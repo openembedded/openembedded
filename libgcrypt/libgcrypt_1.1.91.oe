@@ -1,0 +1,25 @@
+DESCRIPTION=A general purpose cryptographic library based on the code from GnuPG
+SECTION=libs
+PRIORITY=optional
+LICENSE=GPL LGPL FDL
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/${PN}-${PV}.tar.gz"
+
+inherit autotools libtool
+
+EXTRA_OECONF=--without-pth
+
+do_stage() {
+	oe_soinstall src/.libs/libgcrypt.so.7.3.1 ${STAGING_LIBDIR}/
+	oe_soinstall src/.libs/libgcrypt-pthread.so.7.3.1 ${STAGING_LIBDIR}/
+	install -m 0755 src/libgcrypt-config ${STAGING_BINDIR}/
+
+	install -d ${STAGING_DIR}/target/include/
+	for X in gcrypt.h gcrypt-module.h
+	do
+		install -m 0644 src/${X} ${STAGING_DIR}/target/include/${X}
+	done
+
+}
