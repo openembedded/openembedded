@@ -3,12 +3,13 @@ information about currently available nameservers. It sets \
 itself up as the intermediary between programs that supply \
 nameserver information and programs that need nameserver \
 information."
-SECTIO = "net"
+SECTION = "console/network"
 LICENSE = "GPL"
 AUTHOR = "Thomas Hood"
 HOMEPAGE = "http://packages.debian.org/resolvconf"
 DEPENDS = "bash"
 RDEPENDS = "bash"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/r/resolvconf/resolvconf_${PV}.tar.gz"
 

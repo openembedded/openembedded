@@ -86,7 +86,7 @@ python do_lint() {
 		"audio"			: True,
 		"base"			: True,
 		"console/games"		: True,
-		"console/net"		: "network",
+		"console/net"		: "console/network",
 		"console/network"	: True,
 		"console/utils"		: True,
 		"devel"			: True,
