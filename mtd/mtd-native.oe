@@ -1,6 +1,6 @@
 include mtd.oe
 inherit native
-DEPENDS = "patcher-native"
+DEPENDS = "patcher-native zlib-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/mtd"
 
 do_stage () {
