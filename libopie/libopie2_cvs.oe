@@ -8,7 +8,8 @@ DEPENDS = "virtual/libc libqpe-opie sqlite libpcap-0.7.2"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
+	file://${FILESDIR}/ossqlitedriver-posix-regex-include.patch;patch=1"
 S = "${WORKDIR}/libopie2"
 
 inherit qmake
@@ -21,6 +22,13 @@ export OPIEDIR = "${STAGING_LIBDIR}/.."
 EXTRA_QMAKEVARS_POST = ' DEFINES+=OPIE_NEW_MALLOC    \
                          DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
                          DEFINES+="OPIE_WE_VERSION=15" '
+
+# uclibc doesn't have backtrace()
+python __anonymous () {
+    import oe, re
+    if (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None):
+        oe.data.setVar("EXTRA_QMAKEVARS_POST_append", " DEFINES+=OPIE_NO_BACKTRACE ", d)
+}
 
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
