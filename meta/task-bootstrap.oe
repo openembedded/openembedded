@@ -12,7 +12,7 @@ DEPENDS = 'base-files base-passwd-3.5.7 \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
-	hotplug ipkg initscripts modutils-depmod \
+	hotplug ipkg initscripts modutils-depmod modutils-modinfo \
 	netbase resolvconf sysvinit tinylogin \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
