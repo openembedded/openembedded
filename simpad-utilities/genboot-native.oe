@@ -1,5 +1,6 @@
 DESCRIPTION = "Console utility for generating a SIMpad boot image for the proprietary SIEMENS Switzerland bootloader"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/genboot"
+SRC_URI = "file://gen_boot.c file://arnold_boot.h file://simpad-make-flashimg"
 
 inherit native
 
