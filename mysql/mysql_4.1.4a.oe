@@ -8,3 +8,9 @@ DEPENDS += "ncurses mysql-native"
 inherit autotools
 
 EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
+
+do_stage() {
+	autotools_stage_includes
+	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
+}
+
