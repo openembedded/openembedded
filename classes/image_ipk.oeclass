@@ -51,14 +51,7 @@ fakeroot do_rootfs () {
 insert_feed_uris () {
 	
 	echo "Building feeds for [${DISTRO}].."
-	
-	case "${DISTRO}" in
-		openzaurus*)	FEED_URIS_="$FEED_URIS_openzaurus";;
-		familiar*)	FEED_URIS_="$FEED_URIS_familiar";;
-	esac
-	
-	! test -z "$FEED_URIS_" && FEED_URIS="$FEED_URIS_"
-	
+		
 	for line in ${FEED_URIS}
 	do
 		# strip leading and trailing spaces/tabs, then split into name and uri
