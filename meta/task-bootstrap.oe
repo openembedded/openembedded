@@ -1,7 +1,7 @@
-PR = "r1"
-
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+PR = "r2"
+
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
@@ -15,6 +15,5 @@ RDEPENDS = 'base-files base-passwd busybox \
 	netbase resolvconf sysvinit tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
-RRECOMMENDS = 'dropbear lrzsz putty-scp putty-sftp putty-ssh \
-	portmap \
+RRECOMMENDS = 'dropbear lrzsz putty portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
