@@ -12,7 +12,7 @@ DESCRIPTION = Generic library support script\
 DEPENDS=
 
 SRC_URI = ${DEBIAN_MIRROR}/main/libt/${PN}/${PN}_${PV}.orig.tar.gz \
-	  ${DEBIAN_MIRROR}/main/libt/${PN}/${PN}_${PV}-5.diff.gz \
+	  file://${FILESDIR}/debian.patch;patch=1 \
 	  file://${FILESDIR}/libdir.patch;patch=1 \
 	  file://${FILESDIR}/sedvar.patch;patch=1 \
 	  file://${FILESDIR}/libtoolize-staging.patch;patch=1

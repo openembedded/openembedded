@@ -3,7 +3,7 @@ SECTION="libs"
 DEPENDS=virtual/libc
 PV_append=.20030719
 SRC_URI=${DEBIAN_MIRROR}/main/n/ncurses/ncurses_${PV}.orig.tar.gz \
-	${DEBIAN_MIRROR}/main/n/ncurses/ncurses_${PV}-1.diff.gz;patch=1 \
+	file://${FILESDIR}/debian.patch;patch=1 \
 	file://${FILESDIR}/ncurses-5.2.patch;patch=1 \
 	file://${FILESDIR}/ncurses-dirs.patch;patch=1
 
