@@ -1,3 +1,4 @@
+PR = "r1"
 include fakeroot_${PV}.oe
 inherit native
 
