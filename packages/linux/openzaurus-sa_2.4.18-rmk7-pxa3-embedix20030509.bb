@@ -1,3 +1,4 @@
+DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 SECTION = "kernel"
 PV = "2.4.18-rmk7-pxa3-embedix"
 LICENSE = "GPL"
@@ -5,8 +6,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r15"
-DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
+PR = "r16"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
@@ -27,6 +27,8 @@ SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${
 	   file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
 	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
+	   file://ir240_sys_max_tx-2.diff;patch=1 \
+	   file://ir241_qos_param-2.diff;patch=1 \
            file://defconfig-${MACHINE} \
 	   "
 

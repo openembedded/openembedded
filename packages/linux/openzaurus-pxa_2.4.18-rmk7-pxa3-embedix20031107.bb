@@ -1,3 +1,5 @@
+DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
 PV = "2.4.18-rmk7-pxa3-embedix"
 LICENSE = "GPL"
@@ -5,9 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r30"
-DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r31"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 ALLOW_EMPTY_kernel = "1"
@@ -25,7 +25,6 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://bt950_cs.patch;patch=1 \
            file://bluecard_cs.patch;patch=1 \
            file://sharpsl_battery.patch;patch=1 \
-           file://irda-qos.patch;patch=1 \
            file://buffered-fbmem.patch;patch=1 \
            file://enable-sysrq.patch;patch=1 \
            file://compile.patch;patch=1 \
@@ -46,9 +45,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
            http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
-           file://defconfig-${MACHINE} \
+           file://ir240_sys_max_tx-2.diff;patch=1 \
+           file://ir241_qos_param-2.diff;patch=1 \
            http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz \
-           file://fix_tosa_apm.patch;patch=1 "
+           file://fix_tosa_apm.patch;patch=1 \
+           file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
