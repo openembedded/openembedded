@@ -113,6 +113,16 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # DEBUG_BUILD = "1"
 # INHIBIT_PACKAGE_STRIP = "1"
 
+# Uncomment these to build a package such that you can use gprof to profile it.
+# NOTE: This will only work with 'linux' targets, not
+# 'linux-uclibc', as uClibc doesn't provide the necessary
+# object files.  Also, don't build glibc itself with these
+# flags, or it'll fail to build.
+#
+# PROFILE_OPTIMIZATION = "-pg"
+# SELECTED_OPTIMIZATION = "${PROFILE_OPTIMIZATION}"
+# LDFLAGS =+ "-pg"
+
 # Uncomment this if you want OE to emit the log if a build fails.
 OEINCLUDELOGS = "yes"
 
