@@ -1,0 +1,36 @@
+--- libc/sysdeps/unix/sysv/linux/i386/dl-procinfo.h	2002-09-22 06:14:11.000000000 +0900
++++ libc/sysdeps/unix/sysv/linux/i386/dl-procinfo.h.new	2003-01-19 01:18:55.000000000 +0900
+@@ -92,7 +92,7 @@
+   HWCAP_I386_AMD3D = 1 << 31,
+ 
+   /* XXX Which others to add here?  */
+-  HWCAP_IMPORTANT = (HWCAP_I386_MMX)
++  HWCAP_IMPORTANT = (HWCAP_I386_MMX | HWCAP_I386_CMOV)
+ 
+ };
+ 
+--- libc/sysdeps/generic/dl-cache.c	2003-02-02 05:33:47.000000000 +0900
++++ libc/sysdeps/generic/dl-cache.c.new1	2003-02-21 09:18:19.000000000 +0900
+@@ -260,6 +260,12 @@
+       if (platform != (uint64_t) -1)
+ 	platform = 1ULL << platform;
+ 
++#ifdef USE_TLS
++# define TLS_BIT (1ULL << 63)
++#else
++# define TLS_BIT 0
++#endif
++
+       /* Only accept hwcap if it's for the right platform.  */
+ #define HWCAP_CHECK \
+       if (GL(dl_osversion)						      \
+@@ -271,7 +277,8 @@
+ 	  && (lib->hwcap & _DL_HWCAP_PLATFORM) != platform)		      \
+ 	continue;							      \
+       if (hwcap								      \
+-	  && ((lib->hwcap & *hwcap & ~_DL_HWCAP_PLATFORM) > *hwcap))	      \
++	  && ((lib->hwcap & ~_DL_HWCAP_PLATFORM & (*hwcap | TLS_BIT)) <		      \
++	      (lib->hwcap & ~_DL_HWCAP_PLATFORM)))			      \
+ 	continue
+       SEARCH_CACHE (cache_new);
+     }
