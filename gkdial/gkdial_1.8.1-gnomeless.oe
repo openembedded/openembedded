@@ -2,7 +2,7 @@ PR = "r2"
 
 DESCRIPTION = "GTK PPP dialing tool"
 DEPENDS = "virtual/libc gconf gtk+ libglade gettext"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 

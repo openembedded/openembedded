@@ -1,8 +1,9 @@
 inherit autotools pkgconfig
 
+PR = "r1"
 DESCRIPTION = "GTK PPP dialing tool"
 DEPENDS = "virtual/libc gconf gtk+ libglade gettext libgnome libgnomeui ppp"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 

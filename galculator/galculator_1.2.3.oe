@@ -1,11 +1,11 @@
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
 PROVIDES = "galculator"
 DESCRIPTION = "GTK Advanced Calculator"
 DEPENDS = "virtual/libc gtk+ libglade"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 
