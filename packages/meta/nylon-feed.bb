@@ -40,7 +40,7 @@ maradns \
 mc \
 mobilemesh \
 modutils \
-mtd \
+mtd-utils \
 mtr \
 nano \
 ncurses \
