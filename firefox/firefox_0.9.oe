@@ -1,4 +1,4 @@
-DEPENDS = "xt xi zip-native"
+DEPENDS = "xt xi zip-native gtk+"
 PR = "r1"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
