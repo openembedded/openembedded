@@ -1,6 +1,9 @@
-PV = "1.1"
+PV = "1.4"
 
-SRC_URI = "file://tftp.sh"
+DEPENDS = "xfonts-xorg"
+RDEPENDS_${PN} = "xfonts-xorg"
+
+SRC_URI = "file://tftp.sh file://xorg.conf"
 
 do_install() {
 	install -d ${D}/etc/udhcpc.d/
@@ -10,6 +13,15 @@ do_install() {
 	ln -sf /var/lib/config/mysql.txt ${D}/etc/mythtv
 
 	install -d ${D}/etc/X11
-	ln -sf /var/lib/config/xorg.conf ${D}/etc/X11
+	install -m 0644 ${WORKDIR}/xorg.conf ${D}/etc/X11
+
+	ln -sf /var/lib/config/lircd.conf ${D}/etc/lircd.conf
+
+	# ewwww
+	install -d ${D}/root/.mythtv
+	ln -sf /var/lib/config/lircrc ${D}/root/.mythtv/lircrc
+
+	install -d ${D}/dev
+	ln -sf lirc0 ${D}/dev/lirc
 }
 
