@@ -3,9 +3,7 @@ MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib"
 
-SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1 \
-	   file://m4.patch;patch=1"
+SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2"
 
 inherit autotools 
 
