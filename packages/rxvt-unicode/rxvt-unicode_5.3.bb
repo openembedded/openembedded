@@ -7,8 +7,9 @@ output. It also supports mixing multiple fonts at the \
 same time, including Xft fonts."
 LICENSE = "GPL"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
+	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1"
-PR = "r1"
+PR = "r2"
 
 inherit autotools update-alternatives
 
