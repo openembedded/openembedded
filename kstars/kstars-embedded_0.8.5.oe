@@ -1,22 +1,23 @@
 DESCRIPTION = "KDE Stars: The Universe, in your hands! QtE based Palmtop Environments Edition"
-SECTION = "base"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = ""
+APPNAME = "kstars"
+APPTYPE = "binary"
+APPDESKTOP = "${WORKDIR}/apps/Applications"
 
 SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz"
 S = "${WORKDIR}/kstars"
 
-inherit palmtop
+inherit opie
+
+export OE_QMAKE_LINK="${CXX}"
+EXTRA_QMAKEVARS_POST += 'DEFINES+=I18N_NOOP='
 
 do_install() {
     install -d ${D}/${palmtopdir}/bin \
-	       ${D}/${palmtopdir}/apps/Applications \
 	       ${D}/${palmtopdir}/pics/kstars \
 	       ${D}/${palmtopdir}/share/apps/kstars
-    install -m 0755 ${STAGING_LIBDIR}/../bin/kstars ${D}/${palmtopdir}/bin/kstars
-    rm -f ${STAGING_LIBDIR}/../bin/kstars
-    install -m 0644 ${WORKDIR}/apps/Applications/kstars.desktop ${D}/${palmtopdir}/Applications
-    cp -a ${WORKDIR}/pics/kstars ${D}/${palmtopdir}/pics/
+    cp -a ${WORKDIR}/pics ${D}/${palmtopdir}/pics
     cp -a ${WORKDIR}/share/apps/kstars ${D}/${palmtopdir}/share/apps/
 }
