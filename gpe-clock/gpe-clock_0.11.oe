@@ -1,0 +1,11 @@
+inherit gpe
+
+PR = "r1"
+DESCRIPTION = "GPE panel clock"
+DEPENDS = "gtk+ libschedule libgpewidget gpe-announce atd"
+RDEPENDS = "gpe-announce atd"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
