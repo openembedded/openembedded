@@ -4,7 +4,7 @@ export IMAGE_BASENAME = "opie-image"
 # Dependencies to get the launcher up and running
 #
 
-OPIE_LIBS = "libqte2 qpf-bitstream-vera-small libqpe1 libopiecore2 libopieui2 libopienet2 libopiepim2 libopiemm2"
+OPIE_LIBS = "qpf-bitstream-vera-small"
 OPIE_LIBS_DEPEND = "qte-for-opie libopie2 qpf-bitstream-vera"
 OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 
@@ -24,7 +24,7 @@ OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
 OPIE_BASE_STYLES = "opie-deco-flat opie-style-flat"
 
 OPIE_BASE_DEPENDS = "ipkg ntp"
-OPIE_BASE_RDEPENDS = "libipkg ntp"
+OPIE_BASE_RDEPENDS = "ntpdate"
 #
 # Additional things for a standard 16MB distribution
 #
