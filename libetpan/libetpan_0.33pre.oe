@@ -2,15 +2,23 @@ DESCRIPTION = "libetpan is a library for mail server functions"
 SECTION = "libs"
 DEPENDS = "virtual/libc openssl"
 PR = "r1"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+                ${libdir}/*.a"
 
-SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
-	   file://${FILESDIR}/mailstream_socket.patch;patch=1 \
-           file://${FILESDIR}/smtptls.patch;patch=1"
+SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2 \
+       file://${FILESDIR}/mailstream_socket.patch;patch=1 \
+       file://${FILESDIR}/smtptls.patch;patch=1 \
+       file://${FILESDIR}/includedir.patch;patch=1;pnum=0"
 
 inherit autotools libtool
 
 EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
 
 do_stage() {
-	oe_soinstall .libs/libetpan.so.1.0.0 ${STAGING_LIBDIR}/
+    oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
+}
+
+do_install() {
+    oe_runmake install includedir=${D}/${includedir} libdir=${D}/${libdir} bindir=${D}/${bindir}
 }
