@@ -22,7 +22,7 @@
 + * (C) 2003-2005 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
 + */
 +
-+#ifdef QT_QWS_SIMPAD
++
 +
 +#include <linux/switches.h>
 +#define SIMPAD_SWITCHES_DEVICE "/dev/misc/switches"
@@ -69,7 +69,7 @@
 +    QTimer* repeater;
 +    QSocketNotifier *notifier;
 +};
-+#endif
++
 +
  #ifdef QT_QWS_SL5XXX
  #include <asm/sharp_char.h>
@@ -107,7 +107,7 @@
  	&& !ipaq_return_pressed
  #endif
  	) {
-@@ -1779,9 +1834,11 @@
+@@ -1775,9 +1830,11 @@
      } else {
  	type = spec;
      }
@@ -121,7 +121,7 @@
  	handler = new QWSyopyButtonsHandler();
  #elif defined(QT_QWS_CASSIOPEIA)
  	handler = new QWSVr41xxButtonsHandler();
-@@ -1816,6 +1873,218 @@
+@@ -1812,6 +1869,218 @@
      return keyM;
  }
  
@@ -131,7 +131,7 @@
 + * SIMpad switches handler
 + * (C) 2003 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
 + */
-+
++#if defined(QT_QWS_SIMPAD)
 +
 +QWSsimpadButtonsHandler::QWSsimpadButtonsHandler()
 +                        :QWSKeyboardHandler(), fd( -1 ),
@@ -338,7 +338,7 @@
 +    processKeyEvent( 0, k, 0, true, true );
 +    repeater->start(repeatperiod);
 +}
-+
++#endif
 +
 +#endif // QT_NO_QWS_KEYBOARD
 --- qt-2.3.10-snapshot-20050131/src/kernel/qsoundqss_qws.cpp~simpad
@@ -411,5 +411,3 @@
  	    handler = new QTPanelHandlerPrivate(mouseProtocol,mouseDev);
  #elif defined(QT_QWS_CASSIOPEIA)
  	    handler = new QVrTPanelHandlerPrivate( mouseProtocol, mouseDev );
---- qt-2.3.10-snapshot-20050131/qwindowsystem_qws.cpp
-+++ /dev/null

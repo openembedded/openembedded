@@ -1,7 +1,10 @@
-Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
-===================================================================
---- qt-2.3.10-snapshot-20050120.orig/src/kernel/qkeyboard_qws.cpp	2005-01-22 22:52:45.000000000 +0100
-+++ qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp	2005-01-25 00:00:27.506796263 +0100
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10-snapshot-20050131/src/kernel/qkeyboard_qws.cpp~kernel-keymap
++++ qt-2.3.10-snapshot-20050131/src/kernel/qkeyboard_qws.cpp
 @@ -30,6 +30,42 @@
  **
  **********************************************************************/
@@ -45,7 +48,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  #include "qwindowsystem_qws.h"
  #include "qwsutils_qws.h"
  #include "qgfx_qws.h"
-@@ -44,15 +80,18 @@
+@@ -45,15 +81,18 @@
  #include <ctype.h>
  
  #include <unistd.h>
@@ -67,8 +70,8 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  
  #ifdef QT_QWS_TIP2
  #include <qcopchannel_qws.h>
-@@ -80,17 +119,6 @@
- #include <sys/vt.h>
+@@ -135,17 +174,6 @@
+ };
  #endif
  
 -#ifdef QT_QWS_SL5XXX
@@ -85,7 +88,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  static int dir_keyrot = -1;
  
  static int xform_dirkey(int key)
-@@ -114,7 +142,6 @@
+@@ -169,7 +197,6 @@
      int xf = qt_screen->transformOrientation() + dir_keyrot;
      return (key-Qt::Key_Left+xf)%4+Qt::Key_Left;
  }
@@ -93,19 +96,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  
  #define VTSWITCHSIG SIGUSR2
  
-@@ -165,9 +192,9 @@
- 	    current = 0;
-     }
- 
--    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d; 
-+    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d;
- 				       if ( p > 0 ) repeatperiod=p;}
--    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay; 
-+    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay;
-     					  if (p) *p=repeatperiod; }
- 
-     void stop()
-@@ -245,11 +272,19 @@
+@@ -300,11 +327,19 @@
      {	Qt::Key_F35,		0xffff  , 0xffff  , 0xffff  }, // 21 light
      {	Qt::Key_Escape,		0xffff  , 0xffff  , 0xffff  }, // 22
  
@@ -129,7 +120,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  
      {	Qt::Key_F33,		0xffff  , 0xffff  , 0xffff  }, // 27 OK
      {	Qt::Key_F12,		0xffff  , 0xffff  , 0xffff  }, // 28 40 home
-@@ -314,7 +349,7 @@
+@@ -369,7 +404,7 @@
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 63
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 64
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 65
@@ -138,19 +129,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
      {	Qt::Key_Meta,		0xffff  , 0xffff  , 0xffff  }, // 67
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 68
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 69
-@@ -551,9 +586,9 @@
- 
-     void doKey(uchar scancode);
- 
--    
-+
-     void restoreLeds();
--    
-+
- private:
-     bool shift;
-     bool alt;
-@@ -594,12 +629,61 @@
+@@ -649,12 +684,61 @@
  public:
      QWSTtyKeyboardHandler(const QString&);
      virtual ~QWSTtyKeyboardHandler();
@@ -212,7 +191,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  };
  
  
-@@ -759,6 +843,7 @@
+@@ -814,6 +898,7 @@
      fn = FALSE;
  
      numLock = FALSE;
@@ -220,7 +199,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
      sharp_kbdctl_modifstat  st;
      int dev = ::open("/dev/sharp_kbdctl", O_RDWR);
      if( dev >= 0 ) {
-@@ -770,6 +855,7 @@
+@@ -825,6 +910,7 @@
  	::close(dev);
      }
  #endif
@@ -228,16 +207,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  #if defined(QT_QWS_IPAQ)
      // iPAQ Action Key has ScanCode 0x60: 0x60|0x80 = 0xe0 == extended mode 1 !
      ipaq_return_pressed = FALSE;
-@@ -809,7 +895,7 @@
- 
- #if !defined(QT_QWS_SL5XXX)
-     if (code == 224
--#if defined(QT_QWS_IPAQ) 
-+#if defined(QT_QWS_IPAQ)
- 	&& !ipaq_return_pressed
- #endif
- 	) {
-@@ -899,7 +985,7 @@
+@@ -954,7 +1040,7 @@
  	    }
      } else if ( extended == 2 ) {
  	switch (code) {
@@ -246,7 +216,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  	    return;
  	case 0x45:
  	    keyCode = Qt::Key_Pause;
-@@ -1144,7 +1230,7 @@
+@@ -1199,7 +1285,7 @@
  		unicode = '`';
  	    } else
  #endif
@@ -255,7 +225,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  		if (bCtrl)
  		    unicode = currentKey->ctrl_unicode;
  		else if (bCaps)
-@@ -1189,9 +1275,12 @@
+@@ -1244,9 +1330,12 @@
  //
  // Tty keyboard
  //
@@ -268,7 +238,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
      kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
  
      if ( kbdFD >= 0 ) {
-@@ -1207,11 +1296,7 @@
+@@ -1262,11 +1351,7 @@
  	tcgetattr( kbdFD, &termdata );
  
  #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
@@ -281,7 +251,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  #endif
  
  	termdata.c_iflag = (IGNPAR | IGNBRK) & (~PARMRK) & (~ISTRIP);
-@@ -1224,6 +1309,9 @@
+@@ -1279,6 +1364,9 @@
  	cfsetospeed(&termdata, 9600);
  	tcsetattr(kbdFD, TCSANOW, &termdata);
  
@@ -291,15 +261,15 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  	signal(VTSWITCHSIG, vtSwitchHandler);
  
  #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
-@@ -1245,6 +1333,7 @@
+@@ -1300,6 +1388,7 @@
  
  QWSTtyKeyboardHandler::~QWSTtyKeyboardHandler()
  {
 +    restoreLeds();
      if (kbdFD >= 0)
      {
- #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
-@@ -1255,13 +1344,451 @@
+ 
+@@ -1328,13 +1417,451 @@
  	kbdFD = -1;
      }
  }
@@ -752,7 +722,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  }
  
  typedef struct {
-@@ -1366,13 +1893,13 @@
+@@ -1439,13 +1966,13 @@
  	return;
  #ifdef QT_QWS_TIP2
      // custom scan codes - translate them and create a key event immediately
@@ -768,7 +738,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
  	    {
  		case Key_Menu:
  		case Key_Back:
-@@ -1400,14 +1927,14 @@
+@@ -1473,14 +2000,14 @@
  							TRUE, FALSE );
  	    }
  	    lastPress = km;
@@ -787,7 +757,7 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
      else
  #endif
      {
-@@ -1770,10 +2297,10 @@
+@@ -1845,10 +2372,10 @@
  	handler = new QWSUsbKeyboardHandler(device);
      } else if ( type == "TTY" ) {
  	handler = new QWSTtyKeyboardHandler(device);
@@ -800,10 +770,8 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/qkeyboard_qws.cpp
      else {
  	qWarning( "Keyboard type %s:%s unsupported", spec.latin1(), device.latin1() );
      }
-Index: qt-2.3.10-snapshot-20050120/src/kernel/keyboard_linux_to_qt.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ qt-2.3.10-snapshot-20050120/src/kernel/keyboard_linux_to_qt.h	2005-01-24 22:28:46.000000000 +0100
+--- /dev/null
++++ qt-2.3.10-snapshot-20050131/src/kernel/keyboard_linux_to_qt.h
 @@ -0,0 +1,263 @@
 +/*
 + * Generated with a small python utility found at
@@ -1068,4 +1036,3 @@ Index: qt-2.3.10-snapshot-20050120/src/kernel/keyboard_linux_to_qt.h
 +Qt::Key_thorn,
 +Qt::Key_ydiaeresis
 +}; 
- 
