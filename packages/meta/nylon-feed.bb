@@ -50,6 +50,7 @@ net-snmp \
 ntp \
 nylon-scripts \
 nylon-statistics \
+olsrd \
 openssh \
 openssl \
 openvpn \
@@ -70,7 +71,6 @@ sysvinit \
 tcpdump \
 tinc \
 timezones \
-unik-olsrd \
 usbutils \
 vtun \
 wireless-tools \

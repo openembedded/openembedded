@@ -10,13 +10,13 @@ NYLON_STANDARD = "\
 	ifplugd iproute2 iptables \
 	mobilemesh \
 	nylon-scripts \
+	olsrd \
 	ppp pciutils \
 	rp-pppoe \
 	shorewall \
 	tcpdump \
 	usbutils \
-	wireless-tools \
-	unik-olsrd"
+	wireless-tools"
 
 DEPENDS += "hostap-modules ntp \ 
 	${NYLON_STANDARD}"
