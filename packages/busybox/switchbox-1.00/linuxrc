@@ -1,0 +1,81 @@
+#!/bin/sh
+
+mounted=
+
+/bin/mount -t proc proc /proc
+/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
+
+if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/tmpmnt ; then
+
+    if [ -x /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init ] ; then
+	if [ -f /mnt/tmpmnt/.recovery ] ; then
+	    mounted=
+	elif [ -f /mnt/tmpmnt/.ramdisk ] ; then
+	    /bin/dd if=/dev/zero of=/dev/ram1 bs=1k count=10k
+	    /bin/mkdir /lib
+	    /bin/ln -s /mnt/tmpmnt/lib/* /lib
+	    /bin/mkdir /usr/bin
+	    /bin/ln -s /mnt/tmpmnt/usr/bin/mke2fs /usr/bin
+	    /bin/ln -s /mnt/tmpmnt/usr/bin/find /usr/bin
+	    /bin/ln -s /mnt/tmpmnt/usr/bin/cpio /usr/bin
+	    /usr/bin/mke2fs -m 0 /dev/ram1 10240
+	    /bin/mkdir /mnt/tmpmnt2
+	    /bin/mount -t ext2 /dev/ram1 /mnt/tmpmnt2
+	    ( cd /mnt/tmpmnt ; /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/tmpmnt2 )
+	    /bin/cp /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi /mnt/tmpmnt2/home/httpd/html/Management/upgrade-real.cgi
+	    /bin/echo "#!/bin/sh" > /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/echo >> /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/echo "/bin/mount -t ramfs none /upload -o size=8196 2>/dev/null" \
+		>> /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/echo "/bin/dd if=/dev/zero of=/upload/free-ram bs=1k count=8k 2>/dev/null" \
+		>> /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/echo "/bin/umount /upload 2>/dev/null" \
+		>> /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/echo "exec /home/httpd/html/Management/upgrade-real.cgi" \
+		>> /mnt/tmpmnt2/home/httpd/html/Management/upgrade.cgi
+	    /bin/umount /mnt/tmpmnt2
+	    /bin/rm -rf /mnt/tmpmnt2
+	    /bin/echo "Root filesystem will be mounted from /dev/ram1 (a copy of /dev/mtdblock4) ..."
+	    /bin/echo "0x0101" > /proc/sys/kernel/real-root-dev
+	    mounted=/mnt/tmpmnt
+	else
+	    /bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
+	    /bin/echo "0x1f04" > /proc/sys/kernel/real-root-dev
+	    mounted=/mnt/tmpmnt
+	fi
+    fi
+
+    /bin/umount /mnt/tmpmnt
+fi
+
+if [ -z "$mounted" ] ; then
+
+    if  [ -x /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/ram0 ..."
+	mounted=/mnt/tmpmnt
+	/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
+    fi
+fi
+
+if [ -z "$mounted" ] ; then
+    /bin/echo "Root filesystem cannot be found - dropping into shell ..."
+
+    /bin/echo "5" > /proc/sys/kernel/panic
+
+    device=/dev/`/bin/sed -n -e 's/^\(mtd[0-9]*\): .* "FIS directory"/\1/p' /proc/mtd`   
+    length=`/bin/dd if=$device bs=2 skip=2048 | /bin/hexdump -n 4 -e '4/1 "%02X"' $device`
+
+    if ( [ "$length" != "FFFFFFFF" ] ); then
+	/bin/dd if=$device bs=2 skip=2056 | /bin/tar zxvf -
+	/sbin/insmod ixp400
+	/sbin/insmod ixp425_eth
+	/sbin/ifconfig ixp0 up 192.168.1.77 netmask 255.255.0.0
+	/sbin/telnetd
+    fi
+
+    exec /bin/sh
+fi
+
+/bin/umount /proc
+
+exit 0
