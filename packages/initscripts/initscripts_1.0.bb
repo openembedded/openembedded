@@ -29,16 +29,14 @@ SRC_URI = "file://halt \
            file://checkroot.sh \
            file://umountnfs.sh \
            file://sysfs.sh \
-           file://device_table.txt"
+           file://device_table.txt \
+	   file://corgikeymap-2.6.map"
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
 SRC_URI_append_corgi =    " file://keymap"
 SRC_URI_append_shepherd = " file://keymap"
 SRC_URI_append_husky =    " file://keymap"
-SRC_URI_append_corgi =    " file://corgikeymap.map"
-SRC_URI_append_shepherd = " file://corgikeymap.map"
-SRC_URI_append_husky =    " file://corgikeymap.map"
 
 def read_kernel_version(d):
 	import bb
