@@ -1,5 +1,6 @@
 collie/sharp_mmcsd_m.o
 corgi/sharp_mmcsd_m.o
+defconfig-shepherd
 enlightenment-sa_2.4.19-rmk6-pxa1-hh37.1.bb
 enlightenment.conf
 h3600-mine.conf
