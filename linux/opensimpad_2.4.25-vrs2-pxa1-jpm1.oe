@@ -55,8 +55,3 @@ do_configure() {
         oe_runmake oldconfig
 }
 
-do_stage() {
-	install -d ${STAGING_LIBDIR}/kernel
-	install arch/arm/boot/zImage ${STAGING_LIBDIR}/kernel/
-}
-
