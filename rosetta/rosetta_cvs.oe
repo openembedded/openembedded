@@ -1,10 +1,11 @@
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xinerama xtst xext xau"
+DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xtst xext xau"
 DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=rosetta \
 	file://rosetta-makefile.patch;patch=1"
 S = "${WORKDIR}/rosetta"
+PR = "r1"
 
 inherit pkgconfig
 

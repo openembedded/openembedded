@@ -42,7 +42,6 @@ DEPENDS += " ${gpe-task-pim}"
 
 gpe-task-utils = "\
     gpe-bluetooth \
-    gpe-aerial \
     gpe-mixer \
     gpe-edit \
     gpe-su \
@@ -51,6 +50,7 @@ gpe-task-utils = "\
     gpe-gallery \
     gpe-calculator \
     minilite \
+    miniclipboard \
     gpe-taskmanager \
     gpe-package \
     gpe-clock \
@@ -60,6 +60,8 @@ gpe-task-utils = "\
     gpe-shield \
     keylaunch \
     gpe-mininet \
+    xmonobut \
+    matchbox-panel-hacks \
     rosetta \
     detect-stylus"
 
