@@ -25,14 +25,21 @@ check_sanity || exit 0
 # Convert numbers from the cset list into something useful
 nums=
 for s in `cat $BK_CSETLIST`; do
-    nums="`bk prs -h -d\"\\\$if(:DS: -eq $s){:REV:}\" ChangeSet` $nums"
+    # translate cset serial to cset #
+    n=`bk prs -h -d"\\$if(:DS: -eq $s){:REV:}" ChangeSet`
+    # dont send notifications about empty ChangeSets
+    if test -z `bk prs -h -r"$n" -d'$if(:LI: -eq 0){$if(:LD: -eq 0){:REV:}}' ChangeSet`; then
+    	nums="$n $nums"
+    fi
 done
 
-# Send logs to CIA
-echo "Sending notification to CIA irc bot (cia.navi.cx)."
-(
-    for n in $nums; do
-        $BK_ROOT/BitKeeper/triggers/ciabot_bk.sh $n
-    done
-) &
+# Send notifications to CIA
+if test -n "$nums"; then
+    echo "Sending notification to CIA irc bot (cia.navi.cx)."
+    (
+        for n in $nums; do
+            $BK_ROOT/BitKeeper/triggers/ciabot_bk.sh $n
+        done
+    ) &
+fi
 exit 0
