@@ -2,5 +2,3 @@ SRC_URI := ${DEBIAN_MIRROR}/main/f/fakeroot/${PN}_${PV}.tar.gz
 S = ${WORKDIR}/${P}
 
 inherit autotools libtool
-
-EXTRA_OECONF = --program-prefix=

@@ -1,0 +1,20 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools libtool
+
+do_configure () {
+	set -e
+	rm -f configure.in configure.files acinclude.m4 subdirs
+	oe_runmake -f admin/Makefile.common configure.in
+	oe_runmake -f admin/Makefile.common configure.files
+	cat admin/acinclude.m4.in admin/libtool.m4.in > acinclude.m4
+	oe_runmake -f admin/Makefile.common subdirs
+	aclocal -I . -I admin
+	autoheader
+	autoconf
+	oe_runconf
+}

@@ -7,4 +7,4 @@ S := ${WORKDIR}/${P}
 
 inherit autotools
 
-EXTRA_OECONF = --disable-pam --program-prefix=
+EXTRA_OECONF = --disable-pam
