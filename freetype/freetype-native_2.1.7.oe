@@ -10,7 +10,7 @@ S = "${WORKDIR}/freetype-${PV}"
 PACKAGES = ""
 
 do_configure () {
-	gnu-configize
+	(cd builds/unix && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
 

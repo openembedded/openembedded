@@ -103,6 +103,7 @@ do_configure () {
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
 # version check and doesn't really help with anything
+	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
 	CPPFLAGS="" oe_runconf
 }
 

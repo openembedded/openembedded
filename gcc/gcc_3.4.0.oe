@@ -170,7 +170,7 @@ do_configure () {
 		export AR_FOR_TARGET="${HOST_PREFIX}ar"
 		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
 	fi
-	gnu-configize
+	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
 

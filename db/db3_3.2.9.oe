@@ -38,12 +38,12 @@ do_configure_prepend () {
 
 do_configure () {
 	set -e
-	cd ${B}
+	cd ${S}
 	gnu-configize
+	cd ${B}
 	oe_runconf --enable-shared --disable-static
 	mkdir -p ${WORKDIR}/db-${PV}/build_unix_static
 	cd ${WORKDIR}/db-${PV}/build_unix_static
-	gnu-configize
 	oe_runconf --disable-shared --enable-static
 	cd ${S}
 }
