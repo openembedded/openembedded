@@ -8,8 +8,9 @@ SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-${PV}.tar.b
 
 inherit autotools pkgconfig libtool
 
-libname = "libxml2.so.2.6.7"
+EXTRA_OECONF = "--without-python"
 
+libname = "libxml2.so.2.6.7"
 headers = "DOCBparser.h HTMLparser.h HTMLtree.h SAX.h SAX2.h c14n.h catalog.h chvalid.h debugXML.h dict.h encoding.h entities.h globals.h hash.h list.h nanoftp.h nanohttp.h parser.h parserInternals.h pattern.h relaxng.h schemasInternals.h threads.h tree.h uri.h valid.h xinclude.h xlink.h xmlIO.h xmlautomata.h xmlerror.h xmlexports.h xmlmemory.h xmlreader.h xmlregexp.h xmlschemas.h xmlschemastypes.h xmlstring.h xmlunicode.h xmlversion.h xmlwriter.h xpath.h xpathInternals.h xpointer.h"
 
 do_stage () {
