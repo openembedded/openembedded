@@ -1,0 +1,4 @@
+include pkgconfig_${PV}.oe
+inherit native
+FILESDIR=${TOPDIR}/pkgconfig/pkgconfig-${PV}
+S=${WORKDIR}/pkgconfig-${PV}

@@ -1,0 +1,4 @@
+include autoconf_${PV}.oe
+S = ${WORKDIR}/autoconf-${PV}
+
+inherit native

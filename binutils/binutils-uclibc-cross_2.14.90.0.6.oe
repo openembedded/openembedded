@@ -1,0 +1,4 @@
+include binutils-uclibc_${PV}.oe
+inherit cross
+PROVIDES = virtual/${TARGET_SYS}-binutils
+FILESDIR = ${TOPDIR}/binutils/binutils-${PV}
