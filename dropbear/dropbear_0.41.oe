@@ -22,13 +22,12 @@ do_install_prepend () {
 }
 pkg_postinst_append () {
 
-if [ "x$D" = "x" ]; then
-	if [ ! -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
-		dropbearkey -t rsa -f ${sysconfdir}/dropbear/dropbear_rsa_host_key
-	fi
-	if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
-		dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
-	fi
+if [ -n "$D"  ]; then exit 1; fi
+if [ ! -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
+	dropbearkey -t rsa -f ${sysconfdir}/dropbear/dropbear_rsa_host_key
+fi
+if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
+	dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
 fi
 }
 

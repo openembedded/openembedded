@@ -122,6 +122,8 @@ do_install () {
             echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
             echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
         done
+        echo "mkdir -p /var/lock/subsys" >> ${D}/etc/init.d/populate-var
+        echo "chmod 755 /var/lock/subsys" >> ${D}/etc/init.d/populate-var
         rmdir ${D}/var/*
         chmod a+x ${D}/etc/init.d/populate-var
         ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
