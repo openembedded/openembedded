@@ -1,7 +1,7 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
 DEPENDS = "zlib ncurses"
-PR = "r2"
+PR = "r3"
 RV = "0.44test3"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/testing/dropbear-${RV}.tar.bz2 \
@@ -46,16 +46,6 @@ do_install () {
 				  -e 's,/usr/bin,${bindir},g' \
 				  -e 's,/usr,${prefix},g' > ${D}/${sysconfdir}/init.d/dropbear
 	chmod 755 ${D}/${sysconfdir}/init.d/dropbear
-}
-
-pkg_postinst_append () {
-  if [ -n "$D"  ]; then exit 1; fi
-  if [ ! -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
-        dropbearkey -t rsa -f ${sysconfdir}/dropbear/dropbear_rsa_host_key
-  fi
-  #if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
-  #       dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
-  #fi
 }
 
 pkg_postrm_append () {
