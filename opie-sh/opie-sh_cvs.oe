@@ -6,13 +6,14 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/opie-sh \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/help \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
-
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/bin"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
@@ -21,6 +22,7 @@ inherit opie
 do_install() {
 	install -d ${D}${palmtopdir}/bin
 	install -m 0755 ${WORKDIR}/${APPNAME}/scripts/*.sh ${D}${palmtopdir}/bin/
+	install -m 0755 ${WORKDIR}/bin/opie-sh-howto.sh ${D}${palmtopdir}/bin/
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
         install -d ${D}${palmtopdir}/pics/opie-sh-scripts/
@@ -47,4 +49,4 @@ FILES_opie-sh-ssh-askpass = " ${palmtopdir}/bin/opie-sh-ssh-askpass.sh"
 FILES_opie-sh-stowawayctrl = " ${palmtopdir}/bin/stowctrl.sh ${palmtopdir}/apps/Opie-SH/stowctrl.desktop ${palmtopdir}/pics/opie-sh-scripts/stowctrl.png"
 FILES_opie-sh-usbnetctrl = " ${palmtopdir}/bin/usbnetctrl.sh ${palmtopdir}/apps/Opie-SH/usbnetctrl.desktop ${palmtopdir}/pics/opie-sh-scripts/usbnetctrl.png"
 FILES_opie-sh-wavelanchooser = " ${palmtopdir}/bin/opie-sh-wavelanchooser.sh ${palmtopdir}/apps/Opie-SH/opie-sh-wavelanchooser.desktop ${palmtopdir}/pics/opie-sh-scripts/qtwavelan.png"
-FILES_opie-sh = " ${palmtopdir}/bin/opie-sh ${palmtopdir}/apps/Opie-SH/opie-sh.desktop ${palmtopdir}/pics/opie-sh/*.png ${palmtopdir}/opie-sh/*.html"
+FILES_opie-sh = " ${palmtopdir}/bin/opie-sh-howto.sh ${palmtopdir}/bin/opie-sh ${palmtopdir}/apps/Opie-SH/opie-sh.desktop ${palmtopdir}/pics/opie-sh/*.png ${palmtopdir}/opie-sh/*.html"
