@@ -1,0 +1,42 @@
+DESCRIPTION=Qt(E) Makefile Generator
+PRIORITY="optional"
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+LICENSE="GPL/QPL"
+
+SRC_URI="ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
+S="${WORKDIR}/qt-embedded-free-${PV}"
+
+inherit autotools native
+
+export QTDIR=${S}
+
+ARCH_i686=x86
+
+EXTRA_OECONF = -static -no-gif -no-sm -system-zlib -system-libjpeg -system-libpng -no-thread -no-nis -no-cups -no-stl		\
+               -disable-styles -disable-tools -disable-kernel -disable-widgets -disable-dialogs -disable-iconview     		\
+               -disable-workspace -disable-network -disable-canvas -disable-table -disable-xml -disable-opengl -disable-sql
+EXTRA_OEMAKE=-e
+
+do_configure() {
+        if [ "$BUILD_ARCH" = "i686" ]; then
+                BUILD_ARCH=x86
+        fi
+        echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
+
+}
+
+do_compile() {
+	sleep 1
+}
+
+do_stage() {
+        install -m 0755 bin/qmake ${STAGING_BINDIR}
+	install -d ${QMAKE_MKSPEC_PATH}
+	cp -dfR mkspecs/* ${QMAKE_MKSPEC_PATH}
+}
+
+do_install() {
+        sleep 1
+}
+
