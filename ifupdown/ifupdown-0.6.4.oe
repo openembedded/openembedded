@@ -7,6 +7,7 @@ DESCRIPTION = High level tools to configure network interfaces\
 
 SRC_URI = ${DEBIAN_MIRROR}/main/i/${PN}/${PN}_${PV}.orig.tar.gz \
 	  ${DEBIAN_MIRROR}/main/i/${PN}/${PN}_${PV}-4.4.diff.gz;patch=1 \
+	  file://${FILESDIR}/busybox.patch;patch=1 \
 	  file://${FILESDIR}/udhcpc.patch;patch=1 \
 	  file://${FILESDIR}/zeroconf.patch;patch=1
 S = ${WORKDIR}/${P}
