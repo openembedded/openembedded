@@ -1,0 +1,23 @@
+DESCRIPTION = "Settings application for the zkbapplet"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "opie-keyz"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/keyz-cfg;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/keyz-cfg"
+
+inherit opie
+
+# FILES
+do_install() {
+        install -d ${D}${palmtopdir}/pics/keyz-cfg/
+        install -m 0644 ${WORKDIR}/pics/keyz-cfg.png ${D}${palmtopdir}/pics/
+}
+
