@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- pcre-4.4/Makefile.in~rpath
++++ pcre-4.4/Makefile.in
+@@ -107,12 +107,12 @@
+ 
+ libpcre.la:     $(OBJ)
+ 		-rm -f libpcre.la
+-		$(LINKLIB) -rpath $(LIBDIR) -version-info \
++		$(LINKLIB) -version-info \
+ 		'$(PCRELIBVERSION)' -o libpcre.la $(LOBJ)
+ 
+ libpcreposix.la: pcreposix.@OBJEXT@
+ 		-rm -f libpcreposix.la
+-		$(LINKLIB) -rpath $(LIBDIR) libpcre.la -version-info \
++		$(LINKLIB) libpcre.la -version-info \
+ 		'$(PCREPOSIXLIBVERSION)' -o libpcreposix.la pcreposix.lo
+ 
+ pcre.@OBJEXT@:  $(top_srcdir)/chartables.c $(top_srcdir)/pcre.c \
