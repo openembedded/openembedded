@@ -10,7 +10,7 @@ PR = "r2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
-           file://no-xwc.patch;patch=1;pnum=0 \
+           file://no-xwc.patch;patch=1 \
            file://automake-lossage.patch;patch=1 \
            file://gtk+-handhelds.patch;patch=1 \
 	   file://spinbutton.patch;patch=1 \
