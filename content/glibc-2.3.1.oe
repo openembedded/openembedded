@@ -1,6 +1,8 @@
 DESCRIPTION="GNU C Library"
 LICENSE="LGPL"
 SECTION="libs"
+DEPENDS=""
+RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 
