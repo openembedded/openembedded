@@ -8,8 +8,8 @@
 export FEED_PATTERN = "^opie"
 export FEED_NAME = "opie"
 
-# egrep -i regexp matching package name
-export EXCLUDE_FROM_FEED = "-dev$"
+# egrep -i Pattern matched against "$Section $Package-Name"
+export EXCLUDE_FROM_FEED = "-dev$|translations "
 inherit split_ipk_feeds
 
 

@@ -8,7 +8,7 @@
 export FEED_PATTERN = "\ locale-|glibc-|-dev$|devel"
 export FEED_NAME = "openzaurus-system"
 
-# egrep -i regexp matching package name
+# egrep -i Pattern matched against "$Section $Package-Name"
 export EXCLUDE_FROM_FEED = ""
 
 inherit split_ipk_feeds

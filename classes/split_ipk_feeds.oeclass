@@ -20,13 +20,15 @@ do_split_feed () {
 	echo "Working on pattern [$FEED_PATTERN] for feed [$FEED_NAME]"
 	
 	# Don't we all love sed?
-	cat "${DEPLOY_DIR_IPK}/Packages" |sed -n "/^Section/s/Section\:\ //p;/^Package/s/Package\:\ //p" |sed '$!N;s/\n/ /;s/\(.*\)\ \(.*\)/\2 \1/'| sort | egrep -i -- "$FEED_PATTERN" | sed -n "s/\(.*\)\ \(.*\)/\2/p" > feed-content.tmp	
+	cat "${DEPLOY_DIR_IPK}/Packages" |sed -n "/^Section/s/Section\:\ //p;/^Package/s/Package\:\ //p" |sed '$!N;s/\n/ /;s/\(.*\)\ \(.*\)/\2 \1/'| sort | egrep -i -- "$FEED_PATTERN" > feed-content.tmp	
 
 	if ! test -z "$EXCLUDE_FROM_FEED"
 	then
-		cat feed-content.tmp | egrep -iv -- "$EXCLUDE_FROM_FEED" > feed-content.tmp2
-		rm feed-content.tmp ; mv feed-content.tmp2 feed-content.tmp
+		cat feed-content.tmp | egrep -iv -- "$EXCLUDE_FROM_FEED" | sed -n "s/\(.*\)\ \(.*\)/\2/p" > feed-content.tmp2		
+	else
+		cat feed-content.tmp | sed -n "s/\(.*\)\ \(.*\)/\2/p" > feed-content.tmp2
 	fi
+	rm feed-content.tmp ; mv feed-content.tmp2 feed-content.tmp
 	
 	if ! test -d ${DEPLOY_DIR_IPK}/${FEED_NAME}
 	then
