@@ -1,0 +1,196 @@
+diff -urN xmms-embedded.orig/xmms/General/QPEgui/QPEgui.pro xmms-embedded/xmms/General/QPEgui/QPEgui.pro
+--- xmms-embedded.orig/xmms/General/QPEgui/QPEgui.pro	2003-04-01 12:55:53.000000000 -0500
++++ xmms-embedded/xmms/General/QPEgui/QPEgui.pro	2004-03-28 19:04:54.000000000 -0500
+@@ -3,8 +3,8 @@
+ CONFIG		= qt warn_on release
+ HEADERS		= config.h xmmsgui2.h filebrowser.h inlineedit.h qinputdialog.h moviewin.h xtoolbutton.h
+ SOURCES		= song_change.cpp xmmsgui2.cpp filebrowser.cpp inlineedit.cpp qinputdialog.cpp moviewin.cpp xtoolbutton.cpp
+-INCLUDEPATH	+= . ../.. $(INC_PATH) $(OPIE_INC)
+-LIBS            += $(SUB_LIBS) -lpthread -lglib -lqpe
++INCLUDEPATH	+= . ../.. $(INC_PATH) $(OPIE_INC) $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS            += -L$(STAGING_DIR)/lib $(SUB_LIBS) -lpthread -lglib-2.0 -lqpe
+ #INTERFACES      = xmmsgui2.ui
+ DESTDIR		= ../../../compiled/xmms/General
+ TARGET		= QPEgui
+diff -urN xmms-embedded.orig/xmms/General/QPEgui/xmms.pro xmms-embedded/xmms/General/QPEgui/xmms.pro
+--- xmms-embedded.orig/xmms/General/QPEgui/xmms.pro	2002-11-18 05:13:07.000000000 -0500
++++ xmms-embedded/xmms/General/QPEgui/xmms.pro	2004-03-28 19:05:01.000000000 -0500
+@@ -3,8 +3,8 @@
+ CONFIG		= qt warn_on release
+ HEADERS		= config.h xmmsgui2.h filebrowser.h inlineedit.h qinputdialog.h moviewin.h xtoolbutton.h
+ SOURCES		= song_change.cpp xmmsgui2.cpp filebrowser.cpp inlineedit.cpp qinputdialog.cpp moviewin.cpp xtoolbutton.cpp
+-INCLUDEPATH	+= . ../.. /usr/include/glib-1.2 /usr/lib/glib/include
+-LIBS            += -lpthread -lglib -lqpe
++INCLUDEPATH	+= . ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS            += -L$(STAGING_DIR)/lib -lpthread -lglib-2.0 -lqpe
+ #INTERFACES      = xmmsgui2.ui
+ DESTDIR		= ../../../compiled/xmms/General
+ TARGET		= QPEgui
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro	2004-03-28 19:04:48.000000000 -0500
+@@ -12,8 +12,8 @@
+ vcedit.c \
+ vorbis.c
+ 
+-INCLUDEPATH = . ../../include ../.. ../../../Tremor
+-LIBS = -lglib -lm -ldl -L../../../compiled -lvorbisidec 
++INCLUDEPATH = . ../../include ../.. ../../../Tremor $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl -L../../../compiled -lvorbisidec 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro xmms-embedded/xmms/Input/mikmod/mikmod.pro
+--- xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/mikmod/mikmod.pro	2004-03-28 19:04:42.000000000 -0500
+@@ -5,8 +5,8 @@
+ SOURCES = drv_xmms.c \
+ plugin.c
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = -lglib -lm -ldl -lmikmod
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl -lmikmod
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro xmms-embedded/xmms/Input/mplayer/mplayer.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro	2004-03-28 17:39:52.000000000 -0500
++++ xmms-embedded/xmms/Input/mplayer/mplayer.pro	2004-03-28 19:04:30.000000000 -0500
+@@ -4,8 +4,8 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = $(SUB_LIBS) -lglib -lm -ldl 
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib $(SUB_LIBS) -lglib-2.0 -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/wav.pro xmms-embedded/xmms/Input/mplayer/wav.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/wav.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/mplayer/wav.pro	2004-03-28 19:04:36.000000000 -0500
+@@ -4,8 +4,8 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = -lglib -lm -ldl 
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/shorten/shorten.pro xmms-embedded/xmms/Input/shorten/shorten.pro
+--- xmms-embedded.orig/xmms/Input/shorten/shorten.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/shorten/shorten.pro	2004-03-28 19:04:25.000000000 -0500
+@@ -16,8 +16,8 @@
+ wave.c
+ 
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = -lglib -lm -ldl 
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/wav/wav.pro xmms-embedded/xmms/Input/wav/wav.pro
+--- xmms-embedded.orig/xmms/Input/wav/wav.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/wav/wav.pro	2004-03-28 19:04:19.000000000 -0500
+@@ -4,8 +4,8 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = -lglib -lm -ldl 
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro
+--- xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro	2004-03-28 19:04:12.000000000 -0500
+@@ -11,8 +11,8 @@
+ xing.c \
+ xmms-mad.c
+ 
+-INCLUDEPATH = . ../..
+-LIBS = -lid3tag -lz -lmad -lglib -ldl -L../../../compiled -lxmms -lm
++INCLUDEPATH = . ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lid3tag -lz -lmad -lglib-2.0 -ldl -L../../../compiled -lxmms -lm
+ #TMAKE_CFLAGS = -O2 -fPIC -DHAVE_CONFIG_H -DPIC 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DNOGUI -DSLOWCPU
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro	2004-03-28 19:04:05.000000000 -0500
+@@ -11,8 +11,8 @@
+ xs_init.c \
+ xs_stil.c
+ 
+-INCLUDEPATH = . ../..
+-LIBS = -lglib -lm -ldl -lsidplay
++INCLUDEPATH = . ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl -lsidplay
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops "-DVERSION=\"1.0.0\""
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
+diff -urN xmms-embedded.orig/xmms/libxmms/libxmms.pro xmms-embedded/xmms/libxmms/libxmms.pro
+--- xmms-embedded.orig/xmms/libxmms/libxmms.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/libxmms/libxmms.pro	2004-03-28 19:03:44.000000000 -0500
+@@ -16,8 +16,8 @@
+ util.c \
+ xmmsctrl.c
+ 
+-INCLUDEPATH = . ../include
+-LIBS = -lglib -lm -ldl
++INCLUDEPATH = . ../include $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = -export-dynamic
+ DESTDIR = ../../compiled
+diff -urN xmms-embedded.orig/xmms/Output/OSS/oss.pro xmms-embedded/xmms/Output/OSS/oss.pro
+--- xmms-embedded.orig/xmms/Output/OSS/oss.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/oss.pro	2004-03-28 19:03:59.000000000 -0500
+@@ -10,8 +10,8 @@
+ mixer.c \
+ OSS.c
+ 
+-INCLUDEPATH = . ../../include ../.. 
+-LIBS = -lglib -lm -ldl
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Output
+diff -urN xmms-embedded.orig/xmms/Output/OSS/OSS.pro xmms-embedded/xmms/Output/OSS/OSS.pro
+--- xmms-embedded.orig/xmms/Output/OSS/OSS.pro	2004-03-28 17:39:52.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/OSS.pro	2004-03-28 19:03:53.000000000 -0500
+@@ -10,8 +10,8 @@
+ mixer.c \
+ OSS.c
+ 
+-INCLUDEPATH = . ../../include ../..
+-LIBS = $(SUB_LIBS) -lglib -lm -ldl
++INCLUDEPATH = . ../../include ../.. $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib $(SUB_LIBS) -lglib-2.0 -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Output
+diff -urN xmms-embedded.orig/xmms/xmms/xmms.pro xmms-embedded/xmms/xmms/xmms.pro
+--- xmms-embedded.orig/xmms/xmms/xmms.pro	2004-03-28 17:51:10.000000000 -0500
++++ xmms-embedded/xmms/xmms/xmms.pro	2004-03-28 19:03:35.000000000 -0500
+@@ -30,8 +30,8 @@
+ pluginenum.c \
+ urldecode.c \
+ util.c 
+-INCLUDEPATH = . .. ../include
+-LIBS = -lglib -L../../compiled -lxmms 
++INCLUDEPATH = . .. ../include $(QTDIR)/include $(STAGING_DIR)/include/glib-2.0 $(STAGING_DIR)/include
++LIBS = -L$(STAGING_DIR)/lib -lglib-2.0 -L../../compiled -lxmms 
+ TMAKE_CFLAGS = -g -O2 -Wall -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DPLUGIN_DIR=\"/opt/QtPalmtop/lib/xmms\" -DLOCALEDIR=\"/usr/local/share/locale\" -DPLUGINSUBS=\"Output\",\"Input\",\"Effect\",\"General\"
+ TMAKE_LFLAGS = -export-dynamic
+ DESTDIR = ../../compiled/bin
