@@ -7,3 +7,4 @@ meta/treke-image.oe
 patches
 .pc
 packages/find_no_ver.sh
+packages/linux/openslug-kernel-2.6.9/fp_lenert_float64.patch

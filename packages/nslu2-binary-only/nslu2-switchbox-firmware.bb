@@ -2,9 +2,9 @@ SECTION = "base"
 DEPENDS = ""
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r9"
+PR = "r10"
 
-SRC_URI = "http://nslu.sf.net/downloads/switchbox-3.8.tar.gz"
+SRC_URI = "http://nslu.sf.net/downloads/switchbox-3.9.tar.gz"
 S = "${WORKDIR}"
 
 python () {

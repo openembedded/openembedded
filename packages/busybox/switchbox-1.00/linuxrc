@@ -7,7 +7,7 @@ mounted=
 
 if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/tmpmnt ; then
 
-    if [ -e /mnt/tmpmnt/sbin/init -o -e /mnt/tmpmnt/bin/init ] ; then
+    if [ -x /mnt/tmpmnt/sbin/init -o -L /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init -o -L /mnt/tmpmnt/bin/init ] ; then
 	if [ -f /mnt/tmpmnt/.recovery ] ; then
 	    mounted=
 	elif [ -f /mnt/tmpmnt/.ramdisk ] ; then
