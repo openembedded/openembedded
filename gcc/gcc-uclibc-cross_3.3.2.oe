@@ -52,4 +52,11 @@ do_stage_append () {
 	for d in info man share/doc share/locale ; do
 		rm -rf ${CROSS_DIR}/$d
 	done
+
+	# Fix a few include links so cross builds are happier
+	if [ ! -e ${STAGING_DIR}/target/include/c++ ]; then
+		mkdir -p ${STAGING_DIR}/target/include
+		ln -s ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+			${STAGING_DIR}/target/include/
+	fi
 }

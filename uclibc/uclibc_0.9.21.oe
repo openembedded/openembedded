@@ -57,6 +57,13 @@ python do_patch () {
 
 do_stage() {
 	make install_dev install_runtime install_utils
+
+	# Make links to ${STAGING_DIR}/target/include so many
+	# cross builds work easier...
+	mkdir -p ${STAGING_DIR}/target/include
+	for f in ${CROSS_DIR}/${TARGET_SYS}/include/*; do
+		ln -s $f ${STAGING_DIR}/target/include/
+	done
 }
 
 do_install() {
