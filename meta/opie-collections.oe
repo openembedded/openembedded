@@ -35,7 +35,7 @@ OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-
 
 OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 
-OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal"
+OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal opie-style-web opie-style-phase"
 
 OPIE_BASE_DEPENDS = "ipkg ntp"
 OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
@@ -44,7 +44,9 @@ OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
 # Additional things for a standard 16MB distribution
 #
 
-OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-mail opie-textedit opie-today"
+OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-textedit opie-today"
+
+OPIE_PIM_MAIL = "opie-mail"
 
 OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo \
             opie-today opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
@@ -52,7 +54,7 @@ OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo \
 KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.3a"
 KDE_PIM_RDEPENDS = "kopi kapi libmicrokdelibs kopi-applet"
 
-OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet subapplet"
+OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
 
 OPIE_EXTRA_APPS = "opie-advancedfm"
 
