@@ -51,10 +51,13 @@ B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
+LIBC_ADDONS ?= "linuxthreads"
+LIBC_EXTRA_OECONF ?= ""
+
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
-	        --enable-add-ons=linuxthreads --with-headers=${WORKDIR}/linux/include"
+	        --enable-add-ons=${LIBC_ADDONS} --with-headers=${WORKDIR}/linux/include ${LIBC_EXTRA_OECONF}"
 
 glibcbuild_do_unpack () {
 # kernel headers
