@@ -50,13 +50,23 @@ export CC_FOR_BUILD = ${BUILD_CC}
 
 export CC = ${CCACHE} ${CROSS}gcc
 
+binutilsbuild_do_patch () {
+	oenote IN binutils patch
+	perl -i -p -e 's,#.*define.*ELF_DYNAMIC_INTERPRETER.*".*",#define ELF_DYNAMIC_INTERPRETER "/lib/ld-uClibc.so.0",;' `grep -lr ELF_DYNAMIC_INTERPRETER *`
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	oe.build.exec_func('binutilsbuild_do_patch', d)
+}
+
 do_install_append () {
 	cd ${D}/${bindir}
 	# Symlinks for if this is intended to be the only compiler
 	(
-	for p in ${TARGET_SYS}-* ; do
-		ln -s $p `echo $p | sed -e s,${TARGET_SYS}-,,`
-	done
-	true
+		for p in ${TARGET_SYS}-* ; do
+			ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
+		done
+		true
 	)
 }
