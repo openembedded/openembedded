@@ -6,7 +6,9 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz"
 
 do_install () {
 	install -d ${D}/etc/init.d ${D}/${sbindir} ${D}/${mandir}/man8
-	install -m 0644 ${FILESDIR}/init ${D}/etc/init.d/networking
+	install -d ${D}/etc/network/{if-pre-up.d,if-up.d}
+	install -m 0644 ${FILESDIR}/options ${D}/etc/network/options
+	install -m 0755 ${FILESDIR}/init ${D}/etc/init.d/networking
 	install -m 0644 etc-rpc ${D}/etc/rpc
 	install -m 0644 etc-protocols ${D}/etc/protocols
 	install -m 0644 etc-services ${D}/etc/services
