@@ -7,7 +7,8 @@ DEPENDS = "virtual/libc libopie2"
 PV = "1.1.3-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/textedit \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics"
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps"
 S = "${WORKDIR}/textedit"
 
 inherit opie
@@ -15,7 +16,9 @@ inherit opie
 do_install() {
     install -d ${D}/${palmtopdir}/bin/
     install -d ${D}/${palmtopdir}/pics/textedit/
+    install -d ${D}/${palmtopdir}/apps/1Pim/
     install -m 0755 libtextedit.so* ${D}/${palmtopdir}/plugins/application/
     ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/textedit
     install -m 0644 ${WORKDIR}/pics/textedit/*.png ${D}/${palmtopdir}/pics/textedit/
+    install -m 0644 ${WORKDIR}/apps/1Pim/textedit.desktop ${D}/${palmtopdir}/apps/1Pim/
 }

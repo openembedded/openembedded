@@ -1,0 +1,24 @@
+DESCRIPTION = "Opie embedded konsole"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Opie Team <opie@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libopie2 libqtaux2"
+PV = "cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/embeddedkonsole \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps"
+S = "${WORKDIR}/embeddedkonsole"
+
+inherit opie
+
+do_install() {
+    install -d ${D}/${palmtopdir}/bin/
+    install -d ${D}/${palmtopdir}/pics/embeddedkonsole/
+    install -d ${D}/${palmtopdir}/apps/Applications/
+    install -m 0755 libembeddedkonsole.so* ${D}/${palmtopdir}/plugins/application/
+    ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/embeddedkonsole
+    install -m 0644 ${WORKDIR}/pics/embeddedkonsole/*.png ${D}/${palmtopdir}/pics/embeddedkonsole/
+    install -m 0644 ${WORKDIR}/apps/Applications/embeddedkonsole.desktop ${D}/${palmtopdir}/apps/Applications/
+}
