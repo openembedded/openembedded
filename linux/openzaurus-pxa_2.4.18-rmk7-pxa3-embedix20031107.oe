@@ -53,5 +53,5 @@ KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	install -m 0644 ${S}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 }
