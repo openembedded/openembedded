@@ -54,7 +54,6 @@ kernel_do_stage() {
 	install -m 0644 .config ${STAGING_KERNEL_DIR}/config-${PV}
 	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/.config
 	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/kernel-config
-	echo "${PV}" >${STAGING_KERNEL_DIR}/kernel-version
 	echo "${KERNEL_VERSION}" >${STAGING_KERNEL_DIR}/kernel-abiversion
 	echo "${S}" >${STAGING_KERNEL_DIR}/kernel-source
 	echo "${KERNEL_CCSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ccsuffix
