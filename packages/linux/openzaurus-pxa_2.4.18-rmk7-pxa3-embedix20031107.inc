@@ -7,7 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r33"
+PR = "r34"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 ALLOW_EMPTY_kernel = "1"
@@ -102,3 +102,8 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
+
+PACKAGE_ARCH_corgi    = "c7x0"
+PACKAGE_ARCH_shepherd = "c7x0"
+PACKAGE_ARCH_husky    = "c7x0"
+
