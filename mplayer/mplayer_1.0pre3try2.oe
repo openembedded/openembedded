@@ -14,7 +14,7 @@ PACKAGES="${PN} postproc postproc-dev"
 FILES_${PN} = "/usr/bin/mplayer"
 
 FILES_postproc = " /usr/lib/libpostproc.so.0.0.0 /usr/lib/libpostproc.so.0"
-FILES_postproc-dev = " /usr/include/postprocess.h /usr/lib/libpostproc.so /usr/lib/libpostproc.a"
+FILES_postproc-dev = " /usr/include/postproc/postprocess.h /usr/lib/libpostproc.so /usr/lib/libpostproc.a"
 
 inherit autotools 
 
@@ -62,7 +62,8 @@ do_install_append () {
 	mkdir ${D}/usr/lib
 	cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}/usr/lib/libpostproc.so.0.0.0
 	mkdir ${D}/usr/include
-	cp ${S}/libavcodec/libpostproc/postprocess.h ${D}/usr/include/postprocess.h
+	mkdir ${D}/usr/include/postproc
+	cp ${S}/libavcodec/libpostproc/postprocess.h ${D}/usr/include/postproc/postprocess.h
 	cd ${D}/usr/lib
 	ln -s libpostproc.so.0.0.0 libpostproc.so.0
 	ln -s libpostproc.so.0 libpostproc.so
@@ -70,6 +71,11 @@ do_install_append () {
 
 do_stage () {
 	oe_libinstall -a -so -C libavcodec/libpostproc libpostproc ${STAGING_LIBDIR}
-	install -m 0644 ${S}/libavcodec/libpostproc/postprocess.h ${STAGING_INCDIR}/postprocess.h
+	cd ${STAGING_LIBDIR}
+	ln -s libpostproc.so libpostproc.so.0.0.0
+	ln -s libpostproc.so libpostproc.so.0
+
+	install -d ${STAGING_INCDIR}/postproc
+	install -m 0644 ${S}/libavcodec/libpostproc/postprocess.h ${STAGING_INCDIR}/postproc/postprocess.h
 }					
 
