@@ -32,6 +32,4 @@ EOF
    echo "Configured /etc/network/interfaces with IP Static linksysconf Information"
 fi
 
-modprobe ixp425_eth
-modprobe ehci-hcd
-
+# Module loading handled more properly by update-modules and modprobe.conf
