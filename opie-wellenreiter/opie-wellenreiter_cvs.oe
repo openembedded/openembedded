@@ -4,6 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RRECOMMENDS = "manufacturers"
+PV = "1.0.3-cvs-${CVSDATE}"
 PR = "r0"
 
 APPNAME = "wellenreiter"
