@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext"
+DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext libxkbfile"
 PROVIDES = "virtual/xserver"
 DESCRIPTION = "X server from freedesktop.org"
 
