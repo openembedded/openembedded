@@ -10,9 +10,9 @@ check_sanity () {
     # is on bkbits.net and b) we are the client.
     
     # Is parent a public BitKeeper repository at bkbits.net?
-    if !(echo $BKD_HOST|grep -q bitkeeper.com); then
-        return 1
-    fi
+#    if !(echo $BKD_HOST|grep -q bitkeeper.com); then
+#        return 1
+#    fi
     
     if [ $BK_SIDE != client ]; then
         return 1
@@ -22,13 +22,13 @@ check_sanity () {
 # Check sanity - do we need to send anything?
 check_sanity || exit 0
 
-# convert numbers from the cset list into something useful
+# Convert numbers from the cset list into something useful
 nums=
 for s in `cat $BK_CSETLIST`; do
     nums="`bk prs -h -d\"\\\$if(:DS: -eq $s){:REV:}\" ChangeSet` $nums"
 done
 
-# send logs to CIA
+# Send logs to CIA
 echo "Sending notification to CIA irc bot (cia.navi.cx)."
 (
     for n in $nums; do
