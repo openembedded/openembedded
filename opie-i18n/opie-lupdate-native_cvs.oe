@@ -13,6 +13,7 @@ S = "${WORKDIR}/opie-lupdate"
 
 inherit native qmake
 
+export OE_QMAKE_LINK="${CXX}"
 EXTRA_QMAKEVARS_POST_append = "LIBS+=-ldl"
 
 do_stage() {
