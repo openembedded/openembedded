@@ -4,7 +4,7 @@ PV = "${BaseV}.${SnapV}"
 
 DESCRIPTION = "Ncurses library"
 SECTION = "libs"
-DEPENDS = "virtual/libc"
+DEPENDS = "ncurses-native"
 PROVIDES = "${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
 	 ${CATEGORY}/${PN}-${BaseV} ${CATEGORY}/${PN}-${BaseV}-${PR} "
 PACKAGES_append = " ncurses-terminfo"
