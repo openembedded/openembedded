@@ -3,44 +3,18 @@
 #
 # Please visit the Wiki at http://openembedded.org/ for more info.
 #
-
-# Be SURE to read these comments and setup your build environment before
-# proceeding.  Once you have done that, remove the line at the end of this
+#
+# Be SURE to read this file in its entirety and the GettingStarted page on the
+# wiki before proceeding.
+#
+# Once you have done that, remove the line at the end of this
 # file and build away.
-
-# The recommended setup is to create a build directory, such as
-# ${HOME}/oe/build/ (you may want to put BitBake and the OE packages into your
-# ${HOME}/oe/bb/ and ${HOME}/oe/packages/ respectively too).  Within your
-# build environment, you should copy this file into conf/local.conf, and
-# then EDIT IT.  Fixup any paths to point to the correct locations, and
-# setup the target specifications appropriately.
-
+#
 # NOTE: Do NOT use ~ in your paths, BitBake does NOT expand ~ for you.  If you
 # must have paths relative to your homedir use ${HOME} (note the {}'s there
 # you MUST have them for the variable expansion to be done by BitBake).  Your
 # paths should all be absolute paths (They should all start with a / after
 # expansion.  Stuff like starting with ${HOME} or ${TOPDIR} is ok).
-
-# Once you have done that, you will want to cd into your build environment
-# (${HOME}/oe/build/ in this example), then run "bitbake targets..."  This
-# will build into ${TMPDIR} which defaults to ${TOPDIR}/tmp (${TOPDIR} is
-# the current directory when bitbake was executed).
-
-#
-# Quick example of the described stuff above (builds the busybox packages):
-#
-# mkdir $HOME/sources
-# mkdir $HOME/oe
-#  .. checkout BitBake from Berlios into $HOME/oe/bb
-#  .. checkout the OE packages repository into $HOME/oe/packages
-# mkdir $HOME/oe/build-arm
-# mkdir $HOME/oe/build-arm/conf
-# cd $HOME/oe/build-arm
-# cp ../packages/conf/local.conf.sample conf/local.conf
-#  .. EDIT conf/local.conf to set BBFILES and other vars properly ..
-# bitbake busybox
-#  .. busybox is built in tmp/ from the current dir ($HOME/oe/build-arm) ..
-#
 
 # Use this to specify where BitBake should place the downloaded sources into
 DL_DIR = "${HOME}/sources"
@@ -49,13 +23,13 @@ DL_DIR = "${HOME}/sources"
 # your build. Typically this will be something like BBFILES = "/path/to/oe-packages/packages/*/*.bb"
 BBFILES := "${@bb.fatal('Edit your conf/local.conf: BBFILES')}"
 
-# Use the BBMASK below to instruct OE to _NOT_ consider some .bb files
+# Use the BBMASK below to instruct BitBake to _NOT_ consider some .bb files
 # This is a regulary expression, so be sure to get your parenthesis balanced.
 BBMASK = ""
 
 # Uncomment this if you want to use a prebuilt toolchain. You will need to
 # provide packages for toolchain and additional libraries yourself. You also
-# have to set PATH in your environment to make sure OE finds additional binaries.
+# have to set PATH in your environment to make sure BitBake finds additional binaries.
 # Note: You will definitely need to say:
 #     ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95"
 # to build any of two Linux 2.4 Embedix kernels,
