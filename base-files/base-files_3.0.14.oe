@@ -10,6 +10,7 @@ SRC_URI = " \
            file://etc/host.conf \
            file://profile \
            file://fstab \
+	   file://filesystems \
            file://issue.net \
            file://issue \
            file://usbd \
@@ -36,7 +37,7 @@ SRC_URI = " \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
            file://licenses/LGPL-2.1 \
-           file://licenses/Artistic"
+           file://licenses/Artistic "	   
 S = "${WORKDIR}"
 
 docdir_append = "/${P}"
@@ -63,6 +64,7 @@ do_install () {
 
     install -d ${D}/${sysconfdir}/default
     install -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
+    install -m 0644 ${WORKDIR}/filesystems ${D}${sysconfdir}/filesystems
     install -m 0644 ${WORKDIR}/usbd ${D}/${sysconfdir}/default/usbd
     [ -z "${MACHINE}" ] && echo "openembedded" >${D}/${sysconfdir}/hostname || echo ${MACHINE} >${D}/${sysconfdir}/hostname
     install -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
@@ -130,7 +132,6 @@ do_install_append_ramses () {
     mkdir -p ${D}/var/tmp
     ln -s var/tmp ${D}/tmp
 }
-
 
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
