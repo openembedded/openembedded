@@ -42,7 +42,7 @@ pkg_prerm_modutils () {
 	update-rc.d $D modutils remove
 }
 
-PACKAGES = "modutils-depmod modutils"
+PACKAGES = "modutils-depmod modutils-doc modutils"
 
 FILES_modutils-depmod = "sbin/depmod"
 
