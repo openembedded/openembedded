@@ -18,7 +18,7 @@ def get_image_deps(d):
 
 DEPENDS += "${@get_image_deps(d)}"
 
-IMAGE_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-minimal.txt')}"
+IMAGE_DEVICE_TABLE ?= "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-minimal.txt')}"
 IMAGE_POSTPROCESS_COMMAND ?= ""
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
