@@ -6,16 +6,15 @@ RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 
-SRC_URI="ftp://ftp.gnu.org/gnu/glibc/${P}.tar.gz ftp://ftp.gnu.org/pub/gnu/libc/glibc-linuxthreads-${PV}.tar.gz file://${FILESDIR}/${P}-200304020432.patch;patch=1 file://${FILESDIR}/sedscript.patch;patch=1 file://${FILESDIR}/noinfo.patch;patch=1"
+SRC_URI="ftp://ftp.gnu.org/gnu/glibc/${P}.tar.gz ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz file://${FILESDIR}/${P}-200304020432.patch;patch=1 file://${FILESDIR}/sedscript.patch;patch=1 file://${FILESDIR}/noinfo.patch;patch=1"
 PROVIDES=virtual/libc
 
 S="${WORKDIR}/${P}"
 builddir="${WORKDIR}/build-${SYS}"
 EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${STAGING_DIR}/target/include --without-cvs --enable-kernel=2.4.6"
+EXTRA_OEMAKE=
 
 PACKAGES="libc6"
-FILES=""
-FILES_libc6="/lib/libc.so.6"
 
 do_unpack() {
 	set -e
