@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r2"
+PR = "r3"
 
 include uclibc.inc
 
