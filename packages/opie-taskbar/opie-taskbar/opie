@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/root
-[ -z $HOME ] && export HOME=/$LOGNAME
+[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+[ -z $HOME ] && export HOME=/home/$LOGNAME
 
 export QTDIR=/opt/QtPalmtop
 export OPIEDIR=/opt/QtPalmtop
@@ -34,10 +34,6 @@ fi
 
 if [ ! -e "/opt/Qtopia" ] ; then
     ln -sf /opt/QtPalmtop /opt/Qtopia
-fi
-
-if [ ! -e "/home/root/" ] ; then
-    ln -sf /root /home/
 fi
 
 case $1 in
