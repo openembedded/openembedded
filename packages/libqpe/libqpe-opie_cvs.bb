@@ -6,9 +6,10 @@ LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.8+cvs-${CVSDATE}"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/library"
-#	file://nomax.patch;patch=1;pnum=2"
+SRC_URI = "${HANDHELDS_CVS};module=opie/library \
+	file://nomax.patch;patch=1;pnum=1"
 S = "${WORKDIR}/library"
 
 inherit qmake
