@@ -4,12 +4,15 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "oxygen"
+PR = "r0"
 
-TAG = "v1_1_7"
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/apps/${APPNAME} \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/share \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
+#cvsdate for 1.0.0 is 20050101
+CVSDATE = "20050101"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/${APPNAME} \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/share \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
