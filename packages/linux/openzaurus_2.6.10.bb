@@ -75,12 +75,16 @@ COMPATIBLE_HOST = "arm.*-linux"
 #CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
 #CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
 
-CMDLINE_MEM_collie		= "mem=32M"
 #CMDLINE_MEM_husky		= "mem=64M"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 
+# configure memory/ramdisk split on collie
+export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
+export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
+
+CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_MEM}"
 
 do_configure() {
@@ -89,16 +93,16 @@ do_configure() {
 
     if [ "${MACHINE}" == "collie" ] 
     then
-		mem="32"
-		rd="32"
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
 		rdsize=`echo "$rd * 1024" | bc`
 		total=`expr $mem + $rd`
-		addr=`echo "obase=16; ibase=16; C000000 + $mempos" | bc`
+		addr=`echo "obase=16; ibase=16; C0000000 + $mempos" | bc`
 	 	if [ "$rd" == "0" ]
 	 	then
+		    echo "No RAMDISK"
 			echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
 		else
+		    echo "RAMDIR = $rdsize on $addr"
 			echo "CONFIG_MTD_MTDRAM_SA1100=y"           >> ${S}/.config
 			echo "CONFIG_MTDRAM_TOTAL_SIZE=$rdsize"     >> ${S}/.config
 			echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
