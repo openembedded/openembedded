@@ -7,16 +7,19 @@ and some of the most uncommon formats, too."
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libogg tremor libmad"
-PR = "r1"
+RRECOMMENDS = "libxine-plugins"
+PR = "r2"
 
 inherit autotools pkgconfig binconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-1-beta12.tar.gz \
 	   file://full.patch;patch=1 \
-	   file://libvorbis.patch;patch=0 \
-	   file://demux_ogg.patch;patch=0 \
-	   file://configure.ac.patch;patch=0 \
-	   file://vo_scale.patch;patch=0 \
+	   file://libvorbis.patch;patch=1 \
+	   file://demux_ogg.patch;patch=1 \
+	   file://configure.ac.patch;patch=1 \
+	   file://vo_scale.patch;patch=1 \
+	   file://oss.patch;patch=1;pnum=0 \
+	   file://fix-oss-plugin.patch;patch=1 \
 	   file://mpegvideo-static-inlining.patch;patch=1 \
 	   file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
 	   file://fftscope-static-inlining.patch;patch=1"
