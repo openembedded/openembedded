@@ -7,10 +7,9 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
 PV_append = "${CVSDATE}"
-PR = "r8"
+PR = "r9"
 
-SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
-	   file://fix-ipkg-tar.patch;patch=1"
+SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils"
 	   
 S = "${WORKDIR}/ipkg-utils"
 
