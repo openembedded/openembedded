@@ -1,6 +1,6 @@
 SRC_URI = "${GNOME_MIRROR}/sources/libgnomeui/2.6/libgnomeui-${PV}.tar.bz2"
 
-DEPENDS = "libgnome libgnomecanvas libbonoboui"
+DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 
 inherit autotools libtool pkgconfig
 
