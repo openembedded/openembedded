@@ -624,7 +624,7 @@ python __anonymous () {
 	
 	pn = oe.data.getVar('PN', d, 1)
 	cvsdate = oe.data.getVar('CVSDATE_%s' % pn, d, 1)
-	if cvsdate:
+	if cvsdate != None:
 		oe.data.setVar('CVSDATE', cvsdate, d)
 
 	try:
