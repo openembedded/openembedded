@@ -53,7 +53,7 @@ do_stage_append () {
 	# Fix a few include links so cross builds are happier
 	if [ ! -e ${STAGING_INCDIR}/c++ ]; then
 		mkdir -p ${STAGING_INCDIR}
-		ln -s ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+		ln -sf ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
 			${STAGING_INCDIR}/
 	fi
 

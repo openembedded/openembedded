@@ -59,7 +59,7 @@ do_stage_append () {
 	if [ ! -e ${STAGING_INCDIR}/c++ ]; then
 		mkdir -p ${STAGING_INCDIR}
 		rm -f ${STAGING_INCDIR}/c++
-		ln -s ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+		ln -sf ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
 			${STAGING_INCDIR}/
 	fi
 

@@ -142,7 +142,7 @@ do_install () {
 	mkdir -p ${D}/lib
 	mv ${D}/${libdir}/libgcc_s.so.* ${D}/lib
 	rm ${D}/${libdir}/libgcc_s.so
-	ln -s `echo ${libdir}/gcc/${TARGET_SYS}/${PV} \
+	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${PV} \
 		| tr -s / \
 		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \
 		      ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/libgcc_s.so
@@ -168,11 +168,11 @@ do_install () {
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
 	# Symlinks so we can use these trivially on the target
-	ln -s ${TARGET_SYS}-g77 g77
-	ln -s ${TARGET_SYS}-g++ g++
-	ln -s ${TARGET_SYS}-gcc gcc
-	ln -s g77 f77
-	ln -s g++ c++
-	ln -s gcc cc
+	ln -sf ${TARGET_SYS}-g77 g77
+	ln -sf ${TARGET_SYS}-g++ g++
+	ln -sf ${TARGET_SYS}-gcc gcc
+	ln -sf g77 f77
+	ln -sf g++ c++
+	ln -sf gcc cc
 }
 
