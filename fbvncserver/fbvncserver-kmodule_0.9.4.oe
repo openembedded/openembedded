@@ -14,5 +14,5 @@ EXTRA_OEMAKE = "KERNEL_INCLUDES=-I${STAGING_KERNEL_DIR}/include zaurus_kbdsim.o"
 
 do_install () {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc
-	install -m 0755 zaurus_kbdsim.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc/
+	install -m 0644 zaurus_kbdsim.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc/
 }
