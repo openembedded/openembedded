@@ -1,5 +1,6 @@
 DESCRIPTION= "All of Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
@@ -36,7 +37,7 @@ DEPENDS = "	python-ao 		\
 		python-sgmlop		\
 		python-snmplib		\
 		python-soappy		\
-		python-sqlite		\
+		python-pysqlite		\
 		python-tlslite		\
 		python-vmaps		\
 		python-vorbis		"
