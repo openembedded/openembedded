@@ -26,7 +26,7 @@ PR = "r1"
 #http://www.rpsys.net/openzaurus/${KV}/jl1/collie_use_sharp_mtd.patch;patch=1 \
 
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.10.tar.gz \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.10.tar.gz \
 	   ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.11-rc4.bz2;patch=2 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
