@@ -31,24 +31,6 @@ do_install() {
 	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
 	install -m 0644 driver/etc/hostap_cs.conf ${D}${sysconfdir}/pcmcia/hostap_cs.conf
 	cat ${WORKDIR}/hostap_cs.conf >>${D}${sysconfdir}/pcmcia/hostap_cs.conf
-
-	if [ "${MACHINE}" = "mtx-1" ]; then
-		install -d ${D}${sysconfdir}/modutils
-		echo "hostap_pci" > ${D}${sysconfdir}/modutils/hostap
-	fi
-}
-
-pkg_postinst_hostap-modules-pci() {
-#!/bin/sh
-if [ "x$D" != "x" ]; then
-  exit 1
-fi
-update-modules || true
-}
-
-pkg_postrm_hostap-modules-pci() {
-#!/bin/sh
-update-modules || true
 }
 
 PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"

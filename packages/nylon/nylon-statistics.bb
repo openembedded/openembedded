@@ -15,6 +15,7 @@ do_install() {
 	install -d ${D}${sbindir}
 	ln -s /var/tmp ${D}/srv/www/rrd-img
 	install -m 755 ${S}/*.html ${D}/srv/www/cgi-bin
+	ln -s /var/tmp/nav.inc.html ${D}/srv/www/cgi-bin
 	install -m 755 ${S}/collect.sh ${D}${sbindir}
 }
 
@@ -33,6 +34,11 @@ else
 		echo "A:*" > /etc/httpd.conf
 	fi	
 	update-rc.d -s busybox-httpd defaults
+	
+	if ! grep -q "/var/lib/rrd/" /etc/nylon/backup.list; then
+		echo "adding to backup list"
+		echo "/var/lib/rrd/" >> /etc/nylon/backup.list
+	fi
 fi
 }
 

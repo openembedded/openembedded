@@ -21,18 +21,19 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://12-openswan-2.2.0-nat-t.diff;patch=1 \
 	file://13-openswan-2.2.0.patch;patch=1 \
 	file://14-au1000-eth-link-beat.diff;patch=1 \
-	file://15-au1000-pci-fixup-non-coherent-pre-ac.diff;patch=1 \
 	file://16-i2c.patch;patch=1 \
 	file://17-lmsensors.2.8.8.patch;patch=1 \
 	file://18-i2c-au1x00gpio.patch;patch=1 \
 	file://19-kernel-make-depend.diff;patch=1 \
 	file://20-au1x00_ethernet_tx_stats.diff;patch=1 \
+	file://21-mtx-1-watchdog.diff;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
 
 inherit kernel
 
+COMPATIBLE_HOST = "mipsel.*-linux"
 PACKAGE_ARCH = "mtx-1"
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-1.flash.bin"
