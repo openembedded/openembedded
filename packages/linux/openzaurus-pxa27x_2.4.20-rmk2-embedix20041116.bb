@@ -5,9 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r1"
-
-ALLOW_EMPTY_kernel = "1"
+PR = "r2"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3000/20041116/linux-c3000-20041116-rom1_01.tar.bz2 \
            file://swap-performance.patch;patch=1 \
@@ -37,6 +35,7 @@ inherit kernel
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
+ALLOW_EMPTY = "1"
 FILES_kernel-image = ""
 
 #

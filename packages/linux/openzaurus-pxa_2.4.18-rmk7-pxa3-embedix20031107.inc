@@ -7,10 +7,8 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r35"
+PR = "r36"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
-
-ALLOW_EMPTY_kernel = "1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            ftp://ftp.linux.org.uk/pub/armlinux/source/kernel-patches/v2.4/patch-${KV}-rmk${RMKV}.gz;patch=1 \
@@ -77,6 +75,7 @@ CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
+ALLOW_EMPTY = "1"
 FILES_kernel-image = ""
 
 EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
