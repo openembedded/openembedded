@@ -1,0 +1,24 @@
+inherit src_distribute
+
+# SRC_DIST_LOCAL possible values:
+# copy		copies the files from ${A} to the distributedir
+# symlink	symlinks the files from ${A} to the distributedir
+# move+symlink	moves the files into distributedir, and symlinks them back
+SRC_DIST_LOCAL ?= "move+symlink"
+SRC_DISTRIBUTEDIR ?= "${DEPLOY_DIR}/sources"
+SRC_DISTRIBUTECOMMAND () {
+	s="${SRC}"
+	mkdir -p ${SRC_DISTRIBUTEDIR}
+	case "${SRC_DIST_LOCAL}" in
+		copy)
+			cp -f $s ${SRC_DISTRIBUTEDIR}/
+			;;
+		symlink)
+			ln -sf $s ${SRC_DISTRIBUTEDIR}/
+			;;
+		move+symlink)
+			mv $s ${SRC_DISTRIBUTEDIR}/
+			ln -sf ${SRC_DISTRIBUTEDIR}/`basename $s` $s
+			;;
+	esac
+}

@@ -1,8 +1,11 @@
-DEPENDS =+ "ccdv-native"
-CCDV = "ccdv"
-CC =+ "${CCDV}"
-BUILD_CC =+ "${CCDV}"
-CCLD =+ "${CCDV}"
+python () {
+	if oe.data.getVar('PN', d, 1) != 'ccdv-native':
+		if not oe.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
+			oe.data.setVar("DEPENDS", '%s %s' % ("ccdv-native", oe.data.getVar("DEPENDS", d, 1) or ""), d)
+		oe.data.setVar("CC", '%s %s' % ("ccdv", oe.data.getVar("CC", d, 1) or ""), d)
+		oe.data.setVar("BUILD_CC", '%s %s' % ("ccdv", oe.data.getVar("BUILD_CC", d, 1) or ""), d)
+		oe.data.setVar("CCLD", '%s %s' % ("ccdv", oe.data.getVar("CCLD", d, 1) or ""), d)
+}
 
 def quiet_libtool(oe,d):
 	deps = (oe.data.getVar('DEPENDS', d, 1) or "").split()
@@ -12,5 +15,7 @@ def quiet_libtool(oe,d):
 		return "'LIBTOOL=${B}/${HOST_SYS}-libtool --silent'"
 	else:
 		return ""
+
+CCDV = "ccdv"
 EXTRA_OEMAKE_append = " ${@quiet_libtool(oe,d)}"
 MAKE += "-s"
