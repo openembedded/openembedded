@@ -1,0 +1,20 @@
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libmatchbox"
+RDEPENDS = "libc6 libmatchbox"
+
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/matchbox-desktop-${PV}.tar.bz2"
+
+inherit autotools libtool pkgconfig
+
+FILES_${PN} = \
+	${bindir} \
+	${datadir}/applications \
+	${datadir}/matchbox/desktop/modules/*.so \
+	${datadir}/matchbox-desktop \
+	${datadir}/pixmaps
+
+FILES_${PN}-dev = \
+	${libdir}/matchbox-desktop \
+	${includedir}/matchbox-desktop \
+	${datadir}/matchbox/desktop/modules/*a
+
