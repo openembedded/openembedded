@@ -2,6 +2,7 @@ SECTION = "base"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/chkhinge;date=${PV}"
 LICENSE = "MIT"
 S = "${WORKDIR}/chkhinge"
+PR = "r1"
 
 FILES_${PN} = "/bin"
 
@@ -11,6 +12,6 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/bin
-	install chkhinge ${D}/bin/
+	install -m 4755 chkhinge ${D}/bin/
 }
 
