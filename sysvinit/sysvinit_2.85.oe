@@ -8,6 +8,8 @@ PACKAGES = "sysvinit"
 FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d \
            file://need \
