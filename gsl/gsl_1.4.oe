@@ -13,7 +13,7 @@ do_stage() {
 	oe_libinstall -so -C .libs/ libgsl ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/gsl
-	install -m 0644 .install/usr/include/gsl/* ${STAGING_INCDIR}/
+	install -m 0644 .install/usr/include/gsl/* ${STAGING_INCDIR}/gsl
 
         cat gsl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR} -I${STAGING_INCDIR}/python2.3," \
                        | sed -e "s,-L/usr/lib,-L${STAGING_LIBDIR}," > ${STAGING_BINDIR}/gsl-config
