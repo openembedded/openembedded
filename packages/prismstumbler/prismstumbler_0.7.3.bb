@@ -1,7 +1,7 @@
 SECTION = "x11/network"
-PR = "r2"
+PR = "r3"
 
-PACKAGES = "prismstumbler prismstumbler-frontend"
+PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
