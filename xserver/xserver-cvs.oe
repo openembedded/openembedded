@@ -9,4 +9,4 @@ S=${WORKDIR}/xserver
 
 inherit autotools pkgconfig libtool
 
-EXTRA_OECONF = '--enable-composite'
+EXTRA_OECONF = '--enable-composite --disable-xinerama'
