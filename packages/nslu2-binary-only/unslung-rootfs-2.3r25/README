@@ -84,7 +84,7 @@ FIRMWARE INSTALLATION DETAILS
    are installing Unslung 3.x onto an NSLU2 unit with version 3.x already
    installed, go to step 2-b.
 
-	2-a) Flash unslung-standard-3.x.img as you normally would flash new
+	2-a) Flash unslung-standard-3.x.bin as you normally would flash new
              firmware (using the web interface "Upgrade Firmware" page).
    
 	2-b) You must put the NSLU2 into maintenance mode before you can 
