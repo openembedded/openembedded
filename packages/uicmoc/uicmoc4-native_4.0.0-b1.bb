@@ -23,11 +23,11 @@ do_configure() {
 
 do_compile() {
 	unset CC CXX CFLAGS LFLAGS CXXFLAGS CPPFLAGS
-	cd ${S}/src/moc && make CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/core && make CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/xml && make CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/tools/uic && make CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/tools/rcc && make CC="${CC}" CXX="${CXX}"
+	cd ${S}/src/moc && oe_runmake CC="${CC}" CXX="${CXX}"
+	cd ${S}/src/core && oe_runmake CC="${CC}" CXX="${CXX}"
+	cd ${S}/src/xml && oe_runmake CC="${CC}" CXX="${CXX}"
+	cd ${S}/src/tools/uic && oe_runmake CC="${CC}" CXX="${CXX}"
+	cd ${S}/src/tools/rcc && oe_runmake CC="${CC}" CXX="${CXX}"
 }
 
 do_stage() {
