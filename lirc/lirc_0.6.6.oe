@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "kernel lirc-modules"
 DEPENDS = "virtual/kernel"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 S = "${WORKDIR}/lirc-${PV}"
@@ -32,5 +32,9 @@ do_install() {
 	install -m 755 daemons/irrecord ${D}/${bindir}/irrecord
 	install -m 755 daemons/lircd ${D}/${bindir}/lircd
 	install -m 755 tools/rc ${D}/${bindir}/rc
+
+	oe_libinstall -so -C tools liblirc_client ${D}${libdir}/
+	install -d ${D}${includedir}
+	install -m 0644 tools/lirc_client.h ${D}${includedir}/
 }
 
