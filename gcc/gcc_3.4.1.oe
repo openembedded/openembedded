@@ -76,7 +76,8 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc-3.4.1-uclibc-100-conf.patch;patch=1 \
 	   file://gcc-3.4.1-uclibc-200-locale.patch;patch=1 \
 	   file://gcc-3.4.0-arm-lib1asm.patch;patch=1 \
-	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1"
+	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1 \
+	   file://gcc-3.4.0-arm-bigendian.patch;patch=1"
 
 MIRRORS_prepend () {
 ${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
