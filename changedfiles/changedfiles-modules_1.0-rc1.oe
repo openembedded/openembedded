@@ -11,14 +11,21 @@ S = "${WORKDIR}/changedfiles-${PV}/module"
 inherit module
 
 do_compile() {
-	changedfiles.o: changedfiles.c
-        ${CC} -Wall -DMODULE -D__KERNEL__ -I${KERNEL_PATH} -c changedfiles.c
+        ${CC} -Wall -DMODULE -D__KERNEL__ -I${KERNEL_PATH}/include -c changedfiles.c
 }
 
-#install-exec-hook:
-#        (/bin/mknod /dev/changedfiles c 40 0; exit 0 )
-#        chmod 0600 /dev/changedfiles
-#FIXME perhaps package also readtest in an init script?
+pkg_postinst() {
+#!/bin/sh
+if [ -n $D ]; then exit 1; fi
+/bin/mknod /dev/changedfiles c 40 0; exit 0
+chmod 0600 /dev/changedfiles
+}
+
+pkg_postrm() {
+#!/bin/sh
+if [ -n $D ]; then exit 1; fi
+rm -f /dev/changedfiles
+}
 
 do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
