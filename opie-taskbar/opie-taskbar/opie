@@ -47,6 +47,15 @@ if [ ! -e "$HOME/Settings/locale.conf" -a -e "$OPIEDIR/etc/skel/locale.conf" ] ;
     cat $OPIEDIR/etc/skel/locale.conf >$HOME/Settings/locale.conf
 fi
 
+if [ ! -e "$HOME/systeminfo/linkver" ] ; then
+    mkdir -p $HOME/systeminfo/
+    echo "1.13" >$HOME/systeminfo/linkver
+fi
+
+if [ ! -e "/opt/Qtopia" ] ; then
+    ln -sf /opt/QtPalmtop /opt/Qtopia
+fi
+
 case $1 in
 'start')
     /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
