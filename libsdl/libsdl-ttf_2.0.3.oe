@@ -12,6 +12,6 @@ inherit autotools
 
 do_stage() {
 	oe_libinstall -so libSDL_ttf ${STAGING_LIBDIR}
-	ln -sf libSDL_ttf.so ${STAGING_LIBDIR}/libSDL_ttf-1.2.so
+	ln -sf libSDL_ttf.so ${STAGING_LIBDIR}/libSDL_ttf-2.0.so
 	install -m 0644 SDL_ttf.h ${STAGING_INCDIR}/SDL/SDL_ttf.h
 }
