@@ -1,5 +1,8 @@
 collie/sharp_mmcsd_m.o
 corgi/sharp_mmcsd_m.o
+enlightenment-sa_2.4.19-rmk6-pxa1-hh37.1.bb
+enlightenment.conf
+h3600-mine.conf
 husky/sharp_mmcsd_m.o
 kergoth@direwolf.ppp.ti.com|tmp/base/apache-2.0.47-r0/httpd-2.0.47/.patches/configure.patch|20031017000313|22103|55fb394e85ed9a27
 kergoth@direwolf.ppp.ti.com|tmp/base/avr-libc-1.0-r0/avr-libc-1.0/.patches/configure.patch|20031017000314|20947|86c76bf82d67da92
