@@ -12,9 +12,6 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	   file://wpa-defconfig"
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
-CFLAGS +=  "-DCONFIG_DRIVER_HOSTAP -DCONFIG_DRIVER_WEXT -DEAP_TLS -DEAP_PEAP \
--DEAP_TTLS -DEAP_MD5 -DEAP_MSCHAPv2 -DEAP_GTC -DEAP_OTP -DEAP_SIM -DEAP_LEAP \
--DIEEE8021X_EAPOL -DEAP_TLS_FUNCS -DCONFIG_WIRELESS_EXTENSION "
 EXTRA_OEMAKE="LIBS='-L${STAGING_LIBDIR} -lssl -lcrypto' LIBS_p='-L${STAGING_LIBDIR} -lssl -lcrypto'"
 
 do_configure() {
