@@ -1,5 +1,5 @@
 DESCRIPTION = "A minimal version of the Mozilla web browser"
-DEPENDS = "xt gtk+ libidl zip-native"
+DEPENDS = "xt gtk+ libidl zip-native unzip-native"
 SRC_URI = "cvs://anonymous@cvs-mirror.mozilla.org/cvsroot;module=mozilla \
            file://xptcstubs.patch;patch=1 \
 	   file://no-xmb.patch;patch=1 \
