@@ -3,7 +3,7 @@ SECTION=base
 PRIORITY=optional
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS=libc6 python-core python-numeric libsdl libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg
-DEPENDS=virtual/libc libsdl libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg python-numeric
+DEPENDS=virtual/libc virtual/libsdl libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg python-numeric
 SRCNAME=pygame
 
 SRC_URI = http://www.pygame.org/ftp/${SRCNAME}-${PV}.tar.gz

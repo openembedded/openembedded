@@ -2,8 +2,8 @@ DESCRIPTION=Python Vorbis Bindings
 SECTION=base
 PRIORITY=optional
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-RDEPENDS=libc6 python-core libvorbis pyogg
-DEPENDS=virtual/libc libvorbis pyogg
+RDEPENDS=libc6 python-core libvorbis python-ogg
+DEPENDS=virtual/libc libvorbis python-ogg
 SRCNAME=pyvorbis
 
 SRC_URI = http://www.andrewchatham.com/pyogg/download/${SRCNAME}-${PV}.tar.gz \

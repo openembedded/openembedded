@@ -1,0 +1,25 @@
+DESCRIPTION="Qt Widget Extension for Technical Applications"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE="GPL"
+RDEPENDS="libqte2"
+DEPENDS="virtual/libc virtual/libqte2"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tgz
+
+inherit qmake
+
+EXTRA_QMAKEVARS_POST = "CONFIG-=thread"
+
+do_stage() {
+	oe_soinstall lib/libqwt.so.4.2.0 ${STAGING_LIBDIR}
+	cp -a include/* ${STAGING_INCDIR}
+}
+
+do_install() {
+	install -d ${D}/{${libdir},${includedir}}
+	oe_soinstall lib/libqwt.so.4.2.0 ${D}/${libdir}
+	cp -a include/* ${D}/${includedir}
+}
+
