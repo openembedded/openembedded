@@ -1,3 +1,5 @@
+LICENSE = GPL LGPL FDL
+
 SECTION="libs"
 PRIORITY="optional"
 RDEPENDS="libc6"
@@ -16,6 +18,8 @@ do_stage () {
 	ln -sf ${STAGING_LIBDIR}/libgcrypt.so.1.5.1 ${STAGING_LIBDIR}/libgcrypt.so.1.5
 	ln -sf ${STAGING_LIBDIR}/libgcrypt.so.1.5.1 ${STAGING_LIBDIR}/libgcrypt.so.1
 	ln -sf ${STAGING_LIBDIR}/libgcrypt.so.1.5.1 ${STAGING_LIBDIR}/libgcrypt.so
+
+	install -m 0755 src/libgcrypt-config ${STAGING_BINDIR}/
 
 	install -d ${STAGING_DIR}/target/include/
 	for X in gcrypt.h
