@@ -2,7 +2,7 @@ SECTION="libs"
 PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
-DEPENDS=virtual/libc xproto
+DEPENDS=virtual/libc xproto-cvs
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp
 S=${WORKDIR}/Xdmcp

@@ -3,11 +3,9 @@ PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc
-PROVIDES=virtual/libreadline
 
 SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-4.3.tar.gz \
 	  file://${FILESDIR}/signalnamespace.patch;patch=1
-S=${WORKDIR}/readline-${PV}
 
 inherit autotools libtool
 

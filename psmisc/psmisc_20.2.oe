@@ -3,7 +3,7 @@ SECTION="base"
 PRIORITY="required"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6 libncurses5"
-DEPENDS=virtual/libc libncurses
+DEPENDS=virtual/libc ncurses
 
 SRC_URI="${SOURCEFORGE_MIRROR}/psmisc/psmisc-20.2.tar.gz \
 	 file://${FILESDIR}/configure.patch;patch=1"

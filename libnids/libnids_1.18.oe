@@ -1,4 +1,4 @@
-DEPENDS = libc libnet libpcap
+DEPENDS = virtual/libc libnet libpcap
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

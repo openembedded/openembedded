@@ -1,0 +1,32 @@
+SECTION="libs"
+PRIORITY="optional"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc xproto-cvs xextentions-cvs xau-cvs xtrans-cvs xdmcp-cvs
+
+SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11
+S=${WORKDIR}/X11
+
+inherit autotools pkgconfig libtool
+
+do_stage() {
+
+	install -c -m 644 X11/XKBlib.h ${STAGING_DIR}/target/include/X11/XKBlib.h
+	install -c -m 644 X11/Xcms.h ${STAGING_DIR}/target/include/X11/Xcms.h
+	install -c -m 644 X11/Xlib.h ${STAGING_DIR}/target/include/X11/Xlib.h
+	install -c -m 644 X11/Xlibint.h ${STAGING_DIR}/target/include/X11/Xlibint.h
+	install -c -m 644 X11/Xlocale.h ${STAGING_DIR}/target/include/X11/Xlocale.h
+	install -c -m 644 X11/Xresource.h ${STAGING_DIR}/target/include/X11/Xresource.h
+	install -c -m 644 X11/Xutil.h ${STAGING_DIR}/target/include/X11/Xutil.h
+	install -c -m 644 X11/cursorfont.h ${STAGING_DIR}/target/include/X11/cursorfont.h
+	install -c -m 644 X11/region.h ${STAGING_DIR}/target/include/X11/region.h
+	install -c -m 644 X11/ImUtil.h ${STAGING_DIR}/target/include/X11/ImUtil.h
+	
+	install -c .libs/libX11.so.6.2.1 ${STAGING_DIR}/target/lib/libX11.so.6.2.1
+	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6
+	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so
+
+	install -c -m 644 .libs/libX11.a ${STAGING_DIR}/target/lib/libX11.a
+
+
+}

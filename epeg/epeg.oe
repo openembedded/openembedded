@@ -1,0 +1,9 @@
+PV = ${DATE}
+
+DEPENDS = virtual/libc libjpeg
+RDEPENDS = libc6 jpeg
+
+SRC_URI = cvs://anonymous:@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epeg
+S = ${WORKDIR}/epeg
+
+inherit autotools libtool

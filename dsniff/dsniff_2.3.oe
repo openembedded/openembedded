@@ -1,0 +1,17 @@
+DESCRIPTION = 'dsniff is a collection of tools for network auditing and penetration testing.'
+
+DEPENDS = virtual/libc db3 libpcap libnet libnids openssl
+RDEPENDS = libc6 db3 libpcap openssl
+
+SRC_URI = http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF='--without-x --with-db=${STAGING_DIR}/target \
+	      --with-libpcap=${STAGING_DIR}/target \
+	      --with-libnet=${STAGING_DIR}/target \
+	      --with-libnids=${STAGING_DIR}/target \
+	      --with-openssl=${STAGING_DIR}/target'
+EXTRA_OEMAKE='"install_prefix=${D}"'
+CFLAGS_prepend=' -I${S}/missing '

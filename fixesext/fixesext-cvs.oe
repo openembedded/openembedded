@@ -2,7 +2,7 @@ SECTION="libs"
 PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
-DEPENDS=virtual/libc xextensions 
+DEPENDS=virtual/libc xextensions-cvs
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=FixesExt
 S=${WORKDIR}/FixesExt
