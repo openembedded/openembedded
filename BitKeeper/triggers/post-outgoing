@@ -49,7 +49,6 @@ echo "Sending notification mail to $LIST..."
     then (
          echo $VERB the following changesets
          echo
-         BK_CSETLIST=BitKeeper/etc/csets-in
          bk changes -v - < $BK_CSETLIST
          ) | sed 's/^/    /'
     fi

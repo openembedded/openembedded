@@ -95,7 +95,6 @@ echo repository={green}${R_OUT}{normal} $U_OUT
 # See "bk help prs" for documentation on the formatting string.
 if [ X$BK_CSETLIST != X ]
 then
-     BK_CSETLIST=BitKeeper/etc/csets-in
      (
      $CHANGECMD -d'$if(:GFILE:=ChangeSet){{orange}ChangeSet@:REV:{normal}$if(:TAG:){ tags={red}:TAG:{normal}} $if(:C:){:C:}\n}$unless(:GFILE:=ChangeSet){* :GFILE:$if(:C:){: $each(:C:){(:C:)}}\n}' - < $BK_CSETLIST
      )
