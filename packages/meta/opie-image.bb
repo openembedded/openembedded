@@ -5,7 +5,8 @@ FEED_URIS_append_openzaurus = " opie##http://openzaurus.org/official/unstable/${
 FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
-PR = "r11"
+LICENSE = "MIT"
+PR = "r12"
 
 include opie-collections.inc
 
@@ -70,13 +71,7 @@ merge_feeds() {
 }
 
 
-# create a timestamp of the build date
-IMAGE_POSTPROCESS_COMMAND_openzaurus = "create_etc_timestamp"
-
-# merge feed-sources into ipkg.conf
-IMAGE_PREPROCESS_COMMAND = "merge_feeds"
+# merge feed-sources into ipkg.conf and create /etc/timestamp from build date
+IMAGE_PREPROCESS_COMMAND = "merge_feeds; create_etc_timestamp"
 
 inherit image_ipk
-
-
-LICENSE = MIT
