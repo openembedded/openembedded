@@ -47,7 +47,7 @@ EXTRA_QMAKEVARS_POST += "KDEPIMDIR=${S} INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DI
 QMAKE_PROFILES= "all.pro"
 SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
 		kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \ 
-		kabc/formats/binary "
+		kabc/formats/binary kabc/plugins/qtopia "
 #		"gammu/emb/common gammu/emb/gammu " build
 #		"pwmanager/pwmanager" needs patching to link with qpe (?)
 
@@ -90,7 +90,7 @@ do_install() {
     install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
     install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
 
-    for f in libmicrokde libmicrokdepim libkamicrokabc libkomicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary
+    for f in libmicrokde libmicrokdepim libkamicrokabc libkomicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary libmicrokabc_qtopia
     do
         oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
     done
