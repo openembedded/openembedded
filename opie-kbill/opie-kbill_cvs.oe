@@ -6,6 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "kbill"
 APPTYPE = "binary"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/games/kbill \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
@@ -17,7 +18,10 @@ inherit opie
 
 # FILES bin/kbill apps/Games/kbill.desktop pics/kbill/*
 do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/pixmaps
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/bitmaps
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/bitmaps/*.xbm ${D}${palmtopdir}/pics/${APPNAME}/bitmaps
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/pixmaps/*.xpm ${D}${palmtopdir}/pics/${APPNAME}/pixmaps
 }
 
