@@ -1,7 +1,7 @@
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 PACKAGE_ARCH = "ipaqpxa"
 KERNEL_CCSUFFIX = "-3.3.3"
@@ -24,8 +24,8 @@ HHV     = "${@oe.data.getVar('PV',d,1).split('-')[3].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(oe.data.getVar('K_MAJOR',d,1)) * 100000000 + int(oe.data.getVar('K_MINOR',d,1)) * 1000000 + int(oe.data.getVar('K_MICRO',d,1)) * 10000 + int(oe.data.getVar('RMKV',d,1)) * 1000 + int(oe.data.getVar('PXAV',d,1)) * 100 + float(oe.data.getVar('HHV',d,1)))}"
 
-module_conf_h3900_asic = "alias h3900_asic ipaq_hal_h3900"
-module_conf_h5400_asic = "alias h3900_asic ipaq_hal_h5400"
+module_conf_h3900_asic = "alias ipaq_hal_3900 h3900_asic"
+module_conf_h5400_asic = "alias ipaq_hal_5400 h5400_asic"
 module_conf_pxa_ir = "alias irda0 pxa_ir"
 module_conf_i2c_algo_pxa = "options i2c-algo-pxa pxa_scan=0"
 module_conf_pcmcia_core = "options pcmcia_core ignore_cis_vcc=1"
