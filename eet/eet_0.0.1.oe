@@ -1,10 +1,12 @@
-DEPENDS = "virtual/libc zlib jpeg"
 DESCRIPTION = "EET is a tiny library designed to write an \
 arbitary set of chunks of data to a file and optionally compress \
 each chunk (very much like a zip file) and allow fast \
 random-access reading of the file later on."
+SECTION = "libs"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+DEPENDS = "zlib jpeg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/eet-${PV}.tar.gz \
 	   file://flags.patch;patch=1"
 
-inherit autotools 
+inherit autotools
