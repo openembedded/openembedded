@@ -86,10 +86,6 @@ kernel_do_stage() {
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 	install -m 0644 System.map ${STAGING_KERNEL_DIR}/System.map-${PV}
 
-	# Check if scripts/genksyms exists and if so, build it
-	if [ -e scripts/genksyms/ ]; then
-		oe_runmake SUBDIRS="scripts/genksyms"
-	fi
 	cp -fR scripts ${STAGING_KERNEL_DIR}/
 }
 
@@ -107,6 +103,13 @@ kernel_do_install() {
 	install -m 0644 System.map ${D}/boot/System.map-${PV}
 	install -m 0644 .config ${D}/boot/config-${PV}
 	install -d ${D}/etc/modutils
+
+        # Check if scripts/genksyms exists and if so, build it
+        if [ -e scripts/genksyms/ ]; then
+                oe_runmake SUBDIRS="scripts/genksyms"
+        fi
+
+        cp -fR scripts ${STAGING_KERNEL_DIR}/
 }
 
 kernel_do_configure() {
