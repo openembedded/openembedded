@@ -1,13 +1,18 @@
-PACKAGES = gpe gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-gtkapps gpe-task-gnomeapps
+PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r14"
+PR = "r15"
 
 ALLOW_EMPTY = 1
 
-gpe-base = "\
+gpe-base-depends = "\
     diet-x11 \
-    virtual/xserver \
+    virtual/xserver"
+
+RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
+DEPENDS += " ${gpe-base-depends}"
+
+gpe-task-base = "\
     matchbox \
     xcursor-transparent-theme \
     rxvt-unicode \
@@ -17,6 +22,7 @@ gpe-base = "\
     xhost \
     xrdb \
     gpe-soundserver \
+    ttf-bitstream-vera \
     gpe-dm \
     gpe-login \
     gpe-session-scripts \
@@ -27,8 +33,15 @@ gpe-base = "\
     libgtkstylus \
     detect-stylus"
 
-RDEPENDS_gpe-task-base := "${gpe-base}"
-DEPENDS += " ${gpe-base}"
+RDEPENDS_gpe-task-base := "glibc-gconv \
+			   glibc-gconv-iso8859-1 \
+			   gdk-pixbuf-loader-png \
+			   gdk-pixbuf-loader-xpm \
+			   gdk-pixbuf-loader-jpeg \
+			   pango-module-basic-x \
+			   pango-module-basic-fc \
+			   ${gpe-task-base}"
+DEPENDS += " ${gpe-task-base}"
 
 gpe-task-pim = "\
     gpe-timesheet \
@@ -62,48 +75,13 @@ gpe-task-apps = "\
     gpe-edit \
     gpe-gallery \
     gpe-calculator \
-    gpe-filemanager \
-    gpe-irc \
-    gpe-nmf \
     gpe-package \
     gpe-plucker \
-    gpe-soundbite \
     gpe-terminal \
     gpe-watch \
     gpe-what \
     matchbox-panel-hacks \
-    rosetta \
-    dillo2"
+    rosetta"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"
-
-gpe-task-games = "\
-    gpe-go \
-    gpe-lights \
-    gpe-othello \
-    gpe-tetris \
-    gsoko \
-    xdemineur"
-
-RDEPENDS_gpe-task-games := "${gpe-task-games}"
-DEPENDS += " ${gpe-task-games}"
-
-gpe-task-gtkapps = "\
-    firefox \
-    thunderbird \
-    minimo \
-    gaim"
-
-RDEPENDS_gpe-task-gtkapps := "${gpe-task-gtkapps}"
-DEPENDS += " ${gpe-task-gtkapps}"
-
-gpe-task-gnomeapps = "\
-    gail \
-    galculator \
-    gnumeric \
-    gpdf \
-    totem"
-
-RDEPENDS_gpe-task-gnomeapps := "${gpe-task-gnomeapps}"
-DEPENDS += " ${gpe-task-gnomeapps}"

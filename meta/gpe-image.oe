@@ -1,20 +1,34 @@
-include gpe-collections.oe
 
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 
-PR = "r4"
+PR = "r5"
 
 export IMAGE_BASENAME = "gpe-image"
 
-DEPENDS = "task-bootstrap ${GPE_BASE_DEPENDS} ${GPE_BASE} ${GPE_PIM} \
-	   ${GPE_BASE_SETTINGS} ${GPE_BASE_APPS} \
+GPE_MACHINE_CLASS ?= "none"
+
+GPE_EXTRA_DEPENDS += "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
+GPE_EXTRA_INSTALL += "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
+
+GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
+GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
+
+GPE_EXTRA_DEPENDS_smallscreen = "minimo linphone-hh"
+GPE_EXTRA_INSTALL_smallscreen = "minimo linphone-hh"
+
+GPE_EXTRA_DEPENDS_none = ""
+GPE_EXTRA_INSTALL_none = ""
+
+XSERVER ?= "xserver-kdrive-fbdev"
+
+DEPENDS = "task-bootstrap \
+	   meta-gpe \
 	   ${GPE_EXTRA_DEPENDS}"
 
-export IPKG_INSTALL = "task-bootstrap ${GPE_BASE_DEPENDS} ${GPE_BASE} \
-           	       ${GPE_PIM} ${GPE_BASE_SETTINGS} \
-	               ${GPE_BASE_APPS} ${GPE_EXTRA_DEPENDS} \
+export IPKG_INSTALL = "task-bootstrap gpe-task-base \
+           	       gpe-task-pim gpe-task-settings \
+	               gpe-task-apps ${GPE_EXTRA_DEPENDS} \
 		       ${XSERVER} \
-		       ${GPE_BASE_RDEPENDS} \
 		       ${GPE_EXTRA_INSTALL}"
 
 ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
