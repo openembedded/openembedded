@@ -16,9 +16,11 @@ SRC_DISTRIBUTECOMMAND () {
 	mkdir -p ${SRC_DISTRIBUTEDIR}
 	case "${SRC_DIST_LOCAL}" in
 		copy)
+			test -e $s.md5 && cp -f $s.md5 ${SRC_DISTRIBUTEDIR}/
 			cp -f $s ${SRC_DISTRIBUTEDIR}/
 			;;
 		symlink)
+			test -e $s.md5 && ln -sf $s.md5 ${SRC_DISTRIBUTEDIR}/
 			ln -sf $s ${SRC_DISTRIBUTEDIR}/
 			;;
 		move+symlink)
