@@ -4,9 +4,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
-PR = "r1"
+PR = "r2"
 APPNAME = "qpe"
-
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
@@ -24,24 +23,18 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
 
 S = "${WORKDIR}/launcher"
 
-CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_c7x0 = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
 
 # Caps/Numlock icons for devices with keyboard
 EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_poodle 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_shepherd 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_corgi 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_husky 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_c7x0 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_tosa 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
-PIXMAP_SIZE_shepherd 	= "-640x480"
-PIXMAP_SIZE_corgi 	= "-640x480"
-PIXMAP_SIZE_husky 	= "-640x480"
+PIXMAP_SIZE_c7x0 	= "-640x480"
 # PIXMAP_SIZE_tosa 	= "-640x480"
 PIXMAP_SIZE_simpad 	= "-800x600"
 
@@ -100,30 +93,7 @@ do_install() {
 
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
-}
 
-# These two should be installed only on devices with keyboard
-do_install_append_collie () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_poodle () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_corgi () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_shepherd () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_husky () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_tosa () {
 	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }

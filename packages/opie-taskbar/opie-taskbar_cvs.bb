@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.9+cvs-${CVSDATE}"
-PR = "r3"
+PR = "r4"
 APPNAME = "qpe"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
@@ -27,16 +27,12 @@ S = "${WORKDIR}/launcher"
 # Caps/Numlock icons for devices with keyboard
 EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_poodle 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_shepherd 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_corgi 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_husky 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_c7x0 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_tosa 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
-PIXMAP_SIZE_shepherd 	= "-640x480"
-PIXMAP_SIZE_corgi 	= "-640x480"
-PIXMAP_SIZE_husky 	= "-640x480"
+PIXMAP_SIZE_c7x0 	= "-640x480"
 # PIXMAP_SIZE_tosa 	= "-640x480"
 PIXMAP_SIZE_simpad 	= "-800x600"
 

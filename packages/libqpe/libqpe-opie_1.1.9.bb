@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte"
 PROVIDES = "virtual/libqpe"
-PR = "r1"
+PR = "r2"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
@@ -20,11 +20,8 @@ EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
 EXTRA_QMAKEVARS_POST = "DESTDIR="
 
 CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
-
-CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
-XXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_c7x0 = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
 
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \

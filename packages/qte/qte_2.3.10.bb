@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -26,9 +26,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
 	   file://switches.h "
 
 SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 "
-SRC_URI_append_corgi		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
-SRC_URI_append_shepherd		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
-SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
+SRC_URI_append_c7x0		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
 SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 "
@@ -69,9 +67,7 @@ EXTRA_DEFINES_h3900 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_jornada56x	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_jornada720	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
-EXTRA_DEFINES_corgi     	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_shepherd  	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_husky		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_beagle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
 
 export SYSCONF_CC = "${CC}"

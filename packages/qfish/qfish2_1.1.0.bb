@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "opie/games"
 LICENSE = "GPL"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://taiga0818.hp.infoseek.co.jp/rpms/qfish2-${PV}.tar.gz"
 S = "${WORKDIR}/qfish"
@@ -11,9 +11,7 @@ S = "${WORKDIR}/qfish"
 inherit palmtop
 
 MACHTYPE = "sl300"
-MACHTYPE_corgi    = "sl700"
-MACHTYPE_shepherd = "sl700"
-MACHTYPE_husky    = "sl700"
+MACHTYPE_c7x0     = "sl700"
 MACHTYPE_tosa     = "sl700"
 
 do_configure_append() {

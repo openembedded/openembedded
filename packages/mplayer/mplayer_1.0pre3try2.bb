@@ -3,28 +3,18 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
-PR = "r4"
+PR = "r5"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=0 \
            file://sdl.patch;patch=0 \
            file://zlib.patch;patch=0 "
 
-DEPENDS_corgi += "sharp-aticore"
-DEPENDS_shepherd += "sharp-aticore"
-DEPENDS_husky += "sharp-aticore"
+DEPENDS_c7x0 += "sharp-aticore"
+PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
+SRC_URI_append_c7x0 = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
+                       file://Makefile-vidix.patch;patch=0 "
 
-PACKAGE_ARCH_corgi = "${MACHINE_ARCH}"
-PACKAGE_ARCH_shepherd = "${MACHINE_ARCH}"
-PACKAGE_ARCH_husky = "${MACHINE_ARCH}"
-
-SRC_URI_append_corgi = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
-                        file://Makefile-vidix.patch;patch=0 "
-SRC_URI_append_shepherd = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
-                        file://Makefile-vidix.patch;patch=0 "
-SRC_URI_append_husky = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
-                        file://Makefile-vidix.patch;patch=0 "
-                        
 S = "${WORKDIR}/MPlayer-${PV}"
 
 PACKAGES =+ "postproc postproc-dev"

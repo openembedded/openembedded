@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r32"
+PR = "r33"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -34,9 +34,7 @@ SRC_URI = "file://halt \
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
-SRC_URI_append_corgi =    " file://keymap"
-SRC_URI_append_shepherd = " file://keymap"
-SRC_URI_append_husky =    " file://keymap"
+SRC_URI_append_c7x0 =    " file://keymap"
 
 def read_kernel_version(d):
 	import bb
@@ -93,10 +91,10 @@ do_install () {
 		ln -sf          ../init.d/checkversion  ${D}/etc/rcS.d/S05version
 	fi
 
-	if [ "${MACHINE}" == "corgi" -o "${MACHINE}" == "shepherd" -o "${MACHINE}" == "husky" ]; then
+	if [ "${MACHINE}" == "c7x0" ]; then
 		install -m 0755    ${WORKDIR}/corgikeymap-2.6.map		${D}/etc
-		install -m 0755    ${WORKDIR}/keymap			${D}/etc/init.d
-		ln -sf          ../init.d/keymap  	${D}/etc/rcS.d/S04keymap
+		install -m 0755    ${WORKDIR}/keymap				${D}/etc/init.d
+		ln -sf          ../init.d/keymap  				${D}/etc/rcS.d/S04keymap
 	fi
 
 

@@ -7,7 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r32"
+PR = "r33"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 ALLOW_EMPTY_kernel = "1"
@@ -96,7 +96,7 @@ do_configure_prepend() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PACKAGE_ARCH}-${DATETIME}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${PACKAGE_ARCH}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"
