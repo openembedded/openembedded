@@ -75,7 +75,7 @@ python do_package () {
 			oe.error("D not defined")
 			return
 
-		packages = string.split(data.getVar('PACKAGES', d, 1))
+		packages = string.split(oe.data.getVar('PACKAGES', d, 1))
 		if not packages:
 			oe.error("PACKAGES not defined")
 			return
