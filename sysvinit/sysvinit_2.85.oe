@@ -42,6 +42,9 @@ do_install () {
 	else
 		install -m 0644    ${FILESDIR}/inittab	${D}/etc/inittab
 	fi
+	if [ ! -z "${SERIAL_CONSOLE}" ]; then
+		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
+	fi
 	install -m 0644    ${FILESDIR}/rcS-default	${D}/etc/default/rcS
 	install -m 0755    ${FILESDIR}/rc		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/rcS		${D}/etc/init.d
