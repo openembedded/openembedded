@@ -38,6 +38,9 @@ arch any 1
 arch noarch 1
 arch ${TARGET_ARCH} 10
 EOF
+	if [ "${TARGET_ARCH}" != "${PACKAGE_ARCH}" ]; then
+		echo "arch ${PACKAGE_ARCH} 15" >>${T}/ipkg.conf
+	fi
 	if [ ! -z ${MACHINE} ]; then
 		echo "arch ${MACHINE} 20" >>${T}/ipkg.conf
 	fi
