@@ -6,7 +6,9 @@ DEPENDS = "gtk+"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2"
 
-PREMIRRORS_prepend = "${SOURCEFORGE_MIRROR}   http://unc.dl.sourceforge.net/sourceforge"
+PREMIRRORS_prepend () {
+	${SOURCEFORGE_MIRROR}   http://unc.dl.sourceforge.net/sourceforge
+}
 EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
 
 inherit autotools  gettext gettext
