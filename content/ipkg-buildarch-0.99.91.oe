@@ -1,2 +1,0 @@
-inherit native
-include ipkg-${PV}.oe

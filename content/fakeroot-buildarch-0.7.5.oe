@@ -1,4 +1,0 @@
-inherit native
-include fakeroot-${PV}.oe
-PN_append=-buildarch
-S = ${WORKDIR}/fakeroot-${PV}
