@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+CVSDATE = 20040817
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/qpegps;module=qpegps \
            file://gpsd-fix.patch;patch=1 \
@@ -13,6 +14,7 @@ S = "${WORKDIR}/qpegps"
 inherit palmtop
 
 QMAKE_PROFILES = "qpegps.pro"
+EXTRA_QMAKEVARS_POST = "LIBS=-lqpe"
 
 do_install() {
         install -d ${D}/${palmtopdir}/bin \
