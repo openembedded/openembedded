@@ -1,4 +1,4 @@
-DEPENDS = patcher
+DEPENDS = patcher-native
 RDEPENDS = 
 FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glib-2.0-${PV}
 
