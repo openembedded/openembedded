@@ -5,7 +5,7 @@ RDEPENDS = libc6
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
 S = "${WORKDIR}/${P}"
 
-inherit autotools
+inherit autotools libtool
 
 do_stage () {
 	install -m 0644 lib/expat.h ${STAGING_DIR}/target/include/

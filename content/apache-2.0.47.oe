@@ -1,11 +1,11 @@
 SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz
 SECTION = net
-DEPENDS = virtual/libc expat libtool openssl
+DEPENDS = virtual/libc expat openssl
 RDEPENDS = libc6, libexpat1, libssl0.9.7
 
 S = ${WORKDIR}/httpd-${PV}
 
-inherit autotools
+inherit autotools libtool
 
 CFLAGS_append = " -DPATH_MAX=4096"
 CFLAGS_prepend = "-I${STAGING_DIR}/target/include/openssl "

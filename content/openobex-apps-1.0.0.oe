@@ -4,7 +4,7 @@ RDEPENDS = libc6 libopenobex1
 SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
 S = ${WORKDIR}/${P}
 
-inherit autotools
+inherit autotools libtool
 
 EXTRA_OECONF = --disable-glibtest --with-glib-prefix=${STAGING_DIR}/target
 export OPENOBEX_CFLAGS=-I${STAGING_DIR}/target/include

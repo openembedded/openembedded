@@ -10,7 +10,7 @@ SRC_URI_append = " file://${FILESDIR}/envvar_doc.patch;patch=1"
 #SRC_URI_append = " file://${FILESDIR}/collie-module.patch;patch=1"
 S = ${WORKDIR}/${PN}
 
-inherit autotools
+inherit autotools libtool
 
 do_compile_prepend () {
 	./autogen.sh

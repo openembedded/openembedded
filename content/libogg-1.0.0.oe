@@ -9,4 +9,4 @@ SRC_URI = "ftp://ftp.debian.org/debian/pool/main/libo/libogg/${PN}_${PV}.orig.ta
 SRC_URI_append = " file://${FILESDIR}/libogg-configure.patch;patch=1"
 S=${WORKDIR}/${P}
 
-inherit autotools
+inherit autotools libtool

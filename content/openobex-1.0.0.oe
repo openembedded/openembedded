@@ -4,7 +4,7 @@ RDEPENDS = libc6
 SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
 S = ${WORKDIR}/${P}
 
-inherit autotools
+inherit autotools libtool
 
 do_stage () {
 	install -m 0755 src/.libs/libopenobex* ${STAGING_LIBDIR}/

@@ -23,6 +23,6 @@ do_install () {
 		   ${D}/sbin
 	install -m 0755 ifup ${D}/sbin/
 	ln ${D}/sbin/ifup ${D}/sbin/ifdown
-	install -m 0644 ${FILESDIR}/init ${D}/etc/init.d/init
+	install -m 0644 ${FILESDIR}/init ${D}/etc/init.d/networking
 	install -m 0644 ${FILESDIR}/interfaces ${D}/etc/network/interfaces
 }

@@ -11,10 +11,8 @@ the POSIX-style functions is called pcreposix.h.
 SRC_URI = ftp://ftp.csx.cam.ac.uk/pub/software/programming/${PN}/${P}.tar.bz2
 S = "${WORKDIR}/${P}"
 
-inherit autotools
+inherit autotools libtool
 
-# this libtool cant handle the multiword gcc
-CC:=${@oe.data.getVar("CC", d, 1).split()[-1].strip()}
 CFLAGS_append = " -D_REENTRANT"
 do_compile () {
 	${BUILD_CC} -I${S}/include -c dftables.c

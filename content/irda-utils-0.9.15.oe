@@ -7,7 +7,7 @@ DESCRIPTION = Provides common files needed to use IrDA.\
 SRC_URI = ${SOURCEFORGE_MIRROR}/irda/${P}.tar.gz
 S = ${WORKDIR}/${P}
 
-inherit autotools
+inherit autotools libtool
 
 do_compile () {
 	oe_runmake -C irattach
