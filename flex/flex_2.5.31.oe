@@ -1,5 +1,9 @@
 DESCRIPTION = "Flex is a tool for generating programs \
 that recognize lexical patterns in text."
+HOMEPAGE = "http://www.gnu.org/software/flex/"
+LICENSE = "GPL"
+SECTION = "devel"
+PRIORITY = "optional"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lex/flex-${PV}.tar.bz2 \
 	   file://include.patch;patch=1"
