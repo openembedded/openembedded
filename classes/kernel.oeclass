@@ -14,6 +14,24 @@ KERNEL_LDSUFFIX ?= ""
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
 
+# parse kernel ABI version out of <linux/version.h>
+def get_kernelversion(p):
+	import re
+	try:
+		f = open(p, 'r')
+	except IOError:
+		return None
+	l = f.readlines()
+	f.close()
+	r = re.compile("#define UTS_RELEASE \"(.*)\"")
+	for s in l:
+		m = r.match(s)
+		if m:
+			return m.group(1)
+	return None
+
+KERNEL_VERSION = "${@get_kernelversion('${S}/include/linux/version.h')}"
+
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
@@ -37,6 +55,7 @@ kernel_do_stage() {
 	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/.config
 	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/kernel-config
 	echo "${PV}" >${STAGING_KERNEL_DIR}/kernel-version
+	echo "${KERNEL_VERSION}" >${STAGING_KERNEL_DIR}/kernel-abiversion
 	echo "${S}" >${STAGING_KERNEL_DIR}/kernel-source
 	echo "${KERNEL_CCSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ccsuffix
 	echo "${KERNEL_LDSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ldsuffix
@@ -81,8 +100,7 @@ FILES_kernel = "/boot"
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
-	VER=${PV}
-	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} $VER
+	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} ${KERNEL_VERSION}
 else
 	depmod -A
 	update-modules || true
