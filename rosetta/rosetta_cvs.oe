@@ -5,7 +5,7 @@ DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=rosetta \
 	file://rosetta-makefile.patch;patch=1"
 S = "${WORKDIR}/rosetta"
-PR = "r1"
+PR = "r2"
 
 inherit pkgconfig
 
@@ -15,3 +15,6 @@ do_install () {
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
 }
 
+do_postinst () {
+  ${prefix}/bin/rosetta -R
+}
