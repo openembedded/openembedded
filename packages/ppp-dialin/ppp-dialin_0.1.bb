@@ -1,0 +1,41 @@
+SECTION = "console/network"
+DESCRIPTION = "Enables PPP dial-in through a serial connection"
+MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+DEPENDS = "ppp"
+RDEPENDS = "ppp"
+PR = "r2"
+
+SRC_URI = "file://host-peer \
+           file://ppp-dialin"
+
+do_install() {
+	install -d ${D}/${sysconfdir}/ppp/peers
+	install -m 0644 ${WORKDIR}/host-peer ${D}/${sysconfdir}/ppp/peers/host
+
+	install -d ${D}/${sbindir}
+	install -m 0750 ${WORKDIR}/ppp-dialin ${D}/${sbindir}
+}
+
+
+# NOTE: adduser appears to be malfunctioning.
+#       add ppp user when creating the group already.
+
+pkg_postinst() {
+if test "x$D" != "x"; then
+	exit 1
+else
+	addgroup ppp ppp
+	adduser --system --home /dev/null --no-create-home --empty-password --ingroup ppp -s /usr/sbin/ppp-dialin ppp
+	chgrp ppp /usr/sbin/ppp-dialin
+	chmod u+s /usr/sbin/ppp-dialin
+fi
+}
+
+pkg_postrm() {
+if test "x$D" != "x"; then
+	exit 1
+else
+	deluser ppp
+	delgroup ppp
+fi
+}
