@@ -1,9 +1,8 @@
 HOMEPAGE = "http://www.pentest.co.uk/cgi-bin/viewcat.cgi?cat=downloads&section=01_bluetooth"
-DESCRIPTION = "extract as information from a Bluetooth device pairing"
+DESCRIPTION = "Extract information from near Bluetooth devices"
 SECTION = "libs"
 PRIORITY = "optional"
-SECTION = "libs"
-DEPENDS = "virtual/libc virtual/libbluetooth virtual/libsdp virtual/libgdbm ncurses"
+DEPENDS = "virtual/libbluetooth virtual/libsdp gdbm ncurses"
 
 SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"

@@ -1,13 +1,15 @@
-DEPENDS = "virtual/libc"
-PROVIDES = "virtual/libgdbm"
+DESCRIPTION = "GNU dbm is a set of database routines that use extensible hashing."
 SECTION = "libs"
-DESCRIPTION = "GNU dbm is a set of database routines \
-that use extensible hashing."
+PRIORITY = "optional"
 
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 	   file://${FILESDIR}/makefile.patch;patch=1"
 
 inherit autotools 
+
+do_configure_prepend() {
+	rm -f aclocal.m4
+}
 
 do_stage () {
 	oe_libinstall -so -a libgdbm ${STAGING_LIBDIR}
