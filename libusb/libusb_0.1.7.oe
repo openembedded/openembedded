@@ -6,3 +6,16 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool
+
+do_stage() {
+        oe_soinstall .libs/libusb.so ${STAGING_LIBDIR}/
+        install -m 0644 .libs/libusb.lai ${STAGING_LIBDIR}/libusb.la
+        install -m 0644 .libs/libusb.a ${STAGING_LIBDIR}/libusb.a
+                                                                                          
+        install -d ${STAGING_INCDIR}/
+        for X in usb.h
+        do
+                install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
+        done
+}
+
