@@ -13,16 +13,16 @@ PY_FILES = "box_info.py layer.py sound_ctrl.py stack.py txt_tools.py"
 do_install() {
 
    install -d ${D}/${libdir}
-   install -d ${D}/${libdir}/python2.3
-   install -d ${D}/${libdir}/python2.3/site-packages
+   install -d ${D}/${libdir}/${PYTHON_DIR}
+   install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages
 
    for f in ${PY_FILES}
    do
-      install -m 0644 $f ${D}${libdir}/python2.3/site-packages/
+      install -m 0644 $f ${D}${libdir}/${PYTHON_DIR}/site-packages/
    done
 
    install -d ${D}/${bindir}
    install -m 755 pymp3 ${D}/${bindir}/
 }
 
-FILES_${PN} += " ${libdir}/python2.3/site-packages/"
+FILES_${PN} += " ${libdir}/${PYTHON_DIR}/site-packages/"

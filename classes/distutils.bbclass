@@ -1,9 +1,4 @@
-inherit base
-EXTRA_OEMAKE = ""
-DEPENDS  += "${@["python-native python", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
-RDEPENDS += "python-core"
-
-FILES_${PN} = "${bindir} ${libdir} ${libdir}/python2.3"
+inherit distutils-base
 
 distutils_do_compile() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \

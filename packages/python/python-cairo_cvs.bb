@@ -11,4 +11,4 @@ inherit autotools
 SRC_URI = "cvs://anoncvs@cvs.cairographics.org/cvs/cairo;module=pycairo"
 S = "${WORKDIR}/${SRCNAME}"
 
-FILES_${PN} = "${libdir}/python2.3/"
+FILES_${PN} = "${libdir}/${PYTHON_DIR}/"

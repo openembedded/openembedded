@@ -15,9 +15,9 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://remove-imlib-et-al;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig distutils-base
 
-FILES_${PN} = "${libdir}/python2.3/"
+FILES_${PN} = "${libdir}/${PYTHON_DIR}/"
 
 do_configure_prepend() {
 	echo ${LDFLAGS} > /tmp/ldflags

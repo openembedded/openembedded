@@ -26,9 +26,9 @@ EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
                          DESTDIR= VERSION=1.0.0 \
                          DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=QWS \
                          INCLUDEPATH=. \
-                         INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
+                         INCLUDEPATH+=${STAGING_INCDIR}/${PYTHON_DIR} \
                          INCLUDEPATH+=${STAGING_INCDIR} \
-                         LIBS+=-L${STAGING_LIBDIR}/python2.3/site-packages \
+                         LIBS+=-L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages \
                          LIBS+=-L${QTDIR}/lib LIBS+=-lqte LIBS+=-lqpe "
 
 do_configure_prepend() {
@@ -40,16 +40,16 @@ do_stage() {
     for module in ${SIP_MODULES}
     do
         install -m 0644 ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/qt/
-	install -m 0755 ${module}/lib${module}.so ${STAGING_LIBDIR}/python2.3/site-packages/${module}.so
+	install -m 0755 ${module}/lib${module}.so ${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages/${module}.so
     done
 }
 
 do_install() {
-    install -d ${D}/${libdir}/python2.3/site-packages/
+    install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages/
     for module in ${SIP_MODULES}
     do
-	install -m 0755 ${module}/lib${module}.so ${D}/${libdir}/python2.3/site-packages/${module}.so
+	install -m 0755 ${module}/lib${module}.so ${D}/${libdir}/${PYTHON_DIR}/site-packages/${module}.so
     done
 }
 
-FILES_${PN} = "${libdir}/python2.3/site-packages"
+FILES_${PN} = "${libdir}/${PYTHON_DIR}/site-packages"

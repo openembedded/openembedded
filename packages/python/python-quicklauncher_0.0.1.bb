@@ -18,10 +18,10 @@ do_compile() {
 #
 
 do_install() {
-	install -d ${D}/${libdir}/python2.3/
-	install -m 0755 quicklauncher.py ${D}/${libdir}/python2.3/
-	install -d ${D}/${libdir}/python2.3/site-packages/quicklauncher/
-	install -m 0755 testapp.py ${D}/${libdir}/python2.3/site-packages/quicklauncher/
+	install -d ${D}/${libdir}/${PYTHON_DIR}/
+	install -m 0755 quicklauncher.py ${D}/${libdir}/${PYTHON_DIR}/
+	install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages/quicklauncher/
+	install -m 0755 testapp.py ${D}/${libdir}/${PYTHON_DIR}/site-packages/quicklauncher/
 }
  
 

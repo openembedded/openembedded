@@ -4,15 +4,14 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "gtk+ libglade"
 SRCNAME = "pygtk"
-PR = "r0"
 LICENSE = "LGPL"
+PR = "r1"
+
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.3/${SRCNAME}-${PV}.tar.bz2 \
 	file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit autotools pkgconfig
-
-FILES_${PN} = "${libdir}/python2.3/"
+inherit autotools pkgconfig distutils-base
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
