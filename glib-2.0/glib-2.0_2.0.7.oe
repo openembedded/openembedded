@@ -1,0 +1,47 @@
+DEPENDS = virtual/libc glib-2.0-native
+RDEPENDS = libc6
+
+SRC_URI = http://ftp.gnome.org/pub/gnome/sources/glib/2.0/glib-${PV}.tar.bz2 \
+	  file://${FILESDIR}/configure.patch;patch=1
+S = ${WORKDIR}/glib-${PV}
+
+inherit autotools libtool pkgconfig
+
+acpaths=
+do_configure_prepend () {
+	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h .
+}
+
+SOV=0.0.7
+do_stage () {
+	install -m 0755 glib/.libs/libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so.${SOV}
+	install -m 0644 glib/.libs/libglib-2.0.lai ${STAGING_LIBDIR}/libglib-2.0.la
+	install -m 0644 glib/.libs/libglib-2.0.a ${STAGING_LIBDIR}/libglib-2.0.a
+	install -m 0755 gmodule/.libs/libgmodule-2.0.so.${SOV} ${STAGING_LIBDIR}/libgmodule-2.0.so.${SOV}
+	install -m 0644 gmodule/.libs/libgmodule-2.0.lai ${STAGING_LIBDIR}/libgmodule-2.0.la
+	install -m 0644 gmodule/.libs/libgmodule-2.0.a ${STAGING_LIBDIR}/libgmodule-2.0.a
+	install -m 0755 gthread/.libs/libgthread-2.0.so.${SOV} ${STAGING_LIBDIR}/libgthread-2.0.so.${SOV}
+	install -m 0644 gthread/.libs/libgthread-2.0.lai ${STAGING_LIBDIR}/libgthread-2.0.la
+	install -m 0644 gthread/.libs/libgthread-2.0.a ${STAGING_LIBDIR}/libgthread-2.0.a
+	install -m 0755 gobject/.libs/libgobject-2.0.so.${SOV} ${STAGING_LIBDIR}/libgobject-2.0.so.${SOV}
+	install -m 0644 gobject/.libs/libgobject-2.0.lai ${STAGING_LIBDIR}/libgobject-2.0.la
+	install -m 0644 gobject/.libs/libgobject-2.0.a ${STAGING_LIBDIR}/libgobject-2.0.a
+	ln -sf libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so.0
+	ln -sf libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so
+	ln -sf libgmodule-2.0.so.${SOV} ${STAGING_LIBDIR}/libgmodule-2.0.so.0
+	ln -sf libgmodule-2.0.so.${SOV} ${STAGING_LIBDIR}/libgmodule-2.0.so
+	ln -sf libgthread-2.0.so.${SOV} ${STAGING_LIBDIR}/libgthread-2.0.so.0
+	ln -sf libgthread-2.0.so.${SOV} ${STAGING_LIBDIR}/libgthread-2.0.so
+	ln -sf libgobject-2.0.so.${SOV} ${STAGING_LIBDIR}/libgobject-2.0.so.0
+	ln -sf libgobject-2.0.so.${SOV} ${STAGING_LIBDIR}/libgobject-2.0.so
+	ln -sf libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so.0
+	ln -sf libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so
+	install -d ${STAGING_INCDIR}/glib-2.0/glib
+	install -d ${STAGING_INCDIR}/glib-2.0/gobject
+	install -m 0755 glib/glib.h ${STAGING_INCDIR}/glib-2.0/glib.h
+	install -m 0755 glibconfig.h ${STAGING_INCDIR}/glib-2.0/glibconfig.h
+	cp -f glib/*.h ${STAGING_INCDIR}/glib-2.0/glib/
+	cp -f gobject/*.h ${STAGING_INCDIR}/glib-2.0/gobject/
+	cp -f gmodule/*.h ${STAGING_INCDIR}/glib-2.0/
+	cp -f gobject/gobjectnotifyqueue.c ${STAGING_INCDIR}/glib-2.0/gobject/
+}
