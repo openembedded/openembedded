@@ -4,3 +4,5 @@ conf/local.conf
 conf/auto.conf
 tmp
 meta/treke-image.oe
+patches
+.pc
