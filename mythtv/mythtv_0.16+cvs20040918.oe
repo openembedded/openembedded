@@ -1,7 +1,7 @@
 DESCRIPTION = "A full featured personal video recorder system."
 MAINTAINER = "Michael 'Mickey' Lauer"
 SECTION = "x11/multimedia"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "cvs://mythtv:mythtv@cvs.mythtv.org/var/lib/mythcvs;module=mythtv;date=20040918;method=pserver \
 	file://xvmc-via.patch;patch=1;pnum=0 \
@@ -15,6 +15,11 @@ RDEPENDS = "qt-x11-plugins"
 inherit qmake qt3x11
 
 QMAKE_PROFILES = "mythtv.pro"
+
+#
+# Disable everything non-x86 for now, since there are some -march=i586 hardcoded in there.
+#
+COMPATIBLE_HOST = 'i.86.*-linux'
 
 def mythtv_arch(d):
         import oe, re

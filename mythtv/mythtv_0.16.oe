@@ -1,13 +1,16 @@
 DESCRIPTION = "A full featured personal video recorder system."
 MAINTAINER = "Michael 'Mickey' Lauer"
 SECTION = "x11/multimedia"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2"
 
 DEPENDS = "xinerama qt-x11-free lame libxv libxxf86vm"
 
 inherit qmake qt3x11
+
+# there is a -march=586 somewhere in the source tree
+COMPATIBLE_HOST = 'i.86.*-linux'
 
 QMAKE_PROFILES = "mythtv.pro"
 

@@ -1,6 +1,7 @@
+DESCRIPTION = "X Video Motion Compensation extension library."
 SECTION = "x11/libs"
 DEPENDS = "x11 xext libxv drm"
-DESCRIPTION = "X Video Motion Compensation extension library."
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=20040919;method=pserver \
 	cvs://anonymous@cvs.sourceforge.net/cvsroot/unichrome;module=libxvmc;date=20040919;method=pserver \
@@ -9,6 +10,9 @@ SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=20040919
 S = "${WORKDIR}/XvMC"
 
 CFLAGS += "-I${STAGING_INCDIR}/X11/extensions -I${STAGING_INCDIR}/xserver-xorg"
+
+# this one is for via only atm.
+COMPATIBLE_HOST = 'i.86.*-linux'
 
 inherit autotools pkgconfig 
 
