@@ -1,6 +1,8 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
+FEED_URIS += "opie##http://openzaurus.org/official/unstable/3.5.2/feed/opie"
+
 PR = "r4"
 
 include opie-collections.inc
