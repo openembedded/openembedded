@@ -1,10 +1,13 @@
 DESCRIPTION="Itsy Package Manager"
 LICENSE="GPL"
-SRC_URI="cvs://anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
+SRC_URI="cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
 PROVIDES=virtual/ipkg
 
-export CVS_PASSFILE="${FILESDIR}/.cvspass"
-
-S="${WORKDIR}/${P}"
+S="${WORKDIR}/ipkg/C"
 
 inherit base
+
+do_compile () {
+	./autoconfigure.sh && \
+		base_do_compile $@
+}
