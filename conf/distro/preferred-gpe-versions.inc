@@ -3,7 +3,7 @@
 #
 
 #work around some breakages
-#CVSDATE_xserver-kdrive=20050207
+CVSDATE_xserver-kdrive=20050207
 
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox ?= "1.6"
