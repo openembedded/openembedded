@@ -13,12 +13,13 @@ S = "${WORKDIR}/matchbox-window-manager"
 inherit autotools  pkgconfig
 
 FILES_${PN} = "${bindir} \
-	       ${datadir}/matchbox \
-	       ${datadir}/themes/blondie/matchbox \
-	       ${datadir}/themes/bluebox/matchbox \
-	       ${datadir}/themes/borillo/matchbox"
+               ${datadir}/matchbox \
+               ${sysconfdir}/matchbox \
+               ${datadir}/themes/blondie/matchbox \
+               ${datadir}/themes/Default/matchbox \
+               ${datadir}/themes/MBOpus/matchbox"
 
-EXTRA_OECONF = "--enable-composite --enable-startup-notification --enable-expat"
+EXTRA_OECONF = "--enable-composite --enable-startup-notification --disable-xrm"
 
 pkg_postinst() {
 update-alternatives --install ${bindir}/x-window-manager x-window-manager ${bindir}/matchbox-session 10
@@ -27,3 +28,4 @@ update-alternatives --install ${bindir}/x-window-manager x-window-manager ${bind
 pkg_postrm() {
 update-alternatives --remove x-window-manager ${bindir}/matchbox-session
 }
+
