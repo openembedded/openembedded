@@ -1,0 +1,23 @@
+DESCRIPTION = "MP3 file plugin for opie-mediaplayer1 using libmad"
+SECTION = "opie/codecs"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "opie-mediaplayer libmad"
+RDEPENDS = "opie-mediaplayer"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "madplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer;date=${CVSDATE} \
+	   file://libmadplugin.pro"
+
+S = "${WORKDIR}/opieplayer/libmad"
+QMAKE_PROFILES = "libmadplugin.pro"
+
+inherit opie
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/libmadplugin.pro ${S}/
+}
+
+# FILES plugins/codecs/libmadplugin.so
