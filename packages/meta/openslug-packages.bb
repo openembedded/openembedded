@@ -1,9 +1,38 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r2"
+PR = "r3"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
+
+OPENSLUG_DEVELOPMENT = "\
+	autoconf  \
+	automake  \
+	bash  \
+	bison  \
+	bzip2  \
+	coreutils  \
+	cvs \
+	diffutils  \
+	findutils  \
+	flex  \
+	gawk \
+	gcc  \
+	gdb  \
+	grep   \
+	lsof  \
+	m4  \
+	make  \
+	ncurses  \
+	openssh  \
+	pciutils  \
+	perl  \
+	quilt  \
+	sed  \
+	strace  \
+	tar  \
+	"
+
 
 OPENSLUG_PACKAGES = "\
 	atftp \
@@ -12,17 +41,19 @@ OPENSLUG_PACKAGES = "\
 	coreutils \
 	miau \
 	microcom \
-	mgetty \
 	mt-daapd \
 	muxsshssl \
 	nail \
 	openssh \
 	ppp puppy \
 	strace sudo \
+	thttpd \
 	"
 
 BROKEN_PACKAGES = "\
+	mgetty \
 	"
 
 DEPENDS = 'openslug-image \
-	${OPENSLUG_PACKAGES}'
+	${OPENSLUG_PACKAGES} \
+	${OPENSLUG_DEVELOPMENT}'
