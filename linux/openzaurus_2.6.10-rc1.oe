@@ -4,7 +4,7 @@ LICENSE = "GPL"
 #KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@oe.data.getVar('PV',d,True)}"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.gz \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 #          http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.7-jl1.diff.gz;patch=1 \
 #	       http://www.rpsys.net/openzaurus/${PV}/localversion.patch.gz;patch=1 \
            http://www.rpsys.net/openzaurus/${PV}/pxa-linking-bug.patch.gz;patch=1 \
