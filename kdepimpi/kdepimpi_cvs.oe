@@ -1,8 +1,6 @@
-SECTION = "opie/pim"
 include kdepimpi-base.inc
 
-PV = "1.9.6+${CVSDATE}"
-PR = "r1"
+PV = "1.9.7+${CVSDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -11,17 +9,3 @@ file://qinputdialog_inc.patch;patch=1 \
 file://manager.h.patch;patch=1 \
 file://libkcal.pro.patch;patch=1 \
 "
-#file://libsnames.patch;patch=1 \ - patch to get bluetooth & gammu libs
-
-PACKAGES_prepend = " libkomicrokcal libkamicrokabc "
-FILES_libkamicrokabc = "${palmtopdir}/lib/libkamicrokabc*"
-FILES_libkomicrokcal = "${palmtopdir}/lib/libkomicrokcal*"
-
-do_install_append() {
-
-    for f in libkamicrokabc libkomicrokcal 
-    do
-        oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
-    done
-
-}

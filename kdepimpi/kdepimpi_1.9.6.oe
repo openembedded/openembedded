@@ -1,8 +1,0 @@
-SECTION = "opie/pim"
-include kdepimpi-base.inc
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kdepim${PV}.src.tar.gz \
-file://qinputdialog_inc.patch;patch=1 \
-file://manager.h.patch;patch=1 \
-file://libkcal.pro.patch;patch=1 \
-"
