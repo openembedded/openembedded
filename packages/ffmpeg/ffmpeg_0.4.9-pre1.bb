@@ -4,6 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libvorbis faad2 faac liba52 lame mplayer"
 LICENSE = "LGPL"
+PR = "r1"
 
 
 inherit autotools
@@ -11,6 +12,7 @@ inherit autotools
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
 	file://configure.patch;patch=0 \
 	file://common.patch;patch=1 \
+	file://soname.patch;patch=1 \
 	"
 
 TARGET_LDFLAGS_append = " -lm -la52 "
@@ -46,8 +48,16 @@ EXTRA_OECONF=" \
 	--extra-libs=\$(TARGET_LDFLAGS) \
 	\
 	--cpu=${PACKAGE_ARCH} \
-	--prefix=${D}/usr \
+	--prefix=${D}/${prefix} \
 "
+
+PACKAGES += "libavcodec libavcodec-dev libavformat libavformat-dev"
+FILES_${PN} = "${bindir}"
+FILES_${PN}-dev = "${includedir}"
+FILES_libavcodec = "${libdir}/libavcodec*.so.*"
+FILES_libavcodec-dev = "${libdir}/libavcodec*.so ${libdir}/libavcodec*.la ${libdir}/libavcodec*.a"
+FILES_libavformat = "${libdir}/libavformat*.so.*"
+FILES_libavformat-dev = "${libdir}/libavformat*.so ${libdir}/libavformat*.la ${libdir}/libavformat*.a"
 
 # We do this because the install program is called with -s which causes it to call "strip" and it then mangles cross compiled stuff..
 PATH_prepend=${CROSS_DIR}/${TARGET_SYS}/bin:
@@ -56,19 +66,6 @@ PATH_prepend=${CROSS_DIR}/${TARGET_SYS}/bin:
 
 do_configure_prepend() {
 	export CC="${CC}"
-}
-
-do_install_append() {
-	# Need to fix up the shared libraries
-	cd ${D}/usr/lib
-	
-	mv libavcodec-${PV}.so libavcodec.so.0.0.0
-	ln -s libavcodec.so.0.0.0 libavcodec-${PV}.so
-	ln -s libavcodec.so.0.0.0 libavcodec.so.0
-
-	mv libavformat-${PV}.so libavformat.so.0.0.0
-	ln -s libavformat.so.0.0.0 libavformat-${PV}.so
-	ln -s libavformat.so.0.0.0 libavformat.so.0
 }
 
 do_stage() {
