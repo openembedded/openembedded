@@ -3,8 +3,8 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
-RDEPENDS="libqpe1"
-DEPENDS="virtual/libc phalanx"
+RDEPENDS="libqpe1 phalanx"
+DEPENDS=virtual/libc virtual/libqpe
 
 SRC_URI = http://www.houseoffish.org/${PN}/downloads/${PN}.tar.gz \
           file://${FILESDIR}/libqpe-opie.patch;patch=1 \
