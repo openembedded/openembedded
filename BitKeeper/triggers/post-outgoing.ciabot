@@ -42,16 +42,22 @@ check_sanity () {
 # Check sanity - do we need to send anything?
 check_sanity || exit 0
 
-# Convert numbers from the cset list into something useful
-nums=
-for s in `cat $BK_CSETLIST`; do
-    # translate cset serial to cset #
-    n=`bk prs -h -d"\\$if(:DS: -eq $s){:REV:}" ChangeSet`
-    # dont send notifications about empty ChangeSets
-    if test -z `bk prs -h -r"$n" -d'$if(:LI: -eq 0){$if(:LD: -eq 0){:REV:}}' ChangeSet`; then
-    	nums="$n $nums"
-    fi
-done
+if (grep -q ':ChangeSet:' $BK_CSETLIST); then
+    # new, correct csets-out format
+    nums = `bk changes -d:REV: - < $BK_CSETLIST`
+else
+
+    # Convert numbers from the cset list into something useful
+    nums=
+    for s in `cat $BK_CSETLIST`; do
+        # translate cset serial to cset #
+        n=`bk prs -h -d"\\$if(:DS: -eq $s){:REV:}" ChangeSet`
+        # dont send notifications about empty ChangeSets
+        if test -z `bk prs -h -r"$n" -d'$if(:LI: -eq 0){$if(:LD: -eq 0){:REV:}}' ChangeSet`; then
+        	nums="$n $nums"
+        fi
+    done
+fi
 
 # Send notifications to CIA
 if test -n "$nums"; then
