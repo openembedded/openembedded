@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 PV = "0.0cvs${CVSDATE}"
-PR = "r5"
+PR = "r6"
 DEFAULT_PREFERENCE = "1"
 
 #
@@ -48,6 +48,7 @@ FILES_uclibc-dev += "${libdir}/*.o"
 FILES_uclibc-utils = "${bindir} ${sbindir}"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
+RPROVIDES_uclibc-dev += "libc-dev"
 
 #
 # This locale file gets copied into uClibc-${PV}/extra/locale/ prior to

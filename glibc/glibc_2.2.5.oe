@@ -1,5 +1,5 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -49,6 +49,7 @@ DEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
 FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
+RPROVIDES_glibc-dev += "libc-dev"
 
 #	   file://noinfo.patch;patch=1 \
 #	   file://ldconfig.patch;patch=1;pnum=0 \
