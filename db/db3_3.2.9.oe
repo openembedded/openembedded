@@ -1,13 +1,14 @@
 SECTION = "libs"
 DESCRIPTION = "Berkeley DB v3."
 LICENSE = "BSD Sleepycat"
+PR = "r1"
 
 SRC_URI = "ftp://sleepycat1.inetu.net/releases/db-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--enable-shared --enable-compat185 --enable-static"
 EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}` cr' 'chmod=`which chmod`' \
@@ -18,7 +19,9 @@ PACKAGES = "${PN} ${PN}-bin ${PN}-dev ${PN}-doc ${PN}-locale"
 
 FILES_${PN} = "${libdir}/libdb-3.2*so*"
 FILES_${PN}-bin = "${bindir}"
-FILES_${PN}-dev = "${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so ${libdir}/libdb.la"
+FILES_${PN}-dev = "${includedir} ${libdir}/libdb.so ${libdir}/libdb.a \
+		   ${libdir}/libdb-3.so ${libdir}/libdb.la ${libdir}/libdb-3.2.a \
+		   ${libdir}/libdb-3.2.la"
 
 do_configure_prepend () {
 	set -e
