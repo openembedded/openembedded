@@ -19,7 +19,7 @@ export LDFLAGS = ""
 
 do_configure () {
 	rm -f ${CROSS_DIR}/lib/gcc/${TARGET_SYS}/${PV}/libgcc_eh.a
-	gnu-configize
+	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
 
