@@ -80,7 +80,13 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} --with-headers=${HEADERS_DIR}/include ${GLIBC_EXTRA_OECONF}"
-EXTRA_OECONF_append_ramses = " --without-fp"
+
+EXTRA_OECONF += "${@get_fpu_setting(oe, d)}"
+
+def get_fpu_setting(oe, d):
+	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+		return "--without-fp"
+	return ""
 
 glibcbuild_do_unpack () {
 # kernel headers
