@@ -1,0 +1,98 @@
+DESCRIPTION = "Open Source multimedia player."
+SECTION = "opie/multimedia"
+PRIORITY = "optional"
+HOMEPAGE = "http://www.mplayerhq.hu/"
+DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
+LICENSE = "GPL"
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
+           file://Makefile.patch;patch=1 \
+           file://sdl.patch;patch=0 \
+           file://zlib.patch;patch=0 "
+
+DEFAULT_PREFERENCE_corgi = "-1"
+DEFAULT_PREFERENCE_shepherd = "-1"
+DEFAULT_PREFERENCE_husky = "-1"
+
+DEPENDS_corgi += "sharp-aticore"
+DEPENDS_shepherd += "sharp-aticore"
+DEPENDS_husky += "sharp-aticore"
+
+PACKAGE_ARCH_corgi = "${MACHINE_ARCH}"
+PACKAGE_ARCH_shepherd = "${MACHINE_ARCH}"
+PACKAGE_ARCH_husky = "${MACHINE_ARCH}"
+
+SRC_URI_append_corgi = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
+                        file://Makefile-vidix.patch;patch=0 "
+SRC_URI_append_shepherd = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
+                        file://Makefile-vidix.patch;patch=0 "
+SRC_URI_append_husky = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
+                        file://Makefile-vidix.patch;patch=0 "
+                        
+S = "${WORKDIR}/MPlayer-${PV}"
+
+PACKAGES =+ "postproc postproc-dev"
+
+FILES_${PN} = "/usr/bin/mplayer /usr/lib/mplayer/vidix/w100_vid.so"
+
+FILES_postproc = " /usr/lib/libpostproc.so.0.0.0 /usr/lib/libpostproc.so.0"
+FILES_postproc-dev = " /usr/include/postproc/postprocess.h /usr/lib/libpostproc.so /usr/lib/libpostproc.a"
+
+inherit autotools 
+
+EXTRA_OECONF = " \
+        --prefix=/usr \
+		--mandir=/usr/share/man \
+        --target=${TARGET_ARCH} \
+        --enable-shared-pp \
+        \
+        --disable-win32 \
+        --disable-macosx \
+        --disable-dvdread \
+        --disable-mpdvdkit \
+        --disable-tv \
+        --disable-tv-v4l \
+        --disable-tv-v4l2 \
+        --disable-tv-bsdbt848 \
+        --disable-mencoder \
+        \
+        --enable-dynamic-plugins \
+        --enable-fbdev \
+        --enable-sdl \
+        --with-sdl-config=${STAGING_BINDIR}/sdl-config \
+        \
+        --enable-mad \
+        --enable-tremor \
+        --enable-vorbis \
+        \
+        --enable-ossaudio \
+        \
+        --with-extralibdir=${STAGING_LIBDIR} "
+
+EXTRA_OECONF_append_corgi = " --enable-vidix "
+EXTRA_OECONF_append_shepherd = " --enable-vidix "
+EXTRA_OECONF_append_husky = " --enable-vidix "
+
+do_configure() {
+        ./configure ${EXTRA_OECONF}
+}
+
+do_install_append () {
+        install -d ${D}/${libdir} ${D}/usr/include ${D}/usr/include/postproc
+        install -m 0644 libavcodec/libpostproc/postprocess.h ${D}/usr/include/postproc/
+        oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}/${libdir}
+        cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}/usr/lib/libpostproc.so.0.0.0
+        cd ${D}/usr/lib
+        ln -sf libpostproc.so.0.0.0 libpostproc.so.0
+        ln -sf libpostproc.so.0 libpostproc.so
+}
+
+do_stage () {
+        oe_libinstall -a -so -C libavcodec/libpostproc libpostproc ${STAGING_LIBDIR}
+        cd ${STAGING_LIBDIR}
+        ln -sf libpostproc.so libpostproc.so.0.0.0
+        ln -sf libpostproc.so libpostproc.so.0
+
+        install -d ${STAGING_INCDIR}/postproc
+        install -m 0644 ${S}/libavcodec/libpostproc/postprocess.h ${STAGING_INCDIR}/postproc/postprocess.h
+}                                       
+

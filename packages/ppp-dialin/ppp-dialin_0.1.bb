@@ -4,6 +4,7 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
 PR = "r3"
+LICENSE = "MIT"
 
 SRC_URI = "file://host-peer \
            file://ppp-dialin"

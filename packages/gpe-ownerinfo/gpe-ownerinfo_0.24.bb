@@ -5,7 +5,8 @@ SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libgpewidget"
-PR = "r1"
+PR = "r2"
+LICENSE = "GPL"
 
 SRC_URI += "file://fixloop.patch;patch=1;pnum=0"
 

@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "zope"
-
+LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/plone/CMFPlone${PV}.tar.gz"
 S = "${WORKDIR}/CMFPlone-${PV}"
 

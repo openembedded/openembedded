@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
 PR = "r4"
-
+LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=0 \
            file://sdl.patch;patch=0 \

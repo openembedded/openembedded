@@ -1,0 +1,24 @@
+DESCRIPTION = "A portable audio library"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+SRC_URI = "http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
+	   file://flags.patch;patch=1"
+S = "${WORKDIR}/portaudio"
+
+inherit autotools  pkgconfig
+
+EXTRA_OECONF = "--with-jack=no"
+
+do_stage() {
+	oe_libinstall -so -C lib libportaudio ${STAGING_LIBDIR}
+        install -m 0644 pa_common/portaudio.h ${STAGING_INCDIR}/portaudio.h
+}
+
+do_install() {
+	install -d ${D}${libdir}
+	install -d ${D}${includedir}
+	oe_runmake 'PREFIX=${D}${prefix}' install
+}
+
