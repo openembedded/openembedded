@@ -1,5 +1,6 @@
 DEPENDS = "ncurses"
 DESCRIPTION = "An sh-compatible command language interpreter."
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
            file://bashbug-editor.patch;patch=1;pnum=0 \
@@ -33,7 +34,11 @@ SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
            file://gcc34.patch;patch=1"
 
-inherit autotools
+inherit autotools update-alternatives
+
+PROVIDES = "virtual/sh"
+ALTERNATIVE_NAME = "sh"
+ALTERNATIVE_PATH = "${bindir}/bash"
 
 bindir = "/bin"
 sbindir = "/sbin"
