@@ -1,11 +1,11 @@
-DESCRIPTION = "Linux kernel for Sharp SL-C3000 processor based devices."
+DESCRIPTION = "Linux kernel for Sharp Zaurus SL-C1000 and SL-C3000 devices."
 MAINTAINER = "NOT Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa27x-2.4.20-rmk2-embedix20041116"
 SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3000/20041116/linux-c3000-20041116-rom1_01.tar.bz2 \
            file://swap-performance.patch;patch=1 \
