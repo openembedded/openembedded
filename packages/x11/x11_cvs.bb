@@ -21,6 +21,7 @@ do_compile() {
 #		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 		oe_runmake -C src/util 'CFLAGS=' 'LDFLAGS=' 'CXXFLAGS=' 'CPPFLAGS=' makekeys
 	)
+	rm -f ${STAGING_INCDIR}/X11/Xlib.h
 	oe_runmake
 }
 
