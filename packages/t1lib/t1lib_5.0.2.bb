@@ -2,7 +2,7 @@ DESCRIPTION = "A Type1 Font Rastering Library"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r1"
+PR = "r2"
 LICENSE = "LGPL GPL"
 SRC_URI = "ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -25,5 +25,5 @@ do_stage() {
 	install lib/t1lib/t1libx.h ${STAGING_INCDIR}/
 }
 
-FILES_${PN} = "${bindir}/* {$libdir}* ${datadir}/t1lib/t1lib.config"
+FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir}/t1lib/t1lib.config"
 FILES_${PN}-doc = "${datadir}/t1lib/doc/t1lib_doc.pdf"

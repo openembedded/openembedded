@@ -8,11 +8,12 @@ DEPENDS = "t1lib freetype"
 APPNAME = "qpdf"
 APPTYPE = "binary"
 APPDESKTOP = "${S}/ipkg-render-freetype/opt/QtPalmtop/apps/Applications"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qpdf2/qpdf2_2.2.1_20040217b.tgz \
            file://hack-the-hack.patch;patch=1 \
-           file://fix-sigsegv.patch;patch=1"
+           file://fix-sigsegv.patch;patch=1 \
+	   file://fix_qtversion_check.patch;patch=1"
 S = "${WORKDIR}/qpdf2_${PV}"
 
 inherit opie
