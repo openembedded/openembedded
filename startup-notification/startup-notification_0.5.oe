@@ -1,4 +1,5 @@
 DESCRIPTION = "Startup notification support"
+LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
