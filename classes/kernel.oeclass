@@ -113,11 +113,11 @@ kernel_do_configure() {
 }
 
 pkg_postinst_kernel () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/zImage zImage /${KERNEL_IMAGEDEST}/zImage-${PV} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${PV} ${KERNEL_PRIORITY} || true
 }
 
 pkg_postrm_kernel () {
-	update-alternatives --remove zImage /${KERNEL_IMAGEDEST}/zImage-${PV} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${PV} || true
 }
 
 inherit cml1
