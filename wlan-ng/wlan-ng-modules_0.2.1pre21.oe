@@ -6,14 +6,14 @@ PR = "r4"
 
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
-		file://no-compat.patch;patch=1 \
-	   file://Ambit_usb.patch;patch=1 \
-	   file://config.mk \
-		file://wlan-ng.modutils \
-		file://wlan.agent \
-	   file://version.h \
-	   file://sl6kwlanctl-ng \
-	   file://usbctl"
+	file://no-compat.patch;patch=1 \
+	file://Ambit_usb.patch;patch=1 \
+	file://config.mk \
+	file://wlan-ng.modutils \
+	file://wlan.agent \
+	file://version.h \
+	file://sl6kwlanctl-ng \
+	file://usbctl"
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 inherit module

@@ -14,7 +14,8 @@ inherit module-base
 
 # Hack Alert :D
 ARCH_mipsel = "mips"
-EXTRA_OEMAKE_mtx-1 = "TARGET=mips-le-elf KERNELPATH=${KERNEL_SOURCE} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX} COPTS='-G 0 -mno-abicalls -fno-pic -Wa,--trap -fno-strict-aliasing -fno-common -fomit-frame-pointer -mlong-calls'"
+EXTRA_OEMAKE_mtx-1 = "TARGET=mips-le-elf KERNELPATH=${KERNEL_SOURCE} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX} \
+COPTS='-G 0 -mno-abicalls -fno-pic -Wa,--trap -fno-strict-aliasing -fno-common -fomit-frame-pointer -mlong-calls -DATH_PCI'"
 
 do_compile() {
 	oe_runmake
