@@ -21,7 +21,9 @@ OPIE_BASE_APPS = "opie-aqpkg opie-console"
 
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
 
-OPIE_BASE_STYLES = "opie-deco-flat opie-style-flat"
+OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
+     
+OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal"
 
 OPIE_BASE_DEPENDS = "ipkg ntp"
 OPIE_BASE_RDEPENDS = "ntpdate"
@@ -43,11 +45,11 @@ OPIE_EXTRA_SETTINGS = ""
 
 export IPKG_INSTALL = "task-bootstrap ${OPIE_LIBS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
                              ${OPIE_BASE_RDEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
-			     ${OPIE_BASE_STYLES}"
+			     ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS}"
 
 DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND}  ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
                           ${OPIE_BASE_DEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
-			  ${OPIE_BASE_STYLES}"
+			  ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS}"
 
 
 inherit image_ipk
