@@ -16,7 +16,7 @@ S = "${WORKDIR}/hostap-driver-${PV}"
 inherit module
 
 EXTRA_OEMAKE = "EXTRA_CFLAGS='-DPRISM2_NON_VOLATILE_DOWNLOAD'"
-
+MAKE_TARGETS = "KERNEL_PATH=${KERNEL_SOURCE} MAKE='make -e'"
 NET_MODULES = "hostap.o hostap_pci.o hostap_crypt_ccmp.o hostap_crypt_tkip.o hostap_crypt_wep.o"
 
 do_install() {
