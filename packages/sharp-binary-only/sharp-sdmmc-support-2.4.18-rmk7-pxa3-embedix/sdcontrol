@@ -82,7 +82,8 @@ kill_task()
 
 case "$ACTION" in
 'insert')
-
+	
+	echo "Beginning SD auto-mount..:"
 	# Read available partitions from /proc/partitions.
 	OK_PARTS="`cat /proc/partitions |awk '{print $4}'| grep mmcd`"
 	
@@ -91,7 +92,14 @@ case "$ACTION" in
 		OK_PARTS="`echo "$OK_PARTS" | grep -v "^mmcda$"`"
 	fi
 	
-	echo "Valid SD partitions are: [$OK_PARTS]"
+	if test -n "$OK_PARTS"
+	then
+		echo -e "\n\nWARNING: Trying failsafe partition mode\n\n"
+		OK_PARTS="mmcda1 mmcda2 mmcda3 mmcda4"
+	fi
+
+	
+	echo "-> Valid SD partitions are: [$OK_PARTS]"
 	
 	# Allow for "#" in fstab.
 	fstab_txt="`cat /etc/fstab | grep -v ^#`"
@@ -99,8 +107,10 @@ case "$ACTION" in
 	cnt=1
 	for part in $OK_PARTS
 	do
+		echo -e "\n* * * * * Working on [/dev/$part] * * * * *\n"
 		# Read the mount-point for this partition from fstab 
 		MOUNT_POINT="`echo "$fstab_txt" | grep "/dev/$part" | awk '{print $2}`"
+
 
 		# Mount the first valid partition as /mnt/card if there was no entry in fstab
 		if test -z "$MOUNT_POINT"
@@ -139,6 +149,8 @@ case "$ACTION" in
 				MOUNT_POINT="/mnt/card$cnt"
 				let cnt=$cnt+1				
 			fi
+		else
+			echo "-> Using mountpoint [$MOUNT_POINT] from fstab"
 		fi
 
 		! test -d $MOUNT_POINT && mkdir -p $MOUNT_POINT	
@@ -150,22 +162,25 @@ case "$ACTION" in
 			cd /dev			
 			mknod mmcda$DEV_NUM b 60 $DEV_NUM
 		fi
-		
-		echo "Mounting [/dev/$part]"
-		echo "* Trying VFAT mount [$SD_OPTS_VFAT]..."
-        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $MOUNT_POINT
+				
+		echo "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
+        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $MOUNT_POINT 2>1 >/dev/null
 		MOUNT_RES=`mount | grep $DEVICE`
 
 
 		if [ "$MOUNT_RES" = "" ]; then
-			echo "* Trying ext2 mount [$SD_OPTS]..."
+			echo "-> Trying ext2 mount [$SD_OPTS]..."
 	        	mount $FSTYPE -o $SD_OPTS $DEVICE $MOUNT_POINT
+		else
+			echo "VFAT mount successfull"
 		fi
 
 		MOUNT_RES=`mount | grep $DEVICE`
 		if [ "$MOUNT_RES" = "" ]; then
-			echo "* Trying failsafe mount..."
+			echo "-> Trying failsafe mount..."
 	        	mount $FSTYPE $DEVICE $MOUNT_POINT
+		else
+			echo "EXT2 mount successfull"			
 		fi
 
 		# Um what was the function of that?
