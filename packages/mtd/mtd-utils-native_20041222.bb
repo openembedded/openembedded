@@ -2,7 +2,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 include mtd-utils_${PV}.bb
 inherit native
-DEPENDS = "patcher-native zlib-native"
+DEPENDS = "zlib-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/mtd-utils"
 
 do_stage () {

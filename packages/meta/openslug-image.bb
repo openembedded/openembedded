@@ -5,7 +5,7 @@ IMAGE_BASENAME = "openslug"
 IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
-OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native patcher-native virtual/armeb-linux-uclibc-gcc \
+OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATCH_DEPENDS} virtual/armeb-linux-uclibc-gcc \
 	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware "
 
 DEPENDS = "base-files base-passwd-3.5.7 \

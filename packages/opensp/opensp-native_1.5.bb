@@ -1,5 +1,5 @@
 SECTION = "libs"
-DEPENDS = "patcher-native"
+DEPENDS = ""
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 	   file://m4.patch;patch=1 \

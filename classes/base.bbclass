@@ -8,8 +8,15 @@ def base_dep_prepend(d):
 	# that case though.
 	#
 	deps = ""
+
+	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
+	# we need that built is the responsibility of the patch function / class, not
+	# the application.
+	patchdeps = bb.data.getVar("PATCH_DEPENDS", d, 1)
+	if patchdeps and not patchdeps in bb.data.getVar("PROVIDES", d, 1):
+		deps = patchdeps
+
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
-		deps += "patcher-native"
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
 	     	    bb.data.getVar('BUILD_SYS', d, 1)):
 			deps += " virtual/${TARGET_PREFIX}gcc virtual/libc "
@@ -408,6 +415,15 @@ python base_do_patch() {
 	import bb.fetch
 
 	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
+	if not src_uri:
+		return
+
+	patchcleancmd = bb.data.getVar('PATCHCLEANCMD', d, 1)
+	if patchcleancmd:
+		bb.data.setVar("do_patchcleancmd", patchcleancmd, d)
+		bb.data.setVarFlag("do_patchcleancmd", "func", 1, d)
+		bb.build.exec_func("do_patchcleancmd", d)
+
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	for url in src_uri:
 

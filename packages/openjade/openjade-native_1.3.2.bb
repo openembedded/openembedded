@@ -1,5 +1,5 @@
 SECTION = "unknown"
-DEPENDS = "patcher-native opensp-native sgml-common-native"
+DEPENDS = "opensp-native sgml-common-native"
 LICENSE = "MIT"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
