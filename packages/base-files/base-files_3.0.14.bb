@@ -133,8 +133,8 @@ do_install () {
 		ln -sf ../init.d/populate-var.sh ${D}${sysconfdir}/rcS.d/S37populate-var.sh
 		ln -sf ${localstatedir}/run/resolv.conf ${D}${sysconfdir}/resolv.conf
 		ln -sf ${localstatedir}/ld.so.cache ${D}${sysconfdir}/ld.so.cache
-		ln -sf /proc/mounts ${D}${sysconfdir}/mtab
 	fi
+	ln -sf /proc/mounts ${D}${sysconfdir}/mtab
 }
 
 

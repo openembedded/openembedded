@@ -9,11 +9,10 @@ APPNAME = "gaim"
 APPTYPE = "binary"
 LICENSE = "GPL"
 APPDESKTOP = "${S}"
-PV = "0.4+cvs-20041030"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.vanille.de/mirror/qpe-gaim_20041030.tar.bz2 \
-           file://libopie2.patch;patch=1 \
+           file://qpe-gaim.patch;patch=1 \
 	   file://vit.patch;patch=1"
 S = "${WORKDIR}/qpe-gaim"
 
