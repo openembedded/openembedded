@@ -1,0 +1,9 @@
+include fakeroot_${PV}.oe
+inherit native
+
+S = ${WORKDIR}/fakeroot-${PV}
+
+do_stage_append () {
+    install -d ${STAGING_LIBDIR}/libfakeroot
+    oe_soinstall ${S}/.libs/libfakeroot.so.0.0.1 ${STAGING_LIBDIR}/libfakeroot
+}
