@@ -4,7 +4,7 @@ DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
-PR = "r6a"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
