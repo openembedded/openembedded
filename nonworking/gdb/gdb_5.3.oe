@@ -1,0 +1,44 @@
+DESCRIPTION = "gdb - GNU debugger"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
+DEPENDS = virtual/libc ncurses readline
+RDEPENDS = libc6 ncurses readline
+
+inherit autotools
+
+SRC_URI = "ftp://ftp.gnu.org/gnu/${PN}/${P}.tar.gz \
+           file://${FILESDIR}/readline.patch;patch=1"
+
+export LDFLAGS:="${LDFLAGS} -s"
+export CC_FOR_BUILD = ${BUILD_CC}
+export CFLAGS:="${CFLAGS} -L${STAGING_LIBDIR}"
+EXTRA_OEMAKE = 'SUBDIRS="intl mmalloc libiberty opcodes bfd sim gdb etc utils"'
+
+EXTRA_OECONF = "--prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc \
+                --infodir=/usr/share/info \
+                --disable-gdbtk --disable-tui --disable-x --disable-nls \
+                --with-curses --with-readline --disable-sim \
+                --program-prefix=''"
+
+do_configure () {
+# override this function to avoid the autoconf/automake/aclocal/autoheader
+# calls for now
+        oe_runconf
+}
+
+do_install () {
+  oe_runmake install \
+    'prefix=${D}' 'exec_prefix=${D}' 'bindir=${D}/bin' \
+    'sbindir=${D}/sbin' 'infodir=${D}/share/info' 'libdir=${D}/lib' \
+    'mandir=${D}/share/man' 'includedir=${D}/include'
+}
+
+#
+# patch description
+#
+# readline.patch:
+#   gdb 5.3 provides its own readline source which tends to conflict with
+#   readline package. we override readline included from gdb source
+#   with packaged readline and fix up extern tilde_expand in gdb/defs.h
+#
