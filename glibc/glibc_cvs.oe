@@ -205,6 +205,7 @@ do_install() {
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
 	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
+	make -f ${WORKDIR}/generate-supported.mk IN="${S}/localedata/SUPPORTED" OUT="${WORKDIR}/SUPPORTED"
 }
 
 locale_base_postinst() {
@@ -249,7 +250,6 @@ python package_do_split_gconvs () {
 
 	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
-	os.system(oe.data.expand("make -f ${WORKDIR}/generate-supported.mk IN=\"${S}/localedata/SUPPORTED\" OUT=\"${WORKDIR}/SUPPORTED\"", d))
 	f = open(os.path.join(oe.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
 	supported = f.readlines()
 	f.close()
@@ -272,7 +272,11 @@ python package_do_split_gconvs () {
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 
 		oe.data.setVar('RDEPENDS_%s' % pkgname, 'localedef glibc-localedata-%s glibc-charmap-%s' % (legitimize_package_name(locale), legitimize_package_name(encoding)), d)
-		oe.data.setVar('RPROVIDES_%s' % pkgname, 'virtual-locale-%s' % name)
+		rprovides = 'virtual-locale-%s' % legitimize_package_name(name)
+		m = re.match("(.*)_(.*)", name)
+		if m:
+			rprovides += ' virtual-locale-%s' % m.group(1)
+		oe.data.setVar('RPROVIDES_%s' % pkgname, rprovides, d)
 		oe.data.setVar('PACKAGES', '%s %s' % (pkgname, oe.data.getVar('PACKAGES', d, 1)), d)
 		oe.data.setVar('ALLOW_EMPTY_%s' % pkgname, '1', d)
 		oe.data.setVar('pkg_postinst_%s' % pkgname, oe.data.getVar('locale_base_postinst', d, 1) % (locale, encoding), d)
