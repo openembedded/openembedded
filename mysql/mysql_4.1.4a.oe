@@ -19,7 +19,7 @@ do_stage() {
 }
 
 do_install() {
-	oe_runmake install
+	oe_runmake 'DESTDIR=${D}' install
 	mv -f ${D}${libdir}/mysql/* ${D}${libdir}
 	rmdir ${D}${libdir}/mysql
 }
