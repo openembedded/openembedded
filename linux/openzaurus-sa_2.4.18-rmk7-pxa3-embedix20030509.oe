@@ -4,7 +4,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r6"
+PR = "r7"
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
@@ -54,7 +54,7 @@ module_autoload_sa1100_bi = "sa1100_bi"
 #
 export mem = ${@oe.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
 export rd  = ${@oe.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
-export CMDLINE = "${CMDLINE_CONSOLE} root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
+export CMDLINE = "${CMDLINE_CONSOLE} root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphaned_inodes=delete"
 
 do_configure_prepend() {
         install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
