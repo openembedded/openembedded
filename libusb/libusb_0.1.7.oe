@@ -5,10 +5,14 @@ access to USB devices."
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 do_stage() {
 	oe_libinstall -a -so libusb ${STAGING_LIBDIR}
+
+        install -d ${STAGING_BINDIR}
+	install -m 755 ${S}/libusb-config ${STAGING_BINDIR}
+	perl -pi -e 's:\-L/usr/lib ::' ${STAGING_BINDIR}/libusb-config
 
         install -d ${STAGING_INCDIR}/
         for X in usb.h
@@ -16,4 +20,3 @@ do_stage() {
                 install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
         done
 }
-
