@@ -200,9 +200,14 @@ python populate_packages () {
 						break
 
 	def write_if_exists(f, pkg, var):
+		def encode(str):
+			import codecs
+			c = codecs.getencoder("string_escape")
+			return c(str)[0]
+
 		val = oe.data.getVar('%s_%s' % (var, pkg), d, 1)
 		if val:
-			f.write('%s_%s: %s\n' % (var, pkg, val))
+			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
 	data_file = os.path.join(workdir, "install", pn + ".package")
 	f = open(data_file, 'w')

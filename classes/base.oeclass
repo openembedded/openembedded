@@ -589,6 +589,11 @@ python read_shlibdeps () {
 python read_subpackage_metadata () {
 	import re
 
+	def decode(str):
+		import codecs
+		c = codecs.getdecoder("string_escape")
+		return c(str)[0]
+
 	data_file = oe.data.expand("${WORKDIR}/install/${PN}.package", d)
 	if os.access(data_file, os.R_OK):
 		f = file(data_file, 'r')
@@ -598,7 +603,7 @@ python read_subpackage_metadata () {
 		for l in lines:
 			m = r.match(l)
 			if m:
-				oe.data.setVar(m.group(1), m.group(2), d)
+				oe.data.setVar(m.group(1), decode(m.group(2)), d)
 }
 
 python __anonymous () {
