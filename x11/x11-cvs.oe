@@ -19,23 +19,20 @@ do_compile() {
 }
 
 do_stage() {
-
-	install -c -m 644 X11/XKBlib.h ${STAGING_DIR}/target/include/X11/XKBlib.h
-	install -c -m 644 X11/Xcms.h ${STAGING_DIR}/target/include/X11/Xcms.h
-	install -c -m 644 X11/Xlib.h ${STAGING_DIR}/target/include/X11/Xlib.h
-	install -c -m 644 X11/Xlibint.h ${STAGING_DIR}/target/include/X11/Xlibint.h
-	install -c -m 644 X11/Xlocale.h ${STAGING_DIR}/target/include/X11/Xlocale.h
-	install -c -m 644 X11/Xresource.h ${STAGING_DIR}/target/include/X11/Xresource.h
-	install -c -m 644 X11/Xutil.h ${STAGING_DIR}/target/include/X11/Xutil.h
-	install -c -m 644 X11/cursorfont.h ${STAGING_DIR}/target/include/X11/cursorfont.h
-	install -c -m 644 X11/region.h ${STAGING_DIR}/target/include/X11/region.h
-	install -c -m 644 X11/ImUtil.h ${STAGING_DIR}/target/include/X11/ImUtil.h
+	install -c -m 644 include/X11/XKBlib.h ${STAGING_INCDIR}/X11/XKBlib.h
+	install -c -m 644 include/X11/Xcms.h ${STAGING_INCDIR}/X11/Xcms.h
+	install -c -m 644 include/X11/Xlib.h ${STAGING_INCDIR}/X11/Xlib.h
+	install -c -m 644 include/X11/Xlibint.h ${STAGING_INCDIR}/X11/Xlibint.h
+	install -c -m 644 include/X11/Xlocale.h ${STAGING_INCDIR}/X11/Xlocale.h
+	install -c -m 644 include/X11/Xresource.h ${STAGING_INCDIR}/X11/Xresource.h
+	install -c -m 644 include/X11/Xutil.h ${STAGING_INCDIR}/X11/Xutil.h
+	install -c -m 644 include/X11/cursorfont.h ${STAGING_INCDIR}/X11/cursorfont.h
+	install -c -m 644 include/X11/region.h ${STAGING_INCDIR}/X11/region.h
+	install -c -m 644 include/X11/ImUtil.h ${STAGING_INCDIR}/X11/ImUtil.h
 	
-	install -c .libs/libX11.so.6.2.1 ${STAGING_DIR}/target/lib/libX11.so.6.2.1
+	install -c src/.libs/libX11.so.6.2.1 ${STAGING_DIR}/target/lib/libX11.so.6.2.1
 	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6
 	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so
 
-	install -c -m 644 .libs/libX11.a ${STAGING_DIR}/target/lib/libX11.a
-
-
+	install -c -m 644 src/.libs/libX11.a ${STAGING_DIR}/target/lib/libX11.a
 }
