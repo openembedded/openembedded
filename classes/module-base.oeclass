@@ -1,3 +1,5 @@
+inherit module_strip
+
 export ARCH = "${TARGET_ARCH}"
 export ARCH_i686 = "i386"
 export ARCH_mipsel = "mips"
