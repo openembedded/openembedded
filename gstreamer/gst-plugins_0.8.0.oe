@@ -3,11 +3,11 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-DEPENDS = "gstreamer esound-gpe zlib libmikmod libogg gnome-vfs virtual/libsdl"
+DEPENDS = "gstreamer esound-gpe zlib libmikmod libmad libogg tremor libvorbis libid3tag virtual/libsdl gnome-vfs"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-0.8.0.tar.bz2"
 
-EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking"
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-esd"
 
 inherit autotools  pkgconfig
 
