@@ -8,7 +8,7 @@ SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
 
 FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gconf
 
 gnome_stage_includes() {
 	autotools_stage_includes
