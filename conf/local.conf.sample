@@ -100,6 +100,10 @@ TARGET_ARCH = "arm"
 # Usually better to set DISTRO instead (see above)
 #INHERIT = "package_tar"
 
+# Uncomment one of these lines to get a rootfs image type other than jffs2
+#IMAGE_FSTYPE = "tar"
+#IMAGE_FSTYPE = "cramfs"
+
 # Comment this out if you do not wish to use a parse cache (not recommended).
 CACHE=/var/tmp/oe-cache.${USER}
 
