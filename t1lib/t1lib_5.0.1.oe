@@ -1,0 +1,26 @@
+DESCRIPTION=A Type1 Font Rastering Library
+SECTION=libs
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-${PV}.tar.gz \
+          file://${FILESDIR}/configure.patch;patch=1 \
+          file://${FILESDIR}/install.patch;patch=1
+
+inherit autotools libtool
+
+EXTRA_OECONF = --without-x --without-athena
+EXTRA_OEMAKE = without_doc
+
+do_configure() {
+	oe_runconf
+}
+
+do_stage() {
+	oe_soinstall lib/.libs/libt1.so.5.1.1 ${STAGING_LIBDIR}/
+	oe_soinstall lib/.libs/libt1.so.5.1.1 ${STAGING_LIBDIR}/
+	install lib/t1lib/t1lib.h ${STAGING_INCDIR}/
+	install lib/t1lib/t1libx.h ${STAGING_INCDIR}/
+}
