@@ -296,6 +296,15 @@ python package_do_shlibs() {
 		oe.error("PV not defined")
 		return
 
+	target_sys = oe.data.getVar('TARGET_SYS', d, 1)
+	if not target_sys:
+		oe.error("TARGET_SYS not defined")
+		return
+
+	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
+	old_shlibs_dir = os.path.join(staging, "shlibs")
+	oe.mkdirhier(shlibs_dir)
+
 	needed = {}
 	for pkg in packages.split():
 		needs_ldconfig = False
@@ -326,8 +335,6 @@ python package_do_shlibs() {
 							sonames.append(m.group(1))
 						if m and libdir_re.match(root):
 							needs_ldconfig = True
-		shlibs_dir = os.path.join(staging, "shlibs")
-		oe.mkdirhier(shlibs_dir)
 		shlibs_file = os.path.join(shlibs_dir, pkgname + ".list")
 		if os.path.exists(shlibs_file):
 			os.remove(shlibs_file)
@@ -350,39 +357,45 @@ python package_do_shlibs() {
 			postinst += oe.data.getVar('ldconfig_postinst_fragment', d, 1)
 			oe.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
 
+	shlib_provider = {}
+	list_re = re.compile('^(.*)\.list$')
+	for dir in [shlibs_dir, old_shlibs_dir]: 
+		if not os.path.exists(dir):
+			continue
+		for file in os.listdir(dir):
+			m = list_re.match(file)
+			if m:
+				dep_pkg = m.group(1)
+				fd = open(os.path.join(dir, file))
+				lines = fd.readlines()
+				fd.close()
+				ver_file = os.path.join(dir, dep_pkg + '.ver')
+				lib_ver = None
+				if os.path.exists(ver_file):
+					fd = open(ver_file)
+					lib_ver = fd.readline().rstrip()
+					fd.close()
+				for l in lines:
+					shlib_provider[l.rstrip()] = (dep_pkg, lib_ver)
+
+
 	for pkg in packages.split():
 		oe.debug(2, "calculating shlib requirements for %s" % pkg)
 
 		deps = list()
 		for n in needed[pkg]:
-			found = False
-			for file in os.listdir(shlibs_dir):
-				m = re.match('^(.*)\.list$', file)
-				if m:
-					dep_pkg = m.group(1)
-					fd = open(os.path.join(shlibs_dir, file))
-					lines = fd.readlines()
-					fd.close()
-					for l in lines:
-						if n == l.rstrip():
-							if dep_pkg == pkg:
-								found = True
-								continue
-							ver_file = os.path.join(shlibs_dir, dep_pkg + '.ver')
-							ver_needed = None
-							if os.path.exists(ver_file):
-								fd = open(ver_file)
-								ver_needed = fd.readline().rstrip()
-								fd.close()
-							if ver_needed:
-								dep = "%s (>= %s)" % (dep_pkg, ver_needed)
-							else:
-								dep = dep_pkg
-							if not dep in deps:
-								deps.append(dep)
-							found = True
-			if found == False:
+			if n in shlib_provider.keys():
+				(dep_pkg, ver_needed) = shlib_provider[n]
+
+				if ver_needed:
+					dep = "%s (>= %s)" % (dep_pkg, ver_needed)
+				else:
+					dep = dep_pkg
+				if not dep in deps:
+					deps.append(dep)
+			else:
 				oe.note("Couldn't find shared library provider for %s" % n)
+
 
 		deps_file = os.path.join(workdir, "install", pkg + ".shlibdeps")
 		if os.path.exists(deps_file):
