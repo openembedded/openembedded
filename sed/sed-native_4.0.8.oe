@@ -1,5 +1,0 @@
-include sed_${PV}.oe
-S = "${WORKDIR}/sed-${PV}"
-DEPENDS=
-
-inherit native
