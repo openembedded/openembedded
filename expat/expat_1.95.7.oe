@@ -1,5 +1,6 @@
 SECTION = "libs"
 DESCRIPTION = "Jim Clarkes XML parser library."
+HOMEPAGE = "http://expat.sourceforge.net/"
 LICENSE = "MIT"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz \

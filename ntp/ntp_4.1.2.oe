@@ -2,6 +2,7 @@ DESCRIPTION = "The Network Time Protocol (NTP) is used to \
 synchronize the time of a computer client or server to \
 another server or reference time source, such as a radio \
 or satellite receiver or modem."
+HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "NTP"

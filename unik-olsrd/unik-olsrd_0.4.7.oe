@@ -1,5 +1,6 @@
 DESCRIPTION = "OLSR mesh routing daemon"
 DESCRIPTION_unik-olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
+HOMEPAGE = "http://www.olsr.org"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"

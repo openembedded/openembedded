@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
+HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
 S = "${WORKDIR}/sysfsutils-${PV}"
 LICENSE = "GPLv2"

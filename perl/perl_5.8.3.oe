@@ -1,4 +1,6 @@
 DESCRIPTION = "Perl is a popular scripting language."
+HOMEPAGE = "http://www.perl.org/"
+LICENSE = "Artistic|GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 DEPENDS = "db3 perl-native"

@@ -1,4 +1,5 @@
 DESCRIPTION = "iptables network filtering tools"
+HOMEPAGE = "http://www.netfilter.org/"
 SECTION = "console/utils"
 LICENSE = "GPL"
 

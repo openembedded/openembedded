@@ -1,5 +1,7 @@
 DESCRIPTION = "GNU Midnight Commander is a file \
 manager for free operating systems."
+HOMEPAGE = "http://www.ibiblio.org/mc/"
+LICENSE = "GPLv2"
 SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0"

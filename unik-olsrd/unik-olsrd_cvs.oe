@@ -1,9 +1,10 @@
 DESCRIPTION = "OLSR mesh routing daemon"
+HOMEPAGE = "http://www.olsr.org"
 DESCRIPTION_unik-olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "BSD"
 PV = "cvs${CVSDATE}"
 
 SRC_URI="cvs://anonymous@cvs.sourceforge.net/cvsroot/olsrd;module=olsrd-current \

@@ -1,4 +1,5 @@
 SECTION = "kernel/userland"
+HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

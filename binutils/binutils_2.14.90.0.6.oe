@@ -4,6 +4,7 @@ inherit autotools gettext
 PR = "r2"
 
 DESCRIPTION = "A GNU collection of binary utilities"
+HOMEPAGE = "http://www.gnu.org/software/binutils/"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 

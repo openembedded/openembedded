@@ -1,4 +1,6 @@
 DESCRIPTION = "Network Packet Capture Library"
+HOMEPAGE = "http://www.tcpdump.org/"
+LICENSE = "BSD"
 SECTION = "libs"
 PRIORITY = "required"
 

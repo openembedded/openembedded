@@ -1,9 +1,10 @@
-DESCRIPTION = "This package provides the mtx specific init and configuration scripts."
+DESCRIPTION = "This package provides the nylon specific init and configuration scripts."
+HOMEPAGE = "http://meshcube.org/meshwiki/NyLon"
 DEPENDS = "hostap-utils"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "svn://meshcube.org/svn/scripts;module=${PN}"

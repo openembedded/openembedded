@@ -1,5 +1,7 @@
 SECTION = "console/network"
 DESCRIPTION = "A VPN solution via tun device.  Not IPSEC!"
+HOMEPAGE = "http://openvpn.sourceforge.net"
+LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "lzo openssl"
 RDEPENDS = "kernel-module-tun"

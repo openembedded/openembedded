@@ -1,3 +1,7 @@
+DESCRIPTION = "Perl is a popular scripting language."
+HOMEPAGE = "http://www.perl.org/"
+LICENSE = "Artistic|GPL"
+
 SECTION = "libs"
 inherit native
 

@@ -1,5 +1,6 @@
 SECTION = "libs"
 DESCRIPTION = "Berkeley DB v3."
+HOMEPAGE = "http://www.sleepycat.com"
 LICENSE = "BSD Sleepycat"
 PR = "r1"
 

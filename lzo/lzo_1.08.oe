@@ -1,4 +1,6 @@
 DESCRIPTION = "Lossless data compression library"
+HOMEPAGE = "http://www.oberhumer.com/opensource/lzo/"
+LICENSE = "GPLv2"
 SECTION = "libs"
 PRIORITY = "optional"
 PR = "r12"
