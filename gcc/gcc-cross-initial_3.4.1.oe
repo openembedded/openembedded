@@ -1,7 +1,7 @@
 include gcc-cross_${PV}.oe
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils"
-DEPENDS += "${@['virtual/${TARGET_PREFIX}libc-initial',''][oe.data.getVar('TARGET_ARCH', d, 1) in ['arm', 'mips', 'mipsel']]}"
+DEPENDS += "${@['virtual/${TARGET_PREFIX}libc-initial',''][oe.data.getVar('TARGET_ARCH', d, 1) in ['arm', 'armeb', 'mips', 'mipsel']]}"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-initial"
 
 PACKAGES = ""
