@@ -29,7 +29,7 @@ PR = "r7"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
            file://add-oz-release-string.patch;patch=1 \
-           file://add-elpp-stuff.patch \
+           file://add-elpp-stuff.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \	   
 http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.11-rc2-jl1.diff.gz;patch=1 \
 http://www.cs.wisc.edu/~lenz/zaurus/files/poodle_fix_mtd_sharpsl_part.patch;patch=1 \
@@ -56,25 +56,21 @@ SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.pa
 SRC_URI_append_openzaurus-pxa-2.6 = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1 "
 SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
 
-# Uncomment this to apply the Enhanced Linux Progress Patch.
-# You also need to say VERBOSE=progress in /etc/default/rcS make it work
-#APPLY_ELPP = "yes"
-
 S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
 
-#
+##############################################################
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
 FILES_kernel = ""
-ALLOW_EMPTY = 1 
+ALLOW_EMPTY = 1
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
 
-#
-# Create the kernel command line (deprecated)
+##############################################################
+# Create the kernel command line (mtdparts deprecated)
 #
 #CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
 #CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
@@ -85,18 +81,24 @@ COMPATIBLE_HOST = "arm.*-linux"
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 
-# configure memory/ramdisk split on collie
+##############################################################
+# Configure memory/ramdisk split for collie
+#
 export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
 export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
 
 CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_MEM}"
 
+###############################################################
+# Enable or disable ELPP via local.conf - default is "no"
+#
+ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
+
 do_configure() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
-	if [ "${MACHINE}" == "collie" ]
-	then
+	if [ "${MACHINE}" == "collie" ]; then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
 		rdsize=`echo "$rd * 1024" | bc`
 		total=`expr $mem + $rd`
@@ -113,19 +115,17 @@ do_configure() {
 			echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
 		fi
 	fi
-    
+
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	if [ "${APPLY_ELPP}" == "yes" ]
-	then
-		patcher -i -R ${FILESDIR}/add-elpp-stuff.patch
-		echo "# Enhanced Linux Progress Patch"	>> ${S}/.config
-		echo "CONFIG_FB_ELPP=y"			>> ${S}/.config
-		echo "CONFIG_LOGO=y"			>> ${S}/.config
-		echo "CONFIG_LOGO_LINUX_CLUT224=y"	>> ${S}/.config
+	if [ "${ENABLE_ELPP}" == "yes" ]; then
+                echo "# Enhanced Linux Progress Patch"  >> ${S}/.config
+                echo "CONFIG_FB_ELPP=y"                 >> ${S}/.config
+                echo "CONFIG_LOGO=y"                    >> ${S}/.config
+                echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
 	fi
 
-    yes '' | oe_runmake oldconfig
+	yes '' | oe_runmake oldconfig
 }
 
 do_deploy() {
