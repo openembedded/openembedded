@@ -1,0 +1,10 @@
+inherit gpe
+
+DESCRIPTION = "GPE to-do list"
+DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget libgpepimc libtododb"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+FILES_${PN} = "/etc /usr/bin /usr/share/pixmaps /usr/share/applications"
+
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-todo-${PV}.tar.gz"
