@@ -13,7 +13,8 @@ S = "${WORKDIR}/vtun"
 inherit autotools
 
 do_configure() {
-	oe_runconf
+	export BLOWFISH_HDR_DIR=${STAGING_INCDIR}/openssl
+	oe_runconf --with-lzo-headers=${STAGING_INCDIR} --with-ssl-headers=${STAGING_INCDIR}/openssl
 }
 
 do_install_append() {
