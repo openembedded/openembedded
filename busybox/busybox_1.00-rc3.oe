@@ -10,7 +10,7 @@ system."
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r7"
+PR = "r8"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -20,8 +20,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \
+	   file://busybox-udhcpd \
 	   file://syslog \
-	   file://udhcp-server \
            file://hwclock.sh"
 	   
 S = "${WORKDIR}/busybox-${PV}"
@@ -48,11 +48,21 @@ do_compile () {
 do_install () {
 	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
-	install -m 0755 ${WORKDIR}/busybox-cron ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/busybox-httpd ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/udhcp-server ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
-	install -d ${D}${datadir}/udhcpc
-	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
+	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then 
+		install -m 0755 ${WORKDIR}/busybox-cron ${D}/etc/init.d/
+	fi
+	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then 
+		install -m 0755 ${WORKDIR}/busybox-httpd ${D}/etc/init.d/
+	fi
+	if grep "CONFIG_UDHCPD=y" ${WORKDIR}/defconfig; then 
+		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}/etc/init.d/
+	fi
+	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then 
+		install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
+	fi
+	if grep "CONFIG_UDHCPC=y" ${WORKDIR}/defconfig; then 
+		install -d ${D}${datadir}/udhcpc
+		install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
+	fi
 }
