@@ -10,9 +10,9 @@ check_sanity () {
     # is on bkbits.net and b) we are the client.
     
     # Is parent a public BitKeeper repository at bkbits.net?
-#    if !(echo $BKD_HOST|grep -q bitkeeper.com); then
-#        return 1
-#    fi
+    if !(echo $BKD_HOST|grep -q bitkeeper.com); then
+        return 1
+    fi
     
     if [ $BK_SIDE != client ]; then
         return 1
