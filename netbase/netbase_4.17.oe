@@ -1,8 +1,6 @@
-PR = "r4"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
-DEPENDS = "update-rc.d"
-RDEPENDS = "update-rc.d"
+PR = "r5"
 
 inherit update-rc.d
 
@@ -15,6 +13,10 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://hosts \
            file://epia/interfaces \
            file://collie/interfaces \
+           file://husky/interfaces \
+           file://shepherd/interfaces \
+           file://poodle/interfaces \
+           file://corgi/interfaces \
            file://interfaces"
 
 do_install () {
