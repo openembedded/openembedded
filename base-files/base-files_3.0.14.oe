@@ -1,7 +1,7 @@
 xDESCRIPTION = "Base system miscellaneous files."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
