@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 inherit gpe
 
@@ -7,14 +7,15 @@ DESCRIPTION = "GPE session startup scripts"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr xmodmap"
+RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr xmodmap xdpyinfo"
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
-DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap"
+DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo"
 
 SRC_URI += "file://zaurus.sh \
 	file://keymap.sh \
 	file://change-default-applets.patch;patch=1 \
 	file://xdefaults.patch;patch=1 \
+	file://matchbox-session \
 	file://shepherd.xmodmap file://simpad.xmodmap"
 
 do_install_append() {
@@ -27,6 +28,8 @@ do_install_append() {
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
 		echo "Gtk/ToolbarStyle:S:icons" > ${D}/etc/gpe/xsettings-default.d/toolbar
 	fi
+	install -d ${D}/etc/matchbox
+	install ${WORKDIR}/matchbox-session ${D}/etc/matchbox/session
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
