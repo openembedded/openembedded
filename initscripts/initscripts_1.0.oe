@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://halt \
            file://ramdisk \
