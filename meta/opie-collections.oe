@@ -44,15 +44,15 @@ OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
 # Additional things for a standard 16MB distribution
 #
 
-OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-textedit opie-today"
+OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-textedit"
 
 OPIE_PIM_MAIL = "opie-mail"
 
-OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo \
+OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo opie-today \
             opie-today opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
 
-KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.5"
-KDE_PIM_RDEPENDS = "kopi kapi libmicrokdelibs kopi-applet"
+KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi"
+KDE_PIM_RDEPENDS = "kopi kapi kopi-applet"
 
 OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
 
