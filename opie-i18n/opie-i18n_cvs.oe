@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>
 LICENSE = "GPL"
 DEPENDS = "opie-lrelease-native"
 PV = "1.1.5-cvs-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/dict"
@@ -29,6 +29,7 @@ do_install() {
 	do
 		echo Installing language $f
 		install -d ${D}${palmtopdir}/i18n/$f/
+		install -m 0644 $f/.directory ${D}${palmtopdir}/i18n/$f/
 		install -m 0644 $f/*.qm ${D}${palmtopdir}/i18n/$f/
 		if [ -e ${WORKDIR}/dict/dawg.$f ]
 		then
