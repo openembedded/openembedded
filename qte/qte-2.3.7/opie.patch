@@ -460,18 +460,17 @@ diff -ur qt-2.3.7_clean/src/kernel/qgfxraster_qws.cpp qt-2.3.7/src/kernel/qgfxra
      // ### fix for 8bpp
      // This seems to be reliable now, at least for 16bpp
  
-diff -ur qt-2.3.7_clean/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard_qws.cpp
---- qt-2.3.7_clean/src/kernel/qkeyboard_qws.cpp	2004-06-04 02:17:53.000000000 +0200
-+++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp	2004-06-04 02:22:25.000000000 +0200
-@@ -238,7 +238,7 @@
-     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 63
-     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 64
-     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 65
--    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 66
-+    {   Qt::Key_F14,    0xffff  , 0xffff  , 0xffff  }, // 66
-     {	Qt::Key_Meta,		0xffff  , 0xffff  , 0xffff  }, // 67
-     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 68
-     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 69
+#--- qt-2.3.7_clean/src/kernel/qkeyboard_qws.cpp	2004-06-04 02:17:53.000000000 +0200
+#+++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp	2004-06-04 02:22:25.000000000 +0200
+#@@ -249,7 +249,7 @@
+#     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 63
+#     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 64
+#     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 65
+#-    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 66
+#+    {   Qt::Key_F14,    0xffff  , 0xffff  , 0xffff  }, // 66
+#     {	Qt::Key_Meta,		0xffff  , 0xffff  , 0xffff  }, // 67
+#     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 68
+#     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 69
 diff -ur qt-2.3.7_clean/src/kernel/qwindowsystem_qws.cpp qt-2.3.7/src/kernel/qwindowsystem_qws.cpp
 --- qt-2.3.7_clean/src/kernel/qwindowsystem_qws.cpp	2004-06-04 02:17:53.000000000 +0200
 +++ qt-2.3.7/src/kernel/qwindowsystem_qws.cpp	2004-06-04 02:22:25.000000000 +0200

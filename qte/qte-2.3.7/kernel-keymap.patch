@@ -76,7 +76,40 @@
  
  #define VTSWITCHSIG SIGUSR2
  
-@@ -480,12 +504,18 @@
+@@ -169,11 +193,19 @@
+     {	Qt::Key_F35,		0xffff  , 0xffff  , 0xffff  }, // 21 light
+     {	Qt::Key_Escape,		0xffff  , 0xffff  , 0xffff  }, // 22
+ 
++#ifdef QT_QWS_SL6000
+     // Direction key code are for *UNROTATED* display.
++    {  Qt::Key_Left,           0xffff  , 0xffff  , 0xffff  }, // 23
++    {  Qt::Key_Up,             0xffff  , 0xffff  , 0xffff  }, // 24
++    {  Qt::Key_Down,           0xffff  , 0xffff  , 0xffff  }, // 25
++    {  Qt::Key_Right,          0xffff  , 0xffff  , 0xffff  }, // 26
++#else
++    // Direction key code are for *UNROTATED* display.
++    {   Qt::Key_Up,             0xffff  , 0xffff  , 0xffff  }, // 23
++    {   Qt::Key_Right,          0xffff  , 0xffff  , 0xffff  }, // 24
++    {   Qt::Key_Left,           0xffff  , 0xffff  , 0xffff  }, // 25
++    {   Qt::Key_Down,           0xffff  , 0xffff  , 0xffff  }, // 26
++#endif
+-    {	Qt::Key_Up,		0xffff  , 0xffff  , 0xffff  }, // 23
+-    {	Qt::Key_Right,		0xffff  , 0xffff  , 0xffff  }, // 24
+-    {	Qt::Key_Left,		0xffff  , 0xffff  , 0xffff  }, // 25
+-    {	Qt::Key_Down,		0xffff  , 0xffff  , 0xffff  }, // 26
+ 
+     {	Qt::Key_F33,		0xffff  , 0xffff  , 0xffff  }, // 27 OK
+     {	Qt::Key_F12,		0xffff  , 0xffff  , 0xffff  }, // 28 40 home
+@@ -246,7 +262,7 @@
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 63
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 64
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 65
+-    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 66
++    {   Qt::Key_F14,    0xffff  , 0xffff  , 0xffff  }, // 66
+     {	Qt::Key_Meta,		0xffff  , 0xffff  , 0xffff  }, // 67
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 68
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 69
+@@ -488,12 +504,18 @@
  public:
      QWSTtyKeyboardHandler(const QString&);
      virtual ~QWSTtyKeyboardHandler();
@@ -95,7 +128,7 @@
  };
  
  class QWSUsbKeyboardHandler : public QWSPC101KeyboardHandler
-@@ -625,6 +655,7 @@
+@@ -633,6 +655,7 @@
      fn = FALSE;
  
      numLock = FALSE;
@@ -103,7 +136,7 @@
      sharp_kbdctl_modifstat  st;
      int dev = ::open("/dev/sharp_kbdctl", O_RDWR);
      if( dev >= 0 ) {
-@@ -636,6 +667,7 @@
+@@ -644,6 +667,7 @@
  	::close(dev);
      }
  #endif
@@ -111,7 +144,7 @@
  #if defined(QT_QWS_IPAQ)
      // iPAQ Action Key has ScanCode 0x60: 0x60|0x80 = 0xe0 == extended mode 1 !
      ipaq_return_pressed = FALSE;
-@@ -1015,7 +1047,7 @@
+@@ -1023,7 +1047,7 @@
  // Tty keyboard
  //
  
@@ -120,7 +153,7 @@
  {
      kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
  
-@@ -1032,7 +1064,7 @@
+@@ -1040,7 +1064,7 @@
  	tcgetattr( kbdFD, &termdata );
  
  #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
@@ -129,7 +162,7 @@
  #endif
  
  	termdata.c_iflag = (IGNPAR | IGNBRK) & (~PARMRK) & (~ISTRIP);
-@@ -1045,6 +1077,9 @@
+@@ -1053,6 +1077,9 @@
  	cfsetospeed(&termdata, 9600);
  	tcsetattr(kbdFD, TCSANOW, &termdata);
  
@@ -139,7 +172,7 @@
  	signal(VTSWITCHSIG, vtSwitchHandler);
  
  #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
-@@ -1100,9 +1135,122 @@
+@@ -1108,9 +1135,122 @@
      unsigned char buf[81];
      int n = read(kbdFD, buf, 80 );
      for ( int loop = 0; loop < n; loop++ )
