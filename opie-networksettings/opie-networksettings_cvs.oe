@@ -3,7 +3,9 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 PV = "1.1.5-${CVSDATE}"
+PR = "r1"
 
 APPNAME = "networksettings"
 
@@ -18,8 +20,8 @@ inherit opie
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
 
 do_install() {
-    install -d ${D}/${palmtopdir}/pics/${APPNAME}/
-    install -d ${D}/${palmtopdir}/pics/Network/
+	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}/${palmtopdir}/pics/Network/
 	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${WORKDIR}/pics/Network/*.* ${D}${palmtopdir}/pics/Network/
 	install -d ${D}/${palmtopdir}/lib/
