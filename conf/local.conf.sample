@@ -1,41 +1,65 @@
 #
 # OpenEmbedded local configuration file (sample)
 #
+# Please visit the Wiki at http://openembedded.org/ for more info.
+#
+
+# Be SURE to read these comments and setup your build environment before
+# proceeding.  Once you have done that, remove the line at the end of this
+# file and build away.
+
+# The recommended setup is to create a build directory, such as
+# ${HOME}/oe/build/ (you may want to put OE and the packages into your
+# ${HOME}/oe/oe/ and ${HOME}/oe/packages/ respectively too).  Within your
+# build environment, you should copy this file into conf/local.conf, and
+# then EDIT IT.  Fixup any paths to point to the correct locations, and
+# setup the target specifications appropriately.
+
+# Once you have done that, you will want to cd into your build environment
+# (${HOME}/oe/build/ in this example), then run "oemake targets..."  This
+# will build into ${TMPDIR} which defaults to ${TOPDIR}/tmp (${TOPDIR} is
+# the current directory when oemake was executed).
 
 # Use this to specify where OE should place the downloaded sources into
 DL_DIR = "${HOME}/sources"
 
 # Use this to specify what .oe files to consider for builds
-OEFILES = "*/*.oe"
+OEFILES = "/path/to/packages/*/*.oe"
 
-# Use the OEMASK below unless you want to build something else than the default glibc based setup
+# Use the OEMASK below unless you want to build something else than the
+# default glibc based setup
 OEMASK = ""
 
-# Uncomment this if you want to use a prebuilt toolchain.
-# You will need to provide packages for toolchain and additional libraries yourself
-# You will definitly need to say ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95" to build any of two
-# Linux 2.4 Embedix kernels, i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18.
+# Uncomment this if you want to use a prebuilt toolchain.  You will need to
+# provide packages for toolchain and additional libraries yourself You will
+# definitely need to say:
+#     ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95"
+# to build any of two Linux 2.4 Embedix kernels,
+# i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18.
 #ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
-PREFERRED_PROVIDERS = "virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie virtual/libsdl:libsdl-qpe"
+PREFERRED_PROVIDERS = "virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
+PREFERRED_PROVIDERS += " virtual/libsdl:libsdl-qpe"
 
 # Uncomment this to specify where OE should create its temporary files.
-# Note that a full build of everything in OE will take GigaBytes of hard disk space,
-# so make sure to free enough space. The default TMPDIR is <build directory>/tmp
+# Note that a full build of everything in OE will take GigaBytes of hard
+# disk space, so make sure to free enough space. The default TMPDIR is
+# <build directory>/tmp
 #TMPDIR = /usr/local/projects/oetmp
 
-# Uncomment this to specify a machine to build for. See <oe>/conf/*.conf for machines
-# currently known to OpenEmbedded.
+# Uncomment this to specify a machine to build for. See <oe>/conf/*.conf
+# for machines currently known to OpenEmbedded.
 #MACHINE = "collie"
 
-# Use this to specify the target architecture. Note that this is only needed when building
-# for a machine not known to OpenEmbedded. Better use the MACHINE attribute (see above)
+# Use this to specify the target architecture. Note that this is only
+# needed when building for a machine not known to OpenEmbedded. Better use
+# the MACHINE attribute (see above)
 TARGET_ARCH = "arm"
 
-# Use this to specify the target operating system.  This is "linux" for a normal
-# linux system with glibc.  Set this to "linux-uclibc" if you want to build a
-# uclibc based system.
+# Use this to specify the target operating system.  This is "linux" for a
+# normal linux system with glibc.  Set this to "linux-uclibc" if you want
+# to build a uclibc based system.
 #TARGET_OS = "linux"
 #TARGET_OS = "linux-uclibc"
 
@@ -60,3 +84,7 @@ CACHE=/var/tmp/oe-cache.${USER}
 # a cvs:// URI.  Comment this out if you always want to pull directly 
 # from the CVS tree.
 CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
+
+# EDIT THIS FILE and then remove the line below before using
+REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
+
