@@ -1,0 +1,81 @@
+--- linux/drivers/usb/device/bi/sa1100.c.orig	2003-05-13 11:18:44.000000000 +0200
++++ linux/drivers/usb/device/bi/sa1100.c	2004-08-01 13:49:10.000000000 +0200
+@@ -46,6 +46,7 @@
+ #include "../usbd-build.h"
+ #include "../usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device SA-1100 Bus Interface");
+ 
+--- linux/drivers/usb/device/usbd.c.orig	2003-05-13 11:18:45.000000000 +0200
++++ linux/drivers/usb/device/usbd.c	2004-08-01 13:47:47.000000000 +0200
+@@ -72,6 +72,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Core Support");
+ 
+--- linux/drivers/usb/device/usbd-monitor.c.orig	2004-08-01 13:46:44.000000000 +0200
++++ linux/drivers/usb/device/usbd-monitor.c	2004-08-01 13:46:36.000000000 +0200
+@@ -33,6 +33,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Monitor");
+ USBD_MODULE_INFO ("usbd_monitor 0.3");
+--- linux/drivers/usb/device/net_fd/net-fd.c.orig	2003-05-13 11:18:45.000000000 +0200
++++ linux/drivers/usb/device/net_fd/net-fd.c	2004-08-01 13:48:32.000000000 +0200
+@@ -33,6 +33,7 @@
+ #include "../usbd-build.h"
+ #include "../usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Network Function");
+ 
+--- linux/arch/arm/mach-sa1100/deviceinfo.c.orig	2004-08-01 13:56:24.000000000 +0200
++++ linux/arch/arm/mach-sa1100/deviceinfo.c	2004-08-01 13:56:11.000000000 +0200
+@@ -28,6 +28,7 @@
+ 
+ #define	MODULE_NAME	"deviceinfo"
+ #define	DEVINFO_DIRNAME	"deviceinfo"
++MODULE_LICENSE("GPL");
+ 
+ static int proc_read_deviceinfo(struct file * file, char * buf,
+ 				size_t nbytes, loff_t *ppos);
+--- linux/arch/arm/mach-sa1100/gpio.c.orig	2003-05-13 11:18:14.000000000 +0200
++++ linux/arch/arm/mach-sa1100/gpio.c	2004-08-01 13:55:27.000000000 +0200
+@@ -15,7 +15,7 @@
+ 
+ #include <asm/hardware.h>
+ 
+-
++MODULE_LICENSE("GPL");
+ 
+ static int proc_gpio_read(char *page, char **start, off_t off,
+ 			  int count, int *eof, void *data)
+--- linux/drivers/usb/device/serial_fd/serial.c.orig	2003-05-13 11:18:45.000000000 +0200
++++ linux/drivers/usb/device/serial_fd/serial.c	2004-08-01 14:25:02.000000000 +0200
+@@ -80,6 +80,7 @@
+ #include "../usbd-module.h"
+ 
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Serial Function");
+ 
+--- linux/drivers/usb/device/usbd-serialnumber.c.orig	2003-05-13 11:18:45.000000000 +0200
++++ linux/drivers/usb/device/usbd-serialnumber.c	2004-08-01 14:25:40.000000000 +0200
+@@ -33,6 +33,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Monitor");
+ USBD_MODULE_INFO ("usbd_monitor 0.2-alpha");
