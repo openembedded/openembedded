@@ -7,11 +7,17 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 
 SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
-	   file://signalnamespace.patch;patch=1"
+	   file://acinclude.m4"
 
 inherit autotools 
 
-do_install_append () {
+do_configure () {
+	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
+	autotools_do_configure
+}
+
+do_install () {
+	autotools_do_install
 	# Make install doesn't properly install these
 	oe_libinstall -so -C shlib libhistory ${D}/${libdir}
 	oe_libinstall -so -C shlib libreadline ${D}/${libdir}
