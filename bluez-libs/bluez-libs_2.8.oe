@@ -10,7 +10,7 @@ HEADERS = "bluetooth.h bnep.h cmtp.h hci.h hci_lib.h hci_uart.h hci_vhci.h hidp.
 
 do_stage() {
         oe_libinstall -a -so -C src libbluetooth ${STAGING_LIBDIR}
-        oe_libinstall -a -so -C src libsdp ${STAGING_LIBDIR}
+
         install -d ${STAGING_INCDIR}/bluetooth/
         for f in ${HEADERS}
         do
