@@ -1,0 +1,19 @@
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/atd;tag=ATD-0_70"
+S = "${WORKDIR}/atd"
+
+inherit update-rc.d
+
+INITSCRIPT_NAME = "atd"
+INITSCRIPT_PARAMS = "defaults 97"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	install -d ${D}${sbindir}
+	install atd ${D}${sbindir}/atd
+	install -d ${D}/etc/init.d
+	install dist/etc/init.d/atd ${D}/etc/init.d/atd
+}
+
