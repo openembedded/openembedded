@@ -5,7 +5,7 @@
 
 --- /dev/null
 +++ busybox-1.00/console-tools/getkey.c
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,94 @@
 +/* vi: set sw=4 ts=4: */
 +/*
 + * getkey.c - Michael 'Mickey' Lauer
@@ -30,8 +30,18 @@
 +{
 +    int status = EXIT_FAILURE;
 +
-+    if ( argc < 2 ) {
-+        bb_show_usage();
++    if ( argc < 2 )
++    {
++	bb_show_usage();
++    }
++
++    /*
++     * If no terminal is attached it is quite useless
++     * to treat it like one.
++     */
++    if( !isatty(STDIN_FILENO) )
++    {
++	goto error_hard;
 +    }
 +
 +    //bb_printf( "DEBUG: time = '%s'\n", argv[1] );
@@ -41,8 +51,10 @@
 +    struct termios attr;
 +
 +    if ( tcgetattr(STDIN_FILENO, &orig) == -1 )
-+	return EXIT_FAILURE;
-+	
++    {
++	goto error_hard;
++    }
++
 +    attr = orig;
 +    attr.c_cc[VMIN] = 0;
 +    attr.c_cc[VTIME] = 0;
@@ -51,7 +63,9 @@
 +    attr.c_cflag &= ~PARENB;
 +    attr.c_lflag &= ~(ICANON/*|ECHO*/);
 +    if ( tcsetattr(STDIN_FILENO,TCSANOW,&attr) == -1 )
-+	return EXIT_FAILURE;
++    {
++	goto error_hard;
++    }
 +
 +    fd_set rfds;
 +    struct timeval tv;
@@ -65,20 +79,25 @@
 +
 +    if ( argc == 3 )
 +    {
-+        bb_printf( argv[2], tv.tv_sec );
-+        bb_printf( "\n" );
-+        fflush(stdout);
++	bb_printf( argv[2], tv.tv_sec );
++	bb_printf( "\n" );
++	fflush(stdout);
 +    }
 +    retval = select(1, &rfds, NULL, NULL, &tv);
 +    if (retval > 0)
 +    {
-+        status = EXIT_SUCCESS;
++	status = EXIT_SUCCESS;
 +    }
 +
 +    if (tcsetattr(STDIN_FILENO,TCSANOW,&orig) == -1 )
-+	return EXIT_FAILURE;
-+	
++    {
++	goto error_hard;
++    }
++
 +    return status;
++
++error_hard   :
++    return EXIT_FAILURE;
 +};
 +
 --- busybox-1.00/console-tools/Makefile.in~add-getkey-applet.patch
