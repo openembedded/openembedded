@@ -8,13 +8,14 @@ functionality and behave very much like their GNU counterparts. BusyBox \
 provides a fairly complete POSIX environment for any small or embedded \
 system."
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
            file://bb-iproute-iftunnel.patch;patch=1 \
 	   file://cvs20040731.patch;patch=1 \
+	   file://busybox-1.00-rc2-modprobe.patch \
            file://defconfig \
            file://syslog \
            file://hwclock.sh"
