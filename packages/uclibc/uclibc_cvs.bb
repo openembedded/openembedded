@@ -63,7 +63,6 @@ UCLIBC_LOCALE_URI_arm = "http://openembedded.org/dl/uclibc-locale/${UCLIBC_LOCAL
 SRC_URI = "cvs://anonymous:@uclibc.org/var/cvs;module=uClibc \
 	   ${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) == 'no']} \
            file://nokernelheadercheck.patch;patch=1 \
-	   file://dyn-ldconfig.patch;patch=1 \
            file://uClibc.config"
 
 S = "${WORKDIR}/uClibc"
