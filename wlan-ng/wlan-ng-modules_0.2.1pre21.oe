@@ -2,15 +2,17 @@ DESCRIPTION = "linux-wlan-ng (prism2.x, prism3, pcmcia, pci, usb) driver for 11M
 DEPENDS = "virtual/kernel"
 MAINTAINER = "Jeremy Grant <jeremy@thegrantclan.org>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
+
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
-	   file://no-compat.patch;patch=1 \
+		file://no-compat.patch;patch=1 \
 	   file://Ambit_usb.patch;patch=1 \
 	   file://config.mk \
 		file://wlan-ng.modutils \
 		file://wlan.agent \
 	   file://version.h \
+	   file://sl6kwlanctl-ng \
 	   file://usbctl"
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
@@ -31,6 +33,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/wlan-ng.modutils ${D}/etc/modutils/wlan-ng.conf
 	install -m 0755 ${WORKDIR}/wlan.agent ${D}/etc/hotplug/wlan.agent
 	install -m 0755 ${WORKDIR}/usbctl ${D}/sbin/usbctl
+	install -m 0755 ${WORKDIR}/sl6kwlanctl-ng ${D}/sbin/sl6kwlanctl-ng
+	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlanup
+	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlandown
 }
 
 sbindir = "/sbin"
