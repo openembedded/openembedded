@@ -5,6 +5,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 SRC_URI = "svn://meshcube.org/svn/application;module=mobilemesh;proto=http"
+PR = "r1"
 
 S = "${WORKDIR}/mobilemesh"
 
