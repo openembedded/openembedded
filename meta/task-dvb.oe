@@ -4,4 +4,4 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
 
 RDEPENDS = "dvbstream dvbtune xserver-kdrive-fbdev tda1004x-firmware gst-plugins"
-DEPENDS = "dvbstream dvbtune xserver tda1004x-firmware"
+DEPENDS = "dvbstream dvbtune xserver-kdrive tda1004x-firmware"
