@@ -5,8 +5,7 @@ runboot=
 prefroot=
 
 /bin/mount -t proc proc /proc
-# /bin/echo "5" > /proc/sys/kernel/panic
-# /bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
+/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
 
 sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 | hexdump -n 6 -e '"%02d"'`
 ipaddr=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 | grep ip_addr | sed -e s/ip_addr=//`
@@ -150,7 +149,6 @@ if [ -n "$mounted" ] ; then
         sleep 1
         /bin/umount /mnt/jffs2
     fi
-#    /bin/echo "5" > /proc/sys/kernel/panic
     umount /proc
     cd $mounted
     /sbin/pivot_root . initrd
@@ -169,8 +167,6 @@ fi
 
 if [ -z "$mounted" ] ; then
     /bin/echo "Root filesystem cannot be found - dropping into shell ..."
-
-#    /bin/echo "5" > /proc/sys/kernel/panic
 
     if ( [ "$length" != "FFFFFFFF" ] ); then
 	/bin/dd if=$device bs=2 skip=2056 | /bin/tar zxvf -
