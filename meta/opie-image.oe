@@ -22,7 +22,7 @@ OPIE_BASE_APPS = "opie-aqpkg opie-console"
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
 
 OPIE_BASE_DEPENDS = "ipkg ntp"
-OPIE_BASE_RDEPENDS = "libipkg ntpdate"
+OPIE_BASE_RDEPENDS = "libipkg ntp"
 #
 # Additional things for a standard 16MB distribution
 #
