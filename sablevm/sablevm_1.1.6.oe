@@ -5,7 +5,8 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 DEPENDS = "libffi libtool popt \
            sablevm-classpath"
 #          unzip"
-PR = "r1"
+RDEPENDS = "sablevm-classpath"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/sablevm-${PV}.tar.gz"
 
