@@ -4,6 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "db3 perl-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
 
+FILES_${PN} += "${libdir}/perl5"
+
 do_configure() {
 	cd Cross
 	oe_runmake patch
