@@ -1,12 +1,11 @@
 DESCRIPTION = "Opie Launcher"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 DEPENDS = "opie-libqrsync "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "2"
+PR = "3"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
@@ -35,6 +34,7 @@ do_install() {
 		   ${D}/${palmtopdir}/pics/launcher \
 		   ${D}/etc/init.d
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
+	install -m 0755 ${FILESDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/calibrate.desktop
 	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
 	install -m 0755 ${WORKDIR}/root/etc/init.d/opie ${D}/etc/init.d/opie
