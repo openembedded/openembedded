@@ -53,7 +53,7 @@ check_projects () {
 
     while read _p _s _e; do
         _sshort=`echo $_s|sed -e's,.bkbits.net,,'`
-        if (echo $BKD_ROOT|grep "/${_sshort}"); then
+        if (echo $BKD_ROOT|grep -q "/${_sshort}"); then
             project_name=${_p}
             return_address=${_e}
         fi
