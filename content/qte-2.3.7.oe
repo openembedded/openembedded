@@ -2,7 +2,7 @@ DESCRIPTION="Qt/Embedded version ${PV}"
 LICENSE="GPL/QPL"
 SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qt-embedded-${PV}.tar.gz"
 SRC_URI_append=" file://${FILESDIR}/qpe.patch;patch=1"
-DEPENDS=virtual/libc base/zlib base/libpng base/libjpeg
+DEPENDS=virtual/libc base/zlib base/libpng base/jpeg
 PROVIDES=virtual/qte virtual/libqte2
 S="${WORKDIR}/qt-${PV}"
 
