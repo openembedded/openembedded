@@ -3,7 +3,7 @@ DESCRIPTION = "General-purpose x86 assembler"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 COMPATIBLE_HOST = 'i.86.*-(linux|freebsd.*)'
 
-SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/nasm/nasm-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/nasm/nasm-${PV}.tar.bz2"
 
 inherit autotools
 

@@ -3,7 +3,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc lzo"
 RDEPENDS = "tun"
 
-SRC_URI = "http://unc.dl.sourceforge.net/sourceforge/openvpn/openvpn-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-${PV}.tar.gz"
 
 inherit autotools
 

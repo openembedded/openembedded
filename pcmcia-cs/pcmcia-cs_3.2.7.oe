@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 
-SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/pcmcia-cs-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
