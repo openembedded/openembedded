@@ -880,7 +880,7 @@ CONFIG_I2C_ALGOBIT=m
 # CONFIG_I2C_ELEKTOR is not set
 # CONFIG_I2C_I801 is not set
 # CONFIG_I2C_I810 is not set
-# CONFIG_I2C_ISA is not set
+CONFIG_I2C_ISA=m
 # CONFIG_I2C_NFORCE2 is not set
 # CONFIG_I2C_PARPORT is not set
 # CONFIG_I2C_PARPORT_LIGHT is not set
@@ -898,7 +898,7 @@ CONFIG_I2C_VIAPRO=m
 #
 # Hardware Sensors Chip support
 #
-# CONFIG_I2C_SENSOR is not set
+CONFIG_I2C_SENSOR=m
 # CONFIG_SENSORS_ADM1021 is not set
 # CONFIG_SENSORS_ADM1025 is not set
 # CONFIG_SENSORS_ADM1031 is not set
@@ -924,6 +924,7 @@ CONFIG_I2C_VIAPRO=m
 # Other I2C Chip support
 #
 # CONFIG_SENSORS_EEPROM is not set
+CONFIG_SENSORS_VT1211=m
 # CONFIG_SENSORS_PCF8574 is not set
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_RTC8564 is not set
