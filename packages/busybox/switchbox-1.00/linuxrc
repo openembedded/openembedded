@@ -21,42 +21,34 @@ if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/jffs2 ; then
     if [ -f /mnt/jffs2/.recovery ] ; then
 	/bin/echo "Preferred root device is /dev/ram0 (recovery)"
 	mounted=
-	runboot=
 	prefroot=
     elif [ -f /mnt/jffs2/.sda1root ] ; then
 	/bin/echo "Preferred root device is /dev/sda1 (disk 1)"
 	mounted=/mnt/newroot
-	runboot=/bin/init
 	prefroot=sda1
     elif [ -f /mnt/jffs2/.sda2root ] ; then
 	/bin/echo "Preferred root device is /dev/sda2 (disk 1)"
 	mounted=/mnt/newroot
-	runboot=/bin/init
 	prefroot=sda2
     elif [ -f /mnt/jffs2/.sdb1root ] ; then
 	/bin/echo "Preferred root device is /dev/sdb1 (disk 2)"
 	mounted=/mnt/newroot
-	runboot=/bin/init
 	prefroot=sdb1
     elif [ -f /mnt/jffs2/.sdb2root ] ; then
 	/bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
 	mounted=/mnt/newroot
-	runboot=/bin/init
 	prefroot=sdb2
     elif [ -f /mnt/jffs2/.ramdisk ] ; then
 	/bin/echo "Preferred root device is /dev/ram1 (maintenence)"
 	mounted=/mnt/newroot
-	runboot=/bin/init
 	prefroot=maintenence
     elif [ -f /mnt/jffs2/.nfsroot ] ; then
 	/bin/echo "Preferred root device is through NFS"
         mounted=/mnt/newroot
-	runboot=/linuxrc
 	prefroot=nfsroot
     else
 	/bin/echo "Preferred root device is jffs2"
 	mounted=/mnt/jffs2
-	runboot=/linuxrc
 	prefroot=jffs2
     fi
 fi
@@ -74,7 +66,6 @@ if [ -n "$prefroot" ] ; then
 	else
 	    /bin/echo "Cant find valid rootfs on /dev/$prefroot, using recovery ..."
 	    mounted=
-	    runboot=
 	fi
 
     elif [ $prefroot = "maintenence" ] ; then
@@ -104,7 +95,6 @@ if [ -n "$prefroot" ] ; then
 	else
 	    /bin/echo "Cant find valid rootfs on ram1, using recovery ..."
 	    mounted=
-	    runboot=
 	fi
 
     elif [ $prefroot = "nfsroot" ] ; then
@@ -134,11 +124,9 @@ if [ -n "$prefroot" ] ; then
 	      -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from a NFS root ..."
 	    mounted=/mnt/newroot
-	    runboot=/linuxrc
 	else
 	    /bin/echo "Cant find valid NFS rootfs, using recovery ..."
 	    mounted=
-	    runboot=
 	fi
 
     else
@@ -146,11 +134,9 @@ if [ -n "$prefroot" ] ; then
 	      -L /mnt/jffs2/bin/init  -o -x /mnt/jffs2/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
 	    mounted=/mnt/jffs2
-	    runboot=/linuxrc
 	else
 	    /bin/echo "Cant find valid rootfs on jffs2, using recovery ..."
 	    mounted=
-	    runboot=
 	fi
     fi
 fi
@@ -167,6 +153,15 @@ if [ -n "$mounted" ] ; then
     umount /proc
     cd $mounted
     /sbin/pivot_root . initrd
+    if [ -x /linuxrc ] ; then
+	runboot=/linuxrc
+    elif [ -x /sbin/init ] ; then
+	runboot=/sbin/init
+    elif [ -x /bin/init ] ; then
+	runboot=/bin/init
+    else
+	runboot=/bin/sh
+    fi
     exec chroot . $runboot  < dev/console > dev/console 2>&1
 fi
 
