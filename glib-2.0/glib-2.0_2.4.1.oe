@@ -82,6 +82,7 @@ do_stage () {
 	install -m 0644 ${S}/glib/gutils.h ${STAGING_INCDIR}/glib-2.0/glib/gutils.h
 	install -m 0644 ${S}/glib/gwin32.h ${STAGING_INCDIR}/glib-2.0/glib/gwin32.h
 	install -m 0644 ${S}/glib/gprintf.h ${STAGING_INCDIR}/glib-2.0/glib/gprintf.h
+	install -m 0644 ${S}/glib/gi18n.h ${STAGING_INCDIR}/glib-2.0/glib/gi18n.h
 	install -d ${STAGING_INCDIR}/glib-2.0/gobject
 	install -m 0644 ${S}/gobject/gboxed.h ${STAGING_INCDIR}/glib-2.0/gobject/gboxed.h
 	install -m 0644 ${S}/gobject/gclosure.h ${STAGING_INCDIR}/glib-2.0/gobject/gclosure.h
