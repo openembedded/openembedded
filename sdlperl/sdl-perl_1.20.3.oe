@@ -3,7 +3,7 @@ SRC_URI = "http://bloodgate.com/perl/sdl/pub/SDL_perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1;pnum=0"
 S = "${WORKDIR}/SDL_perl-${PV}"
 
-DEPENDS = "perl virtual/libsdl libsdl-image libsdl-gfx libsdl-mixer mesa"
+DEPENDS = "perl virtual/libsdl libsdl-image libsdl-gfx libsdl-mixer libsdl-net mesa"
 
 inherit cpan
 
