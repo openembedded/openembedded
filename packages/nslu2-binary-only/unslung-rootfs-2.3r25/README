@@ -310,3 +310,42 @@ boot time.
 Enabled mounting of external drives earlier in the boot process, so
 that the rc, rc.sysinit, and rc.1 scripts can be diverted by external
 diversion scripts on an attached drive.
+
+3.9:
+
+Moved a number of -able kernel features (such as USB devfs support)
+into -standard.
+
+3.10:
+
+Added support for unslung-start and unslung-stop diversion scripts,
+and package shutdown scripts (K??foo).
+
+3.11:
+
+Added NFS kernel support (both client and server, and both V2 and V3
+protocols).
+
+3.12:
+
+Added basic maintenance mode support.  If /.ramdisk exists in the
+jffs2 filesystem, then the jffs2 filesystem is copied into a ramdisk
+on boot, and run from there.  This allows for updating firmware using
+the web interface.
+
+3.13:
+
+Added recovery mode support.  If a viable root filesystem cannot be
+found, then switchbox drops into a basic recovery shell, with a telnet
+daemon running as 192.168.1.77 with no password.
+
+3.14:
+
+Added web control of maintenance mode.  You have to enable maintenance
+mode and reboot before the firmware upgrade page allows you to enter a
+filename for the new firmware.
+
+3.15:
+
+Added confirmation dialog boxes to the maintenance mode web control.
+
