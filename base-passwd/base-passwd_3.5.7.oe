@@ -1,4 +1,5 @@
-DESCRIPTION = "Base System Password/Group Files."
+DESCRIPTION = "Base system password/group files."
+PR="r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -6,9 +7,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
 
 inherit autotools
 
-#do_compile_append () {
-#	oe_runmake -C doc
-#}
 
 do_install () {
 	install -d -m 755 ${D}/${sbindir}
@@ -32,18 +30,16 @@ do_install () {
 	gzip -9 ${D}/${docdir}/${P}/*
 	install -p -m 644 README ${D}/${docdir}/${P}/
 	install -p -m 644 debian/copyright ${D}/${docdir}/${P}/
-#	install -p -m 644 \
-#		doc/users-and-groups.html doc/users-and-groups.txt \
-#		${D}/${docdir}/${P}/
-#	gzip -9 ${D}/${docdir}/${P}/users-and-groups.txt
 }
+
+
+do_install_append_ramses() {
+	echo "0:Jn6tcg/qjqvUE:0:0:root:/root:/bin/sh" >>${D}/${datadir}/base-passwd/passwd.master
+}
+
 
 pkg_postinst () {
 	set -e
-
-#	if [ X"$1" != Xconfigure ]; then
-#		exit 0
-#	fi
 
 	if [ ! -e $D/${sysconfdir}/passwd ] ; then
 		cp $D/${datadir}/base-passwd/passwd.master $D/${sysconfdir}/passwd
@@ -52,16 +48,5 @@ pkg_postinst () {
 	if [ ! -e $D/${sysconfdir}/group ] ; then
 		cp $D/${datadir}/base-passwd/group.master $D/${sysconfdir}/group
 	fi
-	
-#	if ! [ -x ${sbindir}/update-passwd ]; then
-#		echo >&2 "`dirname $0`: ${sbindir}/update-passwd does not exist,"
-#		echo >&2 "or is not executable"
-#		exit 1
-#	fi
-#	update-passwd -p ${D}/${datadir}/base-passwd/passwd.master \
-#		      -g ${D}/${datadir}/base-passwd/group.master \
-#		      -P ${D}/${sysconfdir}/passwd \
-#		      -G ${D}/${sysconfdir}/group \
-#		      -S ${D}/${sysconfdir}/shadow --dry-run
 	exit 0
 }
