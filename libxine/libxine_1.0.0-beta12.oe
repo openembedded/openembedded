@@ -9,7 +9,7 @@ PRIORITY = "optional"
 DEPENDS = "zlib libogg tremor libmad"
 PR = "r1"
 
-inherit autotools
+inherit autotools pkgconfig binconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-1-beta12.tar.gz \
 	   file://full.patch;patch=1 \
