@@ -2,12 +2,17 @@ DESCRIPTION = "Driver for the SHARP Zaurus SD/MMC Slot for linux ${PV}"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-PR = "r1"
+PR = "r2"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://sharp-sdmmc-2.4.18.tar.gz"
 S = "${WORKDIR}/sharp-sdmmc"
+
+inherit update-rc.d
+
+INITSCRIPT_NAME = "sd"
+INITSCRIPT_PARAMS = "start 04 2 3 4 5 . stop 96 0 1 6 ."
 
 do_install() {
 	install -d ${D}/
