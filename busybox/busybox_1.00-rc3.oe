@@ -10,7 +10,7 @@ system."
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r5"
+PR = "r6"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -18,9 +18,10 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
 	   file://awk2.patch;patch=1 \
            file://defconfig \
-           file://cron \
-	   file://httpd \
+           file://busybox-cron \
+	   file://busybox-httpd \
 	   file://syslog \
+	   file://udhcp-server \
            file://hwclock.sh"
 	   
 S = "${WORKDIR}/busybox-${PV}"
@@ -47,9 +48,10 @@ do_compile () {
 do_install () {
 	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
-	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/cron
-	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/httpd
-	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/syslog
+	install -m 0755 ${WORKDIR}/busybox-cron ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/busybox-httpd ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/udhcp-serrver ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
 	install -d ${D}${datadir}/udhcpc
 	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
