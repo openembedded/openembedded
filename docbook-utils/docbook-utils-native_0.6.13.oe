@@ -17,7 +17,7 @@ do_stage () {
 		 backends/texi backends/txt frontends/docbook \
 		 helpers/docbook2man-spec.pl helpers/docbook2texi-spec.pl \
 		 docbook-utils.dsl; do
-		 install -d ${STAGING_DIR}/share/sgml/docbook/utils-${PV}/`dirname $i`
-		 install ${S}/$i ${STAGING_DIR}/share/sgml/docbook/utils-${PV}/$i
+		 install -d ${STAGING_DATADIR}/sgml/docbook/utils-${PV}/`dirname $i`
+		 install ${S}/$i ${STAGING_DATADIR}/sgml/docbook/utils-${PV}/$i
 	done
 }

@@ -36,6 +36,6 @@ do_install() {
         oe_soinstall ${STAGING_LIBDIR}/${f} ${D}/opt/QtPalmtop/lib
         rm -f ${STAGING_LIBDIR}/${f}
     done
-    install -m 0755 ${STAGING_DIR}/target/bin/korganizer ${D}/opt/QtPalmtop/bin/korganizer
-    rm -f ${STAGING_DIR}/target/bin/korganizer
+    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/korganizer ${D}/opt/QtPalmtop/bin/korganizer
+    rm -f ${STAGING_DIR}/${HOST_SYS}/bin/korganizer
 }

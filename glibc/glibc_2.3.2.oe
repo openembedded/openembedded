@@ -149,7 +149,7 @@ do_compile_append() {
 }
 
 do_stage() {
-	oe_runmake 'install_root=${STAGING_DIR}/target' \
+	oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
 		   '${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
 		   install-headers install-lib

@@ -18,10 +18,9 @@ do_configure_prepend() {
 }
 
 do_stage() {
-  oe_runmake install \
-    DESTDIR=${STAGING_DIR} \
-    includedir=/target/include/tremor \
-    libdir=/target/lib/tremor \
-    datadir=/share
-    prefix=''
+	oe_runmake install prefix=${STAGING_DIR} \
+	       bindir=${STAGING_BINDIR} \
+	       includedir=${STAGING_INCDIR}/tremor \
+	       libdir=${STAGING_LIBDIR} \
+	       datadir=${STAGING_DATADIR}
 }

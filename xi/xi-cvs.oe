@@ -10,10 +10,9 @@ S = "${WORKDIR}/Xi"
 inherit autotools pkgconfig libtool
 
 do_stage() {
-	oe_runmake install DESTDIR=${STAGING_DIR} \
-	       bindir=/build/bin \
-	       includedir=/target/include \
-	       libdir=/target/lib \
-	       datadir=/share
-	       prefix=
+	oe_runmake install prefix=${STAGING_DIR} \
+	       bindir=${STAGING_BINDIR} \
+	       includedir=${STAGING_INCDIR} \
+	       libdir=${STAGING_LIBDIR} \
+	       datadir=${STAGING_DATADIR}
 }

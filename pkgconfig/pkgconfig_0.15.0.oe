@@ -16,6 +16,6 @@ do_configure_prepend () {
 }
 
 do_stage_append() {
-	install -d -m 0755 ${STAGING_DIR}/share/pkgconfig
+	install -d -m 0755 ${STAGING_DATADIR}/pkgconfig
 
 }

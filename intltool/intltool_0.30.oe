@@ -9,5 +9,5 @@ S = "${WORKDIR}/intltool-${PV}"
 inherit autotools libtool pkgconfig
 
 do_stage() {
-	install -m 0644 intltool.m4 ${STAGING_DIR}/share/aclocal/
+	install -m 0644 intltool.m4 ${STAGING_DATADIR}/aclocal/
 }

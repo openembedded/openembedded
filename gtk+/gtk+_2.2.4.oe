@@ -65,7 +65,7 @@ do_stage () {
 	mkdir -p ${STAGING_LIBDIR}/gtk-2.0/include
 	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h
 
-	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DIR}/share/aclocal/
+	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
 }
 
 python populate_packages_prepend () {

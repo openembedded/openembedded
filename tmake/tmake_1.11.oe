@@ -11,8 +11,8 @@ S = "${WORKDIR}/tmake-${PV}"
 do_stage() {
 	install -m 0755 bin/tmake bin/progen ${STAGING_BINDIR}/
 
-	install -d ${STAGING_DIR}/share/tmake
-	cp -R lib/* ${STAGING_DIR}/share/tmake/
+	install -d ${STAGING_DATADIR}/tmake
+	cp -R lib/* ${STAGING_DATADIR}/tmake/
 }
 
 do_install() {

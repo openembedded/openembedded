@@ -17,7 +17,7 @@ do_stage () {
 	install -m 0644 .libs/libesmtp.lai ${STAGING_LIBDIR}/libesmtp.la
 	oe_soinstall .libs/libesmtp.so.5.1.2 ${STAGING_LIBDIR}/
 
-        install -d ${STAGING_DIR}/include
+        install -d ${STAGING_INCDIR}
 	install -m 644 auth-client.h ${STAGING_INCDIR}
 	install -m 644 auth-plugin.h ${STAGING_INCDIR}
 	install -m 644 libesmtp.h ${STAGING_INCDIR}

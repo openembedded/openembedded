@@ -11,7 +11,7 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools native
 
-EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/build"
+EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
 
 do_configure () {
 	oe_runconf
@@ -19,6 +19,6 @@ do_configure () {
 
 do_stage_append() {
 	# install pgen for later usage with non-native builds
-	install Parser/pgen ${STAGING_DIR}/build/bin
+	install Parser/pgen ${STAGING_DIR}/${BUILD_SYS}/bin/
 }
 
