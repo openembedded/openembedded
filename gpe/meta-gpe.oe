@@ -1,6 +1,6 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
-DEPENDS = "gpe-bluetooth gpe-login gpe-dm gpe-session-scripts gpe-edit gpe-todo rxvt matchbox gpe-icons gpe-calendar gpe-todo gpe-timesheet gpe-conf"
+DEPENDS = "gpe-bluetooth gpe-login gpe-dm gpe-session-scripts gpe-edit gpe-todo rxvt matchbox gpe-icons gpe-calendar gpe-todo gpe-timesheet"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 ALLOW_EMPTY = 1
@@ -22,7 +22,6 @@ RDEPENDS_gpe-task-pim = "\
     gpe-calendar"
 
 RDEPENDS_gpe-task-utils = "\
-    gpe-conf \
     gpe-bluetooth \
     gpe-edit"
 
