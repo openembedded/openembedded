@@ -23,7 +23,7 @@ CFLAGS_prepend = "-I${S} "
 CFLAGS_append = " -D__FILE_OFFSET_BITS=64"
 LDFLAGS_prepend = "-L${S} -L${S}/openbsd-compat "
 EXTRA_OECONF = --disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
-	       --with-rand-helper=no
+	       --with-rand-helper=no --without-pam
 
 do_compile_append () {
 	install -m 0644 ${FILESDIR}/sshd_config ${S}/

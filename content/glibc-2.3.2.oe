@@ -85,11 +85,14 @@ python do_unpack () {
 	oe.build.exec_func('glibcbuild_do_unpack', d)
 }
 
-do_compile() {
-	touch sysdeps/${ARCH}/framestate.c
+do_configure_prepend() {
 	mkdir -p "${builddir}"
 	cd "${builddir}"
-	base_do_compile $@
+}
+
+do_compile_prepend() {
+	touch sysdeps/${ARCH}/framestate.c
+	cd "${builddir}"
 }
 
 do_stage() {
