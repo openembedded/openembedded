@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r9"
+PR = "r10"
 
 ALLOW_EMPTY = 1
 
@@ -37,17 +37,20 @@ DEPENDS += " ${gpe-task-pim}"
 
 gpe-task-utils = "\
     gpe-bluetooth \
+    gpe-aerial \
+    gpe-mixer \
     gpe-edit \
     gpe-su \
     gpe-conf \
     gpe-wlancfg \
     gpe-gallery \
+    gpe-calculator \
+    gpe-plucker \
     minilite \
-    miniclipboard \
     gpe-taskmanager \
     gpe-package \
     gpe-clock \
-    gpe-appmgr \
+    gpe-watch \
     gpe-terminal \
     gpe-what \
     gpe-shield \
