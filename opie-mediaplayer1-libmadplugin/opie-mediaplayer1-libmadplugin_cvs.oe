@@ -1,10 +1,10 @@
-DESCRIPTION = "MP3 file plugin for opie-mediaplayer1 using libmad"
+DESCRIPTION = "MP3 file plugin for opie-mediaplayer11 using libmad"
 SECTION = "opie/codecs"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "opie-mediaplayer libmad"
-RDEPENDS = "opie-mediaplayer"
+DEPENDS = "opie-mediaplayer1 libmad"
+RDEPENDS = "opie-mediaplayer1"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "madplugin"
 
