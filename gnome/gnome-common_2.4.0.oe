@@ -3,6 +3,7 @@ DESCRIPTION = "Common macros for building GNOME applications"
 inherit gnome
 
 EXTRA_AUTORECONF = ""
+DEPENDS = ""
 
 FILES_${PN} += "${datadir}/aclocal"
 FILES_${PN}-dev = ""

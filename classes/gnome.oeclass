@@ -6,6 +6,8 @@ def gnome_verdir(v):
 SECTION = "gnome"
 SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
 
+DEPENDS += "gnome-common"
+
 FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info \
 	${datadir}/gnome-2.0"
 
