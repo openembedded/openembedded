@@ -1,0 +1,25 @@
+DESCRIPTION = "System time"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "ntpdate"
+DEPENDS = "libopiecore2 libopieui2"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "systemtime"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/netsystemtime;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/netsystemtime"
+
+inherit opie
+
+# FILES plugins/application/libsystemtime.so* bin/systemtime apps/Settings/systemtime.desktop etc/ntpservers pics/netsystemtime
+do_install() {
+        install -d ${D}${palmtopdir}/pics/netsystemtime/
+        install -m 0644 ${WORKDIR}/pics/netsystemtime/*.png ${D}${palmtopdir}/pics/netsystemtime/
+}
+
+#FIXME: Take care about etc
