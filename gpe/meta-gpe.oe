@@ -1,5 +1,6 @@
 PACKAGES = gpe-task-base
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
+DEPENDS_prepend = "coreutils-native"
 DEPENDS = "gpe-bluetooth gpe-login gpe-dm gpe-session-scripts gpe-edit gpe-todo rxvt matchbox"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
