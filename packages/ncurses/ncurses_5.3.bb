@@ -1,61 +1,11 @@
 BaseV := "${PV}"
 SnapV := "20030906"
 PV = "${BaseV}.${SnapV}"
-LICENSE = "MIT"
-DESCRIPTION = "Ncurses library"
-SECTION = "libs"
-DEPENDS = "ncurses-native"
-PROVIDES = "${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
-	 ${CATEGORY}/${PN}-${BaseV} ${CATEGORY}/${PN}-${BaseV}-${PR} "
-PACKAGES_append = " ncurses-terminfo"
-FILES_ncurses_append = " ${datadir}/tabset"
-FILES_ncurses-terminfo = "${datadir}/terminfo"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${BaseV}.tar.gz \
 	   file://${SnapV}.patch;patch=1 \
 	   file://configure.patch;patch=1"
 S = "${WORKDIR}/ncurses-${BaseV}"
 
-inherit autotools
-
-EXTRA_OECONF = "--with-shared \
-	        --without-profile \
-	        --without-debug \
-	        --disable-rpath \
-	        --enable-echo \
-	        --enable-const \
-	        --without-ada \
-	        --enable-termcap \
-	        --without-cxx-binding \
-	        --with-terminfo-dirs=${sysconfdir}/terminfo:${datadir}/terminfo \
-	        --enable-overwrite"
-export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
-export BUILD_LDFLAGS = ""
-
-do_configure_prepend () {
-	if [ -e aclocal.m4 -a ! -e acinclude.m4 ]; then
-		cat aclocal.m4 > acinclude.m4
-	fi
-}
-
-do_configure () {
-# override this function to avoid the autoconf/automake/aclocal/autoheader
-# calls for now
-	gnu-configize
-	oe_runconf
-}
-
-do_compile () {
-	oe_runmake BUILD_LDFLAGS="" 'BUILD_CCFLAGS=${BUILD_CCFLAGS}'
-}
-
-do_stage () {
-	for h in ncurses_*.h curses.h eti.h form.h menu.h panel.h \
-		termcap.h term.h unctrl.h; do
-		       install -m 0644 include/$h ${STAGING_INCDIR}/
-	done
-	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
-	for i in ncurses panel form menu; do
-		oe_libinstall -so -C lib $i ${STAGING_LIBDIR}
-	done
-}
+include ncurses.inc
