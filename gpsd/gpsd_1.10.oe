@@ -9,7 +9,11 @@ SRC_URI=http://pygps.org/gpsd/downloads/gpsd-${PV}.tar.gz \
         file://${FILESDIR}/gcc3.patch;patch=1 \
         file://${FILESDIR}/nmea-fix.patch;patch=1
 
-inherit autotools libtool
+inherit autotools
+
+do_configure() {
+	oe_runconf
+}
 
 do_compile() {
 	oe_runmake gpsd
