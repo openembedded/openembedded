@@ -9,7 +9,7 @@ LICENSE = "GPLv2"
 DEPENDS += "ncurses"
 RPROVIDES_${PN} += "readline"
 LEAD_SONAME = "libreadline.so"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 	   file://shlink-termcap.patch;patch=1 \
