@@ -45,7 +45,6 @@ else
 	mkdir -p dev/pts
 	ln -sf /proc/self/fd /dev/fd
 	ln -sf /proc/kcore /dev/core
-	umask 0000
 	/sbin/makedevs -r / -D /etc/device_table
 	if test $? -ne 0; then
 		if test "$VERBOSE" != "no"; then echo "failed"; fi
