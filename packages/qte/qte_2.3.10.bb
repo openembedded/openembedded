@@ -22,6 +22,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
 	   file://simpad.patch;patch=1 \
 	   file://handhelds.patch;patch=1 \
 	   file://qiconview-speed.patch;patch=1 \
+	   file://qtabbar.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://key.patch;patch=1 \
 	   file://switches.h "
