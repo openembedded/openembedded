@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 DEPENDS = "expat glib-2.0"
@@ -14,7 +14,8 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN}-dev += " ${libdir}/dbus-1.0/include"
+FILES_${PN} += "${libdir}/dbus-1.0/services"
+FILES_${PN}-dev += "${libdir}/dbus-1.0/include"
 
 pkg_postinst_dbus() {
 #!/bin/sh
