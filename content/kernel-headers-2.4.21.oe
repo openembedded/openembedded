@@ -1,4 +1,8 @@
 DESCRIPTION="Kernel headers need to compile the C-Library"
+DEPENDS=""
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 LICENSE="GPL"
 SRC_URI="http://www.uclibc.org/downloads/toolchain/${P}.tar.bz2"
 PROVIDES=virtual/kernel-header
