@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 
 inherit autotools pkgconfig gconf
 
@@ -10,7 +10,8 @@ SECTION = "gpe"
 PRIORITY = "optional"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
-        file://gnome-calc2.png \
+        file://desktop-categories.patch;patch=1 \
+	file://gnome-calc2.png \
         file://Makefile.am.patch;patch=1" 
 
 #EXTRA_OECONF = ""
