@@ -15,8 +15,6 @@ inherit opie
 APPTYPE = "binary"
 
 do_install() {
-        install -d ${D}/${palmtopdir}/apps/Applications \
-        	   ${D}/${palmtopdir}/pics/wellenreiter
-	install -m 0644 ${WORKDIR}/apps/Applications/${PN}.desktop ${D}${palmtopdir}/apps/Applications/${PN}.desktop
+        install -d ${D}/${palmtopdir}/pics/wellenreiter
 	install -m 0644 ${WORKDIR}/pics/${PN}/*.* ${D}${palmtopdir}/pics/${PN}/
 }
