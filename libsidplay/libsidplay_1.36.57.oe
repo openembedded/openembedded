@@ -1,7 +1,6 @@
 DESCRIPTION = "A library for replaying C64 SID music"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libs/libsidplay/libsidplay_${PV}.orig.tar.gz \

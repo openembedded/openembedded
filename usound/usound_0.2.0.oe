@@ -2,7 +2,6 @@ DESCRIPTION = "The Useful Sound Daemon"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 pth"
 DEPENDS = "virtual/libc pth"
 
 SRC_URI = "http://mattcamp.paunix.org/usound/usound-${PV}.tar.gz"

@@ -1,7 +1,6 @@
 SECTION = "NET"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 libsdl"
 DEPENDS = "virtual/libc virtual/libsdl"
 PROVIDES = "smpeg"
 DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \

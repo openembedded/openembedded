@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc docbook-utils-native"
-RDEPENDS = "libc6"
 DESCRIPTION = "Utilities for the IP protocol."
 
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz"

@@ -1,5 +1,4 @@
 SECTION = "libs"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "libogg is the bitstream and framing library \
 for the Ogg project. It provides functions which are \

@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc ncurses"
-RDEPENDS = "libc6 ncurses5"
 DESCRIPTION = "Frotz is an interpreter for Infocom games \
 and other Z-machine games."
 

@@ -4,7 +4,7 @@ Google cache, and ask Google for spelling suggestions."
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 python-core python-soappy"
+RDEPENDS = "python-core python-soappy"
 DEPENDS = "virtual/libc"
 SRCNAME = "pygoogle"
 

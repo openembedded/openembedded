@@ -1,7 +1,6 @@
 HOMEPAGE = "http://linux.dell.com/devlabel/devlabel.html"
 DESCRIPTION = "tool for user-define static device labels"
 DEPENDS = "virtual/libc e2fsprogs-libs"
-RDEPENDS = "libc6 e2fsprogs-libs"
 
 SRC_URI = "http://linux.dell.com/devlabel/permalink/devlabel-${PV}.tar.gz"
 

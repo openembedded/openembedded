@@ -1,7 +1,6 @@
 DESCRIPTION = "grep GNU utility"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
 	   file://${FILESDIR}/install.patch;patch=1"

@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "TinyLogin is a suite of tiny UNIX \
 utilities for handling logins, user authentication, \
 changing passwords, and otherwise maintaining users \

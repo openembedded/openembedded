@@ -1,7 +1,6 @@
 DESCRIPTION = "A Doom Clone based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
-RDEPENDS = "libc6 libsdl-qpe libsdl-mixer libsdl-net"
 DEPENDS = "virtual/libc libsdl-qpe libsdl-mixer libsdl-net"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \

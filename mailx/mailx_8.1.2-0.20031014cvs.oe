@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc liblockfile"
-RDEPENDS = "libc6 liblockfile"
 DESCRIPTION = "mailx is the traditional command-line-mode \
 mail user agent."
 

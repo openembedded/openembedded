@@ -1,7 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "tslib is a touchscreen access library."
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib"

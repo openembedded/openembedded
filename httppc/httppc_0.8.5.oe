@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc adns"
-RDEPENDS = "libc6 adns"
 DESCRIPTION = "HTTP Proxy Client is a set of libraries and scripts \
 that provide transparent access to Internet via HTTP proxy tunnel \
 for programs which use TCP/IP for communication. The tunnel is \

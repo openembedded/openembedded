@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc openssl ncurses"
-RDEPENDS = "libc6 openssl ncurses"
 DESCRIPTION = "An ncurses-based IM client for ICQ2000, Yahoo!, \
 AIM, IRC, Jabber and LiveJournal"
 

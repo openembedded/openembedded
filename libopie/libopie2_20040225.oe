@@ -4,7 +4,6 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 DEPENDS = "virtual/libc libqpe-opie sqlite libpcap"
-RDEPENDS = "libc6 libqpe1 sqlite libpcap"
 
 SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/libopie2;date=${PV}"
 S = "${WORKDIR}/libopie2"

@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 LICENSE = "GPL"
 DESCRIPTION = "pdm is a minimal session manager for GUIs."
 

@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "virtual/libc zlib libogg tremor libmad"
-RDEPENDS = "libc6 zlib libogg tremor libmad "
 
 inherit autotools
 

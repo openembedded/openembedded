@@ -3,7 +3,6 @@ DESCRIPTION = "Patchutils is a small collection of programs that operate on patc
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 
 SRC_URI = "http://cyberelk.net/tim/data/patchutils/stable/patchutils-${PV}.tar.bz2"
 

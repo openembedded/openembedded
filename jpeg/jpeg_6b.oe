@@ -1,7 +1,6 @@
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "libjpeg is a library for handling the JPEG (JFIF) image format."
 

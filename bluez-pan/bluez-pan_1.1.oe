@@ -1,6 +1,5 @@
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 SECTION = "libs"
 DEPENDS = "virtual/libc virtual/libbluetooth virtual/libsdp"
 DESCRIPTION = "Personal area networking for Bluetooth devices."

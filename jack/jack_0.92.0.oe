@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 alsa"
+RDEPENDS = "alsa"
 DEPENDS = "virtual/libc alsa-lib"
 DESCRIPTION = "JACK is a low-latency audio server. It can \
 connect a number of different applications to an audio \

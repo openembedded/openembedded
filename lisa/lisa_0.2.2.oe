@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "LISa is a small daemon which provides something \
 like the network neighbourhood under windows, but more and \
 only relying on the TCP/IP protocol stack."

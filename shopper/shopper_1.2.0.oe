@@ -3,7 +3,6 @@ SECTION = "Applications"
 PRIORITY = "optional"
 MAINTAINER = "David Greaves <arbor@users.sourceforge.net>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \

@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1 libsdl"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \

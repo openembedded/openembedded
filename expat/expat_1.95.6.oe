@@ -1,6 +1,5 @@
 DESCRIPTION = "Jim Clarkes XML parser library."
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz"
 S = "${WORKDIR}/expat-${PV}"

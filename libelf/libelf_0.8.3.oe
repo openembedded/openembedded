@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 SECTION = "libc"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DESCRIPTION = "an ELF object file access library \

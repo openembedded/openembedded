@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc ncurses"
-RDEPENDS = "libc6 ncurses"
 DESCRIPTION = "A mixer for the terminal or X11, with mouse support."
 
 SRC_URI = "http://jpj.net/~trevor/aumix/aumix-${PV}.tar.bz2 \

@@ -2,7 +2,6 @@ DESCRIPTION = "A portable audio library"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \

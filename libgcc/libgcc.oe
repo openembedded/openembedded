@@ -2,7 +2,6 @@ DESCRIPTION = "GNU Support Library for gcc 3.x"
 SECTION = "libs"
 PRIORITY = "required"
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 PV = "${@os.popen("%s -dumpversion" % oe.data.getVar("CC",d,1)).readline().strip()}"
 
 do_install() {

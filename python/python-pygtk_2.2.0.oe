@@ -2,7 +2,6 @@ DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 gtk+ libglade"
 DEPENDS = "virtual/libc gtk+ libglade"
 SRCNAME = "pygtk"
 

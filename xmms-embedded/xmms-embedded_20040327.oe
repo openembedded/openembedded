@@ -1,6 +1,5 @@
 SECTION = "apps"
 PRIORITY = "optional"
-RDEPENDS = "libc6 zlib tremor libmad libid3tag libsidplay glib-2.0 libqpe1"
 DEPENDS = "virtual/libc zlib tremor libmad libid3tag libsidplay glib-2.0 virtual/libqpe uicmoc-native"
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 

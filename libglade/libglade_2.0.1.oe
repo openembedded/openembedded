@@ -1,7 +1,6 @@
 DESCRIPTION = "Runtime support for GTK interface builder"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "gtk+ libxml2"
 DEPENDS = "virtual/libc libxml2 gtk+"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 

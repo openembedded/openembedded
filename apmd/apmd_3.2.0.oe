@@ -1,7 +1,6 @@
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Lossless data compression library"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.oberhumer.com/opensource/lzo/download/lzo-${PV}.tar.gz"

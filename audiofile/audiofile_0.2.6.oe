@@ -1,6 +1,5 @@
 SECTION = "libs"
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 LICENSE = "LGPL GPL"
 DESCRIPTION = "The Audio File Library provides a uniform and elegant \
 API for accessing a variety of audio file formats, such as AIFF/AIFF-C, \

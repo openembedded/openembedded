@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc libnet libpcap"
-RDEPENDS = "libc6 libnet libpcap"
 DESCRIPTION = "Libnids performs assembly of TCP segments \
 into TCP streams, IP defragmentation, and TCP port \
 scan detection."

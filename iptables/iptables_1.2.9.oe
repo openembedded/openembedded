@@ -1,6 +1,5 @@
 DESCRIPTION = "iptables network filtering tools"
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 
 SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2"
 

@@ -3,7 +3,6 @@ SECTION = "gui"
 PRIORITY = "optional"
 MAINTAINER = "Jordan Crouse <jordan@cosmicpenguin.net>"
 DEPENDS = "virtual/libc libpng jpeg"
-RDEPENDS = "libc6 libpng jpeg"
 
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/microwindows-${PV}.tar.gz"
 

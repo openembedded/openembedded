@@ -1,6 +1,5 @@
 SECTION = "net"
 DEPENDS = "virtual/libc expat openssl"
-RDEPENDS = "libc6, libexpat1, libssl0.9.7"
 DESCRIPTION = "A high performance Unix-based HTTP server."
 
 SRC_URI = "http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \

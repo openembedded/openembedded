@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc libpng jpeg freetype"
-RDEPENDS = "libc6 jpeg libpng freetype"
 DESCRIPTION = "Evas is a hardware-accelerated canvas API \
 that can draw anti-aliased text, smooth super and sub-sampled \
 images, alpha-blend, as well as drop down to using normal X11 \

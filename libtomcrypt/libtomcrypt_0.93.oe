@@ -6,7 +6,6 @@ generators, public key cryptography and a plethora of other \
 routines."
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 #FIXME add dependencies for pdflatex or whatever that package uses to create docs

@@ -1,0 +1,14 @@
+DESCRIPTION = "Matchbox panel"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libmatchbox x11 xext xpm"
+RDEPENDS = "libmatchbox matchbox-common"
+
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/${PV}/matchbox-panel-${PV}.tar.bz2"
+S = "${WORKDIR}/matchbox-panel-${PV}"
+
+inherit autotools libtool pkgconfig
+
+EXTRA_OECONF = "--enable-small-icons"
+#		--enable-dnotify
+#		--enable-startup-notification
+#		--enable-nls

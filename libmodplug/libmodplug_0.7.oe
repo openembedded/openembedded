@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "Library for reading mod-like audio files."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/modplug-xmms/libmodplug-${PV}.tar.gz"

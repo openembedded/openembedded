@@ -4,7 +4,6 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-RDEPENDS = "pango atk jpeg libpng xext"
 DEPENDS = "pango atk jpeg libpng xext"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \

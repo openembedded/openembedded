@@ -3,7 +3,6 @@ simple manner to one or more SSH servers. The goal of this project \
 is to provide a library much simpler to use than OpenSSHs one. It \
 includes SFTP support, and a sample SSH client is provided."
 DEPENDS = "virtual/libc openssl"
-RDEPENDS = "libc6 openssl"
 LICENSE = "LGPL"
 
 SRC_URI = "http://www.0xbadc0de.be/projects/libssh/libssh-${PV}.tgz"

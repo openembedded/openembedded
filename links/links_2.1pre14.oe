@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc jpeg libpng gpm flex openssl zlib"
-RDEPENDS = "libc6 libjpeg libpng gpm openssl zlib1g"
 DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
 

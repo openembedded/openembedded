@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 LICENSE = "OSL"
 DESCRIPTION = "A collection of utilities and DSOs to handle compiled objects."
 

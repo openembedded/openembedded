@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "Flex is a tool for generating programs \
 that recognize lexical patterns in text."
 

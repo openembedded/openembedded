@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "pkg-config is a system for managing library \
 compile/link flags that works with automake and autoconf. \
 It replaces the ubiquitous *-config scripts you may have \

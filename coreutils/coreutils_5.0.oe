@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "A collection of core GNU utilities."
 
 SRC_URI = "${GNU_MIRROR}/coreutils/coreutils-${PV}.tar.gz \

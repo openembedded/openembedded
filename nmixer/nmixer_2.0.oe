@@ -2,7 +2,6 @@ DESCRIPTION = "A text mode OSS soundmixer"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 libncurses5"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "http://www.stack.nl/~brama/projects/nmixer/src/nmixer-${PV}.tar.gz"

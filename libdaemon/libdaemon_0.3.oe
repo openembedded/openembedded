@@ -1,6 +1,5 @@
 DESCRIPTION = "libdaemon is a lightweight C library which eases the writing of UNIX daemons."
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 
 SRC_URI = "http://0pointer.de/lennart/projects/libdaemon/libdaemon-${PV}.tar.gz"
 

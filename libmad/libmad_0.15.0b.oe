@@ -2,7 +2,6 @@ DESCRIPTION = "MPEG Audio Decoder Library"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc libid3tag"
 
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"

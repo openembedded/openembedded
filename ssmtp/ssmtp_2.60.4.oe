@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc openssl"
-RDEPENDS = "libc6 libssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.tar.gz \

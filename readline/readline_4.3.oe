@@ -5,7 +5,6 @@ lines, and perform csh-like history expansion on previous commands."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \

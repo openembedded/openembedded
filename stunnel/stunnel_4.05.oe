@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc openssl"
-RDEPENDS = "libc6 openssl"
 LICENSE = "GPL"
 DESCRIPTION = "Stunnel is a program that allows you to encrypt \
 arbitrary TCP connections inside SSL"

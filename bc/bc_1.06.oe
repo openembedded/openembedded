@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "An arbitrary precision calculator language."
 
 SRC_URI = "${GNU_MIRROR}/bc/bc-${PV}.tar.gz"

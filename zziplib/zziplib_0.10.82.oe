@@ -1,7 +1,6 @@
 DESCRIPTION = "Support library for dealing with zip files"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zziplib/zziplib-${PV}.tar.bz2"

@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "GNU Mailutils contains a series of \
 useful mail clients, servers, and libraries."
 

@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 PROVIDES = "virtual/libgdbm"
 SECTION = "libs"
 DESCRIPTION = "GNU dbm is a set of database routines \

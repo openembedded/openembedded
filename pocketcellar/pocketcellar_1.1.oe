@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.staikos.net/~staikos/pocketcellar/pocketcellar-${PV}.tar.gz \

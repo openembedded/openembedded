@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc openssl"
-RDEPENDS = "libc6 libssl0"
 DESCRIPTION = "Socat is a relay for bidirectional data \
 transfer between two independent data channels."
 

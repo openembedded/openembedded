@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe"
 DEPENDS = "virtual/libc virtual/libqpe"
 
 SRC_URI = "http://downloads.zaurususergroup.com/community/66.180.235.230/download.php/253/tximage-${PV}.tar.gz \

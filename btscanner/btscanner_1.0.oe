@@ -2,7 +2,6 @@ HOMEPAGE = "http://www.pentest.co.uk/cgi-bin/viewcat.cgi?cat=downloads&section=0
 DESCRIPTION = "extract as information from a Bluetooth device pairing"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 SECTION = "libs"
 DEPENDS = "virtual/libc virtual/libbluetooth virtual/libsdp virtual/libgdbm ncurses"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
-RDEPENDS = "libc6 readline libncurses5"
 DEPENDS = "virtual/libc base/readline base/ncurses"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \

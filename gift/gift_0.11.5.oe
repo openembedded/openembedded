@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc libvorbis libogg"
-RDEPENDS = "libc6 libvorbis libogg"
 DESCRIPTION = "giFT is a framework for bridging multiple \
 backend peer-to-peer protocols and the user interface \
 associated with them."

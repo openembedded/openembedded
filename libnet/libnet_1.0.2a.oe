@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "Libnet is a collection of routines to help with \
 the construction and handling of network packets. It provides a \
 portable framework for low-level network packet shaping, \

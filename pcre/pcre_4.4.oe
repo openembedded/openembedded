@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc"
-RDEPENDS = "libc6"
 DESCRIPTION = "Perl-compatible regular expression library. PCRE has its own native \
 API, but a set of 'wrapper' functions that are based on the POSIX API \
 are also supplied in the library libpcreposix. Note that this just \

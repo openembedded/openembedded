@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc fget"
-RDEPENDS = "libc6 fget"
+RDEPENDS = "fget"
 
 SRC_URI = "http://www.bangstate.com/changedfiles-${PV}.tar.gz"
 S = "${WORKDIR}/changedfiles-${PV}"

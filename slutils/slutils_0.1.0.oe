@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 inherit qmake

@@ -2,7 +2,7 @@ DESCRIPTION = "A Pure Python SNMP Package"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 python-core"
+RDEPENDS = "python-core"
 DEPENDS = "virtual/libc"
 SRCNAME = "libsnmp"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Dos Emulator based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
-RDEPENDS = "libc6 libsdl-qpe"
 DEPENDS = "virtual/libc libsdl-qpe"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dosbox/dosbox-${PV}.tar.gz"

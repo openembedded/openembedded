@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1 libsidplay"
 DEPENDS = "virtual/libc libsidplay"
 
 SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz                \

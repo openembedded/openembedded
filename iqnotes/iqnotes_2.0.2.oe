@@ -3,7 +3,6 @@ DESCRIPTION = "Smarty notes \
 SECTION = "applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1 libstdc++"
 DEPENDS = "virtual/libqpe"
 MAINTAINER = "Peter Vrabel <kybu@kybu.sk>"
 

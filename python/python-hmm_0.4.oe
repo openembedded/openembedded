@@ -4,7 +4,7 @@ Python to speed up the computations."
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 python-core python-numeric"
+RDEPENDS = "python-core python-numeric"
 DEPENDS = "virtual/libc"
 SRCNAME = "hmm"
 

@@ -1,5 +1,4 @@
 SECTION = "libs"
-RDEPENDS = "libc6 libogg"
 DEPENDS = "virtual/libc libogg"
 DESCRIPTION = "Ogg Vorbis is a high-quality lossy audio codec \
 that is free of intellectual property restrictions. libvorbis \

@@ -1,6 +1,5 @@
 DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E) 2.x"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 LICENSE = "GPL/QPL"
 

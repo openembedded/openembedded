@@ -1,6 +1,5 @@
 DESCRIPTION = "A console MP3 player based on ncurses"
 DEPENDS = "virtual/libc ncurses libsidplay libogg libvorbis"
-RDEPENDS = "libc6 libncurses libsidplay libogg libvorbis"
 
 SRC_URI = "http://www.stack.nl/~brama/mp3blaster/src/mp3blaster-${PV}.tar.gz \
 	   file://${FILESDIR}/includedir.patch;patch=1"

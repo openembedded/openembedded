@@ -2,7 +2,7 @@ DESCRIPTION = "Plone, a user friendly and powerful Content Management System bas
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 zope"
+RDEPENDS = "zope"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/plone/CMFPlone${PV}.tar.gz"

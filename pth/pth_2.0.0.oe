@@ -2,7 +2,6 @@ DESCRIPTION = "GNU Portable Threads"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"

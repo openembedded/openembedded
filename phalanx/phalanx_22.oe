@@ -1,6 +1,5 @@
 SECTION = "Games"
 PRIORITY = "optional"
-RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "Phalanx is a chess playing engine."
 

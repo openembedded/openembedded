@@ -2,7 +2,6 @@ DESCRIPTION = "procfs tools"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-RDEPENDS = "libc6 libncurses5"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \

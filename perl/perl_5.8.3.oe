@@ -1,7 +1,6 @@
 DESCRIPTION = "Perl is a popular scripting language."
 SECTION = "developing"
 PRIORITY = "optional"
-RDEPENDS = "libc6 db3"
 DEPENDS = "virtual/libc db3 perl-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
 

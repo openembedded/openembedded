@@ -1,5 +1,4 @@
 DEPENDS = "virtual/libc flex"
-RDEPENDS = "libc6"
 DESCRIPTION = "Delayed job execution and batch processing."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \

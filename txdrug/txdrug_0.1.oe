@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe sqlite"
 DEPENDS = "virtual/libc virtual/libqpe sqlite"
 
 SRC_URI = "http://teax.sourceforge.net/txdrug-${PV}.tar.gz"
