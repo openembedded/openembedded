@@ -9,7 +9,7 @@ PV = "1.1.9+cvs-${CVSDATE}"
 PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/library \
-	file://nomax.patch;patch=1;pnum=1"
+	file://nomax_cvs.patch;patch=1;pnum=1"
 S = "${WORKDIR}/library"
 
 inherit qmake
