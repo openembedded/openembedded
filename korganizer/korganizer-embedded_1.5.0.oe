@@ -5,20 +5,22 @@ LICENSE="GPL"
 RDEPENDS="libqpe1"
 DEPENDS="virtual/libc virtual/libqpe uicmoc-native"
 
-SRC_URI = http://www.pi-sync.net/korgenizerE-1.5.0rc2.tar.gz
-S = "${WORKDIR}/korgenizerE-${PV}"
+SRC_URI = http://korganizer.kde.org/files/korganizerPi.150.source.tar.gz
+S = "${WORKDIR}/korgenizerPi.150"
 
 inherit palmtop
 
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 QMAKE_PROFILES= "all.pro"
 
+SUBDIRS="qtcompat microkde libical/src/libical libical/src/libicalss libkcal libkdepim kalarmd korganizer"
+
 do_configure_prepend() {
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat microkde libical/src/libical libical/src/libicalss libkcal libkdepim kalarmd korganizer\n" >all.pro
-        mv -f libical/src/libical/ical.pro libical/src/libical/libical.pro
-        mv -f libical/src/libicalss/icalss.pro libical/src/libicalss/libicalss.pro
-        mv -f libkcal/kcal.pro libkcal/libkcal.pro
-        mv -f libkdepim/kdepim.pro libkdepim/libkdepim.pro
+	echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
+	for d in ${SUBDIRS}
+	do
+		mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
+	done
 }
 
 do_install() {
