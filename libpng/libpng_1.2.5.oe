@@ -24,6 +24,7 @@ do_compile() {
 }
 
 do_stage() {
+	cp libpng.pc libpng12.pc
 	install -m 644 png.h ${STAGING_INCDIR}/png.h
 	install -m 644 pngconf.h ${STAGING_INCDIR}/pngconf.h
 	oe_soinstall libpng12.so.0.${PV} ${STAGING_LIBDIR}/
