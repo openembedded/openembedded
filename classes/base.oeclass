@@ -321,7 +321,6 @@ python base_do_patch() {
 			efile = local
 		efile = oe.data.expand(efile, d)
 		patches_dir = oe.data.expand(oe.data.getVar('PATCHES_DIR', d), d)
-		print "PATCHES_DIR", patches_dir
 		oe.mkdirhier(patches_dir + "/.patches")
 		os.chdir(patches_dir)
 		cmd = "PATH=\"%s\" patcher" % oe.data.getVar("PATH", d, 1)
