@@ -1,3 +1,5 @@
+LICENSE = GPL
+
 DEPENDS=virtual/libc zlib ncurses
 
 SRC_URI := http://ftp.cwi.nl/aeb/util-linux/util-linux-2.12.tar.gz
