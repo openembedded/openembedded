@@ -3,6 +3,10 @@ PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS=libc6 libjpeg libpng3 zlib1g
 DEPENDS=virtual/libc jpeg libpng zlib
+FILES_directfb_append=' ${libdir}/directfb-${PV}/systems/*.so \
+			${libdir}/directfb-${PV}/inputdrivers/*.so \
+			${libdir}/directfb-${PV}/interfaces/*/*.so \
+			${datadir}/directfb-${PV}'
 
 SRC_URI=http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz;
 S=${WORKDIR}/DirectFB-${PV}

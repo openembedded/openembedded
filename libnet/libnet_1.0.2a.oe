@@ -8,6 +8,8 @@ S := ${WORKDIR}/Libnet-1.0.2a
 inherit autotools
 
 CPPFLAGS_prepend = "-I${S}/libnet/include -DHAVE_PF_PACKET "
+EXTRA_OEMAKE="'LIB_PREFIX=${libdir}/' 'MAN_PREFIX=${mandir}/' \
+	      'BIN_PREFIX=${bindir}/' 'INC_PREFIX=${includedir}/'"
 
 do_stage () {
 	install -m 0755 libnet-config ${STAGING_BINDIR}/

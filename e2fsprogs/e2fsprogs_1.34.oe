@@ -14,7 +14,6 @@ SRC_URI=${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF='--with-ldopts="${LDFLAGS}"'
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
 	( cd util; ${BUILD_CC} subst.c -o subst )

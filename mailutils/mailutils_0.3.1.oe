@@ -4,6 +4,6 @@ RDEPENDS = libc6
 SRC_URI := ${GNU_MIRROR}/mailutils/mailutils-0.3.1.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1
 
-inherit autotools
+inherit autotools libtool
 
 EXTRA_OECONF = --disable-pam --without-guile

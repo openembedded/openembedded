@@ -4,6 +4,7 @@ PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc 
+FILES_e2fsprogs-libs-dev_append=" ${datadir}/et ${datadir}/ss"
 
 SRC_URI=${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 	file://${FILESDIR}/configure.patch;patch=1 \

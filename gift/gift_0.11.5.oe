@@ -1,0 +1,10 @@
+DEPENDS = virtual/libc libvorbis libogg
+RDEPENDS = libc6 libvorbis libogg
+FILES_gift_append = ' ${datadir}/giFT'
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/gift/gift-${PV}.tar.bz2
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--with-vorbis-libraries=${STAGING_LIBDIR} \
+		--with-vorbis-includes=${STAGING_INCDIR}'
