@@ -1,0 +1,262 @@
+PROVIDES_append = "virtual/kernel"
+DEPENDS_append = "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
+
+export ARCH = "${TARGET_ARCH}"
+export OS = "${TARGET_OS}"
+export CROSS_COMPILE = "${TARGET_PREFIX}"
+KERNEL_IMAGETYPE = "zImage"
+
+KERNEL_PRIORITY = "${@oe.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
+
+KERNEL_CCSUFFIX ?= ""
+KERNEL_LDSUFFIX ?= ""
+
+KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
+KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
+
+kernel_do_compile() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	oe_runmake dep CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	if (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
+		oe_runmake modules  CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	else
+		oenote "no modules to compile"
+	fi
+}
+
+kernel_do_stage() {
+	install -d ${STAGING_KERNEL_DIR}/include/{asm,asm-generic,linux,net,pcmcia}
+	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
+	cp -fR include/asm/* ${STAGING_KERNEL_DIR}/include/asm/
+	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
+	cp -fR include/net/* ${STAGING_KERNEL_DIR}/include/net/
+	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
+	install -m 0644 .config ${STAGING_KERNEL_DIR}/config-${PV}
+	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/.config
+	ln -sf config-${PV} ${STAGING_KERNEL_DIR}/kernel-config
+	echo "${PV}" >${STAGING_KERNEL_DIR}/kernel-version
+	echo "${S}" >${STAGING_KERNEL_DIR}/kernel-source
+	echo "${KERNEL_CCSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ccsuffix
+	echo "${KERNEL_LDSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ldsuffix
+	[ -e Rules.make ] && install -m 0644 Rules.make ${STAGING_KERNEL_DIR}/
+	[ -e Makefile ] && install -m 0644 Makefile ${STAGING_KERNEL_DIR}/
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
+}
+
+kernel_do_install() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	if (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
+		oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" modules_install
+	else
+		oenote "no modules to install"
+	fi
+	install -d ${D}/boot
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${D}/boot/${KERNEL_IMAGETYPE}-${PV}
+	install -m 0644 System.map ${D}/boot/System.map-${PV}
+	install -m 0644 .config ${D}/boot/config-${PV}
+	install -d ${D}/etc/modutils
+}
+
+kernel_do_configure() {
+        yes '' | oe_runmake oldconfig
+}
+
+pkg_postinst_kernel () {
+	update-alternatives --install /boot/zImage zImage /boot/zImage-${PV} ${KERNEL_PRIORITY} || true
+}
+
+pkg_postrm_kernel () {
+	update-alternatives --remove zImage /boot/zImage-${PV} || true
+}
+
+inherit cml1
+
+EXPORT_FUNCTIONS do_compile do_install do_stage do_configure
+
+PACKAGES = "kernel"
+FILES = ""
+FILES_kernel = "/boot"
+
+pkg_postinst_modules () {
+if [ -n "$D" ]; then
+	VER=${PV}
+	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} $VER
+else
+	depmod -A
+	update-modules
+fi
+}
+
+autoload_postinst_fragment() {
+if [ x"$D" = "x" ]; then
+	modprobe %s
+fi
+}
+
+# defaults
+module_autoload_ipv6 = "ipv6"
+module_autoload_ipsec = "ipsec"
+module_conf_bluez = "alias net-pf-31 bluez"
+module_conf_l2cap = "alias bt-proto-0 l2cap"
+module_conf_sco = "alias bt-proto-2 sco"
+module_conf_rfcomm = "alias bt-proto-3 rfcomm"
+module_conf_bnep = "alias bt-proto-4 bnep"
+module_conf_hci_uart = "alias tty-ldisc-15 hci_uart"
+
+python populate_packages_prepend () {
+	def extract_modinfo(file):
+		import os, re
+		tmpfile = os.tmpnam()
+		cmd = "PATH=\"%s\" %sobjcopy -j .modinfo -O binary %s %s" % (oe.data.getVar("PATH", d, 1), oe.data.getVar("HOST_PREFIX", d, 1) or "", file, tmpfile)
+		os.system(cmd)
+		f = open(tmpfile)
+		l = f.read().split("\000")
+		f.close()
+		os.unlink(tmpfile)
+		exp = re.compile("([^=]+)=(.*)")
+		vals = {}
+		for i in l:
+			m = exp.match(i)
+			if not m:
+				continue
+			vals[m.group(1)] = m.group(2)
+		return vals
+	
+	def parse_depmod():
+		import os, re
+
+		dvar = oe.data.getVar('D', d, 1)
+		if not dvar:
+			oe.error("D not defined")
+			return
+
+		kernelver = oe.data.getVar('PV', d, 1)
+		kernelver_stripped = kernelver
+		m = re.match('^(.*-hh.*)\..*$', kernelver)
+		if m:
+			kernelver_stripped = m.group(1)
+		path = oe.data.getVar("PATH", d, 1)
+		host_prefix = oe.data.getVar("HOST_PREFIX", d, 1) or ""
+
+		cmd = "PATH=\"%s\" %sdepmod -n -a -r -b %s -F %s/boot/System.map-%s %s" % (path, host_prefix, dvar, dvar, kernelver, kernelver_stripped)
+		f = os.popen(cmd, 'r')
+
+		deps = {}
+		pattern0 = "^(.*\.o):..*$"
+		pattern1 = "^(.*\.o):\t(.*\.o)$"
+		pattern2 = "^(.*\.o):\t(.*\.o) \\\$"
+		pattern3 = "^\t(.*\.o) \\\$"
+		pattern4 = "^\t(.*\.o)$"
+
+		line = f.readline()
+		while line:
+			if not re.match(pattern0, line):
+				line = f.readline()
+				continue
+			m1 = re.match(pattern1, line)
+			if m1:
+				deps[m1.group(1)] = [m1.group(2)]
+			else:
+				m2 = re.match(pattern2, line)
+				if m2:
+					deps[m2.group(1)] = [m2.group(2)]
+					line = f.readline()
+					m3 = re.match(pattern3, line)
+					while m3:
+						deps[m2.group(1)].append(m3.group(1))
+						line = f.readline()
+						m3 = re.match(pattern3, line)
+					m4 = re.match(pattern4, line)
+					deps[m2.group(1)].append(m4.group(1))
+			line = f.readline()
+		f.close()
+		return deps
+	
+	def get_dependencies(file, pattern, format):
+		file = file.replace(oe.data.getVar('D', d, 1) or '', '', 1)
+
+		if module_deps.has_key(file):
+			import os.path, re
+			dependencies = []
+			for i in module_deps[file]:
+				m = re.match(pattern, os.path.basename(i))
+				if not m:
+					continue
+				on = m.group(1).lower().replace('_', '+').replace('@', '+')
+				dependencies.append(format % on)
+			return dependencies
+		return []
+
+	def frob_metadata(file, pkg, pattern, format, basename):
+		import re
+		vals = extract_modinfo(file)
+
+		dvar = oe.data.getVar('D', d, 1)
+
+		# If autoloading is requested, output /etc/modutils/<name> and append
+		# appropriate modprobe commands to the postinst
+		autoload = oe.data.getVar('module_autoload_%s' % basename, d, 1)
+		if autoload:
+			name = '%s/etc/modutils/%s' % (dvar, basename)
+			f = open(name, 'w')
+			for m in autoload.split():
+				f.write('%s\n' % m)
+			f.close()
+			postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1)
+			if not postinst:
+				oe.fatal("pkg_postinst_%s not defined" % pkg)
+			postinst += oe.data.getVar('autoload_postinst_fragment', d, 1) % autoload
+			oe.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
+
+		# Write out any modconf fragment
+		modconf = oe.data.getVar('module_conf_%s' % basename, d, 1)
+		if modconf:
+			name = '%s/etc/modutils/%s.conf' % (dvar, basename)
+			f = open(name, 'w')
+			f.write("%s\n" % modconf)
+			f.close()
+
+		files = oe.data.getVar('FILES_%s' % pkg, d, 1)
+		files = "%s %s/etc/modutils/%s %s/etc/modutils/%s.conf" % (files, dvar, basename, dvar, basename)
+		oe.data.setVar('FILES_%s' % pkg, files, d)
+
+		if vals.has_key("description"):
+			old_desc = oe.data.getVar('DESCRIPTION_' + pkg, d, 1) or ""
+			oe.data.setVar('DESCRIPTION_' + pkg, old_desc + "; " + vals["description"], d)
+
+		rdepends_str = oe.data.getVar('RDEPENDS_' + pkg, d, 1)
+		if rdepends_str:
+			rdepends = rdepends_str.split()
+		else:
+			rdepends = []
+		rdepends.extend(get_dependencies(file, pattern, format))
+		oe.data.setVar('RDEPENDS_' + pkg, ' '.join(rdepends), d)
+
+	module_deps = parse_depmod()
+	module_regex = '^(.*)\.k?o$'
+	module_pattern = 'kernel-module-%s'
+
+	postinst = oe.data.getVar('pkg_postinst_modules', d, 1)
+	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, recursive=True, hook=frob_metadata, extra_depends='update-modules')
+
+	import re, os
+	metapkg = "kernel-modules"
+	oe.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
+	oe.data.setVar('FILES_' + metapkg, "", d)
+	blacklist = []
+	for l in module_deps.values():
+		for i in l:
+			pkg = module_pattern % re.match(module_regex, os.path.basename(i)).group(1).lower().replace('_', '+').replace('@', '+')
+			blacklist.append(pkg)
+	metapkg_rdepends = []
+	packages = oe.data.getVar('PACKAGES', d, 1).split()
+	for pkg in packages[1:]:
+		if not pkg in blacklist and not pkg in metapkg_rdepends:
+			metapkg_rdepends.append(pkg)
+	oe.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
+	oe.data.setVar('DESCRIPTION_' + metapkg, 'Kernel modules meta package', d)
+	packages.append(metapkg)
+	oe.data.setVar('PACKAGES', ' '.join(packages), d)
+}

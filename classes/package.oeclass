@@ -1,0 +1,414 @@
+def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None):
+	import os, os.path, oe
+
+	dvar = oe.data.getVar('D', d, 1)
+	if not dvar:
+		oe.error("D not defined")
+		return
+
+	packages = oe.data.getVar('PACKAGES', d, 1).split()
+	if not packages:
+		# nothing to do
+		return
+
+	if postinst:
+		postinst = '#!/bin/sh\n' + postinst
+	if not recursive:
+		objs = os.listdir(dvar + root)
+	else:
+		objs = []
+		for walkroot, dirs, files in os.walk(dvar + root):
+			for file in files:
+				relpath = os.path.join(walkroot, file).replace(dvar + root + '/', '', 1)
+				if relpath:
+					objs.append(relpath)
+
+	if extra_depends == None:
+		extra_depends = oe.data.getVar('PKG_' + packages[0], d, 1) or packages[0]
+
+	for o in objs:
+		import re, stat
+		m = re.match(file_regex, os.path.basename(o))
+		if not m:
+			continue
+		f = os.path.join(dvar + root, o)
+		if not stat.S_ISREG(os.lstat(f).st_mode):
+			continue
+		on = m.group(1).lower().replace('_', '+').replace('@', '+')
+		pkg = output_pattern % on
+		if not pkg in packages:
+			packages.append(pkg)
+			if aux_files_pattern:
+				oe.data.setVar('FILES_' + pkg, "%s %s" % (os.path.join(root, o), aux_files_pattern % on), d)
+			else:
+				oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			if extra_depends != '':
+				oe.data.setVar('RDEPENDS_' + pkg, extra_depends, d)
+			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			if postinst:
+				oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
+		else:
+			oldfiles = oe.data.getVar('FILES_' + pkg, d, 1)
+			if not oldfiles:
+				oe.fatal("Package '%s' exists but has no files" % pkg)
+			oe.data.setVar('FILES_' + pkg, oldfiles + " " + os.path.join(root, o), d)
+		if callable(hook):
+			hook(f, pkg, file_regex, output_pattern, m.group(1))
+
+	oe.data.setVar('PACKAGES', ' '.join(packages), d)
+
+python populate_packages () {
+	import glob, copy, stat, errno, re
+
+	workdir = oe.data.getVar('WORKDIR', d, 1)
+	if not workdir:
+		oe.error("WORKDIR not defined, unable to package")
+		return
+
+	import os # path manipulations
+	outdir = oe.data.getVar('DEPLOY_DIR', d, 1)
+	if not outdir:
+		oe.error("DEPLOY_DIR not defined, unable to package")
+		return
+	oe.mkdirhier(outdir)
+
+	dvar = oe.data.getVar('D', d, 1)
+	if not dvar:
+		oe.error("D not defined, unable to package")
+		return
+	oe.mkdirhier(dvar)
+
+	packages = oe.data.getVar('PACKAGES', d, 1)
+	if not packages:
+		oe.debug(1, "PACKAGES not defined, nothing to package")
+		return
+
+	pn = oe.data.getVar('PN', d, 1)
+	if not pn:
+		oe.error("PN not defined")
+		return
+
+	os.chdir(dvar)
+
+	def isexec(path):
+		try:
+			s = os.stat(path)
+		except (os.error, AttributeError):
+			return 0
+		return (s[stat.ST_MODE] & stat.S_IEXEC)
+
+	for pkg in packages.split():
+		localdata = copy.deepcopy(d)
+		root = os.path.join(workdir, "install", pkg)
+
+		oe.data.setVar('ROOT', '', localdata)
+		oe.data.setVar('ROOT_%s' % pkg, root, localdata)
+		pkgname = oe.data.getVar('PKG_%s' % pkg, localdata, 1)
+		if not pkgname:
+			pkgname = pkg
+		oe.data.setVar('PKG', pkgname, localdata)
+
+		overrides = oe.data.getVar('OVERRIDES', localdata, 1)
+		if not overrides:
+			raise oe.build.FuncFailed('OVERRIDES not defined')
+		oe.data.setVar('OVERRIDES', overrides+':'+pkg, localdata)
+
+		oe.data.update_data(localdata)
+
+		root = oe.data.getVar('ROOT', localdata, 1)
+		oe.mkdirhier(root)
+		filesvar = oe.data.getVar('FILES', localdata, 1) or ""
+		files = filesvar.split()
+		stripfunc = ""
+		for file in files:
+			if os.path.isabs(file):
+				file = '.' + file
+			if not os.path.islink(file):
+				if os.path.isdir(file):
+					newfiles =  [ os.path.join(file,x) for x in os.listdir(file) ]
+					if newfiles:
+						files += newfiles
+						continue
+			globbed = glob.glob(file)
+			if globbed:
+				if [ file ] != globbed:
+					files += globbed
+					continue
+			if (not os.path.islink(file)) and (not os.path.exists(file)):
+				continue
+			fpath = os.path.join(root,file)
+			dpath = os.path.dirname(fpath)
+			oe.mkdirhier(dpath)
+			if (oe.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1') and not os.path.islink(file) and isexec(file):
+				stripfunc += "${STRIP} %s || : ;\n" % fpath
+			ret = oe.movefile(file,fpath)
+			if ret is None or ret == 0:
+				raise oe.build.FuncFailed("File population failed")
+		if not stripfunc == "":
+			from oe import build
+			# strip
+			oe.data.setVar('RUNSTRIP', '%s\nreturn 0' % stripfunc, localdata)
+			oe.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
+			oe.build.exec_func('RUNSTRIP', localdata)
+		del localdata
+	os.chdir(workdir)
+
+	unshipped = []
+	for root, dirs, files in os.walk(dvar):
+		for f in files:
+			path = os.path.join(root[len(dvar):], f)
+			unshipped.append(path)
+
+	if unshipped != []:
+		oe.note("the following files were installed but not shipped in any package:")
+		for f in unshipped:
+			oe.note("  " + f)
+
+	oe.build.exec_func("package_name_hook", d)
+
+	dangling_links = {}
+	pkg_files = {}
+	for pkg in packages.split():
+		dangling_links[pkg] = []
+		pkg_files[pkg] = []
+		inst_root = os.path.join(workdir, "install", pkg)
+		for root, dirs, files in os.walk(inst_root):
+			for f in files:
+				path = os.path.join(root, f)
+				rpath = path[len(inst_root):]
+				pkg_files[pkg].append(rpath)
+				try:
+					s = os.stat(path)
+				except OSError, (err, strerror):
+					if err != errno.ENOENT:
+						raise
+					target = os.readlink(path)
+					if target[0] != '/':
+						target = os.path.join(root[len(inst_root):], target)
+					dangling_links[pkg].append(target)
+
+	for pkg in packages.split():
+		for l in dangling_links[pkg]:
+			oe.debug(1, "%s contains dangling link %s" % (pkg, l))
+			for p in packages.split():
+				for f in pkg_files[p]:
+					if f == l:
+						oe.debug(1, "target found in %s" % p)
+						rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
+						rdepends.append(oe.data.getVar('PKG_' + p, d, 1) or p)
+						oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+						break
+
+	def write_if_exists(f, pkg, var):
+		val = oe.data.getVar('%s_%s' % (var, pkg), d, 1)
+		if val:
+			f.write('%s_%s: %s\n' % (var, pkg, val))
+
+	data_file = os.path.join(workdir, "install", pn + ".package")
+	f = open(data_file, 'w')
+	f.write("PACKAGES: %s\n" % packages)
+	for pkg in packages.split():
+		write_if_exists(f, pkg, 'DESCRIPTION')
+		write_if_exists(f, pkg, 'RDEPENDS')
+		write_if_exists(f, pkg, 'RPROVIDES')
+		write_if_exists(f, pkg, 'PKG')
+		write_if_exists(f, pkg, 'ALLOW_EMPTY')
+		write_if_exists(f, pkg, 'FILES')
+		write_if_exists(f, pkg, 'pkg_postinst')
+	f.close()
+	oe.build.exec_func("read_subpackage_metadata", d)
+}
+
+python package_do_shlibs() {
+	import os, re, os.path
+
+	lib_re = re.compile("^lib.*\.so")
+	libdir_re = re.compile(".*/lib$")
+
+	packages = oe.data.getVar('PACKAGES', d, 1)
+	if not packages:
+		oe.note("no packages to build; not calculating shlibs")
+		return
+
+	workdir = oe.data.getVar('WORKDIR', d, 1)
+	if not workdir:
+		oe.error("WORKDIR not defined")
+		return
+
+	staging = oe.data.getVar('STAGING_DIR', d, 1)
+	if not staging:
+		oe.error("STAGING_DIR not defined")
+		return
+
+	ver = oe.data.getVar('PV', d, 1)
+	if not ver:
+		oe.error("PV not defined")
+		return
+
+	needed = {}
+	for pkg in packages.split():
+		needs_ldconfig = False
+		oe.debug(2, "calculating shlib provides for %s" % pkg)
+
+		pkgname = oe.data.getVar('PKG_%s' % pkg, d, 1)
+		if not pkgname:
+			pkgname = pkg
+
+		needed[pkg] = []
+		sonames = list()
+		top = os.path.join(workdir, "install", pkg)
+		for root, dirs, files in os.walk(top):
+			for file in files:
+				soname = None
+				path = os.path.join(root, file)
+				if os.access(path, os.X_OK) or lib_re.match(file):
+					cmd = (oe.data.getVar('BUILD_PREFIX', d, 1) or "") + "objdump -p " + path + " 2>/dev/null"
+					fd = os.popen(cmd)
+					lines = fd.readlines()
+					fd.close()
+					for l in lines:
+						m = re.match("\s+NEEDED\s+([^\s]*)", l)
+						if m:
+							needed[pkg].append(m.group(1))
+						m = re.match("\s+SONAME\s+([^\s]*)", l)
+						if m and not m.group(1) in sonames:
+							sonames.append(m.group(1))
+						if m and libdir_re.match(root):
+							needs_ldconfig = True
+		shlibs_dir = os.path.join(staging, "shlibs")
+		oe.mkdirhier(shlibs_dir)
+		shlibs_file = os.path.join(shlibs_dir, pkgname + ".list")
+		if os.path.exists(shlibs_file):
+			os.remove(shlibs_file)
+		shver_file = os.path.join(shlibs_dir, pkgname + ".ver")
+		if os.path.exists(shver_file):
+			os.remove(shver_file)
+		if len(sonames):
+			fd = open(shlibs_file, 'w')
+			for s in sonames:
+				fd.write(s + '\n')
+			fd.close()
+			fd = open(shver_file, 'w')
+			fd.write(ver + '\n')
+			fd.close()
+		if needs_ldconfig:
+			oe.note('adding ldconfig call to postinst for %s' % pkg)
+			postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1) or oe.data.getVar('pkg_postinst', d, 1)
+			if not postinst:
+				postinst = '#!/bin/sh\n'
+			postinst += 'ldconfig\n'
+			oe.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
+
+	for pkg in packages.split():
+		oe.debug(2, "calculating shlib requirements for %s" % pkg)
+
+		deps = list()
+		for n in needed[pkg]:
+			found = False
+			for file in os.listdir(shlibs_dir):
+				m = re.match('^(.*)\.list$', file)
+				if m:
+					dep_pkg = m.group(1)
+					fd = open(os.path.join(shlibs_dir, file))
+					lines = fd.readlines()
+					fd.close()
+					for l in lines:
+						if n == l.rstrip():
+							if dep_pkg == pkg:
+								found = True
+								continue
+							ver_file = os.path.join(shlibs_dir, dep_pkg + '.ver')
+							ver_needed = None
+							if os.path.exists(ver_file):
+								fd = open(ver_file)
+								ver_needed = fd.readline().rstrip()
+								fd.close()
+							if ver_needed:
+								dep = "%s (>= %s)" % (dep_pkg, ver_needed)
+							else:
+								dep = dep_pkg
+							if not dep in deps:
+								deps.append(dep)
+							found = True
+			if found == False:
+				oe.note("Couldn't find shared library provider for %s" % n)
+
+		deps_file = os.path.join(workdir, "install", pkg + ".shlibdeps")
+		if os.path.exists(deps_file):
+			os.remove(deps_file)
+		if len(deps):
+			fd = open(deps_file, 'w')
+			for dep in deps:
+				fd.write(dep + '\n')
+			fd.close()
+
+	oe.build.exec_func("read_shlibdeps", d)
+}
+
+python package_do_split_locales() {
+	import os
+
+	if (oe.data.getVar('PACKAGE_NO_LOCALE', d, 1) == '1'):
+		oe.note("package requested not splitting locales")
+		return
+
+	packages = (oe.data.getVar('PACKAGES', d, 1) or "").split()
+	if not packages:
+		oe.note("no packages to build; not splitting locales")
+		return
+
+	datadir = oe.data.getVar('datadir', d, 1)
+	if not datadir:
+		oe.note("datadir not defined")
+		return
+
+	dvar = oe.data.getVar('D', d, 1)
+	if not dvar:
+		oe.error("D not defined")
+		return
+
+	pn = oe.data.getVar('PN', d, 1)
+	if not pn:
+		oe.error("PN not defined")
+		return
+
+	if pn + '-locale' in packages:
+		packages.remove(pn + '-locale')
+
+	localedir = os.path.join(dvar + datadir, 'locale')
+
+	if not os.path.isdir(localedir):
+		oe.note("No locale files in this package")
+		return
+
+	locales = os.listdir(localedir)
+
+	mainpkg = packages[0]
+
+	for l in locales:
+		ln = l.lower().replace('_', '+').replace('@', '+')
+		pkg = pn + '-locale-' + ln
+		packages.append(pkg)
+		oe.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
+		oe.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg, ln), d)
+		oe.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
+		oe.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
+
+	oe.data.setVar('PACKAGES', ' '.join(packages), d)
+
+	rdep = (oe.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "").split()
+	rdep.append('%s-locale*' % pn)
+	oe.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
+}
+
+python package_do_package () {
+	oe.build.exec_func('do_install', d)
+	oe.build.exec_func('package_do_split_locales', d)
+	oe.build.exec_func('populate_packages', d)
+	oe.build.exec_func('package_do_shlibs', d)
+}
+
+do_package[dirs] = "${D}"
+populate_packages[dirs] = "${D}"
+EXPORT_FUNCTIONS do_package do_shlibs do_split_locales
+addtask package before do_build after do_populate_staging
