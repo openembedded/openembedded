@@ -1,0 +1,19 @@
+inherit gpe
+
+DEPENDS = "gtk+ librsvg"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
+	file://errno.patch;patch=1;pnum=0 \
+	file://splash-p.svg file://splash-l.svg"
+
+FILES_${PN} += "${datadir}/gpe"
+
+do_install_append() {
+	install -m 0644 ${WORKDIR}/splash-p.svg ${D}${datadir}/gpe/splash-p.svg
+	install -m 0644 ${WORKDIR}/splash-l.svg ${D}${datadir}/gpe/splash-l.svg
+	mv ${D}/etc/rcS.d/S00bootsplash ${D}/etc/rcS.d/S02bootsplash
+}
+
