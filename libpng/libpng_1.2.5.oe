@@ -31,7 +31,7 @@ do_stage() {
 	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so
 }
 
-do_install () {
+do_install() {
 	install -d ${D}/${bindir} ${D}/${mandir} \
 		   ${D}/${libdir} ${D}/${includedir}
 	unset LDFLAGS
@@ -41,7 +41,8 @@ do_install () {
 		   install
 }
 
-python do_package_prepend() {
-	if oe.data.getVar('DEBIAN_NAMES', d, 1):
-		oe.data.setVar('PKG_${PN}', 'libpng12', d)
+python do_package() {
+ 	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+ 		oe.data.setVar('PKG_${PN}', 'libpng12', d)
+	oe.build.exec_func('package_do_package', d)
 }
