@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 DEPENDS = "db3 perl-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1 \
@@ -22,7 +22,7 @@ do_configure() {
 	rm Makefile.SH.patch
 	cp ${WORKDIR}/Makefile.SH.patch .
 	cp ${WORKDIR}/config.sh-mipsel-linux .
-	cat config.sh-${TARGET_ARCH}-${TARGET_OS} | sed -e's,./install_me_here,${D},g' > config.sh-${TARGET_ARCH}-${TARGET_OS}.new
+	cat config.sh-${TARGET_ARCH}-${TARGET_OS} | sed -e's,./install_me_here,${D}/,g' > config.sh-${TARGET_ARCH}-${TARGET_OS}.new
 	mv config.sh-${TARGET_ARCH}-${TARGET_OS}.new config.sh-${TARGET_ARCH}-${TARGET_OS}
 	rm -f config
 	echo "ARCH = ${TARGET_ARCH}" > config

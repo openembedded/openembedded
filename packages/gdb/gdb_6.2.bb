@@ -2,6 +2,7 @@ DESCRIPTION = "gdb - GNU debugger"
 LICENSE="GPL"
 SECTION = "devel"
 PRIORITY = "optional"
+PR = "r1"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"
 
@@ -41,8 +42,8 @@ do_install () {
 	make -C bfd/doc chew LDFLAGS= CFLAGS=-O2
 	oe_runmake install \
 	    'prefix=${D}' 'exec_prefix=${D}' 'bindir=${D}${base_bindir}' \
-	    'sbindir=${D}${base_sbindir}' 'infodir=${D}share/info' 'libdir=${D}${base_libdir}' \
-	    'mandir=${D}share/man' 'includedir=${D}include'
+	    'sbindir=${D}${base_sbindir}' 'infodir=${D}/share/info' 'libdir=${D}${base_libdir}' \
+	    'mandir=${D}/share/man' 'includedir=${D}/include'
 	install -d ${D}${bindir}
 	install -m 0755 gdb/gdbserver/gdbserver ${D}${bindir}
 }

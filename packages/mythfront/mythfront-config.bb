@@ -1,4 +1,5 @@
 PV = "1.7"
+PR = "r1"
 
 DEPENDS = "xfonts-xorg"
 RDEPENDS_${PN} = "xfonts-xorg"
@@ -19,8 +20,8 @@ do_install() {
 
 	ln -sf /var/lib/config/lircd.conf ${D}${sysconfdir}/lircd.conf
 
-	install -d ${D}dev
-	ln -sf lirc0 ${D}dev/lirc
+	install -d ${D}/dev
+	ln -sf lirc0 ${D}/dev/lirc
 
 	if [ -f ${WORKDIR}/serial.sh ]; then
 		install -d ${D}${sysconfdir}/init.d

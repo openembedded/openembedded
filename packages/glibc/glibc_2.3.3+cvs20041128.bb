@@ -14,6 +14,8 @@ GLIBC_EXTRA_OECONF ?= ""
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_i686 = "0"
 DEFAULT_PREFERENCE_i586 = "0"
+DEFAULT_PREFERENCE_sh3 = "0"
+DEFAULT_PREFERENCE_sh4 = "0"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one

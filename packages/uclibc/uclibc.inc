@@ -152,16 +152,23 @@ do_install() {
 	# This conflicts with the c++ version of this header
 	rm -f ${D}${prefix}/include/bits/atomicity.h
 
-	install -d ${D}${includedir}
-	mv ${D}${prefix}/include/* ${D}${includedir}/
-	rmdir ${D}${prefix}/include
+	# ugh.. uclibc doesn't like obeying our path variables.
+	if [ "${includedir}" != "${prefix}/include" ]; then
+		install -d ${D}${includedir}
+		mv ${D}${prefix}/include/* ${D}${includedir}/
+		rmdir ${D}${prefix}/include
+	fi
 
-	install -d ${D}${libdir}
-	mv ${D}${prefix}/lib/* ${D}${libdir}/
-	rmdir ${D}${prefix}/lib
+	if [ "${libdir}" != "${prefix}/lib" ]; then
+		install -d ${D}${libdir}
+		mv ${D}${prefix}/lib/* ${D}${libdir}/
+		rmdir ${D}${prefix}/lib
+	fi
 
-	install -d ${D}${bindir}
-	mv ${D}usr/bin/* ${D}${bindir}/
-	rmdir ${D}usr/bin
+	if [ "${bindir}" != "/usr/bin" ]; then
+		install -d ${D}${bindir}
+		mv ${D}/usr/bin/* ${D}${bindir}/
+		rmdir ${D}/usr/bin
+	fi
 }
 

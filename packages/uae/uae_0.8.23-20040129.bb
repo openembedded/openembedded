@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://rcdrummond.net/uae/uae-${PV}/uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1 \
@@ -30,6 +31,6 @@ do_install_append() {
 # Either update a global config in /etc, install it into /etc/skel/ for
 # new users homedirs, rely on the user installing it to put it in place,
 # or dont install it at all.  --CL
-#	install -d ${D}home/root
-#	install ${FILESDIR}/uaerc ${D}home/root/.uaerc
+#	install -d ${D}/home/root
+#	install ${FILESDIR}/uaerc ${D}/home/root/.uaerc
 }

@@ -3,6 +3,7 @@ DESCRIPTION = "A security-aware DNS server"
 HOMEPAGE = "http://www.maradns.org"
 LICENSE = "PD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+PR = "r1"
 
 SRC_URI = "http://www.maradns.org/download/maradns-${PV}.tar.bz2 \
 	file://init \
@@ -26,7 +27,7 @@ do_install() {
                 TOPLEVEL=${S} \
                 BUILDDIR=${S}/build \
                 RPM_BUILD_ROOT=${D} \
-                PREFIX=${D}usr \
+                PREFIX=${D}/usr \
                 MAN1=${D}${mandir}/man1 \
                 MAN5=${D}${mandir}/man5 \
                 MAN8=${D}${mandir}/man8 \

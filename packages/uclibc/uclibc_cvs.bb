@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-PR = "r7"
+PR = "r8"
 
 include uclibc.inc
 

@@ -7,7 +7,7 @@ LICENSE = "GPL"
 RDEPENDS = "opie-sh"
 
 
-PR = "r1"
+PR = "r2"
 
 FILES_${PN} = "/opt/QtPalmtop"
 
@@ -20,10 +20,10 @@ do_install() {
 
 	for dir in apps apps/Games bin pics
 	do
-		install -d ${D}opt/QtPalmtop/$dir
+		install -d ${D}${palmtopdir}/$dir
 	done
 	
-	install -m 755 ${WORKDIR}/opie-sh-snes.sh ${D}opt/QtPalmtop/bin
-	install -m 644 ${WORKDIR}/*.png ${D}opt/QtPalmtop/pics
-	install -m 644 ${WORKDIR}/*.desktop ${D}opt/QtPalmtop/apps/Games
+	install -m 755 ${WORKDIR}/opie-sh-snes.sh ${D}${palmtopdir}/bin
+	install -m 644 ${WORKDIR}/*.png ${D}${palmtopdir}/pics
+	install -m 644 ${WORKDIR}/*.desktop ${D}${palmtopdir}/apps/Games
 }	   

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges <coredump@handhelds.org>"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://icon-reload.desktop \
 	   file://icon-reload.sh \
@@ -13,12 +13,12 @@ SRC_URI = "file://icon-reload.desktop \
 FILES_${PN} += "/opt"
 
 do_install() {		
-	install -d ${D}opt/QtPalmtop/apps/Settings
-	install -d ${D}opt/QtPalmtop/bin
-	install -d ${D}opt/QtPalmtop/pics
+	install -d ${D}${palmtopdir}/apps/Settings
+	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${palmtopdir}/pics
 	
-	install -m 0644 ${WORKDIR}/icon-reload.desktop ${D}opt/QtPalmtop/apps/Settings
-	install -m 0755 ${WORKDIR}/icon-reload.sh ${D}opt/QtPalmtop/bin
-	install -m 0644 ${WORKDIR}/reload.png ${D}opt/QtPalmtop/pics	
+	install -m 0644 ${WORKDIR}/icon-reload.desktop ${D}${palmtopdir}/apps/Settings
+	install -m 0755 ${WORKDIR}/icon-reload.sh ${D}${palmtopdir}/bin
+	install -m 0644 ${WORKDIR}/reload.png ${D}${palmtopdir}/pics	
 }
 

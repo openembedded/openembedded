@@ -1,5 +1,6 @@
 SECTION = "x11/base"
 LICENSE = "BSD-X"
+PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/xprint/xprint_mozdev_org_source-2004-07-07-release_009_001.tar.gz \
 	file://imake-staging.patch;patch=1"
 
@@ -22,7 +23,7 @@ do_compile() {
 do_install() {
 	make -C programs/Xserver DESTDIR="${D}" install
 	install -d ${D}${bindir}/
-	mv ${D}usr/X11R6/bin/* ${D}${bindir}/
-	rmdir ${D}usr/X11R6/bin/
+	mv ${D}/usr/X11R6/bin/* ${D}${bindir}/
+	rmdir ${D}/usr/X11R6/bin/
 }
 

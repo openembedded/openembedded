@@ -6,7 +6,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 RCV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 MMV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 LV = "2.6.10"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2 \
            http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1 \
@@ -51,8 +51,8 @@ do_stage_prepend() {
 do_install() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
         #oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" modules_install
-        install -d ${D}boot
-        install -m 0755 linux ${D}boot/linux-${PV}
-        install -m 0644 System.map ${D}boot/System.map-${PV}
-        install -m 0644 .config ${D}boot/config-${PV}
+        install -d ${D}/boot
+        install -m 0755 linux ${D}/boot/linux-${PV}
+        install -m 0644 System.map ${D}/boot/System.map-${PV}
+        install -m 0644 .config ${D}/boot/config-${PV}
 }

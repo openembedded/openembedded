@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lirc_sir-sa1100.patch;patch=1"
@@ -27,7 +27,7 @@ do_compile() {
 
 fakeroot do_install() {
 	oe_runmake -C drivers DESTDIR="${D}" moduledir="/lib/modules/${KERNEL_VERSION}/lirc" install
-	rm -rf ${D}dev
+	rm -rf ${D}/dev
 }
 
 pkg_postinst() {

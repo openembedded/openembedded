@@ -3,7 +3,7 @@ DESCRIPTION = "These utilities are intended to make a Linux modular kernel \
 manageable for all users, administrators and distribution maintainers."
 LICENSE = "GPLv2"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${PV}.tar.bz2 \
            file://lex.l.diff;patch=1 \
@@ -26,7 +26,7 @@ do_install () {
 	rm ${D}${base_sbindir}/lsmod
 	install -d ${D}${base_bindir}/
 	ln -s ../sbin/insmod ${D}${base_bindir}/lsmod
-        for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do                mv ${D}$f ${D}$f.24
+        for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do                mv ${D}/$f ${D}/$f.24
         done
 }
 

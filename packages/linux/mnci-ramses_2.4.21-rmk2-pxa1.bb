@@ -5,7 +5,7 @@ LICENSE = "GPL"
 KV = "2.4.21"
 RMKV = "2"
 PXAV = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   ftp://ftp.arm.linux.org.uk/pub/armlinux/source/kernel-patches/v2.4/patch-${KV}-rmk${RMKV}.gz;patch=1 \
@@ -56,10 +56,10 @@ kernel_do_install() {
 	else
 		oenote "no modules to install"
 	fi
-	install -d ${D}tmp
-	install -m 0644 ${KERNEL_OUTPUT} ${D}tmp
-	install -d ${D}boot
-	install -m 0644 .config ${D}boot/config-${PV}
-	bzip2 -9 ${D}boot/*
+	install -d ${D}/tmp
+	install -m 0644 ${KERNEL_OUTPUT} ${D}/tmp
+	install -d ${D}/boot
+	install -m 0644 .config ${D}/boot/config-${PV}
+	bzip2 -9 ${D}/boot/*
 	install -d ${D}${sysconfdir}/modutils
 }

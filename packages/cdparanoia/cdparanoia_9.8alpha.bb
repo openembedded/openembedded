@@ -2,6 +2,7 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+PR="r1"
 LICENSE="GPL"
 
 SRC_URI="http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-alpha9.8.src.tgz \
@@ -12,8 +13,8 @@ S="${WORKDIR}/cdparanoia-III-alpha9.8"
 inherit autotools
 
 do_install() {
-	oe_runmake BINDIR="${D}usr/bin" MANDIR="${D}usr/share/man/" \
-		   INCLUDEDIR="${D}usr/include/" LIBDIR="${D}usr/lib" install 
+	oe_runmake BINDIR="${D}/usr/bin" MANDIR="${D}/usr/share/man/" \
+		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" install 
 }
 
 do_stage() {

@@ -7,7 +7,7 @@ HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"
 DEPENDS = "virtual/libqpe lirc"
 RCONFLICTS = "irk-belkin"
 RREPLACES = "irk-belkin"
-PR = "r1"
+PR = "r2"
 REALV = "0.11.0"
 
 SRC_URI = "http://angela1.data-uncertain.co.uk/~zaurus/irk-${REALV}.tgz"
@@ -20,7 +20,7 @@ EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia INCLUDEPATH+=${STAGING_INCDIR}/lirc"
 do_install() {
 	install -d ${D}${sysconfdir}
 	install -d ${D}${palmtopdir}/plugins/inputmethods/
-	install -d ${D}home/root/Settings/
+	install -d ${D}/home/root/Settings/
 
 	install chicony.conf ${D}${sysconfdir}/lircd.conf
 	install IRK.conf ${D}${sysconfdir}

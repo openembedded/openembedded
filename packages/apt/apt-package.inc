@@ -47,9 +47,9 @@ def get_commands_apt_doc(d, bb, manpages):
 		dest = get_files_apt_doc(d, bb, m)
 		dir = os.path.dirname(dest)
 		if not dir in __dir_cache__:
-			s.append("install -d ${D}%s" % dir)
+			s.append("install -d ${D}/%s" % dir)
 			__dir_cache__.append(dir)
-		s.append("install -m 0644 %s ${D}%s" % (m, dest))
+		s.append("install -m 0644 %s ${D}/%s" % (m, dest))
 	return "\n".join(s)
 
 PACKAGES += "${PN}-utils ${PN}-utils-doc"

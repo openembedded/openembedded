@@ -3,6 +3,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"
+PR = "r1"
 SRC_URI = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-${PV}.tar.gz \
 	file://perl-make-options.diff;patch=1;pnum=0"
 
@@ -12,10 +13,10 @@ EXTRA_OECONF = "--enable-shared --enable-local-libpng --enable-local-zlib --prog
 
 do_install_append() {
 	install -d ${D}${docdir}/rrdtool/
-	mv ${D}usr/html ${D}${docdir}/rrdtool/
-	mv ${D}usr/doc/* ${D}${docdir}/rrdtool/
-	mv ${D}usr/examples ${D}${docdir}/rrdtool/
-	mv ${D}usr/contrib ${D}${docdir}/rrdtool/
+	mv ${D}/usr/html ${D}${docdir}/rrdtool/
+	mv ${D}/usr/doc/* ${D}${docdir}/rrdtool/
+	mv ${D}/usr/examples ${D}${docdir}/rrdtool/
+	mv ${D}/usr/contrib ${D}${docdir}/rrdtool/
 }
 
 FILES_${PN} += "${libdir}/perl"

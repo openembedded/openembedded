@@ -10,6 +10,7 @@ SRC_URI="http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
 DESCRIPTION="*The* screensaver package for X11"
 LICENSE="BSD"
 HOMEPAGE="http://www.jwz.org/xscreensaver/"
+PR = "r1"
 SECTION="x11-misc"
 
 DEPENDS="intltool x11 gtk+ libxml2 libglade"
@@ -43,8 +44,8 @@ do_install() {
 	oe_runmake -C ${S}/hacks install_prefix=${D} install-program
 
 	# Install the defaults file
-	install -d ${D}usr/X11R6/lib/X11/app-defaults
-	install -m 0644 ${WORKDIR}/XScreenSaver ${D}usr/X11R6/lib/X11/app-defaults
+	install -d ${D}/usr/X11R6/lib/X11/app-defaults
+	install -m 0644 ${WORKDIR}/XScreenSaver ${D}/usr/X11R6/lib/X11/app-defaults
 }
 
 python populate_packages_prepend () {

@@ -58,7 +58,7 @@ do_install () {
 		install -m 2755 -d ${D}$d
 	done
 	for d in card cf net ram; do
-		ln -sf /media/$d ${D}mnt/$d
+		ln -sf /media/$d ${D}/mnt/$d
 	done
 
 	if [ -n "${MACHINE}" -a "${hostname}" = "openembedded" ]; then
@@ -138,15 +138,15 @@ do_install () {
 
 
 do_install_append_ramses () {
-	rmdir ${D}tmp
+	rmdir ${D}/tmp
 	mkdir -p ${D}${localstatedir}/tmp
-	ln -s var/tmp ${D}tmp
+	ln -s var/tmp ${D}/tmp
 }
 
 do_install_append_nylon() {
 	rm ${D}${sysconfdir}/resolv.conf
 	touch ${D}${sysconfdir}/resolv.conf
-	rm -r ${D}mnt/*
+	rm -r ${D}/mnt/*
 }
 
 PACKAGES = "${PN}-doc ${PN}"

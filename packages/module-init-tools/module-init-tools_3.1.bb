@@ -3,6 +3,7 @@ SECTION = "base"
 DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
 removing kernel modules for Linux (versions 2.5.48 and above). It serves \
 the same function that the modutils package serves for Linux 2.4."
+PR = "r1"
 
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
@@ -27,7 +28,7 @@ inherit autotools
 do_install() {
 	autotools_do_install
 	for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do
-		mv ${D}$f ${D}$f.26
+		mv ${D}/$f ${D}/$f.26
 	done
 }
 

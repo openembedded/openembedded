@@ -209,7 +209,8 @@ python do_package_ipk () {
 			conffiles.close()
 
 		os.chdir(basedir)
-		ret = os.system("PATH=\"%s\" ipkg-build -o 0 -g 0 %s %s" % (bb.data.getVar("PATH", localdata, 1), pkg, pkgoutdir))
+		ret = os.system("PATH=\"%s\" %s %s %s" % (bb.data.getVar("PATH", localdata, 1), 
+                                                          bb.data.getVar("IPKGBUILDCMD",d,1), pkg, pkgoutdir))
 		if ret != 0:
 			raise bb.build.FuncFailed("ipkg-build execution failed")
 

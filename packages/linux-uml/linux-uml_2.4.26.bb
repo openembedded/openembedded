@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
 UMLR = "2"
-PR = "0"
+PR = "1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
            ${SOURCEFORGE_MIRROR}/user-mode-linux/uml-patch-${PV}-${UMLR}.bz2;patch=1 \
@@ -36,8 +36,8 @@ do_compile() {
 do_install() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
         oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" modules_install
-        install -d ${D}boot
-        install -m 0755 linux ${D}boot/linux-${PV}
-        install -m 0644 System.map ${D}boot/System.map-${PV}
-        install -m 0644 .config ${D}boot/config-${PV}
+        install -d ${D}/boot
+        install -m 0755 linux ${D}/boot/linux-${PV}
+        install -m 0644 System.map ${D}/boot/System.map-${PV}
+        install -m 0644 .config ${D}/boot/config-${PV}
 }
