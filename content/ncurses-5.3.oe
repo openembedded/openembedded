@@ -1,0 +1,39 @@
+DESCRIPTION="Ncurses library"
+SECTION="libs"
+DEPENDS=virtual/libc
+PV_append=.20030719
+SRC_URI=${DEBIAN_MIRROR}/main/n/ncurses/ncurses_${PV}.orig.tar.gz \
+	${DEBIAN_MIRROR}/main/n/ncurses/ncurses_${PV}-1.diff.gz;patch=1 \
+	file://${FILESDIR}/ncurses-5.2.patch;patch=1 \
+	file://${FILESDIR}/ncurses-dirs.patch;patch=1
+
+EXTRA_OECONF=--with-shared \
+	     --without-profile \
+	     --without-debug \
+	     --disable-rpath \
+	     --enable-echo \
+	     --enable-const \
+	     --without-ada \
+	     --enable-termcap \
+	     --without-cxx-binding \
+	     --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo \
+	     --enable-overwrite
+export BUILD_CC:=${BUILD_CC}
+export BUILD_CCFLAGS=-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}
+export BUILD_LDFLAGS=
+
+do_stage () {
+	install -m 0755 lib/lib*.so.* ${STAGING_LIBDIR}/
+	cp -R include/* ${STAGING_DIR}/target/include/
+	ln -sf libpanel.so.5.3 ${STAGING_LIBDIR}/libpanel.so
+	ln -sf libform.so.5.3 ${STAGING_LIBDIR}/libform.so
+	ln -sf libmenu.so.5.3 ${STAGING_LIBDIR}/libmenu.so
+	ln -sf libncurses.so.5.3 ${STAGING_LIBDIR}/libncurses.so
+}
+
+do_install () {
+	set -e
+	oe_runmake DESTDIR=${D} install
+}
+
+S="${WORKDIR}/${P}.orig"

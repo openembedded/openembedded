@@ -5,5 +5,13 @@ MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 RDEPENDS="libc6"
 
 SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2"
-DEPENDS=virtual/libc
+DEPENDS=virtual/libc ncurses pcre
 S="${WORKDIR}/${P}"
+
+EXTRA_OECONF = "--with-curses-terminfo"
+#EXTRA_OECONF = "--with-curses-terminfo --enable-libs='-lncurses'"
+
+do_install () {
+	set -e
+	oe_runmake DESTDIR=${D} install
+}
