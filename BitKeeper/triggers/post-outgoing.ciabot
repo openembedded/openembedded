@@ -84,6 +84,8 @@ then
 CHANGECMD="$CHANGECMD -v"
 fi
 
+if [ X$BK_CSETLIST != X ]
+then
 echo "Sending notification mail to $COMMITADDRESS..."
 
 (
@@ -93,12 +95,11 @@ R_OUT=`echo $RD | sed "s,.*/,,"`
 echo repository={green}${R_OUT}{normal} $U_OUT
 
 # See "bk help prs" for documentation on the formatting string.
-if [ X$BK_CSETLIST != X ]
-then
      (
      $CHANGECMD -d'$if(:GFILE:=ChangeSet){{orange}ChangeSet@:REV:{normal}$if(:TAG:){ tags={red}:TAG:{normal}} $if(:C:){:C:}\n}$unless(:GFILE:=ChangeSet){* :GFILE:$if(:C:){: $each(:C:){(:C:)}}\n}' - < $BK_CSETLIST
      )
 fi
 ) | mail -s "Announce `echo -n $IRCCHANNEL | sed 's,.*/,,'`" $COMMITADDRESS
 echo "done."
+fi
 exit 0
