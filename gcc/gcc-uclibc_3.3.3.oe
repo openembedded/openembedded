@@ -28,6 +28,13 @@ FILES_uclibc-libstdc++-dev = "${includedir}/c++/${PV}-uclibc \
 			      ${libdir}/libsupc++.la \
 			      ${libdir}/libsupc++.a"
 
+# Additional patches
+SRC_URI_append = " \
+	file://${FILESDIR}/gcc-uclibc-3.3-100-conf.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-110-conf.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-120-softfloat.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-200-code.patch;patch=1"
+
 EXTRA_OECONF = "--with-local-prefix=${prefix}/local \
                 --with-gxx-include-dir=${includedir}/c++/${PV}-uclibc \
                 --enable-target-optspace \
