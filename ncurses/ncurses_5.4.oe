@@ -1,9 +1,11 @@
+PR = "r1"
 DESCRIPTION = "Ncurses library"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
 PACKAGES_append = " ncurses-terminfo"
 FILES_ncurses_append = " ${datadir}/tabset"
 FILES_ncurses-terminfo = "${datadir}/terminfo"
+RRECOMMENDS_${PN} = "ncurses-terminfo"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz"
 S = "${WORKDIR}/ncurses-${PV}"
