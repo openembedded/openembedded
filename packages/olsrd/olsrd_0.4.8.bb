@@ -6,7 +6,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
 
-SRC_URI="http://www.olsr.org/downloadolsr.cgi?file=olsrd-${PV}.tar.bz2 \
+SRC_URI="http://www.olsr.org/releases/0.4/olsrd-${PV}.tar.bz2 \
 	file://init \
 	file://olsrd.conf"
 

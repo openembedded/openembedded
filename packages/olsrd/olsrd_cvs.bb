@@ -28,7 +28,7 @@ do_compile() {
 }
 
 do_install () {
-	oe_runmake INSTALL_PREFIX=${D} install install_libs
+	oe_runmake OS=linux INSTALL_PREFIX=${D} install install_libs
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/olsrd
 	install -m 644 ${WORKDIR}/olsrd.conf ${D}${sysconfdir}
