@@ -1,5 +1,5 @@
 DEPENDS = "xt xi zip-native gtk+ orbit2"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
 	file://mozconfig \
@@ -12,10 +12,7 @@ S = "${WORKDIR}/mozilla"
 
 FILES_${PN} += "${libdir}/firefox-${PV} ${datadir}/idl"
 
-CFLAGS := "${@'${CFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
-CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
-
-SELECTED_OPTIMIZATION = "-Os"
+SELECTED_OPTIMIZATION = "-Os -fsigned-char -fno-strict-aliasing"
 
 export CROSS_COMPILE=1
 export HOST_LIBIDL_CONFIG="libIDL-config-2"
@@ -42,6 +39,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/mozilla-firefox.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-firefox.png ${D}${datadir}/pixmaps/
 	# work around requirement for root access on first startup
-	chmod -R a+w ${D}${libdir}/firefox*
+}
+
+pkg_postinst_firefox() {
+	chmod -R a+w ${libdir}/firefox*
 }
 
