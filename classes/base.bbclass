@@ -491,6 +491,23 @@ python base_eventhandler() {
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
 	note(msg)
+
+	if name.startswith("BuildStarted"):
+		statusvars = ['TARGET_ARCH', 'TARGET_OS', 'MACHINE', 'DISTRO',
+			      'TARGET_FPU']
+		statuslines = ["%-13s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
+		statusmsg = "\nOE Build Configuration:\n%s\n" % '\n'.join(statuslines)
+		print statusmsg
+
+		needed_vars = [ "TARGET_ARCH", "TARGET_OS" ]
+		pesteruser = []
+		for v in needed_vars:
+			val = bb.data.getVar(v, e.data, 1)
+			if not val or val == 'INVALID':
+				pesteruser.append(v)
+		if pesteruser:
+			bb.fatal('The following variable(s) were not set: %s\nPlease set them directly, or choose a MACHINE or DISTRO that sets them.' % ', '.join(pesteruser))
+
 	if not data in e.__dict__:
 		return NotHandled
 
@@ -499,6 +516,7 @@ python base_eventhandler() {
 		logfile = file(log, "a")
 		logfile.write("%s\n" % msg)
 		logfile.close()
+
 	return NotHandled
 }
 
