@@ -100,6 +100,7 @@ do_install () {
 	rm -rf ${D}/${libdir}/ldscripts
 
 	# Install the libiberty header
+	install -d ${D}/${includedir}
 	install -m 644 ${S}/include/ansidecl.h ${D}/${includedir}
 	install -m 644 ${S}/include/libiberty.h ${D}/${includedir}
 
