@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
@@ -42,6 +43,9 @@ do_compile() {
         oe_runmake all HAS_XPM= FLIBS="" XMANDIR=""
 }
 
+INSTALL_ETC = "ftl ide ieee1394 memory network parport scsi serial wireless"
+INSTALL_ETC_DATA = "config config.opts ftl.opts ide.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared wireless.opts"
+
 do_install() {
 	install -d ${D}/${sbindir}
 	for f in cardmgr/cardctl cardmgr/cardmgr cardmgr/ide_info cardmgr/ifport cardmgr/ifuser cardmgr/pcinitrd flash/ftl_check flash/ftl_format
@@ -49,8 +53,17 @@ do_install() {
 		install -m 0755 $f ${D}/${sbindir}/
 	done
 	install -d ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/pcmcia
-	cp -a etc/* ${D}/${sysconfdir}/pcmcia/
+		   ${D}/${sysconfdir}/pcmcia \
+		   ${D}/${sysconfdir}/pcmcia/cis
+	for i in ${INSTALL_ETC}; do
+		install etc/${i} ${D}/${sysconfdir}/pcmcia/
+	done
+	for i in ${INSTALL_ETC_DATA}; do
+		install -m 0644 etc/${i} ${D}/${sysconfdir}/pcmcia/
+	done
+	for i in etc/cis/*; do
+		install -m 0644 $i ${D}/${sysconfdir}/pcmcia/cis/
+	done
 	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
 }
 
