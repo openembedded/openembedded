@@ -10,7 +10,8 @@ SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
 	   file://mailstream_socket.patch;patch=1 \
            file://smtptls.patch;patch=1" \
            file://config_iconv.patch;patch=1" \
-           file://includedir.patch;patch=1;pnum=0"
+           file://includedir.patch;patch=1;pnum=0 \
+           file://gcc34.patch;patch=1"
 
 inherit autotools 
 
