@@ -1,8 +1,8 @@
 DESCRIPTION="A Doom Clone based on SDL"
 SECTION=base
 PRIORITY=optional
-RDEPENDS=libc6 libsdl-qpe libsdl-net
-DEPENDS=virtual/libc libsdl-qpe libsdl-net
+RDEPENDS=libc6 libsdl-qpe libsdl-mixer libsdl-net
+DEPENDS=virtual/libc libsdl-qpe libsdl-mixer libsdl-net
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
           file://${FILESDIR}/m4.patch;patch=1
