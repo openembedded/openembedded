@@ -2,8 +2,8 @@ DESCRIPTION=A general purpose cryptographic library based on the code from GnuPG
 SECTION=libs
 PRIORITY=optional
 LICENSE=GPL LGPL FDL
-RDEPENDS=libc6
-DEPENDS=virtual/libc
+RDEPENDS=libc6 libgpg-error
+DEPENDS=virtual/libc libgpg-error
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/${PN}-${PV}.tar.gz"
 
