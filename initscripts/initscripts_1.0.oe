@@ -4,6 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
+PR = "r1"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -63,7 +64,7 @@ do_install () {
 	install -m 0755    ${WORKDIR}/sendsigs		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/single		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}/etc/init.d
-#	install -m 0755    ${FILESDIR}/urandom		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/urandom		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/devpts.sh	${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/devpts		${D}/etc/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}/etc/init.d
@@ -82,12 +83,12 @@ do_install () {
 	ln -sf		../init.d/rmnologin	${D}/etc/rc4.d/S99rmnologin
 	ln -sf		../init.d/rmnologin	${D}/etc/rc5.d/S99rmnologin
 	ln -sf		../init.d/sendsigs	${D}/etc/rc6.d/S20sendsigs
-#	ln -sf		../init.d/urandom	${D}/etc/rc6.d/S30urandom
+	ln -sf		../init.d/urandom	${D}/etc/rc6.d/S30urandom
 	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc6.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}/etc/rc6.d/S40umountfs
 	ln -sf		../init.d/reboot	${D}/etc/rc6.d/S90reboot
 	ln -sf		../init.d/sendsigs	${D}/etc/rc0.d/S20sendsigs
-#	ln -sf		../init.d/urandom	${D}/etc/rc0.d/S30urandom
+	ln -sf		../init.d/urandom	${D}/etc/rc0.d/S30urandom
 	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}/etc/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}/etc/rc0.d/S90halt
@@ -99,7 +100,7 @@ do_install () {
 	ln -sf		../init.d/hostname.sh	${D}/etc/rcS.d/S40hostname.sh
 	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
-#	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
+	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
 	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
 	ln -sf		../init.d/sysfs.sh	${D}/etc/rcS.d/S36sysfs
