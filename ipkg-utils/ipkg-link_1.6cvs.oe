@@ -4,7 +4,9 @@ CONFLICTS = "ipkg-utils"
 PV_append = "${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils \
-	   file://fix-ipkg-link.patch;patch=1"
+	   file://fix-ipkg-link.patch;patch=1 "
+	   
+SRC_URI_append_beagle = "file://fix-ipkg-link-beagle.patch;patch=1"	   
 S = "${WORKDIR}/ipkg-utils"
 
 do_compile() {

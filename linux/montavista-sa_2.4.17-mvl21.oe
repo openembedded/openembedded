@@ -4,7 +4,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 MVLV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
-PR = "r6"
+PR = "r7"
 DEPENDS = "cetools-native"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/montavista-sa-${PV}"
@@ -21,7 +21,6 @@ SRC_URI = "http://www.vanille.de/temp/linux-${KV}_${MVLV}.tar.gz \
 	   file://apm-hh-merge.patch;patch=1 \
 	   file://beagle-sound.patch;patch=1 \
 	   file://linux-2.4.18-list_move.patch;patch=1 \
-	   file://ucb1x_kill-zombie.patch;patch=1 \
 	   file://pcmcia_preempt.patch;patch=1 \
            file://defconfig-${MACHINE}"
 
