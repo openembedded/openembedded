@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-files/base-files_${PV}.tar.gz"
 DESCRIPTION = "Base system miscellaneous files."
 
@@ -66,5 +66,7 @@ EOF
 		rmdir ${D}/var/*
 		chmod a+x ${D}/etc/init.d/populate-var
 		ln -s ../init.d/populate-var ${D}/etc/rcS.d/S01populate-var
+		ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
+		ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
 	fi
 }
