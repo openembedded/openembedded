@@ -1,7 +1,7 @@
 DEPENDS = virtual/libc
 RDEPENDS = libc6
 
-SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
+SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/sasl/cyrus-sasl-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1
 
 inherit autotools
