@@ -1,11 +1,13 @@
 PV = "0.0cvs${CVSDATE}"
+PR = "r1"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xproto"
 DESCRIPTION = "Authorization Protocol for X."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau \
+	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xau"
 
 inherit autotools pkgconfig 
