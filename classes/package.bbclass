@@ -227,6 +227,8 @@ python populate_packages () {
 					if f == l:
 						found = True
 						bb.debug(1, "target found in %s" % p)
+						if p == pkg:
+							break
 						dp = bb.data.getVar('PKG_' + p, d, 1) or p
 						if not dp in rdepends:
 							rdepends.append(dp)
