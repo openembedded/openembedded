@@ -1,6 +1,7 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
 DEPENDS = "virtual/libc zlib ncurses"
+PR = "r1"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	 file://${FILESDIR}/configure.patch;patch=1"
@@ -14,5 +15,6 @@ INITSCRIPT_PARAMS = "defaults 10"
 CFLAGS_prepend = "-I. "
 LD = "${CC}"
 do_install_prepend () {
-	install -d ${D}${sbindir} ${D}${bindir}
+	install -d ${D}${sbindir} ${D}${bindir} ${D}${sysconfdir}/init.d
+	install -m 0755 debian/dropbear.init ${D}${sysconfdir}/init.d/dropbear
 }
