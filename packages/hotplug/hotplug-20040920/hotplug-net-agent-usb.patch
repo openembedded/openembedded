@@ -1,5 +1,5 @@
---- net.agent	2005-01-13 21:12:47.143597392 +1300
-+++ net.agent	2005-01-13 21:17:57.095477544 +1300
+--- hotplug/etc/hotplug/net.agent	2005-01-13 21:12:47.143597392 +1300
++++ hotplug/etc/hotplug/net.agent	2005-01-13 21:17:57.095477544 +1300
 @@ -41,6 +41,9 @@
  	    debug_mesg assuming $INTERFACE is already up
  	    exit 0
