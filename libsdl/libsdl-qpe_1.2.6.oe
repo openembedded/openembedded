@@ -4,7 +4,7 @@ SECTION="libs"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS="libc6 libqpe1"
-DEPENDS=virtual/libc virtual/libqpe1
+DEPENDS=virtual/libc virtual/libqpe
 
 SRC_URI = cvs://guest@libsdl.org/home/sdlweb/libsdl.org/cvs;module=SDL12;date=${SNAPDATE} \
 	  file://${FILESDIR}/agawa-piro-mickey.patch;patch=1

@@ -3,7 +3,8 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
-DEPENDS=virtual/libc uicmoc-native
+DEPENDS=virtual/libc uicmoc-native qte
+RDEPENDS=libc6 qte
 PROVIDES=virtual/libqpe
 
 SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/library;tag=${@'v' + oe.data.getVar('PV',d,1).replace('.','_')}"
