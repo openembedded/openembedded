@@ -2,10 +2,12 @@ DESCRIPTION = "This package contains the scripts necessary \
 for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_29.tar.gz \
+	   file://busybox.patch;patch=1 \
            file://fix-net.agent \
            file://update-usb.usermap \
            file://logcheck-ignore"
 S = "${WORKDIR}/hotplug-2004_03_29"
+PR = "r1"
 
 INITSCRIPT_NAME = "hotplug"
 INITSCRIPT_PARAMS = "start 40 S . stop 89 0 6 ."
