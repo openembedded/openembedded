@@ -73,7 +73,7 @@ do_stage () {
 	for i in ${headers}; do
 		install -m 0644 ${S}/src/lib/$i ${STAGING_INCDIR}/
 	done
-	oe_libinstall -C src libevas ${STAGING_LIBDIR}/
+	oe_libinstall -C src/lib libevas ${STAGING_LIBDIR}/
 	cat evas-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
 				      s,/usr/lib,${STAGING_LIBDIR},g; \
 				      s,/usr/bin,${STAGING_BINDIR},g; \
