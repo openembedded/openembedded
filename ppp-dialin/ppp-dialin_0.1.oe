@@ -25,3 +25,12 @@ else
 	chmod u+s /usr/sbin/ppp-dialin
 fi
 }
+
+pkg_postrm() {
+if test "x$D" != "x"; then
+	exit 1
+else
+	deluser ppp
+	delgroup ppp
+fi
+}
