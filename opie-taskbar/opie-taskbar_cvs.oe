@@ -18,7 +18,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
            file://server.pro \
            file://opie-reorgfiles \
            file://opie \
-           file://qpe.conf"
+           file://qpe.conf \
+	   file://locale.conf "
 
 S = "${WORKDIR}/launcher"
 
@@ -91,6 +92,9 @@ do_install() {
 
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
+	if [ -s ${WORKDIR}/locale.conf ]; then
+	    install -m 0644 ${WORKDIR}/locale.conf ${D}/${palmtopdir}/etc/skel/
+	fi
 }
 
 # These two should be installed only on devices with keyboard

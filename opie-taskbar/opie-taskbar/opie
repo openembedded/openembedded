@@ -43,6 +43,10 @@ if [ ! -e "$HOME/Settings/qpe.conf" ] ; then
     cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
 fi
 
+if [ ! -e "$HOME/Settings/locale.conf" -a -e "$OPIEDIR/etc/skel/locale.conf" ] ; then
+    cat $OPIEDIR/etc/skel/locale.conf >$HOME/Settings/locale.conf
+fi
+
 case $1 in
 'start')
     /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0

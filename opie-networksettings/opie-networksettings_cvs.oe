@@ -5,13 +5,14 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 PV = "1.1.6-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 APPNAME = "networksettings"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/networksettings \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root"
 
 S = "${WORKDIR}/${APPNAME}"
 
@@ -20,6 +21,7 @@ inherit opie
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
 
 do_install() {
+	install -d ${D}/${bindir}/
 	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
 	install -d ${D}/${palmtopdir}/pics/Network/
 	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
@@ -31,9 +33,13 @@ do_install() {
 	do
 		install lib$plugin.so ${D}/${palmtopdir}/plugins/networksettings/
 	done
+
+	# install changedns script
+	install -m 0644 ${WORKDIR}/root/usr/bin/changedns ${D}${bindir}/
 }
 
 PACKAGES =+ "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
+FILES_${PN} += " ${bindir}/changedns "
 FILES_opie-networksettings-pppplugin = "${palmtopdir}/plugins/networksettings/libkppp.so"
 FILES_opie-networksettings-wlanplugin = "${palmtopdir}/plugins/networksettings/libwlan.so"
 
