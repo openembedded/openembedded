@@ -1,9 +1,8 @@
 DEPENDS = "virtual/libc"
 DESCRIPTION = "modutils configuration files"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 
-SRC_URI = "file://${FILESDIR}/modules \
-	   file://${FILESDIR}/modules.conf \
-	   file://${FILESDIR}/modutils"
+SRC_URI = "file://${FILESDIR}/modutils"
 
 INITSCRIPT_NAME = "modutils"
 INITSCRIPT_PARAMS = "start 20 S ."

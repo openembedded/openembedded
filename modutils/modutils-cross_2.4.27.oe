@@ -1,0 +1,17 @@
+include modutils_${PV}.oe
+inherit cross
+S = "${WORKDIR}/modutils-${PV}"
+DEPENDS = "patcher-native"
+PACKAGES = ""
+
+sbindir = "${prefix}/bin"
+
+EXTRA_OECONF_append = " --program-prefix=${TARGET_PREFIX}"
+
+do_stage () {
+        oe_runmake install
+}
+
+do_install () {
+        :
+}
