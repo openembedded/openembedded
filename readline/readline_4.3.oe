@@ -9,20 +9,15 @@ SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 
 inherit autotools libtool
 
-do_stage () {
-	install -m 0755 shlib/libreadline.so.${PV} ${STAGING_LIBDIR}/
-	install -m 0755 shlib/libhistory.so.${PV} ${STAGING_LIBDIR}/
-	install -m 0755 libreadline.a ${STAGING_LIBDIR}/
-	install -m 0755 libhistory.a ${STAGING_LIBDIR}/
-
-	ln -s ${STAGING_LIBDIR}/libreadline.so.${PV} \
-	  ${STAGING_LIBDIR}/libreadline.so.4
-	ln -s ${STAGING_LIBDIR}/libreadline.so.${PV} \
-	  ${STAGING_LIBDIR}/libreadline.so
-	ln -s ${STAGING_LIBDIR}/libhistory.so.${PV} \
-	  ${STAGING_LIBDIR}/libhistory.so.4
-	ln -s ${STAGING_LIBDIR}/libhistory.so.${PV} \
-	  ${STAGING_LIBDIR}/libhistory.so
+do_stage() {
+	install -m 0755 shlib/libhistory.so.4.3 ${STAGING_LIBDIR}/libhistory.so.4.3.0
+	install -m 0755 shlib/libreadline.so.4.3 ${STAGING_LIBDIR}/libreadline.so.4.3.0
+	ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so.4.3
+        ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so.4
+        ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so
+	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so.4.3
+	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so.4
+	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so
 
 	install -d ${STAGING_DIR}/target/include/readline
 	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
