@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r24"
+PR = "r25"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -46,6 +46,7 @@ conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
 
 hostname = "openembedded"
 hostname_ramses = "MNCI"
+hostname_openslug = "openslug"
 
 do_install () {
 	for d in ${dirs755}; do
