@@ -5,7 +5,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r20"
+PR = "r21"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
@@ -164,20 +164,29 @@ ${sbindir}/update-qtfontdir
 PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-large \
 			qte-font-smoothtimes qte-font-smallsmooth qte-font-unicode qte-font-lcd \
 			qte-font-japanese qte-font-micro qte-font-courier"
-PACKAGE_ARCH_libqte2 := "${MACHINE_ARCH}"
+PACKAGE_ARCH := "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
 FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
+PACKAGE_ARCH_qte-font-fixed = "all"
 FILES_qte-font-helvetica-small = "${palmtopdir}/lib/fonts/helvetica_80*.qpf \
 	${palmtopdir}/lib/fonts/helvetica_100*.qpf ${palmtopdir}/lib/fonts/helvetica_120*.qpf"
+PACKAGE_ARCH_qte-font-helvetica-small = "all"
 FILES_qte-font-helvetica-large = "${palmtopdir}/lib/fonts/helvetica_140*.qpf \
 	${palmtopdir}/lib/fonts/helvetica_180*.qpf ${palmtopdir}/lib/fonts/helvetica_240*.qpf"
+PACKAGE_ARCH_qte-font-helvetica-large = "all"
 FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*"
+PACKAGE_ARCH_qte-font-smoothtimes = "all"
 FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*"
+PACKAGE_ARCH_qte-font-smallsmooth = "all"
 FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*.qpf"
+PACKAGE_ARCH_qte-font-unicode = "all"
 FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
+PACKAGE_ARCH_qte-font-lcd = "all"
 FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/japanese*"
+PACKAGE_ARCH_qte-font-japanese = "all"
 FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*.qpf"
+PACKAGE_ARCH_qte-font-micro = "all"
 FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
-
+PACKAGE_ARCH_qte-font-courier = "all"

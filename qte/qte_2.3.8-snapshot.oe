@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r1"
+PR = "r2"
 palmtopdir="/opt/Qtopia"
 
 # CVSDATE="20040818"
@@ -166,35 +166,51 @@ PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-l
       qte-font-unicode qte-font-lcd qte-font-japanese qte-font-micro \
       qte-font-courier"
 
-PACKAGE_ARCH_libqte2 := "${MACHINE_ARCH}"
+PACKAGE_ARCH := "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
 FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
+PACKAGE_ARCH_qte-font-fixed = "all"
 FILES_qte-font-helvetica-small = "${palmtopdir}/lib/fonts/helvetica_80*.qpf \
 	${palmtopdir}/lib/fonts/helvetica_100*.qpf ${palmtopdir}/lib/fonts/helvetica_120*.qpf"
+PACKAGE_ARCH_qte-font-helvetica-small = "all"
 FILES_qte-font-helvetica-large = "${palmtopdir}/lib/fonts/helvetica_140*.qpf \
 	${palmtopdir}/lib/fonts/helvetica_180*.qpf ${palmtopdir}/lib/fonts/helvetica_240*.qpf"
+PACKAGE_ARCH_qte-font-helvetica-large = "all"
 FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*.qpf"
+PACKAGE_ARCH_qte-font-smoothtimes = "all"
 FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*.qpf"
+PACKAGE_ARCH_qte-font-smallsmooth = "all"
 FILES_qte-font-smoothmono-small = "${palmtopdir}/lib/fonts/smoothmono_90*.qpf \
   ${palmtopdir}/lib/fonts/smoothmono_100*.qpf	${palmtopdir}/lib/fonts/smoothmono_110*.qpf \
   ${palmtopdir}/lib/fonts/smoothmono_120*.qpf"
+PACKAGE_ARCH_qte-font-smoothmono-small = "all"
 FILES_qte-font-smoothmono-large = "${palmtopdir}/lib/fonts/smoothmono_140*.qpf \
 	${palmtopdir}/lib/fonts/smoothmono_180*.qpf ${palmtopdir}/lib/fonts/smoothmono_240*.qpf"
+PACKAGE_ARCH_qte-font-smoothmono-large = "all"
 FILES_qte-font-smoothsans-small = "${palmtopdir}/lib/fonts/smoothsans_90*.qpf \
 	${palmtopdir}/lib/fonts/smoothsans_100*.qpf ${palmtopdir}/lib/fonts/smoothsans_110*.qpf \
   ${palmtopdir}/lib/fonts/smoothsans_120*.qpf"
+PACKAGE_ARCH_qte-font-smoothsans-small = "all"
 FILES_qte-font-smoothsans-large = "${palmtopdir}/lib/fonts/smoothsans_140*.qpf \
 	 ${palmtopdir}/lib/fonts/smoothsans_180*.qpf ${palmtopdir}/lib/fonts/smoothsans_240*.qpf"
+PACKAGE_ARCH_qte-font-smoothsans-large = "all"
 FILES_qte-font-smoothserif-small = "${palmtopdir}/lib/fonts/smoothserif_90*.qpf \
 	${palmtopdir}/lib/fonts/smoothserif_100*.qpf ${palmtopdir}/lib/fonts/smoothserif_110*.qpf \
 	${palmtopdir}/lib/fonts/smoothserif_120*.qpf"
+PACKAGE_ARCH_qte-font-smoothserif-small = "all"
 FILES_qte-font-smoothserif-large = "${palmtopdir}/lib/fonts/smoothserif_140*.qpf \
 	${palmtopdir}/lib/fonts/smoothserif_180*.qpf ${palmtopdir}/lib/fonts/smoothserif_240*.qpf"
+PACKAGE_ARCH_qte-font-smoothserif-large = "all"
 FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*.qpf"
+PACKAGE_ARCH_qte-font-unicode = "all"
 FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
+PACKAGE_ARCH_qte-font-lcd = "all"
 FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/japanese*"
+PACKAGE_ARCH_qte-font-japanese = "all"
 FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*.qpf"
+PACKAGE_ARCH_qte-font-micro = "all"
 FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
+PACKAGE_ARCH_qte-font-courier = "all"
 
