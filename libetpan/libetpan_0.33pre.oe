@@ -4,23 +4,14 @@ DEPENDS = "virtual/libc openssl"
 RDEPENDS = "libc6 openssl"
 PR = "r1"
 
-SRC_URI := http://www.alwins-world.de/oe/${P}.tar.bz2  \
-	file://${FILESDIR}/mailstream_socket.patch;patch=1 \
-        file://${FILESDIR}/smtptls.patch;patch=1 \
+SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
+	   file://${FILESDIR}/mailstream_socket.patch;patch=1 \
+           file://${FILESDIR}/smtptls.patch;patch=1"
 
-inherit autotools
+inherit autotools libtool
 
-do_configure() {
-	./configure --prefix=${STAGING_DIR}/target --with-openssl=${STAGING_DIR}/target --disable-db --host=${HOST_SYS}
-
-}
+EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
 
 do_stage() {
-   oe_runmake install
+	oe_soinstall .libs/libetpan.so.1.0.0 ${STAGING_LIBDIR}/
 }
-
-do_install() {
-   install -d ${D}/${libdir}
-   oe_soinstall .libs/libetpan.so.1.0.0 ${D}/${libdir}
-}
-

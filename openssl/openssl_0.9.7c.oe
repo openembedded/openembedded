@@ -1,10 +1,10 @@
-SRC_URI = http://www.openssl.org/source/${P}.tar.gz \
-	  ${DEBIAN_MIRROR}/main/o/${PN}/${PN}_${PV}-5.diff.gz
-S = "${WORKDIR}/${PN}-${PV}"
-
 DEPENDS = "virtual/libc"
 SECTION = "libs"
 DESCRIPTION = "Secure Socket Layer (SSL) binary and related cryptographic tools."
+
+SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz \
+	   ${DEBIAN_MIRROR}/main/o/${PN}/${PN}_${PV}-5.diff.gz"
+S = "${WORKDIR}/openssl-${PV}"
 
 AR_append = " r"
 export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
@@ -33,7 +33,7 @@ do_compile () {
 }
 
 do_stage () {
-	cp --dereference -R include/openssl ${STAGING_DIR}/target/include/
+	cp --dereference -R include/openssl ${STAGING_INCDIR}/
 	install -m 0755 libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
 	ln -sf libcrypto.so.0.9.7 ${STAGING_LIBDIR}/libcrypto.so
 	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/

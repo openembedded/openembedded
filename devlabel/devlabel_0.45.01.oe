@@ -3,12 +3,13 @@ DESCRIPTION = "tool for user-define static device labels"
 DEPENDS = "virtual/libc e2fsprogs-libs"
 RDEPENDS = "libc6 e2fsprogs-libs"
 
-SRC_URI = http://linux.dell.com/devlabel/permalink/devlabel-0.45.01.tar.gz
+SRC_URI = "http://linux.dell.com/devlabel/permalink/devlabel-${PV}.tar.gz"
 
 do_compile () {
 	set -x
 	${CC} ${CFLAGS} ${LDFLAGS} -o scsi_unique_id scsi_unique_id.c
 	${CC} ${CFLAGS} ${LDFLAGS} -o partition_uuid partition_uuid.c -luuid
+	set +x
 }
 
 do_install () {

@@ -1,0 +1,26 @@
+DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
+SECTION = "net"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/qpegps/gpsd_from_qpegps_${PV}.tar.gz \
+           file://${FILESDIR}/gcc3.patch;patch=1 \
+           file://${FILESDIR}/nmea-fix.patch;patch=1"
+S = "${WORKDIR}/gpsd"
+
+inherit autotools
+
+do_configure() {
+	oe_runconf
+}
+
+do_compile() {
+	oe_runmake gpsd
+}
+
+do_install () {
+	install -d ${D}/${bindir}
+	install -m 0755 ${S}/gpsd ${D}/${bindir}/gpsd
+}

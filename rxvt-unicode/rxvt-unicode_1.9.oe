@@ -1,4 +1,4 @@
-DEPENDS = 'virtual/libc x11 xft'
+DEPENDS = "virtual/libc x11 xft"
 RDEPENDS = "libc6 x11 xft"
 DESCRIPTION = "rxvt-unicode is a clone of the well known \
 terminal emulator rxvt, modified to store text in Unicode \
@@ -6,13 +6,13 @@ terminal emulator rxvt, modified to store text in Unicode \
 output. It also supports mixing multiple fonts at the \
 same time, including Xft fonts."
 
-SRC_URI = '${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
 	   file://${FILESDIR}/xim.patch;patch=1 \
-	   file://${FILESDIR}/include.patch;patch=1'
+	   file://${FILESDIR}/include.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--disable-menubar \
+EXTRA_OECONF = "--disable-menubar \
 		--enable-ttygid \
 		--with-term=rxvt \ 
 		--enable-transparency \ 
@@ -20,11 +20,11 @@ EXTRA_OECONF = '--disable-menubar \
 		--with-x=${STAGING_LIBDIR}/.. \
 		--enable-shared \
 		--disable-static \
-		--enable-xft'
+		--enable-xft"
 EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
 		'XLIB=-L${STAGING_LIBDIR} -lX11'"
-#CFLAGS_append = ' -I${S}/W11'
-#CPPFLAGS_append = '-I${S}/W11'
+#CFLAGS_append = " -I${S}/W11"
+#CPPFLAGS_append = "-I${S}/W11"
 
 do_configure () {
 	if test -e ${STAGING_BINDIR}/${HOST_SYS}-libtool; then

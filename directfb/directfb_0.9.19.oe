@@ -8,17 +8,17 @@ with hardware graphics acceleration, input device handling and \
 abstraction, an integrated windowing system with support for \
 translucent windows and multiple display layers on top of the \
 Linux framebuffer device."
-FILES_directfb_append=' ${libdir}/directfb-${PV}/systems/*.so \
-			${libdir}/directfb-${PV}/inputdrivers/*.so \
-			${libdir}/directfb-${PV}/interfaces/*/*.so \
-			${datadir}/directfb-${PV}'
+FILES_directfb_append = " ${libdir}/directfb-${PV}/systems/*.so \
+			  ${libdir}/directfb-${PV}/inputdrivers/*.so \
+			  ${libdir}/directfb-${PV}/interfaces/*/*.so \
+			  ${datadir}/directfb-${PV}"
 
-SRC_URI=http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz;
+SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz"
 S = "${WORKDIR}/DirectFB-${PV}"
 
-inherit autotools libtool
+inherit autotools libtool pkgconfig
 
-EXTRA_OECONF="--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=no --enable-sdl=no"
+EXTRA_OECONF = "--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=no --enable-sdl=no"
 
 do_stage() {
 	oe_runmake -C src 'libdir=/target/lib' 'includedir=/target/include/directfb' \
@@ -31,8 +31,6 @@ do_stage() {
 	       		      'DESTDIR=${STAGING_DIR}' \
 			      'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
 			      install-internalincludeHEADERS install-includeHEADERS
-	install -d ${STAGING_DIR}/share/pkgconfig
-	install -m 0644 directfb.pc ${STAGING_DIR}/share/pkgconfig
 }
 
 do_install() {

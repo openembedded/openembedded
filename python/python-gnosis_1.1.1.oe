@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core"
 DEPENDS = "virtual/libc"
 SRCNAME = "Gnosis_Utils"
 
-SRC_URI = http://gnosis.cx/download/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "http://gnosis.cx/download/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

@@ -2,10 +2,10 @@ DEPENDS = "virtual/libc libpcap libnet-1.0.2a"
 RDEPENDS = "libc6"
 DESCRIPTION = "zcip is an implementation of zero configuration networking (zeroconf)."
 
-SRC_URI := ${SOURCEFORGE_MIRROR}/zeroconf/zcip-4.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/zeroconf/zcip-${PV}.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1 \
 	   file://${FILESDIR}/linux-types.patch;patch=1 \
-	   file://${FILESDIR}/char-signed-idiocy.patch;patch=1
+	   file://${FILESDIR}/char-signed-idiocy.patch;patch=1"
 
 CPPFLAGS_append = " -DLIBNET_LIL_ENDIAN"
 do_compile () {

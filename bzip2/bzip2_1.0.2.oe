@@ -2,10 +2,10 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "Very high-quality data compression program."
 
-SRC_URI = ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
-	  file://${FILESDIR}/installpaths.patch;patch=1
+SRC_URI = "ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
+	   file://${FILESDIR}/installpaths.patch;patch=1"
 
-CFLAGS_append = ' -fPIC -fpic -Winline -fno-strength-reduce -D_FILE_OFFSET_BITS=64'
+CFLAGS_append = " -fPIC -fpic -Winline -fno-strength-reduce -D_FILE_OFFSET_BITS=64"
 
 do_compile () {
 	oe_runmake -f Makefile-libbz2_so
@@ -17,7 +17,7 @@ do_compile () {
 
 do_stage () {
 	install -m 0644 libbz2.a ${STAGING_LIBDIR}/
-	install -m 0644 bzlib.h ${STAGING_DIR}/target/include/
+	install -m 0644 bzlib.h ${STAGING_INCDIR}/
 	install -m 0755 libbz2.so.1.0.2 ${STAGING_LIBDIR}/
 	ln -sf libbz2.so.1.0.2 ${STAGING_LIBDIR}/libbz2.so.1.0
 	ln -sf libbz2.so.1.0.2 ${STAGING_LIBDIR}/libbz2.so.1

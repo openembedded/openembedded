@@ -1,10 +1,10 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
-DESCRIPTIONi = "The Openobex project aims to make an \
+DESCRIPTION = "The Openobex project aims to make an \
 open source implementation of the Object Exchange \
 (OBEX) protocol."
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz"
 
 inherit autotools libtool
 
@@ -13,8 +13,8 @@ do_stage () {
 	ln -sf libopenobex-1.0.so.1.0.0 ${STAGING_LIBDIR}/libopenobex.so
 	install -m 0755 src/.libs/libopenobex.a ${STAGING_LIBDIR}/libopenobex.a
 	install -m 0755 src/.libs/libopenobex.lai ${STAGING_LIBDIR}/libopenobex.la
-	install -d ${STAGING_DIR}/target/include/openobex
-	install -m 0644 src/obex_const.h src/obex.h ${STAGING_DIR}/target/include/openobex/
+	install -d ${STAGING_INCDIR}/openobex
+	install -m 0644 src/obex_const.h src/obex.h ${STAGING_INCDIR}/openobex/
 	cat openobex-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
 				      s,/usr/lib,${STAGING_LIBDIR},g; \
 				      s,/usr/bin,${STAGING_BINDIR},g; \

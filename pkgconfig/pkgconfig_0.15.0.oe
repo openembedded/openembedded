@@ -5,8 +5,8 @@ compile/link flags that works with automake and autoconf. \
 It replaces the ubiquitous *-config scripts you may have \
 seen with a single tool."
 
-SRC_URI := http://www.freedesktop.org/software/pkgconfig/releases/pkgconfig-0.15.0.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://www.freedesktop.org/software/pkgconfig/releases/pkgconfig-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool
 

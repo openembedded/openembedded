@@ -6,14 +6,14 @@ cross-platform approach to connection establishment, terminal \
 sessions, file transfer, character-set translation, and automation \
 of communication tasks."
 
-SRC_URI = ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
-	  file://${FILESDIR}/cross.patch;patch=1
+SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
+	   file://${FILESDIR}/cross.patch;patch=1"
 
-export CC_FOR_BUILD=${BUILD_CC}
-export CC2=${CC}
-export BINDIR=${bindir}
-export MANDIR=${mandir}/man1
-export INFODIR=${infodir}
+export CC_FOR_BUILD = "${BUILD_CC}"
+export CC2 = "${CC}"
+export BINDIR = "${bindir}"
+export MANDIR = "${mandir}/man1"
+export INFODIR = "${infodir}"
 
 python do_unpack () {
 	oe.mkdirhier(oe.data.expand('${S}', d))

@@ -5,17 +5,17 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI=http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
-	file://${FILESDIR}/flags.patch;patch=1
+SRC_URI = "http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
+	   file://${FILESDIR}/flags.patch;patch=1"
 S = "${WORKDIR}/portaudio"
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OECONF = '--with-jack=no'
+EXTRA_OECONF = "--with-jack=no"
 
 do_stage() {
 	oe_soinstall lib/libportaudio.so.${PV} ${STAGING_LIBDIR}/
-        install -m 0644 pa_common/portaudio.h ${STAGING_DIR}/target/include/portaudio.h
+        install -m 0644 pa_common/portaudio.h ${STAGING_INCDIR}/portaudio.h
 }
 
 do_install() {

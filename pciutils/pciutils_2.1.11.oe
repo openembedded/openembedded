@@ -3,17 +3,18 @@ RDEPENDS = "libc6"
 DESCRIPTION = 'The PCI Utilities package contains a library for portable access \
 to PCI bus configuration space and several utilities based on this library.'
 
-SRC_URI = ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
 }
 
-export PREFIX=${D}/${prefix}
-export SBINDIR=${D}/${sbindir}
-export SHAREDIR=${D}/${datadir}
-export MANDIR=${D}/${mandir}
+export PREFIX = "${D}/${prefix}"
+export SBINDIR = "${D}/${sbindir}"
+export SHAREDIR = "${D}/${datadir}"
+export MANDIR = "${D}/${mandir}"
+
 do_install () {
 	oe_runmake install
 }

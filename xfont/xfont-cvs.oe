@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc xproto-cvs xtrans-cvs zlib"
 PROVIDES = "xfont"
 DESCRIPTION = "X font libary (used by the X server)."
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont"
 S = "${WORKDIR}/Xfont"
 
 inherit autotools pkgconfig libtool

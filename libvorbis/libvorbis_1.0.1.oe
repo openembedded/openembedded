@@ -5,36 +5,28 @@ DESCRIPTION = "Ogg Vorbis is a high-quality lossy audio codec \
 that is free of intellectual property restrictions. libvorbis \
 is the main vorbis codec library."
 
-SRC_URI = http://www.vorbis.com/files/${PV}/unix/libvorbis-${PV}.tar.gz
+SRC_URI = "http://www.vorbis.com/files/${PV}/unix/libvorbis-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools libtool pkgconfig
 
-EXTRA_OECONF = '--with-ogg-libraries=${STAGING_LIBDIR} \
-	        --with-ogg-includes=${STAGING_INCDIR}'
+EXTRA_OECONF = "--with-ogg-libraries=${STAGING_LIBDIR} \
+	        --with-ogg-includes=${STAGING_INCDIR}"
 
 do_stage () {
 	install -m 0644 lib/.libs/libvorbis.lai ${STAGING_LIBDIR}/libvorbis.la
 	install -m 0644 lib/.libs/libvorbis.a ${STAGING_LIBDIR}/
-	install -m 0755 lib/.libs/libvorbis.so.0.3.0 ${STAGING_LIBDIR}/
-	ln -sf libvorbis.so.0.3.0 ${STAGING_LIBDIR}/libvorbis.so.0
-	ln -sf libvorbis.so.0.3.0 ${STAGING_LIBDIR}/libvorbis.so
+	oe_soinstall lib/.libs/libvorbis.so.0.3.0 ${STAGING_LIBDIR}/
 
 	install -m 0644 lib/.libs/libvorbisfile.lai ${STAGING_LIBDIR}/libvorbisfile.la
 	install -m 0644 lib/.libs/libvorbisfile.a ${STAGING_LIBDIR}/
-	install -m 0755 lib/.libs/libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/
-	ln -sf libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/libvorbisfile.so.3
-	ln -sf libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/libvorbisfile.so
+	oe_soinstall lib/.libs/libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/
 
 	install -m 0644 lib/.libs/libvorbisenc.lai ${STAGING_LIBDIR}/libvorbisenc.la
 	install -m 0644 lib/.libs/libvorbisenc.a ${STAGING_LIBDIR}/
-	install -m 0755 lib/.libs/libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/
-	ln -sf libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/libvorbisenc.so.2
-	ln -sf libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/libvorbisenc.so
+	oe_soinstall lib/.libs/libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/
 
 	install -d ${STAGING_INCDIR}/vorbis
 	install -m 0644 include/vorbis/vorbisenc.h \
 			include/vorbis/vorbisfile.h \
 			include/vorbis/codec.h ${STAGING_INCDIR}/vorbis/
-
-	install -m 0644 vorbis.pc vorbisfile.pc vorbisenc.pc ${PKG_CONFIG_PATH}/
 }

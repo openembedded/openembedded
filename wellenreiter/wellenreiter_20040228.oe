@@ -6,15 +6,15 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc libopie2"
 RDEPENDS = "libc6 libqpe libopiecore2 libopieui2 libopienet2"
 
-SRC_URI = cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/net/wellenreiter;date=${PV} \
-          cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${PV}                     \
-          cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${PV}
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/net/wellenreiter;date=${PV} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${PV}                     \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${PV}"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/wellenreiter"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST= 'DEFINES+=OPIE_WE_VERSION=15'
+EXTRA_QMAKEVARS_POST = "DEFINES+=OPIE_WE_VERSION=15"
 
 do_install() {
 	install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics/${PN}}

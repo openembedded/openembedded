@@ -3,13 +3,13 @@ RDEPENDS = "libc6 libjpeg libpng gpm openssl zlib1g"
 DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
 
-SRC_URI = http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-2.1pre12.tar.bz2 \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools
 
-EXTRA_OECONF = '--enable-javascript --with-libfl --enable-graphics \
-	        --with-ssl=${STAGING_DIR}/target --with-libjpeg \
+EXTRA_OECONF = "--enable-javascript --with-libfl --enable-graphics \
+	        --with-ssl=${STAGING_LIBDIR}/.. --with-libjpeg \
 	        --without-libtiff --without-svgalib --without-x --with-fb \
 	        --without-directfb --without-pmshell --without-atheos \
-	        --without-x'
+	        --without-x"

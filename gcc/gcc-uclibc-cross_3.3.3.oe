@@ -51,10 +51,10 @@ do_stage_append () {
 	rm -f ${CROSS_DIR}/bin/*gccbug
 
 	# Fix a few include links so cross builds are happier
-	if [ ! -e ${STAGING_DIR}/target/include/c++ ]; then
-		mkdir -p ${STAGING_DIR}/target/include
+	if [ ! -e ${STAGING_INCDIR}/c++ ]; then
+		mkdir -p ${STAGING_INCDIR}
 		ln -s ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
-			${STAGING_DIR}/target/include/
+			${STAGING_INCDIR}/
 	fi
 
 	# We use libiberty from binutils

@@ -4,31 +4,29 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "tslib is a touchscreen access library."
 
-SRC_URI = cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib
-SRC_URI_append=" file://${FILESDIR}/automake.patch;patch=1"
-SRC_URI_append=" file://${FILESDIR}/doc.patch;patch=1"
-SRC_URI_append=" file://${FILESDIR}/zap.patch;patch=1"
-SRC_URI_append=" file://${FILESDIR}/pthres.patch;patch=1"
-SRC_URI_append=" file://${FILESDIR}/raw.patch;patch=1"
-SRC_URI_append=" file://${FILESDIR}/raw-hwread.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/collie-module.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/devfs.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/event1.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/multievent.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/pointercal.patch;patch=1"
-#SRC_URI_append=" file://${FILESDIR}/ts_calibrate.patch;patch=1"
-S = "${WORKDIR}/${PN}"
+SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib"
+SRC_URI_append = " file://${FILESDIR}/automake.patch;patch=1"
+SRC_URI_append = " file://${FILESDIR}/doc.patch;patch=1"
+SRC_URI_append = " file://${FILESDIR}/zap.patch;patch=1"
+SRC_URI_append = " file://${FILESDIR}/pthres.patch;patch=1"
+SRC_URI_append = " file://${FILESDIR}/raw.patch;patch=1"
+SRC_URI_append = " file://${FILESDIR}/raw-hwread.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/collie-module.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/devfs.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/event1.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/multievent.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/pointercal.patch;patch=1"
+#SRC_URI_append = " file://${FILESDIR}/ts_calibrate.patch;patch=1"
+S = "${WORKDIR}/tslib"
 
 inherit autotools libtool
 
-EXTRA_OECONF="--enable-shared "
+EXTRA_OECONF = "--enable-shared"
 do_stage () {
-	install -m 0755 src/.libs/libts-0.0.so.0.1.0 ${STAGING_LIBDIR}/
-	ln -sf libts-0.0.so.0.1.0 ${STAGING_LIBDIR}/libts-0.0.so.0
-	ln -sf libts-0.0.so.0.1.0 ${STAGING_LIBDIR}/libts-0.0.so
+	oe_soinstall src/.libs/libts-0.0.so.0.1.0 ${STAGING_LIBDIR}/
 	ln -sf libts-0.0.so ${STAGING_LIBDIR}/libts.so
-	install -m 0644 src/tslib.h ${STAGING_DIR}/target/include/
-	install -m 0644 src/tslib-private.h ${STAGING_DIR}/target/include/
+	install -m 0644 src/tslib.h ${STAGING_INCDIR}/
+	install -m 0644 src/tslib-private.h ${STAGING_INCDIR}/
 }
 
 FILES_tslib_append = " ${datadir}/ts/plugins/*.so"

@@ -6,8 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1 libsdl libsdl-image"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl libsdl-image"
 
-SRC_URI = http://heanet.dl.sourceforge.net/sourceforge/${PN}/${P}.tar.gz
-#${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/freedroid/freedroid-${PV}.tar.gz"
 
 inherit autotools libtool
 
@@ -32,5 +31,5 @@ do_install() {
 	echo "Name=Freedroid" >>${D}/opt/QtPalmtop/apps/Games/freedroid.desktop
 }
 
-FILES_${PN}=
-FILES_${PN}=/opt/QtPalmtop/
+FILES_${PN} =
+FILES_${PN} = "/opt/QtPalmtop/"

@@ -7,10 +7,10 @@ LICENSE = "GPL"
 RDEPENDS = "shfs-modules (${PV})"
 DEPENDS = "virtual/kernel"
 
-SRC_URI="${SOURCEFORGE_MIRROR}/shfs/shfs-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/shfs/shfs-${PV}.tar.gz"
 S = "${WORKDIR}/shfs-${PV}/shfsmount"
 
-KERNEL_VERSION="`cat ${STAGING_DIR}/target/kernel/kernel-version`"
+KERNEL_VERSION="`cat ${STAGING_LIBDIR}/../kernel/kernel-version`"
 CFLAGS_append=' -DVERSION=\\"${KERNEL_VERSION}\\"'
 
 do_compile() {

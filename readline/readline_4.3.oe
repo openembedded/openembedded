@@ -1,34 +1,27 @@
 DESCRIPTION = "The GNU Readline library provides a set of functions for use by applications that allow users to edit \
 command lines as they are typed in. Both Emacs and vi editing modes are available. The Readline library includes  \
 additional functions to maintain a list of previously-entered command lines, to recall and perhaps reedit those   \
-lines, and perform csh-like history expansion on previous commands. 
+lines, and perform csh-like history expansion on previous commands."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
-	  file://${FILESDIR}/signalnamespace.patch;patch=1
+SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
+	   file://${FILESDIR}/signalnamespace.patch;patch=1"
 
 inherit autotools libtool
 
 do_stage() {
-	install -m 0755 shlib/libhistory.so.4.3 ${STAGING_LIBDIR}/libhistory.so.4.3.0
-	install -m 0755 shlib/libreadline.so.4.3 ${STAGING_LIBDIR}/libreadline.so.4.3.0
-	ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so.4.3
-        ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so.4
-        ln -sf libhistory.so.4.3.0 ${STAGING_LIBDIR}/libhistory.so
-	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so.4.3
-	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so.4
-	ln -sf libreadline.so.4.3.0 ${STAGING_LIBDIR}/libreadline.so
+	oe_soinstall shlib/libhistory.so.${PV} ${STAGING_LIBDIR}/
+	oe_soinstall shlib/libreadline.so.${PV} ${STAGING_LIBDIR}/
 
-	install -d ${STAGING_DIR}/target/include/readline
+	install -d ${STAGING_INCDIR}/readline
 	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
 	  rlconf.h rltypedefs.h
 	do
-		install -m 0644 ${f} ${STAGING_DIR}/target/include/readline
+		install -m 0644 $f ${STAGING_INCDIR}/readline/
 	done
 
 }
-

@@ -4,7 +4,7 @@ DESCRIPTION = " The prelink package contains a utility which modifies ELF shared
 and executables, so that far fewer relocations need to be resolved at \
 runtime and thus programs come up faster."
 
-SRC_URI = http://http.us.debian.org/debian/pool/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz
+SRC_URI = "${DEBIAN_MIRROR}/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz"
 S = "${WORKDIR}/prelink-0.0.${PV}"
 
 inherit autotools libtool

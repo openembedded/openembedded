@@ -4,7 +4,7 @@ DESCRIPTION = "Tools for managing memory technology devices."
 PV = "${@os.popen("date +%Y%m%d").readline().strip()}"
 
 S = "${WORKDIR}/mtd/util"
-SRC_URI = cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd"
 
 CFLAGS_prepend = "-I${S}/../include "
 CPPFLAGS_prepend = "-I${S}/../include "

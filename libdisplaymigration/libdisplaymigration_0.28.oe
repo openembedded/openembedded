@@ -6,20 +6,19 @@ PRIORITY = "optional"
 
 inherit pkgconfig
 
-SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libdisplaymigration-${PV}.tar.gz
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libdisplaymigration-${PV}.tar.gz"
 
 headers = "displaymigration.h auth.h crypt.h"
 
 do_stage () {
-	install -m 0755 libdisplaymigration.so.0 ${STAGING_LIBDIR}/
-	ln -s libdisplaymigration.so.0 ${STAGING_LIBDIR}/libdisplaymigration.so
+	oe_soinstall libdisplaymigration.so.0 ${STAGING_LIBDIR}/
 
 	mkdir -p ${STAGING_INCDIR}/libdisplaymigration
 	for h in ${headers}; do
-		install -m 0644 libdisplaymigration/$h ${STAGING_INCDIR}/libdisplaymigration/${h}
+		install -m 0644 ${S}/libdisplaymigration/$h ${STAGING_INCDIR}/libdisplaymigration/${h}
 	done
 }
 
 do_install() {
-	oe_runmake 'DESTDIR=${D}' install
+	oe_runmake "DESTDIR=${D}" install
 }

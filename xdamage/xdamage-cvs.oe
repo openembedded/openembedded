@@ -5,8 +5,8 @@ DEPENDS = "virtual/libc x11-cvs damageext-cvs xfixes-cvs xproto-cvs"
 PROVIDES = "xdamage"
 DESCRIPTION = "X Damage extension library."
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdamage \
-	  file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdamage \
+	   file://${FILESDIR}/m4.patch;patch=1"
 S = "${WORKDIR}/Xdamage"
 
 inherit autotools pkgconfig libtool

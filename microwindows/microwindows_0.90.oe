@@ -5,7 +5,7 @@ MAINTAINER = "Jordan Crouse <jordan@cosmicpenguin.net>"
 DEPENDS = "virtual/libc libpng jpeg"
 RDEPENDS = "libc6 libpng jpeg"
 
-SRC_URI="ftp://ftp.microwindows.org/pub/microwindows/microwindows-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/microwindows-${PV}.tar.gz"
 
 export EXTRA_OEMAKE=
 

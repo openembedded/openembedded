@@ -3,14 +3,14 @@ RDEPENDS = "libc6 openssl"
 DESCRIPTION = "LibESMTP is a library to manage posting \
 (or submission of) electronic mail using SMTP to a \
 preconfigured Mail Transport Agent (MTA) such as Exim."
-FILES_libesmtp_append = ' ${libdir}/esmtp-plugins'
+FILES_libesmtp_append = " ${libdir}/esmtp-plugins"
 
-SRC_URI := http://www.stafford.uklinux.net/libesmtp/${P}.tar.bz2  \
-           file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://www.stafford.uklinux.net/libesmtp/libesmtp-${PV}.tar.bz2  \
+           file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--disable-isoc --with-openssl=${STAGING_DIR}/target'
+EXTRA_OECONF = "--disable-isoc --with-openssl=${STAGING_LIBDIR}/.."
 
 do_stage () {
 	install -m 0644 .libs/libesmtp.a ${STAGING_LIBDIR}/
@@ -20,8 +20,7 @@ do_stage () {
 	ln -sf libesmtp.so.5.1.2 ${STAGING_LIBDIR}/libesmtp.so
 
         install -d ${STAGING_DIR}/include
-	install -m 644 auth-client.h ${STAGING_DIR}/target/include
-	install -m 644 auth-plugin.h ${STAGING_DIR}/target/include
-	install -m 644 libesmtp.h ${STAGING_DIR}/target/include
+	install -m 644 auth-client.h ${STAGING_INCDIR}
+	install -m 644 auth-plugin.h ${STAGING_INCDIR}
+	install -m 644 libesmtp.h ${STAGING_INCDIR}
 }
-

@@ -3,14 +3,14 @@ DESCRIPTION = "message bus system for applications to talk to one another"
 DEPENDS = "virtual/libc expat glib-2.0"
 RDEPENDS = "libc6 expat"
 
-SRC_URI = 'http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
-	   file://${FILESDIR}/cross.patch;patch=1'
+SRC_URI = "http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
+	   file://${FILESDIR}/cross.patch;patch=1"
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OECONF = '--disable-qt --disable-gtk --disable-tests \
+EXTRA_OECONF = "--disable-qt --disable-gtk --disable-tests \
 		--disable-checks --disable-xml-docs --disable-doxygen-docs \
-		--with-xml=expat --without-x'
+		--with-xml=expat --without-x"
 
 headers = "dbus-address.h dbus-bus.h dbus-connection.h dbus-errors.h dbus-macros.h dbus-memory.h dbus-message.h dbus-pending-call.h dbus-protocol.h dbus-server.h dbus-threads.h dbus-types.h dbus.h"
 
@@ -18,14 +18,10 @@ libname = "libdbus-1.so.0.0.0"
 glibname = "libdbus-glib-1.so.0.0.0"
 
 do_stage () {
-	install -m 0755 dbus/.libs/${libname} ${STAGING_LIBDIR}/
-	ln -sf ${libname} ${STAGING_LIBDIR}/libdbus-1.so.0
-	ln -sf ${libname} ${STAGING_LIBDIR}/libdbus-1.so
+	oe_soinstall dbus/.libs/${libname} ${STAGING_LIBDIR}/
 	install -m 0644 dbus/libdbus-1.la ${STAGING_LIBDIR}/
 
-	install -m 0755 glib/.libs/${glibname} ${STAGING_LIBDIR}/
-	ln -sf ${glibname} ${STAGING_LIBDIR}/libdbus-glib-1.so.0
-	ln -sf ${glibname} ${STAGING_LIBDIR}/libdbus-glib-1.so
+	oe_soinstall glib/.libs/${glibname} ${STAGING_LIBDIR}/
 	install -m 0644 glib/libdbus-glib-1.la ${STAGING_LIBDIR}/
 
 	mkdir -p ${STAGING_INCDIR}/dbus-1.0/dbus

@@ -2,7 +2,7 @@ DESCRIPTION = "OLSR - routing protocol for wireless network"
 PRIORITY = "optional"
 DEPENDS = "virtual/libc"
 
-SRC_URI="ftp://ftp.tcweb.org/pub/tom/olsr-0.3-1.tar.gz"
+SRC_URI = "ftp://ftp.tcweb.org/pub/tom/olsr-${PV}.tar.gz"
 
 inherit autotools
 

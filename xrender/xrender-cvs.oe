@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc render-cvs x11-cvs"
 PROVIDES = "xrender"
 DESCRIPTION = "X Render extension library."
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrender
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrender"
 S = "${WORKDIR}/Xrender"
 
 inherit autotools pkgconfig libtool

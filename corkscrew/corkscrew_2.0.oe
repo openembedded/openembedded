@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.agroman.net/corkscrew/"
 DESCRIPTION = "Tunnel SSH throught HTTP proxies"
 SECTION = "net"
-SRC_URI := http://www.agroman.net/${PN}/${P}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://www.agroman.net/corkscrew/corkscrew-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools

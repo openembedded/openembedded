@@ -1,9 +1,9 @@
 DESCRIPTION = "framebuffer VNC server keyboard events module"
 
-SRC_URI = http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
-          file://${FILESDIR}/libvncs0.6.patch;patch=1 \
-	  file://${FILESDIR}/paths.patch;patch=1 \
-	  file://${FILESDIR}/kernelinclude.patch;patch=1
+SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
+           file://${FILESDIR}/libvncs0.6.patch;patch=1 \
+	   file://${FILESDIR}/paths.patch;patch=1 \
+	   file://${FILESDIR}/kernelinclude.patch;patch=1"
 	  
 S = "${WORKDIR}/fbvncserver-${PV}"
 

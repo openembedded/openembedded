@@ -1,14 +1,14 @@
-DESCRIPTION="GNU C Library"
-LICENSE="LGPL"
-SECTION="libs"
-PRIORITY=required
-MAINTAINER="Chris Larson <kergoth@handhelds.org>"
-PROVIDES=virtual/libc
-PACKAGES=glibc glibc-dev glibc-doc glibc-gconv glibc-i18n glibc-locale
-FILES_glibc_append=' ${datadir}/zoneinfo'
-FILES_glibc-dev_append=' ${libdir}/*.o'
-FILES_glibc-gconv='${libdir}/gconv'
-FILES_glibc-i18n='${datadir}/i18n'
+DESCRIPTION = "GNU C Library"
+LICENSE = "LGPL"
+SECTION = "libs"
+PRIORITY = "required"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+PROVIDES = "virtual/libc"
+PACKAGES = "glibc glibc-dev glibc-doc glibc-gconv glibc-i18n glibc-locale"
+FILES_glibc_append = " ${datadir}/zoneinfo"
+FILES_glibc-dev_append = " ${libdir}/*.o"
+FILES_glibc-gconv = "${libdir}/gconv"
+FILES_glibc-i18n = "${datadir}/i18n"
 
 #	 file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0
 #	  file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0
@@ -17,73 +17,73 @@ FILES_glibc-i18n='${datadir}/i18n'
 #	  file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=1
 #	  file://${FILESDIR}/glibc-make-check-perms.patch;patch=1;pnum=0
 # This patch is needed for builds against recent 2.5/2.6 kernel headers:
-SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
-	  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
-	  http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.25.tar.bz2 \
-	  file://${FILESDIR}/noinfo.patch;patch=1 \
-	  file://${FILESDIR}/10_cvs.patch;patch=1 \
-	  file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc-i686-timing.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/ldd.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/fhs-linux-paths.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-nss-upgrade.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-eo_EO.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-m68k-compat.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-m68k-fpic.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-locales.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/sparc64-fixups.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc22-ttyname-devfs.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/powerpc-sysconf.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/locales-stuff.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/librt-mips.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc23-ctype-compat.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-hppa-Rminkernel.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc23-function-compat.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-errno.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-asserth-decls.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/alpha-pic.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc23-cmov.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/libgcc-compat-all.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/locales-supported.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/libgcc-compat-other.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/s390-tls.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/pthread-cleanup.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc-2.3.2-ldconfig-tls.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-mips-msq.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc23-libio-compat.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/80_glibc232-locales-nb_NO-fix.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/ldso-disable-hwcap.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/11_shlib-lds.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-version-sanity.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-sse-oldkernel.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-sparc-pread64.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/glibc23-powerpc-sigcontext.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/hppa-syscall.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/glibc23-errno-hack.patch;patch=1;pnum=1 \
-	  file://${FILESDIR}/90_glibc232-statvfs.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/90_glibc232-timezones.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0
+SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
+	   http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.25.tar.bz2 \
+	   file://${FILESDIR}/noinfo.patch;patch=1 \
+	   file://${FILESDIR}/10_cvs.patch;patch=1 \
+	   file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc-i686-timing.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/ldd.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/fhs-linux-paths.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-nss-upgrade.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-eo_EO.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-m68k-compat.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-m68k-fpic.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-locales.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/sparc64-fixups.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc22-ttyname-devfs.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/powerpc-sysconf.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/locales-stuff.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/librt-mips.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc23-ctype-compat.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-hppa-Rminkernel.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc23-function-compat.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-errno.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-asserth-decls.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/alpha-pic.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc23-cmov.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/libgcc-compat-all.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/locales-supported.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/libgcc-compat-other.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/s390-tls.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/pthread-cleanup.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc-${PV}-ldconfig-tls.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-mips-msq.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc23-libio-compat.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/80_glibc232-locales-nb_NO-fix.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/ldso-disable-hwcap.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/11_shlib-lds.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-version-sanity.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-sse-oldkernel.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-sparc-pread64.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc23-powerpc-sigcontext.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/hppa-syscall.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc23-errno-hack.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/90_glibc232-statvfs.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/90_glibc232-timezones.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0"
 
-S="${WORKDIR}/${P}"
-B="${WORKDIR}/build-${TARGET_SYS}"
+S = "${WORKDIR}/glibc-${PV}"
+B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
-EXTRA_OECONF =  --without-tls --without-__thread --enable-kernel=2.4.3 \
+EXTRA_OECONF = "--without-tls --without-__thread --enable-kernel=2.4.3 \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
-	        --enable-add-ons=linuxthreads --with-headers=${WORKDIR}/linux/include
+	        --enable-add-ons=linuxthreads --with-headers=${WORKDIR}/linux/include"
 
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
@@ -149,7 +149,7 @@ do_compile_append() {
 }
 
 do_stage() {
-	oe_runmake 'install_root=${STAGING_DIR}/target' \
+	oe_runmake 'install_root=${STAGING_LIBDIR}/..' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
 		   '${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
 		   install-headers install-lib

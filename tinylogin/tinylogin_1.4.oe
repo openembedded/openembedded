@@ -5,9 +5,9 @@ utilities for handling logins, user authentication, \
 changing passwords, and otherwise maintaining users \
 and groups on an embedded system."
 
-SRC_URI = http://tinylogin.busybox.net/downloads/${P}.tar.bz2
+SRC_URI = "http://tinylogin.busybox.net/downloads/tinylogin-${PV}.tar.bz2"
 
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 
 do_compile () {
 	oe_runmake 'CC=${CC}' 'CROSS=${HOST_PREFIX}'

@@ -3,15 +3,13 @@ RDEPENDS = "libc6"
 DESCRIPTION = "The popt library exists essentially \
 for parsing command line options."
 
-SRC_URI = ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
-	  file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
+	   file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 
 do_stage () {
-	install -m 0755 .libs/libpopt.so.0.0.0 ${STAGING_LIBDIR}/
-	ln -sf libpopt.so.0.0.0 ${STAGING_LIBDIR}/libpopt.so.0
-	ln -sf libpopt.so.0.0.0 ${STAGING_LIBDIR}/libpopt.so
+	oe_soinstall .libs/libpopt.so.0.0.0 ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libpopt.a ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libpopt.lai ${STAGING_LIBDIR}/libpopt.la
 	install -m 0644 popt.h ${STAGING_INCDIR}/

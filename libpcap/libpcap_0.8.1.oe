@@ -4,12 +4,13 @@ PRIORITY = "required"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI=http://www.tcpdump.org/release/libpcap-${PV}.tar.gz; \
-	file://${FILESDIR}/shared.patch;patch=1 \
-	file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz; \
+	   file://${FILESDIR}/shared.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools
-EXTRA_OECONF="  --with-pcap=linux"
+
+EXTRA_OECONF = "--with-pcap=linux"
 
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
@@ -18,14 +19,11 @@ do_configure_prepend () {
 }
 
 do_stage () {
-	install -d ${STAGING_DIR}/target/include/net
-	install -m 0644 net/bpf.h ${STAGING_DIR}/target/include/net/bpf.h
-	install -m 0644 pcap.h ${STAGING_DIR}/target/include/pcap.h
-	install -m 0644 pcap-namedb.h ${STAGING_DIR}/target/include/pcap-namedb.h
-	install -m 0644 pcap-bpf.h ${STAGING_DIR}/target/include/pcap-bpf.h
-	install -m 0755 libpcap.so.${PV} ${STAGING_LIBDIR}/
-	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so.0.8
-	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so.0
-	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so
+	install -d ${STAGING_INCDIR}/net
+	install -m 0644 net/bpf.h ${STAGING_INCDIR}/net/bpf.h
+	install -m 0644 pcap.h ${STAGING_INCDIR}/pcap.h
+	install -m 0644 pcap-namedb.h ${STAGING_INCDIR}/pcap-namedb.h
+	install -m 0644 pcap-bpf.h ${STAGING_INCDIR}/pcap-bpf.h
+	oe_soinstall libpcap.so.${PV} ${STAGING_LIBDIR}/
 	install -m 0644 libpcap.a ${STAGING_LIBDIR}/
 }

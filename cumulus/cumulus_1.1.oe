@@ -6,13 +6,13 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc virtual/libqpe"
 
-SRC_URI = http://cumulus.kflog.org/download/src/${P}.src.tar.bz2 \
-          file://${FILESDIR}/qtooltip.patch;patch=1
+SRC_URI = "http://cumulus.kflog.org/download/src/cumulus-${PV}.src.tar.bz2 \
+           file://${FILESDIR}/qtooltip.patch;patch=1"
 S = "${WORKDIR}/cumulus-arm-${PV}"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = 'INCLUDEPATH+=-I.'
+EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=-I."
 
 do_configure_prepend() {
         echo -e "TEMPLATE=subdirs\nSUBDIRS=cumulus\n" >cumulus.pro

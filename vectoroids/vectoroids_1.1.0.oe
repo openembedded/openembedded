@@ -6,11 +6,11 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1 libsdl"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
-SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/x/${PN}/src/${P}.tar.gz
+SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/vectoroids/src/vectoroids-${PV}.tar.gz"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
 
 do_configure_prepend() {
         qmake -project vectoroids.pro

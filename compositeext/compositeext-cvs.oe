@@ -1,12 +1,12 @@
-PV="0.0cvs${CVSDATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-DEPENDS=xextensions-cvs fixesext
-PROVIDES=compositeext
-DESCRIPTION="X Composite extension headers and specification"
+PV = "0.0cvs${CVSDATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+DEPENDS = "xextensions-cvs fixesext"
+PROVIDES = "compositeext"
+DESCRIPTION = "X Composite extension headers and specification"
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=CompositeExt
-S=${WORKDIR}/CompositeExt
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=CompositeExt"
+S = "${WORKDIR}/CompositeExt"
 
 inherit autotools pkgconfig
 

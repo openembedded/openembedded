@@ -1,10 +1,10 @@
 DESCRIPTION = "base set of man pages."
 
-SRC_URI = http://www.kernel.org/pub/linux/docs/manpages/man-pages-1.60.tar.bz2
+SRC_URI = "http://www.kernel.org/pub/linux/docs/manpages/man-pages-${PV}.tar.bz2"
 
-EXTRA_OEMAKE=
+EXTRA_OEMAKE =
 do_compile () {
-	true
+	:
 }
 
 do_install () {
@@ -12,4 +12,4 @@ do_install () {
 }
 
 PACKAGES = "${PN}"
-FILES_${PN}=*
+FILES_${PN} = "*"

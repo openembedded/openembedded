@@ -5,9 +5,9 @@ MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
 DEPENDS = "virtual/libc slang"
 RDEPENDS = "libc6 slang"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
-	  file://${FILESDIR}/m4.patch;patch=1 \
-	  file://${FILESDIR}/chkslang.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
+	   file://${FILESDIR}/m4.patch;patch=1 \
+	   file://${FILESDIR}/chkslang.patch;patch=1"
 
 inherit autotools
 

@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core"
 DEPENDS = "virtual/libc"
 SRCNAME = "vmaps"
 
-SRC_URI = http://snafu.freedom.org/Vmaps/Vmaps-${PV}.tgz
+SRC_URI = "http://snafu.freedom.org/Vmaps/Vmaps-${PV}.tgz"
 S = "${WORKDIR}/Vmaps-${PV}"
 
 inherit distutils

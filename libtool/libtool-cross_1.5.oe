@@ -1,16 +1,16 @@
 include libtool_${PV}.oe
 #inherit cross
-SRC_URI_append = ' file://${FILESDIR}/libdir-la.patch;patch=1 \
+SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
 		   file://${FILESDIR}/sedvar.patch;patch=1 \
 		   file://${FILESDIR}/tag.patch;patch=1 \
 		   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
 		   file://${FILESDIR}/prefix.patch;patch=1 \
-		   file://${FILESDIR}/chmod.patch;patch=1'
+		   file://${FILESDIR}/chmod.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
 
 prefix = "${CROSS_DIR}"
-exec_prefix=${prefix}
+exec_prefix = "${prefix}"
 
 EXTRA_OECONF_append = " --program-prefix=${TARGET_SYS}-"
 
@@ -27,12 +27,10 @@ do_stage () {
 
 	install -m 0644 libltdl/.libs/libltdl.a ${STAGING_LIBDIR}/
 	install -m 0644 libltdl/.libs/libltdl.lai ${STAGING_LIBDIR}/libltdl.la
-	install -m 0755 libltdl/.libs/libltdl.so.3.1.0 ${STAGING_LIBDIR}/
-	ln -sf libltdl.so.3.1.0 ${STAGING_LIBDIR}/libltdl.so.3
-	ln -sf libltdl.so.3.1.0 ${STAGING_LIBDIR}/libltdl.so
-	install -m 0644 libltdl/ltdl.h ${STAGING_DIR}/target/include/
+	oe_soinstall libltdl/.libs/libltdl.so.3.1.0 ${STAGING_LIBDIR}/
+	install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
 }
 
 do_install () {
-	true
+	:
 }

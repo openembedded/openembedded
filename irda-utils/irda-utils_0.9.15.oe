@@ -1,12 +1,12 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
-DESCRIPTION = "Provides common files needed to use IrDA.\
- IrDA allows communication over Infrared with other devices\
- such as phones and laptops.
+DESCRIPTION = "Provides common files needed to use IrDA. \
+IrDA allows communication over Infrared with other devices \
+such as phones and laptops."
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/irda/${P}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1 \
-	  file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 

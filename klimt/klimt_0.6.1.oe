@@ -6,16 +6,16 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc virtual/libqpe"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${PN}-src-${PV}.zip
-S = "${WORKDIR}/${PN}/build/LinuxQTE"
+SRC_URI = "${SOURCEFORGE_MIRROR}/klimt/klimt-src-${PV}.zip"
+S = "${WORKDIR}/klimt/build/LinuxQTE"
 
-EXTRA_QMAKEVARS_POST = ' QMAKE_CXXFLAGS+=-fpermissive DESTDIR=${STAGING_LIBDIR} '
+EXTRA_QMAKEVARS_POST = " QMAKE_CXXFLAGS+=-fpermissive DESTDIR=${STAGING_LIBDIR} "
 
 inherit palmtop
 
 do_stage() {
 # libs already in staging
-	cp -a ../../include/* ${STAGING_INCDIR}/
+	cp -a ${S}/../../include/* ${STAGING_INCDIR}/
 }
 
 do_install() {

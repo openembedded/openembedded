@@ -5,8 +5,8 @@ SECTION = "libs"
 DEPENDS = "virtual/libc virtual/libbluetooth virtual/libsdp"
 DESCRIPTION = "Personal area networking for Bluetooth devices."
 
-SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
+SRC_URI = "http://bluez.sourceforge.net/download/bluez-pan-${PV}.tar.gz"
 
-EXTRA_OECONF:="--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_DIR}/target/include --with-sdp-libs=${STAGING_LIBDIR} --with-sdp-includes=${STAGING_DIR}/target/include"
+EXTRA_OECONF:="--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} --with-sdp-libs=${STAGING_LIBDIR} --with-sdp-includes=${STAGING_INCDIR}"
 
 inherit autotools libtool

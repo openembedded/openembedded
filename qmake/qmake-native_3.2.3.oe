@@ -4,7 +4,7 @@ RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 LICENSE = "GPL/QPL"
 
-SRC_URI="ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 inherit autotools native

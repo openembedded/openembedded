@@ -10,4 +10,4 @@ inherit autotools libtool
 
 EXTRA_OECONF = '--without-x11-driver --without-slang-driver \
 		--with-curses-driver --without-gpm \
-		--without-x --with-ncurses=${STAGING_DIR}/target'
+		--without-x --with-ncurses=${STAGING_LIBDIR}/..'

@@ -7,20 +7,20 @@ bindings, keyboard macros, mail threading, regular expression \
 searches, and a powerful pattern matching language for selecting \
 groups of messages."
 
-SRC_URI := ftp://ftp.mutt.org/mutt/devel/mutt-1.5.4i.tar.gz \
+SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;patch=1 \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.nntp.gz;patch=1 \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.initials.gz;patch=1 \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.quote.gz;patch=1 \
 	   file://${FILESDIR}/cppflags.patch;patch=1 \
 	   file://${FILESDIR}/posix1_lim.patch;patch=1 \
-	   file://${FILESDIR}/configure.patch;patch=1
-S := ${WORKDIR}/${PN}-1.5.4
+	   file://${FILESDIR}/configure.patch;patch=1"
+S = "${WORKDIR}/mutt-1.5.4"
 
 inherit autotools
 
-EXTRA_OECONF = '--disable-pgp --without-mixmaster --with-curses=${STAGING_DIR}/target \
-	        --enable-pop --enable-imap --with-ssl --enable-compressed --enable-nntp'
+EXTRA_OECONF = "--disable-pgp --without-mixmaster --with-curses=${STAGING_LIBDIR}/.. \
+	        --enable-pop --enable-imap --with-ssl --enable-compressed --enable-nntp"
 
 do_compile_prepend () {
 	${BUILD_CC} makedoc.c -o makedoc

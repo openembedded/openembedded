@@ -1,10 +1,10 @@
 DESCRIPTION = "FreeS/WAN IPSEC"
 DEPENDS = "virtual/libc gmp"
 RDEPENDS = "libc6 gmp"
-FILES_freeswan_append = ' ${libdir}/ipsec'
+FILES_freeswan_append = " ${libdir}/ipsec"
 
-SRC_URI = ftp://ftp.xs4all.nl/pub/crypto/freeswan/old/freeswan-${PV}.tar.gz \
-	  file://${FILESDIR}/flags.patch;patch=1
+SRC_URI = "ftp://ftp.xs4all.nl/pub/crypto/freeswan/old/freeswan-${PV}.tar.gz \
+	   file://${FILESDIR}/flags.patch;patch=1"
 
 S = "${WORKDIR}/freeswan-${PV}"
 

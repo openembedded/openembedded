@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core python-io python-terminal python-resource python-f
 DEPENDS = "virtual/libc"
 SRCNAME = "pexpect"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tgz
+SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tgz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

@@ -4,15 +4,16 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--enable-spincludedir=${STAGING_INCDIR}/OpenSP \
-                --enable-splibdir=${STAGING_LIBDIR}'
+EXTRA_OECONF = "--enable-spincludedir=${STAGING_INCDIR}/OpenSP \
+                --enable-splibdir=${STAGING_LIBDIR}"
 acpaths = "-I ${S}/config"
-CFLAGS_prepend='-I${S}/include'
+CFLAGS_prepend = "-I${S}/include"
+
 do_configure_prepend () {
         mv config/configure.in .
 }
@@ -21,17 +22,11 @@ SOV = "0.0.1"
 do_stage () {
 	install -m 0755 ${S}/style/.libs/libostyle.lai ${STAGING_LIBDIR}/libostyle.la
 	install -m 0755 ${S}/style/.libs/libostyle.a ${STAGING_LIBDIR}/libostyle.a
-	install -m 0755 ${S}/style/.libs/libostyle.so.${SOV} ${STAGING_LIBDIR}/libostyle.so.${SOV}
-	ln -sf libostyle.so.${SOV} ${STAGING_LIBDIR}/libostyle.so.0
-	ln -sf libostyle.so.${SOV} ${STAGING_LIBDIR}/libostyle.so
+	oe_soinstall style/.libs/libostyle.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0755 ${S}/spgrove/.libs/libospgrove.lai ${STAGING_LIBDIR}/libospgrove.la
 	install -m 0755 ${S}/spgrove/.libs/libospgrove.a ${STAGING_LIBDIR}/libospgrove.a
-	install -m 0755 ${S}/spgrove/.libs/libospgrove.so.${SOV} ${STAGING_LIBDIR}/libospgrove.so.${SOV}
-	ln -sf libospgrove.so.${SOV} ${STAGING_LIBDIR}/libospgrove.so.0
-	ln -sf libospgrove.so.${SOV} ${STAGING_LIBDIR}/libospgrove.so
+	oe_soinstall spgrove/.libs/libospgrove.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0755 ${S}/grove/.libs/libogrove.lai ${STAGING_LIBDIR}/libogrove.la
 	install -m 0755 ${S}/grove/.libs/libogrove.a ${STAGING_LIBDIR}/libogrove.a
-	install -m 0755 ${S}/grove/.libs/libogrove.so.${SOV} ${STAGING_LIBDIR}/libogrove.so.${SOV}
-	ln -sf libogrove.so.${SOV} ${STAGING_LIBDIR}/libogrove.so.0
-	ln -sf libogrove.so.${SOV} ${STAGING_LIBDIR}/libogrove.so
+	oe_soinstall grove/.libs/libogrove.so.${SOV} ${STAGING_LIBDIR}/
 }

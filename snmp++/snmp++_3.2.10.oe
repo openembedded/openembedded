@@ -4,8 +4,8 @@ PRIORITY = "optional"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc libdes libtomcrypt"
 
-SRC_URI = http://www.agentpp.com/${PN}v${PV}.tar.gz
-S = "${WORKDIR}/${PN}/src"
+SRC_URI = "http://www.agentpp.com/snmp++v${PV}.tar.gz"
+S = "${WORKDIR}/snmp++/src"
 
 CFLAGS_append = " -I../include"
 

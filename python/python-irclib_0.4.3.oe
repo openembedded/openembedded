@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core"
 DEPENDS = "virtual/libc"
 SRCNAME = "pyirclib"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

@@ -5,25 +5,25 @@ the construction and handling of network packets. It provides a \
 portable framework for low-level network packet shaping, \
 handling, and injection."
 
-SRC_URI := http://www.packetfactory.net/libnet/dist/deprecated/libnet-1.0.2a.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
-S := ${WORKDIR}/Libnet-1.0.2a
+SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
+S = ${WORKDIR}/Libnet-${PV}
 
 inherit autotools
 
 CPPFLAGS_prepend = "-I${S}/libnet/include -DHAVE_PF_PACKET "
-EXTRA_OEMAKE="'LIB_PREFIX=${libdir}/' 'MAN_PREFIX=${mandir}/' \
-	      'BIN_PREFIX=${bindir}/' 'INC_PREFIX=${includedir}/'"
+EXTRA_OEMAKE = "'LIB_PREFIX=${libdir}/' 'MAN_PREFIX=${mandir}/' \
+	        'BIN_PREFIX=${bindir}/' 'INC_PREFIX=${includedir}/'"
 
 do_stage () {
 	install -m 0755 libnet-config ${STAGING_BINDIR}/
-	install -m 0644 include/libnet.h ${STAGING_DIR}/target/include/
-	install -d ${STAGING_DIR}/target/include/libnet
-	install -m 0644 include/libnet/libnet-headers.h ${STAGING_DIR}/target/include/libnet/
-	install -m 0644 include/libnet/libnet-functions.h ${STAGING_DIR}/target/include/libnet/
-	install -m 0644 include/libnet/libnet-structures.h ${STAGING_DIR}/target/include/libnet/
-	install -m 0644 include/libnet/libnet-macros.h ${STAGING_DIR}/target/include/libnet/
-	install -m 0644 include/libnet/libnet-asn1.h ${STAGING_DIR}/target/include/libnet/
-	install -m 0644 include/libnet/libnet-ospf.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet.h ${STAGING_INCDIR}/
+	install -d ${STAGING_INCDIR}/libnet
+	install -m 0644 include/libnet/libnet-headers.h ${STAGING_INCDIR}/libnet/
+	install -m 0644 include/libnet/libnet-functions.h ${STAGING_INCDIR}/libnet/
+	install -m 0644 include/libnet/libnet-structures.h ${STAGING_INCDIR}/libnet/
+	install -m 0644 include/libnet/libnet-macros.h ${STAGING_INCDIR}/libnet/
+	install -m 0644 include/libnet/libnet-asn1.h ${STAGING_INCDIR}/libnet/
+	install -m 0644 include/libnet/libnet-ospf.h ${STAGING_INCDIR}/libnet/
 	install -m 0755 lib/libnet.a ${STAGING_LIBDIR}/
 }

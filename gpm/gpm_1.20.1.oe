@@ -4,18 +4,18 @@ DESCRIPTION = "GPM (General Purpose Mouse) is a mouse server \
 for the console and xterm, with sample clients included \
 (emacs, etc)."
 
-SRC_URI = ftp://arcana.linux.it/pub/gpm/gpm-1.20.1.tar.bz2 \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools
 
-export LIBS=-lm
+export LIBS = "-lm"
 do_configure_prepend () {
 	cp aclocal.m4 acinclude.m4
 }
 
 do_stage () {
-	install -m 0644 src/headers/gpm.h ${STAGING_DIR}/target/include/
+	install -m 0644 src/headers/gpm.h ${STAGING_INCDIR}/
 	install -m 0644 src/lib/libgpm.a ${STAGING_LIBDIR}/
 	install -m 0755 src/lib/libgpm.so.1.19.0 ${STAGING_LIBDIR}/
 	ln -sf libgpm.so.1.19.0 ${STAGING_LIBDIR}/libgpm.so

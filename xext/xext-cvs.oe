@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc xproto-cvs x11-cvs xextensions-cvs"
 PROVIDES = "xext"
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext"
 S = "${WORKDIR}/Xext"
 
 inherit autotools pkgconfig libtool

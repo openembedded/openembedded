@@ -2,14 +2,14 @@ DEPENDS = "virtual/libc openssl"
 RDEPENDS = "libc6 libssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 
-SRC_URI := ${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_2.60.4.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.tar.gz \
 	   file://${FILESDIR}/ldflags.patch;patch=1 \
-	   file://${FILESDIR}/configure.patch;patch=1
-S := ${WORKDIR}/${PN}-2.60
+	   file://${FILESDIR}/configure.patch;patch=1"
+S = "${WORKDIR}/${PN}-2.60"
 
 inherit autotools
 
-EXTRA_OECONF = --enable-ssl
+EXTRA_OECONF = "--enable-ssl"
 do_compile () {
 	oe_runmake 'LDFLAGS=${LDFLAGS}'
 }

@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 libncurses5"
 DESCRIPTION = "An sh-compatible command language interpreter."
 
-SRC_URI = "${GNU_MIRROR}/bash/bash-2.05b.tar.gz \
+SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
 	   file://${FILESDIR}/make.patch;patch=1 \
 	   file://${FILESDIR}/configure.patch;patch=1"
 

@@ -4,13 +4,13 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 PROVIDES = "xproto"
 DESCRIPTION = "X protocol and ancillary headers."
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xproto
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xproto"
 S = "${WORKDIR}/Xproto"
 
 inherit autotools pkgconfig
 
 
 do_stage() {
-	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_DIR}/target/include libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
 
 }

@@ -1,6 +1,6 @@
 DESCRIPTION = "PyReverse is a set of tools for reverse engineering Python code. So far, it features dependency analysis \
 tools, documentation generation, and XMI generation for importation in a UML modeling tool. A special module can be  \
-used to generate files readable by Argo UML.
+used to generate files readable by Argo UML."
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
@@ -8,7 +8,7 @@ RDEPENDS = "libc6 python-core python-logilab python-pyxml"
 DEPENDS = "virtual/libc"
 SRCNAME = "pyreverse"
 
-SRC_URI = ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

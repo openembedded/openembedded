@@ -3,10 +3,10 @@ RDEPENDS = "libc6"
 DESCRIPTION = "The sysklogd package implements \
 two system log daemons."
 
-SRC_URI = http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
-	  file://${FILESDIR}/nonrootinstall.patch;patch=1
+SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
+	   file://${FILESDIR}/nonrootinstall.patch;patch=1"
 
-CFLAGS_append = ' -DSYSV'
+CFLAGS_append = " -DSYSV"
 
 do_install () {
 	install -d ${D}/${mandir}/man8 \

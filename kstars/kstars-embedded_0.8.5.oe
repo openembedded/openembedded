@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://kstars.sourceforge.net/${P}.tar.gz
+SRC_URI = "http://kstars.sourceforge.net/kstars-${PV}.tar.gz"
 S = "${WORKDIR}/kstars"
 
 inherit palmtop
@@ -14,8 +14,8 @@ inherit palmtop
 
 do_install() {
     install -d ${D}/opt/QtPalmtop/{bin,lib,apps/Applications,pics/kstars}
-    install -m 0755 ${STAGING_DIR}/target/bin/kstars ${D}/opt/QtPalmtop/bin/kstars
-    rm -f ${STAGING_DIR}/target/bin/kstars
+    install -m 0755 ${STAGING_LIBDIR}/../bin/kstars ${D}/opt/QtPalmtop/bin/kstars
+    rm -f ${STAGING_LIBDIR}/../bin/kstars
 
     echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
     echo "Comment=The Universe, in your Hands!" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop

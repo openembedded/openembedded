@@ -6,12 +6,12 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://www.staikos.net/~staikos/${PN}/${P}.tar.gz \
-          file://${FILESDIR}/gcc3.patch;patch=1
+SRC_URI = "http://www.staikos.net/~staikos/pocketcellar/pocketcellar-${PV}.tar.gz \
+           file://${FILESDIR}/gcc3.patch;patch=1"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST= DESTDIR=pkg-cellar/home/QtPalmtop/bin/
+EXTRA_QMAKEVARS_POST = " DESTDIR=pkg-cellar/home/QtPalmtop/bin/"
 
 do_install() {
         install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
@@ -23,6 +23,4 @@ do_install() {
         cp pocketcellar.png ${D}/opt/QtPalmtop/pics/
 }
 
-FILES_${PN}=
-FILES_${PN}=/
-
+FILES_${PN} = "/"

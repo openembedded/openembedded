@@ -1,11 +1,11 @@
-DESCRIPTION = "A framework for simple filesystem replication and/or security monitoring and/or automatic file transformations \
--- essentially any application where one would poll files or directories and either do things to them or send them out. 
+DESCRIPTION = "A framework for simple filesystem replication \
+and/or security monitoring and/or automatic file transformations"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
-SRC_URI = http://www.bangstate.com/changedfiles-${PV}.tar.gz
+SRC_URI = "http://www.bangstate.com/changedfiles-${PV}.tar.gz"
 S = "${WORKDIR}/changedfiles-${PV}/module"
 
 inherit module

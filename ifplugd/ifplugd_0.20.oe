@@ -2,11 +2,11 @@ DESCRIPTION = "ifplugd is a Linux daemon which will automatically configure your
 DEPENDS = "virtual/libc libdaemon"
 RDEPENDS = "libc6 libdaemon"
 
-SRC_URI = http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz
+SRC_URI = "http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz"
 
 inherit autotools
 
-EXTRA_OECONF = --disable-lynx
+EXTRA_OECONF = "--disable-lynx"
 
 pkg_postinst () {
 	if test -n "$D"; then

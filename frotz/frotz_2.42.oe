@@ -3,20 +3,20 @@ RDEPENDS = "libc6 ncurses5"
 DESCRIPTION = "Frotz is an interpreter for Infocom games \
 and other Z-machine games."
 
-SRC_URI = http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz
+SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz"
 
 do_configure() {
-    patch -N ${s}/ux_init.c < remove_root_restriction.patch || :
-    rm -f ${SourceTree}/frotz.conf
+	patch -N ${s}/ux_init.c < remove_root_restriction.patch || :
+	rm -f ${SourceTree}/frotz.conf
 }
 
 
-EXTRA_OEMAKE=CC="${CC}" INCL="${CFLAGS}" LIB="${LDFLAGS}" PREFIX=${prefix} CONFIG_DIR=${sysconfdir}
+EXTRA_OEMAKE = CC="${CC}" INCL="${CFLAGS}" LIB="${LDFLAGS}" PREFIX=${prefix} CONFIG_DIR=${sysconfdir}
 do_compile() {
-    oe_runmake frotz
-    sed 's/^[a-z]/#&/' frotz.conf-big > frotz.conf;
+	oe_runmake frotz
+	sed 's/^[a-z]/#&/' frotz.conf-big > frotz.conf;
 }
 
 do_install() {
-    oe_runmake PREFIX=${D}${prefix} MAN_PREFIX=${D}${mandir} install
+	oe_runmake PREFIX=${D}${prefix} MAN_PREFIX=${D}${mandir} install
 }

@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc x11-cvs compositeext-cvs xextensions-cvs fixesext-cvs xf
 PROVIDES = "xcomposite"
 DESCRIPTION = "X Composite extension library."
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xcomposite
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xcomposite"
 S = "${WORKDIR}/Xcomposite"
 
 inherit autotools pkgconfig libtool

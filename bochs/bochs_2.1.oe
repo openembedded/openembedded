@@ -4,12 +4,12 @@ PRIORITY = "optional"
 RDEPENDS = "libc6 libsdl-qpe"
 DEPENDS = "virtual/libc libsdl-qpe"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
-          file://${FILESDIR}/compile.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/bochs/bochs-${PV}.tar.gz \
+           file://${FILESDIR}/compile.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF =  --without-x                 \
+EXTRA_OECONF = "--without-x                 \
                 --without-x11               \
                 --without-beos              \
                 --without-win32             \
@@ -21,7 +21,7 @@ EXTRA_OECONF =  --without-x                 \
                 --without-amigaos           \
                 --with-sdl                  \
                 --without-svga              \
-                --without-wx
+                --without-wx"
 
 do_compile() {
 	oe_runmake bochs bximage bxcommit

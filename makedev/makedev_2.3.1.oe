@@ -1,8 +1,8 @@
 DESCRIPTION = "The MAKEDEV executable is used to create \
 device files, often in /dev."
 
-SRC_URI := ${DEBIAN_MIRROR}/main/m/makedev/makedev_2.3.1.orig.tar.gz
-S := ${WORKDIR}/${P}.orig
+SRC_URI = "${DEBIAN_MIRROR}/main/m/makedev/makedev_${PV}.orig.tar.gz"
+S = "${WORKDIR}/makedev-${PV}.orig"
 
 do_install () {
 	install -d ${D}/dev ${D}/${mandir}/man8
@@ -10,4 +10,4 @@ do_install () {
 	install -m 0644 MAKEDEV.man ${D}/${mandir}/man8/MAKEDEV.8
 }
 
-FILES_${PN}=/dev
+FILES_${PN} = "/dev"

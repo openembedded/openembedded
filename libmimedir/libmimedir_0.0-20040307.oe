@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc intltool-native"
 
-SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libmimedir-snapshot-20040307.tar.gz
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libmimedir-snapshot-20040307.tar.gz"
 S = "${WORKDIR}/libmimedir"
 
 inherit autotools libtool pkgconfig
@@ -17,11 +17,9 @@ libname = "libmimedir-0.2.so.0.0.0"
 do_stage() {
 	install -d ${STAGING_INCDIR}/mimedir-1.0/mimedir
 	for i in ${headers}; do
-		install -m 0644 mimedir/$i ${STAGING_INCDIR}/mimedir-1.0/mimedir/$i
+		install -m 0644 ${S}/mimedir/$i ${STAGING_INCDIR}/mimedir-1.0/mimedir/$i
 	done
 
-	install -m 0755 mimedir/.libs/${libname} ${STAGING_LIBDIR}/
-	ln -s ${libname} ${STAGING_LIBDIR}/libmimedir-0.2.so.0
-	ln -s ${libname} ${STAGING_LIBDIR}/libmimedir.so
+	oe_soinstall mimedir/.libs/${libname} ${STAGING_LIBDIR}/
 	install -m 0755 mimedir/libmimedir.la ${STAGING_LIBDIR}/
 }

@@ -4,11 +4,11 @@ PRIORITY = "optional"
 RDEPENDS = "libc6 libsdl-qpe libmad"
 DEPENDS = "virtual/libc libsdl-qpe libmad"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tgz
+SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tgz"
 
 inherit autotools libtool
 
-EXTRA_OECONF = --backend=sdl
+EXTRA_OECONF = "--backend=sdl"
 
 do_compile() {
 	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" DEFINES="-DUNIX -DQTOPIA"

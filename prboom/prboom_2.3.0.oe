@@ -4,12 +4,12 @@ PRIORITY = "optional"
 RDEPENDS = "libc6 libsdl-qpe libsdl-mixer libsdl-net"
 DEPENDS = "virtual/libc libsdl-qpe libsdl-mixer libsdl-net"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
-          file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
+           file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = --without-x --disable-sdltest
+EXTRA_OECONF = "--without-x --disable-sdltest"
 
 do_configure() {
 	oe_runconf
@@ -22,6 +22,4 @@ do_install() {
 	install -m 0644 ${FILESDIR}/prboom.desktop ${D}/opt/QtPalmtop/apps/Games/prboom.desktop
 }
 
-FILES_${PN}=
-FILES_${PN}=/opt/QtPalmtop
-
+FILES_${PN} = "/opt/QtPalmtop"

@@ -5,10 +5,10 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc python-native"
 
-SRC_URI = ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
-	  file://${FILESDIR}/bindir-libdir.patch;patch=1 \
-	  file://${FILESDIR}/crosscompile.patch;patch=1 \
-	  file://${FILESDIR}/autohell.patch;patch=1
+SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
+	   file://${FILESDIR}/bindir-libdir.patch;patch=1 \
+	   file://${FILESDIR}/crosscompile.patch;patch=1 \
+	   file://${FILESDIR}/autohell.patch;patch=1"
 #	  file://${FILESDIR}/crosscompile-hotshot.patch;patch=1 \
 #	  file://${FILESDIR}/crosscompile-socket.patch;patch=1
 
@@ -16,7 +16,7 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF = --with-threads --with-pymalloc --with-cyclic-gc
+EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc"
 
 #
 # copy config.h and an appropriate Makefile for distutils.sysconfig

@@ -4,8 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc libmikmod"
 RDEPENDS = "libc6 libmikmod"
 
-SRC_URI = http://mikmod.raphnet.net/files/${P}.tar.bz2 \
-          file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "http://mikmod.raphnet.net/files/mikmod-${PV}.tar.bz2 \
+           file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 

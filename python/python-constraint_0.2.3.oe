@@ -1,5 +1,7 @@
-DESCRIPTION = "The constraint package is a constraint satisfaction problem solver written in 100% pure Python, using \
-constraint propagation algorithms. So far, facilities are provided to work with finite domains only.
+DESCRIPTION = "The constraint package is a constraint \
+satisfaction problem solver written in 100% pure Python, using \
+constraint propagation algorithms. So far, facilities are \
+provided to work with finite domains only."
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
@@ -7,7 +9,7 @@ RDEPENDS = "libc6 python-core"
 DEPENDS = "virtual/libc"
 SRCNAME = "constraint"
 
-SRC_URI = ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

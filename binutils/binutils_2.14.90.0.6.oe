@@ -9,8 +9,8 @@ TARGET_VENDOR := ""
 TARGET_SYS := "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
 TARGET_PREFIX := "${TARGET_SYS}-"
 
-DEPENDS := "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
-            virtual/libc patcher"
+DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
+           virtual/libc patcher"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
@@ -35,16 +35,16 @@ FILES_${PN}-symlinks = " \
 	${bindir}/strings \
 	${bindir}/strip"
 
-SRC_URI := "http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
-            file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
-            file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
-            file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
-            file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
-            file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
-            file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1"
+SRC_URI = "http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
+           file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
+           file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
+           file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
+           file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
+           file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
+           file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1"
 
-S := "${WORKDIR}/binutils-${PV}"
-B := "${S}/build.${HOST_SYS}.${TARGET_SYS}"
+S = "${WORKDIR}/binutils-${PV}"
+B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--with-sysroot=${prefix}"
 

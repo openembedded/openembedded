@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-SRC_URI = ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-2.6.7.tar.bz2
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-${PV}.tar.bz2"
 
 inherit autotools pkgconfig libtool
 
@@ -13,10 +13,9 @@ libname = "libxml2.so.2.6.7"
 headers = "DOCBparser.h HTMLparser.h HTMLtree.h SAX.h SAX2.h c14n.h catalog.h chvalid.h debugXML.h dict.h encoding.h entities.h globals.h hash.h list.h nanoftp.h nanohttp.h parser.h parserInternals.h pattern.h relaxng.h schemasInternals.h threads.h tree.h uri.h valid.h xinclude.h xlink.h xmlIO.h xmlautomata.h xmlerror.h xmlexports.h xmlmemory.h xmlreader.h xmlregexp.h xmlschemas.h xmlschemastypes.h xmlstring.h xmlunicode.h xmlversion.h xmlwriter.h xpath.h xpathInternals.h xpointer.h"
 
 do_stage () {
-	install -m 0755 .libs/${libname} ${STAGING_LIBDIR}/
-	ln -sf ${libname} ${STAGING_LIBDIR}/libxml2.so.2
-	ln -sf ${libname} ${STAGING_LIBDIR}/libxml2.so
+	oe_soinstall .libs/${libname} ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libxml2.lai ${STAGING_LIBDIR}/libxml2.la
+	install -m 0644 .libs/libxml2.a ${STAGING_LIBDIR}/
 
 	mkdir -p ${STAGING_INCDIR}/libxml2/libxml
 	for i in ${headers}; do

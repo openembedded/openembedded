@@ -5,12 +5,12 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://sun.dhis.portside.net/~sakira/archive/SPainter_1.0-1_src.tar.gz
+SRC_URI = "http://sun.dhis.portside.net/~sakira/archive/SPainter_${PV}-1_src.tar.gz"
 S = "${WORKDIR}/SPainter"
 
 inherit palmtop
 
-QMAKE_PROFILES = spainter.pro
+QMAKE_PROFILES = "spainter.pro"
 
 do_install() {
         install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}

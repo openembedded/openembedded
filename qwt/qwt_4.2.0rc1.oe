@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqte2"
 DEPENDS = "virtual/libc virtual/libqte2"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tgz
+SRC_URI = "${SOURCEFORGE_MIRROR}/qwt/qwt-${PV}.tgz"
 
 inherit qmake
 

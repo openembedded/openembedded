@@ -2,12 +2,13 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "USB console utilities."
 
-SRC_URI = http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 S = "${WORKDIR}/usbutils-${PV}"
 
 inherit autotools libtool
-EXTRA_OECONF=--program-prefix=
+
+EXTRA_OECONF = "--program-prefix="
 sbindir = "/sbin"
 bindir = "/bin"
 

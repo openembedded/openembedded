@@ -1,23 +1,23 @@
-DEPENDS = virtual/libc db3
-RDEPENDS = libc6 db3
+DEPENDS = "virtual/libc db3"
+RDEPENDS = "libc6 db3"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 
-SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz
+SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz"
 
 inherit autotools libtool
 
-acpaths=-I ${S}/cmulocal -I ${S}/config -I .
-CFLAGS_append = ' -I${S}/include -I${S}/saslauthd/include'
-EXTRA_OECONF = '--enable-shared --enable-static --with-dblib=berkeley \
+acpaths = "-I ${S}/cmulocal -I ${S}/config -I ."
+CFLAGS_append = " -I${S}/include -I${S}/saslauthd/include"
+EXTRA_OECONF = "--enable-shared --enable-static --with-dblib=berkeley \
 	        --with-bdb-libdir=${STAGING_LIBDIR} \
 	        --with-bdb-incdir=${STAGING_INCDIR} \
-		--without-opie --without-des'
+		--without-opie --without-des"
+
 do_configure_prepend () {
 	rm -f acinclude.m4
 }
 
 do_compile_prepend () {
-	set -e
 	cd include
 	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} makemd5.c -o makemd5
 	touch makemd5.o makemd5.lo makemd5
@@ -27,16 +27,14 @@ do_compile_prepend () {
 do_stage () {
 	install -m 0644 lib/.libs/libsasl2.lai ${STAGING_LIBDIR}/libsasl2.la
 	install -m 0644 lib/.libs/libsasl2.a ${STAGING_LIBDIR}/libsasl2.a
-	install -m 0755 lib/.libs/libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so.2.0.18
-	ln -sf libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so.2
-	ln -sf libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so
+	oe_soinstall lib/.libs/libsasl2.so.2.0.18 ${STAGING_LIBDIR}/
 	install -d ${STAGING_LIBDIR}/sasl
-	install -d ${STAGING_DIR}/target/include/sasl
-	install -m 0644 include/hmac-md5.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/md5.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/md5global.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/sasl.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/saslplug.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/saslutil.h ${STAGING_DIR}/target/include/sasl/
-	install -m 0644 include/prop.h ${STAGING_DIR}/target/include/sasl/
+	install -d ${STAGING_INCDIR}/sasl
+	install -m 0644 ${S}/include/hmac-md5.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/md5.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/md5global.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/sasl.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/saslplug.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/saslutil.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/prop.h ${STAGING_INCDIR}/sasl/
 }

@@ -2,12 +2,12 @@ DEPENDS = "virtual/libc libpcap"
 RDEPENDS = "libc6 libpcap"
 DESCRIPTION = "Nmap is a command line portscanner."
 
-SRC_URI = http://download.insecure.org/nmap/dist/nmap-${PV}.tgz
+SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tgz"
 
 inherit autotools
 
-EXTRA_OECONF = --with-pcap=linux --with-libpcap=${STAGING_DIR} --without-nmapfe
-EXTRA_OEMAKE = "STRIPPROG=arm-linux-strip"
+EXTRA_OECONF = "--with-pcap=linux --with-libpcap=${STAGING_LIBDIR}/.. --without-nmapfe"
+EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
 
 CXXFLAGS_append = " -fpermissive"
 # Ugly hack follows -- their configure.ac doesnt match their configure .. 

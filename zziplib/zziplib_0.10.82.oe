@@ -4,7 +4,7 @@ PRIORITY = "optional"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.bz2
+SRC_URI = "${SOURCEFORGE_MIRROR}/zziplib/zziplib-${PV}.tar.bz2"
 
 inherit autotools libtool pkgconfig
 
@@ -14,11 +14,11 @@ do_stage() {
 	oe_soinstall zzipwrap/.libs/libzzipwrap-0.so.10.0.82 ${STAGING_LIBDIR}
 	ln -sf libzzipwrap-0.so.10.0.82 ${STAGING_LIBDIR}/libzzipwrap.so
 
-	install -d ${STAGING_DIR}/target/include/readline
+	install -d ${STAGING_INCDIR}/readline
 	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
 	  rlconf.h rltypedefs.h
 	do
-		install -m 0644 ${f} ${STAGING_DIR}/target/include/readline
+		install -m 0644 ${f} ${STAGING_INCDIR}/readline
 	done
 
 }

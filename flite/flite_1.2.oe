@@ -5,12 +5,12 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI=http://www.speech.cs.cmu.edu/flite/packed/flite-1.2/flite-${PV}-release.tar.bz2
+SRC_URI = "http://www.speech.cs.cmu.edu/flite/packed/flite-${PV}/flite-${PV}-release.tar.bz2"
 S = "${WORKDIR}/flite-${PV}-release"
 
 inherit autotools libtool
 
-EXTRA_OECONF="--enable-shared"
+EXTRA_OECONF = "--enable-shared"
 
 do_install() {
         oe_runmake INSTALLBINDIR="${D}${bindir}" INSTALLLIBDIR="${D}${libdir}" INSTALLINCDIR="${D}${includedir}" install

@@ -3,10 +3,10 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "linux-${KERNEL_VERSION}          "
+RDEPENDS = "linux-${KERNEL_VERSION}"
 DEPENDS = "virtual/kernel"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 
 inherit autotools
 
@@ -14,18 +14,17 @@ inherit autotools
 #export OS=${TARGET_OS}
 #export CROSS_COMPILE=${CROSS}
 
-KERNEL_VERSION=`cat ${STAGING_DIR}/target/kernel/kernel-version`
-KERNEL_SOURCE=`cat ${STAGING_DIR}/target/kernel/kernel-source`
-KERNEL_PATH=${STAGING_DIR}/target/kernel
+KERNEL_VERSION = "`cat ${STAGING_LIBDIR}/../kernel/kernel-version`"
+KERNEL_SOURCE = "`cat ${STAGING_LIBDIR}/../kernel/kernel-source`"
+KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
 
 #FIXME: Caution: EXTRA_OECONF is arm-specific!
 
-EXTRA_OECONF = '--with-kerneldir=${KERNEL_SOURCE}                      \
+EXTRA_OECONF = "--with-kerneldir=${KERNEL_SOURCE}                      \
                 --with-driver=sa1100                                   \ 
-                --without-x'
+                --without-x"
 
 do_stage() {
-	install -m 0755 tools/.libs/liblirc_client.0.0.0 tools/.libs/liblirc_client.so.0.0.0
 	oe_soinstall tools/.libs/liblirc_client.so.0.0.0 ${STAGING_LIBDIR}/
 	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/
 }

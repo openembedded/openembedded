@@ -6,12 +6,12 @@ DESCRIPTION = "network API translation layer to \
 insulate X applications and libraries from OS \
 network vageries."
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans"
 S = "${WORKDIR}/xtrans"
 
 inherit autotools libtool pkgconfig
 
 do_stage() {
-	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_DIR}/target/include libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
 }
 

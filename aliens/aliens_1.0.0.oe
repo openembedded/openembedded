@@ -6,8 +6,8 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1 libsdl"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
-SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/aliens/src/aliens_V1.0.0.tar.gz"
-S = "${WORKDIR}/aliens_V1.0.0"
+SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/aliens/src/aliens_V${PV}.tar.gz"
+S = "${WORKDIR}/aliens_V${PV}"
 
 inherit palmtop
 

@@ -2,8 +2,8 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "find, locate, and xargs binaries."
 
-SRC_URI := ftp://alpha.gnu.org/gnu/findutils/findutils-4.1.20.tar.gz \
+SRC_URI = "ftp://alpha.gnu.org/gnu/findutils/findutils-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/m4.patch;patch=1
+	   file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools

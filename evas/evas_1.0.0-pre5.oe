@@ -6,13 +6,13 @@ images, alpha-blend, as well as drop down to using normal X11 \
 primitives such as pixmaps, lines and rectangles for speed \
 if your CPU or graphics hardware are too slow."
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/enlightenment/evas-1.0.0_pre5.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/evas-1.0.0_pre5.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 S = "${WORKDIR}/evas-1.0.0_pre5"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--enable-fb \
+EXTRA_OECONF = "--enable-fb \
 		--enable-image-loader-png \
 		--enable-image-loader-jpeg \
 		--enable-small-dither-mask \
@@ -21,7 +21,7 @@ EXTRA_OECONF = '--enable-fb \
 		--enable-scale-sample \
 		--enable-convert-16-rgb-ipq \
 		--enable-convert-16-rgb-rot-0 \
-		--enable-convert-16-rgb-rot-270'
+		--enable-convert-16-rgb-rot-270"
 
 do_configure_prepend () {
 	cp ${FILESDIR}/pkg.m4 acinclude.m4

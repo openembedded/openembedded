@@ -1,17 +1,15 @@
 DEPENDS = "virtual/libc"
 DESCRIPTION = "Pluginable bootup menu."
 
-SRC_URI := http://www.cosmicpenguin.net/pub/bootmenu/${P}.tar.gz \
-	   file://${FILESDIR}/compile.patch;patch=1
+SRC_URI = "http://www.cosmicpenguin.net/pub/bootmenu/bootmenu-${PV}.tar.gz \
+	   file://${FILESDIR}/compile.patch;patch=1"
 
 EXTRA_OEMAKE =
 
 do_compile () {
-	cd src
-	oe_runmake 'CC=${CC}' 'CFLAGS=${CFLAGS}' 'LDFLAGS=${LDFLAGS}'
+	oe_runmake -C src 'CC=${CC}' 'CFLAGS=${CFLAGS}' 'LDFLAGS=${LDFLAGS}'
 }
 
 do_install () {
-	cd src
-	oe_runmake 'PLUGINDIR=${datadir}/bootmenu' 'PREFIX=${bindir}' 'DESTDIR=${D}' install
+	oe_runmake -C src 'PLUGINDIR=${datadir}/bootmenu' 'PREFIX=${bindir}' 'DESTDIR=${D}' install
 }

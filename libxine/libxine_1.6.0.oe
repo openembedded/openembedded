@@ -53,20 +53,20 @@ do_stage() {
   oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
     -C src install-data \
     'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
-    'libdir=${STAGING_DIR}/target/lib' \
-    'includedir=${STAGING_DIR}/target/include'
+    'libdir=${STAGING_LIBDIR}' \
+    'includedir=${STAGING_INCDIR}'
   oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
     -C include install-data \
     'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
-    'libdir=${STAGING_DIR}/target/lib' \
-    'includedir=${STAGING_DIR}/target/include'
-  install -m 0755 -d ${STAGING_DIR}/target/lib/xine/plugins/1.0.0
+    'libdir=${STAGING_LIBDIR}' \
+    'includedir=${STAGING_INCDIR}'
+  install -m 0755 -d ${STAGING_LIBDIR}/xine/plugins/1.0.0
   for plugin in `find ${S}/src -type f -name xineplug*.la`; do 
     dso=`dirname $plugin`/.libs/`basename $plugin .la`.so 
-    install -m 0755 $dso ${STAGING_DIR}/target/lib/xine/plugins/1.0.0
+    install -m 0755 $dso ${STAGING_LIBDIR}/xine/plugins/1.0.0
   done
   install -m 0755 src/xine-engine/.libs/libxine.so.${PV} \
-    ${STAGING_DIR}/target/lib
-  ln -fs libxine.so.$PV ${STAGING_DIR}/target/lib/libxine.so.1
-  ln -fs libxine.so.$PV ${STAGING_DIR}/target/lib/libxine.so
+    ${STAGING_LIBDIR}
+  ln -fs libxine.so.$PV ${STAGING_LIBDIR}/libxine.so.1
+  ln -fs libxine.so.$PV ${STAGING_LIBDIR}/libxine.so
 }

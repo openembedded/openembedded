@@ -1,7 +1,7 @@
 DEPENDS = "patcher-native openjade-native"
 RDEPENDS = 
 
-SRC_URI = ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-${PV}.tar.gz
+SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-${PV}.tar.gz"
 S = "${WORKDIR}/docbook-utils-${PV}"
 
 inherit autotools native

@@ -4,10 +4,10 @@ itself up as the intermediary between programs that supply \
 nameserver information and programs that need nameserver \
 information."
 
-SRC_URI := ${DEBIAN_MIRROR}/main/r/${PN}/${PN}_${PV}.tar.gz
+SRC_URI = "${DEBIAN_MIRROR}/main/r/resolvconf/resolvconf_${PV}.tar.gz"
 
 do_compile () {
-	oenote "Nothing to compile"
+	:
 }
 
 do_install () {

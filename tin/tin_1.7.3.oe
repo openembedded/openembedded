@@ -2,14 +2,14 @@ RDEPENDS = "libc6 libncurses5"
 DEPENDS = "virtual/libc ncurses"
 DESCRIPTION = "Tin is a powerful text mode news reader."
 
-SRC_URI=ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
-	file://${FILESDIR}/makecfg-buildcc.patch;patch=1 \
-	file://${FILESDIR}/m4.patch;patch=1 \
-	file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
+	   file://${FILESDIR}/makecfg-buildcc.patch;patch=1 \
+	   file://${FILESDIR}/m4.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--with-screen=ncurses'
+EXTRA_OECONF = "--with-screen=ncurses"
 
 do_compile () {
         ${BUILD_CC} -DLINK_SIZE=2 -I${S}/include -c pcre/dftables.c

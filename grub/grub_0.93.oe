@@ -2,11 +2,11 @@ DESCRIPTION = "grand unified bootloader"
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 
-SRC_URI = ftp://alpha.gnu.org/gnu/grub/grub-0.93.tar.gz; \
-	  file://${FILESDIR}/autohell.patch;patch=1 \
-	  file://${FILESDIR}/memcpy.patch;patch=1 \
-	  file://${FILESDIR}/reiserfs.patch;patch=1
+SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz; \
+	   file://${FILESDIR}/autohell.patch;patch=1 \
+	   file://${FILESDIR}/memcpy.patch;patch=1 \
+	   file://${FILESDIR}/reiserfs.patch;patch=1"
 
-S = "${WORKDIR}/grub-0.93"
+S = "${WORKDIR}/grub-${PV}"
 
 inherit autotools

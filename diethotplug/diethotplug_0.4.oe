@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "A small, C implementation of hotplug."
 
-SRC_URI = http://www.us.kernel.org/pub/linux/utils/kernel/hotplug/diethotplug-${PV}.tar.gz
+SRC_URI = "http://www.us.kernel.org/pub/linux/utils/kernel/hotplug/diethotplug-${PV}.tar.gz"
 
 export KLIBC=
 do_compile () {

@@ -6,12 +6,12 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1 libsdl lirc"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl lirc"
 
-SRC_URI = http://downloads.zaurususergroup.com/community/66.180.235.230/download.php/461/${P}.tgz
-S = "${WORKDIR}/${PN}"
+SRC_URI = "http://downloads.zaurususergroup.com/community/66.180.235.230/download.php/461/irk-${PV}.tgz"
+S = "${WORKDIR}/irk"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = 'CONFIG-=qtopia'
+EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia"
 
 do_install() {
 	install -d ${D}/${sysconfdir}

@@ -6,4 +6,4 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "virtual/libc glib-2.0"
 
-SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/gpe-dm-${PV}.tar.gz
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-dm-${PV}.tar.gz"

@@ -4,8 +4,8 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
-SRC_URI := "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
-S       := "${WORKDIR}/sip-${PV}/sipgen"
+SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
+S = "${WORKDIR}/sip-${PV}/sipgen"
 
 inherit qmake native
 

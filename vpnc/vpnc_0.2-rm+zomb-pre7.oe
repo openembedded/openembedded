@@ -4,8 +4,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc base/libgcrypt"
 
-SRC_URI = http://www.unix-ag.uni-kl.de/~massar/vpnc/${PN}-${PV}.tar.gz \
-          file://${FILESDIR}/attribute.patch;patch=1
+SRC_URI = "http://www.unix-ag.uni-kl.de/~massar/vpnc/vpnc-${PV}.tar.gz \
+           file://${FILESDIR}/attribute.patch;patch=1"
 
 
 CFLAGS_append = ' -DVERSION=\\"${PV}\\"'

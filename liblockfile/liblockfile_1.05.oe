@@ -2,17 +2,17 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "File locking library."
 
-SRC_URI = ${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
-	  file://${FILESDIR}/install.patch;patch=1 \
-	  file://${FILESDIR}/configure.patch;patch=1 \
-	  file://${FILESDIR}/ldflags.patch;patch=1
+SRC_URI = "${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
+	   file://${FILESDIR}/install.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/ldflags.patch;patch=1"
 
 inherit autotools
 
 EXTRA_OECONF = "--enable-shared --enable-static"
 
 do_stage () {
-		install -m 644 lockfile.h maillock.h ${STAGING_DIR}/target/include/
+		install -m 644 ${S}/lockfile.h ${S}/maillock.h ${STAGING_INCDIR}/
 		install -m 755 liblockfile.so \
 			${STAGING_LIBDIR}/liblockfile.so.1.0
 		ln -sf liblockfile.so.1.0 ${STAGING_LIBDIR}/liblockfile.so

@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core curl (${PV})"
 DEPENDS = "virtual/libc curl-${PV}"
 SRCNAME = "pycurl"
 
-SRC_URI = http://${SRCNAME}.sourceforge.net/download/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "http://${SRCNAME}.sourceforge.net/download/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

@@ -5,7 +5,7 @@ DEPENDS = "xextensions-cvs"
 PROVIDES = "fixesext"
 DESCRIPTION = "X Fixes extension headers and specification."
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=FixesExt
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=FixesExt"
 S = "${WORKDIR}/FixesExt"
 
 inherit autotools pkgconfig

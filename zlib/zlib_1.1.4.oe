@@ -6,7 +6,7 @@ RDEPENDS = "libc6"
 
 SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz"
 DEPENDS = "virtual/libc"
-S = "${WORKDIR}/${P}"
+S = "${WORKDIR}/zlib-${PV}"
 
 export LDSHARED = "${CC} -shared -Wl,-soname,libz.so.1"
 LDFLAGS_append = " -L. -lz"
@@ -16,13 +16,13 @@ EXTRA_OEMAKE = ""
 
 do_compile() {
 	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir}
-	oe_runmake -e MAKEFLAGS="" libz.so.1.1.4 libz.a
+	oe_runmake -e MAKEFLAGS="" libz.so.${PV} libz.a
 }
 
 do_stage() {
-	install -m 0644 zlib.h ${STAGING_DIR}/target/include/zlib.h
-	install -m 0644 zconf.h ${STAGING_DIR}/target/include/zconf.h
-	install -m 0755 libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so.1.1.4
+	install -m 0644 zlib.h ${STAGING_INCDIR}/zlib.h
+	install -m 0644 zconf.h ${STAGING_INCDIR}/zconf.h
+	install -m 0755 libz.so.${PV} ${STAGING_LIBDIR}/libz.so.${PV}
 	install -m 0755 libz.a ${STAGING_LIBDIR}/libz.a
 	ln -sf ./libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so.1
 	ln -sf ./libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so

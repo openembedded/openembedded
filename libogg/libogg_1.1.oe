@@ -5,17 +5,15 @@ DESCRIPTION = "libogg is the bitstream and framing library \
 for the Ogg project. It provides functions which are \
 necessary to codec libraries like libvorbis."
 
-SRC_URI = http://www.vorbis.com/files/1.0.1/unix/libogg-${PV}.tar.gz
+SRC_URI = "http://www.vorbis.com/files/1.0.1/unix/libogg-${PV}.tar.gz"
 
 inherit autotools libtool
 
 do_stage () {
 	install -m 0644 src/.libs/libogg.a ${STAGING_LIBDIR}/
 	install -m 0644 src/.libs/libogg.lai ${STAGING_LIBDIR}/libogg.la
-	install -m 0644 src/.libs/libogg.so.0.5.0 ${STAGING_LIBDIR}/
-	ln -sf libogg.so.0.5.0 ${STAGING_LIBDIR}/libogg.so.0
-	ln -sf libogg.so.0.5.0 ${STAGING_LIBDIR}/libogg.so
+	oe_soinstall src/.libs/libogg.so.0.5.0 ${STAGING_LIBDIR}/
 
-	install -d ${STAGING_DIR}/target/include/ogg
-	(cd include/ogg; cp config_types.h ogg.h os_types.h ${STAGING_DIR}/target/include/ogg/)
+	install -d ${STAGING_INCDIR}/ogg
+	(cd ${S}/include/ogg; cp config_types.h ogg.h os_types.h ${STAGING_INCDIR}/ogg/)
 }

@@ -2,18 +2,18 @@ DEPENDS = "virtual/libc docbook-utils-native"
 RDEPENDS = "libc6"
 DESCRIPTION = "Utilities for the IP protocol."
 
-SRC_URI = http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz
-S = "${WORKDIR}/${PN}"
+SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz"
+S = "${WORKDIR}/iputils"
 
 EXTRA_OEMAKE = 
 
 do_compile () {
 	oe_runmake 'CC=${CC}' \
-		   KERNEL_INCLUDE="${STAGING_DIR}/target/include" \
-		   LIBC_INCLUDE="${STAGING_DIR}/target/include"
+		   KERNEL_INCLUDE="${STAGING_INCDIR}" \
+		   LIBC_INCLUDE="${STAGING_INCDIR}"
 	oe_runmake -C doc 'CC=${CC}' \
-		   KERNEL_INCLUDE="${STAGING_DIR}/target/include" \
-		   LIBC_INCLUDE="${STAGING_DIR}/target/include"
+		   KERNEL_INCLUDE="${STAGING_INCDIR}" \
+		   LIBC_INCLUDE="${STAGING_INCDIR}"
 }
 
 do_install () {

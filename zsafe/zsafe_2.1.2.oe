@@ -7,12 +7,12 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc virtual/libqpe"
 
-#SRC_URI = http://z-soft.z-portal.info/${PN}/${PN}_${PV}.tgz
-SRC_URI = http://www.lunix.com.ar/~ldipenti/${PN}_${PV}.tgz
+#SRC_URI = http://z-soft.z-portal.info/zsafe/zsafe_${PV}.tgz
+SRC_URI = "http://www.lunix.com.ar/~ldipenti/zsafe_${PV}.tgz"
 
 inherit palmtop 
 
-QMAKE_PROFILES = zsafe.pro
+QMAKE_PROFILES = "zsafe.pro"
 
 do_install() {
         install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics/zsafe}

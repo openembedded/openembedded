@@ -5,7 +5,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://efault.net/npat/hacks/picocom/dist/${P}.tar.gz
+SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz"
 
 CFLAGS_append = ' -DVERSION_STR=\\"${PV}\\"'
 

@@ -2,10 +2,10 @@ HOMEPAGE = "http://bytesex.org/fbi.html"
 DESCRIPTION = "frame buffer image viewer"
 DEPENDS = "virtual/libc jpeg"
 
-SRC_URI := http://bytesex.org/misc/fbi_1.22.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://bytesex.org/misc/fbi_${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools
 
 CFLAGS_append = " ${LDFLAGS}"
-EXTRA_OECONF = --disable-magick --without-x
+EXTRA_OECONF = "--disable-magick --without-x"

@@ -8,11 +8,9 @@ connect a number of different applications to an audio \
 device, as well as allowing them to share audio between \
 themselves."
 
-SRC_URI=http://heanet.dl.sourceforge.net/sourceforge/jackit/jack-audio-connection-kit-${PV}.tar.gz
+SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/jackit/jack-audio-connection-kit-${PV}.tar.gz"
 S = "${WORKDIR}/jack-audio-connection-kit-${PV}"
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OECONF=""
-
-
+EXTRA_OECONF = ""

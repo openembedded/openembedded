@@ -2,19 +2,19 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "Berkeley DB v3."
 
-SRC_URI = http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz
+SRC_URI = "http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--enable-shared --enable-compat185 --enable-static'
+EXTRA_OECONF = "--enable-shared --enable-compat185 --enable-static"
 EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}` cr' 'chmod=`which chmod`' \
 		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
 		'rm=`which rm`' 'strip=`which ${STRIP}`'"
 
-FILES_${PN}=${bindir} ${libdir}/libdb-3.2*
-FILES_${PN}-dev=${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so
+FILES_${PN} = "${bindir} ${libdir}/libdb-3.2*"
+FILES_${PN}-dev = "${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so"
 
 do_configure_prepend () {
 	set -e
@@ -56,7 +56,7 @@ do_compile () {
 do_stage () {
 	set -e
 	cd ${B}
-	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_DIR}/target/include/
+	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_INCDIR}/
 	install -m 0755 .libs/libdb-3.2.so ${STAGING_LIBDIR}/
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb-3.so
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb3.so

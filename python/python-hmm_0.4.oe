@@ -1,6 +1,6 @@
 DESCRIPTION = "Hmm is a python module providing an implementation of Hidden Markov \
-Model and associated algorithms (Viterbi and Baum-Welsh). It uses Numeric       \
-Python to speed up the computations.
+Model and associated algorithms (Viterbi and Baum-Welsh). It uses Numeric \
+Python to speed up the computations."
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
@@ -8,7 +8,7 @@ RDEPENDS = "libc6 python-core python-numeric"
 DEPENDS = "virtual/libc"
 SRCNAME = "hmm"
 
-SRC_URI = ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

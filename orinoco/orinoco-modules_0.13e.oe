@@ -5,9 +5,9 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
-SRC_URI = http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz; \
-          file://${FILESDIR}/crosscompile.patch;patch=1 \
-          file://${FILESDIR}/monitor-${PV}.patch;patch=1
+SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz; \
+           file://${FILESDIR}/crosscompile.patch;patch=1 \
+           file://${FILESDIR}/monitor-${PV}.patch;patch=1"
 S = "${WORKDIR}/orinoco-${PV}"
 
 inherit module

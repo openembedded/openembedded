@@ -3,7 +3,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 
-SRC_URI="ftp://ftp.gnome.org/pub/GNOME/sources/intltool/${PV}/intltool-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/intltool/${PV}/intltool-${PV}.tar.bz2"
 S = "${WORKDIR}/intltool-${PV}"
 
 inherit autotools libtool pkgconfig

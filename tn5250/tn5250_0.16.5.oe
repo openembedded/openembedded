@@ -3,7 +3,7 @@ to IBM's AS/400 (now known as eServer iSeries) midrange computers."
 DEPENDS = "virtual/libc ncurses openssl"
 RDEPENDS = "libc6 ncurses openssl"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/tn5250/tn5250-0.16.5.tar.gz \
-	  file://${FILESDIR}/compile.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
+	   file://${FILESDIR}/compile.patch;patch=1"
 
 inherit autotools libtool

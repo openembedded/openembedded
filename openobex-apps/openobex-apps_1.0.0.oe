@@ -4,10 +4,10 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc openobex"
 RDEPENDS = "libc6 libopenobex1"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/openobex-apps-${PV}.tar.gz \
-	  file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-apps-${PV}.tar.gz \
+	   file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 
-EXTRA_OECONF = --disable-glibtest --with-glib-prefix=${STAGING_DIR}/target
+EXTRA_OECONF = "--disable-glibtest --with-glib-prefix=${STAGING_LIBDIR}/.."
 EXTRA_OEMAKE = "'INCLUDES='"

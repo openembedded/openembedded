@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc virtual/libqpe"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/poqetp/poqetp_${PV}_src.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/poqetp/poqetp_${PV}_src.tar.gz"
 S = "${WORKDIR}/poqetp"
 
 inherit palmtop

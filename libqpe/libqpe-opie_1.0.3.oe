@@ -7,15 +7,15 @@ DEPENDS = "virtual/libc uicmoc-native qte-for-opie"
 RDEPENDS = "libc6 qte"
 PROVIDES = "virtual/libqpe"
 
-SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/library;tag=${@'v' + oe.data.getVar('PV',d,1).replace('.','_')}"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/library;tag=${@'v' + oe.data.getVar('PV',d,1).replace('.','_')}"
 S = "${WORKDIR}/library"
 
 inherit qmake
 
 QMAKE_PROFILES = "library.pro"
 
-export QTDIR=${STAGING_DIR}/target
-export OPIEDIR=${STAGING_DIR}/target
+export QTDIR=${STAGING_LIBDIR}/..
+export OPIEDIR=${STAGING_LIBDIR}/..
 
 CXXFLAGS_append = " -DQWS -fno-rtti -fno-exceptions"
 

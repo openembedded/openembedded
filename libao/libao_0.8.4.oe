@@ -4,19 +4,19 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 
-SRC_URI = http://www.xiph.org/ao/src/libao-${PV}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "http://www.xiph.org/ao/src/libao-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OECONF = '--disable-esd --disable-esdtest \
+EXTRA_OECONF = "--disable-esd --disable-esdtest \
 		--disable-alsa --disable-alsa09 \
-		--disable-arts --disable-nas'
+		--disable-arts --disable-nas"
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/ao
-	install -m 0644 include/ao/ao.h include/ao/os_types.h \
-			include/ao/plugin.h ${STAGING_INCDIR}/ao/
+	install -m 0644 ${S}/include/ao/ao.h ${S}/include/ao/os_types.h \
+			${S}/include/ao/plugin.h ${STAGING_INCDIR}/ao/
 
 	install -m 0644 src/.libs/libao.a ${STAGING_LIBDIR}/
 	install -m 0644 src/.libs/libao.lai ${STAGING_LIBDIR}/libao.la

@@ -1,0 +1,13 @@
+DEPENDS = "virtual/libc pcre"
+RDEPENDS = "libc6 pcre"
+DESCRIPTION = "PME is a C++ wrapper around the PCRE library."
+SRC_URI = "http://xaxxon.slackworks.com/pme/pme-${PV}.tar.gz"
+
+inherit autotools libtool
+
+do_stage () {
+	oe_soinstall .libs/libpme.so.0.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 .libs/libpme.a ${STAGING_LIBDIR}/libpme.a
+	install -m 0644 .libs/libpme.lai ${STAGING_LIBDIR}/libpme.la
+	install -m 0644 pme.h ${STAGING_INCDIR}/
+}

@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc x11-cvs xproto-cvs xrender-cvs freetype fontconfig"
 PROVIDES = "xft"
 DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xft
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xft"
 S = "${WORKDIR}/Xft"
 
 inherit autotools pkgconfig libtool

@@ -5,7 +5,7 @@ DEPENDS = "xextensions-cvs"
 PROVIDES = "resourceext"
 DESCRIPTION = "X Resource usage extension headers"
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ResourceExt
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ResourceExt"
 S = "${WORKDIR}/ResourceExt"
 
 inherit autotools pkgconfig

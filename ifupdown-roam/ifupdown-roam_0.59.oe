@@ -3,7 +3,7 @@ PRIORITY = "extra"
 DESCRIPTION = "Roaming enhancements for ifupdown"
 RDEPENDS = "ifupdown"
 
-SRC_URI := http://openembedded.org/download/ifupdown-roam-0.59.tar.bz2
+SRC_URI = "http://openembedded.org/download/ifupdown-roam-${PV}.tar.bz2"
 
 do_install () {
 	install -d ${D}

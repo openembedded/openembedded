@@ -3,7 +3,7 @@ RDEPENDS = "libc6"
 LICENSE = "OSL"
 DESCRIPTION = "A collection of utilities and DSOs to handle compiled objects."
 
-SRC_URI = http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles/elfutils-${PV}.tar.gz
+SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles/elfutils-${PV}.tar.gz"
 
 inherit autotools
 
@@ -30,14 +30,14 @@ do_stage () {
 	ln -sf libdwarf-${SOV}.so ${STAGING_LIBDIR}/libdwarf.so.1
 	ln -sf libdwarf.so.1 ${STAGING_LIBDIR}/libdwarf.so
 
-	install -m 0644 libelf/libelf.h ${STAGING_INCDIR}/
-	install -m 0644 libelf/gelf.h ${STAGING_INCDIR}/
-	install -m 0644 libelf/nlist.h ${STAGING_INCDIR}/
-	install -m 0644 libdwarf/dwarf.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libelf/libelf.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libelf/gelf.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libelf/nlist.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libdwarf/dwarf.h ${STAGING_INCDIR}/
 	install -d ${STAGING_INCDIR}/elfutils
-	install -m 0644 libebl/libebl.h ${STAGING_INCDIR}/elfutils/
-	install -m 0644 libebl/elf-knowledge.h ${STAGING_INCDIR}/elfutils/
-	install -m 0644 libdwarf/libdwarf.h ${STAGING_INCDIR}/elfutils/
-	install -m 0644 libdw/libdw.h ${STAGING_INCDIR}/elfutils/
-	install -m 0644 libasm/libasm.h ${STAGING_INCDIR}/elfutils/
+	install -m 0644 ${S}/libebl/libebl.h ${STAGING_INCDIR}/elfutils/
+	install -m 0644 ${S}/libebl/elf-knowledge.h ${STAGING_INCDIR}/elfutils/
+	install -m 0644 ${S}/libdwarf/libdwarf.h ${STAGING_INCDIR}/elfutils/
+	install -m 0644 ${S}/libdw/libdw.h ${STAGING_INCDIR}/elfutils/
+	install -m 0644 ${S}/libasm/libasm.h ${STAGING_INCDIR}/elfutils/
 }

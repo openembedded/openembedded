@@ -1,8 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
-FT_SONAME = 6.3.5
 
-SRC_URI = ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
-	  file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools pkgconfig native
 DEPENDS = "patcher-native"
@@ -15,12 +14,11 @@ do_configure () {
 }
 
 do_stage () {
-	install -m 755 -D objs/.libs/libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.${FT_SONAME}
-	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.6
-	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so
+	oe_soinstall objs/.libs/libfreetype.so.6.3.5 ${STAGING_LIBDIR}/
 
 	install -m 0644 objs/.libs/libfreetype.lai ${STAGING_LIBDIR}/libfreetype.la
-	cp -a include/*.h ${STAGING_INCDIR}
+	install -m 0644 objs/.libs/libfreetype.a ${STAGING_LIBDIR}/libfreetype.a
+	cp -a ${S}/include/*.h ${STAGING_INCDIR}
 	install -d ${STAGING_INCDIR}/freetype2
-	cp -a include/freetype ${STAGING_INCDIR}/freetype2/
+	cp -a ${S}/include/freetype ${STAGING_INCDIR}/freetype2/
 }

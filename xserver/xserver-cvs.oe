@@ -5,9 +5,9 @@ RDEPENDS = "libc6 xau-cvs xdmcp-cvs zlib xfont-cvs x11-cvs xext-cvs"
 PROVIDES = "xserver"
 DESCRIPTION = 'An X server.  The only drivers supplied are based on the kdrive framework.'
 
-SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver"
 S = "${WORKDIR}/xserver"
 
 inherit autotools pkgconfig libtool
 
-EXTRA_OECONF = '--enable-composite --disable-xinerama'
+EXTRA_OECONF = "--enable-composite --disable-xinerama"

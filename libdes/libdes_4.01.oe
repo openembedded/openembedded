@@ -4,9 +4,9 @@ PRIORITY = "optional"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://www.agentpp.com/libdes-l-${PV}.tar.gz \
-          file://${FILESDIR}/cross-compile.patch;patch=1
-S = "${WORKDIR}/${PN}"
+SRC_URI = "http://www.agentpp.com/libdes-l-${PV}.tar.gz \
+           file://${FILESDIR}/cross-compile.patch;patch=1"
+S = "${WORKDIR}/libdes"
 
 do_compile() {
 	oe_runmake libdes.a
@@ -14,6 +14,6 @@ do_compile() {
 
 do_stage() {
 	install -m 0755 libdes.a ${STAGING_LIBDIR}/
-	install -m 0644 des.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/des.h ${STAGING_INCDIR}/
 }
 

@@ -1,22 +1,22 @@
-DESCRIPTION := C library for embedded systems
-LICENSE := LGPL
-SECTION := libs
-PRIORITY := required
-MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+DESCRIPTION = "C library for embedded systems"
+LICENSE = "LGPL"
+SECTION = "libs"
+PRIORITY = "required"
+MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-FILESDIR := ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial
-PROVIDES := virtual/libc
+DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial"
+PROVIDES = "virtual/libc"
 
-SRC_URI := http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
-           http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2
+SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
+           http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"
 
-S := ${WORKDIR}/uClibc-${PV}
+S = "${WORKDIR}/uClibc-${PV}"
 
-UCLIBC_PREFIX := ${CROSS_DIR}/${TARGET_SYS}
+UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
 
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 
 uclibcbuild_do_patch() {
 	rm -f ${WORKDIR}/linux/include/asm
@@ -56,11 +56,11 @@ python do_patch () {
 do_stage() {
 	make install_dev install_runtime install_utils
 
-	# Make links to ${STAGING_DIR}/target/include so many
+	# Make links to ${STAGING_INCDIR} so many
 	# cross builds work easier...
-	mkdir -p ${STAGING_DIR}/target/include
+	mkdir -p ${STAGING_INCDIR}
 	for f in ${CROSS_DIR}/${TARGET_SYS}/include/*; do
-		ln -s $f ${STAGING_DIR}/target/include/
+		ln -s $f ${STAGING_INCDIR}/
 	done
 
 	# We don't really need these

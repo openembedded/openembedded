@@ -2,16 +2,16 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "ISC DHCP Distribution (client and server)."
 
-SRC_URI = ftp://ftp.isc.org/isc/dhcp/dhcp-${PV}.tar.gz \
-	  file://${FILESDIR}/make.patch;patch=1
+SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-${PV}.tar.gz \
+	   file://${FILESDIR}/make.patch;patch=1"
 S = "${WORKDIR}/dhcp-${PV}"
 
-export BINDIR = ${sbindir}
+export BINDIR = "${sbindir}"
 
 do_configure () {
 	./configure ${TARGET_SYS}
 }
 
 do_install () {
-	oe_runmake 'DESTDIR=${D}' install
+	oe_runmake "DESTDIR=${D}" install
 }

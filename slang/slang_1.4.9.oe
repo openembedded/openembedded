@@ -5,7 +5,7 @@ MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 
-SRC_URI="ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
+SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
 
 inherit autotools libtool
 
@@ -29,8 +29,8 @@ do_compile () {
 do_stage () {
 	oe_soinstall src/elfobjs/libslang.so.${PV} ${STAGING_LIBDIR}/
 	install -m 0644 src/objs/libslang.a ${STAGING_LIBDIR}/
-	install -m 0644 src/slang.h ${STAGING_DIR}/target/include
-	install -m 0644 src/slcurses.h ${STAGING_DIR}/target/include
+	install -m 0644 src/slang.h ${STAGING_INCDIR}
+	install -m 0644 src/slcurses.h ${STAGING_INCDIR}
 }
 
 do_install () {

@@ -5,8 +5,8 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://www013.upp.so-net.ne.jp/hn43o/${PN}/${P}.tar.gz
-S = "${WORKDIR}/${PN}"
+SRC_URI = "http://www013.upp.so-net.ne.jp/hn43o/dviviewer/dviviewer-${PV}.tar.gz"
+S = "${WORKDIR}/dviviewer"
 
 inherit palmtop
 

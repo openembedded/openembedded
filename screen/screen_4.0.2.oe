@@ -4,12 +4,13 @@ DESCRIPTION = "Screen is a full-screen window manager \
 that multiplexes a physical terminal between several \
 processes, typically interactive shells."
 
-SRC_URI := ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
+SRC_URI = "ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
 
 inherit autotools
 
-EXTRA_OECONF = '--with-pty-mode=0620 --with-pty-group=5 --disable-pam'
+EXTRA_OECONF = "--with-pty-mode=0620 --with-pty-group=5 --disable-pam"
+
 do_configure_prepend () {
 	for f in comm.h kmapdef.c term.h tty.c; do
 		cp ${S}/$f.dist ${S}/$f

@@ -6,12 +6,12 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1 libsdl"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
-SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/x/${PN}/src/${P}.tar.gz \
-          file://${FILESDIR}/directories.patch;patch=1
+SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
+	   file://${FILESDIR}/directories.patch;patch=1"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
 
 do_configure_prepend() {
         qmake -project -o gemdropx.pro

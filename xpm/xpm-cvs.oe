@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc xproto-cvs x11-cvs"
 PROVIDES = "xpm"
 DESCRIPTION = "X Pixmap library."
 
-SRC_URI="cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xpm"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xpm"
 S = "${WORKDIR}/Xpm"
 
 inherit autotools pkgconfig libtool

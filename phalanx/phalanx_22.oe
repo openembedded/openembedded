@@ -4,13 +4,13 @@ RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "Phalanx is a chess playing engine."
 
-SRC_URI=http://dusan.freeshell.org/${PN}/${P}.tar.gz \
-        file://${FILESDIR}/gcc3.patch;patch=1
+SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
+           file://${FILESDIR}/gcc3.patch;patch=1"
 S = "${WORKDIR}/Phalanx-XXII"
 
 inherit autotools
 
-FILES_phalanx = /opt/QtPalmtop/chess/engines/Phalanx
+FILES_phalanx = "/opt/QtPalmtop/chess/engines/Phalanx"
 
 do_install() {
 	install -d ${D}/opt/QtPalmtop/chess/engines/Phalanx

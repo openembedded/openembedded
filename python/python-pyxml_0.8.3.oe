@@ -6,7 +6,7 @@ RDEPENDS = "libc6 python-core python-xml python-netclient"
 DEPENDS = "virtual/libc"
 SRCNAME = "pyxml"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/pyxml/PyXML-${PV}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/pyxml/PyXML-${PV}.tar.gz"
 S = "${WORKDIR}/PyXML-${PV}"
 
 inherit distutils

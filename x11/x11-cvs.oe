@@ -6,9 +6,9 @@ RDEPENDS = "libc6"
 DEPENDS = "virtual/libc xproto-cvs xextensions-cvs xau-cvs xtrans-cvs xdmcp-cvs"
 PROVIDES = "x11"
 DESCRIPTION = "Base X libs."
-FILES_x11-cvs_append=" ${datadir}/X11"
+FILES_x11-cvs_append = " ${datadir}/X11"
 
-SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11"
 S = "${WORKDIR}/X11"
 
 inherit autotools pkgconfig libtool
@@ -34,9 +34,9 @@ do_stage() {
 	install -c -m 644 include/X11/region.h ${STAGING_INCDIR}/X11/region.h
 	install -c -m 644 include/X11/ImUtil.h ${STAGING_INCDIR}/X11/ImUtil.h
 	
-	install -c src/.libs/libX11.so.6.2.1 ${STAGING_DIR}/target/lib/libX11.so.6.2.1
+	install -c src/.libs/libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6.2.1
 	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6
 	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so
 
-	install -c -m 644 src/.libs/libX11.a ${STAGING_DIR}/target/lib/libX11.a
+	install -c -m 644 src/.libs/libX11.a ${STAGING_LIBDIR}/libX11.a
 }

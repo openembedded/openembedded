@@ -5,7 +5,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6 zope"
 DEPENDS = "virtual/libc"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/plone/CMFPlone${PV}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/plone/CMFPlone${PV}.tar.gz"
 S = "${WORKDIR}/CMFPlone-${PV}"
 
 do_install() {
@@ -13,5 +13,4 @@ do_install() {
 	cp -a ${S}/* ${D}/usr/lib/python/Products/
 }
 
-FILES_${PN}=
-FILES_${PN}=/usr/lib/python/Products/
+FILES_${PN} = "/usr/lib/python/Products/"

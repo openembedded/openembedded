@@ -1,13 +1,12 @@
 LICENSE = "GPL"
-
 DEPENDS = "virtual/libc zlib ncurses"
 RDEPENDS = "libc6 zlib ncurses"
 DESCRIPTION = "Util-linux is a suite of essential \
 utilities for any Linux system."
 
-SRC_URI := http://ftp.cwi.nl/aeb/util-linux/util-linux-2.12.tar.gz
+SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz"
 
-EXTRA_OEMAKE=
+EXTRA_OEMAKE = ""
 do_compile () {
 	set -e
 	install ${FILESDIR}/MCONFIG ${S}/MCONFIG

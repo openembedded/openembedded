@@ -4,7 +4,7 @@ DESCRIPTION = "GNU Make examines the timestamps on a set of \
 interdependent files, and, if necessary, issues commands \
 to bring them up-to-date."
 
-SRC_URI := ${GNU_MIRROR}/make/make-3.80.tar.bz2 \
-	   file://${FILESDIR}/SCCS.patch;patch=1
+SRC_URI = "${GNU_MIRROR}/make/make-${PV}.tar.bz2 \
+	   file://${FILESDIR}/SCCS.patch;patch=1"
 
 inherit autotools

@@ -5,7 +5,7 @@ LICENSE = "GPL LGPL FDL"
 RDEPENDS = "libc6 libgpg-error"
 DEPENDS = "virtual/libc libgpg-error"
 
-SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/${PN}-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/libgcrypt-${PV}.tar.gz"
 
 inherit autotools libtool
 
@@ -16,10 +16,10 @@ do_stage() {
 	oe_soinstall src/.libs/libgcrypt-pthread.so.7.3.1 ${STAGING_LIBDIR}/
 	install -m 0755 src/libgcrypt-config ${STAGING_BINDIR}/
 
-	install -d ${STAGING_DIR}/target/include/
+	install -d ${STAGING_INCDIR}/
 	for X in gcrypt.h gcrypt-module.h
 	do
-		install -m 0644 src/${X} ${STAGING_DIR}/target/include/${X}
+		install -m 0644 src/${X} ${STAGING_INCDIR}/${X}
 	done
 
 }

@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 libncurses"
 DESCRIPTION = "A text screen-based source browser."
 
-SRC_URI := ${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.gz"
 
 inherit autotools
 

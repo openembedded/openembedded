@@ -2,11 +2,11 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "netkit-base includes the inetd daemon."
 
-SRC_URI = ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/${P}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1 \
-	  file://${FILESDIR}/mconfig.patch;patch=1
+SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-base-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/mconfig.patch;patch=1"
 
-EXTRA_OEMAKE = -C inetd
+EXTRA_OEMAKE = "-C inetd"
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' all
 }

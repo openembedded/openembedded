@@ -6,8 +6,8 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe sqlite"
 DEPENDS = "virtual/libc virtual/libqpe sqlite"
 
-SRC_URI = http://teax.sourceforge.net/${P}.tar.gz
-S = "${WORKDIR}/${PN}-tar"
+SRC_URI = "http://teax.sourceforge.net/txdrug-${PV}.tar.gz"
+S = "${WORKDIR}/txdrug-tar"
 
 inherit palmtop
 

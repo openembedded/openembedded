@@ -7,12 +7,12 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 RDEPENDS = "pango atk jpeg libpng xext"
 DEPENDS = "pango atk jpeg libpng xext"
 
-SRC_URI = http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
-	http://handhelds.org/packages/gtk-2.0/gtk+-2.2.4.diff.bz2;patch=1;pnum=1 \
-	file://${FILESDIR}/automake-lossage.patch;patch=1;pnum=0 \
-	file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0 \
-	file://${FILESDIR}/no-demos.patch;patch=1 \
-	file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0
+SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
+	   http://handhelds.org/packages/gtk-2.0/gtk+-2.2.4.diff.bz2;patch=1;pnum=1 \
+	   file://${FILESDIR}/automake-lossage.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/no-demos.patch;patch=1 \
+	   file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0"
 
 inherit autotools libtool pkgconfig
 
@@ -22,7 +22,7 @@ do_configure_prepend() {
 	install ${FILESDIR}/glib-gettext.m4 m4/
 }
 
-EXTRA_OECONF = --without-libtiff --enable-debug=no --disable-cruft
+EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-cruft"
 
 SOV = "0.200.4"
 LIBV = "2.2.0"

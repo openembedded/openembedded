@@ -7,14 +7,14 @@ RDEPENDS = "python-core python-pyqt (${PV}) python-numeric qwt"
 DEPENDS = "virtual/libc virtual/libqte2 python-numeric python-pyqt qwt"
 SRCNAME = "pyqwt"
 
-SRC_URI = http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
-          file://${FILESDIR}/qt2.x-compat.patch;patch=1               \
-          file://${FILESDIR}/qtmod-sip-staging.patch;patch=1
+SRC_URI = "http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
+           file://${FILESDIR}/qt2.x-compat.patch;patch=1               \
+           file://${FILESDIR}/qtmod-sip-staging.patch;patch=1"
 S = "${WORKDIR}/PyQwt-20040118"
 
-export QTDIR=${STAGING_DIR}/target
+export QTDIR = "${STAGING_LIBDIR}/.."
 
-EXTRA_QMAKEVARS_POST = ' QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
+EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
                          CONFIG=qte CONFIG+=warn_on CONFIG+=release \
                          DESTDIR=${STAGING_LIBDIR}/python2.3/site-packages \
                          DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=HAS_NUMERIC\
@@ -22,7 +22,7 @@ EXTRA_QMAKEVARS_POST = ' QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
                          INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
                          INCLUDEPATH+=${STAGING_INCDIR}/ \
                          LIBS=-L${STAGING_LIBDIR}/python2.3/site-packages \
-                         LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip '
+                         LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip "
 
 PYTHON = "${STAGING_BINDIR}/python"
 SIP = "${STAGING_BINDIR}/sip"

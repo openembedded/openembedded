@@ -4,11 +4,13 @@ PRIORITY = "optional"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
 
-SRC_URI = http://mikmod.raphnet.net/files/${P}.tar.gz
+SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz"
 
 inherit autotools libtool
 
-EXTRA_OECONF = --disable-af --disable-alsa --disable-esd --enable-oss --disable-sam9407 --disable-ultra --disable-esdtest --enable-threads --enable-shared --disable-static
+EXTRA_OECONF = "--disable-af --disable-alsa --disable-esd \
+--enable-oss --disable-sam9407 --disable-ultra \
+--disable-esdtest --enable-threads"
 
 do_configure() {
 	oe_runconf
@@ -16,7 +18,9 @@ do_configure() {
 
 do_stage() {
 	oe_soinstall libmikmod/.libs/libmikmod.so.3.0.0 ${STAGING_LIBDIR}/
-	install -m 0644 include/mikmod.h ${STAGING_INCDIR}/
+	install -m 0644 libmikmod/.libs/libmikmod.a ${STAGING_LIBDIR}/
+	install -m 0644 libmikmod/.libs/libmikmod.lai ${STAGING_LIBDIR}/libmikmod.la
+	install -m 0644 ${S}/include/mikmod.h ${STAGING_INCDIR}/
 
         cat libmikmod-config | sed 's,$libdir , ,' \
                              | sed 's,$includes , ,' > ${STAGING_BINDIR}/libmikmod-config

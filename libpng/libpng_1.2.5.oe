@@ -4,26 +4,24 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "virtual/libc base/zlib"
 RDEPENDS = "libc6 zlib1g"
-RDEPENDS_append_libpng3=' libpng12'
+RDEPENDS_append_libpng3 = " libpng12"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/png-mng/${P}.tar.bz2
+SRC_URI = "${SOURCEFORGE_MIRROR}/png-mng/libpng-${PV}.tar.bz2"
 
-EXTRA_OEMAKE_append=' ZLIBINC=${STAGING_DIR}/target/include ZLIBLIB=${STAGING_LIBDIR}'
+EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
 
 do_compile() {
 	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
 	unset LDFLAGS
 	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
-		   'ZLIBINC=${STAGING_DIR}/target/include' \
+		   'ZLIBINC=${STAGING_INCDIR}' \
 		   'ZLIBLIB=${STAGING_LIBDIR}'
 }
 
 do_stage() {
-	install -m 644 -D png.h ${STAGING_DIR}/target/include/png.h
-	install -m 644 -D pngconf.h ${STAGING_DIR}/target/include/pngconf.h
-	install -m 755 -D libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0.${PV}
-	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0
-	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so
+	install -m 644 png.h ${STAGING_INCDIR}/png.h
+	install -m 644 pngconf.h ${STAGING_INCDIR}/pngconf.h
+	oe_soinstall libpng12.so.0.${PV} ${STAGING_LIBDIR}/
 	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so.3
 	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so
 }

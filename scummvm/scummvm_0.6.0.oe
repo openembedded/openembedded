@@ -1,0 +1,26 @@
+DESCRIPTION = "Virtual Machine for LucasArts Adventures"
+SECTION = "base"
+PRIORITY = "optional"
+RDEPENDS = "libc6 libsdl-qpe libmad"
+DEPENDS = "virtual/libc libsdl-qpe libmad"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
+
+inherit autotools libtool
+
+export CC = "${HOST_PREFIX}gcc"
+export CXX = "${HOST_PREFIX}g++"
+
+do_configure() {
+	./configure --backend=sdl --with-sdl-prefix=${STAGING_BINDIR}/..
+}
+
+do_compile() {
+	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" DEFINES="-DUNIX -DQTOPIA"
+}
+
+do_install() {
+	install -d ${D}/${bindir}
+	install -m 0755 scummvm ${D}/${bindir}/scummvm
+}
+

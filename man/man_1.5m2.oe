@@ -4,9 +4,9 @@ DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
 
-SRC_URI := ftp://ftp.kernel.org/pub/linux/utils/man/man-1.5m2.tar.bz2
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/man/man-${PV}.tar.bz2"
 
-EXTRA_OEMAKE=
+EXTRA_OEMAKE = ""
 GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 
@@ -24,6 +24,6 @@ do_install() {
 	oe_runmake 'PREFIX=${D}' install
 }
 
-FILES_${PN}=${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
-	    ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
-	    /bin /sbin /lib/*/ /lib/*.so*
+FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
+	       ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
+	       /bin /sbin /lib/*/ /lib/*.so*"

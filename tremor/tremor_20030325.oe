@@ -5,7 +5,7 @@ RDEPENDS = "libc6"
 DEPENDS = "virtual/libc libogg"
 DESCRIPTION = "tremor is a fixed point implementation of the vorbis codec."
 
-SRC_URI="cvs://anoncvs:anoncvs@xiph.org/usr/local/cvsroot;module=Tremor;date=20030325"
+SRC_URI = "cvs://anoncvs:anoncvs@xiph.org/usr/local/cvsroot;module=Tremor;date=${PV}"
 
 S = "${WORKDIR}/Tremor"
 

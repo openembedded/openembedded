@@ -4,21 +4,20 @@ PRIORITY = "optional"
 RDEPENDS = "libc6 libsdl-qpe"
 DEPENDS = "virtual/libc libsdl-qpe"
 
-SRC_URI = http://www.vanille.de/mirror/snes9x-sdl-${PV}.tar.bz2 \
-          file://${FILESDIR}/compile.patch;patch=1
+SRC_URI = "http://www.vanille.de/mirror/snes9x-sdl-${PV}.tar.bz2 \
+	   file://${FILESDIR}/compile.patch;patch=1"
 S = "${WORKDIR}/snes9x-sdl-${PV}"
 
-FILES_${PN}=
-FILES_${PN}=${TARGET_PALMTOPDIR}
+FILES_${PN} = "${TARGET_PALMTOPDIR}"
 
 do_compile() {
-    oe_runmake CC="${CC}" CCC="${CXX}" \
-               INCLUDES="-I${STAGING_DIR}/target/include `sdl-config --cflags`" \
-               LDLIBS="`sdl-config --libs` -Wl,-rpath-link,${STAGING_LIBDIR}"
+	oe_runmake CC="${CC}" CCC="${CXX}" \
+	           INCLUDES="-I${STAGING_INCDIR} `sdl-config --cflags`" \
+	           LDLIBS="`sdl-config --libs` -Wl,-rpath-link,${STAGING_LIBDIR}"
 }
 
 do_install() {
-    install -d ${D}/${TARGET_PALMTOPDIR}/${bindir}
-    install -m 0755 snes9x ${D}/${TARGET_PALMTOPDIR}/${bindir}/snes9x
+	install -d ${D}/${TARGET_PALMTOPDIR}/${bindir}
+	install -m 0755 snes9x ${D}/${TARGET_PALMTOPDIR}/${bindir}/snes9x
 }
 

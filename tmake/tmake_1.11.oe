@@ -1,4 +1,4 @@
-SRC_URI="ftp://ftp.trolltech.com/pub/freebies/tmake/tmake-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.trolltech.com/pub/freebies/tmake/tmake-${PV}.tar.gz"
 DESCRIPTION = "tmake is an easy-to-use tool for creating and maintaining makefiles across many platforms and compilers."
 LICENSE = "Unknown"
 DEPENDS = ""
@@ -6,7 +6,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
-S = "${WORKDIR}/${P}"
+S = "${WORKDIR}/tmake-${PV}"
 
 do_stage() {
 	install -m 0755 bin/tmake bin/progen ${STAGING_BINDIR}/
