@@ -5,12 +5,22 @@ MAINTAINER = "Team Opie <opie@handhelds.org>
 LICENSE = "GPL"
 PV = "1.1.6-cvs-${CVSDATE}"
 
+PR = "r1"
+
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root"
 S = "${WORKDIR}/root"
 
 do_install() {
-	mkdir -p ${D}/usr/share
-	cp -pfLR usr/share/zoneinfo ${D}/usr/share
+	for dir in `ls -1 usr/share/zoneinfo`
+	do
+		install -d ${D}/usr/share/zoneinfo/$dir
+		
+		for file in `find usr/share/zoneinfo/$dir/ -type f|grep -v CVS`
+		do
+			install -m 644 "$file" ${D}/usr/share/zoneinfo/$dir
+		done
+		
+	done
 }
 
 FILES_${PN} = usr/share/zoneinfo/[A-Z]*
