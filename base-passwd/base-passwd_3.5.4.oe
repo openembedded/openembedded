@@ -2,7 +2,8 @@ DEPENDS = virtual/libc
 RDEPENDS = libc6
 
 SRC_URI := ${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_3.5.4.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/nobash.patch;patch=1
 S := ${WORKDIR}/${P}
 
 inherit autotools
