@@ -15,6 +15,12 @@ HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 # gammu as replacement for libmicrogammu
 # libetpan & libmailwrapper as replacement for kdepim/pi versions
 
+SRC_URI += "\
+file://qinputdialog_inc.patch;patch=1 \
+file://manager.h.patch;patch=1 \
+file://libkcal.pro.patch;patch=1 \
+"
+
 # TODO:
 # checking libmailwrapper changes (diff sent to opie-devel ML)
 # author said that he didn't changed libetpan so we probably can get OE one

@@ -1,11 +1,7 @@
-include kdepimpi-base.inc
-
-PV = "1.9.7+${CVSDATE}"
+PV = "1.9.8+${CVSDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
-file://qinputdialog_inc.patch;patch=1 \
-file://manager.h.patch;patch=1 \
-file://libkcal.pro.patch;patch=1 \
-"
+SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim "
+
+include kdepimpi-base.inc
