@@ -1,188 +1,24 @@
-SECTION = "devel"
 PR = "r2"
-
-inherit autotools gettext
-
 DESCRIPTION = "The GNU cc and gcc C compilers."
+HOMEPAGE = "http://www.gnu.org/software/gcc/"
+SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-# libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
-# packaged in the respective cross packages.
-PACKAGES = "${PN} ${PN}-symlinks \
-            ${PN}-c++ ${PN}-c++-symlinks \
-            ${PN}-f77 ${PN}-f77-symlinks \
-            libstdc++-dev libg2c-dev \
-            ${PN}-doc"
+inherit autotools gettext
 
-FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
-	       ${bindir}/${TARGET_PREFIX}cpp \
-	       ${bindir}/${TARGET_PREFIX}gcov \
-	       ${bindir}/${TARGET_PREFIX}gccbug \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1 \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/collect2 \
-	       ${libdir}/gcc/${TARGET_SYS}/${PV}/*.o \
-	       ${libdir}/gcc/${TARGET_SYS}/${PV}/specs \
-	       ${libdir}/gcc/${TARGET_SYS}/${PV}/lib* \
-	       ${libdir}/gcc/${TARGET_SYS}/${PV}/include"
-
-FILES_${PN}-symlinks = "${bindir}/cc \
-			${bindir}/gcc \
-			${bindir}/cpp \
-			${bindir}/gcov \
-			${bindir}/gccbug"
-
-FILES_${PN}-f77 = "${bindir}/${TARGET_PREFIX}g77 \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/f771"
-
-FILES_${PN}-f77-symlinks = "${bindir}/g77 \
-			    ${bindir}/f77"
-
-# Called from within gcc-cross, so libdir is set wrong
-#FILES_libg2c = "${libdir}/libg2c.so.*"
-FILES_libg2c = "/usr/lib/libg2c.so.*"
-
-FILES_libg2c-dev = "${libdir}/libg2c.so \
-			  ${libdir}/libg2c.a \
-			  ${libdir}/libfrtbegin.a"
-
-FILES_${PN}-c++ = "${bindir}/${TARGET_PREFIX}g++ \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1plus"
-
-FILES_${PN}-c++-symlinks = "${bindir}/c++ \
-			    ${bindir}/g++"
-
-FILES_libgcc = "/lib/libgcc_s.so.*"
-
-# Called from within gcc-cross, so libdir is set wrong
-#FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-FILES_libstdc++ = "/usr/lib/libstdc++.so.*"
-
-FILES_libstdc++-dev = "${includedir}/c++/${PV} \
-		       ${libdir}/libstdc++.so \
-		       ${libdir}/libstdc++.la \
-		       ${libdir}/libstdc++.a \
-		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
-
-FILES_${PN}-doc = "${infodir} \
-		   ${mandir} \
-		   ${libdir}/gcc/${TARGET_SYS}/${PV}/include/README"
+include gcc-package.inc
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-reverse-compare.patch;patch=1 \
-	   file://gcc34-pre-modify.patch;patch=1 \
 	   file://gcc34-arm-ldm.patch;patch=1 \
 	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
 	   file://gcc34-arm-tune.patch;patch=1 \
-	   file://gcc34-15089.patch;patch=1 \
-	   file://gcc34-15666.patch;patch=1 \
-	   file://gcc-uclibc-3.4.0-100-conf.patch;patch=1 \
-	   file://gcc-uclibc-3.4.0-200-code.patch;patch=1 \
+	   file://gcc-3.4.1-uclibc-100-conf.patch;patch=1 \
+	   file://gcc-3.4.1-uclibc-200-locale.patch;patch=1 \
 	   file://gcc-3.4.0-arm-lib1asm.patch;patch=1 \
 	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1 \
 	   file://gcc-3.4.0-arm-bigendian.patch;patch=1 \
 	   file://gcc-3.4.0-arm-bigendian-uclibc.patch;patch=1"
 
-MIRRORS_prepend () {
-${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
-}
-
-S = "${WORKDIR}/gcc-${PV}"
-B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
-
-EXTRA_OECONF = "${@['--enable-clocale=generic', ''][oe.data.getVar('USE_NLS', d, 1) != 'no']} \
-                --with-gnu-ld \
-                --enable-shared \
-                --enable-target-optspace \
-                --enable-languages=c,c++,f77 \
-                --enable-threads=posix \
-                --enable-multilib \
-                --enable-c99 \
-                --enable-long-long \
-                --enable-symvers=gnu \
-                --program-prefix=${TARGET_PREFIX} \
-                ${EXTRA_OECONF_PATHS} \
-                ${EXTRA_OECONF_DEP}"
-
-EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
-                      --with-gxx-include-dir=${includedir}/c++/${PV}"
-
-EXTRA_OECONF_DEP = ""
-EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
-EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
-EXTRA_OECONF += "${@get_gcc_fpu_setting(oe, d)}"
-
-def get_gcc_fpu_setting(oe, d):
-	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-		return "--with-float=soft"
-	return ""
-
-python __anonymous () {
-    import oe, re
-    if (re.match('linux-uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None):
-        oe.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
-    elif (re.match('linux$', oe.data.getVar('TARGET_OS', d, 1)) != None):
-        oe.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
-}
-
-do_configure () {
-	# Setup these vars for cross building only
-	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
-		export CC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
-		export GCC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
-		export CXX_FOR_TARGET="${CCACHE} ${HOST_PREFIX}g++"
-		export AS_FOR_TARGET="${HOST_PREFIX}as"
-		export LD_FOR_TARGET="${HOST_PREFIX}ld"
-		export NM_FOR_TARGET="${HOST_PREFIX}nm"
-		export AR_FOR_TARGET="${HOST_PREFIX}ar"
-		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
-	fi
-	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
-	oe_runconf
-}
-
-do_install () {
-	autotools_do_install
-
-	# Cleanup some of the /usr/lib{,exec}/gcc stuff ...
-	rm -r ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/install-tools
-	rm -r ${D}/${libexecdir}/gcc/${TARGET_SYS}/${PV}/install-tools
-
-	# Move libgcc_s into /lib
-	mkdir -p ${D}/lib
-	mv ${D}/${libdir}/libgcc_s.so.* ${D}/lib
-	rm ${D}/${libdir}/libgcc_s.so
-	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${PV} \
-		| tr -s / \
-		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \
-		      ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/libgcc_s.so
-
-	# We don't need libtool libraries
-	rm ${D}/${libdir}/libg2c.la
-
-	# Cleanup manpages..
-	rm -r ${D}/${mandir}/man7
-
-	# We use libiberty from binutils
-	rm ${D}/${libdir}/libiberty.a
-
-	cd ${D}/${bindir}
-
-	# We care about g++ not c++
-	rm *c++
-
-	# We don't care about the gcc-<version> ones for this
-	rm *gcc-?.?*
-
-	# These sometimes show up, they are strange, we remove them
-	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
-
-	# Symlinks so we can use these trivially on the target
-	ln -sf ${TARGET_SYS}-g77 g77
-	ln -sf ${TARGET_SYS}-g++ g++
-	ln -sf ${TARGET_SYS}-gcc gcc
-	ln -sf g77 f77
-	ln -sf g++ c++
-	ln -sf gcc cc
-}
+include gcc3-build.inc
