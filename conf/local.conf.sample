@@ -8,10 +8,8 @@ DL_DIR = "${HOME}/sources"
 # Use this to specify what .oe files to consider for builds
 OEFILES = "*/*.oe"
 
-# Note that only recent oemake's obey OEMASK directly. In earlier versions
-# you had to filter by hand and populate OEFILES accordingly
 # Use the OEMASK below unless you want to build something else than the default glibc based setup
-OEMASK = "(toolchain-external)"
+OEMASK = ""
 
 # Uncomment this if you want to use a prebuilt toolchain.
 # You will need to provide packages for toolchain and additional libraries yourself
