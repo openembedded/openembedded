@@ -31,9 +31,9 @@ do_install() {
                ${D}/${palmtopdir}/pics/korganizer/icons16 \
                ${D}/${palmtopdir}/pics/korganizer/iconsmini \
                ${D}/${palmtopdir}/plugins/applets
-    install -m 0644 ${S}/bin/pics/*.png ${D}/${palmtopdir}/pics
-    install -m 0644 ${S}/bin/pics/*.wav ${D}/${palmtopdir}/pics
-    install -m 0644 ${S}/bin/pics/*.txt ${D}/${palmtopdir}/pics
+    install -m 0644 ${S}/bin/pics/*.png ${D}/${palmtopdir}/pics/korganizer
+    install -m 0644 ${S}/bin/pics/*.wav ${D}/${palmtopdir}/pics/korganizer
+    install -m 0644 ${S}/bin/pics/*.txt ${D}/${palmtopdir}/pics/korganizer
     install -m 0644 ${S}/bin/pics/ko*.png ${D}/${palmtopdir}/pics/korganizer
     install -m 0644 ${S}/bin/pics/icons16/*.png ${D}/${palmtopdir}/pics/korganizer/icons16
     install -m 0644 ${S}/bin/pics/iconsmini/*.png ${D}/${palmtopdir}/pics/korganizer/iconsmini
