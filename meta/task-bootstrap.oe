@@ -6,12 +6,11 @@ PACKAGES = "${PN}"
 DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ipkg initscripts \
 	netbase resolvconf sysvinit tinylogin lrzsz \
-	dhcpcd \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug ipkg initscripts netbase resolvconf \
-	sysvinit tinylogin dhcpcd \
+	sysvinit tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz \
