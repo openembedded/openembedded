@@ -2,6 +2,7 @@ DESCRIPTION = "Enables PPP dial-in through a serial connection"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
+PR = "r1"
 
 SRC_URI = "file://host-peer \
            file://ppp-dialin"
@@ -19,7 +20,7 @@ if test "x$D" != "x"; then
 	exit 1
 else
 	addgroup ppp
-	adduser --system --home /dev/null --no-create-home --disabled-password --ingroup ppp -s /usr/sbin/ppp-dialin ppp
+	adduser --system --home /dev/null --no-create-home --empty-password --ingroup ppp -s /usr/sbin/ppp-dialin ppp
 	chgrp ppp /usr/sbin/ppp-dialin
 	chmod u+s /usr/sbin/ppp-dialin
 fi
