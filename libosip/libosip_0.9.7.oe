@@ -1,9 +1,9 @@
 SECTION = "libs"
-SRC_URI = "http://simon.morlat.free.fr/download/0.12.2/source/libosip-0.9.7.tar.gz"
+SRC_URI = "http://handhelds.org/pub/linux/packages/libosip/libosip-0.9.7-hh2.tar.gz"
 DESCRIPTION = "Session Initiation Protocol (SIP) library"
 LEAD_SONAME = "libosip\..*"
 
-inherit autotools
+inherit autotools pkgconfig
 
 do_configure_prepend() {
 	rm -f acinclude.m4
