@@ -1,6 +1,6 @@
 include qte_${PV}.oe
 
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}-r0"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}"
 
 DESCRIPTION = "Qt/Embedded w/ Opie Patches version ${PV}"
 
