@@ -1,5 +1,5 @@
 LICENSE = GPL
-SECTION = "opie/games"
+SECTION = "games"
 DEPENDS = "libsdl-mixer libsdl-image sdl-perl"
 
 SRC_URI = "http://zarb.org/~gc/fb//frozen-bubble-${PV}.tar.bz2 \
