@@ -24,7 +24,7 @@ ${sbindir}/update-qtfontdir -f
 
 python populate_packages_prepend() {
 	postinst = bb.data.getVar('pkg_postinst_fonts', d, 1)
-	postrm = postinst
+	postrm   = bb.data.getVar('pkg_postrm_fonts', d, 1)
 	fontdir  = bb.data.getVar('palmtopdir', d, 1) + '/lib/fonts'
 	pkgregex = "^([a-z]*_[0-9]*).*.qpf$"
 	pkgpattern = bb.data.getVar('QPF_PKGPATTERN', d, 1) or 'qpf-%s'

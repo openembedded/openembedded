@@ -3,7 +3,7 @@ SECTION = "opie/fonts"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://update-qtfontdir"
 S = "${WORKDIR}/qt-${PV}"
