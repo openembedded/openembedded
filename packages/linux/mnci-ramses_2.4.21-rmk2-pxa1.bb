@@ -63,15 +63,3 @@ kernel_do_install() {
 	bzip2 -9 ${D}/boot/*
 	install -d ${D}/etc/modutils
 }
-
-#do_stage () {
-#	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm
-#	mkdir -p ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm
-#	cp -a include/linux/* ${STAGING_INCDIR}/linux/
-#	cp -a include/asm/* ${STAGING_INCDIR}/asm/
-#	find ${STAGING_INCDIR}/linux -name "*~*" | xargs rm
-#	find ${STAGING_INCDIR}/asm -name "*~*" | xargs rm
-#
-#	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
-#	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${CROSS_DIR}/${TARGET_SYS}/include/linux/wireless.h
-#}
