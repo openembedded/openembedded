@@ -5,7 +5,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kdepim193a.src.tar.gz \
 file://libkcal.pro.patch;patch=1 \
@@ -52,6 +52,8 @@ do_install() {
                ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22 \
                ${D}/${palmtopdir}/plugins/applets
 
+    install -m 0644 ${S}/bin/kdepim/korganizer/ko16.png ${D}/${palmtopdir}/pics/
+    install -m 0644 ${S}/bin/kdepim/korganizer/ko24.png ${D}/${palmtopdir}/pics/
     install -m 0644 ${S}/bin/kdepim/korganizer/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer
     install -m 0644 ${S}/bin/kdepim/korganizer/*.wav ${D}/${palmtopdir}/pics/kdepim/korganizer
     install -m 0644 ${S}/bin/kdepim/korganizer/*.txt ${D}/${palmtopdir}/pics/kdepim/korganizer
@@ -83,5 +85,5 @@ PACKAGES = "kopi kapi libmicrokdelibs kopi-applet"
 
 FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/*"
 FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_*"
-FILES_kopi-applet = "${palmtopdir}/plugins/applets/*"
+FILES_kopi-applet = "${palmtopdir}/plugins/applets/* ${palmtopdir}/pics/ko16.png ${palmtopdir}/pics/ko24.png"
 FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
