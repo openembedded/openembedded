@@ -1,21 +1,27 @@
+SECTION = net
+DEPENDS = virtual/libc expat openssl
+RDEPENDS = libc6, libexpat1, libssl0.9.7
+
 SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1 \
 	  file://${FILESDIR}/pcre-configure.patch;patch=1
-SECTION = net
-DEPENDS = virtual/libc expat openssl zlib db3
-RDEPENDS = libc6 expat openssl zlib db3
-
 S = ${WORKDIR}/httpd-${PV}
-sysconfdir_append = /apache
+
+basesysconfdir := ${sysconfdir}
+sysconfdir = /etc/apache
 
 inherit autotools libtool
 
-CFLAGS_append = " -DPATH_MAX=4096"
-CFLAGS_prepend = "-I${STAGING_DIR}/target/include/openssl "
-EXTRA_OECONF = '--enable-ssl --with-ssl=${STAGING_DIR}/target \
-	        --enable-dav --enable-dav-fs \
-	        --with-z=${STAGING_DIR}/target --with-dbm=db3'
+FILES_${PN}=${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
+	    ${libdir}/*/ ${basesysconfdir} ${sharedstatedir} ${localstatedir} \
+	    /bin /sbin /lib/*/ /lib/*.so* ${datadir}/${PN} ${datadir}/htdocs \
+	    ${datadir}/icons ${datadir}/cgi-bin ${datadir}/error /var
 
+CFLAGS_append = " -DPATH_MAX=4096"
+CFLAGS_prepend = "-I${STAGING_INCDIR}/openssl "
+EXTRA_OECONF = "--enable-ssl --with-ssl=${STAGING_LIBDIR}/.. --enable-dav \
+		--enable-dav-fs --with-dbm=sdbm --with-berkeley-db=no \
+		--with-gdbm=no --with-ndbm=no"
 do_configure () {
 	(cd srclib/apr && ./buildconf)
 	(cd srclib/apr-util && ./buildconf)
@@ -49,26 +55,31 @@ do_compile () {
 }
 
 do_install_append () {
-	install -d ${D}/${sysconfdir}/init.d
+	set -x
+	install -d ${D}/${basesysconfdir}/init.d
 	cat ${FILESDIR}/init | \
-		sed -e 's,/usr/sbin,${sbindir},g; \
-			s,/usr/bin,${bindir},g; \
-			s,/usr/lib,${libdir},g; \
-			s,/etc/apache,${sysconfdir},g; \
-			s,/usr,${prefix},g;' > ${D}/${sysconfdir}/init.d/apache
-	chmod 755 ${D}/${sysconfdir}/init.d/apache
+		sed -e 's,/usr/sbin/,${sbindir}/,g; \
+			s,/usr/bin/,${bindir}/,g; \
+			s,/usr/lib,${libdir}/,g; \
+			s,/etc/apache/,${sysconfdir}/,g; \
+			s,/etc/,${basesysconfdir}/,g; \
+			s,/usr/,${prefix}/,g;' > ${D}/${basesysconfdir}/init.d/httpd
+	chmod 755 ${D}/${basesysconfdir}/init.d/httpd
+	if test -e ${FILESDIR}/httpd.conf.${MACHINE}; then
+		install -m 0644 ${FILESDIR}/httpd.conf.${MACHINE} ${D}/${sysconfdir}/httpd.conf
+	fi
 }
 
 pkg_postinst () {
 	if test -n "$D"; then
 		D="-r $D"
 	fi
-	update-rc.d $D apache defaults 91 20
+	update-rc.d $D httpd defaults 91 20
 }
 
 pkg_prerm () {
 	if test -n "$D"; then
 		D="-r $D"
 	fi
-	update-rc.d $D apache remove
+	update-rc.d $D httpd remove
 }
