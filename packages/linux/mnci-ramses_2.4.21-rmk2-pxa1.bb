@@ -61,5 +61,5 @@ kernel_do_install() {
 	install -d ${D}/boot
 	install -m 0644 .config ${D}/boot/config-${PV}
 	bzip2 -9 ${D}/boot/*
-	install -d ${D}/etc/modutils
+	install -d ${D}/${sysconfdir}/modutils
 }

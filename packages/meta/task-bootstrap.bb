@@ -31,10 +31,13 @@ def bootstrap_modutils_rdepends(d):
                 r.append('module-init-tools-depmod')
         return ' '.join(r)
 
+HOTPLUG ?= "linux-hotplug"
+
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear initscripts modutils netbase \
 	sysvinit tinylogin portmap \
 	modutils-initscripts \
+	${HOTPLUG} \
 	${BOOTSTRAP_EXTRA_DEPENDS} \
 	${@bootstrap_modutils_depends(d)}'
 
@@ -42,6 +45,7 @@ RDEPENDS = 'base-files base-passwd busybox \
 	initscripts \
 	netbase sysvinit sysvinit-pidof tinylogin \
 	modutils-initscripts \
+	${HOTPLUG} \
 	${BOOTSTRAP_EXTRA_RDEPENDS} \
 	${@bootstrap_modutils_rdepends(d)}'
 

@@ -18,12 +18,12 @@ INITSCRIPT_NAME = "sd"
 INITSCRIPT_PARAMS = "start 39 S . stop 96 0 1 6 ."
 
 do_install() {
-	install -d ${D}/etc/init.d ${D}/sbin
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/block/
-	install -m 0755 ${WORKDIR}/sdmgr ${D}/sbin/
+	install -d ${D}/${sysconfdir}/init.d ${D}/${base_sbindir}
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/block/
+	install -m 0755 ${WORKDIR}/sdmgr ${D}/${base_sbindir}/
 	install -m 0755 ${WORKDIR}/sdcontrol ${D}/${sysconfdir}
-	install -m 0755 ${WORKDIR}/sd ${D}/etc/init.d/
-	install -m 0644 ${MACHINE}/sharp_mmcsd_m.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/block/
+	install -m 0755 ${WORKDIR}/sd ${D}/${sysconfdir}/init.d/
+	install -m 0644 ${MACHINE}/sharp_mmcsd_m.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/block/
 }
 
 FILES_${PN} = "/"

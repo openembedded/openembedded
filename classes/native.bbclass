@@ -23,21 +23,6 @@ CFLAGS = "${BUILD_CFLAGS}"
 CXXFLAGS = "${BUILD_CFLAGS}"
 LDFLAGS = "${BUILD_LDFLAGS}"
 
-bindir = "${exec_prefix}/bin"
-sbindir = "${exec_prefix}/bin"
-libexecdir = "${exec_prefix}/libexec"
-datadir = "${exec_prefix}/share"
-sysconfdir = "${prefix}/etc"
-sharedstatedir = "${prefix}/com"
-localstatedir = "${prefix}/var"
-libdir = "${exec_prefix}/lib"
-includedir = "${exec_prefix}/include"
-oldincludedir = "${exec_prefix}/include"
-infodir = "${prefix}/info"
-mandir = "${prefix}/man"
-docdir = "${prefix}/doc"
-servicedir = "${prefix}/srv"
-
 # Path prefixes
 base_prefix = "${exec_prefix}"
 prefix = "${STAGING_DIR}"
@@ -45,7 +30,7 @@ exec_prefix = "${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}"
 
 # Base paths
 base_bindir = "${base_prefix}/bin"
-base_sbindir = "${base_prefix}/sbin"
+base_sbindir = "${base_prefix}/bin"
 base_libdir = "${base_prefix}/lib"
 
 # Architecture independent paths
@@ -59,7 +44,7 @@ servicedir = "${prefix}/srv"
 
 # Architecture dependent paths
 bindir = "${exec_prefix}/bin"
-sbindir = "${exec_prefix}/sbin"
+sbindir = "${exec_prefix}/bin"
 libexecdir = "${exec_prefix}/libexec"
 libdir = "${exec_prefix}/lib"
 includedir = "${exec_prefix}/include"

@@ -21,7 +21,7 @@ FILES_${PN} = "${bindir}/prismstumbler"
 
 FILES_prismstumbler-frontend = "${bindir}/psfront ${bindir}/pst \
 	                       ${datadir}/applications \
-	                       ${datadir}/pixmaps ${datadir}/doc/prismstumbler/help.txt \
+	                       ${datadir}/pixmaps ${docdir}/prismstumbler/help.txt \
                                ${sysconfdir}"
 RDEPENDS_prismstumbler-frontend = "${PN}"
 

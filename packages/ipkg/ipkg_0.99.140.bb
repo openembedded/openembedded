@@ -3,7 +3,7 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-PR = "r0"
+PR = "r2"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
@@ -29,12 +29,12 @@ ipkg-cl configure
 	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S98configure
 fi
 
-update-alternatives --install /usr/bin/ipkg ipkg /usr/bin/ipkg-cl 100
+update-alternatives --install ${bindir}/ipkg ipkg ${bindir}/ipkg-cl 100
 }
 
 pkg_postrm_ipkg () {
 #!/bin/sh
-update-alternatives --remove ipkg /usr/bin/ipkg-cl
+update-alternatives --remove ipkg ${bindir}/ipkg-cl
 }
 
 do_stage() {

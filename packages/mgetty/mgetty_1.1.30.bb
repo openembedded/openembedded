@@ -49,7 +49,7 @@ do_compile () {
         -DFAX_OUT_USER=\"uucp\" \
         -DVARRUNDIR=\"/var/run\" \
         -DAWK=\"awk\" \
-        -DPERL=\""/usr/bin/perl -w"\" -DTKPERL=\"/usr/bin/tkperl\" \
+        -DPERL=\""${bindir}/perl -w"\" -DTKPERL=\"${bindir}/tkperl\" \
         -DECHO=\""echo -e"\" \
         -DSHELL=\"/bin/bash\" \
 	-o mksed mksed.c

@@ -38,7 +38,7 @@ do_compile() {
 do_install() {
 	oe_runmake install
 	mv ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
-	( cd ${D}/usr/bin/; rm perl; ln -s perl${PV} perl )
+	( cd ${D}${bindir}/; rm perl; ln -s perl${PV} perl )
 }
 
 do_stage() {
@@ -56,8 +56,8 @@ python populate_packages_prepend () {
 }
 
 PACKAGES = "perl perl-misc perl-lib perl-dev perl-pod"
-FILES_${PN} = "/usr/bin/perl /usr/bin/perl${PV}"
-FILES_${PN}-lib = "/usr/lib/libperl.so*"
-FILES_${PN}-dev = "/usr/lib/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/"
-FILES_${PN}-pod = "/usr/lib/perl5/${PV}/pod"
-FILES_perl-misc = "/usr/bin/"
+FILES_${PN} = "${bindir}/perl ${bindir}/perl${PV}"
+FILES_${PN}-lib = "${libdir}/libperl.so*"
+FILES_${PN}-dev = "${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/"
+FILES_${PN}-pod = "${libdir}/perl5/${PV}/pod"
+FILES_perl-misc = "${bindir}/"

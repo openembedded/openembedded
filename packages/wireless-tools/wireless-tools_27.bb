@@ -15,7 +15,7 @@ S = "${WORKDIR}/wireless_tools.${PV}"
 
 CFLAGS =+ "-I${S}"
 EXTRA_OEMAKE = "-e 'BUILD_SHARED=y' \
-		'INSTALL_DIR=${D}/sbin' \
+		'INSTALL_DIR=${D}/${base_sbindir}' \
 		'INSTALL_LIB=${D}/${libdir}' \
 		'INSTALL_INC=${D}/${includedir}' \
 		'INSTALL_MAN=${D}/${mandir}'"
@@ -32,13 +32,13 @@ do_stage () {
 
 do_install() {
 	oe_runmake PREFIX=${D} install install-static
-	install -d ${D}/etc/network/if-pre-up.d
-	install ${WORKDIR}/wireless-tools.if-pre-up ${D}/etc/network/if-pre-up.d/wireless-tools
+	install -d ${D}/${sysconfdir}/network/if-pre-up.d
+	install ${WORKDIR}/wireless-tools.if-pre-up ${D}/${sysconfdir}/network/if-pre-up.d/wireless-tools
 }
 
 PACKAGES = "libiw libiw-dev libiw-doc ${PN} ${PN}-doc"
 FILES_libiw = "${libdir}/*.so.*"
 FILES_libiw-dev = "${libdir}/*.a ${libdir}/*.so ${includedir}"
 FILES_libiw-doc = "${mandir}/man7"
-FILES_${PN} = "${bindir} ${sbindir} /sbin /bin ${sysconfdir}/network"
+FILES_${PN} = "${bindir} ${sbindir} ${base_sbindir} ${base_bindir} ${sysconfdir}/network"
 FILES_${PN}-doc = "${mandir}/man8"

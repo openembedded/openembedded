@@ -20,6 +20,6 @@ do_stage () {
 
 do_install () {
         gpe_do_install
-	install -d ${D}/usr/include/
-	install xsettings-client.h ${D}/usr/include/
+	install -d ${D}${includedir}/
+	install xsettings-client.h ${D}${includedir}/
 }

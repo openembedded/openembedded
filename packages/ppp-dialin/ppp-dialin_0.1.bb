@@ -22,7 +22,7 @@ pkg_postinst() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s /usr/sbin/ppp-dialin ppp
+	adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s ${sbindir}/ppp-dialin ppp
 fi
 }
 

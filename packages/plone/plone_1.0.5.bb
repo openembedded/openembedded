@@ -8,8 +8,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/plone/CMFPlone${PV}.tar.gz"
 S = "${WORKDIR}/CMFPlone-${PV}"
 
 do_install() {
-	install -d ${D}/usr/lib/python/Products/
-	cp -a ${S}/* ${D}/usr/lib/python/Products/
+	install -d ${D}${libdir}/python/Products/
+	cp -a ${S}/* ${D}${libdir}/python/Products/
 }
 
-FILES_${PN} = "/usr/lib/python/Products/"
+FILES_${PN} = "${libdir}/python/Products/"

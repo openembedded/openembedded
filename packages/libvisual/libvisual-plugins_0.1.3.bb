@@ -11,4 +11,4 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libvisual/libvisual-plugins-${PV}.tar.gz"
 
 inherit autotools
 
-FILES_${PN} += "/usr/lib/libvisual/actor/*.so /usr/lib/libvisual/morph/*.so"
+FILES_${PN} += "${libdir}/libvisual/actor/*.so ${libdir}/libvisual/morph/*.so"

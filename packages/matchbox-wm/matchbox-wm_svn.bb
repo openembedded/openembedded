@@ -21,9 +21,9 @@ FILES_${PN} = "${bindir} \
 EXTRA_OECONF = "--enable-composite --enable-startup-notification --enable-expat"
 
 pkg_postinst() {
-update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/matchbox-session 10
+update-alternatives --install ${bindir}/x-window-manager x-window-manager ${bindir}/matchbox-session 10
 }
 
 pkg_postrm() {
-update-alternatives --remove x-window-manager /usr/bin/matchbox-session
+update-alternatives --remove x-window-manager ${bindir}/matchbox-session
 }

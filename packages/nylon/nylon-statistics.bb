@@ -24,7 +24,7 @@ else
 	if ! grep -q collect.sh /etc/cron/crontabs/root; then
 		echo "adding crontab"
 		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
-		echo "*/5 * * * *    /usr/sbin/collect.sh" >> /etc/cron/crontabs/root
+		echo "*/5 * * * *    ${sbindir}/collect.sh" >> /etc/cron/crontabs/root
 	fi
 	update-rc.d -s busybox-cron defaults
 	/etc/init.d/busybox-cron reload

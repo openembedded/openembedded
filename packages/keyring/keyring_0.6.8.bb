@@ -31,6 +31,6 @@ do_install() {
 }
 
 PACKAGES = "${PN} ${PN}-help"
-FILES_${PN} = " ${palmtopdir}/bin ${palmtopdir}/apps ${palmtopdir}/pics"
+FILES_${PN} = " ${palmtopdir}${base_bindir} ${palmtopdir}/apps ${palmtopdir}/pics"
 FILES_${PN}-help = " ${palmtopdir}/help/html"
 

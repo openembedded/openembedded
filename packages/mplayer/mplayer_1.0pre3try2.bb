@@ -19,16 +19,16 @@ S = "${WORKDIR}/MPlayer-${PV}"
 
 PACKAGES =+ "postproc postproc-dev"
 
-FILES_${PN} = "/usr/bin/mplayer /usr/lib/mplayer/vidix/w100_vid.so"
+FILES_${PN} = "${bindir}/mplayer ${libdir}/mplayer/vidix/w100_vid.so"
 
-FILES_postproc = " /usr/lib/libpostproc.so.0.0.0 /usr/lib/libpostproc.so.0"
-FILES_postproc-dev = " /usr/include/postproc/postprocess.h /usr/lib/libpostproc.so /usr/lib/libpostproc.a"
+FILES_postproc = " ${libdir}/libpostproc.so.0.0.0 ${libdir}/libpostproc.so.0"
+FILES_postproc-dev = " ${includedir}/postproc/postprocess.h ${libdir}/libpostproc.so ${libdir}/libpostproc.a"
 
 inherit autotools 
 
 EXTRA_OECONF = " \
         --prefix=/usr \
-		--mandir=/usr/share/man \
+		--mandir=${mandir} \
         --target=${TARGET_ARCH} \
         --enable-shared-pp \
         \
@@ -64,11 +64,11 @@ do_configure() {
 }
 
 do_install_append () {
-        install -d ${D}/${libdir} ${D}/usr/include ${D}/usr/include/postproc
-        install -m 0644 libavcodec/libpostproc/postprocess.h ${D}/usr/include/postproc/
+        install -d ${D}/${libdir} ${D}${includedir} ${D}${includedir}/postproc
+        install -m 0644 libavcodec/libpostproc/postprocess.h ${D}${includedir}/postproc/
         oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}/${libdir}
-        cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}/usr/lib/libpostproc.so.0.0.0
-        cd ${D}/usr/lib
+        cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}${libdir}/libpostproc.so.0.0.0
+        cd ${D}${libdir}
         ln -sf libpostproc.so.0.0.0 libpostproc.so.0
         ln -sf libpostproc.so.0 libpostproc.so
 }

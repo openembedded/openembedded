@@ -19,5 +19,5 @@ do_compile() {
 do_install() {
 	install -d ${D}${sbindir}
 	install -d ${D}${sysconfdir}/init.d
-	oe_runmake sbindir="${D}${sbindir}" initdir="${D}${sysconfdir}/init.d" mandir="${D}${datadir}/man" docdir="${D}${datadir}/doc/mobile-ip6" NETWORK_MIP6_CONF="${D}${sysconfdir}" install
+	oe_runmake sbindir="${D}${sbindir}" initdir="${D}${sysconfdir}/init.d" mandir="${D}${mandir}" docdir="${D}${docdir}/mobile-ip6" NETWORK_MIP6_CONF="${D}${sysconfdir}" install
 }

@@ -45,7 +45,7 @@ PACKAGE_ARCH_libstdc++ = "${TARGET_ARCH}"
 PACKAGE_ARCH_libstdc++-dev = "${TARGET_ARCH}"
 # Called from within gcc-cross, so libdir is set wrong
 #FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-FILES_libstdc++ = "/usr/lib/libstdc++.so.*"
+FILES_libstdc++ = "${libdir}/libstdc++.so.*"
 
 FILES_libstdc++-dev = "${includedir}/c++/${PV} \
 		       ${libdir}/libstdc++.so \
@@ -160,8 +160,8 @@ do_install () {
 	rm -rf ${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
 
 	# Move libgcc_s into /lib
-	mkdir -p ${D}/lib
-	mv -f ${D}/${libdir}/libgcc_s.so.* ${D}/lib
+	mkdir -p ${D}/${base_libdir}
+	mv -f ${D}/${libdir}/libgcc_s.so.* ${D}/${base_libdir}
 	rm -f ${D}/${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc-lib/${TARGET_SYS}/${PV} | tr -s / |
 		sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \

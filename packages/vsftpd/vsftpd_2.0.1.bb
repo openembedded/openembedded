@@ -12,9 +12,9 @@ do_compile() {
 }
 
 do_install() {
-        install -d ${D}/usr/sbin
-	install -d ${D}/usr/share/man/man8
-	install -d ${D}/usr/share/man/man5
+        install -d ${D}${sbindir}
+	install -d ${D}${mandir}/man8
+	install -d ${D}${mandir}/man5
 	oe_runmake 'DESTDIR=${D}' install
 	install -d ${D}/${sysconfdir}
 	install -m 0755 ${S}/vsftpd.conf ${D}${sysconfdir}/vsftpd.conf

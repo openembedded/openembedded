@@ -18,6 +18,6 @@ do_configure() {
 }
 
 do_install() {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/snes232
-	install snes232.ko ${D}/lib/modules/${KERNEL_VERSION}/snes232/
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/snes232
+	install snes232.ko ${D}/${base_libdir}/modules/${KERNEL_VERSION}/snes232/
 }

@@ -29,6 +29,6 @@ do_install () {
 	oe_runmake install
 }
 
-FILES_${PN} += "/usr/lib/ipsec/"
+FILES_${PN} += "${libdir}/ipsec/"
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/ipsec/ipsec.conf"

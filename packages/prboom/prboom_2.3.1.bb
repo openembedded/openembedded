@@ -28,11 +28,11 @@ do_install() {
         install -d ${D}/${palmtopdir}/bin \
         	   ${D}/${palmtopdir}/apps/Games \
         	   ${D}/${palmtopdir}/pics \
-		   ${D}/usr/share/games/doom
+		   ${D}${datadir}/games/doom
 	install -m 0755 src/prboom ${D}/${palmtopdir}/bin/prboom
-	install -m 0644 data/prboom.wad ${D}/usr/share/games/doom/
+	install -m 0644 data/prboom.wad ${D}${datadir}/games/doom/
 	install -m 0644 ${WORKDIR}/prboom.png ${D}/${palmtopdir}/pics/prboom.png
 	install -m 0644 ${WORKDIR}/prboom.desktop ${D}/${palmtopdir}/apps/Games/prboom.desktop
 }
 
-FILES_${PN} = "${palmtopdir} /usr/share/games/doom/prboom.wad"
+FILES_${PN} = "${palmtopdir} ${datadir}/games/doom/prboom.wad"

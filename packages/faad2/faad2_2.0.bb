@@ -14,13 +14,13 @@ S="${WORKDIR}/${PN}"
 
 PACKAGES = "${PN} libfaad libfaad-dev libmp4ff libmp4ff-dev" 
 
-FILES_${PN} = "/usr/bin/faad"
+FILES_${PN} = "${bindir}/faad"
 
-FILES_libfaad = "/usr/lib/libfaad.so.0 /usr/lib/libfaad.so.0.0.0"
-FILES_libfaad-dev = "/usr/lib/libfaad.so /usr/lib/libfaad.la /usr/lib/libfaad.a /usr/include/faad.h"
+FILES_libfaad = "${libdir}/libfaad.so.0 ${libdir}/libfaad.so.0.0.0"
+FILES_libfaad-dev = "${libdir}/libfaad.so ${libdir}/libfaad.la ${libdir}/libfaad.a ${includedir}/faad.h"
 
-FILES_libmp4ff = "/usr/lib/libmp4ff.so.0 /usr/lib/libmp4ff.so.0.0.0"
-FILES_libmp4ff-dev = "/usr/lib/libmp4ff.so /usr/lib/libmp4ff.la /usr/lib/libmp4ff.a /usr/include/mp4ff.h"
+FILES_libmp4ff = "${libdir}/libmp4ff.so.0 ${libdir}/libmp4ff.so.0.0.0"
+FILES_libmp4ff-dev = "${libdir}/libmp4ff.so ${libdir}/libmp4ff.la ${libdir}/libmp4ff.a ${includedir}/mp4ff.h"
 
 do_stage() {
 	oe_libinstall -a -so -C libfaad libfaad ${STAGING_LIBDIR}

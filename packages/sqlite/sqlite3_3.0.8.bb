@@ -37,5 +37,5 @@ FILES_sqlite3 = "${bindir}/*"
 FILES_libsqlite = "${libdir}/*.so.*"
 FILES_libsqlite-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so \
 		       ${libdir}/pkgconfig ${includedir}"
-FILES_libsqlite-doc = "${datadir}/doc ${mandir} ${infodir}"
+FILES_libsqlite-doc = "${docdir} ${mandir} ${infodir}"
 AUTO_LIBNAME_PKGS = "libsqlite"

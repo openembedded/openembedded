@@ -24,7 +24,7 @@ exec_prefix = "${prefix}"
 
 # Base paths
 base_bindir = "${base_prefix}/bin"
-base_sbindir = "${base_prefix}/sbin"
+base_sbindir = "${base_prefix}/bin"
 base_libdir = "${base_prefix}/lib"
 
 # Architecture independent paths
@@ -39,7 +39,7 @@ servicedir = "${prefix}/srv"
 
 # Architecture dependent paths
 bindir = "${exec_prefix}/bin"
-sbindir = "${exec_prefix}/sbin"
+sbindir = "${exec_prefix}/bin"
 libexecdir = "${exec_prefix}/libexec"
 libdir = "${exec_prefix}/lib"
 includedir = "${exec_prefix}/include"

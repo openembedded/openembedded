@@ -12,6 +12,6 @@ do_compile() {
 }
 
 do_install() {
-         install -d ${D}/sbin
-         install -m 0755 softfan ${D}/sbin/softfan
+         install -d ${D}/${base_sbindir}
+         install -m 0755 softfan ${D}/${base_sbindir}/softfan
 }

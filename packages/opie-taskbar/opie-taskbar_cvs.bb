@@ -65,8 +65,8 @@ do_install() {
 	install -d ${D}/${palmtopdir}/pics/launcher
 	install -d ${D}/${palmtopdir}/pics/logo
 	install -d ${D}/${palmtopdir}/pics/RoH/star/
-	install -d ${D}/etc/init.d
-	install -d ${D}/etc/profile.d	
+	install -d ${D}/${sysconfdir}/init.d
+	install -d ${D}/${sysconfdir}/profile.d	
 	install -d ${D}/${palmtopdir}/etc/colors
 	install -d ${D}/${palmtopdir}/etc/skel
 
@@ -74,7 +74,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}/${palmtopdir}/apps/Settings/
-	install -m 0644 ${WORKDIR}/opie_defaults ${D}/etc/profile.d/
+	install -m 0644 ${WORKDIR}/opie_defaults ${D}/${sysconfdir}/profile.d/
 
 	for p in ${PICS}
 	do
@@ -87,9 +87,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/RoH/star/*.png ${D}/${palmtopdir}/pics/RoH/star/
 
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
-	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/etc/
+	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/${sysconfdir}/
 
-	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
+	install -m 0755 ${WORKDIR}/opie ${D}/${sysconfdir}/init.d/opie
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
 
 	if [ -s ${WORKDIR}/locale.conf ]; then

@@ -27,13 +27,13 @@ do_compile_prepend() {
 }
 
 do_install() {   
-        install -d ${D}/lib/modules/${KERNEL_VERSION}/net/
-        install -d ${D}/etc/pcmcia
-        install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/net/
-        install -m 0644 ${WORKDIR}/spectrum.conf ${D}/etc/pcmcia/
-        install -m 0644 hermes.conf ${D}/etc/pcmcia/
-        install -d ${D}/etc/modutils
-        install -m 0644 ${WORKDIR}/orinoco_cs.conf ${D}/etc/modutils/
+        install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/
+        install -d ${D}/${sysconfdir}/pcmcia
+        install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/
+        install -m 0644 ${WORKDIR}/spectrum.conf ${D}/${sysconfdir}/pcmcia/
+        install -m 0644 hermes.conf ${D}/${sysconfdir}/pcmcia/
+        install -d ${D}/${sysconfdir}/modutils
+        install -m 0644 ${WORKDIR}/orinoco_cs.conf ${D}/${sysconfdir}/modutils/
 }
 
 PACKAGES = "orinoco-modules-cs orinoco-modules-pci orinoco-modules-usb orinoco-modules-nortel orinoco-modules"

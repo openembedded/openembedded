@@ -61,4 +61,4 @@ do_install() {
     done
 }
 
-FILES_${PN} = "/usr/lib/${PYTHON_DIR}/site-packages"
+FILES_${PN} = "${libdir}/${PYTHON_DIR}/site-packages"

@@ -1,7 +1,7 @@
 DESCRIPTION = "RPC program number mapper."
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5.orig.tar.gz \
 	http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_${PV}.diff.gz;patch=1 \
@@ -12,6 +12,7 @@ S = "${WORKDIR}/portmap_5beta"
 
 PACKAGES =+ "portmap-utils"
 FILES_portmap-utils = "/sbin/pmap_set /sbin/pmap_dump"
+FILES_${PN}-doc += "${docdir}"
 
 INITSCRIPT_NAME = "portmap"
 INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . start 18 2 3 4 5 . stop 81 1 ."
@@ -25,8 +26,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/etc/init.d
-	install -m 0755 ${WORKDIR}/portmap.init ${D}/etc/init.d/portmap
-	oe_runmake 'docdir=${datadir}/doc/portmap' \
+	install -d ${D}/${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/portmap.init ${D}/${sysconfdir}/init.d/portmap
+	oe_runmake 'docdir=${docdir}/portmap' \
 		   'DESTDIR=${D}' install
 }

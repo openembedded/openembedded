@@ -6,7 +6,7 @@ DESCRIPTION = "System-V like init.\
  your system. All processes are descended from init. For more information,\
  see the manual page init(8)."
 PACKAGES = "sysvinit"
-FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
+FILES_${PN} = "${base_sbindir} ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 PR = "r1"
 LICENSE = "GPL"
@@ -31,26 +31,26 @@ export LCRYPT = "-lcrypt"
 
 do_install () {
 	install -d ${D}/${bindir} ${D}/${sbindir} \
-		   ${D}/sbin ${D}/${sysconfdir}/default \
+		   ${D}/${base_sbindir} ${D}/${sysconfdir}/default \
 		   ${D}/${sysconfdir}/init.d
 	install -m 755 halt killall5 \
-		runlevel shutdown ${D}/sbin/
-	install -m 755 init ${D}/sbin/sysvinit
+		runlevel shutdown ${D}/${base_sbindir}/
+	install -m 755 init ${D}/${base_sbindir}/sysvinit
 	install -m 755 mesg last ${D}${bindir}
-	install -m 0755 ${WORKDIR}/need		${D}/sbin/need.sysvinit
-	install -m 0755 ${WORKDIR}/provide		${D}/sbin/provide.sysvinit
-	ln -sf halt ${D}/sbin/reboot
-	ln -sf halt ${D}/sbin/poweroff
-	ln -sf init ${D}/sbin/telinit
-	ln -sf killall5 ${D}/sbin/pidof
+	install -m 0755 ${WORKDIR}/need		${D}/${base_sbindir}/need.sysvinit
+	install -m 0755 ${WORKDIR}/provide		${D}/${base_sbindir}/provide.sysvinit
+	ln -sf halt ${D}/${base_sbindir}/reboot
+	ln -sf halt ${D}/${base_sbindir}/poweroff
+	ln -sf init ${D}/${base_sbindir}/telinit
+	ln -sf killall5 ${D}/${base_sbindir}/pidof
 	ln -sf last ${D}${bindir}/lastb
 	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
-		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
+		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}/${sysconfdir}/inittab
 	fi
 	if [ "${USE_VT}" == "1" ]; then
-		cat <<EOF >>${D}/etc/inittab
-# /sbin/getty invocations for the runlevels.
+		cat <<EOF >>${D}/${sysconfdir}/inittab
+# ${base_sbindir}/getty invocations for the runlevels.
 #
 # The "id" field MUST be the same as the last
 # characters of the device (after "tty").
@@ -58,26 +58,26 @@ do_install () {
 # Format:
 #  <id>:<runlevels>:<action>:<process>
 #
-1:2345:respawn:/sbin/getty 38400 tty1
-# 2:23:respawn:/sbin/getty 38400 tty2
-# 3:23:respawn:/sbin/getty 38400 tty3
-# 4:23:respawn:/sbin/getty 38400 tty4
+1:2345:respawn:${base_sbindir}/getty 38400 tty1
+# 2:23:respawn:${base_sbindir}/getty 38400 tty2
+# 3:23:respawn:${base_sbindir}/getty 38400 tty3
+# 4:23:respawn:${base_sbindir}/getty 38400 tty4
 EOF
 	fi
-	install -m 0644    ${WORKDIR}/rcS-default	${D}/etc/default/rcS
-	install -m 0755    ${WORKDIR}/rc		${D}/etc/init.d
-	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
+	install -m 0644    ${WORKDIR}/rcS-default	${D}/${sysconfdir}/default/rcS
+	install -m 0755    ${WORKDIR}/rc		${D}/${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/rcS		${D}/${sysconfdir}/init.d
 }
 
 
 do_install_append_ramses () {
-	cat <<EOF >>${D}/etc/inittab
+	cat <<EOF >>${D}/${sysconfdir}/inittab
 # Bluetooth
-#1:2345:respawn:/sbin/getty -L 115200 tts/1
+#1:2345:respawn:${base_sbindir}/getty -L 115200 tts/1
 # External serial port
-4:2345:respawn:/sbin/getty -L 115200 tts/4
+4:2345:respawn:${base_sbindir}/getty -L 115200 tts/4
 # Framebuffer
-v1:2345:respawn:/sbin/getty -L 115200 vc/1
+v1:2345:respawn:${base_sbindir}/getty -L 115200 vc/1
 EOF
 }
 

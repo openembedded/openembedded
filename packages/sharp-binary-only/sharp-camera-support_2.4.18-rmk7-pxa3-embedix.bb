@@ -15,12 +15,12 @@ S = "${WORKDIR}"
 inherit module-base
 
 do_install() {
-	install -d ${D}/etc/pcmcia/cis
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/pcmcia
-	install -m 0644 ${WORKDIR}/CE-AG06.dat ${D}/etc/pcmcia/cis/
-	install -m 0644 ${WORKDIR}/sharpzdc.conf ${D}/etc/pcmcia/
-	install -m 0755 ${WORKDIR}/sharpzdc ${D}/etc/pcmcia/
-	install -m 0644 ${MACHINE}/sharpzdc_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
+	install -d ${D}/${sysconfdir}/pcmcia/cis
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia
+	install -m 0644 ${WORKDIR}/CE-AG06.dat ${D}/${sysconfdir}/pcmcia/cis/
+	install -m 0644 ${WORKDIR}/sharpzdc.conf ${D}/${sysconfdir}/pcmcia/
+	install -m 0755 ${WORKDIR}/sharpzdc ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${MACHINE}/sharpzdc_cs.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
 }
 
 FILES_${PN} = "/"

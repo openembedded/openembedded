@@ -57,12 +57,12 @@ do_compile() {
 
 
 do_install() {
-        install -d ${D}/etc/pcmcia
-        install -m 0644 ${WORKDIR}/wlags_h${COMPILE_HERMES}.conf ${D}/etc/pcmcia/
+        install -d ${D}/${sysconfdir}/pcmcia
+        install -m 0644 ${WORKDIR}/wlags_h${COMPILE_HERMES}.conf ${D}/${sysconfdir}/pcmcia/
 
-        install -d ${D}/lib/modules/${KERNEL_VERSION}/net/wireless
+        install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/wireless
 	ls
-        install -m 0644 wlags49_h${COMPILE_HERMES}_cs${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/net/wireless
+        install -m 0644 wlags49_h${COMPILE_HERMES}_cs${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/wireless
 }
 
 FILES = "/lib/modules/${KERNEL_VERSION}/net/wireless/*${KERNEL_OBJECT_SUFFIX} /${sysconfdir}"        

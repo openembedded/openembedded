@@ -31,20 +31,20 @@ do_stage () {
 
 do_install () {
 	install -d ${D}/${sbindir}
-	install -d ${D}/${datadir}/man/man1
-	install -d ${D}/${datadir}/man/man3
+	install -d ${D}/${mandir}/man1
+	install -d ${D}/${mandir}/man3
 	install -d ${D}/${incdir}
 	install -d ${D}/${libdir}
 	install -d ${D}/${sysconfdir}/init.d
 
 	install -m 0755 ${S}/.libs/gpsd ${D}${sbindir}
 	oe_libinstall -so -C ${S}/.libs libgps ${D}${libdir}
-	install -m 755 gpsd.1 ${D}/usr/share/man/man1/gpsd.1
+	install -m 755 gpsd.1 ${D}${mandir}/man1/gpsd.1
 	install -m 0755 ${S}/libgps.la ${D}${libdir}libgps.la
 	install -m 0755 ${S}/gps.h ${S}/gpsd.h ${D}/${incdir}
-	install -m 755 libgps.3 libgpsd.3 ${D}/${datadir}/man/man3/
+	install -m 755 libgps.3 libgpsd.3 ${D}/${mandir}/man3/
 	install -m 755 gpsd.init ${D}${sysconfdir}/init.d/gpsd
 }
 
 PACKAGES =+ "gpsd-devdoc "
-FILES_${PN}-devdoc = "${datadir}/man/man3 "
+FILES_${PN}-devdoc = "${mandir}/man3 "

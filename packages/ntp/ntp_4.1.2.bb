@@ -20,7 +20,7 @@ CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
 PACKAGES = "ntpdate ntp"
 
-FILES_ntpdate = "/usr/bin/ntpdate /etc/init.d/ntpdate"
+FILES_ntpdate = "${bindir}/ntpdate /etc/init.d/ntpdate"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
@@ -34,7 +34,7 @@ else
 	if ! grep -q ntpdate /etc/cron/crontabs/root; then
 		echo "adding crontab"
 		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
-		echo "30 * * * *    /usr/bin/ntpdate -s -u pool.ntp.org" >> /etc/cron/crontabs/root
+		echo "30 * * * *    ${bindir}/ntpdate -s -u pool.ntp.org" >> /etc/cron/crontabs/root
 	fi
 	update-rc.d -s busybox-cron defaults
 	update-rc.d -s ntpdate defaults 30

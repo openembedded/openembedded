@@ -46,16 +46,16 @@ do_compile_append () {
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/init ${D}/etc/init.d/sshd
+	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/sshd
 }
 
 PACKAGES =+ " openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc"
-FILES_openssh-scp = "/usr/bin/scp"
-FILES_openssh-ssh = "/usr/bin/ssh /usr/bin/slogin /${sysconfdir}/ssh/ssh_config"
-FILES_openssh-sshd = "/usr/sbin/sshd /${sysconfdir}/init.d/sshd /usr/bin/ssh-keygen"
+FILES_openssh-scp = "${bindir}/scp"
+FILES_openssh-ssh = "${bindir}/ssh ${bindir}/slogin /${sysconfdir}/ssh/ssh_config"
+FILES_openssh-sshd = "${sbindir}/sshd /${sysconfdir}/init.d/sshd ${bindir}/ssh-keygen"
 FILES_openssh-sshd += " /${sysconfdir}/ssh/moduli /${sysconfdir}/ssh/sshd_config /var/run/sshd"
-FILES_openssh-sftp = "/usr/bin/sftp /usr/libexec/sftp-server"
-FILES_openssh-misc = "/usr/bin /usr/libexec/"
+FILES_openssh-sftp = "${bindir}/sftp ${libdir}exec/sftp-server"
+FILES_openssh-misc = "${bindir} ${libdir}exec/"
 RDEPENDS_openssh += " openssh-scp openssh-ssh openssh-sshd"
 DEPENDS_openssh-sshd += " update-rc.d"
 RDEPENDS_openssh-sshd += " update-rc.d"

@@ -57,7 +57,7 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/etc/init.d
+	install -d ${D}/${sysconfdir}/init.d
 	oe_runmake 'PREFIX=${D}' install
 	install -m 0755 ${WORKDIR}/syslog ${D}/${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}/${sysconfdir}/
@@ -79,10 +79,10 @@ do_install () {
 		install -m 0755 ${S}/examples/udhcp/simple.script ${D}/${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
 	fi
-	rm ${D}/bin/mount
-	install -m 0755 ${WORKDIR}/mount.busybox ${D}/bin/
-	rm ${D}/bin/umount
-	install -m 0755 ${WORKDIR}/umount.busybox ${D}/bin/
+	rm ${D}/${base_bindir}/mount
+	install -m 0755 ${WORKDIR}/mount.busybox ${D}/${base_bindir}/
+	rm ${D}/${base_bindir}/umount
+	install -m 0755 ${WORKDIR}/umount.busybox ${D}/${base_bindir}/
 }
 
 pkg_postinst () {

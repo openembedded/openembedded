@@ -27,7 +27,7 @@ inherit image_ipk
 # Note that anything in this function must be repeatable without having to rebuild the rootfs
 unslung_clean_image () {
 	# Remove info from the local feed used to build the image
-	rm -f ${IMAGE_ROOTFS}/usr/lib/ipkg/lists/*
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/*
 	rm -f ${IMAGE_ROOTFS}/${sysconfdir}/version
 }
 

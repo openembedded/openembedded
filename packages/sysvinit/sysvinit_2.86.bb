@@ -38,7 +38,7 @@ ALTERNATIVE_PATH = "/sbin/init.sysvinit"
 ALTERNATIVE_PRIORITY = "50"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
-FILES_${PN} += "/sbin /bin"
+FILES_${PN} += "${base_sbindir} /bin"
 FILES_sysvinit-pidof = "/bin/pidof"
 FILES_sysvinit-sulogin = "/sbin/sulogin"
 
@@ -59,11 +59,11 @@ do_install () {
 		   ${D}/${sysconfdir}/init.d
 	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
-		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
+		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}/${sysconfdir}/inittab
 	fi
 	if [ "${USE_VT}" == "1" ]; then
-		cat <<EOF >>${D}/etc/inittab
-# /sbin/getty invocations for the runlevels.
+		cat <<EOF >>${D}/${sysconfdir}/inittab
+# ${base_sbindir}/getty invocations for the runlevels.
 #
 # The "id" field MUST be the same as the last
 # characters of the device (after "tty").
@@ -71,34 +71,34 @@ do_install () {
 # Format:
 #  <id>:<runlevels>:<action>:<process>
 #
-1:2345:respawn:/sbin/getty 38400 tty1
-# 2:23:respawn:/sbin/getty 38400 tty2
-# 3:23:respawn:/sbin/getty 38400 tty3
-# 4:23:respawn:/sbin/getty 38400 tty4
+1:2345:respawn:${base_sbindir}/getty 38400 tty1
+# 2:23:respawn:${base_sbindir}/getty 38400 tty2
+# 3:23:respawn:${base_sbindir}/getty 38400 tty3
+# 4:23:respawn:${base_sbindir}/getty 38400 tty4
 EOF
 	fi
-	install -m 0644    ${WORKDIR}/rcS-default	${D}/etc/default/rcS
-	install -m 0755    ${WORKDIR}/rc		${D}/etc/init.d
-	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
-	install -m 0755    ${WORKDIR}/bootlogd.init     ${D}/etc/init.d/bootlogd
-	ln -sf bootlogd ${D}/etc/init.d/stop-bootlogd
-	install -d ${D}/etc/rcS.d
-	ln -sf ../init.d/bootlogd ${D}/etc/rcS.d/S07bootlogd
+	install -m 0644    ${WORKDIR}/rcS-default	${D}/${sysconfdir}/default/rcS
+	install -m 0755    ${WORKDIR}/rc		${D}/${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/rcS		${D}/${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/bootlogd.init     ${D}/${sysconfdir}/init.d/bootlogd
+	ln -sf bootlogd ${D}/${sysconfdir}/init.d/stop-bootlogd
+	install -d ${D}/${sysconfdir}/rcS.d
+	ln -sf ../init.d/bootlogd ${D}/${sysconfdir}/rcS.d/S07bootlogd
 	for level in 2 3 4 5; do
-		install -d ${D}/etc/rc$level.d
-		ln -s ../init.d/stop-bootlogd ${D}/etc/rc$level.d/S99stop-bootlogd
+		install -d ${D}/${sysconfdir}/rc$level.d
+		ln -s ../init.d/stop-bootlogd ${D}/${sysconfdir}/rc$level.d/S99stop-bootlogd
 	done
-	mv                 ${D}/sbin/init               ${D}/sbin/init.sysvinit
+	mv                 ${D}/${base_sbindir}/init               ${D}/${base_sbindir}/init.sysvinit
 }
 
 
 do_install_append_ramses () {
-	cat <<EOF >>${D}/etc/inittab
+	cat <<EOF >>${D}/${sysconfdir}/inittab
 # Bluetooth
-#1:2345:respawn:/sbin/getty -L 115200 tts/1
+#1:2345:respawn:${base_sbindir}/getty -L 115200 tts/1
 # External serial port
-4:2345:respawn:/sbin/getty -L 115200 tts/4
+4:2345:respawn:${base_sbindir}/getty -L 115200 tts/4
 # Framebuffer
-v1:2345:respawn:/sbin/getty -L 115200 vc/1
+v1:2345:respawn:${base_sbindir}/getty -L 115200 vc/1
 EOF
 }

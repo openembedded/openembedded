@@ -29,7 +29,7 @@ do_install() {
 	install -d ${D}/opt/QtPalmtop.compat/binlib
 	install -d ${D}/opt/QtPalmtop.compat/lib
 	
-	install -d ${D}/etc/init.d
+	install -d ${D}/${sysconfdir}/init.d
 	
 	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/apps/Settings/makecompat.desktop ${D}/opt/QtPalmtop/apps/Settings		
 	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/etc/quickexec.libs ${D}/opt/QtPalmtop/etc/quickexec.libs
@@ -38,7 +38,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/bin/* ${D}/opt/QtPalmtop.compat/bin
 	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/lib/* ${D}/opt/QtPalmtop.compat/lib
 	
-	install -m 0755 ${WORKDIR}/oz-compat-0.5/etc/init.d/quickexec ${D}/etc/init.d
+	install -m 0755 ${WORKDIR}/oz-compat-0.5/etc/init.d/quickexec ${D}/${sysconfdir}/init.d
 			
 	cd ${D}/opt/QtPalmtop/bin
 	for file in chkhinge makecompat qeserver quickexec runcompat

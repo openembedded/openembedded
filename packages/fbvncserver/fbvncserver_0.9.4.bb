@@ -29,12 +29,12 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/usr/bin
-	install -m 0755 zaurus_fbvncserver ${D}/usr/bin/fbvncserver
-	install -m 0755 zaurus_tssimd ${D}/usr/bin/tssimd
+	install -d ${D}${bindir}
+	install -m 0755 zaurus_fbvncserver ${D}${bindir}/fbvncserver
+	install -m 0755 zaurus_tssimd ${D}${bindir}/tssimd
 	
-	install -d ${D}/usr/share/fbvncserver
-	install -m 0644 ${WORKDIR}/zaurus_panel.jpg ${D}/usr/share/fbvncserver/
+	install -d ${D}${datadir}/fbvncserver
+	install -m 0644 ${WORKDIR}/zaurus_panel.jpg ${D}${datadir}/fbvncserver/
 	
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/fbvncinput

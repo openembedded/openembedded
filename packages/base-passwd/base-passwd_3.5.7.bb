@@ -1,6 +1,6 @@
 DESCRIPTION = "Base system password/group files."
 SECTION = "base"
-PR="r2"
+PR = "r3"
 LICENSE = "GPL"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
@@ -10,6 +10,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
 
 inherit autotools
 
+FILES_${PN}-doc += "${docdir}"
 
 do_install () {
 	install -d -m 755 ${D}/${sbindir}
@@ -28,11 +29,11 @@ do_install () {
 	install -p -m 644 group.master \
 		${D}/${datadir}/base-passwd/
 
-	install -d -m 755 ${D}/${docdir}/${P}
-	install -p -m 644 debian/changelog ${D}/${docdir}/${P}/
-	gzip -9 ${D}/${docdir}/${P}/*
-	install -p -m 644 README ${D}/${docdir}/${P}/
-	install -p -m 644 debian/copyright ${D}/${docdir}/${P}/
+	install -d -m 755 ${D}/${docdir}/${PN}
+	install -p -m 644 debian/changelog ${D}/${docdir}/${PN}/
+	gzip -9 ${D}/${docdir}/${PN}/*
+	install -p -m 644 README ${D}/${docdir}/${PN}/
+	install -p -m 644 debian/copyright ${D}/${docdir}/${PN}/
 }
 
 

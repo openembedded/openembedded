@@ -207,7 +207,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
 FILES_libqte4-debug	= "${palmtopdir}/lib/libQt*_debug.*"
-FILES_libqte4-core	= "${palmtopdir}/lib/libQtCore.* /usr/sbin/update-qtfontdir"
+FILES_libqte4-core	= "${palmtopdir}/lib/libQtCore.* ${sbindir}/update-qtfontdir"
 FILES_libqte4-gui	= "${palmtopdir}/lib/libQtGui.*"
 FILES_libqte4-network	= "${palmtopdir}/lib/libQtNetwork.*"
 FILES_libqte4-sql	= "${palmtopdir}/lib/libQtSql.*"

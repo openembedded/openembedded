@@ -18,13 +18,13 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/bin ${D}${sbindir} \
-		   ${D}/${mandir}/man8 ${D}/${datadir}/doc/${P}
-	install -m 0755 ping ${D}/bin/
+	install -d ${D}/${base_bindir} ${D}${sbindir} \
+		   ${D}/${mandir}/man8 ${D}/${docdir}/${P}
+	install -m 0755 ping ${D}/${base_bindir}/
 	for f in ipg tracepath clockdiff rdisc arping \
 		tftpd rarpd tracepath6 traceroute6 ping6; do
 		install -m 0755 $f ${D}/${sbindir}/
 	done
 	install -m 0644 doc/*.8 ${D}/${mandir}/man8/
-	install -m 0644 doc/*.html ${D}/${datadir}/doc/${P}/
+	install -m 0644 doc/*.html ${D}/${docdir}/${P}/
 }

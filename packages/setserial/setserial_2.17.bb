@@ -4,7 +4,7 @@ LICENSE = "GPL"
 inherit autotools
 
 do_install() {
-	install -d ${D}/bin
+	install -d ${D}/${base_bindir}
 	install -d ${D}/usr/man/man8
 	install -d ${D}${mandir}
 	autotools_do_install

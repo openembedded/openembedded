@@ -148,8 +148,8 @@ EOF
         echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
         echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
-	rm -rf ${SDK_OUTPUT}/usr/lib/ipkg
+	mv ${SDK_OUTPUT}${libdir}/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	rm -rf ${SDK_OUTPUT}${libdir}/ipkg
 
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc

@@ -21,20 +21,20 @@ MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e'"
 NET_MODULES = "hostap hostap_pci hostap_crypt_ccmp hostap_crypt_tkip hostap_crypt_wep"
 
 do_install() {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
-		   ${D}/lib/modules/${KERNEL_VERSION}/pcmcia \
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net \
+		   ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia \
         	   ${D}/${sysconfdir}/pcmcia
 	for i in ${NET_MODULES}
 	do
-		install -m 0644 driver/modules/$i${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/net/
+		install -m 0644 driver/modules/$i${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/
 	done
-	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
+	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
 	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 
 	if [ "${MACHINE}" = "mtx-1" ]; then
-		install -d ${D}/etc/modutils
-		echo "hostap_pci" > ${D}/etc/modutils/hostap
+		install -d ${D}/${sysconfdir}/modutils
+		echo "hostap_pci" > ${D}/${sysconfdir}/modutils/hostap
 	fi
 }
 

@@ -23,6 +23,6 @@ rm -f /dev/changedfiles
 }
 
 do_install() {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
-	install -m 0644 changedfiles.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
+	install -m 0644 changedfiles.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
 }

@@ -52,6 +52,6 @@ do_stage () {
 }
 
 do_install_append () {
-	install -d ${D}/etc/gtk-1.2
+	install -d ${D}/${sysconfdir}/gtk-1.2
 }
 

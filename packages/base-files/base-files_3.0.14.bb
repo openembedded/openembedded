@@ -98,36 +98,36 @@ do_install () {
 		install -m 0644 ${WORKDIR}/licenses/$license ${D}/${datadir}/common-licenses/
 	done
 
-	if (grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab); then
+	if (grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/${sysconfdir}/fstab); then
 		# /var is in a ramdisk
-		install -d ${D}/etc/init.d ${D}/etc/rcS.d
+		install -d ${D}/${sysconfdir}/init.d ${D}/${sysconfdir}/rcS.d
 		for d in ${dirs755}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
-				echo "chmod 0775 $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+				echo "chmod 0775 $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
 			fi
 		done
 		for d in ${dirs1777}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
-				echo "chmod 1777 $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+				echo "chmod 1777 $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
 			fi
 		done
 		for d in ${dirs2775}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
-				echo "chmod 2775 $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+				echo "chmod 2775 $d" >> ${D}/${sysconfdir}/init.d/populate-var.sh
 			fi
 		done
 
 
-		echo ">/var/run/utmp" >> ${D}/etc/init.d/populate-var.sh
-		echo ">/var/log/wtmp" >> ${D}/etc/init.d/populate-var.sh
-		echo ">/var/log/lastlog" >> ${D}/etc/init.d/populate-var.sh
-		echo "chmod 0664 /var/run/utmp /var/log/wtmp /var/log/lastlog"	>> ${D}/etc/init.d/populate-var.sh
-		echo "touch /var/run/resolv.conf"	>> ${D}/etc/init.d/populate-var.sh
+		echo ">/var/run/utmp" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+		echo ">/var/log/wtmp" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+		echo ">/var/log/lastlog" >> ${D}/${sysconfdir}/init.d/populate-var.sh
+		echo "chmod 0664 /var/run/utmp /var/log/wtmp /var/log/lastlog"	>> ${D}/${sysconfdir}/init.d/populate-var.sh
+		echo "touch /var/run/resolv.conf"	>> ${D}/${sysconfdir}/init.d/populate-var.sh
 
-#		rmdir ${D}/var/*
+#		rmdir ${D}/${localstatedir}/*
 		chmod 0755 ${D}/${sysconfdir}/init.d/populate-var.sh
 		ln -sf ../init.d/populate-var.sh ${D}/${sysconfdir}/rcS.d/S37populate-var.sh
 		ln -sf ${localstatedir}/run/resolv.conf ${D}/${sysconfdir}/resolv.conf
@@ -139,7 +139,7 @@ do_install () {
 
 do_install_append_ramses () {
 	rmdir ${D}/tmp
-	mkdir -p ${D}/var/tmp
+	mkdir -p ${D}/${localstatedir}/tmp
 	ln -s var/tmp ${D}/tmp
 }
 

@@ -19,9 +19,9 @@ do_stage () {
 	rm -rf ${STAGE_TEMP}
 	mkdir -p ${STAGE_TEMP}
 	make DESTDIR="${STAGE_TEMP}" install
-	cp -a ${STAGE_TEMP}/usr/bin/* ${STAGING_DIR}/${BUILD_SYS}/bin
+	cp -a ${STAGE_TEMP}${bindir}/* ${STAGING_DIR}/${BUILD_SYS}/bin
 	install -d ${STAGING_DIR}/${HOST_SYS}/share/gnome-common
-	cp -a ${STAGE_TEMP}/usr/share/gnome-common/* ${STAGING_DIR}/${HOST_SYS}/share/gnome-common
-	cp -a ${STAGE_TEMP}/usr/share/aclocal/* ${STAGING_DIR}/${HOST_SYS}/share/aclocal
+	cp -a ${STAGE_TEMP}${datadir}/gnome-common/* ${STAGING_DIR}/${HOST_SYS}/share/gnome-common
+	cp -a ${STAGE_TEMP}${datadir}/aclocal/* ${STAGING_DIR}/${HOST_SYS}/share/aclocal
 	rm -rf ${STAGE_TEMP}
 }

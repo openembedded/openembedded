@@ -22,7 +22,7 @@ CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
 PACKAGES = "ntpdate ntp"
 
-FILES_ntpdate = "/usr/bin/ntpdate /etc/init.d/ntpdate"
+FILES_ntpdate = "${bindir}/ntpdate /etc/init.d/ntpdate"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d

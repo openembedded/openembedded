@@ -41,6 +41,6 @@ pkg_postinst() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	chmod u+s /usr/sbin/pppd
+	chmod u+s ${sbindir}/pppd
 fi
 }

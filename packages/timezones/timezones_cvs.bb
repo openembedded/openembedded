@@ -10,9 +10,9 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/root"
 S = "${WORKDIR}/root"
 
 do_install() {
-	install -d ${D}/usr/share/
-	cp -fa usr/share/zoneinfo ${D}/usr/share/
-	find ${D}/usr/share -name "CVS"|xargs rm -rf
+	install -d ${D}${datadir}/
+	cp -fa usr/share/zoneinfo ${D}${datadir}/
+	find ${D}${datadir} -name "CVS"|xargs rm -rf
 }
 
 python populate_packages_prepend() {
@@ -20,7 +20,7 @@ python populate_packages_prepend() {
         pkgpattern = "timezones-%s"
         pkgdescription = "Timezone for %s"
 
-        do_split_packages(d, root='/usr/share/zoneinfo/', file_regex=pkgregex, output_pattern=pkgpattern, 
+        do_split_packages(d, root='${datadir}/zoneinfo/', file_regex=pkgregex, output_pattern=pkgpattern, 
                           description=pkgdescription,allow_dirs=True )
 }
 

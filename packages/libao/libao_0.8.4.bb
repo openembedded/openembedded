@@ -24,4 +24,4 @@ do_stage() {
 	install -m 0644 ao.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-FILES_${PN} += "/usr/lib/ao/plugins-2/*.so"
+FILES_${PN} += "${libdir}/ao/plugins-2/*.so"

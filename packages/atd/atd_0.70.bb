@@ -18,6 +18,6 @@ do_compile() {
 do_install() {
 	install -d ${D}${sbindir}
 	install atd ${D}${sbindir}/atd
-	install -d ${D}/etc/init.d
-	install dist/etc/init.d/atd ${D}/etc/init.d/atd
+	install -d ${D}/${sysconfdir}/init.d
+	install dist/etc/init.d/atd ${D}/${sysconfdir}/init.d/atd
 }
