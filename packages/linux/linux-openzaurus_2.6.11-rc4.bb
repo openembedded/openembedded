@@ -47,7 +47,7 @@ http://www.rpsys.net/openzaurus/${KV}/corgi_snd-r3.patch;patch=1 \
 http://www.do13.in-berlin.de/openzaurus/tosa-machine-base.patch;patch=1 \
 http://www.do13.in-berlin.de/openzaurus/tc6393_nand.patch;patch=1 \
 http://www.do13.in-berlin.de/openzaurus/tc6393-device.patch;patch=1 \
-file://defconfig-corgi \
+file://defconfig-c7x0 \
 file://defconfig-collie \
 file://defconfig-poodle \
 file://defconfig-tosa "
