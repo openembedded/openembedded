@@ -3,3 +3,6 @@ PENDING/*
 conf/local.conf
 conf/auto.conf
 tmp
+_hrw/hrw-build.oe
+_hrw/build-hrw-qpe.oe
+_hrw/build-hrw.oe
