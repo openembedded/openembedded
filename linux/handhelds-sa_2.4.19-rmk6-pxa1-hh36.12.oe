@@ -1,6 +1,7 @@
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
+PR = "r1"
 
 PACKAGE_ARCH = "ipaqsa"
 KERNEL_CCSUFFIX = "-3.3.3"
@@ -9,7 +10,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
            file://defconfig-ipaqsa \
-	   file://ipaq-hal.init"
+	   file://ipaq-hal.init \
+	   file://ipsec.patch;patch=1"
 
 S = "${WORKDIR}/kernel"
 
@@ -33,9 +35,10 @@ module_conf_orinoco_cs = "options orinoco_cs ignore_cis_vcc=1"
 module_conf_hostap_cs = "options hostap_cs ignore_cis_vcc=1"
 module_conf_spectrum_cs = "options spectrum_cs ignore_cis_vcc=1"
 
-autoload_h3600_generic_sleeve = "h3600_generic_sleeve"
-autoload_ds = "ds"
-autoload_sa_cs = "sa_cs"
+module_autoload_h3600_generic_sleeve = "h3600_generic_sleeve"
+module_autoload_ds = "ds"
+module_autoload_sa1100_cs = "sa1100_cs"
+module_autoload_h3600_ts = "h3600_ts"
 
 FILES_kernel += "/etc/init.d/ipaq-hal"
 INITSCRIPT_NAME = "ipaq-hal"
