@@ -9,6 +9,20 @@ This is intended to be a way of distributing and loading new packages
 for the NSLU2, with minimal changes to the standard user interface and
 firmware.
 
+Note that you must follow the steps in this README *exactly*.  Do not
+skip any steps, and do not skip ahead thinking you know what you are
+doing and don't need to follow instructions step by step.
+
+If at any time you have any questions concerning the installation or
+operation of Unslung firmware, your first port of call should be the
+NSLU2-Linux wiki at:
+
+	http://www.nslu2-linux.org
+
+In partiticular, there is a Frequently Asked Questions page, and also
+quite a few Information and HowTo pages.  Read them all before asking
+questions on the mailing list or the IRC channel.
+
 The changes in the UNSLUNG 3.x firmware from the standard Linksys
 2.3R25 can be found at:
 
@@ -41,6 +55,12 @@ PRE-INSTALLATION CONSIDERATIONS
  
 INSTALLATION DETAILS
 
+0) Please verify that any disks you are going to connect to the NSLU2
+   are recognised and working properly *before* updating your
+   firmware.  The only exception to this, of course, are those
+   enclosures that the stock firmware does not support, but the
+   Unslung firmware does support.
+
 1) Make sure your NSLU2 is working properly, and remove any disks that
    you may have plugged into the NSLU2 (upgrades must always be
    performed with *no* hard disks or flash disks attached).
@@ -55,9 +75,14 @@ INSTALLATION DETAILS
    maintenance mode before you can use the web interface to flash a new
    version.  Just click the "Enter Maintenance Mode" link on the web
    interface Upgrade Firmware page, wait for the NSLU2 to reboot, and
-   then you can flash the new firmware in the normal manner.
+   then flash the new firmware in the normal manner.  The NSLU2 will
+   reboot after the flashing is complete.
 
-4) Verify your NSLU2 is working normally at this point.
+4) Verify your NSLU2 is working normally again at this point.  In
+   particular, you should ensure that all your disks are still
+   recognised as they were before you updated the firmware.  Once you
+   have confirmed normal operation, make sure you unplug all disks
+   before the next step.
 
 5) Make sure that you do *not* have a disk plugged in when you reboot to
    perform the next part of the installation.
@@ -110,7 +135,9 @@ INSTALLATION DETAILS
 
 5) Note that unsling will not change the password on your disk, so if
    you had previously changed the password on a disk, then your password
-   will not be changed.
+   will not be changed.  Also note that simply editing the /etc/passwd
+   file is not enough to permanently change a password.  See the NSLU2
+   wiki for more details.
 
 6) Reboot.
 
@@ -127,7 +154,8 @@ in the internal flash memory) using diversion scripts.
 If you "unsling" an external disk, then downloaded packages will be
 installed onto that external disk.  The number of packages that you
 can install is only limited by the size of the "conf" partition on the
-external disk.
+external disk.  And if you run out of room on the "conf" partition,
+you can always put symlinks across to the "data" partition too.
 
 If you are experienced with the Linux operating system, then you can
 also make changes directly to the root filesystem, and these changes
@@ -337,7 +365,8 @@ the web interface.
 
 Added recovery mode support.  If a viable root filesystem cannot be
 found, then switchbox drops into a basic recovery shell, with a telnet
-daemon running as 192.168.1.77 with no password.
+daemon running as 192.168.1.77 with no password.  This behaviour can
+also be forced with a /.recovery file in the jffs2 filesystem.
 
 3.14:
 
