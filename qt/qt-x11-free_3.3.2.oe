@@ -2,9 +2,10 @@ DESCRIPTION = "Qt/X11 Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
-DEPENDS = "qmake-native x11"
+DEPENDS = "qmake-native x11 xft xext libxrender uicmoc3-native"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
+	   file://configure.patch;patch=1 \
 	   file://no-examples.patch;patch=1"
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
@@ -14,24 +15,26 @@ S = "${WORKDIR}/qt-x11-free-${PV}"
 #
 
 export QTDIR = "${S}"
-export SYSCONF_CXX = "${CCACHE} g++"
-export SYSCONF_CC  = "${CCACHE} gcc"
-export SYSCONF_LINK  = "${CCACHE} g++"
 THIS_QMAKESPEC = "${STAGING_DATADIR}/qmake/${TARGET_OS}-oe-g++"
 export QMAKESPEC = ""
 ARCH_i686 = "x86"
+export MAKE="make -e"
 
-QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama -no-xcursor -no-xrandr \
-                   -no-xrender -no-xft -no-tablet -no-xkb -no-dlopen-opengl -no-freetype -no-thread -no-nis -no-cups"
+QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xinerama \
+                   -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups"
 
 do_configure() {
-	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast
+	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast -L${STAGING_LIBDIR} -I${STAGING_INCDIR}
 }
 
 do_compile() {
+	unset CFLAGS
+	unset CXXFLAGS
+	AR="${AR} cqs"
+	LIBS="" LINK="${BUILD_CXX}" CC="${BUILD_CC}" CXX="${BUILD_CXX}" oe_runmake -C src/moc
 	LD_LIBRARY_PATH=${S}/lib oe_runmake \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCLUDEPATH+=${STAGING_INCDIR} LIBS+=-I${STAGING_LIBDIR}" \
-		QMAKESPEC="${THIS_QMAKESPEC}"
+		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} LIBS+=-L${STAGING_LIBDIR}" \
+		QMAKESPEC="${THIS_QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" MOC="moc3" UIC="uic3"
 }
 
 do_stage() {
