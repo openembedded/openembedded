@@ -1,6 +1,7 @@
 DESCRIPTION = "Tools for ethernet bridging."
 LICENSE = "GPL"
 DEPENDS = "sysfsutils"
+RDEPENDS = "kernel-module-bridge"
 SRC_URI = "${SOURCEFORGE_MIRROR}/bridge/bridge-utils-${PV}.tar.gz"
 S = "${WORKDIR}/bridge-utils-${PV}"
 
