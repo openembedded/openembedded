@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r8"
+PR = "r9"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -38,7 +38,7 @@ http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras2-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras3-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras1-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r14.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r15.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r10.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power-r15.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1 \
