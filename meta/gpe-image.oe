@@ -5,8 +5,8 @@ GPE_MACHINE_CLASS ?= "none"
 GPE_EXTRA_DEPENDS ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 GPE_EXTRA_INSTALL ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 
-GPE_EXTRA_DEPENDS_bigscreen = "minimo gaim linphone rhythmbox"
-GPE_EXTRA_INSTALL_bigscreen = "minimo gaim linphone rhythmbox"
+GPE_EXTRA_DEPENDS_bigscreen = "firefox"
+GPE_EXTRA_INSTALL_bigscreen = "firefox"
 
 GPE_EXTRA_DEPENDS_smallscreen = "minimo"
 GPE_EXTRA_INSTALL_smallscreen = "minimo"
@@ -26,6 +26,6 @@ export IPKG_INSTALL = 'task-bootstrap ${XSERVER} \
 		      glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png \
 		      ${GPE_EXTRA_INSTALL}'
 
-IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
+IMAGE_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
