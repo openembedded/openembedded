@@ -30,10 +30,10 @@ do_install() {
         cp -a music/* ${D}/${palmtopdir}/share/brickout/music/
         cp -a images-sdl/* ${D}/${palmtopdir}/share/brickout/images/
 
-	echo "[Desktop Entry]" >${D}/${palmtopdir}/Games/brickout.desktop
-	echo "Comment=Arkanoid game" >>${D}/${palmtopdir}/Games/brickout.desktop
-	echo "Exec=brickout" >>${D}/${palmtopdir}/Games/brickout.desktop
-	echo "Icon=brickout" >>${D}/${palmtopdir}/Games/brickout.desktop
-	echo "Type=Application" >>${D}/${palmtopdir}/Games/brickout.desktop
-	echo "Name=Brickout" >>${D}/${palmtopdir}/Games/brickout.desktop
+	echo "[Desktop Entry]" >${D}/${palmtopdir}/apps/Games/brickout.desktop
+	echo "Comment=Arkanoid game" >>${D}/${palmtopdir}/apps/Games/brickout.desktop
+	echo "Exec=brickout" >>${D}/${palmtopdir}/apps/Games/brickout.desktop
+	echo "Icon=brickout" >>${D}/${palmtopdir}/apps/Games/brickout.desktop
+	echo "Type=Application" >>${D}/${palmtopdir}/apps/Games/brickout.desktop
+	echo "Name=Brickout" >>${D}/${palmtopdir}/apps/Games/brickout.desktop
 }

@@ -12,7 +12,7 @@ S = "${WORKDIR}/puzzle_arm"
 inherit palmtop
 
 do_install() {
-        install -m 0755 puzz-le Qtopia${palmtopdir}/bin/puzz-le
+        install -m 0755 puzz-le Qtopia/puzz-le/${palmtopdir}/bin/puzz-le
 	install -d ${D}/
-	cp -a Qtopia/* ${D}/
+	cp -a Qtopia/puzz-le/* ${D}/
 }
