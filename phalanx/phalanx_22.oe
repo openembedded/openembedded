@@ -2,7 +2,7 @@ DESCRIPTION = "Phalanx is a chess playing engine."
 SECTION = "games/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \
@@ -10,9 +10,11 @@ SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
            file://description"
 S = "${WORKDIR}/Phalanx-XXII"
 
-inherit autotools
-
 palmtopdir = "/opt/QtPalmtop"
+
+do_compile() {
+	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" STRIP=echo LD="${CC}"
+}
 
 do_install() {
 	install -d ${D}${palmtopdir}/chess/engines/Phalanx
