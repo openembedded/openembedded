@@ -1,3 +1,4 @@
+PR = "r1"
 DEPENDS = "x11 xft"
 DESCRIPTION = "Well known terminal emulator"
 
@@ -23,6 +24,9 @@ EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
 		'XLIB=-L${STAGING_LIBDIR} -lX11 -lXft'"
 
 do_configure () {
+	mv autoconf/configure.in . || true
+	rm autoconf/libtool.m4
+	libtoolize --force
 	autotools_do_configure
 	echo '#define RXVT_UTMP_FILE "${localstatedir}/run/utmp"' >> config.h
 	echo '#define RXVT_WTMP_FILE "${localstatedir}/log/wtmp"' >> config.h
