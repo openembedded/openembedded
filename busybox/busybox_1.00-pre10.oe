@@ -15,7 +15,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz"
 S = "${WORKDIR}/busybox-${PV}"
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
-FILES_${PN} += " ${datadir}/udhcp"
+FILES_${PN} += " ${datadir}/udhcpc"
 
 inherit cml1
 
@@ -35,5 +35,5 @@ do_install () {
 	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
 	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
 	install -d ${D}${datadir}/udhcp
-	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcp/default.script
+	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
 }
