@@ -1,10 +1,12 @@
 SECTION = "console/network"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
            file://configure.patch;patch=1 \
+           file://libs-lcrypto.patch;patch=1 \
            file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-2.61"
 LICENSE = "GPL"
