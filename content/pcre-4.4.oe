@@ -1,0 +1,35 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+DESCRIPTION = Perl-compatible regular expression library. PCRE has its own native \
+API, but a set of "wrapper" functions that are based on the POSIX API \
+are also supplied in the library libpcreposix. Note that this just \
+provides a POSIX calling interface to PCRE; the regular expressions \
+themselves still follow Perl syntax and semantics. The header file for \
+the POSIX-style functions is called pcreposix.h.
+
+
+SRC_URI = ftp://ftp.csx.cam.ac.uk/pub/software/programming/${PN}/${P}.tar.bz2
+S = "${WORKDIR}/${P}"
+
+do_compile () {
+	set -e
+	oe_runconf
+	${BUILD_CC} -I${S}/include -c dftables.c
+	${BUILD_CC} dftables.o -o dftables
+	oe_runmake
+}
+
+do_stage () {
+	set -e
+	install -m 0755 .libs/libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/
+	ln -sf libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/libpcreposix.so.0
+	install -m 0755 .libs/libpcre.so.0.0.1 ${STAGING_LIBDIR}/
+	ln -sf libpcre.so.0.0.1 ${STAGING_LIBDIR}/libpcre.so.0
+	
+	ln -sf libpcre.so.0.0.1 ${STAGING_LIBDIR}/libpcre.so
+	ln -sf libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/libpcreposix.so
+	install -m 0644 .libs/libpcre.a ${STAGING_LIBDIR}/
+	install -m 0644 .libs/libpcreposix.a ${STAGING_LIBDIR}/
+	install -m 0644 pcre.h ${STAGING_DIR}/target/include/
+	install -m 0644 pcreposix.h ${STAGING_DIR}/target/include/
+}

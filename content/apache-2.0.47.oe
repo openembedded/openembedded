@@ -1,0 +1,24 @@
+SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz
+SECTION = net
+DEPENDS = virtual/libc expat pcre
+RDEPENDS = libc6, libexpat1, libpcre0
+
+S = ${WORKDIR}/httpd-${PV}
+
+CFLAGS_append = " -DPATH_MAX=4096"
+do_compile () {
+	set -e
+	oe_runconf
+	touch srclib/apr-util/uri/gen_uri_delims.lo
+	${BUILD_CC} srclib/apr-util/uri/gen_uri_delims.c -o srclib/apr-util/uri/gen_uri_delims
+	touch srclib/pcre/dftables.lo
+	${BUILD_CC} -I/usr/include/pcre srclib/pcre/dftables.c -o srclib/pcre/dftables
+	cd server
+	${BUILD_CC} -I${S}/srclib/apr/include -c gen_test_char.c && touch gen_test_char.lo
+	${BUILD_CC} -I${S}/os/unix -I${S}/srclib/apr/include -I${S}/srclib/apr-util/include -I${S}/include -c util_debug.c && touch util_debug.lo
+	${BUILD_CC} gen_test_char.o util_debug.o -o gen_test_char
+	cd ..
+	oe_runmake
+}
+
+inherit base
