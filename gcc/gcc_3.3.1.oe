@@ -4,7 +4,7 @@ DESCRIPTION := The GNU cc and gcc C compilers.
 LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
-DEPENDS := virtual/${CROSS}binutils virtual/${CROSS}gcc \
+DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
            virtual/uclibc virtual/uclibc-headers patcher
 
 PACKAGES = ${PN} ${PN}-cplusplus \
@@ -65,14 +65,14 @@ EXTRA_OECONF := --with-local-prefix=/usr/local \
 do_configure_prepend () {
 	# Setup these vars for cross building only
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
-		export CC_FOR_TARGET="${CCACHE} ${CROSS}gcc"
-		export GCC_FOR_TARGET="${CCACHE} ${CROSS}gcc"
-		export CXX_FOR_TARGET="${CCACHE} ${CROSS}g++"
-		export AS_FOR_TARGET="${CROSS}as"
-		export LD_FOR_TARGET="${CROSS}ld"
-		export NM_FOR_TARGET="${CROSS}nm"
-		export AR_FOR_TARGET="${CROSS}ar"
-		export RANLIB_FOR_TARGET="${CROSS}ranlib"
+		export CC_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}gcc"
+		export GCC_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}gcc"
+		export CXX_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}g++"
+		export AS_FOR_TARGET="${TARGET_PREFIX}as"
+		export LD_FOR_TARGET="${TARGET_PREFIX}ld"
+		export NM_FOR_TARGET="${TARGET_PREFIX}nm"
+		export AR_FOR_TARGET="${TARGET_PREFIX}ar"
+		export RANLIB_FOR_TARGET="${TARGET_PREFIX}ranlib"
 	fi
 }
 

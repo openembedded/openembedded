@@ -1,0 +1,13 @@
+DEPENDS = virtual/libc
+
+SRC_URI := ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
+S := ${WORKDIR}/${P}
+
+EXTRA_OEMAKE=
+do_compile () {
+	oe_runmake 'CC=${CC}' 'CROSS=${HOST_PREFIX}'
+}
+
+do_install () {
+	oe_runmake 'INSTPREFIX=${D}' install
+}
