@@ -1,5 +1,6 @@
 DESCRIPTION = "AppWeb is an embedded HTTP Web server that has been designed with security in mind."
 SECTION = "console/network"
+LICENSE="GPL"
 
 SRC_URI = "http://www.mbedthis.com/software/appWeb-${PV}.LINUX-i386.self.tar.gz"
 SRC_URI_EXTRA = 'file://${WORKDIR}/appWeb-src-${PV}-12.tar.gz \

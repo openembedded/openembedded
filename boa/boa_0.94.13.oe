@@ -2,6 +2,7 @@ DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 RPROVIDES = "httpd"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+LICENSE = "GPL"
 PR = "r1"
 
 DEPENDS = "mime-support"

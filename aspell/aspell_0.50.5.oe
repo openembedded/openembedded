@@ -3,6 +3,7 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/aspell/aspell-${PV}.tar.gz \
 	file://makefile.patch;patch=1"
 DESCRIPTION = "GNU Aspell spell-checker"
 SECTION = "console/utils"
+LICENSE="LGPL"
 
 PACKAGES =+ "libaspell libpspell libpspell-dev aspell-utils"
 

@@ -4,6 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs pcmcia-cs"
 RPROVIDES = "bluez-pan bluez-sdp"
 PR = "r3"
+LICENSE = "GPL"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://bluetooth_conf.patch;patch=1"

@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
+LICENSE="GPL"
 
 PACKAGES =+ "libapm libapm-dev apm"
 

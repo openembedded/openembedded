@@ -1,7 +1,7 @@
 DESCRIPTION = "Qt/X11 Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL/QPL"
+LICENSE = "GPL QPL"
 DEPENDS = "qmake-native x11-native"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qt-x11-free"

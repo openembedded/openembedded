@@ -2,6 +2,7 @@ BROKEN = "1"
 SECTION = "console/network"
 DEPENDS = "expat openssl"
 DESCRIPTION = "A high performance Unix-based HTTP server."
+LICENSE="Apache-2.0"
 
 SRC_URI = "http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
            file://configure.patch;patch=1 \

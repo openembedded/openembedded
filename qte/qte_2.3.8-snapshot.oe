@@ -1,7 +1,7 @@
 DESCRIPTION = "Qt/Embedded version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL/QPL"
+LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
 PR = "r1"

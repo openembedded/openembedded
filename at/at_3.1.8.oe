@@ -1,6 +1,7 @@
 DEPENDS = "flex"
 DESCRIPTION = "Delayed job execution and batch processing."
 SECTION = "base"
+LICENSE="BSD"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
 	   file://configure.patch;patch=1 \

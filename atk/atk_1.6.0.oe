@@ -3,6 +3,7 @@ DESCRIPTION = "An accessibility toolkit for GNOME."
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/atk-${PV}.tar.bz2 \
 	   file://gtk-doc.patch;patch=1"

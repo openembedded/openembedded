@@ -4,6 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs pcmcia-cs dbus"
 RPROVIDES = "bluez-pan bluez-sdp"
 PR = "r2"
+LICENSE = "GPL"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://dbus.patch;patch=1 \
