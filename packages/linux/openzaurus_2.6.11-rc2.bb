@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r2"
+PR = "r3"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -30,7 +30,7 @@ PR = "r2"
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \	   
+http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \	   
 http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.11-rc2-jl1.diff.gz;patch=1 \
 http://www.cs.wisc.edu/~lenz/zaurus/files/poodle_fix_mtd_sharpsl_part.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_backlight-r12.patch;patch=1 \
