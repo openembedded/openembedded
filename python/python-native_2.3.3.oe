@@ -4,8 +4,8 @@ PRIORITY=optional
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 
 SRC_URI = ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
-          file://${FILESDIR}/bindir-libdir.patch;patch=1
-
+          file://${FILESDIR}/bindir-libdir.patch;patch=1             \
+	  file://${FILESDIR}/cross-distutils.patch;patch=1
 S = ${WORKDIR}/Python-${PV}
 
 inherit autotools native

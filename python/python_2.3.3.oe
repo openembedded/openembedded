@@ -18,17 +18,19 @@ inherit autotools
 EXTRA_OECONF = --with-threads --with-pymalloc --with-cyclic-gc
 
 #
-# yes, the following lines are correct. python distutils is executed on the host
-# and it will use the settings from build/include/python2.3/pyconfig.h
+# copy config.h and an appropriate Makefile for distutils.sysconfig
+# which laters uses the information out of these to compile extensions
 #
 do_compile_prepend() {
-	install -m 0644 pyconfig.h ${STAGING_DIR}/build/include/python2.3/
+	install -d ${STAGING_INCDIR}/python2.3/
+	install -d ${STAGING_LIBDIR}/python2.3/config/
+	install -m 0644 pyconfig.h ${STAGING_INCDIR}/python2.3/
 	install -m 0644 Makefile Makefile.orig
 	install -m 0644 Makefile Makefile.backup
-	sed -e 's,${includedir},${STAGING_DIR}/target/include,' < Makefile.backup > Makefile
+	sed -e 's,${includedir},${STAGING_INCDIR},' < Makefile.backup > Makefile
 	install -m 0644 Makefile Makefile.backup
-	sed -e 's,${libdir},${STAGING_DIR}/target/lib,' < Makefile.backup > Makefile
-	install -m 0644 Makefile ${STAGING_DIR}/build/lib/python2.3/config/
+	sed -e 's,${libdir},${STAGING_LIBDIR},' < Makefile.backup > Makefile
+	install -m 0644 Makefile ${STAGING_LIBDIR}/python2.3/config/
 }
 
 do_compile() {
