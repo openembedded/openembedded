@@ -148,7 +148,7 @@ last_change:	$(SRC)
           | awk '{print $$5,$$6}' >last_change
 
 libsqlite.so:	$(LIBOBJ)
-	$(CC) -shared -o libsqlite.so -Wl,-soname,libsqlite.so.0.8.6 $(LIBOBJ)
+	$(CC) -shared -o libsqlite.so -Wl,-soname,libsqlite.so.0 $(LIBOBJ)
 
 sqlite$(EXE):	$(TOP)/src/shell.c libsqlite.so sqlite.h
 	$(TCCX) $(READLINE_FLAGS) -o sqlite$(EXE) $(TOP)/src/shell.c \
