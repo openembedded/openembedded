@@ -1,0 +1,33 @@
+DESCRIPTION = "Linux kernel for the MASTERIA PA-100 device."
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
+MVLV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
+PR = "r2"
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/montavista-sa-${PV}"
+
+SRC_URI = "http://www.vanille.de/mirror/linux-${KV}_${MVLV}.tar.gz \
+           file://iw_handlers.w13-5.diff;patch=1 \
+           file://iw_handlers.w14-5.diff;patch=1 \
+           file://iw240_we15-6.diff;patch=1 \
+	   \
+	   file://flash-for-beagle-iii.patch;patch=1 \
+	   \
+           file://mkdep.patch;patch=1 \
+           file://defconfig-${MACHINE}"
+
+S = "${WORKDIR}/linux-${KV}_${MVLV}"
+
+inherit kernel
+
+KERNEL_CCSUFFIX = "-2.95"
+KERNEL_LDSUFFIX = "-2.11.2"
+COMPATIBLE_HOST = "arm.*-linux"
+
+EXTRA_OEMAKE = ""
+
+do_configure_prepend() {
+        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+}
+
