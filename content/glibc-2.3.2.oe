@@ -92,11 +92,11 @@ do_stage() {
 	oe_runmake -C ${builddir} install_root=${STAGING_DIR}/target \
 		includedir=/include libdir=/lib slibdir=/lib \
 		${STAGING_LIBDIR}/libc-${PV}.so ${STAGING_LIBDIR}/libc.so.6 \
-		${STAGING_LIBDIR}/libc.so install-headers install-lib
-	for i in pthread c; do
-		mv ${STAGING_LIBDIR}/lib$i.so ${STAGING_LIBDIR}/lib$i-old.so
-		cat ${STAGING_LIBDIR}/lib$i-old.so | sed -e's,/lib/,,g' > ${STAGING_LIBDIR}/lib$i.so
-	done
+		install-headers install-lib
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > \
+		${STAGING_LIBDIR}/libc.so
+	mv ${STAGING_LIBDIR}/libpthread.so ${STAGING_LIBDIR}/libpthread-old.so
+	cat ${STAGING_LIBDIR}/libpthread-old.so | sed -e's,/lib/,,g' > ${STAGING_LIBDIR}/libpthread.so
 }
 
 do_install() {
