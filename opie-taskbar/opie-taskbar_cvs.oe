@@ -29,6 +29,10 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/server.pro ${S}/server.pro
 }
 
+do_stage() {
+    install obexinterface.h ${STAGING_INCDIR}/
+
+}
 do_install() {
 	install -d ${D}/${palmtopdir}/bin \
 		   ${D}/${palmtopdir}/apps/Applications \
