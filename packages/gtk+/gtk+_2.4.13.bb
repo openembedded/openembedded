@@ -6,7 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -18,7 +18,6 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
 	   file://disable-tooltips.patch;patch=1 \
 	   file://gtklabel-resize-patch;patch=1 \
 	   file://menu-deactivate.patch;patch=1 \
-	   file://error-dialog.patch;patch=1 \
 	   file://xsettings.patch;patch=1 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://gtk-doc.m4 \

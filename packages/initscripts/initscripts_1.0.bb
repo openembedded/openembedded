@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r27"
+PR = "r28"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -34,7 +34,15 @@ SRC_URI = "file://halt \
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
 
-KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
+def read_kernel_version(d):
+	import bb
+	distro = bb.data.getVar('DISTRO', d, 1)
+	filename = bb.data.getVar('STAGING_KERNEL_DIR', d, 1)
+	if distro == "openzaurus":
+		return file( filename + "/kernel-abiversion", "r" ).read().strip()
+	else:
+		return "not important"
+KERNEL_VERSION = "${@read_kernel_version(d)}"
 
 do_install () {
 #

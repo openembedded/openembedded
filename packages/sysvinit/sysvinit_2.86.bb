@@ -4,11 +4,14 @@ LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 
-PR = "r4"
+PR = "r5"
 
-# USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
+# USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+PACKAGES =+ "bootlogd"
+FILES_bootlogd = "/etc/init.d/bootlogd /etc/rcS.d/*bootlogd /sbin/bootlogd"
 
 USE_VT ?= "1"
 
