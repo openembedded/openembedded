@@ -5,7 +5,7 @@
 
 --- linux/drivers/char/tosa_ts.c~tosa-power-key-off
 +++ linux/drivers/char/tosa_ts.c
-@@ -203,10 +203,53 @@
+@@ -205,10 +205,53 @@
  	write:	tosa_ts_write_params,
  };
  
@@ -59,7 +59,7 @@
    
    proc_ts = proc_mkdir("driver/ts", NULL);
    if (proc_ts == NULL) {
-@@ -232,6 +275,12 @@
+@@ -234,6 +277,12 @@
      }
    }
  
