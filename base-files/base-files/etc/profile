@@ -24,3 +24,9 @@ fi
 export PATH PS1 OPIEDIR QPEDIR QTDIR
 
 umask 022
+
+if [ -d /mnt/ramfs/home/$USER ]; then
+  export HISTFILE="/mnt/ramfs/home/$USER/.ash_history"
+else
+  export HISTFILE=""
+fi
