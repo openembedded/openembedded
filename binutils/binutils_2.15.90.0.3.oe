@@ -7,11 +7,15 @@ MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
 FILES_${PN} = " \
-	${bindir}/${TARGET_PREFIX}*"
+	${bindir}/${TARGET_PREFIX}* \
+	${libdir}/lib*-*.so"
 
 FILES_${PN}-dev = " \
 	${includedir} \
-	${libdir}/*.a"
+	${libdir}/*.a \
+	${libdir}/*.la \
+	${libdir}/libbfd.so \
+	${libdir}/libopcodes.so"
 
 FILES_${PN}-symlinks = " \
 	${bindir}/addr2line \
@@ -44,7 +48,8 @@ B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--with-sysroot=${prefix} \
 		--disable-nls \
-		--program-prefix=${TARGET_PREFIX}"
+		--program-prefix=${TARGET_PREFIX} \
+		--enable-shared"
 
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = "configure-build-libiberty all"
@@ -73,6 +78,18 @@ export CC = "${CCACHE} ${HOST_PREFIX}gcc"
 do_configure () {
 	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
 	oe_runconf
+}
+
+do_stage () {
+	oe_libinstall -so -a -C opcodes libopcodes ${STAGING_LIBDIR}/
+	oe_libinstall -a -C libiberty libiberty ${STAGING_LIBDIR}/
+	oe_libinstall -so -a -C bfd libbfd ${STAGING_LIBDIR}/
+	install -m 0644 ${S}/include/dis-asm.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/include/symcat.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/include/libiberty.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/include/ansidecl.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/include/bfdlink.h ${STAGING_INCDIR}/
+	install -m 0644 bfd/bfd.h ${STAGING_INCDIR}/
 }
 
 do_install () {
