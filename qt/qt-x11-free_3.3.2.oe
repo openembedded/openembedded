@@ -3,6 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 DEPENDS = "qmake-native x11 xft xext libxrender uicmoc3-native"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
@@ -21,7 +22,7 @@ ARCH_i686 = "x86"
 export MAKE="make -e"
 
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xinerama \
-                   -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups"
+                   -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups -thread"
 
 do_configure() {
 	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast -L${STAGING_LIBDIR} -I${STAGING_INCDIR}
@@ -38,7 +39,7 @@ do_compile() {
 }
 
 do_stage() {
-	oe_soinstall lib/libqt.so.${PV} ${STAGING_LIBDIR}/
+	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_LIBDIR}/
 	for f in include/*.h
 	do
 		install -m 0644 $f ${STAGING_INCDIR}/
@@ -47,5 +48,5 @@ do_stage() {
 
 do_install() {
 	install -d ${D}/${libdir}/
-	oe_soinstall lib/libqt.so.${PV} ${D}/${libdir}/
+	oe_soinstall lib/libqt-mt.so.${PV} ${D}/${libdir}/
 }
