@@ -167,8 +167,7 @@ do_stage() {
 		   install-headers install-lib
 
 	cp -a '${WORKDIR}/linux/include/linux' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
-	cp -a '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
-	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
+	cp -R -L '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/sys-include/asm'
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
 		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
