@@ -13,7 +13,10 @@ SRC_URI = "cvs://anonymous@cvs.xine.sf.net/cvsroot/xine;module=xine-lib;tag=xine
 	   file://libvorbis.patch;patch=0 \
 	   file://demux_ogg.patch;patch=0 \
 	   file://configure.ac.patch;patch=0 \
-	   file://vo_scale.patch;patch=0"
+	   file://vo_scale.patch;patch=0 \
+	   file://mpegvideo-static-inlining.patch;patch=1 \
+	   file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
+	   file://fftscope-static-inlining.patch;patch=1"
 
 SOV = "1.0.6"
 
@@ -27,7 +30,7 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool
+	oe_runmake LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool OGG_LIBS=$(STAGING_LIBDIR)/libogg.so
 }
 
 # ug - we don't do elegant/purdy today
