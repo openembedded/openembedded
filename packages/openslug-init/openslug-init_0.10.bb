@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r10"
+PR = "r11"
 
 OPENSLUG_VERSION = "1.3-alpha"
 
