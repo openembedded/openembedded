@@ -60,3 +60,6 @@ glib_cv_use_pid_surrogate=${glib_cv_use_pid_surrogate=yes}
 
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
+
+# cvs
+cvs_cv_func_printf_ptr=${cvs_cv_func_printf_ptr=yes}
