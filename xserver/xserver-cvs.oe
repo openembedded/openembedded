@@ -1,7 +1,7 @@
 PV = "0.0cvs${CVSDATE}"
 RDEPENDS = "libc6"
-DEPENDS = "virtual/libc xproto-cvs xdmcp-cvs xextensions-cvs xtrans-cvs xau-cvs x11-cvs xext-cvs randr-cvs render-cvs xrender-cvs xrandr-cvs fixesext-cvs damageext-cvs xfont-cvs resourceext-cvs compositeext-cvs"
-RDEPENDS = "libc6 xau-cvs xdmcp-cvs zlib xfont-cvs x11-cvs xext-cvs"
+DEPENDS = "virtual/libc tslib xproto-cvs xdmcp-cvs xextensions-cvs xtrans-cvs xau-cvs x11-cvs xext-cvs randr-cvs render-cvs xrender-cvs xrandr-cvs fixesext-cvs damageext-cvs xfont-cvs resourceext-cvs compositeext-cvs"
+RDEPENDS = "libc6 tslib xau-cvs xdmcp-cvs zlib xfont-cvs x11-cvs xext-cvs"
 PROVIDES = "xserver"
 DESCRIPTION = 'An X server.  The only drivers supplied are based on the kdrive framework.'
 
