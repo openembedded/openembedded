@@ -12,9 +12,9 @@ inherit autotools
 
 EXTRA_OECONF=" --enable-shared --disable-rpath  "
 
-do_configure_prepend() {
-    ./autogen.sh
-}
+#do_configure_prepend() {
+#    ./autogen.sh
+#}
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
