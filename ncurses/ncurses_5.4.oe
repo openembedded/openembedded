@@ -68,5 +68,8 @@ do_install_append() {
                 fi
         done
 	# i think we can use xterm-color as default xterm
-	ln -sf xterm-color ${D}/etc/terminfo/x/xterm
+	if [ -e ${D}/etc/terminfo/x/xterm ]
+	then
+		ln -sf xterm-color ${D}/etc/terminfo/x/xterm
+	fi
 }
