@@ -1,14 +1,14 @@
-DESCRIPTION = "Qt bindings for the Scintilla source code editor component"
-SECTION = "libs"
+DESCRIPTION = "Qt/Embedded bindings for the Scintilla source code editor component"
+SECTION = "opie/libs"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/qscintilla-${PV}_zaurus.tar.gz"
 S = "${WORKDIR}/qscintilla-${PV}/qt"
 
-inherit qmake
+inherit opie
 
 QMAKE_PROFILES = "qscintilla.pro"
-EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 
 do_stage() {
 	install -m 0644 qextscintilla*.h ${STAGING_INCDIR}/
