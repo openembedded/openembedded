@@ -5,6 +5,7 @@
 #work around some breakages
 CVSDATE_xserver-kdrive=20050207
 CVSDATE_minimo=20050316
+CVSDATE_cairo=20050330
 
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox ?= "1.6"
@@ -26,7 +27,7 @@ PREFERRED_VERSION_xcursor-transparent-theme ?= "0.1.1"
 PREFERRED_VERSION_rxvt-unicode ?= "5.3"
 PREFERRED_VERSION_gtk2-theme-angelistic ?= "0.3"
 PREFERRED_VERSION_xst ?= "0.14"
-PREFERRED_VERSION_xextensions ?= "0.0cvs${CVSDATE}"
+#PREFERRED_VERSION_xextensions ?= "0.0cvs${CVSDATE}"
 PREFERRED_VERSION_xprop ?= "0.0cvs${CVSDATE}" 
 PREFERRED_VERSION_xhost ?= "0.0cvs20040413"
 PREFERRED_VERSION_xrdb ?= "0.0cvs${CVSDATE}"
