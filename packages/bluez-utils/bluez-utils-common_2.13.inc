@@ -1,10 +1,11 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
-SECTION = "libs"
+SECTION = "console"
 PRIORITY = "optional"
 DEPENDS = "bluez-libs-2.13 pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
 PACKAGES =+ "${PN}-ciptool ${PN}-bluepin"
+PR = "r1"
 
 FILES_${PN}-ciptool = "/bin/ciptool"
 FILES_${PN}-bluepin = "/bin/bluepin"

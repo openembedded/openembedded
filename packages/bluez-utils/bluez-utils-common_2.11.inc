@@ -1,9 +1,10 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
-SECTION = "libs"
+SECTION = "console"
 PRIORITY = "optional"
 DEPENDS = "bluez-libs-2.11 pcmcia-cs"
 RPROVIDES = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf"
