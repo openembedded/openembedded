@@ -4,7 +4,6 @@ another server or reference time source, such as a radio \
 or satellite receiver or modem."
 SECTION = "console/network"
 PRIORITY = "optional"
-DEPENDS = "openssl"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -12,8 +11,7 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = "--with-openssl-libdir=${STAGING_LIBDIR} \
-	        --with-openssl-incdir=${STAGING_INCDIR}/openssl"
+EXTRA_OECONF = "--without-openssl"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
 PACKAGES = "ntpdate ntp"
