@@ -1,10 +1,12 @@
 PV = "0.0cvs${CVSDATE}"
+PR = "r1"
 DESCRIPTION = "X Server Extension library"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 DEPENDS = "xproto x11 xextensions"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext \
+	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xext"
 
 inherit autotools pkgconfig 
