@@ -327,6 +327,9 @@ python base_do_patch() {
 		cmd = "PATH=\"%s\" patcher" % oe.data.getVar("PATH", d, 1)
 		if "pnum" in parm:
 			cmd += " -p %s" % parm["pnum"]
+		# Getting rid of // at the front helps the Cygwin-Users of OE
+		if efile.startswith('//'):
+			efile = efile[1:]
 		cmd += " -R -n \"%s\" -i %s" % (os.path.basename(efile), efile)
 		ret = os.system(cmd)
 		if ret != 0:
