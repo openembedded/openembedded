@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
@@ -14,7 +14,7 @@ CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
 inherit autotools
 
-PACKAGES += "tslib-tests"
+PACKAGES += "tslib-tests tslib-calibrate"
 EXTRA_OECONF = "--enable-shared"
 EXTRA_OECONF_append_ramses = " --enable-input --disable-ucb1x00 --disable-corgi --disable-collie --disable-h3600 --disable-mk712 --disable-arctic2"
 EXTRA_OECONF_beagle = "--enable-shared --enable-h3600 --disable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
@@ -36,6 +36,6 @@ do_install_append() {
 }
 
 FILES_${PN}  = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh "
-FILES_${PN} += "${bindir}/ts_calibrate"
-FILES_${PN} += "${libdir}/*.so* ${libdir}/ts/*.so"
+FILES_${PN} += "${libdir}/*.so* ${libdir}/ts/*.so.*"
+FILES_tslib-calibrate += "${bindir}/ts_calibrate"
 FILES_tslib-tests = "${bindir}/ts_harvest ${bindir}/ts_print ${bindir}/ts_print_raw ${bindir}/ts_test"
