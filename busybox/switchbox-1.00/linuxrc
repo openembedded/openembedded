@@ -37,7 +37,7 @@ fi
 
 if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/tmpmnt ; then
 
-    if  [ -x /mnt/tmpmnt/bin/init ] ; then
+    if  [ -x /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
 	mounted=/mnt/tmpmnt
 	/bin/echo "0x1f04" > /proc/sys/kernel/real-root-dev
