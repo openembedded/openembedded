@@ -146,9 +146,6 @@ do_stage() {
 	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
 	cp -a '${WORKDIR}/linux/include/asm' '${STAGING_DIR}/target/include/'
 	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${STAGING_DIR}/target/include/'
-	install -m 0644 ${B}/libc_nonshared.a ${STAGING_LIBDIR}/
-	install -m 0644 ${B}/libc_pic.a ${STAGING_LIBDIR}/
-	install -m 0644 ${B}/libc.a ${STAGING_LIBDIR}/
 
 	install -d ${STAGING_DIR}/target/include/gnu \
 		   ${STAGING_DIR}/target/include/bits \
@@ -159,6 +156,11 @@ do_stage() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_DIR}/target/include/rpcsvc/
 	done
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${STAGING_LIBDIR}/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_LIBDIR}/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_LIBDIR}/libc.so
 
 	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
