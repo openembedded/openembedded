@@ -6,7 +6,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r18"
+PR = "r19"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
@@ -23,7 +23,6 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://simpad-backlight-if.diff;patch=1;pnum=0 \
            file://simpad-switches-input.diff;patch=1;pnum=0 \
            file://simpad-switches-input2.diff;patch=1;pnum=0 \
-	   file://keymap.patch;patch=1 \
            file://simpad-apm.diff;patch=1;pnum=0 \
            file://simpad-ts-noninput.diff;patch=1;pnum=0 \
            file://simpad-pm-updates.patch;patch=1;pnum=0 \
