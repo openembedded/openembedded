@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 RDEPENDS = "libc6"
-DEPENDS = "virtual/libc xproto-cvs"
+DEPENDS = "virtual/libc xproto"
 PROVIDES = "xau"
 DESCRIPTION = "Authorization Protocol for X."
 

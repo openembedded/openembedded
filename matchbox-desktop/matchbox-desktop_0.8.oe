@@ -1,6 +1,5 @@
 LICENSE = "GPL"
 DEPENDS = "virtual/libc libmatchbox"
-RDEPENDS = "libc6 libmatchbox"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/matchbox-desktop-${PV}.tar.bz2"
 

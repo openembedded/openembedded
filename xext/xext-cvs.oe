@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 DESCRIPTION = "X Server Extension library"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc xproto-cvs x11-cvs xextensions-cvs"
+DEPENDS = "virtual/libc xproto x11 xextensions"
 PROVIDES = "xext"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext"

@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 RDEPENDS = "libc6"
-DEPENDS = "virtual/libc tslib xproto-cvs xdmcp-cvs xextensions-cvs xtrans-cvs xau-cvs x11-cvs xext-cvs randr-cvs render-cvs xrender-cvs xrandr-cvs fixesext-cvs damageext-cvs xfont-cvs resourceext-cvs compositeext-cvs"
+DEPENDS = "virtual/libc tslib xproto xdmcp xextensions xtrans xau x11 xext randr render xrender xrandr fixesext damageext xfont resourceext compositeext"
 PROVIDES = "xserver"
 PACKAGES = "xserver-kdrive-fbdev xserver-kdrive-ati ${PN}-doc ${PN}-dev ${PN}-locale"
 DESCRIPTION = "X server from freedesktop.org"
