@@ -7,7 +7,7 @@ S="${WORKDIR}/${P}"
 
 inherit autotools
 
-CFLAGS_append = " -I${S}/libtomcrypt"
+CFLAGS_prepend = "-I. "
 LD=${CC}
 do_install_prepend () {
 	install -d ${D}${sbindir} ${D}${bindir}

@@ -1,0 +1,15 @@
+DESCRIPTION="Dropbear SSH Implementation"
+LICENSE="MIT"
+DEPENDS=virtual/libc zlib ncurses
+
+SRC_URI="http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
+	 file://${FILESDIR}/configure.patch;patch=1"
+S="${WORKDIR}/${P}"
+
+inherit autotools
+
+CFLAGS_prepend = "-I. "
+LD=${CC}
+do_install_prepend () {
+	install -d ${D}${sbindir} ${D}${bindir}
+}
