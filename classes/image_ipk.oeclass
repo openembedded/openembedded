@@ -2,7 +2,9 @@ inherit rootfs_ipk
 
 USE_DEVFS ?= "0"
 
-DEPENDS += "mtd-native makedevs-native"
+DEPENDS += "makedevs-native"
+OVERRIDES += ":${IMAGE_FSTYPE}"
+DEPENDS += "${IMAGE_DEPENDS}"
 
 IMAGE_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-minimal.txt')}"
 
