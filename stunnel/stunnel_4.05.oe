@@ -1,0 +1,12 @@
+DEPENDS = "virtual/libc openssl libtool-cross"
+RDEPENDS = "libc6 openssl"
+LICENSE = "GPL"
+DESCRIPTION = "Stunnel is a program that allows you to encrypt \
+arbitrary TCP connections inside SSL"
+
+SRC_URI = "http://www.stunnel.org/download/stunnel/src/stunnel-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/automake.patch;patch=1"
+S = "${WORKDIR}/stunnel-${PV}"
+
+inherit autotools
