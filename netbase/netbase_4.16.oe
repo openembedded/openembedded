@@ -1,8 +1,13 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 DEPENDS = "update-rc.d"
 RDEPENDS = "update-rc.d"
+
+inherit update-rc.d
+
+INITSCRIPT_NAME = "networking"
+INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz"
 
@@ -22,18 +27,4 @@ do_install () {
 	install -m 0755 update-inetd ${D}/${sbindir}/
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
 	install -m 0644 ${FILESDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
-}
-
-pkg_postinst () {
-	if test -n "${D}"; then
-		D="-r ${D}"
-	fi
-	update-rc.d $D networking start 40 S . stop 40 0 6 1 .
-}
-
-pkg_prerm () {
-	if test -n "${D}"; then
-		D="-r ${D}"
-	fi
-	update-rc.d $D networking remove
 }
