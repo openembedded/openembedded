@@ -21,6 +21,8 @@ FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}
 FILES_ncurses-terminfo = "${datadir}/terminfo"
 FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* usr/share/tabset etc/terminfo"
 
+PARALLEL_MAKE=""
+
 EXTRA_OECONF = "--with-shared \
 	        --without-profile \
 	        --without-debug \

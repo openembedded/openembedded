@@ -11,6 +11,8 @@ SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2"
 
 S = "${WORKDIR}/iptables-${PV}"
 
+PARALLEL_MAKE=""
+
 export COPT_FLAGS = "${CFLAGS}"
 export KERNEL_DIR = "${STAGING_INCDIR}"
 
