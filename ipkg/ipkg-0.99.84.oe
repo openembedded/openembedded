@@ -1,0 +1,13 @@
+DESCRIPTION="Itsy Package Manager"
+LICENSE="GPL"
+PROVIDES=virtual/ipkg
+DEPENDS=virtual/libc
+
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
+S="${WORKDIR}/ipkg/C"
+
+inherit autotools
+
+do_configure_prepend () {
+	./autoconfigure.sh
+}
