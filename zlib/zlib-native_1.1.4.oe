@@ -1,0 +1,3 @@
+include zlib_${PV}.oe
+inherit native
+DEPENDS = "patcher-native"
