@@ -16,9 +16,7 @@ do_configure() {
 }
 
 do_stage() {
-	oe_soinstall libmikmod/.libs/libmikmod.so.3.0.0 ${STAGING_LIBDIR}/
-	install -m 0644 libmikmod/.libs/libmikmod.a ${STAGING_LIBDIR}/
-	install -m 0644 libmikmod/.libs/libmikmod.lai ${STAGING_LIBDIR}/libmikmod.la
+	oe_libinstall -a -so -C libmikmod libmikmod ${STAGING_LIBDIR}
 	install -m 0644 ${S}/include/mikmod.h ${STAGING_INCDIR}/
 
         cat libmikmod-config | sed 's,$libdir , ,' \

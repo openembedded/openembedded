@@ -11,15 +11,11 @@ inherit autotools libtool pkgconfig
 
 headers = "mimedir-attachment.h mimedir-attendee.h mimedir-attribute.h mimedir-datetime.h mimedir-init.h mimedir-period.h mimedir-profile.h mimedir-recurrence-rule.h mimedir-recurrence.h mimedir-valarm.h mimedir-vcal.h mimedir-vcard-address.h mimedir-vcard-email.h mimedir-vcard-phone.h mimedir-vcard.h mimedir-vcomponent.h mimedir-vevent.h mimedir-vfreebusy.h mimedir-vjournal.h mimedir-vtimezone.h mimedir-vtodo.h mimedir.h"
 
-libname = "libmimedir-0.2.so.0.0.0"
-
 do_stage() {
 	install -d ${STAGING_INCDIR}/mimedir-1.0/mimedir
 	for i in ${headers}; do
 		install -m 0644 ${S}/mimedir/$i ${STAGING_INCDIR}/mimedir-1.0/mimedir/$i
 	done
 
-	oe_soinstall mimedir/.libs/${libname} ${STAGING_LIBDIR}/
-	ln -sf ${libname} ${STAGING_LIBDIR}/libmimedir.so
-	install -m 0755 mimedir/libmimedir.la ${STAGING_LIBDIR}/
+	oe_libinstall -so -C mimedir libmimedir-0.2 ${STAGING_LIBDIR}
 }

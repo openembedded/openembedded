@@ -9,7 +9,6 @@ SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglade/2.0/libglade-${PV}.tar
 
 inherit autotools pkgconfig libtool
 
-libname = "libglade-2.0.so.0.0.1"
 headers = "glade-build.h glade-init.h glade-parser.h glade-xml.h glade.h"
 
 do_configure_prepend() {
@@ -18,9 +17,7 @@ do_configure_prepend() {
 }
 
 do_stage () {
-	oe_soinstall glade/.libs/${libname} ${STAGING_LIBDIR}/
-	install -m 0644 glade/.libs/libglade-2.0.a ${STAGING_LIBDIR}/libglade-2.0.a
-	install -m 0644 glade/.libs/libglade-2.0.lai ${STAGING_LIBDIR}/libglade-2.0.la
+	oe_libinstall -a -so -C glade libglade-2.0 ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/libglade-2.0/glade
 	for i in ${headers}; do

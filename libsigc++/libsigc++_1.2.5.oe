@@ -10,8 +10,7 @@ inherit autotools libtool pkgconfig
 acpaths = "-I ${S}/scripts"
 
 do_stage() {
-	oe_soinstall sigc++/.libs/libsigc-1.2.so.5.0.5 ${STAGING_LIBDIR}/
-	install -m 0755 sigc++/.libs/libsigc-1.2.la ${STAGING_LIBDIR}/
+	oe_libinstall -so -C sigc++ libsigc-1.2 ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/sigc++/
 	for f in sigc++/*.h

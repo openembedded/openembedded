@@ -1,0 +1,19 @@
+DESCRIPTION = "A secondary system tray for those people who like having a lot of applets loaded at once."
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
+	   file://${FILESDIR}/subapplet.pro.patch;patch=1 "
+S = "${WORKDIR}/SubApplet-1.0.8"
+
+inherit palmtop
+
+QMAKE_PROFILES = "subapplet.pro"
+
+do_install() {
+    install -d ${D}/${palmtopdir}/plugins/applets ${D}/${palmtopdir}/pics/subapplet/
+    install -m 0644 *.png ${D}/${palmtopdir}/pics/subapplet/
+    oe_libinstall -so -C rel${palmtopdir}/plugins/applets libsubapplet ${D}/${palmtopdir}/plugins/applets/
+}

@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Camera, Photo and Video Capturing Application for the Sharp CF-AG06 camera"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "libopie2"
 APPNAME = "camera"
@@ -21,7 +21,7 @@ inherit opie
 do_install() {
     install -d ${D}/${palmtopdir}/pics/${APPNAME}
     install -d ${D}/${palmtopdir}/lib/
-    oe_soinstall libcamera.so.1.0.1 ${D}/${palmtopdir}/lib/
+    oe_libinstall -so libcamera ${D}/${palmtopdir}/lib
     install -m 0755 capture ${D}/${palmtopdir}/bin/
     install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
 }

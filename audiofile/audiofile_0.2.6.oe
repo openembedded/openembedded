@@ -13,9 +13,7 @@ inherit autotools libtool pkgconfig
 
 do_stage () {
 	install -m 0644 libaudiofile/audiofile.h libaudiofile/aupvlist.h libaudiofile/af_vfs.h ${STAGING_INCDIR}/
-	oe_soinstall libaudiofile/.libs/libaudiofile.so.0.0.2 ${STAGING_LIBDIR}/
-	install -m 0644 libaudiofile/.libs/libaudiofile.a ${STAGING_LIBDIR}/libaudiofile.a
-	install -m 0644 libaudiofile/.libs/libaudiofile.lai ${STAGING_LIBDIR}/libaudiofile.la
+	oe_libinstall -C libaudiofile libaudiofile ${STAGING_LIBDIR}
 	cat audiofile-config | sed -e "s,/usr/include,${STAGING_INCDIR},g; \
 				      s,/usr/lib,${STAGING_LIBDIR},g; \
 				      s,/usr/bin,${STAGING_BINDIR},g; \

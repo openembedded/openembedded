@@ -12,7 +12,7 @@ do_compile() {
 }
 
 do_stage() {
-	oe_soinstall libslotsig.so.${PV} ${STAGING_LIBDIR}/
+	oe_libinstall -so libslotsig ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/slotsig/
 	for X in slotsig/*.h
@@ -22,7 +22,5 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}${libdir}/
-	oe_soinstall libslotsig.so.${PV} ${D}${libdir}/
+	oe_libinstall -so libslotsig ${D}/${libdir}
 }
-

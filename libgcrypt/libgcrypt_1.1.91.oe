@@ -11,8 +11,8 @@ inherit autotools libtool
 EXTRA_OECONF = "--without-pth"
 
 do_stage() {
-	oe_soinstall src/.libs/libgcrypt.so.7.3.1 ${STAGING_LIBDIR}/
-	oe_soinstall src/.libs/libgcrypt-pthread.so.7.3.1 ${STAGING_LIBDIR}/
+	oe_libinstall -so -C src libgcrypt ${STAGING_LIBDIR}
+	oe_libinstall -so -C src libgcrypt-pthread ${STAGING_LIBDIR}
 	install -m 0755 src/libgcrypt-config ${STAGING_BINDIR}/
 
 	install -d ${STAGING_INCDIR}/

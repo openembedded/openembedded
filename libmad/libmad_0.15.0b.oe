@@ -17,7 +17,6 @@ do_configure_prepend () {
 }
 
 do_stage() {
-	oe_soinstall .libs/libmad.so.0.2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so libmad ${STAGING_LIBDIR}
 	install -m 0644 mad.h ${STAGING_INCDIR}
 }
-

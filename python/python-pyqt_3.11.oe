@@ -65,10 +65,10 @@ do_stage() {
 
 do_install() {
     install -d ${D}/${libdir}/python2.3/site-packages/
-    oe_soinstall ${STAGING_LIBDIR}/python2.3/site-packages/libsip.so.11.0.1 ${D}/${libdir}/python2.3/site-packages/
+    oe_libinstall -so -C ${STAGING_LIBDIR}/python2.3/site-packages libsip ${D}/${libdir}/python2.3/site-packages
     for module in ${MODULES}
     do
-        oe_soinstall ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so.1.0.0 ${D}/${libdir}/python2.3/site-packages/
+	oe_libinstall -so -C ${STAGING_LIBDIR}/python2.3/site-packages lib${module}cmodule ${D}/${libdir}/python2.3/site-packages
         install -m 0644 ${module}/${module}.py ${D}/${libdir}/python2.3/site-packages/
     done
 }

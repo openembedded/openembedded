@@ -1,0 +1,9 @@
+SRC_URI = "cvs://anoncvs@cvs.handhelds.org/cvs;module=gpe/base/esound"
+S = "${WORKDIR}/esound"
+
+inherit autotools libtool
+
+do_stage () {
+	install -m 0644 esd.h ${STAGING_INCDIR}/esd.h
+	oe_libinstall -so libesd ${STAGING_LIBDIR}
+}

@@ -1,0 +1,20 @@
+DESCRIPTION = "CLucene is a C++ port of Lucene: the high-performance, full-featured text search engine written in Java."
+SECTION = "libs"
+PRIORITY = "optional"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/clucene/clucene-${PV}-src.tar.gz"
+S = "${WORKDIR}/"
+
+inherit autotools libtool
+
+do_stage() {
+	oe_libinstall -C src libclucene ${STAGING_LIBDIR}
+	cd src
+	headers=`find CLucene -name "*.h"`
+	for f in $headers
+	do
+		install -d ${STAGING_INCDIR}/`dirname $f`
+		install -m 0644 $f ${STAGING_INCDIR}/$f
+	done
+}

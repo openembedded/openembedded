@@ -16,9 +16,6 @@ do_configure() {
 }
 
 do_stage() {
-	oe_soinstall libmikmod/.libs/libmikmod.so.2.0.4 ${STAGING_LIBDIR}/
-	install -m 0644 libmikmod/.libs/libmikmod.lai ${STAGING_LIBDIR}/libmikmod.la
-	install -m 0644 libmikmod/.libs/libmikmod.a ${STAGING_LIBDIR}/libmikmod.a
+	oe_libinstall -a -so -C libmikmod libmikmod ${STAGING_LIBDIR}
 	install -m 0644 ${S}/include/mikmod.h ${STAGING_INCDIR}/
 }
-

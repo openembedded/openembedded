@@ -9,7 +9,6 @@ inherit autotools libtool
 acpaths = ""
 
 do_stage () {
-	install -m 0644 .libs/libgmp.lai ${STAGING_LIBDIR}/libgmp.la
-	oe_soinstall .libs/libgmp.so.3.3.2 ${STAGING_LIBDIR}
+	oe_libinstall -so libgmp ${STAGING_LIBDIR}
 	install -m 0644 ${S}/gmp.h ${STAGING_INCDIR}/gmp.h
 }

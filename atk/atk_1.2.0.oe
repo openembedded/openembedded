@@ -10,12 +10,10 @@ EXTRA_OECONF = "--disable-glibtest"
 
 CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0 \
 		  -I${STAGING_INCDIR}/glib-2.0/glib \
-	 	  -I${STAGING_INCDIR}/glib-2.0/gobject"
+		  -I${STAGING_INCDIR}/glib-2.0/gobject"
 
 do_stage () {
-	oe_soinstall atk/.libs/libatk-1.0.so.0.200.0 ${STAGING_LIBDIR}/
-	install -m 0755 atk/.libs/libatk-1.0.lai ${STAGING_LIBDIR}/libatk-1.0.la
-	install -m 0755 atk/.libs/libatk-1.0.a ${STAGING_LIBDIR}/
+	oe_libinstall -so -a -C atk libatk-1.0 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/atk
 	install -m 0644 atk/atkaction.h ${STAGING_INCDIR}/atk/atkaction.h
 	install -m 0644 atk/atkcomponent.h ${STAGING_INCDIR}/atk/atkcomponent.h

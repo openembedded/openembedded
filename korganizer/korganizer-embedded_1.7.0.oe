@@ -33,23 +33,22 @@ do_install() {
                ${D}/${palmtopdir}/pics/korganizer/icons16 \
                ${D}/${palmtopdir}/pics/korganizer/iconsmini \
                ${D}/${palmtopdir}/plugins/applets
-    install -m 0644 korganizer/korganizer.desktop ${D}/opt/QtPalmtop/apps/Pim/korganizer.desktop
+    install -m 0644 korganizer/korganizer.desktop ${D}/${palmtopdir}/apps/Pim/korganizer.desktop
     cd ${S}/pics
-    cp ko*.png ${D}/opt/QtPalmtop/pics
-    cp *.png *.wav ${D}/opt/QtPalmtop/pics/korganizer
-    cp ./icons16/*.png ${D}/opt/QtPalmtop/pics/korganizer/icons16
-    cp ./iconsmini/*.png ${D}/opt/QtPalmtop/pics/korganizer/iconsmini
+    cp ko*.png ${D}/${palmtopdir}/pics
+    cp *.png *.wav ${D}/${palmtopdir}/pics/korganizer
+    cp ./icons16/*.png ${D}/${palmtopdir}/pics/korganizer/icons16
+    cp ./iconsmini/*.png ${D}/${palmtopdir}/pics/korganizer/iconsmini
 
-    for f in libmicrokde.so.1.0.0 libmicrokdepim.so.1.0.0 libmicrokabc.so.1.0.0 libmicrokcal.so.1.0.0 libmicroqtcompat.so.1.0.0
-    do                                                                                  
-        oe_soinstall ${STAGING_LIBDIR}/${f} ${D}/opt/QtPalmtop/lib
-    done
-
-    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/kopi ${D}/opt/QtPalmtop/bin/kopi
-    
-    for f in libkopialarmapplet.so.1.0.0 
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
     do
-        oe_soinstall ${STAGING_DIR}/${HOST_SYS}/plugins/applets/${f} ${D}/opt/QtPalmtop/plugins/applets
+        oe_libinstall -so -C ${STAGING_LIBDIR} $f ${D}/${palmtopdir}/lib
     done
 
+    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/kopi ${D}/${palmtopdir}/bin/kopi
+
+    for f in libkopialarmapplet
+    do
+        oe_libinstall -so -C ${STAGING_DIR}/${HOST_SYS}/plugins/applets $f ${d}/${palmtopdir}/plugins/applets
+    done
 }

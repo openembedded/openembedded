@@ -5,8 +5,6 @@ SRC_URI = "http://xaxxon.slackworks.com/pme/pme-${PV}.tar.gz"
 inherit autotools libtool
 
 do_stage () {
-	oe_soinstall .libs/libpme.so.0.0.0 ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libpme.a ${STAGING_LIBDIR}/libpme.a
-	install -m 0644 .libs/libpme.lai ${STAGING_LIBDIR}/libpme.la
+	oe_libinstall -a -so libpme ${STAGING_LIBDIR}
 	install -m 0644 pme.h ${STAGING_INCDIR}/
 }

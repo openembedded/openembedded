@@ -12,8 +12,6 @@ headers = "oop.h oop-adns.h oop-glib.h \
 	  oop-tcl.h oop-www.h oop-rl.h \
 	  oop-read.h"
 do_stage () {
-	oe_soinstall .libs/liboop.so.4.0.1 ${STAGING_LIBDIR}/
-	install -m 0644 .libs/liboop.lai ${STAGING_LIBDIR}/liboop.la
-	install -m 0644 .libs/liboop.a ${STAGING_LIBDIR}/liboop.a
+	oe_libinstall -a -so liboop ${STAGING_LIBDIR}
 	install -m 0644 ${headers} ${STAGING_INCDIR}/
 }

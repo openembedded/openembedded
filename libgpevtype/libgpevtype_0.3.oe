@@ -11,7 +11,7 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpevtype-${PV}.ta
 headers = "tag-db.h vcard.h vevent.h vtodo.h"
 
 do_stage () {
-	oe_soinstall libgpevtype.so.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libgpevtype ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/gpe
 	for h in ${headers}; do

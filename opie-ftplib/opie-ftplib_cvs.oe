@@ -1,6 +1,6 @@
 DESCRIPTION = "Opie FTP Library"
 SECTION = "opie/libs"
-MAINTAINER = "Team Opie <opie@handhelds.org>
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc"
@@ -16,10 +16,9 @@ EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 
 do_stage () {
 	install -m 0664 ${S}/ftplib.h ${STAGING_INCDIR}/
-	oe_soinstall libftplib.so.1.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libftplib.so ${STAGING_LIBDIR}
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/lib/
-	oe_soinstall libftplib.so.1.0.0 ${D}${palmtopdir}/lib/
+	oe_libinstall -so libftplib ${D}/${palmtopdir}/lib
 }

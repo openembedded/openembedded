@@ -19,7 +19,7 @@ do_install() {
 
 	install chicony.conf ${D}/${sysconfdir}/lircd.conf
 	install IRK.conf ${D}/${sysconfdir}
-	oe_soinstall libirk.so.1.0.0 ${D}${palmtopdir}/plugins/inputmethods/
+	oe_libinstall -so libirk ${D}/${palmtopdir}/plugins/inputmethods
 }
 
 FILES_irk_append=" /etc /home/root"

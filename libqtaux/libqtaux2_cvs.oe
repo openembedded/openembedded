@@ -28,8 +28,7 @@ do_compile() {
 # lib files already done during do_compile
 
 do_install() {
-	install -d ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libqtaux2.so.1.0.0 ${D}${palmtopdir}/lib/
+	oe_libinstall -so -C ${STAGING_LIBDIR} libqtaux2 ${D}/${palmtopdir}/lib
 }
 
 FILES_${PN}=${palmtopdir}/lib

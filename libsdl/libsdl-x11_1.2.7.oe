@@ -21,8 +21,8 @@ EXTRA_OECONF = "--disable-debug --disable-cdrom --enable-threads --enable-timers
                 --disable-video-picogui --disable-video-qtopia --enable-dlopen"
 
 do_stage() {
-	oe_soinstall src/.libs/libSDL-1.2.so.0.7.0 ${STAGING_LIBDIR}
-	ln -sf libSDL-1.2.so.0.7.0 ${STAGING_LIBDIR}/libSDL.so
+	oe_libinstall -so libSDL-1.2 ${STAGING_LIBDIR}
+	ln -sf libSDL-1.2.so ${STAGING_LIBDIR}/libSDL.so
 	install -m 0644 src/main/libSDLmain.a ${STAGING_LIBDIR}/libSDLmain.a
 
 	install -d ${STAGING_INCDIR}/SDL

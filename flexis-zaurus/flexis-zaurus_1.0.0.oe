@@ -1,0 +1,18 @@
+DESCRIPTION = "A Qtopia/Opie Input Method plugin for the Flexis FX100 Keyboard."
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "http://www.Vanille.de/mirror/flexis-zaurus-${PV}.tar.bz2 \
+           file://${FILESDIR}/gcc3.patch;patch=1"
+S = "${WORKDIR}/flexis-zaurus"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia"
+
+do_install() {
+	oe_libinstall libqflexis ${D}/${palmtopdir}/plugins/inputmethods/
+}

@@ -15,9 +15,7 @@ do_configure () {
 }
 
 do_stage () {
-	install -m 0755 lib/.libs/libosp.a ${STAGING_LIBDIR}/libosp.so.a
-	install -m 0755 lib/.libs/libosp.lai ${STAGING_LIBDIR}/libosp.la
-	oe_soinstall lib/.libs/libosp.so.3.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -a -so -C lib libosp ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/OpenSP
 	install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/OpenSP/
 	install -m 0644 ${S}/include/*.cxx ${STAGING_INCDIR}/OpenSP/

@@ -12,7 +12,7 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpepimc-${PV}.tar
 headers = "pim-categories.h pim-categories-ui.h"
 
 do_stage () {
-	oe_soinstall libgpepimc.so.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libgpepimc ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/gpe
 	for h in ${headers}; do

@@ -31,10 +31,7 @@ do_compile () {
 
 
 do_stage () {
-	oe_soinstall src/.libs/libfontconfig.so.1.0.4 ${STAGING_LIBDIR}/
-	install -m 0644 src/.libs/libfontconfig.a ${STAGING_LIBDIR}/
-	install -m 0644 src/.libs/libfontconfig.lai ${STAGING_LIBDIR}/libfontconfig.la
+	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/fontconfig
 	cp -a ${S}/fontconfig/*.h ${STAGING_INCDIR}/fontconfig/
 }
-

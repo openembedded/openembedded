@@ -57,14 +57,14 @@ do_compile() {
 }
 
 do_stage() {
-	oe_soinstall lib/libqte.so.${PV} ${STAGING_LIBDIR}
+	oe_libinstall -so -C lib libqte ${STAGING_LIBDIR}
 	rm -f include/qxt.h
 	cp -pfLR include/* ${STAGING_INCDIR}/
 }
 
 do_install() {
 	install -d ${D}${palmtopdir}/lib/fonts
-	oe_soinstall lib/libqte.so.${PV} ${D}${palmtopdir}/lib
+	oe_libinstall -so -C lib libqte ${D}/${palmtopdir}/lib
 	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
 }
 

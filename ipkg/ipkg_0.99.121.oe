@@ -33,7 +33,7 @@ update-alternatives --remove ipkg /usr/bin/ipkg-cl
 }
 
 do_stage() {
-	oe_soinstall .libs/libipkg.so.0.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libipkg ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/replace/
 	install -m 0644 replace/replace.h ${STAGING_INCDIR}/replace/
 	install -d ${STAGING_INCDIR}/libipkg/

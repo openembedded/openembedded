@@ -18,8 +18,5 @@ do_stage () {
 		install -m 0644 ${S}/libmb/$h ${STAGING_INCDIR}/libmb/
 	done
 
-	cp -a ${S}/libmb/.libs/libmb.a ${STAGING_LIBDIR}/libmb.a
-	cp -a ${S}/libmb/libmb.lai ${STAGING_LIBDIR}/libmb.la
-	oe_soinstall ${S}/libmb/.libs/libmb.so.1.0.1 ${STAGING_LIBDIR}/
-#	cp -a ${S}/libmb.pc ${STAGING_LIBDIR}/pkgconfig/libmb.pc
+	oe_libinstall -a -so -C libmb libmb ${STAGING_LIBDIR}
 }

@@ -25,9 +25,7 @@ do_compile_prepend () {
 }
 
 do_stage () {
-	install -m 0644 lib/.libs/libsasl2.lai ${STAGING_LIBDIR}/libsasl2.la
-	install -m 0644 lib/.libs/libsasl2.a ${STAGING_LIBDIR}/libsasl2.a
-	oe_soinstall lib/.libs/libsasl2.so.2.0.18 ${STAGING_LIBDIR}/
+	oe_libinstall -so -a -C lib libsasl2 ${STAGING_LIBDIR}
 	install -d ${STAGING_LIBDIR}/sasl
 	install -d ${STAGING_INCDIR}/sasl
 	install -m 0644 ${S}/include/hmac-md5.h ${STAGING_INCDIR}/sasl/

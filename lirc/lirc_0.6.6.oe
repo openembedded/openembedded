@@ -24,7 +24,7 @@ EXTRA_OECONF = "--with-kerneldir=${KERNEL_SOURCE}                      \
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
 
 do_stage() {
-	oe_soinstall tools/.libs/liblirc_client.so.0.0.0 ${STAGING_LIBDIR}/
+        oe_libinstall -so -C tools liblirc_client ${STAGING_LIBDIR}
 	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/
 }
 

@@ -8,10 +8,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 inherit autotools libtool
 
 do_stage() {
-        oe_soinstall .libs/libusb.so ${STAGING_LIBDIR}/
-        install -m 0644 .libs/libusb.lai ${STAGING_LIBDIR}/libusb.la
-        install -m 0644 .libs/libusb.a ${STAGING_LIBDIR}/libusb.a
-                                                                                          
+	oe_libinstall -a -so libusb ${STAGING_LIBDIR}
+
         install -d ${STAGING_INCDIR}/
         for X in usb.h
         do

@@ -13,9 +13,7 @@ LDFLAGS_prepend = "-L${S}/libs "
 inherit autotools libtool
 
 do_stage () {
-	install -m 0644 libs/.libs/libsdp.a ${STAGING_LIBDIR}/
-	install -m 0644 libs/.libs/libsdp.lai ${STAGING_LIBDIR}/libsdp.la
-	oe_soinstall libs/.libs/libsdp.so.2.0.1 ${STAGING_LIBDIR}/
+	oe_libinstall -a -so -C libs libsdp ${STAGING_LIBDIR}
 
 	for X in sdp.h sdp_lib.h
 	do

@@ -12,9 +12,7 @@ inherit autotools libtool
 EXTRA_OECONF = "--disable-isoc --with-openssl=${STAGING_LIBDIR}/.."
 
 do_stage () {
-	install -m 0644 .libs/libesmtp.a ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libesmtp.lai ${STAGING_LIBDIR}/libesmtp.la
-	oe_soinstall .libs/libesmtp.so.5.1.2 ${STAGING_LIBDIR}/
+	oe_libinstall -a -so libesmtp ${STAGING_LIBDIR}
 
         install -d ${STAGING_INCDIR}
 	install -m 644 auth-client.h ${STAGING_INCDIR}

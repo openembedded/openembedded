@@ -42,13 +42,12 @@ do_compile() {
 }
 
 do_stage() {
-	[ -e ${STAGING_LIBDIR}/libqpe.so.1.5.0 ] || oe_soinstall libqpe.so.1.5.0 ${STAGING_LIBDIR}
+	oe_libinstall -so libqpe ${STAGING_LIBDIR}
 	# include files already done during do_compile
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}/lib
-	oe_soinstall ${STAGING_LIBDIR}/libqpe.so.1.5.0 ${D}${palmtopdir}/lib
+	oe_libinstall -so libqpe ${D}/${palmtopdir}/lib
 }
 
 PACKAGES = "libqpe1"

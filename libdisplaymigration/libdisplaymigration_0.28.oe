@@ -11,7 +11,7 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libdisplaymigration-
 headers = "displaymigration.h auth.h crypt.h"
 
 do_stage () {
-	oe_soinstall libdisplaymigration.so.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libdisplaymigration ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/libdisplaymigration
 	for h in ${headers}; do

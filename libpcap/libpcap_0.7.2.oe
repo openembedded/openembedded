@@ -27,6 +27,5 @@ do_stage () {
 	install -m 0644 net/bpf.h ${STAGING_INCDIR}/net/bpf.h
 	install -m 0644 pcap.h ${STAGING_INCDIR}/pcap.h
 	install -m 0644 pcap-namedb.h ${STAGING_INCDIR}/pcap-namedb.h
-	oe_soinstall libpcap.so.${PV} ${STAGING_LIBDIR}/
-	install -m 0644 libpcap.a ${STAGING_LIBDIR}/
+	oe_libinstall -a -so libpcap ${STAGING_LIBDIR}
 }

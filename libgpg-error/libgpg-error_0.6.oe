@@ -9,9 +9,8 @@ SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgpg-error/libgpg-error-${PV}.tar.
 inherit autotools libtool
 
 do_stage() {
-	oe_soinstall src/.libs/libgpg-error.so.0.1.1 ${STAGING_LIBDIR}/
+	oe_libinstall -so -C src libgpg-error ${STAGING_LIBDIR}
 	install -m 0755 src/gpg-error-config ${STAGING_BINDIR}/
-	install -m 0644 src/.libs/libgpg-error.lai ${STAGING_LIBDIR}/libgpg-error.la
 
 	install -d ${STAGING_INCDIR}/
 	for X in gpg-error.h

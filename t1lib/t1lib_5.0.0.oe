@@ -18,8 +18,7 @@ do_configure() {
 }
 
 do_stage() {
-	oe_soinstall lib/.libs/libt1.so.5.0.0 ${STAGING_LIBDIR}/
-	oe_soinstall lib/.libs/libt1.so.5.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so -C lib libt1 ${STAGING_LIBDIR}
 	install lib/t1lib/t1lib.h ${STAGING_INCDIR}/
 	install lib/t1lib/t1libx.h ${STAGING_INCDIR}/
 }

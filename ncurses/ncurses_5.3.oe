@@ -55,6 +55,6 @@ do_stage () {
 	done
 	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
 	for i in ncurses panel form menu; do
-		oe_soinstall lib/lib$i.so.5.3 ${STAGING_LIBDIR}/
+		oe_libinstall -so -C lib $i ${STAGING_LIBDIR}
 	done
 }

@@ -23,13 +23,8 @@ do_compile () {
 }
 
 do_stage () {
-	oe_soinstall .libs/libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libpcreposix.a ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libpcreposix.lai ${STAGING_LIBDIR}/libpcreposix.la
-	oe_soinstall .libs/libpcre.so.0.0.1 ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libpcre.a ${STAGING_LIBDIR}/
-	install -m 0644 .libs/libpcre.lai ${STAGING_LIBDIR}/libpcre.la
-	
+	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
+	oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
 	install -m 0644 pcre.h ${STAGING_INCDIR}/
 	install -m 0644 pcreposix.h ${STAGING_INCDIR}/
 }

@@ -16,8 +16,7 @@ do_configure_prepend () {
 
 do_stage () {
 	install -m 0644 src/headers/gpm.h ${STAGING_INCDIR}/
-	install -m 0644 src/lib/libgpm.a ${STAGING_LIBDIR}/
-	oe_soinstall src/lib/libgpm.so.1.19.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so -a -C src/lib libgpm ${STAGING_LIBDIR}
 }
 
 do_install () {

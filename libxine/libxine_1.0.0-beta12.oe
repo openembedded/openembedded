@@ -40,12 +40,12 @@ do_install() {
 	  -C include install-data \
 	  'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
 	  'includedir=${D}/${includedir}'
-	install -m 0755 -d ${D}/${libdir}/xine/plugins/1.0.0
 	for plugin in `find ${S}/src -type f -name xineplug*.la`; do 
-	  dso=`dirname $plugin`/.libs/`basename $plugin .la`.so 
-	  install -m 0755 $dso ${D}/${libdir}/xine/plugins/1.0.0
+	  dir=`dirname $plugin`
+	  libname=`basename $plugin|sed -e's,\.la,,'` 
+	  oe_libinstall -so -C $dir $libname ${D}/${libdir}/xine/plugins/1.0.0
 	done
-	oe_soinstall src/xine-engine/.libs/libxine.so.${SOV} ${D}/${libdir}/
+	oe_libinstall -so -C src/xine-engine libxine ${D}/${libdir}
 }
 
 do_stage() {
@@ -59,10 +59,10 @@ do_stage() {
 	  'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
 	  'libdir=${STAGING_LIBDIR}' \
 	  'includedir=${STAGING_INCDIR}'
-	install -m 0755 -d ${STAGING_LIBDIR}/xine/plugins/1.0.0
 	for plugin in `find ${S}/src -type f -name xineplug*.la`; do 
-		dso=`dirname $plugin`/.libs/`basename $plugin .la`.so 
-		install -m 0755 $dso ${STAGING_LIBDIR}/xine/plugins/1.0.0
+	  dir=`dirname $plugin`
+	  libname=`basename $plugin|sed -e's,\.la,,'` 
+	  oe_libinstall -so -C $dir $libname ${STAGING_LIBDIR}/xine/plugins/1.0.0
 	done
-	oe_soinstall src/xine-engine/.libs/libxine.so.${SOV} ${STAGING_LIBDIR}/
+	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }

@@ -12,9 +12,7 @@ EXTRA_OECONF = "--with-zlib=${STAGING_LIBDIR}/../ \
 do_stage () {
 	install -d ${STAGING_INCDIR}/curl
 	install -m 0644 ${S}/include/curl/*.h ${STAGING_INCDIR}/curl/
-	oe_soinstall lib/.libs/libcurl.so.2.0.2 ${STAGING_LIBDIR}/
-	install -m 0644 lib/.libs/libcurl.a ${STAGING_LIBDIR}/
-	install -m 0644 lib/.libs/libcurl.lai ${STAGING_LIBDIR}/libcurl.la
+	oe_libinstall -so -a -C lib libcurl ${STAGING_LIBDIR}
 
 	cat curl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR}/," \
                         | sed -e "s,-L/usr/lib , , "> ${STAGING_BINDIR}/curl-config

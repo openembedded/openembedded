@@ -26,7 +26,7 @@ do_compile() {
 }
 
 do_stage() {
-	oe_soinstall .libs/libapm.so.1.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libapm ${STAGING_LIBDIR}
 }
 
 do_install() {
@@ -50,7 +50,7 @@ do_install() {
 	install -m 0755 ${S}/debian/apmd_proxy ${D}/${sysconfdir}/apm/
 	install -m 0644 ${S}/debian/apmd_proxy.conf ${D}/${datadir}/apmd/
 	install -m 0644 ${S}/debian/apmd.default ${D}/${sysconfdir}/default/apmd
-	oe_soinstall .libs/libapm.so.1.0.0 ${D}/${libdir}/
+	oe_libinstall -so libapm ${D}/${libdir}
 
 	cat ${FILESDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}/${sysconfdir}/init.d/apmd
 	chmod 755 ${D}/${sysconfdir}/init.d/apmd

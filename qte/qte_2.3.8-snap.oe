@@ -59,12 +59,11 @@ do_compile() {
 }
 
 do_stage () {
-    oe_soinstall lib/libqte.so.${PV} ${STAGING_LIBDIR}
+    oe_libinstall -so -C lib libqte ${STAGING_LIBDIR}
     rm -f include/qxt.h
     cp -pfLR include/* ${STAGING_INCDIR}/
 }
 
 do_install () {
-    install -d ${D}${libdir}/qte2/lib
-    install -m 0755 lib/libqte.so.* ${D}${libdir}/qte2/lib/
+    oe_libinstall -so -C lib libqte ${D}/${palmtopdir}/lib
 }

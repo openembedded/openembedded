@@ -29,15 +29,14 @@ do_install() {
 	       ${D}/${palmtopdir}/lib \
 	       ${D}/${palmtopdir}/apps/Pim \
        	       ${D}/${palmtopdir}/pics/korganizer/icons16
-    install -m 0644 korganizer/korganizer.desktop ${D}/opt/QtPalmtop/apps/Pim/korganizer.desktop
+    install -m 0644 korganizer/korganizer.desktop ${D}/${palmtopdir}/apps/Pim/korganizer.desktop
     cd ${S}/pics
-    cp *.png *.wav ${D}/opt/QtPalmtop/pics/korganizer
-    cp ./icons16/*.png ${D}/opt/QtPalmtop/pics/korganizer/icons16
-    for f in libmicrokde.so.1.0.0 libkcal.so.1.0.0 libkdepim.so.1.0.0 libqtcompat.so.1.0.0
+    cp *.png *.wav ${D}/${palmtopdir}/pics/korganizer
+    cp ./icons16/*.png ${D}/${palmtopdir}/pics/korganizer/icons16
+    for f in libmicrokde libkcal libkdepim libqtcompat
     do
-        oe_soinstall ${STAGING_LIBDIR}/${f} ${D}/opt/QtPalmtop/lib
-        rm -f ${STAGING_LIBDIR}/${f}
+        oe_libinstall -so -C ${STAGING_LIBDIR} $f ${D}/${palmtopdir}/lib
     done
-    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/korganizer ${D}/opt/QtPalmtop/bin/korganizer
+    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/korganizer ${D}/${palmtopdir}/bin/korganizer
     rm -f ${STAGING_DIR}/${HOST_SYS}/bin/korganizer
 }

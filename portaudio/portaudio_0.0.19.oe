@@ -13,7 +13,7 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--with-jack=no"
 
 do_stage() {
-	oe_soinstall lib/libportaudio.so.${PV} ${STAGING_LIBDIR}/
+	oe_libinstall -so -C lib libportaudio ${STAGING_LIBDIR}
         install -m 0644 pa_common/portaudio.h ${STAGING_INCDIR}/portaudio.h
 }
 

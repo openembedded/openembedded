@@ -12,17 +12,9 @@ EXTRA_OECONF = "--with-ogg-libraries=${STAGING_LIBDIR} \
 	        --with-ogg-includes=${STAGING_INCDIR}"
 
 do_stage () {
-	install -m 0644 lib/.libs/libvorbis.lai ${STAGING_LIBDIR}/libvorbis.la
-	install -m 0644 lib/.libs/libvorbis.a ${STAGING_LIBDIR}/
-	oe_soinstall lib/.libs/libvorbis.so.0.3.0 ${STAGING_LIBDIR}/
-
-	install -m 0644 lib/.libs/libvorbisfile.lai ${STAGING_LIBDIR}/libvorbisfile.la
-	install -m 0644 lib/.libs/libvorbisfile.a ${STAGING_LIBDIR}/
-	oe_soinstall lib/.libs/libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/
-
-	install -m 0644 lib/.libs/libvorbisenc.lai ${STAGING_LIBDIR}/libvorbisenc.la
-	install -m 0644 lib/.libs/libvorbisenc.a ${STAGING_LIBDIR}/
-	oe_soinstall lib/.libs/libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -a -so -C lib libvorbis ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C lib libvorbisfile ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C lib libvorbisenc ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/vorbis
 	install -m 0644 include/vorbis/vorbisenc.h \

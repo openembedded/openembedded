@@ -9,7 +9,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/libs/libsidplay/libsidplay_${PV}.orig.tar.gz \
 inherit autotools libtool
 
 do_stage() {
-	oe_soinstall src/.libs/libsidplay.so.1.0.3 ${STAGING_LIBDIR}/
+	oe_libinstall -so -C src libsidplay ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/sidplay
 	for f in src/compconf.h src/emucfg.h src/fformat.h src/fixpoint.h src/libcfg.h src/myendian.h src/mytypes.h src/player.h src/sidtune.h src/version.h
 	do

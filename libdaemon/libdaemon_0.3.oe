@@ -8,9 +8,7 @@ inherit autotools libtool
 EXTRA_OECONF = "--disable-lynx"
 
 do_stage () {
-	oe_soinstall src/.libs/libdaemon.so.0.1.0 ${STAGING_LIBDIR}/
-	install -m 0644 src/.libs/libdaemon.a ${STAGING_LIBDIR}/
-	install -m 0644 src/.libs/libdaemon.lai ${STAGING_LIBDIR}/libdaemon.la
+	oe_libinstall -a -so -C src libdaemon ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/libdaemon
 	for i in dlog.h dfork.h dsignal.h dnonblock.h dpid.h; do
 		install -m 0644 ${S}/src/$i ${STAGING_INCDIR}/libdaemon/

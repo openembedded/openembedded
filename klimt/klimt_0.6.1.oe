@@ -18,6 +18,5 @@ do_stage() {
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/lib
-        oe_soinstall ${STAGING_LIBDIR}/libKlimt.so.0.5.1 ${D}${palmtopdir}/lib/
+	oe_libinstall -so -C ${STAGING_LIBDIR} libKlimt ${D}/${palmtopdir}/lib
 }

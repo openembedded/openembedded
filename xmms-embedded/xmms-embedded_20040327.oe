@@ -35,14 +35,14 @@ do_install() {
     install -m 0644 xmms/General/QPEgui/xmms.desktop ${D}/${palmtopdir}/apps/Applications/xmms.desktop
     install -m 0644 ${FILESDIR}/xmms.png ${D}/${palmtopdir}/pics/xmms.png
     install -m 0755 compiled/bin/xmms ${D}/${palmtopdir}/bin/xmms
-    oe_soinstall compiled/libxmms.so.1.0.0 ${D}/${palmtopdir}/lib
-    oe_soinstall compiled/xmms/General/libQPEgui.so.1.0.0 ${D}/${palmtopdir}/lib/xmms/General
-    for f in libfixpvorbisplugin.so.1.0.0 libmplayer.so.1.0.0 libshorten.so.1.0.0 \
-		libwav.so.1.0.0 libxmms-mad.so.1.0.0 libxmms-sid.so.1.0.0
+    oe_libinstall -so -C compiled libxmms ${D}/${palmtopdir}/lib
+    oe_libinstall -so -C compiled/xmms/General libQPEgui ${D}/${palmtopdir}/lib/xmms/General
+    for f in libfixpvorbisplugin libmplayer libshorten \
+		libwav libxmms-mad libxmms-sid
     do
-        oe_soinstall compiled/xmms/Input/${f} ${D}/${palmtopdir}/lib/xmms/Input
+        oe_libinstall -so -C compiled/xmms/Input $f ${D}/${palmtopdir}/lib/xmms/Input
     done
-    oe_soinstall compiled/xmms/Output/liboss.so.1.0.0 ${D}/${palmtopdir}/lib/xmms/Output
+    oe_libinstall -so -C compiled/xmms/Output liboss ${D}/${palmtopdir}/lib/xmms/Output
     for f in eject.png fileadd.png main.png norep.png pause.png play.png rew.png \
 		shuf.png stop.png ff.png filedel.png move.png noshuf.png plalap.png \
 		rep.png save.png skinconf urladd.png

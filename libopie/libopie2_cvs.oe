@@ -42,13 +42,12 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.9.1 ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.9.0 ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.9.0 ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.4 ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiepim2.so.1.8.6 ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}${palmtopdir}/lib/
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopiecore2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopiedb2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopiemm2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopienet2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopiepim2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopieui2 ${D}/${palmtopdir}/lib
 }
 
 PACKAGES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"

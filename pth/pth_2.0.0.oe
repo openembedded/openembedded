@@ -13,7 +13,7 @@ do_configure() {
 }
 
 do_stage() {
-	oe_soinstall .libs/libpth.so.20.0.20 ${STAGING_LIBDIR}/
+	oe_libinstall -so libpth ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/
 	for X in pth.h

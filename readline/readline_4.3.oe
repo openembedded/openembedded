@@ -13,8 +13,8 @@ SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 inherit autotools libtool
 
 do_stage() {
-	oe_soinstall shlib/libhistory.so.${PV} ${STAGING_LIBDIR}/
-	oe_soinstall shlib/libreadline.so.${PV} ${STAGING_LIBDIR}/
+	oe_libinstall -so -C shlib libhistory ${STAGING_LIBDIR}
+	oe_libinstall -so -C shlib libreadline ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}/readline
 	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \

@@ -26,8 +26,8 @@ do_compile () {
 }
 
 do_stage () {
-	oe_soinstall src/elfobjs/libslang.so.${PV} ${STAGING_LIBDIR}/
-	install -m 0644 src/objs/libslang.a ${STAGING_LIBDIR}/
+	oe_libinstall -so -C src/elfobjs libslang ${STAGING_LIBDIR}
+	oe_libinstall -a -C src/objs libslang ${STAGING_LIBDIR}
 	install -m 0644 src/slang.h ${STAGING_INCDIR}
 	install -m 0644 src/slcurses.h ${STAGING_INCDIR}
 }

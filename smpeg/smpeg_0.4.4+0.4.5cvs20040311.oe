@@ -21,13 +21,13 @@ EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \
 		--with-sdl-exec-prefix=${STAGING_BINDIR}/.."
 
 do_configure_prepend () {
-	touch NEWS AUTHORS ChangeLog	
-	rm -f acinclude.m4	
+	touch NEWS AUTHORS ChangeLog
+	rm -f acinclude.m4
 }
 
 do_stage() {
-	oe_soinstall .libs/libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}
-	ln -sf libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}/libsmpeg.so
+	oe_libinstall libsmpeg-0.4 ${STAGING_LIBDIR}
+	ln -sf libsmpeg-0.4.so ${STAGING_LIBDIR}/libsmpeg.so
 
 	for f in "*.h"
 	do

@@ -28,7 +28,7 @@ do_stage() {
 	install -m 644 jmorecfg.h ${STAGING_INCDIR}/jmorecfg.h
 	install -m 644 jerror.h ${STAGING_INCDIR}/jerror.h
 	install -m 644 jpegint.h ${STAGING_INCDIR}/jpegint.h
-	oe_soinstall .libs/libjpeg.so.62.0.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libjpeg ${STAGING_LIBDIR}
 }
 
 do_install() {

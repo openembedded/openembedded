@@ -14,10 +14,7 @@ do_configure () {
 }
 
 do_stage () {
-	oe_soinstall objs/.libs/libfreetype.so.6.3.5 ${STAGING_LIBDIR}/
-
-	install -m 0644 objs/.libs/libfreetype.lai ${STAGING_LIBDIR}/libfreetype.la
-	install -m 0644 objs/.libs/libfreetype.a ${STAGING_LIBDIR}/libfreetype.a
+	oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
 	cp -a ${S}/include/*.h ${STAGING_INCDIR}
 	install -d ${STAGING_INCDIR}/freetype2
 	cp -a ${S}/include/freetype ${STAGING_INCDIR}/freetype2/

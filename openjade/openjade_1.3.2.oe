@@ -18,15 +18,8 @@ do_configure_prepend () {
         mv config/configure.in .
 }
 
-SOV = "0.0.1"
 do_stage () {
-	install -m 0755 ${S}/style/.libs/libostyle.lai ${STAGING_LIBDIR}/libostyle.la
-	install -m 0755 ${S}/style/.libs/libostyle.a ${STAGING_LIBDIR}/libostyle.a
-	oe_soinstall style/.libs/libostyle.so.${SOV} ${STAGING_LIBDIR}/
-	install -m 0755 ${S}/spgrove/.libs/libospgrove.lai ${STAGING_LIBDIR}/libospgrove.la
-	install -m 0755 ${S}/spgrove/.libs/libospgrove.a ${STAGING_LIBDIR}/libospgrove.a
-	oe_soinstall spgrove/.libs/libospgrove.so.${SOV} ${STAGING_LIBDIR}/
-	install -m 0755 ${S}/grove/.libs/libogrove.lai ${STAGING_LIBDIR}/libogrove.la
-	install -m 0755 ${S}/grove/.libs/libogrove.a ${STAGING_LIBDIR}/libogrove.a
-	oe_soinstall grove/.libs/libogrove.so.${SOV} ${STAGING_LIBDIR}/
+	oe_libinstall -a -so -C style libostyle ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C spgrove libospgrove ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C grove libogrove ${STAGING_LIBDIR}
 }

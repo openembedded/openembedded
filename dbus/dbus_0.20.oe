@@ -13,15 +13,9 @@ EXTRA_OECONF = "--disable-qt --disable-gtk --disable-tests \
 
 headers = "dbus-address.h dbus-bus.h dbus-connection.h dbus-errors.h dbus-macros.h dbus-memory.h dbus-message.h dbus-pending-call.h dbus-protocol.h dbus-server.h dbus-threads.h dbus-types.h dbus.h"
 
-libname = "libdbus-1.so.0.0.0"
-glibname = "libdbus-glib-1.so.0.0.0"
-
 do_stage () {
-	oe_soinstall dbus/.libs/${libname} ${STAGING_LIBDIR}/
-	install -m 0644 dbus/libdbus-1.la ${STAGING_LIBDIR}/
-
-	oe_soinstall glib/.libs/${glibname} ${STAGING_LIBDIR}/
-	install -m 0644 glib/libdbus-glib-1.la ${STAGING_LIBDIR}/
+	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}
+	oe_libinstall -so -C glib libdbus-glib-1 ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/dbus-1.0/dbus
 	for i in ${headers}; do

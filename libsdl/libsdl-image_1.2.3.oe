@@ -10,8 +10,8 @@ S = "${WORKDIR}/SDL_image-${PV}"
 inherit autotools libtool
 
 do_stage() {
-	oe_soinstall .libs/libSDL_image-1.2.so.0.1.2 ${STAGING_LIBDIR}
-	ln -sf libSDL_image-1.2.so.0.1.2 ${STAGING_LIBDIR}/libSDL_image.so
+	oe_libinstall -so libSDL_image-1.2 ${STAGING_LIBDIR}
+	ln -sf libSDL_image-1.2.so ${STAGING_LIBDIR}/libSDL_image.so
 	install -m 0644 SDL_image.h ${STAGING_INCDIR}/SDL/SDL_image.h
 }
 

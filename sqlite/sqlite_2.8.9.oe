@@ -22,7 +22,7 @@ do_compile () {
 }
 
 do_stage() {
-	oe_soinstall .libs/libsqlite.so.0.8.6 ${STAGING_LIBDIR}
+	oe_libinstall -so libsqlite ${STAGING_LIBDIR}
 	install -m 0644 sqlite.h ${STAGING_INCDIR}
 }
 

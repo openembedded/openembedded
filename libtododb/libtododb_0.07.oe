@@ -11,7 +11,7 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libtododb-${PV}.tar.
 headers = "todo-db.h"
 
 do_stage () {
-	oe_soinstall libtododb.so.0 ${STAGING_LIBDIR}/
+	oe_libinstall -so libtododb ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/gpe
 	for h in ${headers}; do

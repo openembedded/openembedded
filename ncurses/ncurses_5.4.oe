@@ -38,8 +38,8 @@ do_configure () {
 }
 
 do_stage () {
-	for i in ncurses panel form menu; do
-		oe_soinstall lib/lib$i.so.${PV} ${STAGING_LIBDIR}/
+	for i in libncurses libpanel libform libmenu; do
+		oe_libinstall -so -C lib $i ${STAGING_LIBDIR}
 	done
 	for h in ncurses_*.h curses.h eti.h form.h menu.h panel.h \
 		termcap.h term.h unctrl.h; do
