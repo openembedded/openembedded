@@ -2,8 +2,9 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+PR = "r1"
 
-DEPENDS = "gstreamer zlib libmikmod libmad libogg tremor libvorbis libid3tag gnome-vfs"
+DEPENDS = "gstreamer zlib libmikmod libmad libogg tremor libvorbis libid3tag gnome-vfs esound-gpe"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://ivorbis.patch;patch=1"
