@@ -6,9 +6,9 @@ LICENSE = "GPL"
 DEPENDS = "freetype"
 PV = "1.1.8+cvs-${CVSDATE}"
 APPNAME = "freetypefactory"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/freetype \
-	   file://modern-freetype-includes.patch;patch=1"
+SRC_URI = "${HANDHELDS_CVS};module=opie/freetype"
 S = "${WORKDIR}/freetype"
 
 inherit opie

@@ -15,7 +15,7 @@ do_install() {
 # Add more known manfids, if necessary          
                                                        
 if [ `cardctl info|grep "d601,0010\|d601,0101"` ]; then
-  $IWPRIV "$IFACE" reset 1                             
+  iwpriv "$IFACE" reset 1                             
   hostap_fw_load "$IFACE"  
 fi                      
   
