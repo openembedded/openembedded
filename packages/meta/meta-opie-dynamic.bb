@@ -5,7 +5,6 @@ BROKEN = 1
 # to allow the dynamic package to work
 #
 DESCRIPTION = "Meta-package for Opie"
-DEPENDS = "qte-for-opie libqpe-opie libopie2 manufacturers"
 
 def opie_packages(d):
 	import bb, os
@@ -15,6 +14,6 @@ def opie_packages(d):
 
 OPIE_PACKAGES := "${@opie_packages(d)}"
 
-DEPENDS = "qte-for-opie libqpe-opie libopie2 ${OPIE_PACKAGES}"
+DEPENDS = "qte libqpe-opie libopie2 manufacturers ${OPIE_PACKAGES}"
 
 LICENSE = MIT

@@ -3,9 +3,9 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "uicmoc-native qte-for-opie"
+DEPENDS = "uicmoc-native qte"
 PROVIDES = "virtual/libqpe"
-PR = "r0"
+PR = "r1"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \

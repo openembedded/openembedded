@@ -6,7 +6,7 @@
 # Dependencies to get the launcher up and running
 #
 
-OPIE_LIBS_DEPENDS = "qte-for-opie libopie2 qpf-bitstream-vera qpf-bitstream-vera-sans-mono qpf-unifont"
+OPIE_LIBS_DEPENDS = "qte libopie2 qpf-bitstream-vera qpf-bitstream-vera-sans-mono qpf-unifont"
 OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
 OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
 
