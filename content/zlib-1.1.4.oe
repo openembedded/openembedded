@@ -1,0 +1,37 @@
+DESCRIPTION="Zlib Compression Library"
+SECTION="libs"
+PRIORITY="required"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+RDEPENDS="libc6"
+
+SRC_URI="http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz"
+DEPENDS=virtual/libc
+S="${WORKDIR}/${P}"
+
+EXTRA_OECONF="--shared"
+
+do_compile() {
+	unset CC CFLAGS CPPFLAGS LDFLAGS; ./configure --prefix=/usr --shared || die "failed configuring ${P}"
+	oemake LDSHARED="${CC} -shared -Wl,-soname,libz.so.1" CC="${CC}" CFLAGS="-fPIC ${CFLAGS}" LD="${LD}" CPP="${CC} -E" AR="${AR} rc" LDFLAGS="${LDFLAGS}" libz.so.1.1.4 libz.a || die "failed building ${P}"
+}
+
+do_stage() {
+	install -d ${STAGING_DIR}/{bin,lib,include}
+	install -m 0644 zlib.h ${STAGING_DIR}/include/zlib.h
+	install -m 0644 zconf.h ${STAGING_DIR}/include/zconf.h
+	install -m 0755 libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so.1.1.4
+	install -m 0755 libz.a ${STAGING_LIBDIR}/libz.a
+	ln -sf ./libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so.1
+	ln -sf ./libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so
+}
+
+do_install() {
+	install -d ${D}/usr/lib
+	install -m 0755 libz.so.1.1.4 ${D}/usr/lib/libz.so.1.1.4
+	ln -sf ./libz.so.1.1.4 ${D}/usr/lib/libz.so.1
+	ln -sf ./libz.so.1.1.4 ${D}/usr/lib/libz.so
+}
+
+PACKAGES="zlib1g"
+FILES=""
+FILES_zlib1g="/usr/lib/libz.so.1.1.4 /usr/lib/libz.so.1 /usr/lib/libz.so"

@@ -1,0 +1,9 @@
+DESCRIPTION="Zsh shell"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+RDEPENDS="libc6"
+
+SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2"
+DEPENDS=virtual/libc
+S="${WORKDIR}/${P}"

@@ -1,0 +1,15 @@
+DESCRIPTION="Dropbear SSH Implementation"
+LICENSE="MIT"
+SRC_URI="http://matt.ucc.asn.au/dropbear/dropbear-0.33.tar.bz2"
+DEPENDS=virtual/libc content/zlib
+
+S="${WORKDIR}/${P}"
+
+do_compile() {
+	CFLAGS="${CFLAGS}"
+	LDFLAGS="${LDFLAGS}"
+	CPPFLAGS="${CPPFLAGS}"
+	CXXFLAGS="${CXXFLAGS}"
+	export CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
+	base_do_compile $@
+}

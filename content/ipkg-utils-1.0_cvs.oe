@@ -1,0 +1,15 @@
+DESCRIPTION="Itsy Package Manager utilities"
+LICENSE="GPL"
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=ipkg-utils"
+#DEPENDS=virtual/libc
+
+S="${WORKDIR}/${PN}"
+
+do_stage() {
+	cp ipkg* ${STAGING_BINDIR}/
+}
+
+do_install() {
+	install -d ${D}/usr/bin
+	cp ipkg* ${D}/usr/bin/
+}

@@ -16,8 +16,6 @@ PACKAGES="libc6"
 FILES=""
 FILES_libc6="/lib/libc.so.6"
 
-inherit base
-
 do_unpack() {
 	base_do_unpack $@ || die
 	test -d ${S} || die

@@ -6,8 +6,6 @@ DEPENDS=virtual/libc
 
 S="${WORKDIR}/ipkg/C"
 
-inherit base
-
 do_compile () {
 	(
 		./autoconfigure.sh && \
