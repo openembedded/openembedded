@@ -1,11 +1,7 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
-# The included feeds are choosen by ${DISTRO}
-export FEED_URIS_openzaurus = "OZ-3.5.1##http://openzaurus.org/official/unstable/3.5.1/feed/ \
-			       OZ-Upgrades##http://openzaurus.org/official/unstable/3.5.1/upgrades/"
-
-PR = "r3"
+PR = "r4"
 
 include opie-collections.oe
 
