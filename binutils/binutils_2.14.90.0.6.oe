@@ -36,8 +36,7 @@ SRC_URI := http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2
            file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
            file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
            file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
-           file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1 \
-           file://${FILESDIR}/configure.patch;patch=1
+           file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1
 
 S := ${WORKDIR}/binutils-${PV}
 B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
