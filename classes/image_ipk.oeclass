@@ -1,5 +1,8 @@
 inherit rootfs_ipk
 
+# Images are generally built explicitly, do not need to be part of world.
+EXCLUDE_FROM_WORLD = "1"
+
 USE_DEVFS ?= "0"
 
 DEPENDS += "makedevs-native"

@@ -1,3 +1,7 @@
+# Cross packages are built indirectly via dependency,
+# no need for them to be a direct target of 'world'
+EXCLUDE_FROM_WORLD = "1"
+
 PACKAGES = ""
 
 HOST_ARCH = "${BUILD_ARCH}"
