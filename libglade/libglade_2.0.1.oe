@@ -1,0 +1,30 @@
+DESCRIPTION = Runtime support for GTK interface builder
+SECTION = libs
+PRIORITY = optional
+RDEPENDS = gtk+ libxml2
+DEPENDS = virtual/libc libxml2 gtk+
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+SRC_URI = ftp://ftp.gnome.org/pub/GNOME/sources/${PN}/2.0/${P}.tar.bz2
+
+inherit autotools pkgconfig libtool
+
+libname = libglade-2.0.so.0.0.1
+headers = glade-build.h glade-init.h glade-parser.h glade-xml.h glade.h
+
+do_configure_prepend() {
+	install -d m4
+	install ${FILESDIR}/gtk-2.0.m4 m4/
+}
+
+do_stage () {
+	install -m 0755 glade/.libs/${libname} ${STAGING_LIBDIR}/
+	ln -sf ${libname} ${STAGING_LIBDIR}/libglade-2.0.so.2
+	ln -sf ${libname} ${STAGING_LIBDIR}/libglade-2.0.so
+	install -m 0644 glade/.libs/libglade-2.0.lai ${STAGING_LIBDIR}/libglade-2.0.la
+
+	mkdir -p ${STAGING_INCDIR}/libglade-2.0/glade
+	for i in ${headers}; do
+		install -m 0644 glade/$i ${STAGING_INCDIR}/libglade-2.0/glade/$i
+	done
+}
