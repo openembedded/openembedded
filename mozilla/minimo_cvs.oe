@@ -11,6 +11,7 @@ PRIORITY = "optional"
 PV = "0.0cvs${CVSDATE}"
 FILES_${PN} += "${libdir}/mozilla-minimo"
 PR = "r5"
+LICENSE = "MPL/LGPL/GPL"
 
 export MINIMO=1
 export CROSS_COMPILE=1
