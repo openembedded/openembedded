@@ -1,5 +1,5 @@
 SECTION = "base"
-PR = "r4"
+PR = "r5"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
@@ -17,8 +17,8 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN} += "${libdir}/dbus-1.0/services"
-FILES_${PN}-dev += "${libdir}/dbus-1.0/include"
+FILES_${PN} = "${bindir}/dbus-daemon-1 ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${libdir}/dbus-1.0/services ${libdir}/lib*.so.*"
+FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
 pkg_postinst_dbus() {
 #!/bin/sh
