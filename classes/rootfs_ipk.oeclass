@@ -17,7 +17,7 @@ IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
 IMAGE_POSTPROCESS_COMMAND ?= ""
 
-fakeroot do_rootfs () {
+real_do_rootfs () {
 	set -x
 	rm -rf ${IMAGE_ROOTFS}
 
@@ -63,6 +63,10 @@ EOF
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
 	${IMAGE_POSTPROCESS_COMMAND}
+}
+
+fakeroot do_rootfs () {
+	real_do_rootfs
 }
 
 # set '*' as the rootpassword so the images

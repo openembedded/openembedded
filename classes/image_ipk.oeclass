@@ -1,70 +1,25 @@
-# TODO:
-#	- now that there is a rootfs_ipk one should re-use it here
-#	- also, the makedev-stuff should be configurable, there are devices
-#	  out that use devfs and don't need no /dev-directory population
-#	  We probably could do this with some gentoo-like "use devfs || ..."
-#	  feature
+inherit rootfs_ipk
 
-DEPENDS_prepend="ipkg-native ipkg-utils-native makedevs fakeroot-native mtd-native makedevs-native "
-DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
+USE_DEVFS ?= "0"
 
-PACKAGES = ""
+DEPENDS += "mtd-native makedevs-native"
 
 IMAGE_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-minimal.txt')}"
 
-do_images[nostamp] = 1
-do_images[dirs] = ${TOPDIR}
-
-IPKG_ARGS = "-f ${DEPLOY_DIR_IMAGE}/ipkg.conf -o ${IMAGE_ROOTFS}"
-
-IMAGE_POSTPROCESS_COMMAND ?= ""
-
-fakeroot do_images () {
+# Must call real_do_rootfs() from inside here, rather than as a separate
+# task, so that we have a single fakeroot context for the whole process.
+fakeroot do_rootfs () {
 	set -x
 	rm -rf ${IMAGE_ROOTFS}
 
-	mkdir -p ${IMAGE_ROOTFS}/dev
-	makedevs -r ${IMAGE_ROOTFS} -D ${IMAGE_DEVICE_TABLE}
-
-	touch ${DEPLOY_DIR_IPK}/Packages
-	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-	mkdir -p ${DEPLOY_DIR_IMAGE}
-	echo "src oe file:${DEPLOY_DIR_IPK}" > ${DEPLOY_DIR_IMAGE}/ipkg.conf
-	cat <<EOF >>${DEPLOY_DIR_IMAGE}/ipkg.conf
-arch all 1
-arch any 1
-arch noarch 1
-arch ${TARGET_ARCH} 10
-EOF
-	if [ ! -z ${MACHINE} ]; then
-		echo "arch ${MACHINE} 10" >>${DEPLOY_DIR_IMAGE}/ipkg.conf
+	if [ "${USE_DEVFS}" != "1" ]; then
+		mkdir -p ${IMAGE_ROOTFS}/dev
+		makedevs -r ${IMAGE_ROOTFS} -D ${IMAGE_DEVICE_TABLE}
 	fi
-	for i in ${IPKG_ARCHS}; do
-		if [ $i != "all" ] && [ $i != "${TARGET_ARCH}" ]; then
-			echo "arch $i 5" >> ${DEPLOY_DIR_IMAGE}/ipkg.conf
-		fi
-	done
-	ipkg-cl ${IPKG_ARGS} update
-	ipkg-cl ${IPKG_ARGS} install ${IPKG_INSTALL}
 
-	export D=${IMAGE_ROOTFS}
-	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
+	real_do_rootfs
 
-	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.preinst; do
-		if [ -f $i ] && ! sh $i; then
-			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .preinst`
-		fi
-	done
-	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.postinst; do
-		if [ -f $i ] && ! sh $i; then
-			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
-		fi
-	done
-
-	install -d ${IMAGE_ROOTFS}/${sysconfdir}
-	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
-
-	${IMAGE_POSTPROCESS_COMMAND}
+	export TOPDIR=${TOPDIR}
 
 	if test -z "$FAKEROOTKEY"; then
 		fakeroot -i ${TMPDIR}/fakedb.image oeimage -t ${IMAGE_FSTYPE} -e ${FILE}
@@ -72,16 +27,3 @@ EOF
 		oeimage -t ${IMAGE_FSTYPE} -e ${FILE}
 	fi
 }
-
-# set '*' as the rootpassword so the images
-# can decide if they want it or not
-
-zap_root_password () {
-	sed 's%^root:[^:]*:%root:*:%' < ${IMAGE_ROOTFS}/etc/passwd >${IMAGE_ROOTFS}/etc/passwd.new
-	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd	
-} 
-
-# export the zap_root_password
-EXPORT_FUNCTIONS zap_root_password
-
-addtask images before do_build after do_install
