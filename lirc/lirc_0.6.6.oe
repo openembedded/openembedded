@@ -1,0 +1,47 @@
+DESCRIPTION=LIRC is a package that allows you to decode and send infra-red signals of many commonly used remote controls.
+SECTION=base
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE=GPL
+RDEPENDS=linux-${KERNEL_VERSION}          
+DEPENDS=virtual/kernel
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
+
+inherit autotools
+
+#export ARCH=${TARGET_ARCH}
+#export OS=${TARGET_OS}
+#export CROSS_COMPILE=${CROSS}
+
+KERNEL_VERSION=`cat ${STAGING_DIR}/target/kernel/kernel-version`
+KERNEL_SOURCE=`cat ${STAGING_DIR}/target/kernel/kernel-source`
+KERNEL_PATH=${STAGING_DIR}/target/kernel
+
+#FIXME: Caution: EXTRA_OECONF is arm-specific!
+
+EXTRA_OECONF = '--with-kerneldir=${KERNEL_SOURCE}                      \
+                --with-driver=sa1100                                   \ 
+                --without-x'
+
+do_stage() {
+	install -m 0755 tools/.libs/liblirc_client.0.0.0 tools/.libs/liblirc_client.so.0.0.0
+	oe_soinstall tools/.libs/liblirc_client.so.0.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/
+}
+
+#FIXME: Add to postinstall /bin/mknod $(DESTDIR)$(devdir)/lirc c 61 0
+
+do_install() {
+	install -d ${D}/{lib/modules/${KERNEL_VERSION}/kernel/drivers/char,${bindir}}
+
+	install -m 755 daemons/irrecord ${D}/${bindir}/irrecord
+	install -m 755 daemons/lircd ${D}/${bindir}/lircd
+	install -m 755 tools/rc ${D}/${bindir}/rc
+
+	install -m 755 drivers/lirc_sir/lirc_sir.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
+}
+
+PACKAGES_append=" lirc-modules"
+FILES_lirc-modules="/lib/modules"
+
