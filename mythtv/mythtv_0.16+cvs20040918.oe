@@ -12,10 +12,7 @@ S = "${WORKDIR}/mythtv"
 DEPENDS = "xinerama qt-x11-free lame libxv libxxf86vm libxvmc"
 RDEPENDS = "qt-x11-plugins"
 
-inherit qmake
-
-export OE_QMAKE_UIC="${STAGING_BINDIR}/uic3"
-export OE_QMAKE_MOC="${STAGING_BINDIR}/moc3"
+inherit qmake qt3x11
 
 QMAKE_PROFILES = "mythtv.pro"
 
@@ -31,8 +28,6 @@ def mythtv_arch(d):
         return arch
 
 MYTHTV_ARCH := "${@mythtv_arch(d)}"
-
-EXTRA_QMAKEVARS_POST += "QMAKE_LIBS_QT=-lqt QMAKE_LIBS_QT_THREAD=-lqt-mt"
 
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
