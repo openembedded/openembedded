@@ -3,7 +3,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "BSD GPL"
 SECTION = "libs"
 DEPENDS = "libogg"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
 	   file://disable-xmms-plugin.patch;patch=1 \
@@ -19,6 +19,13 @@ EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
 		--without-xmms-exec-prefix \
 		--without-libiconv-prefix \
 		--without-id3lib"
+
+PACKAGES += "libflac libflac++ liboggflac liboggflac++"
+FILES_${PN} = "${bindir}"
+FILES_libflac = "${libdir}/libFLAC.so.*"
+FILES_libflac++ = "${libdir}/libFLAC++.so.*"
+FILES_liboggflac = "${libdir}/libOggFLAC.so.*"
+FILES_liboggflac++ = "${libdir}/libOggFLAC++.so.*"
 
 do_configure () {
 	install -d ${S}/m4
