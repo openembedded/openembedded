@@ -1,0 +1,73 @@
+DESCRIPTION = "GNU libiconv Native - libiconv is for you if your application needs to support multiple character encodings, but that support lacks from your system. "
+HOMEPAGE = "http://www.gnu.org/software/libiconv/"
+SECTION = "libs"
+GUISECTION = "enlightenment"
+PRIORITY = "optional"
+MAINTAINER = "That Crazy fool emte <emte@labotomy.net>"
+NOTES = "Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8"
+DEPENDS = "gettext-native"
+PR = "r0"
+
+SRC_URI = "ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PV}.tar.gz"
+
+EXTRA_OECONF = "--disable-debug"
+
+S = "${WORKDIR}/libiconv-${PV}"
+
+inherit autotools native
+
+do_configure_prepend () {
+}
+
+do_stage () {
+	oe_libinstall -so lib/libiconv_plug_linux ${STAGING_LIBDIR}
+	autotools_stage_includes
+	install -d ${STAGING_INCDIR}/include
+	install -m 0755 ${S}/include/iconv.h ${STAGING_INCDIR}/iconv.h
+	install -d ${STAGING_DATADIR}/aclocal
+	install -m 0644 ${S}/m4/alloca.m4 ${STAGING_DATADIR}/aclocal/alloca.m4
+	install -m 0644 ${S}/m4/canonicalize.m4 ${STAGING_DATADIR}/aclocal/canonicalize.m4
+	install -m 0644 ${S}/m4/codeset.m4 ${STAGING_DATADIR}/aclocal/codeset.m4
+	install -m 0644 ${S}/m4/cp.m4 ${STAGING_DATADIR}/aclocal/cp.m4
+	install -m 0644 ${S}/m4/eilseq.m4 ${STAGING_DATADIR}/aclocal/eilseq.m4
+	install -m 0644 ${S}/m4/endian.m4 ${STAGING_DATADIR}/aclocal/endian.m4
+	install -m 0644 ${S}/m4/error.m4 ${STAGING_DATADIR}/aclocal/error.m4
+	install -m 0644 ${S}/m4/general.m4 ${STAGING_DATADIR}/aclocal/general.m4
+	install -m 0644 ${S}/m4/gettext.m4 ${STAGING_DATADIR}/aclocal/gettext.m4
+	install -m 0644 ${S}/m4/glibc21.m4 ${STAGING_DATADIR}/aclocal/glibc21.m4
+	install -m 0644 ${S}/m4/iconv.m4 ${STAGING_DATADIR}/aclocal/iconv.m4
+	install -m 0644 ${S}/m4/intmax.m4 ${STAGING_DATADIR}/aclocal/intmax.m4
+	install -m 0644 ${S}/m4/isc-posix.m4 ${STAGING_DATADIR}/aclocal/isc-posix.m4
+	install -m 0644 ${S}/m4/lcmessage.m4 ${STAGING_DATADIR}/aclocal/lcmessage.m4
+	install -m 0644 ${S}/m4/lib-ld.m4 ${STAGING_DATADIR}/aclocal/lib-ld.m4
+	install -m 0644 ${S}/m4/lib-link.m4 ${STAGING_DATADIR}/aclocal/lib-link.m4
+	install -m 0644 ${S}/m4/lib-prefix.m4 ${STAGING_DATADIR}/aclocal/lib-prefix.m4
+	install -m 0644 ${S}/m4/libtool.m4 ${STAGING_DATADIR}/aclocal/libtool.m4
+	install -m 0644 ${S}/m4/ln.m4 ${STAGING_DATADIR}/aclocal/ln.m4
+	install -m 0644 ${S}/m4/longdouble.m4 ${STAGING_DATADIR}/aclocal/longdouble.m4
+	install -m 0644 ${S}/m4/longlong.m4 ${STAGING_DATADIR}/aclocal/longlong.m4
+	install -m 0644 ${S}/m4/mbstate_t.m4 ${STAGING_DATADIR}/aclocal/mbstate_t.m4
+	install -m 0644 ${S}/m4/nls.m4 ${STAGING_DATADIR}/aclocal/nls.m4
+	install -m 0644 ${S}/m4/onceonly.m4 ${STAGING_DATADIR}/aclocal/onceonly.m4
+	install -m 0644 ${S}/m4/pathmax.m4 ${STAGING_DATADIR}/aclocal/pathmax.m4
+	install -m 0644 ${S}/m4/po.m4 ${STAGING_DATADIR}/aclocal/po.m4
+	install -m 0644 ${S}/m4/printf-posix.m4 ${STAGING_DATADIR}/aclocal/printf-posix.m4
+	install -m 0644 ${S}/m4/progtest.m4 ${STAGING_DATADIR}/aclocal/progtest.m4
+	install -m 0644 ${S}/m4/proto.m4 ${STAGING_DATADIR}/aclocal/proto.m4
+	install -m 0644 ${S}/m4/readlink.m4 ${STAGING_DATADIR}/aclocal/readlink.m4
+	install -m 0644 ${S}/m4/relocatable.m4 ${STAGING_DATADIR}/aclocal/relocatable.m4
+	install -m 0644 ${S}/m4/setenv.m4 ${STAGING_DATADIR}/aclocal/setenv.m4
+	install -m 0644 ${S}/m4/signed.m4 ${STAGING_DATADIR}/aclocal/signed.m4
+	install -m 0644 ${S}/m4/ssize_t.m4 ${STAGING_DATADIR}/aclocal/ssize_t.m4
+	install -m 0644 ${S}/m4/stdbool.m4 ${STAGING_DATADIR}/aclocal/stdbool.m4
+	install -m 0644 ${S}/m4/strerror.m4 ${STAGING_DATADIR}/aclocal/strerror.m4
+	install -m 0644 ${S}/m4/strerror_r.m4 ${STAGING_DATADIR}/aclocal/strerror_r.m4
+	install -m 0644 ${S}/m4/unlocked-io.m4 ${STAGING_DATADIR}/aclocal/unlocked-io.m4
+	install -m 0644 ${S}/m4/wchar_t.m4 ${STAGING_DATADIR}/aclocal/wchar_t.m4
+	install -m 0644 ${S}/m4/wint_t.m4 ${STAGING_DATADIR}/aclocal/wint_t.m4
+	install -m 0644 ${S}/m4/xreadlink.m4 ${STAGING_DATADIR}/aclocal/xreadlink.m4
+}
+
+do_install () {
+	:
+}
