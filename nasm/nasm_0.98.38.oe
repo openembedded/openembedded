@@ -1,7 +1,7 @@
 SECTION = "devel"
 DESCRIPTION = "General-purpose x86 assembler"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-COMPATIBLE_HOST = 'i.86.*-linux'
+COMPATIBLE_HOST = 'i.86.*-(linux|freebsd.*)'
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/nasm/nasm-${PV}.tar.bz2"
 
