@@ -33,9 +33,9 @@ S = "${WORKDIR}/linux"
 inherit kernel
 
 #FIXME: Use configuration system
-MEM = "32"
-RD = "32"
-CMDLINE = "root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
+export MEM = "32"
+export RD = "32"
+export CMDLINE = "console=ttySA root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
@@ -56,7 +56,7 @@ do_configure_prepend() {
                 echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
         fi
-	echo "CONFIG_CMDLINE=\"$CMDLINE console=null mem=${mem}M\"" >> ${S}/.config
+	echo "CONFIG_CMDLINE=\"$CMDLINE mem=${mem}M\"" >> ${S}/.config
         oe_runmake oldconfig
 }
 
