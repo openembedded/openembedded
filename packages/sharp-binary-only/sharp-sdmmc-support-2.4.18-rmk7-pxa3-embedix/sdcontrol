@@ -139,6 +139,12 @@ case "$ACTION" in
 		! test -d $MOUNT_POINT && mkdir -p $MOUNT_POINT	
 			
 		DEVICE="/dev/$part"
+		if ! test -e "$DEVICE"
+		then
+			DEV_NUM="`echo "$DEVICE" | sed -n "s/.*\([0-9]\)/\1/p"`"
+			cd /dev			
+			mknod mmcda$DEV_NUM b 60 $DEV_NUM
+		fi
 		
 		echo "Mounting [/dev/$part]"
 		echo "* Trying VFAT mount [$SD_OPTS_VFAT]..."
