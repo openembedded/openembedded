@@ -6,9 +6,8 @@ PACKAGE_ARCH = "ipaqsa"
 KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
 
-HHSUBV  = "11"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}.${HHSUBV}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')}-${HHSUBV}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')}"
 
 S = "${WORKDIR}/kernel"
 
