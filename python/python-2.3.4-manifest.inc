@@ -182,8 +182,8 @@ RDEPENDS_python-mmap="python-core python-io"
 FILES_python-mmap="/usr/lib/python2.3/lib-dynload/mmap.so "
 
 DESCRIPTION_python-zlib="Python zlib Support."
-PR_python-zlib="ml2"
-RDEPENDS_python-zlib="python-core zlib1g"
+PR_python-zlib="ml3"
+RDEPENDS_python-zlib="python-core libz1"
 FILES_python-zlib="/usr/lib/python2.3/lib-dynload/zlib.so "
 
 DESCRIPTION_python-db="Python File-Based Database Support"
