@@ -6,7 +6,7 @@ def gnome_verdir(v):
 SECTION = "gnome"
 SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
 
-FILES_${PN} += "${datadir}/application-registry"
+FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info"
 
 inherit autotools pkgconfig
 
