@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -26,7 +26,7 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault glibc-extra-nss"
+PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
@@ -47,6 +47,8 @@ FILES_glibc-gconv = "${libdir}/gconv"
 FILES_glibc-i18n = "${datadir}/i18n"
 FILES_catchsegv = "${bindir}/catchsegv"
 DEPENDS_catchsegv = "libsegfault"
+FILES_glibc-pcprofile = "/lib/libpcprofile.so"
+FILES_glibc-thread-db = "/lib/libthread-db*"
 
 HEADERS_VERSION = "2.6.5.1"
 HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
