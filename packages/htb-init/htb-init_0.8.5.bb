@@ -2,11 +2,13 @@ DESCRIPTION = "HTB.init is a shell script that allows for easy setup of HTB-base
 HOMEPAGE = "http://sourceforge.net/projects/htbinit"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://aleron.dl.sourceforge.net/sourceforge/htbinit/htb.init-v${PV} \
 	file://htb.init+ingress+predef+verbose.diff;patch=1;pnum=0 \
 	file://htb-basic-verbose.diff;patch=1;pnum=0"
-RDEPENDS = "kernel-module-sch-ingress kernel-module-cls-route kernel-module-cls-u32 kernel-module-cls-fw kernel-module-sch-sfq kernel-module-sch-htb iproute2 (>= 2.6.8-r1)"
+RRECOMMENDS = "kernel-module-sch-ingress kernel-module-cls-route kernel-module-cls-u32 kernel-module-cls-fw kernel-module-sch-sfq kernel-module-sch-htb"
+RDEPENDS = "iproute2 (>= 2.6.8-r1)"
 
 S="${WORKDIR}"
 
