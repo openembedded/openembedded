@@ -1,7 +1,7 @@
 DESCRIPTION = "GStreamer is a multimedia framework for encoding and decoding video and sound. \
 It supports a wide range of formats including mp3, ogg, avi, mpeg and quicktime."
 DEPENDS = "glib-2.0 gettext libxml2 popt"
-SECTION = "base"
+SECTION = "x11/network"
 PRIORITY = "optional"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.8.0.tar.bz2"

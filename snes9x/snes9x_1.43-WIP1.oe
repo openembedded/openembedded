@@ -1,4 +1,4 @@
-SECTION = "unknown"
+SECTION = "x11/games"
 PR = "r3"
 
 DEPENDS = "libxxf86dga libxxf86vm"

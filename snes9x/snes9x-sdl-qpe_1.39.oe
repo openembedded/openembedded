@@ -1,5 +1,5 @@
 DESCRIPTION = "Super Nintendo Emulator based on SDL, QtE Palmtop Environments Edition"
-SECTION = "base"
+SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 PR = "r1"

@@ -1,5 +1,5 @@
 DESCRIPTION = "USB console utilities."
-SECTION = "console/base"
+SECTION = "base"
 
 SRC_URI = "http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \
 	   file://configure.patch;patch=1"

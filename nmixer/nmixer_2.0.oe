@@ -1,5 +1,5 @@
 DESCRIPTION = "A text mode OSS soundmixer"
-SECTION = "base"
+SECTION = "console/multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "ncurses"

@@ -1,4 +1,4 @@
-SECTION = "base"
+SECTION = "console/utils"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DESCRIPTION = "gzip (GNU zip) is a compression utility designed \

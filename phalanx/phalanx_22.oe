@@ -1,5 +1,5 @@
 DESCRIPTION = "Phalanx is a chess playing engine."
-SECTION = "games/libs"
+SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer"
 PR = "r3"

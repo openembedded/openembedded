@@ -1,5 +1,5 @@
 DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
-SECTION = "fonts"
+SECTION = "opie/fonts"
 PRIORITY = "optional"
 
 SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Tcpick Tcp Stream Sniffer and Connection Tracker"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "required"
 DEPENDS = "ncurses"
 

@@ -3,7 +3,7 @@ PR = "r1"
 DESCRIPTION = "GStreamer is a multimedia framework for encoding and decoding video and sound. \
 It supports a wide range of formats including mp3, ogg, avi, mpeg and quicktime."
 DEPENDS = "glib-2.0 gettext-native libxml2 popt"
-SECTION = "base"
+SECTION = "x11/network"
 PRIORITY = "optional"
 
 FILES_${PN} += " ${libdir}/gstreamer-0.8/*.so"

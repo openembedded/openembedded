@@ -1,5 +1,5 @@
 DESCRIPTION = "Plugins for GStreamer"
-SECTION = "base"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PROVIDES = "gst-plugins"

@@ -1,5 +1,5 @@
 PR = "r1"
-SECTION = "gnome/base"
+SECTION = "x11/gnome/libs"
 DESCRIPTION = "Bonobo CORBA interfaces library"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libbonobo/2.6/libbonobo-${PV}.tar.bz2 \
            file://gtk-doc.m4 \

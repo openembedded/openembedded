@@ -1,5 +1,5 @@
 DESCRIPTION = "A sophisticated console ftp client"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "optional"
 
 SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2 \

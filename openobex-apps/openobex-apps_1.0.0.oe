@@ -1,5 +1,5 @@
 DESCRIPTION = "Applications for OpenOBEX"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "openobex"
 

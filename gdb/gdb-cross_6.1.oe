@@ -1,5 +1,5 @@
 DESCRIPTION = "gdb - GNU debugger"
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
 DEPENDS = "ncurses-native"

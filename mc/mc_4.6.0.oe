@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU Midnight Commander is a file \
 manager for free operating systems."
-SECTION = "base"
+SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0"
 

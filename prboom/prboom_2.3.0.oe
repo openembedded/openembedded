@@ -1,5 +1,5 @@
 DESCRIPTION = "A Doom Clone based on SDL"
-SECTION = "base"
+SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-net"
 PR = "r1"

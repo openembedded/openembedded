@@ -1,6 +1,6 @@
 DESCRIPTION = "A full featured personal video recorder system."
 MAINTAINER = "Michael 'Mickey' Lauer"
-SECTION = "multimedia"
+SECTION = "x11/multimedia"
 PR = "r3"
 
 SRC_URI = "cvs://mythtv:mythtv@cvs.mythtv.org/var/lib/mythcvs;module=mythtv;date=20040918;method=pserver \

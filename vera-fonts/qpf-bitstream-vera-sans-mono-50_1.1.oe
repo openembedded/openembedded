@@ -1,0 +1,27 @@
+DESCRIPTION = "fonts-bitstream-vera-sans-mono-50 is a package \
+containing QPF font files of Bitstream Vera Mono, at the \
+normal line weight (not bold)."
+SECTION = "opie/fonts"
+PRIORITY = "optional"
+
+SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono-50_1.1.tar.gz"
+
+FILES_${PN} += "/opt"
+
+do_install () { 
+        install -d ${D}${palmqtdir}/lib/fonts/ 
+	
+	cd ${WORKDIR}/fonts-bitstream-vera-sans-mono-50_1.1/home/QtPalmtop/lib/fonts/
+	
+        for i in *.qpf; do 
+                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i} 
+        done 
+} 
+
+pkg_postinst () {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}

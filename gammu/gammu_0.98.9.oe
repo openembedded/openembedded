@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://mwiacek.com/gsm/soft/gammu.html"
 AUTHOR = "Marcin Wiacek <marcin@mwiacek.com>"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
-SECTION = "base"
+SECTION = "console/network"
 
 SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/test/gammu-${PV}.tar.gz \
 file://ldflags.patch;patch=1 \

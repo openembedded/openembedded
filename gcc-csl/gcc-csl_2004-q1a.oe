@@ -1,4 +1,4 @@
-SECTION = "base"
+SECTION = "devel"
 inherit autotools
 
 DESCRIPTION = "The GNU cc and gcc C compilers."

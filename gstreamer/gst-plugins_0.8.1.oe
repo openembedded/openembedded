@@ -1,5 +1,5 @@
 DESCRIPTION = "Plugins for GStreamer"
-SECTION = "base"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r3"

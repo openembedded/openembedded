@@ -1,5 +1,5 @@
 DESCRIPTION = "A sophisticated network protocol dumper"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "libpcap-0.8.1"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "C64 Emulator based on SDL"
-SECTION = "games"
+SECTION = "opie/utils"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 CVSDATE = "20040801"

@@ -1,4 +1,4 @@
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "standard"
 DESCRIPTION = "Tools for zmodem/xmodem/ymodem file transfer"
 DEPENDS = "gettext-native"
