@@ -1,0 +1,34 @@
+DESCRIPTION = Freetype font rendering library
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+FT_SONAME = 6.3.5
+
+SRC_URI = ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools libtool pkgconfig
+
+EXTRA_OEMAKE="'LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool'"
+
+do_configure () {
+	cd builds/unix
+	aclocal -I .
+	autoconf
+	cd ${S}
+	oe_runconf
+}
+
+do_stage () {
+	install -m 755 -D objs/.libs/libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.${FT_SONAME}
+	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.6
+	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so
+
+	install -m 0644 objs/.libs/libfreetype.lai ${STAGING_LIBDIR}/libfreetype.la
+	cp -a include/*.h ${STAGING_INCDIR}
+	cp -a include/freetype ${STAGING_INCDIR}
+
+	sed -e 's,/usr,${STAGING_DIR}/target,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
+	chmod u+x ${STAGING_BINDIR}/freetype-config
+}
+
