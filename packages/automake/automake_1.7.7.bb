@@ -1,8 +1,9 @@
-SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2"
+SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
+	file://path_prog_fixes.patch;patch=1"
 DESCRIPTION = "A tool for automatically generating Makefiles."
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"

@@ -1,9 +1,10 @@
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
-	   file://automake182-update-configscripts.patch;patch=1;pnum=1"
+	   file://automake182-update-configscripts.patch;patch=1;pnum=1 \
+	file://path_prog_fixes.patch;patch=1"
 DESCRIPTION = "A tool for automatically generating Makefiles."
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/automake-${PV}"
 
