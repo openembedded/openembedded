@@ -1,0 +1,9 @@
+DESCRIPTION = "opie"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
+DEPENDS = virtual/libc qte
+RDEPENDS = libc6 qte
+
+
+#SRC_URI=":pserver:anoncvs@cvs.handhelds.org:/cvs module=opie;module=opie;tag=v${PV}"
