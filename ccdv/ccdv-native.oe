@@ -1,0 +1,10 @@
+include ccdv.oe
+inherit native
+
+do_stage () {
+	install -m 0755 ccdv ${STAGING_BINDIR}/
+}
+
+do_install () {
+	:
+}
