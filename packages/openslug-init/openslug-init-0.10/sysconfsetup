@@ -15,6 +15,7 @@ then
 auto lo
 iface lo inet loopback
 
+auto eth0
 iface eth0 inet static
 EOF
 
@@ -32,3 +33,5 @@ EOF
 fi
 
 modprobe ixp425_eth
+modprobe ehci-hcd
+
