@@ -20,7 +20,7 @@ do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
 	install ${WORKDIR}/shepherd.xmodmap ${D}/etc/X11/shepherd.xmodmap
 	install -d ${D}/etc/gpe/xsettings-default.d
-	if [ "${GPE_MACHINE_CLASS}" != "bigscreen" ]; then
+	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
 		echo "Gtk/ToolbarStyle:S:icons" > ${D}/etc/gpe/xsettings-default.d/toolbar
 	fi
 }

@@ -10,6 +10,8 @@ PR = "r2"
 # seems to cause problems on arm
 DEFAULT_PREFERENCE_arm = "-1"
 
+SELECTED_OPTIMIZATION = "-O -fno-strict-aliasing"
+
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz \
            file://list-move.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \

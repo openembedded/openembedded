@@ -1,14 +1,14 @@
-SECTION = "console/network"
 DESCRIPTION = "Nmap is a command line portscanner."
 HOMEPAGE = "http://www.insecure.org/nmap/"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "libpcap pcre"
 PR = "r1"
 
 inherit autotools
 
-SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tgz \
+SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/nmap-${PV}"
 
