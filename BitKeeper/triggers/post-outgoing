@@ -1,0 +1,64 @@
+#!/bin/sh
+
+LIST=openzaurus-cvslogs@lists.sf.net
+
+
+if [ X"$BK_STATUS" = XDRYRUN -o X"$BK_STATUS" = XNOTHING ]
+then exit 0
+fi
+
+if [ "$BK_SIDE" = server ]
+then U=$BKD_USER
+     H=$BKD_HOST
+     R=$BKD_ROOT
+else U=$BK_USER
+     H=$BK_HOST
+     R=$BK_ROOT
+fi
+R_OUT=`echo $BKD_ROOT | sed "s,.*/,,"`
+
+if !(echo $BKD_HOST|grep -q bitkeeper.com)
+then exit 0
+fi
+
+if [ $BK_SIDE != client ]
+then exit 0
+fi
+
+echo "Sending notification mail to $LIST..."
+
+(
+    echo ${U}@${H} fired the $BK_TRIGGER trigger in $R_OUT
+    case "$BK_TRIGGER" in
+        pre-outgoing)   VERB=Sending;;
+        post-outgoing)  VERB=Sent;;
+        pre-incoming)   VERB=Receiving;;
+        post-incoming)  VERB=Received;;
+        pre-resolve)    VERB=Resolving;;
+        pre-commit)     VERB=Committing;;
+        post-commit)    VERB=Committed;;
+        pre-apply)      VERB=Applying;;
+    esac
+    if [ X"$BK_PENDING" != X ]
+    then (
+         echo $VERB the following deltas
+         echo
+         bk prs - < $BK_PENDING
+         ) | sed 's/^/    /'
+    fi
+    if [ X"$BK_CSETLIST" != X ]
+    then (
+         echo $VERB the following changesets
+         echo
+         BK_CSETLIST=BitKeeper/etc/cset-in
+         bk changes -v - < $BK_CSETLIST
+         ) | sed 's/^/    /'
+    fi
+    if [ X"$BK_CSETS" != X ]
+    then (
+         echo $VERB the following changesets
+         echo
+         bk changes -v -r$BK_CSETS
+         ) | sed 's/^/    /'
+    fi
+) | mail -s "${U}@${H}:${R} - $BK_EVENT" $LIST
