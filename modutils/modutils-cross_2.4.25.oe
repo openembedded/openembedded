@@ -2,7 +2,7 @@ include modutils_${PV}.oe
 inherit cross
 S = "${WORKDIR}/modutils-${PV}"
 DEPENDS = "patcher-native"
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/modutils-${PV}-${PR}"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 PACKAGES = ""
 
 sbindir = "${prefix}/bin"
