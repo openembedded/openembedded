@@ -1,0 +1,16 @@
+PR = "r1"
+
+inherit gnome
+
+DEPENDS = "gconf gettext"
+
+EXTRA_OECONF = "--disable-schemas-install"
+
+SRC_URI += "file://compiler-flags.m4 \
+	file://aclocal-lossage.patch;patch=1"
+
+do_configure_prepend() {
+	install -d ${S}/m4
+	install -m 0644 ${WORKDIR}/compiler-flags.m4 ${S}/m4/
+}
+
