@@ -13,7 +13,8 @@ SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snap
 	   file://kcookiejar-merge.patch;patch=1 \
 	   file://malformed.patch;patch=1 \
 	   file://cachepath.patch;patch=1 \
-	   file://konq-embedrc "
+	   file://konq-embedrc \
+	   file://vit.patch;patch=1"
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
 inherit autotools
