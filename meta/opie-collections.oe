@@ -11,6 +11,14 @@ OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
 OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 
 #
+# High res displays want more fonts
+#
+OPIE_LIBS_RDEPENDS_append_corgi    = "qpf-bitstream-vera-large"
+OPIE_LIBS_RDEPENDS_append_shepherd = "qpf-bitstream-vera-large"
+OPIE_LIBS_RDEPENDS_append_husky    = "qpf-bitstream-vera-large"
+OPIE_LIBS_RDEPENDS_append_tosa     = "qpf-bitstream-vera-large"
+
+#
 # Things for reasonable bootstrap image
 #
 
