@@ -13,10 +13,9 @@ gpe-base = "\
     matchbox \
     rxvt \
     gpe-icons \
-    libfontconfig-utils \
     gpe-autostarter"
 
-RDEPENDS_gpe-task-base := "${gpe-base}"
+RDEPENDS_gpe-task-base := "${gpe-base} libfontconfig-utils"
 DEPENDS += " ${gpe-base}"
 
 gpe-task-pim = "\
