@@ -12,5 +12,5 @@ inherit autotools
 
 PACKAGES += " ${PN}-native"
 
-FILES_${PN} = "/usr/share/sablevm"
-FILES_${PN}-native = "/usr/lib/sablevm"
+FILES_${PN} = "${datadir}/sablevm"
+FILES_${PN}-native = "${libdir}/sablevm"
