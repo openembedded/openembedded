@@ -61,3 +61,28 @@ OPIE_EXTRA_APPS = "opie-advancedfm"
 OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security \
             opie-mediummount opie-networksettings-wlanplugin opie-networksettings-pppplugin"
 
+#
+# Additional things for a >= 24MB distribution
+#
+
+OPIE_DEPENDS_24 = "konqueror-embedded"
+OPIE_RDEPENDS_24 = "konqueror-embedded"
+
+#
+#
+#
+
+def opie_more_depends(d):
+	import bb
+	root_flash_size = int( bb.data.getVar( "ROOT_FLASH_SIZE", d, True ) )
+	if root_flash_size >= 24: return bb.data.getVar( "OPIE_DEPENDS_24", d, True )
+	else: return " "
+
+def opie_more_rdepends(d):  
+        import bb
+        root_flash_size = int( bb.data.getVar( "ROOT_FLASH_SIZE", d, True ) )
+        if root_flash_size >= 24: return bb.data.getVar( "OPIE_RDEPENDS_24", d, True )
+        else: return " "
+
+OPIE_MORE_DEPENDS := "${@opie_more_depends(d)}"    
+OPIE_MORE_RDEPENDS := "${@opie_more_rdepends(d)}"
