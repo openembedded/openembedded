@@ -14,6 +14,12 @@ EXTRA_OECONF="--enable-static --enable-shared"
 
 CFLAGS_append = " -D_REENTRANT"
 
+# This doesn't seem to exist, we need it to for our libtool.oeclass
+# to work properly, ensure that it does exist.
+do_configure_prepend() {
+	touch ${S}/libtool
+}
+
 do_stage() {
 	install -m 644 jconfig.h ${STAGING_INCDIR}/jconfig.h
 	install -m 644 jpeglib.h ${STAGING_INCDIR}/jpeglib.h
