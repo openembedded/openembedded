@@ -11,7 +11,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -31,7 +31,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://busybox-udhcpd \
 	   file://syslog \
            file://hwclock.sh \
-	   file://default.script"
+	   file://default.script \
+	   file://syslog.conf"
 	   
 S = "${WORKDIR}/busybox-${PV}"
 
@@ -57,23 +58,24 @@ do_compile () {
 do_install () {
 	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
-	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/syslog ${D}/${sysconfdir}/init.d/
+	install -m 644 ${WORKDIR}/syslog.conf ${D}/${sysconfdir}/
 	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then 
-		install -m 0755 ${WORKDIR}/busybox-cron ${D}/etc/init.d/
+		install -m 0755 ${WORKDIR}/busybox-cron ${D}/${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then 
-		install -m 0755 ${WORKDIR}/busybox-httpd ${D}/etc/init.d/
+		install -m 0755 ${WORKDIR}/busybox-httpd ${D}/${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_UDHCPD=y" ${WORKDIR}/defconfig; then 
-		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}/etc/init.d/
+		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}/${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then 
-		install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
+		install -m 0755 ${WORKDIR}/hwclock.sh ${D}/${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_UDHCPC=y" ${WORKDIR}/defconfig; then 
-		install -d ${D}/etc/udhcpc.d
+		install -d ${D}/${sysconfdir}/udhcpc.d
 		install -d ${D}${datadir}/udhcpc
-		install -m 0755 ${S}/examples/udhcp/simple.script ${D}/etc/udhcpc.d/50default
+		install -m 0755 ${S}/examples/udhcp/simple.script ${D}/${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
 	fi
 }
