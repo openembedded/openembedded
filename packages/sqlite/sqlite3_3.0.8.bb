@@ -12,8 +12,7 @@ S = "${WORKDIR}/sqlite"
 inherit autotools
 
 EXTRA_OECONF = "--without-tcl --disable-static --enable-shared"
-EXTRA_OEMAKE = "'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses' "
-EXTRA_OEMAKE_arm = "'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses' LIBTOOL='./${TARGET_ARCH}-${TARGET_OS}-libtool' "
+EXTRA_OEMAKE = "'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses' LIBTOOL='./${TARGET_ARCH}-${TARGET_OS}-libtool' "
 export config_BUILD_CC = "${BUILD_CC}"
 export config_BUILD_CFLAGS = "${BUILD_CFLAGS}"
 export config_TARGET_CC = "${CC}"
