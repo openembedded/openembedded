@@ -43,7 +43,7 @@ check_sanity () {
 }
 
 check_projects () {
-    if [ ! -e ciabot.projects ]; then
+    if [ ! -e $BK_ROOT/BitKeeper/triggers/ciabot.projects ]; then
         return 1
     fi
 
@@ -53,7 +53,7 @@ check_projects () {
             project_name=${_p}
             return_address=${_e}
         fi
-    done < ciabot.projects
+    done < $BK_ROOT/BitKeeper/triggers/ciabot.projects
     export project_name return_address
     return 0
 }
