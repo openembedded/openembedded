@@ -15,5 +15,6 @@ do_stage() {
 	       bindir=${STAGING_BINDIR} \
 	       includedir=${STAGING_INCDIR} \
 	       libdir=${STAGING_LIBDIR} \
-	       datadir=${STAGING_DATADIR}
+	       datadir=${STAGING_DATADIR} \
+	       mandir=${STAGING_DATADIR}/man
 }
