@@ -1,0 +1,26 @@
+DESCRIPTION = "Enables PPP dial-in through a serial connection"
+MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+DEPENDS = "ppp"
+RDEPENDS = "ppp"
+
+SRC_URI = "file://host-peer \
+           file://ppp-dialin"
+
+do_install() {
+	install -d ${D}/${sysconfdir}/ppp/peers
+	install -m 0644 ${WORKDIR}/host-peer ${D}/${sysconfdir}/ppp/peers/host
+
+	install -d ${D}/${sbindir}
+	install -m 0750 ${WORKDIR}/ppp-dialin ${D}/${sbindir}
+}
+
+pkg_postinst() {
+if test "x$D" != "x"; then
+	exit 1
+else
+	addgroup ppp
+	adduser --system --home /dev/null --no-create-home --disabled-password --ingroup ppp -s /usr/sbin/ppp-dialin ppp
+	chgrp ppp /usr/sbin/ppp-dialin
+	chmod u+s /usr/sbin/ppp-dialin
+fi
+}
