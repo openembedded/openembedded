@@ -1,6 +1,6 @@
 SECTION = "libs"
 DESCRIPTION = "Secure Socket Layer (SSL) binary and related cryptographic tools."
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz \
 	   file://debian.patch;patch=1"
@@ -8,11 +8,16 @@ S = "${WORKDIR}/openssl-${PV}"
 
 AR_append = " r"
 export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
-export DIRS = "crypto ssl"
+
+# -02 does not work on mipsel: ssh hangs when it tries to read /dev/urandom
+export CFLAG_mtx-1 := "${@'${CFLAG}'.replace('-O2', '')}"
+
+export DIRS = "crypto ssl apps"
 export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
 
-PACKAGES =+ "libcrypto"
-FILES_libcrypto = "${libdir}/libcrypto.so.*"
+PACKAGES =+ "libcrypto libssl"
+FILES_libcrypto = "${libdir}/libcrypto.so*"
+FILES_libssl = "${libdir}/libssl.so*"
 
 do_compile () {
 	perl util/perlpath.pl ${bindir}
@@ -50,20 +55,18 @@ do_compile () {
 	esac
 	perl ./Configure shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
 	oe_runmake -f Makefile.ssl
-	perl ./Configure no-shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
-	oe_runmake -f Makefile.ssl
 }
 
 do_stage () {
 	cp --dereference -R include/openssl ${STAGING_INCDIR}/
-	oe_libinstall -a -so ${S}/libcrypto ${STAGING_LIBDIR}
-	oe_libinstall -a -so ${S}/libssl ${STAGING_LIBDIR}
+	oe_libinstall -a -so libcrypto ${STAGING_LIBDIR}
+	oe_libinstall -a -so libssl ${STAGING_LIBDIR}
 }
 
 do_install () {
 	install -m 0755 -d ${D}/${libdir}/pkgconfig
 	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
 	chmod 644 ${D}/${libdir}/pkgconfig/openssl.pc
-	oe_libinstall -so ${S}/libcrypto ${D}/${libdir}
-	oe_libinstall -so ${S}/libssl ${D}/${libdir}
+	oe_libinstall -so libcrypto ${D}/${libdir}
+	oe_libinstall -so libssl ${D}/${libdir}
 }
