@@ -58,4 +58,7 @@ else
 	fi
 fi
 
+## enable (working) suspend/resume via power button on c7x0
+echo 1 >/proc/power_key_off
+
 exit 0
