@@ -14,6 +14,8 @@ KERNEL_LDSUFFIX ?= ""
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
 
+KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
+
 #
 # configuration
 #
@@ -65,7 +67,7 @@ kernel_do_stage() {
 	echo "${KERNEL_LDSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ldsuffix
 	[ -e Rules.make ] && install -m 0644 Rules.make ${STAGING_KERNEL_DIR}/
 	[ -e Makefile ] && install -m 0644 Makefile ${STAGING_KERNEL_DIR}/
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
+	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 }
 
 kernel_do_install() {
@@ -76,7 +78,7 @@ kernel_do_install() {
 		oenote "no modules to install"
 	fi
 	install -d ${D}/boot
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${D}/boot/${KERNEL_IMAGETYPE}-${PV}
+	install -m 0644 ${KERNEL_OUTPUT} ${D}/boot/${KERNEL_IMAGETYPE}-${PV}
 	install -m 0644 System.map ${D}/boot/System.map-${PV}
 	install -m 0644 .config ${D}/boot/config-${PV}
 	install -d ${D}/etc/modutils
