@@ -1,7 +1,8 @@
 DEPENDS = virtual/libc glib-2.0 fontconfig freetype zlib x11-cvs xft-cvs xproto-cvs
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/pango/1.2/pango-${PV}.tar.bz2 \
-	  file://${FILESDIR}/ft2.patch;patch=1
+	  file://${FILESDIR}/ft2.patch;patch=1 \
+	  file://${FILESDIR}/m4.patch;patch=1
 
 inherit autotools libtool pkgconfig
 
@@ -11,9 +12,10 @@ EXTRA_OECONF = '--disable-glibtest \
 FILES_${PN}-doc:=${FILES_pango-doc} ${datadir}/gtk-doc
 
 do_compile_prepend () {
+	if test -e ${S}/${HOST_PREFIX}libtool; then LIBTOOL=${S}/${HOST_PREFIX}libtool; else LIBTOOL=${S}/libtool; fi
 	(cd tests && \
-	/bin/sh ${S}/libtool --silent --mode=link ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR}/glib-2.0 -lglib-2.0 gen-all-unicode.c -o gen-all-unicode && \
-	touch gen-all-unicode.c .libs/gen-all-unicde gen-all-unicode gen-all-unicode.o)
+	/bin/sh $LIBTOOL --silent --mode=link ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR}/glib-2.0 -lglib-2.0 gen-all-unicode.c -o gen-all-unicode && \
+	touch gen-all-unicode.c .libs/gen-all-unicode gen-all-unicode gen-all-unicode.o .deps/gen-all-unicode.Po)
 }
 
 SOV=0.200.5
