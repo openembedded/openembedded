@@ -1,0 +1,22 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := http://www.packetfactory.net/libnet/dist/deprecated/libnet-1.0.2a.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/Libnet-1.0.2a
+
+inherit autotools
+
+CPPFLAGS_prepend = "-I${S}/libnet/include -DHAVE_PF_PACKET "
+
+do_stage () {
+	install -m 0644 include/libnet.h ${STAGING_DIR}/target/include/
+	install -d ${STAGING_DIR}/target/include/libnet
+	install -m 0644 include/libnet/libnet-headers.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet/libnet-functions.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet/libnet-structures.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet/libnet-macros.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet/libnet-asn1.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0644 include/libnet/libnet-ospf.h ${STAGING_DIR}/target/include/libnet/
+	install -m 0755 lib/libnet.a ${STAGING_LIBDIR}/
+}
