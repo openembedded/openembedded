@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r1"
+PR = "r3"
 
 inherit gpe
 
@@ -7,16 +7,18 @@ DESCRIPTION = "GPE session startup scripts"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr"
+RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr xmodmap"
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
-DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr"
+DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap"
 
 SRC_URI += "file://zaurus.sh \
 	file://change-default-applets.patch;patch=1 \
-	file://xdefaults.patch;patch=1"
+	file://xdefaults.patch;patch=1 \
+	file://shepherd.xmodmap"
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
+	install ${WORKDIR}/shepherd.xmodmap ${D}/etc/X11/shepherd.xmodmap
 	install -d ${D}/etc/gpe/xsettings-default.d
 	if [ "${GPE_MACHINE_CLASS}" != "bigscreen" ]; then
 		echo "Gtk/ToolbarStyle:S:icons" > ${D}/etc/gpe/xsettings-default.d/toolbar
