@@ -2,12 +2,12 @@ include libtool_${PV}.oe
 # This is a cross tool, but doesn't really fit in with the cross
 # build system, so we don't actually "inherit cross" here.
 SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
-		   file://${FILESDIR}/sedvar.patch;patch=1 \
-		   file://${FILESDIR}/tag.patch;patch=1 \
-		   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
-		   file://${FILESDIR}/prefix.patch;patch=1 \
-		   file://${FILESDIR}/chmod.patch;patch=1 \
-		   file://${FILESDIR}/install-path-check.patch;patch=1"
+                   file://${FILESDIR}/sedvar.patch;patch=1 \
+                   file://${FILESDIR}/tag.patch;patch=1 \
+                   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
+                   file://${FILESDIR}/prefix.patch;patch=1 \
+                   file://${FILESDIR}/ld.patch;patch=1 \
+                   file://${FILESDIR}/chmod.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
 
@@ -27,8 +27,8 @@ do_stage () {
 	install -c config.guess ${STAGING_DATADIR}/libtool/config.guess
 	install -c config.sub ${STAGING_DATADIR}/libtool/config.sub
 	install -c -m 0644 ltmain.sh ${STAGING_DATADIR}/libtool/
-	install -c -m 0644 libtool.m4 ${STAGING_DATADIR}/aclocal/
-	install -c -m 0644 ltdl.m4 ${STAGING_DATADIR}/aclocal/
+	install -c -m 0644 m4/libtool.m4 ${STAGING_DATADIR}/aclocal/
+	install -c -m 0644 m4/ltdl.m4 ${STAGING_DATADIR}/aclocal/
 
 	install -m 0644 libltdl/.libs/libltdl.a ${STAGING_LIBDIR}/
 	install -m 0644 libltdl/.libs/libltdl.lai ${STAGING_LIBDIR}/libltdl.la
