@@ -30,6 +30,24 @@ INHIBIT_DEFAULT_DEPS = "1"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
+PACKAGES = "uclibc ldd uclibc-utils uclibc-gconv uclibc-dev uclibc-doc uclibc-thread-db"
+
+uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
+		   /lib/libintl*.so* /lib/libm*.so \
+		   /lib/libnsl*.so* /lib/libpthread*.so \
+		   /lib/libresolv*.so* /lib/libutil*.so \
+		   /lib/libuClibc*.so* /lib/ld*.so* \
+		   /lib/libc*.so* /lib/libdl*.so* \
+		   /lib/libm*.so* /lib/libutil*.so* \
+		   /lib/libpthread*.so*"
+FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
+	       ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
+FILES_ldd = "${bindir}/ldd"
+FILES_uclibc-dev += "${libdir}/*.o"
+FILES_uclibc-utils = "${bindir} ${sbindir}"
+FILES_uclibc-gconv = "${libdir}/gconv"
+FILES_uclibc-thread-db = "/lib/libthread_db*"
+
 #
 # This locale file gets copied into uClibc-${PV}/extra/locale/ prior to
 # build, it does not need to be unpacked, but we can't inhibit the unpacking
@@ -43,6 +61,7 @@ UCLIBC_LOCALE_URI_arm = "http://openembedded.org/dl/uclibc-locale/${UCLIBC_LOCAL
 SRC_URI = "cvs://anonymous:@uclibc.org/var/cvs;module=uClibc \
 	   ${UCLIBC_LOCALE_URI} \
            file://nokernelheadercheck.patch;patch=1 \
+	   file://dyn-ldconfig.patch;patch=1 \
            file://uClibc.config"
 
 S = "${WORKDIR}/uClibc"
@@ -57,6 +76,7 @@ configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${CROSS_DIR}/${TARGET_SYS}/in
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
 		s,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH="/lib",; \
 		s,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g;'
+CFLAGS := "${@oe_filter_out('-I\S+', '${CFLAGS}', d)}"
 
 python () {
 	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
