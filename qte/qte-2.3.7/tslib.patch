@@ -1,0 +1,349 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.7/src/kernel/qwsmouse_qws.cpp~tslib.patch
++++ qt-2.3.7/src/kernel/qwsmouse_qws.cpp
+@@ -7,6 +7,10 @@
+ **
+ ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
+ **
++** Portions Copyright (C) 2003 Texas Instruments, Inc.
++** 	Rights to said portions for use under the GPL and QPL licenses
++**	are hereby granted to Trolltech AS.
++**
+ ** This file is part of the kernel module of the Qt GUI Toolkit.
+ **
+ ** This file may be distributed and/or modified under the terms of the
+@@ -59,6 +63,9 @@
+ #ifdef QT_QWS_CASSIOPEIA
+ #include <linux/tpanel.h>
+ #endif
++#if QWS_TSLIB
++#include <tslib.h>
++#endif
+ 
+ #if defined(QT_QWS_IPAQ)
+ #define QT_QWS_IPAQ_RAW
+@@ -110,7 +117,7 @@
+ 
+ #ifndef QT_QWS_TP_JITTER_LIMIT
+ #define QT_QWS_TP_JITTER_LIMIT 2
+-#endif 
++#endif
+ 
+ //#define QWS_CUSTOMTOUCHPANEL
+ 
+@@ -1093,6 +1100,220 @@
+     return sent;
+ }
+ 
++
++class QTSLibHandler : public QCalibratedMouseHandler
++{
++    Q_OBJECT
++public:
++    QTSLibHandler();
++    ~QTSLibHandler();
++
++    virtual void clearCalibration();
++    virtual void calibrate( QWSPointerCalibrationData * );
++
++    static int sortByX( const void*, const void* );
++    static int sortByY( const void*, const void* );
++private:
++    void openTs();
++    void closeTs();
++    void interpolateSample();
++
++private:
++    bool raw;
++#ifdef QWS_TSLIB
++    struct tsdev *ts;
++#endif
++    QSocketNotifier *m_notify;
++
++private slots:
++    void readMouseData();
++};
++
++QTSLibHandler::QTSLibHandler()
++    : raw(false), m_notify(0l)
++{
++    openTs();
++}
++
++QTSLibHandler::~QTSLibHandler()
++{
++    closeTs();
++}
++
++void QTSLibHandler::openTs()
++{
++#ifdef QWS_TSLIB
++    char *tsdevice;
++
++    if( ( tsdevice = getenv( "TSLIB_TSDEVICE" ) ) != NULL ) {
++	ts = ts_open( tsdevice, 1 );
++    } else {
++	ts = ts_open( "/dev/ts", 1 );
++    }
++
++    if (!ts) {
++	qWarning( "Cannot open touchscreen (%s)", strerror( errno ) );
++	return;
++    }
++
++    if (ts_config( ts )) {
++	qWarning( "Cannot configure touchscreen (%s)", strerror( errno ) );
++	return;
++    }
++
++
++    m_notify = new QSocketNotifier( ts_fd(ts), QSocketNotifier::Read, this );
++    connect( m_notify, SIGNAL( activated( int ) ), this, SLOT( readMouseData() ) );
++#endif
++}
++
++void QTSLibHandler::closeTs()
++{
++#ifdef QWS_TSLIB
++    if (ts)
++        ts_close(ts);
++
++    delete m_notify;
++    m_notify = 0; ts = 0;
++#endif
++
++}
++
++void QTSLibHandler::clearCalibration()
++{
++    raw = true;
++}
++
++
++void QTSLibHandler::calibrate( QWSPointerCalibrationData *cd )
++{
++    QPoint dev_tl = cd->devPoints[ QWSPointerCalibrationData::TopLeft ];
++    QPoint dev_br = cd->devPoints[ QWSPointerCalibrationData::BottomRight ];
++    QPoint screen_tl = cd->screenPoints[ QWSPointerCalibrationData::TopLeft ];
++    QPoint screen_br = cd->screenPoints[ QWSPointerCalibrationData::BottomRight ];
++    int a, b, c, d, e, f, s;
++
++    s = 1 << 16;
++
++    a = s * (screen_tl.x() - screen_br.x() ) / (dev_tl.x() - dev_br.x());
++    b = 0;
++    c = s * screen_tl.x() - a * dev_tl.x();
++
++    d = 0;
++    e = s * (screen_tl.y() - screen_br.y() ) / (dev_tl.y() - dev_br.y());
++    f = s * screen_tl.y() - e * dev_tl.y();
++
++    QString calFile = "/etc/pointercal";
++#ifndef QT_NO_TEXTSTREAM
++    QFile file( calFile );
++    if ( file.open( IO_WriteOnly ) ) {
++	QTextStream t( &file );
++	t << a << " " << b << " " << c << " ";
++	t << d << " " << e << " " << f << " " << s;
++       file.flush(); closeTs();
++       openTs();
++    } else
++#endif
++    {
++	qDebug( "Could not save calibration: %s", calFile.latin1() );
++    }
++    raw = false;
++}
++
++void QTSLibHandler::readMouseData()
++{
++#ifdef QWS_TSLIB
++    if(!qt_screen)
++	return;
++
++    /*
++     * After clear Calibration
++     * we're in raw mode and do some easy median
++     * search.
++     */
++    if (raw )
++        return interpolateSample();
++
++    static struct ts_sample sample;
++    static int ret;
++
++    /*
++     * Ok. We need to see if we can read more than one event
++     * We do this not to lose an update.
++     */
++    while ( true ) {
++        if ((ret = ts_read(ts, &sample, 1)) != 1 )
++            return;
++
++
++        QPoint pos( sample.x, sample.y );
++        emit mouseChanged( pos, sample.pressure != 0 ? 1 : 0 );
++    }
++#endif
++}
++
++
++/*
++ * Lets take all down events and then sort them
++ * and take the event in the middle.
++ *
++ * inspired by testutils.c
++ */
++void QTSLibHandler::interpolateSample() {
++    static struct ts_sample samples[25];
++    int index = -1;
++    int ret;
++
++    do {
++        index++;
++        /* fill only the last sample again */
++        if ( index >= 25 )
++            index = 24;
++
++        /* we're opened non-blocking */
++        if((ret= ts_read_raw(ts, &samples[index], 1 ) ) !=  1 ) {
++            /* no event yet, so try again */
++            if (ret==-1 ) {
++                index--;
++                continue;
++            }
++        }
++    }while (samples[index].pressure != 0);
++
++    /*
++     * index is maximal 25  and we at least one sample
++     */
++    int x, y;
++
++    /*
++     * now let us use the median value
++     * even index does not have an item in the middle
++     * so let us take the average of n/2 and (n/2)-1 as the middle
++     */
++    int m = index/2;
++    ::qsort(samples, index, sizeof(ts_sample), QTSLibHandler::sortByX);
++    x = (index % 2 ) ? samples[m].x :
++        ( samples[m-1].x + samples[m].x )/2;
++
++    ::qsort(samples, index, sizeof(ts_sample), QTSLibHandler::sortByY);
++    y = (index % 2 ) ? samples[m].y :
++        ( samples[m-1].y + samples[m].y )/2;
++
++    emit mouseChanged( QPoint(x, y), 1 );
++    emit mouseChanged( QPoint(0, 0), 0 );
++}
++
++int QTSLibHandler::sortByX( const void* one, const void* two) {
++    return reinterpret_cast<const struct ts_sample*>(one)->x -
++           reinterpret_cast<const struct ts_sample*>(two)->x;
++}
++
++int QTSLibHandler::sortByY( const void* one, const void* two) {
++    return reinterpret_cast<const struct ts_sample*>(one)->y -
++           reinterpret_cast<const struct ts_sample*>(two)->y;
++}
++
++
+ /*
+  * Handler for /dev/tpanel Linux kernel driver
+  */
+@@ -1235,7 +1456,7 @@
+ 
+ 
+ QTPanelHandlerPrivate::QTPanelHandlerPrivate( MouseProtocol, QString dev )
+-    : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0), 
++    : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0),
+     numSamples(0), skipCount(0)
+ {
+ #if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+@@ -1315,7 +1536,7 @@
+ 		mousePos = QPoint( 0, 0 );
+ 		QPoint totalMousePos = oldTotalMousePos;
+ 		totalMousePos += samples[currSample];
+-		if(numSamples >= samples.count()) 
++		if(numSamples >= samples.count())
+ 		    totalMousePos -= samples[lastSample];
+ 
+ 		mousePos = totalMousePos / (sampleCount - 1);
+@@ -1345,7 +1566,7 @@
+ 
+ 		    // save recuring information
+ 		    currSample++;
+-		    if (numSamples >= samples.count()) 
++		    if (numSamples >= samples.count())
+ 			lastSample++;
+ 		    oldTotalMousePos = totalMousePos;
+ 		} else {
+@@ -1658,7 +1879,7 @@
+ 
+     if ( mouseProto == "USB" && mouseDev.isEmpty() )
+ 	mouseDev = "/dev/input/mice";
+-    
++
+     MouseProtocol mouseProtocol = Unknown;
+ 
+     int idx = 0;
+@@ -1689,12 +1910,14 @@
+ 	    break;
+ 
+ 	case TPanel:
+-#if defined(QWS_CUSTOMTOUCHPANEL)
+-	    handler = new QCustomTPanelHandlerPrivate(mouseProtocol,mouseDev);
++#if defined(QWS_TSLIB)
++	    handler = new QTSLibHandler( );
++#elif defined(QWS_CUSTOMTOUCHPANEL)
++	    handler = new QCustomTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #elif defined(QT_QWS_YOPY)
+-	    handler = new QYopyTPanelHandlerPrivate(mouseProtocol,mouseDev);
++	    handler = new QYopyTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+-	    handler = new QTPanelHandlerPrivate(mouseProtocol,mouseDev);
++	    handler = new QTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #elif defined(QT_QWS_CASSIOPEIA)
+ 	    handler = new QVrTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #endif
+--- qt-2.3.7/configure~tslib.patch
++++ qt-2.3.7/configure
+@@ -399,6 +399,9 @@
+    -kde)
+        KDE=yes
+ 	;;
++   -tslib)
++       TSLIB=yes
++	;;
+    -no-g++-exceptions)
+ 	GPLUSPLUS_EXCEPTIONS=no
+ 	;;
+@@ -1255,6 +1258,9 @@
+ 			 set to point to a KDE 2 installation.
+                          See http://www.kde.org
+ 
++    -tslib ............. Use the TSLib (touchscreen access library) mouse handler
++                         by default, instead of the normal device default.
++
+     -no-g++-exceptions . Disable exceptions on platforms using the GNU C++
+ 			 compiler by using the -fno-exceptions flag.
+ 
+@@ -1314,6 +1320,13 @@
+ [ "x$SM" = "xno" ] && QT_CXX="${QT_CXX} -DQT_NO_SM_SUPPORT"
+ [ "x$XFT" = "xyes" ] && QT_CXX="${QT_CXX} -DQT_XFT"
+ [ "x$XFT" = "xno" ] && QT_CXX="${QT_CXX} -DQT_NO_XKB"
++
++if [ "x$TSLIB" = "xyes" ]
++then
++   QT_CXX="${QT_CXX} -DQWS_TSLIB"
++   QT_LIBS="${QT_LIBS} -lts"
++fi
++
+ if [ "x$THREAD" = "xyes" ]
+ then
+    cat >src-mt.mk <<EOF
