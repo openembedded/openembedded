@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 LICENSE = "GPL"
 DESCRIPTION = "BusyBox version ${PV}. \
 BusyBox combines tiny versions of many common UNIX utilities into a single \
@@ -14,6 +14,7 @@ system."
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
            file://bb-iproute-iftunnel.patch;patch=1 \
+	   file://awk.patch;patch=1;pnum=0 \
            file://defconfig \
            file://syslog \
            file://hwclock.sh"
