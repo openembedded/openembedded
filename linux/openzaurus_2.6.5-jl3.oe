@@ -50,7 +50,7 @@ do_configure() {
 		fi
 		echo "CONFIG_CMDLINE=\"$CMDLINE mem=${mem}M\"" >> ${S}/.config
 	else
-		echo "CONFIG_CMDLINE=\"$CMDLINEpxa"" >> ${S}/.config
+		echo "CONFIG_CMDLINE=\"$CMDLINEpxa\"" >> ${S}/.config
 	fi
         oe_runmake oldconfig
 }
