@@ -95,7 +95,6 @@ opie-rdesktop \
 opie-reader \
 opie-remote \
 opie-sheet \
-opie-showimg \
 opie-tableviewer \
 opie-tinykate \
 opie-wellenreiter \
