@@ -6,7 +6,7 @@
 . /etc/default/rcS
 
 # exit without doing anything if udev is active
-if test -x /bin/pidof -a "`pidof udevd`" != ""; then
+if test -e /dev/.udev.tdb; then
 	exit 0
 fi
 
