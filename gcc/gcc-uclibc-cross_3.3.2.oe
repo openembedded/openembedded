@@ -1,7 +1,7 @@
 inherit cross
 include gcc-uclibc_${PV}.oe
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc patcher-native
+DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc
 PROVIDES := virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++
 
 PACKAGES =
