@@ -1,0 +1,22 @@
+
+DESCRIPTION = "Library for reading some sort of media format."
+SECTION = "libs"
+PRIORITY = "optional"
+DEPENDS = ""
+
+inherit autotools
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.tar.gz"
+S="${WORKDIR}/${PN}"
+
+PACKAGES = "${PN} lib${PN} lib${PN}-dev"
+
+FILES_${PN} = " /usr/bin/faac "
+FILES_lib${PN} = " /usr/lib/libfaac.so.0 /usr/lib/libfaac.so.0.0.0 " 
+FILES_lib${PN}-dev = " /usr/include/faac.h /usr/include/faaccfg.h /usr/lib/libfaac.so /usr/lib/libfaac.la /usr/lib/libfaac.a "
+
+do_stage() {
+	oe_libinstall -a -so -C libfaac libfaac ${STAGING_LIBDIR}
+	install -m 0644 ${S}/include/faac.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/include/faaccfg.h ${STAGING_INCDIR}/
+}
