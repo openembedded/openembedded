@@ -1,0 +1,123 @@
+diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/build/Makefile.dpkg_ipkg gpe-package-0.0.9-1/build/Makefile.dpkg_ipkg
+--- ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/build/Makefile.dpkg_ipkg	2004-03-19 12:26:57.000000000 +0000
++++ gpe-package-0.0.9-1/build/Makefile.dpkg_ipkg	2004-07-27 21:21:30.000000000 +0100
+@@ -61,7 +61,7 @@
+ clean: clean-dist
+ 
+ check-source:
+-	@if ! grep -q '^Source:' familiar/$(CONTROL); then echo -e "\nNo Source: field in control file.  Aborting.\n"; exit 1; fi
++	@if [ -e familiar ] && ! grep -q '^Source:' familiar/$(CONTROL); then echo -e "\nNo Source: field in control file.  Aborting.\n"; exit 1; fi
+ 
+ ipkg: check-source ipkg-prep clean
+ 	rm -rf familiar/dist
+diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/Makefile gpe-package-0.0.9-1/Makefile
+--- ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/Makefile	2004-03-19 12:26:57.000000000 +0000
++++ gpe-package-0.0.9-1/Makefile	2004-07-27 21:21:45.000000000 +0100
+@@ -1,65 +1,27 @@
+ PACKAGE = gpe-package
+ VERSION = 0.0.9-1
+-NATIVE = yes
+ CVSBUILD = no
+ DEBUG = no
+-INSTALL = install
+-PREFIX = /usr/
+-DESTDIR = /
++PREFIX = /usr/local
+ 
+ LINGUAS = 
+ 
+-EXTRA_DESKTOPS = gpe-package.desktop.in 
++EXTRA_DESKTOPS = gpe-package.desktop.in
+ HELPFILE = gpe-package.html
+ 
+ ifeq ($(CVSBUILD),yes)
+-LDFLAGS += -L../libgpewidget -L../libdisplaymigration -ldisplaymigration -L.
+-CFLAGS += -Wall -I../libgpewidget -I. -I/home/fuchs/Projekte/gpe/familiar/dist/ipkg/C
++PACKAGE_CPPFLAGS += -I../libgpewidget -I../libdisplaymigration -I../libipkg
++PACKAGE_LDFLAGS += -L../libgpewidget -L../libdisplaymigration -L../libipkg
+ BUILD = ../build
+ else
+-CFLAGS += -I/usr/local/include/gpe
++PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS)
++PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GPECFLAGS) -I$(STAGING_INCDIR)/libipkg -DIPKG_LIB
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS) -lgpewidget -ldisplaymigration -lipkg
+ BUILD = build
+ endif
+ 
+ MEMBERS  = main interface packages filesel
+ 
+-ifeq ($(DEBUG),yes)
+-CFLAGS += -g -DDEBUG
+-else
+-CFLAGS += -Os -fomit-frame-pointer
+-endif
+-
+-CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
+-CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+-CFLAGS += -DIPKG_LIB
+-
+-GTKCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0` 
+-GTKLDFLAGS += `pkg-config --libs gtk+-2.0 gdk-2.0 gdk-pixbuf-2.0`
+-
+-# setup how to compile
+-ifeq ($(NATIVE),yes)
+-
+-STRIP=strip
+-CC=gcc
+-
+-CFLAGS += $(GTKCFLAGS) -Wall
+-LDFLAGS += -lgpewidget `pkg-config --libs gtk+-2.0 gdk-pixbuf-2.0` 
+-LDFLAGS += -lipkg 
+-
+-else # we do cross-compile...
+-
+-CC=arm-linux-gcc
+-STRIP=arm-linux-strip
+-
+-CFLAGS += -march=armv4 -mtune=strongarm
+-CFLAGS += $(GTKCFLAGS) -Wall 
+-LDFLAGS += -lgpewidget $(GTKLDFLAGS) -Wall 
+-LDFLAGS += -lipkg 
+-LDFLAGS += -lXinerama
+-
+-endif #native or cross-compile
+-
+-
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ DEPS = $(patsubst %,%.d,$(MEMBERS))
+ SOURCES = $(patsubst %,%.c,$(MEMBERS))
+@@ -67,27 +29,27 @@
+ 
+ PIXMAPS = gpe-package.png local-package-16.png
+ 
+-all: $(PACKAGE) 
++all: $(PACKAGE)
+ 
+ $(PACKAGE): $(OBJS)
+-	$(CC) -g -o $@ $(OBJS) $(LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: $(PACKAGE) all-desktop
+ 	mkdir -p $(DESTDIR)/CONTROL
+ 	sed -e s/VERSION/$(VERSION)/ < familiar/control > $(DESTDIR)/CONTROL/control
+ 	mkdir -p $(DESTDIR)/etc/gpe
+ 	mkdir -p $(DESTDIR)/$(PREFIX)/bin
+-	$(INSTALL) $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+-	$(STRIP) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	for i in $(PIXMAPS); do install -m 644 -D pixmaps/$$i $(DESTDIR)$(PREFIX)/share/pixmaps/$$i; done
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
+-	$(INSTALL) -m 644 *.desktop $(DESTDIR)$(PREFIX)/share/applications
++	install -m 644 *.desktop $(DESTDIR)$(PREFIX)/share/applications
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/gpe
+-	$(INSTALL) -m 644 $(HELPFILE) $(DESTDIR)$(PREFIX)/share/doc/gpe/
++	install -m 644 $(HELPFILE) $(DESTDIR)$(PREFIX)/share/doc/gpe/
+ 
+ clean:
+ 	rm -f $(PACKAGE) $(OBJS) *~ */*~ *.ipk *.o
+ 
+-include $(BUILD)/Makefile.dpkg_ipkg
+ include $(BUILD)/Makefile.translation
++include $(BUILD)/Makefile.dpkg_ipkg
++-include $(DEPS)
