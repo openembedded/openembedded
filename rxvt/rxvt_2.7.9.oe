@@ -5,7 +5,10 @@ DESCRIPTION = "Well known terminal emulator"
 SRC_URI = "pserver://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/rxvt \
 	   file://include.patch;patch=1"
 
-inherit autotools 
+inherit autotools update-alternatives
+
+ALTERNATIVE_NAME = "x-terminal-emulator"
+ALTERNATIVE_PATH = "${bindir}/rxvt-2.7.9"
 
 S = ${WORKDIR}/rxvt
 
