@@ -36,9 +36,13 @@ do_compile() {
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
-# no staging neessary, becaue
+# no sophisticated staging neessary, because
 # include files already done during do_compile
 # lib files already done during do_compile
+
+do_stage() {
+	install -m 0644 ${FILESDIR}/include.pro ${OPIEDIR}/
+}
 
 do_install() {
 	install -d ${D}${palmtopdir}/lib/
