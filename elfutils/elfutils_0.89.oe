@@ -22,9 +22,8 @@ do_stage () {
 	ln -sf libdw-${SOV}.so ${STAGING_LIBDIR}/libdw.so.1
 	ln -sf libdw.so.1 ${STAGING_LIBDIR}/libdw.so
 	install -m 0644 libebl/libebl.a ${STAGING_LIBDIR}/libebl.a
-	install -m 0755 libebl/libebl.so.1 ${STAGING_LIBDIR}/libebl-${SOV}.so
-	ln -sf libebl-${SOV}.so ${STAGING_LIBDIR}/libebl.so.1
-	ln -sf libebl.so.1 ${STAGING_LIBDIR}/libebl.so
+	install -d ${STAGING_LIBDIR}/elfutils/
+	install -m 0755 libebl/libebl_*.so ${STAGING_LIBDIR}/elfutils/
 	install -m 0644 libdwarf/libdwarf.a ${STAGING_LIBDIR}/libdwarf.a
 	install -m 0755 libdwarf/libdwarf.so.1 ${STAGING_LIBDIR}/libdwarf-${SOV}.so
 	ln -sf libdwarf-${SOV}.so ${STAGING_LIBDIR}/libdwarf.so.1
