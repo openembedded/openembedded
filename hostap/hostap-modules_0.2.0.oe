@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
            file://hostap_cs.conf"
@@ -19,5 +20,6 @@ do_install() {
 	install -m 0644 driver/modules/hostap_crypt_wep.o ${D}/lib/modules/${KERNEL_VERSION}/net/
 	install -m 0644 driver/modules/hostap.o ${D}/lib/modules/${KERNEL_VERSION}/net/
 	install -m 0644 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
-        install -m 0644 ${WORKDIR}/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
+	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf                
+	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 }
