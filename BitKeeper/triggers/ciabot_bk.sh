@@ -11,8 +11,8 @@
 ############# There are some parameters for this script that you can customize:
 
 # Project information
-project_name="openembedded"
-return_address="oe@handhelds.org"
+[ -z "$project_name" ] && project_name="openembedded"
+[ -z "$project_name" ] && return_address="oe@handhelds.org"
 
 # System
 sendmail_command="/usr/sbin/sendmail -t"

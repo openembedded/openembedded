@@ -1,5 +1,8 @@
 #!/bin/sh
-
+#
+# ex:ts=4:sw=4:sts=4:et
+# -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
+#
 # Copyright (C) 2004 Chris Larson <kergoth@handhelds.org>
 #
 # Sanity checks taken from the scripts on commits.bkbits.net
@@ -39,8 +42,27 @@ check_sanity () {
     fi
 }
 
+check_projects () {
+    if [ ! -e ciabot.projects ]; then
+        return 1
+    fi
+
+    while read _p _s _e; do
+        _sshort=`echo $_s|sed -e's,.bkbits.net,,'`
+        if (echo $BKD_ROOT|grep "/${_sshort}"); then
+            project_name=${_p}
+            return_address=${_e}
+        fi
+    done < ciabot.projects
+    export project_name return_address
+    return 0
+}
+
 # Check sanity - do we need to send anything?
 check_sanity || exit 0
+
+# Check projects - attempt to determine which bkbits project we are
+check_projects || exit 0
 
 if (grep -q 'ChangeSet' $BK_CSETLIST); then
     # new, correct csets-out format
