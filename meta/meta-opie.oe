@@ -308,6 +308,7 @@ opie-sysinfo \
 opie-systemtime \
 opie-tabmanager \
 opie-usermanager \
+opie-icon-reload \
 opie-vmemo-settings "
 RDEPENDS_task-opie-settings = "${task-opie-settings}"
 DEPENDS += " ${task-opie-settings}"
