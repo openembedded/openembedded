@@ -1,0 +1,37 @@
+DEPENDS = "unzip-native"
+
+SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci216.exe"
+FILES_${PN} = '*'
+
+python do_unpack() {
+	import re, copy
+
+	localdata = copy.deepcopy(d)
+	overrides = oe.data.getVar('OVERRIDES', localdata, 1)
+	if not overrides:
+		raise oe.build.FuncFailed('OVERRIDES not defined')
+	oe.data.setVar('OVERRIDES', overrides+':'+oe.data.getVar('PN', localdata, 1), localdata)
+	
+	oe.data.update_data(localdata)
+
+	src_uri = oe.data.getVar('SRC_URI', localdata)
+	if not src_uri:
+		return
+	src_uri = oe.data.expand(src_uri, localdata)
+
+	local = oe.data.expand(oe.fetch.localpath(src_uri, localdata), localdata)
+	# dont need any parameters for extraction, strip them off
+	local = re.sub(';.*$', '', local)
+	bindir = oe.data.getVar('STAGING_BINDIR', localdata, 1)
+	cmd = '%s/unzip %s' % (bindir, local)
+	if not os.path.exists(oe.data.getVar('S', localdata, 1)):
+		os.mkdir(oe.data.getVar('S', localdata, 1))
+	os.chdir(oe.data.getVar('S', localdata, 1))
+	oe.note("Unpacking %s to %s/" % (local, os.getcwd()))
+	ret = os.system(cmd)
+}
+
+do_install() {
+	install -d ${D}${prefix}/lib/hotplug/firmware
+	install -m 0644 software/OEM/PCI/App/ttlcdacc.dll ${D}${prefix}/lib/hotplug/firmware/tda1004x.bin
+}
