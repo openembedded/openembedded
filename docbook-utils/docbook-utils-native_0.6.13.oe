@@ -11,7 +11,7 @@ do_stage () {
 		 docbook2texi jw; do
 		install -m 0755 ${S}/bin/$b ${STAGING_BINDIR}/
 	done
-	for i in backends/dvi backends/html backends/man doc/man \
+	for i in backends/dvi backends/html backends/man \
 		 backends/pdf backends/ps backends/rtf backends/tex \
 		 backends/texi backends/txt frontends/docbook \
 		 helpers/docbook2man-spec.pl helpers/docbook2texi-spec.pl \
