@@ -1,0 +1,33 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := ${SOURCEFORGE_MIRROR}/libnet/libnet-0.10.11.tar.gz \
+	   file://${FILESDIR}/compile.patch;patch=1
+S := ${WORKDIR}/${PN}
+
+do_configure () {
+	if [ -e makfiles/${TARGET_OS}.mak ]; then
+		cp makfiles/${TARGET_OS}.mak port.mak
+	else
+		die "Unable to locate default .make file for OS ${TARGET_OS}"
+	fi
+}
+
+CFLAGS_prepend='-I${S}/include '
+EXTRA_OEMAKE=
+do_compile () {
+	oe_runmake 'CC=${CC}' 'LD=${LD}' 'AR=${AR}' 'CXX=${CXX}' \
+		   'WARNING_FLAGS=${CFLAGS}'
+}
+
+do_stage () {
+	install -d ${STAGING_LIBDIR} ${STAGING_DIR}/target/include
+	install -m 0755 lib/libnet.a ${STAGING_LIBDIR}/
+	install -m 0644 include/libnet.h ${STAGING_DIR}/target/include/
+}
+
+do_install () {
+	install -d ${D}/${libdir} ${D}/${includedir}
+	install -m 0755 lib/libnet.a ${D}/${libdir}/
+	install -m 0644 include/libnet.h ${D}/${includedir}/
+}
