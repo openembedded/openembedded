@@ -1,3 +1,10 @@
+BROKEN = 1
+# Authors recently added Gammu to sources - I plan to talk with them to use
+# libgammu instead of microgammu
+#
+# Actually building will fail on qtopia/services.h from Qtopia 1.7 (?)
+# If I won't fix it before 2004.08.13 I will fix it in September (time for vacation)
+
 DESCRIPTION = "Korganizer/Pi is a powerful calender and ToDo Tool for Qt/Embedded based Palmtop Environments"
 SECTION = "base"
 PRIORITY = "optional"
@@ -6,7 +13,9 @@ LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 PV = "1.9.3a-${CVSDATE}"
-PR = "r2"
+PR = "r3"
+
+DEFAULT_PREFERENCE = "-1"
 
 # Author said that he will tag stable versions in CVS
 # From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.3a version
@@ -15,14 +24,14 @@ SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
 file://libkcal.pro.patch;patch=1 \
 file://manager.h.patch;patch=1 \
 file://qinputdialog_inc.patch;patch=1 \
-file://xxportmanager.cpp.patch;patch=1 \
+file://locale.h.patch;patch=1 \
 "
 
 S = "${WORKDIR}/kdepim"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, OBJECTS_DIR=obj/ MOC_DIR=moc/ INCLUDEPATH+=../ LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++"
+EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, OBJECTS_DIR=obj/ MOC_DIR=moc/ INCLUDEPATH+=../ LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++ LIBS-=-lmicrogammu LIBS+=-llibgammu"
 QMAKE_PROFILES= "all.pro"
 
 # we don't have libopie1 (and ldap?)
