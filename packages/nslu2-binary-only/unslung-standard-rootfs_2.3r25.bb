@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r38"
+PR = "r39"
 
-UNSLUNG_VERSION = "3.17-beta"
+UNSLUNG_VERSION = "3.18-beta"
 UNSLUNG_VARIANT ?= "standard"
 
 DEPENDS = "nslu2-linksys-libs"

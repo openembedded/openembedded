@@ -1,5 +1,4 @@
-DESCRIPTION = "SwitchBox version ${PV}. \
-SwitchBox is a minimal version of BusyBox with just enough functionality \
+DESCRIPTION = "SwitchBox is a minimal version of BusyBox with just enough functionality \
 to switch between different root filesystem options on an Unslung NSLU2 device."
 HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
