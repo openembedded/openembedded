@@ -1,10 +1,8 @@
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "guile gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade"
-PR = "r1"
+DEPENDS = "guile gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common"
+PR = "r2"
 
 inherit gnome
-
-SRC_URI += "file://compiler-flags.m4"
 
 PACKAGES =+ "libgdkcardimage libgdkcardimage-data libgdkcardimage-dev"
 
@@ -21,10 +19,8 @@ FILES_gnome-games-sol = "${bindir}/sol ${datadir}/applications/sol.desktop ${dat
 PACKAGES =+ "gnome-games-gnometris "
 FILES_gnome-games-gnometris = "${bindir}/gnometris ${datadir}/pixmaps/gnometris ${datadir}/pixmaps/gnome-gtetris.png ${datadir}/applications/gnometris.desktop ${sysconfdir}/gconf/schemas/gnometris.schemas"
 
-EXTRA_OECONF = "--disable-schemas-install"
+PACKAGES =+ "gnome-games-gnomine"
+FILES_gnome-games-gnomine = "${bindir}/gnomine ${datadir}/pixmaps/gnomine ${datadir}/pixmaps/gnome-gnomine.png ${datadir}/applications/gnomine.desktop ${sysconfdir}/gconf/schemas/gnomine.schemas"
 
-do_configure_prepend() {
-	mkdir -p m4
-	cp ${WORKDIR}/compiler-flags.m4 m4/
-}
+EXTRA_OECONF = "--disable-schemas-install"
 

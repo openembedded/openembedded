@@ -1,31 +1,12 @@
-DEPENDS = "libgnomeprint gtk+ libgnomecanvas gnome-icon-theme"
+PR = "r1"
+DEPENDS = "libgnomeprint gtk+ libgnomecanvas gnome-icon-theme gnome-common"
 
-SRC_URI = "${GNOME_MIRROR}/${PN}/2.6/${PN}-${PV}.tar.bz2 \
-	file://compiler-flags.m4 \
-	file://configure.patch;patch=1"
+inherit gnome pkgconfig
 
-inherit autotools pkgconfig
-
-do_configure_prepend() {
-	mkdir -p ${S}/m4
-	install ${WORKDIR}/compiler-flags.m4 ${S}/m4/
-}
-
-HEADERS = " \
-gnome-print-paper-selector.h \
-gnome-print-config-dialog.h \
-gnome-print-preview.h \
-gnome-font-dialog.h \
-gnome-print-dialog.h \
-gnome-print-unit-selector.h \
-gnome-print-job-preview.h \
-"
+SRC_URI += "file://configure.patch;patch=1"
 
 do_stage() {
 	install -d ${STAGING_LIBDIR}
 	oe_libinstall -so -a -C libgnomeprintui libgnomeprintui-2-2 ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}/libgnomeprintui-2.2/libgnomeprintui
-	for i in ${HEADERS}; do
-		install -m 0644 libgnomeprintui/$i ${STAGING_INCDIR}/libgnomeprintui-2.2/libgnomeprintui/$i
-	done	
+	gnome_stage_includes
 }
