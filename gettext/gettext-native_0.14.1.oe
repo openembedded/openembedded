@@ -2,6 +2,7 @@ include gettext_${PV}.oe
 S = "${WORKDIR}/gettext-${PV}"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gettext-${PV}"
 inherit native
+PROVIDES = ""
 
 M4 = "\
 lib-ld.m4 \

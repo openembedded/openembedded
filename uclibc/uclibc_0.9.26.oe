@@ -21,7 +21,8 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PROVIDES += " virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
+PROVIDES += "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
+PROVIDES += "virtual/libiconv"
 DEPENDS = "patcher-native virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"

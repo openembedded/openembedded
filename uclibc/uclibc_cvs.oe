@@ -24,6 +24,7 @@ python __anonymous () {
 }
 
 PROVIDES += " virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
+PROVIDES += "virtual/libiconv"
 DEPENDS = "patcher-native virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"

@@ -8,6 +8,7 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial"
 PROVIDES = "virtual/libc"
+PROVIDES += "virtual/libiconv"
 
 SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
            http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"
