@@ -20,6 +20,7 @@ hostap-utils \
 hostap-daemon \
 hotplug \
 htb-init \
+ifplugd \
 initscripts \
 iperf \
 ipkg \

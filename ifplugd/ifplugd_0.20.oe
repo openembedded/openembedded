@@ -5,20 +5,9 @@ LICENSE = "GPL"
 
 SRC_URI = "http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools update-rc.d
 
 EXTRA_OECONF = "--disable-lynx"
 
-pkg_postinst () {
-	if test -n "${D}"; then
-		D="-r $D"
-	fi
-	update-rc.d $D ifplugd defaults
-}
-
-pkg_prerm () {
-	if test -n "${D}"; then
-		D="-r $D"
-	fi
-	update-rc.d $D ifplugd remove
-}
+INITSCRIPT_NAME = "ifplugd"
+INITSCRIPT_PARAMS = "defaults"
