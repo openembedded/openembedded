@@ -72,8 +72,8 @@ do_install_append () {
 do_stage () {
 	oe_libinstall -a -so -C libavcodec/libpostproc libpostproc ${STAGING_LIBDIR}
 	cd ${STAGING_LIBDIR}
-	ln -s libpostproc.so libpostproc.so.0.0.0
-	ln -s libpostproc.so libpostproc.so.0
+	ln -sf libpostproc.so libpostproc.so.0.0.0
+	ln -sf libpostproc.so libpostproc.so.0
 
 	install -d ${STAGING_INCDIR}/postproc
 	install -m 0644 ${S}/libavcodec/libpostproc/postprocess.h ${STAGING_INCDIR}/postproc/postprocess.h
