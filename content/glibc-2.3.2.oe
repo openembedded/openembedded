@@ -67,12 +67,11 @@ PROVIDES=virtual/libc
 
 S="${WORKDIR}/${P}"
 builddir="${WORKDIR}/build-${SYS}"
+
+inherit autotools
+
 EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${WORKDIR}/linux/include --without-cvs --enable-kernel=2.4.6"
 EXTRA_OEMAKE=
-
-PACKAGES="libc6"
-FILES=
-FILES_libc6="*"
 
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
@@ -87,7 +86,6 @@ python do_unpack () {
 }
 
 do_compile() {
-	oenote "pwd is `/bin/pwd`"
 	touch sysdeps/${ARCH}/framestate.c
 	mkdir -p "${builddir}"
 	cd "${builddir}"

@@ -11,12 +11,12 @@ the POSIX-style functions is called pcreposix.h.
 SRC_URI = ftp://ftp.csx.cam.ac.uk/pub/software/programming/${PN}/${P}.tar.bz2
 S = "${WORKDIR}/${P}"
 
+inherit autotools
+
 # this libtool cant handle the multiword gcc
 CC:=${@oe.data.getVar("CC", d, 1).split()[-1].strip()}
 CFLAGS_append = " -D_REENTRANT"
 do_compile () {
-	set -e
-	oe_runconf
 	${BUILD_CC} -I${S}/include -c dftables.c
 	${BUILD_CC} dftables.o -o dftables
 	oe_runmake
@@ -35,9 +35,4 @@ do_stage () {
 	install -m 0644 .libs/libpcreposix.a ${STAGING_LIBDIR}/
 	install -m 0644 pcre.h ${STAGING_DIR}/target/include/
 	install -m 0644 pcreposix.h ${STAGING_DIR}/target/include/
-}
-
-do_install () {
-	set -e
-	oe_runmake 'DESTDIR=${D}' install
 }

@@ -5,12 +5,12 @@ RDEPENDS = libc6, libexpat1, libssl0.9.7
 
 S = ${WORKDIR}/httpd-${PV}
 
+inherit autotools
+
 CFLAGS_append = " -DPATH_MAX=4096"
 CFLAGS_prepend = "-I${STAGING_DIR}/target/include/openssl "
 EXTRA_OECONF = --enable-ssl --with-ssl=${STAGING_DIR}/target --enable-dav --enable-dav-fs
 do_compile () {
-	set -e
-	oe_runconf
 	touch srclib/apr-util/uri/gen_uri_delims.lo
 	${BUILD_CC} srclib/apr-util/uri/gen_uri_delims.c -o srclib/apr-util/uri/gen_uri_delims
 	touch srclib/pcre/dftables.lo
@@ -25,10 +25,3 @@ do_compile () {
 	cd ..
 	oe_runmake
 }
-
-do_install () {
-	set -e
-	oe_runmake DESTDIR="${D}" install
-}
-
-inherit base
