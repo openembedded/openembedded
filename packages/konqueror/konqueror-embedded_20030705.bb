@@ -11,6 +11,8 @@ SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snap
 	   file://include_qconfig.patch;patch=1 \
 	   file://useragent.patch;patch=1 \
 	   file://kcookiejar-merge.patch;patch=1 \
+	   file://malformed.patch;patch=1 \
+	   file://cachepath.patch;patch=1 \
 	   file://konq-embedrc "
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
