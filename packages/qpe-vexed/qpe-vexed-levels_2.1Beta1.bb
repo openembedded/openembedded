@@ -5,21 +5,20 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "The Vexed Development Team"
 HOMEPAGE = "http://vexed.sourceforge.net/"
+PACKAGE_ARCH = "all"
+PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/vexed/vexed21Beta1.zip"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/vexed/;module=vexed/levelpacks"
 
 S = "${WORKDIR}"
 
 do_install () {
 	install -d ${D}${palmtopdir}/etc/qpe-vexed
 
-	cd ${WORKDIR}
-	for level in *.pdb
+	for level in ${WORKDIR}/levelpacks/*.ini;
 	do
-	    cp "$level" "`basename "$level" .pdb`.lvl"
+	    install -m 0664 "$level" "${D}${palmtopdir}/etc/qpe-vexed/`basename "$level" .ini`.lvl";
 	done
-
-	install -m 0644 ${WORKDIR}/*.lvl ${D}${palmtopdir}/etc/qpe-vexed/
 }
 
 FILES_${PN} = "${palmtopdir}/etc/qpe-vexed/*.lvl"

@@ -19,8 +19,8 @@ HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 # kabc/plugins/ldap     - wants ldap libs (?)
 # kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
 # kmicromail            - conflict with OE libetpan, libmailwrapper/OPIE
-# pwmanager             - needs stdc++ and some patching
 
+SRC_URI_append = "file://opie-fontselector-copy.patch;patch=1"
 PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/kdepim"
