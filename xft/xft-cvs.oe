@@ -7,6 +7,11 @@ DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xft"
 S = "${WORKDIR}/Xft"
 
+FILES_${PN} = ${libdir}/lib*.so.*
+FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+		${libdir}/*.a ${libdir}/pkgconfig \
+		${datadir}/aclocal ${bindir} ${sbindir}
+
 inherit autotools pkgconfig libtool
 
 do_stage() {
@@ -16,4 +21,10 @@ do_stage() {
 	       libdir=/target/lib \
 	       datadir=/share
 	       prefix=
+}
+
+python do_package() {
+        if oe.data.getVar('DEBIAN_NAMES', d, 1):
+            oe.data.setVar('PKG_${PN}', 'libxft2', d)
+        oe.build.exec_func('package_do_package', d)
 }
