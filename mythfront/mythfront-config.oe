@@ -1,4 +1,4 @@
-PV = "1.5"
+PV = "1.7"
 
 DEPENDS = "xfonts-xorg"
 RDEPENDS_${PN} = "xfonts-xorg"
@@ -27,6 +27,8 @@ do_install() {
 	ln -sf lirc0 ${D}/dev/lirc
 
 	if [ -f ${WORKDIR}/serial.sh ]; then
+		install -d ${D}/etc/init.d
+		install -d ${D}/etc/rc2.d
 		install ${WORKDIR}/serial.sh ${D}/etc/init.d/mythfront-serial
 		ln -sf ../init.d/mythfront-serial ${D}/etc/rc2.d/S10mythfront-serial
 	fi
