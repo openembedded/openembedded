@@ -6,7 +6,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r17"
+PR = "r18"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
@@ -88,7 +88,8 @@ do_configure_prepend() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} \
+	${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"
