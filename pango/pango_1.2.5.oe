@@ -14,9 +14,11 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--disable-glibtest \
 		--enable-explicit-deps=no"
 
-FILES_pango-doc_append = " ${datadir}/gtk-doc"
+FILES_${PN} = "/etc ${bindir} ${libdir}/libpango*.so.*"
 
 SOV = "0.200.5"
+LIBV = "1.2.0"
+
 do_stage () {
 	for lib in pango pangox pangoft2 pangoxft; do
 		oe_soinstall pango/.libs/lib$lib-1.0.so.${SOV} ${STAGING_LIBDIR}/
@@ -25,4 +27,48 @@ do_stage () {
 	done
 	install -d ${STAGING_INCDIR}/pango
 	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
+}
+
+python do_package () {
+	import string
+	def do_split(root, pattern, format, description, postinst):
+		dvar = oe.data.getVar('D', d, 1)
+		if not dvar:
+			oe.error("D not defined")
+			return
+
+		packages = string.split(oe.data.getVar('PACKAGES', d, 1))
+		if not packages:
+			oe.error("PACKAGES not defined")
+			return
+
+		postinst = '#!/bin/sh\n' + postinst
+		objs = os.listdir(dvar + root)
+		mainpkg = packages[0]
+		for o in objs:
+			import re
+			m = re.match(pattern, o)
+			if not m:
+				continue
+			on = m.group(1)
+			pkg = format % on
+			packages.append(pkg)
+			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
+			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
+
+		oe.data.setVar('PACKAGES', string.join(packages, ' '), d)
+
+	libdir = oe.data.getVar('libdir', d, 1)
+	if not libdir:
+		oe.error("libdir not defined")
+		return
+
+	pango_libdir = os.path.join(libdir, "pango", oe.data.getVar('LIBV', d))
+	modules_root = os.path.join(pango_libdir, 'modules')
+
+	do_split(modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', 'pango-querymodules > /etc/pango/pango.modules')
+
+	oe.build.exec_func("package_do_package", d)
 }
