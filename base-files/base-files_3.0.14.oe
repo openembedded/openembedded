@@ -1,10 +1,11 @@
-PR = "r1"
+PR = "r2"
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-files/base-files_${PV}.tar.gz"
 DESCRIPTION = "Base system miscellaneous files."
 
 docdir_append = "/${P}"
-PACKAGES = "base-files"
-FILES_${PN} := "*"
+PACKAGES = "${PN}-doc ${PN}"
+FILES_${PN} = "/"
+FILES_${PN}-doc = "/usr/share/doc /usr/share/common-licenses"
 
 do_install () {
 	install -d ${D}/${docdir}
@@ -17,6 +18,8 @@ do_install () {
 #	cd debian && install -m 755 preinst postinst ${D}/DEBIAN
 #	cd debian && install -m 644 conffiles ${D}/DEBIAN
 	( cd ${D} && install -d `cat ${S}/debian/directory-list` )
+	install -d ${D}/sys
+
 	install -p -m 644 share/* ${D}${datadir}/base-files
 	install -p -m 644 licenses/* ${D}${datadir}/common-licenses
 	ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
@@ -39,5 +42,29 @@ do_install () {
 	oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
 	oe_machinstall -m 0644 ${FILESDIR}/profile ${D}/${sysconfdir}/profile
 
-	install -d ${D}/sys
+	install -m 0755 ${D}/usr/share/base-files/dot.profile ${D}/root/.profile
+
+	# debian ships these, but they are useless to us
+	rmdir ${D}/var/lib/dpkg ${D}/var/lib/misc ${D}/var/backups \
+	      ${D}/usr/src ${D}/usr/info ${D}/usr/games ${D}/usr/doc \
+	      ${D}/usr/include ${D}/usr/share/dict
+	rm -r ${D}/usr/share/base-files
+
+	if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
+		# /var is in a ramdisk
+		install -d ${D}/etc/init.d ${D}/etc/rcS.d
+		cat <<EOF >${D}/etc/init.d/populate-var
+#!/bin/sh
+
+mount /var
+EOF
+		for d in `(cd ${D}/var; ls)`; do
+			mode=`stat -c %a ${D}/var/$d`
+			echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
+			echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
+		done
+		rmdir ${D}/var/*
+		chmod a+x ${D}/etc/init.d/populate-var
+		ln -s ../init.d/populate-var ${D}/etc/rcS.d/S01populate-var
+	fi
 }
