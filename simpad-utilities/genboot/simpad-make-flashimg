@@ -9,11 +9,12 @@
 GENBOOT=genboot
 PAD=pad
 KERNEL=$2
+INITRD=$3
 
 doComplete()
 {
     kernel=$(basename $KERNEL)
-    initrd=$OUTPUT_DIR/images/initrd.bin
+    initrd=$INITRD
     outfile=/tmp/tmpfile
     padfile=/tmp/tmpfile2
     flashfile=$kernel.initrd.flashfile
@@ -76,13 +77,13 @@ doKernelInPlace()
 }
 
 if [ $# -lt 2 ]
-    then echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel>" && exit -1
+    then echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel> [rootfs.jffs2]" && exit -1
 fi
 
 case "$1" in
 kernel) doKernel;;
 complete) doComplete;;
 inplace) doKernelInPlace;;
-*) echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel>"; exit;;
+*) echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel> [rootfs.jffs2]"; exit;;
 esac
 

@@ -16,7 +16,7 @@ inherit kernel
 #FIXME: Use configuration system
 export MEM = "32"
 export RD = "32"
-export CMDLINE = "root=/dev/mtdblock4 console=tty0 rootfstype=jffs2 jffs2_orphand_inodes=delete"
+export CMDLINE = "noinitrd root=/dev/mtdblock2 rootfstype=jffs2 console=tty0 jffs2_orphand_inodes=delete"
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
