@@ -4,14 +4,15 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "2"
+PR = "3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://${FILESDIR}/qpe.patch;patch=1 \
 	   file://${FILESDIR}/tslib.patch;patch=1 \
 	   file://${FILESDIR}/devfs.patch;patch=1 \
 	   file://${FILESDIR}/no-moc.patch;patch=1 \
-	   file://${FILESDIR}/update-qtfontdir "
+	   file://${FILESDIR}/update-qtfontdir \
+	   file://${FILESDIR}/sharp_char.h "
 
 #
 # FIXME: Apply the SIMpad hardware patch for SIMpad.
@@ -48,7 +49,7 @@ EXTRA_OEMAKE = "-e"
 # FIXME: Add more here
 #
 EXTRA_DEFINES 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
-EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -I${STAGING_DIR}/${HOST_SYS}/kernel/include"
+EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_h3600 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_simpad	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
 EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
@@ -75,6 +76,8 @@ do_configure() {
 
 do_compile() {
 	unset CC LD CCLD CXX RANLIB AR STRIP CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
+	install -d include/asm/
+	install -m 0644 ${WORKDIR}/sharp_char.h include/asm/
 	oe_runmake
 }
 
