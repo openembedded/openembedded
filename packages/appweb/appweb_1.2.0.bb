@@ -6,8 +6,14 @@ SRC_URI = "http://www.mbedthis.com/software/appWeb-src-1.2.0-1.tar.gz \
 	   file://nonrootinstall.patch;patch=1"
 S = "${WORKDIR}/appWeb-1.2.0"
 
-APPWEB_HOST = "${HOST_SYS}"
+APPWEB_HOST = "${@get_appweb_host(d, bb)}"
 APPWEB_BUILD = "${BUILD_SYS}"
+
+def get_appweb_host(d, bb):
+    host = bb.data.getVar('HOST_SYS', d, 1)
+    return host.replace('-linux-uclibc', '-linux')
+    
+
 #  --buildNumber=NUMBER     Set the build number part of the version (1.0.0.X).
 #  --name=NAME              Set the full product name (BLD_NAME define).
 #  --port=PORT              Set the default HTTP port to use for the product.
