@@ -1,7 +1,6 @@
 SECTION = "base"
 LICENSE = "GPL"
-SRC_URI = "cvs://anonymous@cvs.berlios.de/cvsroot/at76c503a;module=at76c503a \
-	file://ipaq.patch;patch=1;pnum=0"
+SRC_URI = "cvs://anonymous@cvs.berlios.de/cvsroot/at76c503a;module=at76c503a"
 S = "${WORKDIR}/at76c503a"
 PR = "r1"
 PV = "0.0cvs${CVSDATE}"
