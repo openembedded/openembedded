@@ -3,10 +3,35 @@ PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc
+PROVIDES=virtual/libreadline
 
 SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-4.3.tar.gz \
 	  file://${FILESDIR}/signalnamespace.patch;patch=1
 S=${WORKDIR}/readline-${PV}
 
-inherit autotools
+inherit autotools libtool
+
+do_stage () {
+	install -m 0755 shlib/libreadline.so.4.3 ${STAGING_LIBDIR}/
+	install -m 0755 shlib/libhistory.so.4.3 ${STAGING_LIBDIR}/
+	install -m 0755 libreadline.a ${STAGING_LIBDIR}/
+	install -m 0755 libhistory.a ${STAGING_LIBDIR}/
+
+	ln -s ${STAGING_LIBDIR}/libreadline.so.4.3 \
+	  ${STAGING_LIBDIR}/libreadline.so.4
+	ln -s ${STAGING_LIBDIR}/libreadline.so.4.3 \
+	  ${STAGING_LIBDIR}/libreadline.so
+	ln -s ${STAGING_LIBDIR}/libhistory.so.4.3 \
+	  ${STAGING_LIBDIR}/libhistory.so.4
+	ln -s ${STAGING_LIBDIR}/libhistory.so.4.3 \
+	  ${STAGING_LIBDIR}/libhistory.so
+
+	install -d ${STAGING_DIR}/target/include/readline
+	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
+	  rlconf.h rltypedefs.h
+	do
+		install -m 0644 ${f} ${STAGING_DIR}/target/include/readline
+	done
+
+}
 
