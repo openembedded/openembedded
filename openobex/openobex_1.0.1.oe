@@ -1,0 +1,18 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
+
+inherit autotools libtool
+
+do_stage () {
+	oe_soinstall src/.libs/libopenobex-1.0.so.1.0.0 ${STAGING_LIBDIR}/
+	ln -sf libopenobex-1.0.so.1.0.0 ${STAGING_LIBDIR}/libopenobex.so
+	install -m 0755 src/.libs/libopenobex.a ${STAGING_LIBDIR}/libopenobex.a
+	install -m 0755 src/.libs/libopenobex.lai ${STAGING_LIBDIR}/libopenobex.la
+	install -d ${STAGING_DIR}/target/include/openobex
+	install -m 0644 src/obex_const.h src/obex.h ${STAGING_DIR}/target/include/openobex/
+	cat openobex-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
+				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/openobex-config
+        chmod a+rx ${STAGING_BINDIR}/openobex-config
+}
