@@ -8,25 +8,17 @@ DEPENDS="virtual/libc virtual/libqpe uicmoc-native"
 SRC_URI = http://www.pi-sync.net/korgenizerE-1.5.0rc2.tar.gz
 S = "${WORKDIR}/korgenizerE-${PV}"
 
-FILES=
-FILES_${PN}=/opt/QtPalmtop
-
-QMAKE=${STAGING_BINDIR}/qmake
-QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++
+inherit palmtop
 
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
+QMAKE_PROFILES= "all.pro"
 
-do_configure() {
+do_configure_prepend() {
         echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat microkde libical/src/libical libical/src/libicalss libkcal libkdepim kalarmd korganizer\n" >all.pro
-        cd ${S}/qtcompat; ${QMAKE} -spec ${QMAKESPEC} qtcompat.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/microkde; ${QMAKE} -spec ${QMAKESPEC} microkde.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/libkcal; ${QMAKE} -spec ${QMAKESPEC} kcal.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/libkdepim; ${QMAKE} -spec ${QMAKESPEC} kdepim.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/kalarmd; ${QMAKE} -spec ${QMAKESPEC} kalarmd.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/korganizer; ${QMAKE} -spec ${QMAKESPEC} korganizer.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/libical/src/libical; ${QMAKE} -spec ${QMAKESPEC} ical.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}/libical/src/libicalss; ${QMAKE} -spec ${QMAKESPEC} icalss.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
-        cd ${S}; ${QMAKE} -spec ${QMAKESPEC} all.pro -after ${EXTRA_QMAKEVARS_POST} -o Makefile
+        mv -f libical/src/libical/ical.pro libical/src/libical/libical.pro
+        mv -f libical/src/libicalss/icalss.pro libical/src/libicalss/libicalss.pro
+        mv -f libkcal/kcal.pro libkcal/libkcal.pro
+        mv -f libkdepim/kdepim.pro libkdepim/libkdepim.pro
 }
 
 do_install() {
