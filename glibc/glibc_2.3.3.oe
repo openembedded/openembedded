@@ -5,6 +5,7 @@ SECTION = "libs"
 PRIORITY = "required"
 
 DEFAULT_PREFERENCE_arm = "-1"
+DEFAULT_PREFERENCE_armeb = "-1"
 DEFAULT_PREFERENCE_i686 = "-1"
 
 GLIBC_ADDONS ?= "linuxthreads"
