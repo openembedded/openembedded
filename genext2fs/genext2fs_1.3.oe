@@ -1,9 +1,11 @@
-SECTION = "console/utils"
 DESCRIPTION = "A tool to generate an ext2 filesystem \
 as a normal (non-root) user."
+SECTION = "console/utils"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/genext2fs/genext2fs_${PV}.orig.tar.gz \
-	   file://misc.patch;patch=1"
+	   file://misc.patch;patch=1 \
+	   file://autosize.patch;patch=1"
 S = "${WORKDIR}/genext2fs-${PV}.orig"
 
 do_compile () {

@@ -1,8 +1,6 @@
-SECTION = "console/utils"
 include genext2fs_${PV}.oe
 inherit native
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/genext2fs-${PV}"
-DEPENDS = ""
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/genext2fs-${PV}', '${FILE_DIRNAME}/genext2fs', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 do_stage () {
 	install -m 0755 genext2fs ${STAGING_BINDIR}/
