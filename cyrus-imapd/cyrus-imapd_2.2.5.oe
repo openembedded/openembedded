@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "cyrus-sasl"
 PR = "r1"
 

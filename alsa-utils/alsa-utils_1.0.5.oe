@@ -1,0 +1,9 @@
+DESCRIPTION = "Alsa Utilities"
+MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
+SECTION = "console/utils"
+LICENSE = "GPL"
+DEPENDS = "alsa-lib"
+
+SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
+
+inherit autotools

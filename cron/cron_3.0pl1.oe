@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "Vixie cron."
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \

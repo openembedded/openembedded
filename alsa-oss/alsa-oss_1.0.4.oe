@@ -1,5 +1,6 @@
 DESCRIPTION = "Alsa OSS Compatibility Package"
 MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
+SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib"
 

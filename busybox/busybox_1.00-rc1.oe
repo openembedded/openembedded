@@ -9,6 +9,7 @@ provides a fairly complete POSIX environment for any small or embedded \
 system."
 HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
+SECTION = "base"
 PR = "r2"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1

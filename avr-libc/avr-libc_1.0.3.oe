@@ -1,6 +1,7 @@
 HOMEPAGE = "http://www.nongnu.org/avr-libc"
 DESCRIPTION = "C library for use with GCC on Atmel AVR microcontrollers"
 PROVIDES = "virtual/libc"
+SECTION = "libs"
 
 python __anonymous () {
     import oe, re

@@ -1,5 +1,6 @@
 HOMEPAGE = "http:/ccache.samba.org"
 DESCRIPTION = "compiler cache"
+SECTION = "devel"
 
 SRC_URI = "http://ccache.samba.org/ftp/ccache/ccache-${PV}.tar.gz"
 

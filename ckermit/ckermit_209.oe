@@ -3,7 +3,7 @@ software package offering a consistent, medium-independent, \
 cross-platform approach to connection establishment, terminal \
 sessions, file transfer, character-set translation, and automation \
 of communication tasks."
-
+SECTION = "console/network"
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
 	   file://compile.patch;patch=1"

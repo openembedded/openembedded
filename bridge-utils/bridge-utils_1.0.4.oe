@@ -1,4 +1,5 @@
 DESCRIPTION = "Tools for ethernet bridging."
+SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "sysfsutils"
 RDEPENDS = "kernel-module-bridge"

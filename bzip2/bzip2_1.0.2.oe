@@ -1,4 +1,5 @@
 DESCRIPTION = "Very high-quality data compression program."
+SECTION = "console/utils"
 
 SRC_URI = "ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
 	   file://installpaths.patch;patch=1"

@@ -1,6 +1,6 @@
 DEPENDS = "glib-2.0"
 DESCRIPTION = "An accessibility toolkit for GNOME."
-SECTION = "libs"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 

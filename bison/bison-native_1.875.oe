@@ -1,5 +1,5 @@
 include bison_${PV}.oe
-
+SECTION = "devel"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/bison-${PV}"
 S = "${WORKDIR}/bison-${PV}"
 

@@ -1,5 +1,6 @@
 DEPENDS = "ncurses"
 DESCRIPTION = "An sh-compatible command language interpreter."
+SECTION = "base"
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \

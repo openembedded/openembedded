@@ -1,5 +1,6 @@
 DEPENDS = "ncurses"
 DESCRIPTION = "An ASCII art gfx library."
+SECTION = "libs"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \
 	   file://configure.patch;patch=1"

@@ -1,0 +1,14 @@
+SECTION = "base"
+SRC_URI = "${SOURCEFORGE_MIRROR}/cramfs/cramfs-1.1.tar.gz"
+DEPENDS = "zlib"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	install -d ${D}${bindir}
+	install mkcramfs ${D}${bindir}
+	install cramfsck ${D}${bindir}
+}
+

@@ -1,6 +1,6 @@
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/atd;tag=ATD-0_70"
 S = "${WORKDIR}/atd"
-
+SECTION = "base"
 inherit update-rc.d
 
 INITSCRIPT_NAME = "atd"

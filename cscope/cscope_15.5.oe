@@ -1,5 +1,6 @@
 DEPENDS = "ncurses"
 DESCRIPTION = "A text screen-based source browser."
+SECTION = "console/utils"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.gz"
 
