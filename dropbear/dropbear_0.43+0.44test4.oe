@@ -1,12 +1,13 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
 DEPENDS = "zlib"
-PR = "r3"
+PR = "r4"
 RV = "0.44test4"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/testing/dropbear-${RV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://allow-nopw.patch;patch=1 \
+	   file://xauth-path.patch;patch=1 \
 	   file://init"
 S = "${WORKDIR}/dropbear-${RV}"
 
