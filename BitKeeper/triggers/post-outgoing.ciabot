@@ -44,7 +44,7 @@ check_sanity || exit 0
 
 if (grep -q 'ChangeSet' $BK_CSETLIST); then
     # new, correct csets-out format
-    nums=`bk changes -d:REV: - < $BK_CSETLIST`
+    nums=`bk changes -d":REV: " - < $BK_CSETLIST`
 else
 
     # Convert numbers from the cset list into something useful
