@@ -20,5 +20,5 @@ do_stage () {
 
 	install -m 0644 src/.libs/libao.a ${STAGING_LIBDIR}/
 	install -m 0644 src/.libs/libao.lai ${STAGING_LIBDIR}/libao.la
-	oe_soinstall -src/.libs/libao.so.2.1.2 ${STAGING_LIBDIR}/
+	oe_soinstall src/.libs/libao.so.2.1.2 ${STAGING_LIBDIR}/
 }
