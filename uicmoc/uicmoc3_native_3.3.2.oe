@@ -1,0 +1,34 @@
+DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E) 3.x"
+SECTION = "tools"
+PRIORITY = "optional"
+LICENSE = "GPL/QPL"
+
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-3.3.2.tar.bz2 \
+	   file://${FILESDIR}/no-examples.patch;patch=1"
+S = "${WORKDIR}/qt-embedded-free-3.3.2"
+
+inherit native
+
+export QTDIR = "${S}"
+export SYSCONF_CXX = "${CCACHE} g++"
+export SYSCONF_CC  = "${CCACHE} gcc"
+export SYSCONF_LINK  = "${CCACHE} g++"
+export QMAKESPEC = ""
+ARCH_i686 = "x86"
+
+QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama -no-xcursor -no-xrandr \
+                   -no-xrender -no-xft -no-tablet -no-xkb -no-dlopen-opengl -no-freetype -no-thread -no-nis -no-cups"
+
+do_configure() {
+	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS}
+}
+
+do_stage() {
+	install -m 0755 bin/moc ${STAGING_BINDIR}/moc3
+	install -m 0755 bin/uic ${STAGING_BINDIR}/uic3
+	install -m 0655 lib/*.a ${STAGING_LIBDIR}/
+	for f in include/*.h
+	do
+		install -m 0644 $f ${STAGING_INCDIR}/
+	done
+}
