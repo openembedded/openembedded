@@ -1,5 +1,5 @@
 DEPENDS = "xt xi zip-native gtk+ orbit2"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
 	file://mozconfig \
