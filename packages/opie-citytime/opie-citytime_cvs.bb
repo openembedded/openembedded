@@ -1,5 +1,5 @@
-DESCRIPTION = "Time-zone / world clock settings"
-SECTION = "opie/settings"
+DESCRIPTION = "Opie Time-zone / world clock settings"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"

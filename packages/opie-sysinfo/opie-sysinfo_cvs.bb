@@ -1,5 +1,5 @@
 DESCRIPTION = "System Information dialog for the Opie environment"
-SECTION = "opie/settings"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"

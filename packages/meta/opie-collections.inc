@@ -8,7 +8,7 @@
 
 OPIE_FONTS_SMALL = "qte-font-smoothsans-90 qte-font-smoothsans-100 qte-font-smoothsans-110 \
                     qte-font-smoothmono-90 qte-font-smoothmono-100 qte-font-smoothmono-110 \
-                    qte-font-fixed-70 qte-font-fixed-120 "
+                    qte-font-fixed-70 qte-font-fixed-120 qpf-font-common "
 
 #
 # Fonts for >= 640x480 displays
@@ -21,7 +21,7 @@ OPIE_FONTS_LARGE = "qte-font-smoothsans-120 qte-font-smoothsans-140 qte-font-smo
 # Dependencies to get the launcher up and running
 #
 
-OPIE_LIBS_DEPENDS = "qte libopie2 qpf-qte"
+OPIE_LIBS_DEPENDS = "qte libopie2 qpf-qte qpf-font-common"
 OPIE_LIBS_RDEPENDS = "${OPIE_FONTS_SMALL}"
 OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
 

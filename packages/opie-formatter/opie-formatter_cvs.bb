@@ -1,5 +1,5 @@
 DESCRIPTION = "The filesystem formatting and mountpoint app for the Opie environment."
-SECTION = "opie/settings"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
@@ -14,7 +14,6 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-# FILES plugins/application/libformatter.so* bin/formatter pics/formatter/devices.png apps/Settings/formatter.desktop
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/

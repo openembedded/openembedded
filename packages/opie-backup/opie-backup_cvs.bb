@@ -1,5 +1,5 @@
 DESCRIPTION = "Backup and Restore utility."
-SECTION = "opie/settings"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
@@ -14,7 +14,6 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-# FILES plugins/application/libbackup.so* bin/backup pics/backup apps/Settings/backup.desktop
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
