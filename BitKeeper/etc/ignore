@@ -3,4 +3,3 @@ PENDING/*
 conf/local.conf
 conf/auto.conf
 tmp
-linux/mppe-20040216.patch
