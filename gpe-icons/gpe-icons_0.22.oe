@@ -6,5 +6,3 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 DESCRIPTION = "Common icons for GPE"
 FILES_${PN} = "${datadir}/gpe"
-
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-icons-${PV}.tar.gz"

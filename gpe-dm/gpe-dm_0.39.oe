@@ -10,5 +10,3 @@ PR = "r0"
 
 INITSCRIPT_NAME = "gpe-dm"
 INITSCRIPT_PARAMS = "defaults 99"
-
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-dm-${PV}.tar.gz"
