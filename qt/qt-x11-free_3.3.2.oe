@@ -44,5 +44,5 @@ do_stage() {
 
 do_install() {
 	install -d ${D}/${libdir}/
-	oe_soinstall lib/libqt.so.${PV} ${D}/{libdir}/
+	oe_soinstall lib/libqt.so.${PV} ${D}/${libdir}/
 }
