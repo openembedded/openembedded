@@ -1,6 +1,29 @@
 # libxine OE build file
 # Modified by Advanced Micro Devices, Inc.
 
+#FIXME: libxine doesn't build when X11 has been built before:
+#| In file included from video_out_dxr3.c:55:
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:16: error: parse error before "Bool"
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:17: error: parse error before '*' token
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:20: warning: type defaults to `int' in declaration of 
+#`XineramaQueryExtension'
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:20: warning: data definition has no type or storage class
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:22: error: parse error before "XineramaQueryVersion"
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:23: error: parse error before '*' token
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:26: warning: type defaults to `int' in declaration of 
+#`XineramaQueryVersion'
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:26: warning: data definition has no type or storage class
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: error: parse error before "XineramaIsActive"
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: error: parse error before '*' token
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: warning: type defaults to `int' in declaration of 
+#`XineramaIsActive'
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: warning: data definition has no type or storage class
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:41: error: parse error before '*' token
+#| In file included from /local/pkg/oe/collie/tmp/staging/arm-linux/include/inttypes.h:28,
+#|                  from ../../src/xine-engine/xine_internal.h:31,
+#|                  from video_out_dxr3.c:65:
+#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/stdint.h:49: error: syntax error before "typedef"
+
 DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"
