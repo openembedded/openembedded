@@ -82,8 +82,10 @@ gpe-task-apps = "\
     btscanner \
     curl \
     dsniff \
-    kismet \
     prismstumbler \
+    prismstumbler-frontend \
+    dillo \
+    tcpdump \
     miniclipboard"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"

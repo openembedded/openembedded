@@ -2,7 +2,7 @@ SECTION = "base"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 inherit update-rc.d
 
@@ -34,4 +34,4 @@ do_install () {
 	install -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
 }
 
-CONFFILES_${PN}_nylon = "${sysconfdir}/network/options ${sysconfdir}/hosts ${sysconfdir}/network/interfaces"
+CONFFILES_${PN} = "${sysconfdir}/network/options ${sysconfdir}/hosts ${sysconfdir}/network/interfaces"

@@ -3,12 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r12"
-
-PACKAGES =+ "${PN}-ftl ${PN}-pcinitrd"
-
-FILES_${PN}-ftl = "/sbin/ftl_format /sbin/ftl_check /etc/pcmcia/ftl*"
-FILES_${PN}-pcinitrd = "/sbin/pcinitrd"
+PR = "r13"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
@@ -58,7 +53,8 @@ do_compile() {
 }
 
 INSTALL_ETC = "ftl ide ieee1394 memory network parport scsi serial wireless"
-INSTALL_ETC_DATA = "config config.opts ftl.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared"
+INSTALL_ETC_DATA =     "config config.opts ftl.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared"
+INSTALL_ETC_DATA_arm = "config             ftl.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared"
 
 do_install() {
 	install -d ${D}/${sbindir}
@@ -89,4 +85,9 @@ do_install() {
 	install -m 0755 ${WORKDIR}/pcmcia ${D}/${sysconfdir}/sysconfig/pcmcia
 }
 
+PACKAGES =+ "${PN}-ftl ${PN}-pcinitrd"
+
 FILES_${PN} = "${sbindir} ${sysconfdir}"
+FILES_${PN}-ftl = "/sbin/ftl_format /sbin/ftl_check /etc/pcmcia/ftl*"
+FILES_${PN}-pcinitrd = "/sbin/pcinitrd"
+

@@ -1,5 +1,4 @@
-DESCRIPTION = "BusyBox version ${PV}. \
-BusyBox combines tiny versions of many common UNIX utilities into a single \
+DESCRIPTION = "BusyBox combines tiny versions of many common UNIX utilities into a single \
 small executable. It provides minimalist replacements for most of the \
 utilities you usually find in GNU fileutils, shellutils, etc. The utilities \
 in BusyBox generally have fewer options than their full-featured GNU \
@@ -11,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r14"
+PR = "r16"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -33,7 +32,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://hwclock.sh \
 	   file://default.script \
 	   file://syslog.conf"
-	   
+
 S = "${WORKDIR}/busybox-${PV}"
 
 export EXTRA_CFLAGS = "${CFLAGS}"

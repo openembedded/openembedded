@@ -59,7 +59,7 @@ opie-suspendapplet \
 opie-vmemo \
 opie-volumeapplet \
 opie-vtapplet \
-opie-zkbapplet \ 
+opie-zkbapplet \
 "
 RDEPENDS_task-opie-applets = "${task-opie-applets}"
 DEPENDS += " ${task-opie-applets}"

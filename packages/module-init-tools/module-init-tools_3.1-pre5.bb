@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
 removing kernel modules for Linux (versions 2.5.48 and above). It serves \
 the same function that the modutils package serves for Linux 2.4."
-PR = "r5"
+PR = "r6"
 
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
@@ -47,10 +47,10 @@ done
 
 pkg_postinst_module-init-tools-depmod() {
 #!/bin/sh
-update-alternatives --install /sbin/depmod depmod.26 /sbin/depmod.26 20
+update-alternatives --install /sbin/depmod depmod /sbin/depmod.26 20
 }
 
 pkg_prerm_module-init-tools() {
 #!/bin/sh
-update-alternatives --remove depmod /sbin/debmod.26
+update-alternatives --remove depmod /sbin/depmod.26
 }

@@ -3,9 +3,10 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
+DEPENDS_openzaurus = "virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r26"
+PR = "r27"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -32,6 +33,8 @@ SRC_URI = "file://halt \
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
+
+KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
 
 do_install () {
 #
@@ -72,9 +75,8 @@ do_install () {
 # Install device dependent scripts
 #
 
-	# checkversion hardcoded for now since kernel may be built after initscripts
 	if [ "${DISTRO}" == "openzaurus" ]; then
-		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,2.4.18-rmk7-pxa3-embedix-${DISTRO_VERSION}," > ${D}/etc/init.d/checkversion
+		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}/etc/init.d/checkversion
         	chmod 0755 				${D}/etc/init.d/checkversion
 		ln -sf          ../init.d/checkversion  ${D}/etc/rcS.d/S05version
 	fi

@@ -4,7 +4,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
            file://hostap_cs.conf \
@@ -18,7 +18,7 @@ inherit module
 
 EXTRA_OEMAKE = "EXTRA_CFLAGS='-DPRISM2_NON_VOLATILE_DOWNLOAD'"
 MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e'"
-NET_MODULES = "hostap.o hostap_pci.o hostap_crypt_ccmp.o hostap_crypt_tkip.o hostap_crypt_wep.o"
+NET_MODULES = "hostap hostap_pci hostap_crypt_ccmp hostap_crypt_tkip hostap_crypt_wep"
 
 do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
@@ -26,9 +26,9 @@ do_install() {
         	   ${D}/${sysconfdir}/pcmcia
 	for i in ${NET_MODULES}
 	do
-		install -m 0644 driver/modules/$i ${D}/lib/modules/${KERNEL_VERSION}/net/
+		install -m 0644 driver/modules/$i${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/net/
 	done
-	install -m 0644 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
+	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
 	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 
@@ -53,7 +53,7 @@ update-modules || true
 
 PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"
 FILES_hostap-modules-cs = "/lib/modules/${KERNEL_VERSION}/pcmcia/ /${sysconfdir}/pcmcia/"
-FILES_hostap-modules-pci = "/etc/modutils /lib/modules/${KERNEL_VERSION}/net/hostap_pci.o"
+FILES_hostap-modules-pci = "/etc/modutils /lib/modules/${KERNEL_VERSION}/net/hostap_pci${KERNEL_OBJECT_SUFFIX}"
 FILES_hostap-modules = "/lib/modules/"
 RDEPENDS_hostap-modules-cs = "hostap-modules"
 RDEPENDS_hostap-modules-pci = "hostap-modules"

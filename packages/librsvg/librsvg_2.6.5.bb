@@ -1,8 +1,9 @@
+DESCRIPTION = "Library for rendering SVG files"
 SECTION = "x11/utils"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libart-lgpl libxml2 popt"
-PR = "r2"
 LICENSE = "LGPL"
+PR = "r3"
 
 inherit autotools pkgconfig gnome
 

@@ -361,7 +361,12 @@ def oe_unpack_file(file, data, url = None):
 	else:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 		if not 'patch' in parm:
-			destdir = bb.decodeurl(url)[1] or "."
+			# The "destdir" handling was specifically done for FILESPATH
+			# items.  So, only do so for file:// entries.
+			if type == "file":
+				destdir = bb.decodeurl(url)[1] or "."
+			else:
+				destdir = "."
 			bb.mkdirhier("%s/%s" % (os.getcwd(), destdir))
 			cmd = 'cp %s %s/%s/' % (file, os.getcwd(), destdir)
 	if not cmd:

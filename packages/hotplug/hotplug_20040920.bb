@@ -4,11 +4,12 @@ and use them immediately."
 HOMEPAGE = "http://linux-hotplug.sourceforge.net/"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r5"
-RRECOMMENDS = "pciutils usbutils"
+PR = "r7"
+RSUGGESTS = "pciutils usbutils"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
 	   file://userspecified_hcd.patch;patch=1 \
+	   file://hotplug-net-agent-usb.patch;patch=1 \
            file://fix-net.agent \
            file://update-usb.usermap \
            file://logcheck-ignore \

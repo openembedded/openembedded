@@ -18,7 +18,7 @@ NYLON_STANDARD = "\
 	usbutils \
 	wireless-tools"
 
-DEPENDS += "hostap-modules ntp \ 
+DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"
 	
 RDEPENDS += "hostap-modules-pci ntpdate \

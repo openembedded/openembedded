@@ -5,7 +5,7 @@ PRIORITY = "optional"
 PROVIDES = "spectrum-modules"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 # seems to cause problems on arm
 DEFAULT_PREFERENCE_arm = "-1"
@@ -26,13 +26,24 @@ do_compile_prepend() {
 	install ${WORKDIR}/spectrum_fw.h ${S}/
 }
 
-do_install() {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless
+do_install() {   
+        install -d ${D}/lib/modules/${KERNEL_VERSION}/net/
         install -d ${D}/etc/pcmcia
-	install -m 0644 *.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/
+        install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}/lib/modules/${KERNEL_VERSION}/net/
         install -m 0644 ${WORKDIR}/spectrum.conf ${D}/etc/pcmcia/
         install -m 0644 hermes.conf ${D}/etc/pcmcia/
-	install -d ${D}/etc/modutils
-	install -m 0644 ${WORKDIR}/orinoco_cs.conf ${D}/etc/modutils/
+        install -d ${D}/etc/modutils
+        install -m 0644 ${WORKDIR}/orinoco_cs.conf ${D}/etc/modutils/
 }
 
+PACKAGES = "orinoco-modules-cs orinoco-modules-pci orinoco-modules-usb orinoco-modules-nortel orinoco-modules"
+FILES_orinoco-modules-cs = "/lib/modules/${KERNEL_VERSION}/net/*_cs${KERNEL_OBJECT_SUFFIX} /${sysconfdir}"        
+FILES_orinoco-modules-pci = "/lib/modules/${KERNEL_VERSION}/net/orinoco_p*${KERNEL_OBJECT_SUFFIX}"
+FILES_orinoco-modules-usb = "/lib/modules/${KERNEL_VERSION}/net/*_usb${KERNEL_OBJECT_SUFFIX}"
+FILES_orinoco-modules-nortel = "/lib/modules/${KERNEL_VERSION}/net/orinoco_tmd${KERNEL_OBJECT_SUFFIX} \
+                                /lib/modules/${KERNEL_VERSION}/net/orinoco_nortel${KERNEL_OBJECT_SUFFIX}"
+FILES_orinoco-modules = "/lib/modules/"
+RDEPENDS_orinoco-modules-cs = "orinoco-modules"
+RDEPENDS_orinoco-modules-pci = "orinoco-modules"
+RDEPENDS_orinoco-modules-usb = "orinoco-modules"
+RDEPENDS_orinoco-modules-nortel = "orinoco-modules"

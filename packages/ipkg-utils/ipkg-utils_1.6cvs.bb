@@ -6,9 +6,8 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
-CVSDATE = "20041220"
 PV_append = "${CVSDATE}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
 	   file://fix-ipkg-link.patch;patch=1 \

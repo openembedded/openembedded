@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite3 libpcap"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
-PR = "r9"
+PR = "10"
 PV = "1.1.8+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
@@ -105,7 +105,9 @@ do_install() {
 	done
 }
 
-PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PACKAGES = "libopie2-examples libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+
+FILES_libopie2-examples = "${palmtopdir}/bin"
 FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so*"
 FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so*"
 FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so*"

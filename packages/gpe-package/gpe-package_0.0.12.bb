@@ -1,5 +1,4 @@
-
-PR = "r2"
+PR = "r3"
 LICENSE = "GPL"
 inherit gpe pkgconfig
 
@@ -11,4 +10,4 @@ PRIORITY = "optional"
 
 SRC_URI += "file://use-filesel.patch;patch=1"
 
-FILES_{PN} += "${datadir}"
+FILES_${PN} += "${datadir}"

@@ -3,12 +3,12 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
+MAINTAINER = "Team Opie <opie-devel@handhelds.org>"
 PV = "1.1.8+cvs-${CVSDATE}"
 APPTYPE = "binary"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/etc "
-
-$palmtopdir = "/opt/QtPalmtop/"
 
 do_install() {
         install -d ${D}${palmtopdir}/etc/keytabs/

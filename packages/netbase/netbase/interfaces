@@ -17,3 +17,9 @@ iface eth1 inet dhcp
 # Zaurus usbnet
 iface usbd0 inet dhcp
 
+# iPAQ usbnet
+iface usbf inet dhcp
+
+# Bluetooth networking
+iface bnep0 inet dhcp
+

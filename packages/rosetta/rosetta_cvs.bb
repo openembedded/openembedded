@@ -7,7 +7,7 @@ LICENSE = "GPL"
 SRC_URI = "${HANDHELDS_CVS};module=rosetta \
 	file://rosetta-makefile.patch;patch=1"
 S = "${WORKDIR}/rosetta"
-PR = "r3"
+PR = "r4"
 
 inherit pkgconfig
 
@@ -17,7 +17,7 @@ do_install () {
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
 }
 
-do_postinst () {
+pkg_postinst () {
 if test "x$D" != "x"; then
 	exit 1
 else

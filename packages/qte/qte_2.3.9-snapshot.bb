@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -17,6 +17,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}.tar.gz \
 	   file://encoding.patch;patch=1 \
 	   file://fix-qgfxraster.patch;patch=1 \
 	   file://qt-visibility.patch;patch=1 \
+	   file://fix-mouse-release.patch;patch=1 \
 	   file://update-qtfontdir \
 	   file://sharp_char.h \
 	   file://switches.h "

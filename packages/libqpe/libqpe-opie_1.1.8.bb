@@ -9,8 +9,8 @@ PR = "r4"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
-	file://nomax.patch;patch=1;pnum=1 \
-	file://resource.patch;patch=1;pnum=1"
+	file://nomax.patch;patch=1;pnum=1"
+	
 S = "${WORKDIR}/library"
 
 inherit qmake

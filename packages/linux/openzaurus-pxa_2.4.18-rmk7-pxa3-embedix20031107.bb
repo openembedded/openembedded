@@ -5,7 +5,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r29"
+PR = "r30"
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
@@ -36,7 +36,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://keymap-more-sane.patch;patch=1 \
            file://mkdep.patch;patch=1 \
            file://disable-pcmcia-probe.patch;patch=1 \
-           file://deviceinfo.patch;patch=1 \  
+           file://deviceinfo.patch;patch=1 \
            file://linux-2.4.18-list_move.patch;patch=1 \
            file://tosa_map.patch;patch=1 \
            file://tosa_ts.patch;patch=1 \
@@ -45,9 +45,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
-	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
-           file://defconfig-${MACHINE} \ 
-           http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz "
+           http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
+           file://defconfig-${MACHINE} \
+           http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz \
+           file://fix_tosa_apm.patch;patch=1 "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:

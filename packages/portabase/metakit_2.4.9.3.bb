@@ -1,7 +1,7 @@
 SECTION = "libs"
 DESCRIPTION = "Metakit is an efficient embedded database library with a small \
 footprint. It fills the gap between flat-file, relational, object-oriented, and \
-tree-structured databases, supporting relational joins, serialization, nested structures,\ 
+tree-structured databases, supporting relational joins, serialization, nested structures,\
 and instant schema evolution."
 LICENSE = "MetaKit"
 HOMEPAGE = "http://www.equi4.com/metakit.html"

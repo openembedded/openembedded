@@ -4,6 +4,7 @@ bash \
 bridge-utils \
 busybox \
 chillispot \
+dash \
 db3 \
 ddclient \
 dhcp-forwarder \
@@ -76,6 +77,7 @@ usbutils \
 vtun \
 wireless-tools \
 wlan-ng-modules \
+yamonenv \
 zlib \
 "
 

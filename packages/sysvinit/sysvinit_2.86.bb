@@ -4,8 +4,7 @@ LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 
-FILES_${PN} += "/sbin /bin"
-PR = "r3"
+PR = "r4"
 
 # USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -25,6 +24,18 @@ SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.85.tar.gz
 	   file://bootlogd.init"
 S = "${WORKDIR}/sysvinit-2.85"
 B = "${S}/src"
+
+inherit update-alternatives
+
+ALTERNATIVE_NAME = "init"
+ALTERNATIVE_LINK = "/sbin/init"
+ALTERNATIVE_PATH = "/sbin/init.sysvinit"
+ALTERNATIVE_PRIORITY = "50"
+
+PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
+FILES_${PN} += "/sbin /bin"
+FILES_sysvinit-pidof = "/bin/pidof"
+FILES_sysvinit-sulogin = "/sbin/sulogin"
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"
@@ -86,15 +97,3 @@ do_install_append_ramses () {
 v1:2345:respawn:/sbin/getty -L 115200 vc/1
 EOF
 }
-
-pkg_postinstall_sysvinit () {
-	update-alternatives --install /sbin/init init /sbin/init.sysvinit 50
-}
-
-pkg_postrm_sysvinit () {
-        update-alternatives --remove init /sbin/init.sysvinit
-}
-
-PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
-FILES_sysvinit-pidof = "/bin/pidof"
-FILES_sysvinit-sulogin = "/sbin/sulogin"
