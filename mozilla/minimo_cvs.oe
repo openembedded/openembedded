@@ -41,8 +41,11 @@ do_compile () {
 mozdir="${D}${libdir}/mozilla-minimo"
 
 do_install () {
+	cd ${S}/embedding/minimo/
+	sh ./package.sh
+	cd ${S}
 	mkdir -p ${mozdir}
-	cp -rL $MOZ_OBJDIR/dist/bin/* ${mozdir}/
+	cp -rL $MOZ_OBJDIR/dist/Embed/* ${mozdir}/
 	rm -f ${mozdir}/TestGtkEmbed
 	mkdir -p ${D}/${datadir}/applications
 	install -m 0644 embedding/minimo/ipkg/minimo.desktop ${D}/${datadir}/applications/minimo.desktop
