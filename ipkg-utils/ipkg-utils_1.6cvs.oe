@@ -7,9 +7,10 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
 PV_append = "${CVSDATE}"
-PR = "r3"
+PR = "r4"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils \
+	   file://fix-ipkg-link.patch;patch=1"
 S = "${WORKDIR}/ipkg-utils"
 
 INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg-link ipkg.py"
