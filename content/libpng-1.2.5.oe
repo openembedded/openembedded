@@ -6,15 +6,18 @@ DEPENDS=virtual/libc base/zlib
 RDEPENDS="libc6 zlib1g"
 RDEPENDS_append_libpng3=' libpng12'
 
-SRC_URI=http://www.libpng.org/pub/png/src/${P}.tar.bz2
-S=${WORKDIR}/${P}
+SRC_URI = ${SOURCEFORGE_MIRROR}/png-mng/${P}.tar.bz2
+S = ${WORKDIR}/${P}
 
 EXTRA_OEMAKE_append=' ZLIBINC=${STAGING_DIR}/target/include ZLIBLIB=${STAGING_LIBDIR}'
 
 do_compile() {
 	set -e
 	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
-	oe_runmake libpng12.so
+	unset LDFLAGS
+	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
+		   'ZLIBINC=${STAGING_DIR}/target/include' \
+		   'ZLIBLIB=${STAGING_LIBDIR}'
 }
 
 do_stage() {
@@ -28,15 +31,13 @@ do_stage() {
 	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so
 }
 
-do_install() {
-	install -d ${D}/usr/lib
-	install -m 755 -D libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so.0.${PV}
-	ln -sf ./libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so.0
-	ln -sf ./libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so
-	ln -sf libpng12.so ${D}/usr/lib/libpng.so.3
+do_install () {
+	set -e
+	install -d ${D}/${bindir} ${D}/${mandir} \
+		   ${D}/${libdir} ${D}/${includedir}
+	unset LDFLAGS
+	oe_runmake 'prefix=${prefix}' 'DESTDIR=${D}' \
+		   'DB=${D}/${bindir}' 'DI=${D}/${includedir}' \
+		   'DL=${D}/${libdir}' 'DM=${D}/${mandir}' \
+		   install
 }
-
-PACKAGES="libpng3 libpng12"
-FILES=""
-FILES_libpng3="/usr/lib/libpng.so.3"
-FILES_libpng12="/usr/lib/libpng12.so.*"

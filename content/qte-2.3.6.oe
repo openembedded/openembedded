@@ -1,6 +1,6 @@
 DESCRIPTION="Qt/Embedded version 2.3.6"
 LICENSE="GPL/QPL"
-SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qt-embedded-2.3.6.tar.gz"
+SRC_URI="ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-2.3.6.tar.gz"
 SRC_URI_append=" file://${FILESDIR}/qpe.patch;patch=1"
 DEPENDS=virtual/libc zlib libpng jpeg
 PROVIDES=virtual/qte virtual/libqte2
