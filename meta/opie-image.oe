@@ -1,49 +1,6 @@
 export IMAGE_BASENAME = "opie-image"
 
-#
-# Dependencies to get the launcher up and running
-#
-
-OPIE_LIBS = "qpf-bitstream-vera-small"
-OPIE_LIBS_DEPEND = "qte-for-opie libopie2 qpf-bitstream-vera"
-OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
-
-#
-# Things for reasonable bootstrap image
-#
-
-OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
-                     opie-suspendapplet opie-batteryapplet opie-homeapplet \
-                     opie-multikeyapplet opie-rotateapplet opie-vtapplet \ 
-                     opie-cardmon opie-irdaapplet"
-
-OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
-
-OPIE_BASE_APPS = "opie-aqpkg opie-console opie-clock opie-citytime"
-
-OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-sysinfo opie-networksettings opie-button-settings"
-
-OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
-     
-OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal"
-
-OPIE_BASE_DEPENDS = "ipkg ntp"
-OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
-
-#
-# Additional things for a standard 16MB distribution
-#
-
-OPIE_PIM = "opie-alarm opie-addressbook opie-drawpad opie-datebook opie-textedit \
-            opie-todo opie-today opie-today-addressbookplugin opie-today-datebookplugin \
-            opie-today-todolistplugin"
-
-OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
-
-OPIE_EXTRA_APPS = "opie-advancedfm"
-
-OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security \
-            opie-mediummount"
+include opie-collections.oe
 
 #
 # Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.
