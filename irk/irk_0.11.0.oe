@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"
-DEPENDS = "virtual/libqpe libsdl-qpe lirc"
+DEPENDS = "virtual/libqpe lirc"
 PR = "r2"
 
 SRC_URI = "http://angela1.data-uncertain.co.uk/~zaurus/irk-${PV}.tgz"
