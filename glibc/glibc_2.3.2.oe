@@ -4,6 +4,12 @@ SECTION="libs"
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 PROVIDES=virtual/libc
+PACKAGES=glibc glibc-dev glibc-doc glibc-gconv glibc-i18n glibc-locale
+FILES_glibc_append=' ${datadir}/zoneinfo'
+FILES_glibc-dev_append=' ${libdir}/*.o'
+FILES_glibc-gconv='${libdir}/gconv'
+FILES_glibc-i18n='${datadir}/i18n'
+FILES_glibc-locale='${datadir}/locale'
 
 #	 file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0
 #	  file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0
@@ -70,9 +76,6 @@ SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 
 S="${WORKDIR}/${P}"
 B="${WORKDIR}/build-${TARGET_SYS}"
-libdir=/lib
-bindir=/bin
-sbindir=/sbin
 
 inherit autotools
 
