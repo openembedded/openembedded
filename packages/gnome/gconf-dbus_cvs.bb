@@ -7,12 +7,13 @@ PROVIDES = "gconf"
 RPROVIDES = "gconf"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gconf;tag=gconf-dbus-2-6 \
-           file://gconf-dbus-update.patch;patch=1;pnum=0"
+           file://gconf-dbus-update.patch;patch=1;pnum=0 \
+	   file://69gconfd-dbus"
 
-FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0"
+FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir}"
 
 S = "${WORKDIR}/gconf"
 
@@ -28,4 +29,9 @@ do_stage() {
         install -d ${STAGING_INCDIR}/gconf/2/gconf/
         ( cd gconf; for i in ${HEADERS}; do install -m 0644 $i ${STAGING_INCDIR}/gconf/2/gconf/$i; done )
         install -m 0644 gconf.m4 ${STAGING_DATADIR}/aclocal/gconf-2.m4
+}
+
+do_install_append () {
+	install -d ${D}/${sysconfdir}/X11/Xsession.d
+	install -m 755 ${WORKDIR}/69gconfd-dbus ${D}/${sysconfdir}/X11/Xsession.d/
 }
