@@ -217,19 +217,25 @@ python populate_packages () {
 					target = os.readlink(path)
 					if target[0] != '/':
 						target = os.path.join(root[len(inst_root):], target)
-					dangling_links[pkg].append(target)
+					dangling_links[pkg].append(os.path.normpath(target))
 
 	for pkg in packages.split():
+		rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
 		for l in dangling_links[pkg]:
+			found = False
 			oe.debug(1, "%s contains dangling link %s" % (pkg, l))
 			for p in packages.split():
 				for f in pkg_files[p]:
 					if f == l:
+						found = True
 						oe.debug(1, "target found in %s" % p)
-						rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
-						rdepends.append(oe.data.getVar('PKG_' + p, d, 1) or p)
-						oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+						dp = oe.data.getVar('PKG_' + p, d, 1) or p
+						if not dp in rdepends:
+							rdepends.append(dp)
 						break
+			if found == False:
+				oe.note("%s contains dangling symlink to %s" % (pkg, l))
+		oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 
 	def write_if_exists(f, pkg, var):
 		def encode(str):
