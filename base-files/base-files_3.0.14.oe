@@ -82,29 +82,30 @@ do_install () {
 	if (grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab); then
 		# /var is in a ramdisk
 		install -d ${D}/etc/init.d ${D}/etc/rcS.d
-		for d in ${dirs775}; do
+		for d in ${dirs755}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
-				echo "chmod 0775 $d" > ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "chmod 0775 $d" >> ${D}/etc/init.d/populate-var.sh
 			fi
 		done
 		for d in ${dirs1777}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
-				echo "chmod 1777 $d" > ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "chmod 1777 $d" >> ${D}/etc/init.d/populate-var.sh
 			fi
 		done
 		for d in ${dirs2775}; do
 			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
-				echo "chmod 2775 $d" > ${D}/etc/init.d/populate-var.sh
+				echo "mkdir -p $d" >> ${D}/etc/init.d/populate-var.sh
+				echo "chmod 2775 $d" >> ${D}/etc/init.d/populate-var.sh
 			fi
 		done
 
 
 		echo ">/var/run/utmp" >> ${D}/etc/init.d/populate-var.sh
 		echo ">/var/log/wtmp" >> ${D}/etc/init.d/populate-var.sh
-		echo "chmod 0664 /var/run/utmp /var/log/wtmp"	>> ${D}/etc/init.d/populate-var.sh
+		echo ">/var/log/lastlog" >> ${D}/etc/init.d/populate-var.sh
+		echo "chmod 0664 /var/run/utmp /var/log/wtmp /var/log/lastlog"	>> ${D}/etc/init.d/populate-var.sh
 
 #		rmdir ${D}/var/*
 		chmod 0755 ${D}/${sysconfdir}/init.d/populate-var.sh
@@ -120,6 +121,12 @@ do_install_append_ramses () {
 	rmdir ${D}/tmp
 	mkdir -p ${D}/var/tmp
 	ln -s var/tmp ${D}/tmp
+}
+
+do_install_append_nylon() {
+	rm ${D}/${sysconfdir}/resolv.conf
+	touch ${D}/${sysconfdir}/resolv.conf
+	rm -r ${D}/mnt/*
 }
 
 PACKAGES = "${PN}-doc ${PN}"
