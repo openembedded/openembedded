@@ -58,7 +58,7 @@ EOF
 		fi
 	done
 	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.postinst; do
-		if [ -f $i ] && ! sh $i; then
+		if [ -f $i ] && ! sh $i configure; then
 			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
 		fi
 	done
