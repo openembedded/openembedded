@@ -11,4 +11,3 @@ S="${WORKDIR}/${P}"
 inherit autotools
 
 EXTRA_OECONF = "--with-curses-terminfo"
-EXTRA_OEMAKE = 

@@ -6,7 +6,6 @@ S = ${WORKDIR}/${P}
 
 inherit autotools
 
-EXTRA_OEMAKE =
 EXTRA_OECONF = --disable-glibtest --with-glib-prefix=${STAGING_DIR}/target
 export OPENOBEX_CFLAGS=-I${STAGING_DIR}/target/include
 export OPENOBEX_CONFIG = ${STAGING_BINDIR}/openobex-config \

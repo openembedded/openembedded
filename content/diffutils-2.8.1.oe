@@ -5,5 +5,3 @@ SRC_URI = ${GNU_MIRROR}/${PN}/${P}.tar.gz
 S = ${WORKDIR}/${P}
 
 inherit autotools
-
-EXTRA_OEMAKE = 

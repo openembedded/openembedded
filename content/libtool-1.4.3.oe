@@ -21,7 +21,6 @@ S = "${WORKDIR}/${P}"
 inherit autotools
 
 EXTRA_OECONF = --disable-ltdl-install
-EXTRA_OEMAKE =
 do_configure_prepend () {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC CPP
 	./bootstrap

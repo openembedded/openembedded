@@ -12,7 +12,6 @@ S = ${WORKDIR}/${PN}
 
 inherit autotools
 
-EXTRA_OEMAKE=
 do_compile_prepend () {
 	./autogen.sh
 }

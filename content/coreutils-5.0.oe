@@ -1,0 +1,8 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${GNU_MIRROR}/${PN}/${P}.tar.gz \
+	  file://${FILESDIR}/malloc.patch;patch=1
+S = ${WORKDIR}/${P}
+
+inherit autotools

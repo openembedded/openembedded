@@ -19,7 +19,6 @@ EXTRA_OECONF=--with-shared \
 	     --without-cxx-binding \
 	     --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo \
 	     --enable-overwrite
-EXTRA_OEMAKE = 
 export HOSTCCFLAGS=-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}
 export HOSTLDFLAGS=
 export LD := ${CC}

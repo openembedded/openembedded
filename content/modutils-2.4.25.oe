@@ -5,5 +5,4 @@ S = ${WORKDIR}/${P}
 inherit autotools
 
 EXTRA_OECONF = --disable-strip
-EXTRA_OEMAKE =
 export BUILDCC = ${BUILD_CC}

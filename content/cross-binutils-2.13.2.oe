@@ -12,5 +12,3 @@ CROSS_DIR := ${CROSS_DIR}
 prefix=${CROSS_DIR}
 exec_prefix=${prefix}
 inherit cross autotools
-
-EXTRA_OEMAKE =

@@ -3,7 +3,6 @@ PV = ${@os.popen("date +%Y%m%d").readline().strip()}
 S = ${WORKDIR}/mtd/util
 SRC_URI = cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd
 
-#EXTRA_OEMAKE_append = " util"
 CFLAGS_prepend = "-I${S}/../include "
 CPPFLAGS_prepend = "-I${S}/../include "
 CXXFLAGS_prepend = "-I${S}/../include "

@@ -69,7 +69,6 @@ builddir="${WORKDIR}/build-${TARGET_SYS}"
 inherit autotools
 
 EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${WORKDIR}/linux/include --without-cvs --enable-kernel=2.4.6"
-EXTRA_OEMAKE=
 
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"

@@ -8,7 +8,6 @@ prefix=${CROSS_DIR}
 exec_prefix=${prefix}
 inherit cross autotools
 
-EXTRA_OEMAKE =
 EXTRA_OECONF = --oldincludedir=${prefix}/include --enable-shared \
 	       --with-gxx-include-dir=${CROSS_DIR}/include/c++ \
 	       --enable-shared \

@@ -6,8 +6,6 @@ S = ${WORKDIR}/${P}
 
 inherit autotools
 
-EXTRA_OEMAKE =
-
 do_stage () {
 	install -m 0755 src/.libs/libopenobex* ${STAGING_LIBDIR}/
 	install -d ${STAGING_DIR}/target/include/openobex

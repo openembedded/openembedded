@@ -24,7 +24,6 @@ EXTRA_OECONF=--with-shared \
 	     --without-cxx-binding \
 	     --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo \
 	     --enable-overwrite
-EXTRA_OEMAKE = 
 export BUILD_CC := ${BUILD_CC}
 export BUILD_CCFLAGS=-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}
 export BUILD_LDFLAGS=
