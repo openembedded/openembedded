@@ -1,0 +1,10 @@
+IMAGE_BASENAME = "openslug"
+
+IMAGE_LINGUAS = ""
+USE_DEVFS = "1"
+
+IPKG_INSTALL = "task-bootstrap"
+
+DEPENDS = "task-bootstrap"
+
+inherit image_ipk
