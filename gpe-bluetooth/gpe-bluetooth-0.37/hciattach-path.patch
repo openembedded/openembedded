@@ -1,0 +1,11 @@
+--- gpe-bluetooth-0.37/hciattach.sh.old	2004-11-23 14:11:16.000000000 +0000
++++ gpe-bluetooth-0.37/hciattach.sh	2004-11-23 14:11:23.000000000 +0000
+@@ -3,7 +3,7 @@
+ if [ -f /etc/sysconfig/bluetooth ]; then
+   . /etc/sysconfig/bluetooth
+ 
+-  exec hciattach -n $BLUETOOTH_PORT $BLUETOOTH_PROTOCOL $BLUETOOTH_SPEED
++  exec /sbin/hciattach -n $BLUETOOTH_PORT $BLUETOOTH_PROTOCOL $BLUETOOTH_SPEED
+ else
+   echo "Bluetooth not configured"
+   exit 1

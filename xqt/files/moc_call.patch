@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xc/programs/Xserver/hw/xqt/Imakefile~moc_call
++++ xc/programs/Xserver/hw/xqt/Imakefile
+@@ -12,7 +12,7 @@
+ 
+ QTDIR = QtDir
+ 
+-MOC   = QtDir/bin/moc
++MOC   = MocBin
+ 
+ INCLUDES = -I. \
+ 	 -I$(XBUILDINCDIR) -I$(FONTINCSRC) \

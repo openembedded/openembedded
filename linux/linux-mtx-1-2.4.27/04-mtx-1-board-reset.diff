@@ -1,0 +1,15 @@
+--- linux/arch/mips/au1000/mtx-1/board_setup.c.orig	2004-10-13 19:05:15.340583632 +0200
++++ linux/arch/mips/au1000/mtx-1/board_setup.c	2004-10-13 19:01:03.402883984 +0200
+@@ -48,6 +48,12 @@
+ 
+ extern struct rtc_ops no_rtc_ops;
+ 
++void board_reset (void)
++{
++	/* Hit BCSR.SYSTEM_CONTROL[SW_RST] */
++	au_writel(0x00000000, 0xAE00001C);
++}
++
+ void __init board_setup(void)
+ {
+ 	rtc_ops = &no_rtc_ops;

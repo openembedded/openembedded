@@ -1,0 +1,15 @@
+--- linux-mips-2.4.24-pre2+zboot/arch/mips/zboot/Makefile	2004-11-17 19:25:04.538345048 +0100
++++ linux/arch/mips/zboot/Makefile	2004-11-17 19:21:05.304714088 +0100
+@@ -25,11 +25,7 @@
+ 
+ GZIP_FLAGS = -v9f
+ 
+-CFLAGS	:= $(CPPFLAGS) -O2 -D__BOOTER__ \
+-	-fomit-frame-pointer -fno-strict-aliasing -fno-common \
+-	-G 0 -mno-abicalls -fno-pic -mcpu=r4600 -mips2 \
+-		-I$(TOPDIR)/arch/$(ARCH)/zboot/include \
+-		-I$(TOPDIR)/include/asm
++CFLAGS	+= -D__BOOTER__ -I$(TOPDIR)/arch/$(ARCH)/zboot/include
+ AFLAGS	+= -D__BOOTER__
+ 
+ BOOT_TARGETS = zImage zImage.initrd zImage.flash zImage.initrd.flash

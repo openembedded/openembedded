@@ -1,0 +1,80 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- apt-0.6.18/configure.in~autofoo
++++ apt-0.6.18/configure.in
+@@ -17,9 +17,9 @@
+ AC_CONFIG_HEADER(include/config.h:buildlib/config.h.in include/apti18n.h:buildlib/apti18n.h.in)
+ 
+ dnl -- SET THIS TO THE RELEASE VERSION --
+-AC_DEFINE_UNQUOTED(VERSION,"0.6.25")
++AC_DEFINE_UNQUOTED(VERSION,"0.6.25", [package version])
+ PACKAGE="apt"
+-AC_DEFINE_UNQUOTED(PACKAGE,"$PACKAGE")
++AC_DEFINE_UNQUOTED(PACKAGE,"$PACKAGE", [package name])
+ AC_SUBST(PACKAGE)
+ 
+ dnl Check the archs, we want the target type.
+@@ -46,7 +46,7 @@
+ LIBS="$SAVE_LIBS"
+  
+ dnl Checks for pthread -- disabled due to glibc bugs jgg
+-dnl AC_CHECK_LIB(pthread, pthread_create,[AC_DEFINE(HAVE_PTHREAD) PTHREADLIB="-lpthread"])
++dnl AC_CHECK_LIB(pthread, pthread_create,[AC_DEFINE(HAVE_PTHREAD, 1, [define if we have pthreads]) PTHREADLIB="-lpthread"])
+ AC_SUBST(PTHREADLIB)
+ dnl if test "$PTHREADLIB" != "-lpthread"; then
+ dnl   AC_MSG_ERROR(failed: I need posix threads, pthread)
+@@ -66,14 +66,14 @@
+   AC_MSG_ERROR(failed: use --host=)
+ fi
+ AC_MSG_RESULT($archset)
+-AC_DEFINE_UNQUOTED(COMMON_CPU,"$archset")
++AC_DEFINE_UNQUOTED(COMMON_CPU,"$archset",[define to the system architecture])
+ 
+ dnl Get a common name for the host OS - this is primarily only for HURD and is
+ dnl non fatal if it fails
+ AC_MSG_CHECKING(system OS)
+ osset="`awk \" ! /^#|^\\\$/ {if (match(\\\"$target_vendor-$target_os\\\",\\\$1)) {print \\\$2; exit}}\" $srcdir/buildlib/ostable`"
+ AC_MSG_RESULT($osset)
+-AC_DEFINE_UNQUOTED(COMMON_OS,"$osset")
++AC_DEFINE_UNQUOTED(COMMON_OS,"$osset",[define to the system OS])
+ 
+ dnl We use C99 types if at all possible
+ AC_CACHE_CHECK([for C99 integer types],c9x_ints,[
+@@ -87,13 +87,13 @@
+ 
+ dnl Arg, linux and bsd put their statfs function in different places
+ if test x"$HAVE_STATVFS" != x"yes"; then
+-   AC_EGREP_HEADER(statfs,sys/vfs.h,[AC_DEFINE(HAVE_VFS_H)],[
+-   AC_EGREP_HEADER(statfs,sys/mount.h,[AC_DEFINE(HAVE_MOUNT_H)],[AC_MSG_ERROR(failed: Need statvfs)])
++   AC_EGREP_HEADER(statfs,sys/vfs.h,[AC_DEFINE(HAVE_VFS_H, 1, [define if statfs is in sys/vfs.h])],[
++   AC_EGREP_HEADER(statfs,sys/mount.h,[AC_DEFINE(HAVE_MOUNT_H, 1, [define if statfs is in sys/mount.h])],[AC_MSG_ERROR(failed: Need statvfs)])
+    ])
+ fi
+ 
+ dnl We should use the real timegm function if we have it.
+-AC_CHECK_FUNC(timegm,AC_DEFINE(HAVE_TIMEGM))
++AC_CHECK_FUNC(timegm,AC_DEFINE(HAVE_TIMEGM, 1, [define if we have timegm]))
+ AC_SUBST(HAVE_TIMEGM)
+ 
+ dnl Check the sizes etc. of the architecture
+@@ -139,7 +139,7 @@
+ dnl HP-UX sux..
+ AC_MSG_CHECKING(for missing socklen_t)
+ AC_EGREP_HEADER(socklen_t, sys/socket.h,[AC_MSG_RESULT(no)],[
+-	AC_DEFINE(NEED_SOCKLEN_T_DEFINE)
++	AC_DEFINE(NEED_SOCKLEN_T_DEFINE, 1, [define if we need to define socklen_t])
+ 	NEED_SOCKLEN_T_DEFINE=yes
+         AC_MSG_RESULT(missing.)])
+ AC_SUBST(NEED_SOCKLEN_T_DEFINE)
+@@ -174,7 +174,7 @@
+ ALL_LINGUAS="da de en_GB es fr hu it nl no_NO pl pt_BR ru sv zh_TW"
+ AM_GNU_GETTEXT(external)
+ if test x"$USE_NLS" = "xyes"; then
+-   AC_DEFINE(USE_NLS)
++   AC_DEFINE(USE_NLS, 1, [define if we have native language support])
+ fi
+ AC_SUBST(USE_NLS)
+ AC_PATH_PROG(BASH, bash)

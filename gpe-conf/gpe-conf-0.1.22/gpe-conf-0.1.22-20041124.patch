@@ -1,0 +1,227 @@
+? rgpe-conf-0.1.22-20041124.patch
+Index: ChangeLog
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/ChangeLog,v
+retrieving revision 1.268
+retrieving revision 1.270
+diff -u -r1.268 -r1.270
+--- ChangeLog	23 Nov 2004 21:34:38 -0000	1.268
++++ ChangeLog	24 Nov 2004 15:44:10 -0000	1.270
+@@ -1,5 +1,15 @@
+ 2004-11-23	Florian Boor  	<florian.boor@kernelconcepts.de>
+ 
++	* cfgfile.*, network.c: Hide all network interfaces that are not available.
++
++2004-11-19	Florian Boor  	<florian.boor@kernelconcepts.de>
++
++	* users/interface.*, users/callbacks.c: Prevent user from deleting last 
++	                                        user account.
++	* timeanddate.c: Make some entries activate OK button.
++
++2004-11-23	Florian Boor  	<florian.boor@kernelconcepts.de>
++
+ 	* Released Version 0.1.22
+ 
+ 2004-11-17	Florian Boor  	<florian.boor@kernelconcepts.de>
+Index: cfgfile.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/cfgfile.c,v
+retrieving revision 1.14
+retrieving revision 1.15
+diff -u -r1.14 -r1.15
+--- cfgfile.c	16 Oct 2004 16:03:42 -0000	1.14
++++ cfgfile.c	24 Nov 2004 15:43:10 -0000	1.15
+@@ -19,9 +19,12 @@
+ #include <stdlib.h>
+ #include <libintl.h>
+ #include <gpe/errorbox.h>
++#include <net/if.h>
++#include <sys/socket.h>
+ 
+ #include "cfgfile.h"
+ #include "network.h"
++#include "tools/interface.h"
+ 
+ #define _(x) gettext(x)
+ 
+@@ -280,6 +283,22 @@
+ 	}
+ }
+ 
++static gboolean
++is_present_interface(gchar *ifname)
++{
++	struct interface *int_list, *ife;
++
++	int_list = if_getlist ();
++	g_strstrip(ifname);
++
++	for (ife = int_list; ife; ife = ife->next)
++	{
++		if (g_str_has_prefix(ifname, ife->name))
++			return TRUE;
++	}
++	return FALSE;
++}
++
+ gint get_scheme_list()
+ {
+ 	gchar ifname[255]  = {0};
+@@ -339,6 +358,7 @@
+ 			memset(&iflist[l-1],'\0',sizeof(NWInterface_t));
+ 
+ 			strcpy(iflist[l-1].name,ifname);
++			iflist[l-1].ispresent = is_present_interface(ifname);
+ 			
+ 			iflist[l-1].isstatic = FALSE;
+ 			iflist[l-1].isinet = FALSE;
+Index: cfgfile.h
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/cfgfile.h,v
+retrieving revision 1.9
+retrieving revision 1.10
+diff -u -r1.9 -r1.10
+--- cfgfile.h	25 Aug 2004 10:17:31 -0000	1.9
++++ cfgfile.h	24 Nov 2004 15:43:10 -0000	1.10
+@@ -66,6 +66,7 @@
+ 	gint firstline;
+ 	gint lastline;
+ 	gint status;
++	gboolean ispresent;
+ } NWInterface_t;
+ 
+ gint set_file_open(gint openon);
+Index: network.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/network.c,v
+retrieving revision 1.42
+retrieving revision 1.43
+diff -u -r1.42 -r1.43
+--- network.c	17 Nov 2004 18:25:59 -0000	1.42
++++ network.c	24 Nov 2004 15:43:10 -0000	1.43
+@@ -1648,12 +1648,15 @@
+ 	for (row = 0; row < num_int; row++)
+ 	{
+ 		ctable = NULL;
+-		if (iflist[row].isstatic)
+-			ctable = create_nwstatic_widgets (iflist[row]);
+-		if (iflist[row].isdhcp)
+-			ctable = create_nwdhcp_widgets (iflist[row]);
+-		if (iflist[row].isppp)
+-			ctable = create_nwppp_widgets (iflist[row]);
++		if (iflist[row].ispresent)
++		{
++			if (iflist[row].isstatic)
++				ctable = create_nwstatic_widgets (iflist[row]);
++			if (iflist[row].isdhcp)
++				ctable = create_nwdhcp_widgets (iflist[row]);
++			if (iflist[row].isppp)
++				ctable = create_nwppp_widgets (iflist[row]);
++		}
+ 		if (ctable)
+ 		{
+ 			if (!have_access)
+Index: timeanddate.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/timeanddate.c,v
+retrieving revision 1.39
+retrieving revision 1.40
+diff -u -r1.39 -r1.40
+--- timeanddate.c	6 Nov 2004 08:22:52 -0000	1.39
++++ timeanddate.c	24 Nov 2004 15:43:10 -0000	1.40
+@@ -528,6 +528,7 @@
+ 	  gtk_misc_set_alignment (GTK_MISC (self.catlabel1), 0.0, 0.9);
+ 	  
+ 	  self.cal = gtk_date_combo_new ();
++	  gtk_entry_set_activates_default(GTK_ENTRY(GTK_DATE_COMBO(self.cal)->entry), TRUE);
+ 	  gtk_calendar_select_month (GTK_CALENDAR (GTK_DATE_COMBO(self.cal)->cal), ts.tm_mon, ts.tm_year);
+ 	  gtk_calendar_select_day (GTK_CALENDAR (GTK_DATE_COMBO(self.cal)->cal), ts.tm_mday);
+ 	  gtk_table_attach (GTK_TABLE (table), self.cal, 0, 3, 1, 2,
+@@ -549,6 +550,8 @@
+ 	  gpe_time_sel_set_time(GPE_TIME_SEL(self.tsel),(guint)ts.tm_hour, (guint)ts.tm_min);
+ 	  gtk_table_attach (GTK_TABLE (table), self.tsel, 0, 3, 3, 4,
+ 				GTK_FILL,0,3,0);
++	  gtk_entry_set_activates_default(GTK_ENTRY(GPE_TIME_SEL(self.tsel)->hour_spin), TRUE);
++	  gtk_entry_set_activates_default(GTK_ENTRY(GPE_TIME_SEL(self.tsel)->minute_spin), TRUE);
+ 	  /* -------------------------------------------------------------------------- */
+ 	
+ 	  self.catlabel3 = gtk_label_new (NULL);
+@@ -569,7 +572,7 @@
+ 	  gtk_combo_set_popdown_strings (GTK_COMBO (self.ntpserver), ntpsrv);
+ 	  gtk_table_attach (GTK_TABLE (table), self.ntpserver, 0, 3, 5, 6,
+ 				GTK_FILL,0,3,0);
+-	  
++ 
+ 	  gtk_tooltips_set_tip (tooltips, self.ntpserver, _("Select the timeserver to use to set the clock."), NULL);
+ 	
+ 	  self.internet = gtk_button_new_with_label(_("Get time from network"));
+Index: users/callbacks.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/users/callbacks.c,v
+retrieving revision 1.17
+retrieving revision 1.18
+diff -u -r1.17 -r1.18
+--- users/callbacks.c	17 Nov 2004 18:26:00 -0000	1.17
++++ users/callbacks.c	24 Nov 2004 15:43:10 -0000	1.18
+@@ -93,6 +93,22 @@
+     pwlist *cur = pwroot;
+     pwlist **prec = &pwroot;
+     uint i=GPOINTER_TO_UINT(tmp->data);
++	uint usercount = 0;
++	
++	while (cur)
++	 {
++		 if ((cur->pw.pw_uid >= MINUSERUID) && (cur->pw.pw_uid < MAXUSERID))
++		   usercount++;
++	     cur = cur->next;
++	 }
++
++	if (usercount < 2)
++	  {
++        gpe_error_box(_("You need at least one user account!"));
++		return;
++	  }
++	cur = pwroot;
++	  
+     while(IsHidden(cur))
+       {
+         prec = &cur->next;
+@@ -109,6 +125,13 @@
+         }
+        i--;
+       }
++	  
++	if (!strcmp(cur->pw.pw_name, "lx"))
++	  {
++        gpe_error_box(_("You can't remove this user!"));
++		return;
++	  }
++	  
+     if(cur->pw.pw_uid < MINUSERUID)
+       gpe_error_box(_("You can't remove\n system users!"));
+     else
+@@ -122,7 +145,6 @@
+       	}
+   }
+   ReloadList();
+-
+ }
+ 
+ 
+Index: users/interface.h
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/users/interface.h,v
+retrieving revision 1.8
+retrieving revision 1.9
+diff -u -r1.8 -r1.9
+--- users/interface.h	14 Jun 2004 10:15:16 -0000	1.8
++++ users/interface.h	24 Nov 2004 15:43:10 -0000	1.9
+@@ -6,6 +6,8 @@
+ #else
+ #define MINUSERUID 100
+ #endif
++#define MAXUSERID 65500
++
+ typedef struct pwlist_s
+ {
+   struct passwd pw;

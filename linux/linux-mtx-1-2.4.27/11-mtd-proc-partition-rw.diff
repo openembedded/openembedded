@@ -1,0 +1,173 @@
+diff -Nurb linux/drivers/mtd/mtdcore.c linux-mtd-rw/drivers/mtd/mtdcore.c
+--- linux/drivers/mtd/mtdcore.c	2004-11-18 13:16:00.000000000 +0100
++++ linux-mtd-rw/drivers/mtd/mtdcore.c	2004-11-18 15:27:13.130036616 +0100
+@@ -25,6 +25,10 @@
+ 
+ #include <linux/mtd/mtd.h>
+ 
++/* this symbol is exported by the procfs. */
++extern struct proc_dir_entry *proc_sys_root;
++
++
+ /* These are exported solely for the purpose of mtd_blkdevs.c. You 
+    should not use them for _anything_ else */
+ DECLARE_MUTEX(mtd_table_mutex);
+@@ -336,8 +340,83 @@
+ 
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
+ static struct proc_dir_entry *proc_mtd;
++
++static struct proc_dir_entry *proc_sys_mtd;
++static struct proc_dir_entry *proc_sys_mtd_partition[MAX_MTD_DEVICES];
++static struct proc_dir_entry *proc_sys_mtd_partition_rw[MAX_MTD_DEVICES];
+ #endif
+ 
++/*===================================0
++ * mtdproc_read_partition_access
++ */
++static int mtdproc_read_partition_access ( char *page, char **start, off_t off,int count,
++					   int *eof, void *data
++					   )
++{
++  int partid = (unsigned int)data;
++  int len = 0;
++
++  // NO RETURN FROM HERE UNTIL "up(&mtd_table_mutex)".
++  down(&mtd_table_mutex);
++
++  if (partid < MAX_MTD_DEVICES)
++  {
++    struct mtd_info *this = mtd_table[partid];
++    if (this)
++      {
++	page[len] = (this->flags & MTD_WRITEABLE) ? '1' : '0';
++	len++;
++      }
++  }
++  
++  up(&mtd_table_mutex);
++
++  if (off >= len)
++    return 0;
++  *start = page + off;
++  return ((count < len-off) ? count : len-off);
++}
++
++
++static int mtdproc_write_partition_access (struct file *file, const char *buffer,
++					   unsigned long count, void *data)
++{
++  int partid = (unsigned int)data;
++  int len = 0;
++
++  // NO RETURN FROM HERE UNTIL "up(&mtd_table_mutex)".
++  down(&mtd_table_mutex);
++
++  if (partid < MAX_MTD_DEVICES)
++  {
++    struct mtd_info *this = mtd_table[partid];
++    if (this && count > 0)
++      {
++	switch (*buffer)
++	  {
++	  case '0':
++	    this->flags &= ~(this->master_flags & MTD_WRITEABLE);
++	    break;
++
++	  case '1':
++	    this->flags |= ~(this->master_flags & MTD_WRITEABLE);
++	    break;
++
++	  default:
++	    break;
++	  }
++      }
++  }
++  
++  up(&mtd_table_mutex);
++
++  return count;
++}
++
++
++
++
++
+ static inline int mtd_proc_info (char *buf, int i)
+ {
+ 	struct mtd_info *this = mtd_table[i];
+@@ -349,6 +428,7 @@
+ 		       this->erasesize, this->name);
+ }
+ 
++
+ static int mtd_read_proc ( char *page, char **start, off_t off,int count
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
+                        ,int *eof, void *data_unused
+@@ -404,12 +484,31 @@
+ /*====================================================================*/
+ /* Init code */
+ 
++
+ int __init init_mtd(void)
+ {
+ #ifdef CONFIG_PROC_FS
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
++	int i;
++
+ 	if ((proc_mtd = create_proc_entry( "mtd", 0, 0 )))
+ 	  proc_mtd->read_proc = mtd_read_proc;
++
++	proc_sys_mtd = proc_mkdir("mtd", proc_sys_root);
++	for (i=0; i<MAX_MTD_DEVICES; i++)
++	  {
++	    char partname[10];
++	    sprintf (partname, "%d", i);
++
++	    proc_sys_mtd_partition[i] = proc_mkdir(partname, proc_sys_mtd);
++	    proc_sys_mtd_partition_rw[i] = create_proc_entry ("rw", S_IFREG | S_IRUGO, proc_sys_mtd_partition[i]);
++	    if (proc_sys_mtd_partition_rw[i])
++            {
++              proc_sys_mtd_partition_rw[i]->read_proc  = mtdproc_read_partition_access;
++	      proc_sys_mtd_partition_rw[i]->write_proc = mtdproc_write_partition_access;
++	      proc_sys_mtd_partition_rw[i]->data = (void *)i;
++            }
++	  }
+ #else
+         proc_register_dynamic(&proc_root,&mtd_proc_entry);
+ #endif
+@@ -425,6 +524,8 @@
+ 	return 0;
+ }
+ 
++
++
+ static void __exit cleanup_mtd(void)
+ {
+ #ifdef CONFIG_PM
+diff -Nurb linux/drivers/mtd/mtdpart.c linux-mtd-rw/drivers/mtd/mtdpart.c
+--- linux/drivers/mtd/mtdpart.c	2004-11-18 13:16:00.000000000 +0100
++++ linux-mtd-rw/drivers/mtd/mtdpart.c	2004-11-18 15:27:13.131036464 +0100
+@@ -341,6 +341,9 @@
+ 		/* set up the MTD object for this partition */
+ 		slave->mtd.type = master->type;
+ 		slave->mtd.flags = master->flags & ~parts[i].mask_flags;
++		slave->mtd.master_flags = master->flags;
++		slave->mtd.mask_flags = parts[i].mask_flags;
++
+ 		slave->mtd.size = parts[i].size;
+ 		slave->mtd.oobblock = master->oobblock;
+ 		slave->mtd.oobsize = master->oobsize;
+diff -Nurb linux/include/linux/mtd/mtd.h linux-mtd-rw/include/linux/mtd/mtd.h
+--- linux/include/linux/mtd/mtd.h	2004-11-18 13:16:31.000000000 +0100
++++ linux-mtd-rw/include/linux/mtd/mtd.h	2004-11-18 15:27:13.000000000 +0100
+@@ -232,6 +232,9 @@
+ 
+ 	struct module *owner;
+ 	int usecount;
++
++	u_int32_t master_flags;
++	u_int32_t mask_flags;
+ };
+ 
+ 

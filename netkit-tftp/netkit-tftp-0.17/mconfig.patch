@@ -1,0 +1,20 @@
+diff -urNd netkit-base-0.17/MCONFIG netkit-base-0.17-new/MCONFIG
+--- netkit-base-0.17/MCONFIG	1969-12-31 18:00:00.000000000 -0600
++++ netkit-base-0.17-new/MCONFIG	2002-10-12 13:33:16.000000000 -0500
+@@ -0,0 +1,16 @@
++BINDIR=/usr/bin
++SBINDIR=/usr/sbin
++MANDIR=/usr/man
++ROOTBINDIR=/bin
++BINMODE=755
++DAEMONMODE=755
++MANMODE=644
++SUIDMODE=4755
++PREFIX=/usr
++EXECPREFIX=/usr
++ROOTPREFIX=
++INSTALLROOT=
++CC=arm-linux-gcc
++CFLAGS=-I/usr/src/coding/projects/userspace/buildroot/output/staging/usr/include -O2 -Wall -W -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Winline
++LDFLAGS=
++LIBS=

@@ -1,0 +1,52 @@
+diff -Naur util-linux-2.12/disk-utils/blockdev.c util-linux-2.12-ok/disk-utils/blockdev.c
+--- util-linux-2.12/disk-utils/blockdev.c	2002-03-08 23:57:02.000000000 +0100
++++ util-linux-2.12-ok/disk-utils/blockdev.c	2004-11-09 14:21:13.000000000 +0100
+@@ -24,8 +24,8 @@
+ #define BLKRASET   _IO(0x12,98)
+ #define BLKRAGET   _IO(0x12,99)
+ #define BLKSSZGET  _IO(0x12,104)
+-#define BLKBSZGET  _IOR(0x12,112,sizeof(int))
+-#define BLKBSZSET  _IOW(0x12,113,sizeof(int))
++#define BLKBSZGET  _IOR(0x12,112,int)
++#define BLKBSZSET  _IOW(0x12,113,int)
+ #endif
+ 
+ /* Maybe <linux/hdreg.h> could be included */
+diff -Naur util-linux-2.12/disk-utils/elvtune.c util-linux-2.12-ok/disk-utils/elvtune.c
+--- util-linux-2.12/disk-utils/elvtune.c	2002-03-08 23:57:49.000000000 +0100
++++ util-linux-2.12-ok/disk-utils/elvtune.c	2004-11-09 14:21:44.000000000 +0100
+@@ -37,8 +37,8 @@
+ 	int max_bomb_segments;
+ } blkelv_ioctl_arg_t;
+ 
+-#define BLKELVGET   _IOR(0x12,106,sizeof(blkelv_ioctl_arg_t))
+-#define BLKELVSET   _IOW(0x12,107,sizeof(blkelv_ioctl_arg_t))
++#define BLKELVGET   _IOR(0x12,106,blkelv_ioctl_arg_t)
++#define BLKELVSET   _IOW(0x12,107,blkelv_ioctl_arg_t)
+ 
+ static void
+ usage(void) {
+diff -Naur util-linux-2.12/fdisk/common.h util-linux-2.12-ok/fdisk/common.h
+--- util-linux-2.12/fdisk/common.h	2003-07-13 15:59:53.000000000 +0200
++++ util-linux-2.12-ok/fdisk/common.h	2004-11-09 14:37:41.000000000 +0100
+@@ -6,7 +6,7 @@
+ #define BLKGETSIZE   _IO(0x12,96)    /* return device size */
+ #define BLKFLSBUF    _IO(0x12,97)    /* flush buffer cache */
+ #define BLKSSZGET    _IO(0x12,104)   /* get block device sector size */
+-#define BLKGETSIZE64 _IOR(0x12,114,8)	/* 8 = sizeof(u64) */
++#define BLKGETSIZE64 _IOR(0x12,114,unsigned long long)/* 8 = sizeof(u64) */
+ 
+ /* including <linux/hdreg.h> also fails */
+ struct hd_geometry {
+diff -Naur util-linux-2.12/partx/gpt.c util-linux-2.12-ok/partx/gpt.c
+--- util-linux-2.12/partx/gpt.c	2002-08-04 02:20:16.000000000 +0200
++++ util-linux-2.12-ok/partx/gpt.c	2004-11-09 14:23:18.000000000 +0100
+@@ -41,7 +41,7 @@
+ #define BLKGETLASTSECT  _IO(0x12,108)   /* get last sector of block device */
+ #define BLKGETSIZE _IO(0x12,96)	        /* return device size */
+ #define BLKSSZGET  _IO(0x12,104)	/* get block device sector size */
+-#define BLKGETSIZE64 _IOR(0x12,114,sizeof(uint64_t))	/* return device size in bytes (u64 *arg) */
++#define BLKGETSIZE64 _IOR(0x12,114,uint64_t)	/* return device size in bytes (u64 *arg) */
+ 
+ struct blkdev_ioctl_param {
+         unsigned int block;

@@ -1,0 +1,37 @@
+HAVE_VLDXVMC was only defined when 'X' was enabled leading to an
+error when compiling without-x
+
+Disable XVmc and VldXvmc
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xine-lib-1-rc7/configure.ac~fix-x
++++ xine-lib-1-rc7/configure.ac
+@@ -618,7 +618,7 @@
+                [Define 1 if you have vldXvMC.h])
+   fi
+ fi
+-AM_CONDITIONAL(HAVE_VLDXVMC, test x$ac_have_vldxvmc_h = "xyes")
++
+ dnl Try fallback to standard XvMC if vld failed
+ if test x$ac_have_xxmc = "xno"; then
+   if test x$xxmc_stub == "xXvMCW"; then
+@@ -705,10 +705,16 @@
+ 
+ LIBS="$saved_libs"
+ fi
++
++ac_have_xvmc="no"
++ac_have_vldxvmc_h="no"
+ AM_CONDITIONAL(HAVE_XVMC, test x$ac_have_xvmc = "xyes")
+ AC_SUBST(XVMC_LIB)
+ 
+ 
++
++AM_CONDITIONAL(HAVE_VLDXVMC, test x$ac_have_vldxvmc_h = "xyes")
++
+ dnl ---------------------------------------------
+ dnl Checks for Xinerama extension
+ dnl ---------------------------------------------
