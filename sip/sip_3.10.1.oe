@@ -1,5 +1,5 @@
 DESCRIPTION = "SIP - A Python Wrapper Generator"
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

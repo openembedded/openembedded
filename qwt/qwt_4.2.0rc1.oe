@@ -1,5 +1,5 @@
 DESCRIPTION = "Qt Widget Extension for Technical Applications"
-SECTION = "base"
+SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
