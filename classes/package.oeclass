@@ -431,6 +431,8 @@ python package_do_pkgconfig () {
 					name = m.group(1)
 					pkgconfig_provided[pkg].append(name)
 					path = os.path.join(root, file)
+					if not os.access(path, os.R_OK):
+						continue
 					f = open(path, 'r')
 					lines = f.readlines()
 					f.close()
