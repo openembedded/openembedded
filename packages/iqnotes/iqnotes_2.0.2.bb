@@ -8,9 +8,9 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
 HOMEPAGE = "http://iqnotes.kybu.org"
 AUTHOR = "Peter Vrabel <kybu@kybu.org>"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://iqnotes.kybu.org/iqnotes-2.0.2-src.tar.bz2 \
+SRC_URI = "http://www.vanille.de/mirror/iqnotes-2.0.2-src.tar.bz2 \
            file://md5.diff;patch=1"
 S = "${WORKDIR}/iqnotes/iqnotes"
 
