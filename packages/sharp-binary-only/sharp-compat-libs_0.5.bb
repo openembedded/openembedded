@@ -3,15 +3,16 @@ system by providing 2.95 libraries. To run compatible programs, use the Compat \
 Library program in the Settings menu to make them use these libraries."
 SECTION = "opie/settings"
 PRIORITY = "optional"
+DEPENDS = "opie-sh"
 RDEPENDS = "opie-sh"
 RPROVIDES = "oz-compat"
 RCONFLICTS = "oz-compat"
 MAINTAINER = "Tim Ansell <mithro AT mithis.net>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-EXCLUDE_FROM_WORLD = "1"
 EXCLUDE_FROM_SHLIBS = "1"
+COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "http://openzaurus.org/mirror/oz-compat_0.5.tar.gz \
 	   file://hentges.patch;patch=1 \
