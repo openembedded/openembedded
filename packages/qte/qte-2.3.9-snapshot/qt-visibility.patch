@@ -447,3 +447,14 @@
  		      int space, int spacer )
  {
      typedef int fixed;
+--- qt-2.3.9-snapshot-20041229/src/kernel/qfontmanager_qws.h~qt-visibility.patch
++++ qt-2.3.9-snapshot-20041229/src/kernel/qfontmanager_qws.h
+@@ -84,7 +84,7 @@
+ // e.g. Truetype Times, 10 point. There's only one of these though;
+ // we want to share generated glyphs
+ 
+-class QRenderedFont {
++class Q_EXPORT QRenderedFont {
+ 
+ public:
+ 

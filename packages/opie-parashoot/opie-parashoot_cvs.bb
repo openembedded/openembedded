@@ -4,6 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.8+cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "parashoot"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/games/parashoot \
@@ -18,5 +19,6 @@ inherit opie
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.xpm ${D}${palmtopdir}/pics/${APPNAME}/
 }
 
