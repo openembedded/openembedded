@@ -1,0 +1,25 @@
+DESCRIPTION = "GNU Portable Threads"
+SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "GPL LGPL FDL"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
+
+inherit autotools libtool
+
+do_configure() {
+	oe_runconf
+}
+
+do_stage() {
+	oe_soinstall .libs/libpth.so.20.0.20 ${STAGING_LIBDIR}/
+
+	install -d ${STAGING_INCDIR}/
+	for X in pth.h
+	do
+		install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
+	done
+
+}
