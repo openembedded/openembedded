@@ -42,3 +42,8 @@ pkg_prerm () {
 	update-rc.d $D modutils remove
 }
 
+PACKAGES = "modutils-depmod modutils"
+
+FILES_modutils-depmod = "sbin/depmod"
+
+RDEPENDS_modutils = "modutils-depmod"
