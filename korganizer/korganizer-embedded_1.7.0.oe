@@ -16,10 +16,10 @@ inherit palmtop
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 QMAKE_PROFILES= "all.pro"
 
-SUBDIRS="qtcompat microkde libical/src/libical libical/src/libicalss libkcal libkdepim libkabcwrap kalarmd korganizer " 
+SUBDIRS="microkde libical/src/libical libical/src/libicalss libkcal libkdepim libkabcwrap kalarmd korganizer" 
 
 do_configure_prepend() {
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat ${SUBDIRS}\n" >all.pro
         for d in ${SUBDIRS}
         do
                 mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
@@ -28,11 +28,11 @@ do_configure_prepend() {
 
 do_install() {
     install -d ${D}/${palmtopdir}/bin \
-	       ${D}/${palmtopdir}/lib \
-	       ${D}/${palmtopdir}/apps/Pim \
-       	       ${D}/${palmtopdir}/pics/korganizer/icons16 \
-       	       ${D}/${palmtopdir}/pics/korganizer/iconsmini \
-       	       ${D}/${palmtopdir}/plugins/applets
+               ${D}/${palmtopdir}/lib \
+               ${D}/${palmtopdir}/apps/Pim \
+               ${D}/${palmtopdir}/pics/korganizer/icons16 \
+               ${D}/${palmtopdir}/pics/korganizer/iconsmini \
+               ${D}/${palmtopdir}/plugins/applets
     install -m 0644 korganizer/korganizer.desktop ${D}/opt/QtPalmtop/apps/Pim/korganizer.desktop
     cd ${S}/pics
     cp ko*.png ${D}/opt/QtPalmtop/pics
@@ -40,18 +40,16 @@ do_install() {
     cp ./icons16/*.png ${D}/opt/QtPalmtop/pics/korganizer/icons16
     cp ./iconsmini/*.png ${D}/opt/QtPalmtop/pics/korganizer/iconsmini
 
-    for f in libmicrokde.so.1.0.0 libmicrokdepim.so.1.0.0 libmicrokabc.so.1.0.0 libmicrokcal.so.1.0.0 libmicroqtcompat.so.1.0.0 
-    do
+    for f in libmicrokde.so.1.0.0 libmicrokdepim.so.1.0.0 libmicrokabc.so.1.0.0 libmicrokcal.so.1.0.0 libmicroqtcompat.so.1.0.0
+    do                                                                                  
         oe_soinstall ${STAGING_LIBDIR}/${f} ${D}/opt/QtPalmtop/lib
-        rm -f ${STAGING_LIBDIR}/${f}
     done
 
-    install -m 0755 ${STAGING_DIR}/target/bin/kopi ${D}/opt/QtPalmtop/bin/kopi
-    rm -f ${STAGING_DIR}/target/bin/kopi
-    for f in libkopialarmapplet.so.1.0.0 libsimplealarmdaemon.so.1.0.0
+    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/kopi ${D}/opt/QtPalmtop/bin/kopi
+    
+    for f in libkopialarmapplet.so.1.0.0 
     do
-	oe_soinstall ${STAGING_DIR}/target/plugins/applets/${f} ${D}/opt/QtPalmtop/plugins/applets
-    rm -f $ {STAGING_DIR}/target/plugins/applets/${f}
+        oe_soinstall ${STAGING_DIR}/${HOST_SYS}/plugins/applets/${f} ${D}/opt/QtPalmtop/plugins/applets
     done
 
 }
