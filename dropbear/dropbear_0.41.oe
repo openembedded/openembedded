@@ -6,7 +6,10 @@ SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	 file://${FILESDIR}/configure.patch;patch=1"
 S = "${WORKDIR}/dropbear-${PV}"
 
-inherit autotools
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "dropbear"
+INITSCRIPT_PARAMS = "defaults 10"
 
 CFLAGS_prepend = "-I. "
 LD = "${CC}"
