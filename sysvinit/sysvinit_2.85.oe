@@ -24,12 +24,11 @@ S = "${WORKDIR}/sysvinit-${PV}/src"
 CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"
 
+
 do_install () {
 	install -d ${D}/${bindir} ${D}/${sbindir} \
 		   ${D}/sbin ${D}/${sysconfdir}/default \
 		   ${D}/${sysconfdir}/init.d
-#	install -m 755 debian/sysv-rc/sbin/invoke-rc.d \
-#		debian/sysv-rc/sbin/update-rc.d ${D}${sbindir}/
 	install -m 755 halt killall5 \
 		runlevel shutdown ${D}/sbin/
 	install -m 755 init ${D}/sbin/sysvinit
@@ -41,10 +40,6 @@ do_install () {
 	ln -sf init ${D}/sbin/telinit
 	ln -sf killall5 ${D}/sbin/pidof
 	ln -sf last ${D}${bindir}/lastb
-#	echo "/etc/inittab" > ${D}/CONTROL/conffiles
-#	echo "/etc/default/rcS" >> ${D}/CONTROL/conffiles
-#	install -m 0755    ${FILESDIR}/prerm		${D}/CONTROL/
-#	install -m 0755    ${FILESDIR}/postinst		${D}/CONTROL/
 	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
 		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
@@ -70,20 +65,26 @@ EOF
 	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
 }
 
-pkg_postinst () {
-	set -e
 
-# FIXME: use update-alternatives.. but what if the user doesnt have it?
-#	if [ -n "`which update-alternatives 2>/dev/null`" ]; then
-#		update-alternatives blah
-#	else
-		ln -sf sysvinit $D/sbin/init
-#	fi
-	exit 0
+do_install_append_ramses () {
+	cat <<EOF >>${D}/etc/inittab
+# Bluetooth
+#1:2345:respawn:/sbin/getty -L 115200 tts/1
+# External serial port
+4:2345:respawn:/sbin/getty -L 115200 tts/4
+# Framebuffer
+v1:2345:respawn:/sbin/getty -L 115200 vc/1
+EOF
 }
 
-#pkg_prerm () {
-#	set -e
-# FIXME: use update-alternatives
-#	exit 0
-#}
+
+pkg_postinst () {
+set -e
+# FIXME: use update-alternatives.. but what if the user doesnt have it?
+#if [ -n "`which update-alternatives 2>/dev/null`" ]; then
+#	update-alternatives blah
+#else
+	ln -sf sysvinit $D/sbin/init
+#fi
+exit 0
+}
