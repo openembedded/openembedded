@@ -4,6 +4,7 @@ PR = "r4"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
+		python-dialog		\
 		python-egenix-mx-base   \
 		python-pycurl		\
 		python-fnorb		\
@@ -40,6 +41,7 @@ DEPENDS = "	python-ao 		\
 		python-soappy		\
 		python-pysqlite		\
 		python-tlslite		\
+		python-urwid		\
 		python-vmaps		\
 		python-vorbis		\
 		moin			\
