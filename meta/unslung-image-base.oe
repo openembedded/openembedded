@@ -1,0 +1,29 @@
+IMAGE_LINGUAS = ""
+USE_DEVFS = "1"
+
+UNSLUNG_BASE_PACKAGES = "nslu2-unslung-ramdisk slingbox ipkg wget"
+
+IPKG_INSTALL = "${UNSLUNG_BASE_PACKAGES}"
+
+DEPENDS ?= "virtual/kernel ${UNSLUNG_BASE_PACKAGES}"
+IMAGE_BASENAME ?= "unslung"
+
+UNSLUNG_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-unslung.txt')}"
+EXTRA_IMAGECMD_ext2.gz = "-f ${UNSLUNG_DEVICE_TABLE}"
+
+IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
+		
+inherit image_ipk
+
+# Note that anything in this function must be repeatable without having to rebuild the rootfs
+unslung_clean_image () {
+
+	# Remove all traces of the ipkg stuff we did to get this rootfs
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg
+	if [ -f ${IMAGE_ROOTFS}/usr/bin/ipkg-cl ]; then
+	  rm -f ${IMAGE_ROOTFS}/usr/bin/ipkg
+	  mv ${IMAGE_ROOTFS}/usr/bin/ipkg-cl ${IMAGE_ROOTFS}/usr/bin/ipkg
+	fi
+	rm -f ${IMAGE_ROOTFS}/usr/bin/update-alternatives
+
+}
