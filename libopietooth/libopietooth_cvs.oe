@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Bluetooth library"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-DEPENDS = "libopie"
+DEPENDS = "libopie2"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.4-cvs-${CVSDATE}"
