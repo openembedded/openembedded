@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglade/2.0/libglade-${PV}.tar.bz2 \
 	   file://${FILESDIR}/glade-cruft.patch;patch=1;pnum=0"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 headers = "glade-build.h glade-init.h glade-parser.h glade-xml.h glade.h"
 

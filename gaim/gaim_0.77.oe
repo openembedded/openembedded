@@ -1,0 +1,10 @@
+DESCRIPTION = "multi-protocol instant messaging client"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+DEPENDS = "gtk+"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2"
+
+EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
+
+inherit autotools 

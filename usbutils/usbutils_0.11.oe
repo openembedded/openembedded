@@ -5,7 +5,7 @@ SRC_URI = "http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${P
 	   file://${FILESDIR}/configure.patch;patch=1"
 S = "${WORKDIR}/usbutils-${PV}"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--program-prefix="
 sbindir = "/sbin"

@@ -14,7 +14,7 @@ SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
 	   file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/no-xwc.patch;patch=1;pnum=0"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_configure_prepend() {
 	install -d m4

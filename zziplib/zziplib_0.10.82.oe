@@ -5,7 +5,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zziplib/zziplib-${PV}.tar.bz2"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_stage() {
 	oe_libinstall -a -so libzzip-0 ${STAGING_LIBDIR}

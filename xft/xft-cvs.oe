@@ -12,7 +12,7 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
 		${datadir}/aclocal ${bindir} ${sbindir}
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

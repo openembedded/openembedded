@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "ftp://mirrors.kernel.org/gnu/gmp/gmp-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 acpaths = ""
 

@@ -5,4 +5,4 @@ DESCRIPTION = "Epeg is a small library for handling thumbnails."
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epeg"
 S = "${WORKDIR}/epeg"
 
-inherit autotools libtool
+inherit autotools 

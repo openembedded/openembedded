@@ -13,6 +13,6 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver 
 	file://${FILESDIR}/shrotate.patch;patch=1;pnum=0"
 S = "${WORKDIR}/xserver"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 EXTRA_OECONF = "--enable-composite --disable-xinerama"

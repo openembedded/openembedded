@@ -5,7 +5,7 @@ DEPENDS = "virtual/libc libsdl-qpe libmad libvorbis libogg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--backend=sdl \
 		--with-sdl-prefix=${STAGING_BINDIR}/.. \

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
 DEPENDS = "virtual/libc x11"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 SRC_URI = "http://freedesktop.org/Software/startup-notification/releases/startup-notification-${PV}.tar.gz"
 

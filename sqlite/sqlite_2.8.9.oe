@@ -8,7 +8,7 @@ SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
 
 S = "${WORKDIR}/sqlite"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--without-tcl --enable-static --enable-shared"
 export config_BUILD_CC = "${BUILD_CC}"

@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "${SOURCEFORGE_MIRROR}/cpufreqd/cpufreqd-${PV}.tar.gz \
 	   file://${FILESDIR}/nonrootinstall.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 FILES_${PN} = "${sbindir} ${sysconfdir} ${libdir}/libsys_*.so"
 FILES_${PN}-dev = "${libdir}/*.la ${libdir}/*.a"

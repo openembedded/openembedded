@@ -10,7 +10,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xtst \
            file://${FILESDIR}/no-xrecord.patch;patch=1;pnum=0"
 S = "${WORKDIR}/Xtst"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/evas-1.0.0_pre5.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"
 S = "${WORKDIR}/evas-1.0.0_pre5"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--enable-fb \
 		--enable-image-loader-png \

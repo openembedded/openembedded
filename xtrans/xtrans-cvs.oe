@@ -9,7 +9,7 @@ network vageries."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans"
 S = "${WORKDIR}/xtrans"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

@@ -5,7 +5,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--disable-af --disable-alsa --disable-esd \
 --enable-oss --disable-sam9407 --disable-ultra \

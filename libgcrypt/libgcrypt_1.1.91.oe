@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc libgpg-error"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/libgcrypt-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--without-pth"
 

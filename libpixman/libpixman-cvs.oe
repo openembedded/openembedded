@@ -9,7 +9,7 @@ PROVIDES = "libpixman"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libpixman"
 S = "${WORKDIR}/libpixman"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage () {
 	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}

@@ -1,0 +1,36 @@
+# Xt needed to keep autoconf's check for X11 happy
+DEPENDS = "virtual/libc glib-2.0 fontconfig freetype zlib x11 xft xt"
+DESCRIPTION = "The goal of the Pango project is to provide an \
+Open Source framework for the layout and rendering of \
+internationalized text."
+
+SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/pango-${PV}.tar.bz2 \
+	   file://${FILESDIR}/gtk-doc.patch;patch=1 \
+	   file://${FILESDIR}/no-tests.patch;patch=1"
+
+inherit autotools  pkgconfig
+
+EXTRA_OECONF = "--disable-glibtest \
+		--enable-explicit-deps=no \
+	        --disable-debug"
+
+FILES_${PN} = "/etc ${bindir} ${libdir}/libpango*.so.*"
+
+SOV = "0.399.1"
+LIBV = "1.4.0"
+
+do_stage () {
+	for lib in pango pangox pangoft2 pangoxft; do
+		oe_soinstall pango/.libs/lib$lib-1.0.so.${SOV} ${STAGING_LIBDIR}/
+		install -m 0644 pango/.libs/lib$lib-1.0.lai ${STAGING_LIBDIR}/lib$lib-1.0.la
+		install -m 0644 pango/.libs/lib$lib-1.0.a ${STAGING_LIBDIR}/
+	done
+	install -d ${STAGING_INCDIR}/pango
+	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
+}
+
+python populate_packages_prepend () {
+	modules_root = oe.data.expand('${libdir}/pango/${LIBV}/modules', d)
+
+	do_split_packages(d, modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', 'pango-querymodules > /etc/pango/pango.modules')
+}

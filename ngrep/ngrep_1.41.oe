@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ngrep/ngrep-${PV}.tar.bz2"
 EXTRA_OECONF = "--with-safe-user --with-restart"
 EXTRA_OEMAKE = "INCLUDES=${S}"
 
-inherit autotools libtool
+inherit autotools 
 
 do_install () {
 	oe_runmake BINDEST="${D}/${bindir}" MANDEST="${D}/${mandir}"

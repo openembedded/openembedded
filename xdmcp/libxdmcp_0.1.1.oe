@@ -1,0 +1,19 @@
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+DEPENDS = "virtual/libc xproto"
+PROVIDES = "xdmcp"
+DESCRIPTION = "X Display Manager Control Protocol library."
+S = "${WORKDIR}/libXdmcp-${PV}"
+
+SRC_URI = "http://freedesktop.org/~xlibs/release/libXdmcp-${PV}.tar.bz2"
+
+inherit autotools pkgconfig 
+
+do_stage() {
+	oe_runmake install prefix=${STAGING_DIR} \
+	       bindir=${STAGING_BINDIR} \
+	       includedir=${STAGING_INCDIR} \
+	       libdir=${STAGING_LIBDIR} \
+	       datadir=${STAGING_DATADIR}
+}

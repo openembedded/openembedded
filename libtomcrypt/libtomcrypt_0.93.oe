@@ -13,7 +13,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "http://libtomcrypt.org/files/crypt-${PV}.tar.bz2 \
            file://${FILESDIR}/install.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 #FIXME add patch to make it shared
 

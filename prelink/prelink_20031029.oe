@@ -12,7 +12,7 @@ SRC_URI = "ftp://people.redhat.com/jakub/prelink/prelink-${PV}.tar.bz2 \
 	   file://${FILESDIR}/ts.Makefile.in.patch;patch=1"
 S = "${WORKDIR}/prelink"
 
-inherit autotools libtool
+inherit autotools 
 
 do_install_append () {
 	install -d ${D}/${sysconfdir}/cron.daily ${D}/${sysconfdir}/default

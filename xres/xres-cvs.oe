@@ -8,7 +8,7 @@ DESCRIPTION = "X Resource usage library."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XRes"
 S = "${WORKDIR}/XRes"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

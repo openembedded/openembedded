@@ -7,7 +7,7 @@ SRC_URI = "http://rcdrummond.net/uae/uae-${PV}/uae-${PV}.tar.bz2 \
            file://${FILESDIR}/configure.patch;patch=1 \
            file://${FILESDIR}/m4.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--with-hostcc=gcc --disable-ui --without-x \
 		--without-gtk --enable-jit --disable-natmem \

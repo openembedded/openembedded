@@ -1,0 +1,11 @@
+DESCRIPTION = "Matchbox panel manager"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc gtk+"
+
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/${PN}/${PV}/${PN}-${PV}.tar.bz2"
+S = "${WORKDIR}/${PN}-${PV}"
+
+inherit autotools  pkgconfig
+
+FILES_${PN} = "${bindir} ${datadir}/applications ${datadir}/pixmaps"
+

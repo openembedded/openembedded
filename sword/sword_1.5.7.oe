@@ -9,7 +9,7 @@ PR = "2"
 SRC_URI = "${DEBIAN_MIRROR}/main/s/sword/sword_${PV}.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/s/sword/sword_${PV}-${PR}.diff.gz;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage() {
 	oe_libinstall -so -C lib libsword ${STAGING_LIBDIR}

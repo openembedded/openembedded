@@ -8,7 +8,7 @@ PROVIDES = "xext"
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext"
 S = "${WORKDIR}/Xext"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

@@ -7,7 +7,7 @@ DEPENDS = "libidl popt orbit2-native"
 
 S = "${WORKDIR}/ORBit2-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_compile() {
 	oe_runmake IDL_COMPILER="`which orbit-idl-2`"

@@ -8,4 +8,4 @@ SRC_URI = "http://www.stunnel.org/download/stunnel/src/stunnel-${PV}.tar.gz \
 	   file://${FILESDIR}/automake.patch;patch=1"
 S = "${WORKDIR}/stunnel-${PV}"
 
-inherit autotools libtool
+inherit autotools 

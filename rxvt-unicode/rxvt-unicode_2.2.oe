@@ -8,7 +8,7 @@ same time, including Xft fonts."
 SRC_URI = "${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
 	   file://${FILESDIR}/include.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 #EXTRA_OECONF = "--enable-utmp --enable-wtmp --enable-lastlog \
 #		--disable-strings --with-term=rxvt --enable-keepscrolling \

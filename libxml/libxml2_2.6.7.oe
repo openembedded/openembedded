@@ -6,7 +6,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-${PV}.tar.bz2"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 EXTRA_OECONF = "--without-python"
 

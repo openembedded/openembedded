@@ -5,5 +5,5 @@ DEPENDS = "virtual/libc libsdl-qpe"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dosbox/dosbox-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 

@@ -8,7 +8,7 @@ FILES_${PN}-dev += " ${bindir}"
 
 S = "${WORKDIR}/libIDL-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

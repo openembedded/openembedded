@@ -6,7 +6,8 @@ libraries) behind a consistent interface."
 SRC_URI = "http://ftp.club.cc.cmu.edu/pub/gnu/libtool/libtool-${PV}.tar.gz \
            file://${FILESDIR}/m4.patch;patch=1 \
            file://${FILESDIR}/autotools.patch;patch=1 \
-	   file://${FILESDIR}/libtool15-update-configscripts.patch;patch=1;pnum=1"
+           file://${FILESDIR}/prefix.patch;patch=1 \
+           file://${FILESDIR}/libtool15-update-configscripts.patch;patch=1;pnum=1"
 S = "${WORKDIR}/libtool-${PV}"
 
 inherit autotools

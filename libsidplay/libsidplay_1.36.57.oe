@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "${DEBIAN_MIRROR}/main/libs/libsidplay/libsidplay_${PV}.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/libs/libsidplay/libsidplay_${PV}-3.diff.gz;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage() {
 	oe_libinstall -so -C src libsidplay ${STAGING_LIBDIR}

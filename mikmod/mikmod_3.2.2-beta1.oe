@@ -6,6 +6,6 @@ DEPENDS = "virtual/libc libmikmod"
 SRC_URI = "http://mikmod.raphnet.net/files/mikmod-${PV}.tar.bz2 \
            file://${FILESDIR}/m4.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 LDFLAGS_append = " -lm"

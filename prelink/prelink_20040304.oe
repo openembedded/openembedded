@@ -6,7 +6,7 @@ runtime and thus programs come up faster."
 SRC_URI = "${DEBIAN_MIRROR}/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz"
 S = "${WORKDIR}/prelink-0.0.${PV}"
 
-inherit autotools libtool
+inherit autotools 
 
 do_install_append () {
 	install -d ${D}/${sysconfdir}/cron.daily ${D}/${sysconfdir}/default

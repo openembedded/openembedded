@@ -5,4 +5,4 @@ on their contents and prints a description if a match is found."
 SRC_URI = "ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz \
 	   file://${FILESDIR}/fileexec.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 

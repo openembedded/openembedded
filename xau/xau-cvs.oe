@@ -9,7 +9,7 @@ DESCRIPTION = "Authorization Protocol for X."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau"
 S = "${WORKDIR}/Xau"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

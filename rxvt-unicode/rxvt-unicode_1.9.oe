@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
 	   file://${FILESDIR}/xim.patch;patch=1 \
 	   file://${FILESDIR}/include.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--disable-menubar \
 		--enable-ttygid \

@@ -1,7 +1,7 @@
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc"
+DEPENDS = "virtual/libc libtool-cross"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz;"
@@ -14,15 +14,8 @@ SRC_URI_append =" file://${FILESDIR}/make.patch;patch=1"
 
 S = "${WORKDIR}/apmd-${PV}.orig"
 
-inherit libtool
-
 do_compile() {
-	if [ -e ${STAGING_BINDIR}/${TARGET_SYS}-libtool ]; then
-	    LIBTOOL=${STAGING_BINDIR}/${TARGET_SYS}-libtool
-	else
-	    LIBTOOL=libtool
-	fi
-	oe_runmake "LIBTOOL=$LIBTOOL" apm apmd
+	oe_runmake "LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool" apm apmd
 }
 
 do_stage() {

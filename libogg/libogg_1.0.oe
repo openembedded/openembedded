@@ -6,7 +6,7 @@ necessary to codec libraries like libvorbis."
 
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/libogg-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage () {
 	oe_libinstall -a -so -C src libogg ${STAGING_LIBDIR}

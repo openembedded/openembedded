@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc libsdl-qpe"
 SRC_URI = "${SOURCEFORGE_MIRROR}/bochs/bochs-${PV}.tar.gz \
            file://${FILESDIR}/compile.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--without-x                 \
                 --without-x11               \

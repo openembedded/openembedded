@@ -5,7 +5,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libsigc/libsigc++-${PV}.tar.gz"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 acpaths = "-I ${S}/scripts"
 

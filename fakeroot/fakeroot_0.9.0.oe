@@ -3,4 +3,4 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 

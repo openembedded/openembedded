@@ -10,7 +10,7 @@ SRC_URI = "http://pdx.freedesktop.org/~fontconfig/release/fontconfig-${PV}.tar.g
 
 S = "${WORKDIR}/fontconfig-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 EXTRA_OECONF = " --disable-docs "
 

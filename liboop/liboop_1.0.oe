@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "http://download.ofb.net/liboop/liboop-${PV}.tar.bz2"
 S = "${WORKDIR}/liboop-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 headers = "oop.h oop-adns.h oop-glib.h \
 	  oop-tcl.h oop-www.h oop-rl.h \

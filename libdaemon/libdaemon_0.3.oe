@@ -3,7 +3,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "http://0pointer.de/lennart/projects/libdaemon/libdaemon-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--disable-lynx"
 

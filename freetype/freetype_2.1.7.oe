@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 LIBTOOL = "${S}/builds/unix/${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"

@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl libsdl-image"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freedroid/freedroid-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 do_compile() {
 	oe_runmake pkgdatadir=${palmtopdir}/share/freedroid

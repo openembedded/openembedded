@@ -5,4 +5,4 @@ DEPENDS = "virtual/libc ncurses openssl"
 SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 

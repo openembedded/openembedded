@@ -10,7 +10,7 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-sdp-${PV}.tar.gz"
 EXTRA_OECONF:="--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR}"
 LDFLAGS_prepend = "-L${S}/libs "
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage () {
 	oe_libinstall -a -so -C libs libsdp ${STAGING_LIBDIR}

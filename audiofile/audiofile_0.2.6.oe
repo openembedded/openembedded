@@ -9,7 +9,7 @@ Research, Amiga IFF/8SVX, and NIST SPHERE."
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_stage () {
 	install -m 0644 libaudiofile/audiofile.h libaudiofile/aupvlist.h libaudiofile/af_vfs.h ${STAGING_INCDIR}/

@@ -7,7 +7,7 @@ network vageries."
 SRC_URI = "http://freedesktop.org/~xlibs/release/libXtrans-0.1.tar.bz2"
 S = "${WORKDIR}/libXtrans-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

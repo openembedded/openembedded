@@ -10,7 +10,7 @@ S = "${WORKDIR}/httpd-${PV}"
 basesysconfdir := "${sysconfdir}"
 sysconfdir = "/etc/apache"
 
-inherit autotools libtool
+inherit autotools 
 
 FILES_${PN}="${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 	     ${libdir}/*/ ${basesysconfdir} ${sharedstatedir} ${localstatedir} \

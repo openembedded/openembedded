@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc pcre"
 DESCRIPTION = "PME is a C++ wrapper around the PCRE library."
 SRC_URI = "http://xaxxon.slackworks.com/pme/pme-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage () {
 	oe_libinstall -a -so libpme ${STAGING_LIBDIR}

@@ -3,7 +3,7 @@ DEPENDS = "virtual/libc libmatchbox"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/matchbox-desktop-${PV}.tar.bz2"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \

@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc libid3tag"
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "-enable-speed --enable-shared"
 

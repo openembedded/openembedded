@@ -7,7 +7,7 @@ DESCRIPTION = "X Fixes extension library."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfixes"
 S = "${WORKDIR}/Xfixes"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

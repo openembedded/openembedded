@@ -6,7 +6,7 @@ only relying on the TCP/IP protocol stack."
 SRC_URI = "http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 do_configure_prepend () {
 	set -e

@@ -5,3 +5,5 @@ SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
            file://${FILESDIR}/install-cross.patch;patch=1;pnum=0"
 
 inherit autotools
+
+export EXTRA_OEMAKE="'SUBDIRS=lib src doc m4 po tests' MAKEFLAGS="

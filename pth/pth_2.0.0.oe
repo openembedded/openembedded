@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 do_configure() {
 	oe_runconf

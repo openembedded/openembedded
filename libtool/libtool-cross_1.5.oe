@@ -5,21 +5,17 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
                    file://${FILESDIR}/sedvar.patch;patch=1 \
                    file://${FILESDIR}/tag.patch;patch=1 \
-                   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
                    file://${FILESDIR}/prefix.patch;patch=1 \
                    file://${FILESDIR}/ld.patch;patch=1 \
                    file://${FILESDIR}/chmod.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
-# This should match what native.oeclass does
 prefix = "${STAGING_DIR}"
-exec_prefix = "${prefix}/${BUILD_SYS}"
 
 do_compile () {
 }
 
 do_stage () {
-        install -m 0755 ${HOST_SYS}-libtool ${STAGING_BINDIR}/${HOST_SYS}-libtool
         install -m 0755 ${HOST_SYS}-libtool ${bindir}/${HOST_SYS}-libtool
 }
 

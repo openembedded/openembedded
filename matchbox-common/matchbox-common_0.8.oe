@@ -5,7 +5,7 @@ DEPENDS = "libmatchbox"
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-common/${PV}/matchbox-common-${PV}.tar.bz2"
 S = "${WORKDIR}/matchbox-common-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 EXTRA_OECONF = "--enable-pda-folders"
 

@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "ftp://oss.sgi.com/projects/fam/download/stable/fam-${PV}.tar.gz \
 	   file://${FILESDIR}/rpcsvc.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 CPPFLAGS_append = " -DNDEBUG"
 

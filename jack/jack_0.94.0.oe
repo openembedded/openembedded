@@ -11,6 +11,6 @@ themselves."
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/jackit/jack-audio-connection-kit-${PV}.tar.gz"
 S = "${WORKDIR}/jack-audio-connection-kit-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 EXTRA_OECONF = ""

@@ -18,7 +18,7 @@ SRC_URI_append = " file://${FILESDIR}/raw-hwread.patch;patch=1"
 #SRC_URI_append = " file://${FILESDIR}/ts_calibrate.patch;patch=1"
 S = "${WORKDIR}/tslib"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--enable-shared"
 

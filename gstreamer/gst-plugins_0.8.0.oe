@@ -9,7 +9,7 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-0.8.0.ta
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 

@@ -5,7 +5,7 @@ open source implementation of the Object Exchange \
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage () {
 	oe_libinstall -a -so -C src libopenobex-1.0 ${STAGING_LIBDIR}

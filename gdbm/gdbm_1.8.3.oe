@@ -7,7 +7,7 @@ that use extensible hashing."
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 	   file://${FILESDIR}/makefile.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 do_stage () {
 	oe_libinstall -so -a libgdbm ${STAGING_LIBDIR}

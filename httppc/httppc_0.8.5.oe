@@ -8,4 +8,4 @@ DNS resolution."
 SRC_URI = "${SOURCEFORGE_MIRROR}/httppc/httppc-${PV}.tar.gz \
 	   file://${FILESDIR}/install.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 

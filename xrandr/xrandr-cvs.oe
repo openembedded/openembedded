@@ -5,7 +5,7 @@ DESCRIPTION = "X Resize and Rotate extension command."
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xapps;module=xrandr"
 S = "${WORKDIR}/xrandr"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_configure_prepend() {
 	./autogen.sh

@@ -11,7 +11,7 @@ SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.
 	   file://${FILESDIR}/lai.patch;patch=1"
 S = "${WORKDIR}/pcre-${PV}"
 
-inherit autotools libtool
+inherit autotools 
 
 CFLAGS_append = " -D_REENTRANT"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"

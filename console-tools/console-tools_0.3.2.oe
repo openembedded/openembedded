@@ -20,4 +20,4 @@ do_compile () {
 	oe_runmake 'SUBDIRS=${SUBDIRS}'
 }
 
-inherit autotools libtool
+inherit autotools 

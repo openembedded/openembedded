@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc"
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz"
 S = "${WORKDIR}/expat-${PV}"
 
-inherit autotools libtool lib_package
+inherit autotools  lib_package
 export LTCC = "${CC}"
 
 do_stage () {

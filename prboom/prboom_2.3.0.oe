@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc libsdl-qpe libsdl-mixer libsdl-net"
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
            file://${FILESDIR}/m4.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools 
 
 EXTRA_OECONF = "--without-x --disable-sdltest"
 

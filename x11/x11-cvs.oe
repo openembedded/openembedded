@@ -10,7 +10,7 @@ FILES_${PN}_append = " ${datadir}/X11"
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11"
 S = "${WORKDIR}/X11"
 
-inherit autotools pkgconfig libtool
+inherit autotools pkgconfig 
 
 do_compile() {
 	(

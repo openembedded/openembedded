@@ -6,7 +6,7 @@ DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
 
-inherit autotools libtool
+inherit autotools 
 
 acpaths = "-I ${S}/autoconf"
 EXTRA_OECONF="--enable-warnings"

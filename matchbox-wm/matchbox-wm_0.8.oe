@@ -7,7 +7,7 @@ SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/${PV
 	   file://${FILESDIR}/m4.patch;patch=1"
 S = "${WORKDIR}/matchbox-window-manager-${PV}"
 
-inherit autotools libtool pkgconfig
+inherit autotools  pkgconfig
 
 EXTRA_OECONF = "--enable-composite"
 #		--enable-startup-notification
