@@ -31,7 +31,7 @@ do_install() {
 		   ${D}/${palmtopdir}/pics/launcher \
 		   ${D}/etc/init.d
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
-	install -m 0644 ${WORKDIR}/apps/Settings/Calibrate.desktop ${D}/${palmtopdir}/apps/Settings/Calibrate.desktop
+	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/calibrate.desktop
 	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
 	install -m 0644 ${WORKDIR}/root/etc/init.d/opie ${D}/etc/init.d/opie
 #FIXME use our own - machine dependent - start script
