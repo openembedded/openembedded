@@ -6,7 +6,14 @@ DEPENDS = "virtual/libc base/zlib"
 RDEPENDS = "libc6 zlib1g"
 RDEPENDS_append_libpng3 = " libpng12"
 
+FILES_${PN} = ${libdir}/lib*.so.*
+FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+		${libdir}/*.a ${libdir}/pkgconfig \
+		${datadir}/aclocal ${bindir} ${sbindir}
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/png-mng/libpng-${PV}.tar.bz2"
+
+inherit pkgconfig
 
 EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
 
