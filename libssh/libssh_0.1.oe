@@ -17,7 +17,7 @@ do_stage () {
 	for i in crypto.h libssh.h sftp.h ssh2.h; do
 		install -m 0644 ${S}/include/libssh/$i ${STAGING_INCDIR}/libssh/
 	done
-	install -m 0755 libssh/libssh.so ${STAGING_LIBDIR}/
+	oe_libinstall -so -C libssh libssh ${STAGING_LIBDIR}
 }
 
 do_install () {

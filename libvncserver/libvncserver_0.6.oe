@@ -16,18 +16,19 @@ S = "${WORKDIR}/LibVNCServer-${PV}"
 inherit autotools
 
 do_stage () {
-    install -d ${STAGING_INCDIR}/rfb
-    install -m 0644 rfb/rfb.h rfb/rfbproto.h rfb/rfbint.h rfb/rfbconfig.h \
+	install -d ${STAGING_INCDIR}/rfb
+	install -m 0644 rfb/rfb.h rfb/rfbproto.h rfb/rfbint.h rfb/rfbconfig.h \
 		    rfb/rfbclient.h rfb/rfbregion.h rfb/keysym.h \
 		    rfb/default8x16.h ${STAGING_INCDIR}/rfb
-		    
-    install -m 0644 libvncserver.a libvncclient/libvncclient.a ${STAGING_LIBDIR} 
+
+	oe_libinstall -a -C libvncclient libvncclient ${STAGING_LIBDIR}/
+	oe_libinstall -a libvncserver ${STAGING_LIBDIR}/
 }
 
 do_install () {
-    install -d ${D}/${bindir}
-    install -m 0755 examples/storepasswd ${D}/${bindir}
-    install -d ${D}/${datadir}fbvncserver/classes
-    install -m 0644 classes/index.vnc ${D}/${datadir}fbvncserver/classes/
-    install -m 0644 classes/VncViewer.jar ${D}/${datadir}fbvncserver/classes/
+	install -d ${D}/${bindir}
+	install -m 0755 examples/storepasswd ${D}/${bindir}
+	install -d ${D}/${datadir}fbvncserver/classes
+	install -m 0644 classes/index.vnc ${D}/${datadir}fbvncserver/classes/
+	install -m 0644 classes/VncViewer.jar ${D}/${datadir}fbvncserver/classes/
 }

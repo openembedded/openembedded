@@ -13,7 +13,7 @@ do_compile() {
 }
 
 do_stage() {
-	install -m 0755 ../lib/libsnmp++.a ${STAGING_LIBDIR}/
+	oe_libinstall -a -C ../lib libsnmp++ ${STAGING_LIBDIR}/
 	install -d ${STAGING_INCDIR}/snmp++
 	install -m 0644 ../include/*.h ${STAGING_INCDIR}/snmp++
 }

@@ -59,13 +59,10 @@ do_stage () {
 	set -e
 	cd ${B}
 	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_INCDIR}/
-	install -m 0755 .libs/libdb-3.2.so ${STAGING_LIBDIR}/
-	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb-3.so
-	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb3.so
+	oe_libinstall -so libdb-3.2 ${STAGING_LIBDIR}
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb.so
-	install -m 0644 .libs/libdb-3.2.lai ${STAGING_LIBDIR}/libdb-3.2.la
 	cd ${WORKDIR}/db-${PV}/build_unix_static
-	install -m 0644 libdb.a ${STAGING_LIBDIR}/
+	oe_libinstall -a libdb ${STAGING_LIBDIR}
 	cd ${S}
 }
 

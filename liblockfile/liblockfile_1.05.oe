@@ -11,12 +11,9 @@ inherit autotools
 EXTRA_OECONF = "--enable-shared --enable-static"
 
 do_stage () {
-		install -m 644 ${S}/lockfile.h ${S}/maillock.h ${STAGING_INCDIR}/
-		install -m 755 liblockfile.so \
-			${STAGING_LIBDIR}/liblockfile.so.1.0
-		ln -sf liblockfile.so.1.0 ${STAGING_LIBDIR}/liblockfile.so
-		install -m 644 liblockfile.a ${STAGING_LIBDIR}/
-#		install -m 755 nfslock.so.1.0 ${STAGING_LIBDIR}/
+	install -m 644 ${S}/lockfile.h ${S}/maillock.h ${STAGING_INCDIR}/
+	oe_libinstall -a -so liblockfile ${STAGING_LIBDIR}
+#	oe_libinstall -so nfslock ${STAGING_LIBDIR}
 }
 
 do_install () {

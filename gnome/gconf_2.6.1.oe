@@ -12,8 +12,7 @@ inherit autotools pkgconfig
 HEADERS = "gconf.h gconf-changeset.h gconf-listeners.h gconf-schema.h gconf-value.h gconf-error.h gconf-engine.h gconf-client.h gconf-enum-types.h"
 
 do_stage() {
-	oe_soinstall gconf/.libs/libgconf-2.so.4.1.0 ${STAGING_LIBDIR}/
-	install -m 0644 gconf/.libs/libgconf-2.lai ${STAGING_LIBDIR}/libgconf-2.la
+	oe_libinstall -so -C gconf libgconf-2 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/gconf/2/gconf/
 	( cd gconf; for i in ${HEADERS}; do install -m 0644 $i ${STAGING_INCDIR}/gconf/2/gconf/$i; done )
 }

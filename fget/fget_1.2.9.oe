@@ -16,7 +16,7 @@ do_configure() {
 }
 
 do_stage() {
-	install -m 0755 lib/libfget.a ${STAGING_LIBDIR}/
+	oe_libinstall -a -C lib libfget ${STAGING_LIBDIR}
 	install -m 0755 lib/libfget.h ${STAGING_INCDIR}/
 }
 

@@ -9,6 +9,6 @@ DEPENDS = "gtk+ libgpewidget"
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-ownerinfo-${PV}.tar.gz"
 
 do_stage () {
-	install -m 0644 libgpe-ownerinfo.a ${STAGING_LIBDIR}/
+	oe_libinstall -a libgpe-ownerinfo ${STAGING_LIBDIR}
 	install -m 0644 gpe-ownerinfo.h ${STAGING_INCDIR}/ 
 }

@@ -8,6 +8,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/lex/flex-${PV}.tar.bz2 \
 inherit autotools
 
 do_stage () {
-	install -m 0644 libfl.a ${STAGING_LIBDIR}/
+	oe_libinstall -a libfl ${STAGING_LIBDIR}
 	install -m 0644 FlexLexer.h ${STAGING_INCDIR}/
 }

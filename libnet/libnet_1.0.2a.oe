@@ -24,5 +24,5 @@ do_stage () {
 	install -m 0644 include/libnet/libnet-macros.h ${STAGING_INCDIR}/libnet/
 	install -m 0644 include/libnet/libnet-asn1.h ${STAGING_INCDIR}/libnet/
 	install -m 0644 include/libnet/libnet-ospf.h ${STAGING_INCDIR}/libnet/
-	install -m 0755 lib/libnet.a ${STAGING_LIBDIR}/
+	oe_libinstall -a -C lib libnet ${STAGING_LIBDIR}
 }

@@ -14,5 +14,5 @@ EXTRA_OEMAKE = "'install_prefix=${D}'"
 
 do_stage () {
 	install -m 0644 ${S}/src/nids.h ${STAGING_INCDIR}/
-	install -m 0644 src/libnids.a ${STAGING_LIBDIR}/
+	oe_libinstall -a -C src libnids ${STAGING_LIBDIR}
 }

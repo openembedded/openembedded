@@ -18,7 +18,6 @@ inherit autotools
 #FIXME add patch to make it shared
 
 do_stage() {
-	install -m 0755 libtomcrypt.a ${STAGING_LIBDIR}/
+	oe_libinstall -a libtomcrypt ${STAGING_LIBDIR}/
 	install -m 0644 *.h ${STAGING_INCDIR}/
 }
-

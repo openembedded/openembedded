@@ -16,12 +16,11 @@ do_compile() {
 }
 
 do_stage() {
-	install lib/libusound.a ${STAGING_LIBDIR}/
-        install -m 0644 lib/usound.h ${STAGING_INCDIR}/
+	oe_libinstall -a -C lib libusound ${STAGING_LIBDIR}
+	install -m 0644 lib/usound.h ${STAGING_INCDIR}/
 }
 
 do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 daemon/usound ${D}${bindir}
 }
-

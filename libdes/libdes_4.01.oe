@@ -12,7 +12,6 @@ do_compile() {
 }
 
 do_stage() {
-	install -m 0755 libdes.a ${STAGING_LIBDIR}/
+	oe_libinstall -a libdes ${STAGING_LIBDIR}
 	install -m 0644 ${S}/des.h ${STAGING_INCDIR}/
 }
-

@@ -13,10 +13,9 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 inherit autotools
 
 do_stage () {
-	install -m 0644 lib/libcom_err.a ${STAGING_LIBDIR}/
-	install -m 0644 lib/libss.a ${STAGING_LIBDIR}/
-	install -m 0644 lib/libuuid.a ${STAGING_LIBDIR}/
-	install -m 0644 lib/libblkid.a ${STAGING_LIBDIR}/
+	for i in libcom_err libss libuuid libblkid; do
+		oe_libinstall -a -C lib $i ${STAGING_LIBDIR}
+	done
 	install -d ${STAGING_INCDIR}/et \
 		   ${STAGING_INCDIR}/ss \
 		   ${STAGING_INCDIR}/uuid \
