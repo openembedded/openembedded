@@ -1,28 +1,12 @@
 DESCRIPTION = "modutils configuration files"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 
-SRC_URI = "\
-		file://shepherd/modules		\
-		file://shepherd/modules.conf	\
-		file://h3600/modules		\
-		file://h3600/modules.conf		\
-		file://corgi/modules		\
-		file://corgi/modules.conf		\
-		file://husky/modules		\
-		file://husky/modules.conf		\
-		file://modutils-notest.patch	\
-		file://modutils			\
-		file://collie/modules		\
-		file://collie/modules.conf		\
-		file://configure.patch		\
-		file://poodle/modules		\
-		file://poodle/modules.conf		\
-		file://ramses/modules		\
-		file://ramses/modules-ramses	\
-		file://ramses/modules.conf		\
-		file://simpad/modules		\
-		file://simpad/modules.conf		\
-		file://program_prefix.patch"
+SRC_URI = "file://modutils-notest.patch	\
+	   file://configure.patch \
+	   file://program_prefix.patch \
+	   file://modules \
+	   file://modules.conf \
+	   file://modutils"
 
 INITSCRIPT_NAME = "modutils"
 INITSCRIPT_PARAMS = "start 20 S ."
@@ -35,6 +19,6 @@ do_compile () {
 do_install () {
 	install -d ${D}/${sysconfdir} ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/modutils ${D}/etc/init.d/
-	oe_machinstall -m 0644 ${WORKDIR}/modules ${D}/${sysconfdir}/modules
-	oe_machinstall -m 0644 ${WORKDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
+	install -m 0644 ${WORKDIR}/modules ${D}/${sysconfdir}/modules
+	install -m 0644 ${WORKDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
 }

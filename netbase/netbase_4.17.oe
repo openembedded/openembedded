@@ -11,13 +11,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://options \
            file://init \
            file://hosts \
-           file://epia/interfaces \
-           file://collie/interfaces \
-           file://husky/interfaces \
-           file://boxer/interfaces \
-           file://shepherd/interfaces \
-           file://poodle/interfaces \
-           file://corgi/interfaces \
            file://interfaces"
 
 do_install () {
@@ -36,5 +29,5 @@ do_install () {
 	install -m 0644 etc-services ${D}/${sysconfdir}/services
 	install -m 0755 update-inetd ${D}/${sbindir}/
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
-	oe_machinstall -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
+	install -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
 }

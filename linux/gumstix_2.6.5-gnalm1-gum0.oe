@@ -13,7 +13,7 @@ inherit kernel
 KERNEL_IMAGETYPE = "zImage"
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
         oe_runmake oldconfig
 }
 

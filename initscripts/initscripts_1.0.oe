@@ -10,13 +10,6 @@ SRC_URI = "file://halt \
            file://ramdisk \
            file://umountfs \
            file://devices \
-           file://h3600/devices \
-           file://collie/devices \
-           file://shepherd/devices \
-           file://husky/devices \
-           file://boxer/devices \
-           file://corgi/devices \
-           file://poodle/devices \
            file://devpts.sh \
            file://devpts \
            file://bootlogo-simpad.gz \
@@ -26,12 +19,8 @@ SRC_URI = "file://halt \
            file://finish \
            file://bootmisc.sh \
            file://mountnfs.sh \
-           file://ramses/umountfs \
-           file://ramses/extractfs \
            file://reboot \
            file://checkfs.sh \
-           file://simpad/devices \
-           file://simpad/banner \
            file://single \
            file://sendsigs \
            file://urandom \
@@ -76,10 +65,10 @@ do_install () {
 #
 # Install device dependent scripts
 #
-	oe_machinstall -m 0755 ${WORKDIR}/banner	${D}/etc/init.d/banner
-	oe_machinstall -m 0755 ${WORKDIR}/devices	${D}/etc/init.d/devices
-	oe_machinstall -m 0755 ${WORKDIR}/extractfs	${D}/etc/init.d/extractfs
-	oe_machinstall -m 0755 ${WORKDIR}/umountfs	${D}/etc/init.d/umountfs
+	install -m 0755 ${WORKDIR}/banner	${D}/etc/init.d/banner
+	install -m 0755 ${WORKDIR}/devices	${D}/etc/init.d/devices
+	install -m 0755 ${WORKDIR}/extractfs	${D}/etc/init.d/extractfs
+	install -m 0755 ${WORKDIR}/umountfs	${D}/etc/init.d/umountfs
 #
 # Create runlevel links
 #

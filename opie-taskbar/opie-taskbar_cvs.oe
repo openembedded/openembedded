@@ -57,7 +57,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/logo/*.* ${D}/${palmtopdir}/pics/logo/
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
 	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/etc/
-	oe_machinstall -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
+	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 }
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"

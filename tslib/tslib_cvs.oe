@@ -6,22 +6,8 @@ DESCRIPTION = "tslib is a touchscreen access library."
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib \
-           file://collie/ts.conf \
-           file://collie/tslib.sh \
-           file://corgi/ts.conf \
-           file://corgi/tslib.sh \
-           file://h3600/ts.conf \
-           file://h3600/tslib.sh \
-           file://husky/ts.conf \
-           file://husky/tslib.sh \
-           file://boxer/ts.conf \
-           file://boxer/tslib.sh \
-           file://poodle/ts.conf \
-           file://poodle/tslib.sh \
-	   file://simpad/ts.conf \
-	   file://simpad/tslib.sh \
-           file://shepherd/ts.conf \
-           file://shepherd/tslib.sh"
+	   file://ts.conf \
+	   file://tslib.sh"
 S = "${WORKDIR}/tslib"
 
 inherit autotools
@@ -36,12 +22,12 @@ do_stage () {
 }
 
 do_install_prepend () {
-	oe_machinstall -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
+	install -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
 }
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/profile.d/
-	oe_machinstall -m 0755 ${WORKDIR}/tslib.sh ${D}/${sysconfdir}/profile.d/
+	install -m 0755 ${WORKDIR}/tslib.sh ${D}/${sysconfdir}/profile.d/
 }
 
 FILES_${PN} += " ${libdir}/ts/*.so ${datadir}/ts/plugins/*.so"

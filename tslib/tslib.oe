@@ -11,12 +11,7 @@ SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
            file://pthres.patch;patch=1 \
            file://raw.patch;patch=1 \
            file://raw-hwread.patch;patch=1 \
-           file://collie/ts.conf \
-           file://corgi/ts.conf \
-           file://h3600/ts.conf \
-           file://husky/ts.conf \
-           file://poodle/ts.conf \
-           file://shepherd/ts.conf"
+           file://ts.conf"
 #           file://collie-module.patch;patch=1
 #           file://devfs.patch;patch=1
 #           file://event1.patch;patch=1
@@ -37,7 +32,7 @@ do_stage () {
 }
 
 do_install_prepend () {
-	oe_machinstall -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
+	install -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
 }
 
 FILES_tslib_append = " ${datadir}/ts/plugins/*.so"

@@ -19,7 +19,7 @@ inherit autotools
 
 do_install_append () {
 	install -d ${D}/${sysconfdir}/cron.daily ${D}/${sysconfdir}/default
-	oe_machinstall -m 0644 ${WORKDIR}/prelink.conf ${D}/${sysconfdir}/prelink.conf
-	oe_machinstall -m 0644 ${WORKDIR}/prelink.cron.daily ${D}/${sysconfdir}/cron.daily/prelink
-	oe_machinstall -m 0644 ${WORKDIR}/prelink.default ${D}/${sysconfdir}/default/prelink
+	install -m 0644 ${WORKDIR}/prelink.conf ${D}/${sysconfdir}/prelink.conf
+	install -m 0644 ${WORKDIR}/prelink.cron.daily ${D}/${sysconfdir}/cron.daily/prelink
+	install -m 0644 ${WORKDIR}/prelink.default ${D}/${sysconfdir}/default/prelink
 }

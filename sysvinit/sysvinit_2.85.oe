@@ -44,7 +44,7 @@ do_install () {
 #	echo "/etc/default/rcS" >> ${D}/CONTROL/conffiles
 #	install -m 0755    ${FILESDIR}/prerm		${D}/CONTROL/
 #	install -m 0755    ${FILESDIR}/postinst		${D}/CONTROL/
-	oe_machinstall -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
+	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
 		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
 	fi
