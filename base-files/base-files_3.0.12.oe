@@ -28,8 +28,10 @@ do_install () {
 	cd ${D} && chmod 755  `find . -type d`
 	cd ${D} && chmod 1777 `cat ${S}/debian/1777-dirs`
 	cd ${D} && chmod 2775 `cat ${S}/debian/2775-dirs`
+
 	install -d ${D}/${sysconfdir}
 	oe_machinstall -m 0644 ${FILESDIR}/fstab ${D}/${sysconfdir}/fstab
+	oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
 }
 
 PACKAGES=base-files
