@@ -45,6 +45,7 @@ do_stage() {
 	do
 		install -m 0644 $f ${STAGING_INCDIR}/
 	done
+	install -d ${STAGING_INCDIR}/private
 	for f in include/private/*.h
 	do
 		install -m 0644 $f ${STAGING_INCDIR}/private/
