@@ -13,18 +13,8 @@ do_compile () {
 	oe_runmake 'HOSTCC=${BUILD_CC}'
 }
 
-Tw_headers = "Tw1.h Twautoconf.h Twavl.h Tw_defs.h Twerrno.h Tw.h Tw++.h Twkeys.h Twstat_defs.h Twstat.h Twtypes.h"
-
-
 do_stage () {
-#	oe_libinstall -so -C libs/libTw libTw ${STAGING_LIBDIR}
-
-	install -m 0644 ${S}/libs/libTw/libTw.la ${STAGING_LIBDIR}
-	install -m 0644 ${S}/libs/libTw/libTw.so ${STAGING_LIBDIR}
-	install -m 0644 ${S}/libs/libTw/libTw.so.3 ${STAGING_LIBDIR}
-	install -m 0644 ${S}/libs/libTw/libTw.so.3.0.9 ${STAGING_LIBDIR}
+	oe_soinstall libs/libTw/libTw.so.3.0.9 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/Tw
-	for i in ${Tw_headers}; do
-		install -m 0644 ${S}/include/Tw/$i ${STAGING_INCDIR}/Tw
-	done
+	install -m 0644 include/Tw/*.h ${STAGING_INCDIR}/Tw/
 }
