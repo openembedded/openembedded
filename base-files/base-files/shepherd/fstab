@@ -1,7 +1,7 @@
 /dev/mtdblock2	/ 	jffs2	rw,noatime	1  1 
 /dev/mtdblock3	/home 	jffs2	defaults,noatime	1  2
-tmpfs		/var	tmpfs	defaults	0  0
 proc		/proc	proc	defaults	0  0
-/dev/hda1	/mnt/cf	auto	defaults,noauto,owner	0  0
-/dev/mmcda1	/mnt/card	auto	defaults,noauto,owner	0  0
-tmpfs		/tmp	tmpfs	defaults	0  0
+/dev/hda1	/mnt/cf	auto	defaults,sync,noauto,owner	0  0
+/dev/mmcda1	/mnt/card	auto	defaults,sync,noauto,owner	0  0
+tmpfs		/var	tmpfs	defaults	0  0
+tmpfs		/mnt/ramdisk	tmpfs	defaults	0  0

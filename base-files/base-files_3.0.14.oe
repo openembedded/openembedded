@@ -125,6 +125,7 @@ do_install () {
     install -m 0755 -d                              ${D}/mnt/cf
     install -m 0755 -d                              ${D}/mnt/net
     install -m 0755 -d                              ${D}/mnt/ram
+    install -m 0755 -d				    ${D}/mnt/ramdisk
 }
 
 PACKAGES = "${PN}-doc ${PN}"
