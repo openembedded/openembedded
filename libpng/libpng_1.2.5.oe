@@ -42,7 +42,8 @@ do_install() {
 }
 
 python do_package() {
- 	if oe.data.getVar('DEBIAN_NAMES', d, 1):
- 		oe.data.setVar('PKG_${PN}', 'libpng12', d)
-	oe.build.exec_func('package_do_package', d)
+        if oe.data.getVar('DEBIAN_NAMES', d, 1):
+            oe.data.setVar('PKG_${PN}', 'libpng12', d)
+        oe.build.exec_func('package_do_package', d)
 }
+
