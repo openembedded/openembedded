@@ -11,6 +11,7 @@ FILES_${PN}-ciptool = "/bin/ciptool"
 FILES_${PN}-bluepin = "/bin/bluepin"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
+	file://base.patch;patch=1 \
 	file://hcid.conf \
 	file://bluetooth.default"
 

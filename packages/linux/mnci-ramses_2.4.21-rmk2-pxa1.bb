@@ -5,7 +5,7 @@ LICENSE = "GPL"
 KV = "2.4.21"
 RMKV = "2"
 PXAV = "1"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   http://lorien.handhelds.org/ftp.arm.linux.org.uk/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1 \

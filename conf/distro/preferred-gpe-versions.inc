@@ -4,6 +4,7 @@
 
 #work around some breakages
 CVSDATE_xserver-kdrive=20050207
+CVSDATE_minimo=20050316
 
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox ?= "1.6"
