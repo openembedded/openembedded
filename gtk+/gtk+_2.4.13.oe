@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -20,7 +20,9 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
 	   file://error-dialog.patch;patch=1 \
 	   file://xsettings.patch;patch=1 \
 	   file://scroll-timings.patch;patch=1 \
-	   file://gtk-doc.m4"
+	   file://gtk-doc.m4 \
+	   file://small-gtkfilesel.patch;patch=1 \
+	   file://single-click.patch;patch=1"
 
 inherit autotools pkgconfig flow-lossage
 
