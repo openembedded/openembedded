@@ -1,19 +1,20 @@
 DESCRIPTION = "libetpan is a library for mail server functions"
 SECTION = "libs"
 DEPENDS = "openssl"
-PR = "r1"
+PR = "r2"
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
-                ${libdir}/*.a"
+                ${libdir}/*.a ${libdir}/pkgconfig"
 
 SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
 	   file://mailstream_socket.patch;patch=1 \
            file://smtptls.patch;patch=1" \
            file://config_iconv.patch;patch=1" \
            file://includedir.patch;patch=1;pnum=0 \
+           file://pkgconfig.patch;patch=1 \
            file://gcc34.patch;patch=1"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db --prefix=${TARGET_DIR}"
 
