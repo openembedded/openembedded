@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
-PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
 PV = "1.1.4-cvs-${CVSDATE}"
 PR = "r1"
 
@@ -60,14 +60,17 @@ do_install() {
 	oe_libinstall -so -C ${STAGING_LIBDIR} libopienet2 ${D}/${palmtopdir}/lib
 	oe_libinstall -so -C ${STAGING_LIBDIR} libopiepim2 ${D}/${palmtopdir}/lib
 	oe_libinstall -so -C ${STAGING_LIBDIR} libopieui2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so -C ${STAGING_LIBDIR} libopiesecurity2 ${D}/${palmtopdir}/lib
 }
 
-PACKAGES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so.*"
 FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so.*"
 FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so.*"
 FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so.*"
 FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so.*"
 FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so.*"
+FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so.*"
+
 
 #FIXME: Add individual package descriptions and dependencies

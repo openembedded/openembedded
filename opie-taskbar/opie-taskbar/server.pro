@@ -77,6 +77,6 @@ DEPENDPATH	+= mediummount
 
 TARGET		= qpe
 
-LIBS = -lqpe -lopiecore2 -lopieui2 -lqrsync
+LIBS = -lqpe -lopiecore2 -lopieui2 -lopiesecurity2 -lqrsync
 
 include ( $(OPIEDIR)/include.pro )
