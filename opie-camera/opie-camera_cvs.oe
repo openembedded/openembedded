@@ -3,10 +3,11 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
+RDEPENDS = "sharp-camera-support"
 APPNAME = "camera"
 APPTYPE = "binary"
 PV = "1.0.3-cvs-${CVSDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/${APPNAME} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
