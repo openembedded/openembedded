@@ -1,6 +1,6 @@
 DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r6"
+PR = "r7"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
@@ -15,6 +15,7 @@ DEPENDS = "	python-ao 		\
 		python-irclib		\
 		python-irclib		\
 		python-logilab		\
+		python-libgmail		\
 		python-mad		\
 		python-native		\
 		python-numeric		\
