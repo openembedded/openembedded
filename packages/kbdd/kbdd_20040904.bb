@@ -1,5 +1,7 @@
 SECTION = "unknown"
 SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${PV}"
+DEFAULT_PREFERENCE="-1"
+
 
 S = "${WORKDIR}/kbdd"
 LICENSE = "GPL"

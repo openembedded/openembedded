@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
 
@@ -27,6 +27,7 @@ libatk-1.0-dev \
 libaudiofile-dev \
 libbluetooth-dev \
 libcairo-dev \
+libdisplaymigration-dev \
 libesd-dev \
 libeventdb-dev \
 libexpat-dev \
@@ -37,6 +38,7 @@ libglade-2.0-dev \
 libglib-2.0-dev \
 libgpelaunch-dev \
 libgpepimc-dev \
+libgpevtype-dev \
 libgpewidget-dev \
 libgpg-error-dev \
 libice-dev \
@@ -124,7 +126,8 @@ EOF
 	mkdir -p ${SDK_OUTPUT}
 	
 	${IPKG_HOST} update
-	${IPKG_HOST} --nodeps install ${HOST_INSTALL}
+	${IPKG_HOST} -nodeps install ${HOST_INSTALL}
+
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TARGET_INSTALL}
 
@@ -134,7 +137,8 @@ EOF
 
         cp -a ${SDK_OUTPUT}/${prefix}/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib
         rm -rf ${SDK_OUTPUT}/${prefix}/lib/*
-	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc ${SDK_OUTPUT}/${prefix}/lib
+
+	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc* ${SDK_OUTPUT}/${prefix}/lib
 
 	cp -a ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
         cp -a ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
@@ -143,7 +147,6 @@ EOF
 
         echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
         echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
-
 	# remove unwanted housekeeping files
 	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
 	rm -rf ${SDK_OUTPUT}/usr/lib/ipkg
