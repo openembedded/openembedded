@@ -1,0 +1,25 @@
+--- ../rxvt-unicode-cvs-r0/rxvt-unicode/src/screen.C	2004-12-15 00:53:23 +00:00
++++ rxvt-unicode/src/screen.C	2004-12-24 02:28:38 +00:00
+@@ -3067,9 +3067,8 @@
+   else
+     rxvt_warn ("can't get primary selection, ignoring.\n");
+ 
+-#if 0
++#ifdef HAVE_XWC
+   XTextProperty ct;
+-
+   if (XwcTextListToTextProperty (display->display, &selection.text, 1, XStringStyle, &ct) >= 0)
+     {
+       set_string_property (XA_CUT_BUFFER0, ct.value, ct.nitems);
+@@ -3641,9 +3640,11 @@
+         }
+       else
+ #endif
++#ifdef HAVE_XWC
+       if (XwcTextListToTextProperty (display->display, &cl, 1, (XICCEncodingStyle) style, &ct) >= 0)
+         freect = 1;
+       else
++#endif
+         {
+           /* if we failed to convert then send it raw */
+           ct.value = (unsigned char *)cl;
