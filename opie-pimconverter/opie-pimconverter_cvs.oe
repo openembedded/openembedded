@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "sqlite3 sqlite" 
 #RDEPENDS = "sqlite3-bin sqlite-bin"
 
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 PR = "r3"
 APPNAME = "opimconverter"
 

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RRECOMMENDS = "timezones"
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 
 APPNAME = "citytime"
 

@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library \
 	file://nomax.patch;patch=1;pnum=2"

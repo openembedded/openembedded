@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 PR = "r1"
 APPNAME = "qpe"
 

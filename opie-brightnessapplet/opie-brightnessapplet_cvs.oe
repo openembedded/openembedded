@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 CVSDATE = "20041001"
 
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "brightnessapplet"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/brightnessapplet \

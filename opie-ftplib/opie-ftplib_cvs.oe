@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PROVIDES = "libftplib1"
 I18N_FILES = "libftplib.ts"
 
-PV = "1.1.6+cvs-${CVSDATE}"
+PV = "1.1.7+cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/ftplib"
 S = "${WORKDIR}/ftplib"
