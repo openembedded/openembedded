@@ -869,6 +869,10 @@ CONFIG_TOSA_TS=y
 # CONFIG_R3964 is not set
 # CONFIG_APPLICOM is not set
 
+# these shouldnt be here
+CONFIG_TOSA_POWER_KEY_OFF=y
+CONFIG_BOOT_TOSA_POWER_KEY_OFF=y
+
 #
 # Ftape, the floppy tape device driver
 #
