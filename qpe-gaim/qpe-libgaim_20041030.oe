@@ -6,7 +6,7 @@ RDEPENDS = "libgaim-plugins"
 LICENSE = "GPL"
 HOMEPAGE = "http://qpe-gaim.sourceforge.net/"
 PV = "0.4+cvs-20041030"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.vanille.de/mirror/qpe-gaim_20041030.tar.bz2 \
            file://fix-compilation.patch;patch=1 \
@@ -35,7 +35,12 @@ do_stage() {
 	oe_libinstall -so -C src libgaim ${QTDIR}/lib
 }
 
-PACKAGES += "libgaim-plugins"
-FILES_libgaim-plugins = "/usr/lib/gaim/*.so"
-
 #FIXME: use do_packages to create individual packages for each of the plugins
+python populate_packages_prepend () {
+	plugindir = oe.data.expand('${libdir}/gaim', d)
+	do_split_packages(d, plugindir, '^lib(.*)\.so$', 'libgaim-protocol-%s', 'GAIM plugin for %s protocol', extra_depends='' )
+}
+
+PACKAGES += "libgaim-plugins"
+FILES_libgaim-plugins = "/usr/lib/gaim/autorecon.so /usr/lib/gaim/s*.so"
+
