@@ -79,7 +79,7 @@ oedebug() {
 oe_runmake() {
 	if [ x"$MAKE" = x ]; then MAKE=make; fi
 	oenote ${MAKE} ${EXTRA_OEMAKE} "$@"
-	${MAKE} ${EXTRA_OEMAKE} "$@" || die "oemake failed"
+	${MAKE} ${EXTRA_OEMAKE} "$@" || die "oe_runmake failed"
 }
 
 oe_soinstall() {
