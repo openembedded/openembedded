@@ -8,15 +8,24 @@ RDEPENDS = "pango atk jpeg libpng xext"
 DEPENDS = "pango atk jpeg libpng xext"
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
+	http://handhelds.org/packages/gtk-2.0/gtk+-2.2.4.diff.bz2;patch=1;pnum=1 \
 	file://${FILESDIR}/automake-lossage.patch;patch=1;pnum=0 \
 	file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0 \
-	file://${FILESDIR}/no-demos.patch;patch=1
+	file://${FILESDIR}/no-demos.patch;patch=1 \
+	file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OECONF = --without-libtiff
+do_configure_prepend() {
+	install -d m4
+	install ${FILESDIR}/glib-2.0.m4 m4/
+	install ${FILESDIR}/glib-gettext.m4 m4/
+}
+
+EXTRA_OECONF = --without-libtiff --enable-debug=no --disable-cruft
 
 SOV = "0.200.4"
+LIBV = "2.2.0"
 
 gtk_include = gtk.h gtkaccelgroup.h gtkaccellabel.h gtkaccelmap.h gtkaccessible.h gtkadjustment.h gtkalignment.h gtkarrow.h gtkaspectframe.h gtkbbox.h gtkbin.h gtkbindings.h gtkbox.h gtkbutton.h gtkcalendar.h gtkcelleditable.h gtkcellrenderer.h gtkcellrendererpixbuf.h gtkcellrenderertext.h gtkcellrenderertoggle.h gtkcheckbutton.h gtkcheckmenuitem.h gtkclipboard.h gtkclist.h gtkcolorsel.h gtkcolorseldialog.h gtkcombo.h gtkcontainer.h gtkctree.h gtkcurve.h gtkdebug.h gtkdialog.h gtkdnd.h gtkdrawingarea.h gtkeditable.h gtkentry.h gtkenums.h gtkeventbox.h gtkfilesel.h gtkfixed.h gtkfontsel.h gtkframe.h gtkgamma.h gtkgc.h gtkhandlebox.h gtkhbbox.h gtkhbox.h gtkhpaned.h gtkhruler.h gtkhscale.h gtkhscrollbar.h gtkhseparator.h gtkiconfactory.h gtkimage.h gtkimagemenuitem.h gtkimcontext.h gtkimcontextsimple.h gtkimmodule.h gtkimmulticontext.h gtkinputdialog.h gtkinvisible.h gtkitem.h gtkitemfactory.h gtklabel.h gtklayout.h gtklist.h gtklistitem.h gtkliststore.h gtkmain.h gtkmarshal.h gtkmenu.h gtkmenubar.h gtkmenuitem.h gtkmenushell.h gtkmessagedialog.h gtkmisc.h gtknotebook.h gtkobject.h gtkoldeditable.h gtkoptionmenu.h gtkpaned.h gtkpixmap.h gtkplug.h gtkpreview.h gtkprivate.h gtkprogress.h gtkprogressbar.h gtkradiobutton.h gtkradiomenuitem.h gtkrange.h gtkrc.h gtkruler.h gtkscale.h gtkscrollbar.h gtkscrolledwindow.h gtkselection.h gtkseparator.h gtkseparatormenuitem.h gtksettings.h gtksignal.h gtksizegroup.h gtksocket.h gtkspinbutton.h gtkstatusbar.h gtkstock.h gtkstyle.h gtktable.h gtktearoffmenuitem.h gtktext.h gtktextbuffer.h gtktextchild.h gtktextdisplay.h gtktextiter.h gtktextlayout.h gtktextmark.h gtktexttag.h gtktexttagtable.h gtktextview.h gtktipsquery.h gtktogglebutton.h gtktoolbar.h gtktooltips.h gtktree.h gtktreednd.h gtktreeitem.h gtktreemodel.h gtktreemodelsort.h gtktreeselection.h gtktreesortable.h gtktreestore.h gtktreeview.h gtktreeviewcolumn.h gtktypebuiltins.h gtktypeutils.h gtkvbbox.h gtkvbox.h gtkversion.h gtkviewport.h gtkvpaned.h gtkvruler.h gtkvscale.h gtkvscrollbar.h gtkvseparator.h gtkwidget.h gtkwindow.h
 
@@ -59,4 +68,45 @@ do_stage () {
 	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h
 
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DIR}/share/aclocal/
+}
+
+python do_package_prepend() {
+	def do_split(root, pattern, format, description):
+		dvar = data.getVar('D', d, 1)
+		if not dvar:
+			oe.error("D not defined")
+			return
+
+		packages = string.split(data.getVar('PACKAGES', d, 1))
+		if not packages:
+			oe.error("PACKAGES not defined")
+			return
+
+		objs = os.listdir(dvar + root)
+		mainpkg = packages[0]
+		for o in objs:
+			import re
+			m = re.match(pattern, o)
+			if not m:
+				continue
+			on = m.group(1)
+			pkg = format % on	
+			packages.append(pkg)
+			data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			data.setVar('RDEPENDS_' + pkg, mainpkg, d)
+			data.setVar('DESCRIPTION_' + pkg, description % on, d)
+								
+		data.setVar('PACKAGES', string.join(packages, ' '), d)
+
+	libdir = data.getVar('libdir', d, 1)
+	if not libdir:
+		oe.error("libdir not defined")
+		return
+
+	gtk_libdir = os.path.join(libdir, "gtk-2.0", data.getVar('LIBV', d))
+	loaders_root = os.path.join(gtk_libdir, 'loaders')
+	immodules_root = os.path.join(gtk_libdir, 'immodules')
+
+	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s')
+	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s')
 }

@@ -1,0 +1,446 @@
+--- gtk/Makefile.am.old	2003-09-03 20:50:06.000000000 +0100
++++ gtk/Makefile.am	2004-03-07 12:17:29.000000000 +0000
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS=stock-icons theme-bits
+ 
+-INCLUDES = @STRIP_BEGIN@ \
++INCLUDES =  \
+ 	-DG_LOG_DOMAIN=\"Gtk\"				\
+ 	-DGTK_LIBDIR=\"$(libdir)\"			\
+ 	-DGTK_DATA_PREFIX=\"$(prefix)\"			\
+@@ -20,8 +20,7 @@
+ 	-DGDK_DISABLE_DEPRECATED			\
+ 	-DGTK_DISABLE_DEPRECATED			\
+ 	@GTK_DEBUG_FLAGS@				\
+-	@GTK_DEP_CFLAGS@				\
+-@STRIP_END@
++	@GTK_DEP_CFLAGS@
+ 
+ gtarget=@gdktarget@
+ 
+@@ -67,7 +66,7 @@
+ # since automake doesn't support conditionalized libsomething_la_LDFLAGS
+ # we use the general approach here
+ libgtkincludedir = $(includedir)/gtk-2.0/gtk
+-LDFLAGS = @STRIP_BEGIN@ \
++AM_LDFLAGS =  \
+ 	@LDFLAGS@								\
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)			\
+ 	-export-dynamic								\
+@@ -77,8 +76,8 @@
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la		\
+ 	$(top_builddir)/gdk/@gdktargetlib@					\
+ 	$(libgtk_target_ldflags)						\
+-	@GTK_DEP_LIBS@								\
+-@STRIP_END@
++	@GTK_DEP_LIBS@
++
+ 
+ #
+ # setup source file variables
+@@ -86,7 +85,7 @@
+ 
+ # GTK+ header files for public installation (non-generated, or generated
+ # by configure)
+-gtk_public_h_sources = @STRIP_BEGIN@ \
++gtk_public_h_sources =  \
+ 	gtk.h			\
+ 	gtkaccelgroup.h		\
+ 	gtkaccellabel.h		\
+@@ -228,10 +227,10 @@
+ 	gtkvscrollbar.h		\
+ 	gtkvseparator.h		\
+ 	gtkwidget.h		\
+-	gtkwindow.h		\
+-@STRIP_END@
++	gtkwindow.h
++
+ # GTK+ header files that don't get installed
+-gtk_private_h_sources = @STRIP_BEGIN@ \
++gtk_private_h_sources =  \
+ 	gtkrbtree.h 		\
+ 	gtktextbtree.h		\
+ 	gtktextchildprivate.h   \
+@@ -244,8 +243,7 @@
+ 	gtkthemes.h		\
+ 	gtktreedatalist.h	\
+ 	gtktreeprivate.h	\
+-	gtkwindow-decorate.h    \
+-@STRIP_END@
++	gtkwindow-decorate.h
+ 
+ # GTK+ C sources to build the library from
+ 
+@@ -257,7 +255,7 @@
+ 	gtktreeitem.c
+ endif
+ 
+-gtk_c_sources = @STRIP_BEGIN@   \
++gtk_c_sources =			\
+ 	gtkaccelgroup.c		\
+ 	gtkaccelmap.c		\
+ 	gtkaccellabel.c		\
+@@ -410,15 +408,13 @@
+ 	gtkwindow-decorate.c    \
+ 	fnmatch.c		\
+ 	xembed.h		\
+-	${crufty_gtk_c_sources}	\
+-@STRIP_END@
++	${crufty_gtk_c_sources}
+ 
+-gtk_plug_c_sources = @STRIP_BEGIN@   \
++gtk_plug_c_sources =		\
+ 	gtkplug.c		\
+ 	gtksocket.c		\
+ 	gtkxembed.c		\
+-	gtkxembed.h		\
+-@STRIP_END@
++	gtkxembed.h
+ 
+ # we use our own built_sources variable rules to avoid automake's
+ # BUILT_SOURCES oddities
+@@ -427,35 +423,34 @@
+ # content
+ 
+ # built sources that get installed with the header files
+-gtk_built_public_sources = @STRIP_BEGIN@ \
++gtk_built_public_sources =  \
+ 	gtkmarshal.h		\
+-	gtktypebuiltins.h	\
+-@STRIP_END@
+-gtk_built_private_headers = @STRIP_BEGIN@ \
+-	gtkmarshalers.h		\
+-@STRIP_END@
++	gtktypebuiltins.h
++
++gtk_built_private_headers =  \
++	gtkmarshalers.h
++
+ # built sources that don't get installed
+-gtk_built_sources = @STRIP_BEGIN@		\
++gtk_built_sources = 		\
+ 	gtktypebuiltins.c			\
+ 	gtkmarshalers.c				\
+ 	gtkmarshalers.h				\
+ 	gtkmarshal.c				\
+ 	${gtk_built_private_headers}		\
+-	${gtk_built_public_sources}		\
+-@STRIP_END@
+-stamp_files = @STRIP_BEGIN@ 		\
++	${gtk_built_public_sources}
++
++stamp_files =  		\
+ 	stamp-gtkmarshalers.h		\
+ 	stamp-gtkmarshal.h		\
+-	stamp-gtktypebuiltins.h		\
+-@STRIP_END@
++	stamp-gtktypebuiltins.h
++
+ # non-header sources (headers should be specified in the above variables)
+ # that don't serve as direct make target sources, i.e. they don't have
+ # their own .lo rules and don't get publically installed
+-gtk_extra_sources = @STRIP_BEGIN@ \
++gtk_extra_sources =  \
+ 	gtkversion.h.in		\
+ 	gtkmarshalers.list	\
+-	gtkmarshal.list		\
+-@STRIP_END@
++	gtkmarshal.list
+ 
+ #
+ # setup GTK+ sources and their dependencies
+@@ -592,11 +587,10 @@
+ 
+ TEST_DEPS = $(DEPS) gtk.immodules
+ 
+-LDADDS = @STRIP_BEGIN@ \
++LDADDS =  \
+ 	$(gtktargetlib)							\
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+-	$(top_builddir)/gdk/$(gdktargetlib) 				\
+-@STRIP_END@
++	$(top_builddir)/gdk/$(gdktargetlib)
+ 
+ #
+ # Installed tools
+@@ -615,7 +609,7 @@
+ 	  echo $$p; \
+ 	done
+ 
+-EXTRA_DIST += @STRIP_BEGIN@ 	\
++EXTRA_DIST +=  	\
+ 	line-arrow.xbm 		\
+ 	line-wrap.xbm 		\
+ 	tree_plus.xbm		\
+@@ -629,9 +623,8 @@
+ 	gtkrc.key.default	\
+ 	gtkrc.key.emacs		\
+ 	makefile.msc		\
+-	makefile.msc.in		\
+-@STRIP_END@
++	makefile.msc.in
+ 
+ install-data-local:
+ 
+
+--- gdk/Makefile.am.old	2003-09-03 20:49:25.000000000 +0100
++++ gdk/Makefile.am	2004-03-07 12:18:18.000000000 +0000
+@@ -10,7 +10,7 @@
+ 	makeenums.pl		\
+ 	makefile.msc
+ 
+-common_includes = @STRIP_BEGIN@ 	\
++common_includes =  	\
+ 	-DG_LOG_DOMAIN=\"Gdk\"		\
+ 	-DGDK_COMPILATION		\
+ 	-I$(top_srcdir)			\
+@@ -20,8 +20,7 @@
+ 	-DGDK_PIXBUF_DISABLE_DEPRECATED	\
+ 	-DGDK_DISABLE_DEPRECATED	\
+ 	@GTK_DEBUG_FLAGS@ 		\
+-	@GDK_DEP_CFLAGS@		\
+-@STRIP_END@
++	@GDK_DEP_CFLAGS@
+ 
+ INCLUDES = $(common_includes)
+ gtarget=@gdktarget@
+@@ -69,7 +68,7 @@
+ # libtool stuff: set version and export symbols for resolving
+ # since automake doesn't support conditionalized libsomething_la_LDFLAGS
+ # we use the general approach here
+-LDFLAGS = @STRIP_BEGIN@ 						\
++AM_LDFLAGS =  						\
+ 	@LDFLAGS@							\
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) 		\
+ 	-export-dynamic 						\
+@@ -77,8 +76,7 @@
+ 	$(no_undefined)							\
+ 	@LIBTOOL_EXPORT_OPTIONS@					\
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+-	$(gdk_win32_symbols)						\
+-@STRIP_END@
++	$(gdk_win32_symbols)
+ 
+ #
+ # setup source file variables
+@@ -88,7 +86,7 @@
+ #
+ # Note: files added here may need to be be propagated to gdk_headers in gtk/Makefile.am
+ #
+-gdk_public_h_sources = @STRIP_BEGIN@		\
++gdk_public_h_sources = 		\
+ 	gdk.h					\
+ 	gdkcolor.h				\
+ 	gdkcursor.h				\
+@@ -114,16 +112,14 @@
+ 	gdkselection.h				\
+ 	gdktypes.h				\
+ 	gdkvisual.h				\
+-	gdkwindow.h				\
+-@STRIP_END@
++	gdkwindow.h
+ 
+-gdk_headers = @STRIP_BEGIN@       \
++gdk_headers =        \
+ 	$(gdk_public_h_sources)   \
+ 	gdkenumtypes.h		  \
+-	gdkprivate.h		  \
+-@STRIP_END@
++	gdkprivate.h
+ 
+-gdk_c_sources = @STRIP_BEGIN@ 	\
++gdk_c_sources =  	\
+ 	gdk.c			\
+ 	gdkcolor.c		\
+ 	gdkcursor.c		\
+@@ -153,8 +149,7 @@
+ 	gdkscreen.c		\
+ 	gdkselection.c		\
+ 	gdkvisual.c		\
+-	gdkwindow.c		\
+-@STRIP_END@
++	gdkwindow.c
+ 
+ #
+ # setup GDK sources and their dependencies
+@@ -164,11 +159,10 @@
+ gdkinclude_HEADERS = $(gdk_headers)
+ 
+ # gdkmarshalers.c is not here becuase it is currently an empty file
+-common_sources = @STRIP_BEGIN@	\
++common_sources = 	\
+ 	$(gdk_c_sources)	\
+ 	gdkenumtypes.c		\
+-	gdkmarshalers.h		\
+-@STRIP_END@
++	gdkmarshalers.h
+ 
+ libgdk_x11_2_0_la_SOURCES = $(common_sources)
+ libgdk_linux_fb_2_0_la_SOURCES = $(common_sources) gdkkeynames.c
+--- gdk-pixbuf/Makefile.am.old	2003-01-27 23:19:07.000000000 +0000
++++ gdk-pixbuf/Makefile.am	2004-03-07 12:19:11.000000000 +0000
+@@ -238,7 +238,7 @@
+ endif
+ 
+ DEPS = libgdk_pixbuf-$(GTK_API_VERSION).la
+-INCLUDES = @STRIP_BEGIN@ 			\
++INCLUDES =  			\
+ 	-DG_LOG_DOMAIN=\"GdkPixbuf\"		\
+ 	-I$(top_srcdir) -I$(top_builddir) 	\
+ 	-I$(top_srcdir)/gdk-pixbuf 		\
+@@ -252,8 +252,7 @@
+ 	@INCLUDED_LOADER_DEFINE@ 		\
+ 	@GTK_DEBUG_FLAGS@			\
+ 	@GDK_PIXBUF_DEP_CFLAGS@			\
+-	-DGDK_PIXBUF_ENABLE_BACKEND		\
+-@STRIP_END@
++	-DGDK_PIXBUF_ENABLE_BACKEND
+ 
+ AM_CPPFLAGS = "-DPIXBUF_LIBDIR=\"$(loaderdir)\"" "-DBUILT_MODULES_DIR=\"$(srcdir)/.libs\""
+ LDADDS = libgdk_pixbuf-$(GTK_API_VERSION).la
+@@ -281,7 +280,7 @@
+ # The GdkPixBuf library
+ #
+ libgdk_pixbufincludedir = $(includedir)/gtk-2.0/gdk-pixbuf
+-libgdk_pixbuf_2_0_la_SOURCES = @STRIP_BEGIN@ \
++libgdk_pixbuf_2_0_la_SOURCES =  \
+ 	gdk-pixbuf-i18n.h	\
+ 	gdk-pixbuf.c		\
+ 	gdk-pixbuf-animation.c	\
+@@ -291,14 +290,13 @@
+ 	gdk-pixbuf-scale.c	\
+ 	gdk-pixbuf-util.c	\
+ 	gdk-pixdata.c		\
+-	$(gdk_pixbuf_built_cfiles) \
+-@STRIP_END@
+-libgdk_pixbuf_2_0_la_LDFLAGS = @STRIP_BEGIN@ \
++	$(gdk_pixbuf_built_cfiles)
++
++libgdk_pixbuf_2_0_la_LDFLAGS =  \
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)    \
+ 	@LIBTOOL_EXPORT_OPTIONS@				\
+ 	$(no_undefined)						\
+-	$(gdk_pixbuf_symbols)					\
+-@STRIP_END@
++	$(gdk_pixbuf_symbols)
+ 
+ libgdk_pixbuf_2_0_la_LIBADD = pixops/libpixops.la $(builtin_objs) $(gdk_pixbuf_win32res_lo) $(GDK_PIXBUF_DEP_LIBS)
+ libgdk_pixbuf_2_0_la_DEPENDENCIES = pixops/libpixops.la $(builtin_objs) $(gdk_pixbuf_def) $(gdk_pixbuf_win32res_lo)
+--- demos/Makefile.am.old	2003-06-06 01:52:59.000000000 +0100
++++ demos/Makefile.am	2004-03-07 12:20:23.000000000 +0000
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS = gtk-demo
+ 
+-INCLUDES = @STRIP_BEGIN@ \
++INCLUDES =  \
+ 	-I$(top_srcdir) 				\
+ 	-I$(top_builddir)/gdk				\
+ 	-DG_DISABLE_DEPRECATED	 			\
+@@ -10,19 +10,17 @@
+ 	-DGDK_DISABLE_DEPRECATED			\
+ 	-DGTK_DISABLE_DEPRECATED			\
+ 	@GTK_DEBUG_FLAGS@				\
+-	@GTK_DEP_CFLAGS@				\
+-@STRIP_END@
++	@GTK_DEP_CFLAGS@
+ 
+ DEPS = \
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+ 	$(top_builddir)/gdk/@gdktargetlib@ 				\
+ 	$(top_builddir)/gtk/@gtktargetlib@
+ 
+-LDADDS = @STRIP_BEGIN@ 							\
++LDADDS =  							\
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+ 	$(top_builddir)/gdk/@gdktargetlib@        			\
+-	$(top_builddir)/gtk/@gtktargetlib@ 				\
+-@STRIP_END@
++	$(top_builddir)/gtk/@gtktargetlib@
+ 
+ noinst_PROGRAMS = 		\
+ 	testpixbuf 		\
+--- docs/faq/Makefile.am.old	2002-03-06 03:59:12.000000000 +0000
++++ docs/faq/Makefile.am	2004-03-07 12:23:40.000000000 +0000
+@@ -14,15 +14,6 @@
+ dist-hook: html
+ 	cp -Rp $(srcdir)/html $(distdir)
+ else
+-html:
+-	echo "***"
+-	echo "*** Warning: FAQ not built"
+-	echo "***"
+-
+-pdf:
+-	echo "***"
+-	echo "*** Warning: FAQ not built"
+-	echo "***"
+ 
+ dist-hook:
+ 	echo "***"
+--- docs/tutorial/Makefile.am.old	2002-03-06 03:59:12.000000000 +0000
++++ docs/tutorial/Makefile.am	2004-03-07 12:24:42.000000000 +0000
+@@ -49,15 +49,6 @@
+ dist-hook: html
+ 	cp -Rp $(srcdir)/html $(distdir)
+ else
+-html:
+-	echo "***"
+-	echo "*** Warning: Tutorial not built"
+-	echo "***"
+-
+-pdf:
+-	echo "***"
+-	echo "*** Warning: Tutorial not built"
+-	echo "***"
+ 
+ dist-hook:
+ 	echo "***"
+--- demos/gtk-demo/Makefile.am.old	2003-06-09 22:58:32.000000000 +0100
++++ demos/gtk-demo/Makefile.am	2004-03-07 12:25:47.000000000 +0000
+@@ -4,7 +4,7 @@
+ 
+ ## These should be in the order you want them to appear in the 
+ ## demo app, which means alphabetized by demo title, not filename
+-demos = @STRIP_BEGIN@	\
++demos = 	\
+ 	appwindow.c	\
+ 	button_box.c	\
+ 	changedisplay.c	\
+@@ -21,10 +21,9 @@
+ 	sizegroup.c	\
+ 	stock_browser.c	\
+ 	textview.c	\
+-	tree_store.c	\
+-@STRIP_END@
++	tree_store.c
+ 
+-INCLUDES = @STRIP_BEGIN@ \
++INCLUDES =  \
+ 	-DDEMOCODEDIR="\"$(democodedir)\""		\
+ 	-I$(top_srcdir) 				\
+ 	-I$(top_builddir)/gdk				\
+@@ -33,19 +32,17 @@
+ 	-DGDK_DISABLE_DEPRECATED			\
+ 	-DGTK_DISABLE_DEPRECATED 			\
+ 	@GTK_DEBUG_FLAGS@				\
+-	@GTK_DEP_CFLAGS@				\
+-@STRIP_END@
++	@GTK_DEP_CFLAGS@
+ 
+ DEPS = \
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+ 	$(top_builddir)/gdk/@gdktargetlib@ 				\
+ 	$(top_builddir)/gtk/@gtktargetlib@
+ 
+-LDADDS = @STRIP_BEGIN@ 							\
++LDADDS =  							\
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+ 	$(top_builddir)/gdk/@gdktargetlib@        			\
+-	$(top_builddir)/gtk/@gtktargetlib@ 				\
+-@STRIP_END@
++	$(top_builddir)/gtk/@gtktargetlib@
+ 
+ bin_PROGRAMS = gtk-demo
+ 
