@@ -3,7 +3,6 @@ DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r6"
-DEPENDS = "virtual/kernel"
 
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
