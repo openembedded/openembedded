@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 ALLOW_EMPTY = 1
-PR = "r3"
+PR = "r4"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -269,7 +269,6 @@ opie-addressbook \
 opie-datebook \
 opie-drawpad \
 opie-mail \
-opie-osearch \
 opie-pimconverter \
 opie-search \
 opie-textedit \
