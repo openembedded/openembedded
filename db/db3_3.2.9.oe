@@ -1,7 +1,8 @@
 SECTION = "libs"
 DESCRIPTION = "Berkeley DB v3."
+LICENSE = "BSD Sleepycat"
 
-SRC_URI = "http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz \
+SRC_URI = "ftp://sleepycat1.inetu.net/releases/db-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
