@@ -1,13 +1,30 @@
 export IMAGE_BASENAME = "gpe-image"
 
+GPE_MACHINE_CLASS ?= "none"
+
+GPE_EXTRA_DEPENDS ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
+GPE_EXTRA_INSTALL ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
+
+GPE_EXTRA_DEPENDS_bigscreen = "firefox gaim linphone"
+GPE_EXTRA_INSTALL_bigscreen = "firefox gaim"
+
+GPE_EXTRA_DEPENDS_smallscreen = "minimo"
+GPE_EXTRA_INSTALL_smallscreen = "minimo"
+
+GPE_EXTRA_DEPENDS_none = ""
+GPE_EXTRA_INSTALL_none = ""
+
 DEPENDS = 'task-bootstrap \
 	   diet-x11 xserver-kdrive matchbox-wm matchbox-desktop matchbox-panel \
-	   meta-gpe ttf-bitstream-vera'
+	   meta-gpe ttf-bitstream-vera ${GPE_EXTRA_DEPENDS}'
 
-export IPKG_INSTALL = 'task-bootstrap xserver-kdrive-fbdev \
-		      gpe ttf-bitstream-vera pango-module-basic-x pango-module-basic-fc \
-		      glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png'
+XSERVER ?= "xserver-kdrive-fbdev"
 
+export IPKG_INSTALL = 'task-bootstrap ${XSERVER} \
+		      gpe ttf-bitstream-vera \
+		      pango-module-basic-x pango-module-basic-fc \
+		      glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png \
+		      ${GPE_EXTRA_INSTALL}'
 
 IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
 
