@@ -9,16 +9,32 @@ do_install() {
 	make -f ${WORKDIR}/generate-supported.mk IN="${S}/localedata/SUPPORTED" OUT="${WORKDIR}/SUPPORTED"
 }
 
+TMP_LOCALE="/tmp/locale/${libdir}/locale"
+
 locale_base_postinst() {
 #!/bin/sh
 
-localedef --add-to-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz
+rm -rf ${TMP_LOCALE}
+mkdir -p ${TMP_LOCALE}
+if [ -f ${libdir}/locale/locale-archive ]; then
+        cp ${libdir}/locale/locale-archive ${TMP_LOCALE}/
+fi
+localedef --add-to-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz --prefix=/tmp/locale
+mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
+rm -rf ${TMP_LOCALE}
 }
 
 locale_base_postrm() {
 #!/bin/sh
 
-localedef --delete-from-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz
+rm -rf ${TMP_LOCALE}
+mkdir -p ${TMP_LOCALE}
+if [ -f ${libdir}/locale/locale-archive ]; then
+	cp ${libdir}/locale/locale-archive ${TMP_LOCALE}/
+fi
+localedef --delete-from-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz --prefix=/tmp/locale
+mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
+rm -rf ${TMP_LOCALE}
 }
 
 python package_do_split_gconvs () {
