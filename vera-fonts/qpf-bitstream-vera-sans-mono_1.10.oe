@@ -1,0 +1,34 @@
+DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
+SECTION = "opie/fonts"
+
+#FIXME: We also need T10 and T15 rotations !!!
+
+SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono-50_1.1.tar.gz \
+	http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono-50-t5_1.1.tar.gz \
+	http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono-75_1.1.tar.gz    \
+	http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono-75-t5_1.1.tar.gz"
+
+FILES_${PN} += "/opt"
+
+do_install () { 
+        install -d ${D}${palmqtdir}/lib/fonts/ 
+	
+	cd ${WORKDIR}
+	files=`find . -name "*.qpf"`
+        for i in $files; do 
+                install -m 644 $i ${D}${palmqtdir}/lib/fonts/
+        done 
+} 
+
+pkg_postinst () {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+PACKAGES = "qpf-bitstream-vera-sans-mono-small qpf-bitstream-vera-sans-mono-large qpf-bitstream-vera-sans-mono-huge"
+FILES_qpf-bitstream-vera-sans-mono-small = "${palmqtdir}/lib/fonts/verasansmono_1*"
+FILES_qpf-bitstream-vera-sans-mono-large = "${palmqtdir}/lib/fonts/verasansmono_2*"
+FILES_qpf-bitstream-vera-sans-mono-huge = "${palmqtdir}/lib/fonts/verasansmono_3*"
