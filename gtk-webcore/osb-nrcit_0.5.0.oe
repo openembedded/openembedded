@@ -1,0 +1,30 @@
+DESCRIPTION = "Gtk+ WebCore - NRCit embeddable browser component"
+HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
+PRIORITY = "optional"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+DEPENDS = "curl osb-nrcore"
+SECTION = "gpe"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-nrcit-${PV}.tar.gz"
+
+inherit autotools pkgconfig
+
+do_configure () {
+	autotools_do_configure
+	cd ${S}
+
+	# prevent libtool from linking libs against libstdc++, libgcc, ...
+	cat arm-linux-libtool | sed -e 's/postdeps=".*"/postdeps=""/' > arm-linux-libtool.tmp
+	mv arm-linux-libtool.tmp arm-linux-libtool
+}
+
+do_stage () {
+	oe_libinstall -so -C src libnrcit ${STAGING_LIBDIR}
+
+	autotools_stage_includes
+	
+	install -d ${STAGING_INCDIR}/osb
+	install -m 0644 ${S}/src/gtk/gtk-khtml.h ${STAGING_INCDIR}/osb
+	install -m 0644 ${S}/src/osb.h ${STAGING_INCDIR}/osb
+}

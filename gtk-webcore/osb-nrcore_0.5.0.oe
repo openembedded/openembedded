@@ -4,6 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "glib-2.0 gtk+ pango osb-jscore"
 SECTION = "gpe"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-nrcore-${PV}.tar.gz \
            file://KWQDictImpl.patch;patch=1"
@@ -11,6 +12,15 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-nrcore-${PV}.tar.gz \
 LEAD_SONAME = "libnrcore.so"
 
 inherit autotools pkgconfig
+
+do_configure () {
+	autotools_do_configure
+	cd ${S}
+
+	# prevent libtool from linking libs against libstdc++, libgcc, ...
+	cat arm-linux-libtool | sed -e 's/postdeps=".*"/postdeps=""/' > arm-linux-libtool.tmp
+	mv arm-linux-libtool.tmp arm-linux-libtool
+}
 
 do_stage () {
 	oe_libinstall -so libnrcore ${STAGING_LIBDIR}
