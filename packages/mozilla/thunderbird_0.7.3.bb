@@ -1,67 +1,51 @@
 SECTION = "x11/utils"
-DEPENDS = "xt libxi zip-native gtk+ orbit2 gnupg"
-RRECOMMENDS = "gnupg"
+DEPENDS += "gnupg"
+RRECOMMENDS += "gnupg"
 PR = "r1"
 
 EMVER="0.85.0"
 IPCVER="1.0.7"
-LICENSE = "MPL NPL"
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${PV}/thunderbird-${PV}-source.tar.bz2 \
 	http://downloads.mozdev.org/enigmail/src/enigmail-${EMVER}.tar.gz \
 http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz \
-	file://mozconfig \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
 	file://extensions-hack.patch;patch=1 \
 	file://mozilla-thunderbird.png file://mozilla-thunderbird.desktop"
-
 S = "${WORKDIR}/mozilla"
 
 FILES_${PN} += "${libdir}/thunderbird-${PV} ${datadir}/idl"
 
-SELECTED_OPTIMIZATION = "-Os -fsigned-char -fno-strict-aliasing"
+inherit mozilla
 
 export MOZ_THUNDERBIRD=1
-export CROSS_COMPILE=1
-export HOST_LIBIDL_CONFIG="libIDL-config-2"
-export CONFIGURE_ARGS="--target=${TARGET_SYS} --host=${BUILD_SYS} --build=${BUILD_SYS} --prefix=${prefix}"
-
-export HOST_CFLAGS="${BUILD_CFLAGS}"
-export HOST_CXXFLAGS="${BULID_CXXFLAGS}"
-export HOST_LDFLAGS="${BUILD_LDFLAGS}"
-export HOST_RANLIB="${BUILD_RANLIB}"
-export HOST_AR="${BUILD_AR}"
 
 do_configure() {
-	cp ${WORKDIR}/mozconfig .mozconfig
 	for x in ipc enigmail; do
-		mv ${WORKDIR}/${x} ${WORKDIR}/mozilla/extensions
-		cd ${WORKDIR}/mozilla/extensions/${x}
-		makemake
+		if [ ! -e ${WORKDIR}/mozilla/extensions/$x ]; then
+			mv ${WORKDIR}/$x ${WORKDIR}/mozilla/extensions/
+			cd ${WORKDIR}/mozilla/extensions/$x
+			makemake
+		fi
 	done
-	cd ${WORKDIR}/mozilla
+	cd ${S}
+	mozilla_do_configure
 }
 
 do_compile() {
-	make -f client.mk build_all
-	cd ${WORKDIR}/mozilla/extensions/ipc
-	make
-	cd ${WORKDIR}/mozilla/extensions/enigmail
-	make
+	mozilla_do_compile
+	oe_runmake -C ${WORKDIR}/mozilla/extensions/ipc
+	oe_runmake -C ${WORKDIR}/mozilla/extensions/enigmail
 }
 
 do_install() {
-	make DESTDIR="${D}" install
-	cd ${WORKDIR}/mozilla/extensions/ipc
-	make DESTDIR="${D}" install
-	cd ${WORKDIR}/mozilla/extensions/enigmail
-	make DESTDIR="${D}" install
-	cd ${WORKDIR}/mozilla
+	mozilla_do_install
+	oe_runmake -C ${WORKDIR}/mozilla/extensions/ipc DESTDIR="${D}" install
+	oe_runmake -C ${WORKDIR}/mozilla/extensions/enigmail DESTDIR="${D}" install
 	install -d ${D}${datadir}/applications
 	install -d ${D}${datadir}/pixmaps
 	install -m 0644 ${WORKDIR}/mozilla-thunderbird.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-thunderbird.png ${D}${datadir}/pixmaps/
-	# work around requirement for root access on first startup
 }
 
 pkg_postinst_thunderbird() {
