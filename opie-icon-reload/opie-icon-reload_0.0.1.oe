@@ -6,8 +6,6 @@ LICENSE = "GPL"
 
 PR = "r2"
 
-include conf/hentges-3.5.1_1.1.6.conf
-
 SRC_URI = "file://icon-reload.desktop \
 	   file://icon-reload.sh \
 	   file://reload.png"
