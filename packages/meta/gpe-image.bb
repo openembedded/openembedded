@@ -4,7 +4,7 @@ FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${D
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r12"
+PR = "r17"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -22,6 +22,10 @@ GPE_EXTRA_INSTALL_bigscreen = "minimo figment gpe-task-games ${GPE_EXTRA_THEMES}
 
 GPE_EXTRA_DEPENDS_smallscreen = "minimo figment linphone-hh"
 GPE_EXTRA_INSTALL_smallscreen = "minimo figment linphone-hh gpe-task-games ${GPE_EXTRA_THEMES}"
+
+#h3900 has 32mb of *useable* flash
+GPE_EXTRA_DEPENDS_append_h3900 = " vlc-gpe "
+GPE_EXTRA_INSTALL_append_h3900 = " vlc-gpe "
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
