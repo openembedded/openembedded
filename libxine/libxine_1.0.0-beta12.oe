@@ -36,7 +36,7 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool OGG_LIBS=$(STAGING_LIBDIR)/libogg.so
+	oe_runmake LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool OGG_LIBS=${STAGING_LIBDIR}/libogg.so
 }
 
 do_stage() {
