@@ -17,6 +17,6 @@ export IPKG_INSTALL = "task-bootstrap ${GPE_BASE_DEPENDS} ${GPE_BASE} \
 		       ${GPE_BASE_RDEPENDS} \
 		       ${GPE_EXTRA_INSTALL}"
 
-IMAGE_POSTPROCESS_COMMAND += "zap_root_password; "
+ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
