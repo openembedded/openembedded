@@ -152,6 +152,8 @@ do_stage() {
 
 	install -d ${STAGING_INCDIR}/asm
 	cp -a ${HEADERS_DIR}/include/linux ${STAGING_INCDIR}/
+	rm -f ${STAGING_INCDIR}/linux/wireless.h
+	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
 	cp -a ${HEADERS_DIR}/include/asm/* ${STAGING_INCDIR}/asm/
 
 	install -d ${STAGING_INCDIR}/gnu \
