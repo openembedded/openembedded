@@ -81,7 +81,8 @@ gpe-task-games = "\
     gpe-go \
     gpe-lights \
     gpe-othello \
-    gpe-tetris"
+    gpe-tetris \
+    gsoko"
 
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
 DEPENDS += " ${gpe-task-games}"
@@ -97,7 +98,6 @@ DEPENDS += " ${gpe-task-gtkapps}"
 
 gpe-task-gnomeapps = "\
     gail \
-    gal \
     galculator \
     gnumeric \
     gpdf \
