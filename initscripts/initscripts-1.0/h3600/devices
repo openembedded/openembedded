@@ -3,6 +3,7 @@
 # Devfs handling script.  Since we arent running devfsd due to various reasons
 # which I will not lay out here, we need to create some links for compatibility.
 
+    mount /proc
     depmod -ae
     modprobe ipaq_hal
     model=`cat /proc/hal/model`
