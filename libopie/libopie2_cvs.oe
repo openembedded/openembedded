@@ -38,7 +38,12 @@ do_compile() {
 	do
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
 	done
-	install -m 0644 opiepim/private/vobject_p.h ${STAGING_INCDIR}/opie2/private/	
+	
+	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h
+	do
+		install -m 0644 opiepim/private/$i ${STAGING_INCDIR}/opie2/private/	
+	done
+	
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
