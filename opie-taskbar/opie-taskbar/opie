@@ -32,6 +32,11 @@ fi
 
 . /etc/profile
 
+if [ ! -x "$HOME/Settings/qpe.conf" ] ; then
+    echo "Copying default qpe.conf into $HOME/Settings/"
+    cp -f $OPIEDIR/etc/skel/qpe.conf $HOME/Settings/qpe.conf
+fi
+
 case $1 in
 'start')
     /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0

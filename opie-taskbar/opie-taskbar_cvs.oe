@@ -2,10 +2,11 @@ DESCRIPTION = "Opie Launcher"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync "
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount \
@@ -58,7 +59,7 @@ do_install() {
 	install -d ${D}/${palmtopdir}/pics/logo
 	install -d ${D}/etc/init.d
 	install -d ${D}/${palmtopdir}/etc/colors
-	install -d ${D}/${palmtopdir}/etc/skeleton
+	install -d ${D}/${palmtopdir}/etc/skel
 
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
@@ -68,7 +69,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
 	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/etc/
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
-	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skeleton/
+	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
 
 }
 
@@ -96,12 +97,6 @@ do_install_append_husky () {
 do_install_append_tosa () {
 	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-
-pkg_postinst() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-[ -e "$HOME/Settings/qpe.conf" ] || cp -f /opt/QtPalmtop/etc/skeleton/qpe.conf /$HOME/Settings/qpe.conf
 }
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
