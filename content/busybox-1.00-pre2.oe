@@ -29,20 +29,15 @@ do_compile () {
 
 do_install () {
 	set -e
-	install -d ${D}/{bin,usr/share/udhcpc}
-	install -m 0755 busybox ${D}/bin/busybox
-	applets/busybox.mkll > ${D}/bin/busybox.links
-	install -d ${D}/usr/share/udhcpc ${D}/CONTROL ${D}/etc/init.d 
-	install -m 0755 examples/udhcp/simple.script ${D}/usr/share/udhcpc/default.script
-	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog;
-	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh;
+	oe_runmake 'PREFIX=${D}' install
+	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
+	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
 }
 
-do_package_ipk () {
+do_package_ipk_prepend () {
 	set -e
 	install -m 0755 ${FILESDIR}/postinst ${D}/CONTROL/postinst;
 	install -m 0755 ${FILESDIR}/prerm ${D}/CONTROL/prerm;
-	package_ipk_do_package_ipk
 }
 
 inherit cml1 base
