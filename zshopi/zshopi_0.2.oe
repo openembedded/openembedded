@@ -1,0 +1,32 @@
+DESCRIPTION = "Shopping manager"
+SECTION = "opie/applications"
+DEPENDS = "sqlite"
+PRIORITY = "optional"
+LICENSE = "GPL"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+HOMEPAGE = "http://www.lachner-net.de/"
+AUTHOR = "Bernd Lachner <dev@lachner-net.de>"
+APPTYPE = "binary"
+APPNAME = "zshopi"
+APPDESKTOP = "${WORKDIR}"
+
+SRC_URI = "http://www.lachner-net.de/Frames/Software/zshopi_0.2.tar.bz2 \
+file://zshopi.desktop \
+file://zshopi.png"
+
+S = "${WORKDIR}/${PN}_${PV}/${PN}/"
+
+inherit opie
+
+EXTRA_QMAKEVARS_POST = "DEFINES+=QTOPIA LIBS+=-lm LIBS+=-lsqlite LIBS+=-lqpe"
+OE_QMAKE_CXXFLAGS = "-fno-rtti ${CXXFLAGS}"
+export OE_QMAKE_LINK="${CXX}"
+
+do_configure_prepend() {
+	qmake -project
+}
+
+do_install() {
+	install -d ${D}/${palmtopdir}/pics/
+	install -m 0644 ${WORKDIR}/zshopi.png ${D}/${palmtopdir}/pics/
+}
