@@ -15,6 +15,13 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
+pkg_postrm_fonts() {
+#!/bin/sh
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
+}
+
 python populate_packages_prepend() {
 	postinst = bb.data.getVar('pkg_postinst_fonts', d, 1)
 	postrm = postinst

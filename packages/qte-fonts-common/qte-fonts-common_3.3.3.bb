@@ -3,7 +3,7 @@ DESCRIPTION= "Tools to update the Qt fontdir"
 MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 LICENSE = "GPL/QPL"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.gz"
 SRC_URI += "file://update-qtfontdir"
@@ -42,6 +42,13 @@ set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
 }
+pkg_postrm_qte-font-fixed() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
+}
 
 PACKAGES += "qte-font-helvetica-small"
 PROVIDES += "qte-font-helvetica-small"
@@ -54,6 +61,13 @@ if [ -n "$D" ]; then exit 1; fi
 set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
+}
+pkg_postrm_qte-font-helvetica-small() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
 }
 
 PACKAGES += "qte-font-helvetica-large"
@@ -68,6 +82,13 @@ set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
 }
+pkg_postrm_qte-font-helvetica-large() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
+}
 
 PACKAGES += "qte-font-smoothtimes"
 PROVIDES += "qte-font-smoothtimes"
@@ -79,6 +100,13 @@ if [ -n "$D" ]; then exit 1; fi
 set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
+}
+pkg_postrm_qte-font-smoothtimes() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
 }
 
 PACKAGES += "qte-font-smallsmooth"
@@ -92,6 +120,13 @@ set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
 }
+pkg_postrm_qte-font-smallsmooth() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
+}
 
 PACKAGES += "qte-font-unicode"
 PROVIDES += "qte-font-unicode"
@@ -104,6 +139,13 @@ set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
 }
+pkg_postrm_qte-font-unicode() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
+}
 
 PACKAGES += "qte-font-micro"
 PROVIDES += "qte-font-micro"
@@ -115,6 +157,13 @@ if [ -n "$D" ]; then exit 1; fi
 set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
+}
+pkg_postrm_qte-font-micro() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir -f
 }
 
 # Not in the QtE/3 tar file:
@@ -129,6 +178,13 @@ ${sbindir}/update-qtfontdir
 #. /etc/profile
 #${sbindir}/update-qtfontdir
 #}
+#pkg_postrm_qte-font-lcd() {
+##!/bin/sh
+#if [ -n "$D" ]; then exit 1; fi
+#set -e
+#. /etc/profile
+#${sbindir}/update-qtfontdir -f
+#}
 
 # Not in the QtE/3 tar file:
 #PACKAGES += "qte-font-japanese"
@@ -142,6 +198,13 @@ ${sbindir}/update-qtfontdir
 #. /etc/profile
 #${sbindir}/update-qtfontdir
 #}
+#pkg_postrm_qte-font-japanese() {
+##!/bin/sh
+#if [ -n "$D" ]; then exit 1; fi
+#set -e
+#. /etc/profile
+#${sbindir}/update-qtfontdir -f
+#}
 
 # Not in the QtE/3 tar file:
 #PACKAGES += "qte-font-courier"
@@ -154,4 +217,11 @@ ${sbindir}/update-qtfontdir
 #set -e
 #. /etc/profile
 #${sbindir}/update-qtfontdir
+#}
+#pkg_postrm_qte-font-courier() {
+##!/bin/sh
+#if [ -n "$D" ]; then exit 1; fi
+#set -e
+#. /etc/profile
+#${sbindir}/update-qtfontdir -f
 #}
