@@ -2,6 +2,7 @@ SECTION = "console/utils"
 DESCRIPTION = "Lsof is a Unix-specific diagnostic \
 tool. Its name stands for LiSt Open Files, and it \
 does just that."
+PR = "r1"
 
 SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.gz"
 LOCALSRC = "file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar"
@@ -15,9 +16,11 @@ python do_unpack () {
 	oe.data.setVar('SRC_URI', src_uri, d)
 }
 
+LSOF_OS = "${TARGET_OS}"
+LSOF_OS_linux-uclibc = "linux"
+
 do_configure () {
-	echo PWD is $PWD
-	./Configure ${TARGET_OS}
+	./Configure ${LSOF_OS}
 }
 
 export I = "${STAGING_INCDIR}"
