@@ -8,8 +8,7 @@ DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo
-\
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo \
 	   file://status.patch;patch=1"
 S = "${WORKDIR}/cairo"
 
