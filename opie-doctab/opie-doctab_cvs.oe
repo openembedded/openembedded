@@ -5,6 +5,7 @@ MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "doctab"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/doctab;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
