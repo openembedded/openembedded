@@ -6,11 +6,13 @@ HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
 LICENSE = "GPLv2"
 
 PV="0.8+cvs-${CVSDATE}"
+PR="r2"
+
 
 S = "${WORKDIR}/kbdd"
 LICENSE = "GPL"
 do_compile() {
-	oe_runmake CFLAGS="${CFLAGS} -DVERSION=\'${PV}\'"
+	oe_runmake CFLAGS="${CFLAGS} -DVERSION=\\\"${PV}\\\""
 }
 
 do_install() {
