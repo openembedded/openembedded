@@ -59,15 +59,15 @@
 -#ifdef QT_QWS_SL5XXX
 -#include <asm/sharp_char.h>
 -#endif
-+// #ifdef QT_QWS_SL5XXX
-+// #include <asm/sharp_char.h>
-+// #endif
++#ifdef QT_QWS_SL5XXX
++#include <asm/sharp_char.h>
++#endif
  
 -#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
-+// #if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
  #define QT_QWS_AUTOREPEAT_MANUALLY
 -#endif
-+//#endif
++#endif
  
  
  
