@@ -55,4 +55,4 @@ do_install() {
 		   DESTDIR=${D} install
 }
 
-include python-${PV}-manifest.oe
+include python-${PV}-manifest.inc
