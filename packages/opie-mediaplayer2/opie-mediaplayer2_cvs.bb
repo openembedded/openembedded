@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 PV = "1.1.9+cvs-${CVSDATE}"
-DEPENDS = "libxine-opie opie-mediaplayer2-skin-default"
+DEPENDS = "libxine-opie libqtaux2 opie-mediaplayer2-skin-default"
 RDEPENDS = "opie-mediaplayer2-skin"
 RRECOMMENDS = "opie-mediaplayer2-skin-default libxine-plugin-ao-out-oss libxine-plugin-decode-mad \
 libxine-plugin-dmx-audio libxine-plugin-dmx-mpeg libxine-plugin-inp-file "
