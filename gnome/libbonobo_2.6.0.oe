@@ -24,7 +24,8 @@ BONOBO_HEADERS = "Bonobo.h bonobo-arg.h bonobo-context.h bonobo-event-source.h b
 		  bonobo-persist.h bonobo-persist-client.h bonobo-property-bag.h \
 	          bonobo-property-bag-client.h bonobo-shlib-factory.h  bonobo-storage.h \
 		  bonobo-stream.h bonobo-stream-client.h bonobo-stream-memory.h \
-	          bonobo-storage-memory.h bonobo-xobject.h bonobo-i18n.h bonobo-types.h"
+	          bonobo-storage-memory.h bonobo-xobject.h bonobo-i18n.h bonobo-types.h \
+		  bonobo-app-client.h bonobo-application.h"
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/bonobo-activation-2.0/bonobo-activation
@@ -32,4 +33,6 @@ do_stage() {
 	install -d ${STAGING_INCDIR}/libbonobo-2.0/bonobo
 	for i in ${BONOBO_HEADERS}; do install -m 0644 bonobo/$i ${STAGING_INCDIR}/libbonobo-2.0/bonobo/; done
 	install -m 0644 libbonobo.h ${STAGING_INCDIR}/libbonobo-2.0/
+	oe_libinstall -so -C bonobo libbonobo-2 ${STAGING_LIBDIR}
+	oe_libinstall -so -C bonobo-activation libbonobo-activation ${STAGING_LIBDIR}
 }
