@@ -6,7 +6,7 @@ PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r10"
+PR = "r11"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
