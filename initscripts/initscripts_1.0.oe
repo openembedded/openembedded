@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -101,7 +101,7 @@ do_install () {
 	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
 	ln -sf		../init.d/sysfs.sh	${D}/etc/rcS.d/S36sysfs
-	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
+	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S38devpts.sh
 
 	install -m 0755    ${WORKDIR}/device_table.txt		${D}/etc/device_table
 }
