@@ -4,24 +4,24 @@ MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc
 
-SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-4.3.tar.gz \
+SRC_URI = ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 	  file://${FILESDIR}/signalnamespace.patch;patch=1
 
 inherit autotools libtool
 
 do_stage () {
-	install -m 0755 shlib/libreadline.so.4.3 ${STAGING_LIBDIR}/
-	install -m 0755 shlib/libhistory.so.4.3 ${STAGING_LIBDIR}/
+	install -m 0755 shlib/libreadline.so.${PV} ${STAGING_LIBDIR}/
+	install -m 0755 shlib/libhistory.so.${PV} ${STAGING_LIBDIR}/
 	install -m 0755 libreadline.a ${STAGING_LIBDIR}/
 	install -m 0755 libhistory.a ${STAGING_LIBDIR}/
 
-	ln -s ${STAGING_LIBDIR}/libreadline.so.4.3 \
+	ln -s ${STAGING_LIBDIR}/libreadline.so.${PV} \
 	  ${STAGING_LIBDIR}/libreadline.so.4
-	ln -s ${STAGING_LIBDIR}/libreadline.so.4.3 \
+	ln -s ${STAGING_LIBDIR}/libreadline.so.${PV} \
 	  ${STAGING_LIBDIR}/libreadline.so
-	ln -s ${STAGING_LIBDIR}/libhistory.so.4.3 \
+	ln -s ${STAGING_LIBDIR}/libhistory.so.${PV} \
 	  ${STAGING_LIBDIR}/libhistory.so.4
-	ln -s ${STAGING_LIBDIR}/libhistory.so.4.3 \
+	ln -s ${STAGING_LIBDIR}/libhistory.so.${PV} \
 	  ${STAGING_LIBDIR}/libhistory.so
 
 	install -d ${STAGING_DIR}/target/include/readline
