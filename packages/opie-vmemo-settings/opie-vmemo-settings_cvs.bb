@@ -1,0 +1,16 @@
+DESCRIPTION = "Sound settings dialog"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "sound"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sound \
+           ${HANDHELDS_CVS};module=opie/apps"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libsound.so* bin/sound apps/Settings/Sound.desktop

@@ -1,0 +1,22 @@
+DESCRIPTION = "Calculator"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "calculator"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/tools/calculator \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libcalculator.so* bin/calculator apps/Applications/calculator.desktop etc/unit_conversion.dat pics/calc
+do_install() {
+        install -d ${D}${palmtopdir}/pics/calc/
+        install -m 0644 ${WORKDIR}/pics/calc/*.png ${D}${palmtopdir}/pics/calc/
+}
+

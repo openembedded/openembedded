@@ -1,0 +1,16 @@
+DESCRIPTION = "WAV file plugin"
+SECTION = "opie/codecs"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "opie-mediaplayer1"
+RDEPENDS = "opie-mediaplayer1"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "wavplugin"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer "
+
+S = "${WORKDIR}/opieplayer/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/codecs/libwavplugin*

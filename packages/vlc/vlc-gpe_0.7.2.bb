@@ -4,6 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
+PR = "r1"
 
 DEPENDS = "faad ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
@@ -64,4 +65,16 @@ EXTRA_OECONF = "--disable-plugins \
 	--with-ffmpeg-mp3lame \
 	--with-ffmpeg-faac"
 
-FILES_${PN} = "${bindir} ${datadir}/${PN}/pda-* ${datadir}/${PN}/vlc*png ${datadir}/${PN}/http"
+do_install() {
+	autotools_do_install
+
+	install -d ${D}/${datadir}/applications
+	install -m 644 ipkg/vlc.gpe ${D}/${datadir}/applications/vlc-gpe.desktop
+}
+
+FILES_${PN} = "${bindir}/vlc \
+	${datadir}/applications \
+	${datadir}/vlc/pda-* \
+	${datadir}/vlc/vlc*png \
+	${datadir}/vlc/vlc*xpm \
+	${datadir}/vlc/http"

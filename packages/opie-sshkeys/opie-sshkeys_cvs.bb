@@ -1,0 +1,23 @@
+DESCRIPTION = "Utility for managing ssh-agent keys"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "ssh opie-sh-ssh-askpass"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "sshkeys"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sshkeys \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES bin/sshkeys apps/Settings/sshkeys.desktop pics/sshkeys/sshkeys.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+

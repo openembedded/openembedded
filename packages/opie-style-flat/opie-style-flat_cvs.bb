@@ -1,0 +1,13 @@
+DESCRIPTION = "Simple, flat widget style for Opie"
+SECTION = "opie/styles"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "flatstyle"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/styles/flat "
+
+S = "${WORKDIR}/flat"
+
+inherit opie

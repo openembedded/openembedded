@@ -1,0 +1,24 @@
+DESCRIPTION = "Ogg file plugin using tremor"
+SECTION = "opie/codecs"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "opie-mediaplayer1 tremor"
+RDEPENDS = "opie-mediaplayer1"
+PV = "1.1.8+cvs-${CVSDATE}"
+APPNAME = "tremorplugin"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer \
+	   file://vorbis.pro "
+
+S = "${WORKDIR}/opieplayer/vorbis"
+
+QMAKE_PROFILES = "vorbis.pro"
+
+inherit opie
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/vorbis.pro ${S}/
+}
+
+# FILES plugins/codecs/libtremorplugin.so
