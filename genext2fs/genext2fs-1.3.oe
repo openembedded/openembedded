@@ -1,5 +1,5 @@
 SRC_URI := ${DEBIAN_MIRROR}/main/g/genext2fs/genext2fs_1.3.orig.tar.gz \
-	   file://${FILESDIR}/debian.patch;patch=1
+	   file://${FILESDIR}/misc.patch;patch=1
 S := ${WORKDIR}/genext2fs-${PV}.orig
 
 do_compile () {
