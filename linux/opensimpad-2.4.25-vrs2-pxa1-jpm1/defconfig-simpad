@@ -205,7 +205,9 @@ CONFIG_APM=y
 CONFIG_SIMPAD_PM=y
 # CONFIG_ARTHUR is not set
 CONFIG_CMDLINE="mtdparts=sa1100:512k(boot),1m(kernel),-(root) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 mem=32M"
-# CONFIG_LEDS is not set
+CONFIG_LEDS=y
+# CONFIG_LEDS_TIMER is not set
+# CONFIG_LEDS_CPU is not set
 CONFIG_ALIGNMENT_TRAP=y
 
 #
