@@ -1,0 +1,17 @@
+PV = "0.0cvs${CVSDATE}"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+DEPENDS = "virtual/libc x11"
+PROVIDES = "xtst"
+DESCRIPTION = "X Test Extension: client side library"
+
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xtst \
+           file://${FILESDIR}/no-xrecord.patch;patch=1;pnum=0"
+S = "${WORKDIR}/Xtst"
+
+inherit autotools pkgconfig libtool
+
+do_stage () {
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+}
