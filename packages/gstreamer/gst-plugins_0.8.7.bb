@@ -3,12 +3,13 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag gpe-soundserver gconf"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://gst-plugins-0.8.7-httpsrc1.patch;patch=1 \
+	   file://lame-autoconf.patch;patch=1 \
 	   file://try-esdsink.patch;patch=1"
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts \
