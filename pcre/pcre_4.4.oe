@@ -8,7 +8,7 @@ the POSIX-style functions is called pcreposix.h."
 SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2"
 S = "${WORKDIR}/pcre-${PV}"
 
-inherit autotools 
+inherit autotools binconfig
 
 CFLAGS_append = " -D_REENTRANT"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"
