@@ -3,9 +3,9 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PROVIDES = "gst-plugins"
-PR = "r1"
+PR = "r2"
 
-DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag gpe-soundserver gconf gnome-vfs"
+DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag gpe-soundserver gconf"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://ivorbis.patch;patch=1 \
@@ -21,7 +21,6 @@ EXTRA_OECONF = "--disable-docs-build \
 		--disable-arts \
                 --disable-artsc \
 		--disable-audiofile \
-		--disable-cdparanoia \
 		--disable-dirac \
 		--disable-divx \
 		--disable-dts \
@@ -29,6 +28,7 @@ EXTRA_OECONF = "--disable-docs-build \
 		--disable-dvdnav \
 		--disable-faac \
 		--disable-faad \
+		--disable-gnome_vfs \
 		--disable-gsm \
 		--disable-hermes \
 		--disable-jack \
@@ -47,6 +47,8 @@ EXTRA_OECONF = "--disable-docs-build \
 		--disable-mplex \
 		--disable-musicbrainz \
 		--disable-nas \
+		--disable-opengl \
+		--disable-oss \
 		--disable-pango \
 		--disable-raw1394 \
 		--disable-sdl \

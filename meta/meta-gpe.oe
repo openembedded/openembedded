@@ -82,7 +82,8 @@ gpe-task-games = "\
     gpe-lights \
     gpe-othello \
     gpe-tetris \
-    gsoko"
+    gsoko \
+    xdemineur"
 
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
 DEPENDS += " ${gpe-task-games}"
