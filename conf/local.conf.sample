@@ -74,9 +74,8 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # INHERIT = "package_ipk"
 # INHERIT = "package_tar"
 
-# Uncomment one of these lines to get a rootfs image type other than jffs2
-# IMAGE_FSTYPE = "tar"
-# IMAGE_FSTYPE = "cramfs"
+# Add the required image file system types below. Valid are jffs2, tar, cramfs
+IMAGE_FSTYPES = "jffs2 tar"
 
 # Uncomment this to disable the parse cache (not recommended).
 # CACHE = ""
