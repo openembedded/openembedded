@@ -9,7 +9,7 @@ do_configure () {
     ./Configure					\
     -Dcc="${BUILD_CC}"				\
     -Dcflags="${BUILD_CFLAGS}"			\
-    -Dldflags="${BUILD_LDFLAGS}"		\
+    -Dldflags="${BUILD_LDFLAGS} -Wl,-rpath,${STAGING_LIBDIR}"		\
     -Dusethreads				\
     -Duselargefiles				\
     -Dprefix=${prefix}				\
