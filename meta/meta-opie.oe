@@ -1,14 +1,16 @@
-DESCRIPTION = "Meta-package for Opie"
+DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 ALLOW_EMPTY = 1
-PR = "r2"
+PR = "r3"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
             task-opie-decorations task-opie-games task-opie-inputmethods \
 		    task-opie-multimedia task-opie-pim task-opie-settings \
 		    task-opie-styles task-opie-today task-opie-bluetooth \
-			task-opie-wlan"
+			task-opie-wlan \
+			task-qpe-applets task-qpe-games task-qpe-inputmethods \
+			task-qpe-multimedia task-qpe-emulators task-qpe-applications "
 
 DEPENDS = "\
 opie-examples-python \
@@ -52,10 +54,16 @@ opie-vmemo \
 opie-volumeapplet \
 opie-vtapplet \
 opie-wirelessapplet \
-opie-zkbapplet "
-
+opie-zkbapplet \ 
+"
 RDEPENDS_task-opie-applets = "${task-opie-applets}"
 DEPENDS += " ${task-opie-applets}"
+
+task-qpe-applets = "\
+subapplet \
+"
+RDEPENDS_task-qpe-applets = "${task-qpe-applets}"
+DEPENDS += " ${task-qpe-applets}"
 
 task-opie-applications = "\
 opie-advancedfm \
@@ -92,6 +100,40 @@ opie-write \
 opie-zsafe "
 RDEPENDS_task-opie-applications = "${task-opie-applications}"
 DEPENDS += " ${task-opie-applications}"
+
+task-qpe-applications = "\
+cumulus \
+dviviewer \
+inkwp \
+iqnotes \
+irk \
+justreader \
+keyring \
+klimt \
+konqueror-embedded \
+kphonepi \
+kstars-embedded \
+ktimetrackerpi \
+mileage \
+petitepainture \
+pocketcellar \
+poqetpresenter \
+portabase \
+qpegps \
+qplot \
+shopper \
+timesleuth \
+txdrug \
+tximage \
+ubahnnav \
+visiscript \
+zbench \
+zgscore \
+zipsc \
+zlapspeed \
+"
+RDEPENDS_task-qpe-applications = "${task-qpe-applications}"
+DEPENDS += " ${task-qpe-applications}"
 
 task-opie-base = "\
 opie-alarm \
@@ -130,15 +172,25 @@ opie-tictac \
 opie-wordgame \
 opie-zlines \
 opie-zsame \
+"
+RDEPENDS_task-opie-games = "${task-opie-games}"
+DEPENDS += " ${task-opie-games}"
+
+task-qpe-games = "\
 aliens \
 aliens-qt \
 atomic \
+brickout \
 checkers \
 crossword \
 fish \
+freedroid \
+froot \
+gemdropx \
 glider \
 hexatrolic \
 icebloxx \
+knights \
 labyrinth \
 mahjongg \
 maki \
@@ -146,18 +198,27 @@ nmm \
 pairs \
 pdamaze \
 pipeman \
+powermanga \
+prboom \
+puzz-le \
 rott \
+scummvm \
 shisensho \
 sokoban \
 tickypip \
 tron \
+vectoroids \
 win4 \
+xmame \
+zauralign \
+zddice \
 ziq \
+zmerlin \
 zrev7 \
 zsubhunt \
 ztappy "
-RDEPENDS_task-opie-games = "${task-opie-games}"
-DEPENDS += " ${task-opie-games}"
+RDEPENDS_task-qpe-games = "${task-qpe-games}"
+DEPENDS += " ${task-qpe-games}"
 
 task-opie-inputmethods = "\
 opie-dasher \
@@ -173,6 +234,13 @@ opie-unikeyboard "
 RDEPENDS_task-opie-inputmethods = "${task-opie-inputmethods}"
 DEPENDS += " ${task-opie-inputmethods}"
 
+task-qpe-inputmethods = "\
+custominput \
+flexis-zaurus \
+"
+RDEPENDS_task-qpe-inputmethods = "${task-qpe-inputmethods}"
+DEPENDS += " ${task-qpe-inputmethods}"
+
 task-opie-multimedia = "\
 opie-mediaplayer1 \
 opie-mediaplayer1-libmadplugin \
@@ -186,9 +254,16 @@ opie-mediaplayer2-skin-pod \
 opie-mediaplayer2-skin-techno \
 opie-powerchord \
 opie-recorder \
-opie-tonleiter "
+opie-tonleiter \
+"
 RDEPENDS_task-opie-multimedia = "${task-opie-multimedia}"
 DEPENDS += " ${task-opie-multimedia}"
+
+task-qpe-multimedia = "\
+sidplayer \
+xmms-embedded "
+RDEPENDS_task-qpe-multimedia = "${task-qpe-multimedia}"
+DEPENDS += " ${task-qpe-multimedia}"
 
 task-opie-pim = "\
 opie-addressbook \
@@ -203,6 +278,14 @@ opie-today \
 opie-todo "
 RDEPENDS_task-opie-pim = "${task-opie-pim} task-opie-todayplugins"
 DEPENDS += " ${task-opie-pim}"
+
+task-kdepim = "\
+kopi \
+kapi \
+kopi-applet \
+"
+RDEPENDS_task-kdepim = "${task-kdepim}"
+DEPENDS += " kdepimpi"
 
 task-opie-settings = "\
 opie-appearance \
@@ -264,3 +347,13 @@ opie-wellenreiter \
 opie-wirelessapplet "
 RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
 DEPENDS += " ${task-opie-wlan}"
+
+task-qpe-emulators = "\
+dosbox \
+frodo \
+snes9x-sdl-qpe \
+uae \
+"
+RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
+DEPENDS += " ${task-qpe-emulators}"
+
