@@ -1,8 +1,14 @@
+PR = "r1"
+
 DEPENDS = "libxml2 gconf libbonobo bzip2"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/2.6/${PN}-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
+
+FILES_${PN} += " ${libdir}/gnome-vfs-2.0/modules/*.so ${libdir}/bonobo/servers ${libdir}/bonobo/monikers/*.so ${libdir}/vfs"
+FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/modules/*.a ${libdir}/gnome-vfs-2.0/modules/*.la ${libdir}/gnome-vfs-2.0/include ${libdir}/bonobo/monikers/*.a ${libdir}/bonobo/monikers/*.la"
+FILES_${PN}-doc += " ${datadir}/gtk-doc"
 
 GNOME_VFS_HEADERS = " \
 gnome-vfs-utils.h \
