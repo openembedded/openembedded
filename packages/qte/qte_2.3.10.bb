@@ -31,7 +31,6 @@ SRC_URI_append_shepherd		= "file://kernel-keymap.patch;patch=1 file://kernel-key
 SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
 SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
-SRC_URI_append_openzaurus-pxa-2.6 = "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 "
 
@@ -74,7 +73,6 @@ EXTRA_DEFINES_corgi     	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_
 EXTRA_DEFINES_shepherd  	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_husky		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_beagle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
-EXTRA_DEFINES_openzaurus-pxa-2.6= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"

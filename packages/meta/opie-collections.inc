@@ -17,7 +17,6 @@ OPIE_LIBS_RDEPENDS_append_corgi              = " qpf-bitstream-vera-large qpf-bi
 OPIE_LIBS_RDEPENDS_append_shepherd           = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
 OPIE_LIBS_RDEPENDS_append_husky              = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
 OPIE_LIBS_RDEPENDS_append_tosa               = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_openzaurus-pxa-2.6 = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
 
 #
 # Things for reasonable bootstrap image
@@ -47,7 +46,6 @@ OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus ope
 OPIE_BASE_DEPENDS_append_corgi                = " opie-autorotateapplet"
 OPIE_BASE_DEPENDS_append_shepherd             = " opie-autorotateapplet"
 OPIE_BASE_DEPENDS_append_husky                = " opie-autorotateapplet"
-OPIE_BASE_DEPENDS_append_openzaurus-pxa-2.6   = " opie-autorotateapplet"
 
 #
 # Additional things for a standard 16MB distribution

@@ -69,6 +69,10 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # for distributions currently known to OpenEmbedded.
 # DISTRO = "familiar"
 
+# Uncomment this to select a particular kernel version if supported by 
+# your MACHINE setting. Currently only supported on Zaurus Clamshells.
+# KERNEL_VERSION = "2.6"
+
 # Uncomment one of these to build packages during the build process.
 # This is done automatically if you set DISTRO (see above)
 # INHERIT = "package_ipk"
