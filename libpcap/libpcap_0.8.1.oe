@@ -21,7 +21,7 @@ do_configure_prepend () {
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/net
-	install -m 0644 net/bpf.h ${STAGING_INCDIR}/net/bpf.h
+#	install -m 0644 net/bpf.h ${STAGING_INCDIR}/net/bpf.h
 	install -m 0644 pcap.h ${STAGING_INCDIR}/pcap.h
 	install -m 0644 pcap-namedb.h ${STAGING_INCDIR}/pcap-namedb.h
 	install -m 0644 pcap-bpf.h ${STAGING_INCDIR}/pcap-bpf.h
