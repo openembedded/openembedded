@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r11"
+PR = "r12"
 
 PACKAGES =+ "${PN}-ftl ${PN}-pcinitrd"
 
@@ -74,7 +74,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/wnv.conf ${D}/${sysconfdir}/pcmcia/
 
 	for i in ${INSTALL_ETC}; do
-		install etc/${i} ${D}/${sysconfdir}/pcmcia/
+		install -m 0755 etc/${i} ${D}/${sysconfdir}/pcmcia/
 	done
 	for i in ${INSTALL_ETC_DATA}; do
 		install -m 0644 etc/${i} ${D}/${sysconfdir}/pcmcia/
