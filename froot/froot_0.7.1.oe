@@ -2,7 +2,7 @@ DESCRIPTION = "Froot is a game like frozen bubbles"
 SECTION = "opie/Games"
 APPNAME = "froot"
 APPTYPE = "binary"
-APPDESKTOP = "froot.desktop"
+APPDESKTOP = "${S}"
 PR = "r1"
 
 SRC_URI = "http://www.cs.unc.edu/~scheuerm/froot/froot-${PV}.tar.gz"
@@ -13,9 +13,7 @@ inherit opie
 do_install() {
     install -d ${D}/${palmtopdir}/help/html
     install -d ${D}/${palmtopdir}/pics/froot
-    install -d ${D}/${palmtopdir}/apps/Games
     install -m 0644 Froot.png ${D}/${palmtopdir}/pics/
     install -m 0644 help/html/froot.html ${D}/${palmtopdir}/help/html/
     install -m 0644 pics/froot/*.png ${D}/${palmtopdir}/pics/froot/
-    install -m 0644 froot.desktop ${D}/${palmtopdir}/apps/Games/froot.desktop
 }
