@@ -31,7 +31,7 @@ module_conf_i2c_algo_pxa = "options i2c-algo-pxa pxa_scan=0"
 module_conf_pcmcia_core = "options pcmcia_core ignore_cis_vcc=1"
 module_conf_ppp_async = "alias ppp0 ppp_async"
 module_conf_orinoco_cs = "options orinoco_cs ignore_cis_vcc=1"
-module_conf_hostap_cs "options hostap_cs ignore_cis_vcc=1"
+module_conf_hostap_cs = "options hostap_cs ignore_cis_vcc=1"
 
 autoload_h3600_generic_sleeve = "h3600_generic_sleeve"
 autoload_ds = "ds"
