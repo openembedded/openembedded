@@ -1,7 +1,7 @@
 SECTION = "x11/base"
 PR = "r4"
 
-DEPENDS = "freetype libxi xmu flex-2.5.4-native"
+DEPENDS = "freetype libxi xmu flex-2.5.4-native xfonts-xorg"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
 	cvs://anonymous@cvs.sourceforge.net/cvsroot/unichrome;tag=release;method=pserver;module=xfree86 \
