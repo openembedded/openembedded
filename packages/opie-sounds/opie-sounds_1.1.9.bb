@@ -4,7 +4,6 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
-
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};module=opie/sounds;tag=${TAG}"
 S = "${WORKDIR}/sounds"
