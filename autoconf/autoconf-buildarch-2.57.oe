@@ -1,5 +1,5 @@
 include autoconf-${PV}.oe
-PN_append='-buildarch'
+PN:='autoconf-buildarch'
 S = ${WORKDIR}/autoconf-${PV}
 
 inherit native
