@@ -1,0 +1,27 @@
+DESCRIPTION = FreeS/WAN IPSEC
+DEPENDS = virtual/libc gmp
+RDEPENDS = libc6 gmp
+FILES_freeswan_append = ' ${libdir}/ipsec'
+
+SRC_URI = ftp://ftp.xs4all.nl/pub/crypto/freeswan/old/freeswan-${PV}.tar.gz \
+	  file://${FILESDIR}/flags.patch;patch=1
+
+S = "${WORKDIR}/freeswan-${PV}"
+
+# "local" part of tree, used in building other pathnames
+EXTRA_OEMAKE = "'INC_USRLOCAL=${prefix}' \
+		'FINALLIBEXECDIR=${libexecdir}/ipsec' \
+		'FINALSBINDIR=${sbindir}' \
+		'FINALLIBDIR=${libdir}/ipsec' \
+		'MANTREE=${DESTDIR}/${mandir}' \
+		'FINALCONFFILE?=${sysconfdir}/ipsec.conf' \
+		'FINALCONFDIR?=${sysconfdir}'"
+
+do_compile () {
+	oe_runmake 'CFLAGS=${CFLAGS}' 'CPPFLAGS=${CPPFLAGS}' 'LDFLAGS=${LDFLAGS}' programs
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir}/init.d
+	oe_runmake DESTDIR=${D} install
+}
