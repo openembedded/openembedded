@@ -5,6 +5,7 @@ CONFIG		+= qt warn_on
 DESTDIR		= 
 
 HEADERS		+= server.h \
+		  qrr.h     \
 		  serverinterface.h \
 		  launchertab.h \
 		  documentlist.h \
@@ -34,6 +35,7 @@ HEADERS		+= server.h \
                   mediadlg.h
 
 SOURCES		+= server.cpp \
+		  qrr.cpp \
 		  serverinterface.cpp \
 		  launchertab.cpp \
 		  documentlist.cpp \
