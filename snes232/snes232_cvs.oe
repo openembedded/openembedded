@@ -1,5 +1,7 @@
 SECTION = "unknown"
-PR = "r2"
+PR = "r3"
+
+INHIBIT_PACKAGE_STRIP = "1"
 
 RDEPENDS = "kernel-module-serport"
 
