@@ -1,6 +1,7 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "apps"
 DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
@@ -19,6 +20,7 @@ S = "${WORKDIR}/xmms-embedded"
 inherit palmtop
 
 QMAKE_PROFILES = "xmms-e.pro"
+export OE_QMAKE_LINK="${CXX}"
 
 do_configure_prepend() {
     #remove all Makefiles - build will generate the correct ones using qmake
