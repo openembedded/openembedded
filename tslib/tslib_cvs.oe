@@ -1,11 +1,13 @@
-PV = "0.1cvs${CVSDATE}"
-PR = "r2"
+PV = "0.0cvs${CVSDATE}"
+PR = "r3"
 
 DESCRIPTION = "tslib is a touchscreen access library."
 
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib \
+# SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib
+#	   file://ev_syn.patch;patch=1
+SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
 	   file://tslib.sh"
 S = "${WORKDIR}/tslib"
