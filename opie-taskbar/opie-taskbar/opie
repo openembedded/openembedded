@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+export QTDIR=/opt/QtPalmtop
+export OPIEDIR=/opt/QtPalmtop
+export QPEDIR=/opt/QtPalmtop
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
+export PATH=$PATH:$OPIEDIR/bin
+
+if [ -e /proc/cpuinfo ] ; then
+	model=`grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
+	
+    case "$model" in	
+        "HP IPAQ H3100" | "HP IPAQ H3800" )
+	     export QWS_DISPLAY=Transformed:Rot90:0 ;;
+	"HP IPAQ H5400" | "HP JORNADA 56X" | "HP IPAQ H2200" )
+	     export QWS_DISPLAY=Transformed:Rot0:0 ;;
+	*SIMPAD* )
+	     export QWS_KEYBOARD='SIMpad'
+             export QWS_DISPLAY=Transformed:Rot0:0 ;;
+	     
+	*)
+	     export QWS_DISPLAY=Transformed:Rot270:0 ;;
+    esac
+else
+    export QWS_DISPLAY=Transformed:Rot270:0
+fi
+
+if [ ! -x "$OPIEDIR/bin/qpe" ] ; then 
+    echo Opie not installed
+    exit 0 
+fi
+
+. /etc/profile
+
+case $1 in
+'start')
+    /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
+    
+    if [ -x "$OPIEDIR/bin/opie-login" ]; then
+            echo Starting Opie-login....
+            $OPIEDIR/bin/opie-login -terminal 2
+    else
+        $OPIEDIR/bin/opie-reorgfiles
+        if [ -x /usr/bin/ssh-agent ]; then
+             SSHAGENT=/usr/bin/ssh-agent
+        else
+             SSHAGENT=""
+        fi
+        
+        if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
+            export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
+        fi           
+            echo Starting Opie....
+            $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
+        fi
+    fi
+
+    ;;
+
+'stop')
+    echo "Stopping Opie..."
+    killall qpe
+    killall opie-login
+    killall quicklauncher
+
+    ;;
+
+*)
+    echo "usage: $0 { start | stop }"
+
+    ;;
+
+esac
+
