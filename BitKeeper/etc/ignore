@@ -1,0 +1,5 @@
+BitKeeper/*/*
+PENDING/*
+conf/local.conf
+conf/auto.conf
+tmp
