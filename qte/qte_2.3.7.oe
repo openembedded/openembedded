@@ -11,6 +11,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://tslib.patch;patch=1 \
 	   file://devfs.patch;patch=1 \
 	   file://no-moc.patch;patch=1 \
+	   file://gcc3_4.patch;patch=1 \
 	   file://update-qtfontdir \
 	   file://sharp_char.h "
 
