@@ -9,6 +9,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 PV = "0.0cvs${CVSDATE}"
 FILES_${PN} += " ${libdir}/mozilla-minimo"
+PR = "r1"
 
 export MINIMO=1
 export CROSS_COMPILE=1
@@ -43,6 +44,7 @@ do_compile () {
 do_install () {
 	mkdir -p ${D}/${libdir}/mozilla-minimo
 	cp -rH $MOZ_OBJDIR/dist/bin/* ${D}/${libdir}/mozilla-minimo/
+	rm -f ${D}${libdir}/mozilla-minimo/TestGtkEmbed
 	mkdir -p ${D}/${datadir}/applications
 	install -m 0644 embedding/minimo/ipkg/minimo.desktop ${D}/${datadir}/applications/minimo.desktop
 	mkdir -p ${D}/${datadir}/pixmaps
