@@ -45,7 +45,7 @@ inherit kernel
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
-	install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config
+	install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 	oe_runmake oldconfig
 }
 

@@ -10,6 +10,6 @@ KERNEL_ARCH = "i386"
 KERNEL_IMAGETYPE = "bzImage"
 
 do_configure_prepend() {
-	cp ${FILESDIR}/epia_defconfig ${S}/.config
+	install -m 0644 ${FILESDIR}/epia_defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
         oe_runmake oldconfig
 }

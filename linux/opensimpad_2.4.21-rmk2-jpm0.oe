@@ -35,7 +35,7 @@ export CMDLINE = "mtdparts=sa1100:512k(boot),1m(kernel),-(root) console=tty1 roo
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
-        install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config
+        install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
         mem=${MEM}
         rd=${RD}
