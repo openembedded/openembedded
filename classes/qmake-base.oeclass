@@ -22,6 +22,7 @@ export OE_QMAKE_RPATH="-Wl,-rpath-link,"
 export OE_QMAKE_INCDIR_QT="${QTDIR}/include"
 export OE_QMAKE_LIBDIR_QT="${QTDIR}/lib"
 export OE_QMAKE_LIBS_QT="qte"
+export OE_QMAKE_LIBS_X11=""
 
 oe_qmake_mkspecs () {
     mkdir -p mkspecs/${OE_QMAKE_PLATFORM}
