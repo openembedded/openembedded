@@ -1,11 +1,11 @@
-PACKAGES = gpe gpe-task-base gpe-task-utils
+PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 DEPENDS = "gpe-bluetooth gpe-login gpe-dm gpe-session-scripts gpe-edit gpe-todo rxvt matchbox gpe-icons"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 ALLOW_EMPTY = 1
 
-RDEPENDS_gpe = "gpe-task-base gpe-task-utils"
+RDEPENDS_gpe = "gpe-task-base gpe-task-utils gpe-task-pim"
 
 RDEPENDS_gpe-task-base = "\
     gpe-dm \
@@ -15,7 +15,16 @@ RDEPENDS_gpe-task-base = "\
     rxvt \
     gpe-icons"
 
-RDEPENDS_gpe-task-utils = "gpe-edit"
+RDEPENDS_gpe-task-pim = "\
+    gpe-timesheet \
+    gpe-todo \
+    gpe-today \
+    gpe-calendar"
+
+RDEPENDS_gpe-task-utils = "\
+    gpe-conf \
+    gpe-bluetooth \
+    gpe-edit"
 
 #    gpe-collateral-gtk2 \
 #    gdk-pixbuf2-loader-jpeg \
