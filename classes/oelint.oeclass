@@ -42,8 +42,6 @@ python do_lint() {
 	#
 	valid_sections = {
 		# Current Section         Correct section
-		"applications"		: True,
-		"Applications"		: "applications",
 		"apps"			: True,
 		"audio"			: True,
 		"base"			: True,
@@ -54,7 +52,6 @@ python do_lint() {
 		"devel"			: True,
 		"developing"		: "devel",
 		"devel/python"		: True,
-		"dvb"			: "multimedia",
 		"fonts"			: True,
 		"games"			: True,
 		"games/libs"		: True,
@@ -63,7 +60,7 @@ python do_lint() {
 		"gpe"			: True,
 		"gpe/libs"		: True,
 		"gui"			: False,
-		"libc"			: True,
+		"libc"			: "libs",
 		"libs"			: True,
 		"libs/net"		: True,
 		"multimedia"		: True,
@@ -83,13 +80,12 @@ python do_lint() {
 		"opie/libs"		: True,
 		"opie/multimedia"	: True,
 		"opie/pim"		: True,
-		"opie/setting"		: True,
+		"opie/setting"		: "opie/settings",
 		"opie/settings"		: True,
 		"opie/Shell"		: False,
 		"opie/styles"		: True,
 		"opie/today"		: True,
 		"scientific"		: True,
-		"tools"		 	: "utils",
 		"utils"			: True,
 		"x11"			: True,
 		"x11/libs"		: True,
@@ -116,7 +112,7 @@ python do_lint() {
 	# Test for valid PRIORITY
 	#
 	valid_priorities = {
-		"standed"		: True,
+		"standard"		: True,
 		"required"		: True,
 		"optional"		: True,
 		"extra"			: True,

@@ -2,7 +2,7 @@ DESCRIPTION = "IQNotes is notes kept in a hierarchical(tree like) manner. \
 It handles todo, events, sketching. It can acts as a contact, password, \
 credit card manager and even more, because is highly configurable. \
 Data can be crypted by strong AES algorithm."
-SECTION = "applications"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Shopping list manager"
-SECTION = "Applications"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "David Greaves <arbor@users.sourceforge.net>"
 LICENSE = "GPL"

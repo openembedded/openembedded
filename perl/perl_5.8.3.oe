@@ -1,5 +1,5 @@
 DESCRIPTION = "Perl is a popular scripting language."
-SECTION = "developing"
+SECTION = "devel"
 PRIORITY = "optional"
 DEPENDS = "db3 perl-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \

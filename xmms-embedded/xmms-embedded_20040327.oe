@@ -1,5 +1,5 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
-SECTION = "apps"
+SECTION = "opie/multimedia"
 DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0"
 PR = "r1"
 
