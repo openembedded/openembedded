@@ -28,6 +28,7 @@ PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) == 'no'
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
+PARALLEL_MAKE = ""
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

@@ -454,7 +454,9 @@ python base_do_patch() {
 		else:
 			pname = unpacked
 
-		os.chdir(workdir)
+		patchdir = bb.data.getVar('S', d, 1)
+		os.chdir(patchdir)
+
 		bb.note("Applying patch '%s'" % pname)
 		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
 		bb.data.setVarFlag("do_patchcmd", "func", 1, d)

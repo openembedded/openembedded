@@ -26,6 +26,7 @@ PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) == 'no'
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
+PARALLEL_MAKE = ""
 
 PACKAGES = "uclibc ldd uclibc-utils uclibc-gconv uclibc-dev uclibc-doc uclibc-thread-db"
 
