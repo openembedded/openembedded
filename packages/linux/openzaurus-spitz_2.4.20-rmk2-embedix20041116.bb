@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r0"
+PR = "r1"
 
 ALLOW_EMPTY_kernel = "1"
 
@@ -16,6 +16,7 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3000/20041116/linux-c3000-2
            file://bluecard_cs.patch;patch=1 \
            file://enable-sysrq.patch;patch=1 \
            file://compile.patch;patch=1 \
+           file://idecs.patch;patch=1 \
            file://logo.patch;patch=1 \
            file://initsh.patch;patch=1 \
            file://keyboard-ctrl+alt.patch;patch=1 \
