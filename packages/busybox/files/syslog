@@ -10,10 +10,10 @@ if [ -f /etc/syslog.conf ]; then
 	LOG_LOCAL=0
 	LOG_REMOTE=0
 	for D in $DESTINATION; do
-		if [ "$D" == "buffer" ]; then
+		if [ "$D" = "buffer" ]; then
 			SYSLOG_ARGS="$SYSLOG_ARGS -C $BUFFERSIZE"
 			LOG_LOCAL=1
-		elif [ "$D" == "file" ]; then
+		elif [ "$D" = "file" ]; then
 			if [ -n "$LOGFILE" ]; then
 				SYSLOG_ARGS="$SYSLOG_ARGS -O $LOGFILE"
 			fi
@@ -24,18 +24,18 @@ if [ -f /etc/syslog.conf ]; then
 				SYSLOG_ARGS="$SYSLOG_ARGS -b $ROTATEGENS"
 			fi
 			LOCAL=0
-		elif [ "$D" == "remote" ]; then
+		elif [ "$D" = "remote" ]; then
 			SYSLOG_ARGS="$SYSLOG_ARGS -R $REMOTE"
 			LOG_REMOTE=1
 		fi
 	done
-	if (( $LOG_LOCAL && $LOG_REMOTE )); then 
+	if [ "$LOG_LOCAL" = "1" -a "$LOG_REMOTE" = "1" ]; then
 		SYSLOG_ARGS="$SYSLOG_ARGS -L"
 	fi
 	if [ -n "$MARKINT" ]; then
 		SYSLOG_ARGS="$SYSLOG_ARGS -m $MARKINT"
 	fi
-	if [ "$REDUCE" == "yes" ]; then
+	if [ "$REDUCE" = "yes" ]; then
 		SYSLOG_ARGS="$SYSLOG_ARGS -S"
 	fi
 else
