@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r9"
+PR = "r10"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.cs.wisc.edu/~lenz/zaurus/
@@ -14,6 +14,7 @@ PR = "r9"
 #http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_base.patch;patch=1 \
 #http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_fb.patch;patch=1 \
 #http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-cpu.patch;patch=1 \
+#http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_kbd.patch;patch=1 \
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.11-rc1-bk7.gz;patch=1 \
@@ -22,7 +23,6 @@ http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.11-rc1-bk7.gz;pa
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_pm.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_devices.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_kbd.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_lcd.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/collie_uart.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/collie_batswitch.patch;patch=1 \
@@ -38,9 +38,9 @@ http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras2-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras3-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras1-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r8.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r10.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r5.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_power-r11.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_power-r12.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/ide_fixes-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mmc_sd-r3.patch;patch=1 \
