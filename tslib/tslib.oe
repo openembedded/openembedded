@@ -1,3 +1,5 @@
+PV=${DATE}
+
 DEPENDS = virtual/libc
 RDEPENDS = libc6
 

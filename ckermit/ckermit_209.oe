@@ -1,0 +1,38 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
+	  file://${FILESDIR}/cross.patch;patch=1
+
+export CC_FOR_BUILD=${BUILD_CC}
+export CC2=${CC}
+export BINDIR=${bindir}
+export MANDIR=${mandir}/man1
+export INFODIR=${infodir}
+
+python do_unpack () {
+	oe.mkdirhier(oe.data.expand('${S}', d))
+	oe.build.exec_func('base_do_unpack', d, [ '${S}' ])
+}
+
+do_compile () {
+	# read $(SourceTree)/ckccfg.txt to understand this :-)
+	oe_runmake wermit \
+		CFLAGS="${CFLAGS} -DLINUX -DCK_POSIX_SIG \
+		-DNOTCPOPTS -DLINUXFSSTND -DNOCOTFMC -DPOSIX -DUSE_STRERROR \
+		-DNOSYSLOG -DHAVE_PTMX -DNO_DNS_SRV -DNOGFTIMER \
+		-DNOB_50 -DNOB_75 -DNOB_134 -DNOB_150 -DNOB_200 \
+		-DNOB_1800 -DNOB_3600 -DNOB_7200 -DNOB_76K -DNOB_230K \
+		-DNOB_460K -DNOB_921K \
+		-DNOAPC -DNOCSETS -DNONET -DNOUNICODE -DNOHELP -DNODEBUG \
+		-DNOFRILLS -DNOFTP -DNODIAL -DNOPUSH -DNOIKSD -DNOHTTP -DNOFLOAT \
+		-DNOSERVER -DNOSEXP -DNORLOGIN -DNOOLDMODEMS -DNOSSH -DNOLISTEN \
+		-DNORESEND -DNOAUTODL -DNOSTREAMING -DNOHINTS -DNOCKXYZ -DNOLEARN \
+		-DNORECALL -DNOMKDIR -DNOPERMS -DNOCKTIMERS -DNOCKREGEX -DNOREALPATH \
+		-DCK_SMALL -DNOLOGDIAL -DNORENAME -DNOWHATAMI"
+}
+
+do_install () {
+	install -d ${D}/${BINDIR} ${D}/${MANDIR} ${D}/${INFODIR}
+	oe_runmake 'DESTDIR=${D}' 'MANDIR=${D}/${MANDIR}' install
+}
