@@ -6,7 +6,8 @@ RDEPENDS = "python-core python-numeric"
 DEPENDS = "virtual/libc virtual/libsdl libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg python-numeric"
 SRCNAME = "pygame"
 
-SRC_URI = "http://www.pygame.org/ftp/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "http://www.pygame.org/ftp/${SRCNAME}-${PV}.tar.gz \
+			file://${FILESDIR}/qpe.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
