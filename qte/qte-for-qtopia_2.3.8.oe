@@ -1,4 +1,4 @@
-include qte-${PV}-snapshot.oe
+include qte_${PV}-snapshot.oe
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-2.3.8-snapshot"
 
