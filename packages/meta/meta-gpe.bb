@@ -18,6 +18,7 @@ gpe-task-base = "\
     xcursor-transparent-theme \
     rxvt-unicode \
     gtk2-theme-angelistic \
+    matchbox-themes-gtk \
     xst \
     xhost \
     xrdb \
