@@ -4,13 +4,24 @@ clipping, aligning and coloring fonts in different styles, and more."
 SECTION = "libs"
 DEPENDS = "edb evas ecore"
 PV = "${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/etox"
 S = "${WORKDIR}/etox"
 
 inherit autotools pkgconfig binconfig
 
+export EDB_CONFIG = "${STAGING_BINDIR}/edb-config"
+export EVAS_CONFIG = "${STAGING_BINDIR}/evas-config"
+export ECORE_CONFIG = "${STAGING_BINDIR}/ecore-config"
+
 do_stage () {
 	oe_libinstall -C src libetox ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/Etox.h ${STAGING_INCDIR}/
 }
+
+PACKAGES += "etox-examples"
+
+FILES_${PN} = "${libdir}/libetox*.so*"
+FILES_${PN}-dev += "${bindir}/etox-config ${libdir}/pkgconfig"
+FILES_${PN}-examples = "${bindir}/etox* ${datadir}"
