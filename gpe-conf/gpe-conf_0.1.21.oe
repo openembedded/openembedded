@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 inherit gpe pkgconfig
 
@@ -11,9 +11,6 @@ FILES_${PN} += " ${datadir}/gpe/pixmaps ${datadir}/gpe-conf"
 
 SRC_URI = "${GPE_MIRROR}/gpe-conf-${PV}.tar.gz \
             file://icons.patch;patch=1;pnum=0"
-
-# disable wifi support, enable limited capabilities appmgr interface
-CPPFLAGS_append = " -D APPMGR_INTERFACE -DDISABLE_XRANDR -DIMG_HEIGHT=200 -DIMG_WIDTH=200"
 
 do_compile () {
 	oe_runmake PREFIX=${prefix}
