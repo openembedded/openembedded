@@ -1,23 +1,9 @@
-DESCRIPTION = "System Information dialog for the Opie environment"
-SECTION = "opie/applications"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "sysinfo"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sysinfo \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps \
            ${HANDHELDS_CVS};module=opie/share"
-S = "${WORKDIR}/${APPNAME}"
-
-inherit opie
-
-do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-        install -d ${D}${palmtopdir}/share/sysinfo/
-        install -m 0644 ${WORKDIR}/share/sysinfo/results ${D}${palmtopdir}/share/sysinfo/results
-}
-

@@ -1,16 +1,6 @@
-DESCRIPTION = "Opie Standalone Touchscreen Calibration Utility"
-SECTION = "opie/base"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate"
-S = "${WORKDIR}/calibrate"
-
-inherit opie
-
-do_install() {
-	install -d ${D}${palmtopdir}/bin/
-	install -m 0755 calibrate ${D}${palmtopdir}/bin/
-}

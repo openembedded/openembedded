@@ -1,24 +1,8 @@
-DESCRIPTION = "Password manager program for Opie."
-SECTION = "opie/applications"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "zsafe"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/zsafe \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps"
-
-S = "${WORKDIR}/${APPNAME}"
-
-inherit opie
-
-QMAKE_PROFILES = "zsafe.pro"
-
-# FILES bin/zsafe apps/Applications/zsafe.desktop pics/zsafe/zsafe.png
-do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-}
-

@@ -1,30 +1,9 @@
-DESCRIPTION = "KeyZ Applet"
-SECTION = "opie/applets"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "zkbapplet"
-RDEPENDS = "opie-pics"
-I18N_FILES = "keyz-cfg.ts"
-
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/applets/zkbapplet \
            ${HANDHELDS_CVS};module=opie/share \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps"
-
-S = "${WORKDIR}/${APPNAME}"
-
-inherit opie
-
-do_install() {
-        install -d ${D}${palmtopdir}/pics/
-        install -d ${D}${palmtopdir}/share/zkb/
-        install -m 0644 ${WORKDIR}/share/zkb/*xml* ${D}${palmtopdir}/share/zkb/
-	install -m 0644 ${WORKDIR}/share/zkb/zkb.xml.sample ${D}${palmtopdir}/share/zkb/zkb.xml
-        install -d ${D}${palmtopdir}/bin
-        install -m 0755 ${S}/keyz-cfg ${D}${palmtopdir}/bin/
-        install -d ${D}${palmtopdir}/apps/Settings
-        install -m 0644 ${WORKDIR}/apps/Settings/keyz-cfg.desktop ${D}${palmtopdir}/apps/Settings/
-}

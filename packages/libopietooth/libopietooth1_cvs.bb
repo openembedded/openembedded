@@ -4,10 +4,9 @@ PRIORITY = "optional"
 DEPENDS = "libopie2"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
-PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/lib"
-PV = "1.1.9+cvs-${CVSDATE}"
+PV = "1.2.0+cvs-${CVSDATE}"
 
 inherit opie
 

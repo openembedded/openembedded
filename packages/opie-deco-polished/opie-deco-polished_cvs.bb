@@ -1,13 +1,6 @@
-DESCRIPTION = "Polished window decoration style for Opie"
-SECTION = "opie/decorations"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "polished"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/decorations/polished "
-
-S = "${WORKDIR}/polished"
-
-inherit opie

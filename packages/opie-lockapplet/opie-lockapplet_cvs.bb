@@ -1,37 +1,7 @@
-DESCRIPTION = "Lock Opie now Button to lock Opie (as configured in the Security settings) on demand."
-SECTION = "opie/applets"
-PRIORITY = "optional"
-LICENSE = "GPL"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "lockapplet"
-DEPENDS = "opie-security"
-RDEPENDS = "opie-security"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/lockapplet \
            ${HANDHELDS_CVS};module=opie/pics "
-
-S = "${WORKDIR}/lockapplet"
-
-inherit opie
-
-pkg_postinst() {
-#!/bin/sh
-if pidof -s qpe >/dev/null; then
-  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
-fi
- if [ -n "$D" ]; then false; fi
-}
-
-pkg_postrm() {
-#!/bin/sh
-/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
- if [ -n "$D" ]; then false; fi
-}
-
-do_install() {
-    install -d ${D}${palmtopdir}/plugins/applets ${D}${palmtopdir}/pics/security/
-    install -m 0644 ${WORKDIR}/pics/security/lock.png ${D}${palmtopdir}/pics/security/
-    oe_libinstall -so liblockapplet ${D}${palmtopdir}/plugins/applets/
-}
-

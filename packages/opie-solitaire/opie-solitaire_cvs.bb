@@ -1,23 +1,8 @@
-DESCRIPTION = "Game: solitaire card games"
-SECTION = "opie/games"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "patience"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/games/solitaire \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps"
-
-S = "${WORKDIR}/solitaire"
-
-inherit opie
-
-# FILES plugins/application/libpatience.so* bin/patience apps/Games/patience.desktop pics/cards
-do_install() {
-        install -d ${D}${palmtopdir}/pics/cards/
-        install -m 0644 ${WORKDIR}/pics/cards/*.png ${D}${palmtopdir}/pics/cards/
-}
-
-

@@ -1,20 +1,6 @@
-DESCRIPTION = "Enables apps on external media"
-SECTION = "opie/base"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "opie-update-symlinks"
-APPTYPE = "binary"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/symlinker "
-
-S = "${WORKDIR}/symlinker"
-
-inherit opie
-
-do_install() {
-	install -d ${D}${palmtopdir}/bin/
-	install -m 0755 ${S}/opie-update-symlinks ${D}${palmtopdir}/bin/
-}
-

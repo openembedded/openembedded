@@ -38,7 +38,7 @@ OPENSLUG_PACKAGES = "\
 	atftp \
 	bash \
 	bluez-utils-nodbus \
-	coreutils \
+	coreutils cvs\
 	miau \
 	microcom \
 	mt-daapd \
@@ -46,6 +46,7 @@ OPENSLUG_PACKAGES = "\
 	nail \
 	openssh \
 	ppp puppy \
+	rsync \
 	strace sudo \
 	thttpd \
 	"

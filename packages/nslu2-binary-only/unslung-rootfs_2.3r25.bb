@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r46"
+PR = "r48"
 
 UNSLUNG_VERSION = "4.7-alpha"
 
@@ -11,6 +11,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://linuxrc \
 	   file://unsling \
 	   file://resling \
+	   file://nsswitch.conf \
 	   file://rc.unslung-start \
 	   file://rc.unslung-stop \
 	   file://rc-diversion.patch;patch=1 \
@@ -65,6 +66,8 @@ do_compile () {
 	install -m 755 ${WORKDIR}/resling ${S}/sbin/resling
 	install -m 755 ${WORKDIR}/rc.unslung-start ${S}/etc/rc.d/rc.unslung-start
 	install -m 755 ${WORKDIR}/rc.unslung-stop ${S}/etc/rc.d/rc.unslung-stop
+
+	install -m 644 ${WORKDIR}/nsswitch.conf ${S}/etc/nsswitch.conf
 
 	install -d ${S}/opt/doc
 	install -m 755 ${WORKDIR}/README ${S}/opt/doc/README

@@ -1,27 +1,8 @@
-DESCRIPTION = "Opie PIM database converter"
-SECTION = "opie/pim"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-RDEPENDS = "sqlite3 sqlite" 
-#RDEPENDS = "sqlite3-bin sqlite-bin"
-
-PV = "1.1.9+cvs-${CVSDATE}"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
 PR = "r0"
-APPNAME = "opimconverter"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/tools/pimconverter \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps"
-
-S = "${WORKDIR}/pimconverter"
-EXTRA_QMAKEVARS_POST += "TARGET=${APPNAME}"
-
-inherit opie
-
-# FILES bin/opimconverter pics/opimconverter/* apps/1Pim/opimconverter.desktop
-do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-}
-

@@ -1,11 +1,6 @@
-DESCRIPTION = "A flatter widget style than flat :)"
-SECTION = "opie/styles"
-PRIORITY = "optional"
-LICENSE = "GPL"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "webstyle"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/styles/web"
-S = "${WORKDIR}/web"
-
-inherit opie

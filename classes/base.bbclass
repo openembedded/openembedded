@@ -32,6 +32,13 @@ def base_read_file(filename):
 		return f.read().strip()
 	return None
 
+def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
+	import bb
+	if bb.data.getVar(variable,d,1) == checkvalue:
+		return truevalue
+	else:
+		return falsevalue
+
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
 def base_set_filespath(path, d):

@@ -8,7 +8,7 @@ USE_DEVFS = "1"
 OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATCH_DEPENDS} virtual/armeb-linux-uclibc-gcc \
 	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware "
 
-DEPENDS = "virtual/kernel base-files base-passwd-3.5.7 \
+DEPENDS = "virtual/kernel base-files base-passwd-3.5.9 \
         busybox dropbear hotplug-ng initscripts netbase \
         sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth openslug-init \

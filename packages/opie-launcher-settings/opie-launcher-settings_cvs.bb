@@ -1,22 +1,8 @@
-DESCRIPTION = "Launcher settings dialog"
-SECTION = "opie/settings"
-PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
-LICENSE = "GPL"
-DEPENDS = "libqtaux2"
-PV = "1.1.9+cvs-${CVSDATE}"
-APPNAME = "launchersettings"
+include ${PN}.inc
+    
+PV = "1.2.0+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/settings/launcher \
            ${HANDHELDS_CVS};module=opie/apps \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/Cvs;module=opie/pics"
-
-S = "${WORKDIR}/launcher"
-
-inherit opie
-
-# FILES plugins/application/liblaunchersettings.so* bin/launchersettings apps/Settings/launchersettings.desktop pics/launchersettings
-do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-} 
