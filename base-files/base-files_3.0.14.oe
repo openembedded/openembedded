@@ -6,7 +6,6 @@ PR = "r5"
 SRC_URI = " file://${FILESDIR}/etc/nsswitch.conf \
             file://${FILESDIR}/etc/motd \
             file://${FILESDIR}/etc/issue.net- \
-            file://${FILESDIR}/etc/debian_version \
             file://${FILESDIR}/etc/issue-opensimpad \
             file://${FILESDIR}/etc/issue.net-opensimpad \
             file://${FILESDIR}/etc/issue- \
@@ -95,7 +94,7 @@ do_install () {
     install -m 0644 ${FILESDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
     install -m 0644 ${FILESDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
     cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
-    for f in debian_version inputrc nsswitch.conf host.conf profile
+    for f in inputrc nsswitch.conf host.conf profile
     do
         install -m 0644 ${WORKDIR}/etc/$f ${D}/${sysconfdir}/
     done
