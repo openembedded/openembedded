@@ -26,9 +26,9 @@ if [ -n "$D"  ]; then exit 1; fi
 if [ ! -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
 	dropbearkey -t rsa -f ${sysconfdir}/dropbear/dropbear_rsa_host_key
 fi
-if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
-	dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
-fi
+#if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
+#	dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
+#fi
 }
 
 pkg_postrm_append () {
