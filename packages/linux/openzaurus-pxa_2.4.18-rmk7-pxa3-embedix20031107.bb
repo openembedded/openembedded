@@ -7,7 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r31"
+PR = "r32"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 ALLOW_EMPTY_kernel = "1"

@@ -7,7 +7,7 @@ DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 RDEPENDS_openzaurus-pxa-2.6 = "makedevs console-tools"
 LICENSE = "GPL"
-PR = "r31"
+PR = "r32"
 
 SRC_URI = "file://halt \
            file://ramdisk \
