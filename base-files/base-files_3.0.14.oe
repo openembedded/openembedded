@@ -95,9 +95,8 @@ do_install () {
         install -d ${D}/etc/init.d ${D}/etc/rcS.d
 
 	for d in `(cd ${D}/var; ls)`; do
-		mode=`stat -c %a ${D}/var/$d`
-		echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var.sh
-		echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var.sh
+		echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
+		echo "chmod --reference=${D}/var/$d /var/$d" >> ${D}/etc/init.d/populate-var.sh
 	done
 	
 	echo "mkdir -p /var/lock/subsys" 		>> ${D}/etc/init.d/populate-var.sh

@@ -9,6 +9,16 @@ S = "${WORKDIR}/libXt-${PV}"
 
 inherit autotools pkgconfig 
 
+#nasty hack as utils need to be native
+do_compile() {
+        (
+                unset CC LD CXX CCLD
+#               unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+                oe_runmake -C util 'CFLAGS=' 'LDFLAGS=' 'CXXFLAGS=' 'CPPFLAGS=' makestrs
+        )
+        oe_runmake
+}
+
 do_stage () {
 	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
 }

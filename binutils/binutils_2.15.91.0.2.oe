@@ -76,6 +76,8 @@ export CC_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc"
 export CXX_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc"
 
 export CC_FOR_BUILD = "${BUILD_CC}"
+export CPP_FOR_BUILD = "${BUILD_CPP}"
+export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 
 export CC = "${CCACHE} ${HOST_PREFIX}gcc"
 
