@@ -3,5 +3,5 @@
 @@ -1,2 +1,3 @@
  Rxvt*scrollBar_right: true
 -Rxvt*font: Mono-6
-+Rxvt*font: xft:Mono:pixelsize=10
++Rxvt*font: xft:Mono:pixelsize=7
 +
