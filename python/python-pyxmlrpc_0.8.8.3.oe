@@ -1,0 +1,12 @@
+DESCRIPTION=Fast Python XMLRPC Library
+SECTION=base
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6 python-core
+DEPENDS=virtual/libc
+SRCNAME=py-xmlrpc
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+S = ${WORKDIR}/${SRCNAME}-${PV}
+
+inherit distutils
