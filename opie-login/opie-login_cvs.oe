@@ -7,10 +7,17 @@ DEPENDS = "libopie2"
 PV = "1.1.3-cvs-${CVSDATE}"
 APPNAME = "opie-login"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/${APPNAME};date=${CVSDATE}"
+SRC_URI = " cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/${APPNAME};date=${CVSDATE} \
+cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
+cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/launcher;date=${CVSDATE} \
+file://${FILESDIR}/nopam.patch;patch=1"
+
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-#FIXME needs more sources to build
-
+do_configure() {
+	mkdir -p  "${WORKDIR}/apps"
+	ln -s "${WORKDIR}/calibrate" "${WORKDIR}/apps/calibrate"
+	palmtop_do_configure
+}
