@@ -1,0 +1,19 @@
+DESCRIPTION = "ntop is network top"
+SECTION = "network"
+PRIORITY = "optional"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz \
+	   file://${FILESDIR}/libtool-shut-up.patch;patch=1"
+
+inherit autotools
+
+do_configure_prepend() {
+	find . -name "acinclude.m4"|xargs rm -f
+	find . -name "aclocal.m4" |xargs rm -f
+	find . -name "config.h.in"|xargs rm -f
+	find . -name "Makefile.in"|xargs rm -f
+	find . -name "configure"|xargs rm -f
+}
+ 
+export NTOPAUTOREBUILD=yes
+export NTOPCONFIGDEBUG=yes
