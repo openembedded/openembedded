@@ -7,7 +7,7 @@ RPROVIDES = "hotplug"
 RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
 SECTION = "base"
-PR = "r1"
+PR = "r2"
 RSUGGESTS = "pciutils usbutils"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
@@ -24,7 +24,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_2
 	   file://sysconfig-hotplug \
 	   file://sysconfig-usb \
 	   file://isapnp-exit.diff;patch=1 \
-	   file://usb-storage"
+	   file://usb-storage \
+	   file://soc.agent"
 	   
 S = "${WORKDIR}/hotplug-2004_09_20"
 
@@ -60,6 +61,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/sleeve.rc ${D}${sysconfdir}/hotplug/
 	install -m 0755 ${WORKDIR}/mmc.agent ${D}${sysconfdir}/hotplug/
 	install -m 0755 ${WORKDIR}/usbd.agent ${D}${sysconfdir}/hotplug/
+	install -m 0755 ${WORKDIR}/soc.agent ${D}${sysconfdir}/hotplug/
 	#install -m 0755 ${WORKDIR}/usbd ${D}${sysconfdir}/default/usbd
 	install -d ${D}${sysconfdir}/sysconfig
 	install -m 0644 ${WORKDIR}/sysconfig-hotplug ${D}${sysconfdir}/sysconfig/hotplug
