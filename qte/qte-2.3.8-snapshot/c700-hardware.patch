@@ -1,0 +1,17 @@
+--- qwsmouse_qws.cpp.~1~	2004-09-13 09:17:07 +10:00
++++ qt-2.3.9/src/kernel/qwsmouse_qws.cpp	2004-09-13 19:41:23 +10:00
+@@ -71,10 +71,10 @@
+ #elif defined(QT_QWS_SL5XXX)
+ #define QT_QWS_SL5XXX_RAW
+ typedef struct {
+-       long y;
+-       long x;
+-       long pressure;
+-       long long millisecs;
++       unsigned short pressure;
++       unsigned short x;
++       unsigned short y;
++       unsigned short millisecs;
+ } TS_EVENT;
+ #define QT_QWS_TP_SAMPLE_SIZE 10
+ #define QT_QWS_TP_MINIMUM_SAMPLES 4
