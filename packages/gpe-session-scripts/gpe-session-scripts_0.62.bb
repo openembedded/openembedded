@@ -1,0 +1,33 @@
+LICENSE = "GPL"
+PR = "r4"
+
+inherit gpe
+
+DESCRIPTION = "GPE session startup scripts"
+SECTION = "gpe"
+PRIORITY = "optional"
+MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr xmodmap"
+# more rdepends: keylaunch ipaq-sleep apmd blueprobe
+DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap"
+
+SRC_URI += "file://zaurus.sh \
+	file://keymap.sh \
+	file://change-default-applets.patch;patch=1 \
+	file://xdefaults.patch;patch=1 \
+	file://shepherd.xmodmap file://simpad.xmodmap"
+
+do_install_append() {
+	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
+	install ${WORKDIR}/keymap.sh ${D}/etc/X11/Xinit.d/12keymap
+	for m in simpad shepherd; do
+		install -m 0644 ${WORKDIR}/$m.xmodmap ${D}/etc/X11/
+	done
+	install -d ${D}/etc/gpe/xsettings-default.d
+	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
+		echo "Gtk/ToolbarStyle:S:icons" > ${D}/etc/gpe/xsettings-default.d/toolbar
+	fi
+}
+
+# This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
+PACKAGE_ARCH := "${MACHINE_ARCH}"
