@@ -5,7 +5,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r27"
+PR = "r29"
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
@@ -41,17 +41,13 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://tosa_map.patch;patch=1 \
            file://tosa_ts.patch;patch=1 \
            file://corgi-fbcon-logo.patch;patch=1 \
+           file://corgi-default-brightness.patch;patch=1 \
            http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
 	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
            file://defconfig-${MACHINE} \ 
            http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz "
-
-def get_sysreq_setting(bb, d):
-	if bb.data.getVar('ENABLE_SYSREQ', d, 1) in [ 'yes' ]:
-		return "file://enable-sysrq.patch;patch=1 "
-	return ""
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
@@ -72,7 +68,9 @@ CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(ro
 CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
 
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 jffs2_orphaned_inodes=delete"
-CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
+# CMDLINE_INIT = "init=/bin/busybox ash"
+CMDLINE_INIT = " "
+CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
