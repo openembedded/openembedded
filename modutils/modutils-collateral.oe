@@ -1,0 +1,29 @@
+DEPENDS = "virtual/libc"
+DESCRIPTION = "modutils configuration files"
+
+SRC_URI = "file://${FILESDIR}/modules \
+	   file://${FILESDIR}/modules.conf \
+	   file://${FILESDIR}/modutils"
+
+pkg_postinst () {
+	if test -n "${D}"; then
+		D="-r ${D}"
+	fi
+	update-rc.d $D modutils start 20 S .
+}
+
+pkg_prerm () {
+	if test -n "${D}"; then
+		D="-r ${D}"
+	fi
+	update-rc.d $D modutils remove
+}
+do_compile () {
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir} ${D}/etc/init.d/
+	install -m 0755 ${FILESDIR}/modutils ${D}/etc/init.d/
+	oe_machinstall -m 0644 ${FILESDIR}/modules ${D}/${sysconfdir}/modules
+	oe_machinstall -m 0644 ${FILESDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
+}
