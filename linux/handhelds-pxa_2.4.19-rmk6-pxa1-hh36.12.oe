@@ -44,7 +44,7 @@ INITSCRIPT_NAME = "ipaq-hal"
 INITSCRIPT_PARAMS = "start 21 S ."
 
 do_configure_prepend() {
-	oe_runmake ipaqpxa_config
+	 install -m 0644 ${WORKDIR}/defconfig-${PACKAGE_ARCH} ${S}/.config
 }
 
 do_install_append() {
