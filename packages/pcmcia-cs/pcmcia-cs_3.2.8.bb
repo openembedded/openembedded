@@ -3,7 +3,12 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r10"
+PR = "r11"
+
+PACKAGES =+ "${PN}-ftl ${PN}-pcinitrd"
+
+FILES_${PN}-ftl = "/sbin/ftl_format /sbin/ftl_check /etc/pcmcia/ftl*"
+FILES_${PN}-pcinitrd = "/sbin/pcinitrd"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
