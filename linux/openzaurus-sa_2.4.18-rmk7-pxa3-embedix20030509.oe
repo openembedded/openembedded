@@ -7,7 +7,6 @@ PXAV = "3"
 SHARPV = "20030509"
 PR = "r8"
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
@@ -51,7 +50,7 @@ module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
 module_autoload_sa1100_bi = "sa1100_bi"
 module_autoload_collie_ssp = "collie_ssp"
-module_autoload_collie_tc35143af = "tc35143af"
+module_autoload_collie_tc35143af = "collie_tc35143af"
 #
 # FIXME: Use configuration system
 #
