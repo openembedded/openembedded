@@ -1,3 +1,5 @@
+inherit module_strip
+
 RDEPENDS += "kernel (${KERNEL_VERSION})"
 DEPENDS += "virtual/kernel"
 

@@ -1,3 +1,5 @@
+inherit module_strip
+
 PROVIDES += "virtual/kernel"
 DEPENDS += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
 
