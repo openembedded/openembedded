@@ -5,19 +5,11 @@ SRC_URI = "file://${FILESDIR}/modules \
 	   file://${FILESDIR}/modules.conf \
 	   file://${FILESDIR}/modutils"
 
-pkg_postinst () {
-	if test -n "${D}"; then
-		D="-r ${D}"
-	fi
-	update-rc.d $D modutils start 20 S .
-}
+INITSCRIPT_NAME = "modutils"
+INITSCRIPT_PARAMS = "start 20 S ."
 
-pkg_prerm () {
-	if test -n "${D}"; then
-		D="-r ${D}"
-	fi
-	update-rc.d $D modutils remove
-}
+inherit update-rc.d
+
 do_compile () {
 }
 
