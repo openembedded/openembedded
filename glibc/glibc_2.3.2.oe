@@ -95,6 +95,20 @@ do_compile_prepend() {
 	touch sysdeps/${TARGET_ARCH}/framestate.c
 }
 
+rpcsvc = bootparam_prot.x nlm_prot.x rstat.x \
+	 yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
+	 rusers.x spray.x nfs_prot.x rquota.x key_prot.x
+
+do_compile_append() {
+	(
+		cd ${S}/sunrpc/rpcsvc
+		for r in ${rpcsvc}; do
+			h=`echo $r|sed -e's,\.x$,.h,'`
+			rpcgen -h $r -o $h || oewarn "unable to generate header for $r"
+		done
+	)
+}
+
 do_stage() {
 	oe_runmake 'install_root=${STAGING_DIR}/target' \
 		'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
@@ -106,11 +120,19 @@ do_stage() {
 	cat '${STAGING_LIBDIR}/libpthread-old.so' | sed -e's,/lib/,,g' > '${STAGING_LIBDIR}/libpthread.so'
 	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
 	cp -a '${WORKDIR}/linux/include/asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/'
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_DIR}/target/include/rpcsvc/
+	done
 	ln -sf 'asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/asm'
 }
 
 do_install() {
 	oe_runmake install_root=${D} install
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
+	done
 #	cp -a ${WORKDIR}/linux/include/linux ${D}/${includedir}/
 #	cp -a ${WORKDIR}/linux/include/asm-${TARGET_ARCH}/* ${D}/${includedir}/asm/
 }

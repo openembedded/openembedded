@@ -8,14 +8,15 @@ B = ${WORKDIR}/db-${PV}/build_unix
 inherit autotools libtool
 
 EXTRA_OECONF = '--enable-shared --enable-compat185 --enable-static'
-EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}`' 'chmod=`which chmod`' \
+EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}` cr' 'chmod=`which chmod`' \
 		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
 		'rm=`which rm`' 'strip=`which ${STRIP}`'"
 
-FILES_${PN}=${bindir} ${libdir}/libdb-3.2.{so,a,la}
-FILES_${PN}-dev=${includedir} ${libdir}/libdb.so ${libdir}/libdb-3.so
+FILES_${PN}=${bindir} ${libdir}/libdb-3.2*
+FILES_${PN}-dev=${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so
 
 do_configure_prepend () {
+	set -e
 	(
 		cd ${S}
 		. ./RELEASE
@@ -32,17 +33,43 @@ do_configure_prepend () {
 	)
 }
 
+do_configure () {
+	set -e
+	cd ${B}
+	oe_runconf --enable-shared --disable-static
+	mkdir -p ${WORKDIR}/db-${PV}/build_unix_static
+	cd ${WORKDIR}/db-${PV}/build_unix_static
+	oe_runconf --disable-shared --enable-static
+	cd ${S}
+}
+
+do_compile () {
+	set -e
+	cd ${B}
+	oe_runmake
+	cd ${WORKDIR}/db-${PV}/build_unix_static
+	oe_runmake
+	cd ${S}
+}
+
 do_stage () {
+	set -e
+	cd ${B}
 	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_DIR}/target/include/
 	install -m 0755 .libs/libdb-3.2.so ${STAGING_LIBDIR}/
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb-3.so
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb3.so
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb.so
 	install -m 0644 .libs/libdb-3.2.la ${STAGING_LIBDIR}/
+	cd ${WORKDIR}/db-${PV}/build_unix_static
+	install -m 0644 libdb.a ${STAGING_LIBDIR}/
+	cd ${S}
 }
 
 do_install () {
-	oe_runmake \
+	set -e
+	for i in ${B} ${WORKDIR}/db-${PV}/build_unix_static; do
+	oe_runmake -C $i \
 		prefix=${D}/${prefix} \
 		exec_prefix=${D}/${exec_prefix} \
 		bindir=${D}/${bindir} \
@@ -50,4 +77,5 @@ do_install () {
 		libdir=${D}/${libdir} \
 		docdir=${D}/${docdir} \
 		install
+	done
 }

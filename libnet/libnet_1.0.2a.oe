@@ -10,6 +10,7 @@ inherit autotools
 CPPFLAGS_prepend = "-I${S}/libnet/include -DHAVE_PF_PACKET "
 
 do_stage () {
+	install -m 0755 libnet-config ${STAGING_BINDIR}/
 	install -m 0644 include/libnet.h ${STAGING_DIR}/target/include/
 	install -d ${STAGING_DIR}/target/include/libnet
 	install -m 0644 include/libnet/libnet-headers.h ${STAGING_DIR}/target/include/libnet/

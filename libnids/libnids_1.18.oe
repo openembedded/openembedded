@@ -1,0 +1,14 @@
+DEPENDS = libc libnet libpcap
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+EXTRA_OECONF='--with-libpcap=${STAGING_DIR}/target \
+	      --with-libnet=${STAGING_DIR}/target'
+EXTRA_OEMAKE='"install_prefix=${D}"'
+
+do_stage () {
+	install -m 0644 src/nids.h ${STAGING_DIR}/target/include/
+	install -m 0644 src/libnids.a ${STAGING_LIBDIR}/
+}

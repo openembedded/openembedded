@@ -1,0 +1,37 @@
+SRC_URI = http://www.openssl.org/source/${P}.tar.gz \
+	  ${DEBIAN_MIRROR}/main/o/${PN}/${PN}_${PV}-5.diff.gz
+S = ${WORKDIR}/${PN}-${PV}
+
+DEPENDS = virtual/libc
+SECTION = libs
+DESCRIPTION = Secure Socket Layer (SSL) binary and related cryptographic tools.
+
+AR_append = " r"
+export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
+export DIRS = "crypto ssl"
+export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
+do_compile () {
+	perl util/perlpath.pl /usr/bin
+	perl ./Configure shared --prefix=/usr --openssldir=/usr/lib/ssl ${TARGET_OS}-elf-${TARGET_ARCH}
+	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
+	oe_runmake -f Makefile.ssl
+	perl ./Configure no-shared --prefix=/usr --openssldir=/usr/lib/ssl ${TARGET_OS}-elf-${TARGET_ARCH}
+	oe_runmake -f Makefile.ssl
+}
+
+do_stage () {
+	cp --dereference -R include/openssl ${STAGING_DIR}/target/include/
+	install -m 0755 libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libcrypto.so.0.9.7 ${STAGING_LIBDIR}/libcrypto.so
+	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libssl.so.0.9.7 ${STAGING_LIBDIR}/libssl.so
+	install -m 0644 libcrypto.a ${STAGING_LIBDIR}/
+	install -m 0644 libssl.a ${STAGING_LIBDIR}/
+}
+
+do_install () {
+	install -d ${D}/${libdir}/pkgconfig
+	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
+	chmod u+rx ${D}/${libdir}/pkgconfig
+	chmod 644 ${D}/${libdir}/pkgconfig/openssl.pc
+}
