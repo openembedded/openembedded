@@ -1,0 +1,41 @@
+DESCRIPTION="KDE Organizer, QtE based Palmtop Environments Edition"
+SECTION="base"
+PRIORITY="optional"
+LICENSE="GPL"
+RDEPENDS="libqpe1"
+DEPENDS="virtual/libc virtual/libqpe uicmoc-native"
+
+SRC_URI = "http://korganizer.kde.org/files/korganizerPi.150.source.tar.gz \
+	file://${FILESDIR}/qmaketarget.patch;patch=1"
+	
+S = "${WORKDIR}/korgenizerPi.150"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
+QMAKE_PROFILES= "all.pro"
+
+SUBDIRS="qtcompat microkde libical/src/libical libical/src/libicalss libkcal libkdepim kalarmd korganizer"
+
+do_configure_prepend() {
+	echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
+	for d in ${SUBDIRS}
+	do
+		mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
+	done
+}
+
+do_install() {
+    install -d ${D}/opt/QtPalmtop/{bin,lib,apps/Pim,pics/korganizer/icons16}
+    install -m 0644 korganizer/korganizer.desktop ${D}/opt/QtPalmtop/apps/Pim/korganizer.desktop
+    cd ${S}/pics
+    cp *.png *.wav ${D}/opt/QtPalmtop/pics/korganizer
+    cp ./icons16/*.png ${D}/opt/QtPalmtop/pics/korganizer/icons16
+    for f in libmicrokde.so.1.0.0 libkcal.so.1.0.0 libkdepim.so.1.0.0 libqtcompat.so.1.0.0
+    do
+        oe_soinstall ${STAGING_LIBDIR}/${f} ${D}/opt/QtPalmtop/lib
+        rm -f ${STAGING_LIBDIR}/${f}
+    done
+    install -m 0755 ${STAGING_DIR}/target/bin/korganizer ${D}/opt/QtPalmtop/bin/korganizer
+    rm -f ${STAGING_DIR}/target/bin/korganizer
+}
