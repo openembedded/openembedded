@@ -20,7 +20,8 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" DEFINES="-DUNIX -DQTOPIA"
+	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" \
+                   DEFINES="-DUNIX -DSCUMM_NEED_ALIGNMENT -DQTOPIA"
 }
 
 do_install() {
