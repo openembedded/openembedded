@@ -33,6 +33,7 @@
     ln -s /dev/v4l/video0 /dev/video0
     ln -s /dev/v4l/video0 /dev/video
     ln -s /dev/misc/rtc /dev/rtc
+    ln -s /dev/misc/apm_bios /dev/apm_bios
 
     ## need this so that ppp will autoload the ppp modules
     mknod /dev/ppp c 108 0
