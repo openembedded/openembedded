@@ -1,24 +1,16 @@
 DESCRIPTION = "modutils configuration files"
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
+PR = "r1"
 
 SRC_URI = "file://modutils-notest.patch	\
 	   file://configure.patch \
 	   file://program_prefix.patch \
 	   file://modules \
-	   file://modules.conf \
-	   file://modutils"
-
-INITSCRIPT_NAME = "modutils"
-INITSCRIPT_PARAMS = "start 20 S ."
-
-inherit update-rc.d
+	   file://modules.conf"
 
 do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir} ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/modutils ${D}/etc/init.d/
 	install -m 0644 ${WORKDIR}/modules ${D}/${sysconfdir}/modules
 	install -m 0644 ${WORKDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
 }
