@@ -1,6 +1,6 @@
 DESCRIPTION = "Base system password/group files."
 SECTION = "base"
-PR = "r3"
+PR = "r4"
 LICENSE = "GPL"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
@@ -45,12 +45,12 @@ do_install_append_ramses() {
 pkg_postinst () {
 	set -e
 
-	if [ ! -e $D/${sysconfdir}/passwd ] ; then
-		cp $D/${datadir}/base-passwd/passwd.master $D/${sysconfdir}/passwd
+	if [ ! -e $D${sysconfdir}/passwd ] ; then
+		cp $D${datadir}/base-passwd/passwd.master $D${sysconfdir}/passwd
 	fi
 	
-	if [ ! -e $D/${sysconfdir}/group ] ; then
-		cp $D/${datadir}/base-passwd/group.master $D/${sysconfdir}/group
+	if [ ! -e $D${sysconfdir}/group ] ; then
+		cp $D${datadir}/base-passwd/group.master $D${sysconfdir}/group
 	fi
 	exit 0
 }
