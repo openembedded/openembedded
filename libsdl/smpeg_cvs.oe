@@ -13,8 +13,9 @@ EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x --without-
 
 do_stage() {
 	oe_soinstall .libs/libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}
+	ln -sf libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}/libsmpeg.so
 
-	for f in `find . -name "MPEG*.h"`
+	for f in "*.h"
 	do
 		install -m 0644 ${f} ${STAGING_INCDIR}/SDL
 	done

@@ -9,6 +9,10 @@ S = ${WORKDIR}/SDL_mixer-${PV}
 
 inherit autotools libtool
 
+EXTRA_OECONF = "--disable-music-mp3"
+# although we build smpeg... need to find out how
+# to deal with optional dependencies
+
 do_stage() {
 	oe_soinstall .libs/libSDL_mixer-1.2.so.0.2.3 ${STAGING_LIBDIR}
 	install -m 0644 SDL_mixer.h ${STAGING_INCDIR}/SDL/SDL_mixer.h
