@@ -1,5 +1,6 @@
 SECTION = "x11/base"
 CVSDATE = "${PV}"
+LICENSE = "GPL"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/esound \
 	   file://audiofile-please.patch;patch=1 \
 	   file://configure.patch;patch=1"

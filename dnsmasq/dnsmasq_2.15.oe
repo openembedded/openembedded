@@ -1,5 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "Dnsmasq is a lightweight, easy to configure \
+LICENSE = "GPL"
 DNS forwarder and DHCP server."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PR = "r1"

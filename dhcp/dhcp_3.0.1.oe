@@ -1,6 +1,7 @@
 SECTION = "console/network"
 DESCRIPTION = "Internet Software Consortium DHCP package"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+LICENSE = "BSD"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0.1.tar.gz \
 	file://init-relay file://default-relay \
 	file://init-server file://default-server \

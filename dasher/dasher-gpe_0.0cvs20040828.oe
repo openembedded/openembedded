@@ -1,4 +1,5 @@
 
+LICENSE="GPL"
 PR = "r1"
 DEPENDS = "libxsettings-client libglade xtst gconf gtk+"
 SECTION = "gpe"

@@ -1,6 +1,7 @@
 DESCRIPTION = "EDB is a database convenience library wrapped around the \
 Berkeley DB 2.7.7 by Sleepycat Software."
 SECTION = "e/libs"
+LICENSE = "MIT"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib"
 PV = "${CVSDATE}"

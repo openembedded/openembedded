@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Dillon's Cron is a multi-user cron written from scratch, \
+LICENSE = "GPL"
 similar to vixie-cron but with major differences."
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/dcron-${PV}.tar.gz \

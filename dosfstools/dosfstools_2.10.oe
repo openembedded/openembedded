@@ -1,6 +1,7 @@
 DESCRIPTION = "DOS FAT Filesystem Utilities"
 SECTION = "base"
 PRIORITY = "optional"
+LICENSE = "GPL"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
        file://alignment_hack.patch;patch=1 \

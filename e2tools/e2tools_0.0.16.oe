@@ -1,4 +1,5 @@
 SECTION = "base"
+LICENSE = "GPL"
 DESCRIPTION = "A simple set of utilities for reading, writing, and \
 manipulating files in an ext2/ext3 filesystem."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"

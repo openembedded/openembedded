@@ -1,5 +1,6 @@
 DESCRIPTION = "edje is a complex graphical design & layout library."
 DEPENDS = "freetype evas ecore embryo eet edb edje-native"
+LICENSE = "MIT"
 SECTION = "e/libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "${CVSDATE}"

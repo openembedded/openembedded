@@ -1,4 +1,5 @@
 DESCRIPTION = "EXT2 Filesystem Utilities"
+LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "optional"
 PR = "r3"

@@ -5,6 +5,7 @@ making any format supported by Imlib2 such as JPEG, PNG, XCF, TIFF and GIF. \
 To provide the best possible performance Epsilon can even integrate \
 with Epeg directly to harness it's speed."
 SECTION = "e/libs"
+LICENSE = "GPL"
 DEPENDS = "epeg libpng imlib2"
 PV = "${CVSDATE}"
 PR = "r1"

@@ -5,6 +5,7 @@ SECTION = "libs"
 DEPENDS = "edb evas ecore"
 PV = "${CVSDATE}"
 PR = "r1"
+LICENSE = "MIT"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/etox"
 S = "${WORKDIR}/etox"

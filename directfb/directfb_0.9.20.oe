@@ -4,6 +4,7 @@ abstraction, an integrated windowing system with support for \
 translucent windows and multiple display layers on top of the \
 Linux framebuffer device."
 SECTION = "libs"
+LICENSE = "LGPL"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "jpeg libpng zlib"

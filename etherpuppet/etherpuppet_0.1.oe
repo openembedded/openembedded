@@ -4,6 +4,7 @@ your machine to create the doll, which will have the shape of a virtual \
 TUN/TAP interface (named by default puppet%d, where %d is a number). \
 You also have to run Etherpuppet on the victim interface's machine."
 SECTION = "console/network"
+LICENSE = "LGPL"
 
 SRC_URI = "http://www.cartel-securite.fr/pbiondi/projects/etherpuppet/etherpuppet.c"
 S = "${WORKDIR}"

@@ -5,6 +5,8 @@ DEPENDS = "edb eet evas ecore etox edje"
 PV = "${CVSDATE}"
 PR = "r2"
 
+LICENSE = "MIT"
+
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl \
            file://no-x-test.patch;patch=1"
 S = "${WORKDIR}/ewl"

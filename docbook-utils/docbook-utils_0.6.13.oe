@@ -1,4 +1,5 @@
 SECTION = "console/utils"
+LICENSE = "GPL"
 DEPENDS = ""
 DESCRIPTION = "docbook-utils contains scripts for easy conversion \
 from DocBook SGML files to other formats (for example, HTML, RTF, \

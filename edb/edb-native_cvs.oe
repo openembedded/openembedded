@@ -1,4 +1,5 @@
 SECTION = "unknown"
+LICENSE = "MIT"
 include edb_cvs.oe
 inherit native
 DEPENDS = "zlib-native"

@@ -1,5 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "dsniff is a collection of tools for network auditing and penetration testing."
+LICENSE = "BSD"
 
 DEPENDS = "db3 libpcap libnet libnids openssl"
 
