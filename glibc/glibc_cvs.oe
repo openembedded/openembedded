@@ -6,8 +6,8 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-LIBC_ADDONS ?= "linuxthreads"
-LIBC_EXTRA_OECONF ?= ""
+GLIBC_ADDONS ?= "linuxthreads"
+GLIBC_EXTRA_OECONF ?= ""
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -28,8 +28,8 @@ python __anonymous () {
 PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
-PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${LIBC_ADDONS}']}"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${LIBC_ADDONS}']}"
+PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
+DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
 
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
@@ -58,7 +58,7 @@ inherit autotools
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
-	        --enable-add-ons=${LIBC_ADDONS} --with-headers=${WORKDIR}/linux/include ${LIBC_EXTRA_OECONF}"
+	        --enable-add-ons=${GLIBC_ADDONS} --with-headers=${WORKDIR}/linux/include ${GLIBC_EXTRA_OECONF}"
 
 glibcbuild_do_unpack () {
 # kernel headers
