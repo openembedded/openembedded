@@ -18,13 +18,8 @@ fi
 . /etc/profile
 
 if [ ! -e "$HOME/Settings/qpe.conf" ] ; then
-    echo "Copying default qpe.conf into $HOME/Settings/"
-    mkdir -p $HOME/Settings/
-    cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
-fi
-
-if [ ! -e "$HOME/Settings/locale.conf" -a -e "$OPIEDIR/etc/skel/locale.conf" ] ; then
-    cat $OPIEDIR/etc/skel/locale.conf >$HOME/Settings/locale.conf
+    mkdir -p $HOME/Settings
+    cp $OPIEDIR/etc/skel/* $HOME/Settings
 fi
 
 if [ ! -e "$HOME/systeminfo/linkver" ] ; then
@@ -42,7 +37,7 @@ case $1 in
             echo Starting Opie-login....
             $OPIEDIR/bin/opie-login -terminal 2
     else
-        $OPIEDIR/bin/opie-reorgfiles
+        $OPIEDIR/bin/opie-reorgfiles >/dev/null
         if [ -x /usr/bin/ssh-agent ]; then
              SSHAGENT=/usr/bin/ssh-agent
         else
@@ -53,16 +48,20 @@ case $1 in
             export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
         fi           
         echo Starting Opie....
-        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
+        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2 2>/dev/null
     fi
 
     ;;
 
 'stop')
     echo "Stopping Opie..."
-    killall qpe 2>/dev/null
-    killall opie-login 2>/dev/null
-    killall quicklauncher 2>/dev/null
+        killall qpe 2>/dev/null
+        killall opie-login 2>/dev/null
+        killall quicklauncher 2>/dev/null
+	sleep 1
+        killall -9 qpe 2>/dev/null
+        killall -9 opie-login 2>/dev/null
+        killall -9 quicklauncher 2>/dev/null
 
     ;;
 

@@ -100,6 +100,15 @@ do_install() {
         install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }
 
+updatercd_postinst_ramses() {
+if test "x$D" != "x"; then
+        D="-r $D"
+else
+        D=""	# do not autostart at installation time
+fi
+update-rc.d $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
+}
+
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
