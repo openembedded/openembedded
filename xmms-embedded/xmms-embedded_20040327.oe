@@ -1,24 +1,25 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "opie/multimedia"
-DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0"
-PR = "r2"
+DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod-3.1.11"
+PR = "r3"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
            file://gtkremoval.patch;patch=1 \
            file://removenativeincdir.patch;patch=1 \
-           file://removemikmod.patch;patch=1 \
            file://glib2.patch;patch=1 \
            file://tremorlib.patch;patch=1 \
            file://bufferdefaults.patch;patch=1 \
            file://gcc34.patch;patch=1 \
            file://gcc34-enum.patch;patch=1 \
+		   file://mikmod-endian.patch;patch=1 \
+		   file://mikmod-update.patch;patch=1 \
            file://xmms.png"
 S = "${WORKDIR}/xmms-embedded"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST += "CONFIG-=thread LIBS+=-lpthread LIBS+=-Wl,-rpath-link,${STAGING_LIBDIR}"
+EXTRA_QMAKEVARS_POST += "CONFIG-=thread LIBS+=-lpthread LIBS+=-Wl,-rpath-link,${STAGING_LIBDIR} DEFINES+=_REENTRANT"
 QMAKE_PROFILES = "xmms-e.pro"
 export OE_QMAKE_LINK="${CXX}"
 
@@ -46,7 +47,7 @@ do_install() {
     oe_libinstall -so -C compiled libxmms ${D}/${palmtopdir}/lib
     oe_libinstall -so -C compiled/xmms/General libQPEgui ${D}/${palmtopdir}/lib/xmms/General
     for f in libfixpvorbisplugin libmplayer libshorten \
-		libwav libxmms-mad libxmms-sid
+		libwav libxmms-mad libxmms-sid libmikmod
     do
         oe_libinstall -so -C compiled/xmms/Input $f ${D}/${palmtopdir}/lib/xmms/Input
     done
