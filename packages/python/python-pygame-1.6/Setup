@@ -1,0 +1,57 @@
+#This Setup file is used by the setup.py script to configure the
+#python extensions. You will likely use the "config.py" which will
+#build a correct Setup file for you based on your system settings.
+#If not, the format is simple enough to edit by hand. First change
+#the needed commandline flags for each dependency, then comment out
+#any unavailable optional modules in the first optional section.
+
+#SDL = ???
+
+FONT = -lSDL_ttf-2.0
+IMAGE = -lSDL_image-1.2
+MIXER = -lSDL_mixer-1.2
+SMPEG = -lsmpeg $(SDL)
+NUMERIC = -I.
+
+
+
+#the following modules are optional. you will want to compile
+#everything you can, but you can ignore ones you don't have
+#dependencies for, just comment them out
+
+imageext src/imageext.c $(SDL) $(IMAGE)
+font src/font.c $(SDL) $(FONT)
+mixer src/mixer.c $(SDL) $(MIXER)
+mixer_music src/music.c $(SDL) $(MIXER)
+movie src/movie.c $(SDL) $(SMPEG)
+surfarray src/surfarray.c $(SDL) $(NUMERIC)
+sndarray src/sndarray.c $(SDL) $(NUMERIC) $(MIXER)
+
+
+
+#these modules are required for pygame to run. they only require
+#SDL as a dependency. these should not be altered
+
+base src/base.c $(SDL)
+cdrom src/cdrom.c $(SDL)
+constants src/constants.c $(SDL)
+display src/display.c $(SDL)
+event src/event.c $(SDL)
+key src/key.c $(SDL)
+mouse src/mouse.c $(SDL)
+rect src/rect.c $(SDL)
+rwobject src/rwobject.c $(SDL)
+surface src/surface.c src/alphablit.c $(SDL)
+surflock src/surflock.c $(SDL)
+time src/time.c $(SDL)
+joystick src/joystick.c $(SDL)
+draw src/draw.c $(SDL)
+image src/image.c $(SDL)
+transform src/transform.c src/rotozoom.c src/scale2x.c $(SDL)
+
+
+#the following are placeholders. setup.py can use them to help
+#auto-copy needed DLLs into the pygame installation folder.
+#you can simply ignore these lines under non-windows, no need to
+#comment out.
+COPYLIB_smpeg $(SDL) $(SMPEG)
