@@ -12,7 +12,7 @@ diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/build/Makefile.dpkg_ipk
  	rm -rf familiar/dist
 diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/Makefile gpe-package-0.0.9-1/Makefile
 --- ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/Makefile	2004-03-19 12:26:57.000000000 +0000
-+++ gpe-package-0.0.9-1/Makefile	2004-07-27 21:21:45.000000000 +0100
++++ gpe-package-0.0.9-1/Makefile	2004-07-27 22:02:38.000000000 +0100
 @@ -1,65 +1,27 @@
  PACKAGE = gpe-package
  VERSION = 0.0.9-1
@@ -22,7 +22,7 @@ diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/Makefile gpe-package-0.
 -INSTALL = install
 -PREFIX = /usr/
 -DESTDIR = /
-+PREFIX = /usr/local
++PREFIX = /usr
  
  LINGUAS = 
  
