@@ -187,7 +187,7 @@ python do_package_ipk () {
 		src_uri = bb.data.getVar("SRC_URI", localdata, 1)
 		if src_uri:
 			src_uri = re.sub("\s+", " ", src_uri)
-			ctrlfile.write("Source: %s\n" % src_uri)
+			ctrlfile.write("Source: %s\n" % " ".join(src_uri.split()))
 		ctrlfile.close()
 
 		for script in ["preinst", "postinst", "prerm", "postrm"]:
