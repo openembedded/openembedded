@@ -21,11 +21,16 @@ S = "${WORKDIR}/tslib"
 inherit autotools libtool
 
 EXTRA_OECONF = "--enable-shared"
+
 do_stage () {
 	oe_soinstall src/.libs/libts-0.0.so.0.1.0 ${STAGING_LIBDIR}/
 	ln -sf libts-0.0.so ${STAGING_LIBDIR}/libts.so
 	install -m 0644 src/tslib.h ${STAGING_INCDIR}/
 	install -m 0644 src/tslib-private.h ${STAGING_INCDIR}/
+}
+
+do_install_prepend () {
+    oe_machinstall -m 0644 ${FILESDIR}/ts.conf ${S}/etc/ts.conf
 }
 
 FILES_tslib_append = " ${datadir}/ts/plugins/*.so"
