@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
-PR = "r1"
+PR = "r2"
 
 APPNAME = "qpe"
 
@@ -16,12 +16,17 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/co
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/apps \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/root \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/etc \
+	   file://nomax.patch;patch=1;pnum=3 \
            file://server.pro-1.1.7 \
            file://opie-reorgfiles \
            file://opie \
            file://qpe.conf"
 
 S = "${WORKDIR}/launcher"
+
+CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
 
 # Caps/Numlock icons for devices with keyboard
 EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
