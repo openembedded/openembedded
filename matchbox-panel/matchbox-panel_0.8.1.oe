@@ -1,7 +1,7 @@
 PR = "r3"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox x11 xext xpm apmd startup-notification"
+DEPENDS = "libmatchbox x11 xext xpm apmd startup-notification virtual/kernel"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/0.8/matchbox-panel-${PV}.tar.bz2 \
 	file://automake-lossage.patch;patch=1 \
