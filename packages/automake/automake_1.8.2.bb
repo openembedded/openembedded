@@ -3,14 +3,14 @@ SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
 DESCRIPTION = "A tool for automatically generating Makefiles."
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/automake-${PV}"
 
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
-RDEPENDS_${PN} += "perl"
+RDEPENDS_${PN} += "autoconf perl"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install

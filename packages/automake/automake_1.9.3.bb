@@ -2,7 +2,7 @@ DESCRIPTION = "A tool for automatically generating Makefiles."
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2"
 S = "${WORKDIR}/automake-${PV}"
@@ -13,7 +13,7 @@ DEFAULT_PREFERENCE = "-1"
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
-RDEPENDS_${PN} += "perl"
+RDEPENDS_${PN} += "autoconf perl"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
