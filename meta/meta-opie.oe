@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r7"
+PR = "r8"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -119,6 +119,7 @@ petitepainture \
 pocketcellar \
 poqetpresenter \
 portabase \
+qpe-gaim \
 qpegps \
 qplot \
 shopper \
