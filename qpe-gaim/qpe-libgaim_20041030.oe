@@ -1,0 +1,38 @@
+DESCRIPTION = "A multi protocol instant messager library, Qt/Embedded based Palmtop Environments Edition"
+SECTION = "opie/applications"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+DEPENDS = "openssl glib-2.0"
+PV = "0.4+cvs-20041030"
+PR = "r1"
+
+SRC_URI = "http://www.vanille.de/mirror/qpe-gaim_20041030.tar.bz2 \
+           file://fix-compilation.patch;patch=1 \
+           file://dont-look-for-gtk.patch;patch=1"
+S = "${WORKDIR}/libgaim"
+
+inherit autotools
+
+EXTRA_OE_CONF = "--disable-audio --disable-gtkspell --disable-perl \
+                 --with-dynamic-prpls=gg,irc,jabber,msn,napster,oscar,yahoo \
+		 --disable-screensaver --disable-sm --disable-glibtest \
+		 --disable-gtktest --disable-startup-notification \
+		 --disable-gevolution --disable-aotest --disable-audiofiletest"
+
+CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0"
+
+do_configure_prepend() {
+	ln -s src libgaim
+	touch intl/Makefile.in
+	touch po/Makefile.in.in
+	install -d build-root
+	touch build-root/mkipk.sh.in.in
+}
+
+do_stage() {
+	oe_libinstall -so -C src libgaim ${QTDIR}/lib
+}
+
+PACKAGES += "libgaim-plugins"
+FILES_libgaim-plugins = "/usr/lib/gaim/*.so"
+
+#FIXME: use do_packages to create individual packages for each of the plugins
