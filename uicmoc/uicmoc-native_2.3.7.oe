@@ -16,15 +16,13 @@ export SYSCONF_LINK  = "${CCACHE} g++"
 
 ARCH_i686 = "x86"
 
-EXTRA_OECONF = "-depths 8,16 -xplatform linux-x86-g++ -no-qvfb -no-g++-exceptions -no-jpeg -no-mng -qt-zlib -qt-libpng -no-xft -no-xkb -no-vnc -no-sm -no-opengl -static -qconfig oe"
+EXTRA_OECONF = "-depths 8,16 -no-qvfb -no-g++-exceptions -no-jpeg -no-mng -qt-zlib -qt-libpng -no-xft -no-xkb -no-vnc -no-sm -no-opengl -static -qconfig oe"
 EXTRA_OEMAKE = "-e"
 
 do_configure() {
-        if [ "$BUILD_ARCH" = "i686" ]; then
-                BUILD_ARCH=x86
-        fi
 	echo "#define QT_NO_FREETYPE" >>src/tools/qconfig-oe.h
-        echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
+        oenote ./configure ${EXTRA_OECONF}
+        echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed"
 }
 
 do_compile() {

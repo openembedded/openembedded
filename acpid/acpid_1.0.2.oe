@@ -17,14 +17,14 @@ do_install () {
 }
 
 pkg_postinst () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D acpid defaults
 }
 
 pkg_prerm () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D acpid remove

@@ -91,7 +91,7 @@ glibcbuild_do_unpack () {
 	cp -a "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
 	sed 's:\(^.*define.*__NR_waitpid.*$\):/*&*/:' < ${WORKDIR}/linux/include/asm-arm/unistd.h > ${WORKDIR}/linux/include/asm-arm/unistd.h.new
 	mv ${WORKDIR}/linux/include/asm-arm/unistd.h.new ${WORKDIR}/linux/include/asm-arm/unistd.h
-	case $TARGET_ARCH in
+	case ${TARGET_ARCH} in
 		alpha*)   TARGET_ARCH=alpha ;;
 		arm*)     TARGET_ARCH=arm ;;
 		cris*)    TARGET_ARCH=cris ;;

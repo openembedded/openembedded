@@ -72,14 +72,14 @@ do_install_append () {
 }
 
 pkg_postinst () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D httpd defaults 91 20
 }
 
 pkg_prerm () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D httpd remove

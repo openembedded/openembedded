@@ -26,13 +26,13 @@ do_configure_prepend () {
 		. ./RELEASE
 		(echo "AC_DEFUN(AM_VERSION_SET, [" &&
 		echo "AC_SUBST(DB_VERSION_MAJOR)" &&
-		echo "DB_VERSION_MAJOR=$DB_VERSION_MAJOR" &&
+		echo "DB_VERSION_MAJOR=\$DB_VERSION_MAJOR" &&
 		echo "AC_SUBST(DB_VERSION_MINOR)" &&
-		echo "DB_VERSION_MINOR=$DB_VERSION_MINOR" &&
+		echo "DB_VERSION_MINOR=\$DB_VERSION_MINOR" &&
 		echo "AC_SUBST(DB_VERSION_PATCH)" &&
-		echo "DB_VERSION_PATCH=$DB_VERSION_PATCH" &&
+		echo "DB_VERSION_PATCH=\$DB_VERSION_PATCH" &&
 		echo "AC_SUBST(DB_VERSION_STRING)" &&
-		echo "DB_VERSION_STRING=\"\\\"$DB_VERSION_STRING\\\"\"" &&
+		echo "DB_VERSION_STRING=\"\\\"\$DB_VERSION_STRING\\\"\"" &&
 		echo "])dnl") > acinclude.m4
 	)
 }

@@ -19,14 +19,14 @@ do_install () {
 }
 
 pkg_postinst () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D inetd start 20 2 3 4 5 . stop 20 0 1 6 .
 }
 
 pkg_prerm () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D inetd remove

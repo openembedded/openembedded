@@ -19,11 +19,8 @@ EXTRA_OECONF = "-static -no-gif -no-sm -system-zlib -system-libjpeg -system-libp
 EXTRA_OEMAKE = "-e"
 
 do_configure() {
-        if [ "$BUILD_ARCH" = "i686" ]; then
-                BUILD_ARCH=x86
-        fi
-        echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
-
+        oenote ./configure ${EXTRA_OECONF}
+        echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed"
 }
 
 do_compile() {

@@ -9,14 +9,14 @@ inherit autotools
 EXTRA_OECONF = "--disable-lynx"
 
 pkg_postinst () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D ifplugd defaults
 }
 
 pkg_prerm () {
-	if test -n "$D"; then
+	if test -n "${D}"; then
 		D="-r $D"
 	fi
 	update-rc.d $D ifplugd remove
