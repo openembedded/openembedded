@@ -15,6 +15,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}.tar.gz \
 	   file://c700-hardware.patch;patch=1 \
 	   file://encoding.patch;patch=1 \
 	   file://fix-qgfxraster.patch;patch=1 \
+	   file://qt-visibility.patch;patch=1 \
 	   file://update-qtfontdir \
 	   file://sharp_char.h \
 	   file://switches.h "
@@ -70,6 +71,7 @@ export SYSCONF_LINK = "${CCLD}"
 export SYSCONF_SHLIB = "${CCLD}"
 export SYSCONF_CFLAGS = "${CFLAGS}"
 export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
+#export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES}"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
