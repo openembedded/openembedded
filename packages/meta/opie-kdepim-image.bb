@@ -1,6 +1,6 @@
+include opie-image.bb
+
 export IMAGE_BASENAME = "opie-kdepim-image"
-export IMAGE_LINGUAS = ""
-include opie-collections.inc
 
 #
 # Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.
@@ -16,10 +16,3 @@ DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPENDS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}
             ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} ${OPIE_BASE_DEPENDS} ${KDE_PIM_DEPENDS} \
             ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
             ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS} ${OPIE_BASE_INPUTMETHODS}"
-
-
-# zap the root password
-#IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
-
-inherit image_ipk
-LICENSE = MIT

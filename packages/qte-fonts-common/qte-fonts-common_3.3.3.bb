@@ -3,7 +3,7 @@ DESCRIPTION= "Tools to update the Qt fontdir"
 MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 LICENSE = "GPL/QPL"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.gz"
 SRC_URI += "file://update-qtfontdir"
