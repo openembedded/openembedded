@@ -20,7 +20,7 @@ export CMDLINE = "root=/dev/mtdblock4 console=tty0 rootfstype=jffs2 jffs2_orphan
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
-        install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config
+        install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
         mem=${MEM}
         rd=${RD}
