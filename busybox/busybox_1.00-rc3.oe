@@ -10,13 +10,15 @@ system."
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r8"
+PR = "r9"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://HEAD-20040829.patch;patch=1 \
            file://add-getkey-applet.patch;patch=1 \
 	   file://awk2.patch;patch=1 \
+	   file://udhcpscript.patch;patch=1 \
+	   file://dhcpretrytime.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \
