@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
-PR = "r1"
+PR = "r2"
 
 inherit update-rc.d
 
