@@ -1,11 +1,14 @@
 SECTION = "x11/utils"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libart-lgpl"
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/librsvg/2.6/librsvg-${PV}.tar.bz2"
+PR = "r1"
+LICENSE = "LGPL"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gnome
 
-PACKAGES =+ "librsvg-gtk librsvg-gtk-dev "
+PACKAGES =+ "librsvg-gtk librsvg-gtk-dev rsvg"
+FILES_${PN} = "${libdir}/*.so.*"
+FILES_rsvg = "${bindir}/rsvg"
 FILES_librsvg-gtk = "${libdir}/gtk-2.0/*/*/*.so"
 FILES_librsvg-gtk-dev = "${libdir}/gtk-2.0"
 
