@@ -1,4 +1,4 @@
-DEPENDS = "slugtool-native"
+DEPENDS = "slugtool-native unzip-native"
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r2"
