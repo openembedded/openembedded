@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar.gz \
 file://man.patch;patch=1"

@@ -3,6 +3,7 @@ PRIORITY = "optional"
 SECTION = "libs"
 DEPENDS = "virtual/libbluetooth"
 DESCRIPTION = "Utilities for controlling Bluetooth devices."
+PR = "r1"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	   file://man.patch;patch=1 \
