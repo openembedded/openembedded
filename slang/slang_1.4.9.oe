@@ -1,10 +1,12 @@
-DESCRIPTION = "slang"
+DESCRIPTION = "slang is a library of text functions used in editors like slrn etc."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
+PR = "r1"
 
-SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
-
+SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2 \
+           file://configure.patch;patch=1 \
+           file://Makefile.patch;patch=1"
 inherit autotools 
 
 acpaths = "-I ${S}/autoconf"
@@ -21,7 +23,7 @@ do_configure_prepend () {
 do_compile () {
 	oe_runmake all
 	oe_runmake elf
-	oe_runmake demos
+#	oe_runmake demos
 }
 
 do_stage () {
