@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r8"
+PR = "r9"
 
 ALLOW_EMPTY = 1
 
@@ -49,7 +49,6 @@ gpe-task-utils = "\
     gpe-clock \
     gpe-appmgr \
     gpe-terminal \
-    gpe-filemanager \
     gpe-what \
     gpe-shield \
     keylaunch \
