@@ -3,27 +3,21 @@ PROVIDES="virtual/${OLDARCH}-${OLDOS}-gcc"
 SRC_URI = ${GNU_MIRROR}/gcc/gcc-${PV}.tar.gz
 S = ${WORKDIR}/gcc-${PV}
 
-OLDOS := ${OS}
-OLDARCH := ${ARCH}
 CROSS_DIR := ${CROSS_DIR}
-inherit noncross autotools
+prefix=${CROSS_DIR}
+exec_prefix=${prefix}
+inherit cross autotools
 
-EXTRA_OECONF = --with-gxx-include-dir=${CROSS_DIR}/include/c++ \
-		--enable-shared \
-		--enable-threads
+EXTRA_OEMAKE =
+EXTRA_OECONF = --oldincludedir=${prefix}/include --enable-shared \
+	       --with-gxx-include-dir=${CROSS_DIR}/include/c++ \
+	       --enable-shared \
+	       --enable-threads
 tmake_file = gcc/config/${OLDARCH}/t-linux
 
-do_configure() {
-	./configure --target=${OLDARCH}-${OLDOS} --prefix=${CROSS_DIR} \
-		    --with-gnu-ld --oldincludedir=${CROSS_DIR}/include \
-		    --enable-shared ${EXTRA_OECONF}	
+do_configure_append() {
 	touch ${tmake_file}
 	mv ${tmake_file} > ${tmake_file}.tmp
 	cat ${tmake_file}.tmp | sed -e's/-Dinhibit_libc -D__gthr_posix_h//g' > ${tmake_file}
 	rm -f ${tmake_file}.tmp
-}
-
-EXTRA_OEMAKE =
-do_compile() {
-	oe_runmake
 }

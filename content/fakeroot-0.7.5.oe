@@ -1,4 +1,4 @@
 SRC_URI := ${DEBIAN_MIRROR}/main/f/fakeroot/${PN}_${PV}.tar.gz
-S := ${WORKDIR}/${P}
+S = ${WORKDIR}/${P}
 
 inherit autotools

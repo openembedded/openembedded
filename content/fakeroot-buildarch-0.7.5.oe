@@ -1,4 +1,4 @@
-inherit noncross
+inherit native
 include fakeroot-${PV}.oe
-S := ${S}
-PN=fakeroot-buildarch
+PN_append=-buildarch
+S = ${WORKDIR}/fakeroot-${PV}
