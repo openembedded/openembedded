@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r2"
+PR = "r3"
 
 DOSRC="http://www.do13.in-berlin.de/openzaurus"
 RPSRC="http://www.rpsys.net/openzaurus/patches"
@@ -28,9 +28,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r1.patch;patch=1 \
            ${RPSRC}/corgi_kbd1-r0.patch;patch=1 \
-	   ${RPSRC}/sharp_multi_scoop-r0.patch;patch=1 \
+	   ${RPSRC}/sharp_multi_scoop-r1.patch;patch=1 \
+	   ${RPSRC}/sharp_multi_pcmcia-r1.patch;patch=1 \
+           ${RPSRC}/sharpsl_param-r3.patch;patch=1 \
            ${RPSRC}/input_power-r1.patch;patch=1 \
-	   ${RPSRC}/corgi_irda-r1.patch;patch=1 \
+	   ${RPSRC}/corgi_irda-r2.patch;patch=1 \
            ${RPSRC}/corgi_base_extras1-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/corgi_power-r17.patch;patch=1 \
@@ -38,11 +40,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/ide_fixes-r1.patch;patch=1 \
            ${RPSRC}/mmc_sd-r4.patch;patch=1 \
            ${RPSRC}/corgi_snd-r4.patch;patch=1 \
-           ${RPSRC}/sharpsl_param-r2.patch;patch=1 \
            ${RPSRC}/w100_split-r2.patch;patch=1 \
-           ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
-           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
-           ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
            ${DOSRC}/pxa2xx-ir-dma-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r2.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r2.patch;patch=1 \
@@ -50,8 +48,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${DOSRC}/tosa-keyboard-r2.patch;patch=1 \
            ${DOSRC}/tc6393fb-r1.patch;patch=1 \
            ${DOSRC}/tosa-power-r2.patch;patch=1 \
+           ${DOSRC}/tosa-mmc-r1.patch;patch=1 \
 	   ${DOSRC}/sharpsl-flash-tosa-r0.patch;patch=1 \
-	   ${RPSRC}/sharp_multi_pcmcia-r0.patch;patch=1 \
+           ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
+           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \	   
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \	   
@@ -61,13 +61,15 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            file://defconfig-tosa "
 
 SRC_URI_append_collie = " ${RPSRC}/jl1/collie_keymap.patch;patch=1 "
+SRC_URI_append_poodle = " ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
+			  ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "			  "
 SRC_URI_append_tosa = " ${DOSRC}/nand-readid-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-mmc-r1.patch;patch=1 \
-                        ${DOSRC}/tosa-bl-r2.patch;patch=1 \
+                        ${DOSRC}/ac97-r1.patch;patch=1 \
+			${DOSRC}/tosa-bl-r2.patch;patch=1 \
                         ${DOSRC}/tosa-udc-r1.patch;patch=1 \
                         ${DOSRC}/tosa-irda-r0.patch;patch=1 \
-                        ${DOSRC}/ac97-r1.patch;patch=1 \
-                        ${DOSRC}/tosa-pcmcia-r1.patch;patch=1 "
+			${RPSRC}/rpextra_tosa-r0.patch;patch=1 "
+#                        ${DOSRC}/tosa-pcmcia-r1.patch;patch=1 "
 
 
 S = "${WORKDIR}/linux-2.6.11"
