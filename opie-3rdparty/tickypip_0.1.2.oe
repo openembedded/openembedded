@@ -23,8 +23,8 @@ do_install () {
 	install -m 0644 ${S}/images/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
 
 # copy share
-	install -d ${D}/${palmtopdir}/share/${APPNAME}/
-	install -m 0644 ${S}/levels/* ${D}/${palmtopdir}/share/${APPNAME}/
+	install -d ${D}/${palmtopdir}/share/${APPNAME}/levels
+	install -m 0644 ${S}/levels/* ${D}/${palmtopdir}/share/${APPNAME}/levels/
 }
 
 
