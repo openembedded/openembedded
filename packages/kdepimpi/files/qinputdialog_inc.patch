@@ -25,17 +25,6 @@
  #include <qlabel.h>
  #include <qlineedit.h>
  #include <qpushbutton.h>
---- kdepim/kabc/distributionlisteditor.cpp~qinputdialog_inc.patch
-+++ kdepim/kabc/distributionlisteditor.cpp
-@@ -22,7 +22,7 @@
- #include <qlayout.h>
- #include <qpushbutton.h>
- #include <qcombobox.h>
--#include <qinputdialog.h>
-+#include <qtcompat/qinputdialog.h>
- #include <qbuttongroup.h>
- #include <qradiobutton.h>
- 
 --- kdepim/kaddressbook/keywidget.cpp~qinputdialog_inc.patch
 +++ kdepim/kaddressbook/keywidget.cpp
 @@ -23,7 +23,7 @@

@@ -18,6 +18,7 @@ HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 # libetpan & libmailwrapper as replacement for kdepim/pi versions
 
 SRC_URI += "\
+file://qt2310.patch;patch=1 \
 file://qinputdialog_inc.patch;patch=1 \
 file://libkcal.pro.patch;patch=1 \
 "
