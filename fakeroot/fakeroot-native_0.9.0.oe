@@ -3,6 +3,8 @@ inherit native
 
 S = ${WORKDIR}/fakeroot-${PV}
 
+EXTRA_OECONF = "--program-prefix= "
+
 do_stage_append () {
     install -d ${STAGING_LIBDIR}/libfakeroot
     oe_soinstall ${S}/.libs/libfakeroot.so.0.0.1 ${STAGING_LIBDIR}/libfakeroot
