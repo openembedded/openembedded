@@ -1,0 +1,19 @@
+DESCRIPTION=Tx Image Viewer
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE="GPL"
+RDEPENDS=libqpe
+DEPENDS=virtual/libc virtual/libqpe
+
+SRC_URI = http://community.zaurus.com/download.php/253/tximage-${PV}.tar.gz \
+          file://${FILESDIR}/gcc3.patch;patch=1
+
+inherit palmtop
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+        install -D -m 755 tximage ${D}/opt/QtPalmtop/bin/tximage
+        install -D -m 644 imageviewer.desktop ${D}/opt/QtPalmtop/apps/Applications/tximage.desktop
+        cp -a tximage.png ${D}/opt/QtPalmtop/pics/
+}
