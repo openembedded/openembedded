@@ -1,9 +1,10 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
-FEED_URIS += "opie##http://openzaurus.org/official/unstable/3.5.2/feed/opie"
+FEED_URIS_append_openzaurus = "opie##http://openzaurus.org/official/unstable/3.5.2/feed/opie"
+FEED_URIS_append_familiar = "opie##http://familiar.handhelds.org/releases/0.8/feed/opie"
 
-PR = "r4"
+PR = "r5"
 
 include opie-collections.inc
 
