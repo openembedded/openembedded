@@ -1,6 +1,6 @@
 DESCRIPTION = "Kernel based automounter for linux."
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-${PV}-1.tar.bz2"
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/old/autofs-${PV}-1.tar.bz2"
 
 inherit autotools
 
