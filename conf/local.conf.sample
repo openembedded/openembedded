@@ -13,9 +13,9 @@ OEFILES = "*/*.oe"
 # Use the OEMASK below unless you want to build something else than the default glibc based setup
 OEMASK = "(toolchain-external)"
 
-# Uncomment this OEMASK, if you want to use a prebuilt toolchain.
+# Uncomment this if you want to use a prebuilt toolchain.
 # You will need to provide packages for toolchain and additional libraries yourself
-#OEMASK = "-initial|()"
+# ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie virtual/libsdl:libsdl-qpe"
@@ -46,3 +46,6 @@ TARGET_ARCH = "arm"
 # Also supported is "package_ipk"
 # Usually better to set DISTRO instead (see above)
 #INHERIT = "package_tar"
+
+# Comment this out if you do not wish to use a parse cache
+CACHE=/var/tmp/oe-cache.${USER}
