@@ -1,6 +1,10 @@
-diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard_qws.cpp
---- qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp	2004-07-06 23:02:40.000000000 +0200
-+++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp	2004-07-06 23:03:00.000000000 +0200
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.7/src/kernel/qkeyboard_qws.cpp~simpad.patch
++++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp
 @@ -37,6 +37,7 @@
  #include <qapplication.h>
  #include <qsocketnotifier.h>
@@ -69,6 +73,53 @@ diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard
  #ifdef QT_QWS_SL5XXX
  static const QWSServer::KeyMap keyM[] = {
      {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 00
+@@ -420,15 +474,15 @@
+ 
+     void doKey(uchar scancode);
+ 
+-    
++
+ #ifdef QT_QWS_AUTOREPEAT_MANUALLY
+-    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d; 
++    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d;
+ 				       if ( p > 0 ) repeatperiod=p;}
+-    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay; 
++    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay;
+     					  if (p) *p=repeatperiod; }
+ #endif
+     void restoreLeds();
+-    
++
+ private slots:
+     void autoRepeat();
+ private:
+@@ -671,7 +725,7 @@
+     int keypad = 0;
+ #if !defined(QT_QWS_SL5XXX)
+     if (code == 224
+-#if defined(QT_QWS_IPAQ) 
++#if defined(QT_QWS_IPAQ)
+ 	&& !ipaq_return_pressed
+ #endif
+ 	) {
+@@ -759,7 +813,7 @@
+ 	    }
+     } else if ( extended == 2 ) {
+ 	switch (code) {
+-	case 0x1d: 
++	case 0x1d:
+ 	    return;
+ 	case 0x45:
+ 	    keyCode = Qt::Key_Pause;
+@@ -973,7 +1027,7 @@
+ 		unicode = '`';
+ 	    } else
+ #endif
+-		
++
+ 		if (bCtrl)
+ 		    unicode = currentKey->ctrl_unicode;
+ 		else if (bCaps)
 @@ -1479,7 +1533,11 @@
      } else {
  	type = spec;
@@ -82,12 +133,12 @@ diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard
      if ( type == "Buttons" ) {
  #if defined(QT_QWS_YOPY)
  	handler = new QWSyopyButtonsHandler();
-@@ -1508,6 +1566,217 @@
+@@ -1508,6 +1566,218 @@
      return keyM;
  }
  
 -#endif // QT_NO_QWS_KEYBOARD
- 
++
 +/*
 + * SIMpad switches handler
 + * (C) 2003 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
@@ -245,13 +296,14 @@ diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard
 +    else
 +    {
 +        qDebug( "standard mode - no shift yet..." );
- 
++
 +        switch(code)
 +        {
 +            case SIMPAD_SWITCH_UP:    k = Qt::Key_Up;       break;
 +            case SIMPAD_SWITCH_DOWN:  k = Qt::Key_Down;     break;
 +            case SIMPAD_SWITCH_LEFT:  k = Qt::Key_Left;     break;
 +            case SIMPAD_SWITCH_RIGHT: k = Qt::Key_Right;    break;
++            case SIMPAD_SWITCH_POWER: k = Qt::Key_F34;      break; // Power Button
 +
 +            case SIMPAD_SWITCH_UPPER: k=-1; shiftKeyPressed = press? code:0; shiftUsed = false; qDebug( "shiftkey pressed now = %d", shiftKeyPressed ); return;
 +            case SIMPAD_SWITCH_LOWER: k=-1; shiftKeyPressed = press? code:0; shiftUsed = false; qDebug( "shiftkey pressed now = %d", shiftKeyPressed ); return;
@@ -298,12 +350,11 @@ diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard
 +    processKeyEvent( 0, k, 0, true, true );
 +    repeater->start(repeatperiod);
 +}
-+
-+
+ 
+ 
 +#endif // QT_NO_QWS_KEYBOARD
-diff -u qt-2.3.7.orig/src/kernel/qsoundqss_qws.cpp qt-2.3.7/src/kernel/qsoundqss_qws.cpp
---- qt-2.3.7.orig/src/kernel/qsoundqss_qws.cpp	2004-07-06 23:02:40.000000000 +0200
-+++ qt-2.3.7/src/kernel/qsoundqss_qws.cpp	2004-07-06 23:03:00.000000000 +0200
+--- qt-2.3.7/src/kernel/qsoundqss_qws.cpp~simpad.patch
++++ qt-2.3.7/src/kernel/qsoundqss_qws.cpp
 @@ -47,8 +47,8 @@
  #include <sys/ioctl.h>
  #include <sys/soundcard.h>
@@ -315,9 +366,8 @@ diff -u qt-2.3.7.orig/src/kernel/qsoundqss_qws.cpp qt-2.3.7/src/kernel/qsoundqss
  
  static int sound_speed = 44100;
  #ifndef QT_NO_SOUNDSERVER
-diff -u qt-2.3.7.orig/src/kernel/qwsmouse_qws.cpp qt-2.3.7/src/kernel/qwsmouse_qws.cpp
---- qt-2.3.7.orig/src/kernel/qwsmouse_qws.cpp	2004-07-06 23:02:39.000000000 +0200
-+++ qt-2.3.7/src/kernel/qwsmouse_qws.cpp	2004-07-06 22:57:44.000000000 +0200
+--- qt-2.3.7/src/kernel/qwsmouse_qws.cpp~simpad.patch
++++ qt-2.3.7/src/kernel/qwsmouse_qws.cpp
 @@ -51,6 +51,7 @@
  #include <stdlib.h>
  #include <stdio.h>
