@@ -45,7 +45,7 @@ SRC_URI := http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2
 S := ${WORKDIR}/binutils-${PV}
 B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
 
-EXTRA_OECONF = '--disable-nls --program-prefix=${TARGET_PREFIX}'
+EXTRA_OECONF = '--with-sysroot=${prefix}'
 
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = configure-build-libiberty all

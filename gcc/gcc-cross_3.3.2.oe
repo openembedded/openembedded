@@ -7,14 +7,18 @@ PROVIDES := virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++
 
 PACKAGES =
 
-EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
-                --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
-                --enable-target-optspace \
-                --with-gnu-ld \
-                --enable-languages=c,c++ \
-                --enable-shared \
-                --enable-multilib \
-                --program-prefix=${TARGET_SYS}-
+EXTRA_OECONF = '--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
+		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
+		--disable-nls \
+		--enable-threads=posix \
+		--enable-symvers=gnu \
+		--enable-__cxa_atexit \
+		--enable-languages=c,c++ \
+		--enable-shared \
+		--enable-c99 \
+		--enable-long-long \
+		--program-prefix=${TARGET_PREFIX}'
 
 export CPPFLAGS =
 export CXXFLAGS =
@@ -27,7 +31,7 @@ do_configure () {
 	export RANLIB="${TARGET_SYS}-ranlib"
 	export LD="${TARGET_SYS}-ld"
 	export NM="${TARGET_SYS}-nm"
-	rm -f ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2/libgcc_eh.a
+	rm -f ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/${PV}/libgcc_eh.a
 	oe_runconf
 }
 

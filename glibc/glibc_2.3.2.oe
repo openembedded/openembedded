@@ -17,12 +17,12 @@ FILES_glibc-i18n='${datadir}/i18n'
 #	  file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=1
 #	  file://${FILESDIR}/glibc-make-check-perms.patch;patch=1;pnum=0
 # This patch is needed for builds against recent 2.5/2.6 kernel headers:
-#	  file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0
 SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 	  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
-	  http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2 \
+	  http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.25.tar.bz2 \
 	  file://${FILESDIR}/noinfo.patch;patch=1 \
 	  file://${FILESDIR}/10_cvs.patch;patch=1 \
+	  file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
 	  file://${FILESDIR}/glibc-i686-timing.patch;patch=1;pnum=1 \
 	  file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
 	  file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0 \
@@ -87,9 +87,6 @@ glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
 # kernel headers
 	cp -a "${FILESDIR}/version.h" "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
-	if [ -e "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" ]; then 
-		cp -a "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" "${WORKDIR}/linux/include/asm-${TARGET_ARCH}/unistd.h"
-	fi
 	case $TARGET_ARCH in
 		alpha*)   TARGET_ARCH=alpha ;;
 		arm*)     TARGET_ARCH=arm ;;
@@ -110,6 +107,10 @@ glibcbuild_do_unpack () {
 		oefatal unable to create asm symlink in kernel headers
 	fi
 	ln -sf "asm-$TARGET_ARCH" "${WORKDIR}/linux/include/asm"
+	if test "$TARGET_ARCH" = "arm"; then
+		ln -sf proc-armv ${WORKDIR}/linux/include/asm/proc
+		ln -sf arch-ebsa285 ${WORKDIR}/linux/include/asm/arch
+	fi
 }
 
 python do_unpack () {
@@ -172,9 +173,9 @@ do_stage() {
 		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
 		   install-headers install-lib
 
-	install -d ${CROSS_DIR}/${TARGET_SYS}/sys-include
-	cp -a '${WORKDIR}/linux/include/linux' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
-	cp -R -L '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include
+	cp -a '${WORKDIR}/linux/include/linux' '${CROSS_DIR}/${TARGET_SYS}/include/'
+	cp -R -L '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/include/'
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
 		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \

@@ -3,18 +3,19 @@ include gcc-cross_${PV}.oe
 DEPENDS := virtual/${TARGET_PREFIX}binutils glibc-initial patcher-native
 PROVIDES := virtual/${TARGET_PREFIX}gcc-initial
 
-EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
-                --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
-                --enable-target-optspace \
-                --disable-nls \
-                --with-gnu-ld \
-                --enable-languages=c \
-                --disable-shared \
-		--disable-threads \
-                --enable-multilib \
-                --program-prefix=${TARGET_SYS}-
+EXTRA_OECONF = '--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
+		--disable-multilib \
+		--with-newlib \
+		--without-headers \
+		--disable-nls \
+		--enable-threads=no \
+		--enable-symvers=gnu \
+		--enable-__cxa_atexit \
+		--enable-languages=c \
+		--disable-shared \
+		--program-prefix=${TARGET_SYS}-'
 
 do_stage_prepend () {
-	mkdir -p ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2
-	ln -sf libgcc.a ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2/libgcc_eh.a
+	mkdir -p ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/${PV}
+	ln -sf libgcc.a ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/${PV}/libgcc_eh.a
 }
