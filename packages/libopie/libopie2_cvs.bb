@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite3 libpcap"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
-PR = "10"
+PR = "11"
 PV = "1.1.8+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
@@ -55,7 +55,7 @@ do_compile() {
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
 	done
 
-	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h
+	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h
 	do
 		install -m 0644 opiepim/private/$i ${STAGING_INCDIR}/opie2/private/
 	done
