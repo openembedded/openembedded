@@ -5,9 +5,10 @@ DEPENDS = ""
 INHIBIT_DEFAULT_DEPS = "1"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "0.1cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:@savannah.gnu.org/cvsroot/config;module=config;method=ext;rsh=ssh \
+	   file://config-guess-uclibc.patch;patch=1 \
            file://gnu-configize.in"
 S = "${WORKDIR}/config"
 
