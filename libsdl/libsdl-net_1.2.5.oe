@@ -11,6 +11,7 @@ inherit autotools libtool
 
 do_stage() {
 	oe_soinstall .libs/libSDL_net-1.2.so.0.0.5 ${STAGING_LIBDIR}
+	ln -sf libSDL_net-1.2.so.0.0.5 ${STAGING_LIBDIR}/libSDL_net.so
 	install -m 0644 SDL_net.h ${STAGING_INCDIR}/SDL/SDL_net.h
 }
 
