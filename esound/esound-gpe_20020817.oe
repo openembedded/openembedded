@@ -1,0 +1,24 @@
+CVSDATE = "${PV}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/esound \
+	   file://audiofile-please.patch;patch=1 \
+	   file://configure.patch;patch=1"
+S = "${WORKDIR}/esound"
+DEPENDS = "audiofile"
+PR = "r1"
+
+PACKAGES =+ "esddsp esd esd-utils"
+
+FILES_esddsp = "${bindir}/esddsp ${libdir}/libesddsp.so.*"
+FILES_esd = "${bindir}/esd"
+FILES_esd-utils = "${bindir}"
+
+inherit autotools libtool pkgconfig
+
+SOV = "0.2.28"
+
+do_stage () {
+	install -m 0644 esd.h ${STAGING_INCDIR}/esd.h
+	oe_soinstall .libs/libesd.so.${SOV} ${STAGING_LIBDIR}
+	install -m 0644 .libs/libesd.lai ${STAGING_LIBDIR}/libesd.la
+	install -m 0644 esd.m4 ${STAGING_DATADIR}/aclocal
+}
