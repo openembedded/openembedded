@@ -1,0 +1,21 @@
+DESCRIPTION = Gtk+ display migration library
+DEPENDS = virtual/libc gtk+ libgcrypt
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = gpe
+PRIORITY = optional
+
+inherit pkgconfig
+
+SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libdisplaymigration-${PV}.tar.gz
+
+headers = displaymigration.h auth.h crypt.h
+
+do_stage () {
+	install -m 0755 libdisplaymigration.so.0 ${STAGING_LIBDIR}/
+	ln -s libdisplaymigration.so.0 ${STAGING_LIBDIR}/libdisplaymigration.so
+
+	mkdir -p ${STAGING_INCDIR}/libdisplaymigration
+	for h in ${headers}; do
+		install -m 0644 libdisplaymigration/$h ${STAGING_INCDIR}/libdisplaymigration/${h}
+	done
+}

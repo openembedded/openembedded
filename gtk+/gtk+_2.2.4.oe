@@ -26,15 +26,18 @@ gdk_pixbuf_include = gdk-pixbuf-animation.h gdk-pixbuf-enum-types.h gdk-pixbuf-f
 do_stage () {
 	install -m 0755 gtk/.libs/libgtk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/libgtk-x11-2.0.so.${SOV}
 	install -m 0644 gtk/.libs/libgtk-x11-2.0.lai ${STAGING_LIBDIR}/libgtk-x11-2.0.la
-	install -m 0644 gtk/.libs/libgtk-x11-2.0.a ${STAGING_LIBDIR}/libgtk-x11-2.0.a	
+	install -m 0644 gtk/.libs/libgtk-x11-2.0.a ${STAGING_LIBDIR}/libgtk-x11-2.0.a
+	ln -s libgtk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/libgtk-x11-2.0.so
 
 	install -m 0755 gdk/.libs/libgdk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/libgdk-x11-2.0.so.${SOV}
 	install -m 0644 gdk/.libs/libgdk-x11-2.0.lai ${STAGING_LIBDIR}/libgdk-x11-2.0.la
 	install -m 0644 gdk/.libs/libgdk-x11-2.0.a ${STAGING_LIBDIR}/libgdk-x11-2.0.a	
+	ln -s libgdk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/libgdk-x11-2.0.so
 
 	install -m 0755 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.so.${SOV} ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.so.${SOV}
 	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.lai ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.la
 	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.a ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.a	
+	ln -s libgdk_pixbuf-2.0.so.${SOV} ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.so
 
 	mkdir -p ${STAGING_INCDIR}/gtk-2.0/gtk
 	for i in ${gtk_include}; do
