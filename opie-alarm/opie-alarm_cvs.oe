@@ -4,15 +4,18 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 PV = "1.1.4-cvs-${CVSDATE}"
+RDEPENDS = "apmd"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/opiealarm;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/opiealarm;date=${CVSDATE} \
+           file://01opiealarm "
 S = "${WORKDIR}/opiealarm"
 
 inherit palmtop
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin/
-	install -m 0755 ${S}/opiealarm ${D}/${palmtopdir}/bin/
+	install -d ${D}${palmtopdir}/bin/ ${D}${sysconfdir}/apm/event.d/
+	install -m 0755 ${S}/opiealarm ${D}${palmtopdir}/bin/
+	install -m 0755 ${WORKDIR}/01opiealarm ${D}${sysconfdir}/apm/event.d/
 }
 
-#FIXME add suspend/resume scripts
+FILES_${PN} = "${palmtopdir}/bin/opiealarm ${sysconfdir}/apm/event.d/01opiealarm"
