@@ -58,7 +58,6 @@ EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
 EXTRA_OEMAKE = "-e"
-PARALLEL_MAKE = ""
 
 #
 # FIXME: Add more here
@@ -103,7 +102,10 @@ do_compile() {
 	install -m 0644 ${WORKDIR}/sharp_char.h include/asm/
 	install -d include/linux/
 	install -m 0644 ${WORKDIR}/switches.h   include/linux/
-	oe_runmake
+
+	# Create symlinks first and then compile the library
+	oe_runmake symlinks
+	oe_runmake src-mt sub-src
 }
 
 do_stage() {
