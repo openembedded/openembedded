@@ -1,5 +1,5 @@
 SRC_URI = "http://handhelds.org/~mallum/xkbd/xkbd-${PV}.tar.gz \
-           file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0"
+           file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=1"
 
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11"
