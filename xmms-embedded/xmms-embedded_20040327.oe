@@ -13,6 +13,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms
            file://tremorlib.patch;patch=1 \
            file://bufferdefaults.patch;patch=1 \
            file://${FILESDIR}/gcc34.patch;patch=1 \
+           file://${FILESDIR}/gcc34-enum.patch;patch=1 \
            file://xmms.png"
 
 S = "${WORKDIR}/xmms-embedded"
