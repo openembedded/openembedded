@@ -17,7 +17,7 @@ export QTDIR = "${S}"
 export SYSCONF_CXX = "${CCACHE} g++"
 export SYSCONF_CC  = "${CCACHE} gcc"
 export SYSCONF_LINK  = "${CCACHE} g++"
-THIS_QMAKESPEC = "${STAGING_DATADIR}/qmake/${TAGET_OS}-oe-g++"
+THIS_QMAKESPEC = "${STAGING_DATADIR}/qmake/${TARGET_OS}-oe-g++"
 export QMAKESPEC = ""
 ARCH_i686 = "x86"
 
