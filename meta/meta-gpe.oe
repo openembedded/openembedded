@@ -13,6 +13,7 @@ gpe-base = "\
     matchbox \
     rxvt \
     gpe-icons \
+    libfontconfig-utils \
     gpe-autostarter"
 
 RDEPENDS_gpe-task-base := "${gpe-base}"
@@ -33,7 +34,10 @@ gpe-task-utils = "\
     gpe-su \
     gpe-conf \
     gpe-filemanager \
-    gpe-gallery"
+    gpe-gallery \
+    gpe-shield \
+    galculator \
+    gkdial"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
 DEPENDS += " ${gpe-task-utils}"

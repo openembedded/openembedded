@@ -5,7 +5,7 @@ DEPENDS = 'task-bootstrap \
 	   meta-gpe ttf-bitstream-vera'
 
 export IPKG_INSTALL = 'task-bootstrap xserver-kdrive-fbdev \
-		      gpe ttf-bitstream-vera pango-module-basic-xft \
+		      gpe ttf-bitstream-vera pango-module-basic-x pango-module-basic-fc \
 		      glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png'
 
 inherit image_ipk
