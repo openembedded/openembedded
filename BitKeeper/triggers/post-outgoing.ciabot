@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# post-outgoing.ciabot -- catch and format public BitKeeper repository
+# pushes and mail them to the CIA bot.
+#
+# Copyright (C) 2003 Leonard Norrgard <leonard.norrgard@refactor.fi>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# PLEASE NOTE: This script is a self-contained program and as such does
+# not affect the licensing of the software in the software repository it
+# is added to.
+#########################################################################
+
+# Submit bkbits.net repository changes to the CIA bot, who in turn
+# forwards the messages to #commits on IRC and a project IRC channel,
+# as configured below. If your project isn't on bkbits.net, you may need to
+# make several changes in the script itself. See "bk help triggers" for the
+# basic documentation to how this works. There's a trick: bkbits.net don't
+# have triggers enabled, so we run locally on the pushing machine.
+#
+# It makes sure that only pushes to public repositories at bkbits.net
+# get broadcasted.
+
+# 1) Edit the configuration script `ciabot.config'.
+# 2) Put this script in a file named post-outgoing.ciabot in
+#    BitKeeper/triggers/pre-apply.ciabot in your project.
+# 3) Check in, commit and push the configuration and this script
+#    to your repository on bkbits.net.
+# 4) The next time anyone pulls the project, they'll get the script.
+#    From then on, BitKeeper does the rest, whenever someone pushes
+#    back to bkbits.net.
+# 4) ?
+# 5) Profit! :^)
+
+if [ X$BK_STATUS = XDRYRUN -o X$BK_STATUS = XNOTHING ]
+then exit 0
+fi
+
+# In order to make sure only pushes to public BitKeeper repositories
+# are broadcasted to #commits, we check that a) the parent repository
+# is on bkbits.net and b) we are the client.
+
+# Is parent a public BitKeeper repository at bkbits.net?
+if !(echo $BKD_HOST|grep -q bitkeeper.com)
+then exit 0
+fi
+
+if [ $BK_SIDE != client ]
+then exit 0
+fi
+
+# Read the configuration, now that we have decided to run.
+. $BK_ROOT/BitKeeper/triggers/ciabot.config
+
+# Display info about incoming and outgoing csets.
+U=$BK_USER
+H=$BK_HOST
+R=$BK_ROOT
+RD=$BKD_ROOT
+
+# On a Debian system /etc/mailname contains the visible mail name of the system
+if [ -e /etc/mailname ]
+then
+H=`cat /etc/mailname`
+fi
+
+CHANGECMD="bk changes"
+if [ -n "$VERBOSE" ]
+then
+CHANGECMD="$CHANGECMD -v"
+fi
+
+echo "Sending notification mail to $COMMITADDRESS..."
+
+(
+U_OUT="user={light blue}${U}@${H}{normal}"
+R_OUT=`echo $RD | sed "s,.*/,,"`
+
+echo repository={green}${R_OUT}{normal} $U_OUT
+
+# See "bk help prs" for documentation on the formatting string.
+if [ X$BK_CSETLIST != X ]
+then (
+     $CHANGECMD -d'$if(:GFILE:=ChangeSet){{orange}ChangeSet@:REV:{normal}$if(:TAG:){ tags={red}:TAG:{normal}} $if(:C:){:C:}\n}$unless(:GFILE:=ChangeSet){* :GFILE:$if(:C:){: $each(:C:){(:C:)}}\n}' - < $BK_CSETLIST
+     )
+fi
+) | mail -s "Announce `echo -n $IRCCHANNEL | sed 's,.*/,,'`" $COMMITADDRESS
+echo "done."
+exit 0
