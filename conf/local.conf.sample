@@ -15,7 +15,9 @@ OEMASK = "(toolchain-external)"
 
 # Uncomment this if you want to use a prebuilt toolchain.
 # You will need to provide packages for toolchain and additional libraries yourself
-# ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
+# You will definitly need to say ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95" to build any of two
+# Linux 2.4 Embedix kernels, i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18.
+#ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie virtual/libsdl:libsdl-qpe"
@@ -47,5 +49,5 @@ TARGET_ARCH = "arm"
 # Usually better to set DISTRO instead (see above)
 #INHERIT = "package_tar"
 
-# Comment this out if you do not wish to use a parse cache
+#Comment this out if you do not wish to use a parse cache (not recommended).
 CACHE=/var/tmp/oe-cache.${USER}
