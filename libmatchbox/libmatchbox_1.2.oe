@@ -21,7 +21,7 @@ do_stage () {
 	done
 
 	cp -a ${S}/libmb/.libs/libmb.a ${STAGING_LIBDIR}/libmb.a
-	cp -a ${S}/libmb/libmb.lai ${STAGING_LIBDIR}/libmb.la
+	cp -a ${S}/libmb/.libs/libmb.lai ${STAGING_LIBDIR}/libmb.la
 	oe_soinstall ${S}/libmb/.libs/libmb.so.${SOV} ${STAGING_LIBDIR}/
 #	cp -a ${S}/libmb.pc ${STAGING_LIBDIR}/pkgconfig/libmb.pc
 }
