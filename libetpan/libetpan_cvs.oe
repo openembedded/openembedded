@@ -1,0 +1,22 @@
+DESCRIPTION = "libetpan is a library for communicating with mail and news servers using \
+SMTP, POP, IMAP and NNTP"
+SECTION = "libs"
+DEPENDS = "gettext-native openssl"
+PR = "r3"
+S = "${WORKDIR}/libetpan"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan;date=${CVSDATE} \
+          file://gcc34.patch;patch=1 \
+          file://destdir.patch;patch=1"
+
+inherit autotools pkgconfig
+
+EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
+
+do_stage () {
+	oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
+}
+
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+                ${libdir}/*.a ${libdir}/pkgconfig"
