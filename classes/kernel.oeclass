@@ -3,7 +3,8 @@ inherit module_strip
 PROVIDES += "virtual/kernel"
 DEPENDS += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
 
-export ARCH = "${TARGET_ARCH}"
+inherit kernel-arch
+
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 KERNEL_IMAGETYPE = "zImage"
