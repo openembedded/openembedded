@@ -1,0 +1,19 @@
+DESCRIPTION = "Opie Bluetooth Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "bluetoothapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/applet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics/bluetoothapplet;date=${CVSDATE}"
+S = "${WORKDIR}/applet"
+
+inherit opie
+
+do_install() {
+	install -d ${D}${palmtopdir}/pics/bluetoothapplet
+	install -m 0644 ${WORKDIR}/bluetoothapplet/*.png ${D}${palmtopdir}/pics/bluetoothapplet
+}
+
