@@ -10,12 +10,6 @@ FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info"
 
 inherit autotools pkgconfig
 
-STAGE_TEMP="${WORKDIR}/temp-staging"
-
 gnome_stage_includes() {
-	rm -rf ${STAGE_TEMP}
-	mkdir -p ${STAGE_TEMP}
-	make DESTDIR="${STAGE_TEMP}" install
-	cp -a ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
-	rm -rf ${STAGE_TEMP}
+	autotools_stage_includes
 }
