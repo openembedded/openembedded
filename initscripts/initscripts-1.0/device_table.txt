@@ -34,7 +34,7 @@
 /dev/initctl	p	600	0	0	-	-	-	-
 /dev/i2c0	c	660	0	0	89	0	-	-	-
 /dev/inportbm	c	660	0	0	10	2	-	-	-
-/dev/input/event c	660	0	0	13	64	0	1	4
+/dev/input/event c	660	0	0	13	64	0	1       20
 /dev/ircomm0	c	640	0	0	161	0	-	-	-
 /dev/jbm	c	660	0	0	10	4	-	-	-
 /dev/kmem	c	640	0	15	1	2	-	-	-
