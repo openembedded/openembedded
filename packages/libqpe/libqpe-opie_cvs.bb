@@ -8,8 +8,7 @@ PROVIDES = "virtual/libqpe"
 PV = "1.1.9+cvs-${CVSDATE}"
 PR = "r5"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/library \
-	file://nomax_cvs.patch;patch=1;pnum=1"
+SRC_URI = "${HANDHELDS_CVS};module=opie/library"
 S = "${WORKDIR}/library"
 
 inherit qmake
