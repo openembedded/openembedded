@@ -1,4 +1,5 @@
 FIXEDCVSDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
+LICENSE = "MIT"
 PV = "0.0cvs${FIXEDCVSDATE}"
 DEPENDS = "x11 xext xmu"
 DESCRIPTION = "server access control program for X"

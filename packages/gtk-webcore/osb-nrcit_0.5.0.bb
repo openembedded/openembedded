@@ -1,4 +1,5 @@
 DESCRIPTION = "Gtk+ WebCore - NRCit embeddable browser component"
+LICENSE = "nokia"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"

@@ -2,6 +2,7 @@ DESCRIPTION = "A graphic library for file loading, saving, rendering, and \
 manipulation."
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Carsten Haitzler (Rasterman) <raster@rasterman.com>"
+LICENSE = "BSD"
 SECTION = "e/libs"
 PRIORITY = "optional"
 include imlib2.bb

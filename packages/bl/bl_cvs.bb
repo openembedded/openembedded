@@ -1,4 +1,5 @@
 SECTION = "base"
+LICENSE= "GPL"
 PV = "0.0cvs${CVSDATE}"
 DESCRIPTION = "Command line tool for iPaq backlight control"
 MAINTAINER = "Florian Boor <florian@kernelconcets.de>"

@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "MIT"
 DEPENDS = "x11 xau xmu xext"
 DESCRIPTION = "X authority file utility"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"

@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "MIT"
 DEPENDS = "x11 xmu xext"
 DESCRIPTION = "property displayer for X"
 MAINTER = "Rene Wagner <reenoo@gmx.de>"

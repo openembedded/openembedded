@@ -1,4 +1,5 @@
 SECTION = "base"
+LICENSE = "freetype"
 DESCRIPTION = "Freetype font rendering library"
 
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \

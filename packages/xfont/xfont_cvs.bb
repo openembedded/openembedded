@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "BSD-X"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"

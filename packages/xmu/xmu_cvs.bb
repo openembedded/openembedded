@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "MIT"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"

@@ -1,4 +1,5 @@
 DESCRIPTION = "user preference utility for X"
+LICENSE = "MIT"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 FIXEDCVSDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.0cvs${FIXEDCVSDATE}"

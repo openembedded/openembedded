@@ -1,6 +1,7 @@
 DESCRIPTION = "Gnuplot is a portable command-line driven interactive datafile \
 (text or binary) and function plotting utility."
 SECTION = "x11/utils"
+LICENSE = "BSD-4"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "x11 libpng gd readline"

@@ -1,4 +1,5 @@
 SECTION = "x11/libs"
+LICENSE = "BSD-X"
 DEPENDS = "randrext x11 libxrender xext"
 DESCRIPTION = "X Resize and Rotate extension library."
 PR = "r1"
