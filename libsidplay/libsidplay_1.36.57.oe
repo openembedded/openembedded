@@ -1,0 +1,20 @@
+DESCRIPTION=A library for replaying C64 SID music
+SECTION=libs
+PRIORITY=optional
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = ftp://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_${PV}.orig.tar.gz \
+          ftp://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_1.36.57-3.diff.gz;patch=1
+
+inherit autotools libtool
+
+do_stage() {
+	oe_soinstall src/.libs/libsidplay.so.1.0.3 ${STAGING_LIBDIR}/
+	install -d ${STAGING_INCDIR}/sidplay
+	for f in src/compconf.h src/emucfg.h src/fformat.h src/fixpoint.h src/libcfg.h src/myendian.h src/mytypes.h src/player.h src/sidtune.h src/version.h
+	do
+		install -m 0644 $f ${STAGING_INCDIR}/sidplay/
+	done
+}
+
