@@ -9,9 +9,10 @@ PROVIDES=virtual/kernel-header
 S="${WORKDIR}/linux"
 
 do_stage() {
-	mkdir -p ${STAGING_DIR}/target/include/{linux,asm}
+	mkdir -p ${STAGING_DIR}/target/include/linux
 	cp -a include/linux/* ${STAGING_DIR}/target/include/linux/
-	cp -a include/asm-${ARCH}/* ${STAGING_DIR}/target/include/asm/
+	cp -a include/asm-${ARCH}/ ${STAGING_DIR}/target/include/
+	ln -sf asm-${ARCH} ${STAGING_DIR}/target/include/asm
 	cp -a ${FILESDIR}/{version,autoconf}.h ${STAGING_DIR}/target/include/linux/
 	chmod 644 ${STAGING_DIR}/target/include/linux/{version,autoconf}.h
 }

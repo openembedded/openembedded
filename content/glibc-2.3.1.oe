@@ -1,7 +1,7 @@
 DESCRIPTION="GNU C Library"
 LICENSE="LGPL"
 SECTION="libs"
-DEPENDS="content/kernel-headers"
+DEPENDS="virtual/kernel-header"
 RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
@@ -16,11 +16,13 @@ EXTRA_OEMAKE=
 PACKAGES="libc6"
 
 do_unpack() {
-	base_do_unpack $@ || die
-	test -d ${S} || die
+	set -e
+	base_do_unpack $@
+	test -d ${S}
 	mv ${WORKDIR}/linuxthreads{,_db} ${S}/
 }
 
 do_install() {
+	set -e
 	${MAKE} install_root=${D} install
 }

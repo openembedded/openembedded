@@ -1,0 +1,48 @@
+LICENSE="GPL"
+SRC_URI="http://www.busybox.net/downloads/${PN}-${PV}.tar.gz"
+DEPENDS=virtual/libc
+DESCRIPTION=BusyBox version ${PV}.\
+ BusyBox combines tiny versions of many common UNIX utilities into a single\
+ small executable. It provides minimalist replacements for most of the\
+ utilities you usually find in GNU fileutils, shellutils, etc. The utilities\
+ in BusyBox generally have fewer options than their full-featured GNU\
+ cousins; however, the options that are included provide the expected\
+ functionality and behave very much like their GNU counterparts. BusyBox\
+ provides a fairly complete POSIX environment for any small or embedded\
+ system.
+	
+S="${WORKDIR}/${P}"
+export EXTRA_CFLAGS="${CFLAGS}"
+EXTRA_OEMAKE_append=' CROSS=${CROSS}'
+
+do_configure () {
+	set -e
+	install -m 0644 ${FILESDIR}/defconfig ${S}/.config
+	cml1_do_configure
+}
+
+do_compile () {
+	set -e
+	unset CFLAGS
+	base_do_compile
+}
+
+do_install () {
+	set -e
+	install -d ${D}/{bin,usr/share/udhcpc}
+	install -m 0755 busybox ${D}/bin/busybox
+	applets/busybox.mkll > ${D}/bin/busybox.links
+	install -d ${D}/usr/share/udhcpc ${D}/CONTROL ${D}/etc/init.d 
+	install -m 0755 examples/udhcp/simple.script ${D}/usr/share/udhcpc/default.script
+	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog;
+	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh;
+}
+
+do_package_ipk () {
+	set -e
+	install -m 0755 ${FILESDIR}/postinst ${D}/CONTROL/postinst;
+	install -m 0755 ${FILESDIR}/prerm ${D}/CONTROL/prerm;
+	package_ipk_do_package_ipk
+}
+
+inherit cml1 base

@@ -21,4 +21,4 @@ do_install() {
 
 inherit base
 
-DEPENDS_prepend_delete="content/patcher "
+DEPENDS_prepend_delete="base/patcher "

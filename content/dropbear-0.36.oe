@@ -1,0 +1,6 @@
+DESCRIPTION="Dropbear SSH Implementation"
+LICENSE="MIT"
+SRC_URI="http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2"
+DEPENDS=virtual/libc base/zlib
+
+S="${WORKDIR}/${P}"

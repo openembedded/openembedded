@@ -2,7 +2,7 @@ DESCRIPTION="Qt/Embedded version 2.3.6"
 LICENSE="GPL/QPL"
 SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qt-embedded-2.3.6.tar.gz"
 SRC_URI_append=" file://${FILESDIR}/qpe.patch;patch=1"
-DEPENDS=virtual/libc content/zlib content/libpng content/libjpeg
+DEPENDS=virtual/libc base/zlib content/libpng content/libjpeg
 PROVIDES=virtual/qte virtual/libqte2
 S="${WORKDIR}/qt-${PV}"
 
@@ -27,16 +27,10 @@ EXTRA_OECONF_ARCH_collie=-xplatform ${OS}-sharp-g++
 EXTRA_OECONF_ARCH_ramses=-xplatform ${OS}-ramses-g++
 
 do_compile() {
-	CFLAGS="${CFLAGS}"
-	LDFLAGS="${LDFLAGS}"
-	CPPFLAGS="${CPPFLAGS}"
-	CXXFLAGS="${CXXFLAGS}"
-	export CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
 	if [ "$BUILD_ARCH" = "i686" ]; then
 		BUILD_ARCH=x86
 	fi
-	oenote ./configure -platform $BUILD_OS-$BUILD_ARCH-g++ $EXTRA_OECONF
-	echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
+	echo yes | ./configure -platform $BUILD_OS-$BUILD_ARCH-g++ $EXTRA_OECONF || die "Configuring qt failed"
 	(cd src/moc; EXTRA_OEMAKE="SYSCONF_CXX='${BUILD_CXX}' SYSCONF_CC='${BUILD_CC}'" oe_runmake)
 	oe_runmake SYSCONF_CXX='${CXX}' SYSCONF_CC="${CC}" SYSCONF_LINK="${CC}" SYSCONF_SHLIB="${CC}" SYSCONF_CFLAGS="${CFLAGS}" SYSCONF_CXXFLAGS="${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -O2 -Wall -W -DNO_DEBUG" SYSCONF_LFLAGS="${LDFLAGS}"
 }
