@@ -3,9 +3,12 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
+	   file://busybox.patch;patch=1 \
+	   file://ide.opts \
+	   file://wireless.opts"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 INITSCRIPT_NAME = "pcmcia"
@@ -44,7 +47,7 @@ do_compile() {
 }
 
 INSTALL_ETC = "ftl ide ieee1394 memory network parport scsi serial wireless"
-INSTALL_ETC_DATA = "config config.opts ftl.opts ide.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared wireless.opts"
+INSTALL_ETC_DATA = "config config.opts ftl.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared"
 
 do_install() {
 	install -d ${D}/${sbindir}
@@ -61,6 +64,8 @@ do_install() {
 	for i in ${INSTALL_ETC_DATA}; do
 		install -m 0644 etc/${i} ${D}/${sysconfdir}/pcmcia/
 	done
+	install -m 0644 ${WORKDIR}/ide.opts ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/wireless.opts ${D}/${sysconfdir}/pcmcia/
 	for i in etc/cis/*; do
 		install -m 0644 $i ${D}/${sysconfdir}/pcmcia/cis/
 	done
