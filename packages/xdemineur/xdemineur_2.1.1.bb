@@ -1,5 +1,5 @@
 inherit gpe
-LICNESE = "BSD-X"
+LICENSE = "BSD-X"
 
 DEPENDS = "x11 xpm"
 SECTION = "gpe"
