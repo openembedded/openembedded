@@ -5,9 +5,7 @@ CONFLICTS = "ipkg-utils"
 PV_append = "${CVSDATE}"
 PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
-	   file://fix-ipkg-link.patch;patch=1 \
-	   file://ipkg-link-oe.patch;patch=1"
+SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils"
 	   	   
 S = "${WORKDIR}/ipkg-utils"
 
