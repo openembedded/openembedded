@@ -58,3 +58,4 @@ do_install() {
 
 PACKAGES = "libqpe1"
 FILES_libqpe1 = "${palmtopdir}/lib"
+PACKAGE_ARCH = "${MACHINE_ARCH}"

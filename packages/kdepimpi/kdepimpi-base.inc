@@ -10,7 +10,6 @@ DESCRIPTION_kammu            = "KDE Pim/PI fork of gammu"
 
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 
