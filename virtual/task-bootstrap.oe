@@ -3,7 +3,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-DEPENDS = 'glibc base-files base-passwd-3.5.7 \
+DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ifupdown ipkg initscripts \
 	netbase resolvconf sysvinit tinylogin lrzsz \
 	dhcpcd \
