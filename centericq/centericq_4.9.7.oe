@@ -1,7 +1,7 @@
 DEPENDS = virtual/libc openssl ncurses
 RDEPENDS = libc6 openssl ncurses
 
-SRC_URI = http://thekonst.net/download/centericq-4.9.7.tar.bz2 \
+SRC_URI = http://centericq.de/archive/source/releases/centericq-${PV}.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1 \
 	  file://${FILESDIR}/m4.patch;patch=1
 

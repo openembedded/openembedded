@@ -43,15 +43,9 @@ do_install () {
 pkg_postinst () {
 	set -e
 
-	if [ X"$1" != Xconfigure ]; then
-		exit 0
-	fi
-
-	if ! [ -x ${sbindir}/update-passwd ]; then
-		echo >&2 "`dirname $0`: ${sbindir}/update-passwd does not exist,"
-		echo >&2 "or is not executable"
-		exit 1
-	fi
+#	if [ X"$1" != Xconfigure ]; then
+#		exit 0
+#	fi
 
 	if [ ! -e ${D}/${sysconfdir}/passwd ] ; then
 		cp ${D}/${datadir}/base-passwd/passwd.master ${D}/${sysconfdir}/passwd
@@ -61,6 +55,11 @@ pkg_postinst () {
 		cp ${D}/${datadir}/base-passwd/group.master ${D}/${sysconfdir}/group
 	fi
 	
+#	if ! [ -x ${sbindir}/update-passwd ]; then
+#		echo >&2 "`dirname $0`: ${sbindir}/update-passwd does not exist,"
+#		echo >&2 "or is not executable"
+#		exit 1
+#	fi
 #	update-passwd -p ${D}/${datadir}/base-passwd/passwd.master \
 #		      -g ${D}/${datadir}/base-passwd/group.master \
 #		      -P ${D}/${sysconfdir}/passwd \

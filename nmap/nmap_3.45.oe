@@ -2,8 +2,7 @@ DEPENDS = virtual/libc libpcap
 RDEPENDS = libc6 libpcap
 DESCRIPTION = Nmap is a command line portscanner.
 
-SRC_URI = http://download.insecure.org/nmap/dist/nmap-${PV}.tgz \
-	${DEBIAN_MIRROR}/main/n/nmap/nmap_${PV}-1.diff.gz
+SRC_URI = http://download.insecure.org/nmap/dist/nmap-${PV}.tgz
 
 inherit autotools
 
