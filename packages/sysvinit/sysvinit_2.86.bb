@@ -5,7 +5,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 
 FILES_${PN} += "/sbin /bin"
-PR = "r1"
+PR = "r2"
 
 # USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -70,7 +70,7 @@ EOF
 	ln -sf ../init.d/bootlogd ${D}/etc/rcS.d/S07bootlogd
 	for level in 2 3 4 5; do
 		install -d ${D}/etc/rc$level.d
-		ln -s ../init.d/stop-bootlogd ${D}/etc/rc$level.d/
+		ln -s ../init.d/stop-bootlogd ${D}/etc/rc$level.d/S99stop-bootlogd
 	done
 }
 
@@ -85,3 +85,7 @@ do_install_append_ramses () {
 v1:2345:respawn:/sbin/getty -L 115200 vc/1
 EOF
 }
+
+PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
+FILES_sysvinit-pidof = "/bin/pidof"
+FILES_sysvinit-sulogin = "/sbin/sulogin"
