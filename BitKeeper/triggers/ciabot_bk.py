@@ -242,10 +242,11 @@ class BKClient(CIAClient):
 
     def collectFiles(self):
         # Extract all the files from the output of 'bkchanges changed'
-        files = []
-        for line in self.bkchanges('-n -v -d\'$unless(:GFILE:=ChangeSet){:GFILE:}\'').strip().split('\n'):
-            files.append(File(line))
-        return files
+        lines = []
+        for l in self.bkchanges('-n -v -d\'$unless(:GFILE:=ChangeSet){:GFILE:}\'').strip().split('\n'):
+            if not l in lines:
+                lines.append(l)
+        return [ File(line) for line in lines ]
 
 
 if __name__ == "__main__":
