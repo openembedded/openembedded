@@ -3,9 +3,7 @@ inherit native
 DEPENDS = "freetype-native expat-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/fontconfig-${PV}"
 
-do_compile () {
-	oe_runmake
-}
+export HASDOCBOOK="no"
 
 do_stage () {
 	oe_runmake install
