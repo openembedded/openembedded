@@ -93,7 +93,7 @@
 /dev/ptyae	c	660	0	5	2	190	-	-	-
 /dev/ptyaf	c	660	0	5	2	191	-	-	-
 /dev/ram	b	640	0	0	1	0	0	1	4
-/dev/random	c	440	0	0	1	8	-	-	-
+/dev/random	c	444	0	0	1	8	-	-	-
 /dev/rmidi0	c	660	0	0	35	64	-	-	-
 /dev/rmidi1	c	660	0	0	35	65	-	-	-
 /dev/rmidi2	c	660	0	0	35	66	-	-	-
