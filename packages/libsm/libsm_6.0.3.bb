@@ -1,4 +1,5 @@
 SECTION = "libs"
+LICENSE = "MIT-X"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "x11 ice"

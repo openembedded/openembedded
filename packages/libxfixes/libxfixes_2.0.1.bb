@@ -1,4 +1,5 @@
 SECTION = "x11/libs"
+LICENSE= "BSD-X"
 DEPENDS = "x11 fixesext"
 DESCRIPTION = "X Fixes extension library."
 PR = "r1"

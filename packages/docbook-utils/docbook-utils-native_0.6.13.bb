@@ -1,4 +1,5 @@
 SECTION = "console/utils"
+LICENSE = "GPL"
 DEPENDS = "openjade-native"
 
 SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-${PV}.tar.gz"

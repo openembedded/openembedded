@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "MIT-X"
 SECTION = "x11/libs"
 DEPENDS = "xproto x11 xextensions"
 DESCRIPTION = "X Input extension library."

@@ -1,4 +1,5 @@
 DESCRIPTION = "X Input Extension library"
+LICENSE = "MIT-X"
 SECTION = "x11/libs"
 DEPENDS = "xproto x11 xextensions"
 PR = "r1"

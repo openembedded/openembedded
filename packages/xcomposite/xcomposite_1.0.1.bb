@@ -1,4 +1,5 @@
 SECTION = "x11/libs"
+LICENSE= "BSD-X"
 DEPENDS = "x11 compositeext xextensions libxfixes"
 DESCRIPTION = "X Composite extension library."
 PR = "r1"

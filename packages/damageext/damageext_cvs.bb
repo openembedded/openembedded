@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+LICENSE = "MIT-X"
 SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions fixesext"

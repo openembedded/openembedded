@@ -1,4 +1,5 @@
 SECTION = "libs"
+LICENSE = "LGPL"
 DEPENDS = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glib-2.0-${PV}"
 
