@@ -4,7 +4,7 @@ DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
@@ -15,8 +15,10 @@ SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://config.in \
-	file://sl6kwlanctl-ng \
-	file://usbctl"
+	file://usbctl \
+	file://resume \
+	file://pre-up \
+	file://post-down"
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 inherit module
@@ -57,10 +59,12 @@ do_install() {
 	mkdir -p ${D}/sbin/
 	install -m 0644 ${WORKDIR}/wlan-ng.modutils ${D}/etc/modutils/wlan-ng.conf
 	install -m 0755 ${WORKDIR}/wlan.agent ${D}/etc/hotplug/wlan.agent
+	install -d ${D}/${sysconfdir}/network/if-pre-up.d
+	install -m 0755 ${WORKDIR}/pre-up ${D}/${sysconfdir}/network/if-pre-up.d/wlan-ng
+	install -m 0755 ${WORKDIR}/post-down ${D}/${sysconfdir}/network/if-post-down.d/wlan-ng
+	install -d ${D}/${sysconfdir}/apm/resume.d
+	install -m 0755 ${WORKDIR}/resume ${D}/${sysconfdir}/apm/resume.d/wlan-ng
 	install -m 0755 ${WORKDIR}/usbctl ${D}/sbin/usbctl
-	install -m 0755 ${WORKDIR}/sl6kwlanctl-ng ${D}/sbin/sl6kwlanctl-ng
-	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlanup
-	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlandown
 	install -d ${D}/${mandir}
 	mv ${D}/usr/local/man/* ${D}/${mandir}
 	rm -r ${D}/usr/local/man
