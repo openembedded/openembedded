@@ -6,7 +6,8 @@ PR = "r2"
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
 
-SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2"
+SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
+	   file://sh-missing.patch;patch=1"
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
 do_configure () {
@@ -32,6 +33,8 @@ do_configure () {
 	cp -a "include/asm-$ARCH" "include/asm"
 	if test "$ARCH" = "arm"; then
 		cp -a include/asm/arch-ebsa285 include/asm/arch
+	elif test "$ARCH" = "sh"; then
+		cp -a include/asm/cpu-${TARGET_ARCH} include/asm/cpu || die "unable to create include/asm/cpu"
 	fi
 }
 
@@ -40,12 +43,16 @@ do_stage () {
 	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm
 	cp -pfLR include/linux ${STAGING_INCDIR}/
 	cp -pfLR include/asm ${STAGING_INCDIR}/
-        ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
 	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/linux
 	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/asm
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include
 	cp -pfLR include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
 	cp -pfLR include/asm ${CROSS_DIR}/${TARGET_SYS}/include/
-        ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${CROSS_DIR}/${TARGET_SYS}/include/linux/wireless.h
 
+	if [ -e "${STAGING_KERNEL_DIR}/include/linux/wireless.h" ]; then
+		oenote "Warning: unable to link wireless.h to a set of valid kernel sources."
+		oenote "Have you built a kernel?"
+	        ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
+        	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${CROSS_DIR}/${TARGET_SYS}/include/linux/wireless.h
+	fi
 }
