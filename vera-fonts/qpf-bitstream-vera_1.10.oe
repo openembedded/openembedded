@@ -14,15 +14,9 @@ do_install () {
 
 pkg_postinst () {
 #!/bin/sh
-
+if [ -n $D ]; then exit 1; fi
 set -e
-
-if [ "$1" != "configure" ]; then
-    exit 0
-fi
-
 . /etc/profile
-
 update-qtfontdir
 }
 

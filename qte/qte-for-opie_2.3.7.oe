@@ -4,9 +4,4 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}-r0"
 
 DESCRIPTION = "Qt/Embedded w/ Opie Patches version ${PV}"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
-	   file://${FILESDIR}/qpe.patch;patch=1 \
-	   file://${FILESDIR}/tslib.patch;patch=1 \
-	   file://${FILESDIR}/devfs.patch;patch=1 \
-	   file://${FILESDIR}/no-moc.patch;patch=1 \
-	   file://${FILESDIR}/opie.patch;patch=1"
+SRC_URI_append = "file://${FILESDIR}/opie.patch;patch=1"

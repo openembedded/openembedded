@@ -2,13 +2,16 @@ DESCRIPTION = "Qt/Embedded version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
-	 file://${FILESDIR}/qpe.patch;patch=1 \
-	 file://${FILESDIR}/tslib.patch;patch=1 \
-	 file://${FILESDIR}/devfs.patch;patch=1 \
-	 file://${FILESDIR}/no-moc.patch;patch=1 "
-DEPENDS = "virtual/libc base/zlib base/libpng base/jpeg uicmoc-native"
+DEPENDS = "base/zlib base/libpng base/jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
+PR = "1"
+
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
+	   file://${FILESDIR}/qpe.patch;patch=1 \
+	   file://${FILESDIR}/tslib.patch;patch=1 \
+	   file://${FILESDIR}/devfs.patch;patch=1 \
+	   file://${FILESDIR}/no-moc.patch;patch=1 \
+	   file://${FILESDIR}/update-qtfontdir "
 S = "${WORKDIR}/qt-${PV}"
 
 export QTDIR = "${S}"
@@ -65,15 +68,44 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}/lib/fonts
+	install -d ${D}/${sbindir}/
+	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}/${sbindir}/
+	install -d ${D}${palmtopdir}/lib/fonts/
 	oe_libinstall -so -C lib libqte ${D}/${palmtopdir}/lib
 	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
 }
 
+pkg_postinst () {
+#!/bin/sh
+if [ -n $D ]; then exit 1; fi
+set -e
+. /etc/profile
+update-qtfontdir
+}
+
+#
+# FIXME: Don't use the above but make the following work:
+#
+
+#pkg_postinst_qte-font-fixed() {
+#if [ -n $D ]; then exit 1; fi
+#/usr/sbin/update-qtfontdir
+#}
+
+#pkg_postinst_qte-font-helvetica() {
+#if [ -n $D ]; then exit 1; fi
+#/usr/sbin/update-qtfontdir
+#}
+
+#pkg_postinst_qte-fonts-smoothtimes() {
+#if [ -n $D ]; then exit 1; fi
+#/usr/sbin/update-qtfontdir
+#}
+
 PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica qte-font-smoothtimes qte-font-smallsmooth"
 
 FILES_${PN} = ""
-FILES_libqte2 = "${palmtopdir}/lib/libqte.so*"
+FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
 FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
 FILES_qte-font-helvetica = "${palmtopdir}/lib/fonts/helvetica*"
 FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*"
