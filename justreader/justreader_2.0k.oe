@@ -1,9 +1,10 @@
 DESCRIPTION = "An E-Books reader for Qt/Embedded based Palmtop Environments"
-SECTION = "base"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+HOMEPAGE = "http://justreader.sourceforge.net/"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/justreader/justreader_${PV}.tgz"
 S = "${WORKDIR}/TextReader2"

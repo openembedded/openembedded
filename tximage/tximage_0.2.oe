@@ -1,9 +1,10 @@
 DESCRIPTION = "Tx Image Viewer"
-SECTION = "base"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe"
+HOMEPAGE = "http://community.zaurus.com/projects/tximage/"
+PR = "r1"
 
 SRC_URI = "http://downloads.zaurususergroup.com/community/66.180.235.230/download.php/253/tximage-${PV}.tar.gz \
            file://gcc3.patch;patch=1"

@@ -1,9 +1,10 @@
 DESCRIPTION = "Tx Drug Database"
-SECTION = "base"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe sqlite"
+DEPENDS = "sqlite"
+PR = "r1"
 
 SRC_URI = "http://teax.sourceforge.net/txdrug-${PV}.tar.gz \
            file://${FILESDIR}/${palmtopdir}"

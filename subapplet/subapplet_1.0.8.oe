@@ -1,9 +1,10 @@
 DESCRIPTION = "A secondary system tray for those people who like having a lot of applets loaded at once."
-SECTION = "base"
+SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
-PR = "r2"
+HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz"
 

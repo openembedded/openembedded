@@ -1,9 +1,11 @@
 DESCRIPTION = "Kphone/Pi is a 'Voice Over Internet' phone which uses the Session Initiation Protocol (SIP)."
-SECTION = "base"
+SECTION = "opie/applications"
 PRIORITY = "optional"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
-DEPENDS ="virtual/libqpe openssl"
-PR = "r1"
+HOMEPAGE = "http://www.pi-sync.net/html/kp_pi.html"
+DEPENDS ="openssl"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kphone_pi097.tar.gz"
 

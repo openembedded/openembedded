@@ -1,10 +1,11 @@
 DESCRIPTION = "IRK provides a Qtopia/Opie Input Method plugin that allows you to use external infrared keyboards with the Zaurus."
-SECTION = "base"
+SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"
 DEPENDS = "virtual/libqpe libsdl-qpe lirc"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://angela1.data-uncertain.co.uk/~zaurus/irk-${PV}.tgz"
 S = "${WORKDIR}/irk"

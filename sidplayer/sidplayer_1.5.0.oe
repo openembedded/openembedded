@@ -1,9 +1,11 @@
 DESCRIPTION = "A SID Player for the Qt/Embedded based Palmtop Environments"
-SECTION = "base"
+SECTION = "opie/multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+HOMEPAGE = "http://sidplayer.sourceforge.net/"
 DEPENDS = "libsidplay"
+PR = "r1"
 
 SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz \
            file://use-external-libsidplay.patch;patch=1 \
