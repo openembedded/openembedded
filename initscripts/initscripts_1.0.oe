@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -12,7 +12,6 @@ SRC_URI = "file://halt \
            file://devices \
            file://devpts.sh \
            file://devpts \
-           file://bootlogo-simpad.gz \
            file://hostname.sh \
            file://mountall.sh \
            file://banner \
