@@ -70,6 +70,7 @@ do_install() {
 	install -d ${D}/${palmtopdir}/pics/logo
 	install -d ${D}/${palmtopdir}/pics/RoH/star/
 	install -d ${D}/etc/init.d
+	install -d ${D}/etc/profile.d	
 	install -d ${D}/${palmtopdir}/etc/colors
 	install -d ${D}/${palmtopdir}/etc/skel
 
@@ -77,6 +78,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}/${palmtopdir}/apps/Settings/
+	install -m 0644 ${WORKDIR}/opie_defaults ${D}/etc/profile.d/
 
 	for p in ${PICS}
 	do

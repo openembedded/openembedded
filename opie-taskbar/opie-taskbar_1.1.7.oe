@@ -20,7 +20,8 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            file://server.pro-1.1.7 \
            file://opie-reorgfiles \
            file://opie \
-           file://qpe.conf"
+           file://qpe.conf \
+	   file://opie_defaults"
 
 S = "${WORKDIR}/launcher"
 
@@ -75,6 +76,7 @@ do_install() {
 	install -d ${D}/${palmtopdir}/pics/logo
 	install -d ${D}/${palmtopdir}/pics/RoH/star/
 	install -d ${D}/etc/init.d
+	install -d ${D}/etc/profile.d
 	install -d ${D}/${palmtopdir}/etc/colors
 	install -d ${D}/${palmtopdir}/etc/skel
 
@@ -82,6 +84,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}/${palmtopdir}/apps/Settings/
+	install -m 0644 ${WORKDIR}/opie_defaults ${D}/etc/profile.d/
 
 	for p in ${PICS}
 	do
@@ -126,7 +129,7 @@ do_install_append_tosa () {
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }
 
-FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
+FILES_opie-taskbar_append = " /etc /etc/profile.d ${palmtopdir}/apps ${palmtopdir}/pics"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
