@@ -2,7 +2,7 @@ include uclibc_${PV}.oe
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 
-DEPENDS = ""
+DEPENDS = "patcher-native"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 PACKAGES = ""
 

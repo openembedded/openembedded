@@ -23,7 +23,8 @@ python __anonymous () {
 PROVIDES = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
-DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
+DEPENDS = "patcher-native virtual/${TARGET_PREFIX}gcc-initial"
+INHIBIT_DEFAULT_DEPS = "1"
 
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"

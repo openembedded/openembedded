@@ -4,6 +4,7 @@ DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+INHIBIT_DEFAULT_DEPS = "1"
 
 SRC_URI = "http://www.holgerschurig.de/files/linux/patcher"
 

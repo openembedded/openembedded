@@ -1,6 +1,6 @@
 include glibc_${PV}.oe
 
-DEPENDS = ""
+DEPENDS = "patcher-native"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-${PV}"
 S = "${WORKDIR}/glibc-${PV}"

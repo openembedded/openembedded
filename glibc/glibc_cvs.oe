@@ -30,7 +30,8 @@ PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
+DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
+INHIBIT_DEFAULT_DEPS = "1"
 
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
