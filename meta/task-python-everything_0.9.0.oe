@@ -1,6 +1,6 @@
 DESCRIPTION= "All of Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r1"
+PR = "r2"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
@@ -28,6 +28,7 @@ DEPENDS = "	python-ao 		\
 		python-pyqt		\
 		python-pyqwt		\
 		python-pyreverse	\
+		python-pyro		\
 		python-pyserial		\
 		python-pyxml		\
 		python-pyxmlrpc		\
