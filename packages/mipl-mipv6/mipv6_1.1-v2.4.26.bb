@@ -2,11 +2,15 @@ SECTION = "unknown"
 SRC_URI = "http://www.mobile-ipv6.org/software/download/mipv6-${PV}.tar.gz \
         patch://sbindir.patch;pnum=0;patch=1 \
         patch://outputfix.patch;pnum=0;patch=1"
+DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 CFLAGS =+ "-I${S}/include -I${STAGING_KERNEL_DIR}/include"
-PR="r1"
 
-inherit autotools
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+
+PR="r3"
+
+inherit autotools module-base
 
 do_compile() {
 	oe_runmake CFLAGS="${CFLAGS}"
