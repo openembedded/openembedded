@@ -15,6 +15,8 @@ S = "${WORKDIR}/libopie2"
 
 inherit opie
 
+PARALLEL_MAKE = ""
+
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
 
 EXTRA_QMAKEVARS_POST = 'DEFINES+=OPIE_NEW_MALLOC \

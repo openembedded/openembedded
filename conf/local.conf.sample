@@ -97,6 +97,12 @@ IMAGE_FSTYPES = "jffs2 tar"
 # SELECTED_OPTIMIZATION = "${PROFILE_OPTIMIZATION}"
 # LDFLAGS =+ "-pg"
 
+# Uncomment this to enable parallel make.
+# This allows make to spawn mutliple processes to take advantage of multiple 
+# processors. Useful on SMP machines. This may break some packages - we're
+# in the process of marking these so let us know if you find any.
+# PARALLEL_MAKE = "-j 4"
+
 # Uncomment this if you want BitBake to emit the log if a build fails.
 BBINCLUDELOGS = "yes"
 

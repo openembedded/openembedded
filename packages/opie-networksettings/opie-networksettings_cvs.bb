@@ -16,6 +16,8 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
+PARALLEL_MAKE = ""
+
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
 
 do_install() {

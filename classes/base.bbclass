@@ -448,23 +448,33 @@ python base_eventhandler() {
 	from bb.event import Handled, NotHandled, getName
 	import os
 
+	messages = {}
+	messages["Succeeded"] = "completed"
+	messages["Started"] = "started"
+	messages["Failed"] = "failed"
+
 	name = getName(e)
-	if name in ["PkgSucceeded"]:
-		note("package %s: build completed" % e.pkg)
-	if name in ["PkgStarted"]:
-		note("package %s: build %s" % (e.pkg, name[3:].lower()))
-	elif name in ["PkgFailed"]:
-		error("package %s: build %s" % (e.pkg, name[3:].lower()))
-	elif name in ["TaskStarted"]:
-		note("package %s: task %s %s" % (data.expand(data.getVar("PF", e.data), e.data), e.task, name[4:].lower()))
-	elif name in ["TaskSucceeded"]:
-		note("package %s: task %s completed" % (data.expand(data.getVar("PF", e.data), e.data), e.task))
-	elif name in ["TaskFailed"]:
-		error("package %s: task %s %s" % (data.expand(data.getVar("PF", e.data), e.data), e.task, name[4:].lower()))
-	elif name in ["UnsatisfiedDep"]:
-		note("package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower()))
-	elif name in ["BuildStarted", "BuildCompleted"]:
-		note("build %s %s" % (e.name, name[5:].lower()))
+	msg = ""
+	if name.startswith("Pkg"):
+		msg += "package %s: " % data.getVar("P", e.data, 1)
+		msg += messages.get(name[3:]) or name[3:]
+	elif name.startswith("Task"):
+		msg += "package %s: task %s: " % (data.getVar("PF", e.data, 1), e.task)
+		msg += messages.get(name[4:]) or name[4:]
+	elif name.startswith("Build"):
+		msg += "build %s: " % e.name
+		msg += messages.get(name[5:]) or name[5:]
+	elif name == "UnsatisfiedDep":
+		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
+	note(msg)
+	if not data in e.__dict__:
+		return NotHandled
+
+	log = data.getVar("EVENTLOG", e.data, 1)
+	if log:
+		logfile = file(log, "a")
+		logfile.write("%s\n" % msg)
+		logfile.close()
 	return NotHandled
 }
 

@@ -13,6 +13,7 @@ SRC_URI = "http://www.openswan.org/code/openswan-${PV}.tar.gz \
 	   file://openswan-2.2.0-gentoo.patch;patch=1"
 S = "${WORKDIR}/openswan-${PV}"
 
+PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "DESTDIR=${D} \
                 USERCOMPILE="${CFLAGS}" \
                 FINALCONFDIR=${sysconfdir}/ipsec \

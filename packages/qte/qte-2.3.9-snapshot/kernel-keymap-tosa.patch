@@ -3,9 +3,9 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-2.3.9-snapshot-20050101/src/kernel/qkeyboard_qws.cpp~kernel-keymap-tosa.patch
-+++ qt-2.3.9-snapshot-20050101/src/kernel/qkeyboard_qws.cpp
-@@ -301,14 +301,24 @@
+--- qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp~kernel-keymap-tosa
++++ qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp
+@@ -355,14 +355,24 @@
      {	Qt::Key_CapsLock,	0xffff  , 0xffff  , 0xffff  }, // 3c 60
      {	Qt::Key_At,		'@'     , 's'     , 'S'-64  }, // 3d
      {	Qt::Key_Question,	'?'     , '?'     , 0xffff  }, // 3e
@@ -30,7 +30,7 @@
      {	Qt::Key_Semicolon,	';'     , ';'     , 0xffff  }, // 47
      {	Qt::Key_QuoteDbl,	'\"'    , '\"'    , 0xffff  }, // 48
      {	Qt::Key_Colon,		':'     , ':'     , 0xffff  }, // 49
-@@ -518,6 +528,32 @@
+@@ -572,6 +582,32 @@
  static const int keyMSize = sizeof(keyM)/sizeof(QWSServer::KeyMap)-1;
  static QIntDict<QWSServer::KeyMap> *overrideMap = 0;
  
@@ -63,7 +63,7 @@
  /*!
    Changes the mapping of the keyboard; adding the scancode to Unicode
    mappings from \a map. The server takes over ownership of \a map
-@@ -828,6 +864,15 @@
+@@ -882,6 +918,15 @@
      int keypad = 0;
  
  #ifndef QT_QWS_USE_KEYCODES

@@ -3,8 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-2.3.9-snapshot-20050101/src/kernel/qwindowsystem_qws.cpp~c700-hardware.patch
-+++ qt-2.3.9-snapshot-20050101/src/kernel/qwindowsystem_qws.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp~c700-hardware
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp
 @@ -178,7 +178,7 @@
  static QRect maxwindow_rect;
  extern Q_EXPORT QRect qt_maxWindowRect;
@@ -23,9 +23,9 @@
      d->screensavertimer->stop();
  #else
      if ( screensaverinterval ) {
---- qt-2.3.9-snapshot-20050101/src/kernel/qwsmouse_qws.cpp~c700-hardware.patch
-+++ qt-2.3.9-snapshot-20050101/src/kernel/qwsmouse_qws.cpp
-@@ -95,6 +95,19 @@
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.cpp~c700-hardware
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.cpp
+@@ -87,6 +87,19 @@
  #define QT_QWS_TP_PRESSURE_THRESHOLD 500
  #define QT_QWS_TP_MOVE_LIMIT 50
  #define QT_QWS_TP_JITTER_LIMIT 2
@@ -45,7 +45,7 @@
  #endif
  
  #ifndef QT_QWS_TP_SAMPLE_SIZE
-@@ -600,7 +613,7 @@
+@@ -592,7 +605,7 @@
  	sub[nsub++] = new QAutoMouseSubHandler_intellimouse(fd);
  	notify(fd);
      }
@@ -54,21 +54,16 @@
      char fn[] = "/dev/ttyS?";
      for (int ch='0'; ch<='3'; ch++) {
  	fn[9] = ch;
-@@ -1493,11 +1506,11 @@
- 
- 
- QTPanelHandlerPrivate::QTPanelHandlerPrivate( MouseProtocol, QString dev )
--    : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0), 
-+    : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0),
+@@ -1274,7 +1287,7 @@
      numSamples(0), skipCount(0)
  {
      Q_UNUSED(dev);
 -#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2)
-+#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700 )
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700)
  #if defined(QT_QWS_IPAQ)
  # ifdef QT_QWS_IPAQ_RAW
      if ((mouseFD = open( "/dev/h3600_tsraw", O_RDONLY | O_NDELAY)) < 0) {
-@@ -1507,7 +1520,7 @@
+@@ -1284,7 +1297,7 @@
          qWarning( "Cannot open /dev/h3600_ts (%s)", strerror(errno));
  	return;
      }
@@ -77,7 +72,7 @@
  //# ifdef QT_QWS_SL5XXX_TSRAW
  # if 0
      if ((mouseFD = open( "/dev/tsraw", O_RDONLY | O_NDELAY)) < 0) {
-@@ -1533,7 +1546,7 @@
+@@ -1310,7 +1323,7 @@
  
  QTPanelHandlerPrivate::~QTPanelHandlerPrivate()
  {
@@ -86,7 +81,7 @@
      if (mouseFD >= 0)
  	close(mouseFD);
  #endif
-@@ -1541,7 +1554,7 @@
+@@ -1318,7 +1331,7 @@
  
  void QTPanelHandlerPrivate::readMouseData()
  {
@@ -95,7 +90,7 @@
      if(!qt_screen)
  	return;
  
-@@ -1560,7 +1573,7 @@
+@@ -1337,7 +1350,7 @@
  	uchar *mb = mouseBuf+idx;
  	data = (TS_EVENT *) mb;
  	if(data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD) {
@@ -104,32 +99,8 @@
  	    samples[currSample] = QPoint( 1000 - data->x, data->y );
  #else
  	    samples[currSample] = QPoint( data->x, data->y );
-@@ -1574,12 +1587,12 @@
- 		mousePos = QPoint( 0, 0 );
- 		QPoint totalMousePos = oldTotalMousePos;
- 		totalMousePos += samples[currSample];
--		if(numSamples >= samples.count()) 
-+		if(numSamples >= samples.count())
- 		    totalMousePos -= samples[lastSample];
- 
- 		mousePos = totalMousePos / (sampleCount - 1);
- 
--# if defined(QT_QWS_IPAQ_RAW) || defined(QT_QWS_SL5XXX_RAW)
-+# if defined(QT_QWS_IPAQ_RAW) || defined(QT_QWS_SL5XXX_RAW) || defined(QT_QWS_SLC700_RAW)
- 		mousePos = transform( mousePos );
- # endif
- 		if(!waspressed)
-@@ -1604,7 +1617,7 @@
- 
- 		    // save recuring information
- 		    currSample++;
--		    if (numSamples >= samples.count()) 
-+		    if (numSamples >= samples.count())
- 			lastSample++;
- 		    oldTotalMousePos = totalMousePos;
- 		} else {
-@@ -1963,7 +1976,7 @@
-             handler = new QTSLibHandler();
+@@ -1997,7 +2010,7 @@
+ 	    handler = new QTSLibHandlerPrivate();
  #elif defined(QT_QWS_YOPY)
  	    handler = new QYopyTPanelHandlerPrivate(mouseProtocol,mouseDev);
 -#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2)

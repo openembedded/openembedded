@@ -3,11 +3,11 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-2.3.9-snapshot-20041212/configure~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/configure
+--- qt-2.3.9-snapshot-20050114/configure~qt-visibility
++++ qt-2.3.9-snapshot-20050114/configure
 @@ -409,6 +409,9 @@
     -tslib)
- 	TSLIB=YES
+        TSLIB=yes
  	;;
 +   -visibility-hidden)
 +   	VISIBILITY=YES
@@ -16,8 +16,8 @@
  	GPLUSPLUS_EXCEPTIONS=no
  	;;
 @@ -1296,6 +1299,9 @@
-     -tslib ............. Use the TSLib (touchscreen access library) mouse handler
-                          by default, instead of the normal device default.
+     -tslib ............. Enable TSlib (touchscreen library) mouse handler.
+                          See http://arm.linux.org.uk 			      
  
 +    -visibility-hidden . Use -fvisibility=hidden as default. This requires GCC 4.0
 +                         or a special patched GCC to support the visibility attribute
@@ -25,21 +25,20 @@
      -no-g++-exceptions . Disable exceptions on platforms using the GNU C++
  			 compiler by using the -fno-exceptions flag.
  
-@@ -1366,6 +1372,11 @@
+@@ -1364,6 +1370,10 @@
+    QT_CXX="${QT_CXX} -DQT_QWS_TSLIB"
     QT_LIBS="${QT_LIBS} -lts"
  fi
- 
 +if [ "x$VISIBILITY=" = "xyes" ]
 +then
 +   QT_CXX="${QT_CXX} -DGCC_SUPPORTS_VISIBILITY -fvisibility=hidden"
 +fi
-+
  if [ "x$THREAD" = "xyes" ]
  then
     cat >src-mt.mk <<EOF
---- qt-2.3.9-snapshot-20041212/src/tools/qglobal.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/tools/qglobal.h
-@@ -504,6 +504,12 @@
+--- qt-2.3.9-snapshot-20050114/src/tools/qglobal.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/tools/qglobal.h
+@@ -503,6 +503,12 @@
  #undef QT_DLL
  #endif
  
@@ -52,8 +51,8 @@
  #ifndef Q_EXPORT
  #define Q_EXPORT
  #endif
---- qt-2.3.9-snapshot-20041212/src/widgets/qscrollview.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/widgets/qscrollview.cpp
+--- qt-2.3.9-snapshot-20050114/src/widgets/qscrollview.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/widgets/qscrollview.cpp
 @@ -696,7 +696,7 @@
    The surrounding environment (or application, if there is no
    environment, may set this. Requires Qt >= 2.3.8.
@@ -63,8 +62,8 @@
  
  /*!
    Updates scrollbars - all possibilities considered.  You should never
---- qt-2.3.9-snapshot-20041212/src/Makefile.in~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/Makefile.in
+--- qt-2.3.9-snapshot-20050114/src/Makefile.in~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/Makefile.in
 @@ -641,7 +641,7 @@
  		network/qsocket.h \
  		network/qsocketdevice.h
@@ -74,8 +73,8 @@
  	$(MOC) -o allmoc.cpp allmoc.h
  	perl -pi -e 's{"allmoc.h"}{"kernel/qt.h"}' allmoc.cpp
  	rm allmoc.h
---- qt-2.3.9-snapshot-20041212/src/kernel/qcopchannel_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qcopchannel_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qcopchannel_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qcopchannel_qws.h
 @@ -42,7 +42,7 @@
  class QCopChannelPrivate;
  class QWSClient;
@@ -85,8 +84,8 @@
  {
      Q_OBJECT
  public:
---- qt-2.3.9-snapshot-20041212/src/kernel/qfontmanager_qws.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qfontmanager_qws.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.cpp
 @@ -68,7 +68,7 @@
      return r;
  }
@@ -96,8 +95,8 @@
  
  /*!
    \class QFontManager qfontmanager_qws.h
---- qt-2.3.9-snapshot-20041212/src/kernel/qgfx_qws.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qgfx_qws.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qgfx_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qgfx_qws.cpp
 @@ -38,10 +38,10 @@
  #include <stdlib.h>
  
@@ -112,8 +111,8 @@
  
  extern bool qws_screen_is_interlaced; //### hack, from qapplication_qws.cpp
  
---- qt-2.3.9-snapshot-20041212/src/kernel/qwindowsystem_qws.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwindowsystem_qws.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp
 @@ -89,7 +89,7 @@
  
  extern void qt_setMaxWindowRect(const QRect& r);
@@ -123,8 +122,8 @@
  
  #define MOUSE 0
  #define KEY 1
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsdecoration_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsdecoration_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsdecoration_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsdecoration_qws.h
 @@ -41,7 +41,7 @@
  /*
   Implements decoration styles
@@ -134,8 +133,8 @@
  {
  public:
      QWSDecoration() {}
---- qt-2.3.9-snapshot-20041212/src/kernel/qwindowsystem_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwindowsystem_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.h
 @@ -67,7 +67,7 @@
  
  struct QWSWindowData;
@@ -193,8 +192,8 @@
  {
      Q_OBJECT
  public:
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsdefaultdecoration_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsdefaultdecoration_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsdefaultdecoration_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsdefaultdecoration_qws.h
 @@ -44,7 +44,7 @@
  
  
@@ -204,8 +203,8 @@
  {
  public:
      QWSDefaultDecoration();
---- qt-2.3.9-snapshot-20041212/src/kernel/qwscommand_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwscommand_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwscommand_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwscommand_qws.h
 @@ -47,8 +47,8 @@
   *
   *********************************************************************/
@@ -226,8 +225,8 @@
  {
      // ctor - dtor
      QWSProtocolItem( int t, int len, char *ptr ) : type( t ),
---- qt-2.3.9-snapshot-20041212/src/kernel/qfont_qws.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qfont_qws.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfont_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfont_qws.cpp
 @@ -152,7 +152,7 @@
  static QFontCache    *fontCache	     = 0;	// cache of loaded fonts
  static QFontDict     *fontDict	     = 0;	// dict of all loaded fonts
@@ -237,8 +236,8 @@
  {
      QFontDictIt it( *fontDict );
      while ( it.current() ) {
---- qt-2.3.9-snapshot-20041212/src/kernel/qwscursor_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwscursor_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwscursor_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwscursor_qws.h
 @@ -37,7 +37,7 @@
  #include <qimage.h>
  #endif // QT_H
@@ -248,8 +247,8 @@
  {
  public:
      QWSCursor() {}
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsevent_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsevent_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsevent_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsevent_qws.h
 @@ -40,7 +40,7 @@
  
  struct QWSMouseEvent;
@@ -394,8 +393,8 @@
      QWSIMEvent()
  	: QWSEvent( IMEvent, sizeof( simpleData ), (char*)&simpleData ) { }
  
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsmanager_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsmanager_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsmanager_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsmanager_qws.h
 @@ -48,7 +48,7 @@
  class QWSButton;
  class QWSManager;
@@ -405,8 +404,8 @@
  {
      Q_OBJECT
  
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsmouse_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsmouse_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.h
 @@ -38,7 +38,7 @@
  #include <qpointarray.h>
  #endif // QT_H
@@ -425,8 +424,8 @@
      Q_OBJECT
  public:
      QWSMouseHandler();
---- qt-2.3.9-snapshot-20041212/src/kernel/qwsproperty_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qwsproperty_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsproperty_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsproperty_qws.h
 @@ -47,7 +47,7 @@
  
  class QWSPropertyManagerData;
@@ -436,8 +435,8 @@
  {
  public:
      enum Mode {
---- qt-2.3.9-snapshot-20041212/src/kernel/qlayoutengine.cpp~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041212/src/kernel/qlayoutengine.cpp
+--- qt-2.3.9-snapshot-20050114/src/kernel/qlayoutengine.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qlayoutengine.cpp
 @@ -70,7 +70,7 @@
    pos and space give the interval (relative to parentWidget topLeft.)
  */
@@ -447,8 +446,8 @@
  		      int space, int spacer )
  {
      typedef int fixed;
---- qt-2.3.9-snapshot-20041229/src/kernel/qfontmanager_qws.h~qt-visibility.patch
-+++ qt-2.3.9-snapshot-20041229/src/kernel/qfontmanager_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.h
 @@ -84,7 +84,7 @@
  // e.g. Truetype Times, 10 point. There's only one of these though;
  // we want to share generated glyphs
