@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 DEPENDS = "qmake-native x11-native"
 
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qt-x11-free-${PV}"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qt-x11-free"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://no-examples.patch;patch=1"
