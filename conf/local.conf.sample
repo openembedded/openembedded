@@ -2,6 +2,10 @@ TARGET_ARCH = "arm"
 DL_DIR = "${HOME}/sources"
 OEFILES = "*/*.oe"
 # NOTE: only recent oemake's obey OEMASK directly
-OEMASK = "-initial|/(binutils|uclibc|avr-libc|gcc|linux|grub|qte_|qte-for-qtopia|toolchain-external)"
+OEMASK = "(uclibc|avr-libc|linux|grub|qte_|qte-for-qtopia|toolchain-external)"
+
+# Use this OEMASK if you want to use a prebuild toolchain. You will need to provide packages for toolchain
+# specific libraries yourself
+OEMASK = "-initial|/(binutils|uclibc|avr-libc|gcc|linux|grub|qte_|qte-for-qtopia)"
 
 #INHERIT = "package_tar"
