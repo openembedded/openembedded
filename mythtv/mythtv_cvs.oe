@@ -2,6 +2,7 @@ DESCRIPTION = "A full featured personal video recorder system."
 MAINTAINER = "Michael 'Mickey' Lauer"
 SECTION = "x11/multimedia"
 PR = "r2"
+PV = "0.16+cvs${CVSDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 
