@@ -12,6 +12,10 @@ SRC_URI = "file://halt \
            file://devices \
            file://h3600/devices \
            file://collie/devices \
+           file://shepherd/devices \
+           file://husky/devices \
+           file://corgi/devices \
+           file://poodle/devices \
            file://devpts.sh \
            file://devpts \
            file://bootlogo-simpad.gz \
