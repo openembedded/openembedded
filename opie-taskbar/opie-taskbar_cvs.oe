@@ -15,6 +15,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc \
+	   file://nomax.patch;patch=1;pnum=3 \
            file://server.pro \
            file://opie-reorgfiles \
            file://opie \

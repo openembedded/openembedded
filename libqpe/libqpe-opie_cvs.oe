@@ -7,7 +7,8 @@ DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.6+cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library \
+	file://nomax.patch;patch=1;pnum=2"
 S = "${WORKDIR}/library"
 
 inherit qmake
@@ -16,7 +17,7 @@ QMAKE_PROFILES = "library.pro"
 EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
 EXTRA_QMAKEVARS_POST = "DESTDIR="
 
-CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
+CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NO_WINDOWED -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
 
 do_compile_prepend_ramses () {
 	ln -s custom-ramses.h custom.h
