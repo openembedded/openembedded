@@ -1,0 +1,25 @@
+DESCRIPTION="libetpan is a library for mail server functions"
+SECTION=libs
+DEPENDS = virtual/libc openssl
+RDEPENDS = libc6 openssl
+PR = r1
+
+SRC_URI := http://www.alwins-world.de/oe/${P}.tar.bz2  \
+	file://${FILESDIR}/mailstream_socket.patch;patch=1 \
+
+inherit autotools
+
+do_configure() {
+	./configure --prefix=${STAGING_DIR}/target --with-openssl=${STAGING_DIR}/target --disable-db --host=${HOST_SYS}
+
+}
+
+do_stage() {
+   oe_runmake install
+}
+
+do_install() {
+   install -d ${D}/${libdir}
+   oe_soinstall .libs/libetpan.so.1.0.0 ${D}/${libdir}
+}
+
