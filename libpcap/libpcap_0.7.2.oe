@@ -2,6 +2,7 @@ DESCRIPTION="Network Packet Capture Library"
 SECTION="libs"
 PRIORITY="required"
 MAINTAINER="Greg Gilbert <treke@handhelds.org>"
+DEPENDS=virtual/libc
 RDEPENDS="libc6"
 
 SRC_URI=http://www.tcpdump.org/release/libpcap-${PV}.tar.gz;
@@ -9,10 +10,10 @@ SRC_URI_append=" file://${FILESDIR}/libpcap-shared.patch;patch=1"
 SRC_URI_append=" file://${FILESDIR}/configure.patch;patch=1"
 SRC_URI_append=" file://${FILESDIR}/ldflags.patch;patch=1"
 DEPENDS=virtual/libc
-S=${WORKDIR}/libpcap-${PV}
 
 inherit autotools
 EXTRA_OECONF="  --with-pcap=linux"
+
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
 		cat aclocal.m4 > acinclude.m4
