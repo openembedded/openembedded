@@ -4,7 +4,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/shfs/shfs-${PV}.tar.gz"
 S = "${WORKDIR}/shfs-${PV}/shfs/Linux-2.4"
@@ -15,7 +15,8 @@ inherit module
 
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-        oe_runmake KERNEL_SOURCES=${KERNEL_SOURCE} KERNEL=${KERNEL_VERSION} LINKER=${LD} LDFLAGS=-r
+        oe_runmake KERNEL_SOURCES=${KERNEL_SOURCE} KERNEL=${KERNEL_VERSION} \
+                   CC="${KERNEL_CC}" LD="${KERNEL_LD}" LINKER="${KERNEL_LD}" LDFLAGS=-r
 }
 
 do_stage() {
