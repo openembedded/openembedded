@@ -1,6 +1,7 @@
 include binutils_${PV}.oe
 inherit cross
-PROVIDES = virtual/${TARGET_SYS}-binutils
+PROVIDES = virtual/${TARGET_PREFIX}binutils
+DEPENDS = patcher
 FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}
 
 D=${CROSS_DIR}

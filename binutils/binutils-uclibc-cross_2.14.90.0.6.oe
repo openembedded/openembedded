@@ -1,4 +1,5 @@
 include binutils-uclibc_${PV}.oe
 inherit cross
-PROVIDES = virtual/${TARGET_SYS}-binutils
-FILESDIR = ${TOPDIR}/binutils/binutils-${PV}
+PROVIDES = virtual/${TARGET_PREFIX}binutils
+DEPENDS = patcher
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}

@@ -1,5 +1,5 @@
 include binutils_${PV}.oe
-FILESDIR = ${TOPDIR}/binutils/binutils-${PV}
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}
 
 binutilsbuild_do_patch () {
 	oenote IN binutils patch

@@ -4,7 +4,7 @@ DESCRIPTION := A GNU collection of binary utilities
 LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
-DEPENDS := virtual/${CROSS}binutils virtual/${CROSS}gcc \
+DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
            virtual/libc virtual/libc-headers patcher
 
 PACKAGES = ${PN} ${PN}-doc
@@ -25,41 +25,31 @@ EXTRA_OECONF := --enable-targets=${TARGET_SYS} \
                 --with-sysroot=${prefix} \
                 --with-lib-path=${prefix}/lib:/lib \
                 --enable-multilib \
-                --program-prefix=${TARGET_SYS}-
+                --program-prefix=${TARGET_PREFIX}
 
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = configure-build-libiberty all
 
-export AR = ${CROSS}ar
-export AS = ${CROSS}as
-export LD = ${CROSS}ld
-export NM = ${CROSS}nm
-export RANLIB = ${CROSS}ranlib
-export OBJCOPY = ${CROSS}objcopy
-export OBJDUMP = ${CROSS}objdump
+export AR = ${HOST_PREFIX}ar
+export AS = ${HOST_PREFIX}as
+export LD = ${HOST_PREFIX}ld
+export NM = ${HOST_PREFIX}nm
+export RANLIB = ${HOST_PREFIX}ranlib
+export OBJCOPY = ${HOST_PREFIX}objcopy
+export OBJDUMP = ${HOST_PREFIX}objdump
 
-export AR_FOR_TARGET = ${TARGET_SYS}-ar
-export AS_FOR_TARGET = ${TARGET_SYS}-as
-export LD_FOR_TARGET = ${TARGET_SYS}-ld
-export NM_FOR_TARGET = ${TARGET_SYS}-nm
-export RANLIB_FOR_TARGET = ${TARGET_SYS}-ranlib
+export AR_FOR_TARGET = ${TARGET_PREFIX}ar
+export AS_FOR_TARGET = ${TARGET_PREFIX}as
+export LD_FOR_TARGET = ${TARGET_PREFIX}ld
+export NM_FOR_TARGET = ${TARGET_PREFIX}nm
+export RANLIB_FOR_TARGET = ${TARGET_PREFIX}ranlib
 
-export CC_FOR_HOST = ${CCACHE} ${CROSS}gcc
-export CXX_FOR_HOST = ${CCACHE} ${CROSS}gcc
+export CC_FOR_HOST = ${CCACHE} ${HOST_PREFIX}gcc
+export CXX_FOR_HOST = ${CCACHE} ${HOST_PREFIX}gcc
 
 export CC_FOR_BUILD = ${BUILD_CC}
 
-export CC = ${CCACHE} ${CROSS}gcc
-
-binutilsbuild_do_patch () {
-	oenote IN binutils patch
-	perl -i -p -e 's,#.*define.*ELF_DYNAMIC_INTERPRETER.*".*",#define ELF_DYNAMIC_INTERPRETER "/lib/ld-uClibc.so.0",;' `grep -lr ELF_DYNAMIC_INTERPRETER *`
-}
-
-python do_patch () {
-	oe.build.exec_func('base_do_patch', d)
-	oe.build.exec_func('binutilsbuild_do_patch', d)
-}
+export CC = ${CCACHE} ${HOST_PREFIX}gcc
 
 do_configure () {
 	oe_runconf

@@ -4,17 +4,17 @@ DESCRIPTION := The GNU cc and gcc C compilers.
 LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${CROSS}gcc \
+DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
            virtual/uclibc virtual/uclibc-headers patcher
 
 PACKAGES = ${PN} ${PN}-cplusplus \
            uclibc-libgcc uclibc-libstdcplusplus \
            ${PN}-doc
 
-FILES_${PN} = ${bindir}/${TARGET_SYS}-gcc \
-              ${bindir}/${TARGET_SYS}-cpp \
-              ${bindir}/${TARGET_SYS}-gcov \
-              ${bindir}/${TARGET_SYS}-gccbug \
+FILES_${PN} = ${bindir}/${TARGET_PREFIX}gcc \
+              ${bindir}/${TARGET_PREFIX}cpp \
+              ${bindir}/${TARGET_PREFIX}gcov \
+              ${bindir}/${TARGET_PREFIX}gccbug \
               ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1 \
               ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/collect2 \
               ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/crt* \
@@ -26,7 +26,7 @@ FILES_${PN} = ${bindir}/${TARGET_SYS}-gcc \
               ${bindir}/cc ${bindir}/gcc ${bindir}/cpp \
               ${bindir}/gcov ${bindir}/gccbug
 
-FILES_${PN}-cplusplus = ${bindir}/${TARGET_SYS}-g++ \
+FILES_${PN}-cplusplus = ${bindir}/${TARGET_PREFIX}g++ \
                   ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1plus \
                   ${prefix}/${TARGET_SYS}/lib/libstdc++.so \
                   ${prefix}/${TARGET_SYS}/lib/libstdc++.la \
@@ -60,9 +60,9 @@ EXTRA_OECONF := --with-local-prefix=/usr/local \
                 --enable-languages=c,c++ \
                 --enable-shared \
                 --enable-multilib \
-                --program-prefix=${TARGET_SYS}-
+                --program-prefix=${TARGET_PREFIX}
 
-do_configure_prepend () {
+do_configure () {
 	# Setup these vars for cross building only
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
 		export CC_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}gcc"
@@ -74,6 +74,7 @@ do_configure_prepend () {
 		export AR_FOR_TARGET="${TARGET_PREFIX}ar"
 		export RANLIB_FOR_TARGET="${TARGET_PREFIX}ranlib"
 	fi
+	oe_runconf
 }
 
 do_install () {
