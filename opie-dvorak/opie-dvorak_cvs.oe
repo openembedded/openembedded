@@ -4,12 +4,13 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-pickboard"
+RDEPENDS = "opie-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "qdvorak"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dvorak \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/pickboard"
-
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/pickboard"
 S = "${WORKDIR}/dvorak"
 
 inherit opie

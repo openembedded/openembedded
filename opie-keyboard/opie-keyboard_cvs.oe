@@ -1,14 +1,15 @@
-DESCRIPTION = "Keyboard input method"
+DESCRIPTION = "Opie Keyboard input method"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-pickboard"
+RDEPENDS = "opie-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "qkeyboard"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/keyboard "
-
 S = "${WORKDIR}/keyboard"
 
 inherit opie

@@ -4,13 +4,13 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
-RDEPENDS = "opie-pics"
+RDEPENDS = "opie-pics opic-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "qmultikey"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share"
-
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share"
 S = "${WORKDIR}/multikey"
 
 inherit opie
