@@ -2,11 +2,12 @@ DESCRIPTION = "libetpan is a library for communicating with mail and news server
 SMTP, POP, IMAP and NNTP"
 SECTION = "libs"
 DEPENDS = "gettext-native openssl"
-CVSDATE = "20040729"
-PV = "0.32cvs16-${CVSDATE}"
+PV = "0.33"
+PR = "r1"
 S = "${WORKDIR}/libetpan"
+TAG="rel-0-33-b"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan"
 
 inherit autotools pkgconfig
 
