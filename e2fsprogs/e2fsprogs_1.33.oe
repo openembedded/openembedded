@@ -11,3 +11,5 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://m4.patch;patch=1"
 
 inherit autotools
+
+sbindir = "/sbin"

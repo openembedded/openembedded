@@ -12,6 +12,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 
 inherit autotools
 
+sbindir = "/sbin"
+
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
 	( cd util; ${BUILD_CC} subst.c -o subst )
