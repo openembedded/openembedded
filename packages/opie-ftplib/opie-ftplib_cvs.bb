@@ -5,18 +5,14 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "libftplib1"
 I18N_FILES = "libftplib.ts"
-
 APPNAME = "opie-ftplib"
-
 PV = "1.1.9+cvs-${CVSDATE}"
+PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/ftplib"
 S = "${WORKDIR}/ftplib"
 
-inherit palmtop
-
-
-EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
+inherit opie
 
 do_stage () {
 	install -m 0664 ${S}/ftplib.h ${STAGING_INCDIR}/
