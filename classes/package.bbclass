@@ -486,6 +486,8 @@ python package_do_pkgconfig () {
 			f.close()
 
 	for dir in [old_shlibs_dir, shlibs_dir]:
+		if not os.path.exists(dir):
+			continue
 		for file in os.listdir(dir):
 			m = re.match('^(.*)\.pclist$', file)
 			if m:
