@@ -4,7 +4,8 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-2.3.8-snapshot"
 DESCRIPTION = "Qt/Embedded w/ Opie Patches version ${PV}"
 
 SRC_URI_append = " file://opie.patch;patch=1 \
-		  file://qte238-iconviewspeed.patch;patch=1 \
+     file://qte238-iconviewspeed.patch;patch=1 \
+	   file://c700-hardware.patch;patch=1 \
  	   file://tslib.patch;patch=1 \
 	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
@@ -19,4 +20,3 @@ SRC_URI_append = " file://opie.patch;patch=1 \
 
 
 # 		  file://lefthand.patch;patch=1 \
-#	   file://c700-hardware.patch;patch=1 \
