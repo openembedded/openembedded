@@ -42,7 +42,7 @@ Subject: DeliverXML
 <message>
     <generator>
         <name>BitKeeper CIA Bot client shell script</name>
-        <version>1.0</version>
+        <version>1.1</version>
     </generator>
     <source>
         <project>$project_name</project>
