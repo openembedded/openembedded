@@ -1,0 +1,51 @@
+DESCRIPTION=User Interface Generator and Meta Object Compiler (moc) for Qt(E) 2.x
+PRIORITY="optional"
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+LICENSE="GPL/QPL"
+
+SRC_URI="ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz"
+S="${WORKDIR}/qt-2.3.7"
+
+inherit autotools native
+
+export QTDIR=${S}
+export SYSCONF_CXX = ${CCACHE} g++
+export SYSCONF_CC  = ${CCACHE} gcc
+export SYSCONF_LINK  = ${CCACHE} g++
+
+ARCH_i686=x86
+
+EXTRA_OECONF=-depths 8,16 -xplatform linux-x86-g++ -no-qvfb -no-g++-exceptions -no-jpeg -no-mng -qt-zlib -qt-libpng -no-xft -no-xkb -no-vnc -no-sm -no-opengl -static -qconfig oe
+EXTRA_OEMAKE=-e
+
+do_configure() {
+        if [ "$BUILD_ARCH" = "i686" ]; then
+                BUILD_ARCH=x86
+        fi
+	echo "#define QT_NO_FREETYPE" >>src/tools/qconfig-oe.h
+        echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
+}
+
+do_compile() {
+        unset CC LD CCLD CXX RANLIB AR STRIP CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
+        cd ${S}/src/moc && oe_runmake || die "Building moc failed"
+        cp ${S}/src/moc/moc ${S}/bin
+        cd ${S}/src && oe_runmake || die "Building libqt.a failed"
+        cd ${S}/tools/designer/util && oe_runmake || die "Building libqutil.a failed"
+        cd ${S}/tools/designer/uic && oe_runmake || die "Building uic failed"
+        cd ${S}/tools/qvfb && oe_runmake || die "Building qvfb failed"
+}
+
+do_stage() {
+        install -m 0755 bin/moc ${STAGING_BINDIR}
+        install -m 0755 bin/uic ${STAGING_BINDIR}
+}
+
+do_install() {
+
+        sleep 1
+
+}
+
+
