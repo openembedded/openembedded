@@ -1,0 +1,28 @@
+SRC_URI = ${DEBIAN_MIRROR}/main/o/openssl/${PN}_${PV}.orig.tar.gz \
+	  ${DEBIAN_MIRROR}/main/o/openssl/${PN}_${PV}-2.diff.gz;patch=1
+S = ${WORKDIR}/${PN}-${PV}.orig
+
+DEPENDS = virtual/libc
+SECTION = libs
+DESCRIPTION = Secure Socket Layer (SSL) binary and related cryptographic tools.
+
+export AR := ${AR} r
+export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
+export DIRS = "crypto ssl"
+export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
+do_compile () {
+	set -e
+	perl util/perlpath.pl /usr/bin
+	perl ./Configure shared --prefix=/usr --openssldir=/usr/lib/ssl linux-elf-arm
+	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
+	oe_runmake -f Makefile.ssl
+}
+
+do_stage () {
+	set -e
+	cp --dereference -R include/openssl ${STAGING_DIR}/target/include/
+	install -m 0755 libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libcrypto.so.0.9.7 ${STAGING_LIBDIR}/libcrypto.so
+	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libssl.so.0.9.7 ${STAGING_LIBDIR}/libssl.so
+}

@@ -9,7 +9,7 @@ RDEPENDS_append_libpng3=' libpng12'
 SRC_URI=http://www.libpng.org/pub/png/src/${P}.tar.bz2
 S=${WORKDIR}/${P}
 
-EXTRA_OEMAKE_append=' ZLIBINC=${STAGING_DIR}/include ZLIBLIB=${STAGING_LIBDIR}'
+EXTRA_OEMAKE_append=' ZLIBINC=${STAGING_DIR}/target/include ZLIBLIB=${STAGING_LIBDIR}'
 
 do_compile() {
 	set -e
@@ -19,8 +19,8 @@ do_compile() {
 
 do_stage() {
 	install -d ${STAGING_DIR}/{bin,lib,include}
-	install -m 644 -D png.h ${STAGING_DIR}/include/png.h
-	install -m 644 -D pngconf.h ${STAGING_DIR}/include/pngconf.h
+	install -m 644 -D png.h ${STAGING_DIR}/target/include/png.h
+	install -m 644 -D pngconf.h ${STAGING_DIR}/target/include/pngconf.h
 	install -m 755 -D libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0.${PV}
 	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0
 	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so
