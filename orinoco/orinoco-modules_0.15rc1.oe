@@ -2,14 +2,21 @@ DESCRIPTION = "A driver for wireless LAN cards based on Hermes(Orinoco) cards. \
 Also contains support for cards using downloadable firmware, i.e. the Symbol/Socket family."
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PR = "1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \
-           file://spectrum.conf"
+           file://spectrum-firmware.patch;patch=1 \
+           file://spectrum.conf \
+           file://spectrum_fw.h"
 S = "${WORKDIR}/orinoco-${PV}"
 
 inherit module
+
+do_compile_prepend() {
+	install ${WORKDIR}/spectrum_fw.h ${S}/
+}
 
 do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless
