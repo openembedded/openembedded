@@ -1,7 +1,7 @@
 DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://flags.patch;patch=1 \
@@ -15,7 +15,7 @@ INITSCRIPT_NAME = "udev"
 INITSCRIPT_PARAMS = "start 03 S ."
 
 export HOSTCC = "${BUILD_CC}"
-export udevdir ?= "/udev"
+export udevdir ?= "/dev"
 export usrbindir := "${bindir}"
 export usrsbindir := "${sbindir}"
 export etcdir = "${sysconfdir}"

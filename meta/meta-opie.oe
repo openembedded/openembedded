@@ -2,20 +2,21 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r10"
+PR = "r11"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
-            task-opie-decorations task-opie-games task-opie-inputmethods \
-		    task-opie-multimedia task-opie-pim task-opie-settings \
-		    task-opie-styles task-opie-today task-opie-bluetooth \
-			task-opie-wlan \
-			task-qpe-applets task-qpe-games task-qpe-inputmethods \
-			task-qpe-multimedia task-qpe-emulators task-qpe-applications \
-			task-qpe-fonts"
+	task-opie-decorations task-opie-games task-opie-inputmethods \
+	task-opie-multimedia task-opie-pim task-opie-settings \
+	task-opie-styles task-opie-today task-opie-bluetooth \
+	task-opie-wlan \
+	task-qpe-applets task-qpe-games task-qpe-inputmethods \
+	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
+	task-qpe-fonts task-qpe-settings"
 
 DEPENDS = "\
+libopieobex0 \
 opie-examples-python \
 opie-freetype \
 opie-help-en \
@@ -188,6 +189,7 @@ task-qpe-games = "\
 aliens \
 aliens-qt \
 atomic \
+billiardz \
 brickout \
 checkers \
 crossword \
@@ -210,6 +212,7 @@ powermanga \
 prboom \
 puzz-le \
 qfish2 \
+qpe-vexed \
 qmatrix \
 rott \
 scummvm \
@@ -380,3 +383,8 @@ qpf-bitstream-vera \
 "
 DEPENDS += " ${task-qpe-fonts}"
 
+task-qpe-settings = "\
+qclockchange \
+"
+RDEPENDS_task-qpe-settings += "${task-qpe-settings}"
+DEPENDS += " ${task-qpe-settings}"

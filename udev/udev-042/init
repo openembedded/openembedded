@@ -99,7 +99,7 @@ case "$1" in
     echo "done."
     ;;
   stop)
-    start-stop-daemon --stop --exec /sbin/udevd --oknodo --quiet
+    start-stop-daemon -K -x /sbin/udevd 
     echo -n "Unmounting $udev_root..."
     # unmounting with -l should never fail
     if umount -l $udev_root; then
@@ -146,7 +146,7 @@ case "$1" in
 #    /etc/init.d/mountvirtfs start
     ;;
   stop)
-    start-stop-daemon --stop --exec /sbin/udevd --oknodo --quiet
+    start-stop-daemon -K -x /sbin/udevd 
     unmount_devpts
     echo -n "Unmounting /dev..."
     # unmounting with -l should never fail
@@ -159,7 +159,7 @@ case "$1" in
     fi
     ;;
   restart|force-reload)
-    start-stop-daemon --stop --exec /sbin/udevd --oknodo --quiet
+    start-stop-daemon -K -x /sbin/udevd 
     echo -n "Recreating device nodes..."
     ACTION=add
     $UDEVSTART
