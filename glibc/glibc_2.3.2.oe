@@ -54,7 +54,7 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1;pnum=1 \
 	   file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1;pnum=1 \
 	   file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/pthread-cleanup.patch;patch=1;pnum=0 \
