@@ -98,7 +98,6 @@ echo repository={green}${R_OUT}{normal} $U_OUT
      (
      $CHANGECMD -d'$if(:GFILE:=ChangeSet){{orange}ChangeSet@:REV:{normal}$if(:TAG:){ tags={red}:TAG:{normal}} $if(:C:){:C:}\n}$unless(:GFILE:=ChangeSet){* :GFILE:$if(:C:){: $each(:C:){(:C:)}}\n}' - < $BK_CSETLIST
      )
-fi
 ) | mail -s "Announce `echo -n $IRCCHANNEL | sed 's,.*/,,'`" $COMMITADDRESS
 echo "done."
 fi
