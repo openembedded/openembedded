@@ -121,7 +121,7 @@ CONFIG_FEATURE_FANCY_TAIL=y
 # CONFIG_TR is not set
 # CONFIG_TRUE is not set
 # CONFIG_TTY is not set
-# CONFIG_UNAME is not set
+CONFIG_UNAME=y
 CONFIG_UNIQ=y
 # CONFIG_USLEEP is not set
 # CONFIG_UUDECODE is not set
