@@ -9,6 +9,6 @@ CFLAGS_append = " -I${S}/libtomcrypt"
 LD=${CC}
 do_install () {
 	set -e
-	install -d ${D}/usr/sbin
+	install -d ${D}/usr/sbin ${D}/usr/bin
 	oe_runmake DESTDIR=${D} install
 }

@@ -12,3 +12,8 @@ do_compile () {
 		base_do_compile $@
 	) || die "compilation failed."
 }
+
+do_install () {
+	set -e
+	oe_runmake DESTDIR="${D}" install
+}
