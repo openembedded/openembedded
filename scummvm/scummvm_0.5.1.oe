@@ -1,8 +1,8 @@
-DESCRIPTION="Virtual Machine for LucasArts Adventures"
-SECTION="base"
-PRIORITY="optional"
-RDEPENDS="libc6 libsdl-qpe libmad"
-DEPENDS=virtual/libc libsdl-qpe libmad
+DESCRIPTION = "Virtual Machine for LucasArts Adventures"
+SECTION = "base"
+PRIORITY = "optional"
+RDEPENDS = "libc6 libsdl-qpe libmad"
+DEPENDS = "virtual/libc libsdl-qpe libmad"
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tgz
 

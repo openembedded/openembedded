@@ -1,0 +1,20 @@
+DESCRIPTION = "A C++ SNMP library that supports SNMPv1, SNMPv2c and SNMPv3"
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc libdes libtomcrypt"
+
+SRC_URI = http://www.agentpp.com/${PN}v${PV}.tar.gz
+S = "${WORKDIR}/${PN}/src"
+
+CFLAGS_append = " -I../include"
+
+do_compile() {
+	oe_runmake -f Makefile.linux LIBDESDIR=${STAGING_LIBDIR} LIBTOMCRYPTDIR=${STAGING_LIBDIR}
+}
+
+do_stage() {
+	install -m 0755 ../lib/libsnmp++.a ${STAGING_LIBDIR}/
+	install -d ${STAGING_INCDIR}/snmp++
+	install -m 0644 ../include/*.h ${STAGING_INCDIR}/snmp++
+}

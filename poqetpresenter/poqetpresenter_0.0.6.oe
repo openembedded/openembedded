@@ -1,0 +1,24 @@
+DESCRIPTION = "OpenOffice.org Impress presentation viewer for Qt/E based Palmtop environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc virtual/libqpe"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/poqetp/poqetp_${PV}_src.tar.gz
+S = "${WORKDIR}/poqetp"
+
+inherit palmtop
+
+do_configure_prepend() {
+	find . -name "Makefile"|xargs rm -f # force regenerating Makefiles
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+        install -D -m 0755 poqetp/poqetp ${D}/opt/QtPalmtop/bin/poqetp
+        install -D -m 0644 poqetp.desktop ${D}/opt/QtPalmtop/apps/Applications/poqetp.desktop
+        install -d ${D}/opt/QtPalmtop/pics/poqetp
+        cp -a pics/* ${D}/opt/QtPalmtop/pics/poqetp/
+}

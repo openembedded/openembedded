@@ -1,12 +1,12 @@
 SRC_URI = ${SOURCEFORGE_MIRROR}/linux-hotplug/hotplug-2003_08_05.tar.gz \
 	  file://${FILESDIR}/busybox.patch;patch=1
-S = ${WORKDIR}/hotplug-2003_08_05
+S = "${WORKDIR}/hotplug-2003_08_05"
 
 do_compile () {
 	oenote "Nothing to compile."
 }
 
-DEBFIX=sed -e 's:sysconfig/usb:default/hotplug.usb:'
+DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
 do_install () {
 	install -d ${D}/sbin ${D}/${sysconfdir}/hotplug \
 		   ${D}/${sysconfdir}/logcheck/ignore.d \

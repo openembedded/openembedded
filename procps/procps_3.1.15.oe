@@ -1,9 +1,9 @@
-DESCRIPTION=Procps is the package that has a bunch of small useful utilities that give information \
+DESCRIPTION = "Procps is the package that has a bunch of small useful utilities that give information \
 about processes using the /proc filesystem. The package includes the programs ps, top, vmstat, w, kill, and skill.
-SECTION=net
-PRIORITY=optional
-RDEPENDS=libc6 libncurses
-DEPENDS=virtual/libc ncurses
+SECTION = "net"
+PRIORITY = "optional"
+RDEPENDS = "libc6 libncurses"
+DEPENDS = "virtual/libc ncurses"
 
 inherit autotools
 

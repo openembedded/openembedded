@@ -1,0 +1,24 @@
+DESCRIPTION = "Klimt is a software OpenGL rendering library for Opie/Qtopia"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc virtual/libqpe"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${PN}-src-${PV}.zip
+S = "${WORKDIR}/${PN}/build/LinuxQTE"
+
+EXTRA_QMAKEVARS_POST = ' QMAKE_CXXFLAGS+=-fpermissive DESTDIR=${STAGING_LIBDIR} '
+
+inherit palmtop
+
+do_stage() {
+# libs already in staging
+	cp -a ../../include/* ${STAGING_INCDIR}/
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/lib
+        oe_soinstall ${STAGING_LIBDIR}/libKlimt.so.0.5.1 ${D}/opt/QtPalmtop/lib/
+}

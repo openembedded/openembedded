@@ -1,0 +1,22 @@
+DESCRIPTION = "A full fledged pluggable content management system with integrated web server and much more"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6 python-core "
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://zope.org/Products/Zope/2.7.0rc1/Zope-2.7.0-rc1.tgz
+S = "${WORKDIR}/Zope-2.7.0-rc1"
+
+do_configure() {
+	./configure --with-python=${STAGING_BINDIR}/python --prefix=/usr --optimize
+}
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	oe_runmake install PREFIX=${D}/${prefix}
+}
+

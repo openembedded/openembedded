@@ -1,0 +1,16 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/transconnect/transconnect-${PV}.tar.gz
+
+LDFLAGS_append = " -shared"
+do_compile () {
+	oe_runmake tconn.so
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir}
+	install -m 0644 tconn.conf ${D}/${sysconfdir}/
+	install -d ${D}/${libdir}/tconn
+	install -m 0755 tconn.so ${D}/${libdir}/tconn/
+}

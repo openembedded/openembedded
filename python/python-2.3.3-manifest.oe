@@ -4,7 +4,7 @@
 ###
  
 
-PACKAGES="python-codecs python-threading python-distutils python-textutils python-curses python-pickle python-core python-io python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-math python-hotshot python-unixadmin python-gdbm python-fcntl python-netclient python-pprint python-netserver python-compiler python-syslog python-html python-readline python-pydoc python-xml python-mime python-unittest python-stringold python-compile python-shell python-mmap python-zlib python-db python-lang python-crypt python-audio "
+PACKAGES = "python-codecs python-threading python-distutils python-textutils python-curses python-pickle python-core python-io python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-math python-hotshot python-unixadmin python-gdbm python-fcntl python-netclient python-pprint python-netserver python-compiler python-syslog python-html python-readline python-pydoc python-xml python-mime python-unittest python-stringold python-compile python-shell python-mmap python-zlib python-db python-lang python-crypt python-audio "
 
 FILES_python-codecs="/usr/lib/python2.3/codecs.* /usr/lib/python2.3/encodings /usr/lib/python2.3/locale.* /usr/lib/python2.3/lib-dynload/_locale.so /usr/lib/python2.3/lib-dynload/unicodedata.so /usr/lib/python2.3/gettext.* /usr/lib/python2.3/xdrlib.* "
 

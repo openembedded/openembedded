@@ -1,13 +1,13 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc xproto-cvs
-PROVIDES=xau
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc xproto-cvs"
+PROVIDES = "xau"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau
-S=${WORKDIR}/Xau
+S = "${WORKDIR}/Xau"
 
 inherit autotools pkgconfig libtool
 

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc libvorbis libogg
-RDEPENDS = libc6 libvorbis libogg
+DEPENDS = "virtual/libc libvorbis libogg"
+RDEPENDS = "libc6 libvorbis libogg"
 FILES_gift_append = ' ${datadir}/giFT'
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/gift/gift-${PV}.tar.bz2

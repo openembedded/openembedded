@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = http://ftp3.ie.freebsd.org/pub/gentoo/distfiles/fbgetty-${PV}.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1

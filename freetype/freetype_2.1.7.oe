@@ -1,6 +1,6 @@
-DESCRIPTION = Freetype font rendering library
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DESCRIPTION = "Freetype font rendering library"
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 FT_SONAME = 6.3.5
 
@@ -9,7 +9,7 @@ SRC_URI = ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 
 inherit autotools libtool pkgconfig
 
-LIBTOOL=${S}/builds/unix/${HOST_SYS}-libtool
+LIBTOOL = "${S}/builds/unix/${HOST_SYS}-libtool"
 EXTRA_OEMAKE="'LIBTOOL=${LIBTOOL}'"
 
 do_configure () {

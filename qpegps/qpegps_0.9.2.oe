@@ -1,0 +1,24 @@
+DESCRIPTION = "Navigation application for use with GPS adapters"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = cvs://anonymous:@cvs.sourceforge.net/cvsroot/qpegps;module=qpegps
+S = "${WORKDIR}/${PN}"
+
+inherit palmtop
+
+QMAKE_PROFILES = "qpegps.pro"
+
+do_install() {
+        install -d ${D}/{opt/QtPalmtop/{help/html/qpegps_icons,bin,apps/Applications,pics/qpegps,qpegps/{maps,icons,tracks}}}
+        install -m 0755 qpegps ${D}/opt/QtPalmtop/bin/
+        install -m 0644 ${FILESDIR}/qpegps.desktop ${D}/opt/QtPalmtop/apps/Applications/
+        install -m 0644 ${FILESDIR}/qpegps.png ${D}/opt/QtPalmtop/pics/qpegps/
+        install -m 0644 doc/qpegps.html ${D}/opt/QtPalmtop/help/html/
+        install -m 0644 doc/qpegps_icons/*.png ${D}/opt/QtPalmtop/help/html/qpegps_icons/
+        install -m 0644 icons/*.xpm ${D}/opt/QtPalmtop/qpegps/icons/
+}

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
 	  file://${FILESDIR}/installpaths.patch;patch=1

@@ -1,0 +1,21 @@
+DESCRIPTION = "Pressure-Sensitive Paint Program for Opie/Qtopia"
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://sun.dhis.portside.net/~sakira/archive/SPainter_1.0-1_src.tar.gz
+S = "${WORKDIR}/SPainter"
+
+inherit palmtop
+
+QMAKE_PROFILES = spainter.pro
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+        install -D -m 755 petitpeintu ${D}/opt/QtPalmtop/bin/petitpeintu
+        install -D -m 644 ${FILESDIR}/petitpeintu.desktop ${D}/opt/QtPalmtop/apps/Applications/petitpeintu.desktop
+        install -d ${D}/opt/QtPalmtop/pics
+        cp -a *.png ${D}/opt/QtPalmtop/pics/
+}

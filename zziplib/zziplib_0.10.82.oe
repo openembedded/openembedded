@@ -1,0 +1,25 @@
+DESCRIPTION = "Support library for dealing with zip files"
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.bz2
+
+inherit autotools libtool pkgconfig
+
+do_stage() {
+	oe_soinstall zzip/.libs/libzzip-0.so.10.0.82 ${STAGING_LIBDIR}
+	ln -sf libzzip-0.so.10.0.82 ${STAGING_LIBDIR}/libzzip.so
+	oe_soinstall zzipwrap/.libs/libzzipwrap-0.so.10.0.82 ${STAGING_LIBDIR}
+	ln -sf libzzipwrap-0.so.10.0.82 ${STAGING_LIBDIR}/libzzipwrap.so
+
+	install -d ${STAGING_DIR}/target/include/readline
+	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
+	  rlconf.h rltypedefs.h
+	do
+		install -m 0644 ${f} ${STAGING_DIR}/target/include/readline
+	done
+
+}
+

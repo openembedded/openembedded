@@ -1,0 +1,18 @@
+SRC_URI = ${SOURCEFORGE_MIRROR}/linux-hotplug/hotplug-2004_01_05.tar.gz \
+	  file://${FILESDIR}/busybox.patch;patch=1
+S = "${WORKDIR}/hotplug-2004_01_05"
+
+do_compile () {
+	oenote "Nothing to compile."
+}
+
+DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
+do_install () {
+	install -d ${D}/sbin ${D}/${sysconfdir}/hotplug \
+		   ${D}/${sysconfdir}/logcheck/ignore.d \
+		   ${D}/${sbindir}
+	oe_runmake prefix=${D} install
+	sh debian/fix-net.agent ${D}
+	install -m 0755 debian/update-usb.usermap ${D}/${sbindir}/
+	install -m 0644 debian/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
+}

@@ -1,11 +1,11 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-DEPENDS=virtual/libc x11-cvs xextensions-cvs xext-cvs resourceext-cvs
-PROVIDES=xres
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+DEPENDS = "virtual/libc x11-cvs xextensions-cvs xext-cvs resourceext-cvs"
+PROVIDES = "xres"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XRes
-S=${WORKDIR}/XRes
+S = "${WORKDIR}/XRes"
 
 inherit autotools pkgconfig libtool
 

@@ -1,0 +1,25 @@
+DESCRIPTION = "Classic Arcaede Shooter for Qtopia/Opie - based on SDL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsdl"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
+
+SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/aliens/src/aliens_V1.0.0.tar.gz"
+S = "${WORKDIR}/aliens_V1.0.0"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+
+do_compile_prepend() {
+	cd images && make && cd ..
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/aliens}
+        install -D -m 0755 aliens ${D}/opt/QtPalmtop/bin/aliens
+	install -D -m 0644 aliens.png ${D}/opt/QtPalmtop/pics/aliens.png
+        install -D -m 0644 aliens.desktop ${D}/opt/QtPalmtop/apps/Games/aliens.desktop
+}

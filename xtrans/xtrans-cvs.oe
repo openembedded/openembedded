@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-PROVIDES=xtrans
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+PROVIDES = "xtrans"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans
-S=${WORKDIR}/xtrans
+S = "${WORKDIR}/xtrans"
 
 inherit autotools libtool pkgconfig
 

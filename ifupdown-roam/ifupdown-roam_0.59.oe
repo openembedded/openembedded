@@ -1,7 +1,7 @@
-SECTION = net
-PRIORITY = extra
-DESCRIPTION = Roaming enhancements for ifupdown
-RDEPENDS = ifupdown
+SECTION = "net"
+PRIORITY = "extra"
+DESCRIPTION = "Roaming enhancements for ifupdown"
+RDEPENDS = "ifupdown"
 
 SRC_URI := http://openembedded.org/download/ifupdown-roam-0.59.tar.bz2
 

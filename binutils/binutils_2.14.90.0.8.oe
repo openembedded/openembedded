@@ -12,7 +12,7 @@ TARGET_PREFIX := ${TARGET_SYS}-
 DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
            virtual/libc patcher
 
-PACKAGES = ${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks
+PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
 FILES_${PN} =  \
 	${bindir}/${TARGET_PREFIX}*

@@ -1,7 +1,7 @@
-HOMEPAGE = http://www.freedesktop.org/Software/dbus
+HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
-DEPENDS = virtual/libc expat glib-2.0
-RDEPENDS = libc6 expat
+DEPENDS = "virtual/libc expat glib-2.0"
+RDEPENDS = "libc6 expat"
 
 SRC_URI = 'http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
 	   file://${FILESDIR}/cross.patch;patch=1'
@@ -12,10 +12,10 @@ EXTRA_OECONF = '--disable-qt --disable-gtk --disable-tests \
 		--disable-checks --disable-xml-docs --disable-doxygen-docs \
 		--with-xml=expat --without-x'
 
-headers = dbus-address.h dbus-bus.h dbus-connection.h dbus-errors.h dbus-macros.h dbus-memory.h dbus-message.h dbus-pending-call.h dbus-protocol.h dbus-server.h dbus-threads.h dbus-types.h dbus.h
+headers = "dbus-address.h dbus-bus.h dbus-connection.h dbus-errors.h dbus-macros.h dbus-memory.h dbus-message.h dbus-pending-call.h dbus-protocol.h dbus-server.h dbus-threads.h dbus-types.h dbus.h"
 
-libname = libdbus-1.so.0.0.0
-glibname = libdbus-glib-1.so.0.0.0
+libname = "libdbus-1.so.0.0.0"
+glibname = "libdbus-glib-1.so.0.0.0"
 
 do_stage () {
 	install -m 0755 dbus/.libs/${libname} ${STAGING_LIBDIR}/

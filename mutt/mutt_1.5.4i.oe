@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc ncurses openssl
-RDEPENDS = libc6 libncurses5 libssl0
+DEPENDS = "virtual/libc ncurses openssl"
+RDEPENDS = "libc6 libncurses5 libssl0"
 
 SRC_URI := ftp://ftp.mutt.org/mutt/devel/mutt-1.5.4i.tar.gz \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;patch=1 \

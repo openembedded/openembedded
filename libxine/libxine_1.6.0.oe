@@ -1,13 +1,13 @@
 DESCRIPTION = "libxine"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = virtual/libc zlib libogg tremor libmad
-RDEPENDS = libc6 zlib libogg tremor libmad 
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
+DEPENDS = "virtual/libc zlib libogg tremor libmad"
+RDEPENDS = "libc6 zlib libogg tremor libmad "
 
 inherit autotools
 
-S = ${WORKDIR}/xine-lib
+S = "${WORKDIR}/xine-lib"
 
 SRC_URI = "cvs://anonymous@cvs.xine.sf.net/cvsroot/xine;module=xine-lib;tag=xine-1-beta12-release \
         file://${FILESDIR}/full.patch;patch=1 \

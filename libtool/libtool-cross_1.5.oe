@@ -6,10 +6,10 @@ SRC_URI_append = ' file://${FILESDIR}/libdir-la.patch;patch=1 \
 		   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
 		   file://${FILESDIR}/prefix.patch;patch=1 \
 		   file://${FILESDIR}/chmod.patch;patch=1'
-S = ${WORKDIR}/libtool-${PV}
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}
+S = "${WORKDIR}/libtool-${PV}"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
 
-prefix=${CROSS_DIR}
+prefix = "${CROSS_DIR}"
 exec_prefix=${prefix}
 
 EXTRA_OECONF_append = " --program-prefix=${TARGET_SYS}-"

@@ -1,8 +1,8 @@
-DESCRIPTION=libmikmod is a module player library supporting many formats, including mod, s3m, it, and xm.
-SECTION=libs
-PRIORITY=optional
-RDEPENDS=libc6
-DEPENDS=virtual/libc
+DESCRIPTION = "libmikmod is a module player library supporting many formats, including mod, s3m, it, and xm."
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
 
 SRC_URI = http://mikmod.raphnet.net/files/${P}.tar.gz
 

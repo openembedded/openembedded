@@ -1,14 +1,14 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1
-S = ${WORKDIR}/usbutils-${PV}
+S = "${WORKDIR}/usbutils-${PV}"
 
 inherit autotools libtool
 EXTRA_OECONF=--program-prefix=
-sbindir=/sbin
-bindir=/bin
+sbindir = "/sbin"
+bindir = "/bin"
 
 libusb_remove () {
 	cd ${S}

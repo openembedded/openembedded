@@ -1,0 +1,51 @@
+DESCRIPTION = "Base libraries for the Open Integrated Palmtop Environment"
+SECTION = "opie/libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "LGPL"
+DEPENDS = "virtual/libc libqpe-opie sqlite libpcap"
+RDEPENDS = "libc6 libqpe sqlite libpcap"
+
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/libopie2;date=${PV}"
+S = "${WORKDIR}/libopie2"
+
+inherit qmake
+
+export QTDIR=${STAGING_DIR}/target
+export OPIEDIR=${STAGING_DIR}/target
+
+#FIXME: Add machine specific bits here. Best use oe_machinstall and read the from a given file
+
+EXTRA_QMAKEVARS_POST= 'DEFINES+=OPIE_WE_VERSION=15'
+
+#
+# for developing - qmake.oeclass should gather this automatically
+#
+export QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++
+
+do_compile() {
+	install -d ${STAGING_INCDIR}/opie2
+	for i in `find . -name "*.h"`
+	do
+		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
+	done
+	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+}
+
+# no staging neessary, becaue
+# include files already done during do_compile
+# lib files already done during do_compile
+
+do_install() {
+	install -d ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.8.5 ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.8.2 ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.8.2 ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.3 ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiepim2.so.1.8.3 ${D}/opt/QtPalmtop/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}/opt/QtPalmtop/lib/
+}
+
+FILES=
+FILES_${PN}=/opt/QtPalmtop
+

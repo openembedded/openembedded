@@ -1,8 +1,8 @@
-SECTION="libs"
-PRIORITY="optional"
-RDEPENDS="libc6"
-SECTION="libs"
-DEPENDS=virtual/libc virtual/libbluetooth
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+SECTION = "libs"
+DEPENDS = "virtual/libc virtual/libbluetooth"
 
 SRC_URI = http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,0 +1,7 @@
+DEPENDS = "virtual/libc zlib jpeg"
+RDEPENDS = "libc6 zlib jpeg"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/enlightenment/eet-${PV}.tar.gz \
+	  file://${FILESDIR}/flags.patch;patch=1
+
+inherit autotools libtool

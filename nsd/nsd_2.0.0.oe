@@ -1,0 +1,20 @@
+DESCRIPTION = "NSD is an authoritative only, high performance, simple andopen source name server"
+SECTION = "net"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://www.nlnetlabs.nl/downloads/nsd/${P}.tar.gz
+
+inherit autotools libtool
+
+do_install() {
+	oe_runconf 	configdir=${D}/etc/nsd              \
+			pidfile=${D}/var/run/nsd.pid        \
+			zonesfile=${D}/etc/nsd/nsd.zones    \
+			dbfile=${D}/etc/nsd/nsd.db          \
+			configfile=${D}/etc/nsd/nsdc.conf   \
+			zonesdir=${D}/etc/nsd
+}
+

@@ -1,0 +1,45 @@
+DEPENDS = "virtual/libc libpcap"
+RDEPENDS = "libc6 libpcap"
+DESCRIPTION = "Nmap is a command line portscanner."
+
+SRC_URI = http://download.insecure.org/nmap/dist/nmap-${PV}.tgz
+
+inherit autotools
+
+EXTRA_OECONF = --with-pcap=linux --with-libpcap=${STAGING_DIR} --without-nmapfe
+EXTRA_OEMAKE = "STRIPPROG=arm-linux-strip"
+
+CXXFLAGS_append = " -fpermissive"
+# Ugly hack follows -- their configure.ac doesnt match their configure .. 
+# doesnt include a check for the length type in recvfrom, so we hack it here
+CPPFLAGS_append = " -Drecvfrom6_t=socklen_t"
+
+#do_configure_prepend () {
+#	if [ ! -e libpcap-possiblymodified/acinclude.m4 ]; then
+#		cat libpcap-possiblymodified/aclocal.m4 > libpcap-possiblymodified/acinclude.m4
+#	fi
+#}
+
+do_compile_prepend () {
+	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} libpcre/dftables.c -o libpcre/dftables
+	touch libpcre/dftables.o
+	libpcre/dftables > libpcre/chartables.c
+}
+
+do_configure () {
+# override this function to avoid the autoconf/automake/aclocal/autoheader
+# calls for now
+	oe_runconf
+}
+
+
+do_install () {
+	oe_runmake 'prefix=${D}/${prefix}' \
+		   'exec_prefix=${D}/${exec_prefix}' \
+		   'bindir=${D}/${bindir}' \
+		   'sbindir=${D}/${sbindir}' \
+		   'mandir=${D}/${mandir}' \
+		   'datadir=${D}/${datadir}' \
+		   'nmapdatadir=${D}/${datadir}/nmap' \
+		   install
+}

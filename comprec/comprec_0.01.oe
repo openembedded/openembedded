@@ -1,0 +1,20 @@
+DESCRIPTION = "An MP3 command line encoder"
+HOMEPAGE = "http://unimut.fsk.uni-heidelberg.de/demi/comprec/index.html"
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://unimut.fsk.uni-heidelberg.de/demi/comprec/comprec-${PV}.tar.gz \
+	  file://${FILESDIR}/makefile.patch;patch=1
+
+export AS="${TARGET_PREFIX}as"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	install -d ${D}/${bindir}
+	cp shine ${D}/${bindir}/shine
+}

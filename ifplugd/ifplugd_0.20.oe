@@ -1,0 +1,23 @@
+DESCRIPTION = "ifplugd is a Linux daemon which will automatically configure your ethernet device when a cable is plugged in and automatically unconfigure it if the cable is pulled."
+DEPENDS = "virtual/libc libdaemon"
+RDEPENDS = "libc6 libdaemon"
+
+SRC_URI = http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz
+
+inherit autotools
+
+EXTRA_OECONF = --disable-lynx
+
+pkg_postinst () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D ifplugd defaults
+}
+
+pkg_prerm () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D ifplugd remove
+}

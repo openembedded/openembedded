@@ -1,11 +1,11 @@
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc zlib
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc zlib"
 
 SRC_URI =  ftp://ftp.mars.org/pub/mpeg/libid3tag-0.15.0b.tar.gz 
-S=${WORKDIR}/libid3tag-${PV}
+S = "${WORKDIR}/libid3tag-${PV}"
 
 inherit autotools libtool
 

@@ -1,13 +1,13 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc xproto-cvs xtrans-cvs zlib
-PROVIDES=xfont
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc xproto-cvs xtrans-cvs zlib"
+PROVIDES = "xfont"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont
-S=${WORKDIR}/Xfont
+S = "${WORKDIR}/Xfont"
 
 inherit autotools pkgconfig libtool
 

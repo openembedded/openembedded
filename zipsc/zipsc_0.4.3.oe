@@ -1,0 +1,19 @@
+DESCRIPTION = "IP/Subnet calculator for Qt/Embedded based Palmtop Environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://www.warmi.net/zaurus/files/${PN}_${PV}.tar.gz \
+          file://${FILESDIR}/gcc3.patch;patch=1
+S = "${WORKDIR}/${PN}_${PV}"
+
+inherit palmtop
+
+do_install() {
+        install -m 0755 zipsc Qtopia/opt/QtPalmtop/bin/zipsc
+	install -d ${D}/
+	cp -a Qtopia/* ${D}/
+}

@@ -1,16 +1,16 @@
-DESCRIPTION=GLib is a general-purpose utility library, which provides many useful data types, macros,  \
+DESCRIPTION = "GLib is a general-purpose utility library, which provides many useful data types, macros,  \
 type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many \
 UNIX-like platforms, Windows, OS/2 and BeOS.
-SECTION=libs
-PRIORITY=optional
-MAINTAINER=Phillip Blundell <pb@handhelds.org>
-DEPENDS=virtual/libc glib-2.0-native
-RDEPENDS=libc6
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Phillip Blundell <pb@handhelds.org>"
+DEPENDS = "virtual/libc glib-2.0-native"
+RDEPENDS = "libc6"
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
 	  file://${FILESDIR}/automake-lossage.patch;patch=1
 
-S = ${WORKDIR}/glib-${PV}
+S = "${WORKDIR}/glib-${PV}"
 
 inherit autotools libtool pkgconfig
 
@@ -19,7 +19,7 @@ do_configure_prepend () {
 	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h .
 }
 
-SOV=0.200.3
+SOV = "0.200.3"
 do_stage () {
 	install -m 0755 glib/.libs/libglib-2.0.so.${SOV} ${STAGING_LIBDIR}/libglib-2.0.so.${SOV}
 	install -m 0644 glib/.libs/libglib-2.0.lai ${STAGING_LIBDIR}/libglib-2.0.la

@@ -1,12 +1,12 @@
-DESCRIPTION=Python Packet Capture Library
-SECTION=base
-PRIORITY=optional
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-RDEPENDS=libc6 python-core libnet (1.1.1) libpcap (0.7.2)
-DEPENDS=virtual/libc libpcap-0.7.2 libnet-1.1.1
-SRCNAME=pycap
+DESCRIPTION = "Python Packet Capture Library"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6 python-core libnet (1.1.1) libpcap (0.7.2)"
+DEPENDS = "virtual/libc libpcap-0.7.2 libnet-1.1.1"
+SRCNAME = "pycap"
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
-S = ${WORKDIR}/${SRCNAME}-${PV}
+S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

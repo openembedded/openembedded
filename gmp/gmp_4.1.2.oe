@@ -1,6 +1,6 @@
-DESCRIPTION = GNU multiprecision arithmetic library
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DESCRIPTION = "GNU multiprecision arithmetic library"
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = ftp://mirrors.kernel.org/gnu/${PN}/${P}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI := http://www.packetfactory.net/libnet/dist/deprecated/libnet-1.0.2a.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1

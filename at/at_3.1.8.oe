@@ -1,9 +1,9 @@
-DEPENDS = virtual/libc flex
-RDEPENDS = libc6
+DEPENDS = "virtual/libc flex"
+RDEPENDS = "libc6"
 
-SRC_URI = ${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1 \
-	  file://${FILESDIR}/nonrootinstall.patch;patch=1
+SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/nonrootinstall.patch;patch=1"
 
 inherit autotools
 

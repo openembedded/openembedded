@@ -1,15 +1,15 @@
-DESCRIPTION=A SID Player for the Qt/Embedded based Palmtop Environments
-SECTION=base
-PRIORITY=optional
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE=GPL
-RDEPENDS=libqpe1 libsidplay
-DEPENDS=virtual/libc libsidplay
+DESCRIPTION = "A SID Player for the Qt/Embedded based Palmtop Environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsidplay"
+DEPENDS = "virtual/libc libsidplay"
 
 SRC_URI = http://${PN}.sourceforge.net/${PN}.tar.gz                \
           file://${FILESDIR}/use-external-libsidplay.patch;patch=1 \
           file://${FILESDIR}/gcc3.patch;patch=1
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 EXTRA_QMAKEVARS_PRE = 'QMAKE_INCDIR=${STAGING_INCDIR}/sidplay'
 
 inherit palmtop

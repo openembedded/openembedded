@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-PROVIDES=randr
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+PROVIDES = "randr"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Randr
-S=${WORKDIR}/Randr
+S = "${WORKDIR}/Randr"
 
 inherit autotools pkgconfig
 

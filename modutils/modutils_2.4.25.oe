@@ -6,7 +6,7 @@ SRC_URI = ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${P
 inherit autotools
 
 # modutils go in /sbin
-sbindir=/sbin
+sbindir = "/sbin"
 EXTRA_OECONF = --disable-strip
 export BUILDCC = ${BUILD_CC}
 

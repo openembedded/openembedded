@@ -1,10 +1,10 @@
-DEPENDS = patcher-native
+DEPENDS = "patcher-native"
 RDEPENDS = 
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glib-2.0-${PV}
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glib-2.0-${PV}"
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
 	  file://${FILESDIR}/automake-lossage.patch;patch=1
-S = ${WORKDIR}/glib-${PV}
+S = "${WORKDIR}/glib-${PV}"
 
 inherit autotools libtool native
 
@@ -13,7 +13,7 @@ do_configure_prepend () {
 	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h .
 }
 
-SOV=0.103.0
+SOV = "0.103.0"
 
 do_configure () {
 	oe_runconf

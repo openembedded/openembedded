@@ -1,10 +1,10 @@
-DESCRIPTION="Clone of the classic arcade game Asteroids for Qtopia/Opie - based on SDL"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-RDEPENDS="libqpe1 libsdl"
-DEPENDS="virtual/libc virtual/libqpe virtual/libsdl"
+DESCRIPTION = "Clone of the classic arcade game Asteroids for Qtopia/Opie - based on SDL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsdl"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
 SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-2002.06.09.tar.gz \
           file://${FILESDIR}/directories.patch;patch=1

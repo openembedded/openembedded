@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc openssl
-RDEPENDS = libc6 openssl
+DEPENDS = "virtual/libc openssl"
+RDEPENDS = "libc6 openssl"
 FILES_libesmtp_append = ' ${libdir}/esmtp-plugins'
 
 SRC_URI := http://www.stafford.uklinux.net/libesmtp/${P}.tar.bz2  \

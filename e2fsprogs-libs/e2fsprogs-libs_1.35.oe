@@ -1,0 +1,38 @@
+DESCRIPTION = "EXT2 Filesystem Utilities"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc "
+FILES_e2fsprogs-libs-dev_append=" ${datadir}/et ${datadir}/ss"
+
+SRC_URI=${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
+	file://${FILESDIR}/configure.patch;patch=1 \
+	file://${FILESDIR}/compile-subst.patch;patch=1 \
+	file://${FILESDIR}/m4.patch;patch=1 \
+	file://${FILESDIR}/ldflags.patch;patch=1
+
+inherit autotools
+
+do_compile_prepend () {
+	find ./ -print|xargs chmod u=rwX
+	( cd util; ${BUILD_CC} subst.c -o subst )
+}
+
+do_stage () {
+	install -m 0644 lib/libcom_err.a ${STAGING_LIBDIR}/
+	install -m 0644 lib/libss.a ${STAGING_LIBDIR}/
+	install -m 0644 lib/libuuid.a ${STAGING_LIBDIR}/
+	install -m 0644 lib/libblkid.a ${STAGING_LIBDIR}/
+	install -d ${STAGING_DIR}/target/include/et \
+		   ${STAGING_DIR}/target/include/ss \
+		   ${STAGING_DIR}/target/include/uuid \
+		   ${STAGING_DIR}/target/include/blkid
+	install -m 0644 lib/et/com_err.h ${STAGING_DIR}/target/include/et/
+	install -m 0644 lib/ss/ss.h ${STAGING_DIR}/target/include/ss/
+	install -m 0644 lib/ss/ss_err.h ${STAGING_DIR}/target/include/ss/
+	install -m 0644 lib/uuid/uuid.h ${STAGING_DIR}/target/include/uuid/
+	install -m 0644 lib/uuid/uuid_types.h ${STAGING_DIR}/target/include/uuid/
+	install -m 0644 lib/blkid/blkid.h ${STAGING_DIR}/target/include/blkid/
+	install -m 0644 lib/blkid/blkid_types.h ${STAGING_DIR}/target/include/blkid/
+}

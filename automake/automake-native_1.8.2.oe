@@ -1,6 +1,6 @@
 include automake_${PV}.oe
-S = ${WORKDIR}/automake-${PV}
-DEPENDS = autoconf-native patcher-native 
+S = "${WORKDIR}/automake-${PV}"
+DEPENDS = "autoconf-native patcher-native "
 
 inherit native
 

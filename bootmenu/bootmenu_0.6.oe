@@ -1,4 +1,4 @@
-DEPENDS = virtual/libc
+DEPENDS = "virtual/libc"
 
 SRC_URI := http://www.cosmicpenguin.net/pub/bootmenu/${P}.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1

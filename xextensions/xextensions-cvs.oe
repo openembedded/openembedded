@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-PROVIDES=xextensions
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+PROVIDES = "xextensions"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XExtensions
-S=${WORKDIR}/XExtensions
+S = "${WORKDIR}/XExtensions"
 
 inherit autotools pkgconfig
 

@@ -1,0 +1,26 @@
+DESCRIPTION = "A framework for simple filesystem replication and/or security monitoring and/or automatic file transformations \
+-- essentially any application where one would poll files or directories and either do things to them or send them out. 
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+
+SRC_URI = http://www.bangstate.com/changedfiles-${PV}.tar.gz
+S = "${WORKDIR}/changedfiles-${PV}/module"
+
+inherit module
+
+do_compile() {
+	changedfiles.o: changedfiles.c
+        ${CC} -Wall -DMODULE -D__KERNEL__ -I${KERNEL_PATH} -c changedfiles.c
+}
+
+#install-exec-hook:
+#        (/bin/mknod /dev/changedfiles c 40 0; exit 0 )
+#        chmod 0600 /dev/changedfiles
+#FIXME perhaps package also readtest in an init script?
+
+do_install() {
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
+	install -m 0755 changedfiles.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/fs/changedfiles/
+}

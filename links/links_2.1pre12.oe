@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc jpeg libpng gpm flex openssl zlib
-RDEPENDS = libc6 libjpeg libpng gpm openssl zlib1g
+DEPENDS = "virtual/libc jpeg libpng gpm flex openssl zlib"
+RDEPENDS = "libc6 libjpeg libpng gpm openssl zlib1g"
 
 SRC_URI = http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-2.1pre12.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

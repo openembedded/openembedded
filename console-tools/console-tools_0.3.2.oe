@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI := ${SOURCEFORGE_MIRROR}/lct/console-tools-0.3.2.tar.gz \
 	   file://${FILESDIR}/codepage.patch;patch=1 \
@@ -8,7 +8,7 @@ SRC_URI := ${SOURCEFORGE_MIRROR}/lct/console-tools-0.3.2.tar.gz \
 export SUBDIRS='fontfiletools vttools kbdtools screenfonttools contrib \
 		examples po intl compat'
 
-acpaths=-I config
+acpaths = "-I config"
 do_configure_prepend () {
 	mkdir -p config
 	cp ${FILESDIR}/config/*.m4 config/

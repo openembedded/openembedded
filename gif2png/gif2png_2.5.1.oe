@@ -1,0 +1,10 @@
+DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
+SECTION = "net"
+PRIORITY = "optional"
+RDEPENDS = "libc6 zlib1g libpng12"
+DEPENDS = "virtual/libc base/zlib libpng"
+
+SRC_URI=http://www.catb.org/~esr/gif2png/${PN}-${PV}.tar.gz
+
+inherit autotools libtool
+

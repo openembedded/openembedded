@@ -1,0 +1,24 @@
+DESCRIPTION = "QPlot is an Advanced Matematical Calculator for Qt/Embedded based Palmtop Environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = cvs://anonymous@cvs.qplot.sourceforge.net/cvsroot/qplot;module=qplot;tag=HEAD \
+          file://${FILESDIR}/gcc3.patch;patch=1
+S = "${WORKDIR}/${PN}"
+
+inherit palmtop
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics,lib,plugins/inputmethods}
+        install -D -m 755 qplotmain/qplot ${D}/opt/QtPalmtop/bin/qplot
+        install -D -m 644 qplotmain/qplot.png ${D}/opt/QtPalmtop/pics/
+        install -D -m 644 qplotmain/qplot-const.b ${D}/opt/QtPalmtop/lib/
+        install -D -m 644 qplotmain/qplot-math.b ${D}/opt/QtPalmtop/lib/
+	oe_soinstall qplotmath/libqplotmath.so.1.0.0 ${D}/opt/QtPalmtop/plugins/inputmethods/
+        install -D -m 644 qplot.desktop ${D}/opt/QtPalmtop/apps/Applications/qplot.desktop
+}
+

@@ -1,12 +1,12 @@
-HOMEPAGE=http://fife.speech.cs.cmu.edu/flite/
-DESCRIPTION="festival light speech synthesizer"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-RDEPENDS=libc6
-DEPENDS=virtual/libc
+HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
+DESCRIPTION = "festival light speech synthesizer"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
 
 SRC_URI=http://www.speech.cs.cmu.edu/flite/packed/flite-1.2/flite-${PV}-release.tar.bz2
-S=${WORKDIR}/flite-${PV}-release
+S = "${WORKDIR}/flite-${PV}-release"
 
 inherit autotools libtool
 

@@ -1,27 +1,27 @@
 inherit autotools
 
-DESCRIPTION := A GNU collection of binary utilities
-LICENSE := GPL
-MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+DESCRIPTION = "A GNU collection of binary utilities"
+LICENSE = "GPL"
+MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
 # This will ONLY build to this target
-TARGET_VENDOR :=
-TARGET_SYS := ${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}
-TARGET_PREFIX := ${TARGET_SYS}-
+TARGET_VENDOR := ""
+TARGET_SYS := "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
+TARGET_PREFIX := "${TARGET_SYS}-"
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
-           virtual/libc patcher
+DEPENDS := "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
+            virtual/libc patcher"
 
-PACKAGES = ${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks
+PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
-FILES_${PN} =  \
-	${bindir}/${TARGET_PREFIX}*
+FILES_${PN} = " \
+	${bindir}/${TARGET_PREFIX}*"
 
-FILES_${PN}-dev = \
+FILES_${PN}-dev = " \
 	${includedir} \
-	${libdir}/*.a
+	${libdir}/*.a"
 
-FILES_${PN}-symlinks = \
+FILES_${PN}-symlinks = " \
 	${bindir}/addr2line \
 	${bindir}/ar \
 	${bindir}/as \
@@ -33,44 +33,44 @@ FILES_${PN}-symlinks = \
 	${bindir}/readelf \
 	${bindir}/size \
 	${bindir}/strings \
-	${bindir}/strip
+	${bindir}/strip"
 
-SRC_URI := http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
-           file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
-           file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
-           file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
-           file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
-           file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
-           file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1
+SRC_URI := "http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
+            file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
+            file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
+            file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
+            file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
+            file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
+            file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1"
 
-S := ${WORKDIR}/binutils-${PV}
-B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
+S := "${WORKDIR}/binutils-${PV}"
+B := "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = '--with-sysroot=${prefix}'
+EXTRA_OECONF = "--with-sysroot=${prefix}"
 
 # This is necessary due to a bug in the binutils Makefiles
-EXTRA_OEMAKE = configure-build-libiberty all
+EXTRA_OEMAKE = "configure-build-libiberty all"
 
-export AR = ${HOST_PREFIX}ar
-export AS = ${HOST_PREFIX}as
-export LD = ${HOST_PREFIX}ld
-export NM = ${HOST_PREFIX}nm
-export RANLIB = ${HOST_PREFIX}ranlib
-export OBJCOPY = ${HOST_PREFIX}objcopy
-export OBJDUMP = ${HOST_PREFIX}objdump
+export AR = "${HOST_PREFIX}ar"
+export AS = "${HOST_PREFIX}as"
+export LD = "${HOST_PREFIX}ld"
+export NM = "${HOST_PREFIX}nm"
+export RANLIB = "${HOST_PREFIX}ranlib"
+export OBJCOPY = "${HOST_PREFIX}objcopy"
+export OBJDUMP = "${HOST_PREFIX}objdump"
 
-export AR_FOR_TARGET = ${TARGET_PREFIX}ar
-export AS_FOR_TARGET = ${TARGET_PREFIX}as
-export LD_FOR_TARGET = ${TARGET_PREFIX}ld
-export NM_FOR_TARGET = ${TARGET_PREFIX}nm
-export RANLIB_FOR_TARGET = ${TARGET_PREFIX}ranlib
+export AR_FOR_TARGET = "${TARGET_PREFIX}ar"
+export AS_FOR_TARGET = "${TARGET_PREFIX}as"
+export LD_FOR_TARGET = "${TARGET_PREFIX}ld"
+export NM_FOR_TARGET = "${TARGET_PREFIX}nm"
+export RANLIB_FOR_TARGET = "${TARGET_PREFIX}ranlib"
 
-export CC_FOR_HOST = ${CCACHE} ${HOST_PREFIX}gcc
-export CXX_FOR_HOST = ${CCACHE} ${HOST_PREFIX}gcc
+export CC_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc"
+export CXX_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc"
 
-export CC_FOR_BUILD = ${BUILD_CC}
+export CC_FOR_BUILD = "${BUILD_CC}"
 
-export CC = ${CCACHE} ${HOST_PREFIX}gcc
+export CC = "${CCACHE} ${HOST_PREFIX}gcc"
 
 do_configure () {
 	oe_runconf

@@ -1,0 +1,7 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI := ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz \
+	   file://${FILESDIR}/fileexec.patch;patch=1
+
+inherit autotools libtool

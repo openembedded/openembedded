@@ -1,0 +1,12 @@
+DEPENDS = "virtual/libc adns"
+RDEPENDS = "libc6 adns"
+DESCRIPTION = 'HTTP Proxy Client is a set of libraries and scripts \
+that provide transparent access to Internet via HTTP proxy tunnel \
+for programs which use TCP/IP for communication. The tunnel is \
+provided by the CONNECT method of HTTP proxy, and supports external \
+DNS resolution.'
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/httppc/httppc-${PV}.tar.gz \
+	  file://${FILESDIR}/install.patch;patch=1
+
+inherit autotools libtool

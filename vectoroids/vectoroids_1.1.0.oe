@@ -1,0 +1,31 @@
+DESCRIPTION = "Clone of the classic arcade game Asteroids for Qtopia/Opie - based on SDL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsdl"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
+
+SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/x/${PN}/src/${P}.tar.gz
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+
+do_configure_prepend() {
+        qmake -project vectoroids.pro
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/vectoroids}
+        install -D -m 0755 vectoroids ${D}/opt/QtPalmtop/bin/vectoroids
+	install -D -m 0644 data/images/icon.png ${D}/opt/QtPalmtop/pics/vectoroids.png
+	cp -a data/* ${D}/opt/QtPalmtop/share/vectoroids
+
+	echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "Comment=Asteroids game" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "Exec=vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "Icon=vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "Name=Vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+}

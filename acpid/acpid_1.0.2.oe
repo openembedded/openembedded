@@ -1,6 +1,7 @@
-DEPENDS = virtual/libc
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
-SRC_URI := ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz"
 
 EXTRA_OEMAKE=
 do_compile () {

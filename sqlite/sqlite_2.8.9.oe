@@ -1,13 +1,13 @@
-DESCRIPTION="An Embeddable SQL Database Engine"
-SECTION="libs"
-PRIORITY="optional"
-RDEPENDS="libc6 readline libncurses5"
-DEPENDS=virtual/libc base/readline base/ncurses
+DESCRIPTION = "An Embeddable SQL Database Engine"
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6 readline libncurses5"
+DEPENDS = "virtual/libc base/readline base/ncurses"
 
 SRC_URI = http://www.hwaci.com/sw/${PN}/${P}.tar.gz \
           file://${FILESDIR}/crosscompile.patch;patch=1
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 inherit autotools libtool
 

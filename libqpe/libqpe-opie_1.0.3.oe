@@ -1,14 +1,14 @@
-DESCRIPTION="Base library for the Qt Palmtop Environment"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-DEPENDS=virtual/libc uicmoc-native qte-for-opie
-RDEPENDS=libc6 qte
-PROVIDES=virtual/libqpe
+DESCRIPTION = "Base library for the Qt Palmtop Environment"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc uicmoc-native qte-for-opie"
+RDEPENDS = "libc6 qte"
+PROVIDES = "virtual/libqpe"
 
 SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/library;tag=${@'v' + oe.data.getVar('PV',d,1).replace('.','_')}"
-S = ${WORKDIR}/library
+S = "${WORKDIR}/library"
 
 inherit qmake
 
@@ -56,6 +56,6 @@ do_install() {
 	oe_soinstall ${STAGING_LIBDIR}/libqpe.so.1.5.0 ${D}/opt/QtPalmtop/lib
 }
 
-PACKAGES=libqpe1
+PACKAGES = "libqpe1"
 FILES_${PN}=
 FILES_libqpe1=/opt/QtPalmtop/lib

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc libpcap libnet-1.0.2a
-RDEPENDS = libc6
+DEPENDS = "virtual/libc libpcap libnet-1.0.2a"
+RDEPENDS = "libc6"
 
 SRC_URI := ${SOURCEFORGE_MIRROR}/zeroconf/zcip-4.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1 \

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = ftp://ftp.sudo.ws/pub/sudo/sudo-${PV}.tar.gz \
 	  file://${FILESDIR}/nonrootinstall.patch;patch=1 \

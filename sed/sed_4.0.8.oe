@@ -1,0 +1,6 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = ${GNU_MIRROR}/sed/sed-${PV}.tar.gz
+
+inherit autotools

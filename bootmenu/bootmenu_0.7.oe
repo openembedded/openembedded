@@ -1,0 +1,14 @@
+DEPENDS = "virtual/libc"
+
+SRC_URI := http://www.cosmicpenguin.net/pub/bootmenu/${P}.tar.gz
+
+EXTRA_OEMAKE =
+do_compile () {
+	cd src
+	oe_runmake 'CC=${CC}' 'CFLAGS=${CFLAGS}' 'LDFLAGS=${LDFLAGS}'
+}
+
+do_install () {
+	cd src
+	oe_runmake 'PLUGINDIR=${datadir}/bootmenu' 'PREFIX=${bindir}' 'DESTDIR=${D}' install
+}

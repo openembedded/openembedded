@@ -1,7 +1,7 @@
-PV=${DATE}
+PV = "${DATE}"
 
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib
 SRC_URI_append=" file://${FILESDIR}/automake.patch;patch=1"
@@ -16,7 +16,7 @@ SRC_URI_append=" file://${FILESDIR}/raw-hwread.patch;patch=1"
 #SRC_URI_append=" file://${FILESDIR}/multievent.patch;patch=1"
 #SRC_URI_append=" file://${FILESDIR}/pointercal.patch;patch=1"
 #SRC_URI_append=" file://${FILESDIR}/ts_calibrate.patch;patch=1"
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 inherit autotools libtool
 

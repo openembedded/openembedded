@@ -1,8 +1,8 @@
 SRC_URI := ftp://ftp.kernel.org/pub/linux/utils/man/man-1.5m2.tar.bz2
 
 EXTRA_OEMAKE=
-GS = -DGREPSILENT=\"q\"
-DEFS = -DUSG -DDO_COMPRESS ${GS}
+GS = "-DGREPSILENT=\"q\"
+DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 
 do_configure() {
 	./configure -d -confdir ${sysconfdir}

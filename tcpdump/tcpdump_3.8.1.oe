@@ -1,0 +1,14 @@
+DESCRIPTION = "A sophisticated network protocol dumper"
+SECTION = "base"
+PRIORITY = "optional"
+RDEPENDS = "libc6 libpcap (0.8.1)"
+DEPENDS = "virtual/libc base/libpcap-0.8.1"
+
+SRC_URI = http://www.tcpdump.org/release/${P}.tar.gz
+
+inherit autotools libtool
+
+do_configure() {
+	oe_runconf
+}
+

@@ -1,13 +1,13 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc xproto-cvs
-PROVIDES=xdmcp
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc xproto-cvs"
+PROVIDES = "xdmcp"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp
-S=${WORKDIR}/Xdmcp
+S = "${WORKDIR}/Xdmcp"
 
 inherit autotools pkgconfig libtool
 

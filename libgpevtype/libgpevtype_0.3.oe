@@ -1,14 +1,14 @@
-DESCRIPTION=Data interchange library for GPE
-SECTION=gpe/libs
-PRIORITY=optional
-MAINTAINER="Philip Blundell <pb@handhelds.org>"
-DEPENDS=virtual/libc libmimedir
+DESCRIPTION = "Data interchange library for GPE"
+SECTION = "gpe/libs"
+PRIORITY = "optional"
+MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+DEPENDS = "virtual/libc libmimedir"
 
 inherit pkgconfig
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libgpevtype-${PV}.tar.gz
 
-headers = tag-db.h vcard.h vevent.h vtodo.h
+headers = "tag-db.h vcard.h vevent.h vtodo.h"
 
 do_stage () {
 	install -m 0755 libgpevtype.so.0 ${STAGING_LIBDIR}/

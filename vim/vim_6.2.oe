@@ -1,9 +1,9 @@
-DEPENDS = virtual/libc ncurses
-RDEPENDS = libc6 ncurses
+DEPENDS = "virtual/libc ncurses"
+RDEPENDS = "libc6 ncurses"
 
 SRC_URI = ftp://ftp.vim.org/pub/vim/unix/vim-6.2.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1
-S = ${WORKDIR}/vim62/src
+S = "${WORKDIR}/vim62/src"
 
 inherit autotools
 

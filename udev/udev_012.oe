@@ -1,12 +1,12 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	  file://${FILESDIR}/flags.patch;patch=1
 
-bindir=/bin
-sbindir=/sbin
-libdir=/lib
+bindir = "/bin"
+sbindir = "/sbin"
+libdir = "/lib"
 EXTRA_OEMAKE_append = " 'prefix=${prefix}' \
 		'exec_prefix=${prefix}' \
 		'etcdir=${sysconfdir}' \

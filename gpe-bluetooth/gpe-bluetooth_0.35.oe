@@ -1,7 +1,7 @@
-DESCRIPTION = GPE bluetooth support
-DEPENDS = virtual/libc gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs bluez-sdp sqlite dbus
+DESCRIPTION = "GPE bluetooth support"
+DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs bluez-sdp sqlite dbus"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-SECTION = gpe
-PRIORITY = optional
+SECTION = "gpe"
+PRIORITY = "optional"
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/gpe-bluetooth-${PV}.tar.gz

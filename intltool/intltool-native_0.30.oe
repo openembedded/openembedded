@@ -1,0 +1,8 @@
+include intltool_${PV}.oe
+inherit native
+DEPENDS=
+
+do_stage () {
+	install -d ${STAGING_DIR}/share/aclocal
+	install -m 0644 intltool.m4 xml-i18n-tools.m4 ${STAGING_DIR}/share/aclocal/
+}

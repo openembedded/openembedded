@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 DESCRIPTION = "joe's own editor."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/joe-editor/joe-${PV}.tar.gz

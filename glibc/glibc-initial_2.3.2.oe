@@ -1,9 +1,9 @@
 include glibc_${PV}.oe
 
 DEPENDS =
-PROVIDES = virtual/glibc-headers
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-${PV}
-S = ${WORKDIR}/glibc-${PV}
+PROVIDES = "virtual/glibc-headers"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-${PV}"
+S = "${WORKDIR}/glibc-${PV}"
 
 PACKAGES =
 

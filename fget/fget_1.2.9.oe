@@ -1,0 +1,20 @@
+DESCRIPTION = "fget is a commandline tool for mirroring remote files via FTP. It was designed as an analog to the GNU wget \
+utility. The fget package includes an FTP client library, so that others can make use of FTP from within their own C programs.
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = ftp://ftp-dev.cites.uiuc.edu/pub/${PN}/${P}.tar.gz
+
+inherit autotools libtool
+
+do_configure() {
+	oe_runconf
+}
+
+do_stage() {
+	install -m 0755 lib/libfget.a ${STAGING_LIBDIR}/
+	install -m 0755 lib/libfget.h ${STAGING_INCDIR}/
+}
+

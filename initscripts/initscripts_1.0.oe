@@ -1,5 +1,5 @@
-DESCRIPTION="SysV init scripts"
-MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+DESCRIPTION = "SysV init scripts"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 do_install () {
 #

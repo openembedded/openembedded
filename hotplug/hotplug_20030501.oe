@@ -1,6 +1,6 @@
 SRC_URI = ${SOURCEFORGE_MIRROR}/linux-hotplug/hotplug-2003_05_01.tar.gz \
 	  file://${FILESDIR}/busybox.patch;patch=1
-S = ${WORKDIR}/hotplug-2003_05_01
+S = "${WORKDIR}/hotplug-2003_05_01"
 
 do_compile () {
 	oenote "Nothing to compile."

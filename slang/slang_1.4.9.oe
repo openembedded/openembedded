@@ -1,15 +1,15 @@
-DESCRIPTION="slang"
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Graeme Gregory <xora@lordpain.uklinux.net>"
-DEPENDS="virtual/libc"
-RDEPENDS="libc6"
+DESCRIPTION = "slang"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI="ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
 
 inherit autotools libtool
 
-acpaths="-I ${S}/autoconf"
+acpaths = "-I ${S}/autoconf"
 EXTRA_OECONF="--enable-warnings"
 CFLAGS_append=" -fno-strength-reduce -D_REENTRANT"
 LDFLAGS_prepend="-L${S}/src/elfobjs "

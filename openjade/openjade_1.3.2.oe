@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc opensp
-RDEPENDS = libc6 opensp sgml-common
+DEPENDS = "virtual/libc opensp"
+RDEPENDS = "libc6 opensp sgml-common"
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1
@@ -8,13 +8,13 @@ inherit autotools libtool
 
 EXTRA_OECONF = '--enable-spincludedir=${STAGING_INCDIR}/OpenSP \
                 --enable-splibdir=${STAGING_LIBDIR}'
-acpaths=-I ${S}/config
+acpaths = "-I ${S}/config"
 CFLAGS_prepend='-I${S}/include'
 do_configure_prepend () {
         mv config/configure.in .
 }
 
-SOV=0.0.1
+SOV = "0.0.1"
 do_stage () {
 	install -m 0755 ${S}/style/.libs/libostyle.lai ${STAGING_LIBDIR}/libostyle.la
 	install -m 0755 ${S}/style/.libs/libostyle.a ${STAGING_LIBDIR}/libostyle.a

@@ -1,0 +1,20 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = http://www.dotaster.com/~shuu/linux/murasaki/0.7/10/murasaki-${PV}.tar.gz \
+	  file://${FILESDIR}/install.patch;patch=1
+EXTRA_OEMAKE = -e
+
+do_compile () {
+	unset CFLAGS
+	oe_runmake 'OPT=' 'DEBUG=' 'INC=-I ../inc ${CFLAGS}'
+}
+
+do_install () {
+	install -d ${D}/sbin ${D}/etc/${PN} \
+		   ${D}/${sysconfdir}/init.d
+	oe_runmake 'BIN_DIR=${D}/sbin' 'CONF_DIR=${D}/etc/${PN}' \
+		   'RC_DIR=${D}/${sysconfdir}/rc.d' \
+		   'RC_INIT_DIR=${D}/${sysconfdir}/init.d' \
+		   install
+}

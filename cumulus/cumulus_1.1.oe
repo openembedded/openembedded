@@ -1,0 +1,28 @@
+DESCRIPTION = "OpenOffice.org Impress presentation viewer for Qt/E based Palmtop environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc virtual/libqpe"
+
+SRC_URI = http://cumulus.kflog.org/download/src/${P}.src.tar.bz2 \
+          file://${FILESDIR}/qtooltip.patch;patch=1
+S = "${WORKDIR}/cumulus-arm-${PV}"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = 'INCLUDEPATH+=-I.'
+
+do_configure_prepend() {
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=cumulus\n" >cumulus.pro
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+        install -D -m 0755 cumulus/cumulus ${D}/opt/QtPalmtop/bin/cumulus
+        install -D -m 0644 cumulus/cumulus.desktop ${D}/opt/QtPalmtop/apps/Applications/cumulus.desktop
+        install -D -m 0644 cumulus.png ${D}/opt/QtPalmtop/pics/cumulus.png
+        install -d ${D}/opt/QtPalmtop/pics/mapicons
+        cp -a cumulus/map-icons/* ${D}/opt/QtPalmtop/pics/mapicons
+}

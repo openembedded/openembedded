@@ -1,0 +1,10 @@
+DEPENDS = "virtual/libc readline"
+RDEPENDS = "libc6 readline"
+
+SRC_URI := http://ftp.yars.free.net/pub/software/unix/net/ftp/client/lftp/${P}.tar.bz2 \
+	   file://${FILESDIR}/pty.patch;patch=1
+
+EXTRA_OECONF = "--disable-largefile --disable-rpath --disable-nls"
+
+
+inherit autotools

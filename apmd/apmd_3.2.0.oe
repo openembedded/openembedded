@@ -1,8 +1,8 @@
-SECTION="base"
-PRIORITY="required"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc
+SECTION = "base"
+PRIORITY = "required"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/${PN}/${PN}_${PV}.orig.tar.gz;"
 SRC_URI_append =" file://${FILESDIR}/${PN}_${PV}-3.diff;patch=1"
@@ -12,7 +12,7 @@ SRC_URI_append =" file://${FILESDIR}/proxy.patch;patch=1"
 SRC_URI_append =" file://${FILESDIR}/compile.patch;patch=1"
 SRC_URI_append =" file://${FILESDIR}/make.patch;patch=1"
 
-S=${WORKDIR}/apmd-${PV}.orig
+S = "${WORKDIR}/apmd-${PV}.orig"
 
 inherit libtool
 

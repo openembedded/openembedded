@@ -1,12 +1,12 @@
-PV="0.0cvs${DATE}"
-DESCRIPTION=X Server Extension library
-SECTION=libs
-PRIORITY=optional
-DEPENDS=virtual/libc xproto-cvs x11-cvs xextensions-cvs
-PROVIDES=xext
+PV = "0.0cvs${DATE}"
+DESCRIPTION = "X Server Extension library"
+SECTION = "libs"
+PRIORITY = "optional"
+DEPENDS = "virtual/libc xproto-cvs x11-cvs xextensions-cvs"
+PROVIDES = "xext"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xext
-S=${WORKDIR}/Xext
+S = "${WORKDIR}/Xext"
 
 inherit autotools pkgconfig libtool
 

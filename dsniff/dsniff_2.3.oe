@@ -1,7 +1,7 @@
 DESCRIPTION = 'dsniff is a collection of tools for network auditing and penetration testing.'
 
-DEPENDS = virtual/libc db3 libpcap libnet libnids openssl
-RDEPENDS = libc6 db3 libpcap openssl
+DEPENDS = "virtual/libc db3 libpcap libnet libnids openssl"
+RDEPENDS = "libc6 db3 libpcap openssl"
 
 SRC_URI = http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

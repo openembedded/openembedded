@@ -1,0 +1,10 @@
+DEPENDS = "virtual/libc ncurses"
+RDEPENDS = "libc6 libncurses"
+
+SRC_URI := ${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.gz
+
+inherit autotools
+
+do_compile () {
+	oe_runmake 'LDFLAGS=${LDFLAGS}'
+}

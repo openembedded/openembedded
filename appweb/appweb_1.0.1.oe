@@ -1,0 +1,82 @@
+SRC_URI = "http://www.mbedthis.com/software/appWeb-${PV}.LINUX-i386.self.tar.gz"
+SRC_URI_EXTRA = 'file://${WORKDIR}/appWeb-src-${PV}-5.tar.gz \
+		 file://${FILESDIR}/charsignedness.patch;patch=1 \
+		 file://${FILESDIR}/makerules.patch;patch=1'
+S = "${WORKDIR}/appWeb-${PV}"
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	src_uri = oe.data.getVar('SRC_URI', d)
+	oe.data.setVar('SRC_URI', '${SRC_URI_EXTRA}', d)
+	oe.build.exec_func('base_do_unpack', d)
+	oe.data.setVar('SRC_URI', src_uri, d)
+	oe.build.exec_func('do_unpack_cleanup', d)
+}
+
+do_unpack_cleanup () {
+	(
+		set -e
+		cd ${WORKDIR}
+		rm -f README.HTML install remove
+	)
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	src_uri = oe.data.getVar('SRC_URI', d)
+	oe.data.setVar('SRC_URI', '${SRC_URI_EXTRA}', d)
+	oe.build.exec_func('base_do_patch', d)
+	oe.data.setVar('SRC_URI', src_uri, d)
+}
+#       --enable-access-log
+#       --enable-admin
+#       --enable-all-static
+#       --enable-assert
+#       --enable-c-api
+#       --enable-dll
+#       --enable-fast-malloc
+#       --enable-goahead-compat
+#       --enable-if-modified
+#       --enable-log
+#       --enable-rom-fs
+#       --enable-run-as-service
+#       --enable-safe-strings
+#       --enable-squeeze
+#       --enable-ssl
+#       --enable-session
+
+APPWEB_TARGET = ${TARGET_ARCH}
+APPWEB_OS = ${TARGET_OS}
+APPWEB_OS_linux = LINUX
+EXTRA_OECONF = '--os ${APPWEB_OS} --target ${APPWEB_TARGET} \
+		--enable-keep-alive \
+		--enable-multi-thread \
+		--enable-cgi \
+		--enable-cookie \
+		--enable-config \
+		--enable-digest-auth \
+		--disable-ssl'
+EXTRA_OEMAKE = "'CC=${CC}' 'AR=${AR}' 'CPP=${CXX}' 'LD=${CC}'"
+
+export LD_LIBRARY_PATH=${S}/lib:${LD_LIBRARY_PATH}
+do_configure () {
+	./configure ${EXTRA_OECONF}
+}
+
+do_compile () {
+	oe_runmake build
+	oe_runmake compile
+}
+
+do_stage () {
+	:
+}
+
+do_install () {
+	install -d ${D}/${sbindir} ${D}/${sysconfdir}/appWeb/lib \
+		   ${D}/${libexecdir}/appWeb ${D}/${libdir}
+	install -m 0755 appWeb/appWeb ${D}/${sbindir}/
+	install -m 0644 appWeb/appWeb.conf ${D}/${sysconfdir}/appWeb/
+	install -m 0755 bin/${APPWEB_OS}/* ${D}/${libexecdir}/appWeb/
+	install -m 0755 lib/lib*.so* ${D}/${sysconfdir}/appWeb/lib/
+}

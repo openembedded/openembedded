@@ -1,0 +1,22 @@
+SECTION = "Games"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI=http://dusan.freeshell.org/${PN}/${P}.tar.gz \
+        file://${FILESDIR}/gcc3.patch;patch=1
+S = "${WORKDIR}/Phalanx-XXII"
+
+inherit autotools
+
+FILES_phalanx = /opt/QtPalmtop/chess/engines/Phalanx
+
+do_install() {
+	install -d ${D}/opt/QtPalmtop/chess/engines/Phalanx
+        install -D -m 755 phalanx ${D}/opt/QtPalmtop/chess/engines/Phalanx/phalanx
+        install -D -m 755 pbook.phalanx ${D}/opt/QtPalmtop/chess/engines/Phalanx/pbook.phalanx
+        >${D}/opt/QtPalmtop/chess/engines/Phalanx/sbook.phalanx
+        >${D}/opt/QtPalmtop/chess/engines/Phalanx/learn.phalanx
+        install -D -m 755 ${FILESDIR}/capabilities ${D}/opt/QtPalmtop/chess/engines/Phalanx/capabilities
+        install -D -m 755 ${FILESDIR}/description ${D}/opt/QtPalmtop/chess/engines/Phalanx/description
+}

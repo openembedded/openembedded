@@ -1,0 +1,13 @@
+DESCRIPTION = "Python GTK+ Bindings"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6 gtk+ libglade"
+DEPENDS = "virtual/libc gtk+ libglade"
+SRCNAME = "pygtk"
+
+SRC_URI = ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.2/${SRCNAME}-${PV}.tar.bz2
+S = "${WORKDIR}/${SRCNAME}-${PV}"
+
+inherit distutils pkgconfig
+

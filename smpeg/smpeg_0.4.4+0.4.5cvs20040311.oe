@@ -1,0 +1,41 @@
+SECTION = "NET"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "libc6 libsdl"
+DEPENDS = "virtual/libc virtual/libsdl"
+PROVIDES = "smpeg"
+
+SRC_URI=cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;date=20040311 \
+	file://${FILESDIR}/m4.patch;patch=1 \
+	file://${FILESDIR}/compile.patch;patch=1
+S = "${WORKDIR}/smpeg"
+
+inherit autotools libtool
+
+CFLAGS_append = " -I${STAGING_INCDIR}/SDL"
+EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \
+		--without-gtk --disable-gtk-player \
+		--with-sdl-prefix=${STAGING_LIBDIR}/.. \
+		--with-sdl-exec-prefix=${STAGING_BINDIR}/.."
+
+do_configure_prepend () {
+	touch NEWS AUTHORS ChangeLog	
+	rm -f acinclude.m4	
+}
+
+do_stage() {
+	oe_soinstall .libs/libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}
+	ln -sf libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}/libsmpeg.so
+
+	for f in "*.h"
+	do
+		install -m 0644 ${f} ${STAGING_INCDIR}/SDL
+	done
+
+        cat smpeg-config | sed -e "s,-I/usr/include/SDL,-I${STAGING_INCDIR}/SDL," \
+                         | sed -e "s,-I/usr/include/smpeg, ," \
+                         | sed -e "s,libdirs ,mickey_is_cool ," \
+                         | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR}/smpeg-config
+        chmod a+rx ${STAGING_BINDIR}/smpeg-config
+}
+

@@ -1,0 +1,35 @@
+DESCRIPTION = "Lossless data compression library"
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI="http://www.oberhumer.com/opensource/lzo/download/lzo-1.08.tar.gz"
+
+inherit autotools libtool
+
+do_configure () {
+	# override this function to avoid the autoconf/automake/aclocal/autoheader
+	# calls for now
+	oe_runconf
+}
+
+do_stage() {
+	install -m 0644 include/lzo1.h ${STAGING_DIR}/target/include/lzo1.h
+	install -m 0644 include/lzo16bit.h ${STAGING_DIR}/target/include/lzo16bit.h
+	install -m 0644 include/lzo1a.h ${STAGING_DIR}/target/include/lzo1a.h
+	install -m 0644 include/lzo1b.h ${STAGING_DIR}/target/include/lzo1b.h
+	install -m 0644 include/lzo1c.h ${STAGING_DIR}/target/include/lzo1c.h
+	install -m 0644 include/lzo1f.h ${STAGING_DIR}/target/include/lzo1f.h
+	install -m 0644 include/lzo1x.h ${STAGING_DIR}/target/include/lzo1x.h
+	install -m 0644 include/lzo1y.h ${STAGING_DIR}/target/include/lzo1y.h
+	install -m 0644 include/lzo1z.h ${STAGING_DIR}/target/include/lzo1z.h
+	install -m 0644 include/lzo2a.h ${STAGING_DIR}/target/include/lzo2a.h
+	install -m 0644 include/lzoconf.h ${STAGING_DIR}/target/include/lzoconf.h
+	install -m 0644 include/lzoutil.h ${STAGING_DIR}/target/include/lzoutil.h
+
+        install -m 0755 src/.libs/liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblszo.so.1.0.0
+	ln -sf liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblzo.so.1
+	ln -sf liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblzo.so
+	install -m 0644 src/.libs/liblzo.a ${STAGING_LIBDIR}/liblzo.a
+}

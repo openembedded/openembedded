@@ -1,12 +1,12 @@
-PN=linux
-PV=2.4.18-rmk7-pxa3-embedix
-LICENSE="GPL"
-KV=2.4.18
-RMKV=7
-PXAV=3
-SHARPV=20030509
+PN = "linux"
+PV = "2.4.18-rmk7-pxa3-embedix"
+LICENSE = "GPL"
+KV = "2.4.18"
+RMKV = "7"
+PXAV = "3"
+SHARPV = "20030509"
 
-FILESDIR=${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2      \
         \
@@ -27,14 +27,14 @@ SRC_URI = http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${S
 # SRC_URI_append = file://${FILESDIR}/gcc-3.3.patch;patch=1
 # SRC_URI_append = file://${FILESDIR}/machtune-args.patch;patch=1
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 inherit kernel
 
 #FIXME: Use configuration system
-MEM=32
-RD=32
-CMDLINE="root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
+MEM = "32"
+RD = "32"
+CMDLINE = "root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
 EXTRA_OEMAKE=
 
 do_configure_prepend() {

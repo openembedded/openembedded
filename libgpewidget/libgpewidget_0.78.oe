@@ -1,15 +1,15 @@
-DESCRIPTION=libgpewidget contains a collection of widgets and other common code shared by many GPE applications.
-SECTION=gpe/libs
-PRIORITY=optional
-MAINTAINER="Philip Blundell <pb@handhelds.org>"
-RDEPENDS=gtk
-DEPENDS=gtk+
+DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
+SECTION = "gpe/libs"
+PRIORITY = "optional"
+MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+RDEPENDS = "gtk"
+DEPENDS = "gtk+"
 
 inherit pkgconfig
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libgpewidget-${PV}.tar.gz
 
-headers = init.h render.h errorbox.h smallbox.h pixmaps.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h
+headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h"
 
 do_stage () {
 	install -m 0755 libgpewidget.so.1 ${STAGING_LIBDIR}/

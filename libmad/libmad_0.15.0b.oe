@@ -1,12 +1,12 @@
-DESCRIPTION="MPEG Audio Decoder Library"
-SECTION="libs"
-PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc  libid3tag
+DESCRIPTION = "MPEG Audio Decoder Library"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc  libid3tag"
 
 SRC_URI =  ftp://ftp.mars.org/pub/mpeg/libmad-0.15.0b.tar.gz 
-S=${WORKDIR}/libmad-${PV}
+S = "${WORKDIR}/libmad-${PV}"
 
 inherit autotools libtool
 

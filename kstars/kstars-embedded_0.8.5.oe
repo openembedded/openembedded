@@ -1,0 +1,26 @@
+DESCRIPTION = "KDE Stars: The Universe, in your hands! QtE based Palmtop Environments Edition"
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = http://kstars.sourceforge.net/${P}.tar.gz
+S = "${WORKDIR}/kstars"
+
+inherit palmtop
+
+#FIXME add an icon
+
+do_install() {
+    install -d ${D}/opt/QtPalmtop/{bin,lib,apps/Applications,pics/kstars}
+    install -m 0755 ${STAGING_DIR}/target/bin/kstars ${D}/opt/QtPalmtop/bin/kstars
+    rm -f ${STAGING_DIR}/target/bin/kstars
+
+    echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    echo "Comment=The Universe, in your Hands!" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    echo "Exec=kstars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    echo "Icon=kstars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    echo "Name=KStars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+}

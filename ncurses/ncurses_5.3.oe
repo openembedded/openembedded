@@ -1,11 +1,11 @@
 BaseV := ${PV}
 SnapV := 20030906
-PV = ${BaseV}.${SnapV}
+PV = "${BaseV}.${SnapV}"
 
-DESCRIPTION="Ncurses library"
-SECTION="libs"
-DEPENDS=virtual/libc
-PROVIDES=${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
+DESCRIPTION = "Ncurses library"
+SECTION = "libs"
+DEPENDS = "virtual/libc"
+PROVIDES = "${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
 	 ${CATEGORY}/${PN}-${BaseV} ${CATEGORY}/${PN}-${BaseV}-${PR} 
 PACKAGES_append=' ncurses-terminfo'
 FILES_ncurses_append=' ${datadir}/tabset'
@@ -14,7 +14,7 @@ FILES_ncurses-terminfo=${datadir}/terminfo
 SRC_URI = ${GNU_MIRROR}/ncurses/${PN}-${BaseV}.tar.gz \
 	  file://${FILESDIR}/${SnapV}.patch;patch=1 \
 	  file://${FILESDIR}/configure.patch;patch=1
-S = ${WORKDIR}/${PN}-${BaseV}
+S = "${WORKDIR}/${PN}-${BaseV}"
 
 inherit autotools
 

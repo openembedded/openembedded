@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
 	  file://${FILESDIR}/cross.patch;patch=1

@@ -1,17 +1,17 @@
-DEPENDS=virtual/libc
+DEPENDS = "virtual/libc"
 DESCRIPTION = "System-V like init.\
  Init is the first program to run after your system is booted, and\
  continues to run as process number 1 until your system halts. Inits\
  job is to start other programs that are essential to the operation of\
  your system. All processes are descended from init. For more information,\
  see the manual page init(8)."
-PACKAGES = ${PN} sysv-rc
+PACKAGES = "${PN} sysv-rc"
 FILES_${PN} = /sbin ${bindir} ${sysconfdir}
 FILES_sysv-rc = ${sbindir}
 
 SRC_URI = ftp://ftp.cistron.nl/pub/people/miquels/${PN}/${P}.tar.gz \
 	  cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d
-S="${WORKDIR}/${P}/src"
+S = "${WORKDIR}/${P}/src"
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"

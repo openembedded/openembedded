@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-DEPENDS=virtual/libc x11-cvs xproto-cvs xrender-cvs freetype fontconfig
-PROVIDES=xft
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+DEPENDS = "virtual/libc x11-cvs xproto-cvs xrender-cvs freetype fontconfig"
+PROVIDES = "xft"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xft
-S=${WORKDIR}/Xft
+S = "${WORKDIR}/Xft"
 
 inherit autotools pkgconfig libtool
 

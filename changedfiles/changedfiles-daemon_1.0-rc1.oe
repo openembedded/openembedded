@@ -1,14 +1,14 @@
-DESCRIPTION=A framework for simple filesystem replication and/or security monitoring and/or automatic file transformations \
+DESCRIPTION = "A framework for simple filesystem replication and/or security monitoring and/or automatic file transformations \
 -- essentially any application where one would poll files or directories and either do things to them or send them out. 
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-DEPENDS="virtual/libc fget"
-RDEPENDS="libc6 fget"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc fget"
+RDEPENDS = "libc6 fget"
 
 SRC_URI = http://www.bangstate.com/changedfiles-${PV}.tar.gz
-S = ${WORKDIR}/changedfiles-${PV}
+S = "${WORKDIR}/changedfiles-${PV}"
 
 inherit autotools libtool
 

@@ -1,13 +1,13 @@
-DESCRIPTION = Freetype font rendering library
+DESCRIPTION = "Freetype font rendering library"
 FT_SONAME = 6.3.5
 
 SRC_URI = ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1
 
 inherit autotools pkgconfig native
-DEPENDS = patcher-native
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/freetype-${PV}
-S = ${WORKDIR}/freetype-${PV}
+DEPENDS = "patcher-native"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/freetype-${PV}"
+S = "${WORKDIR}/freetype-${PV}"
 PACKAGES =
 
 do_configure () {

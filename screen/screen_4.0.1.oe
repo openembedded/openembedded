@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc ncurses
-RDEPENDS = libc6 libncurses5
+DEPENDS = "virtual/libc ncurses"
+RDEPENDS = "libc6 libncurses5"
 
 SRC_URI := ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1

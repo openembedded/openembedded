@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-DEPENDS=virtual/libc x11-cvs compositeext-cvs xextensions-cvs fixesext-cvs xfixes-cvs
-PROVIDES=xcomposite
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+DEPENDS = "virtual/libc x11-cvs compositeext-cvs xextensions-cvs fixesext-cvs xfixes-cvs"
+PROVIDES = "xcomposite"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xcomposite
-S=${WORKDIR}/Xcomposite
+S = "${WORKDIR}/Xcomposite"
 
 inherit autotools pkgconfig libtool
 

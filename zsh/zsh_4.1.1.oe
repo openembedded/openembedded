@@ -1,9 +1,9 @@
-DESCRIPTION="Zsh shell"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Chris Larson <kergoth@handhelds.org>"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc ncurses pcre
+DESCRIPTION = "Zsh shell"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc ncurses pcre"
 
 SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2 \
 	 file://${FILESDIR}/configure.patch;patch=1"

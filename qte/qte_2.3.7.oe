@@ -1,14 +1,14 @@
-DESCRIPTION="Qt/Embedded version ${PV}"
-LICENSE="GPL/QPL"
+DESCRIPTION = "Qt/Embedded version ${PV}"
+LICENSE = "GPL/QPL"
 SRC_URI="ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	 file://${FILESDIR}/qpe.patch;patch=1 \
 	 file://${FILESDIR}/tslib.patch;patch=1 \
 	 file://${FILESDIR}/devfs.patch;patch=1 \
 	 file://${FILESDIR}/no-moc.patch;patch=1 "
-DEPENDS=virtual/libc base/zlib base/libpng base/jpeg uicmoc-native
-RDEPENDS=libc6 libjpeg62 libpng3 zlib1g
-PROVIDES=virtual/qte virtual/libqte2
-S="${WORKDIR}/qt-${PV}"
+DEPENDS = "virtual/libc base/zlib base/libpng base/jpeg uicmoc-native"
+RDEPENDS = "libc6 libjpeg62 libpng3 zlib1g"
+PROVIDES = "virtual/qte virtual/libqte2"
+S = "${WORKDIR}/qt-${PV}"
 
 # strip off leading and trailing whitespace, and made the vars single word
 #CXX:="${@oe.data.getVar('CXX', d, 1).strip().split()[-1]}"
@@ -67,7 +67,7 @@ do_install() {
 	cp -a lib/fonts/* ${D}/opt/QtPalmtop/lib/fonts/
 }
 
-PACKAGES=libqte2 qte-fonts
+PACKAGES = "libqte2 qte-fonts"
 
 FILES_${PN}=
 FILES_libqte2=/opt/QtPalmtop/lib/libqte.so*

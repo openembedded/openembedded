@@ -1,0 +1,19 @@
+include modutils_${PV}.oe
+inherit cross
+S = "${WORKDIR}/modutils-${PV}"
+DEPENDS=
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/modutils-${PV}-${PR}"
+PACKAGES =
+
+sbindir = "${prefix}/bin"
+
+EXTRA_OECONF_append = ' --program-prefix=${TARGET_PREFIX}'
+
+do_stage () {
+        oe_runmake install
+}
+
+do_install () {
+        :
+}
+

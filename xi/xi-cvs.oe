@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-DEPENDS=virtual/libc x11-cvs xextensions-cvs
-PROVIDES=xi
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+DEPENDS = "virtual/libc x11-cvs xextensions-cvs"
+PROVIDES = "xi"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xi
-S=${WORKDIR}/Xi
+S = "${WORKDIR}/Xi"
 
 inherit autotools pkgconfig libtool
 

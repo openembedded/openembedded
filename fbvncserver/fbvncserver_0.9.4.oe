@@ -1,0 +1,39 @@
+DESCRIPTION = "framebuffer VNC server"
+DEPENDS = "virtual/libc libvncserver jpeg zlib"
+RDEPENDS = "libc6 fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet zlib libjpeg"
+
+SRC_URI = http://sdgsystems.com/download/${PN}-${PV}.tar.gz \
+	  file://${FILESDIR}/libvncs0.6.patch;patch=1 \
+	  file://${FILESDIR}/paths.patch;patch=1 \
+	  file://${FILESDIR}/kernelinclude.patch;patch=1
+	  
+export INCLUDES = -I${STAGING_INCDIR}
+
+export LIBS = -L${STAGING_LIBDIR} -lpthread
+export VNCSERVER_DIR = ${STAGING_LIBDIR}
+export ZAURUS_ZLIB_LIBS = ${STAGING_LIBDIR}
+export ZAURUS_JPEG_LIBS = ${STAGING_LIBDIR}
+
+do_compile () {
+	oe_runmake zaurus_fbvncserver zaurus_tssimd
+}
+
+do_install () {
+	install -d ${D}/usr/bin
+	install -m 0755 zaurus_fbvncserver ${D}/usr/bin/fbvncserver
+	install -m 0755 zaurus_tssimd ${D}/usr/bin/tssimd
+	
+	install -d ${D}/usr/share/fbvncserver
+	install -m 0644 ${FILESDIR}/zaurus_panel.jpg ${D}/usr/share/fbvncserver/
+	
+	install -d ${D}/${sysconfdir}/init.d
+	install -d ${D}/${sysconfdir}/rc2.d
+	install -d ${D}/${sysconfdir}/rc3.d
+	install -d ${D}/${sysconfdir}/rc4.d
+	install -d ${D}/${sysconfdir}/rc5.d
+	install -m 0755 ${FILESDIR}/init ${D}/${sysconfdir}/init.d/fbvncinput
+	ln -sf ../init.d/fbvncinput ${D}/etc/rc2.d/S97fbvncinput
+	ln -sf ../init.d/fbvncinput ${D}/etc/rc3.d/S97fbvncinput
+	ln -sf ../init.d/fbvncinput ${D}/etc/rc4.d/S97fbvncinput
+	ln -sf ../init.d/fbvncinput ${D}/etc/rc5.d/S97fbvncinput
+}

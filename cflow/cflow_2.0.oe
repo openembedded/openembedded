@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = http://www.ibiblio.org/pub/Linux/devel/lang/c/cflow-2.0.tar.gz
 

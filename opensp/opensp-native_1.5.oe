@@ -1,14 +1,14 @@
-DEPENDS = patcher-native
+DEPENDS = "patcher-native"
 RDEPENDS =
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 	  file://${FILESDIR}/m4.patch;patch=1 \
 	  file://${FILESDIR}/attributevalue.patch;patch=1
-S = ${WORKDIR}/OpenSP-${PV}
+S = "${WORKDIR}/OpenSP-${PV}"
 
 inherit autotools native
 
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensp-${PV}
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensp-${PV}"
 PACKAGES =
 
 do_configure () {

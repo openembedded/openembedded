@@ -1,6 +1,6 @@
-SECTION=libs
-RDEPENDS=libc6
-DEPENDS=virtual/libc
+SECTION = "libs"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
 
 SRC_URI = http://www.vorbis.com/files/1.0.1/unix/libogg-${PV}.tar.gz
 

@@ -1,10 +1,10 @@
-DESCRIPTION=GNU Midnight Commander is a file manager for free operating systems. \
+DESCRIPTION = "GNU Midnight Commander is a file manager for free operating systems. \
 Like other GNU software, it is written in a portable manner and should compile   \
 and run on a wide range of operating systems with some degree of UNIX compatibility.
-SECTION=base
-PRIORITY=optional
-RDEPENDS=libc6 libncurses5 glib-2.0
-DEPENDS=virtual/libc ncurses glib-2.0
+SECTION = "base"
+PRIORITY = "optional"
+RDEPENDS = "libc6 libncurses5 glib-2.0"
+DEPENDS = "virtual/libc ncurses glib-2.0"
 
 SRC_URI = http://www.ibiblio.org/pub/Linux/utils/file/managers/${PN}/${P}.tar.gz 
 

@@ -1,12 +1,12 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
 #DEPENDS=virtual/libc x11-cvs damageext-cvs xextensions-cvs fixesext-cvs xfixes-cvs
-DEPENDS=virtual/libc x11-cvs damageext-cvs xfixes-cvs xproto-cvs
-PROVIDES=xdamage
+DEPENDS = "virtual/libc x11-cvs damageext-cvs xfixes-cvs xproto-cvs"
+PROVIDES = "xdamage"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdamage \
 	  file://${FILESDIR}/m4.patch;patch=1
-S=${WORKDIR}/Xdamage
+S = "${WORKDIR}/Xdamage"
 
 inherit autotools pkgconfig libtool
 

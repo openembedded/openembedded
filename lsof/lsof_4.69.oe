@@ -1,6 +1,6 @@
 SRC_URI = ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/OLD/lsof_${PV}.tar.gz
-LOCALSRC = file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar
-S = ${WORKDIR}/lsof_${PV}_src
+LOCALSRC = "file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar"
+S = "${WORKDIR}/lsof_${PV}_src"
 
 python do_unpack () {
 	oe.build.exec_func('base_do_unpack', d)

@@ -1,9 +1,9 @@
-DESCRIPTION="PNG Library"
-SECTION="libs"
-PRIORITY="required"
-MAINTAINER="Chris Larson <kergoth@handhelds.org>"
-DEPENDS=virtual/libc base/zlib
-RDEPENDS="libc6 zlib1g"
+DESCRIPTION = "PNG Library"
+SECTION = "libs"
+PRIORITY = "required"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+DEPENDS = "virtual/libc base/zlib"
+RDEPENDS = "libc6 zlib1g"
 RDEPENDS_append_libpng3=' libpng12'
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/png-mng/${P}.tar.bz2

@@ -1,0 +1,22 @@
+DESCRIPTION = "GPG-Error library"
+SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "GPL LGPL FDL"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
+
+SRC_URI = ftp://ftp.gnupg.org/gcrypt/alpha/${PN}/${PN}-${PV}.tar.gz
+
+inherit autotools libtool
+
+do_stage() {
+	oe_soinstall src/.libs/libgpg-error.so.0.1.1 ${STAGING_LIBDIR}/
+	install -m 0755 src/gpg-error-config ${STAGING_BINDIR}/
+
+	install -d ${STAGING_INCDIR}/
+	for X in gpg-error.h
+	do
+		install -m 0644 src/${X} ${STAGING_INCDIR}/${X}
+	done
+
+}

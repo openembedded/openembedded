@@ -1,6 +1,6 @@
-DESCRIPTION = A library for configuring and customizing font access.
-DEPENDS = virtual/libc expat freetype freetype-native zlib
-RDEPENDS = libc6 expat freetype zlib
+DESCRIPTION = "A library for configuring and customizing font access."
+DEPENDS = "virtual/libc expat freetype freetype-native zlib"
+RDEPENDS = "libc6 expat freetype zlib"
 
 FC_SONAME = 1.0.4
 

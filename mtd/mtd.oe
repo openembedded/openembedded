@@ -1,8 +1,8 @@
-DEPENDS = virtual/libc zlib
-RDEPENDS = libc6 zlib1g
-PV = ${@os.popen("date +%Y%m%d").readline().strip()}
+DEPENDS = "virtual/libc zlib"
+RDEPENDS = "libc6 zlib1g"
+PV = "${@os.popen("date +%Y%m%d").readline().strip()}
 
-S = ${WORKDIR}/mtd/util
+S = "${WORKDIR}/mtd/util"
 SRC_URI = cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd
 
 CFLAGS_prepend = "-I${S}/../include "

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/strace/strace-4.4.98.tar.bz2 \
 	  file://${FILESDIR}/arm-compilation.patch;patch=1 \

@@ -1,0 +1,12 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/modplug-xmms/${P}.tar.gz
+
+inherit autotools libtool pkgconfig
+
+do_stage() {
+	install -m 644 src/modplug.h ${STAGING_DIR}/target/include
+	cp -a src/.libs/libmodplug.so* ${STAGING_LIBDIR}
+}
+

@@ -1,0 +1,32 @@
+DESCRIPTION = "Classic arcade puzzle game Qtopia/Opie - based on SDL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsdl"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
+
+SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/x/${PN}/src/${P}.tar.gz \
+          file://${FILESDIR}/directories.patch;patch=1
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+
+do_configure_prepend() {
+        qmake -project -o gemdropx.pro
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/gemdropx}
+        install -D -m 0755 gemdropx ${D}/opt/QtPalmtop/bin/gemdropx
+	install -D -m 0644 ${FILESDIR}/icon.png ${D}/opt/QtPalmtop/pics/gemdropx.png
+	cp -a data/* ${D}/opt/QtPalmtop/share/gemdropx
+
+	echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "Comment=Puzzle game" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "Exec=gemdropx" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "Icon=gemdropx" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "Name=GemdropX" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+}

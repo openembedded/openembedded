@@ -1,0 +1,11 @@
+DEPENDS = "virtual/libc ncurses"
+RDEPENDS = "libc6 ncurses"
+
+SRC_URI = "http://jpj.net/~trevor/aumix/aumix-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
+
+inherit autotools
+
+EXTRA_OECONF = "--without-gpm --without-sysmouse \
+		--without-alsa --without-gtk \
+		--without-gtk1"

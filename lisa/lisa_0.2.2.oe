@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI = http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

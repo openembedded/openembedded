@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc libesmtp
-RDEPENDS = libc6 libesmtp
+DEPENDS = "virtual/libc libesmtp"
+RDEPENDS = "libc6 libesmtp"
 
 SRC_URI := ${SOURCEFORGE_MIRROR}/esmtp/esmtp-${PV}.tar.bz2
 

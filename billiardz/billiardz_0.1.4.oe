@@ -1,13 +1,13 @@
-DESCRIPTION="Billiard Game for Opie/Qtopia using libsdl"
-HOMEPAGE=http://www.chipx86.com/projects/billiardz/
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-RDEPENDS=libqpe1 virtual/libsdl
-DEPENDS=virtual/libc virtual/libsdl
+DESCRIPTION = "Billiard Game for Opie/Qtopia using libsdl"
+HOMEPAGE = "http://www.chipx86.com/projects/billiardz/"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 virtual/libsdl"
+DEPENDS = "virtual/libc virtual/libsdl"
 
-SRC_URI = http://www.lilo.cx/packages/ipkg/${P}.tar.gz
+SRC_URI = "http://www.lilo.cx/packages/ipkg/billiardz-${PV}.tar.gz"
 
 inherit palmtop
 

@@ -1,5 +1,5 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
 SRC_URI := ${GNU_MIRROR}/make/make-3.80.tar.bz2 \
 	   file://${FILESDIR}/SCCS.patch;patch=1

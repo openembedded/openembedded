@@ -1,14 +1,14 @@
-SECTION = net
-DEPENDS = virtual/libc expat openssl
-RDEPENDS = libc6, libexpat1, libssl0.9.7
+SECTION = "net"
+DEPENDS = "virtual/libc expat openssl"
+RDEPENDS = "libc6, libexpat1, libssl0.9.7"
 
-SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
-	  file://${FILESDIR}/configure.patch;patch=1 \
-	  file://${FILESDIR}/pcre-configure.patch;patch=1
-S = ${WORKDIR}/httpd-${PV}
+SRC_URI = "http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/pcre-configure.patch;patch=1"
+S = "${WORKDIR}/httpd-${PV}"
 
-basesysconfdir := ${sysconfdir}
-sysconfdir = /etc/apache
+basesysconfdir := "${sysconfdir}"
+sysconfdir = "/etc/apache"
 
 inherit autotools libtool
 

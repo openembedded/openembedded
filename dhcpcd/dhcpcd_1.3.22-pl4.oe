@@ -1,0 +1,7 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = http://www.phystech.com/ftp/dhcpcd-${PV}.tar.gz \
+	  file://${FILESDIR}/config_dir.patch;patch=1
+
+inherit autotools

@@ -1,10 +1,10 @@
-DESCRIPTION="Clone of the classic Paradroid from C64 for Qtopia/Opie - based on SDL"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-RDEPENDS="libqpe1 libsdl libsdl-image"
-DEPENDS="virtual/libc virtual/libqpe virtual/libsdl libsdl-image"
+DESCRIPTION = "Clone of the classic Paradroid from C64 for Qtopia/Opie - based on SDL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1 libsdl libsdl-image"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl libsdl-image"
 
 SRC_URI = http://heanet.dl.sourceforge.net/sourceforge/${PN}/${P}.tar.gz
 #${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz

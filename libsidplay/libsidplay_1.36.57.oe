@@ -1,8 +1,8 @@
-DESCRIPTION=A library for replaying C64 SID music
-SECTION=libs
-PRIORITY=optional
-RDEPENDS=libc6
-DEPENDS=virtual/libc
+DESCRIPTION = "A library for replaying C64 SID music"
+SECTION = "libs"
+PRIORITY = "optional"
+RDEPENDS = "libc6"
+DEPENDS = "virtual/libc"
 
 SRC_URI = ftp://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_${PV}.orig.tar.gz \
           ftp://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_1.36.57-3.diff.gz;patch=1

@@ -1,0 +1,30 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+
+SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
+
+inherit autotools
+
+acpaths=
+do_configure_prepend () {
+	if ! test -e acinclude.m4; then
+		cp aclocal.m4 acinclude.m4
+	fi
+}
+
+do_stage () {
+	install -m 0644 ${S}/src/adns.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/src/libadns.a ${STAGING_LIBDIR}/
+	install -m 0755 ${S}/dynamic/libadns.so.1.0 ${STAGING_LIBDIR}/
+	ln -sf libadns.so.1.0 ${STAGING_LIBDIR}/libadns.so.1
+	ln -sf libadns.so.1.0 ${STAGING_LIBDIR}/libadns.so
+}
+
+do_install () {
+	install -d ${D}${prefix} ${D}${exec_prefix} \
+		   ${D}${bindir} ${D}${libdir} ${D}${includedir}
+	oe_runmake 'prefix=${D}${prefix}' 'exec_prefix=${D}${exec_prefix}' \
+		   'bin_dir=${D}${bindir}' 'lib_dir=${D}${libdir}' \
+		   'include_dir=${D}${includedir}' install
+}

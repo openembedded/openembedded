@@ -1,10 +1,10 @@
-DESCRIPTION="Qt Widget Extension for Technical Applications"
-SECTION="base"
-PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-RDEPENDS="libqte2"
-DEPENDS="virtual/libc virtual/libqte2"
+DESCRIPTION = "Qt Widget Extension for Technical Applications"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "libqte2"
+DEPENDS = "virtual/libc virtual/libqte2"
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tgz
 

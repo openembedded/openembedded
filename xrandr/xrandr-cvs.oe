@@ -1,10 +1,10 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-DEPENDS=virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs
-PROVIDES=xrandr
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+DEPENDS = "virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs"
+PROVIDES = "xrandr"
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr
-S=${WORKDIR}/Xrandr
+S = "${WORKDIR}/Xrandr"
 
 inherit autotools pkgconfig libtool
 

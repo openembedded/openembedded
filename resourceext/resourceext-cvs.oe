@@ -1,11 +1,11 @@
-PV="0.0cvs${DATE}"
-SECTION="libs"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
-DEPENDS=xextensions-cvs
-PROVIDES=resourceext
+PV = "0.0cvs${DATE}"
+SECTION = "libs"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+DEPENDS = "xextensions-cvs"
+PROVIDES = "resourceext"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ResourceExt
-S=${WORKDIR}/ResourceExt
+S = "${WORKDIR}/ResourceExt"
 
 inherit autotools pkgconfig
 

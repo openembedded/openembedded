@@ -1,8 +1,8 @@
-DESCRIPTION=A module player based on libmikmod.
-SECTION=base
-PRIORITY=optional
-DEPENDS=virtual/libc libmikmod
-RDEPENDS=libc6 libmikmod
+DESCRIPTION = "A module player based on libmikmod."
+SECTION = "base"
+PRIORITY = "optional"
+DEPENDS = "virtual/libc libmikmod"
+RDEPENDS = "libc6 libmikmod"
 
 SRC_URI = http://mikmod.raphnet.net/files/${P}.tar.bz2 \
           file://${FILESDIR}/m4.patch;patch=1
