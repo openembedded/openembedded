@@ -405,40 +405,44 @@ addtask patch after do_unpack
 do_patch[dirs] = "${WORKDIR}"
 python base_do_patch() {
 	import re
+	import bb.fetch
 
-	src_uri = bb.data.getVar('SRC_URI', d)
-	if not src_uri:
-		return
-	src_uri = bb.data.expand(src_uri, d)
-	for url in src_uri.split():
-#		bb.note('url is %s' % url)
+	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
+	workdir = bb.data.getVar('WORKDIR', d, 1)
+	for url in src_uri:
+
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 		if not "patch" in parm:
 			continue
-		from bb.fetch import init, localpath
-		init([url])
+
+		bb.fetch.init([url])
 		url = bb.encodeurl((type, host, path, user, pswd, []))
-		local = '/' + localpath(url, d)
-		# patch!
+		local = os.path.join('/', bb.fetch.localpath(url, d))
+
+		# did it need to be unpacked?
 		dots = local.split(".")
 		if dots[-1] in ['gz', 'bz2', 'Z']:
-			efile = os.path.join(bb.data.getVar('WORKDIR', d),os.path.basename('.'.join(dots[0:-1])))
+			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),os.path.basename('.'.join(dots[0:-1])))
 		else:
-			efile = local
-		efile = bb.data.expand(efile, d)
-		patches_dir = bb.data.expand(bb.data.getVar('PATCHES_DIR', d), d)
-		bb.mkdirhier(patches_dir + "/.patches")
-		os.chdir(patches_dir)
-		cmd = "PATH=\"%s\" patcher" % bb.data.getVar("PATH", d, 1)
+			unpacked = local
+		unpacked = bb.data.expand(unpacked, d)
+
 		if "pnum" in parm:
-			cmd += " -p %s" % parm["pnum"]
-		# Getting rid of // at the front helps the Cygwin-Users of OE
-		if efile.startswith('//'):
-			efile = efile[1:]
-		cmd += " -R -n \"%s\" -i %s" % (os.path.basename(efile), efile)
-		ret = os.system(cmd)
-		if ret != 0:
-			raise bb.build.FuncFailed("'patcher' execution failed")
+			pnum = parm["pnum"]
+		else:
+			pnum = "1"
+
+		dots = os.path.basename(unpacked).split(".")
+		if len(dots) > 1:
+			pname = ".".join(dots[:-1])
+		else:
+			pname = unpacked
+
+		os.chdir(workdir)
+		bb.note("Applying patch '%s'" % pname)
+		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
+		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
+		bb.build.exec_func("do_patchcmd", d)
 }
 
 
