@@ -1,0 +1,32 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+
+acpaths=-I ${S}/cmulocal -I ${S}/config -I .
+CFLAGS_append = ' -I${S}/include -I${S}/saslauthd/include'
+EXTRA_OECONF = --enable-shared
+do_compile_prepend () {
+	set -e
+	cd include
+	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} makemd5.c -o makemd5
+	touch makemd5.o makemd5.lo makemd5
+	cd ..
+}
+
+do_stage () {
+	install -m 0644 lib/libsasl2.la ${STAGING_LIBDIR}/
+	install -m 0644 lib/libsasl2.a ${STAGING_LIBDIR}/
+	install -d ${STAGING_LIBDIR}/sasl
+	install -d ${STAGING_DIR}/target/include/sasl
+	install -m 0644 include/hmac-md5.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/md5.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/md5global.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/sasl.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/saslplug.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/saslutil.h ${STAGING_DIR}/target/include/sasl/
+	install -m 0644 include/prop.h ${STAGING_DIR}/target/include/sasl/
+}
