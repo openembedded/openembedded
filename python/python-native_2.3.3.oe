@@ -12,7 +12,7 @@ S = "${WORKDIR}/Python-${PV}"
 inherit autotools native
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
-
+EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 do_configure () {
 	oe_runconf
 }

@@ -11,8 +11,8 @@
  # These are needed in a couple of spots, so just compute them once.
 -PREFIX = os.path.normpath(sys.prefix)
 -EXEC_PREFIX = os.path.normpath(sys.exec_prefix)
-+PREFIX = os.path.normpath(sys.prefix).replace( "build", "target" )
-+EXEC_PREFIX = os.path.normpath(sys.exec_prefix).replace( "build", "target" )
++PREFIX = os.path.normpath(sys.prefix).replace( os.getenv("BUILD_SYS"), os.getenv("HOST_SYS") )
++EXEC_PREFIX = os.path.normpath(sys.exec_prefix).replace( os.getenv("BUILD_SYS"), os.getenv("HOST_SYS") )
  
  # python_build: (Boolean) if true, we're either building Python or
  # building an extension with an un-installed Python, so we use
@@ -22,7 +22,7 @@
          config_h = 'pyconfig.h'
 -    return os.path.join(inc_dir, config_h)
 +    print "NOTE: sysconfig.get_config_h_filename() altered for OpenEmbedded"
-+    return os.path.join(inc_dir, config_h).replace( "build", "target" )
++    return os.path.join(inc_dir, config_h).replace( os.getenv("BUILD_SYS"), os.getenv("HOST_SYS") )
  
  
  def get_makefile_filename():
@@ -32,7 +32,7 @@
      lib_dir = get_python_lib(plat_specific=1, standard_lib=1)
 -    return os.path.join(lib_dir, "config", "Makefile")
 +    print "NOTE: sysconfig.get_config_h_filename() altered for OpenEmbedded"
-+    return os.path.join(lib_dir, "config", "Makefile").replace( "build", "target" )
++    return os.path.join(lib_dir, "config", "Makefile").replace( os.getenv("BUILD_SYS"), os.getenv("HOST_SYS") )
  
  
  def parse_config_h(fp, g=None):

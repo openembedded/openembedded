@@ -36,7 +36,9 @@ do_compile_prepend() {
 do_compile() {
 	oe_runmake HOSTPGEN=${STAGING_BINDIR}/pgen \
 		   HOSTPYTHON=${STAGING_BINDIR}/python \
-		   STAGING_DIR=${STAGING_DIR}
+		   STAGING_DIR=${STAGING_DIR} \
+		   BUILD_SYS=${BUILD_SYS} \
+		   HOST_SYS=${HOST_SYS}
 }
 
 do_stage() {
