@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext"
+DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext recordext"
 PROVIDES = "virtual/xserver"
 PACKAGES = "xserver-kdrive-fbdev xserver-kdrive-ati xserver-kdrive-fake xserver-kdrive-i810 ${PN}-doc ${PN}-dev ${PN}-locale"
 DESCRIPTION = "X server from freedesktop.org"
