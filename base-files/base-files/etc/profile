@@ -25,6 +25,3 @@ export PATH PS1 OPIEDIR QPEDIR QTDIR
 
 umask 022
 
-# disable history writing
-# causes busybox sh to segfault on certain stuff...
-#export HISTFILE=""
