@@ -1,0 +1,14 @@
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/chkhinge;date=${PV}"
+S = "${WORKDIR}/chkhinge"
+
+FILES_${PN} = "/bin"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	install -d ${D}/bin
+	install chkhinge ${D}/bin/
+}
+
