@@ -1,11 +1,11 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "Ncurses library"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
 PACKAGES_append = " ncurses-terminfo"
 FILES_ncurses_append = " ${datadir}/tabset"
 FILES_ncurses-terminfo = "${datadir}/terminfo"
-RRECOMMENDS_${PN} = "ncurses-terminfo"
+RSUGGESTS_${PN} = "ncurses-terminfo"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz"
 S = "${WORKDIR}/ncurses-${PV}"
@@ -49,4 +49,24 @@ do_stage () {
 		       install -m 0644 include/$h ${STAGING_INCDIR}/
 	done
 	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
+}
+
+do_install_append() {
+	# include some basic terminfo files
+	# stolen ;) from gentoo and modified a bit
+	for x in ansi console dumb linux rxvt screen sun vt{52,100,102,200,220} xterm-color xterm-xfree86
+        do
+                local termfile="$(find "${D}/usr/share/terminfo/" -name "${x}" 2>/dev/null)"
+                local basedir="$(basename $(dirname "${termfile}"))"
+
+                if [ -n "${termfile}" ]
+                then
+                        install -d ${D}/etc/terminfo/${basedir}
+                        mv ${termfile} ${D}/etc/terminfo/${basedir}/
+                        ln -s /etc/terminfo/${basedir}/${x} \
+                                ${D}/usr/share/terminfo/${basedir}/${x}
+                fi
+        done
+	# i think we can use xterm-color as default xterm
+	ln -sf xterm-color ${D}/etc/terminfo/x/xterm
 }
