@@ -137,7 +137,7 @@ rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
 
 do_compile () {
 	touch sysdeps/${TARGET_ARCH}/framestate.c
-	autotools_do_compile
+	base_do_compile
 	(
 		cd ${S}/sunrpc/rpcsvc
 		for r in ${rpcsvc}; do
