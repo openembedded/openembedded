@@ -1,3 +1,4 @@
+PR = "r1"
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-files/base-files_${PV}.tar.gz"
 DESCRIPTION = "Base system miscellaneous files."
 
@@ -37,4 +38,6 @@ do_install () {
 	oe_machinstall -m 0644 ${FILESDIR}/fstab ${D}/${sysconfdir}/fstab
 	oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
 	oe_machinstall -m 0644 ${FILESDIR}/profile ${D}/${sysconfdir}/profile
+
+	install -d ${D}/sys
 }
