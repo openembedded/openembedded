@@ -1,3 +1,6 @@
+DESCRIPTION=The Concurrent Versioning System
+SECTION=base
+PRIORITY=optional
 DEPENDS = virtual/libc
 RDEPENDS = libc6
 
