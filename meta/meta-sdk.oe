@@ -6,7 +6,7 @@ SDK_DIR = "${TMPDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
 
 IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
-IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}/${prefix}"
+IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
@@ -15,11 +15,11 @@ do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
-	cat <<EOF >>${SDK_DIR}/ipkg-host.conf
+	cat <<EOF >${SDK_DIR}/ipkg-host.conf
 src oe file:${DEPLOY_DIR_IPK}
 arch ${BUILD_ARCH} 1
 EOF
-	cat <<EOF >>${SDK_DIR}/ipkg-target.conf
+	cat <<EOF >${SDK_DIR}/ipkg-target.conf
 src oe file:${DEPLOY_DIR_IPK}
 arch ${TARGET_ARCH} 1
 EOF
