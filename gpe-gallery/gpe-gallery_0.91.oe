@@ -12,4 +12,5 @@ DESCRIPTION = "GPE image viewer application"
 export CVSBUILD = no
 
 SRC_URI = "${GPE_MIRROR}/gpe-gallery-${PV}.tar.gz \
-	file://desktop-categories.patch;patch=1"
+	file://desktop-categories.patch;patch=1 \
+	file://mcheck.patch;patch=1"
