@@ -24,6 +24,10 @@
 # Boston, MA 02111-1307, USA.
 
 check_sanity () {
+    if [ X$BK_SILENT != X ]; then
+        return 1
+    fi
+
     if [ X$BK_STATUS = XDRYRUN -o X$BK_STATUS = XNOTHING ]; then
         return 1
     fi
