@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r2"
 
 DOSRC="http://www.do13.in-berlin.de/openzaurus"
 RPSRC="http://www.rpsys.net/openzaurus/patches"
@@ -61,28 +61,29 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.10.tar.gz \
            ${RPSRC}/w100_split5-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r0.patch;patch=1 \
            ${RPSRC}/pxa_irda-r0.patch;patch=1 \
-           ${DOSRC}/tc6393-device-r1.patch;patch=1 \
-           ${DOSRC}/tc6393_nand-r1.patch;patch=1 \
-           ${DOSRC}/tosa-machine-base-r1.patch;patch=1 \
-           ${DOSRC}/tosa-keyboard-r1.patch;patch=1 \
-           ${DOSRC}/tc6393fb-r0.patch;patch=1 \
-           ${DOSRC}/tosa-power-r0.patch;patch=1 \
+           ${DOSRC}/tc6393-device-r2.patch;patch=1 \
+           ${DOSRC}/tc6393_nand-r2.patch;patch=1 \
+           ${DOSRC}/tosa-machine-base-r2.patch;patch=1 \
+           ${DOSRC}/tosa-keyboard-r2.patch;patch=1 \
+           ${DOSRC}/tc6393fb-r1.patch;patch=1 \
+           ${DOSRC}/tosa-power-r1.patch;patch=1 \
+	   ${DOSRC}/sharpsl-flash-tosa-r0.patch;patch=1 \
+	   ${RPSRC}/sharp_multi_pcmcia-r0.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-collie \
            file://defconfig-poodle \
            file://defconfig-tosa "
 
 SRC_URI_append_collie = " ${RPSRC}/jl1/collie_keymap.patch;patch=1 "
-SRC_URI_append_c7x0 = " ${RPSRC}/sharp_multi_pcmcia-r0.patch;patch=1 "
 SRC_URI_append_tosa = " ${RPSRC}/corgi_power1-r0.patch;patch=1 \
                         ${DOSRC}/nand-readid-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-pcmia-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-mmc-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-bl-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-udc-r0.patch;patch=1 \
-                        ${DOSRC}/pxa-ac97-hh.org-r0.patch;patch=1 \
-                        ${DOSRC}/tosa-ac97-r0.patch;patch=1 "
-#                        ${DOSRC}/multiple-scoop-devices-r1.patch;patch=1 
+                        ${DOSRC}/tosa-mmc-r1.patch;patch=1 \
+                        ${DOSRC}/tosa-bl-r1.patch;patch=1 \
+                        ${DOSRC}/tosa-udc-r1.patch;patch=1 \
+                        ${DOSRC}/tosa-irda-r0.patch;patch=1 \
+                        ${DOSRC}/ac97-r0.patch;patch=1 "
+#                       ${DOSRC}/tosa-pcmia-r0.patch;patch=1 			
+
 
 S = "${WORKDIR}/linux-2.6.10"
 
@@ -109,7 +110,6 @@ COMPATIBLE_HOST = "arm.*-linux"
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
-CMDLINE_ROOT_tosa = "root=/dev/mtdblock1 rootfstype=jffs2 "
 
 ##############################################################
 # Configure memory/ramdisk split for collie
