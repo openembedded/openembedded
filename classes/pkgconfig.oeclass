@@ -6,11 +6,11 @@ def get_pkgconfig_mangle(d):
 	import oe.data
 	s = "-e ''"
 	if not oe.data.inherits_class('native', d):
-		s += " -e 's:${libdir}$:${STAGING_LIBDIR}:;'"
-		s += " -e 's:${includedir}$:${STAGING_INCDIR}:;'"
-		s += " -e 's:${datadir}$:${STAGING_DATADIR}:'"
-		s += " -e 's:${prefix}$:${STAGING_LIBDIR}/..:'"
-		s += " -e 's:${exec_prefix}$:${STAGING_LIBDIR}/..:'"
+		s += " -e 's:${libdir}:${STAGING_LIBDIR}:;'"
+		s += " -e 's:${includedir}:${STAGING_INCDIR}:;'"
+		s += " -e 's:${datadir}:${STAGING_DATADIR}:'"
+		s += " -e 's:${prefix}:${STAGING_LIBDIR}/..:'"
+		s += " -e 's:${exec_prefix}:${STAGING_LIBDIR}/..:'"
 	return s
 
 do_stage_append () {
