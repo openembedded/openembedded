@@ -11,6 +11,7 @@ SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz
 	file://Ambit_usb.patch;patch=1 \
 	file://scripts-makefile-hostcc.diff;patch=1;pnum=0 \
 	file://pass-kernel-cross.patch;patch=1;pnum=0 \
+	file://OZ-Configure.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://config.in \
