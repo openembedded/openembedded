@@ -4,14 +4,12 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/libqtaux"
 S = "${WORKDIR}/libqtaux"
 
-inherit qmake
-
-EXTRA_QMAKEVARS_POST = 'DEFINES+=QWS'
+inherit opie
 
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
