@@ -4,7 +4,7 @@ and use them immediately."
 HOMEPAGE = "http://linux-hotplug.sourceforge.net/"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r7"
+PR = "r8"
 RSUGGESTS = "pciutils usbutils"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
