@@ -2,7 +2,8 @@ DESCRIPTION = "libmikmod is a module player library supporting many formats, inc
 SECTION = "libs"
 PRIORITY = "optional"
 
-SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz"
+SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz \
+file://m4.patch;patch=1"
 
 inherit autotools binconfig
 
