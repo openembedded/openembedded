@@ -1,0 +1,22 @@
+DESCRIPTION="Alsa sound library"
+MAINTAINER="Lorn Potter <lpotter@trolltech.com>"
+LICENSE="GPL"
+DEPENDS="virtual/libc"
+
+SRC_URI="ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2"
+
+inherit autotools libtool
+
+EXTRA_OECONF="--with-cards=pdaudiocf --with-oss=yes"
+
+do_stage () {
+	install -m 0755 src/.libs/libasound.so.2.0.0 ${STAGING_LIBDIR}/
+	ln -sf libasound.so.2.0.0 ${STAGING_LIBDIR}/libasound.so.2
+	ln -sf libasound.so.2.0.0 ${STAGING_LIBDIR}/libasound.so
+	install -d ${STAGING_DIR}/target/include/alsa/sound
+	install -m 0644 include/*.h ${STAGING_DIR}/target/include/alsa/
+	install -m 0644 include/sound/ainstr*.h ${STAGING_DIR}/target/include/alsa/sound/
+	install -d ${PKG_CONFIG_DIR}
+	install -m 0644 utils/alsa.pc ${PKG_CONFIG_DIR}/
+	install -m 0644 utils/alsa.m4 ${STAGING_DIR}/share/aclocal/
+}

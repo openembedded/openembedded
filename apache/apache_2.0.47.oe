@@ -13,6 +13,12 @@ inherit autotools libtool
 CFLAGS_append = " -DPATH_MAX=4096"
 CFLAGS_prepend = "-I${STAGING_DIR}/target/include/openssl "
 EXTRA_OECONF = --enable-ssl --with-ssl=${STAGING_DIR}/target --enable-dav --enable-dav-fs
+
+do_configure () {
+	./buildconf
+	oe_runconf
+}
+
 do_compile () {
 	touch srclib/apr-util/uri/gen_uri_delims.lo
 	${BUILD_CC} srclib/apr-util/uri/gen_uri_delims.c -o srclib/apr-util/uri/gen_uri_delims

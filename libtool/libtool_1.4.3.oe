@@ -1,0 +1,26 @@
+PR = r0
+
+DESCRIPTION = Generic library support script\
+ This is GNU libtool, a generic library support script.  Libtool hides\
+ the complexity of generating special library types (such as shared\
+ libraries) behind a consistent interface.  To use libtool, add the\
+ new generic library building commands to your Makefile, Makefile.in,\
+ or Makefile.am.  See the documentation for details.  Libtool supports\
+ building static libraries on all platforms.\
+ Libtool supports generation of C, C++ and Java libraries.
+
+DEPENDS=
+
+SRC_URI = ${DEBIAN_MIRROR}/main/libt/${PN}/${PN}_${PV}.orig.tar.gz \
+	  file://${FILESDIR}/debian.patch;patch=1 \
+	  file://${FILESDIR}/libdir.patch;patch=1 \
+	  file://${FILESDIR}/sedvar.patch;patch=1 \
+	  file://${FILESDIR}/libtoolize-staging.patch;patch=1
+S = "${WORKDIR}/${P}"
+
+inherit autotools
+
+EXTRA_OECONF = --disable-ltdl-install
+do_configure_prepend () {
+	./bootstrap
+}

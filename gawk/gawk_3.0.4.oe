@@ -9,6 +9,10 @@ inherit autotools
 EXTRA_OEMAKE = "'bindir=${D}/${bindir}' 'mandir=${D}/${mandir}/man1' 'infodir=${D}/${datadir}/info' \
 		'libexecdir=${D}/${libexecdir}' 'datadir=${D}/${datadir}/awk'"
 
+do_configure_prepend () {
+	mv aclocal.m4 acinclude.m4
+}
+
 do_install_append () {
 	rm -f ${D}/${bindir}/gawk-*
 }
