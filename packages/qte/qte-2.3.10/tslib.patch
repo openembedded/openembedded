@@ -1,0 +1,53 @@
+Index: qt-2.3.10/src/kernel/qwsmouse_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qwsmouse_qws.cpp	2005-02-16 00:53:53.090339898 +0100
++++ qt-2.3.10/src/kernel/qwsmouse_qws.cpp	2005-02-16 00:54:43.059069292 +0100
+@@ -1878,30 +1878,33 @@
+  */
+ void QTSLibHandlerPrivate::interpolateSample() {
+ #ifdef QT_QWS_TSLIB
+-    static struct ts_sample samples[25];
+-    int index = -1;
++#define TSLIB_MAX_SAMPLES 25
++    static struct ts_sample samples[TSLIB_MAX_SAMPLES];
++    int index = 0;
++    int read_samples = 0;
+     int ret;
+ 
+     do {
+-        /* fill only the last sample again */
+-        if ( index >= 25 )
+-            index = 24;
+-
++        /* do not access negative arrays */
++        if ( index < 0 )
++            index = 0;
++	    
+         /* we're opened non-blocking */
+-        if((ret= ts_read_raw(m_ts, &samples[index], 1 ) ) !=  1 ) {
++        if((ret= ts_read_raw(m_ts, &samples[index], 1 ) ) !=  1 )
+             /* no event yet, so try again */
+-            if (ret==-1 ) {
+-                index--;
++            if (ret==-1 )
+                 continue;
+-            }
+-        }
+-    }while (samples[index++].pressure != 0);
++	
++	read_samples++;
++	index = (index+1)%TSLIB_MAX_SAMPLES;
++    }while (samples[index == 0 ? (TSLIB_MAX_SAMPLES-1) : index-1].pressure != 0);
+ 
+     /*
+-     * index is maximal 25  and we at least one sample
++     * If we've wrapped around each sample is used otherwise
++     * we will use the index
+      */
+-    if( index >= 25 )
+-        index = 24;
++    index = read_samples >= TSLIB_MAX_SAMPLES ?
++            (TSLIB_MAX_SAMPLES-1 ) : index;
+     int x, y;
+ 
+     /*
