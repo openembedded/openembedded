@@ -56,7 +56,7 @@ Subject: DeliverXML
             <files>$files</files>
 EOF
 echo "            <log>"
-bk changes -r"$REV" -d'$if(:C:){$each(:C:){:C:\\\n}}' | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+bk changes -r"$REV" -d'$if(:C:){$each(:C:){:C:\\n}}' | sed 's/\&/\&amp\;/g;s/</\&lt\;/g;s/>/\&gt\;/g'
 echo "            </log>"
 cat <<EOF
         </commit>
