@@ -18,4 +18,6 @@ IMAGE_LINGUAS = ""
 
 inherit image_ipk
 
-ROOTFS_POSTPROCESS_COMMAND = "rm ${IMAGE_ROOTFS}/boot/zImage*"
+ROOTFS_POSTPROCESS_COMMAND = "rm ${IMAGE_ROOTFS}/tmp/zImage*"
+
+export FEED_URIS="nylon##http://192.168.0.5/feed/unstable"
