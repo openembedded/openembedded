@@ -1,5 +1,5 @@
 DEPENDS = virtual/libc ncurses
-RDEPENDS = libc6 libncurses5
+RDEPENDS = libc6 ncurses5
 
 SRC_URI = http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz
 
