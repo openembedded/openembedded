@@ -2,7 +2,7 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "gstreamer zlib libmikmod libmad libogg tremor libvorbis libid3tag gnome-vfs esound-gpe"
 
@@ -17,10 +17,15 @@ acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 
 LIBV = "0.8"
 
+plugin_postinst() {
+gst-register --gst-registry=/var/cache/gstreamer-0.8/registry.xml
+}
+
 python populate_packages_prepend () {
 	gst_libdir = oe.data.expand('${libdir}/gstreamer-${LIBV}', d)
+	postinst = oe.data.getVar('plugin_postinst', d, 1)
 
-	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s')
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s', postinst=postinst)
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
 }
 
