@@ -8,5 +8,4 @@ SRCNAME = "pygtk"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.2/${SRCNAME}-${PV}.tar.bz2"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit distutils pkgconfig
-
+inherit autotools pkgconfig
