@@ -12,7 +12,7 @@ do_stage() {
 
         install -d ${STAGING_BINDIR}
 	install -m 755 ${S}/libusb-config ${STAGING_BINDIR}
-	perl -pi -e 's:\-L/usr/lib ::' ${STAGING_BINDIR}/libusb-config
+	perl -pi -e 's:\-L/usr/lib :-L${STAGING_LIBDIR} :' ${STAGING_BINDIR}/libusb-config
 
         install -d ${STAGING_INCDIR}/
         for X in usb.h
