@@ -1,0 +1,26 @@
+DESCRIPTION="Network Packet Capture Library"
+SECTION="libs"
+PRIORITY="required"
+MAINTAINER="Greg Gilbert <treke@handhelds.org>"
+RDEPENDS="libc6"
+
+SRC_URI=http://www.tcpdump.org/release/libpcap-${PV}.tar.gz;
+SRC_URI_append=" file://${FILESDIR}/libpcap-shared.patch;patch=1"
+SRC_URI_append=" file://${FILESDIR}/configure.patch;patch=1"
+DEPENDS=virtual/libc
+S=${WORKDIR}/libpcap-${PV}
+
+inherit autotools
+EXTRA_OECONF="  --with-pcap=linux"
+
+do_stage () {
+	install -d ${STAGING_DIR}/target/include/net
+	install -m 0644 net/bpf.h ${STAGING_DIR}/target/include/net/bpf.h
+	install -m 0644 pcap.h ${STAGING_DIR}/target/include/pcap.h
+	install -m 0644 pcap-namedb.h ${STAGING_DIR}/target/include/pcap-namedb.h
+	install -m 0755 libpcap.so.${PV} ${STAGING_LIBDIR}/
+	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so.0.7
+	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so.0
+	ln -sf libpcap.so.${PV} ${STAGING_LIBDIR}/libpcap.so
+	install -m 0644 libpcap.a ${STAGING_LIBDIR}/
+}

@@ -1,0 +1,27 @@
+DEPENDS = virtual/libc ncurses openssl
+RDEPENDS = libc6 libncurses5 libssl0
+
+SRC_URI := ftp://ftp.mutt.org/mutt/devel/mutt-1.5.4i.tar.gz \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;patch=1 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.nntp.gz;patch=1 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.initials.gz;patch=1 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.quote.gz;patch=1 \
+	   file://${FILESDIR}/cppflags.patch;patch=1 \
+	   file://${FILESDIR}/posix1_lim.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${PN}-1.5.4
+
+inherit autotools
+
+EXTRA_OECONF = --disable-pgp --without-mixmaster --with-curses=${STAGING_DIR}/target \
+	       --enable-pop --enable-imap --with-ssl --enable-compressed --enable-nntp
+
+do_configure_prepend () {
+	if [ -d ${STAGING_DIR}/share/aclocal ]; then
+		cp -a m4/*.m4 ${STAGING_DIR}/share/aclocal/
+	fi
+}
+
+do_compile_prepend () {
+	${BUILD_CC} makedoc.c -o makedoc
+}

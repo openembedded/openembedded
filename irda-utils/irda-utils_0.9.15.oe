@@ -1,0 +1,22 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+DESCRIPTION = Provides common files needed to use IrDA.\
+ IrDA allows communication over Infrared with other devices\
+ such as phones and laptops.
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/irda/${P}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+S = ${WORKDIR}/${P}
+
+inherit autotools libtool
+
+do_compile () {
+	oe_runmake -C irattach
+	oe_runmake -C irdaping
+}
+
+do_install () {
+	install -d ${D}/usr/sbin
+	oe_runmake -C irattach ROOT="${D}" install
+	oe_runmake -C irdaping ROOT="${D}" install
+}

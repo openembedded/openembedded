@@ -1,0 +1,27 @@
+PROVIDES = virtual/libc
+
+SRC_URI := http://savannah.nongnu.org/download/avr-libc/released/SOURCES/avr-libc-1.0.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}
+B := ${WORKDIR}/build.${BUILD_SYS}.${TARGET_SYS}
+
+inherit autotools
+
+export tooldir=${prefix}
+prefix=${CROSS_DIR}
+exec_prefix=${prefix}
+
+do_stage () {
+# install into CROSS_DIR
+	oe_runmake install
+# install into STAGING_DIR
+	oe_runmake 'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
+		   'bindir=${STAGING_BINDIR}' 'libdir=${STAGING_LIBDIR}' \
+		   'tooldir=${STAGING_DIR}' 'toolibdir=${STAGING_LIBDIR}' \
+		   install
+}
+
+do_install () {
+# install into D
+	oe_runmake 'DESTDIR=${D}' 'tooldir=/' install
+}

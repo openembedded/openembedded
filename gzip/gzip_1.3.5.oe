@@ -1,0 +1,11 @@
+SECTION="base"
+PRIORITY="required"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc
+
+SRC_URI = ${DEBIAN_MIRROR}/main/g/${PN}/${PN}_${PV}.orig.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+S=${WORKDIR}/${PN}-${PV}
+inherit autotools

@@ -1,0 +1,10 @@
+DEPENDS = virtual/libc jpeg
+
+SRC_URI := http://bytesex.org/misc/fbi_1.22.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}
+
+inherit autotools
+
+CFLAGS_append = " ${LDFLAGS}"
+EXTRA_OECONF = --disable-magick --without-x

@@ -1,0 +1,19 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := ftp://ftp.ncftp.com/ncftp/ncftp-3.1.6-src.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}
+
+inherit autotools
+
+do_configure_prepend () {
+	install -m 0644 autoconf/aclocal.m4 acinclude.m4
+}
+
+do_install () {
+	install -d ${D}/${bindir} ${D}/${prefix} ${D}/${sysconfdir} ${D}/${mandir}
+	oe_runmake 'prefix=${D}/${prefix}' 'BINDIR=${D}/${bindir}' \
+		   'SYSCONFDIR=${D}/${sysconfdir}' 'mandir=${D}/${mandir}' \
+		   install
+}

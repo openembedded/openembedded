@@ -1,0 +1,5 @@
+SRC_URI := http://www.agroman.net/${PN}/${P}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}
+
+inherit autotools

@@ -1,4 +1,5 @@
 SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1 \
 	  file://${FILESDIR}/pcre-configure.patch;patch=1
 SECTION = net
 DEPENDS = virtual/libc expat openssl

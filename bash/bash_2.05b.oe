@@ -1,0 +1,22 @@
+DEPENDS = virtual/libc ncurses
+RDEPENDS = libc6 libncurses5
+
+SRC_URI = ${GNU_MIRROR}/bash/bash-2.05b.tar.gz \
+	  file://${FILESDIR}/make.patch;patch=1 \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF = --with-curses
+BUILD_CPPFLAGS_append = " -I${S} -I${S}/include"
+BUILD_CFLAGS_append = " -I${S} -I${S}/include"
+export CFLAGS_FOR_BUILD=${BUILD_CFLAGS}
+export CPPFLAGS_FOR_BUILD=${BUILD_CPPFLAGS}
+export LDFLAGS_FOR_BUILD=${BUILD_LDFLAGS}
+export CC_FOR_BUILD=${BUILD_CC}
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		mv aclocal.m4 acinclude.m4
+	fi
+	support/mkconffiles
+}

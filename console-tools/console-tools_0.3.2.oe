@@ -1,0 +1,16 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := ${SOURCEFORGE_MIRROR}/lct/console-tools-0.3.2.tar.gz \
+	   file://${FILESDIR}/codepage.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}
+
+export SUBDIRS='fontfiletools vttools kbdtools screenfonttools contrib \
+		examples po intl compat'
+do_compile () {
+	oe_runmake -C lib
+	oe_runmake 'SUBDIRS=${SUBDIRS}'
+}
+
+inherit autotools libtool
