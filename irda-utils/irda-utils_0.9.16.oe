@@ -1,16 +1,19 @@
-SECTION = "base"
 DESCRIPTION = "Provides common files needed to use IrDA. \
 IrDA allows communication over Infrared with other devices \
 such as phones and laptops."
+SECTION = "base"
 LICENSE = "GPL"
-PR="r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://m4.patch;patch=1 \
 	   file://init"
 
-inherit autotools 
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "irattach"
+INITSCRIPT_PARAMS = "defaults 20"
 
 do_compile () {
 	oe_runmake -e -C irattach
@@ -24,20 +27,4 @@ do_install () {
 
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}/etc/init.d/irattach
-}
-
-pkg_postinst_irda-utils() {
-if test "x$D" != "x"; then
-	exit 1
-else
-	update-rc.d irattach defaults
-fi
-}
-
-pkg_postrm_irda-utils() {
-if test "x$D" != "x"; then
-	exit 1
-else
-	update-rc.d -f irattach remove
-fi
 }
