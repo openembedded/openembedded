@@ -14,7 +14,7 @@ SRC_URI = "http://www.holgerschurig.de/files/linux/patcher-${PV}.tar.bz2"
 S = "${WORKDIR}/patcher"
 
 PATCHCLEANCMD = ""
-PATCHCMD = "num='%s'; name='%s'; file='%s'; cat $file | patch -p "$num""
+PATCHCMD = "num='%s'; name='%s'; file='%s'; patch -p "$num" -i "$file""
 
 do_stage() {
 	install -m 0755 patcher.py ${STAGING_BINDIR}/patcher
