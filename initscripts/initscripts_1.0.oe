@@ -95,7 +95,7 @@ do_install () {
 	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
 #	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
-#	ln -sf		../init.d/packages	${D}/etc/rcS.d/S98packages
+	ln -sf		../init.d/packages	${D}/etc/rcS.d/S98packages
 	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
 	ln -sf		../init.d/sysfs.sh	${D}/etc/rcS.d/S36sysfs
