@@ -1,5 +1,5 @@
 DESCRIPTION = "Python Programming Language"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "patcher-native"

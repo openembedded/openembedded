@@ -2,7 +2,7 @@ DESCRIPTION = "The constraint package is a constraint \
 satisfaction problem solver written in 100% pure Python, using \
 constraint propagation algorithms. So far, facilities are \
 provided to work with finite domains only."
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

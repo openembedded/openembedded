@@ -1,5 +1,5 @@
 DESCRIPTION = "Fast Python XMLRPC Library"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

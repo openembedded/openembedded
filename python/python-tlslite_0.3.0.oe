@@ -1,7 +1,7 @@
 DESCRIPTION = "TLS Lite is a free python library that implements SSL 3.0 and TLS 1.0. TLS Lite supports non-traditional \
 authentication methods such as SRP, shared keys, and cryptoIDs, in addition to X.509 certificates. TLS Lite is pure  \
 Python, however it can access OpenSSL or cryptlib for faster crypto operations."
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Gnosis Utils contains several Python modules for XML processing, plus other generally useful tools"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

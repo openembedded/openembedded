@@ -1,5 +1,5 @@
 DESCRIPTION = "Python libSDL Bindings"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-numeric"

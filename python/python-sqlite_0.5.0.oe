@@ -1,5 +1,5 @@
 DESCRIPTION = "A Python extension for the SQLite Embedded Relational Database"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-re python-lang"

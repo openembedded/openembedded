@@ -1,7 +1,7 @@
 DESCRIPTION = "This module is a wrapper for the Google Web APIs. \
 It allows you to do Google searches, retrieve pages from the \
 Google cache, and ask Google for spelling suggestions."
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-soappy"

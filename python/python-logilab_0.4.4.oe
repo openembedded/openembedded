@@ -3,7 +3,7 @@ projects released by Logilab, including abstract syntax \
 tree manipulation tools, database helper functions, HTML generation, \
 command line argument parsing, logging, and process \
 daemonization."
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

@@ -1,0 +1,13 @@
+DESCRIPTION = "IMDbPY is a Python package useful to retrieve and manage the data of the IMDb movie database."
+SECTION = "devel/python"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "python-core"
+DEPENDS = "virtual/libc"
+SRCNAME = "imdbpy"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/fnorb/${SRCNAME}-${PV}.tar.gz"
+S = "${WORKDIR}/IMDbPY-${PV}"
+
+inherit distutils
+

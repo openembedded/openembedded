@@ -1,5 +1,5 @@
 DESCRIPTION = "A Pure Python SNMP Package"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Python Qt/Embedded + Qt/Palmtop Bindings"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

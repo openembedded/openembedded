@@ -1,7 +1,7 @@
 DESCRIPTION = "Hmm is a python module providing an implementation of Hidden Markov \
 Model and associated algorithms (Viterbi and Baum-Welsh). It uses Numeric \
 Python to speed up the computations."
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-numeric"

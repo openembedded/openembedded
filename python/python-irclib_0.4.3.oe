@@ -1,5 +1,5 @@
 DESCRIPTION = "IRC (Internet Relay Chat) Support Library"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

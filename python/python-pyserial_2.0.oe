@@ -1,5 +1,5 @@
 DESCRIPTION = "Serial Port Support for Python"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Python GTK+ Bindings"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc gtk+ libglade"

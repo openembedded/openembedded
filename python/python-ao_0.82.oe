@@ -1,5 +1,5 @@
 DESCRIPTION = "Python AO Bindings"
-SECTION = "base"
+SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc libao"
