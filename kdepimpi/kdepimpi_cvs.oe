@@ -19,7 +19,7 @@ HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 # bluez-libs for libbluetooth
 # libetpan & libmailwrapper as replacement for kdepim/pi versions
 # will be needed for KMicroMail/PI
-PV = "1.9.4-${CVSDATE}"
+PV = "1.9.5-${CVSDATE}"
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
