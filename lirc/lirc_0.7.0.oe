@@ -4,12 +4,17 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
+      file://split-hauppauge.patch;patch=1 \
+      file://lircd.init file://lircmd.init"
 S = "${WORKDIR}/lirc-${PV}"
 
-inherit autotools module-base
+inherit autotools module-base update-rc.d
+
+INITSCRIPT_NAME = "lirc"
+INITSCRIPT_PARAMS = "defaults 20"
 
 EXTRA_OECONF_epia = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=serial"
 EXTRA_OECONF_collie = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=sa1100 --without-x"
@@ -23,5 +28,13 @@ do_stage() {
         oe_libinstall -so -C tools liblirc_client ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/lirc/
 	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/lirc/
+}
+
+do_install_append() {
+	install -d ${D}/etc/init.d
+	install ${WORKDIR}/lircd.init ${D}/etc/init.d/lircd
+
+        install -d ${D}${datadir}/lirc/
+        cp -a ${S}/remotes ${D}${datadir}/lirc/
 }
 
