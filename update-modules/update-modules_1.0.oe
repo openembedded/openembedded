@@ -9,11 +9,10 @@ if [ "x$D" != "x" ]; then
 	exit 1
 fi
 update-modules
-/etc/init.d/modutils
+/etc/init.d/modutils.sh
 }
 
 do_install() {
 	install -d ${D}${sbindir}
 	install ${WORKDIR}/update-modules ${D}${sbindir}
 }
-
