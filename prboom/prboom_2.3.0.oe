@@ -2,6 +2,7 @@ DESCRIPTION = "A Doom Clone based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-net"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
            file://m4.patch;patch=1 \
@@ -26,4 +27,4 @@ do_install() {
 	install -m 0644 ${WORKDIR}/prboom.desktop ${D}/${palmtopdir}/apps/Games/prboom.desktop
 }
 
-FILES_${PN} = "${D}/{palmtopdir}/"
+FILES_${PN} = "${palmtopdir}"
