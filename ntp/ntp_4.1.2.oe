@@ -7,6 +7,5 @@ S = ${WORKDIR}/${P}
 inherit autotools
 
 EXTRA_OECONF = --with-openssl-libdir=${STAGING_LIBDIR} \
-	       --with-openssl-incdir=${STAGING_DIR}/target/include/openssl \
-	       --program-prefix=
+	       --with-openssl-incdir=${STAGING_DIR}/target/include/openssl
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
