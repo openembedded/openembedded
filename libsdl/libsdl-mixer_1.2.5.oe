@@ -15,6 +15,7 @@ EXTRA_OECONF = "--disable-music-mp3"
 
 do_stage() {
 	oe_soinstall .libs/libSDL_mixer-1.2.so.0.2.3 ${STAGING_LIBDIR}
+	ln -sf libSDL_mixer-1.2.so.0.2.3 ${STAGING_LIBDIR}/libSDL_mixer.so
 	install -m 0644 SDL_mixer.h ${STAGING_INCDIR}/SDL/SDL_mixer.h
 }
 
