@@ -1,6 +1,5 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-BASEV = "2.3.2"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -135,12 +134,13 @@ do_compile () {
 do_stage() {
 	oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
-		   '${STAGING_LIBDIR}/libc-${BASEV}.so' '${STAGING_LIBDIR}/libc.so.6' \
+		   '${STAGING_LIBDIR}/libc.so.6' \
 		   install-headers install-lib
 
 	install -d ${STAGING_INCDIR}/asm
 	cp -a ${WORKDIR}/linux/include/linux ${STAGING_INCDIR}/
 	cp -a ${WORKDIR}/linux/include/asm/* ${STAGING_INCDIR}/asm/
+	install -d ${STAGING_INCDIR}/asm-generic
 	cp -a ${WORKDIR}/linux/include/asm-generic/* ${STAGING_INCDIR}/asm-generic/
 
 	install -d ${STAGING_INCDIR}/gnu \
@@ -161,13 +161,12 @@ do_stage() {
 
 	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
-		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc-${BASEV}.so' \
-		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
 		   install-headers install-lib
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
 	cp -a ${WORKDIR}/linux/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
 	cp -R ${WORKDIR}/linux/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm-generic
 	cp -R ${WORKDIR}/linux/include/asm-generic/* ${CROSS_DIR}/${TARGET_SYS}/include/asm-generic/
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
