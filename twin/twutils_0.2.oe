@@ -1,0 +1,10 @@
+DESCRIPTION = "Utilities for twin. Currently contains 'twkalc', a calculator derived from kcalc."
+MAINTAINER = "Chris Lord <cwiiis@blueyonder.co.uk>"
+DEPENDS = "twin"
+
+SRC_URI = "http://linuz.sns.it/~max/twin/twutils-0.2.tar.gz"
+
+#EXTRA_OECONF = ""
+
+inherit autotools
+

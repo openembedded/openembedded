@@ -1,0 +1,117 @@
+diff -urNd ../twin-0.4.6-r0/twin-0.4.6/configure.in twin-0.4.6/configure.in
+--- ../twin-0.4.6-r0/twin-0.4.6/configure.in	2003-03-27 08:29:47.000000000 +0000
++++ twin-0.4.6/configure.in	2004-07-24 13:37:10.000000000 +0100
+@@ -378,7 +378,16 @@
+ 	       select strdup strerror strspn strstr scandir alphasort uname \
+ 	       vprintf vsprintf vsnprintf wait3 wait4 getpt grantpt unlockpt ptsname)
+ 
+-AC_CHECK_FILE(/dev/ptmx)
++AC_SEARCH_LIBS(openpty,util,
++   [
++       AC_DEFINE(HAVE_OPENPTY,1,[define if you have openpty function])
++       no_dev_ptmx=yes
++   ])
++AC_CHECK_FUNCS([_getpty])
++if test -z "$no_dev_ptmx" ; then
++    AC_CHECK_FILE(/dev/ptmx)
++fi
++
+ AC_CHECK_FUNC(crypt,,AC_CHECK_LIB(crypt,crypt))
+ AC_CHECK_FUNC(dlopen,,AC_CHECK_LIB(dl,dlopen))
+ AC_CHECK_LIB(ltdl,lt_dlopen)
+diff -urNd ../twin-0.4.6-r0/twin-0.4.6/Makefile.in twin-0.4.6/Makefile.in
+--- ../twin-0.4.6-r0/twin-0.4.6/Makefile.in	2003-03-27 08:29:47.000000000 +0000
++++ twin-0.4.6/Makefile.in	2004-07-24 13:23:48.000000000 +0100
+@@ -71,33 +71,33 @@
+ # to correctly generate include/autoconf.h
+ #
+ 
+-ADMIN_LIBTOOLS:=admin/ltmain.sh admin/config.guess admin/config.sub
++#ADMIN_LIBTOOLS:=admin/ltmain.sh admin/config.guess admin/config.sub
+ 
+-$(ADMIN_LIBTOOLS):
+-	libtoolize -c
++#$(ADMIN_LIBTOOLS):
++#	libtoolize -c
+ 
+-ADMIN_ACLOCAL:=admin/aclocal.m4
++#ADMIN_ACLOCAL:=admin/aclocal.m4
+ 
+-DISTCLEAN_EMPTY_FILES:=$(ADMIN_ACLOCAL) $(ADMIN_LIBTOOLS)
++#DISTCLEAN_EMPTY_FILES:=$(ADMIN_ACLOCAL) $(ADMIN_LIBTOOLS)
+ 
+-$(ADMIN_ACLOCAL):
+-	@if [ -f /usr/share/aclocal/libtool.m4 ]; then \
+-	  echo $(LN) /usr/share/aclocal/libtool.m4 $@ ; \
+-	  $(LN) /usr/share/aclocal/libtool.m4 $@ ; \
+-	else \
+-	  echo touch $@; \
+-	  touch $@; \
+-	fi
++#$(ADMIN_ACLOCAL):
++#	@if [ -f /usr/share/aclocal/libtool.m4 ]; then \
++#	  echo $(LN) /usr/share/aclocal/libtool.m4 $@ ; \
++#	  $(LN) /usr/share/aclocal/libtool.m4 $@ ; \
++#	else \
++#	  echo touch $@; \
++#	  touch $@; \
++#	fi
+ 
+-configure: configure.in $(ADMIN_LIBTOOLS) $(ADMIN_ACLOCAL) include/autoconf.h.in
+-	rm -f $@ && autoconf --localdir=admin
++#configure: configure.in $(ADMIN_LIBTOOLS) $(ADMIN_ACLOCAL) include/autoconf.h.in
++#	rm -f $@ && autoconf
+ 
+-include/autoconf.h.in: configure.in
+-	rm -f $@ && autoheader
++#include/autoconf.h.in: configure.in
++#	rm -f $@ && autoheader
+ 
+-config.status libtool: configure $(ADMIN_LIBTOOLS)
+-	@echo Updating config.status libtool
+-	./configure --cache-file=config.cache --no-create
++#config.status libtool: configure $(ADMIN_LIBTOOLS)
++#	@echo Updating config.status libtool
++#	./configure --host --cache-file=config.cache --no-create
+ 
+ #
+ # was:
+diff -urNd ../twin-0.4.6-r0/twin-0.4.6/makerules twin-0.4.6/makerules
+--- ../twin-0.4.6-r0/twin-0.4.6/makerules	2003-03-27 08:29:48.000000000 +0000
++++ twin-0.4.6/makerules	2004-07-24 13:24:13.000000000 +0100
+@@ -794,7 +794,7 @@
+ endif
+ 
+ $(TOPDIR)/scripts/Getsizes: $(TOPDIR)/scripts/getsizes.c $(TOPDIR)/include/Tw/datatypes.h $(TOPDIR)/include/autoconf.h
+-	$(CC) $(CC_FLAGS) $(CC_FLAGS_script_getsizes.o) $(LD_FLAGS) $< -o $@
++	$(HOSTCC) $(CC_FLAGS) $(CC_FLAGS_script_getsizes.o) $(LD_FLAGS) $< -o $@
+ 	@echo "PREVIOUS_CONF__LONG_LONG=$(CONF__LONG_LONG)" > $(TOPDIR)/.long_long.conf
+ 
+ #
+@@ -802,10 +802,10 @@
+ # but this is the best place to force creating it
+ #
+ $(TOPDIR)/scripts/Mkdep: $(TOPDIR)/scripts/mkdep.c $(TOPDIR)/include/autoconf.h $(TOPDIR)/include/Tw/datasizes.h
+-	$(CC) $(CC_FLAGS) $(LD_FLAGS) $< -o $@
++	$(HOSTCC) $(CC_FLAGS) $(LD_FLAGS) $< -o $@
+ 
+ $(TOPDIR)/scripts/Bitmap: $(TOPDIR)/scripts/bitmap.c
+-	$(CC) $(CC_FLAGS) $(LD_FLAGS) $< -o $@
++	$(HOSTCC) $(CC_FLAGS) $(LD_FLAGS) $< -o $@
+ 	
+ 
+ #
+diff -urNd ../twin-0.4.6-r0/twin-0.4.6/scripts/mkdep.c twin-0.4.6/scripts/mkdep.c
+--- ../twin-0.4.6-r0/twin-0.4.6/scripts/mkdep.c	2003-03-27 08:29:48.000000000 +0000
++++ twin-0.4.6/scripts/mkdep.c	2004-07-24 13:24:21.000000000 +0100
+@@ -172,8 +172,8 @@
+ 	putchar('\n');
+ }
+ 
+-static char str_path[3][512];
+-static int  len_path[3];
++static char str_path[20][512];
++static int  len_path[20];
+ static int  max_path = 0;
+ static int  limit_path = sizeof(len_path)/sizeof(len_path[0]);
+ 

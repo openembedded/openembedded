@@ -1,0 +1,30 @@
+DESCRIPTION = "Twin is a text-mode windowing environment: it draws and manages text windows on a text-mode display, like X11 does for graphical windows. It has a built-in window manager and terminal emulator, and can be used as server for remote clients in the same style as X11. It can display on Linux console, on X11 and inside itself."
+MAINTAINER = "Chris Lord <cwiiis@blueyonder.co.uk>"
+DEPENDS = "coreutils-native"
+
+SRC_URI = "http://linuz.sns.it/~max/twin/twin-0.4.6.tar.gz \
+	   file://cross_compile.patch;patch=1"
+
+EXTRA_OECONF = " --disable-tt-hw-x11 --disable-hw-x11 --disable-tt-hw-gtk"
+
+inherit autotools
+
+do_compile () {
+	oe_runmake 'HOSTCC=${BUILD_CC}'
+}
+
+Tw_headers = "Tw1.h Twautoconf.h Twavl.h Tw_defs.h Twerrno.h Tw.h Tw++.h Twkeys.h Twstat_defs.h Twstat.h Twtypes.h"
+
+
+do_stage () {
+#	oe_libinstall -so -C libs/libTw libTw ${STAGING_LIBDIR}
+
+	install -m 0644 ${S}/libs/libTw/libTw.la ${STAGING_LIBDIR}
+	install -m 0644 ${S}/libs/libTw/libTw.so ${STAGING_LIBDIR}
+	install -m 0644 ${S}/libs/libTw/libTw.so.3 ${STAGING_LIBDIR}
+	install -m 0644 ${S}/libs/libTw/libTw.so.3.0.9 ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/Tw
+	for i in ${Tw_headers}; do
+		install -m 0644 ${S}/include/Tw/$i ${STAGING_INCDIR}/Tw
+	done
+}
