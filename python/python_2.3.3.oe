@@ -44,3 +44,5 @@ do_install() {
                    STAGING_DIR=${STAGING_DIR} \
 		   DESTDIR=${D} install
 }
+
+include python-${PV}-manifest.oe
