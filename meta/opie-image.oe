@@ -6,7 +6,7 @@ export IMAGE_BASENAME = "opie-image"
 
 OPIE_LIBS = "libqte2 qpf-bitstream-vera-small libqpe1 libopiecore2 libopieui2 libopienet2 libopiepim2 libopiemm2"
 OPIE_LIBS_DEPEND = "qte-for-opie libopie2 qpf-bitstream-vera"
-OPIE_BASE = "opie-qcop opie-quicklauncher opie-taskbar"
+OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 
 #
 # Things for reasonable bootstrap image
