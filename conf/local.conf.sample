@@ -55,3 +55,8 @@ CACHE=/var/tmp/oe-cache.${USER}
 
 # Uncomment this if you want OE to emit the log if a build fails.
 #OEINCLUDELOGS = "yes"
+
+# Specifies a location to search for pre-generated tarballs when fetching
+# a cvs:// URI.  Comment this out if you always want to pull directly 
+# from the CVS tree.
+CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
