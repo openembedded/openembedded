@@ -3,17 +3,11 @@ SECTION = "opie/help"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = " "
 PV = "1.1.6+cvs-${CVSDATE}"
-APPNAME = "opie-help-en"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/help/en/html "
-
 S = "${WORKDIR}/html"
 
-#inherit opie
-
-# FILES
 do_install() {
         install -d ${D}${palmtopdir}/help/en/html/
         install -m 0644 ${WORKDIR}/html/*.html ${D}${palmtopdir}/help/en/html/
