@@ -1,5 +1,7 @@
 inherit autotools
 
+PR = "r1"
+
 DESCRIPTION = "A GNU collection of binary utilities"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"

@@ -3,7 +3,7 @@ inherit autotools
 DESCRIPTION = "A GNU collection of binary utilities"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r2"
+PR = "r3"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
