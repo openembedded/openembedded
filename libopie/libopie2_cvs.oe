@@ -7,6 +7,7 @@ LICENSE = "LGPL"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
            file://include.pro"
@@ -22,7 +23,9 @@ export OPIEDIR = "${STAGING_LIBDIR}/.."
 EXTRA_QMAKEVARS_POST = ' DEFINES+=QWS                \
                          DEFINES+=OPIE_NEW_MALLOC    \
                          DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
-			 DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX '			 
+			 DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX '
+
+EXTRA_QMAKEVARS_PRE = 'ENABLE_SQL_PIM_BACKEND=y'
 
 # uclibc doesn't have backtrace()
 python __anonymous () {

@@ -21,6 +21,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 SRC_URI_append_simpad   = "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
 SRC_URI_append_h3600    = "file://devfs.patch;patch=1 "
 SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
+SRC_URI_append_beagle	= "file://devfs.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -56,7 +57,7 @@ EXTRA_DEFINES_simpad	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SIMPA
 EXTRA_DEFINES_corgi     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
-EXTRA_DEFINES_boxer     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
+EXTRA_DEFINES_beagle	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
