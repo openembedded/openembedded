@@ -3,11 +3,11 @@ PACKAGES = "e e-libs e-base"
 
 ALLOW_EMPTY = 1
 
-task-elibs = "evas edb ecore eet embryo edje etox ewl"
-task-ebase = ""
+task-e-libs = "evas edb ecore eet embryo edje etox ewl"
+task-e-base = ""
 
-RDEPENDS_elibs = "${task-elibs}"
-DEPENDS += "${task-elibs}"
+RDEPENDS_e-libs = "${task-e-libs}"
+DEPENDS += "${task-e-libs}"
 
-RDEPENDS_ebase = "${task-ebase}"
-DEPENDS += "${task-ebase}"
+RDEPENDS_e-base = "${task-e-base}"
+DEPENDS += "${task-e-base}"
