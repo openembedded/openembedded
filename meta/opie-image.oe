@@ -16,7 +16,7 @@ OPIE_BASE_APPLETS = "opie-aboutapplet      opie-clockapplet      opie-logoutappl
 		     opie-batteryapplet    opie-homeapplet       opie-multikeyapplet  opie-rotateapplet  \
 		     opie-vtapplet         opie-cardmon          opie-irdaapplet"
 
-OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting"
+OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
 
 OPIE_BASE_APPS = "opie-aqpkg opie-console"
 
