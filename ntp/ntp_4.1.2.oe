@@ -4,6 +4,7 @@ another server or reference time source, such as a radio \
 or satellite receiver or modem."
 SECTION = "console/network"
 PRIORITY = "optional"
+LICENSE = "ntp"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
