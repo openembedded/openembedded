@@ -381,3 +381,7 @@ Added confirmation dialog boxes to the maintenance mode web control.
 3.16:
 
 First public release of 3.x firmware.
+
+3.17:
+
+Fixed syslog issue.  Added FP patches.
