@@ -24,7 +24,7 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 ${EXTRA_OECONF_PATHS} \
                 ${EXTRA_OECONF_DEP}"
 
-EXTRA_OECONF_PATHS = "--with-sysroot=/ \
+EXTRA_OECONF_PATHS = " \
                       --with-local-prefix=${prefix}/local \
                       --with-gxx-include-dir=${includedir}/c++/${PV}"
 

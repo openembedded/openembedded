@@ -9,8 +9,11 @@
 #
 # Once you have done that, remove the line at the end of this
 # file and build away.
+# 
+# WARNING: lines starting with a space (' ') will result in parse failures.
+# Remove '# ' from commented lines to activate them.
 #
-# NOTE: Do NOT use ~ in your paths, BitBake does NOT expand ~ for you.  If you
+# NOTE: Do NOT use $HOME in your paths, BitBake does NOT expand ~ for you.  If you
 # must have paths relative to your homedir use ${HOME} (note the {}'s there
 # you MUST have them for the variable expansion to be done by BitBake).  Your
 # paths should all be absolute paths (They should all start with a / after

@@ -1,6 +1,6 @@
 include libmatchbox.inc
 
-PV = "1.5cvs${CVSDATE}"
+PV = "1.6cvs${CVSDATE}"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http\
