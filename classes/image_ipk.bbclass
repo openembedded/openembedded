@@ -36,7 +36,7 @@ fakeroot do_rootfs () {
 
 	insert_feed_uris	
 
-	rm ${IMAGE_ROOTFS}/usr/lib/ipkg/lists/oe
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/oe
 	
 	${IMAGE_PREPROCESS_COMMAND}
 		

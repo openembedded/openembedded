@@ -57,12 +57,12 @@ real_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/etc/ipkg/
 	grep "^arch" ${T}/ipkg.conf >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
 
-	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.preinst; do
+	for i in ${IMAGE_ROOTFS}${libdir}/ipkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then
 			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .preinst`
 		fi
 	done
-	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.postinst; do
+	for i in ${IMAGE_ROOTFS}${libdir}/ipkg/info/*.postinst; do
 		if [ -f $i ] && ! sh $i configure; then
 			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
 		fi
