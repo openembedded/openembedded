@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "cvs://anonymous@cvs.qplot.sourceforge.net/cvsroot/qplot;module=qplot;tag=HEAD \
+SRC_URI = "cvs://anonymous@cvs.qplot.sourceforge.net/cvsroot/qplot;module=qplot \
            file://${FILESDIR}/gcc3.patch;patch=1"
 S = "${WORKDIR}/qplot"
 
