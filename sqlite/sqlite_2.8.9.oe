@@ -3,6 +3,7 @@ DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
+LICENSE = "PD"
 
 PACKAGES =+ "sqlite-bin"
 
