@@ -15,7 +15,7 @@
 
 inherit palmtop
 
-DEPENDS_prepend = "libopie2 "
+DEPENDS_prepend = "${@["libopie2 ", ""][(oe.data.getVar('PN', d, 1) == 'libopie2')]}"
 
 # to be consistent, put all targets into workdir
 EXTRA_QMAKEVARS_POST_append = " DESTDIR=${S}"
