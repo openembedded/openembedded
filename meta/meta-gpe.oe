@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r10"
+PR = "r11"
 
 ALLOW_EMPTY = 1
 
@@ -20,7 +20,11 @@ gpe-base = "\
     gpe-bootsplash \
     gtk2-theme-angelistic \
     libgtkstylus \
-    xst"
+    xst \
+    xprop \
+    xhost \
+    xrdb \
+    gpe-soundserver"
 
 RDEPENDS_gpe-task-base := "${gpe-base} libfontconfig-utils"
 DEPENDS += " ${gpe-base}"
