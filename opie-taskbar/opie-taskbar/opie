@@ -50,9 +50,8 @@ case $1 in
         if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
             export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
         fi           
-            echo Starting Opie....
-            $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
-        fi
+        echo Starting Opie....
+        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
     fi
 
     ;;

@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "opie-libqrsync "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
@@ -101,7 +101,7 @@ do_install_append_tosa () {
 pkg_postinst() {
 #!/bin/sh
 if [ -n "$D" ]; then exit 1; fi
-[ -e "/home/$USER/Settings/qpe.conf" ] || cp -f /opt/QtPalmtop/etc/skeleton/qpe.conf /home/$USER/Settings/qpe.conf
+[ -e "$HOME/Settings/qpe.conf" ] || cp -f /opt/QtPalmtop/etc/skeleton/qpe.conf /$HOME/Settings/qpe.conf
 }
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
