@@ -6,12 +6,16 @@ LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 sword"
 PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "dagger"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/dagger \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
+
+EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/sword/"
+
 
 inherit opie
 
