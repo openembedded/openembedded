@@ -30,8 +30,25 @@ gnome-vfs-xfer.h \
 gnome-vfs-monitor.h \
 gnome-vfs-types.h"
 
+GNOME_VFS_MODULE_HEADERS = " \
+gnome-vfs-mime-info.h \
+gnome-vfs-transform.h \
+gnome-vfs-ssl.h \
+gnome-vfs-inet-connection.h \
+gnome-vfs-socket.h \
+gnome-vfs-parse-ls.h \
+gnome-vfs-method.h \
+gnome-vfs-cancellable-ops.h \
+gnome-vfs-module.h \
+gnome-vfs-module-shared.h \
+gnome-vfs-module-callback-module-api.h \
+gnome-vfs-mime.h \
+gnome-vfs-socket-buffer.h"
+
 do_stage() {
 	oe_libinstall -so -C libgnomevfs libgnomevfs-2 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/gnome-vfs-2.0/libgnomevfs
 	for i in ${GNOME_VFS_HEADERS}; do install -m 0644 libgnomevfs/$i ${STAGING_INCDIR}/gnome-vfs-2.0/libgnomevfs/; done
+	install -d ${STAGING_INCDIR}/gnome-vfs-module-2.0/libgnomevfs
+	for i in ${GNOME_VFS_MODULE_HEADERS}; do install -m 0644 libgnomevfs/$i ${STAGING_INCDIR}/gnome-vfs-module-2.0/libgnomevfs/; done
 }
