@@ -1,0 +1,35 @@
+DESCRIPTION="Clone of the classic arcade game Asteroids for Qtopia/Opie - based on SDL"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE="GPL"
+RDEPENDS="libqpe1 libsdl"
+DEPENDS="virtual/libc virtual/libqpe virtual/libsdl"
+
+SRC_URI = ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-2002.06.09.tar.gz \
+          file://${FILESDIR}/directories.patch;patch=1
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST=' INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte TARGET=brickout DEFINES+=USE_SDL '
+
+do_configure_prepend() {
+        qmake -project -o brickout.pro
+}
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/brickout/{sounds,music,images}}
+        install -D -m 0755 brickout ${D}/opt/QtPalmtop/bin/brickout
+	install -D -m 0644 brickout.png ${D}/opt/QtPalmtop/pics/brickout.png
+
+        cp -a sounds/* ${D}/opt/QtPalmtop/share/brickout/sounds/
+        cp -a music/* ${D}/opt/QtPalmtop/share/brickout/music/
+        cp -a images-sdl/* ${D}/opt/QtPalmtop/share/brickout/images/
+
+	echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+	echo "Comment=Arkanoid game" >>${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+	echo "Exec=brickout" >>${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+	echo "Icon=brickout" >>${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+	echo "Name=Brickout" >>${D}/opt/QtPalmtop/apps/Games/brickout.desktop
+}
