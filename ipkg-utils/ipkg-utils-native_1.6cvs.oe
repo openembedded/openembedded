@@ -2,3 +2,9 @@ include ipkg-utils_${PV}.oe
 inherit native
 DEPENDS = "python-native"
 
+do_stage() {
+        for i in $INSTALL; do
+                install $i ${STAGING_BINDIR}
+        done
+}
+
