@@ -4,41 +4,49 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-# We want to select whether we're building a uclibc or glibc system and
-# perform provides accordingly.  We want to trigger on the original
-# TARGET_VENDOR setting, so we must do this before changing it.
-def target_is_uclibc(d):
-    import oe
-    if (oe.data.getVar('TARGET_VENDOR', d, 1) == '-uclibc'):
-        return 1
-    return 0
-def cond_provides(d):
-    import oe
-    if target_is_uclibc(d):
-        return 'virtual/libc'
-    return ''
-def cond_packages(d):
-    import oe
-    if target_is_uclibc(d):
-        return '${PN} ${PN}-doc ${PN}-dev ${PN}-locale'
-    return '${PN}-compat'
-PROVIDES := "${@cond_provides(d)}"
-PACKAGES := "${@cond_packages(d)}"
+#
+# For now, we will skip building of a gcc package if it is a uclibc one
+# and our build is not a uclibc one, and we skip a glibc one if our build
+# is a uclibc build.
+#
+# See the note in gcc/gcc_3.4.0.oe
+#
 
-# When target is not a uclibc system, do a compat-only package
-FILES_${PN}-compat = "${libdir}/lib*.so.* /lib/*.so*"
+python __anonymous () {
+    import oe, re
+    uc_os = (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None)
+    if not uc_os:
+        raise oe.parse.SkipPackage("incompatible with target %s" %
+                                   oe.data.getVar('TARGET_OS', d, 1))
+}
 
-# This will ONLY build to this target (we override it incase we're buliding
-# the world for a glibc system)
-TARGET_VENDOR = "-uclibc"
-TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
-TARGET_PREFIX = "${TARGET_SYS}-"
+#
+# We can only work currently with a predefined .config, this ensures we have
+# one.  In the future, this may want to respect ${MACHINE} as well.
+#
 
+python __anonymous () {
+    import oe, os;
+    conf = (oe.data.getVar('FILESDIR', d, 1) + "/uClibc.config." +
+            oe.data.getVar('TARGET_ARCH', d, 1))
+    if not os.access(conf, os.R_OK):
+        raise oe.parse.SkipPackage("no available .config for target %s" %
+                                   oe.data.getVar('TARGET_OS', d, 1))
+}
+
+PROVIDES = "virtual/libc"
+DEPENDS = "virtual/${TARGET_PREFIX}binutils \
+	   virtual/${TARGET_PREFIX}gcc-initial"
+
+#
+# This locale file gets copied into uClibc-${PV}/extra/locale/ prior to
+# build, it does not need to be unpacked, but we can't inhibit the unpacking
+# in the current build system.
+#
+UCLIBC_LOCALE_FILE = "uClibc-locale-030818.tgz"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
-
-DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial"
-
 SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
+           http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE} \
            http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${PV}"
@@ -63,6 +71,7 @@ uclibcbuild_do_patch() {
 		cp ${FILESDIR}/uClibc.config.${TARGET_ARCH} ${S}/.config
 	else
 		echo ERROR: No target specific config for ${TARGET_ARCH}
+		return 1
 	fi
 
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
@@ -71,6 +80,8 @@ uclibcbuild_do_patch() {
 	perl -i -p -e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/${prefix}\",g' ${S}/.config
 	perl -i -p -e 's,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH=\"/lib\",g' ${S}/.config
 	perl -i -p -e 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g' ${S}/.config
+
+	cp ${DL_DIR}/${UCLIBC_LOCALE_FILE} extra/locale
 
 	make oldconfig
 }

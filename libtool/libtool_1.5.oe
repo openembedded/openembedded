@@ -3,7 +3,8 @@ This is GNU libtool, a generic library support script.  Libtool hides \
 the complexity of generating special library types (such as shared \
 libraries) behind a consistent interface."
 
-SRC_URI = "http://ftp.club.cc.cmu.edu/pub/gnu/libtool/libtool-${PV}.tar.gz"
+SRC_URI = "http://ftp.club.cc.cmu.edu/pub/gnu/libtool/libtool-${PV}.tar.gz \
+	   file://${FILESDIR}/libtool15-update-configscripts.patch;patch=1;pnum=1"
 S = "${WORKDIR}/libtool-${PV}"
 
 inherit autotools

@@ -33,6 +33,12 @@ PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqp
 # for a machine not known to OpenEmbedded. Better use the MACHINE attribute (see above)
 TARGET_ARCH = "arm"
 
+# Use this to specify the target operating system.  This is "linux" for a normal
+# linux system with glibc.  Set this to "linux-uclibc" if you want to build a
+# uclibc based system.
+#TARGET_OS = "linux"
+#TARGET_OS = "linux-uclibc"
+
 # Uncomment this to select a distribution policy.
 #DISTRO = "familiar"
 

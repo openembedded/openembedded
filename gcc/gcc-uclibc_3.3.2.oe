@@ -5,13 +5,7 @@ DESCRIPTION = "The GNU cc and gcc C compilers (uclibc)."
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-# This will ONLY build to this target
-TARGET_VENDOR = "-uclibc"
-TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
-TARGET_PREFIX = "${TARGET_SYS}-"
-
-DEPENDS = "virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc \
-           uclibc patcher"
+DEPENDS = "uclibc"
 
 PACKAGES = "${PN} ${PN}-symlinks \
            ${PN}-c++ ${PN}-c++-symlinks \

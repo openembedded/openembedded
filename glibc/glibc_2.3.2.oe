@@ -4,37 +4,24 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
-# We want to select whether we're building a uclibc or glibc system and
-# perform provides accordingly.  We want to trigger on the original
-# TARGET_VENDOR setting, so we must do this before changing it.
-def target_is_uclibc(d):
-    import oe
-    if (oe.data.getVar('TARGET_VENDOR', d, 1) == '-uclibc'):
-        return 1
-    return 0
-def cond_provides(d):
-    import oe
-    if not target_is_uclibc(d):
-        return 'virtual/libc'
-    return ''
-def cond_packages(d):
-    import oe
-    if not target_is_uclibc(d):
-        return 'glibc glibc-dev glibc-doc glibc-i18n glibc-locale'
-    oe.data.setVar('PACKAGE_NO_LOCALE', '1', d)
-    oe.data.setVar('PACKAGE_NO_GCONV', '1', d)
-    return 'glibc-compat'
-PROVIDES := "${@cond_provides(d)}"
-PACKAGES := "${@cond_packages(d)}"
+#
+# For now, we will skip building of a gcc package if it is a uclibc one
+# and our build is not a uclibc one, and we skip a glibc one if our build
+# is a uclibc build.
+#
+# See the note in gcc/gcc_3.4.0.oe
+#
 
-# When target is not a uclibc system, do a compat-only package
-FILES_${PN}-compat = "${libdir}/lib*.so.* /lib/*.so*"
+python __anonymous () {
+    import oe, re
+    uc_os = (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None)
+    if uc_os:
+        raise oe.parse.SkipPackage("incompatible with target %s" %
+                                   oe.data.getVar('TARGET_OS', d, 1))
+}
 
-# This will ONLY build to this target (we override it incase we're buliding
-# the world for a uclibc system)
-TARGET_VENDOR = ""
-TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
-TARGET_PREFIX = "${TARGET_SYS}-"
+PROVIDES = "virtual/libc"
+PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
 
@@ -106,7 +93,10 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://${FILESDIR}/90_glibc232-statvfs.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/90_glibc232-timezones.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0"
+	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/arm-machine-gmon.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/glibc232-gcc34-i386-fixup-attribute.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/glibc232-gcc34-no-unit-at-a-time.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

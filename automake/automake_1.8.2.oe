@@ -1,5 +1,8 @@
-SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2"
+SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
+	   file://${FILESDIR}/automake182-update-configscripts.patch;patch=1;pnum=1"
 DESCRIPTION = "A tool for automatically generating Makefiles."
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/automake-${PV}"
 
 inherit autotools
 

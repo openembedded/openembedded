@@ -1,5 +1,6 @@
 include libtool_${PV}.oe
-#inherit cross
+# This is a cross tool, but doesn't really fit in with the cross
+# build system, so we don't actually "inherit cross" here.
 SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
 		   file://${FILESDIR}/sedvar.patch;patch=1 \
 		   file://${FILESDIR}/tag.patch;patch=1 \

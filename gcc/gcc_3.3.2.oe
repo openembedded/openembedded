@@ -4,13 +4,24 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-# This will ONLY build to this target
-TARGET_VENDOR = ""
-TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
-TARGET_PREFIX = "${TARGET_SYS}-"
+#
+# For now, we will skip building of a gcc package if it is a uclibc one
+# and our build is not a uclibc one, and we skip a glibc one if our build
+# is a uclibc build.
+#
+# See the note in gcc/gcc_3.4.0.oe
+#
 
-DEPENDS = "virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc \
-           glibc patcher"
+python __anonymous () {
+    import oe, re
+    uc_pkg = (re.search('uclibc', oe.data.getVar('PN', d, 1)) != None)
+    uc_os = (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None)
+    if uc_pkg != uc_os:
+        raise oe.parse.SkipPackage("incompatible with target %s" %
+                                   oe.data.getVar('TARGET_OS', d, 1))
+}
+
+DEPENDS = "glibc"
 
 PACKAGES = "${PN} ${PN}-symlinks \
             ${PN}-c++ ${PN}-c++-symlinks \

@@ -2,11 +2,6 @@ include uclibc_${PV}.oe
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 
-# This will ONLY build to this target
-TARGET_VENDOR = "-uclibc"
-TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
-TARGET_PREFIX = "${TARGET_SYS}-"
-
 DEPENDS = ""
 PACKAGES = ""
 
