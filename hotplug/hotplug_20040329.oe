@@ -6,8 +6,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_2
            file://fix-net.agent \
            file://update-usb.usermap \
            file://logcheck-ignore"
-S = "${WORKDIR}/hotplug-2004_03_29"
-PR = "r1"
+S = "${WORKDIR}/hotplug-2004_03_29 \
+	file://sleeve.agent file://sleeve.rc file://mmc.agent"
+PR = "r2"
 
 INITSCRIPT_NAME = "hotplug"
 INITSCRIPT_PARAMS = "start 40 S . stop 89 0 6 ."
@@ -35,4 +36,7 @@ do_install () {
 	sh ${WORKDIR}/fix-net.agent ${D}
 	install -m 0755 ${WORKDIR}/update-usb.usermap ${D}/${oldsbindir}/
 	install -m 0644 ${WORKDIR}/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
+	install -m 0755 ${WORKDIR}/sleeve.agent ${D}${sysconfdir}/hotplug/
+	install -m 0755 ${WORKDIR}/sleeve.rc ${D}${sysconfdir}/hotplug/
+	install -m 0755 ${WORKDIR}/mmc.agent ${D}${sysconfdir}/hotplug/
 }

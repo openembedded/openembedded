@@ -1,7 +1,7 @@
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 PACKAGE_ARCH = "ipaqpxa"
 KERNEL_CCSUFFIX = "-3.3.3"
@@ -40,6 +40,8 @@ module_autoload_h3600_ts = "h3600_ts"
 module_autoload_apm = "apm"
 module_autoload_af_packet = "af_packet"
 module_autoload_usb-ohci-h5400 = "usb-ohci-h5400"
+module_autoload_ppp_async = "ppp_async"
+module_autoload_usb_eth = "usb-eth"
 
 FILES_kernel += "/etc/init.d/ipaq-hal"
 INITSCRIPT_NAME = "ipaq-hal"
