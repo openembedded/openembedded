@@ -7,8 +7,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xproto"
 DESCRIPTION = "Authorization Protocol for X."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau"
 S = "${WORKDIR}/Xau"
 
 inherit autotools pkgconfig 
@@ -18,5 +17,6 @@ do_stage() {
 	       bindir=${STAGING_BINDIR} \
 	       includedir=${STAGING_INCDIR} \
 	       libdir=${STAGING_LIBDIR} \
-	       datadir=${STAGING_DATADIR}
+	       datadir=${STAGING_DATADIR} \
+	       mandir=${STAGING_DATADIR}/man
 }

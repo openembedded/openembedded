@@ -8,8 +8,7 @@ DEPENDS = "xproto"
 PROVIDES = "xdmcp"
 DESCRIPTION = "X Display Manager Control Protocol library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp"
 S = "${WORKDIR}/Xdmcp"
 
 inherit autotools pkgconfig 
