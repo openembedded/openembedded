@@ -86,7 +86,7 @@ uclibcbuild_do_patch() {
 	ln -sf ${STAGING_INCDIR}/linux ${S}/include/linux
 	ln -sf ${STAGING_INCDIR}/asm ${S}/include/asm
 	
-	${@['cp %s/%s extra/locale' % (oe.data.getVar('WORKDIR', d, 1) or '', oe.data.getVar('UCLIBC_LOCALE_FILE', d, 1) or ''), ''][oe.data.getVar('USE_NLS', d, 1) == 'no']}
+	${@['cp %s/%s extra/locale' % (oe.data.getVar('DL_DIR', d, 1) or '', oe.data.getVar('UCLIBC_LOCALE_FILE', d, 1) or ''), ''][oe.data.getVar('USE_NLS', d, 1) == 'no']}
 }
 
 python do_patch () {
