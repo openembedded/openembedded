@@ -1,21 +1,26 @@
 DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/games"
 PRIORITY = "optional"
-DEPENDS = "libsdl-qpe libmad tremor-20030325 libogg libvorbis zlib"
+DEPENDS = "libsdl-qpe libmad tremor-20030325 libogg libvorbis zlib libpng jpeg sharp-aticore"
 
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
 			file://Makefile.patch;patch=0 \
+			file://sdl.patch;patch=0 \
 			file://zlib.patch;patch=0 "
 S = "${WORKDIR}/MPlayer-${PV}"
 
+PACKAGES="${PN} postproc postproc-dev"
+
 FILES_${PN} = " \
-	/usr/local/bin/mplayer \
-	/usr/local/man/man1/mplayer.1 "
+	 /usr/local/bin/mplayer "
+
+FILES_postproc = ""
 
 inherit autotools 
 
 EXTRA_OECONF = " \
-	--target=arm \
+	--prefix=/usr \
+	--target=${PACKAGE_ARCH} \
 	\
 	--disable-win32 \
 	--disable-macosx \
