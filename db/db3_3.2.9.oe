@@ -1,0 +1,49 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz
+S = ${WORKDIR}/db-${PV}/dist
+B = ${WORKDIR}/db-${PV}/build_unix
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--enable-shared --enable-compat185'
+EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}`' 'chmod=`which chmod`' \
+		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
+		'rm=`which rm`' 'strip=`which ${STRIP}`'"
+
+do_configure_prepend () {
+	(
+		cd ${S}
+		. ./RELEASE
+		(echo "AC_DEFUN(AM_VERSION_SET, [" &&
+		echo "AC_SUBST(DB_VERSION_MAJOR)" &&
+		echo "DB_VERSION_MAJOR=$DB_VERSION_MAJOR" &&
+		echo "AC_SUBST(DB_VERSION_MINOR)" &&
+		echo "DB_VERSION_MINOR=$DB_VERSION_MINOR" &&
+		echo "AC_SUBST(DB_VERSION_PATCH)" &&
+		echo "DB_VERSION_PATCH=$DB_VERSION_PATCH" &&
+		echo "AC_SUBST(DB_VERSION_STRING)" &&
+		echo "DB_VERSION_STRING=\"\\\"$DB_VERSION_STRING\\\"\"" &&
+		echo "])dnl") > acinclude.m4
+	)
+}
+
+do_stage () {
+	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_DIR}/target/include/
+	install -m 0755 .libs/libdb-3.2.so ${STAGING_LIBDIR}/
+	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb-3.so
+	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb.so
+	install -m 0644 .libs/libdb-3.2.la ${STAGING_LIBDIR}/
+}
+
+do_install () {
+	oe_runmake \
+		prefix=${D}/${prefix} \
+		exec_prefix=${D}/${exec_prefix} \
+		bindir=${D}/${bindir} \
+		includedir=${D}/${includedir} \
+		libdir=${D}/${libdir} \
+		docdir=${D}/${docdir} \
+		install
+}
