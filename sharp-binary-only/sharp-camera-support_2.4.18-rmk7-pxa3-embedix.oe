@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (2.4.18-rmk7-pxa3-embedix)"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.openzaurus.org/mirror/camera-modules-2.4.18-rmk7-pxa3-embedix.tar.bz2 \
            file://CE-AG06.dat \
@@ -18,7 +18,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/CE-AG06.dat ${D}/etc/pcmcia/cis/
 	install -m 0644 ${WORKDIR}/sharpzdc.conf ${D}/etc/pcmcia/
 	install -m 0755 ${WORKDIR}/sharpzdc ${D}/etc/pcmcia/
-	install -m 0644 sharpzdc_cs.o ${D}/lib/modules/2.4.18-rmk7-pxa3-embedix/pcmcia/
+	install -m 0644 ${MACHINE}/sharpzdc_cs.o ${D}/lib/modules/2.4.18-rmk7-pxa3-embedix/pcmcia/
 }
 
 FILES_${PN} = "/"
