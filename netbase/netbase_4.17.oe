@@ -1,6 +1,6 @@
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
-PR = "r5"
+PR = "r6"
 
 inherit update-rc.d
 
