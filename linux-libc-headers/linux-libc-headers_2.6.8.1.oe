@@ -2,13 +2,14 @@ SECTION = "devel"
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r4"
+PR = "r5"
 
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
-	file://mips-asm-atomic-system.diff;patch=1;pnum=0"
+	file://mips-asm-atomic-system.diff;patch=1;pnum=0 \
+	file://keyboard.patch;patch=1"
 	
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
