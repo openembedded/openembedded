@@ -7,3 +7,21 @@ inherit autotools
 
 EXTRA_OECONF = --disable-strip
 export BUILDCC = ${BUILD_CC}
+
+do_install_prepend () {
+	oe_runmake 'DESTDIR=${D}' install
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir}
+	if [ -e ${FILESDIR}/modules_${MACHINE} ]; then
+		install -m 0644 ${FILESDIR}/modules_${MACHINE} ${D}/${sysconfdir}/modules
+	else
+		touch ${D}/${sysconfdir}/modules
+	fi
+	if [ -e ${FILESDIR}/modules.conf_${MACHINE} ]; then
+		install -m 0644 ${FILESDIR}/modules.conf_${MACHINE} ${D}/${sysconfdir}/modules.conf
+	else
+		touch ${D}/${sysconfdir}/modules.conf
+	fi
+}
