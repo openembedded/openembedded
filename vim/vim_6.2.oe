@@ -21,3 +21,5 @@ do_configure () {
 	touch auto/configure
 	touch auto/config.mk auto/config.h
 }
+
+#FILES_${PN}-doc=${datadir}/vim/vim62/doc ${mandir} ${infodir}
