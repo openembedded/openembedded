@@ -26,3 +26,8 @@ do_stage () {
 	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/
 	ln -sf libssl.so.0.9.7 ${STAGING_LIBDIR}/libssl.so
 }
+
+do_install () {
+	set -e
+	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
+}

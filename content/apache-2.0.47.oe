@@ -1,7 +1,7 @@
 SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz
 SECTION = net
-DEPENDS = virtual/libc expat pcre libtool openssl
-RDEPENDS = libc6, libexpat1, libpcre0
+DEPENDS = virtual/libc expat libtool openssl
+RDEPENDS = libc6, libexpat1, libssl0.9.7
 
 S = ${WORKDIR}/httpd-${PV}
 
