@@ -6,14 +6,17 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 RCV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 MMV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 LV = "2.6.10"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2 \
            http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1 \
            http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/${KV}-${RCV}/${KV}-${RCV}-${MMV}/${KV}-${RCV}-${MMV}.gz;patch=1 \
+http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-core-on-panic;patch=1 \
+http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-pretend-to-be-i586;patch=1 \
+http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-general-protection-fault;patch=1 \
+http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-x11-fb;patch=1 \
            file://defconfig"
-#           file://compile-fix.patch;patch=1 \
-#           file://defconfig"
+
 S = "${WORKDIR}/linux-${LV}"
 
 inherit kernel
