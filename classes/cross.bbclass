@@ -32,9 +32,9 @@ datadir = "${prefix}/share"
 sysconfdir = "${prefix}/etc"
 sharedstatedir = "${prefix}/com"
 localstatedir = "${prefix}/var"
-infodir = "${prefix}/info"
-mandir = "${prefix}/man"
-docdir = "${prefix}/doc"
+infodir = "${datadir}/info"
+mandir = "${datadir}/man"
+docdir = "${datadir}/doc"
 servicedir = "${prefix}/srv"
 
 # Architecture dependent paths
