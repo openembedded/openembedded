@@ -31,6 +31,5 @@ do_stage() {
 do_install() {
 	install -d ${D}/${bindir} ${D}/${includedir} \
 		   ${D}/${mandir}/man1 ${D}/${libdir}
-	oe_runmake 'prefix=${D}/${prefix}' 'exec_prefix=${D}/${exec_prefix}' \
-		   install
+	oe_runmake 'DESTDIR=${D}' install
 }
