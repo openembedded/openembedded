@@ -84,8 +84,8 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # the MACHINE attribute (see above)
 #TARGET_ARCH = "arm"
 
-# Use this to specify the target operating system.  This is "linux" for a
-# normal linux system with glibc.  Set this to "linux-uclibc" if you want
+# Use this to specify the target operating system.  The default is "linux",
+# for a normal linux system with glibc. Set this to "linux-uclibc" if you want
 # to build a uclibc based system.
 #TARGET_OS = "linux"
 #TARGET_OS = "linux-uclibc"
@@ -108,6 +108,10 @@ CACHE=/var/tmp/oe-cache.${USER}
 
 # Uncomment this if you want OE to emit debugging output
 #OEDEBUG = "yes"
+
+# Uncomment these two if you want OE to build images useful for debugging.
+#DEBUG_BUILD = "1"
+#INHIBIT_PACKAGE_STRIP = "1"
 
 # Uncomment this if you want OE to emit the log if a build fails.
 OEINCLUDELOGS = "yes"
