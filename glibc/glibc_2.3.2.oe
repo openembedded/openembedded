@@ -210,7 +210,8 @@ do_install() {
 	done
 }
 
-python do_package_prepend() {
+python do_package () {
 	if oe.data.getVar('DEBIAN_NAMES', d, 1):
 		oe.data.setVar('PKG_${PN}', 'libc6', d)
+	oe.build.exec_func('package_do_package', d)
 }
