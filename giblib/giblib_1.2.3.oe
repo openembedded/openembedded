@@ -1,0 +1,26 @@
+DESCRIPTION = "giblib is a utility library that incorporates doubly linked \
+lists, some string functions, and a wrapper for imlib2."
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+DEPENDS = "imlib2"
+PR = "r1"
+
+SRC_URI = "http://linuxbrit.co.uk/downloads/giblib-${PV}.tar.gz \
+	   file://pkgconfig.patch;patch=1"
+S = "${WORKDIR}/giblib-${PV}"
+
+inherit autotools pkgconfig
+
+headers = "gib_imlib.h gib_btree.h gib_debug.h gib_queue.h gib_stack.h \
+gib_style.h giblib_config.h gib_hash.h giblib.h gib_list.h gib_utils.h"
+do_stage () {
+	oe_libinstall -a -so -C giblib libgiblib ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/giblib
+	for h in ${headers}; do
+		install -m 0644 ${S}/giblib/$h ${STAGING_INCDIR}/giblib/
+	done
+	cat giblib-config | sed -e "s,${prefix},${STAGING_LIBDIR}/..," \
+		       	     -e "s,${exec_prefix},${STAGING_BINDIR}/..," \
+			     -e "s,${includedir},${STAGING_INCDIR}," \
+			     -e "s,${libdir},${STAGING_LIBDIR}," > ${STAGING_BINDIR}/giblib-config
+	chmod a+rx ${STAGING_BINDIR}/giblib-config
+}
