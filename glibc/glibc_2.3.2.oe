@@ -81,7 +81,7 @@ B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-tls --without-__thread --enable-kernel=2.4.3 \
+EXTRA_OECONF = "--without-tls --without-__thread --enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=linuxthreads --with-headers=${WORKDIR}/linux/include"
