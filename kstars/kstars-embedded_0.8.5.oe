@@ -10,17 +10,11 @@ S = "${WORKDIR}/kstars"
 
 inherit palmtop
 
-#FIXME add an icon
-
 do_install() {
-    install -d ${D}/opt/QtPalmtop/{bin,lib,apps/Applications,pics/kstars}
+    install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics/kstars,share/apps/kstars}
     install -m 0755 ${STAGING_LIBDIR}/../bin/kstars ${D}/opt/QtPalmtop/bin/kstars
     rm -f ${STAGING_LIBDIR}/../bin/kstars
-
-    echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
-    echo "Comment=The Universe, in your Hands!" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
-    echo "Exec=kstars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
-    echo "Icon=kstars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
-    echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
-    echo "Name=KStars" >>${D}/opt/QtPalmtop/apps/Applications/kstars.desktop
+    install -m 0644 ${WORKDIR}/apps/Applications/kstars.desktop ${D}/opt/QtPalmtop/apps/Applications
+    cp -a ${WORKDIR}/pics/kstars ${D}/opt/QtPalmtop/pics/
+    cp -a ${WORKDIR}/share/apps/kstars ${D}/opt/QtPalmtop/share/apps/
 }
