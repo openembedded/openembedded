@@ -1,5 +1,5 @@
 SECTION = "base"
-PR = "r2"
+PR = "r3"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 DEPENDS = "expat glib-2.0"
@@ -50,6 +50,7 @@ do_stage () {
 	done
 
 	install -m 0644 dbus/dbus-glib.h ${STAGING_INCDIR}/dbus-1.0/dbus/
+	install -m 0644 dbus/dbus-glib-lowlevel.h ${STAGING_INCDIR}/dbus-1.0/dbus/
 
 	mkdir -p ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
 	install -m 0644 dbus/dbus-arch-deps.h ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
