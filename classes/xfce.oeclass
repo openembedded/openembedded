@@ -1,0 +1,15 @@
+# xfce.oeclass
+# Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
+# Released under the MIT license (see packages/COPYING)
+
+# Global class to make it easier to maintain XFCE packages
+
+HOMEPAGE="http://www.xfce.org"
+LICENSE="LGPL-2"
+
+SRC_URI="http://hannelore.f1.fhtw-berlin.de/mirrors/xfce4/xfce-${PV}/src/${PN}-${PV}.tar.gz"
+
+# Most, but not *all* packages use pkgconfig, so we can't include it here
+# too
+
+inherit autotools 
