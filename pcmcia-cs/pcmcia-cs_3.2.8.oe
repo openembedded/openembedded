@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
@@ -11,7 +11,9 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://pcmcia \
 	   file://ide.opts \
 	   file://wireless.opts \
-	   file://network.conf"
+	   file://network.conf \
+	   file://hostap_cs.conf \
+	   file://wnv.conf \"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 INITSCRIPT_NAME = "pcmcia"
@@ -61,7 +63,11 @@ do_install() {
 	install -d ${D}/${sysconfdir}/init.d \
 		   ${D}/${sysconfdir}/pcmcia \
 		   ${D}/${sysconfdir}/pcmcia/cis
+
 	install -m 0644 ${WORKDIR}/network.conf ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/wnv.conf ${D}/${sysconfdir}/pcmcia/
+
 	for i in ${INSTALL_ETC}; do
 		install etc/${i} ${D}/${sysconfdir}/pcmcia/
 	done
