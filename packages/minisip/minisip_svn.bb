@@ -5,7 +5,7 @@ PR = "r0"
 MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 
 DESCRIPTION = "SIP user agent, with focus on security"
-DEPENDS = "libsamplerate0 libglademm libmsip0 libmikey0"
+DEPENDS = "libglademm libmsip0 libmikey0"
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
 S = ${WORKDIR}/${PN}
 
