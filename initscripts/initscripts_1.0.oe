@@ -10,6 +10,7 @@ SRC_URI = "file://halt \
            file://umountfs \
            file://devices \
            file://h3600/devices \
+           file://collie/devices \
            file://devpts.sh \
            file://devpts \
            file://bootlogo-simpad.gz \
