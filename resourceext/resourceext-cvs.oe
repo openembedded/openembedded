@@ -3,7 +3,7 @@ SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions-cvs"
 PROVIDES = "resourceext"
-DESCRIPTIOn = "X Resource usage extension headers"
+DESCRIPTION = "X Resource usage extension headers"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ResourceExt
 S = "${WORKDIR}/ResourceExt"

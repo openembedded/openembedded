@@ -1,13 +1,13 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
-DESCRIPTIOn = "The man page suite, including man, apropos, \
+DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
 
 SRC_URI := ftp://ftp.kernel.org/pub/linux/utils/man/man-1.5m2.tar.bz2
 
 EXTRA_OEMAKE=
-GS = "-DGREPSILENT=\"q\"
+GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 
 do_configure() {
