@@ -1,14 +1,16 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = virtual/libc db3
+RDEPENDS = libc6 db3
 
 SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1
 
-inherit autotools
+inherit autotools libtool
 
 acpaths=-I ${S}/cmulocal -I ${S}/config -I .
 CFLAGS_append = ' -I${S}/include -I${S}/saslauthd/include'
-EXTRA_OECONF = --enable-shared --enable-static
+EXTRA_OECONF = '--enable-shared --enable-static --with-dblib=berkeley \
+	        --with-bdb-libdir=${STAGING_LIBDIR} \
+	        --with-bdb-incdir=${STAGING_INCDIR}'
 do_configure_prepend () {
 	rm -f acinclude.m4
 }
