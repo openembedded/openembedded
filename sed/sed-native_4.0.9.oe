@@ -1,2 +1,0 @@
-include sed_${PV}.oe
-inherit native
