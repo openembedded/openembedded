@@ -1,0 +1,26 @@
+DESCRIPTION = "Opie Camera, Photo and Video Capturing Application for the Sharp CF-AG06 camera"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
+LICENSE = "GPL"
+APPNAME = "camera"
+APPTYPE = "binary"
+PV = "1.0.3-cvs-${CVSDATE}"
+PR = "r0"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/${APPNAME} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+S = "${WORKDIR}/camera"
+
+EXTRA_QMAKEVARS_POST=" LIBS+=-L.. "
+
+inherit opie
+
+do_install() {
+    install -d ${D}/${palmtopdir}/pics/${APPNAME}
+    install -d ${D}/${palmtopdir}/lib/
+    oe_libinstall -so libcamera ${D}/${palmtopdir}/lib
+    install -m 0755 capture ${D}/${palmtopdir}/bin/
+    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+}
