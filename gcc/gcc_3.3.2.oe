@@ -63,11 +63,13 @@ FILES_${PN}-doc = \
 	${mandir} \
 	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README
 
-SRC_URI := http://gcc.get-software.com/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
-	   file://${FILESDIR}/pr8896.patch;patch=1 \
-	   file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
-	   file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
-	   file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1
+SRC_URI = ${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+	  file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
+	  file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
+	  file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1
+MIRRORS_prepend () {
+${GNU_MIRROR}/gcc/gcc-${PV}/	http://gcc.get-software.com/releases/gcc-${PV}/
+}
 
 S := ${WORKDIR}/gcc-${PV}
 B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
