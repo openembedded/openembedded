@@ -3,7 +3,7 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl tslib libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
-PR = "r6"
+PR = "r7"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=0 \
@@ -56,9 +56,7 @@ EXTRA_OECONF = " \
 	--enable-rtc \
         --with-extralibdir=${STAGING_LIBDIR} "
 
-EXTRA_OECONF_append_corgi = " --enable-vidix "
-EXTRA_OECONF_append_shepherd = " --enable-vidix "
-EXTRA_OECONF_append_husky = " --enable-vidix "
+EXTRA_OECONF_append_c7x0 = " --enable-vidix "
 
 do_configure() {
         ./configure ${EXTRA_OECONF}
