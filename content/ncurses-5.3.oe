@@ -1,9 +1,12 @@
-DESCRIPTION="Ncurses library"
-SECTION="libs"
-DEPENDS=virtual/libc
 BaseV := ${PV}
 SnapV := 20030906
 PV = ${BaseV}.${SnapV}
+
+DESCRIPTION="Ncurses library"
+SECTION="libs"
+DEPENDS=virtual/libc
+PROVIDES=${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
+	 ${CATEGORY}/${PN}-${BaseV} ${CATEGORY}/${PN}-${BaseV}-${PR} 
 SRC_URI = ${GNU_MIRROR}/ncurses/${PN}-${BaseV}.tar.gz \
 	  file://${FILESDIR}/${SnapV}.patch;patch=1
 S = ${WORKDIR}/${PN}-${BaseV}

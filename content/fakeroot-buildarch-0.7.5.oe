@@ -1,0 +1,4 @@
+inherit noncross
+include fakeroot-${PV}.oe
+S := ${S}
+PN=fakeroot-buildarch
