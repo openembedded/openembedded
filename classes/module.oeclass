@@ -1,5 +1,5 @@
-RDEPENDS_append = " kernel (${KERNEL_VERSION})"
-DEPENDS_append = " virtual/kernel"
+RDEPENDS += "kernel (${KERNEL_VERSION})"
+DEPENDS += "virtual/kernel"
 
 inherit module-base
 

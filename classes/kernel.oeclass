@@ -1,5 +1,5 @@
-PROVIDES_append = "virtual/kernel"
-DEPENDS_append = "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
+PROVIDES += "virtual/kernel"
+DEPENDS += "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
 
 export ARCH = "${TARGET_ARCH}"
 export OS = "${TARGET_OS}"
