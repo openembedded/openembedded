@@ -12,7 +12,8 @@ SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
 	   file://${FILESDIR}/automake-lossage.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/no-demos.patch;patch=1 \
-	   file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0"
+	   file://${FILESDIR}/libtool-lossage.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/no-xwc.patch;patch=1;pnum=0"
 
 inherit autotools libtool pkgconfig
 
@@ -69,7 +70,7 @@ do_stage () {
 
 python do_package () {
 	import string
-	def do_split(root, pattern, format, description):
+	def do_split(root, pattern, format, description, postinst):
 		dvar = oe.data.getVar('D', d, 1)
 		if not dvar:
 			oe.error("D not defined")
@@ -80,6 +81,7 @@ python do_package () {
 			oe.error("PACKAGES not defined")
 			return
 
+		postinst = '#!/bin/sh\n' + postinst
 		objs = os.listdir(dvar + root)
 		mainpkg = packages[0]
 		for o in objs:
@@ -93,6 +95,7 @@ python do_package () {
 			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
 			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
 			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
 
 		oe.data.setVar('PACKAGES', string.join(packages, ' '), d)
 
@@ -105,8 +108,8 @@ python do_package () {
 	loaders_root = os.path.join(gtk_libdir, 'loaders')
 	immodules_root = os.path.join(gtk_libdir, 'immodules')
 
-	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s')
-	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s')
+	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s', 'gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders')
+	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', 'gtk-query-immodules > /etc/gtk-2.0/gtk.immodules')
 
 	oe.build.exec_func("package_do_package", d)
 }

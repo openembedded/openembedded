@@ -33,7 +33,7 @@ then
 	if test "$VERBOSE" != "no"; then echo "done"; fi
 else
 	if test "$VERBOSE" != "no"; then echo -n "Mounting /dev ramdisk: "; fi
-	mount -t ramfs ramfs /dev
+	mount -t ramfs ramfs /dev || mount -t tmpfs ramfs /dev
 	if test $? -ne 0; then
 		if test "$VERBOSE" != "no"; then echo "failed"; fi
 	else

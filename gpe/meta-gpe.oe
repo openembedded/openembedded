@@ -1,0 +1,57 @@
+PACKAGES = gpe-task-base
+DESCRIPTION = "Meta-package for GPE Palmtop Environment"
+DEPENDS = "gpe-bluetooth gpe-login gpe-dm gpe-session-scripts gpe-edit gpe-todo rxvt-unicode matchbox"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+ALLOW_EMPTY = 1
+
+RDEPENDS_gpe-task-base = "\
+    gpe-dm \
+    gpe-login \
+    gpe-session-scripts \
+    matchbox \
+    rxvt-unicode"
+
+#    gpe-collateral-gtk2 \
+#    gdk-pixbuf2-loader-jpeg \
+#    \
+#    gpe-bootsplash2 \
+#    gpe-terminal \
+#    \
+#    keylaunch \
+#    esd \
+#    detect-stylus \
+#    gpe-soundserver \
+#    gpe-mimedir-tools \
+#    teleport \
+#    gpe-keylock \
+#    \
+#    xmonobut \
+#    minilite \
+#    minibat \
+#    minipredict \
+#    matchbox-panel-hacks \
+#    mbinputmgr \
+#    \
+#    xstroke \
+#    rosetta \
+#    xkbd \
+#    mbmerlin \
+#    \
+#    startup-monitor \
+#    \
+#    xtscal \
+#    gpe-su2 \
+#    gpe-conf \
+#    gpe-confd \
+#    xst \
+#    \
+#    gpe-what \
+#    gpe-question2 \
+#    gpe-announce2 \
+#    \
+#    gpe-wlancfg \
+#    gpe-aerial \
+#    hotplug-dbus \
+#    gpe-autostarter \
+#    nsqld

@@ -1,5 +1,6 @@
 DESCRIPTION = "SysV init scripts"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+RDEPENDS = "makedevs"
 SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/ramdisk \
 	   file://${FILESDIR}/umountfs \
@@ -29,7 +30,8 @@ SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/extractfs \
 	   file://${FILESDIR}/checkroot.sh \
 	   file://${FILESDIR}/devices_h3600 \
-	   file://${FILESDIR}/umountnfs.sh"
+	   file://${FILESDIR}/umountnfs.sh \
+	   file://${FILESDIR}/device_table.txt"
 
 
 do_install () {
@@ -96,4 +98,6 @@ do_install () {
 #	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
 #	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
 #	ln -sf		../init.d/ramdisk	${D}/etc/rcS.d/S30ramdisk
+
+	install -m 0755    ${FILESDIR}/device_table.txt		${D}/etc/device_table
 }
