@@ -1,29 +1,27 @@
 DESCRIPTION = "Base libraries for the Open Palmtop Integrated Environment"
 HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
-PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
 PV = "1.1.5-cvs-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
            file://include.pro"
 S = "${WORKDIR}/libopie2"
 
-inherit qmake
+inherit opie
 
 export QTDIR = "${STAGING_LIBDIR}/.."
 export OPIEDIR = "${STAGING_LIBDIR}/.."
 
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
 
-EXTRA_QMAKEVARS_POST = ' DEFINES+=QWS                \
-                         DEFINES+=OPIE_NEW_MALLOC    \
-                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
-			 DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX '
+EXTRA_QMAKEVARS_POST = 'DEFINES+=OPIE_NEW_MALLOC \
+                        DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
+			DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX'
 
 EXTRA_QMAKEVARS_PRE = 'ENABLE_SQL_PIM_BACKEND=y'
 
@@ -43,10 +41,15 @@ do_compile() {
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
-# no sophisticated staging neessary, because most include+lib files already done during do_compile
-# only need some special case for uic-created header files here
+LIBS = "core2 ui2 db2 mm2 net2 pim2 security2"
 
+# need some special case for uic-created header files here
 do_stage() {
+        for f in ${LIBS}
+	do
+		oe_libinstall -so libopie$f ${STAGING_LIBDIR}/
+	done
+
 	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
@@ -54,23 +57,20 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopiecore2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopiedb2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopiemm2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopienet2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopiepim2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopieui2 ${D}/${palmtopdir}/lib
-	oe_libinstall -so -C ${STAGING_LIBDIR} libopiesecurity2 ${D}/${palmtopdir}/lib
+	install -d ${D}/${palmtopdir}/lib
+	for f in ${LIBS}
+	do
+		oe_libinstall -so libopie$f ${D}/${palmtopdir}/lib
+	done
 }
 
 PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
-FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so.*"
-FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so.*"
-FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so.*"
-FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so.*"
-FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so.*"
-FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so.*"
-FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so.*"
-
+FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so*"
+FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so*"
+FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so*"
+FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so*"
+FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so*"
+FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so*"
+FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so*"
 
 #FIXME: Add individual package descriptions and dependencies

@@ -29,8 +29,8 @@ python opie_do_opie_install() {
 	import os, shutil
 	section = oe.data.getVar( "SECTION", d ).split( '/' )[1] or "Applications"
 	section = section.title()
-	if section == "Base":
-		oe.note( "Section = Base --> target won't be installed automatically." )
+	if section in ( "Base", "Libs" ):
+		oe.note( "Section = Base or Libs. Target won't be installed automatically." )
 		return
 
 	#               SECTION         : BINDIR			DESKTOPDIR

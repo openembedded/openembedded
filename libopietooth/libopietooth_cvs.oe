@@ -2,13 +2,11 @@ DESCRIPTION = "Opie Bluetooth library"
 SECTION = "opie/libs"
 PRIORITY = "optional"
 DEPENDS = "libopie2"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
-LICENSE = "GPL"
+MAINTAINER = "Team Opie <opie@handhelds.org>
+LICENSE = "LGPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 
-inherit palmtop
-
-EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
+inherit opie
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/lib;date=${CVSDATE}"
 S = "${WORKDIR}/lib"

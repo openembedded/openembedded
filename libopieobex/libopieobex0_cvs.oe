@@ -1,8 +1,8 @@
 DESCRIPTION = "IrDA obex support library"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
-LICENSE = "GPL"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "LGPL"
 DEPENDS = "opie-taskbar openobex"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "obex"
@@ -11,11 +11,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/obex;dat
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
 S = "${WORKDIR}/obex"
 
-inherit palmtop
-
-EXTRA_QMAKEVARS_POST = 'DESTDIR="${S}"'
-
-FILES_${PN} = "${palmtopdir}/plugins/obex/ ${palmtopdir}/pics/obex/"
+inherit opie
 
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/ ${D}${palmtopdir}/plugins/obex/
@@ -23,3 +19,4 @@ do_install() {
 	oe_libinstall -so libopieobex ${D}${palmtopdir}/plugins/obex/
 }
 
+FILES_${PN} = "${palmtopdir}/plugins/obex/ ${palmtopdir}/pics/obex/"

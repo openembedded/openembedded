@@ -1,17 +1,15 @@
 DESCRIPTION = "Qt-based class wrapper of libetpan."
 SECTION = "opie/libs"
 PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "libetpan"
 PV = "1.1.5-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail/libmailwrapper;date=${CVSDATE} "
-
 S = "${WORKDIR}/libmailwrapper"
 
-EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
-
-inherit palmtop
+inherit opie
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/libmailwrapper/
