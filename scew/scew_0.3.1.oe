@@ -1,0 +1,8 @@
+DESCRIPTION = Simple C Expat Wrapper.
+DEPENDS = virtual/libc expat
+RDEPENDS = libc6 expat
+
+SRC_URI = http://www.ccd.uab.es/~aleix/scew/scew-${PV}.tar.gz \
+	  file://${FILESDIR}/m4.patch;patch=1
+
+inherit autotools pkgconfig
