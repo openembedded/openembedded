@@ -51,7 +51,7 @@ OPIE_PIM_MAIL = "opie-mail"
 OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo \
             opie-today opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
 
-KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.3a"
+KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.4"
 KDE_PIM_RDEPENDS = "kopi kapi libmicrokdelibs kopi-applet"
 
 OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
