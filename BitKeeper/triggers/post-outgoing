@@ -2,7 +2,6 @@
 
 LIST=openzaurus-cvslogs@lists.sf.net
 
-
 if [ X"$BK_STATUS" = XDRYRUN -o X"$BK_STATUS" = XNOTHING ]
 then exit 0
 fi
