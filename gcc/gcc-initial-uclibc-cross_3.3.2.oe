@@ -1,6 +1,6 @@
 include gcc-uclibc-cross_${PV}.oe
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc-initial
+DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc-initial patcher-native
 PROVIDES := virtual/${TARGET_PREFIX}gcc-initial
 
 EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \

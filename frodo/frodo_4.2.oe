@@ -11,3 +11,5 @@ S = ${WORKDIR}/Frodo4/Src
 
 inherit autotools libtool
 
+CFLAGS_append = " -DQTOPIA"
+

@@ -10,6 +10,8 @@ S = ${WORKDIR}/Python-${PV}
 
 inherit autotools native
 
+DEPENDS=patcher-native
+
 EXTRA_OECONF = '--with-threads --with-pymalloc --with-cyclic-gc --with-exec-prefix=${STAGING_DIR}/build'
 do_configure () {
 	oe_runconf

@@ -1,4 +1,5 @@
-DEPENDS = opensp-native sgml-common-native
+DEPENDS = patcher-native opensp-native sgml-common-native
+RDEPENDS = 
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,3 +1,6 @@
+DEPENDS = patcher-native
+RDEPENDS =
+
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 	  file://${FILESDIR}/m4.patch;patch=1 \
 	  file://${FILESDIR}/attributevalue.patch;patch=1
