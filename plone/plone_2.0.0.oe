@@ -6,7 +6,7 @@ RDEPENDS = "zope"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/plone/CMFPlone-2.0-final.tar.gz"
-S = "${WORKDIR}/CMFPlone-2.0"
+S = "${WORKDIR}/CMFPlone-2.0-final"
 
 do_install() {
 	install -d ${D}/usr/lib/python/Products/
