@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.9+cvs-${CVSDATE}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/library"
 S = "${WORKDIR}/library"
