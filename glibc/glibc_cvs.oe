@@ -32,7 +32,7 @@ PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-d
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-PROVIDES += "${@['virtual/libiconv virtual/libintl', ''][oe.data.getVar('USE_NLS', d, 1) == 'no']}"
+PROVIDES += "virtual/libintl virtual/libiconv"
 DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -76,7 +76,7 @@ SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
-inherit autotools gettext
+inherit autotools
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

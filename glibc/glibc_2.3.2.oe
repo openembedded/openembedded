@@ -25,10 +25,10 @@ python __anonymous () {
 }
 
 PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+PROVIDES += "virtual/libintl virtual/libiconv"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-PROVIDES += "${@['virtual/libiconv virtual/libintl', ''][oe.data.getVar('USE_NLS', d, 1) == 'no']}"
 DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -115,7 +115,7 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
-inherit autotools gettext
+inherit autotools
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
