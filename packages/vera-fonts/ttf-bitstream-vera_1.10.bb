@@ -1,8 +1,9 @@
 DESCRIPTION = "The Bitstream Vera fonts - TTF Edition"
 SECTION = "x11/fonts"
 PRIORITY = "optional"
-LICENSE = "GPL"
-PR = "r1"
+LICENSE = "Bitstream Vera"
+PACKAGE_ARCH = "all"
+PR = "r2"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-${PV}.tar.bz2" 
 
@@ -28,6 +29,5 @@ pkg_postinst () {
 fc-cache
 }
 
-PACKAGE_ARCH = "all"
 
 FILES_${PN} = "/etc /usr/share/fonts"

@@ -1,8 +1,9 @@
 DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
 SECTION = "opie/fonts"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-LICENSE = "GPL"
-PR = "r2"
+LICENSE = "Bitstream Vera"
+PACKAGE_ARCH = "all"
+PR = "r3"
 
 SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono.tar.gz"
 S = "${WORKDIR}/verasansmono"
@@ -27,7 +28,6 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
-PACKAGE_ARCH = "all"
 
 PACKAGES = "\
 qpf-bitstream-vera-sans-mono-small \

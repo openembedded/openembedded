@@ -2,8 +2,9 @@ DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
 SECTION = "opie/fonts"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PRIORITY = "optional"
-LICENSE = "GPL"
-PR = "r1"
+LICENSE = "Bitstream Vera"
+PACKAGE_ARCH = "all"
+PR = "r2"
 
 SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"
 S = "${WORKDIR}/vera-qpf"
@@ -23,7 +24,6 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
-PACKAGE_ARCH = "all"
 
 PACKAGES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
 
