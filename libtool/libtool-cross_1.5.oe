@@ -11,6 +11,7 @@ SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
 S = "${WORKDIR}/libtool-${PV}"
 
 prefix = "${STAGING_DIR}"
+exec_prefix = "${prefix}/${BUILD_SYS}"
 
 do_compile () {
 }
