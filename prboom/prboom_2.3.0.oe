@@ -22,3 +22,6 @@ do_install() {
 	install -m 0644 ${FILESDIR}/prboom.desktop ${D}/opt/QtPalmtop/apps/Games/prboom.desktop
 }
 
+FILES_${PN}=
+FILES_${PN}=/opt/QtPalmtop
+
