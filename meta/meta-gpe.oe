@@ -40,6 +40,7 @@ gpe-task-utils = "\
     minilite \
     gpe-taskmanager \
     gpe-clock \
+    gpe-appmgr \
     gpe-shield"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
