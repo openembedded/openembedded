@@ -1,0 +1,682 @@
+PATCHES_DIR="${S}"
+
+def base_dep_prepend(d):
+	import oe;
+	#
+	# Ideally this will check a flag so we will operate properly in
+	# the case where host == build == target, for now we don't work in
+	# that case though.
+	#
+	deps = ""
+	if not oe.data.getVar('INHIBIT_DEFAULT_DEPS', d):
+		deps += "patcher-native"
+		if (oe.data.getVar('HOST_SYS', d, 1) !=
+	     	    oe.data.getVar('BUILD_SYS', d, 1)):
+			deps += " virtual/${TARGET_PREFIX}gcc virtual/libc "
+	return deps
+
+def base_read_file(filename):
+	try:
+		f = file( filename, "r" )
+	except IOError, reason:
+		return "<unknown>:%s" % reason
+	else:
+		return f.read().strip()
+	return None
+
+DEPENDS_prepend="${@base_dep_prepend(d)} "
+
+def base_set_filespath(d):
+	import os, oe
+	filespath = []
+	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
+		overrides = oe.data.getVar("OVERRIDES", d, 1) or ""
+		overrides = overrides + ":"
+		for o in overrides.split(":"):
+			filespath.append(os.path.join(p, o))
+	oe.data.setVar("FILESPATH", ":".join(filespath), d)
+
+FILESPATH = "${@base_set_filespath(d)}"
+
+die() {
+	oefatal "$*"
+}
+
+oenote() {
+	echo "NOTE:" "$*"
+}
+
+oewarn() {
+	echo "WARNING:" "$*"
+}
+
+oefatal() {
+	echo "FATAL:" "$*"
+	exit 1
+}
+
+oedebug() {
+	test $# -ge 2 || {
+		echo "Usage: oedebug level \"message\""
+		exit 1
+	}
+
+	test ${OEDEBUG:-0} -ge $1 && {
+		shift
+		echo "DEBUG:" $*
+	}
+}
+
+oe_runmake() {
+	if [ x"$MAKE" = x ]; then MAKE=make; fi
+	oenote ${MAKE} ${EXTRA_OEMAKE} "$@"
+	${MAKE} ${EXTRA_OEMAKE} "$@" || die "oemake failed"
+}
+
+oe_soinstall() {
+	# Purpose: Install shared library file and
+	#          create the necessary links
+	# Example:
+	#
+	# oe_
+	#
+	#oenote installing shared library $1 to $2
+	#
+	libname=`basename $1`
+	install -m 755 $1 $2/$libname
+	sonamelink=`${HOST_PREFIX}readelf -d $1 |grep 'Library soname:' |sed -e 's/.*\[\(.*\)\].*/\1/'`
+	solink=`echo $libname | sed -e 's/\.so\..*/.so/'`
+	ln -sf $libname $2/$sonamelink
+	ln -sf $libname $2/$solink
+}
+
+oe_libinstall() {
+	# Purpose: Install a library, in all its forms
+	# Example
+	#
+	# oe_libinstall libltdl ${STAGING_LIBDIR}/
+	# oe_libinstall -C src/libblah libblah ${D}/${libdir}/
+	dir=""
+	libtool=""
+	while [ "$#" -gt 0 ]; do
+		case "$1" in
+		-C)
+			shift
+			dir="$1"
+			;;
+		-s)
+			silent=1
+			;;
+		-a)
+			require_static=1
+			;;
+		-so)
+			require_shared=1
+			;;
+		-*)
+			oefatal "oe_libinstall: unknown option: $1"
+			;;
+		*)
+			break;
+			;;
+		esac
+		shift
+	done
+
+	libname="$1"
+	shift
+	destpath="$1"
+	if [ -z "$destpath" ]; then
+		oefatal "oe_libinstall: no destination path specified"
+	fi
+
+	__runcmd () {
+		if [ -z "$silent" ]; then
+			echo >&2 "oe_libinstall: $*"
+		fi
+		$*
+	}
+
+	if [ -z "$dir" ]; then
+		dir=`pwd`
+	fi
+	if [ -d "$dir/.libs" ]; then
+		dir=$dir/.libs
+	fi
+	olddir=`pwd`
+	__runcmd cd $dir
+
+	lafile=$libname.la
+	if [ -f "$lafile" ]; then
+		# libtool archive
+		eval `cat $lafile|grep "^library_names="`
+		libtool=1
+	else
+		library_names="$libname.so* $libname.dll.a"
+	fi
+
+	__runcmd install -d $destpath/
+	dota=$libname.a
+	if [ -f "$dota" -o -n "$require_static" ]; then
+		__runcmd install -m 0644 $dota $destpath/
+	fi
+	dotlai=$libname.lai
+	if [ -f "$dotlai" -o -n "$libtool" ]; then
+		__runcmd install -m 0644 $dotlai $destpath/$libname.la
+	fi
+
+	for name in $library_names; do
+		files=`eval echo $name`
+		for f in $files; do
+			if [ ! -e "$f" ]; then
+				if [ -n "$libtool" ]; then
+					oefatal "oe_libinstall: $dir/$f not found."
+				fi
+			elif [ -L "$f" ]; then
+				__runcmd cp -P "$f" $destpath/
+			elif [ ! -L "$f" ]; then
+				libfile="$f"
+				__runcmd install -m 0755 $libfile $destpath/
+			fi
+		done
+	done
+
+	if [ -z "$libfile" ]; then
+		if  [ -n "$require_shared" ]; then
+			oefatal "oe_libinstall: unable to locate shared library"
+		fi
+	elif [ -z "$libtool" ]; then
+		# special case hack for non-libtool .so.#.#.# links
+		baselibfile=`basename "$libfile"`
+		if (echo $baselibfile | grep -qE '^lib.*\.so\.[0-9.]*$'); then
+			sonamelink=`${HOST_PREFIX}readelf -d $libfile |grep 'Library soname:' |sed -e 's/.*\[\(.*\)\].*/\1/'`
+			solink=`echo $baselibfile | sed -e 's/\.so\..*/.so/'`
+			if [ -n "$sonamelink" -a x"$baselibfile" != x"$sonamelink" ]; then
+				__runcmd ln -sf $baselibfile $destpath/$sonamelink
+			fi
+			__runcmd ln -sf $baselibfile $destpath/$solink
+		fi
+	fi
+
+	__runcmd cd "$olddir"
+}
+
+oe_machinstall() {
+	# Purpose: Install machine dependent files, if available
+	#          If not available, check if there is a default
+	#          If no default, just touch the destination
+	# Example:
+	#                $1  $2   $3         $4
+	# oe_machinstall -m 0644 fstab ${D}/etc/fstab
+	#
+	# TODO: Check argument number?
+	#
+	filename=`basename $3`
+	dirname=`dirname $3`
+
+	for o in `echo ${OVERRIDES} | tr ':' ' '`; do
+		if [ -e $dirname/$o/$filename ]; then
+			oenote $dirname/$o/$filename present, installing to $4
+			install $1 $2 $dirname/$o/$filename $4
+			return
+		fi
+	done
+#	oenote overrides specific file NOT present, trying default=$3...
+	if [ -e $3 ]; then
+		oenote $3 present, installing to $4
+		install $1 $2 $3 $4
+	else
+		oenote $3 NOT present, touching empty $4
+		touch $4
+	fi
+}
+
+addtask showdata
+do_showdata[nostamp] = "1"
+python do_showdata() {
+	import sys
+	# emit variables and shell functions
+	oe.data.emit_env(sys.__stdout__, d, True)
+	# emit the metadata which isnt valid shell
+	for e in d.keys():
+		if oe.data.getVarFlag(e, 'python', d):
+			sys.__stdout__.write("\npython %s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
+		elif oe.data.getVarFlag(e, 'func', d):
+			sys.__stdout__.write("\n%s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
+		else:
+			sys.__stdout__.write("%s=%s\n" % (e, oe.data.getVar(e, d, 1)))
+}
+
+addtask listtasks
+do_listtasks[nostamp] = "1"
+python do_listtasks() {
+	import sys
+	# emit variables and shell functions
+	#oe.data.emit_env(sys.__stdout__, d)
+	# emit the metadata which isnt valid shell
+	for e in d.keys():
+		if oe.data.getVarFlag(e, 'task', d):
+			sys.__stdout__.write("%s\n" % e)
+}
+
+addtask clean
+do_clean[dirs] = "${TOPDIR}"
+do_clean[nostamp] = "1"
+python base_do_clean() {
+	"""clear the build and temp directories"""
+	dir = oe.data.expand("${WORKDIR}", d)
+	if dir == '//': raise oe.build.FuncFailed("wrong DATADIR")
+	oe.note("removing " + dir)
+	os.system('rm -rf ' + dir)
+
+	dir = "%s.*" % oe.data.expand(oe.data.getVar('STAMP', d), d)
+	oe.note("removing " + dir)
+	os.system('rm -f '+ dir)
+}
+
+addtask mrproper
+do_mrproper[dirs] = "${TOPDIR}"
+do_mrproper[nostamp] = "1"
+python base_do_mrproper() {
+	"""clear downloaded sources, build and temp directories"""
+	dir = oe.data.expand("${DL_DIR}", d)
+	if dir == '/': oe.build.FuncFailed("wrong DATADIR")
+	oe.debug(2, "removing " + dir)
+	os.system('rm -rf ' + dir)
+	oe.build.exec_task('do_clean', d)
+}
+
+addtask patch after do_unpack
+do_patch[dirs] = "${WORKDIR}"
+python base_do_patch() {
+	import re
+
+	src_uri = oe.data.getVar('SRC_URI', d)
+	if not src_uri:
+		return
+	src_uri = oe.data.expand(src_uri, d)
+	for url in src_uri.split():
+#		oe.note('url is %s' % url)
+		(type, host, path, user, pswd, parm) = oe.decodeurl(url)
+		if not "patch" in parm:
+			continue
+		from oe.fetch import init, localpath
+		init([url])
+		url = oe.encodeurl((type, host, path, user, pswd, []))
+		local = '/' + localpath(url, d)
+		# patch!
+		dots = local.split(".")
+		if dots[-1] in ['gz', 'bz2', 'Z']:
+			efile = os.path.join(oe.data.getVar('WORKDIR', d),os.path.basename('.'.join(dots[0:-1])))
+		else:
+			efile = local
+		efile = oe.data.expand(efile, d)
+		patches_dir = oe.data.expand(oe.data.getVar('PATCHES_DIR', d), d)
+		oe.mkdirhier(patches_dir)
+		os.chdir(patches_dir)
+		cmd = "PATH=\"%s\" patcher" % oe.data.getVar("PATH", d, 1)
+		if "pnum" in parm:
+			cmd += " -p %s" % parm["pnum"]
+		cmd += " -n \"%s\" -i %s" % (os.path.basename(efile), efile)
+		ret = os.system(cmd)
+		if ret != 0:
+			raise oe.build.FuncFailed("'patcher' execution failed")
+}
+
+addtask fetch
+do_fetch[dirs] = "${DL_DIR}"
+do_fetch[nostamp] = "1"
+python base_do_fetch() {
+	import sys, copy
+
+	localdata = copy.deepcopy(d)
+	oe.data.update_data(localdata)
+
+	src_uri = oe.data.getVar('SRC_URI', localdata, 1)
+	if not src_uri:
+		return 1
+
+	try:
+		oe.fetch.init(src_uri.split())
+	except oe.fetch.NoMethodError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("No method: %s" % value)
+
+	try:
+		oe.fetch.go(localdata)
+	except oe.fetch.MissingParameterError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("Missing parameters: %s" % value)
+	except oe.fetch.FetchError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("Fetch failed: %s" % value)
+}
+
+addtask unpack after do_fetch
+do_unpack[dirs] = "${WORKDIR}"
+python base_do_unpack() {
+	import re, copy, os
+
+	localdata = copy.deepcopy(d)
+	oe.data.update_data(localdata)
+
+	src_uri = oe.data.getVar('SRC_URI', localdata)
+	if not src_uri:
+		return
+	src_uri = oe.data.expand(src_uri, localdata)
+	for url in src_uri.split():
+		try:
+			local = oe.data.expand(oe.fetch.localpath(url, localdata), localdata)
+		except oe.MalformedUrl, e:
+			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
+		# dont need any parameters for extraction, strip them off
+		local = re.sub(';.*$', '', local)
+		local = os.path.realpath(local)
+		dots = local.split(".")
+		if dots[-1] in ['gz', 'bz2', 'Z']:
+			efile = os.path.join(oe.data.getVar('WORKDIR', localdata, 1),os.path.basename('.'.join(dots[0:-1])))
+		else:
+			efile = local
+		cmd = None
+		if local.endswith('.tar'):
+			cmd = 'tar x --no-same-owner -f %s' % local
+		elif local.endswith('.tgz') or local.endswith('.tar.gz'):
+			cmd = 'tar xz --no-same-owner -f %s' % local
+		elif local.endswith('.tbz') or local.endswith('.tar.bz2'):
+			cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % local
+		elif local.endswith('.gz') or local.endswith('.Z') or local.endswith('.z'):
+			loc = local.rfind('.')
+			cmd = 'gzip -dc %s > %s' % (local, efile)
+		elif local.endswith('.bz2'):
+			loc = local.rfind('.')
+			cmd = 'bzip2 -dc %s > %s' % (local, efile)
+		elif local.endswith('.zip'):
+			loc = local.rfind('.')
+			cmd = 'unzip %s' % local
+		elif os.path.isdir(local):
+			filesdir = os.path.realpath(oe.data.getVar("FILESDIR", localdata, 1))
+			destdir = "."
+			if local[0:len(filesdir)] == filesdir:
+				destdir = local[len(filesdir):local.rfind('/')]
+				destdir = destdir.strip('/')
+				if len(destdir) < 1:
+					destdir = "."
+				elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
+					os.makedirs("%s/%s" % (os.getcwd(), destdir))
+			cmd = 'cp -a %s %s/%s/' % (local, os.getcwd(), destdir)
+		else:
+			(type, host, path, user, pswd, parm) = oe.decodeurl(url)
+			if not 'patch' in parm:
+				destdir = oe.decodeurl(url)[1] or "."
+				oe.mkdirhier("%s/%s" % (os.getcwd(), destdir))
+				cmd = 'cp %s %s/%s/' % (local, os.getcwd(), destdir)
+		if not cmd:
+			continue
+		oe.note("Unpacking %s to %s/" % (local, os.getcwd()))
+		ret = os.system(cmd)
+		if ret != 0:
+			raise oe.build.FuncFailed("%s execution failed" % cmd)
+}
+
+addhandler base_eventhandler
+python base_eventhandler() {
+	from oe import note, error, data
+	from oe.event import Handled, NotHandled, getName
+	import os
+
+	name = getName(e)
+	if name in ["PkgSucceeded"]:
+		note("package %s: build completed" % e.pkg)
+	if name in ["PkgStarted"]:
+		note("package %s: build %s" % (e.pkg, name[3:].lower()))
+	elif name in ["PkgFailed"]:
+		error("package %s: build %s" % (e.pkg, name[3:].lower()))
+	elif name in ["TaskStarted"]:
+		note("package %s: task %s %s" % (data.expand(data.getVar("PF", e.data), e.data), e.task, name[4:].lower()))
+	elif name in ["TaskSucceeded"]:
+		note("package %s: task %s completed" % (data.expand(data.getVar("PF", e.data), e.data), e.task))
+	elif name in ["TaskFailed"]:
+		error("package %s: task %s %s" % (data.expand(data.getVar("PF", e.data), e.data), e.task, name[4:].lower()))
+	elif name in ["UnsatisfiedDep"]:
+		note("package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower()))
+	elif name in ["BuildStarted", "BuildCompleted"]:
+		note("build %s %s" % (e.name, name[5:].lower()))
+	return NotHandled
+}
+
+addtask configure after do_unpack do_patch
+do_configure[dirs] = "${S} ${B}"
+
+base_do_configure() {
+	:
+}
+
+addtask compile after do_configure
+do_compile[dirs] = "${S} ${B}"
+base_do_compile() {
+	if [ -e Makefile -o -e makefile ]; then
+		oe_runmake || die "make failed"
+	else
+		oenote "nothing to compile"
+	fi
+}
+
+
+addtask stage after do_compile
+base_do_stage () {
+	:
+}
+
+do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${TARGET_SYS}/lib \
+			     ${STAGING_DIR}/${TARGET_SYS}/include \
+			     ${STAGING_DIR}/${BUILD_SYS}/bin ${STAGING_DIR}/${BUILD_SYS}/lib \
+			     ${STAGING_DIR}/${BUILD_SYS}/include \
+			     ${STAGING_DATADIR} \
+			     ${S} ${B}"
+
+addtask populate_staging after do_compile
+
+#python do_populate_staging () {
+#	if not oe.data.getVar('manifest', d):
+#		oe.build.exec_func('do_emit_manifest', d)
+#	if oe.data.getVar('do_stage', d):
+#		oe.build.exec_func('do_stage', d)
+#	else:
+#		oe.build.exec_func('manifest_do_populate_staging', d)
+#}
+
+python do_populate_staging () {
+	if oe.data.getVar('manifest_do_populate_staging', d):
+		oe.build.exec_func('manifest_do_populate_staging', d)
+	else:
+		oe.build.exec_func('do_stage', d)
+}
+
+#addtask install
+addtask install after do_compile
+do_install[dirs] = "${S} ${B}"
+
+base_do_install() {
+	:
+}
+
+#addtask populate_pkgs after do_compile
+#python do_populate_pkgs () {
+#	if not oe.data.getVar('manifest', d):
+#		oe.build.exec_func('do_emit_manifest', d)
+#	oe.build.exec_func('manifest_do_populate_pkgs', d)
+#	oe.build.exec_func('package_do_shlibs', d)
+#}
+
+base_do_package() {
+	:
+}
+
+addtask build after do_populate_staging
+do_build = ""
+do_build[nostamp] = "1"
+do_build[func] = "1"
+
+# Functions that update metadata based on files outputted
+# during the build process.
+
+SHLIBS = ""
+RDEPENDS_prepend = " ${SHLIBS}"
+
+python read_manifest () {
+	import sys
+	mfn = oe.data.getVar("MANIFEST", d, 1)
+	if os.access(mfn, os.R_OK):
+		# we have a manifest, so emit do_stage and do_populate_pkgs,
+		# and stuff some additional bits of data into the metadata store
+		mfile = file(mfn, "r")
+		manifest = oe.manifest.parse(mfile, d)
+		if not manifest:
+			return
+
+		oe.data.setVar('manifest', manifest, d)
+}
+
+python parse_manifest () {
+		manifest = oe.data.getVar("manifest", d)
+		if not manifest:
+			return
+		for func in ("do_populate_staging", "do_populate_pkgs"):
+			value = oe.manifest.emit(func, manifest, d)
+			if value:
+				oe.data.setVar("manifest_" + func, value, d)
+				oe.data.delVarFlag("manifest_" + func, "python", d)
+				oe.data.delVarFlag("manifest_" + func, "fakeroot", d)
+				oe.data.setVarFlag("manifest_" + func, "func", 1, d)
+		packages = []
+		for l in manifest:
+			if "pkg" in l and l["pkg"] is not None:
+				packages.append(l["pkg"])
+		oe.data.setVar("PACKAGES", " ".join(packages), d)
+}
+
+def explode_deps(s):
+	r = []
+	l = s.split()
+	flag = False
+	for i in l:
+		if i[0] == '(':
+			flag = True
+			j = []
+		if flag:
+			j.append(i)
+			if i.endswith(')'):
+				flag = False
+				r[-1] += ' ' + ' '.join(j)
+		else:
+			r.append(i)
+	return r
+
+python read_shlibdeps () {
+	packages = (oe.data.getVar('PACKAGES', d, 1) or "").split()
+	for pkg in packages:
+		shlibsfile = oe.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
+		if os.access(shlibsfile, os.R_OK):
+			fd = file(shlibsfile)
+			lines = fd.readlines()
+			fd.close()
+			rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
+			for l in lines:
+				rdepends.append(l.rstrip())
+			oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+}
+
+python read_subpackage_metadata () {
+	import re
+
+	data_file = oe.data.expand("${WORKDIR}/install/${PN}.package", d)
+	if os.access(data_file, os.R_OK):
+		f = file(data_file, 'r')
+		lines = f.readlines()
+		f.close()
+		r = re.compile("([^:]+):\s*(.*)")
+		for l in lines:
+			m = r.match(l)
+			if m:
+				oe.data.setVar(m.group(1), m.group(2), d)
+}
+
+python __anonymous () {
+	need_host = oe.data.getVar('COMPATIBLE_HOST', d, 1)
+	if need_host:
+		import re
+		this_host = oe.data.getVar('HOST_SYS', d, 1)
+		if not re.match(need_host, this_host):
+			raise oe.parse.SkipPackage("incompatible with host %s" % this_host)
+	
+	pn = oe.data.getVar('PN', d, 1)
+	cvsdate = oe.data.getVar('CVSDATE_%s' % pn, d, 1)
+	if cvsdate:
+		oe.data.setVar('CVSDATE', cvsdate, d)
+
+	try:
+		oe.build.exec_func('read_manifest', d)
+		oe.build.exec_func('parse_manifest', d)
+		oe.build.exec_func('read_shlibdeps', d)
+		oe.build.exec_func('read_subpackage_metadata', d)
+	except Exception, e:
+		oe.error("anonymous function: %s" % e)
+		pass
+}
+
+addtask emit_manifest
+python do_emit_manifest () {
+#	FIXME: emit a manifest here
+#	1) adjust PATH to hit the wrapper scripts
+	wrappers = oe.which(oe.data.getVar("OEPATH", d, 1), 'build/install', 0)
+	path = (oe.data.getVar('PATH', d, 1) or '').split(':')
+	path.insert(0, os.path.dirname(wrappers))
+	oe.data.setVar('PATH', ':'.join(path), d)
+#	2) exec_func("do_install", d)
+	oe.build.exec_func('do_install', d)
+#	3) read in data collected by the wrappers
+	oe.build.exec_func('read_manifest', d)
+#	4) mangle the manifest we just generated, get paths back into
+#	   our variable form
+#	5) write it back out
+#	6) re-parse it to ensure the generated functions are proper
+	oe.build.exec_func('parse_manifest', d)
+}
+
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage
+
+MIRRORS[func] = "0"
+MIRRORS () {
+${DEBIAN_MIRROR}/main	http://snapshot.debian.net/archive/pool
+${DEBIAN_MIRROR}	ftp://ftp.de.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.au.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.cl.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hr.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.fi.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hk.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hu.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.ie.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.it.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.jp.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.no.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.pl.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.ro.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.si.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.es.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.se.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.tr.debian.org/debian/pool
+${GNU_MIRROR}	ftp://mirrors.kernel.org/gnu
+${GNU_MIRROR}	ftp://ftp.matrix.com.br/pub/gnu
+${GNU_MIRROR}	ftp://ftp.cs.ubc.ca/mirror2/gnu
+${GNU_MIRROR}	ftp://sunsite.ust.hk/pub/gnu
+${GNU_MIRROR}	ftp://ftp.ayamura.org/pub/gnu
+ftp://ftp.kernel.org/pub	http://www.kernel.org/pub
+ftp://ftp.kernel.org/pub	ftp://ftp.us.kernel.org/pub
+ftp://ftp.kernel.org/pub	ftp://ftp.uk.kernel.org/pub
+ftp://ftp.kernel.org/pub	ftp://ftp.hk.kernel.org/pub
+ftp://ftp.kernel.org/pub	ftp://ftp.au.kernel.org/pub
+ftp://ftp.kernel.org/pub	ftp://ftp.jp.kernel.org/pub
+ftp://.*/.*/	http://treke.net/oe/source/
+http://.*/.*/	http://treke.net/oe/source/
+}
+
