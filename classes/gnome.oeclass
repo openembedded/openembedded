@@ -1,0 +1,21 @@
+def gnome_verdir(v):
+	import re
+	m = re.match("([0-9]+)\.([0-9]+)\..*", v)
+	return "%s.%s" % (m.group(1), m.group(2))
+
+SECTION = "gnome"
+SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
+
+FILES_${PN} += "${datadir}/application-registry"
+
+inherit autotools pkgconfig
+
+STAGE_TEMP="${WORKDIR}/temp-staging"
+
+gnome_stage_includes() {
+	rm -rf ${STAGE_TEMP}
+	mkdir -p ${STAGE_TEMP}
+	make DESTDIR="${STAGE_TEMP}" install
+	cp -a ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
+	rm -rf ${STAGE_TEMP}
+}
