@@ -14,10 +14,10 @@ do_install () {
 
 pkg_postinst () {
 #!/bin/sh
-if [ -n $D ]; then exit 1; fi
+if [ -n "$D" ]; then exit 1; fi
 set -e
 . /etc/profile
-update-qtfontdir
+${sbindir}/update-qtfontdir
 }
 
 PACKAGES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"

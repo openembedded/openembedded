@@ -1,0 +1,40 @@
+DESCRIPTION = "Multiple language keyboard"
+SECTION = "opie/inputmethods"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libqtaux2 opie-pickboard"
+RDEPENDS = "opie-pics"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "qmultikey"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey;date=${CVSDATE} \
+	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE}"
+
+S = "${WORKDIR}/multikey"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+if pidof -s qpe >/dev/null; then
+  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadInputMethods()"
+else
+  exit 0
+fi
+}
+
+pkg_postrm() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadInputMethods()"
+}
+
+# FILES plugins/inputmethods/libqmultikey.so* share/multikey/*
+do_install() {
+	install -d ${D}${palmtopdir}/share/multikey/
+	install -m 0644 ${WORKDIR}/share/multikey/*.keymap ${D}${palmtopdir}/share/multikey/
+	install -m 0644 ${WORKDIR}/share/multikey/README ${D}${palmtopdir}/share/multikey/
+}
+
