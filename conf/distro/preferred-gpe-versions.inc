@@ -7,6 +7,9 @@ CVSDATE_xserver-kdrive=20050207
 CVSDATE_minimo=20050401
 CVSDATE_cairo=20050330
 
+#set some preferred providers:
+PREFERRED_PROVIDER_gconf=gconf-dbus
+
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox ?= "1.6"
 PREFERRED_VERSION_matchbox ?= "0.9.1"
