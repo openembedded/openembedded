@@ -2,7 +2,7 @@ DESCRIPTION = "Phalanx is a chess playing engine."
 SECTION = "games/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \
