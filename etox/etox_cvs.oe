@@ -1,10 +1,10 @@
 DESCRIPTION = "Etox is a type setting and text layout library based on Evas. \
 Etox helps you when it comes to displaying, moving, resizing, layering, \
 clipping, aligning and coloring fonts in different styles, and more."
-SECTION = "libs"
+SECTION = "e/libs"
 DEPENDS = "edb evas ecore"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/etox"
