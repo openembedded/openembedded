@@ -5,58 +5,71 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r2"
+
+DOSRC="http://www.do13.in-berlin.de/openzaurus"
+RPSRC="http://www.rpsys.net/openzaurus/patches"
+JLSRC="http://www.cs.wisc.edu/~lenz/zaurus/files/"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.11-rc1-bk7.gz;patch=1 \
 
 # These have been left in the hope JL will split his patch series...
-#http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_base.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_fb.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-cpu.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_kbd.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_pm.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_devices.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_lcd.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/collie_uart.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/collie_batswitch.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/collie_pcmcia.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/sharp_mtd.patch;patch=1 \
-#http://www.rpsys.net/openzaurus/${KV}/jl1/collie_use_sharp_mtd.patch;patch=1 \
+#${RPSRC}/jl1/poodle_base.patch;patch=1 \
+#${RPSRC}/jl1/poodle_fb.patch;patch=1 \
+#${RPSRC}/jl1/pxa-cpu.patch;patch=1 \
+#${RPSRC}/jl1/locomo_kbd.patch;patch=1 \
+#${RPSRC}/jl1/locomo_pm.patch;patch=1 \
+#${RPSRC}/jl1/locomo_devices.patch;patch=1 \
+#${RPSRC}/jl1/locomo_lcd.patch;patch=1 \
+#${RPSRC}/jl1/collie_uart.patch;patch=1 \
+#${RPSRC}/jl1/collie_batswitch.patch;patch=1 \
+#${RPSRC}/jl1/collie_pcmcia.patch;patch=1 \
+#${RPSRC}/jl1/sharp_mtd.patch;patch=1 \
+#${RPSRC}/jl1/collie_use_sharp_mtd.patch;patch=1 \
 
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.10.tar.gz \
-	   ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.11-rc4.bz2;patch=2 \
+           ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.11-rc4.bz2;patch=2 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \	   
-http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.11-rc2-jl1.diff.gz;patch=1 \
-http://www.cs.wisc.edu/~lenz/zaurus/files/poodle_fix_mtd_sharpsl_part.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/rndis_fix-r0.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/w100_malloc-r1.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r16.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r10.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/input_power-r1.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras1-r2.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_power-r15.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/ide_fixes-r1.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/mmc_sd-r3.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_snd-r3.patch;patch=1 \
-http://www.do13.in-berlin.de/openzaurus/tosa-machine-base.patch;patch=1 \
-http://www.do13.in-berlin.de/openzaurus/tc6393_nand.patch;patch=1 \
-http://www.do13.in-berlin.de/openzaurus/tc6393-device.patch;patch=1 \
-file://defconfig-c7x0 \
-file://defconfig-collie \
-file://defconfig-poodle \
-file://defconfig-tosa "
+           ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \	   
+           ${JLSRC}/patch-2.6.11-rc2-jl1.diff.gz;patch=1 \
+           ${JLSRC}/poodle_fix_mtd_sharpsl_part.patch;patch=1 \
+           ${RPSRC}/rndis_fix-r0.patch;patch=1 \
+           ${RPSRC}/w100_malloc-r1.patch;patch=1 \
+           ${RPSRC}/corgi_kbd-r16.patch;patch=1 \
+           ${RPSRC}/corgi_ts-r10.patch;patch=1 \
+           ${RPSRC}/input_power-r1.patch;patch=1 \
+           ${RPSRC}/corgi_base_extras1-r2.patch;patch=1 \
+           ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
+           ${RPSRC}/corgi_power-r15.patch;patch=1 \
+           ${RPSRC}/ide_fixes-r1.patch;patch=1 \
+           ${RPSRC}/mmc_sd-r3.patch;patch=1 \
+           ${RPSRC}/corgi_snd-r3.patch;patch=1 \
+           ${DOSRC}/tc6393-device-r1.patch;patch=1 \
+           ${DOSRC}/tc6393_nand-r1.patch;patch=1 \
+           ${DOSRC}/tosa-machine-base-r1.patch;patch=1 \
+           ${DOSRC}/tosa-keyboard-r1.patch;patch=1 \
+           ${DOSRC}/tc6393fb-r0.patch;patch=1 \
+           ${DOSRC}/tosa-power-r0.patch;patch=1 \
+           file://defconfig-c7x0 \
+           file://defconfig-collie \
+           file://defconfig-poodle \
+           file://defconfig-tosa "
 
-SRC_URI_append_tosa = " http://www.do13.in-berlin.de/openzaurus/nand-readid.patch;patch=1 \
-                       http://www.do13.in-berlin.de/openzaurus/multiple-scoop-devices.patch;patch=1"
-SRC_URI_append_c7x0 = " http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
-SRC_URI_append_collie = " http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
-
+SRC_URI_append_collie = " ${RPSRC}/jl1/collie_keymap.patch;patch=1 "
+SRC_URI_append_c7x0 = " ${RPSRC}/corgi_power1-r0.patch;patch=1"
+SRC_URI_append_tosa = " ${RPSRC}/corgi_power1-r0.patch;patch=1 \
+                        ${DOSRC}/nand-readid-r0.patch;patch=1 \
+                        ${DOSRC}/multiple-scoop-devices-r1.patch;patch=1 \
+                        ${DOSRC}/tosa-pcmia-r0.patch;patch=1 \
+                        ${DOSRC}/tosa-mmc-r0.patch;patch=1 \
+                        ${DOSRC}/tosa-bl-r0.patch;patch=1 \
+                        ${DOSRC}/tosa-udc-r0.patch;patch=1 \
+                        ${DOSRC}/pxa-ac97-hh.org-r0.patch;patch=1 \
+                        ${DOSRC}/tosa-ac97-r0.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.10"
 
@@ -83,6 +96,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
+CMDLINE_ROOT_tosa = "root=/dev/mtdblock1 rootfstype=jffs2 "
 
 ##############################################################
 # Configure memory/ramdisk split for collie
