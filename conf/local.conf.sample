@@ -38,11 +38,9 @@
 # Use this to specify where OE should place the downloaded sources into
 DL_DIR = "${HOME}/sources"
 
-# Use this to specify what .oe files to consider for builds
-#OEFILES = "/path/to/packages/*/*.oe"
+# Delete the line below. Then specify which .oe files to consider for
+# your build. Typically this will be something like OEFILES = "/path/to/packages/*/*.oe"
 OEFILES := "${@oe.fatal('Edit your conf/local.conf: OEFILES')}"
-# Delete the line above.  Then uncomment and edit the other line to point
-# to the proper place where your .oe files are.
 
 # Use the OEMASK below unless you want to build something else than the
 # default glibc based setup
