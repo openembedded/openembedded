@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 DEPENDS = "update-rc.d"
@@ -21,6 +21,7 @@ do_install () {
 		   ${D}/${sysconfdir}/network/if-post-down.d
 	install -m 0644 ${FILESDIR}/options ${D}/${sysconfdir}/network/options
 	install -m 0755 ${FILESDIR}/init ${D}/${sysconfdir}/init.d/networking
+	install -m 0644 ${FILESDIR}/hosts ${D}/${sysconfdir}/hosts
 	install -m 0644 etc-rpc ${D}/${sysconfdir}/rpc
 	install -m 0644 etc-protocols ${D}/${sysconfdir}/protocols
 	install -m 0644 etc-services ${D}/${sysconfdir}/services
