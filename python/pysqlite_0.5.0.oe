@@ -10,5 +10,4 @@ S = ${WORKDIR}/${PN}
 
 inherit distutils
 
-FILES_pysqlite_append = ${PYFILES} ${libdir}/python2.3/site-packages/sqlite
-
+FILES_pysqlite_append=${PYFILES}
