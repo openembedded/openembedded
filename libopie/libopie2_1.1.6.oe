@@ -3,9 +3,10 @@ HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
+I18N_FILES = "libopiecore2.ts"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
-PR = "r0"
+PR = "r1"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/libopie2 \

@@ -4,12 +4,15 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "libftplib1"
+I18N_FILES = "libftplib.ts"
+
 PV = "1.1.6+cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/ftplib"
 S = "${WORKDIR}/ftplib"
 
 inherit palmtop
+inherit opie_i18n
 
 EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 

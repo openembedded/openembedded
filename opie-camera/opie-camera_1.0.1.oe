@@ -6,7 +6,11 @@ LICENSE = "GPL"
 RDEPENDS = "sharp-camera-support"
 APPNAME = "camera"
 APPTYPE = "binary"
-PR = "r1"
+
+CVSDATE = "20041015"
+
+PR = "r2"
+
 
 TAG = "v1_1_6"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/multimedia/${APPNAME} \

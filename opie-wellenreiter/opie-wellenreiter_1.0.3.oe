@@ -4,10 +4,12 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RRECOMMENDS = "manufacturers"
-PR = "r2"
+PR = "r3"
 
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
+
+CVSDATE = "20041015"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/wellenreiter;date=20040504 \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=20040504                     \

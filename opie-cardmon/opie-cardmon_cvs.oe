@@ -5,6 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "cardmonapplet"
+I18N_FILES = "libcardmonapplet.ts"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/cardmon \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \

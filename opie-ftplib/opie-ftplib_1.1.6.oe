@@ -1,0 +1,27 @@
+DESCRIPTION = "Opie FTP Library"
+SECTION = "opie/libs"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+PRIORITY = "optional"
+LICENSE = "GPL"
+PROVIDES = "libftplib1"
+I18N_FILES = "libftplib.ts"
+
+PR = "r1"
+
+TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/net/ftplib"
+S = "${WORKDIR}/ftplib"
+
+inherit palmtop
+inherit opie_i18n
+
+EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
+
+do_stage () {
+	install -m 0664 ${S}/ftplib.h ${STAGING_INCDIR}/
+	oe_libinstall -so libftplib ${STAGING_LIBDIR}
+}
+
+do_install() {
+	oe_libinstall -so libftplib ${D}/${palmtopdir}/lib
+}
