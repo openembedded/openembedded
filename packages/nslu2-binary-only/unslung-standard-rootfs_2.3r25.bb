@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r41"
+PR = "r42"
 
-UNSLUNG_VERSION = "4.2-alpha"
+UNSLUNG_VERSION = "4.3-alpha"
 UNSLUNG_VARIANT ?= "standard"
 
 DEPENDS = "nslu2-linksys-libs"
