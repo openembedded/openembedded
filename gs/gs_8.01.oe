@@ -1,6 +1,6 @@
 SECTION = "console/utils"
 SRC_URI = "ftp://ftp.gnu.org/gnu/ghostscript/gnughostscript-${PV}.tar.gz"
-DEPENDS = "jpeg"
+DEPENDS = "jpeg zlib"
 PR = "r1"
 
 S = "${WORKDIR}/gnughostscript-${PV}"
