@@ -1,0 +1,42 @@
+DEPENDS_append = " update-rc.d"
+RDEPENDS_append = " update-rc.d"
+
+INIT_D_DIR = "${sysconfdir}/init.d"
+
+updatercd_postinst() {
+if test "x$D" != "x"; then
+	D="-r $D"
+fi
+update-rc.d -s $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
+}
+
+updatercd_postrm() {
+if test "x$D" != "x"; then
+	D="-r $D"
+else
+	${INIT_D_DIR}/${INITSCRIPT_NAME} stop
+fi
+update-rc.d $D ${INITSCRIPT_NAME} remove
+}
+
+python __anonymous() {
+	if oe.data.getVar('INITSCRIPT_NAME', d) == None:
+		raise oe.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_NAME" % oe.data.getVar('FILE', d)
+	if oe.data.getVar('INITSCRIPT_PARAMS', d) == None:
+		raise oe.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_PARAMS" % oe.data.getVar('FILE', d)
+}
+
+python populate_packages_prepend () {
+	pkg = oe.data.getVar('PN', d, 1)
+	oe.note('adding update-rc.d calls to postinst/postrm for %s' % pkg)
+	postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1) or oe.data.getVar('pkg_postinst', d, 1)
+	if not postinst:
+		postinst = '#!/bin/sh\n'
+	postinst += oe.data.getVar('updatercd_postinst', d, 1)
+	oe.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
+	postrm = oe.data.getVar('pkg_postrm_%s' % pkg, d, 1) or oe.data.getVar('pkg_postrm', d, 1)
+	if not postrm:
+		postrm = '#!/bin/sh\n'
+	postrm += oe.data.getVar('updatercd_postrm', d, 1)
+	oe.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
+}
