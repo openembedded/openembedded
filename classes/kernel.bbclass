@@ -87,6 +87,7 @@ kernel_do_stage() {
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 	install -m 0644 System.map ${STAGING_KERNEL_DIR}/System.map-${PV}${KERNEL_LOCALVERSION}
+	[ -e Module.symvers ] && install -m 0644 Module.symvers ${STAGING_KERNEL_DIR}/
 
 	cp -fR scripts ${STAGING_KERNEL_DIR}/
 }
