@@ -1,4 +1,4 @@
-inherit gpe
+inherit gpe 
 
 DESCRIPTION = "GPE Desktop Manager"
 SECTION = "gpe"
@@ -7,3 +7,11 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "virtual/libc glib-2.0"
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-dm-${PV}.tar.gz"
+
+pkg_postinst() {
+update-rc.d gpe-dm defaults 99
+}
+
+pkg_postrm() {
+update-rc.d gpe-dm remove
+}
