@@ -11,8 +11,6 @@ S = "${WORKDIR}/libqtaux"
 
 inherit qmake
 
-export OPIEDIR = "${STAGING_LIBDIR}/.."
-
 EXTRA_QMAKEVARS_POST = 'DEFINES+=QWS'
 
 do_compile() {
