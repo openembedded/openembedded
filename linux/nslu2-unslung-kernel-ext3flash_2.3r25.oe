@@ -1,4 +1,7 @@
 SECTION = "kernel"
+
+KERNEL_SUFFIX = "unslung-ext3flash"
+
 include nslu2-linksys_2.4.22.oe
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/nslu2-unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

@@ -242,3 +242,21 @@ do_stage() {
 }
 
 include glibc-package.oeclass
+
+
+# Unslung distribution specific packages follow ...
+
+PACKAGES_unslung = libc6-unslung
+PACKAGE_ARCH_libc6-unslung = "nslu2"
+MAINTAINER_libc6-unslung = "NSLU2 Linux <www.nslu2-linux.org>"
+RDEPENDS_libc6-unslung = "nslu2-linksys-ramdisk"
+RPROVIDES_libc6-unslung = "libc6"
+
+FILES_libc6-unslung = "/lib/librt*"
+
+# For some reason, ldconfig segfaults on nslu2.
+# FILES_libc6-unslung += " /sbin/ldconfig"
+
+# For some reason, libnss_compat causes segmentation faults on nslu2.
+# FILES_libc6-unslung += " /lib/libnss_compat*"
+

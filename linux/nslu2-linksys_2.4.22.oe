@@ -23,6 +23,7 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
+KERNEL_SUFFIX ?= "linksys"
 CMDLINE_CONSOLE ?= "ttyS0,115200"
 CMDLINE_ROOT = "root=/dev/ram0 initrd=0x01000000,10M mem=32M@0x00000000"
 CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT}"
@@ -36,7 +37,7 @@ do_configure_prepend() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}.bin-${DATETIME}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}
 }
 
 do_deploy[dirs] = "${S}"

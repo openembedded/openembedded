@@ -50,7 +50,9 @@ EOF
 		fi
 	done
 	ipkg-cl ${IPKG_ARGS} update
-	ipkg-cl ${IPKG_ARGS} install ${IPKG_INSTALL}
+	if [ ! -z "${IPKG_INSTALL}" ]; then
+		ipkg-cl ${IPKG_ARGS} install ${IPKG_INSTALL}
+	fi
 
 	export D=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
