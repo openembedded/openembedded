@@ -5,7 +5,6 @@ or satellite receiver or modem."
 SECTION = "net"
 PRIORITY = "optional"
 DEPENDS = "virtual/libc openssl"
-RPROVIDES = "ntpdate"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"
@@ -15,3 +14,7 @@ inherit autotools
 EXTRA_OECONF = "--with-openssl-libdir=${STAGING_LIBDIR} \
 	        --with-openssl-incdir=${STAGING_INCDIR}/openssl"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
+
+PACKAGES = "ntpdate ntp"
+
+FILES_ntpdate = "/usr/bin/ntpdate"
