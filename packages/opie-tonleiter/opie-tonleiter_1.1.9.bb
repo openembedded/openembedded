@@ -3,10 +3,8 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-
 APPNAME = "tonleiter"
-APPTYPE = "binary"
-
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/multimedia/tonleiter \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
@@ -16,7 +14,6 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-# FILES bin/tonleiter pics/tonleiter apps/Applications/tonleiter.desktop
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
