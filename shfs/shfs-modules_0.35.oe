@@ -1,6 +1,6 @@
 DESCRIPTION = "A simple and easy to use Linux kernel (2.4+) module which allows you to mount remote filesystems using plain shell (ssh/rsh) connection. \
 It supports some nice features like number of different caches for access speedup, target system optimisations, etc."
-SECTION = "base"
+SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
