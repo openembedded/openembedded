@@ -81,6 +81,10 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
+do_compile () {
+	oe_runmake all utils
+}
+
 do_stage() {
 	# Install into the cross dir (this MUST be done first because we
 	# will install crt1.o in the install_dev stage and gcc needs it)
