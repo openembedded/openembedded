@@ -1,7 +1,7 @@
 SECTION = "devel"
 DESCRIPTION = "Qt(E) Makefile Generator"
 PRIORITY = "optional"
-LICENSE = "GPL/QPL"
+LICENSE = "GPL|QPL"
 
 SRC_URI = \
 	"ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2 \
