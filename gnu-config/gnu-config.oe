@@ -13,15 +13,6 @@ PACKAGES = "${PN}"
 FILES_${PN} = "${bindir} \
 	       ${datadir}/gnu-config"
 
-do_stage () {
-	install -d ${STAGING_DIR}/${BUILD_SYS}/share/gnu-config
-	cat ${WORKDIR}/gnu-configize.in | \
-		sed -e 's,@gnu-configdir@,${STAGING_DIR}/${BUILD_SYS}/share/gnu-config,; \
-			s,@autom4te_perllibdir@,${STAGING_DIR}/${BUILD_SYS}/share/autoconf,;' > ${STAGING_BINDIR}/gnu-configize
-	chmod 755 ${STAGING_BINDIR}/gnu-configize
-	install -m 0644 config.guess config.sub ${STAGING_DIR}/${BUILD_SYS}/share/gnu-config/
-}
-
 do_install () {
 	install -d ${D}/${datadir}/gnu-config \
 		   ${D}/${bindir}
