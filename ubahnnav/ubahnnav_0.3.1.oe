@@ -17,7 +17,7 @@ S = "${WORKDIR}/ubahnnav-${PV}"
 inherit opie
 
 export OE_QMAKE_LINK="${CXX}"
-EXTRA_QMAKEVARS_POST = "LIBS+=-L${S}"
+EXTRA_QMAKEVARS_POST = "LIBS+=-L${S} INCLUDEPATH+=${QTDIR}/include"
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f
