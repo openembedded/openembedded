@@ -1,0 +1,23 @@
+DESCRIPTION = "Pressure-Sensitive Paint Program for Opie/Qtopia"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+APPTYPE = "binary"
+APPNAME = "petitpeintu"
+APPDESKTOP = "${WORKDIR}"
+PR = "r1"
+
+SRC_URI = "http://sun.dhis.portside.net/~sakira/archive/SPainter_${PV}_src.tar.gz \
+           file://petitpeintu.desktop \
+           file://petitpeintu.png "
+S = "${WORKDIR}/SPainter"
+
+inherit opie
+
+QMAKE_PROFILES = "spainter.pro"
+export OE_QMAKE_LINK="${CXX}"
+
+do_install() {
+        install -d ${D}/${palmtopdir}/pics
+        install -m 0644 *.png ${D}/${palmtopdir}/pics/
+        install -m 0644 ${WORKDIR}/petitpeintu.png ${D}/${palmtopdir}/pics/
+}
