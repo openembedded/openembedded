@@ -1,0 +1,51 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- Src/configure.ac~configure	2004-01-13 20:52:49.000000000 +0100
++++ Src/configure.ac	2004-01-21 01:08:08.000000000 +0100
+@@ -4,7 +4,7 @@
+ AC_CONFIG_SRCDIR(main.cpp)
+ AC_PREREQ(2.52)
+ AC_CONFIG_HEADER(sysconfig.h)
+-
++AM_INIT_AUTOMAKE(Frodo, 4.2, [Christian.Bauer@uni-mainz.de], Frodo)
+ dnl Checks for programs.
+ AC_PROG_CC
+ AC_PROG_CXX
+@@ -24,10 +24,6 @@
+ AC_CHECK_LIB(vga, vga_setmode, HAVE_SVGA_LIB=yes, HAVE_SVGA_LIB=no)
+ AM_PATH_SDL(1.2.0, HAVE_SDL=yes, HAVE_SDL=no)
+ HAVE_GLADE=no
+-PKG_CHECK_MODULES(GLADE, libglade-2.0 libgnomeui-2.0 >= 1.110.0, HAVE_GLADE=yes)
+-if [[ $HAVE_GLADE = yes ]]; then
+-  AC_DEFINE(HAVE_GLADE, 1, [Glade support is enabled])
+-fi
+ 
+ AC_PATH_XTRA
+ 
+--- Src/Makefile.in~configure	2004-01-13 20:52:48.000000000 +0100
++++ Src/Makefile.in	2004-01-21 01:10:56.000000000 +0100
+@@ -16,10 +16,10 @@
+ DESTDIR =
+ 
+ CXX = @CXX@
+-CFLAGS = @CFLAGS@ @GLADE_CFLAGS@ -I./ -DKBD_LANG=@KBD_LANG@
++CFLAGS = @CFLAGS@ -I./ -DKBD_LANG=@KBD_LANG@
+ DEFS = @DEFS@ -DDATADIR=\"$(datadir)/frodo/\" -DBINDIR=\"$(bindir)/\"
+ LDFLAGS = @LDFLAGS@
+-LIBS = @LIBS@ @GLADE_LIBS@
++LIBS = @LIBS@
+ INSTALL = @INSTALL@
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@
+ INSTALL_DATA = @INSTALL_DATA@
+@@ -54,7 +54,7 @@
+ 	$(INSTALL_PROGRAM) FrodoSC $(DESTDIR)$(bindir)/FrodoSC
+ 	$(INSTALL_PROGRAM) Frodo_GUI.tcl $(DESTDIR)$(bindir)/Frodo_GUI.tcl
+ 	$(INSTALL_DATA) ../Kernal\ ROM $(DESTDIR)$(datadir)/frodo/Kernal\ ROM
+-	$(INSTALL_DATA) glade/Frodo.glade $(DESTDIR)$(datadir)/frodo/Frodo.glade
++	#$(INSTALL_DATA) glade/Frodo.glade $(DESTDIR)$(datadir)/frodo/Frodo.glade
+ 
+ installdirs:
+ 	$(SHELL) mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(datadir)/frodo
