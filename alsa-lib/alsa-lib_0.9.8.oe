@@ -19,5 +19,4 @@ do_stage () {
 	install -m 0644 include/sound/ainstr*.h ${STAGING_DIR}/target/include/alsa/sound/
 	install -d ${PKG_CONFIG_DIR}
 	install -m 0644 utils/alsa.pc ${PKG_CONFIG_DIR}/
-	install -m 0644 utils/alsa.m4 ${STAGING_DIR}/share/aclocal/
 }

@@ -15,7 +15,4 @@ do_stage () {
 
 	install -d ${STAGING_DIR}/target/include/ogg
 	(cd include/ogg; cp config_types.h ogg.h os_types.h ${STAGING_DIR}/target/include/ogg/)
-
-	install -d ${STAGING_DIR}/share/aclocal
-	install -m 0644 ogg.m4 ${STAGING_DIR}/share/aclocal/ogg.m4
 }

@@ -10,5 +10,4 @@ do_stage () {
 	install -d ${STAGING_DIR}/target/include/openobex
 	install -m 0644 src/obex_const.h src/obex.h ${STAGING_DIR}/target/include/openobex/
 	install -m 0755 openobex-config ${STAGING_BINDIR}/
-	install -m 0644 m4macros/openobex.m4 ${STAGING_DIR}/share/aclocal/
 }
