@@ -1,0 +1,29 @@
+inherit autotools pkgconfig
+
+DESCRIPTION = "GTK PPP dialing tool"
+DEPENDS = "virtual/libc gconf gtk+ libglade gettext libgnome libgnomeui ppp"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+SRC_URI = "http://gkdial.sourceforge.net/downloads/${PN}-${PV}.tar.gz \
+        file://gkdial-gladedir.patch;patch=1;pnum=0 \
+        file://header.patch;patch=1 \
+	file://gkdial-gpe-su.patch;patch=1 \
+	file://gkdial-arm.patch;patch=1 \
+	file://gkdial.desktop \
+	file://gkdial.png"
+
+FILES_${PN} = "${sysconfdir}/chatscripts ${bindir} ${datadir}/pixmaps ${datadir}/applications"
+FILES_${PN} += "${datadir}/gkdial"
+ 
+
+LDFLAGS_append = " -Wl,--export-dynamic"
+
+do_install_append () {
+        mkdir -p  ${D}/${datadir}/pixmaps
+        install -m 0644 ${WORKDIR}/gkdial.png ${D}${datadir}/pixmaps/gkdial.png
+        mkdir -p  ${D}${datadir}/applications
+        install -m 0644 ${WORKDIR}/gkdial.desktop ${D}${datadir}/applications/gkdial.desktop
+	mkdir -p ${D}/${sysconfdir}/chatscripts
+}
