@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "freetype"
 APPNAME = "freetypefactory"
-PR = "r1"
+PR = "r0"
 
 
 

@@ -6,7 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 I18N_FILES = "libmultiauthnoticeplugin.ts"
 RDEPENDS = "opie-security"
-PR = "r1"
+PR = "r0"
 
 APPNAME = "multiauthnoticeplugin"
 

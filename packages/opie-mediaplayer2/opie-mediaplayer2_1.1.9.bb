@@ -9,7 +9,7 @@ RDEPENDS = "opie-mediaplayer2-skin"
 RRECOMMENDS = "opie-mediaplayer2-skin-default libxine-plugin-ao-out-oss libxine-plugin-decode-mad \
 libxine-plugin-dmx-audio libxine-plugin-dmx-mpeg libxine-plugin-inp-file "
 APPNAME = "opieplayer2"
-PR = "r2"
+PR = "r0"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/multimedia/opieplayer2 \

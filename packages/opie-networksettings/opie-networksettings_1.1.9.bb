@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 APPNAME = "networksettings"
-PR = "r1"
+PR = "r0"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/networksettings \

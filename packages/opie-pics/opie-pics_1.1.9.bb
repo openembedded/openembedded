@@ -3,7 +3,7 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/pics;tag=${TAG}"

@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "apmd"
 RDEPENDS = "apmd"
-PR = "r1"
+PR = "r0"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/opiealarm \

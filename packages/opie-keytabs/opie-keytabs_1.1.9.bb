@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie-devel@handhelds.org>"
 DEPENDS = "virtual/libqpe"
 APPTYPE = "binary"
-PR = "r1"
+PR = "r0"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/etc "

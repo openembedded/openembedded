@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RRECOMMENDS = "opie-securityplugin-pin"
-PR = "r2"
+PR = "r0"
 
 APPNAME = "security"
 

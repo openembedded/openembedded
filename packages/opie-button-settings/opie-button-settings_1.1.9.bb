@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-button-settings-pics"
-PR = "r1"
+PR = "r0"
 
 APPNAME = "buttonsettings"
 

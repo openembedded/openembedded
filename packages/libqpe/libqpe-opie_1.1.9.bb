@@ -5,9 +5,9 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
-PR = "r4"
+PR = "r0"
 
-
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
 	file://nomax.patch;patch=1;pnum=1"
 	
