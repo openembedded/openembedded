@@ -6,6 +6,7 @@ PR = "r1"
 
 SRC_URI := http://www.alwins-world.de/oe/${P}.tar.bz2  \
 	file://${FILESDIR}/mailstream_socket.patch;patch=1 \
+        file://${FILESDIR}/smtptls.patch;patch=1 \
 
 inherit autotools
 
