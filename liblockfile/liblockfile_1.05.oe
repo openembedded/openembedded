@@ -1,0 +1,23 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
+	  file:/${FILESDIR}/install.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF = "--enable-shared --enable-static"
+
+do_stage () {
+		install -m 644 lockfile.h maillock.h ${STAGING_DIR}/target/include/
+		install -m 755 liblockfile.so \
+			${STAGING_LIBDIR}/liblockfile.so.1.0
+		ln -sf liblockfile.so.1.0 ${STAGING_LIBDIR}/liblockfile.so
+		install -m 644 liblockfile.a ${STAGING_LIBDIR}/
+#		install -m 755 nfslock.so.1.0 ${STAGING_LIBDIR}/
+}
+
+do_install () {
+	install -d ${D}/${includedir}
+	oe_runmake 'ROOT=${D}' INSTGRP='' install
+}
