@@ -2,6 +2,7 @@ DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E)
 SECTION = "tools"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
            file://fix-makefile.patch;patch=1 \
@@ -12,7 +13,7 @@ S = "${WORKDIR}/qt-${PV}"
 inherit native qmake-base
 
 export QTDIR = "${S}"
-EXTRA_OEMAKE = 'SYSCONF_LINK="${CXX}"'
+EXTRA_OEMAKE = 'SYSCONF_CXX="${CXX}" SYSCONF_LINK="${CXX}"'
 CXXFLAGS += " -DQWS"
 
 QT_CONFIG_FLAGS = "-depths 8,16 -no-qvfb -no-g++-exceptions -no-jpeg -no-mng \
@@ -35,9 +36,11 @@ do_compile() {
     oe_runmake -C tools/designer/util || die "Building libqutil.a failed"
     oe_runmake -C tools/designer/uic  || die "Building uic failed"
     oe_runmake -C tools/qvfb          || die "Building qvfb failed"
+    oe_runmake -C tools/makeqpf       || die "Building makeqpf failed"
 }
 
 do_stage() {
     install -m 0755 bin/moc ${STAGING_BINDIR}
     install -m 0755 bin/uic ${STAGING_BINDIR}
+    install -m 0755 tools/makeqpf/makeqpf ${STAGING_BINDIR}
 }
