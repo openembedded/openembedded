@@ -10,6 +10,11 @@ S=${WORKDIR}/jpeg-${PV}
 
 EXTRA_OECONF="--enable-static --enable-shared"
 
+# this libtool cant handle the multiword gcc
+CC:=${@oe.data.getVar("CC", d, 1).split()[-1].strip()}
+CFLAGS_append = " -D_REENTRANT"
+#export AR:=${AR} rv
+
 do_stage() {
 	install -d ${STAGING_DIR}/{bin,lib,include}
 	install -m 644 -D jconfig.h ${STAGING_DIR}/include/jconfig.h
