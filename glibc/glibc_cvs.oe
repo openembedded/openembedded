@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r4"
+PR = "r5"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -26,18 +26,19 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault"
+PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault glibc-extra-nss"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
 DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
 INHIBIT_DEFAULT_DEPS = "1"
 
-libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
+libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
 FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "/lib/libSegFault*"
+FILES_glibc-extra-nss = "/lib/libnss*"
 FILES_sln = "/sbin/sln"
 FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
 FILES_nscd = "${sbindir}/nscd*"
