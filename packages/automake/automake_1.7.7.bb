@@ -3,7 +3,7 @@ SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
 DESCRIPTION = "A tool for automatically generating Makefiles."
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
