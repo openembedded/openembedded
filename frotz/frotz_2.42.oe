@@ -1,8 +1,10 @@
+DESCRIPTION = "Frotz is an interpreter for Infocom games and other Z-machine games."
+HOMEPAGE = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/"
+SECTION = "console/games"
 DEPENDS = "ncurses"
-DESCRIPTION = "Frotz is an interpreter for Infocom games \
-and other Z-machine games."
 
-SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz"
+SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz \
+	file://Makefile.patch;patch=1 "
 
 do_configure() {
 	patch -N ${s}/ux_init.c < remove_root_restriction.patch || :
