@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = " libqtaux2"
 PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "embeddedkonsole"
-RDEPENDS = "qte-font-fixed"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/${APPNAME} \
            ${HANDHELDS_CVS};module=opie/pics \
