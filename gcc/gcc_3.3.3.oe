@@ -4,9 +4,12 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
+# libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
+# packaged in the respective cross packages.
 PACKAGES = "${PN} ${PN}-symlinks \
             ${PN}-c++ ${PN}-c++-symlinks \
-            libgcc libstdc++ libstdc++-dev \
+            ${PN}-f77 ${PN}-f77-symlinks \
+            libstdc++-dev libg2c-dev \
             ${PN}-doc"
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
@@ -34,7 +37,9 @@ FILES_${PN}-c++-symlinks = "${bindir}/c++ \
 
 FILES_libgcc = "/lib/libgcc_s.so.*"
 
-FILES_libstdc++ = "${libdir}/libstdc++.so.*"
+# Called from within gcc-cross, so libdir is set wrong
+#FILES_libstdc++ = "${libdir}/libstdc++.so.*"
+FILES_libstdc++ = "/usr/lib/libstdc++.so.*"
 
 FILES_libstdc++-dev = "${includedir}/c++/${PV} \
 		       ${libdir}/libstdc++.so \
@@ -216,8 +221,10 @@ do_install () {
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
 	# Symlinks so we can use these trivially on the target
+	ln -sf ${TARGET_SYS}-g77 g77
 	ln -sf ${TARGET_SYS}-g++ g++
 	ln -sf ${TARGET_SYS}-gcc gcc
+	ln -sf g77 f77
 	ln -sf g++ c++
 	ln -sf gcc cc
 }

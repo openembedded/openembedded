@@ -5,7 +5,8 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
-PACKAGES = "libgcc"
+# Files for these are defined in the main gcc.oe
+PACKAGES = "libgcc libstdc++ libg2c"
 INHIBIT_PACKAGE_STRIP = 1
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
@@ -80,4 +81,16 @@ do_install () {
 	else
 		mv -f ${D}/${prefix}/*/lib/libgcc_s.so.* ${D}/lib
 	fi
+
+	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
+	TGT_LIBDIR=`echo ${libdir} | sed -e 's,${CROSS_DIR},/usr,'`
+	mkdir -p ${D}/${TGT_LIBDIR}
+	mv -f ${D}/${prefix}/*/lib/libstdc++.so.* ${D}/${TGT_LIBDIR}
+	mv -f ${D}/${prefix}/*/lib/libg2c.so.* ${D}/${TGT_LIBDIR}
+
+	# Manually run the target stripper since we won't get it run by
+	# the packaging.
+	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libstdc++.so.*
+	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libg2c.so.*
+	${TARGET_PREFIX}strip ${D}/libgcc_s.so.*
 }
