@@ -28,15 +28,15 @@ do_install_append() {
 }
 
 pkg_postinst_ntpdate_nylon() {
-#!/bin/sh
-if test "x$D" == "x"; then
-	mkdir -p /etc/cron/crontabs
+if test "x$D" != "x"; then
+	exit 1
+else
 	if ! grep -q ntpdate /etc/cron/crontabs/root; then
 		echo "adding crontab"
+		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
 		echo "30 * * * *    /usr/bin/ntpdate -s -u pool.ntp.org" >> /etc/cron/crontabs/root
 	fi
 	update-rc.d -s busybox-cron defaults
+	update-rc.d -s ntpdate defaults 30
 fi
-update-rc.d -s ntpdate defaults 30
 }
- 

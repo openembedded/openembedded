@@ -15,19 +15,21 @@ do_install() {
 }
 
 pkg_postinst() {
-#!/bin/sh
-update-rc.d hostap defaults 14
-update-rc.d bridge defaults 15
-update-rc.d ipaliases defaults 16
-update-rc.d firewall defaults 20
-update-rc.d routing defaults 20
-update-rc.d emergency-ip defaults 98
-update-rc.d flash-backup start 38 S . stop 38 0 6 .
-update-rc.d dummydate start 50 S . stop 50 0 6 .
-if test "x$D" == "x"; then
-	mkdir -p /etc/cron/crontabs
+if test "x$D" != "x"; then
+	exit 1
+else
+	update-rc.d -s hostap defaults 14
+	update-rc.d -s bridge defaults 15
+	update-rc.d -s ipaliases defaults 16
+	update-rc.d -s firewall defaults 20
+	update-rc.d -s routing defaults 20
+	update-rc.d -s emergency-ip defaults 98
+	update-rc.d -s flash-backup start 38 S . stop 38 0 6 .
+	update-rc.d -s dummydate start 50 S . stop 50 0 6 .
+	
 	if ! grep -q flash-backup /etc/cron/crontabs/root; then
 		echo "adding crontab"
+		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
 		echo "0 * * * *    /etc/init.d/flash-backup backup" >> /etc/cron/crontabs/root
 	fi
 	update-rc.d -s busybox-cron defaults
