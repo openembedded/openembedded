@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
@@ -32,8 +32,8 @@ do_configure_append () {
 	cd ${S}
 
 	# prevent libtool from linking libs against libstdc++, libgcc, ...
-	cat arm-linux-libtool | sed -e 's/postdeps=".*"/postdeps=""/' > arm-linux-libtool.tmp
-	mv arm-linux-libtool.tmp arm-linux-libtool
+	cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
+	mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
 }
 
 do_stage() {
