@@ -1,12 +1,14 @@
+DESCRIPTION = "Tools for managing memory technology devices."
 SECTION = "base"
 DEPENDS = "zlib"
-DESCRIPTION = "Tools for managing memory technology devices."
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
+PR = "r1"
 
+SRC_URI = "ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-${PV}.tar.bz2 \
+           file://add-exclusion-to-mkfs-jffs2.patch;patch"
 S = "${WORKDIR}/mtd/"
-#SRC_URI = "cvs://anoncvs@cvs.infradead.org/home/cvs;module=mtd;method=ext"
-SRC_URI = "ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-${PV}.tar.bz2"
+
 
 CFLAGS_prepend = "-I${S}/include "
 
