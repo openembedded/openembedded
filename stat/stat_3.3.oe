@@ -9,5 +9,7 @@ do_stage() {
 }
 
 do_install() {
-	make install DESTDIR=${D}
+	install -d ${D}/usr/bin ${D}/usr/share/man/man1
+	install -s -m 755 stat ${D}/usr/bin
+	install -m 644 stat.1 ${D}/usr/share/man/man1
 }
