@@ -1,7 +1,7 @@
 PV = ${DATE}
 
-DEPENDS = virtual/libc libjpeg
-RDEPENDS = libc6 jpeg
+DEPENDS = virtual/libc jpeg
+RDEPENDS = libc6 libjpeg
 
 SRC_URI = cvs://anonymous:@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epeg
 S = ${WORKDIR}/epeg
