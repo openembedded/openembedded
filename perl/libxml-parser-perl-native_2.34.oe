@@ -1,0 +1,3 @@
+include libxml-parser-perl_${PV}.oe
+inherit native
+DEPENDS = "perl-native expat-native"
