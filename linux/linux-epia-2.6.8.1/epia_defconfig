@@ -829,6 +829,7 @@ CONFIG_PPDEV=m
 # Ftape, the floppy tape device driver
 #
 # CONFIG_FTAPE is not set
+CONFIG_CLE266VGAIO=m
 CONFIG_AGP=y
 # CONFIG_AGP_ALI is not set
 # CONFIG_AGP_ATI is not set
@@ -841,7 +842,15 @@ CONFIG_AGP=y
 # CONFIG_AGP_SWORKS is not set
 CONFIG_AGP_VIA=y
 # CONFIG_AGP_EFFICEON is not set
-# CONFIG_DRM is not set
+CONFIG_DRM=y
+# CONFIG_DRM_TDFX is not set
+# CONFIG_DRM_GAMMA is not set
+# CONFIG_DRM_R128 is not set
+# CONFIG_DRM_RADEON is not set
+# CONFIG_DRM_MGA is not set
+# CONFIG_DRM_SIS is not set
+CONFIG_DRM_VIA=m
+# CONFIG_DRM_MACH64 is not set
 # CONFIG_MWAVE is not set
 # CONFIG_RAW_DRIVER is not set
 # CONFIG_HPET is not set
@@ -1350,11 +1359,10 @@ CONFIG_NFS_V3=y
 # CONFIG_NFS_V4 is not set
 # CONFIG_NFS_DIRECTIO is not set
 # CONFIG_NFSD is not set
-# CONFIG_NFSD_V3 is not set
-# CONFIG_NFSD_TCP is not set
 # CONFIG_ROOT_NFS is not set
 CONFIG_LOCKD=y
-CONFIG_EXPORTFS=y
+CONFIG_LOCKD_V4=y
+# CONFIG_EXPORTFS is not set
 CONFIG_SUNRPC=y
 # CONFIG_RPCSEC_GSS_KRB5 is not set
 # CONFIG_SMB_FS is not set
@@ -1444,5 +1452,6 @@ CONFIG_DEBUG_SPINLOCK_SLEEP=y
 # CONFIG_CRC_CCITT is not set
 CONFIG_CRC32=y
 # CONFIG_LIBCRC32C is not set
+CONFIG_ZLIB_INFLATE=y
 CONFIG_X86_BIOS_REBOOT=y
 CONFIG_PC=y
