@@ -5,7 +5,7 @@ KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r11"
+PR = "r12"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
@@ -52,7 +52,8 @@ do_configure() {
         mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
         rdsize=`echo "$rd * 1024" | bc`
         total=`expr $mem + $rd`
-        addr=`echo "obase=16; ibase=16; C000000 + $mempos" | bc`
+        addr=`echo "obase=16; ibase=16; C0000000 + $mempos" | bc`
+
         if [ "$rd" == "0" ]
         then
                 echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
