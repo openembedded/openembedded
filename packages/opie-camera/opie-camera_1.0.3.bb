@@ -8,10 +8,12 @@ APPNAME = "camera"
 APPTYPE = "binary"
 PR = "r0"
 
-TAG = "v1_1_7"
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/multimedia/${APPNAME} \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
+# cvsdate is 20050101 for V1.0.3
+CVSDATE = "20050101"
+
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/multimedia/${APPNAME} \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/camera"
 
 EXTRA_QMAKEVARS_POST=" LIBS+=-L.. "
