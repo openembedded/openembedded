@@ -6,6 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/opie-sh \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
@@ -34,8 +35,12 @@ do_install() {
 	install -m 0644 ${WORKDIR}/share/config/*.cfg  ${D}${palmtopdir}/share/config/
 }
 
-PACKAGES = " opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist opie-sh-killproc opie-sh-launcher-refresh opie-sh-logviewer opie-sh-rsynchelper opie-sh-servicemanager opie-sh-ssh-askpass opie-sh-stowawayctrl opie-sh-usbnetctrl opie-sh-wavelanchooser opie-sh"
+PACKAGES = " opie-sh-microkbd opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist \
+opie-sh-killproc opie-sh-launcher-refresh opie-sh-logviewer opie-sh-rsynchelper \
+opie-sh-servicemanager opie-sh-ssh-askpass opie-sh-stowawayctrl opie-sh-usbnetctrl \
+opie-sh-wavelanchooser opie-sh"
 
+FILES_opie-sh-microkbd = " ${palmtopdir}/bin/microkbd.sh ${palmtopdir}/apps/Opie-SH/microkbd.desktop ${palmtopdir}/pics/opie-sh-scripts/keyz-cfg.png"
 FILES_opie-sh-diskfree = " ${palmtopdir}/bin/diskfree.sh ${palmtopdir}/apps/Opie-SH/diskfree.desktop ${palmtopdir}/pics/opie-sh-scripts/diskfree.png"
 FILES_opie-sh-fsmounter = " ${palmtopdir}/bin/filesystem_mounter.sh ${palmtopdir}/pics/opie-sh-scripts/fsmounter.png ${palmtopdir}/apps/Opie-SH/filesystem_mounter.desktop"
 FILES_opie-sh-hostlist = " ${palmtopdir}/bin/hostlist.sh ${palmtopdir}/pics/opie-sh-scripts/hostlist.png ${palmtopdir}/apps/Opie-SH/hostlist.desktop ${palmtopdir}/share/config/hostlist.cfg"
