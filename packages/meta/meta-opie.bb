@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r17"
+PR = "r18"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -379,11 +379,9 @@ RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
 DEPENDS += " ${task-qpe-emulators}"
 
 task-qpe-fonts = "\
-qpf-georgia \
 qpf-helvetica \
 qpf-unifont \
 qpf-utopia \
-qpf-verdana \
 terminus \
 qpf-bitstream-vera-sans-mono \
 qpf-bitstream-vera \

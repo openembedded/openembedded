@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r28"
+PR = "r29"
 
 ALLOW_EMPTY = 1
 
@@ -94,6 +94,7 @@ DEPENDS += " ${gpe-task-apps}"
 gpe-task-games = "\
     gpe-tetris \
     gpe-othello \
+    gpe-lights \
     xdemineur"
 
 RDEPENDS_gpe-task-games := "${gpe-task-games}"

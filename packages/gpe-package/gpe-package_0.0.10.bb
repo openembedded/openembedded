@@ -1,0 +1,16 @@
+inherit gpe pkgconfig
+LICENSE = "GPL"
+DESCRIPTION = "A package manager GUI for GPE"
+DEPENDS = "libipkg libgpewidget libdisplaymigration libgpepimc"
+RDEPENDS = "gpe-icons"
+SECTION = "gpe"
+PRIORITY = "optional"
+#BROKEN = "1"
+PR = "r1"
+
+SRC_URI += "file://fix_makefile.patch;patch=1 \
+	    file://fix_interface_c.patch;patch=1"
+
+do_compile() {
+        oe_runmake STAGING_INCDIR="${STAGING_INCDIR}"
+}

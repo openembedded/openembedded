@@ -1,5 +1,5 @@
 PR = "r4"
-
+LICENSE = "GPL"
 inherit gpe
 
 SRC_URI += "file://gpe-conf-0.1.22-20041124.patch;patch=1;pnum=0 \
