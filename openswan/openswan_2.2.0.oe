@@ -1,6 +1,7 @@
 DESCRIPTION = "Openswan is an Open Source implementation of IPsec for the \
 Linux operating system."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+HOMEPAGE = "http://www.openswan.org"
 DEPENDS = "gmp flex-native"
 
 SRC_URI = "http://www.openswan.org/code/openswan-${PV}.tar.gz \
