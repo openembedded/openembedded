@@ -48,13 +48,16 @@ do_install () {
 	install -m 0755    ${WORKDIR}/update-rc.d/update-rc.d ${D}/${sbindir}/
 }
 
+do_stage () {
+	install -m 0755    ${WORKDIR}/update-rc.d/update-rc.d ${STAGING_BINDIR}/
+}
+
 pkg_postinst () {
 	set -e
 
-	if [ X"$1" != Xconfigure ]; then
-		exit 0
-	fi
-
+#	if [ X"$1" != Xconfigure ]; then
+#		exit 0
+#	fi
 # FIXME: use update-alternatives.. but what if the user doesnt have it?
 #	if [ -n "`which update-alternatives 2>/dev/null`" ]; then
 #		update-alternatives blah
