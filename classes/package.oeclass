@@ -76,7 +76,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 
 	oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
-def package_frob_arch(d):
+python () {
 	import oe, os
 	machine = oe.data.getVar('MACHINE', d, 1)
 	if not machine:
@@ -93,12 +93,13 @@ def package_frob_arch(d):
 		local = oe.data.expand(oe.fetch.localpath(s, d), d)
 		for mp in paths:
 			if local.startswith(mp):
-				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, machine))
+#				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, machine))
 				oe.data.setVar('PACKAGE_ARCH', machine, d)
 				return
+}
 
 python populate_packages () {
-	import glob, copy, stat, errno, re
+	import glob, stat, errno, re
 
 	workdir = oe.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -127,8 +128,6 @@ python populate_packages () {
 	if not pn:
 		oe.error("PN not defined")
 		return
-
-	package_frob_arch(d)
 
 	os.chdir(dvar)
 
