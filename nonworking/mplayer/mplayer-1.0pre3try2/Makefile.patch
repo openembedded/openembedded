@@ -1,0 +1,22 @@
+--- ./Makefile~Makefile.patch	2003-12-09 08:03:31.000000000 +1030
++++ ./Makefile	2004-09-24 02:08:50.000000000 +0930
+@@ -10,10 +10,6 @@
+ PRG_CFG = codec-cfg
+ PRG_MENCODER = mencoder
+ 
+-# Do not strip the binaries at installation
+-ifeq ($(STRIPBINARIES),yes)
+-INSTALLSTRIP = -s
+-endif
+ 
+ # These subdirectories require installation due to binaries within them.
+ ifeq ($(VIDIX),yes)
+@@ -246,7 +242,7 @@
+ $(MENCODER_DEP): version.h
+ 
+ $(PRG_CFG): version.h codec-cfg.c codec-cfg.h
+-	$(CC) $(CFLAGS) -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
++	$(BUILD_CC) $(CFLAGS) -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
+ 
+ install: $(ALL_PRG)
+ ifeq ($(VIDIX),yes)

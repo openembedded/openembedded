@@ -1,0 +1,54 @@
+DESCRIPTION = "Open Source multimedia player."
+SECTION = "opie/games"
+PRIORITY = "optional"
+DEPENDS = "libsdl-qpe libmad tremor-20030325 libogg libvorbis zlib"
+
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
+			file://Makefile.patch;patch=0 \
+			file://zlib.patch;patch=0 "
+S = "${WORKDIR}/MPlayer-${PV}"
+
+FILES_${PN} = " \
+	/usr/local/bin/mplayer \
+	/usr/local/man/man1/mplayer.1 "
+
+inherit autotools 
+
+EXTRA_OECONF = " \
+	--target=arm \
+	\
+	--disable-win32 \
+	--disable-macosx \
+	--disable-dvdread \
+	--disable-mpdvdkit \
+	--disable-tv \
+	--disable-tv-v4l \
+	--disable-tv-v4l2 \
+	--disable-tv-bsdbt848 \
+	--disable-mencoder \
+	\
+	--enable-dynamic-plugins \
+	--enable-fbdev \
+	--enable-sdl \
+	--with-sdl-config=${STAGING_BINDIR}/sdl-config \
+	\
+	--enable-mad \
+	--enable-tremor \
+	--enable-vorbis \
+	\
+	--enable-ossaudio \
+	\
+	--with-extralibdir=${STAGING_LIBDIR} "
+
+#	--enable-static \
+#	--enable-live \
+#	--with-livelibdir=/Projects/armbuild/live \
+#	--host=${HOST} \
+#	--cc=arm-linux-gcc \
+#	--disable-dvdnav \
+
+
+do_configure() {
+	./configure ${EXTRA_OECONF}
+}
+
