@@ -5,7 +5,7 @@ KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r8"
+PR = "r9"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
