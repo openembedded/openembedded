@@ -1,7 +1,7 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
-DEPENDS = "zlib ncurses"
-PR = "r0"
+DEPENDS = "zlib"
+PR = "r1"
 RV = "0.44test4"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/testing/dropbear-${RV}.tar.bz2 \
@@ -20,7 +20,7 @@ LD = "${CC}"
 
 SBINCOMMANDS = "dropbear dropbearkey dropbearconvert"
 BINCOMMANDS = "dbclient ssh scp"
-EXTRA_OEMAKE = 'STATIC=1 MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
+EXTRA_OEMAKE = 'MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
 
 do_install () {
 	install -d ${D}/${sysconfdir} \
@@ -31,14 +31,14 @@ do_install () {
 		   ${D}/${sbindir} \
 		   ${D}/${localstatedir}
 
-	install -m 0755 staticdropbearmulti ${D}/${sbindir}/
+	install -m 0755 dropbearmulti ${D}/${sbindir}/
 	for i in ${BINCOMMANDS}
 	do
-		ln -s ${sbindir}/staticdropbearmulti ${D}/${bindir}/$i
+		ln -s ${sbindir}/dropbearmulti ${D}/${bindir}/$i
 	done
 	for i in ${SBINCOMMANDS}
 	do
-		ln -s ./staticdropbearmulti ${D}/${sbindir}/$i
+		ln -s ./dropbearmulti ${D}/${sbindir}/$i
 	done
 	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
 				  -e 's,/usr/sbin,${sbindir},g' \

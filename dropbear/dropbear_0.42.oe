@@ -1,6 +1,6 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
-DEPENDS = "zlib ncurses"
+DEPENDS = "zlib"
 PR = "r4"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
