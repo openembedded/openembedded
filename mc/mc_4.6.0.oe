@@ -12,6 +12,7 @@ EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
 --without-nfs --without-gpm-mouse"
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

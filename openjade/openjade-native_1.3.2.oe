@@ -15,6 +15,7 @@ acpaths = "-I ${S}/config"
 CFLAGS_prepend = "-I${S}/include"
 
 do_configure () {
+	gnu-configize
 	oe_runconf
 }
 

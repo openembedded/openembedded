@@ -34,6 +34,7 @@ do_configure_prepend () {
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
+	gnu-configize
 	oe_runconf
 }
 

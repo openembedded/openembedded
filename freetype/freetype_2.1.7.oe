@@ -14,6 +14,7 @@ EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 do_configure () {
 	cd builds/unix
+	gnu-configize
 	aclocal -I .
 	autoconf
 	cd ${S}

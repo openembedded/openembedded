@@ -12,6 +12,7 @@ EXTRA_OECONF = "--disable-af --disable-alsa --disable-esd \
 --disable-esdtest --enable-threads"
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

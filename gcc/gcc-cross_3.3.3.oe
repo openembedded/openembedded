@@ -23,6 +23,7 @@ do_configure () {
 	export LD="${TARGET_SYS}-ld"
 	export NM="${TARGET_SYS}-nm"
 	rm -f ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/${PV}/libgcc_eh.a
+	gnu-configize
 	oe_runconf
 }
 

@@ -14,6 +14,7 @@ EXTRA_OECONF = "--without-x --without-athena"
 EXTRA_OEMAKE = "without_doc"
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

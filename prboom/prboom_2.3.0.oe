@@ -11,6 +11,7 @@ inherit autotools
 EXTRA_OECONF = "--without-x --disable-sdltest"
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

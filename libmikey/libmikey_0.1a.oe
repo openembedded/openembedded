@@ -10,6 +10,7 @@ S = "${WORKDIR}/libmikey-0.1"
 inherit autotools 
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

@@ -31,6 +31,7 @@ do_configure () {
 		${HOST_SYS}-libtoolize -c -f
 	fi
 	./reconf
+	gnu-configize
 	oe_runconf
 	cat >>config.h <<EOF
 #define RXVT_UTMP_FILE "/var/run/utmp"

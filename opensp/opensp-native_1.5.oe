@@ -11,6 +11,7 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensp-${PV}"
 PACKAGES = ""
 
 do_configure () {
+	gnu-configize
 	oe_runconf
 }
 

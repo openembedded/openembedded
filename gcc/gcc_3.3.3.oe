@@ -176,6 +176,7 @@ do_configure () {
 		export AR_FOR_TARGET="${HOST_PREFIX}ar"
 		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
 	fi
+	gnu-configize
 	oe_runconf
 }
 

@@ -68,6 +68,7 @@ export CC_FOR_BUILD = "${BUILD_CC}"
 export CC = "${CCACHE} ${HOST_PREFIX}gcc"
 
 do_configure () {
+	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
 	oe_runconf
 }
 

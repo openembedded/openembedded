@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
 inherit autotools 
 
 do_configure() {
+	gnu-configize
 	oe_runconf
 }
 

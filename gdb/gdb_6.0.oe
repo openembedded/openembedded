@@ -28,6 +28,7 @@ EXTRA_OECONF = "--disable-gdbtk --disable-tui --disable-x --disable-nls \
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
+	gnu-configize
 	oe_runconf
 }
 

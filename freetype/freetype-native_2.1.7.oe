@@ -10,6 +10,7 @@ S = "${WORKDIR}/freetype-${PV}"
 PACKAGES = ""
 
 do_configure () {
+	gnu-configize
 	oe_runconf
 }
 
