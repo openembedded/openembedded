@@ -12,6 +12,7 @@ provides a fairly complete POSIX environment for any small or embedded \
 system."
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+	file://${FILESDIR}/busybox-1.00-pre10-fuser.patch;patch=1 \
 	file://${FILESDIR}/bb-iproute-iftunnel.patch;patch=1"
 S = "${WORKDIR}/busybox-${PV}"
 export EXTRA_CFLAGS = "${CFLAGS}"
