@@ -2,7 +2,7 @@ include glibc_${PV}.oe
 
 DEPENDS = "patcher-native linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
-FILESPATH = "${@base_set_filespath([ '%s/glibc-%s' % (os.path.dirname(oe.data.getVar('FILE', d, 1)) ], d), oe.data.getVar('PV', d, 1))}"
+FILESPATH = "${@base_set_filespath([ '%s/glibc-%s' % (os.path.dirname(oe.data.getVar('FILE', d, 1)), oe.data.getVar('PV', d, 1)) ], d)}"
 
 PACKAGES = ""
 
