@@ -1,8 +1,0 @@
-diff -ur icebloxx_V1.0.0.orig/tools/Makefile icebloxx_V1.0.0/tools/Makefile
---- icebloxx_V1.0.0.orig/tools/Makefile	2002-07-31 08:38:56.000000000 +0200
-+++ icebloxx_V1.0.0/tools/Makefile	2004-06-16 20:50:29.000000000 +0200
-@@ -1,3 +1,3 @@
- bin2c:
--	gcc -O2 -Wall -o bin2c bin2c.c
-+	$(BUILD_CC) -O2 -Wall -o bin2c bin2c.c
- 
