@@ -1,0 +1,825 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- qt-2.3.7/src/kernel/qapplication.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qapplication.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -35,6 +35,8 @@
+ **
+ **********************************************************************/
+ 
++#define QT_WEAK_SYMBOL	__attribute__(( weak ))
++
+ #include "qobjectlist.h"
+ #include "qobjectdict.h"
+ #include "qapplication.h"
+@@ -933,11 +935,16 @@
+ #ifndef QT_NO_STYLE
+ void QApplication::setStyle( QStyle *style )
+ {
++	setStyle_NonWeak ( style );
++}
++
++void QApplication::setStyle_NonWeak( QStyle *style )
++{
+     QStyle* old = app_style;
+-    app_style = style;
+ 
+     if ( startingUp() ) {
+ 	delete old;
++	app_style = style;
+ 	return;
+     }
+ 
+@@ -958,6 +965,8 @@
+ 	old->unPolish( qApp );
+     }
+ 
++    app_style = style;
++ 
+     // take care of possible palette requirements of certain gui
+     // styles. Do it before polishing the application since the style
+     // might call QApplication::setStyle() itself
+@@ -1184,13 +1193,30 @@
+   \sa QWidget::setPalette(), palette(), QStyle::polish()
+ */
+ 
+-void QApplication::setPalette( const QPalette &palette, bool informWidgets,
++void QApplication::setPalette ( const QPalette &palette, bool informWidgets,
++			       const char* className )
++{
++	setPalette_NonWeak ( palette, informWidgets, className );
++}
++
++void QApplication::setPalette_NonWeak ( const QPalette &palette, bool informWidgets,
+ 			       const char* className )
+ {
+     QPalette pal = palette;
+ #ifndef QT_NO_STYLE
+-    if ( !startingUp() )
++    if ( !startingUp() ) {
+ 	qApp->style().polish( pal );	// NB: non-const reference
++	if ( className ) {
++	    // if we just polished a class specific palette (this normally 
++	    // only called by qt_fix_tooltips - see below), we better re-
++	    // polish the global palette. Some styles like liquid can get 
++	    // confused, because they can not detect if the polished palette 
++	    // is the global one or only a class specific one.
++	    // (liquid uses this palette to calculate blending pixmaps)
++	    QPalette p = qApp-> palette ( );
++	    qApp->style().polish ( p );
++	}
++    }
+ #endif
+     bool all = FALSE;
+     if ( !className ) {
+@@ -1275,6 +1301,12 @@
+ void QApplication::setFont( const QFont &font, bool informWidgets,
+ 			    const char* className )
+ {
++	setFont_NonWeak ( font, informWidgets, className );
++}
++
++void QApplication::setFont_NonWeak( const QFont &font, bool informWidgets,
++			    const char* className )
++{
+     bool all = FALSE;
+     if ( !className ) {
+ 	if ( !app_font ) {
+--- qt-2.3.7/src/kernel/qapplication.h~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qapplication.h	2004-04-27 18:16:54.000000000 +0200
+@@ -61,6 +61,10 @@
+ class QSemaphore;
+ #endif
+ 
++#if !defined( QT_WEAK_SYMBOL )
++#define QT_WEAK_SYMBOL
++#endif
++
+ // REMOVE IN 3.0 (just here for moc source compatibility)
+ #define QNonBaseApplication QApplication
+ 
+@@ -85,7 +89,10 @@
+ 
+ #ifndef QT_NO_STYLE
+     static QStyle  &style();
+-    static void	    setStyle( QStyle* );
++    static void	    setStyle( QStyle* ) QT_WEAK_SYMBOL;
++private:
++	static void     setStyle_NonWeak( QStyle* );
++public:
+ #endif
+ #if 1	/* OBSOLETE */
+     enum ColorMode { NormalColors, CustomColors };
+@@ -106,11 +113,19 @@
+ #ifndef QT_NO_PALETTE
+     static QPalette  palette( const QWidget* = 0 );
+     static void	     setPalette( const QPalette &, bool informWidgets=FALSE,
++				 const char* className = 0 ) QT_WEAK_SYMBOL;
++private:
++    static void	     setPalette_NonWeak( const QPalette &, bool informWidgets=FALSE,
+ 				 const char* className = 0 );
++public:
+ #endif
+     static QFont     font( const QWidget* = 0 );
+     static void	     setFont( const QFont &, bool informWidgets=FALSE,
++			      const char* className = 0 ) QT_WEAK_SYMBOL;
++private:
++    static void	     setFont_NonWeak( const QFont &, bool informWidgets=FALSE,
+ 			      const char* className = 0 );
++public:			      
+     static QFontMetrics fontMetrics();
+ 
+     QWidget	    *mainWidget()  const;
+@@ -207,7 +222,10 @@
+     void             qwsSetCustomColors( QRgb *colortable, int start, int numColors );
+ #ifndef QT_NO_QWS_MANAGER
+     static QWSDecoration &qwsDecoration();
+-    static void      qwsSetDecoration( QWSDecoration *);
++    static void      qwsSetDecoration( QWSDecoration *) QT_WEAK_SYMBOL;
++private:
++    static void      qwsSetDecoration_NonWeak( QWSDecoration *);
++public:
+ #endif
+ #endif
+ 
+--- qt-2.3.7/src/kernel/qapplication_qws.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qapplication_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -2804,6 +2804,11 @@
+ */
+ void QApplication::qwsSetDecoration( QWSDecoration *d )
+ {
++	qwsSetDecoration_NonWeak ( d );
++}
++
++void QApplication::qwsSetDecoration_NonWeak( QWSDecoration *d )
++{
+     if ( d ) {
+ 	delete qws_decoration;
+ 	qws_decoration = d;
+--- qt-2.3.7/src/kernel/qfontdatabase.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qfontdatabase.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -35,6 +35,8 @@
+ **
+ **********************************************************************/
+ 
++#define QT_WEAK_SYMBOL  __attribute__(( weak ))
++
+ #include "qfontdatabase.h"
+ 
+ #ifndef QT_NO_FONTDATABASE
+@@ -2424,6 +2426,13 @@
+                                                  const QString &style,
+                                                  const QString &charSet )
+ {
++	return pointSizes_NonWeak ( family, style, charSet );
++}
++
++QValueList<int> QFontDatabase::pointSizes_NonWeak ( const QString &family,
++                                                 const QString &style,
++                                                 const QString &charSet )
++{
+     QString cs( charSet );
+     if ( charSet.isEmpty() ) {
+         QStringList lst = charSets( family );
+--- qt-2.3.7/src/kernel/qfontdatabase.h~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qfontdatabase.h	2004-04-27 18:16:54.000000000 +0200
+@@ -59,6 +59,10 @@
+ class QDiskFont;
+ #endif
+ 
++#if !defined( QT_WEAK_SYMBOL )
++#define QT_WEAK_SYMBOL
++#endif
++
+ class QFontDatabasePrivate;
+ 
+ class Q_EXPORT QFontDatabase
+@@ -67,9 +71,16 @@
+     QFontDatabase();
+ 
+     QStringList families( bool onlyForLocale = TRUE ) const;
++    
++    
+     QValueList<int> pointSizes( const QString &family,
+ 				const QString &style = QString::null,
+-				const QString &charSet = QString::null );
++				const QString &charSet = QString::null ) QT_WEAK_SYMBOL;
++private:
++    QValueList<int> pointSizes_NonWeak( const QString &family,
++				const QString &style,
++				const QString &charSet );
++public:
+     QStringList styles( const QString &family,
+ 			const QString &charSet = QString::null ) const;
+     QStringList charSets( const QString &familyName,
+--- qt-2.3.7/src/kernel/qgfxraster_qws.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qgfxraster_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -4237,7 +4237,7 @@
+     setAlphaType(IgnoreAlpha);
+     if ( w <= 0 || h <= 0 || !ncliprect ) return;
+     GFX_START(QRect(rx+xoffs, ry+yoffs, w+1, h+1))
+-#ifdef QWS_EXPERIMENTAL_FASTPATH
++#if 0 // def QWS_EXPERIMENTAL_FASTPATH    !! this is crashing HancomWord on OZ !!
+     // ### fix for 8bpp
+     // This seems to be reliable now, at least for 16bpp
+ 
+--- qt-2.3.7/src/kernel/qwindowsystem_qws.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qwindowsystem_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -844,6 +844,18 @@
+ {
+ }
+ 
++static void catchSegvSignal( int )
++{
++#ifndef QT_NO_QWS_KEYBOARD
++    if ( qwsServer )
++	qwsServer->closeKeyboard();
++#endif
++    QWSServer::closedown();
++    fprintf(stderr, "Segmentation fault.\n");
++    exit(1);
++}
++
++
+ /*!
+   \class QWSServer qwindowsystem_qws.h
+   \brief Server-specific functionality in Qt/Embedded
+@@ -936,6 +948,7 @@
+     }
+ 
+     signal(SIGPIPE, ignoreSignal); //we get it when we read
++    signal(SIGSEGV, catchSegvSignal); //recover the keyboard on crash
+ #endif
+     focusw = 0;
+     mouseGrabber = 0;
+--- qt-2.3.7/src/widgets/qcommonstyle.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/widgets/qcommonstyle.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -566,7 +566,7 @@
+ 				    bool enabled, bool active )
+ {
+ #ifndef QT_NO_MENUBAR
+-#ifndef QT_NO_STYLE_SGI
++#if 1 // #ifndef QT_NO_STYLE_SGI
+     if (draw_menu_bar_impl != 0) {
+ 	QDrawMenuBarItemImpl impl = draw_menu_bar_impl;
+ 	(this->*impl)(p, x, y, w, h, mi, g, enabled, active);
+--- qt-2.3.7/src/widgets/qlistview.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/widgets/qlistview.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -4968,9 +4968,9 @@
+ 	l = l->childItem ? l->childItem : l->siblingItem;
+ 
+     if ( l && l->height() )
+-	s.setHeight( s.height() + 10 * l->height() );
+-    else
+-	s.setHeight( s.height() + 140 );
++	s.setHeight( s.height() + 4 /*10*/ * l->height() );
++    else                      // ^v much too big for handhelds
++	s.setHeight( s.height() + 30 /*140*/ );
+ 
+     if ( s.width() > s.height() * 3 )
+ 	s.setHeight( s.width() / 3 );
+--- qt-2.3.7/src/widgets/qtoolbutton.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/widgets/qtoolbutton.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -230,7 +230,7 @@
+ 	else
+ 	    QToolTip::add( this, textLabel );
+     }
+-#endif	
++#endif
+ }
+ 
+ 
+@@ -324,12 +324,12 @@
+ 	QPixmap pm = iconSet(TRUE).pixmap(QIconSet::Large, QIconSet::Normal);
+ 	w = pm.width();
+ 	h = pm.height();
+-	if ( w < 32 )
+-	    w = 32;
+-	if ( h < 32 )
+-	    h = 32;
++	if ( w < 24 )
++	    w = 24;
++	if ( h < 24 )
++	    h = 24;
+     } else {
+-	w = h = 16;
++	w = h = 14;
+ 	QPixmap pm = iconSet(TRUE).pixmap(QIconSet::Small, QIconSet::Normal);
+ 	w = pm.width();
+ 	h = pm.height();
+--- qt-2.3.7/src/kernel/qkeyboard_qws.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -238,7 +238,7 @@
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 63
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 64
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 65
+-    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 66
++    {   Qt::Key_F14,    0xffff  , 0xffff  , 0xffff  }, // 66
+     {	Qt::Key_Meta,		0xffff  , 0xffff  , 0xffff  }, // 67
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 68
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 69
+--- qt-2.3.7/configs/linux-generic-g++-shared~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic-g++-shared	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic-g++-shared-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic-g++-shared-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic-g++-static~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic-g++-static	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic-g++-static-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic-g++-static-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic_rtti-g++-shared~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic_rtti-g++-shared	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic_rtti-g++-shared-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic_rtti-g++-shared-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic_rtti-g++-static~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic_rtti-g++-static	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-generic_rtti-g++-static-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-generic_rtti-g++-static-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= 
+ 
+--- qt-2.3.7/configs/linux-x86rtti-g++-shared~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-x86rtti-g++-shared	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= -lm
+ 
+--- qt-2.3.7/configs/linux-x86rtti-g++-shared-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-x86rtti-g++-shared-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= -lm
+ 
+--- qt-2.3.7/configs/linux-x86rtti-g++-static~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-x86rtti-g++-static	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= -lm
+ 
+--- qt-2.3.7/configs/linux-x86rtti-g++-static-debug~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/configs/linux-x86rtti-g++-static-debug	2004-04-27 18:16:54.000000000 +0200
+@@ -36,7 +36,7 @@
+ SYSCONF_LIBS_YACC	= 
+ 
+ # Linking applications
+-SYSCONF_LINK		= gcc
++SYSCONF_LINK		= g++
+ SYSCONF_LFLAGS		= 
+ SYSCONF_LIBS		= -lm
+ 
+--- qt-2.3.7/src/kernel/qimage.cpp~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/kernel/qimage.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -2201,7 +2201,7 @@
+     t2 = srcHeight * dstWidth;
+ 
+     if (((sModeQStr == "ScaleMin") && (t1 > t2)) ||
+-	    ((sModeQStr == "ScaleMax") && (t2 < t2))) {
++	    ((sModeQStr == "ScaleMax") && (t1 < t2))) {
+ 	dstHeight = t2 / srcWidth;
+     } else if (sModeQStr != "ScaleFree") {
+ 	dstWidth = t1 / srcHeight;
+--- qt-2.3.7/src/tools/qsortedlist.h~qte237-all	2004-04-27 18:16:31.000000000 +0200
++++ qt-2.3.7/src/tools/qsortedlist.h	2004-04-27 18:16:54.000000000 +0200
+@@ -48,7 +48,7 @@
+ public:
+     QSortedList() {}
+     QSortedList( const QSortedList<type> &l ) : QList<type>(l) {}
+-    ~QSortedList() { clear(); }
++    ~QSortedList() { this->clear(); }
+     QSortedList<type> &operator=(const QSortedList<type> &l)
+       { return (QSortedList<type>&)QList<type>::operator=(l); }
+ 
+--- qt-2.3.7/src/kernel/qgfxvfb_qws.cpp~qte237-all	2004-04-27 18:16:28.000000000 +0200
++++ qt-2.3.7/src/kernel/qgfxvfb_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -31,7 +31,6 @@
+ **********************************************************************/
+ 
+ #include "qgfxraster_qws.h"
+-
+ #ifndef QT_NO_QWS_VFB
+ 
+ #include <sys/ipc.h>
+@@ -140,8 +139,8 @@
+ void QGfxVFb<depth,type>::drawPoint( int x, int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, 1, 1 ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, 1, 1 ) );
+     QGfxRaster<depth,type>::drawPoint( x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -150,8 +149,8 @@
+ void QGfxVFb<depth,type>::drawPoints( const QPointArray &pa,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPoints( pa, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -160,9 +159,9 @@
+ void QGfxVFb<depth,type>::drawLine( int x1,int y1,int x2,int y2 )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx ) {
++    if ( this->is_screen_gfx ) {
+ 	QRect r;
+-	r.setCoords( x1+xoffs, y1+yoffs, x2+xoffs, y2+yoffs );
++	r.setCoords( x1+this->xoffs, y1+this->yoffs, x2+this->xoffs, y2+this->yoffs );
+ 	qvfb_screen->setDirty( r.normalize() );
+     }
+     QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
+@@ -173,8 +172,8 @@
+ void QGfxVFb<depth,type>::fillRect( int x,int y,int w,int h )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, w, h ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, w, h ) );
+     QGfxRaster<depth,type>::fillRect( x, y, w, h );
+     QWSDisplay::ungrab();
+ }
+@@ -183,8 +182,8 @@
+ void QGfxVFb<depth,type>::drawPolyline( const QPointArray &pa,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPolyline( pa, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -193,8 +192,8 @@
+ void QGfxVFb<depth,type>::drawPolygon( const QPointArray &pa,bool w,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPolygon( pa, w, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -203,8 +202,8 @@
+ void QGfxVFb<depth,type>::blt( int x,int y,int w,int h, int sx, int sy )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, w, h ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, w, h ) );
+     QGfxRaster<depth,type>::blt( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+ }
+@@ -215,8 +214,8 @@
+     QWSDisplay::grab( TRUE );
+     int dy = sy - y;
+     int dx = sx - x;
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect(QMIN(x,sx) + xoffs, QMIN(y,sy) + yoffs,
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect(QMIN(x,sx) + this->xoffs, QMIN(y,sy) + this->yoffs,
+ 			   w+abs(dx), h+abs(dy)) );
+     QGfxRaster<depth,type>::scroll( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+@@ -227,8 +226,8 @@
+ void QGfxVFb<depth,type>::stretchBlt( int x,int y,int w,int h,int sx,int sy )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x + xoffs, y + yoffs, w, h) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x + this->xoffs, y + this->yoffs, w, h) );
+     QGfxRaster<depth,type>::stretchBlt( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+ }
+@@ -238,8 +237,8 @@
+ void QGfxVFb<depth,type>::tiledBlt( int x,int y,int w,int h )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect(x + xoffs, y + yoffs, w, h) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect(x + this->xoffs, y + this->yoffs, w, h) );
+     QGfxRaster<depth,type>::tiledBlt( x, y, w, h );
+     QWSDisplay::ungrab();
+ }
+--- qt-2.3.7/src/kernel/qgfxtransformed_qws.cpp~qte237-all	2004-04-27 18:16:28.000000000 +0200
++++ qt-2.3.7/src/kernel/qgfxtransformed_qws.cpp	2004-04-27 18:16:54.000000000 +0200
+@@ -671,11 +671,11 @@
+     inline int tx( int x, int y ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		return y - xoffs + yoffs;
++		return y - this->xoffs + this->yoffs;
+ 	    case QTransformedScreen::Rot180:
+-		return (width - x - 1) - xoffs - xoffs;
++		return (this->width - x - 1) - this->xoffs - this->xoffs;
+ 	    case QTransformedScreen::Rot270:
+-		return (height - y - 1) - xoffs - yoffs;
++		return (this->height - y - 1) - this->xoffs - this->yoffs;
+ 	    default:
+ 		return x;
+ 	}
+@@ -683,11 +683,11 @@
+     inline int ty( int x, int y ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		return (width - x - 1) - yoffs - xoffs;
++		return (this->width - x - 1) - this->yoffs - this->xoffs;
+ 	    case QTransformedScreen::Rot180:
+-		return (height - y - 1) - yoffs - yoffs;
++		return (this->height - y - 1) - this->yoffs - this->yoffs;
+ 	    case QTransformedScreen::Rot270:
+-		return x - yoffs + xoffs;
++		return x - this->yoffs + this->xoffs;
+ 	    default:
+ 		return y;
+ 	}
+@@ -715,23 +715,23 @@
+ template <const int depth, const int type>
+ void QGfxTransformedRaster<depth,type>::setSourceWidgetOffset(int x, int y)
+ {
+-    if ( srcbits == buffer ) {
++    if ( this->srcbits == this->buffer ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		srcwidgetoffs = QPoint( y, width - x - srcwidth );
++		this->srcwidgetoffs = QPoint( y, this->width - x - this->srcwidth );
+ 		break;
+ 	    case QTransformedScreen::Rot180:
+-		srcwidgetoffs = QPoint( width - x - srcwidth, height - y - srcheight );
++		this->srcwidgetoffs = QPoint( this->width - x - this->srcwidth, this->height - y - this->srcheight );
+ 		break;
+ 	    case QTransformedScreen::Rot270:
+-		srcwidgetoffs = QPoint( height - y - srcheight, x );
++		this->srcwidgetoffs = QPoint( this->height - y - this->srcheight, x );
+ 		break;
+ 	    default:
+-		srcwidgetoffs = QPoint( x, y );
++		this->srcwidgetoffs = QPoint( x, y );
+ 		break;
+ 	}
+     } else
+-	srcwidgetoffs = QPoint( x, y );
++	this->srcwidgetoffs = QPoint( x, y );
+ }
+ 
+ template <const int depth, const int type>
+@@ -739,8 +739,8 @@
+ {
+     QT_TRANS_GFX_BASE<depth,type>::setSource(i);
+     QSize s = qt_screen->mapToDevice( QSize(i->width(), i->height()) );
+-    srcwidth = s.width();
+-    srcheight = s.height();
++    this->srcwidth = s.width();
++    this->srcheight = s.height();
+ }
+ 
+ template <const int depth, const int type>
+@@ -782,7 +782,7 @@
+     if ( w == 0 || h == 0 )
+ 	return;
+     QRect r( x, y, w, h );
+-    if ( cbrush.style() == SolidPattern ) {
++    if ( this->cbrush.style() == Qt::SolidPattern ) {
+ 	r.setCoords( tx(x,y), ty(x,y), tx(x+w-1,y+h-1), ty(x+w-1,y+h-1) );
+ 	r = r.normalize();
+     }
+@@ -797,7 +797,7 @@
+     // solution. The brush offset logic is complicated enough, so we don't
+     // fastpath patternedbrush.
+     
+-    if ( inDraw  || cpen.style()==NoPen || patternedbrush ) {
++    if ( inDraw  || this->cpen.style()==Qt::NoPen || this->patternedbrush ) {
+ 	//slowpath
+ 	QT_TRANS_GFX_BASE<depth,type>::drawPolygon( a, w, idx, num );
+     } else {
+@@ -819,29 +819,29 @@
+ template <const int depth, const int type>
+ void QGfxTransformedRaster<depth,type>::processSpans( int n, QPoint* point, int* width )
+ {
+-    if ( inDraw || patternedbrush && srcwidth != 0 && srcheight != 0 ) {
++    if ( inDraw || this->patternedbrush && this->srcwidth != 0 && this->srcheight != 0 ) {
+ 	//in the patternedbrush case, we let blt do the transformation
+ 	// so we leave inDraw false.
+-	QT_TRANS_GFX_BASE<depth,type>::processSpans( n, point, width );		    
++	QT_TRANS_GFX_BASE<depth,type>::processSpans( n, point, width );
+     } else {
+ 	inDraw = TRUE;
+ 	while (n--) {
+ 	    if ( *width > 0 ) {
+-		int x=tx(point->x(),point->y())+xoffs;
+-		int y=ty(point->x(),point->y())+yoffs;
++		int x=tx(point->x(),point->y())+this->xoffs;
++		int y=ty(point->x(),point->y())+this->yoffs;
+ 
+ 		switch( qt_trans_screen->transformation() ) {
+ 		case QTransformedScreen::Rot90:
+-		    vline( x, y-(*width-1), y );
++		    this->vline( x, y-(*width-1), y );
+ 		    break;
+ 		case QTransformedScreen::Rot180:
+-		    hline( x - (*width-1), x, y );
++		    this->hline( x - (*width-1), x, y );
+ 		    break;
+ 		case QTransformedScreen::Rot270:
+-		    vline( x, y, y+*width-1 );
++		    this->vline( x, y, y+*width-1 );
+ 		    break;
+ 		default:
+-		    hline( x, x+*width-1, y );
++		    this->hline( x, x+*width-1, y );
+ 		    break;
+ 		}
+ 	    }
+@@ -896,14 +896,14 @@
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	case QTransformedScreen::Rot90:
+ 	    rsx = sy;
+-	    rsy = srcwidth - sx - w;
++	    rsy = this->srcwidth - sx - w;
+ 	    break;
+ 	case QTransformedScreen::Rot180:
+-	    rsx = srcwidth - sx - w;
+-	    rsy = srcheight - sy - h;
++	    rsx = this->srcwidth - sx - w;
++	    rsy = this->srcheight - sy - h;
+ 	    break;
+ 	case QTransformedScreen::Rot270:
+-	    rsx = srcheight - sy - h;
++	    rsx = this->srcheight - sy - h;
+ 	    rsy = sx;
+ 	    break;
+ 	default:
+@@ -941,39 +941,39 @@
+     r.setCoords( tx(rx,ry), ty(rx,ry), tx(rx+w-1,ry+h-1), ty(rx+w-1,ry+h-1) );
+     r = r.normalize();
+ 
+-    QPoint oldBrushOffs = brushoffs;
++    QPoint oldBrushOffs = this->brushoffs;
+     int brx, bry;
+     switch ( qt_trans_screen->transformation() ) {
+ 	case QTransformedScreen::Rot90:
+-	    brx = brushoffs.y();
+-	    bry = srcwidth - brushoffs.x() - w;
++	    brx = this->brushoffs.y();
++	    bry = this->srcwidth - this->brushoffs.x() - w;
+ 	    break;
+ 	case QTransformedScreen::Rot180:
+-	    brx = srcwidth - brushoffs.x() - w;
+-	    bry = srcheight - brushoffs.y() - h;
++	    brx = this->srcwidth - this->brushoffs.x() - w;
++	    bry = this->srcheight - this->brushoffs.y() - h;
+ 	    break;
+ 	case QTransformedScreen::Rot270:
+-	    brx = srcheight - brushoffs.y() - h;
+-	    bry = brushoffs.x();
++	    brx = this->srcheight - this->brushoffs.y() - h;
++	    bry = this->brushoffs.x();
+ 	    break;
+ 	default:
+-	    brx = brushoffs.x();
+-	    bry = brushoffs.y();
++	    brx = this->brushoffs.x();
++	    bry = this->brushoffs.y();
+ 	    break;
+     }
+-    brushoffs = QPoint( brx, bry );
++    this->brushoffs = QPoint( brx, bry );
+ 
+-    int oldsw = srcwidth;
+-    int oldsh = srcheight;
+-    QSize s = qt_screen->mapToDevice( QSize(srcwidth,srcheight) );
+-    srcwidth = s.width();
+-    srcheight = s.height();
++    int oldsw = this->srcwidth;
++    int oldsh = this->srcheight;
++    QSize s = qt_screen->mapToDevice( QSize(this->srcwidth,this->srcheight) );
++    this->srcwidth = s.width();
++    this->srcheight = s.height();
+ 
+     QT_TRANS_GFX_BASE<depth,type>::tiledBlt( r.x(), r.y(), r.width(), r.height() );
+ 
+-    srcwidth = oldsw;
+-    srcheight = oldsh;
+-    brushoffs = oldBrushOffs;
++    this->srcwidth = oldsw;
++    this->srcheight = oldsh;
++    this->brushoffs = oldBrushOffs;
+     inDraw = FALSE;
+ }
+ 
+--- qt-2.3.7/src/tools/qstring.h~qte237-all	2003-07-17 03:20:26.000000000 +0200
++++ qt-2.3.7/src/tools/qstring.h	2004-04-27 18:18:37.000000000 +0200
+@@ -199,7 +199,7 @@
+ #endif
+     enum { net_ordered = 0 };
+ #endif
+-} Q_PACKED;
++}; // was: Q_PACKED; (arm-linux-)g++ 3.4 no longer allows direct access to packed structures. ML.
+ 
+ inline QChar::QChar()
+ {
+--- 2.3.7/src/tools/qcstring.h~gcc34-compliance	2004-04-27 20:21:48.000000000 +0200
++++ 2.3.7/src/tools/qcstring.h	2004-04-27 20:22:52.000000000 +0200
+@@ -119,7 +119,7 @@
+ //                   We want to keep source compatibility for 2.x
+ // ### TODO for 4.0: completely remove these and the cstr* functions
+ 
+-#if !defined(QT_GENUINE_STR)
++#if 0
+ 
+ #undef	strlen
+ #define strlen qstrlen
