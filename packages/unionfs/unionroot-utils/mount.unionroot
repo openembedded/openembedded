@@ -26,17 +26,22 @@ resolvelink () {
 for var in $@; do
 	if [ -z "$SKIP" ]; then
 		if echo $var | grep -q "^-.*"; then
+			# argument is an option
 			if echo $var | grep -q "[$TWOSHIFTARGS]"; then
 				SKIP="yes"
 			fi
+			# mount -a
 			if echo $var | grep -q "^-[^- ]*a"; then
 				DO_FSTAB="yes"
 			fi
 			ARGS="$ARGS $var"
 		else
 			if [ -z "$MOUNT_POINT" ]; then
+				# argument apears to be the mountpoint
 				MOUNT_POINT=$var
 			else
+				# A mountpoint was found earlier, so the other non-option
+				# must be the real mountpoint, and the first non-option is a device
 				DEV_PATH="$MOUNT_POINT"
 				MOUNT_POINT="$var"
 			fi
@@ -58,6 +63,7 @@ if ! [ -z "$DO_FSTAB" ]; then
 fi
 
 # Get mount-point for device name, if device name is given
+# Why would we need that? A possible device would have been found in the for-loop.
 if echo "$MOUNT_POINT" | grep -q "^${DEVICE}"; then
 	MOUNT_POINT_TEMP=`echo $MOUNT_POINT | sed -e "s/\//\\\\\\\\\//g"`
 	NEW_MOUNT_POINT=`awk "/$MOUNT_POINT_TEMP/ {print "'$2'"}" /etc/fstab`
@@ -66,7 +72,8 @@ if echo "$MOUNT_POINT" | grep -q "^${DEVICE}"; then
 	fi
 fi
 
-if ! (echo "$MOUNT_POINT" | grep -q "$INCDIRS"||[ "$MOUNT_POINT" = "/" ]); then
+# Mount anything but /media/* and / with the real mount
+if ! (echo "$MOUNT_POINT" | grep -q "$INCDIRS" || [ "$MOUNT_POINT" = "/" ]); then
 	exec ${REALMOUNT} $@
 fi
 
@@ -74,15 +81,20 @@ fi
 # with mount ROOTMOUNTPT (the real-root mount point for the
 # unionfs'd system).
 packagedir=""
-if ([ "$MOUNT_POINT" = "/" ]||[ "$MOUNT_POINT" = "${ROOTMOUNTPT}" ]); then
+if ([ "$MOUNT_POINT" = "/" ] || [ "$MOUNT_POINT" = "${ROOTMOUNTPT}" ]); then
 	MOUNT_POINT=${ROOTMOUNTPT}
 else
+	# FIXME: A hard-coded path is bad - see ipkg-link
 	PACKAGE_DIR="/packages"
+	x=a
 fi
 
 # Finally, mount and union-mount
+#echo "<<DEBUG>> Running command: [${REALMOUNT} $ARGS $DEV_PATH $MOUNT_POINT]"
 if ${REALMOUNT} $ARGS $DEV_PATH $MOUNT_POINT; then
 	if mkdir -p $MOUNT_POINT$PACKAGE_DIR; then
-		unionctl /. --add --after ${ROOTMOUNTPT} --mode rw `resolvelink $MOUNT_POINT`$PACKAGE_DIR
+		#echo "<<DEBUG>> Running command: [unionctl /. --add --after ${ROOTMOUNTPT} --mode rw `resolvelink $MOUNT_POINT`$PACKAGE_DIR]"
+		#unionctl /. --add --after ${ROOTMOUNTPT} --mode rw `resolvelink $MOUNT_POINT`$PACKAGE_DIR
+		unionctl /. --add `resolvelink $MOUNT_POINT`$PACKAGE_DIR
 	fi
 fi
