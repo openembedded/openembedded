@@ -131,6 +131,8 @@ python populate_packages () {
 		localdata = copy.deepcopy(d)
 		root = os.path.join(workdir, "install", pkg)
 
+		os.system('rm -rf %s' % root)
+
 		oe.data.setVar('ROOT', '', localdata)
 		oe.data.setVar('ROOT_%s' % pkg, root, localdata)
 		pkgname = oe.data.getVar('PKG_%s' % pkg, localdata, 1)
@@ -271,7 +273,7 @@ python package_do_shlibs() {
 
 	packages = oe.data.getVar('PACKAGES', d, 1)
 	if not packages:
-		oe.note("no packages to build; not calculating shlibs")
+		oe.debug(1, "no packages to build; not calculating shlibs")
 		return
 
 	workdir = oe.data.getVar('WORKDIR', d, 1)
@@ -385,8 +387,104 @@ python package_do_shlibs() {
 			for dep in deps:
 				fd.write(dep + '\n')
 			fd.close()
+}
 
-	oe.build.exec_func("read_shlibdeps", d)
+python package_do_pkgconfig () {
+	import re, os
+
+	packages = oe.data.getVar('PACKAGES', d, 1)
+	if not packages:
+		oe.debug(1, "no packages to build; not calculating pkgconfig dependencies")
+		return
+
+	workdir = oe.data.getVar('WORKDIR', d, 1)
+	if not workdir:
+		oe.error("WORKDIR not defined")
+		return
+
+	staging = oe.data.getVar('STAGING_DIR', d, 1)
+	if not staging:
+		oe.error("STAGING_DIR not defined")
+		return
+
+	pc_re = re.compile('(.*)\.pc$')
+	var_re = re.compile('(.*)=(.*)')
+	field_re = re.compile('(.*): (.*)')
+
+	pkgconfig_provided = {}
+	pkgconfig_needed = {}
+	for pkg in packages.split():
+		pkgconfig_provided[pkg] = []
+		pkgconfig_needed[pkg] = []
+		top = os.path.join(workdir, "install", pkg)
+		for root, dirs, files in os.walk(top):
+			for file in files:
+				m = pc_re.match(file)
+				if m:
+					pd = {}
+					name = m.group(1)
+					pkgconfig_provided[pkg].append(name)
+					path = os.path.join(root, file)
+					f = open(path, 'r')
+					lines = f.readlines()
+					f.close()
+					for l in lines:
+						m = var_re.match(l)
+						if m:
+							name = m.group(1)
+							val = m.group(2)
+							oe.data.setVar(name, oe.data.expand(val, pd), pd)
+							continue
+						m = field_re.match(l)
+						if m:
+							hdr = m.group(1)
+							exp = oe.data.expand(m.group(2), pd)
+							if hdr == 'Requires':
+								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
+
+	shlibs_dir = os.path.join(staging, "shlibs")
+	oe.mkdirhier(shlibs_dir)
+
+	for pkg in packages.split():
+		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
+		if os.path.exists(pkgs_file):
+			os.remove(pkgs_file)
+		if pkgconfig_provided[pkg] != []:
+			f = open(pkgs_file, 'w')
+			for p in pkgconfig_provided[pkg]:
+				f.write('%s\n' % p)
+			f.close()
+
+	for file in os.listdir(shlibs_dir):
+		m = re.match('^(.*)\.pclist$', file)
+		if m:
+			pkg = m.group(1)
+			fd = open(os.path.join(shlibs_dir, file))
+			lines = fd.readlines()
+			fd.close()
+			pkgconfig_provided[pkg] = []
+			for l in lines:
+				pkgconfig_provided[pkg].append(l.rstrip())
+
+	for pkg in packages.split():
+		deps = []
+		for n in pkgconfig_needed[pkg]:
+			found = False
+			for k in pkgconfig_provided.keys():
+				if n in pkgconfig_provided[k]:
+					if k != pkg and not (k in deps):
+						deps.append(k)
+					found = True
+			if found == False:
+				oe.note("couldn't find pkgconfig module '%s' in any package" % n)
+		deps_file = os.path.join(workdir, "install", pkg + ".pcdeps")
+		if os.path.exists(deps_file):
+			os.remove(deps_file)
+		if len(deps):
+			fd = open(deps_file, 'w')
+			for dep in deps:
+				fd.write(dep + '\n')
+			fd.close()
 }
 
 python package_do_split_locales() {
@@ -450,6 +548,8 @@ python package_do_package () {
 	oe.build.exec_func('package_do_split_locales', d)
 	oe.build.exec_func('populate_packages', d)
 	oe.build.exec_func('package_do_shlibs', d)
+	oe.build.exec_func('package_do_pkgconfig', d)
+	oe.build.exec_func('read_shlibdeps', d)
 }
 
 do_package[dirs] = "${D}"
