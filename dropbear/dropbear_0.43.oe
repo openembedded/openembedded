@@ -1,0 +1,63 @@
+DESCRIPTION = "Dropbear SSH Implementation"
+LICENSE = "MIT"
+DEPENDS = "zlib ncurses"
+PR = "r5"
+
+SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
+	   file://configure.patch;patch=1 \
+	   file://allow-nopw.patch;patch=1 \
+	   file://multi-binary.patch;patch=1 \
+	   file://init"
+S = "${WORKDIR}/dropbear-${PV}"
+
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "dropbear"
+INITSCRIPT_PARAMS = "defaults 10"
+
+CFLAGS_prepend = "-I. "
+LD = "${CC}"
+
+do_compile () {
+	oe_runmake dropbearmulti
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir} \
+		   ${D}/${sysconfdir}/init.d \
+		   ${D}/${sysconfdir}/default \
+		   ${D}/${sysconfdir}/dropbear \
+		   ${D}/${sbindir} \
+		   ${D}/${localstatedir}
+
+	install -m 0755 dropbearmulti ${D}/${sbindir}/
+	cd ${D}/${sbindir}/ && ln -s ./dropbearmulti dropbear && ln -s ./dropbearmulti dropbearkey && ln -s ./dropbearmulti dropbearconvert
+#	autotools_do_install
+	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
+				  -e 's,/usr/sbin,${sbindir},g' \
+				  -e 's,/var,${localstatedir},g' \
+				  -e 's,/usr/bin,${bindir},g' \
+				  -e 's,/usr,${prefix},g' > ${D}/${sysconfdir}/init.d/dropbear
+	chmod 755 ${D}/${sysconfdir}/init.d/dropbear
+}
+pkg_postinst_append () {
+
+if [ ! -n "$D"  ]; then
+	if [ ! -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
+		dropbearkey -t rsa -f ${sysconfdir}/dropbear/dropbear_rsa_host_key
+	fi
+	#if [ ! -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
+	#	dropbearkey -t dss -f ${sysconfdir}/dropbear/dropbear_dss_host_key
+	#fi
+fi
+}
+
+pkg_postrm_append () {
+
+if [ -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
+	rm ${sysconfdir}/dropbear/dropbear_rsa_host_key
+fi
+if [ -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
+	rm ${sysconfdir}/dropbear/dropbear_dss_host_key
+fi
+}
