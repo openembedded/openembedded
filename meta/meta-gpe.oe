@@ -42,6 +42,7 @@ gpe-task-utils = "\
     gpe-wlancfg \
     gpe-gallery \
     minilite \
+    miniclipboard \
     gpe-taskmanager \
     gpe-clock \
     gpe-appmgr \
