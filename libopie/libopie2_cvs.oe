@@ -21,7 +21,8 @@ export OPIEDIR = "${STAGING_LIBDIR}/.."
 
 EXTRA_QMAKEVARS_POST = ' DEFINES+=QWS                \
                          DEFINES+=OPIE_NEW_MALLOC    \
-                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" '
+                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
+			 DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX '			 
 
 # uclibc doesn't have backtrace()
 python __anonymous () {
