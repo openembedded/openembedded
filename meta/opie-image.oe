@@ -20,7 +20,7 @@ OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting"
 
 OPIE_BASE_APPS = "opie-aqpkg opie-console"
 
-OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
+OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-sysinfo"
 
 OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
      
