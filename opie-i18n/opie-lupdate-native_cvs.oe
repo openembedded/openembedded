@@ -14,7 +14,7 @@ S = "${WORKDIR}/opie-lupdate"
 inherit native
 
 do_configure() {
-	QMAKESPEC="${QMAKE_MKSPEC_PATH}/${TARGET_OS}-g++" 
+	QMAKESPEC="${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-oe-g++" 
 	qmake -makefile -spec $QMAKESPEC -o Makefile opie-lupdate.pro
 }
 

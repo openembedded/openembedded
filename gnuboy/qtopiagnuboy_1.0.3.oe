@@ -12,7 +12,7 @@ FILES = ""
 FILES_${PN} = "${palmtopdir}/"
 
 QMAKE = "${STAGING_BINDIR}/qmake"
-QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++"
+QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-oe-g++"
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 qtopiadir = "${S}/gnuboy-${PV}-qtopia2"
 
