@@ -12,6 +12,7 @@ gpe-base = "\
     gpe-login \
     gpe-session-scripts \
     matchbox \
+    xcursor-transparent-theme \
     rxvt-unicode \
     gpe-icons \
     gpe-confd \
@@ -48,6 +49,8 @@ gpe-task-utils = "\
     gpe-clock \
     gpe-appmgr \
     gpe-terminal \
+    gpe-filemanager \
+    gpe-what \
     gpe-shield \
     keylaunch"
 
