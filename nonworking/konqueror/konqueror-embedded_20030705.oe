@@ -18,11 +18,6 @@ QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++
 
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 
-EXTRA_OECONF = --enable-static --disable-shared --disable-debug --enable-qpe --enable-embedded \
-               --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR} --with-ssl-version=0.9.7c \
-               --with-ssl-dir=${STAGING_DIR}/target --with-qtopia-dir=${STAGING_DIR}/target --prefix=/opt/QtPalmtop --with-javascript=static
-
-
 do_configure () {
 	./configure \
 	--build=${BUILD_SYS} \
