@@ -1,0 +1,23 @@
+DESCRIPTION = "Plugins for GStreamer"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+DEPENDS = "gstreamer esound-gpe zlib libmikmod"
+
+SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-0.8.0.tar.bz2"
+
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking"
+
+inherit autotools libtool pkgconfig
+
+acpaths = "-I ${S}/common/m4 -I ${S}/m4"
+
+LIBV = "0.8"
+
+python populate_packages_prepend () {
+	gst_libdir = oe.data.expand('${libdir}/gstreamer-${LIBV}', d)
+
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s')
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
+}
