@@ -17,3 +17,8 @@ do_configure_prepend() {
 }
 
 inherit autotools
+
+do_compile() {
+	oe_runmake ORBIT_IDL=`which orbit-idl-2`
+}
+
