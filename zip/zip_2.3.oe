@@ -1,8 +1,8 @@
 SECTION = "console/utils"
 SRC_URI = "http://www.mirror.ac.uk/sites/ftp.info-zip.org/pub/infozip/src/zip23.tar.gz"
-PR = "r1"
+PR = "r2"
 
-EXTRA_OEMAKE = "'CC=${CC}' 'BIND=${CC}' 'AS=${AS}' 'CPP=${CPP}' \
+EXTRA_OEMAKE = "'CC=${CC}' 'BIND=${CC}' 'AS=${CC} -c' 'CPP=${CPP}' \
 		'CFLAGS=-I. -DUNIX ${CFLAGS}' 'INSTALL=install' \
 		'BINFLAGS=0755' 'INSTALL_D=install -d'"
 
