@@ -22,9 +22,9 @@ FILES_libcrypto = "${libdir}/libcrypto.so*"
 FILES_libssl = "${libdir}/libssl.so*"
 
 do_compile () {
-	pushd util
+	cd util
 	perl perlpath.pl ${bindir}
-	popd
+	cd ..
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
 
 	#

@@ -6,10 +6,9 @@ MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "x11 libpixman libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo \
-	   file://status.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo"
 S = "${WORKDIR}/cairo"
 
 inherit autotools pkgconfig 

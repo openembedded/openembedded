@@ -4,6 +4,9 @@ LICENSE = "GPL"
 DEPENDS = "libmatchbox x11 xext xcomposite libxfixes xdamage libxrender startup-notification expat gconf matchbox-common"
 RDEPENDS = "matchbox-common"
 
+
+DEFAULT_PREFERENCE=-1
+
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/0.9/matchbox-window-manager-${PV}.tar.gz"
 S = "${WORKDIR}/matchbox-window-manager-${PV}"
 
