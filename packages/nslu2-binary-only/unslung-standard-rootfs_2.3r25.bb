@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r34"
+PR = "r35"
 
-UNSLUNG_VERSION = "3.13-alpha"
+UNSLUNG_VERSION = "3.14-alpha"
 UNSLUNG_VARIANT ?= "standard"
 
 DEPENDS = "nslu2-linksys-libs"
@@ -37,6 +37,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://remount-noatime.patch;patch=1 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
+	   file://maintmode.cgi file://upgrade-maint.htm file://upgrade-nomaint.htm \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r25"
@@ -72,6 +73,19 @@ do_compile () {
 
 	# Remove the libraries, because they are in nslu2-linksys-libs now
 	rm -rf ${S}/lib
+
+	# Install maintenance mode files
+	install -m 755 ${WORKDIR}/maintmode.cgi ${S}/home/httpd/html/Management
+	install -m 644 ${WORKDIR}/upgrade-maint.htm ${S}/home/httpd/html/Management/upgrade-maint.htm
+	install -m 644 ${WORKDIR}/upgrade-nomaint.htm ${S}/home/httpd/html/Management/upgrade-nomaint.htm
+	install -m 644 ${WORKDIR}/upgrade-nomaint.htm ${S}/home/httpd/html/Management/upgrade.htm
+	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ \
+		${S}/home/httpd/html/Management/upgrade-maint.htm
+	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ \
+		${S}/home/httpd/html/Management/upgrade-nomaint.htm
+	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ \
+		${S}/home/httpd/html/Management/upgrade.htm
+
 }
 
 do_install () {
