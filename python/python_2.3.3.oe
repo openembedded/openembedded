@@ -17,6 +17,11 @@ inherit autotools
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc"
 
+do_configure_prepend() {
+	# blow this away so that autoreconf will regenerate it
+	rm -f aclocal.m4
+}
+
 #
 # copy config.h and an appropriate Makefile for distutils.sysconfig
 # which laters uses the information out of these to compile extensions

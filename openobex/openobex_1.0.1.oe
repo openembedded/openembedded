@@ -3,7 +3,8 @@ DESCRIPTION = "The Openobex project aims to make an \
 open source implementation of the Object Exchange \
 (OBEX) protocol."
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
+	  file://${FILESDIR}/syms.patch;patch=1"
 
 inherit autotools 
 
