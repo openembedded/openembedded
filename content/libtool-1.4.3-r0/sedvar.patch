@@ -1,0 +1,16 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libtool-1.4.3/ltmain.in~sedvar
++++ libtool-1.4.3/ltmain.in
+@@ -48,6 +48,8 @@
+   exit 0
+ fi
+ 
++[ -z "${SED}" ] && SED=sed
++
+ # The name of this program.
+ progname=`$echo "$0" | ${SED} 's%^.*/%%'`
+ modename="$progname"

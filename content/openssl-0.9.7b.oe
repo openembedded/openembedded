@@ -28,3 +28,10 @@ do_stage () {
 do_install () {
 	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
 }
+
+PACKAGES=libssl0.9.7 libssl-dev openssl-doc
+FILES=
+FILES_libssl0.9.7=${libdir}/lib*.so.* ${libdir}/ssl
+FILES_libssl-dev=${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+		 ${libdir}/*.a ${libdir}/pkgconfig
+FILES_openssl-doc=${mandir} ${datadir}/doc
