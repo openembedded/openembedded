@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r2"
 
 DOSRC="http://www.do13.in-berlin.de/openzaurus"
 RPSRC="http://www.rpsys.net/openzaurus/patches"
@@ -39,12 +39,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/mmc_sd-r4.patch;patch=1 \
            ${RPSRC}/corgi_snd-r4.patch;patch=1 \
            ${RPSRC}/sharpsl_param-r2.patch;patch=1 \
-           ${RPSRC}/w100_split-r0.patch;patch=1 \
-           ${RPSRC}/w100_split1-r0.patch;patch=1 \
-           ${RPSRC}/w100_split2-r0.patch;patch=1 \
-           ${RPSRC}/w100_split3-r0.patch;patch=1 \
-           ${RPSRC}/w100_split4-r0.patch;patch=1 \
-           ${RPSRC}/w100_split5-r0.patch;patch=1 \
+           ${RPSRC}/w100_split-r2.patch;patch=1 \
            ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
            ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
            ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
