@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Login Manager (similar to gdm, xdm or kdm)"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opie-login"

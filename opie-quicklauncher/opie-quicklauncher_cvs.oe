@@ -1,7 +1,7 @@
-DESCRIPTION = "Opie Quick Launcher"
+DESCRIPTION = "The Opie Quick Launcher Loader"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 

@@ -1,17 +1,14 @@
 DESCRIPTION = "Opie QCOP IPC Client"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libqpe-opie"
 PV = "1.0.0-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/qcop"
 S = "${WORKDIR}/qcop"
 
-inherit palmtop
-
-EXTRA_QMAKEVARS_POST = 'DESTDIR="${S}"'
+inherit opie
 
 do_install() {
 	install -d ${D}/${palmtopdir}/bin/
