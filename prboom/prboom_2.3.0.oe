@@ -1,0 +1,24 @@
+DESCRIPTION="A Doom Clone based on SDL"
+SECTION=base
+PRIORITY=optional
+RDEPENDS=libc6 libsdl-qpe libsdl-net
+DEPENDS=virtual/libc libsdl-qpe libsdl-net
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
+          file://${FILESDIR}/m4.patch;patch=1
+
+inherit autotools libtool
+
+EXTRA_OECONF = --without-x --disable-sdltest
+
+do_configure() {
+	oe_runconf
+}
+
+do_install() {
+	install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics}
+	install -m 0755 src/prboom ${D}/opt/QtPalmtop/bin/prboom
+	install -m 0644 ${FILESDIR}/prboom.png ${D}/opt/QtPalmtop/pics/prboom.png
+	install -m 0644 ${FILESDIR}/prboom.desktop ${D}/opt/QtPalmtop/apps/Games/prboom.desktop
+}
+
