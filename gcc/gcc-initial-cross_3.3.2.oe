@@ -13,3 +13,8 @@ EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
 		--disable-threads \
                 --enable-multilib \
                 --program-prefix=${TARGET_SYS}-
+
+do_stage_prepend () {
+	mkdir -p ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2
+	ln -sf libgcc.a ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2/libgcc_eh.a
+}

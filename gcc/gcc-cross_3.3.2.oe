@@ -27,6 +27,7 @@ do_configure () {
 	export RANLIB="${TARGET_SYS}-ranlib"
 	export LD="${TARGET_SYS}-ld"
 	export NM="${TARGET_SYS}-nm"
+	rm -f ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/3.3.2/libgcc_eh.a
 	oe_runconf
 }
 

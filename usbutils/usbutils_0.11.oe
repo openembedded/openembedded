@@ -1,0 +1,22 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+S = ${WORKDIR}/usbutils-${PV}
+
+inherit autotools libtool
+EXTRA_OECONF=--program-prefix=
+sbindir=/sbin
+bindir=/bin
+
+libusb_remove () {
+	cd ${S}
+	rm -rf libusb
+}
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	oe.build.exec_func('libusb_remove', d)
+}
+
