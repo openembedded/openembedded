@@ -2,7 +2,6 @@
 found=`cat /proc/version | cut -d ' ' -f3`
 
 if [ "VERSION" != "$found" ] ; then
-	chvt 1
 	echo -e >/dev/tty1
 	echo -e "\033[31;1m ******************************************* \033[0m" >/dev/tty1
 	echo -e "\033[31;1m *            \033[0mW A R N I N G !              \033[31;1m* \033[0m" >/dev/tty1
@@ -27,5 +26,4 @@ if [ "VERSION" != "$found" ] ; then
         echo -e "\033[31;1m ******************************************* \033[0m" >/dev/tty1
         echo >/dev/tty1
 	sleep 60
-	chvt 2
 fi

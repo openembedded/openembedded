@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r34"
+PR = "r35"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -88,7 +88,7 @@ do_install () {
 	if [ "${DISTRO}" == "openzaurus" ]; then
 		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}/etc/init.d/checkversion
         	chmod 0755 				${D}/etc/init.d/checkversion
-		ln -sf          ../init.d/checkversion  ${D}/etc/rcS.d/S05version
+		ln -sf          ../init.d/checkversion  ${D}/etc/rcS.d/S00version
 	fi
 
 	if [ "${MACHINE}" == "c7x0" ]; then
