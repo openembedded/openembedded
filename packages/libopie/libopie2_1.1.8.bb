@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite3 libpcap"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
-PR = "r4"
+PR = "r5"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/libopie2 \
@@ -64,38 +64,16 @@ do_stage() {
 	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
 }
 
-EXAMPLES = "\
-	oconfigdemo		\
-	oglobalsettingsdemo	\
-	onetworkdemo		\
-	oplugins		\
-	osoundsystemdemo	\
-	owidgetstack-example	\
-	odebugdemo		\
-	olistviewdemo		\
-	onotifydemo		\
-	oprocessdemo		\
-	osplitter_example	\
-	sqltest			\
-"
-
 do_install() {
 	install -d ${D}/${palmtopdir}/lib
 	for f in ${LIBS}
 	do
 		oe_libinstall -so libopie$f ${D}/${palmtopdir}/lib
 	done
-
-	install -d ${D}/${palmtopdir}/bin
-	for f in ${EXAMPLES}
-	do
-		install -m 0755 $f ${D}/${palmtopdir}/bin
-	done
 }
 
-PACKAGES = "libopie2-examples libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 
-FILES_libopie2-examples = "${palmtopdir}/bin"
 FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so*"
 FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so*"
 FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so*"
