@@ -60,7 +60,7 @@ OEMASK = ""
 # to build any of two Linux 2.4 Embedix kernels,
 # i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18 - and don't forget
 # to rename the binaries as instructed in the Wiki.
-#ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
+# ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
@@ -73,53 +73,52 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # Note that a full build of everything in OE will take GigaBytes of hard
 # disk space, so make sure to free enough space. The default TMPDIR is
 # <build directory>/tmp
-#TMPDIR = /usr/local/projects/oetmp
+# TMPDIR = /usr/local/projects/oetmp
 
 # Uncomment this to specify a machine to build for. See the conf directory
 # for machines currently known to OpenEmbedded.
-#MACHINE = "collie"
+# MACHINE = "collie"
 
 # Use this to specify the target architecture. Note that this is only
 # needed when building for a machine not known to OpenEmbedded. Better use
 # the MACHINE attribute (see above)
-#TARGET_ARCH = "arm"
+# TARGET_ARCH = "arm"
 
 # Use this to specify the target operating system.  The default is "linux",
 # for a normal linux system with glibc. Set this to "linux-uclibc" if you want
 # to build a uclibc based system.
-#TARGET_OS = "linux"
-#TARGET_OS = "linux-uclibc"
+# TARGET_OS = "linux"
+# TARGET_OS = "linux-uclibc"
 
 # Uncomment this to select a distribution policy. See the conf directory
 # for distributions currently known to OpenEmbedded.
-#DISTRO = "familiar"
+# DISTRO = "familiar"
 
 # Uncomment one of these to build packages during the build process.
 # This is done automatically if you set DISTRO (see above)
-#INHERIT = "package_ipk"
-#INHERIT = "package_tar"
+# INHERIT = "package_ipk"
+# INHERIT = "package_tar"
 
 # Uncomment one of these lines to get a rootfs image type other than jffs2
-#IMAGE_FSTYPE = "tar"
-#IMAGE_FSTYPE = "cramfs"
+# IMAGE_FSTYPE = "tar"
+# IMAGE_FSTYPE = "cramfs"
 
 # Uncomment this to disable the parse cache (not recommended).
 # CACHE = ""
 
 # Uncomment this if you want OE to emit debugging output
-#OEDEBUG = "yes"
+# OEDEBUG = "yes"
 
 # Uncomment these two if you want OE to build images useful for debugging.
-#DEBUG_BUILD = "1"
-#INHIBIT_PACKAGE_STRIP = "1"
+# DEBUG_BUILD = "1"
+# INHIBIT_PACKAGE_STRIP = "1"
 
 # Uncomment this if you want OE to emit the log if a build fails.
 OEINCLUDELOGS = "yes"
 
 # Specifies a location to search for pre-generated tarballs when fetching
 # a cvs:// URI.  Uncomment this, if you not want to pull directly from CVS.
-#CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
+# CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
 
 # EDIT THIS FILE and then remove the line below before using!
 REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
-
