@@ -14,6 +14,13 @@ S = "${WORKDIR}/qt-${PV}shot-${SNAPDATE}"
 
 export QTDIR = "${S}"
 
+def qte_os(d):
+	import oe, re
+	arch = oe.data.getVar('TARGET_OS', d, 1)
+	if re.match("^linux-uclibc$", arch):
+		arch = "linux"
+	return arch
+
 def qte_arch(d):
 	import oe, re
 	arch = oe.data.getVar('TARGET_ARCH', d, 1)
@@ -23,12 +30,13 @@ def qte_arch(d):
 		arch = "x86"
 	return arch
 
+QTE_OS := "${@qte_os(d)}"
 QTE_ARCH := "${@qte_arch(d)}"
 
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
-EXTRA_OECONF_ARCH = "-xplatform ${TARGET_OS}-${QTE_ARCH}-g++"
-EXTRA_OECONF_ARCH_collie = "-xplatform ${TARGET_OS}-sharp-g++"
-EXTRA_OECONF_ARCH_ramses = "-xplatform ${TARGET_OS}-ramses-g++"
+EXTRA_OECONF_ARCH = "-xplatform ${QTE_OS}-${QTE_ARCH}-g++"
+EXTRA_OECONF_ARCH_collie = "-xplatform ${QTE_OS}-sharp-g++"
+EXTRA_OECONF_ARCH_ramses = "-xplatform ${QTE_OS}-ramses-g++"
 
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif ${EXTRA_OECONF_ARCH} ${EXTRA_OECONF_CONFIG}"
 
