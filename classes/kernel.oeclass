@@ -77,6 +77,7 @@ kernel_do_stage() {
 	cp -fR scripts ${STAGING_KERNEL_DIR}/
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
+	install -m 0644 System.map ${STAGING_KERNEL_DIR}/System.map-${PV}
 }
 
 kernel_do_install() {
@@ -117,7 +118,7 @@ FILES_kernel = "/boot"
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
-	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} ${KERNEL_VERSION}
+	${HOST_PREFIX}depmod -A -b $D -F ${STAGING_KERNEL_DIR}/System.map-${PV} ${KERNEL_VERSION}
 else
 	depmod -A
 	update-modules || true
