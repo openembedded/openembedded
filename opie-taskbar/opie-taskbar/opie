@@ -1,5 +1,8 @@
 #!/bin/sh
 #
+[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/root
+[ -z $HOME ] && export HOME=/$LOGNAME
+
 export QTDIR=/opt/QtPalmtop
 export OPIEDIR=/opt/QtPalmtop
 export QPEDIR=/opt/QtPalmtop
@@ -34,7 +37,8 @@ fi
 
 if [ ! -x "$HOME/Settings/qpe.conf" ] ; then
     echo "Copying default qpe.conf into $HOME/Settings/"
-    cp -f $OPIEDIR/etc/skel/qpe.conf $HOME/Settings/qpe.conf
+    mkdir -p $HOME/Settings/
+    cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
 fi
 
 case $1 in
