@@ -13,14 +13,8 @@ S := ${WORKDIR}/${PN}-1.5.4
 
 inherit autotools
 
-EXTRA_OECONF = --disable-pgp --without-mixmaster --with-curses=${STAGING_DIR}/target \
-	       --enable-pop --enable-imap --with-ssl --enable-compressed --enable-nntp
-
-do_configure_prepend () {
-	if [ -d ${STAGING_DIR}/share/aclocal ]; then
-		cp -a m4/*.m4 ${STAGING_DIR}/share/aclocal/
-	fi
-}
+EXTRA_OECONF = '--disable-pgp --without-mixmaster --with-curses=${STAGING_DIR}/target \
+	        --enable-pop --enable-imap --with-ssl --enable-compressed --enable-nntp'
 
 do_compile_prepend () {
 	${BUILD_CC} makedoc.c -o makedoc
