@@ -6,7 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r15"
+PR = "r17"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount \
@@ -120,3 +120,6 @@ do_install_append_tosa () {
 }
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
