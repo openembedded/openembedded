@@ -4,9 +4,15 @@
 auto lo
 iface lo inet loopback
 
+# Wireless interfaces
 iface wlan0 inet dhcp
-
+wireless_mode wlan0 managed
 iface atml0 inet dhcp
 
+# Wired or wireless interfaces
 iface eth0 inet dhcp
+iface eth1 inet dhcp
+
+# Zaurus usbnet
+iface usbd0 inet dhcp
 
