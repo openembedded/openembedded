@@ -12,9 +12,9 @@ DEPENDS = 'base-files base-passwd-3.5.7 \
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug ipkg initscripts modutils-depmod \
-	netbase \
-	resolvconf sysvinit tinylogin portmap \
+	netbase resolvconf sysvinit tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz putty-scp putty-sftp putty-ssh \
+	portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
