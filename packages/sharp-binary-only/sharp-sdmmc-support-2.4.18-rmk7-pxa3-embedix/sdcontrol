@@ -9,7 +9,7 @@
 
 ACTION=$1
 DEVICE=/dev/mmcda1
-MOUNT_POINT=/mnt/card
+MOUNT_POINT=/media/card
 SMB_MOUNT=/home/samba/SD_Card
 INSTALL_DIR=Documents/Install_Files
 

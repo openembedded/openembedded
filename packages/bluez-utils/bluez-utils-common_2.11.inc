@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "bluez-libs pcmcia-cs"
+DEPENDS = "bluez-libs-2.11 pcmcia-cs"
 RPROVIDES = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
 
