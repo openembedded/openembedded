@@ -22,6 +22,5 @@ QMAKE_PROFILES = "opieplayer2.pro"
 do_install() {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/ ${S}${palmtopdir}/apps/Applications/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-	install -m 0644 ${WORKDIR}/apps/Applications/mediaplayer.desktop ${D}${palmtopdir}/apps/Applications/
 }
 
