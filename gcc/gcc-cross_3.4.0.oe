@@ -2,7 +2,7 @@ include gcc_${PV}.oe
 inherit cross
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}"
 
-DEPENDS = "virtual/${TARGET_PREFIX}binutils glibc patcher-native"
+DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc patcher-native"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
 # Files for these are defined in the main gcc.oe
