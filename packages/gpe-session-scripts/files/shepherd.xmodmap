@@ -1,0 +1,23 @@
+keycode 38 = Mode_switch
+keycode 31 = w W caret
+keycode 13 = e E equal
+keycode 26 = r R plus
+keycode 28 = t T bracketleft
+keycode 33 = y y bracketright
+keycode 29 = u U braceleft
+keycode 17 = i I braceright
+keycode 12 = d D period
+keycode 14 = f F backslash
+keycode 15 = g G semicolon
+keycode 16 = h H colon
+keycode 18 = j J asterisk
+keycode 19 = k K currency
+keycode 20 = l L bar
+keycode 10 = b B underscore
+keycode 66 = minus minus at
+keycode 71 = slash slash less
+keycode 72 = question question greater
+
+remove mod1 = Mode_switch
+add mod2 = Mode_switch
+
