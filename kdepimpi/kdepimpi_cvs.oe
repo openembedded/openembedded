@@ -13,7 +13,7 @@ LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 PV = "1.9.3a-${CVSDATE}"
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -31,7 +31,10 @@ S = "${WORKDIR}/kdepim"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, OBJECTS_DIR=obj/ MOC_DIR=moc/ INCLUDEPATH+=../ LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++ LIBS-=-lmicrogammu LIBS+=-llibgammu"
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DIR=moc/ \
+			 LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++ \
+			 LIBS-=-lmicrogammu LIBS+=-lGammu \
+			 LIBS-=-lsdp LIBS+=-lbluetooth LIBS+=-Wl,-rpath-link,${S}/dest"
 QMAKE_PROFILES= "all.pro"
 
 # we don't have libopie1 (and ldap?)
