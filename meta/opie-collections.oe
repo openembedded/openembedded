@@ -25,7 +25,7 @@ OPIE_LIBS_RDEPENDS_append_tosa     = " qpf-bitstream-vera-large"
 OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
                      opie-suspendapplet opie-batteryapplet opie-homeapplet \
                      opie-multikeyapplet opie-rotateapplet opie-vtapplet \
-                     opie-cardmon opie-irdaapplet"
+                     opie-cardmon opie-irdaapplet opie-brightnessapplet"
 
 OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
 
