@@ -12,6 +12,11 @@ SRC_URI = "http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
            file://${FILESDIR}/qtmod-sip-staging.patch;patch=1"
 S = "${WORKDIR}/PyQwt-20040118"
 
+#
+# FIXME - This should be updated to use OE's qmake-base.oeclass
+#         or the full qmake.oeclass.
+#
+
 export QTDIR = "${STAGING_LIBDIR}/.."
 
 EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
@@ -27,7 +32,7 @@ EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
 PYTHON = "${STAGING_BINDIR}/python"
 SIP = "${STAGING_BINDIR}/sip"
 QMAKE = "${STAGING_BINDIR}/qmake"
-QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-oe-g++"
+QMAKESPEC = "${QMAKE_MKSPEC_PATH}/${TARGET_OS}-oe-g++"
 
 MODULES = "qwt"
 

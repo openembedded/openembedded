@@ -1,0 +1,48 @@
+DESCRIPTION = "Qt/X11 Version ${PV}"
+SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "GPL/QPL"
+DEPENDS = "qmake-native x11"
+
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
+	   file://${FILESDIR}/no-examples.patch;patch=1"
+S = "${WORKDIR}/qt-x11-free-${PV}"
+
+#
+# FIXME - This should be updated to use OE's qmake-base.oeclass
+#         or the full qmake.oeclass.
+#
+
+export QTDIR = "${S}"
+export SYSCONF_CXX = "${CCACHE} g++"
+export SYSCONF_CC  = "${CCACHE} gcc"
+export SYSCONF_LINK  = "${CCACHE} g++"
+THIS_QMAKESPEC = "${STAGING_DATADIR}/qmake/${TAGET_OS}-oe-g++"
+export QMAKESPEC = ""
+ARCH_i686 = "x86"
+
+QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama -no-xcursor -no-xrandr \
+                   -no-xrender -no-xft -no-tablet -no-xkb -no-dlopen-opengl -no-freetype -no-thread -no-nis -no-cups"
+
+do_configure() {
+	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast
+}
+
+do_compile() {
+	LD_LIBRARY_PATH=${S}/lib oe_runmake \
+		QMAKE="${STAGING_BINDIR}/qmake -after INCLUDEPATH+=${STAGING_INCDIR} LIBS+=-I${STAGING_LIBDIR}" \
+		QMAKESPEC="${THIS_QMAKESPEC}"
+}
+
+do_stage() {
+	oe_soinstall lib/libqt.so.${PV} ${STAGING_LIBDIR}/
+	for f in include/*.h
+	do
+		install -m 0644 $f ${STAGING_INCDIR}/
+	done
+}
+
+do_install() {
+	install -d ${D}/${libdir}/
+	oe_soinstall lib/libqt.so.${PV} ${D}/{libdir}/
+}

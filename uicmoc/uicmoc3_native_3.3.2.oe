@@ -5,22 +5,26 @@ LICENSE = "GPL/QPL"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-3.3.2.tar.bz2 \
 	   file://${FILESDIR}/no-examples.patch;patch=1"
+
 S = "${WORKDIR}/qt-embedded-free-3.3.2"
 
-inherit native
+inherit native qmake-base
 
 export QTDIR = "${S}"
-export SYSCONF_CXX = "${CCACHE} g++"
-export SYSCONF_CC  = "${CCACHE} gcc"
-export SYSCONF_LINK  = "${CCACHE} g++"
-export QMAKESPEC = ""
-ARCH_i686 = "x86"
 
-QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama -no-xcursor -no-xrandr \
-                   -no-xrender -no-xft -no-tablet -no-xkb -no-dlopen-opengl -no-freetype -no-thread -no-nis -no-cups"
+CXXFLAGS += " -DQWS"
+
+QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound \
+                   -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama \
+                   -no-xcursor -no-xrandr -no-xrender -no-xft -no-tablet \
+                   -no-xkb -no-dlopen-opengl -no-freetype -no-thread \
+                   -no-nis -no-cups -prefix ${prefix} \
+                   -xplatform ${OE_QMAKE_PLATFORM} \
+                   -platform ${OE_QMAKE_PLATFORM}"
 
 do_configure() {
-	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS}
+    oe_qmake_mkspecs
+    echo "yes" | ./configure ${QT_CONFIG_FLAGS}
 }
 
 do_stage() {

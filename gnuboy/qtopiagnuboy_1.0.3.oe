@@ -11,8 +11,13 @@ S = "${WORKDIR}/gnuboy"
 FILES = ""
 FILES_${PN} = "${palmtopdir}/"
 
+#
+# FIXME - This should be updated to use OE's qmake-base.oeclass
+#         or the full qmake.oeclass.
+#
+
 QMAKE = "${STAGING_BINDIR}/qmake"
-QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-oe-g++"
+QMAKESPEC = "${QMAKE_MKSPEC_PATH}/${TARGET_OS}-oe-g++"
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 qtopiadir = "${S}/gnuboy-${PV}-qtopia2"
 

@@ -11,7 +11,10 @@ SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz"
 
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
-inherit qmake
+#
+# FIXME - This should be updated to use OE's qmake-base.oeclass
+#         or the full qmake.oeclass.
+#
 
 export QTDIR = "${STAGING_LIBDIR}/.."
 
@@ -28,7 +31,7 @@ EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
 PYTHON = "${STAGING_BINDIR}/python"
 SIP = "${STAGING_BINDIR}/sip"
 QMAKE = "${STAGING_BINDIR}/qmake"
-QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-oe-g++"
+QMAKESPEC = "${QMAKE_MKSPEC_PATH}/${TARGET_OS}-oe-g++"
 
 MODULES = "qt qtcanvas qttable qtpe"
 
