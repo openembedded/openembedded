@@ -22,6 +22,10 @@ EXTRA_QMAKEVARS_POST = "DESTDIR="
 
 CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
 
+do_compile_prepend_ramses () {
+	ln -s custom-ramses.h custom.h
+}
+
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \
                  ${STAGING_INCDIR}/qtopia \
