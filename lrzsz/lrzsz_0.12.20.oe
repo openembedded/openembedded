@@ -5,7 +5,8 @@ DESCRIPTION = "Tools for zmodem/xmodem/ymodem file transfer"
 SRC_URI = "http://www.ohse.de/uwe/releases/lrzsz-${PV}.tar.gz \
 	   file://${FILESDIR}/autotools.patch;patch=1 \
 	   file://${FILESDIR}/makefile.patch;patch=1 \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://${FILESDIR}/m4.patch;patch=1 \
+	   file://${FILESDIR}/po-fix.patch;patch=1"
 
 inherit autotools
 
