@@ -7,6 +7,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "jpeg libpng zlib"
+PR = "r1"
 
 SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz"
 S = "${WORKDIR}/DirectFB-${PV}"
@@ -18,12 +19,12 @@ EXTRA_OECONF = "--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=no
 do_stage() {
 	oe_runmake -C src 'libdir=/lib' 'includedir=/include/directfb' \
 			  'oldincludedir=/include' 'datadir=/share' \
-			  'DESTDIR=${STAGING_DIR}' \
+			  'DESTDIR=${STAGING_LIBDIR}/..' \
 			  'INTERNALINCLUDEDIR=/include/directfb-internal' \
 			  install-internalincludeHEADERS install-libLTLIBRARIES
 	oe_runmake -C include 'libdir=/lib' 'includedir=/include/directfb' \
 			      'oldincludedir=/include' 'datadir=/share' \
-	       		      'DESTDIR=${STAGING_DIR}' \
+	       		      'DESTDIR=${STAGING_LIBDIR}/..' \
 			      'INTERNALINCLUDEDIR=/include/directfb-internal' \
 			      install-internalincludeHEADERS install-includeHEADERS
 }
