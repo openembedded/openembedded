@@ -11,14 +11,14 @@ OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATC
 DEPENDS = "base-files base-passwd-3.5.7 \
         busybox dropbear hotplug initscripts netbase \
         sysvinit tinylogin lrzsz portmap \
-        ixp4xx-csr ixp425-eth \
+        ixp4xx-csr ixp425-eth openslug-init \
         ipkg-collateral ipkg ipkg-link \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear hotplug initscripts netbase \
         update-modules sysvinit tinylogin lrzsz portmap \
-        ixp4xx-csr ixp425-eth \
+        ixp4xx-csr ixp425-eth  openslug-init \
         ipkg-collateral ipkg ipkg-link \
         ${OPENSLUG_EXTRA_INSTALL}"
 
