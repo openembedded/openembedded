@@ -1,0 +1,45 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libesmtp-1.0.1/configure.in~configure	2003-09-11 17:23:26.000000000 -0400
++++ libesmtp-1.0.1/configure.in	2004-01-20 11:59:35.000000000 -0500
+@@ -231,7 +231,7 @@
+ 	if test x$enable_emulate_getaddrinfo != xyes ; then
+ 		AC_MSG_ERROR([getaddrinfo not found: try --with-lwres or --enable-emulate-getaddrinfo])
+ 	fi
+-	LIBOBJS="$LIBOBJS getaddrinfo.o"
++	AC_LIBOBJ([getaddrinfo])
+ fi
+ 
+ if test x"$enable_emulate_getaddrinfo" != xno ; then
+@@ -259,7 +259,7 @@
+ 	AC_SEARCH_LIBS(gethostbyname, resolv bind nsl, ,
+ 		       [AC_MSG_ERROR([cannot find gethostbyname])])
+     fi
+-    LIBOBJS="$LIBOBJS gethostbyname.o"
++    AC_LIBOBJ([gethostbyname])
+ 
+     AC_CACHE_CHECK([for IPv6 support], acx_cv_sys_use_ipv6, [
+ 	    AC_TRY_COMPILE([
+@@ -572,7 +572,7 @@
+ dnl #########################################################################
+ dnl Check that snprintf works correctly.
+ dnl #########################################################################
+-ACX_SNPRINTF(,[LIBOBJS="$LIBOBJS snprintf.o"])
++ACX_SNPRINTF(,[AC_LIBOBJ([snprintf])])
+ 
+ dnl #########################################################################
+ dnl Make substitutions
+@@ -588,8 +588,8 @@
+ AC_SUBST(RANLIB)
+ AC_SUBST(subdirs)
+ 
+-LTLIBOBJS=`echo "$LIBOBJS" | sed ['s/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/']`
+-AC_SUBST(LTLIBOBJS)
++#LTLIBOBJS=`echo "$LIBOBJS" | sed ['s/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/']`
++#AC_SUBST(LTLIBOBJS)
+ LTALLOCA=`echo "$ALLOCA" | sed ['s/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/']`
+ AC_SUBST(LTALLOCA)
+ 
