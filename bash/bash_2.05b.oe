@@ -2,8 +2,36 @@ DEPENDS = "ncurses"
 DESCRIPTION = "An sh-compatible command language interpreter."
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
-	   file://make.patch;patch=1 \
-	   file://configure.patch;patch=1"
+           file://bashbug-editor.patch;patch=1;pnum=0 \
+           file://deb-bash-config.patch;patch=1 \
+           file://deb-examples.patch;patch=1;pnum=0 \
+           file://man-arithmetic.patch;patch=1;pnum=0 \
+           file://man-fignore.patch;patch=1;pnum=0 \
+           file://man-bashrc.patch;patch=1 \
+           file://privmode.patch;patch=1 \
+           file://various.patch;patch=1 \
+           file://report-155436.patch;patch=1;pnum=0 \
+           file://bash205b-001.patch;patch=1;pnum=0 \
+           file://bash205b-002.patch;patch=1;pnum=0 \
+           file://bash205b-003.patch;patch=1;pnum=0 \
+           file://bash205b-004.patch;patch=1;pnum=0 \
+           file://bash205b-005.patch;patch=1;pnum=0 \
+           file://bash205b-006.patch;patch=1;pnum=0 \
+           file://bash205b-007.patch;patch=1;pnum=0 \
+           file://rl-examples.patch;patch=1;pnum=0 \
+           file://rl-inputrc.patch;patch=1 \
+           file://rl-del-backspace-policy.patch;patch=1;pnum=0 \
+           file://rl-8bit-init.patch;patch=1 \
+           file://rl-slow-multibyte.patch;patch=1 \
+           file://s390-build.patch;patch=1;pnum=0 \
+           file://rbash-manpage.patch;patch=1;pnum=0 \
+           file://rbash-login-shell.patch;patch=1 \
+           file://execute-cmd.patch;patch=1 \
+           file://builtins-shift.patch;patch=1;pnum=0 \
+           file://suspend-segfault.patch;patch=1 \
+           file://mailcheck.patch;patch=1 \
+           file://autofoo.patch;patch=1 \
+           file://gcc34.patch;patch=1"
 
 inherit autotools
 
@@ -17,9 +45,10 @@ export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 export CPPFLAGS_FOR_BUILD = "${BUILD_CPPFLAGS}"
 export LDFLAGS_FOR_BUILD = "${BUILD_LDFLAGS}"
 export CC_FOR_BUILD = "${BUILD_CC}"
-do_configure_prepend () {
+
+do_configure () {
 	if [ ! -e acinclude.m4 ]; then
 		mv aclocal.m4 acinclude.m4
 	fi
-	support/mkconffiles
+	autotools_do_configure
 }
