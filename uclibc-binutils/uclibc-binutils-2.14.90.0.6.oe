@@ -1,0 +1,70 @@
+inherit autotools
+
+DESCRIPTION := A GNU collection of binary utilities
+LICENSE := GPL
+MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+
+DEPENDS := virtual/${CROSS}binutils virtual/${CROSS}gcc \
+           virtual/libc virtual/libc-headers patcher
+
+PACKAGES = ${PN} ${PN}-doc
+FILES_${PN} = ${includedir} ${libdir} ${bindir}/*
+
+SRC_URI := http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
+           file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
+           file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
+           file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
+           file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
+           file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1
+
+S := ${WORKDIR}/binutils-${PV}
+B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
+
+EXTRA_OECONF := --enable-targets=${TARGET_SYS} \
+                --with-sysroot=${prefix} \
+                --with-lib-path=${prefix}/lib:/lib \
+                --enable-multilib \
+                --program-prefix=${TARGET_SYS}-
+
+# This is necessary due to a bug in the binutils Makefiles
+EXTRA_OEMAKE = configure-build-libiberty all
+
+export AR = ${CROSS}ar
+export AS = ${CROSS}as
+export LD = ${CROSS}ld
+export NM = ${CROSS}nm
+export RANLIB = ${CROSS}ranlib
+export OBJCOPY = ${CROSS}objcopy
+export OBJDUMP = ${CROSS}objdump
+
+export AR_FOR_TARGET = ${TARGET_SYS}-ar
+export AS_FOR_TARGET = ${TARGET_SYS}-as
+export LD_FOR_TARGET = ${TARGET_SYS}-ld
+export NM_FOR_TARGET = ${TARGET_SYS}-nm
+export RANLIB_FOR_TARGET = ${TARGET_SYS}-ranlib
+
+export CC_FOR_HOST = ${CCACHE} ${CROSS}gcc
+export CXX_FOR_HOST = ${CCACHE} ${CROSS}gcc
+
+export CC_FOR_BUILD = ${BUILD_CC}
+
+export CC = ${CCACHE} ${CROSS}gcc
+
+binutilsbuild_do_patch () {
+	oenote IN binutils patch
+	perl -i -p -e 's,#.*define.*ELF_DYNAMIC_INTERPRETER.*".*",#define ELF_DYNAMIC_INTERPRETER "/lib/ld-uClibc.so.0",;' `grep -lr ELF_DYNAMIC_INTERPRETER *`
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	oe.build.exec_func('binutilsbuild_do_patch', d)
+}
+
+do_install_append () {
+	cd ${D}/${bindir}
+	# Symlinks for if this is intended to be the only compiler
+	for p in ${TARGET_SYS}-* ; do
+		ln -s $p `echo $p | sed -e s,${TARGET_SYS}-,,`
+	done
+}
+

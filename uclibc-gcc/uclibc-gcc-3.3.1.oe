@@ -1,0 +1,160 @@
+inherit autotools
+
+DESCRIPTION := The GNU cc and gcc C compilers.
+LICENSE := GPL
+MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+
+DEPENDS := virtual/${CROSS}binutils virtual/${CROSS}gcc \
+           virtual/uclibc virtual/uclibc-headers patcher
+
+PACKAGES = ${PN} ${PN}-cplusplus \
+           uclibc-libgcc uclibc-libstdcplusplus \
+           ${PN}-doc
+
+FILES_${PN} = ${bindir}/${TARGET_SYS}-gcc \
+              ${bindir}/${TARGET_SYS}-cpp \
+              ${bindir}/${TARGET_SYS}-gcov \
+              ${bindir}/${TARGET_SYS}-gccbug \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1 \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/collect2 \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/crt* \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/specs \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc* \
+              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include \
+              ${prefix}/${TARGET_SYS}/lib/libgcc_s.so \
+              ${prefix}/${TARGET_SYS}/lib/libiberty.a \
+              ${bindir}/cc ${bindir}/gcc ${bindir}/cpp \
+              ${bindir}/gcov ${bindir}/gccbug
+
+FILES_${PN}-cplusplus = ${bindir}/${TARGET_SYS}-g++ \
+                  ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1plus \
+                  ${prefix}/${TARGET_SYS}/lib/libstdc++.so \
+                  ${prefix}/${TARGET_SYS}/lib/libstdc++.la \
+                  ${prefix}/${TARGET_SYS}/lib/libstdc++.a \
+                  ${prefix}/${TARGET_SYS}/lib/libsupc++.la \
+                  ${prefix}/${TARGET_SYS}/lib/libsupc++.a \
+                  ${includedir}/c++ \
+                  ${bindir}/c++ ${bindir}/g++
+
+FILES_uclibc-libgcc = /lib/libgcc_s.so.*
+
+FILES_uclibc-libstdcplusplus = ${prefix}/${TARGET_SYS}/lib/libstdc++.so.*
+
+FILES_${PN}-doc = ${infodir} ${mandir} \
+                  ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README
+
+SRC_URI := http://gcc.get-software.com/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
+           file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
+           file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
+           file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1
+
+S := ${WORKDIR}/gcc-${PV}
+B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
+
+EXTRA_OECONF := --with-local-prefix=/usr/local \
+                --with-gxx-include-dir=${includedir}/c++ \
+                --enable-target-optspace \
+                --disable-nls \
+                --with-gnu-ld \
+                --disable-__cxa_atexit \
+                --enable-languages=c,c++ \
+                --enable-shared \
+                --enable-multilib \
+                --program-prefix=${TARGET_SYS}-
+
+do_configure_prepend () {
+	# Setup these vars for cross building only
+	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
+		export CC_FOR_TARGET="${CCACHE} ${CROSS}gcc"
+		export GCC_FOR_TARGET="${CCACHE} ${CROSS}gcc"
+		export CXX_FOR_TARGET="${CCACHE} ${CROSS}g++"
+		export AS_FOR_TARGET="${CROSS}as"
+		export LD_FOR_TARGET="${CROSS}ld"
+		export NM_FOR_TARGET="${CROSS}nm"
+		export AR_FOR_TARGET="${CROSS}ar"
+		export RANLIB_FOR_TARGET="${CROSS}ranlib"
+	fi
+}
+
+gccbuild_do_patch () {
+	#
+	# Hack things to use the correct shared lib loader
+	#
+	LIST=`grep -lr -- "-dynamic-linker.*\.so[\.0-9]*" .`
+	if [ -n "$LIST" ] ; then
+		perl -i -p -e "s,-dynamic-linker.*\.so[\.0-9]*},-dynamic-linker /lib/ld-uClibc.so.0},;" $LIST
+	fi
+
+	#
+	# Prevent system glibc start files from leaking in uninvited...
+	#
+	perl -i -p -e "s,standard_startfile_prefix_1 = \".*,standard_startfile_prefix_1 = \"${CROSS_DIR}/${TARGET_SYS}/lib/\";,;" gcc/gcc.c
+	perl -i -p -e "s,standard_startfile_prefix_2 = \".*,standard_startfile_prefix_2 = \"${CROSS_DIR}/${TARGET_SYS}/usr/lib/\";,;" gcc/gcc.c
+
+	#
+	# Prevent system glibc include files from leaking in uninvited...
+	#
+	perl -i -p -e "s,^NATIVE_SYSTEM_HEADER_DIR.*,NATIVE_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
+	perl -i -p -e "s,^CROSS_SYSTEM_HEADER_DIR.*,CROSS_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
+	perl -i -p -e "s,^#define.*STANDARD_INCLUDE_DIR.*,#define STANDARD_INCLUDE_DIR \"${CROSS_DIR}/${TARGET_SYS}/include\",;" gcc/cppdefault.h
+
+	#
+	# Prevent system glibc libraries from being found by collect2 
+	# when it calls locatelib() and rummages about the system looking 
+	# for libraries with the correct name...
+	#
+	perl -i -p -e "s,\"/lib,\"${CROSS_DIR}/${TARGET_SYS}/lib,g;" \
+		gcc/collect2.c
+	perl -i -p -e "s,\"/usr/,\"${CROSS_DIR}/${TARGET_SYS}/usr/,g;" \
+		gcc/collect2.c
+
+	#
+	# Prevent gcc from using the unwind-dw2-fde-glibc code
+	#
+	perl -i -p -e "s,^#ifndef inhibit_libc,#define inhibit_libc\n#ifndef inhibit_libc,g;" gcc/unwind-dw2-fde-glibc.c
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	oe.build.exec_func('gccbuild_do_patch', d)
+}
+
+do_install_append () {
+	# Cleanup some of the gcc-lib stuff
+	rm -rf ${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
+
+	# Move libgcc_s into /lib
+	mkdir -p ${D}/lib
+	mv -f ${D}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so.* ${D}/lib
+	rm -f ${D}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
+	ln -s ../../../lib/libgcc_s.so.? \
+	      ${D}/${prefix}/${TARGET_SYS}/libgcc_s.so
+
+	# Cleanup manpages..
+	rm -rf ${D}/${mandir}/man7
+	mv ${D}/${mandir}/man1/cpp.1 \
+	   ${D}/${mandir}/man1/${TARGET_SYS}-cpp.1
+	mv ${D}/${mandir}/man1/gcov.1 \
+	   ${D}/${mandir}/man1/${TARGET_SYS}-gcov.1
+
+	cd ${D}/${bindir}
+
+	# We care about g++ not c++
+	rm -f *c++
+
+	# We don't care about the gcc-<version> ones for this
+	rm -f *gcc-?.?*
+
+#	# Cleanup after gcc's --program-prefix failing..
+#	rm -f ${TARGET_SYS}-${TARGET_ARCH}-uclibc-*
+
+#	# Symlinks for if this is intended to be the only compiler
+#	for p in ${TARGET_ARCH}-uclibc-* ; do
+#		ln -s $p `echo $p | sed -e s,${TARGET_ARCH}-uclibc-,,`
+#		ln -s $p `echo $p | sed -e s,uclibc,linux,`
+#	done
+	ln -s ${TARGET_SYS}-g++ g++
+	ln -s ${TARGET_SYS}-gcc gcc
+	ln -s g++ c++
+	ln -s gcc cc
+}

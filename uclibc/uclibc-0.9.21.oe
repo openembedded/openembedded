@@ -1,0 +1,84 @@
+DESCRIPTION := C library for embedded systems
+LICENSE := LGPL
+SECTION := libs
+PRIORITY := required
+MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+
+DEPENDS := virtual/${CROSS}binutils virtual/${CROSS}gcc-initial
+PROVIDES := virtual/libc virtual/uclibc \
+            virtual/libc-headers virtual/uclibc-headers
+
+SRC_URI := http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
+           http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2
+
+S := ${WORKDIR}/uClibc-${PV}
+
+UCLIBC_PREFIX := ${CROSS_DIR}/${TARGET_SYS}
+
+EXTRA_OEMAKE =
+
+uclibcbuild_do_patch() {
+	rm -f ${WORKDIR}/linux/include/asm
+	ln -sf asm-${TARGET_ARCH} ${WORKDIR}/linux/include/asm
+
+	touch ${WORKDIR}/linux/include/linux/autoconf.h
+
+	echo "#define UTS_RELEASE \"2.4.21\"" > ${WORKDIR}/linux/include/linux/version.h
+	echo "#define LINUX_VERSION_CODE 132117" >> ${WORKDIR}/linux/include/linux/version.h
+	echo "#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))" \
+		>> ${WORKDIR}/linux/include/linux/version.h
+
+	if [ -f ${FILESDIR}/uClibc.config.${TARGET_ARCH} ]; then
+		cp ${FILESDIR}/uClibc.config.${TARGET_ARCH} ${S}/.config
+	else
+		cp ${FILESDIR}/uClibc.config ${S}/.config
+	fi
+
+	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${CROSS},g' ${S}/Rules.mak
+	perl -i -p -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"${WORKDIR}/linux\",g' ${S}/.config
+	perl -i -p -e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
+	perl -i -p -e 's,^SYSTEM_DEVEL_PREFIX=.*,SYSTEM_DEVEL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
+	perl -i -p -e 's,^DEVEL_TOOL_PREFIX=.*,DEVEL_TOOL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
+	perl -i -p -e 's,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH=\"/lib\",g' ${S}/.config
+	perl -i -p -e 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g' ${S}/.config
+	perl -i -p -e 's,^GCC_BIN.*,GCC_BIN=${CROSS_DIR}/bin/${TARGET_SYS}-gcc,g' ${S}/extra/gcc-uClibc/Makefile
+	perl -i -p -e 's,^LD_BIN.*,LD_BIN=${CROSS_DIR}/bin/${TARGET_SYS}-ld,g' ${S}/extra/gcc-uClibc/Makefile
+
+	make oldconfig
+	make headers
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	oe.build.exec_func('uclibcbuild_do_patch', d)
+}
+
+do_stage() {
+	make install_dev install_runtime install_utils
+}
+
+do_install() {
+	make DEVEL_PREFIX= SYSTEM_DEVEL_PREFIX= TARGET_PREFIX= \
+		DEVEL_TOOL_PREFIX=/usr PREFIX=${D} \
+		install_dev install_target install_target_utils
+
+	# binutils has a readelf, so forget about this one...
+	rm -f ${D}/usr/bin/readelf
+
+	# move devel headers/libs/objects from / into /usr
+	mv -f ${D}/lib/*.a ${D}/lib/*.o ${D}/usr/lib/
+	rm -f ${D}/include/.cvsignore
+	mv -f ${D}/include ${D}/usr/
+	for lib in libc.so libcrypt.so libdl.so libm.so libnsl.so \
+	           libpthread.so libresolv.so libthread_db.so libutil.so; do
+		ln -s ../../lib/`readlink ${D}/lib/$lib` ${D}/usr/lib/$lib
+		rm -f ${D}/lib/$lib
+	done
+
+	# ensure we have a /sbin/ldconfig as some scripts expect one
+	if ! [ -e ${D}/sbin/ldconfig ]; then
+		mkdir -p ${D}/sbin
+		ln -sf ../bin/true ${D}/sbin/ldconfig
+	fi
+}
+

@@ -1,0 +1,41 @@
+inherit cross
+include uclibc-binutils-${PV}.oe
+PN := ${PN}-cross
+
+DEPENDS := patcher
+PROVIDES := virtual/${TARGET_SYS}-binutils
+
+PACKAGES =
+
+EXTRA_OECONF := --enable-targets=${TARGET_SYS} \
+                --with-sysroot=${prefix} \
+                --with-lib-path=${prefix}/usr/lib:${prefix}/lib \
+                --enable-multilib \
+                --program-prefix=${TARGET_SYS}-
+
+EXTRA_OEMAKE :=
+
+export CPPFLAGS =
+export CXXFLAGS =
+export CFLAGS =
+export LDFLAGS =
+
+prefix:=${CROSS_DIR}
+exec_prefix:=${CROSS_DIR}
+sysconfdir=${CROSS_DIR}/etc
+localstatedir=${CROSS_DIR}/var/lib
+
+do_stage () {
+	cd ${B}
+	make install
+	${CROSS_DIR}/bin/${TARGET_SYS}-ar rv \
+		${CROSS_DIR}/${TARGET_SYS}/lib/libg.a
+	for d in info man share/doc share/locale; do
+		rm -rf ${CROSS_DIR}/$d
+	done
+}
+
+do_install () {
+	true
+}
+
