@@ -1,5 +1,6 @@
 SECTION = "devel"
-inherit autotools
+PR = "r1"
+inherit autotools gettext
 
 DESCRIPTION = "The GNU cc and gcc C compilers."
 LICENSE = "GPL"
@@ -96,7 +97,7 @@ ${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--disable-nls \
+EXTRA_OECONF = "${@['--enable-clocale=generic', ''][oe.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
                 --enable-shared \
                 --enable-multilib \

@@ -1,6 +1,6 @@
-PR = "r1"
+PR = "r2"
 
-inherit autotools
+inherit autotools gettext
 
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
@@ -90,7 +90,7 @@ ${GNU_MIRROR}/gcc/	http://mirrors.rcn.net/pub/sourceware/gcc/releases/
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--disable-nls \
+EXTRA_OECONF = "${@['--enable-clocale=generic', ''][oe.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
                 --enable-shared \
                 --enable-target-optspace \
@@ -125,6 +125,7 @@ python __anonymous () {
         oe.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
 }
 
+CPPFLAGS = ""
 do_configure () {
 	# Setup these vars for cross building only
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
@@ -137,6 +138,12 @@ do_configure () {
 		export AR_FOR_TARGET="${HOST_PREFIX}ar"
 		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
 	fi
+	export CC_FOR_BUILD="${BUILD_CC}"
+	export CXX_FOR_BUILD="${BUILD_CXX}"
+	export CFLAGS_FOR_BUILD="${BUILD_CFLAGS}"
+	export CPPFLAGS_FOR_BUILD="${BUILD_CPPFLAGS}"
+	export CXXFLAGS_FOR_BUILD="${BUILD_CXXFLAGS}"
+	export LDFLAGS_FOR_BUILD="${BUILD_LDFLAGS}"
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
