@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
@@ -14,7 +14,7 @@ S = "${WORKDIR}/qt-x11-free-${PV}"
 PACKAGES += "qt-x11-plugins"
 FILES_qt-x11-plugins = "${prefix}/plugins"
 
-inherit qmake-base
+inherit qmake-base qt3x11
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${HOST_SYS}/qt3"
