@@ -5,7 +5,7 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils glibc patcher-native"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
-PACKAGES = ""
+PACKAGES = "libgcc"
 
 EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
@@ -19,6 +19,8 @@ EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--enable-c99 \
 		--enable-long-long \
 		--program-prefix=${TARGET_PREFIX}"
+
+FILES_libgcc = "/lib/libgcc_s.so.*"
 
 export CPPFLAGS = ""
 export CXXFLAGS = ""
@@ -70,8 +72,10 @@ do_stage_append () {
 	rm -rf ${CROSS_DIR}/share
 }
 
-# Kill the install so we get no packages (we're the cross compiler)
 do_install () {
-	:
-}
+	oe_runmake 'DESTDIR=${D}' install
 
+	# Move libgcc_s into /lib
+	mkdir -p ${D}/lib
+	mv -f ${D}/${prefix}/*/lib/libgcc_s.so.* ${D}/lib
+}
