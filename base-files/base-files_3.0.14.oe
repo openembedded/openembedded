@@ -75,7 +75,7 @@ do_install () {
     install -d ${D}/${sysconfdir}
     install -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
     [ -z "${MACHINE}" ] && echo "openembedded" >${D}/${sysconfdir}/hostname || echo ${MACHINE} >${D}/${sysconfdir}/hostname
-    install -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
+    install -m 0644 ${WORKDIR}/etc/profile ${D}/${sysconfdir}/profile
     install -m 0644 ${WORKDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
     install -m 0644 ${WORKDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
     cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
