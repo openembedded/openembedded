@@ -1,6 +1,8 @@
+SRC_URI=""
+
 do_whee() {
 	oenote "testing, testing, 1 .. 2 .. 3 .."
 }
 
-# insert whee task between staging and install
-addtask whee 'stage compile' "install"
+# insert whee task between compile and unpack
+addtask whee after unpack before compile
