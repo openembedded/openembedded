@@ -1,32 +1,33 @@
-PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
+PACKAGES = gpe gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-gtkapps gpe-task-gnomeapps
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r13"
+PR = "r14"
 
 ALLOW_EMPTY = 1
 
-RDEPENDS_gpe = "gpe-task-base gpe-task-utils gpe-task-pim"
-
 gpe-base = "\
-    gpe-dm \
-    gpe-login \
-    gpe-session-scripts \
+    diet-x11 \
+    virtual/xserver \
     matchbox \
     xcursor-transparent-theme \
     rxvt-unicode \
-    gpe-icons \
-    gpe-confd \
-    gpe-autostarter \
-    gpe-bootsplash \
     gtk2-theme-angelistic \
-    libgtkstylus \
     xst \
     xprop \
     xhost \
     xrdb \
-    gpe-soundserver"
+    gpe-soundserver \
+    gpe-dm \
+    gpe-login \
+    gpe-session-scripts \
+    gpe-icons \
+    gpe-confd \
+    gpe-autostarter \
+    gpe-bootsplash \
+    libgtkstylus \
+    detect-stylus"
 
-RDEPENDS_gpe-task-base := "${gpe-base} libfontconfig-utils"
+RDEPENDS_gpe-task-base := "${gpe-base}"
 DEPENDS += " ${gpe-base}"
 
 gpe-task-pim = "\
@@ -35,78 +36,72 @@ gpe-task-pim = "\
     gpe-calendar \
     gpe-sketchbook \
     gpe-contacts \
-    gpe-today \
-    dillo2"
+    gpe-today"
 RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
 DEPENDS += " ${gpe-task-pim}"
 
-gpe-task-utils = "\
+gpe-task-settings = "\
+    matchbox-panel-manager \
     gpe-bluetooth \
-    gpe-mixer \
-    gpe-edit \
     gpe-su \
     gpe-conf \
+    gpe-clock \
+    gpe-mininet \
+    gpe-mixer \
+    gpe-shield \
     gpe-wlancfg \
+    gpe-taskmanager \
+    keylaunch \
+    minilite \
+    xmonobut"
+
+RDEPENDS_gpe-task-settings := "${gpe-task-settings}"
+DEPENDS += " ${gpe-task-settings}"
+
+gpe-task-apps = "\
+    gpe-edit \
     gpe-gallery \
     gpe-calculator \
-    minilite \
-    miniclipboard \
-    gpe-taskmanager \
+    gpe-filemanager \
+    gpe-irc \
+    gpe-nmf \
     gpe-package \
-    gpe-clock \
-    gpe-watch \
+    gpe-plucker \
     gpe-terminal \
+    gpe-watch \
     gpe-what \
-    gpe-shield \
-    keylaunch \
-    gpe-mininet \
-    xmonobut \
     matchbox-panel-hacks \
     rosetta \
-    detect-stylus"
+    dillo2"
 
-RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
-DEPENDS += " ${gpe-task-utils}"
+RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
+DEPENDS += " ${gpe-task-apps}"
 
-#    gpe-collateral-gtk2 \
-#    gdk-pixbuf2-loader-jpeg \
-#    \
-#    gpe-bootsplash2 \
-#    \
-#    keylaunch \
-#    esd \
-#    detect-stylus \
-#    gpe-soundserver \
-#    gpe-mimedir-tools \
-#    teleport \
-#    gpe-keylock \
-#    \
-#    xmonobut \
-#    minilite \
-#    minibat \
-#    minipredict \
-#    matchbox-panel-hacks \
-#    mbinputmgr \
-#    \
-#    xstroke \
-#    rosetta \
-#    xkbd \
-#    mbmerlin \
-#    \
-#    startup-monitor \
-#    \
-#    xtscal \
-#    gpe-su2 \
-#    gpe-conf \
-#    gpe-confd \
-#    xst \
-#    \
-#    gpe-what \
-#    gpe-question2 \
-#    gpe-announce2 \
-#    \
-#    gpe-wlancfg \
-#    gpe-aerial \
-#    hotplug-dbus \
-#    gpe-autostarter \
-#    nsqld
+gpe-task-games = "\
+    gpe-go \
+    gpe-lights \
+    gpe-othello \
+    gpe-tetris"
+
+RDEPENDS_gpe-task-games := "${gpe-task-games}"
+DEPENDS += " ${gpe-task-games}"
+
+gpe-task-gtkapps = "\
+    firefox \
+    thunderbird \
+    minimo \
+    gaim"
+
+RDEPENDS_gpe-task-gtkapps := "${gpe-task-gtkapps}"
+DEPENDS += " ${gpe-task-gtkapps}"
+
+gpe-task-gnomeapps = "\
+    gail \
+    gal \
+    galculator \
+    gnumeric \
+    gpdf \
+    totem"
+
+RDEPENDS_gpe-task-gnomeapps := "${gpe-task-gnomeapps}"
+DEPENDS += " ${gpe-task-gnomeapps}"

@@ -3,7 +3,8 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe virtual/libsdl libsdl-image libsdl-mixer"
+DEPENDS = "virtual/libqpe libsdl-qpe libsdl-image libsdl-mixer"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/vectoroids/src/vectoroids-${PV}.tar.gz"
 

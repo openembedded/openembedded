@@ -4,7 +4,8 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libsdl libsdl-image"
+DEPENDS = "libsdl-qpe libsdl-image"
+PR = "r1"
 
 SRC_URI = "http://www.chipx86.com/packages/ipkg/billiardz-${PV}.tar.gz"
 
