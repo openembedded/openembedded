@@ -1,4 +1,4 @@
-PV = "0.0cvs${CVSDATE}"
+PV = "6.2.1+cvs${CVSDATE}"
 LICENSE = "XFree86"
 PR = "r2"
 SECTION = "x11/libs"
@@ -10,8 +10,7 @@ FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
 PROVIDES = "x11"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11 \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11"
 S = "${WORKDIR}/X11"
 
 inherit autotools pkgconfig 
