@@ -1,0 +1,21 @@
+DESCRIPTION=GNU Scientific Library
+SECTION=libs
+PRIORITY=optional
+LICENSE=GPL
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = http://www.mirror.ac.uk/sites/sources.redhat.com/pub/${PN}/${P}.tar.gz
+
+inherit autotools libtool pkgconfig
+
+do_stage() {
+	oe_runmake DESTDIR=${S}/.install install
+	oe_soinstall .install/usr/lib/libgslcblas.so.0.0.0 ${STAGING_LIBDIR}/
+	oe_soinstall .install/usr/lib/libgsl.so.0.5.0 ${STAGING_LIBDIR}/
+	cp -a .install/usr/include/* ${STAGING_INCDIR}/
+
+        cat gsl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR} -I${STAGING_INCDIR}/python2.3," \
+                       | sed -e "s,-L/usr/lib,-L${STAGING_LIBDIR}," > ${STAGING_BINDIR}/gsl-config
+        chmod a+rx ${STAGING_BINDIR}/gsl-config
+}
