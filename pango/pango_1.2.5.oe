@@ -14,7 +14,7 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--disable-glibtest \
 		--enable-explicit-deps=no"
 
-FILES_${PN}-doc = "${FILES_pango-doc} ${datadir}/gtk-doc"
+FILES_pango-doc = "${FILES_pango-doc} ${datadir}/gtk-doc"
 
 SOV = "0.200.5"
 do_stage () {
