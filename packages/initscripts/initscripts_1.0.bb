@@ -5,8 +5,9 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
+RDEPENDS_openzaurus-pxa-2.6 = "makedevs console-tools"
 LICENSE = "GPL"
-PR = "r29"
+PR = "r30"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -33,6 +34,8 @@ SRC_URI = "file://halt \
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
+SRC_URI_append_openzaurus-pxa-2.6 = " file://corgikeymap.map"
+SRC_URI_append_openzaurus-pxa-2.6 = " file://keymap.sh"
 
 def read_kernel_version(d):
 	import bb
@@ -88,6 +91,13 @@ do_install () {
         	chmod 0755 				${D}/etc/init.d/checkversion
 		ln -sf          ../init.d/checkversion  ${D}/etc/rcS.d/S05version
 	fi
+
+	if [ "${MACHINE}" == "openzaurus-pxa-2.6" ]; then
+		install -m 0755    ${WORKDIR}/corgikeymap.map		${D}/etc
+		install -m 0755    ${WORKDIR}/keymap.sh			${D}/etc/init.d
+		ln -sf          ../init.d/keymap.sh  	${D}/etc/rcS.d/S04keymap.sh
+	fi
+
 
 	install -m 0755 ${WORKDIR}/banner	${D}/etc/init.d/banner
 	install -m 0755 ${WORKDIR}/devices	${D}/etc/init.d/devices
