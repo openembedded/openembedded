@@ -1,0 +1,5 @@
+/dev/ram0	/	ext2	defaults	1  1
+proc            /proc   proc    defaults        0  0
+tmpfs		/var	tmpfs	defaults	0  0
+tmpfs		/mnt/ram	tmpfs	defaults	0  0
+usbdevfs	/proc/bus/usb        usbdevfs   noauto                0 0
