@@ -2,12 +2,12 @@ DESCRIPTION = "Ecore is the core event abstraction layer for the enlightenment \
 foundation libraries. It makes makes doing selections, drag and drop, event loops, \
 timeouts and idle handlers fast, optimized, and convenient."
 HOMEPAGE = "http://www.enlightenment.org"
-SECTION = "libs"
+SECTION = "e/libs"
 PRIORITY = "optional"
 LEAD_SONAME = "libecore.so"
 PV = "${CVSDATE}"
 DEPENDS = "edb eet evas freetype edb-native"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore \
            file://no-x-test.patch;patch=1"

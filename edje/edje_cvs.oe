@@ -1,9 +1,9 @@
 DESCRIPTION = "edje is a complex graphical design & layout library."
 DEPENDS = "freetype evas ecore embryo eet edb edje-native"
-SECTION = "libs"
+SECTION = "e/libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje \
 	   file://fix-hardcoded-imlib2-config.patch;patch=1"

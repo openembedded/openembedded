@@ -1,4 +1,3 @@
-SECTION = "devel"
 include embryo_${PV}.oe
 inherit native
 

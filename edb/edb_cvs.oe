@@ -1,10 +1,10 @@
 DESCRIPTION = "EDB is a database convenience library wrapped around the \
 Berkeley DB 2.7.7 by Sleepycat Software."
-SECTION = "libs"
+SECTION = "e/libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edb"
 S = "${WORKDIR}/edb"

@@ -2,11 +2,11 @@ DESCRIPTION = "EET is a tiny library designed to write an \
 arbitary set of chunks of data to a file and optionally compress \
 each chunk (very much like a zip file) and allow fast \
 random-access reading of the file later on."
-SECTION = "libs"
+SECTION = "e/libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib jpeg"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet \
 	   file://flags.patch;patch=1"

@@ -1,11 +1,12 @@
 DESCRIPTION = "The Enlightened Widget Library, \
 a simple-to-use general purpose widget library based on the Evas canvas."
-SECTION = "libs"
+SECTION = "e/libs"
 DEPENDS = "edb eet evas ecore etox edje"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl \
+           file://no-x-test.patch;patch=1"
 S = "${WORKDIR}/ewl"
 
 inherit autotools binconfig

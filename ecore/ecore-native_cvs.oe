@@ -1,4 +1,3 @@
-SECTION = "unknown"
 include ecore_${PV}.oe
 inherit native
 DEPENDS = "edb-native eet-native evas-native freetype-native"

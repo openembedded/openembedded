@@ -3,11 +3,11 @@ anti-aliased text, smooth super and sub-images, alpha-blend, as well as drop \
 down to using normal X11 primitives such as pixmaps, lines and rectangles if \
 your CPU or graphics hardware are too slow."
 HOMEPAGE = "http://www.enlightenment.org"
-SECTION = "libs"
+SECTION = "e/libs"
 PRIORITY = "optional"
 DEPENDS = "libpng jpeg edb eet freetype"
 PV = "${CVSDATE}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas \
            file://flags.patch;patch=1 \
