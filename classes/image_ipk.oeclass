@@ -21,9 +21,11 @@ fakeroot do_rootfs () {
 
 	export TOPDIR=${TOPDIR}
 
-	if test -z "$FAKEROOTKEY"; then
-		fakeroot -i ${TMPDIR}/fakedb.image oeimage -t ${IMAGE_FSTYPE} -e ${FILE}
-	else
-		oeimage -t ${IMAGE_FSTYPE} -e ${FILE}
-	fi
+	for type in ${IMAGE_FSTYPES}; do
+		if test -z "$FAKEROOTKEY"; then
+			fakeroot -i ${TMPDIR}/fakedb.image oeimage -t $type -e ${FILE}
+		else
+			oeimage -t $type -e ${FILE}
+		fi
+	done
 }
