@@ -32,22 +32,11 @@ real_do_rootfs () {
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 	mkdir -p ${T}
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
-	cat <<EOF >>${T}/ipkg.conf
-arch all 1
-arch any 1
-arch noarch 1
-arch ${TARGET_ARCH} 10
-EOF
-	if [ "${TARGET_ARCH}" != "${PACKAGE_ARCH}" ]; then
-		echo "arch ${PACKAGE_ARCH} 15" >>${T}/ipkg.conf
-	fi
-	if [ ! -z ${MACHINE} ]; then
-		echo "arch ${MACHINE} 20" >>${T}/ipkg.conf
-	fi
-	for i in ${IPKG_ARCHS}; do
-		if [ $i != "all" ] && [ $i != "${TARGET_ARCH}" ] && [ $i != "${MACHINE}" ]; then
-			echo "arch $i 5" >> ${T}/ipkg.conf
-		fi
+	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
+	priority=1
+	for arch in $ipkgarchs; do
+		echo "arch $arch $priority" >> ${T}/ipkg.conf
+		priority=$(expr $priority + 5)
 	done
 	ipkg-cl ${IPKG_ARGS} update
 	if [ ! -z "${LINGUAS_INSTALL}" ]; then
