@@ -7,9 +7,9 @@ PROVIDES=virtual/libc
 S="${WORKDIR}/${P}"
 EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${STAGING_DIR}/target/include --without-cvs --enable-kernel=2.4.6"
 
-inherit patcher
+inherit base
 
 do_unpack() {
-	patcher_do_unpack $@ || oefatal "unpacking failed"
+	base_do_unpack $@ || die "unpacking failed"
 	mv ${WORKDIR}/linuxthreads{,_db} ${S}/
 }
