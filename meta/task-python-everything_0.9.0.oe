@@ -3,7 +3,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
-		python-curl		\
+		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
 		python-gmpy		\
