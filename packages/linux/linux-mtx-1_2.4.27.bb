@@ -25,6 +25,7 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://16-i2c.patch;patch=1 \
 	file://17-lmsensors.2.8.8.patch;patch=1 \
 	file://18-i2c-au1x00gpio.patch;patch=1 \
+	file://19-kernel-make-depend.diff;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
