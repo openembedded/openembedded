@@ -6,10 +6,11 @@ LICENSE = "GPLv2"
 mtd_utils = "ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
 	     mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info mtd_debug \
 	     flashcp nandwrite jffs2dump"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-${PV}.tar.bz2 \
-           file://add-exclusion-to-mkfs-jffs2.patch;patch=1"
+           file://add-exclusion-to-mkfs-jffs2.patch;patch=1 \
+           file://more-verbosity.patch;patch=1"
 S = "${WORKDIR}/mtd/"
 
 CFLAGS_prepend = "-I${S}/include "
