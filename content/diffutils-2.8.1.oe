@@ -1,0 +1,12 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${GNU_MIRROR}/${PN}/${P}.tar.gz
+S = ${WORKDIR}/${P}
+
+EXTRA_OEMAKE = 
+
+do_install () {
+	set -e
+	oe_runmake DESTDIR="${D}" install
+}
