@@ -1,0 +1,59 @@
+DESCRIPTION = "A driver for wireless LAN cards based on Intersil's Prism2/2.5/3 chipset"
+HOMEPAGE = "http://hostap.epitest.fi"
+SECTION = "kernel/modules"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+PR = "r6"
+
+SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
+           file://hostap_cs.conf \
+	   file://Makefile.patch;patch=1"
+SRC_URI_append_mtx-1 = " file://mtx_compat.diff;patch=1;pnum=0 \
+	file://mtx_hostap_deferred_irq.diff;patch=1;pnum=0"
+
+S = "${WORKDIR}/hostap-driver-${PV}"
+
+inherit module
+
+EXTRA_OEMAKE = "EXTRA_CFLAGS='-DPRISM2_NON_VOLATILE_DOWNLOAD'"
+MAKE_TARGETS = "KERNEL_PATH=${KERNEL_SOURCE} MAKE='make -e'"
+NET_MODULES = "hostap.o hostap_pci.o hostap_crypt_ccmp.o hostap_crypt_tkip.o hostap_crypt_wep.o"
+
+do_install() {
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
+		   ${D}/lib/modules/${KERNEL_VERSION}/pcmcia \
+        	   ${D}/${sysconfdir}/pcmcia
+	for i in ${NET_MODULES}
+	do
+		install -m 0644 driver/modules/$i ${D}/lib/modules/${KERNEL_VERSION}/net/
+	done
+	install -m 0644 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
+	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
+	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
+
+	if [ "${MACHINE}" = "mtx-1" ]; then
+		install -d ${D}/etc/modutils
+		echo "hostap_pci" > ${D}/etc/modutils/hostap
+	fi
+}
+
+pkg_postinst_hostap-modules-pci() {
+#!/bin/sh
+if [ "x$D" != "x" ]; then
+  exit 1
+fi
+update-modules || true
+}
+
+pkg_postrm_hostap-modules-pci() {
+#!/bin/sh
+update-modules || true
+}
+
+PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"
+FILES_hostap-modules-cs = "/lib/modules/${KERNEL_VERSION}/pcmcia/ /${sysconfdir}/pcmcia/"
+FILES_hostap-modules-pci = "/etc/modutils /lib/modules/${KERNEL_VERSION}/net/hostap_pci.o"
+FILES_hostap-modules = "/lib/modules/"
+RDEPENDS_hostap-modules-cs = "hostap-modules"
+RDEPENDS_hostap-modules-pci = "hostap-modules"
