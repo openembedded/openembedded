@@ -1,0 +1,15 @@
+SRC_URI := ${GNU_MIRROR}/automake/automake-1.7.7.tar.bz2
+S := ${WORKDIR}/${P}
+
+inherit autotools
+
+do_install () {
+	oe_runmake 'DESTDIR=${D}' install
+	install -d ${D}/${datadir}
+	if [ ! -e ${D}/${datadir}/aclocal ]; then
+		ln -sf aclocal-1.7 ${D}/${datadir}/aclocal
+	fi
+	if [ ! -e ${D}/${datadir}/automake ]; then
+		ln -sf automake-1.7 ${D}/${datadir}/automake
+	fi
+}
