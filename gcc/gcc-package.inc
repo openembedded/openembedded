@@ -30,10 +30,10 @@ FILES_${PN}-f77-symlinks = "${bindir}/g77 \
 			    ${bindir}/f77"
 
 # Called from within gcc-cross, so libdir is set wrong
-FILES_libg2c = "${libdir}/libg2c.so.*"
-FILES_libg2c-dev = "${libdir}/libg2c.so \
-			  ${libdir}/libg2c.a \
-			  ${libdir}/libfrtbegin.a"
+FILES_libg2c = "/usr/lib/libg2c.so.*"
+FILES_libg2c-dev = "/usr/lib/libg2c.so \
+		    /usr/lib/libg2c.a \
+		    /usr/lib/libfrtbegin.a"
 
 FILES_${PN}-c++ = "${bindir}/${TARGET_PREFIX}g++ \
 		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1plus"
@@ -43,13 +43,13 @@ FILES_${PN}-c++-symlinks = "${bindir}/c++ \
 FILES_libgcc = "/lib/libgcc_s.so.1"
 
 # Called from within gcc-cross, so libdir is set wrong
-FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-FILES_libstdc++-dev = "${includedir}/c++/${PV} \
-		       ${libdir}/libstdc++.so \
-		       ${libdir}/libstdc++.la \
-		       ${libdir}/libstdc++.a \
-		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
+FILES_libstdc++ = "/usr/lib/libstdc++.so.*"
+FILES_libstdc++-dev = "/usr/include/c++/${PV} \
+		       /usr/lib/libstdc++.so \
+		       /usr/lib/libstdc++.la \
+		       /usr/lib/libstdc++.a \
+		       /usr/lib/libsupc++.la \
+		       /usr/lib/libsupc++.a"
 
 FILES_${PN}-doc = "${infodir} \
 		   ${mandir} \
