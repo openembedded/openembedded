@@ -1,8 +1,0 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
-
-SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
-	  file://${FILESDIR}/m4.patch;patch=1
-S = ${WORKDIR}/OpenSP-${PV}
-
-inherit autotools libtool
