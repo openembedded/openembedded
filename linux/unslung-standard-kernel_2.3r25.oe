@@ -1,0 +1,21 @@
+SECTION = "kernel"
+
+include nslu2-linksys-kernel_2.4.22.oe
+
+DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
+MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
+PR = "r4"
+
+UNSLUNG_VARIANT ?= "standard"
+KERNEL_SUFFIX = "unslung-${UNSLUNG_VARIANT}"
+
+CMDLINE_ROOT = "root=/dev/slug initrd=0x01000000,10M mem=32M@0x00000000"
+
+UNSLUNG_KERNEL_EXTRA_SRC_URI ?=
+
+SRC_URI += "file://limit1gb.patch;patch=1 \
+	    file://gl811e.patch;patch=1 \
+	    file://ext3flash-on-disk1.patch;patch=1 \
+	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
+
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel-${PV}/${UNSLUNG_VARIANT}', '${FILE_DIRNAME}/unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
