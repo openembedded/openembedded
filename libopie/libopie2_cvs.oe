@@ -8,8 +8,7 @@ DEPENDS = "virtual/libc libqpe-opie sqlite libpcap-0.7.2"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
-	file://${FILESDIR}/ossqlitedriver-posix-regex-include.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE}"
 S = "${WORKDIR}/libopie2"
 
 inherit qmake
