@@ -70,7 +70,6 @@ SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 
 S="${WORKDIR}/${P}"
 B="${WORKDIR}/build-${TARGET_SYS}"
-prefix=/usr
 libdir=/lib
 bindir=/bin
 sbindir=/sbin

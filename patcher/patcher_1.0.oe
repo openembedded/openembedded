@@ -17,8 +17,8 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/usr/bin
-	install -m 0755 ${DL_DIR}/patcher ${D}/usr/bin
+	install -d ${D}${bindir}
+	install -m 0755 ${DL_DIR}/patcher ${D}/${bindir}
 }
 
 DEPENDS_prepend_delete="patcher "

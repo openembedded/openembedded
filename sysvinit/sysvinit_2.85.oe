@@ -21,18 +21,18 @@ do_install () {
 		   ${D}/sbin ${D}/${sysconfdir}/default \
 		   ${D}/${sysconfdir}/init.d
 #	install -m 755 debian/sysv-rc/sbin/invoke-rc.d \
-#		debian/sysv-rc/sbin/update-rc.d ${D}/usr/sbin/
+#		debian/sysv-rc/sbin/update-rc.d ${D}${sbindir}/
 	install -m 755 halt killall5 \
 		runlevel shutdown ${D}/sbin/
 	install -m 755 init ${D}/sbin/sysvinit
-	install -m 755 mesg last ${D}/usr/bin/
+	install -m 755 mesg last ${D}${bindir}
 	install -m 0755 ${FILESDIR}/need		${D}/sbin/need.sysvinit
 	install -m 0755 ${FILESDIR}/provide		${D}/sbin/provide.sysvinit
 	ln -sf halt ${D}/sbin/reboot
 	ln -sf halt ${D}/sbin/poweroff
 	ln -sf init ${D}/sbin/telinit
 	ln -sf killall5 ${D}/sbin/pidof
-	ln -sf last ${D}/usr/bin/lastb
+	ln -sf last ${D}${bindir}/lastb
 #	echo "/etc/inittab" > ${D}/CONTROL/conffiles
 #	echo "/etc/default/rcS" >> ${D}/CONTROL/conffiles
 #	install -m 0755    ${FILESDIR}/prerm		${D}/CONTROL/

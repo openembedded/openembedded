@@ -10,5 +10,5 @@ inherit autotools
 CFLAGS_append = " -I${S}/libtomcrypt"
 LD=${CC}
 do_install_prepend () {
-	install -d ${D}/usr/sbin ${D}/usr/bin
+	install -d ${D}${sbindir} ${D}${bindir}
 }

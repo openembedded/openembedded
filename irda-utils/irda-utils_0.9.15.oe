@@ -15,7 +15,7 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/usr/sbin
+	install -d ${D}${sbindir}
 	oe_runmake -C irattach ROOT="${D}" install
 	oe_runmake -C irdaping ROOT="${D}" install
 }

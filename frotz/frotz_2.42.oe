@@ -9,12 +9,12 @@ do_configure() {
 }
 
 
-EXTRA_OEMAKE=CC="${CC}" INCL="${CFLAGS}" LIB="${LDFLAGS}" PREFIX=/usr CONFIG_DIR=/etc 
+EXTRA_OEMAKE=CC="${CC}" INCL="${CFLAGS}" LIB="${LDFLAGS}" PREFIX=${prefix} CONFIG_DIR=${sysconfdir}
 do_compile() {
     oe_runmake frotz
     sed 's/^[a-z]/#&/' frotz.conf-big > frotz.conf;
 }
 
 do_install() {
-    oe_runmake PREFIX=${D}/usr MAN_PREFIX=${D}/usr install
+    oe_runmake PREFIX=${D}${prefix} MAN_PREFIX=${D}${mandir} install
 }

@@ -10,10 +10,10 @@ CPPFLAGS_prepend = "-I${S}/../include "
 CXXFLAGS_prepend = "-I${S}/../include "
 
 do_install () {
-	install -d ${D}/usr/bin
+	install -d ${D}${bindir}
 	for binary in ftl_format erase eraseall nanddump doc_loadbios \
 		mkfs.jffs ftl_check mkfs.jffs2 lock unlock einfo mtd_debug \
 		fcp nandwrite jffs2dump; do
-		install -m 0755 $binary ${D}/usr/bin/
+		install -m 0755 $binary ${D}${bindir}
 	done
 }

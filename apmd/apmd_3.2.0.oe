@@ -43,13 +43,12 @@ do_install() {
     install -d ${D}/${sbindir}
     install -d ${D}/${bindir}
     install -d ${D}/${libdir}
-    install -d ${D}/usr/share
-    install -d ${D}/usr/share/apmd
+    install -d ${D}/${datadir}/apmd
     install -m 4755 ${S}/.libs/apm ${D}/${bindir}/apm.orig
     install -m 0755 ${FILESDIR}/apmwrapper ${D}/${bindir}/apm
     install -m 0755 ${S}/.libs/apmd ${D}/${sbindir}/apmd
     install -m 0755 ${S}/debian/apmd_proxy ${D}/${sysconfdir}/apm/
-    install -m 0644 ${S}/debian/apmd_proxy.conf ${D}/usr/share/apmd/
+    install -m 0644 ${S}/debian/apmd_proxy.conf ${D}/${datadir}/apmd/
     install -m 0644 ${S}/debian/apmd.default ${D}/${sysconfdir}/default/apmd
     install -m 0755 .libs/libapm.so.1.0.0 ${D}/${libdir}
     ln -sf ./libapm.so.1.0.0 ${D}/${libdir}/libapm.so.1.0

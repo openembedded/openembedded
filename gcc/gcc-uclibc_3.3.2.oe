@@ -33,7 +33,7 @@ SRC_URI_append = " file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
                    file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
                    file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1"
 
-EXTRA_OECONF := --with-local-prefix=/usr/local \
+EXTRA_OECONF := --with-local-prefix=${prefix}/local \
                 --with-gxx-include-dir=${includedir}/c++/${PV}-uclibc \
                 --enable-target-optspace \
                 --disable-nls \

@@ -12,7 +12,7 @@ export DIRS = "crypto ssl"
 export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
 
 do_compile () {
-	perl util/perlpath.pl /usr/bin
+	perl util/perlpath.pl ${bindir}
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
 	if test "X${TARGET_OS}" = "Xlinux"; then
 		target=${TARGET_OS}-elf

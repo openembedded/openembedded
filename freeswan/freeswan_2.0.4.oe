@@ -1,0 +1,18 @@
+DESCRIPTION = FreeS/WAN IPSEC
+DEPENDS = virtual/libc gmp
+RDEPENDS = libc6 gmp
+
+SRC_URI = ftp://ftp.xs4all.nl/pub/crypto/freeswan/freeswan-2.04.tar.gz \
+	  file://${FILESDIR}/pathnames.patch;patch=1 \
+	  file://${FILESDIR}/flags.patch;patch=1
+
+S = "${WORKDIR}/freeswan-2.04"
+
+do_compile () {
+	oe_runmake INC_USRLOCAL=${prefix} 'CFLAGS=${CFLAGS}' 'CPPFLAGS=${CPPFLAGS}' 'LDFLAGS=${LDFLAGS}' programs
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir}/init.d
+	oe_runmake INC_USRLOCAL=${prefix} DESTDIR=${D} install
+}

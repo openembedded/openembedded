@@ -30,7 +30,7 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/freetype2
 	cp -a include/freetype ${STAGING_INCDIR}/freetype2/
 
-	sed -e 's,/usr,${STAGING_DIR}/target,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
+	sed -e 's,${prefix},${STAGING_DIR}/target,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
 	chmod u+x ${STAGING_BINDIR}/freetype-config
 }
 

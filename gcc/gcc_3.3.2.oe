@@ -68,7 +68,7 @@ SRC_URI := http://gcc.get-software.com/releases/gcc-${PV}/gcc-${PV}.tar.bz2
 S := ${WORKDIR}/gcc-${PV}
 B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
 
-EXTRA_OECONF := --with-local-prefix=/usr/local \
+EXTRA_OECONF := --with-local-prefix=${prefix}/local \
                 --with-gxx-include-dir=${includedir}/c++/${PV} \
                 --enable-target-optspace \
                 --disable-nls \

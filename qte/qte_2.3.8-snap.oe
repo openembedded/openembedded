@@ -62,6 +62,6 @@ do_stage () {
 }
 
 do_install () {
-    install -d ${D}/usr/lib/qte2/lib
-    install -m 0755 lib/libqte.so.* ${D}/usr/lib/qte2/lib/
+    install -d ${D}${libdir}/qte2/lib
+    install -m 0755 lib/libqte.so.* ${D}${libdir}/qte2/lib/
 }

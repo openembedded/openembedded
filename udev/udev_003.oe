@@ -6,9 +6,9 @@ SRC_URI = http://kernel.org/pub/linux/utils/kernel/hotplug/udev-003.tar.gz \
 	  file://${FILESDIR}/partsegfault.patch;patch=1 \
 	  file://${FILESDIR}/compile.patch;patch=1
 
-prefix=
-datadir=/usr/share
-mandir=${datadir}/man
+bindir=/bin
+sbindir=/sbin
+libdir=/lib
 EXTRA_OEMAKE_append = " 'prefix=${prefix}' \
 		'exec_prefix=${prefix}' \
 		'etcdir=${sysconfdir}' \

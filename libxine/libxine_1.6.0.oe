@@ -1,0 +1,72 @@
+DESCRIPTION = "libxine"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
+DEPENDS = virtual/libc zlib libogg tremor libmad
+RDEPENDS = libc6 zlib libogg tremor libmad 
+
+inherit autotools
+
+S = ${WORKDIR}/xine-lib
+
+SRC_URI = "cvs://anonymous@cvs.xine.sf.net/cvsroot/xine;module=xine-lib;tag=xine-1-beta12-release \
+        file://${FILESDIR}/full.patch;patch=1 \
+	file://${FILESDIR}/libvorbis.patch;patch=0 \
+        file://${FILESDIR}/demux_ogg.patch;patch=0 \
+        file://${FILESDIR}/configure.ac.patch;patch=0 \
+        file://${FILESDIR}/vo_scale.patch;patch=0"
+
+do_configure() {
+  ./autogen.sh --host ${TARGET_SYS} --build ${BUILD_SYS} \
+        --enable-shared --disable-static --prefix=${prefix} \
+        --with-zlib-path=${STAGING_DIR} --with-vorbis-prefix=${STAGING_DIR} \
+        --disable-oggtest --with-ogg-prefix=${STAGING_DIR} --without-x \
+	--disable-iconv --disable-nls --without-arts --without-sdl \
+	--disable-aalib
+}
+
+do_compile() {
+  oe_runmake LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool
+}
+
+# ug - we don't do elegant/purdy today
+do_install() {
+  oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+    -C src install-data \
+    'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
+    'includedir=${D}/${includedir}'
+  oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+    -C include install-data \
+    'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
+    'includedir=${D}/${includedir}'
+  install -m 0755 -d ${D}/${libdir}/xine/plugins/1.0.0
+  for plugin in `find ${S}/src -type f -name xineplug*.la`; do 
+    dso=`dirname $plugin`/.libs/`basename $plugin .la`.so 
+    install -m 0755 $dso ${D}/${libdir}/xine/plugins/1.0.0
+  done
+  install -m 0755 src/xine-engine/.libs/libxine.so.${PV} ${D}${libdir}
+  ln -fs libxine.so.$PV ${D}${libdir}/libxine.so.1
+  ln -fs libxine.so.$PV ${D}${libdir}/libxine.so
+}
+
+do_stage() {
+  oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+    -C src install-data \
+    'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
+    'libdir=${STAGING_DIR}/target/lib' \
+    'includedir=${STAGING_DIR}/target/include'
+  oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+    -C include install-data \
+    'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
+    'libdir=${STAGING_DIR}/target/lib' \
+    'includedir=${STAGING_DIR}/target/include'
+  install -m 0755 -d ${STAGING_DIR}/target/lib/xine/plugins/1.0.0
+  for plugin in `find ${S}/src -type f -name xineplug*.la`; do 
+    dso=`dirname $plugin`/.libs/`basename $plugin .la`.so 
+    install -m 0755 $dso ${STAGING_DIR}/target/lib/xine/plugins/1.0.0
+  done
+  install -m 0755 src/xine-engine/.libs/libxine.so.${PV} \
+    ${STAGING_DIR}/target/lib
+  ln -fs libxine.so.$PV ${STAGING_DIR}/target/lib/libxine.so.1
+  ln -fs libxine.so.$PV ${STAGING_DIR}/target/lib/libxine.so
+}

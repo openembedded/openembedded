@@ -65,25 +65,25 @@ do_stage() {
 	done
 
 	# We don't really need these
-	rmdir ${CROSS_DIR}/${TARGET_SYS}/usr/lib || :
-	rmdir ${CROSS_DIR}/${TARGET_SYS}/usr || :
+	rmdir ${CROSS_DIR}/${TARGET_SYS}/${libdir} || :
+	rmdir ${CROSS_DIR}/${TARGET_SYS}/${prefix} || :
 }
 
 do_install() {
 	make DEVEL_PREFIX= SYSTEM_DEVEL_PREFIX= TARGET_PREFIX= \
-		DEVEL_TOOL_PREFIX=/usr PREFIX=${D} \
+		DEVEL_TOOL_PREFIX=${prefix} PREFIX=${D} \
 		install_dev install_target install_target_utils
 
 	# binutils has a readelf, so forget about this one...
-	rm -f ${D}/usr/bin/readelf
+	rm -f ${D}/${bindir}/readelf
 
-	# move devel headers/libs/objects from / into /usr
-	mv -f ${D}/lib/*.a ${D}/lib/*.o ${D}/usr/lib/
+	# move devel headers/libs/objects from / into ${prefix}
+	mv -f ${D}/lib/*.a ${D}/lib/*.o ${D}${libdir}/
 	rm -f ${D}/include/.cvsignore
-	mv -f ${D}/include ${D}/usr/
+	mv -f ${D}/include ${D}${prefix}/
 	for lib in libc.so libcrypt.so libdl.so libm.so libnsl.so \
 	           libpthread.so libresolv.so libthread_db.so libutil.so; do
-		ln -s ../../lib/`readlink ${D}/lib/$lib` ${D}/usr/lib/$lib
+		ln -s ../../lib/`readlink ${D}/lib/$lib` ${D}${libdir}/$lib
 		rm -f ${D}/lib/$lib
 	done
 

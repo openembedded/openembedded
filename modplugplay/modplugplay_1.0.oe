@@ -1,0 +1,17 @@
+DEPENDS = virtual/libc libmodplug
+RDEPENDS = libc6 libmodplug
+
+SRC_URI = http://www.linuks.mine.nu/modplugplay/${P}.tar.gz
+
+do_compile() {
+	${CC} -c ${CFLAGS} modplugplay.c -o modplugplay.o -I${STAGING_DIR}/target/include 
+	${CC} -o modplugplay modplugplay.o ${LDFLAGS} -L${STAGING_LIBDIR} -lmodplug
+}
+
+do_install() {
+	install -d ${D}${bindir}
+	install -d ${D}${mandir}/man1
+        install -m 755 modplugplay ${D}${bindir}/
+        install -m 644 modplugplay.1 ${D}${mandir}/man1/
+}
+

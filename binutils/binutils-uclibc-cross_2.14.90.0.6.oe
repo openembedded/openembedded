@@ -14,9 +14,9 @@ do_stage () {
 	rm -rf ${CROSS_DIR}/share/locale
 	rm -rf ${CROSS_DIR}/share/man
 	rmdir ${CROSS_DIR}/share || :
-	rmdir ${CROSS_DIR}/usr/lib/gcc-lib || :
-	rmdir ${CROSS_DIR}/usr/lib || :
-	rmdir ${CROSS_DIR}/usr || :
+	rmdir ${CROSS_DIR}${libdir}/gcc-lib || :
+	rmdir ${CROSS_DIR}${libdir} || :
+	rmdir ${CROSS_DIR}${prefix} || :
 
 	# We want to move this into the target specific location
 	mkdir -p ${CROSS_DIR}/${TARGET_SYS}/lib
