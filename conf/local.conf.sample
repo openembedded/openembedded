@@ -15,14 +15,14 @@ OEMASK = "(grub|toolchain-external)"
 
 # Uncomment this OEMASK, if you want to use a prebuild toolchain.
 # You will need to provide packages for toolchain specific libraries yourself
-#OEMASK = "-initial|/(binutils|uclibc|avr-libc|gcc|linux|grub|qte_|qte-for-qtopia|glibc_cvs)"
+#OEMASK = "(grub)"
 
 # Select between multiple alternative providers, if more than one is eligible
 PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
 
 # Uncomment this to specify where OE should create its temporary files.
 # Note that a fully build of everything in OE will take GigaBytes of hard disk space,
-# so make sure to free enough space. The default TMPDIR is <package directory>/tmp
+# so make sure to free enough space. The default TMPDIR is <build directory>/tmp
 #TMPDIR = /usr/local/projects/oetmp
 
 # Uncomment this to specify a machine to build for. See <oe>/conf/*.conf for machines
