@@ -9,4 +9,14 @@ DEPENDS = "zlib jpeg"
 SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/eet-${PV}.tar.gz \
 	   file://flags.patch;patch=1"
 
-inherit autotools
+inherit autotools pkgconfig
+
+do_stage () {
+	oe_libinstall -C src/lib libeet ${STAGING_LIBDIR}/
+	install -m 0644 ${S}/src/lib/Eet.h ${STAGING_INCDIR}/
+	cat eet-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
+				      s,/usr/lib,${STAGING_LIBDIR},g; \
+				      s,/usr/bin,${STAGING_BINDIR},g; \
+				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/eet-config
+	chmod u+x ${STAGING_BINDIR}/eet-config
+}
