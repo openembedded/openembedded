@@ -46,7 +46,8 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-aalib                            \
 	--without-v4l --without-arts --without-sdl \
 	--disable-dxr3 --without-xv --without-xvmc \
-	--without-xxmc --without-Xshm --without-x "
+	--without-xxmc --without-Xshm --without-x \
+	--disable-cacatest"
 			      
 do_compile() {
 	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool
