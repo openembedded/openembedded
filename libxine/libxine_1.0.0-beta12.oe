@@ -8,7 +8,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libogg tremor libmad"
 RRECOMMENDS = "libxine-plugins"
-PR = "r2"
+PR = "r3"
 
 inherit autotools pkgconfig binconfig
 
@@ -37,17 +37,17 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool OGG_LIBS=$(STAGING_LIBDIR)/libogg.so
+	oe_runmake LIBTOOL=${STAGING_BINDIR}/${TARGET-PREFIX}libtool OGG_LIBS=$(STAGING_LIBDIR)/libogg.so
 }
 
 do_stage() {
-	oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+	oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET-PREFIX}libtool \
 	  -C src install-data \
 	  'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
 	  'libdir=${STAGING_LIBDIR}' \
 	  'includedir=${STAGING_INCDIR}'
 
-	oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+	oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET-PREFIX}libtool \
 	  -C include install-data \
 	  'prefix=${STAGING_DIR}' 'exec_prefix=${STAGING_DIR}' \
 	  'libdir=${STAGING_LIBDIR}' \
@@ -63,12 +63,12 @@ do_stage() {
 }
 
 do_install() {
-        oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+        oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET-PREFIX}libtool \
           -C src install-data \
           'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
           'includedir=${D}/${includedir}' 
 
-        oe_runmake -e LIBTOOL=${STAGING_BINDIR}/arm-linux-libtool \
+        oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET-PREFIX}libtool \
           -C include install-data \
           'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
           'includedir=${D}/${includedir}'
