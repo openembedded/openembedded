@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
@@ -102,13 +102,20 @@ do_install () {
         # /var is in a ramdisk
         install -d ${D}/etc/init.d ${D}/etc/rcS.d
 	echo "#!/bin/sh" >> ${D}/etc/init.d/populate-var
-        for d in `(cd ${D}/var; ls)`; do
-            mode=`stat -c %a ${D}/var/$d`
-            echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
-            echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
-        done
-        echo "mkdir -p /var/lock/subsys" >> ${D}/etc/init.d/populate-var
-        echo "chmod 755 /var/lock/subsys" >> ${D}/etc/init.d/populate-var
+	
+	for d in `(cd ${D}/var; ls)`; do
+		mode=`stat -c %a ${D}/var/$d`
+		echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
+		echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
+	done
+	
+	echo "mkdir -p /var/lock/subsys" 		>> ${D}/etc/init.d/populate-var
+	echo "chmod 755 /var/lock/subsys" 		>> ${D}/etc/init.d/populate-var
+	echo "> /var/run/utmp" 				>> ${D}/etc/init.d/populate-var
+	echo "touch /var/log/wtmp" 			>> ${D}/etc/init.d/populate-var
+	echo "chmod 0664 /var/run/utmp /var/log/wtmp"	>> ${D}/etc/init.d/populate-var
+	echo "rm -f /var/run/utmpx"			>> ${D}/etc/init.d/populate-var
+
         rmdir ${D}/var/*
         chmod a+x ${D}/etc/init.d/populate-var
         ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
