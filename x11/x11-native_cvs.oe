@@ -1,0 +1,4 @@
+include x11_cvs.oe
+inherit native
+DEPENDS = "xproto-native xextensions-native xau-native xtrans-native libxdmcp-native"
+PROVIDES = ""

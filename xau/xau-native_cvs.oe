@@ -1,0 +1,4 @@
+include xau_cvs.oe
+inherit native
+DEPENDS = "xproto-native"
+PROVIDES = ""
