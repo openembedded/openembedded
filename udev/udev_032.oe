@@ -1,3 +1,4 @@
+PR = "r1"
 SECTION = "base"
 DESCRIPTION = " udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
@@ -31,7 +32,7 @@ do_install () {
 	if [ "${udevdir}" == "/dev" ]; then
 		install -m 0755 ${S}/extras/start_udev ${D}/etc/init.d/start_udev
 		install -d ${D}/etc/rcS.d
-		ln -s /etc/init.d/start_udev ${D}/etc/rcS.d/S37start_udev
+		ln -s /etc/init.d/start_udev ${D}/etc/rcS.d/S03start_udev
 	else
 		chmod 0755 ${D}/etc/init.d/udev
 	fi
