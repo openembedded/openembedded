@@ -6,9 +6,10 @@ SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0"
-PR = "r1"
+PR = "r2"
 
 INITSCRIPT_NAME = "gpe-dm"
 INITSCRIPT_PARAMS = "defaults 99"
 
-SRC_URI += " file://source-xsession-scripts.patch;patch=1"
+SRC_URI += " file://source-xsession-scripts.patch;patch=1 \
+	     file://collie-suspend-hack.patch;patch=1"
