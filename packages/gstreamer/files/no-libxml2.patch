@@ -1,0 +1,75 @@
+diff -ur gstreamer-0.8.9/configure gstreamer-0.8.9-jeh3/configure
+--- gstreamer-0.8.9/configure	2005-02-08 04:45:25.000000000 -0500
++++ gstreamer-0.8.9-jeh3/configure	2005-03-03 22:34:09.213409312 -0500
+@@ -25655,10 +25655,10 @@
+ 
+ 
+ 
+-if test "x$GST_DISABLE_LOADSAVE" = "xyes" && test "x$GST_DISABLE_REGISTRY" = "xyes"
++if test "x$GST_DISABLE_LOADSAVE" = "xyes"
+ then
+-  { echo "$as_me:$LINENO: Registry and load/save are disabled, not checking for libxml2" >&5
+-echo "$as_me: Registry and load/save are disabled, not checking for libxml2" >&6;}
++  { echo "$as_me:$LINENO: Load/save are disabled, not checking for libxml2" >&5
++echo "$as_me: Load/save are disabled, not checking for libxml2" >&6;}
+ else
+ 
+       LIBXML2_REQ=2.4.9
+diff -ur gstreamer-0.8.9/configure.ac gstreamer-0.8.9-jeh3/configure.ac
+--- gstreamer-0.8.9/configure.ac	2005-02-08 04:44:47.000000000 -0500
++++ gstreamer-0.8.9-jeh3/configure.ac	2005-03-03 22:34:09.215409008 -0500
+@@ -275,9 +275,9 @@
+ AC_SUBST(GLIB_ONLY_LIBS)
+   
+ dnl === libxml 2 ===
+-if test "x$GST_DISABLE_LOADSAVE" = "xyes" && test "x$GST_DISABLE_REGISTRY" = "xyes"
++if test "x$GST_DISABLE_LOADSAVE" = "xyes"
+ then
+-  AC_MSG_NOTICE([Registry and load/save are disabled, not checking for libxml2])
++  AC_MSG_NOTICE([Load/save is disabled, not checking for libxml2])
+ else
+   dnl check for libxml2 with minimum req version
+   GST_LIBXML2_CHECK(2.4.9)
+diff -ur gstreamer-0.8.9/gst/gstconfig.h.in gstreamer-0.8.9-jeh3/gst/gstconfig.h.in
+--- gstreamer-0.8.9/gst/gstconfig.h.in	2004-07-26 06:09:02.000000000 -0400
++++ gstreamer-0.8.9-jeh3/gst/gstconfig.h.in	2005-03-03 22:36:13.860460080 -0500
+@@ -61,10 +61,11 @@
+ 
+ /***** Deal with XML stuff, we have to handle both loadsave and registry *****/
+ 
+-#if (! (defined(GST_DISABLE_LOADSAVE) && defined(GST_DISABLE_REGISTRY)) )
++#if (! defined(GST_DISABLE_LOADSAVE) )
+ # include <libxml/parser.h>
+ #else
+-# define GST_DISABLE_LOADSAVE_REGISTRY
++/* misnomer but we cannot rename symbols */
++# define GST_DISABLE_LOADSAVE_REGISTRY 
+ #endif
+ 
+ #ifdef WIN32
+Only in gstreamer-0.8.9-jeh3/gst: gstconfig.h.in.orig
+diff -ur gstreamer-0.8.9/gst/indexers/gstindexers.c gstreamer-0.8.9-jeh3/gst/indexers/gstindexers.c
+--- gstreamer-0.8.9/gst/indexers/gstindexers.c	2004-03-15 14:20:30.000000000 -0500
++++ gstreamer-0.8.9-jeh3/gst/indexers/gstindexers.c	2005-03-03 22:34:09.228407032 -0500
+@@ -30,7 +30,9 @@
+   gboolean res = TRUE;
+ 
+   res &= gst_mem_index_plugin_init (plugin);
++#ifndef GST_DISABLE_LOADSAVE_REGISTRY
+   res &= gst_file_index_plugin_init (plugin);
++#endif
+ 
+   return res;
+ }
+diff -ur gstreamer-0.8.9/gst/registries/gstxmlregistry.h gstreamer-0.8.9-jeh3/gst/registries/gstxmlregistry.h
+--- gstreamer-0.8.9/gst/registries/gstxmlregistry.h	2004-03-15 10:08:32.000000000 -0500
++++ gstreamer-0.8.9-jeh3/gst/registries/gstxmlregistry.h	2005-03-03 22:34:09.229406880 -0500
+@@ -25,6 +25,7 @@
+ #define __GST_XML_REGISTRY_H__
+ 
+ #include <gst/gstregistry.h>
++#include <stdio.h>
+ 
+ G_BEGIN_DECLS
+ 
+Only in gstreamer-0.8.9-jeh3/win32: gstconfig.h.orig
