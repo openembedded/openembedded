@@ -1,0 +1,36 @@
+DESCRIPTION = "Opie Launcher"
+SECTION = "opie/Applications"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libopie2 libqpe-opie"
+PV = "1.1.3cvs${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/rsync;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/launcher;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE}                     \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/root;date=${CVSDATE}"
+
+S = "${WORKDIR}/launcher"
+
+inherit palmtop
+
+
+do_configure_prepend() {
+	ln -s ${WORKDIR}/rsync ${S}/rsync
+	ln -s ${WORKDIR}/calibrate ${S}/calibrate
+	ln -s ${WORKDIR}/mediummount ${S}/mediummount
+	install -m 0644 ${FILESDIR}/server.pro ${S}/server.pro
+}
+
+do_install() {
+	install -d ${D}/${palmtopdir}/{bin,apps/Applications,apps/Settings,pics/launcher}
+	install -d ${D}/etc/init.d/
+	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
+	install -m 0644 ${WORKDIR}/apps/Settings/Calibrate.desktop ${D}/${palmtopdir}/apps/Settings/Calibrate.desktop
+	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
+	install -m 0644 ${WORKDIR}/root/etc/init.d/opie ${D}/etc/init.d/opie
+}
+
