@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r4"
 
 inherit gpe
 
@@ -15,5 +15,9 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-session-scripts-
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
+	install -d ${D}/etc/gpe/xsettings-default.d
+	if [ "${GPE_MACHINE_CLASS}" != "bigscreen" ]; then
+		echo "Gtk/ToolbarStyle:S:icons" > ${D}/etc/gpe/xsettings-default.d/toolbar
+	fi
 }
 
