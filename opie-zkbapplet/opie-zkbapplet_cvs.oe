@@ -3,15 +3,13 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-RDEPENDS = "opie-keyz-cfg"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "zkbapplet"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/zkbapplet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/keyz-cfg \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-		   file://path.patch;patch=1"
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 
@@ -26,7 +24,12 @@ test -f $OPIEDIR/share/zkb/zkb.xml || cp $OPIEDIR/share/zkb/zkb.xml.sample $OPIE
 do_install() {
         install -d ${D}${palmtopdir}/pics/
         install -m 0644 ${WORKDIR}/pics/zkb-disabled.png ${D}${palmtopdir}/pics/
+        install -m 0644 ${WORKDIR}/pics/keyz-cfg.png ${D}${palmtopdir}/pics/
         install -d ${D}${palmtopdir}/share/zkb/
         install -m 0644 ${WORKDIR}/share/zkb/*xml* ${D}${palmtopdir}/share/zkb/
+        install -d ${D}${palmtopdir}/bin
+        install -m 0755 ${S}/keyz-cfg ${D}${palmtopdir}/bin/
+        install -d ${D}${palmtopdir}/apps/Settings
+        install -m 0644 ${WORKDIR}/apps/Settings/keyz-cfg.desktop ${D}${palmtopdir}/apps/Settings/
 }
 
