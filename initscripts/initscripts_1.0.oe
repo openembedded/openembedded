@@ -33,27 +33,7 @@ SRC_URI = "file://halt \
            file://extractfs \
            file://checkroot.sh \
            file://umountnfs.sh \
-           file://device_table.txt \
-           file://bootmisc.sh \
-           file://checkroot.sh \
-           file://finish \
-           file://halt \
-           file://hostname.sh \
-           file://mountall.sh \
-           file://mountnfs.sh \
-           file://packages \
-           file://reboot \
-           file://rmnologin \
-           file://sendsigs \
-           file://single \
-           file://umountnfs.sh \
-           file://devpts.sh \
-           file://devpts \
            file://sysfs.sh \
-           file://banner \
-           file://devices \
-           file://extractfs \
-           file://umountfs \
            file://device_table.txt"
 
 

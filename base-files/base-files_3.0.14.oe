@@ -57,9 +57,7 @@ SRC_URI = " \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
            file://licenses/LGPL-2.1 \
-           file://licenses/Artistic \
-           file://etc/issue-${DISTRO} \
-           file://etc/issue.net-${DISTRO}"
+           file://licenses/Artistic"
 S = "${WORKDIR}"
 
 docdir_append = "/${P}"

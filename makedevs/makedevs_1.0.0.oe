@@ -1,9 +1,8 @@
-SRC_URI = "file://makedevs.c \
-           file://makedevs.c"
+SRC_URI = "file://makedevs.c"
 S = "${WORKDIR}/makedevs-${PV}"
 
 do_configure() {
-	cp -f ${WORKDIR}/makedevs.c ${S}/
+	install -m 0644 ${WORKDIR}/makedevs.c ${S}/
 }
 
 do_compile() {
