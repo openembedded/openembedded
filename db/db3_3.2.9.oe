@@ -36,7 +36,7 @@ do_configure_prepend () {
 		echo "DB_VERSION_PATCH=$DB_VERSION_PATCH" &&
 		echo "AC_SUBST(DB_VERSION_STRING)" &&
 		echo "AC_DEFINE(DB_VERSION_STRING, [$DB_VERSION_STRING])" &&
-		echo "DB_VERSION_STRING=\"\\"\$DB_VERSION_STRING\\"\"" &&
+		echo "DB_VERSION_STRING=\"\\\"\$DB_VERSION_STRING\\\"\"" &&
 		echo "])dnl") > acinclude.m4
 	)
 }
