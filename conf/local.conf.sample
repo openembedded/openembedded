@@ -15,15 +15,11 @@
 # then EDIT IT.  Fixup any paths to point to the correct locations, and
 # setup the target specifications appropriately.
 
-# ** READ THIS CAREFULLY **
-#
 # NOTE: Do NOT use ~ in your paths, OE does NOT expand ~ for you.  If you
 # must have paths relative to your homedir use ${HOME} (note the {}'s there
 # you MUST have them for the variable expansion to be done by OE).  Your
 # paths should all be absolute paths (They should all start with a / after
 # expansion.  Stuff like starting with ${HOME} or ${TOPDIR} is ok).
-#
-# ** READ THIS CAREFULLY **
 
 # Once you have done that, you will want to cd into your build environment
 # (${HOME}/oe/build/ in this example), then run "oemake targets..."  This
@@ -40,7 +36,7 @@
 # mkdir $HOME/oe/build-arm/conf
 # cd $HOME/oe/build-arm
 # cp ../packages/conf/local.conf.sample conf/local.conf
-#  .. EDIT conf/local.conf to set OEFILES and other vars properly!! ..
+#  .. EDIT conf/local.conf to set OEFILES and other vars properly ..
 # oemake busybox
 #  .. busybox is built in tmp/ from the current dir ($HOME/oe/build-arm) ..
 #
@@ -52,16 +48,18 @@ DL_DIR = "${HOME}/sources"
 # your build. Typically this will be something like OEFILES = "/path/to/packages/*/*.oe"
 OEFILES := "${@oe.fatal('Edit your conf/local.conf: OEFILES')}"
 
-# Use the OEMASK below unless you want to build something else than the
-# default glibc based setup
+# Use the OEMASK below to instruct OE to _NOT_ consider some .oe files
+# This is a regulary expression, so be sure to get your parenthesis balanced.
 OEMASK = ""
 
-# Uncomment this if you want to use a prebuilt toolchain.  You will need to
-# provide packages for toolchain and additional libraries yourself You will
-# definitely need to say:
+# Uncomment this if you want to use a prebuilt toolchain. You will need to
+# provide packages for toolchain and additional libraries yourself. You also
+# have to set PATH in your environment to make sure OE finds additional binaries.
+# Note: You will definitely need to say:
 #     ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95"
 # to build any of two Linux 2.4 Embedix kernels,
-# i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18.
+# i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18 - and don't forget
+# to rename the binaries as instructed in the Wiki.
 #ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
@@ -77,14 +75,14 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # <build directory>/tmp
 #TMPDIR = /usr/local/projects/oetmp
 
-# Uncomment this to specify a machine to build for. See <oe>/conf/*.conf
+# Uncomment this to specify a machine to build for. See the conf directory
 # for machines currently known to OpenEmbedded.
 #MACHINE = "collie"
 
 # Use this to specify the target architecture. Note that this is only
 # needed when building for a machine not known to OpenEmbedded. Better use
 # the MACHINE attribute (see above)
-TARGET_ARCH = "arm"
+#TARGET_ARCH = "arm"
 
 # Use this to specify the target operating system.  This is "linux" for a
 # normal linux system with glibc.  Set this to "linux-uclibc" if you want
@@ -92,12 +90,13 @@ TARGET_ARCH = "arm"
 #TARGET_OS = "linux"
 #TARGET_OS = "linux-uclibc"
 
-# Uncomment this to select a distribution policy.
+# Uncomment this to select a distribution policy. See the conf directory
+# for distributions currently known to OpenEmbedded.
 #DISTRO = "familiar"
 
-# Uncomment this to build .tar packages during the build process.
-# Also supported is "package_ipk"
-# Usually better to set DISTRO instead (see above)
+# Uncomment one of these to build packages during the build process.
+# This is done automatically if you set DISTRO (see above)
+#INHERIT = "package_ipk"
 #INHERIT = "package_tar"
 
 # Uncomment one of these lines to get a rootfs image type other than jffs2
@@ -111,12 +110,11 @@ CACHE=/var/tmp/oe-cache.${USER}
 #OEDEBUG = "yes"
 
 # Uncomment this if you want OE to emit the log if a build fails.
-#OEINCLUDELOGS = "yes"
+OEINCLUDELOGS = "yes"
 
 # Specifies a location to search for pre-generated tarballs when fetching
-# a cvs:// URI.  Comment this out if you always want to pull directly 
-# from the CVS tree.
-CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
+# a cvs:// URI.  Uncomment this, if you not want to pull directly from CVS.
+#CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
 
 # EDIT THIS FILE and then remove the line below before using!
 REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
