@@ -1,0 +1,15 @@
+DESCRIPTION = "GNU Classpath modified to work with SableVM"
+HOMEPAGE = "http://sablevm.org"
+PRIORITY = "optional"
+MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+DEPENDS = "glib-2.0 gtk+ libart-lgpl pango"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/sablevm-classpath-${PV}.tar.gz"
+
+inherit autotools
+
+PACKAGES += " ${PN}-native"
+
+FILES_${PN} = "/usr/share/sablevm"
+FILES_${PN}-native = "/usr/lib/sablevm"
