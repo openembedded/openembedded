@@ -1,7 +1,8 @@
 DESCRIPTION = "KDE Web Browser Konqueror, QtE based Palmtop Environments Edition"
-SECTION = "opie/Applications"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libqpe-opie openssl pcre"
+PR = "r1"
 
 SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snapshot-${PV}.tar.gz \
            file://opie1.patch;patch=1 \
