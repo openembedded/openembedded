@@ -1,8 +1,0 @@
-UNSLUNG_VARIANT = "able"
-
-# Add overlays and patches to the standard ramdisk here
-# SRC_URI += "file://ipkg.conf"
-
-include nslu2-unslung-ramdisk_2.3r25.oe
-
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/nslu2-unslung-ramdisk/able', '${FILE_DIRNAME}/nslu2-unslung-ramdisk', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

@@ -14,9 +14,9 @@
 /dev/kmem	c	640	0	0	1	2	-	-	-
 /dev/ledman	c	644	0	0	126	0	-	-	-
 /dev/mem	c	640	0	0	1	1	-	-	-
-/dev/mtd	c	664	0	0	90	0	0	2	4
-/dev/mtdblock	b	644	0	0	31	0	0	1	4
-/dev/mtdr	c	664	0	0	90	0	1	2	4
+/dev/mtd	c	664	0	0	90	0	0	2	8
+/dev/mtdblock	b	644	0	0	31	0	0	1	8
+/dev/mtdr	c	664	0	0	90	0	1	2	8
 /dev/null	c	666	0	0	1	3	-	-	-
 /dev/pbuttons	c	664	0	0	60	0	-	-	-
 /dev/ppp	c	644	0	0	108	0	-	-	-

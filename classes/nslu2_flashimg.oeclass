@@ -11,5 +11,5 @@ nslu2_pack_image () {
 	rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug
 }
 
-EXTRA_IMAGEDEPENDS += 'slugtool-native nslu2-firmware-binary'
+EXTRA_IMAGEDEPENDS += 'slugtool-native nslu2-linksys-firmware'
 IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "
