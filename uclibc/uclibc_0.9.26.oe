@@ -4,7 +4,32 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-# This will ONLY build to this target
+# We want to select whether we're building a uclibc or glibc system and
+# perform provides accordingly.  We want to trigger on the original
+# TARGET_VENDOR setting, so we must do this before changing it.
+def target_is_uclibc(d):
+    import oe
+    if (oe.data.getVar('TARGET_VENDOR', d, 1) == '-uclibc'):
+        return 1
+    return 0
+def cond_provides(d):
+    import oe
+    if target_is_uclibc(d):
+        return 'virtual/libc'
+    return ''
+def cond_packages(d):
+    import oe
+    if target_is_uclibc(d):
+        return '${PN} ${PN}-doc ${PN}-dev ${PN}-locale'
+    return '${PN}-compat'
+PROVIDES := "${@cond_provides(d)}"
+PACKAGES := "${@cond_packages(d)}"
+
+# When target is not a uclibc system, do a compat-only package
+FILES_${PN}-compat = "${libdir}/lib*.so.* /lib/*.so*"
+
+# This will ONLY build to this target (we override it incase we're buliding
+# the world for a glibc system)
 TARGET_VENDOR = "-uclibc"
 TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
 TARGET_PREFIX = "${TARGET_SYS}-"
@@ -12,7 +37,6 @@ TARGET_PREFIX = "${TARGET_SYS}-"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial"
-PROVIDES = "virtual/libc"
 
 SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
            http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"

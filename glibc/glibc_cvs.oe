@@ -7,14 +7,39 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-# This will ONLY build to this target
+# We want to select whether we're building a uclibc or glibc system and
+# perform provides accordingly.  We want to trigger on the original
+# TARGET_VENDOR setting, so we must do this before changing it.
+def target_is_uclibc(d):
+    import oe
+    if (oe.data.getVar('TARGET_VENDOR', d, 1) == '-uclibc'):
+        return 1
+    return 0
+def cond_provides(d):
+    import oe
+    if not target_is_uclibc(d):
+        return 'virtual/libc'
+    return ''
+def cond_packages(d):
+    import oe
+    if not target_is_uclibc(d):
+        return 'glibc glibc-dev glibc-doc glibc-i18n glibc-locale'
+    oe.data.setVar('PACKAGE_NO_LOCALE', '1', d)
+    oe.data.setVar('PACKAGE_NO_GCONV', '1', d)
+    return 'glibc-compat'
+PROVIDES := "${@cond_provides(d)}"
+PACKAGES := "${@cond_packages(d)}"
+
+# When target is not a uclibc system, do a compat-only package
+FILES_${PN}-compat = "${libdir}/lib*.so.* /lib/*.so*"
+
+# This will ONLY build to this target (we override it incase we're buliding
+# the world for a uclibc system)
 TARGET_VENDOR = ""
 TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
 TARGET_PREFIX = "${TARGET_SYS}-"
 
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
-PROVIDES = "virtual/libc"
-PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
@@ -171,7 +196,7 @@ do_install() {
 	done
 }
 
-python populate_packages_prepend () {
+python package_do_split_gconvs () {
 	import os
 	def do_split(root, pattern, format, description, postinst):
 		dvar = oe.data.getVar('D', d, 1)
@@ -204,6 +229,10 @@ python populate_packages_prepend () {
 
 		oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
+	if (oe.data.getVar('PACKAGE_NO_GCONV', d, 1) == '1'):
+		oe.note("package requested not splitting gconvs")
+		return
+
 	libdir = oe.data.getVar('libdir', d, 1)
 	if not libdir:
 		oe.error("libdir not defined")
@@ -214,6 +243,12 @@ python populate_packages_prepend () {
 	do_split(gconv_libdir, '^(.*)\.so$', 'glibc-gconv-%s', 'gconv module for character set %s', None)
 
 	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
+}
+
+# We want to do this indirection so that we can safely 'return'
+# from the called function even though we're prepending
+python populate_packages_prepend () {
+	oe.build.exec_func('package_do_split_gconvs', d)
 }
 
 python do_package () {
