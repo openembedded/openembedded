@@ -1,4 +1,9 @@
 include binutils_${PV}.oe
 inherit cross
 PROVIDES = virtual/${TARGET_SYS}-binutils
-FILESDIR = ${TOPDIR}/binutils/binutils-${PV}
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}
+
+D=${CROSS_DIR}
+do_install () {
+	oe_runmake install
+}

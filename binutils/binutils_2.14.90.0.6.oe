@@ -61,7 +61,8 @@ python do_patch () {
 	oe.build.exec_func('binutilsbuild_do_patch', d)
 }
 
-do_install_append () {
+do_install () {
+	autotools_do_install
 	cd ${D}/${bindir}
 	# Symlinks for if this is intended to be the only compiler
 	(

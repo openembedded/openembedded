@@ -1,5 +1,6 @@
-inherit cross
 include gcc_${PV}.oe
+inherit cross
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}
 
 DEPENDS := virtual/${TARGET_SYS}-binutils \
            virtual/glibc virtual/glibc-headers patcher

@@ -1,5 +1,5 @@
 include gcc_${PV}.oe
-FILESDIR=${TOPDIR}/gcc/gcc-${PV}
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}
 
 gccbuild_do_patch () {
 	#

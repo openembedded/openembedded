@@ -11,5 +11,6 @@ EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/usr/local \
                 --with-gnu-ld \
                 --enable-languages=c \
                 --disable-shared \
+		--disable-threads \
                 --enable-multilib \
                 --program-prefix=${TARGET_SYS}-
