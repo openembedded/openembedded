@@ -1,6 +1,6 @@
 DESCRIPTION="Python Programming Language"
-SECTION="base"
-PRIORITY="optional"
+SECTION=base
+PRIORITY=optional
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 
 SRC_URI = ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
