@@ -3,6 +3,8 @@ SECTION = "base"
 PRIORITY = "optional"
 PR = "r2"
 
+DEPENDS = "gettext-native"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://ln.patch;patch=1 \
 	   file://configure.patch;patch=1 \
