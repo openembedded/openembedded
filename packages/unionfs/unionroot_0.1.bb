@@ -1,13 +1,13 @@
 LICENSE = "GPL"
 
 DESCRIPTION = "Provides an init script that changes the root file-system to unionfs."
-DEPENDS = "base-files"
-RDEPENDS = "base-files"
+DEPENDS = "busybox base-files"
+RDEPENDS = "busybox base-files"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://init.unionroot"
 
