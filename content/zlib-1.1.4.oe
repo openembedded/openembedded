@@ -8,11 +8,15 @@ SRC_URI="http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz"
 DEPENDS=virtual/libc
 S="${WORKDIR}/${P}"
 
-EXTRA_OECONF="--shared"
+export LDSHARED:="${CC} -shared -Wl,-soname,libz.so.1"
+export LDFLAGS:="${LDFLAGS} -L. -lz"
+export CFLAGS:="-fPIC ${CFLAGS}"
+export AR:="${AR} rc"
 
 do_compile() {
-	unset CC CFLAGS CPPFLAGS LDFLAGS; ./configure --prefix=/usr --shared || die "failed configuring ${P}"
-	oemake LDSHARED="${CC} -shared -Wl,-soname,libz.so.1" CC="${CC}" CFLAGS="-fPIC ${CFLAGS}" LD="${LD}" CPP="${CC} -E" AR="${AR} rc" LDFLAGS="${LDFLAGS}" libz.so.1.1.4 libz.a || die "failed building ${P}"
+	set -e
+	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir}
+	oe_runmake libz.so.1.1.4 libz.a
 }
 
 do_stage() {

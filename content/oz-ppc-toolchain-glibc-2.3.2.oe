@@ -1,0 +1,35 @@
+DESCRIPTION="glibc 2.3.2 from FSF"
+SRC_URI="ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.3.2.tar.gz ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz"
+HOMEPAGE="http://www.gnu.org"
+
+LICENSE="LGPL"
+RDEPEND=""
+DEPEND=""
+PROVIDES="virtual/ppc-linux-gcc"
+MAINTAINER="Tom Gall <tom_gall@mac.com>"
+
+do_unpack() {
+	base_do_unpack $@ || die
+        mv ${WORKDIR}/linuxthreads* ${WORKDIR}/glibc-${PV}
+}
+
+do_compile() {
+        cd ${WORKDIR}/glibc-${PV}
+        unset CC CFLAGS CPPFLAGS LDFLAGS;
+	export PATH="/usr/local/ppc/bin:$PATH"
+	mkdir -p ../glibc-bld
+	cd ../glibc-bld
+        CC=""  ../glibc-${PV}/configure --prefix=/usr/local/ppc --build=ppc-linux --host=ppc-linux --target=ppc-linux --enable-add-ons=linuxthreads --enable-elf  --with-headers=${STAGING_DIR}/target/include/  --enable-shared --without-cvs --without-gd --without-fp --with-cpu=403 || die " ${P} failed during configure"
+        oe_runmake -j 8 || die "failed building ${P}"
+
+}
+
+do_install() {
+	mkdir -p /usr/local/ppc/etc
+	touch /usr/local/ppc/etc/ld.so.conf
+	cd ${WORKDIR}/glibc-bld
+	export PATH="/usr/local/ppc/bin:$PATH"
+	make install
+
+	oeset COMPILERPATH /usr/local/ppc/bin
+}

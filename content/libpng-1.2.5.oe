@@ -1,0 +1,43 @@
+DESCRIPTION="PNG Library"
+SECTION="libs"
+PRIORITY="required"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+DEPENDS=virtual/libc content/zlib
+RDEPENDS="libc6 zlib1g"
+RDEPENDS_append_libpng3=' libpng12'
+
+SRC_URI=http://www.libpng.org/pub/png/src/${P}.tar.bz2
+DEPENDS=virtual/libc
+S=${WORKDIR}/${P}
+
+EXTRA_OEMAKE=ZLIBINC=${STAGING_DIR}/include ZLIBLIB=${STAGING_LIBDIR}
+
+do_compile() {
+	set -e
+	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
+	oe_runmake libpng12.so
+}
+
+do_stage() {
+	install -d ${STAGING_DIR}/{bin,lib,include}
+	install -m 644 -D png.h ${STAGING_DIR}/include/png.h
+	install -m 644 -D pngconf.h ${STAGING_DIR}/include/pngconf.h
+	install -m 755 -D libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0.${PV}
+	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0
+	ln -sf ./libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so
+	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so.3
+	ln -sf ./libpng12.so ${STAGING_LIBDIR}/libpng.so
+}
+
+do_install() {
+	install -d ${D}/usr/lib
+	install -m 755 -D libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so.0.${PV}
+	ln -sf ./libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so.0
+	ln -sf ./libpng12.so.0.${PV} ${D}/usr/lib/libpng12.so
+	ln -sf libpng12.so ${D}/usr/lib/libpng.so.3
+}
+
+PACKAGES="libpng3 libpng12"
+FILES=""
+FILES_libpng3="/usr/lib/libpng.so.3"
+FILES_libpng12="/usr/lib/libpng12.so.*"

@@ -1,0 +1,33 @@
+DESCRIPTION="Zlib Compression Library"
+SECTION="libs"
+PRIORITY="required"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+RDEPENDS="libc6"
+
+SRC_URI=${DEBIAN_MIRROR}/main/libj/libjpeg6b/libjpeg6b_${PV}.orig.tar.gz ${DEBIAN_MIRROR}/main/libj/libjpeg6b/libjpeg6b_${PV}-5.diff.gz;patch=1
+DEPENDS=virtual/libc
+S=${WORKDIR}/jpeg-${PV}
+
+EXTRA_OECONF="--enable-static --enable-shared"
+
+do_stage() {
+	install -d ${STAGING_DIR}/{bin,lib,include}
+	install -m 644 -D jconfig.h ${STAGING_DIR}/include/jconfig.h
+	install -m 644 -D jpeglib.h ${STAGING_DIR}/include/jpeglib.h
+	install -m 644 -D jmorecfg.h ${STAGING_DIR}/include/jmorecfg.h
+	install -m 644 -D jerror.h ${STAGING_DIR}/include/jerror.h
+	install -m 644 -D jpegint.h ${STAGING_DIR}/include/jpegint.h
+	install -m 755 -D .libs/libjpeg.so.62.0.0 ${STAGING_LIBDIR}/libjpeg.so.62.0.0
+	ln -sf libjpeg.so.62.0.0 ${STAGING_LIBDIR}/libjpeg.so.62
+	ln -sf libjpeg.so.62.0.0 ${STAGING_LIBDIR}/libjpeg.so
+}
+
+do_install() {
+	install -d ${D}/usr/lib
+	install -m 755 -D .libs/libjpeg.so.62.0.0 ${D}/usr/lib/libjpeg.so.62.0.0
+	ln -sf libjpeg.so.62.0.0 ${D}/usr/lib/libjpeg.so.62
+}
+
+PACKAGES="libjpeg62"
+FILES=""
+FILES_libjpeg62="/usr/lib/libjpeg.so.62.0.0 /usr/lib/libjpeg.so.62"
