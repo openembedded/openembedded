@@ -15,11 +15,9 @@ S = "${WORKDIR}/opie-reader"
 
 inherit opie
 
-# FILES bin/reader bin/reader apps/Applications/opie-reader.desktop pics/opie-reader/*
+# FILES bin/opie-reader apps/Applications/opie-reader.desktop pics/opie-reader/*
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -d ${D}${palmtopdir}/apps/Applications/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-	install -m 0755 ${S}/reader ${D}${palmtopdir}/bin/
 }
 
