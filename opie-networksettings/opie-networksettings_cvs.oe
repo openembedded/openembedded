@@ -1,0 +1,37 @@
+DESCRIPTION = "Opie Network Settings"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+PV = "1.1.4-${CVSDATE}"
+
+APPNAME = "networksettings"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/networksettings;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
+
+do_install() {
+    install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+    install -d ${D}/${palmtopdir}/pics/Network/
+	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/pics/Network/*.* ${D}${palmtopdir}/pics/Network/
+	install -d ${D}/${palmtopdir}/lib/
+	oe_libinstall -so libinterfaces ${D}${palmtopdir}/lib
+	install -d ${D}/${palmtopdir}/plugins/networksettings/
+	for plugin in kppp wlan
+	do
+		install lib$plugin.so ${D}/${palmtopdir}/plugins/networksettings/
+	done
+}
+
+PACKAGES =+ "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
+FILES_opie-networksettings-pppplugin = "${palmtopdir}/plugins/networksettings/libkppp.so"
+FILES_opie-networksettings-wlanplugin = "${palmtopdir}/plugins/networksettings/libwlan.so"
+
