@@ -4,11 +4,10 @@ PV = "${CVSDATE}"
 
 S = "${WORKDIR}/mtd/"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd \
-           file://${FILESDIR}/stdint.patch;patch=1;pnum=0"
+           file://${FILESDIR}/stdint.patch;patch=1;pnum=0 \
+           file://${FILESDIR}/removelinuxinc.patch;patch=1;pnum=1"
 
-CFLAGS_prepend = "-I${S}/../include "
-CPPFLAGS_prepend = "-I${S}/../include "
-CXXFLAGS_prepend = "-I${S}/../include "
+CFLAGS_prepend = "-I${S}/include "
 
 do_compile () {
 	oe_runmake -C util
