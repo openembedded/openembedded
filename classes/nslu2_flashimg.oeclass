@@ -1,0 +1,16 @@
+nslu2_pack_image () {
+	install -d ${DEPLOY_DIR_IMAGE}/slug
+	install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/Redboot \
+			${STAGING_LIBDIR}/nslu2-binaries/Trailer \
+			${STAGING_LIBDIR}/nslu2-binaries/SysConf \
+			${DEPLOY_DIR_IMAGE}/slug/
+	install -m 0644 ${STAGING_KERNEL_DIR}/zImage ${DEPLOY_DIR_IMAGE}/slug/vmlinuz
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug/ramdisk.gz
+	cd ${DEPLOY_DIR_IMAGE}/slug
+	slugtool pack ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.img
+	rm -f ${DEPLOY_DIR_IMAGE}/zImage* ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz
+	rm -rf ${DEPLOY_DIR_IMAGE}/slug
+}
+
+EXTRA_IMAGEDEPENDS += 'slugtool-native nslu2-firmware-binary'
+IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "
