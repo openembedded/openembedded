@@ -6,7 +6,7 @@ iface lo inet loopback
 
 # Wireless interfaces
 iface wlan0 inet dhcp
-wireless_mode wlan0 managed
+wireless_mode managed
 iface atml0 inet dhcp
 
 # Wired or wireless interfaces
