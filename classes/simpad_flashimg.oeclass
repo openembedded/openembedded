@@ -1,9 +1,0 @@
-EXTRA_IMAGEDEPENDS += 'virtual/kernel genboot-native'
-IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime \
-                   --output=${T}/${IMAGE_NAME}.rootfs.jffs2 \
-		   ${EXTRA_IMAGECMD}; \
-		   cd ${DEPLOY_DIR_IMAGE}; \
-		   simpad-make-flashimg complete ${STAGING_KERNEL_DIR}/zImage ${T}/${IMAGE_NAME}.rootfs.jffs2; \
-	           mv zImage.initrd.flashfile ${IMAGE_NAME}.img"
-IMAGE_POSTPROCESS_COMMAND += "rm -f ${IMAGE_ROOTFS}/boot/zImage*; "
-
