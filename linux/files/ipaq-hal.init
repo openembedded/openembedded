@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# make sure update-modules has been run
+# since the calls below depend on aliases...
+if [ ! -f /etc/modules.conf ]; then 
+  update-modules || true
+fi
+
 modprobe ipaq_hal || exit 0
 
 if [ -d /proc/hal ]; then
