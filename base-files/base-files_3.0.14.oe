@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = " \
            file://nsswitch.conf \
