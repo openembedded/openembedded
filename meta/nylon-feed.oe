@@ -4,8 +4,10 @@ bash \
 bridge-utils \
 busybox \
 db3 \
+ddclient \
 dhcp-forwarder \
 dhcp \
+expat \
 gdb \
 glib-2.0 \
 glibc \
@@ -21,12 +23,14 @@ ipkg \
 iproute2 \
 iptables \
 virtual/kernel \
+kismet \
 less \
 libmail-sendmail-perl \
 libnetserver-generic-perl \
 libpcap \
 lsof \
 lzo \
+madwifi-modules \
 maradns \
 mc \
 mobilemesh \
@@ -53,14 +57,25 @@ tinc \
 unik-olsrd \
 vtun \
 wireless-tools \
+wlan-ng-modules \
 zlib \
 "
 
+# TODO:
 # ksymoops / binutils
-# wlan-ng
-# madwifi-modules \
-# prism54 cvs
-# strace \
+# strace: SYS_read?
+# gdb-cross: install paths, sdk?
+# screen: sgttyb?
+# nocat
+# openssh: exclude /var/run
+# ppp init scipts
+# zoneinfo? timezones /etc/localtime
+# snmp
+# mrtg
+# iptraf
+# dyndns: http://ez-ipupdate.com/
+# tinc: MTU patch
+# pptp
 
 # egrep -i Pattern matched against "$Section $Package-Name"
 export FEED_PATTERN = "^locale-|^glibc-|^net|^libs|^base"
