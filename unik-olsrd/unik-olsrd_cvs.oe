@@ -15,14 +15,13 @@ FILES_unik-olsrd-libs = "${libdir}"
 S = "${WORKDIR}/olsrd-current"
 
 do_compile() {
-	oe_runmake OS=linux all libs
+	oe_runmake OS=linux clean all libs
 }
 
 do_install () {
-	oe_runmake PREFIX=${D} install install_libs
+	oe_runmake INSTALL_PREFIX=${D} install install_libs
 	install -d ${D}/etc/init.d
 	install -m 0755 ${WORKDIR}/unik-olsrd ${D}/${sysconfdir}/init.d
 }
 
 CONFFILES_${PN} = "/etc/olsrd.conf"
-

@@ -21,6 +21,7 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://12-openswan-2.2.0-nat-t.diff;patch=1 \
 	file://13-openswan-2.2.0.patch;patch=1 \
 	file://14-au1000-eth-link-beat.diff;patch=1 \
+	file://15-au1000-pci-fixup-non-coherent-pre-ac.diff;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
