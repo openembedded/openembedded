@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r9"
+PR = "r10"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -12,7 +12,7 @@ PACKAGE_ARCH_${PN}-inittab = "${MACHINE_ARCH}"
 RDEPENDS_${PN} = "${PN}-inittab"
 
 PACKAGES =+ "bootlogd ${PN}-inittab"
-FILES_bootlogd = "/etc/init.d/bootlogd /etc/rcS.d/*bootlogd /sbin/bootlogd"
+FILES_bootlogd = "/etc/init.d/bootlogd /etc/init.d/stop-bootlogd /etc/rc?.d/S*bootlogd /sbin/bootlogd"
 FILES_${PN}-inittab = "${sysconfdir}/inittab"
 
 USE_VT ?= "1"
