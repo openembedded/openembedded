@@ -148,18 +148,18 @@ do_stage() {
 		   '${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
 		   install-headers install-lib
 
-	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
-	cp -a '${WORKDIR}/linux/include/asm' '${STAGING_DIR}/target/include/'
-	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${STAGING_DIR}/target/include/'
+	install -d ${STAGING_INCDIR}/asm
+	cp -a ${WORKDIR}/linux/include/linux ${STAGING_INCDIR}/
+	cp -a ${WORKDIR}/linux/include/asm/* ${STAGING_INCDIR}/asm/
 
-	install -d ${STAGING_DIR}/target/include/gnu \
-		   ${STAGING_DIR}/target/include/bits \
-		   ${STAGING_DIR}/target/include/rpcsvc
-	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_DIR}/target/include/gnu/
-	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_DIR}/target/include/bits/
+	install -d ${STAGING_INCDIR}/gnu \
+		   ${STAGING_INCDIR}/bits \
+		   ${STAGING_INCDIR}/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
-		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_DIR}/target/include/rpcsvc/
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
 	done
 	for i in libc.a libc_pic.a libc_nonshared.a; do
 		install ${B}/$i ${STAGING_LIBDIR}/
@@ -173,9 +173,9 @@ do_stage() {
 		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
 		   install-headers install-lib
 
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include
-	cp -a '${WORKDIR}/linux/include/linux' '${CROSS_DIR}/${TARGET_SYS}/include/'
-	cp -R -L '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/include/'
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
+	cp -a ${WORKDIR}/linux/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
+	cp -R ${WORKDIR}/linux/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
 		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
@@ -200,6 +200,4 @@ do_install() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
-#	cp -a ${WORKDIR}/linux/include/linux ${D}/${includedir}/
-#	cp -a ${WORKDIR}/linux/include/asm-${TARGET_ARCH}/* ${D}/${includedir}/asm/
 }
