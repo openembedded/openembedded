@@ -8,7 +8,8 @@ SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.orig.tar.gz \
 	   ${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}-4.6.diff.gz;patch=1 \
 	   file://${FILESDIR}/busybox.patch;patch=1 \
 	   file://${FILESDIR}/udhcpc.patch;patch=1 \
-	   file://${FILESDIR}/zeroconf.patch;patch=1"
+	   file://${FILESDIR}/zeroconf.patch;patch=1 \
+	   file://${FILESDIR}/head-tail.patch;patch=1"
 
 EXTRA_OEMAKE = ""
 
