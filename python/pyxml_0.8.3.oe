@@ -10,3 +10,19 @@ S = ${WORKDIR}/PyXML-${PV}
 
 inherit distutils
 
+FILES_pyxml_append =    ${PYFILES} ${libdir}/python2.3/site_packages/_xmlplus 	\
+			${libdir}/python2.3/site_packages/_xmlplus		\
+			${libdir}/python2.3/site_packages/_xmlplus/dom		\
+			${libdir}/python2.3/site_packages/_xmlplus/dom/ext 	\
+			${libdir}/python2.3/site_packages/_xmlplus/dom/html	\
+			${libdir}/python2.3/site_packages/_xmlplus/sax          \
+			${libdir}/python2.3/site_packages/_xmlplus/sax/drivers  \
+			${libdir}/python2.3/site_packages/_xmlplus/utils	\
+			${libdir}/python2.3/site_packages/_xmlplus/xpath        \
+			${libdir}/python2.3/site_packages/_xmlplus/marshal	\
+			${libdir}/python2.3/site_packages/_xmlplus/unicode	\
+			${libdir}/python2.3/site_packages/_xmlplus/schema	\
+			${libdir}/python2.3/site_packages/_xmlplus/parsers	\
+			${libdir}/python2.3/site_packages/_xmlplus/parsers/xmlproc
+
+
