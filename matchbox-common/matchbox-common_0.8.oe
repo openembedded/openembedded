@@ -9,7 +9,6 @@ inherit autotools libtool pkgconfig
 
 EXTRA_OECONF = "--enable-pda-folders"
 
-FILES_${PN} = \
-        ${bindir} \
-        ${datadir}/matchbox/vfolders \
-        ${datadir}/pixmaps
+FILES_${PN} = "${bindir} \
+	       ${datadir}/matchbox/vfolders \
+	       ${datadir}/pixmaps"
