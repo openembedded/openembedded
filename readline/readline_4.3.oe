@@ -12,6 +12,12 @@ SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 
 inherit autotools libtool
 
+do_install_append () {
+	# Make install doesn't properly install these
+	oe_libinstall -so -C shlib libhistory ${D}/${libdir}
+	oe_libinstall -so -C shlib libreadline ${D}/${libdir}
+}
+
 do_stage() {
 	oe_libinstall -so -C shlib libhistory ${STAGING_LIBDIR}
 	oe_libinstall -so -C shlib libreadline ${STAGING_LIBDIR}
