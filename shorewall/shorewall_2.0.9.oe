@@ -5,7 +5,8 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 
-SRC_URI = "http://germany.shorewall.net/pub/shorewall/2.0/shorewall-2.0.9/shorewall-2.0.9.tgz"
+SRC_URI = "http://germany.shorewall.net/pub/shorewall/2.0/shorewall-2.0.9/shorewall-2.0.9.tgz \
+	file://install-no-chown.diff;patch=1;pnum=0"
 SRC_URI_append_nylon = " file://shorewall-conf-nylon.diff;patch=1"
 
 do_install() {
