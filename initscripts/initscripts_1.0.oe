@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -25,7 +25,6 @@ SRC_URI = "file://halt \
            file://sendsigs \
            file://urandom \
            file://rmnologin \
-           file://extractfs \
            file://checkroot.sh \
            file://umountnfs.sh \
            file://sysfs.sh \
@@ -69,7 +68,6 @@ do_install () {
 #
 	install -m 0755 ${WORKDIR}/banner	${D}/etc/init.d/banner
 	install -m 0755 ${WORKDIR}/devices	${D}/etc/init.d/devices
-	install -m 0755 ${WORKDIR}/extractfs	${D}/etc/init.d/extractfs
 	install -m 0755 ${WORKDIR}/umountfs	${D}/etc/init.d/umountfs
 #
 # Create runlevel links
@@ -93,7 +91,6 @@ do_install () {
 	ln -sf		../init.d/checkroot.sh	${D}/etc/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}/etc/rcS.d/S30checkfs.sh
 	ln -sf		../init.d/mountall.sh	${D}/etc/rcS.d/S35mountall.sh
-#	ln -sf		../init.d/extractfs	${D}/etc/rcS.d/S36extractfs
 	ln -sf		../init.d/hostname.sh	${D}/etc/rcS.d/S40hostname.sh
 	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
