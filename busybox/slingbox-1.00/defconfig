@@ -80,7 +80,7 @@ CONFIG_CHROOT=y
 # CONFIG_DATE is not set
 # CONFIG_DD is not set
 # CONFIG_DF is not set
-# CONFIG_DIRNAME is not set
+CONFIG_DIRNAME=y
 # CONFIG_DOS2UNIX is not set
 # CONFIG_DU is not set
 # CONFIG_ECHO is not set
@@ -164,7 +164,7 @@ CONFIG_FEATURE_MD5_SHA1_SUM_CHECK=y
 #
 # Editors
 #
-# CONFIG_AWK is not set
+CONFIG_AWK=y
 # CONFIG_PATCH is not set
 CONFIG_SED=y
 # CONFIG_VI is not set

@@ -27,7 +27,20 @@ fi
 
 if [ -z "$mounted" ] ; then
     /bin/echo "Root filesystem cannot be found - dropping into shell ..."
-    echo "5" > /proc/sys/kernel/panic
+
+    /bin/echo "5" > /proc/sys/kernel/panic
+
+    device=/dev/`/bin/sed -n -e 's/^\(mtd[0-9]*\): .* "FIS directory"/\1/p' /proc/mtd`   
+    length=`/bin/dd if=$device bs=2 skip=2048 | /bin/hexdump -n 4 -e '4/1 "%02X"' $device`
+
+    if ( [ "$length" != "FFFFFFFF" ] ); then
+	/bin/dd if=$device bs=2 skip=2056 | /bin/tar zxvf -
+	/sbin/insmod ixp400
+	/sbin/insmod ixp425_eth
+	/sbin/ifconfig ixp0 up 192.168.1.77 netmask 255.255.0.0
+	/sbin/telnetd
+    fi
+
     exec /bin/sh
 fi
 

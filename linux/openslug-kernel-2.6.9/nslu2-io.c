@@ -1,13 +1,16 @@
 //=============================================================================
 //
-// nslu2-io.c version 0.1.0
+// n2-io.c version 0.1.7
 // Author: Karen Spearel <kas11 at tampabay.rr.com>
 // please report problems/bugs directly to the address above
 //
+// Boilerplate to be added "real soon now"...it is and has always been GPL'ed per
+// MODULE_LICENSE but is offered without warrantee of any sort..use at your own risk
+//
 // NOTE: THIS IS INCOMPLETE.  INCLUDED ONLY TO KEEP FROM BREAKING THE BUILD,
 // IT BEEPS AND SENDS A MESSAGE TO /proc/poweroff.  EVENTUALLY IT
-// WILL TALK TO THE n2_pbuttond DAEMON.  EVENTUALLY THE LED DRIVER
-// WILL TALK TO SOME USERLAND APP BUT ***NOT*** THE NASTY SETLEDS.
+// WILL TALK TO THE n2_pbd DAEMON.  EVENTUALLY THE LED DRIVER
+// WILL TALK TO SOME USERLAND APP BUT ***NOT*** SET_LEDS.
 // 
 //=============================================================================
 //	GPIO		Function	State
@@ -22,12 +25,9 @@
 //=============================================================================
 // this driver is N2 specific and is purposely designed to do the minimum 
 // necessary to provide the necessary services given the limited memory resources
-// of the N2.  As OpenSlug develops, addition features will be added as
-// suggested by community leadership.
+// of the N2.  As OpenN2 develops, addition features will be added as
+// suggested by the community.
 //
-// The Userland apps such as SetLeds are just to crufty to bother with.
-// This driver makes no attempt to do so...one day a Userland app will appear
-// ...until then, this does very little.
 //=============================================================================
 
 #include <linux/config.h>
@@ -53,39 +53,10 @@
 #include <asm/hardware.h>
 #include <asm-arm/irq.h>
 #include <asm-arm/delay.h>
+#include <asm-arm/signal.h>
 
-// Print kernel error 
-#define P_ERROR(args...) \
-	printk(KERN_ERR DRV_NAME ": " args)
-// Print kernel warning 
-#define P_WARN(args...) \
-	printk(KERN_WARNING DRV_NAME ": " args)
-// Print kernel notice 
-#define P_NOTICE(args...) \
-	printk(KERN_NOTICE DRV_NAME ": " args)
-// Print kernel info 
-#define P_INFO(args...) \
-	printk(KERN_INFO DRV_NAME ": " args)
-// Print verbose message. Enabled/disabled by 'log_level' param 
-#define P_VERBOSE(args...) \
-	if (log_level >= 1) printk(DRV_NAME ": " args)
-// Print debug message. Enabled/disabled by 'log_level' param  
-#define P_DEBUG(args...) \
-	if (log_level >= 2) { \
-		printk("%s: %s()\n", DRV_NAME, __FUNCTION__); \
-		printk(args); }
 
-#ifdef DEBUG
-// Print trace message 
-#define TRACE \
-	if (log_level >= 2) printk("%s: %s(): line %d\n", \
-			DRV_NAME, __FUNCTION__, __LINE__)
-#else
-// no trace 
-#define TRACE 
-#endif
-
-#define VERSION			"0.1.1"
+#define VERSION			"0.1.7"
 
 #define N2RB_MAJOR		60
 #define N2PB_MAJOR		61
@@ -121,22 +92,27 @@
 #define PWR_OFF_STR		"poweroff"
 
 
-// ioctls -- THESE NEED TO BE PROPERLY DEFINED
+// ioctls -- 'M" is used for sound cards...we don't got one so it seems safe
 
-#define N2LM_ON			0
-#define N2LM_OFF		1
-#define N2LM_BLINK		2
-#define N2LM_ALT		3
-#define N2LM_ALL_ON		4
-#define N2LM_ALL_OFF		5
+#define N2BZ_BEEP_STOP		_IO('M',0)       //stop multi-beep at end of audible
+#define N2BZ_BEEP		_IO('M',1)       //one beep at current defaults
+#define N2BZ_BEEPS		_IOW('M',3,long) //param beeps at current defaults
+#define N2BZ_TONESET		_IOW('M',4,long) //set tone: range is high=250 to low=2000
+#define N2BZ_ONTIME		_IOW('M',5,long) //ontime for multi-beeps in jiffies
+#define	N2BZ_SILENTTIME		_IOW('M',6,long) //offtime for multi-beeps in jiffies
+#define N2BZ_REPEATCNT		_IOW('M',7,long) //number of repeats for multi-beeps 0 = forever
+#define N2BZ_COMBINED		_IOW('M',8,long) //combine all params in a long
+
+#define N2LM_OFF		_IOW('M',32,long)
+#define N2LM_ON			_IOW('M',33,long)
+#define N2LM_BLINK		_IOW('M',34,long)
+#define N2LM_ALT		_IOW('M',35,long)
+#define N2LM_ALL_ON		_IO('M',36)
+#define N2LM_ALL_OFF		_IO('M',37)
 
 #define PHYS_LEDS		4
 #define BLINK_DELAY		25
 
-static int  n2lm_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigned long arg);
-
-
- 
 //  OR Masks to turn these LEDs ON
 
 #define	RS_RED_ON	0x00000001	//0b0000 0000 0000 0010
@@ -175,8 +151,12 @@ static int  n2lm_ioctl(struct inode * inode, struct file * file, unsigned int cm
 #define LED_DISK2	3
 #define LED_ALL		4
 
-static long init_jiffy = 0;			//jiffies at init time
-static int rb_presses = 0;			//number of reset button presses
+static unsigned long init_jiffy = 0;			//jiffies at init time
+static unsigned long rb_presses = 0;			//number of reset button presses
+static unsigned long ontime = 50;
+static unsigned long offtime = 450;
+static unsigned long bz_repeatcnt = 10;
+static unsigned long tone = 1000;
 
 DECLARE_WAIT_QUEUE_HEAD(n2rb_waitq);
 DECLARE_WAIT_QUEUE_HEAD(n2pb_waitq);
@@ -187,7 +167,7 @@ static struct timer_list n2lm_d1_timer;		//drive 1
 static struct timer_list n2lm_d2_timer;		//drive 2
 static struct timer_list n2rb_timer;
 static struct timer_list n2pb_timer;
-
+static struct timer_list n2bz_timer;		//beeper
 
 //==================================================================================================
 //
@@ -240,25 +220,21 @@ static void n2lm_timer_start(unsigned long led)
 	switch(led) {
 		case LED_RS_RED:
 			n2lm_rsr_timer.expires = jiffies + BLINK_DELAY;
-			n2lm_rsr_timer.function = n2lm_rsr_handler;
 			add_timer(&n2lm_rsr_timer);
 			break;
 
 		case LED_RS_GRN:
 			n2lm_rsg_timer.expires = jiffies + BLINK_DELAY;
-			n2lm_rsg_timer.function = n2lm_rsg_handler;
 			add_timer(&n2lm_rsg_timer);
 			break;
 
 		case LED_DISK1:
 			n2lm_d1_timer.expires = jiffies + BLINK_DELAY;
-			n2lm_d1_timer.function = n2lm_d1_handler;
 			add_timer(&n2lm_d1_timer);
  			break;
 
 		case LED_DISK2:
-			n2lm_d2_timer.expires = jiffies + BLINK_DELAY;
-			n2lm_d2_timer.function = n2lm_d2_handler; 
+			n2lm_d2_timer.expires = jiffies + BLINK_DELAY; 
 			add_timer(&n2lm_d2_timer);
 			break;
 
@@ -306,7 +282,7 @@ static void n2lm_timer_stop_all(void)
 static void n2lm_ledon(unsigned long led)
 {
 
-	printk("ledon: %ld\n", led);
+	printk(KERN_DEBUG "ledon: %ld\n", led);
 
 	switch (led) {
 		case LED_RS_RED:	
@@ -421,7 +397,7 @@ static struct file_operations n2lm_fops = {
 // important should be haprepening. 
 //==================================================================================================
 
-static void n2_beep(int tone_delay, int duration)
+static void n2_buzz(int tone_delay, int duration)
 {
 	int i;
 
@@ -437,6 +413,82 @@ static void n2_beep(int tone_delay, int duration)
 
 	return;
 }
+//=================================================================================================
+
+// this handles the buzzer duty cycle
+static void n2bz_handler(unsigned long data)
+{
+	if (--bz_repeatcnt > 0) {			//if just one beep left to do
+		n2bz_timer.expires = jiffies + ontime + offtime;	//next timeout
+		add_timer(&n2bz_timer);					//reinit timer
+	}
+	n2_buzz(tone/2, ontime);
+	printk(KERN_DEBUG "Count = %d\tOntime = %d\n", bz_repeatcnt, ontime);
+	return;
+}
+
+//==================================================================================================
+
+static int n2bz_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long param)
+{
+	switch (cmd) {
+		case N2BZ_BEEP:
+			n2_buzz(tone/2, ontime);
+			break;
+	
+		case N2BZ_BEEP_STOP:
+			del_timer(&n2bz_timer);
+			break;
+
+		case N2BZ_BEEPS:
+			if (param == 0)
+				bz_repeatcnt = 0xffffffff;
+			else
+				bz_repeatcnt = param;
+			n2bz_handler(0);
+			break;
+	
+		case N2BZ_TONESET:
+			if (param >= 250 && param <= 2000)
+				tone = param;
+			break;
+
+		case N2BZ_ONTIME:
+			if (param > 4 && param < 201)
+				ontime = param;
+			break;
+
+		case N2BZ_SILENTTIME:
+			if (param > ontime)			//enforce a reasonable duty cycle
+				offtime = param;
+			else
+				offtime = ontime;
+			break;
+
+		case N2BZ_REPEATCNT:
+			if (param == 0)
+				bz_repeatcnt = 0xffffffff;
+			else
+				bz_repeatcnt = param;
+			break;
+
+		case N2BZ_COMBINED:
+			bz_repeatcnt =  (param & 0xF0000000) >> 28;	//repeat 1 - 16
+			ontime =        (param & 0x0FF00000) >> 20; 	//ontime 1 - 256 jiffies
+			offtime =       (param & 0x000FFF00) >> 8;	//offtime 1 - 4095 jiffies
+			tone =          (param & 0x000000FF) << 4;	//tone (1 - 255) * 16
+			break;
+
+		default:
+			break;
+	}
+	return NOERR;
+}
+
+static struct file_operations n2bz_fops = {
+	.owner		= THIS_MODULE,
+	.ioctl		= n2bz_ioctl,
+};
 
 //==================================================================================================
 		
@@ -446,11 +498,12 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 	
 	wake_up(&n2pb_waitq);	
 	remove_proc_entry(PWR_OFF_STR, NULL);		//no parent	
-	n2_beep(N2_BEEP_PITCH_MED, N2_BEEP_DUR_MED);
+	n2_buzz(N2_BEEP_PITCH_MED, N2_BEEP_DUR_MED);
 	ret = create_proc_entry(PWR_OFF_STR, 0, NULL);
+	printk(KERN_DEBUG "cpe ret = %p\n", ret);
 
-// WARNING: This is RUDE...it unconditionally pulls the power plug
-// your data will be at risk...since this is just a test system
+// WARNING: This is RUDE...it unconditionally pulls the power plug.
+// Your data will be at risk...since this is just a test system
 // I am leaving it enabled...eventually userland needs to get the
 // message, do an orderly shutdown and use an ioctl or something in
 // /proc/powerdowm to actually have us pull the plug.
@@ -458,7 +511,6 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 	*IXP4XX_GPIO_GPOER &= ~GPIO_PO_BM;	// enable the pwr cntl gpio
 	*IXP4XX_GPIO_GPOUTR |= GPIO_PO_BM;	// do the deed
 
-	printk(KERN_DEBUG "cpe ret = %p\n", ret);
 	return IRQ_HANDLED;
 }
 
@@ -469,7 +521,7 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 //	int i;
 //
 //	for (i = 0; i < rb_presses; i++)
-//		n2_beep(N2_BEEP_PITCH_MED,N2_BEEP_DUR_SHORT);
+//		n2_buzz(N2_BEEP_PITCH_MED,N2_BEEP_DUR_SHORT);
 //	return;
 //}
 //
@@ -477,23 +529,55 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 // does nothing -- waiting for userland to define
 // This thing is sorta braindead...edge triggered IRQs aren't available in the drivers yet...so
 // we hang in a loop until the button is no longer pressed
+
+struct testr {
+	int	ctl;
+	long	param;
+};
+
 static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 {
 
-	unsigned long test[] = { 5,0, 0,0, 1,0, 0,1, 1,1, 0,2, 1,2, 0,3, 1,3, 2,0, 1,0, 2,1, 1,1, 2,2, 1,2, 2,3, 1,3, 5,0, 3,1, 5,0, 4,0  };
+	static struct testr test[] = {
+				 N2LM_ALL_OFF,0,
+				 N2LM_ON,0,
+				 N2LM_OFF,0,
+				 N2LM_ON,1,
+				 N2LM_ALL_OFF,1, 
+				 N2LM_ON,2,
+				 N2LM_OFF,2,
+				 N2LM_ON,3,
+				 N2LM_OFF,3,
+				 N2LM_BLINK,0,
+				 N2LM_OFF,0,
+				 N2LM_BLINK,1,
+				 N2LM_OFF,1,
+				 N2LM_BLINK,2,
+				 N2LM_OFF,2,
+				 N2LM_BLINK,3,
+				 N2LM_OFF,3,
+				 N2LM_ALL_OFF,0,
+				 N2LM_ALT,1,
+				 N2LM_OFF,1,
+				 N2LM_ALL_ON,0
+	};
 
-	printk(KERN_DEBUG "Reset Entry IRQ=%d Presses= %d Jiffies= %08lx\n", irq, rb_presses, jiffies);
+	printk("Reset Entry IRQ =%d Presses = %d Jiffies = %08lx\tIO = %x\tIOW = %x\n", irq, rb_presses, jiffies, (int)_IO('M',rb_presses), (int)_IOW('M',rb_presses,long));
 
 	wake_up(&n2rb_waitq);	
   	while ((*IXP4XX_GPIO_GPINR & GPIO_RB_BM) == 0)
 		;					//wait for button release
 
-	if (rb_presses == 21) {
+	if (rb_presses > 20) 
 		rb_presses = 0;
-	}
-	n2lm_ioctl(NULL,NULL,test[rb_presses*2], test[rb_presses*2+1]);
-	rb_presses++;
+	tone = (rb_presses * 50) + 200;
+	ontime = (rb_presses*10) + 100;
+	offtime = 500 - (rb_presses*20);
+	printk("Ontime = %d\tOfftime = %d\tTone = %d\n",ontime,offtime,tone);
+ 	rb_presses++;
 
+	n2bz_ioctl(NULL,NULL, N2BZ_BEEPS, rb_presses);	
+	n2lm_ioctl(NULL,NULL, test[rb_presses].ctl, test[rb_presses].param);
 //	if (rb_presses == 0) {
 //		init_jiffy = jiffies;
 //		init_timer (&n2rb_timer);
@@ -518,6 +602,7 @@ static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 
 	printk(KERN_DEBUG "Reset Exit IRQ=%d Presses= %d Jiffies= %08lx\n", irq, rb_presses, jiffies);
 	return IRQ_HANDLED;
+
 }
 
 //==================================================================================================
@@ -572,14 +657,21 @@ static void n2iom_initarch(void)
 	init_timer(&n2lm_rsr_timer);
 	init_timer(&n2lm_d1_timer);
 	init_timer(&n2lm_d2_timer);
-	init_timer(&n2rb_timer);
-	init_timer(&n2pb_timer);
+//	init_timer(&n2rb_timer);
+//	init_timer(&n2pb_timer);
+	init_timer(&n2bz_timer);
+	n2lm_rsr_timer.function = n2lm_rsr_handler;
+	n2lm_rsg_timer.function = n2lm_rsg_handler;
+	n2lm_d2_timer.function = n2lm_d2_handler;
+	n2lm_d1_timer.function = n2lm_d1_handler;
+	n2bz_timer.function = n2bz_handler;
+	n2lm_rsr_timer.data = n2lm_rsg_timer.data = n2lm_d1_timer.data = n2lm_d2_timer.data = n2bz_timer.data = 0;
 
 	*IXP4XX_GPIO_GPOER &= 0xfffffff0;	//enable gpio 0-3
 	*IXP4XX_GPIO_GPOUTR |= 0x00000003;	//turn off the leds
 	*IXP4XX_GPIO_GPOUTR &= 0xfffffffc;
 	n2lm_ledon(LED_ALL);
-	n2_beep(N2_BEEP_PITCH_MED, N2_BEEP_DUR_SHORT);
+	n2_buzz(N2_BEEP_PITCH_MED, N2_BEEP_DUR_SHORT);
 	n2lm_ledoff(LED_ALL);
 
 	return;
@@ -589,24 +681,29 @@ static void n2iom_initarch(void)
 
 static int __init n2iom_init(void)
 {
-	printk(KERN_INFO "NSLU2 Misc I/O Driver Version %s (C) Karen Spearel\n", VERSION);
+	printk(KERN_INFO "OpenN2 Misc I/O Driver Version %s\n", VERSION);
   	
 	init_jiffy = jiffies;
 	printk(KERN_DEBUG "init_jiffy=%ld\n",init_jiffy);
 	n2iom_initarch();
 
-	if (register_chrdev(N2RB_MAJOR, "n2_rb", &n2pb_fops) < NOERR) {
+	if (register_chrdev(N2RB_MAJOR, "n2_rbm", &n2pb_fops) < NOERR) {
 		printk(KERN_DEBUG "Reset Button Major %d not available\n", N2RB_MAJOR);
 		return -EBUSY;
 	}
-	if (register_chrdev(N2PB_MAJOR, "n2_pb", &n2rb_fops) < NOERR) {
+	if (register_chrdev(N2PB_MAJOR, "n2_pbm", &n2rb_fops) < NOERR) {
 		printk(KERN_DEBUG "Power Button Major %d not available\n", N2PB_MAJOR);
 		return -EBUSY;
 	}
-	if (register_chrdev(N2LM_MAJOR, "n2_leds", &n2lm_fops) < NOERR) {
+	if (register_chrdev(N2LM_MAJOR, "n2_ledm", &n2lm_fops) < NOERR) {
 		printk(KERN_DEBUG "Led Manager Major %d not available\n", N2LM_MAJOR);
 		return -EBUSY;
 	}
+	if (register_chrdev(N2BZ_MAJOR, "n2_bzm", &n2bz_fops) < NOERR) {
+		printk(KERN_DEBUG "Buzzer Major %d not available\n", N2BZ_MAJOR);
+		return -EBUSY;
+	}
+
 	if (request_irq(N2RB_IRQ, &n2rb_handler, SA_INTERRUPT, "n2_rb", NULL) < NOERR) {
 		printk(KERN_DEBUG "Reset Button IRQ %d not available\n", N2RB_IRQ);
 		return -EIO;
@@ -643,9 +740,9 @@ module_init (n2iom_init);
 module_exit (n2iom_exit);
 
 MODULE_AUTHOR("Karen Spearel <kas11@tampabay.rr.com>");
-MODULE_DESCRIPTION("NSLU2 Buttons/LEDs IO Driver");
+MODULE_DESCRIPTION("OpenN2 Buttons/LEDs IO Driver");
 MODULE_LICENSE("GPL");
 static int debug = 7;
 module_param(debug, int, 0644);
-MODULE_PARM_DESC(debug, "Debugging enabled = 1");
+MODULE_PARM_DESC(debug, "Debugging enabled = 8");
 

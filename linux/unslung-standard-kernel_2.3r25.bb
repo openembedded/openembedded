@@ -19,3 +19,11 @@ SRC_URI += "file://limit1gb.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel-${PV}/${UNSLUNG_VARIANT}', '${FILE_DIRNAME}/unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+
+python () {
+	# Don't build unslung kernel unless we're targeting an nslu2
+	mach = oe.data.getVar("MACHINE", d, 1)
+	dist = oe.data.getVar("DISTRO", d, 1)
+	if mach != 'nslu2' or dist != 'unslung':
+		raise oe.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
+}

@@ -1,0 +1,22 @@
+DESCRIPTION = "Linksys NSLU2 Stock Firmware Libraries."
+PACKAGE_ARCH = "nslu2"
+SECTION = "base"
+PRIORITY = "required"
+PR = "r1"
+
+SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2"
+
+S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r25"
+
+do_install () {
+	( cd ${S} ; tar cvf - . ) | ( cd ${D} ; tar xvf - )
+}
+
+PACKAGES = "${PN}"
+FILES_${PN} = "/lib"
+
+python () {
+	# Don't build unless we're targeting an nslu2
+	if oe.data.getVar("MACHINE", d, 1) != "nslu2":
+		raise oe.parse.SkipPackage("NSLU2 stock firmware libraries only builds for the Linksys NSLU2")
+}
