@@ -35,7 +35,7 @@ if (test ! -e /etc/.configured) || test "$OLD_MTD_SIZE" != "$RAM_MTD_SIZE"; then
   dd if=/dev/zero bs=1024 count=$RAM_MTD_SIZE of=$RAM_MTD 2>/dev/null >&2 || exit 1
   test "$VERBOSE" != "no" && echo "$RAM_MTD";
   test "$VERBOSE" != "no" && echo -n "Creating filesystem on ramdisk: "
-  mkfs -t $FSTYPE $RAM_MTDBLK 2>/dev/null >&2 || exit 1
+  mkfs.$FSTYPE $RAM_MTDBLK 2>/dev/null >&2 || exit 1
   test "$VERBOSE" != "no" && echo "$RAM_MTDBLK";
 fi
 

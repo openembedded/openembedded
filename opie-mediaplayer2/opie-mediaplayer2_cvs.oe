@@ -1,13 +1,14 @@
-DESCRIPTION = "The mediaplayer for Opie. It plays mp3, mpeg, wav, ogg, quicktime, divx and more. Also it is streaming capable."
+DESCRIPTION = "The next generation mediaplayer for Opie - based libxine. \
+It plays mp3, mpeg, wav, ogg, quicktime, divx, etc. and is capable of streaming."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>
 PV = "1.1.6-cvs-${CVSDATE}"
-DEPENDS = "libxine"
+DEPENDS = "libxine-1.0.0-rc6a"
 RDEPENDS = "opie-mediaplayer2-skin"
 APPNAME = "opieplayer2"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/opieplayer2 \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
@@ -20,8 +21,6 @@ inherit opie
 QMAKE_PROFILES = "opieplayer2.pro"
 
 do_install() {
-	install -d ${D}${palmtopdir}/pics/${APPNAME}/ ${D}${palmtopdir}/apps/Applications
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/apps/Applications/mediaplayer.desktop ${D}${palmtopdir}/apps/Applications/
 }
-
