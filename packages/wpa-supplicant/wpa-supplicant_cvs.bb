@@ -7,6 +7,8 @@ DEPENDS = "openssl"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@hostap.epitest.fi/cvs;module=hostap \
+	file://use-channel.patch;patch=1 \
+	file://driver-hermes.patch;patch=1 \
 	file://defconfig \
 	file://wpa_supplicant.conf"
 S = "${WORKDIR}/hostap/wpa_supplicant"
