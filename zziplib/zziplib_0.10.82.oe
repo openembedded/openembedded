@@ -4,20 +4,18 @@ PRIORITY = "optional"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zziplib/zziplib-${PV}.tar.bz2"
 
-inherit autotools  pkgconfig
+inherit autotools pkgconfig
 
 do_stage() {
-	oe_libinstall -a -so libzzip-0 ${STAGING_LIBDIR}
-	ln -sf libzzip-0.so ${STAGING_LIBDIR}/libzzip.so
-	oe_libinstall -a -so -C zzipwarp libzzipwrap-0 ${STAGING_LIBDIR}
-	ln -sf libzzipwrap-0.so ${STAGING_LIBDIR}/libzzipwrap.so
-
-	install -d ${STAGING_INCDIR}/readline
-	for f in readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h \
-	  rlconf.h rltypedefs.h
-	do
-		install -m 0644 ${f} ${STAGING_INCDIR}/readline
+	oe_libinstall -a -so -C zzip libzzip ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C zzipwrap libzzipwrap ${STAGING_LIBDIR}
+	install -d ${STAGING_DATADIR}/aclocal
+	install -m 0644 ${S}/bins/zziplib.m4 ${STAGING_DATADIR}/aclocal/
+	for h in zzip.h zzipformat.h zzipwrap.h zziplib.h zzip-io.h; do
+		install -m 0644 ${S}/zziplib/$h ${STAGING_INCDIR}/
 	done
-
+	install -d ${STAGING_INCDIR}/zzip
+	for h in lib.h format.h _msvc.h conf.h file.h stdint.h zzip.h _config.h plugin.h; do
+		install -m 0644 ${S}/zzip/$h ${STAGING_INCDIR}/zzip/
+	done
 }
-
