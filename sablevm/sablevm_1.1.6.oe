@@ -6,9 +6,10 @@ DEPENDS = "libffi libtool popt \
            sablevm-classpath"
 #          unzip"
 RDEPENDS = "sablevm-classpath"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/sablevm-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/sablevm-${PV}.tar.gz \
+           ${DEBIAN_MIRROR}/main/s/sablevm/sablevm_${PV}-6.diff.gz;patch=1"
 
 inherit autotools update-alternatives
 
