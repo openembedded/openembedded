@@ -1,0 +1,30 @@
+DESCRIPTION = "Utilities and system configuration files for the Linux PCMCIA card services"
+SECTION = "base"
+PRIORITY = "required"
+LICENSE = "GPL"
+DEPENDS = "virtual/kernel"
+
+SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/pcmcia-cs-${PV}.tar.gz"
+S = "${WORKDIR}/pcmcia-cs-${PV}"
+
+export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
+
+do_configure() {
+	./Configure --noprompt --sysv --nopnp --rcdir=${sysconfdir} --arch="${ARCH}" --kernel="${KERNEL_SOURCE}" \
+		    --srctree --nocardbus --ucc="${CC}" --ld="${LD}" --uflags="${CFLAGS}" --target=.
+        oe_runmake all HAS_XPM= FLIBS="" XMANDIR=""
+}
+
+do_install() {
+	install -d ${D}/${sbindir}
+	for f in cardmgr/cardctl cardmgr/cardmgr cardmgr/ide_info cardmgr/ifport cardmgr/ifuser cardmgr/pcinitrd flash/ftl_check flash/ftl_format
+	do
+		install -m 0755 $f ${D}/${sbindir}/
+	done
+	install -d ${D}/${sysconfdir}/init.d \
+		   ${D}/${sysconfdir}/pcmcia
+	cp -a etc/* ${D}/${sysconfdir}/pcmcia/
+	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
+}
+
+FILES_${PN} = "${sbindir} ${sysconfdir}"
