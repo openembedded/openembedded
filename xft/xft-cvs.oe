@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc x11-cvs xproto-cvs xrender-cvs freetype fontconfig"
+DEPENDS = "virtual/libc x11 xproto xrender freetype fontconfig"
 PROVIDES = "xft"
 DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
 

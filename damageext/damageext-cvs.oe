@@ -1,7 +1,7 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "xextensions-cvs fixesext-cvs"
+DEPENDS = "xextensions fixesext"
 PROVIDES = "damageext"
 DESCRIPTION = "X Damage extension headers and specification"
 

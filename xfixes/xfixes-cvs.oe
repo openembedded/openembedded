@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc x11-cvs fixesext-cvs"
+DEPENDS = "virtual/libc x11 fixesext"
 PROVIDES = "xfixes"
 DESCRIPTION = "X Fixes extension library."
 

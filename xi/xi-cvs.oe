@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc x11-cvs xextensions-cvs"
+DEPENDS = "virtual/libc x11 xextensions"
 PROVIDES = "xi"
 DESCRIPTION = "X Input extension library."
 
