@@ -3,6 +3,13 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/esound \
 	   file://configure.patch;patch=1"
 S = "${WORKDIR}/esound"
 DEPENDS = "audiofile"
+PR = "r1"
+
+PACKAGES =+ "esddsp esd esd-utils"
+
+FILES_esddsp = "${bindir}/esddsp ${libdir}/libesddsp.so.*"
+FILES_esd = "${bindir}/esd"
+FILES_esd-utils = "${bindir}"
 
 inherit autotools libtool pkgconfig
 
