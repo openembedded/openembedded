@@ -11,12 +11,13 @@ OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
 OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
 
 #
-# High res displays want more fonts
+# High res displays need some additional larger fonts
 #
-OPIE_LIBS_RDEPENDS_append_corgi    = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_shepherd = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_husky    = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_tosa     = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_corgi              = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_shepherd           = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_husky              = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_tosa               = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_openzaurus-pxa-2.6 = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
 
 #
 # Things for reasonable bootstrap image
@@ -39,6 +40,14 @@ OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-styl
 
 OPIE_BASE_DEPENDS = "ipkg ntp bluez-utils-nodbus irda-utils openobex-apps libopieobex0"
 OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex0"
+
+#
+# Clamshell models need the autorotate applet
+#
+OPIE_BASE_DEPENDS_append_corgi                = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_shepherd             = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_husky                = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_openzaurus-pxa-2.6   = " opie-autorotateapplet"
 
 #
 # Additional things for a standard 16MB distribution
