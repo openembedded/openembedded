@@ -3,10 +3,11 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar.gz \
-file://man.patch;patch=1"
+file://man.patch;patch=1 \
+file://wireless-tools.if-pre-up"
 S = "${WORKDIR}/wireless_tools.${PV}"
 
 inherit module
@@ -18,8 +19,11 @@ do_compile() {
 
 do_install() {
 	oe_runmake PREFIX=${D} install
+	install -d ${D}/etc/network/if-pre-up.d
+	install ${WORKDIR}/wireless-tools.if-pre-up ${D}/etc/network/if-pre-up.d/wireless-tools
 }
 
 FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
                ${sysconfdir} ${sharedstatedir} ${localstatedir} \
-               /bin /sbin /lib/*.so* ${datadir}/${PN} ${libdir}/${PN}"
+               /bin /sbin /lib/*.so* ${datadir}/${PN} ${libdir}/${PN} \
+	       /etc/network"
