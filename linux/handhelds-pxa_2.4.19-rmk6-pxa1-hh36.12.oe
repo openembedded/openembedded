@@ -8,6 +8,7 @@ KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
+	   file://ipaq-hal.init \
 	   file://linux-2.4-no-short-loads.patch;patch=1 \
 	   file://linux-2.4-cpufreq.patch;patch=1 \
 	   file://ipsec.patch;patch=1"
@@ -38,7 +39,7 @@ autoload_h3600_generic_sleeve = "h3600_generic_sleeve"
 autoload_ds = "ds"
 autoload_pxa_cs = "pxa_cs"
 
-FILES_${PN} += "/etc/init.d/ipaq-hal"
+FILES_kernel += "/etc/init.d/ipaq-hal"
 INITSCRIPT_NAME = "ipaq-hal"
 INITSCRIPT_PARAMS = "start 21 S ."
 
