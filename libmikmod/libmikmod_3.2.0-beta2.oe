@@ -22,5 +22,6 @@ do_stage() {
         cat libmikmod-config | sed 's,$libdir , ,' \
                              | sed 's,$includes , ,' > ${STAGING_BINDIR}/libmikmod-config
         chmod a+rx ${STAGING_BINDIR}/libmikmod-config
+	install -d ${STAGING_DATADIR}/aclocal/
+	install -m 0644 libmikmod.m4 ${STAGING_DATADIR}/aclocal/
 }
-

@@ -18,4 +18,6 @@ do_stage() {
 			${S}/include/ao/plugin.h ${STAGING_INCDIR}/ao/
 
 	oe_libinstall -so -C src libao ${STAGING_LIBDIR}
+	install -d ${STAGING_DATADIR}/aclocal
+	install -m 0644 ao.m4 ${STAGING_DATADIR}/aclocal/
 }

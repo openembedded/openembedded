@@ -20,4 +20,6 @@ do_stage () {
 	install -m 0644 include/vorbis/vorbisenc.h \
 			include/vorbis/vorbisfile.h \
 			include/vorbis/codec.h ${STAGING_INCDIR}/vorbis/
+	install -d ${STAGING_DATADIR}/aclocal
+	install -m 0644 vorbis.m4 ${STAGING_DATADIR}/aclocal/
 }
