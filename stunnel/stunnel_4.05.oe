@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc openssl libtool-cross"
+DEPENDS = "virtual/libc openssl"
 RDEPENDS = "libc6 openssl"
 LICENSE = "GPL"
 DESCRIPTION = "Stunnel is a program that allows you to encrypt \
@@ -9,4 +9,4 @@ SRC_URI = "http://www.stunnel.org/download/stunnel/src/stunnel-${PV}.tar.gz \
 	   file://${FILESDIR}/automake.patch;patch=1"
 S = "${WORKDIR}/stunnel-${PV}"
 
-inherit autotools
+inherit autotools libtool
