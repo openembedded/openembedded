@@ -30,4 +30,4 @@ do_install_append() {
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
-PACKAGE_ARCH := "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"

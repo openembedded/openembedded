@@ -4,7 +4,7 @@ PR = "r14"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
-PACKAGE_ARCH := "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
