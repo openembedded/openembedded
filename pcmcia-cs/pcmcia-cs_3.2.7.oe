@@ -3,10 +3,11 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
+	   file://network.patch;patch=1 \
 	   file://ide.opts \
 	   file://wireless.opts"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
