@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-image"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
            file://directories.patch;patch=1"
@@ -12,7 +12,7 @@ SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-$
 inherit palmtop
 
 EXTRA_QMAKEVARS_POST += " INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDLmain \
-			LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte TARGET=brickout DEFINES+=USE_SDL "
+			LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qt LIBS+=-lqpe TARGET=brickout DEFINES+=USE_SDL "
 
 do_configure_prepend() {
         qmake -project -o brickout.pro
