@@ -60,7 +60,7 @@ CONFIG_CAT=y
 # CONFIG_CHGRP is not set
 # CONFIG_CHMOD is not set
 # CONFIG_CHOWN is not set
-# CONFIG_CHROOT is not set
+CONFIG_CHROOT=y
 # CONFIG_CMP is not set
 CONFIG_CP=y
 # CONFIG_CUT is not set
@@ -341,7 +341,7 @@ CONFIG_PIVOT_ROOT=y
 # CONFIG_RDATE is not set
 # CONFIG_SWAPONOFF is not set
 CONFIG_MOUNT=y
-# CONFIG_NFSMOUNT is not set
+CONFIG_NFSMOUNT=y
 CONFIG_UMOUNT=y
 # CONFIG_FEATURE_MOUNT_FORCE is not set
 
