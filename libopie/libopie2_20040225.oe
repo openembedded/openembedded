@@ -46,6 +46,13 @@ do_install() {
 	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}/opt/QtPalmtop/lib/
 }
 
-FILES=
-FILES_${PN}=/opt/QtPalmtop
+PACKAGES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+FILES_libopiecore2 = "/opt/QtPalmtop/lib/libopiecore2.so.*"
+FILES_libopiedb2 = "/opt/QtPalmtop/lib/libopiedb2.so.*"
+FILES_libopiemm2 = "/opt/QtPalmtop/lib/libopiemm2.so.*"
+FILES_libopienet2 = "/opt/QtPalmtop/lib/libopienet2.so.*"
+FILES_libopiepim2 = "/opt/QtPalmtop/lib/libopiepim2.so.*"
+FILES_libopieui2 = "/opt/QtPalmtop/lib/libopieui2.so.*"
+
+#FIXME: Add individual package descriptions and dependencies
 
