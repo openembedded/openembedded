@@ -6,6 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.8+cvs-${CVSDATE}"
 APPNAME = "wirelessapplet"
 
+EXCLUDE_FROM_WORLD = "1"
+
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/applets/wirelessapplet"
 S = "${WORKDIR}/${APPNAME}"
 

@@ -59,7 +59,6 @@ opie-suspendapplet \
 opie-vmemo \
 opie-volumeapplet \
 opie-vtapplet \
-opie-wirelessapplet \
 opie-zkbapplet \ 
 "
 RDEPENDS_task-opie-applets = "${task-opie-applets}"
@@ -367,8 +366,7 @@ RDEPENDS_task-opie-bluetooth = "${task-opie-bluetooth}"
 DEPENDS += " ${task-opie-bluetooth}"
 
 task-opie-wlan = "\
-opie-wellenreiter \
-opie-wirelessapplet "
+opie-wellenreiter "
 RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
 DEPENDS += " ${task-opie-wlan}"
 
