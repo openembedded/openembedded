@@ -8,22 +8,8 @@ PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 PACKAGES = "libgcc"
 INHIBIT_PACKAGE_STRIP = 1
 
-EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
-		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
-		--disable-nls \
-		--with-gnu-ld \
-		--enable-multilib \
-		--enable-threads=posix \
-		--enable-symvers=gnu \
-		--enable-__cxa_atexit \
-		--enable-languages=c,c++,f77 \
-		--enable-shared \
-		--enable-c99 \
-		--enable-long-long \
-		--enable-target-optspace \
-		--program-prefix=${TARGET_PREFIX}"
-
-FILES_libgcc = "/lib/libgcc_s.so.*"
+EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
+		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++"
 
 export CPPFLAGS = ""
 export CXXFLAGS = ""

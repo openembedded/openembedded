@@ -129,17 +129,34 @@ python do_patch () {
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--with-local-prefix=${prefix}/local \
-		--with-gxx-include-dir=${includedir}/c++/${PV} \
-		--enable-target-optspace \
-		--disable-nls \
-		--with-gnu-ld \
-		--disable-__cxa_atexit \
-		--enable-languages=c,c++,f77 \
-		--enable-shared \
-		--enable-multilib \
-		--enable-threads=posix \
-		--program-prefix=${TARGET_PREFIX}"
+EXTRA_OECONF = "--disable-nls \
+                --with-gnu-ld \
+                --enable-shared \
+                --enable-multilib \
+                --enable-target-optspace \
+                --enable-languages=c,c++,f77 \
+                --enable-threads=posix \
+                --enable-c99 \
+                --enable-long-long \
+                --enable-symvers=gnu \
+                --program-prefix=${TARGET_PREFIX} \
+                ${EXTRA_OECONF_PATHS} \
+                ${EXTRA_OECONF_DEP}"
+
+EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
+                      --with-gxx-include-dir=${includedir}/c++/${PV}"
+
+EXTRA_OECONF_DEP = ""
+EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
+EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
+
+python __anonymous () {
+    import oe, re
+    if (re.match('linux-uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None):
+        oe.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
+    elif (re.match('linux$', oe.data.getVar('TARGET_OS', d, 1)) != None):
+        oe.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
+}
 
 do_configure () {
 	# Setup these vars for cross building only
