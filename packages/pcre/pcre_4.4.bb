@@ -12,6 +12,8 @@ S = "${WORKDIR}/pcre-${PV}"
 
 inherit autotools binconfig
 
+PARALLEL_MAKE=""
+
 LEAD_SONAME = "libpcre.so"
 CFLAGS_append = " -D_REENTRANT"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"
