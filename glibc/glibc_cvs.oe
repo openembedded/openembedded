@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r6"
+PR = "r7"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -26,7 +26,7 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
@@ -44,11 +44,11 @@ FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
 FILES_nscd = "${sbindir}/nscd*"
 FILES_glibc-utils = "${bindir} ${sbindir}"
 FILES_glibc-gconv = "${libdir}/gconv"
-FILES_glibc-i18n = "${datadir}/i18n"
 FILES_catchsegv = "${bindir}/catchsegv"
 DEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
 FILES_glibc-thread-db = "/lib/libthread_db*"
+FILES_localedef = "${bindir}/localedef"
 
 HEADERS_VERSION = "2.6.5.1"
 HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
@@ -68,7 +68,8 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
            file://dyn-ldconfig.patch;patch=1;pnum=0 \
 	   \
-           file://etc/ld.so.conf"
+           file://etc/ld.so.conf \
+	   file://generate-supported.mk"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -206,8 +207,20 @@ do_install() {
 	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
 }
 
+locale_base_postinst() {
+#!/bin/sh
+
+localedef --add-to-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz
+}
+
+locale_base_postrm() {
+#!/bin/sh
+
+localedef --delete-from-archive --inputfile=${datadir}/locales/%s --charmap=${datadir}/charmaps/%s.gz
+}
+
 python package_do_split_gconvs () {
-	import os
+	import os, re
 	if (oe.data.getVar('PACKAGE_NO_GCONV', d, 1) == '1'):
 		oe.note("package requested not splitting gconvs")
 		return
@@ -219,12 +232,62 @@ python package_do_split_gconvs () {
 	if not libdir:
 		oe.error("libdir not defined")
 		return
+	datadir = oe.data.getVar('datadir', d, 1)
+	if not datadir:
+		oe.error("datadir not defined")
+		return
 
 	gconv_libdir = os.path.join(libdir, "gconv")
+	charmap_dir = os.path.join(datadir, "i18n", "charmaps")
+	locales_dir = os.path.join(datadir, "i18n", "locales")
 
 	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='glibc-gconv-%s', description='gconv module for character set %s')
 
+	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='glibc-charmap-%s', description='character map for %s encoding')
+
+	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s')
+
 	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
+
+	os.system(oe.data.expand("make -f ${WORKDIR}/generate-supported.mk IN=\"${S}/localedata/SUPPORTED\" OUT=\"${WORKDIR}/SUPPORTED\"", d))
+	f = open(os.path.join(oe.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
+	supported = f.readlines()
+	f.close()
+
+	dot_re = re.compile("(.*)\.(.*)")
+
+	# Collate the locales by base and encoding
+	encodings = {}
+	for l in supported:
+		l = l[:-1]
+		(locale, charset) = l.split(" ")
+		m = dot_re.match(locale)
+		if m:
+			locale = m.group(1)
+		if not encodings.has_key(locale):
+			encodings[locale] = []
+		encodings[locale].append(charset)
+
+	def output_locale(name, locale, encoding):
+		pkgname = 'locale-base-' + legitimize_package_name(name)
+
+		oe.data.setVar('RDEPENDS_%s' % pkgname, 'localedef glibc-localedata-%s glibc-charmap-%s' % (legitimize_package_name(locale), legitimize_package_name(encoding)), d)
+		oe.data.setVar('RPROVIDES_%s' % pkgname, 'virtual-locale-%s' % name)
+		oe.data.setVar('PACKAGES', '%s %s' % (pkgname, oe.data.getVar('PACKAGES', d, 1)), d)
+		oe.data.setVar('ALLOW_EMPTY_%s' % pkgname, '1', d)
+		oe.data.setVar('pkg_postinst_%s' % pkgname, oe.data.getVar('locale_base_postinst', d, 1) % (locale, encoding), d)
+		oe.data.setVar('pkg_postrm_%s' % pkgname, oe.data.getVar('locale_base_postrm', d, 1) % (locale, encoding), d)
+
+	# Reshuffle names so that UTF-8 is preferred over other encodings
+	for l in encodings.keys():
+		if len(encodings[l]) == 1:
+			output_locale(l, l, encodings[l][0])
+		else:
+			if "UTF-8" in encodings[l]:
+				output_locale(l, l, "UTF-8")
+				encodings[l].remove("UTF-8")
+			for e in encodings[l]:
+				output_locale('%s-%s' % (l, e), l, e)			
 }
 
 # We want to do this indirection so that we can safely 'return'
