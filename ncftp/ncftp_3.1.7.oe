@@ -1,14 +1,14 @@
-BROKEN = "1"
 DESCRIPTION = "A sophisticated console ftp client"
 SECTION = "base"
 PRIORITY = "optional"
 
-SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2"
+SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2 \
+	   file://acinclude.m4"
 
 inherit autotools
 
 do_configure_prepend () {
-	install -m 0644 autoconf/aclocal.m4 acinclude.m4
+	install -m 0644 ${WORKDIR}/acinclude.m4 acinclude.m4
 }
 
 do_install () {
