@@ -3,7 +3,7 @@ DNS forwarder and DHCP server."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-${PV}.tar.gz"
+SRC_URI = "http://www.thekelleys.org.uk/dnsmasq/archive/dnsmasq-${PV}.tar.gz"
 S = "${WORKDIR}/dnsmasq-${PV}"
 
 do_install () {
