@@ -60,7 +60,7 @@ gpe-task-utils = "\
     gpe-shield \
     keylaunch \
     gpe-mininet \
-    mbmerlin \
+    rosetta \
     detect-stylus"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
