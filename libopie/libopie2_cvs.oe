@@ -35,10 +35,12 @@ python __anonymous () {
 
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
+	install -d ${STAGING_INCDIR}/opie2/private
 	for i in `find . -name "*.h"`
 	do
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
 	done
+	install -m 0644 opiepim/private/vobject_p.h ${STAGING_INCDIR}/opie2/private/	
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
