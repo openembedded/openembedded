@@ -1,0 +1,17 @@
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+DEPENDS = "gtk+ libart-lgpl"
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/librsvg/2.6/librsvg-${PV}.tar.bz2"
+
+inherit autotools pkgconfig
+
+PACKAGES =+ "librsvg-gtk librsvg-gtk-dev "
+FILES_librsvg-gtk = "${libdir}/gtk-2.0/*/*/*.so"
+FILES_librsvg-gtk-dev = "${libdir}/gtk-2.0"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/librsvg-2/librsvg/
+	install -m 0644 rsvg.h ${STAGING_INCDIR}/librsvg-2/librsvg/
+	install -m 0644 librsvg-features.h ${STAGING_INCDIR}/librsvg-2/librsvg/
+	oe_libinstall -so -a librsvg-2 ${STAGING_LIBDIR}
+}
+
