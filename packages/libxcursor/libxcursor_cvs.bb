@@ -5,11 +5,12 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DESCRIPTION = "X Cursor library"
 DEPENDS = "libxfixes"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xcursor \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xcursor"
+FILES_${PN} += "${libdir}/libXcursor.so"
 
 inherit autotools pkgconfig 
 

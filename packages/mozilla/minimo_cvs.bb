@@ -1,4 +1,5 @@
 DESCRIPTION = "A minimal version of the Mozilla web browser"
+HOMEPAGE="http://www.mozilla.org/projects/minimo/"
 SRC_URI = "cvs://anonymous@cvs-mirror.mozilla.org/cvsroot;module=mozilla \
            file://xptcstubs.patch;patch=1 \
 	   file://no-xmb.patch;patch=1 \
