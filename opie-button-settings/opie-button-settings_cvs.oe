@@ -3,7 +3,9 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
+RDEPENDS = "opie-button-settings-pics"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "buttonsettings"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/settings/button \
@@ -22,3 +24,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/devicebuttons/*.png ${D}${palmtopdir}/pics/devicebuttons/
 }
 
+PACKAGES_prepend = "opie-button-settings-pics "
+FILES_opie-button-settings-pics = "${palmtopdir}/pics/devicebuttons/z*" 
+FILES_opie-button-settings-pics_h3600 = "${palmtopdir}/pics/devicebuttons/ipaq*"
+FILES_opie-button-settings-pics_h3900 = "${palmtopdir}/pics/devicebuttons/ipaq*"
+FILES_opie-button-settings-pics_simpad = "${palmtopdir}/pics/devicebuttons/simpad*"
+PACKAGE_ARCH_opie-button-settings-pics = "${MACHINE_ARCH}"
