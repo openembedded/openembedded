@@ -3,19 +3,9 @@
 # Devfs handling script.  Since we arent running devfsd due to various reasons
 # which I will not lay out here, we need to create some links for compatibility.
 
-    mount /proc
-    depmod -ae
-    modprobe ipaq_hal
-    model=`cat /proc/hal/model`
-    modprobe ipaq_hal_$model
-
     test -n "$VERBOSE" && echo -n "Setting up device links for devfs: "
     echo "Setting up some devices"
     (
-    ln -s /dev/touchscreen/0 
-    chmod 0644 /dev/h3600_ts
-    ln -s /dev/touchscreen/0raw /dev/h3600_tsraw 
-    chmod 0644 /dev/h3600_ts 
     ln -s /dev/vc/0 /dev/tty0
     ln -s /dev/vc/1 /dev/tty1
     ln -s /dev/vc/2 /dev/tty2
