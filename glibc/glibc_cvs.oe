@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -26,17 +26,26 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
+PACKAGES = "glibc catchsegv sln nscd ldd glibc-utils glibc-dev glibc-doc glibc-i18n glibc-locale libsegfault"
 
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
 DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
 INHIBIT_DEFAULT_DEPS = "1"
 
-FILES_glibc_append = " ${datadir}/zoneinfo"
-FILES_glibc-dev_append = " ${libdir}/*.o"
+libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
+
+FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo"
+FILES_ldd = "${bindir}/ldd"
+FILES_libsegfault = "/lib/libSegFault*"
+FILES_sln = "/sbin/sln"
+FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
+FILES_nscd = "${sbindir}/nscd*"
+FILES_glibc-utils = "${bindir} ${sbindir}"
 FILES_glibc-gconv = "${libdir}/gconv"
 FILES_glibc-i18n = "${datadir}/i18n"
+FILES_catchsegv = "${bindir}/catchsegv"
+DEPENDS_catchsegv = "libsegfault"
 
 HEADERS_VERSION = "2.6.5.1"
 HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
@@ -54,6 +63,7 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://arm-memcpy.patch;patch=1;pnum=0 \
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+           file://dyn-ldconfig.patch;patch=1;pnum=0 \
 	   \
            file://etc/ld.so.conf"
 
