@@ -12,3 +12,16 @@ S = "${WORKDIR}/libtool-${PV}"
 inherit autotools
 
 acpaths = "-I ${S}/m4"
+
+do_configure () {
+	for ac in `find ${S} -name configure.in -o -name configure.ac`; do
+		dir=`dirname $ac`
+		set -e
+		cd $dir
+		test -f $dir/configure && chmod u+w $dir/configure
+		oenote Generating configure in $dir
+		oenote Executing autoreconf --install --force --exclude=libtoolize ${acpaths}
+		autoreconf --install --force --exclude=libtoolize ${acpaths}
+	done
+	oe_runconf
+}
