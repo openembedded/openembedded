@@ -1,5 +1,6 @@
 DESCRIPTION = "SysV init scripts"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/ramdisk \
@@ -8,6 +9,7 @@ SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/packages_default \
 	   file://${FILESDIR}/h3600/devices \
 	   file://${FILESDIR}/devpts.sh \
+	   file://${FILESDIR}/devpts \
 	   file://${FILESDIR}/bootlogo-simpad.gz \
 	   file://${FILESDIR}/packages_ramses \
 	   file://${FILESDIR}/hostname.sh \
@@ -46,7 +48,8 @@ do_install () {
 		   ${D}/${sysconfdir}/rc3.d \
 		   ${D}/${sysconfdir}/rc4.d \
 		   ${D}/${sysconfdir}/rc5.d \
-		   ${D}/${sysconfdir}/rc6.d
+		   ${D}/${sysconfdir}/rc6.d \
+		   ${D}/${sysconfdir}/default
 	install -m 0755    ${FILESDIR}/bootmisc.sh	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/checkroot.sh	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/finish		${D}/etc/init.d
@@ -56,10 +59,12 @@ do_install () {
 	install -m 0755    ${FILESDIR}/mountnfs.sh	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/reboot		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/rmnologin	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/sendsigs	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/sendsigs		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/single		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/umountnfs.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/urandom		${D}/etc/init.d
+#	install -m 0755    ${FILESDIR}/urandom		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/devpts.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/devpts		${D}/etc/default
 #
 # Install device dependent scripts
 #
@@ -80,7 +85,7 @@ do_install () {
 #	ln -sf		../init.d/umountfs	${D}/etc/rc6.d/S40umountfs
 	ln -sf		../init.d/reboot	${D}/etc/rc6.d/S90reboot
 	ln -sf		../init.d/sendsigs	${D}/etc/rc0.d/S20sendsigs
-	ln -sf		../init.d/urandom	${D}/etc/rc0.d/S30urandom
+#	ln -sf		../init.d/urandom	${D}/etc/rc0.d/S30urandom
 	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}/etc/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}/etc/rc0.d/S90halt
@@ -92,11 +97,11 @@ do_install () {
 	ln -sf		../init.d/hostname.sh	${D}/etc/rcS.d/S40hostname.sh
 	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
-	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
+#	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
 #	ln -sf		../init.d/packages	${D}/etc/rcS.d/S98packages
 	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
-#	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
+	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
 #	ln -sf		../init.d/ramdisk	${D}/etc/rcS.d/S30ramdisk
 
 	install -m 0755    ${FILESDIR}/device_table.txt		${D}/etc/device_table
