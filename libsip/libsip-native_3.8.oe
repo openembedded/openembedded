@@ -1,0 +1,2 @@
+include libsip_${PV}.oe
+inherit native
