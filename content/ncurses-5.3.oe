@@ -1,11 +1,12 @@
 DESCRIPTION="Ncurses library"
 SECTION="libs"
 DEPENDS=virtual/libc
-PV_append=.20030719
-SRC_URI=${DEBIAN_MIRROR}/main/n/ncurses/ncurses_${PV}.orig.tar.gz \
-	file://${FILESDIR}/debian.patch;patch=1 \
-	file://${FILESDIR}/ncurses-5.2.patch;patch=1 \
-	file://${FILESDIR}/ncurses-dirs.patch;patch=1
+BaseV := ${PV}
+SnapV := 20030906
+PV = ${BaseV}.${SnapV}
+SRC_URI = ${GNU_MIRROR}/ncurses/${PN}-${BaseV}.tar.gz \
+	  file://${FILESDIR}/${SnapV}.patch;patch=1
+S = ${WORKDIR}/${PN}-${BaseV}
 
 EXTRA_OECONF=--with-shared \
 	     --without-profile \
@@ -42,5 +43,3 @@ do_install () {
 	set -e
 	oe_runmake DESTDIR=${D} install
 }
-
-S="${WORKDIR}/${P}.orig"
