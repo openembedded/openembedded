@@ -9,8 +9,8 @@ SRC_URI = "http://prism54.org/~mcgrof/firmware/${PV}.arm"
 S = "${WORKDIR}/prism54.org"
 
 do_install() {
-	install -d ${D}/usr/lib/hotplug/firmware/
-	install -m 0644 ${PV}.arm ${D}/usr/lib/hotplug/firmware/
+	install -d ${D}/lib/firmware/
+	install -m 0644 ${PV}.arm ${D}/lib/firmware/isl3890
 }
 
-FILES_${PN} = "/usr/lib/hotplug/firmware/"
+FILES_${PN} = "/lib/firmware/"

@@ -9,14 +9,14 @@ NYLON_COMMON = "base-files base-passwd bash busybox bridge-utils \
 	nano ncurses netbase nylon-scripts \
 	openssh openvpn ppp rp-pppoe \
 	shorewall sysvinit \
-	tcpdump tinylogin \
+	tcpdump timezones tinylogin \
 	wireless-tools"
 
 DEPENDS = "virtual/kernel hostap-modules ntp \ 
 	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_DEPENDS}"
 	
 RDEPENDS = "kernel modutils-depmod modutils-modinfo \
-	ncurses-terminfo ntpdate hostap-modules-pci \
+	ntpdate hostap-modules-pci \
 	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export IPKG_INSTALL = "${RDEPENDS}" 
@@ -25,4 +25,5 @@ IMAGE_LINGUAS = ""
 
 inherit image_ipk
 
+# we dont need the kernel in the image
 ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"

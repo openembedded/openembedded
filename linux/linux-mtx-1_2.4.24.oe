@@ -26,9 +26,9 @@ pkg_postinst_kernel() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	if test -e /tmp/zImage.flash.bin-${KV}; then
+	if test -e /tmp/zImage.flash-${KV}; then
 		echo "*** flashing kernel ***"
-		flashcp -v /tmp/zImage.flash.bin-${KV} /dev/mtd/2
+		flashcp -v /tmp/zImage.flash-${KV} /dev/mtd/2
 		echo "*** done. please reboot ***"
 	fi
 fi

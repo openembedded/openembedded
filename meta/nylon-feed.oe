@@ -58,6 +58,7 @@ stunnel \
 sysvinit \
 tcpdump \
 tinc \
+timezones \
 unik-olsrd \
 vtun \
 wireless-tools \
@@ -71,13 +72,13 @@ zlib \
 # gdb-cross: install paths, sdk?
 # screen: sgttyb?
 # nocat
-# ppp init scipts
-# zoneinfo? timezones /etc/localtime
+# ppp init script
 # snmp
 # mrtg
 # ipac-ng
 # dyndns: http://ez-ipupdate.com/
 # pptp
+# meshroaming
 
 # egrep -i Pattern matched against "$Section $Package-Name"
 export FEED_PATTERN = "^locale-|^glibc-|^net|^libs|^base"
