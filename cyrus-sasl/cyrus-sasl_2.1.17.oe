@@ -9,6 +9,10 @@ inherit autotools
 acpaths=-I ${S}/cmulocal -I ${S}/config -I .
 CFLAGS_append = ' -I${S}/include -I${S}/saslauthd/include'
 EXTRA_OECONF = --enable-shared --enable-static
+do_configure_prepend () {
+	rm -f acinclude.m4
+}
+
 do_compile_prepend () {
 	set -e
 	cd include
