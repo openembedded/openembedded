@@ -1,10 +1,10 @@
 DESCRIPTION = "X Video Motion Compensation extension library."
 SECTION = "x11/libs"
 DEPENDS = "x11 xext libxv drm xserver-xorg"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=20040919;method=pserver \
-	cvs://anonymous@cvs.sourceforge.net/cvsroot/unichrome;module=libxvmc;date=20040919;method=pserver \
+SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=${PV};method=pserver \
+	cvs://anonymous@cvs.sourceforge.net/cvsroot/unichrome;module=libxvmc;date=${PV};method=pserver \
 	file://via.patch;patch=1 \
 	file://true.patch"
 S = "${WORKDIR}/XvMC"
@@ -35,5 +35,5 @@ do_stage() {
 	       datadir=${STAGING_DATADIR} \
 	       mandir=${STAGING_DATADIR}/man
 	oe_libinstall -so -C hw/via libviaXvMC ${STAGING_LIBDIR}
-	install hw/via/vldXvMC.h ${STAGING_INCDIR}
+	install hw/via/vldXvMC.h ${STAGING_INCDIR}/X11/extensions/
 }
