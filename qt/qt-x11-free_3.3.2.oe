@@ -2,40 +2,43 @@ DESCRIPTION = "Qt/X11 Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
-DEPENDS = "qmake-native x11 xft xext libxrender uicmoc3-native"
-PR = "r1"
+MAINTAINER "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://no-examples.patch;patch=1"
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
-#
-# FIXME - This should be updated to use OE's qmake-base.oeclass
-#         or the full qmake.oeclass.
-#
+inherit qmake-base
 
 export QTDIR = "${S}"
-THIS_QMAKESPEC = "${STAGING_DATADIR}/qmake/${TARGET_OS}-oe-g++"
-export QMAKESPEC = ""
 ARCH_i686 = "x86"
-export MAKE="make -e"
+EXTRA_OEMAKE = "-e"
 
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups -thread"
 
 do_configure() {
-	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast -L${STAGING_LIBDIR} -I${STAGING_INCDIR}
+	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast \
+		-L${STAGING_LIBDIR} -I${STAGING_INCDIR} -I${STAGING_INCDIR}/freetype2
+	# force regenerate
+	rm src/qtmain.pro
+	cat Makefile >makefile
+	find . -name "Makefile"|xargs rm -f
+	cd src && qmake -spec ${QMAKESPEC}
 }
 
 do_compile() {
 	unset CFLAGS
 	unset CXXFLAGS
-	AR="${AR} cqs"
-	LIBS="" LINK="${BUILD_CXX}" CC="${BUILD_CC}" CXX="${BUILD_CXX}" oe_runmake -C src/moc
-	LD_LIBRARY_PATH=${S}/lib oe_runmake \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} LIBS+=-L${STAGING_LIBDIR}" \
-		QMAKESPEC="${THIS_QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" MOC="moc3" UIC="uic3"
+#	cd src && oe_runmake QMAKESPEC="${QMAKESPEC}" QMAKE="${STAGING_BINDIR}/qmake" MOC="moc3" UIC="uic3" MAKE="make -e"
+	cd src && oe_runmake \
+		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
+		INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
+		QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
+		MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"
 }
 
 do_stage() {
