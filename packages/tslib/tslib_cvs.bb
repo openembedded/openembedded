@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -9,6 +9,7 @@ PACKAGE_ARCH_ramses = "${MACHINE}"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
+	   file://ts.conf-h3600 file://ts.conf-h3600-2.4 \
 	   file://tslib.sh \
 	   file://initialize_djs.patch;patch=1 \
 	   file://visibility.patch;patch=1"
@@ -39,11 +40,22 @@ do_install_prepend () {
 do_install_append() {
 	install -d ${D}/${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}/${sysconfdir}/profile.d/
+	case ${MACHINE} in
+	h3600 | h3900)
+		install -d ${D}${datadir}/tslib
+		for f in ts.conf-h3600 ts.conf-h3600-2.4; do
+			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
+		done
+		rm -f ${D}${sysconfdir}/ts.conf
+		;;
+	*)
+		;;
+	esac
 }
 
 RDEPENDS_libts = "tslib-conf"
 
-FILES_tslib-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh"
+FILES_tslib-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh ${datadir}/tslib"
 FILES_libts = "${libdir}/*.so.* ${libdir}/ts/*.so*"
 FILES_libts-dev = "${FILES_tslib-dev}"
 FILES_tslib-calibrate += "${bindir}/ts_calibrate"
