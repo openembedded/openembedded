@@ -5,6 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "patcher-native"
+PR = "r1"
 
 SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
            file://bindir-libdir.patch;patch=1             \
@@ -13,8 +14,10 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools native
 
-EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
+EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --without-cxx --with-signal-module --with-wctype-functions \
+		--with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
 EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
+
 do_configure () {
 	oe_runconf
 }

@@ -5,6 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native zlib gdbm"
+PR = "r1"
 
 SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
 	   file://bindir-libdir.patch;patch=1 \
@@ -17,7 +18,7 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc"
+EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --without-cxx --with-signal-module --with-wctype-functions"
 
 #
 # copy config.h and an appropriate Makefile for distutils.sysconfig
