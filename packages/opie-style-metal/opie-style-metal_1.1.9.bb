@@ -1,0 +1,19 @@
+DESCRIPTION = "Metal Style by Trolltech"
+SECTION = "opie/styles"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+
+APPNAME = "metal"
+
+
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/styles/metal "
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES
+do_install() {
+}
+

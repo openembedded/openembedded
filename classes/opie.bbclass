@@ -20,6 +20,9 @@ DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2
 # to be consistent, put all targets into workdir
 EXTRA_QMAKEVARS_POST_append = " DESTDIR=${S}"
 
+# Opie standard TAG value
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
+
 # plan for later:
 # add common scopes for opie applications, see qmake-native/common.pro
 # qmake should care about all the details then. qmake can do that, i know it :)
