@@ -1,4 +1,4 @@
-include kdepimpi-base
+include kdepimpi-base.inc
 
 PV = "1.9.6-${CVSDATE}"
 
