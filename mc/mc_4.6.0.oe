@@ -1,0 +1,29 @@
+DESCRIPTION=GNU Midnight Commander is a file manager for free operating systems. \
+Like other GNU software, it is written in a portable manner and should compile   \
+and run on a wide range of operating systems with some degree of UNIX compatibility.
+SECTION=base
+PRIORITY=optional
+RDEPENDS=libc6 libncurses5 glib-2.0
+DEPENDS=virtual/libc ncurses glib-2.0
+
+SRC_URI = http://www.ibiblio.org/pub/Linux/utils/file/managers/${PN}/${P}.tar.gz 
+
+inherit autotools
+
+EXTRA_OECONF = --disable-glibtest --without-x --without-samba --without-nfs --without-gpm-mouse
+
+do_configure() {
+    oe_runconf
+}
+
+do_install() {
+    cd src
+    oe_runmake 'DESTDIR=${D}' install
+    cd ../syntax
+    oe_runmake 'DESTDIR=${D}' install
+    cd ../po
+    oe_runmake 'DESTDIR=${D}' install
+    cd ../vfs
+    oe_runmake 'DESTDIR=${D}' install
+    cd ..
+}
