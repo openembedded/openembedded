@@ -1,13 +1,266 @@
 DESCRIPTION = "Meta-package for Opie"
-DEPENDS = "qte-for-opie libqpe-opie libopie2 manufacturers"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+ALLOW_EMPTY = 1
+PR = "r2"
+PACKAGE_ARCH = "all"
 
-def opie_packages(d):
-	import oe, os
-	files = os.listdir( oe.data.getVar( "TOPDIR", d, True ) )
-	pkgs = [ f for f in files if f.startswith( "opie-" ) and f != "opie-3rdparty" ]
-        return " ".join( pkgs )
+PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
+            task-opie-decorations task-opie-games task-opie-inputmethods \
+		    task-opie-multimedia task-opie-pim task-opie-settings \
+		    task-opie-styles task-opie-today task-opie-bluetooth \
+			task-opie-wlan"
 
-OPIE_PACKAGES := "${@opie_packages(d)}"
+DEPENDS = "\
+opie-examples-python \
+opie-freetype \
+opie-help-en \
+opie-i18n \
+opie-keytabs \
+opie-libqrsync \
+opie-login \
+opie-securityplugin-blueping \
+opie-securityplugin-dummy \
+opie-securityplugin-notice \
+opie-securityplugin-pin \
+opie-sh \
+opie-symlinker \
+"
 
-DEPENDS = "qte-for-opie libqpe-opie libopie2 ${OPIE_PACKAGES}"
+task-opie-applets = "\
+opie-aboutapplet \
+opie-autorotateapplet \
+opie-batteryapplet \
+opie-bluetoothapplet \
+opie-cardmon \
+opie-clipboardapplet \
+opie-clockapplet \
+opie-homeapplet \
+opie-irdaapplet \
+opie-logoutapplet \
+opie-mailapplet \
+opie-memoryapplet \
+opie-multikeyapplet \
+opie-networkapplet \
+opie-notesapplet \
+opie-pyquicklaunchapplet \
+opie-restartapplet \
+opie-restartapplet2 \
+opie-rotateapplet \
+opie-screenshotapplet \
+opie-suspendapplet \
+opie-vmemo \
+opie-volumeapplet \
+opie-vtapplet \
+opie-wirelessapplet \
+opie-zkbapplet "
 
+RDEPENDS_task-opie-applets = "${task-opie-applets}"
+DEPENDS += " ${task-opie-applets}"
+
+task-opie-applications = "\
+opie-advancedfm \
+opie-bartender \
+opie-calculator \
+opie-camera \
+opie-checkbook \
+opie-clock \
+opie-console \
+opie-dagger \
+opie-embeddedkonsole \
+opie-euroconv \
+opie-eye \
+opie-ftp \
+opie-gutenbrowser \
+opie-helpbrowser \
+opie-irc \
+opie-keypebble \
+opie-mobilemsg \
+opie-odict \
+opie-oxygen \
+opie-performance \
+opie-qashmoney \
+opie-rdesktop \
+opie-reader \
+opie-remote \
+opie-sheet \
+opie-showimg \
+opie-tableviewer \
+opie-tinykate \
+opie-ubrowser \
+opie-wellenreiter \
+opie-write \
+opie-zsafe "
+RDEPENDS_task-opie-applications = "${task-opie-applications}"
+DEPENDS += " ${task-opie-applications}"
+
+task-opie-base = "\
+opie-alarm \
+opie-qcop \
+opie-quicklauncher \
+opie-taskbar "
+RDEPENDS_task-opie-base = "${task-opie-base}"
+DEPENDS += " ${task-opie-base}"
+
+task-opie-decorations = "\
+opie-deco-flat \
+opie-deco-liquid \
+opie-deco-polished "
+RDEPENDS_task-opie-decorations = "${task-opie-decorations}"
+DEPENDS += " ${task-opie-decorations}"
+
+task-opie-games = "\
+opie-backgammon \
+opie-bounce \
+opie-buzzword \
+opie-fifteen \
+opie-go \
+opie-kbill \
+opie-kcheckers \
+opie-kpacman \
+opie-mindbreaker \
+opie-minesweep \
+opie-oyatzee \
+opie-parashoot \
+opie-qasteroids \
+opie-sfcave \
+opie-snake \
+opie-solitaire \
+opie-tetrix \
+opie-tictac \
+opie-wordgame \
+opie-zlines \
+opie-zsame \
+aliens \
+aliens-qt \
+atomic \
+checkers \
+crossword \
+fish \
+glider \
+hexatrolic \
+icebloxx \
+labyrinth \
+mahjongg \
+maki \
+nmm \
+pairs \
+pdamaze \
+pipeman \
+rott \
+shisensho \
+sokoban \
+tickypip \
+tron \
+win4 \
+ziq \
+zrev7 \
+zsubhunt \
+ztappy "
+RDEPENDS_task-opie-games = "${task-opie-games}"
+DEPENDS += " ${task-opie-games}"
+
+task-opie-inputmethods = "\
+opie-dasher \
+opie-dvorak \
+opie-handwriting \
+opie-jumpx \
+opie-keyboard \
+opie-keyview \
+opie-kjumpx \
+opie-multikey \
+opie-pickboard \
+opie-unikeyboard "
+RDEPENDS_task-opie-inputmethods = "${task-opie-inputmethods}"
+DEPENDS += " ${task-opie-inputmethods}"
+
+task-opie-multimedia = "\
+opie-mediaplayer1 \
+opie-mediaplayer1-libmadplugin \
+opie-mediaplayer1-libmodplugin \
+opie-mediaplayer1-libtremorplugin \
+opie-mediaplayer1-libwavplugin \
+opie-mediaplayer2 \
+opie-mediaplayer2-skin-default \
+opie-mediaplayer2-skin-default-landscape \
+opie-mediaplayer2-skin-pod \
+opie-mediaplayer2-skin-techno \
+opie-powerchord \
+opie-recorder \
+opie-tonleiter "
+RDEPENDS_task-opie-multimedia = "${task-opie-multimedia}"
+DEPENDS += " ${task-opie-multimedia}"
+
+task-opie-pim = "\
+opie-addressbook \
+opie-datebook \
+opie-drawpad \
+opie-mail \
+opie-osearch \
+opie-pimconverter \
+opie-search \
+opie-textedit \
+opie-today \
+opie-todo "
+RDEPENDS_task-opie-pim = "${task-opie-pim} task-opie-todayplugins"
+DEPENDS += " ${task-opie-pim}"
+
+task-opie-settings = "\
+opie-appearance \
+opie-aqpkg \
+opie-backup \
+opie-button-settings \
+opie-calibrate \
+opie-citytime \
+opie-confeditor \
+opie-doctab \
+opie-formatter \
+opie-language \
+opie-launcher-settings \
+opie-light-and-power \
+opie-mediummount \
+opie-networksettings \
+opie-packagemanager \
+opie-security \
+opie-sshkeys \
+opie-sysinfo \
+opie-systemtime \
+opie-tabmanager \
+opie-usermanager \
+opie-vmemo-settings "
+RDEPENDS_task-opie-settings = "${task-opie-settings}"
+DEPENDS += " ${task-opie-settings}"
+
+task-opie-styles = "\
+opie-style-flat \
+opie-style-fresh \
+opie-style-liquid \
+opie-style-metal \
+opie-style-web \
+opie-style-phase \
+opie-theme "
+RDEPENDS_task-opie-styles = "${task-opie-styles}"
+DEPENDS += " ${task-opie-styles}"
+
+task-opie-todayplugins = "\
+opie-today-addressbookplugin \
+opie-today-datebookplugin \
+opie-today-fortuneplugin \
+opie-today-mailplugin \
+opie-today-stocktickerplugin \
+opie-today-todolistplugin \
+opie-today-weatherplugin "
+RDEPENDS_task-opie-todayplugins = "${task-opie-todayplugins}"
+DEPENDS += " ${task-opie-todayplugins}"
+
+task-opie-bluetooth = "\
+opie-bluepin \
+opie-bluetoothmanager \
+opie-bluetoothapplet"
+RDEPENDS_task-opie-bluetooth = "${task-opie-bluetooth}"
+DEPENDS += " ${task-opie-bluetooth}"
+
+task-opie-wlan = "\
+opie-wellenreiter \
+opie-wirelessapplet "
+RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
+DEPENDS += " ${task-opie-wlan}"
