@@ -6,7 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -35,7 +35,7 @@ do_configure_prepend() {
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-query-immodules-2.0 \
 	${libdir}/lib*.so.* \
-	${datadir}/themes"
+	${datadir}/themes ${sysconfdir}"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
