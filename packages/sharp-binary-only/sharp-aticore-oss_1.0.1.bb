@@ -30,8 +30,7 @@ do_install() {
 }
 
 # Currently incompatible with the way sharp-aticore.bb stages.
-#do_stage() {
-#	install -m 0644 aticore.h ${STAGING_INCDIR}
-#	oe_libinstall -so libaticore ${STAGING_LIBDIR}
-#}	
-
+do_stage() {
+	install -m 0644 aticore.h ${STAGING_INCDIR}
+	oe_libinstall -so libaticore ${STAGING_LIBDIR}
+}

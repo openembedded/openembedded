@@ -13,7 +13,7 @@ PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 PARALLEL_MAKE = ""
 
-DEPENDS_append_c7x0 = " sharp-aticore"
+DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
 SRC_URI_append_c7x0 = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
                        file://Makefile-vidix.patch;patch=0 \
