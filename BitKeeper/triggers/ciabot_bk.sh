@@ -29,7 +29,9 @@ author=`echo $BK_USER | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 module=`basename $BKD_ROOT | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 log=`bk changes -r"$REV" -d":C:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 tag=`bk changes -r"$REV" -d":TAG:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
-files=`bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}" | sort -u | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
+for file in `bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}" | sort -u | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`; do
+    files="$files<file>$file</file>"
+done
 
 # Send an email with the final XML message
 (cat <<EOF
@@ -46,29 +48,13 @@ Subject: DeliverXML
     <source>
         <project>$project_name</project>
         <module>$module</module>
-EOF
-
-if test -n "$tag"; then
-    echo "        <branch>$tag</branch>"
-fi
-
-cat <<EOF
+        <branch>$tag</branch>
     </source>
     <body>
         <commit>
             <revision>$REV</revision>
             <author>$author</author>
-EOF
-
-if test -n "$files"; then
-    echo "            <files>"
-    for f in $files; do
-        echo "                <file>$f</file>"
-    done
-    echo "            </files>"
-fi
-
-cat <<EOF
+            <files>$files</files>
             <log>$log</log>
         </commit>
     </body>
