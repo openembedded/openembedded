@@ -27,13 +27,13 @@ do_stage () {
 	oe_soinstall gthread/.libs/libgthread-2.0.so.${SOV} ${STAGING_LIBDIR}/
 	oe_soinstall gobject/.libs/libgobject-2.0.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0644 glib/.libs/libglib-2.0.lai ${STAGING_LIBDIR}/libglib-2.0.la
-	install -m 0644 glib/.libs/libglib-2.0.a ${STAGING_LIBDIR}/libglib-2.0.a
+	#install -m 0644 glib/.libs/libglib-2.0.a ${STAGING_LIBDIR}/libglib-2.0.a
 	install -m 0644 gmodule/.libs/libgmodule-2.0.lai ${STAGING_LIBDIR}/libgmodule-2.0.la
-	install -m 0644 gmodule/.libs/libgmodule-2.0.a ${STAGING_LIBDIR}/libgmodule-2.0.a
+	#install -m 0644 gmodule/.libs/libgmodule-2.0.a ${STAGING_LIBDIR}/libgmodule-2.0.a
 	install -m 0644 gthread/.libs/libgthread-2.0.lai ${STAGING_LIBDIR}/libgthread-2.0.la
-	install -m 0644 gthread/.libs/libgthread-2.0.a ${STAGING_LIBDIR}/libgthread-2.0.a
+	#install -m 0644 gthread/.libs/libgthread-2.0.a ${STAGING_LIBDIR}/libgthread-2.0.a
 	install -m 0644 gobject/.libs/libgobject-2.0.lai ${STAGING_LIBDIR}/libgobject-2.0.la
-	install -m 0644 gobject/.libs/libgobject-2.0.a ${STAGING_LIBDIR}/libgobject-2.0.a
+	#install -m 0644 gobject/.libs/libgobject-2.0.a ${STAGING_LIBDIR}/libgobject-2.0.a
 	install -d ${STAGING_INCDIR}/glib-2.0/glib
 	install -m 0755 ${S}/glibconfig.h ${STAGING_INCDIR}/glib-2.0/glibconfig.h
 	install -m 0644 ${S}/glib/glib-object.h ${STAGING_INCDIR}/glib-2.0/glib-object.h
