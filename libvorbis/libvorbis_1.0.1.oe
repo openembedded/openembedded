@@ -1,0 +1,50 @@
+SECTION="libs"
+RDEPENDS=libc6 libogg
+DEPENDS=virtual/libc libogg
+
+SRC_URI = http://www.vorbis.com/files/${PV}/unix/libvorbis-${PV}.tar.gz
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--with-ogg-libraries=${STAGING_LIBDIR} \
+	        --with-ogg-includes=${STAGING_INCDIR}'
+#do_stage () {
+#	install -m 0644 src/lib/.libs/libogg.a ${STAGING_LIBDIR}/
+#	install -m 0644 src/lib/.libs/libogg.lai ${STAGING_LIBDIR}/libogg.la
+#	install -m 0644 src/lib/.libs/libogg.so.0.4.0 ${STAGING_LIBDIR}/
+#	ln -sf libogg.so.0.4.0 ${STAGING_LIBDIR}/libogg.so.0
+#	ln -sf libogg.so.0.4.0 ${STAGING_LIBDIR}/libogg.so
+#
+#	install -d ${STAGING_DIR}/target/include/ogg
+#	(cd include/ogg; cp config_types.h ogg.h os_types.h ${STAGING_DIR}/target/include/ogg/)
+#
+#	install -d ${STAGING_DIR}/share/aclocal
+#	install -m 0644 ogg.m4 ${STAGING_DIR}/share/aclocal/ogg.m4
+#}
+
+do_stage () {
+	install -m 0644 lib/.libs/libvorbis.lai ${STAGING_LIBDIR}/libvorbis.la
+	install -m 0644 lib/.libs/libvorbis.a ${STAGING_LIBDIR}/
+	install -m 0755 lib/.libs/libvorbis.so.0.3.0 ${STAGING_LIBDIR}/
+	ln -sf libvorbis.so.0.3.0 ${STAGING_LIBDIR}/libvorbis.so.0
+	ln -sf libvorbis.so.0.3.0 ${STAGING_LIBDIR}/libvorbis.so
+
+	install -m 0644 lib/.libs/libvorbisfile.lai ${STAGING_LIBDIR}/libvorbisfile.la
+	install -m 0644 lib/.libs/libvorbisfile.a ${STAGING_LIBDIR}/
+	install -m 0755 lib/.libs/libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/
+	ln -sf libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/libvorbisfile.so.3
+	ln -sf libvorbisfile.so.3.1.0 ${STAGING_LIBDIR}/libvorbisfile.so
+
+	install -m 0644 lib/.libs/libvorbisenc.lai ${STAGING_LIBDIR}/libvorbisenc.la
+	install -m 0644 lib/.libs/libvorbisenc.a ${STAGING_LIBDIR}/
+	install -m 0755 lib/.libs/libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/
+	ln -sf libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/libvorbisenc.so.2
+	ln -sf libvorbisenc.so.2.0.0 ${STAGING_LIBDIR}/libvorbisenc.so
+
+	install -d ${STAGING_INCDIR}/vorbis
+	install -m 0644 include/vorbis/vorbisenc.h \
+			include/vorbis/vorbisfile.h \
+			include/vorbis/codec.h ${STAGING_INCDIR}/vorbis/
+
+	install -m 0644 vorbis.pc vorbisfile.pc vorbisenc.pc ${PKG_CONFIG_PATH}/
+}
