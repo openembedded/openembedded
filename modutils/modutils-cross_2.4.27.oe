@@ -1,10 +1,12 @@
 SECTION = "base"
 include modutils_${PV}.oe
-PR = "r4"
+PR = "r5"
 inherit cross
 S = "${WORKDIR}/modutils-${PV}"
 DEPENDS = "patcher-native"
 PACKAGES = ""
+PROVIDES += "virtual/${TARGET_PREFIX}depmod"
+DEFAULT_PREFERENCE = "1"
 
 SRC_URI +=  "file://modutils-cross/module.h.diff;patch=1"
 
