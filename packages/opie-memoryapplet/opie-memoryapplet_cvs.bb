@@ -4,13 +4,12 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "1.1.8+cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "memoryapplet"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/applets/memoryapplet \
            ${HANDHELDS_CVS};module=opie/noncore/settings/sysinfo \
-           ${HANDHELDS_CVS};module=opie/pics \
-           file://memoryapplet.pro.patch;patch=1"
-
+           ${HANDHELDS_CVS};module=opie/pics"
 S = "${WORKDIR}/memoryapplet"
 
 inherit opie
