@@ -17,7 +17,7 @@ inherit module
 
 # Hack Alert :D
 ARCH_mipsel = "mips"
-MAKE_TARGETS = "KERNEL_PATH=${KERNEL_SOURCE} MAKE='make -e'"
+MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e'"
 
 NET_MODULES = "hostap hostap_pci hostap_crypt_ccmp hostap_crypt_tkip hostap_crypt_wep"
 
