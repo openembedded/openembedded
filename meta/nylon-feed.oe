@@ -72,7 +72,6 @@ zlib \
 # gdb-cross: install paths, sdk?
 # screen: sgttyb?
 # nocat
-# ppp init script
 # snmp
 # mrtg
 # ipac-ng
