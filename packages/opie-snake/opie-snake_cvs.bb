@@ -5,6 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "snake"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/games/snake \
            ${HANDHELDS_CVS};module=opie/pics \
@@ -18,5 +19,6 @@ inherit opie
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.xpm ${D}${palmtopdir}/pics/${APPNAME}/
 }
 
