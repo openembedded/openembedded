@@ -1,0 +1,54 @@
+S-ECTION="base"
+PRIORITY="required"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc
+
+SRC_URI = "${DEBIAN_MIRROR}/main/a/${PN}/${PN}_${PV}.orig.tar.gz;"
+SRC_URI_append =" file://${FILESDIR}/${PN}_${PV}-3.diff;patch=1"
+SRC_URI_append =" file://${FILESDIR}/workaround.patch;patch=1"
+SRC_URI_append =" file://${FILESDIR}/conf.patch;patch=1"
+SRC_URI_append =" file://${FILESDIR}/proxy.patch;patch=1"
+SRC_URI_append =" file://${FILESDIR}/compile.patch;patch=1"
+SRC_URI_append =" file://${FILESDIR}/make.patch;patch=1"
+
+S=${WORKDIR}/apmd-${PV}.orig
+
+do_compile() {
+    oe_runmake apm apmd
+}
+
+do_stage() {
+    install -m 0755 .libs/libapm.so.1.0.0 ${STAGING_LIBDIR};
+
+}
+
+do_install() {
+
+    install -d ${D}/${sysconfdir}
+    install -d ${D}/${sysconfdir}/apm
+    install -d ${D}/${sysconfdir}/apm/event.d
+    install -d ${D}/${sysconfdir}/apm/other.d
+    install -d ${D}/${sysconfdir}/apm/suspend.d
+    install -d ${D}/${sysconfdir}/apm/resume.d
+    install -d ${D}/${sysconfdir}/apm/scripts.d
+    install -d ${D}/${sysconfdir}/default
+    install -d ${D}/${sysconfdir}/init.d
+    install -d ${D}/${sbindir}
+    install -d ${D}/${bindir}
+    install -d ${D}/${libdir}
+    install -d ${D}/usr/share
+    install -d ${D}/usr/share/apmd
+    install -m 4755 ${S}/.libs/apm ${D}/${bindir}/apm.orig
+    install -m 0755 ${FILESDIR}/apmwrapper ${D}/${bindir}/apm
+    install -m 0755 ${S}/.libs/apmd ${D}/${sbindir}/apmd
+    install -m 0755 ${S}/debian/apmd_proxy ${D}/${sysconfdir}/apm/
+    install -m 0644 ${S}/debian/apmd_proxy.conf ${D}/usr/share/apmd/
+    install -m 0755 ${S}/debian/apmd.init ${D}/${sysconfdir}/init.d/apmd
+    install -m 0644 ${S}/debian/apmd.default ${D}/${sysconfdir}/default/apmd
+    install -m 0755 .libs/libapm.so.1.0.0 ${D}/${libdir}
+    ln -sf ./libapm.so.1.0.0 ${D}/${libdir}/libapm.so.1.0
+    ln -sf ./libapm.so.1.0.0 ${D}/${libdir}/libapm.so.1
+                
+
+}
