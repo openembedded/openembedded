@@ -1,0 +1,25 @@
+DESCRIPTION=libmikmod is a module player library supporting many formats, including mod, s3m, it, and xm.
+SECTION=libs
+PRIORITY=optional
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = http://mikmod.raphnet.net/files/${P}.tar.gz
+
+inherit autotools libtool
+
+EXTRA_OECONF = --disable-af --disable-alsa --disable-esd --enable-oss --disable-sam9407 --disable-ultra --disable-esdtest --enable-threads --enable-shared --disable-static
+
+do_configure() {
+	oe_runconf
+}
+
+do_stage() {
+	oe_soinstall libmikmod/.libs/libmikmod.so.3.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 include/mikmod.h ${STAGING_INCDIR}/
+
+        cat libmikmod-config | sed 's,$libdir , ,' \
+                             | sed 's,$includes , ,' > ${STAGING_BINDIR}/libmikmod-config
+        chmod a+rx ${STAGING_BINDIR}/libmikmod-config
+}
+
