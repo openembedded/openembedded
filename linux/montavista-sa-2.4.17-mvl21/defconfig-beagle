@@ -184,7 +184,7 @@ CONFIG_BINFMT_ELF=y
 CONFIG_PM=y
 CONFIG_APM=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="noinitrd root=/dev/mtdblock/1 init=/linuxrc mem=27M console=ttySA0"
+CONFIG_CMDLINE="<see .oe file>"
 CONFIG_LEDS=y
 CONFIG_LEDS_TIMER=y
 # CONFIG_LEDS_CPU is not set

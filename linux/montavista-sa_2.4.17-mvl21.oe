@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 MVLV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
-PR = "r2"
+PR = "r4"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/montavista-sa-${PV}"
 
@@ -21,6 +21,8 @@ S = "${WORKDIR}/linux-${KV}_${MVLV}"
 
 inherit kernel
 
+CMDLINE="noinitrd root=/dev/mtdblock/1 mem=27M console=ttySA0"
+
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
@@ -28,6 +30,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
-        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
