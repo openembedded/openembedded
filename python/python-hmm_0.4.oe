@@ -5,7 +5,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-numeric"
-DEPENDS = "virtual/libc"
+DEPENDS = "virtual/libc python-numeric"
 SRCNAME = "hmm"
 
 SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
