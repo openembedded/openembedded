@@ -1,0 +1,41 @@
+--- ./Makefile~Makefile.patch	2004-09-24 20:07:12.000000000 +0930
++++ ./Makefile	2004-09-24 20:09:38.000000000 +0930
+@@ -10,10 +10,6 @@
+ PRG_CFG = codec-cfg
+ PRG_MENCODER = mencoder
+ 
+-# Do not strip the binaries at installation
+-ifeq ($(STRIPBINARIES),yes)
+-INSTALLSTRIP = -s
+-endif
+ 
+ # These subdirectories require installation due to binaries within them.
+ ifeq ($(VIDIX),yes)
+@@ -212,7 +208,8 @@
+ 
+ $(PRG):	$(MPLAYER_DEP)
+ 	./darwinfixlib.sh $(MPLAYER_DEP)
+-	$(CC) $(CFLAGS) -o $(PRG) $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) $(I18NLIBS) -lm
++	$(CC) $(CFLAGS) -o $(PRG) $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) $(I18NLIBS) -lm  -ljpeg -lpng -lts
++	
+ 
+ mplayer.exe.spec.c: libmpcodecs/libmpcodecs.a
+ 	winebuild -fPIC -o mplayer.exe.spec.c -exe mplayer.exe -mcui \
+@@ -246,7 +243,7 @@
+ $(MENCODER_DEP): version.h
+ 
+ $(PRG_CFG): version.h codec-cfg.c codec-cfg.h
+-	$(CC) $(CFLAGS) -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
++	$(BUILD_CC) -Ilibmpdemux -Iloader -Ilibvo -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
+ 
+ install: $(ALL_PRG)
+ ifeq ($(VIDIX),yes)
+@@ -316,7 +313,7 @@
+ 	-$(MAKE) -C libavcodec distclean LIBPREF=lib LIBSUF=.a
+ 
+ strip:
+-	strip -s $(ALL_PRG)
++
+ 
+ dep:	depend
+ 
