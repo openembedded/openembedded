@@ -8,9 +8,10 @@ SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
 
 S = "${WORKDIR}/sqlite"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--without-tcl --enable-static --enable-shared"
+EXTRA_OEMAKE = "'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses' 'LIBTOOL=${S}/${HOST_PREFIX}libtool'"
 export config_BUILD_CC = "${BUILD_CC}"
 export config_BUILD_CFLAGS = "${BUILD_CFLAGS}"
 export config_TARGET_CC = "${CC}"
@@ -18,7 +19,7 @@ export config_TARGET_LINK = "${CCLD}"
 export config_TARGET_CFLAGS = "${CFLAGS}"
 
 do_compile () {
-	oe_runmake 'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses'
+	oe_runmake
 }
 
 do_stage() {
