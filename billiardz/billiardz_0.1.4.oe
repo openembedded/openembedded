@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc virtual/libsdl"
+DEPENDS = "virtual/libsdl libsdl-image"
 
 SRC_URI = "http://www.chipx86.com/packages/ipkg/billiardz-${PV}.tar.gz"
 
