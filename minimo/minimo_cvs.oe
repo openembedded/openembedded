@@ -1,0 +1,57 @@
+DEPENDS = "xt gtk+ libidl zip-native"
+SRC_URI = "cvs://anonymous@cvs-mirror.mozilla.org/cvsroot;module=mozilla \
+           file://xptcstubs.patch;patch=1 \
+           file://mozconfig"
+S = "${WORKDIR}/mozilla"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "x11"
+PRIORITY = "optional"
+PV = "0.0cvs${CVSDATE}"
+FILES_${PN} += " ${libdir}/mozilla-minimo"
+
+export MINIMO=1
+export CROSS_COMPILE=1
+export CONFIGURE_ARGS="--target=${TARGET_SYS} --host=${BUILD_SYS} --build=${BUILD_SYS}"
+export CXX=${CC}
+export HOST_LIBIDL_CONFIG="libIDL-config-2"
+export MOZ_OBJDIR="${WORKDIR}/build-${TARGET_SYS}"
+export MOZCONFIG="${WORKDIR}/mozconfig"
+
+do_fetch () {
+	mkdir -p ${WORKDIR}
+	cd ${WORKDIR}
+	if [ ! -f ${DL_DIR}/mozilla_cvs-mirror.mozilla.org__${CVSDATE}.tar.gz ]; then
+		cvs $CVSCOOPTS -d :pserver:anonymous@cvs-mirror.mozilla.org/cvsroot co mozilla/client.mk
+		cd mozilla
+		make -f client.mk checkout
+		cd ..
+		tar czf ${DL_DIR}/mozilla_cvs-mirror.mozilla.org__${CVSDATE}.tar.gz mozilla
+	fi
+}
+
+#do_configure () {
+#	cp embedding/minimo/mozconfig .
+#}
+
+do_compile () {
+	make -f client.mk build_all
+	cd $MOZ_OBJDIR/embedding/minimo
+	make
+}
+
+do_install () {
+	mkdir -p ${D}/${libdir}/mozilla-minimo
+	cp -rH $MOZ_OBJDIR/dist/bin/* ${D}/${libdir}/mozilla-minimo/
+	mkdir -p ${D}/${datadir}/applications
+	install -m 0644 embedding/minimo/ipkg/minimo.desktop ${D}/${datadir}/applications/minimo.desktop
+	mkdir -p ${D}/${datadir}/pixmaps
+	install -m 0644 embedding/minimo/ipkg/minimo.png ${D}/${datadir}/applications/minimo.png
+	mkdir -p ${D}/${bindir}
+	echo "#!/bin/sh" > ${D}/${bindir}/minimo
+	cat >>${D}/${bindir}/minimo << EOF
+cd ${libdir}/mozilla-minimo
+export LD_LIBRARY_PATH=${libdir}/mozilla-minimo
+exec ./Minimo http://www.mozilla.org/projects/minimo/home.html
+EOF
+	chmod 755 ${D}/${bindir}/minimo
+}
