@@ -4,9 +4,9 @@ SRC_URI = "http://bloodgate.com/perl/sdl/pub/SDL_perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1;pnum=0"
 S = "${WORKDIR}/SDL_perl-${PV}"
 LICENSE = "GPL"
-DEPENDS = "perl virtual/libsdl libsdl-image libsdl-gfx libsdl-ttf libsdl-mixer libsdl-net smpeg mesa"
+DEPENDS = "perl virtual/libsdl libsdl-image libsdl-gfx libsdl-ttf libsdl-mixer libsdl-net smpeg"
 
-inherit cpan
+inherit sdl
 
 do_stage () {
 	install -d ${STAGING_LIBDIR}/perl5/vendor_perl
