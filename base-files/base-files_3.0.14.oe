@@ -20,7 +20,7 @@ do_install () {
 	install -p -m 644 licenses/* ${D}${datadir}/common-licenses
 	ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
 	ln -s GPL-2    ${D}${datadir}/common-licenses/GPL
-	install -p -m 644 `ls etc/|grep -v debian` ${D}/etc
+	for i in `ls etc/|grep -v debian`; do install -p -m 644 etc/$i ${D}/etc; done
 	rm -f ${D}/etc/motd
 	cat etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
 	cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
