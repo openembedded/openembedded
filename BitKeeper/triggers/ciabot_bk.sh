@@ -32,6 +32,7 @@ for file in `bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}
     files="$files<file>$file</file>"
 done
 
+sendmail_command=cat
 # Send an email with the final XML message
 (cat <<EOF
 From: $return_address
@@ -56,13 +57,13 @@ Subject: DeliverXML
             <files>$files</files>
 EOF
 echo "            <log>"
-bk changes -r"$REV" -d"\$if(:C:){\$each(:C:){:C:\\\\n}}" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+bk changes -r"$REV" -d'$if(:C:){$each(:C:){:C:\\\n}}' | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
 echo "            </log>"
 cat <<EOF
         </commit>
     </body>
 </message>
 EOF
-) | tee ~/sendmailcmd.$$ | $sendmail_command
+) | $sendmail_command
 
 ### The End ###
