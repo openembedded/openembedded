@@ -101,6 +101,6 @@ gpe-task-games = "\
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
 DEPENDS += " ${gpe-task-games}"
 
-DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
+DEPENDS += "matchbox-themes-extra"
 
 LICENSE = MIT

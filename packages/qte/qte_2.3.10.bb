@@ -36,6 +36,9 @@ SRC_URI_append_ramses           = "file://devfs.patch;patch=1 \
                                    file://ramses.patch;patch=1 \
                                    file://ramses-keyboard.patch;patch=1 \
                                    file://ramses-touchscreen.patch;patch=1 "
+SRC_URI_append_h3600            = "file://ipaq-keyboard.patch;patch=1 "
+SRC_URI_append_h3900            = "file://ipaq-keyboard.patch;patch=1 "
+
 
 S = "${WORKDIR}/qt-${PV}"
 

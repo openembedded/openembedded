@@ -14,7 +14,7 @@ GUI_MACHINE_CLASS ?= "none"
 GPE_EXTRA_DEPENDS += "${GPE_EXTRA_DEPENDS_${GUI_MACHINE_CLASS}}"
 GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 
-GPE_EXTRA_THEMES = "gtk-theme-industrial gtk-industrial-engine matchbox-themes-extra-industrial"
+GPE_EXTRA_THEMES = "gtk-theme-industrial matchbox-themes-extra-industrial"
 
 #GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
 #GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
