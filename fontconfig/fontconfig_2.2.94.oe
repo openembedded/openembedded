@@ -13,6 +13,8 @@ S = "${WORKDIR}/fontconfig-${PV}"
 
 inherit autotools pkgconfig
 
+export HASDOCBOOK="no"
+
 EXTRA_OECONF = " --disable-docs "
 
 do_compile () {

@@ -3,16 +3,8 @@ inherit native
 DEPENDS = "freetype-native expat-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/fontconfig-${PV}"
 
-export HASDOCBOOK="no"
-
 do_stage () {
 	oe_runmake install
 	install fc-lang/fc-lang ${STAGING_BINDIR}
 	install fc-glyphname/fc-glyphname ${STAGING_BINDIR}
 }
-
-#
-# FIXME: If this package fails to compile on your host, then
-# you have docbook2html installed. Delete it or fix this package
-# to obey what we request in fontconfig (--disable-docs).
-#
