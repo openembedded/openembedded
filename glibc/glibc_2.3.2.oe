@@ -96,7 +96,7 @@ EXTRA_OECONF = "--without-tls --without-__thread --enable-kernel=${OLDEST_KERNEL
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
 # kernel headers
-	cp -a "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
+	touch ${WORKDIR}/linux/include/linux/autoconf.h
 	sed 's:\(^.*define.*__NR_waitpid.*$\):/*&*/:' < ${WORKDIR}/linux/include/asm-arm/unistd.h > ${WORKDIR}/linux/include/asm-arm/unistd.h.new
 	mv ${WORKDIR}/linux/include/asm-arm/unistd.h.new ${WORKDIR}/linux/include/asm-arm/unistd.h
 	case ${TARGET_ARCH} in
@@ -195,7 +195,7 @@ do_stage() {
 		   ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc
 	install -m 0644 ${S}/include/gnu/stubs.h ${CROSS_DIR}/${TARGET_SYS}/include/gnu/
 	install -m 0644 ${B}/bits/stdio_lim.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/
-	install -m 0644 misc/syscall-list.h ${CROSS_DIR}/${TARGET_SYS}/bits/syscall.h
+	install -m 0644 misc/syscall-list.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/syscall.h
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc/

@@ -57,13 +57,14 @@ python do_patch () {
 }
 
 do_stage() {
-	# Install into the staging dir
-	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+	# Install into the cross dir (this MUST be done first because we
+	# will install crt1.o in the install_dev stage and gcc needs it)
+	make PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
 		install_dev install_runtime install_utils
 
 	# We don't really need this
-	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
+	rm -f ${UCLIBC_PREFIX}/include/.cvsignore
 
 	# Fixup shared lib symlinks
 	( cd ${UCLIBC_STAGE_PREFIX}/lib
@@ -72,13 +73,13 @@ do_stage() {
 		done
 	)
 
-	# Install into the cross dir
-	make PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
+	# Install into the staging dir
+	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		install_dev install_runtime install_utils
 
 	# We don't really need this
-	rm -f ${UCLIBC_PREFIX}/include/.cvsignore
+	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
 
 	# Fixup shared lib symlinks
 	( cd ${UCLIBC_STAGE_PREFIX}/lib
