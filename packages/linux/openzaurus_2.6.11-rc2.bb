@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r10"
+PR = "r11"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -47,6 +47,7 @@ http://www.rpsys.net/openzaurus/${KV}/mmc_sd-r3.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/w100_malloc-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/input_power-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_snd-r3.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/rndis_fix-r0.patch;patch=1 \
 file://defconfig-husky \
 file://defconfig-collie \
 file://defconfig-poodle \
