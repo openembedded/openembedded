@@ -85,8 +85,12 @@ if [ -n "$D" ]; then
 	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} $VER
 else
 	depmod -A
-	update-modules
+	update-modules || true
 fi
+}
+
+pkg_postrm_modules () {
+update-modules || true
 }
 
 autoload_postinst_fragment() {
@@ -184,7 +188,7 @@ python populate_packages_prepend () {
 				m = re.match(pattern, os.path.basename(i))
 				if not m:
 					continue
-				on = m.group(1).lower().replace('_', '+').replace('@', '+')
+				on = legitimize_package_name(m.group(1))
 				dependencies.append(format % on)
 			return dependencies
 		return []
@@ -219,7 +223,7 @@ python populate_packages_prepend () {
 			f.close()
 
 		files = oe.data.getVar('FILES_%s' % pkg, d, 1)
-		files = "%s %s/etc/modutils/%s %s/etc/modutils/%s.conf" % (files, dvar, basename, dvar, basename)
+		files = "%s /etc/modutils/%s /etc/modutils/%s.conf" % (files, basename, basename)
 		oe.data.setVar('FILES_%s' % pkg, files, d)
 
 		if vals.has_key("description"):
@@ -239,7 +243,8 @@ python populate_packages_prepend () {
 	module_pattern = 'kernel-module-%s'
 
 	postinst = oe.data.getVar('pkg_postinst_modules', d, 1)
-	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, recursive=True, hook=frob_metadata, extra_depends='update-modules')
+	postrm = oe.data.getVar('pkg_postrm_modules', d, 1)
+	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='update-modules')
 
 	import re, os
 	metapkg = "kernel-modules"
@@ -248,7 +253,7 @@ python populate_packages_prepend () {
 	blacklist = []
 	for l in module_deps.values():
 		for i in l:
-			pkg = module_pattern % re.match(module_regex, os.path.basename(i)).group(1).lower().replace('_', '+').replace('@', '+')
+			pkg = module_pattern % legitimize_package_name(re.match(module_regex, os.path.basename(i)).group(1))
 			blacklist.append(pkg)
 	metapkg_rdepends = []
 	packages = oe.data.getVar('PACKAGES', d, 1).split()

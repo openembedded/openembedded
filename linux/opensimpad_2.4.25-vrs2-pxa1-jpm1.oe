@@ -5,7 +5,7 @@ KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r6"
+PR = "r7"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
@@ -36,6 +36,8 @@ SIMPAD_MEM     = ${@oe.data.getVar("SIMPAD_MEMORY_SIZE",d,1)  or "32"}
 SIMPAD_RD      = ${@oe.data.getVar("SIMPAD_RAMDISK_SIZE",d,1) or "32"}
 export CMDLINE = ${@oe.data.getVar("SIMPAD_CMDLINE",d,1) or  "mtdparts=sa1100:512k(boot),1m(kernel),-(root) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 "}
 EXTRA_OEMAKE = ""
+
+module_conf_sa1100-ir = "alias irda0 sa1100_ir"
 
 do_configure() {
         install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
