@@ -8,7 +8,7 @@ SRC_URI = "http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5.orig.ta
 S = "${WORKDIR}/portmap_5beta"
 
 INITSCRIPT_NAME = "portmap"
-INITSCRIPT_PARAMS = "43 S . start 32 0 6 . start 18 2 3 4 5 . stop 81 1 ."
+INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . start 18 2 3 4 5 . stop 81 1 ."
 
 inherit update-rc.d
 
@@ -20,7 +20,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/etc/init.d
-	install -m 0644 ${WORKDIR}/portmap.init ${D}/etc/init.d/portmap
+	install -m 0755 ${WORKDIR}/portmap.init ${D}/etc/init.d/portmap
 	oe_runmake 'docdir=${datadir}/doc/portmap' \
 		   'DESTDIR=${D}' install
 }
