@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r35"
+PR = "r36"
 
 ALLOW_EMPTY = 1
 
@@ -31,7 +31,6 @@ gpe-task-base = "\
     gpe-autostarter \
     gpe-bootsplash \
     libgtkstylus \
-    gpe-appmgr \
     detect-stylus \
     teleport \	
     xauth"
@@ -101,6 +100,6 @@ gpe-task-games = "\
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
 DEPENDS += " ${gpe-task-games}"
 
-DEPENDS += "matchbox-themes-extra"
+DEPENDS += "gpe-appmgr matchbox-themes-extra"
 
 LICENSE = MIT

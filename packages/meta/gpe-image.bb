@@ -4,7 +4,7 @@ FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${D
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r11"
+PR = "r12"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -18,7 +18,7 @@ GPE_EXTRA_THEMES = "gtk-theme-industrial matchbox-themes-extra-industrial"
 #GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
 #GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
 GPE_EXTRA_DEPENDS_bigscreen = "minimo figment"
-GPE_EXTRA_INSTALL_bigscreen = "minimo figment gpe-task-games ${GPE_EXTRA_THEMES}"
+GPE_EXTRA_INSTALL_bigscreen = "minimo figment gpe-task-games ${GPE_EXTRA_THEMES} gpe-appmgr"
 
 GPE_EXTRA_DEPENDS_smallscreen = "minimo figment linphone-hh"
 GPE_EXTRA_INSTALL_smallscreen = "minimo figment linphone-hh gpe-task-games ${GPE_EXTRA_THEMES}"

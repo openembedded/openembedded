@@ -8,6 +8,7 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS = "xkbd"
 RPROVIDES = "gpe-session-starter"
-PR = "r2"
+PR = "r3"
 
-SRC_URI += "file://pre-session.patch;patch=1"
+SRC_URI += "file://pre-session.patch;patch=1 \
+	    file://user-own-collie-devs.patch;patch=1"

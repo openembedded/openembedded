@@ -9,7 +9,12 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  computers. You can connect each key to a program of your choice; if the\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
+PR = "r1"
 
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+SRC_URI += " file://keylaunchrc"
+
+do_install_prepend () {
+	install ${WORKDIR}/keylaunchrc ${S}/keylaunchrc
+}
 
 export CVSBUILD=no
