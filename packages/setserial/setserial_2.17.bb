@@ -8,5 +8,4 @@ do_install() {
 	install -d ${D}/usr/man/man8
 	install -d ${D}${mandir}
 	autotools_do_install
-	mv ${D}/usr/man/* ${D}${mandir}/
 }
