@@ -13,7 +13,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://wireless.opts \
 	   file://network.conf \
 	   file://hostap_cs.conf \
-	   file://wnv.conf \"
+	   file://wnv.conf"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 INITSCRIPT_NAME = "pcmcia"
