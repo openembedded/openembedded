@@ -5,7 +5,8 @@ RDEPENDS=libc6
 DEPENDS=virtual/libc
 DESCRIPTION=A portable audio library
 
-SRC_URI=http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz
+SRC_URI=http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
+	file://${FILESDIR}/flags.patch;patch=1
 S=${WORKDIR}/portaudio
 
 inherit autotools libtool pkgconfig
