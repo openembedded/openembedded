@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 
@@ -50,8 +50,7 @@ SRC_URI = \
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--with-sysroot=${prefix} \
-		--disable-nls \
+EXTRA_OECONF = "--disable-nls \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 

@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
@@ -147,6 +147,9 @@ do_install () {
 	# Cleanup some of the /usr/lib{,exec}/gcc stuff ...
 	rm -r ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/install-tools
 	rm -r ${D}/${libexecdir}/gcc/${TARGET_SYS}/${PV}/install-tools
+
+	# Hack around specs file assumptions
+	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/specs
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}/lib
