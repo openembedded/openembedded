@@ -102,11 +102,14 @@ do_stage() {
 	rm -f ${UCLIBC_PREFIX}/include/.cvsignore
 
 	# Fixup shared lib symlinks
-	( cd ${UCLIBC_STAGE_PREFIX}/lib
+	( cd ${UCLIBC_PREFIX}/lib
 		for f in c crypt dl m nsl pthread resolv thread_db util; do
 			ln -sf lib${f}.so.? lib${f}.so
 		done
 	)
+
+	# This conflicts with the c++ version of this header
+	rm -f ${UCLIBC_PREFIX}/include/bits/atomicity.h
 
 	# Install into the staging dir
 	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
@@ -122,6 +125,9 @@ do_stage() {
 			ln -sf lib${f}.so.? lib${f}.so
 		done
 	)
+
+	# This conflicts with the c++ version of this header
+	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
 }
 
 do_install() {
@@ -130,5 +136,8 @@ do_install() {
 
 	# We don't really need this in /usr/include
 	rm -f ${D}/${prefix}/include/.cvsignore
+
+	# This conflicts with the c++ version of this header
+	rm -f ${D}/${prefix}/include/bits/atomicity.h
 }
 

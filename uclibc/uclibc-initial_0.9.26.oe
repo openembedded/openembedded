@@ -16,6 +16,9 @@ do_stage() {
 	mkdir -p ${CROSS_DIR}/${TARGET_SYS}/lib
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 	rm -rf ${CROSS_DIR}/${TARGET_SYS}/${prefix}
+
+	# This conflicts with the c++ version of this header
+	rm -f ${UCLIBC_PREFIX}/include/bits/atomicity.h
 }
 
 do_install() {
