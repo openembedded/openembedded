@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r16"
+PR = "r17"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
