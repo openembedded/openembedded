@@ -1,4 +1,4 @@
-SECTION = "libs"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "xproto x11 xt xmu xpm"

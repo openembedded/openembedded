@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 DESCRIPTION = "X Server Extension library"
-SECTION = "libs"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 DEPENDS = "xproto x11 xextensions"
 

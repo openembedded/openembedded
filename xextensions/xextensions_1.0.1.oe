@@ -1,4 +1,4 @@
-SECTION = "libs"
+SECTION = "x11/libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DESCRIPTION = "various extension headers."
 

@@ -1,0 +1,14 @@
+SECTION = "x11/libs"
+PRIORITY = "optional"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+DEPENDS = "x11 libsm"
+DESCRIPTION = "X Toolkit Intrinsics"
+
+SRC_URI = "${XLIBS_MIRROR}/libXt-${PV}.tar.bz2"
+S = "${WORKDIR}/libXt-${PV}"
+
+inherit autotools pkgconfig 
+
+do_stage () {
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+}

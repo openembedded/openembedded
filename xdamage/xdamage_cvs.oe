@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-SECTION = "libs"
+SECTION = "x11/libs"
 DEPENDS = "x11 damageext libxfixes xproto"
 DESCRIPTION = "X Damage extension library."
 
