@@ -65,8 +65,8 @@ do_install_append () {
 	mkdir ${D}/usr/include/postproc
 	cp ${S}/libavcodec/libpostproc/postprocess.h ${D}/usr/include/postproc/postprocess.h
 	cd ${D}/usr/lib
-	ln -s libpostproc.so.0.0.0 libpostproc.so.0
-	ln -s libpostproc.so.0 libpostproc.so
+	ln -sf libpostproc.so.0.0.0 libpostproc.so.0
+	ln -sf libpostproc.so.0 libpostproc.so
 }
 
 do_stage () {
