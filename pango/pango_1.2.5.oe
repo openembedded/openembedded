@@ -14,7 +14,7 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--disable-glibtest \
 		--enable-explicit-deps=no"
 
-FILES_pango-doc = "${FILES_pango-doc} ${datadir}/gtk-doc"
+FILES_pango-doc_append = " ${datadir}/gtk-doc"
 
 SOV = "0.200.5"
 do_stage () {
@@ -26,4 +26,3 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/pango
 	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
 }
-

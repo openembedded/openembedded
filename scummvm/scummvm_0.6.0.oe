@@ -1,18 +1,22 @@
 DESCRIPTION = "Virtual Machine for LucasArts Adventures"
 SECTION = "base"
 PRIORITY = "optional"
-RDEPENDS = "libc6 libsdl-qpe libmad"
-DEPENDS = "virtual/libc libsdl-qpe libmad"
+DEPENDS = "virtual/libc libsdl-qpe libmad libvorbis libogg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 
 inherit autotools libtool
 
-export CC = "${HOST_PREFIX}gcc"
-export CXX = "${HOST_PREFIX}g++"
+EXTRA_OECONF = "--backend=sdl \
+		--with-sdl-prefix=${STAGING_BINDIR}/.. \
+		--disable-alsa \
+		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
+		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \
+		--disable-mpeg2 \
+		--with-mad-prefix=${STAGING_BINDIR}/.."
 
 do_configure() {
-	./configure --backend=sdl --with-sdl-prefix=${STAGING_BINDIR}/..
+	./configure ${EXTRA_OECONF}
 }
 
 do_compile() {

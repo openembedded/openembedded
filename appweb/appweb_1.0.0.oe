@@ -62,7 +62,8 @@ EXTRA_OECONF = "--os ${APPWEB_OS} --target ${APPWEB_TARGET} \
 		--disable-ssl"
 EXTRA_OEMAKE = "'CC=${CC}' 'AR=${AR}' 'CPP=${CXX}' 'LD=${CC}'"
 
-export LD_LIBRARY_PATH = "${S}/lib:${LD_LIBRARY_PATH}"
+LD_LIBRARY_PATH_prepend = "${S}/lib:"
+LD_LIBRARY_PATH[export] = "1"
 do_configure () {
 	./configure ${EXTRA_OECONF}
 }
