@@ -11,7 +11,10 @@ die () {
 do_split_feed () {
 	test -z "$FEED_PATTERN" && die "No feed pattern in FEED_PATTERN"
 	test -z "$FEED_NAME" && die "No feed name in FEED_NAME"
-	! test -e ${DEPLOY_DIR_IPK}/Packages && die "[$DEPLOY_DIR_IPK/Packages] not found"
+	test -z "${DEPLOY_DIR_IPK}" && die "DEPLOY_DIR_IPK is empty, how do you do that?"
+	
+	echo "Rebuilding [${DEPLOY_DIR_IPK}/Packages]"
+	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 	
 	echo "Working on pattern [$FEED_PATTERN] for feed [$FEED_NAME]"
 	
@@ -21,8 +24,7 @@ do_split_feed () {
 	if ! test -z "$EXCLUDE_FROM_FEED"
 	then
 		cat feed-content.tmp | egrep -iv -- "$EXCLUDE_FROM_FEED" > feed-content.tmp2
-		rm feed-content.tmp
-		mv feed-content.tmp2 feed-content.tmp
+		rm feed-content.tmp ; mv feed-content.tmp2 feed-content.tmp
 	fi
 	
 	if ! test -d ${DEPLOY_DIR_IPK}/${FEED_NAME}
