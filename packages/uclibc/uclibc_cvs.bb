@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 PV = "0.0cvs${CVSDATE}"
-PR = "r6"
+PR = "r7"
 DEFAULT_PREFERENCE = "1"
 
 #
@@ -41,7 +41,7 @@ uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
 		   /lib/libuClibc*.so* /lib/ld*.so* \
 		   /lib/libc*.so* /lib/libdl*.so* \
 		   /lib/libm*.so* /lib/libutil*.so* \
-		   /lib/libpthread*.so*"
+		   /lib/libpthread*.so* /lib/librt*.so*"
 FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
 	       ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
 FILES_ldd = "${bindir}/ldd"

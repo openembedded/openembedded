@@ -570,7 +570,6 @@ base_do_package() {
 
 addtask build after do_populate_staging
 do_build = ""
-do_build[nostamp] = "1"
 do_build[func] = "1"
 
 # Functions that update metadata based on files outputted
