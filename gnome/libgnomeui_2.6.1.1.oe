@@ -1,69 +1,15 @@
-SRC_URI = "${GNOME_MIRROR}/sources/libgnomeui/2.6/libgnomeui-${PV}.tar.bz2"
-
+PR = "r1"
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
+DESCRIPTION = "GNOME User Interface Library"
 
-inherit autotools libtool pkgconfig
+FILES_${PN} += "${libdir}/gtk-2.0/*/filesystems/lib*.so \
+	${libdir}/libglade/*/lib*.so"
+
+inherit gnome
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-HEADERS = "\
-gnome-about.h \
-gnome-app.h \
-gnome-app-helper.h \
-gnome-app-util.h \
-gnome-appbar.h \
-gnome-authentication-manager.h \
-gnome-client.h \
-gnome-color-picker.h \
-gnome-dateedit.h \
-gnome-dialog.h \
-gnome-dialog-util.h \
-gnome-druid.h \
-gnome-druid-page.h \
-gnome-druid-page-edge.h \
-gnome-druid-page-standard.h \
-gnome-entry.h \
-gnome-file-entry.h \
-gnome-font-picker.h \
-gnome-help.h \
-gnome-href.h \
-gnome-ice.h \
-gnome-icon-entry.h \
-gnome-icon-item.h \
-gnome-icon-list.h \
-gnome-icon-lookup.h \
-gnome-icon-sel.h \
-gnome-icon-theme.h \
-gnome-messagebox.h \
-gnome-mdi.h \
-gnome-mdi-child.h \
-gnome-mdi-generic-child.h \
-gnome-mdi-session.h \
-gnome-password-dialog.h \
-gnome-pixmap.h \
-gnome-pixmap-entry.h \
-gnome-popup-menu.h \
-gnome-propertybox.h \
-gnome-scores.h \
-gnome-ui-init.h \
-gnome-stock-icons.h \
-gnome-thumbnail.h \
-gnome-types.h \
-gnome-uidefs.h \
-gnome-url.h \
-gnome-vfs-util.h \
-gnome-window.h \
-gnome-window-icon.h \
-libgnomeui.h \
-gnome-theme-parser.h \
-gnometypebuiltins.h \
-"
-
 do_stage() {
-	install -d ${STAGING_INCDIR}/libgnomeui-2.0/libgnomeui
-	for i in ${HEADERS}; do
-		install -m 0644 libgnomeui/$i ${STAGING_INCDIR}/libgnomeui-2.0/libgnomeui/$i
-	done
-	install -m 0644 libgnomeui/gnome.h ${STAGING_INCDIR}/libgnomeui-2.0/gnome.h
+	gnome_stage_includes
 	oe_libinstall -C libgnomeui -a -so libgnomeui-2 ${STAGING_LIBDIR}
 }
