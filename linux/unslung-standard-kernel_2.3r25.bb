@@ -22,8 +22,8 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel-${PV}/${UNS
 
 python () {
 	# Don't build unslung kernel unless we're targeting an nslu2
-	mach = oe.data.getVar("MACHINE", d, 1)
-	dist = oe.data.getVar("DISTRO", d, 1)
+	mach = bb.data.getVar("MACHINE", d, 1)
+	dist = bb.data.getVar("DISTRO", d, 1)
 	if mach != 'nslu2' or dist != 'unslung':
-		raise oe.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
+		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
 }

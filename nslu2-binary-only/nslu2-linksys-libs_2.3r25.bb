@@ -17,6 +17,6 @@ FILES_${PN} = "/lib"
 
 python () {
 	# Don't build unless we're targeting an nslu2
-	if oe.data.getVar("MACHINE", d, 1) != "nslu2":
-		raise oe.parse.SkipPackage("NSLU2 stock firmware libraries only builds for the Linksys NSLU2")
+	if bb.data.getVar("MACHINE", d, 1) != "nslu2":
+		raise bb.parse.SkipPackage("NSLU2 stock firmware libraries only builds for the Linksys NSLU2")
 }

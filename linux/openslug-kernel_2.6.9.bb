@@ -51,8 +51,8 @@ addtask deploy before do_build after do_compile
 
 python () {
 	# Don't build openslug kernel unless we're targeting an nslu2
-	mach = oe.data.getVar("MACHINE", d, 1)
-	dist = oe.data.getVar("DISTRO", d, 1)
+	mach = bb.data.getVar("MACHINE", d, 1)
+	dist = bb.data.getVar("DISTRO", d, 1)
 	if mach != 'nslu2' or dist != 'openslug':
-		raise oe.parse.SkipPackage("OpenSlug only builds for the Linksys NSLU2")
+		raise bb.parse.SkipPackage("OpenSlug only builds for the Linksys NSLU2")
 }

@@ -9,9 +9,9 @@ S = "${WORKDIR}"
 
 python () {
 	# Don't build switchbox firmware unless we're targeting an nslu2
-	mach = oe.data.getVar("MACHINE", d, 1)
+	mach = bb.data.getVar("MACHINE", d, 1)
 	if mach != 'nslu2':
-		raise oe.parse.SkipPackage("Switchbox is only relevant for the Linksys NSLU2")
+		raise bb.parse.SkipPackage("Switchbox is only relevant for the Linksys NSLU2")
 }
 
 do_compile () {
