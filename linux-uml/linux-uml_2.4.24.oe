@@ -9,7 +9,6 @@ S = "${WORKDIR}/linux-${PV}"
 inherit kernel
 
 export OS = "Linux"
-
 ARCH = "um"
 SUBARCH = "${TARGET_ARCH}"
 KERNEL_IMAGETYPE = "linux"
