@@ -7,7 +7,9 @@ PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "screenshotapplet"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/screenshotapplet \
-           ${HANDHELDS_CVS};module=opie/apps"
+           ${HANDHELDS_CVS};module=opie/apps                          \
+	   ${HANDHELDS_CVS};module=opie/pics "
+
 
 S = "${WORKDIR}/${APPNAME}"
 
@@ -29,5 +31,8 @@ pkg_postrm() {
 
 # FILES plugins/applets/libscreenshotapplet.so*
 do_install() {
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+
 }
 
