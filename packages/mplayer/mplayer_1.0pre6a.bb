@@ -61,9 +61,6 @@ EXTRA_OECONF = " \
 	\
         --with-extralibdir=${STAGING_LIBDIR} "
 
-EXTRA_OECONF_append_corgi = " --enable-vidix "
-EXTRA_OECONF_append_shepherd = " --enable-vidix "
-EXTRA_OECONF_append_husky = " --enable-vidix "
 EXTRA_OECONF_append_c7x0 = " --enable-vidix "
 
 do_configure() {
