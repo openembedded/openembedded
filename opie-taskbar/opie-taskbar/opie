@@ -15,7 +15,7 @@ if [ -e /proc/cpuinfo ] ; then
     case "$model" in	
         "HP IPAQ H3100" | "HP IPAQ H3800" )
 	     export QWS_DISPLAY=Transformed:Rot90:0 ;;
-	"HP IPAQ H5400" | "HP JORNADA 56X" | "HP IPAQ H2200" )
+	"HP IPAQ H5400" | "HP JORNADA 56X" | "HP IPAQ H2200" | "SHARP Tosa" )
 	     export QWS_DISPLAY=Transformed:Rot0:0 ;;
 	*SIMPAD* )
 	     export QWS_KEYBOARD='SIMpad'
