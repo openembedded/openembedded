@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r5"
+PR = "r6"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.cs.wisc.edu/~lenz/zaurus/
@@ -32,7 +32,9 @@ http://www.rpsys.net/openzaurus/${KV}/jl1/collie_use_sharp_mtd.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/collie_scoop-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/collie_scoop_pcmcia-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ssp_extra-r0.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras-r5.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_fb-r1.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_mmc-r5.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras-r7.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r8.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_backlight-r9.patch;patch=1 \
@@ -40,7 +42,6 @@ http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r3.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power-r7.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/ide_fixes-r1.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_mmc-r3.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mmc_sd-r2.patch;patch=1 \
 file://defconfig-husky \
 file://defconfig-collie \
