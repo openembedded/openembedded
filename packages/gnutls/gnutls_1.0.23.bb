@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt"
-PR = "r2"
+PR = "r3"
 
 LICENSE = "LGPL"
 
@@ -17,7 +17,7 @@ FILES_${PN}-bin = "${bindir}/gnutls-serv ${bindir}/gnutls-cli \
 	${bindir}/srptool ${bindir}/certtool ${bindir}/gnutls-srpcrypt"
 FILES_${PN}-dev += "${bindir}/*-config ${bindir}/gnutls-cli-debug"
 
-EXTRA_OECONF="--with-included-opencdk"
+EXTRA_OECONF="--with-included-opencdk --with-included-libtasn1"
 
 do_stage() {
 	oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}
