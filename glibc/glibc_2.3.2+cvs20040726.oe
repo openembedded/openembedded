@@ -1,0 +1,208 @@
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
+PR = "r0"
+DESCRIPTION = "GNU C Library"
+LICENSE = "LGPL"
+SECTION = "libs"
+PRIORITY = "required"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+GLIBC_ADDONS ?= "linuxthreads"
+GLIBC_EXTRA_OECONF ?= ""
+
+#
+# For now, we will skip building of a gcc package if it is a uclibc one
+# and our build is not a uclibc one, and we skip a glibc one if our build
+# is a uclibc build.
+#
+# See the note in gcc/gcc_3.4.0.oe
+#
+
+python __anonymous () {
+    import oe, re
+    uc_os = (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None)
+    if uc_os:
+        raise oe.parse.SkipPackage("incompatible with target %s" %
+                                   oe.data.getVar('TARGET_OS', d, 1))
+}
+
+PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+
+# nptl needs unwind support in gcc, which can't be built without glibc.
+PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
+DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
+INHIBIT_DEFAULT_DEPS = "1"
+
+libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
+
+FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo"
+FILES_ldd = "${bindir}/ldd"
+FILES_libsegfault = "/lib/libSegFault*"
+FILES_glibc-extra-nss = "/lib/libnss*"
+FILES_sln = "/sbin/sln"
+FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
+FILES_nscd = "${sbindir}/nscd*"
+FILES_glibc-utils = "${bindir} ${sbindir}"
+FILES_glibc-gconv = "${libdir}/gconv"
+FILES_catchsegv = "${bindir}/catchsegv"
+DEPENDS_catchsegv = "libsegfault"
+FILES_glibc-pcprofile = "/lib/libpcprofile.so"
+FILES_glibc-thread-db = "/lib/libthread_db*"
+FILES_localedef = "${bindir}/localedef"
+
+HEADERS_VERSION = "2.6.5.1"
+HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
+
+#	   file://noinfo.patch;patch=1 \
+#	   file://ldconfig.patch;patch=1;pnum=0 \
+
+SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@oe.data.getVar('PV', d, 1)[9:]} \
+	   http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${HEADERS_VERSION}.tar.bz2 \
+	   file://arm-ioperm.patch;patch=1;pnum=0 \
+	   file://makeconfig.patch;patch=1;pnum=0 \
+	   file://ldd.patch;patch=1;pnum=0 \
+	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
+	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
+	   file://arm-memcpy.patch;patch=1;pnum=0 \
+	   file://arm-longlong.patch;patch=1;pnum=0 \
+	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+           file://dyn-ldconfig.patch;patch=1;pnum=0 \
+	   \
+           file://etc/ld.so.conf \
+	   file://generate-supported.mk"
+
+S = "${WORKDIR}/libc"
+B = "${WORKDIR}/build-${TARGET_SYS}"
+
+inherit autotools
+
+EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
+	        --without-cvs --disable-profile --disable-debug --without-gd \
+		--enable-clocale=gnu \
+	        --enable-add-ons=${GLIBC_ADDONS} --with-headers=${HEADERS_DIR}/include ${GLIBC_EXTRA_OECONF}"
+
+EXTRA_OECONF += "${@get_glibc_fpu_setting(oe, d)}"
+
+def get_glibc_fpu_setting(oe, d):
+	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+		return "--without-fp"
+	return ""
+
+glibcbuild_do_unpack () {
+# kernel headers
+	case ${TARGET_ARCH} in
+		alpha*)   TARGET_ARCH=alpha ;;
+		arm*)     TARGET_ARCH=arm ;;
+		cris*)    TARGET_ARCH=cris ;;
+		hppa*)    TARGET_ARCH=parisc ;;
+		i*86*)    TARGET_ARCH=i386 ;;
+		ia64*)    TARGET_ARCH=ia64 ;;
+		mips*)    TARGET_ARCH=mips ;;
+		m68k*)    TARGET_ARCH=m68k ;;
+		powerpc*) TARGET_ARCH=ppc ;;
+		s390*)    TARGET_ARCH=s390 ;;
+		sh*)      TARGET_ARCH=sh ;;
+		sparc64*) TARGET_ARCH=sparc64 ;;
+		sparc*)   TARGET_ARCH=sparc ;;
+		x86_64*)  TARGET_ARCH=x86_64 ;;
+	esac
+	if test !  -e ${HEADERS_DIR}/include/asm-$TARGET_ARCH; then
+		oefatal unable to create asm symlink in kernel headers
+	fi
+	ln -sf "asm-$TARGET_ARCH" "${HEADERS_DIR}/include/asm"
+	if test "$TARGET_ARCH" = "arm"; then
+		ln -sf proc-armv ${HEADERS_DIR}/include/asm/proc
+		ln -sf arch-ebsa285 ${HEADERS_DIR}/include/asm/arch
+	fi
+}
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	oe.build.exec_func('glibcbuild_do_unpack', d)
+}
+
+do_configure () {
+# override this function to avoid the autoconf/automake/aclocal/autoheader
+# calls for now
+# don't pass CPPFLAGS into configure, since it upsets the kernel-headers
+# version check and doesn't really help with anything
+	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
+	CPPFLAGS="" oe_runconf
+}
+
+rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
+	  yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
+	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
+
+do_compile () {
+	# this really is arm specific
+	touch ${S}/sysdeps/arm/framestate.c
+	# -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
+	unset LDFLAGS
+	base_do_compile
+	(
+		cd ${S}/sunrpc/rpcsvc
+		for r in ${rpcsvc}; do
+			h=`echo $r|sed -e's,\.x$,.h,'`
+			rpcgen -h $r -o $h || oewarn "unable to generate header for $r"
+		done
+	)
+}
+
+do_stage() {
+	rm -f ${STAGING_LIBDIR}/libc.so.6
+	oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${STAGING_LIBDIR}/libc.so.6' \
+		   install-headers install-lib
+
+	install -d ${STAGING_INCDIR}/asm
+	rm -f ${STAGING_INCDIR}/linux/wireless.h
+	cp -a ${HEADERS_DIR}/include/linux ${STAGING_INCDIR}/
+	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
+	cp -a ${HEADERS_DIR}/include/asm/* ${STAGING_INCDIR}/asm/
+
+	install -d ${STAGING_INCDIR}/gnu \
+		   ${STAGING_INCDIR}/bits \
+		   ${STAGING_INCDIR}/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
+	install -m 0644 misc/syscall-list.h ${STAGING_INCDIR}/bits/syscall.h
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
+	done
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${STAGING_LIBDIR}/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_LIBDIR}/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_LIBDIR}/libc.so
+
+	rm -f ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6
+	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
+		   install-headers install-lib
+
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
+	cp -a ${HEADERS_DIR}/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
+	cp -R ${HEADERS_DIR}/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${CROSS_DIR}/${TARGET_SYS}/include/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/
+	install -m 0644 misc/syscall-list.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/syscall.h
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc/
+	done
+
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
+}
+
+include glibc-package.oe

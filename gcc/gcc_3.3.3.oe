@@ -160,9 +160,9 @@ EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
 EXTRA_OECONF_DEP = ""
 EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
 EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
-EXTRA_OECONF += "${@get_fpu_setting(oe, d)}"
+EXTRA_OECONF += "${@get_gcc_fpu_setting(oe, d)}"
 
-def get_fpu_setting(oe, d):
+def get_gcc_fpu_setting(oe, d):
 	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
 		return "--with-float=soft"
 	return ""

@@ -83,9 +83,9 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} --with-headers=${HEADERS_DIR}/include ${GLIBC_EXTRA_OECONF}"
 
-EXTRA_OECONF += "${@get_fpu_setting(oe, d)}"
+EXTRA_OECONF += "${@get_glibc_fpu_setting(oe, d)}"
 
-def get_fpu_setting(oe, d):
+def get_glibc_fpu_setting(oe, d):
 	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
 		return "--without-fp"
 	return ""
