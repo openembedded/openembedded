@@ -1,7 +1,7 @@
 include eet_${PV}.oe
 inherit native
-DEPENDS = "zlib-native"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/eet"
+DEPENDS = "zlib-native jpeg-native"
 
 do_stage () {
         oe_libinstall -C src/lib libeet ${STAGING_LIBDIR}/

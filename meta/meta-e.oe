@@ -10,4 +10,4 @@ RDEPENDS_elibs = "${task-elibs}"
 DEPENDS += "${task-elibs}"
 
 RDEPENDS_ebase = "${task-ebase}"
-DEPENDS += "${task-ebase"
+DEPENDS += "${task-ebase}"

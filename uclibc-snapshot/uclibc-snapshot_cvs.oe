@@ -33,8 +33,12 @@ INHIBIT_DEFAULT_DEPS = "1"
 # in the current build system.
 #
 UCLIBC_LOCALE_FILE = "uClibc-locale-030818.tgz"
+UCLIBC_LOCALE_FILE_arm = "uClibc-locale-030818.arm.tgz"
+UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE}"
+UCLIBC_LOCALE_URI_arm = "http://openembedded.org/dl/uclibc-locale/${UCLIBC_LOCALE_FILE}"
+
 SRC_URI = "cvs://anonymous:@166.70.99.138/var/cvs;module=uClibc \
-           http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE} \
+	   ${UCLIBC_LOCALE_URI} \
            file://nokernelheadercheck.patch;patch=1 \
            file://uClibc.config"
 
@@ -43,7 +47,8 @@ S = "${WORKDIR}/uClibc"
 UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
 UCLIBC_STAGE_PREFIX = "${STAGING_DIR}/${HOST_SYS}"
 
-EXTRA_OEMAKE = "'OPTIMIZATION=' 'CPU_CFLAGS=${CFLAGS}' 'STRIPTOOL=true'"
+EXTRA_OEMAKE = "'OPTIMIZATION=' 'CPU_CFLAGS=${CFLAGS}' 'STRIPTOOL=true' 'LD=${LD}' \
+		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
 configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${CROSS_DIR}/${TARGET_SYS}/include",g; \
 		s,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX="/",g; \
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
