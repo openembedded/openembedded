@@ -26,5 +26,10 @@ do_install() {
 	install -m 0644 ${MACHINE}/sharp_mmcsd_m.o ${D}/lib/modules/${PV}/kernel/drivers/block/
 }
 
-PACKAGE_ARCH = ${MACHINE_ARCH}
 FILES_${PN} = "/"
+
+python () {
+	mach = oe.data.getVar('MACHINE', d, 1)
+	if mach:
+		oe.data.setVar('PACKAGE_ARCH', oe.data.getVar('MACHINE_ARCH', d, 1), d)
+}
