@@ -3,13 +3,14 @@ SMTP, POP, IMAP and NNTP"
 SECTION = "libs"
 DEPENDS = "openssl"
 PV = "0.36"
-PR = "r1"
+PR = "r3"
 S = "${WORKDIR}/libetpan"
 TAG="rel-0-36"
 LICENSE = "BSD"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan \
           file://etpan_configure.patch;patch=1 \
-          file://reentrant.patch;patch=1 "
+          file://reentrant.patch;patch=1 \
+          file://gnutls.patch;patch=1 "
 
 inherit autotools pkgconfig gettext
 
