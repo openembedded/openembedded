@@ -60,4 +60,8 @@ DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND} ${OPIE_BASE} ${OPIE_BASE_APPLETS} 
             ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
             ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS} ${OPIE_BASE_INPUTMETHODS}"
 
+
+# zap the root password
+#IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
+
 inherit image_ipk

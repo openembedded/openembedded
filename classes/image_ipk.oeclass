@@ -69,4 +69,16 @@ EOF
 		oeimage -t ${IMAGE_FSTYPE} -e ${FILE}
 	fi
 }
+
+# set '*' as the rootpassword so the images
+# can decide if they want it or not
+
+zap_root_password () {
+	sed 's%^root:[^:]*:%root:*:%' < ${IMAGE_ROOTFS}/etc/passwd >${IMAGE_ROOTFS}/etc/passwd.new
+	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd	
+} 
+
+# export the zap_root_password
+EXPORT_FUNCTIONS zap_root_password
+
 addtask images before do_build after do_install
