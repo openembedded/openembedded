@@ -2,6 +2,7 @@ DESCRIPTION = "A Doom Clone based on SDL"
 SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-net"
+LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \

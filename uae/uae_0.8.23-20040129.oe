@@ -2,6 +2,7 @@ DESCRIPTION = "Amiga Emulator based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
+LICENSE = "GPL"
 
 SRC_URI = "http://rcdrummond.net/uae/uae-${PV}/uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1 \

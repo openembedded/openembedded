@@ -3,6 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Tim Ansell <ipks@mithis.net>"
 DEPENDS = "virtual/libsdl"
+LICENSE = "GPL"
 
 SRC_URI = "http://libmpeg2.sourceforge.net/files/mpeg2dec-${PV}.tar.gz \
 			file://Makefile.patch;patch=1 "

@@ -5,6 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
 DEPENDS = "x11 xext"
 PROVIDES = "virtual/libsdl"
+LICENSE = "LGPL"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \
