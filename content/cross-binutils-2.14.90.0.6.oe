@@ -1,0 +1,22 @@
+PROVIDES = virtual/${OLDARCH}-${OLDOS}-binutils
+
+SRC_URI = http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.gz
+S = ${WORKDIR}/binutils-${PV}
+
+OLDOS := ${OS}
+OLDARCH := ${ARCH}
+CROSS_DIR := ${CROSS_DIR}
+inherit noncross autotools
+
+do_configure() {
+	./configure --prefix=${CROSS_DIR} --target=${OLDARCH}-${OLDOS}
+}
+
+EXTRA_OEMAKE =
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	oe_runmake install
+}
