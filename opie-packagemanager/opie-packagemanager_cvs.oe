@@ -13,7 +13,7 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-EXTRA_QMAKEVARS_POST = 'DEFINES+="LIBIPK_INC_DIR=${STAGING_INCDIR}/libipkg"'
+EXTRA_QMAKEVARS_PRE = 'LIBIPK_INC_DIR=${STAGING_INCDIR}/libipkg'
 
 do_install() {
     install -d ${D}/${palmtopdir}/pics/${APPNAME}
