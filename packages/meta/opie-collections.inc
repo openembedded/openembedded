@@ -50,8 +50,8 @@ OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 
 OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal opie-style-web opie-style-phase"
 
-OPIE_BASE_DEPENDS = "ipkg ntp bluez-utils-nodbus irda-utils openobex-apps libopieobex0"
-OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex0"
+OPIE_BASE_DEPENDS = "ipkg timzones ntp bluez-utils-nodbus irda-utils openobex-apps libopieobex0"
+OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex0"
 
 #
 # Clamshell models can benefit from the autorotate applet

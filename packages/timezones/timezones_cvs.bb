@@ -23,3 +23,10 @@ python populate_packages_prepend() {
         do_split_packages(d, root='/usr/share/zoneinfo/', file_regex=pkgregex, output_pattern=pkgpattern, 
                           description=pkgdescription,allow_dirs=True )
 }
+
+FILES_${PN} =  "${datadir}/zoneinfo/America/Denver      \
+                ${datadir}/zoneinfo/America/NewYork     \
+                ${datadir}/zoneinfo/America/LosAngeles  \
+                ${datadir}/zoneinfo/Australia/Brisbane  \
+                ${datadir}/zoneinfo/Europe/Berlin       \
+                ${datadir}/zoneinfo/Asia/Tokyo          "
