@@ -21,7 +21,7 @@ gpe-base = "\
     libgtkstylus \
     xst"
 
-RDEPENDS_gpe-task-base := "${gpe-base} libfontconfig-utils"
+RDEPENDS_gpe-task-base := "${gpe-base} fontconfig-utils"
 DEPENDS += " ${gpe-base}"
 
 gpe-task-pim = "\
