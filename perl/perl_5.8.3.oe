@@ -1,0 +1,23 @@
+DESCRIPTION = "Perl is a popular scripting language."
+SECTION = "developing"
+PRIORITY = "optional"
+RDEPENDS = "libc6 db3"
+DEPENDS = "virtual/libc db3 perl-native"
+SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
+
+do_configure() {
+	cd Cross
+	oe_runmake patch
+}
+
+do_compile() {
+	cd Cross
+	oe_runmake perl
+}
+
+do_install() {
+	rm -rf install_me_here
+	make install
+	mv install_me_here/* ${D}
+	rmdir install_me_here
+}
