@@ -14,15 +14,12 @@ S = "${WORKDIR}/ORBit2-${PV}"
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-gtk-doc"
+EXTRA_OEMAKE = "IDL_COMPILER='${STAGING_BINDIR}/orbit-idl-2'"
 
 do_configure_prepend() {
 	mkdir -p m4
 	install ${WORKDIR}/gtk-doc.m4 ./m4/
 	install ${WORKDIR}/gtk-doc.make ./
-}
-
-do_compile() {
-	oe_runmake IDL_COMPILER="`which orbit-idl-2`"
 }
 
 do_stage() {
