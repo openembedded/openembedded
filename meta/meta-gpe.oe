@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r11"
+PR = "r12"
 
 ALLOW_EMPTY = 1
 
@@ -35,7 +35,8 @@ gpe-task-pim = "\
     gpe-calendar \
     gpe-sketchbook \
     gpe-contacts \
-    gpe-today"
+    gpe-today \
+    dillo2"
 RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
 DEPENDS += " ${gpe-task-pim}"
 
@@ -49,7 +50,6 @@ gpe-task-utils = "\
     gpe-wlancfg \
     gpe-gallery \
     gpe-calculator \
-    gpe-plucker \
     minilite \
     gpe-taskmanager \
     gpe-package \
