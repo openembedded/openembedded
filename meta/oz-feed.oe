@@ -1,0 +1,14 @@
+
+# A dependency isn't really needed. Just build meta-opie or even world
+# and build the feed afterwards.
+
+#DEPENDS = "meta-opie"
+
+# egrep -i Pattern matched against "$Section $Package-Name"
+export FEED_PATTERN = "^net|^fonts|^libs|^base"
+export FEED_NAME = "openzaurus"
+
+# egrep -i regexp matching package name
+export EXCLUDE_FROM_FEED = "^locale-|^glibc-|-dev$"
+
+inherit split_ipk_feeds

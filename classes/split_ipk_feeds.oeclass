@@ -16,22 +16,22 @@ do_split_feed () {
 	echo "Working on pattern [$FEED_PATTERN] for feed [$FEED_NAME]"
 	
 	# Don't we all love sed?
-	cat "${DEPLOY_DIR_IPK}/Packages" |sed -n "/^Section/s/Section\:\ //p;/^Package/s/Package\:\ //p" |sed '$!N;s/\n/ /;s/\(.*\)\ \(.*\)/\2 \1/'| sort | egrep -i "$FEED_PATTERN" | sed -n "s/\(.*\)\ \(.*\)/\2/p" > feed-content.tmp	
+	cat "${DEPLOY_DIR_IPK}/Packages" |sed -n "/^Section/s/Section\:\ //p;/^Package/s/Package\:\ //p" |sed '$!N;s/\n/ /;s/\(.*\)\ \(.*\)/\2 \1/'| sort | egrep -i -- "$FEED_PATTERN" | sed -n "s/\(.*\)\ \(.*\)/\2/p" > feed-content.tmp	
 
 	if ! test -z "$EXCLUDE_FROM_FEED"
 	then
-		cat feed-content.tmp | egrep -iv "$EXCLUDE_FROM_FEED" > feed-content.tmp2
+		cat feed-content.tmp | egrep -iv -- "$EXCLUDE_FROM_FEED" > feed-content.tmp2
 		rm feed-content.tmp
 		mv feed-content.tmp2 feed-content.tmp
 	fi
 	
 	if ! test -d ${DEPLOY_DIR_IPK}/${FEED_NAME}
 	then
-		mkdir ${DEPLOY_DIR_IPK}/${FEED_NAME}
+		mkdir -p ${DEPLOY_DIR_IPK}/${FEED_NAME}
 	else		
 		test "${DEPLOY_DIR_IPK}/${FEED_NAME}" = "/" && die "EMERGENCY BAIL-OUT"
 		rm -rf ${DEPLOY_DIR_IPK}/${FEED_NAME}
-		mkdir ${DEPLOY_DIR_IPK}/${FEED_NAME}
+		mkdir -p ${DEPLOY_DIR_IPK}/${FEED_NAME}
 	fi	
 	
 	for package in `cat feed-content.tmp`
@@ -40,9 +40,11 @@ do_split_feed () {
 	done
 	
 	touch ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages
-	ipkg-make-index -r ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages -p ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages -l ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages.filelist -m ${DEPLOY_DIR_IPK}/${FEED_NAME}
+	ipkg-make-index -r ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages -p ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages -l ${DEPLOY_DIR_IPK}/${FEED_NAME}/Packages.filelist -m ${DEPLOY_DIR_IPK}/${FEED_NAME} || die "ipkg-make-index failed!" && echo "Packages done"
 	
+	echo "###"
 	test -d ${DEPLOY_DIR_IPK}/${FEED_NAME}/morgue && rm -rf ${DEPLOY_DIR_IPK}/${FEED_NAME}/morgue
+	echo "###"	
 }
 	
 addtask split_feed before do_build 

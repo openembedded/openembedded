@@ -5,7 +5,7 @@
 #DEPENDS = "meta-opie"
 
 # egrep -i Pattern matched against "$Section $Package-Name"
-export FEED_PATTERN = "\ locale-|glibc-"
+export FEED_PATTERN = "\ locale-|glibc-|-dev$"
 export FEED_NAME = "openzaurus-system"
 
 # egrep -i regexp matching package name
