@@ -17,8 +17,28 @@ export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kern
 sbindir = "/sbin"
 
 do_configure() {
-	./Configure --noprompt --sysv --nopnp --rcdir=${sysconfdir} --arch="${ARCH}" --kernel="${KERNEL_SOURCE}" \
-		    --srctree --nocardbus --ucc="${CC}" --ld="${LD}" --uflags="${CFLAGS}" --target=.
+	touch .prereq.ok
+	touch config.out
+	cat >config.mk <<EOF
+UCC=${CC}
+UFLAGS=${CFLAGS} -I${S}/include
+HAS_WORDEXP=y
+SYSV_INIT=y
+RC_DIR=/etc
+CONFIG_PNP_BIOS=n
+ARCH=${ARCH}
+CONFIG_CARDBUS=n
+CONFIG_PCMCIA=y
+CONFIG_INET=y
+CONFIG_SCSI=y
+DO_IDE=y
+EOF
+	cat >include/pcmcia/autoconf.h <<EOF
+#define HAS_WORDEXP 1
+EOF
+}
+
+do_compile() {
         oe_runmake all HAS_XPM= FLIBS="" XMANDIR=""
 }
 
