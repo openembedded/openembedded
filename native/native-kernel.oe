@@ -1,3 +1,4 @@
+COMPATIBLE_HOST = "${BUILD_SYS}"
 
 PROVIDES = "virtual/kernel"
 
