@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
