@@ -1,29 +1,32 @@
-DESCRIPTION="KDE Web Browser Konqueror, QtE based Palmtop Environments Edition"
-SECTION="base"
-PRIORITY="optional"
-LICENSE="GPL"
+DESCRIPTION = "KDE Web Browser Konqueror, QtE based Palmtop Environments Edition"
+SECTION = "opie/Applications"
+PRIORITY = "optional"
+DEPENDS = "libqpe-opie openssl pcre"
 
-SRC_URI = http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snapshot-${PV}.tar.gz \
-          file://${FILESDIR}/opie1.patch;patch=1 \
-          file://${FILESDIR}/pro.patch;patch=1 \
-          file://${FILESDIR}/packing.patch;patch=1 
-
+SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snapshot-${PV}.tar.gz \
+           file://opie1.patch;patch=1 \
+           file://pro.patch;patch=1 \
+           file://packing.patch;patch=1"
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
-inherit autotools libtool
+inherit autotools libtool qmake-base
 
-FILES=
-FILES_${PN}=/opt/QtPalmtop
+FILES_${PN} = "${palmtopdir}"
 
-QMAKE=${STAGING_BINDIR}/qmake
-QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++
+export QMAKE = "${STAGING_BINDIR}/qmake"
+export MOC = "${STAGING_BINDIR}/moc"
+export UIC = "${STAGING_BINDIR}/uic"
+export exec_prefix = "${STAGING_LIBDIR}/.."
 
-EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
+EXTRA_OECONF = "--prefix=${palmtopdir} --exec-prefix=${palmtopdir}                              \
+                --enable-static --disable-shared --disable-debug                                \
+                --with-javascript=static --enable-qpe --enable-qt-embedded                      \
+                --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR}     \
+                --with-ssl-version=0.9.7c --with-ssl-dir=${STAGING_LIBDIR}/..                   \
+                --with-qt-dir=${STAGING_LIBDIR}/.. --with-qtopia-dir=${STAGING_LIBDIR}/..       "
 
-EXTRA_OECONF = --enable-static --disable-shared --disable-debug --enable-qpe --enable-embedded \
-               --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR} --with-ssl-version=0.9.7c \
-               --with-ssl-dir=${STAGING_DIR}/target --with-qtopia-dir=${STAGING_DIR}/target --prefix=/opt/QtPalmtop --with-javascript=static
-CXXFLAGS+=" -DOPIE_NO_ERASE_RECT_FIX -dOPIE_NEW_MALLOC"
+CXXFLAGS += "-DOPIE_NO_ERASE_RECT_FIX -DOPIE_NEW_MALLOC"
+
 do_compile_prepend() {
 	perl admin/am_edit
 }
