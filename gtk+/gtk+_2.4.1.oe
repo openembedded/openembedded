@@ -5,23 +5,22 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
+           file://no-xwc.patch;patch=1;pnum=0 \
            file://automake-lossage.patch;patch=1 \
            file://gtk+-handhelds.patch;patch=1 \
            file://hardcoded_libtool.patch;patch=1 \
            file://gtk-doc.m4"
 
-inherit autotools  pkgconfig
+inherit autotools pkgconfig flow-lossage
 
 do_configure_prepend() {
 	install -d m4
 	install ${WORKDIR}/gtk-doc.m4 m4/
 }
-
-# gcc-3.4 blows up in gtktext with -frename-registers on arm-linux
-CFLAGS := "${@'${CFLAGS}'.replace('-frename-registers', '')}"
 
 EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-xkb"
 # --disable-cruft
