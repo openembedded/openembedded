@@ -1,0 +1,45 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.7/src/kernel/qkeyboard_qws.cpp~beagle.patch
++++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp
+@@ -350,6 +350,11 @@
+     {   Qt::Key_F12,        0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },  // 90
++#ifdef QT_QWS_BEAGLE
++    {   Qt::Key_F13,	0xffff, 0xffff, 0xffff }, // lightning
++    {   Qt::Key_Up,	0xffff, 0xffff, 0xffff }, // Wheel Up
++    {   Qt::Key_Down,   0xffff, 0xffff, 0xffff }, // Wheel Down
++#endif    
+     {   0,          0xffff  , 0xffff  , 0xffff  }
+ };
+ #endif
+@@ -406,7 +411,7 @@
+     qwsServer->processKeyEvent( unicode, keycode, modifiers, isPress, autoRepeat );
+ }
+ 
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_BEAGLE)
+ #define QT_QWS_AUTOREPEAT_MANUALLY
+ #endif
+ 
+@@ -791,13 +796,15 @@
+ 	bool repeatable = TRUE;
+ 
+ #if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) && !defined(QT_QWS_CUSTOM)
++#warning "Compiling in Keyboard code"
+ 	switch (code) {
+ 	case 0x7a: case 0x7b: case 0x7c: case 0x7d:
+ 	    keyCode = code - 0x7a + Key_F9;
+ 	    repeatable = FALSE;
+ 	    break;
+ 	case 0x79:
+-	    keyCode = Key_SysReq;
++	    qWarning("Keyboard Power Button activated!");
++	    keyCode = Key_F34; // Power Button on Beagle
+ 	    repeatable = FALSE;
+ 	    break;
+ 	case 0x78:

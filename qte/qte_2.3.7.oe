@@ -27,7 +27,7 @@ SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
 SRC_URI_append_corgi	= "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_shepherd	= "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_husky	= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_beagle   = "file://devfs.patch;patch=1 file://beagle.patch;patch=1 "
+SRC_URI_append_beagle   = "file://beagle.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -50,6 +50,10 @@ EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 16,32"
 EXTRA_OEMAKE = "-e"
+EXTRA_OECONF_beagle = "-system-jpeg -system-libpng -system-zlib -no-qvfb \
+		       -no-xft -no-vnc -gif \
+                       -xplatform ${TARGET_OS}-${QTE_ARCH}-g++ \
+		       ${EXTRA_OECONF_CONFIG} -depths 8,16,32 "
 
 #
 # FIXME: Add more here
@@ -63,7 +67,7 @@ EXTRA_DEFINES_simpad	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SIMPA
 EXTRA_DEFINES_corgi     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_beagle	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS"
+EXTRA_DEFINES_beagle	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
