@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 PR = "r6"
 
 inherit gpe
