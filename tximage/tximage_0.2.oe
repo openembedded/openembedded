@@ -12,8 +12,8 @@ SRC_URI = "http://downloads.zaurususergroup.com/community/66.180.235.230/downloa
 inherit palmtop
 
 do_install() {
-        install -d ${D}${palmtopdir}{bin,apps/Applications,pics}
-        install -D -m 755 tximage ${D}${palmtopdir}bin/tximage
-        install -D -m 644 imageviewer.desktop ${D}${palmtopdir}apps/Applications/tximage.desktop
-        cp -a tximage.png ${D}${palmtopdir}pics/
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
+        install -D -m 755 tximage ${D}${palmtopdir}/bin/tximage
+        install -D -m 644 imageviewer.desktop ${D}${palmtopdir}/apps/Applications/tximage.desktop
+        cp -a tximage.png ${D}${palmtopdir}/pics/
 }
