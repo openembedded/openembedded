@@ -1,0 +1,15 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := http://us2.samba.org/samba/ftp/old-versions/samba-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}/source
+
+inherit autotools
+
+do_configure_prepend () {
+	./script/mkversion.sh
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
