@@ -2,12 +2,13 @@ DESCRIPTION = "Driver for the SHARP Zaurus SD/MMC Slot for linux ${PV}"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-PR = "r2"
+PR = "r3"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-SRC_URI = "file://sharp-sdmmc-2.4.18.tar.gz"
-S = "${WORKDIR}/sharp-sdmmc"
+SRC_URI = "file://sd \
+	   file://sdmgr \
+	   file://sdcontrol \
+	   file://sharp_mmcsd_m.o"
+S = "${WORKDIR}"
 
 inherit update-rc.d
 
@@ -15,9 +16,12 @@ INITSCRIPT_NAME = "sd"
 INITSCRIPT_PARAMS = "start 04 2 3 4 5 . stop 96 0 1 6 ."
 
 do_install() {
-	install -d ${D}/
-	cp -a etc lib sbin ${D}/
-	install -m 0644 modules/${MACHINE}.o ${D}/lib/modules/2.4.18-rmk7-pxa3-embedix/kernel/drivers/block/sharp_mmcsd_m.o
+	install -d ${D}/etc/init.d ${D}/${sbindir}
+	install -d ${D}/lib/modules/${PV}/kernel/drivers/block/
+	install -m 0755 ${WORKDIR}/sdmgr ${D}/${sbindir}
+	install -m 0755 ${WORKDIR}/sdcontrol ${D}/${sysconfdir}
+	install -m 0755 ${WORKDIR}/sd ${D}/etc/init.d/
+	install -m 0644 ${WORKDIR}/sharp_mmcsd_m.o ${D}/lib/modules/${PV}/kernel/drivers/block/
 }
 
 FILES_${PN} = "/"
