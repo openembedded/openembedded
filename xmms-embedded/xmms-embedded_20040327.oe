@@ -1,6 +1,6 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "apps"
-DEPENDS = "zlib tremor libmad libid3tag libsidplay"
+DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
