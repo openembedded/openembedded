@@ -1,0 +1,116 @@
+diff -urN qt-2.3.7-orig/src/kernel/qwindowsystem_qws.cpp qt-2.3.7/src/kernel/qwindowsystem_qws.cpp
+--- qt-2.3.7-orig/src/kernel/qwindowsystem_qws.cpp	2003-07-17 02:20:26.000000000 +0100
++++ qt-2.3.7/src/kernel/qwindowsystem_qws.cpp	2004-06-27 23:30:03.000000000 +0100
+@@ -126,7 +126,7 @@
+ static QRect maxwindow_rect;
+ extern Q_EXPORT QRect qt_maxWindowRect;
+ static const char *defaultMouse =
+-#if defined(QT_QWS_CASSIOPEIA) || defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_YOPY) || defined(QWS_CUSTOMTOUCHPANEL)
++#if defined(QT_QWS_CASSIOPEIA) || defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700) || defined(QT_QWS_YOPY) || defined(QWS_CUSTOMTOUCHPANEL)
+     "TPanel"
+ #else
+     "Auto"
+@@ -3067,7 +3067,7 @@
+ void QWSServer::screenSaverSleep()
+ {
+     qt_screen->blank(TRUE);
+-#if !defined(QT_QWS_IPAQ) && !defined(QT_QWS_SL5XXX)
++#if !defined(QT_QWS_IPAQ) && !defined(QT_QWS_SL5XXX) && !defined(QT_QWS_SLC700)
+     d->screensavertimer->stop();
+ #else
+     if ( screensaverinterval ) {
+diff -urN qt-2.3.7-orig/src/kernel/qwsmouse_qws.cpp qt-2.3.7/src/kernel/qwsmouse_qws.cpp
+--- qt-2.3.7-orig/src/kernel/qwsmouse_qws.cpp	2003-07-17 02:20:26.000000000 +0100
++++ qt-2.3.7/src/kernel/qwsmouse_qws.cpp	2004-06-27 23:49:33.000000000 +0100
+@@ -90,6 +90,19 @@
+ #define QT_QWS_TP_MOVE_LIMIT 50
+ #define QT_QWS_TP_JITTER_LIMIT 2
+ #endif
++#elif defined(QT_QWS_SLC700)
++#define QT_QWS_SLC700_RAW
++typedef struct {
++       unsigned short pressure;
++       unsigned short x;
++       unsigned short y;
++       unsigned short millisecs;
++} TS_EVENT;
++#define QT_QWS_TP_SAMPLE_SIZE 10
++#define QT_QWS_TP_MINIMUM_SAMPLES 4 
++#define QT_QWS_TP_PRESSURE_THRESHOLD 500 
++#define QT_QWS_TP_MOVE_LIMIT 50
++#define QT_QWS_TP_JITTER_LIMIT 2
+ #endif
+ 
+ #ifndef QT_QWS_TP_SAMPLE_SIZE
+@@ -576,7 +589,7 @@
+ 	sub[nsub++] = new QAutoMouseSubHandler_intellimouse(fd);
+ 	notify(fd);
+     }
+-#if !defined(QT_QWS_IPAQ) && !defined(QT_QWS_SL5XXX)
++#if !defined(QT_QWS_IPAQ) && !defined(QT_QWS_SL5XXX) && !defined(QT_QWS_SLC700)
+     char fn[] = "/dev/ttyS?";
+     for (int ch='0'; ch<='3'; ch++) {
+ 	fn[9] = ch;
+@@ -1238,7 +1251,7 @@
+     : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0), 
+     numSamples(0), skipCount(0)
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+ #if defined(QT_QWS_IPAQ)
+ # ifdef QT_QWS_IPAQ_RAW
+     if ((mouseFD = open( "/dev/h3600_tsraw", O_RDONLY | O_NDELAY)) < 0) {
+@@ -1248,7 +1261,7 @@
+         qWarning( "Cannot open /dev/h3600_ts (%s)", strerror(errno));
+ 	return;
+     }
+-#elif defined(QT_QWS_SL5XXX)
++#elif defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+ //# ifdef QT_QWS_SL5XXX_TSRAW
+ # if 0
+     if ((mouseFD = open( "/dev/tsraw", O_RDONLY | O_NDELAY)) < 0) {
+@@ -1274,7 +1287,7 @@
+ 
+ QTPanelHandlerPrivate::~QTPanelHandlerPrivate()
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+     if (mouseFD >= 0)
+ 	close(mouseFD);
+ #endif
+@@ -1282,7 +1295,7 @@
+ 
+ void QTPanelHandlerPrivate::readMouseData()
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+     if(!qt_screen)
+ 	return;
+ 
+@@ -1301,7 +1314,7 @@
+ 	uchar *mb = mouseBuf+idx;
+ 	data = (TS_EVENT *) mb;
+ 	if(data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD) {
+-#ifdef QT_QWS_SL5XXX
++#if defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+ 	    samples[currSample] = QPoint( 1000 - data->x, data->y );
+ #else
+ 	    samples[currSample] = QPoint( data->x, data->y );
+@@ -1320,7 +1333,7 @@
+ 
+ 		mousePos = totalMousePos / (sampleCount - 1);
+ 
+-# if defined(QT_QWS_IPAQ_RAW) || defined(QT_QWS_SL5XXX_RAW)
++# if defined(QT_QWS_IPAQ_RAW) || defined(QT_QWS_SL5XXX_RAW) || defined(QT_QWS_SLC700_RAW)
+ 		mousePos = transform( mousePos );
+ # endif
+ 		if(!waspressed)
+@@ -1693,7 +1706,7 @@
+ 	    handler = new QCustomTPanelHandlerPrivate(mouseProtocol,mouseDev);
+ #elif defined(QT_QWS_YOPY)
+ 	    handler = new QYopyTPanelHandlerPrivate(mouseProtocol,mouseDev);
+-#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+ 	    handler = new QTPanelHandlerPrivate(mouseProtocol,mouseDev);
+ #elif defined(QT_QWS_CASSIOPEIA)
+ 	    handler = new QVrTPanelHandlerPrivate( mouseProtocol, mouseDev );

@@ -19,6 +19,7 @@ SRC_URI_append_simpad   = "file://simpad.patch;patch=1 file://devfs.patch;patch=
 SRC_URI_append_corgi    = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 "
 SRC_URI_append_shepherd = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 " 
 SRC_URI_append_husky    = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 " 
+SRC_URI_append_boxer    = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 " 
 SRC_URI_append_h3600    = "file://tslib.patch;patch=1 file://devfs.patch;patch=1 "
 SRC_URI_append_h3900    = "file://tslib.patch;patch=1 file://devfs.patch;patch=1 "
 
