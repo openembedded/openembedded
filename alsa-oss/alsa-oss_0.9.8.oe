@@ -4,7 +4,8 @@ LICENSE="GPL"
 DEPENDS="virtual/libc alsa-lib"
 
 SRC_URI="ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
-	 file://${FILESDIR}/configure.patch"
+	 file://${FILESDIR}/configure.patch;patch=1 \
+	 file://${FILESDIR}/m4.patch;patch=1"
 
 inherit autotools libtool
 
