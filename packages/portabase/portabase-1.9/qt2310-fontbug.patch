@@ -1,0 +1,11 @@
+--- portabase/preferences.cpp.orig	2005-02-13 22:48:10 +0100
++++ portabase/preferences.cpp	2005-02-13 22:48:06 +0100
+@@ -154,7 +154,7 @@
+ {
+     QWidget *appearanceTab = new QWidget(tabs);
+     QVBoxLayout *layout = new QVBoxLayout(appearanceTab);
+-#if defined(Q_WS_QWS)
++#if defined(Q_WS_QWS) && QT_VERSION <= 239
+     sizeFactor = 10;
+ #else
+     sizeFactor = 1;
