@@ -41,6 +41,7 @@ else
 	fi
 	if test "$VERBOSE" != "no"; then echo -n "Populating /dev: "; fi
 	cd /
+	mkdir -p dev/input
 	mkdir -p dev/msys
 	mkdir -p dev/pts
 	mkdir -p dev/vc
