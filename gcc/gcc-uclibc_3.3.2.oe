@@ -29,10 +29,6 @@ FILES_uclibc-libstdc++-dev = \
 	${libdir}/libsupc++.la \
 	${libdir}/libsupc++.a
 
-SRC_URI_append = " file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
-                   file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
-                   file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1"
-
 EXTRA_OECONF := --with-local-prefix=${prefix}/local \
                 --with-gxx-include-dir=${includedir}/c++/${PV}-uclibc \
                 --enable-target-optspace \
@@ -42,6 +38,7 @@ EXTRA_OECONF := --with-local-prefix=${prefix}/local \
                 --enable-languages=c,c++ \
                 --enable-shared \
                 --enable-multilib \
+		--enable-threads=posix \
                 --program-prefix=${TARGET_PREFIX}
 
 gccbuild_do_patch () {

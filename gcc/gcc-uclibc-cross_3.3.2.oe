@@ -15,6 +15,7 @@ EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
                 --enable-languages=c,c++ \
                 --enable-shared \
                 --enable-multilib \
+		--enable-threads=posix \
                 --program-prefix=${TARGET_PREFIX}
 
 export CPPFLAGS =

@@ -1,0 +1,16 @@
+include gcc-uclibc-cross_${PV}.oe
+
+DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc-initial patcher-native
+PROVIDES := virtual/${TARGET_PREFIX}gcc-initial
+
+EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
+                --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+                --enable-target-optspace \
+                --disable-nls \
+                --with-gnu-ld \
+                --disable-__cxa_atexit \
+                --enable-languages=c \
+                --disable-shared \
+		--disable-threads \
+                --enable-multilib \
+                --program-prefix=${TARGET_PREFIX}
