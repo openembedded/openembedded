@@ -2,8 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "libsdl-qpe libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
-PR = "r3"
+DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
+PR = "r4"
 
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=0 \
@@ -76,11 +76,11 @@ do_configure() {
 do_install_append () {
         install -d ${D}/${libdir} ${D}/usr/include ${D}/usr/include/postproc
         install -m 0644 libavcodec/libpostproc/postprocess.h ${D}/usr/include/postproc/
+        oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}/${libdir}
         cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}/usr/lib/libpostproc.so.0.0.0
         cd ${D}/usr/lib
         ln -sf libpostproc.so.0.0.0 libpostproc.so.0
         ln -sf libpostproc.so.0 libpostproc.so
-        oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}/${libdir}
 }
 
 do_stage () {
