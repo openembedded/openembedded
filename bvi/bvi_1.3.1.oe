@@ -1,3 +1,5 @@
+HOMEPAGE = http://bvi.sourceforge.net/
+DESCRIPTION = "binary vi (binary file editor)"
 DEPENDS = virtual/libc ncurses
 RDEPENDS = libc6 libncurses5
 

@@ -1,0 +1,29 @@
+DESCRIPTION="Billiard Game for Opie/Qtopia using libsdl"
+HOMEPAGE=http://www.chipx86.com/projects/billiardz/
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE="GPL"
+RDEPENDS=libqpe1 libsdl
+DEPENDS="virtual/libc libsdl
+
+SRC_URI = http://www.lilo.cx/packages/ipkg/${P}.tar.gz
+
+inherit palmtop
+
+QMAKE_PROFILES = "billiardz.arm.pro"
+EXTRA_QMAKEVARS_POST = "DEFINES-=FPM_INTEL" 
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics/billiardz}
+        install -D -m 0755 ${PN} ${D}/opt/QtPalmtop/bin/${PN}
+        install -D -m 0644 ${PN}.png ${D}/opt/QtPalmtop/pics/${PN}.png
+	cp -a images/*.png ${D}/opt/QtPalmtop/pics/billiardz
+
+	echo "[Desktop Entry] " >${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+	echo "Comment=Billiards for Zaurus" >>${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+	echo "Exec=billiardz" >>${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+	echo "Icon=billiardz" >>${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+	echo "Name=BilliardZ" >>${D}/opt/QtPalmtop/apps/Games/billiardz.desktop
+}

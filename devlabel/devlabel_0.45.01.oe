@@ -1,0 +1,22 @@
+HOMEPAGE = http://linux.dell.com/devlabel/devlabel.html
+DESCRIPTION = "tool for user-define static device labels"
+DEPENDS = virtual/libc e2fsprogs-libs
+RDEPENDS = libc6 e2fsprogs-libs
+
+SRC_URI = http://linux.dell.com/devlabel/permalink/devlabel-0.45.01.tar.gz
+
+do_compile () {
+	set -x
+	${CC} ${CFLAGS} ${LDFLAGS} -o scsi_unique_id scsi_unique_id.c
+	${CC} ${CFLAGS} ${LDFLAGS} -o partition_uuid partition_uuid.c -luuid
+}
+
+do_install () {
+	install -d ${D}/sbin ${D}/${bindir} ${D}/${mandir}/man8 \
+		   ${D}/${sysconfdir}/sysconfig/devlabel.d
+	install -m 755 devlabel ${D}/sbin/devlabel
+	install -m 755 scsi_unique_id ${D}${bindir}/
+	install -m 755 partition_uuid ${D}${bindir}/
+	install -m 644 devlabel.8.gz ${D}${mandir}/man8/
+	install -m 644 sysconfig.devlabel ${D}${sysconfdir}/sysconfig/devlabel
+}

@@ -1,3 +1,5 @@
+HOMEPAGE = http:/ccache.samba.org
+DESCRIPTION = "compiler cache"
 DEPENDS = virtual/libc
 RDEPENDS = libc6
 

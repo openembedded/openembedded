@@ -1,3 +1,5 @@
+HOMEPAGE=http://fife.speech.cs.cmu.edu/flite/
+DESCRIPTION="festival light speech synthesizer"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS=libc6

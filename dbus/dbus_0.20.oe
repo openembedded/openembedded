@@ -1,0 +1,13 @@
+HOMEPAGE = http://www.freedesktop.org/Software/dbus
+DESCRIPTION = "message bus system for applications to talk to one another"
+DEPENDS = virtual/libc expat
+RDEPENDS = libc6 expat
+
+SRC_URI = 'http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
+	   file://${FILESDIR}/cross.patch;patch=1'
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--disable-qt --disable-glib --disable-gtk --disable-tests \
+		--disable-checks --disable-xml-docs --disable-doxygen-docs \
+		--with-xml=expat --without-x'

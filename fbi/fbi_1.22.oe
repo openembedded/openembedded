@@ -1,3 +1,5 @@
+HOMEPAGE = http://bytesex.org/fbi.html
+DESCRIPTION = "frame buffer image viewer"
 DEPENDS = virtual/libc jpeg
 
 SRC_URI := http://bytesex.org/misc/fbi_1.22.tar.gz \
