@@ -23,6 +23,7 @@ EXTRA_OECONF = --disable-debug --enable-cdrom --enable-threads --enable-timers -
 
 do_stage() {
 	oe_soinstall src/.libs/libSDL-1.2.so.0.0.7 ${STAGING_LIBDIR}
+	ln -sf libSDL-1.2.so.0.0.7 ${STAGING_LIBDIR}/libSDL.so
 	install -m 0755 src/main/libSDLmain.a ${STAGING_LIBDIR}/libSDLmain.a
 
 	install -d ${STAGING_INCDIR}/SDL
