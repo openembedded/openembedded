@@ -19,3 +19,7 @@ do_stage () {
 		install -m 0644 libdisplaymigration/$h ${STAGING_INCDIR}/libdisplaymigration/${h}
 	done
 }
+
+do_install() {
+	oe_runmake 'DESTDIR=${D}' install
+}

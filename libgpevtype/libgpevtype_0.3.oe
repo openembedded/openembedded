@@ -19,3 +19,7 @@ do_stage () {
 		install -m 0644 gpe/$h ${STAGING_INCDIR}/gpe/${h}
 	done
 }
+
+do_install() {
+	oe_runmake 'DESTDIR=${D}' install
+}
