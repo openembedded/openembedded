@@ -644,6 +644,8 @@ python __anonymous () {
 		oe.build.exec_func('parse_manifest', d)
 		oe.build.exec_func('read_shlibdeps', d)
 		oe.build.exec_func('read_subpackage_metadata', d)
+	except exceptions.KeyboardInterrupt:
+		raise
 	except Exception, e:
 		oe.error("anonymous function: %s" % e)
 		pass
