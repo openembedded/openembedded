@@ -1,14 +1,13 @@
 LICENSE = GPL
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SECTION = "libs"
 DEPENDS = "x11 xext"
 DESCRIPTION = "X screen saver extension library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xss \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xss"
 S = "${WORKDIR}/Xss"
 
 inherit autotools pkgconfig 
