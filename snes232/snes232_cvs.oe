@@ -1,0 +1,21 @@
+PR = "r2"
+
+RDEPENDS = "kernel-module-serport"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/games/snes232 \
+	file://snes232-2.6.patch;patch=1;pnum=0 \
+	file://Makefile-2.6"
+
+S = "${WORKDIR}/snes232"
+
+inherit module
+
+do_configure() {
+	install -m 0644 ${WORKDIR}/Makefile-2.6 Makefile
+}
+
+do_install() {
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/snes232
+	install snes232.ko ${D}/lib/modules/${KERNEL_VERSION}/snes232/
+}
+
