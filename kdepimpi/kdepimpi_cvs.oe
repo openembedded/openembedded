@@ -1,0 +1,88 @@
+DESCRIPTION = "Korganizer/Pi is a powerful calender and ToDo Tool for Qt/Embedded based Palmtop Environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+LICENSE = "GPL"
+DEPENDS ="virtual/libqpe"
+HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
+PV = "1.9.3-${CVSDATE}"
+
+# Author said that he will tag stable versions in CVS
+# From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.1 version
+# version in CVS is 1.9.2
+
+SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
+file://libkcal.pro.patch;patch=1 \
+file://manager.h.patch;patch=1 \
+file://qinputdialog_inc.patch;patch=1 \
+file://xxportmanager.cpp.patch;patch=1 "
+
+S = "${WORKDIR}/kdepim"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, OBJECTS_DIR=obj/ MOC_DIR=moc/ INCLUDEPATH+=../ LIBS+=-L${S}/dest/ DESTDIR=${S}/dest"
+QMAKE_PROFILES= "all.pro"
+
+# we don't have libopie1 (and ldap?)
+#SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc kabc/converter/opie kabc/formats/binary kabc/plugins/file kabc/plugins/dir kabc/plugins/ldap kabc/plugins/opie korganizer kalarmd kaddressbook/xxport/opie kaddressbook"
+SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc korganizer kalarmd kaddressbook"
+
+# TODO:
+# checking libmailwrapper changes
+# author said that he didn't changed libetpan so we probably can get OE one
+# compile opie mail/pi
+
+
+do_configure_prepend() {
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat ${SUBDIRS}\n" >all.pro
+        for d in ${SUBDIRS}
+        do
+                mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
+        done
+		mkdir "${S}/dest"
+}
+
+do_install() {
+    install -d ${D}/${palmtopdir}/bin \
+               ${D}/${palmtopdir}/lib \
+               ${D}/${palmtopdir}/apps/1Pim \
+               ${D}/${palmtopdir}/pics/kdepim/korganizer/icons16 \
+               ${D}/${palmtopdir}/pics/kdepim/korganizer/iconsmini \
+               ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons16 \
+               ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22 \
+               ${D}/${palmtopdir}/plugins/applets
+
+    install -m 0644 ${S}/bin/kdepim/korganizer/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer
+    install -m 0644 ${S}/bin/kdepim/korganizer/*.wav ${D}/${palmtopdir}/pics/kdepim/korganizer
+    install -m 0644 ${S}/bin/kdepim/korganizer/*.txt ${D}/${palmtopdir}/pics/kdepim/korganizer
+    install -m 0644 ${S}/bin/kdepim/korganizer/icons16/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer/icons16
+    install -m 0644 ${S}/bin/kdepim/korganizer/iconsmini/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer/iconsmini
+    install -m 0644 korganizer/korganizer.desktop ${D}/${palmtopdir}/apps/1Pim/korganizer.desktop
+
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/zone.tab ${D}/${palmtopdir}/pics/kdepim/kaddressbook
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons16/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons16
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
+    install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
+
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
+    do
+        oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
+    done
+
+    install -m 0755 ${S}/dest/kopi ${D}/${palmtopdir}/bin/kopi
+    install -m 0755 ${S}/dest/kapi ${D}/${palmtopdir}/bin/kapi
+
+    for f in libkopialarmapplet
+    do
+        oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/plugins/applets
+    done
+}
+
+PACKAGES = "kopi kapi libmicrokdelibs kopi-applet"
+
+FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/*"
+FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/*"
+FILES_kopi-applet = "${palmtopdir}/plugins/applets/*"
+FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
