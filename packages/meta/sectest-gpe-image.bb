@@ -6,7 +6,7 @@ FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${D
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/v${DISTRO_VERSION}/feed/x11 \
                                 gpe##http://familiar.handhelds.org/releases/v${DISTRO_VERSION}/feed/gpe"
 
-PR = "r2"
+PR = "r4"
 
 export IMAGE_BASENAME = "sectest-gpe-image"
 
@@ -36,7 +36,7 @@ DEPENDS = "task-bootstrap \
 
 export IPKG_INSTALL = "task-bootstrap gpe-task-base \
            	       gpe-task-pim gpe-task-settings \
-	               gpe-task-apps ${GPE_EXTRA_DEPENDS} \
+	               sectest-task-apps ${GPE_EXTRA_DEPENDS} \
 		       ${XSERVER} \
 		       ${GPE_EXTRA_INSTALL}"
 

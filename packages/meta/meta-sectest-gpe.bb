@@ -1,7 +1,7 @@
-PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games 
+PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim sectest-task-apps gpe-task-games 
 DESCRIPTION = "Meta-package for GPE Security Testing Image"
 MAINTAINER = "Bob Davies tyggerbob@rogers.com>"
-PR = "r3"
+PR = "r4"
 
 ALLOW_EMPTY = 1
 
@@ -66,7 +66,7 @@ gpe-task-settings = "\
 RDEPENDS_gpe-task-settings := "${gpe-task-settings}"
 DEPENDS += " ${gpe-task-settings}"
 
-gpe-task-apps = "\
+sectest-task-apps = "\
     gpe-edit \
     gpe-calculator \
     gpe-clock \
@@ -87,8 +87,8 @@ gpe-task-apps = "\
     tcpdump \
     miniclipboard"
 
-RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
-DEPENDS += " ${gpe-task-apps}"
+RDEPENDS_sectest-task-apps := "${sectest-task-apps}"
+DEPENDS += " ${sectest-task-apps}"
 
 
 DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
