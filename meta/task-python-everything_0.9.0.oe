@@ -1,6 +1,6 @@
 DESCRIPTION= "All of Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r2"
+PR = "r3"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
@@ -41,7 +41,10 @@ DEPENDS = "	python-ao 		\
 		python-pysqlite		\
 		python-tlslite		\
 		python-vmaps		\
-		python-vorbis		"
+		python-vorbis		\
+		moin			\
+		plone			\
+		zope"
 RDEPENDS=${DEPENDS}
 
 #fixme add python-pycap once libdnet is in again
