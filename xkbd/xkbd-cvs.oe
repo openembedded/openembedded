@@ -1,0 +1,16 @@
+PV = "0.0cvs${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/xkbd"
+
+SECTION = "x11"
+DEPENDS = "xtst xft xpm"
+PROVIDES = xkbd
+
+inherit autotools pkgconfig libtool
+S = ${WORKDIR}/xkbd
+
+FILES_${PN} = "${bindir} ${datadir}/xkbd ${datadir}/pixmaps ${datadir}/applications"
+
+do_configure_prepend() {
+	./autoconfigure.sh
+}
+
