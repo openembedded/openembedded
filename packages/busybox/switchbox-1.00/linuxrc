@@ -64,11 +64,15 @@ if [ -n "$prefroot" ] ; then
 	     -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
 	else
-	    /bin/echo "Cant find valid rootfs on /dev/$prefroot, using recovery ..."
-	    mounted=
+	    /bin/umount /mnt/newroot
+	    /bin/echo "Cant find valid rootfs on /dev/$prefroot, using jffs2 ..."
+	    mounted=/mnt/jffs2
+	    prefroot=jffs2
 	fi
 
-    elif [ $prefroot = "maintenence" ] ; then
+    fi
+
+    if [ $prefroot = "maintenence" ] ; then
         /bin/dd if=/dev/zero of=/dev/ram1 bs=1k count=12k 2>/dev/null 
         /bin/mkdir /lib
         /bin/ln -s /mnt/jffs2/lib/* /lib
@@ -79,7 +83,7 @@ if [ -n "$prefroot" ] ; then
         /usr/bin/mke2fs -m 0 /dev/ram1 12288
         /bin/mount -t ext2 /dev/ram1 /mnt/newroot
         ( cd /mnt/jffs2 ; /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/newroot )
-	if [ -x /mnt/newroot/bin/init ] && [ -r /mnt/newroot/.unslung ] ; then
+	if [ -r /mnt/newroot/.unslung ] ; then
             /bin/cp /mnt/newroot/home/httpd/html/Management/upgrade.cgi /mnt/newroot/home/httpd/html/Management/upgrade-real.cgi
             /bin/echo "#!/bin/sh" > /mnt/newroot/home/httpd/html/Management/upgrade.cgi
             /bin/echo >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
@@ -92,12 +96,18 @@ if [ -n "$prefroot" ] ; then
             /bin/echo "exec /home/httpd/html/Management/upgrade-real.cgi" \
                 >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
             /bin/echo "Root filesystem will be mounted from /dev/ram1 (a copy of /dev/mtdblock4) ..."
+	elif [ -r /mnt/newroot/.openslug ] ; then
+            /bin/echo "Root filesystem will be mounted from /dev/ram1 (a copy of /dev/mtdblock4) ..."
 	else
-	    /bin/echo "Cant find valid rootfs on ram1, using recovery ..."
+	    /bin/umount /mnt/newroot
+	    /bin/echo "Cant find valid rootfs on /dev/ram1, using recovery ..."
 	    mounted=
+	    prefroot=
 	fi
 
-    elif [ $prefroot = "nfsroot" ] ; then
+    fi
+
+    if [ $prefroot = "nfsroot" ] ; then
 
 	# Should the network drivers come from payload or the jffs2?
 	if ( [ "$length" != "FFFFFFFF" ] ); then
@@ -125,11 +135,15 @@ if [ -n "$prefroot" ] ; then
 	    /bin/echo "Root filesystem will be mounted from a NFS root ..."
 	    mounted=/mnt/newroot
 	else
-	    /bin/echo "Cant find valid NFS rootfs, using recovery ..."
-	    mounted=
+	    /bin/umount /mnt/newroot
+	    /bin/echo "Cant find valid NFS rootfs, using jffs2 ..."
+	    mounted=/mnt/jffs2
+	    prefroot=jffs2
 	fi
 
-    else
+    fi
+
+    if [ $prefroot = "jffs2" ] ; then
     	if  [ -L /mnt/jffs2/sbin/init -o -x /mnt/jffs2/sbin/init -o \
 	      -L /mnt/jffs2/bin/init  -o -x /mnt/jffs2/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
@@ -165,21 +179,10 @@ if [ -n "$mounted" ] ; then
     exec /usr/sbin/chroot . $runboot  < dev/console > dev/console 2>&1
 fi
 
-#if [ -z "$mounted" ] ; then
-#
-#    /bin/umount /mnt/jffs2
-#    if  [ -L /mnt/jffs2/sbin/init -o -x /mnt/jffs2/sbin/init -o \
-#          -L /mnt/jffs2/bin/init  -o -x /mnt/jffs2/bin/init ] ; then
-#        /bin/echo "5" > /proc/sys/kernel/panic
-#	/bin/echo "Root filesystem will be mounted from /dev/ram0 ..."
-#	/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
-#    fi
-#fi
-
 if [ -z "$mounted" ] ; then
     /bin/echo "Root filesystem cannot be found - dropping into shell ..."
 
-    if ( [ "$length" != "FFFFFFFF" ] ); then
+    if ( [ -x /sbin/telnetd -a "$length" != "FFFFFFFF" ] ); then
 	/bin/dd if=$device bs=2 skip=2056 2>/dev/null | /bin/tar zxvf -
 	/sbin/insmod ixp400
 	/sbin/insmod ixp425_eth

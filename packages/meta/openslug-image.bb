@@ -13,6 +13,7 @@ DEPENDS = "base-files base-passwd-3.5.7 \
         sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth openslug-init \
         ipkg-collateral ipkg ipkg-link \
+	cpio findutils e2fsprogs \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
 IPKG_INSTALL = "base-files base-passwd \
@@ -20,6 +21,8 @@ IPKG_INSTALL = "base-files base-passwd \
         update-modules sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth  openslug-init \
         ipkg-collateral ipkg ipkg-link \
+	cpio findutils e2fsprogs-mke2fs \
+	e2fsprogs-fsck e2fsprogs-e2fsck \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk
