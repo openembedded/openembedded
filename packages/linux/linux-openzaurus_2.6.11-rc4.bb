@@ -52,12 +52,10 @@ file://defconfig-collie \
 file://defconfig-poodle \
 file://defconfig-tosa "
 
-SRC_URI_append_tosa = "http://www.do13.in-berlin.de/openzaurus/nand-readid.patch;patch=1"
-SRC_URI_append_tosa = "http://www.do13.in-berlin.de/openzaurus/multiple-scoop-devices.patch;patch=1"
-SRC_URI_append_corgi = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
-SRC_URI_append_shepherd = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
-SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
-SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
+SRC_URI_append_tosa = " http://www.do13.in-berlin.de/openzaurus/nand-readid.patch;patch=1 \
+                       http://www.do13.in-berlin.de/openzaurus/multiple-scoop-devices.patch;patch=1"
+SRC_URI_append_c7x0 = " http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
+SRC_URI_append_collie = " http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
 
 
 S = "${WORKDIR}/linux-2.6.10"
@@ -102,11 +100,7 @@ ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
 
 do_configure() {
 
-	if [ "${MACHINE}" == "shepherd" -o "${MACHINE}" == "husky" ]; then
-	    install -m 0644 ${WORKDIR}/defconfig-corgi ${S}/.config || die "No default configuration for ${MACHINE} available."
-	else
-	    install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-	fi
+	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
 	if [ "${MACHINE}" == "collie" ]; then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
