@@ -30,6 +30,8 @@ INCLUDEPATH+=../ \
 OBJECTS_DIR=obj/ MOC_DIR=moc/ \
 DESTDIR=${S}/dest \
 LIBS+=-L${S}/dest/ \
+LIBS-=-lzlib \
+LIBS+=-lz \
 "
 # That changes will be needed for KMicroMail/PI to get it build with OE libs
 #
@@ -37,7 +39,7 @@ LIBS+=-L${S}/dest/ \
 
 QMAKE_PROFILES= "all.pro"
 
-SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
+SUBDIRS="qtcompat libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
         kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \
         kabc/formats/binary kabc/plugins/qtopia \
         gammu/emb/common \
@@ -58,7 +60,7 @@ do_compile() {
 
 do_configure_prepend() {
         mv ${S}/kabc/formats/binary/kabcformat_binaryE.pro ${S}/kabc/formats/binary/binaryE.pro
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat ${SUBDIRS}\n" >all.pro
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
         for d in ${SUBDIRS}
         do
             if [ -f ${d}/`basename ${d}`E.pro ]; 
@@ -66,6 +68,32 @@ do_configure_prepend() {
                 mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
             fi
         done
+}
+
+HEADERS_DIRS = "qtcompat \
+microkde \
+microkde/kdecore \
+microkde/kdeui \
+microkde/kio \
+microkde/kresources \
+microkde/kutils \
+microkde/opie2 \
+kabc \
+libkcal \
+libkdepim "
+
+do_stage() {
+
+for dir in ${HEADERS_DIRS};
+do
+    install -d ${STAGING_INCDIR}/$dir
+    install -m 0644 ${S}/$dir/*.h ${STAGING_INCDIR}/$dir/
+done
+
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
+    do
+        oe_libinstall -so -C ${S}/dest/ $f ${STAGING_LIBDIR}
+    done
 }
 
 do_install() {
