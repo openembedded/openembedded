@@ -1,8 +1,0 @@
-inherit gpe
-
-DEPENDS = "libgpewidget gnome-vfs dbus"
-SECTION = "gpe"
-RDEPENDS = "gpe-icons"
-DESCRIPTION = "GPE file manager"
-
-FILES_${PN} += " ${datadir}/gpe"

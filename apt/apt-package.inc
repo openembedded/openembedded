@@ -59,14 +59,14 @@ FILES_${PN} = "${bindir}/apt-cdrom ${bindir}/apt-get \
 	       ${localstatedir} ${sysconfdir} \
 	       ${libdir}/dpkg"
 FILES_${PN}-utils = "${bindir}/apt-sortpkgs ${bindir}/apt-extracttemplates"
-FILES_${PN}-doc = "${@get_files_apt_doc(d, oe, oe.data.getVar('apt-manpages', d, 1))} \
+FILES_${PN}-doc = "${@get_files_apt_doc(d, oe, bb.data.getVar('apt-manpages', d, 1))} \
 		   ${datadir}/doc/apt"
-FILES_${PN}-utils-doc = "${@get_files_apt_doc(d, oe, oe.data.getVar('apt-utils-manpages', d, 1))}"
+FILES_${PN}-utils-doc = "${@get_files_apt_doc(d, oe, bb.data.getVar('apt-utils-manpages', d, 1))}"
 FILES_${PN}-dev = "${libdir}/libapt*.so"
 
 do_install () {
-	${@get_commands_apt_doc(d, oe, oe.data.getVar('apt-manpages', d, 1))}
-	${@get_commands_apt_doc(d, oe, oe.data.getVar('apt-utils-manpages', d, 1))}
+	${@get_commands_apt_doc(d, oe, bb.data.getVar('apt-manpages', d, 1))}
+	${@get_commands_apt_doc(d, oe, bb.data.getVar('apt-utils-manpages', d, 1))}
 	install -d ${D}/${bindir}
 	install -m 0755 bin/apt-cdrom ${D}/${bindir}/
 	install -m 0755 bin/apt-get ${D}/${bindir}/

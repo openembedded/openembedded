@@ -1,2 +1,0 @@
-DEPENDS = "unslung-standard-image unslung-able-image"
-EXCLUDE_FROM_WORLD = "1"

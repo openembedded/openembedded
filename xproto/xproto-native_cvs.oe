@@ -1,4 +1,0 @@
-SECTION = "unknown"
-include xproto_cvs.oe
-inherit native
-PROVIDES = ""

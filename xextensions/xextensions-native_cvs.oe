@@ -1,4 +1,0 @@
-SECTION = "unknown"
-include xextensions_cvs.oe
-inherit native
-PROVIDES = ""

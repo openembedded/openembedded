@@ -1,4 +1,0 @@
-SECTION = "unknown"
-include xproto_${PV}.oe
-inherit native
-PROVIDES = ""

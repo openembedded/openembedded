@@ -1,4 +1,0 @@
-SECTION = "x11/base"
-include x11_${PV}.oe
-
-EXTRA_OECONF = "--disable-xcms --disable-xlocale --disable-xkb"

@@ -1,4 +1,0 @@
-SECTION = "unknown"
-include xext_${PV}.oe
-inherit native
-DEPENDS = "x11-native xextensions-native"
