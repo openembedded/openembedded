@@ -17,7 +17,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://sharp_char.h \
 	   file://switches.h "
 
-SRC_URI_append_simpad   = "file://simpad.patch;patch=1 file://devfs.patch;patch=1 "
+SRC_URI_append_simpad   = "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
 SRC_URI_append_h3600    = "file://devfs.patch;patch=1 "
 SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
 
