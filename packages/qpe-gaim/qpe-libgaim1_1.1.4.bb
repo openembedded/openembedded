@@ -1,7 +1,7 @@
 DESCRIPTION = "A multi protocol instant messager library, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/applications"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "openssl glib-2.0"
+DEPENDS = "openssl glib-2.0 gnutls"
 RDEPENDS = "libgaim-plugins"
 LICENSE = "GPL"
 HOMEPAGE = "http://gaim.sourceforge.net/"
@@ -19,7 +19,8 @@ EXTRA_OE_CONF = "--disable-audio --disable-gtkspell --disable-perl \
 		 --disable-screensaver --disable-sm --disable-glibtest \
 		 --disable-gtktest --disable-startup-notification \
 		 --disable-gevolution --disable-aotest --disable-audiofiletest \
-		 --disable-x --without-x --without-gtk --disable-gtk "
+		 --disable-x --without-x --without-gtk --disable-gtk \
+		 --enable-gnutls=y"
 
 CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0"
 
