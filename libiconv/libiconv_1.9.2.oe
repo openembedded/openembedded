@@ -5,7 +5,6 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 MAINTAINER = "That Crazy fool emte <emte@labotomy.net>"
 NOTES = "Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8"
-DEPENDS = "libiconv-native"
 PROVIDES = "virtual/libiconv"
 PR = "r2"
 
