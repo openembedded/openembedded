@@ -15,9 +15,10 @@ SRC_URI = "${GPE_MIRROR}/gpe-conf-${PV}.tar.gz \
 # disable wifi support, enable limited capabilities appmgr interface
 CPPFLAGS_append = " -D APPMGR_INTERFACE -DDISABLE_XRANDR -DIMG_HEIGHT=200 -DIMG_WIDTH=200"
 
-do_configure_prepend () {
-	install ${WORKDIR}/netbook.png ${S}/pixmaps/
-}
+# Should this file have been put in OE?
+#do_configure_prepend () {
+#	install ${WORKDIR}/netbook.png ${S}/pixmaps/
+#}
 
 do_compile () {
 	oe_runmake PREFIX=${prefix}
