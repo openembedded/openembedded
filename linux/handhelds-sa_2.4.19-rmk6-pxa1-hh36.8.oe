@@ -2,7 +2,7 @@ DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices.
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
 
-TARGET_ARCH = "ipaqsa"
+PACKAGE_ARCH = "ipaqsa"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 
@@ -13,8 +13,6 @@ SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=linux/kernel;tag=${@'K
 S = "${WORKDIR}/kernel"
 
 inherit kernel
-
-KERNEL_ARCH = "arm"
 
 K_MAJOR = "${@oe.data.getVar('PV',d).split('-')[0].split('.')[0]}"
 K_MINOR = "${@oe.data.getVar('PV',d).split('-')[0].split('.')[1]}"
