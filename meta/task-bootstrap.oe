@@ -1,13 +1,13 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r5"
+PR = "r6"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ipkg ipkg-link initscripts modutils netbase \
-	resolvconf sysvinit tinylogin putty lrzsz portmap \
+	resolvconf sysvinit tinylogin lrzsz portmap \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
@@ -17,5 +17,5 @@ RDEPENDS = 'base-files base-passwd busybox \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
-RRECOMMENDS = 'dropbear lrzsz putty portmap \
+RRECOMMENDS = 'dropbear lrzsz portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
