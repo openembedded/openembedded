@@ -4,7 +4,8 @@ LICENSE = "${PN}"
 LICENSE_HOMEPAGE = "http://www.intel.com/design/network/swsup/ixp400AccessLibrary-1_4.htm"
 SRC_URI = "http://www.intel.com/design/network/swsup/ixp400AccessLibrary-1_4.zip \
 	   http://www.wnk.at/ixp400_accesslib_kernel26/data/patch_accesslib_kernel26_20040811.diff;patch=1 \
-	   file://badpaths.patch;patch=1"
+	   file://badpaths.patch;patch=1 \
+	   file://build-timing-annoyance.patch;patch=1"
 S = "${WORKDIR}/ixp400_xscale_sw"
 PR = "r1"
 
@@ -14,6 +15,7 @@ inherit module
 
 #LINUX_MACH_CFLAGS := -D__LINUX_ARM_ARCH__=5 -mcpu=xscale -mtune=xscale
 CFLAGS = "-fno-common -D__KERNEL__ -DMODULE -D__linux -DCPU=33 -DXSCALE=33 \
+	  -D__LINUX_ARM_ARCH__=5 \
 	  -I${S}/src/linux -I${S}/src/include \
 	  ${BUILD_OPTIMIZATION} \
 	  -I${STAGING_KERNEL_DIR}/include"
@@ -34,7 +36,7 @@ do_compile () {
 do_stage () {
 	install -d ${STAGING_INCDIR}/linux/ixp4xx-csr
 	install -m 0644 src/include/*.h ${STAGING_INCDIR}/linux/ixp4xx-csr/
-	cp -r --dereference src/linux/* ${STAGING_INCDIR}/linux/ixp4xx-csr/
+	cp -rf --dereference src/linux/* ${STAGING_INCDIR}/linux/ixp4xx-csr/
 }
 
 do_install () {

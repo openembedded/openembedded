@@ -1,0 +1,249 @@
+UNSLUNG-2.x family release README
+
+Unslung is a replacement firmware image for the NSLU2 which is designed
+to allow you to mount the root filesystem from an external disk,
+without changing the standard product functionality.
+
+This is intended to be a way of distributing and loading new packages
+for the NSLU2, with minimal changes to the standard user interface and
+firmware.
+
+The changes in the UNSLUNG 2.x firmware from the standard Linksys
+2.3R25 can be found at:
+
+	http://www.nslu2-linux.org/wiki/Unslung/UnslungStandard
+
+For more information about the Unslung firmware, including details on
+how to build it from source code yourself, look at:
+
+	http://www.nslu2-linux.org/wiki/Unslung
+
+PRE-INSTALLATION CONSIDERATIONS
+
+1)  It is strongly recommended that you test telnet Redboot access first.
+    See http://www.nslu2-linux.org/wiki/HowTo/TelnetIntoRedBoot
+2)  It is strongly recommended you select a 'virgin' disk for unslinging;
+    that is a disk that empty; or that can be reformatted.  It is
+    absolutely required that the disk is (or has previously been)
+    formatted by the NSLU2.  It is possible to upgrade from Unslung 1.x
+    to Unslung 2.x without reformatting your disk.  The unsling script
+    will not touch anything in /unslung or /opt, so make sure all your
+    file modifications are in those directories, as you were warned
+    in the README for Unslung 1.x :-)
+ 
+INSTALLATION DETAILS
+
+1) Make sure your NSLU2 is working properly.
+2) Flash unslung-standard-2.x.img as you normally would flash new firmware.
+3) Verify your NSLU2 is working normally at this point.
+4) Make sure that you do *not* have a disk plugged in when you reboot to
+   perform the next part of the installation.
+
+'UNSLINGING' DETAILS
+
+0) Note that this only has to be done when you update the firmware.
+   Also note that you should not have a disk plugged in at this stage.
+1) Enable telnet by going to http://192.168.1.77/Management/telnet.cgi, 
+   and press the enable button.
+2) Telnet into the NSLU2 using the username root and password uNSLUng.
+3) Identify which drive you wish you "unsling", and plug it in.
+   Wait a minute or two while the disk is mounted.  If the disk has not
+   been previously formatted on the NSLU2, then now is the time to do
+   that.  Make sure that the drive is recognised in the web interface.
+4) In the telnet session, run "/sbin/unsling" and watch the ramdisk files
+   be copied to your disk. The files from the ramdisk will be copied to
+   the "conf" partition, not the "data" partition.
+5) Note that unsling will not change the password on your disk, so if
+   you had previously changed the password on a disk, then your password
+   will not be changed.
+6) Reboot.
+
+Congratulations, you're now Unslung!  You should have an extra 10M of free
+memory to use for other things.
+
+Make sure you add an entry to the "The Unslung 2.x" table in the Yahoo
+group.  Just use the next free integer for your Unslung number.
+
+If you make no further changes, your NSLU2 will continue to operate
+normally.  But to customize things, you'll be downloading packages and
+adding stuff to the /unslung directory on the new hard drive root
+using diversion scripts.
+
+POST-INSTALLATION DETAILS
+
+Diversion scripts go into /unslung.  You can divert as many or as few 
+scripts as you like.  Simply add the name of the standard rc script 
+into /unslung and it will be run.
+
+For example, I have a script /unslung/rc.local:
+
+#! /bin/sh
+/opt/bin/do_foo
+return 1
+
+That will run at the beginning of the normal /etc/rc.d/rc.local, and then 
+the rest of the factory rc.local will be executed.  If I do NOT want to run
+the factory rc.local, my script would be
+
+#!/bin/sh
+/opt/bin/do_foo
+return 0
+
+That is, if the diversion script returns with something other than 0, it will
+run the rest of the factory script.  
+
+Note that any variable definitions or function declarations are allowed to
+happen before the diversion script is called.  This allows you to use the
+variables and functions defined by the factory script.
+
+PACKAGE INSTALLATION 
+
+1)  Run "ipkg update" on the NSLU2.
+2)  Run "ipkg list" to see the available packages.
+3)  Run "ipkg install <package-name>" to install them.
+4)  Note that if you upgrade an existing 1.11-beta disk, all your
+    downloaded packages will still be on your hard disk and should work as
+    before, but the ipkg system will probably have forgotten what you have
+    downloaded.  You can re-install any you need to by typing
+    "ipk install -force-overwrite <package>".
+
+ADDITIONAL INFORMATION:
+
+1)  If you wish to see the contents of the ramdisk, temporarily make a 
+    directory called /initrd in your new hard drive /, then the ramdisk 
+    will not be dismounted.  You will not see a RAM benefit if you do this,
+    so use with caution.  After you're done looking at the contents of the
+    ramdisk, unmount it and remove the initrd directory for RAM savings on 
+    the next reboot.
+
+2)  The linuxrc is written in such a way that if a known good unslung disk
+    is NOT attached, it will revert to failsafe booting from ramdisk.
+
+3)  There is a version check mechanism which tags your unslung hard disk
+    at a certain firmware version (including the unslung version) and
+    will not boot from it if the versions do not match.  When you flash a
+    new version of unslung, then you must re-run unsling to update the
+    root disk (and that's when you check your diversion scripts to make
+    sure they are still compatible with the new firmware version).
+
+4)  The unsling script will never touch any files under /unslung or /opt,
+    so please store all your additional files there.  However, any existing
+    files that you modify in any other of the standard directories will
+    be overwritten when you next update the firmware and unsling the disk.
+    If you need to modify a file in /etc for example, then write a
+    diversion script which does it on each boot (perhaps by symlinking
+    it to a file in /opt/etc which will not be touched by unsling).
+
+5)  The diversion of startup scripts is done at the lowest granularity,
+    so you can, for instance, just divert the rc.xinetd script if you
+    want, and leave all the others unchanged.
+
+6)  The diversion mechanism allows you to add to, or replace, the Linksys
+    script functionality.
+
+7)  The /sbin/unsling script can take a new version of the Linksys
+    ramdisk, and update your unslung hard disk root filesystem from
+    that.  This makes sure that unslung can take advantage of any new
+    Linksys features.  As noted in item #4, if you have modified any
+    of the files from the Linksys ramdisk, then they will be overwritten.
+    Keep your modifications in /unslung and /opt and they will be safe.
+
+8)  Note that telnet is not enabled by default - there is an openssh
+    package available to replace telnet access with secure shell
+    access.  The rationale behind not enabling it by default is to
+    ensure that an unslung NSLU2 without a hard disk attached has the
+    same network footprint as the standard firmware.
+
+9)  This simple diversion script will enable telnet on boot
+   
+    # /unslung/rc.xinetd 
+    #! /bin/sh
+    echo "telnet  stream  tcp     nowait  root    /usr/sbin/telnetd" > /etc/inetd.conf
+    # Additional lines must append (using >>), ie:
+    # echo "ftp   stream  tcp     nowait  root    /usr/sbin/ftpd -a=passwd" >> /etc/inetd.conf
+    return 1
+
+10) Note that the PATH is set so that downloadable packages do not
+    override the factory executables.  This is so that a package
+    can't break the standard functionality.  You can use a diversion
+    script or a .profile in the /root directory to change the PATH
+    if you would prefer to take the chance and get a different
+    behaviour.
+
+11) The Unslung firmware will automatically execute any scripts
+    which are in /opt/etc/init.d - and this is where any packages
+    put their startup scripts so that they execute on each boot.
+
+CHANGELOG:
+
+1.11:
+
+First public release
+
+1.12:
+
+Added a symlink to slingbox for gzip.  Added flashfs (as simple utility for preserving
+user files across hard disk formats during beta testing).
+
+1.13:
+
+Added LD_LIBRARY_PATH to /etc/profile (only works for telnet and ssh
+access, not for serial or diversion scripts).
+
+1.14:
+
+Added Unslung Doc link to the User Guide page.
+
+2.3:
+
+Moved development to OpenEmbedded.
+
+2.4:
+
+Updated to the latest ipk binary instead of the simple script.
+
+2.5:
+
+Added the real wget (instead of using the busybox version).  This is
+so we can support .netrc files for commercial packages.
+
+2.6:
+
+Fixed the unsling script so it removes conflicting files on an upgrade.
+
+2.7:
+
+Began development of the -able variant.
+
+2.8:
+
+Added the patch for genesys enclosures.
+
+2.9:
+
+Reorganised the various variants into a more consistent scheme.
+
+2.10:
+
+Added the ext3flash-on-disk1 functionality.
+
+2.11:
+
+Added the README to /opt/doc.
+
+2.12:
+
+First public release of 2.x firmware.
+
+3.1:
+
+Added jffs2 functionality.
+
+3.2:
+
+Incorporated switchbox functionality.
+
+3.3:
+
+Added ramdisks for /dev and /var to reduce internal flash writes.
+

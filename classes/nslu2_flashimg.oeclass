@@ -6,10 +6,14 @@ nslu2_pack_image () {
 			${STAGING_LIBDIR}/nslu2-binaries/switchbox.ext2.gz \
 			${DEPLOY_DIR_IMAGE}/slug/
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${IMAGE_BASENAME} ${DEPLOY_DIR_IMAGE}/slug/vmlinuz
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug/ramdisk.ext2.gz
+	if [ "${NSLU2_BUILD_RAMDISK_FIRMWARE}" == "1" ] ; then
+	  install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug/ramdisk.ext2.gz
+	fi
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
 	cd ${DEPLOY_DIR_IMAGE}/slug
-	slugimage -p -r Ramdisk:ramdisk.ext2.gz -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ramdisk.img
+	if [ "${NSLU2_BUILD_RAMDISK_FIRMWARE}" == "1" ] ; then
+	  slugimage -p -r Ramdisk:ramdisk.ext2.gz -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ramdisk.img
+	fi
 	slugimage -p -r Ramdisk:switchbox.ext2.gz,Flashdisk:flashdisk.jffs2 -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img
 	rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
 	rm -rf ${DEPLOY_DIR_IMAGE}/slug

@@ -24,7 +24,6 @@ do_ixp425_c_patch_unpack () {
 	install -m 0644 ${DL_DIR}/ixp425_eth.c.patch ${WORKDIR}/
 }
 
-#addtask ixp425_c_patch_unpack after do_unpack before do_patch
 addtask ixp425_c_patch_unpack after do_unpack before do_pre_patch
 
 do_pre_patch () {
@@ -44,5 +43,5 @@ do_compile () {
 
 do_install () {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net
-	install -m 0644 ixp425_eth.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/
+	install -m 0644 ixp425_eth.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/
 }
