@@ -1,0 +1,27 @@
+DESCRIPTION = "A PyQt-optimized Python Quicklauncher for Qt/Embedded based Palmtop Environments"
+SECTION = "devel/python"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+RDEPENDS = "python-pyqt"
+PR = "ml1"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/pyquicklauncher;date=${CVSDATE}"
+S = "${WORKDIR}/pyquicklauncher"
+
+inherit distutils
+
+do_compile() {
+	true
+}
+
+#
+# FIXME: Launch during postinstall
+#
+
+do_install() {
+	install -d ${D}/${libdir}/python2.3/
+	install -m 0755 quicklauncher.py ${D}/${libdir}/python2.3/
+	install -d ${D}/${libdir}/python2.3/site-packages/quicklauncher/
+	install -m 0755 testapp.py ${D}/${libdir}/python2.3/site-packages/quicklauncher/
+}
+ 
+
