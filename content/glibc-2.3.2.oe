@@ -1,12 +1,14 @@
 DESCRIPTION="GNU C Library"
 LICENSE="LGPL"
 SECTION="libs"
-DEPENDS="virtual/kernel-header"
+DEPENDS=""
 RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 
-SRC_URI="ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz"
+SRC_URI="ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
+	 ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
+	 http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"
 SRC_URI_append=' file://${FILESDIR}/noinfo.patch;patch=1'
 SRC_URI_append=' file://${FILESDIR}/10_cvs.patch;patch=1'
 SRC_URI_append=' file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0'
@@ -65,7 +67,7 @@ PROVIDES=virtual/libc
 
 S="${WORKDIR}/${P}"
 builddir="${WORKDIR}/build-${SYS}"
-EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${STAGING_DIR}/target/include --without-cvs --enable-kernel=2.4.6"
+EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${WORKDIR}/linux/include --without-cvs --enable-kernel=2.4.6"
 EXTRA_OEMAKE=
 
 PACKAGES="libc6"
@@ -77,6 +79,9 @@ do_unpack() {
 	base_do_unpack $@
 	test -d ${S}
 	mv ${WORKDIR}/linuxthreads{,_db} ${S}/
+# kernel headers
+	cp -a ${FILESDIR}/{version,autoconf}.h ${WORKDIR}/linux/include/linux/
+	ln -sf asm-${ARCH} ${WORKDIR}/linux/include/asm
 }
 
 do_compile() {
@@ -97,9 +102,14 @@ do_stage() {
 		${STAGING_LIBDIR}/libc.so
 	mv ${STAGING_LIBDIR}/libpthread.so ${STAGING_LIBDIR}/libpthread-old.so
 	cat ${STAGING_LIBDIR}/libpthread-old.so | sed -e's,/lib/,,g' > ${STAGING_LIBDIR}/libpthread.so
+	cp -a ${WORKDIR}/linux/include/linux ${STAGING_DIR}/target/include/
+	cp -a ${WORKDIR}/linux/include/asm-${ARCH} ${STAGING_DIR}/target/include/
+	ln -sf asm-${ARCH} ${STAGING_DIR}/target/include/asm
 }
 
 do_install() {
 	set -e
 	oe_runmake -C ${builddir} install_root=${D} install
+	cp -a ${WORKDIR}/linux/include/linux ${D}/${includedir}/
+	cp -a ${WORKDIR}/linux/include/asm-${ARCH} ${D}/${includedir}/asm
 }
