@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.9+cvs-${CVSDATE}"
-PR = "r4"
+PR = "r5"
 APPNAME = "qpe"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
