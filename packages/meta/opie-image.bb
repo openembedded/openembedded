@@ -31,7 +31,13 @@ merge_feeds() {
 
 	if ! test -z "${FEED_URIS}"
 	then
-
+		# Die gracefully if ipkg-collateral failed
+		if ! test -e "${IMAGE_ROOTFS}/etc/ipkg.conf"
+		then
+			echo "[${IMAGE_ROOTFS}/etc/ipkg.conf] is missing!"
+			exit 1
+		fi
+		
 		# comment out existing feed-sources inserted by ipkg-collateral
 		cat ${IMAGE_ROOTFS}/etc/ipkg.conf | sed "s/^src\ /#src\ /" > ${IMAGE_ROOTFS}/etc/ipkg.conf_
 		rm ${IMAGE_ROOTFS}/etc/ipkg.conf && mv ${IMAGE_ROOTFS}/etc/ipkg.conf_ ${IMAGE_ROOTFS}/etc/ipkg.conf
