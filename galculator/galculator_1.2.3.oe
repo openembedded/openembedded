@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 
 inherit autotools pkgconfig gconf
 
@@ -12,9 +12,9 @@ PRIORITY = "optional"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
         file://desktop-categories.patch;patch=1 \
 	file://gnome-calc2.png \
-        file://Makefile.am.patch;patch=1" 
+        file://Makefile.am.patch;patch=1 \
+        file://src-ui.c.patch;patch=1;pnum=0" 
 
-#EXTRA_OECONF = ""
 
 LDFLAGS += '-Wl,--export-dynamic'
 
@@ -22,4 +22,3 @@ do_install_append () {
         mkdir -p ${D}${datadir}/pixmaps
         install -m 0644 ${WORKDIR}/gnome-calc2.png ${D}${datadir}/pixmaps/gnome-calc2.png
 }
-
