@@ -1,0 +1,11 @@
+include bison_${PV}.oe
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/bison-${PV}"
+S = "${WORKDIR}/bison-${PV}"
+
+inherit native autotools
+
+do_stage() {
+	install -m 0755 bison ${STAGING_BINDIR}/
+	ln -sf ./bison ${STAGING_BINDIR}/yacc
+}
