@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r11"
+PR = "r12"
 
 inherit gpe
 
