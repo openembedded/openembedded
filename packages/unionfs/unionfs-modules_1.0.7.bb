@@ -1,4 +1,4 @@
 include unionfs-modules.inc
 include unionfs_${PV}.inc
 
-PR = "r2"
+PR = "r3"

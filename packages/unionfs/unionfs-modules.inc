@@ -2,15 +2,27 @@ unionutils = "unionctl uniondbg"
 
 include unionfs.inc
 inherit module
-CFLAGS =+ "-D__KERNEL__ -DMODULE -I${STAGING_KERNEL_DIR}/include"
+
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' 'LD=${KERNEL_LD}' \
 		'KERNELVER=${KERNEL_VERSION}' \
 		'LINUXSRC=${STAGING_KERNEL_DIR}' \
 		'CROSS_COMPILE=${TARGET_PREFIX}' \
-		'OS=${TARGET_OS}'"
+		'OS=${TARGET_OS}' \
+		${@get_flags(d, bb)}"
+
+KCFLAGS = "-D__KERNEL__ -DMODULE -DFISTGEN \
+	   -DUNIONFS_UNSUPPORTED -DNODEBUG \
+	   -I. -I${STAGING_KERNEL_DIR}/include \
+	   ${CFLAGS}"
+
+def get_flags(d, bb):
+	ret = ""
+	if bb.data.getVar('KERNEL_OBJECT_SUFFIX', d, 1) == '.ko':
+		return "'EXTRA_CFLAGS=%s'" % bb.data.getVar('KCFLAGS', d, 1)
+	return "'CFLAGS=%s'" % bb.data.getVar('KCFLAGS', d, 1)
 
 do_compile () {
-	unset CFLAGS LDFLAGS
+	unset LDFLAGS
 	oe_runmake unionfs${KERNEL_OBJECT_SUFFIX}
 }
 
