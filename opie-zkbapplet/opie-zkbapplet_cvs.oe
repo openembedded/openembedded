@@ -27,9 +27,9 @@ do_install() {
         install -d ${D}${palmtopdir}/pics/
         install -d ${D}${palmtopdir}/share/zkb/
         install -m 0644 ${WORKDIR}/share/zkb/*xml* ${D}${palmtopdir}/share/zkb/
+	install -m 0644 ${WORKDIR}/share/zkb/zkb.xml.sample ${D}${palmtopdir}/share/zkb/zkb.xml
         install -d ${D}${palmtopdir}/bin
         install -m 0755 ${S}/keyz-cfg ${D}${palmtopdir}/bin/
         install -d ${D}${palmtopdir}/apps/Settings
         install -m 0644 ${WORKDIR}/apps/Settings/keyz-cfg.desktop ${D}${palmtopdir}/apps/Settings/
 }
-

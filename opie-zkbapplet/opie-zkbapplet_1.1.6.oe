@@ -18,12 +18,6 @@ S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-pkg_postinst() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-test -f $OPIEDIR/share/zkb/zkb.xml || cp $OPIEDIR/share/zkb/zkb.xml.sample $OPIEDIR/share/zkb/zkb.xml
-}
-
 do_install() {
         install -d ${D}${palmtopdir}/pics/
         install -d ${D}${palmtopdir}/share/zkb/
