@@ -47,7 +47,7 @@ FILES_${PN}-doc = "${infodir} \
 		   ${mandir} \
 		   ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://${FILESDIR}/config.sub.patch;patch=1 \
 	   file://${FILESDIR}/empty6.patch;patch=1 \
 	   file://${FILESDIR}/pr10392-1-test.patch;patch=1 \
