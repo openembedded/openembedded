@@ -27,7 +27,6 @@ SRC_URI = "file://halt \
            file://simpad/banner \
            file://single \
            file://sendsigs \
-           file://packages \
            file://urandom \
            file://rmnologin \
            file://extractfs \
@@ -58,7 +57,6 @@ do_install () {
 	install -m 0755    ${WORKDIR}/hostname.sh	${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/mountall.sh	${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/mountnfs.sh	${D}/etc/init.d
-	install -m 0755    ${WORKDIR}/packages		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/reboot		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/rmnologin	${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/sendsigs		${D}/etc/init.d
@@ -101,7 +99,6 @@ do_install () {
 	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
 #	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
-	ln -sf		../init.d/packages	${D}/etc/rcS.d/S98packages
 	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
 	ln -sf		../init.d/sysfs.sh	${D}/etc/rcS.d/S36sysfs
