@@ -26,5 +26,5 @@ do_install () {
 	install -m 0644 etc-services ${D}/${sysconfdir}/services
 	install -m 0755 update-inetd ${D}/${sbindir}/
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
-	install -m 0644 ${FILESDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
+	oe_machinstall -m 0644 ${FILESDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
 }
