@@ -6,6 +6,7 @@ DEPENDS = virtual/libc expat openssl zlib db3
 RDEPENDS = libc6 expat openssl zlib db3
 
 S = ${WORKDIR}/httpd-${PV}
+sysconfdir_append = /apache
 
 inherit autotools libtool
 
@@ -33,11 +34,11 @@ do_compile () {
 do_install_append () {
 	install -d ${D}/${sysconfdir}/init.d
 	cat ${FILESDIR}/init | \
-		sed -e 's,/usr/sbin/,${sbindir},g; \
-			s,/usr/bin/,${bindir},g; \
+		sed -e 's,/usr/sbin,${sbindir},g; \
+			s,/usr/bin,${bindir},g; \
 			s,/usr/lib,${libdir},g; \
-			s,/etc/,${sysconfdir},g; \
-			s,/usr/,${prefix},g;' > ${D}/${sysconfdir}/init.d/apache
+			s,/etc/apache,${sysconfdir},g; \
+			s,/usr,${prefix},g;' > ${D}/${sysconfdir}/init.d/apache
 	chmod 755 ${D}/${sysconfdir}/init.d/apache
 }
 
