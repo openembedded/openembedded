@@ -12,17 +12,13 @@ SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
            file://config_iconv.patch;patch=1 \
            file://includedir.patch;patch=1;pnum=0 \
            file://pkgconfig.patch;patch=1 \
-           file://gcc34.patch;patch=1"
+           file://gcc34.patch;patch=1 \
+           file://destdir.patch;patch=1"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db --prefix=${TARGET_DIR}"
+EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
 
-do_stage() {
-    oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
+do_stage () {
+	oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
 }
-
-do_install() {
-    oe_runmake install includedir=${D}/${includedir} libdir=${D}/${libdir} bindir=${D}/${bindir}
-}
-
