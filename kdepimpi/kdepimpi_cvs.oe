@@ -1,4 +1,4 @@
-PV = "1.9.10+cvs-${CVSDATE}"
+PV = "1.9.12+cvs-${CVSDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -3,8 +3,8 @@ DESCRIPTION_kopi = "Korganizer/PI is a powerful calendar and ToDo Tool"
 DESCRIPTION_kopi-applet = "KDE Pim/PI applet"
 DESCRIPTION_kapi = "KAddressbook/PI is a port of KDE addressbook"
 DESCRIPTION_libmicrokdelibs    = "KDE Pim/PI library - microkde"
-DESCRIPTION_libkomicrokcal     = "KDE Pim/PI library - microkcal"
-DESCRIPTION_libkamicrokabc     = "KDE Pim/PI library - microkabc"
+DESCRIPTION_libmicrokcal     = "KDE Pim/PI library - microkcal"
+DESCRIPTION_libmicrokabc     = "KDE Pim/PI library - microkabc"
 
 SECTION = "opie/pim"
 PRIORITY = "optional"
@@ -90,7 +90,7 @@ do_install() {
     install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
     install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
 
-    for f in libmicrokde libmicrokdepim libkamicrokabc libkomicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary libmicrokabc_qtopia
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary libmicrokabc_qtopia
     do
         oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
     done
@@ -105,11 +105,11 @@ do_install() {
 }
 
 
-PACKAGES = "libkomicrokcal libkamicrokabc kopi-applet kopi kapi libmicrokdelibs"
+PACKAGES = "libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs"
 
 FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
 FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"
 FILES_kopi-applet = "${palmtopdir}/plugins/applets/* ${palmtopdir}/pics/ko16.png ${palmtopdir}/pics/ko24.png"
-FILES_libkamicrokabc = "${palmtopdir}/lib/libkamicrokabc*"
-FILES_libkomicrokcal = "${palmtopdir}/lib/libkomicrokcal*"
+FILES_libmicrokabc = "${palmtopdir}/lib/libmicrokabc*"
+FILES_libmicrokcal = "${palmtopdir}/lib/libmicrokcal*"
 FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
