@@ -9,6 +9,7 @@ AR_append = " r"
 export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
 export DIRS = "crypto ssl"
 export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
+export AS = "${CC} -c"
 
 do_compile () {
 	perl util/perlpath.pl ${bindir}
