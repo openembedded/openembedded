@@ -1,0 +1,44 @@
+DESCRIPTION= "All of Python"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de"
+DEPENDS = "	python-ao 		\
+		python-constraint	\
+		python-crypto		\
+		python-curl		\
+		python-fnorb		\
+		python-fpconst		\
+		python-gmpy		\
+		python-gnosis		\
+		python-hmm		\
+		python-irclib		\
+		python-logilab		\
+		python-mad		\
+		python-native		\
+		python-numeric		\
+		python-numarray		\
+		python-ogg		\
+		python-pexpect		\
+		python-pychecker	\
+		python-pycodes		\
+		python-pygame		\
+		python-pygoogle		\
+		python-pygtk		\
+		python-pylint		\
+		python-pyqt		\
+		python-pyqwt		\
+		python-pyreverse	\
+		python-pyserial		\
+		python-pyxml		\
+		python-pyxmlrpc		\
+		python-quicklauncher    \
+		python-sgmlop		\
+		python-snmplib		\
+		python-soappy		\
+		python-sqlite		\
+		python-tlslite		\
+		python-vmaps		\
+		python-vorbis		"
+RDEPENDS=${DEPENDS}
+
+#fixme add python-pycap once libdnet is in again
+#fixme add python-pyx once kpathwhich-native is there
+#fixme add packages dynamically
