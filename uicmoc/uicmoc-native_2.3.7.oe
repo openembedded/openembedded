@@ -4,7 +4,8 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
-           file://fix-makefile.patch;patch=1"
+           file://fix-makefile.patch;patch=1 \
+           file://gcc3_4.patch;patch=1"
 
 S = "${WORKDIR}/qt-${PV}"
 
