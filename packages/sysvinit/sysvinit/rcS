@@ -32,24 +32,23 @@ fi
 trap ":" INT QUIT TSTP
 
 #
-#	Do we have /proc/progress and want to have a progress display?
-#	If so, calculate the number of scripts and the increasing step
+#       Do we have /proc/progress and want to have a progress display?
+#       If so, calculate the number of scripts and the incremental step
 #
-if [ "$VERBOSE" = progress ]; then
-	mount /proc
-	if [ ! -e /proc/progress ]; then
-		echo "INIT: VERBOSE=progress requested, but /proc/progress not available."
-		echo "INIT: Falling back to VERBOSE=no"
-		VERBOSE=no
-	else
-		set `ls -1 /etc/rc$runlevel.d/S* | wc`
-		numscripts=$1
-		PROGRESS_incstep=`expr 70 / $1`
-		PROGRESS_value=30
-		export PROGRESS_value PROGRESS_incstep
-	fi
+if [ "$VERBOSE" = no ]; then
+    mount /proc
+    if [ ! -e /proc/progress ]; then
+        echo "INIT: VERBOSE=no requested, but /proc/progress not available."
+    else
+        set `ls -1 /etc/rc$runlevel.d/S* | wc`
+        numscripts=$1
+        PROGRESS_incstep=`expr 90 / $1`
+        PROGRESS_value=10
+        PROGRESS=yes
+        export PROGRESS_value PROGRESS_incstep
+    fi
 fi
-export VERBOSE
+export VERBOSE PROGRESS
 
 #
 #	Call all parts in order.
@@ -61,11 +60,11 @@ do
 
 	# Handle verbosity
 	[ "$VERBOSE" = very ] && echo "INIT: Running $i..."
-	if [ "$VERBOSE" = progress ]; then
+	if [ "$PROGRESS" = yes ]; then
 		export PROGRESS_value=`expr $PROGRESS_value + $PROGRESS_incstep`
 		echo "$PROGRESS_value Starting $i..." >/proc/progress
 	fi
-	
+
 	case "$i" in
 		*.sh)
 			# Source shell script for speed.
@@ -80,6 +79,18 @@ do
 			$i start
 			;;
 	esac
+
+        #
+        # Report status based on result code
+        #
+        result=$?
+        if [ "$PROGRESS" = yes ]; then
+                if [ "$result" = 0 ]; then
+                    echo "=s" >/proc/progress
+                else
+                    echo "=f" >/proc/progress
+                fi
+        fi
 done
 
 #
