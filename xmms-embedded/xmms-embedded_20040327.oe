@@ -1,0 +1,47 @@
+SECTION = "apps"
+PRIORITY = "optional"
+RDEPENDS = "libc6 zlib tremor libmad libid3tag libsidplay glib-2.0 libqpe1"
+DEPENDS = "virtual/libc zlib tremor libmad libid3tag libsidplay glib-2.0 virtual/libqpe uicmoc-native"
+DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
+	file://${FILESDIR}/bogusincdir.patch;patch=1 \
+	file://${FILESDIR}/gtkremoval.patch;patch=1 \
+	file://${FILESDIR}/removenativeincdir.patch;patch=1 \
+	file://${FILESDIR}/removemikmod.patch;patch=1 \
+	file://${FILESDIR}/glib2.patch;patch=1 \
+	file://${FILESDIR}/tremorlib.patch;patch=1 \
+	file://${FILESDIR}/bufferdefaults.patch;patch=1"
+
+S = "${WORKDIR}/xmms-embedded"
+
+inherit palmtop
+
+QMAKE_PROFILES = "xmms-e.pro"
+
+do_configure_prepend() {
+    #remove all Makefiles - build will generate the correct ones using qmake
+    find ${S} -name Makefile | xargs rm -f
+}
+
+do_install() {
+    install -d ${D}/opt/QtPalmtop/lib/xmms/{Effect,General,Input,Output,skin}
+    install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+    install -m 0644 xmms/General/QPEgui/xmms.desktop ${D}/opt/QtPalmtop/apps/Applications/xmms.desktop
+    install -m 0644 ${FILESDIR}/xmms.png ${D}/opt/QtPalmtop/pics/xmms.png
+    install -m 0755 compiled/bin/xmms ${D}/opt/QtPalmtop/bin/xmms
+    oe_soinstall compiled/libxmms.so.1.0.0 ${D}/opt/QtPalmtop/lib
+    oe_soinstall compiled/xmms/General/libQPEgui.so.1.0.0 ${D}/opt/QtPalmtop/lib/xmms/General
+    for f in libfixpvorbisplugin.so.1.0.0 libmplayer.so.1.0.0 libshorten.so.1.0.0 \
+		libwav.so.1.0.0 libxmms-mad.so.1.0.0 libxmms-sid.so.1.0.0
+    do
+        oe_soinstall compiled/xmms/Input/${f} ${D}/opt/QtPalmtop/lib/xmms/Input
+    done
+    oe_soinstall compiled/xmms/Output/liboss.so.1.0.0 ${D}/opt/QtPalmtop/lib/xmms/Output
+    for f in eject.png fileadd.png main.png norep.png pause.png play.png rew.png \
+		shuf.png stop.png ff.png filedel.png move.png noshuf.png plalap.png \
+		rep.png save.png skinconf urladd.png
+    do
+        install -m 0644 Skins/winamp_xmms/${f} ${D}/opt/QtPalmtop/lib/xmms/skin/${f}
+    done
+}
