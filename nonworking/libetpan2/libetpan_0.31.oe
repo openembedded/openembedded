@@ -1,5 +1,4 @@
 DEPENDS = db3 openssl
-RDEPENDS = libc6 db3 openssl
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
 	  file://${FILESDIR}/limits.patch;patch=1 \

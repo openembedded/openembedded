@@ -10,7 +10,7 @@ have IMAP support, has poor IMAP support, or does not provide \
 disconnected operation.
 
 DEPENDS = 
-RDEPENDS = libc6 python
+RDEPENDS = python
 
 SRC_URI = http://gopher.quux.org:70/devel/offlineimap/offlineimap_${PV}.tar.gz
 S = ${WORKDIR}/offlineimap

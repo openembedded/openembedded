@@ -2,8 +2,6 @@ DESCRIPTION="DVI Viewer for Opie/Qtopia"
 SECTION="base"
 PRIORITY="optional"
 LICENSE="GPL"
-RDEPENDS="libqpe1"
-DEPENDS=""
 
 SRC_URI = http://ichitokumei.hp.infoseek.co.jp/${PN}/source/${P}.tar.gz
 S = ${WORKDIR}/${PN}/src

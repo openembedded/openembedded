@@ -2,7 +2,7 @@ DESCRIPTION="Pixil Operating Environment"
 SECTION="gui"
 PRIORITY="optional"
 MAINTAINER="Jordan Crouse <jordan@cosmicpenguin.net>"
-RDEPENDS="libc6 microwindows"
+RDEPENDS="microwindows"
 DEPENDS="microwindows"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/pixdev/pixdev-stable-${PV}.tar.gz \

@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Sebastian Goergen <zeppo@gmx.net>"
 LICENSE = "GPL"
-RDEPENDS = "lipqpe1"
 DEPENDS ="virtual/libqpe"
 PR = "b"
 

@@ -3,7 +3,6 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
-RDEPENDS=libqpe1
 DEPENDS=virtual/libqpe snmp++
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/SNMPz-${PV}.tar.gz

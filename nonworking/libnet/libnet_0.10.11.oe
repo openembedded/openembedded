@@ -1,6 +1,3 @@
-DEPENDS = 
-RDEPENDS = libc6
-
 SRC_URI := ${SOURCEFORGE_MIRROR}/libnet/libnet-0.10.11.tar.gz \
 	   file://${FILESDIR}/compile.patch;patch=1
 S := ${WORKDIR}/${PN}

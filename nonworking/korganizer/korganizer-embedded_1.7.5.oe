@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Sebastian Goergen <zeppo@gmx.net>"
 LICENSE = "GPL"
-RDEPENDS = "lipqpe1"
 DEPENDS ="virtual/libqpe libopie1"
 
 SRC_URI = "http://www.pi-sync.net/daunlood/stable/korganizerPi.175.tar.gz"

@@ -1,7 +1,6 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-RDEPENDS = "libc6 libjpeg62 libpng3 zlib1g"
 DEPENDS = "jpeg libpng zlib"
 DESCRIPTION = "DirectFB is a thin library that provides developers \
 with hardware graphics acceleration, input device handling and \

@@ -1,7 +1,6 @@
 DESCRIPTION="Multiple Arcade Machine Emulator based on SDL"
 SECTION="base"
 PRIORITY="optional"
-RDEPENDS="libc6 libsdl-qpe libsdl-mixer"
 DEPENDS=libsdl-qpe libsdl-mixer
 
 SRC_URI = http://x.mame.net/download/${P}.tar.bz2 \

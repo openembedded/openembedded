@@ -1,6 +1,5 @@
 SECTION = net
 DEPENDS = expat openssl
-RDEPENDS = libc6, libexpat1, libssl0.9.7
 
 SRC_URI = http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1 \

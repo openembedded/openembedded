@@ -1,5 +1,4 @@
 DEPENDS = readline
-RDEPENDS = libc6 readline
 
 SRC_URI := http://us2.samba.org/samba/ftp/old-versions/samba-${PV}.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1

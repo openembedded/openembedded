@@ -1,5 +1,4 @@
 DEPENDS = zlib
-RDEPENDS = libc6 zlib
 
 SRC_URI = ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-${PV}.tar.gz \
 	  file://${FILESDIR}/gcc3.patch;patch=1

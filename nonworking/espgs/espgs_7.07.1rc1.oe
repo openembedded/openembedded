@@ -1,6 +1,3 @@
-DEPENDS = 
-RDEPENDS = libc6
-
 SRC_URI = ftp://ftp.easysw.com/pub/ghostscript/espgs-${PV}-source.tar.bz2
 
 inherit autotools

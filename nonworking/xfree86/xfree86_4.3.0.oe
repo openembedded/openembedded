@@ -1,7 +1,6 @@
 SECTION="base"
 PRIORITY="required"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
-RDEPENDS="libc6"
 DEPENDS=zlib tslib ncurses
 
 SRC_URI = "ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-1.tgz;"

@@ -1,5 +1,4 @@
 DEPENDS = db3
-RDEPENDS = libc6 db3
 
 SRC_URI = ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	  file://${FILESDIR}/makedefs.patch;patch=1 \
