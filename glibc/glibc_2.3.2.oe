@@ -157,6 +157,7 @@ do_stage() {
 		   ${STAGING_INCDIR}/rpcsvc
 	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
 	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
+	install -m 0644 misc/syscall-list.h ${STAGING_INCDIR}/bits/syscall.h
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
@@ -182,6 +183,7 @@ do_stage() {
 		   ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc
 	install -m 0644 ${S}/include/gnu/stubs.h ${CROSS_DIR}/${TARGET_SYS}/include/gnu/
 	install -m 0644 ${B}/bits/stdio_lim.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/
+	install -m 0644 misc/syscall-list.h ${CROSS_DIR}/${TARGET_SYS}/bits/syscall.h
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc/
