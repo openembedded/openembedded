@@ -1,10 +1,8 @@
+inherit gpe
+
 DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 DESCRIPTION = "Editor for the GPE Palmtop Environment"
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/gpe-edit-${PV}.tar.gz
-
-do_install() {
-	oe_runmake 'DESTDIR=${D}' install
-}

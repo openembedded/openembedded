@@ -1,11 +1,9 @@
+inherit gpe
+
 DESCRIPTION = "GPE user login screen"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "gtk+ libgpewidget gpe-ownerinfo"
+DEPENDS = "virtual/libc gtk+ libgpewidget gpe-ownerinfo"
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/gpe-login-${PV}.tar.gz
-
-do_install() {
-	oe_runmake 'DESTDIR=${D}' install
-}

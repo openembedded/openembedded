@@ -1,3 +1,5 @@
+inherit gpe
+
 DESCRIPTION = "GPE owner information dialog"
 SECTION = "gpe"
 PRIORITY = "optional"
