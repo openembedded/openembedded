@@ -198,6 +198,9 @@ python package_do_split_gconvs () {
 		oe.note("package requested not splitting gconvs")
 		return
 
+	if not oe.data.getVar('PACKAGES', d, 1):
+		return
+
 	libdir = oe.data.getVar('libdir', d, 1)
 	if not libdir:
 		oe.error("libdir not defined")
