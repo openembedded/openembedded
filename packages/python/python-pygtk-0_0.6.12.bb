@@ -21,7 +21,7 @@ FILES_${PN} = "${libdir}/${PYTHON_DIR}/"
 
 do_configure_prepend() {
 	echo ${LDFLAGS} > /tmp/ldflags
-	rm aclocal.m4
+	rm -f aclocal.m4
 }
 
 do_stage() {
