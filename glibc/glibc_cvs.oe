@@ -161,6 +161,7 @@ do_stage() {
 
 	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
 		   install-headers install-lib
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
