@@ -6,7 +6,7 @@ FILES_alsa-lib_append=" ${datadir}/alsa"
 
 SRC_URI="ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2"
 
-inherit autotools libtool
+inherit autotools libtool pkgconfig
 
 EXTRA_OECONF="--with-cards=pdaudiocf --with-oss=yes"
 
@@ -17,6 +17,4 @@ do_stage () {
 	install -d ${STAGING_DIR}/target/include/alsa/sound
 	install -m 0644 include/*.h ${STAGING_DIR}/target/include/alsa/
 	install -m 0644 include/sound/ainstr*.h ${STAGING_DIR}/target/include/alsa/sound/
-	install -d ${PKG_CONFIG_DIR}
-	install -m 0644 utils/alsa.pc ${PKG_CONFIG_DIR}/
 }
