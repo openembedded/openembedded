@@ -4,7 +4,8 @@ DEPENDS = virtual/libc openssl
 RDEPENDS = libc6 openssl
 
 SRC_URI := http://www.alwins-world.de/oe/${P}.tar.bz2  \
-	file://${FILESDIR}/mailsocket.patch;patch=1
+	file://${FILESDIR}/mailsocket.patch;patch=1 \
+        file://${FILESDIR}/mailmime.patch;patch=1
 
 inherit autotools
 
