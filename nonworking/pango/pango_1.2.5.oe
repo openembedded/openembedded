@@ -1,0 +1,43 @@
+DEPENDS = virtual/libc glib-2.0 fontconfig freetype zlib x11-cvs xft-cvs xproto-cvs
+
+SRC_URI = http://ftp.gnome.org/pub/gnome/sources/pango/1.2/pango-${PV}.tar.bz2 \
+	  file://${FILESDIR}/ft2.patch;patch=1
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--disable-glibtest \
+		--enable-explicit-deps=no'
+
+FILES_${PN}-doc:=${FILES_pango-doc} ${datadir}/gtk-doc
+
+do_compile_prepend () {
+	(cd tests && \
+	/bin/sh ${S}/libtool --silent --mode=link ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR}/glib-2.0 -lglib-2.0 gen-all-unicode.c -o gen-all-unicode && \
+	touch gen-all-unicode.c .libs/gen-all-unicde gen-all-unicode gen-all-unicode.o)
+}
+
+SOV=0.200.5
+do_stage () {
+	install -m 0755 pango/.libs/libpangoft2-1.0.so.${SOV} ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpangoft2-1.0.lai ${STAGING_LIBDIR}/libpangoft2-1.0.la
+	install -m 0755 pango/.libs/libpangoft2-1.0.a ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpangox-1.0.so.${SOV} ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpangox-1.0.lai ${STAGING_LIBDIR}/libpangox-1.0.la
+	install -m 0755 pango/.libs/libpangox-1.0.a ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpangoxft-1.0.so.${SOV} ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpangoxft-1.0.lai ${STAGING_LIBDIR}/libpangoxft-1.0.la
+	install -m 0755 pango/.libs/libpangoxft-1.0.a ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpango-1.0.so.${SOV} ${STAGING_LIBDIR}/
+	install -m 0755 pango/.libs/libpango-1.0.lai ${STAGING_LIBDIR}/libpango-1.0.la
+	install -m 0755 pango/.libs/libpango-1.0.a ${STAGING_LIBDIR}/
+	ln -sf libpango-1.0.so.${SOV} ${STAGING_LIBDIR}/libpango-1.0.so.0
+	ln -sf libpango-1.0.so.${SOV} ${STAGING_LIBDIR}/libpango-1.0.so
+	ln -sf libpangox-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangox-1.0.so.0
+	ln -sf libpangox-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangox-1.0.so
+	ln -sf libpangoxft-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangoxft-1.0.so.0
+	ln -sf libpangoxft-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangoxft-1.0.so
+	ln -sf libpangoft2-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangoft2-1.0.so.0
+	ln -sf libpangoft2-1.0.so.${SOV} ${STAGING_LIBDIR}/libpangoft2-1.0.so
+	install -d ${STAGING_INCDIR}/pango
+	install -m 0644 pango/pango*.h ${STAGING_INCDIR}/pango/
+}
