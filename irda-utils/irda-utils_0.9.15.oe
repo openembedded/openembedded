@@ -11,8 +11,8 @@ SRC_URI = ${SOURCEFORGE_MIRROR}/irda/${P}.tar.gz \
 inherit autotools libtool
 
 do_compile () {
-	oe_runmake -C irattach
-	oe_runmake -C irdaping
+	oe_runmake -e -C irattach
+	oe_runmake -e -C irdaping
 }
 
 do_install () {
