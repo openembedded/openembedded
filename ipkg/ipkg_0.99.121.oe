@@ -8,6 +8,7 @@ PR = "r1"
 PACKAGES =+ "libipkg-dev libipkg "
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
 FILES_libipkg = "${libdir}"
+AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=${@'V' + oe.data.getVar('PV',d,1).replace('.', '-')}"
 S = "${WORKDIR}/ipkg/C"
