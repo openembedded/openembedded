@@ -3,26 +3,25 @@ DESCRIPTION = "Allows applications compiled with 2.95 to run on a 3.2 compiled \
 system by providing 2.95 libraries. To run compatible programs, use the Compat \
 Library program in the Settings menu to make them use these libraries."
 PRIORITY = "optional"
+RDEPENDS = "opie-sh"
 MAINTAINER = "Tim Ansell <mithro AT mithis.net>"
 LICENSE = "GPL"
+PR = "r2"
 
-PR = "r1"
+EXCLUDE_FROM_WORLD = "1"
 
 SRC_URI = "http://openzaurus.org/mirror/oz-compat_0.5.tar.gz \
 	   file://hentges.patch;patch=0"
-
-FILES_${PN} += "/opt /etc"
-PACKAGES = "oz-compat"
-
-RDEPENDS = "opie-sh"
-
-LEAD_SONAME = "libqte.so.*"
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "quickexec"
 INITSCRIPT_PARAMS = "defaults 10"
 
+do_configure() {
+        rm ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/bin/*.patch
+}
+        
 do_install() {
 	install -d ${D}/opt/QtPalmtop/apps/Settings
 	install -d ${D}/opt/QtPalmtop/bin/
@@ -63,10 +62,6 @@ do_install() {
 	
 }
 
-do_configure() {
-	rm ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/bin/*.patch
-}
-
 pkg_postinst() {
 test -n "$D" && exit 1
 
@@ -80,5 +75,7 @@ pkg_postrm() {
 	test -e /etc/init.d/quickexec && rm /etc/init.d/quickexec
 }
 
-
+FILES_${PN} += "/opt /etc"
+PACKAGES = "oz-compat"
+LEAD_SONAME = "libqte.so.*"
 
