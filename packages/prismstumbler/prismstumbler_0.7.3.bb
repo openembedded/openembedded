@@ -15,7 +15,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-libpcap=${STAGING_DIR}/${HOST_SYS} --with-sqlite-libs=${STAGING_LIBDIR} --with-sqlite-includes=${STAGING_INCDIR}"
-CFLAGS =+ "-I${S}/include"
+CFLAGS =+ "-I${S}/include -D_GNU_SOURCE"
 
 FILES_${PN} = "${bindir}/prismstumbler"
 
