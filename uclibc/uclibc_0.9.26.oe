@@ -20,6 +20,7 @@ SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
 S = "${WORKDIR}/uClibc-${PV}"
 
 UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
+UCLIBC_STAGE_PREFIX = "${STAGING_DIR}/${HOST_SYS}"
 
 EXTRA_OEMAKE = ""
 
@@ -42,13 +43,10 @@ uclibcbuild_do_patch() {
 
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
 	perl -i -p -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"${WORKDIR}/linux\",g' ${S}/.config
-	perl -i -p -e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
-	perl -i -p -e 's,^SYSTEM_DEVEL_PREFIX=.*,SYSTEM_DEVEL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
-	perl -i -p -e 's,^DEVEL_TOOL_PREFIX=.*,DEVEL_TOOL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
+	perl -i -p -e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/\",g' ${S}/.config
+	perl -i -p -e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/${prefix}\",g' ${S}/.config
 	perl -i -p -e 's,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH=\"/lib\",g' ${S}/.config
 	perl -i -p -e 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g' ${S}/.config
-	#perl -i -p -e 's,^GCC_BIN.*,GCC_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}gcc,g' ${S}/extra/gcc-uClibc/Makefile
-	#perl -i -p -e 's,^LD_BIN.*,LD_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}ld,g' ${S}/extra/gcc-uClibc/Makefile
 
 	make oldconfig
 }
@@ -59,42 +57,42 @@ python do_patch () {
 }
 
 do_stage() {
-	make install_dev install_runtime install_utils
+	# Install into the staging dir
+	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		install_dev install_runtime install_utils
 
-	# Make links to ${STAGING_INCDIR} so many
-	# cross builds work easier...
-	mkdir -p ${STAGING_INCDIR}
-	for f in ${CROSS_DIR}/${TARGET_SYS}/include/*; do
-		ln -s $f ${STAGING_INCDIR}/
-	done
+	# We don't really need this
+	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
 
-	# We don't really need these
-	rmdir ${CROSS_DIR}/${TARGET_SYS}/${libdir} || :
-	rmdir ${CROSS_DIR}/${TARGET_SYS}/${prefix} || :
+	# Fixup shared lib symlinks
+	( cd ${UCLIBC_STAGE_PREFIX}/lib
+		for f in c crypt dl m nsl pthread resolv thread_db util; do
+			ln -sf lib${f}.so.? lib${f}.so
+		done
+	)
+
+	# Install into the cross dir
+	make PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
+		install_dev install_runtime install_utils
+
+	# We don't really need this
+	rm -f ${UCLIBC_PREFIX}/include/.cvsignore
+
+	# Fixup shared lib symlinks
+	( cd ${UCLIBC_STAGE_PREFIX}/lib
+		for f in c crypt dl m nsl pthread resolv thread_db util; do
+			ln -sf lib${f}.so.? lib${f}.so
+		done
+	)
 }
 
 do_install() {
-	make DEVEL_PREFIX= SYSTEM_DEVEL_PREFIX= TARGET_PREFIX= \
-		DEVEL_TOOL_PREFIX=${prefix} PREFIX=${D}/ \
-		install_dev install_target install_target_utils
+	make PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+		install_dev install_runtime install_utils
 
-	# binutils has a readelf, so forget about this one...
-	rm -f ${D}/${bindir}/readelf
-
-	# move devel headers/libs/objects from / into ${prefix}
-	mv -f ${D}/lib/*.a ${D}/lib/*.o ${D}${libdir}/
-	rm -f ${D}/include/.cvsignore
-	mv -f ${D}/include ${D}${prefix}/
-	for lib in libc.so libcrypt.so libdl.so libm.so libnsl.so \
-	           libpthread.so libresolv.so libthread_db.so libutil.so; do
-		ln -s ../../lib/`readlink ${D}/lib/$lib` ${D}${libdir}/$lib
-		rm -f ${D}/lib/$lib
-	done
-
-	# ensure we have a /sbin/ldconfig as some scripts expect one
-	if ! [ -e ${D}/sbin/ldconfig ]; then
-		mkdir -p ${D}/sbin
-		ln -sf ../bin/true ${D}/sbin/ldconfig
-	fi
+	# We don't really need this in /usr/include
+	rm -f ${D}/${prefix}/include/.cvsignore
 }
 
