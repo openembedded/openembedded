@@ -1,0 +1,31 @@
+DESCRIPTION = "User space helper for WPA and WPA2 client operations. \
+The Supplicant is used in WPA/WPA2 key handshakes to authenticate \
+with the AP and to generate dynamic encryption keys (TKIP or CCMP)."
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "openssl"
+RDEPENDS = "hostap-modules (${PV}) hostap-utils (${PV}) hostap-daemon (${PV})"
+
+SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
+	   file://wpa-defconfig"
+S = "${WORKDIR}/wpa_supplicant-${PV}"
+
+CFLAGS +=  "-DCONFIG_DRIVER_HOSTAP -DCONFIG_DRIVER_WEXT -DEAP_TLS -DEAP_PEAP \
+-DEAP_TTLS -DEAP_MD5 -DEAP_MSCHAPv2 -DEAP_GTC -DEAP_OTP -DEAP_SIM -DEAP_LEAP \
+-DIEEE8021X_EAPOL -DEAP_TLS_FUNCS -DCONFIG_WIRELESS_EXTENSION "
+EXTRA_OEMAKE="LIBS='-L${STAGING_LIBDIR} -lssl -lcrypto' LIBS_p='-L${STAGING_LIBDIR} -lssl -lcrypto'"
+
+do_configure() {
+	install -m 0644 ${WORKDIR}/wpa-defconfig .config
+}
+
+do_install() {
+	install -d ${D}/${sysconfdir} ${D}/${bindir}
+	install -m 0644 wpa_supplicant.conf ${D}/${sysconfdir}/
+	install -m 0755 wpa_passphrase ${D}/${bindir}
+	install -m 0755 wpa_cli        ${D}/${bindir}
+	install -m 0755 wpa_supplicant ${D}/${bindir}
+}
+
