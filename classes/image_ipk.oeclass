@@ -33,6 +33,8 @@ fakeroot do_rootfs () {
 
 	insert_feed_uris	
 
+	rm ${IMAGE_ROOTFS}/usr/lib/ipkg/lists/oe
+	
 	${IMAGE_PREPROCESS_COMMAND}
 		
 	export TOPDIR=${TOPDIR}
