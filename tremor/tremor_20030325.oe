@@ -4,7 +4,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libogg"
 DESCRIPTION = "tremor is a fixed point implementation of the vorbis codec."
 
-SRC_URI = "cvs://anoncvs:anoncvs@xiph.org/usr/local/cvsroot;module=Tremor;date=${PV}"
+SRC_URI = "http://treke.net/oe/source/Tremor_xiph.org__${PV}.tar.gz"
 
 S = "${WORKDIR}/Tremor"
 
