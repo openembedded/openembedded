@@ -64,8 +64,8 @@ case "$1" in
 	echo -n "Starting $DESC: "
 	gen_keys
 	KEY_ARGS=""
-	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d \"$DROPBEAR_DSSKEY\""
-	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r \"$DROPBEAR_RSAKEY\""
+	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d $DROPBEAR_DSSKEY"
+	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r $DROPBEAR_RSAKEY"
 	start-stop-daemon -S \
 	  -x "$DAEMON" -- $KEY_ARGS \
 	    -p "$DROPBEAR_PORT" $DROPBEAR_EXTRA_ARGS
@@ -81,8 +81,8 @@ case "$1" in
 	start-stop-daemon -K -x "$DAEMON"
 	sleep 1
 	KEY_ARGS=""
-	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d \"$DROPBEAR_DSSKEY\""
-	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r \"$DROPBEAR_RSAKEY\""
+	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d $DROPBEAR_DSSKEY"
+	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r $DROPBEAR_RSAKEY"
 	start-stop-daemon -S \
 	  -x "$DAEMON" -- $KEY_ARGS \
 	    -p "$DROPBEAR_PORT" $DROPBEAR_EXTRA_ARGS

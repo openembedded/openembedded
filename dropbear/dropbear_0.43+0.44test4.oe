@@ -1,7 +1,7 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
 DEPENDS = "zlib"
-PR = "r2"
+PR = "r3"
 RV = "0.44test4"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/testing/dropbear-${RV}.tar.bz2 \
