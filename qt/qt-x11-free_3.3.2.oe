@@ -2,7 +2,7 @@ DESCRIPTION = "Qt/X11 Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
-MAINTAINER "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor"
 PR = "r2"
 
