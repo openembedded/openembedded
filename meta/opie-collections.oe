@@ -52,7 +52,7 @@ OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo \
 KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.3a"
 KDE_PIM_RDEPENDS = "kopi kapi libmicrokdelibs kopi-applet"
 
-OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
+OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet subapplet"
 
 OPIE_EXTRA_APPS = "opie-advancedfm"
 
