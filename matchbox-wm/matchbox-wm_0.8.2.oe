@@ -1,7 +1,8 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox x11 xext xcomposite libxfixes xdamage libxrender startup-notification expat gconf"
+DEPENDS = "libmatchbox x11 xext xcomposite libxfixes xdamage libxrender startup-notification expat gconf matchbox-common"
+RDEPENDS = "matchbox-common"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
 	file://net-showing-desktop.patch;patch=1 \
