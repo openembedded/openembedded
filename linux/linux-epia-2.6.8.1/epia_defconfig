@@ -335,7 +335,7 @@ CONFIG_IDEDMA_AUTO=y
 # SCSI device support
 #
 CONFIG_SCSI=y
-# CONFIG_SCSI_PROC_FS is not set
+CONFIG_SCSI_PROC_FS=y
 
 #
 # SCSI support type (disk, tape, CD-ROM)

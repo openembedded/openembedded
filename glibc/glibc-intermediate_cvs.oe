@@ -1,6 +1,8 @@
 SECTION = "libs"
 include glibc_${PV}.oe
 
+DEFAULT_PREFERENCE = "-1"
+
 do_install () {
 	:
 }
