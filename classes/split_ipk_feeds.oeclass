@@ -14,6 +14,7 @@ do_split_feed () {
 	test -z "${DEPLOY_DIR_IPK}" && die "DEPLOY_DIR_IPK is empty, how do you do that?"
 	
 	echo "Rebuilding [${DEPLOY_DIR_IPK}/Packages]"
+	touch ${DEPLOY_DIR_IPK}/Packages
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 	
 	echo "Working on pattern [$FEED_PATTERN] for feed [$FEED_NAME]"
