@@ -25,7 +25,7 @@ REV="$1"
 # The email address CIA lives at
 cia_address="cia@navi.cx"
 
-author=`echo $BK_USER | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
+author=`bk changes -r"$REV" -d":P:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 module=`basename $BKD_ROOT | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 tag=`bk changes -r"$REV" -d":TAG:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 for file in `bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}" | sort -u | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`; do
