@@ -7,6 +7,7 @@ PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
 # Files for these are defined in the main gcc.oe
 PACKAGES = "libgcc libstdc++ libg2c"
+OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = 1
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
@@ -90,7 +91,9 @@ do_install () {
 
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
-	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libstdc++.so.*
-	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libg2c.so.*
-	${TARGET_PREFIX}strip ${D}/lib/libgcc_s.so.*
+	if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
+		${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libstdc++.so.*
+		${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libg2c.so.*
+		${TARGET_PREFIX}strip ${D}/lib/libgcc_s.so.*
+	fi
 }
