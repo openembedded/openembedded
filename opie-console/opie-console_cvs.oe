@@ -4,16 +4,16 @@ PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.4-cvs-${CVSDATE}"
-APPNAME = "console"
+APPNAME = "opie-console"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/opie-${APPNAME};date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/${APPNAME};date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
-S = "${WORKDIR}/opie-${APPNAME}"
+S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
 do_install() {
-    install -d ${D}/${palmtopdir}/pics/${APPNAME}/
-    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+    install -d ${D}/${palmtopdir}/pics/console/
+    install -m 0644 ${WORKDIR}/pics/console/*.png ${D}/${palmtopdir}/pics/console/
 }
