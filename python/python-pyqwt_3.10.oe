@@ -75,3 +75,15 @@ do_compile() {
     done
 }
 
+do_install() {
+    install -d ${D}/${libdir}/python2.3/site-packages/qwt
+    install -m 0644 ${S}/qwt/*.py ${D}/${libdir}/python2.3/site-packages/qwt/ 
+    for module in ${MODULES}
+    do
+        oe_soinstall ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so.1.0.0 ${D}/${libdir}/python2.3/site-packages/
+    done
+}
+
+FILES_${PN}=
+FILES_${PN}=/usr/lib/python2.3/site-packages
+
