@@ -3,6 +3,7 @@ MAINTAINER="Lorn Potter <lpotter@trolltech.com>"
 LICENSE="GPL/QPL"
 SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qtopia-free-${PV}.tar.gz \
 	file://${FILESDIR}/nofreetype.patch;patch=1 \
+	file://${FILESDIR}/ft2.patch;patch=1 \
 	file://${FILESDIR}/embeddedkonsole.patch;patch=1 \
 	file://${FILESDIR}/konsoleEnv.patch;patch=1 \
 	file://${FILESDIR}/makefile2.patch;patch=1 \
@@ -11,7 +12,7 @@ SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qtopia-free-${PV}.tar.gz \
 	file://${FILESDIR}/security.patch;patch=1 \
 	file://${FILESDIR}/storage.patch;patch=1"
 
-DEPENDS=virtual/libc base/zlib base/libpng base/jpeg qte tmake e2fsprogs-libs uicmoc
+DEPENDS=virtual/libc base/zlib base/libpng base/jpeg qte-for-qtopia tmake e2fsprogs-libs uicmoc
 PROVIDES=virtual/qtopia virtual/libqpe virtual/libqtopia
 S="${WORKDIR}/qtopia-free-${PV}"
 
@@ -57,21 +58,20 @@ do_configure() {
 
 do_compile() {
 	unset CC CXX LD LINK CPP CFLAGS CXXFLAGS LDFLAGS
-	unset SYSCONF_CFLAGS SYSCONF_CXXFLAGS SYSCONF_LFLAGS SYSCONF_SHLIB CROSS
+	unset SYSCONF_CFLAGS SYSCONF_CXXFLAGS SYSCONF_LFLAGS SYSCONF_SHLIB CROSS SYSCONF_LFLAGS
 	cd ${S}/src
-	export SYSCONF_LFLAGS="-L${S}/lib -L${STAGING_LIBDIR} -Wl,-rpath-link,${S}/lib -Wl,-rpath-link,${STAGING_LIBDIR}"
+	export SYSCONF_LFLAGS="-L${S}/lib -L${STAGING_LIBDIR} -Wl,-rpath,${S}/lib -Wl,-rpath,${STAGING_LIBDIR} -Wl,-rpath-link,${S}/lib -Wl,-rpath-link,${STAGING_LIBDIR}"
+	# Fix to make oe freetype2 available as freetype
+	ln -sf  ${STAGING_INCDIR}/freetype2/freetype  ${STAGING_INCDIR}/freetype
 	oe_runmake
+	# Clean the mess
+	rm ${STAGING_INCDIR}/freetype
 }
 
 do_stage () {
-	die "no staging yet"
-#	install -m 0755 lib/libqpe.so.* ${STAGING_LIBDIR}/
-#	install -m 0755 lib/libqtopia.so.* ${STAGING_LIBDIR}/
-#	install -m 0755 lib/libqtopia1.so.* ${STAGING_LIBDIR}/
-#	install -m 0755 lib/libqtopia2.so.* ${STAGING_LIBDIR}/
-
-#	rm -f include/qxt.h
-#	cp -a -f --dereference include/* ${STAGING_DIR}/target/include/
+	cp -a lib/* ${STAGING_LIBDIR}/
+	cp -a -R -f --dereference include/qtopia ${STAGING_DIR}/target/include/
+	ln -sf ${STAGING_DIR}/target/include/qtopia ${STAGING_DIR}/target/include/qpe
 }
 
 do_install () {
