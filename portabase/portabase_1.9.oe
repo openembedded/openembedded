@@ -1,5 +1,7 @@
-DESCRIPTION = "Portabase is a small database program for creating, browsing, and editing custom tables of data."
-LICENCE = "GPL"
+DESCRIPTION = "Portabase is a small database program for creating, browsing, \
+and editing custom tables of data."
+SECTION = "opie/applications"
+LICENSE = "GPL"
 HOMEPAGE = "http://portabase.sourceforge.net/"
 DEPENDS = "metakit beecrypt"
 APPNAME = "portabase"
