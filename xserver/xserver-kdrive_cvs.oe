@@ -14,8 +14,6 @@ DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting ge
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/xserver-cvs"
-
 PR = "r5"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
