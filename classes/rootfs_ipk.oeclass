@@ -15,7 +15,7 @@ do_rootfs[dirs] = ${TOPDIR}
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
-IMAGE_POSTPROCESS_COMMAND ?= ""
+ROOTFS_POSTPROCESS_COMMAND ?= ""
 
 # some default locales
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
@@ -71,7 +71,7 @@ EOF
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
-	${IMAGE_POSTPROCESS_COMMAND}
+	${ROOTFS_POSTPROCESS_COMMAND}
 }
 
 fakeroot do_rootfs () {
