@@ -1,0 +1,9 @@
+inherit gpe
+
+DESCRIPTION = "Displays a summary of appointments and tasks for the day ahead"
+DEPENDS = "gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdisplaymigration libeventdb libgpepimc libtododb"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-today-${PV}.tar.gz \
+	file://${FILESDIR}/gpe-today_makefile.patch;patch=1"
