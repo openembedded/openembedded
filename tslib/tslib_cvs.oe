@@ -1,4 +1,5 @@
 PV = "0.1cvs${CVSDATE}"
+PR = "r1"
 
 DESCRIPTION = "tslib is a touchscreen access library."
 
