@@ -7,6 +7,9 @@ SRC_URI = ${GNU_MIRROR}/bash/bash-2.05b.tar.gz \
 
 inherit autotools
 
+bindir=/bin
+sbindir=/sbin
+
 EXTRA_OECONF = --with-curses
 BUILD_CPPFLAGS_append = " -I${S} -I${S}/include"
 BUILD_CFLAGS_append = " -I${S} -I${S}/include"
