@@ -5,7 +5,7 @@ LICENSE = "GPL/QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
@@ -27,6 +27,7 @@ SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
 SRC_URI_append_corgi	= "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_shepherd	= "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_husky	= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_tosa	= "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_beagle   = "file://beagle.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
