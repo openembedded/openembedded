@@ -206,7 +206,7 @@ python package_do_split_gconvs () {
 
 		packages = oe.data.getVar('PACKAGES', d, 1).split()
 		if not packages:
-			oe.error("PACKAGES not defined")
+			# might be glibc-initial
 			return
 
 		if postinst:
