@@ -27,7 +27,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://sharpsl_battery.patch;patch=1 \
            file://irda-qos.patch;patch=1 \
            file://buffered-fbmem.patch;patch=1 \
-           file://enable-sysrq.patch;patch=1 \
+           ${@get_sysreq_setting(oe, d)} \
            file://compile.patch;patch=1 \
            file://idecs.patch;patch=1 \
            file://logo.patch;patch=1 \
@@ -43,6 +43,12 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
            file://defconfig-${MACHINE}"
+
+def get_sysreq_setting(oe, d):
+	if oe.data.getVar('ENABLE_SYSREQ', d, 1) in [ 'yes' ]:
+		return "file://enable-sysrq.patch;patch=1 "
+	return ""
+
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
 # SRC_URI_append = file://machtune-args.patch;patch=1
