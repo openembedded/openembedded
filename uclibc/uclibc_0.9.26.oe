@@ -42,11 +42,10 @@ uclibcbuild_do_patch() {
 	perl -i -p -e 's,^DEVEL_TOOL_PREFIX=.*,DEVEL_TOOL_PREFIX=\"${UCLIBC_PREFIX}\",g' ${S}/.config
 	perl -i -p -e 's,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH=\"/lib\",g' ${S}/.config
 	perl -i -p -e 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g' ${S}/.config
-	perl -i -p -e 's,^GCC_BIN.*,GCC_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}gcc,g' ${S}/extra/gcc-uClibc/Makefile
-	perl -i -p -e 's,^LD_BIN.*,LD_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}ld,g' ${S}/extra/gcc-uClibc/Makefile
+	#perl -i -p -e 's,^GCC_BIN.*,GCC_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}gcc,g' ${S}/extra/gcc-uClibc/Makefile
+	#perl -i -p -e 's,^LD_BIN.*,LD_BIN=${CROSS_DIR}/bin/${TARGET_PREFIX}ld,g' ${S}/extra/gcc-uClibc/Makefile
 
 	make oldconfig
-	make headers
 }
 
 python do_patch () {
