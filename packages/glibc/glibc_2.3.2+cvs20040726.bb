@@ -54,6 +54,13 @@ FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
 RPROVIDES_glibc-dev += "libc-dev"
 
+DESCRIPTION_sln = "glibc: create symbolic links between files"
+DESCRIPTION_nscd = "glibc: name service cache daemon for passwd, group, and hosts"
+DESCRIPTION_glibc-extra-nss = "glibc: nis, nisplus and hesiod search services"
+DESCRIPTION_ldd = "glibc: print shared library dependencies"
+DESCRIPTION_localedef = "glibc: compile locale definition files"
+DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
+
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.data.getVar('PV', d, 1)[9:]} \
