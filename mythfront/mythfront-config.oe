@@ -1,9 +1,11 @@
-PV = "1.4"
+PV = "1.5"
 
 DEPENDS = "xfonts-xorg"
 RDEPENDS_${PN} = "xfonts-xorg"
 
 SRC_URI = "file://tftp.sh file://xorg.conf"
+
+SRC_URI_append_epia = " file://serial.sh"
 
 do_install() {
 	install -d ${D}/etc/udhcpc.d/
@@ -23,5 +25,10 @@ do_install() {
 
 	install -d ${D}/dev
 	ln -sf lirc0 ${D}/dev/lirc
+
+	if [ -f ${WORKDIR}/serial.sh ]; then
+		install ${WORKDIR}/serial.sh ${D}/etc/init.d/mythfront-serial
+		ln -sf ../init.d/mythfront-serial ${D}/etc/rc2.d/S10mythfront-serial
+	fi
 }
 
