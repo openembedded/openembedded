@@ -55,6 +55,7 @@ else
 	# Change some permissions for non-root users
 	chmod 666 /dev/collie-fl
 	chmod 666 /dev/dsp
+	chmod 666 /dev/mixer
 	if test $? -ne 0; then
 		if test "$VERBOSE" != "no"; then echo "failed"; fi
 	else
