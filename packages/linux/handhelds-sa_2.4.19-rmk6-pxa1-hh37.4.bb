@@ -4,8 +4,6 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
 PR = "r2"
 
-DEFAULT_PREFERENCE = "-1"
-
 KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
 
