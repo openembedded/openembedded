@@ -1,0 +1,10 @@
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}-gamma.tar.gz \
+	   file://autofoo.patch;patch=1 \
+	   file://gen_lex_hash.patch;patch=1"
+S = "${WORKDIR}/mysql-${PV}-gamma"
+DEPENDS += "ncurses mysql-native"
+
+inherit autotools
+
+EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
