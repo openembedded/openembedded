@@ -28,8 +28,8 @@ do_compile () {
 	fi
 	install -d ${S}/bin/${TARGET_SYS}
 	oe_runmake -C src exe
-	sed -i -e 's,^SHAREDIR=.*$,SHAREDIR=${datadir}/${PN},; \
-		   s,^BINDIR=.*$,BINDIR=${libdir}/${PN},;' ${WORKDIR}/lmbench-run
+	sed -i -e 's,^SHAREDIR=.*$,SHAREDIR=${datadir}/${PN},;' \
+	       -e 's,^BINDIR=.*$,BINDIR=${libdir}/${PN},;' ${WORKDIR}/lmbench-run
 }
 
 do_install () {
