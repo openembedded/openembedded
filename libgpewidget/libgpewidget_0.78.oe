@@ -1,0 +1,8 @@
+DESCRIPTION=libgpewidget contains a collection of widgets and other common code shared by many GPE applications.
+SECTION=gpe/libs
+PRIORITY=optional
+MAINTAINER="Philip Blundell <pb@handhelds.org>"
+RDEPENDS=gtk
+DEPENDS=gtk
+
+SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libgpewidget-${PV}.tar.gz
