@@ -3,12 +3,11 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-DEPENDS = "libopie2"
+DEPENDS = "opie-libqrsync libopie2"
 PV = "1.1.3-cvs-${CVSDATE}"
 APPNAME = "qpe"
 
 SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/rsync;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/launcher;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE}                     \
@@ -20,7 +19,6 @@ S = "${WORKDIR}/launcher"
 inherit opie
 
 do_configure_prepend() {
-	ln -s ${WORKDIR}/rsync ${S}/rsync
 	ln -s ${WORKDIR}/calibrate ${S}/calibrate
 	ln -s ${WORKDIR}/mediummount ${S}/mediummount
 	install -m 0644 ${FILESDIR}/server.pro ${S}/server.pro
