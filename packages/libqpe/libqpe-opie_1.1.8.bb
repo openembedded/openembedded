@@ -5,11 +5,12 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
-PR = "r3"
+PR = "r4"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
-	file://nomax.patch;patch=1;pnum=1"
+	file://nomax.patch;patch=1;pnum=1 \
+	file://resource.patch;patch=1;pnum=1"
 S = "${WORKDIR}/library"
 
 inherit qmake
@@ -23,7 +24,7 @@ CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-r
 CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
+XXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
 
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \

@@ -2,21 +2,20 @@ DESCRIPTION = "Keyboard Device Daemon which provides support for snapntype and s
 MAINTAINER = "Paul Eggleton <http://handhelds.org/moin/moin.cgi/PaulEggleton>"
 SECTION = "utils"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 DEPENDS = "virtual/kernel"
 RDEPENDS = "kernel-module-keybdev kernel-module-uinput"
 SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${PV} \
            file://snapntype.patch;patch=1;pnum=0 \
            file://stowaway-fellowes-apm.patch;patch=1;pnum=0 \
-           file://fellowes.init \ 
-           file://stowaway.init \ 
-           file://snapntype.init \
+           file://kbdd.init \ 
            file://kbdd.default"
 
-inherit autotools
+inherit autotools update-rc.d
 
 S = "${WORKDIR}/kbdd"
-
+INITSCRIPT_NAME = "kbdd.init"
+INITSCRIPT_PARAMS = "default"
 do_compile() {
 	oe_runmake
 }
@@ -29,17 +28,6 @@ do_install() {
 }
 
 do_install_append () {
-        set -x
-        install -d ${D}/${sysconfdir}/init.d
-        cat ${WORKDIR}/fellowes.init | \
-                sed -e 's,/usr/sbin/,${sbindir}/,g; s,/usr/bin/,${bindir}/,g; s,/usr/lib/,${libdir}/,g; s,/etc/,${sysconfdir}/,g; s,/usr/,${prefix}/,g;' > ${D}/${sysconfdir}/init.d/kbdd-fellowes
-        cat ${WORKDIR}/stowaway.init | \
-                sed -e 's,/usr/sbin/,${sbindir}/,g; s,/usr/bin/,${bindir}/,g; s,/usr/lib/,${libdir}/,g; s,/etc/,${sysconfdir}/,g; s,/usr/,${prefix}/,g;' > ${D}/${sysconfdir}/init.d/kbdd-stowaway
-        cat ${WORKDIR}/snapntype.init | \
-                sed -e 's,/usr/sbin/,${sbindir}/,g; s,/usr/bin/,${bindir}/,g; s,/usr/lib/,${libdir}/,g; s,/etc/,${sysconfdir}/,g; s,/usr/,${prefix}/,g;' > ${D}/${sysconfdir}/init.d/kbdd-snapntype
-        chmod 755 ${D}/${sysconfdir}/init.d/kbdd-fellowes
-        chmod 755 ${D}/${sysconfdir}/init.d/kbdd-stowaway
-        chmod 755 ${D}/${sysconfdir}/init.d/kbdd-snapntype
         mkdir -p ${D}/${sysconfdir}/defaults
         cat ${WORKDIR}/kbdd.default > ${D}/${sysconfdir}/defaults/kbdd
         chmod 755 ${D}/${sysconfdir}/defaults/kbdd
@@ -51,22 +39,28 @@ do_install_append () {
 }
 
 pkg_postinst () {
-        if test -n "${D}"; then
-                D="-r"
-        fi
-#        update-rc.d $D kbdd-fellowes defaults
-#        update-rc.d $D kbdd-stowaway defaults
-        update-rc.d $D kbdd-snapntype defaults
         update-modules
 }
 
 pkg_prerm () {
-        if test -n "${D}"; then
-                D="-r"
-        fi
-        update-rc.d $D kbdd-fellowes remove
-        update-rc.d $D kbdd-stowaway remove
-        update-rc.d $D kbdd-snapntype remove
         rm ${D}/${sysconfdir}/modutils/kbdd-modules
         update-modules
+}
+
+updatercd_postinst() {
+if test "x$D" != "x"; then
+        D="-r $D"
+else
+        D="-s"
+fi
+update-rc.d $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
+}
+
+updatercd_postrm() {
+if test "x$D" != "x"; then
+        D="-r $D"
+else
+        ${INIT_D_DIR}/${INITSCRIPT_NAME} stop
+fi
+update-rc.d $D ${INITSCRIPT_NAME} remove
 }
