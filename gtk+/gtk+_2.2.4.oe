@@ -40,7 +40,9 @@ do_stage () {
 	install -m 0644 gdk/.libs/libgdk-x11-2.0.lai ${STAGING_LIBDIR}/libgdk-x11-2.0.la
 	install -m 0644 gdk/.libs/libgdk-x11-2.0.a ${STAGING_LIBDIR}/libgdk-x11-2.0.a
 
-	oe_soinstall gdk-pixbuf/.libs/libgdk-pixbuf-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/
+	oe_soinstall contrib/gdk-pixbuf-xlib/.libs/libgdk_pixbuf_xlib-2.0.so.${SOV} ${STAGING_LIBDIR}/
+	install -m 0644 contrib/gdk-pixbuf-xlib/.libs/libgdk_pixbuf_xlib-2.0.lai ${STAGING_LIBDIR}/
+	install -m 0644 contrib/gdk-pixbuf-xlib/.libs/libgdk_pixbuf_xlib-2.0.a ${STAGING_LIBDIR}/
 
 	oe_soinstall gdk-pixbuf/.libs/libgdk_pixbuf-2.0.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.lai ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.la
