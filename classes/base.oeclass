@@ -107,6 +107,9 @@ oe_libinstall() {
 	# oe_libinstall -C src/libblah libblah ${D}/${libdir}/
 	dir=""
 	libtool=""
+	silent=""
+	require_static=""
+	require_shared=""
 	while [ "$#" -gt 0 ]; do
 		case "$1" in
 		-C)
