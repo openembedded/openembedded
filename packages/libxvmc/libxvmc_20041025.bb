@@ -1,10 +1,10 @@
 DESCRIPTION = "X Video Motion Compensation extension library."
 SECTION = "x11/libs"
 DEPENDS = "x11 xext libxv drm xserver-xorg"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=${PV};method=pserver \
-	file://true.patch;patch=1"
+	file://true.patch;patch=1 file://drm.patch;patch=1"
 S = "${WORKDIR}/XvMC"
 
 CFLAGS += "-I${STAGING_INCDIR}/X11/extensions -I${STAGING_INCDIR}/xserver-xorg -D_BSD_SOURCE"
