@@ -1,5 +1,9 @@
 DESCRIPTION="GNU C Library"
 LICENSE="LGPL"
+SECTION="libs"
+PRIORITY=required
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+
 SRC_URI="ftp://ftp.gnu.org/gnu/glibc/${P}.tar.gz ftp://ftp.gnu.org/pub/gnu/libc/glibc-linuxthreads-${PV}.tar.gz ${DEBIAN_MIRROR}/main/g/glibc/glibc_2.3.1-16.diff.gz;patch=1"
 PROVIDES=virtual/libc
 
@@ -10,7 +14,7 @@ PACKAGES="libc6"
 FILES=""
 FILES_libc6="/lib/libc.so.6"
 
-inherit base package
+inherit base
 
 do_unpack() {
 	base_do_unpack $@ || die "unpacking failed"
