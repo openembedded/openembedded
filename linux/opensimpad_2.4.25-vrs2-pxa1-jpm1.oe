@@ -5,7 +5,7 @@ KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r3"
+PR = "r4"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
@@ -16,7 +16,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://sound-volume-reversed.patch;patch=1 \
 	   file://disable-pcmcia-probe.patch;patch=1 \
            file://mkdep.patch;patch=1 \
-           file://defconfig-${MACHINE}"
+           file://defconfig-${MACHINE} \
+	   ftp://ftp.xs4all.nl/pub/crypto/freeswan/kernpatch/freeswan-2.06.k2.4.patch.gz;patch=1"
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
