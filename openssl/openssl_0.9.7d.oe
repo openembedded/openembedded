@@ -1,7 +1,8 @@
 SECTION = "libs"
 DESCRIPTION = "Secure Socket Layer (SSL) binary and related cryptographic tools."
 
-SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz"
+SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz \
+	   file://debian.patch;patch=1"
 S = "${WORKDIR}/openssl-${PV}"
 
 AR_append = " r"
@@ -51,13 +52,14 @@ do_compile () {
 
 do_stage () {
 	cp --dereference -R include/openssl ${STAGING_INCDIR}/
-	oe_libinstall -a -so libcrypto ${STAGING_LIBDIR}
-	oe_libinstall -a -so libssl ${STAGING_LIBDIR}
+	oe_libinstall -a -so ${S}/libcrypto ${STAGING_LIBDIR}
+	oe_libinstall -a -so ${S}/libssl ${STAGING_LIBDIR}
 }
 
 do_install () {
-	install -d ${D}/${libdir}/pkgconfig
+	install -m 0755 -d ${D}/${libdir}/pkgconfig
 	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
-	chmod u+rx ${D}/${libdir}/pkgconfig
 	chmod 644 ${D}/${libdir}/pkgconfig/openssl.pc
+	oe_libinstall -so ${S}/libcrypto ${D}/${libdir}
+	oe_libinstall -so ${S}/libssl ${D}/${libdir}
 }

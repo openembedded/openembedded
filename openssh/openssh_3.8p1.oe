@@ -36,3 +36,8 @@ do_configure_prepend () {
 do_compile_append () {
 	install -m 0644 ${WORKDIR}/sshd_config ${S}/
 }
+
+PACKAGES =+ " openssh-scp "
+
+FILES_openssh-scp = "/usr/bin/scp"
+RDEPENDS_openssh += " openssh-scp"
