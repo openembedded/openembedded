@@ -103,8 +103,8 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 #IMAGE_FSTYPE = "tar"
 #IMAGE_FSTYPE = "cramfs"
 
-# Comment this out if you do not wish to use a parse cache (not recommended).
-CACHE=/var/tmp/oe-cache.${USER}
+# Uncomment this to disable the parse cache (not recommended).
+# CACHE = ""
 
 # Uncomment this if you want OE to emit debugging output
 #OEDEBUG = "yes"
