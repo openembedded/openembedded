@@ -1,0 +1,21 @@
+DESCRIPTION = "Opie Text Editor"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Opie Team <opie@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libopie2"
+PV = "1.1.3-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/textedit \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics"
+S = "${WORKDIR}/textedit"
+
+inherit opie
+
+do_install() {
+    install -d ${D}/${palmtopdir}/bin/
+    install -d ${D}/${palmtopdir}/pics/textedit/
+    install -m 0755 libtextedit.so* ${D}/${palmtopdir}/plugins/application/
+    ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/textedit
+    install -m 0644 ${WORKDIR}/pics/textedit/*.png ${D}/${palmtopdir}/pics/textedit/
+}

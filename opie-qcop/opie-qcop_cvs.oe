@@ -3,7 +3,6 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc libqpe-opie"
 PV = "1.1.3-cvs-${CVSDATE}"
 

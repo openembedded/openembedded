@@ -1,0 +1,26 @@
+DESCRIPTION = "IRK provides a Qtopia/Opie Input Method plugin that allows you to use external infrared keyboards with the Zaurus."
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl lirc"
+
+SRC_URI = "http://angela1.data-uncertain.co.uk/~zaurus/irk-${PV}.tgz"
+S = "${WORKDIR}/irk"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia"
+
+do_install() {
+	install -d ${D}/${sysconfdir}
+	install -d ${D}${palmtopdir}/plugins/inputmethods/
+	install -d ${D}/home/root/Settings/
+
+	install chicony.conf ${D}/${sysconfdir}/lircd.conf
+	install IRK.conf ${D}/${sysconfdir}
+	oe_soinstall libirk.so.1.0.0 ${D}${palmtopdir}/plugins/inputmethods/
+}
+
+FILES_irk_append=" /etc /home/root"
+
