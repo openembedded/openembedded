@@ -1,12 +1,13 @@
-DESCRIPTION = "Python QWT Bindings"
+DESCRIPTION = "Python QWT Bindings, QtE edition"
+HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "python-core python-pyqt (${PV}) python-numeric qwt"
+RDEPENDS = "python-core python-sip python-pyqt (>=${PV}) python-numeric qwt"
 DEPENDS = "virtual/libqte2 python-numeric python-pyqt qwt"
 SRCNAME = "pyqwt"
-PR = "r1"
+PR = "ml2"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQwt-20040118.tar.gz \
            file://qt2.x-compat.patch;patch=1 \
@@ -21,15 +22,14 @@ SIP_MODULES = "qwt"
 SIP_FEATURES = "${WORKDIR}/features"   
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
-EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
-                         CONFIG=qte CONFIG+=warn_on CONFIG+=release \
-                         TARGET=cmodule DESTDIR= VERSION=1.0.0 \
+EXTRA_QMAKEVARS_POST += "CONFIG=qt CONFIG+=warn_on CONFIG+=release \
+                         TARGET=qwt DESTDIR= VERSION=1.0.0 \
                          DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=HAS_NUMERIC DEFINES+=QWS \
-                         INCLUDEPATH=. INCLUDEPATH+=../numpy \
+                         INCLUDEPATH+=../numpy \
                          INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
-                         INCLUDEPATH+=${STAGING_INCDIR}/ \
-                         LIBS=-L${STAGING_LIBDIR}/python2.3/site-packages \
-                         LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip "
+                         INCLUDEPATH+=${STAGING_INCDIR} \
+                         LIBS+=-L${STAGING_LIBDIR}/python2.3/site-packages \
+                         LIBS+=-L${QTDIR}/lib LIBS+=-lqte LIBS+=-lqpe "
 
 do_generate_prepend() {
     echo -e "TEMPLATE=subdirs\nSUBDIRS=qwt\n" >pyqwt.pro
@@ -45,25 +45,20 @@ do_generate_prepend() {
 }
 
 do_stage() {
-    install -d ${STAGING_SIPDIR}/qwt/
+    install -d ${STAGING_SIPDIR}/qt/
     for module in ${SIP_MODULES}
     do
-        cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/qwt/
-        install -m 0755 ${module}/libcmodule.so ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so
+        install -m 0644 ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/qt/
+        install -m 0755 ${module}/lib${module}.so ${STAGING_LIBDIR}/python2.3/site-packages/${module}.so
     done
 }
 
 do_install() {
     install -d ${D}/${libdir}/python2.3/site-packages/
-    oe_libinstall -so -C ${STAGING_LIBDIR}/python2.3/site-packages libsip ${D}/${libdir}/python2.3/site-packages
     for module in ${SIP_MODULES}
     do
-        install -m 0755 ${module}/libcmodule.so ${D}/${libdir}/python2.3/site-packages/lib${module}cmodule.so
-#        install -m 0644 ${module}/${module}.py ${D}/${libdir}/python2.3/site-packages/
+        install -m 0755 ${module}/lib${module}.so ${D}/${libdir}/python2.3/site-packages/${module}.so
     done
-
-    install -d ${D}/${libdir}/python2.3/site-packages/qwt
-    install -m 0644 ${S}/qwt/*.py ${D}/${libdir}/python2.3/site-packages/qwt/
 }
 
 FILES_${PN} = "/usr/lib/python2.3/site-packages"
