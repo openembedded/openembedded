@@ -30,6 +30,9 @@ python __anonymous() {
 
 python populate_packages_prepend () {
 	pkg = oe.data.getVar('PN', d, 1)
+	packages = (oe.data.getVar('PACKAGES', d, 1) or "").split()
+	if not pkg in packages:
+		pkg = packages[0]
 	oe.note('adding update-rc.d calls to postinst/postrm for %s' % pkg)
 	postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1) or oe.data.getVar('pkg_postinst', d, 1)
 	if not postinst:
