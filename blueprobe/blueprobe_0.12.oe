@@ -1,4 +1,0 @@
-SRC_URI = "${GPE_MIRROR}/blueprobe-${PV}.tar.gz"
-SECTION = "x11/network"
-inherit gpe
-
