@@ -1,6 +1,7 @@
 DEPENDS = "slugtool-native"
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.linksys.com/pub/network/nslu2-fw-2.3r25.zip"
 S = "${WORKDIR}"
