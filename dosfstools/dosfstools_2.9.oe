@@ -10,5 +10,6 @@ SRC_URI = ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.
 	  file://${FILESDIR}/mkdosfs-errno.patch;patch=1
 
 do_install () {
-	oe_runmake 'PREFIX=${D}' install
+	oe_runmake 'PREFIX=${D}' 'SBINDIR=${D}/${sbindir}' \
+		   'MANDIR=${D}/${mandir}/man8' install
 }

@@ -9,7 +9,6 @@ FILES_glibc_append=' ${datadir}/zoneinfo'
 FILES_glibc-dev_append=' ${libdir}/*.o'
 FILES_glibc-gconv='${libdir}/gconv'
 FILES_glibc-i18n='${datadir}/i18n'
-FILES_glibc-locale='${datadir}/locale'
 
 #	 file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0
 #	  file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0

@@ -28,6 +28,6 @@ do_stage() {
 }
 
 do_install() {
-	oe_runmake install prefix=${D} exec_prefix=${D}
+	oe_runmake install prefix=${D}/${prefix} exec_prefix=${D}/${exec_prefix}
 }
 

@@ -7,6 +7,9 @@ SECTION="libs"
 DEPENDS=virtual/libc
 PROVIDES=${PV}-${BaseV} ${PV}-${BaseV}-${PR} \
 	 ${CATEGORY}/${PN}-${BaseV} ${CATEGORY}/${PN}-${BaseV}-${PR} 
+PACKAGES_append=' ncurses-terminfo'
+FILES_ncurses-terminfo=${datadir}/terminfo
+
 SRC_URI = ${GNU_MIRROR}/ncurses/${PN}-${BaseV}.tar.gz \
 	  file://${FILESDIR}/${SnapV}.patch;patch=1 \
 	  file://${FILESDIR}/configure.patch;patch=1
