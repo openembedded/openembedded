@@ -1,11 +1,12 @@
 DESCRIPTION = "Dropbear SSH Implementation"
 LICENSE = "MIT"
 DEPENDS = "zlib ncurses"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://allow-nopw.patch;patch=1 \
+	   file://multi-binary.patch;patch=1 \
 	   file://init"
 S = "${WORKDIR}/dropbear-${PV}"
 
@@ -16,6 +17,11 @@ INITSCRIPT_PARAMS = "defaults 10"
 
 CFLAGS_prepend = "-I. "
 LD = "${CC}"
+
+do_compile () {
+	oe_runmake dropbearmulti
+}
+
 do_install () {
 	install -d ${D}/${sysconfdir} \
 		   ${D}/${sysconfdir}/init.d \
@@ -23,7 +29,10 @@ do_install () {
 		   ${D}/${sysconfdir}/dropbear \
 		   ${D}/${sbindir} \
 		   ${D}/${localstatedir}
-	autotools_do_install
+
+	install -m 0755 dropbearmulti ${D}/${sbindir}/
+	cd ${D}/${sbindir}/ && ln -s ./dropbearmulti dropbear && ln -s ./dropbearmulti dropbearkey && ln -s ./dropbearmulti dropbearconvert
+#	autotools_do_install
 	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
 				  -e 's,/usr/sbin,${sbindir},g' \
 				  -e 's,/var,${localstatedir},g' \
