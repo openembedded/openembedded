@@ -2,9 +2,9 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r11"
+PR = "r12"
 
-OPENSLUG_VERSION = "1.3-alpha"
+OPENSLUG_VERSION = "1.4-alpha"
 
 SRC_URI = "file://sysconfsetup \
 	   file://modutils.txt \
