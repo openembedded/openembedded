@@ -21,7 +21,7 @@ test ! -h /var/service/dropbear || exit 0
 
 readonly_rootfs=0
 for flag in `awk '{ if ($2 == "/") { split($4,FLAGS,",") } }; END { for (f in FLAGS) print FLAGS[f] }' </proc/mounts`; do
-  case flag in
+  case $flag in
    ro)
      readonly_rootfs=1
      ;;
