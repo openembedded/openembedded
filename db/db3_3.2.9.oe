@@ -7,10 +7,13 @@ B = ${WORKDIR}/db-${PV}/build_unix
 
 inherit autotools libtool
 
-EXTRA_OECONF = '--enable-shared --enable-compat185'
+EXTRA_OECONF = '--enable-shared --enable-compat185 --enable-static'
 EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}`' 'chmod=`which chmod`' \
 		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
 		'rm=`which rm`' 'strip=`which ${STRIP}`'"
+
+FILES_${PN}=${bindir} ${libdir}/libdb-3.2.{so,a,la}
+FILES_${PN}-dev=${includedir} ${libdir}/libdb.so ${libdir}/libdb-3.so
 
 do_configure_prepend () {
 	(
@@ -33,6 +36,7 @@ do_stage () {
 	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_DIR}/target/include/
 	install -m 0755 .libs/libdb-3.2.so ${STAGING_LIBDIR}/
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb-3.so
+	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb3.so
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb.so
 	install -m 0644 .libs/libdb-3.2.la ${STAGING_LIBDIR}/
 }
