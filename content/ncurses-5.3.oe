@@ -18,9 +18,16 @@ EXTRA_OECONF=--with-shared \
 	     --without-cxx-binding \
 	     --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo \
 	     --enable-overwrite
-export BUILD_CC:=${BUILD_CC}
+EXTRA_OEMAKE = 
+export BUILD_CC := ${BUILD_CC}
 export BUILD_CCFLAGS=-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}
 export BUILD_LDFLAGS=
+
+do_compile () {
+	set -e
+	oe_runconf
+	oe_runmake BUILD_LDFLAGS="" 'BUILD_CCFLAGS=${BUILD_CCFLAGS}'
+}
 
 do_stage () {
 	install -m 0755 lib/lib*.so.* ${STAGING_LIBDIR}/

@@ -10,6 +10,7 @@ S="${WORKDIR}/${P}"
 
 EXTRA_OECONF = "--with-curses-terminfo"
 #EXTRA_OECONF = "--with-curses-terminfo --enable-libs='-lncurses'"
+EXTRA_OEMAKE = 
 
 do_install () {
 	set -e
