@@ -12,7 +12,7 @@ inherit autotools libtool
 EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x --without-gtk"
 
 do_stage() {
-	oe_soinstall libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}
+	oe_soinstall .libs/libsmpeg-0.4.so.0.1.4 ${STAGING_LIBDIR}
 
 	for f in `find . -name "MPEG*.h"`
 	do

@@ -1,0 +1,16 @@
+SECTION="NET"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6 libjpeg62 libpng3 zlib1g libsdl
+DEPENDS=virtual/libc base/zlib base/libpng base/jpeg base/libsdl
+
+SRC_URI=http://www.libsdl.org/projects/SDL_image/release/SDL_image-${PV}.tar.gz
+S = ${WORKDIR}/SDL_image-${PV}
+
+inherit autotools libtool
+
+do_stage() {
+	oe_soinstall .libs/libSDL_image-1.2.so.0.1.2 ${STAGING_LIBDIR}
+	install -m 0644 SDL_image.h ${STAGING_INCDIR}/SDL/SDL_image.h
+}
+
