@@ -41,19 +41,11 @@ FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/$
 
 def oe_filter(f, str, d):
 	from re import match
-	ret = []
-	for w in str.split():
-		if match(f, w, 0):
-			ret += [ w ]
-	return " ".join(ret)
+	return " ".join(filter(lambda x: match(f, x, 0), str.split()))
 
 def oe_filter_out(f, str, d):
 	from re import match
-	ret = []
-	for w in str.split():
-		if not match(f, w, 0):
-			ret += [ w ]
-	return " ".join(ret)
+	return " ".join(filter(lambda x: not match(f, x, 0), str.split()))
 
 die() {
 	oefatal "$*"
