@@ -1,5 +1,7 @@
 SRC_URI = http://freshmeat.net/redir/pppd/8313/url_tgz/ppp-2.4.1.tar.gz \
-	file://pppd.patch;patch=1
+	file://pppd.patch;patch=1 \
+	file://man.patch;patch=1
+	
 inherit autotools libtool
 
 EXTRA_OEMAKE = "STRIPPROG=arm-linux-strip"
