@@ -35,7 +35,7 @@
  
  //#define QWS_CUSTOMTOUCHPANEL
  
-@@ -1093,6 +1100,220 @@
+@@ -1093,6 +1100,221 @@
      return sent;
  }
  
@@ -58,7 +58,7 @@
 +    void interpolateSample();
 +
 +private:
-+    bool raw;
++    bool raw : 1;
 +#ifdef QWS_TSLIB
 +    struct tsdev *ts;
 +#endif
@@ -114,6 +114,7 @@
 +
 +    delete m_notify;
 +    m_notify = 0; ts = 0;
++    raw = false;
 +#endif
 +
 +}
@@ -156,7 +157,6 @@
 +    {
 +	qDebug( "Could not save calibration: %s", calFile.latin1() );
 +    }
-+    raw = false;
 +}
 +
 +void QTSLibHandler::readMouseData()
@@ -200,11 +200,10 @@
 + */
 +void QTSLibHandler::interpolateSample() {
 +    static struct ts_sample samples[25];
-+    int index = -1;
++    int index = 0;
 +    int ret;
 +
 +    do {
-+        index++;
 +        /* fill only the last sample again */
 +        if ( index >= 25 )
 +            index = 24;
@@ -217,11 +216,13 @@
 +                continue;
 +            }
 +        }
-+    }while (samples[index].pressure != 0);
++    }while (samples[index++].pressure != 0);
 +
 +    /*
 +     * index is maximal 25  and we at least one sample
 +     */
++    if( index >= 25 )
++	index = 24;
 +    int x, y;
 +
 +    /*
@@ -256,7 +257,7 @@
  /*
   * Handler for /dev/tpanel Linux kernel driver
   */
-@@ -1235,7 +1456,7 @@
+@@ -1235,7 +1457,7 @@
  
  
  QTPanelHandlerPrivate::QTPanelHandlerPrivate( MouseProtocol, QString dev )
@@ -265,7 +266,7 @@
      numSamples(0), skipCount(0)
  {
  #if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
-@@ -1315,7 +1536,7 @@
+@@ -1315,7 +1537,7 @@
  		mousePos = QPoint( 0, 0 );
  		QPoint totalMousePos = oldTotalMousePos;
  		totalMousePos += samples[currSample];
@@ -274,7 +275,7 @@
  		    totalMousePos -= samples[lastSample];
  
  		mousePos = totalMousePos / (sampleCount - 1);
-@@ -1345,7 +1566,7 @@
+@@ -1345,7 +1567,7 @@
  
  		    // save recuring information
  		    currSample++;
@@ -283,7 +284,7 @@
  			lastSample++;
  		    oldTotalMousePos = totalMousePos;
  		} else {
-@@ -1658,7 +1879,7 @@
+@@ -1658,7 +1880,7 @@
  
      if ( mouseProto == "USB" && mouseDev.isEmpty() )
  	mouseDev = "/dev/input/mice";
@@ -292,7 +293,7 @@
      MouseProtocol mouseProtocol = Unknown;
  
      int idx = 0;
-@@ -1689,12 +1910,14 @@
+@@ -1689,12 +1911,14 @@
  	    break;
  
  	case TPanel:

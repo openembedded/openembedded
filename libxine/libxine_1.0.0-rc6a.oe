@@ -96,11 +96,11 @@ do_stage() {
 
 python populate_packages_prepend () {
 	plugindir = oe.data.expand('${libdir}/xine/plugins/1.0.0', d)
-	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s')
+	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s', extra_depends='' )
 
 	postdir = oe.data.expand('${libdir}/xine/plugins/1.0.0/post', d)
-	do_split_packages(d, postdir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s')
+	do_split_packages(d, postdir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s', extra_depends='' )
 
 	fontdir = oe.data.expand('${datadir}/xine/libxine1/fonts', d)
-	do_split_packages(d, fontdir, '^(.*).xinefont.gz$', 'libxine-font-%s', 'Xine font %s')
+	do_split_packages(d, fontdir, '^(.*).xinefont.gz$', 'libxine-font-%s', 'Xine font %s', extra_depends='' )
 }
