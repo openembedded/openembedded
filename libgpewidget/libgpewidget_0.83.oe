@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
 SECTION = "gpe/libs"
 PRIORITY = "optional"
@@ -7,10 +7,9 @@ DEPENDS = "gtk+ cairo xrender"
 
 inherit pkgconfig gpe
 
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
-	file://header.patch;patch=1"
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
 
-headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gpetimesel.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h popup_menu.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h gpeiconlistview.h gpehelp.h"
+headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gpetimesel.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h popup_menu.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h gpeiconlistview.h gpehelp.h gpeiconlistitem.h"
 
 do_stage () {
 	oe_libinstall -so libgpewidget ${STAGING_LIBDIR}
