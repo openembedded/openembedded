@@ -295,6 +295,106 @@ python base_do_mrproper() {
 	oe.build.exec_task('do_clean', d)
 }
 
+addtask fetch
+do_fetch[dirs] = "${DL_DIR}"
+do_fetch[nostamp] = "1"
+python base_do_fetch() {
+	import sys, copy
+
+	localdata = copy.deepcopy(d)
+	oe.data.update_data(localdata)
+
+	src_uri = oe.data.getVar('SRC_URI', localdata, 1)
+	if not src_uri:
+		return 1
+
+	try:
+		oe.fetch.init(src_uri.split())
+	except oe.fetch.NoMethodError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("No method: %s" % value)
+
+	try:
+		oe.fetch.go(localdata)
+	except oe.fetch.MissingParameterError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("Missing parameters: %s" % value)
+	except oe.fetch.FetchError:
+		(type, value, traceback) = sys.exc_info()
+		raise oe.build.FuncFailed("Fetch failed: %s" % value)
+}
+
+def oe_unpack_file(file, data, url = None):
+	import oe, os
+	if not url:
+		url = "file://%s" % file
+	dots = file.split(".")
+	if dots[-1] in ['gz', 'bz2', 'Z']:
+		efile = os.path.join(oe.data.getVar('WORKDIR', data, 1),os.path.basename('.'.join(dots[0:-1])))
+	else:
+		efile = file
+	cmd = None
+	if file.endswith('.tar'):
+		cmd = 'tar x --no-same-owner -f %s' % file
+	elif file.endswith('.tgz') or file.endswith('.tar.gz'):
+		cmd = 'tar xz --no-same-owner -f %s' % file
+	elif file.endswith('.tbz') or file.endswith('.tar.bz2'):
+		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
+	elif file.endswith('.gz') or file.endswith('.Z') or file.endswith('.z'):
+		cmd = 'gzip -dc %s > %s' % (file, efile)
+	elif file.endswith('.bz2'):
+		cmd = 'bzip2 -dc %s > %s' % (file, efile)
+	elif file.endswith('.zip'):
+		cmd = 'unzip -q %s' % file
+	elif os.path.isdir(file):
+		filesdir = os.path.realpath(oe.data.getVar("FILESDIR", data, 1))
+		destdir = "."
+		if file[0:len(filesdir)] == filesdir:
+			destdir = file[len(filesdir):file.rfind('/')]
+			destdir = destdir.strip('/')
+			if len(destdir) < 1:
+				destdir = "."
+			elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
+				os.makedirs("%s/%s" % (os.getcwd(), destdir))
+		cmd = 'cp -a %s %s/%s/' % (file, os.getcwd(), destdir)
+	else:
+		(type, host, path, user, pswd, parm) = oe.decodeurl(url)
+		if not 'patch' in parm:
+			destdir = oe.decodeurl(url)[1] or "."
+			oe.mkdirhier("%s/%s" % (os.getcwd(), destdir))
+			cmd = 'cp %s %s/%s/' % (file, os.getcwd(), destdir)
+	if not cmd:
+		return True
+	cmd = "PATH=\"%s\" %s" % (oe.data.getVar('PATH', data, 1), cmd)
+	oe.note("Unpacking %s to %s/" % (file, os.getcwd()))
+	ret = os.system(cmd)
+	return ret == 0
+
+addtask unpack after do_fetch
+do_unpack[dirs] = "${WORKDIR}"
+python base_do_unpack() {
+	import re, copy, os
+
+	localdata = copy.deepcopy(d)
+	oe.data.update_data(localdata)
+
+	src_uri = oe.data.getVar('SRC_URI', localdata)
+	if not src_uri:
+		return
+	src_uri = oe.data.expand(src_uri, localdata)
+	for url in src_uri.split():
+		try:
+			local = oe.data.expand(oe.fetch.localpath(url, localdata), localdata)
+		except oe.MalformedUrl, e:
+			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
+		# dont need any parameters for extraction, strip them off
+		local = re.sub(';.*$', '', local)
+		local = os.path.realpath(local)
+		ret = oe_unpack_file(local, localdata, url)
+		if not ret:
+			raise oe.build.FuncFailed()
+}
+
 addtask patch after do_unpack
 do_patch[dirs] = "${WORKDIR}"
 python base_do_patch() {
@@ -335,101 +435,6 @@ python base_do_patch() {
 			raise oe.build.FuncFailed("'patcher' execution failed")
 }
 
-addtask fetch
-do_fetch[dirs] = "${DL_DIR}"
-do_fetch[nostamp] = "1"
-python base_do_fetch() {
-	import sys, copy
-
-	localdata = copy.deepcopy(d)
-	oe.data.update_data(localdata)
-
-	src_uri = oe.data.getVar('SRC_URI', localdata, 1)
-	if not src_uri:
-		return 1
-
-	try:
-		oe.fetch.init(src_uri.split())
-	except oe.fetch.NoMethodError:
-		(type, value, traceback) = sys.exc_info()
-		raise oe.build.FuncFailed("No method: %s" % value)
-
-	try:
-		oe.fetch.go(localdata)
-	except oe.fetch.MissingParameterError:
-		(type, value, traceback) = sys.exc_info()
-		raise oe.build.FuncFailed("Missing parameters: %s" % value)
-	except oe.fetch.FetchError:
-		(type, value, traceback) = sys.exc_info()
-		raise oe.build.FuncFailed("Fetch failed: %s" % value)
-}
-
-addtask unpack after do_fetch
-do_unpack[dirs] = "${WORKDIR}"
-python base_do_unpack() {
-	import re, copy, os
-
-	localdata = copy.deepcopy(d)
-	oe.data.update_data(localdata)
-
-	src_uri = oe.data.getVar('SRC_URI', localdata)
-	if not src_uri:
-		return
-	src_uri = oe.data.expand(src_uri, localdata)
-	for url in src_uri.split():
-		try:
-			local = oe.data.expand(oe.fetch.localpath(url, localdata), localdata)
-		except oe.MalformedUrl, e:
-			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
-		# dont need any parameters for extraction, strip them off
-		local = re.sub(';.*$', '', local)
-		local = os.path.realpath(local)
-		dots = local.split(".")
-		if dots[-1] in ['gz', 'bz2', 'Z']:
-			efile = os.path.join(oe.data.getVar('WORKDIR', localdata, 1),os.path.basename('.'.join(dots[0:-1])))
-		else:
-			efile = local
-		cmd = None
-		if local.endswith('.tar'):
-			cmd = 'tar x --no-same-owner -f %s' % local
-		elif local.endswith('.tgz') or local.endswith('.tar.gz'):
-			cmd = 'tar xz --no-same-owner -f %s' % local
-		elif local.endswith('.tbz') or local.endswith('.tar.bz2'):
-			cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % local
-		elif local.endswith('.gz') or local.endswith('.Z') or local.endswith('.z'):
-			loc = local.rfind('.')
-			cmd = 'gzip -dc %s > %s' % (local, efile)
-		elif local.endswith('.bz2'):
-			loc = local.rfind('.')
-			cmd = 'bzip2 -dc %s > %s' % (local, efile)
-		elif local.endswith('.zip'):
-			loc = local.rfind('.')
-			cmd = 'unzip -q %s' % local
-		elif os.path.isdir(local):
-			filesdir = os.path.realpath(oe.data.getVar("FILESDIR", localdata, 1))
-			destdir = "."
-			if local[0:len(filesdir)] == filesdir:
-				destdir = local[len(filesdir):local.rfind('/')]
-				destdir = destdir.strip('/')
-				if len(destdir) < 1:
-					destdir = "."
-				elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
-					os.makedirs("%s/%s" % (os.getcwd(), destdir))
-			cmd = 'cp -a %s %s/%s/' % (local, os.getcwd(), destdir)
-		else:
-			(type, host, path, user, pswd, parm) = oe.decodeurl(url)
-			if not 'patch' in parm:
-				destdir = oe.decodeurl(url)[1] or "."
-				oe.mkdirhier("%s/%s" % (os.getcwd(), destdir))
-				cmd = 'cp %s %s/%s/' % (local, os.getcwd(), destdir)
-		if not cmd:
-			continue
-		cmd = "PATH=\"%s\" %s" % (oe.data.getVar('PATH', d, 1), cmd)
-		oe.note("Unpacking %s to %s/" % (local, os.getcwd()))
-		ret = os.system(cmd)
-		if ret != 0:
-			raise oe.build.FuncFailed("%s execution failed" % cmd)
-}
 
 addhandler base_eventhandler
 python base_eventhandler() {
