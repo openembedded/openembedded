@@ -1,7 +1,7 @@
 export IMAGE_BASENAME = "gpe-image"
 
 DEPENDS = 'task-bootstrap \
-	   diet-x11-cvs xserver matchbox-wm matchbox-desktop matchbox-panel \
+	   diet-x11 xserver matchbox-wm matchbox-desktop matchbox-panel \
 	   meta-gpe ttf-bitstream-vera'
 
 export IPKG_INSTALL = 'task-bootstrap xserver-kdrive-fbdev \
