@@ -1,0 +1,17 @@
+include freetype_${PV}.oe
+inherit native
+DEPENDS = patcher
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/freetype-${PV}
+S = ${WORKDIR}/freetype-${PV}
+PACKAGES =
+
+do_stage () {
+	install -m 755 -D objs/.libs/libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.${FT_SONAME}
+	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so.6
+	ln -sf ./libfreetype.so.${FT_SONAME} ${STAGING_LIBDIR}/libfreetype.so
+
+	install -m 0644 objs/.libs/libfreetype.lai ${STAGING_LIBDIR}/libfreetype.la
+	cp -a include/*.h ${STAGING_INCDIR}
+	install -d ${STAGING_INCDIR}/freetype2
+	cp -a include/freetype ${STAGING_INCDIR}/freetype2/
+}
