@@ -1,0 +1,25 @@
+DESCRIPTION = "Opie FTP Library"
+SECTION = "opie/libs"
+MAINTAINER = "Team Opie <opie@handhelds.org>
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc"
+PROVIDES = "libftplib1"
+PV = "1.1.4-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/net/ftplib;date=${CVSDATE}"
+S = "${WORKDIR}/ftplib"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
+
+do_stage () {
+	install -m 0664 ${S}/ftplib.h ${STAGING_INCDIR}/
+	oe_soinstall libftplib.so.1.0.0 ${STAGING_LIBDIR}/
+}
+
+do_install() {
+	install -d ${D}/${palmtopdir}/lib/
+	oe_soinstall libftplib.so.1.0.0 ${D}${palmtopdir}/lib/
+}

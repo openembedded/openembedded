@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2"
-PV = "1.1.3-cvs-${CVSDATE}"
+PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "light-and-power"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/settings/light-and-power;date=${CVSDATE} \

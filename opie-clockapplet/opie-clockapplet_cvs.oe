@@ -1,0 +1,35 @@
+DESCRIPTION = "Clock applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = ""
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "clockapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/clockapplet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if pidof -s qpe >/dev/null; then
+  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+fi
+ if [ -n $D ]; then false; fi
+}
+
+pkg_postrm() {
+#!/bin/sh
+/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+ if [ -n $D ]; then false; fi
+}
+
+# FILES plugins/applets/libclockapplet.so*
+do_install() {
+}
+

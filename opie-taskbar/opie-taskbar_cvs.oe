@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 DEPENDS = "opie-libqrsync libopie2"
-PV = "1.1.3-cvs-${CVSDATE}"
+PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \

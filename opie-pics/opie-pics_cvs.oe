@@ -1,0 +1,21 @@
+DESCRIPTION = "Common Opie pictures usable from all applications"
+SECTION = "opie/base"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>
+LICENSE = "GPL"
+PV = "1.1.4-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+S = "${WORKDIR}/pics"
+
+do_install() {
+	install -d ${D}${palmtopdir}/pics/addressbook/
+	install -d ${D}${palmtopdir}/pics/datebook/
+	install -d ${D}${palmtopdir}/pics/todo/
+	install *.png ${D}${palmtopdir}/pics/
+	install addressbook/*.png ${D}${palmtopdir}/pics/addressbook/
+	install datebook/*.png ${D}${palmtopdir}/pics/datebook/
+	install todo/*.png ${D}${palmtopdir}/pics/todo/
+}
+
+FILES_${PN} = "${palmtopdir}"

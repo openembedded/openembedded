@@ -1,0 +1,23 @@
+DESCRIPTION = "Opie native i18n tool lrelease"
+SECTION = "opie/base"
+PRIORITY = "optional"
+MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "qmake-native uicmoc3-native"
+PV = "1.1.4-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/opie-lrelease;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/shared;date=${CVSDATE}"
+
+S = "${WORKDIR}/opie-lrelease"
+
+inherit native
+
+do_configure() {
+	QMAKESPEC="${QMAKE_MKSPEC_PATH}/${TARGET_OS}-g++" 
+	qmake -makefile -spec $QMAKESPEC -o Makefile lrelease.pro
+}
+
+do_stage() {
+	install -m 0755 opie-lrelease ${STAGING_BINDIR}/
+}

@@ -6,7 +6,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 DEPENDS = "virtual/libc libqpe-opie sqlite libpcap-0.7.2"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
-PV = "1.1.3-cvs-${CVSDATE}"
+PV = "1.1.4-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE}"
 S = "${WORKDIR}/libopie2"

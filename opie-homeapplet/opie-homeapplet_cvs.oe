@@ -1,0 +1,21 @@
+DESCRIPTION = "Home Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = ""
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "homeapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/homeapplet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES
+do_install() {
+}
+

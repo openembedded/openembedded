@@ -1,0 +1,34 @@
+DESCRIPTION = "Multikey Keyboard Layout Switcher Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "multikeyapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/multikeyapplet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if pidof -s qpe >/dev/null; then
+  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+fi
+ if [ -n $D ]; then false; fi
+}
+
+pkg_postrm() {
+#!/bin/sh
+/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+ if [ -n $D ]; then false; fi
+}
+
+# FILES plugins/applets/libmultikeyapplet.so*
+do_install() {
+}
+

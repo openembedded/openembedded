@@ -1,0 +1,23 @@
+DESCRIPTION = "The filesystem formatting and mountpoint app for the Opie environment."
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "formatter"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/formatter;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libformatter.so* bin/formatter pics/formatter/devices.png apps/Settings/formatter.desktop
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+

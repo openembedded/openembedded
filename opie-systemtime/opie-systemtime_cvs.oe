@@ -5,7 +5,7 @@ MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "ntpdate"
 DEPENDS = "libopiecore2 libopieui2"
-PV = "1.1.3-cvs-${CVSDATE}"
+PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "systemtime"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/netsystemtime;date=${CVSDATE} \

@@ -1,0 +1,19 @@
+DESCRIPTION = "Rotate Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = " libopiecore2 "
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "rotateapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/rotateapplet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES
+do_install() {
+}

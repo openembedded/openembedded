@@ -1,0 +1,23 @@
+DESCRIPTION = "Calculator"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = " libopiecore2"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "calculator"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/calculator;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libcalculator.so* bin/calculator apps/Applications/calculator.desktop etc/unit_conversion.dat pics/calc
+do_install() {
+        install -d ${D}${palmtopdir}/pics/calc/
+        install -m 0644 ${WORKDIR}/pics/calc/*.png ${D}${palmtopdir}/pics/calc/
+}
+

@@ -1,0 +1,27 @@
+DESCRIPTION = "A QDialog shell frontend"
+SECTION = "opie/Shell"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "opie-sh"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/opie-sh;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/help;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES bin/opie-sh apps/Opie-SH/opie-sh.desktop pics/opie-sh/*.png help/opie-sh/*.html
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/help/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/help/${APPNAME}/*.html ${D}${palmtopdir}/help/${APPNAME}/
+}
+

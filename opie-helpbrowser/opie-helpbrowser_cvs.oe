@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopie2"
-PV = "1.1.3-cvs-${CVSDATE}"
+PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "helpbrowser"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/${APPNAME};date=${CVSDATE} \

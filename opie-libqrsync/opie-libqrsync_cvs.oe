@@ -1,0 +1,17 @@
+DESCRIPTION = "Qt wrapper for librsync"
+SECTION = "opie/base"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.4-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/rsync;date=${CVSDATE}"
+S = "${WORKDIR}/rsync"
+
+inherit opie
+
+do_stage() {
+	install -m 0644 libqrsync.a ${STAGING_LIBDIR}/
+	install -m 0644 qrsync.h ${STAGING_INCDIR}/
+}
+
