@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r12"
+PR = "r13"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -118,6 +118,7 @@ klimt \
 kstars-embedded \
 ktimetrackerpi \
 mileage \
+notez \
 petitepainture \
 pocketcellar \
 poqetpresenter \
