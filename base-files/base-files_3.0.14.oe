@@ -1,7 +1,7 @@
 xDESCRIPTION = "Base system miscellaneous files."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
@@ -81,7 +81,7 @@ do_install () {
 
     install -d ${D}/${sysconfdir}
     oe_machinstall -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
-    echo ${MACHINE} > ${D}/${sysconfdir}/hostname
+    [ -z "${MACHINE}" ] && echo "openembedded" >${D}/${sysconfdir}/hostname || echo ${MACHINE} >${D}/${sysconfdir}/hostname
     oe_machinstall -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
     install -m 0644 ${WORKDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
     install -m 0644 ${WORKDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
