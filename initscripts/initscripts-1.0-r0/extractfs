@@ -1,0 +1,28 @@
+#!/bin/sh
+
+. /etc/default/rcS
+
+set -e
+
+if (grep -q 'ramfs.*/var.*ramfs' /proc/mounts) || (grep -q 'tmpfs.*/var.*tmpfs' /proc/mounts)
+then
+	if test "$VERBOSE" != "no"; then echo -n "Populating /var filesystem: "; fi
+	cd /
+	tar -xpf /boot/var.tar
+	if test $? -ne 0; then
+		if test "$VERBOSE" != "no"; then echo "failed"; fi
+	else
+		if test "$VERBOSE" != "no"; then echo "done"; fi
+	fi
+fi
+
+# Sharp ROM compatibility links
+if ! [ -e /home/QtPalmtop ]; then
+	ln -sf /opt/QtPalmtop /home/QtPalmtop
+fi
+
+if ! [ -e /home/root ]; then
+	ln -sf /root /home/root
+fi
+
+exit 0
