@@ -5,11 +5,12 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "kernel lirc-modules"
 DEPENDS = "virtual/kernel"
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/lirc"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/lirc;module=lirc;date=20040918;method=pserver \
-	file://split-hauppauge.patch;patch=1"
+	file://split-hauppauge.patch;patch=1 \
+	file://lirc.init"
 
 inherit autotools module-base update-rc.d
 
@@ -41,7 +42,7 @@ do_install() {
 	install -m 0644 tools/lirc_client.h ${D}${includedir}/
 
 	install -d ${D}/etc/init.d
-	install contrib/lirc.debian ${D}/etc/init.d/lirc
+	install ${WORKDIR}/lirc.init ${D}/etc/init.d/lirc
 
 	install -d ${D}${datadir}/lirc/
 	cp -a remotes ${D}${datadir}/lirc/
