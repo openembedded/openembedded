@@ -2,7 +2,7 @@ case `awk 'BEGIN { FS=":" } /Processor/ { gsub(/ /, "", $2) ; print $2 } ' </pro
   *XScale-PXA2*)
     PCIC=pxa_cs
     ;;
-  StrongARM-1100* | StrongARM-1110*)
+  *StrongARM-1100* | *StrongARM-1110*)
     PCIC=sa1100_cs
     ;;
   *)
