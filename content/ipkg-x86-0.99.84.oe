@@ -1,0 +1,4 @@
+ARCH:=${BUILD_ARCH}
+OS:=${BUILD_OS}
+
+include ipkg-${PV}.oe

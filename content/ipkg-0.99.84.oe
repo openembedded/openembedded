@@ -3,14 +3,13 @@ LICENSE="GPL"
 SRC_URI="cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
 PROVIDES=virtual/ipkg
 
-S="${WORKDIR}/ipkg"
+S="${WORKDIR}/ipkg/C"
 
 inherit base
 
 do_compile () {
 	(
 		 set -x
-		cd ${S}/C
 		./autoconfigure.sh
 		base_do_compile $@
 	) || die "compilation failed."
