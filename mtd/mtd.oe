@@ -3,9 +3,8 @@ DESCRIPTION = "Tools for managing memory technology devices."
 PV = "${CVSDATE}"
 
 S = "${WORKDIR}/mtd/"
-SRC_URI = "cvs://anoncvs@cvs.infradead.org/home/cvs;module=mtd;method=ext \
-           file://stdint.patch;patch=1;pnum=0 \
-           file://removelinuxinc.patch;patch=1;pnum=1"
+#SRC_URI = "cvs://anoncvs@cvs.infradead.org/home/cvs;module=mtd;method=ext"
+SRC_URI = "ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-${CVSDATE}.tar.bz2"
 
 CFLAGS_prepend = "-I${S}/include "
 
