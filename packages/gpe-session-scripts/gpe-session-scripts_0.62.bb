@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r12"
+PR = "r13"
 
 inherit gpe
 
@@ -18,7 +18,8 @@ SRC_URI += "file://zaurus.sh \
 	file://matchbox-session \
 	file://shepherd.xmodmap file://simpad.xmodmap \
 	file://collie.xmodmap \
-	file://disable-composite.xsettings"
+	file://disable-composite.xsettings \
+	file://change-default-xsettings.patch;patch=1"
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}${sysconfdir}/X11/Xinit.d/11zaurus
