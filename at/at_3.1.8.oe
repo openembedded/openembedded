@@ -8,7 +8,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
 
 inherit autotools
 
-export LIBS=-L${STAGING_LIBDIR}
+export LIBS = "-L${STAGING_LIBDIR}"
 
 do_install () {
 	oe_runmake 'IROOT=${D}' install

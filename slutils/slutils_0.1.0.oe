@@ -8,7 +8,7 @@ DEPENDS = "virtual/libc"
 
 inherit qmake
 
-export UTILS=sltime
+export UTILS = "sltime"
 
 do_fetch() {
 	for u in ${UTILS}
@@ -27,6 +27,6 @@ do_install() {
         install -d ${D}/${sbindir}/
 	for u in ${UTILS}
 	do
-        	install -m 0755 ${S}/${u}/${u} ${D}/${sbindir}/
+		install -m 0755 ${S}/${u}/${u} ${D}/${sbindir}/
 	done
 }

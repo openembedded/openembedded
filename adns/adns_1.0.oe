@@ -7,7 +7,7 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \
 
 inherit autotools
 
-acpaths=
+acpaths = ""
 do_configure_prepend () {
 	if ! test -e acinclude.m4; then
 		cp aclocal.m4 acinclude.m4

@@ -16,7 +16,7 @@ S = "${WORKDIR}/glib-${PV}"
 
 inherit autotools libtool pkgconfig
 
-acpaths=
+acpaths = ""
 do_configure_prepend () {
 	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h .
 }

@@ -7,7 +7,7 @@ SRC_URI = "ftp://mirrors.kernel.org/gnu/gmp/gmp-${PV}.tar.gz \
 
 inherit autotools libtool
 
-acpaths =
+acpaths = ""
 
 do_stage () {
 	install -m 0644 .libs/libgmp.lai ${STAGING_LIBDIR}/libgmp.la

@@ -9,15 +9,15 @@ S = "${WORKDIR}/qt-${PV}"
 
 inherit autotools native
 
-export QTDIR=${S}
-export SYSCONF_CXX = ${CCACHE} g++
-export SYSCONF_CC  = ${CCACHE} gcc
-export SYSCONF_LINK  = ${CCACHE} g++
+export QTDIR = "${S}"
+export SYSCONF_CXX = "${CCACHE} g++"
+export SYSCONF_CC  = "${CCACHE} gcc"
+export SYSCONF_LINK  = "${CCACHE} g++"
 
-ARCH_i686=x86
+ARCH_i686 = "x86"
 
-EXTRA_OECONF=-depths 8,16 -xplatform linux-x86-g++ -no-qvfb -no-g++-exceptions -no-jpeg -no-mng -qt-zlib -qt-libpng -no-xft -no-xkb -no-vnc -no-sm -no-opengl -static -qconfig oe
-EXTRA_OEMAKE=-e
+EXTRA_OECONF = "-depths 8,16 -xplatform linux-x86-g++ -no-qvfb -no-g++-exceptions -no-jpeg -no-mng -qt-zlib -qt-libpng -no-xft -no-xkb -no-vnc -no-sm -no-opengl -static -qconfig oe"
+EXTRA_OEMAKE = "-e"
 
 do_configure() {
         if [ "$BUILD_ARCH" = "i686" ]; then
@@ -47,5 +47,3 @@ do_install() {
         sleep 1
 
 }
-
-

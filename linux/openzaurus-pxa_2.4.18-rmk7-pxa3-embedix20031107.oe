@@ -38,12 +38,12 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2       
 
 # apply this when we have a kernel that builds with gcc 3.x:
 # SRC_URI_append = file://${FILESDIR}/machtune-args.patch;patch=1
-          
+
 S = "${WORKDIR}/linux"
 
 inherit kernel
 
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
 	install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config
@@ -59,5 +59,3 @@ do_compile_prepend() {
 	rm -f ${S}/include/linux/version.h
 	cd ${S}
 }
-
-

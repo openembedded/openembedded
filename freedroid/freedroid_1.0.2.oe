@@ -31,5 +31,5 @@ do_install() {
 	echo "Name=Freedroid" >>${D}/opt/QtPalmtop/apps/Games/freedroid.desktop
 }
 
-FILES_${PN} =
+FILES_${PN} = ""
 FILES_${PN} = "/opt/QtPalmtop/"

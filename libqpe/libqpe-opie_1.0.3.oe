@@ -14,15 +14,15 @@ inherit qmake
 
 QMAKE_PROFILES = "library.pro"
 
-export QTDIR=${STAGING_LIBDIR}/..
-export OPIEDIR=${STAGING_LIBDIR}/..
+export QTDIR = "${STAGING_LIBDIR}/.."
+export OPIEDIR = "${STAGING_LIBDIR}/.."
 
 CXXFLAGS_append = " -DQWS -fno-rtti -fno-exceptions"
 
 #
 # for developing - qmake.oeclass should gather this automatically
 #
-export QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++
+export QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++"
 
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \
@@ -57,5 +57,4 @@ do_install() {
 }
 
 PACKAGES = "libqpe1"
-FILES_${PN}=
-FILES_libqpe1=/opt/QtPalmtop/lib
+FILES_libqpe1 = "/opt/QtPalmtop/lib"

@@ -7,7 +7,7 @@ RDEPENDS = "libc6 libpng jpeg"
 
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/microwindows-${PV}.tar.gz"
 
-export EXTRA_OEMAKE=
+export EXTRA_OEMAKE = ""
 
 do_compile() {
 	if [ "${MACHINE}" = "ipaq" ]; then CONFIG=config.ipaq; fi
@@ -18,12 +18,12 @@ do_compile() {
 	if [ -z "$CONFIG" ]; then CONFIG=config.fb; fi
 
 	cp src/Configs/$CONFIG src/config
-	
-	ARCH=`echo ${TARGET_OS}-${TARGET_ARCH} | tr [a-z] [A-Z]`	
+
+	ARCH=`echo ${TARGET_OS}-${TARGET_ARCH} | tr [a-z] [A-Z]`
 	cd src
 	oe_runmake "ARCH=$ARCH" "TOOLSPREFIX=${TARGET_PREFIX}" "MICROWIN=N" \
 	"MICROWINDEMO=N" "NANOWM=N" "SHAREDLIBS=Y" "DEBUG=N" \
-	"INCJPEG=${STAGING_INCDIR}" "LIBJPEG=${STAGING_LIBDIR}/libjpeg.so" 
+	"INCJPEG=${STAGING_INCDIR}" "LIBJPEG=${STAGING_LIBDIR}/libjpeg.so"
 }
 
 do_stage() {

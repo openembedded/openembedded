@@ -4,7 +4,7 @@ DESCRIPTION = "A daemon for delivering ACPI events."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz"
 
-EXTRA_OEMAKE=
+EXTRA_OEMAKE = ""
 do_compile () {
 	oe_runmake 'CC=${CC}' 'CROSS=${HOST_PREFIX}'
 }

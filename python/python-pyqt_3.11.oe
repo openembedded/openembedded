@@ -73,5 +73,4 @@ do_install() {
     done
 }
 
-FILES_${PN}=
-FILES_${PN}=/usr/lib/python2.3/site-packages
+FILES_${PN} = "/usr/lib/python2.3/site-packages"

@@ -11,17 +11,17 @@ S = "${WORKDIR}/libopie2"
 
 inherit qmake
 
-export QTDIR=${STAGING_LIBDIR}/..
-export OPIEDIR=${STAGING_LIBDIR}/..
+export QTDIR = "${STAGING_LIBDIR}/.."
+export OPIEDIR = "${STAGING_LIBDIR}/.."
 
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read the from a given file
 
-EXTRA_QMAKEVARS_POST= 'DEFINES+=OPIE_WE_VERSION=15'
+EXTRA_QMAKEVARS_POST = " DEFINES+=OPIE_WE_VERSION=15"
 
 #
 # for developing - qmake.oeclass should gather this automatically
 #
-export QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++
+export QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++"
 
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2

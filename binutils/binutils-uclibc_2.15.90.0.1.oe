@@ -1,0 +1,18 @@
+include binutils_${PV}.oe
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}"
+
+# This will ONLY build to this target
+TARGET_VENDOR := "-uclibc"
+TARGET_SYS := "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
+TARGET_PREFIX := "${TARGET_SYS}-"
+
+binutilsbuild_do_patch () {
+	oenote IN binutils patch
+	perl -i -p -e 's,#.*define.*ELF_DYNAMIC_INTERPRETER.*".*",#define ELF_DYNAMIC_INTERPRETER "/lib/ld-uClibc.so.0",;' `grep -lr ELF_DYNAMIC_INTERPRETER *`
+}
+
+python do_patch () {
+	oe.build.exec_func('base_do_patch', d)
+	oe.build.exec_func('binutilsbuild_do_patch', d)
+}
+

@@ -27,11 +27,9 @@ EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-cruft"
 SOV = "0.200.4"
 LIBV = "2.2.0"
 
-gtk_include = gtk.h gtkaccelgroup.h gtkaccellabel.h gtkaccelmap.h gtkaccessible.h gtkadjustment.h gtkalignment.h gtkarrow.h gtkaspectframe.h gtkbbox.h gtkbin.h gtkbindings.h gtkbox.h gtkbutton.h gtkcalendar.h gtkcelleditable.h gtkcellrenderer.h gtkcellrendererpixbuf.h gtkcellrenderertext.h gtkcellrenderertoggle.h gtkcheckbutton.h gtkcheckmenuitem.h gtkclipboard.h gtkclist.h gtkcolorsel.h gtkcolorseldialog.h gtkcombo.h gtkcontainer.h gtkctree.h gtkcurve.h gtkdebug.h gtkdialog.h gtkdnd.h gtkdrawingarea.h gtkeditable.h gtkentry.h gtkenums.h gtkeventbox.h gtkfilesel.h gtkfixed.h gtkfontsel.h gtkframe.h gtkgamma.h gtkgc.h gtkhandlebox.h gtkhbbox.h gtkhbox.h gtkhpaned.h gtkhruler.h gtkhscale.h gtkhscrollbar.h gtkhseparator.h gtkiconfactory.h gtkimage.h gtkimagemenuitem.h gtkimcontext.h gtkimcontextsimple.h gtkimmodule.h gtkimmulticontext.h gtkinputdialog.h gtkinvisible.h gtkitem.h gtkitemfactory.h gtklabel.h gtklayout.h gtklist.h gtklistitem.h gtkliststore.h gtkmain.h gtkmarshal.h gtkmenu.h gtkmenubar.h gtkmenuitem.h gtkmenushell.h gtkmessagedialog.h gtkmisc.h gtknotebook.h gtkobject.h gtkoldeditable.h gtkoptionmenu.h gtkpaned.h gtkpixmap.h gtkplug.h gtkpreview.h gtkprivate.h gtkprogress.h gtkprogressbar.h gtkradiobutton.h gtkradiomenuitem.h gtkrange.h gtkrc.h gtkruler.h gtkscale.h gtkscrollbar.h gtkscrolledwindow.h gtkselection.h gtkseparator.h gtkseparatormenuitem.h gtksettings.h gtksignal.h gtksizegroup.h gtksocket.h gtkspinbutton.h gtkstatusbar.h gtkstock.h gtkstyle.h gtktable.h gtktearoffmenuitem.h gtktext.h gtktextbuffer.h gtktextchild.h gtktextdisplay.h gtktextiter.h gtktextlayout.h gtktextmark.h gtktexttag.h gtktexttagtable.h gtktextview.h gtktipsquery.h gtktogglebutton.h gtktoolbar.h gtktooltips.h gtktree.h gtktreednd.h gtktreeitem.h gtktreemodel.h gtktreemodelsort.h gtktreeselection.h gtktreesortable.h gtktreestore.h gtktreeview.h gtktreeviewcolumn.h gtktypebuiltins.h gtktypeutils.h gtkvbbox.h gtkvbox.h gtkversion.h gtkviewport.h gtkvpaned.h gtkvruler.h gtkvscale.h gtkvscrollbar.h gtkvseparator.h gtkwidget.h gtkwindow.h
-
-gdk_include = gdk.h gdkcolor.h gdkcursor.h gdkdisplay.h gdkdisplaymanager.h gdkdnd.h gdkdrawable.h gdkenumtypes.h gdkevents.h gdkfont.h gdkgc.h gdki18n.h gdkimage.h gdkinput.h gdkkeys.h gdkkeysyms.h gdkpango.h gdkpixbuf.h gdkpixmap.h gdkprivate.h gdkproperty.h gdkregion.h gdkrgb.h gdkscreen.h gdkselection.h gdktypes.h gdkvisual.h gdkwindow.h x11/gdkx.h
-
-gdk_pixbuf_include = gdk-pixbuf-animation.h gdk-pixbuf-enum-types.h gdk-pixbuf-features.h gdk-pixbuf-io.h gdk-pixbuf-loader.h gdk-pixbuf-marshal.h gdk-pixbuf.h gdk-pixdata.h
+gtk_include = "gtk.h gtkaccelgroup.h gtkaccellabel.h gtkaccelmap.h gtkaccessible.h gtkadjustment.h gtkalignment.h gtkarrow.h gtkaspectframe.h gtkbbox.h gtkbin.h gtkbindings.h gtkbox.h gtkbutton.h gtkcalendar.h gtkcelleditable.h gtkcellrenderer.h gtkcellrendererpixbuf.h gtkcellrenderertext.h gtkcellrenderertoggle.h gtkcheckbutton.h gtkcheckmenuitem.h gtkclipboard.h gtkclist.h gtkcolorsel.h gtkcolorseldialog.h gtkcombo.h gtkcontainer.h gtkctree.h gtkcurve.h gtkdebug.h gtkdialog.h gtkdnd.h gtkdrawingarea.h gtkeditable.h gtkentry.h gtkenums.h gtkeventbox.h gtkfilesel.h gtkfixed.h gtkfontsel.h gtkframe.h gtkgamma.h gtkgc.h gtkhandlebox.h gtkhbbox.h gtkhbox.h gtkhpaned.h gtkhruler.h gtkhscale.h gtkhscrollbar.h gtkhseparator.h gtkiconfactory.h gtkimage.h gtkimagemenuitem.h gtkimcontext.h gtkimcontextsimple.h gtkimmodule.h gtkimmulticontext.h gtkinputdialog.h gtkinvisible.h gtkitem.h gtkitemfactory.h gtklabel.h gtklayout.h gtklist.h gtklistitem.h gtkliststore.h gtkmain.h gtkmarshal.h gtkmenu.h gtkmenubar.h gtkmenuitem.h gtkmenushell.h gtkmessagedialog.h gtkmisc.h gtknotebook.h gtkobject.h gtkoldeditable.h gtkoptionmenu.h gtkpaned.h gtkpixmap.h gtkplug.h gtkpreview.h gtkprivate.h gtkprogress.h gtkprogressbar.h gtkradiobutton.h gtkradiomenuitem.h gtkrange.h gtkrc.h gtkruler.h gtkscale.h gtkscrollbar.h gtkscrolledwindow.h gtkselection.h gtkseparator.h gtkseparatormenuitem.h gtksettings.h gtksignal.h gtksizegroup.h gtksocket.h gtkspinbutton.h gtkstatusbar.h gtkstock.h gtkstyle.h gtktable.h gtktearoffmenuitem.h gtktext.h gtktextbuffer.h gtktextchild.h gtktextdisplay.h gtktextiter.h gtktextlayout.h gtktextmark.h gtktexttag.h gtktexttagtable.h gtktextview.h gtktipsquery.h gtktogglebutton.h gtktoolbar.h gtktooltips.h gtktree.h gtktreednd.h gtktreeitem.h gtktreemodel.h gtktreemodelsort.h gtktreeselection.h gtktreesortable.h gtktreestore.h gtktreeview.h gtktreeviewcolumn.h gtktypebuiltins.h gtktypeutils.h gtkvbbox.h gtkvbox.h gtkversion.h gtkviewport.h gtkvpaned.h gtkvruler.h gtkvscale.h gtkvscrollbar.h gtkvseparator.h gtkwidget.h gtkwindow.h"
+gdk_include = "gdk.h gdkcolor.h gdkcursor.h gdkdisplay.h gdkdisplaymanager.h gdkdnd.h gdkdrawable.h gdkenumtypes.h gdkevents.h gdkfont.h gdkgc.h gdki18n.h gdkimage.h gdkinput.h gdkkeys.h gdkkeysyms.h gdkpango.h gdkpixbuf.h gdkpixmap.h gdkprivate.h gdkproperty.h gdkregion.h gdkrgb.h gdkscreen.h gdkselection.h gdktypes.h gdkvisual.h gdkwindow.h x11/gdkx.h"
+gdk_pixbuf_include = "gdk-pixbuf-animation.h gdk-pixbuf-enum-types.h gdk-pixbuf-features.h gdk-pixbuf-io.h gdk-pixbuf-loader.h gdk-pixbuf-marshal.h gdk-pixbuf.h gdk-pixdata.h"
 
 do_stage () {
 	oe_soinstall gtk/.libs/libgtk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/
@@ -40,13 +38,13 @@ do_stage () {
 
 	oe_soinstall gdk/.libs/libgdk-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0644 gdk/.libs/libgdk-x11-2.0.lai ${STAGING_LIBDIR}/libgdk-x11-2.0.la
-	install -m 0644 gdk/.libs/libgdk-x11-2.0.a ${STAGING_LIBDIR}/libgdk-x11-2.0.a	
+	install -m 0644 gdk/.libs/libgdk-x11-2.0.a ${STAGING_LIBDIR}/libgdk-x11-2.0.a
 
 	oe_soinstall gdk-pixbuf/.libs/libgdk-pixbuf-x11-2.0.so.${SOV} ${STAGING_LIBDIR}/
 
-	oe_soinstall gdk-pixbuf/.libs/libgdk_pixbuf-2.0.so.${SOV} ${STAGING_LIBDIR}/ 
+	oe_soinstall gdk-pixbuf/.libs/libgdk_pixbuf-2.0.so.${SOV} ${STAGING_LIBDIR}/
 	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.lai ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.la
-	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.a ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.a	
+	install -m 0644 gdk-pixbuf/.libs/libgdk_pixbuf-2.0.a ${STAGING_LIBDIR}/libgdk_pixbuf-2.0.a
 
 	mkdir -p ${STAGING_INCDIR}/gtk-2.0/gtk
 	for i in ${gtk_include}; do
@@ -90,12 +88,12 @@ python do_package () {
 			if not m:
 				continue
 			on = m.group(1)
-			pkg = format % on	
+			pkg = format % on
 			packages.append(pkg)
 			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
 			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
 			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
-								
+
 		oe.data.setVar('PACKAGES', string.join(packages, ' '), d)
 
 	libdir = oe.data.getVar('libdir', d, 1)

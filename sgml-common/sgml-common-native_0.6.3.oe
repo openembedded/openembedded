@@ -4,7 +4,7 @@ inherit native
 DEPENDS = "patcher-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/sgml-common-${PV}"
 S = "${WORKDIR}/sgml-common-${PV}"
-PACKAGES =
+PACKAGES = ""
 
 do_stage () {
 	install -m 0755 bin/install-catalog ${STAGING_BINDIR}/

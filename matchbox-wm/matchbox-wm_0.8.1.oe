@@ -1,0 +1,20 @@
+DESCRIPTION = "Matchbox window manager"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libmatchbox x11 xext xcomposite xfixes xdamage xrender"
+RDEPENDS = "libc6 libmatchbox x11 xext xcomposite xfixes xdamage xrender"
+
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
+	   file://${FILESDIR}/m4.patch;patch=1"
+S = "${WORKDIR}/matchbox-window-manager-${PV}"
+
+inherit autotools libtool pkgconfig
+
+FILES_${PN} = "${bindir} \
+	       ${datadir}/matchbox \
+	       ${datadir}/themes/blondie/matchbox \
+	       ${datadir}/themes/bluebox/matchbox \
+	       ${datadir}/themes/borillo/matchbox"
+
+EXTRA_OECONF = "--enable-composite"
+#		--enable-startup-notification
+#		--enable-expat

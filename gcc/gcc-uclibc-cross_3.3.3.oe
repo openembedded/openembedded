@@ -1,12 +1,12 @@
 inherit cross
 include gcc-uclibc_${PV}.oe
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils uclibc patcher-native
-PROVIDES := virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++
+DEPENDS = "virtual/${TARGET_PREFIX}binutils uclibc patcher-native"
+PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
-PACKAGES =
+PACKAGES = ""
 
-EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
+EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/local \
                 --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
                 --enable-target-optspace \
                 --disable-nls \
@@ -16,12 +16,12 @@ EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
                 --enable-shared \
 		--enable-threads \
                 --enable-multilib \
-                --program-prefix=${TARGET_PREFIX}
+                --program-prefix=${TARGET_PREFIX}"
 
-export CPPFLAGS =
-export CXXFLAGS =
-export CFLAGS =
-export LDFLAGS =
+export CPPFLAGS = ""
+export CXXFLAGS = ""
+export CFLAGS = ""
+export LDFLAGS = ""
 
 do_configure () {
 	export CC="${BUILD_CC}"

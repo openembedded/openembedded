@@ -16,7 +16,7 @@ EXTRA_OEMAKE_append = " 'prefix=${prefix}' \
 		'mandir=${mandir}' \
 		'hotplugdir=${sysconfdir}/hotplug.d/default' \
 		'configdir=${sysconfdir}/udev/'"
-export LD=${CC}
+export LD = "${CC}"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install

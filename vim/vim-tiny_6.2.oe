@@ -1,10 +1,11 @@
 include vim_${PV}.oe
-EXTRA_OECONF = '--enable-gui=none --disable-gtktest \
-		--disable-xim --with-features=tiny \
-		--disable-gpm --without-x --disable-netbeans \
-		--with-tlib=ncurses'
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/vim-${PV}"
 
-FILES_${PN}=${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
-	    ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
-	    /bin /sbin /lib/*/ /lib/*.so* ${datadir}/vim
+EXTRA_OECONF = "--enable-gui=none --disable-gtktest \
+		--disable-xim --with-features=tiny \
+		--disable-gpm --without-x --disable-netbeans \
+		--with-tlib=ncurses"
+
+FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
+	       ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
+	       /bin /sbin /lib/*/ /lib/*.so* ${datadir}/vim"

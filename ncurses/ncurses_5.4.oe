@@ -22,7 +22,7 @@ EXTRA_OECONF = "--with-shared \
 	        --with-terminfo-dirs=${sysconfdir}/terminfo:${datadir}/terminfo \
 	        --enable-overwrite"
 export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
-export BUILD_LDFLAGS =
+export BUILD_LDFLAGS = ""
 
 do_configure_prepend () {
 	if [ -e aclocal.m4 -a ! -e acinclude.m4 ]; then

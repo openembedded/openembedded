@@ -1,6 +1,6 @@
 include intltool_${PV}.oe
 inherit native
-DEPENDS=
+DEPENDS = ""
 
 do_stage () {
 	install -d ${STAGING_DIR}/share/aclocal

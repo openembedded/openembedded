@@ -8,4 +8,4 @@ SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-${PV}.tar.bz2 \
 
 inherit autotools
 
-EXTRA_OECONF = --disable-ldap
+EXTRA_OECONF = "--disable-ldap"

@@ -11,7 +11,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.orig.tar.gz \
 	   file://${FILESDIR}/udhcpc.patch;patch=1 \
 	   file://${FILESDIR}/zeroconf.patch;patch=1"
 
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 
 do_compile () {
 	chmod a+rx *.pl *.sh

@@ -4,7 +4,8 @@ DESCRIPTION = "A small, C implementation of hotplug."
 
 SRC_URI = "http://www.us.kernel.org/pub/linux/utils/kernel/hotplug/diethotplug-${PV}.tar.gz"
 
-export KLIBC=
+export KLIBC = ""
+
 do_compile () {
 	perl convert_usb.pl ${FILESDIR}/modules.usbmap > usb_modules.h
 	perl convert_pci.pl ${FILESDIR}/modules.pcimap > pci_modules.h

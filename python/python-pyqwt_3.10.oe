@@ -8,7 +8,7 @@ DEPENDS = "virtual/libc virtual/libqte2 python-numeric python-pyqt qwt"
 SRCNAME = "pyqwt"
 
 SRC_URI = "http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
-           file://${FILESDIR}/qt2.x-compat.patch;patch=1               \
+           file://${FILESDIR}/qt2.x-compat.patch;patch=1 \
            file://${FILESDIR}/qtmod-sip-staging.patch;patch=1"
 S = "${WORKDIR}/PyQwt-20040118"
 
@@ -17,7 +17,7 @@ export QTDIR = "${STAGING_LIBDIR}/.."
 EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
                          CONFIG=qte CONFIG+=warn_on CONFIG+=release \
                          DESTDIR=${STAGING_LIBDIR}/python2.3/site-packages \
-                         DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=HAS_NUMERIC\
+                         DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=HAS_NUMERIC \
                          INCLUDEPATH=. INCLUDEPATH+=../numpy \
                          INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
                          INCLUDEPATH+=${STAGING_INCDIR}/ \
@@ -84,6 +84,5 @@ do_install() {
     done
 }
 
-FILES_${PN}=
-FILES_${PN}=/usr/lib/python2.3/site-packages
-
+FILES_${PN} = ""
+FILES_${PN} = "/usr/lib/python2.3/site-packages"

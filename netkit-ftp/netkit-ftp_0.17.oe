@@ -5,7 +5,7 @@ DESCRIPTION = "netkit-ftp includes a commandline ftp client."
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-ftp-${PV}.tar.gz \
 	   file://${FILESDIR}/mconfig.patch;patch=1"
 
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' all
 }

@@ -1,35 +1,34 @@
 include gcc_${PV}.oe
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}"
 
-DESCRIPTION := The GNU cc and gcc C compilers (uclibc).
-LICENSE := GPL
-MAINTAINER := Gerald Britton <gbritton@doomcom.org>
+DESCRIPTION = "The GNU cc and gcc C compilers (uclibc)."
+LICENSE = "GPL"
+MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
 # This will ONLY build to this target
-TARGET_VENDOR := -uclibc
-TARGET_SYS := ${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}
-TARGET_PREFIX := ${TARGET_SYS}-
+TARGET_VENDOR = "-uclibc"
+TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
+TARGET_PREFIX = "${TARGET_SYS}-"
 
-DEPENDS := virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc \
-           uclibc patcher
+DEPENDS = "virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc \
+           uclibc patcher"
 
-PACKAGES = ${PN} ${PN}-symlinks \
+PACKAGES = "${PN} ${PN}-symlinks \
            ${PN}-c++ ${PN}-c++-symlinks \
            uclibc-libgcc uclibc-libstdc++ uclibc-libstdc++-dev \
-           ${PN}-doc
+           ${PN}-doc"
 
 # The rest of these are properly defined in gcc_${PV}.oe
-FILES_uclibc-libgcc = ${FILES_libgcc}
-FILES_uclibc-libstdc++ = ${FILES_libstdc++}
-FILES_uclibc-libstdc++-dev = \
-	${includedir}/c++/${PV}-uclibc \
-	${libdir}/libstdc++.so \
-	${libdir}/libstdc++.la \
-	${libdir}/libstdc++.a \
-	${libdir}/libsupc++.la \
-	${libdir}/libsupc++.a
+FILES_uclibc-libgcc = "${FILES_libgcc}"
+FILES_uclibc-libstdc++ = "${FILES_libstdc++}"
+FILES_uclibc-libstdc++-dev = "${includedir}/c++/${PV}-uclibc \
+			      ${libdir}/libstdc++.so \
+			      ${libdir}/libstdc++.la \
+			      ${libdir}/libstdc++.a \
+			      ${libdir}/libsupc++.la \
+			      ${libdir}/libsupc++.a"
 
-EXTRA_OECONF := --with-local-prefix=${prefix}/local \
+EXTRA_OECONF = "--with-local-prefix=${prefix}/local \
                 --with-gxx-include-dir=${includedir}/c++/${PV}-uclibc \
                 --enable-target-optspace \
                 --disable-nls \
@@ -37,9 +36,9 @@ EXTRA_OECONF := --with-local-prefix=${prefix}/local \
                 --disable-__cxa_atexit \
                 --enable-languages=c,c++ \
                 --enable-shared \
-		--enable-threads \
                 --enable-multilib \
-                --program-prefix=${TARGET_PREFIX}
+		--enable-threads=posix \
+                --program-prefix=${TARGET_PREFIX}"
 
 gccbuild_do_patch () {
 	#

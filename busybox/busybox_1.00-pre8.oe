@@ -1,19 +1,19 @@
 LICENSE = "GPL"
-SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz"
 DEPENDS = "virtual/libc"
-DESCRIPTION = "BusyBox version ${PV}.\
- BusyBox combines tiny versions of many common UNIX utilities into a single\
- small executable. It provides minimalist replacements for most of the\
- utilities you usually find in GNU fileutils, shellutils, etc. The utilities\
- in BusyBox generally have fewer options than their full-featured GNU\
- cousins; however, the options that are included provide the expected\
- functionality and behave very much like their GNU counterparts. BusyBox\
- provides a fairly complete POSIX environment for any small or embedded\
- system.
-	
+DESCRIPTION = "BusyBox version ${PV}. \
+BusyBox combines tiny versions of many common UNIX utilities into a single \
+small executable. It provides minimalist replacements for most of the \
+utilities you usually find in GNU fileutils, shellutils, etc. The utilities \
+in BusyBox generally have fewer options than their full-featured GNU \
+cousins; however, the options that are included provide the expected \
+functionality and behave very much like their GNU counterparts. BusyBox \
+provides a fairly complete POSIX environment for any small or embedded \
+system."
+
+SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz"
 S = "${WORKDIR}/busybox-${PV}"
-export EXTRA_CFLAGS="${CFLAGS}"
-EXTRA_OEMAKE_append=' CROSS=${HOST_PREFIX}'
+export EXTRA_CFLAGS = "${CFLAGS}"
+EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 
 inherit cml1
 

@@ -1,6 +1,6 @@
 include mtd.oe
 inherit native
-DEPENDS = 
+DEPENDS = "patcher-native"
 
 do_stage () {
 	for binary in ftl_format erase eraseall nanddump doc_loadbios \

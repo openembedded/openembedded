@@ -6,15 +6,12 @@ SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/match
 
 inherit autotools libtool pkgconfig
 
-FILES_${PN} = \
-	${bindir} \
-	${datadir}/applications \
-	${datadir}/matchbox/desktop/modules/*.so \
-	${datadir}/matchbox-desktop \
-	${datadir}/pixmaps
+FILES_${PN} = "${bindir} \
+	       ${datadir}/applications \
+	       ${datadir}/matchbox/desktop/modules/*.so \
+	       ${datadir}/matchbox-desktop \
+	       ${datadir}/pixmaps"
 
-FILES_${PN}-dev = \
-	${libdir}/matchbox-desktop \
-	${includedir}/matchbox-desktop \
-	${datadir}/matchbox/desktop/modules/*a
-
+FILES_${PN}-dev = "${libdir}/matchbox-desktop \
+		   ${includedir}/matchbox-desktop \
+		   ${datadir}/matchbox/desktop/modules/*a"

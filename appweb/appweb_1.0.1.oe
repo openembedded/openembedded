@@ -48,20 +48,20 @@ python do_patch () {
 #       --enable-ssl
 #       --enable-session
 
-APPWEB_TARGET = ${TARGET_ARCH}
-APPWEB_OS = ${TARGET_OS}
-APPWEB_OS_linux = LINUX
-EXTRA_OECONF = '--os ${APPWEB_OS} --target ${APPWEB_TARGET} \
+APPWEB_TARGET = "${TARGET_ARCH}"
+APPWEB_OS = "${TARGET_OS}"
+APPWEB_OS_linux = "LINUX"
+EXTRA_OECONF = "--os ${APPWEB_OS} --target ${APPWEB_TARGET} \
 		--enable-keep-alive \
 		--enable-multi-thread \
 		--enable-cgi \
 		--enable-cookie \
 		--enable-config \
 		--enable-digest-auth \
-		--disable-ssl'
+		--disable-ssl"
 EXTRA_OEMAKE = "'CC=${CC}' 'AR=${AR}' 'CPP=${CXX}' 'LD=${CC}'"
 
-export LD_LIBRARY_PATH=${S}/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH = "${S}/lib:${LD_LIBRARY_PATH}"
 do_configure () {
 	./configure ${EXTRA_OECONF}
 }

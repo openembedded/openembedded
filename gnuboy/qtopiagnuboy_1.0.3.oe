@@ -9,7 +9,7 @@ SRC_URI = "http://www.warmi.net/zaurus/files/gnuboy-${PV}-qtopia3.tar.gz \
            file://${FILESDIR}/gcc3.patch;patch=1"
 S = "${WORKDIR}/gnuboy"
 
-FILES =
+FILES = ""
 FILES_${PN} = "/opt/QtPalmtop"
 
 QMAKE = "${STAGING_BINDIR}/qmake"

@@ -1,11 +1,11 @@
 include glibc_${PV}.oe
 
-DEPENDS =
+DEPENDS = ""
 PROVIDES = "virtual/glibc-headers"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-${PV}"
 S = "${WORKDIR}/glibc-${PV}"
 
-PACKAGES =
+PACKAGES = ""
 
 do_configure () {
 	sed -ie 's,{ (exit 1); exit 1; }; },{ (exit 0); }; },g' ${S}/configure

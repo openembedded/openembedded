@@ -36,7 +36,7 @@ inherit kernel
 MEM = "32"
 RD = "32"
 CMDLINE = "root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
-EXTRA_OEMAKE =
+EXTRA_OEMAKE = ""
 
 do_configure_prepend() {
         install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config

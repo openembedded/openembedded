@@ -13,10 +13,10 @@ sysconfdir = "/etc/apache"
 
 inherit autotools libtool
 
-FILES_${PN}=${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
-	    ${libdir}/*/ ${basesysconfdir} ${sharedstatedir} ${localstatedir} \
-	    /bin /sbin /lib/*/ /lib/*.so* ${datadir}/${PN} ${datadir}/htdocs \
-	    ${datadir}/icons ${datadir}/cgi-bin ${datadir}/error /var
+FILES_${PN}="${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
+	     ${libdir}/*/ ${basesysconfdir} ${sharedstatedir} ${localstatedir} \
+	     /bin /sbin /lib/*/ /lib/*.so* ${datadir}/${PN} ${datadir}/htdocs \
+	     ${datadir}/icons ${datadir}/cgi-bin ${datadir}/error /var"
 
 CFLAGS_append = " -DPATH_MAX=4096"
 CFLAGS_prepend = "-I${STAGING_INCDIR}/openssl "

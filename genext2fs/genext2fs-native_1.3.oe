@@ -1,12 +1,12 @@
 include genext2fs_${PV}.oe
 inherit native
 FILESDIR = "${TOPDIR}/genext2fs/genext2fs-${PV}"
-DEPENDS = 
+DEPENDS = ""
 
 do_stage () {
 	install -m 0755 genext2fs ${STAGING_BINDIR}/
 }
 
 do_install () {
-	true
+	:
 }

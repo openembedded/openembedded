@@ -3,12 +3,12 @@ RDEPENDS = "libc6"
 DEPENDS = "virtual/libc tslib xproto-cvs xdmcp-cvs xextensions-cvs xtrans-cvs xau-cvs x11-cvs xext-cvs randr-cvs render-cvs xrender-cvs xrandr-cvs fixesext-cvs damageext-cvs xfont-cvs resourceext-cvs compositeext-cvs"
 PROVIDES = "xserver"
 PACKAGES = "xserver-kdrive-fbdev xserver-kdrive-ati ${PN}-doc ${PN}-dev ${PN}-locale"
-DESCRIPTION = 'X server from freedesktop.org'
-DESCRIPTION_xserver-kdrive-ati = 'X server from freedesktop.org, supporting ATI devices'
-DESCRIPTION_xserver-kdrive-fbdev = 'X server from freedesktop.org, supporting generic framebuffer devices'
+DESCRIPTION = "X server from freedesktop.org"
+DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
+DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
 
-FILES_xserver-kdrive-fbdev = ${bindir}/Xfbdev
-FILES_xserver-kdrive-ati = ${bindir}/Xati
+FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
+FILES_xserver-kdrive-ati = "${bindir}/Xati"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver"
 S = "${WORKDIR}/xserver"

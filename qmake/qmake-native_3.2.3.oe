@@ -9,14 +9,14 @@ S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 inherit autotools native
 
-export QTDIR=${S}
+export QTDIR = "${S}"
 
-ARCH_i686=x86
+ARCH_i686 = "x86"
 
-EXTRA_OECONF = -static -no-gif -no-sm -system-zlib -system-libjpeg -system-libpng -no-thread -no-nis -no-cups -no-stl		\
-               -disable-styles -disable-tools -disable-kernel -disable-widgets -disable-dialogs -disable-iconview     		\
-               -disable-workspace -disable-network -disable-canvas -disable-table -disable-xml -disable-opengl -disable-sql
-EXTRA_OEMAKE=-e
+EXTRA_OECONF = "-static -no-gif -no-sm -system-zlib -system-libjpeg -system-libpng -no-thread -no-nis -no-cups -no-stl \
+                -disable-styles -disable-tools -disable-kernel -disable-widgets -disable-dialogs -disable-iconview \
+                -disable-workspace -disable-network -disable-canvas -disable-table -disable-xml -disable-opengl -disable-sql"
+EXTRA_OEMAKE = "-e"
 
 do_configure() {
         if [ "$BUILD_ARCH" = "i686" ]; then

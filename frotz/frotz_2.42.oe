@@ -10,8 +10,8 @@ do_configure() {
 	rm -f ${SourceTree}/frotz.conf
 }
 
+EXTRA_OEMAKE = "CC='${CC}' INCL='${CFLAGS}' LIB='${LDFLAGS}' PREFIX=${prefix} CONFIG_DIR=${sysconfdir}"
 
-EXTRA_OEMAKE = CC="${CC}" INCL="${CFLAGS}" LIB="${LDFLAGS}" PREFIX=${prefix} CONFIG_DIR=${sysconfdir}
 do_compile() {
 	oe_runmake frotz
 	sed 's/^[a-z]/#&/' frotz.conf-big > frotz.conf;

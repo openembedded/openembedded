@@ -1,13 +1,13 @@
 include modutils_${PV}.oe
 inherit cross
 S = "${WORKDIR}/modutils-${PV}"
-DEPENDS=
+DEPENDS = "patcher-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/modutils-${PV}-${PR}"
-PACKAGES =
+PACKAGES = ""
 
 sbindir = "${prefix}/bin"
 
-EXTRA_OECONF_append = ' --program-prefix=${TARGET_PREFIX}'
+EXTRA_OECONF_append = " --program-prefix=${TARGET_PREFIX}"
 
 do_stage () {
         oe_runmake install
@@ -16,4 +16,3 @@ do_stage () {
 do_install () {
         :
 }
-

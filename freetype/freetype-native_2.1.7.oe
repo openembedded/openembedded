@@ -7,7 +7,7 @@ inherit autotools pkgconfig native
 DEPENDS = "patcher-native"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/freetype-${PV}"
 S = "${WORKDIR}/freetype-${PV}"
-PACKAGES =
+PACKAGES = ""
 
 do_configure () {
 	oe_runconf
