@@ -1,6 +1,7 @@
 export IMAGE_BASENAME = "mythfront-image"
 
 IMAGE_ROOTFS_SIZE_ext2 = "90000"
+IMAGE_ROOTFS_SIZE_ext2.gz = "90000"
 IMAGE_LINGUAS = ""
 
 MYTHFRONT_PACKAGES = "task-bootstrap task-mythfront"
