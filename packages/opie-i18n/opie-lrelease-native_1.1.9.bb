@@ -4,9 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc3-native"
+PR = "r0"
 
-
-
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/development/translation/opie-lrelease \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/development/translation/shared"
 

@@ -4,8 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-lrelease-native"
+PR = "r0"
 
-
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/i18n \
 	   ${HANDHELDS_CVS};tag=${TAG};module=opie/etc/dict"
 S = "${WORKDIR}/i18n"
