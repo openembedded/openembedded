@@ -2,13 +2,15 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r1"
+PR = "r2"
 
 KERNEL_SUFFIX = "openslug"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.9.tar.bz2 \
            file://nslu2_2.6.9.patch;patch=1 \
 	   file://double_cpdo.patch;patch=1 \
+	   file://alignment.patch;patch=1 \
+	   file://usbnet.patch;patch=1 \
            file://defconfig \
            file://x1205-rtc.c \
            file://nslu2-io.c \

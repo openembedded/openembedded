@@ -1,0 +1,61 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- cpio-2.5/Makefile.in~install.patch
++++ cpio-2.5/Makefile.in
+@@ -70,6 +70,7 @@
+ # Prefix for each installed man page, normally empty or `g'.
+ manprefix = 
+ 
++DESTDIR =
+ 
+ # Where to install the cpio and mt executables.
+ bindir = @bindir@
+@@ -123,19 +124,19 @@
+ 	$(CC) -c $(CPPFLAGS) $(DEFS) -I$(srcdir) $(CFLAGS) $<
+ 
+ install:: installdirs all $(srcdir)/cpio.1 $(srcdir)/mt.1
+-	$(INSTALL_PROGRAM) cpio $(bindir)/$(binprefix)cpio
+-	test ! -f mt || $(INSTALL_PROGRAM) mt $(bindir)/$(binprefix)mt
+-	-test ! -f rmt || $(INSTALL_PROGRAM) rmt $(libexecdir)/rmt
+-	-$(INSTALL_DATA) $(srcdir)/cpio.1 $(mandir)/$(manprefix)cpio.$(manext)
+-	-test ! -f mt || $(INSTALL_DATA) $(srcdir)/mt.1 $(mandir)/$(manprefix)mt.$(manext)
++	$(INSTALL_PROGRAM) -D cpio $(DESTDIR)$(bindir)/$(binprefix)cpio
++	test ! -f mt || $(INSTALL_PROGRAM) -D mt $(DESTDIR)$(bindir)/$(binprefix)mt
++	-test ! -f rmt || $(INSTALL_PROGRAM) -D rmt $(DESTDIR)$(libexecdir)/rmt
++	-$(INSTALL_DATA) -D $(srcdir)/cpio.1 $(DESTDIR)$(mandir)/$(manprefix)cpio.$(manext)
++	-test ! -f mt || $(INSTALL_DATA) -D $(srcdir)/mt.1 $(DESTDIR)$(mandir)/$(manprefix)mt.$(manext)
+ 
+ installdirs:
+-	$(srcdir)/mkinstalldirs $(bindir) $(libexecdir) $(mandir) $(infodir)
++	$(srcdir)/mkinstalldirs $(DESTDIR)/$(bindir) $(DESTDIR)/$(libexecdir) $(DESTDIR)/$(mandir) $(DESTDIR)/$(infodir)
+ 
+ uninstall::
+-	cd $(bindir); rm -f $(binprefix)cpio $(binprefix)mt
+-	-rm -f $(libexecdir)/rmt
+-	cd $(mandir); rm -f $(manprefix)cpio.$(manext) $(manprefix)mt.$(manext)
++	cd $(DESTDIR)$(bindir); rm -f $(binprefix)cpio $(binprefix)mt
++	-rm -f $(DESTDIR)$(libexecdir)/rmt
++	cd $(DESTDIR)$(mandir); rm -f $(manprefix)cpio.$(manext) $(manprefix)mt.$(manext)
+ 
+ check:
+ 	@echo No tests are supplied.
+@@ -186,14 +187,14 @@
+ 
+ install-info: $(INFO_DEPS)
+ 	for file in *.info*; do \
+-	  $(INSTALL_DATA) $$file $(infodir)/$$file; \
++	  $(INSTALL_DATA) -D $$file $(DESTDIR)$(infodir)/$$file; \
+ 	done
+ 
+ uninstall:: uninstall-info
+ 
+ uninstall-info:
+ 	for file in *.info*; do \
+-	  rm -f $(infodir)/$$file; \
++	  rm -f $(DESTDIR)$(infodir)/$$file; \
+ 	done
+ 
+ clean:

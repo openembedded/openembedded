@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# Set or seach for target disk
+
+if [ $# -gt 1 ] ; then
+    echo "Usage: $0 [flash|hdd|flash-data|hdd-data]"
+    exit 1
+fi
+
+if [ $# -eq 1 ] ; then
+    if [ "$1" = "flash-data" ] ; then
+	targ=/share/flash/data
+    elif [ "$1" = "hdd-data" ] ; then
+	targ=/share/hdd/data
+    elif [ "$1" = "flash" ] ; then
+	targ=/share/flash/conf
+    elif [ "$1" = "hdd" ] ; then
+	targ=/share/hdd/conf
+    else
+	echo "Usage: $0 [flash|hdd|flash-data|hdd-data]"
+	exit 1
+    fi
+elif [ -d /share/hdd/conf/lost+found ] ; then
+    targ=/share/hdd/conf
+elif [ -d /share/flash/conf/lost+found ] ; then
+    targ=/share/flash/conf
+else
+    echo "Cannot locate target disk"
+    exit 1
+fi
+
+# Check it's a real mount point
+
+if grep $targ /proc/mounts >/dev/null 2>&1 ; then
+    echo "Target disk is $targ"
+else
+    echo "Error: $targ is not a mounted disk"
+    exit 1
+fi
+
+# Start at the root directory
+
+cd /
+
+# Ensure /opt is there.
+
+if [ ! -d $targ/opt ] ; then
+    echo "Creating new /opt directory on target disk."
+    mkdir -p $targ/opt
+else
+    echo "Preserving existing /opt directory on target disk."
+fi
+  
+if [ -d /opt -a ! -h /opt ] ; then
+    echo "Copying existing /opt directory from root disk to target disk."
+    tar cf - opt | ( cd $targ ; tar xf - )
+    mv /opt /opt.old
+fi
+
+echo "Linking /opt directory from target disk to root disk."
+rm -f /opt ; ln -s $targ/opt /opt
+
+# Ensure /usr/lib/ipkg is there.
+
+if [ ! -d $targ/usr/lib/ipkg ] ; then
+    echo "Creating new /usr/lib/ipkg directory on target disk."
+    mkdir -p $targ/usr/lib/ipkg
+fi
+  
+if [ ! -f $targ/usr/lib/ipkg/status -a -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
+    echo "Copying existing /usr/lib/ipkg directory from root disk to target disk."
+    tar cf - usr/lib/ipkg | ( cd $targ ; tar xf - )
+else
+    echo "Preserving existing ipkg database on target disk."
+fi
+
+if [ -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
+    echo "Saving /usr/lib/ipkg directory on root disk in /usr/lib/ipkg.old"
+    rm -rf /usr/lib/ipkg.old
+    mv /usr/lib/ipkg /usr/lib/ipkg.old
+fi
+
+echo "Linking /usr/lib/ipkg directory from target disk to root disk."
+rm -f /usr/lib/ipkg ; ln -s $targ/usr/lib/ipkg /usr/lib/ipkg
+
+exit 0

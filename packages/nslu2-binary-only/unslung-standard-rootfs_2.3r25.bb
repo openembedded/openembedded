@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r40"
+PR = "r41"
 
 UNSLUNG_VERSION = "3.18-beta"
 UNSLUNG_VARIANT ?= "standard"
@@ -11,6 +11,7 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-rootfs-${PV}/${UNS
 
 SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://README \
+	   file://NOTES \
 	   file://linuxrc \
 	   file://unsling \
 	   file://resling \
@@ -37,8 +38,8 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://remount-noatime.patch;patch=1 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
-	   file://maintmode.cgi file://upgrade-maint.htm file://upgrade-nomaint.htm \
 	   file://tmp-permissions.patch;patch=1 \
+	   file://maintmode.cgi file://upgrade-maint.htm file://upgrade-nomaint.htm \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r25"
@@ -70,6 +71,7 @@ do_compile () {
 
 	install -d ${S}/opt/doc
 	install -m 755 ${WORKDIR}/README ${S}/opt/doc/README
+	install -m 755 ${WORKDIR}/NOTES ${S}/opt/doc/NOTES
 	ln -s /opt/doc ${S}/home/httpd/html/Unslung
 
 	# Remove the libraries, because they are in nslu2-linksys-libs now
@@ -90,7 +92,7 @@ do_compile () {
 }
 
 do_install () {
-	( cd ${S} ; tar -c -v -f - --exclude '*\~*' --exclude '.patches' . ) | ( cd ${D} ; tar xvf - )
+	( cd ${S} ; tar -c -v -f - --exclude '.pc' --exclude 'patches' . ) | ( cd ${D} ; tar xvf - )
 }
 
 PACKAGES = "${PN}"
