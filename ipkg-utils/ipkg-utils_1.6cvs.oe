@@ -1,32 +1,37 @@
-PV_append = "${CVSDATE}"
-PR = "r1"
 DESCRIPTION = "Itsy Package Manager utilities"
 DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
-#DEPENDS = "virtual/libc"
 RDEPENDS = "python"
+PV_append = "${CVSDATE}"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils"
 S = "${WORKDIR}/ipkg-utils"
 
-INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg.py"
+INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg-link ipkg.py"
 
 do_compile() {
 	oe_runmake ipkg-compare-versions
 }
 
 do_stage() {
-	for i in $INSTALL; do
-		install $i ${STAGING_BINDIR}
+	for i in ${INSTALL}
+	do
+		install -m 0755 $i ${STAGING_BINDIR}
 	done
 }
 
 do_install() {
 	install -d ${D}${bindir}
-	for i in $INSTALL; do
-		install $i ${D}${bindir}
+	for i in ${INSTALL}
+	do
+		install -m 0755 $i ${D}${bindir}
 	done
 }
+
+PACKAGES_prepend = "ipkg-link "
+FILES_ipkg-link = "${bindir}/ipkg-link"
+
