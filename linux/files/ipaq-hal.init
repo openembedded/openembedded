@@ -1,0 +1,8 @@
+#!/bin/sh
+
+modprobe ipaq_hal || exit 0
+
+if [ -d /proc/hal ]; then
+  model=`cat /proc/hal/model`
+  modprobe ipaq_hal_$model
+fi
