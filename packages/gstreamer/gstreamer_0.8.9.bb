@@ -3,7 +3,7 @@ PR = "r0"
 
 DESCRIPTION = "GStreamer is a multimedia framework for encoding and decoding video and sound. \
 It supports a wide range of formats including mp3, ogg, avi, mpeg and quicktime."
-DEPENDS = "glib-2.0 gettext-native popt"
+DEPENDS = "glib-2.0 gettext-native popt libxml2"
 SECTION = "base"
 PRIORITY = "optional"
 
@@ -14,7 +14,7 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-${PV}.tar.bz
 	file://libm.patch;patch=1 \
 	file://gstreamer.xsession"
 
-EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-loadsave --disable-registry"
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-loadsave"
 
 inherit autotools pkgconfig
 
