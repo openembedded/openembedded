@@ -10,7 +10,7 @@ system."
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r6"
+PR = "r7"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \

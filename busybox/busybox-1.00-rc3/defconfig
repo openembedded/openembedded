@@ -22,7 +22,7 @@ CONFIG_FEATURE_DEVPTS=y
 # Build Options
 #
 # CONFIG_STATIC is not set
-# CONFIG_LFS is not set
+CONFIG_LFS=y
 # USING_CROSS_COMPILER is not set
 EXTRA_CFLAGS_OPTIONS=""
 
@@ -137,6 +137,7 @@ CONFIG_TEST=y
 #
 # test (forced enabled for use with shell)
 #
+# CONFIG_FEATURE_TEST_64 is not set
 CONFIG_TOUCH=y
 CONFIG_TR=y
 CONFIG_TRUE=y
@@ -253,6 +254,7 @@ CONFIG_XARGS=y
 # CONFIG_ADDUSER is not set
 # CONFIG_DELUSER is not set
 # CONFIG_GETTY is not set
+CONFIG_FEATURE_U_W_TMP=y
 # CONFIG_LOGIN is not set
 # CONFIG_PASSWD is not set
 # CONFIG_SU is not set
