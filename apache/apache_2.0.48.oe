@@ -17,7 +17,18 @@ EXTRA_OECONF = '--enable-ssl --with-ssl=${STAGING_DIR}/target \
 	        --with-z=${STAGING_DIR}/target --with-dbm=db3'
 
 do_configure () {
-	./buildconf
+	(cd srclib/apr && ./buildconf)
+	(cd srclib/apr-util && ./buildconf)
+
+	cp srclib/apr/build/config.guess srclib/apr/build/config.sub \
+	   srclib/apr/build/PrintPath srclib/apr/build/apr_common.m4 \
+	   srclib/apr/build/find_apr.m4 $apu_src_dir/build/find_apu.m4 build
+
+	(cd srclib/pcre && autoconf)
+
+	aclocal -I build
+	autoheader
+	autoconf
 	oe_runconf
 }
 
