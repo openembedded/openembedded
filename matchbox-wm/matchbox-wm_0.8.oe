@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox x11 xext xcomposite xfixes xdamage xrender"
+DEPENDS = "libmatchbox x11 xext xcomposite xfixes xdamage xrender gconf"
 RDEPENDS = "libmatchbox"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/${PV}/matchbox-window-manager-${PV}.tar.bz2 \
