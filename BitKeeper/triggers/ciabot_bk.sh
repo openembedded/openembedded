@@ -64,5 +64,3 @@ cat <<EOF
 </message>
 EOF
 ) | $sendmail_command
-
-### The End ###
