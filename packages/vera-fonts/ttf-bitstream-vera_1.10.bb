@@ -1,0 +1,33 @@
+DESCRIPTION = "The Bitstream Vera fonts - TTF Edition"
+SECTION = "x11/fonts"
+PRIORITY = "optional"
+LICENSE = "GPL"
+PR = "r1"
+
+SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-${PV}.tar.bz2" 
+
+do_install () { 
+        install -d ${D}${prefix}/share/fonts/ttf/ 
+        for i in *.ttf; do 
+                install -m 644 $i ${D}${prefix}/share/fonts/ttf/${i} 
+        done 
+
+	# fontconfig ships this too.  not sure what to do about it.
+        #install -d ${D}/etc/fonts 
+        #install -m 644 local.conf ${D}/etc/fonts/local.conf 
+
+
+        install -d ${D}${prefix}/share/doc/${PN}/ 
+        for i in *.TXT; do 
+                install -m 644 $i ${D}${prefix}/share/doc/${PN}/$i 
+        done 
+} 
+
+pkg_postinst () {
+#!/bin/sh
+fc-cache
+}
+
+PACKAGE_ARCH = "all"
+
+FILES_${PN} = "/etc /usr/share/fonts"

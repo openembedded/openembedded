@@ -1,7 +1,8 @@
 DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
 SECTION = "opie/fonts"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono.tar.gz"
 S = "${WORKDIR}/verasansmono"
@@ -26,7 +27,25 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
-PACKAGES = "qpf-bitstream-vera-sans-mono-small qpf-bitstream-vera-sans-mono-large qpf-bitstream-vera-sans-mono-huge"
-FILES_qpf-bitstream-vera-sans-mono-small = "${palmqtdir}/lib/fonts/verasansmono_1*"
-FILES_qpf-bitstream-vera-sans-mono-large = "${palmqtdir}/lib/fonts/verasansmono_2*"
+PACKAGE_ARCH = "all"
+
+PACKAGES = "\
+qpf-bitstream-vera-sans-mono-small \
+qpf-bitstream-vera-sans-mono-large \
+qpf-bitstream-vera-sans-mono-larger \
+qpf-bitstream-vera-sans-mono-huge"
+
+FILES_qpf-bitstream-vera-sans-mono-small = "\
+${palmqtdir}/lib/fonts/verasansmono_10* \
+	${palmqtdir}/lib/fonts/verasansmono_11* \
+	${palmqtdir}/lib/fonts/verasansmono_12* \
+	${palmqtdir}/lib/fonts/verasansmono_13* \
+	${palmqtdir}/lib/fonts/verasansmono_14*"
+FILES_qpf-bitstream-vera-sans-mono-large = "\
+	${palmqtdir}/lib/fonts/verasansmono_15*" \
+	${palmqtdir}/lib/fonts/verasansmono_16* \
+	${palmqtdir}/lib/fonts/verasansmono_17* \
+	${palmqtdir}/lib/fonts/verasansmono_18* \
+	${palmqtdir}/lib/fonts/verasansmono_19*"
+FILES_qpf-bitstream-vera-sans-mono-larger = "${palmqtdir}/lib/fonts/verasansmono_2*"
 FILES_qpf-bitstream-vera-sans-mono-huge = "${palmqtdir}/lib/fonts/verasansmono_3*"
