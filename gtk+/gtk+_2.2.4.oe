@@ -68,8 +68,9 @@ do_stage () {
 }
 
 python do_package () {
+	import string
 	def do_split(root, pattern, format, description):
-		dvar = data.getVar('D', d, 1)
+		dvar = oe.data.getVar('D', d, 1)
 		if not dvar:
 			oe.error("D not defined")
 			return
@@ -89,18 +90,18 @@ python do_package () {
 			on = m.group(1)
 			pkg = format % on	
 			packages.append(pkg)
-			data.setVar('FILES_' + pkg, os.path.join(root, o), d)
-			data.setVar('RDEPENDS_' + pkg, mainpkg, d)
-			data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
+			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
 								
-		data.setVar('PACKAGES', string.join(packages, ' '), d)
+		oe.data.setVar('PACKAGES', string.join(packages, ' '), d)
 
-	libdir = data.getVar('libdir', d, 1)
+	libdir = oe.data.getVar('libdir', d, 1)
 	if not libdir:
 		oe.error("libdir not defined")
 		return
 
-	gtk_libdir = os.path.join(libdir, "gtk-2.0", data.getVar('LIBV', d))
+	gtk_libdir = os.path.join(libdir, "gtk-2.0", oe.data.getVar('LIBV', d))
 	loaders_root = os.path.join(gtk_libdir, 'loaders')
 	immodules_root = os.path.join(gtk_libdir, 'immodules')
 
