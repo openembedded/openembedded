@@ -28,7 +28,8 @@ do_configure() {
 	for i in config.sh-*-linux; do
 		a="`echo $i|sed -e 's,^config.sh-,,; s,-linux$,,'`"
 		newfile="`echo $i|sed -e 's,-linux$,-linux-uclibc,g'`"
-		cat $i | sed -e "s,${a}-linux,${a}-linux-uclibc,g" > $newfile
+		cat $i | sed -e "s,${a}-linux,${a}-linux-uclibc,g; \
+				 s,d_sockatmark='define',d_sockatmark='undef',g;" > $newfile
 	done
 	sed -i -e 's,./install_me_here,${D},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
 	rm -f config
