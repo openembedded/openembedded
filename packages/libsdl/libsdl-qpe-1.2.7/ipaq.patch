@@ -1,0 +1,130 @@
+diff -urNd SDL-1.2.7_clean/src/video/qtopia/Makefile.am SDL-1.2.7/src/video/qtopia/Makefile.am
+--- SDL-1.2.7_clean/src/video/qtopia/Makefile.am	2005-01-27 23:51:00.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-01-27 23:55:28.000000000 +0200
+@@ -20,4 +20,4 @@
+ # overwrite USER variables
+ CXXLD = $(CC)
+ CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+-	$(AM_LDFLAGS) $(LDFLAGS) -lsupc++ -o $@
++	$(AM_LDFLAGS) $(LDFLAGS) -lopiecore2 -lsupc++ -o $@
+diff -urNd SDL-1.2.7_clean/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+--- SDL-1.2.7_clean/src/video/qtopia/SDL_QWin.cc	2005-01-27 23:50:59.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-01-27 23:53:37.000000000 +0200
+@@ -29,8 +29,11 @@
+ #include "SDL_QWin.h"
+ #include <qapplication.h>
+ #include <qpe/qpeapplication.h>
++#include <opie2/odevice.h>
+ #include <qdirectpainter_qws.h>
+ 
++using namespace Opie::Core;
++ 
+ extern int fb_hwrot;
+ extern int fb_direct;
+ extern bool is_VGA_machine;
+@@ -545,18 +548,32 @@
+     case Qt::Key_F7: scancode = SDLK_F7; break;
+     case Qt::Key_F8: scancode = SDLK_F8; break;
+     case Qt::Key_F9: 
+-      scancode = SDLK_F9;
+-      mouse_button_mode=1;
++      if ( ODevice::inst ( )-> series ( ) == Model_iPAQ ) {
++        scancode = SDLK_y; }
++      else {
++        scancode = SDLK_F9;
++        mouse_button_mode=1; }
+       break;
+     case Qt::Key_F10:
+-      scancode = SDLK_F10;
+-      mouse_button_mode=2;
++      if ( ODevice::inst ( )-> series ( ) == Model_iPAQ ) {
++        scancode = SDLK_LALT; }
++      else {
++        scancode = SDLK_F10;
++        mouse_button_mode=2; }
+       break;
+     case Qt::Key_F11: scancode = SDLK_F11; break;
+-    case Qt::Key_F12: scancode = SDLK_F12; break;
++    case Qt::Key_F12:
++      if ( ODevice::inst ( )-> series ( ) == Model_iPAQ ) {
++        scancode = SDLK_RETURN; }
++      else {	
++        scancode = SDLK_F12; }
++      break;
+     case Qt::Key_F13:
+-      scancode = SDLK_F13;
+-      mouse_button_mode=3;
++      if ( ODevice::inst ( )-> series ( ) == Model_iPAQ ) {
++        scancode = SDLK_ESCAPE; }
++      else {
++	scancode = SDLK_F13;
++	mouse_button_mode=3; }
+       break;
+     case Qt::Key_F14: scancode = SDLK_F14; break;
+     case Qt::Key_F15: scancode = SDLK_F15; break;
+@@ -573,6 +590,9 @@
+       scancode = SDLK_RETURN;
+       break;
+ 
++    // To use record button on ipaq
++    case Qt::Key_F24: scancode = SDLK_LSHIFT; break;
++      
+     default:
+       scancode = SDLK_UNKNOWN;
+       break;
+diff -urNd SDL-1.2.7_clean/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+--- SDL-1.2.7_clean/src/video/qtopia/SDL_sysvideo.cc	2005-01-27 23:50:58.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-01-27 23:53:37.000000000 +0200
+@@ -106,6 +106,9 @@
+     MACHINE_SHARP_SLC760,
+     MACHINE_SHARP_SLC860,
+     MACHINE_SHARP_SL6000,
++    MACHINE_HP_H3600,
++    MACHINE_HP_H3900,
++    MACHINE_HP_H5400,
+     MACHINE_MAX
+   } machine_t;
+ 
+@@ -119,6 +122,9 @@
+     { "Sharp", "SL-C760", 0 },
+     { "Sharp", "SL-C860", 0 },
+     { "Sharp", "SL-6000", 0 },
++    { "HP", "H3600", 0},
++    { "HP", "H3900", 0},
++    { "HP", "H5400", 0},
+   };
+ 
+   /* Name of the environment variable used to invert the screen rotation or not:
+@@ -423,6 +429,17 @@
+           machine = MACHINE_SHARP_SLC760;
+         else if (strstr(buf, "SHARP Boxer") != NULL)
+           machine = MACHINE_SHARP_SLC860;
++        else if (strstr(buf, "H3600") != NULL)
++          machine = MACHINE_HP_H3600;
++        else if (strstr(buf, "H3900") != NULL)
++          machine = MACHINE_HP_H3900;
++        else if (strstr(buf, "H5400") != NULL)
++          machine = MACHINE_HP_H5400;
++	else
++          {
++          machine = MACHINE_SHARP_SL5000D;
++          LOG("Can't detect machine defaulting to SL5000D");
++          }
+       }
+       fclose(fp);
+     } else {
+@@ -679,6 +696,14 @@
+     if (machine == MACHINE_SHARP_SL5500)
+       qteRotation = 3;
+ 
++    // H3900
++    if (machine == MACHINE_HP_H3900)
++      qteRotation = 3;
++    
++    // H5400
++    if (machine == MACHINE_HP_H5400)
++      qteRotation = 3;
++    
+     // SL-B500 用ハック(とりあえず、ね)
+     if (machine == MACHINE_SHARP_SLB500)
+       qteRotation = 3;
