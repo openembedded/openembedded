@@ -1,0 +1,35 @@
+DESCRIPTION = "Shopping list manager"
+SECTION = "Applications"
+PRIORITY = "optional"
+MAINTAINER = "David Greaves <arbor@users.sourceforge.net>"
+LICENSE = "GPL"
+RDEPENDS = "libqpe1"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \
+           file://${FILESDIR}/gcc3.patch;patch=1"
+S = "${WORKDIR}/Shopper"
+
+inherit palmtop
+
+QMAKE_PROFILES = "Shopper.pro"
+
+pkg_preinst() {
+	cp /root/Applications/ShoppingListQt/shoppinglist.xml /root/Applications/ShoppingListQt/shoppinglist.xml.safe 2>/dev/null
+	true
+}
+
+pkg_postinst() {
+	/opt/QtPalmtop/bin/qcop QPE/System "linkChanged(QString)" 2>/dev/null
+	true
+}
+
+do_install() {
+        install -d ${D}${palmtopdir}/{help/html/,bin,apps/Applications,pics}
+        install -d ${D}/root/Applications/ShoppingListQt/
+        install -m 0755 ${S}/Shopper ${D}${palmtopdir}/bin/
+        install -m 0644 ${S}/Shopper.desktop ${D}${palmtopdir}/apps/Applications/
+        install -m 0644 ${S}/Shopper.png ${D}${palmtopdir}/pics/
+        install -m 0644 ${S}/Shopper.html ${D}${palmtopdir}/help/html/
+        install -m 0644 ${S}/shoppinglist.xml ${D}/root/Applications/ShoppingListQt/shoppinglist.xml.new
+}
