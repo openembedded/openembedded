@@ -71,7 +71,9 @@ SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 	  file://${FILESDIR}/hppa-syscall.patch;patch=1;pnum=0 \
 	  file://${FILESDIR}/glibc23-errno-hack.patch;patch=1;pnum=1 \
 	  file://${FILESDIR}/90_glibc232-statvfs.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/90_glibc232-timezones.patch;patch=1;pnum=0
+	  file://${FILESDIR}/90_glibc232-timezones.patch;patch=1;pnum=0 \
+	  file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
+	  file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0
 
 S="${WORKDIR}/${P}"
 B="${WORKDIR}/build-${TARGET_SYS}"
@@ -86,7 +88,9 @@ EXTRA_OECONF =  --without-tls --without-__thread --enable-kernel=2.4.3 \
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
 # kernel headers
-	cp -a "${FILESDIR}/version.h" "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
+	cp -a "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
+	sed 's:\(^.*define.*__NR_waitpid.*$\):/*&*/:' < ${WORKDIR}/linux/include/asm-arm/unistd.h > ${WORKDIR}/linux/include/asm-arm/unistd.h.new
+	mv ${WORKDIR}/linux/include/asm-arm/unistd.h.new ${WORKDIR}/linux/include/asm-arm/unistd.h
 	case $TARGET_ARCH in
 		alpha*)   TARGET_ARCH=alpha ;;
 		arm*)     TARGET_ARCH=arm ;;
@@ -121,7 +125,9 @@ python do_unpack () {
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
-	oe_runconf
+# don't pass CPPFLAGS into configure, since it upsets the kernel-headers
+# version check and doesn't really help with anything
+	CPPFLAGS="" oe_runconf
 }
 
 do_compile_prepend() {
