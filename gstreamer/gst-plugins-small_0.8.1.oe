@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PROVIDES = "gst-plugins"
 
-DEPENDS = "gstreamer libmad libogg tremor libvorbis libid3tag esound-gpe"
+DEPENDS = "gstreamer libmad libogg tremor libvorbis libid3tag esound-gpe gconf"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://ivorbis.patch;patch=1"
