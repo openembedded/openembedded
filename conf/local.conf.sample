@@ -15,6 +15,16 @@
 # then EDIT IT.  Fixup any paths to point to the correct locations, and
 # setup the target specifications appropriately.
 
+# ** READ THIS CAREFULLY **
+#
+# NOTE: Do NOT use ~ in your paths, OE does NOT expand ~ for you.  If you
+# must have paths relative to your homedir use ${HOME} (note the {}'s there
+# you MUST have them for the variable expansion to be done by OE).  Your
+# paths should all be absolute paths (They should all start with a / after
+# expansion.  Stuff like starting with ${HOME} or ${TOPDIR} is ok).
+#
+# ** READ THIS CAREFULLY **
+
 # Once you have done that, you will want to cd into your build environment
 # (${HOME}/oe/build/ in this example), then run "oemake targets..."  This
 # will build into ${TMPDIR} which defaults to ${TOPDIR}/tmp (${TOPDIR} is
