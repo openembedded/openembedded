@@ -1,0 +1,51 @@
+DESCRIPTION = "Linux kernel for MTX-1 (MeshCube)"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+LICENSE = "GPL"
+KV = "${PV}"
+PACKAGE_ARCH = "mtx-1"
+RDEPENDS = "mtd"
+
+SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4 \
+	ftp://ftp.linux-mips.org/pub/linux/mips/people/ppopov/2.4/zboot-2.4.26.patch;patch=1 \
+	ftp://ftp.linux-mips.org/pub/linux/mips/people/ppopov/2.4/usb-nonpci-2.4.24.patch;patch=1 \
+	file://mtx-1-board-reset.diff;patch=1 \
+	file://zimage-flash-bin.patch;patch=1 \
+	file://defconfig-mtx-1"
+
+S = "${WORKDIR}/linux"
+
+BROKEN = "1"
+inherit kernel
+
+ARCH = "mips"
+KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-1.flash.bin"
+KERNEL_IMAGETYPE = "zImage.flash"
+KERNEL_IMAGEDEST = "tmp"
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/defconfig-mtx-1 ${S}/.config
+}
+
+pkg_postinst_kernel() {
+if test "x$D" != "x"; then
+	exit 1
+else
+	if test -e /tmp/zImage.flash.bin-${KV}; then
+		echo "*** flashing kernel ***"
+		flashcp -v /tmp/zImage.flash.bin-${KV} /dev/mtd/2
+		echo "*** done. please reboot ***"
+	fi
+fi
+}
+
+FILES_kernel += " /tmp"
+
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/mips/zboot/images/mtx-1.flash.bin ${DEPLOY_DIR}/images/${MACHINE}-${KV}-${DATETIME}.bin
+	install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR}/images/${MACHINE}-${KV}-${DATETIME}.srec
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile

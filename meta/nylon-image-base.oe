@@ -1,18 +1,22 @@
 export IMAGE_BASENAME = "nylon-base"
  
-NYLON_COMMON = "base-files base-passwd bash busybox \
+NYLON_COMMON = "base-files base-passwd bash busybox bridge-utils \
+	dnsmasq \
 	hostap-utils \
-	ipkg initscripts iproute2 \
-	modutils modutils-initscripts \
-	mtd netbase nylon-scripts openssh sysvinit tinylogin wireless-tools"
+	ipkg initscripts iproute2 iptables \
+	less \
+	mobilemesh modutils modutils-initscripts mtd \
+	nano ncurses netbase nylon-scripts \
+	openssh openvpn ppp rp-pppoe \
+	shorewall sysvinit \
+	tcpdump tinylogin \
+	wireless-tools"
 
-#update-modules
-
-DEPENDS = "virtual/kernel hostap-modules \ 
+DEPENDS = "virtual/kernel hostap-modules ntp \ 
 	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_DEPENDS}"
 	
-RDEPENDS = "kernel kernel-module-tun modutils-depmod modutils-modinfo ncurses-terminfo \
-	hostap-modules-pci \
+RDEPENDS = "kernel modutils-depmod modutils-modinfo \
+	ncurses-terminfo ntpdate hostap-modules-pci \
 	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export IPKG_INSTALL = "${RDEPENDS}" 
@@ -22,5 +26,3 @@ IMAGE_LINGUAS = ""
 inherit image_ipk
 
 ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"
-
-export FEED_URIS="nylon##http://192.168.0.5/feed/unstable"

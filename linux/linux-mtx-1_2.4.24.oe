@@ -2,11 +2,11 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MTX-1 (MeshCube)"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
-KV = "2.4.24"
-PV = "${KV}"
+KV = "${PV}"
 PACKAGE_ARCH = "mtx-1"
 RDEPENDS = "mtd"
 
+CVSDATE = "20041016"
 SRC_URI = "cvs://anoncvs:anoncvs@meshcube.org/data/cvs;module=kernel/linux"
 
 S = "${WORKDIR}/linux"
@@ -15,7 +15,7 @@ inherit kernel
 
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-1.flash.bin"
-KERNEL_IMAGETYPE = "zImage.flash.bin"
+KERNEL_IMAGETYPE = "zImage.flash"
 KERNEL_IMAGEDEST = "tmp"
 
 do_configure_prepend() {
@@ -26,9 +26,11 @@ pkg_postinst_kernel() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	echo "*** flashing kernel ***"
-	flashcp -v /tmp/zImage.flash.bin-${KV} /dev/mtd/2
-	echo "*** done. please reboot ***"
+	if test -e /tmp/zImage.flash.bin-${KV}; then
+		echo "*** flashing kernel ***"
+		flashcp -v /tmp/zImage.flash.bin-${KV} /dev/mtd/2
+		echo "*** done. please reboot ***"
+	fi
 fi
 }
 
@@ -36,7 +38,7 @@ FILES_kernel += " /tmp"
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR}/images/${MACHINE}-${KV}-${KERNEL_IMAGETYPE}-${DATETIME}
+        install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR}/images/${MACHINE}-${KV}-${DATETIME}.srec
 }
 
 do_deploy[dirs] = "${S}"
