@@ -1,3 +1,4 @@
+LICENSE = "LGPL"
 DESCRIPTION = "Database access library for GPE calendar"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
