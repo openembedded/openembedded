@@ -55,9 +55,11 @@ kernel_do_compile() {
 }
 
 kernel_do_stage() {
-	install -d ${STAGING_KERNEL_DIR}/include/{asm,asm-generic,linux,net,pcmcia}
+	ASMDIR=`readlink include/asm`
+	install -d ${STAGING_KERNEL_DIR}/include/{$ASMDIR,asm-generic,linux,net,pcmcia}
+	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
-	cp -fR include/asm/* ${STAGING_KERNEL_DIR}/include/asm/
+	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
 	cp -fR include/net/* ${STAGING_KERNEL_DIR}/include/net/
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
