@@ -1,0 +1,25 @@
+DESCRIPTION = "A remote control"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "lirc"
+DEPENDS = " libopiecore2"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "remote"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/remote;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES bin/remote apps/Applications/remote.desktop pics/remote/*.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+
