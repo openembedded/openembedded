@@ -6,6 +6,9 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
+LIBC_ADDONS ?= "linuxthreads"
+LIBC_EXTRA_OECONF ?= ""
+
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -22,10 +25,11 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PROVIDES = "virtual/libc"
 PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 
-DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
+# nptl needs unwind support in gcc, which can't be built without glibc.
+PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${LIBC_ADDONS}']}"
+DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${LIBC_ADDONS}']}"
 
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
@@ -50,9 +54,6 @@ S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
-
-LIBC_ADDONS ?= "linuxthreads"
-LIBC_EXTRA_OECONF ?= ""
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
