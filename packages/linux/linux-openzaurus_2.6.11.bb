@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r3"
+PR = "r4"
 
 DOSRC="http://www.do13.in-berlin.de/openzaurus"
 RPSRC="http://www.rpsys.net/openzaurus/patches"
@@ -16,6 +16,12 @@ JLSRC="http://www.cs.wisc.edu/~lenz/zaurus/files/"
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.11-rc1-bk7.gz;patch=1 \
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.11-rc5.bz2;patch=1 \
+
+# To be added after OZ 3.5.3
+#          ${RPSRC}/corgi_kbd2-r0.patch;patch=1 \
+#          ${RPSRC}/corgi_kbd1-r1.patch;patch=1 \
+#          ${RPSRC}/corgi_kbd3-r5.patch;patch=1 \
+#          ${RPSRC}/sharp_multi_scoop-r2.patch;patch=1 \
 
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
@@ -28,6 +34,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r1.patch;patch=1 \
            ${RPSRC}/corgi_kbd1-r0.patch;patch=1 \
+	   ${RPSRC}/pxaudc_susres-r0.patch;patch=1 \
 	   ${RPSRC}/sharp_multi_scoop-r1.patch;patch=1 \
 	   ${RPSRC}/sharp_multi_pcmcia-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_param-r3.patch;patch=1 \

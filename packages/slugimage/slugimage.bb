@@ -7,7 +7,7 @@ PR = "r2"
 
 RDEPENDS = "perl-native"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_1"
+SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_1"
 S = "${WORKDIR}"
 
 

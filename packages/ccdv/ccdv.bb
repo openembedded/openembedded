@@ -3,7 +3,7 @@ finding actual problems easier."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 SRC_URI = "http://openembedded.org/dl/ccdv.c"
-S = "${WORKDIR}/openembedded.org"
+S = "${WORKDIR}"
 
 do_compile () {
 	${CC} ${CFLAGS} ${LDFLAGS} ccdv.c -o ccdv

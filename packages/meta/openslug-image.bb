@@ -1,4 +1,4 @@
-PR = "r6"
+PR = "r7"
 
 IMAGE_BASENAME = "openslug"
 
@@ -26,7 +26,6 @@ IPKG_INSTALL = "base-files base-passwd \
 	cpio findutils e2fsprogs-mke2fs \
 	e2fsprogs-fsck e2fsprogs-e2fsck \
 	kernel-module-nfs kernel-module-sunrpc kernel-module-lockd  \
-	kernel-module-ehci-hcd \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk

@@ -5,30 +5,31 @@ MAINTAINER = "Carsten Haitzler (Rasterman) <raster@rasterman.com>"
 LICENSE = BSD
 SECTION = "e/libs"
 PRIORITY = "optional"
-DEPENDS = "freetype libpng jpeg"
-PR = "2"
+DEPENDS = "freetype libpng jpeg x11 xext"
+PR = "r4"
 
 do_prepsources () {
-  make clean distclean || true
+	make clean distclean || true
 }
 addtask prepsources after do_fetch before do_unpack
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/imlib2-1.2.0.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/imlib2-1.2.0.tar.gz \
+	   file://binconfig.patch;patch=1 \
+	   file://x.patch;patch=1"
 
 inherit autotools pkgconfig binconfig
 
-export FREETYPE_CONFIG = "${STAGING_BINDIR}/freetype-config"
-export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
-
 EXTRA_OECONF = "--disable-mmx \
-                --disable-x11"
+		--with-x \
+		--x-includes=${STAGING_INCDIR} \
+		--x-libraries=${STAGING_LIBDIR}"
 
 do_stage () {
-  oe_libinstall -C src/lib libImlib2 ${STAGING_LIBDIR}/
-  install -m 0644 ${S}/src/lib/Imlib2.h ${STAGING_INCDIR}/
+	oe_libinstall -C src/lib libImlib2 ${STAGING_LIBDIR}/
+	install -m 0644 ${S}/src/lib/Imlib2.h ${STAGING_INCDIR}/
 }
 
-FILES_${PN} = "${libdir}/libImlib2*.so*"
-FILES_${PN} = "${libdir}/imlib2"
-FILES_${PN}-dev += "${bindir} ${libdir}/pkgconfig"
- 
+PACKAGES += "${PN}-bin"
+FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2"
+FILES_${PN}-dev += "${bindir}/imlib2-config"
+FILES_${PN}-bin = "${bindir}"

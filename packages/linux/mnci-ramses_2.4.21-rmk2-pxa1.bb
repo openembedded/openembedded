@@ -21,16 +21,24 @@ COMPATIBLE_HOST = "arm.*-linux"
 FILES_kernel = "/boot /tmp"
 DEPENDS = "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX}"
 
+# Don't want kernel zImage in rootfs, put it into /tmp ramdisk
+FILES_kernel = ""
+ALLOW_EMPTY_kernel = "1"
+FILES_kernel-image += "/tmp/zImage"
+
 do_configure_prepend() {
 	install -m 0644 ${S}/arch/arm/def-configs/${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 }
 
-pkg_postinst_kernel () {
+pkg_postinst_kernel-image () {
 test -f /tmp/zImage || exit 0
 cp /tmp/zImage /dev/mtdblock/1
 rm /tmp/zImage
 sync
 cat /dev/mtdblock/1 >/dev/null
+}
+
+pkg_postinst_kernel () {
 }
 
 pkg_postinst_modules () {

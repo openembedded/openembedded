@@ -3,7 +3,7 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
-PR = "r5"
+PR = "r6"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=0 \
@@ -29,7 +29,7 @@ inherit autotools
 EXTRA_OECONF = " \
         --prefix=/usr \
 		--mandir=${mandir} \
-        --target=${TARGET_ARCH} \
+        --target=${TARGET_SYS} \
         --enable-shared-pp \
         \
         --disable-win32 \
@@ -53,6 +53,7 @@ EXTRA_OECONF = " \
         \
         --enable-ossaudio \
         \
+	--enable-rtc \
         --with-extralibdir=${STAGING_LIBDIR} "
 
 EXTRA_OECONF_append_corgi = " --enable-vidix "

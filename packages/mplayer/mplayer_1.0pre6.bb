@@ -31,7 +31,7 @@ inherit autotools
 EXTRA_OECONF = " \
         --prefix=/usr \
 		--mandir=${mandir} \
-        --target=${TARGET_ARCH} \
+        --target=${TARGET_SYS} \
         --enable-shared-pp \
         \
         --disable-win32 \
@@ -56,6 +56,8 @@ EXTRA_OECONF = " \
         \
         --enable-ossaudio \
         \
+	--enable-rtc \
+	\
         --with-extralibdir=${STAGING_LIBDIR} "
 
 EXTRA_OECONF_append_corgi = " --enable-vidix "

@@ -2,13 +2,15 @@ SECTION = "libs"
 LICENSE = "freetype"
 DESCRIPTION = "Freetype font rendering library"
 
+PR = "r1"
+
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += " ${bindir}"
 
-inherit autotools  pkgconfig
+inherit autotools binconfig pkgconfig
 
 LIBTOOL = "${S}/builds/unix/${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
@@ -23,12 +25,6 @@ do_configure () {
 }
 
 do_stage () {
+	autotools_stage_includes
 	oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
-
-	cp -a ${S}/include/*.h ${STAGING_INCDIR}
-	install -d ${STAGING_INCDIR}/freetype2
-	cp -a ${S}/include/freetype ${STAGING_INCDIR}/freetype2/
-
-	sed -e 's,${prefix},${STAGING_LIBDIR}/..,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
-	chmod u+x ${STAGING_BINDIR}/freetype-config
 }

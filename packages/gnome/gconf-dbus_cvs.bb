@@ -1,8 +1,8 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 dbus"
+DEPENDS = "gtk+ glib-2.0 dbus libxml2 popt"
 DESCRIPTION = "Settings daemon using DBUS for communication."
 LICENSE = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>
+MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 PROVIDES = "gconf"
 RPROVIDES = "gconf"
 

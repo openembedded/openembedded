@@ -272,6 +272,11 @@ fi
 python package_do_shlibs() {
 	import os, re, os.path
 
+	exclude_shlibs = bb.data.getVar('EXCLUDE_FROM_SHLIBS', d, 0)
+	if exclude_shlibs:
+		bb.note("not generating shlibs")
+		return
+		
 	lib_re = re.compile("^lib.*\.so")
 	libdir_re = re.compile(".*/lib$")
 
