@@ -10,6 +10,7 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${datadir}/aclocal ${bindir} ${sbindir}
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/png-mng/libpng-${PV}.tar.bz2"
+S = "${WORKDIR}/libpng-${PV}"
 
 inherit pkgconfig
 
