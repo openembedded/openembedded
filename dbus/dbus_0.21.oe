@@ -50,6 +50,7 @@ do_stage () {
 do_install_append () {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
+	install -d ${D}/usr/lib/dbus-1.0/services
 }
 
 python populate_packages_prepend () {
