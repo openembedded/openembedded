@@ -1,5 +1,5 @@
 SECTION = "kernel"
-DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
+DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 #
