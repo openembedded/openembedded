@@ -34,10 +34,8 @@ do_compile () {
 
 do_stage () {
 	cp --dereference -R include/openssl ${STAGING_INCDIR}/
-	install -m 0755 libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
-	ln -sf libcrypto.so.0.9.7 ${STAGING_LIBDIR}/libcrypto.so
-	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/
-	ln -sf libssl.so.0.9.7 ${STAGING_LIBDIR}/libssl.so
+	oe_soinstall libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
+	oe_soinstall libssl.so.0.9.7 ${STAGING_LIBDIR}/
 }
 
 do_install () {

@@ -28,8 +28,6 @@ do_stage() {
 	install -m 0644 include/lzoconf.h ${STAGING_INCDIR}/lzoconf.h
 	install -m 0644 include/lzoutil.h ${STAGING_INCDIR}/lzoutil.h
 
-        install -m 0755 src/.libs/liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblszo.so.1.0.0
-	ln -sf liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblzo.so.1
-	ln -sf liblzo.so.1.0.0 ${STAGING_LIBDIR}/liblzo.so
+	oe_soinstall src/.libs/liblzo.so.1.0.0 ${STAGING_LIBDIR}/
 	install -m 0644 src/.libs/liblzo.a ${STAGING_LIBDIR}/liblzo.a
 }

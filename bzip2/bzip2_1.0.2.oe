@@ -18,17 +18,12 @@ do_compile () {
 do_stage () {
 	install -m 0644 libbz2.a ${STAGING_LIBDIR}/
 	install -m 0644 bzlib.h ${STAGING_INCDIR}/
-	install -m 0755 libbz2.so.1.0.2 ${STAGING_LIBDIR}/
-	ln -sf libbz2.so.1.0.2 ${STAGING_LIBDIR}/libbz2.so.1.0
-	ln -sf libbz2.so.1.0.2 ${STAGING_LIBDIR}/libbz2.so.1
-	ln -sf libbz2.so.1.0.2 ${STAGING_LIBDIR}/libbz2.so
+	oe_soinstall libbz2.so.1.0.2 ${STAGING_LIBDIR}/
 }
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 	install -d ${D}/${libdir}
-	install -m 0755 libbz2.so.1.0.2 ${D}/${libdir}/
-	ln -sf libbz2.so.1.0.2 ${D}/${libdir}/libbz2.so.1.0
-	ln -sf libbz2.so.1.0.2 ${D}/${libdir}/libbz2.so.1
-	ln -sf libbz2.so.1.0.2 ${D}/${libdir}/libbz2.so
+	oe_soinstall libbz2.so.1.0.2 ${D}/${libdir}/
+	install -m 0644 libbz2.a ${D}/${libdir}/
 }

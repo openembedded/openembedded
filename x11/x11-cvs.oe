@@ -34,9 +34,7 @@ do_stage() {
 	install -c -m 644 include/X11/region.h ${STAGING_INCDIR}/X11/region.h
 	install -c -m 644 include/X11/ImUtil.h ${STAGING_INCDIR}/X11/ImUtil.h
 	
-	install -c src/.libs/libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6.2.1
-	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so.6
-	ln -sf libX11.so.6.2.1 ${STAGING_LIBDIR}/libX11.so
-
+	oe_soinstall src/.libs/libX11.so.6.2.1 ${STAGING_LIBDIR}/
 	install -c -m 644 src/.libs/libX11.a ${STAGING_LIBDIR}/libX11.a
+	install -c -m 644 src/.libs/libX11.lai ${STAGING_LIBDIR}/libX11.la
 }

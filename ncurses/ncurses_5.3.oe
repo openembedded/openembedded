@@ -49,14 +49,12 @@ do_compile () {
 }
 
 do_stage () {
-	install -m 0755 lib/lib*.so.* ${STAGING_LIBDIR}/
 	for h in ncurses_*.h curses.h eti.h form.h menu.h panel.h \
 		termcap.h term.h unctrl.h; do
 		       install -m 0644 include/$h ${STAGING_INCDIR}/
 	done
 	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
-	ln -sf libpanel.so.5.3 ${STAGING_LIBDIR}/libpanel.so
-	ln -sf libform.so.5.3 ${STAGING_LIBDIR}/libform.so
-	ln -sf libmenu.so.5.3 ${STAGING_LIBDIR}/libmenu.so
-	ln -sf libncurses.so.5.3 ${STAGING_LIBDIR}/libncurses.so
+	for i in ncurses panel form menu; do
+		oe_soinstall lib/lib$i.so.5.3 ${STAGING_LIBDIR}/
+	done
 }

@@ -11,9 +11,9 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes"
 
 do_stage () {
-	install -m 0755 src/.libs/libasound.so.2.0.0 ${STAGING_LIBDIR}/
-	ln -sf libasound.so.2.0.0 ${STAGING_LIBDIR}/libasound.so.2
-	ln -sf libasound.so.2.0.0 ${STAGING_LIBDIR}/libasound.so
+	oe_soinstall src/.libs/libasound.so.2.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 src/.libs/libasound.lai ${STAGING_LIBDIR}/libasound.la
+	install -m 0644 src/.libs/libasound.a ${STAGING_LIBDIR}/
 	install -d ${STAGING_INCDIR}/alsa/sound
 	install -m 0644 include/*.h ${STAGING_INCDIR}/alsa/
 	install -m 0644 include/sound/ainstr*.h ${STAGING_INCDIR}/alsa/sound/

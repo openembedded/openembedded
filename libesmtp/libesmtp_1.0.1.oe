@@ -15,9 +15,7 @@ EXTRA_OECONF = "--disable-isoc --with-openssl=${STAGING_LIBDIR}/.."
 do_stage () {
 	install -m 0644 .libs/libesmtp.a ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libesmtp.lai ${STAGING_LIBDIR}/libesmtp.la
-	install -m 0644 .libs/libesmtp.so.5.1.2 ${STAGING_LIBDIR}/
-	ln -sf libesmtp.so.5.1.2 ${STAGING_LIBDIR}/libesmtp.so.5
-	ln -sf libesmtp.so.5.1.2 ${STAGING_LIBDIR}/libesmtp.so
+	oe_soinstall .libs/libesmtp.so.5.1.2 ${STAGING_LIBDIR}/
 
         install -d ${STAGING_DIR}/include
 	install -m 644 auth-client.h ${STAGING_INCDIR}

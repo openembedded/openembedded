@@ -14,9 +14,7 @@ do_configure_prepend () {
 }
 
 do_stage () {
-	install -m 0755 .libs/libaoss.so.0.0.0 ${STAGING_LIBDIR}/
-	ln -sf libaoss.so.0.0.0 ${STAGING_LIBDIR}/libaoss.so.0
-	ln -sf libaoss.so.0.0.0 ${STAGING_LIBDIR}/libaoss.so
+	oe_soinstall .libs/libaoss.so.0.0.0 ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libaoss.a ${STAGING_LIBDIR}/
 	install -m 0644 .libs/libaoss.lai ${STAGING_LIBDIR}/libaoss.la
 }
