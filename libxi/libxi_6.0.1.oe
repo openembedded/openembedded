@@ -1,7 +1,6 @@
 DESCRIPTION = "X Input Extension library"
 SECTION = "x11/libs"
-
-DEPENDS = "xproto"
+DEPENDS = "xproto x11 xextensions"
 
 SRC_URI = "${XLIBS_MIRROR}/libXi-${PV}.tar.bz2"
 S = "${WORKDIR}/libXi-${PV}"
