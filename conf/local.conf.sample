@@ -47,5 +47,11 @@ TARGET_ARCH = "arm"
 # Usually better to set DISTRO instead (see above)
 #INHERIT = "package_tar"
 
-#Comment this out if you do not wish to use a parse cache (not recommended).
+# Comment this out if you do not wish to use a parse cache (not recommended).
 CACHE=/var/tmp/oe-cache.${USER}
+
+# Uncomment this if you want OE to emit debugging output
+#OEDEBUG = "yes"
+
+# Uncomment this if you want OE to emit the log if a build fails.
+#OEINCLUDELOGS = "yes"
