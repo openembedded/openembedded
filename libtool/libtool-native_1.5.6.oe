@@ -4,6 +4,7 @@ PR = "r1"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
                    file://${FILESDIR}/prefix.patch;patch=1 \
+                   file://${FILESDIR}/tag.patch;patch=1 \
                    file://${FILESDIR}/install-path-check.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
