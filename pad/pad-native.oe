@@ -1,10 +1,11 @@
 DESCRIPTION = "Console utility for padding a file (filling with 0 to reach a specified length)"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/pad"
+SRC_URI = "file://pad.c"
 
 inherit native
 
 do_compile() {
-	cp ${WORKDIR}/*.c .
+	cp ${WORKDIR}/pad.c .
 	${CC} -I. -o pad pad.c
 }
 
