@@ -1,17 +1,17 @@
 include gpe-collections.oe
 
-PR = "r2"
+PR = "r3"
 
 export IMAGE_BASENAME = "gpe-image"
 
 DEPENDS = "task-bootstrap ${GPE_BASE_DEPENDS} ${GPE_BASE} ${GPE_PIM} \
-	   ${GPE_BASE_SETTINGS} ${GPE_EXTRA_SETTINGS} ${GPE_BASE_APPS} \
+	   ${GPE_BASE_SETTINGS} ${GPE_BASE_APPS} \
 	   ${GPE_EXTRA_DEPENDS}"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
 export IPKG_INSTALL = "task-bootstrap ${GPE_BASE_DEPENDS} ${GPE_BASE} \
-           	       ${GPE_PIM} ${GPE_BASE_SETTINGS} ${GPE_EXTRA_SETTINGS} \
+           	       ${GPE_PIM} ${GPE_BASE_SETTINGS} \
 	               ${GPE_BASE_APPS} ${GPE_EXTRA_DEPENDS} \
 		       ${XSERVER} \
 		       ${GPE_BASE_RDEPENDS} \

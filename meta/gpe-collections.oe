@@ -42,9 +42,7 @@ GPE_PIM = "\
     gpe-calendar \
     gpe-sketchbook \
     gpe-contacts \
-    gpe-today"
-
-GPE_EXTRA_PIM = "\
+    gpe-today \
     gpe-timesheet"
 
 GPE_BASE_SETTINGS = "\
@@ -59,11 +57,9 @@ GPE_BASE_SETTINGS = "\
     gpe-wlancfg \
     gpe-taskmanager \
     keylaunch \
-    minilite"
-
-GPE_EXTRA_SETTINGS = "\
+    minilite \
     xmonobut"
-    
+
 GPE_BASE_APPS = "\
     gpe-edit \
     gpe-gallery \
@@ -80,11 +76,11 @@ GPE_MACHINE_CLASS ?= "none"
 GPE_EXTRA_DEPENDS += "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 GPE_EXTRA_INSTALL += "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 
-GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone ${GPE_EXTRA_PIM}"
-GPE_EXTRA_INSTALL_bigscreen = "firefox linphone ${GPE_EXTRA_PIM}"
+GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
+GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
 
-GPE_EXTRA_DEPENDS_smallscreen = "minimo linphone-hh ${GPE_EXTRA_PIM}"
-GPE_EXTRA_INSTALL_smallscreen = "minimo linphone-hh ${GPE_EXTRA_PIM}"
+GPE_EXTRA_DEPENDS_smallscreen = "minimo linphone-hh"
+GPE_EXTRA_INSTALL_smallscreen = "minimo linphone-hh"
 
-GPE_EXTRA_DEPENDS_none = "dillo2"
-GPE_EXTRA_INSTALL_none = "dillo2"
+GPE_EXTRA_DEPENDS_none = ""
+GPE_EXTRA_INSTALL_none = ""
