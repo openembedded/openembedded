@@ -18,6 +18,7 @@ hostap-modules \
 hostap-utils \
 hostap-daemon \
 hotplug \
+htb-init \
 initscripts \
 iperf \
 ipkg \
@@ -75,15 +76,12 @@ zlib \
 # snmp
 # mrtg
 # ipac-ng
-# dyndns: http://ez-ipupdate.com/
 # pptp
 # meshroaming
 
-# egrep -i Pattern matched against "$Section $Package-Name"
-export FEED_PATTERN = "^locale-|^glibc-|^net|^libs|^base"
-export FEED_NAME = "nylon-${MACHINE}"
+do_index() {
+	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}    
+}
 
-# egrep -i regexp matching package name
-export EXCLUDE_FROM_FEED = ""
+addtask index before do_build after do_install
 
-inherit split_ipk_feeds

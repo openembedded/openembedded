@@ -56,7 +56,7 @@ do_install () {
 		install -m 2755 -d ${D}/$d
 	done
 
-	if [ -z "${MACHINE}" -a "${hostname}" == "openembedded" ]; then
+	if [ -n "${MACHINE}" -a "${hostname}" == "openembedded" ]; then
 		echo ${MACHINE} > ${D}/${sysconfdir}/hostname
 	else
 		echo ${hostname} > ${D}/${sysconfdir}/hostname
