@@ -52,6 +52,10 @@ KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
 
+module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
+module_conf_pxa_bi = "below pxa_bi net_fd usbdcore "
+module_autoload_pxa_bi = "pxa_bi"
+
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 }
