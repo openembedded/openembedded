@@ -8,14 +8,18 @@ PR = "r1"
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
            file://hostap_cs.conf \
 	   file://Makefile.patch;patch=1"
+SRC_URI_append_mtx-1 = " file://mtx_compat.diff;patch=1;pnum=0 \
+	file://mtx_hostap_deferred_irq.diff;patch=1;pnum=0"
+
 S = "${WORKDIR}/hostap-driver-${PV}"
 
 inherit module
 
 # Hack Alert :D
+ARCH_mipsel = "mips"
 MAKE_TARGETS = "KERNEL_PATH=${KERNEL_SOURCE} MAKE='make -e'"
 
-NET_MODULES = "hostap.o hostap_crypt_ccmp.o hostap_crypt_tkip.o hostap_crypt_wep.o"
+NET_MODULES = "hostap.o hostap_pci.o hostap_crypt_ccmp.o hostap_crypt_tkip.o hostap_crypt_wep.o"
 
 do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
@@ -29,3 +33,10 @@ do_install() {
 	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 }
+
+PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"
+FILES_hostap-modules-cs = "/lib/modules/${KERNEL_VERSION}/pcmcia/ /${sysconfdir}/pcmcia/"
+FILES_hostap-modules-pci = "/lib/modules/${KERNEL_VERSION}/net/hostap_pci.o"
+FILES_hostap-modules = "/lib/modules/"
+RDEPENDS_hostap-modules-cs = "hostap-modules"
+RDEPENDS_hostap-modules-pci = "hostap-modules"
