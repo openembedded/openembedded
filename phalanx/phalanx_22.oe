@@ -1,6 +1,8 @@
-SECTION = "Games"
-PRIORITY = "optional"
 DESCRIPTION = "Phalanx is a chess playing engine."
+SECTION = "games/libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer"
+PR = "r1"
 
 SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \
@@ -10,7 +12,7 @@ S = "${WORKDIR}/Phalanx-XXII"
 
 inherit autotools
 
-FILES_phalanx = "${palmtopdir}/chess/engines/Phalanx"
+palmtopdir = "/opt/QtPalmtop"
 
 do_install() {
 	install -d ${D}${palmtopdir}/chess/engines/Phalanx
@@ -21,3 +23,5 @@ do_install() {
         install -D -m 755 ${WORKDIR}/capabilities ${D}${palmtopdir}/chess/engines/Phalanx/capabilities
         install -D -m 755 ${WORKDIR}/description ${D}${palmtopdir}/chess/engines/Phalanx/description
 }
+
+FILES_${PN} = "${palmtopdir}/chess"
