@@ -15,7 +15,7 @@ inherit autotools pkgconfig
 HEADERS = "gconf.h gconf-changeset.h gconf-listeners.h gconf-schema.h gconf-value.h gconf-error.h gconf-engine.h gconf-client.h gconf-enum-types.h"
 
 do_compile() {
-	oe_runmake ORBIT_IDL="`which orbit-idl2`"
+	oe_runmake ORBIT_IDL="`which orbit-idl-2`"
 }
 
 do_stage() {
