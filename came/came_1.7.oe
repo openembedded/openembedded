@@ -3,6 +3,7 @@ support and additional features."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "curl giblib"
 SECTION = "x11/utils"
+LICENSE = "GPLv2"
 
 SRC_URI = "http://linuxbrit.co.uk/downloads/camE-${PV}.tar.gz \
            file://make.patch;patch=1 \

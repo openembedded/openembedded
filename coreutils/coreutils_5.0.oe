@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "A collection of core GNU utilities."
+COREUTILS = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/coreutils/coreutils-${PV}.tar.gz \
 	   file://malloc.patch;patch=1 \

@@ -5,6 +5,7 @@ MAINTAINER = "Phil Blundell <pb@debian.org>"
 # DEPENDS = "x11 libpixman libpng fontconfig libxrender xcb glitz"
 DEPENDS = "x11 libpixman libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
+LICENSE = "MPL LGPL"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo"
 S = "${WORKDIR}/cairo"

@@ -7,6 +7,7 @@
 DEPENDS = "zlib"
 DESCRIPTION = "Command line tool and library for \
 client-side URL transfers."
+LICENSE = "MIT" 
 SECTION = "console/network"
 PR = "r1"
 

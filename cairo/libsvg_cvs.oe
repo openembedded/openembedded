@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libxml2 jpeg zlib libpng"
 DESCRIPTION = "SVG parser library"
-
+LICENSE = "LGPL"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg"
 S = "${WORKDIR}/libsvg"
 

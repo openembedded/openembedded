@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Vixie cron."
+LICENSE = "as-is"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
 	   file://nonrootinstall.patch;patch=1 \

@@ -1,5 +1,6 @@
 SECTION = "base"
 SRC_URI = "${SOURCEFORGE_MIRROR}/cramfs/cramfs-1.1.tar.gz"
+LICENSE = "GPLv2"
 DEPENDS = "zlib"
 
 do_compile() {

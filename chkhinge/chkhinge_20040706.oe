@@ -1,5 +1,6 @@
 SECTION = "base"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/chkhinge;date=${PV}"
+LICENSE = "MIT"
 S = "${WORKDIR}/chkhinge"
 
 FILES_${PN} = "/bin"
