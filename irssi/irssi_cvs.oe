@@ -3,9 +3,14 @@ HOMEPAGE = "http://irssi.org/"
 SECTION = "console/network"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "ncurses glib-2.0"
+DEPENDS += "ncurses glib-2.0"
 PV = "0.8.9+cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
+
+PACKAGES += "${PN}-common"
+FILES_${PN} = "${bindir}/irssi"
+FILES_${PN}-common = "${datadir}/irssi ${sysconfdir}"
+RDEPENDS_${PN} += "${PN}-common"
 
 inherit autotools
 
@@ -38,9 +43,10 @@ do_configure () {
 	files=`echo $files|sed 's/\.in//g'`
 	cat docs/help/Makefile.am.gen|sed "s/@HELPFILES@/$files/g"|sed 's/?/\\?/g'|tr '!?' '\t\n' > docs/help/Makefile.am
 	
-	# .html -> .txt with lynx
+	# .HTML -> .txt with lynx
 	# echo "Documentation: html -> txt..."
 	# lynx -dump -nolist docs/faq.html|perl -pe 's/^ *//; if ($_ eq "\n" && $state eq "Q") { $_ = ""; } elsif (/^([QA]):/) { $state = $1 } elsif ($_ ne "\n") { $_ = "   $_"; };' > docs/faq.txt
+	> docs/faq.txt
 	
 	autotools_do_configure
 }
@@ -55,4 +61,9 @@ do_stage () {
 		install -m 0644 $l ${STAGING_LIBDIR}/../irssi/$l
 	done
 	install -m 0644 irssi-config ${STAGING_LIBDIR}/../irssi/
+}
+
+do_install () {
+	autotools_do_install
+	rm -f ${D}/${docdir}/irssi/faq.txt
 }

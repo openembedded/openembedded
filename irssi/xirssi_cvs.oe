@@ -3,9 +3,10 @@ HOMEPAGE = "http://irssi.org/"
 SECTION = "x11/network"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "irssi gtk+"
+DEPENDS += "irssi gtk+"
+RDEPENDS_${PN} += "irssi-common"
 PV = "0.0+cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 inherit autotools
 
