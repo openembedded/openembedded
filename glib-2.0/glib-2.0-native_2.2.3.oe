@@ -12,16 +12,7 @@ do_configure_prepend () {
 	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h .
 }
 
-SOV = "0.103.0"
-
-do_configure () {
-	oe_runconf
-}
-
-do_compile () {
-	oe_runmake -C ${S}/glib
-	oe_runmake -C ${S}/gobject
-}
+SOV = "0.200.3"
 
 do_stage () {
 	install -m 0755 gobject/glib-mkenums ${STAGING_BINDIR}/
