@@ -2,13 +2,22 @@ DESCRIPTION = "Perl is a popular scripting language."
 SECTION = "developing"
 PRIORITY = "optional"
 DEPENDS = "db3 perl-native"
-SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
+SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
+	file://Makefile.patch;patch=1 \
+	file://config.sh-arm-linux.patch;patch=1 \
+	file://Makefile.SH.patch "
 
 FILES_${PN} += "${libdir}/perl5"
 
+HOSTPERL=${STAGING_BINDIR}/perl${PV}
+
 do_configure() {
+	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl 
+	cp ${HOSTPERL} hostperl
 	cd Cross
-	oe_runmake patch
+	rm Makefile.SH.patch
+	cp ${WORKDIR}/Makefile.SH.patch .
+	oe_runmake patch 
 }
 
 do_compile() {
