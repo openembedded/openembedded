@@ -1,0 +1,17 @@
+diff -ur konqe.old/konq-embed/kdesrc/kjs/ustring.h konqueror-embedded-snapshot-20030705/konq-embed/kdesrc/kjs/ustring.h
+--- konqe.old/konq-embed/kdesrc/kjs/ustring.h	2001-07-28 17:32:15.000000000 +0200
++++ konqueror-embedded-snapshot-20030705/konq-embed/kdesrc/kjs/ustring.h	2004-08-22 21:30:04.000000000 +0200
+@@ -154,11 +154,11 @@
+     /**
+      * @return Lower byte.
+      */
+-    unsigned char& low() const { return ref().lo; }
++    unsigned char& low() const { return *(&ref().lo); }
+     /**
+      * @return Higher byte.
+      */
+-    unsigned char& high() const { return ref().hi; }
++    unsigned char& high() const { return *(&ref().hi); }
+     /**
+      * @return Character converted to lower case.
+      */
