@@ -1,7 +1,7 @@
 PV="0.0cvs${DATE}"
 SECTION="libs"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
-DEPENDS=xextensions-cvs
+DEPENDS=xextensions-cvs fixesext
 PROVIDES=compositeext
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=CompositeExt
