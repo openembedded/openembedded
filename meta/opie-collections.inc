@@ -1,0 +1,63 @@
+#
+# A collection of dependencies for images including Opie or parts of it.
+#
+
+#
+# Dependencies to get the launcher up and running
+#
+
+OPIE_LIBS_DEPENDS = "qte-for-opie libopie2 qpf-bitstream-vera qpf-bitstream-vera-sans-mono qpf-unifont"
+OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
+OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
+
+#
+# High res displays want more fonts
+#
+OPIE_LIBS_RDEPENDS_append_corgi    = " qpf-bitstream-vera-large qpf-unifont"
+OPIE_LIBS_RDEPENDS_append_shepherd = " qpf-bitstream-vera-large qpf-unifont"
+OPIE_LIBS_RDEPENDS_append_husky    = " qpf-bitstream-vera-large qpf-unifont"
+OPIE_LIBS_RDEPENDS_append_tosa     = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+
+#
+# Things for reasonable bootstrap image
+#
+
+OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
+                     opie-suspendapplet opie-batteryapplet opie-homeapplet \
+                     opie-multikeyapplet opie-rotateapplet opie-vtapplet \
+                     opie-cardmon opie-irdaapplet opie-brightnessapplet"
+
+OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
+
+OPIE_BASE_APPS = "opie-packagemanager opie-keytabs opie-console opie-clock opie-citytime opie-backup"
+
+OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-sysinfo opie-networksettings opie-button-settings"
+
+OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
+
+OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal opie-style-web opie-style-phase"
+
+OPIE_BASE_DEPENDS = "ipkg ntp"
+OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
+
+#
+# Additional things for a standard 16MB distribution
+#
+
+OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-textedit"
+
+OPIE_PIM_MAIL = "opie-mail"
+
+OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo opie-today \
+            opie-today opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
+
+KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi"
+KDE_PIM_RDEPENDS = "kopi kapi kopi-applet"
+
+OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
+
+OPIE_EXTRA_APPS = "opie-advancedfm"
+
+OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security \
+            opie-mediummount opie-networksettings-wlanplugin opie-networksettings-pppplugin"
+
