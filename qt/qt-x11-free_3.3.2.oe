@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
@@ -43,9 +43,14 @@ do_compile() {
 
 do_stage() {
 	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_LIBDIR}/
+	install -d ${STAGING_INCDIR}/private
 	for f in include/*.h
 	do
 		install -m 0644 $f ${STAGING_INCDIR}/
+	done
+	for f in include/private/*.h
+	do
+	        install -m 0644 $f ${STAGING_INCDIR}/private/
 	done
 }
 
