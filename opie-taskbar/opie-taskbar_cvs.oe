@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "opie-libqrsync "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
@@ -16,7 +16,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc;date=${CVSDATE} \
            file://server.pro \
            file://opie-reorgfiles \
-           file://opie"
+           file://opie \
+           file://qpe.conf"
 
 S = "${WORKDIR}/launcher"
 
@@ -49,6 +50,7 @@ do_install() {
 	install -d ${D}/${palmtopdir}/pics/logo
 	install -d ${D}/etc/init.d
 	install -d ${D}/${palmtopdir}/etc/colors
+	install -d ${D}/${palmtopdir}/etc/skeleton
 
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
@@ -58,6 +60,13 @@ do_install() {
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
 	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/etc/
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
+	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skeleton/
+}
+
+pkg_postinst() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+[ -e "/home/$USER/Settings/qpe.conf" ] || cp -f /opt/QtPalmtop/etc/skeleton/qpe.conf /home/$USER/Settings/qpe.conf
 }
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
