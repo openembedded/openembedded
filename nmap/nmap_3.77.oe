@@ -9,7 +9,8 @@ PR = "r1"
 inherit autotools
 
 SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tar.bz2 \
-	   file://autofoo.patch;patch=1"
+	   file://autofoo.patch;patch=1 \
+	   file://remove_gtk.patch;patch=1"
 S = "${WORKDIR}/nmap-${PV}"
 
 EXTRA_OECONF = "--with-pcap=linux \
