@@ -4,6 +4,11 @@ DESCRIPTION := A GNU collection of binary utilities
 LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
+# This will ONLY build to this target
+TARGET_VENDOR :=
+TARGET_SYS := ${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}
+TARGET_PREFIX := ${TARGET_SYS}-
+
 DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
            virtual/libc patcher
 
