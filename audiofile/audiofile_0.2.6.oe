@@ -9,14 +9,10 @@ Research, Amiga IFF/8SVX, and NIST SPHERE."
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 
-inherit autotools  pkgconfig
+inherit autotools pkgconfig
 
 do_stage () {
 	install -m 0644 libaudiofile/audiofile.h libaudiofile/aupvlist.h libaudiofile/af_vfs.h ${STAGING_INCDIR}/
 	oe_libinstall -C libaudiofile libaudiofile ${STAGING_LIBDIR}
-	cat audiofile-config | sed -e "s,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;" > ${STAGING_BINDIR}/audiofile-config
-        chmod a+rx ${STAGING_BINDIR}/audiofile-config
+	install -m 0644 audiofile.m4 ${STAGING_DATADIR}/aclocal/
 }
