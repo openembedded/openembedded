@@ -12,7 +12,6 @@ EXTRA_OECONF = "--disable-debug"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glib-2.0-${PV}"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
-           file://glibconfig-sysdefs.h \
            file://gtk-doc.patch;patch=1 \
            file://glibconfig-sysdefs.h"
 
