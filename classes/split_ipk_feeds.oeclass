@@ -54,3 +54,5 @@ do_split_feed () {
 	
 addtask split_feed before do_build 
 
+# Feed splitting should be done explicitly, not as part of world
+EXCLUDE_FROM_WORLD = "1"
