@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
-DEPENDS = "libxml2 jpeg"
+DEPENDS = "libxml2 jpeg zlib libpng"
 DESCRIPTION = "SVG parser library"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg"
