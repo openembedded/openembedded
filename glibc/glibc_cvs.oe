@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r3"
+PR = "r4"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
