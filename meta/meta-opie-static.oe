@@ -1,0 +1,229 @@
+DESCRIPTION = "Meta-package for Opie"
+DEPENDS = "qte-for-opie libqpe-opie libopie2"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+ALLOW_EMPTY = 1
+
+PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
+            task-opie-decorations task-opie-games task-opie-inputmethods \
+		    task-opie-multimedia task-opie-pim task-opie-settings \
+		    task-opie-styles task-opie-today "
+
+RDEPENDS_opie = "task-opie-applets task-opie-applications task-opie-base \
+            task-opie-decorations task-opie-games task-opie-inputmethods \
+		    task-opie-multimedia task-opie-pim task-opie-settings \
+		    task-opie-styles task-opie-today "
+
+DEPENDS_opie = "opie-sh opie-help-en opie-freetype"
+DEPENDS_opie = "opie-sh opie-freetype"
+
+task-opie-applets = "\
+opie-aboutapplet \
+opie-autorotateapplet \
+opie-batteryapplet \
+opie-cardmon \
+opie-clipboardapplet \
+opie-clockapplet \
+opie-homeapplet \
+opie-irdaapplet \
+opie-logoutapplet \
+opie-mailapplet \
+opie-memoryapplet \
+opie-multikeyapplet \
+opie-networkapplet \
+opie-notesapplet \
+opie-pyquicklaunchapplet \
+opie-restartapplet \
+opie-restartapplet2 \
+opie-rotateapplet \
+opie-screenshotapplet \
+opie-suspendapplet \
+opie-vmemo \
+opie-volumeapplet \
+opie-vtapplet \
+opie-wirelessapplet \
+opie-zkbapplet "
+
+RDEPENDS_task-opie-applets = "${task-opie-applets}"
+DEPENDS += " ${task-opie-applets}"
+
+task-opie-applications = "\
+opie-advancedfm \
+opie-bartender \
+opie-calculator \
+opie-camera \
+opie-checkbook \
+opie-clock \
+opie-console \
+opie-embeddedkonsole \
+opie-euroconv \
+opie-eye \
+opie-ftp \
+opie-gutenbrowser \
+opie-helpbrowser \
+opie-irc \
+opie-keypebble \
+opie-mobilemsg \
+opie-odict \
+opie-oxygen \
+opie-performance \
+opie-qashmoney \
+opie-rdesktop \
+opie-reader \
+opie-remote \
+opie-sheet \
+opie-showimg \
+opie-tableviewer \
+opie-tinykate \
+opie-ubrowser \
+opie-wellenreiter \
+opie-write \
+opie-zsafe "
+RDEPENDS_task-opie-applications = "${task-opie-applications}"
+DEPENDS += " ${task-opie-applications}"
+
+task-opie-base = "\
+opie-alarm \
+opie-calibrate \
+opie-i18n \
+opie-libqrsync \
+opie-login \
+opie-lrelease-native \
+opie-lupdate-native \
+opie-pics \
+opie-qcop \
+opie-quicklauncher \
+opie-symlinker \
+opie-taskbar "
+RDEPENDS_task-opie-base = "${task-opie-base}"
+DEPENDS += " ${task-opie-base}"
+
+task-opie-decorations = "\
+opie-deco-flat \
+opie-deco-liquid \
+opie-deco-polished "
+RDEPENDS_task-opie-decorations = "${task-opie-decorations}"
+DEPENDS += " ${task-opie-decorations}"
+
+task-opie-games = "\
+aliens \
+atomic \
+checkers \
+crossword \
+fish \
+glider \
+icebloxx \
+mahjongg \
+maki \
+nmm \
+opie-backgammon \
+opie-bounce \
+opie-buzzword \
+opie-fifteen \
+opie-go \
+opie-kbill \
+opie-kcheckers \
+opie-kpacman \
+opie-mindbreaker \
+opie-minesweep \
+opie-oyatzee \
+opie-parashoot \
+opie-qasteroids \
+opie-sfcave \
+opie-snake \
+opie-solitaire \
+opie-tetrix \
+opie-tictac \
+opie-wordgame \
+opie-zlines \
+opie-zsame \
+pairs \
+pdamaze \
+pipeman \
+shisensho \
+sokoban \
+tickypip \
+tron \
+win4 \
+ziq \
+zrev7 \
+zsubhunt \
+ztappy "
+RDEPENDS_task-opie-games = "${task-opie-games}"
+DEPENDS += " ${task-opie-games}"
+
+task-opie-inputmethods = "\
+opie-dasher \
+opie-dvorak \
+opie-handwriting \
+opie-jumpx \
+opie-keyboard \
+opie-kjumpx \
+opie-multikey \
+opie-pickboard \
+opie-unikeyboard "
+RDEPENDS_task-opie-inputmethods = "${task-opie-inputmethods}"
+DEPENDS += " ${task-opie-inputmethods}"
+
+task-opie-multimedia = "\
+opie-powerchord \
+opie-recorder \
+opie-tonleiter "
+RDEPENDS_task-opie-multimedia = "${task-opie-multimedia}"
+DEPENDS += " ${task-opie-multimedia}"
+
+task-opie-pim = "\
+opie-addressbook \
+opie-datebook \
+opie-drawpad \
+opie-mail \
+opie-osearch \
+opie-search \
+opie-textedit \
+opie-today \
+opie-todo "
+RDEPENDS_task-opie-pim = "${task-opie-pim} task-opie-todayplugins"
+DEPENDS += " ${task-opie-pim}"
+
+task-opie-settings = "\
+opie-appearance \
+opie-aqpkg \
+opie-backup \
+opie-button-settings \
+opie-citytime \
+opie-confeditor \
+opie-doctab \
+opie-formatter \
+opie-language \
+opie-launcher-settings \
+opie-light-and-power \
+opie-mediummount \
+opie-packagemanager \
+opie-security \
+opie-sshkeys \
+opie-sysinfo \
+opie-systemtime \
+opie-tabmanager \
+opie-usermanager \
+opie-vmemo-settings "
+RDEPENDS_task-opie-settings = "${task-opie-settings}"
+DEPENDS += " ${task-opie-settings}"
+
+task-opie-styles = "\
+opie-style-flat \
+opie-style-fresh \
+opie-style-liquid \
+opie-style-metal \
+opie-theme "
+RDEPENDS_task-opie-styles = "${task-opie-styles}"
+DEPENDS += " ${task-opie-styles}"
+
+task-opie-todayplugins = "\
+opie-today-addressbookplugin \
+opie-today-datebookplugin \
+opie-today-fortuneplugin \
+opie-today-mailplugin \
+opie-today-stocktickerplugin \
+opie-today-todolistplugin \
+opie-today-weatherplugin "
+RDEPENDS_task-opie-todayplugins = "${task-opie-todayplugins}"
+DEPENDS += " ${task-opie-todayplugins}"
