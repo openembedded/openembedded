@@ -131,10 +131,10 @@ case "$ACTION" in
 		if test -z "$FS_MOUNT_POINT"
 		then
 			# See if /mnt/card is already mounted
-			if ! mount|awk '{print $3}'|grep "^$MOUNT_POINT$" 2>1 >/dev/null
+			if ! mount|awk '{print $3}'|grep "^$MOUNT_POINT$" 2>&1 >/dev/null
 			then
 				# Check if another *existing* partition is configured as /mnt/card				
-				if ! echo "$fstab_txt" | grep "$MOUNT_POINT" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>1 >/dev/null
+				if ! echo "$fstab_txt" | grep "$MOUNT_POINT" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>&1 >/dev/null
 				then
 					# As /mnt/card wasn't configured in fstab, we simply mount the
 					# first unconfigured partition we find
@@ -144,7 +144,7 @@ case "$ACTION" in
 					# as /mnt/card
 					for xpart in $OK_PARTS
 					do
-						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>1 >/dev/null
+						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>&1 >/dev/null
 						then
 							vecho "-> $MOUNT_POINT is reserved by fstab"
 							found=1
@@ -181,7 +181,7 @@ case "$ACTION" in
 		fi
 				
 		vecho "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
-        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT 2>1 >/dev/null
+        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT 2>&1 >/dev/null
 		MOUNT_RES=`mount | grep $DEVICE`
 
 
