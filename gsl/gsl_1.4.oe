@@ -7,6 +7,8 @@ SRC_URI = "http://www.mirror.ac.uk/sites/sources.redhat.com/pub/gsl/gsl-${PV}.ta
 
 inherit autotools  pkgconfig
 
+LEAD_SONAME = "libgsl.so"
+
 do_stage() {
 	oe_runmake DESTDIR=${S}/.install install
 	oe_libinstall -so -C cblas/.libs/ libgslcblas ${STAGING_LIBDIR}
