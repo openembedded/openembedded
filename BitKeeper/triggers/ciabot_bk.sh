@@ -12,7 +12,7 @@
 
 # Project information
 [ -z "$project_name" ] && project_name="openembedded"
-[ -z "$project_name" ] && return_address="oe@handhelds.org"
+[ -z "$return_address" ] && return_address="oe@handhelds.org"
 
 # System
 sendmail_command="/usr/sbin/sendmail -t"
