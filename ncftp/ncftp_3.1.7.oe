@@ -1,0 +1,20 @@
+DESCRIPTION=A sophisticated console ftp client
+SECTION=base
+PRIORITY=optional
+DEPENDS=virtual/libc
+RDEPENDS=libc6
+
+SRC_URI = ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2
+
+inherit autotools
+
+do_configure_prepend () {
+	install -m 0644 autoconf/aclocal.m4 acinclude.m4
+}
+
+do_install () {
+	install -d ${D}/${bindir} ${D}/${sysconfdir} ${D}/${mandir}
+	oe_runmake 'prefix=${D}/${prefix}' 'BINDIR=${D}/${bindir}' \
+		   'SYSCONFDIR=${D}/${sysconfdir}' 'mandir=${D}/${mandir}' \
+		   install
+}
