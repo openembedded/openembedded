@@ -5,7 +5,8 @@ DEPENDS = "virtual/libc libsdl-qpe libmad tremor libogg zlib"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
 			file://${FILESDIR}/sword1.patch;patch=1 \
-			file://${FILESDIR}/tremor.patch;patch=1 "
+			file://${FILESDIR}/tremor.patch;patch=1 \
+			file://${FILESDIR}/mouse.patch;patch=1 "
 
 inherit autotools 
 
