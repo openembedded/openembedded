@@ -9,7 +9,8 @@ DEPENDS=pango atk jpeg libpng xext
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \
 	file://${FILESDIR}/automake-lossage.patch;patch=1;pnum=0 \
-	file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0
+	file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=0 \
+	file://${FILESDIR}/no-demos.patch;patch=1
 
 inherit autotools libtool pkgconfig
 
