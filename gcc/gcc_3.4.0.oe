@@ -1,3 +1,5 @@
+PR = "r1"
+
 inherit autotools
 
 DESCRIPTION = "The GNU cc and gcc C compilers."
@@ -73,6 +75,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
 	   file://gcc34-arm-tune.patch;patch=1 \
 	   file://gcc34-15089.patch;patch=1 \
+	   file://gcc34-15666.patch;patch=1 \
 	file://gcc-uclibc-3.4.0-100-conf.patch;patch=1 \
 	file://gcc-uclibc-3.4.0-120-softfloat.patch;patch=1 \
 	file://gcc-uclibc-3.4.0-200-code.patch;patch=1"
