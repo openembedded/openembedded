@@ -53,10 +53,6 @@ do_install () {
 	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
 }
 
-do_stage () {
-	install -m 0755    ${WORKDIR}/update-rc.d/update-rc.d ${STAGING_BINDIR}/
-}
-
 pkg_postinst () {
 	set -e
 
