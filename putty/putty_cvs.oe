@@ -1,0 +1,33 @@
+DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Unix platforms"
+SECTION = "net"
+
+SRC_URI = "cvs://cvsuser:anonymous@cvs.tartarus.org/home/cvs;module=putty;date=${CVSDATE}"
+
+TARGETS = "plink pscp psftp puttygen"
+PV = "0.54-cvs-${CVSDATE}"
+
+S = "${WORKDIR}/putty"
+
+do_configure() {
+	perl mkfiles.pl
+}
+
+do_compile() {
+	cd unix && oe_runmake -f Makefile.gtk ${TARGETS} CC="${CC}" CFLAGS="${CFLAGS} -I. -I.. -I../charset"
+}
+
+do_install() {
+	install -d ${D}/${bindir}/
+	install -m 0755 unix/plink ${D}/${bindir}/ssh
+	install -m 0755 unix/pscp ${D}/${bindir}/scp
+	install -m 0755 unix/psftp ${D}/${bindir}/sftp
+	install -m 0755 unix/puttygen ${D}/${bindir}/puttygen
+}
+
+PACKAGES = "putty-ssh putty-scp putty-sftp putty-gen"
+FILES_putty = ""
+FILES_putty-ssh = "${bindir}/ssh"
+FILES_putty-scp = "${bindir}/scp"
+FILES_putty-sftp = "${bindir}/sftp"
+FILES_putty-gen = "${bindir}/puttygen"
+
