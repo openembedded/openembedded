@@ -4,13 +4,13 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
-	busybox dropbear hotplug ipkg initscripts \
-	netbase resolvconf sysvinit tinylogin lrzsz \
+	busybox dropbear hotplug ipkg initscripts modutils netbase psmisc \
+	resolvconf sysvinit tinylogin lrzsz \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
-	hotplug ipkg initscripts netbase resolvconf \
-	sysvinit tinylogin \
+	hotplug ipkg initscripts modutils netbase psmisc \
+	resolvconf sysvinit tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz \

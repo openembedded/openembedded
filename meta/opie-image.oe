@@ -1,7 +1,7 @@
 export IMAGE_BASENAME = "opie-image"
 
 #
-# Libraries and Files to get the launcher up and running
+# Dependencies to get the launcher up and running
 #
 
 OPIE_LIBS = "libqte2 qpf-bitstream-vera-small libqpe1 libopiecore2 libopieui2 libopienet2 libopiepim2 libopiemm2"
@@ -15,12 +15,14 @@ OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 OPIE_BASE_APPLETS = "opie-aboutapplet      opie-clockapplet      opie-logoutapplet    opie-suspendapplet \
 		     opie-batteryapplet    opie-homeapplet       opie-multikeyapplet  opie-rotateapplet  \
 		     opie-volumeapplet     opie-clipboardapplet  opie-irdaapplet      opie-restartapplet \
-		     opie-screenshotapplet opie-vtapplet         opie-cardmon"
+		     opie-screenshotapplet opie-vtapplet         opie-cardmon         "
 
 OPIE_BASE_APPS = "opie-aqpkg opie-console"
 
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
 
+OPIE_BASE_DEPENDS = "ipkg ntp"
+OPIE_BASE_RDEPENDS = "libipkg ntpdate"
 #
 # Additional things for a standard 16MB distribution
 #
@@ -38,10 +40,10 @@ OPIE_EXTRA_SETTINGS = ""
 #
 
 export IPKG_INSTALL = "task-bootstrap ${OPIE_LIBS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
-                               ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
+                             ${OPIE_BASE_RDEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
 
-DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
-                               ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
+DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND}  ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
+                          ${OPIE_BASE_DEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
 
 
 inherit image_ipk
