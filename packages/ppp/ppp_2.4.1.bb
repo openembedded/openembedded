@@ -2,17 +2,20 @@ SECTION = "console/network"
 DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 LICENSE = "BSD GPLv2"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-2.4.1.tar.gz \
 	file://pppd.patch;patch=1 \
 	file://man.patch;patch=1 \
 	file://cifdefroute.dif;patch=1 \
+	file://pppd-resolv-varrun.patch;patch=1 \
 	file://pon \
 	file://poff \
 	file://init \
 	file://ip-up \
-	file://ip-down"
+	file://ip-down \
+	file://08setupdns \
+	file://92removedns"
 	
 inherit autotools
 
@@ -28,6 +31,8 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/ip-down ${D}${sysconfdir}/ppp/
 	install -d ${D}${sysconfdir}/ppp/ip-up.d/
 	install -d ${D}${sysconfdir}/ppp/ip-down.d/
+	install -m 0755 ${WORKDIR}/08setupdns ${D}${sysconfdir}/ppp/ip-up.d/
+	install -m 0755 ${WORKDIR}/92removedns ${D}${sysconfdir}/ppp/ip-down.d/
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets"
