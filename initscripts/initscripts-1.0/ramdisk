@@ -33,12 +33,12 @@ if (test ! -e /etc/.configured) || test "$OLD_MTD_SIZE" != "$RAM_MTD_SIZE"; then
   dd if=/dev/zero bs=1024 count=$RAM_MTD_SIZE of=$RAM_MTD 2>/dev/null >&2 || exit 1
   test "$VERBOSE" != "no" && echo "$RAM_MTD";
   test "$VERBOSE" != "no" && echo -n "Creating filesystem on ramdisk: "
-  mkfs.minix $RAM_MTDBLK 2>/dev/null >&2 || exit 1
+  mkfs.ext2 $RAM_MTDBLK 2>/dev/null >&2 || exit 1
   test "$VERBOSE" != "no" && echo "$RAM_MTDBLK";
 fi
 
 test "$VERBOSE" != "no" && echo -n "Mounting ramdisk: "
-mount -t minix $RAM_MTDBLK $RAM_MNTPT 2>/dev/null >&2 || exit 1
+mount $RAM_MTDBLK $RAM_MNTPT 2>/dev/null >&2 || exit 1
 test "$VERBOSE" != "no" && echo "$RAM_MTDBLK";
 
 exit 0
