@@ -62,9 +62,9 @@ case $1 in
 
 'stop')
     echo "Stopping Opie..."
-    killall qpe
-    killall opie-login
-    killall quicklauncher
+    killall qpe 2>/dev/null
+    killall opie-login 2>/dev/null
+    killall quicklauncher 2>/dev/null
 
     ;;
 

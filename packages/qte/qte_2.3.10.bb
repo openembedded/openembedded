@@ -4,6 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
+DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
 PR = "r3"
 
@@ -30,7 +31,10 @@ SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_ramses           = "file://kernel-keymap.patch;patch=1 file://ramses.patch;patch=1 "
+SRC_URI_append_ramses           = "file://devfs.patch;patch=1 \
+                                   file://ramses.patch;patch=1 \
+                                   file://ramses-keyboard.patch;patch=1 \
+                                   file://ramses-touchscreen.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -69,7 +73,7 @@ EXTRA_DEFINES_jornada720	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
 EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_beagle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
-EXTRA_DEFINES_ramses 		= "-DQT_QWS_TSLIB                 -DQT_QWS_RAMSES"
+EXTRA_DEFINES_ramses 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
@@ -79,6 +83,7 @@ export SYSCONF_CFLAGS = "${CFLAGS}"
 export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES}"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
+export SYSCONF_LFLAGS_ramses = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
 
