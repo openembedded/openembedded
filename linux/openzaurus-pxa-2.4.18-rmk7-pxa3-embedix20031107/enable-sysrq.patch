@@ -1,5 +1,10 @@
---- linux/drivers/char/corgi_keyb.c~enable-sysrq	2003-09-05 01:18:15.000000000 +0200
-+++ linux/drivers/char/corgi_keyb.c	2003-09-05 01:40:17.000000000 +0200
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux/drivers/char/corgi_keyb.c~enable-sysrq
++++ linux/drivers/char/corgi_keyb.c
 @@ -23,7 +23,7 @@
  #include <linux/init.h>
  #include <linux/poll.h>
@@ -43,3 +48,14 @@
  }
  
  int corgi_kbd_translate(unsigned char scancode, unsigned char *keycode_p)
+--- linux/drivers/char/keyboard.c~enable-sysrq
++++ linux/drivers/char/keyboard.c
+@@ -366,7 +366,7 @@
+ #ifdef CONFIG_MAGIC_SYSRQ		/* Handle the SysRq Hack */
+ 	if (keycode == SYSRQ_KEY) {
+ 		sysrq_pressed = !up_flag;
+-		goto out;
++		// goto out;
+ 	} else if (sysrq_pressed) {
+ 		if (!up_flag) {
+ 			handle_sysrq(kbd_sysrq_xlate[keycode], kbd_pt_regs, kbd, tty);
