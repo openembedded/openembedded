@@ -681,9 +681,14 @@ python __anonymous () {
 			raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
 	
 	pn = bb.data.getVar('PN', d, 1)
+
 	cvsdate = bb.data.getVar('CVSDATE_%s' % pn, d, 1)
 	if cvsdate != None:
 		bb.data.setVar('CVSDATE', cvsdate, d)
+
+	use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
+	if use_nls != None:
+		bb.data.setVar('USE_NLS', use_nls, d)
 
 	try:
 		bb.build.exec_func('read_manifest', d)
