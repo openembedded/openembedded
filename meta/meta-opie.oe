@@ -4,6 +4,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PR = "r10"
 PACKAGE_ARCH = "all"
+LICENSE = "MIT"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
             task-opie-decorations task-opie-games task-opie-inputmethods \
