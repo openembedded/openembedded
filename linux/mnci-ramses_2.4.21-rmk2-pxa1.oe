@@ -25,6 +25,7 @@ do_configure_prepend() {
 }
 
 pkg_postinst_kernel () {
+test -f /tmp/zImage || exit 0
 cp /tmp/zImage /dev/mtdblock/1
 rm /tmp/zImage
 sync
