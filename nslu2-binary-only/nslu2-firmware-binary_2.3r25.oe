@@ -1,7 +1,7 @@
 DEPENDS = "slugtool-native"
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.linksys.com/pub/network/nslu2-fw-2.3r25.zip"
 S = "${WORKDIR}"
@@ -11,5 +11,6 @@ do_compile () {
 	install -d ${STAGING_LIBDIR}/nslu2-binaries
 	install -m 0755 Redboot ${STAGING_LIBDIR}/nslu2-binaries/
 	install -m 0755 SysConf ${STAGING_LIBDIR}/nslu2-binaries/
+	install -m 0755 ramdisk.gz ${STAGING_LIBDIR}/nslu2-binaries/
 	install -m 0755 Trailer ${STAGING_LIBDIR}/nslu2-binaries/
 }
