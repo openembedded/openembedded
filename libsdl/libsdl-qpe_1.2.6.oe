@@ -12,7 +12,7 @@ S = ${WORKDIR}/SDL12
 
 inherit autotools libtool
 
-EXTRA_OECONF = --disable-debug --disable-cdrom --enable-threads --enable-timers --enable-endian \
+EXTRA_OECONF = --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
                --enable-file --enable-oss --disable-alsa --disable-esd --disable-arts \
                --disable-diskaudio --disable-nas --disable-esd-shared --disable-esdtest \
                --disable-mintaudio --disable-nasm --disable-video-x11 --disable-video-dga \
@@ -32,7 +32,8 @@ do_stage() {
 	done
 
 	cat sdl-config | sed -e "s,-I/usr/include/SDL,-I${STAGING_INCDIR}/SDL," \
-	               | sed -e "s,libdirs ,mickey_is_cool ," > ${STAGING_BINDIR}/sdl-config
+	               | sed -e "s,libdirs ,mickey_is_cool ," \
+                       | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR}/sdl-config
         chmod a+rx ${STAGING_BINDIR}/sdl-config
 }
 
