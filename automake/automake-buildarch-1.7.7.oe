@@ -1,0 +1,5 @@
+include automake-${PV}.oe
+PN_append='-buildarch'
+S = ${WORKDIR}/automake-${PV}
+
+inherit native
