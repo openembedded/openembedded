@@ -1,0 +1,20 @@
+DESCRIPTION=File Alteration Monitor
+SECTION=libs
+PRIORITY=optional
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+SRC_URI = ftp://oss.sgi.com/projects/fam/download/stable/fam-${PV}.tar.gz \
+	  file://${FILESDIR}/compile-fix.patch;patch=1
+
+inherit autotools libtool
+
+CPPFLAGS_append = ' -DNDEBUG'
+
+do_stage() {
+	oe_soinstall libfam/.libs/libfam.so.0.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 libfam/.libs/libfam.a ${STAGING_LIBDIR}/libfam.a
+	install -m 0644 libfam/.libs/libfam.lai ${STAGING_LIBDIR}/libfam.la
+	install -m 0644 include/* ${STAGING_INCDIR}/
+}
+
