@@ -5,10 +5,9 @@ MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "expat jpeg zlib libpng"
 DESCRIPTION = "SVG parser library"
 LICENSE = "LGPL"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg \
-	file://expat.patch;patch=1;pnum=0"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg"
 S = "${WORKDIR}/libsvg"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--with-expat"
 
