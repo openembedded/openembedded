@@ -49,5 +49,5 @@ OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotappl
 OPIE_EXTRA_APPS = "opie-advancedfm"
 
 OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security \
-            opie-mediummount"
+            opie-mediummount opie-networksettings-wlanplugin opie-networksettings-pppplugin"
 
