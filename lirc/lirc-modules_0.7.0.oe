@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel"
+DEPENDS = "virtual/kernel fakeroot-native"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
