@@ -3,15 +3,20 @@ SECTION = "opie/libs"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PROVIDES = "libftplib1"
+PROVIDES = "libftplib1 opie-ftplib"
 I18N_FILES = "libftplib.ts"
+
+APPNAME = "opie-ftplib"
+
+PR="r1"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/ftplib"
 S = "${WORKDIR}/ftplib"
 
 inherit palmtop
-inherit opie_i18n
+
+
 
 EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 
