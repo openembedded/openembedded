@@ -8,10 +8,12 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
 HOMEPAGE = "http://iqnotes.kybu.org"
 AUTHOR = "Peter Vrabel <kybu@kybu.org>"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.vanille.de/mirror/iqnotes-2.0.2-src.tar.bz2 \
-           file://md5.diff;patch=1"
+           file://md5.diff;patch=1 \
+           file://qt2310-fontbug.patch;patch=1"
+
 S = "${WORKDIR}/iqnotes/iqnotes"
 
 inherit palmtop
