@@ -269,7 +269,7 @@ CONFIG_DC=y
 # CONFIG_DEVFSD is not set
 # CONFIG_LAST is not set
 # CONFIG_HDPARM is not set
-CONFIG_MAKEDEVS=y
+# CONFIG_MAKEDEVS is not set
 # CONFIG_MT is not set
 # CONFIG_RX is not set
 CONFIG_STRINGS=y
