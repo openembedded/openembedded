@@ -6,10 +6,10 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "sysinfo"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/sysinfo \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sysinfo \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps \
+           ${HANDHELDS_CVS};module=opie/share"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

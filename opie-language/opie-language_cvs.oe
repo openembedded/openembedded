@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "language"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/language \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/language \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

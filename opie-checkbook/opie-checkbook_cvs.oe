@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PV = "0.8.0-cvs-${CVSDATE}"
 APPNAME = "checkbook"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/${APPNAME} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/${APPNAME} \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

@@ -7,8 +7,8 @@ PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "restartapplet"
 I18N_FILES = "librestartapplet.ts"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/restartapplet2 \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/restartapplet2 \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/restartapplet2"
 

@@ -5,7 +5,7 @@ INHIBIT_PACKAGE_STRIP = "1"
 
 RDEPENDS = "kernel-module-serport"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/games/snes232 \
+SRC_URI = "${HANDHELDS_CVS};module=gpe/games/snes232 \
 	file://snes232-2.6.patch;patch=1;pnum=0 \
 	file://Makefile-2.6"
 

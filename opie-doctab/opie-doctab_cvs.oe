@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "doctab"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/doctab \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/doctab \
+           ${HANDHELDS_CVS};module=opie/apps \
+           ${HANDHELDS_CVS};module=opie/pics"
 
 S = "${WORKDIR}/${APPNAME}"
 

@@ -7,8 +7,8 @@ DEPENDS = "libopietooth1"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "bluetoothapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/applet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics/bluetoothapplet"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/applet \
+           ${HANDHELDS_CVS};module=opie/pics/bluetoothapplet"
 S = "${WORKDIR}/applet"
 
 inherit opie

@@ -7,7 +7,7 @@ PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "opie-update-symlinks"
 APPTYPE = "binary"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/symlinker "
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/symlinker "
 
 S = "${WORKDIR}/symlinker"
 

@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "volumeapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/volumeapplet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/volumeapplet \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

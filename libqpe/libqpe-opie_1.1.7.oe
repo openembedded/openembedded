@@ -8,7 +8,7 @@ PROVIDES = "virtual/libqpe"
 PR = "r2"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/library \
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
 	file://nomax.patch;patch=1;pnum=2"
 S = "${WORKDIR}/library"
 

@@ -7,7 +7,7 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "bluepin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/blue-pin"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/blue-pin"
 S = "${WORKDIR}/blue-pin"
 
 inherit opie

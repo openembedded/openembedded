@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "multikeyapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/multikeyapplet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/multikeyapplet \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

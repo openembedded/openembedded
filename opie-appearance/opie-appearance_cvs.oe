@@ -7,9 +7,9 @@ DEPENDS = "libqtaux2"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "appearance"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/appearance2 \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/appearance2 \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/appearance2"
 

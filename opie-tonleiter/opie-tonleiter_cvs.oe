@@ -7,9 +7,9 @@ PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "tonleiter"
 APPTYPE = "binary"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/tonleiter \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/multimedia/tonleiter \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

@@ -1,0 +1,15 @@
+DESCRIPTION = "Liquid window decoration style for Opie"
+SECTION = "opie/decorations"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libqtaux2"
+
+APPNAME = "liquid"
+
+TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/decorations/liquid "
+
+S = "${WORKDIR}/liquid"
+
+inherit opie

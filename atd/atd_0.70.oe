@@ -1,4 +1,4 @@
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/atd;tag=ATD-0_70"
+SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70"
 S = "${WORKDIR}/atd"
 SECTION = "base"
 LICENSE = "GPLV2"

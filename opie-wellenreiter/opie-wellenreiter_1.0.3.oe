@@ -11,9 +11,9 @@ APPTYPE = "binary"
 
 CVSDATE = "20041015"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/wellenreiter;date=20040504 \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=20040504                     \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=20040504"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/wellenreiter;date=20040504 \
+           ${HANDHELDS_CVS};module=opie/pics;date=20040504                     \
+           ${HANDHELDS_CVS};module=opie/apps;date=20040504"
 S = "${WORKDIR}/wellenreiter"
 
 inherit opie

@@ -8,9 +8,9 @@ APPNAME = "camera"
 APPTYPE = "binary"
 PV = "1.0.3+cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/${APPNAME} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/multimedia/${APPNAME} \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/camera"
 
 EXTRA_QMAKEVARS_POST=" LIBS+=-L.. "

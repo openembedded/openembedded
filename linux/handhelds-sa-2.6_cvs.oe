@@ -10,7 +10,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel26  \
+SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
            file://defconfig-${MACHINE}"
 
 S = "${WORKDIR}/kernel26"

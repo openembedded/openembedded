@@ -8,7 +8,7 @@ RDEPENDS = "opie-today opie-mailapplet"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "todaymailplugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/today/plugins/mail "
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/pim/today/plugins/mail "
 
 S = "${WORKDIR}/mail"
 

@@ -7,7 +7,7 @@ DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.7+cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library \
+SRC_URI = "${HANDHELDS_CVS};module=opie/library \
 	file://nomax.patch;patch=1;pnum=2"
 S = "${WORKDIR}/library"
 

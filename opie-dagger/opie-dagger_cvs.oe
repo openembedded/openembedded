@@ -9,9 +9,9 @@ APPNAME = "dagger"
 
 EXTRA_QMAKEVARS_PRE = "LIBSWORD_INC_DIR=${STAGING_INCDIR}/sword"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/dagger \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/dagger \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

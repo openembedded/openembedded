@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "qhandwriting"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/handwriting \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/qimpen"
+SRC_URI = "${HANDHELDS_CVS};module=opie/inputmethods/handwriting \
+	${HANDHELDS_CVS};module=opie/etc/qimpen"
 
 S = "${WORKDIR}/handwriting"
 

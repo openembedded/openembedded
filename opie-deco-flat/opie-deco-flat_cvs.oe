@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "flat"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/decorations/flat "
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/decorations/flat "
 
 S = "${WORKDIR}/flat"
 

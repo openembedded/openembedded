@@ -8,8 +8,8 @@ RDEPENDS = "openobex-apps"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "obex"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/obex \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/obex \
+           ${HANDHELDS_CVS};module=opie/pics"
 S = "${WORKDIR}/obex"
 
 inherit opie

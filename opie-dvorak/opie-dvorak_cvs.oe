@@ -8,8 +8,8 @@ RDEPENDS = "opie-pickboard"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "qdvorak"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dvorak \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/pickboard"
+SRC_URI = "${HANDHELDS_CVS};module=opie/inputmethods/dvorak \
+           ${HANDHELDS_CVS};module=opie/inputmethods/pickboard"
 S = "${WORKDIR}/dvorak"
 
 inherit opie

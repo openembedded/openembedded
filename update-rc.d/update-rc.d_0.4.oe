@@ -4,7 +4,7 @@ DESCRIPTION = "Manage symlinks in /etc/rcN.d"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 S = ${WORKDIR}/update-rc.d
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d;tag=r0_4"
+SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_4"
 
 do_compile() {
 }

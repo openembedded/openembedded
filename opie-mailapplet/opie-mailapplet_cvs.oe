@@ -7,9 +7,9 @@ DEPENDS = "libmailwrapper"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "mailapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail/taskbarapplet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/mail/taskbarapplet \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/taskbarapplet"
 

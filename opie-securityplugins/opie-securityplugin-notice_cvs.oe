@@ -10,8 +10,8 @@ PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "multiauthnoticeplugin"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/notice \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/notice \
+           ${HANDHELDS_CVS};module=opie/pics "
 
 S = "${WORKDIR}/notice"
 

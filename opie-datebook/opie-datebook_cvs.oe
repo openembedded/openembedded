@@ -7,8 +7,8 @@ RDEPENDS = "opie-pics"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "datebook"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/datebook \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/pim/datebook \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

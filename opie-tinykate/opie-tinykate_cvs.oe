@@ -7,10 +7,10 @@ DEPENDS = "libqtaux2"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "tinykate"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/tinykate \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/tinykate \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/share \
+           ${HANDHELDS_CVS};module=opie/apps"
 
 S = "${WORKDIR}/tinykate"
 

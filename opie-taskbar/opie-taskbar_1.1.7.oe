@@ -9,13 +9,13 @@ PR = "r2"
 APPNAME = "qpe"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/core/apps/calibrate \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/settings/mediummount \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/core/launcher \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/apps \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/root \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/etc \
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/core/launcher \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/root \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/etc \
 	   file://nomax.patch;patch=1;pnum=3 \
            file://server.pro-1.1.7 \
            file://opie-reorgfiles \

@@ -7,7 +7,7 @@ APPNAME = "opieplayer2"
 
 RPROVIDES = "opie-mediaplayer2-skin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+SRC_URI = "${HANDHELDS_CVS};module=opie/pics"
 
 FILES_${PN} = "${palmtopdir}/pics/${APPNAME}/skins/default/*.png"
 

@@ -8,7 +8,7 @@ PACKAGE_ARCH = "ipaqpxa"
 KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
+SRC_URI = "${HANDHELDS_CVS};module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
 	   file://defconfig-ipaqpxa \
 	   file://ipaq-hal.init \
 	   file://linux-2.4-no-short-loads.patch;patch=1 \

@@ -8,8 +8,8 @@ RDEPENDS = "opie-today"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "todayweatherplugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/weather \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/todayplugins/weather \
+           ${HANDHELDS_CVS};module=opie/pics"
 
 S = "${WORKDIR}/weather"
 

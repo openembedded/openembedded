@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 DEPENDS = "libetpan"
 PV = "1.1.7+cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail/libmailwrapper "
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/mail/libmailwrapper "
 S = "${WORKDIR}/libmailwrapper"
 
 inherit opie

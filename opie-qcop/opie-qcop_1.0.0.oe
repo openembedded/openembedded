@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
 TAG = "v1_1_6"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/core/apps/qcop"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/qcop"
 S = "${WORKDIR}/qcop"
 
 inherit opie

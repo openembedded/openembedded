@@ -9,9 +9,9 @@ PV = "1.0.3+cvs-${CVSDATE}"
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/wellenreiter \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/wellenreiter \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps"
 S = "${WORKDIR}/wellenreiter"
 
 inherit opie

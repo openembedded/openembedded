@@ -1,0 +1,15 @@
+DESCRIPTION = "Addressbook plugin for Today"
+SECTION = "opie/today"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "opie-today"
+
+APPNAME="todayaddressbookplugin"
+
+TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/pim/today/plugins/addressbook "
+
+S = "${WORKDIR}/addressbook"
+
+inherit opie
+

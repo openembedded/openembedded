@@ -9,9 +9,9 @@ PR = "r1"
 APPNAME = "security"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/core/settings/security \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/apps"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/settings/security \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

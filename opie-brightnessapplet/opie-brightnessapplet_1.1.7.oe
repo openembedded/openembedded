@@ -8,8 +8,8 @@ APPNAME = "brightnessapplet"
 
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/applets/brightnessapplet \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/pics"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/applets/brightnessapplet \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

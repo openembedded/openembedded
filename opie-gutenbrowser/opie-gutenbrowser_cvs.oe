@@ -7,10 +7,10 @@ DEPENDS = "  opie-ftplib"
 PV = "1.1.7+cvs-${CVSDATE}"
 APPNAME = "gutenbrowser"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/opie-gutenbrowser \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc"
+SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-gutenbrowser \
+           ${HANDHELDS_CVS};module=opie/pics \
+           ${HANDHELDS_CVS};module=opie/apps \
+	   ${HANDHELDS_CVS};module=opie/etc"
 
 S = "${WORKDIR}/opie-gutenbrowser"
 

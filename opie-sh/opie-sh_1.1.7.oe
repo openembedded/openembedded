@@ -9,12 +9,12 @@ APPNAME = "opie-sh"
 APPTYPE = "binary"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/tools/opie-sh \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/help \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/share \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/apps \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/bin"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/tools/opie-sh \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/help \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/share \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/bin"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
