@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#
+# Noodles' simpler update script. SL-C3000 only for the moment.
+#
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -8,7 +11,6 @@ TMPHEAD=$TMPPATH/tmphead.bin
 
 WFLG_KERNEL=0
 WFLG_INITRD=0
-WFLG_MVERSION=0
 WFLG_HDD=0
 
 RO_MTD_LINE=`cat /proc/mtd | grep "root" | tail -n 1`
@@ -94,94 +96,51 @@ mkdir -p $TMPPATH > /dev/null 2>&1
 
 cd $DATAPATH/
 
-for TARGETFILE in zImage.bin zimage.bin ZIMAGE.BIN initrd.bin INITRD.BIN mversion.bin MVERSION.BIN
+#
+# First do the kernel.
+#
+for TARGETFILE in zImage.bin zimage.bin ZIMAGE.BIN
 do
-	if [ -e $TARGETFILE ]
+	if [ -e $TARGETFILE -a $WFLG_KERNEL = 0 ]
+	then
+		# Get the size of the kernel.
+		DATASIZE=`wc -c $TARGETFILE`
+		DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
+
+		echo 'Updating kernel.'
+		echo $TARGETFILE':'$DATASIZE' bytes'
+		/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE \
+			$TARGETFILE > /dev/null 2>&1
+
+		WFLG_KERNEL=1
+
+	fi
+done
+
+#
+# Now do the initrd.
+#
+for TARGETFILE in initrd.bin INITRD.BIN
+do
+	if [ -e $TARGETFILE -a $WFLG_INITRD = 0 ]
 	then
 		rm -f $TMPPATH/*.bin > /dev/null 2>&1
 		DATASIZE=`wc -c $TARGETFILE`
 		DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
 
-		#echo $TARGETFILE':'$DATASIZE'bytes'
-		TARGETTYPE=Invalid
-		case "$TARGETFILE" in
-		zImage.bin) TARGETTYPE=Kernel;;
-		zimage.bin) TARGETTYPE=Kernel;;
-		ZIMAGE.BIN) TARGETTYPE=Kernel;;
-		initrd.bin) TARGETTYPE=RoFs;;
-		INITRD.BIN) TARGETTYPE=RoFs;;
-		mversion.bin) TARGETTYPE=MasterVer;;
-		MVERSION.BIN) TARGETTYPE=MasterVer;;
-		*)
-			continue
-			;;
-		esac
-
-		case "$TARGETTYPE" in
-		Kernel)
-			if [ $WFLG_KERNEL != 0 ]
-			then
-				continue
-			fi
-			WFLG_KERNEL=1
-			echo 'kernel'
-			ISLOGICAL=1
-			MODULEID=5
-			MODULESIZE=0x13C000
-			ADDR=`dc 0xE0000`
-			ISFORMATTED=1
-			DATAPOS=0
-			ONESIZE=524288
-			HDTOP=`expr $DATASIZE - 16`
-			/sbin/bcut -a $HDTOP -s 16 -o $TMPHEAD $TARGETFILE
-			;;
-		RoFs)
-			if [ $WFLG_INITRD != 0 ]
-			then
-				continue
-			fi
-			WFLG_INITRD=1
-			echo 'RO file system'
-			ISLOGICAL=0
-			MODULEID=6
-			MODULESIZE=0x500000
-			ADDR=0
-			ISFORMATTED=0
-			TARGET_MTD=$RO_MTD
-			DATAPOS=16
-			ONESIZE=1048576
-			/sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
-			;;
-		MasterVer)
-			if [ $WFLG_MVERSION != 0 ]
-			then
-				continue
-			fi
-			WFLG_MVERSION=1
-			echo 'Master version'
-			MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
-			/sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-			/sbin/verchg -m $MTMPNAME $TARGETFILE 0 0 > /dev/null 2>&1
-			/sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-			rm -f $MTMPNAME > /dev/null 2>&1
-			echo 'Success!'
-			continue
-			;;
-		*)
-			continue
-			;;
-		esac
-
-
-		#format?
-		if [ $ISFORMATTED = 0 ]
-		then
-			echo -n 'Flash erasing...'
-			/sbin/eraseall $TARGET_MTD 2> /dev/null > /dev/null
-			#/sbin/eraseall $TARGET_MTD 2
-			echo 'done'
-			ISFORMATTED=1
-		fi
+		WFLG_INITRD=1
+		echo 'RO file system'
+		MODULEID=6
+		MODULESIZE=0x500000
+		ADDR=0
+		TARGET_MTD=$RO_MTD
+		DATAPOS=16
+		ONESIZE=1048576
+		/sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
+		
+		echo -n 'Flash erasing...'
+		/sbin/eraseall $TARGET_MTD 2> /dev/null > /dev/null
+		echo 'done'
 
 		echo ''
 		echo '0%                      100%'
@@ -214,20 +173,14 @@ do
 			#handle data file
 			#echo 'ADDR='$ADDR
 			#echo 'SIZE='$TMPSIZE
-			if [ $ISLOGICAL = 0 ]
-			then
-				next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
-				if [ "$next_addr" = "" ]; then
-					echo "ERROR:flash write"
-					rm $TMPDATA > /dev/null 2>&1
-					RESULT=3
-					break;
-				fi
-				ADDR=$next_addr
-			else
-				/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
-				ADDR=`expr $ADDR + $TMPSIZE`
+			next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
+			if [ "$next_addr" = "" ]; then
+				echo "ERROR:flash write"
+				rm $TMPDATA > /dev/null 2>&1
+				RESULT=3
+				break;
 			fi
+			ADDR=$next_addr
 
 			rm $TMPDATA > /dev/null 2>&1
 
@@ -242,7 +195,7 @@ do
 
 		echo ''
 
-#finish
+		#finish
 		rm -f $TMPPATH/*.bin > /dev/null 2>&1
 
 		if [ $RESULT = 0 ]
@@ -260,7 +213,6 @@ do
 	fi
 done
 
-HDD1FILE=hdimage1.tgz
 ## HDD image
 for TARGETFILE in hdimage1.tgz HDIMAGE1.TGZ
 do
@@ -289,32 +241,17 @@ do
 		    exit "$?"
 		fi
     
-		cd /
+		cd /hdd1
 		echo 'Now extracting...'
-		gzip -dc $DATAPATH/$HDD1FILE | tar xf -
+		gzip -dc $DATAPATH/$TARGETFILE | tar xf -
 		if [ "$?" != "0" ]; then
 		    echo "Error!"
 		    exit "$?"
 		fi
 
-		# delete java if no java model
-		if [ ! -f /root/.java ]; then
-			rm -rf /hdd1/usr/QtPalmtop.rom/j2me
-		fi
-
-		## write check sum
-		ORGFILE=$DATAPATH/mversion.bin
-		if [ ! -f $ORGFILE ]; then
-		    ORGFILE=$DATAPATH/MVERSION.BIN
-		fi
-		MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
-		/sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-		/sbin/verchg_hdd $MTMPNAME $ORGFILE 9 > /dev/null 2>&1
-		/sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-		rm -f $MTMPNAME > /dev/null 2>&1
-
 		echo 'Success!'
 		# remount as RO
+		cd /
 		umount /hdd1
 		mount -t $LINUXFMT -o ro,noatime /dev/${IDE1}1 /hdd1
 	fi
