@@ -15,7 +15,7 @@ OEMASK = "(toolchain-external)"
 
 # Uncomment this OEMASK, if you want to use a prebuilt toolchain.
 # You will need to provide packages for toolchain and additional libraries yourself
-#OEMASK = "()"
+#OEMASK = "-initial|()"
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
