@@ -26,7 +26,7 @@ python do_distribute_sources () {
 		if lvalid != 1:
 			valid = 0
 	if valid == 0:
-		oe.note("Licenses in LICENSE are not all listed in SRC_DISTRIBUTE_LICENSES, skipping source distribution")
+		oe.note("Licenses (%s) are not all listed in SRC_DISTRIBUTE_LICENSES, skipping source distribution" % licenses)
 		return
 	import re
 	for s in (oe.data.getVar('A', d, 1) or "").split():

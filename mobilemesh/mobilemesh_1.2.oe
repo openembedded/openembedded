@@ -33,3 +33,5 @@ do_install() {
 	install ${S}/doc/README ${D}/${docdir}
 	install ${S}/mobilemesh.init ${D}/${sysconfdir}/init.d/mobilemesh
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/mobilemesh/mmrp.conf ${sysconfdir}/mobilemesh/mmdiscover.conf"

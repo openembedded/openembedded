@@ -38,3 +38,7 @@ FILES_dhcp-server = "/usr/sbin/dhcpd /etc/init.d/dhcp-server /etc/default/dhcp-s
 FILES_dhcp-relay = "/usr/sbin/dhcrelay /etc/init.d/dhcp-relay /etc/default/dhcp-relay"
 FILES_dhcp-client = "/sbin/ /etc/dhcp/dhclient.conf"
 FILES_dhcp-omshell = "/usr/bin/omshell"
+
+CONFFILES_dhcp-server_nylon = "/etc/dhcp/dhcpd.conf"
+CONFFILES_dhcp-relay_nylon = "/etc/default/dhcp-relay"
+CONFFILES_dhcp-client_nylon = "/etc/dhcp/dhclient.conf"

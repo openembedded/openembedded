@@ -159,3 +159,6 @@ RDEPENDS_${PN}-unslung = "nslu2-linksys-ramdisk"
 RPROVIDES_${PN}-unslung = "${PN}"
 
 FILES_${PN}-unslung = ""
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
+

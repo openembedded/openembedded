@@ -55,6 +55,7 @@ openvpn \
 openswan \
 perl \
 ppp \
+ppp-dsl \
 rp-pppoe \
 rrdtool \
 prism2-firmware-update \

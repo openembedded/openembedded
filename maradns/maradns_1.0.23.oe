@@ -32,7 +32,7 @@ do_install() {
                 MAN8=${D}/usr/share/man/man8 \
                 install
 	
-	mv ${D}/${sysconfdir}/mararc/example_mararc ${D}/${sysconfdir}/maradns
+	mv ${D}/${sysconfdir}/mararc/example_mararc ${D}/${sysconfdir}/maradns/mararc
 	rm -r ${D}/${sysconfdir}/mararc/
 	install -m 755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/maradns
 }
@@ -40,3 +40,5 @@ do_install() {
 PACKAGES = "maradns-zone maradns-ask maradns maradns-doc"
 FILES_maradns-zone = "${sbindir}/zoneserver ${bindir}/getzone"
 FILES_maradns-ask = "${bindir}/askmara"
+
+CONFFILES_${PN}_nylon = "/etc/maradns/mararc"

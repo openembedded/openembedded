@@ -8,12 +8,18 @@ LICENSE = "BSD"
 PV = "cvs${CVSDATE}"
 
 SRC_URI="cvs://anonymous@cvs.sourceforge.net/cvsroot/olsrd;module=olsrd-current \
-	file://unik-olsrd"
+	file://unik-olsrd \
+	file://olsrd.conf"
 
 PACKAGES =+ "unik-olsrd-libs"
 FILES_unik-olsrd-libs = "${libdir}"
 
 S = "${WORKDIR}/olsrd-current"
+
+inherit update-rc.d
+
+INITSCRIPT_NAME = "unik-olsrd"
+INITSCRIPT_PARAMS = "defaults"
 
 do_compile() {
 	oe_runmake OS=linux clean all libs
@@ -21,8 +27,9 @@ do_compile() {
 
 do_install () {
 	oe_runmake INSTALL_PREFIX=${D} install install_libs
-	install -d ${D}/etc/init.d
+	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/unik-olsrd ${D}/${sysconfdir}/init.d
+	install -m 644 ${WORKDIR}/olsrd.conf ${D}/${sysconfdir}
 }
 
-CONFFILES_${PN} = "/etc/olsrd.conf"
+CONFFILES_${PN} = "${sysconfdir}/olsrd.conf"

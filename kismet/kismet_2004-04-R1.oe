@@ -30,3 +30,5 @@ do_install_append() {
 
 PACKAGES =+ "kismet-sounds"
 FILES_kismet-sounds = "/usr/share/kismet/wav"
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/kismet.conf"

@@ -15,3 +15,31 @@ do_install() {
 	export PREFIX=${D}
 	${S}/install.sh
 }
+
+CONFFILES_${PN}_nylon = "\
+${sysconfdir}/shorewall/accounting \
+${sysconfdir}/shorewall/actions \
+${sysconfdir}/shorewall/blacklist \
+${sysconfdir}/shorewall/ecn \
+${sysconfdir}/shorewall/hosts \
+${sysconfdir}/shorewall/init \
+${sysconfdir}/shorewall/initdone \
+${sysconfdir}/shorewall/interfaces \
+${sysconfdir}/shorewall/maclist \
+${sysconfdir}/shorewall/masq \
+${sysconfdir}/shorewall/modules \
+${sysconfdir}/shorewall/nat \
+${sysconfdir}/shorewall/netmap \
+${sysconfdir}/shorewall/params \
+${sysconfdir}/shorewall/policy \
+${sysconfdir}/shorewall/proxyarp \
+${sysconfdir}/shorewall/routestopped \
+${sysconfdir}/shorewall/rules \
+${sysconfdir}/shorewall/shorewall.conf \
+${sysconfdir}/shorewall/start \
+${sysconfdir}/shorewall/stop \
+${sysconfdir}/shorewall/stopped \
+${sysconfdir}/shorewall/tcrules \
+${sysconfdir}/shorewall/tos \
+${sysconfdir}/shorewall/tunnels \
+${sysconfdir}/shorewall/zones"

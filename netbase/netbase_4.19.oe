@@ -33,3 +33,5 @@ do_install () {
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
 	install -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/network/options ${sysconfdir}/hosts ${sysconfdir}/network/interfaces"

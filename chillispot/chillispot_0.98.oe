@@ -13,3 +13,5 @@ do_install_append() {
 	install ${S}/doc/chilli.conf ${D}/${sysconfdir}
 	install -m 755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/chillispot
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/chilli.conf"

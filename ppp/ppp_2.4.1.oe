@@ -28,3 +28,5 @@ do_install_append () {
 	install -d ${D}${sysconfdir}/ppp/ip-up.d/
 	install -d ${D}${sysconfdir}/ppp/ip-down.d/
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets"

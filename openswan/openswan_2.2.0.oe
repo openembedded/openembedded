@@ -26,3 +26,5 @@ do_install () {
 }
 
 FILES_${PN} += "/usr/lib/ipsec/"
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/ipsec/ipsec.conf"

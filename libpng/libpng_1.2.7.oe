@@ -1,6 +1,6 @@
 DESCRIPTION = "PNG Library"
 HOMEPAGE = "http://www.libpng.org/"
-LICENSE = "as-is"
+LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"

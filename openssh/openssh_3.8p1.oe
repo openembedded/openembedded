@@ -79,3 +79,6 @@ else
 	update-rc.d -f sshd remove
 fi
 }
+
+CONFFILES_openssh-sshd_nylon = "${sysconfdir}/ssh/sshd_config"
+CONFFILES_openssh-ssh_nylon = "${sysconfdir}/ssh/ssh_config"

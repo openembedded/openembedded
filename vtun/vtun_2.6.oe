@@ -25,3 +25,5 @@ do_install() {
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/vtund
 	install ${S}/scripts/vtund-start.conf ${D}${sysconfdir}
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/vtund-start.conf"

@@ -52,3 +52,5 @@ else
 fi
 update-rc.d $D snmpd remove
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/snmp/snmpd.conf ${sysconfdir}/snmp/snmptrapd.conf"

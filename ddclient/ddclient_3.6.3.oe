@@ -18,3 +18,5 @@ do_install() {
 	install ${S}/COPY* ${D}/${docdir}/ddclient
 	install ${S}/sample* ${D}/${docdir}/ddclient
 }
+
+CONFFILES_${PN}_nylon = "${sysconfdir}/ddclient.conf"
