@@ -10,7 +10,7 @@ DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug ipkg initscripts modutils netbase psmisc \
-	resolvconf sysvinit tinylogin \
+	resolvconf sysvinit sysv-rc tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz \
