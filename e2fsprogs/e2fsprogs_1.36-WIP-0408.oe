@@ -1,7 +1,7 @@
 DESCRIPTION = "EXT2 Filesystem Utilities"
 SECTION = "base"
 PRIORITY = "optional"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "gettext-native"
 

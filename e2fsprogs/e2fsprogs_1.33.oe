@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = ""
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://ln.patch;patch=1 \
