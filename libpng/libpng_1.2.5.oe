@@ -2,7 +2,7 @@ DESCRIPTION = "PNG Library"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "base/zlib"
+DEPENDS = "zlib"
 PR = "r1"
 
 PACKAGES =+ "${PN}12 ${PN}12-dev"

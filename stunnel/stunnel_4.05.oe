@@ -9,3 +9,5 @@ SRC_URI = "http://www.stunnel.org/download/stunnel/src/stunnel-${PV}.tar.gz \
 S = "${WORKDIR}/stunnel-${PV}"
 
 inherit autotools 
+
+EXTRA_OECONF = "--with-ssl=${STAGING_LIBDIR}/.."

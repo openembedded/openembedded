@@ -2,7 +2,7 @@ PR = "r1"
 DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "base/readline base/ncurses"
+DEPENDS = "readline ncurses"
 
 PACKAGES =+ "sqlite-bin"
 

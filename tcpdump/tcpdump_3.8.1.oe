@@ -1,7 +1,7 @@
 DESCRIPTION = "A sophisticated network protocol dumper"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "base/libpcap-0.8.1"
+DEPENDS = "libpcap-0.8.1"
 
 SRC_URI = "http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz"
 
