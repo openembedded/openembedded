@@ -2,14 +2,14 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r18"
+PR = "r19"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
-PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
+PACKAGES = "task-opie-applets task-opie-applications task-opie-base \
 	task-opie-decorations task-opie-games task-opie-inputmethods \
 	task-opie-multimedia task-opie-pim task-opie-settings \
-	task-opie-styles task-opie-today task-opie-bluetooth \
+	task-opie-styles task-opie-todayplugins task-opie-bluetooth \
 	task-opie-wlan \
 	task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -393,4 +393,3 @@ qclockchange \
 "
 RDEPENDS_task-qpe-settings += "${task-qpe-settings}"
 DEPENDS += " ${task-qpe-settings}"
-LICENSE = MIT
