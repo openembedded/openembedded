@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r1"
-
+LICENSE = "LGPL GPL"
 SRC_URI = "ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-${PV}.tar.gz \
            file://configure.patch;patch=1 \
            file://install.patch;patch=1 \

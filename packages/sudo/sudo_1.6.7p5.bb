@@ -1,0 +1,20 @@
+SECTION = "base"
+DESCRIPTION = "Sudo (superuser do) allows a system \
+administrator to give certain users (or groups of \
+users) the ability to run some (or all) commands \
+as root while logging all commands and arguments."
+
+PR="r2"
+LICENSE = "sudo"
+SRC_URI = "ftp://ftp.sudo.ws/pub/sudo/sudo-${PV}.tar.gz \
+	   file://nonrootinstall.patch;patch=1 \
+	   file://configure.patch;patch=1 \
+           file://nostrip.patch;patch=1"
+
+inherit autotools
+
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}

@@ -9,7 +9,7 @@ PACKAGES = "sysvinit"
 FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 PR = "r1"
-
+LICENSE = "GPL"
 # USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
 PACKAGE_ARCH = "${MACHINE_ARCH}"

@@ -11,7 +11,7 @@ SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 SRC_URI_append_ramses += " file://devfs.patch;patch=1"
 SRC_URI_append_ramses += " file://event1.patch;patch=1"
 S = "${WORKDIR}/tslib"
-
+LICENSE = "LGPL"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
 inherit autotools
