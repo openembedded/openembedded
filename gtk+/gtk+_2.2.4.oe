@@ -108,5 +108,5 @@ python do_package () {
 	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s')
 	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s')
 
-	oe.build.exec_func("base_do_package", d)
+	oe.build.exec_func("package_do_package", d)
 }
