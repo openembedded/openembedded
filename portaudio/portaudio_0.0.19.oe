@@ -11,6 +11,8 @@ S=${WORKDIR}/portaudio
 
 inherit autotools libtool pkgconfig
 
+EXTRA_OECONF = '--with-jack=no'
+
 do_stage() {
         install -m 0755 lib/libportaudio.so.${PV} ${STAGING_LIBDIR}/
         ln -sf libportaudio.so.${PV} ${STAGING_LIBDIR}/libportaudio.so.0
