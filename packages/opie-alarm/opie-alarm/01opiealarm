@@ -1,0 +1,12 @@
+#!/bin/sh
+# Starts opiealarm, which only runs while the iPaq sleeps 
+# and wakes it up when the RTC alarm goes off.
+
+if [ "$1" = suspend ]; then
+	/opt/QtPalmtop/bin/opiealarm -s -f
+elif [ "$1" = resume ] && [ "$2" != standby ]; then
+	/opt/QtPalmtop/bin/opiealarm -r -a 120
+fi
+
+: exit 0
+

@@ -1,9 +1,11 @@
+DESCRIPTION = "Network suspend/resume scripts"
+SECTION = "base"
 LICENSE = "GPL"
-SRC_URI = "file://ifupdown \
-	   file://usbnet"
-FILES = "${sysconfdir}/apm"
 PV = "1.1"
-PR = "r1"
+PR = "r2"
+
+SRC_URI = "file://ifupdown \
+           file://usbnet"  
 
 do_install() {
 	install -d ${D}${sysconfdir}/apm/scripts.d
@@ -17,3 +19,4 @@ do_install() {
 	ln -sf ../scripts.d/usbnet ${D}${sysconfdir}/apm/resume.d/20usbnet
 }
 
+FILES = "${sysconfdir}/apm"

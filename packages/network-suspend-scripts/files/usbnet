@@ -12,3 +12,5 @@ elif [ "$1" = resume ] && [ "$2" != standby ]; then
 	modprobe $usbdmodule
 fi
 
+: exit 0
+
