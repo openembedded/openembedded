@@ -1,4 +1,4 @@
-PV = "1.1"
+PV = "1.2"
 
 SRC_URI = "file://mythfront.sh"
 

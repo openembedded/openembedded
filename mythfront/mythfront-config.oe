@@ -19,10 +19,6 @@ do_install() {
 
 	ln -sf /var/lib/config/lircd.conf ${D}/etc/lircd.conf
 
-	# ewwww
-	install -d ${D}/root/.mythtv
-	ln -sf /var/lib/config/lircrc ${D}/root/.mythtv/lircrc
-
 	install -d ${D}/dev
 	ln -sf lirc0 ${D}/dev/lirc
 
