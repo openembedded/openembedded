@@ -38,3 +38,6 @@ cookie_io_functions_use_off64_t=${cookie_io_functions_use_off64_t=yes}
 # minicom
 am_cv_sys_posix_termios=${am_cv_sys_posix_termios=yes}
 
+
+# gettext
+am_cv_func_working_getline=${am_cv_func_working_getline=yes}

@@ -99,3 +99,6 @@ db_cv_path_strip=${db_cv_path_strip=/usr/bin/strip}
 # rrdtool
 rd_cv_ieee_works=${rd_cv_ieee_works=yes}
 # ac_cv_path_PERL=${ac_cv_path_PERL=no}
+
+# gettext
+am_cv_func_working_getline=${am_cv_func_working_getline=yes}

@@ -81,3 +81,6 @@ ac_cv_func_getaddrinfo=${ac_cv_func_getaddrinfo=yes}
 
 # D-BUS
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
+
+# gettext
+am_cv_func_working_getline=${am_cv_func_working_getline=yes}

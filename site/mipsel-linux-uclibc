@@ -74,3 +74,6 @@ ac_cv_func_setpgrp_void=${ac_cv_func_setpgrp_void=yes}
 wi_cv_struct_timeval_tv_sec=${wi_cv_struct_timeval_tv_sec=long}
 wi_cv_struct_timeval_tv_usec=${wi_cv_struct_timeval_tv_usec=long}
 wi_cv_unix_domain_sockets=${wi_cv_unix_domain_sockets=yes}
+
+# gettext
+am_cv_func_working_getline=${am_cv_func_working_getline=yes}
