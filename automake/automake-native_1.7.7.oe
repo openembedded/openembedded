@@ -1,5 +1,6 @@
 include automake_${PV}.oe
 S = ${WORKDIR}/automake-${PV}
+DEPENDS = 
 
 inherit native
 

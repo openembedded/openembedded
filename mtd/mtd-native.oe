@@ -1,5 +1,6 @@
-inherit native
 include mtd.oe
+inherit native
+DEPENDS = 
 
 do_stage () {
 	for binary in ftl_format erase eraseall nanddump doc_loadbios \

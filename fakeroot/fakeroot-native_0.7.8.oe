@@ -1,5 +1,6 @@
 SRC_URI := ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz
 S = ${WORKDIR}/fakeroot-${PV}
+DEPENDS = 
 
 inherit autotools
 inherit native
