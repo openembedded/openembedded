@@ -15,7 +15,7 @@ INSTALL_DIR=Documents/Install_Files
 
 # import FS mount options from fstab or use defaults
 # if detection fails
-SD_OPTS="`grep "/mnt/card" /etc/fstab | awk '{print $4}'`" 
+SD_OPTS="`grep "$MOUNT_POINT" /etc/fstab | awk '{print $4}'`" 
 if test -z "$SD_OPTS"
 then
 	SD_OPTS="noatime,sync"
@@ -92,7 +92,7 @@ case "$ACTION" in
 		OK_PARTS="`echo "$OK_PARTS" | grep -v "^mmcda$"`"
 	fi
 	
-	if test -n "$OK_PARTS"
+	if test -z "$OK_PARTS"
 	then
 		echo -e "\n\nWARNING: Trying failsafe partition mode\n\n"
 		OK_PARTS="mmcda1 mmcda2 mmcda3 mmcda4"
@@ -109,51 +109,53 @@ case "$ACTION" in
 	do
 		echo -e "\n* * * * * Working on [/dev/$part] * * * * *\n"
 		# Read the mount-point for this partition from fstab 
-		MOUNT_POINT="`echo "$fstab_txt" | grep "/dev/$part" | awk '{print $2}`"
+		FS_MOUNT_POINT="`echo "$fstab_txt" | grep "/dev/$part" | awk '{print $2}`"
 
 
 		# Mount the first valid partition as /mnt/card if there was no entry in fstab
-		if test -z "$MOUNT_POINT"
+		if test -z "$FS_MOUNT_POINT"
 		then
 			# See if /mnt/card is already mounted
-			if ! mount|awk '{print $3}'|grep "^/mnt/card$"
+			if ! mount|awk '{print $3}'|grep "^$MOUNT_POINT$" 2>1 >/dev/null
 			then
 				# Check if another *existing* partition is configured as /mnt/card				
-				if ! echo "$fstab_txt" | grep "/mnt/card" | awk '{print $2}'| grep "^/mnt/card$"
+				if ! echo "$fstab_txt" | grep "$MOUNT_POINT" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>1 >/dev/null
 				then
 					# As /mnt/card wasn't configured in fstab, we simply mount the
 					# first unconfigured partition we find
-					MOUNT_POINT="/mnt/card"
+					FS_MOUNT_POINT="$MOUNT_POINT"
 				else
 					# Go through all partitions, and check if one of them is configured
 					# as /mnt/card
 					for xpart in $OK_PARTS
 					do
-						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^/mnt/card$"
+						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>1 >/dev/null
 						then
-							echo found=1
+							echo "-> $MOUNT_POINT is reserved by fstab"
+							found=1
 						fi
 					done
 					
-					if test "$found" = 1
+					if test "$found" = 1 
 					then	
 						# Another existing partition is configured for /mnt/card, leave it alone.
-						MOUNT_POINT="/mnt/card$cnt"
+						FS_MOUNT_POINT="$MOUNT_POINT$cnt"
 						let cnt=$cnt+1
 					else
-						MOUNT_POINT="/mnt/card"
+						FS_MOUNT_POINT="$MOUNT_POINT"
 					fi					
 					
 				fi
 			else
-				MOUNT_POINT="/mnt/card$cnt"
+				FS_MOUNT_POINT="$MOUNT_POINT$cnt"
 				let cnt=$cnt+1				
 			fi
+			echo "-> Using mountpoint [$FS_MOUNT_POINT]"
 		else
-			echo "-> Using mountpoint [$MOUNT_POINT] from fstab"
+			echo "-> Using mountpoint [$FS_MOUNT_POINT] from fstab"
 		fi
 
-		! test -d $MOUNT_POINT && mkdir -p $MOUNT_POINT	
+		! test -d $FS_MOUNT_POINT && mkdir -p $FS_MOUNT_POINT	
 			
 		DEVICE="/dev/$part"
 		if ! test -e "$DEVICE"
@@ -164,23 +166,23 @@ case "$ACTION" in
 		fi
 				
 		echo "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
-        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $MOUNT_POINT 2>1 >/dev/null
+        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT 2>1 >/dev/null
 		MOUNT_RES=`mount | grep $DEVICE`
 
 
 		if [ "$MOUNT_RES" = "" ]; then
 			echo "-> Trying ext2 mount [$SD_OPTS]..."
-	        	mount $FSTYPE -o $SD_OPTS $DEVICE $MOUNT_POINT
+	        	mount $FSTYPE -o $SD_OPTS $DEVICE $FS_MOUNT_POINT
 		else
-			echo "VFAT mount successfull"
+			echo "-> VFAT mount was successfull"
 		fi
 
 		MOUNT_RES=`mount | grep $DEVICE`
 		if [ "$MOUNT_RES" = "" ]; then
 			echo "-> Trying failsafe mount..."
-	        	mount $FSTYPE $DEVICE $MOUNT_POINT
+	        	mount $FSTYPE $DEVICE $FS_MOUNT_POINT
 		else
-			echo "EXT2 mount successfull"			
+			echo "-> EXT2 mount was successfull"			
 		fi
 
 		# Um what was the function of that?
@@ -193,7 +195,7 @@ case "$ACTION" in
 		rm -rf $SMB_MOUNT
 	fi
 	ln -s /mnt/card $SMB_MOUNT
-	mkdir -p $MOUNT_POINT/$INSTALL_DIR
+	mkdir -p $FS_MOUNT_POINT/$INSTALL_DIR
 
         ;;
 'eject')
