@@ -1,9 +1,12 @@
+PR = "r1"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libmatchbox"
+DEPENDS = "virtual/libc libmatchbox startup-notification"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/matchbox-desktop-${PV}.tar.bz2"
 
-inherit autotools  pkgconfig
+EXTRA_OECONF = "--enable-startup-notification --enable-dnotify"
+
+inherit autotools pkgconfig
 
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \
