@@ -1,0 +1,17 @@
+DEPENDS = virtual/libc readline
+RDEPENDS = libc6 readline
+
+SRC_URI := http://us2.samba.org/samba/ftp/samba-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1
+S := ${WORKDIR}/${P}/source
+
+inherit autotools
+
+EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
+	      --without-ads --without-automount'
+do_configure_prepend () {
+	./script/mkversion.sh
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
