@@ -53,11 +53,6 @@ do_install () {
 	if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
 		# /var is in a ramdisk
 		install -d ${D}/etc/init.d ${D}/etc/rcS.d
-		cat <<EOF >${D}/etc/init.d/populate-var
-#!/bin/sh
-
-mount /var
-EOF
 		for d in `(cd ${D}/var; ls)`; do
 			mode=`stat -c %a ${D}/var/$d`
 			echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
@@ -65,7 +60,7 @@ EOF
 		done
 		rmdir ${D}/var/*
 		chmod a+x ${D}/etc/init.d/populate-var
-		ln -s ../init.d/populate-var ${D}/etc/rcS.d/S01populate-var
+		ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
 		ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
 		ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
 	fi
