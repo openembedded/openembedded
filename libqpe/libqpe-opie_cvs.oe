@@ -16,6 +16,7 @@ QMAKE_PROFILES = "library.pro"
 
 export QTDIR = "${STAGING_LIBDIR}/.."
 export OPIEDIR = "${STAGING_LIBDIR}/.."
+EXTRA_QMAKEVARS_POST = "DESTDIR="
 
 CXXFLAGS_append = " -DQWS -fno-rtti -fno-exceptions"
 
@@ -38,7 +39,7 @@ do_compile() {
 		install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
 	done
 	rm -f ${STAGING_INCDIR}/qtopia/*_p.h # remove private stuff out of qtopia
-	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic
 }
 
 do_stage() {
