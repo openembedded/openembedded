@@ -22,9 +22,11 @@ EOF
    strings /etc/linksysconf | grep ip_addr >> /etc/interfaces
    strings /etc/linksysconf | grep ^netmask >> /etc/interfaces
    strings /etc/linksysconf | grep hw_addr >> /etc/interfaces
+   strings /etc/linksysconf | grep gateway >> /etc/interfaces
    sed -i -e 's/ip_addr=/        address /' /etc/interfaces
    sed -i -e 's/netmask=/        netmask /' /etc/interfaces
    sed -i -e 's/hw_addr=/        hwaddress ether /' /etc/interfaces
+   sed -i -e 's/gateway=/        gateway /' /etc/interfaces
 
    mv /etc/network/interfaces /etc/network/interfaces.old
    cp /etc/interfaces /etc/network/interfaces
@@ -33,3 +35,18 @@ EOF
 fi
 
 # Module loading handled more properly by update-modules and modprobe.conf
+
+exit 0
+
+# Future stuff ....
+
+# Use the bootproto key to set "static" or "dhcp", then do other stuff based on that.
+   strings /etc/linksysconf | grep bootproto >> /etc/interfaces
+   strings /etc/linksysconf | grep disk_server_name >> /etc/interfaces
+   strings /etc/linksysconf | grep hw_addr >> /etc/interfaces
+   strings /etc/linksysconf | grep dns_server1 >> /etc/interfaces
+   sed -i -e 's/bootproto=//' /etc/interfaces
+   sed -i -e 's/disk_server_name=/        hostname /' /etc/interfaces
+   sed -i -e          's/hw_addr=/        hwaddress ether /' /etc/interfaces
+   sed -i -e      's/dns_server1=/         /' /etc/interfaces
+
