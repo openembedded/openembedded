@@ -33,18 +33,18 @@ apt-utils-manpages="doc/apt-extracttemplates.1 \
 #		    doc/fr/apt-ftparchive.fr.1
 #		    doc/apt-ftparchive.1
 
-def get_files_apt_doc(d, oe, manpages):
+def get_files_apt_doc(d, bb, manpages):
 	import re
 	manpages = re.sub(r'\bdoc/(\S+)/(\S+)\.\1\.(.)\b', r'${mandir}/\1/man\3/\2.\3', manpages)
 	manpages = re.sub(r'\bdoc/(\S+)\.(.)\b', r'${mandir}/man\3/\1.\3', manpages)
 	return manpages
 
-def get_commands_apt_doc(d, oe, manpages):
+def get_commands_apt_doc(d, bb, manpages):
 	import os
 	s = list()
 	__dir_cache__ = list()
 	for m in manpages.split():
-		dest = get_files_apt_doc(d, oe, m)
+		dest = get_files_apt_doc(d, bb, m)
 		dir = os.path.dirname(dest)
 		if not dir in __dir_cache__:
 			s.append("install -d ${D}/%s" % dir)
@@ -59,14 +59,14 @@ FILES_${PN} = "${bindir}/apt-cdrom ${bindir}/apt-get \
 	       ${localstatedir} ${sysconfdir} \
 	       ${libdir}/dpkg"
 FILES_${PN}-utils = "${bindir}/apt-sortpkgs ${bindir}/apt-extracttemplates"
-FILES_${PN}-doc = "${@get_files_apt_doc(d, oe, bb.data.getVar('apt-manpages', d, 1))} \
+FILES_${PN}-doc = "${@get_files_apt_doc(d, bb, bb.data.getVar('apt-manpages', d, 1))} \
 		   ${datadir}/doc/apt"
-FILES_${PN}-utils-doc = "${@get_files_apt_doc(d, oe, bb.data.getVar('apt-utils-manpages', d, 1))}"
+FILES_${PN}-utils-doc = "${@get_files_apt_doc(d, bb, bb.data.getVar('apt-utils-manpages', d, 1))}"
 FILES_${PN}-dev = "${libdir}/libapt*.so"
 
 do_install () {
-	${@get_commands_apt_doc(d, oe, bb.data.getVar('apt-manpages', d, 1))}
-	${@get_commands_apt_doc(d, oe, bb.data.getVar('apt-utils-manpages', d, 1))}
+	${@get_commands_apt_doc(d, bb, bb.data.getVar('apt-manpages', d, 1))}
+	${@get_commands_apt_doc(d, bb, bb.data.getVar('apt-utils-manpages', d, 1))}
 	install -d ${D}/${bindir}
 	install -m 0755 bin/apt-cdrom ${D}/${bindir}/
 	install -m 0755 bin/apt-get ${D}/${bindir}/
