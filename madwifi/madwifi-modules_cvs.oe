@@ -1,0 +1,36 @@
+DESCRIPTION = "Linux driver for 802.11a/b/g universal NIC cards using Atheros chip sets"
+SECTION = "net"
+PRIORITY = "optional"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+LICENSE = "GPL"
+RDEPENDS = "kernel (${KERNEL_VERSION})"
+DEPENDS = "virtual/kernel"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/madwifi;module=madwifi"
+
+S = "${WORKDIR}/madwifi"
+
+inherit module-base
+
+# Hack Alert :D
+ARCH_mipsel = "mips"
+EXTRA_OEMAKE_mtx-1 = "TARGET=mips-le-elf KERNELPATH=${KERNEL_SOURCE} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX} COPTS='-G 0 -mno-abicalls -fno-pic -Wa,--trap -fno-strict-aliasing -fno-common -fomit-frame-pointer -mlong-calls'"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	oe_runmake DESTDIR=${D} install
+	
+}
+
+pkg_postinst() {
+if test "x$D" != "x"; then
+       exit 1
+else
+	depmod -ae
+fi
+}
+
+FILES_${PN} = "/lib/modules/"
