@@ -1,13 +1,13 @@
 SECTION = "base"
 PRIORITY = "standard"
 DESCRIPTION = "Tools for zmodem/xmodem/ymodem file transfer"
-PR = "r1"
+DEPENDS = "gettext-native"
+PR = "r2"
 
 SRC_URI = "http://www.ohse.de/uwe/releases/lrzsz-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \
 	   file://makefile.patch;patch=1 \
-	   file://m4.patch;patch=1 \
-	   file://po-fix.patch;patch=1"
+	   file://gettext.patch;patch=1"
 
 inherit autotools
 
