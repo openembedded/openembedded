@@ -14,8 +14,9 @@ OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 
 OPIE_BASE_APPLETS = "opie-aboutapplet      opie-clockapplet      opie-logoutapplet    opie-suspendapplet \
 		     opie-batteryapplet    opie-homeapplet       opie-multikeyapplet  opie-rotateapplet  \
-		     opie-volumeapplet     opie-clipboardapplet  opie-irdaapplet      opie-restartapplet \
-		     opie-screenshotapplet opie-vtapplet         opie-cardmon         "
+		     opie-vtapplet         opie-cardmon          opie-irdaapplet"
+
+OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting"
 
 OPIE_BASE_APPS = "opie-aqpkg opie-console"
 
@@ -26,18 +27,19 @@ OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal"
 
 OPIE_BASE_DEPENDS = "ipkg ntp"
-OPIE_BASE_RDEPENDS = "ntpdate"
+OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
+
 #
 # Additional things for a standard 16MB distribution
 #
 
-OPIE_PIM = "opie-alarm opie-addressbook opie-datebook opie-textedit opie-todo opie-today"
+OPIE_PIM = "opie-alarm opie-addressbook opie-drawpad opie-datebook opie-textedit opie-todo opie-today"
 
-OPIE_EXTRA_APPLETS = ""
+OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
 
 OPIE_EXTRA_APPS = "opie-advancedfm"
 
-OPIE_EXTRA_SETTINGS = ""
+OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security opie-mediummount"
 
 #
 # Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.
@@ -45,11 +47,11 @@ OPIE_EXTRA_SETTINGS = ""
 
 export IPKG_INSTALL = "task-bootstrap ${OPIE_LIBS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
                              ${OPIE_BASE_RDEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
-			     ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS}"
+			     ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS} ${OPIE_BASE_INPUTMETHODS}"
 
 DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND}  ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
                           ${OPIE_BASE_DEPENDS} ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
-			  ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS}"
+			  ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS} ${OPIE_BASE_INPUTMETHODS}"
 
 
 inherit image_ipk

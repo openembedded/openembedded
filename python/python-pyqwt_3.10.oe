@@ -9,7 +9,6 @@ SRCNAME = "pyqwt"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQwt-20040118.tar.gz \
            file://qt2.x-compat.patch;patch=1 \
-           file://qtmod-sip-staging.patch;patch=1 \
            file://features"
 S = "${WORKDIR}/PyQwt-20040118"
 
