@@ -3,18 +3,22 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "bluez-libs"
 RPROVIDES = "bluez-pan bluez-sdp"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz"
 
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR}"
+
+do_install_append() {
+	install -d ${D}/sbin ${D}/bin/
+	mv ${D}${sbindir}/* ${D}/sbin/
+	mv ${D}${bindir}/* ${D}/bin/
+	rmdir ${D}${bindir} ${D}${sbindir}
+	chmod u+s ${D}/sbin/hciattach ${D}/sbin/hciconfig
+}
 
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults"
 
-pgk_postinst() {
-#!/bin/sh
-chmod u+s /sbin/hciattach /sbin/hciconfig
-}
