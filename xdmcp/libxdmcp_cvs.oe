@@ -1,4 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
+PR = "r1"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
@@ -6,7 +7,8 @@ DEPENDS = "xproto"
 PROVIDES = "xdmcp"
 DESCRIPTION = "X Display Manager Control Protocol library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp \
+	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xdmcp"
 
 inherit autotools pkgconfig 
