@@ -24,6 +24,7 @@ CFLAGS_append = " -D__FILE_OFFSET_BITS=64"
 LDFLAGS_prepend = "-L${S} -L${S}/openbsd-compat "
 EXTRA_OECONF = --disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
 	       --with-rand-helper=no --without-pam
+EXTRA_OEMAKE = '"STRIP_OPT="'
 
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 -a -e aclocal.m4 ]; then
