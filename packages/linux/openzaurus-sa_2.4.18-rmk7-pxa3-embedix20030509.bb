@@ -51,7 +51,7 @@ ALLOW_EMPTY = 1
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
-EXTRA_OEMAKE = " EMBEDIXRELEASE=${DISTRO_VERSION}"
+EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
