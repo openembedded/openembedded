@@ -1072,7 +1072,7 @@
  
  
    static int QT_SetFullScreen(_THIS, SDL_Surface *screen, int fullscreen)
-@@ -276,47 +398,433 @@
+@@ -276,47 +398,428 @@
      return -1;
    }
  
@@ -1080,32 +1080,27 @@
 +  {
 +    FILE *fp;
 +    machine_t machine = MACHINE_SHARP_SL5000D;
-+    char buf[512];
++    char buf[1024];
 +
-+    fp = fopen("/proc/deviceinfo/product", "rb");
++
++    fp = fopen("/proc/cpuinfo", "rb");
 +    if (fp) {
 +      if (fread(buf, 1, sizeof(buf), fp) > 0) {
-+//        LOG("QT_GetMachine: /proc/deviceinfo/product is %s\n", buf);
-+        if (strncmp(buf, "SL-A300", 7) == 0)
-+          machine = MACHINE_SHARP_SLA300;
-+        else if (strncmp(buf, "SL-5500", 7) == 0)
++        LOG("QT_GetMachine: /proc/cpuinfo is %s\n", buf);
++        if (strstr(buf, "SHARP Tosa") != NULL)  
++          machine = MACHINE_SHARP_SL6000;
++        else if (strstr(buf, "Collie") != NULL)
 +          machine = MACHINE_SHARP_SL5500;
-+        else if (strncmp(buf, "SL-6000", 7) == 0) // 詳しいことわからんけどとりあえず
-+          machine = MACHINE_SHARP_SL6000;
-+        else if (strncmp(buf, "SL-B500", 7) == 0)
++        else if (strstr(buf, "SHARP Poodle") != NULL)
 +          machine = MACHINE_SHARP_SLB500;
-+        else if (strncmp(buf, "SL-C700", 7) == 0)
++        else if (strstr(buf, "SHARP Corgi") !=NULL)
 +          machine = MACHINE_SHARP_SLC700;
-+        else if (strncmp(buf, "SL-C750", 7) == 0)
++        else if (strstr(buf, "SHARP Shepherd") !=NULL)
 +          machine = MACHINE_SHARP_SLC750;
-+        else if (strncmp(buf, "SL-C760", 7) == 0)
++        else if (strstr(buf, "SHARP Husky") !=NULL)
 +          machine = MACHINE_SHARP_SLC760;
-+        else if (strncmp(buf, "SL-C860", 7) == 0) // 詳しいことわからんけどとりあえず
++        else if (strstr(buf, "SHARP Boxer") != NULL)
 +          machine = MACHINE_SHARP_SLC860;
-+        else if (strncmp(buf, "SL-C860", 7) == 0)
-+          machine = MACHINE_SHARP_SLC860;
-+        else if (strncmp(buf, "SL-6000", 7) == 0)
-+          machine = MACHINE_SHARP_SL6000;
 +      }
 +      fclose(fp);
 +    } else {
