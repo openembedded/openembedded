@@ -3,4 +3,4 @@ proc            /proc   proc    defaults        0  0
 /dev/hda1	/mnt/cf	auto	defaults,sync,noauto,noatime,user,exec,suid	0  0
 /dev/mmcda1	/mnt/card	auto	defaults,sync,noauto,noatime,user,exec,suid	0  0
 tmpfs		/var	tmpfs	defaults	0  0
-tmpfs		/mnt/ramdisk	tmpfs	defaults	0  0
+tmpfs		/mnt/ram	tmpfs	defaults	0  0
