@@ -12,7 +12,6 @@ S = "${WORKDIR}/${P}"
 
 inherit autotools
 
-#EXTRA_OECONF = --disable-ltdl-install
 do_configure_prepend () {
 	./bootstrap
 }
