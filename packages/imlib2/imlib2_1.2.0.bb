@@ -6,17 +6,14 @@ LICENSE = BSD
 SECTION = "e/libs"
 PRIORITY = "optional"
 DEPENDS = "freetype libpng jpeg"
-PV = "1.2.0"
-PR = "1"
+PR = "2"
 
 do_prepsources () {
   make clean distclean || true
 }
 addtask prepsources after do_fetch before do_unpack
 
-#SRC_URI = "file://./"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/imlib2"
-S = "${WORKDIR}/imlib2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/imlib2-1.2.0.tar.gz"
 
 inherit autotools pkgconfig binconfig
 

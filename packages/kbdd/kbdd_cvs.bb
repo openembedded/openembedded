@@ -5,7 +5,7 @@ SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${CVSDATE}"
 HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
 LICENSE = "GPLv2"
 
-PV="0.6+cvs-${CVSDATE}"
+PV="0.8+cvs-${CVSDATE}"
 
 S = "${WORKDIR}/kbdd"
 LICENSE = "GPL"
