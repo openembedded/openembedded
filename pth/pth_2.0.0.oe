@@ -2,6 +2,7 @@ DESCRIPTION = "GNU Portable Threads"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
 
@@ -21,4 +22,6 @@ do_stage() {
 		install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
 	done
 
+	install -d ${STAGING_DATADIR}/aclocal
+	install pth.m4 ${STAGING_DATADIR}/aclocal/
 }
