@@ -1,3 +1,4 @@
+BROKEN = "1"
 SECTION = "net"
 DEPENDS = "expat openssl"
 DESCRIPTION = "A high performance Unix-based HTTP server."

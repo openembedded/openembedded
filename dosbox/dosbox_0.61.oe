@@ -1,3 +1,4 @@
+BROKEN = "1"
 DESCRIPTION = "Dos Emulator based on SDL"
 SECTION = "base"
 PRIORITY = "optional"

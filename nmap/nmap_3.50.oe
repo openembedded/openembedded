@@ -1,6 +1,6 @@
-DEPENDS = "libpcap"
+BROKEN = "1"
 DESCRIPTION = "Nmap is a command line portscanner."
-
+DEPENDS = "libpcap"
 SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tgz"
 
 inherit autotools
