@@ -1,7 +1,7 @@
 DESCRIPTION = "A tool to generate an ext2 filesystem \
 as a normal (non-root) user."
 SECTION = "console/utils"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/genext2fs/genext2fs_${PV}.orig.tar.gz \
 	   file://misc.patch;patch=1 \
