@@ -91,7 +91,7 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}/etc/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}/etc/rc0.d/S90halt
-#	ln -sf		../init.d/banner	${D}/etc/rcS.d/S01banner
+	ln -sf		../init.d/banner	${D}/etc/rcS.d/S01banner
 	ln -sf		../init.d/checkroot.sh	${D}/etc/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}/etc/rcS.d/S30checkfs.sh
 	ln -sf		../init.d/mountall.sh	${D}/etc/rcS.d/S35mountall.sh
