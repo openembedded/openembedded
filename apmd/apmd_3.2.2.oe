@@ -1,14 +1,14 @@
 PR = "r1"
 SECTION = "base"
 PRIORITY = "required"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libtool-cross"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
 
-PACKAGES =+ "libapm libapm-dev "
+PACKAGES =+ "libapm libapm-dev apm"
 
 FILES_libapm = "${libdir}/libapm.so.*"
 FILES_libapm-dev = "${libdir}/libapm.* ${includedir}"
+FILES_apm = "${bindir}/apm*"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://debian.patch;patch=1 \
