@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs"
+DEPENDS = "virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs xext-cvs"
 PROVIDES = "xrandr"
 DESCRIPTION = "X Resize and Rotate extension library."
 
