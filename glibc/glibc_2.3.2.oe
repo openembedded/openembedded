@@ -209,3 +209,8 @@ do_install() {
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
 }
+
+python do_package_prepend() {
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_${PN}', 'libc6', d)
+}

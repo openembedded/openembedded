@@ -72,6 +72,11 @@ do_stage_append () {
 	rm -rf ${CROSS_DIR}/share
 }
 
+python do_package_prepend() {
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_libgcc', 'libgcc1', d)
+}
+
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 

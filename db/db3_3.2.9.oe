@@ -13,8 +13,11 @@ EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}` cr' 'chmod=`which chmod`' \
 		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
 		'rm=`which rm`' 'strip=`which ${STRIP}`'"
 
-FILES_${PN} = "${bindir} ${libdir}/libdb-3.2*"
-FILES_${PN}-dev = "${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so"
+PACKAGES = "${PN} ${PN}-bin ${PN}-dev ${PN}-doc ${PN}-locale"
+
+FILES_${PN} = "${libdir}/libdb-3.2*so*"
+FILES_${PN}-bin = "${bindir}"
+FILES_${PN}-dev = "${includedir} ${libdir}/libdb.so ${libdir}/libdb.a ${libdir}/libdb-3.so ${libdir}/libdb.la"
 
 do_configure_prepend () {
 	set -e
@@ -79,4 +82,9 @@ do_install () {
 		docdir=${D}/${docdir} \
 		install
 	done
+}
+
+python do_package_prepend() {
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_${PN}', 'libdb3', d)
 }

@@ -3,8 +3,6 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "virtual/libc base/zlib"
-RDEPENDS = "libc6 zlib1g"
-RDEPENDS_append_libpng3 = " libpng12"
 
 FILES_${PN} = ${libdir}/lib*.so.*
 FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
@@ -41,4 +39,9 @@ do_install () {
 		   'DB=${D}/${bindir}' 'DI=${D}/${includedir}' \
 		   'DL=${D}/${libdir}' 'DM=${D}/${mandir}' \
 		   install
+}
+
+python do_package_prepend() {
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_${PN}', 'libpng12', d)
 }
