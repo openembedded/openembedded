@@ -1,4 +1,4 @@
-DESCRIPTION=A Pure Python Expect like Module for Python"
+DESCRIPTION=A Pure Python Expect like Module for Python
 SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
