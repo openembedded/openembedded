@@ -22,7 +22,7 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver \
 	file://kmode.patch;patch=1"
 
-SRC_URI_append_poodle = " file://poodle.patch;patch=1"
+SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
 PACKAGE_ARCH_poodle = "poodle"
 
 S = "${WORKDIR}/xserver"
