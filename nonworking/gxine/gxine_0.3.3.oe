@@ -1,0 +1,10 @@
+DESCRIPTION = "gxine is a front-end for libxine."
+MAINTAINER = "Chris Lord <cwiiis@blueyonder.co.uk>"
+DEPENDS = "gtk+ libxine"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-${PV}.tar.gz"
+
+EXTRA_OECONF = " --disable-xinetest"
+
+inherit autotools pkgconfig
+

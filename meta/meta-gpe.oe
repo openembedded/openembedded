@@ -67,6 +67,7 @@ gpe-task-apps = "\
     gpe-nmf \
     gpe-package \
     gpe-plucker \
+    gpe-soundbite \
     gpe-terminal \
     gpe-watch \
     gpe-what \
