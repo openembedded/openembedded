@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://poqetp.sourceforge.net/"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poqetp/poqetp_${PV}_src.tar.gz"
 S = "${WORKDIR}/poqetp"
@@ -20,7 +20,7 @@ do_install() {
         	   ${D}${palmtopdir}/apps/Applications \
         	   ${D}${palmtopdir}/pics
         install -D -m 0755 poqetp/poqetp ${D}${palmtopdir}/bin/poqetp
-        install -D -m 0644 poqetp.desktop ${D}${palmtopdir}/Applications/poqetp.desktop
+        install -D -m 0644 poqetp.desktop ${D}${palmtopdir}/apps/Applications/poqetp.desktop
         install -d ${D}${palmtopdir}/pics/poqetp
         cp -a pics/* ${D}${palmtopdir}/pics/poqetp/
 }
