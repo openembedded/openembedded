@@ -1,0 +1,57 @@
+DESCRIPTION="SysV init scripts"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+
+do_install () {
+	install -d ${D}/${sysconfdir}/init.d \
+		   ${D}/${sysconfdir}/rcS.d \
+		   ${D}/${sysconfdir}/rc0.d \
+		   ${D}/${sysconfdir}/rc1.d \
+		   ${D}/${sysconfdir}/rc2.d \
+		   ${D}/${sysconfdir}/rc3.d \
+		   ${D}/${sysconfdir}/rc4.d \
+		   ${D}/${sysconfdir}/rc5.d \
+		   ${D}/${sysconfdir}/rc6.d
+	install -m 0755    ${FILESDIR}/bootmisc.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/checkroot.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/finish		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/halt		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/hostname.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/mountall.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/mountnfs.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/reboot		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/rmnologin	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/sendsigs	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/single		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/umountnfs.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/urandom		${D}/etc/init.d
+
+# links
+	ln -sf		../init.d/rmnologin	${D}/etc/rc2.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}/etc/rc3.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}/etc/rc4.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}/etc/rc5.d/S99rmnologin
+	ln -sf		../init.d/sendsigs	${D}/etc/rc6.d/S20sendsigs
+#	ln -sf		../init.d/urandom	${D}/etc/rc6.d/S30urandom
+	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc6.d/S31umountnfs.sh
+#	ln -sf		../init.d/umountfs	${D}/etc/rc6.d/S40umountfs
+	ln -sf		../init.d/reboot	${D}/etc/rc6.d/S90reboot
+	ln -sf		../init.d/sendsigs	${D}/etc/rc0.d/S20sendsigs
+	ln -sf		../init.d/urandom	${D}/etc/rc0.d/S30urandom
+	ln -sf		../init.d/umountnfs.sh	${D}/etc/rc0.d/S31umountnfs.sh
+#	ln -sf		../init.d/umountfs	${D}/etc/rc0.d/S40umountfs
+	ln -sf		../init.d/halt		${D}/etc/rc0.d/S90halt
+#	ln -sf		../init.d/banner	${D}/etc/rcS.d/S01banner
+	ln -sf		../init.d/checkroot.sh	${D}/etc/rcS.d/S10checkroot.sh
+#	ln -sf		../init.d/checkfs.sh	${D}/etc/rcS.d/S30checkfs.sh
+	ln -sf		../init.d/mountall.sh	${D}/etc/rcS.d/S35mountall.sh
+#	ln -sf		../init.d/extractfs	${D}/etc/rcS.d/S36extractfs
+	ln -sf		../init.d/hostname.sh	${D}/etc/rcS.d/S40hostname.sh
+	ln -sf		../init.d/mountnfs.sh	${D}/etc/rcS.d/S45mountnfs.sh
+	ln -sf		../init.d/bootmisc.sh	${D}/etc/rcS.d/S55bootmisc.sh
+	ln -sf		../init.d/urandom	${D}/etc/rcS.d/S55urandom
+#	ln -sf		../init.d/packages	${D}/etc/rcS.d/S98packages
+	ln -sf		../init.d/finish	${D}/etc/rcS.d/S99finish
+#	ln -sf		../init.d/devices	${D}/etc/rcS.d/S01devices
+#	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
+#	ln -sf		../init.d/ramdisk	${D}/etc/rcS.d/S30ramdisk
+}
