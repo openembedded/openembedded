@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r30"
+PR = "r33"
 
 ALLOW_EMPTY = 1
 
@@ -84,22 +84,22 @@ gpe-task-apps = "\
     gpe-what \
     matchbox-panel-hacks \
     gpe-aerial \
-    mbmerlin \
-    miniclipboard \
+    gpe-soundbite \
     rosetta"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"
 
 gpe-task-games = "\
-    gpe-tetris \
-    gpe-othello \
+    gpe-go \
     gpe-lights \
+    gpe-othello \
+    gpe-tetris \
     gsoko \
     xdemineur"
 
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
-DEPENDS += "${gpe-task-games}"
+DEPENDS += " ${gpe-task-games}"
 
 DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
 

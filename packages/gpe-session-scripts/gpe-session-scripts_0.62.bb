@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 inherit gpe
 
@@ -16,12 +16,13 @@ SRC_URI += "file://zaurus.sh \
 	file://change-default-applets.patch;patch=1 \
 	file://xdefaults.patch;patch=1 \
 	file://matchbox-session \
-	file://shepherd.xmodmap file://simpad.xmodmap"
+	file://shepherd.xmodmap file://simpad.xmodmap \
+	file://collie.xmodmap"
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
 	install ${WORKDIR}/keymap.sh ${D}/etc/X11/Xinit.d/12keymap
-	for m in simpad shepherd; do
+	for m in simpad shepherd collie; do
 		install -m 0644 ${WORKDIR}/$m.xmodmap ${D}/etc/X11/
 	done
 	install -d ${D}/etc/gpe/xsettings-default.d
