@@ -3,7 +3,7 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
-DEPENDS=virtual/libc uicmoc-native qte
+DEPENDS=virtual/libc uicmoc-native qte-for-opie
 RDEPENDS=libc6 qte
 PROVIDES=virtual/libqpe
 
