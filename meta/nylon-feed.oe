@@ -41,6 +41,7 @@ ncurses \
 netbase \
 netperf \
 ntp \
+nylon-scripts \
 openssh \
 openssl \
 openvpn \
@@ -48,8 +49,10 @@ openswan \
 perl \
 ppp \
 rp-pppoe \
+prism2-firmware-update \
 prism54-module \
 prism54-firmware \
+shorewall \
 stunnel \
 sysvinit \
 tcpdump \
@@ -62,17 +65,17 @@ zlib \
 "
 
 # TODO:
+# linux arch/mips/Makefile: mipsel-linux-
 # ksymoops / binutils
 # strace: SYS_read?
 # gdb-cross: install paths, sdk?
 # screen: sgttyb?
 # nocat
-# openssh: exclude /var/run
 # ppp init scipts
 # zoneinfo? timezones /etc/localtime
 # snmp
 # mrtg
-# iptraf
+# ipac-ng
 # dyndns: http://ez-ipupdate.com/
 # tinc: MTU patch
 # pptp

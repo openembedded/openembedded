@@ -1,16 +1,19 @@
 export IMAGE_BASENAME = "nylon-base"
  
 NYLON_COMMON = "base-files base-passwd bash busybox \
+	hostap-utils \
 	ipkg initscripts iproute2 \
 	modutils modutils-initscripts \
-	mtd netbase openssh sysvinit tinylogin"
+	mtd netbase nylon-scripts openssh sysvinit tinylogin wireless-tools"
 
 #update-modules
 
-DEPENDS = "virtual/kernel ${NYLON_COMMON} \
-	${BOOTSTRAP_EXTRA_DEPENDS}"
+DEPENDS = "virtual/kernel hostap-modules \ 
+	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_DEPENDS}"
 	
-RDEPENDS = "kernel kernel-module-tun modutils-depmod modutils-modinfo ${NYLON_COMMON} ${BOOTSTRAP_EXTRA_RDEPENDS}"
+RDEPENDS = "kernel kernel-module-tun modutils-depmod modutils-modinfo ncurses-terminfo \
+	hostap-modules-pci \
+	${NYLON_COMMON} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export IPKG_INSTALL = "${RDEPENDS}" 
 
