@@ -5,14 +5,14 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r9"
+PR = "r10"
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
            file://cacko.patch;patch=1 \
            file://battery.patch;patch=1 \
-           file://bluetooth-patch-2.4.18-mh9.diff;patch=1 \
+           file://bluetooth-2.4.18-mh15.patch;patch=1 \
            file://iw_handlers.w13-5.diff;patch=1 \
            file://iw_handlers.w14-5.diff;patch=1 \
            file://iw240_we15-6.diff;patch=1 \
@@ -23,10 +23,12 @@ SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${
            file://mkdep.patch;patch=1 \
            file://disable-pcmcia-probe.patch;patch=1 \
            file://linux-2.4.18-list_move.patch;patch=1 \
-           file://defconfig-${MACHINE} \
-           file://module_licence.patch;patch=1 \
+	   http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
 	   file://1764-1.patch;patch=1 \
-           file://sound-2.4.18r2.patch;patch=1  "
+           file://module_licence.patch;patch=1 \
+           file://defconfig-${MACHINE} \
+           file://sound-2.4.18r2.patch;patch=1 \
+	   "
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
