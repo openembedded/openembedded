@@ -7,13 +7,13 @@ LICENSE = "GPL"
 RDEPENDS = "python-core python-sip"
 DEPENDS = "virtual/libqte2 virtual/libqpe"
 SRCNAME = "pyqt"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
            file://features"
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
-inherit qmake sip
+inherit qmake sip distutils-base
 
 QMAKE_PROFILES = "pyqt.pro"
 EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"
