@@ -3,7 +3,7 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- mtd/util/mkfs.jffs2.c~add-exclusion-to-mkfs-jffs2.patch
+--- mtd/util/mkfs.jffs2.c~add-exclusion-to-mkfs-jffs2
 +++ mtd/util/mkfs.jffs2.c
 @@ -92,7 +92,12 @@
  	struct filesystem_entry *files;	/* Only relevant to directories */
@@ -72,12 +72,13 @@
  	{
  		switch (opt) {
  			case 'D':
-@@ -1376,6 +1394,27 @@
+@@ -1376,6 +1394,28 @@
  				page_size = strtol(optarg, NULL, 0);
  				break;
  
 +			case 'I':
 +				printf( "Note: Adding '%s' to ignore Path\n", optarg );
++				element = ignorepath;
 +				if ( !ignorepath ) {
 +					ignorepath = xmalloc( sizeof( struct ignorepath_entry ) );
 +					ignorepath->next = 0;
@@ -89,7 +90,7 @@
 +					strcpy( &element->next->name[0], optarg );
 +				}
 +				printf( "--------- Dumping ignore path list ----------------\n" );
-+				element=ignorepath;
++				element = ignorepath;
 +				while ( element ) {
 +					printf( "  * '%s'\n", &element->name[0] );
 +					element = element->next;
