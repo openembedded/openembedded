@@ -10,6 +10,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
            file://automake-lossage.patch;patch=1 \
            file://gtk+-handhelds.patch;patch=1 \
+           file://hardcoded_libtool.patch;patch=1 \
            file://gtk-doc.m4"
 
 inherit autotools  pkgconfig
