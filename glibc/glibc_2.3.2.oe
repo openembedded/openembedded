@@ -11,6 +11,8 @@ PROVIDES=virtual/libc
 #	  file://${FILESDIR}/50_glibc232-hppa-full-nptl-2003-10-22.patch;patch=1;pnum=1
 #	  file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=1
 #	  file://${FILESDIR}/glibc-make-check-perms.patch;patch=1;pnum=0
+# This patch is needed for builds against recent 2.5/2.6 kernel headers:
+#	  file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0
 SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 	  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
 	  http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2 \
@@ -50,7 +52,6 @@ SRC_URI = ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
 	  file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1;pnum=1 \
 	  file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1;pnum=1 \
 	  file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0 \
-	  file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
 	  file://${FILESDIR}/pthread-cleanup.patch;patch=1;pnum=0 \
 	  file://${FILESDIR}/glibc-2.3.2-ldconfig-tls.patch;patch=1;pnum=1 \
 	  file://${FILESDIR}/glibc23-mips-msq.patch;patch=1;pnum=0 \
