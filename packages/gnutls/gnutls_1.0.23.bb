@@ -17,6 +17,8 @@ FILES_${PN}-bin = "${bindir}/gnutls-serv ${bindir}/gnutls-cli \
 	${bindir}/srptool ${bindir}/certtool ${bindir}/gnutls-srpcrypt"
 FILES_${PN}-dev += "${bindir}/*-config ${bindir}/gnutls-cli-debug"
 
+EXTRA_OECONF="--with-included-opencdk"
+
 do_stage() {
 	oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}
 	oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
