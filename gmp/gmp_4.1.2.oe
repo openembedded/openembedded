@@ -1,0 +1,16 @@
+DESCRIPTION = GNU multiprecision arithmetic library
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ftp://mirrors.kernel.org/gnu/${PN}/${P}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools libtool
+
+acpaths = -I . -I mpn -I mpfr
+
+do_stage () {
+	install -m 0644 ${S}/.libs/libgmp.lai ${STAGING_LIBDIR}/libgmp.la
+	oe_soinstall ${S}/.libs/libgmp.so.3.3.2 ${STAGING_LIBDIR}
+	install -m 0644 ${S}/gmp.h ${STAGING_INCDIR}/gmp.h
+}
