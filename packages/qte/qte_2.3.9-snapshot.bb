@@ -1,10 +1,11 @@
-DESCRIPTION = "Qt/Embedded version ${PV}"
+DESCRIPTION = "Qt/Embedded Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -29,7 +30,7 @@ SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap
 SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 
-SRC_URI_append_openzaurus-pxa-2.6 = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
+SRC_URI_append_openzaurus-pxa-2.6 = "file://use-kernel-keycodes.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -68,7 +69,7 @@ EXTRA_DEFINES_corgi     	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS
 EXTRA_DEFINES_shepherd  	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_husky		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_beagle		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
-EXTRA_DEFINES_openzaurus-pxa-2.6= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_openzaurus-pxa-2.6= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"

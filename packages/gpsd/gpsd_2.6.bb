@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "http://ftp.berlios.de/gpsd/gpsd-${PV}.tar.gz"
 
-inherit autotools updater-rc.d
+inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
