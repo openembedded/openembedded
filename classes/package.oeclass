@@ -69,7 +69,7 @@ def package_frob_arch(d):
 	machine = oe.data.getVar('MACHINE', d, 1)
 	if not machine:
 		# can't specialise if MACHINE not defined
-		return:
+		return
 	old_arch = oe.data.getVar('PACKAGE_ARCH', d, 1)
 	if (old_arch == machine):
 		# Nothing to do
