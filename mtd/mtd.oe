@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for managing memory technology devices."
 PV = "${CVSDATE}"
 
 S = "${WORKDIR}/mtd/"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd \
+SRC_URI = "cvs://anoncvs@cvs.infradead.org/home/cvs;module=mtd;method=ext \
            file://stdint.patch;patch=1;pnum=0 \
            file://removelinuxinc.patch;patch=1;pnum=1"
 
