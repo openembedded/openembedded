@@ -1,9 +1,11 @@
-DESCRIPTION = "System time"
+DESCRIPTION = "Set the system time - utilizing ntpdate, if available."
 SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
+RRECOMMENDS = "ntpdate"
 PV = "1.1.5-cvs-${CVSDATE}"
+
 APPNAME = "systemtime"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/netsystemtime \

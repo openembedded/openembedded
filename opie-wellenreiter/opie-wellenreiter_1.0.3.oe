@@ -3,8 +3,8 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "manufacturers"
-PR = "r1"
+RRECOMMENDS = "manufacturers"
+PR = "r2"
 
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
@@ -12,7 +12,6 @@ APPTYPE = "binary"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/wellenreiter;date=20040504 \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=20040504                     \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=20040504"
-
 S = "${WORKDIR}/wellenreiter"
 
 inherit opie

@@ -1,9 +1,8 @@
-DESCRIPTION = "Opie Calibrate"
+DESCRIPTION = "Opie Standalone Touchscreen Calibration Utility"
 SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-RDEPENDS = "libqpe1"
 PV = "1.1.5-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate"
