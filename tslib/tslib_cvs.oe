@@ -2,6 +2,8 @@ PV = "0.1cvs${CVSDATE}"
 
 DESCRIPTION = "tslib is a touchscreen access library."
 
+CONFFILES_${PN} = "${sysconfdir}/ts.conf"
+
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib \
            file://collie/ts.conf \
            file://collie/tslib.sh \
