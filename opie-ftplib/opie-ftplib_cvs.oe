@@ -16,7 +16,7 @@ EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 
 do_stage () {
 	install -m 0664 ${S}/ftplib.h ${STAGING_INCDIR}/
-	oe_libinstall -so libftplib.so ${STAGING_LIBDIR}
+	oe_libinstall -so libftplib ${STAGING_LIBDIR}
 }
 
 do_install() {
