@@ -1,3 +1,4 @@
+PV="0.0cvs${DATE}"
 SECTION="libs"
 DEPENDS=virtual/libc x11-cvs fixesext-cvs
 PROVIDES=xfixes

@@ -1,3 +1,4 @@
+PV="0.0cvs${DATE}"
 SECTION="libs"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 PROVIDES=xproto

@@ -1,4 +1,0 @@
-inherit native
-include ipkg-utils_${PV}.oe
-DEPENDS = 
-PACKAGES =

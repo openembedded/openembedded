@@ -1,3 +1,4 @@
+PV="0.0cvs${DATE}"
 DESCRIPTION=X Server Extension library
 SECTION=libs
 PRIORITY=optional
