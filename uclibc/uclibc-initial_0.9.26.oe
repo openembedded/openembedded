@@ -1,6 +1,6 @@
 include uclibc_${PV}.oe
 
-FILESPATH = "${@base_set_filespath([ '%s/uclibc-%s' % (os.path.dirname(oe.data.getVar('FILE', d, 1)), oe.data.getVar('PV', d, 1)) ], d)}"
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-${PV}', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 DEPENDS = "patcher-native linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"

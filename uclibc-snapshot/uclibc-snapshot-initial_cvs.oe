@@ -1,6 +1,6 @@
 include uclibc-snapshot_cvs.oe
 
-FILESPATH = "${@base_set_filespath([ '%s/uclibc-snapshot' % os.path.dirname(oe.data.getVar('FILE', d, 1)) ], d)}"
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-snapshot', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 DEPENDS = "patcher-native linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
