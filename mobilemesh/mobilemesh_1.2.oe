@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "MobileMesh mobile ad-hoc routing protocol"
 LICENSE = "GPL"
 DEPENDS = "openssl"
-SRC_URI = "cvs://anoncvs:anoncvs@meshcube.org/data/cvs;module=application/mobilemesh"
+SRC_URI = "svn://meshcube.org/svn/application;module=mobilemesh"
 
 S = "${WORKDIR}/mobilemesh"
 
@@ -29,5 +29,5 @@ do_install() {
 	install ${S}/doc/INSTALL ${D}/${docdir}
 	install ${S}/doc/LICENSE ${D}/${docdir}
 	install ${S}/doc/README ${D}/${docdir}
-	install ${S}/ipkg/etc/init.d/mobilemesh ${D}/${sysconfdir}/init.d/
+	install ${S}/mobilemesh.init ${D}/${sysconfdir}/init.d/mobilemesh
 }
