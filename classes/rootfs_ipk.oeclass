@@ -55,7 +55,7 @@ EOF
 	export D=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
 	mkdir -p ${IMAGE_ROOTFS}/etc/ipkg/
-	grep "^arch" ${DEPLOY_DIR_IMAGE}/ipkg.conf >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
+	grep "^arch" ${T}/ipkg.conf >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
 
 	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then
