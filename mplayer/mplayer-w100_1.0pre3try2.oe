@@ -11,14 +11,19 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
 			file://zlib.patch;patch=0 "
 S = "${WORKDIR}/MPlayer-${PV}"
 
-FILES_${PN} = " \
-	/usr/local/bin/mplayer \
-	/usr/local/lib/mplayer/vidix/w100_vid.so "
+PACKAGES="${PN} postproc postproc-dev"
+
+FILES_${PN} = "/usr/bin/mplayer /usr/lib/mplayer/vidix/w100_vid.so"
+
+FILES_postproc = " /usr/lib/libpostproc.so.0.0.0 /usr/lib/libpostproc.so.0"
+FILES_postproc-dev = " /usr/include/postprocess.h /usr/lib/libpostproc.so /usr/lib/libpostproc.a"
 
 inherit autotools 
 
 EXTRA_OECONF = " \
-	--target=arm \
+	--prefix=/usr \
+	--target=${PACKAGE_ARCH} \
+	--enable-shared-pp \
 	\
 	--disable-win32 \
 	--disable-macosx \
@@ -51,9 +56,23 @@ EXTRA_OECONF = " \
 #	--cc=arm-linux-gcc \
 #	--disable-dvdnav \
 
-# CFLAGS += " -ljpeg -lpng -lts "
 
 do_configure() {
 	./configure ${EXTRA_OECONF}
 }
+
+do_install_append () {
+	mkdir ${D}/usr/lib
+	cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}/usr/lib/libpostproc.so.0.0.0
+	mkdir ${D}/usr/include
+	cp ${S}/libavcodec/libpostproc/postprocess.h ${D}/usr/include/postprocess.h
+	cd ${D}/usr/lib
+	ln -s libpostproc.so.0.0.0 libpostproc.so.0
+	ln -s libpostproc.so.0 libpostproc.so
+}
+
+do_stage () {
+	oe_libinstall -a -so -C libavcodec/libpostproc libpostproc ${STAGING_LIBDIR}
+	install -m 0644 ${S}/libavcodec/libpostproc/postprocess.h ${STAGING_INCDIR}/postprocess.h
+}					
 
