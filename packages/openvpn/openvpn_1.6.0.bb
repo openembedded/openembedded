@@ -4,7 +4,7 @@ HOMEPAGE = "http://openvpn.sourceforge.net"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "lzo openssl"
-RDEPENDS = "kernel-module-tun"
+RRECOMMENDS = "kernel-module-tun"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-${PV}.tar.gz \

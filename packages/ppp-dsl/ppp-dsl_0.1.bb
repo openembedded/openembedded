@@ -3,8 +3,9 @@ DESCRIPTION = "Enables PPP dial-in through a DSL connection"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "PD"
 DEPENDS = "ppp rp-pppoe"
-RDEPENDS = "ppp rp-pppoe kernel-module-ppp-async kernel-module-ppp-generic kernel-module-slhc"
-PR = "r1"
+RDEPENDS = "ppp rp-pppoe"
+RRECOMMENDS = "kernel-module-ppp-async kernel-module-ppp-generic kernel-module-slhc"
+PR = "r2"
 
 SRC_URI = "file://dsl-provider \
 	file://ppp_on_boot.dsl"

@@ -4,9 +4,10 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 SECTION = "network"
 PRIORITY = "optional"
-PR = "r2"
+PR = "r3"
 
-RDEPENDS = "iptables kernel-module-ip-tables kernel-module-ip-conntrack kernel-module-ipt-conntrack kernel-module-ipt-multiport kernel-module-ipt-log kernel-module-ipt-mac kernel-module-ipt-mark kernel-module-ipt-masquerade kernel-module-ipt-pkttype kernel-module-ipt-reject kernel-module-ipt-state kernel-module-ipt-tos kernel-module-iptable-filter kernel-module-iptable-mangle kernel-module-iptable-nat"
+RDEPENDS = "iptables"
+RRECOMMENDS = "kernel-module-ip-tables kernel-module-ip-conntrack kernel-module-ipt-conntrack kernel-module-ipt-multiport kernel-module-ipt-log kernel-module-ipt-mac kernel-module-ipt-mark kernel-module-ipt-masquerade kernel-module-ipt-pkttype kernel-module-ipt-reject kernel-module-ipt-state kernel-module-ipt-tos kernel-module-iptable-filter kernel-module-iptable-mangle kernel-module-iptable-nat"
 
 SRC_URI = "http://germany.shorewall.net/pub/shorewall/2.0/shorewall-2.0.9/shorewall-2.0.9.tgz \
 	file://install-no-chown.diff;patch=1;pnum=0"
