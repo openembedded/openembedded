@@ -10,6 +10,7 @@ APPNAME = "systemtime"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/netsystemtime \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/netsystemtime"
@@ -19,7 +20,9 @@ inherit opie
 # FILES plugins/application/libsystemtime.so* bin/systemtime apps/Settings/systemtime.desktop etc/ntpservers pics/netsystemtime
 do_install() {
         install -d ${D}${palmtopdir}/pics/netsystemtime/
+        install -d ${D}${palmtopdir}/etc
         install -m 0644 ${WORKDIR}/pics/netsystemtime/*.png ${D}${palmtopdir}/pics/netsystemtime/
+				install -m 0644 ${WORKDIR}/etc/ntpservers ${D}${palmtopdir}/etc
 }
 
 FILES_opie-systemtime_append = " /etc/ntpservers"
