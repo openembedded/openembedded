@@ -58,6 +58,7 @@ openswan \
 pciutils \
 pcre \
 perl \
+pmacct \
 ppp \
 ppp-dsl \
 rp-pppoe \
