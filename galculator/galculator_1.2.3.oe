@@ -1,0 +1,22 @@
+PR = "r1"
+
+inherit autotools pkgconfig
+
+PROVIDES = "galculator"
+DESCRIPTION = "GTK Advanced Calculator"
+DEPENDS = "virtual/libc gtk+ libglade"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
+        file://gnome-calc2.png \
+        file://Makefile.am.patch;patch=1" 
+
+#EXTRA_OECONF = ""
+
+do_install_append () {
+        mkdir -p ${D}${datadir}/pixmaps
+        install -m 0644 ${WORKDIR}/gnome-calc2.png ${D}${datadir}/pixmaps/gnome-calc2.png
+}
+
