@@ -1,6 +1,7 @@
 DESCRIPTION = "Berkeley DB v3."
 
-SRC_URI = "http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz"
+SRC_URI = "http://www.sleepycat.com/update/snapshot/db-${PV}.tar.gz \
+	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
 
@@ -24,53 +25,39 @@ do_configure_prepend () {
 		. ./RELEASE
 		(echo "AC_DEFUN(AM_VERSION_SET, [" &&
 		echo "AC_SUBST(DB_VERSION_MAJOR)" &&
-		echo "DB_VERSION_MAJOR=\$DB_VERSION_MAJOR" &&
+		echo "AC_DEFINE(DB_VERSION_MAJOR, [$DB_VERSION_MAJOR])" &&
+		echo "DB_VERSION_MAJOR=$DB_VERSION_MAJOR" &&
 		echo "AC_SUBST(DB_VERSION_MINOR)" &&
-		echo "DB_VERSION_MINOR=\$DB_VERSION_MINOR" &&
+		echo "AC_DEFINE(DB_VERSION_MINOR, [$DB_VERSION_MINOR])" &&
+		echo "DB_VERSION_MINOR=$DB_VERSION_MINOR" &&
 		echo "AC_SUBST(DB_VERSION_PATCH)" &&
-		echo "DB_VERSION_PATCH=\$DB_VERSION_PATCH" &&
+		echo "AC_DEFINE(DB_VERSION_PATCH, [$DB_VERSION_PATCH])" &&
+		echo "DB_VERSION_PATCH=$DB_VERSION_PATCH" &&
 		echo "AC_SUBST(DB_VERSION_STRING)" &&
+		echo "AC_DEFINE(DB_VERSION_STRING, [$DB_VERSION_STRING])" &&
 		echo "DB_VERSION_STRING=\"\\\"\$DB_VERSION_STRING\\\"\"" &&
 		echo "])dnl") > acinclude.m4
 	)
 }
 
 do_configure () {
-	set -e
-	cd ${S}
-	gnu-configize
-	cd ${B}
-	oe_runconf --enable-shared --disable-static
-	mkdir -p ${WORKDIR}/db-${PV}/build_unix_static
-	cd ${WORKDIR}/db-${PV}/build_unix_static
-	oe_runconf --disable-shared --enable-static
-	cd ${S}
+	rm -f ${S}/configure
+	autotools_do_configure
 }
 
 do_compile () {
-	set -e
-	cd ${B}
 	oe_runmake
-	cd ${WORKDIR}/db-${PV}/build_unix_static
-	oe_runmake
-	cd ${S}
 }
 
 do_stage () {
-	set -e
-	cd ${B}
 	install -m 0644 db_185.h ../include/db_cxx.h db.h ${STAGING_INCDIR}/
-	oe_libinstall -so libdb-3.2 ${STAGING_LIBDIR}
+	oe_libinstall -so -a libdb-3.2 ${STAGING_LIBDIR}
 	ln -sf libdb-3.2.so ${STAGING_LIBDIR}/libdb.so
-	cd ${WORKDIR}/db-${PV}/build_unix_static
-	oe_libinstall -a libdb ${STAGING_LIBDIR}
-	cd ${S}
+	ln -sf libdb-3.2.a ${STAGING_LIBDIR}/libdb.a
 }
 
 do_install () {
-	set -e
-	for i in ${B} ${WORKDIR}/db-${PV}/build_unix_static; do
-	oe_runmake -C $i \
+	oe_runmake \
 		prefix=${D}/${prefix} \
 		exec_prefix=${D}/${exec_prefix} \
 		bindir=${D}/${bindir} \
@@ -78,7 +65,6 @@ do_install () {
 		libdir=${D}/${libdir} \
 		docdir=${D}/${docdir} \
 		install
-	done
 }
 
 python do_package() {
