@@ -1,6 +1,6 @@
 DESCRIPTION="Itsy Package Manager"
 LICENSE="GPL"
-SRC_URI="cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
 PROVIDES=virtual/ipkg
 
 S="${WORKDIR}/ipkg/C"
@@ -9,8 +9,7 @@ inherit base
 
 do_compile () {
 	(
-		 set -x
-		./autoconfigure.sh
+		./autoconfigure.sh && \
 		base_do_compile $@
 	) || die "compilation failed."
 }

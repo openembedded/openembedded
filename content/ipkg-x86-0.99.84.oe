@@ -1,4 +1,2 @@
-ARCH:=${BUILD_ARCH}
-OS:=${BUILD_OS}
-
+inherit noncross
 include ipkg-${PV}.oe
