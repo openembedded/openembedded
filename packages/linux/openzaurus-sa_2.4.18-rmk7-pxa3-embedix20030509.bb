@@ -5,7 +5,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r14"
+PR = "r15"
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
@@ -51,7 +51,7 @@ ALLOW_EMPTY = 1
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
-EXTRA_OEMAKE = " EXTRAVERSION=-rmk7-pxa3-embedix-${DISTRO_VERSION} EMBEDIXRELEASE="
+EXTRA_OEMAKE = " EMBEDIXRELEASE=${DISTRO_VERSION}"
 
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
