@@ -14,6 +14,8 @@ FILES_${PN}-dev += "${libdir}/orbit-2.0/* ${libdir}/bonobo/monikers/* \
 
 inherit autotools pkgconfig
 
+PARALLEL_MAKE = ""
+
 do_configure_prepend() {
 	install -d m4
 	install ${WORKDIR}/gtk-doc.m4 m4/
