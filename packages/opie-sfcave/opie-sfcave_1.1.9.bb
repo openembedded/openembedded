@@ -3,10 +3,8 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-
 APPNAME = "sfcave"
-APPTYPE = "binary"
-
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/games/sfcave \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
