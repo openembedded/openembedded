@@ -19,6 +19,7 @@ inherit opie
 
 QMAKE_PROFILES = "qpdf_render-freetype.pro"
 EXTRA_QMAKEVARS_POST = "TARGET=qpdf"
+export OE_QMAKE_LINK="${CXX}"
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f

@@ -187,7 +187,6 @@ opie-tictac \
 opie-wordgame \
 opie-zlines \
 opie-zsame \
-freedriod \
 "
 RDEPENDS_task-opie-games = "${task-opie-games}"
 DEPENDS += " ${task-opie-games}"

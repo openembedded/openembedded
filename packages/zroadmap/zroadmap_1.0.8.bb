@@ -22,6 +22,7 @@ inherit palmtop
 
 EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} \
                 GUILDFLAGS="-lz -lpng -ljpeg -lts -lqte -lqpe -L${STAGING_LIBDIR} -L${QTDIR}/lib"'
+PARALLEL_MAKE = ""
 
 do_configure() {
 	rm -rf moc*

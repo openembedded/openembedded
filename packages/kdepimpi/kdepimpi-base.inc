@@ -33,10 +33,10 @@ file://libkcal.pro.patch;patch=1 \
 # kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
 # kmicromail            - have to check changes in KDEPIM/PI version libmailwrapper
 
-
+PARALLEL_MAKE = ""
 S = "${WORKDIR}/kdepim"
 EXTRA_QMAKEVARS_POST += "KDEPIMDIR=${S} INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DIR=moc/ \
-             LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++ \
+             LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lsupc++ \
              LIBS+=-Wl,-rpath-link,${S}/dest \
              LIBS-=-lzlib LIBS+=-lz \
              "
@@ -47,7 +47,7 @@ EXTRA_QMAKEVARS_POST += "KDEPIMDIR=${S} INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DI
 
 QMAKE_PROFILES= "all.pro"
 SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
-        kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \ 
+        kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \
         kabc/formats/binary kabc/plugins/qtopia \
         gammu/emb/common \
         gammu/emb/gammu \

@@ -9,6 +9,7 @@ AUTHOR = "Bernd Lachner <dev@lachner-net.de>"
 APPTYPE = "binary"
 APPNAME = "zshopi"
 APPDESKTOP = "${WORKDIR}"
+PR = "r1"
 
 SRC_URI = "http://www.lachner-net.de/Frames/Software/zshopi_0.2.tar.bz2 \
 file://zshopi.desktop \
@@ -24,7 +25,6 @@ inherit opie
 
 EXTRA_QMAKEVARS_POST = "DEFINES+=QTOPIA LIBS+=-lm LIBS+=-lsqlite LIBS+=-lqpe"
 OE_QMAKE_CXXFLAGS = "-fno-rtti ${CXXFLAGS}"
-export OE_QMAKE_LINK="${CXX}"
 
 do_configure_prepend() {
 	qmake -project

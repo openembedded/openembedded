@@ -8,6 +8,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
 HOMEPAGE = "http://iqnotes.kybu.org"
 AUTHOR = "Peter Vrabel <kybu@kybu.org>"
+PR = "r1"
 
 SRC_URI = "http://iqnotes.kybu.org/iqnotes-2.0.2-src.tar.bz2 \
            file://md5.diff;patch=1"
@@ -16,6 +17,8 @@ S = "${WORKDIR}/iqnotes/iqnotes"
 inherit palmtop
 
 QMAKE_PROFILES = "iqnotes.pro"
+export OE_QMAKE_LINK="${CXX}"
+
 
 do_install() {
         install -d ${D}/${palmtopdir}/help/html \
