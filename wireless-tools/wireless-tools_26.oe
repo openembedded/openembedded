@@ -7,8 +7,8 @@ LICENSE = "GPL"
 PR = "r4"
 
 SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar.gz \
-file://man.patch;patch=1 \
-file://wireless-tools.if-pre-up"
+	   file://man.patch;patch=1 \
+	   file://wireless-tools.if-pre-up"
 S = "${WORKDIR}/wireless_tools.${PV}"
 
 export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
@@ -17,6 +17,11 @@ KERNEL_CCSUFFIX = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-cc
 KERNEL_LDSUFFIX = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-ldsuffix')}
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
+
+do_configure() {
+	rm -rf wireless.h
+	ln -s ${STAGING_KERNEL_DIR}/include/linux/wireless.h wireless.h
+}
 
 do_compile() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
