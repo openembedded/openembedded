@@ -3,9 +3,3 @@ PENDING/*
 conf/local.conf
 conf/auto.conf
 tmp
-qtopia/qtopia_1_7_0.oe.~1~
-opie-opiealarm/.opie-opiealarm_cvs.oe.swp
-kdepimpi/libmicrokdelibs_cvs.oe
-meta/meta-opie-failed
-linux/nslu2-openslug-2.6.7/defconfig.orig
-linux/nslu2-linksys-2.4.22/nslu2/defconfig.safe
