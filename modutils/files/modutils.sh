@@ -1,5 +1,8 @@
+#!/bin/sh
+
 [ -f /proc/modules ] || exit 0
 [ -e /sbin/depmod ] || exit 0
+[ -f /etc/modules ] || exit 0
 
 [ "$VERBOSE" != no ] && echo "Calculating module dependencies ..."
 depmod -Ae
@@ -15,3 +18,5 @@ do
 	modprobe $module $args
 done
 [ "$VERBOSE" != no ] && echo
+
+exit 0

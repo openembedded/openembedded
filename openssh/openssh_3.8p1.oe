@@ -62,7 +62,7 @@ if test "x$D" != "x"; then
 else
 	addgroup sshd
 	adduser --system --home /var/run/sshd --no-create-home --disabled-password --ingroup sshd -s /bin/false sshd
-	update-rc.d -s sshd defaults
+	update-rc.d sshd defaults
 fi
 }
 
