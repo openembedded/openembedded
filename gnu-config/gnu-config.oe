@@ -1,0 +1,33 @@
+PV = "0.1"
+LICENSE = "GPL"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SRC_URI = "ftp://ftp.club.cc.cmu.edu/pub/gnu/config/config.guess \
+	   ftp://ftp.club.cc.cmu.edu/pub/gnu/config/config.sub \
+	   file://${FILESDIR}/uclibc.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/gnu-configize.in"
+S = "${WORKDIR}" 
+
+INHIBIT_DEFAULT_DEPS = "1"
+DEPENDS = "patcher-native"
+PACKAGES = "${PN}"
+FILES_${PN} = "${bindir} \
+	       ${datadir}/gnu-config"
+
+do_stage () {
+	install -d ${STAGING_DIR}/${BUILD_SYS}/share/gnu-config
+	cat ${WORKDIR}/gnu-configize.in | \
+		sed -e 's,@gnu-configdir@,${STAGING_DIR}/${BUILD_SYS}/share/gnu-config,; \
+			s,@autom4te_perllibdir@,${STAGING_DIR}/${BUILD_SYS}/share/autoconf,;' > ${STAGING_BINDIR}/gnu-configize
+	chmod 755 ${STAGING_BINDIR}/gnu-configize
+	install -m 0644 config.guess config.sub ${STAGING_DIR}/${BUILD_SYS}/share/gnu-config/
+}
+
+do_install () {
+	install -d ${D}/${datadir}/gnu-config \
+		   ${D}/${bindir}
+	cat ${WORKDIR}/gnu-configize.in | \
+		sed -e 's,@gnu-configdir@,${datadir}/gnu-config,; \
+			s,@autom4te_perllibdir@,${datadir}/autoconf,;' > ${D}/${bindir}/gnu-configize
+	chmod 755 ${D}/${bindir}/gnu-configize
+	install -m 0644 config.guess config.sub ${D}/${datadir}/gnu-config/
+}
