@@ -1,20 +1,10 @@
 DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
-UMLR = "1"
-PR = "2"
+UMLR = "2"
+PR = "0"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
-           http://mirror.usermodelinux.org/uml/uml-patch-${PV}-${UMLR}.bz2;patch=1 \
-           file://01-CONFIG_X86_CMPXCHG.patch-2;patch=1 \
-           file://02-config_cleanup.patch;patch=1 \
-           file://07-mconsole_dir_cleanup.patch;patch=1 \
-           file://10-flock.patch;patch=1 \
-           file://11-usr1_process_tkill.patch;patch=1 \
-           file://12-hostfs.patch;patch=1 \
-           file://13-hostfs_access.patch;patch=1 \
-           file://fix-includes.patch;patch=1 \
-           file://fix-arg-max.patch;patch=1 \
-           file://disable-aio-check.patch;patch=1 \
+           ${SOURCEFORGE_MIRROR}/user-mode-linux/uml-patch-${PV}-${UMLR}.bz2;patch=1 \
            file://defconfig \
            file://aio_abi.h"
 S = "${WORKDIR}/linux-${PV}"
