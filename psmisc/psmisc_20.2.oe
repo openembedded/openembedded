@@ -2,11 +2,11 @@ DESCRIPTION = "procfs tools"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "ncurses"
+DEPENDS = "ncurses gettext-native"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
-	 file://configure.patch;patch=1 \
-	 file://m4.patch;patch=1"
+	   file://gettext.patch;patch=1"
 S = "${WORKDIR}/psmisc-${PV}"
 
 inherit autotools
