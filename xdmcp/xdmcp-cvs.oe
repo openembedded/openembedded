@@ -1,0 +1,16 @@
+SECTION="libs"
+PRIORITY="optional"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc xproto
+
+SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp
+S=${WORKDIR}/Xdmcp
+
+inherit autotools pkgconfig
+
+
+do_stage() {
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_DIR}/target/include libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+
+}
