@@ -6,7 +6,6 @@ LICENSE = "GPL"
 DEPENDS = "libopiecore2 opie-ftplib"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "opieftp"
-APPTYPE = "binary"
 I18N_FILES = "opieftp.ts"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opieftp \
