@@ -1,4 +1,4 @@
-DESCRIPTION = "Base libraries for the Open Integrated Palmtop Environment"
+DESCRIPTION = "Base libraries for the Open Palmtop Integrated Environment"
 HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
 PRIORITY = "optional"

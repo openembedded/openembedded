@@ -2,13 +2,13 @@ DESCRIPTION = "The SWORD Project is an open source, cross-platform (Linux, Windo
 Bible software with a constantly growing list of front-ends (GUI, textmode, web-based, etc.) and a library of over 200 text modules"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "clucene curl"
-RDEPENDS = "clucene curl"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.crosswire.org/~dglassey/sword-1.5.7a.tar.gz"
 
 inherit autotools 
+
+EXTRA_OECONF = "--without-clucene"
 
 do_stage() {
 	oe_libinstall -so -C lib libsword ${STAGING_LIBDIR}
