@@ -2,10 +2,10 @@ DESCRIPTION = "A tool for automatically generating Makefiles."
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
-	file://path_prog_fixes.patch;patch=1"
+	${@['file://path_prog_fixes.patch;patch=1', ''][bb.data.inherits_class('native', d)]}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/automake-${PV}"
 
 inherit autotools
