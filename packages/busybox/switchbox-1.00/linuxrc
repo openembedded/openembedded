@@ -23,11 +23,21 @@ if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/jffs2 ; then
 	mounted=
 	runboot=
 	prefroot=
+    elif [ -f /mnt/jffs2/.sda1root ] ; then
+	/bin/echo "Preferred root device is /dev/sda1 (disk 1)"
+	mounted=/mnt/newroot
+	runboot=/bin/init
+	prefroot=sda1
     elif [ -f /mnt/jffs2/.sda2root ] ; then
 	/bin/echo "Preferred root device is /dev/sda2 (disk 1)"
 	mounted=/mnt/newroot
 	runboot=/bin/init
 	prefroot=sda2
+    elif [ -f /mnt/jffs2/.sdb1root ] ; then
+	/bin/echo "Preferred root device is /dev/sdb1 (disk 2)"
+	mounted=/mnt/newroot
+	runboot=/bin/init
+	prefroot=sdb1
     elif [ -f /mnt/jffs2/.sdb2root ] ; then
 	/bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
 	mounted=/mnt/newroot
@@ -54,11 +64,12 @@ fi
 # perform prepatory tasks
 if [ -n "$prefroot" ] ; then
 
-    if [ $prefroot = "sda2" -o $prefroot = "sdb2" ] ; then
+    if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot = "sdb2" ] ; then
 	/bin/echo "Sleeping 10sec while waiting for disk..."
 	sleep 10
         /bin/mount -rt ext3 /dev/$prefroot /mnt/newroot
-	if [ -x /mnt/newroot/bin/init ] && [ -r /mnt/newroot/.unslung ] ; then
+	if [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
+	     -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
 	else
 	    /bin/echo "Cant find valid rootfs on /dev/$prefroot, using recovery ..."
@@ -119,7 +130,8 @@ if [ -n "$prefroot" ] ; then
 
 	mount -o $nfsrootopts $nfsrootloc /mnt/newroot
 
-    	if  [ -e /mnt/newroot/sbin/init -o -e /mnt/newroot/bin/init ] ; then
+    	if  [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
+	      -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from a NFS root ..."
 	    mounted=/mnt/newroot
 	    runboot=/linuxrc
@@ -130,7 +142,8 @@ if [ -n "$prefroot" ] ; then
 	fi
 
     else
-    	if  [ -e /mnt/jffs2/sbin/init -o -e /mnt/jffs2/bin/init ] ; then
+    	if  [ -L /mnt/jffs2/sbin/init -o -x /mnt/jffs2/sbin/init -o \
+	      -L /mnt/jffs2/bin/init  -o -x /mnt/jffs2/bin/init ] ; then
 	    /bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
 	    mounted=/mnt/jffs2
 	    runboot=/linuxrc
@@ -160,7 +173,8 @@ fi
 #if [ -z "$mounted" ] ; then
 #
 #    /bin/umount /mnt/jffs2
-#    if  [ -e /mnt/jffs2/sbin/init -o -e /mnt/jffs2/bin/init ] ; then
+#    if  [ -L /mnt/jffs2/sbin/init -o -x /mnt/jffs2/sbin/init -o \
+#          -L /mnt/jffs2/bin/init  -o -x /mnt/jffs2/bin/init ] ; then
 #        /bin/echo "5" > /proc/sys/kernel/panic
 #	/bin/echo "Root filesystem will be mounted from /dev/ram0 ..."
 #	/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
