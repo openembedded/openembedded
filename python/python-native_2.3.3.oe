@@ -1,0 +1,25 @@
+DESCRIPTION="Python Programming Language"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+
+SRC_URI = ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
+          file://${FILESDIR}/bindir-libdir.patch;patch=1
+
+S = ${WORKDIR}/Python-${PV}
+
+inherit autotools native
+
+DEPENDS=patcher-native
+
+EXTRA_OECONF = '--with-threads --with-pymalloc --with-cyclic-gc --with-exec-prefix=${STAGING_DIR}/build'
+do_configure () {
+	oe_runconf
+}
+
+do_stage_append() {
+	# install pgen for later usage with non-native builds
+	install Parser/pgen ${STAGING_DIR}/build/bin
+}
+
+

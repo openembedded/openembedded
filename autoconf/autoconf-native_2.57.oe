@@ -1,6 +1,0 @@
-include autoconf_${PV}.oe
-S = ${WORKDIR}/autoconf-${PV}
-FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/autoconf-${PV}
-DEPENDS = 
-
-inherit native
