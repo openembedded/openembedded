@@ -1,0 +1,16 @@
+inherit gpe
+
+DESCRIPTION = "GPE bluetooth support"
+DEPENDS = "gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus libglade blueprobe"
+RDEPENDS = "bluez-utils blueprobe"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+FILES_${PN} += '${datadir}/bluez-pin'
+
+SRC_URI = "${GPE_MIRROR}/gpe-bluetooth-${PV}.tar.gz"
+
+pkg_postinst() {
+	chmod u+s /sbin/hciattach /sbin/hciconfig /usr/lib/gpe-bluetooth/bnep-helper /usr/lib/gpe-bluetooth/rfcomm-helper
+}
