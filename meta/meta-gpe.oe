@@ -12,7 +12,7 @@ gpe-base = "\
     gpe-login \
     gpe-session-scripts \
     matchbox \
-    rxvt \
+    rxvt-unicode \
     gpe-icons \
     gpe-confd \
     gpe-autostarter"
