@@ -8,20 +8,20 @@ DL_DIR = "${HOME}/sources"
 # Use this to specify what .oe files to consider for builds
 OEFILES = "*/*.oe"
 
-# Note that only recent oemake's obey OEMASK directly, in earlier versions,
+# Note that only recent oemake's obey OEMASK directly. In earlier versions
 # you had to filter by hand and populate OEFILES accordingly
 # Use the OEMASK below unless you want to build something else than the default glibc based setup
 OEMASK = "(toolchain-external)"
 
-# Uncomment this OEMASK, if you want to use a prebuild toolchain.
-# You will need to provide packages for toolchain specific libraries yourself
+# Uncomment this OEMASK, if you want to use a prebuilt toolchain.
+# You will need to provide packages for toolchain and additional libraries yourself
 #OEMASK = "()"
 
-# Select between multiple alternative providers, if more than one is eligible
+# Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
 
 # Uncomment this to specify where OE should create its temporary files.
-# Note that a fully build of everything in OE will take GigaBytes of hard disk space,
+# Note that a full build of everything in OE will take GigaBytes of hard disk space,
 # so make sure to free enough space. The default TMPDIR is <build directory>/tmp
 #TMPDIR = /usr/local/projects/oetmp
 
