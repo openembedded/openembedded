@@ -10,7 +10,7 @@ TARGET_SYS := "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
 TARGET_PREFIX := "${TARGET_SYS}-"
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
-           virtual/libc patcher"
+           virtual/libc patcher-native"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
