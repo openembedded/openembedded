@@ -1,0 +1,53 @@
+#
+# A collection of dependencies for images including Opie or parts of it.
+#
+
+#
+# Dependencies to get the launcher up and running
+#
+
+OPIE_LIBS_DEPENDS = "qte-for-opie libopie2 qpf-bitstream-vera"
+OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small"
+OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
+
+#
+# Things for reasonable bootstrap image
+#
+
+OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
+                     opie-suspendapplet opie-batteryapplet opie-homeapplet \
+                     opie-multikeyapplet opie-rotateapplet opie-vtapplet \
+                     opie-cardmon opie-irdaapplet"
+
+OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
+
+OPIE_BASE_APPS = "opie-aqpkg opie-console opie-clock opie-citytime"
+
+OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-sysinfo opie-networksettings opie-button-settings"
+
+OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
+
+OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal"
+
+OPIE_BASE_DEPENDS = "ipkg ntp"
+OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset"
+
+#
+# Additional things for a standard 16MB distribution
+#
+
+OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-mail opie-textedit opie-today"
+
+OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-today \
+            opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
+
+KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi-1.9.3a"
+KDE_PIM_RDEPENDS = "kopi kapi libmicrokdelibs kopi-applet"
+
+OPIE_EXTRA_APPLETS = "opie-clipboardapplet opie-volumeapplet opie-screenshotapplet"
+
+OPIE_EXTRA_APPS = "opie-advancedfm"
+
+OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-security \
+            opie-mediummount"
+
