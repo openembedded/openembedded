@@ -3,7 +3,7 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
