@@ -127,9 +127,12 @@ CONFIG_CORGI_LCD_BUFF=y
 # CONFIG_ARCH_PXA_SHEPHERD is not set
 # CONFIG_ARCH_PXA_HUSKY is not set
 # CONFIG_ARCH_PXA_BOXER is not set
+# CONFIG_ARCH_PXA_TOSA is not set
+# CONFIG_ARCH_PXA_TOSA_SKIP is not set
 CONFIG_ARCH_SHARP_SL=y
 CONFIG_SL_CCCR_CHANGE=y
 # CONFIG_SL_CCCR242 is not set
+# CONFIG_SL_CCCR162 is not set
 
 #
 # Language type
@@ -185,7 +188,6 @@ CONFIG_ARM_THUMB=y
 # CONFIG_ARM_FCSE is not set
 # CONFIG_DISCONTIGMEM is not set
 # CONFIG_PREEMPT is not set
-# CONFIG_LOCK_BREAK is not set
 
 #
 # General setup
@@ -236,6 +238,7 @@ CONFIG_ALIGNMENT_TRAP=y
 CONFIG_FREEPG_SIGNAL=y
 CONFIG_OOM_KILL_SURVIVAL=y
 CONFIG_DEVICEINFO=m
+CONFIG_CORGI_DEVICEINFO=m
 
 #
 # Parallel port support
@@ -383,6 +386,15 @@ CONFIG_NET_IPGRE=m
 # CONFIG_ARPD is not set
 # CONFIG_INET_ECN is not set
 # CONFIG_SYN_COOKIES is not set
+
+#
+#   IP: Netfilter Configuration
+#
+# CONFIG_IP_NF_CONNTRACK is not set
+# CONFIG_IP_NF_QUEUE is not set
+# CONFIG_IP_NF_IPTABLES is not set
+# CONFIG_IP_NF_COMPAT_IPCHAINS is not set
+# CONFIG_IP_NF_COMPAT_IPFWADM is not set
 # CONFIG_IPV6 is not set
 # CONFIG_KHTTPD is not set
 # CONFIG_ATM is not set
@@ -408,6 +420,7 @@ CONFIG_NET_IPGRE=m
 # QoS and/or fair queueing
 #
 # CONFIG_NET_SCHED is not set
+# CONFIG_IPSEC is not set
 
 #
 # Network device support
@@ -528,290 +541,6 @@ CONFIG_IRDA=y
 #
 # CONFIG_IRLAN is not set
 CONFIG_IRNET=m
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 CONFIG_IRCOMM=y
 # CONFIG_IRDA_ULTRA is not set
 
@@ -932,8 +661,14 @@ CONFIG_SERIAL=y
 # CONFIG_SERIAL_CONSOLE is not set
 CONFIG_SERIAL_SL_SERIES=y
 # CONFIG_SL_TS_PRESSURE is not set
+# CONFIG_BOOT_PRESSURE_ON is not set
 CONFIG_SL7X0_POWER_KEY_OFF=y
+# CONFIG_BOOT_POWER_KEY_OFF is not set
 # CONFIG_SL_3BUTTON_PATCH is not set
+# CONFIG_BOOT_3BUTTON_PATCH_ON is not set
+# CONFIG_SL_WRITE_TS is not set
+# CONFIG_BLUETOOTH_SL is not set
+# CONFIG_KBD_DEV_FILE is not set
 # CONFIG_SERIAL_EXTENDED is not set
 # CONFIG_SERIAL_NONSTANDARD is not set
 
@@ -1011,6 +746,7 @@ CONFIG_UNIX98_PTY_COUNT=256
 # CONFIG_RTC is not set
 CONFIG_COTULLA_RTC=y
 CONFIG_ADS7846_TS=y
+# CONFIG_TOSA_TS is not set
 # CONFIG_DTLK is not set
 # CONFIG_R3964 is not set
 # CONFIG_APPLICOM is not set
@@ -1200,6 +936,7 @@ CONFIG_DUMMY_CONSOLE=y
 # CONFIG_FB_COTULLA is not set
 # CONFIG_FB_POODLE is not set
 CONFIG_FB_CORGI=y
+# CONFIG_FB_TOSA is not set
 # CONFIG_SHARP_LOGO_SCREEN is not set
 # CONFIG_SL_SYSCLK100 is not set
 # CONFIG_FB_CYBER2000 is not set
@@ -1263,6 +1000,8 @@ CONFIG_SOUND=y
 # CONFIG_SOUND_PXA_AC97 is not set
 # CONFIG_SOUND_POODLE is not set
 CONFIG_SOUND_CORGI=y
+# CONFIG_SOUND_TOSA is not set
+# CONFIG_BUZZER_TOSA is not set
 # CONFIG_SOUND_TVMIXER is not set
 
 #
@@ -1295,6 +1034,8 @@ CONFIG_USB=m
 # CONFIG_USB_UHCI_ALT is not set
 # CONFIG_USB_OHCI is not set
 # CONFIG_USB_OHCI_SA1111 is not set
+# CONFIG_USB_OHCI_TC6393 is not set
+# CONFIG_USB_USE_INTERNAL_MEMORY is not set
 
 #
 # USB Device Class drivers
@@ -1479,6 +1220,7 @@ CONFIG_BLUEZ_RFCOMM_TTY=y
 CONFIG_BLUEZ_BNEP=m
 CONFIG_BLUEZ_BNEP_MC_FILTER=y
 CONFIG_BLUEZ_BNEP_PROTO_FILTER=y
+# CONFIG_BLUEZ_HIDP is not set
 
 #
 # Bluetooth device drivers
