@@ -48,7 +48,8 @@ UCLIBC_LOCALE_FILE = "uClibc-locale-030818.tgz"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}"
 SRC_URI = "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
            http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE} \
-           http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2"
+           http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2 \
+           file://uClibc.config.${TARGET_ARCH}"
 
 S = "${WORKDIR}/uClibc-${PV}"
 
@@ -68,8 +69,8 @@ uclibcbuild_do_patch() {
 	echo "#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))" \
 		>> ${WORKDIR}/linux/include/linux/version.h
 
-	if [ -f ${FILESDIR}/uClibc.config.${TARGET_ARCH} ]; then
-		cp ${FILESDIR}/uClibc.config.${TARGET_ARCH} ${S}/.config
+	if [ -f ${WORKDIR}/uClibc.config.${TARGET_ARCH} ]; then
+		cp ${WORKDIR}/uClibc.config.${TARGET_ARCH} ${S}/.config
 	else
 		echo ERROR: No target specific config for ${TARGET_ARCH}
 		return 1
@@ -141,4 +142,3 @@ do_install() {
 	# This conflicts with the c++ version of this header
 	rm -f ${D}/${prefix}/include/bits/atomicity.h
 }
-

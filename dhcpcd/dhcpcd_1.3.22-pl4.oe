@@ -6,6 +6,6 @@ configures the network interface, and tries to renew the \
 lease time according to RFC2131 or RFC1541."
 
 SRC_URI = "http://www.phystech.com/ftp/dhcpcd-${PV}.tar.gz \
-	   file://${FILESDIR}/config_dir.patch;patch=1"
+	   file://config_dir.patch;patch=1"
 
 inherit autotools

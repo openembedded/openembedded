@@ -2,8 +2,8 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "Vixie cron."
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
-	   file://${FILESDIR}/nonrootinstall.patch;patch=1 \
-	   file://${FILESDIR}/time.patch;patch=1"
+	   file://nonrootinstall.patch;patch=1 \
+	   file://time.patch;patch=1"
 S = "${WORKDIR}/cron${PV}"
 
 CFLAGS_append = " -I${S} -DSYS_TIME_H=0"

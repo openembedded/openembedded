@@ -5,9 +5,9 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://pygps.org/gpsd/downloads/gpsd-${PV}.tar.gz \
-           file://${FILESDIR}/gcc3.patch;patch=1 \
-           file://${FILESDIR}/gpsdc.patch;patch=1 \
-           file://${FILESDIR}/nmea-fix.patch;patch=1"
+           file://gcc3.patch;patch=1 \
+           file://gpsdc.patch;patch=1 \
+           file://nmea-fix.patch;patch=1"
 
 inherit autotools
 

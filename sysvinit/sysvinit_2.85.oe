@@ -10,7 +10,13 @@ FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d"
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d \
+           file://need \
+           file://provide \
+           file://inittab \
+           file://rcS-default \
+           file://rc \
+           file://rcS"
 S = "${WORKDIR}/sysvinit-${PV}/src"
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
@@ -26,8 +32,8 @@ do_install () {
 		runlevel shutdown ${D}/sbin/
 	install -m 755 init ${D}/sbin/sysvinit
 	install -m 755 mesg last ${D}${bindir}
-	install -m 0755 ${FILESDIR}/need		${D}/sbin/need.sysvinit
-	install -m 0755 ${FILESDIR}/provide		${D}/sbin/provide.sysvinit
+	install -m 0755 ${WORKDIR}/need		${D}/sbin/need.sysvinit
+	install -m 0755 ${WORKDIR}/provide		${D}/sbin/provide.sysvinit
 	ln -sf halt ${D}/sbin/reboot
 	ln -sf halt ${D}/sbin/poweroff
 	ln -sf init ${D}/sbin/telinit
@@ -37,17 +43,13 @@ do_install () {
 #	echo "/etc/default/rcS" >> ${D}/CONTROL/conffiles
 #	install -m 0755    ${FILESDIR}/prerm		${D}/CONTROL/
 #	install -m 0755    ${FILESDIR}/postinst		${D}/CONTROL/
-	if [ -e ${FILESDIR}/inittab_${MACHINE} ]; then
-		install -m 0644    ${FILESDIR}/inittab_${MACHINE}	${D}/etc/inittab
-	else
-		install -m 0644    ${FILESDIR}/inittab	${D}/etc/inittab
-	fi
+	oe_machinstall -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
 		echo "S:2345:respawn:/sbin/getty ${SERIAL_CONSOLE}" >> ${D}/etc/inittab
 	fi
-	install -m 0644    ${FILESDIR}/rcS-default	${D}/etc/default/rcS
-	install -m 0755    ${FILESDIR}/rc		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/rcS		${D}/etc/init.d
+	install -m 0644    ${WORKDIR}/rcS-default	${D}/etc/default/rcS
+	install -m 0755    ${WORKDIR}/rc		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
 }
 
 do_stage () {

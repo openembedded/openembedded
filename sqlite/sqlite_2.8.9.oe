@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc base/readline base/ncurses"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
-           file://${FILESDIR}/crosscompile.patch;patch=1"
+           file://crosscompile.patch;patch=1"
 
 S = "${WORKDIR}/sqlite"
 

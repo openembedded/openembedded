@@ -5,8 +5,8 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-${PV}.tar.gz \
-           file://${FILESDIR}/configure.patch;patch=1 \
-           file://${FILESDIR}/install.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://install.patch;patch=1"
 
 inherit autotools 
 

@@ -6,7 +6,8 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
-	   file://${FILESDIR}/directories.patch;patch=1"
+           file://directories.patch;patch=1 \
+           file://icon.png"
 
 inherit palmtop
 
@@ -23,7 +24,7 @@ do_install() {
 		   ${D}/${palmtopdir}/pics \
 		   ${D}/${palmtopdir}/share/gemdropx
         install -D -m 0755 gemdropx ${D}/${palmtopdir}/bin/gemdropx
-	install -D -m 0644 ${FILESDIR}/icon.png ${D}/${palmtopdir}/pics/gemdropx.png
+	install -D -m 0644 ${WORKDIR}/icon.png ${D}/${palmtopdir}/pics/gemdropx.png
 	cp -a data/* ${D}/${palmtopdir}/share/gemdropx
 
 	echo "[Desktop Entry]" >${D}/${palmtopdir}/apps/Games/gemdropx.desktop

@@ -2,7 +2,7 @@ DESCRIPTION = "This package contains the scripts necessary \
 for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-hotplug/hotplug-2003_08_05.tar.gz \
-	   file://${FILESDIR}/busybox.patch;patch=1"
+	   file://busybox.patch;patch=1"
 S = "${WORKDIR}/hotplug-2003_08_05"
 
 do_compile () {

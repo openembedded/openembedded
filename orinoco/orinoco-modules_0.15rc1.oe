@@ -5,7 +5,8 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \
+           file://spectrum.conf"
 S = "${WORKDIR}/orinoco-${PV}"
 
 inherit module
@@ -14,6 +15,6 @@ do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless
         install -d ${D}/etc/pcmcia
 	install -m 0755 *.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/
-        install -m 0644 ${FILESDIR}/spectrum.conf ${D}/etc/pcmcia/
+        install -m 0644 ${WORKDIR}/spectrum.conf ${D}/etc/pcmcia/
         install -m 0644 hermes.conf ${D}/etc/pcmcia/
 }

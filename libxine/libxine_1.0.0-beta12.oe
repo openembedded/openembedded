@@ -9,11 +9,11 @@ inherit autotools
 S = "${WORKDIR}/xine-lib"
 
 SRC_URI = "cvs://anonymous@cvs.xine.sf.net/cvsroot/xine;module=xine-lib;tag=xine-1-beta12-release \
-	   file://${FILESDIR}/full.patch;patch=1 \
-	   file://${FILESDIR}/libvorbis.patch;patch=0 \
-	   file://${FILESDIR}/demux_ogg.patch;patch=0 \
-	   file://${FILESDIR}/configure.ac.patch;patch=0 \
-	   file://${FILESDIR}/vo_scale.patch;patch=0"
+	   file://full.patch;patch=1 \
+	   file://libvorbis.patch;patch=0 \
+	   file://demux_ogg.patch;patch=0 \
+	   file://configure.ac.patch;patch=0 \
+	   file://vo_scale.patch;patch=0"
 
 SOV = "1.0.6"
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
-           file://${FILESDIR}/directories.patch;patch=1"
+           file://directories.patch;patch=1"
 
 inherit palmtop
 

@@ -4,8 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc libsdl-qpe"
 
 SRC_URI = "http://rcdrummond.net/uae/uae-${PV}/uae-${PV}.tar.bz2 \
-           file://${FILESDIR}/configure.patch;patch=1 \
-           file://${FILESDIR}/m4.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://m4.patch;patch=1"
 
 inherit autotools 
 

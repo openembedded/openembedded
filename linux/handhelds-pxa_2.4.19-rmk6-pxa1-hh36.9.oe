@@ -7,8 +7,8 @@ KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
-	   file://${FILESDIR}/linux-2.4-no-short-loads.patch;patch=1 \
-	   file://${FILESDIR}/linux-2.4-cpufreq.patch;patch=1"
+	   file://linux-2.4-no-short-loads.patch;patch=1 \
+	   file://linux-2.4-cpufreq.patch;patch=1"
 
 S = "${WORKDIR}/kernel"
 

@@ -1,7 +1,10 @@
 DESCRIPTION = "This package contains the scripts necessary \
 for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_11.tar.gz"
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_11.tar.gz \
+           file://fix-net.agent \
+           file://update-usb.usermap \
+           file://logcheck-ignore"
 S = "${WORKDIR}/hotplug-2004_03_11"
 
 do_compile () {
@@ -22,7 +25,7 @@ do_install () {
 	oe_runmake prefix=${D}${prefix} exec_prefix=${D}${exec_prefix} \
 		   etcdir=${D}${sysconfdir} sbindir=${D}${sbindir} \
 		   mandir=${D}${oldmandir} install
-	sh ${FILESDIR}/fix-net.agent ${D}
-	install -m 0755 ${FILESDIR}/update-usb.usermap ${D}/${oldsbindir}/
-	install -m 0644 ${FILESDIR}/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
+	sh ${WORKDIR}/fix-net.agent ${D}
+	install -m 0755 ${WORKDIR}/update-usb.usermap ${D}/${oldsbindir}/
+	install -m 0644 ${WORKDIR}/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
 }

@@ -3,22 +3,28 @@ PV = "0.0cvs${CVSDATE}"
 DEPENDS = "virtual/libc"
 DESCRIPTION = "tslib is a touchscreen access library."
 
-SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib"
-SRC_URI_append = " file://${FILESDIR}/automake.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/doc.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/zap.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/pthres.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/raw.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/raw-hwread.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/collie-module.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/devfs.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/event1.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/multievent.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/pointercal.patch;patch=1"
-#SRC_URI_append = " file://${FILESDIR}/ts_calibrate.patch;patch=1"
+SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
+           file://automake.patch;patch=1 \
+           file://doc.patch;patch=1 \
+           file://zap.patch;patch=1 \
+           file://pthres.patch;patch=1 \
+           file://raw.patch;patch=1 \
+           file://raw-hwread.patch;patch=1 \
+           file://collie/ts.conf \
+           file://corgi/ts.conf \
+           file://h3600/ts.conf \
+           file://husky/ts.conf \
+           file://poodle/ts.conf \
+           file://shepherd/ts.conf"
+#           file://collie-module.patch;patch=1
+#           file://devfs.patch;patch=1
+#           file://event1.patch;patch=1
+#           file://multievent.patch;patch=1
+#           file://pointercal.patch;patch=1
+#           file://ts_calibrate.patch;patch=1
 S = "${WORKDIR}/tslib"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--enable-shared"
 
@@ -30,7 +36,7 @@ do_stage () {
 }
 
 do_install_prepend () {
-    oe_machinstall -m 0644 ${FILESDIR}/ts.conf ${S}/etc/ts.conf
+	oe_machinstall -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
 }
 
 FILES_tslib_append = " ${datadir}/ts/plugins/*.so"

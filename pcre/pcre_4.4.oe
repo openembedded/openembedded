@@ -7,8 +7,8 @@ themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 
 SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2 \
-	   file://${FILESDIR}/rpath.patch;patch=1 \
-	   file://${FILESDIR}/lai.patch;patch=1"
+	   file://rpath.patch;patch=1 \
+	   file://lai.patch;patch=1"
 S = "${WORKDIR}/pcre-${PV}"
 
 inherit autotools 

@@ -8,7 +8,7 @@ DEPENDS = "gtk+ cairo xrender"
 inherit pkgconfig gpe
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpewidget-${PV}.tar.gz \
-	   file://${FILESDIR}/ldflags.patch;patch=1"
+	   file://ldflags.patch;patch=1"
 
 headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gpetimesel.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h popup_menu.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h gpeiconlistview.h"
 

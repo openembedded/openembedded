@@ -5,6 +5,6 @@ each chunk (very much like a zip file) and allow fast \
 random-access reading of the file later on."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/eet-${PV}.tar.gz \
-	   file://${FILESDIR}/flags.patch;patch=1"
+	   file://flags.patch;patch=1"
 
 inherit autotools 

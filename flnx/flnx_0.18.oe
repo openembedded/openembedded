@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc microwindows"
 RDEPENDS = "microwindows"
 DESCRIPTION = "fltk library for microwindows."
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}-tar.gz \
-	   file://${FILESDIR}/gcc3.patch;patch=1"
+	   file://gcc3.patch;patch=1"
 S = "${WORKDIR}/flnx"
 
 inherit autotools

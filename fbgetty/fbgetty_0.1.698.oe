@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "framebuffer getty."
 
 SRC_URI = "http://ftp3.ie.freebsd.org/pub/gentoo/distfiles/fbgetty-${PV}.tar.gz \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://compile.patch;patch=1"
 B = "${WORKDIR}/build.${HOST_SYS}.${TARGET_SYS}"
 
 inherit autotools

@@ -6,8 +6,8 @@ sessions, file transfer, character-set translation, and automation \
 of communication tasks."
 
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
-	   file://${FILESDIR}/cross.patch;patch=1 \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://cross.patch;patch=1 \
+	   file://compile.patch;patch=1"
 
 export CC_FOR_BUILD = "${BUILD_CC}"
 export CC2 = "${CC}"

@@ -1,7 +1,8 @@
 DESCRIPTION = "Linux kernel for VIA EPiA"
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+           file://epia_defconfig"
 S = "${WORKDIR}/linux-${PV}"
 
 COMPATIBLE_HOST = 'i.86.*-linux'
@@ -12,5 +13,5 @@ ARCH = "i386"
 KERNEL_IMAGETYPE = "bzImage"
 
 do_configure_prepend() {
-	install -m 0644 ${FILESDIR}/epia_defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/epia_defconfig ${S}/.config
 }

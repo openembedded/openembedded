@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
-	   file://${FILESDIR}/subapplet.pro.patch;patch=1 "
+	   file://subapplet.pro.patch;patch=1 "
 S = "${WORKDIR}/SubApplet-1.0.8"
 
 inherit palmtop

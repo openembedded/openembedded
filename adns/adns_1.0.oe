@@ -2,8 +2,8 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "An advanced alternative, asynchronous resolver."
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/fixparsedomainflags.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://fixparsedomainflags.patch;patch=1"
 
 inherit autotools
 

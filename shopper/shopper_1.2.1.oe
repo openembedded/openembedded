@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \
-           file://${FILESDIR}/gcc3.patch;patch=1"
+           file://gcc3.patch;patch=1"
 S = "${WORKDIR}/Shopper"
 
 inherit palmtop

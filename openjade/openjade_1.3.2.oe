@@ -5,7 +5,7 @@ processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools 
 

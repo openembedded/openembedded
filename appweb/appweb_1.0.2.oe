@@ -2,8 +2,8 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "AppWeb is an embedded HTTP Web server that has been designed with security in mind."
 SRC_URI = "http://www.mbedthis.com/software/appWeb-${PV}.LINUX-i386.self.tar.gz"
 SRC_URI_EXTRA = 'file://${WORKDIR}/appWeb-src-${PV}-12.tar.gz \
-		 file://${FILESDIR}/charsignedness.patch;patch=1 \
-		 file://${FILESDIR}/makerules.patch;patch=1'
+		 file://charsignedness.patch;patch=1 \
+		 file://makerules.patch;patch=1'
 S = "${WORKDIR}/appWeb-${PV}"
 
 python do_unpack () {

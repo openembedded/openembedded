@@ -1,7 +1,7 @@
 DEPENDS = "patcher-native opensp-native sgml-common-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/openjade-${PV}"
 
 inherit autotools native

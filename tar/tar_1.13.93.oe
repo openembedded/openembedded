@@ -5,7 +5,7 @@ DEPENDS = "virtual/libc"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/tar/tar-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://m4.patch;patch=1"
 
 inherit autotools

@@ -4,7 +4,7 @@ for ethernet LANs. It supports active and passive dissection of \
 many protocols (even ciphered ones, like SSH and HTTPS)."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ettercap/ettercap-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools
 

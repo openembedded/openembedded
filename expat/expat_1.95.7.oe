@@ -1,7 +1,7 @@
 DESCRIPTION = "Jim Clarkes XML parser library."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz \
-	   file://${FILESDIR}/autotools.patch;patch=1"
+	   file://autotools.patch;patch=1"
 S = "${WORKDIR}/expat-${PV}"
 
 inherit autotools lib_package

@@ -6,14 +6,15 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz; \
-           file://${FILESDIR}/crosscompile.patch;patch=1 \
-           file://${FILESDIR}/monitor-${PV}.patch;patch=1"
+           file://crosscompile.patch;patch=1 \
+           file://monitor-${PV}.patch;patch=1 \
+           file://spectrum*"
 S = "${WORKDIR}/orinoco-${PV}"
 
 inherit module
 
 do_compile_prepend() {
-	cp -f ${FILESDIR}/spectrum* ${S}/
+	cp -f ${WORKDIR}/spectrum* ${S}/
 }
 
 do_install() {

@@ -7,12 +7,13 @@ DEPENDS = "virtual/libc virtual/libsdl libsdl-image libsdl-mixer libsdl-net libs
 SRCNAME = "pygame"
 
 SRC_URI = "http://www.pygame.org/ftp/${SRCNAME}-${PV}.tar.gz \
-			file://${FILESDIR}/qpe.patch;patch=1"
+           file://qpe.patch;patch=1 \
+           file://Setup"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
 do_configure_prepend() {
 	SDL="`sdl-config --cflags` `sdl-config --libs`"; echo "SDL=$SDL" >Setup
-        cat ${FILESDIR}/Setup >>Setup
+        cat ${WORKDIR}/Setup >>Setup
 }

@@ -6,9 +6,9 @@ LICENSE = "GPL"
 DEPENDS = "libsidplay"
 
 SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz \
-           file://${FILESDIR}/use-external-libsidplay.patch;patch=1 \
-           file://${FILESDIR}/gcc3.patch;patch=1 \
-	   file://${FILESDIR}/gcc34.patch;patch=1"
+           file://use-external-libsidplay.patch;patch=1 \
+           file://gcc3.patch;patch=1 \
+	   file://gcc34.patch;patch=1"
 S = "${WORKDIR}/sidplayer"
 
 EXTRA_QMAKEVARS_PRE = "QMAKE_INCDIR=${STAGING_INCDIR}/sidplay"

@@ -4,8 +4,8 @@ for validating, parsing, and manipulating SGML and \
 XML documents."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
-	   file://${FILESDIR}/m4.patch;patch=1 \
-	   file://${FILESDIR}/attributevalue.patch;patch=1"
+	   file://m4.patch;patch=1 \
+	   file://attributevalue.patch;patch=1"
 S = "${WORKDIR}/OpenSP-${PV}"
 
 inherit autotools 

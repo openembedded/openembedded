@@ -3,7 +3,7 @@ DESCRIPTION = "dsniff is a collection of tools for network auditing and penetrat
 DEPENDS = "virtual/libc db3 libpcap libnet libnids openssl"
 
 SRC_URI = "http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools
 

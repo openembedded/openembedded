@@ -7,7 +7,7 @@ to be a replacement for 'compress'. The GNU Project uses it as \
 the standard compression program for its system."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/gzip/gzip_${PV}.orig.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 S = "${WORKDIR}/gzip-${PV}"
 

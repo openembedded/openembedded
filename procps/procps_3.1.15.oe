@@ -7,8 +7,8 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
-           file://${FILESDIR}/procps_${PV}-2.diff;patch=1 \
-           file://${FILESDIR}/install.patch;patch=1"
+           file://procps_${PV}-2.diff;patch=1 \
+           file://install.patch;patch=1"
 
 inherit autotools
 

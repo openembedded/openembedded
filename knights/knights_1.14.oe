@@ -7,8 +7,8 @@ RDEPENDS = "phalanx"
 DEPENDS = "virtual/libc virtual/libqpe"
 
 SRC_URI = "http://www.houseoffish.org/knights/downloads/knights.tar.gz \
-           file://${FILESDIR}/libqpe-opie.patch;patch=1 \
-           file://${FILESDIR}/gcc3.patch;patch=1"
+           file://libqpe-opie.patch;patch=1 \
+           file://gcc3.patch;patch=1"
 S = "${WORKDIR}/knights"
 
 inherit palmtop

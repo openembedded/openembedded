@@ -5,11 +5,13 @@ configure (or, respectively, deconfigure) network interfaces, based on \
 the file /etc/network/interfaces."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.orig.tar.gz \
-	   ${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}-4.8.diff.gz;patch=1 \
-	   file://${FILESDIR}/busybox.patch;patch=1 \
-	   file://${FILESDIR}/udhcpc.patch;patch=1 \
-	   file://${FILESDIR}/zeroconf.patch;patch=1 \
-	   file://${FILESDIR}/gcc34-fix.patch;patch=1"
+           ${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}-4.8.diff.gz;patch=1 \
+           file://busybox.patch;patch=1 \
+           file://udhcpc.patch;patch=1 \
+           file://zeroconf.patch;patch=1 \
+           file://gcc34-fix.patch;patch=1 \
+           file://init \
+           file://interfaces"
 
 EXTRA_OEMAKE = ""
 
@@ -24,6 +26,6 @@ do_install () {
 		   ${D}/sbin
 	install -m 0755 ifup ${D}/sbin/
 	ln ${D}/sbin/ifup ${D}/sbin/ifdown
-	install -m 0644 ${FILESDIR}/init ${D}/etc/init.d/networking
-	install -m 0644 ${FILESDIR}/interfaces ${D}/etc/network/interfaces
+	install -m 0644 ${WORKDIR}/init ${D}/etc/init.d/networking
+	install -m 0644 ${WORKDIR}/interfaces ${D}/etc/network/interfaces
 }

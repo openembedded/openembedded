@@ -2,9 +2,9 @@ DESCRIPTION = "grand unified bootloader"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz; \
-	   file://${FILESDIR}/autohell.patch;patch=1 \
-	   file://${FILESDIR}/memcpy.patch;patch=1 \
-	   file://${FILESDIR}/reiserfs.patch;patch=1"
+	   file://autohell.patch;patch=1 \
+	   file://memcpy.patch;patch=1 \
+	   file://reiserfs.patch;patch=1"
 
 S = "${WORKDIR}/grub-${PV}"
 

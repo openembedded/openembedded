@@ -1,6 +1,6 @@
 SRC_URI = "cvs://anoncvs@cvs.handhelds.org/cvs;module=gpe/base/esound \
-	   file://${FILESDIR}/audiofile-please.patch;patch=1 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://audiofile-please.patch;patch=1 \
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/esound"
 DEPENDS = "audiofile"
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://unimut.fsk.uni-heidelberg.de/demi/comprec/comprec-${PV}.tar.gz \
-	   file://${FILESDIR}/makefile.patch;patch=1"
+	   file://makefile.patch;patch=1"
 
 export AS = "${TARGET_PREFIX}as"
 

@@ -5,8 +5,8 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
-	 file://${FILESDIR}/configure.patch;patch=1 \
-	 file://${FILESDIR}/m4.patch;patch=1"
+	 file://configure.patch;patch=1 \
+	 file://m4.patch;patch=1"
 S = "${WORKDIR}/psmisc-${PV}"
 
 inherit autotools

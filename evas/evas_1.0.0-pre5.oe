@@ -6,7 +6,8 @@ primitives such as pixmaps, lines and rectangles for speed \
 if your CPU or graphics hardware are too slow."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/evas-1.0.0_pre5.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://pkg.m4"
 S = "${WORKDIR}/evas-1.0.0_pre5"
 
 inherit autotools 
@@ -23,5 +24,5 @@ EXTRA_OECONF = "--enable-fb \
 		--enable-convert-16-rgb-rot-270"
 
 do_configure_prepend () {
-	cp ${FILESDIR}/pkg.m4 acinclude.m4
+	cp ${WORKDIR}/pkg.m4 acinclude.m4
 }

@@ -4,6 +4,6 @@ interdependent files, and, if necessary, issues commands \
 to bring them up-to-date."
 
 SRC_URI = "${GNU_MIRROR}/make/make-${PV}.tar.bz2 \
-	   file://${FILESDIR}/SCCS.patch;patch=1"
+	   file://SCCS.patch;patch=1"
 
 inherit autotools

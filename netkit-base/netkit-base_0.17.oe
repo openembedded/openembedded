@@ -2,8 +2,10 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "netkit-base includes the inetd daemon."
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-base-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/mconfig.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://mconfig.patch;patch=1 \
+           file://init \
+           file://inetd.conf"
 
 EXTRA_OEMAKE = "-C inetd"
 do_compile () {
@@ -13,8 +15,8 @@ do_compile () {
 do_install () {
 	install -d ${D}/${sysconfdir}/init.d ${D}/${sbindir}
 	install -m 0755 inetd/inetd ${D}/${sbindir}/inetd
-	install -m 0755 ${FILESDIR}/init ${D}/${sysconfdir}/init.d/inetd
-	install -m 0644 ${FILESDIR}/inetd.conf ${D}/${sysconfdir}
+	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/inetd
+	install -m 0644 ${WORKDIR}/inetd.conf ${D}/${sysconfdir}
 }
 
 pkg_postinst () {

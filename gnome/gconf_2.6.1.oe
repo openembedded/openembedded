@@ -1,7 +1,7 @@
 SECTION = "gnome/base"
 DESCRIPTION = "GNOME configuration database system"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.6/GConf-${PV}.tar.bz2 \
-	   file://${FILESDIR}/backends.patch;patch=1"
+	   file://backends.patch;patch=1"
 DEPENDS = "orbit2 glib-2.0 gettext"
 
 S = "${WORKDIR}/GConf-${PV}"

@@ -5,7 +5,7 @@ according to a set of rules specified in the config file."
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cpufreqd/cpufreqd-${PV}.tar.gz \
-	   file://${FILESDIR}/nonrootinstall.patch;patch=1"
+	   file://nonrootinstall.patch;patch=1"
 
 inherit autotools 
 

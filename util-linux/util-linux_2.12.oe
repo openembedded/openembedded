@@ -3,15 +3,19 @@ DEPENDS = "virtual/libc zlib ncurses"
 DESCRIPTION = "Util-linux is a suite of essential \
 utilities for any Linux system."
 
-SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz"
+SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz \
+           file://MCONFIG \
+           file://make_include \
+           file://swapargs.h \
+           file://defines.h"
 
 EXTRA_OEMAKE = ""
 do_compile () {
 	set -e
-	install ${FILESDIR}/MCONFIG ${S}/MCONFIG
-	install ${FILESDIR}/make_include ${S}/make_include
-	install ${FILESDIR}/swapargs.h ${S}/mount/swapargs.h
-	install ${FILESDIR}/defines.h ${S}/defines.h
+	install ${WORKDIR}/MCONFIG ${S}/MCONFIG
+	install ${WORKDIR}/make_include ${S}/make_include
+	install ${WORKDIR}/swapargs.h ${S}/mount/swapargs.h
+	install ${WORKDIR}/defines.h ${S}/defines.h
 	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}'

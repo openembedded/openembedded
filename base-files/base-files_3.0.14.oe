@@ -3,60 +3,63 @@ SECTION = "base"
 PRIORITY = "required"
 PR = "r5"
 
-SRC_URI = " file://${FILESDIR}/etc/nsswitch.conf \
-            file://${FILESDIR}/etc/motd \
-            file://${FILESDIR}/etc/issue.net- \
-            file://${FILESDIR}/etc/issue-opensimpad \
-            file://${FILESDIR}/etc/issue.net-opensimpad \
-            file://${FILESDIR}/etc/issue- \
-            file://${FILESDIR}/etc/issue-openzaurus \
-            file://${FILESDIR}/etc/issue.net-openzaurus \
-            file://${FILESDIR}/etc/issue-familiar \
-            file://${FILESDIR}/etc/issue.net-familiar \
-            file://${FILESDIR}/etc/inputrc \
-            file://${FILESDIR}/etc/host.conf \
-            file://${FILESDIR}/etc/profile \
-            file://${FILESDIR}/shepherd/fstab \
-            file://${FILESDIR}/shepherd/hostname \
-            file://${FILESDIR}/epia/fstab \
-            file://${FILESDIR}/h3600/hostname \
-            file://${FILESDIR}/corgi/fstab \
-            file://${FILESDIR}/corgi/hostname \
-            file://${FILESDIR}/fstab \
-            file://${FILESDIR}/husky/fstab \
-            file://${FILESDIR}/husky/hostname \
-            file://${FILESDIR}/share/dot.bashrc \
-            file://${FILESDIR}/share/dot.profile \
-            file://${FILESDIR}/share/info.dir \
-            file://${FILESDIR}/share/motd.md5sums \
-            file://${FILESDIR}/collie/fstab \
-            file://${FILESDIR}/collie/hostname \
-            file://${FILESDIR}/debian/FAQ \
-            file://${FILESDIR}/debian/directory-list \
-            file://${FILESDIR}/debian/control \
-            file://${FILESDIR}/debian/1777-dirs \
-            file://${FILESDIR}/debian/rules \
-            file://${FILESDIR}/debian/conffiles \
-            file://${FILESDIR}/debian/changelog \
-            file://${FILESDIR}/debian/copyright.in \
-            file://${FILESDIR}/debian/postinst \
-            file://${FILESDIR}/debian/README.FHS \
-            file://${FILESDIR}/debian/2775-dirs \
-            file://${FILESDIR}/debian/preinst.in \
-            file://${FILESDIR}/debian/remove-base \
-            file://${FILESDIR}/debian/README.base \
-            file://${FILESDIR}/debian/current-md5sums \
-            file://${FILESDIR}/hostname \
-            file://${FILESDIR}/poodle/fstab \
-            file://${FILESDIR}/poodle/hostname \
-            file://${FILESDIR}/ramses/fstab \
-            file://${FILESDIR}/ramses/hostname \
-            file://${FILESDIR}/simpad/hostname \
-            file://${FILESDIR}/licenses/BSD \
-            file://${FILESDIR}/licenses/GPL-2 \
-            file://${FILESDIR}/licenses/LGPL-2 \
-            file://${FILESDIR}/licenses/LGPL-2.1 \
-            file://${FILESDIR}/licenses/Artistic"
+SRC_URI = " \
+           file://etc/nsswitch.conf \
+           file://etc/motd \
+           file://etc/issue.net- \
+           file://etc/issue-opensimpad \
+           file://etc/issue.net-opensimpad \
+           file://etc/issue- \
+           file://etc/issue-openzaurus \
+           file://etc/issue.net-openzaurus \
+           file://etc/issue-familiar \
+           file://etc/issue.net-familiar \
+           file://etc/inputrc \
+           file://etc/host.conf \
+           file://etc/profile \
+           file://shepherd/fstab \
+           file://shepherd/hostname \
+           file://epia/fstab \
+           file://h3600/hostname \
+           file://corgi/fstab \
+           file://corgi/hostname \
+           file://fstab \
+           file://husky/fstab \
+           file://husky/hostname \
+           file://share/dot.bashrc \
+           file://share/dot.profile \
+           file://share/info.dir \
+           file://share/motd.md5sums \
+           file://collie/fstab \
+           file://collie/hostname \
+           file://debian/FAQ \
+           file://debian/directory-list \
+           file://debian/control \
+           file://debian/1777-dirs \
+           file://debian/rules \
+           file://debian/conffiles \
+           file://debian/changelog \
+           file://debian/copyright.in \
+           file://debian/postinst \
+           file://debian/README.FHS \
+           file://debian/2775-dirs \
+           file://debian/preinst.in \
+           file://debian/remove-base \
+           file://debian/README.base \
+           file://debian/current-md5sums \
+           file://hostname \
+           file://poodle/fstab \
+           file://poodle/hostname \
+           file://ramses/fstab \
+           file://ramses/hostname \
+           file://simpad/hostname \
+           file://licenses/BSD \
+           file://licenses/GPL-2 \
+           file://licenses/LGPL-2 \
+           file://licenses/LGPL-2.1 \
+           file://licenses/Artistic \
+           file://etc/issue-${DISTRO} \
+           file://etc/issue.net-${DISTRO}"
 S = "${WORKDIR}"
 
 docdir_append = "/${P}"
@@ -91,8 +94,8 @@ do_install () {
     oe_machinstall -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
     oe_machinstall -m 0644 ${WORKDIR}/hostname ${D}/${sysconfdir}/hostname
     oe_machinstall -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
-    install -m 0644 ${FILESDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
-    install -m 0644 ${FILESDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
+    install -m 0644 ${WORKDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
+    install -m 0644 ${WORKDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
     cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
     for f in inputrc nsswitch.conf host.conf profile
     do
@@ -132,4 +135,3 @@ do_install () {
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
 FILES_${PN}-doc = "/usr/share/doc /usr/share/common-licenses"
-

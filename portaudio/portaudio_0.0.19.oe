@@ -5,7 +5,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
-	   file://${FILESDIR}/flags.patch;patch=1"
+	   file://flags.patch;patch=1"
 S = "${WORKDIR}/portaudio"
 
 inherit autotools  pkgconfig

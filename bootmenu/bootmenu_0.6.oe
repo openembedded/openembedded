@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "Pluginable bootup menu."
 
 SRC_URI = "http://www.cosmicpenguin.net/pub/bootmenu/bootmenu-${PV}.tar.gz \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://compile.patch;patch=1"
 
 EXTRA_OEMAKE = ""
 

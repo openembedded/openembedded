@@ -3,14 +3,15 @@ DEPENDS = "virtual/libc expat openssl"
 DESCRIPTION = "A high performance Unix-based HTTP server."
 
 SRC_URI = "http://ftp.epix.net/apache/httpd/httpd-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/pcre-configure.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://pcre-configure.patch;patch=1 \
+           file://init"
 S = "${WORKDIR}/httpd-${PV}"
 
 basesysconfdir := "${sysconfdir}"
 sysconfdir = "/etc/apache"
 
-inherit autotools 
+inherit autotools
 
 FILES_${PN}="${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 	     ${libdir}/*/ ${basesysconfdir} ${sharedstatedir} ${localstatedir} \
@@ -57,7 +58,7 @@ do_compile () {
 do_install_append () {
 	set -x
 	install -d ${D}/${basesysconfdir}/init.d
-	cat ${FILESDIR}/init | \
+	cat ${WORKDIR}/init | \
 		sed -e 's,/usr/sbin/,${sbindir}/,g; \
 			s,/usr/bin/,${bindir}/,g; \
 			s,/usr/lib,${libdir}/,g; \

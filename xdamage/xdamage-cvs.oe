@@ -6,7 +6,7 @@ PROVIDES = "xdamage"
 DESCRIPTION = "X Damage extension library."
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdamage \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://m4.patch;patch=1"
 S = "${WORKDIR}/Xdamage"
 
 inherit autotools pkgconfig 

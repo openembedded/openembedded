@@ -3,8 +3,8 @@ DESCRIPTION = " udev is a program which dynamically creates and removes device n
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://${FILESDIR}/flags.patch;patch=1 \
-	   file://${FILESDIR}/sh-not-bash.patch;patch=1"
+	   file://flags.patch;patch=1 \
+	   file://sh-not-bash.patch;patch=1"
 
 bindir = "/bin"
 sbindir = "/sbin"

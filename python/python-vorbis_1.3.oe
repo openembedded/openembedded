@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc libvorbis python-ogg"
 SRCNAME = "pyvorbis"
 
 SRC_URI = "http://www.andrewchatham.com/pyogg/download/${SRCNAME}-${PV}.tar.gz \
-           file://${FILESDIR}/disable-oggcheck.patch;patch=1"
+           file://disable-oggcheck.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

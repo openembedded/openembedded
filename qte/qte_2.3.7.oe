@@ -7,21 +7,21 @@ PROVIDES = "virtual/qte virtual/libqte2"
 PR = "3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
-	   file://${FILESDIR}/qpe.patch;patch=1 \
-	   file://${FILESDIR}/tslib.patch;patch=1 \
-	   file://${FILESDIR}/devfs.patch;patch=1 \
-	   file://${FILESDIR}/no-moc.patch;patch=1 \
-	   file://${FILESDIR}/update-qtfontdir \
-	   file://${FILESDIR}/sharp_char.h "
+	   file://qpe.patch;patch=1 \
+	   file://tslib.patch;patch=1 \
+	   file://devfs.patch;patch=1 \
+	   file://no-moc.patch;patch=1 \
+	   file://update-qtfontdir \
+	   file://sharp_char.h "
 
 #
 # FIXME: Apply the SIMpad hardware patch for SIMpad.
 #
-#SRC_URI_append_simpad = "file://${FILESDIR}/simpad.patch;patch=1 "
+#SRC_URI_append_simpad = "file://simpad.patch;patch=1 "
 #
 # FIXME: Apply the C7xx hardware patch for shepherd/husky/boxer
 #
-#SRC_URI_append_<machine> = "file://${FILESDIR}/c700-hardware.patch;patch=1 "
+#SRC_URI_append_<machine> = "file://c700-hardware.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 

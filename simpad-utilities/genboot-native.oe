@@ -1,0 +1,14 @@
+DESCRIPTION = "Console utility for generating a SIMpad boot image for the proprietary SIEMENS Switzerland bootloader"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/genboot"
+
+inherit native
+
+do_compile() {
+	cp ${WORKDIR}/*.h ${WORKDIR}/*.c .
+	${CC} -I. -o genboot gen_boot.c 
+}
+
+do_stage() {
+	install -m 0755 genboot ${STAGING_BINDIR}/
+	install -m 0755 ${WORKDIR}/simpad-make-flashimg ${STAGING_BINDIR}/
+}

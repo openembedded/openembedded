@@ -5,13 +5,14 @@ It replaces the ubiquitous *-config scripts you may have \
 seen with a single tool."
 
 SRC_URI = "http://www.freedesktop.org/software/pkgconfig/releases/pkgconfig-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://glibconfig-sysdefs.h"
 
 inherit autotools 
 
 acpaths = "-I ."
 do_configure_prepend () {
-	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h glib-1.2.8/
+	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h glib-1.2.8/
 }
 
 do_stage_append() {

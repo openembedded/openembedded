@@ -3,7 +3,7 @@ DESCRIPTION = "frame buffer image viewer"
 DEPENDS = "virtual/libc jpeg"
 
 SRC_URI = "http://bytesex.org/misc/fbi_${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools
 

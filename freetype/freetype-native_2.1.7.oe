@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools pkgconfig native
 DEPENDS = "patcher-native"

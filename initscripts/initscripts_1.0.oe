@@ -5,35 +5,56 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 
-SRC_URI = "file://${FILESDIR}/halt \
-	   file://${FILESDIR}/ramdisk \
-	   file://${FILESDIR}/umountfs \
-	   file://${FILESDIR}/devices \
-	   file://${FILESDIR}/h3600/devices \
-	   file://${FILESDIR}/devpts.sh \
-	   file://${FILESDIR}/devpts \
-	   file://${FILESDIR}/bootlogo-simpad.gz \
-	   file://${FILESDIR}/hostname.sh \
-	   file://${FILESDIR}/mountall.sh \
-	   file://${FILESDIR}/banner \
-	   file://${FILESDIR}/finish \
-	   file://${FILESDIR}/bootmisc.sh \
-	   file://${FILESDIR}/mountnfs.sh \
-	   file://${FILESDIR}/ramses/umountfs \
-	   file://${FILESDIR}/ramses/extractfs \
-	   file://${FILESDIR}/reboot \
-	   file://${FILESDIR}/checkfs.sh \
-	   file://${FILESDIR}/simpad/devices \
-	   file://${FILESDIR}/simpad/banner \
-	   file://${FILESDIR}/single \
-	   file://${FILESDIR}/sendsigs \
-	   file://${FILESDIR}/packages \
-	   file://${FILESDIR}/urandom \
-	   file://${FILESDIR}/rmnologin \
-	   file://${FILESDIR}/extractfs \
-	   file://${FILESDIR}/checkroot.sh \
-	   file://${FILESDIR}/umountnfs.sh \
-	   file://${FILESDIR}/device_table.txt"
+SRC_URI = "file://halt \
+           file://ramdisk \
+           file://umountfs \
+           file://devices \
+           file://h3600/devices \
+           file://devpts.sh \
+           file://devpts \
+           file://bootlogo-simpad.gz \
+           file://hostname.sh \
+           file://mountall.sh \
+           file://banner \
+           file://finish \
+           file://bootmisc.sh \
+           file://mountnfs.sh \
+           file://ramses/umountfs \
+           file://ramses/extractfs \
+           file://reboot \
+           file://checkfs.sh \
+           file://simpad/devices \
+           file://simpad/banner \
+           file://single \
+           file://sendsigs \
+           file://packages \
+           file://urandom \
+           file://rmnologin \
+           file://extractfs \
+           file://checkroot.sh \
+           file://umountnfs.sh \
+           file://device_table.txt \
+           file://bootmisc.sh \
+           file://checkroot.sh \
+           file://finish \
+           file://halt \
+           file://hostname.sh \
+           file://mountall.sh \
+           file://mountnfs.sh \
+           file://packages \
+           file://reboot \
+           file://rmnologin \
+           file://sendsigs \
+           file://single \
+           file://umountnfs.sh \
+           file://devpts.sh \
+           file://devpts \
+           file://sysfs.sh \
+           file://banner \
+           file://devices \
+           file://extractfs \
+           file://umountfs \
+           file://device_table.txt"
 
 
 do_install () {
@@ -50,30 +71,30 @@ do_install () {
 		   ${D}/${sysconfdir}/rc5.d \
 		   ${D}/${sysconfdir}/rc6.d \
 		   ${D}/${sysconfdir}/default
-	install -m 0755    ${FILESDIR}/bootmisc.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/checkroot.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/finish		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/halt		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/hostname.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/mountall.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/mountnfs.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/packages		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/reboot		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/rmnologin	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/sendsigs		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/single		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/umountnfs.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/checkroot.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/finish		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/halt		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/hostname.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/mountall.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/mountnfs.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/packages		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/reboot		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/rmnologin	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/sendsigs		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/single		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}/etc/init.d
 #	install -m 0755    ${FILESDIR}/urandom		${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/devpts.sh	${D}/etc/init.d
-	install -m 0755    ${FILESDIR}/devpts		${D}/etc/default
-	install -m 0755    ${FILESDIR}/sysfs.sh		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/devpts.sh	${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/devpts		${D}/etc/default
+	install -m 0755    ${WORKDIR}/sysfs.sh		${D}/etc/init.d
 #
 # Install device dependent scripts
 #
-	oe_machinstall -m 0755 ${FILESDIR}/banner	${D}/etc/init.d/banner
-	oe_machinstall -m 0755 ${FILESDIR}/devices	${D}/etc/init.d/devices
-	oe_machinstall -m 0755 ${FILESDIR}/extractfs	${D}/etc/init.d/extractfs
-	oe_machinstall -m 0755 ${FILESDIR}/umountfs	${D}/etc/init.d/umountfs
+	oe_machinstall -m 0755 ${WORKDIR}/banner	${D}/etc/init.d/banner
+	oe_machinstall -m 0755 ${WORKDIR}/devices	${D}/etc/init.d/devices
+	oe_machinstall -m 0755 ${WORKDIR}/extractfs	${D}/etc/init.d/extractfs
+	oe_machinstall -m 0755 ${WORKDIR}/umountfs	${D}/etc/init.d/umountfs
 #
 # Create runlevel links
 #
@@ -107,5 +128,5 @@ do_install () {
 	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S31devpts.sh
 #	ln -sf		../init.d/ramdisk	${D}/etc/rcS.d/S30ramdisk
 
-	install -m 0755    ${FILESDIR}/device_table.txt		${D}/etc/device_table
+	install -m 0755    ${WORKDIR}/device_table.txt		${D}/etc/device_table
 }

@@ -3,7 +3,7 @@ DESCRIPTION = "Vim is an almost fully-compatible \
 version of the Unix editor Vi."
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/vim62/src"
 
 inherit autotools

@@ -5,8 +5,8 @@ Open Source framework for the layout and rendering of \
 internationalized text."
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/pango-${PV}.tar.bz2 \
-	   file://${FILESDIR}/gtk-doc.patch;patch=1 \
-	   file://${FILESDIR}/no-tests.patch;patch=1"
+	   file://gtk-doc.patch;patch=1 \
+	   file://no-tests.patch;patch=1"
 
 inherit autotools  pkgconfig
 

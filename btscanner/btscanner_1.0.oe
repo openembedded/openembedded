@@ -5,6 +5,6 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libbluetooth virtual/libsdp gdbm ncurses"
 
 SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools

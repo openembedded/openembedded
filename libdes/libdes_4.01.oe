@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.agentpp.com/libdes-l-${PV}.tar.gz \
-           file://${FILESDIR}/cross-compile.patch;patch=1"
+           file://cross-compile.patch;patch=1"
 S = "${WORKDIR}/libdes"
 
 do_compile() {

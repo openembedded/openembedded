@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "Utility for viewing function call flow."
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/devel/lang/c/cflow-${PV}.tar.gz \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://compile.patch;patch=1"
 
 do_install () {
 	install -d ${D}/${bindir}

@@ -11,9 +11,12 @@ functionality and behave very much like their GNU counterparts. BusyBox \
 provides a fairly complete POSIX environment for any small or embedded \
 system."
 
-#	file://${FILESDIR}/busybox-1.00-pre10-fuser.patch;patch=1
+#	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
-	file://${FILESDIR}/bb-iproute-iftunnel.patch;patch=1"
+           file://bb-iproute-iftunnel.patch;patch=1 \
+           file://defconfig \
+           file://syslog \
+           file://hwclock.sh"
 S = "${WORKDIR}/busybox-${PV}"
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
@@ -22,7 +25,7 @@ FILES_${PN} += " ${datadir}/udhcpc"
 inherit cml1
 
 do_configure () {
-	install -m 0644 ${FILESDIR}/defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 	cml1_do_configure
 }
 
@@ -34,8 +37,8 @@ do_compile () {
 do_install () {
 	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
-	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
-	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
+	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/syslog
+	install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
 	install -d ${D}${datadir}/udhcpc
 	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
 }

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.cinlug.org/modules/Static_Docs/data/db/zgs/zgscore_${PV}_arm.src.tar.gz \
-           file://${FILESDIR}/qtopia17.patch;patch=1"
+           file://qtopia17.patch;patch=1"
 S = "${WORKDIR}/zgscore-src"
 
 inherit palmtop

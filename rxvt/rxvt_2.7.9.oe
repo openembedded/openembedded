@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc x11 xft"
 DESCRIPTION = "Well known terminal emulator"
 
 SRC_URI = "pserver://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/rxvt \
-	   file://${FILESDIR}/include.patch;patch=1"
+	   file://include.patch;patch=1"
 
 inherit autotools 
 

@@ -1,0 +1,7 @@
+SRC_URI = "file://header-c700.bin \
+           file://header-c700.bin"
+
+do_stage() {
+	mkdir -p ${STAGING_LIBDIR}/sharp-flash-header
+	cp -a ${WORKDIR}/header-c700.bin ${STAGING_LIBDIR}/sharp-flash-header/header-c700.bin
+}

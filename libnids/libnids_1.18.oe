@@ -4,7 +4,7 @@ into TCP streams, IP defragmentation, and TCP port \
 scan detection."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools
 

@@ -4,13 +4,14 @@ DEPENDS = "virtual/libc zlib tremor libmad libid3tag libsidplay glib-2.0 virtual
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
-	file://${FILESDIR}/bogusincdir.patch;patch=1 \
-	file://${FILESDIR}/gtkremoval.patch;patch=1 \
-	file://${FILESDIR}/removenativeincdir.patch;patch=1 \
-	file://${FILESDIR}/removemikmod.patch;patch=1 \
-	file://${FILESDIR}/glib2.patch;patch=1 \
-	file://${FILESDIR}/tremorlib.patch;patch=1 \
-	file://${FILESDIR}/bufferdefaults.patch;patch=1"
+           file://bogusincdir.patch;patch=1 \
+           file://gtkremoval.patch;patch=1 \
+           file://removenativeincdir.patch;patch=1 \
+           file://removemikmod.patch;patch=1 \
+           file://glib2.patch;patch=1 \
+           file://tremorlib.patch;patch=1 \
+           file://bufferdefaults.patch;patch=1 \
+           file://xmms.png"
 
 S = "${WORKDIR}/xmms-embedded"
 
@@ -33,7 +34,7 @@ do_install() {
                ${D}/${palmtopdir}/apps/Applications \
                ${D}/${palmtopdir}/pics
     install -m 0644 xmms/General/QPEgui/xmms.desktop ${D}/${palmtopdir}/apps/Applications/xmms.desktop
-    install -m 0644 ${FILESDIR}/xmms.png ${D}/${palmtopdir}/pics/xmms.png
+    install -m 0644 ${WORKDIR}/xmms.png ${D}/${palmtopdir}/pics/xmms.png
     install -m 0755 compiled/bin/xmms ${D}/${palmtopdir}/bin/xmms
     oe_libinstall -so -C compiled libxmms ${D}/${palmtopdir}/lib
     oe_libinstall -so -C compiled/xmms/General libQPEgui ${D}/${palmtopdir}/lib/xmms/General

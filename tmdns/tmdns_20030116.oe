@@ -2,9 +2,9 @@ DEPENDS = "virtual/libc"
 DESCRIPTION = "tmdns is a multicast DNS server."
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/zeroconf;module=tmdns;date=${PV} \
-	   file://${FILESDIR}/install-init.d.patch;patch=1 \
-	   file://${FILESDIR}/busybox-init.d.patch;patch=1 \
-	   file://${FILESDIR}/char-signed-idiocy.patch;patch=1"
+	   file://install-init.d.patch;patch=1 \
+	   file://busybox-init.d.patch;patch=1 \
+	   file://char-signed-idiocy.patch;patch=1"
 S = "${WORKDIR}/tmdns"
 
 inherit autotools

@@ -6,10 +6,10 @@ DEPENDS = "virtual/libc "
 FILES_e2fsprogs-libs-dev_append = " ${datadir}/et ${datadir}/ss"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/compile-subst.patch;patch=1 \
-	   file://${FILESDIR}/m4.patch;patch=1 \
-	   file://${FILESDIR}/ldflags.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://compile-subst.patch;patch=1 \
+	   file://m4.patch;patch=1 \
+	   file://ldflags.patch;patch=1"
 
 inherit autotools
 

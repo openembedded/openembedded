@@ -3,7 +3,7 @@ DEPENDS = "virtual/libc gmp"
 FILES_freeswan_append = " ${libdir}/ipsec"
 
 SRC_URI = "ftp://ftp.xs4all.nl/pub/crypto/freeswan/old/freeswan-${PV}.tar.gz \
-	   file://${FILESDIR}/flags.patch;patch=1"
+	   file://flags.patch;patch=1"
 
 S = "${WORKDIR}/freeswan-${PV}"
 

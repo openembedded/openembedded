@@ -2,8 +2,9 @@ DEPENDS = "virtual/libc openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.tar.gz \
-	   file://${FILESDIR}/ldflags.patch;patch=1 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+           file://ldflags.patch;patch=1 \
+           file://configure.patch;patch=1 \
+           file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-2.60"
 
 inherit autotools
@@ -18,5 +19,5 @@ do_install () {
 		   'bindir=${D}/${bindir}' 'mandir=${D}/${mandir}' \
 		   'etcdir=${D}/${sysconfdir}' GEN_CONFIG="`which echo`" install
 	install -d ${D}/${sysconfdir}/ssmtp
-	install -m 0644 ${FILESDIR}/ssmtp.conf ${D}/${sysconfdir}/ssmtp/ssmtp.conf
+	install -m 0644 ${WORKDIR}/ssmtp.conf ${D}/${sysconfdir}/ssmtp/ssmtp.conf
 }

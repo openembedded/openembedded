@@ -3,7 +3,7 @@ DESCRIPTION = "binary vi (binary file editor)"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bvi/bvi-${PV}.src.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1 \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://compile.patch;patch=1"
 
 inherit autotools

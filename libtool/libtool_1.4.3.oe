@@ -6,10 +6,10 @@ the complexity of generating special library types (such as shared \
 libraries) behind a consistent interface."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libt/libtool/libtool_${PV}.orig.tar.gz \
-	   file://${FILESDIR}/debian.patch;patch=1 \
-	   file://${FILESDIR}/libdir.patch;patch=1 \
-	   file://${FILESDIR}/sedvar.patch;patch=1 \
-	   file://${FILESDIR}/libtoolize-staging.patch;patch=1"
+	   file://debian.patch;patch=1 \
+	   file://libdir.patch;patch=1 \
+	   file://sedvar.patch;patch=1 \
+	   file://libtoolize-staging.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
 inherit autotools

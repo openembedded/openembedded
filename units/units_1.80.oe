@@ -2,8 +2,8 @@ DEPENDS = "virtual/libc readline"
 DESCRIPTION = "GNU units converts between different systems of units."
 
 SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \
-	   file://${FILESDIR}/units.c.patch;patch=1 \
-	   file://${FILESDIR}/makefile.patch;patch=1"
+	   file://units.c.patch;patch=1 \
+	   file://makefile.patch;patch=1"
 
 inherit autotools
 

@@ -8,7 +8,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
-	   file://${FILESDIR}/signalnamespace.patch;patch=1"
+	   file://signalnamespace.patch;patch=1"
 
 inherit autotools 
 

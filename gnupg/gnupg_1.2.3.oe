@@ -3,7 +3,7 @@ MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "virtual/libc zlib"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-${PV}.tar.bz2 \
-           file://${FILESDIR}/m4.patch;patch=1"
+           file://m4.patch;patch=1"
 
 inherit autotools
 

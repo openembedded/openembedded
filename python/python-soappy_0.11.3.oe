@@ -6,7 +6,8 @@ RDEPENDS = "python-core python-xml python-fpconst"
 DEPENDS = "virtual/libc"
 SRCNAME = "SOAPpy"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/pywebsvcs/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pywebsvcs/${SRCNAME}-${PV}.tar.gz \
+           file://fpconst.py"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
@@ -14,5 +15,5 @@ inherit distutils
 # *cough*, yes this is a bit hackish.. but for now ;)
 
 do_compile_prepend() {
-	install -m 0644 ${FILESDIR}/fpconst.py ${S}/SOAPpy/fpconst.py
+	install -m 0644 ${WORKDIR}/fpconst.py ${S}/SOAPpy/fpconst.py
 }

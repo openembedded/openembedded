@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc virtual/libqpe"
 
 SRC_URI = "http://cumulus.kflog.org/download/src/cumulus-${PV}.src.tar.bz2 \
-           file://${FILESDIR}/qtooltip.patch;patch=1"
+           file://qtooltip.patch;patch=1"
 S = "${WORKDIR}/cumulus-arm-${PV}"
 
 inherit palmtop

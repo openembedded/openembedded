@@ -10,9 +10,11 @@ PR = "3"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/launcher;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}                     \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root;date=${CVSDATE}"
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root;date=${CVSDATE} \
+           file://server.pro \
+           file://opie-reorgfiles"
 
 S = "${WORKDIR}/launcher"
 
@@ -24,7 +26,7 @@ INITSCRIPT_PARAMS = "defaults 99"
 do_configure_prepend() {
 	ln -s ${WORKDIR}/calibrate ${S}/calibrate
 	ln -s ${WORKDIR}/mediummount ${S}/mediummount
-	install -m 0644 ${FILESDIR}/server.pro ${S}/server.pro
+	install -m 0644 ${WORKDIR}/server.pro ${S}/server.pro
 }
 
 do_install() {
@@ -34,7 +36,7 @@ do_install() {
 		   ${D}/${palmtopdir}/pics/launcher \
 		   ${D}/etc/init.d
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
-	install -m 0755 ${FILESDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
+	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/calibrate.desktop
 	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
 	install -m 0755 ${WORKDIR}/root/etc/init.d/opie ${D}/etc/init.d/opie

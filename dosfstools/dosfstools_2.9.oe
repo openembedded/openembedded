@@ -5,8 +5,8 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
-	   file://${FILESDIR}/alignment_hack.patch;patch=1 \
-	   file://${FILESDIR}/mkdosfs-errno.patch;patch=1"
+	   file://alignment_hack.patch;patch=1 \
+	   file://mkdosfs-errno.patch;patch=1"
 
 do_install () {
 	oe_runmake "PREFIX=${D}" "SBINDIR=${D}/${sbindir}" \

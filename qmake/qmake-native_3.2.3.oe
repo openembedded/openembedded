@@ -5,7 +5,7 @@ LICENSE = "GPL/QPL"
 
 SRC_URI = \
 	"ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2 \
-	file://${FILESDIR}/linux-oe-qmake.conf"
+	file://linux-oe-qmake.conf"
 
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 

@@ -3,7 +3,7 @@ DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools 
 

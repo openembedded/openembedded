@@ -5,7 +5,7 @@ portable framework for low-level network packet shaping, \
 handling, and injection."
 
 SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/Libnet-${PV}"
 
 inherit autotools

@@ -1,7 +1,8 @@
 DEPENDS = "virtual/libc"
 DESCRIPTION = "A daemon for delivering ACPI events."
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz \
+           file://init"
 
 EXTRA_OEMAKE = ""
 do_compile () {
@@ -11,7 +12,7 @@ do_compile () {
 do_install () {
 	oe_runmake 'INSTPREFIX=${D}' install
 	install -d ${D}/${sysconfdir}/init.d
-	cat ${FILESDIR}/init | sed -e's,/usr/sbin,${sbindir},g' > ${D}/${sysconfdir}/init.d/acpid
+	cat ${WORKDIR}/init | sed -e's,/usr/sbin,${sbindir},g' > ${D}/${sysconfdir}/init.d/acpid
 	chmod 755 ${D}/${sysconfdir}/init.d/acpid
 }
 

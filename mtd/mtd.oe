@@ -4,8 +4,8 @@ PV = "${CVSDATE}"
 
 S = "${WORKDIR}/mtd/"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd \
-           file://${FILESDIR}/stdint.patch;patch=1;pnum=0 \
-           file://${FILESDIR}/removelinuxinc.patch;patch=1;pnum=1"
+           file://stdint.patch;patch=1;pnum=0 \
+           file://removelinuxinc.patch;patch=1;pnum=1"
 
 CFLAGS_prepend = "-I${S}/include "
 

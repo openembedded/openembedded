@@ -5,7 +5,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "virtual/libc ncurses"
 
 SRC_URI = "http://thekonst.net/download/orpheus-${PV}.tar.bz2 \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://m4.patch;patch=1"
 S = "${WORKDIR}/orpheus-${PV}"
 
 inherit autotools

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-3.3.2.tar.bz2 \
-	   file://${FILESDIR}/no-examples.patch;patch=1"
+	   file://no-examples.patch;patch=1"
 
 S = "${WORKDIR}/qt-embedded-free-3.3.2"
 

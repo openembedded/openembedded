@@ -4,7 +4,7 @@ that multiplexes a physical terminal between several \
 processes, typically interactive shells."
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 inherit autotools
 

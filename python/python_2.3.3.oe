@@ -5,11 +5,11 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libc python-native"
 
 SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
-	   file://${FILESDIR}/bindir-libdir.patch;patch=1 \
-	   file://${FILESDIR}/crosscompile.patch;patch=1 \
-	   file://${FILESDIR}/autohell.patch;patch=1"
-#	  file://${FILESDIR}/crosscompile-hotshot.patch;patch=1 \
-#	  file://${FILESDIR}/crosscompile-socket.patch;patch=1
+	   file://bindir-libdir.patch;patch=1 \
+	   file://crosscompile.patch;patch=1 \
+	   file://autohell.patch;patch=1"
+#	  file://crosscompile-hotshot.patch;patch=1 \
+#	  file://crosscompile-socket.patch;patch=1
 
 S = "${WORKDIR}/Python-${PV}"
 

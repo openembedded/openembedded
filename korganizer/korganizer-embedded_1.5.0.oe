@@ -5,7 +5,7 @@ LICENSE="GPL"
 DEPENDS="virtual/libc virtual/libqpe uicmoc-native"
 
 SRC_URI = "http://korganizer.kde.org/files/korganizerPi.150.source.tar.gz \
-	file://${FILESDIR}/qmaketarget.patch;patch=1"
+	file://qmaketarget.patch;patch=1"
 	
 S = "${WORKDIR}/korgenizerPi.150"
 

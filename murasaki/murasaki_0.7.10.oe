@@ -4,7 +4,7 @@ USB, Cardbus, and other hot-pluggable devices using the new Hotplug \
 feature in Linux 2.4."
 
 SRC_URI = "http://www.dotaster.com/~shuu/linux/murasaki/${PV}/murasaki-${PV}.tar.gz \
-	   file://${FILESDIR}/install.patch;patch=1"
+	   file://install.patch;patch=1"
 
 do_compile () {
 	unset CFLAGS

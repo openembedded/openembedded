@@ -3,7 +3,7 @@ for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-hotplug/hotplug-2003_05_01.tar.gz \
-	   file://${FILESDIR}/busybox.patch;patch=1"
+	   file://busybox.patch;patch=1"
 S = "${WORKDIR}/hotplug-2003_05_01"
 
 do_compile () {

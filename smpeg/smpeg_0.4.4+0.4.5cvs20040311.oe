@@ -8,8 +8,8 @@ player for Linux based on the mpeg_play and SPLAY \
 MPEG decoders."
 
 SRC_URI = "cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;date=20040311 \
-	   file://${FILESDIR}/m4.patch;patch=1 \
-	   file://${FILESDIR}/compile.patch;patch=1"
+	   file://m4.patch;patch=1 \
+	   file://compile.patch;patch=1"
 S = "${WORKDIR}/smpeg"
 
 inherit autotools 

@@ -4,13 +4,15 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "virtual/libc libtool-cross"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
 
-SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz;"
-SRC_URI_append =" file://${FILESDIR}/apmd_${PV}-3.diff;patch=1"
-SRC_URI_append =" file://${FILESDIR}/workaround.patch;patch=1"
-SRC_URI_append =" file://${FILESDIR}/conf.patch;patch=1"
-SRC_URI_append =" file://${FILESDIR}/proxy.patch;patch=1"
-SRC_URI_append =" file://${FILESDIR}/compile.patch;patch=1"
-SRC_URI_append =" file://${FILESDIR}/make.patch;patch=1"
+SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
+           file://apmwrapper \
+           file://init"
+SRC_URI_append =" file://apmd_${PV}-3.diff;patch=1"
+SRC_URI_append =" file://workaround.patch;patch=1"
+SRC_URI_append =" file://conf.patch;patch=1"
+SRC_URI_append =" file://proxy.patch;patch=1"
+SRC_URI_append =" file://compile.patch;patch=1"
+SRC_URI_append =" file://make.patch;patch=1"
 
 S = "${WORKDIR}/apmd-${PV}.orig"
 
@@ -38,14 +40,14 @@ do_install() {
 	install -d ${D}/${libdir}
 	install -d ${D}/${datadir}/apmd
 	install -m 4755 ${S}/.libs/apm ${D}/${bindir}/apm.orig
-	install -m 0755 ${FILESDIR}/apmwrapper ${D}/${bindir}/apm
+	install -m 0755 ${WORKDIR}/apmwrapper ${D}/${bindir}/apm
 	install -m 0755 ${S}/.libs/apmd ${D}/${sbindir}/apmd
 	install -m 0755 ${S}/debian/apmd_proxy ${D}/${sysconfdir}/apm/
 	install -m 0644 ${S}/debian/apmd_proxy.conf ${D}/${datadir}/apmd/
 	install -m 0644 ${S}/debian/apmd.default ${D}/${sysconfdir}/default/apmd
 	oe_libinstall -so libapm ${D}/${libdir}
 
-	cat ${FILESDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}/${sysconfdir}/init.d/apmd
+	cat ${WORKDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}/${sysconfdir}/init.d/apmd
 	chmod 755 ${D}/${sysconfdir}/init.d/apmd
 }
 

@@ -4,7 +4,7 @@ DEPENDS = "virtual/libc libmatchbox x11 xext xcomposite xfixes xdamage xrender"
 RDEPENDS = "libmatchbox"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/${PV}/matchbox-window-manager-${PV}.tar.bz2 \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://m4.patch;patch=1"
 S = "${WORKDIR}/matchbox-window-manager-${PV}"
 
 inherit autotools  pkgconfig

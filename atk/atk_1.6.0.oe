@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/atk-${PV}.tar.bz2 \
-	   file://${FILESDIR}/gtk-doc.patch;patch=1"
+	   file://gtk-doc.patch;patch=1"
 
 inherit autotools  pkgconfig
 

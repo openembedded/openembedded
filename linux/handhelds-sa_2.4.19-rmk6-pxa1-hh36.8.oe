@@ -10,7 +10,7 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')}    \
            \
-           file://${FILESDIR}/mkdep.patch;patch=1"
+           file://mkdep.patch;patch=1"
 
 S = "${WORKDIR}/kernel"
 

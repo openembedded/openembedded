@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for the SHARP CG-AG06 digital compact flash camera for lin
 SECTION = "base"
 PRIORITY = "optional"
 
-SRC_URI = "file://${FILESDIR}/sharp-camera-2.4.18.tar.gz"
+SRC_URI = "file://sharp-camera-2.4.18.tar.gz"
 S = "${WORKDIR}/sharp-camera"
 
 do_install() {

@@ -3,7 +3,7 @@ DESCRIPTION = "Flex is a tool for generating programs \
 that recognize lexical patterns in text."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lex/flex-${PV}.tar.bz2 \
-	   file://${FILESDIR}/include.patch;patch=1"
+	   file://include.patch;patch=1"
 
 inherit autotools
 

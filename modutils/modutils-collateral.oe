@@ -3,27 +3,27 @@ DESCRIPTION = "modutils configuration files"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 
 SRC_URI = "\
-		file://${FILESDIR}/shepherd/modules		\
-		file://${FILESDIR}/shepherd/modules.conf	\
-		file://${FILESDIR}/h3600/modules		\
-		file://${FILESDIR}/h3600/modules.conf		\
-		file://${FILESDIR}/corgi/modules		\
-		file://${FILESDIR}/corgi/modules.conf		\
-		file://${FILESDIR}/husky/modules		\
-		file://${FILESDIR}/husky/modules.conf		\
-		file://${FILESDIR}/modutils-notest.patch	\
-		file://${FILESDIR}/modutils			\
-		file://${FILESDIR}/collie/modules		\
-		file://${FILESDIR}/collie/modules.conf		\
-		file://${FILESDIR}/configure.patch		\
-		file://${FILESDIR}/poodle/modules		\
-		file://${FILESDIR}/poodle/modules.conf		\
-		file://${FILESDIR}/ramses/modules		\
-		file://${FILESDIR}/ramses/modules-ramses	\
-		file://${FILESDIR}/ramses/modules.conf		\
-		file://${FILESDIR}/simpad/modules		\
-		file://${FILESDIR}/simpad/modules.conf		\
-		file://${FILESDIR}/program_prefix.patch"
+		file://shepherd/modules		\
+		file://shepherd/modules.conf	\
+		file://h3600/modules		\
+		file://h3600/modules.conf		\
+		file://corgi/modules		\
+		file://corgi/modules.conf		\
+		file://husky/modules		\
+		file://husky/modules.conf		\
+		file://modutils-notest.patch	\
+		file://modutils			\
+		file://collie/modules		\
+		file://collie/modules.conf		\
+		file://configure.patch		\
+		file://poodle/modules		\
+		file://poodle/modules.conf		\
+		file://ramses/modules		\
+		file://ramses/modules-ramses	\
+		file://ramses/modules.conf		\
+		file://simpad/modules		\
+		file://simpad/modules.conf		\
+		file://program_prefix.patch"
 
 INITSCRIPT_NAME = "modutils"
 INITSCRIPT_PARAMS = "start 20 S ."

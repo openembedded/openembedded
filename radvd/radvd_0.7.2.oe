@@ -2,7 +2,7 @@ DESCRIPTION = "IPv6 router advertisement daemon"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://v6web.litech.org/radvd/dist/radvd-${PV}.tar.gz \
-	   file://${FILESDIR}/automake.patch;patch=1"
+	   file://automake.patch;patch=1"
 S = "${WORKDIR}/radvd-${PV}"
 
 inherit autotools

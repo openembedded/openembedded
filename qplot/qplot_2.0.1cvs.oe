@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/qplot;module=qplot \
-	   file://${FILESDIR}/gcc3.patch;patch=1"
+	   file://gcc3.patch;patch=1"
 S = "${WORKDIR}/qplot"
 
 inherit palmtop

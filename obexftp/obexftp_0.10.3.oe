@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc openobex"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.gz \
-	   file://${FILESDIR}/m4.patch;patch=1"
+	   file://m4.patch;patch=1"
 
 inherit autotools 
 

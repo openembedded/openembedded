@@ -8,24 +8,22 @@ DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
-SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2      \
-           \
-           file://${FILESDIR}/cacko.patch;patch=1                     \
-           file://${FILESDIR}/battery.patch;patch=1                   \
-           \
-           file://${FILESDIR}/bluetooth-patch-2.4.18-mh9.diff;patch=1 \
-           file://${FILESDIR}/iw_handlers.w13-5.diff;patch=1          \
-           file://${FILESDIR}/iw_handlers.w14-5.diff;patch=1          \
-           file://${FILESDIR}/iw240_we15-6.diff;patch=1               \
-           \
-           file://${FILESDIR}/idecs.patch;patch=1                     \
-           file://${FILESDIR}/logo.patch;patch=1                      \
-           file://${FILESDIR}/initsh.patch;patch=1                    \
-           file://${FILESDIR}/mkdep.patch;patch=1"
+SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
+           file://cacko.patch;patch=1 \
+           file://battery.patch;patch=1 \
+           file://bluetooth-patch-2.4.18-mh9.diff;patch=1 \
+           file://iw_handlers.w13-5.diff;patch=1 \
+           file://iw_handlers.w14-5.diff;patch=1 \
+           file://iw240_we15-6.diff;patch=1 \
+           file://idecs.patch;patch=1 \
+           file://logo.patch;patch=1 \
+           file://initsh.patch;patch=1 \
+           file://mkdep.patch;patch=1 \
+           file://defconfig-${MACHINE}"
 
 # apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://${FILESDIR}/gcc-3.3.patch;patch=1
-# SRC_URI_append = file://${FILESDIR}/machtune-args.patch;patch=1
+# SRC_URI_append = file://gcc-3.3.patch;patch=1
+# SRC_URI_append = file://machtune-args.patch;patch=1
 
 S = "${WORKDIR}/linux"
 
@@ -50,7 +48,7 @@ export RD = "32"
 export CMDLINE = "console=ttySA root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
 
 do_configure_prepend() {
-        install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
         mem=${MEM}
         rd=${RD}

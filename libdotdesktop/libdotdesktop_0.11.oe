@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0"
 inherit pkgconfig
 
 SRC_URI = "ftp://gpe.handhelds.org/gpe/source/libdotdesktop-${PV}.tar.gz \
-	file://${FILESDIR}/make_build_var.patch;patch=1"
+	file://make_build_var.patch;patch=1"
 
 headers = "dotdesktop.h"
 

@@ -5,7 +5,8 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "http://www.Vanille.de/mirror/flexis-zaurus-${PV}.tar.bz2"
+SRC_URI = "http://www.Vanille.de/mirror/flexis-zaurus-${PV}.tar.bz2 \
+           file://gcc3.patch;patch=1"
 S = "${WORKDIR}/flexis-zaurus"
 
 inherit palmtop

@@ -6,7 +6,7 @@ PROVIDES = "libxsettings-client"
 inherit pkgconfig gpe
 
 SRC_URI = "ftp://gpe.handhelds.org/gpe/source/libxsettings-client0-${PV}.tar.gz \
-	file://${FILESDIR}/make_pkgconfig_x11.patch;patch=1"
+	file://make_pkgconfig_x11.patch;patch=1"
 
 headers = "xsettings-client.h"
 do_stage () {

@@ -8,8 +8,9 @@ DEPENDS = "virtual/libqte2 python-numeric python-pyqt qwt"
 SRCNAME = "pyqwt"
 
 SRC_URI = "http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
-           file://${FILESDIR}/qt2.x-compat.patch;patch=1 \
-           file://${FILESDIR}/qtmod-sip-staging.patch;patch=1"
+           file://qt2.x-compat.patch;patch=1 \
+           file://qtmod-sip-staging.patch;patch=1 \
+           file://features"
 S = "${WORKDIR}/PyQwt-20040118"
 
 inherit qmake sip
@@ -17,7 +18,7 @@ inherit qmake sip
 QMAKE_PROFILES = "pyqwt.pro"
 EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"
 SIP_MODULES = "qwt"
-SIP_FEATURES = "${FILESDIR}/features"   
+SIP_FEATURES = "${WORKDIR}/features"   
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
 EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \

@@ -12,7 +12,7 @@ export UTILS = "sltime"
 do_fetch() {
 	for u in ${UTILS}
 	do
-		install -d ${S}/${u}
+		install -d ${S}/$u
 		cp -dfR `ls -dp ${FILESDIR}/$u/*|grep -v SCCS` ${S}/$u/
 	done
 }

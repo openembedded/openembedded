@@ -1,0 +1,17 @@
+PV = "0.0cvs${CVSDATE}"
+DEPENDS = "virtual/libc gtk+ libgpewidget x11 xrandr xrender xft xinerama xtst xext xau"
+PROVIDES = "rosetta"
+DESCRIPTION = "Multistroke / full word handwriting recognition for X"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=rosetta \
+	file://rosetta-makefile.patch;patch=1"
+S = "${WORKDIR}/rosetta"
+
+inherit pkgconfig
+
+FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps ${datadir}/applications ${datadir}/rosetta"
+
+do_install () {
+        oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
+}
+

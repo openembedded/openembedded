@@ -7,7 +7,7 @@ DEPENDS = "virtual/libqpe"
 MAINTAINER = "Peter Vrabel <kybu@kybu.sk>"
 
 SRC_URI = ftp://iqnotes.kybu.sk/iqnotes-2.0.2-src.tar.bz2   \
-          file://${FILESDIR}/md5.diff;patch=1"
+          file://md5.diff;patch=1"
 S = "${WORKDIR}/iqnotes/iqnotes"
 
 inherit palmtop

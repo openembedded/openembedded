@@ -41,21 +41,21 @@ FILES_glibc-i18n = "${datadir}/i18n"
 HEADERS_VERSION = "2.6.5.1"
 HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
 
-#	   file://${FILESDIR}/noinfo.patch;patch=1 \
-#	   file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch;patch=1 \
+#	   file://ldconfig.patch;patch=1;pnum=0 \
 
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${HEADERS_VERSION}.tar.bz2 \
-	   file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/ldd.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/fhs-linux-paths.patch;patch=1;pnum=1 \
-	   file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-machine-gmon.patch;patch=1;pnum=0 \
+	   file://arm-ioperm.patch;patch=1;pnum=0 \
+	   file://makeconfig.patch;patch=1;pnum=0 \
+	   file://ldd.patch;patch=1;pnum=0 \
+	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
+	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
+	   file://arm-memcpy.patch;patch=1;pnum=0 \
+	   file://arm-longlong.patch;patch=1;pnum=0 \
+	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
 	   \
-           file://${FILESDIR}/etc/ld.so.conf"
+           file://etc/ld.so.conf"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"

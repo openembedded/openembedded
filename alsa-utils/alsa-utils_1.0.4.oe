@@ -1,0 +1,10 @@
+DESCRIPTION = "Alsa Utilities"
+MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc"
+
+SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
+	   file://autotools.patch;patch=1 \
+	   file://m4.patch;patch=1"
+
+inherit autotools

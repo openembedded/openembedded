@@ -6,8 +6,8 @@ output. It also supports mixing multiple fonts at the \
 same time, including Xft fonts."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
-	   file://${FILESDIR}/xim.patch;patch=1 \
-	   file://${FILESDIR}/include.patch;patch=1"
+	   file://xim.patch;patch=1 \
+	   file://include.patch;patch=1"
 
 inherit autotools 
 

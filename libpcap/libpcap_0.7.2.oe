@@ -5,9 +5,9 @@ MAINTAINER = "Greg Gilbert <treke@handhelds.org>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz;"
-SRC_URI_append = " file://${FILESDIR}/libpcap-shared.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/configure.patch;patch=1"
-SRC_URI_append = " file://${FILESDIR}/ldflags.patch;patch=1"
+SRC_URI_append = " file://libpcap-shared.patch;patch=1"
+SRC_URI_append = " file://configure.patch;patch=1"
+SRC_URI_append = " file://ldflags.patch;patch=1"
 
 inherit autotools
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for the SHARP Zaurus SD/MMC Slot for linux ${PV}"
 SECTION = "base"
 PRIORITY = "optional"
 
-SRC_URI = "file://${FILESDIR}/sharp-sdmmc-2.4.18.tar.gz"
+SRC_URI = "file://sharp-sdmmc-2.4.18.tar.gz"
 S = "${WORKDIR}/sharp-sdmmc"
 
 do_install() {

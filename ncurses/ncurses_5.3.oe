@@ -12,8 +12,8 @@ FILES_ncurses_append = " ${datadir}/tabset"
 FILES_ncurses-terminfo = "${datadir}/terminfo"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${BaseV}.tar.gz \
-	   file://${FILESDIR}/${SnapV}.patch;patch=1 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://${SnapV}.patch;patch=1 \
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/ncurses-${BaseV}"
 
 inherit autotools

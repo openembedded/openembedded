@@ -4,7 +4,9 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libc libsdl-qpe libsdl-mixer libsdl-net"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
-           file://${FILESDIR}/m4.patch;patch=1"
+           file://m4.patch;patch=1 \
+           file://prboom.png \
+           file://prboom.desktop"
 
 inherit autotools 
 
@@ -20,8 +22,8 @@ do_install() {
         	   ${D}/${palmtopdir}/apps/Games \
         	   ${D}/${palmtopdir}/pics
 	install -m 0755 src/prboom ${D}/${palmtopdir}/bin/prboom
-	install -m 0644 ${FILESDIR}/prboom.png ${D}/${palmtopdir}/pics/prboom.png
-	install -m 0644 ${FILESDIR}/prboom.desktop ${D}/${palmtopdir}/apps/Games/prboom.desktop
+	install -m 0644 ${WORKDIR}/prboom.png ${D}/${palmtopdir}/pics/prboom.png
+	install -m 0644 ${WORKDIR}/prboom.desktop ${D}/${palmtopdir}/apps/Games/prboom.desktop
 }
 
 FILES_${PN} = "${D}/{palmtopdir}/"

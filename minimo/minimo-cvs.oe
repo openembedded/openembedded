@@ -1,6 +1,7 @@
 DEPENDS = "virtual/libc xt gtk+ libidl"
 SRC_URI = "cvs://anonymous@cvs-mirror.mozilla.org/cvsroot;module=mozilla \
-	   file://${FILESDIR}/xptcstubs.patch;patch=1"
+           file://xptcstubs.patch;patch=1 \
+           file://mozconfig"
 S = "${WORKDIR}/mozilla"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11"
@@ -14,7 +15,7 @@ export CONFIGURE_ARGS="--target=${TARGET_SYS} --host=${BUILD_SYS} --build=${BUIL
 export CXX=${CC}
 export HOST_LIBIDL_CONFIG="libIDL-config-2"
 export MOZ_OBJDIR="${WORKDIR}/build-${TARGET_SYS}"
-export MOZCONFIG="${FILESDIR}/mozconfig"
+export MOZCONFIG="${WORKDIR}/mozconfig"
 
 do_fetch () {
 	mkdir -p ${WORKDIR}

@@ -5,8 +5,8 @@ FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}-r0"
 DESCRIPTION = "Qt/Embedded w/ Qtopia Patches version ${PV}"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
-	  file://${FILESDIR}/qtopia.patch;patch=1 \
-	  file://${FILESDIR}/tslib.patch;patch=1 \
-	  file://${FILESDIR}/devfs.patch;patch=1 \
-	  file://${FILESDIR}/no-moc.patch;patch=1"
+	  file://qtopia.patch;patch=1 \
+	  file://tslib.patch;patch=1 \
+	  file://devfs.patch;patch=1 \
+	  file://no-moc.patch;patch=1"
 	  

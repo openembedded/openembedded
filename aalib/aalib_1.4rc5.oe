@@ -2,7 +2,7 @@ DEPENDS = "virtual/libc ncurses"
 DESCRIPTION = "An ASCII art gfx library."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 S = "${WORKDIR}/aalib-1.4.0"
 
 inherit autotools 

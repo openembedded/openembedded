@@ -8,7 +8,8 @@ DEPENDS = "virtual/libc libqpe-opie sqlite libpcap-0.7.2"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
+           file://include.pro"
 S = "${WORKDIR}/libopie2"
 
 inherit qmake
@@ -42,7 +43,7 @@ do_compile() {
 # only need some special case for uic-created header files here
 
 do_stage() {
-	install -m 0644 ${FILESDIR}/include.pro ${OPIEDIR}/
+	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
@@ -66,4 +67,3 @@ FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so.*"
 FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so.*"
 
 #FIXME: Add individual package descriptions and dependencies
-

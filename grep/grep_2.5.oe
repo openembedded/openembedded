@@ -3,7 +3,7 @@ MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
-	   file://${FILESDIR}/install.patch;patch=1"
+	   file://install.patch;patch=1"
 
 inherit autotools
 
