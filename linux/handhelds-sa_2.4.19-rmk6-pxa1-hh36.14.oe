@@ -14,7 +14,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=$
 
 S = "${WORKDIR}/kernel"
 
-inherit kernel
+inherit kernel update-rc.d
 
 K_MAJOR = "${@oe.data.getVar('PV',d,1).split('-')[0].split('.')[0]}"
 K_MINOR = "${@oe.data.getVar('PV',d,1).split('-')[0].split('.')[1]}"
