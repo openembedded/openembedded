@@ -32,3 +32,4 @@ gpe-task-desktopapps = "\
 
 RDEPENDS_gpe-task-desktopapps := "${gpe-task-desktopapps}"
 DEPENDS += " ${gpe-task-desktopapps}"
+LICENSE = MIT

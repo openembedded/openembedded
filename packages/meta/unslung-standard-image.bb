@@ -38,3 +38,4 @@ python () {
 	if mach != 'nslu2' or dist != 'unslung':
 		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
 }
+LICENSE = MIT

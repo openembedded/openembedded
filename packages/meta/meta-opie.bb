@@ -393,3 +393,4 @@ qclockchange \
 "
 RDEPENDS_task-qpe-settings += "${task-qpe-settings}"
 DEPENDS += " ${task-qpe-settings}"
+LICENSE = MIT

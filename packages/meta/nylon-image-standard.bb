@@ -23,3 +23,4 @@ DEPENDS += "hostap-modules ntp \
 	
 RDEPENDS += "hostap-modules-pci ntpdate \
 	${NYLON_STANDARD}"
+LICENSE = MIT

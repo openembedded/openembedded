@@ -21,3 +21,4 @@ IMAGE_LINGUAS = ""
 ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"
 
 inherit image_ipk
+LICENSE = MIT

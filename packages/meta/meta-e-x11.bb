@@ -19,3 +19,4 @@ DEPENDS += "${task-e-libs}"
 
 RDEPENDS_e-base = "${task-e-base}"
 DEPENDS += "${task-e-base}"
+LICENSE = MIT

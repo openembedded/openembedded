@@ -102,3 +102,4 @@ DEPENDS += " ${gpe-task-games}"
 
 DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
 
+LICENSE = MIT

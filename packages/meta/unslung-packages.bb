@@ -1,0 +1,15 @@
+DESCRIPTION = "Packages that are compatible with the Unslung firmware"
+PR = "r1"
+
+ALLOW_EMPTY = 1
+PACKAGES = "${PN}"
+
+DEPENDS = ' \
+	${UNSLUNG_EXTRA_DEPENDS}'
+
+RDEPENDS = ' \
+	${UNSLUNG_EXTRA_RDEPENDS}'
+
+RRECOMMENDS = ' \
+	${UNSLUNG_EXTRA_RRECOMMENDS}'
+LICENSE = MIT

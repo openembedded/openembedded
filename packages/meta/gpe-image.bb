@@ -42,3 +42,4 @@ export IPKG_INSTALL = "task-bootstrap gpe-task-base \
 ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
+LICENSE = MIT

@@ -158,3 +158,4 @@ EOF
 
 do_populate_sdk[nostamp] = 1
 addtask populate_sdk before do_build after do_install
+LICENSE = MIT

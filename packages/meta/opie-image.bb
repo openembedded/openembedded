@@ -79,3 +79,4 @@ IMAGE_PREPROCESS_COMMAND = "merge_feeds"
 inherit image_ipk
 
 
+LICENSE = MIT

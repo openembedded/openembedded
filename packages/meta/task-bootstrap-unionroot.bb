@@ -58,3 +58,4 @@ RDEPENDS = 'base-files base-passwd busybox \
 
 RRECOMMENDS = 'dropbear portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
+LICENSE = MIT

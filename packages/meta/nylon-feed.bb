@@ -96,3 +96,4 @@ do_index() {
 
 addtask index before do_build after do_install
 
+LICENSE = MIT

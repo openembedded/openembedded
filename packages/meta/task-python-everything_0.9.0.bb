@@ -55,3 +55,4 @@ RDEPENDS=${DEPENDS}
 #fixme add python-pyx once kpathwhich-native is there
 #fixme add packages dynamically
 #fixme python-numarray doesn't work with soft-float
+LICENSE = MIT
