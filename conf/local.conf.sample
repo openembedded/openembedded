@@ -85,6 +85,6 @@ CACHE=/var/tmp/oe-cache.${USER}
 # from the CVS tree.
 CVS_TARBALL_STASH = "http://www.treke.net/oe/source/"
 
-# EDIT THIS FILE and then remove the line below before using
+# EDIT THIS FILE and then remove the line below before using!
 REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
 
