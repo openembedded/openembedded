@@ -1,13 +1,19 @@
+PR = "r1"
 DESCRIPTION = "GNOME XML library"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-${PV}.tar.bz2"
+PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+
+FILES_${PN}-dev += "${bindir}/xml-config"
+FILES_${PN}-utils += "${bindir}"
+
+SRC_URI = "${GNOME_MIRROR}/libxml2/2.6/libxml2-${PV}.tar.bz2"
 
 inherit autotools pkgconfig 
 
-EXTRA_OECONF = "--without-python"
+EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-schemas --without-catalog --without-docbook --without-xptr --without-c14n"
 
 headers = "DOCBparser.h HTMLparser.h HTMLtree.h SAX.h SAX2.h c14n.h catalog.h chvalid.h debugXML.h dict.h encoding.h entities.h globals.h hash.h list.h nanoftp.h nanohttp.h parser.h parserInternals.h pattern.h relaxng.h schemasInternals.h threads.h tree.h uri.h valid.h xinclude.h xlink.h xmlIO.h xmlautomata.h xmlerror.h xmlexports.h xmlmemory.h xmlreader.h xmlregexp.h xmlschemas.h xmlschemastypes.h xmlstring.h xmlunicode.h xmlversion.h xmlwriter.h xpath.h xpathInternals.h xpointer.h"
 
@@ -18,4 +24,10 @@ do_stage () {
 	for i in ${headers}; do
 		install -m 0644 include/libxml/$i ${STAGING_INCDIR}/libxml2/libxml/$i
 	done
+}
+
+python populate_packages_prepend () {
+	# autonamer would call this libxml2-2, but we don't want that
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_libxml2', 'libxml2', d)
 }
