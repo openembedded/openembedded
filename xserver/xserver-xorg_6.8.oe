@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "freetype libxi xmu flex-2.5.4-native"
 
@@ -7,6 +7,8 @@ SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;tag=XORG-6_8_0;m
 	file://imake-staging.patch;patch=1 \
 	file://dri.patch;patch=1 \
 	file://xorg.conf"
+
+RDEPENDS_${PN} += "xfonts-xorg"
 
 PACKAGES =+ "xserver-xorg-xprint xserver-xorg-xvfb xserver-xorg-utils"
 
