@@ -1,0 +1,10 @@
+inherit gpe
+
+DEPENDS = "libgpewidget sqlite gnome-vfs gnome-vfs-extras dbus"
+SECTION = "gpe"
+RDEPENDS = "gpe-icons"
+DESCRIPTION = "GPE file manager"
+
+FILES_${PN} += " ${datadir}/gpe"
+
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-filemanager-${PV}.tar.gz"
