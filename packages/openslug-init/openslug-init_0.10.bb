@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r8"
+PR = "r9"
 
 OPENSLUG_VERSION = "1.3-alpha"
 
@@ -31,11 +31,11 @@ do_install() {
 		  
 	install -d ${D}/initrd
 
-	install -m 0755 ${D}/../kern_header ${D}/${sbindir}/kern_header
-	install -m 0755 ${D}/../sysconfsetup ${D}/${sysconfdir}/init.d/
-	install -m 0644 ${D}/../modutils.txt ${D}/${sysconfdir}/modutils/
-	install -m 0644 ${D}/../modprobe.conf ${D}/${sysconfdir}/
-	ln  -s /etc/init.d/sysconfsetup ${D}/${sysconfdir}/rcS.d/S39sysconfsetup
+	install -m 0755 ${D}/../kern_header ${D}${sbindir}/kern_header
+	install -m 0755 ${D}/../sysconfsetup ${D}${sysconfdir}/init.d/
+	install -m 0644 ${D}/../modutils.txt ${D}${sysconfdir}/modutils/
+	install -m 0644 ${D}/../modprobe.conf ${D}${sysconfdir}/
+	ln -s /etc/init.d/sysconfsetup ${D}${sysconfdir}/rcS.d/S39sysconfsetup
 }
 
 FILES_${PN} = "/"
