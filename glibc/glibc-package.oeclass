@@ -63,9 +63,9 @@ python package_do_split_gconvs () {
 	charmap_dir = os.path.join(datadir, "i18n", "charmaps")
 	locales_dir = os.path.join(datadir, "i18n", "locales")
 
-	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='glibc-gconv-%s', description='gconv module for character set %s')
+	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='glibc-gconv-%s', description='gconv module for character set %s', extra_depends='glibc-gconv')
 
-	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='glibc-charmap-%s', description='character map for %s encoding')
+	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='glibc-charmap-%s', description='character map for %s encoding', extra_depends='')
 
 	def calc_locale_deps(fn, pkg, file_regex, output_pattern, group):
 		deps = []
@@ -82,7 +82,7 @@ python package_do_split_gconvs () {
 		if deps != []:
 			oe.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
 
-	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps)
+	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
 	f = open(os.path.join(oe.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
