@@ -6,6 +6,7 @@ LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 PV = "1.9.3a-${CVSDATE}"
+PR = "r1"
 
 # Author said that he will tag stable versions in CVS
 # From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.3a version
@@ -27,7 +28,7 @@ QMAKE_PROFILES= "all.pro"
 
 # we don't have libopie1 (and ldap?)
 #SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc kabc/converter/opie kabc/formats/binary kabc/plugins/file kabc/plugins/dir kabc/plugins/ldap kabc/plugins/opie korganizer kalarmd kaddressbook/xxport/opie kaddressbook"
-SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc korganizer kalarmd kaddressbook"
+SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir "
 
 # TODO:
 # get KA/PI plugins working
@@ -68,7 +69,7 @@ do_install() {
     install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
     install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
 
-    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir
     do
         oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
     done
@@ -85,6 +86,6 @@ do_install() {
 PACKAGES = "kopi kapi libmicrokdelibs kopi-applet"
 
 FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/*"
-FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/*"
+FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_*"
 FILES_kopi-applet = "${palmtopdir}/plugins/applets/*"
 FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
