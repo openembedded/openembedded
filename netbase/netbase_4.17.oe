@@ -14,6 +14,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://epia/interfaces \
            file://collie/interfaces \
            file://husky/interfaces \
+           file://boxer/interfaces \
            file://shepherd/interfaces \
            file://poodle/interfaces \
            file://corgi/interfaces \

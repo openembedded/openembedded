@@ -22,6 +22,7 @@ SRC_URI = " \
            file://corgi/fstab \
            file://fstab \
            file://husky/fstab \
+           file://boxer/fstab \
            file://share/dot.bashrc \
            file://share/dot.profile \
            file://share/info.dir \

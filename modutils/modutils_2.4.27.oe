@@ -17,6 +17,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${
            file://h3600/modules.conf \
            file://husky/modules \
            file://husky/modules.conf \
+           file://boxer/modules \
+           file://boxer/modules.conf \
            file://poodle/modules \
            file://poodle/modules.conf \
            file://ramses/modules \

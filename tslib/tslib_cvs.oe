@@ -14,6 +14,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib \
            file://h3600/tslib.sh \
            file://husky/ts.conf \
            file://husky/tslib.sh \
+           file://boxer/ts.conf \
+           file://boxer/tslib.sh \
            file://poodle/ts.conf \
            file://poodle/tslib.sh \
 	   file://simpad/ts.conf \
