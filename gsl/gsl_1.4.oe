@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.mirror.ac.uk/sites/sources.redhat.com/pub/gsl/gsl-${PV}.tar.gz"
 
-inherit autotools  pkgconfig
+inherit autotools pkgconfig binconfig
 
 LEAD_SONAME = "libgsl.so"
 
@@ -16,8 +16,4 @@ do_stage() {
 
 	install -d ${STAGING_INCDIR}/gsl
 	install -m 0644 .install/usr/include/gsl/* ${STAGING_INCDIR}/gsl
-
-        cat gsl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR} -I${STAGING_INCDIR}/python2.3," \
-                       | sed -e "s,-L/usr/lib,-L${STAGING_LIBDIR}," > ${STAGING_BINDIR}/gsl-config
-        chmod a+rx ${STAGING_BINDIR}/gsl-config
 }

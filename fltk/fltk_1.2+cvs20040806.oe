@@ -11,7 +11,7 @@ SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/fltk;module=fltk;method=
 	   file://autotools.patch;patch=1"
 S="${WORKDIR}/fltk"
 
-inherit autotools
+inherit autotools binconfig
 
 do_configure_prepend() {
 	autoconf
@@ -37,8 +37,6 @@ do_stage() {
 	       includedir=${STAGING_INCDIR} \
 	       libdir=${STAGING_LIBDIR} \
 	       datadir=${STAGING_DATADIR}
-	cat fltk-config | sed -e "s,includedir=/usr/include,includedir=${STAGING_INCDIR}," \
-	                | sed -e "s,libdir=/usr/lib,libdir=${STAGING_LIBDIR}," > ${STAGING_BINDIR}/fltk-config
 }
 
 python populate_packages_prepend () {
