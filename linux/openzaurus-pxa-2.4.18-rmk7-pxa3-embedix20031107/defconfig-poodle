@@ -213,7 +213,7 @@ CONFIG_APM_CPU_IDLE=y
 CONFIG_APM_DISPLAY_BLANK=y
 CONFIG_APM_RTC_IS_GMT=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="console=null root=/dev/mtdblock2 mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home) jffs2_orphaned_inodes=delete"
+CONFIG_CMDLINE="<see .oe file>"
 # CONFIG_SHARPSL_BOOTLDR_PARAMS is not set
 CONFIG_ALIGNMENT_TRAP=y
 CONFIG_FREEPG_SIGNAL=y

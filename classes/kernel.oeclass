@@ -14,6 +14,11 @@ KERNEL_LDSUFFIX ?= ""
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
 
+#
+# configuration
+#
+export CMDLINE_CONSOLE = "console=${@oe.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
+
 # parse kernel ABI version out of <linux/version.h>
 def get_kernelversion(p):
 	import re

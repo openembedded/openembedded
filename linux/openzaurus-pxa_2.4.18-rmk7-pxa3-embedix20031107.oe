@@ -4,8 +4,9 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
@@ -43,6 +44,18 @@ S = "${WORKDIR}/linux"
 inherit kernel
 
 #
+# Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
+#
+CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_tosa     = "mtdparts=irrelevant-for-now-since-we-use-the-bootloader-params" 
+
+CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 jffs2_orphaned_inodes=delete"
+CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
+
+#
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
 FILES_kernel = "/boot/System.map*"
@@ -58,4 +71,5 @@ module_autoload_pxa_bi = "pxa_bi"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
