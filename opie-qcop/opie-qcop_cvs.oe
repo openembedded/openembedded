@@ -3,10 +3,10 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libqpe-opie"
-PV = "1.1.3-cvs-${CVSDATE}"
+DEPENDS = "libqpe-opie"
+PV = "1.0.0-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/qcop"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/qcop;date=${CVSDATE}"
 S = "${WORKDIR}/qcop"
 
 inherit palmtop

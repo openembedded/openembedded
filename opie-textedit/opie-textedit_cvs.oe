@@ -3,18 +3,18 @@ SECTION = "opie/pim"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libopie2"
+DEPENDS = "libopie2"
 PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "textedit"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/textedit \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps"
-S = "${WORKDIR}/textedit"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/${APPNAME};date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
-APPNAME = "textedit"
 
 do_install() {
     install -d ${D}/${palmtopdir}/pics/${APPNAME}
-    install -m 0644 ${WORKDIR}/pics/textedit/*.png ${D}/${palmtopdir}/pics/textedit/
+    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
 }

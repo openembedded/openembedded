@@ -3,28 +3,19 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libopie2"
+DEPENDS = "libopie2"
 PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "helpbrowser"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/helpbrowser \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/${APPNAME};date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
 
-S = "${WORKDIR}/helpbrowser"
+S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
 do_install() {
-    install -d ${D}/${palmtopdir}/bin/
-    install -d ${D}/${palmtopdir}/pics/
-    install -d ${D}/${palmtopdir}/pics/helpbrowser/
-    install -d ${D}/${palmtopdir}/apps/Applications/
-    if [ -f ${S}/libembeddedkonsole.so.1.0.0 ]; then
-     install -m 0755 libhelpbrowser.so* ${D}/${palmtopdir}/plugins/application/
-     ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/helpbrowser
-    else
-     install -m 0755 ${S}/helpbrowser ${D}/${palmtopdir}/bin/helpbrowser
-    fi
-    install -m 0644 ${WORKDIR}/pics/helpbrowser/*.png ${D}/${palmtopdir}/pics/helpbrowser/
-    install -m 0644 ${WORKDIR}/apps/Applications/helpbrowser.desktop ${D}/${palmtopdir}/apps/Applications/
+    install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
 }

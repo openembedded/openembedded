@@ -1,0 +1,20 @@
+DESCRIPTION = "Opie Checkbook"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Opie Team <opie@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libopie2"
+PV = "0.8.0-cvs-${CVSDATE}"
+APPNAME = "checkbook"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/apps/${APPNAME};date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+do_install() {
+    install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+}

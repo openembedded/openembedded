@@ -5,13 +5,9 @@ MAINTAINER = "Rajko Albrecht <alwin@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc"
 PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "aboutapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/applets/aboutapplet"
-S = "${WORKDIR}/aboutapplet"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/applets/aboutapplet;date=${CVSDATE}"
+S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
-
-do_install() {
-	install -d ${D}/${palmtopdir}/plugins/applets/
-	install -m 0755 libaboutapplet.so* ${D}/${palmtopdir}/plugins/applets/
-}
