@@ -1,7 +1,8 @@
 DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r4"
+PR = "r5"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -111,8 +112,6 @@ irk \
 justreader \
 keyring \
 klimt \
-konqueror-embedded \
-kphonepi \
 kstars-embedded \
 ktimetrackerpi \
 mileage \
