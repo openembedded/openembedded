@@ -29,6 +29,14 @@ do_stage () {
         install -m 0644 libltdl/.libs/libltdl.lai ${STAGING_LIBDIR}/libltdl.la
         oe_soinstall libltdl/.libs/libltdl.so.3.1.0 ${STAGING_LIBDIR}/
         install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
+
+        install -d ${CROSS_DATADIR}/libtool/
+        install -d ${CROSS_DATADIR}/aclocal/
+        install -c config.guess ${CROSS_DATADIR}/libtool/config.guess
+        install -c config.sub ${CROSS_DATADIR}/libtool/config.sub
+        install -c -m 0644 ltmain.sh ${CROSS_DATADIR}/libtool/
+        install -c -m 0644 libtool.m4 ${CROSS_DATADIR}/aclocal/
+        install -c -m 0644 ltdl.m4 ${STAGING_DATADIR}/aclocal/
 }
 
 do_install () {
