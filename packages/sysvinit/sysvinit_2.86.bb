@@ -5,7 +5,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 
 FILES_${PN} += "/sbin /bin"
-PR = "r2"
+PR = "r3"
 
 # USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -72,6 +72,7 @@ EOF
 		install -d ${D}/etc/rc$level.d
 		ln -s ../init.d/stop-bootlogd ${D}/etc/rc$level.d/S99stop-bootlogd
 	done
+	mv                 ${D}/sbin/init               ${D}/sbin/init.sysvinit
 }
 
 
@@ -84,6 +85,14 @@ do_install_append_ramses () {
 # Framebuffer
 v1:2345:respawn:/sbin/getty -L 115200 vc/1
 EOF
+}
+
+pkg_postinstall_sysvinit () {
+	update-alternatives --install /sbin/init init /sbin/init.sysvinit 50
+}
+
+pkg_postrm_sysvinit () {
+        update-alternatives --remove init /sbin/init.sysvinit
 }
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
