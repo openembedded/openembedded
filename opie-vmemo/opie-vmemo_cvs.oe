@@ -1,0 +1,34 @@
+DESCRIPTION = "Voice Memo Recorder Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "opie-vmemo-settings"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "vmemoapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/vmemo;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/vmemo"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if pidof -s qpe >/dev/null; then
+  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+fi
+ if [ -n $D ]; then exit 1; fi
+}
+
+pkg_postrm() {
+#!/bin/sh
+/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+ if [ -n $D ]; then exit 1; fi
+}
+
+# FILES plugins/applets/libvmemoapplet.so*
+do_install() {
+}
+
