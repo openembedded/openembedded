@@ -448,11 +448,14 @@ python base_do_patch() {
 		else:
 			pnum = "1"
 
-		dots = os.path.basename(unpacked).split(".")
-		if len(dots) > 1:
-			pname = ".".join(dots[:-1])
+		if "pname" in parm:
+			pname = parm["pname"]
 		else:
-			pname = os.path.basename(unpacked)
+			dots = os.path.basename(unpacked).split(".")
+			if len(dots) > 1:
+				pname = ".".join(dots[:-1])
+			else:
+				pname = os.path.basename(unpacked)
 
 		bb.note("Applying patch '%s'" % pname)
 		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
