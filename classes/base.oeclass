@@ -39,7 +39,7 @@ def base_set_filespath(path, d):
 
 FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
-def filter(f, str, d):
+def oe_filter(f, str, d):
 	from re import match
 	ret = []
 	for w in str.split():
@@ -47,7 +47,7 @@ def filter(f, str, d):
 			ret += [ w ]
 	return " ".join(ret)
 
-def filter_out(f, str, d):
+def oe_filter_out(f, str, d):
 	from re import match
 	ret = []
 	for w in str.split():
