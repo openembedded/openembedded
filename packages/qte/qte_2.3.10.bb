@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -21,7 +21,6 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
 	   file://simpad.patch;patch=1 \
 	   file://handhelds.patch;patch=1 \
 	   file://qiconview-speed.patch;patch=1 \
-	   file://update-qtfontdir \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -107,87 +106,7 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${sbindir}/
-	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}/${sbindir}/
-	install -d ${D}${palmtopdir}/lib/fonts/
-	oe_libinstall -so -C lib libqte ${D}/${palmtopdir}/lib
-	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
+	oe_libinstall -so -C lib libqte ${D}/${palmqtdir}/lib/
 }
 
-pkg_postinst() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-pkg_postinst_qte-font-unicode() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-pkg_postinst_qte-font-lcd () {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-pkg_postinst_qte-font-japanese() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-pkg_postinst_qte-font-micro() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-pkg_postinst_qte-font-courier() {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
-PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-large \
-			qte-font-smoothtimes qte-font-smallsmooth qte-font-unicode qte-font-lcd \
-			qte-font-japanese qte-font-micro qte-font-courier"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-FILES_${PN} = ""
-FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
-FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
-PACKAGE_ARCH_qte-font-fixed = "all"
-FILES_qte-font-helvetica-small = "${palmtopdir}/lib/fonts/helvetica_80*.qpf \
-	${palmtopdir}/lib/fonts/helvetica_100*.qpf ${palmtopdir}/lib/fonts/helvetica_120*.qpf"
-PACKAGE_ARCH_qte-font-helvetica-small = "all"
-FILES_qte-font-helvetica-large = "${palmtopdir}/lib/fonts/helvetica_140*.qpf \
-	${palmtopdir}/lib/fonts/helvetica_180*.qpf ${palmtopdir}/lib/fonts/helvetica_240*.qpf"
-PACKAGE_ARCH_qte-font-helvetica-large = "all"
-FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*"
-PACKAGE_ARCH_qte-font-smoothtimes = "all"
-FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*"
-PACKAGE_ARCH_qte-font-smallsmooth = "all"
-FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*.qpf"
-PACKAGE_ARCH_qte-font-unicode = "all"
-FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
-PACKAGE_ARCH_qte-font-lcd = "all"
-FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/japanese*"
-PACKAGE_ARCH_qte-font-japanese = "all"
-FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*.qpf"
-PACKAGE_ARCH_qte-font-micro = "all"
-FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
-PACKAGE_ARCH_qte-font-courier = "all"
+FILES_${PN} = "${palmqtdir}"
