@@ -5,7 +5,9 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "x11 libsm"
 DESCRIPTION = "X Toolkit Intrinsics"
 LICENSE =  "X-MIT"
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xt"
+PR = "r1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xt \
+	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xt"
 
 inherit autotools pkgconfig 

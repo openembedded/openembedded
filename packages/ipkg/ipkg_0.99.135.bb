@@ -3,7 +3,7 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
@@ -14,7 +14,8 @@ SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVa
 	file://depends.patch;patch=1 \
 	file://uninclude-replace.patch;patch=1 \
 	file://terse.patch;patch=1 \
-	file://remove-c99isms.patch;patch=1"
+	file://remove-c99isms.patch;patch=1 \
+	file://uclibc.patch;patch=1"
 
 S = "${WORKDIR}/ipkg/C"
 

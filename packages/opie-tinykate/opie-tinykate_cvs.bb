@@ -17,6 +17,7 @@ S = "${WORKDIR}/tinykate"
 inherit opie
 
 EXTRA_QMAKEVARS_POST += " LIBS+=-L.."
+PARALLEL_MAKE = ""
 
 # FILES plugins/application/libkate.so* bin/kate apps/Applications/tinykate.desktop pics/tinykate lib/libtinykate.so*
 do_install() {

@@ -1,6 +1,7 @@
 SECTION = "x11/utils"
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xtst xext xau"
+DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xtst xext xau \
+	   virtual/libintl"
 DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 LICENSE = "GPL"
 
@@ -9,7 +10,7 @@ SRC_URI = "${HANDHELDS_CVS};module=rosetta \
 S = "${WORKDIR}/rosetta"
 PR = "r4"
 
-inherit pkgconfig
+inherit pkgconfig gettext
 
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps ${datadir}/applications ${datadir}/rosetta"
 
