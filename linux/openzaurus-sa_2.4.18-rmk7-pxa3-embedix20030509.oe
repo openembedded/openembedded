@@ -31,14 +31,23 @@ S = "${WORKDIR}/linux"
 
 inherit kernel
 
-#FIXME: Use configuration system
-export MEM = "32"
-export RD = "32"
-export CMDLINE = "console=ttySA root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
-EXTRA_OEMAKE = ""
+#
+# Compensate for sucky bootloader on all Sharp Zaurus models
+#
+FILES_kernel = ""
+ALLOW_EMPTY = 1
+
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
+EXTRA_OEMAKE = ""
+
+#
+# FIXME: Use configuration system
+#
+export MEM = "32"
+export RD = "32"
+export CMDLINE = "console=ttySA root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphand_inodes=delete"
 
 do_configure_prepend() {
         install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
