@@ -5,6 +5,8 @@ S = ${WORKDIR}/${P}
 
 inherit autotools
 
+# modutils go in /sbin
+sbindir=/sbin
 EXTRA_OECONF = --disable-strip
 export BUILDCC = ${BUILD_CC}
 

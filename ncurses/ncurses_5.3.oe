@@ -24,11 +24,22 @@ EXTRA_OECONF=--with-shared \
 	     --enable-termcap \
 	     --without-cxx-binding \
 	     --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo \
-	     --enable-overwrite \
-	     --program-prefix=
+	     --enable-overwrite
 export BUILD_CC := ${BUILD_CC}
 export BUILD_CCFLAGS=-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}
 export BUILD_LDFLAGS=
+
+do_configure_prepend () {
+	if [ -e aclocal.m4 -a ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
+
+do_configure () {
+# override this function to avoid the autoconf/automake/aclocal/autoheader
+# calls for now
+	oe_runconf
+}
 
 do_compile () {
 	oe_runmake BUILD_LDFLAGS="" 'BUILD_CCFLAGS=${BUILD_CCFLAGS}'
