@@ -17,7 +17,8 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/{${libdir},${includedir}}
+	install -d ${D}/${libdir} \
+		   ${D}/${includedir}
 	oe_soinstall lib/libqwt.so.4.2.0 ${D}/${libdir}
 	cp -a include/* ${D}/${includedir}
 }

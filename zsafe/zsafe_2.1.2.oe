@@ -14,9 +14,11 @@ inherit palmtop
 QMAKE_PROFILES = "zsafe.pro"
 
 do_install() {
-        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics/zsafe}
-        install -D -m 0755 ${PN} ${D}${palmtopdir}/bin/${PN}
-        install -D -m 0644 ${PN}.png ${D}${palmtopdir}/pics/${PN}.png
-	cp -a pics/zsafe/*.xpm ${D}${palmtopdir}/pics/zsafe
-	cp zsafe.desktop ${D}${palmtopdir}/Applications
+        install -d ${D}/${palmtopdir}/bin \
+		   ${D}/${palmtopdir}/apps/Applications \
+		   ${D}/${palmtopdir}/pics/zsafe
+        install -D -m 0755 ${PN} ${D}/${palmtopdir}/bin/${PN}
+        install -D -m 0644 ${PN}.png ${D}/${palmtopdir}/pics/${PN}.png
+	cp -a pics/zsafe/*.xpm ${D}/${palmtopdir}/pics/zsafe
+	cp zsafe.desktop ${D}/${palmtopdir}/Applications
 }

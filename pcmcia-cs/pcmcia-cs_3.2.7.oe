@@ -16,12 +16,13 @@ do_configure() {
 }
 
 do_install() {
-	install -d ${D}/${sbindir}/
+	install -d ${D}/${sbindir}
 	for f in cardmgr/cardctl cardmgr/cardmgr cardmgr/ide_info cardmgr/ifport cardmgr/ifuser cardmgr/pcinitrd flash/ftl_check flash/ftl_format
 	do
 		install -m 0755 $f ${D}/${sbindir}/
 	done
-	install -d ${D}/${sysconfdir}/{init.d,pcmcia}
+	install -d ${D}/${sysconfdir}/init.d \
+		   ${D}/${sysconfdir}/pcmcia
 	cp -a etc/* ${D}/${sysconfdir}/pcmcia/
 	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
 }

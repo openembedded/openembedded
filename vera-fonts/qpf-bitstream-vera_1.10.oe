@@ -1,0 +1,31 @@
+DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
+SECTION = "fonts"
+PRIORITY = "optional"
+
+SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"
+S = "${WORKDIR}/vera-qpf"
+
+do_install () { 
+        install -d ${D}${palmtopqtdir}/lib/fonts/ 
+        for i in *.qpf; do 
+                install -m 644 $i ${D}${palmtopqtdir}/lib/fonts/${i} 
+        done 
+} 
+
+pkg_postinst () {
+#!/bin/sh
+
+set -e
+
+if [ "$1" != "configure" ]; then
+    exit 0
+fi
+
+. /etc/profile
+
+update-qtfontdir
+}
+
+PACKAGES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
+FILES_qpf-bitstream-vera-small = "vera_80_50* vera_80_50i* vera_80_75* vera_80_75i* vera_100_50* vera_100_50i* vera_100_75* vera_100_75i* vera_120_50* vera_120_50i* vera_120_75* vera_120_75i*"
+FILES_qpf-bitstream-vera-large = "vera_140_50* vera_140_50i* vera_140_75* vera_140_75i* vera_160_50* vera_160_50i* vera_160_75* vera_160_75i* vera_180_50* vera_180_50i* vera_180_75* vera_180_75i*"

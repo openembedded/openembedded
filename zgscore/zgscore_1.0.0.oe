@@ -14,7 +14,9 @@ inherit palmtop
 EXTRA_QMAKEVARS_POST = 'TMAKE_LIBS-="-luuid" TMAKE_LIBS+="-lqpe" CONFIG+=qt CONFIG-=qtopia'
 
 do_install() {
-	install -d ${D}/${palmtopdir}/{bin,pics,apps/Applications}
+        install -d ${D}/${palmtopdir}/bin \
+		   ${D}/${palmtopdir}/apps/Applications \
+		   ${D}/${palmtopdir}/pics
         install -m 0755 zgscore ${D}/${palmtopdir}/bin/zgscore
 	install -m 0755 zgscore.png ${D}/${palmtopdir}/pics/
 	install -m 0644 zgscore.desktop ${D}/${palmtopdir}/apps/Applications/

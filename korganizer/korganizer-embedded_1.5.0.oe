@@ -25,7 +25,10 @@ do_configure_prepend() {
 }
 
 do_install() {
-    install -d ${D}/opt/QtPalmtop/{bin,lib,apps/Pim,pics/korganizer/icons16}
+    install -d ${D}/${palmtopdir}/bin \
+	       ${D}/${palmtopdir}/lib \
+	       ${D}/${palmtopdir}/apps/Pim \
+       	       ${D}/${palmtopdir}/pics/korganizer/icons16
     install -m 0644 korganizer/korganizer.desktop ${D}/opt/QtPalmtop/apps/Pim/korganizer.desktop
     cd ${S}/pics
     cp *.png *.wav ${D}/opt/QtPalmtop/pics/korganizer

@@ -26,8 +26,11 @@ do_configure_prepend() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/{bin,apps/Applications,apps/Settings,pics/launcher}
-	install -d ${D}/etc/init.d/
+	install -d ${D}/${palmtopdir}/bin \
+		   ${D}/${palmtopdir}/apps/Applications \
+		   ${D}/${palmtopdir}/apps/Settings \
+		   ${D}/${palmtopdir}/pics/launcher \
+		   ${D}/etc/init.d
 	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
 	install -m 0644 ${WORKDIR}/apps/Settings/Calibrate.desktop ${D}/${palmtopdir}/apps/Settings/Calibrate.desktop
 	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/

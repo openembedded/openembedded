@@ -10,9 +10,11 @@ S = "${WORKDIR}/dviviewer"
 inherit palmtop
 
 do_install() {
-        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
-        install -D -m 755 dviviewer ${D}${palmtopdir}/bin/dviviewer
-        install -D -m 644 dviviewer.desktop ${D}${palmtopdir}/Applications/dviviewer.desktop
-        install -d ${D}${palmtopdir}/pics
-        cp -a *.png ${D}${palmtopdir}/pics/
+        install -d ${D}/${palmtopdir}/bin \
+		   ${D}/${palmtopdir}/apps/Applications \
+		   ${D}/${palmtopdir}/pics
+        install -D -m 755 dviviewer ${D}/${palmtopdir}/bin/dviviewer
+        install -D -m 644 dviviewer.desktop ${D}/${palmtopdir}/Applications/dviviewer.desktop
+        install -d ${D}/${palmtopdir}/pics
+        cp -a *.png ${D}/${palmtopdir}/pics/
 }

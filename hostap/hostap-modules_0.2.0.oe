@@ -12,8 +12,9 @@ inherit module
 MAKE_TARGETS = "hostap pccard"
 
 do_install() {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/{net,pcmcia}
-        install -d ${D}/${sysconfdir}/pcmcia
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
+		   ${D}/lib/modules/${KERNEL_VERSION}/pcmcia \
+        	   ${D}/${sysconfdir}/pcmcia
 	install -m 0755 driver/modules/hostap_crypt_wep.o ${D}/lib/modules/${KERNEL_VERSION}/net/
 	install -m 0755 driver/modules/hostap.o ${D}/lib/modules/${KERNEL_VERSION}/net/
 	install -m 0755 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/

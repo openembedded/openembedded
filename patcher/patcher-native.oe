@@ -4,4 +4,5 @@ DEPENDS = ""
 
 do_stage() {
 	install -m 0755 ${DL_DIR}/patcher ${STAGING_BINDIR}/
+	exit 1
 }

@@ -20,9 +20,11 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/{bin,apps/Games,pics}
-        install -D -m 755 knights/knights ${D}${palmtopdir}/bin/knights
-        install -D -m 644 knights.desktop ${D}${palmtopdir}/Games/knights.desktop
-        install -d ${D}${palmtopdir}/pics
-        cp -a pics/knights ${D}${palmtopdir}/pics/
+        install -d ${D}/${palmtopdir}/bin \
+	           ${D}/${palmtopdir}/apps/Games \
+       	 	   ${D}/${palmtopdir}/pics
+        install -D -m 755 knights/knights ${D}/${palmtopdir}/bin/knights
+        install -D -m 644 knights.desktop ${D}/${palmtopdir}/Games/knights.desktop
+        install -d ${D}/${palmtopdir}/pics
+        cp -a pics/knights ${D}/${palmtopdir}/pics/
 }

@@ -5,27 +5,32 @@ infrastructure for basic TCP/IP based networking."
 SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz"
 
 do_install () {
-	install -d ${D}/etc/init.d ${D}/${sbindir} ${D}/${mandir}/man8
-	install -d ${D}/etc/network/{if-pre-up.d,if-up.d}
-	install -m 0644 ${FILESDIR}/options ${D}/etc/network/options
-	install -m 0755 ${FILESDIR}/init ${D}/etc/init.d/networking
-	install -m 0644 etc-rpc ${D}/etc/rpc
-	install -m 0644 etc-protocols ${D}/etc/protocols
-	install -m 0644 etc-services ${D}/etc/services
+	install -d ${D}/${sysconfdir}/init.d \
+		   ${D}/${sbindir} \
+		   ${D}/${mandir}/man8 \
+		   ${D}/${sysconfdir}/network/if-pre-up.d \
+		   ${D}/${sysconfdir}/network/if-up.d \
+		   ${D}/${sysconfdir}/network/if-down.d \
+		   ${D}/${sysconfdir}/network/if-post-down.d
+	install -m 0644 ${FILESDIR}/options ${D}/${sysconfdir}/network/options
+	install -m 0755 ${FILESDIR}/init ${D}/${sysconfdir}/init.d/networking
+	install -m 0644 etc-rpc ${D}/${sysconfdir}/rpc
+	install -m 0644 etc-protocols ${D}/${sysconfdir}/protocols
+	install -m 0644 etc-services ${D}/${sysconfdir}/services
 	install -m 0755 update-inetd ${D}/${sbindir}/
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
 }
 
 pkg_postinst () {
 	if test -n "${D}"; then
-		D="-r $D"
+		D="-r ${D}"
 	fi
 	update-rc.d $D networking start 40 S . stop 40 0 6 1 .
 }
 
 pkg_prerm () {
 	if test -n "${D}"; then
-		D="-r $D"
+		D="-r ${D}"
 	fi
 	update-rc.d $D networking remove
 }

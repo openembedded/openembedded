@@ -14,20 +14,25 @@ do_compile() {
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/{bin,apps/Games,pics,share/freedroid/{graphics,map,sound}}
-        install -D -m 0755 src/freedroid ${D}${palmtopdir}/bin/freedroid
-	install -D -m 0644 ${FILESDIR}/icon.png ${D}${palmtopdir}/pics/freedroid.png
+        install -d ${D}/${palmtopdir}/bin \
+		   ${D}/${palmtopdir}/apps/Games \
+		   ${D}/${palmtopdir}/pics \
+		   ${D}/${palmtopdir}/share/freedroid/graphics \
+		   ${D}/${palmtopdir}/share/freedroid/map \
+		   ${D}/${palmtopdir}/share/freedroid/sound
+        install -D -m 0755 src/freedroid ${D}/${palmtopdir}/bin/freedroid
+	install -D -m 0644 ${FILESDIR}/icon.png ${D}/${palmtopdir}/pics/freedroid.png
 
-	cp -a graphics/* ${D}${palmtopdir}/share/freedroid/graphics
-	cp -a map/* ${D}${palmtopdir}/share/freedroid/map
-	cp -a sound/* ${D}${palmtopdir}/share/freedroid/sound
+	cp -a graphics/* ${D}/${palmtopdir}/share/freedroid/graphics
+	cp -a map/* ${D}/${palmtopdir}/share/freedroid/map
+	cp -a sound/* ${D}/${palmtopdir}/share/freedroid/sound
 
-	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/freedroid.desktop
-	echo "Comment=A Paradroid Clone" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
-	echo "Exec=freedroid" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
-	echo "Icon=freedroid" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
-	echo "Type=Application" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
-	echo "Name=Freedroid" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
+	echo "[Desktop Entry]" >${D}/${palmtopdir}/apps/Games/freedroid.desktop
+	echo "Comment=A Paradroid Clone" >>${D}/${palmtopdir}/apps/Games/freedroid.desktop
+	echo "Exec=freedroid" >>${D}/${palmtopdir}/apps/Games/freedroid.desktop
+	echo "Icon=freedroid" >>${D}/${palmtopdir}/apps/Games/freedroid.desktop
+	echo "Type=Application" >>${D}/${palmtopdir}/apps/Games/freedroid.desktop
+	echo "Name=Freedroid" >>${D}/${palmtopdir}/apps/Games/freedroid.desktop
 }
 
 FILES_${PN} = ""
