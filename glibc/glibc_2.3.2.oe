@@ -131,15 +131,13 @@ do_configure () {
 	CPPFLAGS="" oe_runconf
 }
 
-do_compile_prepend() {
-	touch sysdeps/${TARGET_ARCH}/framestate.c
-}
-
 rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
 	  yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
 	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
 
-do_compile_append() {
+do_compile () {
+	touch sysdeps/${TARGET_ARCH}/framestate.c
+	autotools_do_compile
 	(
 		cd ${S}/sunrpc/rpcsvc
 		for r in ${rpcsvc}; do
