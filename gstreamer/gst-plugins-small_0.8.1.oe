@@ -1,0 +1,33 @@
+DESCRIPTION = "Plugins for GStreamer"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+PROVIDES = "gst-plugins"
+
+DEPENDS = "gstreamer libmad libogg tremor libvorbis libid3tag esound-gpe"
+
+SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
+	   file://ivorbis.patch;patch=1"
+
+S = "${WORKDIR}/gst-plugins-${PV}"
+
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts --disable-artsc --disable-libfame --disable-sdl --disable-mikmod --disable-gnome_vfs --disable-oss --disable-alsa --disable-dvdread --disable-dvdnav"
+
+inherit autotools pkgconfig gconf
+
+acpaths = "-I ${S}/common/m4 -I ${S}/m4"
+
+LIBV = "0.8"
+
+python populate_packages_prepend () {
+	gst_libdir = oe.data.expand('${libdir}/gstreamer-${LIBV}', d)
+
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s')
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
+}
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
+	install -m 0644 gst-libs/gst/gconf/gconf.h ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
+	oe_libinstall -C gst-libs/gst/gconf -so libgstgconf-0.8 ${STAGING_LIBDIR}
+}
