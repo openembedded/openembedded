@@ -22,5 +22,5 @@ do_stage () {
 
 do_install () {
 	gpe_do_install
-	oe_runmake PREFIX=${PREFIX} DESTDIR=${D} install-devel
+	oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
 }
