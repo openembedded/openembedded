@@ -1,0 +1,14 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ftp://ftp.sudo.ws/pub/sudo/sudo-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1 \
+	  file://${FILESDIR}/nonrootinstall.patch;patch=1
+
+inherit autotools
+
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
