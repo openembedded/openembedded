@@ -27,7 +27,6 @@ cia_address="cia@navi.cx"
 
 author=`echo $BK_USER | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 module=`basename $BKD_ROOT | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
-log=`bk changes -r"$REV" -d":C:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 tag=`bk changes -r"$REV" -d":TAG:" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`
 for file in `bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}" | sort -u | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'`; do
     files="$files<file>$file</file>"
@@ -55,7 +54,11 @@ Subject: DeliverXML
             <revision>$REV</revision>
             <author>$author</author>
             <files>$files</files>
-            <log>$log</log>
+EOF
+echo "            <log>"
+bk changes -r"$REV" -d"\$if(:C:){\$each(:C:){:C:\\\n}}" | sed 's/\&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+echo "            </log>"
+cat <<EOF
         </commit>
     </body>
 </message>
