@@ -13,6 +13,9 @@ DEPENDS=virtual/libc
 
 inherit autotools
 EXTRA_OECONF="  --with-pcap=linux"
+CPPFLAGS_prepend = '-I${S} '
+CFLAGS_prepend = '-I${S} '
+CXXFLAGS_prepend = '-I${S} '
 
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
