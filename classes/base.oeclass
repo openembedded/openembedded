@@ -575,15 +575,22 @@ def explode_deps(s):
 python read_shlibdeps () {
 	packages = (oe.data.getVar('PACKAGES', d, 1) or "").split()
 	for pkg in packages:
+		rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
 		shlibsfile = oe.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
 		if os.access(shlibsfile, os.R_OK):
 			fd = file(shlibsfile)
 			lines = fd.readlines()
 			fd.close()
-			rdepends = explode_deps(oe.data.getVar('RDEPENDS_' + pkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "")
 			for l in lines:
 				rdepends.append(l.rstrip())
-			oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+		pcfile = oe.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
+		if os.access(pcfile, os.R_OK):
+			fd = file(pcfile)
+			lines = fd.readlines()
+			fd.close()
+			for l in lines:
+				rdepends.append(l.rstrip())
+		oe.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
 
 python read_subpackage_metadata () {
