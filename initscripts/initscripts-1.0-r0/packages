@@ -1,0 +1,70 @@
+#!/bin/sh
+# Original author: ???
+#
+# Additions by Steph Meslin-Weber:
+# x Percentage display
+# x Dot display of dependency installations
+# - removed both of above
+# - display is now X of Y packages and current package name being installed
+
+. /etc/default/rcS
+
+if [ -e /dev/tty0 ]; then
+  vtmaster=/dev/tty0
+elif [ -e /dev/vc/0 ]; then
+  vtmaster=/dev/vc/0
+else
+  vtmaster=/dev/null
+fi
+
+# Display formatting
+linelength=80
+head1="  Progress: "
+head2="  Packages: "
+disp1="\033[1A\033[${linelength}D\033[K${head1}"
+disp2="\033[1B\033[${linelength}D\033[K${head2}"
+
+reconfigure () {
+  pkg=$1;
+  path=$2;
+	curposition=$3;
+	max=$4;
+  test -e "$path/info/$pkg.control" || return 1;
+
+	echo >$vtmaster -ne "$disp1 \033[1m${curposition} of ${max}\033[0m packages"
+	echo >$vtmaster -ne "$disp2 ${pkg}..."
+	
+  test -e "$path/info/$pkg.prerm" && $path/info/$pkg.prerm unconfigure >/dev/null 2>&1
+  test -e "$path/info/$pkg.postinst" && $path/info/$pkg.postinst configure >/dev/null 2>&1
+	
+  log="$log $pkg";
+
+  return 0;
+}
+
+if test ! -e /etc/.configured; then
+	test "$VERBOSE" != "no" && echo >$vtmaster "Starting at `date +%H:%M:%S`"
+  echo >$vtmaster -ne "\rReconfiguring all packages installed to root...\n\r\n\r";
+
+	# switch off console cursor
+	echo >$vtmaster -ne "\033[?25l"
+	
+  log="";
+
+	# number of root packages (not including dependencies)
+	maxcount=`ls -l /usr/lib/ipkg/info/*.control|wc -l|sed -e 's, ,,g'`
+	
+	curposition=0
+	for control in /usr/lib/ipkg/info/*.control; do
+		package=`echo $control|sed -e 's,.*/,,g; s,\.control,,g;'`
+		(echo $log|grep -q $package) || reconfigure $package /usr/lib/ipkg "$curposition" "$maxcount";
+		curposition=`expr $curposition + 1`
+  done
+
+  echo >$vtmaster -ne "$disp1 \033[1m${maxcount} of ${maxcount}\033[0m packages"	
+	echo >$vtmaster -ne "$disp2 Completed.\r\n"
+	test "$VERBOSE" != "no" && echo >$vtmaster "Finished at `date +%H:%M:%S`"
+
+	# switch on console cursor
+	echo >$vtmaster -ne "\033[?25h"
+fi

@@ -43,9 +43,6 @@ else
 	cd /
 	mkdir -p dev/msys
 	mkdir -p dev/pts
-#	ln -sf /dev/dsp1 /dev/sharp_buz
-	ln -sf /dev/sharp_ts /dev/ts
-	ln -sf /dev/collie-fl /dev/fl
 	ln -sf /proc/self/fd /dev/fd
 	ln -sf /proc/kcore /dev/core
 	/sbin/makedevs -r / -D /etc/device_table
