@@ -3,7 +3,7 @@ DEPENDS = "matchbox xmodmap"
 SRC_URI = "file://xrandr-panelapp.sh \
 	   file://xrandr-panelapp.desktop \
 	   file://xrandr.png"
-SECTION = "gpe"
+SECTION = "x11/wm"
 PRIORITY = "optional"
 
 do_install() {
