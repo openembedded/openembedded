@@ -20,6 +20,21 @@
 # will build into ${TMPDIR} which defaults to ${TOPDIR}/tmp (${TOPDIR} is
 # the current directory when oemake was executed).
 
+#
+# Quick example of the described stuff above (builds the busybox packages):
+#
+# mkdir $HOME/sources
+# mkdir $HOME/oe
+#  .. clone oe and packages into $HOME/oe/oe and $HOME/oe/packages ..
+# mkdir $HOME/oe/build-arm
+# mkdir $HOME/oe/build-arm/conf
+# cd $HOME/oe/build-arm
+# cp ../packages/conf/local.conf.sample conf/local.conf
+#  .. EDIT conf/local.conf to set OEFILES and other vars properly!! ..
+# oemake busybox
+#  .. busybox is built in tmp/ from the current dir ($HOME/oe/build-arm) ..
+#
+
 # Use this to specify where OE should place the downloaded sources into
 DL_DIR = "${HOME}/sources"
 
