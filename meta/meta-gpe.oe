@@ -1,0 +1,83 @@
+PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
+DESCRIPTION = "Meta-package for GPE Palmtop Environment"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+ALLOW_EMPTY = 1
+
+RDEPENDS_gpe = "gpe-task-base gpe-task-utils gpe-task-pim"
+
+gpe-base = "\
+    gpe-dm \
+    gpe-login \
+    gpe-session-scripts \
+    matchbox \
+    rxvt \
+    gpe-icons \
+    gpe-autostarter"
+
+RDEPENDS_gpe-task-base := "${gpe-base}"
+DEPENDS += " ${gpe-base}"
+
+gpe-task-pim = "\
+    gpe-timesheet \
+    gpe-todo \
+    gpe-calendar \
+    gpe-contacts"
+#    gpe-today
+RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
+DEPENDS += " ${gpe-task-pim}"
+
+gpe-task-utils = "\
+    gpe-bluetooth \
+    gpe-edit \
+    gpe-su \
+    gpe-conf \
+    gpe-filemanager \
+    gpe-gallery"
+
+RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
+DEPENDS += " ${gpe-task-utils}"
+
+#    gpe-collateral-gtk2 \
+#    gdk-pixbuf2-loader-jpeg \
+#    \
+#    gpe-bootsplash2 \
+#    gpe-terminal \
+#    \
+#    keylaunch \
+#    esd \
+#    detect-stylus \
+#    gpe-soundserver \
+#    gpe-mimedir-tools \
+#    teleport \
+#    gpe-keylock \
+#    \
+#    xmonobut \
+#    minilite \
+#    minibat \
+#    minipredict \
+#    matchbox-panel-hacks \
+#    mbinputmgr \
+#    \
+#    xstroke \
+#    rosetta \
+#    xkbd \
+#    mbmerlin \
+#    \
+#    startup-monitor \
+#    \
+#    xtscal \
+#    gpe-su2 \
+#    gpe-conf \
+#    gpe-confd \
+#    xst \
+#    \
+#    gpe-what \
+#    gpe-question2 \
+#    gpe-announce2 \
+#    \
+#    gpe-wlancfg \
+#    gpe-aerial \
+#    hotplug-dbus \
+#    gpe-autostarter \
+#    nsqld
