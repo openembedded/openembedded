@@ -135,33 +135,6 @@
      }
      if ( qt_is_gui_used ) {
  	delete qt_fbdpy;
-@@ -2584,7 +2677,7 @@
-     if ( !widget ) {				// don't know this window
- 	if ( !QWidget::mouseGrabber()
- #ifndef QT_NO_QWS_MANAGER
--	    && !QWSManager::grabbedMouse() 
-+	    && !QWSManager::grabbedMouse()
- #endif
- 	    ) {
- 	    qt_last_cursor = 0xffffffff; // cursor can be changed by another application
-@@ -3394,7 +3487,7 @@
- #ifndef QT_NO_QWS_IM
- 			    if ( mouse.state&button && w != QInputContext::microFocusWidget() ) //button press
- 				QInputContext::reset( oldFocus );
--#endif	
-+#endif
- 			    QFocusEvent::setReason( QFocusEvent::Mouse);
- 			    w->setFocus();
- 			    QFocusEvent::resetReason();
-@@ -3540,7 +3633,7 @@
- 		    QApplication::sendEvent( widget, &enter );
- 		    (*mouseInWidget) = widget;
- #ifndef QT_NO_QWS_IM
--		    if ( e.type() == QEvent::MouseButtonPress && 
-+		    if ( e.type() == QEvent::MouseButtonPress &&
- 			 !widget->testWFlags( Qt::WStyle_Tool ) &&
- 			 !widget->topLevelWidget()->testWFlags( Qt::WStyle_Tool ) )
- 			QInputContext::reset( oldFocus );
 --- qt-2.3.7/src/kernel/qkeyboard_qws.cpp~vt-switch.patch
 +++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp
 @@ -1068,6 +1068,24 @@
