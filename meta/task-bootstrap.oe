@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r8"
+PR = "r9"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
@@ -8,13 +8,13 @@ PACKAGES = "${PN}"
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug initscripts modutils netbase \
 	sysvinit tinylogin lrzsz portmap \
-	modutils-initscripts timezones \
+	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug initscripts modutils-depmod modutils-modinfo \
 	netbase sysvinit tinylogin \
-	modutils-initscripts timezones \
+	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz portmap \
