@@ -29,7 +29,7 @@ OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
 
 OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
 
-OPIE_BASE_APPS = "opie-packagemanager opie-console opie-clock opie-citytime"
+OPIE_BASE_APPS = "opie-packagemanager opie-console opie-clock opie-citytime opie-backup"
 
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime opie-sysinfo opie-networksettings opie-button-settings"
 
