@@ -1,4 +1,4 @@
-SECTION = "libs"
+SECTION = "x11/libs"
 DEPENDS = "x11 xext libxv drm"
 DESCRIPTION = "X Video Motion Compensation extension library."
 
