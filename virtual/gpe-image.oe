@@ -12,6 +12,7 @@ export IPKG_INSTALL = 'base-files base-passwd \
 		      initscripts kernel-modules \
 		      netbase resolvconf \
 		      tslib libgcc1 sysvinit tinylogin xserver-kdrive-fbdev \
-		      gpe-task-base prelink ttf-bitstream-vera pango-module-basic-xft'
+		      gpe-task-base prelink ttf-bitstream-vera pango-module-basic-xft \
+		      lrzsz glibc-gconv glibc-gconv-iso8859-1'
 
 inherit image_ipk

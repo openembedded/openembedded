@@ -5,7 +5,7 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
 PROVIDES = "virtual/libc"
-PACKAGES = "glibc glibc-dev glibc-doc glibc-gconv glibc-i18n glibc-locale"
+PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
 FILES_glibc-gconv = "${libdir}/gconv"
@@ -209,6 +209,51 @@ do_install() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
+}
+
+python populate_packages_prepend () {
+	import os
+	def do_split(root, pattern, format, description, postinst):
+		dvar = oe.data.getVar('D', d, 1)
+		if not dvar:
+			oe.error("D not defined")
+			return
+
+		packages = oe.data.getVar('PACKAGES', d, 1).split()
+		if not packages:
+			oe.error("PACKAGES not defined")
+			return
+
+		if postinst:
+			postinst = '#!/bin/sh\n' + postinst
+		objs = os.listdir(dvar + root)
+		mainpkg = oe.data.getVar('PKG_' + packages[0], d) or packages[0]
+		for o in objs:
+			import re
+			m = re.match(pattern, o)
+			if not m:
+				continue
+			on = m.group(1).lower().replace('_', '+').replace('@', '+')
+			pkg = format % on
+			packages.append(pkg)
+			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
+			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			if postinst:
+				oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
+
+		oe.data.setVar('PACKAGES', ' '.join(packages), d)
+
+	libdir = oe.data.getVar('libdir', d, 1)
+	if not libdir:
+		oe.error("libdir not defined")
+		return
+
+	gconv_libdir = os.path.join(libdir, "gconv")
+
+	do_split(gconv_libdir, '^(.*)\.so$', 'glibc-gconv-%s', 'gconv module for character set %s', None)
+
+	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 }
 
 python do_package () {
