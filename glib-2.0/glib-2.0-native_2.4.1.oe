@@ -6,6 +6,7 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+DEPENDS = "gettext-native"
 
 EXTRA_OECONF = "--disable-debug"
 
