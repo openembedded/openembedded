@@ -1,0 +1,38 @@
+DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
+/dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
+LICENSE = "GPL"
+PR = "r1"
+
+SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
+	   file://flags.patch;patch=1 \
+	   file://tmpfs.patch;patch=1 \
+	   file://noasmlinkage.patch;patch=1 \
+	   file://init"
+
+inherit update-rc.d
+
+INITSCRIPT_NAME = "udev"
+INITSCRIPT_PARAMS = "start 03 S ."
+
+export HOSTCC = "${BUILD_CC}"
+export udevdir ?= "/udev"
+export usrbindir := "${bindir}"
+export usrsbindir := "${sbindir}"
+export etcdir = "${sysconfdir}"
+LD = "${CC}"
+bindir = "/bin"
+sbindir = "/sbin"
+
+UDEV_EXTRAS = "extras/scsi_id/ extras/volume_id/"
+FILES_${PN} += "${usrbindir} ${usrsbindir}"
+EXTRA_OEMAKE = "-e \
+		'EXTRAS=${UDEV_EXTRAS}' \
+		'STRIP=echo'"
+
+do_install () {
+	install -d ${D}/${usrsbindir} \
+		   ${D}/${sbindir}
+	oe_runmake 'DESTDIR=${D}' install
+	install -d ${D}/${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/udev
+}
