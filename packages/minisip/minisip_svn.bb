@@ -9,7 +9,7 @@ DEPENDS = "libsamplerate0 libglademm libmsip0 libmikey0"
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
 S = ${WORKDIR}/${PN}
 
-
+DEFAULT_PREFERENCE=-1
 
 FILES_${PN} += "${datadir}/minisip"
 
