@@ -1,0 +1,11 @@
+SECTION = "console/utils"
+SRC_URI = "http://www.mirror.ac.uk/sites/ftp.info-zip.org/pub/infozip/src/zip23.tar.gz"
+
+do_compile() {
+	make -f unix/Makefile generic
+}
+
+do_install() {
+	make -f unix/Makefile install prefix=${D}${prefix}
+}
+

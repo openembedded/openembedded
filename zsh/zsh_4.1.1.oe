@@ -1,5 +1,5 @@
 DESCRIPTION = "Zsh shell"
-SECTION = "base"
+SECTION = "console/base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "ncurses pcre"

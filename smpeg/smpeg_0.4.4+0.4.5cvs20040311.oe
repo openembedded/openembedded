@@ -1,4 +1,4 @@
-SECTION = "NET"
+SECTION = "console/multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"

@@ -2,6 +2,8 @@ DESCRIPTION = "Utilities for twin. Currently contains 'twkalc', a calculator der
 MAINTAINER = "Chris Lord <cwiiis@blueyonder.co.uk>"
 DEPENDS = "twin"
 
+SECTION = "console/utils"
+
 SRC_URI = "http://linuz.sns.it/~max/twin/twutils-0.2.tar.gz"
 
 inherit autotools

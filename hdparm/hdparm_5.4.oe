@@ -1,6 +1,6 @@
 DESCRIPTION = "hdparm is a Linux shell utility for viewing \
 and manipulating various IDE drive and driver parameters."
-SECTION = "utils"
+SECTION = "console/utils"
 PRIORITY = "optional"
 PR = "r1"
 

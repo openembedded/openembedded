@@ -1,5 +1,5 @@
-DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
-SECTION = "net"
+DESCRIPTION = "gif2png"
+SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "zlib libpng"
 

@@ -1,6 +1,7 @@
 DEPENDS = "ncurses"
 DESCRIPTION = "Vim is an almost fully-compatible \
 version of the Unix editor Vi."
+SECTION = "console/utils"
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"

@@ -1,0 +1,14 @@
+DESCRIPTION = "user preference utility for X"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
+FIXEDCVSDATE = "${@oe.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
+PV = "0.0cvs${FIXEDCVSDATE}"
+
+DEPENDS = "x11 xext xextensions xmu"
+
+SECTION = "x11/base"
+
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xset;date=${FIXEDCVSDATE} \
+           file://autofoo.patch;patch=1"
+S = "${WORKDIR}/xset"
+
+inherit autotools pkgconfig 

@@ -3,6 +3,8 @@ DESCRIPTION = " vorbis-tools contains oggenc (an encoder), ogg123 (a playback to
 ogginfo (displays ogg information), vcut (ogg file splitter), and \
 vorbiscomment (ogg comment editor)."
 
+SECTION = "console/multimedia"
+
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/vorbis-tools-${PV}.tar.gz \
 	   file://m4.patch;patch=1"
 

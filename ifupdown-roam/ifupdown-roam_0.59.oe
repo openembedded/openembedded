@@ -1,4 +1,4 @@
-SECTION = "net"
+SECTION = "console/network"
 PRIORITY = "extra"
 DESCRIPTION = "Roaming enhancements for ifupdown"
 RDEPENDS = "ifupdown"

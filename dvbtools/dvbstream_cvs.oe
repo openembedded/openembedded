@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-SECTION = "dvb"
+SECTION = "console/dvb"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libxml2"

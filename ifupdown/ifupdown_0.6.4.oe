@@ -3,6 +3,8 @@ This package provides the tools ifup and ifdown which may be used to \
 configure (or, respectively, deconfigure) network interfaces, based on \
 the file /etc/network/interfaces."
 
+SECTION = "base"
+
 SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}-4.8.diff.gz;patch=1 \
            file://busybox.patch;patch=1 \

@@ -1,5 +1,5 @@
 DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
-SECTION = "net"
+SECTION = "console/network"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 

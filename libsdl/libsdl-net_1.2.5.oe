@@ -1,5 +1,5 @@
 DESCRIPTION = "Simple DirectMedia Layer networking library."
-SECTION = "net"
+SECTION = "libs/network"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"

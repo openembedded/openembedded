@@ -1,5 +1,5 @@
 DESCRIPTION = "Microwindows Graphical Engine"
-SECTION = "gui"
+SECTION = "x11/wm"
 PRIORITY = "optional"
 MAINTAINER = "Jordan Crouse <jordan@cosmicpenguin.net>"
 DEPENDS = "libpng jpeg"

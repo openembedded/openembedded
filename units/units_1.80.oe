@@ -1,5 +1,6 @@
 DEPENDS = "readline"
 DESCRIPTION = "GNU units converts between different systems of units."
+SECTION = "console/utils"
 
 SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \
 	   file://units.c.patch;patch=1 \

@@ -1,5 +1,5 @@
 DESCRIPTION = "A client for the Cisco3000 VPN Concentrator"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libgcrypt"
