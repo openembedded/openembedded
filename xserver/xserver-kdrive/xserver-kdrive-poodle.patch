@@ -1,5 +1,10 @@
---- xserver/hw/kdrive/fbdev/fbdev.c.orig	2004-11-29 20:00:00.000000000 +0000
-+++ xserver/hw/kdrive/fbdev/fbdev.c	2004-11-29 20:04:10.000000000 +0000
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xserver/hw/kdrive/fbdev/fbdev.c~xserver-kdrive-poodle.patch
++++ xserver/hw/kdrive/fbdev/fbdev.c
 @@ -190,6 +190,7 @@
      var.nonstd = 0;
      var.grayscale = 0;
@@ -8,7 +13,12 @@
      k = ioctl (priv->fd, FBIOPUT_VSCREENINFO, &var);
  
      if (k < 0)
-@@ -202,6 +203,7 @@
+@@ -198,10 +199,11 @@
+ 	return FALSE;
+     }
+ 
+-    /* Re-get the "fixed" parameters since they might have changed */
++    // Re-get the "fixed" parameters since they might have changed
      k = ioctl (priv->fd, FBIOGET_FSCREENINFO, &priv->fix);
      if (k < 0)
          perror ("FBIOGET_FSCREENINFO");
