@@ -64,6 +64,27 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 
 	oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
+def package_frob_arch(d):
+	import oe, os
+	machine = oe.data.getVar('MACHINE', d, 1)
+	if not machine:
+		# can't specialise if MACHINE not defined
+		return:
+	old_arch = oe.data.getVar('PACKAGE_ARCH', d, 1)
+	if (old_arch == machine):
+		# Nothing to do
+		return
+	paths = []
+	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
+		paths.append(oe.data.expand(os.path.join(p, machine), d))
+	for s in oe.data.getVar('SRC_URI', d, 1).split():
+		local = oe.data.expand(oe.fetch.localpath(s, d), d)
+		for mp in paths:
+			if local.startswith(mp):
+				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, machine))
+				oe.data.setVar('PACKAGE_ARCH', machine, d)
+				return
+
 python populate_packages () {
 	import glob, copy, stat, errno, re
 
@@ -94,6 +115,8 @@ python populate_packages () {
 	if not pn:
 		oe.error("PN not defined")
 		return
+
+	package_frob_arch(d)
 
 	os.chdir(dvar)
 
@@ -370,12 +393,12 @@ python package_do_split_locales() {
 	import os
 
 	if (oe.data.getVar('PACKAGE_NO_LOCALE', d, 1) == '1'):
-		oe.note("package requested not splitting locales")
+		oe.debug(1, "package requested not splitting locales")
 		return
 
 	packages = (oe.data.getVar('PACKAGES', d, 1) or "").split()
 	if not packages:
-		oe.note("no packages to build; not splitting locales")
+		oe.debug(1, "no packages to build; not splitting locales")
 		return
 
 	datadir = oe.data.getVar('datadir', d, 1)
