@@ -5,7 +5,6 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "tabmanager"
-APPTYPE = "binary"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/tabmanager \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \

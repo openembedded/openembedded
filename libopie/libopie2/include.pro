@@ -8,12 +8,14 @@
     TEMPLATE = lib
     CONFIG += plugin
     DEFINES += OPIE_APP_INTERFACE
+    DEFINES += QUICKAPP_NAME="\"$${TARGET}\""
   }
 
   !contains ( CONFIG, quick-app ) {
     message( Building a standalone application )
     TEMPLATE = app
     DEFINES -= OPIE_APP_INTERFACE
+    DEFINES += QUICKAPP_NAME="\"$${TARGET}\""
   }
 }
 }
