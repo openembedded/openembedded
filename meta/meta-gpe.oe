@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r1"
+PR = "r2"
 
 ALLOW_EMPTY = 1
 
@@ -41,6 +41,7 @@ gpe-task-utils = "\
     gpe-taskmanager \
     gpe-clock \
     gpe-appmgr \
+    gpe-terminal \
     gpe-shield"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
@@ -50,7 +51,6 @@ DEPENDS += " ${gpe-task-utils}"
 #    gdk-pixbuf2-loader-jpeg \
 #    \
 #    gpe-bootsplash2 \
-#    gpe-terminal \
 #    \
 #    keylaunch \
 #    esd \
