@@ -2,6 +2,7 @@ DESCRIPTION = "Skin for opie-mediaplayer2"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "opieplayer2"
 
