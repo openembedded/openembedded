@@ -1,9 +1,10 @@
 DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E) 2.x"
+SECTION = "tools"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc zlib-native"
 LICENSE = "GPL/QPL"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
+           file://${FILESDIR}/fix-makefile.patch;patch=1"
 S = "${WORKDIR}/qt-${PV}"
 
 inherit autotools native
@@ -26,6 +27,7 @@ do_configure() {
 
 do_compile() {
         unset CC LD CCLD CXX RANLIB AR STRIP CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
+	oe_runmake symlinks || die "Can't symlink include files"
         cd ${S}/src/moc && oe_runmake || die "Building moc failed"
         cp ${S}/src/moc/moc ${S}/bin
         cd ${S}/src && oe_runmake || die "Building libqt.a failed"
