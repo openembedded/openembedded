@@ -18,7 +18,7 @@ OEMASK = ""
 #ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
-PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie virtual/libsdl:libsdl-qpe"
+PREFERRED_PROVIDERS = "virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie virtual/libsdl:libsdl-qpe"
 
 # Uncomment this to specify where OE should create its temporary files.
 # Note that a full build of everything in OE will take GigaBytes of hard disk space,
