@@ -68,6 +68,13 @@ kernel_do_stage() {
 	echo "${KERNEL_LDSUFFIX}" >${STAGING_KERNEL_DIR}/kernel-ldsuffix
 	[ -e Rules.make ] && install -m 0644 Rules.make ${STAGING_KERNEL_DIR}/
 	[ -e Makefile ] && install -m 0644 Makefile ${STAGING_KERNEL_DIR}/
+	# Makefile includes arch/mips/Makefile on mips
+	if [ ARCH="mips" ]; then
+		install -d ${STAGING_KERNEL_DIR}/arch/mips
+		install -m 0644 arch/mips/Makefile ${STAGING_KERNEL_DIR}/arch/mips
+	fi
+	cp -fR scripts ${STAGING_KERNEL_DIR}/
+	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 }
 
