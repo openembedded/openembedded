@@ -4,6 +4,7 @@ SECTION = "libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib"
 PV = "${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edb"
 S = "${WORKDIR}/edb"
@@ -17,3 +18,7 @@ do_stage () {
 	oe_libinstall -C src libedb ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/Edb.h ${STAGING_INCDIR}/
 }
+
+FILES_${PN} = "${libdir}/libedb*.so*"
+FILES_${PN}-dev += "${bindir} ${libdir}/pkgconfig"
+

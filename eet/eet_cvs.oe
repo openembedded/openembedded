@@ -6,6 +6,7 @@ SECTION = "libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib jpeg"
 PV = "${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet \
 	   file://flags.patch;patch=1"
@@ -17,3 +18,7 @@ do_stage () {
 	oe_libinstall -C src/lib libeet ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/lib/Eet.h ${STAGING_INCDIR}/
 }
+
+FILES_${PN} = "${libdir}/libeet*.so*"
+FILES_${PN}-dev += "${bindir} ${libdir}/pkgconfig"
+

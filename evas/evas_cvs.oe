@@ -5,9 +5,9 @@ your CPU or graphics hardware are too slow."
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "libpng jpeg freetype"
+DEPENDS = "libpng jpeg edb eet freetype"
 PV = "${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas \
            file://flags.patch;patch=1 \
@@ -22,13 +22,13 @@ EXTRA_OECONF = "--enable-fb			\
 		--disable-software-qtopia	\
 		--disable-software-x11		\
 		--disable-gl-x11		\
-		--disable-image-loader-eet	\
-		--disable-image-loader-edb	\
+		--enable-image-loader-eet	\
+		--enable-image-loader-edb	\
 		--enable-image-loader-png	\
 		--enable-image-loader-jpeg	\
 		--enable-small-dither-mask	\
 		--enable-cpu-c			\
-		--disable-font-loader-eet	\
+		--enable-font-loader-eet	\
 		--enable-scale-sample		\
 		--enable-scale-smooth		\
 		--enable-convert-yuv		\
@@ -80,3 +80,9 @@ do_stage () {
 	done
 	oe_libinstall -C src/lib libevas ${STAGING_LIBDIR}/
 }
+
+PACKAGES += "evas-examples"
+
+FILES_${PN} = "${libdir}/libevas*.so*"
+FILES_${PN}-dev += "${bindir}/evas-config ${libdir}/pkgconfig"
+FILES_${PN}-examples = "${bindir}/evas_fb_test ${datadir}"

@@ -4,9 +4,10 @@ timeouts and idle handlers fast, optimized, and convenient."
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "libs"
 PRIORITY = "optional"
+LEAD_SONAME = "libecore.so"
 PV = "${CVSDATE}"
 DEPENDS = "edb eet evas freetype edb-native"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
 S = "${WORKDIR}/ecore"
@@ -43,3 +44,9 @@ do_stage () {
 	install -m 0644 ${S}/src/lib/ecore/Ecore_Data.h ${STAGING_INCDIR}/
 	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+PACKAGES += "ecore-examples"
+
+FILES_${PN} = "${libdir}/libecore*.so* ${libdir}/ecore_config_ipc_ecore.so"
+FILES_${PN}-dev += "${bindir}/ecore-config ${libdir}/pkgconfig"
+FILES_${PN}-examples = "${bindir}/ecore_test ${bindir}/ecore_evas_test ${datadir}"
