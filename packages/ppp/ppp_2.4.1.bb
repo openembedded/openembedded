@@ -14,7 +14,7 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-2.4.1.tar.gz \
 	file://ip-up \
 	file://ip-down"
 	
-inherit autotools libtool
+inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
 EXTRA_OECONF = --disable-strip
