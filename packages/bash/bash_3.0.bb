@@ -8,7 +8,9 @@ PR = "r4"
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
 	file://signames-mipsel.diff;patch=1"
 
-inherit autotools
+inherit autotools gettext
+
+PARALLEL_MAKE = ""
 
 bindir = "/bin"
 sbindir = "/sbin"
