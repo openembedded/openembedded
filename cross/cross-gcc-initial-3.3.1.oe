@@ -1,0 +1,15 @@
+include cross-gcc-${PV}.oe
+
+EXTRA_OECONF = --oldincludedir=${prefix}/include --enable-shared \
+	       --enable-languages=c \
+	       --disable-shared \
+	       --disable-threads
+
+do_configure_append () {
+	if (grep -q TARGET_LIBGCC2_CFLAGS ${tmake_file}); then
+		perl -pi -e 's/^(TARGET_LIBGCC2_CFLAGS.*)/$$1 -Dinhibit_libc -D__gthr_posix_h/' ${tmake_file}
+	else
+		echo 'TARGET_LIBGCC2_CFLAGS = -Dinhibit_libc -D__gthr_posix_h' >> ${tmake_file}
+	fi
+	echo 'T_CFLAGS = -Dinhibit_libc -D__gthr_posix_h' >> ${tmake_file}
+}

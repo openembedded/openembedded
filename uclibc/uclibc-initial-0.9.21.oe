@@ -1,5 +1,4 @@
 include uclibc-${PV}.oe
-PN := ${PN}-initial
 
 DEPENDS :=
 PROVIDES := virtual/uclibc-headers

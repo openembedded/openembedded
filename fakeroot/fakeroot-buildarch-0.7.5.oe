@@ -1,0 +1,3 @@
+inherit native
+include fakeroot-${PV}.oe
+S = ${WORKDIR}/fakeroot-${PV}

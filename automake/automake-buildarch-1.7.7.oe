@@ -1,5 +1,4 @@
 include automake-${PV}.oe
-PN:='automake-buildarch'
 S = ${WORKDIR}/automake-${PV}
 
 inherit native
