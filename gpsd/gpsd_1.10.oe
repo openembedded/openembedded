@@ -5,6 +5,7 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://pygps.org/gpsd/downloads/gpsd-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \
+           file://gcc34.patch;patch=1 \
            file://gpsdc.patch;patch=1 \
            file://nmea-fix.patch;patch=1"
 
