@@ -3,11 +3,12 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "xt xext"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xmu"
 S = "${WORKDIR}/Xmu"
 
-PACKAGES =+ "libxmuu libxmuu-dev"
+PACKAGES =+ "xmuu xmuu-dev"
 
 FILES_libxmuu = "${libdir}/libXmuu.so.*"
 FILES_libxmuu-dev = "${libdir}/libXmuu.so"

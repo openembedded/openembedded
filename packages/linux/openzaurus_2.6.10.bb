@@ -21,18 +21,18 @@ http://www.rpsys.net/openzaurus/${KV}/jl1/sharp_mtd.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/collie_use_sharp_mtd.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_base.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/poodle_fb.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_base-r5.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_base-r7.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ssp-r4.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/w100-r9.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/w100-r10.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl-r1.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl_extra-r1.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl_extra-r2.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl_map-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r4.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_backlight-r5.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_param-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r2.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_power-r2.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_power-r3.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/fb_blank-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/sharpsl_head_asm-r1.patch;patch=1 \
@@ -64,14 +64,14 @@ COMPATIBLE_HOST = "arm.*-linux"
 #
 # Create the kernel command line. 
 #
-CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
-CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
-CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
-CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
-CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
+#CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
+#CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+#CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+#CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
+#CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
 
 CMDLINE_MEM_collie		= "mem=32M"
-CMDLINE_MEM_husky		= "mem=64M"
+#CMDLINE_MEM_husky		= "mem=64M"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
