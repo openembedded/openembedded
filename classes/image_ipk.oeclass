@@ -36,6 +36,9 @@ arch any 1
 arch noarch 1
 arch ${TARGET_ARCH} 10
 EOF
+	if [ ! -z ${MACHINE} ]; then
+		echo "arch ${MACHINE} 10" >>${DEPLOY_DIR_IMAGE}/ipkg.conf
+	fi
 	for i in ${IPKG_ARCHS}; do
 		if [ $i != "all" ] && [ $i != "${TARGET_ARCH}" ]; then
 			echo "arch $i 5" >> ${DEPLOY_DIR_IMAGE}/ipkg.conf
