@@ -42,9 +42,9 @@ check_sanity () {
 # Check sanity - do we need to send anything?
 check_sanity || exit 0
 
-if (grep -q ':ChangeSet:' $BK_CSETLIST); then
+if (grep -q 'ChangeSet' $BK_CSETLIST); then
     # new, correct csets-out format
-    nums = `bk changes -d:REV: - < $BK_CSETLIST`
+    nums=`bk changes -d:REV: - < $BK_CSETLIST`
 else
 
     # Convert numbers from the cset list into something useful
