@@ -128,10 +128,13 @@ inherit cml1
 
 EXPORT_FUNCTIONS do_compile do_install do_stage do_configure
 
-PACKAGES = "kernel kernel-dev"
+PACKAGES = "kernel kernel-image kernel-dev"
 FILES = ""
-FILES_kernel = "/boot/${KERNEL_IMAGETYPE}*"
+FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 FILES_kernel-dev = "/boot/System.map* /boot/config*"
+RDEPENDS_kernel = "kernel-image-${KERNEL_VERSION}"
+PKG_kernel-image = "kernel-image-${KERNEL_VERSION}"
+ALLOW_EMPTY_kernel = "1"
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
@@ -300,7 +303,7 @@ python populate_packages_prepend () {
 
 	postinst = bb.data.getVar('pkg_postinst_modules', d, 1)
 	postrm = bb.data.getVar('pkg_postrm_modules', d, 1)
-	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='update-modules')
+	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='update-modules kernel-image-%s' % bb.data.getVar("KERNEL_VERSION", d, 1))
 
 	import re, os
 	metapkg = "kernel-modules"
@@ -320,4 +323,22 @@ python populate_packages_prepend () {
 	bb.data.setVar('DESCRIPTION_' + metapkg, 'Kernel modules meta package', d)
 	packages.append(metapkg)
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
+
+	v = bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) or "0"
+	if v == "1":
+		kv = bb.data.getVar("KERNEL_VERSION", d, 1)
+		packages = bb.data.getVar("PACKAGES", d, 1)
+		module_re = re.compile("^kernel-module-")
+		for p in packages.split():
+			if not module_re.match(p):
+				continue
+			pkg = bb.data.getVar("PKG_%s" % p, d, 1) or p
+			newpkg = "%s-%s" % (pkg, kv)
+			bb.data.setVar("PKG_%s" % p, newpkg, d)
+			rprovides = bb.data.getVar("RPROVIDES_%s" % p, d, 1)
+			if rprovides:
+				rprovides = "%s %s" % (rprovides, pkg)
+			else:
+				rprovides = pkg
+			bb.data.setVar("RPROVIDES_%s" % p, rprovides, d)
 }
