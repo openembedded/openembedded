@@ -2,13 +2,16 @@ DESCRIPTION = "Dropbear is a lightweight SSH and SCP Implementation"
 SECTION = "console/network"
 LICENSE = "MIT"
 DEPENDS = "zlib"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	   file://use-urandom.patch;patch=1 \
 	   file://configure.patch;patch=1 \
 	   file://allow-nopw.patch;patch=1 \
 	   file://xauth-path.patch;patch=1 \
+	   file://fix-2kb-keys.patch;patch=1 \
+	   file://fix-ctrl-C-in-scp.patch;patch=1 \
+	   file://fix-empty-termode-problem.patch;patch=1 \
 	   file://init"
 
 inherit autotools update-rc.d
