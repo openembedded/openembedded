@@ -1,6 +1,7 @@
 DEPENDS = "zlib"
 DESCRIPTION = "Tools for managing memory technology devices."
-PV = "${CVSDATE}"
+#PV = "${CVSDATE}"
+PV = "20040614"
 
 S = "${WORKDIR}/mtd/"
 #SRC_URI = "cvs://anoncvs@cvs.infradead.org/home/cvs;module=mtd;method=ext"
