@@ -1,5 +1,5 @@
 PV = "0.1cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 DESCRIPTION = "tslib is a touchscreen access library."
 
@@ -16,6 +16,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/tslib \
            file://husky/tslib.sh \
            file://poodle/ts.conf \
            file://poodle/tslib.sh \
+	   file://simpad/ts.conf \
+	   file://simpad/tslib.sh \
            file://shepherd/ts.conf \
            file://shepherd/tslib.sh"
 S = "${WORKDIR}/tslib"

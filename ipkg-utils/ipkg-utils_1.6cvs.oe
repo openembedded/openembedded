@@ -1,4 +1,5 @@
 PV_append = "${CVSDATE}"
+PR = "r1"
 DESCRIPTION = "Itsy Package Manager utilities"
 DEPENDS = ""
 SECTION = "base"
@@ -11,13 +12,21 @@ RDEPENDS = "python"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils"
 S = "${WORKDIR}/ipkg-utils"
 
-inherit distutils
+INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg.py"
+
+do_compile() {
+	oe_runmake ipkg-compare-versions
+}
 
 do_stage() {
-	cp ipkg* ${STAGING_BINDIR}/
+	for i in $INSTALL; do
+		install $i ${STAGING_BINDIR}
+	done
 }
 
 do_install() {
 	install -d ${D}${bindir}
-	cp ipkg* ${D}${bindir}/
+	for i in $INSTALL; do
+		install $i ${D}${bindir}
+	done
 }

@@ -1,8 +1,4 @@
 include ipkg-utils_${PV}.oe
 inherit native
 DEPENDS = "python-native"
-PACKAGES = ""
 
-do_stage() {
-	cp ipkg* ${STAGING_BINDIR}/
-}
