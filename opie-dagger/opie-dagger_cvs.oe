@@ -6,20 +6,17 @@ LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 sword"
 PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "dagger"
-PR = "r1"
+PR = "r2"
+
+EXTRA_QMAKEVARS_PRE = "LIBSWORD_INC_DIR=${STAGING_INCDIR}/sword"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/dagger \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
-
 S = "${WORKDIR}/${APPNAME}"
-
-EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/sword/"
-
 
 inherit opie
 
-# FILES plugins/application/libdagger.so* bin/dagger pics/dagger apps/Applications/dagger.desktop
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
