@@ -20,12 +20,12 @@ do_compile() {
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
-# no staging neessary, becaue
-# include files already done during do_compile
-# lib files already done during do_compile
+do_stage() {
+	oe_libinstall -so libqtaux2 ${STAGING_LIBDIR}
+}
 
 do_install() {
-	oe_libinstall -so -C ${STAGING_LIBDIR} libqtaux2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so libqtaux2 ${D}/${palmtopdir}/lib
 }
 
 FILES_${PN}=${palmtopdir}/lib
