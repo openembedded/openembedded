@@ -5,8 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
 APPNAME = "opierec"
-APPTYPE = "binary"
-
+PV = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/multimedia/opierec \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
