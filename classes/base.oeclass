@@ -27,17 +27,17 @@ def base_read_file(filename):
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
-def base_set_filespath(d):
+def base_set_filespath(path, d):
 	import os, oe
 	filespath = []
-	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
+	for p in path:
 		overrides = oe.data.getVar("OVERRIDES", d, 1) or ""
 		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
 	oe.data.setVar("FILESPATH", ":".join(filespath), d)
 
-FILESPATH = "${@base_set_filespath(d)}"
+FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
 die() {
 	oefatal "$*"
