@@ -24,6 +24,13 @@ do_stage () {
 	install -c -m 0644 ltmain.sh ${STAGING_DIR}/share/libtool/
 	install -c -m 0644 libtool.m4 ${STAGING_DIR}/share/aclocal/
 	install -c -m 0644 ltdl.m4 ${STAGING_DIR}/share/aclocal/
+
+	install -m 0644 libltdl/.libs/libltdl.a ${STAGING_LIBDIR}/
+	install -m 0644 libltdl/.libs/libltdl.lai ${STAGING_LIBDIR}/libltdl.la
+	install -m 0755 libltdl/.libs/libltdl.so.3.1.0 ${STAGING_LIBDIR}/
+	ln -sf libltdl.so.3.1.0 ${STAGING_LIBDIR}/libltdl.so.3
+	ln -sf libltdl.so.3.1.0 ${STAGING_LIBDIR}/libltdl.so
+	install -m 0644 libltdl/ltdl.h ${STAGING_DIR}/target/include/
 }
 
 do_install () {
