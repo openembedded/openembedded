@@ -1,0 +1,53 @@
+DEPENDS = "xt xi zip-native gtk+ orbit2"
+PR = "r1"
+
+SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
+	file://mozconfig \
+	file://xptcstubs.patch;patch=1 \
+	file://no-xmb.patch;patch=1 \
+	file://extensions-hack.patch;patch=1 \
+	file://mozilla-firefox.png file://mozilla-firefox.desktop"
+
+S = "${WORKDIR}/mozilla"
+
+PACKAGES =+ "firefox-inspector"
+
+FILES_firefox-inspector = "${libdir}/firefox-${PV}/chrome/inspector"
+FILES_${PN} = "${bindir}/firefox ${datadir}/applications ${datadir}/pixmaps ${libdir}/firefox-${PV}"
+FILES_${PN}-dev += "${datadir}/idl ${bindir}/firefox-config"
+
+SELECTED_OPTIMIZATION = "-Os -fsigned-char -fno-strict-aliasing"
+
+export CROSS_COMPILE=1
+export HOST_LIBIDL_CONFIG="libIDL-config-2"
+export CONFIGURE_ARGS="--target=${TARGET_SYS} --host=${BUILD_SYS} --build=${BUILD_SYS} --prefix=${prefix}"
+
+export HOST_CFLAGS="${BUILD_CFLAGS}"
+export HOST_CXXFLAGS="${BULID_CXXFLAGS}"
+export HOST_LDFLAGS="${BUILD_LDFLAGS}"
+export HOST_RANLIB="${BUILD_RANLIB}"
+export HOST_AR="${BUILD_AR}"
+
+do_configure() {
+	cp ${WORKDIR}/mozconfig .mozconfig
+}
+
+do_compile() {
+	make -f client.mk build_all
+}
+
+do_install() {
+	make DESTDIR="${D}" install
+	install -d ${D}${datadir}/applications
+	install -d ${D}${datadir}/pixmaps
+	install -m 0644 ${WORKDIR}/mozilla-firefox.desktop ${D}${datadir}/applications/
+	install -m 0644 ${WORKDIR}/mozilla-firefox.png ${D}${datadir}/pixmaps/
+	rm -f ${D}${libdir}/firefox-${PV}/TestGtkEmbed
+	rm -f ${D}${libdir}/firefox-${PV}/libmozz.so
+}
+
+pkg_postinst_firefox() {
+	# work around requirement for root access on first startup
+	chmod -R a+w ${libdir}/firefox*
+}
+
