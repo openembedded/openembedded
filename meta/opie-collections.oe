@@ -7,7 +7,7 @@
 #
 
 OPIE_LIBS_DEPENDS = "qte-for-opie libopie2 qpf-bitstream-vera"
-OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small"
+OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
 OPIE_BASE = "opie-pics opie-qcop opie-quicklauncher opie-taskbar"
 
 #
