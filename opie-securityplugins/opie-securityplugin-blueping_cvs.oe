@@ -1,10 +1,14 @@
-DESCRIPTION = "Blueping plugin for opie-security authentication."
+DESCRIPTION = "Blueping plugin for opie-security authentication. \
+This is a bluetooth-based authentication plugin (you need \
+to have another Bluetooth device around to use it)."
 SECTION = "opie/settings"
 PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-security bluez-utils"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "multiauthbluepingplugin"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/blueping \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "

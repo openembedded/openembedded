@@ -1,10 +1,14 @@
-DESCRIPTION = "Dummy plugin for opie-security authentication."
+DESCRIPTION = "Dummy plugin for opie-security authentication. \
+This is a very simple authentication plugin (you just have \
+to press a button basically), for demonstration purpose."
 SECTION = "opie/settings"
 PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-security"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "multiauthdummyplugin"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/dummy \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "

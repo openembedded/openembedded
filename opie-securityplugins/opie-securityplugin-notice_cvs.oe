@@ -1,10 +1,13 @@
-DESCRIPTION = "Notice plugin for opie-security authentication."
+DESCRIPTION = "Notice plugin for opie-security authentication. \
+It allows you to display, for example, a notice from your legal departement."
 SECTION = "opie/settings"
 PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-security"
 PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "multiauthnoticeplugin"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/notice \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "
