@@ -1,0 +1,14 @@
+DESCRIPTION = "The GNU cc and gcc C compilers."
+LICENSE = "GPL"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+
+PROVIDES = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}gcc-initial"
+
+inherit native
+
+do_stage() {
+}
+
+do_install() {
+}
+
