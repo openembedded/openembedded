@@ -7,10 +7,6 @@ S := ${WORKDIR}/${P}
 
 inherit autotools
 
-do_configure () {
-	chmod 0755 configure
-}
-
 do_install () {
 	oe_runmake 'bindir=${D}${bindir}' 'mandir=${D}${mandir}' install
 }

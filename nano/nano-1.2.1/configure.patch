@@ -64,27 +64,25 @@
  		AC_MSG_RESULT(no)
  		# We might need the term library
  		for termlib in ncurses curses termcap terminfo termlib; do
-@@ -220,7 +220,8 @@
+@@ -220,7 +220,7 @@
  
  		AC_MSG_CHECKING([for SLtt_initialize in -lslang $tcap])
  		LIBS="$LIBS $tcap"
 -		AC_TRY_RUN([
-+		_au_changequote([,])
 +AC_TRY_RUN([
  #include <stdio.h>
  #include <slcurses.h>
  int main () { SLtt_initialize (NULL); return 0; }],
-@@ -237,7 +238,8 @@
+@@ -237,7 +237,7 @@
  		    # We might need the math library
  		    AC_MSG_CHECKING([for SLtt_initialize in -lslang $tcap -lm])
  		    LIBS="$LIBS -lm"
 -		    AC_TRY_RUN([
-+		    _au_changequote([,])
 +AC_TRY_RUN([
  #include <stdio.h>
  #include <slcurses.h>
  int main () { SLtt_initialize (NULL); return 0; }],
-@@ -252,8 +254,7 @@
+@@ -252,8 +252,7 @@
  			CURSES_LIB_NAME=slang],
  			[AC_MSG_RESULT(no)],
  AC_MSG_WARN([*** Can not use slang when cross-compiling]))],
@@ -94,7 +92,7 @@
  	    AC_MSG_ERROR([
  *** The header file slcurses.h was not found. If you wish to use
  *** slang support this header file is required. Please either
-@@ -334,12 +335,11 @@
+@@ -334,12 +333,11 @@
      # Taken from aumix (can't tell from the variable name?)
      AC_CACHE_CHECK([for private member _use_keypad in WINDOW],
      aumix_cv_struct_window_usekeypad,
@@ -111,7 +109,198 @@
  	AC_DEFINE(HAVE_USEKEYPAD, 1, [Define this if your curses lib has the _use_keypad flag.])
 --- nano-1.2.1/configure~configure
 +++ nano-1.2.1/configure
-@@ -5290,6 +5290,7 @@
+@@ -310,7 +310,7 @@
+ # include <unistd.h>
+ #endif"
+ 
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE MKINSTALLDIRS MSGFMT GMSGFMT XGETTEXT MSGMERGE build build_cpu build_vendor build_os host host_cpu host_vendor host_os USE_NLS LIBICONV LTLIBICONV INTLLIBS LIBINTL LTLIBINTL POSUB CPP EGREP GLIB_CONFIG GLIB_CFLAGS GLIB_LIBS CURSES_LIB LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE MKINSTALLDIRS MSGFMT GMSGFMT XGETTEXT MSGMERGE build build_cpu build_vendor build_os host host_cpu host_vendor host_os USE_NLS LIBICONV LTLIBICONV INTLLIBS LIBINTL LTLIBINTL POSUB CPP EGREP GLIB_CONFIG GLIB_CFLAGS GLIB_LIBS CURSES_LIB LIBOBJS LTLIBOBJS'
+ ac_subst_files=''
+ 
+ # Initialize some variables set by options.
+@@ -1314,7 +1314,7 @@
+ 
+ 
+ 
+-am__api_version="1.6"
++am__api_version="1.7"
+ ac_aux_dir=
+ for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
+   if test -f $ac_dir/install-sh; then
+@@ -1558,6 +1558,15 @@
+   SET_MAKE="MAKE=${MAKE-make}"
+ fi
+ 
++rm -rf .tst 2>/dev/null
++mkdir .tst 2>/dev/null
++if test -d .tst; then
++  am__leading_dot=.
++else
++  am__leading_dot=_
++fi
++rmdir .tst 2>/dev/null
++
+  # test to see if srcdir already configured
+ if test "`cd $srcdir && pwd`" != "`pwd`" &&
+    test -f $srcdir/config.status; then
+@@ -1566,9 +1575,19 @@
+    { (exit 1); exit 1; }; }
+ fi
+ 
++# test whether we have cygpath
++if test -z "$CYGPATH_W"; then
++  if (cygpath --version) >/dev/null 2>/dev/null; then
++    CYGPATH_W='cygpath -w'
++  else
++    CYGPATH_W=echo
++  fi
++fi
++
++
+ # Define the identity of the package.
+- PACKAGE=nano
+- VERSION=1.2.1
++ PACKAGE='nano'
++ VERSION='1.2.1'
+ 
+ 
+ cat >>confdefs.h <<_ACEOF
+@@ -1694,15 +1713,11 @@
+ 
+ 
+ 
+-# Add the stamp file to the list of files AC keeps track of,
+-# along with our hook.
+           ac_config_headers="$ac_config_headers config.h:config.h.in"
+ 
+ 
+ 
+ 
+-
+-
+ ac_ext=c
+ ac_cpp='$CPP $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+@@ -2570,24 +2585,16 @@
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+-rm -f .deps 2>/dev/null
+-mkdir .deps 2>/dev/null
+-if test -d .deps; then
+-  DEPDIR=.deps
+-else
+-  # MS-DOS does not allow filenames that begin with a dot.
+-  DEPDIR=_deps
+-fi
+-rmdir .deps 2>/dev/null
+-
++DEPDIR="${am__leading_dot}deps"
+ 
+           ac_config_commands="$ac_config_commands depfiles"
+ 
+ 
+ am_make=${MAKE-make}
+ cat > confinc << 'END'
+-doit:
++am__doit:
+ 	@echo done
++.PHONY: am__doit
+ END
+ # If we don't find an include directive, just comment out the code.
+ echo "$as_me:$LINENO: checking for style of include used by $am_make" >&5
+@@ -2602,7 +2609,7 @@
+ # In particular we don't look at `^make:' because GNU make might
+ # be invoked under some other name (usually "gmake"), in which
+ # case it prints its new name instead of `make'.
+-if test "`$am_make -s -f confmf 2> /dev/null | fgrep -v 'ing directory'`" = "done"; then
++if test "`$am_make -s -f confmf 2> /dev/null | grep -v 'ing directory'`" = "done"; then
+    am__include=include
+    am__quote=
+    _am_result=GNU
+@@ -2662,18 +2669,32 @@
+   # using a relative directory.
+   cp "$am_depcomp" conftest.dir
+   cd conftest.dir
++  # We will build objects and dependencies in a subdirectory because
++  # it helps to detect inapplicable dependency modes.  For instance
++  # both Tru64's cc and ICC support -MD to output dependencies as a
++  # side effect of compilation, but ICC will put the dependencies in
++  # the current directory while Tru64 will put them in the object
++  # directory.
++  mkdir sub
+ 
+   am_cv_CC_dependencies_compiler_type=none
+   if test "$am_compiler_list" = ""; then
+      am_compiler_list=`sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < ./depcomp`
+   fi
+   for depmode in $am_compiler_list; do
++    # Setup a source with many dependencies, because some compilers
++    # like to wrap large dependency lists on column 80 (with \), and
++    # we should not choose a depcomp mode which is confused by this.
++    #
+     # We need to recreate these files for each test, as the compiler may
+     # overwrite some of them when testing with obscure command lines.
+     # This happens at least with the AIX C compiler.
+-    echo '#include "conftest.h"' > conftest.c
+-    echo 'int i;' > conftest.h
+-    echo "${am__include} ${am__quote}conftest.Po${am__quote}" > confmf
++    : > sub/conftest.c
++    for i in 1 2 3 4 5 6; do
++      echo '#include "conftst'$i'.h"' >> sub/conftest.c
++      : > sub/conftst$i.h
++    done
++    echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
+ 
+     case $depmode in
+     nosideeffect)
+@@ -2691,13 +2712,20 @@
+     # mode.  It turns out that the SunPro C++ compiler does not properly
+     # handle `-M -o', and we need to detect this.
+     if depmode=$depmode \
+-       source=conftest.c object=conftest.o \
+-       depfile=conftest.Po tmpdepfile=conftest.TPo \
+-       $SHELL ./depcomp $depcc -c conftest.c -o conftest.o >/dev/null 2>&1 &&
+-       grep conftest.h conftest.Po > /dev/null 2>&1 &&
++       source=sub/conftest.c object=sub/conftest.${OBJEXT-o} \
++       depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
++       $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
++         >/dev/null 2>conftest.err &&
++       grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
++       grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
+        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
+-      am_cv_CC_dependencies_compiler_type=$depmode
+-      break
++      # icc doesn't choke on unknown options, it will just issue warnings
++      # (even with -Werror).  So we grep stderr for any message
++      # that says an option was ignored.
++      if grep 'ignoring option' conftest.err >/dev/null 2>&1; then :; else
++        am_cv_CC_dependencies_compiler_type=$depmode
++        break
++      fi
+     fi
+   done
+ 
+@@ -2714,6 +2742,18 @@
+ 
+ 
+ 
++if
++  test "x$enable_dependency_tracking" != xno \
++  && test "$am_cv_CC_dependencies_compiler_type" = gcc3; then
++  am__fastdepCC_TRUE=
++  am__fastdepCC_FALSE='#'
++else
++  am__fastdepCC_TRUE='#'
++  am__fastdepCC_FALSE=
++fi
++
++
++
+ 
+         echo "$as_me:$LINENO: checking for strerror in -lcposix" >&5
+ echo $ECHO_N "checking for strerror in -lcposix... $ECHO_C" >&6
+@@ -5290,6 +5330,7 @@
  
  done
  
@@ -119,7 +308,7 @@
  if test "${ac_cv_header_regex_h+set}" = set; then
    echo "$as_me:$LINENO: checking for regex.h" >&5
  echo $ECHO_N "checking for regex.h... $ECHO_C" >&6
-@@ -5422,7 +5423,10 @@
+@@ -5422,7 +5463,10 @@
  if test $ac_cv_header_regex_h = yes; then
    echo "$as_me:$LINENO: checking for broken regexec" >&5
  echo $ECHO_N "checking for broken regexec... $ECHO_C" >&6
@@ -131,7 +320,7 @@
    { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
  See \`config.log' for more details." >&5
  echo "$as_me: error: cannot run test program while cross compiling
-@@ -5472,6 +5476,10 @@
+@@ -5472,6 +5516,10 @@
  fi
  
  fi
@@ -142,26 +331,107 @@
  
  
  
-@@ -6037,7 +6045,8 @@
+@@ -6037,7 +6085,7 @@
  		echo "$as_me:$LINENO: checking for SLtt_initialize in -lslang $tcap" >&5
  echo $ECHO_N "checking for SLtt_initialize in -lslang $tcap... $ECHO_C" >&6
  		LIBS="$LIBS $tcap"
 -		if test "$cross_compiling" = yes; then
-+		_au_changequote(,)
 +if test "$cross_compiling" = yes; then
    { echo "$as_me:$LINENO: WARNING: *** Can not use slang when cross-compiling" >&5
  echo "$as_me: WARNING: *** Can not use slang when cross-compiling" >&2;}
  else
-@@ -6091,7 +6100,8 @@
+@@ -6091,7 +6139,7 @@
  		    echo "$as_me:$LINENO: checking for SLtt_initialize in -lslang $tcap -lm" >&5
  echo $ECHO_N "checking for SLtt_initialize in -lslang $tcap -lm... $ECHO_C" >&6
  		    LIBS="$LIBS -lm"
 -		    if test "$cross_compiling" = yes; then
-+		    _au_changequote(,)
 +if test "$cross_compiling" = yes; then
    { echo "$as_me:$LINENO: WARNING: *** Can not use slang when cross-compiling" >&5
  echo "$as_me: WARNING: *** Can not use slang when cross-compiling" >&2;}
  else
+@@ -7671,6 +7719,13 @@
+ Usually this means the macro was only invoked conditionally." >&2;}
+    { (exit 1); exit 1; }; }
+ fi
++if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
++  { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCC\" was never defined.
++Usually this means the macro was only invoked conditionally." >&5
++echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
++Usually this means the macro was only invoked conditionally." >&2;}
++   { (exit 1); exit 1; }; }
++fi
+ 
+ : ${CONFIG_STATUS=./config.status}
+ ac_clean_files_save=$ac_clean_files
+@@ -8104,7 +8159,7 @@
+ #
+ 
+ AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"
+-# Capture the value of obsolete ALL_LINGUAS because we need it to compute
++# Capture the value of obsolete $ALL_LINGUAS because we need it to compute
+     # POFILES, GMOFILES, UPDATEPOFILES, DUMMYPOFILES, CATALOGS. But hide it
+     # from automake.
+     eval 'ALL_LINGUAS''="$ALL_LINGUAS"'
+@@ -8216,6 +8271,7 @@
+ s,@INSTALL_PROGRAM@,$INSTALL_PROGRAM,;t t
+ s,@INSTALL_SCRIPT@,$INSTALL_SCRIPT,;t t
+ s,@INSTALL_DATA@,$INSTALL_DATA,;t t
++s,@CYGPATH_W@,$CYGPATH_W,;t t
+ s,@PACKAGE@,$PACKAGE,;t t
+ s,@VERSION@,$VERSION,;t t
+ s,@ACLOCAL@,$ACLOCAL,;t t
+@@ -8230,6 +8286,7 @@
+ s,@INSTALL_STRIP_PROGRAM@,$INSTALL_STRIP_PROGRAM,;t t
+ s,@AWK@,$AWK,;t t
+ s,@SET_MAKE@,$SET_MAKE,;t t
++s,@am__leading_dot@,$am__leading_dot,;t t
+ s,@CC@,$CC,;t t
+ s,@CFLAGS@,$CFLAGS,;t t
+ s,@LDFLAGS@,$LDFLAGS,;t t
+@@ -8244,6 +8301,8 @@
+ s,@AMDEP_FALSE@,$AMDEP_FALSE,;t t
+ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
+ s,@CCDEPMODE@,$CCDEPMODE,;t t
++s,@am__fastdepCC_TRUE@,$am__fastdepCC_TRUE,;t t
++s,@am__fastdepCC_FALSE@,$am__fastdepCC_FALSE,;t t
+ s,@MKINSTALLDIRS@,$MKINSTALLDIRS,;t t
+ s,@MSGFMT@,$MSGFMT,;t t
+ s,@GMSGFMT@,$GMSGFMT,;t t
+@@ -8697,13 +8756,29 @@
+     cat $tmp/config.h
+     rm -f $tmp/config.h
+   fi
+-  # Run the commands associated with the file.
+-  case $ac_file in
+-    config.h ) # update the timestamp
+-echo 'timestamp for config.h:config.h.in' >"./stamp-h1"
+- ;;
++# Compute $ac_file's index in $config_headers.
++_am_stamp_count=1
++for _am_header in $config_headers :; do
++  case $_am_header in
++    $ac_file | $ac_file:* )
++      break ;;
++    * )
++      _am_stamp_count=`expr $_am_stamp_count + 1` ;;
+   esac
+ done
++echo "timestamp for $ac_file" >`(dirname $ac_file) 2>/dev/null ||
++$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
++         X$ac_file : 'X\(//\)[^/]' \| \
++         X$ac_file : 'X\(//\)$' \| \
++         X$ac_file : 'X\(/\)' \| \
++         .     : '\(.\)' 2>/dev/null ||
++echo X$ac_file |
++    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
++  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
++  	  /^X\(\/\/\)$/{ s//\1/; q; }
++  	  /^X\(\/\).*/{ s//\1/; q; }
++  	  s/.*/./; q'`/stamp-h$_am_stamp_count
++done
+ _ACEOF
+ cat >>$CONFIG_STATUS <<\_ACEOF
+ 
 --- nano-1.2.1/Makefile.am~configure
 +++ nano-1.2.1/Makefile.am
 @@ -31,6 +31,6 @@

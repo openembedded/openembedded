@@ -12,6 +12,11 @@ S=${WORKDIR}/libpcap-${PV}
 
 inherit autotools
 EXTRA_OECONF="  --with-pcap=linux"
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
 
 do_stage () {
 	install -d ${STAGING_DIR}/target/include/net

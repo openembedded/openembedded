@@ -25,6 +25,12 @@ LDFLAGS_prepend = "-L${S} -L${S}/openbsd-compat "
 EXTRA_OECONF = --disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
 	       --with-rand-helper=no --without-pam
 
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 -a -e aclocal.m4 ]; then
+		cp aclocal.m4 acinclude.m4
+	fi
+}
+
 do_compile_append () {
 	install -m 0644 ${FILESDIR}/sshd_config ${S}/
 }

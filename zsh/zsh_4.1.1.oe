@@ -1,0 +1,18 @@
+DESCRIPTION="Zsh shell"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc ncurses pcre
+
+SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2"
+S="${WORKDIR}/${P}"
+
+inherit autotools
+
+EXTRA_OECONF = "--with-curses-terminfo"
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		cat aczsh.m4 > acinclude.m4
+	fi
+}
