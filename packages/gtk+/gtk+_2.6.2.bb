@@ -6,7 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -21,9 +21,10 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 	   file://xsettings.patch;patch=1 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
-	   file://single-click.patch;patch=1"
+	   file://single-click.patch;patch=1 \
+	   file://migration.patch;patch=1;pnum=0"
 
-inherit autotools pkgconfig flow-lossage
+inherit autotools pkgconfig
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-query-immodules-2.0 \
@@ -33,7 +34,7 @@ FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindi
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
 
-EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest"
+EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 # --disable-cruft
 
 LIBV = "2.4.0"

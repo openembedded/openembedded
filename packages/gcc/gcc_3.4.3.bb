@@ -1,4 +1,4 @@
-PR = "r6"
+PR = "r7"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -20,6 +20,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1 \
 	   file://gcc-3.4.0-arm-bigendian.patch;patch=1 \
 	   file://gcc-3.4.0-arm-bigendian-uclibc.patch;patch=1 \
-	   file://GCC3.4.0VisibilityPatch.diff;patch=1"
+	   file://GCC3.4.0VisibilityPatch.diff;patch=1 \
+	   file://15342.patch;patch=1"
 
 include gcc3-build.inc
