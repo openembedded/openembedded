@@ -8,8 +8,7 @@ PROVIDES = "virtual/libqpe"
 PV = "1.1.6-cvs-${CVSDATE}"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library \
-	   file://beagle-debugging.patch;patch=1 "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library"
 S = "${WORKDIR}/library"
 
 inherit qmake
