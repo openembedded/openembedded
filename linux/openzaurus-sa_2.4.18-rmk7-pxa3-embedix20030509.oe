@@ -44,6 +44,10 @@ KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
 EXTRA_OEMAKE = ""
 
+module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
+module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
+module_autoload_sa1100_bi = "sa1100_bi"
+
 #
 # FIXME: Use configuration system
 #
