@@ -1,0 +1,8 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/libsigc/libsigc++-${PV}.tar.gz
+
+inherit autotools libtool
+
+acpaths = -I ${S}/scripts
