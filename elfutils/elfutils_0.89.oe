@@ -2,7 +2,8 @@ DEPENDS = "virtual/libc"
 LICENSE = "OSL"
 DESCRIPTION = "A collection of utilities and DSOs to handle compiled objects."
 
-SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles/elfutils-${PV}.tar.gz"
+SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles/elfutils-${PV}.tar.gz \
+	   file://${FILESDIR}/warnings.patch;patch=1"
 
 inherit autotools
 
