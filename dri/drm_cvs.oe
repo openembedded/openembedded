@@ -1,0 +1,22 @@
+SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
+	file://config.patch;patch=1"
+
+PV = "0.0cvs${CVSDATE}"
+PR = "r1"
+
+S = "${WORKDIR}/drm"
+
+do_compile() {
+	oe_runmake -C libdrm
+}
+
+do_stage() {
+	oe_libinstall -a -C libdrm libxf86drm ${STAGING_LIBDIR}
+	for i in xf86drmCompat.h xf86drm.h; do
+		install -m 0644 libdrm/$i ${STAGING_INCDIR}
+	done
+	for i in drm.h; do
+		install -m 0644 shared/$i ${STAGING_INCDIR}
+	done
+}
+
