@@ -1,12 +1,14 @@
 DESCRIPTION = "Meta-package for Opie"
-DEPENDS = "qte-for-opie libqpe-opie libopie2 \
-opie-aboutapplet opie-addressbook opie-advancedfm opie-alarm opie-bartender opie-batteryapplet 				\
-opie-button-settings opie-calibrate opie-camera opie-cardmon opie-checkbook opie-citytime				\
-opie-clipboardapplet opie-clock opie-clockapplet opie-confeditor opie-console						\
-opie-embeddedkonsole opie-helpbrowser opie-homeapplet opie-i18n opie-irdaapplet opie-keypebble opie-keyz-cfg		\
-opie-light-and-power opie-login opie-logoutapplet opie-multikeyapplet opie-odict opie-oxygen opie-packagemanager	\
-opie-qashmoney opie-qcop opie-quicklauncher opie-reader opie-restartapplet opie-rotateapplet opie-screenshotapplet	\
-opie-search opie-security opie-sheet opie-solitaire opie-suspendapplet opie-tableviewer opie-taskbar			\
-opie-textedit opie-vmemo opie-volumeapplet opie-vtapplet opie-write opie-zsafe						"
-
+DEPENDS = "qte-for-opie libqpe-opie libopie2"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
+
+def opie_packages(d):
+	import oe, os
+	files = os.listdir( oe.data.getVar( "TOPDIR", d, True ) )
+	pkgs = [ f for f in files if f.startswith( "opie-" ) ]
+        return " ".join( pkgs )
+
+OPIE_PACKAGES := "${@opie_packages(d)}"
+
+DEPENDS = "qte-for-opie libqpe-opie libopie2 ${OPIE_PACKAGES}"
+
