@@ -1,0 +1,8 @@
+include edb_cvs.oe
+inherit native
+DEPENDS = "zlib-native"
+
+do_stage () {
+	oe_libinstall -C src libedb ${libdir}/
+	install -m 0755 tools/.libs/edb_ed ${bindir}/
+}
