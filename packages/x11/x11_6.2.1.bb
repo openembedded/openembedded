@@ -19,7 +19,7 @@ do_compile() {
 	(
 		unset CC LD CXX CCLD
 #		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-		oe_runmake -C src/util 'CFLAGS=' 'LDFLAGS=' 'CXXFLAGS=' 'CPPFLAGS=' makekeys
+		oe_runmake -C src/util 'CFLAGS= -D_GNU_SOURCE' 'LDFLAGS=' 'CXXFLAGS=' 'CPPFLAGS=' makekeys
 	)
 	oe_runmake
 }
