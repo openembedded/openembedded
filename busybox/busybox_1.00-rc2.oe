@@ -8,7 +8,7 @@ functionality and behave very much like their GNU counterparts. BusyBox \
 provides a fairly complete POSIX environment for any small or embedded \
 system."
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 #	file://busybox-1.00-pre10-fuser.patch;patch=1
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -16,6 +16,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://bb-iproute-iftunnel.patch;patch=1 \
 	   file://rc2-cvs20040807.patch;patch=1 \
 	   file://busybox-1.00-rc2-cvs-modprobe-for-all.patch;patch=1 \
+	   file://modprobe-once-more.patch;patch=1 \
            file://defconfig \
            file://syslog \
            file://hwclock.sh"
