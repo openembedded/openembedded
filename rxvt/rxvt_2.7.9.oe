@@ -1,5 +1,5 @@
 PR = "r1"
-DEPENDS = "x11 xft"
+DEPENDS = "x11 libxft"
 DESCRIPTION = "Well known terminal emulator"
 
 SRC_URI = "pserver://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/rxvt \

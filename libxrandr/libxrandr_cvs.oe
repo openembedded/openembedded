@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "randr x11 render xrender xext"
+DEPENDS = "randrext x11 libxrender xext"
 DESCRIPTION = "X Resize and Rotate extension library."
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr"

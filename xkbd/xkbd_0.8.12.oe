@@ -4,6 +4,6 @@ SRC_URI = "http://handhelds.org/~mallum/xkbd/xkbd-${PV}.tar.gz \
 
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11"
-DEPENDS = "xpm xtst xft"
+DEPENDS = "xpm xtst libxft"
 
 inherit autotools

@@ -1,7 +1,7 @@
 DESCRIPTION = "Touchscreen calibration utility"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-DEPENDS = "x11 xft libxrandr"
+DEPENDS = "x11 libxft libxrandr"
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/xtscal-${PV}.tar.bz2"
 
