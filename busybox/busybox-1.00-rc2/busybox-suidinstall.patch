@@ -1,0 +1,20 @@
+diff -urNd busybox/applets/install.sh busybox-new/applets/install.sh
+--- busybox/applets/install.sh	2001-03-08 15:42:11.000000000 -0600
++++ busybox-new/applets/install.sh	2002-10-11 12:04:01.000000000 -0500
+@@ -15,10 +15,15 @@
+ fi
+ h=`sort busybox.links | uniq`
+ 
++if [ -n "$SUID" ]; then
++    mode=4755
++else
++    mode=0755
++fi
+ 
+ rm -f $prefix/bin/busybox || exit 1
+ mkdir -p $prefix/bin || exit 1
+-install -m 755 busybox $prefix/bin/busybox || exit 1
++install -m $mode busybox $prefix/bin/busybox || exit 1
+ 
+ for i in $h ; do
+ 	appdir=`dirname $i`
