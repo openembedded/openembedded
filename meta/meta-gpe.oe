@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r18"
+PR = "r19"
 
 ALLOW_EMPTY = 1
 
@@ -62,7 +62,6 @@ gpe-task-settings = "\
     gpe-mininet \
     gpe-mixer \
     gpe-shield \
-    gpe-wlancfg \
     gpe-taskmanager \
     keylaunch \
     minilite \
