@@ -6,9 +6,17 @@ PROVIDES=virtual/libc
 S="${WORKDIR}/${P}"
 EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${STAGING_DIR}/target/include --without-cvs --enable-kernel=2.4.6"
 
-inherit base
+PACKAGES="libc6"
+FILES=""
+FILES_libc6="/lib/libc.so.6"
+
+inherit base package
 
 do_unpack() {
 	base_do_unpack $@ || die "unpacking failed"
 	mv ${WORKDIR}/linuxthreads{,_db} ${S}/
+}
+
+do_install() {
+	${MAKE} install_root=${D} install
 }
