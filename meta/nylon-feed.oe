@@ -3,6 +3,7 @@ base-files \
 bash \
 bridge-utils \
 busybox \
+chillispot \
 db3 \
 ddclient \
 dhcp-forwarder \
@@ -38,6 +39,7 @@ mc \
 mobilemesh \
 modutils \
 mtd \
+mtr \
 nano \
 ncurses \
 netbase \
@@ -45,6 +47,7 @@ netperf \
 net-snmp \
 ntp \
 nylon-scripts \
+nylon-statistics \
 openssh \
 openssl \
 openvpn \
@@ -74,7 +77,7 @@ zlib \
 # strace: SYS_read?
 # gdb-cross: install paths, sdk?
 # screen: sgttyb?
-# nocat
+# nocat?
 # pptp
 # meshroaming
 
