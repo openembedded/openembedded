@@ -74,45 +74,12 @@ do_install_append () {
 }
 
 python populate_packages_prepend () {
-	import os
-	def do_split(root, pattern, format, description, postinst):
-		dvar = oe.data.getVar('D', d, 1)
-		if not dvar:
-			oe.error("D not defined")
-			return
+	import os.path
 
-		packages = oe.data.getVar('PACKAGES', d, 1).split()
-		if not packages:
-			oe.error("PACKAGES not defined")
-			return
-
-		postinst = '#!/bin/sh\n' + postinst
-		objs = os.listdir(dvar + root)
-		mainpkg = packages[0]
-		for o in objs:
-			import re
-			m = re.match(pattern, o)
-			if not m:
-				continue
-			on = m.group(1)
-			pkg = format % on
-			packages.append(pkg)
-			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
-			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
-			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
-			oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
-
-		oe.data.setVar('PACKAGES', ' '.join(packages), d)
-
-	libdir = oe.data.getVar('libdir', d, 1)
-	if not libdir:
-		oe.error("libdir not defined")
-		return
-
-	gtk_libdir = os.path.join(libdir, "gtk-2.0", oe.data.getVar('LIBV', d))
+	gtk_libdir = oe.data.expand('${libdir}/gtk-2.0/${LIBV}', d)
 	loaders_root = os.path.join(gtk_libdir, 'loaders')
 	immodules_root = os.path.join(gtk_libdir, 'immodules')
 
-	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s', 'gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders')
-	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', 'gtk-query-immodules > /etc/gtk-2.0/gtk.immodules')
+	do_split_packages(d, loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s', 'gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders')
+	do_split_packages(d, immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', 'gtk-query-immodules > /etc/gtk-2.0/gtk.immodules')
 }
