@@ -8,7 +8,7 @@
 case "$ADDRESS" in
 *,*,*,1)
     #INFO="Sample IDE setup"
-    #DO_FSTAB="y";
+    DO_FSTAB="y";
     #DO_FSCK="y" ;
     DO_MOUNT="y"
     #FSTYPE="msdos"
