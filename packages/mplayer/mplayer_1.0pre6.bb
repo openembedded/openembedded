@@ -9,9 +9,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://sdl.patch;patch=0 \
            file://zlib.patch;patch=0 "
 
-DEFAULT_PREFERENCE_corgi = "-1"
-DEFAULT_PREFERENCE_shepherd = "-1"
-DEFAULT_PREFERENCE_husky = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 DEPENDS_corgi += "sharp-aticore"
 DEPENDS_shepherd += "sharp-aticore"
