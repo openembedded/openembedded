@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad tremor libogg libvorbis zlib libpng jpeg"
+DEPENDS = "virtual/libsdl libmad tremor-20021126 libogg libvorbis zlib libpng jpeg"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=1 \
@@ -13,7 +13,7 @@ PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 PARALLEL_MAKE = ""
 
-DEPENDS_c7x0 += "sharp-aticore"
+DEPENDS_append_c7x0 = " sharp-aticore"
 PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
 SRC_URI_append_c7x0 = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
                        file://Makefile-vidix.patch;patch=0 \

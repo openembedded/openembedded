@@ -10,7 +10,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://sdl.patch;patch=0 \
            file://zlib.patch;patch=0 "
 
-DEPENDS_c7x0 += "sharp-aticore"
+DEPENDS_append_c7x0 = " sharp-aticore"
 PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
 SRC_URI_append_c7x0 = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
                        file://Makefile-vidix.patch;patch=0 "
