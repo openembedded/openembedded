@@ -11,6 +11,9 @@ sbindir = "${prefix}/bin"
 
 EXTRA_OECONF_append = " --program-prefix=${TARGET_PREFIX}"
 
+CFLAGS_prepend_mipsel = "-D__MIPSEL__"
+CFLAGS_prepend_mipseb = "-D__MIPSEB__"
+
 do_stage () {
         oe_runmake install
 }
