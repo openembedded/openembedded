@@ -2,9 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r12"
-
-OPENSLUG_VERSION = "1.4-alpha"
+PR = "r13"
 
 SRC_URI = "file://sysconfsetup \
 	   file://modutils.txt \
@@ -25,8 +23,6 @@ do_compile() {
 }
 
 do_install() {
-	echo "OpenSlug-${OPENSLUG_VERSION}" > ${D}/.openslug
-
         install -d ${D}/${sysconfdir} \
                    ${D}/${sysconfdir}/init.d \
 		   ${D}/${sysconfdir}/modutils \
