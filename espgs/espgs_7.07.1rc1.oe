@@ -1,4 +1,4 @@
-SECTION = "unknwon"
+SECTION = "unknown"
 DEPENDS = "jpeg zlib libpng espgs-native"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/ghostscript/espgs-${PV}-source.tar.bz2"
