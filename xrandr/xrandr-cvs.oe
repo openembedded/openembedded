@@ -1,18 +1,12 @@
 PV = "0.0cvs${CVSDATE}"
-SECTION = "libs"
-DEPENDS = "virtual/libc randr x11 render xrender xext"
-PROVIDES = "xrandr"
-DESCRIPTION = "X Resize and Rotate extension library."
+DEPENDS = "virtual/libc libXrandr x11 render xrender xext"
+DESCRIPTION = "X Resize and Rotate extension command."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr"
-S = "${WORKDIR}/Xrandr"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xapps;module=xrandr"
+S = "${WORKDIR}/xrandr"
 
 inherit autotools pkgconfig libtool
 
-do_stage() {
-	oe_runmake install prefix=${STAGING_DIR} \
-	       bindir=${STAGING_BINDIR} \
-	       includedir=${STAGING_INCDIR} \
-	       libdir=${STAGING_LIBDIR} \
-	       datadir=${STAGING_DATADIR}
+do_configure_prepend() {
+	./autogen.sh
 }

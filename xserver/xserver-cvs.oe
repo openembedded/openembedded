@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "virtual/libc tslib xproto xdmcp xextensions xtrans xau x11 xext randr render xrender xrandr fixesext damageext xfont resourceext compositeext"
+DEPENDS = "virtual/libc tslib xproto xdmcp xextensions xtrans xau x11 xext randr render xrender libxrandr fixesext damageext xfont resourceext compositeext"
 PROVIDES = "xserver"
 PACKAGES = "xserver-kdrive-fbdev xserver-kdrive-ati ${PN}-doc ${PN}-dev ${PN}-locale"
 DESCRIPTION = "X server from freedesktop.org"
