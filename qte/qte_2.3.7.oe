@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
@@ -152,18 +152,22 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
-PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica qte-font-smoothtimes qte-font-smallsmooth \
-            qte-font-unicode qte-font-lcd qte-font-japanese qte-font-micro qte-font-courier"
+PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-large \
+			qte-font-smoothtimes qte-font-smallsmooth qte-font-unicode qte-font-lcd \
+			qte-font-japanese qte-font-micro qte-font-courier"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
 FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
-FILES_qte-font-helvetica = "${palmtopdir}/lib/fonts/helv*"
+FILES_qte-font-helvetica-small = "${palmtopdir}/lib/fonts/helvetica_80*.qpf \
+	${palmtopdir}/lib/fonts/helvetica_100*.qpf ${palmtopdir}/lib/fonts/helvetica_120*.qpf"
+FILES_qte-font-helvetica-large = "${palmtopdir}/lib/fonts/helvetica_140*.qpf \
+	${palmtopdir}/lib/fonts/helvetica_180*.qpf ${palmtopdir}/lib/fonts/helvetica_240*.qpf"
 FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*"
 FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*"
-FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*"
+FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*.qpf"
 FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
-FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/jap*"
-FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*"
+FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/japanese*"
+FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*.qpf"
 FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
 
