@@ -55,13 +55,20 @@ do_compile() {
 	oe_runmake
 }
 
-do_stage () {
+do_stage() {
 	oe_soinstall lib/libqte.so.${PV} ${STAGING_LIBDIR}
 	rm -f include/qxt.h
 	cp -pfLR include/* ${STAGING_DIR}/target/include/
 }
 
-do_install () {
-	install -d ${D}${libdir}/qte2/lib
-	install -m 0755 lib/libqte.so.* ${D}${libdir}/qte2/lib/
+do_install() {
+	install -d ${D}/opt/QtPalmtop/lib/fonts
+	oe_soinstall lib/libqte.so.${PV} ${D}/opt/QtPalmtop/lib
+	cp -a lib/fonts/* ${D}/opt/QtPalmtop/lib/fonts/
 }
+
+PACKAGES=libqte2 qte-fonts
+
+FILES_${PN}=
+FILES_libqte2=/opt/QtPalmtop/lib/libqte.so*
+FILES_qte-fonts=/opt/QtPalmtop/lib/fonts
