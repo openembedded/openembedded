@@ -16,4 +16,5 @@ do_stage () {
 	ln -sf libcurl.so.2.0.2 ${STAGING_LIBDIR}/libcurl.so
 	install -m 0644 ${S}/lib/.libs/libcurl.a ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/lib/.libs/libcurl.lai ${STAGING_LIBDIR}/libcurl.la
+	install -m 0755 curl-config ${STAGING_BINDIR}/
 }
