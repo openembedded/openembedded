@@ -38,7 +38,7 @@ BBMASK = ""
 # ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
 # Select between multiple alternative providers, if more than one is eligible.
-PREFERRED_PROVIDERS = "virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
+PREFERRED_PROVIDERS = "virtual/qte:qte virtual/libqpe:libqpe-opie"
 PREFERRED_PROVIDERS += " virtual/libsdl:libsdl-qpe"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc:gcc-cross"
