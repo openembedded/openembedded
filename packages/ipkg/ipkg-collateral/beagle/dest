@@ -1,0 +1,3 @@
+dest root /
+dest flash /home/packages/
+dest cf /mnt/cf/packages/

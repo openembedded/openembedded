@@ -31,7 +31,9 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog \
            file://hwclock.sh \
 	   file://default.script \
-	   file://syslog.conf"
+	   file://syslog.conf \
+	   file://mount.busybox \
+	   file://umount.busybox"
 
 S = "${WORKDIR}/busybox-${PV}"
 
@@ -77,4 +79,18 @@ do_install () {
 		install -m 0755 ${S}/examples/udhcp/simple.script ${D}/${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
 	fi
+	rm ${D}/bin/mount
+	install -m 0755 ${WORKDIR}/mount.busybox ${D}/bin/
+	rm ${D}/bin/umount
+	install -m 0755 ${WORKDIR}/umount.busybox ${D}/bin/
+}
+
+pkg_postinst () {
+	update-alternatives --install /bin/mount mount /bin/mount.busybox 50
+	update-alternatives --install /bin/umount umount /bin/umount.busybox 50
+}
+
+pkg_prerm () {
+	update-alternatives --remove mount /bin/mount.busybox
+	update-alternatives --remove umount /bin/umount.busybox
 }
