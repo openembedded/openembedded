@@ -5,11 +5,11 @@ MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 #DEPENDS = virtual/libc ncurses readline
 #RDEPENDS = libc6 ncurses readline
 DEPENDS = "virtual/libc ncurses"
-RDEPENDS = "libc6 ncurses"
 
 inherit autotools
 
-SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz"
+SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz \
+	   file://${FILESDIR}/libiberty-cross.patch;patch=1;pnum=0"
 
 LDFLAGS_append = " -s"
 export CC_FOR_BUILD = "${BUILD_CC}"
@@ -18,7 +18,7 @@ export CPP_FOR_BUILD = "${BUILD_CPP}"
 export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 export CXXFLAGS_FOR_BUILD = "${BUILD_CXXFLAGS}"
 export CPPFLAGS_FOR_BUILD = "${BUILD_CPPFLAGS}"
-#export CFLAGS_append=" -L${STAGING_LIBDIR}"
+export CFLAGS_append=" -L${STAGING_LIBDIR}"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils'"
 
 EXTRA_OECONF = "--disable-gdbtk --disable-tui --disable-x --disable-nls \
