@@ -5,6 +5,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xproto xextensions xau xtrans xdmcp"
 DESCRIPTION = "Base X libs."
 FILES_${PN}_append = " ${datadir}/X11"
+PROVIDES = "x11"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11"
 S = "${WORKDIR}/X11"
