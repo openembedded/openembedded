@@ -5,8 +5,8 @@ MAINTAINER = "Team Opie <opie@handhelds.org>
 LICENSE = "GPL"
 DEPENDS = "opie-lrelease-native"
 
-PR = "r2"
-CVSDATE = "20040926"
+PR = "r3"
+CVSDATE = "20041003"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/dict"
