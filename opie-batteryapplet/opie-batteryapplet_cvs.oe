@@ -21,13 +21,13 @@ if pidof -s qpe >/dev/null; then
 else
   exit 0
 fi
- if [ -n $D ]; then false; fi
+ if [ -n "$D" ]; then false; fi
 }
 
 pkg_postrm() {
 #!/bin/sh
 /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
- if [ -n $D ]; then false; fi
+ if [ -n "$D" ]; then false; fi
 }
 
 # FILES plugins/applets/libbatteryapplet.so*

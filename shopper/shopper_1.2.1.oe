@@ -19,7 +19,7 @@ pkg_preinst() {
 
 pkg_postinst() {
 	/opt/QtPalmtop/bin/qcop QPE/System "linkChanged(QString)" 2>/dev/null
-	if [ -n $D ]; then false; fi
+	if [ -n "$D" ]; then false; fi
 }
 
 do_install() {

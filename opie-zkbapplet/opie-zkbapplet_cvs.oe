@@ -1,0 +1,32 @@
+DESCRIPTION = "KeyZ Applet"
+SECTION = "opie/applets"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "opie-keyz-cfg"
+PV = "1.1.4-cvs-${CVSDATE}"
+APPNAME = "zkbapplet"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/zkbapplet;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/keyz-cfg;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+		   file://path.patch;patch=1"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+test -f $OPIEDIR/share/zkb/zkb.xml || cp $OPIEDIR/share/zkb/zkb.xml.sample $OPIEDIR/share/zkb/zkb.xml
+}
+
+do_install() {
+        install -d ${D}${palmtopdir}/pics/
+        install -m 0644 ${WORKDIR}/pics/zkb-disabled.png ${D}${palmtopdir}/pics/
+        install -d ${D}${palmtopdir}/share/zkb/
+        install -m 0644 ${WORKDIR}/share/zkb/*xml* ${D}${palmtopdir}/share/zkb/
+}
+
