@@ -1,0 +1,30 @@
+SECTION="libs"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6 libjpeg62 libpng3 zlib1g
+DEPENDS=virtual/libc libjpeg62 libpng3 zlib1g
+
+SRC_URI=http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz;
+S=${WORKDIR}/DirectFB-${PV}
+
+inherit autotools libtool
+
+EXTRA_OECONF="--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=no --enable-sdl=no"
+
+do_stage() {
+	oe_runmake -C src 'libdir=/target/lib' 'includedir=/target/include/directfb' \
+			  'oldincludedir=/target/include' 'datadir=/share' \
+			  'DESTDIR=${STAGING_DIR}' \
+			  'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
+			  install-internalincludeHEADERS install-libLTLIBRARIES
+	oe_runmake -C include 'libdir=/target/lib' 'includedir=/target/include/directfb' \
+			      'oldincludedir=/target/include' 'datadir=/share' \
+	       		      'DESTDIR=${STAGING_DIR}' \
+			      'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
+			      install-internalincludeHEADERS install-includeHEADERS
+	cp -f directfb.pc ${STAGING_DIR}/share/
+}
+
+do_install() {
+        oe_runmake 'DESTDIR=${D}' install
+}
