@@ -5,8 +5,8 @@ GPE_MACHINE_CLASS ?= "none"
 GPE_EXTRA_DEPENDS ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 GPE_EXTRA_INSTALL ?= "${GPE_EXTRA_DEPENDS_${GPE_MACHINE_CLASS}}"
 
-GPE_EXTRA_DEPENDS_bigscreen = "firefox gaim linphone"
-GPE_EXTRA_INSTALL_bigscreen = "firefox gaim"
+GPE_EXTRA_DEPENDS_bigscreen = "minimo gaim linphone rhythmbox"
+GPE_EXTRA_INSTALL_bigscreen = "minimo gaim linphone rhythmbox"
 
 GPE_EXTRA_DEPENDS_smallscreen = "minimo"
 GPE_EXTRA_INSTALL_smallscreen = "minimo"
