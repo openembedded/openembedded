@@ -10,7 +10,7 @@ DEPENDS = "edb eet evas freetype edb-native"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore;date=${CVSDATE}"
 S = "${WORKDIR}/ecore"
 
-inherit autotools pkgconfig
+inherit autotools
 
 export EDB_CONFIG = "${STAGING_BINDIR}/edb-config"
 export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
