@@ -1,0 +1,28 @@
+SECTION="libs"
+PRIORITY="optional"
+RDEPENDS="libc6"
+SECTION="libs"
+DEPENDS=virtual/libc
+PROVIDES=virtual/libbluetooth
+
+SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
+S=${WORKDIR}/${P}
+
+inherit autotools libtool
+
+do_stage () {
+	install -m 0644 src/.libs/libbluetooth.a ${STAGING_LIBDIR}/
+	install -m 0755 src/.libs/libbluetooth.so.1.0.2 ${STAGING_LIBDIR}/
+
+	ln -sf ${STAGING_LIBDIR}/libbluetooth.so.1.0.2 ${STAGING_LIBDIR}/libbluetooth.so.1
+	ln -sf ${STAGING_LIBDIR}/libbluetooth.so.1.0.2 ${STAGING_LIBDIR}/libbluetooth.so
+
+	install -d ${STAGING_DIR}/target/include/bluetooth
+	for X in bluetooth.h hci.h hci_lib.h hci_uart.h hci_vhci.h l2cap.h \
+	  sco.h rfcomm.h
+	do
+		install -m 0644 include/${X} ${STAGING_DIR}/target/include/bluetooth/${X}
+	done
+
+}
+

@@ -1,4 +1,4 @@
-S-ECTION="base"
+SECTION="base"
 PRIORITY="required"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
