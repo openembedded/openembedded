@@ -1,6 +1,6 @@
 export IMAGE_BASENAME = "opie-kdepim-image"
 export IMAGE_LINGUAS = ""
-include opie-collections.oe
+include opie-collections.inc
 
 #
 # Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.

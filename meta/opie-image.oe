@@ -3,7 +3,7 @@ export IMAGE_LINGUAS = ""
 
 PR = "r4"
 
-include opie-collections.oe
+include opie-collections.inc
 
 #
 # Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.
