@@ -54,7 +54,7 @@ Protocol 2
 
 # To disable tunneled clear text passwords, change to no here!
 #PasswordAuthentication yes
-#PermitEmptyPasswords no
+PermitEmptyPasswords yes
 
 # Change to no to disable s/key passwords
 #ChallengeResponseAuthentication yes
@@ -93,4 +93,4 @@ ClientAliveInterval 15
 ClientAliveCountMax 4
 
 # override default of no subsystems
-Subsystem	sftp	/usr/sbin/sftp-server
+Subsystem	sftp	/usr/libexec/sftp-server
