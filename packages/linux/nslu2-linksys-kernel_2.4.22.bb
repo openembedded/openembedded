@@ -5,7 +5,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-2.4.22.tar.bz2 \
-	   ftp://oss.sgi.com/projects/xfs/patches/2.4.22/xfs-2.4.22-all-i386.bz2;patch=1 \
+	   http://nslu.sf.net/downloads/xfs-2.4.22-all-i386.bz2;patch=1 \
 	   http://nslu.sf.net/downloads/2.4.22-xfs-nslu2.patch.bz2;patch=1 \
 	   file://config-fixes.patch;patch=1 \
 	   file://nofpu.patch;patch=1 \
