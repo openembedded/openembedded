@@ -15,14 +15,6 @@ do_install_prepend () {
 
 do_install () {
 	install -d ${D}/${sysconfdir}
-	if [ -e ${FILESDIR}/modules_${MACHINE} ]; then
-		install -m 0644 ${FILESDIR}/modules_${MACHINE} ${D}/${sysconfdir}/modules
-	else
-		touch ${D}/${sysconfdir}/modules
-	fi
-	if [ -e ${FILESDIR}/modules.conf_${MACHINE} ]; then
-		install -m 0644 ${FILESDIR}/modules.conf_${MACHINE} ${D}/${sysconfdir}/modules.conf
-	else
-		touch ${D}/${sysconfdir}/modules.conf
-	fi
+	oe_machinstall -m 0644 ${FILESDIR}/modules ${D}/${sysconfdir}/modules
+	oe_machinstall -m 0644 ${FILESDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
 }
