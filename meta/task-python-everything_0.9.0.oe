@@ -15,7 +15,6 @@ DEPENDS = "	python-ao 		\
 		python-mad		\
 		python-native		\
 		python-numeric		\
-		python-numarray		\
 		python-ogg		\
 		python-pexpect		\
 		python-pychecker	\
@@ -46,3 +45,4 @@ RDEPENDS=${DEPENDS}
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there
 #fixme add packages dynamically
+#fixme python-numarray doesn't work with soft-float
