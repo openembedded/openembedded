@@ -17,9 +17,9 @@ do_stage () {
 	ln -sf libopenobex.so ${STAGING_LIBDIR}/libopenobex-1.0.so
 	install -d ${STAGING_INCDIR}/openobex
 	install -m 0644 src/obex_const.h src/obex.h ${STAGING_INCDIR}/openobex/
-	cat openobex-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
+	cat openobex-config | sed -e 's,/usr/include,${STAGING_INCDIR},g;
+				      s,/usr/lib,${STAGING_LIBDIR},g;
+				      s,/usr/bin,${STAGING_BINDIR},g;
 				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/openobex-config
         chmod a+rx ${STAGING_BINDIR}/openobex-config
 }
