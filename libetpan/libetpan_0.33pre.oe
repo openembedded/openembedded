@@ -6,14 +6,15 @@ FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
                 ${libdir}/*.a"
 
-SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2 \
-       file://${FILESDIR}/mailstream_socket.patch;patch=1 \
-       file://${FILESDIR}/smtptls.patch;patch=1 \
-       file://${FILESDIR}/includedir.patch;patch=1;pnum=0"
+SRC_URI = "http://www.alwins-world.de/oe/libetpan-${PV}.tar.bz2  \
+	   file://${FILESDIR}/mailstream_socket.patch;patch=1 \
+           file://${FILESDIR}/smtptls.patch;patch=1" \
+           file://${FILESDIR}/config_iconv.patch;patch=1" \
+           file://${FILESDIR}/includedir.patch;patch=1;pnum=0"
 
 inherit autotools libtool
 
-EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
+EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db --prefix=${TARGET_DIR}"
 
 do_stage() {
     oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
@@ -22,3 +23,4 @@ do_stage() {
 do_install() {
     oe_runmake install includedir=${D}/${includedir} libdir=${D}/${libdir} bindir=${D}/${bindir}
 }
+
