@@ -1,0 +1,21 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
+	  file://${FILESDIR}/m4.patch;patch=1 \
+	  file://${FILESDIR}/attributevalue.patch;patch=1
+S = ${WORKDIR}/OpenSP-${PV}
+
+inherit autotools libtool
+
+do_stage () {
+	install -m 0755 ${S}/lib/.libs/libosp.a ${STAGING_LIBDIR}/libosp.so.a
+	install -m 0755 ${S}/lib/.libs/libosp.lai ${STAGING_LIBDIR}/libosp.la
+	install -m 0755 ${S}/lib/.libs/libosp.so.3.0.0 ${STAGING_LIBDIR}/libosp.so.3.0.0
+	ln -sf libosp.so.3.0.0 ${STAGING_LIBDIR}/libosp.so.3
+	ln -sf libosp.so.3.0.0 ${STAGING_LIBDIR}/libosp.so
+	install -d ${STAGING_INCDIR}/OpenSP
+	install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/OpenSP/
+	install -m 0644 ${S}/include/*.cxx ${STAGING_INCDIR}/OpenSP/
+	install -m 0644 ${S}/config.h ${STAGING_INCDIR}/OpenSP/config.h
+}
