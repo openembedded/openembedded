@@ -9,17 +9,12 @@ DEPENDS = "virtual/kernel"
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 S = "${WORKDIR}/lirc-${PV}"
 
-inherit autotools
+inherit autotools module-base
 
-KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-abiversion')}
-KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
-KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
-
-#FIXME: Caution: EXTRA_OECONF is arm-specific!
-
-EXTRA_OECONF = "--with-kerneldir=${KERNEL_SOURCE}                      \
-                --with-driver=sa1100                                   \ 
-                --without-x"
+EXTRA_OECONF_collie = "--with-kerneldir=${KERNEL_SOURCE} --with-driver=sa1100 --without-x"
+EXTRA_OECONF_h3600 = "--with-kerneldir=${KERNEL_SOURCE} --with-driver=sa1100 --without-x"
+EXTRA_OECONF_beagle = "--with-kerneldir=${KERNEL_SOURCE} --with-driver=sa1100 --without-x"
+EXTRA_OECONF_simpad = "--with-kerneldir=${KERNEL_SOURCE} --with-driver=sa1100 --without-x"
 
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
 

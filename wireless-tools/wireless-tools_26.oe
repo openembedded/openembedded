@@ -11,12 +11,7 @@ SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar
 	   file://wireless-tools.if-pre-up"
 S = "${WORKDIR}/wireless_tools.${PV}"
 
-export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
-export KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-abiversion')}
-KERNEL_CCSUFFIX = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-ccsuffix')}
-KERNEL_LDSUFFIX = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-ldsuffix')}
-KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
-KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
+inherit module-base
 
 do_configure() {
 	rm -rf wireless.h
