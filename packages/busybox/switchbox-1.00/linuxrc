@@ -109,23 +109,20 @@ if [ -n "$prefroot" ] ; then
 
     if [ $prefroot = "nfsroot" ] ; then
 
-	# Should the network drivers come from payload or the jffs2?
-	if ( [ "$length" != "FFFFFFFF" ] ); then
-	    /bin/dd if=$device bs=2 skip=2056 2>/dev/null | /bin/tar zxvf -
-	    /sbin/insmod ixp400
-	    /sbin/insmod ixp425_eth
-	    /sbin/ifconfig ixp0 up $ipaddr netmask $netmask
-	    /sbin/route add default gw $gateway
-	fi
-
 	/bin/mkdir -p /lib
 	/bin/ln -s /mnt/jffs2/lib/* /lib
 	/bin/mkdir -p /sbin
 	/bin/ln -s /mnt/jffs2/sbin/portmap /sbin
 
+	/sbin/insmod ixp400
+	/sbin/insmod ixp425_eth
+	/sbin/ifconfig ixp0 up $ipaddr netmask $netmask
+	/sbin/route add default gw $gateway
+
 	/sbin/ifconfig lo up 127.0.0.1
 	/sbin/portmap
 
+	# The nfsrootloc and nfsrootopts vars can be overridden here.
 	. /mnt/jffs2/.nfsroot
 
 	mount -o $nfsrootopts $nfsrootloc /mnt/newroot
