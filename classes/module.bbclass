@@ -3,22 +3,6 @@ DEPENDS += "virtual/kernel"
 
 inherit module-base
 
-python __anonymous() {
-	v = bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) or "0"
-	if v == "1":
-		pn = bb.data.getVar("PN", d, 1)
-		kv = bb.data.getVar("KERNEL_VERSION", d, 1)
-		newpn = "%s-%s" % (pn, kv)
-		bb.data.setVar("PN", newpn, d)
-		bb.data.setVar("OLDPN", pn, d)
-		provides = bb.data.getVar("PROVIDES", d, 1)
-		if provides:
-			provides = "%s %s" % (provides, pn)
-		else:
-			provides = pn
-		bb.data.setVar("PROVIDES", provides, d)
-}
-
 python populate_packages_prepend() {
 	v = bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) or "0"
 	if v == "1":
