@@ -8,6 +8,7 @@ export OPIEDIR=/opt/QtPalmtop
 export QPEDIR=/opt/QtPalmtop
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
 export PATH=$PATH:$OPIEDIR/bin
+export QWS_KEYBOARD=KernelTTY
 
 if [ -e /proc/cpuinfo ] ; then
 	model=`grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
