@@ -1,9 +1,9 @@
+DESCRIPTION=A portable audio library
 SECTION="libs"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS=libc6
 DEPENDS=virtual/libc
-DESCRIPTION=A portable audio library
 
 SRC_URI=http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz \
 	file://${FILESDIR}/flags.patch;patch=1
@@ -14,11 +14,7 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = '--with-jack=no'
 
 do_stage() {
-        install -m 0755 lib/libportaudio.so.${PV} ${STAGING_LIBDIR}/
-        ln -sf libportaudio.so.${PV} ${STAGING_LIBDIR}/libportaudio.so.0
-        ln -sf libportaudio.so.${PV} ${STAGING_LIBDIR}/libportaudio.so
-
-        install -d ${STAGING_DIR}/target/include/
+	oe_soinstall lib/libportaudio.so.${PV} ${STAGING_LIBDIR}/
         install -m 0644 pa_common/portaudio.h ${STAGING_DIR}/target/include/portaudio.h
 }
 
