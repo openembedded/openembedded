@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
@@ -45,6 +45,7 @@ SRC_URI = " \
            file://debian/current-md5sums \
            file://poodle/fstab \
            file://ramses/fstab \
+	   file://simpad/fstab \
            file://licenses/BSD \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
