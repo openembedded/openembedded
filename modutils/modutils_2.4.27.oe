@@ -1,0 +1,49 @@
+PR = "r1"
+DESCRIPTION = "These utilities are intended to make a Linux modular kernel \
+manageable for all users, administrators and distribution \
+maintainers."
+
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${PV}.tar.bz2 \
+	   file://${FILESDIR}/modutils-notest.patch;patch=1 \
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/program_prefix.patch;patch=1"
+
+inherit autotools
+
+# modutils go in /sbin
+sbindir = "/sbin"
+EXTRA_OECONF = "--disable-strip"
+export BUILDCC = "${BUILD_CC}"
+
+do_install () {
+	oe_runmake 'DESTDIR=${D}' install
+	install -d ${D}/${sysconfdir}
+	oe_machinstall -m 0644 ${FILESDIR}/modules ${D}/${sysconfdir}/modules
+	oe_machinstall -m 0644 ${FILESDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
+}
+
+pkg_postinst_modutils () {
+	if test -n "$D"; then
+		D="-r $D"
+		if test -n "`which ${TARGET_PREFIX}depmod`"; then
+			for kerneldir in `ls -p ${IMAGE_ROOTFS}/lib/modules|grep /`; do
+				kernelver=`basename $kerneldir`
+				${TARGET_PREFIX}depmod -a -b ${IMAGE_ROOTFS} -C ${IMAGE_ROOTFS}/${sysconfdir}/modules.conf -r $kernelver
+			done
+		fi
+	fi
+	update-rc.d $D modutils start 20 S .
+}
+
+pkg_prerm_modutils () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D modutils remove
+}
+
+PACKAGES = "modutils-depmod modutils"
+
+FILES_modutils-depmod = "sbin/depmod"
+
+RDEPENDS_modutils = "modutils-depmod"
