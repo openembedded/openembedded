@@ -5,7 +5,8 @@ for the console and xterm, with sample clients included \
 (emacs, etc)."
 
 SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://${FILESDIR}/configure.patch;patch=1 \
+	   file://${FILESDIR}/no-docs.patch;patch=1"
 
 inherit autotools
 

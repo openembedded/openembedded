@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RDEPENDS = "libqpe1"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "http://kstars.sourceforge.net/kstars-${PV}.tar.gz"
+SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz"
 S = "${WORKDIR}/kstars"
 
 inherit palmtop
