@@ -6,11 +6,6 @@ RDEPENDS="libc6 libncurses5"
 DEPENDS=virtual/libc libncurses
 
 SRC_URI="${SOURCEFORGE_MIRROR}/psmisc/psmisc-20.2.tar.gz"
-
 S="${WORKDIR}/${P}"
 
-
-do_install () {
-	set -e
-	oe_runmake DESTDIR=${D} install
-}
+inherit autotools
