@@ -16,10 +16,9 @@ S = "${WORKDIR}/kernel26"
 
 inherit kernel
 
-PACKAGE_ARCH = "ipaqpxa"
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "8"
+K_MICRO = "10"
 HHV     = "0"
 #
 
