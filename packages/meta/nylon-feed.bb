@@ -19,7 +19,7 @@ gnupg \
 hostap-modules \
 hostap-utils \
 hostap-daemon \
-hotplug \
+linux-hotplug \
 htb-init \
 ifplugd \
 initscripts \

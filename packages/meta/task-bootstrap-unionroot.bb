@@ -3,6 +3,7 @@ MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PROVIDES = "task-bootstrap"
 PN = "task-bootstrap"
 PV = "1.0unionroot"
+PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
@@ -35,7 +36,7 @@ def bootstrap_modutils_rdepends(d):
         return ' '.join(r)
 
 DEPENDS = 'base-files base-passwd-3.5.7 \
-	busybox dropbear hotplug initscripts modutils netbase \
+	busybox dropbear initscripts modutils netbase \
 	sysvinit tinylogin portmap \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_DEPENDS} \
@@ -46,7 +47,7 @@ DEPENDS = 'base-files base-passwd-3.5.7 \
 	unionroot-utils'
 
 RDEPENDS = 'base-files base-passwd busybox \
-	hotplug initscripts \
+	initscripts \
 	netbase sysvinit sysvinit-pidof tinylogin \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS} \

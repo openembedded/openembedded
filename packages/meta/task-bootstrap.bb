@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r19"
+PR = "r20"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
@@ -32,14 +32,14 @@ def bootstrap_modutils_rdepends(d):
         return ' '.join(r)
 
 DEPENDS = 'base-files base-passwd-3.5.7 \
-	busybox dropbear hotplug initscripts modutils netbase \
+	busybox dropbear initscripts modutils netbase \
 	sysvinit tinylogin portmap \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_DEPENDS} \
 	${@bootstrap_modutils_depends(d)}'
 
 RDEPENDS = 'base-files base-passwd busybox \
-	hotplug initscripts \
+	initscripts \
 	netbase sysvinit sysvinit-pidof tinylogin \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS} \

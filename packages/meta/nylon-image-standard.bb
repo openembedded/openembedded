@@ -6,7 +6,7 @@ NYLON_STANDARD = "\
 	bridge-utils \
 	dnsmasq \
 	hostap-utils \
-	hotplug \
+	linux-hotplug \
 	ifplugd iproute2 iptables \
 	mobilemesh \
 	nylon-scripts \
