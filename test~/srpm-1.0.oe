@@ -1,4 +1,0 @@
-inherit base_srpm
-
-SRC_URI=""
-SRPMFILE="/usr/src/redhat/SRPMS/kernel-2.5.70mm7-2.src.rpm"

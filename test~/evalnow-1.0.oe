@@ -1,7 +1,0 @@
-# Try 'oebuild showenv evalnow-1.0.oe'
-
-EVAL_A='a'
-EVAL_B='b'
-EVAL_C='a is ${EVAL_A}'
-EVAL_CNOW:='a(now) is ${EVAL_A}'
-EVAL_A='a two'
