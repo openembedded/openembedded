@@ -29,43 +29,7 @@ do_stage () {
 }
 
 python populate_packages_prepend () {
-	import os
-	def do_split(root, pattern, format, description, postinst):
-		dvar = oe.data.getVar('D', d, 1)
-		if not dvar:
-			oe.error("D not defined")
-			return
+	modules_root = oe.data.expand('${libdir}/pango/${LIBV}/modules', d)
 
-		packages = oe.data.getVar('PACKAGES', d, 1).split()
-		if not packages:
-			oe.error("PACKAGES not defined")
-			return
-
-		postinst = '#!/bin/sh\n' + postinst
-		objs = os.listdir(dvar + root)
-		mainpkg = packages[0]
-		for o in objs:
-			import re
-			m = re.match(pattern, o)
-			if not m:
-				continue
-			on = m.group(1)
-			pkg = format % on
-			packages.append(pkg)
-			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
-			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
-			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
-			oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
-
-		oe.data.setVar('PACKAGES', ' '.join(packages), d)
-
-	libdir = oe.data.getVar('libdir', d, 1)
-	if not libdir:
-		oe.error("libdir not defined")
-		return
-
-	pango_libdir = os.path.join(libdir, "pango", oe.data.getVar('LIBV', d))
-	modules_root = os.path.join(pango_libdir, 'modules')
-
-	do_split(modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', 'pango-querymodules > /etc/pango/pango.modules')
+	do_split_packages(d, modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', 'pango-querymodules > /etc/pango/pango.modules')
 }
