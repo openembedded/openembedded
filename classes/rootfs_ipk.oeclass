@@ -51,6 +51,7 @@ EOF
 	done
 	ipkg-cl ${IPKG_ARGS} update
 	if [ ! -z "${LINGUAS_INSTALL}" ]; then
+		ipkg-cl ${IPKG_ARGS} install glibc-localedata-i18n
 		for i in ${LINGUAS_INSTALL}; do
 			ipkg-cl ${IPKG_ARGS} install $i
 		done
