@@ -13,9 +13,6 @@ SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
                    file://${FILESDIR}/install-path-check.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
-prefix = "${CROSS_DIR}"
-exec_prefix = "${prefix}"
-
 do_stage () {
         oe_runmake install
         install -d ${STAGING_DATADIR}/libtool \
