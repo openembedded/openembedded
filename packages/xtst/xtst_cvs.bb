@@ -5,10 +5,9 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "x11 recordext xext"
 DESCRIPTION = "X Test Extension: client side library"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xtst \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xtst"
 S = "${WORKDIR}/Xtst"
 
 inherit autotools pkgconfig 
