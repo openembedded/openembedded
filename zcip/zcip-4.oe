@@ -1,0 +1,18 @@
+DEPENDS = virtual/libc libpcap libnet-1.0.2a
+RDEPENDS = libc6
+
+SRC_URI := ${SOURCEFORGE_MIRROR}/zeroconf/zcip-4.tar.gz \
+	   file://${FILESDIR}/compile.patch;patch=1 \
+	   file://${FILESDIR}/linux-types.patch;patch=1 \
+	   file://${FILESDIR}/char-signed-idiocy.patch;patch=1
+S := ${WORKDIR}/${P}
+
+CPPFLAGS_append = " -DLIBNET_LIL_ENDIAN"
+do_compile () {
+	oe_runmake 'LIBS=${STAGING_LIBDIR}/libpcap.a ${STAGING_LIBDIR}/libnet.a'
+}
+
+do_install () {
+	install -d ${D}/${sbindir}
+	install -m 0744 make-arp zcip ${D}/${sbindir}/
+}
