@@ -1,0 +1,103 @@
+SECTION = "kernel"
+DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices."
+LICENSE = "GPL"
+#KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
+KV = "${@oe.data.getVar('PV',d,True)}"
+
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.gz \
+#          http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.7-jl1.diff.gz;patch=1 \
+#	       http://www.rpsys.net/openzaurus/${PV}/localversion.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/pxa-linking-bug.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/pxa-cpu.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/locomo_resource_fix.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/locomo_pm.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/locomo_devices.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/locomo_kbd.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/locomo_lcd.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_uart.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_batswitch.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_mtd.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_pcmcia.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/sharp_mtd.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/sa1100_fix_depends.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_sharp_probe.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/poodle_base.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/poodle_fb.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/corgi_base.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/pxa_ssp.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/w100.patch.gz;patch=1 \
+#	       http://www.rpsys.net/openzaurus/${PV}/sharp_sl_mtd_nand.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/collie_keymap.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-mtd-sharpsl.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-jffs2-longfilename.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-mtd-sharpsl-map.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-jffs2-sync.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-mtd-logical.patch.gz;patch=1 \
+           http://www.rpsys.net/openzaurus/${PV}/rp-corgikbd.patch.gz;patch=1 \
+		   file://defconfig-husky \
+		   file://defconfig-collie \
+		   file://defconfig-poodle \
+		   "
+	   
+#	   file://2.6.7_iomap_fix.diff;patch=1 \
+#	   file://console_rotate.diff;patch=1 \
+#	   file://led_test.diff;patch=1 \    	   	   
+
+S = "${WORKDIR}/linux-${KV}"
+
+inherit kernel
+
+#
+# Compensate for sucky bootloader on all Sharp Zaurus models
+#
+FILES_kernel = ""
+ALLOW_EMPTY = 1 
+        
+EXTRA_OEMAKE = ""
+COMPATIBLE_HOST = "arm.*-linux"
+KERNEL_CCSUFFIX = "-3.3.3"
+
+
+#
+# Create the kernel command line. 
+#
+CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
+
+CMDLINE_MEM_collie		= "mem=32M"
+CMDLINE_MEM_husky		= "mem=64M"
+
+CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
+CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
+
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_MEM}"
+
+do_configure() {
+    
+    install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+
+    if [ "${MACHINE}" == "collie" ] 
+    then
+		mem="32"
+		rd="32"
+		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
+		rdsize=`echo "$rd * 1024" | bc`
+		total=`expr $mem + $rd`
+		addr=`echo "obase=16; ibase=16; C000000 + $mempos" | bc`
+	 	if [ "$rd" == "0" ]
+	 	then
+			echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
+		else
+			echo "CONFIG_MTD_MTDRAM_SA1100=y"           >> ${S}/.config
+			echo "CONFIG_MTDRAM_TOTAL_SIZE=$rdsize"     >> ${S}/.config
+			echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
+			echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
+		fi
+		
+	fi
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+    yes '' | oe_runmake oldconfig
+}
