@@ -3,20 +3,33 @@
 #
 
 #
+# Fonts for 240x320 displays
+#
+
+OPIE_FONTS_SMALL = "qte-font-smoothsans-90 qte-font-smoothsans-100 qte-font-smoothsans-110 \
+                    qte-font-smoothmono-90 qte-font-smoothmono-100 qte-font-smoothmono-110 \
+                    qte-font-fixed-70 qte-font-fixed-120 "
+
+#
+# Fonts for >= 640x480 displays
+#
+
+OPIE_FONTS_LARGE = "qte-font-smoothsans-120 qte-font-smoothsans-140 qte-font-smoothsans-180 \
+                    qte-font-smoothmono-120 qte-font-smoothmono-140 qte-font-smoothmono-180 "
+
+#
 # Dependencies to get the launcher up and running
 #
 
-OPIE_LIBS_DEPENDS = "qte libopie2 qpf-bitstream-vera qpf-bitstream-vera-sans-mono qpf-unifont"
-OPIE_LIBS_RDEPENDS = "qpf-bitstream-vera-small qte-font-fixed"
+OPIE_LIBS_DEPENDS = "qte libopie2 qpf-qte"
+OPIE_LIBS_RDEPENDS = "${OPIE_FONTS_SMALL}"
 OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
 
 #
 # High res displays need some additional larger fonts
 #
-OPIE_LIBS_RDEPENDS_append_corgi              = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_shepherd           = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_husky              = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
-OPIE_LIBS_RDEPENDS_append_tosa               = " qpf-bitstream-vera-large qpf-bitstream-vera-sans-mono-large"
+OPIE_LIBS_RDEPENDS_append_c7x0 = " ${OPIE_FONTS_LARGE}"
+OPIE_LIBS_RDEPENDS_append_tosa = " ${OPIE_FONTS_LARGE}"
 
 #
 # Things for reasonable bootstrap image
@@ -41,11 +54,9 @@ OPIE_BASE_DEPENDS = "ipkg ntp bluez-utils-nodbus irda-utils openobex-apps libopi
 OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex0"
 
 #
-# Clamshell models need the autorotate applet
+# Clamshell models can benefit from the autorotate applet
 #
-OPIE_BASE_DEPENDS_append_corgi                = " opie-autorotateapplet"
-OPIE_BASE_DEPENDS_append_shepherd             = " opie-autorotateapplet"
-OPIE_BASE_DEPENDS_append_husky                = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_c7x0 = " opie-autorotateapplet"
 
 #
 # Additional things for a standard 16MB distribution
