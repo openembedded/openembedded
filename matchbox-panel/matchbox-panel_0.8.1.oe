@@ -1,8 +1,10 @@
+PR = "r1"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox x11 xext xpm"
 
-SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/0.8/matchbox-panel-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/0.8/matchbox-panel-${PV}.tar.bz2 \
+	file://automake-lossage.patch;patch=1"
 S = "${WORKDIR}/matchbox-panel-${PV}"
 
 inherit autotools  pkgconfig
