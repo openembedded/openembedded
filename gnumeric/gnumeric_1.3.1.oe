@@ -10,7 +10,7 @@ SRC_URI += 'file://workbook-control-gui-priv.h.patch;patch=1'
 EXTRA_OEMAKE_prepend = ' ORBIT_IDL=`which orbit-idl-2` '
 
 python populate_packages_prepend () {
-	gnumeric_libdir = oe.data.expand('${libdir}/gnumeric/${PV}', d)
+	gnumeric_libdir = oe.data.expand('${libdir}/gnumeric/${PV}/plugins', d)
 
-	do_split_packages(d, gnumeric_libdir, '^([^/])/', 'gnumeric-plugin-%s', 'Gnumeric plugin for %s')
+	do_split_packages(d, gnumeric_libdir, '(.*)', 'gnumeric-plugin-%s', 'Gnumeric plugin for %s', allow_dirs=True)
 }
