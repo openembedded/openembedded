@@ -152,16 +152,16 @@ if [ -n "$mounted" ] ; then
     fi
     umount /proc
     cd $mounted
-    /sbin/pivot_root . initrd
-    if [ -x /linuxrc ] ; then
+    if [ -x ./linuxrc -o -L ./linuxrc ] ; then
 	runboot=/linuxrc
-    elif [ -x /sbin/init ] ; then
+    elif [ -x ./sbin/init -o -L ./sbin/init ] ; then
 	runboot=/sbin/init
-    elif [ -x /bin/init ] ; then
+    elif [ -x ./bin/init -o -L ./bin/init ] ; then
 	runboot=/bin/init
     else
 	runboot=/bin/sh
     fi
+    /sbin/pivot_root . initrd
     exec chroot . $runboot  < dev/console > dev/console 2>&1
 fi
 
