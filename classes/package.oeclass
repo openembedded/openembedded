@@ -1,5 +1,5 @@
 def legitimize_package_name(s):
-	return s.lower().replace('_', '-').replace('@', '+')
+	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+')
 
 def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None):
 	import os, os.path, oe
