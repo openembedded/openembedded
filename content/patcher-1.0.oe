@@ -18,3 +18,7 @@ do_install() {
 	install -d ${D}/usr/bin
 	install -m 0755 ${DL_DIR}/patcher ${D}/usr/bin
 }
+
+inherit base
+
+DEPENDS_prepend_delete="content/patcher "
