@@ -13,7 +13,7 @@ if [ -n "$IF_NEEDS_RESET" ]; then
 fi
 
 if [ -n "$IF_NEEDS_FIRMWARE" ]; then
-  $NEEDS_FIRMWARE "$IFACE"
+  $IF_NEEDS_FIRMWARE "$IFACE"
 fi
 
 if [ -n "$IF_WIRELESS_SENS" ]; then
