@@ -15,6 +15,6 @@ do_configure () {
 do_stage () {
         oe_libinstall -a -so -C src libImlib2 ${STAGING_LIBDIR}/
         install -m 0644 ${S}/src/Imlib2.h ${STAGING_INCDIR}/
-	install -d ${STAGING_LIBDIR}/loaders/image/
-	install -m 0755 loaders/.libs/*.so ${STAGING_LIBDIR}/loaders/image/
+	install -d ${STAGING_LIBDIR}/imlib2/loaders/image/
+	install -m 0755 loaders/.libs/*.so ${STAGING_LIBDIR}/imlib2/loaders/image/
 }
