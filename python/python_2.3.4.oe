@@ -2,7 +2,7 @@ DESCRIPTION = "Python Programming Language"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "python-native"
+DEPENDS = "python-native zlib gdbm"
 
 SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
 	   file://bindir-libdir.patch;patch=1 \
