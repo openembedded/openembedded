@@ -2,7 +2,7 @@ DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
-DEPENDS = "virtual/libc x11 xext"
+DEPENDS = "x11 xext"
 PROVIDES = "virtual/libsdl"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \

@@ -2,7 +2,7 @@ DESCRIPTION = "Simple DirectMedia Layer - QtE-based Palmtop Environments Edition
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc virtual/libqpe"
+DEPENDS = "virtual/libqpe"
 PROVIDES = "virtual/libsdl"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
