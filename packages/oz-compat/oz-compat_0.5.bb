@@ -6,18 +6,19 @@ PRIORITY = "optional"
 RDEPENDS = "opie-sh"
 MAINTAINER = "Tim Ansell <mithro AT mithis.net>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 EXCLUDE_FROM_WORLD = "1"
 
 SRC_URI = "http://openzaurus.org/mirror/oz-compat_0.5.tar.gz \
-	   file://hentges.patch;patch=1"
+	   file://hentges.patch;patch=1 \
+	   file://qt2310.patch;patch=1"
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "quickexec"
 INITSCRIPT_PARAMS = "defaults 10"
-        
+
 do_install() {
 	install -d ${D}/opt/QtPalmtop/apps/Settings
 	install -d ${D}/opt/QtPalmtop/bin/
