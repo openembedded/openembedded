@@ -8,7 +8,7 @@ DEPENDS = "gstreamer esound-gpe zlib libmikmod libmad libogg tremor libvorbis li
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://ivorbis.patch;patch=1"
 
-EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-esd"
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-esd --disable-aalib --disable-arts --disable-artsc --disable-libfame"
 
 inherit autotools  pkgconfig
 
@@ -26,5 +26,5 @@ python populate_packages_prepend () {
 do_stage() {
 	install -d ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
 	install -m 0644 gst-libs/gst/gconf/gconf.h ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
-	oe_libinstall -C gst-libs/gst/gconf -so libgstgconf-0.8
+	oe_libinstall -C gst-libs/gst/gconf -so libgstgconf-0.8 ${STAGING_LIBDIR}
 }
