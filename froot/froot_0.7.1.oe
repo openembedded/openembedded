@@ -17,5 +17,5 @@ do_install() {
     install -m 0644 Froot.png ${D}/${palmtopdir}/pics/
     install -m 0644 help/html/froot.html ${D}/${palmtopdir}/help/html/
     install -m 0644 pics/froot/*.png ${D}/${palmtopdir}/pics/froot/
-    install -m 0644 froot.desktop ${D}/${palmtopdir}/apps/Games/
+    install -m 0644 froot.desktop ${D}/${palmtopdir}/apps/Games/froot.desktop
 }
