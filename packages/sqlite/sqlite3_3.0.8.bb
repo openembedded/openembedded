@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
 LICENSE = "PD"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.sqlite.org/sqlite-3.0.8.tar.gz \
 	   file://cross-compile.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "http://www.sqlite.org/sqlite-3.0.8.tar.gz \
 	   file://ldflags.patch;patch=1"
 S = "${WORKDIR}/sqlite"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--without-tcl --enable-shared \
 		--enable-threadsafe"

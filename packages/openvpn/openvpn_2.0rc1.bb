@@ -5,8 +5,8 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "lzo openssl"
-RDEPENDS = "kernel-module-tun"
-PR = "r1"
+RRECOMMENDS = "kernel-module-tun"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-2.0_rc1.tar.gz \
 	file://openvpn"
