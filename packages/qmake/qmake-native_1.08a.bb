@@ -4,15 +4,17 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL|QPL"
-PR = "r2"
+PR = "r3"
 
-QTEVER = "4.0.0-b1"
+DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-opensource-${QTEVER}.tar.bz2 \
+QTEVER = "qt-embedded-opensource-4.0.0-b1"
+
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTEVER}.tar.bz2 \
            file://old-moc-compatibility.patch;patch=1 \
            file://old-uic-compatibility.patch;patch=1 \
            file://linux-oe-qmake.conf"
-S = "${WORKDIR}/qt-embedded-opensource-${QTEVER}"
+S = "${WORKDIR}/${QTEVER}"
 
 inherit autotools native
 
