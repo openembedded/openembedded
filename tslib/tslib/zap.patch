@@ -1,0 +1,1684 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- tslib/etc/ts.conf~tslib
++++ tslib/etc/ts.conf
+@@ -1,3 +1,3 @@
+-module variance xlimit=50 ylimit=50 pthreshold=1
+-module dejitter xdelta=10 ydelta=10 pthreshold=1
++module variance delta=30 pthreshold=1
++module dejitter delta=100 pthreshold=1
+ module linear
+--- tslib/plugins/dejitter.c~tslib
++++ tslib/plugins/dejitter.c
+@@ -1,5 +1,5 @@
+ /*
+- *  tslib/plugins/threshold.c
++ *  tslib/plugins/dejitter.c
+  *
+  *  Copyright (C) 2001 Russell King.
+  *
+@@ -8,7 +8,19 @@
+  *
+  * $Id$
+  *
+- * Threshold filter for touchscreen values
++ * Problem: some touchscreens read the X/Y values from ADC with a
++ * great level of noise in their lowest bits. This produces "jitter"
++ * in touchscreen output, e.g. even if we hold the stylus still,
++ * we get a great deal of X/Y coordinate pairs that are close enough
++ * but not equal. Also if we try to draw a straight line in a painter
++ * program, we'll get a line full of spikes.
++ *
++ * Solution: we apply a smoothing filter on the last several values
++ * thus excluding spikes from output. If we detect a substantial change
++ * in coordinates, we reset the backlog of pen positions, thus avoiding
++ * smoothing coordinates that are not supposed to be smoothed. This
++ * supposes all noise has been filtered by the lower-level filter,
++ * e.g. by the "variance" module.
+  */
+ #include <errno.h>
+ #include <stdlib.h>
+@@ -20,74 +32,144 @@
+ #include "tslib.h"
+ #include "tslib-filter.h"
+ 
+-#define NR_LAST	4
++/**
++ * This filter works as follows: we keep track of latest N samples,
++ * and average them with certain weights. The oldest samples have the
++ * least weight and the most recent samples have the most weight.
++ * This helps remove the jitter and at the same time doesn't influence
++ * responsivity because for each input sample we generate one output
++ * sample; pen movement becomes just somehow more smooth.
++ */
+ 
+-struct tslib_threshold {
+-	struct tslib_module_info	module;
+-	int			pthreshold;
+-	int			xdelta;
+-	int			ydelta;
+-	int			delta2;
+-	unsigned int			x;
+-	unsigned int			y;
+-	unsigned int			down;
++#define NR_SAMPHISTLEN	4
++
++/* To keep things simple (avoiding division) we ensure that
++ * SUM(weight) = power-of-two. Also we must know how to approximate
++ * measurements when we have less than NR_SAMPHISTLEN samples.
++ */
++static const unsigned char weight [NR_SAMPHISTLEN - 1][NR_SAMPHISTLEN + 1] =
++{
++	/* The last element is pow2(SUM(0..3)) */
++	{ 5, 3, 0, 0, 3 },	/* When we have 2 samples ... */
++	{ 8, 5, 3, 0, 4 },	/* When we have 3 samples ... */
++	{ 6, 4, 3, 3, 4 },	/* When we have 4 samples ... */
+ };
+ 
+-static int threshold_read(struct tslib_module_info *info, struct ts_sample *samp, int nr)
++struct ts_hist {
++	int x;
++	int y;
++	int p;
++};
++
++struct tslib_dejitter {
++	struct tslib_module_info module;
++	unsigned int pthreshold;
++	unsigned int delta;
++	unsigned int x;
++	unsigned int y;
++	unsigned int down;
++	unsigned int nr;
++	unsigned int head;
++	struct ts_hist hist[NR_SAMPHISTLEN];
++};
++
++static int sqr (int x)
+ {
+-	struct tslib_threshold *thr = (struct tslib_threshold *)info;
++	return x * x;
++}
++
++static void average (struct tslib_dejitter *djt, struct ts_sample *samp)
++{
++	const unsigned char *w;
++	int sn = djt->head;
++	int i, x = 0, y = 0, p = 0;
++
++        w = weight [djt->nr - 2];
++
++	for (i = 0; i < djt->nr; i++) {
++		x += djt->hist [sn].x * w [i];
++		y += djt->hist [sn].y * w [i];
++		p += djt->hist [sn].p * w [i];
++		sn = (sn - 1) & (NR_SAMPHISTLEN - 1);
++	}
++
++	samp->x = x >> w [NR_SAMPHISTLEN];
++	samp->y = y >> w [NR_SAMPHISTLEN];
++	samp->pressure = p >> w [NR_SAMPHISTLEN];
++#ifdef DEBUG
++	fprintf(stderr,"DEJITTER----------------> %d %d %d\n",
++		samp->x, samp->y, samp->pressure);
++#endif
++}
++
++static int dejitter_read(struct tslib_module_info *info, struct ts_sample *samp, int nr)
++{
++        struct tslib_dejitter *djt = (struct tslib_dejitter *)info;
+ 	struct ts_sample *s;
+-	int ret;
++	int count = 0, ret;
+ 
+ 	ret = info->next->ops->read(info->next, samp, nr);
+-	if (ret >= 0) {
+-		int nr = 0;
++	for (s = samp; ret > 0; s++, ret--) {
++		if (s->pressure < djt->pthreshold) {
++			/*
++			 * Pen was released. Reset the state and
++			 * forget all history events.
++			 */
++			djt->nr = 0;
++			samp [count++] = *s;
++                        continue;
++		}
+ 
+-		for (s = samp; s < samp + ret; s++) {
+-			int dr2;
++                /* If the pen moves too fast, reset the backlog. */
++		if (djt->nr) {
++			int prev = (djt->head - 1) & (NR_SAMPHISTLEN - 1);
++			if (sqr (s->x - djt->hist [prev].x) +
++			    sqr (s->y - djt->hist [prev].y) > djt->delta) {
+ #ifdef DEBUG
+-			fprintf(stderr,"BEFORE DEJITTER---------------> %d %d %d\n",s->x,s->y,s->pressure);
+-#endif /*DEBUG*/
+-			thr->down = (s->pressure >= thr->pthreshold);
+-			if (thr->down) {
+-				dr2 = (thr->x - s->x)*(thr->x - s->x) 
+-					+ (thr->y - s->y)*(thr->y - s->y);
+-				if(dr2 < thr->delta2) {
+-					s->x = thr->x;
+-					s->y = thr->y;
+-				} else {
+-					thr->x = s->x;
+-					thr->y = s->y;
+-				}
+-
+-			} else {
+-				s->x = thr->x;
+-				s->y = thr->y;
++				fprintf (stderr, "DEJITTER: pen movement exceeds threshold\n");
++#endif
++                                djt->nr = 0;
+ 			}
++		}
+ 
++		djt->hist[djt->head].x = s->x;
++		djt->hist[djt->head].y = s->y;
++		djt->hist[djt->head].p = s->pressure;
++		if (djt->nr < NR_SAMPHISTLEN)
++			djt->nr++;
+ 
+-			samp[nr++] = *s;
++		/* We'll pass through the very first sample since
++		 * we can't average it (no history yet).
++		 */
++		if (djt->nr == 1)
++			samp [count] = *s;
++		else {
++			average (djt, samp + count);
++			samp [count].tv = s->tv;
+ 		}
++		count++;
+ 
+-		ret = nr;
++		djt->head = (djt->head + 1) & (NR_SAMPHISTLEN - 1);
+ 	}
+-	return ret;
++
++	return count;
+ }
+ 
+-static int threshold_fini(struct tslib_module_info *info)
++static int dejitter_fini(struct tslib_module_info *info)
+ {
+ 	free(info);
++	return 0;
+ }
+ 
+-static const struct tslib_ops threshold_ops =
++static const struct tslib_ops dejitter_ops =
+ {
+-	read:	threshold_read,
+-	fini:	threshold_fini,
++	read:	dejitter_read,
++	fini:	dejitter_fini,
+ };
+ 
+-static int threshold_limit(struct tslib_module_info *inf, char *str, void *data)
++static int dejitter_limit(struct tslib_module_info *inf, char *str, void *data)
+ {
+-	struct tslib_threshold *thr = (struct tslib_threshold *)inf;
++	struct tslib_dejitter *djt = (struct tslib_dejitter *)inf;
+ 	unsigned long v;
+ 	int err = errno;
+ 
+@@ -99,15 +181,11 @@
+ 	errno = err;
+ 	switch ((int)data) {
+ 	case 1:
+-		thr->xdelta = v;
++		djt->delta = v;
+ 		break;
+ 
+ 	case 2:
+-		thr->ydelta = v;
+-		break;
+-
+-	case 3:
+-		thr->pthreshold = v;
++		djt->pthreshold = v;
+ 		break;
+ 
+ 	default:
+@@ -116,35 +194,33 @@
+ 	return 0;
+ }
+ 
+-static const struct tslib_vars threshold_vars[] =
++static const struct tslib_vars dejitter_vars[] =
+ {
+-	{ "xdelta",	(void *)1, threshold_limit },
+-	{ "ydelta",	(void *)2, threshold_limit },
+-	{ "pthreshold",	(void *)3, threshold_limit }
++	{ "delta",	(void *)1, dejitter_limit },
++	{ "pthreshold",	(void *)2, dejitter_limit }
+ };
+ 
+-//#define NR_VARS (sizeof(threshold_vars) / sizeof(threshold_vars[0]))
+-#define NR_VARS 3
++#define NR_VARS (sizeof(dejitter_vars) / sizeof(dejitter_vars[0]))
+ 
+ struct tslib_module_info *mod_init(struct tsdev *dev, const char *params)
+ {
+-	struct tslib_threshold *thr;
++	struct tslib_dejitter *djt;
+ 
+-	thr = malloc(sizeof(struct tslib_threshold));
+-	if (thr == NULL)
++	djt = malloc(sizeof(struct tslib_dejitter));
++	if (djt == NULL)
+ 		return NULL;
+ 
+-	thr->module.ops = &threshold_ops;
++	djt->module.ops = &dejitter_ops;
+ 
+-	thr->xdelta = 10;
+-	thr->ydelta = 10;
+-	thr->pthreshold = 100;
++	djt->delta = 100;
++	djt->pthreshold = 1;
++        djt->head = 0;
+ 
+-	if (tslib_parse_vars(&thr->module, threshold_vars, NR_VARS, params)) {
+-		free(thr);
++	if (tslib_parse_vars(&djt->module, dejitter_vars, NR_VARS, params)) {
++		free(djt);
+ 		return NULL;
+ 	}
+-	thr->delta2 = (thr->xdelta)*(thr->xdelta) + (thr->ydelta)*(thr->ydelta);
++	djt->delta = sqr (djt->delta);
+ 
+-	return &thr->module;
++	return &djt->module;
+ }
+--- tslib/plugins/linear.c~tslib
++++ tslib/plugins/linear.c
+@@ -74,6 +74,7 @@
+ static int linear_fini(struct tslib_module_info *info)
+ {
+ 	free(info);
++	return 0;
+ }
+ 
+ static const struct tslib_ops linear_ops =
+@@ -104,7 +105,6 @@
+ 	struct tslib_linear *lin;
+ 	struct stat sbuf;
+ 	int pcal_fd;
+-	int a[7];
+ 	char pcalbuf[200];
+ 	int index;
+ 	char *tokptr;
+--- tslib/plugins/variance.c~tslib
++++ tslib/plugins/variance.c
+@@ -8,165 +8,124 @@
+  *
+  * $Id$
+  *
+- * Variance filter for touchscreen values
++ * Variance filter for touchscreen values.
++ *
++ * Problem: some touchscreens are sampled very roughly, thus even if
++ * you hold the pen still, the samples can differ, sometimes substantially.
++ * The worst happens when electric noise during sampling causes the result
++ * to be substantially different from the real pen position; this causes
++ * the mouse cursor to suddenly "jump" and then return back.
++ *
++ * Solution: delay sampled data by one timeslot. If we see that the last
++ * sample read differs too much, we mark it as "suspicious". If next sample
++ * read is close to the sample before the "suspicious", the suspicious sample
++ * is dropped, otherwise we consider that a quick pen movement is in progress
++ * and pass through both the "suspicious" sample and the sample after it.
+  */
+ #include <errno.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <limits.h>
+ 
+-#include <stdio.h>
+-
+ #include "tslib.h"
+ #include "tslib-filter.h"
+ 
+-#define NR_LAST	4
+-
+ struct tslib_variance {
+-	struct tslib_module_info	module;
+-	int				nr;
+-	unsigned int			pthreshold;
+-	unsigned int			xlimit;
+-	unsigned int			ylimit;
+-	struct ts_sample		last[NR_LAST];
++	struct tslib_module_info module;
++	unsigned int pthreshold;
++	unsigned int delta;
++        struct ts_sample last;
++        struct ts_sample noise;
++	unsigned int flags;
++#define VAR_PENDOWN		0x00000001
++#define VAR_LASTVALID		0x00000002
++#define VAR_NOISEVALID		0x00000004
++#define VAR_SUBMITNOISE		0x00000008
+ };
+ 
+-/*
+- * We have 4 complete samples.  Calculate the variance between each,
+- * treating X and Y values separately.  Then pick the two with the
+- * least variance, and average them.
+- */
+-static int
+-variance_calculate(struct tslib_variance *var, struct ts_sample *samp,
+-		   struct ts_sample *s)
++static int sqr (int x)
+ {
+-	int i, j;
+-	int diff_x, min_x, i_x, j_x;
+-	int diff_y, min_y, i_y, j_y;
+-	int diff_p, min_p, i_p, j_p;
+-
+-	min_x = INT_MAX;
+-	min_y = INT_MAX;
+-	min_p = INT_MAX;
+-
+-	for (i = 0; i < var->nr - 1; i++) {
+-		for (j = i + 1; j < var->nr; j++) {
+-			/*
+-			 * Calculate the variance between sample 'i'
+-			 * and sample 'j'.  X and Y values are treated
+-			 * separately.
+-			 */
+-			diff_x = var->last[i].x - var->last[j].x;
+-			if (diff_x < 0)
+-				diff_x = -diff_x;
+-
+-			diff_y = var->last[i].y - var->last[j].y;
+-			if (diff_y < 0)
+-				diff_y = -diff_y;
+-
+-			diff_p = var->last[i].pressure - var->last[j].pressure;
+-			if (diff_p < 0)
+-				diff_p = -diff_p;
+-
+-			/*
+-			 * Is the variance between any two samples too large?
+-			 */
+-			if (diff_x > var->xlimit || diff_y > var->ylimit)
+-				return 0;
+-
+-			/*
+-			 * Find the minimum X variance.
+-			 */
+-			if (min_x > diff_x) {
+-				min_x = diff_x;
+-				i_x = i;
+-				j_x = j;
+-			}
+-
+-			/*
+-			 * Find the minimum Y variance.
+-			 */
+-			if (min_y > diff_y) {
+-				min_y = diff_y;
+-				i_y = i;
+-				j_y = j;
+-			}
+-
+-			if (min_p > diff_p) {
+-				min_p = diff_p;
+-				i_p = i;
+-				j_p = j;
+-			}
+-		}
+-	}
+-
+-	samp->x		 = (var->last[i_x].x + var->last[j_x].x) / 2;
+-	samp->y		 = (var->last[i_y].y + var->last[j_y].y) / 2;
+-	samp->pressure   = (var->last[i_p].pressure + var->last[j_p].pressure) / 2;
+-	samp->tv.tv_sec  = s->tv.tv_sec;
+-	samp->tv.tv_usec = s->tv.tv_usec;
+-
+-	return 1;
++	return x * x;
+ }
+ 
+ static int variance_read(struct tslib_module_info *info, struct ts_sample *samp, int nr)
+ {
+ 	struct tslib_variance *var = (struct tslib_variance *)info;
+-	struct ts_sample *s;
+-	int ret;
+-
+-	ret = info->next->ops->read(info->next, samp, nr);
+-	if (ret >= 0) {
+-		int nr = 0;
+-
+-		for (s = samp; s < samp + ret; s++) {
+-			if (s->pressure < var->pthreshold) {
+-				/*
+-				 * Pen was released.  Reset our state and
+-				 * pass up the release information.
+-				 */
+-//				samp[nr].x = 0;
+-//				samp[nr].y = 0;
+-				samp[nr].pressure = s->pressure;
+-				samp[nr].tv.tv_sec = s->tv.tv_sec;
+-				samp[nr].tv.tv_usec = s->tv.tv_usec;
++	struct ts_sample cur;
++	int count = 0, dist;
+ 
+-				nr++;
++	while (count < nr) {
++		if (var->flags & VAR_SUBMITNOISE) {
++			cur = var->noise;
++			var->flags &= ~VAR_SUBMITNOISE;
++		} else if (!info->next->ops->read(info->next, &cur, 1))
++			return count;
+ 
+-				var->nr = 0;
+-				continue;
+-			} else if (var->nr == -1) {
+-				/*
+-				 * Pen was pressed.  Inform upper layers
+-				 * immediately.
+-				 */
+-				samp[nr] = *s;
+-				nr++;
++		if (cur.pressure < var->pthreshold) {
++			/* Flush the queue immediately when the pen is just
++			 * released, otherwise the previous layer will
++			 * get the pen up notification too late. This 
++			 * will happen if info->next->ops->read() blocks.
++			 */
++			if (var->flags & VAR_PENDOWN) {
++				var->flags |= VAR_SUBMITNOISE;
++				var->noise = cur;
+ 			}
++			/* Reset the state machine on pen up events. */
++			var->flags &= ~(VAR_PENDOWN | VAR_NOISEVALID);
++			/* drop the previous event.. the only way to ensure
++			 * that this release is communicated in -this- ts_read,
++			 * rather than the next -CL */
++			var->last.pressure = cur.pressure;
++			goto acceptsample;
++		} else
++			var->flags |= VAR_PENDOWN;
+ 
+-			if (var->nr >= 0) {
+-				var->last[var->nr].x = s->x;
+-				var->last[var->nr].y = s->y;
+-				var->last[var->nr].pressure = s->pressure;
+-			}
++		if (!(var->flags & VAR_LASTVALID)) {
++			var->last = cur;
++			var->flags |= VAR_LASTVALID;
++			continue;
++		}
+ 
+-			var->nr++;
++		if (var->flags & VAR_PENDOWN) {
++			/* Compute the distance between last sample and current */
++			dist = sqr (cur.x - var->last.x) +
++			       sqr (cur.y - var->last.y);
+ 
+-			if (var->nr == NR_LAST) {
+-				if (variance_calculate(var, samp + nr, s))
+-					nr++;
+-				var->nr = 0;
+-			}
++			if (dist > var->delta) {
++				/* Do we suspect the previous sample was a noise? */
++				if (var->flags & VAR_NOISEVALID) {
++					/* Two "noises": it's just a quick pen movement */
++					samp [count++] = var->last = var->noise;
++					var->flags = (var->flags & ~VAR_NOISEVALID) |
++						VAR_SUBMITNOISE;
++				} else
++					var->flags |= VAR_NOISEVALID;
++
++				/* The pen jumped too far, maybe it's a noise ... */
++				var->noise = cur;
++				continue;
++			} else
++				var->flags &= ~VAR_NOISEVALID;
+ 		}
+ 
+-		ret = nr;
++acceptsample:
++#ifdef DEBUG
++		fprintf(stderr,"VARIANCE----------------> %d %d %d\n",
++			var->last.x, var->last.y, var->last.pressure);
++#endif
++		samp [count++] = var->last;
++		var->last = cur;
+ 	}
+-	return ret;
++
++	return count;
+ }
+ 
+ static int variance_fini(struct tslib_module_info *info)
+ {
+ 	free(info);
++        return 0;
+ }
+ 
+ static const struct tslib_ops variance_ops =
+@@ -189,14 +148,10 @@
+ 	errno = err;
+ 	switch ((int)data) {
+ 	case 1:
+-		var->xlimit = v;
++		var->delta = v;
+ 		break;
+ 
+ 	case 2:
+-		var->ylimit = v;
+-		break;
+-
+-	case 3:
+ 		var->pthreshold = v;
+ 		break;
+ 
+@@ -208,9 +163,8 @@
+ 
+ static const struct tslib_vars variance_vars[] =
+ {
+-	{ "xlimit",	(void *)1, variance_limit },
+-	{ "ylimit",	(void *)2, variance_limit },
+-	{ "pthreshold",	(void *)3, variance_limit }
++	{ "delta",	(void *)1, variance_limit },
++	{ "pthreshold",	(void *)2, variance_limit }
+ };
+ 
+ #define NR_VARS (sizeof(variance_vars) / sizeof(variance_vars[0]))
+@@ -225,15 +179,16 @@
+ 
+ 	var->module.ops = &variance_ops;
+ 
+-	var->nr = -1;
+-	var->xlimit = 160;
+-	var->ylimit = 160;
+-	var->pthreshold = 100;
++	var->delta = 30;
++	var->pthreshold = 1;
++	var->flags = 0;
+ 
+ 	if (tslib_parse_vars(&var->module, variance_vars, NR_VARS, params)) {
+ 		free(var);
+ 		return NULL;
+ 	}
+ 
++        var->delta = sqr (var->delta);
++
+ 	return &var->module;
+ }
+--- tslib/src/ts_config.c~tslib
++++ tslib/src/ts_config.c
+@@ -13,6 +13,7 @@
+ #include "config.h"
+ #include <stdio.h>
+ #include <string.h>
++#include <stdlib.h>
+ 
+ #include "tslib-private.h"
+ 
+--- tslib/src/ts_load_module.c~tslib
++++ tslib/src/ts_load_module.c
+@@ -42,6 +42,9 @@
+ 	strcat(fn, module);
+ 	strcat(fn, ".so");
+ 
++#ifdef DEBUG
++	printf ("Loading module %s\n", fn);
++#endif
+ 	handle = dlopen(fn, RTLD_NOW);
+ 	if (!handle)
+ 		return -1;
+--- tslib/src/ts_read.c~tslib
++++ tslib/src/ts_read.c
+@@ -40,7 +40,8 @@
+ //		samp[i] = ts_read_private_samples[i];
+ //	}
+ #ifdef DEBUG
+-	fprintf(stderr,"TS_READ----> x = %d, y = %d, pressure = %d\n", samp->x, samp->y, samp->pressure);
++	if (result)
++		fprintf(stderr,"TS_READ----> x = %d, y = %d, pressure = %d\n", samp->x, samp->y, samp->pressure);
+ #endif
+ 	return result;
+ 
+--- tslib/src/ts_read_raw.c~tslib
++++ tslib/src/ts_read_raw.c
+@@ -81,14 +81,53 @@
+ 	struct arctic2_ts_event *aevt;
+ 	struct collie_ts_event *collie_evt;
+ 	struct corgi_ts_event *corgi_evt;
++	char *tseventtype=NULL;
++	char *defaulttseventtype="UCB1x00";
+ #endif /* USE_INPUT_API */
+ 	int ret;
+ 	int total = 0;
+ 
+-	char *tseventtype=NULL;
+-	char *defaulttseventtype="UCB1x00";
+-
+ #ifdef USE_INPUT_API
++#ifdef EV_SYN
++        /* This version uses EV_SYN */
++	while (total < nr) {
++		ret = read(ts->fd, &ev, sizeof(struct input_event));
++		if (ret < sizeof(struct input_event)) {
++			total = -1;
++			break;
++		}
++
++		switch (ev.type) {
++		case EV_SYN:
++			/* Fill out a new complete event */
++			samp->x = ts->current_x;
++			samp->y = ts->current_y;
++			samp->pressure = ts->current_p;
++			samp->tv = ev.time;
++#ifdef DEBUG
++			fprintf(stderr,"RAW---------------------> %d %d %d %d.%d\n",
++				samp->x, samp->y, samp->pressure, samp->tv.tv_sec, samp->tv.tv_usec);
++#endif /*DEBUG*/
++			samp++;
++			total++;
++			break;
++		case EV_ABS:
++			switch (ev.code) {
++			case ABS_X:
++				ts->current_x = ev.value;
++				break;
++			case ABS_Y:
++				ts->current_y = ev.value;
++				break;
++			case ABS_PRESSURE:
++				ts->current_p = ev.value;
++				break;
++			}
++			break;
++		}
++	}
++	ret = total;
++#else   /* This version doesn't use EV_SYN */
+ 	/* warning: maybe those static vars should be part of the tsdev struct? */
+ 	static int curr_x = 0, curr_y = 0, curr_p = 0;
+ 	static int got_curr_x = 0, got_curr_y = 0;
+@@ -179,6 +218,8 @@
+ 
+ 	if (ret) ret = -1;
+ 	if (total) ret = total;
++#endif
++
+ #else
+ 	tseventtype = getenv("TSLIB_TSEVENTTYPE");
+ 	if(tseventtype==NULL) tseventtype=defaulttseventtype;
+--- tslib/src/tslib-private.h~tslib
++++ tslib/src/tslib-private.h
+@@ -21,6 +21,11 @@
+ struct tsdev {
+ 	int fd;
+ 	struct tslib_module_info *list;
++#ifdef USE_INPUT_API
++	int current_x;
++	int current_y;
++	int current_p;
++#endif
+ };
+ 
+ int __ts_attach(struct tsdev *ts, struct tslib_module_info *info);
+--- tslib/tests/fbutils.c~tslib
++++ tslib/tests/fbutils.c
+@@ -14,22 +14,34 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
+ #include <sys/fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/time.h>
+-#include <linux/fb.h>
+-#include <linux/kd.h>
++
+ #include <linux/vt.h>
++#include <linux/kd.h>
++#include <linux/fb.h>
+ 
+ #include "font.h"
++#include "fbutils.h"
++
++union multiptr {
++	unsigned char *p8;
++	unsigned short *p16;
++	unsigned long *p32;
++};
+ 
+ static int con_fd, fb_fd, last_vt = -1;
+ static struct fb_fix_screeninfo fix;
+ static struct fb_var_screeninfo var;
+-static struct fb_cmap cmap;
+-static char *fbuffer;
++static unsigned char *fbuffer;
++static unsigned char **line_addr;
+ static int fb_fd=0;
++static int bytes_per_pixel;
++static unsigned colormap [256];
+ int xres, yres;
+ 
+ static char *defaultfbdevice = "/dev/fb0";
+@@ -39,26 +51,26 @@
+ 
+ int open_framebuffer(void)
+ {
+-        struct vt_stat vts;
+-        char vtname[128];
+-        int fd, nr;
+-	unsigned short col[2];
++	struct vt_stat vts;
++	char vtname[128];
++	int fd, nr;
++	unsigned y, addr;
+ 
+-	if( (fbdevice = getenv("TSLIB_FBDEVICE")) == NULL)
++	if ((fbdevice = getenv ("TSLIB_FBDEVICE")) == NULL)
+ 		fbdevice = defaultfbdevice;
+ 
+-	if( (consoledevice = getenv("TSLIB_CONSOLEDEVICE")) == NULL)
++	if ((consoledevice = getenv ("TSLIB_CONSOLEDEVICE")) == NULL)
+ 		consoledevice = defaultconsoledevice;
+ 
+-	if(strcmp(consoledevice,"none")!=0) {
+-		sprintf(vtname,"%s%d", consoledevice, 1);
+-        	fd = open(vtname, O_WRONLY);
++	if (strcmp (consoledevice, "none") != 0) {
++		sprintf (vtname,"%s%d", consoledevice, 1);
++        	fd = open (vtname, O_WRONLY);
+         	if (fd < 0) {
+         	        perror("open consoledevice");
+         	        return -1;
+         	}
+ 
+-        	if (ioctl(fd, VT_OPENQRY, &nr) < 0) {
++		if (ioctl(fd, VT_OPENQRY, &nr) < 0) {
+         	        perror("ioctl VT_OPENQRY");
+         	        return -1;
+         	}
+@@ -115,32 +127,20 @@
+ 	xres = var.xres;
+ 	yres = var.yres;
+ 
+-	cmap.start = 0;
+-	cmap.len = 2;
+-	cmap.red = col;
+-	cmap.green = col;
+-	cmap.blue = col;
+-	cmap.transp = NULL;
+-
+-	col[0] = 0;
+-	col[1] = 0xffff;
+-
+-	if(var.bits_per_pixel==8) {
+-		if (ioctl(fb_fd, FBIOPUTCMAP, &cmap) < 0) {
+-			perror("ioctl FBIOPUTCMAP");
+-			close(fb_fd);
+-			return -1;
+-		}
+-	}
+-
+ 	fbuffer = mmap(NULL, fix.smem_len, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fb_fd, 0);
+-	if (fbuffer == (char *)-1) {
++	if (fbuffer == (unsigned char *)-1) {
+ 		perror("mmap framebuffer");
+ 		close(fb_fd);
+ 		return -1;
+ 	}
+ 	memset(fbuffer,0,fix.smem_len);
+ 
++	bytes_per_pixel = (var.bits_per_pixel + 7) / 8;
++	line_addr = malloc (sizeof (unsigned) * var.yres_virtual);
++	addr = 0;
++	for (y = 0; y < var.yres_virtual; y++, addr += fix.line_length)
++		line_addr [y] = fbuffer + addr;
++
+ 	return 0;
+ }
+ 
+@@ -161,135 +161,231 @@
+ 
+         	close(con_fd);
+ 	}
++
++        free (line_addr);
+ }
+ 
+-void put_cross(int x, int y, int c)
++void put_cross(int x, int y, unsigned colidx)
+ {
+-	int off, i, s, e, loc;
++	line (x - 10, y, x - 2, y, colidx);
++	line (x + 2, y, x + 10, y, colidx);
++	line (x, y - 10, x, y - 2, colidx);
++	line (x, y + 2, x, y + 10, colidx);
+ 
+-	if (x < 0) x = 0;
+-	if (y < 0) y = 0;
+-	if (x >= var.xres) x = var.xres - 1;
+-	if (y >= var.yres) y = var.yres - 1;
++#if 1
++	line (x - 6, y - 9, x - 9, y - 9, colidx + 1);
++	line (x - 9, y - 8, x - 9, y - 6, colidx + 1);
++	line (x - 9, y + 6, x - 9, y + 9, colidx + 1);
++	line (x - 8, y + 9, x - 6, y + 9, colidx + 1);
++	line (x + 6, y + 9, x + 9, y + 9, colidx + 1);
++	line (x + 9, y + 8, x + 9, y + 6, colidx + 1);
++	line (x + 9, y - 6, x + 9, y - 9, colidx + 1);
++	line (x + 8, y - 9, x + 6, y - 9, colidx + 1);
++#else
++	line (x - 7, y - 7, x - 4, y - 4, colidx + 1);
++	line (x - 7, y + 7, x - 4, y + 4, colidx + 1);
++	line (x + 4, y - 4, x + 7, y - 7, colidx + 1);
++	line (x + 4, y + 4, x + 7, y + 7, colidx + 1);
++#endif
++}
+ 
+-	s = x - 10;
+-	if(s<0) s=0;
+-	e = x + 10;
+-	if(e>var.xres) e= var.xres;
+-	for(i=s;i<e;i++) {
+-		loc = (i + var.xoffset)*(var.bits_per_pixel/8)
+-			+ (y + var.yoffset)*fix.line_length;
+-		switch(var.bits_per_pixel) {
+-			case 8:
+-			default:
+-				//fbuffer[loc] = c;
+-				fbuffer[loc] = fbuffer[loc] ? 0 : 1;
+-				break;
+-			case 16:
+-				*((unsigned short *)(fbuffer + loc)) = *((unsigned short *)(fbuffer + loc)) ? 0 : 0xffff;
+-				break;
+-			case 24:
+-			case 32:
+-				*((unsigned int *)(fbuffer + loc)) = *((unsigned int *)(fbuffer + loc)) ? 0 : 0xffffffff;
+-				break;
+-		}
+-	}
+-	s = y - 10;
+-	if(s<0) s=0;
+-	e = y + 10;
+-	if(e>var.yres) e = var.yres;
+-	for(i=s;i<e;i++) {
+-		loc = (x + var.xoffset)*(var.bits_per_pixel/8)
+-			+ (i + var.yoffset)*fix.line_length;
+-		switch(var.bits_per_pixel) {
+-			case 8:
+-			default:
+-				//fbuffer[loc] = c;
+-				fbuffer[loc] = fbuffer[loc] ? 0 : 1;
+-				break;
+-			case 16:
+-				*((unsigned short *)(fbuffer + loc)) = *((unsigned short *)(fbuffer + loc)) ? 0 : 0xffff;
+-				break;
+-			case 24:
+-			case 32:
+-				*((unsigned int *)(fbuffer + loc)) = *((unsigned int *)(fbuffer + loc)) ? 0 : 0xffffffff;
+-				break;
+-		}
++void put_char(int x, int y, int c, int colidx)
++{
++	int i,j,bits;
++
++	for (i = 0; i < font_vga_8x8.height; i++) {
++		bits = font_vga_8x8.data [font_vga_8x8.height * c + i];
++		for (j = 0; j < font_vga_8x8.width; j++, bits <<= 1)
++			if (bits & 0x80)
++				pixel (x + j, y + i, colidx);
+ 	}
+-	return;
+ }
+ 
+-void put_char(int x, int y, int c, int color)
++void put_string(int x, int y, char *s, unsigned colidx)
+ {
+-	int i,j,bits,loc;
++	int i;
++	for (i = 0; *s; i++, x += font_vga_8x8.width, s++)
++		put_char (x, y, *s, colidx);
++}
+ 
+-	for(i=0;i<font_vga_8x8.height;i++) {
+-		bits = font_vga_8x8.data[font_vga_8x8.height*c + i];
+-		for(j=0;j<8;j++) {
+-			loc = (x + j + var.xoffset)*(var.bits_per_pixel/8)
+-				+ (y + i + var.yoffset)*fix.line_length;
+-			if(loc>=0 && loc<fix.smem_len && ((bits >> (7-j)) & 1)) {
+-				switch(var.bits_per_pixel) {
+-					case 8:
+-					default:
+-						if(color==0)
+-							fbuffer[loc] = 0;
+-						else
+-							fbuffer[loc] = 1;
+-						break;
+-					case 16:
+-						if(color==0)
+-							*((unsigned short *)(fbuffer + loc)) = 0;
+-						else
+-							*((unsigned short *)(fbuffer + loc)) = 0xffff;
+-						break;
+-					case 24:
+-					case 32:
+-						if(color==0)
+-							*((unsigned int *)(fbuffer + loc)) = 0;
+-						else
+-							*((unsigned int *)(fbuffer + loc)) = 0xffffffff;
+-						break;
+-				}
+-			}	
+-		}
+-	}
++void put_string_center(int x, int y, char *s, unsigned colidx)
++{
++	size_t sl = strlen (s);
++        put_string (x - (sl / 2) * font_vga_8x8.width,
++                    y - font_vga_8x8.height / 2, s, colidx);
+ }
+-		
+ 
++void setcolor(unsigned colidx, unsigned value)
++{
++	unsigned res;
++	unsigned short red, green, blue;
++	struct fb_cmap cmap;
+ 
+-void put_string(int x, int y, char *s, int color)
++#ifdef DEBUG
++	if (colidx > 255) {
++		fprintf (stderr, "WARNING: color index = %u, must be <256\n",
++			 colidx);
++		return;
++	}
++#endif
++
++	switch (bytes_per_pixel) {
++	default:
++	case 1:
++		res = colidx;
++		red = (value >> 8) & 0xff00;
++		green = value & 0xff00;
++		blue = (value << 8) & 0xff00;
++		cmap.start = colidx;
++		cmap.len = 1;
++		cmap.red = &red;
++		cmap.green = &green;
++		cmap.blue = &blue;
++		cmap.transp = NULL;
++
++        	if (ioctl (fb_fd, FBIOPUTCMAP, &cmap) < 0)
++        	        perror("ioctl FBIOPUTCMAP");
++		break;
++	case 2:
++	case 4:
++		red = (value >> 16) & 0xff;
++		green = (value >> 8) & 0xff;
++		blue = value & 0xff;
++		res = ((red >> (8 - var.red.length)) << var.red.offset) |
++                      ((green >> (8 - var.green.length)) << var.green.offset) |
++                      ((blue >> (8 - var.blue.length)) << var.blue.offset);
++	}
++        colormap [colidx] = res;
++}
++
++static inline void __setpixel (union multiptr loc, unsigned xormode, unsigned color)
+ {
+-	int i;
+-	for(i=0;i<strlen(s);i++) {
+-		put_char( (x + font_vga_8x8.width* (i - strlen(s)/2)), y, s[i], color);
++	switch(bytes_per_pixel) {
++	case 1:
++	default:
++		if (xormode)
++			*loc.p8 ^= color;
++		else
++			*loc.p8 = color;
++		break;
++	case 2:
++		if (xormode)
++			*loc.p16 ^= color;
++		else
++			*loc.p16 = color;
++		break;
++	case 4:
++		if (xormode)
++			*loc.p32 ^= color;
++		else
++			*loc.p32 = color;
++		break;
+ 	}
+ }
+ 
+-void setcolors(int bgcolor, int fgcolor) {
+-/* No longer implemented
+-	unsigned short red[2], green[2], blue[2];
++void pixel (int x, int y, unsigned colidx)
++{
++	unsigned xormode;
++	union multiptr loc;
+ 
+-	red[0] = ( (bgcolor >> 16) & 0xff ) << 8;
+-	red[1] = ( (fgcolor >> 16) & 0xff ) << 8;
+-	green[0] = ( (bgcolor >> 8) & 0xff ) << 8;
+-	green[1] = ( (fgcolor >> 8) & 0xff ) << 8;
+-	blue[0] = ( bgcolor & 0xff ) << 8;
+-	blue[1] = ( fgcolor & 0xff ) << 8;
+-        cmap.start = 0;
+-        cmap.len = 2;
+-        cmap.red = red;
+-        cmap.green = green;
+-        cmap.blue = blue;
+-        cmap.transp = NULL;
++	if ((x < 0) || (x >= var.xres_virtual) ||
++	    (y < 0) || (y >= var.yres_virtual))
++		return;
+ 
+-	if(var.bits_per_pixel==8) {
+-        	if (ioctl(fb_fd, FBIOPUTCMAP, &cmap) < 0) {
+-        	        perror("ioctl FBIOPUTCMAP");
+-        	        close(fb_fd);
++	xormode = colidx & XORMODE;
++	colidx &= ~XORMODE;
++
++#ifdef DEBUG
++	if (colidx > 255) {
++		fprintf (stderr, "WARNING: color value = %u, must be <256\n",
++			 colidx);
++		return;
++	}
++#endif
++
++	loc.p8 = line_addr [y] + x * bytes_per_pixel;
++	__setpixel (loc, xormode, colormap [colidx]);
++}
++
++void line (int x1, int y1, int x2, int y2, unsigned colidx)
++{
++	int tmp;
++	int dx = x2 - x1;
++	int dy = y2 - y1;
++
++	if (abs (dx) < abs (dy)) {
++		if (y1 > y2) {
++			tmp = x1; x1 = x2; x2 = tmp;
++			tmp = y1; y1 = y2; y2 = tmp;
++			dx = -dx; dy = -dy;
++		}
++		x1 <<= 16;
++		/* dy is apriori >0 */
++		dx = (dx << 16) / dy;
++		while (y1 <= y2) {
++			pixel (x1 >> 16, y1, colidx);
++			x1 += dx;
++			y1++;
++		}
++	} else {
++		if (x1 > x2) {
++			tmp = x1; x1 = x2; x2 = tmp;
++			tmp = y1; y1 = y2; y2 = tmp;
++			dx = -dx; dy = -dy;
++		}
++		y1 <<= 16;
++		dy = dx ? (dy << 16) / dx : 0;
++		while (x1 <= x2) {
++			pixel (x1, y1 >> 16, colidx);
++			y1 += dy;
++			x1++;
+ 		}
+ 	}
+-*/
+ }
+ 
++void rect (int x1, int y1, int x2, int y2, unsigned colidx)
++{
++	line (x1, y1, x2, y1, colidx);
++	line (x2, y1, x2, y2, colidx);
++	line (x2, y2, x1, y2, colidx);
++	line (x1, y2, x1, y1, colidx);
++}
++
++void fillrect (int x1, int y1, int x2, int y2, unsigned colidx)
++{
++	int tmp;
++	unsigned xormode;
++	union multiptr loc;
++
++	/* Clipping and sanity checking */
++	if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
++	if (y1 > y2) { tmp = y1; y1 = y2; y2 = tmp; }
++	if (x1 < 0) x1 = 0; if (x1 >= xres) x1 = xres - 1;
++	if (x2 < 0) x2 = 0; if (x2 >= xres) x2 = xres - 1;
++	if (y1 < 0) y1 = 0; if (y1 >= yres) y1 = yres - 1;
++	if (y2 < 0) y2 = 0; if (y2 >= yres) y2 = yres - 1;
+ 
++	if ((x1 > x2) || (y1 > y2))
++		return;
++
++	xormode = colidx & XORMODE;
++	colidx &= ~XORMODE;
++
++#ifdef DEBUG
++	if (colidx > 255) {
++		fprintf (stderr, "WARNING: color value = %u, must be <256\n",
++			 colidx);
++		return;
++	}
++#endif
++
++	colidx = colormap [colidx];
++
++	for (; y1 <= y2; y1++) {
++		loc.p8 = line_addr [y1] + x1 * bytes_per_pixel;
++		for (tmp = x1; tmp <= x2; tmp++) {
++			__setpixel (loc, xormode, colidx);
++			loc.p8 += bytes_per_pixel;
++		}
++	}
++}
+--- tslib/tests/fbutils.h~tslib
++++ tslib/tests/fbutils.h
+@@ -10,10 +10,26 @@
+  *
+  */
+ 
++#ifndef _FBUTILS_H
++#define _FBUTILS_H
++
++/* This constant, being ORed with the color index tells the library
++ * to draw in exclusive-or mode (that is, drawing the same second time
++ * in the same place will remove the element leaving the background intact).
++ */
++#define XORMODE	0x80000000
++
+ extern int xres, yres;
+ 
+ int open_framebuffer(void);
+ void close_framebuffer(void);
+-void put_cross(int x, int y, int c);
+-void put_string(int x, int y, char *s, int color);
+-void setcolors(int bgcolor, int fgcolor);
++void setcolor(unsigned colidx, unsigned value);
++void put_cross(int x, int y, unsigned colidx);
++void put_string(int x, int y, char *s, unsigned colidx);
++void put_string_center(int x, int y, char *s, unsigned colidx);
++void pixel (int x, int y, unsigned colidx);
++void line (int x1, int y1, int x2, int y2, unsigned colidx);
++void rect (int x1, int y1, int x2, int y2, unsigned colidx);
++void fillrect (int x1, int y1, int x2, int y2, unsigned colidx);
++
++#endif /* _FBUTILS_H */
+--- tslib/tests/ts_calibrate.c~tslib
++++ tslib/tests/ts_calibrate.c
+@@ -15,18 +15,26 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <signal.h>
++#include <string.h>
++#include <unistd.h>
+ #include <sys/fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/time.h>
+-#include <linux/fb.h>
+ #include <linux/kd.h>
+ #include <linux/vt.h>
++#include <linux/fb.h>
+ 
+ #include "tslib.h"
+ 
+ #include "fbutils.h"
+ 
++static int palette [] =
++{
++	0x000000, 0xffe080, 0xffffff, 0xe0c0a0
++};
++#define NR_COLORS (sizeof (palette) / sizeof (palette [0]))
++
+ typedef struct {
+ 	int x[5], xfb[5];
+ 	int y[5], yfb[5];
+@@ -35,22 +43,24 @@
+ 
+ static void sig(int sig)
+ {
+-	close_framebuffer();
+-	fflush(stderr);
+-	printf("signal %d caught\n", sig);
+-	fflush(stdout);
+-	exit(1);
++	close_framebuffer ();
++	fflush (stderr);
++	printf ("signal %d caught\n", sig);
++	fflush (stdout);
++	exit (1);
+ }
+ 
+ static int sort_by_x(const void* a, const void *b)
+ {
+ 	return (((struct ts_sample *)a)->x - ((struct ts_sample *)b)->x);
+ }
++
+ static int sort_by_y(const void* a, const void *b)
+ {
+ 	return (((struct ts_sample *)a)->y - ((struct ts_sample *)b)->y);
+ }
+-static int getxy(struct tsdev *ts, int *x, int *y)
++
++static void getxy(struct tsdev *ts, int *x, int *y)
+ {
+ #define MAX_SAMPLES 128
+ 	struct ts_sample samp[MAX_SAMPLES];
+@@ -104,7 +114,7 @@
+ 		else
+ 			*x = (samp[middle-1].x + samp[middle].x) / 2;
+ 	}
+-	if (x) {
++	if (y) {
+ 		qsort(samp, index, sizeof(struct ts_sample), sort_by_y);
+ 		if (index & 1)
+ 			*y = samp[middle].y;
+@@ -193,10 +203,40 @@
+ 
+ }
+ 
++static void get_sample (struct tsdev *ts, calibration *cal,
++			int index, int x, int y, char *name)
++{
++	static int last_x = -1, last_y;
++
++	if (last_x != -1) {
++#define NR_STEPS 10
++		int dx = ((x - last_x) << 16) / NR_STEPS;
++		int dy = ((y - last_y) << 16) / NR_STEPS;
++		int i;
++		last_x <<= 16;
++		last_y <<= 16;
++		for (i = 0; i < NR_STEPS; i++) {
++			put_cross (last_x >> 16, last_y >> 16, 2 | XORMODE);
++			usleep (1000);
++			put_cross (last_x >> 16, last_y >> 16, 2 | XORMODE);
++			last_x += dx;
++			last_y += dy;
++		}
++	}
++
++	put_cross(x, y, 2 | XORMODE);
++	getxy (ts, &cal->x [index], &cal->y [index]);
++	put_cross(x, y, 2 | XORMODE);
++
++	last_x = cal->xfb [index] = x;
++	last_y = cal->yfb [index] = y;
++
++	printf("%s : X = %4d Y = %4d\n", name, cal->x [index], cal->y [index]);
++}
++
+ int main()
+ {
+ 	struct tsdev *ts;
+-	int fd;
+ 	calibration cal;
+ 	int cal_fd;
+ 	char cal_buffer[256];
+@@ -231,96 +271,46 @@
+ 		close_framebuffer();
+ 		exit(1);
+ 	}
+-	close_framebuffer();
+-	if (open_framebuffer()) {
+-		close_framebuffer();
+-		exit(1);
+-	}
+ 
+-	setcolors(0x48ff48,0x880000);
++	for (i = 0; i < NR_COLORS; i++)
++		setcolor (i, palette [i]);
+ 
+-	put_string(xres/2,yres/4,"TSLIB calibration utility",1);
+-	put_string(xres/2,yres/4 + 20,"Touch crosshair to calibrate",1);
++	put_string_center (xres / 2, yres / 4,
++			   "TSLIB calibration utility", 1);
++	put_string_center (xres / 2, yres / 4 + 20,
++			   "Touch crosshair to calibrate", 2);
+ 
+-	printf("xres = %d, yres = %d\n",xres,yres);
++	printf("xres = %d, yres = %d\n", xres, yres);
+ 
+ // Read a touchscreen event to clear the buffer
+ 	//getxy(ts, 0, 0);
+ 
+-// Now paint a crosshair on the upper left and start taking calibration
+-// data
+-	put_cross(50,50,1);
+-	getxy(ts, &cal.x[0], &cal.y[0]);
+-	put_cross(50,50,0);
+-
+-	cal.xfb[0] = 50;
+-	cal.yfb[0] = 50;
+-
+-	printf("Top left : X = %4d Y = %4d\n", cal.x[0], cal.y[0]);
+-
+-	put_cross(xres - 50, 50, 1);
+-	getxy(ts, &cal.x[1], &cal.y[1]);
+-	put_cross(xres - 50, 50, 0);
+-
+-	cal.xfb[1] = xres-50;
+-	cal.yfb[1] = 50;
+-
+-	printf("Top right: X = %4d Y = %4d\n", cal.x[1], cal.y[1]);
+-
+-	put_cross(xres - 50, yres - 50, 1);
+-	getxy(ts, &cal.x[2], &cal.y[2]);
+-	put_cross(xres - 50, yres - 50, 0);
+-
+-	cal.xfb[2] = xres-50;
+-	cal.yfb[2] = yres-50;
+-
+-	printf("Bot right: X = %4d Y = %4d\n", cal.x[2], cal.y[2]);
+-
+-	put_cross(50, yres - 50, 1);
+-	getxy(ts, &cal.x[3], &cal.y[3]);
+-	put_cross(50, yres - 50, 0);
+-
+-	cal.xfb[3] = 50;
+-	cal.yfb[3] = yres-50;
+-
+-	printf("Bot left : X = %4d Y = %4d\n", cal.x[3], cal.y[3]);
+-
+-	put_cross(xres/2, yres/2, 1);
+-	getxy(ts, &cal.x[4], &cal.y[4]);
+-	put_cross(xres/2, yres/2, 0);
+-
+-	cal.xfb[4] = xres/2;
+-	cal.yfb[4] = yres/2;
+-
+-	printf("Middle: X = %4d Y = %4d\n", cal.x[4], cal.y[4]);
++	get_sample (ts, &cal, 0, 50,        50,        "Top left");
++	get_sample (ts, &cal, 1, xres - 50, 50,        "Top right");
++	get_sample (ts, &cal, 2, xres - 50, yres - 50, "Bot right");
++	get_sample (ts, &cal, 3, 50,        yres - 50, "Bot left");
++	get_sample (ts, &cal, 4, xres / 2,  yres / 2,  "Center");
+ 
+-	if(perform_calibration(&cal)) {
+-		printf("Calibration constants: ");
+-		for(i=0;i<7;i++) printf("%d ",cal.a[i]);
++	if (perform_calibration (&cal)) {
++		printf ("Calibration constants: ");
++		for (i = 0; i < 7; i++) printf("%d ", cal.a [i]);
+ 		printf("\n");
+-		if( (calfile = getenv("TSLIB_CALIBFILE")) != NULL) {
+-			cal_fd = open(calfile,O_CREAT|O_RDWR);
++		if ((calfile = getenv("TSLIB_CALIBFILE")) != NULL) {
++			cal_fd = open (calfile, O_CREAT | O_RDWR);
+ 		} else {
+-			cal_fd = open("/etc/pointercal",O_CREAT|O_RDWR);
++			cal_fd = open ("/etc/pointercal", O_CREAT | O_RDWR);
+ 		}
+-		sprintf(cal_buffer,"%d %d %d %d %d %d %d",cal.a[1],cal.a[2],cal.a[0],cal.a[4],cal.a[5],cal.a[3],cal.a[6]);
+-		write(cal_fd,cal_buffer,strlen(cal_buffer)+1);
+-		close(cal_fd);	
++		sprintf (cal_buffer,"%d %d %d %d %d %d %d",
++			 cal.a[1], cal.a[2], cal.a[0],
++			 cal.a[4], cal.a[5], cal.a[3], cal.a[6]);
++		write (cal_fd, cal_buffer, strlen (cal_buffer) + 1);
++		close (cal_fd);
++                i = 0;
+ 	} else {
+ 		printf("Calibration failed.\n");
++		i = -1;
+ 	}
+ 
+-//	while (1) {
+-//		struct ts_sample samp;
+-//
+-//		if (ts_read_raw(ts, &samp, 1) < 0) {
+-//			perror("ts_read");
+-//			exit(1);
+-//		}
+-//
+-//		printf("%ld.%06ld: %6d %6d %6d\n", samp.tv.tv_sec, samp.tv.tv_usec,
+-//			samp.x, samp.y, samp.pressure);
+-//	}
+ 	close_framebuffer();
+-
++	return i;
+ }
+--- tslib/tests/ts_print.c~tslib
++++ tslib/tests/ts_print.c
+@@ -23,7 +23,6 @@
+ int main()
+ {
+ 	struct tsdev *ts;
+-	int x, y;
+ 	char *tsdevice=NULL;
+ 
+         if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
+--- tslib/tests/ts_print_raw.c~tslib
++++ tslib/tests/ts_print_raw.c
+@@ -23,7 +23,6 @@
+ int main()
+ {
+ 	struct tsdev *ts;
+-	int x, y;
+ 	char *tsdevice=NULL;
+ 
+         if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
+--- tslib/tests/ts_test.c~tslib
++++ tslib/tests/ts_test.c
+@@ -14,18 +14,39 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <signal.h>
+ #include <sys/fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/time.h>
+-#include <linux/fb.h>
+-#include <linux/kd.h>
+-#include <linux/vt.h>
+ 
+ #include "tslib.h"
+ #include "fbutils.h"
+ 
++static int palette [] =
++{
++	0x000000, 0xffe080, 0xffffff, 0xe0c0a0, 0x304050, 0x80b8c0
++};
++#define NR_COLORS (sizeof (palette) / sizeof (palette [0]))
++
++struct ts_button {
++	int x, y, w, h;
++	char *text;
++	int flags;
++#define BUTTON_ACTIVE 0x00000001
++};
++
++/* [inactive] border fill text [active] border fill text */
++static int button_palette [6] =
++{
++	1, 4, 2,
++	1, 5, 0
++};
++
++#define NR_BUTTONS 2
++static struct ts_button buttons [NR_BUTTONS];
++
+ static void sig(int sig)
+ {
+ 	close_framebuffer();
+@@ -35,10 +56,61 @@
+ 	exit(1);
+ }
+ 
++static void button_draw (struct ts_button *button)
++{
++	int s = (button->flags & BUTTON_ACTIVE) ? 3 : 0;
++	rect (button->x, button->y, button->x + button->w - 1,
++	      button->y + button->h - 1, button_palette [s]);
++	fillrect (button->x + 1, button->y + 1,
++		  button->x + button->w - 2,
++		  button->y + button->h - 2, button_palette [s + 1]);
++	put_string_center (button->x + button->w / 2,
++			   button->y + button->h / 2,
++			   button->text, button_palette [s + 2]);
++}
++
++static int button_handle (struct ts_button *button, struct ts_sample *samp)
++{
++	int inside = (samp->x >= button->x) && (samp->y >= button->y) &&
++		(samp->x < button->x + button->w) &&
++		(samp->y < button->y + button->h);
++
++	if (samp->pressure > 0) {
++		if (inside) {
++			if (!(button->flags & BUTTON_ACTIVE)) {
++				button->flags |= BUTTON_ACTIVE;
++				button_draw (button);
++			}
++		} else if (button->flags & BUTTON_ACTIVE) {
++			button->flags &= ~BUTTON_ACTIVE;
++			button_draw (button);
++		}
++	} else if (button->flags & BUTTON_ACTIVE) {
++		button->flags &= ~BUTTON_ACTIVE;
++		button_draw (button);
++                return 1;
++	}
++
++        return 0;
++}
++
++static void refresh_screen ()
++{
++	int i;
++
++	fillrect (0, 0, xres - 1, yres - 1, 0);
++	put_string_center (xres/2, yres/4,   "TSLIB test program", 1);
++	put_string_center (xres/2, yres/4+20,"Touch screen to move crosshair", 2);
++
++	for (i = 0; i < NR_BUTTONS; i++)
++		button_draw (&buttons [i]);
++}
++
+ int main()
+ {
+ 	struct tsdev *ts;
+-	int x, y;
++	int i, x, y;
++	int mode = 0;
+ 
+ 	char *tsdevice=NULL;
+ 
+@@ -46,9 +118,9 @@
+ 	signal(SIGINT, sig);
+ 	signal(SIGTERM, sig);
+ 
+-        if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
+-                ts = ts_open(tsdevice,0);
+-        } else {
++	if ((tsdevice = getenv("TSLIB_TSDEVICE")) != NULL) {
++		ts = ts_open(tsdevice,0);
++	} else {
+ #ifdef USE_INPUT_API
+                 ts = ts_open("/dev/input/event0", 0);
+ #else
+@@ -70,28 +142,37 @@
+ 		close_framebuffer();
+ 		exit(1);
+ 	}
+-	close_framebuffer();
+-	if (open_framebuffer()) {
+-		close_framebuffer();
+-		exit(1);
+-	}
+ 
+ 	x = xres/2;
+ 	y = yres/2;
+ 
+-	setcolors(0x48ff48,0x880000);
++	for (i = 0; i < NR_COLORS; i++)
++		setcolor (i, palette [i]);
+ 
+-	put_string(xres/2,yres/4,"TSLIB test program",1);
+-	put_string(xres/2,yres/4+20,"Touch screen to move crosshair",1);
++	/* Initialize buttons */
++	memset (&buttons, 0, sizeof (buttons));
++	buttons [0].w = buttons [1].w = xres / 4;
++	buttons [0].h = buttons [1].h = 20;
++	buttons [0].x = xres / 4 - buttons [0].w / 2;
++	buttons [1].x = (3 * xres) / 4 - buttons [0].w / 2;
++	buttons [0].y = buttons [1].y = 10;
++	buttons [0].text = "Drag";
++	buttons [1].text = "Draw";
+ 
+-	put_cross(x,y,1);
++	refresh_screen ();
+ 
+ 	while (1) {
+ 		struct ts_sample samp;
+ 		int ret;
+ 
++		/* Show the cross */
++		put_cross(x, y, 2 | XORMODE);
++
+ 		ret = ts_read(ts, &samp, 1);
+ 
++		/* Hide it */
++		put_cross(x, y, 2 | XORMODE);
++
+ 		if (ret < 0) {
+ 			perror("ts_read");
+ 			close_framebuffer();
+@@ -101,14 +182,30 @@
+ 		if (ret != 1)
+ 			continue;
+ 
++		for (i = 0; i < NR_BUTTONS; i++)
++			if (button_handle (&buttons [i], &samp))
++				switch (i) {
++				case 0:
++					mode = 0;
++					refresh_screen ();
++					break;
++				case 1:
++					mode = 1;
++					refresh_screen ();
++					break;
++				}
++
+ 		printf("%ld.%06ld: %6d %6d %6d\n", samp.tv.tv_sec, samp.tv.tv_usec,
+ 			samp.x, samp.y, samp.pressure);
+ 
+ 		if (samp.pressure > 0) {
+-			put_cross(x, y, 0);
++			if (mode == 0x80000001)
++				line (x, y, samp.x, samp.y, 2);
+ 			x = samp.x;
+ 			y = samp.y;
+-			put_cross(x, y, 1);
+-		}
++			mode |= 0x80000000;
++		} else
++			mode &= ~0x80000000;
+ 	}
++	close_framebuffer();
+ }
