@@ -42,7 +42,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${palmtopdir}/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.9.0 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.9.1 ${D}${palmtopdir}/lib/
 	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.9.0 ${D}${palmtopdir}/lib/
 	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.9.0 ${D}${palmtopdir}/lib/
 	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.3 ${D}${palmtopdir}/lib/
