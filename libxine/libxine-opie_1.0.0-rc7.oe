@@ -22,7 +22,8 @@ SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-1-rc7.tar.
 	file://libxine-libvorbis.patch;patch=1 \
 	file://libxine-tremor-autoconf.patch;patch=1 \
 	file://mpegvideo-static-inlinine.patch;patch=1 \
-	file://libxine-arm-configure.patch;patch=1 "
+	file://libxine-arm-configure.patch;patch=1 \
+	file://fix-x.patch;patch=1 "
 
 
 
@@ -45,7 +46,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-aalib --with-xv-path=${STAGING_LIBDIR} \
 	--without-v4l --without-arts --without-sdl \
 	--disable-dxr3 --without-xv --without-xvmc \
-	--without-xxmc --without-Xshm "
+	--without-xxmc --without-Xshm --without-x "
 			      
 do_compile() {
 	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool
