@@ -4,7 +4,6 @@ the complexity of generating special library types (such as shared \
 libraries) behind a consistent interface."
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
-           file://${FILESDIR}/prefix.patch;patch=1 \
            file://${FILESDIR}/autotools.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 

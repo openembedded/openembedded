@@ -4,12 +4,16 @@ the complexity of generating special library types (such as shared \
 libraries) behind a consistent interface."
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
-           file://${FILESDIR}/m4.patch;patch=1 \
-           file://${FILESDIR}/autotools.patch;patch=1 \
-           file://${FILESDIR}/prefix.patch;patch=1"
+           file://${FILESDIR}/autotools.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
 inherit autotools
 
-acpaths = "-I ${S}/m4"
 EXTRA_AUTORECONF = "--exclude=libtoolize"
+
+do_configure () {
+	find ${S} -name acinclude.m4 | for m4 in `cat`; do
+		cat ${S}/libtool.m4 ${S}/ltdl.m4 > $m4
+	done
+	autotools_do_configure
+}
