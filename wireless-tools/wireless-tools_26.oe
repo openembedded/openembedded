@@ -1,4 +1,4 @@
-DESCRIPTION = "A driver for wireless LAN cards based on Intersil's Prism2/2.5/3 chipset"
+DESCRIPTION = "Tools for the Linux Standard Wireless Extension Subsystem"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
