@@ -14,7 +14,7 @@ FILES_${PN} += "${libdir}/firefox-${PV} ${datadir}/idl"
 CFLAGS := "${@'${CFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
 
-SELECTED_OPTIMIZATION = "-Os"
+#SELECTED_OPTIMIZATION = "-Os"
 
 export CROSS_COMPILE=1
 export HOST_LIBIDL_CONFIG="libIDL-config-2"
