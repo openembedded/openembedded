@@ -1,5 +1,6 @@
 SECTION = "unknown"
 PR = "r1"
+PV = "0.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@cvs1.sourceforge.net/cvsroot/linuxconsole;module=ruby \
 	file://serio.h \
@@ -10,7 +11,7 @@ inherit module-base
 
 S = "${WORKDIR}/ruby/utils"
 
-CFLAGS =+ "-I."
+CFLAGS =+ "-I. -I../linux/include -I../ruby-2.6/include"
 
 do_configure() {
 	install -d linux
