@@ -33,7 +33,7 @@ do_compile () {
 
 do_stage () {
 	install -m 755 -D src/.libs/libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so.${FC_SONAME}
-	ln -sf ./libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so.6
+	ln -sf ./libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so.1
 	ln -sf ./libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so
 	install -d ${STAGING_INCDIR}/fontconfig
 	cp -a fontconfig/*.h ${STAGING_INCDIR}/fontconfig/
