@@ -156,6 +156,7 @@ fi
 module_autoload_ipv6 = "ipv6"
 module_autoload_ipsec = "ipsec"
 module_autoload_ircomm-tty = "ircomm-tty"
+module_autoload_sa1100-rtc = "sa1100-rtc"
 
 module_conf_bluez = "alias net-pf-31 bluez"
 module_conf_l2cap = "alias bt-proto-0 l2cap"
