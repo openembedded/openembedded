@@ -1,67 +1,135 @@
-PR = "r3"
-SRC_URI = "${DEBIAN_MIRROR}/main/b/base-files/base-files_${PV}.tar.gz"
 DESCRIPTION = "Base system miscellaneous files."
+SECTION = "base"
+PRIORITY = "required"
+PR = "r4"
+
+SRC_URI = " file://${FILESDIR}/etc/nsswitch.conf \
+            file://${FILESDIR}/etc/motd \
+            file://${FILESDIR}/etc/issue.net \
+            file://${FILESDIR}/etc/issue \
+            file://${FILESDIR}/etc/issue.net- \
+            file://${FILESDIR}/etc/debian_version \
+            file://${FILESDIR}/etc/issue-opensimpad \
+            file://${FILESDIR}/etc/issue.net-opensimpad \
+            file://${FILESDIR}/etc/issue- \
+            file://${FILESDIR}/etc/issue-openzaurus \
+            file://${FILESDIR}/etc/issue.net-openzaurus \
+            file://${FILESDIR}/etc/issue-familiar \
+            file://${FILESDIR}/etc/issue.net-familiar \
+            file://${FILESDIR}/etc/inputrc \
+            file://${FILESDIR}/etc/host.conf \
+            file://${FILESDIR}/etc/profile \
+            file://${FILESDIR}/shepherd/fstab \
+            file://${FILESDIR}/shepherd/hostname \
+            file://${FILESDIR}/epia/fstab \
+            file://${FILESDIR}/h3600/hostname \
+            file://${FILESDIR}/corgi/fstab \
+            file://${FILESDIR}/corgi/hostname \
+            file://${FILESDIR}/fstab \
+            file://${FILESDIR}/husky/fstab \
+            file://${FILESDIR}/husky/hostname \
+            file://${FILESDIR}/share/dot.bashrc \
+            file://${FILESDIR}/share/dot.profile \
+            file://${FILESDIR}/share/info.dir \
+            file://${FILESDIR}/share/motd.md5sums \
+            file://${FILESDIR}/collie/fstab \
+            file://${FILESDIR}/collie/hostname \
+            file://${FILESDIR}/debian/FAQ \
+            file://${FILESDIR}/debian/directory-list \
+            file://${FILESDIR}/debian/control \
+            file://${FILESDIR}/debian/1777-dirs \
+            file://${FILESDIR}/debian/rules \
+            file://${FILESDIR}/debian/conffiles \
+            file://${FILESDIR}/debian/changelog \
+            file://${FILESDIR}/debian/copyright.in \
+            file://${FILESDIR}/debian/postinst \
+            file://${FILESDIR}/debian/README.FHS \
+            file://${FILESDIR}/debian/2775-dirs \
+            file://${FILESDIR}/debian/preinst.in \
+            file://${FILESDIR}/debian/remove-base \
+            file://${FILESDIR}/debian/README.base \
+            file://${FILESDIR}/debian/current-md5sums \
+            file://${FILESDIR}/hostname \
+            file://${FILESDIR}/poodle/fstab \
+            file://${FILESDIR}/poodle/hostname \
+            file://${FILESDIR}/ramses/fstab \
+            file://${FILESDIR}/ramses/hostname \
+            file://${FILESDIR}/simpad/hostname \
+            file://${FILESDIR}/licenses/BSD \
+            file://${FILESDIR}/licenses/GPL-2 \
+            file://${FILESDIR}/licenses/LGPL-2 \
+            file://${FILESDIR}/licenses/LGPL-2.1 \
+            file://${FILESDIR}/licenses/Artistic"
+S = "${WORKDIR}"
 
 docdir_append = "/${P}"
+
+do_install () {
+    install -d ${D}/${docdir}
+    install -d ${D}${datadir}/${PN}
+    install -m 644 debian/changelog debian/FAQ debian/README.FHS debian/README.base ${D}/${docdir}/
+    cat ${S}/debian/copyright.in | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}/${docdir}/copyright
+    install -m 755 debian/remove-base ${D}/${docdir}
+#   cd debian && install -m 755 preinst postinst ${D}/DEBIAN
+#   cd debian && install -m 644 conffiles ${D}/DEBIAN
+    ( cd ${D} && install -d `cat ${S}/debian/directory-list` )
+    install -d ${D}/sys
+
+    install -p -m 644 share/* ${D}${datadir}/base-files
+    install -p -m 644 licenses/* ${D}${datadir}/common-licenses
+    ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
+    ln -s GPL-2    ${D}${datadir}/common-licenses/GPL
+    for i in `ls etc/|grep -v debian`; do install -p -m 644 etc/$i ${D}/etc; done
+    rm -f ${D}/etc/motd
+    cat etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
+    cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
+    gzip -9 ${D}/${docdir}/changelog
+#   chown -R root:root ${D}
+#   cd ${D} && chown root:src     usr/src
+#   cd ${D} && chown root:staff   var/local
+#   cd ${D} && chown root:staff   home
+    cd ${D} && chmod 755  `find . -type d`
+    cd ${D} && chmod 1777 `cat ${S}/debian/1777-dirs`
+    cd ${D} && chmod 2775 `cat ${S}/debian/2775-dirs`
+
+    install -d ${D}/${sysconfdir}
+    oe_machinstall -m 0644 ${FILESDIR}/fstab ${D}/${sysconfdir}/fstab
+    oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
+    oe_machinstall -m 0644 ${FILESDIR}/profile ${D}/${sysconfdir}/profile
+    install -m 0644 ${FILESDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
+    install -m 0644 ${FILESDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
+
+    install -m 0755 ${D}/usr/share/base-files/dot.profile ${D}/root/.profile
+
+    # debian ships these, but they are useless to us
+    rmdir ${D}/var/lib/dpkg \
+          ${D}/var/lib/misc \
+          ${D}/var/backups  \
+          ${D}/usr/src      \
+          ${D}/usr/info     \
+          ${D}/usr/games    \
+          ${D}/usr/doc      \
+          ${D}/usr/include  \
+          ${D}/usr/share/dict
+    rm -r ${D}/usr/share/base-files
+
+    if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
+        # /var is in a ramdisk
+        install -d ${D}/etc/init.d ${D}/etc/rcS.d
+        for d in `(cd ${D}/var; ls)`; do
+            mode=`stat -c %a ${D}/var/$d`
+            echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
+            echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
+        done
+        rmdir ${D}/var/*
+        chmod a+x ${D}/etc/init.d/populate-var
+        ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
+        ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
+        ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
+    fi
+}
+
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
 FILES_${PN}-doc = "/usr/share/doc /usr/share/common-licenses"
 
-do_install () {
-	install -d ${D}/${docdir}
-	install -d ${D}${datadir}/${PN}
-	install -p -m 644 debian/changelog debian/FAQ \
-		debian/README.FHS debian/README.base ${D}/${docdir}/
-	cat debian/copyright.in | sed -e "s&#OSNAME#&${TARGET_OS}&g" \
-		> ${D}/${docdir}/copyright
-	install -m 755 debian/remove-base ${D}/${docdir}
-#	cd debian && install -m 755 preinst postinst ${D}/DEBIAN
-#	cd debian && install -m 644 conffiles ${D}/DEBIAN
-	( cd ${D} && install -d `cat ${S}/debian/directory-list` )
-	install -d ${D}/sys
-
-	install -p -m 644 share/* ${D}${datadir}/base-files
-	install -p -m 644 licenses/* ${D}${datadir}/common-licenses
-	ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
-	ln -s GPL-2    ${D}${datadir}/common-licenses/GPL
-	for i in `ls etc/|grep -v debian`; do install -p -m 644 etc/$i ${D}/etc; done
-	rm -f ${D}/etc/motd
-	cat etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
-	cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
-	gzip -9 ${D}/${docdir}/changelog
-#	chown -R root:root ${D}
-#	cd ${D} && chown root:src     usr/src
-#	cd ${D} && chown root:staff   var/local
-#	cd ${D} && chown root:staff   home
-	cd ${D} && chmod 755  `find . -type d`
-	cd ${D} && chmod 1777 `cat ${S}/debian/1777-dirs`
-	cd ${D} && chmod 2775 `cat ${S}/debian/2775-dirs`
-
-	install -d ${D}/${sysconfdir}
-	oe_machinstall -m 0644 ${FILESDIR}/fstab ${D}/${sysconfdir}/fstab
-	oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
-	oe_machinstall -m 0644 ${FILESDIR}/profile ${D}/${sysconfdir}/profile
-
-	install -m 0755 ${D}/usr/share/base-files/dot.profile ${D}/root/.profile
-
-	# debian ships these, but they are useless to us
-	rmdir ${D}/var/lib/dpkg ${D}/var/lib/misc ${D}/var/backups \
-	      ${D}/usr/src ${D}/usr/info ${D}/usr/games ${D}/usr/doc \
-	      ${D}/usr/include ${D}/usr/share/dict
-	rm -r ${D}/usr/share/base-files
-
-	if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
-		# /var is in a ramdisk
-		install -d ${D}/etc/init.d ${D}/etc/rcS.d
-		for d in `(cd ${D}/var; ls)`; do
-			mode=`stat -c %a ${D}/var/$d`
-			echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
-			echo "chmod $mode /var/$d" >> ${D}/etc/init.d/populate-var
-		done
-		rmdir ${D}/var/*
-		chmod a+x ${D}/etc/init.d/populate-var
-		ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
-		ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
-		ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
-	fi
-}
