@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libmatchbox x11 xext xcomposite xfixes xdamage xrender"
+DEPENDS = "virtual/libc libmatchbox x11 xext xcomposite xfixes xdamage xrender startup-notification expat"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
 	   file://${FILESDIR}/m4.patch;patch=1"
@@ -14,6 +14,12 @@ FILES_${PN} = "${bindir} \
 	       ${datadir}/themes/bluebox/matchbox \
 	       ${datadir}/themes/borillo/matchbox"
 
-EXTRA_OECONF = "--enable-composite"
-#		--enable-startup-notification
-#		--enable-expat
+EXTRA_OECONF = "--enable-composite --enable-startup-notification --enable-expat"
+
+pkg_postinst() {
+update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/matchbox-session 10
+}
+
+pkg_postrm() {
+update-alternatives --remove x-window-manager /usr/bin/matchbox-session
+}
