@@ -6,6 +6,10 @@ PACKAGES = ""
 DEPENDS = "ncurses-native"
 EXTRA_OEMAKE = ""
 
-do_stage () {
+do_stage() {
 	install -m 0755 sql/gen_lex_hash ${STAGING_BINDIR}/
+}
+
+do_install() {
+	:
 }

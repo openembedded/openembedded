@@ -1,17 +1,13 @@
+DESCRIPTION = "The MySQL Open Source Database System"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SECTION = "libs"
+DEPENDS += "ncurses mysql-native"
 PR = "r1"
 
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}-gamma.tar.gz \
-	   file://autofoo.patch;patch=1 \
-	   file://gen_lex_hash.patch;patch=1"
+           file://autofoo.patch;patch=1 \
+           file://gen_lex_hash.patch;patch=1"
 S = "${WORKDIR}/mysql-${PV}-gamma"
-DEPENDS += "ncurses mysql-native"
-
-PACKAGES =+ "libmysqlclient libmysqlclient-dev"
-
-FILES_libmysqlclient = "${libdir}/libmysqlclient*.so.*"
-FILES_libmysqlclient-dev = "${incdir}/mysql ${libdir}/lib* \
-		${bindir}/mysql_config"
 
 inherit autotools
 
@@ -22,7 +18,15 @@ do_stage() {
 	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
 }
 
-do_install_append() {
+do_install() {
+	oe_runmake install
 	mv -f ${D}${libdir}/mysql/* ${D}${libdir}
 	rmdir ${D}${libdir}/mysql
 }
+
+PACKAGES =+ "libmysqlclient libmysqlclient-dev"
+
+FILES_libmysqlclient = "${libdir}/libmysqlclient*.so.*"
+FILES_libmysqlclient-dev = "${incdir}/mysql ${libdir}/lib* \
+                ${bindir}/mysql_config"
+
