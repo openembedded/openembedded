@@ -1,0 +1,135 @@
+inherit package
+inherit rpm_core
+
+RPMBUILD="rpmbuild --short-circuit ${RPMOPTS}"
+
+python write_specfile() {
+	from oe import data, build
+	import sys
+	out_vartranslate = {
+		"PKG": "Name",
+		"PV": "Version",
+		"PR": "Release",
+		"DESCRIPTION": "%description",
+		"ROOT": "BuildRoot",
+		"LICENSE": "License",
+		"SECTION": "Group",
+	}
+
+	root = oe.data.getVar('ROOT', d)
+
+	# get %files
+	filesvar = oe.data.expand(oe.data.getVar('FILES', d), d) or ""
+	from glob import glob
+	files = filesvar.split()
+	todelete = []
+	for file in files:
+		if file[0] == '.':
+			newfile = file[1:]
+			files[files.index(file)] = newfile
+			file = newfile
+		else:
+			newfile = file
+		realfile = os.path.join(root, './'+file)
+		if not glob(realfile):
+			todelete.append(files[files.index(newfile)])
+	for r in todelete:
+		try:
+			del files[files.index(r)]
+		except ValueError:
+			pass
+	if not files:
+		from oe import note
+		note("Not creating empty archive for %s-%s-%s" % (oe.data.getVar('PKG',d, 1), oe.data.getVar('PV', d, 1), oe.data.getVar('PR', d, 1)))
+		return
+
+	# output .spec using this metadata store
+	try:
+		from __builtin__ import file
+		if not oe.data.getVar('OUTSPECFILE', d):
+			raise OSError('eek!')
+		specfile = file(oe.data.getVar('OUTSPECFILE', d), 'w')
+	except OSError:
+		raise oe.build.FuncFailed("unable to open spec file for writing.")
+
+#	fd = sys.__stdout__
+	fd = specfile
+	for var in out_vartranslate.keys():
+		if out_vartranslate[var][0] == "%":
+			continue
+		fd.write("%s\t: %s\n" % (out_vartranslate[var], oe.data.getVar(var, d)))
+	fd.write("Summary\t: .\n")
+
+	for var in out_vartranslate.keys():
+		if out_vartranslate[var][0] != "%":
+			continue
+		fd.write(out_vartranslate[var] + "\n")
+		fd.write(oe.data.getVar(var, d) + "\n\n")
+
+	fd.write("%files\n")
+	for file in files:
+		fd.write("%s\n" % file)
+
+	fd.close()
+
+	# call out rpm -bb on the .spec, thereby creating an rpm
+
+	oe.data.setVar('BUILDSPEC', "${RPMBUILD} -bb ${OUTSPECFILE}\n", d)
+	oe.data.setVarFlag('BUILDSPEC', 'func', '1', d)
+	oe.build.exec_func('BUILDSPEC', d)
+
+	# move the rpm into the pkgoutdir
+	rpm = oe.data.expand('${RPMBUILDPATH}/RPMS/${TARGET_ARCH}/${PKG}-${PV}-${PR}.${TARGET_ARCH}.rpm', d)
+	outrpm = oe.data.expand('${DEPLOY_DIR_RPM}/${PKG}-${PV}-${PR}.${TARGET_ARCH}.rpm', d)
+	oe.movefile(rpm, outrpm)
+}
+
+python do_package_rpm () {
+	workdir = oe.data.getVar('WORKDIR', d)
+	if not workdir:
+		raise oe.build.FuncFailed("WORKDIR not defined")
+	workdir = oe.data.expand(workdir, d)
+
+	import os # path manipulations
+	outdir = oe.data.getVar('DEPLOY_DIR_RPM', d)
+	if not outdir:
+		raise oe.build.FuncFailed("DEPLOY_DIR_RPM not defined")
+	outdir = oe.data.expand(outdir, d)
+	oe.mkdirhier(outdir)
+
+	packages = oe.data.getVar('PACKAGES', d)
+	if not packages:
+		packages = "${PN}"
+		oe.data.setVar('FILES', '', d)
+		ddir = oe.data.expand(oe.data.getVar('D', d), d)
+		oe.mkdirhier(ddir)
+		oe.data.setVar(oe.data.expand('FILES_${PN}', d), ''.join([ "./%s" % x for x in os.listdir(ddir)]), d)
+	packages = oe.data.expand(packages, d)
+
+	for pkg in packages.split():
+		localdata = {}
+		oe.data.linkDataSet(localdata,d)
+		root = "%s/install/%s" % (workdir, pkg)
+
+		oe.data.setVar('ROOT', '', localdata)
+		oe.data.setVar('ROOT_%s' % pkg, root, localdata)
+		oe.data.setVar('PKG', pkg, localdata)
+
+		overrides = oe.data.getVar('OVERRIDES', localdata)
+		if not overrides:
+			raise oe.build.FuncFailed('OVERRIDES not defined')
+		overrides = oe.data.expand(overrides, localdata)
+		oe.data.setVar('OVERRIDES', '%s:%s' % (overrides, pkg), localdata)
+
+		oe.data.update_data(localdata)
+# stuff
+		root = oe.data.getVar('ROOT', localdata)
+		basedir = os.path.dirname(root)
+		pkgoutdir = outdir
+		oe.mkdirhier(pkgoutdir)
+		oe.data.setVar('OUTSPECFILE', os.path.join(workdir, "%s.spec" % pkg), localdata)
+		oe.build.exec_func('write_specfile', localdata)
+		del localdata
+}
+
+addtask package_rpm after do_package before do_build
