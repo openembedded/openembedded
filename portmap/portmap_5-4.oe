@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5.orig.tar.gz \
 	http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5-4.diff.gz;patch=1 \
@@ -20,7 +20,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/etc/init.d
-	install -m 0644 ${WORKDIR}/portmap.init ${D}/etc/init.d/
+	install -m 0644 ${WORKDIR}/portmap.init ${D}/etc/init.d/portmap
 	oe_runmake 'docdir=${datadir}/doc/portmap' \
 		   'DESTDIR=${D}' install
 }
