@@ -11,3 +11,8 @@ S = "${WORKDIR}/libid3tag-${PV}"
 inherit autotools libtool
 
 EXTRA_OECONF = "-enable-speed"
+
+do_stage() {
+        oe_soinstall .libs/libid3tag.so.0.2.0 ${STAGING_LIBDIR}
+        install -m 0644 id3tag.h ${STAGING_INCDIR}
+}
