@@ -31,6 +31,8 @@ fakeroot do_rootfs () {
 
 	real_do_rootfs
 
+	insert_feed_uris
+		
 	export TOPDIR=${TOPDIR}
 
 	for type in ${IMAGE_FSTYPES}; do
@@ -42,4 +44,38 @@ fakeroot do_rootfs () {
 	done
 
 	${IMAGE_POSTPROCESS_COMMAND}
+}
+
+insert_feed_uris () {
+
+	test -z "$FEED_URIS" && return 0
+	
+	# comment out existing feed-sources inserted by ipkg-collateral
+	cat ${IMAGE_ROOTFS}/etc/ipkg.conf | sed "s/^src\ /#src\ /" > ${IMAGE_ROOTFS}/etc/ipkg.conf_
+	rm ${IMAGE_ROOTFS}/etc/ipkg.conf && mv ${IMAGE_ROOTFS}/etc/ipkg.conf_ ${IMAGE_ROOTFS}/etc/ipkg.conf
+
+	# extract, then delete destinations
+	cat ${IMAGE_ROOTFS}/etc/ipkg.conf | egrep "^dest\ " > ${IMAGE_ROOTFS}/etc/ipkg.conf.dest
+	cat ${IMAGE_ROOTFS}/etc/ipkg.conf | egrep -v "^dest\ " > ${IMAGE_ROOTFS}/etc/ipkg.conf_
+	rm ${IMAGE_ROOTFS}/etc/ipkg.conf && mv ${IMAGE_ROOTFS}/etc/ipkg.conf_ ${IMAGE_ROOTFS}/etc/ipkg.conf
+
+
+	for line in ${FEED_URIS}
+	do
+
+		# strip leading and trailing spaces/tabs, then split into name and uri
+		line_clean="`echo "$line"|sed 's/^[ \t]*//;s/[ \t]*$//'`"
+		feed_name="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\1/p'`"
+		feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"		
+
+		# insert new feed-sources
+		echo "src $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/ipkg.conf
+	done
+	
+	# remove temporary files and rebuild ipkg.conf
+	echo "" >> ${IMAGE_ROOTFS}/etc/ipkg.conf
+	cat ${IMAGE_ROOTFS}/etc/ipkg.conf.dest >> ${IMAGE_ROOTFS}/etc/ipkg.conf
+	rm ${IMAGE_ROOTFS}/etc/ipkg.conf.dest
+	
+	cp ${IMAGE_ROOTFS}/etc/ipkg.conf ${WORKDIR}
 }
