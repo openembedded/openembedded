@@ -1,0 +1,42 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := ${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_3.5.4.tar.gz
+S := ${WORKDIR}/${P}
+
+inherit autotools
+
+#do_compile_append () {
+#	oe_runmake -C doc
+#}
+
+do_install () {
+	install -d -m 755 ${D}/usr/sbin
+	install -p -m 755 update-passwd ${D}/usr/sbin/
+	install -d -m 755 \
+		${D}/usr/share/man/man8 ${D}/usr/share/man/pl/man8
+	install -p -m 644 man/update-passwd.8 \
+		${D}/usr/share/man/man8/
+	install -p -m 644 man/update-passwd.pl.8 \
+		${D}/usr/share/man/pl/man8/update-passwd.8
+	gzip -9 ${D}/usr/share/man/man8/* \
+		${D}/usr/share/man/pl/man8/*
+	install -d -m 755 ${D}/usr/share/base-passwd
+	install -p -m 644 passwd.master \
+		${D}/usr/share/base-passwd/
+	install -p -m 644 group.master \
+		${D}/usr/share/base-passwd/
+
+	install -d -m 755 ${D}/${docdir}/${P}
+	install -p -m 644 debian/changelog ${D}/${docdir}/${P}/
+	gzip -9 ${D}/${docdir}/${P}/*
+	install -p -m 644 README ${D}/${docdir}/${P}/
+	install -p -m 644 debian/copyright ${D}/${docdir}/${P}/
+#	install -p -m 644 \
+#		doc/users-and-groups.html doc/users-and-groups.txt \
+#		${D}/${docdir}/${P}/
+#	gzip -9 ${D}/${docdir}/${P}/users-and-groups.txt
+#	install -d -m 755 ${D}/DEBIAN
+#	install -p -m 755 debian/preinst ${D}/DEBIAN/
+#	install -p -m 755 debian/postinst ${D}/DEBIAN/
+}
