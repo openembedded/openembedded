@@ -13,11 +13,18 @@ do_compile() {
 }
 
 do_stage() {
-	oe_libinstall -a -C libdrm libxf86drm ${STAGING_LIBDIR}
+	oe_libinstall -so -C libdrm libdrm ${STAGING_LIBDIR}
 	for i in xf86drmCompat.h xf86drm.h; do
 		install -m 0644 libdrm/$i ${STAGING_INCDIR}
 	done
 	for i in drm.h; do
-		install -m 0644 shared/$i ${STAGING_INCDIR}
+		install -m 0644 shared-core/$i ${STAGING_INCDIR}
 	done
 }
+
+do_install() {
+	install -d ${D}${includedir}
+	install -d ${D}/lib
+	oe_runmake -C libdrm DESTDIR="${D}" install
+}
+
