@@ -3,72 +3,81 @@ LICENSE="LGPL"
 SECTION="libs"
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
-
-SRC_URI=ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
-	ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
-	http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2
-SRC_URI_append=' file://${FILESDIR}/noinfo.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/10_cvs.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/50_glibc232-mips-buildfix.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/50_glibc23-hppa-entry.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/80_glibc232-futimes-buildfix.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/80_glibc232-iconvdata-fix.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/80_glibc232-locales-header.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/80_glibc232-wcsmbs-fix.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/81_glibc232-utimes-fix.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/alpha-pic.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/alpha-pwrite.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/fhs-linux-paths.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc22-eo_EO.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc22-locales.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/glibc22-m68k-compat.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc22-m68k-fpic.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc22-nss-upgrade.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc22-ttyname-devfs.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/glibc23-01-hppa-dl-machine.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-07-hppa-atomicity.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-asserth-decls.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/glibc23-cmov.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-ctype-compat.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-errno.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-function-compat.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-compat.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-malloc8.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-Rminkernel.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/ldd.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/libgcc-compat-all.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/libgcc-compat-other.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/librt-mips.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/locales-stuff.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/locales-supported.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/lo_LA.UTF-8_not_supported.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/nss_compat-shadow.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/powerpc-sysconf.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/revert-old-libio.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/s390-tls.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/sparc64-fixups.patch;patch=1'
-SRC_URI_append=' file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0'
-SRC_URI_append=' file://${FILESDIR}/syslog-backrev.patch;patch=1;pnum=0'
-#SRC_URI_append=' file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0'
 PROVIDES=virtual/libc
+
+SRC_URI= ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
+	 ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
+	 http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2 \
+	 file://${FILESDIR}/noinfo.patch;patch=1 \
+	 file://${FILESDIR}/10_cvs.patch;patch=1 \
+	 file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1 \
+	 file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1 \
+	 file://${FILESDIR}/50_glibc232-mips-buildfix.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/50_glibc23-hppa-entry.patch;patch=1 \
+	 file://${FILESDIR}/80_glibc232-futimes-buildfix.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/80_glibc232-iconvdata-fix.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/80_glibc232-locales-header.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/80_glibc232-wcsmbs-fix.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/81_glibc232-utimes-fix.patch;patch=1 \
+	 file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/alpha-pic.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/alpha-pwrite.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/fhs-linux-paths.patch;patch=1 \
+	 file://${FILESDIR}/glibc22-eo_EO.patch;patch=1 \
+	 file://${FILESDIR}/glibc22-locales.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/glibc22-m68k-compat.patch;patch=1 \
+	 file://${FILESDIR}/glibc22-m68k-fpic.patch;patch=1 \
+	 file://${FILESDIR}/glibc22-nss-upgrade.patch;patch=1 \
+	 file://${FILESDIR}/glibc22-ttyname-devfs.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/glibc23-01-hppa-dl-machine.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-07-hppa-atomicity.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-asserth-decls.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/glibc23-cmov.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-ctype-compat.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-errno.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-function-compat.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-hppa-compat.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-hppa-malloc8.patch;patch=1 \
+	 file://${FILESDIR}/glibc23-hppa-Rminkernel.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1 \
+	 file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/ldd.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/libgcc-compat-all.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/libgcc-compat-other.patch;patch=1 \
+	 file://${FILESDIR}/librt-mips.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/locales-stuff.patch;patch=1 \
+	 file://${FILESDIR}/locales-supported.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/lo_LA.UTF-8_not_supported.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/nss_compat-shadow.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/powerpc-sysconf.patch;patch=1 \
+	 file://${FILESDIR}/revert-old-libio.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/s390-tls.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/sparc64-fixups.patch;patch=1 \
+	 file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0 \
+	 file://${FILESDIR}/syslog-backrev.patch;patch=1;pnum=0
+#	 file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0
 
 S="${WORKDIR}/${P}"
 B="${WORKDIR}/build-${TARGET_SYS}"
+prefix=/usr
+libdir=/lib
+bindir=/bin
+sbindir=/sbin
 
 inherit autotools
 
-EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${WORKDIR}/linux/include --without-cvs --enable-kernel=2.4.6"
+EXTRA_OECONF='--without-tls --without-__thread \
+	      --enable-kernel=2.4.6 --without-cvs \
+	      --disable-profile --disable-debug --without-gd \
+	      --enable-clocale=gnu \
+	      --enable-add-ons=linuxthreads \
+	      --with-headers=${WORKDIR}/linux/include'
 
 glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
@@ -77,16 +86,21 @@ glibcbuild_do_unpack () {
 	if [ -e "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" ]; then 
 		cp -a "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" "${WORKDIR}/linux/include/asm-${TARGET_ARCH}/unistd.h"
 	fi
-	case "${TARGET_ARCH}" in
-	i686)
-		TARGET_ARCH=i386
-		;;
-	i586)
-		TARGET_ARCH=i386
-		;;
-	i486)
-		TARGET_ARCH=i386
-		;;
+	case $TARGET_ARCH in
+		alpha*)   TARGET_ARCH=alpha ;;
+		arm*)     TARGET_ARCH=arm ;;
+		cris*)    TARGET_ARCH=cris ;;
+		hppa*)    TARGET_ARCH=parisc ;;
+		i*86*)    TARGET_ARCH=i386 ;;
+		ia64*)    TARGET_ARCH=ia64 ;;
+		mips*)    TARGET_ARCH=mips ;;
+		m68k*)    TARGET_ARCH=m68k ;;
+		powerpc*) TARGET_ARCH=ppc ;;
+		s390*)    TARGET_ARCH=s390 ;;
+		sh*)      TARGET_ARCH=sh ;;
+		sparc64*) TARGET_ARCH=sparc64 ;;
+		sparc*)   TARGET_ARCH=sparc ;;
+		x86_64*)  TARGET_ARCH=x86_64 ;;
 	esac
 	if test !  -e ${WORKDIR}/linux/include/asm-$TARGET_ARCH; then
 		oefatal unable to create asm symlink in kernel headers
@@ -125,27 +139,52 @@ do_compile_append() {
 
 do_stage() {
 	oe_runmake 'install_root=${STAGING_DIR}/target' \
-		'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
-		'${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
-		install-headers install-lib
-	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > \
-		'${STAGING_LIBDIR}/libc.so'
-	mv '${STAGING_LIBDIR}/libpthread.so' '${STAGING_LIBDIR}/libpthread-old.so'
-	cat '${STAGING_LIBDIR}/libpthread-old.so' | sed -e's,/lib/,,g' > '${STAGING_LIBDIR}/libpthread.so'
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
+		   install-headers install-lib
+
 	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
+	cp -a '${WORKDIR}/linux/include/asm' '${STAGING_DIR}/target/include/'
+	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${STAGING_DIR}/target/include/'
+	install -m 0644 ${B}/libc_nonshared.a ${STAGING_LIBDIR}/
+	install -m 0644 ${B}/libc_pic.a ${STAGING_LIBDIR}/
+	install -m 0644 ${B}/libc.a ${STAGING_LIBDIR}/
+
 	install -d ${STAGING_DIR}/target/include/gnu \
-		   ${STAGING_DIR}/target/include/bits
+		   ${STAGING_DIR}/target/include/bits \
+		   ${STAGING_DIR}/target/include/rpcsvc
 	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_DIR}/target/include/gnu/
 	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_DIR}/target/include/bits/
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_DIR}/target/include/rpcsvc/
 	done
-	cp -a '${WORKDIR}/linux/include/asm' '${STAGING_DIR}/target/include/'
-	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${STAGING_DIR}/target/include/'
-	install -m 0644 ${B}/libc_nonshared.a ${STAGING_LIBDIR}/
-	install -m 0644 ${B}/libc_pic.a ${STAGING_LIBDIR}/
-	install -m 0644 ${B}/libc.a ${STAGING_LIBDIR}/
+
+	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc-${PV}.so' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
+		   install-headers install-lib
+
+	cp -a '${WORKDIR}/linux/include/linux' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
+	cp -a '${WORKDIR}/linux/include/asm' '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
+	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${CROSS_DIR}/${TARGET_SYS}/sys-include/'
+
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${CROSS_DIR}/${TARGET_SYS}/include/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc/
+	done
+
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
 do_install() {
