@@ -37,4 +37,4 @@ do_install_append() {
 	oe_machinstall -m 0755 ${WORKDIR}/tslib.sh ${D}/${sysconfdir}/profile.d/
 }
 
-FILES_tslib_append = " ${datadir}/ts/plugins/*.so"
+FILES_${PN} += " ${libdir}/ts/*.so ${datadir}/ts/plugins/*.so"
