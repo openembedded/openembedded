@@ -555,7 +555,7 @@ python package_do_split_locales() {
 	localedir = os.path.join(dvar + datadir, 'locale')
 
 	if not os.path.isdir(localedir):
-		oe.note("No locale files in this package")
+		oe.debug(1, "No locale files in this package")
 		return
 
 	locales = os.listdir(localedir)
