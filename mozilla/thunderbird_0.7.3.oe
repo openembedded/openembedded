@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-DEPENDS = "xt xi zip-native gtk+ orbit2 gnupg"
+DEPENDS = "xt libxi zip-native gtk+ orbit2 gnupg"
 RRECOMMENDS = "gnupg"
 PR = "r1"
 
