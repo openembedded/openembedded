@@ -2,6 +2,7 @@ DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
 DESCRIPTION = "A collection of core GNU utilities."
 
-SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2"
+SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
+           file://${FILESDIR}/install-cross.patch;patch=1;pnum=0"
 
 inherit autotools
