@@ -16,10 +16,11 @@ def base_dep_prepend(d):
 	return deps
 
 def base_read_file(filename):
+	import oe
 	try:
 		f = file( filename, "r" )
 	except IOError, reason:
-		return "<unknown>:%s" % reason
+		raise oe.build.FuncFailed("can't read from file '%s' (%s)", (filename,reason))
 	else:
 		return f.read().strip()
 	return None
