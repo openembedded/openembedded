@@ -6,7 +6,7 @@ RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 
-SRC_URI="ftp://ftp.gnu.org/gnu/glibc/${P}.tar.gz ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz"
+SRC_URI="ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz"
 SRC_URI_append=' file://${FILESDIR}/noinfo.patch;patch=1'
 SRC_URI_append=' file://${FILESDIR}/10_cvs.patch;patch=1'
 SRC_URI_append=' file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0'
