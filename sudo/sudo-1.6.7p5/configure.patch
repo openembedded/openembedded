@@ -1,0 +1,42 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- sudo-1.6.7p5/configure.in~configure	2003-05-06 11:22:36.000000000 -0400
++++ sudo-1.6.7p5/configure.in	2004-01-20 00:04:46.000000000 -0500
+@@ -1652,12 +1652,14 @@
+ if test -z "$BROKEN_GETCWD"; then
+     AC_REPLACE_FUNCS(getcwd)
+ fi
+-AC_CHECK_FUNCS(lockf flock, [break])
+-AC_CHECK_FUNCS(waitpid wait3, [break])
+-AC_CHECK_FUNCS(innetgr _innetgr, [AC_CHECK_FUNCS(getdomainname) [break]])
+-AC_CHECK_FUNCS(lsearch, , [AC_CHECK_LIB(compat, lsearch, AC_CHECK_HEADER(search.h, AC_DEFINE(HAVE_LSEARCH) [LIBS="${LIBS} -lcompat"], AC_LIBOBJ(lsearch), -), AC_LIBOBJ(lsearch))])
+-AC_CHECK_FUNCS(utime, [SUDO_FUNC_UTIME_POSIX], [AC_LIBOBJ(utime)])
+-SUDO_FUNC_FNMATCH(AC_DEFINE(HAVE_FNMATCH, 1, [Define if you have the `fnmatch' function.]), AC_LIBOBJ(fnmatch))
++AC_CHECK_FUNCS(lockf flock)
++AC_CHECK_FUNCS(waitpid wait3)
++AC_CHECK_FUNCS(innetgr _innetgr, [AC_CHECK_FUNCS(getdomainname)])
++
++AC_CHECK_FUNCS(lsearch, , [AC_CHECK_LIB(compat, lsearch, [AC_CHECK_HEADER(search.h, [AC_DEFINE(HAVE_LSEARCH) LIBS="$LIBS -lcompat"], [AC_LIBOBJ([lsearch])])], [AC_LIBOBJ([lsearch])])])
++
++AC_CHECK_FUNCS(utime, [SUDO_FUNC_UTIME_POSIX], [AC_LIBOBJ([utime])])
++SUDO_FUNC_FNMATCH([AC_DEFINE([HAVE_FNMATCH], [1], [Define if you have the 'fnmatch' function.])], [AC_LIBOBJ([fnmatch])])
+ SUDO_FUNC_ISBLANK
+ AC_REPLACE_FUNCS(strerror strcasecmp sigaction strlcpy strlcat)
+ AC_CHECK_FUNCS(snprintf vsnprintf asprintf vasprintf, , [NEED_SNPRINTF=1])
+--- sudo-1.6.7p5/aclocal.m4~configure	2003-03-21 13:50:38.000000000 -0500
++++ sudo-1.6.7p5/aclocal.m4	2004-01-20 00:05:05.000000000 -0500
+@@ -244,9 +244,9 @@
+ rm -f core core.* *.core])dnl
+ AC_MSG_RESULT($sudo_cv_func_fnmatch)
+ if test $sudo_cv_func_fnmatch = yes; then
+-  [$1]
++  $1
+ else
+-  [$2]
++  $2
+ fi
+ ])
+ 
