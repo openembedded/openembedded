@@ -2,12 +2,11 @@ DESCRIPTION = "libetpan is a library for communicating with mail and news server
 SMTP, POP, IMAP and NNTP"
 SECTION = "libs"
 DEPENDS = "gettext-native openssl"
+CVSDATE = "20040729"
 PV = "0.32cvs16-${CVSDATE}"
 S = "${WORKDIR}/libetpan"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan \
-          file://gcc34.patch;patch=1 \
-          file://destdir.patch;patch=1"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan"
 
 inherit autotools pkgconfig
 
@@ -18,5 +17,4 @@ do_stage () {
 }
 
 FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
-                ${libdir}/*.a ${libdir}/pkgconfig"
+FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la ${libdir}/*.a ${libdir}/pkgconfig"
