@@ -84,19 +84,27 @@ uclibcbuild_do_patch() {
 	perl -i -p -e 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y\nUCLIBC_HAS_LOCALE=n,g' ${S}/.config
 
 	cp ${DL_DIR}/${UCLIBC_LOCALE_FILE} extra/locale
+}
 
-	make oldconfig
+uclibcbuild_do_fpumangle() {
+	perl -i -p -e 's,^HAS_FPU=y,# HAS_FPU is not set,' ${S}/.config
 }
 
 python do_patch () {
 	oe.build.exec_func('base_do_patch', d)
 	oe.build.exec_func('uclibcbuild_do_patch', d)
+	if oe.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+		oe.build.exec_func('uclibcbuild_do_fpumangle', d)
+}
+
+do_configure() {
+	oe_runmake oldconfig
 }
 
 do_stage() {
 	# Install into the cross dir (this MUST be done first because we
 	# will install crt1.o in the install_dev stage and gcc needs it)
-	make PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
+	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
 		install_dev install_runtime install_utils
 
@@ -114,7 +122,7 @@ do_stage() {
 	rm -f ${UCLIBC_PREFIX}/include/bits/atomicity.h
 
 	# Install into the staging dir
-	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		install_dev install_runtime install_utils
 
@@ -133,7 +141,7 @@ do_stage() {
 }
 
 do_install() {
-	make PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+	oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
 		install_dev install_runtime install_utils
 
 	# We don't really need this in /usr/include
