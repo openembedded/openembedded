@@ -4,6 +4,8 @@ LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PR = "r1"
 
+KERNEL_SUFFIX = "openslug"
+
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.7.tar.bz2 \
 	   file://arm-Makefile.patch;patch=1 \
 	   file://ipx4xx-pci.patch;patch=1 \
@@ -30,7 +32,7 @@ do_configure_prepend() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}.bin-${DATETIME}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}
 }
 
 do_deploy[dirs] = "${S}"
