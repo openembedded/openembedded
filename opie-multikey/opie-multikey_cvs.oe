@@ -4,9 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
-RDEPENDS = "opie-pics opic-pickboard"
+RDEPENDS = "opie-pics opie-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 APPNAME = "qmultikey"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey \
