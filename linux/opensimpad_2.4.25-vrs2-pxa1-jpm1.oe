@@ -5,7 +5,7 @@ KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://${KV}-${VRSV}.patch;patch=1 \
