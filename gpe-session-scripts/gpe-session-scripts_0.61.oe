@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 inherit gpe
 
@@ -6,8 +6,14 @@ DESCRIPTION = "GPE session startup scripts"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager"
+RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr"
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
-DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock"
+DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr"
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-session-scripts-${PV}.tar.gz"
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-session-scripts-${PV}.tar.gz \
+	file://zaurus.sh"
+
+do_install_append() {
+	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
+}
+
