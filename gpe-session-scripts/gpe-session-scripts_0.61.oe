@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 
 inherit gpe
 
@@ -11,7 +11,8 @@ RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-questi
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr"
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-session-scripts-${PV}.tar.gz \
-	file://zaurus.sh"
+	file://zaurus.sh \
+	file://change-default-applets.patch;patch=1"
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
