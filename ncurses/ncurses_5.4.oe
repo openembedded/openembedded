@@ -51,7 +51,9 @@ do_stage () {
 	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
 }
 
-do_install_append() {
+do_install() {
+	autotools_do_install
+
 	# include some basic terminfo files
 	# stolen ;) from gentoo and modified a bit
 	for x in ansi console dumb linux rxvt screen sun vt{52,100,102,200,220} xterm-color xterm-xfree86
