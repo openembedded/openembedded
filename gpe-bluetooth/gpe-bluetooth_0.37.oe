@@ -6,7 +6,7 @@ RDEPENDS = "bluez-utils blueprobe"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
-PR = "r2"
+PR = "r3"
 
 FILES_${PN} += '${datadir}/bluez-pin'
 
