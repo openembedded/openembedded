@@ -4,11 +4,13 @@ PRIORITY="optional"
 LICENSE="GPL"
 
 SRC_URI = http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snapshot-${PV}.tar.gz \
-          file://${FILESDIR}/opie1.patch;patch=1
+          file://${FILESDIR}/opie1.patch;patch=1 \
+          file://${FILESDIR}/pro.patch;patch=1 \
+          file://${FILESDIR}/packing.patch;patch=1 
 
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
-inherit  libtool
+inherit autotools libtool
 
 FILES=
 FILES_${PN}=/opt/QtPalmtop
@@ -18,36 +20,10 @@ QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++
 
 EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
 
-do_configure () {
-	./configure \
-	--build=${BUILD_SYS} \
-	--host=${HOST_SYS} \
-	--target=${TARGET_SYS} \
-	--prefix=${prefix} \
-	--exec_prefix=${exec_prefix} \
-	--bindir=${bindir} \
-	--sbindir=${sbindir} \
-	--libexecdir=${libexecdir} \
-	--datadir=${datadir} \
-	--sysconfdir=${sysconfdir} \
-	--sharedstatedir=${sharedstatedir} \
-	--localstatedir=${localstatedir} \
-	--libdir=${libdir} \
-	--includedir=${includedir} \
-	--oldincludedir=${oldincludedir} \
-	--infodir=${infodir} \
-	--mandir=${mandir} \
-	--enable-static  \
-	--disable-shared  \
-	--disable-debug  \
-	--enable-qpe \
-	--enable-embedded     \           
-	--with-extra-includes=${STAGING_INCDIR} \
-	--with-extra-libs=${STAGING_LIBDIR} \
-	--with-ssl-version=0.9.7c \    
-	--with-ssl-dir=${STAGING_DIR}/target \
-	--with-qtopia-dir=${STAGING_DIR}/target \
-	--prefix=/opt/QtPalmtop \
-	--with-javascript=static
-
+EXTRA_OECONF = --enable-static --disable-shared --disable-debug --enable-qpe --enable-embedded \
+               --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR} --with-ssl-version=0.9.7c \
+               --with-ssl-dir=${STAGING_DIR}/target --with-qtopia-dir=${STAGING_DIR}/target --prefix=/opt/QtPalmtop --with-javascript=static
+CXXFLAGS+=" -DOPIE_NO_ERASE_RECT_FIX -dOPIE_NEW_MALLOC"
+do_compile_prepend() {
+	perl admin/am_edit
 }
