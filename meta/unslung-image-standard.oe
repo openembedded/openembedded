@@ -1,0 +1,5 @@
+IMAGE_BASENAME = "unslung-standard"
+
+DEPENDS = "nslu2-unslung-kernel-standard nslu2-unslung-ramdisk-standard ${UNSLUNG_BASE_PACKAGES}"
+
+include unslung-image-base.oe

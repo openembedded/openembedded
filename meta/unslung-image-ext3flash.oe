@@ -1,0 +1,5 @@
+IMAGE_BASENAME = "unslung-ext3flash"
+
+DEPENDS = "nslu2-unslung-kernel-ext3flash nslu2-unslung-ramdisk-ext3flash ${UNSLUNG_BASE_PACKAGES}"
+
+include unslung-image-base.oe

@@ -1,11 +1,11 @@
 IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
-UNSLUNG_BASE_PACKAGES = "nslu2-unslung-ramdisk slingbox ipkg wget"
+UNSLUNG_BASE_PACKAGES = "slingbox ipkg wget"
 
 IPKG_INSTALL = "${UNSLUNG_BASE_PACKAGES}"
 
-DEPENDS ?= "virtual/kernel ${UNSLUNG_BASE_PACKAGES}"
+DEPENDS ?= "virtual/kernel nslu2-unslung-ramdisk ${UNSLUNG_BASE_PACKAGES}"
 IMAGE_BASENAME ?= "unslung"
 
 UNSLUNG_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-unslung.txt')}"

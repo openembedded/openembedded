@@ -1,1 +1,1 @@
-DEPENDS = "unslung-standard-image unslung-ext3flash-image unslung-vfatdisk2-image unslung-able-image"
+DEPENDS = "unslung-image-standard unslung-image-ext3flash unslung-image-vfatdisk2 unslung-image-able"

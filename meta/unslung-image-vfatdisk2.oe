@@ -1,0 +1,5 @@
+IMAGE_BASENAME = "unslung-vfatdisk2"
+
+DEPENDS = "nslu2-unslung-kernel-vfatdisk2 nslu2-unslung-ramdisk-vfatdisk2 ${UNSLUNG_BASE_PACKAGES}"
+
+include unslung-image-base.oe
