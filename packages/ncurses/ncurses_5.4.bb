@@ -3,17 +3,23 @@ HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
+PACKAGES_prepend = "ncurses-tools "
 PACKAGES_append = " ncurses-terminfo"
 FILES_ncurses_append = " ${datadir}/tabset"
-FILES_ncurses-terminfo = "${datadir}/terminfo"
 RSUGGESTS_${PN} = "ncurses-terminfo"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
 	   file://visibility.patch;patch=1"
 S = "${WORKDIR}/ncurses-${PV}"
 
 inherit autotools
+
+# This keeps only tput/tset in ncurses
+# clear/reset are in already busybox
+FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear ${bindir}/reset ${bindir}/tack "
+FILES_ncurses-terminfo = "${datadir}/terminfo"
+FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* usr/share/tabset etc/terminfo"
 
 EXTRA_OECONF = "--with-shared \
 	        --without-profile \

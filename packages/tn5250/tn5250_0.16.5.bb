@@ -12,13 +12,11 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
 inherit autotools
 
 PACKAGES = "lib5250-0 tn5250-dev tn5250-doc tn5250"
+FILES_${PN} = "${bindir}/tn5250"
 FILES_lib5250-0 = "${libdir}/lib*.so.*"
 AUTO_LIBNAME_PKGS = "lib5250"
 
 do_stage() {
 	autotools_stage_includes
         oe_libinstall -so -a -C src lib5250 ${STAGING_LIBDIR}
-}
-
-do_install_append() {
 }
