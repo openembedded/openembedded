@@ -18,7 +18,7 @@ export QTDIR = "${STAGING_LIBDIR}/.."
 export OPIEDIR = "${STAGING_LIBDIR}/.."
 EXTRA_QMAKEVARS_POST = "DESTDIR="
 
-CXXFLAGS_append = " -DQWS -fno-rtti -fno-exceptions"
+CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
 
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \
