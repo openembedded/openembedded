@@ -2,7 +2,7 @@ SECTION = "unknown"
 DESCRIPTION = "Hardware Abstraction Layer"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "dbus expat"
-RDEPENDS += "linux-hotplug"
+RDEPENDS += "hotplug"
 HOMEPAGE = "http://freedesktop.org/Software/hal"
 LICENSE = "GPL LGPL AFL"
 
