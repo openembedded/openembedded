@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r14"
+PR = "r15"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
@@ -40,7 +40,7 @@ DEPENDS = 'base-files base-passwd-3.5.7 \
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug initscripts \
-	netbase sysvinit tinylogin \
+	netbase sysvinit sysvinit-pidof tinylogin \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS} \
 	${@bootstrap_modutils_rdepends(d)}'

@@ -85,7 +85,14 @@ case "$ACTION" in
 
 	# Get available partitions through dmesg. The "tail -1" is needed as
 	# sometimes the partitions are printed twice by the kernel.
-	OK_PARTS="`dmesg | tail -3 | grep mmcda | tail -1| sed s/^.*\:\ //`"
+	#OK_PARTS="`dmesg | tail -3 | grep mmcda | tail -1| sed s/^.*\:\ //`"
+	OK_PARTS="`cat /proc/partitions |awk '{print $4}'| grep mmcd`"
+	
+	if test "`echo "$OK_PARTS" | wc -l | awk '{print $1}`" -gt 1
+	then
+		OK_PARTS="`echo "$OK_PARTS" | grep -v "^mmcda$"`"
+	fi
+	
 	echo "Valid SD partitions are: [$OK_PARTS]"
 	
 	# Allow for "#" in fstab.
