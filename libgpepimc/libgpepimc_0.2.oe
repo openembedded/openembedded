@@ -6,7 +6,8 @@ DEPENDS = "libgpewidget libdisplaymigration gtk+ sqlite"
 
 inherit pkgconfig gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpepimc-${PV}.tar.gz"
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpepimc-${PV}.tar.gz \
+	file://${FILESDIR}/libgpepimc_pc.patch;patch=1"
 
 headers = "pim-categories.h pim-categories-ui.h"
 
