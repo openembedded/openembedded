@@ -1,0 +1,19 @@
+DESCRIPTION="DOS FAT Filesystem Utilities"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+DEPENDS=virtual/libc 
+RDEPENDS="libc6"
+
+SRC_URI = ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
+	  file://${FILESDIR}/alignment_hack.patch;patch=1
+
+inherit autotools
+	  
+EXTRA_OECONF = "--with-curses-terminfo"
+#EXTRA_OECONF = "--with-curses-terminfo --enable-libs='-lncurses'"
+
+do_install () {
+	set -e
+	oe_runmake 'PREFIX=${D}' install
+}
