@@ -10,11 +10,10 @@ RDEPENDS = "qpe-vexed-levels"
 APPNAME = "qpe-vexed"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://wwwcip.informatik.uni-erlangen.de/~sialhaus/qpe-vexed_1.3_src.tar.gz \
-file://vit.patch;patch=1 \
-"
+           file://vit.patch;patch=1"
 
 S = "${WORKDIR}/qpe-vexed_arm/"
 
