@@ -1,8 +1,9 @@
 DESCRIPTION= "All of Python"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
+		python-egenix-mx-base   \
 		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
@@ -22,6 +23,7 @@ DEPENDS = "	python-ao 		\
 		python-pygame		\
 		python-pygoogle		\
 		python-pygtk		\
+		python-pylinda		\
 		python-pylint		\
 		python-pyqt		\
 		python-pyqwt		\
@@ -30,6 +32,7 @@ DEPENDS = "	python-ao 		\
 		python-pyxml		\
 		python-pyxmlrpc		\
 		python-quicklauncher    \
+		python-sip		\
 		python-sgmlop		\
 		python-snmplib		\
 		python-soappy		\
