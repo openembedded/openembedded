@@ -7,6 +7,8 @@ PR = "r1"
 
 DEPENDS = "x11 xext xextensions xmu"
 
+CFLAGS += "-D_GNU_SOURCE"
+
 SECTION = "x11/base"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xset;date=${FIXEDCVSDATE} \
