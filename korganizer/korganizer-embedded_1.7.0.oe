@@ -49,6 +49,6 @@ do_install() {
 
     for f in libkopialarmapplet
     do
-        oe_libinstall -so -C ${STAGING_DIR}/${HOST_SYS}/plugins/applets $f ${d}/${palmtopdir}/plugins/applets
+        oe_libinstall -so -C ${STAGING_DIR}/${HOST_SYS}/plugins/applets $f ${D}/${palmtopdir}/plugins/applets
     done
 }
