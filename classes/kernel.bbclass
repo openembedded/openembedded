@@ -148,7 +148,7 @@ update-modules || true
 
 autoload_postinst_fragment() {
 if [ x"$D" = "x" ]; then
-	modprobe %s
+	modprobe %s || true
 fi
 }
 
