@@ -1,9 +1,9 @@
 #!/bin/sh
-if [ -n "$(xrandr | grep rotation | grep right)" ]
+if [ -n "$(xrandr | grep rotation | grep left)" ]
 then 
 xrandr -o normal
 xmodmap /etc/X11/xmodmap-portrait
 else 
-xrandr -o right
+xrandr -o left
 xmodmap /etc/X11/xmodmap-right
 fi

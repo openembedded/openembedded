@@ -1,0 +1,19 @@
+inherit gpe
+
+DEPENDS = "gtk+ librsvg"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+PR = "r1"
+
+SRC_URI += "file://splash-p.svg file://splash-l.svg \
+            file://landscape_fix.patch;patch=1"
+
+FILES_${PN} += "${datadir}/gpe"
+
+do_install_append() {
+	install -m 0644 ${WORKDIR}/splash-p.svg ${D}${datadir}/gpe/splash-p.svg
+	install -m 0644 ${WORKDIR}/splash-l.svg ${D}${datadir}/gpe/splash-l.svg
+	mv ${D}/etc/rcS.d/S00bootsplash ${D}/etc/rcS.d/S02bootsplash
+}
+
