@@ -1,3 +1,4 @@
+PR = "r1"
 DESCRIPTION = "Matchbox window manager core library"
 LICENSE = "GPL"
 DEPENDS = "virtual/libc x11 xext xft pango jpeg libpng zlib"
@@ -7,7 +8,7 @@ S = "${WORKDIR}/libmatchbox-${PV}"
 
 inherit autotools  pkgconfig
 
-EXTRA_OECONF = "--enable-jpeg --enable-pango"
+EXTRA_OECONF = "--enable-jpeg --enable-pango --enable-xsettings"
 
 headers = "hash.h mbconfig.h mbdotdesktop.h mbexp.h \
 	   mb.h mbmenu.h mbpixbuf.h mbtray.h mbutil.h"
