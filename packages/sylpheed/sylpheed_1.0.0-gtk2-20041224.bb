@@ -13,6 +13,8 @@ FILES_${PN}-doc += "${datadir}"
 
 EXTRA_OECONF = "--with-gnutls"
 
+CFLAGS += "-D_GNU_SOURCE"
+
 do_configure_prepend() {
 	mkdir -p m4
 }
