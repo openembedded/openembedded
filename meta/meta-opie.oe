@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r9"
+PR = "r10"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -11,7 +11,8 @@ PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
 		    task-opie-styles task-opie-today task-opie-bluetooth \
 			task-opie-wlan \
 			task-qpe-applets task-qpe-games task-qpe-inputmethods \
-			task-qpe-multimedia task-qpe-emulators task-qpe-applications "
+			task-qpe-multimedia task-qpe-emulators task-qpe-applications \
+			task-qpe-fonts"
 
 DEPENDS = "\
 opie-examples-python \
@@ -63,6 +64,7 @@ DEPENDS += " ${task-opie-applets}"
 
 task-qpe-applets = "\
 subapplet \
+tasklistapplet \
 "
 RDEPENDS_task-qpe-applets = "${task-qpe-applets}"
 DEPENDS += " ${task-qpe-applets}"
@@ -103,6 +105,7 @@ RDEPENDS_task-opie-applications = "${task-opie-applications}"
 DEPENDS += " ${task-opie-applications}"
 
 task-qpe-applications = "\
+camera-assistant \
 cumulus \
 dviviewer \
 inkwp \
@@ -125,10 +128,14 @@ timesleuth \
 txdrug \
 tximage \
 ubahnnav \
+visiscript \
+zbedic \
 zbench \
 zgscore \
 zipsc \
 zlapspeed \
+zroadmap \
+zshopi \
 "
 RDEPENDS_task-qpe-applications = "${task-qpe-applications}"
 DEPENDS += " ${task-qpe-applications}"
@@ -201,8 +208,8 @@ pipeman \
 powermanga \
 prboom \
 puzz-le \
-qmatrix \
 qfish2 \
+qmatrix \
 rott \
 scummvm \
 shisensho \
@@ -216,6 +223,7 @@ zauralign \
 zddice \
 ziq \
 zmerlin \
+zrally \
 zrev7 \
 zsubhunt \
 ztappy "
@@ -262,6 +270,7 @@ RDEPENDS_task-opie-multimedia = "${task-opie-multimedia}"
 DEPENDS += " ${task-opie-multimedia}"
 
 task-qpe-multimedia = "\
+mplayer \
 sidplayer \
 xmms-embedded "
 RDEPENDS_task-qpe-multimedia = "${task-qpe-multimedia}"
@@ -351,9 +360,22 @@ RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
 DEPENDS += " ${task-opie-wlan}"
 
 task-qpe-emulators = "\
+frodo \
 snes9x-sdl-qpe \
 uae \
 "
 RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
 DEPENDS += " ${task-qpe-emulators}"
+
+task-qpe-fonts = "\
+qpf-georgia \
+qpf-helvetica \
+qpf-unifont \
+qpf-utopia \
+qpf-verdana \
+terminus \
+qpf-bitstream-vera-sans-mono \
+qpf-bitstream-vera \
+"
+DEPENDS += " ${task-qpe-fonts}"
 
