@@ -28,8 +28,7 @@ SRC_URI = "http://www.vanille.de/temp/linux-${KV}_${MVLV}.tar.gz \
 S = "${WORKDIR}/linux-${KV}_${MVLV}"
 
 def beagle_multiline_ppp():
-	str = "alias char-major-108	ppp_generic
-alias /dev/ppp	ppp_generic"
+	str = "alias char-major-108\Tppp_generic\nalias /dev/ppp\tppp_generic"
 	return str
 
 
