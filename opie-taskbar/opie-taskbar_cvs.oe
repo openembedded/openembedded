@@ -21,6 +21,14 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
 
 S = "${WORKDIR}/launcher"
 
+# Caps/Numlock icons for devices with keyboard
+EXTRA_QMAKEVARS_POST_append_collie = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_poodle = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_shepherd = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_corgi = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_husky = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_tosa = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+
 inherit opie update-rc.d
 
 INITSCRIPT_NAME = "opie"
@@ -66,6 +74,10 @@ do_install() {
 
 #this two should be installed only on devices with keyboard
 do_install_append_collie () {
+	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
+	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
+}
+do_install_append_poodle () {
 	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }
