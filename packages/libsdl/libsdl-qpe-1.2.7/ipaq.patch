@@ -1,17 +1,16 @@
-Index: SDL-1.2.7/src/video/qtopia/Makefile.am
-===================================================================
---- SDL-1.2.7.orig/src/video/qtopia/Makefile.am	2005-03-02 22:24:56.658626603 +0100
-+++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-03-02 22:25:01.549935581 +0100
+diff -Ndru SDL-1.2.7_old/src/video/qtopia/Makefile.am SDL-1.2.7/src/video/qtopia/Makefile.am
+--- SDL-1.2.7_old/src/video/qtopia/Makefile.am	2005-03-08 15:13:16.000000000 -0200
++++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-03-08 15:16:17.000000000 -0200
 @@ -22,4 +22,4 @@
  # overwrite USER variables
  CXXLD = $(CC)
  CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 -	$(AM_LDFLAGS) $(LDFLAGS) -lsupc++ -o $@
 +	$(AM_LDFLAGS) $(LDFLAGS) -lopiecore2 -lsupc++ -o $@
-Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
-===================================================================
---- SDL-1.2.7.orig/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:24:55.100846680 +0100
-+++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:25:01.550935440 +0100
+ 		$(TAGS_FILES) $(LISP)
+diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+--- SDL-1.2.7_old/src/video/qtopia/SDL_QWin.cc	2005-03-08 15:13:16.000000000 -0200
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-03-08 15:16:17.000000000 -0200
 @@ -29,8 +29,11 @@
  #include "SDL_QWin.h"
  #include <qapplication.h>
@@ -74,40 +73,48 @@ Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
      default:
        scancode = SDLK_UNKNOWN;
        break;
-Index: SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
-===================================================================
---- SDL-1.2.7.orig/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:24:46.873009084 +0100
-+++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:25:01.551935299 +0100
-@@ -106,6 +106,9 @@
+diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+--- SDL-1.2.7_old/src/video/qtopia/SDL_sysvideo.cc	2005-03-08 15:13:15.000000000 -0200
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-03-08 15:43:30.000000000 -0200
+@@ -45,6 +45,7 @@
+ #include <qapplication.h>
+ #include <qpe/qpeapplication.h>
+ #include <qpe/qcopenvelope_qws.h>
++#include <opie2/odevice.h>
+ #include <qgfx_qws.h>
+ #include <qwindowsystem_qws.h>
+ #include <qwidget.h>
+@@ -66,6 +67,8 @@
+ #include "SDL_syswm_c.h"
+ #include "SDL_lowvideo.h"
+ 
++using namespace Opie::Core;
++
+   //#define QTOPIA_DEBUG
+ #define QTOPIA_LOG
+ #define QT_HIDDEN_SIZE	32	/* starting hidden window size */
+@@ -106,6 +109,7 @@
      MACHINE_SHARP_SLC760,
      MACHINE_SHARP_SLC860,
      MACHINE_SHARP_SL6000,
-+    MACHINE_HP_H3600,
-+    MACHINE_HP_H3900,
-+    MACHINE_HP_H5400,
++    MACHINE_IPAQ,
      MACHINE_MAX
    } machine_t;
  
-@@ -119,6 +122,9 @@
+@@ -119,6 +123,7 @@
      { "Sharp", "SL-C760", 0 },
      { "Sharp", "SL-C860", 0 },
      { "Sharp", "SL-6000", 0 },
-+    { "HP", "H3600", 0},
-+    { "HP", "H3900", 0},
-+    { "HP", "H5400", 0},
++    { "HP", "HP IPAQ", 0 },
    };
  
    /* Name of the environment variable used to invert the screen rotation or not:
-@@ -423,6 +429,17 @@
+@@ -423,6 +428,13 @@
            machine = MACHINE_SHARP_SLC760;
          else if (strstr(buf, "SHARP Boxer") != NULL)
            machine = MACHINE_SHARP_SLC860;
-+        else if (strstr(buf, "H3600") != NULL)
-+          machine = MACHINE_HP_H3600;
-+        else if (strstr(buf, "H3900") != NULL)
-+          machine = MACHINE_HP_H3900;
-+        else if (strstr(buf, "H5400") != NULL)
-+          machine = MACHINE_HP_H5400;
++        else if ( ODevice::inst ( )-> series ( ) == Model_iPAQ )
++          machine = MACHINE_IPAQ;
 +	else
 +          {
 +          machine = MACHINE_SHARP_SL5000D;
@@ -116,17 +123,14 @@ Index: SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
        }
        fclose(fp);
      } else {
-@@ -679,6 +696,14 @@
+@@ -679,6 +691,11 @@
      if (machine == MACHINE_SHARP_SL5500)
        qteRotation = 3;
  
-+    // H3900
-+    if (machine == MACHINE_HP_H3900)
++    // HP IPaq
++    if ( ODevice::inst ( )-> series ( ) == Model_iPAQ )
 +      qteRotation = 3;
-+    
-+    // H5400
-+    if (machine == MACHINE_HP_H5400)
-+      qteRotation = 3;
++
 +    
      // SL-B500 用ハック(とりあえず、ね)
      if (machine == MACHINE_SHARP_SLB500)
