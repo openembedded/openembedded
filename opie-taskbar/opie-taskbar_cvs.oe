@@ -6,7 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount \
@@ -23,12 +23,20 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
 S = "${WORKDIR}/launcher"
 
 # Caps/Numlock icons for devices with keyboard
-EXTRA_QMAKEVARS_POST_append_collie = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_poodle = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_shepherd = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_corgi = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_husky = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_tosa = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_poodle 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_shepherd 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_corgi 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_husky 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_tosa 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+
+# Wallpaper and welcome splash
+PIXMAP_SIZE 		= ""
+PIXMAP_SIZE_shepherd 	= "-640x480"
+PIXMAP_SIZE_corgi 	= "-640x480"
+PIXMAP_SIZE_husky 	= "-640x480"
+PIXMAP_SIZE_tosa 	= "-640x480"
+PIXMAP_SIZE_simpad 	= "-800x600"
 
 inherit opie update-rc.d
 
@@ -47,6 +55,7 @@ do_stage() {
 }
 
 SECTIONS = "1Pim Applications Examples Games Opie-SH Python Settings"
+PICS = "opielogo32x32.png start_button.png new_wait.png opielogo16x16.png sidebar.png"
 
 do_install() {
 	install -d ${D}/${palmtopdir}/bin
@@ -65,16 +74,24 @@ do_install() {
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}/${palmtopdir}/apps/Settings/
-	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
+
+	for p in ${PICS}
+	do
+		install -m 0644 ${WORKDIR}/pics/launcher/$p ${D}/${palmtopdir}/pics/launcher/$p
+	done
+	install -m 0644 ${WORKDIR}/pics/launcher/firstuse${PIXMAP_SIZE}.jpg ${D}/${palmtopdir}/pics/launcher/firstuse.jpg
+	install -m 0644 ${WORKDIR}/pics/launcher/opie-background${PIXMAP_SIZE}.jpg ${D}/${palmtopdir}/pics/launcher/opie-background.jpg
+
 	install -m 0644 ${WORKDIR}/pics/logo/*.* ${D}/${palmtopdir}/pics/logo/
+
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
 	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/etc/
+
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
-
 }
 
-#this two should be installed only on devices with keyboard
+# These two should be installed only on devices with keyboard
 do_install_append_collie () {
 	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/

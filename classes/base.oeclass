@@ -318,7 +318,7 @@ python base_do_patch() {
 		cmd = "PATH=\"%s\" patcher" % oe.data.getVar("PATH", d, 1)
 		if "pnum" in parm:
 			cmd += " -p %s" % parm["pnum"]
-		cmd += " -n \"%s\" -i %s" % (os.path.basename(efile), efile)
+		cmd += " -R -n \"%s\" -i %s" % (os.path.basename(efile), efile)
 		ret = os.system(cmd)
 		if ret != 0:
 			raise oe.build.FuncFailed("'patcher' execution failed")

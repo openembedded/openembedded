@@ -1,8 +1,0 @@
-include patcher.oe
-inherit native
-DEPENDS = ""
-INHIBIT_DEFAULT_DEPS = "1"
-
-do_stage() {
-	install -m 0755 ${DL_DIR}/patcher ${STAGING_BINDIR}/
-}
