@@ -3,10 +3,11 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xproto xtrans zlib"
 DESCRIPTION = "X font library (used by the X server)."
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${XLIBS_MIRROR}/libXfont-${PV}.tar.bz2 \
-	file://scalable.patch;patch=1"
+	file://scalable.patch;patch=1 \
+	file://autofoo.patch;patch=1"
 S = "${WORKDIR}/libXfont-${PV}"
 
 inherit autotools pkgconfig 
