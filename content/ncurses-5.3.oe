@@ -33,6 +33,7 @@ do_compile () {
 do_stage () {
 	install -m 0755 lib/lib*.so.* ${STAGING_LIBDIR}/
 	cp -R include/* ${STAGING_DIR}/target/include/
+	ln -sf curses.h ${STAGING_DIR}/target/include/ncurses.h
 	ln -sf libpanel.so.5.3 ${STAGING_LIBDIR}/libpanel.so
 	ln -sf libform.so.5.3 ${STAGING_LIBDIR}/libform.so
 	ln -sf libmenu.so.5.3 ${STAGING_LIBDIR}/libmenu.so
