@@ -10,7 +10,8 @@ acpaths=-I ${S}/cmulocal -I ${S}/config -I .
 CFLAGS_append = ' -I${S}/include -I${S}/saslauthd/include'
 EXTRA_OECONF = '--enable-shared --enable-static --with-dblib=berkeley \
 	        --with-bdb-libdir=${STAGING_LIBDIR} \
-	        --with-bdb-incdir=${STAGING_INCDIR}'
+	        --with-bdb-incdir=${STAGING_INCDIR} \
+		--without-opie --without-des'
 do_configure_prepend () {
 	rm -f acinclude.m4
 }
@@ -26,9 +27,9 @@ do_compile_prepend () {
 do_stage () {
 	install -m 0644 lib/.libs/libsasl2.lai ${STAGING_LIBDIR}/libsasl2.la
 	install -m 0644 lib/.libs/libsasl2.a ${STAGING_LIBDIR}/libsasl2.a
-	install -m 0755 lib/.libs/libsasl2.so.2.0.17 ${STAGING_LIBDIR}/libsasl2.so.2.0.17
-	ln -sf libsasl2.so.2.0.17 ${STAGING_LIBDIR}/libsasl2.so.2
-	ln -sf libsasl2.so.2.0.17 ${STAGING_LIBDIR}/libsasl2.so
+	install -m 0755 lib/.libs/libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so.2.0.18
+	ln -sf libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so.2
+	ln -sf libsasl2.so.2.0.18 ${STAGING_LIBDIR}/libsasl2.so
 	install -d ${STAGING_LIBDIR}/sasl
 	install -d ${STAGING_DIR}/target/include/sasl
 	install -m 0644 include/hmac-md5.h ${STAGING_DIR}/target/include/sasl/
