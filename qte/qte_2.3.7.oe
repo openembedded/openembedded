@@ -2,9 +2,9 @@ DESCRIPTION = "Qt/Embedded version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
-DEPENDS = "base/zlib base/libpng base/jpeg uicmoc-native"
+DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "1"
+PR = "2"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://${FILESDIR}/qpe.patch;patch=1 \
@@ -12,6 +12,16 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://${FILESDIR}/devfs.patch;patch=1 \
 	   file://${FILESDIR}/no-moc.patch;patch=1 \
 	   file://${FILESDIR}/update-qtfontdir "
+
+#
+# FIXME: Apply the SIMpad hardware patch for SIMpad.
+#
+#SRC_URI_append_simpad = "file://${FILESDIR}/simpad.patch;patch=1 "
+#
+# FIXME: Apply the C7xx hardware patch for shepherd/husky/boxer
+#
+#SRC_URI_append_<machine> = "file://${FILESDIR}/c700-hardware.patch;patch=1 "
+
 S = "${WORKDIR}/qt-${PV}"
 
 export QTDIR = "${S}"
@@ -30,20 +40,27 @@ def qte_arch(d):
 QTE_ARCH := "${@qte_arch(d)}"
 
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
-EXTRA_OECONF_ARCH = "-xplatform ${TARGET_OS}-${QTE_ARCH}-g++"
-EXTRA_OECONF_ARCH_collie = "-xplatform ${TARGET_OS}-sharp-g++"
-EXTRA_OECONF_ARCH_ramses = "-xplatform ${TARGET_OS}-ramses-g++"
-
-EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif ${EXTRA_OECONF_ARCH} ${EXTRA_OECONF_CONFIG}"
-
+EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
+		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG}"
 EXTRA_OEMAKE = "-e"
+
+#
+# FIXME: Add more here
+#
+EXTRA_DEFINES 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
+EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -I${STAGING_DIR}/${HOST_SYS}/kernel/include"
+EXTRA_DEFINES_h3600 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_simpad	= "-DQT_QWS_DEVFS -DQWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SIMPAD"
+EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
+EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
+EXTRA_DEFINES_boxer     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
 export SYSCONF_LINK = "${CCLD}"
 export SYSCONF_SHLIB = "${CCLD}"
 export SYSCONF_CFLAGS = "${CFLAGS}"
-export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG"
+export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
 export SYSCONF_LFLAGS = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
