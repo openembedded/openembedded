@@ -60,3 +60,27 @@ glib_cv_use_pid_surrogate=${glib_cv_use_pid_surrogate=yes}
 
 # jikes-native
 ac_cv_sizeof_wchar_t=4
+
+# startup-notification
+lf_cv_sane_realloc=yes
+
+# libidl
+libIDL_cv_long_long_format=${libIDL_cv_long_long_format=ll}
+
+# ORBit2
+ac_cv_alignof_CORBA_boolean=1
+ac_cv_alignof_CORBA_char=1
+ac_cv_alignof_CORBA_double=4
+ac_cv_alignof_CORBA_float=4
+ac_cv_alignof_CORBA_long=4
+ac_cv_alignof_CORBA_long_double=4
+ac_cv_alignof_CORBA_long_long=4
+ac_cv_alignof_CORBA_octet=1
+ac_cv_alignof_CORBA_pointer=4
+ac_cv_alignof_CORBA_short=2
+ac_cv_alignof_CORBA_struct=4
+ac_cv_alignof_CORBA_wchar=2
+ac_cv_func_getaddrinfo=${ac_cv_func_getaddrinfo=yes}
+
+# D-BUS
+ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
