@@ -1,0 +1,7 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := ftp://ftp.astron.com/pub/file/file-4.04.tar.gz
+S := ${WORKDIR}/${P}
+
+inherit autotools libtool
