@@ -1,5 +1,5 @@
 DESCRIPTION = "GPE bluetooth support"
-DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs bluez-sdp sqlite dbus"
+DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs bluez-sdp sqlite dbus libglade"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
