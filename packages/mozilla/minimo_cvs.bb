@@ -10,28 +10,18 @@ SECTION = "x11"
 PRIORITY = "optional"
 PV = "0.0cvs${CVSDATE}"
 FILES_${PN} += "${libdir}/mozilla-minimo"
-PR = "r7"
+PR = "r8"
 LICENSE = "MPL/LGPL/GPL"
 
 inherit mozilla
 
 EXTRA_OECONF += "--enable-application=suite"
+export MOZ_CO_PROJECT="suite"
 
 export MINIMO=1
 export MOZ_OBJDIR="${WORKDIR}/build-${TARGET_SYS}"
-export MOZ_CO_PROJECT="suite"
 
-do_fetch () {
-	mkdir -p ${WORKDIR}
-	cd ${WORKDIR}
-	if [ ! -f ${DL_DIR}/mozilla_cvs-mirror.mozilla.org__${CVSDATE}.tar.gz ]; then
-		cvs $CVSCOOPTS -d :pserver:anonymous@cvs-mirror.mozilla.org/cvsroot co mozilla/client.mk
-		cd mozilla
-		oe_runmake -f client.mk checkout
-		cd ..
-		tar czf ${DL_DIR}/mozilla_cvs-mirror.mozilla.org__${CVSDATE}.tar.gz mozilla
-	fi
-}
+include mozilla-cvs.inc
 
 do_compile () {
 	mozilla_do_compile
