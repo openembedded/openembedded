@@ -9,7 +9,8 @@ DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting ge
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver \
+	file://${FILESDIR}/shrotate.patch;patch=1;pnum=0"
 S = "${WORKDIR}/xserver"
 
 inherit autotools pkgconfig libtool
