@@ -1,3 +1,6 @@
-inherit native
 include ipkg_${PV}.oe
-DEPENDS = 
+inherit native
+
+DEPENDS = patcher-native
+FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/ipkg-${PV}
+PACKAGES =
