@@ -14,8 +14,6 @@ EXTRA_OECONF="--enable-static --enable-shared"
 
 CFLAGS_append = " -D_REENTRANT"
 
-CC = ${TARGET_ARCH}-${TARGET_OS}-gcc
-
 do_stage() {
 	install -m 644 -D jconfig.h ${STAGING_DIR}/target/include/jconfig.h
 	install -m 644 -D jpeglib.h ${STAGING_DIR}/target/include/jpeglib.h
