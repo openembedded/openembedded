@@ -247,7 +247,7 @@ python do_showdata() {
 	# emit variables and shell functions
 	oe.data.emit_env(sys.__stdout__, d, True)
 	# emit the metadata which isnt valid shell
-	for e in d.keys():
+	for e in oe.data.keys(d):
 		if oe.data.getVarFlag(e, 'python', d):
 			sys.__stdout__.write("\npython %s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
 		elif oe.data.getVarFlag(e, 'func', d):
@@ -263,7 +263,7 @@ python do_listtasks() {
 	# emit variables and shell functions
 	#oe.data.emit_env(sys.__stdout__, d)
 	# emit the metadata which isnt valid shell
-	for e in d.keys():
+	for e in oe.data.keys(d):
 		if oe.data.getVarFlag(e, 'task', d):
 			sys.__stdout__.write("%s\n" % e)
 }
@@ -339,9 +339,10 @@ addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
 do_fetch[nostamp] = "1"
 python base_do_fetch() {
-	import sys, copy
+	import sys
 
-	localdata = copy.deepcopy(d)
+	localdata = {}
+	oe.data.linkDataSet(localdata,d)
 	oe.data.update_data(localdata)
 
 	src_uri = oe.data.getVar('SRC_URI', localdata, 1)
@@ -367,9 +368,10 @@ python base_do_fetch() {
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
 python base_do_unpack() {
-	import re, copy, os
+	import re, os
 
-	localdata = copy.deepcopy(d)
+	localdata = {}
+	oe.data.linkDataSet(localdata,d)
 	oe.data.update_data(localdata)
 
 	src_uri = oe.data.getVar('SRC_URI', localdata)
@@ -627,6 +629,7 @@ python read_subpackage_metadata () {
 }
 
 python __anonymous () {
+	import exceptions
 	need_host = oe.data.getVar('COMPATIBLE_HOST', d, 1)
 	if need_host:
 		import re
