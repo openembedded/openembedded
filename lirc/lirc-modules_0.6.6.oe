@@ -5,6 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "linux-${KERNEL_VERSION}"
 DEPENDS = "virtual/kernel"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 S = "${WORKDIR}/lirc-${PV}"
@@ -24,7 +25,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char
-	install -m 755 drivers/lirc_sir/lirc_sir.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
+	install -m 0644 drivers/lirc_sir/lirc_sir.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
 }
 
 pkg_postinst() {
@@ -33,6 +34,4 @@ pkg_postinst() {
  if [ -n $D ]; then exit 1; fi
 }
 
-PACKAGES_append=" lirc-modules"
-FILES_lirc-modules="/lib/modules"
-
+FILES_${PN}="/lib/modules"
