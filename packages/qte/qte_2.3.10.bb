@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -135,4 +135,5 @@ do_install() {
 	oe_libinstall -so -C lib libqte ${D}${palmqtdir}/lib/
 }
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 FILES_${PN} = "${palmqtdir}"

@@ -3,6 +3,8 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
+RRECOMMENDS = "opie-logoutapplet"
+PR = "r1"
 
 BROKEN = 1
 

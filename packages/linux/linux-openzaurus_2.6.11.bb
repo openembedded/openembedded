@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r10"
+PR = "r11"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -73,7 +73,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
 
 SRC_URI_append_collie = " ${RPSRC}/jl1/collie_keymap.patch;patch=1 "
 SRC_URI_append_poodle = " ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
-                          ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "			  "
+                          ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "
 SRC_URI_append_tosa = " ${DOSRC}/nand-readid-r0.patch;patch=1 \
                         ${DOSRC}/ac97-r1.patch;patch=1 \
                         ${DOSRC}/tosa-detection-r0.patch;patch=1 \

@@ -4,7 +4,7 @@ DESCRIPTION = "Freetype font rendering library"
 
 PR = "r1"
 
-SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
 
 FILES_${PN} = "${libdir}/lib*.so.*"

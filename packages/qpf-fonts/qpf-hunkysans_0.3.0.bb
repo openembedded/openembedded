@@ -5,7 +5,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://www.yoper.com/ariszlo/hunky.html http://sourceforge.net/projects/hunkyfonts"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.hrw.one.pl/_pliki/oe/files/${PN}-${PV}.tar.bz2"
 

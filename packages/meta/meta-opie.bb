@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r21"
+PR = "r22"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -125,7 +125,7 @@ poqetpresenter \
 portabase \
 qpdf2 \
 qpealarmclock \
-qpe-gaim \
+qpe-gaim1 \
 qpegps \
 qpenmapfe \
 qplot \
@@ -394,6 +394,8 @@ qpf-dejavuserif \
 qpf-dejavuserifcondensed \
 qpf-freemono \
 qpf-freeserif \
+qpf-gentium \
+qpf-gentiumalt \
 qpf-hunky \
 qpf-hunkysans \
 qpf-hunkyserif \

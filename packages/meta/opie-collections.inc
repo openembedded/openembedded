@@ -35,10 +35,9 @@ OPIE_LIBS_RDEPENDS_append_tosa = " ${OPIE_FONTS_LARGE}"
 # Things for reasonable bootstrap image
 #
 
-OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-logoutapplet \
-                     opie-suspendapplet opie-batteryapplet opie-homeapplet \
-                     opie-multikeyapplet opie-rotateapplet opie-vtapplet \
-                     opie-cardmon opie-irdaapplet opie-brightnessapplet"
+OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-suspendapplet opie-batteryapplet \
+                     opie-homeapplet opie-multikeyapplet opie-rotateapplet opie-cardmon \
+                     opie-irdaapplet opie-brightnessapplet"
 
 OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
 
@@ -62,6 +61,10 @@ OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset \
 #
 OPIE_BASE_DEPENDS_append_c7x0 = " opie-autorotateapplet"
 
+# Zaurus models can benefit from the VT and logout applets
+OPIE_BASE_APPLETS_append_openzaurus = " opie-vtapplet opie-logoutapplet"
+OPIE_BASE_APPLETS_append_ramses     = " opie-vtapplet opie-logoutapplet"
+
 #
 # Additional things for a standard 16MB distribution
 #
@@ -71,7 +74,8 @@ OPIE_PIM_BASE = "opie-alarm opie-drawpad opie-textedit"
 OPIE_PIM_MAIL = "opie-mail"
 
 OPIE_PIM = "${OPIE_PIM_BASE} opie-addressbook opie-datebook opie-todo opie-today \
-            opie-today opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin"
+            opie-today-addressbookplugin opie-today-datebookplugin opie-today-todolistplugin \
+            opie-datebook-nationalholidayplugin opie-datebook-birthdayplugin "
 
 KDE_PIM_DEPENDS = "${OPIE_PIM_BASE} kdepimpi"
 KDE_PIM_RDEPENDS = "kopi kapi kopi-applet"
@@ -87,8 +91,10 @@ OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-sec
 # Additional things for a >= 24MB distribution
 #
 
-OPIE_DEPENDS_24 = "konqueror-embedded"
-OPIE_RDEPENDS_24 = "konqueror-embedded"
+OPIE_DEPENDS_24  = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
+                    qpdf2 froot        opie-wellenreiter"
+OPIE_RDEPENDS_24 = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
+                    qpdf2 froot        opie-wellenreiter"
 
 #
 #

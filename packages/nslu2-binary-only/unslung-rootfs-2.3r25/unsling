@@ -108,15 +108,20 @@ else
     rm -rf $targ/var ; mv $targ/var.state $targ/var
 
     rm -f /.sda1root /.sda2root /.sdb1root /.sdb2root
+    rm -f $targ/.sda1root $targ/.sda2root $targ/.sdb1root $targ/.sdb2root
 
     if [ "$targ" = "/share/hdd/data" ] ; then
 	echo > /.sda1root
+	echo > $targ/.sda1root
     elif [ "$targ" = "/share/hdd/conf" ] ; then
 	echo > /.sda2root
+	echo > $targ/.sda2root
     elif [ "$targ" = "/share/flash/data" ] ; then
 	echo > /.sdb1root
+	echo > $targ/.sdb1root
     elif [ "$targ" = "/share/flash/conf" ] ; then
 	echo > /.sdb2root
+	echo > $targ/.sdb2root
     fi
 
 fi
