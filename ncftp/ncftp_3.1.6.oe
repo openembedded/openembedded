@@ -3,7 +3,6 @@ RDEPENDS = libc6
 
 SRC_URI := ftp://ftp.ncftp.com/ncftp/ncftp-3.1.6-src.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1
-S := ${WORKDIR}/${P}
 
 inherit autotools
 

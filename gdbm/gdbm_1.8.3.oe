@@ -1,0 +1,18 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+PROVIDES = virtual/libgdbm
+SECTION = libs
+
+SRC_URI = ${GNU_MIRROR}/${PN}/${P}.tar.gz \
+	  file://${FILESDIR}/makefile.patch;patch=1
+
+inherit autotools libtool
+
+do_stage () {
+	install -m 0755 .libs/libgdbm.so.3.0.0 ${STAGING_LIBDIR}/
+	install -m 0644 .libs/libgdbm.a ${STAGING_LIBDIR}/
+	install -m 0644 gdbm.h ${STAGING_DIR}/target/include/
+	ln -sf ${STAGING_LIBDIR}/libgdbm.so.3.0.0 ${STAGING_LIBDIR}/libgdbm.so.3
+	ln -sf ${STAGING_LIBDIR}/libgdbm.so.3.0.0 ${STAGING_LIBDIR}/libgdbm.so
+}
+

@@ -1,7 +1,6 @@
 DEPENDS = virtual/libc
 
 SRC_URI := ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
-S := ${WORKDIR}/${P}
 
 EXTRA_OEMAKE=
 do_compile () {

@@ -6,7 +6,6 @@ DESCRIPTION = Provides common files needed to use IrDA.\
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/irda/${P}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1
-S = ${WORKDIR}/${P}
 
 inherit autotools libtool
 

@@ -1,5 +1,4 @@
 SRC_URI = http://tinylogin.busybox.net/downloads/${P}.tar.bz2
-S = ${WORKDIR}/${P}
 
 EXTRA_OEMAKE =
 

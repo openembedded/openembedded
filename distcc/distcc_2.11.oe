@@ -1,0 +1,6 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := http://distcc.samba.org/ftp/distcc/distcc-2.11.tar.bz2
+
+inherit autotools

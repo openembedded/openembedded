@@ -1,0 +1,11 @@
+SECTION="libs"
+PRIORITY="optional"
+RDEPENDS="libc6"
+SECTION="libs"
+DEPENDS=virtual/libc virtual/libbluetooth virtual/libsdp virtual/libgdbm
+
+SRC_URI = http://www.pentest.co.uk/src/${PN}-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+

@@ -2,7 +2,6 @@ PROVIDES = virtual/libc
 
 SRC_URI := http://savannah.nongnu.org/download/avr-libc/released/SOURCES/avr-libc-1.0.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1
-S := ${WORKDIR}/${P}
 B := ${WORKDIR}/build.${BUILD_SYS}.${TARGET_SYS}
 
 inherit autotools

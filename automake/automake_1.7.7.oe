@@ -1,5 +1,4 @@
 SRC_URI := ${GNU_MIRROR}/automake/automake-1.7.7.tar.bz2
-S := ${WORKDIR}/${P}
 
 inherit autotools
 

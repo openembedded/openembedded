@@ -1,0 +1,19 @@
+DEPENDS=virtual/libc zlib ncurses
+
+SRC_URI := http://ftp.cwi.nl/aeb/util-linux/util-linux-2.12.tar.gz
+
+EXTRA_OEMAKE=
+do_compile () {
+	set -e
+	install ${FILESDIR}/MCONFIG ${S}/MCONFIG
+	install ${FILESDIR}/make_include ${S}/make_include
+	install ${FILESDIR}/swapargs.h ${S}/mount/swapargs.h
+	install ${FILESDIR}/defines.h ${S}/defines.h
+	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
+		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
+		'LDFLAGS=${LDFLAGS}'
+}
+
+do_install () {
+	oe_runmake 'DESTDIR=${D}' install
+}

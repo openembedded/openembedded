@@ -1,5 +1,4 @@
 SRC_URI := ${DEBIAN_MIRROR}/main/b/base-files/base-files_3.0.12.tar.gz
-S := ${WORKDIR}/${P}
 
 docdir_append=/${P}
 do_install () {

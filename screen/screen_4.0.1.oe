@@ -1,0 +1,9 @@
+DEPENDS = virtual/libc ncurses
+RDEPENDS = libc6 libncurses5
+
+SRC_URI := ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-4.0.1.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF = "--with-pty-mode=0620 --with-pty-group=5"

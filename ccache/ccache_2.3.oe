@@ -1,0 +1,6 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI := http://ccache.samba.org/ftp/ccache/ccache-2.3.tar.gz
+
+inherit autotools

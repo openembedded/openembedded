@@ -4,6 +4,5 @@ RDEPENDS = libc6
 SRC_URI := ftp://alpha.gnu.org/gnu/findutils/findutils-4.1.20.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1 \
 	   file://${FILESDIR}/m4.patch;patch=1
-S := ${WORKDIR}/${P}
 
 inherit autotools

@@ -1,7 +1,6 @@
 SRC_URI = ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/${P}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1 \
 	  file://${FILESDIR}/mconfig.patch;patch=1
-S = ${WORKDIR}/${P}
 
 EXTRA_OEMAKE = -C inetd
 do_compile () {

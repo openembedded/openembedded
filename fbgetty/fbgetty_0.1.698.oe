@@ -1,0 +1,5 @@
+SRC_URI := http://fbgetty.meuh.eu.org/downloads/${P}.tar.gz \
+	   file://${FILESDIR}/compile.patch;patch=1
+B := ${WORKDIR}/build.${HOST_SYS}.${TARGET_SYS}
+
+inherit autotools

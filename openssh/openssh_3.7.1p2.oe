@@ -12,7 +12,6 @@ DESCRIPTION = Secure rlogin/rsh/rcp/telnet replacement (OpenSSH)\
 SRC_URI = ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1 \
 	  file://${FILESDIR}/scp-nossl.patch;patch=1
-S = ${WORKDIR}/${P}
 
 inherit autotools
 

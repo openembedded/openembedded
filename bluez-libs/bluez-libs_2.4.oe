@@ -6,7 +6,6 @@ DEPENDS=virtual/libc
 PROVIDES=virtual/libbluetooth
 
 SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
-S=${WORKDIR}/${P}
 
 inherit autotools libtool
 

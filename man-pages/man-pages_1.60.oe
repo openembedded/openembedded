@@ -1,0 +1,13 @@
+SRC_URI = http://www.kernel.org/pub/linux/docs/manpages/man-pages-1.60.tar.bz2
+
+EXTRA_OEMAKE=
+do_compile () {
+	true
+}
+
+do_install () {
+	oe_runmake 'prefix=${D}' install
+}
+
+PACKAGES=${PN}
+FILES_${PN}=*

@@ -1,5 +1,4 @@
 SRC_URI := ${GNU_MIRROR}/autoconf/autoconf-2.57.tar.bz2 \
 	   file://${FILESDIR}/program_prefix.patch;patch=1
-S := ${WORKDIR}/${P}
 
 inherit autotools

@@ -2,7 +2,6 @@ DEPENDS = virtual/libc
 RDEPENDS = libc6
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
-S = ${WORKDIR}/${P}
 
 inherit autotools libtool
 
