@@ -16,6 +16,7 @@ inherit autotools
 sbindir = "/sbin"
 EXTRA_OECONF = "--disable-strip"
 export BUILDCC = "${BUILD_CC}"
+export BUILDCFLAGS = "${BUILD_CFLAGS}"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
