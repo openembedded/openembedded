@@ -5,16 +5,24 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_1
 S = "${WORKDIR}/hotplug-2004_03_11"
 
 do_compile () {
-	oenote "Nothing to compile."
+	:
 }
 
-DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
+oldmandir := "${mandir}"
+oldsbindir := "${sbindir}"
+prefix = ""
+exec_prefix = ""
+FILES_hotplug_append = " ${oldsbindir}"
+FILES_hotplug-doc_append = " ${oldmandir}"
+
+export DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
 do_install () {
-	install -d ${D}/sbin ${D}/${sysconfdir}/hotplug \
-		   ${D}/${sysconfdir}/logcheck/ignore.d \
-		   ${D}/${sbindir}
-	oe_runmake prefix=${D} install
-	sh debian/fix-net.agent ${D}
-	install -m 0755 debian/update-usb.usermap ${D}/${sbindir}/
-	install -m 0644 debian/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
+	install -d ${D}/${sysconfdir}/logcheck/ignore.d \
+		   ${D}/${oldmandir} ${D}/${oldsbindir}
+	oe_runmake prefix=${D}${prefix} exec_prefix=${D}${exec_prefix} \
+		   etcdir=${D}${sysconfdir} sbindir=${D}${sbindir} \
+		   mandir=${D}${oldmandir} install
+	sh ${FILESDIR}/fix-net.agent ${D}
+	install -m 0755 ${FILESDIR}/update-usb.usermap ${D}/${oldsbindir}/
+	install -m 0644 ${FILESDIR}/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
 }
