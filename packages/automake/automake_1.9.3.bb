@@ -13,6 +13,7 @@ DEFAULT_PREFERENCE = "-1"
 
 inherit autotools
 
+export AUTOMAKE = "${@bb.which('automake', bb.data.getVar('PATH', d, 1))}"
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
 RDEPENDS_${PN} += "autoconf perl"
 
