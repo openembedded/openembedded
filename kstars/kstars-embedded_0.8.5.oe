@@ -5,6 +5,7 @@ LICENSE = "GPL"
 APPNAME = "kstars"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/apps/Applications"
+PR = "r1"
 
 SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz"
 S = "${WORKDIR}/kstars"
@@ -18,6 +19,6 @@ do_install() {
     install -d ${D}/${palmtopdir}/bin \
 	       ${D}/${palmtopdir}/pics/kstars \
 	       ${D}/${palmtopdir}/share/apps/kstars
-    cp -a ${WORKDIR}/pics ${D}/${palmtopdir}/pics
+    cp -a ${WORKDIR}/pics ${D}/${palmtopdir}
     cp -a ${WORKDIR}/share/apps/kstars ${D}/${palmtopdir}/share/apps/
 }
