@@ -19,7 +19,7 @@ LIBV = "1.2.0"
 
 do_stage () {
 	for lib in pango pangox pangoft2 pangoxft; do
-		oe_libinstall -a -so -C pango $lib-1.0 ${STAGING_LIBDIR}
+		oe_libinstall -so -C pango lib$lib-1.0 ${STAGING_LIBDIR}/
 	done
 	install -d ${STAGING_INCDIR}/pango
 	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/

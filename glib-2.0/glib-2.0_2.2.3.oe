@@ -21,10 +21,10 @@ do_configure_prepend () {
 }
 
 do_stage () {
-	oe_libinstall -so -a -C glib libglib-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -a -C gmodule libgmodule-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -a -C gthread libgthread-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -a -C gobject libgobject-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C glib libglib-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gmodule libgmodule-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gthread libgthread-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gobject libgobject-2.0 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/glib-2.0/glib
 	install -m 0755 ${S}/glibconfig.h ${STAGING_INCDIR}/glib-2.0/glibconfig.h
 	install -m 0644 ${S}/glib/glib-object.h ${STAGING_INCDIR}/glib-2.0/glib-object.h

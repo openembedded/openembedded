@@ -31,10 +31,10 @@ gdk_include = "gdk.h gdkcolor.h gdkcursor.h gdkdisplay.h gdkdisplaymanager.h gdk
 gdk_pixbuf_include = "gdk-pixbuf-animation.h gdk-pixbuf-enum-types.h gdk-pixbuf-features.h gdk-pixbuf-io.h gdk-pixbuf-loader.h gdk-pixbuf-marshal.h gdk-pixbuf.h gdk-pixdata.h"
 
 do_stage () {
-	oe_libinstall -a -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/gtk-2.0/gtk
 	for i in ${gtk_include}; do

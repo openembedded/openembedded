@@ -18,4 +18,5 @@ do_stage() {
 	done
 
 	oe_libinstall -so -C mimedir libmimedir-0.2 ${STAGING_LIBDIR}
+	ln -sf libmimedir-0.2.so ${STAGING_LIBDIR}/libmimedir.so
 }

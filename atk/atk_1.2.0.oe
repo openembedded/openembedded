@@ -13,7 +13,7 @@ CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0 \
 		  -I${STAGING_INCDIR}/glib-2.0/gobject"
 
 do_stage () {
-	oe_libinstall -so -a -C atk libatk-1.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C atk libatk-1.0 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/atk
 	install -m 0644 atk/atkaction.h ${STAGING_INCDIR}/atk/atkaction.h
 	install -m 0644 atk/atkcomponent.h ${STAGING_INCDIR}/atk/atkcomponent.h
