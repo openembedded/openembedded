@@ -7,8 +7,7 @@ MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 FILESDIR := ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/uclibc-${PV}
 
 DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc-initial
-PROVIDES := virtual/libc virtual/uclibc \
-            virtual/libc-headers virtual/uclibc-headers
+PROVIDES := virtual/libc
 
 SRC_URI := http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
            http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2
@@ -64,6 +63,10 @@ do_stage() {
 	for f in ${CROSS_DIR}/${TARGET_SYS}/include/*; do
 		ln -s $f ${STAGING_DIR}/target/include/
 	done
+
+	# We don't really need these
+	rmdir ${CROSS_DIR}/${TARGET_SYS}/usr/lib || :
+	rmdir ${CROSS_DIR}/${TARGET_SYS}/usr || :
 }
 
 do_install() {

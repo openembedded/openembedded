@@ -5,16 +5,37 @@ LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
 DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
-           virtual/libc virtual/libc-headers patcher
+           virtual/libc patcher
 
-PACKAGES = ${PN} ${PN}-doc
-FILES_${PN} = ${includedir} ${libdir} ${bindir}/*
+PACKAGES = ${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks
+
+FILES_${PN} =  \
+	${bindir}/${TARGET_PREFIX}*
+
+FILES_${PN}-dev = \
+	${includedir} \
+	${libdir}/*.a
+
+FILES_${PN}-symlinks = \
+	${bindir}/addr2line \
+	${bindir}/ar \
+	${bindir}/as \
+	${bindir}/ld \
+	${bindir}/nm \
+	${bindir}/objcopy \
+	${bindir}/objdump \
+	${bindir}/ranlib \
+	${bindir}/readelf \
+	${bindir}/size \
+	${bindir}/strings \
+	${bindir}/strip
 
 SRC_URI := http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
            file://${FILESDIR}/binutils-001_ld_makefile.patch;patch=1 \
            file://${FILESDIR}/binutils-006_better_file_error.patch;patch=1 \
            file://${FILESDIR}/binutils-009_signed_char_fix.patch;patch=1 \
            file://${FILESDIR}/binutils-012_check_ldrunpath_length.patch;patch=1 \
+           file://${FILESDIR}/binutils-100_cflags_for_build.patch;patch=1 \
            file://${FILESDIR}/binutils-906-hjl_libtool_dso.patch;patch=1 \
            file://${FILESDIR}/configure.patch;patch=1
 
@@ -24,6 +45,7 @@ B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
 EXTRA_OECONF := --enable-targets=${TARGET_SYS} \
                 --with-sysroot=${prefix} \
                 --with-lib-path=${prefix}/lib:/lib \
+                --disable-shared \
                 --enable-multilib \
                 --program-prefix=${TARGET_PREFIX}
 
@@ -57,12 +79,18 @@ do_configure () {
 
 do_install () {
 	autotools_do_install
+
+	# We don't really need these, so we'll remove them...
+	rm -rf ${D}/${libdir}/ldscripts
+
+	# Install the libiberty header
+	install -m 644 ${S}/include/ansidecl.h ${D}/${includedir}
+	install -m 644 ${S}/include/libiberty.h ${D}/${includedir}
+
 	cd ${D}/${bindir}
-	# Symlinks for if this is intended to be the only compiler
-	(
-		for p in ${TARGET_SYS}-* ; do
-			ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
-		done
-		true
-	)
+
+	# Symlinks for ease of running these on the native target
+	for p in ${TARGET_SYS}-* ; do
+		ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
+	done
 }

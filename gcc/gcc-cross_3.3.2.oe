@@ -2,14 +2,12 @@ include gcc_${PV}.oe
 inherit cross
 FILESDIR = ${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gcc-${PV}
 
-DEPENDS := virtual/${TARGET_SYS}-binutils \
-           virtual/glibc virtual/glibc-headers patcher
-PROVIDES := virtual/${TARGET_SYS}-gcc \
-            virtual/${TARGET_SYS}-g++
+DEPENDS := virtual/${TARGET_PREFIX}binutils glibc patcher
+PROVIDES := virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++
 
 PACKAGES =
 
-EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/usr/local \
+EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
                 --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
                 --enable-target-optspace \
                 --with-gnu-ld \
@@ -42,13 +40,33 @@ do_compile_prepend () {
 }
 
 do_stage_append () {
-#	# Cleanup after gcc's --program-prefix failing..
-#	( cd ${CROSS_DIR}/bin ; for p in ${TARGET_SYS}-* ; do
-#		mv $p `echo $p | sed -e s,${TARGET_SYS},${TARGET_ARCH}-uclibc,`
-#	done )
-
-	rm -f ${CROSS_DIR}/bin/gccbug ${CROSS_DIR}/bin/gcov
 	for d in info man share/doc share/locale ; do
 		rm -rf ${CROSS_DIR}/$d
 	done
+
+	# These aren't useful on the cross toolchain
+	rm -f ${CROSS_DIR}/bin/*gcov
+	rm -f ${CROSS_DIR}/bin/*gccbug
+
+	# Fix a few include links so cross builds are happier
+	if [ ! -e ${STAGING_DIR}/target/include/c++ ]; then
+		mkdir -p ${STAGING_DIR}/target/include
+		ln -s ${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+			${STAGING_DIR}/target/include/
+	fi
+
+	# We use libiberty from binutils
+	rm -f ${CROSS_DIR}/lib/libiberty.a
+
+	# We probably don't need these
+	rmdir ${CROSS_DIR}/include || :
+
+	# We don't really need to keep this around
+	rm -rf ${CROSS_DIR}/share
 }
+
+# Kill the install so we get no packages (we're the cross compiler)
+do_install () {
+	:
+}
+

@@ -1,0 +1,15 @@
+include gcc-cross_${PV}.oe
+
+DEPENDS := virtual/${TARGET_PREFIX}binutils glibc-initial patcher
+PROVIDES := virtual/${TARGET_PREFIX}gcc-initial
+
+EXTRA_OECONF := --with-local-prefix=${CROSS_DIR}/local \
+                --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+                --enable-target-optspace \
+                --disable-nls \
+                --with-gnu-ld \
+                --enable-languages=c \
+                --disable-shared \
+		--disable-threads \
+                --enable-multilib \
+                --program-prefix=${TARGET_SYS}-

@@ -4,55 +4,72 @@ DESCRIPTION := The GNU cc and gcc C compilers.
 LICENSE := GPL
 MAINTAINER := Gerald Britton <gbritton@doomcom.org>
 
-DEPENDS := virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}gcc \
-           virtual/uclibc virtual/uclibc-headers patcher
+# This will ONLY build to this target
+TARGET_VENDOR :=
+TARGET_SYS := ${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}
+TARGET_PREFIX := ${TARGET_SYS}-
 
-PACKAGES = ${PN} ${PN}-cplusplus \
-           uclibc-libgcc uclibc-libstdcplusplus \
+DEPENDS := virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc \
+           glibc patcher
+
+PACKAGES = ${PN} ${PN}-symlinks \
+           ${PN}-c++ ${PN}-c++-symlinks \
+           libgcc libstdc++ libstdc++-dev \
            ${PN}-doc
 
-FILES_${PN} = ${bindir}/${TARGET_PREFIX}gcc \
-              ${bindir}/${TARGET_PREFIX}cpp \
-              ${bindir}/${TARGET_PREFIX}gcov \
-              ${bindir}/${TARGET_PREFIX}gccbug \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1 \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/collect2 \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/crt* \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/specs \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc* \
-              ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include \
-              ${prefix}/${TARGET_SYS}/lib/libgcc_s.so \
-              ${prefix}/${TARGET_SYS}/lib/libiberty.a \
-              ${bindir}/cc ${bindir}/gcc ${bindir}/cpp \
-              ${bindir}/gcov ${bindir}/gccbug
+FILES_${PN} = \
+	${bindir}/${TARGET_PREFIX}gcc \
+	${bindir}/${TARGET_PREFIX}cpp \
+	${bindir}/${TARGET_PREFIX}gcov \
+	${bindir}/${TARGET_PREFIX}gccbug \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1 \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/collect2 \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/crt* \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/specs \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/lib* \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include
 
-FILES_${PN}-cplusplus = ${bindir}/${TARGET_PREFIX}g++ \
-                  ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1plus \
-                  ${prefix}/${TARGET_SYS}/lib/libstdc++.so \
-                  ${prefix}/${TARGET_SYS}/lib/libstdc++.la \
-                  ${prefix}/${TARGET_SYS}/lib/libstdc++.a \
-                  ${prefix}/${TARGET_SYS}/lib/libsupc++.la \
-                  ${prefix}/${TARGET_SYS}/lib/libsupc++.a \
-                  ${includedir}/c++ \
-                  ${bindir}/c++ ${bindir}/g++
+FILES_${PN}-symlinks = \
+	${bindir}/cc \
+	${bindir}/gcc \
+	${bindir}/cpp \
+	${bindir}/gcov \
+	${bindir}/gccbug
 
-FILES_uclibc-libgcc = /lib/libgcc_s.so.*
+FILES_${PN}-c++ = \
+	${bindir}/${TARGET_PREFIX}g++ \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1plus \
 
-FILES_uclibc-libstdcplusplus = ${prefix}/${TARGET_SYS}/lib/libstdc++.so.*
+FILES_${PN}-c++-symlinks = \
+	${bindir}/c++ \
+	${bindir}/g++
 
-FILES_${PN}-doc = ${infodir} ${mandir} \
-                  ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README
+FILES_libgcc = \
+	/lib/libgcc_s.so.*
 
-SRC_URI := http://gcc.get-software.com/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
-           file://${FILESDIR}/gcc-001-disable-mathf.patch;patch=1 \
-           file://${FILESDIR}/gcc-006-include-search.patch;patch=1 \
-           file://${FILESDIR}/gcc-810-libstd++-locale.patch;patch=1
+FILES_libstdc++ = \
+	${libdir}/libstdc++.so.*
+
+FILES_libstdc++-dev = \
+	${includedir}/c++/${PV} \
+	${libdir}/libstdc++.so \
+	${libdir}/libstdc++.la \
+	${libdir}/libstdc++.a \
+	${libdir}/libsupc++.la \
+	${libdir}/libsupc++.a
+
+FILES_${PN}-doc = \
+	${infodir} \
+	${mandir} \
+	${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README
+
+SRC_URI := http://gcc.get-software.com/releases/gcc-${PV}/gcc-${PV}.tar.bz2
 
 S := ${WORKDIR}/gcc-${PV}
 B := ${S}/build.${HOST_SYS}.${TARGET_SYS}
 
 EXTRA_OECONF := --with-local-prefix=/usr/local \
-                --with-gxx-include-dir=${includedir}/c++ \
+                --with-gxx-include-dir=${includedir}/c++/${PV} \
                 --enable-target-optspace \
                 --disable-nls \
                 --with-gnu-ld \
@@ -65,29 +82,31 @@ EXTRA_OECONF := --with-local-prefix=/usr/local \
 do_configure () {
 	# Setup these vars for cross building only
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
-		export CC_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}gcc"
-		export GCC_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}gcc"
-		export CXX_FOR_TARGET="${CCACHE} ${TARGET_PREFIX}g++"
-		export AS_FOR_TARGET="${TARGET_PREFIX}as"
-		export LD_FOR_TARGET="${TARGET_PREFIX}ld"
-		export NM_FOR_TARGET="${TARGET_PREFIX}nm"
-		export AR_FOR_TARGET="${TARGET_PREFIX}ar"
-		export RANLIB_FOR_TARGET="${TARGET_PREFIX}ranlib"
+		export CC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
+		export GCC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
+		export CXX_FOR_TARGET="${CCACHE} ${HOST_PREFIX}g++"
+		export AS_FOR_TARGET="${HOST_PREFIX}as"
+		export LD_FOR_TARGET="${HOST_PREFIX}ld"
+		export NM_FOR_TARGET="${HOST_PREFIX}nm"
+		export AR_FOR_TARGET="${HOST_PREFIX}ar"
+		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
 	fi
 	oe_runconf
 }
 
 do_install () {
 	autotools_do_install
+
 	# Cleanup some of the gcc-lib stuff
 	rm -rf ${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}/lib
-	mv -f ${D}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so.* ${D}/lib
-	rm -f ${D}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
-	ln -s ../../../lib/libgcc_s.so.? \
-	      ${D}/${prefix}/${TARGET_SYS}/libgcc_s.so
+	mv -f ${D}/${libdir}/libgcc_s.so.* ${D}/lib
+	rm -f ${D}/${libdir}/libgcc_s.so
+	ln -s `echo ${libdir}/gcc-lib/${TARGET_SYS}/${PV} | tr -s / |
+		sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \
+		${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc_s.so
 
 	# Cleanup manpages..
 	rm -rf ${D}/${mandir}/man7
@@ -95,6 +114,9 @@ do_install () {
 	   ${D}/${mandir}/man1/${TARGET_SYS}-cpp.1
 	mv ${D}/${mandir}/man1/gcov.1 \
 	   ${D}/${mandir}/man1/${TARGET_SYS}-gcov.1
+
+	# We use libiberty from binutils
+	rm -f ${D}/${libdir}/libiberty.a
 
 	cd ${D}/${bindir}
 
@@ -104,16 +126,13 @@ do_install () {
 	# We don't care about the gcc-<version> ones for this
 	rm -f *gcc-?.?*
 
-#	# Cleanup after gcc's --program-prefix failing..
-#	rm -f ${TARGET_SYS}-${TARGET_ARCH}-uclibc-*
+	# These sometimes show up, they are strange, we remove them
+	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
-#	# Symlinks for if this is intended to be the only compiler
-#	for p in ${TARGET_ARCH}-uclibc-* ; do
-#		ln -s $p `echo $p | sed -e s,${TARGET_ARCH}-uclibc-,,`
-#		ln -s $p `echo $p | sed -e s,uclibc,linux,`
-#	done
+	# Symlinks so we can use these trivially on the target
 	ln -s ${TARGET_SYS}-g++ g++
 	ln -s ${TARGET_SYS}-gcc gcc
 	ln -s g++ c++
 	ln -s gcc cc
 }
+
