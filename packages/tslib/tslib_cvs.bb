@@ -24,7 +24,7 @@ inherit autotools
 
 PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
 EXTRA_OECONF = "--enable-shared"
-EXTRA_OECONF_append_ramses = " --enable-input --disable-ucb1x00 --disable-corgi --disable-collie --disable-h3600 --disable-mk712 --disable-arctic2"
+EXTRA_OECONF_ramses = "--enable-shared --disable-h3600 --enable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 EXTRA_OECONF_beagle = "--enable-shared --enable-h3600 --disable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 
 do_stage () {
