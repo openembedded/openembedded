@@ -22,7 +22,8 @@ do_stage() {
 	       		      'DESTDIR=${STAGING_DIR}' \
 			      'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
 			      install-internalincludeHEADERS install-includeHEADERS
-	cp -f directfb.pc ${STAGING_DIR}/share/
+	install -d ${STAGING_DIR}/share/pkgconfig
+	install -m 0644 directfb.pc ${STAGING_DIR}/share/pkgconfig
 }
 
 do_install() {
