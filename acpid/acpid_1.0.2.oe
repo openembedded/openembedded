@@ -10,4 +10,21 @@ do_compile () {
 
 do_install () {
 	oe_runmake 'INSTPREFIX=${D}' install
+	install -d ${D}/${sysconfdir}/init.d
+	cat ${FILESDIR}/init | sed -e's,/usr/sbin,${sbindir},g' > ${D}/${sysconfdir}/init.d/acpid
+	chmod 755 ${D}/${sysconfdir}/init.d/acpid
+}
+
+pkg_postinst () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D acpid defaults
+}
+
+pkg_prerm () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D acpid remove
 }

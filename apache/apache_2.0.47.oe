@@ -27,3 +27,28 @@ do_compile () {
 	cd ..
 	oe_runmake
 }
+
+do_install_append () {
+	install -d ${D}/${sysconfdir}/init.d
+	cat ${FILESDIR}/init | \
+		sed -e 's,/usr/sbin/,${sbindir},g; \
+			s,/usr/bin/,${bindir},g; \
+			s,/usr/lib,${libdir},g; \
+			s,/etc/,${sysconfdir},g; \
+			s,/usr/,${prefix},g;' > ${D}/${sysconfdir}/init.d/apache
+	chmod 755 ${D}/${sysconfdir}/init.d/apache
+}
+
+pkg_postinst () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D apache defaults 91 20
+}
+
+pkg_prerm () {
+	if test -n "$D"; then
+		D="-r $D"
+	fi
+	update-rc.d $D apache remove
+}
