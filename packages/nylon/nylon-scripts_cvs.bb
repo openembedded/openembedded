@@ -21,7 +21,7 @@ update-rc.d ipaliases defaults 16
 update-rc.d firewall defaults 20
 update-rc.d routing defaults 20
 update-rc.d dummydate start 50 S . stop 50 0 6 .
-update-rc.d emergency-ip defaults 99
+update-rc.d emergency-ip defaults 98
 }
 
 pkg_postrm() {
