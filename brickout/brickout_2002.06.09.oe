@@ -10,7 +10,8 @@ SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-$
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = " INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte TARGET=brickout DEFINES+=USE_SDL "
+EXTRA_QMAKEVARS_POST += " INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDLmain \
+			LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte TARGET=brickout DEFINES+=USE_SDL "
 
 do_configure_prepend() {
         qmake -project -o brickout.pro
