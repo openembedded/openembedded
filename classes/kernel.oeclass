@@ -295,7 +295,7 @@ python populate_packages_prepend () {
 	metapkg = "kernel-modules"
 	oe.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
 	oe.data.setVar('FILES_' + metapkg, "", d)
-	blacklist = []
+	blacklist = [ 'kernel-dev', 'kernel-image' ]
 	for l in module_deps.values():
 		for i in l:
 			pkg = module_pattern % legitimize_package_name(re.match(module_regex, os.path.basename(i)).group(1))
