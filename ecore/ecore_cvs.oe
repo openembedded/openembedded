@@ -6,6 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 PV = "${CVSDATE}"
 DEPENDS = "edb eet evas freetype edb-native"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
 S = "${WORKDIR}/ecore"
@@ -17,14 +18,19 @@ export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
 export EVAS_CONFIG = "${STAGING_BINDIR}/evas-config"
 export FREETYPE_CONFIG = "${STAGING_BINDIR}/freetype-config"
 
-EXTRA_OECONF = "--enable-ecore-fb --enable-ecore-job \
-		--enable-ecore-evas-fb --disable-ecore-evas-x \
-		--disable-ecore-evas-gl --enable-ecore-con \
-		--enable-ecore-ipc --enable-ecore-txt \
-		--disable-ecore-x --enable-ecore-config \
+EXTRA_OECONF = "--enable-ecore-fb \
+		--enable-ecore-job \
+		--enable-ecore-evas-fb \
+		--disable-ecore-evas-x \
+		--disable-ecore-evas-gl \
+		--enable-ecore-con \
+		--enable-ecore-ipc \
+		--enable-ecore-txt \
+		--disable-ecore-x \
+		--enable-ecore-config \
 		--disable-openssl"
 
-parts = "Ecore Ecore_Job Ecore_X \
+parts = "Ecore Ecore_Job \
 	 Ecore_Txt Ecore_Fb Ecore_Con \
 	 Ecore_Ipc Ecore_Evas Ecore_Config"
 

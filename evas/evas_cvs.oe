@@ -7,6 +7,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libpng jpeg freetype"
 PV = "${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas \
            file://flags.patch;patch=1 \
@@ -63,13 +64,16 @@ do_configure () {
 }
 
 headers = "Evas_Engine_Buffer.h \
-           Evas_Engine_DirectFB.h \
            Evas_Engine_FB.h \
-           Evas_Engine_GL_X11.h \
-           Evas_Engine_Software_Qtopia.h \
-           Evas_Engine_Software_Win32_GDI.h \
-           Evas_Engine_Software_X11.h \
            Evas.h"
+
+# Don't install these headers or subsequent libraries will include support for it:
+# Evas_Engine_DirectFB.h \
+# Evas_Engine_GL_X11.h \
+# Evas_Engine_Software_Win32_GDI.h \
+# Evas_Engine_Software_X11.h
+# Evas_Engine_Software_Qtopia.h \
+
 
 do_stage () {
 	for i in ${headers}; do
