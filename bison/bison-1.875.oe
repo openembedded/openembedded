@@ -1,0 +1,12 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${GNU_MIRROR}/bison/bison-1.875.tar.bz2
+
+inherit autotools
+
+do_configure_prepend () {
+	if [ ! -e acinclude.m4 ]; then
+		cat m4/*.m4 >> acinclude.m4
+	fi
+}
