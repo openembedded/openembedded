@@ -4,19 +4,28 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libopiemm2"
+RDEPENDS = "opie-advancedfm-pics"
 PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "opie-eye"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/graphics/opie-eye \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
-
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-# FILES plugins/application/libopie-eye.so* bin/opie-eye bin/opie-eye_slave apps/Applications/opie-eye.desktop pics/opie-eye/*.png
+do_configure_append() {
+	cd slave && qmake -makefile -spec ${QMAKESPEC} slave.pro -after ${EXTRA_QMAKEVARS_POST}
+}
+
+do_compile_append() {
+	cd slave && oe_runmake
+}
+
 do_install() {
+	install -m 0755 opie-eye_slave ${D}/${palmtopdir}/bin/
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 }
