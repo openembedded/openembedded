@@ -52,8 +52,6 @@ else
 	ln -sf /proc/self/fd /dev/fd
 	ln -sf /proc/kcore /dev/core
 	/sbin/makedevs -r / -D /etc/device_table
-	# Remove apm_bios - causes Zaurus to freeze on resume
-	rm -f /dev/apm_bios
 	# Change some permissions for non-root users
 	chmod 666 /dev/collie-fl
 	chmod 666 /dev/dsp
