@@ -424,6 +424,7 @@ python base_do_unpack() {
 				cmd = 'cp %s %s/%s/' % (local, os.getcwd(), destdir)
 		if not cmd:
 			continue
+		cmd = "PATH=\"%s\" %s" % (oe.data.getVar('PATH', d, 1), cmd)
 		oe.note("Unpacking %s to %s/" % (local, os.getcwd()))
 		ret = os.system(cmd)
 		if ret != 0:
