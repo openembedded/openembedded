@@ -1,7 +1,7 @@
 DESCRIPTION = "gdb - GNU debugger"
 HOMEPAGE = "http://www.gnu.org/software/gdb/"
 LICENSE="GPL"
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"

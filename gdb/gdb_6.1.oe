@@ -1,5 +1,5 @@
 DESCRIPTION = "gdb - GNU debugger"
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"

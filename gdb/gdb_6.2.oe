@@ -1,6 +1,6 @@
 DESCRIPTION = "gdb - GNU debugger"
 LICENSE="GPL"
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"

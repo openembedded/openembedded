@@ -2,7 +2,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/freebies/tmake/tmake-${PV}.tar.gz"
 DESCRIPTION = "tmake is an easy-to-use tool for creating and maintaining makefiles across many platforms and compilers."
 LICENSE = "Unknown"
 DEPENDS = ""
-SECTION = "base"
+SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
