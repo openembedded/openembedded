@@ -18,8 +18,8 @@ RDEPENDS_gpe-task-base = "\
 RDEPENDS_gpe-task-pim = "\
     gpe-timesheet \
     gpe-todo \
-    gpe-today \
     gpe-calendar"
+#    gpe-today
 
 RDEPENDS_gpe-task-utils = "\
     gpe-bluetooth \
