@@ -1,3 +1,5 @@
+PR = "r1"
+
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
@@ -5,13 +7,13 @@ PACKAGES = "${PN}"
 
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ipkg initscripts modutils netbase \
-	resolvconf sysvinit tinylogin putty lrzsz \
+	resolvconf sysvinit tinylogin putty lrzsz portmap \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug ipkg initscripts modutils-depmod \
 	netbase \
-	resolvconf sysvinit tinylogin \
+	resolvconf sysvinit tinylogin portmap \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz putty-scp putty-sftp putty-ssh \
