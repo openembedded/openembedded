@@ -1,5 +1,36 @@
 DESCRIPTION = "SysV init scripts"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SRC_URI = "file://${FILESDIR}/halt \
+	   file://${FILESDIR}/ramdisk \
+	   file://${FILESDIR}/umountfs \
+	   file://${FILESDIR}/devices \
+	   file://${FILESDIR}/packages_default \
+	   file://${FILESDIR}/h3600/devices \
+	   file://${FILESDIR}/devpts.sh \
+	   file://${FILESDIR}/bootlogo-simpad.gz \
+	   file://${FILESDIR}/packages_ramses \
+	   file://${FILESDIR}/hostname.sh \
+	   file://${FILESDIR}/mountall.sh \
+	   file://${FILESDIR}/banner \
+	   file://${FILESDIR}/finish \
+	   file://${FILESDIR}/devices_simpad \
+	   file://${FILESDIR}/bootmisc.sh \
+	   file://${FILESDIR}/mountnfs.sh \
+	   file://${FILESDIR}/ramses/umountfs \
+	   file://${FILESDIR}/ramses/extractfs \
+	   file://${FILESDIR}/reboot \
+	   file://${FILESDIR}/checkfs.sh \
+	   file://${FILESDIR}/simpad/devices \
+	   file://${FILESDIR}/simpad/banner \
+	   file://${FILESDIR}/single \
+	   file://${FILESDIR}/sendsigs \
+	   file://${FILESDIR}/urandom \
+	   file://${FILESDIR}/rmnologin \
+	   file://${FILESDIR}/extractfs \
+	   file://${FILESDIR}/checkroot.sh \
+	   file://${FILESDIR}/devices_h3600 \
+	   file://${FILESDIR}/umountnfs.sh"
+
 
 do_install () {
 #
