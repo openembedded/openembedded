@@ -1,0 +1,37 @@
+include libtool_${PV}.oe
+inherit native
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/libtool-${PV}"
+SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
+                   file://${FILESDIR}/sedvar.patch;patch=1 \
+                   file://${FILESDIR}/tag.patch;patch=1 \
+                   file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
+                   file://${FILESDIR}/prefix.patch;patch=1 \
+                   file://${FILESDIR}/chmod.patch;patch=1"
+S = "${WORKDIR}/libtool-${PV}"
+
+prefix = "${CROSS_DIR}"
+exec_prefix = "${prefix}"
+
+EXTRA_OECONF_append = " --program-prefix=${TARGET_SYS}-"
+
+do_stage () {
+        oe_runmake install
+        install -d ${STAGING_DIR}/share/{libtool,aclocal}
+        install -m 0755 ${HOST_SYS}-libtool ${STAGING_BINDIR}/${HOST_SYS}-libtool
+        install -m 0755 libtoolize ${STAGING_BINDIR}/${HOST_SYS}-libtoolize
+        install -c config.guess ${STAGING_DIR}/share/libtool/config.guess
+        install -c config.sub ${STAGING_DIR}/share/libtool/config.sub
+        install -c -m 0644 ltmain.sh ${STAGING_DIR}/share/libtool/
+        install -c -m 0644 libtool.m4 ${STAGING_DIR}/share/aclocal/
+        install -c -m 0644 ltdl.m4 ${STAGING_DIR}/share/aclocal/
+
+        install -m 0644 libltdl/.libs/libltdl.a ${STAGING_LIBDIR}/
+        install -m 0644 libltdl/.libs/libltdl.lai ${STAGING_LIBDIR}/libltdl.la
+        oe_soinstall libltdl/.libs/libltdl.so.3.1.0 ${STAGING_LIBDIR}/
+        install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
+}
+
+do_install () {
+        :
+}
