@@ -3,7 +3,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPL"
 KV = "${PV}"
-PR = "r2"
+PR = "r3"
 RDEPENDS = "mtd-utils"
 
 SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
@@ -26,6 +26,7 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://17-lmsensors.2.8.8.patch;patch=1 \
 	file://18-i2c-au1x00gpio.patch;patch=1 \
 	file://19-kernel-make-depend.diff;patch=1 \
+	file://20-au1x00_ethernet_tx_stats.diff;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
