@@ -2,11 +2,11 @@ SECTION = "x11/network"
 DESCRIPTION = "multi-protocol instant messaging client"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-DEPENDS = "gtk+ gettext-native"
+DEPENDS = "gtk+"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2"
 
 PREMIRRORS_prepend = "${SOURCEFORGE_MIRROR}   http://unc.dl.sourceforge.net/sourceforge"
 EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
 
-inherit autotools 
+inherit autotools  gettext gettext

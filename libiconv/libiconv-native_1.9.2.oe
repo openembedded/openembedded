@@ -5,7 +5,7 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 MAINTAINER = "That Crazy fool emte <emte@labotomy.net>"
 # FIXME: Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8
-DEPENDS = "gettext-native"
+DEPENDS = ""
 PR = "r1"
 PROVIDES = ""
 
@@ -15,7 +15,7 @@ EXTRA_OECONF = "--disable-debug"
 
 S = "${WORKDIR}/libiconv-${PV}"
 
-inherit autotools native
+inherit autotools native gettext
 
 do_stage () {
 	oe_libinstall -so -C lib libiconv ${STAGING_LIBDIR}

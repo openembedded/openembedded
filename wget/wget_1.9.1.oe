@@ -1,7 +1,7 @@
 DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "gettext-native"
+DEPENDS = ""
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
@@ -9,7 +9,7 @@ SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
 	   file://autotools.patch;patch=1"
 S = "${WORKDIR}/wget-${PV}"
 
-inherit autotools
+inherit autotools gettext
 
 do_configure () {
 	if [ ! -e acinclude.m4 ]; then

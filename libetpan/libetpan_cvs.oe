@@ -1,7 +1,7 @@
 DESCRIPTION = "libetpan is a library for communicating with mail and news servers using \
 SMTP, POP, IMAP and NNTP"
 SECTION = "libs"
-DEPENDS = "gettext-native openssl"
+DEPENDS = "openssl"
 PV = "0.33"
 PR = "r1"
 S = "${WORKDIR}/libetpan"
@@ -9,7 +9,7 @@ TAG="rel-0-33-b"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gettext gettext
 
 EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
 

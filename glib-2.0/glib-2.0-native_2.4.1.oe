@@ -6,7 +6,7 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "gettext-native"
+DEPENDS = ""
 
 EXTRA_OECONF = "--disable-debug"
 
@@ -18,7 +18,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/glib-${PV}"
 
-inherit autotools pkgconfig native
+inherit autotools pkgconfig native gettext gettext
 
 acpaths = ""
 do_configure_prepend () {

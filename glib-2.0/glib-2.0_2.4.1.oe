@@ -7,7 +7,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0-native"
-DEPENDS += "virtual/libiconv virtual/libintl gettext-native"
+DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
 
 LEAD_SONAME = "libglib-2.0.*"
@@ -21,7 +21,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/glib-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gettext
 
 acpaths = ""
 do_configure_prepend () {

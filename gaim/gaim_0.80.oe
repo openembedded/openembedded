@@ -3,7 +3,7 @@ DESCRIPTION = "multi-protocol instant messaging client"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r1"
 
-DEPENDS = "gtk+ gettext-native"
+DEPENDS = "gtk+"
 RRECOMMENDS_${PN} = "gaim-protocol-irc gaim-protocol-jabber"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2"
@@ -19,7 +19,7 @@ FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 	    ${libdir}/bonobo/servers"
 FILES_${PN}-dev += "${libdir}/gaim/*.la"
 
-inherit autotools 
+inherit autotools  gettext gettext
 
 python populate_packages_prepend () {
 	root = oe.data.expand('${libdir}/gaim', d)

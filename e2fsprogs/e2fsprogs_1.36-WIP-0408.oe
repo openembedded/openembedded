@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 PR = "r3"
 
-DEPENDS = "gettext-native"
+DEPENDS = ""
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://ln.patch;patch=1 \
@@ -12,7 +12,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://ldflags.patch;patch=1"
 S = "${WORKDIR}/e2fsprogs-1.35"
 
-inherit autotools
+inherit autotools gettext gettext
 
 EXTRA_OECONF = "--enable-dynamic-e2fsck"
 

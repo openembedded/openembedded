@@ -1,4 +1,4 @@
-inherit autotools pkgconfig
+inherit autotools pkgconfig gettext gettext
 
 PR = "r1"
 DESCRIPTION = "GTK PPP dialing tool"
