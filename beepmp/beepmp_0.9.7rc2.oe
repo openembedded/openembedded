@@ -8,7 +8,7 @@ HOMEPAGE = "http://beepmp.sourceforge.net"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/beepmp/bmp-${PV}.tar.gz \
-	   file://bugfix.patch;patch = 1"
+	   file://bugfix.patch;patch=1"
 
 inherit autotools pkgconfig
 
