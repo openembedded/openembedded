@@ -1,0 +1,19 @@
+DEPENDS = virtual/libc zlib
+RDEPENDS = libc6 zlib
+
+SRC_URI = http://curl.haxx.se/download/curl-${PV}.tar.bz2
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--with-zlib=${STAGING_LIBDIR}/../ \
+		--without-ssl --with-random=/dev/urandom'
+
+do_stage () {
+	install -d ${STAGING_INCDIR}/curl
+	install -m 0644 ${S}/include/curl/*.h ${STAGING_INCDIR}/curl/
+	install -m 0755 ${S}/lib/.libs/libcurl.so.2.0.2 ${STAGING_LIBDIR}/
+	ln -sf libcurl.so.2.0.2 ${STAGING_LIBDIR}/libcurl.so.2
+	ln -sf libcurl.so.2.0.2 ${STAGING_LIBDIR}/libcurl.so
+	install -m 0644 ${S}/lib/.libs/libcurl.a ${STAGING_LIBDIR}/
+	install -m 0644 ${S}/lib/.libs/libcurl.lai ${STAGING_LIBDIR}/libcurl.la
+}
