@@ -3,8 +3,17 @@ inherit rootfs_ipk
 USE_DEVFS ?= "0"
 
 DEPENDS += "makedevs-native"
-OVERRIDES += ":${IMAGE_FSTYPE}"
-DEPENDS += "${IMAGE_DEPENDS}"
+
+def get_image_deps(d):
+	import oe
+	str = ""
+	for type in (oe.data.getVar('IMAGE_FSTYPES', d, 1) or "").split():
+		deps = oe.data.getVar('IMAGE_DEPENDS_%s' % type, d) or ""
+		if deps:
+			str += " %s" % deps
+	return str
+
+DEPENDS += "${@get_image_deps(d)}"
 
 IMAGE_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-minimal.txt')}"
 
