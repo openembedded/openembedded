@@ -86,6 +86,7 @@ fi
 
 if [ X$BK_CSETLIST != X ]
 then
+if ! test -z "`cat $BK_CSETLIST`"; then
 echo "Sending notification mail to $COMMITADDRESS..."
 
 (
@@ -100,5 +101,6 @@ echo repository={green}${R_OUT}{normal} $U_OUT
      )
 ) | mail -s "Announce `echo -n $IRCCHANNEL | sed 's,.*/,,'`" $COMMITADDRESS
 echo "done."
+fi
 fi
 exit 0
