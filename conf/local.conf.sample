@@ -11,11 +11,14 @@ OEFILES = "*/*.oe"
 # Note that only recent oemake's obey OEMASK directly, in earlier versions,
 # you had to filter by hand and populate OEFILES accordingly
 # Use the OEMASK below unless you want to build something else than the default glibc based setup
-OEMASK = "(uclibc|avr-libc|linux|grub|qte_|qte-for-qtopia|toolchain-external|glibc_cvs)"
+OEMASK = "(grub|toolchain-external)"
 
 # Uncomment this OEMASK, if you want to use a prebuild toolchain.
 # You will need to provide packages for toolchain specific libraries yourself
 #OEMASK = "-initial|/(binutils|uclibc|avr-libc|gcc|linux|grub|qte_|qte-for-qtopia|glibc_cvs)"
+
+# Select between multiple alternative providers, if more than one is eligible
+PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqpe:libqpe-opie"
 
 # Uncomment this to specify where OE should create its temporary files.
 # Note that a fully build of everything in OE will take GigaBytes of hard disk space,
