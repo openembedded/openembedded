@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "Ncurses library"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
@@ -70,7 +70,7 @@ do_install() {
                 fi
         done
 	# i think we can use xterm-color as default xterm
-	if [ -e ${D}/etc/terminfo/x/xterm ]
+	if [ -e ${D}/etc/terminfo/x/xterm-color ]
 	then
 		ln -sf xterm-color ${D}/etc/terminfo/x/xterm
 	fi
