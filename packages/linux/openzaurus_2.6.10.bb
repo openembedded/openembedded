@@ -3,11 +3,12 @@ DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices."
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
+PR = "r1"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.gz \
 #SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 #          http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.7-jl1.diff.gz;patch=1 \
 # http://www.rpsys.net/openzaurus/${KV}/jl1/localversion.patch;patch=1 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.gz \
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-cpu.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_pm.patch;patch=1 \
@@ -57,7 +58,7 @@ inherit kernel
 #
 FILES_kernel = ""
 ALLOW_EMPTY = 1 
-        
+
 EXTRA_OEMAKE = ""
 COMPATIBLE_HOST = "arm.*-linux"
 
@@ -104,3 +105,12 @@ do_configure() {
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
     yes '' | oe_runmake oldconfig
 }
+
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile

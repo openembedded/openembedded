@@ -8,7 +8,7 @@ DEPENDS = ""
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.zip \
-           file://Makefile.patch;patch=1 \
+           file://Makefile.patch;pnum=0;patch=1 \
 "
 S="${WORKDIR}/${PN}"
 
