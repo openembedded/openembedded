@@ -9,6 +9,8 @@ S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
 
+sbindir = "/sbin"
+
 do_configure() {
 	./Configure --noprompt --sysv --nopnp --rcdir=${sysconfdir} --arch="${ARCH}" --kernel="${KERNEL_SOURCE}" \
 		    --srctree --nocardbus --ucc="${CC}" --ld="${LD}" --uflags="${CFLAGS}" --target=.
