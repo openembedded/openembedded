@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- uClibc/utils/Makefile~dyn-ldconfig
++++ uClibc/utils/Makefile
+@@ -43,7 +43,7 @@
+ 	$(STRIPTOOL) -x -R .note -R .comment $@
+ 
+ ldconfig:	ldconfig.c readsoname.c
+-	$(CC) $(CFLAGS) -Wl,-s -static \
++	$(CC) $(CFLAGS) -Wl,-s \
+ 		-DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+ 		-DUCLIBC_LDSO=$(UCLIBC_LDSO) -I. -I../ldso/include \
+ 		$^ -o $@
