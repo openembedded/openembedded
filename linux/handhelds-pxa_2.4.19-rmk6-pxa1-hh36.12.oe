@@ -1,7 +1,7 @@
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 PACKAGE_ARCH = "ipaqpxa"
 KERNEL_CCSUFFIX = "-3.3.3"
@@ -39,6 +39,7 @@ module_autoload_h3600_generic_sleeve = "h3600_generic_sleeve"
 module_autoload_ds = "ds"
 module_autoload_pxa_cs = "pxa_cs"
 module_autoload_h3600_ts = "h3600_ts"
+module_autoload_apm = "apm"
 
 FILES_kernel += "/etc/init.d/ipaq-hal"
 INITSCRIPT_NAME = "ipaq-hal"
