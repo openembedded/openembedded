@@ -2,6 +2,9 @@ SRC_URI = "file://makedevs.c"
 S = "${WORKDIR}/makedevs-${PV}"
 PR = "r1"
 
+PROVIDES = "virtual/makedevs"
+RPROVIDES = "virtual/makedevs"
+
 do_configure() {
 	install -m 0644 ${WORKDIR}/makedevs.c ${S}/
 }
