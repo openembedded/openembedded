@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.4-cvs-${CVSDATE}"
-APPNAME = "opie-keyz"
+APPNAME = "keyz-cfg"
 APPTYPE = "binary"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/keyz-cfg;date=${CVSDATE} \
