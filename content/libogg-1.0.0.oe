@@ -3,7 +3,7 @@ PRIORITY="optional"
 MAINTAINER=""
 RDEPENDS="libc6"
 SECTION="libs"
-DEPENDS=virtual/libc patcher
+DEPENDS=virtual/libc
 
 SRC_URI = "ftp://ftp.debian.org/debian/pool/main/libo/libogg/${PN}_${PV}.orig.tar.gz"
 SRC_URI_append = " file://${FILESDIR}/libogg-configure.patch;patch=1"
