@@ -3,9 +3,10 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xproto xextensions xau xtrans xdmcp"
 DESCRIPTION = "Base X libs."
-FILES_${PN}_append = " ${datadir}/X11"
+FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
+FILES_${PN}-locale += "${datadir}/X11/locale"
 PROVIDES = "x11"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${XLIBS_MIRROR}/libX11-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
