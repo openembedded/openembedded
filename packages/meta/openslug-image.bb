@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 IMAGE_BASENAME = "openslug"
 
@@ -19,10 +19,11 @@ DEPENDS = "base-files base-passwd-3.5.7 \
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear initscripts netbase \
         update-modules sysvinit tinylogin lrzsz portmap \
-        ixp4xx-csr ixp425-eth  openslug-init \
+        ixp4xx-csr ixp425-eth openslug-init \
         ipkg-collateral ipkg ipkg-link \
 	cpio findutils e2fsprogs-mke2fs \
 	e2fsprogs-fsck e2fsprogs-e2fsck \
+	kernel-module-nfs kernel-module-sunrpc kernel-module-lockd  \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk
