@@ -5,4 +5,4 @@ do_whee() {
 }
 
 # insert whee task between compile and unpack
-addtask whee after unpack before compile
+addtask whee after do_unpack before do_compile
