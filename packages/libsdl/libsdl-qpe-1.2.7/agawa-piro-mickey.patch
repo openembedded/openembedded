@@ -1,0 +1,2065 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:24:43.457491622 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:24:46.867009932 +0100
+@@ -1,3 +1,4 @@
++
+ /*
+     SDL - Simple DirectMedia Layer
+     Copyright (C) 1997-2004 Sam Lantinga
+@@ -27,15 +28,24 @@
+ 
+ #include "SDL_QWin.h"
+ #include <qapplication.h>
++#include <qpe/qpeapplication.h>
+ #include <qdirectpainter_qws.h>
+ 
++extern int fb_hwrot;
++extern int fb_direct;
++extern bool is_VGA_machine;
++static int mouse_button_mode=1;
++
+ screenRotationT screenRotation = SDL_QT_NO_ROTATION;
+ 
+ SDL_QWin::SDL_QWin(const QSize& size)
+   : QWidget(0, "SDL_main"), my_painter(0), my_image(0),
+     my_inhibit_resize(false), my_mouse_pos(-1,-1), my_flags(0),
+-    my_has_fullscreen(false), my_locked(0)
++    my_has_fullscreen(false), my_locked(0),
++    rotation_(0), qteRotation_(0), keyRotation_(0), qteKeyRotation_(0),
++    isSLA300InputFix_(0)
+ {
++  for (int i = 0; i < 5; i++) curAxis_[i] = 0;
+   setBackgroundMode(NoBackground);
+ }
+ 
+@@ -84,6 +94,7 @@
+ }
+ 
+ void SDL_QWin::setMousePos(const QPoint &pos) {
++#if 0
+   if(my_image->width() == height()) {
+     if (screenRotation == SDL_QT_ROTATION_90)
+       my_mouse_pos = QPoint(height()-pos.y(), pos.x());
+@@ -92,6 +103,66 @@
+   } else {
+     my_mouse_pos = pos;
+   }
++#else
++  QPoint realPos;
++
++  if (is_VGA_machine) {
++	realPos = pos;
++	my_mouse_pos = realPos;
++  }else {
++	  switch (qteRotation_) {
++	  case 0:
++	    realPos = pos;
++	    break;
++	  case 1:
++	    realPos.setX(pos.y());
++	    realPos.setY(fbSize_.height() - 1 - pos.x());
++	    break;
++	  case 2:
++	    realPos.setX(fbSize_.width() - 1 - pos.x());
++	    realPos.setY(fbSize_.height() - 1 - pos.y());
++	    break;
++	  case 3:
++	    realPos.setX(fbSize_.width() - 1 - pos.y());
++	    realPos.setY(pos.x());
++	    break;
++	  };
++	
++	//   fprintf(stderr, "setMousePos: realPos(%d, %d)\n", realPos.x(), realPos.y());
++
++	  int borderWidth = (fbSize_.width() - my_image->width()) >> 1;
++	  int borderHeight = (fbSize_.height() - my_image->height()) >> 1;
++	  if ( rotation_ & 1 ){
++	    borderWidth = (fbSize_.height() - my_image->width()) >> 1;
++	    borderHeight = (fbSize_.width() - my_image->height()) >> 1;
++	  }
++	  realPos.setX(realPos.x() - borderWidth);
++	  realPos.setY(realPos.y() - borderHeight);
++
++	   fprintf(stderr, "setMousePos: realPos2(%d, %d)\n", realPos.x(), realPos.y());
++
++	  switch (rotation_) {
++	  case 0:
++	    my_mouse_pos = realPos;
++	    break;
++	  case 1:
++	    my_mouse_pos.setX(realPos.y());
++	    my_mouse_pos.setY(my_image->height() - 1 - realPos.x());
++	    break;
++	  case 2:
++	    my_mouse_pos.setX(my_image->width() - 1 - realPos.x());
++	    my_mouse_pos.setY(my_image->height() - 1 - realPos.y());
++	    break;
++	  case 3:
++	    my_mouse_pos.setX(realPos.y());//my_image->width() - 1 - realPos.y());
++	    my_mouse_pos.setY(my_image->height() - realPos.x());
++	    break;
++	  }
++  }
++
++//   fprintf(stderr, "setMousePos: mymousePos(%d, %d)\n", (short)my_mouse_pos.x(), (short)my_mouse_pos.y());
++
++#endif
+ }
+ 
+ void SDL_QWin::mouseMoveEvent(QMouseEvent *e) {
+@@ -113,269 +184,318 @@
+ void SDL_QWin::mousePressEvent(QMouseEvent *e) {
+   mouseMoveEvent(e);
+   Qt::ButtonState button = e->button();
+-  SDL_PrivateMouseButton(SDL_PRESSED,
+-			 (button & Qt::LeftButton) ? 1 :
+-			 ((button & Qt::RightButton) ? 2 : 3),
++  SDL_PrivateMouseButton(SDL_PRESSED,mouse_button_mode,
+ 			 my_mouse_pos.x(), my_mouse_pos.y());
+ }
+ 
+ void SDL_QWin::mouseReleaseEvent(QMouseEvent *e) {
+   setMousePos(e->pos());
+   Qt::ButtonState button = e->button();
+-  SDL_PrivateMouseButton(SDL_RELEASED,
+-			 (button & Qt::LeftButton) ? 1 :
+-			 ((button & Qt::RightButton) ? 2 : 3),
++  SDL_PrivateMouseButton(SDL_RELEASED,mouse_button_mode,
+ 			 my_mouse_pos.x(), my_mouse_pos.y());
+   my_mouse_pos = QPoint(-1, -1);
+ }
+ 
+-static inline void
+-gs_fastRotateBlit_3 ( unsigned short *fb,
+-		      unsigned short *bits,
+-		      const QRect& rect )
++#ifndef __i386__
++
++static void
++blitRotate3(Uint16 *dstBits, const QSize& dstSize,
++            const Uint16 *srcBits, const QSize& srcSize,
++            const QRect& srcBlitRect);
++
++static void
++blitRotate0(Uint16 *dstBits, const QSize& dstSize,
++            const Uint16 *srcBits, const QSize& srcSize,
++            const QRect& srcBlitRect)
+ {
+-  // FIXME: this only works correctly for 240x320 displays
+-  int startx, starty;
+-  int width, height;
+-  
+-  startx = rect.left() >> 1;
+-  starty = rect.top() >> 1;
+-  width  = ((rect.right() - rect.left()) >> 1) + 2;
+-  height = ((rect.bottom() - rect.top()) >> 1) + 2;
+-
+-  if((startx+width) > 120) {
+-    width = 120 - startx; // avoid horizontal overflow
+-  }
+-  if((starty+height) > 160) { 
+-    height = 160 - starty; // avoid vertical overflow
+-  }
+-
+-  ulong *sp1, *sp2, *dp1, *dp2;
+-  ulong stop, sbot, dtop, dbot;    
+-  
+-  sp1 = (ulong*)bits + startx + starty*240;
+-  sp2 = sp1 + 120;
+-  dp1 = (ulong *)fb + (159 - starty) + startx*320;
+-  dp2 = dp1 + 160;
+-  int rowadd = (-320*width) - 1;
+-  int rowadd2 = 240 - width;
+-  // transfer in cells of 2x2 pixels in words
+-  for (int y=0; y<height; y++) {
+-    for (int x=0; x<width; x++) {
+-      // read source pixels
+-      stop = *sp1;
+-      sbot = *sp2;
+-      // rotate pixels
+-      dtop = (sbot & 0xffff) + ((stop & 0xffff)<<16);
+-      dbot = ((sbot & 0xffff0000)>>16) + (stop & 0xffff0000);
+-      // write to framebuffer
+-      *dp1 = dtop;
+-      *dp2 = dbot;
+-      // update source ptrs
+-      sp1++; sp2++;
+-      // update dest ptrs - 2 pix at a time
+-      dp1 += 320;
+-      dp2 += 320;
+-    }
+-    // adjust src ptrs - skip a row as we work in pairs
+-    sp1 += rowadd2;
+-    sp2 += rowadd2;
+-    // adjust dest ptrs for rotation
+-    dp1 += rowadd;
+-    dp2 += rowadd;
++  srcBits += srcBlitRect.left() + srcBlitRect.top() * srcSize.width();
++  dstBits += ((dstSize.width() - srcSize.width()) >> 1)
++    + (((dstSize.height() - srcSize.height()) >> 1) * dstSize.width());
++  dstBits += srcBlitRect.left() + srcBlitRect.top() * dstSize.width();
++  int w = srcBlitRect.width() << 1;
++  int h = srcBlitRect.height();
++
++  while (h--) {
++    memcpy(dstBits, srcBits, w);
++    dstBits += dstSize.width();
++    srcBits += srcSize.width();
+   }
+ }
+ 
+-static inline void
+-gs_fastRotateBlit_1 ( unsigned short *fb,
+-		      unsigned short *bits,
+-		      const QRect& rect ) {
+-  // FIXME: this only works correctly for 240x320 displays
+-  int startx, starty;
+-  int width, height;
+-
+-  startx = rect.left() >> 1;
+-  starty = rect.top() >> 1;
+-  width  = ((rect.right() - rect.left()) >> 1) + 2;
+-  height = ((rect.bottom() - rect.top()) >> 1) + 2;
+-
+-  if((startx+width) > 120) {
+-    width = 120 - startx; // avoid horizontal overflow
+-  }
+-  if((starty+height) > 160) { 
+-    height = 160 - starty; // avoid vertical overflow
+-  }
+-
+-  ulong *sp1, *sp2, *dp1, *dp2;
+-  ulong stop, sbot, dtop, dbot;    
+-  fb += 320*239; // Move "fb" to top left corner
+-  sp1 = (ulong*)bits + startx + starty*240;
+-  sp2 = sp1 + 120;
+-  dp1 = (ulong*)fb - startx * 320 - starty;
+-  dp2 = dp1 - 160;
+-  int rowadd = (320*width) + 1;
+-  int rowadd2 = 240 - width;
+-  // transfer in cells of 2x2 pixels in words
+-  for (int y=0; y<height; y++) {
+-    for (int x=0; x<width; x++) {
+-      // read
+-      stop = *sp1;
+-      sbot = *sp2;
+-      // rotate
+-      dtop = (stop & 0xffff) + ((sbot & 0xffff)<<16);
+-      dbot = ((stop & 0xffff0000)>>16) + (sbot & 0xffff0000);
+-      // write
+-      *dp1 = dtop;
+-      *dp2 = dbot;
+-      // update source ptrs
+-      sp1++; sp2++;
+-      // update dest ptrs - 2 pix at a time
+-      dp1 -= 320;
+-      dp2 -= 320;
+-    }
+-    // adjust src ptrs - skip a row as we work in pairs
+-    sp1 += rowadd2;
+-    sp2 += rowadd2;
+-    // adjust dest ptrs for rotation
+-    dp1 += rowadd;
+-    dp2 += rowadd;
+-  }
++static void
++blitRotate1(Uint16 *dstBits, const QSize& dstSize,
++            const Uint16 *srcBits, const QSize& srcSize,
++            const QRect& srcBlitRect)
++{
++//   fprintf(stdout, "SDL_QT_ROTATION (1) is not implemented.\n");
++  blitRotate3(dstBits, dstSize, srcBits, srcSize, srcBlitRect);
+ }
+ 
+-// desktop, SL-A300 etc
+-bool SDL_QWin::repaintRotation0(const QRect& rect) {
+-  if(my_image->width() == width()) {
+-    uchar *fb = (uchar*)my_painter->frameBuffer();
+-    uchar *buf = (uchar*)my_image->bits();
+-    if(rect == my_image->rect()) {
+-      memcpy(fb, buf, width()*height()*2);
+-    } else {
+-      int h = rect.height();
+-      int wd = rect.width()<<1;
+-      int fblineadd = my_painter->lineStep();
+-      int buflineadd = my_image->bytesPerLine();
+-      fb  += (rect.left()<<1) + rect.top() * my_painter->lineStep();
+-      buf += (rect.left()<<1) + rect.top() * my_image->bytesPerLine();
+-      while(h--) {
+-	memcpy(fb, buf, wd);
+-	fb += fblineadd;
+-	buf += buflineadd;
+-      }
++static void
++blitRotate2(Uint16 *dstBits, const QSize& dstSize,
++            const Uint16 *srcBits, const QSize& srcSize,
++            QRect srcBlitRect)
++{
++//   if (srcBlitRect.left() & 1)
++//     srcBlitRect.setLeft(srcBlitRect.left() - 1);
++//   if (srcBlitRect.right() & 1)
++//     srcBlitRect.setRight(srcBlitRect.right() - 1);
++
++  int dstBorderLeftRight = (dstSize.width() - srcSize.width()) >>1;
++  int dstBorderTopBottom = (dstSize.height() - srcSize.height()) >>1;
++  int dstStartOffsetX = dstSize.width() - dstBorderLeftRight - 2;
++  int dstStartOffsetY = dstSize.height() - dstBorderTopBottom - 1;
++  int left = srcBlitRect.left() & ~(int)1; // to be 32bit aligned
++  srcBits += left + srcBlitRect.top() * srcSize.width();
++  dstBits += dstStartOffsetY * dstSize.width() + dstStartOffsetX;
++  dstBits -= left;
++  dstBits -= srcBlitRect.top() * dstSize.width();
++
++  Uint32 *pSrc = (Uint32 *)srcBits;
++  Uint32 *pDst = (Uint32 *)dstBits;
++
++  int width = srcBlitRect.width(), width2 = srcBlitRect.width(), w;
++  if ( srcBlitRect.left() & 1 ){
++    width--; width2++;
++  }
++  if ( (srcBlitRect.left()+srcBlitRect.width()) & 1 ){
++    width--; width2++;
++  }
++  width >>= 1;
++  int height = srcBlitRect.height();
++  int srcYAdd = srcSize.width() - width2;
++  int dstYSub = dstSize.width() - width2;
++
++  while (height--) {
++    w = width;
++    if (srcBlitRect.left() & 1){
++      *((Uint16 *)pDst) = *(((Uint16 *)pSrc) + 1);
++      pDst--; pSrc++;
+     }
+-  } else {
+-    return false; // FIXME: Landscape
++    while (w--) {
++      *pDst-- = (*pSrc << 16) | (*pSrc >> 16);
++      ++pSrc;
++    }
++    if ((srcBlitRect.left()+srcBlitRect.width()) & 1){
++      *(((Uint16 *)pDst) + 1) = *((Uint16 *)pSrc);
++      pDst--; pSrc++;
++    }
++    pSrc += srcYAdd;
++    pDst -= dstYSub;
+   }
+-#ifdef __i386__
+-  my_painter->fillRect( rect, QBrush( Qt::NoBrush ) );
+-#endif
+-  return true;
+ }
+ 
+-  
+-// Sharp Zaurus SL-5500 etc 
+-bool SDL_QWin::repaintRotation3(const QRect& rect) {
+-  if(my_image->width() == width()) {
+-    ushort *fb = (ushort*)my_painter->frameBuffer();
+-    ushort *buf = (ushort*)my_image->bits();
+-    gs_fastRotateBlit_3(fb, buf, rect);
++#define BLIT_ROTATE_3_MOV32
++
++static void
++blitRotate3(Uint16 *dstBits, const QSize& dstSize,
++            const Uint16 *srcBits, const QSize& srcSize,
++            const QRect& srcBlitRect)
++{
++  if (srcBlitRect.width() != dstSize.height() ||
++      srcBlitRect.height() != dstSize.width()) {
++    // partial update
++    const Uint16 *pSrc = srcBits +
++      (srcBlitRect.left() + srcBlitRect.top() * srcSize.width());
++
++    int dstBorderLeftRight = (dstSize.width() - srcSize.height()) >>1;
++    int dstBorderTopBottom = (dstSize.height() - srcSize.width()) >>1;
++    int dstStartOffsetX = dstSize.width() - dstBorderLeftRight - 1;
++    int dstStartOffsetY = dstBorderTopBottom;
++    Uint16 *pDst = dstBits +
++      (dstStartOffsetY * dstSize.width() + dstStartOffsetX);
++    pDst += srcBlitRect.left() * dstSize.width();
++    pDst -= srcBlitRect.top();
++
++    int width = srcBlitRect.width(), height = srcBlitRect.height(), w;
++    int srcYAdd = srcSize.width() - srcBlitRect.width();
++    int dstXAdd = dstSize.width();
++    int dstYSub = (dstSize.width() * srcBlitRect.width()) + 1;
++
++#if 0
++    fprintf(stderr, "---- Blit begin\n");
++    fprintf(stderr, "srcSize.width: %d srcSize.height:%d\n",
++            srcSize.width(), srcSize.height());
++    fprintf(stderr, "srcBlitRect.left:%d srcBlitRect.right:%d srcBlitRect.top:%d srcBlitRect.bottom:%d srcBlitRect.width:%d srcBlitRect.height:%d\n",
++            srcBlitRect.left(), srcBlitRect.right(), srcBlitRect.top(), srcBlitRect.bottom(), srcBlitRect.width(), srcBlitRect.height());
++
++    fprintf(stderr, "dstSize.width: %d dstSize.height:%d\n",
++            dstSize.width(), dstSize.height());
++    fprintf(stderr, "dstBorderLeftRight:%d dstBorderTopBottom:%d dstStartOffsetX:%d dstStartOffsetY:%d\n",
++            dstBorderLeftRight, dstBorderTopBottom, dstStartOffsetX, dstStartOffsetY);
++    fprintf(stderr, "srcYAdd:%d dstXAdd:%d dstYSub:%d\n", srcYAdd, dstXAdd, dstYSub);
++#endif
++
++    while (height--) {
++      w = width;
++      while (w--) {
++        *pDst = *pSrc ++;
++        pDst += dstXAdd;
++      }
++      pSrc += srcYAdd;
++      pDst -= dstYSub;
++    }
++    // 		fprintf(stderr, "---- Blit end\n");
+   } else {
+-    // landscape mode
+-    if (screenRotation == SDL_QT_ROTATION_90) {
+-      uchar *fb = (uchar*)my_painter->frameBuffer();
+-      uchar *buf = (uchar*)my_image->bits();
+-      if(rect == my_image->rect()) {
+-	memcpy(fb, buf, width()*height()*2);
+-      } else {
+-	int h = rect.height();
+-	int wd = rect.width()<<1;
+-	int fblineadd = my_painter->lineStep();
+-	int buflineadd = my_image->bytesPerLine();
+-	fb  += (rect.left()<<1) + rect.top() * my_painter->lineStep();
+-	buf += (rect.left()<<1) + rect.top() * my_image->bytesPerLine();
+-	while(h--) {
+-	  memcpy(fb, buf, wd);
+-	  fb += fblineadd;
+-	  buf += buflineadd;
+-	}
++    // full update
++#if !defined(BLIT_ROTATE_3_MOV32)
++    const Uint16 *src = srcBits;
++    Uint16 *dst = dstBits + (dstSize.width() - 1);
++    int w = srcBlitRect.width();
++    int h = srcBlitRect.height();
++    int i, dstSub = dstSize.width() * w + 1;
++    int dstAdd = dstSize.width();
++
++    while (h--) {
++      i = w;
++      while (i--) {
++        *dst = *src ++;
++        dst += dstAdd;
+       }
+-    } else if (screenRotation == SDL_QT_ROTATION_270) {
+-      int h = rect.height();
+-      int wd = rect.width();
+-      int fblineadd = my_painter->lineStep() - (rect.width() << 1);
+-      int buflineadd = my_image->bytesPerLine() - (rect.width() << 1);
+-      int w;
+-
+-      uchar *fb = (uchar*)my_painter->frameBuffer();
+-      uchar *buf = (uchar*)my_image->bits();
+-        
+-      fb += ((my_painter->width() - (rect.top() + rect.height())) * 
+-	     my_painter->lineStep()) + ((my_painter->height() - ((rect.left() + 
+-								  rect.width()))) << 1);
+-
+-      buf += my_image->bytesPerLine() * (rect.top() + rect.height()) -
+-	(((my_image->width() - (rect.left() + rect.width())) << 1) + 2);
+-
+-      while(h--) {
+-	w = wd;
+-	while(w--) *((unsigned short*)fb)++ = *((unsigned short*)buf)--;
+-	fb += fblineadd;
+-	buf -= buflineadd;
++      dst -= dstSub;
++    }
++#else  // BLIT_ROTATE_3_MOV32
++    Uint32 *src1 = (Uint32 *)(srcBits);
++    Uint32 *src2 = (Uint32 *)(srcBits + srcSize.width());
++    Uint32 *dst1 = (Uint32 *)(dstBits + (dstSize.width() - 2));
++    Uint32 *dst2 = (Uint32 *)(dstBits + (dstSize.width() + dstSize.width() - 2));
++    int w = srcBlitRect.width() >> 3;
++    int h = srcBlitRect.height() >> 1;
++    int i, dstSub = ((dstSize.width() * srcBlitRect.width()) >> 1) + 1;
++    int dstAdd = dstSize.width();
++
++    Uint32 a, b;
++    while (h--) {
++      i = w;
++      while (i--) {
++        a = *src1 ++;
++        b = *src2 ++;
++        *dst1 = (a << 16) | (b & 0xFFFF);
++        *dst2 = (a & 0xFFFF0000) | (b >> 16);
++        dst1 += dstAdd;
++        dst2 += dstAdd;
++
++        a = *src1 ++;
++        b = *src2 ++;
++        *dst1 = (a << 16) | (b & 0xFFFF);
++        *dst2 = (a & 0xFFFF0000) | (b >> 16);
++        dst1 += dstAdd;
++        dst2 += dstAdd;
++
++        a = *src1 ++;
++        b = *src2 ++;
++        *dst1 = (a << 16) | (b & 0xFFFF);
++        *dst2 = (a & 0xFFFF0000) | (b >> 16);
++        dst1 += dstAdd;
++        dst2 += dstAdd;
++
++        a = *src1 ++;
++        b = *src2 ++;
++        *dst1 = (a << 16) | (b & 0xFFFF);
++        *dst2 = (a & 0xFFFF0000) | (b >> 16);
++        dst1 += dstAdd;
++        dst2 += dstAdd;
+       }
++      src1 += srcSize.width() >> 1;
++      src2 += srcSize.width() >> 1;
++      dst1 -= dstSub;
++      dst2 -= dstSub;
+     }
++#endif // BLIT_ROTATE_3_MOV32
+   }
+-  return true;
+ }
+ 
+-// ipaq 3800...
+-bool SDL_QWin::repaintRotation1(const QRect& rect) {
+-  if(my_image->width() == width()) {
+-    ushort *fb = (ushort*)my_painter->frameBuffer();
+-    ushort *buf = (ushort*)my_image->bits();
+-    gs_fastRotateBlit_1(fb, buf, rect);
+-  } else {
+-    return false; // FIXME: landscape mode
+-  }
+-  return true;
+-}
++#endif // __i386__
+ 
+ void SDL_QWin::repaintRect(const QRect& rect) {
+   if(!my_painter || !rect.width() || !rect.height()) {
+     return;
+   }
+-  
+-  if(QPixmap::defaultDepth() == 16) {
+-    switch(my_painter->transformOrientation()) {
+-    case 3:
+-      if(repaintRotation3(rect)) { return;  }
++#ifndef __i386__
++  if (QPixmap::defaultDepth() == 16 && my_painter->numRects() >= 0) {
++    Uint16 *fb = (Uint16*)my_painter->frameBuffer();
++    Uint16 *buf = (Uint16*)my_image->bits();
++    switch (rotation_) {
++    case 0:
++      blitRotate0(fb, fbSize_,
++                  buf, QSize(my_image->width(), my_image->height()),
++                  rect);
+       break;
+     case 1:
+-      if(repaintRotation1(rect)) { return;  }
++      blitRotate1(fb, fbSize_,
++                  buf, QSize(my_image->width(), my_image->height()),
++                  rect);
+       break;
+-    case 0:
+-      if(repaintRotation0(rect)) { return;  }
++    case 2:
++      blitRotate2(fb, fbSize_,
++                  buf, QSize(my_image->width(), my_image->height()),
++                  rect);
++      break;
++    case 3:
++      blitRotate3(fb, fbSize_,
++                  buf, QSize(my_image->width(), my_image->height()),
++                  rect);
+       break;
+     }
+-  } 
+-  my_painter->drawImage(rect.topLeft(), *my_image, rect);
++  } else {
++#endif // __i386__
++    QDirectPainter pp(this);
++    pp.drawImage(rect.topLeft(), *my_image, rect);
++//     pp.end();
++#ifndef __i386__
++  }
++#endif // __i386__
+ }
+ 
+ // This paints the current buffer to the screen, when desired. 
+ void SDL_QWin::paintEvent(QPaintEvent *ev) {  
+-  if(my_image) {
++  if(my_image && isVisible() && isActiveWindow()) {
++    // TODO: better handling
+     lockScreen(true);
+     repaintRect(ev->rect());
+     unlockScreen();
+   }
+ }  
+ 
++int SDL_QWin::ApplyKeyRotation(int key)
++{
++  int c;
++  int sdlScancode[] = { SDLK_LEFT, SDLK_DOWN, SDLK_RIGHT, SDLK_UP };
++
++  switch (key) {
++  case Qt::Key_Left:
++    c = 0;
++    break;
++  case Qt::Key_Down:
++    c = 1;
++    break;
++  case Qt::Key_Right:
++    c = 2;
++    break;
++  case Qt::Key_Up:
++    c = 3;
++    break;
++  default:
++    return 0;
++  }
++
++//   c = (c + qteKeyRotation_) & 3;
++//   return sdlScancode[(c - keyRotation_) & 3];
++  return sdlScancode[(c + qteKeyRotation_ - keyRotation_) & 3];
++}
++
+ /* Function to translate a keyboard transition and queue the key event
+  * This should probably be a table although this method isn't exactly
+  * slow.
+  */
+ void SDL_QWin::QueueKey(QKeyEvent *e, int pressed)
+-{  
++{
++  if (e->isAutoRepeat())
++    return;
++
+   SDL_keysym keysym;
+   int scancode = e->key();
++
+   /* Set the keysym information */
+   if(scancode >= 'A' && scancode <= 'Z') {
+     // Qt sends uppercase, SDL wants lowercase
+@@ -396,26 +516,12 @@
+     case Qt::Key_Home: scancode = SDLK_HOME; break;
+     case Qt::Key_End: scancode = SDLK_END; break;
+     // We want the control keys to rotate with the screen
+-    case Qt::Key_Left: 
+-        if (screenRotation == SDL_QT_ROTATION_90) scancode = SDLK_UP;
+-        else if (screenRotation == SDL_QT_ROTATION_270) scancode = SDLK_DOWN;
+-        else scancode = SDLK_LEFT;
+-        break;
+-    case Qt::Key_Up: 
+-        if (screenRotation == SDL_QT_ROTATION_90) scancode = SDLK_RIGHT;
+-        else if (screenRotation == SDL_QT_ROTATION_270) scancode = SDLK_LEFT;
+-        else scancode = SDLK_UP;
+-        break;
+-    case Qt::Key_Right: 
+-        if (screenRotation == SDL_QT_ROTATION_90) scancode = SDLK_DOWN;
+-        else if (screenRotation == SDL_QT_ROTATION_270) scancode = SDLK_UP;
+-        else scancode = SDLK_RIGHT;
+-        break;
++    case Qt::Key_Left:
++    case Qt::Key_Up:
++    case Qt::Key_Right:
+     case Qt::Key_Down:
+-        if (screenRotation == SDL_QT_ROTATION_90) scancode = SDLK_LEFT;
+-        else if (screenRotation == SDL_QT_ROTATION_270) scancode = SDLK_RIGHT;
+-        else scancode = SDLK_DOWN;
+-        break;
++      scancode = ApplyKeyRotation(scancode);
++      break;
+     case Qt::Key_Prior: scancode = SDLK_PAGEUP; break;
+     case Qt::Key_Next: scancode = SDLK_PAGEDOWN; break;
+     case Qt::Key_Shift: scancode = SDLK_LSHIFT; break;
+@@ -434,9 +540,18 @@
+     case Qt::Key_F7: scancode = SDLK_F7; break;
+     case Qt::Key_F8: scancode = SDLK_F8; break;
+     case Qt::Key_F9: scancode = SDLK_F9; break;
+-    case Qt::Key_F10: scancode = SDLK_F10; break;
+-    case Qt::Key_F11: scancode = SDLK_F11; break;
+-    case Qt::Key_F12: scancode = SDLK_F12; break;
++    case Qt::Key_F10: 
++      scancode = SDLK_F10;
++      mouse_button_mode=1;
++      break;
++    case Qt::Key_F11:
++      scancode = SDLK_F11;
++      mouse_button_mode=3;
++      break;
++    case Qt::Key_F12:
++      scancode = SDLK_F12;
++      mouse_button_mode=2;
++      break;
+     case Qt::Key_F13: scancode = SDLK_F13; break;
+     case Qt::Key_F14: scancode = SDLK_F14; break;
+     case Qt::Key_F15: scancode = SDLK_F15; break;
+@@ -452,13 +567,14 @@
+       //     david@hedbor.org
+       scancode = SDLK_RETURN;
+       break;
++
+     default:
+       scancode = SDLK_UNKNOWN;
+       break;
+     }
+-    keysym.sym = static_cast<SDLKey>(scancode);    
++    keysym.sym = static_cast<SDLKey>(scancode);
+   } else {
+-    keysym.sym = static_cast<SDLKey>(scancode);    
++    keysym.sym = static_cast<SDLKey>(scancode);
+   }
+   keysym.scancode = scancode;
+   keysym.mod = KMOD_NONE;
+@@ -478,11 +594,82 @@
+   //		pressed = 1;
+   //	}
+ 
++  if (isSLA300InputFix_ &&
++      (keysym.sym == SDLK_SPACE || (keysym.sym >= 273 && keysym.sym <= 276))) {
++      if (keysym.sym >= 273) curAxis_[keysym.sym-273] = pressed;
++      else curAxis_[4] = pressed;
++  }
++
+   /* Queue the key event */
+   if ( pressed ) {
+-    SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++      /* fprintf(stderr, "press %d\n", keysym.sym); */
++      SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++      if (isSLA300InputFix_ &&
++          (keysym.sym >= 273 && keysym.sym <= 276)) {
++          if (keysym.sym == SDLK_UP) {
++              if (curAxis_[1]) {
++                  keysym.sym = SDLK_DOWN;
++                  keysym.scancode = Qt::Key_Down;
++                  curAxis_[1] = 0;
++                  /* fprintf(stderr, "force release %d\n", keysym.sym); */
++                  SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++              }
++          }
++          else if (keysym.sym == SDLK_DOWN) {
++              if (curAxis_[0]) {
++                  keysym.sym = SDLK_UP;
++                  keysym.scancode = Qt::Key_Up;
++                  curAxis_[0] = 0;
++                  /* fprintf(stderr, "force release %d\n", keysym.sym); */
++                  SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++              }
++          }
++          else if (keysym.sym == SDLK_RIGHT) {
++              if (curAxis_[3]) {
++                  keysym.sym = SDLK_LEFT;
++                  keysym.scancode = Qt::Key_Left;
++                  curAxis_[3] = 0;
++                  /* fprintf(stderr, "force release %d\n", keysym.sym); */
++                  SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++              }
++          }
++          else if (keysym.sym == SDLK_LEFT) {
++              if (curAxis_[2]) {
++                  keysym.sym = SDLK_RIGHT;
++                  keysym.scancode = Qt::Key_Right;
++                  curAxis_[2] = 0;
++                  /* fprintf(stderr, "force release %d\n", keysym.sym); */
++                  SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++              }
++          }
++      }
+   } else {
+-    SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++      /* fprintf(stderr, "release %d\n", keysym.sym); */
++      SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++
++      if (isSLA300InputFix_ &&
++          (keysym.sym == SDLK_SPACE ||
++           (keysym.sym >= 273 && keysym.sym <= 276))) {
++          for (int i = 0; i < 4; i++) {
++              if (curAxis_[i]) {
++                  int sym = i+273;
++                  keysym.sym = static_cast<SDLKey>(sym);
++                  if (sym == SDLK_UP) keysym.scancode = Qt::Key_Up;
++                  else if (sym == SDLK_RIGHT) keysym.scancode = Qt::Key_Right;
++                  else if (sym == SDLK_DOWN) keysym.scancode = Qt::Key_Down;
++                  else if (sym == SDLK_LEFT) keysym.scancode = Qt::Key_Left;
++                  curAxis_[i] = 0;
++                  /* fprintf(stderr, "force release %d\n", keysym.sym); */
++                  SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++              }
++          }
++          if (curAxis_[4]) {
++              keysym.scancode = keysym.sym = SDLK_SPACE;
++              curAxis_[4] = 0;
++              /* fprintf(stderr, "force release %d\n", keysym.sym); */
++              SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++          }
++      }
+   }
+ }
+ 
+@@ -524,7 +711,7 @@
+     my_locked--; // decrease lock refcount;
+   }
+   if(!my_locked && my_painter) {
+-    my_painter->end();
++//     my_painter->end();
+     delete my_painter;
+     my_painter = 0;
+   }
+Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.h
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_QWin.h	2005-03-02 22:24:43.457491622 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.h	2005-03-02 22:24:46.868009791 +0100
+@@ -1,3 +1,4 @@
++
+ /*
+     SDL - Simple DirectMedia Layer
+     Copyright (C) 1997-2004 Sam Lantinga
+@@ -52,6 +53,7 @@
+ class SDL_QWin : public QWidget
+ {
+   void QueueKey(QKeyEvent *e, int pressed);
++  int SDL_QWin::ApplyKeyRotation(int key);
+  public:
+   SDL_QWin(const QSize& size);
+   virtual ~SDL_QWin();
+@@ -71,7 +73,7 @@
+     y = my_offset.y();
+   }
+   QImage *image(void) { return my_image; }
+-  
++
+   void setWFlags(WFlags flags) {
+     QWidget::setWFlags(flags);
+     my_flags = flags;
+@@ -83,6 +85,15 @@
+   bool lockScreen(bool force=false);
+   void unlockScreen();
+   void repaintRect(const QRect& rect);
++  void setScreenRotation(int sdlr, int qter) {
++	  rotation_ = sdlr; qteRotation_ = qter;
++  }
++  void setKeyRotation(int sdlr, int qter) {
++    keyRotation_ = sdlr; qteKeyRotation_ = qter;
++  }
++  void setFBSize(QSize& s) { fbSize_ = s; }
++//   void setSLC700InputFix(bool isEnable) { isSLC700InputFix_ = isEnable; }
++  void setSLA300InputFix(bool isEnable) { isSLA300InputFix_ = isEnable; }
+  protected:
+   /* Handle resizing of the window */
+   virtual void resizeEvent(QResizeEvent *e);
+@@ -95,10 +106,8 @@
+   void paintEvent(QPaintEvent *ev);
+   void keyPressEvent(QKeyEvent *e)   { QueueKey(e, 1); }
+   void keyReleaseEvent(QKeyEvent *e) { QueueKey(e, 0); }
++
+  private:
+-  bool repaintRotation0(const QRect& rect);
+-  bool repaintRotation1(const QRect& rect);
+-  bool repaintRotation3(const QRect& rect);
+   void enableFullscreen();
+   QDirectPainter *my_painter;
+   QImage *my_image;
+@@ -108,6 +117,12 @@
+   WFlags my_flags;
+   WFlags my_has_fullscreen;
+   unsigned int my_locked;
++  int rotation_, qteRotation_;
++  int keyRotation_, qteKeyRotation_;
++  QSize fbSize_;
++//   bool isSLC700InputFix_;
++  bool isSLA300InputFix_;
++  int curAxis_[5];   // 0: up, 1: down, 2: right, 3: left, 4: center
+ };
+ 
+ #endif /* _SDL_QWin_h */
+Index: SDL-1.2.7/src/video/qtopia/SDL_sysmouse.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_sysmouse.cc	2005-03-02 22:24:43.457491622 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_sysmouse.cc	2005-03-02 22:24:46.868009791 +0100
+@@ -60,6 +60,7 @@
+ void QT_WarpWMCursor(_THIS, Uint16 x, Uint16 y)
+ {
+   SDL_Win->setMousePos(QPoint(x, y));
++  SDL_PrivateMouseMotion( 0, 0, x, y );
+ }
+ 
+ }; /* Extern C */
+Index: SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:24:43.458491481 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:24:46.873009084 +0100
+@@ -1,3 +1,4 @@
++
+ /*
+   SDL - Simple DirectMedia Layer
+     Copyright (C) 1997-2004 Sam Lantinga
+@@ -29,17 +30,32 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
++#include <stdarg.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
+ 
+ #include <stdio.h>
+ #include <unistd.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <linux/fb.h>
++#include <sys/mman.h>
++#include <asm/page.h>	
+ 
+ #include <qapplication.h>
+ #include <qpe/qpeapplication.h>
++#include <qpe/qcopenvelope_qws.h>
++#include <qgfx_qws.h>
++#include <qwindowsystem_qws.h>
++#include <qwidget.h>
++#include <qwidgetlist.h>
++#include <qdirectpainter_qws.h>
+ 
+ #include "SDL.h"
+ #include "SDL_timer.h"
+ 
+ #include "SDL_QWin.h"
++#include "SDL_sysvideo.h"
+ 
+ extern "C" {
+ 
+@@ -51,14 +67,67 @@
+ #include "SDL_lowvideo.h"
+ 
+   //#define QTOPIA_DEBUG
++#define QTOPIA_LOG
+ #define QT_HIDDEN_SIZE	32	/* starting hidden window size */
+ 
++#ifdef QTOPIA_LOG
++  static FILE *st_logfp = NULL;
++#endif
++  static inline void LOG(char *fmt, ...)
++  {
++#ifdef QTOPIA_LOG
++    va_list ap;
++
++    va_start(ap, fmt);
++    vfprintf(st_logfp, fmt, ap);
++    if (st_logfp != stderr) {
++      fflush(st_logfp);
++      vfprintf(stderr, fmt, ap);
++    }
++    va_end(ap);
++#endif
++  }
++
++  typedef struct machine_spec {
++    const char *manif;
++    const char *name;
++    int qpe_server_rotation;
++    int init_screen_rot;
++    int init_key_rot;
++  } machine_spec_t;
++
++  typedef enum {
++    MACHINE_SHARP_SL5000D,
++    MACHINE_SHARP_SL5500,
++    MACHINE_SHARP_SLA300,
++    MACHINE_SHARP_SLB500,
++    MACHINE_SHARP_SLC700,
++    MACHINE_SHARP_SLC750,
++    MACHINE_SHARP_SLC760,
++    MACHINE_SHARP_SLC860,
++    MACHINE_SHARP_SL6000,
++    MACHINE_MAX
++  } machine_t;
++
++  static const machine_spec_t st_machine_spec[] = {
++    { "Sharp", "SL-5000D", 0 },
++    { "Sharp", "SL-5500", 0 },
++    { "Sharp", "SL-A300", 0 },
++    { "Sharp", "SL-B500", 0 },
++    { "Sharp", "SL-C700", 0 },
++    { "Sharp", "SL-C750", 0 },
++    { "Sharp", "SL-C760", 0 },
++    { "Sharp", "SL-C860", 0 },
++    { "Sharp", "SL-6000", 0 },
++  };
++
+   /* Name of the environment variable used to invert the screen rotation or not:
+      Possible values:
+-     !=0 : Screen is 270∞ rotated
+-     0: Screen is 90∞ rotated*/
+-#define SDL_QT_ROTATION_ENV_NAME "SDL_QT_INVERT_ROTATION"
+-  
++   !=0 : Screen is 270- rotated
++   0: Screen is 90- rotated*/
++#define SDL_QT_ROTATION_ENV_NAME "SDL_QT_ROTATION"
++#define SDL_QT_INVERT_ROTATION_ENV_NAME "SDL_QT_INVERT_ROTATION"
++
+   /* Initialization/Query functions */
+   static int QT_VideoInit(_THIS, SDL_PixelFormat *vformat);
+   static SDL_Rect **QT_ListModes(_THIS, SDL_PixelFormat *format, Uint32 flags);
+@@ -78,6 +147,20 @@
+   static int QT_IconifyWindow(_THIS);
+   static SDL_GrabMode QT_GrabInput(_THIS, SDL_GrabMode mode);
+ 
++  static int console_fd;
++  struct fb_var_screeninfo saved_vinfo;
++  int fb_hwrot;
++  int fb_direct;
++  static int isKHloaded;
++  bool is_VGA_machine;
++ 
++#define W100FB_CONFIG          0x57415200 /* WAL\00 */
++#define W100INIT_ITEM          0
++#define W100INIT_ALL           1
++#define W100INIT_ITEM_WITH_VAL 2
++#define W100FB_CONFIG_EX       0x57415202 /* WAL\02 */
++
++
+   /* FB driver bootstrap functions */
+ 
+   static int QT_Available(void)
+@@ -222,13 +305,34 @@
+ 
+   int QT_VideoInit(_THIS, SDL_PixelFormat *vformat)
+   {
+-    /* Initialize the QPE Application  */
++    const char *SDL_fbdev;
++    struct fb_var_screeninfo vinfo;
++
++     /* Initialize the QPE Application  */
+      /* Determine the screen depth */
+     vformat->BitsPerPixel = QPixmap::defaultDepth();
+ 
+     // For now we hardcode the current depth because anything else
+     // might as well be emulated by SDL rather than by Qtopia.
+-    
++
++    //frame buffer device open.
++    SDL_fbdev = getenv("SDL_FBDEV");
++    if ( SDL_fbdev == NULL ) {
++    	SDL_fbdev = "/dev/fb0";
++    }
++    console_fd = open(SDL_fbdev, O_RDWR, 0);
++    if ( console_fd < 0 ) {
++    	SDL_SetError("Unable to open %s", SDL_fbdev);
++    	return(-1);
++    }
++
++    if ( ioctl(console_fd, FBIOGET_VSCREENINFO, &vinfo) < 0 ) {
++    	SDL_SetError("Couldn't get console pixel format");
++    	QT_VideoQuit(_this);
++    	return(-1);
++    }
++    saved_vinfo = vinfo;
++
+     QSize desktop_size = qApp->desktop()->size();
+     QT_AddMode(_this, ((vformat->BitsPerPixel+7)/8)-1,
+ 	       desktop_size.width(), desktop_size.height());
+@@ -241,7 +345,24 @@
+     /* Fill in some window manager capabilities */
+     _this->info.wm_available = 0;
+ 
+-    /* We're done! */
++#ifdef QTOPIA_LOG
++    st_logfp = fopen("/tmp/sdl-qt-debug", "w");
++    if (!st_logfp)
++      st_logfp = stderr;
++#endif
++
++    QT_GrabInput(_this, SDL_GRAB_ON);
++/*
++    {
++      QCopEnvelope e("QPE/KeyHelper", "repeater(int)");
++      e << 2;
++    }
++*/
++    isKHloaded=(fopen("/home/zaurus/Settings/keyhelper_SDL.xml","r") != NULL) ? 1 : 0;
++    if (isKHloaded) {
++	system("qcop QPE/KeyHelper \"reload(QString)\" keyhelper_SDL.xml"); //QcopEnvelope can't use.
++	LOG("keyhelper_SDL.xml loaded\n");
++    }
+     return(0);
+   }
+ 
+@@ -264,6 +385,7 @@
+ 
+   /* Various screen update functions available */
+   static void QT_NormalUpdate(_THIS, int numrects, SDL_Rect *rects);
++  static void QT_DirectUpdate(_THIS, int numrects, SDL_Rect *rects);
+ 
+ 
+   static int QT_SetFullScreen(_THIS, SDL_Surface *screen, int fullscreen)
+@@ -276,47 +398,428 @@
+     return -1;
+   }
+ 
++  static machine_t QT_GetMachine(_THIS)
++  {
++    FILE *fp;
++    machine_t machine = MACHINE_SHARP_SL5000D;
++    char buf[1024];
++
++
++    fp = fopen("/proc/cpuinfo", "rb");
++    if (fp) {
++      if (fread(buf, 1, sizeof(buf), fp) > 0) {
++        LOG("QT_GetMachine: /proc/cpuinfo is %s\n", buf);
++        if (strstr(buf, "SHARP Tosa") != NULL)  
++          machine = MACHINE_SHARP_SL6000;
++        else if (strstr(buf, "Collie") != NULL)
++          machine = MACHINE_SHARP_SL5500;
++        else if (strstr(buf, "SHARP Poodle") != NULL)
++          machine = MACHINE_SHARP_SLB500;
++        else if (strstr(buf, "SHARP Corgi") !=NULL)
++          machine = MACHINE_SHARP_SLC700;
++        else if (strstr(buf, "SHARP Shepherd") !=NULL)
++          machine = MACHINE_SHARP_SLC750;
++        else if (strstr(buf, "SHARP Husky") !=NULL)
++          machine = MACHINE_SHARP_SLC760;
++        else if (strstr(buf, "SHARP Boxer") != NULL)
++          machine = MACHINE_SHARP_SLC860;
++      }
++      fclose(fp);
++    } else {
++      LOG("QT_GetMachine: Couldn't read /proc/deviceinfo/product.\n");
++      LOG(" Now set machine variable to default (SL-5000D)\n");
++    }
++
++    LOG(" detected machine is '%s %s'\n",
++        st_machine_spec[machine].manif, st_machine_spec[machine].name);
++    return machine;
++  }
++
++  static void QT_GetQteServerSpec(_THIS, int *rotation, bool *isQvga)
++  {
++    const char *user;
++    char buf[FILENAME_MAX];
++    FILE *fp;
++    int rot = 0, is_qvga = 0;
++
++    user = getenv("USER");
++    snprintf(buf, sizeof(buf), "/tmp/qtembedded-%s/QtEmbedded-0.spec",
++             user ? user : "root");
++    LOG("QT_GetRotation: Read spec from '%s'\n", buf);
++
++    fp = fopen(buf, "rb");
++    if (fp) {
++      int size;
++      if ((size = fread(buf, 1, sizeof(buf) - 1, fp)) > 0) {
++        buf[size] = '\0';
++        LOG(" spec is '%s'\n", buf);
++        // get rotation value
++        if (strstr(buf, "Rot")) {
++          rot = atoi(strstr(buf, "Rot") + 3);
++          rot /= 90;
++          if (rot < 0 || rot > 3) {
++            rot = 0;
++          }
++        } else
++          rot = 0;
++
++        // get qvga mode in SL-C700
++        if (strstr(buf, "Qvga"))
++          is_qvga = 1;
++      }
++      fclose(fp);
++    }
++
++    LOG(" Rot=%d, Qvga=%d\n", rot, is_qvga);
++
++    if (rotation)
++      *rotation = rot;
++    if (isQvga)
++      *isQvga = is_qvga;
++  }
++
+   /* FIXME: check return values and cleanup here */
+   SDL_Surface *QT_SetVideoMode(_THIS, SDL_Surface *current,
+ 			       int width, int height, int bpp, Uint32 flags)
+   {
+-
+     QImage *qimage;
+-    QSize desktop_size = qApp->desktop()->size();
++    QSize qteSize = qApp->desktop()->size();
++    QSize fbSize;
++    QSize userSize;
++    int fb_xres;
++    int fb_yres;
++    struct fb_var_screeninfo vinfo;
++    struct fb_fix_screeninfo finfo;
++    int tmp_ioctl_data;
++    char fb_size_fix = ' ';
++    bool isW100patch_kernel = false;
++    int numFb_Size;
++
++    int mapped_memlen;
++    int mapped_offset;
++    void *mapped_mem;
++    int fb_offset;
++
++
++    machine_t machine = QT_GetMachine(_this);
++    machine_spec_t machineSpec = st_machine_spec[machine];
++    int qteRotation, userRotation, sdlRotation;
++    int qteKeyRotation, sdlKeyRotation;
++    bool isQteQvga;
++
++    if (machine == MACHINE_SHARP_SLC700 ||
++        machine == MACHINE_SHARP_SLC750 ||
++        machine == MACHINE_SHARP_SLC760 ||
++        machine == MACHINE_SHARP_SLC860 ||      // æ‹§∑§§§≥§»§Ô§´§È§Û§±§…§»§Í§¢§®§∫
++        machine == MACHINE_SHARP_SL6000 ) {     // æ‹§∑§§§≥§»§Ô§´§È§Û§±§…§»§Í§¢§®§∫
++	is_VGA_machine = true;
++    }else {
++	is_VGA_machine = false;
++    }
++
++    // qte §«§Œ≤Û≈æ≥—≈Ÿ§ÚºË∆¿
++    QT_GetQteServerSpec(_this, &qteRotation, &isQteQvga);
++
++    // SL-C700 §Œ•π•ø•§•Î
++    bool isInputStyle = false;
++    if (is_VGA_machine) {
++      int status = system("/home/QtPalmtop/bin/chkhinge");
++      if (WEXITSTATUS(status) != 2)
++        isInputStyle = true;
++      LOG("QT_SetVideoMode: SL-C700 Style is %s\n",
++          isInputStyle ? "Input style" : "View style");
++    }
+ 
+     
+-    current->flags = 0; //SDL_FULLSCREEN; // We always run fullscreen.
++    // specity screen setting
++    if (is_VGA_machine) {
++
++	// w100 rotation pached kernel check
++      isW100patch_kernel = (fopen("/proc/driver/w100/rotation","r") != NULL) ? true : false;
++      LOG("Your Kernel is %s\n",isW100patch_kernel ? "Special Kernel" : "Normal Kernel");
++
++      const char *envFb_Size = getenv("SDL_FB_SIZE");
++      if (envFb_Size !=NULL) {
++	numFb_Size=sscanf(envFb_Size,"%dx%d%c",&fb_xres,&fb_yres,&fb_size_fix);
++      } else {
++	numFb_Size=0;
++      }
+ 
+-    if(width <= desktop_size.width()
+-	      && height <= desktop_size.height()) {
+-      current->w = desktop_size.width();
+-      current->h = desktop_size.height();
+-    } else if(width <= desktop_size.height() && height <= desktop_size.width()) {
+-      // Landscape mode
+-      char * envString = getenv(SDL_QT_ROTATION_ENV_NAME);
+-      int envValue = envString ? atoi(envString) : 0;
+-      screenRotation = envValue ? SDL_QT_ROTATION_270 : SDL_QT_ROTATION_90;
+-      current->h = desktop_size.width();
+-      current->w = desktop_size.height();
++      if (numFb_Size >=2) {
++
++	// specity screen mode
++	if ( ioctl(console_fd, FBIOGET_VSCREENINFO, &vinfo) < 0 ) {
++		SDL_SetError("Couldn't get console pixel format");
++		QT_VideoQuit(_this);
++		return(NULL);
++	}
++
++	vinfo.xres = fb_xres;
++	vinfo.xres_virtual = fb_xres;
++	vinfo.yres = fb_yres;
++	vinfo.yres_virtual = fb_yres;
++
++	if (fb_size_fix == '@') {
++		width = fb_xres;
++		height = fb_yres;
++	}
++
++	if ( ioctl(console_fd, FBIOPUT_VSCREENINFO, &vinfo) < 0 ) {
++		SDL_SetError("Couldn't set console screen info");
++		return(NULL);
++	}
++
++
++	if (isW100patch_kernel) {
++		qteSize.setWidth(vinfo.xres);
++		qteSize.setHeight(vinfo.yres);
++		qteRotation=0;
++	}else if(vinfo.xres == 320){
++		qteSize.setWidth(vinfo.xres);
++		qteSize.setHeight(vinfo.yres);
++		qteRotation=2;
++	}else {
++		qteSize.setWidth(vinfo.yres);
++		qteSize.setHeight(vinfo.xres);
++		qteRotation=3;
++	}			
++
++	if (isW100patch_kernel && (vinfo.xres == 320) && (vinfo.yres == 240)) {
++		tmp_ioctl_data=121;
++		ioctl(console_fd, W100FB_CONFIG_EX, &tmp_ioctl_data);
++		fb_hwrot=1;	
++	}
++
++	LOG("FBVideoMode: %dx%d%c\n", vinfo.xres, vinfo.yres,fb_size_fix );
++
++      }else {
++
++	// auto screen mode	
++	if ( ioctl(console_fd, FBIOGET_VSCREENINFO, &vinfo) < 0 ) {
++		SDL_SetError("Couldn't get console pixel format");
++		QT_VideoQuit(_this);
++		return(NULL);
++	}
++
++	if (isW100patch_kernel && (isInputStyle == false) && (vinfo.xres == 240) && (vinfo.yres == 320)) {
++		vinfo.xres = 240;
++		vinfo.xres_virtual = 240;
++		vinfo.yres = 320;
++		vinfo.yres_virtual = 320;
++		qteRotation=0;
++	}else if ((width <= 320) && (height <= 240)) {
++		vinfo.xres = 320;
++		vinfo.xres_virtual = 320;
++		vinfo.yres = 240;
++		vinfo.yres_virtual = 240;
++	}else if (isW100patch_kernel && (isInputStyle == true)){
++		vinfo.xres = 640;
++		vinfo.xres_virtual = 640;
++		vinfo.yres = 480;
++		vinfo.yres_virtual = 480;
++		qteRotation=0;
++	}else {
++		vinfo.xres = 480;
++		vinfo.xres_virtual = 480;
++		vinfo.yres = 640;
++		vinfo.yres_virtual = 640;
++	}
++
++		if ( ioctl(console_fd, FBIOPUT_VSCREENINFO, &vinfo) < 0 ) {
++		SDL_SetError("Couldn't set console screen info");
++		return(NULL);
++	}
++
++	if (isW100patch_kernel) {
++		qteSize.setWidth(vinfo.xres);
++		qteSize.setHeight(vinfo.yres);
++		qteRotation=0;
++		fb_direct=1;
++	}else if(vinfo.xres == 320){
++		qteSize.setWidth(vinfo.xres);
++		qteSize.setHeight(vinfo.yres);
++		qteRotation=2;
++	}else {
++		qteSize.setWidth(vinfo.yres);
++		qteSize.setHeight(vinfo.xres);
++		qteRotation=3;
++	}			
++
++	if (isW100patch_kernel && (vinfo.xres == 320) && (vinfo.yres == 240)) {
++		tmp_ioctl_data=121;
++		ioctl(console_fd, W100FB_CONFIG_EX, &tmp_ioctl_data);	
++		fb_hwrot=1;
++		qteRotation=0;
++	}
++
++	LOG("FBVideoMode: %dx%d%c\n", vinfo.xres, vinfo.yres,fb_size_fix );
++      }
++    }
++
++    // direct paint setting
++    const char *envFb_Direct = getenv("SDL_FB_DIRECT");
++    if (envFb_Direct !=NULL)
++	fb_direct = envFb_Direct ? atoi(envFb_Direct) : -1;
++
++    if (fb_direct == 1){
++	if ( ioctl(console_fd, FBIOGET_FSCREENINFO, &finfo) < 0 ) {
++		SDL_SetError("Couldn't get console hardware info");
++		QT_VideoQuit(_this);
++		return(NULL);
++    	}
++        if ( ioctl(console_fd, FBIOGET_VSCREENINFO, &vinfo) < 0 ) {
++		SDL_SetError("Couldn't get console pixel format");
++		QT_VideoQuit(_this);
++                return(NULL);
++        }
++	LOG("Direct paint mode\n");
++    }
++
++    // hack for SL-5500
++    if (machine == MACHINE_SHARP_SL5500)
++      qteRotation = 3;
++
++    // SL-B500 Õ—•œ•√•Ø(§»§Í§¢§®§∫°¢§Õ)
++    if (machine == MACHINE_SHARP_SLB500)
++      qteRotation = 3;
++
++    // ¿∏•’•Ï°º•‡•–•√•’•°§Œ•µ•§•∫§Ú∆¿§Î
++    if (qteRotation & 1) {
++      fbSize.setWidth(qteSize.height());
++      fbSize.setHeight(qteSize.width());
++    } else {
++      fbSize = qteSize;
++    }
++
++    //
++    const char *envRotStr = getenv(SDL_QT_ROTATION_ENV_NAME);
++    userRotation = envRotStr ? atoi(envRotStr) : -1;
++    if ((userRotation >= 0 ? userRotation : qteRotation) & 1) {
++      userSize.setWidth(fbSize.height());
++      userSize.setHeight(fbSize.width());
++    } else {
++      userSize = fbSize;
++    }
++
++    if (width <= userSize.width() && height <= userSize.height()) {
++      // ¥ƒ∂≠ —øÙ§«≤Û≈æ≥—≈Ÿ§¨ªÿƒÍ§µ§Ï§∆§§§Ï§–°¢§Ω§Ï§Ú∫«Õ•¿Ë§π§Î
++      if (userRotation >= 0)
++        sdlRotation = userRotation;
++      else {
++        // §«°¢§Ω§ŒªÿƒÍ§¨Ãµ§§§Œ§«§¢§Ï§– qte §Œ≤Û≈æ≥—≈Ÿ§ÀπÁ§Ô§ª§Î§¿§±
++        // § §Û§¿§±§…°¢SL-C700 §«§œ§¡§Á§§ £ª®°£
++        if (is_VGA_machine && (fbSize.width() == 320) && (fbSize.height() == 240)) {
++          if (isInputStyle)
++            sdlRotation = 2;
++          else
++            sdlRotation = qteRotation;
++        } else {
++          sdlRotation = qteRotation;
++        }
++      }
++    } else if (width <= fbSize.width() && height <= fbSize.height()) {
++      sdlRotation = 0;
++      if (is_VGA_machine && (fbSize.width() == 320) && (fbSize.height() == 240) && isInputStyle)
++        sdlRotation = 2;
++    } else if (width <= fbSize.height() && height <= fbSize.width()) {
++      sdlRotation = 1;
+     } else {
+       SDL_SetError("Unsupported resolution, %dx%d\n", width, height);
++      return NULL;
+     }
++
++    if (fb_hwrot == 1) 
++	sdlRotation = 0;
++
++    if (getenv(SDL_QT_INVERT_ROTATION_ENV_NAME) != NULL) {
++      sdlRotation = (sdlRotation + 2) & 3;
++    }
++
++    LOG("QT_SetVideoMode: argSize=%dx%d\n", width, height);
++    LOG("QT_SetVideoMode: qteSize=%dx%d\n",
++        qteSize.width(), qteSize.height());
++    LOG("QT_SetVideoMode: fbSize=%dx%d\n",
++        fbSize.width(), fbSize.height());
++    LOG("QT_SetVideoMode: qteRotation=%d\n", qteRotation);
++    LOG("QT_SetVideoMode: userRotation=%d\n", userRotation);
++    LOG("QT_SetVideoMode: sdlRotation=%d\n", sdlRotation);
++
++    current->flags = 0;//SDL_FULLSCREEN; // We always run fullscreen.
++    current->w = width;
++    current->h = height;
++    SDL_Win->setScreenRotation(sdlRotation, qteRotation);
++    SDL_Win->setFBSize(fbSize);
++
++    if (machine == MACHINE_SHARP_SLA300)
++      SDL_Win->setSLA300InputFix(true);
++
++    // keyboard rotation
++    qteKeyRotation = qteRotation;
++//     fprintf(stderr, "%d\n", (machine == MACHINE_SHARP_SLC700));
++//     fprintf(stderr, "%d\n", isQteQvga);
++    if (isQteQvga && is_VGA_machine)
++      qteKeyRotation = 3;
++    else if (machine == MACHINE_SHARP_SLB500)
++      qteKeyRotation = 3;
++
++    if (isQteQvga && fb_hwrot == 1) 
++	qteKeyRotation = 1;
++
++    sdlKeyRotation = sdlRotation;
++
++    SDL_Win->setKeyRotation(sdlKeyRotation, qteKeyRotation);
++
++    LOG("QT_SetVideoMode: qteKeyRotation=%d\n", qteKeyRotation);
++    LOG("QT_SetVideoMode: sdlKeyRotation=%d\n", sdlKeyRotation);
++
+     if ( flags & SDL_OPENGL ) {
+       SDL_SetError("OpenGL not supported");
+       return(NULL);
+-    } 
++    }
+     /* Create the QImage framebuffer */
+-    qimage = new QImage(current->w, current->h, bpp);
+-    if (qimage->isNull()) {
+-      SDL_SetError("Couldn't create screen bitmap");
+-      delete qimage;
+-      return(NULL);
++
++    // frame buffer memory mapping    
++    if (fb_direct == 1) {
++	current->pitch = finfo.line_length;
++        current->flags = (SDL_FULLSCREEN|SDL_HWSURFACE);
++        mapped_offset = (((long)finfo.smem_start) -
++	                (((long)finfo.smem_start)&~(PAGE_SIZE-1)));
++	mapped_memlen = finfo.smem_len+mapped_offset;
++        if(console_fd >0 ) {
++		mapped_mem = mmap(NULL, mapped_memlen,PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);
++		fb_offset=(vinfo.xres-width)+(vinfo.yres-height)*vinfo.xres;
++		current->pixels = (void *)((int )mapped_mem+fb_offset);
++                _this->UpdateRects = QT_DirectUpdate;
++    	} else {
++		qimage = new QImage(current->w, current->h, bpp);
++		if (qimage->isNull()) {
++			SDL_SetError("Couldn't create screen bitmap");
++			delete qimage;
++			return(NULL);
++		}
++    		current->pixels = (void *)qimage->bits();
++                _this->UpdateRects = QT_NormalUpdate;
++		SDL_Win->setImage(qimage);
++//		SDL_Win->setFullscreen(true);  //comment to non update taskbar
++    	}
++    } else {
++	qimage = new QImage(current->w, current->h, bpp);
++	if (qimage->isNull()) {
++		SDL_SetError("Couldn't create screen bitmap");
++		delete qimage;
++		return(NULL);
++	}
++	current->pitch = qimage->bytesPerLine();
++	current->pixels = (void *)qimage->bits();
++        _this->UpdateRects = QT_NormalUpdate;
++	SDL_Win->setImage(qimage);
++//	SDL_Win->setFullscreen(true);  //comment to non update taskbar
++
+     }
+-    current->pitch = qimage->bytesPerLine();
+-    current->pixels = (void *)qimage->bits();
+-    SDL_Win->setImage(qimage);
+-    _this->UpdateRects = QT_NormalUpdate;
+-    SDL_Win->setFullscreen(true);
++
++
++    //     fprintf(stderr,"QT_SetVideoMode() qImage:%dx%d %d\n",
++    // 			qimage->width(), qimage->height(), qimage->bytesPerLine());
+     /* We're done */
+     return(current);
+   }
+@@ -361,13 +864,19 @@
+   {
+     if(SDL_Win->lockScreen()) {
+       for(int i=0; i<numrects; ++i ) {
+-	QRect rect(rects[i].x, rects[i].y,
+-		   rects[i].w, rects[i].h);
+-	SDL_Win->repaintRect(rect);
++	    QRect rect(rects[i].x, rects[i].y,
++                  rects[i].w, rects[i].h);
++       SDL_Win->repaintRect(rect);
+       }
+       SDL_Win->unlockScreen();
+     }
+   }
++
++  static void QT_DirectUpdate(_THIS, int numrects, SDL_Rect *rects)
++  {
++
++  }
++
+   /* Is the system palette settable? */
+   int QT_SetColors(_THIS, int firstcolor, int ncolors, SDL_Color *colors)
+   {
+@@ -383,10 +892,36 @@
+     //    -- David Hedbor
+     //    delete SDL_Win; 
+     //    SDL_Win = 0;
++
++    if ( console_fd > 0 ) {
++    	/* Restore the original video mode and palette */
++	if (fb_hwrot == 1) {
++		int tmp_ioctl_data=120;
++		ioctl(console_fd, W100FB_CONFIG_EX, &tmp_ioctl_data);	
++	}
++
++    	ioctl(console_fd, FBIOPUT_VSCREENINFO, &saved_vinfo);
++
++    	/* We're all done with the framebuffer */
++    	close(console_fd);
++    	console_fd = -1;
++    }
++
+     _this->screen->pixels = NULL;
+     QT_GrabInput(_this, SDL_GRAB_OFF);
++/*
++    {
++      QCopEnvelope e("QPE/KeyHelper", "repeater(int)");
++      e << 1;
++    }
++*/
++    if (isKHloaded)
++	system("qcop QPE/KeyHelper \"reload()\""); //QcopEnvelope can't use. 
++
+   }
+ 
++
++
+   static int QT_IconifyWindow(_THIS) {
+     SDL_Win->hide();
+     
+Index: SDL-1.2.7/src/video/fbcon/SDL_fbvideo.c
+===================================================================
+--- SDL-1.2.7.orig/src/video/fbcon/SDL_fbvideo.c	2005-03-02 22:24:43.458491481 +0100
++++ SDL-1.2.7/src/video/fbcon/SDL_fbvideo.c	2005-03-02 22:24:46.875008802 +0100
+@@ -51,7 +51,7 @@
+ #include "SDL_fbmatrox.h"
+ #include "SDL_fbriva.h"
+ 
+-
++/* #define FBCON_DEBUG 1 */
+ #if defined(i386) && defined(FB_TYPE_VGA_PLANES)
+ #define VGA16_FBCON_SUPPORT
+ #ifndef FB_AUX_VGA_PLANES_VGA4
+@@ -76,9 +76,11 @@
+ 	{  0, 0,  720,  576 },		/* PAL */
+ 	{  0, 0,  720,  480 },		/* NTSC */
+ 	{  0, 0,  640,  480 },		/* 16 bpp: 0x111, or 273 */
++	{  0, 0,  480,  640 },
+ 	{  0, 0,  640,  400 },		/*  8 bpp: 0x100, or 256 */
+ 	{  0, 0,  512,  384 },
+ 	{  0, 0,  320,  240 },
++	{  0, 0,  240,  320 },
+ 	{  0, 0,  320,  200 }
+ };
+ static const struct {
+@@ -112,9 +114,11 @@
+ 	*/
+ 	{  320,  200, 79440,  16, 16, 20,  4,  48, 1, 0, 2 },	/* 70 Hz */
+ 	{  320,  240, 63492,  16, 16, 16,  4,  48, 2, 0, 2 },	/* 72 Hz */
++        {  240,  320, 63492,  16, 16, 16,  4,  48, 3, 0, 2 },   /* 72 Hz */
+ 	{  512,  384, 49603,  48, 16, 16,  1,  64, 3, 0, 0 },	/* 78 Hz */
+ 	{  640,  400, 31746,  96, 32, 41,  1,  64, 3, 2, 0 },	/* 85 Hz */
+ 	{  640,  480, 31746, 120, 16, 16,  1,  64, 3, 0, 0 },	/* 75 Hz */
++        {  480,  640, 31746, 120, 16, 16,  1,  64, 4, 0, 0 },   /* 75 Hz */
+ 	{  768,  576, 26101, 144, 16, 28,  6, 112, 4, 0, 0 },	/* 60 Hz */
+ 	{  800,  600, 20000,  64, 56, 23, 37, 120, 6, 3, 0 },	/* 72 Hz */
+ 	{  960,  720, 17686, 144, 24, 28,  8, 112, 4, 0, 0 },	/* 60 Hz */
+@@ -152,6 +156,10 @@
+                                   struct fb_var_screeninfo *vinfo);
+ static void FB_RestorePalette(_THIS);
+ 
++static char *console_fd_buf;
++static char *mapped_mem_fb;
++static int rotation_flag;
++
+ /* FB driver bootstrap functions */
+ 
+ static int FB_Available(void)
+@@ -241,18 +249,30 @@
+ 
+ 	mode_okay = 0;
+ 	vinfo->bits_per_pixel = (index+1)*8;
+-	vinfo->xres = *w;
+-	vinfo->xres_virtual = *w;
+-	vinfo->yres = *h;
+-	vinfo->yres_virtual = *h;
++	if ((rotation_flag == 0) || (rotation_flag == 2)) {
++		vinfo->xres = *w;
++		vinfo->xres_virtual = *w;
++		vinfo->yres = *h;
++		vinfo->yres_virtual = *h;
++	} else {
++		vinfo->xres = *h;
++		vinfo->xres_virtual = *h;
++		vinfo->yres = *w;
++		vinfo->yres_virtual = *w;
++	}
+ 	vinfo->activate = FB_ACTIVATE_TEST;
+ 	if ( ioctl(console_fd, FBIOPUT_VSCREENINFO, vinfo) == 0 ) {
+ #ifdef FBCON_DEBUG
+ 		fprintf(stderr, "Checked mode %dx%d at %d bpp, got mode %dx%d at %d bpp\n", *w, *h, (index+1)*8, vinfo->xres, vinfo->yres, vinfo->bits_per_pixel);
+ #endif
+ 		if ( (((vinfo->bits_per_pixel+7)/8)-1) == index ) {
+-			*w = vinfo->xres;
+-			*h = vinfo->yres;
++			if ((rotation_flag == 0) || (rotation_flag == 2)) {
++				*w = vinfo->xres;
++				*h = vinfo->yres;
++			} else {
++				*h = vinfo->xres;
++				*w = vinfo->yres;
++			}
+ 			mode_okay = 1;
+ 		}
+ 	}
+@@ -332,6 +352,7 @@
+ 	unsigned int current_w;
+ 	unsigned int current_h;
+ 	const char *SDL_fbdev;
++	const char *SDL_rot_flag;
+ 
+ 	/* Initialize the library */
+ 	SDL_fbdev = getenv("SDL_FBDEV");
+@@ -344,6 +365,14 @@
+ 		return(-1);
+ 	}
+ 
++	SDL_rot_flag = getenv("SDL_FBROT");
++	if ( SDL_rot_flag == NULL ) {
++		rotation_flag = 0;
++	} else {
++		rotation_flag = atoi(SDL_rot_flag);
++	}
++
++
+ #ifndef DISABLE_THREADS
+ 	/* Create the hardware surface lock mutex */
+ 	hw_lock = SDL_CreateMutex();
+@@ -407,13 +436,33 @@
+ 	mapped_offset = (((long)finfo.smem_start) -
+ 	                (((long)finfo.smem_start)&~(PAGE_SIZE-1)));
+ 	mapped_memlen = finfo.smem_len+mapped_offset;
+-	mapped_mem = mmap(NULL, mapped_memlen,
+-	                  PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);
+-	if ( mapped_mem == (char *)-1 ) {
+-		SDL_SetError("Unable to memory map the video hardware");
+-		mapped_mem = NULL;
+-		FB_VideoQuit(this);
+-		return(-1);
++	if (rotation_flag == 0) { 
++		mapped_mem = mmap(NULL, mapped_memlen,
++		                  PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);
++		if ( mapped_mem == (char *)-1 ) {
++			SDL_SetError("Unable to memory map the video hardware");
++			mapped_mem = NULL;
++			FB_VideoQuit(this);
++			return(-1);
++		}
++	} else {
++ 
++		console_fd_buf = (char *)malloc(640*480*2);
++
++		if (console_fd_buf == NULL){
++			SDL_SetError("Unable to memory for buffer");
++			return(-1);
++		}
++	
++		mapped_mem_fb = mmap(NULL, mapped_memlen,
++		                  PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);
++		if ( mapped_mem_fb == (char *)-1 ) {
++			SDL_SetError("Unable to memory map the video hardware");
++			mapped_mem_fb = NULL;
++			FB_VideoQuit(this);
++			return(-1);
++		}
++		mapped_mem = console_fd_buf;
+ 	}
+ 
+ 	/* Determine the current screen depth */
+@@ -555,6 +604,7 @@
+ 
+ /* Various screen update functions available */
+ static void FB_DirectUpdate(_THIS, int numrects, SDL_Rect *rects);
++static void FB_RotationUpdate(_THIS, int numrects, SDL_Rect *rects);
+ #ifdef VGA16_FBCON_SUPPORT
+ static void FB_VGA16Update(_THIS, int numrects, SDL_Rect *rects);
+ #endif
+@@ -725,7 +775,7 @@
+ 	Uint32 Bmask;
+ 	char *surfaces_mem;
+ 	int surfaces_len;
+-
++	
+ 	/* Set the terminal into graphics mode */
+ 	if ( FB_EnterGraphicsMode(this) < 0 ) {
+ 		return(NULL);
+@@ -734,6 +784,8 @@
+ 	/* Restore the original palette */
+ 	FB_RestorePalette(this);
+ 
++	flags &= ~SDL_DOUBLEBUF;
++
+ 	/* Set the video mode and get the final screen format */
+ 	if ( ioctl(console_fd, FBIOGET_VSCREENINFO, &vinfo) < 0 ) {
+ 		SDL_SetError("Couldn't get console screen info");
+@@ -748,13 +800,24 @@
+ 		vinfo.activate = FB_ACTIVATE_NOW;
+ 		vinfo.accel_flags = 0;
+ 		vinfo.bits_per_pixel = bpp;
+-		vinfo.xres = width;
+-		vinfo.xres_virtual = width;
+-		vinfo.yres = height;
+-		if ( flags & SDL_DOUBLEBUF ) {
+-			vinfo.yres_virtual = height*2;
++		if ((rotation_flag == 0) || (rotation_flag == 2)) {
++			vinfo.xres = width;
++			vinfo.xres_virtual = width;
++			vinfo.yres = height;
++			if ( flags & SDL_DOUBLEBUF ) {
++				vinfo.yres_virtual = height*2;
++			} else {
++				vinfo.yres_virtual = height;
++			}
+ 		} else {
+-			vinfo.yres_virtual = height;
++			vinfo.xres = height;
++			vinfo.xres_virtual = height;
++			vinfo.yres = width;
++			if ( flags & SDL_DOUBLEBUF ) {
++				vinfo.yres_virtual = width*2;
++			} else {
++				vinfo.yres_virtual = width;
++			}
+ 		}
+ 		vinfo.xoffset = 0;
+ 		vinfo.yoffset = 0;
+@@ -776,6 +839,15 @@
+ 				return(NULL);
+ 			}
+ 		}
++		vinfo.xres = width;
++		vinfo.xres_virtual = width;
++		vinfo.yres = height;
++		if ( flags & SDL_DOUBLEBUF ) {
++			vinfo.yres_virtual = height*2;
++		} else {
++			vinfo.yres_virtual = height;
++		}
++
+ 	} else {
+ 		int maxheight;
+ 
+@@ -821,7 +893,9 @@
+ 		SDL_SetError("Couldn't get console hardware info");
+ 		return(NULL);
+ 	}
+-
++#ifdef FBCON_DEBUG
++	print_finfo(&finfo);
++#endif
+ 	/* Save hardware palette, if needed */
+ 	FB_SavePalette(this, &finfo, &vinfo);
+ 
+@@ -829,7 +903,11 @@
+ 	current->flags = (SDL_FULLSCREEN|SDL_HWSURFACE);
+ 	current->w = vinfo.xres;
+ 	current->h = vinfo.yres;
+-	current->pitch = finfo.line_length;
++	if ((rotation_flag == 0) || (rotation_flag == 2) ) {
++		current->pitch = finfo.line_length;
++	} else { 
++	current->pitch = vinfo.xres*2;
++	}
+ 	current->pixels = mapped_mem+mapped_offset;
+ 
+ 	/* Set up the information for hardware surfaces */
+@@ -863,7 +941,7 @@
+ 	}
+ 
+ 	/* Set the update rectangle function */
+-	this->UpdateRects = FB_DirectUpdate;
++	this->UpdateRects = FB_RotationUpdate;
+ 
+ 	/* We're done */
+ 	return(current);
+@@ -1123,6 +1201,89 @@
+ 	return;
+ }
+ 
++static void FB_RotationUpdate(_THIS, int numrects, SDL_Rect *rects)
++{
++	unsigned short *pDst;
++	unsigned short *pSrc;
++	unsigned int width;
++	unsigned int height;
++	unsigned int srcYAdd;
++	unsigned int dstXAdd;
++	unsigned int dstYSub;
++	unsigned int i;
++	unsigned int dstH;
++	unsigned int dstW;
++	
++#ifdef FBCON_DEBUG
++		fprintf(stderr,"rotation_flag = %d \n",rotation_flag);
++#endif
++	switch (rotation_flag) {
++	case 0:
++		break;
++	case 1:
++		memcpy(mapped_mem_fb,mapped_mem,640*480*2);
++		break;
++	case 2:
++		memcpy(mapped_mem_fb,mapped_mem,640*480*2);
++		break;
++	case 3:
++		dstW=cache_vinfo.xres;
++		dstH=cache_vinfo.yres;
++#ifdef FBCON_DEBUG
++		fprintf(stderr,"dstH = %d : dstW = %d : rects->x = %d : rects->y = %d\n",dstH,dstW);
++		fprintf(stderr,"rects->x = %d : rects->y = %d : rects->w = %d : rects->h = %d\n",rects->x,rects->y,rects->w,rects->h);
++#endif
++		while (numrects) {
++			if (rects->w != dstW || rects->h != dstH) {
++				pSrc = mapped_mem + (rects->x + rects->y * dstW)*2;
++				pDst = mapped_mem_fb + (dstH-1+rects->x * dstH - rects->y)*2;
++
++				width = rects->w;
++				height = rects->h;
++
++				srcYAdd = dstW - rects->w;
++				dstXAdd = dstH;
++				dstYSub = (dstH * rects->w) + 1;
++
++				while (height--) {
++					i = width;
++					while (i--) {
++						*pDst = *pSrc ++;
++						pDst += dstXAdd;
++					}
++					pSrc += srcYAdd;
++					pDst -= dstYSub;
++				}
++
++			} else {
++				pDst=mapped_mem_fb+dstH*2-2;
++				pSrc=mapped_mem;
++				height=dstH;
++				width=dstW;
++				dstXAdd=height;
++				dstYSub=dstW*dstH+1;
++
++				while (height--) {
++					i = width;
++					while (i--) {
++						*pDst = *pSrc ++;
++						pDst += dstXAdd;
++					}
++					pDst -= dstYSub;
++				}
++			}
++			numrects--;
++			rects++;
++		}
++		break;
++	default:
++		break;
++	}
++
++
++
++}
++
+ #ifdef VGA16_FBCON_SUPPORT
+ /* Code adapted with thanks from the XFree86 VGA16 driver! :) */
+ #define writeGr(index, value) \
+Index: SDL-1.2.7/src/video/fbcon/SDL_fbevents.c
+===================================================================
+--- SDL-1.2.7.orig/src/video/fbcon/SDL_fbevents.c	2005-03-02 22:24:43.458491481 +0100
++++ SDL-1.2.7/src/video/fbcon/SDL_fbevents.c	2005-03-02 22:24:46.876008660 +0100
+@@ -60,7 +60,13 @@
+ #ifndef GPM_NODE_FIFO
+ #define GPM_NODE_FIFO	"/dev/gpmdata"
+ #endif
++#define POINTERCAL "/etc/pointercal"
+ 
++static struct SDL_cal {
++	long ok;
++	long a, b, c, d, e, f, s;
++	long rotate;
++} cal = { 0 };
+ 
+ /* The translation tables from a console scancode to a SDL keysym */
+ #define NUM_VGAKEYMAPS	(1<<KG_CAPSSHIFT)
+@@ -317,6 +323,7 @@
+ 	MOUSE_MS,
+ 	MOUSE_BM,
+ 	MOUSE_ELO,
++	TS_SLC7X0,
+ 	NUM_MOUSE_DRVS
+ } mouse_drv = MOUSE_NONE;
+ 
+@@ -500,6 +507,9 @@
+ 	mousedev = getenv("SDL_MOUSEDEV");
+ 	mouse_fd = -1;
+ 
++	const char *sdl_rot_flag;
++	sdl_rot_flag = getenv("SDL_FBROT");
++
+ 	/* ELO TOUCHSCREEN SUPPORT */
+ 
+ 	if( (mousedrv != NULL) && (strcmp(mousedrv, "ELO") == 0) ) {
+@@ -601,9 +611,39 @@
+ 			mouse_drv = MOUSE_MS;
+ 		}
+ 	}
++	/* Default to a SLC7X0 touch screen */
++	if ( mouse_fd < 0 ) {
++		mousedev = "/dev/ts";
++		mouse_fd = open(mousedev, O_RDONLY, 0);
++		if ( mouse_fd >= 0 ) {
++			FILE *pcal;
++			cal.ok = 0;
++			pcal = fopen(POINTERCAL, "r");
++			if(pcal == NULL){
++				fprintf(stderr, "Warning: cannot open " POINTERCAL ".\n");
++			}else{
++				int n;
++				n = fscanf(pcal, "%d %d %d %d %d %d %d",
++					   &cal.a, &cal.b, &cal.c, &cal.d, &cal.e, &cal.f, &cal.s);
++				if(n != 7){
++				    fprintf(stderr, "Warning: " POINTERCAL " is unknown format.\n");
++				}else{
++				    cal.ok = 1;
++				}
++				fclose(pcal);
++			}
++			if ( sdl_rot_flag == NULL ) {
++				cal.rotate = 0;
++			} else {
++				cal.rotate = atoi(sdl_rot_flag);
++			}
++			mouse_drv = TS_SLC7X0;
++		}
++	}
+ 	if ( mouse_fd < 0 ) {
+ 		mouse_drv = MOUSE_NONE;
+ 	}
++
+ 	return(mouse_fd);
+ }
+ 
+@@ -678,6 +718,10 @@
+ 			packetsize = ELO_PACKET_SIZE;
+ 			relative = 0;
+ 			break;
++		case TS_SLC7X0:
++			packetsize = 8;
++			relative = 0;
++			break;
+ 		case NUM_MOUSE_DRVS:
+ 			/* Uh oh.. */
+ 			packetsize = 0;
+@@ -810,6 +854,25 @@
+ 			*/
+ 
+ 			case MOUSE_ELO:
++			case TS_SLC7X0:
++				/* Get current mouse state */
++				button = ((mousebuf[i+1] << 8)+mousebuf[i])/500;
++		  		dx = (mousebuf[i+3] << 8)+mousebuf[i+2];
++		  		dy = (mousebuf[i+5] << 8)+mousebuf[i+4];
++				if(cal.ok){
++					long X, Y;
++					X = (cal.a * dx + cal.b * dy + cal.c) / cal.s;
++					Y = (cal.d * dx + cal.e * dy + cal.f) / cal.s;
++					dx = X;
++					dy = Y;
++				}
++				if(cal.rotate == 3){
++					int tmp;
++					tmp=dx;
++					dx = dy;
++					dy = 480-tmp;
++				}
++				break;
+ 			case NUM_MOUSE_DRVS:
+ 				/* Uh oh.. */
+ 				dx = 0;

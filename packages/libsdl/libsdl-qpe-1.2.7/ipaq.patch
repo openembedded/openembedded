@@ -1,15 +1,17 @@
-diff -urNd SDL-1.2.7_clean/src/video/qtopia/Makefile.am SDL-1.2.7/src/video/qtopia/Makefile.am
---- SDL-1.2.7_clean/src/video/qtopia/Makefile.am	2005-01-27 23:51:00.000000000 +0200
-+++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-01-27 23:55:28.000000000 +0200
-@@ -20,4 +20,4 @@
+Index: SDL-1.2.7/src/video/qtopia/Makefile.am
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/Makefile.am	2005-03-02 22:24:56.658626603 +0100
++++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-03-02 22:25:01.549935581 +0100
+@@ -22,4 +22,4 @@
  # overwrite USER variables
  CXXLD = $(CC)
  CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 -	$(AM_LDFLAGS) $(LDFLAGS) -lsupc++ -o $@
 +	$(AM_LDFLAGS) $(LDFLAGS) -lopiecore2 -lsupc++ -o $@
-diff -urNd SDL-1.2.7_clean/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
---- SDL-1.2.7_clean/src/video/qtopia/SDL_QWin.cc	2005-01-27 23:50:59.000000000 +0200
-+++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-01-27 23:53:37.000000000 +0200
+Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:24:55.100846680 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-03-02 22:25:01.550935440 +0100
 @@ -29,8 +29,11 @@
  #include "SDL_QWin.h"
  #include <qapplication.h>
@@ -72,9 +74,10 @@ diff -urNd SDL-1.2.7_clean/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtop
      default:
        scancode = SDLK_UNKNOWN;
        break;
-diff -urNd SDL-1.2.7_clean/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
---- SDL-1.2.7_clean/src/video/qtopia/SDL_sysvideo.cc	2005-01-27 23:50:58.000000000 +0200
-+++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-01-27 23:53:37.000000000 +0200
+Index: SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:24:46.873009084 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-03-02 22:25:01.551935299 +0100
 @@ -106,6 +106,9 @@
      MACHINE_SHARP_SLC760,
      MACHINE_SHARP_SLC860,
