@@ -5,7 +5,7 @@ MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
 DEPENDS="virtual/libc virtual/libqte2 python"
 
-SRC_URI := "http://opie.net.wox.org/python/dependencies/sip-x11-gpl-${PV}.tar.gz"
+SRC_URI := "http://www.vanille.de/mirror/sip-x11-gpl-${PV}.tar.gz"
 S       := "${WORKDIR}/sip-x11-gpl-${PV}/siplib"
 
 inherit qmake
