@@ -21,9 +21,9 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}.tar.gz \
 	   file://switches.h "
 
 SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
-SRC_URI_append_corgi		= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_shepherd		= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_corgi		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
+SRC_URI_append_shepherd		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
+SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
 SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 
