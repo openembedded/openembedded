@@ -1,11 +1,11 @@
 SECTION = "base"
 PR = "r1"
 
-DEPENDS = "libxml2"
+DEPENDS = "libxml2 intltool-native"
 
 SRC_URI = "http://freedesktop.org/Software/shared-mime-info/${PN}-${PV}.tar.gz"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gettext
 
 FILES_${PN} += "${datadir}/mime"
 #FILES_${PN}-doc += " ${datadir}/gtk-doc"
