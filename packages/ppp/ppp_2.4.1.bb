@@ -2,11 +2,12 @@ SECTION = "console/network"
 DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 LICENSE = "BSD GPLv2"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-2.4.1.tar.gz \
 	file://pppd.patch;patch=1 \
 	file://man.patch;patch=1 \
+	file://cifdefroute.dif;patch=1 \
 	file://pon \
 	file://poff \
 	file://init \

@@ -6,7 +6,7 @@ MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 PR = "r1"
 
-DEPENDS = "faad ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+DEPENDS = "faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz"
 S = "${WORKDIR}/vlc-${PV}"
