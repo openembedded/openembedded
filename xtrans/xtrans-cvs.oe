@@ -1,0 +1,12 @@
+SECTION="libs"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+
+SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans
+S=${WORKDIR}/xtrans
+
+inherit autotools libtool pkgconfig
+
+do_stage() {
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_DIR}/target/include libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+}
+

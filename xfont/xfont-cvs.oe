@@ -2,7 +2,7 @@ SECTION="libs"
 PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
-DEPENDS=virtual/libc zlib xproto-cvs
+DEPENDS=virtual/libc xproto-cvs xtrans-cvs zlib
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont
 S=${WORKDIR}/Xfont
