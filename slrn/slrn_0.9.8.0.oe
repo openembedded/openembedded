@@ -1,8 +1,9 @@
 DESCRIPTION = "slrn - console news reader"
-SECTION = "base"
+SECTION = "console/network"
 PRIORITY = "optional"
 MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
 DEPENDS = "slang"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
 	   file://m4.patch;patch=1 \

@@ -1,5 +1,7 @@
-DEPENDS = "ncurses"
 DESCRIPTION = "Tin is a powerful text mode news reader."
+SECTION = "console/network"
+DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
 	   file://makecfg-buildcc.patch;patch=1 \
