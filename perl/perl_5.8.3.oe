@@ -5,9 +5,9 @@ DEPENDS = "db3 perl-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1 \
 	file://config.sh-arm-linux.patch;patch=1 \
-	file://Makefile.SH.patch "
-
-FILES_${PN} += "${libdir}/perl5"
+	file://libperl-5.8.3-create-libperl-soname.patch;patch=1;pnum=0 \
+	file://Makefile.SH.patch \
+	file://config.sh-mipsel-linux"
 
 HOSTPERL=${STAGING_BINDIR}/perl${PV}
 
@@ -17,6 +17,12 @@ do_configure() {
 	cd Cross
 	rm Makefile.SH.patch
 	cp ${WORKDIR}/Makefile.SH.patch .
+	cp ${WORKDIR}/config.sh-mipsel-linux .
+	cat config.sh-${TARGET_ARCH}-${TARGET_OS} | sed -e's,./install_me_here,${D},g' > config.sh-${TARGET_ARCH}-${TARGET_OS}.new
+	mv config.sh-${TARGET_ARCH}-${TARGET_OS}.new config.sh-${TARGET_ARCH}-${TARGET_OS}
+	rm -f config
+	echo "ARCH = ${TARGET_ARCH}" > config
+	echo "OS = ${TARGET_OS}" >> config
 	oe_runmake patch 
 }
 
@@ -26,10 +32,12 @@ do_compile() {
 }
 
 do_install() {
-	rm -rf install_me_here
 	make install
-	mv install_me_here/* ${D}
-	rmdir install_me_here
+	cd ${D}/usr/bin/
+	rm perl
+	ln -s perl${PV} perl
+	cd ${D}/usr/lib
+	mv ${D}/usr/lib/perl5/5.8.3/CORE/libperl.so.${PV} .
 }
 
 do_stage() {
@@ -37,3 +45,15 @@ do_stage() {
 	install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
 }
 
+python populate_packages_prepend () {
+	libdir = oe.data.expand('${libdir}/perl5/${PV}', d)
+	do_split_packages(d, libdir, 'auto/(.*)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+	do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+}
+
+PACKAGES = "perl perl-misc perl-lib perl-dev perl-pod"
+FILES_${PN} = "/usr/bin/perl /usr/bin/perl${PV}"
+FILES_${PN}-lib = "/usr/lib/libperl.so*"
+FILES_${PN}-dev = "/usr/lib/perl5/5.8.3/CORE/"
+FILES_${PN}-pod = "/usr/lib/perl5/${PV}/pod"
+FILES_perl-misc = "/usr/bin/"

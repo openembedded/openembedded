@@ -1,7 +1,7 @@
 def legitimize_package_name(s):
-	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+')
+	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+').replace('/', '-')
 
-def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False, prepend=False):
+def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False, prepend=False, match_path=False):
 	import os, os.path, oe
 
 	dvar = oe.data.getVar('D', d, 1)
@@ -33,7 +33,11 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 
 	for o in objs:
 		import re, stat
-		m = re.match(file_regex, os.path.basename(o))
+		if match_path:
+			m = re.match(file_regex, o)
+		else:
+			m = re.match(file_regex, os.path.basename(o))
+		
 		if not m:
 			continue
 		f = os.path.join(dvar + root, o)
