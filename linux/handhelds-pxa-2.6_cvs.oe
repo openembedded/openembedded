@@ -2,6 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
+PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${CVSDATE}"
 #
 PACKAGE_ARCH = "ipaqpxa"
 KERNEL_CCSUFFIX = "-3.3.4"
@@ -10,7 +11,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel26  \
-           file://defconfig-${MACHINE}"
+           file://defconfig"
 
 S = "${WORKDIR}/kernel26"
 
@@ -18,12 +19,12 @@ inherit kernel
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "6"
+K_MICRO = "8"
 HHV     = "0"
 #
 
 KERNEL_PRIORITY = "${@'%d' % (int(oe.data.getVar('K_MAJOR',d,1)) * 100000000 + int(oe.data.getVar('K_MINOR',d,1)) * 1000000 + int(oe.data.getVar('K_MICRO',d,1)) * 10000 + float(oe.data.getVar('HHV',d,1)))}"
 do_configure() {
-	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-        (echo N; echo m; echo N) | oe_runmake oldconfig
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "No default configuration for ${MACHINE} available."
+        yes '' | oe_runmake oldconfig
 }
