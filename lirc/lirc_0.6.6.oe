@@ -3,26 +3,25 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "linux-${KERNEL_VERSION}"
+RDEPENDS = "linux-${KERNEL_VERSION} lirc-modules-${KERNEL_VERSION}"
 DEPENDS = "virtual/kernel"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
+S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools
 
-#export ARCH=${TARGET_ARCH}
-#export OS=${TARGET_OS}
-#export CROSS_COMPILE=${CROSS}
-
-KERNEL_VERSION = "`cat ${STAGING_LIBDIR}/../kernel/kernel-version`"
-KERNEL_SOURCE = "`cat ${STAGING_LIBDIR}/../kernel/kernel-source`"
-KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
+export KERNEL_VERSION = "`cat ${STAGING_LIBDIR}/../kernel/kernel-version`"
+export KERNEL_SOURCE = "`cat ${STAGING_LIBDIR}/../kernel/kernel-source`"
+export KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
 
 #FIXME: Caution: EXTRA_OECONF is arm-specific!
 
 EXTRA_OECONF = "--with-kerneldir=${KERNEL_SOURCE}                      \
                 --with-driver=sa1100                                   \ 
                 --without-x"
+
+EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
 
 do_stage() {
 	oe_soinstall tools/.libs/liblirc_client.so.0.0.0 ${STAGING_LIBDIR}/
@@ -32,15 +31,9 @@ do_stage() {
 #FIXME: Add to postinstall /bin/mknod $(DESTDIR)$(devdir)/lirc c 61 0
 
 do_install() {
-	install -d ${D}/{lib/modules/${KERNEL_VERSION}/kernel/drivers/char,${bindir}}
+	install -d ${D}/${bindir}
 
 	install -m 755 daemons/irrecord ${D}/${bindir}/irrecord
 	install -m 755 daemons/lircd ${D}/${bindir}/lircd
 	install -m 755 tools/rc ${D}/${bindir}/rc
-
-	install -m 755 drivers/lirc_sir/lirc_sir.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
 }
-
-PACKAGES_append=" lirc-modules"
-FILES_lirc-modules="/lib/modules"
-
