@@ -16,7 +16,6 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/${APPNAME} \
 	   file://post-session \
 	   file://pre-session \
 	   file://opie-login.conf"
-
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

@@ -10,13 +10,11 @@ BROKEN = 1
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/${APPNAME} \
 	   ${HANDHELDS_CVS};module=opie/core/apps/calibrate \
-	   ${HANDHELDS_CVS};module=opie/core/launcher
+	   ${HANDHELDS_CVS};module=opie/core/launcher \
 	   file://opie-session \
 	   file://post-session \
 	   file://pre-session \
 	   file://opie-login.conf"
-	   
-
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
