@@ -14,6 +14,8 @@ exec_prefix = "${prefix}"
 
 EXTRA_OECONF_append = " --program-prefix=${TARGET_SYS}-"
 
+PACKAGES = ""
+
 do_stage () {
 	oe_runmake install
 	install -d ${STAGING_DIR}/share/{libtool,aclocal}
