@@ -1,8 +1,14 @@
+PR = "r1"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libtool-cross"
 DESCRIPTION = "Set of tools for managing notebook power consumption."
+
+PACKAGES =+ "libapm libapm-dev "
+
+FILES_libapm = "${libdir}/libapm.so.*"
+FILES_libapm-dev = "${libdir}/libapm.* ${includedir}"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://debian.patch;patch=1 \
@@ -25,11 +31,11 @@ do_compile() {
 }
 
 do_stage() {
+	install -m 0644 apm.h ${STAGING_INCDIR}
 	oe_libinstall -so libapm ${STAGING_LIBDIR}
 }
 
 do_install() {
-
 	install -d ${D}/${sysconfdir}
 	install -d ${D}/${sysconfdir}/apm
 	install -d ${D}/${sysconfdir}/apm/event.d
@@ -50,6 +56,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/apmd_proxy.conf ${D}/${datadir}/apmd/
 	install -m 0644 ${WORKDIR}/default ${D}/${sysconfdir}/default/apmd
 	oe_libinstall -so libapm ${D}/${libdir}
+	install -m 0644 apm.h ${D}/${includedir}
 
 	cat ${WORKDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}/${sysconfdir}/init.d/apmd
 	chmod 755 ${D}/${sysconfdir}/init.d/apmd
