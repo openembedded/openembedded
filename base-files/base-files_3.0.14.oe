@@ -18,20 +18,15 @@ SRC_URI = " \
            file://etc/host.conf \
            file://etc/profile \
            file://shepherd/fstab \
-           file://shepherd/hostname \
            file://epia/fstab \
-           file://h3600/hostname \
            file://corgi/fstab \
-           file://corgi/hostname \
            file://fstab \
            file://husky/fstab \
-           file://husky/hostname \
            file://share/dot.bashrc \
            file://share/dot.profile \
            file://share/info.dir \
            file://share/motd.md5sums \
            file://collie/fstab \
-           file://collie/hostname \
            file://debian/FAQ \
            file://debian/directory-list \
            file://debian/control \
@@ -47,12 +42,8 @@ SRC_URI = " \
            file://debian/remove-base \
            file://debian/README.base \
            file://debian/current-md5sums \
-           file://hostname \
            file://poodle/fstab \
-           file://poodle/hostname \
            file://ramses/fstab \
-           file://ramses/hostname \
-           file://simpad/hostname \
            file://licenses/BSD \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
@@ -90,7 +81,7 @@ do_install () {
 
     install -d ${D}/${sysconfdir}
     oe_machinstall -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
-    oe_machinstall -m 0644 ${WORKDIR}/hostname ${D}/${sysconfdir}/hostname
+    echo ${MACHINE} > ${D}/${sysconfdir}/hostname
     oe_machinstall -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
     install -m 0644 ${WORKDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
     install -m 0644 ${WORKDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
