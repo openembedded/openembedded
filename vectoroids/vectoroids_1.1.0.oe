@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe virtual/libsdl"
+DEPENDS = "virtual/libqpe virtual/libsdl libsdl-image libsdl-mixer"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/vectoroids/src/vectoroids-${PV}.tar.gz"
 
