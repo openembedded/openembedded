@@ -1,5 +1,5 @@
-DESCRIPTION = "Virtual Machine for LucasArts Adventures"
-SECTION = "base"
+DESCRIPTION = "Virtual Machine for LucasArts Adventures for Qt/Embedded based palmtop environments w/ SDL."
+SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe libmad tremor libogg zlib"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "Clone of the classic arcade game Asteroids for Qtopia/Opie - based on SDL"
-SECTION = "base"
+SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

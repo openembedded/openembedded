@@ -1,6 +1,6 @@
-DESCRIPTION = "Billiard Game for Opie/Qtopia using libsdl"
+DESCRIPTION = "Billiard Game for Qt/Embedded based palmtop environments w/ SDL."
 HOMEPAGE = "http://www.chipx86.com/projects/billiardz/"
-SECTION = "base"
+SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

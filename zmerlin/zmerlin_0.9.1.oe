@@ -1,9 +1,8 @@
-DESCRIPTION = "Puzzle Game for Opie/Qtopia"
-SECTION = "base"
+DESCRIPTION = "Puzzle Game for Qt/Embedded based palmtop environments."
+SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe"
 
 SRC_URI = "http://user.cs.tu-berlin.de/~karlb/zmerlin/zmerlin.tar.gz"
 S = "${WORKDIR}/zmerlin"

@@ -1,10 +1,10 @@
-DESCRIPTION = "Chess Game for Opie/Qtopia using the Phalanx engine"
-SECTION = "base"
+DESCRIPTION = "Chess Game for Qt/Embedded based palmtop environments. \
+Uses the Phalanx chess engine."
+SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "phalanx"
-DEPENDS = "virtual/libqpe"
 
 SRC_URI = "http://www.houseoffish.org/knights/downloads/knights.tar.gz \
            file://libqpe-opie.patch;patch=1 \

@@ -1,5 +1,5 @@
-DESCRIPTION = "Classic Arcaede Shooter for Qtopia/Opie - based on SDL"
-SECTION = "base"
+DESCRIPTION = "Classic Arcade Shooter for Qt/Embedded based palmtop environments w/ SDL."
+SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
