@@ -1,13 +1,15 @@
-DESCRIPTION = "Smarty notes \
- IQNotes is notes kept in a hierarchical(tree like) manner. It handles todo, events, sketching. It can acts as a contact, password, credit card manager and even more, because is highly configurable. Data can be crypted by strong AES algorithm."
+DESCRIPTION = "IQNotes is notes kept in a hierarchical(tree like) manner. \
+It handles todo, events, sketching. It can acts as a contact, password, \
+credit card manager and even more, because is highly configurable. \
+Data can be crypted by strong AES algorithm."
 SECTION = "applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
 MAINTAINER = "Peter Vrabel <kybu@kybu.sk>"
 
-SRC_URI = ftp://iqnotes.kybu.sk/iqnotes-2.0.2-src.tar.bz2   \
-          file://md5.diff;patch=1"
+SRC_URI = "http://iqnotes.kybu.sk/iqnotes-2.0.2-src.tar.bz2 \
+           file://md5.diff;patch=1"
 S = "${WORKDIR}/iqnotes/iqnotes"
 
 inherit palmtop
