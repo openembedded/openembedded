@@ -25,8 +25,5 @@ export PATH PS1 OPIEDIR QPEDIR QTDIR
 
 umask 022
 
-if [ -d /mnt/ram/home/$USER ]; then
-  export HISTFILE="/mnt/ram/home/$USER/.ash_history"
-else
-  export HISTFILE=""
-fi
+# disable history writing
+export HISTFILE=""
