@@ -1,0 +1,68 @@
+#!/bin/sh
+
+mounted=
+
+/bin/mount -t proc proc /proc
+/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
+
+/bin/sleep 10
+
+if [ -z "$mounted" ] && /bin/mount -rt ext3 /dev/sda2 /mnt/tmpmnt ; then
+
+    if  [ -x /mnt/tmpmnt/bin/init ] &&
+	[ -d /mnt/tmpmnt/unslung ] && [ -r /mnt/tmpmnt/.unslung ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/sda2 ..."
+	/bin/echo "Firmware Version: `/bin/cat /mnt/tmpmnt/.unslung`"
+	mounted=/mnt/tmpmnt
+	/bin/echo "0x0802" > /proc/sys/kernel/real-root-dev
+	[ -r $mounted/unslung/rc.linuxrc ] && . $mounted/unslung/rc.linuxrc
+    fi
+
+    /bin/umount /mnt/tmpmnt
+fi
+
+if [ -z "$mounted" ] && /bin/mount -rt ext3 /dev/sdb2 /mnt/tmpmnt ; then
+
+    if  [ -x /mnt/tmpmnt/bin/init ] &&
+	[ -d /mnt/tmpmnt/unslung ] && [ -r /mnt/tmpmnt/.unslung ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/sdb2 ..."
+	/bin/echo "Firmware Version: `/bin/cat /mnt/tmpmnt/.unslung`"
+	mounted=/mnt/tmpmnt
+	/bin/echo "0x0812" > /proc/sys/kernel/real-root-dev
+	[ -r $mounted/unslung/rc.linuxrc ] && . $mounted/unslung/rc.linuxrc
+    fi
+
+    /bin/umount /mnt/tmpmnt
+fi
+
+if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/tmpmnt ; then
+
+    if  [ -x /mnt/tmpmnt/bin/init ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
+	mounted=/mnt/tmpmnt
+	/bin/echo "0x1f04" > /proc/sys/kernel/real-root-dev
+    fi
+
+    /bin/umount /mnt/tmpmnt
+fi
+
+if [ -z "$mounted" ] ; then
+    if  [ -x /mnt/tmpmnt/bin/init ] &&
+	[ -d /mnt/tmpmnt/unslung ] && [ -r /mnt/tmpmnt/.unslung ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/ram0 ..."
+	/bin/echo "Firmware Version: `/bin/cat /.unslung`"
+	mounted=/mnt/tmpmnt
+	/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
+	[ -r $mounted/unslung/rc.linuxrc ] && . $mounted/unslung/rc.linuxrc
+    fi
+fi
+
+if [ -z "$mounted" ] ; then
+    /bin/echo "Root filesystem cannot be found - dropping into shell ..."
+    echo "5" > /proc/sys/kernel/panic
+    exec /bin/sh
+fi
+
+/bin/umount /proc
+
+exit 0

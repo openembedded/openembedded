@@ -1,0 +1,54 @@
+SECTION = "base"
+
+PR = "r19"
+
+UNSLUNG_VERSION = "3.1-alpha"
+UNSLUNG_VARIANT ?= "standard"
+
+DEPENDS = "nslu2-linksys-libs"
+
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-ramdisk-${PV}/${UNSLUNG_VARIANT}', '${FILE_DIRNAME}/unslung-ramdisk-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+
+UNSLUNG_RAMDISK_EXTRA_SRC_URI ?=
+
+SRC_URI = "http://www.nslu2-linux.org/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
+	   file://README \
+	   file://linuxrc \
+	   file://flashfs \
+	   file://rc.unslung \
+	   file://unsling \
+	   file://unslung.patch \
+	   file://ipkg.conf \
+	   ${UNSLUNG_RAMDISK_EXTRA_SRC_URI}"
+
+S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r25"
+
+do_compile () {
+	sed -e s/X.Y/${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ ${WORKDIR}/unslung.patch | patch -d ${S} -p3
+
+	sed -i -e s/@version#/@version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ ${S}/home/httpd/html/home.htm
+	sed -i -e 's|>&nbsp;<|><a href="Unslung" class="mainmenu" target="_top">Unslung Doco</a><|' \
+		${S}/home/httpd/html/manhead.htm
+
+	install -m 755 ${WORKDIR}/linuxrc ${S}/linuxrc
+	install -m 755 ${WORKDIR}/flashfs ${S}/sbin/flashfs
+	install -m 755 ${WORKDIR}/unsling ${S}/sbin/unsling
+	install -m 755 ${WORKDIR}/rc.unslung ${S}/etc/rc.d/rc.unslung
+
+	install -m 755 ${WORKDIR}/ipkg.conf ${S}/etc/ipkg.conf
+
+	install -d ${S}/opt/doc
+	install -m 755 ${WORKDIR}/README ${S}/opt/doc/README
+	ln -s /opt/doc ${S}/home/httpd/html/Unslung
+
+	# Remove the libraries, because they are in nslu2-linksys-libs now
+	rm -rf ${S}/lib
+}
+
+do_install () {
+	( cd ${S} ; tar -c -v -f - --exclude '*\~*' --exclude '.patches' . ) | ( cd ${D} ; tar xvf - )
+}
+
+PACKAGES = "${PN}"
+FILES_${PN} = "/"
+RDEPENDS_${PN} = "nslu2-linksys-libs"

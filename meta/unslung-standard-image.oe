@@ -20,22 +20,12 @@ RDEPENDS = "${UNSLUNG_BASE_PACKAGES} ${UNSLUNG_EXTRA_RDEPENDS}"
 
 RRECOMMENDS = "${UNSLUNG_EXTRA_RRECOMMENDS}"
 
-UNSLUNG_DEVICE_TABLE = "${@oe.which(oe.data.getVar('OEPATH', d, 1), 'files/device_table-unslung.txt')}"
-
-IMAGE_FSTYPES = "ext2.gz jffs2"
-EXTRA_IMAGECMD_ext2.gz = "-f ${UNSLUNG_DEVICE_TABLE}"
-EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x20000"
-
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
 		
 inherit image_ipk
 
 # Note that anything in this function must be repeatable without having to rebuild the rootfs
 unslung_clean_image () {
-
-	makedevs -r ${IMAGE_ROOTFS} -D ${UNSLUNG_DEVICE_TABLE}
-
 	# Remove info from the local feed used to build the image
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg/lists/*
-
 }

@@ -3,13 +3,17 @@ nslu2_pack_image () {
 	install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/Redboot \
 			${STAGING_LIBDIR}/nslu2-binaries/Trailer \
 			${STAGING_LIBDIR}/nslu2-binaries/SysConf \
+			${STAGING_LIBDIR}/nslu2-binaries/switchbox.ext2.gz \
 			${DEPLOY_DIR_IMAGE}/slug/
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${IMAGE_BASENAME} ${DEPLOY_DIR_IMAGE}/slug/vmlinuz
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug/ramdisk.gz
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug/ramdisk.ext2.gz
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
 	cd ${DEPLOY_DIR_IMAGE}/slug
-	slugtool pack ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.img
-	rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/slug
+	slugimage -p -r Ramdisk:ramdisk.ext2.gz -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ramdisk.img
+	slugimage -p -r Ramdisk:switchbox.ext2.gz,Flashdisk:flashdisk.jffs2 -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img
+	rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
+	rm -rf ${DEPLOY_DIR_IMAGE}/slug
 }
 
-EXTRA_IMAGEDEPENDS += 'slugtool-native nslu2-linksys-firmware'
+EXTRA_IMAGEDEPENDS += 'slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware'
 IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "

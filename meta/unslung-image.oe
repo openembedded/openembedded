@@ -1,1 +1,1 @@
-DEPENDS = "unslung-switchbox-image unslung-standard-image unslung-able-image"
+DEPENDS = "unslung-standard-image unslung-able-image"
