@@ -6,7 +6,8 @@ SRC_URI="ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}shot-${SNAPDA
     file://${FILESDIR}/tslib.patch;patch=1 \
     file://${FILESDIR}/devfs.patch;patch=1 \
     file://${FILESDIR}/no-moc.patch;patch=1"
-DEPENDS=virtual/libc base/zlib base/libpng base/jpeg
+DEPENDS=virtual/libc base/zlib base/libpng base/jpeg base/uicmoc
+RDEPENDS=libc6 libjpeg62 libpng3 zlib1g
 PROVIDES=virtual/qte virtual/libqte2
 S="${WORKDIR}/qt-${PV}shot-${SNAPDATE}"
 
