@@ -29,7 +29,7 @@ EXTRA_OECONF = "--disable-menubar --disable-xim \
 		--with-codesets=eu,jp \
 		--enable-cursor-blink --enable-pointer-blank \
 		--enable-text-blink --enable-plain-scroll \
-		--enable-combining \
+		--enable-combining --enable-shared \
 		--with-x=${STAGING_LIBDIR}/.."
 EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
 		'XLIB=-L${STAGING_LIBDIR} -lX11'"
