@@ -33,6 +33,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz \
            file://51-pending-faxq-time;patch=1 \
            file://52-pending-metamail;patch=1 \
            file://install.patch;patch=1 \
+           file://policy.h \
            file://voice-defs.h"
 
 do_compile () {
