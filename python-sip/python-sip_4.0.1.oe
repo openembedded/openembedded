@@ -1,0 +1,52 @@
+DESCRIPTION = "Runtime helper for sip-generated python wrapper libraries"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libqte2 python"
+RDEPENDS = "python-core"
+PR = "r1"
+
+SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
+S = "${WORKDIR}/sip-${PV}/siplib"
+
+inherit qmake
+
+export QTDIR = "${STAGING_LIBDIR}/.."
+
+#
+# Warning: passing ' "FOO=BAR" results in double ""FOO=BAR"" which is then ignored by qmake
+#
+
+EXTRA_QMAKEVARS_POST = " TEMPLATE=lib \
+                         CONFIG=qte \
+                         DESTDIR= \
+                         VERSION=1.0.0 \
+                         TARGET=sip \
+                         DEFINES=SIP_QT_SUPPORT \
+                         INCLUDEPATH=. \
+                         INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
+                         INCLUDEPATH+=${STAGING_INCDIR}"
+
+
+#
+# It would be nice if I could use spaces, e.g. CONFIG=qt warn_off release dll
+#
+
+do_configure_prepend() {
+	cat siplib.sbf | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, > siplib.pro
+}
+
+do_stage() {
+	install -d ${STAGING_LIBDIR}/python2.3/site-packages/
+	oe_libinstall -so libsip ${STAGING_LIBDIR}/python2.3/site-packages/
+	install -m 0644 sip.h ${STAGING_INCDIR}/sip.h
+}
+
+do_install() {
+	install -d ${D}/${libdir}/python2.3/site-packages/
+	install libsip.so.1.0.0 ${D}/${libdir}/python2.3/site-packages/sip.so
+}
+
+FILES_${PN} = "${libdir}/python2.3/site-packages/sip.so"
+
