@@ -27,7 +27,6 @@ file://libkcal.pro.patch;patch=1 \
 # compile opie mail/pi
 
 # we can't build:
-# kabc/plugins/qtopia   - wants qpe/pim/  (Qtopia)
 # kabc/plugins/sharpdtm - wants libsl     (Sharp ROM 3.x closed source library)
 # kabc/plugins/ldap     - wants ldap libs (?)
 # kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
