@@ -13,6 +13,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-2.4.22.tar.bz2 \
 	   file://gcc3-userfuncs.patch;patch=1 \
 	   file://gcc-registerparanoia.patch;patch=1 \
 	   file://linux-2.4.24-attribute-used.patch;patch=1 \
+	   file://double_cpdo.patch;patch=1 \
            file://defconfig"
 S = "${WORKDIR}/linux-2.4.22"
 
