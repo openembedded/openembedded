@@ -1,0 +1,30 @@
+DESCRIPTION = "Plugins for GStreamer"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+DEPENDS = "gstreamer esound-gpe zlib libmikmod libmad libogg tremor libvorbis libid3tag virtual/libsdl gnome-vfs"
+
+SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
+	   file://ivorbis.patch;patch=1"
+
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-esd"
+
+inherit autotools  pkgconfig
+
+acpaths = "-I ${S}/common/m4 -I ${S}/m4"
+
+LIBV = "0.8"
+
+python populate_packages_prepend () {
+	gst_libdir = oe.data.expand('${libdir}/gstreamer-${LIBV}', d)
+
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s')
+	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
+}
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
+	install -m 0644 gst-libs/gst/gconf/gconf.h ${STAGING_INCDIR}/gstreamer-0.8/gst/gconf/
+	oe_libinstall -C gst-libs/gst/gconf -so libgstgconf-0.8
+}
