@@ -1,0 +1,26 @@
+DESCRIPTION = "A tool for retrieving kernel spinlock metering information."
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+DEPENDS = "virtual/kernel"
+
+SRC_URI = "ftp://oss.sgi.com/projects/lockmeter/download/lockstat-${PV}.tar.gz"
+S = "${WORKDIR}/lockstat"
+
+KERNEL_STAGING_DIR = "${STAGING_DIR}/${HOST_SYS}/kernel"
+export KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-version')}
+export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
+CFLAGS += " -I${KERNEL_SOURCE}/include"
+
+python () {
+# NOTE: any target machines with kernels supporting spinlock metering should
+# check the MACHINE variable here to prevent the SkipPackage.
+	raise oe.parse.SkipPackage("The target machine's kernel does not appear able to use spinlock metering.")
+}
+
+do_compile () {
+	oe_runmake
+}
+
+do_install () {
+	install -d ${D}/${sbindir}
+	install -m 0755 lockstat ${D}/${sbindir}/
+}
