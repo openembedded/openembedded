@@ -9,16 +9,16 @@ PACKAGES = "libgcc"
 
 EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
-		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
 		--disable-nls \
 		--enable-threads=posix \
 		--enable-symvers=gnu \
 		--enable-__cxa_atexit \
-		--enable-languages=c,c++ \
+		--enable-languages=c,c++,f77 \
 		--enable-shared \
 		--enable-c99 \
 		--enable-long-long \
-		--program-prefix=${TARGET_PREFIX}"
+		--program-prefix=${TARGET_PREFIX} \
+		${@['--with-headers=${CROSS_DIR}/${TARGET_SYS}/include', '']['${BUILD_SYS}' == '${HOST_SYS}']}"
 
 FILES_libgcc = "/lib/libgcc_s.so.*"
 
@@ -84,5 +84,10 @@ do_install () {
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}/lib
-	mv -f ${D}/${prefix}/*/lib/libgcc_s.so.* ${D}/lib
+	if [ "${BUILD_SYS}" == "${TARGET_SYS}" ]; then
+		# native builds drop one pathname component
+		mv -f ${D}/${prefix}/lib/libgcc_s.so.* ${D}/lib
+	else
+		mv -f ${D}/${prefix}/*/lib/libgcc_s.so.* ${D}/lib
+	fi
 }
