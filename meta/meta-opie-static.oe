@@ -213,6 +213,8 @@ opie-style-flat \
 opie-style-fresh \
 opie-style-liquid \
 opie-style-metal \
+opie-style-web \
+opie-style-phase \
 opie-theme "
 RDEPENDS_task-opie-styles = "${task-opie-styles}"
 DEPENDS += " ${task-opie-styles}"

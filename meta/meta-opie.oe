@@ -1,6 +1,5 @@
 DESCRIPTION = "Meta-package for Opie"
-DEPENDS = "qte-for-opie libqpe-opie libopie2"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
+DEPENDS = "qte-for-opie libqpe-opie libopie2 manufacturers"
 
 def opie_packages(d):
 	import oe, os
