@@ -17,6 +17,8 @@ inherit opie
 # FILES plugins/application/libbuttonsettings.so* bin/buttonsettings apps/Settings/Button.desktop pics/buttonsettings/*.png
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/pics/devicebuttons/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/pics/devicebuttons/*.png ${D}${palmtopdir}/pics/devicebuttons/
 }
 
