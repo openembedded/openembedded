@@ -15,16 +15,18 @@ EXTRA_QMAKEVARS_POST = "DEFINES-=FPM_INTEL"
 
 do_install() {
         install -d ${D}/${palmtopdir}/bin \
-		   ${D}/${palmtopdir}/apps/Games,pics/billiardz \
+		   ${D}/${palmtopdir}/apps/ \
+		   ${D}/${palmtopdir}/apps/Games \
+		   ${D}/${palmtopdir}/pics \
 		   ${D}/${palmtopdir}/pics/billiardz
-        install -D -m 0755 billiardz ${D}/${palmtopdir}/bin/billiardz
-        install -D -m 0644 billiardz.png ${D}/${palmtopdir}/pics/billiardz.png
+        install -m 0755 billiardz ${D}/${palmtopdir}/bin/billiardz
+        install -m 0644 billiardz.png ${D}/${palmtopdir}/pics/billiardz.png
 	cp -a images/*.png ${D}/${palmtopdir}/pics/billiardz
 
-	echo "[Desktop Entry] " >${D}/${palmtopdir}/Games/billiardz.desktop
-	echo "Comment=Billiards for Zaurus" >>${D}/${palmtopdir}/Games/billiardz.desktop
-	echo "Exec=billiardz" >>${D}/${palmtopdir}/Games/billiardz.desktop
-	echo "Icon=billiardz" >>${D}/${palmtopdir}/Games/billiardz.desktop
-	echo "Type=Application" >>${D}/${palmtopdir}/Games/billiardz.desktop
-	echo "Name=BilliardZ" >>${D}/${palmtopdir}/Games/billiardz.desktop
+	echo "[Desktop Entry] " >${D}/${palmtopdir}/apps/Games/billiardz.desktop
+	echo "Comment=Billiards for Zaurus" >>${D}/${palmtopdir}/apps/Games/billiardz.desktop
+	echo "Exec=billiardz" >>${D}/${palmtopdir}/apps/Games/billiardz.desktop
+	echo "Icon=billiardz" >>${D}/${palmtopdir}/apps/Games/billiardz.desktop
+	echo "Type=Application" >>${D}/${palmtopdir}/apps/Games/billiardz.desktop
+	echo "Name=BilliardZ" >>${D}/${palmtopdir}/apps/Games/billiardz.desktop
 }
