@@ -14,9 +14,6 @@ S = "${WORKDIR}/library"
 inherit qmake
 
 QMAKE_PROFILES = "library.pro"
-
-export QTDIR = "${STAGING_LIBDIR}/.."
-export OPIEDIR = "${STAGING_LIBDIR}/.."
 EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
 EXTRA_QMAKEVARS_POST = "DESTDIR="
 

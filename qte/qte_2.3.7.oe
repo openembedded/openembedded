@@ -97,9 +97,11 @@ do_compile() {
 }
 
 do_stage() {
-	oe_libinstall -so -C lib libqte ${STAGING_LIBDIR}
+	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/lib
+	oe_libinstall -so -C lib libqte ${STAGING_DIR}/${HOST_SYS}/qt2/lib
 	rm -f include/qxt.h
-	cp -pfLR include/* ${STAGING_INCDIR}/
+	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
+	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
 }
 
 do_install() {
