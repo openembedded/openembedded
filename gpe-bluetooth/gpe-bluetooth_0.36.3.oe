@@ -13,5 +13,6 @@ FILES_${PN} += '${datadir}/bluez-pin'
 SRC_URI = "${GPE_MIRROR}/gpe-bluetooth-${PV}.tar.gz"
 
 pkg_postinst() {
-	chmod u+s /sbin/hciattach /sbin/hciconfig /usr/lib/gpe-bluetooth/bnep-helper /usr/lib/gpe-bluetooth/rfcomm-helper
+#!/bin/sh
+chmod u+s /sbin/hciattach /sbin/hciconfig /usr/lib/gpe-bluetooth/bnep-helper /usr/lib/gpe-bluetooth/rfcomm-helper
 }

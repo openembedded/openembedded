@@ -13,3 +13,8 @@ inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults"
+
+pgk_postinst() {
+#!/bin/sh
+chmod u+s /sbin/hciattach /sbin/hciconfig
+}
