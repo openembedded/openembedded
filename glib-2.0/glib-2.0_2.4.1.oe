@@ -7,6 +7,10 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "virtual/libc glib-2.0-native"
+PACKAGES =+ "glib-2.0-utils "
+
+LEAD_SONAME = "libglib-2.0.*"
+FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"
 
@@ -16,7 +20,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/glib-${PV}"
 
-inherit autotools  pkgconfig
+inherit autotools pkgconfig
 
 acpaths = ""
 do_configure_prepend () {
@@ -96,6 +100,7 @@ do_stage () {
 	install -m 0644 ${S}/gobject/gvaluetypes.h ${STAGING_INCDIR}/glib-2.0/gobject/gvaluetypes.h
 	install -m 0644 ${S}/gobject/gobjectnotifyqueue.c ${STAGING_INCDIR}/glib-2.0/gobject/gobjectnotifyqueue.c
 	install -m 0644 ${S}/gobject/gmarshal.h ${STAGING_INCDIR}/glib-2.0/gobject/gmarshal.h
-	install -m 0644 ${S}/m4macros/glib-2.0.m4 ${STAGING_DATADIR}/aclocal/
-	install -m 0644 ${S}/m4macros/glib-gettext.m4 ${STAGING_DATADIR}/aclocal/
+	install -d ${STAGING_DATADIR}/aclocal
+	install -m 0644 ${S}/m4macros/glib-2.0.m4 ${STAGING_DATADIR}/aclocal/glib-2.0.m4
+	install -m 0644 ${S}/m4macros/glib-gettext.m4 ${STAGING_DATADIR}/aclocal/glib-gettext.m4
 }
