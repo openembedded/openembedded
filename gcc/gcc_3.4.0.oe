@@ -76,9 +76,10 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-arm-tune.patch;patch=1 \
 	   file://gcc34-15089.patch;patch=1 \
 	   file://gcc34-15666.patch;patch=1 \
-	file://gcc-uclibc-3.4.0-100-conf.patch;patch=1 \
-	file://gcc-uclibc-3.4.0-120-softfloat.patch;patch=1 \
-	file://gcc-uclibc-3.4.0-200-code.patch;patch=1"
+	   file://gcc-uclibc-3.4.0-100-conf.patch;patch=1 \
+	   file://gcc-uclibc-3.4.0-200-code.patch;patch=1 \
+	   file://gcc-3.4.0-arm-lib1asm.patch;patch=1 \
+	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1"
 
 MIRRORS_prepend () {
 ${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
@@ -135,10 +136,10 @@ B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 EXTRA_OECONF = "--disable-nls \
                 --with-gnu-ld \
                 --enable-shared \
-                --enable-multilib \
                 --enable-target-optspace \
                 --enable-languages=c,c++,f77 \
                 --enable-threads=posix \
+                --enable-multilib \
                 --enable-c99 \
                 --enable-long-long \
                 --enable-symvers=gnu \
