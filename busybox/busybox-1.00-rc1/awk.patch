@@ -1,0 +1,10 @@
+--- editors/awk.c~	2004-03-15 08:28:31.000000000 +0000
++++ editors/awk.c	2004-07-05 19:16:14.000000000 +0100
+@@ -1211,6 +1211,7 @@
+ 
+ 	if (c & TC_GRPSTART) {
+ 		while(next_token(TC_GRPSEQ | TC_GRPTERM) != TC_GRPTERM) {
++			if (t.tclass & TC_NEWLINE) continue;
+ 			rollback_token();
+ 			chain_group();
+ 		}
