@@ -41,7 +41,7 @@ do_compile() {
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
 	done
 
-	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h
+	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h
 	do
 		install -m 0644 opiepim/private/$i ${STAGING_INCDIR}/opie2/private/
 	done

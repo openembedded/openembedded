@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite3 libpcap"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
-PR = "12"
+PR = "r12"
 PV = "1.1.8+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
