@@ -7,8 +7,7 @@ DEPENDS = "x11 ice"
 DESCRIPTION = "Session management library"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=SM \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=SM"
 S = "${WORKDIR}/SM"
 
 inherit autotools pkgconfig 
