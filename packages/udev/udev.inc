@@ -1,6 +1,7 @@
 DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
+PR = "r1"
 
 PACKAGES =+ "udev-utils"
 FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
@@ -28,7 +29,7 @@ EXTRA_OEMAKE = "-e \
 do_install () {
 	install -d ${D}${usrsbindir} \
 		   ${D}${sbindir}
-	oe_runmake 'DESTDIR=${D}' install
+	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
 }
