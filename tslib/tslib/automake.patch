@@ -1,0 +1,97 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- tslib/configure.in~automake
++++ tslib/configure.in
+@@ -22,18 +22,15 @@
+ fi
+ 
+ AC_MSG_CHECKING(--enable-inputapi argument)
+-AC_ARG_ENABLE(inputapi, [  --enable-inputapi       Enable use of the input API [default=yes]],
+-  , [enable_inputapi="yes"])
++AC_ARG_ENABLE(inputapi,
++	      [  --enable-inputapi       Enable use of the input API [default=no]],
++	      [AC_DEFINE(USE_INPUT_API,1)],
++	      [enable_inputapi="no"])
+ AC_MSG_RESULT($enable_inputapi)
+-if test "$enable_inputapi" = "yes"; then
+-	INPUTAPIFLAG="-DUSE_INPUT_API"
+-else
+-	INPUTAPIFLAG=""
+-fi
++AH_TEMPLATE([USE_INPUT_API],
++            [Define if using the input layer.])
+ 
+ AC_SUBST(DEBUGFLAGS)
+-AC_SUBST(INPUTAPIFLAG)
+-
+ AC_SUBST(PLUGINS)
+ 
+ AM_DISABLE_STATIC
+--- tslib/./src/Makefile.am~automake
++++ tslib/./src/Makefile.am
+@@ -9,7 +9,7 @@
+ # $Id$
+ #
+ 
+-CFLAGS		:= $(CFLAGS) -DPLUGIN_DIR=\"@PLUGIN_DIR@\" -DTS_CONF=\"@TS_CONF@\" $(DEBUGFLAGS) $(INPUTAPIFLAG)
++AM_CFLAGS	 = -DPLUGIN_DIR=\"@PLUGIN_DIR@\" -DTS_CONF=\"@TS_CONF@\" $(DEBUGFLAGS)
+ 
+ noinst_HEADERS   = tslib-private.h tslib-filter.h
+ include_HEADERS  = tslib.h
+--- tslib/./plugins/Makefile.am~automake
++++ tslib/./plugins/Makefile.am
+@@ -9,24 +9,24 @@
+ # $Id$
+ #
+ 
+-CFLAGS                  := $(CFLAGS) $(DEBUGFLAGS) $(INPUTAPIFLAG)
+-INCLUDES		 = -I$(top_srcdir)/src
+-LDFLAGS			:= $(LDFLAGS) -rpath $(PLUGIN_DIR)
+-#LTVSN			:= -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+-#			   -release $(LT_RELEASE)
+-LTVSN			:= -avoid-version
+-LIBS			 =
++AM_CFLAGS		= $(DEBUGFLAGS)
++AM_LDFLAGS		= -rpath $(PLUGIN_DIR)
++INCLUDES		= -I$(top_srcdir)/src
+ 
+-plugindir		 = $(PLUGIN_DIR)
++#LTVSN			= -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
++#			   -release $(LT_RELEASE)
++LTVSN			= -avoid-version
++LIBS			=
++plugindir		= $(PLUGIN_DIR)
+ 
+-EXTRA_LTLIBRARIES	 = variance.la dejitter.la linear.la
+-plugin_LTLIBRARIES	 = $(PLUGINS)
++EXTRA_LTLIBRARIES	= variance.la dejitter.la linear.la
++plugin_LTLIBRARIES	= $(PLUGINS)
+ 
+-variance_la_SOURCES	 = variance.c
+-variance_la_LDFLAGS	 = -module $(LTVSN)
++variance_la_SOURCES	= variance.c
++variance_la_LDFLAGS	= -module $(LTVSN)
+ 
+-dejitter_la_SOURCES	 = dejitter.c
+-dejitter_la_LDFLAGS	 = -module $(LTVSN)
++dejitter_la_SOURCES	= dejitter.c
++dejitter_la_LDFLAGS	= -module $(LTVSN)
+ 
+-linear_la_SOURCES	 = linear.c
+-linear_la_LDFLAGS	 = -module $(LTVSN)
++linear_la_SOURCES	= linear.c
++linear_la_LDFLAGS	= -module $(LTVSN)
+--- tslib/./tests/Makefile.am~automake
++++ tslib/./tests/Makefile.am
+@@ -9,7 +9,7 @@
+ # $Id$
+ #
+ 
+-CFLAGS                  :=  $(CFLAGS) $(DEBUGFLAGS) $(INPUTAPIFLAG)
++AM_CFLAGS               = $(DEBUGFLAGS)
+ INCLUDES		= -I$(top_srcdir)/src
+ 
+ bin_PROGRAMS		= ts_test ts_calibrate ts_print ts_print_raw
