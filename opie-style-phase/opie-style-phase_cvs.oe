@@ -3,7 +3,7 @@ It is based on http://www.usermode.org/code.html Phase 0.4."
 SECTION = "opie/styles"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "phasestyle"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/styles/phase"

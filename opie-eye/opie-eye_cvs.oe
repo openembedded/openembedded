@@ -5,9 +5,8 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libopiemm2"
 RDEPENDS = "opie-advancedfm-pics"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "opie-eye"
-PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/graphics/opie-eye \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \

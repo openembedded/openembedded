@@ -3,7 +3,7 @@ This applet displays the amount of free memory and manages the swap partition"
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "memoryapplet"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/memoryapplet \

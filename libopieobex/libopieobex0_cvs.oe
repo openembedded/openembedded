@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "opie-taskbar openobex"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "obex"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/obex \

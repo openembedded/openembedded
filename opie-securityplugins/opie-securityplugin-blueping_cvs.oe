@@ -3,7 +3,7 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "opie-security bluez-utils"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "multiauthbluepingplugin"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/blueping \

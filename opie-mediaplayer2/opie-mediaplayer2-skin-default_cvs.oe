@@ -2,10 +2,10 @@ DESCRIPTION = "Skin for opie-mediaplayer2"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "1.1.6-cvs-${CVSDATE}"
-APPNAME="opieplayer2"
+PV = "1.1.6+cvs-${CVSDATE}"
+APPNAME = "opieplayer2"
 
-RPROVIDES="opie-mediaplayer2-skin"
+RPROVIDES = "opie-mediaplayer2-skin"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 

@@ -4,8 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-button-settings-pics"
-PV = "1.1.6-cvs-${CVSDATE}"
-PR = "r1"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "buttonsettings"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/settings/button \

@@ -1,6 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Ethernet manufacturer database"
-MAINTAINER = "Michael 'Mickey' Lauer"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc"
 S = "${WORKDIR}/etc"

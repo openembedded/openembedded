@@ -4,10 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = " libqtaux2"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "embeddedkonsole"
 RDEPENDS = "qte-font-fixed"
-PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/${APPNAME} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \

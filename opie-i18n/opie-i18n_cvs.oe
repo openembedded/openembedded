@@ -1,11 +1,10 @@
 DESCRIPTION = "Opie i18n files"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-lrelease-native"
-PV = "1.1.6-cvs-${CVSDATE}"
-PR = "r2"
+PV = "1.1.6+cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/dict"

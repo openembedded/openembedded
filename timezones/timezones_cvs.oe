@@ -1,11 +1,9 @@
 DESCRIPTION = "Timezone data"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PV = "1.1.6-cvs-${CVSDATE}"
-
-PR = "r1"
+PV = "1.1.6+cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root"
 S = "${WORKDIR}/root"
@@ -23,4 +21,4 @@ do_install() {
 	done
 }
 
-FILES_${PN} = usr/share/zoneinfo/[A-Z]*
+FILES_${PN} = "usr/share/zoneinfo/[A-Z]*"

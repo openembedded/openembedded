@@ -3,7 +3,7 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPTYPE = "binary"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc "

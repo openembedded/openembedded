@@ -2,7 +2,7 @@ DESCRIPTION = "A flatter widget style than flat :)"
 SECTION = "opie/styles"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.1.6+cvs-${CVSDATE}"
 APPNAME = "webstyle"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/styles/web"
