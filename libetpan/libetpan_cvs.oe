@@ -9,7 +9,7 @@ TAG="rel-0-33-b"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan"
 
-inherit autotools pkgconfig gettext gettext
+inherit autotools pkgconfig gettext
 
 EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. --disable-db"
 

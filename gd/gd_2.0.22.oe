@@ -6,7 +6,7 @@ DEPENDS = "libpng jpeg zlib"
 SRC_URI = "http://www.boutell.com/gd/http/gd-${PV}.tar.gz"
 S = "${WORKDIR}/gd-${PV}"
 
-inherit autotools gettext gettext
+inherit autotools gettext
 
 EXTRA_OECONF += " --with-zlib=${STAGING_LIBDIR}/.. \
                   --with-png=${STAGING_LIBDIR}/.. \

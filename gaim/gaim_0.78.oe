@@ -11,4 +11,4 @@ PREMIRRORS_prepend () {
 }
 EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
 
-inherit autotools  gettext gettext
+inherit autotools  gettext

@@ -1,7 +1,7 @@
 SECTION = "x11/utils"
 PR = "r2"
 
-inherit gnome gettext gettext
+inherit gnome gettext
 
 DEPENDS = "gtk+ libgnomeui libbonoboui gnome-vfs gconf gettext libglade \
 	libgnomeprint libgnomeprintui gnome-common"

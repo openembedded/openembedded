@@ -9,4 +9,4 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/inkscape/inkscape-${PV}.tar.bz2"
 S = "${WORKDIR}/inkscape-${PV}"
 
-inherit autotools gettext gettext
+inherit autotools gettext

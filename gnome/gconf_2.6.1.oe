@@ -11,7 +11,7 @@ S = "${WORKDIR}/GConf-${PV}"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-inherit autotools pkgconfig gettext gettext
+inherit autotools pkgconfig gettext
 
 HEADERS = "gconf.h gconf-changeset.h gconf-listeners.h gconf-schema.h gconf-value.h gconf-error.h gconf-engine.h gconf-client.h gconf-enum-types.h"
 

@@ -18,7 +18,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/glib-${PV}"
 
-inherit autotools pkgconfig native gettext gettext
+inherit autotools pkgconfig native gettext
 
 acpaths = ""
 do_configure_prepend () {

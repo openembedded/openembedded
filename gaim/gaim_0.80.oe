@@ -21,7 +21,7 @@ FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 	    ${libdir}/bonobo/servers"
 FILES_${PN}-dev += "${libdir}/gaim/*.la"
 
-inherit autotools  gettext gettext
+inherit autotools  gettext
 
 python populate_packages_prepend () {
 	root = oe.data.expand('${libdir}/gaim', d)
