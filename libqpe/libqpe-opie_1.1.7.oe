@@ -23,6 +23,7 @@ CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-r
 CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
 
 do_compile() {
         mkdir -p ${STAGING_INCDIR}/qpe \

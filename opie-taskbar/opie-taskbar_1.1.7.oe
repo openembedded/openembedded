@@ -27,6 +27,7 @@ S = "${WORKDIR}/launcher"
 CXXFLAGS_append_husky = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_corgi = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_shepherd = " -DOPIE_NO_WINDOWED "
+CXXFLAGS_append_tosa = " -DOPIE_NO_WINDOWED "
 
 # Caps/Numlock icons for devices with keyboard
 EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
