@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.9+cvs-${CVSDATE}"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/root"
 S = "${WORKDIR}/root"
@@ -20,7 +20,7 @@ python populate_packages_prepend() {
         pkgpattern = "timezones-%s"
         pkgdescription = "Timezone for %s"
 
-        do_split_packages(d, root='${datadir}/zoneinfo/', file_regex=pkgregex, output_pattern=pkgpattern, 
+        do_split_packages(d, root=bb.data.expand('${datadir}/zoneinfo/', d), file_regex=pkgregex, output_pattern=pkgpattern, 
                           description=pkgdescription,allow_dirs=True )
 }
 
