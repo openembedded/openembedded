@@ -2,6 +2,7 @@ inherit package
 DEPENDS_prepend="${@["ipkg-utils-native ", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
 BOOTSTRAP_EXTRA_RDEPENDS += "ipkg-collateral ipkg ipkg-link"
 BOOTSTRAP_EXTRA_DEPENDS  += "ipkg-collateral ipkg ipkg-link"
+PACKAGEFUNCS += "do_package_ipk"
 
 python package_ipk_fn () {
 	from bb import data
@@ -59,11 +60,9 @@ python package_ipk_install () {
 		raise bb.build.FuncFailed
 }
 
-python package_ipk_do_package_ipk () {
+python do_package_ipk () {
 	import copy # to back up env data
 	import sys
-
-	bb.build.exec_func('read_subpackage_metadata', d)
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -226,7 +225,3 @@ python package_ipk_do_package_ipk () {
 			pass
 		del localdata
 }
-
-EXPORT_FUNCTIONS do_package_ipk
-
-addtask package_ipk after do_package before do_build

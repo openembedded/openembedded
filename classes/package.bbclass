@@ -560,13 +560,12 @@ python package_do_split_locales() {
 	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
+PACKAGEFUNCS = "do_install package_do_split_locales \
+		populate_packages package_do_shlibs \
+		package_do_pkgconfig read_shlibdeps"
 python package_do_package () {
-	bb.build.exec_func('do_install', d)
-	bb.build.exec_func('package_do_split_locales', d)
-	bb.build.exec_func('populate_packages', d)
-	bb.build.exec_func('package_do_shlibs', d)
-	bb.build.exec_func('package_do_pkgconfig', d)
-	bb.build.exec_func('read_shlibdeps', d)
+	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
+		bb.build.exec_func(f, d)
 }
 
 do_package[dirs] = "${D}"

@@ -686,7 +686,6 @@ python __anonymous () {
 	try:
 		bb.build.exec_func('read_manifest', d)
 		bb.build.exec_func('parse_manifest', d)
-		bb.build.exec_func('read_shlibdeps', d)
 	except exceptions.KeyboardInterrupt:
 		raise
 	except Exception, e:
