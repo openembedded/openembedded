@@ -28,7 +28,7 @@ do_configure_prepend() {
 FILES_${PN} += "${datadir}/themes"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include"
 
-EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-xkb"
+EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-xkb --disable-glibtest"
 # --disable-cruft
 
 LIBV = "2.4.0"
