@@ -25,7 +25,8 @@ SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${
            file://disable-pcmcia-probe.patch;patch=1 \
            file://linux-2.4.18-list_move.patch;patch=1 \
            file://defconfig-${MACHINE} \
-           file://module_licence.patch;patch=1"
+           file://module_licence.patch;patch=1 \
+           file://sound-2.4.18r2.patch;patch=1  "
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
@@ -49,7 +50,8 @@ EXTRA_OEMAKE = ""
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
 module_autoload_sa1100_bi = "sa1100_bi"
-
+module_autoload_collie_ssp = "collie_ssp"
+module_autoload_collie_tc35143af = "tc35143af"
 #
 # FIXME: Use configuration system
 #
@@ -73,12 +75,12 @@ do_configure_prepend() {
                 echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
         fi
-	echo "CONFIG_CMDLINE=\"$CMDLINE mem=${mem}M\"" >> ${S}/.config
+        echo "CONFIG_CMDLINE=\"$CMDLINE mem=${mem}M\"" >> ${S}/.config
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR}/images
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${DATETIME}
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${DATETIME}
 }
 
 do_deploy[dirs] = "${S}"
