@@ -1,3 +1,6 @@
+collie/sharp_mmcsd_m.o
+corgi/sharp_mmcsd_m.o
+husky/sharp_mmcsd_m.o
 kergoth@direwolf.ppp.ti.com|tmp/base/apache-2.0.47-r0/httpd-2.0.47/.patches/configure.patch|20031017000313|22103|55fb394e85ed9a27
 kergoth@direwolf.ppp.ti.com|tmp/base/avr-libc-1.0-r0/avr-libc-1.0/.patches/configure.patch|20031017000314|20947|86c76bf82d67da92
 kergoth@direwolf.ppp.ti.com|tmp/base/base-passwd-3.5.4-r0/base-passwd-3.5.4/.patches/configure.patch|20031017000313|25095|6eff6e911a09618d
@@ -50,3 +53,6 @@ kergoth@direwolf.ppp.ti.com|tmp/base/tremor-20030325-r0/Tremor/.patches/configur
 kergoth@direwolf.ppp.ti.com|tmp/base/tslib-1.0-r0/tslib/.patches/configure.patch|20031017000313|10146|424e0abc38251984
 kergoth@direwolf|tmp/base/make-3.80-r0/make-3.80/s.conftest|20031121052259|39582|c6bf26cbc42ce43
 linux-c860-20040124.patch
+poodle/sharp_mmcsd_m.o
+shepherd/sharp_mmcsd_m.o
+tosa/sharp_mmcsd_m.o
