@@ -21,9 +21,23 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
+CMDLINE_CONSOLE ?= "ttyS0,115200n8"
+CMDLINE_ROOT = "root=/dev/ram0 initrd=0x01000000,10M mem=32M@0x00000000"
+CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
+
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}.bin-${DATETIME}
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile
+
