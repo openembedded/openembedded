@@ -4,11 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "libpcap-0.8.1"
 
 SRC_URI = "http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz"
-SRC_URI_append_mtx-1 = " file://tcpdump_configure_no_-O2.patch;patch=1;pnum=1"
 
 inherit autotools 
-
-CFLAGS_mtx-1 := "${@'${CFLAGS}'.replace('-O2', '')}"
 
 do_configure() {
 	gnu-configize
