@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- cumulus/whatsthat.cpp~qtooltip	2004-01-24 12:00:59.000000000 +0100
++++ cumulus/whatsthat.cpp	2004-01-29 19:30:04.000000000 +0100
+@@ -16,7 +16,7 @@
+ ***********************************************************************/
+ 
+ #include "whatsthat.h"
+-#include <qtooltip.h>
++#include "./qtooltip.h"
+ #include <qstylesheet.h>
+ #include <qapplication.h>
+ #include <qpainter.h>
+--- cumulus/qtooltip.h~qtooltip	2004-01-24 12:01:00.000000000 +0100
++++ cumulus/qtooltip.h	2004-01-29 19:31:16.000000000 +0100
+@@ -43,7 +43,7 @@
+ public: 
+ 	QToolTip(){};
+ 	~QToolTip(){};
+-  QPalette palette();
++  static QPalette palette();
+ };
+ 
+ #endif

@@ -1,29 +1,24 @@
-DESCRIPTION = "OpenOffice.org Impress presentation viewer for Qt/E based Palmtop environments"
-SECTION = "base"
+DESCRIPTION = "A flightcomputer application for Qt/E based Palmtop Environments"
+SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
+APPTYPE = "binary"
+APPNAME = "cumulus"
+APPDESKTOP = "${S}"
+PR = "r1"
 
 SRC_URI = "http://cumulus.kflog.org/download/src/cumulus-${PV}.src.tar.bz2 \
            file://qtooltip.patch;patch=1"
-S = "${WORKDIR}/cumulus-arm-${PV}"
+S = "${WORKDIR}/cumulus-arm-${PV}/cumulus"
 
-inherit palmtop
+inherit opie
 
 EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=-I."
 
-do_configure_prepend() {
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=cumulus\n" >cumulus.pro
-}
-
 do_install() {
-        install -d ${D}/${palmtopdir}/bin \
-		   ${D}/${palmtopdir}/apps/Applications \
-		   ${D}/${palmtopdir}/pics
-        install -D -m 0755 cumulus/cumulus ${D}/${palmtopdir}/bin/cumulus
-        install -D -m 0644 cumulus/cumulus.desktop ${D}/${palmtopdir}/Applications/cumulus.desktop
-        install -D -m 0644 cumulus.png ${D}/${palmtopdir}/pics/cumulus.png
         install -d ${D}/${palmtopdir}/pics/mapicons
-        cp -a cumulus/map-icons/* ${D}/${palmtopdir}/pics/mapicons
+        install -m 0644 ../cumulus.png ${D}/${palmtopdir}/pics/cumulus.png
+        cp -a map-icons/* ${D}/${palmtopdir}/pics/mapicons
 }
