@@ -1,7 +1,7 @@
 def legitimize_package_name(s):
 	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+')
 
-def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False):
+def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False, prepend=False):
 	import os, os.path, oe
 
 	dvar = oe.data.getVar('D', d, 1)
@@ -43,11 +43,18 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 		on = legitimize_package_name(m.group(1))
 		pkg = output_pattern % on
 		if not pkg in packages:
-			packages.append(pkg)
-			if aux_files_pattern:
-				oe.data.setVar('FILES_' + pkg, "%s %s" % (os.path.join(root, o), aux_files_pattern % on), d)
+			if prepend:
+				packages = [pkg] + packages
 			else:
-				oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+				packages.append(pkg)
+			the_files = [os.path.join(root, o)]
+			if aux_files_pattern:
+				if type(aux_files_pattern) is list:
+					for fp in aux_files_pattern:
+						the_files.append(fp % on)	
+				else:
+					the_files.append(aux_files_pattern % on)
+			oe.data.setVar('FILES_' + pkg, " ".join(the_files), d)
 			if extra_depends != '':
 				oe.data.setVar('RDEPENDS_' + pkg, extra_depends, d)
 			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
