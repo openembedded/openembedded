@@ -33,6 +33,10 @@ PREFERRED_PROVIDERS = "virtual/libc:glibc virtual/qte:qte-for-opie virtual/libqp
 # for a machine not known to OpenEmbedded. Better use the MACHINE attribute (see above)
 TARGET_ARCH = "arm"
 
+# Uncomment this to select a distribution policy.
+#DISTRO = "familiar"
+
 # Uncomment this to build .tar packages during the build process.
 # Also supported is "package_ipk"
+# Usually better to set DISTRO instead (see above)
 #INHERIT = "package_tar"
