@@ -1,7 +1,7 @@
 DESCRIPTION= "Korganizer/Pi is a powerful calender and ToDo Tool for Qt/Embedded based Palmtop Environments"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Sebastian Goergen <zeppo@gmx.net>"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 
