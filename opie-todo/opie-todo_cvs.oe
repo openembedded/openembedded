@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-pics"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "todolist"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/todo;date=${CVSDATE} \

@@ -1,0 +1,18 @@
+DESCRIPTION = "Metal Style by Trolltech"
+SECTION = "opie/styles"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "metal"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/styles/metal;date=${CVSDATE} "
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES
+do_install() {
+}
+

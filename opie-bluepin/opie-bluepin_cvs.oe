@@ -1,0 +1,13 @@
+DESCRIPTION = "Opie BluePin"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+DEPENDS = "libopietooth"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "bluepin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/blue-pin;date=${CVSDATE}"
+S = "${WORKDIR}/blue-pin"
+
+inherit opie

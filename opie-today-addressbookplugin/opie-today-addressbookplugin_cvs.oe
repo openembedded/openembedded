@@ -1,0 +1,14 @@
+DESCRIPTION = "Addressbook plugin for Today"
+SECTION = "opie/today"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "opie-today"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME="todayaddressbookplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/today/plugins/addressbook;date=${CVSDATE} "
+
+S = "${WORKDIR}/addressbook"
+
+inherit opie
+

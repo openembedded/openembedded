@@ -1,0 +1,16 @@
+DESCRIPTION = "Freetype fontfactory plugin"
+SECTION = "opie/fontfactories"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "freetype"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "freetypefactory"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/freetype;date=${CVSDATE} \
+	   file://modern-freetype-includes.patch;patch=1"
+S = "${WORKDIR}/freetype"
+
+inherit opie
+
+EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${STAGING_INCDIR}/freetype2"

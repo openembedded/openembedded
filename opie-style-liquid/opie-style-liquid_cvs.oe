@@ -1,0 +1,19 @@
+DESCRIPTION = "Liquid style by Mosfet"
+SECTION = "opie/styles"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = " libqtaux2"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "liquid"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/styles/liquid;date=${CVSDATE} "
+
+S = "${WORKDIR}/liquid"
+
+inherit opie
+
+# FILES
+do_install() {
+}
+

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "ssh opie-sh-ssh-askpass"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "sshkeys"
 APPTYPE = "binary"
 

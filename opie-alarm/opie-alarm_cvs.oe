@@ -3,7 +3,7 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 RDEPENDS = "apmd"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/opiealarm;date=${CVSDATE} \

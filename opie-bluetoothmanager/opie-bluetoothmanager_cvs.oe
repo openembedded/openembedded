@@ -1,0 +1,22 @@
+DESCRIPTION = "Bluetooth manager for Opie"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+DEPENDS = "libopietooth1"
+RDEPENDS = "opie-bluepin"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "bluetooth-manager"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/opietooth/manager;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+S = "${WORKDIR}/manager"
+
+inherit opie
+
+# Files: plugins/application/libbluetooth-manager.so* bin/bluetooth-manager apps/Settings/bluetooth-manager.desktop pics/opietooth/*
+do_install() {
+        install -d ${D}${palmtopdir}/pics/opietooth/
+        install -m 0644 ${WORKDIR}/pics/opietooth/*.png ${D}${palmtopdir}/pics/opietooth/
+}

@@ -3,7 +3,7 @@ SECTION = "opie/Shell"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
 

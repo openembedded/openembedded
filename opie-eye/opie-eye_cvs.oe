@@ -1,0 +1,23 @@
+DESCRIPTION = "A image viewer"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2 libopieui2 libopiemm2"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "opie-eye"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/graphics/opie-eye;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libopie-eye.so* bin/opie-eye bin/opie-eye_slave apps/Applications/opie-eye.desktop pics/opie-eye/*.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+

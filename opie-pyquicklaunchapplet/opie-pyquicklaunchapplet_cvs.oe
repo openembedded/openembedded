@@ -1,0 +1,27 @@
+DESCRIPTION = "Python Quicklaunch Applet"
+SECTION = "opie/applets"
+LICENSE = "GPL"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "pyquicklaunch"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/pyquicklaunch;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+if pidof -s qpe >/dev/null; then
+  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+fi
+ if [ -n "$D" ]; then false; fi
+}
+
+pkg_postrm() {
+#!/bin/sh
+/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+ if [ -n "$D" ]; then false; fi
+}
+

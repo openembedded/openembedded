@@ -1,0 +1,19 @@
+DESCRIPTION = "'fortune' plugin for Today"
+SECTION = "opie/today"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "fortune-mod opie-today"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "todayfortuneplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/fortune;date=${CVSDATE} "
+
+S = "${WORKDIR}/fortune"
+
+inherit opie
+
+# FILES plugins/today/libtodayfortuneplugin.so*
+do_install() {
+}
+

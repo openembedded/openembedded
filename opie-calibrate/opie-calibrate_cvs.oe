@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "libqpe1"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate"
 S = "${WORKDIR}/calibrate"

@@ -1,0 +1,15 @@
+DESCRIPTION = "Todo list plugin for Today"
+SECTION = "opie/today"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+RDEPENDS = "opie-today"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "todaytodolistplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/today/plugins/todolist;date=${CVSDATE} "
+
+S = "${WORKDIR}/todolist"
+
+inherit opie
+

@@ -1,0 +1,23 @@
+DESCRIPTION = "Stock ticker plugin for Today"
+SECTION = "opie/today"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "opie-today"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "todaystocktickerplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/stockticker;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/stockticker"
+
+inherit opie
+
+# FILES plugins/today/libtodaystocktickerplugin.so* bin/stockticker pics/stockticker/stockticker.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/stockticker/
+        install -m 0644 ${WORKDIR}/pics/stockticker/*.png ${D}${palmtopdir}/pics/stockticker/
+}
+

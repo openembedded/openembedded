@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "lirc"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "remote"
 APPTYPE = "binary"
 

@@ -5,7 +5,7 @@ MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
 RDEPENDS = "opie-pics"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qmultikey"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey;date=${CVSDATE} \

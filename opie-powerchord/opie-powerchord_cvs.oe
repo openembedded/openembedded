@@ -1,0 +1,26 @@
+DESCRIPTION = "Guitar Chord generator application"
+SECTION = "opie/multimedia"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "powerchord"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/powerchord;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES bin/powerchord apps/Applications/powerchord.desktop pics/powerchord share/powerchord
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -d ${D}${palmtopdir}/share/${APPNAME}/
+        install -m 0644 ${WORKDIR}/share/${APPNAME}/*.raw ${D}${palmtopdir}/share/${APPNAME}/
+}
+

@@ -1,0 +1,18 @@
+DESCRIPTION = "Opie keytabs for terminal applications"
+SECTION = "opie/base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "virtual/libqpe"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc;date=${CVSDATE} "
+
+$palmtopdir = "/opt/QtPalmtop/"
+
+do_install() {
+        install -d ${D}${palmtopdir}/etc/keytabs/
+        install -m 0644 ${WORKDIR}/etc/keytabs/*.* ${D}${palmtopdir}/etc/keytabs/
+}
+
+FILES_${PN} = "${palmtopdir}/etc/keytabs/*"

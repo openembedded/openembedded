@@ -1,0 +1,25 @@
+DESCRIPTION = "Opie's mail and news client featuring POP3, IMAP and NNTP - with and without SSL."
+SECTION = "opie/pim"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libmailwrapper libetpan"
+RDEPENDS = "opie-pics"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "opiemail"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+
+S = "${WORKDIR}/mail"
+
+inherit opie
+
+# FILES plugins/application/libopiemail.so* bin/opiemail apps/1Pim/mail.desktop pics/mail/*.png
+
+do_install() {
+	install -d ${D}/${palmtopdir}/pics/mail/
+	install -m 0644 ${WORKDIR}/pics/mail/*.png ${D}/${palmtopdir}/pics/mail/
+}
+

@@ -5,7 +5,7 @@ MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer tremor"
 RDEPENDS = "opie-mediaplayer"
-PV = "1.1.4-cvs-${CVSDATE}"
+PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "tremorplugin"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer;date=${CVSDATE} \
