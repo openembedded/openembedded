@@ -199,6 +199,10 @@ python populate_packages () {
 
 	oe.build.exec_func("package_name_hook", d)
 
+	for pkg in packages.split():
+		if oe.data.getVar('PKG_%s' % pkg, d, 1) is None:
+			oe.data.setVar('PKG_%s' % pkg, pkg, d)
+
 	dangling_links = {}
 	pkg_files = {}
 	for pkg in packages.split():
@@ -546,14 +550,13 @@ python package_do_split_locales() {
 	locales = os.listdir(localedir)
 
 	mainpkg = packages[0]
-	mainpkg_n = oe.data.getVar('PKG_%s' % mainpkg, d, 1) or mainpkg
 
 	for l in locales:
 		ln = legitimize_package_name(l)
 		pkg = pn + '-locale-' + ln
 		packages.append(pkg)
 		oe.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
-		oe.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg_n, ln), d)
+		oe.data.setVar('RDEPENDS_' + pkg, '${PKG_%s} virtual-locale-%s' % (mainpkg, ln), d)
 		oe.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
 		oe.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
 
