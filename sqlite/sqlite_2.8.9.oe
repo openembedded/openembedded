@@ -1,0 +1,33 @@
+DESCRIPTION="An Embeddable SQL Database Engine"
+SECTION="libs"
+PRIORITY="optional"
+RDEPENDS="libc6 readline libncurses5"
+DEPENDS=virtual/libc base/readline base/ncurses
+
+SRC_URI = http://www.hwaci.com/sw/${PN}/${P}.tar.gz \
+          file://${FILESDIR}/crosscompile.patch;patch=1
+
+S = ${WORKDIR}/${PN}
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--without-tcl --enable-static --enable-shared'
+export config_BUILD_CC=${BUILD_CC}
+export config_BUILD_CFLAGS=${BUILD_CFLAGS}
+export config_TARGET_CC=${CC}
+export config_TARGET_LINK=${CCLD}
+export config_TARGET_CFLAGS=${CFLAGS}
+
+do_compile () {
+	oe_runmake 'LIBREADLINE=-L${STAGING_LIBDIR} -lreadline -lncurses'
+}
+
+do_stage() {
+	oe_soinstall .libs/libsqlite.so.0.8.6 ${STAGING_LIBDIR}
+	install -m 0644 sqlite.h ${STAGING_INCDIR}
+}
+
+do_install() {
+	oe_runmake install prefix=${D} exec_prefix=${D}
+}
+
