@@ -1,0 +1,32 @@
+DESCRIPTION=Console utilities for certain hardware aspects of the SL-C7x0 based Zaurii
+SECTION=base
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE=GPL
+RDEPENDS=libc6
+DEPENDS=virtual/libc
+
+inherit qmake
+
+export UTILS=sltime
+
+do_fetch() {
+	for u in ${UTILS}
+	do
+		install -d ${S}/${u}
+		cp -dfR `ls -dp ${FILESDIR}/$u/*|grep -v SCCS` ${S}/$u/
+	done
+}
+
+do_configure_prepend() {
+	cd ${S}/
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=${UTILS}\n" >slutils.pro
+}
+
+do_install() {
+        install -d ${D}/${sbindir}/
+	for u in ${UTILS}
+	do
+        	install -m 0755 ${S}/${u}/${u} ${D}/${sbindir}/
+	done
+}
