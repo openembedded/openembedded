@@ -4,6 +4,8 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.6/GConf-${PV}.tar.bz2 
 	   file://backends.patch;patch=1"
 DEPENDS = "orbit2 glib-2.0 gettext"
 
+FILES_${PN} += " ${libdir}/GConf/*"
+
 S = "${WORKDIR}/GConf-${PV}"
 
 EXTRA_OECONF = "--disable-gtk-doc"

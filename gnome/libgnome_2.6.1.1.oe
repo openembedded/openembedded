@@ -1,8 +1,34 @@
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libgnome/2.6/libgnome-${PV}.tar.bz2 \
 	   file://makefile.patch;patch=1"
 
-inherit autotools libtool
+inherit autotools libtool pkgconfig
 
 DEPENDS = "gnome-vfs libbonobo"
 
 EXTRA_OECONF = "--disable-gtk-doc"
+
+HEADERS = " \
+libgnometypebuiltins.h \
+gnome-config.h \
+gnome-sound.h \
+gnome-triggers.h \
+gnome-program.h \
+gnome-help.h \
+gnome-i18n.h \
+gnome-exec.h \
+gnome-gconf.h \
+gnome-url.h \
+gnome-util.h \
+gnome-macros.h \
+gnome-score.h \
+gnome-init.h \
+libgnome.h \
+"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/libgnome-2.0/libgnome
+	for i in ${HEADERS}; do
+		install -m 0644 libgnome/$i ${STAGING_INCDIR}/libgnome-2.0/libgnome/$i
+	done
+	oe_libinstall -C libgnome -a -so libgnome-2 ${STAGING_LIBDIR}
+}

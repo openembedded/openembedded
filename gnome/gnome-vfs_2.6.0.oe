@@ -28,7 +28,11 @@ gnome-vfs.h \
 gnome-vfs-cancellation.h \
 gnome-vfs-xfer.h \
 gnome-vfs-monitor.h \
-gnome-vfs-types.h"
+gnome-vfs-types.h \
+gnome-vfs-volume-monitor.h \
+gnome-vfs-drive.h \
+gnome-vfs-volume.h \
+gnome-vfs-enum-types.h"
 
 GNOME_VFS_MODULE_HEADERS = " \
 gnome-vfs-mime-info.h \
