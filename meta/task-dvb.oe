@@ -2,6 +2,7 @@ PACKAGES = task-dvb
 DESCRIPTION = "Meta-package for DVB application"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
+PR = "r1"
 
-RDEPENDS = "dvbstream dvbtune xserver-kdrive-fbdev tda1004x-firmware gst-plugins"
-DEPENDS = "dvbstream dvbtune xserver-kdrive tda1004x-firmware"
+RDEPENDS = "dvbstream dvbtune xserver-kdrive-fbdev tda1004x-firmware gst-plugins mythtv"
+DEPENDS = "dvbstream dvbtune xserver-kdrive tda1004x-firmware mythtv"
