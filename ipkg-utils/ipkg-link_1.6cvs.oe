@@ -1,6 +1,6 @@
 DESCRIPTION = "Itsy Package Manager utilities link script"
 CONFLICTS = "ipkg-utils"
-PR = "r1"
+PV_append = "${CVSDATE}"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils \
 	   file://fix-ipkg-link.patch;patch=1"
