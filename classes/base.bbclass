@@ -465,13 +465,14 @@ python base_eventhandler() {
 
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
-
+do_configure[bbdepcmd] = "do_populate_staging"
 base_do_configure() {
 	:
 }
 
 addtask compile after do_configure
 do_compile[dirs] = "${S} ${B}"
+do_compile[bbdepcmd] = "do_populate_staging"
 base_do_compile() {
 	if [ -e Makefile -o -e makefile ]; then
 		oe_runmake || die "make failed"
@@ -682,7 +683,7 @@ addtask emit_manifest
 python do_emit_manifest () {
 #	FIXME: emit a manifest here
 #	1) adjust PATH to hit the wrapper scripts
-	wrappers = bb.which(bb.data.getVar("OEPATH", d, 1), 'build/install', 0)
+	wrappers = bb.which(bb.data.getVar("BBPATH", d, 1), 'build/install', 0)
 	path = (bb.data.getVar('PATH', d, 1) or '').split(':')
 	path.insert(0, os.path.dirname(wrappers))
 	bb.data.setVar('PATH', ':'.join(path), d)
