@@ -9,6 +9,7 @@ PR = "r7"
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
+	   file://daemonize.patch;patch=1 \
 	   file://no-moc.patch;patch=1 \
 	   file://gcc3_4.patch;patch=1 \
 	   file://tslib.patch;patch=1 \
