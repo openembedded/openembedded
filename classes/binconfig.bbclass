@@ -10,6 +10,8 @@ def get_binconfig_mangle(d):
 		s += " -e 's:=${datadir}:=OEDATADIR:'"
 		s += " -e 's:=${prefix}:=OEPREFIX:'"
 		s += " -e 's:=${exec_prefix}:=OEEXECPREFIX:'"
+		s += " -e 's:-L${libdir}:-LOELIBDIR:;'"
+		s += " -e 's:-I${includedir}:-IOEINCDIR:;'"
 		s += " -e 's:OELIBDIR:${STAGING_LIBDIR}:;'"
 		s += " -e 's:OEINCDIR:${STAGING_INCDIR}:;'"
 		s += " -e 's:OEDATADIR:${STAGING_DATADIR}:'"
