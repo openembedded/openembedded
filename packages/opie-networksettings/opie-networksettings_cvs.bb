@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 PV = "1.1.8+cvs-${CVSDATE}"
-PR = "r0"
+PR = "r1"
 APPNAME = "networksettings"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/networksettings \
@@ -19,6 +19,12 @@ inherit opie
 PARALLEL_MAKE = ""
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
+
+do_stage() {
+	oe_libinstall -so libinterfaces ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/interfaces/
+	install -m 0644 interfaces/*.h ${STAGING_INCDIR}/interfaces/
+}
 
 do_install() {
 	# Create dir for changedns and the opie-kppp peer
