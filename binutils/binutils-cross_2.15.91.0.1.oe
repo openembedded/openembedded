@@ -6,7 +6,6 @@ PROVIDES = "virtual/${TARGET_PREFIX}binutils"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-${PV}"
 PACKAGES = ""
 EXTRA_OECONF = "--with-sysroot=${CROSS_DIR}/${TARGET_SYS} \
-		--disable-nls \
 		--program-prefix=${TARGET_PREFIX}"
 
 do_stage () {
