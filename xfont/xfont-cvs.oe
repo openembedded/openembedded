@@ -7,7 +7,7 @@ DEPENDS=virtual/libc zlib xproto-cvs
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont
 S=${WORKDIR}/Xfont
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig libtool
 
 do_stage() {
 	oe_runmake install DESTDIR=${STAGING_DIR} \

@@ -7,7 +7,7 @@ DEPENDS=virtual/libc xproto-cvs
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdmcp
 S=${WORKDIR}/Xdmcp
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig libtool
 
 do_stage() {
 	oe_runmake install DESTDIR=${STAGING_DIR} \
