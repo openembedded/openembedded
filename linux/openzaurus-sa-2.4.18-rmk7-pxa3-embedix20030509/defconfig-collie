@@ -174,7 +174,7 @@ CONFIG_HOTPLUG=y
 # PCMCIA/CardBus support
 #
 CONFIG_PCMCIA=y
-CONFIG_PCMCIA_PROBE=y
+# CONFIG_PCMCIA_PROBE is not set
 # CONFIG_I82092 is not set
 # CONFIG_I82365 is not set
 # CONFIG_TCIC is not set
@@ -199,7 +199,7 @@ CONFIG_APM_CPU_IDLE=y
 CONFIG_APM_DISPLAY_BLANK=y
 CONFIG_APM_RTC_IS_GMT=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphaned_inodes=delete console=null mem=16M probe_io=0"
+CONFIG_CMDLINE="See OE File"
 # CONFIG_SHARPSL_BOOTLDR_PARAMS is not set
 # CONFIG_LEDS is not set
 CONFIG_ALIGNMENT_TRAP=y
