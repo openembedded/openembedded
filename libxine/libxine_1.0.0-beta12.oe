@@ -7,8 +7,7 @@ and some of the most uncommon formats, too."
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libogg tremor libmad"
-RRECOMMENDS = "libxine-plugins"
-PR = "r3"
+PR = "r4"
 
 inherit autotools pkgconfig binconfig
 
@@ -82,10 +81,9 @@ do_install() {
         oe_libinstall -so -C src/xine-engine libxine ${D}/${libdir}
 }
 
-#
-# FIXME: Split plugins into codex, demux, and visualization plugins
-#        or even better, each plugin into one package, since some are HUGE.
-#
+python populate_packages_prepend () {
+	plugins_dir = oe.data.expand('/usr/lib/xine/plugins/1.0.0/', d)
+	
+	do_split_packages(d, plugins_dir, file_regex='^xineplug_(.*).so$', output_pattern='libxine-plugin-%s', description='Xine plugin - %s')
+}
 
-PACKAGES += "libxine-plugins"
-FILES_libxine-plugins = "${libdir}/xine/plugins/1.0.0/xineplug*.so"
