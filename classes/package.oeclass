@@ -224,6 +224,14 @@ python populate_packages () {
 	oe.build.exec_func("read_subpackage_metadata", d)
 }
 
+ldconfig_postinst_fragment() {
+if [ x"$D" != "x" ]; then
+	exit 1
+else
+	ldconfig
+fi
+}
+
 python package_do_shlibs() {
 	import os, re, os.path
 
@@ -301,7 +309,7 @@ python package_do_shlibs() {
 			postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1) or oe.data.getVar('pkg_postinst', d, 1)
 			if not postinst:
 				postinst = '#!/bin/sh\n'
-			postinst += 'ldconfig\n'
+			postinst += oe.data.getVar('ldconfig_postinst_fragment', d, 1)
 			oe.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
 
 	for pkg in packages.split():
