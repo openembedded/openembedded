@@ -63,6 +63,7 @@ python package_ipk_install () {
 python do_package_ipk () {
 	import copy # to back up env data
 	import sys
+	import re
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -145,7 +146,6 @@ python do_package_ipk () {
 		fields.append(["Maintainer: %s\n", ['MAINTAINER']])
 		fields.append(["Architecture: %s\n", ['PACKAGE_ARCH']])
 		fields.append(["OE: %s\n", ['P']])
-		fields.append(["Source: %s\n", ['SRC_URI']])
 
 		def pullData(l, d):
 			l2 = []
@@ -173,17 +173,21 @@ python do_package_ipk () {
 		rreplaces = (bb.data.getVar("RREPLACES", localdata, 1) or "").split()
 		rconflicts = (bb.data.getVar("RCONFLICTS", localdata, 1) or "").split()
 		if rdepends:
-			ctrlfile.write("Depends: " + ", ".join(rdepends) + "\n")
+			ctrlfile.write("Depends: %s\n" % ", ".join(rdepends))
 		if rsuggests:
-			ctrlfile.write("Suggests: " + ", ".join(rsuggests) + "\n")
+			ctrlfile.write("Suggests: %s\n" % ", ".join(rsuggests))
 		if rrecommends:
-			ctrlfile.write("Recommends: " + ", ".join(rrecommends) + "\n")
+			ctrlfile.write("Recommends: %s\n" % ", ".join(rrecommends))
 		if rprovides:
-			ctrlfile.write("Provides: " + ", ".join(rprovides) + "\n")
+			ctrlfile.write("Provides: %s\n" % ", ".join(rprovides))
 		if rreplaces:
-			ctrlfile.write("Replaces: " + ", ".join(rreplaces) + "\n")
+			ctrlfile.write("Replaces: %s\n" % ", ".join(rreplaces))
 		if rconflicts:
-			ctrlfile.write("Conflicts: " + ", ".join(rconflicts) + "\n")
+			ctrlfile.write("Conflicts: %s\n" % ", ".join(rconflicts))
+		src_uri = bb.data.getVar("SRC_URI", localdata, 1)
+		if src_uri:
+			src_uri = re.sub("\s+", " ", src_uri)
+			ctrlfile.write("Source: %s\n" % src_uri)
 		ctrlfile.close()
 
 		for script in ["preinst", "postinst", "prerm", "postrm"]:

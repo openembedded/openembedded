@@ -358,7 +358,7 @@ python package_do_shlibs() {
 
 	shlib_provider = {}
 	list_re = re.compile('^(.*)\.list$')
-	for dir in [shlibs_dir, old_shlibs_dir]: 
+	for dir in [old_shlibs_dir, shlibs_dir]: 
 		if not os.path.exists(dir):
 			continue
 		for file in os.listdir(dir):
@@ -381,10 +381,15 @@ python package_do_shlibs() {
 	for pkg in packages.split():
 		bb.debug(2, "calculating shlib requirements for %s" % pkg)
 
+		p_pkg = bb.data.getVar("PKG_%s" % pkg, d, 1) or pkg
+
 		deps = list()
 		for n in needed[pkg]:
 			if n in shlib_provider.keys():
 				(dep_pkg, ver_needed) = shlib_provider[n]
+
+				if dep_pkg == p_pkg:
+					continue
 
 				if ver_needed:
 					dep = "%s (>= %s)" % (dep_pkg, ver_needed)
@@ -424,6 +429,15 @@ python package_do_pkgconfig () {
 		bb.error("STAGING_DIR not defined")
 		return
 
+	target_sys = bb.data.getVar('TARGET_SYS', d, 1)
+	if not target_sys:
+		bb.error("TARGET_SYS not defined")
+		return
+
+	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
+	old_shlibs_dir = os.path.join(staging, "shlibs")
+	bb.mkdirhier(shlibs_dir)
+
 	pc_re = re.compile('(.*)\.pc$')
 	var_re = re.compile('(.*)=(.*)')
 	field_re = re.compile('(.*): (.*)')
@@ -461,9 +475,6 @@ python package_do_pkgconfig () {
 							if hdr == 'Requires':
 								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
 
-	shlibs_dir = os.path.join(staging, "shlibs")
-	bb.mkdirhier(shlibs_dir)
-
 	for pkg in packages.split():
 		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
 		if os.path.exists(pkgs_file):
@@ -474,16 +485,17 @@ python package_do_pkgconfig () {
 				f.write('%s\n' % p)
 			f.close()
 
-	for file in os.listdir(shlibs_dir):
-		m = re.match('^(.*)\.pclist$', file)
-		if m:
-			pkg = m.group(1)
-			fd = open(os.path.join(shlibs_dir, file))
-			lines = fd.readlines()
-			fd.close()
-			pkgconfig_provided[pkg] = []
-			for l in lines:
-				pkgconfig_provided[pkg].append(l.rstrip())
+	for dir in [old_shlibs_dir, shlibs_dir]:
+		for file in os.listdir(dir):
+			m = re.match('^(.*)\.pclist$', file)
+			if m:
+				pkg = m.group(1)
+				fd = open(os.path.join(dir, file))
+				lines = fd.readlines()
+				fd.close()
+				pkgconfig_provided[pkg] = []
+				for l in lines:
+					pkgconfig_provided[pkg].append(l.rstrip())
 
 	for pkg in packages.split():
 		deps = []
