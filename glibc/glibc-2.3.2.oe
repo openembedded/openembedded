@@ -1,0 +1,116 @@
+DESCRIPTION="GNU C Library"
+LICENSE="LGPL"
+SECTION="libs"
+PRIORITY=required
+MAINTAINER="Chris Larson <kergoth@handhelds.org>"
+
+SRC_URI=ftp://ftp.gnu.org/gnu/glibc/glibc-2.3.2.tar.gz \
+	ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
+	http://www.uclibc.org/downloads/toolchain/kernel-headers-2.4.21.tar.bz2
+SRC_URI_append=' file://${FILESDIR}/noinfo.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/10_cvs.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/30_glibc232-base.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/50_glibc232-arm-dwarf2-buildfix.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/50_glibc232-m68k-dwarf2-buildfix.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/50_glibc232-mips-buildfix.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/50_glibc23-hppa-entry.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/80_glibc232-futimes-buildfix.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/80_glibc232-iconvdata-fix.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/80_glibc232-locales-header.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/80_glibc232-wcsmbs-fix.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/81_glibc232-utimes-fix.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/alpha-crti.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/alpha-pic.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/alpha-pwrite.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/arm-output-format.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/fhs-linux-paths.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc22-eo_EO.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc22-locales.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/glibc22-m68k-compat.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc22-m68k-fpic.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc22-nss-upgrade.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc22-ttyname-devfs.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/glibc23-01-hppa-dl-machine.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-07-hppa-atomicity.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-asserth-decls.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/glibc23-cmov.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-ctype-compat.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-errno.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-function-compat.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-compat.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-malloc8.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/glibc23-hppa-Rminkernel.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/glibcbug.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/hurd-enable-ldconfig.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/ldd.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/libgcc-compat-all.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/libgcc-compat-other.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/librt-mips.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/locale-es_AR.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/locales-stuff.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/locales-supported.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/lo_LA.UTF-8_not_supported.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/nss_compat-shadow.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/powerpc-sysconf.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/revert-old-libio.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/s390-tls.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/sparc64-fixups.patch;patch=1'
+SRC_URI_append=' file://${FILESDIR}/sparcv8-target.patch;patch=1;pnum=0'
+SRC_URI_append=' file://${FILESDIR}/syslog-backrev.patch;patch=1;pnum=0'
+#SRC_URI_append=' file://${FILESDIR}/dyn-ldconfig.diff;patch=1;pnum=0'
+PROVIDES=virtual/libc
+
+S="${WORKDIR}/${P}"
+builddir="${WORKDIR}/build-${TARGET_SYS}"
+
+inherit autotools
+
+EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${WORKDIR}/linux/include --without-cvs --enable-kernel=2.4.6"
+
+glibcbuild_do_unpack () {
+	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
+# kernel headers
+	cp -a "${FILESDIR}/version.h" "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
+	if [ -e "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" ]; then 
+		cp -a "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" "${WORKDIR}/linux/include/asm-${TARGET_ARCH}/unistd.h"
+	fi
+	ln -sf "asm-${TARGET_ARCH}" "${WORKDIR}/linux/include/asm"
+}
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	oe.build.exec_func('glibcbuild_do_unpack', d)
+}
+
+do_configure_prepend() {
+	mkdir -p "${builddir}"
+	cd "${builddir}"
+}
+
+do_compile_prepend() {
+	touch sysdeps/${TARGET_ARCH}/framestate.c
+	cd "${builddir}"
+}
+
+do_stage() {
+	oe_runmake -C '${builddir}' 'install_root=${STAGING_DIR}/target' \
+		'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		'${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
+		install-headers install-lib
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > \
+		'${STAGING_LIBDIR}/libc.so'
+	mv '${STAGING_LIBDIR}/libpthread.so' '${STAGING_LIBDIR}/libpthread-old.so'
+	cat '${STAGING_LIBDIR}/libpthread-old.so' | sed -e's,/lib/,,g' > '${STAGING_LIBDIR}/libpthread.so'
+	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
+	cp -a '${WORKDIR}/linux/include/asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/'
+	ln -sf 'asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/asm'
+}
+
+do_install() {
+	oe_runmake -C ${builddir} install_root=${D} install
+#	cp -a ${WORKDIR}/linux/include/linux ${D}/${includedir}/
+#	cp -a ${WORKDIR}/linux/include/asm-${TARGET_ARCH}/* ${D}/${includedir}/asm/
+}
