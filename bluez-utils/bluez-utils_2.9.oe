@@ -1,13 +1,14 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "bluez-libs"
+DEPENDS = "bluez-libs pcmcia-cs"
 RPROVIDES = "bluez-pan bluez-sdp"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz"
+SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
+           file://bluetooth_conf.patch;patch=1"
 
-EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR}"
+EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} --enable-pcmcia"
 
 do_install_append() {
 	install -d ${D}/sbin ${D}/bin/
@@ -15,6 +16,7 @@ do_install_append() {
 	mv ${D}${bindir}/* ${D}/bin/
 	rmdir ${D}${bindir} ${D}${sbindir}
 	chmod u+s ${D}/sbin/hciattach ${D}/sbin/hciconfig
+    chmod 755 ${D}/etc/pcmcia/bluetooth
 }
 
 inherit autotools update-rc.d
