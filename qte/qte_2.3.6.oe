@@ -20,10 +20,19 @@ S = "${WORKDIR}/qt-${PV}"
 
 export QTDIR = "${S}"
 
-ARCH_i686 = "x86"
+def qte_arch(d):
+	import oe, re
+	arch = oe.data.getVar('TARGET_ARCH', d, 1)
+	if re.match("^i.86$", arch):
+		arch = "x86"
+	elif arch == "x86_64":
+		arch = "x86"
+	return arch
+
+QTE_ARCH := "${@qte_arch(d)}"
 
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
-EXTRA_OECONF_ARCH = "-xplatform ${TARGET_OS}-${TARGET_ARCH}-g++"
+EXTRA_OECONF_ARCH = "-xplatform ${TARGET_OS}-${QTE_ARCH}-g++"
 EXTRA_OECONF_ARCH_collie = "-xplatform ${TARGET_OS}-sharp-g++"
 EXTRA_OECONF_ARCH_ramses = "-xplatform ${TARGET_OS}-ramses-g++"
 
