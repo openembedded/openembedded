@@ -2,10 +2,12 @@ DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc gtk+ libglade"
+DEPENDS = "gtk+ libglade"
 SRCNAME = "pygtk"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.2/${SRCNAME}-${PV}.tar.bz2"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit autotools pkgconfig
+
+FILES_${PN} = "${libdir}/python2.3/"
