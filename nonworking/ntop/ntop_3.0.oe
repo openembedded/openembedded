@@ -1,19 +1,28 @@
 DESCRIPTION = "ntop is network top"
 SECTION = "network"
 PRIORITY = "optional"
+DEPENDS = "gdbm zlib libpcap libpng gd"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz \
-	   file://${FILESDIR}/libtool-shut-up.patch;patch=1"
+           file://${FILESDIR}/autotools.patch;patch=1"
 
 inherit autotools
 
-do_configure_prepend() {
-	find . -name "acinclude.m4"|xargs rm -f
-	find . -name "aclocal.m4" |xargs rm -f
-	find . -name "config.h.in"|xargs rm -f
-	find . -name "Makefile.in"|xargs rm -f
-	find . -name "configure"|xargs rm -f
+EXTRA_OECONF += " --without-ssl \
+                  --with-gd-lib=${STAGING_LIBDIR} \
+                  --with-gd-include=${STAGING_INCDIR} \
+                  --with-zlib-lib=${STAGING_LIBDIR} \
+                  --with-zlib-include=${STAGING_INCDIR} \
+                  --with-pcap-lib=${STAGING_LIBDIR} \
+                  --with-pcap-include=${STAGING_INCDIR} \
+                  --with-libpng-lib=${STAGING_LIBDIR} \
+                  --with-libpng-include=${STAGING_INCDIR} \
+                  --with-gdbm-lib=${STAGING_LIBDIR} \
+                  --with-gdbm-include=${STAGING_INCDIR}"
+
+do_configure () {
+	if [ ! -e acinclude.m4 ]; then
+		mv acinclude.m4.ntop acinclude.m4
+	fi
+	autotools_do_configure
 }
- 
-export NTOPAUTOREBUILD=yes
-export NTOPCONFIGDEBUG=yes
