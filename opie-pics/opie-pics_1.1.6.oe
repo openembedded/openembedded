@@ -3,13 +3,10 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>
 LICENSE = "GPL"
-
-CVSDATE = "20040924"
-
-PR = "r1"
+PR = "r0"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;tag=${TAG}"
 S = "${WORKDIR}/pics"
 
 do_install() {
