@@ -1,0 +1,67 @@
+DESCRIPTION = "Ncurses library"
+HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
+LICENSE = "MIT"
+SECTION = "libs"
+DEPENDS = "ncurses-native"
+PACKAGES_append = " ncurses-terminfo"
+FILES_ncurses_append = " ${datadir}/tabset"
+FILES_ncurses-terminfo = "${datadir}/terminfo"
+RSUGGESTS_${PN} = "ncurses-terminfo"
+PR = "r4"
+
+SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
+	   file://visibility.patch;patch=1"
+S = "${WORKDIR}/ncurses-${PV}"
+
+inherit autotools
+
+EXTRA_OECONF = "--with-shared \
+	        --without-profile \
+	        --without-debug \
+	        --disable-rpath \
+	        --enable-echo \
+	        --enable-const \
+	        --without-ada \
+	        --enable-termcap \
+	        --without-cxx-binding \
+	        --with-terminfo-dirs=${sysconfdir}/terminfo:${datadir}/terminfo \
+	        --enable-overwrite"
+export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
+export BUILD_LDFLAGS = ""
+export EXTRA_OEMAKE = '"BUILD_LDFLAGS=" "BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
+
+do_stage () {
+	for i in libncurses libpanel libform libmenu; do
+		oe_libinstall -so -C lib $i ${STAGING_LIBDIR}
+	done
+	for h in ncurses_*.h curses.h eti.h form.h menu.h panel.h \
+		termcap.h term.h unctrl.h; do
+		       install -m 0644 include/$h ${STAGING_INCDIR}/
+	done
+	ln -sf curses.h ${STAGING_INCDIR}/ncurses.h
+}
+
+do_install() {
+	autotools_do_install
+
+	# include some basic terminfo files
+	# stolen ;) from gentoo and modified a bit
+	for x in ansi console dumb linux rxvt screen sun vt{52,100,102,200,220} xterm-color xterm-xfree86
+        do
+                local termfile="$(find "${D}/usr/share/terminfo/" -name "${x}" 2>/dev/null)"
+                local basedir="$(basename $(dirname "${termfile}"))"
+
+                if [ -n "${termfile}" ]
+                then
+                        install -d ${D}/etc/terminfo/${basedir}
+                        mv ${termfile} ${D}/etc/terminfo/${basedir}/
+                        ln -s /etc/terminfo/${basedir}/${x} \
+                                ${D}/usr/share/terminfo/${basedir}/${x}
+                fi
+        done
+	# i think we can use xterm-color as default xterm
+	if [ -e ${D}/etc/terminfo/x/xterm-color ]
+	then
+		ln -sf xterm-color ${D}/etc/terminfo/x/xterm
+	fi
+}
