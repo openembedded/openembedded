@@ -3,11 +3,9 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS="libc6 python-core"
-DEPENDS=virtual/libc python
+DEPENDS=virtual/libc
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/numpy/Numeric-${PV}.tar.gz
 S = ${WORKDIR}/Numeric-${PV}
 
 inherit distutils
-
-FILES_numeric_append = ${PYFILES}
