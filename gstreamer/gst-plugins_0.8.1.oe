@@ -9,7 +9,7 @@ DEPENDS = "gstreamer zlib libmikmod libmad libogg tremor libvorbis libid3tag gno
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.tar.bz2 \
 	   file://ivorbis.patch;patch=1"
 
-EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-esd --disable-aalib --disable-arts --disable-artsc --disable-libfame --disable-sdl"
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts --disable-artsc --disable-libfame --disable-sdl"
 
 inherit autotools  pkgconfig
 
