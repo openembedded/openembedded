@@ -1,5 +1,8 @@
 gconf_postinst() {
 if [ "$1" = configure ]; then
+	if [ "x$D" != "x" ]; then
+		exit 1
+	fi
         SCHEMA_LOCATION=/etc/gconf/schemas
         for SCHEMA in ${SCHEMA_FILES}; do
                 if [ -e $SCHEMA_LOCATION/$SCHEMA ]; then
