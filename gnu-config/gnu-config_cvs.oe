@@ -11,6 +11,10 @@ PACKAGES = "${PN}"
 FILES_${PN} = "${bindir} \
 	       ${datadir}/gnu-config"
 
+do_compile() {
+	:
+}
+
 do_install () {
 	install -d ${D}/${datadir}/gnu-config \
 		   ${D}/${bindir}
