@@ -1,5 +1,6 @@
 SECTION = "console/utils"
 DESCRIPTION = "framebuffer VNC server"
+LICENSE = "GPL"
 DEPENDS = "libvncserver jpeg zlib"
 RDEPENDS = "fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet"
 

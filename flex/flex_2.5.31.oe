@@ -1,7 +1,7 @@
 DESCRIPTION = "Flex is a tool for generating programs \
 that recognize lexical patterns in text."
 HOMEPAGE = "http://www.gnu.org/software/flex/"
-LICENSE = "GPL"
+LICENSE = "BSD"
 SECTION = "devel"
 PRIORITY = "optional"
 

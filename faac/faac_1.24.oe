@@ -3,7 +3,7 @@ DESCRIPTION = "Library for reading some sort of media format."
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = ""
-
+LICENSE = "LGPL"
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.tar.gz"

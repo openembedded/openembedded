@@ -1,6 +1,7 @@
 
 DESCRIPTION = "Library for reading some sort of media format."
 SECTION = "libs"
+LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
 

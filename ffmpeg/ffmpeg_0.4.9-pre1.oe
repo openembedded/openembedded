@@ -3,6 +3,8 @@ DESCRIPTION = "ffmpeg"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libvorbis faad2 faac liba52 lame mplayer"
+LICENSE = "LGPL"
+
 
 inherit autotools
 

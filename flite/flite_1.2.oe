@@ -2,6 +2,7 @@ SECTION = "console/utils"
 HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
 DESCRIPTION = "festival light speech synthesizer"
 PRIORITY = "optional"
+LICENSE = "flite"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r1"
 

@@ -1,6 +1,6 @@
 SECTION = "console/utils"
 DESCRIPTION = "Video4linux Two sample applications"
-LICENSE = "Public Domain"
+LICENSE = "PD"
 DEPENDS = "xaw x11 xt"
 
 SRC_URI = "http://www.thedirks.org/pub/v4l2/apps/apps${PV}.tgz"

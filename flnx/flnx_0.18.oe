@@ -5,6 +5,7 @@ DESCRIPTION = "fltk library for microwindows."
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}-tar.gz \
 	   file://gcc3.patch;patch=1"
 S = "${WORKDIR}/flnx"
+LICENSE = "LGPL"
 
 inherit autotools
 
