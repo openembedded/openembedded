@@ -1,9 +1,9 @@
-PR = "r1"
+PR = "r2"
 S = "${WORKDIR}/gnumeric-${PV}"
 DEPENDS = "libgsf gtk+ libxml2 libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
-inherit gnome flow-lossage
+inherit gnome flow-lossage gconf
 
 SRC_URI += 'file://workbook-control-gui-priv.h.patch;patch=1'
 

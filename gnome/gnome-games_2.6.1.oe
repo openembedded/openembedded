@@ -1,10 +1,12 @@
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "guile gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade"
+PR = "r1"
 
-SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/gnome-games/2.6/gnome-games-${PV}.tar.bz2 \
-	file://compiler-flags.m4"
+inherit gnome
 
-PACKAGES =+ "libgdkcardimage libgdkcardimage-data libgdkcardimage-dev "
+SRC_URI += "file://compiler-flags.m4"
+
+PACKAGES =+ "libgdkcardimage libgdkcardimage-data libgdkcardimage-dev"
 
 FILES_libgdkcardimage = "${libdir}/libgdkcardimage.so.*"
 FILES_libgdkcardimage-dev = "${libdir}/libgdkcardimage.* ${includedir}/gdkcardimage"
@@ -26,4 +28,3 @@ do_configure_prepend() {
 	cp ${WORKDIR}/compiler-flags.m4 m4/
 }
 
-inherit autotools
