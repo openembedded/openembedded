@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r0"
+PR = "r1"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -41,17 +41,24 @@ http://www.rpsys.net/openzaurus/${KV}/input_power-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_base_extras1-r2.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power-r15.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/ide_fixes-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mmc_sd-r3.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_snd-r3.patch;patch=1 \
-file://defconfig-husky \
+http://www.do13.in-berlin.de/openzaurus/tosa-machine-base.patch;patch=1 \
+http://www.do13.in-berlin.de/openzaurus/tc6393_nand.patch;patch=1 \
+http://www.do13.in-berlin.de/openzaurus/tc6393-device.patch;patch=1 \
+file://defconfig-corgi \
 file://defconfig-collie \
 file://defconfig-poodle \
-file://defconfig-openzaurus-pxa-2.6 "
+file://defconfig-tosa "
 
-
+SRC_URI_append_tosa = "http://www.do13.in-berlin.de/openzaurus/nand-readid.patch;patch=1"
+SRC_URI_append_tosa = "http://www.do13.in-berlin.de/openzaurus/multiple-scoop-devices.patch;patch=1"
+SRC_URI_append_corgi = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
+SRC_URI_append_shepherd = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
+SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_power1-r0.patch;patch=1"
 SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
+
 
 S = "${WORKDIR}/linux-2.6.10"
 
