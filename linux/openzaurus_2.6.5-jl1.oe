@@ -6,9 +6,9 @@ PV = "${KV}-${JLV}"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-${PV}"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
-           http://www.cs.wisc.edu/~lenz/zaurus/files/patch-${KV}-${JLV}.diff.gz;patch=1"
-
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2               \
+           http://www.cs.wisc.edu/~lenz/zaurus/files/patch-${KV}-${JLV}.diff.gz;patch=1 \
+           http://sit.wisc.edu/~bjlarson2/oztesting/patch-${KV}-jlv2.diff.gz;patch=1    "
 S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
