@@ -14,3 +14,5 @@ export LDFLAGS = "${BUILD_LDFLAGS}"
 
 prefix = "/usr/local/${SDK_NAME}"
 exec_prefix = "${prefix}"
+
+FILES_${PN} = "${prefix}"
