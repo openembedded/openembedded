@@ -2,10 +2,10 @@ DESCRIPTION = "Simple DirectMedia Layer - QtE-based Palmtop Environments Edition
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libqpe"
+DEPENDS = "virtual/libqpe libopie2"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \
