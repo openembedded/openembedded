@@ -1,7 +1,7 @@
 DESCRIPTION = "QPlot is an Advanced Matematical Calculator for Qt/Embedded based Palmtop Environments"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/qplot;module=qplot \

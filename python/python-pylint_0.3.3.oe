@@ -4,7 +4,7 @@ features, like checking line-code's length, checking if variable names are well-
 or checking if declared interfaces are truly implemented, and much more."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-logilab"
 SRCNAME = "pylint"
 

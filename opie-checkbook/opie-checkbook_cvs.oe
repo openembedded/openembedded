@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Checkbook"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Opie Team <opie@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "0.8.0-cvs-${CVSDATE}"
 APPNAME = "checkbook"

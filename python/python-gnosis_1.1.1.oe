@@ -1,7 +1,7 @@
 DESCRIPTION = "Gnosis Utils contains several Python modules for XML processing, plus other generally useful tools"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
 SRCNAME = "Gnosis_Utils"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie PIM database converter"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "sqlite"
 PV = "1.1.5-cvs-${CVSDATE}"

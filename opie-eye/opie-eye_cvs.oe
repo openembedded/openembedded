@@ -1,7 +1,7 @@
 DESCRIPTION = "A image viewer"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libopiemm2"
 PV = "1.1.5-cvs-${CVSDATE}"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Pythonware Fast SGML Parser for Python"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
 SRCNAME = "sgmlop"
 

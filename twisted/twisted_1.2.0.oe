@@ -4,7 +4,7 @@ Twisted supports TCP, UDP, SSL/TLS, multicast, Unix sockets, a large number of p
 HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
 
 SRC_URI = "http://twisted.sourceforge.net/Twisted-${PV}.tar.bz2"

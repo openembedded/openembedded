@@ -1,7 +1,7 @@
 DESCRIPTION = "A full fledged WikiWiki system in Python"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/moin/moin-${PV}.tar.gz"

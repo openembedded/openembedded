@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Package Manager"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Opie Team <opie@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libipkg "
 PV = "1.1.5-cvs-${CVSDATE}"

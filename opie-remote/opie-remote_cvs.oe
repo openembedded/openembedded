@@ -1,7 +1,7 @@
 DESCRIPTION = "A remote control"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "lirc"
 PV = "1.1.5-cvs-${CVSDATE}"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Launcher settings dialog"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 PV = "1.1.5-cvs-${CVSDATE}"

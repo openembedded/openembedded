@@ -1,6 +1,6 @@
 SECTION = "NET"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \

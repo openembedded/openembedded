@@ -1,7 +1,7 @@
 DESCRIPTION = "Glider"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 AUTHOR = "Robert Ernst"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Glider.html"

@@ -2,7 +2,7 @@ DESCRIPTION = "A simple and easy to use Linux kernel (2.4+) module which allows 
 It supports some nice features like number of different caches for access speedup, target system optimisations, etc."
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "shfs-modules (${PV})"
 DEPENDS = "virtual/kernel"

@@ -1,7 +1,7 @@
 DESCRIPTION = "The Kate Text Editor for Opie"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 PV = "1.1.5-cvs-${CVSDATE}"

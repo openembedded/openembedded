@@ -1,7 +1,7 @@
 DESCRIPTION = "Base library for the Qt Palmtop Environment"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Help Packages - English"
 SECTION = "opie/help"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = " "
 PV = "1.1.5-cvs-${CVSDATE}"

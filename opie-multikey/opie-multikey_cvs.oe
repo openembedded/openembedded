@@ -1,7 +1,7 @@
 DESCRIPTION = "Multiple language keyboard"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
 RDEPENDS = "opie-pics"

@@ -3,7 +3,7 @@ tools, documentation generation, and XMI generation for importation in a UML mod
 used to generate files readable by Argo UML."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-logilab python-pyxml"
 SRCNAME = "pyreverse"
 

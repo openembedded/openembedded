@@ -1,7 +1,7 @@
 DESCRIPTION = "Console utilities for certain hardware aspects of the SL-C7x0 based Zaurii"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 inherit qmake

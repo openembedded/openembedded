@@ -1,7 +1,7 @@
 DESCRIPTION = "Runtime helper for sip-generated python wrapper libraries"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 python"
 RDEPENDS = "python-core"

@@ -1,6 +1,6 @@
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "alsa"
 DEPENDS = "alsa-lib"
 DESCRIPTION = "JACK is a low-latency audio server. It can \

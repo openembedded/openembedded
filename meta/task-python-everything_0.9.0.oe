@@ -1,5 +1,5 @@
 DESCRIPTION= "All of Python"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\

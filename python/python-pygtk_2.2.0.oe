@@ -1,7 +1,7 @@
 DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "gtk+ libglade"
 SRCNAME = "pygtk"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "A SID Player for the Qt/Embedded based Palmtop Environments"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "libsidplay"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Benchmark for Opie/Qtopia"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.vanille.de/mirror/zbench-${PV}.tar.bz2"

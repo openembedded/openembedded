@@ -1,7 +1,7 @@
 DESCRIPTION = "NSD is an authoritative only, high performance, simple andopen source name server"
 SECTION = "net"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://www.nlnetlabs.nl/downloads/nsd/nsd-${PV}.tar.gz"
 

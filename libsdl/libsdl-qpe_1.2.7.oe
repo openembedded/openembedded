@@ -1,7 +1,7 @@
 DESCRIPTION = "Simple DirectMedia Layer - QtE-based Palmtop Environments Edition"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libqpe"
 PROVIDES = "virtual/libsdl"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Time-zone / world clock settings"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "timezones"
 PV = "1.1.5-cvs-${CVSDATE}"

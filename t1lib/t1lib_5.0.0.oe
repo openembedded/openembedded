@@ -1,7 +1,7 @@
 DESCRIPTION = "A Type1 Font Rastering Library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://www.netsw.org/graphic/font/t1lib-${PV}.tar.gz \
            file://configure.patch;patch=1 \

@@ -1,7 +1,7 @@
 DESCRIPTION = "Tron"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Open Embedded <oe@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 AUTHOR = "Matthias Kiefer"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Tron.html"

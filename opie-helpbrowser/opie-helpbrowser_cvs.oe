@@ -1,7 +1,7 @@
 DESCRIPTION = "Opie Help Browser"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Opie Team <opie@handhelds.org>"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "helpbrowser"

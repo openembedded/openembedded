@@ -2,7 +2,7 @@ DESCRIPTION = "Billiard Game for Qt/Embedded based palmtop environments w/ SDL."
 HOMEPAGE = "http://www.chipx86.com/projects/billiardz/"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libsdl libsdl-image"
 

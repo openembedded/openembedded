@@ -1,7 +1,7 @@
 DESCRIPTION = "Qt Widget Extension for Technical Applications"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Base libraries for the Open Palmtop Integrated Environment"
 HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
