@@ -1,11 +1,12 @@
 include mtd.oe
 inherit native
 DEPENDS = "patcher-native"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/mtd"
 
 do_stage () {
 	for binary in ftl_format erase eraseall nanddump doc_loadbios \
 		mkfs.jffs ftl_check mkfs.jffs2 lock unlock einfo mtd_debug \
 		fcp nandwrite jffs2dump; do
-		install -m 0755 $binary ${STAGING_BINDIR}/
+		install -m 0755 util/$binary ${STAGING_BINDIR}/
 	done
 }
