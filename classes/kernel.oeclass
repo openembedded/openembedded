@@ -15,6 +15,7 @@ KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
 
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
+KERNEL_IMAGEDEST = "boot"
 
 #
 # configuration
@@ -77,8 +78,10 @@ kernel_do_install() {
 	else
 		oenote "no modules to install"
 	fi
+	
+	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -d ${D}/boot
-	install -m 0644 ${KERNEL_OUTPUT} ${D}/boot/${KERNEL_IMAGETYPE}-${PV}
+	install -m 0644 ${KERNEL_OUTPUT} ${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${PV}
 	install -m 0644 System.map ${D}/boot/System.map-${PV}
 	install -m 0644 .config ${D}/boot/config-${PV}
 	install -d ${D}/etc/modutils
@@ -89,11 +92,11 @@ kernel_do_configure() {
 }
 
 pkg_postinst_kernel () {
-	update-alternatives --install /boot/zImage zImage /boot/zImage-${PV} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/zImage zImage /${KERNEL_IMAGEDEST}/zImage-${PV} ${KERNEL_PRIORITY} || true
 }
 
 pkg_postrm_kernel () {
-	update-alternatives --remove zImage /boot/zImage-${PV} || true
+	update-alternatives --remove zImage /${KERNEL_IMAGEDEST}/zImage-${PV} || true
 }
 
 inherit cml1
