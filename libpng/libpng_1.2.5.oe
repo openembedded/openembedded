@@ -3,7 +3,12 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "base/zlib"
+PR = "r1"
 
+PACKAGES =+ "${PN}12 ${PN}12-dev"
+
+FILES_${PN}12 = ${libdir}/libpng12.so.*
+FILES_${PN}12-dev = ${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc
 FILES_${PN} = ${libdir}/lib*.so.*
 FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
