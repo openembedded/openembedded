@@ -3,8 +3,8 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPL"
 KV = "${PV}"
-PR = "r1"
-RDEPENDS = "mtd"
+PR = "r2"
+RDEPENDS = "mtd-utils"
 
 SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://01-mtd-2004-01-27.diff;patch=1 \
