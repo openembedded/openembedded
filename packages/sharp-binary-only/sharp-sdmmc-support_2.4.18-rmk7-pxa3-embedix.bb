@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "http://www.openzaurus.org/mirror/sd-modules-2.4.18-rmk7-pxa3-embedix-r2.tar.bz2 \
 	   file://sd \
