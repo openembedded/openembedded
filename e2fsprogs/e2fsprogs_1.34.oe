@@ -2,7 +2,6 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	   file://ln.patch;patch=1 \

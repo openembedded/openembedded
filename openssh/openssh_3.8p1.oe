@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc zlib openssl"
+DEPENDS = "zlib openssl"
 SECTION = "net"
 DESCRIPTION = "Secure rlogin/rsh/rcp/telnet replacement (OpenSSH) \
 Ssh (Secure Shell) is a program for logging into a remote machine \

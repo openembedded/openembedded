@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "An ASCII art gfx library."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \

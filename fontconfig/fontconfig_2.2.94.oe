@@ -1,5 +1,5 @@
 DESCRIPTION = "A library for configuring and customizing font access."
-DEPENDS = "virtual/libc expat freetype freetype-native zlib fontconfig-native"
+DEPENDS = "expat freetype freetype-native zlib fontconfig-native"
 
 SRC_URI = "http://pdx.freedesktop.org/~fontconfig/release/fontconfig-${PV}.tar.gz \
            file://fc-glyphname.patch;patch=1 \

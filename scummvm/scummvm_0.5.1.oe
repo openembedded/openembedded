@@ -1,7 +1,7 @@
 DESCRIPTION = "Virtual Machine for LucasArts Adventures"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libsdl-qpe libmad libvorbis libogg"
+DEPENDS = "libsdl-qpe libmad libvorbis libogg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 

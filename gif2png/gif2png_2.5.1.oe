@@ -1,7 +1,7 @@
 DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "net"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc base/zlib libpng"
+DEPENDS = "base/zlib libpng"
 
 SRC_URI = "http://www.catb.org/~esr/gif2png/gif2png-${PV}.tar.gz"
 

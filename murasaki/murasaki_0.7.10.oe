@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "Murasaki automatically loads and unloads modules for \
 USB, Cardbus, and other hot-pluggable devices using the new Hotplug \
 feature in Linux 2.4."

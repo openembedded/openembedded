@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Midnight Commander is a file \
 manager for free operating systems."
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc ncurses glib-2.0"
+DEPENDS = "ncurses glib-2.0"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 

@@ -1,4 +1,4 @@
-DEPENDS = virtual/libc x11-cvs xproto-cvs
+DEPENDS = x11-cvs xproto-cvs
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/aterm/aterm-${PV}.tar.bz2
 

@@ -2,7 +2,7 @@ DESCRIPTION="KDE Organizer, QtE based Palmtop Environments Edition"
 SECTION="base"
 PRIORITY="optional"
 LICENSE="GPL"
-DEPENDS="virtual/libc virtual/libqpe uicmoc-native"
+DEPENDS="virtual/libqpe uicmoc-native"
 
 SRC_URI = "http://korganizer.kde.org/files/korganizerPi.150.source.tar.gz \
 	file://qmaketarget.patch;patch=1"

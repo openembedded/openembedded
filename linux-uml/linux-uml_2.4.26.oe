@@ -2,7 +2,6 @@ DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
 UMLR = "1"
 PR = "2"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
            http://mirror.usermodelinux.org/uml/uml-patch-${PV}-${UMLR}.bz2;patch=1 \

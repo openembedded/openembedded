@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
-DEPENDS = "virtual/libc x11 libpixman"
+DEPENDS = "x11 libpixman"
 DESCRIPTION = "Cairo graphics library"
 PROVIDES = "cairo"
 

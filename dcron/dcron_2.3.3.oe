@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "Dillon's Cron is a multi-user cron written from scratch, \
 similar to vixie-cron but with major differences."
 

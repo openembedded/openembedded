@@ -1,7 +1,6 @@
 DESCRIPTION = "File Alteration Monitor"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://oss.sgi.com/projects/fam/download/stable/fam-${PV}.tar.gz \
 	   file://compile-fix.patch;patch=1"

@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "A text screen-based source browser."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.gz"

@@ -2,7 +2,7 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc "
+DEPENDS = ""
 FILES_e2fsprogs-libs-dev_append = " ${datadir}/et ${datadir}/ss"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \

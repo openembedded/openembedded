@@ -2,7 +2,6 @@ DESCRIPTION = "A lightweight signal/slot library for decoupling C++ method calls
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://kafka.fr.free.fr/slotsig/slotsig-${PV}.tar.bz2"
 

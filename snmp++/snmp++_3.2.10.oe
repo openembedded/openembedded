@@ -1,7 +1,7 @@
 DESCRIPTION = "A C++ SNMP library that supports SNMPv1, SNMPv2c and SNMPv3"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libdes libtomcrypt"
+DEPENDS = "libdes libtomcrypt"
 
 SRC_URI = "http://www.agentpp.com/snmp++v${PV}.tar.gz"
 S = "${WORKDIR}/snmp++/src"

@@ -1,6 +1,5 @@
 DESCRIPTION = "Qt(E) Makefile Generator"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 LICENSE = "GPL/QPL"
 
 SRC_URI = \

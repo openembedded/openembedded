@@ -1,7 +1,6 @@
 DESCRIPTION = "GNOME XML library"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-${PV}.tar.bz2"

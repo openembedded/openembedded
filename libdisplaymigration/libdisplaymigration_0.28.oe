@@ -1,5 +1,5 @@
 DESCRIPTION = "Gtk+ display migration library"
-DEPENDS = "virtual/libc gtk+ libgcrypt"
+DEPENDS = "gtk+ libgcrypt"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"

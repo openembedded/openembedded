@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "GPM (General Purpose Mouse) is a mouse server \
 for the console and xterm, with sample clients included \
 (emacs, etc)."

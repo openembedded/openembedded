@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 SECTION = "libs"
-DEPENDS = "virtual/libc virtual/libbluetooth"
+DEPENDS = "virtual/libbluetooth"
 DESCRIPTION = "Analyses Bluetooth HCI packets."
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-hcidump-${PV}.tar.gz \

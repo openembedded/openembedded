@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "Flex is a tool for generating programs \
 that recognize lexical patterns in text."
 

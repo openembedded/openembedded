@@ -5,7 +5,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc"
 SRCNAME = "tlslite"
 
 SRC_URI = "http://trevp.net/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"

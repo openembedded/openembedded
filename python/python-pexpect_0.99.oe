@@ -3,7 +3,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-io python-terminal python-resource python-fcntl"
-DEPENDS = "virtual/libc"
 SRCNAME = "pexpect"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tgz"

@@ -1,7 +1,7 @@
 DESCRIPTION = "library for easy implementation of a RDP/VNC server"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc zlib jpeg"
+DEPENDS = "zlib jpeg"
 LICENSE = "GPL"
 PACKAGES = "libvncserver-storepasswd libvncserver-javaapplet"
 FILES_libvncserver-storepasswd = "${bindir}/storepasswd"

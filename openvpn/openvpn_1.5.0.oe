@@ -1,6 +1,6 @@
 DESCRIPTION = "A VPN solution via tun device.  Not IPSEC!"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc lzo"
+DEPENDS = "lzo"
 RDEPENDS = "tun"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-${PV}.tar.gz"

@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/qplot;module=qplot \
 	   file://gcc3.patch;patch=1"

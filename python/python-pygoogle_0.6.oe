@@ -5,7 +5,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-soappy"
-DEPENDS = "virtual/libc"
 SRCNAME = "pygoogle"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"

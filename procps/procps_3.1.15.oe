@@ -4,7 +4,7 @@ about processes using the /proc filesystem. The package \
 includes the programs ps, top, vmstat, w, kill, and skill."
 SECTION = "net"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
            file://procps_${PV}-2.diff;patch=1 \

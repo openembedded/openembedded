@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 SECTION = "libs"
 DESCRIPTION = "Secure Socket Layer (SSL) binary and related cryptographic tools."
 

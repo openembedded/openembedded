@@ -2,7 +2,7 @@ DESCRIPTION = "libmikey is a C++ library that implements the IETF work-in-progre
 HOMEPAGE = "http://minisip.org/libmikey"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc openssl"
+DEPENDS = "openssl"
 
 SRC_URI = "http://minisip.org/source/libmikey-${PV}.tar.gz"
 S = "${WORKDIR}/libmikey-0.1"

@@ -1,7 +1,6 @@
 DESCRIPTION = "A DES encryption library"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.agentpp.com/libdes-l-${PV}.tar.gz \
            file://cross-compile.patch;patch=1"

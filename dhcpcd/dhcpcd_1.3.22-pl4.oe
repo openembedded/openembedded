@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "dhcpcd is an RFC2131-, RFC2132-, and \
 RFC1541-compliant DHCP client daemon. It gets an IP address \
 and other information from the DHCP server, automatically \

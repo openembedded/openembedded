@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc x11"
+DEPENDS = "x11"
 DESCRIPTION = "Gesture recognition input method for X11"
 
 SRC_URI = "cvs://anoncvs:anoncvs@xstroke.org/cvs/xstroke;module=xstroke"

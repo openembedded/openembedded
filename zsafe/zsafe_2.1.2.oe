@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Carsten Schneider <zcarsten@gmx.net>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc virtual/libqpe"
+DEPENDS = "virtual/libqpe"
 
 #SRC_URI = http://z-soft.z-portal.info/zsafe/zsafe_${PV}.tgz
 SRC_URI = "http://www.lunix.com.ar/~ldipenti/zsafe_${PV}.tgz"

@@ -2,7 +2,7 @@ DESCRIPTION = "Python AO Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc libao"
+DEPENDS = "libao"
 SRCNAME = "pyao"
 
 SRC_URI = "http://www.andrewchatham.com/pyogg/download/${SRCNAME}-${PV}.tar.gz"

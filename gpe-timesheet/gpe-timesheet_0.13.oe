@@ -1,6 +1,6 @@
 inherit gpe
 
-DEPENDS = "virtual/libc libgpewidget glib-2.0 gtk+"
+DEPENDS = "libgpewidget glib-2.0 gtk+"
 SECTION = "gpe"
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-timesheet-${PV}.tar.gz \

@@ -1,5 +1,4 @@
-DEPENDS = virtual/libc
-RDEPENDS = libc6
+DEPENDS = RDEPENDS = libc6
 
 SRC_URI = http://freshmeat.net/redir/pppd/8313/url_tgz/ppp-2.4.1.tar.gz \
 	file://pppd.patch;patch=1

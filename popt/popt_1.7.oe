@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "The popt library exists essentially \
 for parsing command line options."
 

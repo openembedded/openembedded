@@ -2,7 +2,7 @@ DESCRIPTION = "slrn - console news reader"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
-DEPENDS = "virtual/libc slang"
+DEPENDS = "slang"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
 	   file://m4.patch;patch=1 \

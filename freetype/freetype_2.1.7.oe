@@ -1,5 +1,4 @@
 DESCRIPTION = "Freetype font rendering library"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"

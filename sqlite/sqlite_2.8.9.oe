@@ -1,7 +1,7 @@
 DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc base/readline base/ncurses"
+DEPENDS = "base/readline base/ncurses"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
            file://crosscompile.patch;patch=1"

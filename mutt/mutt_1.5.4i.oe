@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses openssl"
+DEPENDS = "ncurses openssl"
 DESCRIPTION = "Mutt is a small but very powerful text-based \
 MIME mail client. It is highly configurable, and is well-suited \
 to the mail power user with advanced features like key \

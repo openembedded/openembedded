@@ -1,0 +1,5 @@
+DESCRIPTION = "joe's own editor."
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/joe-editor/joe-${PV}.tar.gz"
+
+inherit autotools

@@ -1,7 +1,6 @@
 DESCRIPTION = "A sophisticated console ftp client"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2"
 

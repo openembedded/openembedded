@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "An advanced alternative, asynchronous resolver."
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \

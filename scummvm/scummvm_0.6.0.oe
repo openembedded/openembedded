@@ -1,7 +1,7 @@
 DESCRIPTION = "Virtual Machine for LucasArts Adventures"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libsdl-qpe libmad tremor libogg zlib"
+DEPENDS = "libsdl-qpe libmad tremor libogg zlib"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
 			file://sword1.patch;patch=1 \

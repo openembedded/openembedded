@@ -1,7 +1,7 @@
 DESCRIPTION = "x86 Emulator based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libsdl-qpe"
+DEPENDS = "libsdl-qpe"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bochs/bochs-${PV}.tar.gz \
            file://compile.patch;patch=1"

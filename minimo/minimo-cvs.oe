@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc xt gtk+ libidl"
+DEPENDS = "xt gtk+ libidl"
 SRC_URI = "cvs://anonymous@cvs-mirror.mozilla.org/cvsroot;module=mozilla \
            file://xptcstubs.patch;patch=1 \
            file://mozconfig"

@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc kpsewhich-native"
+DEPENDS = "kpsewhich-native"
 SRCNAME = "PyX"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyx/${SRCNAME}-${PV}.tar.gz"

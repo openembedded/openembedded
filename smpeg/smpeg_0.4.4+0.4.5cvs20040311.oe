@@ -1,7 +1,7 @@
 SECTION = "NET"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc virtual/libsdl"
+DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \
 player for Linux based on the mpeg_play and SPLAY \

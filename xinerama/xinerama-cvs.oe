@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc panoramixext"
+DEPENDS = "panoramixext"
 PROVIDES = "xinerama"
 DESCRIPTION = "Xinerama library"
 

@@ -1,0 +1,53 @@
+DESCRIPTION= "Korganizer/Pi is a powerful calender and ToDo Tool for Qt/Embedded based Palmtop Environments"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Sebastian Goergen <zeppo@gmx.net>"
+LICENSE = "GPL"
+RDEPENDS = "lipqpe1"
+DEPENDS ="virtual/libqpe libopie1"
+
+SRC_URI = "http://www.pi-sync.net/daunlood/stable/korganizerPi.175.tar.gz"
+
+S = "${WORKDIR}/korganizerPi.175"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST = "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link,"
+QMAKE_PROFILES= "all.pro"
+
+SUBDIRS="microkde libical/src/libical libical/src/libicalss libkcal libkdepim libkabcwrap kalarmd korganizer" 
+
+do_configure_prepend() {
+        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat ${SUBDIRS}\n" >all.pro
+        for d in ${SUBDIRS}
+        do
+                mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
+        done
+}
+
+do_install() {
+    install -d ${D}/${palmtopdir}/bin \
+               ${D}/${palmtopdir}/lib \
+               ${D}/${palmtopdir}/apps/1Pim \
+               ${D}/${palmtopdir}/pics/korganizer/icons16 \
+               ${D}/${palmtopdir}/pics/korganizer/iconsmini \
+               ${D}/${palmtopdir}/plugins/applets
+    install -m 0644 korganizer/korganizer.desktop ${D}/${palmtopdir}/apps/1Pim/korganizer.desktop
+    cd ${S}/pics
+    install -m 0644 ${S}/pics/ko*.png ${D}/${palmtopdir}/pics
+    install -m 0644 ${S}/pics/*.png ${D}/${palmtopdir}/pics/korganizer
+    install -m 0644 ${S}/pics/icons16/*.png ${D}/${palmtopdir}/pics/korganizer/icons16
+    install -m 0644 ${S}/pics/iconsmini/*.png ${D}/${palmtopdir}/pics/korganizer/iconsmini
+
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
+    do
+        oe_libinstall -so -C ${STAGING_LIBDIR} $f ${d}/${palmtopdir}/lib
+    done
+
+    install -m 0755 ${STAGING_DIR}/${HOST_SYS}/bin/kopi ${D}/${palmtopdir}/bin/kopi
+
+    for f in libkopialarmapplet
+    do
+        oe_libinstall -so -C ${STAGING_DIR}/${HOST_SYS}/plugins/applets $f ${d}/${palmtopdir}/plugins/applets
+    done
+}

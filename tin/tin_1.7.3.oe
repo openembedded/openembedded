@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "Tin is a powerful text mode news reader."
 
 SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \

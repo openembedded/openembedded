@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc readline"
+DEPENDS = "readline"
 DESCRIPTION = "GNU units converts between different systems of units."
 
 SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \

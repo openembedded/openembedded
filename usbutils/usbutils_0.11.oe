@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "USB console utilities."
 
 SRC_URI = "http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-${PV}.tar.gz \

@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "TransConnect is an implementation of function \
 interposing to allow users on *nix platforms to transparenly \
 tunnel all networking applications over an HTTPS proxy."

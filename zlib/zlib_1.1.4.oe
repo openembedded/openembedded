@@ -4,7 +4,6 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz"
-DEPENDS = "virtual/libc"
 S = "${WORKDIR}/zlib-${PV}"
 
 export LDSHARED = "${CC} -shared -Wl,-soname,libz.so.1"

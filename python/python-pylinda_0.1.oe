@@ -3,7 +3,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc"
 SRCNAME = "linda"
 
 SRC_URI = "http://www-users.cs.york.ac.uk/~aw/pylinda/linda-${PV}.tar.gz \

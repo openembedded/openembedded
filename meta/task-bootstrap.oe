@@ -3,7 +3,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
+DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ipkg initscripts modutils netbase \
 	resolvconf sysvinit tinylogin lrzsz \
 	${BOOTSTRAP_EXTRA_DEPENDS}'

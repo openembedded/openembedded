@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "C-Kermit is a combined serial and network communication \
 software package offering a consistent, medium-independent, \
 cross-platform approach to connection establishment, terminal \

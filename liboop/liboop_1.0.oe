@@ -1,7 +1,6 @@
 DESCRIPTION = "Liboop is a low-level event loop management library \
 for POSIX-based operating systems."
 LICENSE = "LGPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://download.ofb.net/liboop/liboop-${PV}.tar.bz2"
 S = "${WORKDIR}/liboop-${PV}"

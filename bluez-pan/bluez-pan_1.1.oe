@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 SECTION = "libs"
-DEPENDS = "virtual/libc virtual/libbluetooth virtual/libsdp"
+DEPENDS = "virtual/libbluetooth virtual/libsdp"
 DESCRIPTION = "Personal area networking for Bluetooth devices."
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-pan-${PV}.tar.gz"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libmatchbox x11 xext xpm"
+DEPENDS = "libmatchbox x11 xext xpm"
 RDEPENDS = "libmatchbox matchbox-common"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/${PV}/matchbox-panel-${PV}.tar.bz2"

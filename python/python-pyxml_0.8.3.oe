@@ -3,7 +3,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-xml python-netclient"
-DEPENDS = "virtual/libc"
 SRCNAME = "pyxml"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyxml/PyXML-${PV}.tar.gz"

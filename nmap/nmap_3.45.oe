@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc libpcap"
+DEPENDS = "libpcap"
 DESCRIPTION = "Nmap is a command line portscanner."
 
 SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tgz"

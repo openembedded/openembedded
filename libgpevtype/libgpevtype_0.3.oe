@@ -2,7 +2,7 @@ DESCRIPTION = "Data interchange library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc libmimedir"
+DEPENDS = "libmimedir"
 
 inherit pkgconfig gpe
 

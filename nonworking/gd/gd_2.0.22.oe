@@ -1,0 +1,11 @@
+DESCRIPTION = "An ANSI C library for the dynamic creation of images. GD creates PNG and JPEG images, among other formats."
+SECTION = "libs"
+PRIORITY = "optional"
+DEPENDS = ""
+
+SRC_URI = "http://www.boutell.com/gd/http/gd-${PV}.tar.gz"
+
+inherit autotools libtool
+
+
+

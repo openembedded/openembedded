@@ -1,6 +1,6 @@
 HOMEPAGE = "http://bvi.sourceforge.net/"
 DESCRIPTION = "binary vi (binary file editor)"
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bvi/bvi-${PV}.src.tar.gz \
 	   file://configure.patch;patch=1 \

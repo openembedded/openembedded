@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "The sysklogd package implements \
 two system log daemons."
 

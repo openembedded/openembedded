@@ -3,7 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-re python-lang"
-DEPENDS = "virtual/libc sqlite"
+DEPENDS = "sqlite"
 SRCNAME = "pysqlite"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"

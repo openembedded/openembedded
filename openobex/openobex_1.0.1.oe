@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "The Openobex project aims to make an \
 open source implementation of the Object Exchange \
 (OBEX) protocol."

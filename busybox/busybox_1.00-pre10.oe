@@ -1,6 +1,5 @@
 PR = "r2"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 DESCRIPTION = "BusyBox version ${PV}. \
 BusyBox combines tiny versions of many common UNIX utilities into a single \
 small executable. It provides minimalist replacements for most of the \

@@ -1,7 +1,7 @@
 DESCRIPTION = "Perl is a popular scripting language."
 SECTION = "developing"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc db3 perl-native"
+DEPENDS = "db3 perl-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
 
 do_configure() {

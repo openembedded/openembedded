@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "A program that you can use to select particular records in a \
 file and perform operations upon them."
 

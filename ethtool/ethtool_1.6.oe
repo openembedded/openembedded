@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "ethtool is a Linux net driver diagnostic \
 and tuning tool for the Linux 2.4.x (or later) series \
 of kernels."

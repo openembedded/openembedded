@@ -1,0 +1,12 @@
+DEPENDS = 
+RDEPENDS = libc6
+
+SRC_URI = ftp://ftp.easysw.com/pub/ghostscript/espgs-${PV}-source.tar.bz2
+
+inherit autotools
+
+do_configure () {
+	set -e
+	./autogen.sh
+	oe_runconf
+}

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "phalanx"
-DEPENDS = "virtual/libc virtual/libqpe"
+DEPENDS = "virtual/libqpe"
 
 SRC_URI = "http://www.houseoffish.org/knights/downloads/knights.tar.gz \
            file://libqpe-opie.patch;patch=1 \

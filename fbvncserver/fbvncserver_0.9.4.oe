@@ -1,5 +1,5 @@
 DESCRIPTION = "framebuffer VNC server"
-DEPENDS = "virtual/libc libvncserver jpeg zlib"
+DEPENDS = "libvncserver jpeg zlib"
 RDEPENDS = "fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \

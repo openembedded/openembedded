@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc zlib"
+DEPENDS = "zlib"
 DESCRIPTION = "Tools for managing memory technology devices."
 PV = "${CVSDATE}"
 

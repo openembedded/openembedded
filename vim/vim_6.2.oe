@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "Vim is an almost fully-compatible \
 version of the Unix editor Vi."
 

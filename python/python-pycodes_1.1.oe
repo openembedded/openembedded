@@ -7,7 +7,6 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc"
 SRCNAME = "pycodes"
 
 SRC_URI = "http://www.csua.berkeley.edu/~emin/source_code/pycodes/pycodes-1-1.tar.gz \

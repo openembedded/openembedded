@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "The mgetty package contains an intelligent \
 getty for allowing logins over a serial line (such as \
 through a modem) and receiving incoming faxes."

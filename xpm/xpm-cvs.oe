@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc xproto x11"
+DEPENDS = "xproto x11"
 PROVIDES = "xpm"
 DESCRIPTION = "X Pixmap library."
 

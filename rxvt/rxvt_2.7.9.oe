@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc x11 xft"
+DEPENDS = "x11 xft"
 DESCRIPTION = "Well known terminal emulator"
 
 SRC_URI = "pserver://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/rxvt \

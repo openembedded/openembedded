@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc virtual/libqpe virtual/libsdl libsdl-image"
+DEPENDS = "virtual/libqpe virtual/libsdl libsdl-image"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freedroid/freedroid-${PV}.tar.gz \
            file://icon.png"

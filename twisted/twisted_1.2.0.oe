@@ -6,7 +6,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://twisted.sourceforge.net/Twisted-${PV}.tar.bz2"
 S = "${WORKDIR}/Twisted-${PV}"

@@ -1,7 +1,7 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 #DEPENDS=virtual/libc x11-cvs damageext-cvs xextensions-cvs fixesext-cvs xfixes-cvs
-DEPENDS = "virtual/libc x11 damageext xfixes xproto"
+DEPENDS = "x11 damageext xfixes xproto"
 PROVIDES = "xdamage"
 DESCRIPTION = "X Damage extension library."
 

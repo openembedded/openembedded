@@ -1,0 +1,11 @@
+SECTION="libs"
+PRIORITY="optional"
+RDEPENDS="libc6"
+SECTION="libs"
+DEPENDS=
+
+SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
+S=${WORKDIR}/${P}
+
+inherit autotools
+

@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc virtual/libqpe"
+DEPENDS = "virtual/libqpe"
 
 SRC_URI = "http://user.cs.tu-berlin.de/~karlb/ztappy/ztappy.tar.gz"
 S = "${WORKDIR}/ztappy"

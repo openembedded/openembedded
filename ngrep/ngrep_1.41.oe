@@ -2,7 +2,7 @@ DESCRIPTION = "ngrep strives to provide most of GNU grep's \
 common features, applying them to the network layer."
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libpcap pcre"
+DEPENDS = "libpcap pcre"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ngrep/ngrep-${PV}.tar.bz2"
 

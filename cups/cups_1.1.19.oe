@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc openssl jpeg libpng zlib"
+DEPENDS = "openssl jpeg libpng zlib"
 DESCRIPTION = "An Internet printing system for Unix."
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2"

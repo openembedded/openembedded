@@ -1,6 +1,6 @@
 DESCRIPTION = "Utilities for User-Mode-Linux"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc zlib ncurses readline"
+DEPENDS = "zlib ncurses readline"
 
 SRC_URI = "http://mirror.usermodelinux.org/uml/uml_utilities_${PV}.tar.bz2 \
            file://fix-ldflags.patch;patch=1"

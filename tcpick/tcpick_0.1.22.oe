@@ -1,0 +1,9 @@
+DESCRIPTION = "Tcpick Tcp Stream Sniffer and Connection Tracker"
+SECTION = "base"
+PRIORITY = "required"
+DEPENDS = "ncurses"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/tcpick/tcpick-${PV}.tar.gz"
+S = "${WORKDIR}/tcpick-${PV}"
+
+inherit autotools

@@ -5,7 +5,6 @@ library, so that others can make use of FTP from within \
 their own C programs."
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp-dev.cites.uiuc.edu/pub/fget/fget-${PV}.tar.gz"
 

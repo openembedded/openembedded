@@ -2,7 +2,6 @@ DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "net"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://pygps.org/gpsd/downloads/gpsd-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \

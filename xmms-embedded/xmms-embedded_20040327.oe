@@ -1,7 +1,7 @@
 BROKEN = "yes"
 SECTION = "apps"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc zlib tremor libmad libid3tag libsidplay glib-2.0 virtual/libqpe uicmoc-native"
+DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 virtual/libqpe uicmoc-native"
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \

@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc virtual/libqpe"
+DEPENDS = "virtual/libqpe"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/klimt/klimt-src-${PV}.zip"
 S = "${WORKDIR}/klimt/build/LinuxQTE"

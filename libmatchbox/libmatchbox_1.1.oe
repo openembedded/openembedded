@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox window manager core library"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc x11 xext xft pango jpeg libpng zlib"
+DEPENDS = "x11 xext xft pango jpeg libpng zlib"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/libmatchbox/${PV}/libmatchbox-${PV}.tar.bz2"
 S = "${WORKDIR}/libmatchbox-${PV}"

@@ -3,7 +3,6 @@ HOMEPAGE = "http://unimut.fsk.uni-heidelberg.de/demi/comprec/index.html"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://unimut.fsk.uni-heidelberg.de/demi/comprec/comprec-${PV}.tar.gz \
 	   file://makefile.patch;patch=1"

@@ -1,5 +1,4 @@
 DESCRIPTION = "grand unified bootloader"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz; \
 	   file://autohell.patch;patch=1 \

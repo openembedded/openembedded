@@ -12,7 +12,7 @@ SRC_URI="ftp://ftp.trolltech.com/pub/qtopia/source/qtopia-free-${PV}.tar.gz \
 	file://${FILESDIR}/security.patch;patch=1 \
 	file://${FILESDIR}/storage.patch;patch=1"
 
-DEPENDS=virtual/libc base/zlib base/libpng base/jpeg qte-for-qtopia tmake e2fsprogs-libs uicmoc
+DEPENDS=base/zlib base/libpng base/jpeg qte-for-qtopia tmake e2fsprogs-libs uicmoc
 PROVIDES=virtual/qtopia virtual/libqpe virtual/libqtopia
 S="${WORKDIR}/qtopia-free-${PV}"
 

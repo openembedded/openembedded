@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-DEPENDS = "virtual/libc zlib ncurses"
+DEPENDS = "zlib ncurses"
 DESCRIPTION = "Util-linux is a suite of essential \
 utilities for any Linux system."
 

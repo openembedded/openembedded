@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc render x11"
+DEPENDS = "render x11"
 PROVIDES = "xrender"
 DESCRIPTION = "X Render extension library."
 

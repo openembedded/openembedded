@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc cairo"
+DEPENDS = "cairo"
 DESCRIPTION = "The freedesktop.org clock"
 PROVIDES = "fdclock"
 

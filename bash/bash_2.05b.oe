@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses"
+DEPENDS = "ncurses"
 DESCRIPTION = "An sh-compatible command language interpreter."
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \

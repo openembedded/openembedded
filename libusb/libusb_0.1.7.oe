@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 

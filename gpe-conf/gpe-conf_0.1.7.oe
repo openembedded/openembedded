@@ -1,6 +1,6 @@
 inherit gpe
 
-DEPENDS = "virtual/libc gtk+ libgpewidget libxsettings libxsettings-client libdotdesktop"
+DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client libdotdesktop"
 SECTION = "gpe"
 PRIORITY = "optional"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps ${datadir}/applications"

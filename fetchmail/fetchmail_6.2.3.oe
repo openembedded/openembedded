@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "Fetchmail is a free, full-featured, robust, \
 well-documented remote-mail retrieval and forwarding utility \
 intended to be used over on-demand TCP/IP links \

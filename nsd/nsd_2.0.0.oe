@@ -2,7 +2,6 @@ DESCRIPTION = "NSD is an authoritative only, high performance, simple andopen so
 SECTION = "net"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.nlnetlabs.nl/downloads/nsd/nsd-${PV}.tar.gz"
 

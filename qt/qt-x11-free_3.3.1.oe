@@ -1,0 +1,24 @@
+DESCRIPTION = "Qt is a versatile class library for graphical applications." 
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-3.3.1.tar.bz2"
+DEPENDS = "moc-native x11 xft libpng zlib jpeg sm xinerama xcursor"
+
+do_configure () {
+	echo "yes" | ./configure -prefix ${prefix} -ipv6 -system-zlib -system-libpng -system-libjpeg
+}
+
+do_compile () {
+	top=`pwd`
+	cd $top/qmake; oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="-I. -Igenerators -Igenerators/unix -Igenerators/win32 -Igenerators/mac \
+	-I${S}/include/qmake -I${S}/include -I${S}/include \
+	-DQT_NO_TEXTCODEC -DQT_NO_UNICODETABLES -DQT_NO_COMPONENT -DQT_NO_STL \
+	-DQT_NO_COMPRESS -I${S}/mkspecs/linux-g++ -DHAVE_QCONFIG_CPP${CXXFLAGS}"
+	cd $top/src/moc; oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="-DQT_MOC -DQT_NO_CODECS -DQT_LITE_UNICODE -DQT_NO_COMPONENT -DQT_NO_STL -DQT_NO_COMPRESS ${CFLAGS}" CXXFLAGS="-DQT_MOC -DQT_NO_CODECS -DQT_LITE_UNICODE -DQT_NO_COMPONENT -DQT_NO_STL -DQT_NO_COMPRESS ${CXXFLAGS}" LINK="${CXX}" LFLAGS="${LDFLAGS}"
+	cd $top/src; oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="-Wall -W -fPIC -DQT_SHARED -DQT_NO_DEBUG -DQT_NO_CUPS -D_LARGEFILE_SOURCE -D_LARGE_FILES -D_FILE_OFFSET_BITS=64 -DQT_NO_IMAGEIO_MNG -DQT_NO_IMAGEIO_JPEG -DQT_NO_STYLE_MAC -DQT_NO_STYLE_AQUA -DQT_NO_STYLE_INTERLACE -DQT_NO_STYLE_WINDOWSXP -DQT_NO_STYLE_COMPACT -DQT_NO_STYLE_POCKETPC ${CFLAGS}" CXXFLAGS="-Wall -W -fPIC -DQT_SHARED -DQT_NO_DEBUG -DQT_NO_CUPS -D_LARGEFILE_SOURCE -D_LARGE_FILES -D_FILE_OFFSET_BITS=64 -DQT_NO_IMAGEIO_MNG -DQT_NO_IMAGEIO_JPEG -DQT_NO_STYLE_MAC -DQT_NO_STYLE_AQUA -DQT_NO_STYLE_INTERLACE -DQT_NO_STYLE_WINDOWSXP -DQT_NO_STYLE_COMPACT -DQT_NO_STYLE_POCKETPC ${CXXFLAGS}" MOC="moc3" LINK="${CXX}" LFLAGS="${LDFLAGS} -shared -Wl,-soname,libqt.so.3 -Wl,-rpath,/var/tmp/oe-tmp.pb/base/qt-x11-free-3.3.1-r0/qt-x11-free-3.3.1/lib"
+}
+
+do_install () {
+	top=`pwd`
+	cd $top/qmake; oe_runmake INSTALL_ROOT="${D}" install
+	cd $top/moc; oe_runmake INSTALL_ROOT="${D}" install
+	cd $top/src; oe_runmake INSTALL_ROOT="${D}" install
+}

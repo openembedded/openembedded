@@ -1,7 +1,7 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc x11 xextensions xext resourceext"
+DEPENDS = "x11 xextensions xext resourceext"
 PROVIDES = "xres"
 DESCRIPTION = "X Resource usage library."
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Startup notification support"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
-DEPENDS = "virtual/libc x11"
+DEPENDS = "x11"
 
 inherit autotools pkgconfig 
 

@@ -2,7 +2,7 @@ DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "virtual/libc zlib libogg tremor libmad"
+DEPENDS = "zlib libogg tremor libmad"
 
 inherit autotools
 

@@ -1,5 +1,4 @@
 DESCRIPTION = "GNU multiprecision arithmetic library"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://mirrors.kernel.org/gnu/gmp/gmp-${PV}.tar.gz \
 	   file://configure.patch;patch=1"

@@ -2,7 +2,6 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc"
 PROVIDES = "xcursor"
 DESCRIPTION = "X Cursor library"
 

@@ -1,0 +1,17 @@
+DESCRIPTION="R is GNU S, a freely available language and environment for statistical computing and \
+graphics which provides a wide variety of statistical and graphical techniques: \
+linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering, etc."
+SECTION=base
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6
+DEPENDS=
+
+SRC_URI=http://cran.us.r-project.org/src/base/R-${PV}.tgz
+S=${WORKDIR}/R-${PV}
+
+inherit autotools libtool
+
+EXTRA_OECONF=""
+
+

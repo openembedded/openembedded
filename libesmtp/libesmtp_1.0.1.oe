@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc openssl"
+DEPENDS = "openssl"
 DESCRIPTION = "LibESMTP is a library to manage posting \
 (or submission of) electronic mail using SMTP to a \
 preconfigured Mail Transport Agent (MTA) such as Exim."

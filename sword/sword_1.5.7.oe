@@ -2,7 +2,7 @@ DESCRIPTION = "The SWORD Project is an open source, cross-platform (Linux, Windo
 Bible software with a constantly growing list of front-ends (GUI, textmode, web-based, etc.) and a library of over 200 text modules"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc clucene curl"
+DEPENDS = "clucene curl"
 RDEPENDS = "clucene curl"
 PR = "2"
 

@@ -1,0 +1,17 @@
+DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Unix platforms"
+SECTION = "base"
+PRIORITY = "optional"
+
+SRC_URI = "http://the.earth.li/~sgtatham/putty/latest/putty-${PV}.tar.gz"
+
+TARGETS = "plink pscp psftp puttygen"
+
+do_compile() {
+	cd unix && oe_runmake -f Makefile.gtk ${TARGETS} CC="${CC}" CFLAGS="${CFLAGS} -I. -I.. -I../charset"
+}
+
+do_install() {
+	install -d ${D}/${bindir}/
+	cd unix && install -m 0755 ${TARGETS} ${D}/${bindir}/
+}
+

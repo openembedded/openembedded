@@ -2,7 +2,6 @@ DESCRIPTION = "Picocom is a lightweight and minimal (~20K) dumb-terminal emulati
 SECTION = "utils"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz"
 

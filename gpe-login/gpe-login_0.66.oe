@@ -4,7 +4,7 @@ DESCRIPTION = "GPE user login screen"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc gtk+ libgpewidget gpe-ownerinfo xkbd"
+DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS = "xkbd"
 RPROVIDES = "gpe-session-starter"
 

@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = 'The PCI Utilities package contains a library for portable access \
 to PCI bus configuration space and several utilities based on this library.'
 

@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc xproto"
+DEPENDS = "xproto"
 PROVIDES = "xdmcp"
 DESCRIPTION = "X Display Manager Control Protocol library."
 S = "${WORKDIR}/libXdmcp-${PV}"

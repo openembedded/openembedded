@@ -1,7 +1,7 @@
 DESCRIPTION = "Applications for OpenOBEX"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc openobex"
+DEPENDS = "openobex"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-apps-${PV}.tar.gz \
 	   file://m4.patch;patch=1 \

@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc libmodplug"
+DEPENDS = "libmodplug"
 DESCRIPTION = "modplugplay is a commandline mod-like audio file player."
 
 SRC_URI = "http://www.linuks.mine.nu/modplugplay/modplugplay-${PV}.tar.gz"

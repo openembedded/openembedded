@@ -2,7 +2,6 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-DEPENDS = "virtual/libc"
 PR = "r1"
 
 PACKAGES =+ "libipkg-dev libipkg "

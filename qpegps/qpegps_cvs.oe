@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/qpegps;module=qpegps \
            file://gpsd-fix.patch;patch=1 \

@@ -2,7 +2,7 @@ DESCRIPTION = "A general purpose cryptographic library based on the code from Gn
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
-DEPENDS = "virtual/libc libgpg-error"
+DEPENDS = "libgpg-error"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgcrypt/libgcrypt-${PV}.tar.gz"
 

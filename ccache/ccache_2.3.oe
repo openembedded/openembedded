@@ -1,6 +1,5 @@
 HOMEPAGE = "http:/ccache.samba.org"
 DESCRIPTION = "compiler cache"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://ccache.samba.org/ftp/ccache/ccache-${PV}.tar.gz"
 

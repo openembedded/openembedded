@@ -1,6 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
-DEPENDS = "virtual/libc x11 compositeext xextensions fixesext xfixes"
+DEPENDS = "x11 compositeext xextensions fixesext xfixes"
 PROVIDES = "xcomposite"
 DESCRIPTION = "X Composite extension library."
 

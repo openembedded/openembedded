@@ -1,7 +1,7 @@
 DESCRIPTION = "Alsa OSS Compatibility Package"
 MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc alsa-lib"
+DEPENDS = "alsa-lib"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \

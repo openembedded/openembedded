@@ -2,7 +2,7 @@ DESCRIPTION="C64 Emulator based on SDL"
 SECTION="base"
 PRIORITY="optional"
 RDEPENDS="libc6 libsdl-qpe"
-DEPENDS=virtual/libc libsdl-qpe
+DEPENDS=libsdl-qpe
 
 SRC_URI = cvs://anoncvs:anoncvs@down.physik.uni-mainz.de/cvs;module=Frodo4 \
           file://${FILESDIR}/m4.patch;patch=1 \

@@ -1,6 +1,5 @@
 DESCRIPTION = "Conserver provides remote access to serial port \
 consoles and logs all data to a central host."
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.conserver.com/conserver-${PV}.tar.gz"
 

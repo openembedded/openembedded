@@ -1,4 +1,4 @@
-DEPENDS = virtual/libc cyrus-sasl
+DEPENDS = cyrus-sasl
 RDEPENDS = libc6 cyrus-sasl
 
 SRC_URI = ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz

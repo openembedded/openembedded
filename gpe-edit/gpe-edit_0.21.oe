@@ -1,6 +1,6 @@
 inherit gpe
 
-DEPENDS = "virtual/libc gtk+ libdisplaymigration libgpewidget"
+DEPENDS = "gtk+ libdisplaymigration libgpewidget"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 DESCRIPTION = "Editor for the GPE Palmtop Environment"

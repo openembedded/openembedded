@@ -1,18 +1,17 @@
 DESCRIPTION = "Lossless data compression library"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "http://www.oberhumer.com/opensource/lzo/download/lzo-${PV}.tar.gz"
 
 inherit autotools 
 
-do_configure () {
-	# override this function to avoid the autoconf/automake/aclocal/autoheader
-	# calls for now
-	gnu-configize
-	oe_runconf
-}
+#do_configure () {
+#	# override this function to avoid the autoconf/automake/aclocal/autoheader
+#	# calls for now
+#	gnu-configize
+#	oe_runconf
+#}
 
 do_stage() {
 	install -m 0644 include/lzo1.h ${STAGING_INCDIR}/lzo1.h

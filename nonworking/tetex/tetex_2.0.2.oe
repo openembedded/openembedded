@@ -1,4 +1,4 @@
-DEPENDS = virtual/libc
+DEPENDS = 
 RDEPENDS = libc6
 
 SRC_URI = ftp://cam.ctan.org/tex-archive/systems/unix/teTeX/2.0/distrib/tetex-src-${PV}.tar.gz \

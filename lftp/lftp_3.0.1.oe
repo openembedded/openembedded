@@ -4,7 +4,7 @@ and FISH."
 HOMEPAGE = "http://lftp.yar.ru"
 SECTION = "net"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc readline"
+DEPENDS = "readline"
 
 SRC_URI = "http://ftp.yars.free.net/pub/software/unix/net/ftp/client/lftp/lftp-${PV}.tar.bz2 \
 	   file://pty.patch;patch=1"

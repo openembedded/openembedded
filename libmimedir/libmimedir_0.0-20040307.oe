@@ -2,7 +2,7 @@ DESCRIPTION = "RFC2425 MIME Directory Profile library, supporting vCard and iCal
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "virtual/libc intltool-native"
+DEPENDS = "intltool-native"
 
 SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libmimedir-snapshot-20040307.tar.gz"
 S = "${WORKDIR}/libmimedir"

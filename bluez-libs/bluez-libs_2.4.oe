@@ -1,7 +1,6 @@
 SECTION = "libs"
 PRIORITY = "optional"
 SECTION = "libs"
-DEPENDS = "virtual/libc"
 PROVIDES = "virtual/libbluetooth"
 DESCRIPTION = "Linux Bluetooth Stack Libaries."
 

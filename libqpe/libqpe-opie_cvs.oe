@@ -3,7 +3,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc uicmoc-native qte-for-opie"
+DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.4-cvs-${CVSDATE}"
 

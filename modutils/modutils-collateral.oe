@@ -1,4 +1,3 @@
-DEPENDS = "virtual/libc"
 DESCRIPTION = "modutils configuration files"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 

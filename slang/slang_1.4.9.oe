@@ -2,7 +2,6 @@ DESCRIPTION = "slang"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2"
 

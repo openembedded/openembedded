@@ -1,5 +1,5 @@
 PV = "0.0cvs${CVSDATE}"
-DEPENDS = "virtual/libc gtk+ libgpewidget x11 xrandr xrender xft xinerama xtst xext xau"
+DEPENDS = "gtk+ libgpewidget x11 xrandr xrender xft xinerama xtst xext xau"
 PROVIDES = "rosetta"
 DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 

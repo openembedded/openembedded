@@ -4,7 +4,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
-DEPENDS = "virtual/libc libqpe-opie sqlite libpcap-0.7.2"
+DEPENDS = "libqpe-opie sqlite libpcap-0.7.2"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
 

@@ -3,7 +3,6 @@ SECTION = "Applications"
 PRIORITY = "optional"
 MAINTAINER = "David Greaves <arbor@users.sourceforge.net>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \
            file://gcc3.patch;patch=1"

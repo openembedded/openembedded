@@ -2,7 +2,7 @@ DESCRIPTION = "PNG Library"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "virtual/libc base/zlib"
+DEPENDS = "base/zlib"
 
 FILES_${PN} = ${libdir}/lib*.so.*
 FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \

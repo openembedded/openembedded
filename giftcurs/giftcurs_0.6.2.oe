@@ -1,4 +1,4 @@
-DEPENDS = "virtual/libc ncurses glib-2.0"
+DEPENDS = "ncurses glib-2.0"
 RDEPENDS = "gift"
 LICENSE = "GPL"
 DESCRIPTION = "giFTcurs is a cursed frontend to the giFT daemon and \

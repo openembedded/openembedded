@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc xproto xtrans zlib"
+DEPENDS = "xproto xtrans zlib"
 PROVIDES = "xfont"
 DESCRIPTION = "X font libary (used by the X server)."
 

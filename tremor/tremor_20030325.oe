@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
-DEPENDS = "virtual/libc libogg"
+DEPENDS = "libogg"
 DESCRIPTION = "tremor is a fixed point implementation of the vorbis codec."
 
 SRC_URI = "cvs://anoncvs:anoncvs@xiph.org/usr/local/cvsroot;module=Tremor;date=${PV}"

@@ -1,6 +1,6 @@
 DESCRIPTION = "libetpan is a library for mail server functions"
 SECTION = "libs"
-DEPENDS = "virtual/libc openssl"
+DEPENDS = "openssl"
 PR = "r1"
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la \

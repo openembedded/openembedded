@@ -1,6 +1,5 @@
 DESCRIPTION = "OLSR - routing protocol for wireless network"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.tcweb.org/pub/tom/olsr-${PV}.tar.gz"
 
