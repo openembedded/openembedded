@@ -1,5 +1,10 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "C-Kermit is a combined serial and network communication \
+software package offering a consistent, medium-independent, \
+cross-platform approach to connection establishment, terminal \
+sessions, file transfer, character-set translation, and automation \
+of communication tasks."
 
 SRC_URI = ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz \
 	  file://${FILESDIR}/cross.patch;patch=1

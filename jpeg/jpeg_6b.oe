@@ -3,6 +3,7 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
+DESCRIPTION = "libjpeg is a library for handling the JPEG (JFIF) image format."
 
 SRC_URI = http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 	  file://${FILESDIR}/debian.patch;patch=1 \

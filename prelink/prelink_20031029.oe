@@ -1,5 +1,8 @@
 DEPENDS = "elfutils virtual/libc"
 RDEPENDS = "elfutils libc6"
+DESCRIPTION = " The prelink package contains a utility which modifies ELF shared libraries \
+and executables, so that far fewer relocations need to be resolved at \
+runtime and thus programs come up faster."
 
 SRC_URI = ftp://people.redhat.com/jakub/prelink/prelink-${PV}.tar.bz2 \
 	  file://${FILESDIR}/dso.c.patch;patch=1 \

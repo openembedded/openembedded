@@ -1,4 +1,5 @@
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-files/base-files_${PV}.tar.gz"
+DESCRIPTION = "Base system miscellaneous files."
 
 docdir_append = "/${P}"
 PACKAGES = "base-files"

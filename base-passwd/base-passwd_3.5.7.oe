@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Base System Password/Group Files."
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1 \

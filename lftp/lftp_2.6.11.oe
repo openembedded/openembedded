@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc readline"
 RDEPENDS = "libc6 readline"
+DESCRIPTION = "lftp is a sophisticated command line based file \
+transfer program. Supported protocols include FTP, HTTP, \
+and FISH."
 
 SRC_URI := http://ftp.yars.free.net/pub/software/unix/net/ftp/client/lftp/${P}.tar.bz2 \
 	   file://${FILESDIR}/pty.patch;patch=1

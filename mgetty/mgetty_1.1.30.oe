@@ -1,3 +1,9 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+DESCRIPTION = "The mgetty package contains an intelligent \
+getty for allowing logins over a serial line (such as \
+through a modem) and receiving incoming faxes."
+
 #SRC_URI = ftp://alpha.greenie.net/pub/mgetty/source/1.0/mgetty+sendfax-${PV}.tar.gz
 SRC_URI = ${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz \
 	  file://${FILESDIR}/debian.patch;patch=1 \

@@ -1,3 +1,5 @@
+DESCRIPTION = "base set of man pages."
+
 SRC_URI = http://www.kernel.org/pub/linux/docs/manpages/man-pages-1.60.tar.bz2
 
 EXTRA_OEMAKE=

@@ -4,6 +4,7 @@ RDEPENDS = "libc6"
 SECTION = "libs"
 DEPENDS = "virtual/libc virtual/libbluetooth"
 PROVIDES = "virtual/libsdp"
+DESCRIPTION = "BlueZ Bluetooth SDP daemon and tool."
 
 SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
 

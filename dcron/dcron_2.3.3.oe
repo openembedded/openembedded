@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Dillon's Cron is a multi-user cron written from scratch, \
+similar to vixie-cron but with major differences."
 
 SRC_URI = http://ibiblio.org/pub/Linux/system/daemons/cron/dcron-${PV}.tar.gz \
 	  file://${FILESDIR}/compile.patch;patch=1

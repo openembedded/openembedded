@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Very high-quality data compression program."
 
 SRC_URI = ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
 	  file://${FILESDIR}/installpaths.patch;patch=1

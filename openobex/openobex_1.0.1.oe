@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTIONi = "The Openobex project aims to make an \
+open source implementation of the Object Exchange \
+(OBEX) protocol."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openobex/${P}.tar.gz
 

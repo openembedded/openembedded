@@ -5,6 +5,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc xproto-cvs xtrans-cvs zlib"
 PROVIDES = "xfont"
+DESCRIPTION = "X font libary (used by the X server)."
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xfont
 S = "${WORKDIR}/Xfont"

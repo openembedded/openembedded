@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 libncurses5"
+DESCRIPTION = "Screen is a full-screen window manager \
+that multiplexes a physical terminal between several \
+processes, typically interactive shells."
 
 SRC_URI := ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1

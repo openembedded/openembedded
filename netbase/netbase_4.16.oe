@@ -1,4 +1,6 @@
 PR = "r1"
+DESCRIPTION = "This package provides the necessary \
+infrastructure for basic TCP/IP based networking."
 
 SRC_URI = ${DEBIAN_MIRROR}/main/n/${PN}/${PN}_${PV}.tar.gz
 

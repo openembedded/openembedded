@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Diffutils contains the GNU diff, diff3, \
+sdiff, and cmp utilities. These programs are usually \
+used for creating patch files."
 
 SRC_URI = ${GNU_MIRROR}/${PN}/${P}.tar.gz
 

@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "LISa is a small daemon which provides something \
+like the network neighbourhood under windows, but more and \
+only relying on the TCP/IP protocol stack."
 
 SRC_URI = http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,3 +1,10 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+DESCRIPTION = "TinyLogin is a suite of tiny UNIX \
+utilities for handling logins, user authentication, \
+changing passwords, and otherwise maintaining users \
+and groups on an embedded system."
+
 SRC_URI = http://tinylogin.busybox.net/downloads/${P}.tar.bz2
 
 EXTRA_OEMAKE =

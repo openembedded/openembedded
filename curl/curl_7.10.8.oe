@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc zlib"
 RDEPENDS = "libc6 zlib"
+DESCRIPTION = "Command line tool and library for \
+client-side URL transfers."
 
 SRC_URI = http://curl.haxx.se/download/curl-${PV}.tar.bz2
 

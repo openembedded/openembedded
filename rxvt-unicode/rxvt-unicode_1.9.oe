@@ -1,0 +1,54 @@
+DEPENDS = 'virtual/libc x11 xft'
+RDEPENDS = "libc6 x11 xft"
+DESCRIPTION = "rxvt-unicode is a clone of the well known \
+terminal emulator rxvt, modified to store text in Unicode \
+(either UCS-2 or UCS-4) and to use locale-correct input and \
+output. It also supports mixing multiple fonts at the \
+same time, including Xft fonts."
+
+SRC_URI = '${SOURCEFORGE_MIRROR}/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
+	   file://${FILESDIR}/xim.patch;patch=1 \
+	   file://${FILESDIR}/include.patch;patch=1'
+
+inherit autotools libtool
+
+EXTRA_OECONF = '--disable-menubar \
+		--enable-ttygid \
+		--with-term=rxvt \ 
+		--enable-transparency \ 
+		--disable-xim \
+		--with-x=${STAGING_LIBDIR}/.. \
+		--enable-shared \
+		--disable-static \
+		--enable-xft'
+EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
+		'XLIB=-L${STAGING_LIBDIR} -lX11'"
+#CFLAGS_append = ' -I${S}/W11'
+#CPPFLAGS_append = '-I${S}/W11'
+
+do_configure () {
+	if test -e ${STAGING_BINDIR}/${HOST_SYS}-libtool; then
+		STAGING_DIR=${STAGING_DIR} \
+		${HOST_SYS}-libtoolize -c -f
+	fi
+	./reconf
+	oe_runconf
+	cat >>config.h <<EOF
+#define RXVT_UTMP_FILE "/var/run/utmp"
+/* #undef RXVT_UTMPX_FILE */
+#define RXVT_WTMP_FILE "/var/log/wtmp"
+/* #undef RXVT_WTMPX_FILE */
+#define RXVT_LASTLOG_FILE "/var/log/lastlog"
+/* #undef RXVT_LASTLOGX_FILE */
+#define HAVE_XLOCALE 1
+EOF
+}
+
+do_compile () {
+	if test -e ${S}/${HOST_SYS}-libtool; then
+		LIBTOOL=${S}/${HOST_SYS}-libtool
+	else
+		LIBTOOL=${S}/libtool
+	fi
+	oe_runmake "LIBTOOL=$LIBTOOL"
+}

@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "TransConnect is an implementation of function \
+interposing to allow users on *nix platforms to transparenly \
+tunnel all networking applications over an HTTPS proxy."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/transconnect/transconnect-${PV}.tar.gz
 

@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 ncurses5"
+DESCRIPTION = "Frotz is an interpreter for Infocom games \
+and other Z-machine games."
 
 SRC_URI = http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz
 

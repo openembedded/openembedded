@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Utility for viewing function call flow."
 
 SRC_URI = http://www.ibiblio.org/pub/Linux/devel/lang/c/cflow-2.0.tar.gz
 

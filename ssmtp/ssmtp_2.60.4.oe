@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc openssl"
 RDEPENDS = "libc6 libssl"
+DESCRIPTIOn = "Extremely simple MTA to get mail off the system to a mail hub."
 
 SRC_URI := ${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_2.60.4.tar.gz \
 	   file://${FILESDIR}/ldflags.patch;patch=1 \

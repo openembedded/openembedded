@@ -2,6 +2,7 @@ PV = "0.0cvs${DATE}"
 SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 PROVIDES = "render"
+DESCRIPTION = "X Render extension headers"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Render
 S = "${WORKDIR}/Render"

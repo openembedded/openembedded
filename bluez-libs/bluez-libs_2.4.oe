@@ -4,6 +4,7 @@ RDEPENDS = "libc6"
 SECTION = "libs"
 DEPENDS = "virtual/libc"
 PROVIDES = "virtual/libbluetooth"
+DESCRIPTION = "Linux Bluetooth Stack Libaries."
 
 SRC_URI = "http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz"
 

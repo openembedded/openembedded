@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc liblockfile"
 RDEPENDS = "libc6 liblockfile"
+DESCRIPTION = "mailx is the traditional command-line-mode \
+mail user agent."
 
 SRC_URI := ${DEBIAN_MIRROR}/main/m/mailx/mailx_${PV}.orig.tar.gz \
 	   ${DEBIAN_MIRROR}/main/m/mailx/mailx_${PV}-1.diff.gz;patch=1 \

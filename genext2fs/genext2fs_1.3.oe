@@ -1,0 +1,16 @@
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
+DESCRIPTION = "A tool to generate an ext2 filesystem \
+as a normal (non-root) user."
+
+SRC_URI := ${DEBIAN_MIRROR}/main/g/genext2fs/genext2fs_1.3.orig.tar.gz \
+	   file://${FILESDIR}/misc.patch;patch=1
+S := ${WORKDIR}/genext2fs-${PV}.orig
+
+do_compile () {
+	oe_runmake
+}	
+
+do_install () {
+	oe_runmake 'DESTDIR=${D}' install
+}

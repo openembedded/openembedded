@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Kernel based automounter for linux."
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v3/autofs-${PV}.tar.bz2"
 

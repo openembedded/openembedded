@@ -5,6 +5,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc xproto-cvs"
 PROVIDES = "xau"
+DESCRIPTION = "Authorization Protocol for X."
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xau
 S = "${WORKDIR}/Xau"

@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
+removing kernel modules for Linux (versions 2.5.48 and above). It serves \
+the same function that the modutils package serves for Linux 2.4."
 
 SRC_URI = ftp://ftp.kernel.org/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2
 S = "${WORKDIR}/module-init-tools-${PV}"

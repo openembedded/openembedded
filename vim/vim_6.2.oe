@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 ncurses"
+DESCRIPTION = "Vim is an almost fully-compatible \
+version of the Unix editor Vi."
 
 SRC_URI = ftp://ftp.vim.org/pub/vim/unix/vim-6.2.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "The popt library exists essentially \
+for parsing command line options."
 
 SRC_URI = ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
 	  file://${FILESDIR}/m4.patch;patch=1

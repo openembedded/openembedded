@@ -1,0 +1,3 @@
+#SRC_URI = http://openembedded.org/download/matrixssl-1-0-beta.tar.gz
+SRC_URI = "http://openembedded.org/dl/matrixssl-1-0-beta2-r2.tar.gz"
+S = "${WORKDIR}/matrixssl"

@@ -2,6 +2,7 @@ SECTION = "Games"
 PRIORITY = "optional"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc"
+DESCRIPTION = "Phalanx is a chess playing engine."
 
 SRC_URI=http://dusan.freeshell.org/${PN}/${P}.tar.gz \
         file://${FILESDIR}/gcc3.patch;patch=1

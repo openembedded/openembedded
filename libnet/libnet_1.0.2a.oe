@@ -1,5 +1,9 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Libnet is a collection of routines to help with \
+the construction and handling of network packets. It provides a \
+portable framework for low-level network packet shaping, \
+handling, and injection."
 
 SRC_URI := http://www.packetfactory.net/libnet/dist/deprecated/libnet-1.0.2a.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1

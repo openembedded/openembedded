@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc jpeg libpng gpm flex openssl zlib"
 RDEPENDS = "libc6 libjpeg libpng gpm openssl zlib1g"
+DESCRIPTION = "Links is graphics and text mode WWW \
+browser, similar to Lynx."
 
 SRC_URI = http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-${PV}.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

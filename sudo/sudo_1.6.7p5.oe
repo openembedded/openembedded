@@ -1,5 +1,9 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Sudo (superuser do) allows a system \
+administrator to give certain users (or groups of \
+users) the ability to run some (or all) commands \
+as root while logging all commands and arguments."
 
 SRC_URI = ftp://ftp.sudo.ws/pub/sudo/sudo-${PV}.tar.gz \
 	  file://${FILESDIR}/nonrootinstall.patch;patch=1 \

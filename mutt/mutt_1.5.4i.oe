@@ -1,5 +1,11 @@
 DEPENDS = "virtual/libc ncurses openssl"
 RDEPENDS = "libc6 libncurses5 libssl0"
+DESCRIPTION = "Mutt is a small but very powerful text-based \
+MIME mail client. It is highly configurable, and is well-suited \
+to the mail power user with advanced features like key \
+bindings, keyboard macros, mail threading, regular expression \
+searches, and a powerful pattern matching language for selecting \
+groups of messages."
 
 SRC_URI := ftp://ftp.mutt.org/mutt/devel/mutt-1.5.4i.tar.gz \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;patch=1 \

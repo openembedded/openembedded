@@ -1,7 +1,6 @@
-SECTION = "libs"
-PRIORITY = "optional"
 RDEPENDS = "libc6 libncurses5"
 DEPENDS = "virtual/libc ncurses"
+DESCRIPTION = "Tin is a powerful text mode news reader."
 
 SRC_URI=ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
 	file://${FILESDIR}/makecfg-buildcc.patch;patch=1 \

@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "An advanced alternative, asynchronous resolver."
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"

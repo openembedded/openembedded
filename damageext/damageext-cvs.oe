@@ -3,6 +3,7 @@ SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions-cvs fixesext-cvs"
 PROVIDES = "damageext"
+DESCRIPTION = "X Damage extension headers and specification"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=DamageExt
 S = "${WORKDIR}/DamageExt"

@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "ISC DHCP Distribution (client and server)."
 
 SRC_URI = ftp://ftp.isc.org/isc/dhcp/dhcp-${PV}.tar.gz \
 	  file://${FILESDIR}/make.patch;patch=1

@@ -3,6 +3,11 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6 libjpeg62 libpng3 zlib1g"
 DEPENDS = "virtual/libc jpeg libpng zlib"
+DESCRIPTION = "DirectFB is a thin library that provides developers \
+with hardware graphics acceleration, input device handling and \
+abstraction, an integrated windowing system with support for \
+translucent windows and multiple display layers on top of the \
+Linux framebuffer device."
 FILES_directfb_append=' ${libdir}/directfb-${PV}/systems/*.so \
 			${libdir}/directfb-${PV}/inputdrivers/*.so \
 			${libdir}/directfb-${PV}/interfaces/*/*.so \

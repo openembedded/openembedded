@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "OpenSP is a library and a set of tools \
+for validating, parsing, and manipulating SGML and \
+XML documents."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 	  file://${FILESDIR}/m4.patch;patch=1 \

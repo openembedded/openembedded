@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "The sysklogd package implements \
+two system log daemons."
 
 SRC_URI = http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
 	  file://${FILESDIR}/nonrootinstall.patch;patch=1

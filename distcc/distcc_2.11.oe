@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "distcc is a parallel build system that distributes \
+compilation of C/C++/ObjC code across machines on a network."
 
 SRC_URI := http://distcc.samba.org/ftp/distcc/distcc-2.11.tar.bz2
 

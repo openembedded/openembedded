@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc ncurses"
 RDEPENDS = "libc6 ncurses"
+DESCRIPTION = "GPM (General Purpose Mouse) is a mouse server \
+for the console and xterm, with sample clients included \
+(emacs, etc)."
 
 SRC_URI = ftp://arcana.linux.it/pub/gpm/gpm-1.20.1.tar.bz2 \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,0 +1,30 @@
+DEPENDS = 'virtual/libc microwindows'
+RDEPENDS = 'libc6 microwindows'
+DESCRIPTION = "fltk library for microwindows."
+SRC_URI = 'ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}-tar.gz \
+	   file://${FILESDIR}/gcc3.patch;patch=1'
+S = '${WORKDIR}/flnx'
+
+inherit autotools
+
+EXTRA_OECONF = '--with-microwin=${STAGING_LIBDIR}/..'
+
+python do_fetch () {
+	import os
+	oe.build.exec_func('base_do_fetch', d)
+	if os.access(oe.data.expand('${DL_DIR}/flnx-${PV}-tar.gz', d), os.R_OK):
+		os.rename(oe.data.expand('${DL_DIR}/flnx-${PV}-tar.gz', d), oe.data.expand('${DL_DIR}/flnx-${PV}.tar.gz', d))
+}
+
+python do_unpack () {
+	src_uri = oe.data.getVar('SRC_URI', d)
+	src_uri = string.replace(src_uri, '-tar', '.tar')
+	oe.data.setVar('SRC_URI', src_uri, d)
+	oe.build.exec_func('base_do_unpack', d)
+}
+
+do_install () {
+	oe_runmake 'bindir=${D}/${bindir}' \
+		   'libdir=${D}/${libdir}' \
+		   'includedir=${D}/${includedir}' install
+}

@@ -1,5 +1,7 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Flex is a tool for generating programs \
+that recognize lexical patterns in text."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/lex/flex-2.5.31.tar.bz2 \
 	  file://${FILESDIR}/include.patch;patch=1

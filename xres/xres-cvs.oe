@@ -3,6 +3,7 @@ SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "virtual/libc x11-cvs xextensions-cvs xext-cvs resourceext-cvs"
 PROVIDES = "xres"
+DESCRIPTION = "X Resource usage library."
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XRes
 S = "${WORKDIR}/XRes"

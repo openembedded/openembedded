@@ -1,4 +1,8 @@
 DEPENDS = "virtual/libc glib-2.0 fontconfig freetype zlib x11-cvs xft-cvs xproto-cvs"
+RDEPENDS = "libc6 glib-2.0 fontconfig freetype zlib x11-cvs xft-cvs xproto-cvs"
+DESCRIPTION = "The goal of the Pango project is to provide an \
+Open Source framework for the layout and rendering of \
+internationalized text."
 
 SRC_URI = http://ftp.gnome.org/pub/gnome/sources/pango/1.2/pango-${PV}.tar.bz2 \
 	  file://${FILESDIR}/ft2.patch;patch=1 \

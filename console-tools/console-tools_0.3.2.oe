@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "Allows you to set-up and manipulate the Linux console."
 
 SRC_URI := ${SOURCEFORGE_MIRROR}/lct/console-tools-0.3.2.tar.gz \
 	   file://${FILESDIR}/codepage.patch;patch=1 \

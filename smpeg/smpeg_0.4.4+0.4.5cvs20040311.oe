@@ -4,6 +4,9 @@ MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "libc6 libsdl"
 DEPENDS = "virtual/libc virtual/libsdl"
 PROVIDES = "smpeg"
+DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \
+player for Linux based on the mpeg_play and SPLAY \
+MPEG decoders."
 
 SRC_URI=cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;date=20040311 \
 	file://${FILESDIR}/m4.patch;patch=1 \

@@ -3,6 +3,7 @@ PRIORITY = "optional"
 RDEPENDS = "libc6"
 SECTION = "libs"
 DEPENDS = "virtual/libc virtual/libbluetooth"
+DESCRIPTION = "Analyses Bluetooth HCI packets."
 
 SRC_URI = http://bluez.sourceforge.net/download/${PN}-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

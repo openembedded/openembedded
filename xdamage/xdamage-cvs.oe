@@ -3,6 +3,7 @@ SECTION = "libs"
 #DEPENDS=virtual/libc x11-cvs damageext-cvs xextensions-cvs fixesext-cvs xfixes-cvs
 DEPENDS = "virtual/libc x11-cvs damageext-cvs xfixes-cvs xproto-cvs"
 PROVIDES = "xdamage"
+DESCRIPTION = "X Damage extension library."
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xdamage \
 	  file://${FILESDIR}/m4.patch;patch=1

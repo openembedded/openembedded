@@ -1,5 +1,8 @@
 DEPENDS = "virtual/libc opensp"
 RDEPENDS = "libc6 opensp sgml-common"
+DESCRIPTION = "OpenJade is a suite of tools for validating, \
+processing, and applying DSSSL (Document Style Semantics and \
+Specification Language) stylesheets to SGML and XML documents."
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	  file://${FILESDIR}/configure.patch;patch=1

@@ -1,0 +1,22 @@
+DESCRIPTION = "Resolvconf is a framework for keeping track of the system's \
+information about currently available nameservers. It sets \
+itself up as the intermediary between programs that supply \
+nameserver information and programs that need nameserver \
+information."
+
+SRC_URI := ${DEBIAN_MIRROR}/main/r/${PN}/${PN}_${PV}.tar.gz
+
+do_compile () {
+	oenote "Nothing to compile"
+}
+
+do_install () {
+	install -d ${D}/${sysconfdir} ${D}/${sbindir} ${D}/sbin ${D}/var/run/resolvconf/interface
+	install -d ${D}/${datadir}/doc/${P}
+	install -d ${D}/${mandir}/man8
+	cp -a etc/* ${D}/${sysconfdir}/
+	cp -a sbin/* ${D}/sbin/
+	cp -a usr/* ${D}/${prefix}/
+	install debian/README debian/ANNOUNCE ${D}/${datadir}/doc/${P}/
+	install man/resolvconf.8 man/update-resolv.8 ${D}/${mandir}/man8/
+}

@@ -1,5 +1,6 @@
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
+DESCRIPTION = "File locking library."
 
 SRC_URI = ${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
 	  file://${FILESDIR}/install.patch;patch=1 \

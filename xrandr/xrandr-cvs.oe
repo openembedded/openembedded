@@ -2,6 +2,7 @@ PV = "0.0cvs${DATE}"
 SECTION = "libs"
 DEPENDS = "virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs"
 PROVIDES = "xrandr"
+DESCRIPTION = "X Resize and Rotate extension library."
 
 SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr
 S = "${WORKDIR}/Xrandr"
