@@ -1,0 +1,7 @@
+devfs		/dev		devfs		defaults		0 0
+proc		/proc		proc		defaults		0 0
+rootfs		/		rootfs		rw			1 1
+tmpfs		/var		tmpfs		defaults		0 0
+none		/proc/bus/usb	usbdevfs 	defaults		0 0
+#/dev/hda1	/mnt/cf		auto		noauto,user	0 0
+/dev/mmc/disc0/part1 /mnt/card	auto		noauto,user	0 0
