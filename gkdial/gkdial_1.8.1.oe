@@ -1,3 +1,4 @@
+LICENSE = GPL
 inherit autotools pkgconfig gettext
 
 PR = "r1"

@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "gpe"
 DESCRIPTION = "GPE application launcher"
 DEPENDS = "libgpewidget libgpelaunch"

@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "console/utils"
 DEPENDS = "ncurses"
 DESCRIPTION = "GNU nano (Nano's ANOther editor, or \

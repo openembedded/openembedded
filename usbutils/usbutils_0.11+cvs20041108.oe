@@ -1,0 +1,26 @@
+LICENSE = GPL
+DESCRIPTION = "USB console utilities."
+SECTION = "base"
+DEPENDS += "libusb"
+
+SRC_URI = "http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils/usbutils-0.11.tar.gz \
+	   file://usbutils-0.11+cvs20041108.patch;patch=1"
+S = "${WORKDIR}/usbutils-0.11"
+
+inherit autotools 
+
+EXTRA_OECONF = "--program-prefix="
+sbindir = "/sbin"
+bindir = "/bin"
+
+FILES_${PN} += "${datadir}"
+
+libusb_remove () {
+	cd ${S}
+	rm -rf libusb
+}
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	oe.build.exec_func('libusb_remove', d)
+}

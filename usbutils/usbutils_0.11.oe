@@ -1,3 +1,4 @@
+LICENSE = GPL
 DESCRIPTION = "USB console utilities."
 SECTION = "base"
 PR = "r1"

@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "x11/gnome/libs"
 PR = "r1"
 

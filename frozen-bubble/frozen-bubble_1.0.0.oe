@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "opie/games"
 DEPENDS = "libsdl-mixer libsdl-image sdl-perl"
 

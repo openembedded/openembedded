@@ -1,3 +1,4 @@
+LICENSE = LGPL
 DESCRIPTION = "Python Vorbis Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"

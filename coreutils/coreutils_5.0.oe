@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "base"
 DESCRIPTION = "A collection of core GNU utilities."
 COREUTILS = "GPL"

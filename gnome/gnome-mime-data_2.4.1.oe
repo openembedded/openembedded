@@ -1,2 +1,3 @@
+LICENSE = GPL
 SECTION = "x11/gnome"
 inherit gnome

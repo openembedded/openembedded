@@ -1,3 +1,4 @@
+LICENSE = GPL
 DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "console/network"
 PRIORITY = "optional"

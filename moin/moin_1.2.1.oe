@@ -1,3 +1,4 @@
+LICENSE = GPL
 DESCRIPTION = "A full fledged WikiWiki system in Python"
 SECTION = "base"
 PRIORITY = "optional"

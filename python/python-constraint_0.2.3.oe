@@ -1,3 +1,4 @@
+LICENSE = GPL
 DESCRIPTION = "The constraint package is a constraint \
 satisfaction problem solver written in 100% pure Python, using \
 constraint propagation algorithms. So far, facilities are \

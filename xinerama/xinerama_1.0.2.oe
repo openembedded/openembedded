@@ -1,3 +1,4 @@
+LICENSE = GPL
 DESCRIPTION = "Xinerama library"
 SECTION = "x11/libs"
 PRIORITY = "optional"

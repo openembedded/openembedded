@@ -1,0 +1,9 @@
+LICENSE = GPL
+SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
+	file://acinclude-lossage.patch;patch=1 \
+	file://rpcgen-lossage.patch;patch=1"
+
+BROKEN = "1"
+
+inherit autotools
+

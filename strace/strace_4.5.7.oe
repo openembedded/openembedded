@@ -1,3 +1,4 @@
+LICENSE = GPL
 SECTION = "console/utils"
 PR = "r1"
 

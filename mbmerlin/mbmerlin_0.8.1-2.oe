@@ -1,3 +1,4 @@
+LICENSE = GPL
 PR = "r3"
 
 inherit pkgconfig gpe
