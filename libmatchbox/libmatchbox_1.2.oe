@@ -12,6 +12,8 @@ EXTRA_OECONF = "--enable-jpeg --enable-pango"
 headers = "hash.h mbconfig.h mbdotdesktop.h mbexp.h \
 	   mb.h mbmenu.h mbpixbuf.h mbtray.h mbutil.h"
 
+SOV = 1.0.2
+
 do_stage () {
 	install -d ${STAGING_INCDIR}/libmb
 	for h in ${headers}; do
@@ -20,6 +22,6 @@ do_stage () {
 
 	cp -a ${S}/libmb/.libs/libmb.a ${STAGING_LIBDIR}/libmb.a
 	cp -a ${S}/libmb/libmb.lai ${STAGING_LIBDIR}/libmb.la
-	oe_soinstall ${S}/libmb/.libs/libmb.so.1.0.1 ${STAGING_LIBDIR}/
+	oe_soinstall ${S}/libmb/.libs/libmb.so.${SOV} ${STAGING_LIBDIR}/
 #	cp -a ${S}/libmb.pc ${STAGING_LIBDIR}/pkgconfig/libmb.pc
 }
