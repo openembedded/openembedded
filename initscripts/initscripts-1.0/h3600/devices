@@ -4,7 +4,6 @@
 # which I will not lay out here, we need to create some links for compatibility.
 
     test -n "$VERBOSE" && echo -n "Setting up device links for devfs: "
-    echo "Setting up some devices"
     (
     ln -s /dev/vc/0 /dev/tty0
     ln -s /dev/vc/1 /dev/tty1
