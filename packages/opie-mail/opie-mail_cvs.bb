@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libmailwrapper libetpan"
 RDEPENDS = "opie-pics"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "opiemail"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/mail \

@@ -3,7 +3,7 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "formatter"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/tools/formatter \

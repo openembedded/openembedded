@@ -7,7 +7,7 @@ RDEPENDS = "opie-mediaplayer2-skin-default"
 RRECOMMENDS = "opie-mediaplayer1-libmadplugin opie-mediaplayer1-libwavplugin \
 opie-mediaplayer1-libmodplugin opie-mediaplayer1-libtremorplugin"
 PR = "r0"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "opieplayer"
 APPTYPE = "binary"
 

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "python-pyqt opie-pyquicklauncher"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "python"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/examples/python \

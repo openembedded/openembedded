@@ -5,7 +5,7 @@ DEPENDS = "libopietooth1"
 RDEPENDS = "opie-bluepin"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "bluetooth-manager"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/manager \

@@ -7,7 +7,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 I18N_FILES = "libmultiauthbluepingplugin.ts"
 RDEPENDS = "opie-security bluez-utils"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "multiauthbluepingplugin"
 PR = "r1"
 

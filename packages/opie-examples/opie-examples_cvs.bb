@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-networksettings"
 LICENSE = "GPL"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPTYPE = "binary"
 PR = "r1"
 

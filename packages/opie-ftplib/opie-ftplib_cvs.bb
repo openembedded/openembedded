@@ -8,7 +8,7 @@ I18N_FILES = "libftplib.ts"
 
 APPNAME = "opie-ftplib"
 
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/ftplib"
 S = "${WORKDIR}/ftplib"

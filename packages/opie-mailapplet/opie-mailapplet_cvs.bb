@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libmailwrapper"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "mailapplet"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/mail/taskbarapplet \

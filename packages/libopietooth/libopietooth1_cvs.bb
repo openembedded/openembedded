@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/lib"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 
 inherit opie
 

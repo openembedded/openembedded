@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "ssh opie-sh-ssh-askpass"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "sshkeys"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sshkeys \

@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "opie-taskbar"
 RDEPENDS = "openobex-apps"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "obex"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/obex \

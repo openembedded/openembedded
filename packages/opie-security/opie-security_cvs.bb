@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RRECOMMENDS = "opie-securityplugin-pin"
 PR = "r0"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "security"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/settings/security \

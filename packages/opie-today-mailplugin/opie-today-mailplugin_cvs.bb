@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-today opie-mailapplet"
 RDEPENDS = "opie-today opie-mailapplet"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "todaymailplugin"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/pim/today/plugins/mail "

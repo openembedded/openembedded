@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-lrelease-native"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/i18n \
 	   ${HANDHELDS_CVS};module=opie/etc/dict"

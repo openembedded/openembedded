@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer1"
 RDEPENDS = "opie-mediaplayer1"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "modplugin"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer "

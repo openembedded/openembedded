@@ -1,7 +1,7 @@
 DESCRIPTION = "Python Quicklaunch Applet"
 SECTION = "opie/applets"
 LICENSE = "GPL"
-PV = "1.1.8+cvs-${CVSDATE}"
+PV = "1.1.9+cvs-${CVSDATE}"
 APPNAME = "pyquicklaunch"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/applets/pyquicklaunch \
