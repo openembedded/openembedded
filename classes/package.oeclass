@@ -558,9 +558,9 @@ python package_do_split_locales() {
 
 	oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
-	rdep = (oe.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or oe.data.getVar('RDEPENDS', d, 1) or "").split()
-	rdep.append('%s-locale*' % pn)
-	oe.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
+	rrec = (oe.data.getVar('RRECOMMENDS_%s' % mainpkg, d, 1) or oe.data.getVar('RRECOMMENDS', d, 1) or "").split()
+	rrec.append('%s-locale*' % pn)
+	oe.data.setVar('RRECOMMENDS_%s' % mainpkg, ' '.join(rrec), d)
 }
 
 python package_do_package () {
