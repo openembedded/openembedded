@@ -1,12 +1,12 @@
 SECTION = "libs"
 DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://pkgconfig.patch;patch=1 \
-	   file://amd64-fPIC.patch;patch=1"
+	   file://amd64-fPIC.patch;patch=1;pnum=0"
 
 inherit autotools pkgconfig
 
