@@ -1,0 +1,21 @@
+DEPENDS = readline
+
+SRC_URI := "http://samba.mirror.ac.uk/samba/ftp/samba-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1"
+S := ${WORKDIR}/${P}/source
+
+inherit autotools
+
+EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
+	      --without-ads --without-automount'
+do_configure_prepend () {
+	./script/mkversion.sh
+	if [ ! -e acinclude.m4 ]; then
+		cat aclocal.m4 > acinclude.m4
+	fi
+}
+
+do_stage() {
+	install -m 0644 include/libsmbclient.h ${STAGING_INCDIR}
+	oe_libinstall -C bin -a -so libsmbclient ${STAGING_LIBDIR}
+}
