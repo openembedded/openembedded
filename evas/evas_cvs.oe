@@ -19,6 +19,7 @@ EXTRA_OECONF = "--enable-fb			\
 		--disable-directfb		\
 		--disable-buffer		\
 		--disable-software-qtopia	\
+		--disable-software-x11		\
 		--disable-gl-x11		\
 		--disable-image-loader-eet	\
 		--disable-image-loader-edb	\
@@ -53,6 +54,7 @@ EXTRA_OECONF = "--enable-fb			\
 		--disable-convert-32-rgb-rot-0	\
 		--disable-convert-32-rgb-rot-90	\
 		--disable-convert-32-rgb-rot-270"
+
 export FREETYPE_CONFIG = "${STAGING_BINDIR}/freetype-config"
 
 do_configure () {
