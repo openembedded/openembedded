@@ -4,7 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.8+cvs-${CVSDATE}"
+DEPENDS = "apmd"
 RDEPENDS = "apmd"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/opiealarm \
            file://01opiealarm "

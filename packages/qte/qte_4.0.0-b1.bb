@@ -2,10 +2,10 @@ DESCRIPTION = "Qt/Embedded version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
-DEPENDS = "zlib libpng jpeg tslib uicmoc4-native"
+DEPENDS = "zlib libpng jpeg tslib qmake-1.08a uicmoc4-native"
 PROVIDES = "virtual/qte4 virtual/libqte4"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-opensource-${PV}.tar.bz2 \
            file://gcc34.patch;patch=1 \
@@ -38,6 +38,17 @@ def qte_arch(d):
 
 QTE_ARCH := "${@qte_arch(d)}"
 
+#
+# How to build the embedded drivers. Use plugin-<type> or qt-<type>. As for Beta1, that doesn't work :D
+#
+GFX = "qt-gfx"
+KBD = "qt-kbd"
+MSE = "qt-mouse"
+
+#
+# Borken: yopy, busmouse, linuxtp
+#
+
 EXTRA_OECONF = "-embedded ${QTE_ARCH} \
 		-system-libjpeg -system-libpng -system-zlib \
 		-no-qvfb -no-nis -no-cups -no-stl -no-pch   \
@@ -45,14 +56,10 @@ EXTRA_OECONF = "-embedded ${QTE_ARCH} \
 		-qconfig large -depths 8,16,24,32 -fast     \
                 -qt-gfx-transformed			    \
 		-qt-gfx-vnc             		    \
-                -plugin-kbd-sl5000                          \
-		-plugin-kbd-tty                             \
-		-plugin-kbd-usb                             \
-		-plugin-kbd-yopy			    \
-		-plugin-mouse-pc                            \
-		-plugin-mouse-bus			    \
-		-plugin-mouse-linuxtp			    \
-		-plugin-mouse-yopy			    \
+                -${KBD}-sl5000                          \
+		-${KBD}-tty                             \
+		-${KBD}-usb                             \
+		-${MSE}-pc                            \
 		"
 
 EXTRA_OEMAKE = "-e"
@@ -71,8 +78,6 @@ do_compile() {
 	install -m 0755 ${STAGING_BINDIR}/rcc4 ${S}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR}/moc4 ${S}/bin/moc
 	install -m 0755 ${STAGING_BINDIR}/uic4 ${S}/bin/uic
-
-	cp -fa	${WORKDIR}/mousedrivers/	${S}/src/gui/embedded/
 
 	install -d include/asm/	
 	install -m 0644 ${WORKDIR}/sharp_char.h include/asm/
@@ -161,6 +166,7 @@ ${sbindir}/update-qtfontdir
 }
 
 LIB_PACKAGES = "\
+		libqte4-debug			\
 		libqte4-core			\
 		libqte4-gui			\
 		libqte4-network			\
@@ -187,6 +193,7 @@ PACKAGES = "${LIB_PACKAGES} ${FONT_PACKAGES} examples"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
+FILES_libqte4-debug	= "${palmtopdir}/lib/libQt*_debug.*"
 FILES_libqte4-core	= "${palmtopdir}/lib/libQtCore.* /usr/sbin/update-qtfontdir"
 FILES_libqte4-gui	= "${palmtopdir}/lib/libQtGui.*"
 FILES_libqte4-network	= "${palmtopdir}/lib/libQtNetwork.*"

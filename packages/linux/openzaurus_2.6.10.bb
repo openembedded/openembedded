@@ -47,7 +47,7 @@ http://www.rpsys.net/openzaurus/${KV}/collie_scoop_pcmcia-r0.patch;patch=1 \
 file://defconfig-husky \
 file://defconfig-collie \
 file://defconfig-poodle \
-file://defconfig-openzaurus-pxa-2.6"
+file://defconfig-openzaurus-pxa-2.6 "
 
 SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
 SRC_URI_append_openzaurus-pxa-2.6 = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
