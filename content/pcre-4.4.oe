@@ -23,7 +23,6 @@ do_compile () {
 }
 
 do_stage () {
-	set -e
 	install -m 0755 .libs/libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/
 	ln -sf libpcreposix.so.0.0.0 ${STAGING_LIBDIR}/libpcreposix.so.0
 	install -m 0755 .libs/libpcre.so.0.0.1 ${STAGING_LIBDIR}/

@@ -5,8 +5,9 @@ RDEPENDS = libc6
 SRC_URI = ${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz
 S = "${WORKDIR}/${P}"
 
+inherit autotools
+
 do_stage () {
-	set -e
 	install -m 0644 lib/expat.h ${STAGING_DIR}/target/include/
 	install -m 0755 .libs/libexpat.so.0.4.0 ${STAGING_LIBDIR}/
 	ln -sf libexpat.so.0.4.0 ${STAGING_LIBDIR}/libexpat.so.1
@@ -15,7 +16,6 @@ do_stage () {
 }
 
 do_install () {
-	set -e
 	oe_runmake prefix="${D}/${prefix}" \
 		bindir="${D}/${bindir}" \
 		libdir="${D}/${libdir}" \

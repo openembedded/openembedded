@@ -14,7 +14,6 @@ export CFLAGS:="-fPIC ${CFLAGS}"
 export AR:="${AR} rc"
 
 do_compile() {
-	set -e
 	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir}
 	oe_runmake libz.so.1.1.4 libz.a
 }

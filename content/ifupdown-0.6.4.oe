@@ -1,0 +1,28 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+DESCRIPTION = High level tools to configure network interfaces\
+ This package provides the tools ifup and ifdown which may be used to\
+ configure (or, respectively, deconfigure) network interfaces, based on\
+ the file /etc/network/interfaces.
+
+SRC_URI = ${DEBIAN_MIRROR}/main/i/${PN}/${PN}_${PV}.orig.tar.gz \
+	  ${DEBIAN_MIRROR}/main/i/${PN}/${PN}_${PV}-4.4.diff.gz;patch=1 \
+	  file://${FILESDIR}/udhcpc.patch;patch=1
+S = ${WORKDIR}/${P}
+
+EXTRA_OEMAKE = 
+
+do_compile () {
+	chmod a+rx *.pl *.sh
+	oe_runmake 'CC=${CC}' "CFLAGS=${CFLAGS} -Wall -W -D'IFUPDOWN_VERSION=\"0.6.4\"'"
+}
+
+do_install () {
+	install -d ${D}/etc/init.d \
+		   ${D}/etc/network \
+		   ${D}/sbin
+	install -m 0755 ifup ${D}/sbin/
+	ln ${D}/sbin/ifup ${D}/sbin/ifdown
+	install -m 0644 ${FILESDIR}/init ${D}/etc/init.d/init
+	install -m 0644 ${FILESDIR}/interfaces ${D}/etc/network/interfaces
+}

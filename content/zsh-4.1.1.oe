@@ -3,16 +3,12 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 RDEPENDS="libc6"
+DEPENDS=virtual/libc ncurses pcre
 
 SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2"
-DEPENDS=virtual/libc ncurses pcre
 S="${WORKDIR}/${P}"
 
-EXTRA_OECONF = "--with-curses-terminfo"
-#EXTRA_OECONF = "--with-curses-terminfo --enable-libs='-lncurses'"
-EXTRA_OEMAKE = 
+inherit autotools
 
-do_install () {
-	set -e
-	oe_runmake DESTDIR=${D} install
-}
+EXTRA_OECONF = "--with-curses-terminfo"
+EXTRA_OEMAKE = 

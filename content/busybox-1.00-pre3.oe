@@ -16,19 +16,16 @@ export EXTRA_CFLAGS="${CFLAGS}"
 EXTRA_OEMAKE_append=' CROSS=${CROSS}'
 
 do_configure () {
-	set -e
 	install -m 0644 ${FILESDIR}/defconfig ${S}/.config
 	cml1_do_configure
 }
 
 do_compile () {
-	set -e
 	unset CFLAGS
 	base_do_compile
 }
 
 do_install () {
-	set -e
 	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
 	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
@@ -36,7 +33,6 @@ do_install () {
 }
 
 do_package_ipk_prepend () {
-	set -e
 	install -m 0755 ${FILESDIR}/postinst ${D}/CONTROL/postinst;
 	install -m 0755 ${FILESDIR}/prerm ${D}/CONTROL/prerm;
 }

@@ -12,7 +12,6 @@ S = ${WORKDIR}/${P}
 EXTRA_OEMAKE_append=' ZLIBINC=${STAGING_DIR}/target/include ZLIBLIB=${STAGING_LIBDIR}'
 
 do_compile() {
-	set -e
 	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
 	unset LDFLAGS
 	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
@@ -32,7 +31,6 @@ do_stage() {
 }
 
 do_install () {
-	set -e
 	install -d ${D}/${bindir} ${D}/${mandir} \
 		   ${D}/${libdir} ${D}/${includedir}
 	unset LDFLAGS

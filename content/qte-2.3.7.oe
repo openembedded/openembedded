@@ -38,13 +38,11 @@ export SYSCONF_LFLAGS = ${LDFLAGS}
 
 do_compile() {
 	unset CC CXX LD LINK CPP CFLAGS CXXFLAGS LDFLAGS
-	set -e
 	if [ "$BUILD_ARCH" = "i686" ]; then
 		BUILD_ARCH=x86
 	fi
 	echo yes | ./configure -platform $BUILD_OS-$BUILD_ARCH-g++ $EXTRA_OECONF || die "Configuring qt failed"
 	(
-		set -e
 		cd src/moc
 		export SYSCONF_CXX="${BUILD_CXX}"
 		export SYSCONF_CC="${BUILD_CC}"

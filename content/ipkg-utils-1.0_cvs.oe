@@ -4,10 +4,12 @@ SECTION="base"
 PRIORITY="optional"
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 LICENSE="GPL"
-SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=ipkg-utils"
 #DEPENDS=virtual/libc
 
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=ipkg-utils"
 S="${WORKDIR}/${PN}"
+
+inherit autotools
 
 do_stage() {
 	cp ipkg* ${STAGING_BINDIR}/

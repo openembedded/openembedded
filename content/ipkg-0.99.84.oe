@@ -1,19 +1,13 @@
 DESCRIPTION="Itsy Package Manager"
 LICENSE="GPL"
-SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
 PROVIDES=virtual/ipkg
 DEPENDS=virtual/libc
 
+SRC_URI="cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=V0-99-84"
 S="${WORKDIR}/ipkg/C"
 
-do_compile () {
-	(
-		./autoconfigure.sh && \
-		base_do_compile $@
-	) || die "compilation failed."
-}
+inherit autotools
 
-do_install () {
-	set -e
-	oe_runmake DESTDIR="${D}" install
+do_compile_prepend () {
+	./autoconfigure.sh
 }

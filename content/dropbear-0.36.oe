@@ -1,14 +1,14 @@
 DESCRIPTION="Dropbear SSH Implementation"
 LICENSE="MIT"
-SRC_URI="http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2"
 DEPENDS=virtual/libc zlib ncurses
 
+SRC_URI="http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2"
 S="${WORKDIR}/${P}"
+
+inherit autotools
 
 CFLAGS_append = " -I${S}/libtomcrypt"
 LD=${CC}
-do_install () {
-	set -e
+do_install_prepend () {
 	install -d ${D}/usr/sbin ${D}/usr/bin
-	oe_runmake DESTDIR=${D} install
 }

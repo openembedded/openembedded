@@ -8,12 +8,12 @@ SRC_URI_append = " file://${FILESDIR}/multievent.patch;patch=1"
 SRC_URI_append = " file://${FILESDIR}/envvar_doc.patch;patch=1"
 #SRC_URI_append = " file://${FILESDIR}/raw.patch;patch=1"
 #SRC_URI_append = " file://${FILESDIR}/collie-module.patch;patch=1"
-
 S = ${WORKDIR}/${PN}
+
+inherit autotools
 
 EXTRA_OEMAKE=
 do_compile_prepend () {
-	set -e
 	./autogen.sh
 }
 
@@ -24,9 +24,4 @@ do_stage () {
 	ln -sf libts-0.0.so ${STAGING_LIBDIR}/libts.so
 	install -m 0644 src/tslib.h ${STAGING_DIR}/target/include/
 	install -m 0644 src/tslib-private.h ${STAGING_DIR}/target/include/
-}
-
-do_install () {
-	set -e
-	oe_runmake DESTDIR="${D}" install
 }
