@@ -18,9 +18,6 @@ S = "${WORKDIR}/kernel"
 
 inherit kernel update-rc.d
 
-# kernel.oeclass stomps on this
-PACKAGE_ARCH = "ipaqpxa"
-
 K_MAJOR = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[0]}"
 K_MINOR = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[1]}"
 K_MICRO = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[2]}"
