@@ -1,0 +1,13 @@
+case `awk 'BEGIN { FS=":" } /Processor/ { gsub(/ /, "", $2) ; print $2 } ' </proc/cpuinfo` in
+  *XScale-PXA2*)
+    PCIC=pxa_cs
+    ;;
+  StrongARM-SA1100 | StrongARM-SA1110)
+    PCIC=sa1100_cs
+    ;;
+  *)
+    echo "Unable to determine PCIC value for this CPU"
+    exit 1
+    ;;
+esac
+
