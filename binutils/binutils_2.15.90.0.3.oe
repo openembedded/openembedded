@@ -3,6 +3,7 @@ inherit autotools
 DESCRIPTION = "A GNU collection of binary utilities"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
+PR = "r1"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
@@ -41,7 +42,8 @@ SRC_URI = \
      file://binutils-100_cflags_for_build.patch;patch=1 \
      file://binutils-2.15.90.0.3-uclibc-100-conf.patch;patch=1 \
      file://binutils-2.15.90.0.3-uclibc-200-build_modules.patch;patch=1 \
-     file://plt32trunc.patch;patch=1"
+     file://plt32trunc.patch;patch=1 \
+     file://600-arm-textrel.patch;patch=1"
 
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
