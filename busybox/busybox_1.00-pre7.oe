@@ -1,0 +1,35 @@
+LICENSE="GPL"
+SRC_URI="http://www.busybox.net/downloads/${PN}-${PV}.tar.gz"
+DEPENDS=virtual/libc
+DESCRIPTION=BusyBox version ${PV}.\
+ BusyBox combines tiny versions of many common UNIX utilities into a single\
+ small executable. It provides minimalist replacements for most of the\
+ utilities you usually find in GNU fileutils, shellutils, etc. The utilities\
+ in BusyBox generally have fewer options than their full-featured GNU\
+ cousins; however, the options that are included provide the expected\
+ functionality and behave very much like their GNU counterparts. BusyBox\
+ provides a fairly complete POSIX environment for any small or embedded\
+ system.
+	
+S="${WORKDIR}/${P}"
+export EXTRA_CFLAGS="${CFLAGS}"
+EXTRA_OEMAKE_append=' CROSS=${HOST_PREFIX}'
+
+inherit cml1
+
+do_configure () {
+	install -m 0644 ${FILESDIR}/defconfig ${S}/.config
+	cml1_do_configure
+}
+
+do_compile () {
+	unset CFLAGS
+	base_do_compile
+}
+
+do_install () {
+	install -d ${D}/etc/init.d
+	oe_runmake 'PREFIX=${D}' install
+	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
+	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
+}
