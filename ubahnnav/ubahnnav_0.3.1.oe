@@ -8,7 +8,7 @@ MAINTAINER = "Dimitri Brukakis"
 APPNAME = "ubahnnav"
 APPTYPE = "binary"
 APPDESKTOP = "${S}/src/ubahnnav"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ubahnstation.net/source/ubahnnav-${PV}.tar.gz \
 	   file://qmake.patch;patch=1"
@@ -17,7 +17,7 @@ S = "${WORKDIR}/ubahnnav-${PV}"
 inherit opie
 
 export OE_QMAKE_LINK="${CXX}"
-EXTRA_QMAKEVARS_POST = "LIBS+=-L${S} INCLUDEPATH+=${QTDIR}/include"
+EXTRA_QMAKEVARS_POST = "LIBS+=-L${S}"
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f
