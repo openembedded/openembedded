@@ -2,7 +2,7 @@
 DAEMON=/usr/sbin/httpd
 NAME=httpd
 DESC="Busybox HTTP Daemon"
-HTTPROOT="/var/www"
+HTTPROOT="/srv/www"
 ARGS="-h $HTTPROOT"
 
 test -f $DAEMON || exit 0
