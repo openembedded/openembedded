@@ -1,0 +1,144 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: linux/drivers/char/tosa_ts.c
+===================================================================
+--- linux.orig/drivers/char/tosa_ts.c	2005-02-15 14:32:53.000000000 +0000
++++ linux/drivers/char/tosa_ts.c	2005-02-15 14:32:58.000000000 +0000
+@@ -205,10 +205,53 @@
+ 	write:	tosa_ts_write_params,
+ };
+ 
++#if defined(CONFIG_TOSA_POWER_KEY_OFF)
++extern unsigned int power_key_off_mode;
++
++static ssize_t power_key_off_read_params(struct file *file, char *buf,
++				      size_t nbytes, loff_t *ppos)
++{
++	char outputbuf[32];
++	int count;
++
++	if (*ppos>0) /* Assume reading completed in previous read*/
++		return 0;
++	count = sprintf(outputbuf, "%d\n", (unsigned int)power_key_off_mode);
++	count++;
++	*ppos += count;
++	if (count>nbytes)	/* Assume output can be read at one time */
++		return -EINVAL;
++	if (copy_to_user(buf, outputbuf, count+1))
++		return -EFAULT;
++	return count;
++}
++
++static ssize_t power_key_off_write_params(struct file *file, const char *buf,
++				       size_t nbytes, loff_t *ppos)
++{
++	unsigned int param=0;
++
++	sscanf(buf,"%d",&param);
++	if (power_key_off_mode != param) {
++		power_key_off_mode = param;
++		printk("power_key_off = %d\n", power_key_off_mode);
++	}
++	return nbytes;
++}
++
++static struct file_operations proc_power_key_off_operations = {
++  read:   power_key_off_read_params,
++  write:  power_key_off_write_params,
++};
++#endif
++
+ static int init_procinfo(void)
+ {
+   int	i;
+   struct proc_dir_entry *entry;
++#if defined(CONFIG_TOSA_POWER_KEY_OFF)
++  struct proc_dir_entry *power_key_off_proc;
++#endif
+   
+   proc_ts = proc_mkdir("driver/ts", NULL);
+   if (proc_ts == NULL) {
+@@ -234,6 +277,12 @@
+     }
+   }
+ 
++#if defined(CONFIG_TOSA_POWER_KEY_OFF)
++  power_key_off_proc = create_proc_entry("power_key_off", 0, NULL);
++  if (power_key_off_proc)
++	  power_key_off_proc->proc_fops = &proc_power_key_off_operations;
++#endif
++
+   return 0;
+ }
+ 
+Index: linux/drivers/char/Config.in
+===================================================================
+--- linux.orig/drivers/char/Config.in	2005-02-15 14:32:41.000000000 +0000
++++ linux/drivers/char/Config.in	2005-02-15 14:32:58.000000000 +0000
+@@ -35,6 +35,8 @@
+    if [ "$CONFIG_SERIAL_SL_SERIES" = "y" ]; then
+       bool '   SL-series Bluetooth support' CONFIG_BLUETOOTH_SL
+    fi
++   dep_bool '  Tosa power key suspend (EXPERIMENTAL)' CONFIG_TOSA_POWER_KEY_OFF $CONFIG_ARCH_PXA_TOSA
++   dep_bool '     Tosa Boot On power key suspend' CONFIG_BOOT_TOSA_POWER_KEY_OFF $CONFIG_TOSA_POWER_KEY_OFF
+ fi
+ bool 'Use Keyboard device file (EXPERIMENTAL)' CONFIG_KBD_DEV_FILE
+ if [ "$CONFIG_SA1100_COLLIE" = "y" ]; then
+Index: linux/drivers/char/keyboard.c
+===================================================================
+--- linux.orig/drivers/char/keyboard.c	2005-02-15 14:32:48.000000000 +0000
++++ linux/drivers/char/keyboard.c	2005-02-15 14:32:58.000000000 +0000
+@@ -119,8 +119,8 @@
+ static struct kbd_struct * kbd = kbd_table;
+ static struct tty_struct * tty;
+ 
+-#if defined(CONFIG_SL7X0_POWER_KEY_OFF)
+-#if defined(CONFIG_BOOT_POWER_KEY_OFF)
++#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_TOSA_POWER_KEY_OFF)
++#if defined(CONFIG_BOOT_POWER_KEY_OFF) || defined(CONFIG_BOOT_TOSA_POWER_KEY_OFF)
+ unsigned int power_key_off_mode = 1;
+ #else
+ unsigned int power_key_off_mode = 0;
+@@ -245,7 +245,7 @@
+ void handle_scancode(unsigned char scancode, int down)
+ {
+ 
+-#if defined(CONFIG_SL7X0_POWER_KEY_OFF)
++#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_TOSA_POWER_KEY_OFF)
+ 	/* printk("scancode = %x down = %x \n",scancode,down); */
+ 	/* SL-C700 side power 0x6d  */ 
+ 	if ( power_key_off_mode && ( scancode == 0x6d ) && ( down == 0x01 ) ){ 
+@@ -282,7 +282,7 @@
+ 		handle_scancode_main ( scancode, down );
+ 	} else
+ #endif
+-#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_SL_3BUTTON_PATCH)
++#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_SL_3BUTTON_PATCH) || defined(CONFIG_TOSA_POWER_KEY_OFF)
+                {
+ 
+ 		handle_scancode_main ( scancode, down );
+Index: linux/arch/arm/mach-pxa/sharpsl_power.c
+===================================================================
+--- linux.orig/arch/arm/mach-pxa/sharpsl_power.c	2005-02-15 14:32:41.000000000 +0000
++++ linux/arch/arm/mach-pxa/sharpsl_power.c	2005-02-16 09:45:13.000000000 +0000
+@@ -1725,7 +1725,7 @@
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_SL7X0_POWER_KEY_OFF)
++#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_TOSA_POWER_KEY_OFF)
+ static int key_suspend_thread(void* unused)
+ {
+ 	int time_cnt = 0;
+@@ -1854,7 +1854,7 @@
+ 	}
+ 
+ 	kernel_thread(sharpsl_off_thread,  NULL, CLONE_FS | CLONE_FILES | CLONE_SIGHAND | SIGCHLD);
+-#if defined(CONFIG_SL7X0_POWER_KEY_OFF)
++#if defined(CONFIG_SL7X0_POWER_KEY_OFF) || defined(CONFIG_TOSA_POWER_KEY_OFF)
+ 	kernel_thread(key_suspend_thread,  NULL, CLONE_FS | CLONE_FILES | CLONE_SIGHAND | SIGCHLD);
+ #endif
+ #if defined(CONFIG_ARCH_PXA_SHEPHERD) || defined(CONFIG_ARCH_PXA_TOSA)
