@@ -22,7 +22,6 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            file://qpe.conf \
 	   file://locale.conf \
 	   file://opie_defaults"
-
 S = "${WORKDIR}/launcher"
 
 # Caps/Numlock icons for devices with keyboard
@@ -32,12 +31,14 @@ EXTRA_QMAKEVARS_POST_append_shepherd 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_corgi 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_husky 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 EXTRA_QMAKEVARS_POST_append_tosa 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
+EXTRA_QMAKEVARS_POST_append_openzaurus-pxa-2.6 = "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
 
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
 PIXMAP_SIZE_shepherd 	= "-640x480"
 PIXMAP_SIZE_corgi 	= "-640x480"
 PIXMAP_SIZE_husky 	= "-640x480"
+PIXMAP_SIZE_openzaurus-pxa-2.6 = "-640x480"
 # PIXMAP_SIZE_tosa 	= "-640x480"
 PIXMAP_SIZE_simpad 	= "-800x600"
 
@@ -126,6 +127,11 @@ do_install_append_tosa () {
 	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }
+do_install_append_openzaurus-pxa-2.6 () {
+        install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
+        install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
+}
+
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
 

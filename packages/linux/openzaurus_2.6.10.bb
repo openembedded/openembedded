@@ -1,9 +1,10 @@
-SECTION = "kernel"
 DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices."
+SECTION = "kernel"
+MAINTAINER = "Richard Purdie <rp@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r1"
+PR = "r2"
 
 #SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 #          http://www.cs.wisc.edu/~lenz/zaurus/files/patch-2.6.7-jl1.diff.gz;patch=1 \
@@ -30,7 +31,7 @@ http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl_extra-r2.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jffs2_longfilename-r0.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/mtd_sharpsl_map-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_kbd-r4.patch;patch=1 \
-http://www.rpsys.net/openzaurus/${KV}/corgi_backlight-r5.patch;patch=1 \
+http://www.rpsys.net/openzaurus/${KV}/corgi_backlight-r6.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_param-r1.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_ts-r2.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/corgi_power-r3.patch;patch=1 \
@@ -45,7 +46,8 @@ file://defconfig-husky \
 file://defconfig-collie \
 file://defconfig-poodle "
 
-SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r0.patch;patch=1"
+SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
+SRC_URI_append_openzaurus-pxa-2.6 = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
 SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1"	   
 
 
