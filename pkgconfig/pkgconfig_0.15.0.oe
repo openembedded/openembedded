@@ -11,3 +11,8 @@ acpaths=-I .
 do_configure_prepend () {
 	install -m 0644 ${FILESDIR}/glibconfig-sysdefs.h glib-1.2.8/
 }
+
+do_stage_append() {
+	install -d -m 0755 ${STAGING_DIR}/share/pkgconfig
+
+}
