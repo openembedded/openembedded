@@ -6,6 +6,8 @@ LICENSE = "Bitstream Vera"
 PACKAGE_ARCH = "all"
 PR = "r2"
 
+PROVIDES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
+
 SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"
 S = "${WORKDIR}/vera-qpf"
 

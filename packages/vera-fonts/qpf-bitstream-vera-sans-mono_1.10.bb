@@ -5,6 +5,11 @@ LICENSE = "Bitstream Vera"
 PACKAGE_ARCH = "all"
 PR = "r3"
 
+PROVIDES += "qpf-bitstream-vera-sans-mono-small"
+PROVIDES += "qpf-bitstream-vera-sans-mono-larger"
+PROVIDES += "qpf-bitstream-vera-sans-mono-large"
+PROVIDES += "qpf-bitstream-vera-sans-mono-huge"
+
 SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono.tar.gz"
 S = "${WORKDIR}/verasansmono"
 
