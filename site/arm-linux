@@ -328,3 +328,17 @@ am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
 # fnmatch
 ac_cv_func_fnmatch_works=${ac_cv_func_fnmatch_works=yes}
+
+# rsync
+rsync_cv_HAVE_BROKEN_LARGEFILE=${rsync_cv_HAVE_BROKEN_LARGEFILE=no}
+rsync_cv_HAVE_SOCKETPAIR=${rsync_cv_HAVE_SOCKETPAIR=yes}
+rsync_cv_HAVE_LONGLONG=${rsync_cv_HAVE_LONGLONG=yes}
+rsync_cv_HAVE_OFF64_T=${rsync_cv_HAVE_OFF64_T=no}
+rsync_cv_HAVE_SHORT_INO_T=${rsync_cv_HAVE_SHORT_INO_T=no}
+rsync_cv_HAVE_UNSIGNED_CHAR=${rsync_cv_HAVE_UNSIGNED_CHAR=no}
+rsync_cv_HAVE_BROKEN_READDIR=${rsync_cv_HAVE_BROKEN_READDIR=no}
+rsync_cv_HAVE_GETTIMEOFDAY_TZ=${rsync_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+rsync_cv_HAVE_C99_VSNPRINTF=${rsync_cv_HAVE_C99_VSNPRINTF=yes}
+rsync_cv_HAVE_SECURE_MKSTEMP=${rsync_cv_HAVE_SECURE_MKSTEMP=yes}
+rsync_cv_REPLACE_INET_NTOA=${rsync_cv_REPLACE_INET_NTOA=no}
+rsync_cv_REPLACE_INET_ATON=${rsync_cv_REPLACE_INET_ATON=no}
