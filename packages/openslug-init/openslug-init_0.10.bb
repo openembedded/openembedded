@@ -22,6 +22,7 @@ do_install() {
                    ${D}/${sysconfdir}/rcS.d \
 		   ${D}/${sbindir} 
 		  
+	install -d ${D}/initrd
 
 	install -m 0755 ${D}/../kern_header ${D}/${sbindir}/kern_header
 	install -m 0755 ${D}/../sysconfsetup ${D}/${sysconfdir}/init.d/
