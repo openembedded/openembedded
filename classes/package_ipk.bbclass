@@ -63,6 +63,8 @@ python package_ipk_do_package_ipk () {
 	import copy # to back up env data
 	import sys
 
+	bb.build.exec_func('read_subpackage_metadata', d)
+
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
 		bb.error("WORKDIR not defined, unable to package")

@@ -656,7 +656,6 @@ python __anonymous () {
 		bb.build.exec_func('read_manifest', d)
 		bb.build.exec_func('parse_manifest', d)
 		bb.build.exec_func('read_shlibdeps', d)
-		bb.build.exec_func('read_subpackage_metadata', d)
 	except exceptions.KeyboardInterrupt:
 		raise
 	except Exception, e:
