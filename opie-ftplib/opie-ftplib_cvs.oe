@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PROVIDES = "libftplib1"
 PV = "1.1.4-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/net/ftplib;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/ftplib;date=${CVSDATE}"
 S = "${WORKDIR}/ftplib"
 
 inherit palmtop
