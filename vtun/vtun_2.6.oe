@@ -1,0 +1,23 @@
+DESCRIPTION = "Virtual Tunnels over TCP/IP networks with traffic shaping, compression and encryption."
+SECTION = "console/network"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "zlib lzo"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/vtun/vtun-${PV}.tar.gz \
+	file://init \
+	file://makefile.in-ldflags.patch;patch=1;pnum=0"
+
+S = "${WORKDIR}/vtun"
+
+inherit autotools
+
+do_configure() {
+	oe_runconf
+}
+
+do_install_append() {
+	install -d ${D}${sysconfdir}/init.d/
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/vtund
+	install ${S}/scripts/vtund-start.conf ${D}${sysconfdir}
+}

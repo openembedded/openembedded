@@ -1,5 +1,5 @@
 DESCRIPTION = "Lightweight and High Performance WebServer"
-SECTION = "net"
+SECTION = "console/network"
 RPROVIDES = "httpd"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 PR = "r1"

@@ -1,0 +1,24 @@
+DESCRIPTION = "OLSR mesh routing daemon"
+DESCRIPTION_unik-olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+SECTION = "console/network"
+PRIORITY = "optional"
+LICENSE = "GPL"
+
+SRC_URI="http://www.olsr.org/downloadolsr.cgi?file=olsrd-${PV}.tar.bz2 \
+	file://unik-olsrd"
+
+PACKAGES =+ "unik-olsrd-libs"
+FILES_unik-olsrd-libs = "${libdir}"
+
+S = "${WORKDIR}/olsrd-${PV}"
+
+do_compile() {
+	oe_runmake all libs
+}
+
+do_install () {
+	oe_runmake INSTALL_PREFIX=${D} install install_libs
+	install -d ${D}/etc/init.d
+	install -m 0755 ${WORKDIR}/unik-olsrd ${D}/${sysconfdir}/init.d
+}

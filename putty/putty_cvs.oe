@@ -1,5 +1,5 @@
 DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Unix platforms"
-SECTION = "net"
+SECTION = "console/network"
 
 SRC_URI = "cvs://cvsuser:anonymous@cvs.tartarus.org/home/cvs;module=putty \
 	   file://lib.pro \
