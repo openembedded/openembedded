@@ -1,7 +1,7 @@
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 PACKAGE_ARCH = "ipaqsa"
 KERNEL_CCSUFFIX = "-3.3.3"
