@@ -5,8 +5,8 @@ PRIORITY="optional"
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
 
-# SRC_URI = cvs://anoncvs@savannah.nongnu.org/cvsroot/orinoco;module=orinoco;tag=HEAD 
-SRC_URI = http://www.vanille.de/mirror/orinoco-0.14-cvs-040215.tar.bz2 \
+# SRC_URI = cvs://anoncvs@savannah.nongnu.org/cvsroot/orinoco;module=orinoco;tag=HEAD;method=ext
+SRC_URI = http://www.vanille.de/mirror/orinoco-0.14-cvs-040228.tar.bz2 \
           file://${FILESDIR}/compile.patch;patch=1
 S = ${WORKDIR}/orinoco
 
