@@ -7,8 +7,6 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 
 inherit pkgconfig gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libeventdb-${PV}.tar.gz"
-
 headers = "event-db.h"
 
 do_stage () {

@@ -4,8 +4,6 @@ SECTION = "x11/base"
 
 DEPENDS = "x11 libxft libxrandr"
 
-
-
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/xtscal-${PV}.tar.bz2"
+SRC_URI = "${GPE_MIRROR}/xtscal-${PV}.tar.bz2"
 
 inherit autotools

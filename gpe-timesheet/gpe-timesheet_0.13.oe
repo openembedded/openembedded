@@ -4,5 +4,4 @@ inherit gpe
 DEPENDS = "libgpewidget glib-2.0 gtk+"
 SECTION = "gpe"
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-timesheet-${PV}.tar.gz \
-	file://gpe-timesheet-makefile.patch;patch=0"
+SRC_URI += "file://gpe-timesheet-makefile.patch;patch=0"

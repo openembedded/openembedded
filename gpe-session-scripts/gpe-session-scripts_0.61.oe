@@ -11,8 +11,7 @@ RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-questi
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr"
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-session-scripts-${PV}.tar.gz \
-	file://change-default-applets.patch;patch=1"
+SRC_URI += "file://change-default-applets.patch;patch=1"
 
 do_install_append() {
 	install -d ${D}/etc/gpe/xsettings-default.d

@@ -7,8 +7,6 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 
 inherit pkgconfig gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libtododb-${PV}.tar.gz"
-
 headers = "todo-db.h"
 
 do_stage () {

@@ -4,8 +4,7 @@ DEPENDS = "libgpewidget libxsettings x11"
 
 inherit pkgconfig gpe
 
-SRC_URI = "ftp://gpe.handhelds.org/gpe/source/libxsettings-client0-${PV}.tar.gz \
-	file://make_pkgconfig_x11.patch;patch=1"
+SRC_URI += "file://make_pkgconfig_x11.patch;patch=1"
 
 S = "${WORKDIR}/libxsettings-client0-0.12"
 

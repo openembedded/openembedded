@@ -7,8 +7,6 @@ DEPENDS = "libmimedir"
 
 inherit pkgconfig gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpevtype-${PV}.tar.gz"
-
 headers = "tag-db.h vcard.h vevent.h vtodo.h"
 
 do_stage () {

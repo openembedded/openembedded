@@ -7,8 +7,6 @@ PRIORITY = "optional"
 
 inherit pkgconfig gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libdisplaymigration-${PV}.tar.gz"
-
 headers = "displaymigration.h auth.h crypt.h"
 
 do_stage () {

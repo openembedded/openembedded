@@ -5,5 +5,3 @@ DESCRIPTION = "GPE time tracker"
 DEPENDS = "libgpewidget gtk+ sqlite"
 SECTION = "gpe"
 RDEPENDS = "gpe-icons"
-
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-timesheet-${PV}.tar.gz"

@@ -6,8 +6,6 @@ DEPENDS = "x11"
 
 inherit gpe
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libxsettings-${PV}.tar.gz"
-
 headers = "xsettings-common.h"
 
 do_stage () {

@@ -6,5 +6,4 @@ DEPENDS = "gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdispl
 SECTION = "gpe"
 PRIORITY = "optional"
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-today-${PV}.tar.gz \
-	file://gpe-today_makefiles.patch;patch=1"
+SRC_URI += "file://gpe-today_makefiles.patch;patch=1"
