@@ -11,9 +11,9 @@ S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools
 
-export KERNEL_VERSION = "`cat ${STAGING_LIBDIR}/../kernel/kernel-version`"
-export KERNEL_SOURCE = "`cat ${STAGING_LIBDIR}/../kernel/kernel-source`"
-export KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
+KERNEL_VERSION = ${@open('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-version').read().strip()}
+KERNEL_SOURCE = ${@open('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source').read().strip()}
+KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
 
 #FIXME: Caution: EXTRA_OECONF is arm-specific!
 
@@ -28,8 +28,6 @@ do_stage() {
 	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/
 }
 
-#FIXME: Add to postinstall /bin/mknod $(DESTDIR)$(devdir)/lirc c 61 0
-
 do_install() {
 	install -d ${D}/${bindir}
 
@@ -37,3 +35,4 @@ do_install() {
 	install -m 755 daemons/lircd ${D}/${bindir}/lircd
 	install -m 755 tools/rc ${D}/${bindir}/rc
 }
+

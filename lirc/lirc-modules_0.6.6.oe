@@ -1,0 +1,47 @@
+DESCRIPTION = "LIRC is a package that allows you to decode and send infra-red signals of many commonly used remote controls."
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+RDEPENDS = "linux-${KERNEL_VERSION}"
+DEPENDS = "virtual/kernel"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
+S = "${WORKDIR}/lirc-${PV}"
+
+inherit autotools
+
+export ARCH=${TARGET_ARCH}
+export OS=${TARGET_OS}
+export CROSS_COMPILE=${CROSS}
+
+KERNEL_VERSION = ${@open('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-version').read().strip()}
+KERNEL_SOURCE = ${@open('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source').read().strip()}
+KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
+
+export TOPDIR = "${KERNEL_SOURCE}"
+
+#FIXME: Caution: EXTRA_OECONF is arm-specific!
+
+EXTRA_OECONF = "--with-kerneldir=${KERNEL_SOURCE}                      \
+                --with-driver=sa1100                                   \ 
+                --without-x"
+
+do_compile() {
+	cd drivers && oe_runmake
+}
+
+do_install() {
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char
+	install -m 755 drivers/lirc_sir/lirc_sir.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
+}
+
+pkg_postinst() {
+#!/bin/sh
+ mknod /dev/lirc c 61 0
+ if [ -n $D ]; then exit 1; fi
+}
+
+PACKAGES_append=" lirc-modules"
+FILES_lirc-modules="/lib/modules"
+
