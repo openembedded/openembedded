@@ -4,13 +4,13 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.9+cvs-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/pics-hires"
 S = "${WORKDIR}"
 
-SHIP_INLINE_PICS = "yes"
+SHIP_INLINE_PICS = "no"
 INLINE_PICS = "pics/inline"
 INLINE_PICS_tosa = "pics-hires/inline"
 INLINE_PICS_c7x0 = "pics-hires/inline"

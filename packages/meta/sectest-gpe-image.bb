@@ -3,10 +3,9 @@ FEED_URIS_append_openzaurus = " x11##http://openzaurus.org/official/unstable/${D
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 \
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
-FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11 \
-                                gpe##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/gpe"
+FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r4"
+PR = "r5"
 
 export IMAGE_BASENAME = "sectest-gpe-image"
 
