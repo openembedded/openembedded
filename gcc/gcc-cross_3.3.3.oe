@@ -92,5 +92,5 @@ do_install () {
 	# the packaging.
 	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libstdc++.so.*
 	${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libg2c.so.*
-	${TARGET_PREFIX}strip ${D}/libgcc_s.so.*
+	${TARGET_PREFIX}strip ${D}/lib/libgcc_s.so.*
 }
