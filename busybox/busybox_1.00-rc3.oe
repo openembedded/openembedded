@@ -51,7 +51,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/busybox-cron ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/busybox-httpd ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/syslog ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/udhcp-serrver ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/udhcp-server ${D}/etc/init.d/
 	install -m 0755 ${WORKDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh
 	install -d ${D}${datadir}/udhcpc
 	install -m 0755 ${S}/examples/udhcp/simple.script ${D}${datadir}/udhcpc/default.script
