@@ -18,7 +18,6 @@ CFLAGS_append = " -D_REENTRANT"
 #export AR:=${AR} rv
 
 do_stage() {
-	install -d ${STAGING_DIR}/{bin,lib,include}
 	install -m 644 -D jconfig.h ${STAGING_DIR}/target/include/jconfig.h
 	install -m 644 -D jpeglib.h ${STAGING_DIR}/target/include/jpeglib.h
 	install -m 644 -D jmorecfg.h ${STAGING_DIR}/target/include/jmorecfg.h

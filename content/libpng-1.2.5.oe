@@ -20,7 +20,6 @@ do_compile() {
 }
 
 do_stage() {
-	install -d ${STAGING_DIR}/{bin,lib,include}
 	install -m 644 -D png.h ${STAGING_DIR}/target/include/png.h
 	install -m 644 -D pngconf.h ${STAGING_DIR}/target/include/pngconf.h
 	install -m 755 -D libpng12.so.0.${PV} ${STAGING_LIBDIR}/libpng12.so.0.${PV}

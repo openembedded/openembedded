@@ -27,7 +27,8 @@ do_configure_prepend () {
 }
 
 do_stage () {
-	install -d ${STAGING_DIR}/share/{libtool,aclocal}
+	install -d ${STAGING_DIR}/share/libtool \
+		   ${STAGING_DIR}/share/aclocal
 	install -m 0755 libtool ${STAGING_BINDIR}/libtool
 	install -m 0755 libtoolize ${STAGING_BINDIR}/libtoolize
 	install -c config.guess ${STAGING_DIR}/share/libtool/

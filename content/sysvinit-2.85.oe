@@ -13,7 +13,9 @@ CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"
 
 do_install () {
-	install -d ${D}/{usr/{,s}bin,sbin,etc/{default,init.d}}
+	install -d ${D}/${bindir} ${D}/${sbindir} \
+		   ${D}/sbin ${D}/${sysconfdir}/default \
+		   ${D}/${sysconfdir}/init.d
 #	install -m 755 debian/sysv-rc/sbin/invoke-rc.d \
 #		debian/sysv-rc/sbin/update-rc.d ${D}/usr/sbin/
 	install -m 755 halt killall5 \

@@ -20,7 +20,6 @@ do_compile() {
 }
 
 do_stage() {
-	install -d ${STAGING_DIR}/{bin,lib,include}
 	install -m 0644 zlib.h ${STAGING_DIR}/target/include/zlib.h
 	install -m 0644 zconf.h ${STAGING_DIR}/target/include/zconf.h
 	install -m 0755 libz.so.1.1.4 ${STAGING_LIBDIR}/libz.so.1.1.4
