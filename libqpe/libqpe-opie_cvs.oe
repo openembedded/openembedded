@@ -1,5 +1,5 @@
 DESCRIPTION = "Base library for the Qt Palmtop Environment"
-SECTION = "base"
+SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"

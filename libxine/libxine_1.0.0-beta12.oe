@@ -1,5 +1,5 @@
 DESCRIPTION = "libxine"
-SECTION = "base"
+SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "virtual/libc zlib libogg tremor libmad"
