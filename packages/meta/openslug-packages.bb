@@ -30,7 +30,7 @@ OPENSLUG_DEVELOPMENT = "\
 	quilt  \
 	sed  \
 	strace  \
-	tar  \
+	tar thttpd  \
 	"
 
 
