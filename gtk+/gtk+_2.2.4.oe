@@ -67,6 +67,10 @@ do_stage () {
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
 }
 
+do_install_append () {
+	install -d ${D}/etc/gtk-2.0
+}
+
 python populate_packages_prepend () {
 	import os
 	def do_split(root, pattern, format, description, postinst):

@@ -4,15 +4,15 @@ DEPENDS = 'glibc base-files base-passwd-3.5.7 \
 	   busybox dropbear hotplug ifupdown ipkg initscripts strace \
 	   netbase tslib module-init-tools resolvconf sysvinit tinylogin \
 	   diet-x11-cvs xserver matchbox-wm matchbox-desktop matchbox-panel \
-	   meta-gpe prelink ttf-bitstream-vera'
+	   meta-gpe ttf-bitstream-vera lrzsz pcmcia-cs'
 
 export IPKG_INSTALL = 'base-files base-passwd \
-		      busybox dropbear \
+		      busybox dropbear pcmcia-cs \
 		      libc6 hotplug ifupdown ipkg strace \
 		      initscripts kernel-modules \
 		      netbase resolvconf \
 		      tslib libgcc1 sysvinit tinylogin xserver-kdrive-fbdev \
 		      gpe-task-base prelink ttf-bitstream-vera pango-module-basic-xft \
-		      lrzsz glibc-gconv glibc-gconv-iso8859-1'
+		      lrzsz glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png'
 
 inherit image_ipk
