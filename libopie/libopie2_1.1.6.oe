@@ -3,7 +3,7 @@ HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
-I18N_FILES = "libopiecore2.ts"
+I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite libpcap-0.7.2 virtual/kernel"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2 "
 PR = "r1"
@@ -14,6 +14,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/li
 S = "${WORKDIR}/libopie2"
 
 inherit opie
+
+CVSDATE = "20041015"
 
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
 
