@@ -3,7 +3,6 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libopie2"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "console"
 

@@ -3,7 +3,6 @@ SECTION = "opie/Applications"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-DEPENDS = "libopie2"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "keypebble"
 

@@ -1,0 +1,21 @@
+DESCRIPTION = "A Wireless Network Monitor"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+
+APPNAME = "wellenreiter"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/wellenreiter;date=20040504 \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=20040504                     \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=20040504"
+
+S = "${WORKDIR}/wellenreiter"
+
+inherit opie
+
+do_install() {
+        install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
+}

@@ -3,7 +3,6 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Rajko Albrecht <alwin@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "aboutapplet"
 

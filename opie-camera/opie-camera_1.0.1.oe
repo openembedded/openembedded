@@ -3,7 +3,6 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "libopie2"
 APPNAME = "camera"
 APPTYPE = "binary"
 

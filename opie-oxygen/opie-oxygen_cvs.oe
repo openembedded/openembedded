@@ -3,7 +3,6 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libopie2"
 PV = "1.0.0-cvs-${CVSDATE}"
 APPNAME = "oxygen"
 

@@ -3,7 +3,7 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libipkg libopie2"
+DEPENDS = "libipkg "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "packagemanager"
 

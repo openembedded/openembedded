@@ -3,7 +3,7 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
-DEPENDS = "opie-libqrsync libopie2"
+DEPENDS = "opie-libqrsync "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
 

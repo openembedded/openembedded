@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libopiecore2 libopieui2 opie-ftplib"
+DEPENDS = "  opie-ftplib"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "gutenbrowser"
 

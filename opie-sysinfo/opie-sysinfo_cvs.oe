@@ -3,7 +3,6 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libopiecore2 libopieui2"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "sysinfo"
 

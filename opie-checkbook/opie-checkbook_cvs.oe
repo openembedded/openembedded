@@ -3,7 +3,6 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libc libopie2"
 PV = "0.8.0-cvs-${CVSDATE}"
 APPNAME = "checkbook"
 

@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Opie Team <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libopie2 libqtaux2"
+DEPENDS = " libqtaux2"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "embeddedkonsole"
 
