@@ -52,9 +52,9 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/lib
-	oe_soinstall ${STAGING_LIBDIR}/libqpe.so.1.5.0 ${D}/opt/QtPalmtop/lib
+	install -d ${D}${palmtopdir}lib
+	oe_soinstall ${STAGING_LIBDIR}/libqpe.so.1.5.0 ${D}${palmtopdir}lib
 }
 
 PACKAGES = "libqpe1"
-FILES_libqpe1 = "/opt/QtPalmtop/lib"
+FILES_libqpe1 = "${palmtopdir}lib"

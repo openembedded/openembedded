@@ -17,15 +17,15 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/vectoroids}
-        install -D -m 0755 vectoroids ${D}/opt/QtPalmtop/bin/vectoroids
-	install -D -m 0644 data/images/icon.png ${D}/opt/QtPalmtop/pics/vectoroids.png
-	cp -a data/* ${D}/opt/QtPalmtop/share/vectoroids
+        install -d ${D}${palmtopdir}{bin,apps/Games,pics,share/vectoroids}
+        install -D -m 0755 vectoroids ${D}${palmtopdir}bin/vectoroids
+	install -D -m 0644 data/images/icon.png ${D}${palmtopdir}pics/vectoroids.png
+	cp -a data/* ${D}${palmtopdir}share/vectoroids
 
-	echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
-	echo "Comment=Asteroids game" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
-	echo "Exec=vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
-	echo "Icon=vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
-	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
-	echo "Name=Vectoroids" >>${D}/opt/QtPalmtop/apps/Games/vectoroids.desktop
+	echo "[Desktop Entry]" >${D}${palmtopdir}apps/Games/vectoroids.desktop
+	echo "Comment=Asteroids game" >>${D}${palmtopdir}apps/Games/vectoroids.desktop
+	echo "Exec=vectoroids" >>${D}${palmtopdir}apps/Games/vectoroids.desktop
+	echo "Icon=vectoroids" >>${D}${palmtopdir}apps/Games/vectoroids.desktop
+	echo "Type=Application" >>${D}${palmtopdir}apps/Games/vectoroids.desktop
+	echo "Name=Vectoroids" >>${D}${palmtopdir}apps/Games/vectoroids.desktop
 }

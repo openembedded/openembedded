@@ -18,15 +18,15 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/gemdropx}
-        install -D -m 0755 gemdropx ${D}/opt/QtPalmtop/bin/gemdropx
-	install -D -m 0644 ${FILESDIR}/icon.png ${D}/opt/QtPalmtop/pics/gemdropx.png
-	cp -a data/* ${D}/opt/QtPalmtop/share/gemdropx
+        install -d ${D}${palmtopdir}{bin,apps/Games,pics,share/gemdropx}
+        install -D -m 0755 gemdropx ${D}${palmtopdir}bin/gemdropx
+	install -D -m 0644 ${FILESDIR}/icon.png ${D}${palmtopdir}pics/gemdropx.png
+	cp -a data/* ${D}${palmtopdir}share/gemdropx
 
-	echo "[Desktop Entry]" >${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
-	echo "Comment=Puzzle game" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
-	echo "Exec=gemdropx" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
-	echo "Icon=gemdropx" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
-	echo "Type=Application" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
-	echo "Name=GemdropX" >>${D}/opt/QtPalmtop/apps/Games/gemdropx.desktop
+	echo "[Desktop Entry]" >${D}${palmtopdir}apps/Games/gemdropx.desktop
+	echo "Comment=Puzzle game" >>${D}${palmtopdir}apps/Games/gemdropx.desktop
+	echo "Exec=gemdropx" >>${D}${palmtopdir}apps/Games/gemdropx.desktop
+	echo "Icon=gemdropx" >>${D}${palmtopdir}apps/Games/gemdropx.desktop
+	echo "Type=Application" >>${D}${palmtopdir}apps/Games/gemdropx.desktop
+	echo "Name=GemdropX" >>${D}${palmtopdir}apps/Games/gemdropx.desktop
 }

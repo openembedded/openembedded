@@ -62,13 +62,13 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/lib/fonts
-	oe_soinstall lib/libqte.so.${PV} ${D}/opt/QtPalmtop/lib
-	cp -a lib/fonts/* ${D}/opt/QtPalmtop/lib/fonts/
+	install -d ${D}${palmtopdir}lib/fonts
+	oe_soinstall lib/libqte.so.${PV} ${D}${palmtopdir}lib
+	cp -a lib/fonts/* ${D}${palmtopdir}lib/fonts/
 }
 
 PACKAGES = "libqte2 qte-fonts"
 
 FILES_${PN} = ""
-FILES_libqte2 = "/opt/QtPalmtop/lib/libqte.so*"
-FILES_qte-fonts = "/opt/QtPalmtop/lib/fonts"
+FILES_libqte2 = "${palmtopdir}lib/libqte.so*"
+FILES_qte-fonts = "${palmtopdir}lib/fonts"

@@ -14,13 +14,13 @@ inherit palmtop
 EXTRA_QMAKEVARS_POST = " DESTDIR=pkg-cellar/home/QtPalmtop/bin/"
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+        install -d ${D}${palmtopdir}{bin,apps/Applications,pics}
 	install -d ${D}/home/root/Settings/
-	cp -a pkg-pcellar/home/QtPalmtop/* ${D}/opt/QtPalmtop/
+	cp -a pkg-pcellar/home/QtPalmtop/* ${D}${palmtopdir}
 	cp -a pkg-pcellar/home/root/Settings/* ${D}/home/root/Settings/
-        install -D -m 755 pkg-cellar/home/QtPalmtop/bin/pocketcellar ${D}/opt/QtPalmtop/bin/pocketcellar
-        install -D -m 644 pocketcellar.desktop ${D}/opt/QtPalmtop/apps/Applications/pocketcellar.desktop
-        cp pocketcellar.png ${D}/opt/QtPalmtop/pics/
+        install -D -m 755 pkg-cellar/home/QtPalmtop/bin/pocketcellar ${D}${palmtopdir}bin/pocketcellar
+        install -D -m 644 pocketcellar.desktop ${D}${palmtopdir}apps/Applications/pocketcellar.desktop
+        cp pocketcellar.png ${D}${palmtopdir}pics/
 }
 
 FILES_${PN} = "/"

@@ -12,8 +12,8 @@ S = "${WORKDIR}/ztappy"
 inherit palmtop
 
 do_install() {
-        install -m 0755 ${PN} ${S}/ipk/opt/QtPalmtop/bin/${PN}
-	install -d ${D}/opt/QtPalmtop
+        install -m 0755 ${PN} ${S}/ipk${palmtopdir}bin/${PN}
+	install -d ${D}${palmtopdir}
         cp -a ipk/opt/* ${D}/opt
 }
 

@@ -37,22 +37,22 @@ do_compile() {
 # lib files already done during do_compile
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.8.5 ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.8.2 ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.8.2 ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.3 ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopiepim2.so.1.8.3 ${D}/opt/QtPalmtop/lib/
-	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}/opt/QtPalmtop/lib/
+	install -d ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.8.5 ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.8.2 ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.8.2 ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.3 ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiepim2.so.1.8.3 ${D}${palmtopdir}lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}${palmtopdir}lib/
 }
 
 PACKAGES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
-FILES_libopiecore2 = "/opt/QtPalmtop/lib/libopiecore2.so.*"
-FILES_libopiedb2 = "/opt/QtPalmtop/lib/libopiedb2.so.*"
-FILES_libopiemm2 = "/opt/QtPalmtop/lib/libopiemm2.so.*"
-FILES_libopienet2 = "/opt/QtPalmtop/lib/libopienet2.so.*"
-FILES_libopiepim2 = "/opt/QtPalmtop/lib/libopiepim2.so.*"
-FILES_libopieui2 = "/opt/QtPalmtop/lib/libopieui2.so.*"
+FILES_libopiecore2 = "${palmtopdir}lib/libopiecore2.so.*"
+FILES_libopiedb2 = "${palmtopdir}lib/libopiedb2.so.*"
+FILES_libopiemm2 = "${palmtopdir}lib/libopiemm2.so.*"
+FILES_libopienet2 = "${palmtopdir}lib/libopienet2.so.*"
+FILES_libopiepim2 = "${palmtopdir}lib/libopiepim2.so.*"
+FILES_libopieui2 = "${palmtopdir}lib/libopieui2.so.*"
 
 #FIXME: Add individual package descriptions and dependencies
 

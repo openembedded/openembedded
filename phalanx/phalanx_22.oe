@@ -10,14 +10,14 @@ S = "${WORKDIR}/Phalanx-XXII"
 
 inherit autotools
 
-FILES_phalanx = "/opt/QtPalmtop/chess/engines/Phalanx"
+FILES_phalanx = "${palmtopdir}chess/engines/Phalanx"
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/chess/engines/Phalanx
-        install -D -m 755 phalanx ${D}/opt/QtPalmtop/chess/engines/Phalanx/phalanx
-        install -D -m 755 pbook.phalanx ${D}/opt/QtPalmtop/chess/engines/Phalanx/pbook.phalanx
-        >${D}/opt/QtPalmtop/chess/engines/Phalanx/sbook.phalanx
-        >${D}/opt/QtPalmtop/chess/engines/Phalanx/learn.phalanx
-        install -D -m 755 ${FILESDIR}/capabilities ${D}/opt/QtPalmtop/chess/engines/Phalanx/capabilities
-        install -D -m 755 ${FILESDIR}/description ${D}/opt/QtPalmtop/chess/engines/Phalanx/description
+	install -d ${D}${palmtopdir}chess/engines/Phalanx
+        install -D -m 755 phalanx ${D}${palmtopdir}chess/engines/Phalanx/phalanx
+        install -D -m 755 pbook.phalanx ${D}${palmtopdir}chess/engines/Phalanx/pbook.phalanx
+        >${D}${palmtopdir}chess/engines/Phalanx/sbook.phalanx
+        >${D}${palmtopdir}chess/engines/Phalanx/learn.phalanx
+        install -D -m 755 ${FILESDIR}/capabilities ${D}${palmtopdir}chess/engines/Phalanx/capabilities
+        install -D -m 755 ${FILESDIR}/description ${D}${palmtopdir}chess/engines/Phalanx/description
 }

@@ -17,9 +17,9 @@ inherit palmtop
 EXTRA_QMAKEVARS_POST = "DEFINES+=OPIE_WE_VERSION=15"
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics/${PN}}
-	install -m 0755 ${OPIEDIR}/bin/${PN} ${D}/opt/QtPalmtop/bin/${PN}
-	install -m 0644 ${WORKDIR}/apps/Applications/${PN}.desktop ${D}/opt/QtPalmtop/apps/Applications/${PN}.desktop
-	install -m 0644 ${WORKDIR}/pics/${PN}/*.* ${D}/opt/QtPalmtop/pics/${PN}/
+	install -d ${D}${palmtopdir}{bin,apps/Applications,pics/${PN}}
+	install -m 0755 ${OPIEDIR}/bin/${PN} ${D}${palmtopdir}bin/${PN}
+	install -m 0644 ${WORKDIR}/apps/Applications/${PN}.desktop ${D}${palmtopdir}apps/Applications/${PN}.desktop
+	install -m 0644 ${WORKDIR}/pics/${PN}/*.* ${D}${palmtopdir}pics/${PN}/
 }
 

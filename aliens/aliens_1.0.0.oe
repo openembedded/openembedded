@@ -18,8 +18,8 @@ do_compile_prepend() {
 }
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Games,pics,share/aliens}
-        install -D -m 0755 aliens ${D}/opt/QtPalmtop/bin/aliens
-	install -D -m 0644 aliens.png ${D}/opt/QtPalmtop/pics/aliens.png
-        install -D -m 0644 aliens.desktop ${D}/opt/QtPalmtop/apps/Games/aliens.desktop
+        install -d ${D}${palmtopdir}{bin,apps/Games,pics,share/aliens}
+        install -D -m 0755 aliens ${D}${palmtopdir}bin/aliens
+	install -D -m 0644 aliens.png ${D}${palmtopdir}pics/aliens.png
+        install -D -m 0644 aliens.desktop ${D}${palmtopdir}apps/Games/aliens.desktop
 }

@@ -10,7 +10,7 @@ SRC_URI = "http://www.warmi.net/zaurus/files/gnuboy-${PV}-qtopia3.tar.gz \
 S = "${WORKDIR}/gnuboy"
 
 FILES = ""
-FILES_${PN} = "/opt/QtPalmtop"
+FILES_${PN} = "${palmtopdir}"
 
 QMAKE = "${STAGING_BINDIR}/qmake"
 QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++"
@@ -27,9 +27,9 @@ do_compile() {
 }
 
 do_install() {
-        install -m 755 -d ${D}/opt/QtPalmtop
-        install -m 755 -D qpe/bin/qtopiagnuboy ${D}/opt/QtPalmtop/bin/qtopiagnuboy
-        install -m 755 -D qpe/bin/qtopiagnuboyl ${D}/opt/QtPalmtop/bin/qtopiagnuboyl
-        install -m 644 -D qpe/pics/Gnuboy.png ${D}/opt/QtPalmtop/pics/Gnuboy.png
-        install -m 644 -D qpe/apps/Games/qtopiagnuboy.desktop ${D}/opt/QtPalmtop/apps/Games/qtopiagnuboy.desktop
+        install -m 755 -d ${D}${palmtopdir}
+        install -m 755 -D qpe/bin/qtopiagnuboy ${D}${palmtopdir}bin/qtopiagnuboy
+        install -m 755 -D qpe/bin/qtopiagnuboyl ${D}${palmtopdir}bin/qtopiagnuboyl
+        install -m 644 -D qpe/pics/Gnuboy.png ${D}${palmtopdir}pics/Gnuboy.png
+        install -m 644 -D qpe/apps/Games/qtopiagnuboy.desktop ${D}${palmtopdir}apps/Games/qtopiagnuboy.desktop
 }

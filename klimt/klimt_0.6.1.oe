@@ -19,6 +19,6 @@ do_stage() {
 }
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/lib
-        oe_soinstall ${STAGING_LIBDIR}/libKlimt.so.0.5.1 ${D}/opt/QtPalmtop/lib/
+        install -d ${D}${palmtopdir}lib
+        oe_soinstall ${STAGING_LIBDIR}/libKlimt.so.0.5.1 ${D}${palmtopdir}lib/
 }
