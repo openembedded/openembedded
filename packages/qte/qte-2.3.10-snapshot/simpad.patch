@@ -131,7 +131,7 @@
 + * SIMpad switches handler
 + * (C) 2003 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
 + */
-+#if defined(QT_QWS_SIMPAD)
++
 +
 +QWSsimpadButtonsHandler::QWSsimpadButtonsHandler()
 +                        :QWSKeyboardHandler(), fd( -1 ),
@@ -338,7 +338,7 @@
 +    processKeyEvent( 0, k, 0, true, true );
 +    repeater->start(repeatperiod);
 +}
-+#endif
++
 +
 +#endif // QT_NO_QWS_KEYBOARD
 --- qt-2.3.10-snapshot-20050131/src/kernel/qsoundqss_qws.cpp~simpad
