@@ -13,18 +13,37 @@ export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
 do_compile () {
 	perl util/perlpath.pl ${bindir}
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
-	if test "X${TARGET_OS}" = "Xlinux"; then
-		target=${TARGET_OS}-elf
-	else
-		target=${TARGET_OS}
+
+	#
+	# NOTE: Yes.  This does suck.  Ugh.
+	#
+	os=${HOST_OS}
+	if [ "x$os" = "xlinux-uclibc" ]; then
+		os=linux
 	fi
-	if ! test "X${BUILD_SYS}" = "X${TARGET_SYS}" -o \
-		"X${TARGET_ARCH}" = "Xi386" -o \
-		"X${TARGET_ARCH}" = "Xi686" -o \
-		"X${TARGET_ARCH}" = "Xi586" -o \
-		"X${TARGET_ARCH}" = "Xi486"; then
-		target="$target-${TARGET_ARCH}"
-	fi
+	case $os-${HOST_ARCH} in
+	linux-arm)
+		target=linux-elf-arm
+		;;
+	linux-i[34]86)
+		target=linux-elf
+		;;
+	linux-i586)
+		target=linux-pentium
+		;;
+	linux-i686)
+		target=linux-ppro
+		;;
+	linux-mipsel)
+		target=linux-mipsel
+		;;
+	linux-x86_64)
+		target=linux-x86_64
+		;;
+	*)
+		die "Unsupported OS-ARCH ${HOST_OS}-${HOST_ARCH}"
+		;;
+	esac
 	perl ./Configure shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
 	oe_runmake -f Makefile.ssl
 	perl ./Configure no-shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
