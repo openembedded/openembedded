@@ -5,9 +5,10 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Rob Taylor <robtaylor@fastmail.fm>"
 DEPENDS = "glib-1.2 jpeg libpng xext"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
+           file://timezone-fix.patch;patch=1 \
            file://gtk+1.2-reconf-fix;patch=1 \
            file://no-xwc;patch=1"
 S = "${WORKDIR}/gtk+-${PV}"
