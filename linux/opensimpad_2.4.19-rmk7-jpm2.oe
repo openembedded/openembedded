@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PN = "linux"
 LICENSE = "GPL"
 KV = "2.4.19"
 RMKV = "rmk7"
