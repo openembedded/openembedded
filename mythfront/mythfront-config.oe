@@ -1,0 +1,15 @@
+PV = "1.1"
+
+SRC_URI = "file://tftp.sh"
+
+do_install() {
+	install -d ${D}/etc/udhcpc.d/
+	install ${WORKDIR}/tftp.sh ${D}/etc/udhcpc.d/80tftp
+
+	install -d ${D}/etc/mythtv
+	ln -sf /var/lib/config/mysql.txt ${D}/etc/mythtv
+
+	install -d ${D}/etc/X11
+	ln -sf /var/lib/config/xorg.conf ${D}/etc/X11
+}
+
