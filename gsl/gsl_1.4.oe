@@ -9,9 +9,11 @@ inherit autotools  pkgconfig
 
 do_stage() {
 	oe_runmake DESTDIR=${S}/.install install
-	oe_libinstall -so -C .install/usr/lib libgslcblas ${STAGING_LIBDIR}
-	oe_libinstall -so -C .install/usr/lib libgsl ${STAGING_LIBDIR}
-	cp -a .install/usr/include/* ${STAGING_INCDIR}/
+	oe_libinstall -so -C cblas/.libs/ libgslcblas ${STAGING_LIBDIR}
+	oe_libinstall -so -C .libs/ libgsl ${STAGING_LIBDIR}
+
+	install -d ${STAGING_INCDIR}/gsl
+	install -m 0644 .install/usr/include/gsl/* ${STAGING_INCDIR}/
 
         cat gsl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR} -I${STAGING_INCDIR}/python2.3," \
                        | sed -e "s,-L/usr/lib,-L${STAGING_LIBDIR}," > ${STAGING_BINDIR}/gsl-config
