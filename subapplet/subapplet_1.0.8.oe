@@ -2,6 +2,7 @@ DESCRIPTION = "A secondary system tray for those people who like having a lot of
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
 	   file://subapplet.pro.patch;patch=1 "
