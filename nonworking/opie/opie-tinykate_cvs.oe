@@ -1,0 +1,31 @@
+DESCRIPTION = "Kate for Opie"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopie2core libopie2ui libkate"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "kate"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/tinykate;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/tinykate"
+
+inherit opie
+
+pkg_postinst() {
+#!/bin/sh
+
+[ -x ldconfig ] && ldconfig
+exit 0
+ if [ -n $D ]; then false; fi
+}
+
+# FILES plugins/application/libkate.so* bin/kate apps/Applications/tinykate.desktop pics/tinykate lib/libtinykate.so.1.0.0 
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+
