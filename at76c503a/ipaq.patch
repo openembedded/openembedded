@@ -1,0 +1,176 @@
+Index: at76c503-fw_skel.c
+===================================================================
+RCS file: /cvsroot/at76c503a/at76c503a/at76c503-fw_skel.c,v
+retrieving revision 1.6
+diff -u -r1.6 at76c503-fw_skel.c
+--- at76c503-fw_skel.c	18 Mar 2004 20:54:57 -0000	1.6
++++ at76c503-fw_skel.c	5 Jul 2004 19:46:45 -0000
+@@ -23,6 +23,12 @@
+  *
+  */
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++#include <asm/mach-types.h>
++#include <asm/arch/ipaq.h>
++#include <asm/arch-pxa/h5400-asic.h>
++#endif
++
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 5, 0)
+ extern inline char *fw_dev_param(struct usb_device *udev, char *buf)
+ {
+@@ -173,6 +179,15 @@
+ 
+ 	info(DRIVER_DESC " " DRIVER_VERSION " loading");
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++	if (machine_is_h5400()) {
++		/* turn WLAN power on */
++		/* both needed? */
++		SET_H5400_ASIC_GPIO (GPB, RF_POWER_ON, 1);
++		SET_H5400_ASIC_GPIO (GPB, WLAN_POWER_ON, 1);
++	}
++#endif
++
+ 	/* register this driver with the USB subsystem */
+ 	result = usb_register(&module_usb);
+ 	if (result < 0) {
+@@ -192,6 +207,14 @@
+ 	if (static_fw.size == 0 && fw != NULL)
+ 		/* we had loaded and allocated the buffer before */
+ 		release_firmware(fw);
++#endif
++
++#ifdef CONFIG_IPAQ_HANDHELD
++	if (machine_is_h5400()) {
++		/* turn WLAN power off */
++		SET_H5400_ASIC_GPIO (GPB, RF_POWER_ON, 0);
++		SET_H5400_ASIC_GPIO (GPB, WLAN_POWER_ON, 0);
++	}
+ #endif
+ }
+ 
+Index: at76c503.c
+===================================================================
+RCS file: /cvsroot/at76c503a/at76c503a/at76c503.c,v
+retrieving revision 1.55
+diff -u -r1.55 at76c503.c
+--- at76c503.c	31 May 2004 13:59:27 -0000	1.55
++++ at76c503.c	5 Jul 2004 19:46:51 -0000
+@@ -110,6 +110,12 @@
+ #endif // #if WIRELESS_EXT > 12
+ 
+ #include <linux/rtnetlink.h>  /* for rtnl_lock() */
++#include <net/iw_handler.h>
++
++#ifdef CONFIG_IPAQ_HANDHELD
++#include <asm/mach-types.h>
++#include <asm/arch-sa1100/h3600.h>
++#endif
+ 
+ #include "at76c503.h"
+ #include "ieee802_11.h"
+@@ -238,8 +244,23 @@
+ #define ASSOC_RETRIES 3
+ #define DISASSOC_RETRIES 3
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++#define scan_hook(x)						\
++	do {							\
++		if (machine_is_h5400()) {			\
++			if (x)					\
++				ipaq_led_blink (RED_LED, 1, 2);	\
++			else					\
++				ipaq_led_off (RED_LED);		\
++		}						\
++	} while (0)
++#else
++#define scan_hook(x)
++#endif
++
+ #define NEW_STATE(dev,newstate) \
+   do {\
++    scan_hook(newstate == SCANNING);		\
+     dbg(DBG_PROGRESS, "%s: state %d -> %d (" #newstate ")",\
+         dev->netdev->name, dev->istate, newstate);\
+     dev->istate = newstate;\
+@@ -3958,6 +3979,34 @@
+ 
+ }
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++
++static struct timer_list led_timer;
++
++static void
++ipaq_clear_led (unsigned long time)
++{
++	ipaq_led_off (RED_LED_2);
++}
++
++static void
++ipaq_blink_led (void)
++{
++	ipaq_led_on (RED_LED_2);
++
++	mod_timer (&led_timer, jiffies + (HZ / 25));
++}
++
++static void
++ipaq_init_led (void)
++{
++	led_timer.function = ipaq_clear_led;
++
++	init_timer (&led_timer);
++}
++
++#endif
++
+ static int
+ at76c503_tx(struct sk_buff *skb, struct net_device *netdev)
+ {
+@@ -3972,6 +4021,11 @@
+ 	struct ieee802_11_hdr *i802_11_hdr =
+ 		(struct ieee802_11_hdr *)&(tx_buffer->packet);
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++	if (machine_is_h5400 ())
++		ipaq_blink_led ();
++#endif
++
+ 	/* we can get rid of memcpy, if we set netdev->hard_header_len
+ 	   to 8 + sizeof(struct ieee802_11_hdr), because then we have
+ 	   enough space */
+@@ -6273,6 +6327,12 @@
+ 		}
+ 	dbg(DBG_PROC_ENTRY, "%s: before freeing dev/netdev", __FUNCTION__);
+ 	free_netdev(dev->netdev); /* dev is in net_dev */ 
++#ifdef CONFIG_IPAQ_HANDHELD
++	if (machine_is_h5400()) {
++		ipaq_led_off (RED_LED);
++		ipaq_led_off (RED_LED_2);
++	}
++#endif
+ 	dbg(DBG_PROC_ENTRY, "%s: EXIT", __FUNCTION__);
+ }
+ 
+@@ -6451,6 +6511,11 @@
+ 	/* we let this timer run the whole time this driver instance lives */
+ 	mod_timer(&dev->bss_list_timer, jiffies+BSS_LIST_TIMEOUT);
+ 
++#ifdef CONFIG_IPAQ_HANDHELD
++	if (machine_is_h5400 ())
++		ipaq_init_led ();
++#endif
++
+ 	if(at76c503_alloc_urbs(dev) < 0)
+ 		goto error;
+ 
+@@ -6534,7 +6599,7 @@
+ 	if (ret) {
+ 		err("unable to register netdevice %s (status %d)!",
+ 		    dev->netdev->name, ret);
+-		goto error;
++		return -1;
+ 	}
+ 	info("registered %s", dev->netdev->name);
+ 	dev->flags |= AT76C503A_NETDEV_REGISTERED;
