@@ -1,6 +1,6 @@
 DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E) 2.x"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc"
+DEPENDS = "virtual/libc zlib-native"
 LICENSE = "GPL/QPL"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz"
