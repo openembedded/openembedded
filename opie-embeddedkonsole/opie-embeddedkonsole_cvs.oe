@@ -15,10 +15,14 @@ inherit opie
 
 do_install() {
     install -d ${D}/${palmtopdir}/bin/
-    install -d ${D}/${palmtopdir}/pics/embeddedkonsole/
+    install -d ${D}/${palmtopdir}/pics/konsole/
     install -d ${D}/${palmtopdir}/apps/Applications/
-    install -m 0755 libembeddedkonsole.so* ${D}/${palmtopdir}/plugins/application/
-    ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/embeddedkonsole
-    install -m 0644 ${WORKDIR}/pics/embeddedkonsole/*.png ${D}/${palmtopdir}/pics/embeddedkonsole/
+    if [ -f ${S}/libembeddedkonsole.so.1.0.0 ]; then
+     install -m 0755 libembeddedkonsole.so* ${D}/${palmtopdir}/plugins/application/
+     ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/embeddedkonsole
+    else 
+     install -m 0755 ${S}/embeddedkonsole ${D}/${palmtopdir}/bin/embeddedkonsole
+    fi
+    install -m 0644 ${WORKDIR}/pics/konsole/*.png ${D}/${palmtopdir}/pics/konsole/
     install -m 0644 ${WORKDIR}/apps/Applications/embeddedkonsole.desktop ${D}/${palmtopdir}/apps/Applications/
 }

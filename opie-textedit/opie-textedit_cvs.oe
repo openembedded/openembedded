@@ -17,8 +17,12 @@ do_install() {
     install -d ${D}/${palmtopdir}/bin/
     install -d ${D}/${palmtopdir}/pics/textedit/
     install -d ${D}/${palmtopdir}/apps/1Pim/
-    install -m 0755 libtextedit.so* ${D}/${palmtopdir}/plugins/application/
-    ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/textedit
+    if [ -f ${S}/libtextedit.so.1.0.0 ]; then
+     install -m 0755 libtextedit.so* ${D}/${palmtopdir}/plugins/application/
+     ln -sf ${D}/${palmtopdir}/bin/quicklaunch ${D}/${palmtopdir}/bin/textedit
+    else
+     install -m 0755 ${S}/textedit ${D}/${palmtopdir}/bin/textedit
+    fi
     install -m 0644 ${WORKDIR}/pics/textedit/*.png ${D}/${palmtopdir}/pics/textedit/
     install -m 0644 ${WORKDIR}/apps/1Pim/textedit.desktop ${D}/${palmtopdir}/apps/1Pim/
 }
