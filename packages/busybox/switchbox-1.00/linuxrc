@@ -7,7 +7,7 @@ mounted=
 
 if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/tmpmnt ; then
 
-    if [ -x /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init ] ; then
+    if [ -e /mnt/tmpmnt/sbin/init -o -e /mnt/tmpmnt/bin/init ] ; then
 	if [ -f /mnt/tmpmnt/.recovery ] ; then
 	    mounted=
 	elif [ -f /mnt/tmpmnt/.ramdisk ] ; then
@@ -48,7 +48,7 @@ fi
 
 if [ -z "$mounted" ] ; then
 
-    if  [ -x /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/bin/init ] ; then
+    if  [ -e /mnt/tmpmnt/sbin/init -o -e /mnt/tmpmnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from /dev/ram0 ..."
 	mounted=/mnt/tmpmnt
 	/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
