@@ -3,6 +3,7 @@ PR = "r1"
 SECTION = "libs"
 DEPENDS = "renderext x11"
 DESCRIPTION = "X Render extension library."
+LICENSE = "BSD"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrender \
 	   file://autofoo.patch;patch=1"
