@@ -13,7 +13,8 @@ EXTRA_OECONF = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--disable-__cxa_atexit \
 		--enable-languages=c \
 		--enable-target-optspace \
-		--program-prefix=${TARGET_PREFIX}"
+		--program-prefix=${TARGET_PREFIX} \
+		${@get_fpu_setting(oe, d)}"
 
 do_stage_prepend () {
 	mkdir -p ${CROSS_DIR}/lib/gcc-lib/${TARGET_SYS}/${PV}
