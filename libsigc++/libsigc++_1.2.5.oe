@@ -1,3 +1,6 @@
+DESCRIPTION=A library for loose coupling of C++ method calls
+SECTION = libs
+PRIORITY = optional
 DEPENDS = virtual/libc
 RDEPENDS = libc6
 
