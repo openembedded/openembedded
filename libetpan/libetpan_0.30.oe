@@ -3,7 +3,8 @@ RDEPENDS = libc6 db3 openssl
 
 SRC_URI = ${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
 	  file://${FILESDIR}/limits.patch;patch=1 \
-	  file://${FILESDIR}/install.patch;patch=1
+	  file://${FILESDIR}/install.patch;patch=1 \
+	  file://${FILESDIR}/m4.patch;patch=1
 
 inherit autotools libtool
 
