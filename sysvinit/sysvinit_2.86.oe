@@ -5,7 +5,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 
 FILES_${PN} += "/sbin /bin"
-PR = "r0"
+PR = "r1"
 
 # USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -21,7 +21,8 @@ SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.85.tar.gz
            file://inittab \
            file://rcS-default \
            file://rc \
-           file://rcS"
+           file://rcS \
+	   file://bootlogd.init"
 S = "${WORKDIR}/sysvinit-2.85"
 B = "${S}/src"
 
@@ -63,6 +64,14 @@ EOF
 	install -m 0644    ${WORKDIR}/rcS-default	${D}/etc/default/rcS
 	install -m 0755    ${WORKDIR}/rc		${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/rcS		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/bootlogd.init     ${D}/etc/init.d/bootlogd
+	ln -sf bootlogd ${D}/etc/init.d/stop-bootlogd
+	install -d ${D}/etc/rcS.d
+	ln -sf ../init.d/bootlogd ${D}/etc/rcS.d/S07bootlogd
+	for level in 2 3 4 5; do
+		install -d ${D}/etc/rc$level.d
+		ln -s ../init.d/stop-bootlogd ${D}/etc/rc$level.d/
+	done
 }
 
 
