@@ -1,4 +1,5 @@
 DESCRIPTION = "The GNU internationalization library."
+HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
 PR = "r3"

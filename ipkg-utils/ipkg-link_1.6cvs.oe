@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Itsy Package Manager utilities link script"
+LICENSE = "GPL"
 CONFLICTS = "ipkg-utils"
 PV_append = "${CVSDATE}"
 

@@ -32,3 +32,5 @@ update-rc.d routing remove
 update-rc.d dummydate remove
 update-rc.d emergency-ip remove
 }
+
+CONFFILES_${PN} = "/etc/nylon/configip.conf /etc/nylon/hostap.conf /etc/nylon/interfaces.conf /etc/nylon/macfilter.list /etc/nylon/route.list"

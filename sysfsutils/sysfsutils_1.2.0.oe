@@ -2,6 +2,7 @@ SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
 S = "${WORKDIR}/sysfsutils-${PV}"
+LICENSE = "GPLv2"
 
 inherit autotools
 

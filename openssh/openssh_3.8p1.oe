@@ -8,6 +8,9 @@ hosts over an insecure network.  X11 connections and arbitrary TCP/IP \
 ports can also be forwarded over the secure channel. \
 It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
+HOMEPAGE = "http://www.openssh.org/"
+LICENSE = "BSD"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \

@@ -3,6 +3,7 @@ PR = "r1"
 inherit autotools gettext
 
 DESCRIPTION = "The GNU cc and gcc C compilers."
+HOMEPAGE = "http://www.gnu.org/software/gcc/"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 

@@ -1,5 +1,7 @@
 PR = "r3"
 DESCRIPTION = "Ncurses library"
+HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
+LICENSE = "MIT"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
 PACKAGES_append = " ncurses-terminfo"

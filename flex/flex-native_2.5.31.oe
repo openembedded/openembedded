@@ -1,5 +1,6 @@
 SECTION = "devel"
 DESCRIPTION = "Flex is a tool for generating programs that recognize lexical patterns in text."
+LICENSE = "BSD"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lex/flex-${PV}.tar.bz2"

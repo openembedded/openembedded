@@ -1,6 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "These utilities are intended to make a Linux modular kernel \
 manageable for all users, administrators and distribution maintainers."
+LICENSE = "GPLv2"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
 PR = "r4"
 

@@ -2,6 +2,8 @@ SECTION = "base"
 DESCRIPTION = "System-V like init."
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
+
 FILES_${PN} += "/sbin /bin"
 PR = "r0"
 

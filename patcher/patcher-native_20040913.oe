@@ -1,4 +1,5 @@
 DESCRIPTION = "Patcher is a perl script for managing patches."
+HOMEPAGE = "http://www.holgerschurig.de/patcher.html"
 LICENSE = "Perl"
 DEPENDS = ""
 SECTION = "base"

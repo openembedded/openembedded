@@ -1,5 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Script to manage module configuration files"
+LICENSE = "GPLv2"
 PACKAGE_ARCH = "all"
 PR = "r3"
 

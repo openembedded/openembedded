@@ -1,5 +1,6 @@
 SECTION = "devel"
 DESCRIPTION = "The GNU cc and gcc C compilers."
+HOMEPAGE = "http://www.gnu.org/software/gcc/"
 LICENSE = "GPL"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 

@@ -24,3 +24,6 @@ do_install () {
 	install -d ${D}/etc/init.d
 	install -m 0755 ${WORKDIR}/unik-olsrd ${D}/${sysconfdir}/init.d
 }
+
+CONFFILES_${PN} = "/etc/olsrd.conf"
+

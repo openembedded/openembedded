@@ -5,6 +5,7 @@ lines, and perform csh-like history expansion on previous commands."
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
+LICENSE = "GPLv2"
 
 SRC_URI = "ftp://ftp.cwru.edu/pub/bash/readline-${PV}.tar.gz \
 	   file://acinclude.m4"
