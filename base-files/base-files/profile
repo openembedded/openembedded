@@ -1,10 +1,7 @@
 # /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
 # and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
 
-OPIEDIR=/opt/QtPalmtop
-QPEDIR=/opt/QtPalmtop
-QTDIR=/opt/QtPalmtop
-PATH="/opt/QtPalmtop/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games"
+PATH="/usr/local/bin:/usr/bin:/bin"
 
 if [ "`id -u`" -eq 0 ]; then
    PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:
