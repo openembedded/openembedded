@@ -235,7 +235,7 @@ CONFIG_CMDLINE="console=null root=/dev/mtdblock2 mtdparts=sharpsl-nand:7168k@0k(
 CONFIG_ALIGNMENT_TRAP=y
 CONFIG_FREEPG_SIGNAL=y
 CONFIG_OOM_KILL_SURVIVAL=y
-CONFIG_DEVICEINFO=y
+CONFIG_DEVICEINFO=m
 
 #
 # Parallel port support
