@@ -21,7 +21,7 @@ python __anonymous () {
 }
 
 PROVIDES += "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
-PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) == 'no']}"
+PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']}"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
@@ -56,7 +56,7 @@ UCLIBC_LOCALE_FILE_arm = "uClibc-locale-030818.arm.tgz"
 UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE}"
 UCLIBC_LOCALE_URI_arm = "http://openembedded.org/dl/uclibc-locale/${UCLIBC_LOCALE_FILE}"
 
-SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) == 'no']} \
+SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
 	   file://uClibc.config"
 
 UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
@@ -69,7 +69,7 @@ configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${CROSS_DIR}/${TARGET_SYS}/in
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
 		s,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH="/lib",; \
 		s,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g; \
-		${@["s,.*UCLIBC_HAS_LOCALE.*,# UCLIBC_HAS_LOCALE is not set,;", ""][bb.data.getVar("USE_NLS", d, 1) != "no"]}'
+		${@["s,.*UCLIBC_HAS_LOCALE.*,# UCLIBC_HAS_LOCALE is not set,;", ""][bb.data.getVar("USE_NLS", d, 1) == "yes"]}'
 CFLAGS := "${@oe_filter_out('-I\S+', '${CFLAGS}', d)}"
 
 python () {
@@ -81,7 +81,7 @@ uclibcbuild_do_patch() {
 	ln -sf ${STAGING_INCDIR}/linux ${S}/include/linux
 	ln -sf ${STAGING_INCDIR}/asm ${S}/include/asm
 	
-	${@['cp %s/%s extra/locale' % (bb.data.getVar('DL_DIR', d, 1) or '', bb.data.getVar('UCLIBC_LOCALE_FILE', d, 1) or ''), ''][bb.data.getVar('USE_NLS', d, 1) == 'no']}
+	${@['cp %s/%s extra/locale' % (bb.data.getVar('DL_DIR', d, 1) or '', bb.data.getVar('UCLIBC_LOCALE_FILE', d, 1) or ''), ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']}
 }
 
 python do_patch () {
