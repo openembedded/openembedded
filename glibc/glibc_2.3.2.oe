@@ -1,9 +1,12 @@
+PR = "r3"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r3"
+
+GLIBC_ADDONS ?= "linuxthreads"
+GLIBC_EXTRA_OECONF ?= ""
+
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -20,19 +23,32 @@ python __anonymous () {
                                    oe.data.getVar('TARGET_OS', d, 1))
 }
 
-PROVIDES = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
-PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
+PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 
-DEPENDS = "patcher-native virtual/${TARGET_PREFIX}gcc-initial"
+# nptl needs unwind support in gcc, which can't be built without glibc.
+PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
+DEPENDS = "patcher-native ${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
 
-FILES_glibc_append = " ${datadir}/zoneinfo"
-FILES_glibc-dev_append = " ${libdir}/*.o"
-FILES_glibc-gconv = "${libdir}/gconv"
-FILES_glibc-i18n = "${datadir}/i18n"
+libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
-HEADERS_VERSION = "2.6.5.1"
-HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
+FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo"
+FILES_ldd = "${bindir}/ldd"
+FILES_libsegfault = "/lib/libSegFault*"
+FILES_glibc-extra-nss = "/lib/libnss*"
+FILES_sln = "/sbin/sln"
+FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
+FILES_nscd = "${sbindir}/nscd*"
+FILES_glibc-utils = "${bindir} ${sbindir}"
+FILES_glibc-gconv = "${libdir}/gconv"
+FILES_catchsegv = "${bindir}/catchsegv"
+DEPENDS_catchsegv = "libsegfault"
+FILES_glibc-pcprofile = "/lib/libpcprofile.so"
+FILES_glibc-thread-db = "/lib/libthread_db*"
+FILES_localedef = "${bindir}/localedef"
+
+#	   file://noinfo.patch;patch=1 \
+#	   file://ldconfig.patch;patch=1;pnum=0 \
 
 #	 file://dyn-ldconfig.diff;patch=1;pnum=0
 #	  file://glibcbug.patch;patch=1;pnum=0
@@ -43,16 +59,15 @@ HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
 # This patch is needed for builds against recent 2.5/2.6 kernel headers:
 SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
-	   http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${HEADERS_VERSION}.tar.bz2 \
 	   file://noinfo.patch;patch=1 \
 	   file://10_cvs.patch;patch=1 \
-	   file://arm-ioperm.patch;patch=1;pnum=0 \
+ 	   file://arm-ioperm.patch;patch=1;pnum=0 \
 	   file://glibc-i686-timing.patch;patch=1;pnum=1 \
-	   file://makeconfig.patch;patch=1;pnum=0 \
+ 	   file://makeconfig.patch;patch=1;pnum=0 \
 	   file://locale-es_AR.patch;patch=1;pnum=0 \
 	   file://ldconfig.patch;patch=1;pnum=0 \
-	   file://ldd.patch;patch=1;pnum=0 \
-	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
+ 	   file://ldd.patch;patch=1;pnum=0 \
+ 	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
 	   file://glibc22-nss-upgrade.patch;patch=1;pnum=1 \
 	   file://glibc22-eo_EO.patch;patch=1;pnum=1 \
 	   file://glibc22-m68k-compat.patch;patch=1;pnum=1 \
@@ -61,7 +76,7 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://sparc64-fixups.patch;patch=1;pnum=1 \
 	   file://glibc22-ttyname-devfs.patch;patch=1;pnum=0 \
 	   file://powerpc-sysconf.patch;patch=1;pnum=1 \
-	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
+ 	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
 	   file://locales-stuff.patch;patch=1;pnum=1 \
 	   file://librt-mips.patch;patch=1;pnum=0 \
 	   file://glibc23-ctype-compat.patch;patch=1;pnum=1 \
@@ -96,24 +111,26 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://glibc23-errno-hack.patch;patch=1;pnum=1 \
 	   file://90_glibc232-statvfs.patch;patch=1;pnum=0 \
 	   file://90_glibc232-timezones.patch;patch=1;pnum=0 \
-	   file://arm-memcpy.patch;patch=1;pnum=0 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
-	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+ 	   file://arm-memcpy.patch;patch=1;pnum=0 \
+ 	   file://arm-longlong.patch;patch=1;pnum=0 \
+ 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+           file://dyn-ldconfig.diff;patch=1;pnum=0 \
 	   file://glibc232-gcc34-i386-fixup-attribute.patch;patch=1;pnum=1 \
 	   file://glibc232-gcc34-no-unit-at-a-time.patch;patch=1;pnum=1 \
-	   \
 	   file://etc/ld.so.conf \
-	   file://generate-supported.mk"
+ 	   file://generate-supported.mk"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-tls --without-__thread --enable-kernel=${OLDEST_KERNEL} \
+EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
-	        --enable-add-ons=linuxthreads --with-headers=${HEADERS_DIR}/include"
+	        --enable-add-ons=${GLIBC_ADDONS} \
+		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
+		${GLIBC_EXTRA_OECONF}"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(oe, d)}"
 
@@ -122,38 +139,13 @@ def get_glibc_fpu_setting(oe, d):
 		return "--without-fp"
 	return ""
 
-glibcbuild_do_unpack () {
+glibc_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
-# kernel headers
-	case ${TARGET_ARCH} in
-		alpha*)   TARGET_ARCH=alpha ;;
-		arm*)     TARGET_ARCH=arm ;;
-		cris*)    TARGET_ARCH=cris ;;
-		hppa*)    TARGET_ARCH=parisc ;;
-		i*86*)    TARGET_ARCH=i386 ;;
-		ia64*)    TARGET_ARCH=ia64 ;;
-		mips*)    TARGET_ARCH=mips ;;
-		m68k*)    TARGET_ARCH=m68k ;;
-		powerpc*) TARGET_ARCH=ppc ;;
-		s390*)    TARGET_ARCH=s390 ;;
-		sh*)      TARGET_ARCH=sh ;;
-		sparc64*) TARGET_ARCH=sparc64 ;;
-		sparc*)   TARGET_ARCH=sparc ;;
-		x86_64*)  TARGET_ARCH=x86_64 ;;
-	esac
-	if test !  -e ${HEADERS_DIR}/include/asm-$TARGET_ARCH; then
-		oefatal unable to create asm symlink in kernel headers
-	fi
-	ln -sf "asm-$TARGET_ARCH" "${HEADERS_DIR}/include/asm"
-	if test "$TARGET_ARCH" = "arm"; then
-		ln -sf proc-armv ${HEADERS_DIR}/include/asm/proc
-		ln -sf arch-ebsa285 ${HEADERS_DIR}/include/asm/arch
-	fi
 }
 
 python do_unpack () {
 	oe.build.exec_func('base_do_unpack', d)
-	oe.build.exec_func('glibcbuild_do_unpack', d)
+	oe.build.exec_func('glibc_do_unpack', d)
 }
 
 do_configure () {
@@ -185,16 +177,11 @@ do_compile () {
 }
 
 do_stage() {
+	rm -f ${STAGING_LIBDIR}/libc.so.6
 	oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
-		   '${STAGING_LIBDIR}/libc-${PV}.so' '${STAGING_LIBDIR}/libc.so.6' \
+		   '${STAGING_LIBDIR}/libc.so.6' \
 		   install-headers install-lib
-
-	install -d ${STAGING_INCDIR}/asm
-	rm -f ${STAGING_INCDIR}/linux/wireless.h
-	cp -a ${HEADERS_DIR}/include/linux ${STAGING_INCDIR}/
-	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
-	cp -a ${HEADERS_DIR}/include/asm/* ${STAGING_INCDIR}/asm/
 
 	install -d ${STAGING_INCDIR}/gnu \
 		   ${STAGING_INCDIR}/bits \
@@ -207,20 +194,16 @@ do_stage() {
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
 	done
 	for i in libc.a libc_pic.a libc_nonshared.a; do
-		install ${B}/$i ${STAGING_LIBDIR}/
+		install -m 0644 ${B}/$i ${STAGING_LIBDIR}/ || die "failed to install $i"
 	done
 	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_LIBDIR}/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_LIBDIR}/libc.so
 
+	rm -f ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6
 	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
 		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
-		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc-${PV}.so' \
 		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
 		   install-headers install-lib
-
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
-	cp -a ${HEADERS_DIR}/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
-	cp -R ${HEADERS_DIR}/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
 
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
 		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
@@ -234,7 +217,7 @@ do_stage() {
 	done
 
 	for i in libc.a libc_pic.a libc_nonshared.a; do
-		install ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/
+		install -m 0644 ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/ || die "failed to install $i"
 	done
 	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so

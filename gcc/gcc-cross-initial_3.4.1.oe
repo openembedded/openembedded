@@ -1,6 +1,6 @@
 include gcc-cross_${PV}.oe
 
-DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-initial"
+DEPENDS = "virtual/${TARGET_PREFIX}binutils"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-initial"
 
 PACKAGES = ""
