@@ -1,2 +1,0 @@
-inherit noncross
-include ipkg-${PV}.oe
