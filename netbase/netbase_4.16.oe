@@ -1,6 +1,8 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
+DEPENDS = "update-rc.d"
+RDEPENDS = "update-rc.d"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz"
 
@@ -19,6 +21,7 @@ do_install () {
 	install -m 0644 etc-services ${D}/${sysconfdir}/services
 	install -m 0755 update-inetd ${D}/${sbindir}/
 	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
+	install -m 0644 ${FILESDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
 }
 
 pkg_postinst () {
