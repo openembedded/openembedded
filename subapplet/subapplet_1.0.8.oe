@@ -1,10 +1,12 @@
-DESCRIPTION = "A secondary system tray for those people who like having a lot of applets loaded at once."
+DESCRIPTION = "Applet for the Qtopia environment taskbar that provides an extension panel \
+for the taskbar that let's you load lot's of applet's without taking up space \
+in the normal taskbar."
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz"
 
