@@ -11,6 +11,7 @@ S = "${WORKDIR}/qt-${PV}"
 inherit native qmake-base
 
 export QTDIR = "${S}"
+export SYSCONF_LINK = "${CXX}"
 CXXFLAGS += " -DQWS"
 
 QT_CONFIG_FLAGS = "-depths 8,16 -no-qvfb -no-g++-exceptions -no-jpeg -no-mng \
