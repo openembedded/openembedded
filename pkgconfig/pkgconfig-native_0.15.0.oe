@@ -1,5 +1,6 @@
 include pkgconfig_${PV}.oe
-inherit native
-FILESDIR = "${TOPDIR}/pkgconfig/pkgconfig-${PV}"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/pkgconfig-${PV}"
+
 S = "${WORKDIR}/pkgconfig-${PV}"
 DEPENDS = "patcher-native"
+inherit native
