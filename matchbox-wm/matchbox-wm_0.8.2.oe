@@ -1,10 +1,11 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox x11 xext xcomposite libxfixes xdamage libxrender startup-notification expat gconf"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
-	file://net-showing-desktop.patch;patch=1"
+	file://net-showing-desktop.patch;patch=1 \
+	file://kbdconfig_keylaunch_simpad.patch;patch=1;pnum=0"
 S = "${WORKDIR}/matchbox-window-manager-${PV}"
 
 inherit autotools  pkgconfig
