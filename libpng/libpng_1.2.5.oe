@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "${PN}12 ${PN}12-dev"
 
@@ -14,7 +14,8 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
 		${datadir}/aclocal ${bindir} ${sbindir}
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/png-mng/libpng-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/png-mng/libpng-${PV}.tar.bz2 \
+	   file://libpng-${PV}-gentoo.diff;patch=1"
 
 inherit pkgconfig
 
