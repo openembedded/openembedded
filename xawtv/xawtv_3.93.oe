@@ -10,6 +10,9 @@ S = "${WORKDIR}/xawtv-${PV}"
 
 inherit autotools
 
+# FIXME: libXaw needs a full x11, not diet
+BROKEN = "1"
+
 EXTRA_OECONF = "--disable-xfree-ext \
 		--disable-xvideo \
 		--disable-lirc \
