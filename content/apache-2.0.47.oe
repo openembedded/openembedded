@@ -26,4 +26,9 @@ do_compile () {
 	oe_runmake
 }
 
+do_install () {
+	set -e
+	oe_runmake DESTDIR="${D}" install
+}
+
 inherit base
