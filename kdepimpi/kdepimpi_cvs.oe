@@ -14,7 +14,9 @@ SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
 file://libkcal.pro.patch;patch=1 \
 file://manager.h.patch;patch=1 \
 file://qinputdialog_inc.patch;patch=1 \
-file://xxportmanager.cpp.patch;patch=1 "
+file://xxportmanager.cpp.patch;patch=1 \
+file://korganizer.pro.patch;patch=1 \
+"
 
 S = "${WORKDIR}/kdepim"
 
