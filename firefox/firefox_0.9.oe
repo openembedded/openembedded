@@ -1,4 +1,5 @@
 DEPENDS = "xt xi zip-native"
+PR = "r1"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
 	file://mozconfig \
