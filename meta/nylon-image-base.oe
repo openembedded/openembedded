@@ -3,7 +3,7 @@ export IMAGE_BASENAME = "nylon-base"
 NYLON_COMMON = "base-files base-passwd bash busybox \
 	ipkg initscripts iproute2 \
 	modutils modutils-initscripts \
-	netbase openssh sysvinit tinylogin"
+	mtd netbase openssh sysvinit tinylogin"
 
 #update-modules
 
@@ -18,6 +18,6 @@ IMAGE_LINGUAS = ""
 
 inherit image_ipk
 
-ROOTFS_POSTPROCESS_COMMAND = "rm ${IMAGE_ROOTFS}/tmp/zImage*"
+ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"
 
 export FEED_URIS="nylon##http://192.168.0.5/feed/unstable"

@@ -4,7 +4,7 @@ LICENSE="GPL"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "ncurses readline libthread_db1"
+DEPENDS = "ncurses readline"
 
 PACKAGES =+ 'gdbserver '
 FILES_gdbserver = '${bindir}/gdbserver'
