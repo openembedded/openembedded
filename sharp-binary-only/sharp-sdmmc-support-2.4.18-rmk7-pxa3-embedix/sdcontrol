@@ -1,0 +1,129 @@
+#!/bin/sh
+#
+# sdcontrol 1.0 2001/8/8 21:33:19 (Hideki Hayami)
+#
+# Initialize or shutdown a SD card device
+#
+# The first argument should be either 'insert' of 'eject'.
+#
+
+ACTION=$1
+DEVICE=/dev/mmcda1
+MOUNT_POINT=/mnt/card
+SMB_MOUNT=/home/samba/SD_Card
+INSTALL_DIR=Documents/Install_Files
+#FSTYPE="-t vfat"
+FATOPTS="-o noatime,quiet,umask=000,iocharset=utf8"
+EXT2OPTS="-o noatime"
+
+###### for QPE ######
+get_pid()
+{
+    echo $1
+}
+
+wait_release()
+{
+    count=1
+    while true
+    do
+        umount $MOUNT_POINT
+        if [ $? = 0 ]; then
+            #echo umount >> /tmp/sd
+            return
+        fi
+        echo count=$count >> /tmp/sd
+        if [ `expr $count \>= 500` = 1 ]; then
+            #echo time out >> /tmp/sd
+            return
+        fi
+        count=`expr $count + 1`
+        usleep 200000
+    done
+}
+
+kill_task()
+{
+    ps_line=`ps ax | grep 'qpe$'` # no -w on busybox
+    qpe_pid=`get_pid $ps_line`
+    #echo qpe_pid = $qpe_pid >> /tmp/sd
+    target_pids=`fuser -m $DEVICE | cut -d : -f2`
+    #echo $target_pids >> /tmp/sd
+    if [ "$target_pids" = "" ]; then
+        return
+    fi
+    is_exist_qpe=`echo $target_pids | grep $qpe_pid` # no -w on busybox
+    if [ "$is_exist_qpe" = "" ]; then
+	kill -9 $target_pids
+        #echo kill -9 $target_pids >> /tmp/sd
+    else
+        #echo "found qpe!!!" >> /tmp/sd
+	target_pids=`echo $target_pids | sed -e "s/$qpe_pid//"`
+	if [ "$target_pids" != "" ]; then
+            kill -9 $target_pids
+            #echo kill -9 $target_pids >> /tmp/sd
+        fi
+        wait_release
+        exit 0
+    fi
+}
+###### for QPE ######
+
+
+case "$ACTION" in
+'insert')
+        mount $FSTYPE $FATOPTS $DEVICE $MOUNT_POINT
+	MOUNT_RES=`mount | grep $DEVICE`
+	if [ "$MOUNT_RES" = "" ]; then
+	        mount $FSTYPE $EXT2OPTS $DEVICE $MOUNT_POINT
+	fi
+	MOUNT_RES=`mount | grep $DEVICE`
+
+	if [ "$MOUNT_RES" = "" ]; then
+	        mount $FSTYPE $DEVICE $MOUNT_POINT
+	fi
+	chkmntsh ${MOUNT_POINT}
+	if [ -d $SMB_MOUNT ] ; then
+		rm -rf $SMB_MOUNT
+	fi
+	ln -s $MOUNT_POINT $SMB_MOUNT
+	mkdir -p $MOUNT_POINT/$INSTALL_DIR
+        #echo mount $? >> /tmp/sd
+        ;;
+'eject')
+        fuser -s -m $DEVICE
+        if [ $? = 1 ]; then
+                umount $MOUNT_POINT
+                rm $SMB_MOUNT
+	else
+		exit 1
+        fi
+        ;;
+'compeject')
+        is_mount=`mount | grep $DEVICE`
+        if [ "$is_mount" = "" ]; then
+                exit 0
+        fi
+        kill_task       # for QPE
+        #fuser -k -m $DEVICE > /dev/null
+        umount $MOUNT_POINT
+        if [ $? != 0 ]; then
+                usleep 500000
+                umount $MOUNT_POINT
+                #echo umount $? >> /tmp/sd
+        #else
+        #        echo umount >> /tmp/sd
+        fi
+		rm $SMB_MOUNT
+        ;;
+'change')
+        $0 compeject
+        $0 insert
+        ;;
+'*')
+        exit 1
+        ;;
+esac
+
+exit 0
+
