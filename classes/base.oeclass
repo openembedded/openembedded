@@ -657,6 +657,29 @@ python __anonymous () {
 		pass
 }
 
+python () {
+	import oe, os
+	machine = oe.data.getVar('MACHINE', d, 1)
+	if not machine:
+		# can't specialise if MACHINE not defined
+		return
+	old_arch = oe.data.getVar('PACKAGE_ARCH', d, 1)
+	if (old_arch == machine):
+		# Nothing to do
+		return
+	paths = []
+	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
+		paths.append(oe.data.expand(os.path.join(p, machine), d))
+	for s in oe.data.getVar('SRC_URI', d, 1).split():
+		local = oe.data.expand(oe.fetch.localpath(s, d), d)
+		for mp in paths:
+			if local.startswith(mp):
+#				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, machine))
+				oe.data.setVar('PACKAGE_ARCH', machine, d)
+				return
+}
+
+
 addtask emit_manifest
 python do_emit_manifest () {
 #	FIXME: emit a manifest here
