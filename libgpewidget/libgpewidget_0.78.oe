@@ -12,7 +12,7 @@ SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/libgpewidget-${PV}.t
 headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h"
 
 do_stage () {
-	oe_soinstall libgpewidget.so.1 ${STAGING_LIBDIR}/
+	oe_soinstall ${S}/libgpewidget.so.1 ${STAGING_LIBDIR}/
 
 	mkdir -p ${STAGING_INCDIR}/gpe
 	for h in ${headers}; do
