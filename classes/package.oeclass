@@ -546,13 +546,14 @@ python package_do_split_locales() {
 	locales = os.listdir(localedir)
 
 	mainpkg = packages[0]
+	mainpkg_n = oe.data.getVar('PKG_%s' % mainpkg, d, 1) or mainpkg
 
 	for l in locales:
 		ln = legitimize_package_name(l)
 		pkg = pn + '-locale-' + ln
 		packages.append(pkg)
 		oe.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
-		oe.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg, ln), d)
+		oe.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg_n, ln), d)
 		oe.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
 		oe.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
 
