@@ -98,4 +98,4 @@ db_cv_path_strip=${db_cv_path_strip=/usr/bin/strip}
 
 # rrdtool
 rd_cv_ieee_works=${rd_cv_ieee_works=yes}
-ac_cv_path_PERL=${ac_cv_path_PERL=no}
+# ac_cv_path_PERL=${ac_cv_path_PERL=no}
