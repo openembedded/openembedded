@@ -1,6 +1,6 @@
 inherit autotools pkgconfig
 
-PR = "r0"
+PR = "r1"
 PACKAGES += "gpsdrive-add"
 DESCRIPTION = "GPS navigation/map display software"
 DEPENDS = "virtual/libc gtk+ pcre gpsd"
@@ -12,6 +12,8 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.gpsdrive.cc/${PN}-${PV}.tar.gz \
            file://gpsdrive.desktop"
+
+CFLAGS += "-D_GNU_SOURCE"
 
 FILES_${PN} = "${bindir}/gpsdrive ${bindir}/wpcvt ${bindir}/wpget ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN} += "${datadir}/${PN}"
