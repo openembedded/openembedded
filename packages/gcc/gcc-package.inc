@@ -3,14 +3,14 @@ gcclibdir ?= "${libdir}/gcc"
 # libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
 # packaged in the respective cross packages.
 PACKAGES = "${PN} ${PN}-symlinks \
-            ${PN}-c++ ${PN}-c++-symlinks \
-            ${PN}-f77 ${PN}-f77-symlinks \
+            g++ g++-symlinks \
+	    cpp cpp-symlinks \
+            g77 g77-symlinks \
+	    gcov gcov-symlinks \
             libstdc++-dev libg2c-dev \
             ${PN}-doc"
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
-	       ${bindir}/${TARGET_PREFIX}cpp \
-	       ${bindir}/${TARGET_PREFIX}gcov \
 	       ${bindir}/${TARGET_PREFIX}gccbug \
 	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1 \
 	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/collect2 \
@@ -20,14 +20,19 @@ FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
 	       ${gcclibdir}/${TARGET_SYS}/${PV}/include"
 FILES_${PN}-symlinks = "${bindir}/cc \
 			${bindir}/gcc \
-			${bindir}/cpp \
-			${bindir}/gcov \
 			${bindir}/gccbug"
 
-FILES_${PN}-f77 = "${bindir}/${TARGET_PREFIX}g77 \
+FILES_g77 = "${bindir}/${TARGET_PREFIX}g77 \
 		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/f771"
-FILES_${PN}-f77-symlinks = "${bindir}/g77 \
+FILES_g77-symlinks = "${bindir}/g77 \
 			    ${bindir}/f77"
+
+FILES_cpp = "${bindir}/${TARGET_PREFIX}cpp \
+	     ${base_libdir}/cpp"
+FILES_cpp-symlinks = "${bindir}/cpp"
+
+FILES_gcov = "${bindir}/${TARGET_PREFIX}gcov"
+FILES_gcov-symlinks = "${bindir}/gcov"
 
 PACKAGE_ARCH_libg2c-dev = "${TARGET_ARCH}"
 # Called from within gcc-cross, so libdir is set wrong
@@ -35,9 +40,9 @@ FILES_libg2c-dev = "${libdir}/libg2c.so \
 		    ${libdir}/libg2c.a \
 		    ${libdir}/libfrtbegin.a"
 
-FILES_${PN}-c++ = "${bindir}/${TARGET_PREFIX}g++ \
+FILES_g++ = "${bindir}/${TARGET_PREFIX}g++ \
 		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1plus"
-FILES_${PN}-c++-symlinks = "${bindir}/c++ \
+FILES_g++-symlinks = "${bindir}/c++ \
 			    ${bindir}/g++"
 
 PACKAGE_ARCH_libstdc++-dev = "${TARGET_ARCH}"
@@ -99,4 +104,5 @@ do_install () {
 	ln -sf g77 f77
 	ln -sf g++ c++
 	ln -sf gcc cc
+	ln -sf ${bindir}/${TARGET_SYS}-cpp ${D}${base_libdir}/cpp
 }
