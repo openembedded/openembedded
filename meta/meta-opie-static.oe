@@ -1,20 +1,25 @@
 DESCRIPTION = "Meta-package for Opie"
-DEPENDS = "qte-for-opie libqpe-opie libopie2"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 ALLOW_EMPTY = 1
+PR = "r1"
+PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
             task-opie-decorations task-opie-games task-opie-inputmethods \
 		    task-opie-multimedia task-opie-pim task-opie-settings \
-		    task-opie-styles task-opie-today "
+		    task-opie-styles task-opie-today task-opie-bluetooth \
+			task-opie-wlan"
 
-RDEPENDS_opie = "task-opie-applets task-opie-applications task-opie-base \
-            task-opie-decorations task-opie-games task-opie-inputmethods \
-		    task-opie-multimedia task-opie-pim task-opie-settings \
-		    task-opie-styles task-opie-today "
-
-DEPENDS_opie = "opie-sh opie-help-en opie-freetype"
-DEPENDS_opie = "opie-sh opie-freetype"
+DEPENDS_opie = "\
+opie-sh \
+opie-help-en \
+opie-freetype \
+opie-libqrsync \
+opie-symlinker \
+opie-calibrate \
+opie-login \
+opie-symlinker \
+"
 
 task-opie-applets = "\
 opie-aboutapplet \
@@ -83,16 +88,8 @@ DEPENDS += " ${task-opie-applications}"
 
 task-opie-base = "\
 opie-alarm \
-opie-calibrate \
-opie-i18n \
-opie-libqrsync \
-opie-login \
-opie-lrelease-native \
-opie-lupdate-native \
-opie-pics \
 opie-qcop \
 opie-quicklauncher \
-opie-symlinker \
 opie-taskbar "
 RDEPENDS_task-opie-base = "${task-opie-base}"
 DEPENDS += " ${task-opie-base}"
@@ -105,16 +102,6 @@ RDEPENDS_task-opie-decorations = "${task-opie-decorations}"
 DEPENDS += " ${task-opie-decorations}"
 
 task-opie-games = "\
-aliens \
-atomic \
-checkers \
-crossword \
-fish \
-glider \
-icebloxx \
-mahjongg \
-maki \
-nmm \
 opie-backgammon \
 opie-bounce \
 opie-buzzword \
@@ -136,6 +123,16 @@ opie-tictac \
 opie-wordgame \
 opie-zlines \
 opie-zsame \
+aliens \
+atomic \
+checkers \
+crossword \
+fish \
+glider \
+icebloxx \
+mahjongg \
+maki \
+nmm \
 pairs \
 pdamaze \
 pipeman \
@@ -165,6 +162,16 @@ RDEPENDS_task-opie-inputmethods = "${task-opie-inputmethods}"
 DEPENDS += " ${task-opie-inputmethods}"
 
 task-opie-multimedia = "\
+opie-mediaplayer1 \
+opie-mediaplayer1-libmadplugin \
+opie-mediaplayer1-libmodplugin \
+opie-mediaplayer1-libtremorplugin \
+opie-mediaplayer1-libwavplugin \
+opie-mediaplayer2 \
+opie-mediaplayer2-skin-default \
+opie-mediaplayer2-skin-default-landscape \
+opie-mediaplayer2-skin-pod \
+opie-mediaplayer2-skin-techno \
 opie-powerchord \
 opie-recorder \
 opie-tonleiter "
@@ -229,3 +236,16 @@ opie-today-todolistplugin \
 opie-today-weatherplugin "
 RDEPENDS_task-opie-todayplugins = "${task-opie-todayplugins}"
 DEPENDS += " ${task-opie-todayplugins}"
+
+task-opie-bluetooth = "\
+opie-bluepin \
+opie-bluetoothmanager \
+opie-bluetoothapplet"
+RDEPENDS_task-opie-bluetooth = "${task-opie-bluetooth}"
+DEPENDS += " ${task-opie-bluetooth}"
+
+task-opie-wlan = "\
+opie-wellenreiter \
+opie-wirelessapplet "
+RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
+DEPENDS += " ${task-opie-wlan}"
