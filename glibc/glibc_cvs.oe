@@ -1,6 +1,3 @@
-FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
-PV = "2.3.2+cvs${CVSDATE}"
-PR = "r12"
 DESCRIPTION = "GNU C Library"
 HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
@@ -8,10 +5,14 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-DEFAULT_PREFERENCE = "-1"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
+PR = "r0"
+PV = "2.3.3+cvs${CVSDATE}"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
+
+DEFAULT_PREFERENCE = "-1"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -55,25 +56,24 @@ FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
 RPROVIDES_glibc-dev += "libc-dev"
 
-#	   file://noinfo.patch;patch=1 \
-#	   file://ldconfig.patch;patch=1;pnum=0 \
-
+#	   file://noinfo.patch;patch=1
+#	   file://ldconfig.patch;patch=1;pnum=0
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://arm-ioperm.patch;patch=1;pnum=0 \
-	   file://makeconfig.patch;patch=1;pnum=0 \
 	   file://ldd.patch;patch=1;pnum=0 \
-	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
+	   file://fhs-linux-paths.patch;patch=1 \
 	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
 	   file://arm-memcpy.patch;patch=1;pnum=0 \
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-	   file://mips-no-throw.patch;patch=1;pnum=0 \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
-# seems to break on TLS platforms
-SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
+# seems to fail on tls platforms
+SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
+
+SRC_URI_append_ramses = " file://ldsocache-varrun.patch;patch=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -99,7 +99,7 @@ do_configure () {
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
 # version check and doesn't really help with anything
-        if [ -z "`which rpcgen`" ]; then
+	if [ -z "`which rpcgen`" ]; then
 		echo "rpcgen not found.  Install glibc-devel."
 		exit 1
 	fi
