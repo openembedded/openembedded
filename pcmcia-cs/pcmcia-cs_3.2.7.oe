@@ -11,7 +11,6 @@ inherit module
 do_configure() {
 	./Configure --kernel="${KERNEL_SOURCE}" --noprompt --sysv --nopnp --rcdir=${sysconfdir} --arch="${ARCH}" \
                     --srctree --nocardbus --ucc="${CC}" --ld="${LD}" --uflags="${CFLAGS}" --target=.
-        chmod ug+rw /etc/*
         oe_runmake HAS_XPM= FLIBS="" XMANDIR="" DIRS="cardmgr etc flash"
 }
 
