@@ -2,9 +2,9 @@ DESCRIPTION = "SysV init scripts"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "base"
 PRIORITY = "required"
-DEPENDS = "virtual/makedevs"
-RDEPENDS = "virtual/makedevs"
-PR = "r13"
+DEPENDS = "makedevs"
+RDEPENDS = "makedevs"
+PR = "r14"
 
 SRC_URI = "file://halt \
            file://ramdisk \
