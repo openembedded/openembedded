@@ -10,8 +10,8 @@ DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
 
 PACKAGES = ""
 
-do_images[nostamp] = 1
-do_images[dirs] = ${TOPDIR}
+do_rootfs[nostamp] = 1
+do_rootfs[dirs] = ${TOPDIR}
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
