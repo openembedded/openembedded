@@ -5,9 +5,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_2
 	   file://busybox.patch;patch=1 \
            file://fix-net.agent \
            file://update-usb.usermap \
-           file://logcheck-ignore"
-S = "${WORKDIR}/hotplug-2004_03_29 \
-	file://sleeve.agent file://sleeve.rc file://mmc.agent"
+           file://logcheck-ignore \
+	   file://sleeve.agent file://sleeve.rc file://mmc.agent"
+S = "${WORKDIR}/hotplug-2004_03_29"
 PR = "r2"
 
 INITSCRIPT_NAME = "hotplug"
