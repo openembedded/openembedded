@@ -5,7 +5,7 @@ S = "${WORKDIR}/modutils-${PV}"
 DEPENDS = "patcher-native"
 PACKAGES = ""
 
-SRC_URI +=  "file://module.h.diff;patch=1"
+SRC_URI +=  "file://modutils-cross/module.h.diff;patch=1"
 
 sbindir = "${prefix}/bin"
 
