@@ -1,10 +1,11 @@
 DEPENDS = "xt xi zip-native gtk+ orbit2"
-PR = "r4"
+PR = "r8"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
 	file://mozconfig \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
+	file://extensions-hack.patch;patch=1 \
 	file://mozilla-firefox.png file://mozilla-firefox.desktop"
 
 S = "${WORKDIR}/mozilla"
@@ -14,7 +15,7 @@ FILES_${PN} += "${libdir}/firefox-${PV} ${datadir}/idl"
 CFLAGS := "${@'${CFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')} -fsigned-char -fno-strict-aliasing"
 
-#SELECTED_OPTIMIZATION = "-Os"
+SELECTED_OPTIMIZATION = "-Os"
 
 export CROSS_COMPILE=1
 export HOST_LIBIDL_CONFIG="libIDL-config-2"
@@ -40,5 +41,7 @@ do_install() {
 	install -d ${D}${datadir}/pixmaps
 	install -m 0644 ${WORKDIR}/mozilla-firefox.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-firefox.png ${D}${datadir}/pixmaps/
+	# work around requirement for root access on first startup
+	chmod -R a+w ${D}${libdir}/firefox*
 }
 
