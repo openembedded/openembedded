@@ -1,0 +1,17 @@
+SECTION="libs"
+DEPENDS=virtual/libc x11-cvs xextensions-cvs
+PROVIDES=xi
+
+SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xi
+S=${WORKDIR}/Xi
+
+inherit autotools pkgconfig libtool
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}

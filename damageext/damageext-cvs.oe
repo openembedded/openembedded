@@ -1,0 +1,18 @@
+SECTION="libs"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+DEPENDS=xextensions-cvs fixesext-cvs
+PROVIDES=damageext
+
+SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=DamageExt
+S=${WORKDIR}/DamageExt
+
+inherit autotools pkgconfig
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}

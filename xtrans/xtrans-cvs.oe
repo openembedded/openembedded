@@ -1,5 +1,6 @@
 SECTION="libs"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
+PROVIDES=xtrans
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=xtrans
 S=${WORKDIR}/xtrans

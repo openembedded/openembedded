@@ -1,0 +1,17 @@
+SECTION="libs"
+DEPENDS=virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs
+PROVIDES=xrandr
+
+SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr
+S=${WORKDIR}/Xrandr
+
+inherit autotools pkgconfig libtool
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}

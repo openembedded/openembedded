@@ -3,6 +3,7 @@ PRIORITY="optional"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc xproto-cvs xextensions-cvs xau-cvs xtrans-cvs xdmcp-cvs
+PROVIDES=x11
 FILES_x11-cvs_append=" ${datadir}/X11"
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11

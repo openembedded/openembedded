@@ -1,5 +1,6 @@
 SECTION="libs"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
+PROVIDES=render
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Render
 S=${WORKDIR}/Render

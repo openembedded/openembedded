@@ -1,0 +1,17 @@
+SECTION="libs"
+DEPENDS=virtual/libc x11-cvs xproto-cvs xrender-cvs freetype fontconfig
+PROVIDES=xft
+
+SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xft
+S=${WORKDIR}/Xft
+
+inherit autotools pkgconfig libtool
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}

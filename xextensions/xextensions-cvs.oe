@@ -1,5 +1,6 @@
 SECTION="libs"
 MAINTAINER="Greg Gilbert <greg@treke.net>"
+PROVIDES=xextensions
 
 SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XExtensions
 S=${WORKDIR}/XExtensions
