@@ -7,6 +7,7 @@ DESCRIPTION = "JACK is a low-latency audio server. It can \
 connect a number of different applications to an audio \
 device, as well as allowing them to share audio between \
 themselves."
+LICENSE = "GPL LGPL" 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jackit/jack-audio-connection-kit-${PV}.tar.gz"
 S = "${WORKDIR}/jack-audio-connection-kit-${PV}"

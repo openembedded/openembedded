@@ -4,6 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
+LICENSE = "GPL"
 PR = "r18"
 
 SRC_URI = "file://halt \

@@ -5,6 +5,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SRC_URI = "${SOURCEFORGE_MIRROR}/ipac-ng/ipac-ng-${PV}.tar.bz2 \
 	file://makefile-build-cc.diff;patch=1;pnum=0"
 RDEPENDS = "perl libgd-perl"
+LICENSE = "GPL"
 
 inherit autotools
 

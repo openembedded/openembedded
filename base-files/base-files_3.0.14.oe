@@ -2,6 +2,7 @@ DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
 PR = "r17"
+LICENSE = "GPL"
 
 SRC_URI = " \
            file://nsswitch.conf \
