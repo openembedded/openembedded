@@ -2,7 +2,7 @@ PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/libc x11"
+DEPENDS = "virtual/libc x11 recordext"
 PROVIDES = "xtst"
 DESCRIPTION = "X Test Extension: client side library"
 

@@ -68,8 +68,8 @@ do_stage () {
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DIR}/share/aclocal/
 }
 
-python do_package () {
-	import string
+python populate_packages_prepend () {
+	import string, os
 	def do_split(root, pattern, format, description, postinst):
 		dvar = oe.data.getVar('D', d, 1)
 		if not dvar:
@@ -110,6 +110,4 @@ python do_package () {
 
 	do_split(loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s', 'gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders')
 	do_split(immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', 'gtk-query-immodules > /etc/gtk-2.0/gtk.immodules')
-
-	oe.build.exec_func("package_do_package", d)
 }

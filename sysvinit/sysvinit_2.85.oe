@@ -59,7 +59,7 @@ pkg_postinst () {
 #	if [ -n "`which update-alternatives 2>/dev/null`" ]; then
 #		update-alternatives blah
 #	else
-		ln -sf sysvinit ${D}/sbin/init
+		ln -sf sysvinit $D/sbin/init
 #	fi
 	exit 0
 }

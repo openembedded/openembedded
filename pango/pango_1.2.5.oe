@@ -29,8 +29,8 @@ do_stage () {
 	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
 }
 
-python do_package () {
-	import string
+python populate_packages_prepend () {
+	import string, os
 	def do_split(root, pattern, format, description, postinst):
 		dvar = oe.data.getVar('D', d, 1)
 		if not dvar:
@@ -69,6 +69,4 @@ python do_package () {
 	modules_root = os.path.join(pango_libdir, 'modules')
 
 	do_split(modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', 'pango-querymodules > /etc/pango/pango.modules')
-
-	oe.build.exec_func("package_do_package", d)
 }
