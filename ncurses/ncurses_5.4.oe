@@ -23,6 +23,7 @@ EXTRA_OECONF = "--with-shared \
 	        --enable-overwrite"
 export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
 export BUILD_LDFLAGS = ""
+export EXTRA_OEMAKE = '"BUILD_LDFLAGS=" "BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
 
 do_configure_prepend () {
 	if [ -e aclocal.m4 -a ! -e acinclude.m4 ]; then
@@ -34,10 +35,6 @@ do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 	oe_runconf
-}
-
-do_compile () {
-	oe_runmake BUILD_LDFLAGS="" 'BUILD_CCFLAGS=${BUILD_CCFLAGS}'
 }
 
 do_stage () {

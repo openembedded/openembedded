@@ -1,0 +1,4 @@
+include ncurses_${PV}.oe
+inherit native
+EXTRA_OEMAKE = '"BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
+DEPENDS = ""
