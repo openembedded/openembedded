@@ -33,8 +33,7 @@ check_sanity () {
     # is on bkbits.net and b) we are the client.
     
     # Is parent a public BitKeeper repository at bkbits.net?
-    if !(echo $BKD_HOST|grep -qE '(bitkeeper.com|bitmover.com|bkbits.net)'); then
-        echo "BKD_HOST is $BKD_HOST"
+    if !(echo $BKD_HOST|grep -qE '(bitkeeper.com|bitmover.com|bkbits.net)$'); then
         return 1
     fi
     
