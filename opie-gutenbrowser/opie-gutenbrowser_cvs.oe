@@ -16,12 +16,9 @@ S = "${WORKDIR}/opie-gutenbrowser"
 
 inherit opie
 
-# FILES apps/Applications/gutenbrowser.desktop etc/gutenbrowser/* pics/gutenbrowser/*
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 	install -d ${D}${palmtopdir}/etc/gutenbrowser/
 	install -m 0644 ${WORKDIR}/etc/gutenbrowser/ftpList ${WORKDIR}/etc/gutenbrowser/GUTINDEX.ALL ${D}${palmtopdir}/etc/gutenbrowser/
 }
-
-FILES_opie-gutenbrowser_append = " /etc/gutenbrowser"
