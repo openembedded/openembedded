@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt"
-PR = "r3"
+PR = "r4"
 
 LICENSE = "LGPL"
 
@@ -8,6 +8,7 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.gz \
 	file://gnutls-openssl.patch;patch=1"
 
 inherit autotools
+inherit binconfig
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin"
 FILES_${PN}-openssl = "${libdir}/libgnutls-openssl.so.*"

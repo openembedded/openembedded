@@ -3,7 +3,6 @@
 #
 
 #work around some breakages
-CVSDATE_cairo=20050204
 CVSDATE_xserver-kdrive=20050207
 
 #specify versions, as the header says :)
@@ -14,8 +13,8 @@ PREFERRED_VERSION_matchbox-desktop = "0.9.1"
 PREFERRED_VERSION_matchbox-wm = "0.9.3"
 PREFERRED_VERSION_matchbox-panel = "0.9.1"
 PREFERRED_VERSION_matchbox-applet-inputmanager = "0.6"
-PREFERRED_VERSION_gtk+ = "2.6.2"
-#PREFERRED_VERSION_libgpewidget = "0.97"
+PREFERRED_VERSION_gtk+ = "2.6.3"
+PREFERRED_VERSION_libgpewidget = "0.97"
 PREFERRED_VERSION_libgpepimc = "0.4"
 PREFERRED_VERSION_libgpevtype = "0.11"
 PREFERRED_VERSION_libschedule = "0.14"
@@ -23,13 +22,13 @@ PREFERRED_VERSION_gpe-icons = "0.24"
 PREFERRED_VERSION_libgsm = "1.0.10"
 #PREFERRED_VERSION_diet-x11 = "6.2.1"
 PREFERRED_VERSION_xcursor-transparent-theme = "0.1.1"
-PREFERRED_VERSION_rxvt-unicode = "4.8"
+PREFERRED_VERSION_rxvt-unicode = "5.3"
 PREFERRED_VERSION_gtk2-theme-angelistic = "0.3"
 PREFERRED_VERSION_xst = "0.14"
 PREFERRED_VERSION_xprop = "0.0cvs${CVSDATE}" 
 PREFERRED_VERSION_xhost = "0.0cvs20040413"
 PREFERRED_VERSION_xrdb = "0.0cvs${CVSDATE}"
-PREFERRED_VERSION_gpe-login = "0.75"
+PREFERRED_VERSION_gpe-login = "0.76"
 PREFERRED_VERSION_gpe-session-scripts = "0.62"
 PREFERRED_VERSION_gpe-soundserver = "0.4-1"
 PREFERRED_VERSION_gpe-todo = "0.50"

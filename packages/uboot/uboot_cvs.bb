@@ -4,7 +4,7 @@ MAINTAINER = "Cliff Brake <cliff.brake@gmail.com>"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "0.0cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 PROVIDES = "virtual/bootloader"
 
@@ -26,7 +26,7 @@ do_compile () {
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
-	install ${S}/u-boot.bin ${DEPLOY_DIR_IMAGE}/u-boot.bin
+	install ${S}/u-boot.bin ${DEPLOY_DIR_IMAGE}/u-boot-${MACHINE}-${DATETIME}.bin
 }
 do_deploy[dirs] = "${S}"
 addtask deploy before do_build after do_compile
