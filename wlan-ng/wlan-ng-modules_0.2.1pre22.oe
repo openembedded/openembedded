@@ -1,0 +1,54 @@
+DESCRIPTION = "linux-wlan-ng (prism2.x, prism3, pcmcia, pci, usb) driver for 11Mbps wireless lan cards"
+DEPENDS = "virtual/kernel"
+MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+LICENSE = "GPL"
+PR = "r4"
+
+SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
+	file://no-compat.patch;patch=1 \
+	file://Ambit_usb.patch;patch=1 \
+	file://scripts-makefile-hostcc.diff;patch=1;pnum=0 \
+	file://wlan-ng.modutils \
+	file://wlan.agent \
+	file://config.in \
+	file://sl6kwlanctl-ng \
+	file://usbctl"
+S = "${WORKDIR}/linux-wlan-ng-${PV}"
+
+inherit module
+
+MAKE_TARGETS = "all"
+
+do_configure() {
+	cp ${WORKDIR}/config.in ${S}
+	if grep CONFIG_PCMCIA=[ym] ${STAGING_DIR}/${HOST_SYS}/kernel/kernel-config; then
+		export PRISM2_PCMCIA=y
+		export WLAN_KERN_PCMCIA=y
+	fi
+	export PRISM2_PCI=y
+	export PRISM2_PLX=n
+	export PRISM2_USB=y
+	export TARGET_ROOT_ON_HOST=${D}
+	export RC_DIR=${sysconfdir}
+	oe_runmake LINUX_SRC=${KERNEL_SOURCE} auto_config
+}
+
+do_install() {
+	oe_runmake install DESTDIR=${D} TARGET_MODDIR=
+	mkdir -p ${D}/etc/modutils/
+	mkdir -p ${D}/etc/hotplug/
+	mkdir -p ${D}/sbin/
+	install -m 0644 ${WORKDIR}/wlan-ng.modutils ${D}/etc/modutils/wlan-ng.conf
+	install -m 0755 ${WORKDIR}/wlan.agent ${D}/etc/hotplug/wlan.agent
+	install -m 0755 ${WORKDIR}/usbctl ${D}/sbin/usbctl
+	install -m 0755 ${WORKDIR}/sl6kwlanctl-ng ${D}/sbin/sl6kwlanctl-ng
+	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlanup
+	ln -s /sbin/sl6kwlanctl-ng ${D}/sbin/wlandown
+	install -d ${D}/${mandir}
+	mv ${D}/usr/local/man/* ${D}/${mandir}
+	rm -r ${D}/usr/local/man
+}
+
+PACKAGES_prepend = "wlan-ng-utils "
+FILES_wlan-ng-utils = "${sysconfdir} /sbin"
+FILES_${PN} = "/lib"
