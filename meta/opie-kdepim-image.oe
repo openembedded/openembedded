@@ -1,5 +1,5 @@
 export IMAGE_BASENAME = "opie-kdepim-image"
-
+export IMAGE_LINGUAS = ""
 include opie-collections.oe
 
 #
