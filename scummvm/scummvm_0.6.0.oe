@@ -7,7 +7,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 
 inherit autotools 
 
-EXTRA_OECONF = "--backend=sdl \
+EXTRA_OECONF = "--host=${HOST_SYS} \
+		--backend=sdl \
 		--with-sdl-prefix=${STAGING_BINDIR}/.. \
 		--disable-alsa \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
