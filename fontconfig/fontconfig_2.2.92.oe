@@ -24,7 +24,7 @@ do_compile () {
 		"FREETYPE_CFLAGS=-I${STAGING_INCDIR}/freetype2" "FREETYPE_LIBS=-lfreetype -lz"
 	   oe_runmake -C fc-glyphname "CC=${BUILD_CC}" \
 	   	"CFLAGS=${BUILD_CFLAGS}" "LDFLAGS=${BUILD_LDFLAGS}" \
-	   	"CPPFLAGS=${BUILD_CPPFLAGS}" "CXXFLAGS=${BUILD_CXXFLAGS}"
+	   	"CPPFLAGS=${BUILD_CPPFLAGS}" "CXXFLAGS=${BUILD_CXXFLAGS}" \
 		"FREETYPE_CFLAGS=-I${STAGING_INCDIR}/freetype2" "FREETYPE_LIBS=-lfreetype -lz"
 	   oe_runmake
 }
