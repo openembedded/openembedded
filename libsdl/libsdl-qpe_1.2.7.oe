@@ -9,7 +9,8 @@ SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \
            file://pygame.patch;patch=1 \
            file://gcc34.patch;patch=1 \
-           file://mouse.patch;patch=1"
+           file://mouse.patch;patch=1 \
+	   file://kill-stdc++.patch;patch=1 "
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools
@@ -22,11 +23,6 @@ EXTRA_OECONF = "--disable-debug --enable-cdrom --enable-threads --enable-timers 
                 --disable-video-xbios --disable-video-gem --disable-video-dummy \
                 --disable-video-opengl --enable-input-events --enable-pthreads \
                 --disable-video-picogui --enable-video-qtopia --enable-dlopen"
-
-do_configure() {
-#	cp ${FILESDIR}/acinclude.m4 ${S}/acinclude.m4
-	oe_runconf
-}
 
 do_stage() {
 	oe_libinstall -so -C src libSDL ${STAGING_LIBDIR}
