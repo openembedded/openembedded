@@ -1,7 +1,8 @@
 include ${PN}.inc
     
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}" 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library"
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
+	file://fix-nomax.patch;patch=1"
 

@@ -5,7 +5,7 @@ FEED_URIS_append_openzaurus = " opie##http://openzaurus.org/official/unstable/${
 FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
-PR = "r10"
+PR = "r11"
 
 include opie-collections.inc
 
@@ -70,8 +70,8 @@ merge_feeds() {
 }
 
 
-# zap the root password
-#IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
+# create a timestamp of the build date
+IMAGE_POSTPROCESS_COMMAND_openzaurus = "create_etc_timestamp"
 
 # merge feed-sources into ipkg.conf
 IMAGE_PREPROCESS_COMMAND = "merge_feeds"

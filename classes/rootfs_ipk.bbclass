@@ -124,7 +124,11 @@ zap_root_password () {
 	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd	
 } 
 
-# export the zap_root_password
-EXPORT_FUNCTIONS zap_root_password
+create_etc_timestamp() {
+	date +%2m%2d%2H%2M%Y >${IMAGE_ROOTFS}/etc/timestamp
+}
+
+# export the zap_root_password and create_etc_timestamp
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp
 
 addtask rootfs before do_build after do_install
