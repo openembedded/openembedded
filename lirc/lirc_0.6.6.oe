@@ -11,7 +11,7 @@ S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools
 
-KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-version')}
+KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-abiversion')}
 KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
 KERNEL_PATH = "${STAGING_LIBDIR}/../kernel"
 
