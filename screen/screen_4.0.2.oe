@@ -1,0 +1,14 @@
+DEPENDS = virtual/libc ncurses
+RDEPENDS = libc6 libncurses5
+
+SRC_URI := ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-${PV}.tar.gz \
+	   file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF = '--with-pty-mode=0620 --with-pty-group=5 --disable-pam'
+do_configure_prepend () {
+	for f in comm.h kmapdef.c term.h tty.c; do
+		cp ${S}/$f.dist ${S}/$f
+	done
+}
