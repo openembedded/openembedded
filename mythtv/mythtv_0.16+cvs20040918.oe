@@ -1,11 +1,12 @@
 DESCRIPTION = "A full featured personal video recorder system."
 MAINTAINER = "Michael 'Mickey' Lauer"
 SECTION = "multimedia"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "cvs://mythtv:mythtv@cvs.mythtv.org/var/lib/mythcvs;module=mythtv;date=20040918;method=pserver \
 	file://xvmc-via.patch;patch=1;pnum=0 \
-	file://settings.pro"
+	file://settings.pro \
+	file://prefix-etc.patch;patch=1"
 S = "${WORKDIR}/mythtv"
 
 DEPENDS = "xinerama qt-x11-free lame libxv libxxf86vm libxvmc"
