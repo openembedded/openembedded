@@ -1,19 +1,22 @@
-BROKEN = 1
-# Authors recently added Gammu to sources - I plan to talk with them to use
-# libgammu instead of microgammu
-#
-# Actually building will fail on qtopia/services.h from Qtopia 1.7 (?)
-# If I won't fix it before 2004.08.13 I will fix it in September (time for vacation)
+DESCRIPTION = "KDE-Pim Platform Independent - port of KDE Pim to PDA"
+DESCRIPTION_kopi = "Korganizer/PI is a powerful calendar and ToDo Tool"
+DESCRIPTION_kopi-applet = "KDE Pim/PI applet"
+DESCRIPTION_kapi = "KAddressbook/PI is a port of KDE addressbook"
+DESCRIPTION_libmicrokdelibs    = "KDE Pim/PI library - microkde"
+DESCRIPTION_libmicrokcal       = "KDE Pim/PI library - microkcal"
+DESCRIPTION_libmicrokabc       = "KDE Pim/PI library - microkabc"
+DESCRIPTION_kapi-plugin-file   = "KAddressbook/PI file plugin"
+DESCRIPTION_kapi-plugin-dir    = "KAddressbook/PI dir plugin"
+DESCRIPTION_kapi-plugin-binary = "KAddressbook/PI binary plugin"
 
-DESCRIPTION = "Korganizer/Pi is a powerful calender and ToDo Tool for Qt/Embedded based Palmtop Environments"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
-DEPENDS ="virtual/libqpe"
+DEPENDS = "gammu" # libetpan libmailwrapper" will be needed for KMicroMail/PI
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 PV = "1.9.3a-${CVSDATE}"
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -21,34 +24,51 @@ DEFAULT_PREFERENCE = "-1"
 # From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.3a version
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
-file://libkcal.pro.patch;patch=1 \
-file://manager.h.patch;patch=1 \
 file://qinputdialog_inc.patch;patch=1 \
-file://locale.h.patch;patch=1 \
+file://manager.h.patch;patch=1 \
+file://libkcal.pro.patch;patch=1 \
+file://libsnames.patch;patch=1 \
 "
 
 S = "${WORKDIR}/kdepim"
 
-inherit palmtop
-
-EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DIR=moc/ \
+EXTRA_QMAKEVARS_POST += "KDEPIMDIR=${S} INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DIR=moc/ \
 			 LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lstdc++ \
-			 LIBS-=-lmicrogammu LIBS+=-lGammu \
-			 LIBS-=-lsdp LIBS+=-lbluetooth LIBS+=-Wl,-rpath-link,${S}/dest"
+			 LIBS+=-Wl,-rpath-link,${S}/dest"
+
+# That changes will be needed for KMicroMail/PI to get it build with OE libs
+#
+#             LIBS-=-lkmicromailwrapper LIBS+=-lmailwrapper LIBS+=-lopiecore2 \
+#             LIBS-=-lkmicrolibetpan LIBS+=-letpan \
+
 QMAKE_PROFILES= "all.pro"
 
-# we don't have libopie1 (and ldap?)
-#SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc kabc/converter/opie kabc/formats/binary kabc/plugins/file kabc/plugins/dir kabc/plugins/ldap kabc/plugins/opie korganizer kalarmd kaddressbook/xxport/opie kaddressbook"
-SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir "
+# we can't build:
+# kabc/plugins/qtopia   - wants qpe/pim/  (Qtopia)
+# kabc/plugins/sharpdtm - wants libsl     (Sharp ROM 3.x closed source library)
+# kabc/plugins/ldap     - wants ldap libs (?)
+# kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
+# kmicromail            - have to check changes in KDEPIM/PI version libmailwrapper
+
+SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
+		kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \ 
+		kabc/formats/binary "
 
 # TODO:
-# get KA/PI plugins working
+# RDEPENDS_kapi = "libmicrokabc_dir libmicrokabc_file libmicrokabcformat_binary"
 # checking libmailwrapper changes
 # author said that he didn't changed libetpan so we probably can get OE one
 # compile opie mail/pi
 
+inherit palmtop
+
+do_compile() {
+	export KDEPIMDIR=${S}
+	oe_runmake
+}
 
 do_configure_prepend() {
+		mv ${S}/kabc/formats/binary/kabcformat_binaryE.pro ${S}/kabc/formats/binary/binaryE.pro
         echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat ${SUBDIRS}\n" >all.pro
         for d in ${SUBDIRS}
         do
@@ -80,7 +100,7 @@ do_install() {
     install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
     install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
 
-    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary
     do
         oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
     done
@@ -94,9 +114,15 @@ do_install() {
     done
 }
 
-PACKAGES = "kopi kapi libmicrokdelibs kopi-applet"
+PACKAGES = "kopi-applet kapi-plugin-file kapi-plugin-dir kapi-plugin-binary kopi kapi \
+libmicrokabc libmicrokcal libmicrokdelibs "
 
 FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/*"
-FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_*"
+FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/*"
 FILES_kopi-applet = "${palmtopdir}/plugins/applets/*"
 FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
+FILES_libmicrokabc = "${palmtopdir}/lib/libmicrokabc*"
+FILES_libmicrokcal = "${palmtopdir}/lib/libmicrokcal*"
+FILES_kapi-plugin-file = "${palmtopdir}/lib/libmicrokabc_file*"
+FILES_kapi-plugin-dir = "${palmtopdir}/lib/libmicrokabc_dir*"
+FILES_kapi-plugin-binary = "${palmtopdir}/lib/libmicrokabcformat_binary*"

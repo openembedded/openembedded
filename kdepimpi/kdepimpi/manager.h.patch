@@ -1,0 +1,25 @@
+
+Strange patch - not always needed
+
+diff -ur kdepim/microkde/kresources/manager.h kdepim-moj/microkde/kresources/manager.h
+--- kdepim/microkde/kresources/manager.h	2004-06-26 21:02:46.000000000 +0200
++++ kdepim-moj/microkde/kresources/manager.h	2004-07-02 17:01:25.000000000 +0200
+@@ -26,6 +26,9 @@
+ 
+ #include <qdict.h>
+ #include <qstringlist.h>
++#include <iostream>
++
++using namespace std;
+ 
+ #include "factory.h"
+ #include "managerimpl.h"
+@@ -235,7 +238,7 @@
+ 
+     ConfigWidget *configWidget( const QString& type, QWidget *parent = 0 )
+     {
+-      return mFactory->resourceConfigWidget( type, parent );
++      return mFactory->configWidget( type, parent );
+     }
+ 
+     /**

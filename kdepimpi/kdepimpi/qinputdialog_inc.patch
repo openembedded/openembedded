@@ -1,0 +1,51 @@
+
+libqtaux contra libmicroqtcompat patch
+
+diff -ur kdepim/microkde/kresources/configpage.cpp kdepim-moj/microkde/kresources/configpage.cpp
+--- kdepim/microkde/kresources/configpage.cpp	2004-06-26 21:02:47.000000000 +0200
++++ kdepim-moj/microkde/kresources/configpage.cpp	2004-07-02 16:58:47.000000000 +0200
+@@ -22,7 +22,7 @@
+ */
+ 
+ #include <qgroupbox.h>
+-#include <qinputdialog.h>
++#include <qtcompat/qinputdialog.h>
+ #include <qlabel.h>
+ #include <qlayout.h>
+ 
+diff -ur kdepim/kaddressbook/xxport/csvimportdialog.cpp kdepim-moj/kaddressbook/xxport/csvimportdialog.cpp
+--- kdepim/kaddressbook/xxport/csvimportdialog.cpp	2004-06-26 21:02:22.000000000 +0200
++++ kdepim-moj/kaddressbook/xxport/csvimportdialog.cpp	2004-07-02 17:30:28.000000000 +0200
+@@ -30,7 +30,7 @@
+ #include <qbuttongroup.h>
+ #include <qcheckbox.h>
+ #include <qcombobox.h>
+-#include <qinputdialog.h>
++#include <qtcompat/qinputdialog.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <qpushbutton.h>
+diff -ur kdepim/kabc/distributionlisteditor.cpp kdepim-moj/kabc/distributionlisteditor.cpp
+--- kdepim/kabc/distributionlisteditor.cpp	2004-06-29 07:22:55.000000000 +0200
++++ kdepim-moj/kabc/distributionlisteditor.cpp	2004-07-02 17:09:14.000000000 +0200
+@@ -22,7 +22,7 @@
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+ #include <qcombobox.h>
+-#include <qinputdialog.h>
++#include <qtcompat/qinputdialog.h>
+ #include <qbuttongroup.h>
+ #include <qradiobutton.h>
+ 
+diff -ur kdepim/kaddressbook/keywidget.cpp kdepim-moj/kaddressbook/keywidget.cpp
+--- kdepim/kaddressbook/keywidget.cpp	2004-06-26 21:02:14.000000000 +0200
++++ kdepim-moj/kaddressbook/keywidget.cpp	2004-07-02 17:26:33.000000000 +0200
+@@ -23,7 +23,7 @@
+ 
+ #include <qfile.h>
+ 
+-#include <qinputdialog.h>
++#include <qtcompat/qinputdialog.h>
+ 
+ #include <qlabel.h>
+ #include <qlayout.h>
