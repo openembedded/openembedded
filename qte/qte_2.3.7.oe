@@ -22,6 +22,7 @@ S="${WORKDIR}/qt-${PV}"
 export QTDIR = ${S}
 
 ARCH_i686=x86
+ARCH_x86_64=x86
 
 EXTRA_OECONF_CONFIG=-qconfig qpe
 EXTRA_OECONF_ARCH=-xplatform ${TARGET_OS}-${TARGET_ARCH}-g++
@@ -46,7 +47,7 @@ do_configure() {
 	if [ "$BUILD_ARCH" = "i686" ]; then
 		BUILD_ARCH=x86
 	fi
-	echo yes | ./configure -platform $BUILD_OS-$BUILD_ARCH-g++ $EXTRA_OECONF || die "Configuring qt failed"
+	echo yes | ./configure $EXTRA_OECONF || die "Configuring qt failed"
 }
 
 do_compile() {
