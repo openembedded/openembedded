@@ -1,6 +1,6 @@
 DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r5"
+PR = "r6"
 DEPENDS = "	python-ao 		\
 		python-constraint	\
 		python-crypto		\
@@ -36,6 +36,7 @@ DEPENDS = "	python-ao 		\
 		python-pyxmlrpc		\
 		python-quicklauncher    \
 		python-scapy		\
+		python-scons		\
 		python-sip		\
 		python-sgmlop		\
 		python-snmplib		\
