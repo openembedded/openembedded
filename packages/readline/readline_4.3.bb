@@ -18,8 +18,6 @@ S = "${WORKDIR}/readline-${PV}"
 
 inherit autotools 
 
-EXTRA_OECONF += "--with-curses"
-
 do_configure () {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 	autotools_do_configure
