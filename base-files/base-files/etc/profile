@@ -1,0 +1,23 @@
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+OPIEDIR=/opt/QtPalmtop
+QPEDIR=/opt/QtPalmtop
+QTDIR=/opt/QtPalmtop
+PATH="/opt/QtPalmtop/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games"
+
+if [ "$PS1" ]; then
+  if [ "$BASH" ]; then
+    PS1='\u@\h:\w\$ '
+  else
+    if [ "`id -u`" -eq 0 ]; then
+      PS1='# '
+    else
+      PS1='$ '
+    fi
+  fi
+fi
+
+export PATH PS1 OPIEDIR QPEDIR QTDIR
+
+umask 022

@@ -1,7 +1,7 @@
 xDESCRIPTION = "Base system miscellaneous files."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = " file://${FILESDIR}/etc/nsswitch.conf \
             file://${FILESDIR}/etc/motd \
