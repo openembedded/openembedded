@@ -6,6 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>
 DEPENDS = "libxine-1.0.0-beta12"
 RDEPENDS = "opie-mediaplayer2-skin"
 APPNAME = "opieplayer2"
+PR = "r1"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/noncore/multimedia/opieplayer2 \
@@ -19,7 +20,8 @@ inherit opie
 QMAKE_PROFILES = "opieplayer2.pro"
 
 do_install() {
-	install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/ ${S}${palmtopdir}/apps/Applications/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/apps/Applications/mediaplayer.desktop ${D}${palmtopdir}/apps/Applications/
 }
 
