@@ -32,14 +32,14 @@ pkg_postinst_modutils () {
 			done
 		fi
 	fi
-	update-rc.d $D modutils start 20 S .
+	update-rc.d $D modutils.sh start 20 S .
 }
 
 pkg_prerm_modutils () {
 	if test -n "$D"; then
 		D="-r $D"
 	fi
-	update-rc.d $D modutils remove
+	update-rc.d $D modutils.sh remove
 }
 
 PACKAGES = "modutils-depmod modutils-modinfo modutils-doc modutils"
