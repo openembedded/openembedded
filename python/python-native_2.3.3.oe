@@ -12,14 +12,14 @@ inherit autotools native
 
 DEPENDS=patcher-native
 
-EXTRA_OECONF = '--with-threads --with-pymalloc --with-cyclic-gc --with-exec-prefix=${STAGING_DIR}/build'
+EXTRA_OECONF = '--with-threads --with-pymalloc --with-cyclic-gc --with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/build'
+
 do_configure () {
 	oe_runconf
 }
 
-do_stage_append() {
+do_stage() {
 	# install pgen for later usage with non-native builds
 	install Parser/pgen ${STAGING_DIR}/build/bin
 }
-
 

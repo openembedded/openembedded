@@ -39,6 +39,10 @@ do_compile() {
 		   STAGING_DIR=${STAGING_DIR}
 }
 
+do_stage() {
+	install -m 0644 Include/*.h ${STAGING_INCDIR}/python2.3/
+}
+
 do_install() {
 	install -m 0644 Makefile.orig Makefile
         oe_runmake HOSTPGEN=${STAGING_BINDIR}/pgen \

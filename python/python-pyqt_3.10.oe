@@ -2,8 +2,9 @@ DESCRIPTION="Python Qt/Embedded + Qt/Palmtop Bindings"
 SECTION=base
 PRIORITY=optional
 MAINTAINER="Michael Lauer <mickey@Vanille.de>"
-LICENSE="GPL"
-DEPENDS="virtual/libc virtual/libqte2 virtual/libqpe"
+LICENSE=GPL
+RDEPENDS=python-core libqte2 libqpe1
+DEPENDS=virtual/libc virtual/libqte2 virtual/libqpe libsip sip-native
 SRCNAME=pyqt
 
 SRC_URI = http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
@@ -21,8 +22,8 @@ EXTRA_QMAKEVARS_POST = ' QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
                          DESTDIR=${STAGING_LIBDIR}/python2.3/site-packages \
                          DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT \
                          INCLUDEPATH=. \
-                         INCLUDEPATH+=${STAGING_DIR}/build/include/python2.3 \
-                         INCLUDEPATH+=${STAGING_DIR}/target/include \
+                         INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
+                         INCLUDEPATH+=${STAGING_INCDIR} \
                          LIBS=-L${STAGING_LIBDIR}/python2.3/site-packages \
                          LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip '
 

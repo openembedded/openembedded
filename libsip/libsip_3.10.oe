@@ -24,8 +24,8 @@ EXTRA_QMAKEVARS_POST = ' CONFIG=qte \
                          DEFINES=SIP_MAKE_DLL \
                          DEFINES+=SIP_QT_SUPPORT \
                          INCLUDEPATH=. \
-                         INCLUDEPATH+=${STAGING_DIR}/build/include/python2.3 \
-                         INCLUDEPATH+=${STAGING_DIR}/target/include '
+                         INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
+                         INCLUDEPATH+=${STAGING_INCDIR} '
 
 
 #

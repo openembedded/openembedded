@@ -1,0 +1,12 @@
+DESCRIPTION="A Python extension for the SQLite Embedded Relational Database"
+SECTION=base
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+RDEPENDS=libc6 python-core python-re python-lang sqlite
+DEPENDS=virtual/libc sqlite
+SRCNAME=pysqlite
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz
+S = ${WORKDIR}/${SRCNAME}
+
+inherit distutils

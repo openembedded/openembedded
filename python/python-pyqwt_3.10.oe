@@ -1,0 +1,77 @@
+DESCRIPTION="Python QWT Bindings"
+SECTION=base
+PRIORITY=optional
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE=GPL"
+RDEPENDS=python-core python-pyqt (${PV}) python-numeric qwt
+DEPENDS=virtual/libc virtual/libqte2 python-numeric python-pyqt qwt
+SRCNAME=pyqwt
+
+SRC_URI = http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
+          file://${FILESDIR}/qt2.x-compat.patch;patch=1               \
+          file://${FILESDIR}/qtmod-sip-staging.patch;patch=1
+S = ${WORKDIR}/PyQwt-20040118
+
+export QTDIR=${STAGING_DIR}/target
+
+EXTRA_QMAKEVARS_POST = ' QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
+                         CONFIG=qte CONFIG+=warn_on CONFIG+=release \
+                         DESTDIR=${STAGING_LIBDIR}/python2.3/site-packages \
+                         DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=HAS_NUMERIC\
+                         INCLUDEPATH=. INCLUDEPATH+=../numpy \
+                         INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
+                         INCLUDEPATH+=${STAGING_INCDIR}/ \
+                         LIBS=-L${STAGING_LIBDIR}/python2.3/site-packages \
+                         LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip '
+
+PYTHON=${STAGING_BINDIR}/python
+SIP=${STAGING_BINDIR}/sip
+QMAKE=${STAGING_BINDIR}/qmake
+QMAKESPEC=${QMAKE_MKSPEC_PATH}/qws/${TARGET_OS}-${TARGET_ARCH}-g++
+
+MODULES=qwt
+
+do_configure_prepend() {
+    echo "%Makefile qwt.pro" >>sip/qwtmod.sip
+    echo "TEMPLATE=lib" >>sip/qwtmod.sip
+    echo 'SOURCES = $B' >>sip/qwtmod.sip
+    echo 'HEADERS = $H' >>sip/qwtmod.sip
+    echo "%End" >>sip/qwtmod.sip
+}
+
+#%Makefile qwt.pro
+#TEMPLATE = lib
+#TARGET = @BLX_TARGET_LIB@
+#DESTDIR = @PYQT_MODDIR@
+#CONFIG += @BLX_CONFIG_LIB@ @PYQT_WARN@
+#INCLUDEPATH = @BLX_INCLUDEPATH@
+#DEFINES = @BLX_DEFINES@
+#LIBS += @PYQT_QASSISTANTCLIENT_LIB@ @BLX_LIBS@
+#macx:QMAKE_LFLAGS += -framework Python
+#SOURCES = $B
+#HEADERS = $H
+#%End
+
+do_configure() {
+    for module in ${MODULES}
+    do
+        mkdir -p ${module}
+        ${SIP} -Isip -I${STAGING_SIPDIR} -tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1 -z${FILESDIR}/features -c ${module} -m ${module}.pro sip/${module}mod.sip
+        mv -f ${module}.pro ${module}/${module}.pro
+    done
+
+    for module in ${MODULES}
+    do
+        cd ${S}/${module}
+        ${QMAKE} -spec ${QMAKESPEC} -after TARGET=${module}cmodule ${EXTRA_QMAKEVARS_POST}
+    done
+}
+
+do_compile() {
+    for module in ${MODULES}
+    do
+        cd ${S}/${module}
+        oe_runmake
+    done
+}
+
