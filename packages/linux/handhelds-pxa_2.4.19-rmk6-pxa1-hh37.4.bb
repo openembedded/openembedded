@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 KERNEL_CCSUFFIX = "-3.3.3"
 COMPATIBLE_HOST = "arm.*-linux"
@@ -59,6 +59,7 @@ INITSCRIPT_PARAMS = "start 21 S ."
 
 # extra depends
 RDEPENDS_kernel-module-h5400-audio = "kernel-module-ak4535 kernel-module-i2c-adap-pxa"
+RDEPENDS_kernel-module-h3900-uda1380 = "kernel-module-uda1380 kernel-module-i2c-adap-pxa"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${PACKAGE_ARCH} ${S}/.config
