@@ -110,7 +110,6 @@ irk \
 justreader \
 keyring \
 klimt \
-konqueror-embedded \
 kphonepi \
 kstars-embedded \
 ktimetrackerpi \
@@ -126,7 +125,6 @@ timesleuth \
 txdrug \
 tximage \
 ubahnnav \
-visiscript \
 zbench \
 zgscore \
 zipsc \
@@ -198,7 +196,6 @@ nmm \
 pairs \
 pdamaze \
 pipeman \
-powermanga \
 prboom \
 puzz-le \
 rott \
@@ -349,8 +346,6 @@ RDEPENDS_task-opie-wlan = "${task-opie-wlan}"
 DEPENDS += " ${task-opie-wlan}"
 
 task-qpe-emulators = "\
-dosbox \
-frodo \
 snes9x-sdl-qpe \
 uae \
 "
