@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
@@ -47,5 +47,5 @@ do_compile () {
 do_install () {
 	oe_runmake 'PREFIX=${D}' install
 	install -m 0755 ${WORKDIR}/linuxrc ${D}/
-	mkdir -p ${D}/proc ${D}/mnt/tmpmnt
+	mkdir -p ${D}/proc ${D}/mnt/tmpmnt ${D}/mnt/repair
 }
