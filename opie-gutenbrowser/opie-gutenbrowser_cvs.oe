@@ -22,7 +22,7 @@ do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 	install -d ${D}/etc/gutenbrowser/
-	install -m 0644 ${WORKDIR}/etc/gutenbrowser/* ${D}/etc/gutenbrowser/
+	install -m 0644 ${WORKDIR}/etc/gutenbrowser/ftpList ${WORKDIR}/etc/gutenbrowser/GUTINDEX.ALL ${D}/etc/gutenbrowser/
 }
 
 FILES_opie-gutenbrowser_append = " /etc/gutenbrowser"
