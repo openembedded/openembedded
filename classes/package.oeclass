@@ -265,9 +265,7 @@ python populate_packages () {
 }
 
 ldconfig_postinst_fragment() {
-if [ x"$D" != "x" ]; then
-	exit 1
-else
+if [ x"$D" = "x" ]; then
 	ldconfig
 fi
 }
