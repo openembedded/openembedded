@@ -2,6 +2,9 @@
 MINIMO=1
 mk_add_options MINIMO=1
 
+# enable building the browser
+ac_add_options --enable-application=browser
+
 # use GTK+-2 widget set with XFT font rendering
 ac_add_options --enable-default-toolkit=gtk2
 ac_add_options --enable-xft
