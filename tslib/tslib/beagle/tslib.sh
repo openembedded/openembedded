@@ -1,0 +1,6 @@
+#!/bin/sh
+
+TSLIB_TSDEVICE=/dev/misc/touchscreen/ucb1x00
+TSLIB_TSEVENTTYPE=H3600
+
+export TSLIB_TSDEVICE TSLIB_TSEVENTTYPE

@@ -3,7 +3,7 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
-PV = "1.1.5-cvs-${CVSDATE}"
+PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "keyview"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/keyview "

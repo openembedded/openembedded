@@ -8,15 +8,16 @@ DEPENDS = "cetools-native"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/montavista-sa-${PV}"
 
-SRC_URI = "http://www.vanille.de/mirror/linux-${KV}_${MVLV}.tar.gz \
+SRC_URI = "http://www.vanille.de/temp/linux-${KV}_${MVLV}.tar.gz \
            file://iw_handlers.w13-5.diff;patch=1 \
            file://iw_handlers.w14-5.diff;patch=1 \
            file://iw240_we15-6.diff;patch=1 \
-	   \
 	   file://flash-for-beagle-iii.patch;patch=1 \
 	   file://remove-montavista-init-stupidity.patch;patch=1 \
-	   \
            file://mkdep.patch;patch=1 \
+	   file://machine_name.patch;patch=1 \
+	   file://opie-logo.patch;patch=1 \
+	   file://apm-hh-merge.patch;patch=1 \
            file://defconfig-${MACHINE}"
 
 S = "${WORKDIR}/linux-${KV}_${MVLV}"
@@ -41,6 +42,9 @@ module_conf_spectrum_cs = "options spectrum_cs ignore_cis_vcc=1"
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
 module_autoload_sa1100_bi = "sa1100_bi"
+module_autoload_sa1100_pcmcia = "sa1100_pcmcia"
+module_autoload_unix = "unix"
+module_autoload_usb-eth = "usb-eth"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."

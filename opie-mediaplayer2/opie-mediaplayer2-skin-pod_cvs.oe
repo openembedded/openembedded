@@ -1,0 +1,17 @@
+DESCRIPTION = "Skin for opie-mediaplayer2"
+SECTION = "opie/multimedia"
+PRIORITY = "optional"
+LICENSE = "GPL"
+PV = "1.1.6-cvs-${CVSDATE}"
+APPNAME="opieplayer2"
+
+RPROVIDES="opie-mediaplayer2-skin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
+
+FILES_${PN} = "${palmtopdir}/pics/${APPNAME}/skins/Pod/*.png"
+
+do_install() {
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/skins/Pod/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/skins/Pod/*.png ${D}${palmtopdir}/pics/${APPNAME}/skins/Pod/
+}

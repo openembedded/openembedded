@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-networksettings"
-PV = "1.1.5-cvs-${CVSDATE}"
+PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "networkapplet"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/networkapplet \

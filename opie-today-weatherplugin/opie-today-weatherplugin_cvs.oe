@@ -5,7 +5,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopiepim2"
 RDEPENDS = "opie-today"
-PV = "1.1.5-cvs-${CVSDATE}"
+PV = "1.1.6-cvs-${CVSDATE}"
 APPNAME = "todayweatherplugin"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/weather \

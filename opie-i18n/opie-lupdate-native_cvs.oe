@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc3-native"
-PV = "1.1.5-cvs-${CVSDATE}"
+PV = "1.1.6-cvs-${CVSDATE}"
 PR = "2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/opie-lupdate \
