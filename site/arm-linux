@@ -244,6 +244,9 @@ glib_cv_strlcpy=${glib_cv_strlcpy=no}
 # httppc
 ac_cv_strerror_r_SUSv3=${ac_cv_strerror_r_SUSv3=no}
 
+# jikes
+ac_cv_sizeof_wchar_t=4
+
 # lftp
 ac_cv_need_trio=${ac_cv_need_trio=no}
 lftp_cv_va_copy=${lftp_cv_va_copy=no}
