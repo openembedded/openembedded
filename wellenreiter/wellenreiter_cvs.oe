@@ -1,0 +1,22 @@
+DESCRIPTION = "A Wireless Network Monitor"
+SECTION = "opie/Applications"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc libopie2"
+PV = "1.0.2-cvs-${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/net/wellenreiter;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE}                     \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/wellenreiter"
+
+inherit palmtop
+
+do_install() {
+	install -d ${D}${palmtopdir}/{bin,apps/Applications,pics/${PN}}
+	install -m 0755 ${OPIEDIR}/bin/${PN} ${D}${palmtopdir}/bin/${PN}
+	install -m 0644 ${WORKDIR}/apps/Applications/${PN}.desktop ${D}${palmtopdir}/Applications/${PN}.desktop
+	install -m 0644 ${WORKDIR}/pics/${PN}/*.* ${D}${palmtopdir}/pics/${PN}/
+}
+

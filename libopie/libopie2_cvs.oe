@@ -1,0 +1,62 @@
+DESCRIPTION = "Base libraries for the Open Integrated Palmtop Environment"
+HOMEPAGE = "http://opie.handhelds.org"
+SECTION = "opie/libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+LICENSE = "LGPL"
+DEPENDS = "virtual/libc libqpe-opie sqlite libpcap"
+PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PV = "1.1.3-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/libopie2;date=${CVSDATE}"
+S = "${WORKDIR}/libopie2"
+
+inherit qmake
+
+export QTDIR = "${STAGING_LIBDIR}/.."
+export OPIEDIR = "${STAGING_LIBDIR}/.."
+
+#FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
+
+EXTRA_QMAKEVARS_POST = ' DEFINES+=OPIE_NEW_MALLOC    \
+                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
+                         DEFINES+="OPIE_WE_VERSION=15" '
+
+#
+# for developing - qmake.oeclass should gather this automatically
+#
+export QMAKESPEC = "${QMAKE_MKSPEC_PATH}/qws/linux-sharp-g++"
+
+do_compile() {
+	install -d ${STAGING_INCDIR}/opie2
+	for i in `find . -name "*.h"`
+	do
+		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
+	done
+	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+}
+
+# no staging neessary, becaue
+# include files already done during do_compile
+# lib files already done during do_compile
+
+do_install() {
+	install -d ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiecore2.so.1.9.0 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiedb2.so.1.9.0 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiemm2.so.1.9.0 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopienet2.so.1.8.3 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopiepim2.so.1.8.6 ${D}${palmtopdir}/lib/
+	oe_soinstall ${STAGING_LIBDIR}/libopieui2.so.1.8.5 ${D}${palmtopdir}/lib/
+}
+
+PACKAGES = "libopiecore2 libopiedb2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so.*"
+FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so.*"
+FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so.*"
+FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so.*"
+FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so.*"
+FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so.*"
+
+#FIXME: Add individual package descriptions and dependencies
+
