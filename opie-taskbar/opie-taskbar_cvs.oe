@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "opie-libqrsync "
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "3"
+PR = "4"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
@@ -14,7 +14,8 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/cal
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root;date=${CVSDATE} \
            file://server.pro \
-           file://opie-reorgfiles"
+           file://opie-reorgfiles \
+           file://opie"
 
 S = "${WORKDIR}/launcher"
 
@@ -43,9 +44,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/calibrate.desktop
 	install -m 0644 ${WORKDIR}/pics/launcher/*.* ${D}/${palmtopdir}/pics/launcher/
-	install -m 0755 ${WORKDIR}/root/etc/init.d/opie ${D}/etc/init.d/opie
-#FIXME use our own - machine dependent - start script
-#FIXME why is this still called qpe? it should be called launcher, or taskbar, or opie, or whatever - just not QPE!
+	oe_machinstall -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 }
 
 FILES_opie-taskbar_append = " /etc/init.d/opie"
