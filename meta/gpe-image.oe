@@ -8,4 +8,11 @@ export IPKG_INSTALL = 'task-bootstrap xserver-kdrive-fbdev \
 		      gpe ttf-bitstream-vera pango-module-basic-x pango-module-basic-fc \
 		      glibc-gconv glibc-gconv-iso8859-1 gdk-pixbuf-loader-png'
 
+zap_root_password () {
+	sed 's%^root:[^:]*:%root:*:%' < ${IMAGE_ROOTFS}/etc/passwd >${IMAGE_ROOTFS}/etc/passwd.new
+	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd	
+}
+
+IMAGE_POSTPROCESS_COMMAND = "zap_root_password"
+
 inherit image_ipk
