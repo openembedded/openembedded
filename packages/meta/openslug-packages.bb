@@ -42,7 +42,6 @@ OPENSLUG_PACKAGES = "\
 	miau \
 	microcom \
 	mt-daapd \
-	muxsshssl \
 	nail \
 	openssh \
 	ppp puppy \
