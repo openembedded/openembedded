@@ -17,6 +17,12 @@ export CROSS_COMPILE=1
 export HOST_LIBIDL_CONFIG="libIDL-config-2"
 export CONFIGURE_ARGS="--target=${TARGET_SYS} --host=${BUILD_SYS} --build=${BUILD_SYS} --prefix=${prefix}"
 
+export HOST_CFLAGS="${BUILD_CFLAGS}"
+export HOST_CXXFLAGS="${BULID_CXXFLAGS}"
+export HOST_LDFLAGS="${BUILD_LDFLAGS}"
+export HOST_RANLIB="${BUILD_RANLIB}"
+export HOST_AR="${BUILD_AR}"
+
 do_configure() {
 	cp ${WORKDIR}/mozconfig .mozconfig
 }
