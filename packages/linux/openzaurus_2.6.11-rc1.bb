@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey
 LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
-PR = "r1"
+PR = "r2"
 
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
 # http://www.cs.wisc.edu/~lenz/zaurus/
@@ -16,6 +16,7 @@ PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
            file://add-oz-release-string.patch;patch=1 \
+           file://add-elpp-stuff.patch \
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-linking-bug.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/pxa-cpu.patch;patch=1 \
 http://www.rpsys.net/openzaurus/${KV}/jl1/locomo_pm.patch;patch=1 \
@@ -51,10 +52,13 @@ file://defconfig-collie \
 file://defconfig-poodle \
 file://defconfig-openzaurus-pxa-2.6 "
 
-SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
-SRC_URI_append_openzaurus-pxa-2.6 = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1"
-SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1"	   
+SRC_URI_append_husky = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1 "
+SRC_URI_append_openzaurus-pxa-2.6 = "http://www.rpsys.net/openzaurus/${KV}/corgi_keymap-r1.patch;patch=1 "
+SRC_URI_append_collie = "http://www.rpsys.net/openzaurus/${KV}/jl1/collie_keymap.patch;patch=1 "
 
+# Uncomment this to apply the Enhanced Linux Progress Patch.
+# You also need to say VERBOSE=progress in /etc/default/rcS make it work
+#APPLY_ELPP = "yes"
 
 S = "${WORKDIR}/linux-${KV}"
 
@@ -70,15 +74,13 @@ EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
 
 #
-# Create the kernel command line. 
+# Create the kernel command line (deprecated)
 #
 #CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
 #CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
 #CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
-#CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
+#CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) mem=64M"
 #CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
-
-#CMDLINE_MEM_husky		= "mem=64M"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty0 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
@@ -91,11 +93,10 @@ CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_MEM}"
 
 do_configure() {
-    
-    install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
-    if [ "${MACHINE}" == "collie" ] 
-    then
+	if [ "${MACHINE}" == "collie" ]
+	then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
 		rdsize=`echo "$rd * 1024" | bc`
 		total=`expr $mem + $rd`
@@ -111,9 +112,19 @@ do_configure() {
 			echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
 			echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
 		fi
-		
 	fi
+    
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+
+	if [ "${APPLY_ELPP}" == "yes" ]
+	then
+		patcher -i -R ${FILESDIR}/add-elpp-stuff.patch
+		echo "# Enhanced Linux Progress Patch"	>> ${S}/.config
+		echo "CONFIG_FB_ELPP=y"			>> ${S}/.config
+		echo "CONFIG_LOGO=y"			>> ${S}/.config
+		echo "CONFIG_LOGO_LINUX_CLUT224=y"	>> ${S}/.config
+	fi
+
     yes '' | oe_runmake oldconfig
 }
 
