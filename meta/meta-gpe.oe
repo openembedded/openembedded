@@ -44,6 +44,7 @@ gpe-task-utils = "\
     minilite \
     miniclipboard \
     gpe-taskmanager \
+    gpe-package \
     gpe-clock \
     gpe-appmgr \
     gpe-terminal \

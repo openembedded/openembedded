@@ -10,7 +10,8 @@ FILES_libipkg = "${libdir}"
 AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=${@'V' + oe.data.getVar('PV',d,1).replace('.', '-')} \
-	file://varargs.patch;patch=1"
+	file://varargs.patch;patch=1 \
+	file://uninclude-replace.patch;patch=1"
 S = "${WORKDIR}/ipkg/C"
 
 inherit autotools 
