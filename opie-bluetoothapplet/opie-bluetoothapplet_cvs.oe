@@ -3,6 +3,7 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
+DEPENDS = "libopietooth1"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "bluetoothapplet"
 
