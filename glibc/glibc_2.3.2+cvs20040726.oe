@@ -60,10 +60,12 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@oe.dat
 	   file://arm-memcpy.patch;patch=1;pnum=0 \
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-           file://dyn-ldconfig.patch;patch=1;pnum=0 \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
+
+# seems to fail on tls platforms
+SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
