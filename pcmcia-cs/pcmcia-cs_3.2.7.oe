@@ -1,0 +1,29 @@
+DESCRIPTION="Card Services for Linux is a complete PCMCIA support package."
+SECTION="base"
+PRIORITY="optional"
+LICENSE="GPL"
+RDEPENDS=modutils psmisc
+
+SRC_URI = http://pcmcia-cs.sourceforge.net/ftp/${P}.tar.gz
+
+inherit module
+
+do_configure() {
+	./Configure --kernel="${KERNEL_SOURCE}" --noprompt --sysv --nopnp --rcdir=/etc --arch="${ARCH}" \
+                    --srctree --nocardbus --ucc="${CC}" --ld="${LD}" --uflags="${CFLAGS}" --target=.
+        chmod ug+rw /etc/*
+        oe_runmake HAS_XPM= FLIBS="" XMANDIR="" DIRS="cardmgr etc flash"
+}
+
+do_install() {
+	install -d ${D}/${sbindir}/
+	for f in cardmgr/cardctl cardmgr/cardmgr cardmgr/ide_info cardmgr/ifport cardmgr/ifuser cardmgr/pcinitrd flash/ftl_check flash/ftl_format
+	do
+		install -m 0755 ${f} ${D}/${sbindir}/
+	done
+	install -d ${D}/${sysconfdir}/{init.d,pcmcia}
+	cp -a etc/* ${D}/${sysconfdir}/pcmcia/
+	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
+}
+
+FILES_${PN}=${sbindir} ${sysconfdir}
