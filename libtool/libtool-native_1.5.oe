@@ -1,3 +1,4 @@
+PR = "r1"
 include libtool_${PV}.oe
 inherit native
 
@@ -8,7 +9,8 @@ SRC_URI_append = " file://${FILESDIR}/libdir-la.patch;patch=1 \
                    file://${FILESDIR}/libtoolize-staging.patch;patch=1 \
                    file://${FILESDIR}/prefix.patch;patch=1 \
                    file://${FILESDIR}/ld.patch;patch=1 \
-                   file://${FILESDIR}/chmod.patch;patch=1"
+                   file://${FILESDIR}/chmod.patch;patch=1 \
+                   file://${FILESDIR}/install-path-check.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
 prefix = "${CROSS_DIR}"
