@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -23,6 +23,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
 	   file://handhelds.patch;patch=1 \
 	   file://qiconview-speed.patch;patch=1 \
 	   file://sharp_char.h \
+	   file://key.patch;patch=1 \
 	   file://switches.h "
 
 SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 "
@@ -84,6 +85,7 @@ export SYSCONF_CXX = "${CXX}"
 export SYSCONF_LINK = "${CCLD}"
 export SYSCONF_SHLIB = "${CCLD}"
 export SYSCONF_CFLAGS = "${CFLAGS}"
+export SYSCONF_LINK_SHLIB = "${CXX}"
 export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES}"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
