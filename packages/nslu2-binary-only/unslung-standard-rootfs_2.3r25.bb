@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r39"
+PR = "r40"
 
 UNSLUNG_VERSION = "3.18-beta"
 UNSLUNG_VARIANT ?= "standard"
@@ -38,6 +38,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
 	   file://maintmode.cgi file://upgrade-maint.htm file://upgrade-nomaint.htm \
+	   file://tmp-permissions.patch;patch=1 \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r25"
