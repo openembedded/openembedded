@@ -1,0 +1,15 @@
+DESCRIPTION="GNU C Library"
+LICENSE="LGPL"
+SRC_URI="ftp://ftp.gnu.org/gnu/glibc/${P}.tar.gz ftp://ftp.gnu.org/pub/gnu/libc/glibc-linuxthreads-${PV}.tar.gz ${PATCHES_URI}"
+PATCHES_URI=" ${DEBIAN_MIRROR}/main/g/glibc/glibc_2.3.1-16.diff.gz"
+PROVIDES=virtual/libc
+
+S="${WORKDIR}/${P}"
+EXTRA_OECONF="--with-elf --disable-profile --enable-add-ons=linuxthreads --with-elf --enable-shared --with-headers=${STAGING_DIR}/target/include --without-cvs --enable-kernel=2.4.6"
+
+inherit patcher
+
+do_unpack() {
+	patcher_do_unpack $@ || oefatal "unpacking failed"
+	mv ${WORKDIR}/linuxthreads{,_db} ${S}/
+}
