@@ -11,8 +11,8 @@ do_install () {
 	install -p -m 644 debian/changelog debian/FAQ \
 		debian/README.FHS debian/README.base ${D}/${docdir}/
 	cat debian/copyright.in | sed -e "s&#OSNAME#&${TARGET_OS}&g" \
-		> ${docdir}/copyright
-	install -m 755 debian/remove-base ${docdir}
+		> ${D}/${docdir}/copyright
+	install -m 755 debian/remove-base ${D}/${docdir}
 #	cd debian && install -m 755 preinst postinst ${D}/DEBIAN
 #	cd debian && install -m 644 conffiles ${D}/DEBIAN
 	( cd ${D} && install -d `cat ${S}/debian/directory-list` )
@@ -24,7 +24,7 @@ do_install () {
 	rm -f ${D}/etc/motd
 	cat etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
 	cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
-	gzip -9 ${docdir}/changelog
+	gzip -9 ${D}/${docdir}/changelog
 #	chown -R root:root ${D}
 #	cd ${D} && chown root:src     usr/src
 #	cd ${D} && chown root:staff   var/local
