@@ -71,8 +71,9 @@ python package_do_split_gconvs () {
 		deps = []
 		f = open(fn, "r")
 		c_re = re.compile('^copy "(.*)"')
+		i_re = re.compile('^include "(\w+)".*')
 		for l in f.readlines():
-			m = c_re.match(l)
+			m = c_re.match(l) or i_re.match(l)
 			if m:
 				dp = legitimize_package_name('glibc-localedata-%s' % m.group(1))
 				if not dp in deps:
@@ -82,9 +83,6 @@ python package_do_split_gconvs () {
 			oe.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
 
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps)
-	# clobber unwanted self-dependency
-	oe.data.setVar('RDEPENDS_glibc-localedata-i18n', '', d)
-
 	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
 	f = open(os.path.join(oe.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
