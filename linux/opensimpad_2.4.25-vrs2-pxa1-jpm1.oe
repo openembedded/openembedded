@@ -1,11 +1,10 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-KV = "2.4.25"
-VRSV = "vrs2"
-PXAV = "pxa1"
-JPMV = "jpm1"
-PV = "${KV}-${VRSV}-${PXAV}-${JPMV}"
+KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
+VRSV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
+PXAV = "${@oe.data.getVar('PV',d,True).split('-')[2]}"
+JPMV = "${@oe.data.getVar('PV',d,True).split('-')[3]}"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://${FILESDIR}/${KV}-${VRSV}.patch;patch=1                 \
@@ -25,13 +24,16 @@ S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
 
+KERNEL_CCSUFFIX = "-3.3.3"
+COMPATIBLE_HOST = "arm.*-linux"
+
 #FIXME: Use configuration system
 export MEM = "32"
 export RD = "32"
 export CMDLINE = "mtdparts=sa1100:512k(boot),1m(kernel),-(root) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 "
 EXTRA_OEMAKE = ""
 
-do_configure_prepend() {
+do_configure() {
         install -m 0644 ${FILESDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
 
         mem=${MEM}
