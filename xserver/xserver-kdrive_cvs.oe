@@ -6,11 +6,18 @@ DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
 DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
 
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/xserver-cvs"
+
+PR = "r1"
+
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver \
+	   file://xkbfile.patch;patch=1 "
 S = "${WORKDIR}/xserver"
+
+
 
 inherit autotools pkgconfig 
 
