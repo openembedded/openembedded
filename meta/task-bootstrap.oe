@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r10"
+PR = "r11"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
@@ -11,7 +11,7 @@ PACKAGES = "${PN}"
 
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug initscripts modutils netbase \
-	sysvinit tinylogin lrzsz portmap \
+	sysvinit tinylogin portmap \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
@@ -21,5 +21,5 @@ RDEPENDS = 'base-files base-passwd busybox \
 	modutils-initscripts \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
-RRECOMMENDS = 'dropbear lrzsz portmap \
+RRECOMMENDS = 'dropbear portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
