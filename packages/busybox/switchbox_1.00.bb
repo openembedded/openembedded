@@ -46,5 +46,5 @@ do_compile () {
 do_install () {
 	oe_runmake 'PREFIX=${D}' install
 	install -m 0755 ${WORKDIR}/linuxrc ${D}/
-	mkdir -p ${D}/proc ${D}/mnt/tmpmnt ${D}/mnt/repair
+	mkdir -p ${D}/proc ${D}/mnt/jffs2 ${D}/mnt/repair ${D}/mnt/newroot
 }

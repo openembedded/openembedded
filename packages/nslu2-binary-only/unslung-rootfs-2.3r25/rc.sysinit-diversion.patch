@@ -8,8 +8,8 @@
  . /etc/rc.d/rc.functions
  . /etc/sysconfig/network
 +
-+if ( [ -f /mnt/sda2/unslung/rc.sysinit ] && . /mnt/sda2/unslung/rc.sysinit ) ; then return 0 ; fi
-+if ( [ -f /mnt/sdb2/unslung/rc.sysinit ] && . /mnt/sdb2/unslung/rc.sysinit ) ; then return 0 ; fi
++if (  [ ! -f /.sda2root ] && [ -f /mnt/sda2/unslung/rc.sysinit ] && . /mnt/sda2/unslung/rc.sysinit ) ; then return 0 ; fi
++if (  [ ! -f /.sdb2root ] && [ -f /mnt/sdb2/unslung/rc.sysinit ] && . /mnt/sdb2/unslung/rc.sysinit ) ; then return 0 ; fi
 +if ( [ -f /unslung/rc.sysinit          ] && . /unslung/rc.sysinit          ) ; then return 0 ; fi
 +
  mkdir -p /var/lock/samba >/dev/null

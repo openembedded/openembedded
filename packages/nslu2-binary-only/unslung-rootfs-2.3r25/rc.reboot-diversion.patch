@@ -3,8 +3,8 @@
 @@ -1,4 +1,11 @@
  #!/bin/sh
 +
-+if ( [ -r /mnt/sda2/unslung/rc.reboot ] && . /mnt/sda2/unslung/rc.reboot ) ; then return 0 ; fi
-+if ( [ -r /mnt/sdb2/unslung/rc.reboot ] && . /mnt/sdb2/unslung/rc.reboot ) ; then return 0 ; fi
++if (  [ ! -f /.sda2root ] && [ -r /mnt/sda2/unslung/rc.reboot ] && . /mnt/sda2/unslung/rc.reboot ) ; then return 0 ; fi
++if (  [ ! -f /.sdb2root ] && [ -r /mnt/sdb2/unslung/rc.reboot ] && . /mnt/sdb2/unslung/rc.reboot ) ; then return 0 ; fi
 +if ( [ -r /unslung/rc.reboot          ] && . /unslung/rc.reboot          ) ; then return 0 ; fi
 +
 +/bin/echo  "Stopping UNSLUNG Packages:"; ( . /etc/rc.d/rc.unslung-stop )

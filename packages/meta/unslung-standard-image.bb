@@ -3,8 +3,8 @@ PR = "r3"
 IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
-UNSLUNG_BASE_DEPENDS = "glibc slingbox ipkg wget cpio findutils"
-UNSLUNG_BASE_PACKAGES = "libc6-unslung slingbox ipkg wget cpio findutils"
+UNSLUNG_BASE_DEPENDS = "glibc slingbox ipkg wget cpio findutils portmap-unslung"
+UNSLUNG_BASE_PACKAGES = "libc6-unslung slingbox ipkg wget cpio findutils portmap-unslung"
 
 IMAGE_VARIANT ?= "standard"
 

@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r41"
+PR = "r40"
 
-UNSLUNG_VERSION = "3.18-beta"
+UNSLUNG_VERSION = "4.1-alpha"
 UNSLUNG_VARIANT ?= "standard"
 
 DEPENDS = "nslu2-linksys-libs"
@@ -11,7 +11,6 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-rootfs-${PV}/${UNS
 
 SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://README \
-	   file://NOTES \
 	   file://linuxrc \
 	   file://unsling \
 	   file://resling \
@@ -38,7 +37,6 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://remount-noatime.patch;patch=1 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
-	   file://tmp-permissions.patch;patch=1 \
 	   file://maintmode.cgi file://upgrade-maint.htm file://upgrade-nomaint.htm \
 	   "
 
@@ -63,6 +61,8 @@ do_compile () {
 	rm -f ${S}/etc/rc.orig
 	rm -f ${S}/etc/rc.d/rc.1.orig
 
+	install -d ${S}/initrd
+
 	install -m 755 ${WORKDIR}/linuxrc ${S}/linuxrc
 	install -m 755 ${WORKDIR}/unsling ${S}/sbin/unsling
 	install -m 755 ${WORKDIR}/resling ${S}/sbin/resling
@@ -71,7 +71,6 @@ do_compile () {
 
 	install -d ${S}/opt/doc
 	install -m 755 ${WORKDIR}/README ${S}/opt/doc/README
-	install -m 755 ${WORKDIR}/NOTES ${S}/opt/doc/NOTES
 	ln -s /opt/doc ${S}/home/httpd/html/Unslung
 
 	# Remove the libraries, because they are in nslu2-linksys-libs now
@@ -89,10 +88,11 @@ do_compile () {
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ \
 		${S}/home/httpd/html/Management/upgrade.htm
 
+	echo > ${S}/.recovery
 }
 
 do_install () {
-	( cd ${S} ; tar -c -v -f - --exclude '.pc' --exclude 'patches' . ) | ( cd ${D} ; tar xvf - )
+	( cd ${S} ; tar -c -v -f - --exclude '.pc' . ) | ( cd ${D} ; tar xvf - )
 }
 
 PACKAGES = "${PN}"

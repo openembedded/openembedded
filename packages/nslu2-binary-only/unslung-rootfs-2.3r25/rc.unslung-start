@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if (  [ ! -f /.sda2root ] && [ -f /mnt/sda2/unslung/rc.unslung-start ] && . /mnt/sda2/unslung/rc.unslung-start ) ; then return 0 ; fi
+if (  [ ! -f /.sdb2root ] && [ -f /mnt/sdb2/unslung/rc.unslung-start ] && . /mnt/sdb2/unslung/rc.unslung-start ) ; then return 0 ; fi
+if ( [ -f /unslung/rc.unslung-start          ] && . /unslung/rc.unslung-start          ) ; then return 0 ; fi
+# For backwards compatibility, will be removed in Unslung 4.x
+if ( [ -f /mnt/sda2/unslung/rc.unslung       ] && . /mnt/sda2/unslung/rc.unslung       ) ; then return 0 ; fi
+if ( [ -f /mnt/sdb2/unslung/rc.unslung       ] && . /mnt/sdb2/unslung/rc.unslung       ) ; then return 0 ; fi
+if ( [ -f /unslung/rc.unslung                ] && . /unslung/rc.unslung                ) ; then return 0 ; fi
+
+# Start all init scripts in /opt/etc/init.d
+# executing them in numerical order.
+#
+for i in /opt/etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     case "$i" in
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+	    ;;
+    esac
+done

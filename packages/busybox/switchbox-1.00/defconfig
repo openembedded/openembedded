@@ -63,7 +63,7 @@ CONFIG_CAT=y
 CONFIG_CHROOT=y
 # CONFIG_CMP is not set
 CONFIG_CP=y
-# CONFIG_CUT is not set
+CONFIG_CUT=y
 # CONFIG_DATE is not set
 CONFIG_DD=y
 CONFIG_DF=y

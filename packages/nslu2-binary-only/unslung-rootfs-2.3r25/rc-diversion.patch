@@ -14,6 +14,11 @@
 +   ( cd /home/httpd/html/Management ; mv upgrade-maint.htm upgrade.htm )
 +fi
 +
++#if ( [ -f /.sda2root ] || [ -f /.sdb2root ] ) ; then
++#   echo "Root filesystem is running a external disk ..."
++#   ( cd /home/httpd/html/Management ; mv upgrade-maint.htm upgrade.htm )
++#fi
++
 +# Wait for the USB disks to be recognised.
 +sleep 5
 +
