@@ -1,0 +1,17 @@
+SECTION="libs"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+DEPENDS=virtual/libc x11-cvs xextensions-cvs xext-cvs resourceext-cvs
+
+SRC_URI = cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XRes
+S=${WORKDIR}/XRes
+
+inherit autotools pkgconfig libtool
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}
