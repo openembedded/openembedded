@@ -1,0 +1,10 @@
+inherit gpe pkgconfig
+
+DESCRIPTION = "GPE wireless LAN communication applet"
+DEPENDS = "gtk+ libgpewidget"
+SECTION = "gpe"
+PRIORITY = "optional"
+LICENSE = "GPL"
+
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/${PN}-${PV}.tar.gz \
+	   file://fix_makefile.patch;patch=1"
