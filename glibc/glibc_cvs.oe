@@ -48,7 +48,7 @@ FILES_glibc-i18n = "${datadir}/i18n"
 FILES_catchsegv = "${bindir}/catchsegv"
 DEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
-FILES_glibc-thread-db = "/lib/libthread-db*"
+FILES_glibc-thread-db = "/lib/libthread_db*"
 
 HEADERS_VERSION = "2.6.5.1"
 HEADERS_DIR = "${WORKDIR}/linux-libc-headers-${HEADERS_VERSION}"
