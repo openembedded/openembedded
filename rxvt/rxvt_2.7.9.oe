@@ -1,9 +1,9 @@
+DESCRIPTION = "Well known terminal emulator"
 SECTION = "x11/utils"
 PR = "r1"
 DEPENDS = "x11 libxft"
-DESCRIPTION = "Well known terminal emulator"
 
-SRC_URI = "pserver://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/rxvt \
+SRC_URI = "${HANDHELDS_CVS};module=apps/rxvt \
 	   file://include.patch;patch=1"
 
 inherit autotools update-alternatives
