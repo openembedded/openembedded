@@ -8,7 +8,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
-           file://defconfig-ipaqsa"
+           file://defconfig-ipaqsa \
+	   file://ipaq-hal.init"
 
 S = "${WORKDIR}/kernel"
 
