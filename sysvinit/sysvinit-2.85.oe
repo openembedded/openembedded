@@ -1,0 +1,46 @@
+DEPENDS=virtual/libc
+DESCRIPTION = "System-V like init.\
+ Init is the first program to run after your system is booted, and\
+ continues to run as process number 1 until your system halts. Inits\
+ job is to start other programs that are essential to the operation of\
+ your system. All processes are descended from init. For more information,\
+ see the manual page init(8)."
+
+SRC_URI = ftp://ftp.cistron.nl/pub/people/miquels/${PN}/${P}.tar.gz \
+	  cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/update-rc.d
+S="${WORKDIR}/${P}/src"
+
+CFLAGS_prepend = "-D_GNU_SOURCE "
+export LCRYPT = "-lcrypt"
+
+do_install () {
+	install -d ${D}/${bindir} ${D}/${sbindir} \
+		   ${D}/sbin ${D}/${sysconfdir}/default \
+		   ${D}/${sysconfdir}/init.d
+#	install -m 755 debian/sysv-rc/sbin/invoke-rc.d \
+#		debian/sysv-rc/sbin/update-rc.d ${D}/usr/sbin/
+	install -m 755 halt killall5 \
+		runlevel shutdown ${D}/sbin/
+	install -m 755 init ${D}/sbin/sysvinit
+	install -m 755 mesg last ${D}/usr/bin/
+	install -m 0755 ${FILESDIR}/need		${D}/sbin/need.sysvinit
+	install -m 0755 ${FILESDIR}/provide		${D}/sbin/provide.sysvinit
+	ln -sf halt ${D}/sbin/reboot
+	ln -sf halt ${D}/sbin/poweroff
+	ln -sf init ${D}/sbin/telinit
+	ln -sf killall5 ${D}/sbin/pidof
+	ln -sf last ${D}/usr/bin/lastb
+#	echo "/etc/inittab" > ${D}/CONTROL/conffiles
+#	echo "/etc/default/rcS" >> ${D}/CONTROL/conffiles
+#	install -m 0755    ${FILESDIR}/prerm		${D}/CONTROL/
+#	install -m 0755    ${FILESDIR}/postinst		${D}/CONTROL/
+	install -m 0644    ${FILESDIR}/inittab	${D}/etc/inittab
+	install -m 0644    ${FILESDIR}/rcS-default	${D}/etc/default/rcS
+	install -m 0755    ${FILESDIR}/rc		${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/rcS		${D}/etc/init.d
+	install -m 0755    ${WORKDIR}/update-rc.d/update-rc.d ${D}/${sbindir}/
+}
+
+PACKAGES = ${PN} sysv-rc
+FILES_${PN} = /sbin ${bindir} ${sysconfdir}
+FILES_sysv-rc = ${sbindir}
