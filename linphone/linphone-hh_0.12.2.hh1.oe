@@ -1,10 +1,11 @@
-PR = "r1"
+PR = "r2"
 
 DESCRIPTION = "SIP-based IP phone (GPE edition)"
 DEPENDS = "libosip gtk+ libogg alsa-lib"
 SRC_URI = "http://handhelds.org/pub/linux/packages/linphone/linphone-${PV}.tar.gz \
 	file://osipua-ipv6-lossage.patch;patch=1 \
-	file://gpe-cross-lossage.patch;patch=1"
+	file://gpe-cross-lossage.patch;patch=1 \
+	file://disable-gtk-doc.patch;patch=1"
 
 S = "${WORKDIR}/linphone-${PV}"
 
@@ -12,7 +13,7 @@ FILES_${PN} += "${datadir}/linphonec"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-gnome_ui"
+EXTRA_OECONF = "--disable-gnome_ui --disable-gtk-doc"
 
 do_configure() {
 	# ffmpeg is in AC_SUBDIRS, but doesn't actually use autoconf.
