@@ -1,0 +1,305 @@
+--- qkeyboard_qws.cpp.~1~	2004-09-13 09:17:07.000000000 +1000
++++ qt-2.3.9/src/kernel/qkeyboard_qws.cpp	2004-09-13 19:20:23.000000000 +1000
+@@ -30,6 +30,34 @@
+ **
+ **********************************************************************/
+ 
++/****************************************************************************
++**
++** Keyboard Handling Redesign
++** Copyright 2003, Chris Larson <kergoth@handhelds.org>
++** 
++** TODO: (key: . = in progress, x = completed)
++**
++** [.] Tty driver should load its initial keymap from the kernel,
++**     thereby ensuring keymap consistency between X, console, and qt/e
++**     [x] Read kernel keymappings.
++**     [x] Read kernel keycode -> unicode map.
++**     [x] Use them, along with the existing keyM, to push events up.
++**     [ ] Create a new table, from transformed keycode -> qt keycode, rather
++**         than the existing raw keycode -> qt keycode.
++**     [ ] Adapt handleKey to deal with keys that have no unicode value, such as
++**         keypresses that are mapped to strings in the string table. (e.g. F keys)
++** [ ] Cursor orientation change based on display rotation should not
++**     be bound to Ipaq or 5xxx, but instead as a runtime choice based
++**     on whether or not we're using a Transformed display driver.
++** [ ] Double check that VT handling, particularly with regard to switching,
++**     is handled properly.
++** [ ] Add a generic means of dealing with additional (outside the realm of
++**     ctrl, alt, shift, altgr) modifiers.  Also ensure a means of binding
++**     a keypress/combination to a 'lock' of said additional modifiers.
++**
++**********************************************************************/
++
++
+ #include "qwindowsystem_qws.h"
+ #include "qwsutils_qws.h"
+ #include "qgfx_qws.h"
+@@ -46,6 +74,7 @@
+ #include <unistd.h>
+ #ifdef _OS_LINUX_
+ #include <linux/kd.h>
++#include <linux/keyboard.h>
+ #endif
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+@@ -53,7 +82,7 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <signal.h>
+-
++#include <termios.h>
+ #ifdef QT_QWS_TIP2
+ #include <qcopchannel_qws.h>
+ #endif
+@@ -80,13 +109,13 @@
+ #include <sys/vt.h>
+ #endif
+ 
+-#ifdef QT_QWS_SL5XXX
+-#include <asm/sharp_char.h>
+-#endif
++// #ifdef QT_QWS_SL5XXX
++// #include <asm/sharp_char.h>
++// #endif
+ 
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++// #if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+ #define QT_QWS_AUTOREPEAT_MANUALLY
+-#endif
++//#endif
+ 
+ 
+ 
+@@ -1251,6 +1280,222 @@
+ 	doKey(buf[loop]);
+ }
+ 
++/* KernelTTY */
++class QWSKernelTtyKeyboardHandler : public QWSPC101KeyboardHandler
++{
++    Q_OBJECT
++public:
++    QWSKernelTtyKeyboardHandler(const QString&);
++    virtual ~QWSKernelTtyKeyboardHandler();
++     void readKeyboardMap();
++     void readUnicodeMap();
++     void handleKey(unsigned char code);
++
++private slots:
++    void readKeyboardData();
++
++private:
++    struct termios origTermData;
++     unsigned short acm[E_TABSZ];
++     unsigned char kernel_map[(1<<KG_CAPSSHIFT)][NR_KEYS];
++
++     int current_map;	
++};
++
++/* Kernel TTY */
++QWSKernelTtyKeyboardHandler::QWSKernelTtyKeyboardHandler(const QString& device) : current_map(0)
++{
++    kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
++
++    if ( kbdFD >= 0 ) {
++	QSocketNotifier *notifier;
++	notifier = new QSocketNotifier( kbdFD, QSocketNotifier::Read, this );
++	connect( notifier, SIGNAL(activated(int)),this,
++		 SLOT(readKeyboardData()) );
++
++	// save for restore.
++	tcgetattr( kbdFD, &origTermData );
++
++	struct termios termdata;
++	tcgetattr( kbdFD, &termdata );
++
++#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
++//# ifdef QT_QWS_USE_KEYCODES
++	ioctl(kbdFD, KDSKBMODE, K_MEDIUMRAW);
++//# else
++//	ioctl(kbdFD, KDSKBMODE, K_RAW);
++//# endif
++#endif
++
++	termdata.c_iflag = (IGNPAR | IGNBRK) & (~PARMRK) & (~ISTRIP);
++	termdata.c_oflag = 0;
++	termdata.c_cflag = CREAD | CS8;
++	termdata.c_lflag = 0;
++	termdata.c_cc[VTIME]=0;
++	termdata.c_cc[VMIN]=1;
++	cfsetispeed(&termdata, 9600);
++	cfsetospeed(&termdata, 9600);
++	tcsetattr(kbdFD, TCSANOW, &termdata);
++
++     readUnicodeMap();
++     readKeyboardMap();
++ 
++	signal(VTSWITCHSIG, vtSwitchHandler);
++
++#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
++	struct vt_mode vtMode;
++	ioctl(kbdFD, VT_GETMODE, &vtMode);
++
++	// let us control VT switching
++	vtMode.mode = VT_PROCESS;
++	vtMode.relsig = VTSWITCHSIG;
++	vtMode.acqsig = VTSWITCHSIG;
++	ioctl(kbdFD, VT_SETMODE, &vtMode);
++
++	struct vt_stat vtStat;
++	ioctl(kbdFD, VT_GETSTATE, &vtStat);
++	vtQws = vtStat.v_active;
++#endif
++   }
++}
++
++QWSKernelTtyKeyboardHandler::~QWSKernelTtyKeyboardHandler()
++{
++    if (kbdFD >= 0)
++    {
++#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
++	ioctl(kbdFD, KDSKBMODE, K_XLATE);
++#endif
++	tcsetattr(kbdFD, TCSANOW, &origTermData);
++	::close(kbdFD);
++	kbdFD = -1;
++    }
++}
++
++void QWSKernelTtyKeyboardHandler::readUnicodeMap()
++{
++    if (kbdFD < 0)
++        return;
++
++    if (ioctl(kbdFD,GIO_UNISCRNMAP,acm) != 0)
++	return;
++}
++
++void QWSKernelTtyKeyboardHandler::readKeyboardMap()
++{
++    struct kbentry  kbe;
++
++    if (kbdFD < 0)
++        return;
++
++    for (int map = 0; map < (1<<KG_CAPSSHIFT); ++map) {
++        unsigned short kval;
++
++	kbe.kb_table = map;
++
++        for (int key = 0; key < NR_KEYS; ++key) { 
++	    kbe.kb_index = key;
++
++	    if (ioctl(kbdFD, KDGKBENT, &kbe) != 0)
++		continue;
++
++            if ((kbe.kb_value == K_HOLE) || 
++                (kbe.kb_value == K_NOSUCHMAP))
++                continue;
++
++	    kval = KVAL(kbe.kb_value);
++	    switch (KTYP(kbe.kb_value)) {
++	    case KT_LETTER:
++            case KT_LATIN:
++            case KT_ASCII:
++            case KT_PAD:
++            case KT_SHIFT:
++                kernel_map[map][key] = kbe.kb_value;
++//                qWarning("keycode %d, map %d, type %d, val %d, acm %c\n", key, map, KTYP(kbe.kb_value), kval, acm[kval]);
++                break;
++       }
++       }
++    }
++}
++
++void QWSKernelTtyKeyboardHandler::readKeyboardData()
++{
++    unsigned char buf[81];
++    int n = read(kbdFD, buf, 80 );
++    for ( int loop = 0; loop < n; loop++ )
++	handleKey(buf[loop]);
++}
++
++static inline int map_to_modif(int current_map)
++{
++    int modifiers = 0;
++
++    if (current_map & KG_ALT)
++        modifiers |= Qt::ALT;
++    else if (current_map & KG_CTRL)
++        modifiers |= Qt::CTRL;
++    else if (current_map & KG_SHIFT)
++        modifiers |= Qt::SHIFT;
++
++    return modifiers;
++}
++
++
++void QWSKernelTtyKeyboardHandler::handleKey(unsigned char code)
++{
++    struct kbentry kbe;
++
++    bool release = false;
++    if (code & 0x80) {
++        release = true;
++        code &= 0x7f;
++    }
++
++    unsigned short mCode = KVAL(kernel_map[current_map][code]);
++    unsigned short unicode = acm[mCode];
++
++    const QWSServer::KeyMap *currentKey = 0;
++    int qtKeyCode = Qt::Key_unknown;
++
++    currentKey = &QWSServer::keyMap()[code];
++    if ( currentKey )
++        qtKeyCode = currentKey->key_code;
++
++    qDebug("code %d, mCode %d, uni %c, qtKeyCode %d\n", code, mCode, unicode, qtKeyCode);
++
++    // Handle map changes based on press/release of modifiers
++    // hardcoded for now
++    int modif = -1;
++    switch (qtKeyCode) {
++        case Qt::Key_Alt:
++        case Qt::Key_F22:
++            modif = (1<<KG_ALT);
++		break;
++        case Qt::Key_Control:
++            modif = (1<<KG_CTRL);
++		break;
++        case Qt::Key_Shift:
++            modif = (1<<KG_SHIFT);
++		break;
++        case Qt::Key_Left:
++        case Qt::Key_Right:
++        case Qt::Key_Up:
++        case Qt::Key_Down:
++            if (qt_screen->isTransformed())
++                qtKeyCode = xform_dirkey(qtKeyCode);
++		break;
++	}
++
++    if (modif != -1) {
++        if (release)
++            current_map &= ~modif;
++	else
++            current_map |= modif;
++    }
++    unsigned int uni = unicode;
++    processKeyEvent(uni & 0xff, qtKeyCode, map_to_modif(current_map), !release, 0);
++}
++
+ 
+ /* USB driver */
+ 
+@@ -1687,6 +1932,8 @@
+ #elif defined(QT_QWS_CASSIOPEIA)
+ 	handler = new QWSVr41xxButtonsHandler();
+ #endif
++    } else if ( type == "KernelTTY" ) { //set QWS_KEYBOARD=KernelTTY
++	handler = new QWSKernelTtyKeyboardHandler(device);
+     } else if ( type == "QVFbKeyboard" ) {
+ 	handler = new QWSVFbKeyboardHandler();
+     } else if ( type == "USB" ) {
