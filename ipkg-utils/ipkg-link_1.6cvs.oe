@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "Itsy Package Manager utilities link script"
 CONFLICTS = "ipkg-utils"
 PV_append = "${CVSDATE}"

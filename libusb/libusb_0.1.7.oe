@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 

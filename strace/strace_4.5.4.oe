@@ -1,0 +1,10 @@
+SECTION = "console/utils"
+DESCRIPTION = "strace is a system call tracing tool."
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
+	   file://arm-compilation.patch;patch=1 \
+	   file://arm-syscall.patch;patch=1"
+
+inherit autotools
+
+export INCLUDES = "-I. -I./linux"

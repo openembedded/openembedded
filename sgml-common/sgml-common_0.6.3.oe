@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "The sgml-common package gathers very basic \
 stuff necessary to work with SGML and XML, such as xml.dcl, \
 a SGML declaration of XML; iso-entities, a list of the basic \

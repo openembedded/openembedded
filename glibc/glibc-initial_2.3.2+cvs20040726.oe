@@ -1,3 +1,4 @@
+SECTION = "libs"
 include glibc_${PV}.oe
 
 DEPENDS = "patcher-native linux-libc-headers"

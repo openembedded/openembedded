@@ -1,3 +1,4 @@
+SECTION = "x11/base"
 LICENSE = "GPL"
 DESCRIPTION = "pdm is a minimal session manager for GUIs."
 

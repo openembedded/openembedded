@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "ncurses glib-2.0"
 RDEPENDS = "gift"
 LICENSE = "GPL"

@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 

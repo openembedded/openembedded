@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 

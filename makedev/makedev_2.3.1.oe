@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "The MAKEDEV executable is used to create \
 device files, often in /dev."
 

@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "libvorbis libogg"
 DESCRIPTION = "giFT is a framework for bridging multiple \
 backend peer-to-peer protocols and the user interface \

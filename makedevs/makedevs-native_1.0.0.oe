@@ -1,3 +1,4 @@
+SECTION = "base"
 include makedevs_${PV}.oe
 inherit native 
 

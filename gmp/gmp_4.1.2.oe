@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "GNU multiprecision arithmetic library"
 
 SRC_URI = "ftp://mirrors.kernel.org/gnu/gmp/gmp-${PV}.tar.gz \

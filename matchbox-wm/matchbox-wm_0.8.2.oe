@@ -1,3 +1,4 @@
+SECTION = "x11/wm"
 PR = "r3"
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"

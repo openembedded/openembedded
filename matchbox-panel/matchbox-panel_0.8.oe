@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox x11 xext xpm"

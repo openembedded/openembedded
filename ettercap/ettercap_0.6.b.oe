@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "ncurses openssl"
 DESCRIPTION = "Ettercap is a network sniffer/interceptor/logger \
 for ethernet LANs. It supports active and passive dissection of \

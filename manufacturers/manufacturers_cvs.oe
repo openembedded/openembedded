@@ -1,0 +1,11 @@
+SECTION = "base"
+DESCRIPTION = "Ethernet manufacturer database"
+MAINTAINER = "Michael 'Mickey' Lauer"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc"
+S = "${WORKDIR}/etc"
+
+do_install() {
+	install -d ${D}/${sysconfdir}
+	install -m 0644 manufacturers ${D}/${sysconfdir}/
+}

@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 PR = "r1"
 
 inherit gnome pkgconfig

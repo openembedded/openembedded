@@ -1,3 +1,4 @@
+SECTION = "base"
 include mtd_${PV}.oe
 inherit native
 DEPENDS = "patcher-native zlib-native"

@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 PR = "r1"
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 DESCRIPTION = "GNOME User Interface Library"

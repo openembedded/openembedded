@@ -1,3 +1,4 @@
+SECTION = "libs"
 LICENSE = GPL
 DESCRIPTION = The GNU internationalization library.
 

@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
@@ -54,4 +55,3 @@ do_install_append() {
         install -d ${D}/etc/init.d
         install ${WORKDIR}/ipaq-hal.init ${D}/etc/init.d/ipaq-hal
 }
-

@@ -1,3 +1,4 @@
+SECTION = "devel"
 PR = "r1"
 include binutils_${PV}.oe
 inherit sdk

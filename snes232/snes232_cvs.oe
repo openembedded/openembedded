@@ -1,3 +1,4 @@
+SECTION = "unknown"
 PR = "r2"
 
 RDEPENDS = "kernel-module-serport"
@@ -18,4 +19,3 @@ do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/snes232
 	install snes232.ko ${D}/lib/modules/${KERNEL_VERSION}/snes232/
 }
-

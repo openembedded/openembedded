@@ -1,3 +1,4 @@
+SECTION = "unknown"
 include eet_${PV}.oe
 inherit native
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/eet"

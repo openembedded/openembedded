@@ -1,3 +1,4 @@
+SECTION = "libs"
 DEPENDS = "ncurses"
 LICENSE = "GPL"
 DESCRIPTION = "The GNU inetutils are a collection of common \

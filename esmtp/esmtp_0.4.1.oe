@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "libesmtp"
 DESCRIPTION = "ESMTP is a user-configurable relay-only MTA \
 with a sendmail-compatible syntax, based on libESMTP and \

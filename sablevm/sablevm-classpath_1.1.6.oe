@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DESCRIPTION = "GNU Classpath modified to work with SableVM"
 HOMEPAGE = "http://sablevm.org"
 PRIORITY = "optional"

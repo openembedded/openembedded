@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 PR = "r1"
 
 DESCRIPTION = "strace is a system call tracing tool."

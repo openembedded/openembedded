@@ -1,3 +1,4 @@
+SECTION = "unknown"
 DESCRIPTION = "Simple C Expat Wrapper."
 DEPENDS = "expat"
 

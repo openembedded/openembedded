@@ -1,3 +1,4 @@
+SECTION = "unknown"
 DEPENDS = "patcher-native opensp-native sgml-common-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \

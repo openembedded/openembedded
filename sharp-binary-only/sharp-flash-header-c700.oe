@@ -1,3 +1,4 @@
+SECTION = "base"
 SRC_URI = "file://header-c700.bin"
 
 do_stage() {

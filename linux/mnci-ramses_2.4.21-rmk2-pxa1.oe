@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MNCI device"
 MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 LICENSE = "GPL"

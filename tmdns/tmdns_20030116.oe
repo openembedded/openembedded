@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DESCRIPTION = "tmdns is a multicast DNS server."
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/zeroconf;module=tmdns;date=${PV} \

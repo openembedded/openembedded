@@ -1,3 +1,4 @@
+SECTION = "x11/base"
 PR = "r3"
 
 inherit gnome

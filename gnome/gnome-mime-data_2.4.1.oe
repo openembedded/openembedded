@@ -1,2 +1,2 @@
+SECTION = "x11/base"
 inherit gnome
-

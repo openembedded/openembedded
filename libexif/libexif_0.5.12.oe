@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Library to read the extended image information (EXIF) from JPEG pictures"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libexif/libexif-${PV}.tar.gz"

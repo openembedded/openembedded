@@ -1,0 +1,81 @@
+SECTION = "base"
+DEPENDS = "nslu2-firmware-binary e2tools-native"
+PACKAGES = ""
+INHIBIT_DEFAULT_DEPS = "1"
+PR = "r1"
+
+UNSLUNG_VERSION = 1.11-beta
+SUFFIX = 
+
+SRC_URI = "file://linuxrc \
+	   file://rc.unslung \
+	   file://unsling \
+	   file://unslung.patch"
+S = "${WORKDIR}"
+
+ROOT_NEW_FILES = ".unslung linuxrc"
+SBIN_NEW_FILES = "unsling"
+ETC_PATCHED_FILES = "passwd rc"
+ETC_NEW_FILES = "profile"
+RC_PATCHED_FILES = "rc.1 rc.crond rc.halt rc.local rc.modules \
+		    rc.network rc.quickset rc.quota rc.reboot \
+		    rc.reset_usrgrpshare rc.rstimezone rc.samba \
+		    rc.sysinit rc.thttpd rc.xinetd"
+RC_NEW_FILES = "rc.unslung"
+HTML_PATCHED_FILES = "home.htm"
+LOCAL_PATCHED_FILES = "passwd"
+ROOT_NEW_DIRS = "opt"
+
+do_compile () {
+	rm -f ${STAGING_LIBDIR}/nslu2-binaries/ramdisk-unslung.gz
+	cp ${STAGING_LIBDIR}/nslu2-binaries/ramdisk.gz .
+	gunzip -f ramdisk.gz
+	rm -rf sources
+	mkdir sources
+	cp linuxrc sources/linuxrc
+	mkdir sources/sbin
+	cp unsling sources/sbin/unsling
+	mkdir -p sources/etc
+	for f in ${ETC_PATCHED_FILES}; do
+		e2cp -v ramdisk:/etc/$f sources/etc/$f || die "failed to copy $f"
+	done
+	mkdir -p sources/etc/rc.d
+	cp rc.unslung sources/etc/rc.d/rc.unslung
+	for f in ${RC_PATCHED_FILES}; do
+		e2cp -v ramdisk:/etc/rc.d/$f sources/etc/rc.d/$f || die "failed to copy $f"
+	done
+	mkdir -p sources/home/httpd/html
+	for f in ${HTML_PATCHED_FILES}; do
+		e2cp -v ramdisk:/home/httpd/html/$f sources/home/httpd/html/$f || die "failed to copy $f"
+	done
+	mkdir -p sources/usr/local
+	for f in ${LOCAL_PATCHED_FILES}; do
+		e2cp -v ramdisk:/usr/local/$f sources/usr/local/$f || die "failed to copy $f"
+	done
+	sed -e s/X.Y/${UNSLUNG_VERSION}${SUFFIX}/ unslung.patch | patch -d sources -p3
+	sed -i -e s/@version#/@version#-uNSLUng-${UNSLUNG_VERSION}${SUFFIX}/ sources/home/httpd/html/home.htm
+	for f in ${ROOT_NEW_DIRS}; do
+		e2mkdir -v -O 0 -G 0 -P 755 ramdisk:/$f || die "failed to create $f"
+	done
+	for f in ${ROOT_NEW_FILES}; do
+		e2cp -v -O 0 -G 0 -P 755 sources/$f ramdisk:/$f || die "failed to copy $f"
+	done
+	for f in ${SBIN_NEW_FILES}; do
+		e2cp -v -O 0 -G 0 -P 755 sources/sbin/$f ramdisk:/sbin/$f || die "failed to copy $f"
+	done
+	for f in ${ETC_PATCHED_FILES} ${ETC_NEW_FILES}; do
+		e2cp -v -O 0 -G 0 -P 755 sources/etc/$f ramdisk:/etc/$f || die "failed to copy $f"
+	done
+	for f in ${RC_PATCHED_FILES} ${RC_NEW_FILES}; do
+		e2cp -v -O 0 -G 0 -P 755 sources/etc/rc.d/$f ramdisk:/etc/rc.d/$f || die "failed to copy $f"
+	done
+	for f in ${HTML_PATCHED_FILES}; do
+		e2cp -v -O 0 -G 0 -P 644 sources/home/httpd/html/$f ramdisk:/home/httpd/html/$f || die "failed to copy $f"
+	done
+	for f in ${LOCAL_PATCHED_FILES}; do
+		e2cp -v -O 0 -G 0 -P 644 sources/usr/local/$f ramdisk:/usr/local/$f || die "failed to copy $f"
+	done
+	rm -rf sources
+	gzip -f ramdisk
+	cp ramdisk.gz ${STAGING_LIBDIR}/nslu2-binaries/ramdisk-unslung.gz
+}

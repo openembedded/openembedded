@@ -1,3 +1,4 @@
+SECTION = "libs"
 DEPENDS = "patcher-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \

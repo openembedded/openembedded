@@ -1,3 +1,4 @@
+SECTION = "base"
 include e2tools_${PV}.oe
 inherit native
 

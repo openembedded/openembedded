@@ -1,3 +1,4 @@
+SECTION = "base"
 DEPENDS = "unzip-native"
 
 SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci216.exe"

@@ -1,3 +1,4 @@
+SECTION = "x11/base"
 PR = "r1"
 
 SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver"

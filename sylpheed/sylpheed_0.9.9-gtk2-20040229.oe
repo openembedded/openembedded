@@ -1,3 +1,4 @@
+SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
@@ -5,4 +6,3 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-gtk2/sylpheed-0.9.9-gtk2-20040229.tar.gz"
 
 inherit autotools 
-

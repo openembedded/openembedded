@@ -1,3 +1,4 @@
+SECTION = "base"
 PR = "r1"
 
 DEPENDS = "libxml2"

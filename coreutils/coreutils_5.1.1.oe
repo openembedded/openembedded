@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "A collection of core GNU utilities."
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2"

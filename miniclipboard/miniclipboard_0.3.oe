@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 inherit gpe
 
 DESCRIPTION = "Clipboard management application"

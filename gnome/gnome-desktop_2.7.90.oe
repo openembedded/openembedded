@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 PR = "r0"
 DESCRIPTION = "GNOME library for reading .desktop files"
 inherit gnome

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 include mono_${PV}.oe
 S = "${WORKDIR}/mono-${PV}"
 DEPENDS = "glib-2.0-native"

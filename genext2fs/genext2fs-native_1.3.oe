@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 include genext2fs_${PV}.oe
 inherit native
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/genext2fs-${PV}"

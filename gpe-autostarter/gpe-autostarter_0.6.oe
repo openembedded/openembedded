@@ -1,3 +1,4 @@
+SECTION = "gpe"
 DEPENDS = "glib-2.0 dbus hotplug-dbus"
 
 SRC_URI = "ftp://gpe.handhelds.org/gpe/source/gpe-autostarter-${PV}.tar.gz"

@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "linux-wlan-ng (prism2.x, prism3, pcmcia, pci, usb) driver for 11Mbps wireless lan cards"
 DEPENDS = "virtual/kernel"
 MAINTAINER = "Jeremy Grant <jeremy@thegrantclan.org>"

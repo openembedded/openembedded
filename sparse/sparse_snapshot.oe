@@ -1,3 +1,4 @@
+SECTION = "devel"
 def get_snapshot_date(d):
 	import oe
 	cvsdate = oe.data.getVar('CVSDATE', d, 1)

@@ -1,0 +1,4 @@
+SECTION = "gpe"
+inherit gpe
+
+DEPENDS = "libsoundgen libschedule gtk+ libgpewidget"

@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DEPENDS = "ncurses"
 DESCRIPTION = "GNU nano (Nano's ANOther editor, or \
 Not ANOther editor) is an enhanced clone of the \

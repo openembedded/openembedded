@@ -1,3 +1,4 @@
+SECTION = "base"
 include gnu-config.oe
 
 inherit native

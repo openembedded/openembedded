@@ -1,0 +1,11 @@
+SECTION = "x11/base"
+SRC_URI = "file://gtkrc"
+DEPENDS = "gnome-themes"
+RDEPENDS = "gtk-engine-mist"
+
+FILES_${PN} += "${datadir}/themes"
+
+do_install() {
+	install -d ${D}${datadir}/themes/Angelistic/gtk-2.0
+	install -m 0644 ${WORKDIR}/gtkrc ${D}${datadir}/themes/Angelistic/gtk-2.0/
+}

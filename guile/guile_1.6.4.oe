@@ -1,3 +1,4 @@
+SECTION = "unknown"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
 	   file://configure-lossage.patch;patch=1"

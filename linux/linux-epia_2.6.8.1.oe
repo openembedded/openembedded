@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "Linux kernel for VIA EPiA"
 LICENSE = "GPL"
 PR = "r9"

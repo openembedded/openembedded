@@ -1,3 +1,4 @@
+SECTION = "devel"
 include intltool_${PV}.oe
 inherit native
 DEPENDS = "libxml-parser-perl-native"

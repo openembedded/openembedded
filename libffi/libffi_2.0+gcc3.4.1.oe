@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"
 PRIORITY = "optional"

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs1.sourceforge.net/cvsroot/linuxconsole;module=ruby \
@@ -20,4 +21,3 @@ do_install() {
 	install -d ${D}${sbindir}
 	install evtest inputattach jstest jscal fftest ${D}${sbindir}
 }
-

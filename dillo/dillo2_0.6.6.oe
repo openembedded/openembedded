@@ -1,3 +1,4 @@
+SECTION = "x11/network"
 DESCRIPTION = "Lightweight gtk+2 browser."
 DEPENDS = "gtk+"
 RDEPENDS = "gdk-pixbuf-loader-xpm"

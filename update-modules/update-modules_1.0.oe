@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "Script to manage module configuration files"
 PACKAGE_ARCH = "all"
 PR = "r3"

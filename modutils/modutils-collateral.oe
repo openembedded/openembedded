@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "modutils configuration files"
 PR = "r1"
 

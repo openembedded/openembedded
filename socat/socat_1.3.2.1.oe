@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "openssl"
 DESCRIPTION = "Socat is a relay for bidirectional data \
 transfer between two independent data channels."

@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 PR = "r2"
 
 DESCRIPTION = "SIP-based IP phone (GPE edition)"

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Perl bindings for SDL"
 SRC_URI = "http://bloodgate.com/perl/sdl/pub/SDL_perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1;pnum=0"

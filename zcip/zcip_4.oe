@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "libpcap libnet-1.0.2a"
 DESCRIPTION = "zcip is an implementation of zero configuration networking (zeroconf)."
 

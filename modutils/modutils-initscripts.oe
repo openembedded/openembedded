@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "modutils configuration files"
 SRC_URI = "file://modutils.sh"
 PR = "r1"

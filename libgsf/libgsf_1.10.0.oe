@@ -1,3 +1,4 @@
+SECTION = "libs"
 PR = "r1"
 
 DEPENDS= "libxml2 glib-2.0 zlib gtk-doc libbonobo gnome-vfs"
@@ -42,4 +43,3 @@ do_stage() {
 		install -m 0644 gsf-gnome/$i ${STAGING_INCDIR}/libgsf-1/gsf-gnome/$i
 	done
 }
-

@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "Gives a fake root environment"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz"

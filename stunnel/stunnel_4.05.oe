@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "openssl"
 LICENSE = "GPL"
 DESCRIPTION = "Stunnel is a program that allows you to encrypt \

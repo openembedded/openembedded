@@ -1,0 +1,5 @@
+SECTION = "libs"
+include libidl_${PV}.oe
+inherit native
+
+DEPENDS = "glib-2.0-native"

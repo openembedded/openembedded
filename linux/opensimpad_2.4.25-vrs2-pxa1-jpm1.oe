@@ -1,3 +1,4 @@
+SECTION = "kernel"
 #DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
@@ -66,4 +67,3 @@ do_configure() {
 	echo "CONFIG_CMDLINE=\"${CMDLINE} mem=${mem}M\"" >> ${S}/.config
         oe_runmake oldconfig
 }
-

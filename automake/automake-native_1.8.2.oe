@@ -1,3 +1,4 @@
+SECTION = "devel"
 include automake_${PV}.oe
 S = "${WORKDIR}/automake-${PV}"
 DEPENDS = "autoconf-native"

@@ -1,0 +1,15 @@
+SECTION = "unknown"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=apps/kbdd;date=${PV}"
+
+S = "${WORKDIR}/kbdd"
+
+do_compile() {
+	oe_runmake
+}
+
+do_install() {
+	install -d ${D}/${bindir}
+	install -d ${D}/${docdir}/kbdd/
+	install -m 0755 kbdd ${D}/${bindir}/
+	install -m 0644 README ${D}/${docdir}/kbdd/
+}

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 DEPENDS = "elftoaout-native"
 
 SRC_URI = "http://www.sparc-boot.org/pub/silo/silo-${PV}.tar.bz2 \
@@ -11,4 +12,3 @@ do_stage() {
 	install tilo/maketilo ${STAGING_BINDIR}
 	install tilo/tilo.sh ${STAGING_BINDIR}
 }
-

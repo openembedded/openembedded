@@ -1,3 +1,4 @@
+SECTION = "devel"
 DESCRIPTION = "GNU Make examines the timestamps on a set of \
 interdependent files, and, if necessary, issues commands \
 to bring them up-to-date."

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
 	file://Make-config.patch;patch=1 \
 	file://mklib.patch;patch=1"
@@ -21,4 +22,3 @@ do_stage() {
         cp -pd lib/* ${STAGING_LIBDIR}/
         cp -r include/GL ${STAGING_INCDIR}/
 }
-

@@ -1,3 +1,4 @@
+SECTION = "devel"
 DESCRIPTION = "GPP is a general-purpose preprocessor with \
 customizable syntax, suitable for a wide range of \
 preprocessing tasks."

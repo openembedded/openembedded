@@ -1,3 +1,4 @@
+SECTION = "unknown"
 include edb_cvs.oe
 inherit native
 DEPENDS = "zlib-native"

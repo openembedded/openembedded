@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 PR = "r1"
 DEPENDS = "libgnomeprint gtk+ libgnomecanvas gnome-icon-theme gnome-common"
 

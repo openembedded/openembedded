@@ -1,3 +1,4 @@
+SECTION = "base"
 PV = "0.1"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"

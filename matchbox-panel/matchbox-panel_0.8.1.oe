@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 PR = "r4"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
@@ -16,4 +17,3 @@ EXTRA_OECONF = "--enable-startup-notification --enable-dnotify --enable-nls --en
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \
 	       ${datadir}/pixmaps"
-

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DEPENDS = "libnet libpcap"
 DESCRIPTION = "Libnids performs assembly of TCP segments \
 into TCP streams, IP defragmentation, and TCP port \

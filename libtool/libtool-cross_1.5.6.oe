@@ -1,3 +1,4 @@
+SECTION = "devel"
 include libtool_${PV}.oe
 
 PACKAGES = ""

@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 include pkgconfig_${PV}.oe
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/pkgconfig-${PV}"
 

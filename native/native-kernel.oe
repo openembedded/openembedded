@@ -1,3 +1,4 @@
+SECTION = "base"
 COMPATIBLE_HOST = "${BUILD_SYS}"
 
 PROVIDES = "virtual/kernel"
@@ -10,4 +11,3 @@ do_stage() {
 	echo >${STAGING_KERNEL_DIR}/kernel-ccsuffix
 	echo >${STAGING_KERNEL_DIR}/kernel-ldsuffix
 }
-

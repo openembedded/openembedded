@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DESCRIPTION = "GNU Mailutils contains a series of \
 useful mail clients, servers, and libraries."
 

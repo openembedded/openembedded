@@ -1,3 +1,4 @@
+SECTION = "libs"
 include gettext_${PV}.oe
 S = "${WORKDIR}/gettext-${PV}"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/gettext-${PV}"

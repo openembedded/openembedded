@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "Firmware for the Prism3 cards"
 LICENSE = "Unknown"
 PR = "r1"
@@ -19,4 +20,3 @@ To make a prism3 card w/ downloadable firmware work, do the following:
 	3.) Add a shell skript w/ "ifup <interface>" to /etc/apm/resume.d
 EOF
 }
-

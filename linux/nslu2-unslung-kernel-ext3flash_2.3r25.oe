@@ -1,0 +1,7 @@
+SECTION = "kernel"
+include nslu2-linksys_2.4.22.oe
+
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/nslu2-unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+
+SRC_URI += " file://unslung-kernel-ext3flash.patch;patch=1"
+CMDLINE_ROOT = "root=/dev/slug initrd=0x01000000,10M mem=32M@0x00000000"

@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DESCRIPTION = "find, locate, and xargs binaries."
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/findutils/findutils-${PV}.tar.gz \

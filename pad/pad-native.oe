@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DESCRIPTION = "Console utility for padding a file (filling with 0 to reach a specified length)"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/pad"
 SRC_URI = "file://pad.c"

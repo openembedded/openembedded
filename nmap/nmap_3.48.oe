@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "libpcap"
 DESCRIPTION = "Nmap is a command line portscanner."
 

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Freetype font rendering library"
 
 SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
@@ -30,4 +31,3 @@ do_stage () {
 	sed -e 's,${prefix},${STAGING_LIBDIR}/..,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
 	chmod u+x ${STAGING_BINDIR}/freetype-config
 }
-

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 PR = "r3"
 
 DEPENDS = "libxxf86dga libxxf86vm"
@@ -23,4 +24,3 @@ do_install() {
 	install -d ${D}${bindir}
 	install snes9x ${D}${bindir}
 }
-

@@ -1,3 +1,4 @@
+SECTION = "x11/network"
 PR = "r1"
 
 PACKAGES = "prismstumbler prismstumbler-frontend"

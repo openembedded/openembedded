@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DESCRIPTION = "IPv6 router advertisement daemon"
 
 SRC_URI = "http://v6web.litech.org/radvd/dist/radvd-${PV}.tar.gz \

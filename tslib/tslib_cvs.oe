@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
 PR = "r4"

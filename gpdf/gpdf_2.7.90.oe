@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 PR = "r2"
 
 inherit gnome
@@ -9,4 +10,3 @@ EXTRA_OECONF = "--disable-schemas-install"
 
 SRC_URI += "file://aclocal-lossage.patch;patch=1 \
 	file://desktop.patch;patch=1"
-

@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DEPENDS = "patcher-native openjade-native"
 
 SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-${PV}.tar.gz"

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Liboop is a low-level event loop management library \
 for POSIX-based operating systems."
 LICENSE = "LGPL"

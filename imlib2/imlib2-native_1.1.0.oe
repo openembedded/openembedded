@@ -1,3 +1,4 @@
+SECTION = "libs"
 include imlib2_${PV}.oe
 inherit native
 DEPENDS = "freetype-native"

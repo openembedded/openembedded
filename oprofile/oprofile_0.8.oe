@@ -1,3 +1,4 @@
+SECTION = "devel"
 DESCRIPTION = "OProfile is a system-wide profiler for Linux systems, capable \
 of profiling all running code at low overhead."
 LICENSE = "GPL"

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "OpenSP is a library and a set of tools \
 for validating, parsing, and manipulating SGML and \
 XML documents."

@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DESCRIPTION = "Utilities for User-Mode-Linux"
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses readline"
@@ -13,4 +14,3 @@ do_compile() {
 do_install() {
 	oe_runmake install DESTDIR=${D}
 }
-

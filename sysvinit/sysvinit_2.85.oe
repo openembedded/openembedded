@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "System-V like init.\
  Init is the first program to run after your system is booted, and\
  continues to run as process number 1 until your system halts. Inits\

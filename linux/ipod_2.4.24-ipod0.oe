@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Ipods"
 LICENSE = "GPL"
 KV = "2.4.24"
@@ -20,4 +21,3 @@ do_compile() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
         oe_runmake
 }
-

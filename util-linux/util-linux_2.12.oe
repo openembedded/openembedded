@@ -1,3 +1,4 @@
+SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses"
 DESCRIPTION = "Util-linux is a suite of essential \

@@ -1,3 +1,4 @@
+SECTION = "x11/base"
 SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
 	file://config.patch;patch=1"
 
@@ -19,4 +20,3 @@ do_stage() {
 		install -m 0644 shared/$i ${STAGING_INCDIR}
 	done
 }
-

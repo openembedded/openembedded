@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = readline
 
 SRC_URI := "http://samba.mirror.ac.uk/samba/ftp/samba-${PV}.tar.gz \

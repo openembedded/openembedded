@@ -1,3 +1,4 @@
+SECTION = "libs"
 inherit native
 
 DEPENDS = "db3-native"

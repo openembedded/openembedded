@@ -1,3 +1,4 @@
+SECTION = "console/network"
 include mysql_${PV}.oe
 inherit native
 

@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 PR = "r1"
 DEPENDS = "x11 libxft"
 DESCRIPTION = "Well known terminal emulator"

@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 DEPENDS = "intltool libgnomeprint gtk+ libglade libgnomeui libgnomecanvas libxml2 libgnomeprintui"
 
 inherit gnome

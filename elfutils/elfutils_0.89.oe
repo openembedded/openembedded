@@ -1,3 +1,4 @@
+SECTION = "base"
 LICENSE = "OSL"
 DESCRIPTION = "A collection of utilities and DSOs to handle compiled objects."
 DEPENDS = "libtool"

@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "The SSH library is a C library to authenticate in a \
 simple manner to one or more SSH servers. The goal of this project \
 is to provide a library much simpler to use than OpenSSHs one. It \

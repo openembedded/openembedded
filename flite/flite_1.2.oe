@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
 DESCRIPTION = "festival light speech synthesizer"
 PRIORITY = "optional"
@@ -30,4 +31,3 @@ LEAD_SONAME = "libflite.so"
 do_install() {
         oe_runmake INSTALLBINDIR="${D}${bindir}" INSTALLLIBDIR="${D}${libdir}" INSTALLINCDIR="${D}${includedir}" install
 }
-

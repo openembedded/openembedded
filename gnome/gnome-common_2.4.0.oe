@@ -1,3 +1,4 @@
+SECTION = "x11/base"
 PR = "r0"
 DESCRIPTION = "Common macros for building GNOME applications"
 inherit gnome

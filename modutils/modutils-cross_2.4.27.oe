@@ -1,3 +1,4 @@
+SECTION = "base"
 include modutils_${PV}.oe
 PR = "r4"
 inherit cross

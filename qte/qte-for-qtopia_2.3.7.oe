@@ -1,3 +1,4 @@
+SECTION = "opie/base"
 include qte_${PV}.oe
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}-r0"

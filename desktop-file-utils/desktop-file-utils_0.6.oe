@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 HOMEPAGE = "http://www.freedesktop.org/Software/desktop-file-utils"
 DESCRIPTION = "command line utilities to work with *.desktop files"
 DEPENDS = "popt glib-2.0 gnome-vfs"

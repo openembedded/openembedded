@@ -1,3 +1,4 @@
+SECTION = "base"
 BROKEN = "1"
 DESCRIPTION = "framebuffer VNC server keyboard events module"
 

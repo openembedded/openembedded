@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 PR = "r1"
 DESCRIPTION = "Matchbox window manager core library"
 LICENSE = "GPL"

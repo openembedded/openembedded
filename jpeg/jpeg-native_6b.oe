@@ -1,3 +1,4 @@
+SECTION = "libs"
 include jpeg_${PV}.oe
 inherit native
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/jpeg-${PV}"
@@ -11,4 +12,3 @@ do_stage() {
         install -m 644 jpegint.h ${STAGING_INCDIR}/jpegint.h
         oe_libinstall -so libjpeg ${STAGING_LIBDIR}
 }
-

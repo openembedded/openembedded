@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 DESCRIPTION = "framebuffer VNC server"
 DEPENDS = "libvncserver jpeg zlib"
 RDEPENDS = "fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet"

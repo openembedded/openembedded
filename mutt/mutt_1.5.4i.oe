@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DEPENDS = "ncurses openssl"
 DESCRIPTION = "Mutt is a small but very powerful text-based \
 MIME mail client. It is highly configurable, and is well-suited \

@@ -1,3 +1,4 @@
+SECTION = "unknown"
 include slugtool.oe
 inherit native
 

@@ -1,0 +1,13 @@
+SECTION = "opie/base"
+include qte_${PV}.oe
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/qte-${PV}"
+
+DESCRIPTION = "Qt/Embedded w/ Opie Patches version ${PV}"
+
+SRC_URI_append = "file://opie.patch;patch=1 \
+		  file://lefthand.patch;patch=1 \
+		  file://qiconview-speed.patch;patch=1 "
+
+EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -qvfb -no-xft -no-vnc -gif \
+                -xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG}"

@@ -1,3 +1,4 @@
+SECTION = "x11/wm"
 DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox x11 xext xcomposite libxfixes xdamage libxrender startup-notification expat gconf"

@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "This package contains the scripts necessary \
 for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."

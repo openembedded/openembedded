@@ -1,3 +1,4 @@
+SECTION = "base"
 inherit autotools
 
 DESCRIPTION = "The GNU cc and gcc C compilers."
@@ -123,7 +124,8 @@ gccbuild_uclibc_do_patch () {
 	#
 	# Prevent gcc from using the unwind-dw2-fde-glibc code
 	#
-	perl -i -p -e "s,^#ifndef inhibit_libc,#define inhibit_libc\n#ifndef inhibit_libc,g;" gcc/unwind-dw2-fde-glibc.c
+	perl -i -p -e "s,^#ifndef inhibit_libc,#define inhibit_libc
+#ifndef inhibit_libc,g;" gcc/unwind-dw2-fde-glibc.c
 }
 
 python do_patch () {
@@ -226,4 +228,3 @@ do_install () {
 	ln -sf g++ c++
 	ln -sf gcc cc
 }
-

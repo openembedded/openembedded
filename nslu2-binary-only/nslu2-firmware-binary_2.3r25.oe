@@ -1,3 +1,4 @@
+SECTION = "base"
 DEPENDS = "slugtool-native unzip-native"
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"

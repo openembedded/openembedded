@@ -1,3 +1,4 @@
+SECTION = "console/network"
 DESCRIPTION = "tn5250 is a 5250 terminal emulator, used for connecting \
 to IBM's AS/400 (now known as eServer iSeries) midrange computers."
 HOMEPAGE = "http://tn5250.sourceforge.net/"

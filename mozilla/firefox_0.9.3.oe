@@ -1,3 +1,4 @@
+SECTION = "x11/utils"
 DEPENDS = "xt xi zip-native gtk+ orbit2"
 PR = "r2"
 
@@ -49,4 +50,3 @@ pkg_postinst_firefox() {
 	# work around requirement for root access on first startup
 	chmod -R a+w ${libdir}/firefox*
 }
-

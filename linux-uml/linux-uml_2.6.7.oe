@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
 UMLR = "1"

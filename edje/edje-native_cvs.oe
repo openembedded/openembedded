@@ -1,3 +1,4 @@
+SECTION = "unknown"
 include edje_${PV}.oe
 inherit native
 DEPENDS = "freetype-native evas-native ecore-native embryo-native eet-native edb-native imlib2-native"
@@ -19,4 +20,3 @@ do_stage() {
 		install -m 0755 src/bin/$i ${STAGING_BINDIR}
 	done
 }
-

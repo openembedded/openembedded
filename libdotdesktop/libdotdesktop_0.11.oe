@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "library for extracting mime data from .desktop files."
 DEPENDS = "glib-2.0"
 
@@ -20,4 +21,3 @@ do_install () {
 	oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
 }
-

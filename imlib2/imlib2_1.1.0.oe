@@ -1,3 +1,4 @@
+SECTION = "x11/libs"
 DESCRIPTION = "A graphic library for file loading, saving, rendering, and \
 manipulation."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"

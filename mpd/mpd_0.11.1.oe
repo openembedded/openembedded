@@ -1,3 +1,4 @@
+SECTION = "console/multimedia"
 DESCRIPTION = "Music Player Daemon (mpd)"
 HOMEPAGE = "http://www.musicpd.org"
 LICENSE = "GPLv2"

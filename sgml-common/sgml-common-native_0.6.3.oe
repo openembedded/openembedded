@@ -1,3 +1,4 @@
+SECTION = "base"
 include sgml-common_${PV}.oe
 inherit native
 

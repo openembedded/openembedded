@@ -1,3 +1,4 @@
+SECTION = "libs"
 PV = "0.0cvs${CVSDATE}"
 DEPENDS = "jpeg"
 DESCRIPTION = "Epeg is a small library for handling thumbnails."

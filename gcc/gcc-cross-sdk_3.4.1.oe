@@ -1,3 +1,4 @@
+SECTION = "devel"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 LICENSE = "GPL"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"

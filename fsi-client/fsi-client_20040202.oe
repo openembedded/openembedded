@@ -1,0 +1,2 @@
+SECTION = "unknown"
+SRC_URI = "http://heim.ifi.uio.no/~jorgenam/h5400/fsi-client-20040202.tar.gz"

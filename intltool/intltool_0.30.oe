@@ -1,3 +1,4 @@
+SECTION = "devel"
 DESCRIPTION = "Utility scripts for internationalizing XML"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 

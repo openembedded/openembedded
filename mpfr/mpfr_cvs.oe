@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "A C library for multiple-precision floating-point \
 	       computations with exact rounding"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"

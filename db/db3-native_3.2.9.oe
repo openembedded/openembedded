@@ -1,3 +1,4 @@
+SECTION = "libs"
 include db3_${PV}.oe
 inherit native
 

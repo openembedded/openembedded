@@ -1,3 +1,4 @@
+SECTION = "libs"
 DESCRIPTION = "Jim Clarkes XML parser library."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz"

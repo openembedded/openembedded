@@ -1,3 +1,4 @@
+SECTION = "kernel"
 PV = "2.4.18-rmk7-pxa3-embedix"
 LICENSE = "GPL"
 KV = "2.4.18"
@@ -83,4 +84,3 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
-

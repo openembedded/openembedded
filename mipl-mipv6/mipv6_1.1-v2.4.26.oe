@@ -1,0 +1,16 @@
+SECTION = "unknown"
+SRC_URI = "http://www.mobile-ipv6.org/software/download/mipv6-${PV}.tar.gz"
+
+CFLAGS =+ "-I${S}/include -I${STAGING_KERNEL_DIR}/include"
+
+inherit autotools
+
+do_compile() {
+	oe_runmake CFLAGS="${CFLAGS}"
+}
+
+do_install() {
+	install -d ${D}${sbindir}
+	install -d ${D}${sysconfdir}/init.d
+	oe_runmake sbindir="${D}${sbindir}" initdir="${D}${sysconfdir}/init.d" mandir="${D}${datadir}/man" docdir="${D}${datadir}/doc/mobile-ip6" NETWORK_MIP6_CONF="${D}${sysconfdir}" install
+}

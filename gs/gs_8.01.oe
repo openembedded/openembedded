@@ -1,3 +1,4 @@
+SECTION = "console/utils"
 SRC_URI = "ftp://ftp.gnu.org/gnu/ghostscript/gnughostscript-${PV}.tar.gz"
 DEPENDS = "jpeg"
 
@@ -14,4 +15,3 @@ do_compile() {
 do_install() {
 	oe_runmake bindir='${D}${bindir}' datadir='${D}${datadir}' libdir='${D}${libdir}' install
 }
-

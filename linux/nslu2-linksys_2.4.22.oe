@@ -1,3 +1,4 @@
+SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
@@ -41,4 +42,3 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
-

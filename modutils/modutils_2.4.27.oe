@@ -1,3 +1,4 @@
+SECTION = "base"
 DESCRIPTION = "These utilities are intended to make a Linux modular kernel \
 manageable for all users, administrators and distribution maintainers."
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/files"
