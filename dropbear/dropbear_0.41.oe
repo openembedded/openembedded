@@ -4,8 +4,9 @@ DEPENDS = "zlib ncurses"
 PR = "r2"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
-	 file://configure.patch;patch=1 \
-	 file://initd.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://initd.patch;patch=1 \
+	   file://allow-nopw.patch;patch=1"
 S = "${WORKDIR}/dropbear-${PV}"
 
 inherit autotools update-rc.d
