@@ -3,7 +3,6 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PR = "r1"
 APPNAME = "wirelessapplet"
 
 TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
@@ -11,9 +10,6 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/applets/wirelessapple
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
-
-# we need to pick up the kernel's wireless.h or else the WE will be broken
-export OE_QMAKE_CFLAGS="-I${STAGING_KERNEL_DIR}/include ${CFLAGS}"
 
 pkg_postinst() {
 #!/bin/sh

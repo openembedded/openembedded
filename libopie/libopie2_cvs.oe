@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
 DEPENDS = "libqpe-opie sqlite3 libpcap-0.7.2 virtual/kernel"
-PR = "r5"
+PR = "r6"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
 PV = "1.1.7+cvs-${CVSDATE}"
 
@@ -14,9 +14,6 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
 S = "${WORKDIR}/libopie2"
 
 inherit opie
-
-# we need to pick up the kernel's wireless.h or else the WE will be broken
-export OE_QMAKE_CFLAGS="-I${STAGING_KERNEL_DIR}/include ${CFLAGS}"
 
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
 

@@ -4,12 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RRECOMMENDS = "manufacturers"
-PR = "r4"
-
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
-
-CVSDATE = "20041015"
+PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/wellenreiter;date=20040504 \
            ${HANDHELDS_CVS};module=opie/pics;date=20040504                     \
@@ -17,9 +14,6 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/wellenreiter;date=20040504 \
 S = "${WORKDIR}/wellenreiter"
 
 inherit opie
-
-# we need to pick up the kernel's wireless.h or else the WE will be broken
-export OE_QMAKE_CFLAGS="-I${STAGING_KERNEL_DIR}/include ${CFLAGS}"
 
 do_install() {
         install -d ${D}/${palmtopdir}/pics/${APPNAME}/

@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 PV = "1.1.7+cvs-${CVSDATE}"
-PR = "r1"
+PR = "r0"
 APPNAME = "networksettings"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/networksettings \
@@ -15,9 +15,6 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/networksettings \
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
-
-# we need to pick up the kernel's wireless.h or else the WE will be broken
-export OE_QMAKE_CFLAGS="-I${STAGING_KERNEL_DIR}/include ${CFLAGS}"
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
 
