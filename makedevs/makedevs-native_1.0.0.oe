@@ -1,0 +1,18 @@
+inherit native 
+
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/makedevs-${PV}"
+S = "${WORKDIR}/makedevs-native-${PV}"
+
+do_configure() {
+        cp -f ${FILESDIR}/makedevs.c ${S}/
+}
+
+do_compile() {
+        ${CC} ${CFLAGS} -o ${S}/makedevs ${S}/makedevs.c
+}
+
+do_stage() {
+	install -d ${STAGING_BINDIR}/
+        install -m 0755 ${S}/makedevs ${STAGING_BINDIR}/
+}
+
