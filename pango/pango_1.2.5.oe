@@ -14,7 +14,8 @@ FILES_${PN}-doc:=${FILES_pango-doc} ${datadir}/gtk-doc
 do_compile_prepend () {
 	if test -e ${S}/${HOST_PREFIX}libtool; then LIBTOOL=${S}/${HOST_PREFIX}libtool; else LIBTOOL=${S}/libtool; fi
 	(cd tests && \
-	/bin/sh $LIBTOOL --silent --mode=link ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR}/glib-2.0 -lglib-2.0 gen-all-unicode.c -o gen-all-unicode && \
+	/bin/sh $LIBTOOL --silent --mode=compile ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR}/glib-2.0 gen-all-unicode.c -c -o gen-all-unicode.o && \
+	/bin/sh $LIBTOOL --silent --mode=link ${BUILD_CC} ${BUILD_LDFLAGS} -lglib-2.0 gen-all-unicode.o -o gen-all-unicode && \
 	touch gen-all-unicode.c .libs/gen-all-unicode gen-all-unicode gen-all-unicode.o .deps/gen-all-unicode.Po)
 }
 
