@@ -1,0 +1,223 @@
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
+PV = "2.3.2+cvs${CVSDATE}"
+BASEV = "2.3.2"
+DESCRIPTION = "GNU C Library"
+LICENSE = "LGPL"
+SECTION = "libs"
+PRIORITY = "required"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+
+# This will ONLY build to this target
+TARGET_VENDOR = ""
+TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
+TARGET_PREFIX = "${TARGET_SYS}-"
+
+DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
+PROVIDES = "virtual/libc"
+PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
+
+FILES_glibc_append = " ${datadir}/zoneinfo"
+FILES_glibc-dev_append = " ${libdir}/*.o"
+FILES_glibc-gconv = "${libdir}/gconv"
+FILES_glibc-i18n = "${datadir}/i18n"
+
+#	   file://${FILESDIR}/noinfo.patch;patch=1 \
+#	   file://${FILESDIR}/ldconfig.patch;patch=1;pnum=0 \
+
+SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
+	   http://handhelds.org/~pb/kernel-headers-2.6.5.tar.bz2 \
+	   file://${FILESDIR}/arm-ioperm.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/makeconfig.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/ldd.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/fhs-linux-paths.patch;patch=1;pnum=1 \
+	   file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0"
+
+S = "${WORKDIR}/libc"
+B = "${WORKDIR}/build-${TARGET_SYS}"
+
+inherit autotools
+
+EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
+	        --without-cvs --disable-profile --disable-debug --without-gd \
+		--enable-clocale=gnu \
+	        --enable-add-ons=linuxthreads --with-headers=${WORKDIR}/linux/include"
+
+glibcbuild_do_unpack () {
+# kernel headers
+	touch ${WORKDIR}/linux/include/linux/autoconf.h
+	sed 's:\(^.*define.*__NR_waitpid.*$\):/*&*/:' < ${WORKDIR}/linux/include/asm-arm/unistd.h > ${WORKDIR}/linux/include/asm-arm/unistd.h.new
+	mv ${WORKDIR}/linux/include/asm-arm/unistd.h.new ${WORKDIR}/linux/include/asm-arm/unistd.h
+	case ${TARGET_ARCH} in
+		alpha*)   TARGET_ARCH=alpha ;;
+		arm*)     TARGET_ARCH=arm ;;
+		cris*)    TARGET_ARCH=cris ;;
+		hppa*)    TARGET_ARCH=parisc ;;
+		i*86*)    TARGET_ARCH=i386 ;;
+		ia64*)    TARGET_ARCH=ia64 ;;
+		mips*)    TARGET_ARCH=mips ;;
+		m68k*)    TARGET_ARCH=m68k ;;
+		powerpc*) TARGET_ARCH=ppc ;;
+		s390*)    TARGET_ARCH=s390 ;;
+		sh*)      TARGET_ARCH=sh ;;
+		sparc64*) TARGET_ARCH=sparc64 ;;
+		sparc*)   TARGET_ARCH=sparc ;;
+		x86_64*)  TARGET_ARCH=x86_64 ;;
+	esac
+	if test !  -e ${WORKDIR}/linux/include/asm-$TARGET_ARCH; then
+		oefatal unable to create asm symlink in kernel headers
+	fi
+	ln -sf "asm-$TARGET_ARCH" "${WORKDIR}/linux/include/asm"
+	if test "$TARGET_ARCH" = "arm"; then
+		ln -sf proc-armv ${WORKDIR}/linux/include/asm/proc
+		ln -sf arch-ebsa285 ${WORKDIR}/linux/include/asm/arch
+	fi
+}
+
+python do_unpack () {
+	oe.build.exec_func('base_do_unpack', d)
+	oe.build.exec_func('glibcbuild_do_unpack', d)
+}
+
+do_configure () {
+# override this function to avoid the autoconf/automake/aclocal/autoheader
+# calls for now
+# don't pass CPPFLAGS into configure, since it upsets the kernel-headers
+# version check and doesn't really help with anything
+	CPPFLAGS="" oe_runconf
+}
+
+rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
+	  yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
+	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
+
+do_compile () {
+	# this really is arm specific
+	touch ${S}/sysdeps/arm/framestate.c
+	# -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
+	unset LDFLAGS
+	base_do_compile
+	(
+		cd ${S}/sunrpc/rpcsvc
+		for r in ${rpcsvc}; do
+			h=`echo $r|sed -e's,\.x$,.h,'`
+			rpcgen -h $r -o $h || oewarn "unable to generate header for $r"
+		done
+	)
+}
+
+do_stage() {
+	oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${STAGING_LIBDIR}/libc-${BASEV}.so' '${STAGING_LIBDIR}/libc.so.6' \
+		   install-headers install-lib
+
+	install -d ${STAGING_INCDIR}/asm
+	cp -a ${WORKDIR}/linux/include/linux ${STAGING_INCDIR}/
+	cp -a ${WORKDIR}/linux/include/asm/* ${STAGING_INCDIR}/asm/
+	cp -a ${WORKDIR}/linux/include/asm-generic/* ${STAGING_INCDIR}/asm-generic/
+
+	install -d ${STAGING_INCDIR}/gnu \
+		   ${STAGING_INCDIR}/bits \
+		   ${STAGING_INCDIR}/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
+	install -m 0644 misc/syscall-list.h ${STAGING_INCDIR}/bits/syscall.h
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
+	done
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${STAGING_LIBDIR}/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_LIBDIR}/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_LIBDIR}/libc.so
+
+	oe_runmake 'install_root=${CROSS_DIR}/${TARGET_SYS}' \
+		   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc-${BASEV}.so' \
+		   '${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6' \
+		   install-headers install-lib
+
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
+	cp -a ${WORKDIR}/linux/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
+	cp -R ${WORKDIR}/linux/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -R ${WORKDIR}/linux/include/asm-generic/* ${CROSS_DIR}/${TARGET_SYS}/include/asm-generic/
+
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/gnu \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/bits \
+		   ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc
+	install -m 0644 ${S}/include/gnu/stubs.h ${CROSS_DIR}/${TARGET_SYS}/include/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/
+	install -m 0644 misc/syscall-list.h ${CROSS_DIR}/${TARGET_SYS}/include/bits/syscall.h
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${CROSS_DIR}/${TARGET_SYS}/include/rpcsvc/
+	done
+
+	for i in libc.a libc_pic.a libc_nonshared.a; do
+		install ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/
+	done
+	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libpthread.so
+	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
+}
+
+do_install() {
+	oe_runmake install_root=${D} install
+	for r in ${rpcsvc}; do
+		h=`echo $r|sed -e's,\.x$,.h,'`
+		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
+	done
+}
+
+python populate_packages_prepend () {
+	import os
+	def do_split(root, pattern, format, description, postinst):
+		dvar = oe.data.getVar('D', d, 1)
+		if not dvar:
+			oe.error("D not defined")
+			return
+
+		packages = oe.data.getVar('PACKAGES', d, 1).split()
+		if not packages:
+			oe.error("PACKAGES not defined")
+			return
+
+		if postinst:
+			postinst = '#!/bin/sh\n' + postinst
+		objs = os.listdir(dvar + root)
+		mainpkg = oe.data.getVar('PKG_' + packages[0], d) or packages[0]
+		for o in objs:
+			import re
+			m = re.match(pattern, o)
+			if not m:
+				continue
+			on = m.group(1).lower().replace('_', '+').replace('@', '+')
+			pkg = format % on
+			packages.append(pkg)
+			oe.data.setVar('FILES_' + pkg, os.path.join(root, o), d)
+			oe.data.setVar('RDEPENDS_' + pkg, mainpkg, d)
+			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			if postinst:
+				oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
+
+		oe.data.setVar('PACKAGES', ' '.join(packages), d)
+
+	libdir = oe.data.getVar('libdir', d, 1)
+	if not libdir:
+		oe.error("libdir not defined")
+		return
+
+	gconv_libdir = os.path.join(libdir, "gconv")
+
+	do_split(gconv_libdir, '^(.*)\.so$', 'glibc-gconv-%s', 'gconv module for character set %s', None)
+
+	oe.data.setVar('PACKAGES', oe.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
+}
+
+python do_package () {
+	if oe.data.getVar('DEBIAN_NAMES', d, 1):
+		oe.data.setVar('PKG_glibc', 'libc6', d)
+	oe.build.exec_func('package_do_package', d)
+}
