@@ -56,9 +56,9 @@ do_configure() {
 
         if [ "$rd" == "0" ]
         then
-                echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
+                echo "# CONFIG_MTD_MTDRAM is not set" >> ${S}/.config
         else
-                echo "CONFIG_MTD_MTDRAM_SA1100=y"           >> ${S}/.config
+                echo "CONFIG_MTD_MTDRAM=y"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_TOTAL_SIZE=$rdsize"     >> ${S}/.config
                 echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
