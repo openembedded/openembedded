@@ -8,7 +8,7 @@ PRIORITY = "optional"
 LICENSE = "ntp"
 PR = "r2"
 
-SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${PV}.tar.gz \
+SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.1/ntp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://readline.patch;patch=1 \
 	   file://ntpdate"
