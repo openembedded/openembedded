@@ -112,9 +112,10 @@ inherit cml1
 
 EXPORT_FUNCTIONS do_compile do_install do_stage do_configure
 
-PACKAGES = "kernel"
+PACKAGES = "kernel kernel-dev"
 FILES = ""
-FILES_kernel = "/boot"
+FILES_kernel = "/boot/${KERNEL_IMAGETYPE}*"
+FILES_kernel-dev = "/boot/System.map* /boot/config*"
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
