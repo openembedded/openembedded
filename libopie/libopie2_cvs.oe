@@ -18,9 +18,9 @@ export OPIEDIR = "${STAGING_LIBDIR}/.."
 
 #FIXME: Add machine specific bits here. Best use oe_machinstall and read from a given file
 
-EXTRA_QMAKEVARS_POST = ' DEFINES+=OPIE_NEW_MALLOC    \
-                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
-                         DEFINES+="OPIE_WE_VERSION=15" '
+EXTRA_QMAKEVARS_POST = ' DEFINES+=QWS                \
+                         DEFINES+=OPIE_NEW_MALLOC    \
+                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" '
 
 # uclibc doesn't have backtrace()
 python __anonymous () {
