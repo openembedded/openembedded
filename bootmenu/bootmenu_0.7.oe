@@ -1,6 +1,7 @@
 DESCRIPTION = "Pluginable bootup menu."
 LICENSE="GPL"
 SECTION = "base"
+LICENSE = "GPL"
 
 SRC_URI = "http://www.cosmicpenguin.net/pub/bootmenu/bootmenu-${PV}.tar.gz"
 
