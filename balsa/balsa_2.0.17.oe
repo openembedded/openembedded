@@ -3,10 +3,11 @@ incorporating all the features you would expect in a robust mail client."
 HOMEPAGE = "http://balsa.gnome.org"
 DEPENDS = "libesmtp glib-2.0 libgnome libgnomeui gtk+ gnome-vfs libbonobo aspell pcre libtool openssl gtkhtml-3.0"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://balsa.gnome.org/balsa-2.0.17.tar.bz2 \
-	   file://libmutt-cross.patch;patch=1"
+	   file://libmutt-cross.patch;patch=1 \
+	   file://desktop-file-fix.patch;patch=1"
 
 
 inherit autotools
