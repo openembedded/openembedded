@@ -25,7 +25,7 @@ EOF
 
    strings /etc/linksysconf | grep ip_addr >> /etc/original-network-settings
    strings /etc/linksysconf | grep ^netmask >> /etc/original-network-settings
-   strings /etc/linksysconf | grep gateway >> /etc/original-network-settings
+   strings /etc/linksysconf | grep ^gateway=. >> /etc/original-network-settings
    strings /etc/linksysconf | grep hw_addr >> /etc/original-network-settings
    sed -i -e 's/ip_addr=/        address /' /etc/original-network-settings
    sed -i -e 's/netmask=/        netmask /' /etc/original-network-settings

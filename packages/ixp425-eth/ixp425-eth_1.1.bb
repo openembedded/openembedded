@@ -3,7 +3,10 @@ LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPatch-1_1.zip \
 	   file://makefile.patch;patch=1 \
-	   file://ethhdr.patch;patch=1"
+	   file://ethhdr.patch;patch=1 \
+	   file://intdriven.patch;patch=1"
+PR = "r1"
+
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^armeb-linux.*"

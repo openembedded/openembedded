@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r13"
+PR = "r15"
 
 SRC_URI = "file://sysconfsetup \
 	   file://modutils.txt \
@@ -43,3 +43,5 @@ do_install() {
 }
 
 FILES_${PN} = "/"
+
+CONFFILES_${PN} = "${sysconfdir}/modutils/modutils.txt ${sysconfdir}/modprobe.conf"

@@ -5,7 +5,7 @@ DEPENDS = "bluez-libs-2.14 pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
 PACKAGES =+ "${PN}-ciptool ${PN}-bluepin"
-PR = "r2"
+PR = "r4"
 
 FILES_${PN}-ciptool = "/bin/ciptool"
 FILES_${PN}-bluepin = "/bin/bluepin"
@@ -34,3 +34,5 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults 23 19"
 
+CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \
+	${sysconfdir}/bluetooth/pin ${sysconfdir}/default/bluetooth"

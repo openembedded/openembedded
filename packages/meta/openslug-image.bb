@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r6"
 
 IMAGE_BASENAME = "openslug"
 
@@ -8,22 +8,25 @@ USE_DEVFS = "1"
 OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATCH_DEPENDS} virtual/armeb-linux-uclibc-gcc \
 	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware "
 
-DEPENDS = "base-files base-passwd-3.5.7 \
-        busybox dropbear initscripts netbase \
+DEPENDS = "virtual/kernel base-files base-passwd-3.5.7 \
+        busybox dropbear hotplug-ng initscripts netbase \
         sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth openslug-init \
-        ipkg-collateral ipkg ipkg-link \
-	cpio findutils e2fsprogs \
+	module-init-tools modutils-initscripts \
+        ipkg-collateral ipkg ipkg-link diffutils \
+	cpio findutils e2fsprogs mtd-utils \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
 IPKG_INSTALL = "base-files base-passwd \
-        busybox dropbear initscripts netbase \
+        busybox dropbear hotplug-ng initscripts netbase \
         update-modules sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth openslug-init \
-        ipkg-collateral ipkg ipkg-link \
+	module-init-tools modutils-initscripts \
+        ipkg-collateral ipkg ipkg-link diffutils \
 	cpio findutils e2fsprogs-mke2fs \
 	e2fsprogs-fsck e2fsprogs-e2fsck \
 	kernel-module-nfs kernel-module-sunrpc kernel-module-lockd  \
+	kernel-module-ehci-hcd \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk

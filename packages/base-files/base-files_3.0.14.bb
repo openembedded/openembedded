@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r26"
+PR = "r27"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -150,6 +150,12 @@ do_install_append_nylon() {
 	rm -r ${D}/mnt/*
 }
 
+do_install_append_openslug() {
+	rm ${D}${sysconfdir}/resolv.conf
+	touch ${D}${sysconfdir}/resolv.conf
+	rm -r ${D}/mnt/*
+}
+
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
 FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"
@@ -165,5 +171,7 @@ RPROVIDES_${PN}-unslung = "${PN}"
 
 FILES_${PN}-unslung = ""
 
+CONFFILES_${PN} = "${sysconfdir}/fstab ${sysconfdir}/hostname"
 CONFFILES_${PN}_nylon = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
+CONFFILES_${PN}_openslug = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 

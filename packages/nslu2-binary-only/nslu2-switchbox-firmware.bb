@@ -1,6 +1,7 @@
 SECTION = "base"
 DEPENDS = ""
 PACKAGES = ""
+LICENSE = "BSD"
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r18"
 

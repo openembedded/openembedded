@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 LICENSE = "BSD GPLv2"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-2.4.1.tar.gz \
 	file://pppd.patch;patch=1 \
@@ -35,7 +35,7 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/92removedns ${D}${sysconfdir}/ppp/ip-down.d/
 }
 
-CONFFILES_${PN}_nylon = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets"
+CONFFILES_${PN} = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets ${sysconfdir}/ppp/options"
 
 pkg_postinst() {
 if test "x$D" != "x"; then

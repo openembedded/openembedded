@@ -3,6 +3,8 @@ DESCRIPTION = "The mgetty package contains an intelligent \
 getty for allowing logins over a serial line (such as \
 through a modem) and receiving incoming faxes."
 LICENSE = "GPL"
+PR="r2"
+
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz \
            file://debian.patch;patch=1 \
            file://00-g3_Makefile;patch=1 \
@@ -37,6 +39,8 @@ SRC_URI = "${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz \
            file://policy.h \
            file://voice-defs.h"
 
+CFLAGS_prepend = "-DAUTO_PPP -DFIDO "
+
 do_compile () {
         cp ${WORKDIR}/policy.h ${WORKDIR}/voice-defs.h .
 	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} \
@@ -65,3 +69,6 @@ do_compile () {
 do_install () {
 	oe_runmake install DESTDIR="${D}" prefix="${D}${prefix}"
 }
+
+CONFFILES_${PN} = "${sysconfdir}/mgetty/mgetty.config \
+	${sysconfdir}/mgetty/login.config ${sysconfdir}/mgetty/sendfax.config"

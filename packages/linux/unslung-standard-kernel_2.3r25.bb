@@ -4,7 +4,7 @@ include nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
 MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
-PR = "r9"
+PR = "r11"
 
 UNSLUNG_VARIANT ?= "standard"
 KERNEL_SUFFIX = "unslung-${UNSLUNG_VARIANT}"
@@ -19,6 +19,7 @@ SRC_URI += "file://limit1gb.patch;patch=1 \
 	    file://usbnet.patch;patch=1 \
 	    file://missing-usb-ioctls.patch;patch=1 \
 	    file://anonymiser.patch;patch=1 \
+	    file://ppp_mppe.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel-${PV}/${UNSLUNG_VARIANT}', '${FILE_DIRNAME}/unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

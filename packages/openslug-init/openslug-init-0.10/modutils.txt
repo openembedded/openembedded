@@ -1,5 +1,2 @@
 # Adding modules to be automatically loaded via update-modules
-#ixp425_eth leave this one to sysconfsetup for now because it loads
-#too late for first boot 
-#ehci-hcd these are now compiled into the kernel
-#ohci-hcd ditto
+ehci-hcd
