@@ -29,6 +29,7 @@ do_compile () {
 
 do_install () {
 	set -e
+	install -d ${D}/etc/init.d
 	oe_runmake 'PREFIX=${D}' install
 	install -m 0755 ${FILESDIR}/syslog ${D}/etc/init.d/syslog
 	install -m 0755 ${FILESDIR}/hwclock.sh ${D}/etc/init.d/hwclock.sh

@@ -36,3 +36,8 @@ do_stage () {
 	install -m 0644 pcre.h ${STAGING_DIR}/target/include/
 	install -m 0644 pcreposix.h ${STAGING_DIR}/target/include/
 }
+
+do_install () {
+	set -e
+	oe_runmake 'DESTDIR=${D}' install
+}
