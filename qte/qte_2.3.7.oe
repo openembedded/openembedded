@@ -23,12 +23,12 @@ export QTDIR = ${S}
 
 ARCH_i686=x86
 
-EXTRA_OECONF=-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif ${EXTRA_OECONF_ARCH} ${EXTRA_OECONF_CONFIG}
-
 EXTRA_OECONF_CONFIG=-qconfig qpe
 EXTRA_OECONF_ARCH=-xplatform ${TARGET_OS}-${TARGET_ARCH}-g++
 EXTRA_OECONF_ARCH_collie=-xplatform ${TARGET_OS}-sharp-g++
 EXTRA_OECONF_ARCH_ramses=-xplatform ${TARGET_OS}-ramses-g++
+
+EXTRA_OECONF=-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif ${EXTRA_OECONF_ARCH} ${EXTRA_OECONF_CONFIG}
 
 EXTRA_OEMAKE = -e
 
