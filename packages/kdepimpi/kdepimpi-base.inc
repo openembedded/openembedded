@@ -13,51 +13,41 @@ PRIORITY = "optional"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
-#DEPENDS = "gammu libetpan libmailwrapper"
-# gammu as replacement for libmicrogammu
-# libetpan & libmailwrapper as replacement for kdepim/pi versions
-
-SRC_URI += "\
-file://qt2310.patch;patch=1 \
-file://qinputdialog_inc.patch;patch=1 \
-file://libkcal.pro.patch;patch=1 \
-"
-
-# TODO:
-# checking libmailwrapper changes (diff sent to opie-devel ML)
-# author said that he didn't changed libetpan so we probably can get OE one
-# compile opie mail/pi
 
 # we can't build:
 # kabc/plugins/sharpdtm - wants libsl     (Sharp ROM 3.x closed source library)
 # kabc/plugins/ldap     - wants ldap libs (?)
 # kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
-# kmicromail            - have to check changes in KDEPIM/PI version libmailwrapper
+# kmicromail            - conflict with OE libetpan, libmailwrapper/OPIE
+# pwmanager             - needs stdc++ and some patching
 
 PARALLEL_MAKE = ""
-S = "${WORKDIR}/kdepim"
-EXTRA_QMAKEVARS_POST += "KDEPIMDIR=${S} INCLUDEPATH+=../ OBJECTS_DIR=obj/ MOC_DIR=moc/ \
-             LIBS+=-L${S}/dest/ DESTDIR=${S}/dest LIBS+=-lsupc++ \
-             LIBS+=-Wl,-rpath-link,${S}/dest \
-             LIBS-=-lzlib LIBS+=-lz \
-             "
 
+S = "${WORKDIR}/kdepim"
+
+EXTRA_QMAKEVARS_POST += " \
+INCLUDEPATH+=../ \
+OBJECTS_DIR=obj/ MOC_DIR=moc/ \
+DESTDIR=${S}/dest \
+LIBS+=-L${S}/dest/ \
+"
 # That changes will be needed for KMicroMail/PI to get it build with OE libs
 #
 #             LIBS-=-lkmicromailwrapper LIBS+=-lmailwrapper LIBS+=-lopiecore2 \
 
 QMAKE_PROFILES= "all.pro"
+
 SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim \
         kabc korganizer kalarmd kaddressbook kabc/plugins/file kabc/plugins/dir \
         kabc/formats/binary kabc/plugins/qtopia \
         gammu/emb/common \
         gammu/emb/gammu \
-        "
 #        pwmanager/libcrypt/mpi  \
 #        pwmanager/libcrypt/error  \
 #        pwmanager/libcrypt/cipher  \
 #        pwmanager/libcrypt/zlib \
-#        pwmanager/pwmanager"
+#        pwmanager/pwmanager \
+        "
 
 inherit palmtop
 
@@ -76,7 +66,6 @@ do_configure_prepend() {
                 mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
             fi
         done
-        mkdir "${S}/dest"
 }
 
 do_install() {
