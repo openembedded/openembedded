@@ -5,7 +5,6 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
 APPNAME = "kpacman"
-APPTYPE = "binary"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/games/kpacman \

@@ -4,8 +4,8 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
-APPNAME = "restartapplet"
-I18N_FILES = "librestartapplet.ts"
+APPNAME = "restartapplet2"
+I18N_FILES = "librestartapplet2.ts"
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/applets/restartapplet2 \
