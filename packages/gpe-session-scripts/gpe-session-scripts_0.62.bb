@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r10"
+PR = "r11"
 
 inherit gpe
 
@@ -17,7 +17,8 @@ SRC_URI += "file://zaurus.sh \
 	file://xdefaults.patch;patch=1 \
 	file://matchbox-session \
 	file://shepherd.xmodmap file://simpad.xmodmap \
-	file://collie.xmodmap"
+	file://collie.xmodmap \
+	file://disable-composite.xsettings"
 
 do_install_append() {
 	install ${WORKDIR}/zaurus.sh ${D}/etc/X11/Xinit.d/11zaurus
@@ -31,6 +32,9 @@ do_install_append() {
 	fi
 	install -d ${D}/etc/matchbox
 	install ${WORKDIR}/matchbox-session ${D}/etc/matchbox/session
+
+	install -d ${D}/etc/gpe/xsettings-default.d
+	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}/etc/gpe/xsettings-default.d/disable-composite
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
