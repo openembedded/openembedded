@@ -136,7 +136,7 @@ rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
 	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
 
 do_compile () {
-	touch sysdeps/${TARGET_ARCH}/framestate.c
+	touch ${S}/sysdeps/${TARGET_ARCH}/framestate.c
 	base_do_compile
 	(
 		cd ${S}/sunrpc/rpcsvc
