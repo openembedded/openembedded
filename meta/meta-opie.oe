@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r15"
+PR = "r16"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -130,12 +130,14 @@ qpe-gaim \
 qpegps \
 qpenmapfe \
 qplot \
+resistorui \
 shopper \
 timesleuth \
 txdrug \
 tximage \
 ubahnnav \
 visiscript \
+zeecookbook \
 zbedic \
 zbench \
 zgscore \
