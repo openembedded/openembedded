@@ -15,5 +15,8 @@ do_stage () {
 	oe_soinstall lib/.libs/libcurl.so.2.0.2 ${STAGING_LIBDIR}/
 	install -m 0644 lib/.libs/libcurl.a ${STAGING_LIBDIR}/
 	install -m 0644 lib/.libs/libcurl.lai ${STAGING_LIBDIR}/libcurl.la
-	install -m 0755 curl-config ${STAGING_BINDIR}/
+
+        cat curl-config | sed -e "s,-I/usr/include,-I${STAGING_INCDIR}/," \
+                        | sed -e "s,-L/usr/lib , , "> ${STAGING_BINDIR}/curl-config
+        chmod a+rx ${STAGING_BINDIR}/curl-config
 }
