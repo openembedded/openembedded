@@ -82,10 +82,15 @@ kernel_do_stage() {
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
 		install -m 0644 arch/${ARCH}/Makefile ${STAGING_KERNEL_DIR}/arch/${ARCH}
 	fi
-	cp -fR scripts ${STAGING_KERNEL_DIR}/
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 	install -m 0644 System.map ${STAGING_KERNEL_DIR}/System.map-${PV}
+
+	# Check if scripts/genksyms exists and if so, build it
+	if [ -e scripts/genksyms/ ]; then
+		oe_runmake SUBDIRS="scripts/genksyms"
+	fi
+	cp -fR scripts ${STAGING_KERNEL_DIR}/
 }
 
 kernel_do_install() {

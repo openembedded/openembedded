@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.8+cvs-${CVSDATE}"
-PR = "r0"
+PR = "r1"
 APPNAME = "qpe"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
@@ -97,41 +97,14 @@ do_install() {
 
 	install -m 0755 ${WORKDIR}/opie ${D}/etc/init.d/opie
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
+
 	if [ -s ${WORKDIR}/locale.conf ]; then
 	    install -m 0644 ${WORKDIR}/locale.conf ${D}/${palmtopdir}/etc/skel/
 	fi
-}
 
-# These two should be installed only on devices with keyboard
-do_install_append_collie () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_poodle () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_corgi () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_shepherd () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_husky () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_tosa () {
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
-}
-do_install_append_openzaurus-pxa-2.6 () {
         install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
         install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
 }
-
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
 
