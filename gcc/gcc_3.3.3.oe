@@ -4,25 +4,6 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
-#
-# For now, we will skip building of a gcc package if it is a uclibc one
-# and our build is not a uclibc one, and we skip a glibc one if our build
-# is a uclibc build.
-#
-# See the note in gcc/gcc_3.4.0.oe
-#
-
-python __anonymous () {
-    import oe, re
-    uc_pkg = (re.search('uclibc', oe.data.getVar('PN', d, 1)) != None)
-    uc_os = (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None)
-    if uc_pkg != uc_os:
-        raise oe.parse.SkipPackage("incompatible with target %s" %
-                                   oe.data.getVar('TARGET_OS', d, 1))
-}
-
-DEPENDS = "glibc"
-
 PACKAGES = "${PN} ${PN}-symlinks \
             ${PN}-c++ ${PN}-c++-symlinks \
             libgcc libstdc++ libstdc++-dev \
@@ -96,25 +77,75 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://${FILESDIR}/arm-ldm-peephole.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/libibery-crosstool.patch;patch=1;pnum=1 \
 	   file://${FILESDIR}/reverse-compare.patch;patch=1 \
-	   file://${FILESDIR}/gcc34-15089.patch;patch=1"
+	   file://${FILESDIR}/gcc34-15089.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-100-conf.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-110-conf.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-120-softfloat.patch;patch=1 \
+	file://${FILESDIR}/gcc-uclibc-3.3-200-code.patch;patch=1"
 
 MIRRORS_prepend () {
 ${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
+}
+
+gccbuild_uclibc_do_patch () {
+	#
+	# Hack things to use the correct shared lib loader
+	#
+	#LIST=`grep -lr -- "-dynamic-linker.*\.so[\.0-9]*" .`
+	#if [ -n "$LIST" ] ; then
+	#	perl -i -p -e "s,-dynamic-linker.*\.so[\.0-9]*},-dynamic-linker /lib/ld-uClibc.so.0},;" $LIST
+	#fi
+
+	#
+	# Prevent system glibc start files from leaking in uninvited...
+	#
+	perl -i -p -e "s,standard_startfile_prefix_1 = \".*,standard_startfile_prefix_1 = \"${CROSS_DIR}/${TARGET_SYS}/lib/\";,;" gcc/gcc.c
+	perl -i -p -e "s,standard_startfile_prefix_2 = \".*,standard_startfile_prefix_2 = \"${CROSS_DIR}/${TARGET_SYS}/usr/lib/\";,;" gcc/gcc.c
+
+	#
+	# Prevent system glibc include files from leaking in uninvited...
+	#
+	perl -i -p -e "s,^NATIVE_SYSTEM_HEADER_DIR.*,NATIVE_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
+	perl -i -p -e "s,^CROSS_SYSTEM_HEADER_DIR.*,CROSS_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
+	perl -i -p -e "s,^#define.*STANDARD_INCLUDE_DIR.*,#define STANDARD_INCLUDE_DIR \"${CROSS_DIR}/${TARGET_SYS}/include\",;" gcc/cppdefault.h
+
+	#
+	# Prevent system glibc libraries from being found by collect2 
+	# when it calls locatelib() and rummages about the system looking 
+	# for libraries with the correct name...
+	#
+	perl -i -p -e "s,\"/lib,\"${CROSS_DIR}/${TARGET_SYS}/lib,g;" \
+		gcc/collect2.c
+	perl -i -p -e "s,\"/usr/,\"${CROSS_DIR}/${TARGET_SYS}/usr/,g;" \
+		gcc/collect2.c
+
+	#
+	# Prevent gcc from using the unwind-dw2-fde-glibc code
+	#
+	perl -i -p -e "s,^#ifndef inhibit_libc,#define inhibit_libc\n#ifndef inhibit_libc,g;" gcc/unwind-dw2-fde-glibc.c
+}
+
+python do_patch () {
+    import oe, re
+    oe.build.exec_func('base_do_patch', d)
+    if (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None):
+        oe.build.exec_func('gccbuild_uclibc_do_patch', d)
 }
 
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--with-local-prefix=${prefix}/local \
-                --with-gxx-include-dir=${includedir}/c++/${PV} \
-                --enable-target-optspace \
-                --disable-nls \
-                --with-gnu-ld \
-                --disable-__cxa_atexit \
-                --enable-languages=c,c++ \
-                --enable-shared \
-                --enable-multilib \
-                --program-prefix=${TARGET_PREFIX}"
+		--with-gxx-include-dir=${includedir}/c++/${PV} \
+		--enable-target-optspace \
+		--disable-nls \
+		--with-gnu-ld \
+		--disable-__cxa_atexit \
+		--enable-languages=c,c++,f77 \
+		--enable-shared \
+		--enable-multilib \
+		--enable-threads=posix \
+		--program-prefix=${TARGET_PREFIX}"
 
 do_configure () {
 	# Setup these vars for cross building only

@@ -1,7 +1,7 @@
 include glibc_${PV}.oe
 
 DEPENDS = ""
-PROVIDES = "virtual/glibc-headers"
+PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 
 PACKAGES = ""
