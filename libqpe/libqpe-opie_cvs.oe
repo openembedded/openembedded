@@ -6,6 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library"
 S = "${WORKDIR}/library"
@@ -16,6 +17,7 @@ QMAKE_PROFILES = "library.pro"
 
 export QTDIR = "${STAGING_LIBDIR}/.."
 export OPIEDIR = "${STAGING_LIBDIR}/.."
+EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
 EXTRA_QMAKEVARS_POST = "DESTDIR="
 
 CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
