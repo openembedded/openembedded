@@ -5,11 +5,10 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 DEPENDS ="virtual/libqpe"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
-PV = "1.9.3-${CVSDATE}"
+PV = "1.9.3a-${CVSDATE}"
 
 # Author said that he will tag stable versions in CVS
-# From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.1 version
-# version in CVS is 1.9.2
+# From SF files zone for projects we can get kdepim.src.tar.gz for 1.9.3a version
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/kdepimpi;module=kdepim \
 file://libkcal.pro.patch;patch=1 \
@@ -29,6 +28,7 @@ QMAKE_PROFILES= "all.pro"
 SUBDIRS="libical/src/libical libical/src/libicalss microkde libkcal libkdepim kabc korganizer kalarmd kaddressbook"
 
 # TODO:
+# get KA/PI plugins working
 # checking libmailwrapper changes
 # author said that he didn't changed libetpan so we probably can get OE one
 # compile opie mail/pi
