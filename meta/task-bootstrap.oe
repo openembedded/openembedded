@@ -8,13 +8,13 @@ PACKAGES = "${PN}"
 DEPENDS = 'base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug initscripts modutils netbase \
 	resolvconf sysvinit tinylogin lrzsz portmap \
-	modutils-initscripts \
+	modutils-initscripts timezones \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug initscripts modutils-depmod modutils-modinfo \
 	netbase resolvconf sysvinit tinylogin \
-	modutils-initscripts \
+	modutils-initscripts timezones \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
 RRECOMMENDS = 'dropbear lrzsz portmap \
