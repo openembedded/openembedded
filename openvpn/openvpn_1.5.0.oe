@@ -1,6 +1,6 @@
 DESCRIPTION = "A VPN solution via tun device.  Not IPSEC!"
 PRIORITY = "optional"
-DEPENDS = "lzo"
+DEPENDS = "lzo openssl"
 RDEPENDS = "kernel-module-tun"
 PR = "r1"
 

@@ -46,6 +46,9 @@ do_compile () {
 	linux-mipsel)
 		target=linux-mipsel
 		;;
+        linux-powerpc)
+                target=linux-ppc
+                ;;
 	linux-x86_64)
 		target=linux-x86_64
 		;;
