@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar.gz \
 	   file://man.patch;patch=1 \
@@ -14,13 +14,12 @@ S = "${WORKDIR}/wireless_tools.${PV}"
 inherit module-base
 
 do_configure() {
-	rm -rf wireless.h
-	ln -s ${STAGING_KERNEL_DIR}/include/linux/wireless.h wireless.h
+	rm -f wireless.h
 }
 
 do_compile() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-        oe_runmake KERNEL_SRC=${KERNEL_PATH} KERNEL_VERSION=${KERNEL_VERSION} BUILD_SHARED=y
+        oe_runmake KERNEL_SRC=${KERNEL_SOURCE} KERNEL_VERSION=${KERNEL_VERSION} BUILD_SHARED=y
 }
 
 do_install() {

@@ -9,10 +9,12 @@ APPNAME = "networkapplet"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/applets/networkapplet \
 	   ${HANDHELDS_CVS};module=opie/pics"
-
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
+
+# we need to pick up the kernel's wireless.h or else the WE will be broken
+export OE_QMAKE_CFLAGS="-I${STAGING_KERNEL_DIR}/include ${CFLAGS}"
 
 pkg_postinst() {
 #!/bin/sh

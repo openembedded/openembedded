@@ -1,0 +1,35 @@
+DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+LICENSE = "GPL"
+APPTYPE = "binary"
+APPDESKTOP = "${WORKDIR}/zbedic/misc"
+PV = "0.9.1+0.9.2-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/bedic;module=zbedic \
+           cvs://anonymous@cvs.sourceforge.net/cvsroot/bedic;module=libbedic \
+           file://file.h file://file.cpp"
+S = "${WORKDIR}/libbedic"
+ZS = "${WORKDIR}/zbedic"
+
+inherit opie
+export OE_QMAKE_LINK="${CXX}"
+
+do_configure() {
+	qmake -project && qmake -makefile -t lib -spec ${QMAKESPEC} CONFIG=console CONFIG+=staticlib -after \
+        INCLUDEPATH+=../include TARGET=bedic DESTDIR=${STAGING_LIBDIR} HEADERS+=src/file.h SOURCES+=src/file.cpp
+	cd ${ZS} && rm -rf *~ && qmake -project && qmake -makefile -spec ${QMAKESPEC} -after \
+        INCLUDEPATH=${S}/include DEFINES+=QWS LIBS+=-lqpe LIBS+=-lbedic DESTDIR=${S} TARGET=zbedic
+}
+
+do_compile() {
+	install -m 0644 ${WORKDIR}/file.* ${S}/src/
+	oe_runmake
+	cd ${ZS} && oe_runmake
+}
+
+do_install() {
+	install -d ${D}${palmtopdir}/pics/
+	install -m 0655 ${ZS}/misc/*.png ${D}/${palmtopdir}/pics/
+}
