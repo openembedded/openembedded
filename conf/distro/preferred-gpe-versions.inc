@@ -2,6 +2,11 @@
 # Specify which versions of GPE (and related) applications to build
 #
 
+#work around some breakages
+CVSDATE_cairo=20050204
+CVSDATE_xserver-kdrive=20050207
+
+#specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox = "1.6"
 PREFERRED_VERSION_matchbox = "0.9.1"
 PREFERRED_VERSION_matchbox-common = "0.9.1"
