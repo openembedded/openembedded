@@ -5,7 +5,7 @@ LICENSE = "GPL/QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
@@ -21,14 +21,15 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://sharp_char.h \
 	   file://switches.h "
 
-SRC_URI_append_simpad   = "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
-SRC_URI_append_h3600    = "file://devfs.patch;patch=1 "
-SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
-SRC_URI_append_corgi	= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_shepherd	= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_husky	= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_tosa	= "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_beagle   = "file://beagle.patch;patch=1 "
+SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
+SRC_URI_append_h3600    	= "file://devfs.patch;patch=1 "
+SRC_URI_append_h3900    	= "file://devfs.patch;patch=1 "
+SRC_URI_append_jornada56x	= "file://devfs.patch;patch=1 "
+SRC_URI_append_corgi		= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_shepherd		= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_husky		= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -59,17 +60,18 @@ EXTRA_OECONF_beagle = "-system-jpeg -system-libpng -system-zlib -no-qvfb \
 #
 # FIXME: Add more here
 #
-EXTRA_DEFINES 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
-EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_poodle	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_tosa	= "-DQWS_TSLIB                 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_h3600     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                   -DQT_QWS_DEVFS" 
-EXTRA_DEFINES_h3900 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                   -DQT_QWS_DEVFS"
-EXTRA_DEFINES_simpad	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
-EXTRA_DEFINES_corgi     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_beagle	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
+EXTRA_DEFINES 			= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
+EXTRA_DEFINES_collie 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_poodle		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_tosa		= "-DQWS_TSLIB                 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_h3600     	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                   -DQT_QWS_DEVFS" 
+EXTRA_DEFINES_h3900 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                   -DQT_QWS_DEVFS"
+EXTRA_DEFINES_jornada56x	= "-DQWS_TSLIB                 -DQT_QWS_IPAQ                   -DQT_QWS_DEVFS"
+EXTRA_DEFINES_simpad		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
+EXTRA_DEFINES_corgi     	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_shepherd  	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_husky		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_beagle		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
