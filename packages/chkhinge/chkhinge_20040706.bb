@@ -11,7 +11,7 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${base_bindir}
-	install -m 4755 chkhinge ${D}/${base_bindir}/
+	install -d ${D}${base_bindir}
+	install -m 4755 chkhinge ${D}${base_bindir}/
 }
 

@@ -75,12 +75,12 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${libdir}
-	install -d ${D}/${bindir}
-	install -d ${D}/${includedir}
-	oe_libinstall -so -C lib libportaudio ${D}/${libdir}
-	install -m 0644 pa_common/portaudio.h ${D}/${includedir}
-	install -m 0755 bin/* ${D}/${bindir}/
+	install -d ${D}${libdir}
+	install -d ${D}${bindir}
+	install -d ${D}${includedir}
+	oe_libinstall -so -C lib libportaudio ${D}${libdir}
+	install -m 0644 pa_common/portaudio.h ${D}${includedir}
+	install -m 0755 bin/* ${D}${bindir}/
 }
 
 PACKAGES = "libportaudio0 portaudio-dev portaudio-examples"

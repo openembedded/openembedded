@@ -58,8 +58,8 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${libdir}/
-	oe_soinstall lib/libqt-mt.so.${PV} ${D}/${libdir}/
+	install -d ${D}${libdir}/
+	oe_soinstall lib/libqt-mt.so.${PV} ${D}${libdir}/
 	oe_runmake -C plugins/src INSTALL_ROOT="${D}" \
 		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
 		INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR} \

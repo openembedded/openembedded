@@ -11,9 +11,9 @@ SRC_URI = "file://mount.unionroot \
 	   file://umount.unionroot"
 
 do_install () {
-	install -d ${D}/${base_bindir}
-	install -m 0755 ${WORKDIR}/mount.unionroot ${D}/${base_bindir}/
-	install -m 0755 ${WORKDIR}/umount.unionroot ${D}/${base_bindir}/
+	install -d ${D}${base_bindir}
+	install -m 0755 ${WORKDIR}/mount.unionroot ${D}${base_bindir}/
+	install -m 0755 ${WORKDIR}/umount.unionroot ${D}${base_bindir}/
 }
 
 pkg_postinst () {

@@ -23,8 +23,8 @@ PACKAGES = "ntpdate ntp"
 FILES_ntpdate = "${bindir}/ntpdate /etc/init.d/ntpdate"
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 755 ${WORKDIR}/ntpdate ${D}/${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/init.d
+	install -m 755 ${WORKDIR}/ntpdate ${D}${sysconfdir}/init.d
 }
 
 pkg_postinst_ntpdate_nylon() {

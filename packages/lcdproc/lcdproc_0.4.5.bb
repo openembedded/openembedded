@@ -14,24 +14,24 @@ EXTRA_OECONF = "${@'--enable-drivers=' + (bb.data.getVar('LCDPROC_DRIVERS',d) or
 
 do_install () {
 	# binaries
-	install -D -m 0755 server/LCDd ${D}/${sbindir}/LCDd
-	install -D -m 0755 clients/lcdproc/lcdproc ${D}/${bindir}/lcdproc
+	install -D -m 0755 server/LCDd ${D}${sbindir}/LCDd
+	install -D -m 0755 clients/lcdproc/lcdproc ${D}${bindir}/lcdproc
 
 	# init scripts
-	install -D -m 0755 scripts/init-LCDd.debian ${D}/${sysconfdir}/init.d/lcdd
+	install -D -m 0755 scripts/init-LCDd.debian ${D}${sysconfdir}/init.d/lcdd
 	# prevent lcdproc from starting if no SCREENS are set.
 	# will be fixed in next upstream release
 	cat scripts/init-lcdproc.debian | sed -e 's/C X//' | sed -e 's/case/[ -n $SCREENS ] || exit 0
 
-case/' > ${D}/${sysconfdir}/init.d/lcdproc
-	chmod 0755 ${D}/${sysconfdir}/init.d/lcdproc
+case/' > ${D}${sysconfdir}/init.d/lcdproc
+	chmod 0755 ${D}${sysconfdir}/init.d/lcdproc
 
 	# configuration files
-	install -D -m 0644 LCDd.conf ${D}/${sysconfdir}/LCDd.conf
+	install -D -m 0644 LCDd.conf ${D}${sysconfdir}/LCDd.conf
 	# don't start lcdproc by default
 	# will be fixed in next upstream release
-	cat scripts/lcdproc.conf | sed -e 's/C X//' > ${D}/${sysconfdir}/lcdproc.conf
-	chmod 0644 ${D}/${sysconfdir}/lcdproc.conf
+	cat scripts/lcdproc.conf | sed -e 's/C X//' > ${D}${sysconfdir}/lcdproc.conf
+	chmod 0644 ${D}${sysconfdir}/lcdproc.conf
 }
 
 pkg_postinst () {

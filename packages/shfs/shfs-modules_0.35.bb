@@ -24,6 +24,6 @@ do_stage() {
 }
 
 do_install() {
-        install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/
-	install -m 0644 shfs.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/shfs.o
+        install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/
+	install -m 0644 shfs.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/shfs.o
 }

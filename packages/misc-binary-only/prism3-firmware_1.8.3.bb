@@ -8,10 +8,10 @@ SRC_URI = "http://www.red-bean.com/~proski/firmware/${PV}.tar.gz \
 S = "${WORKDIR}"
 
 do_install() {
-	install -d ${D}/${sysconfdir}/pcmcia/
-	install -m 0644 primary/pm010102.hex ${D}/${sysconfdir}/pcmcia/
-	install -m 0644 1.8.3/rf010803.hex ${D}/${sysconfdir}/pcmcia/
-	cat >${D}/${sysconfdir}/pcmcia/README.prism3-firmware <<EOF
+	install -d ${D}${sysconfdir}/pcmcia/
+	install -m 0644 primary/pm010102.hex ${D}${sysconfdir}/pcmcia/
+	install -m 0644 1.8.3/rf010803.hex ${D}${sysconfdir}/pcmcia/
+	cat >${D}${sysconfdir}/pcmcia/README.prism3-firmware <<EOF
 To make a prism3 card w/ downloadable firmware work, do the following:
 	0.) Install hostap-utils
 	1.) Add "needs_reset yes" and "needs_firmware hostap_fw_load" to

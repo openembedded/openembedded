@@ -12,6 +12,6 @@ S = "${WORKDIR}"
 
 
 do_install () {
-	install -d ${D}/${bindir}
-	install -m 0755 slugimage/slugimage ${D}/${bindir}/
+	install -d ${D}${bindir}
+	install -m 0755 slugimage/slugimage ${D}${bindir}/
 }

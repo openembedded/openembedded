@@ -10,7 +10,7 @@ inherit autotools
 EXTRA_OECONF = "--with-microwin=${STAGING_LIBDIR}/.."
 
 do_install () {
-	oe_runmake "bindir=${D}/${bindir}" \
-		   "libdir=${D}/${libdir}" \
-		   "includedir=${D}/${includedir}" install
+	oe_runmake "bindir=${D}${bindir}" \
+		   "libdir=${D}${libdir}" \
+		   "includedir=${D}${includedir}" install
 }

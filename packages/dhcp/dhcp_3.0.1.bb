@@ -24,15 +24,15 @@ do_compile() {
 
 do_install() {
 	make -e DESTDIR=${D} USRMANDIR=${mandir}/man1 ADMMANDIR=${mandir}/man8 FFMANDIR=${mandir}/man5 LIBMANDIR=${mandir}/man3 LIBDIR=${libdir} INCDIR=${includedir} install
-	install -d ${D}/${sysconfdir}/init.d
-	install -d ${D}/${sysconfdir}/default
-	install -d ${D}/${sysconfdir}/dhcp
-	install -m 0755 ${WORKDIR}/init-relay ${D}/${sysconfdir}/init.d/dhcp-relay
-	install -m 0644 ${WORKDIR}/default-relay ${D}/${sysconfdir}/default/dhcp-relay
-	install -m 0755 ${WORKDIR}/init-server ${D}/${sysconfdir}/init.d/dhcp-server
-	install -m 0644 ${WORKDIR}/default-server ${D}/${sysconfdir}/default/dhcp-server
-	install -m 0644 ${WORKDIR}/dhclient.conf ${D}/${sysconfdir}/dhcp/dhclient.conf
-	install -m 0644 ${WORKDIR}/dhcpd.conf ${D}/${sysconfdir}/dhcp/dhcpd.conf
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/default
+	install -d ${D}${sysconfdir}/dhcp
+	install -m 0755 ${WORKDIR}/init-relay ${D}${sysconfdir}/init.d/dhcp-relay
+	install -m 0644 ${WORKDIR}/default-relay ${D}${sysconfdir}/default/dhcp-relay
+	install -m 0755 ${WORKDIR}/init-server ${D}${sysconfdir}/init.d/dhcp-server
+	install -m 0644 ${WORKDIR}/default-server ${D}${sysconfdir}/default/dhcp-server
+	install -m 0644 ${WORKDIR}/dhclient.conf ${D}${sysconfdir}/dhcp/dhclient.conf
+	install -m 0644 ${WORKDIR}/dhcpd.conf ${D}${sysconfdir}/dhcp/dhcpd.conf
 }
 
 PACKAGES = "dhcp-server dhcp-client dhcp-relay dhcp-omshell dhcp-dev dhcp-doc"

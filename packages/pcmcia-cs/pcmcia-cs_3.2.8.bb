@@ -58,36 +58,36 @@ INSTALL_ETC_DATA =     "config config.opts ftl.opts ieee1394.opts memory.opts ne
 INSTALL_ETC_DATA_arm = "config             ftl.opts ieee1394.opts memory.opts network.opts parport.opts scsi.opts serial.opts shared"
 
 do_install() {
-	install -d ${D}/${sbindir}
+	install -d ${D}${sbindir}
 	for f in cardmgr/cardctl cardmgr/cardmgr cardmgr/ide_info cardmgr/ifport cardmgr/ifuser cardmgr/pcinitrd flash/ftl_check flash/ftl_format
 	do
-		install -m 0755 $f ${D}/${sbindir}/
+		install -m 0755 $f ${D}${sbindir}/
 	done
-	install -d ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/pcmcia \
-		   ${D}/${sysconfdir}/pcmcia/cis
+	install -d ${D}${sysconfdir}/init.d \
+		   ${D}${sysconfdir}/pcmcia \
+		   ${D}${sysconfdir}/pcmcia/cis
 
-	install -m 0644 ${WORKDIR}/network.conf ${D}/${sysconfdir}/pcmcia/
-	install -m 0644 ${WORKDIR}/wnv.conf ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/network.conf ${D}${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/wnv.conf ${D}${sysconfdir}/pcmcia/
 
 	for i in ${INSTALL_ETC}; do
-		install -m 0755 etc/${i} ${D}/${sysconfdir}/pcmcia/
+		install -m 0755 etc/${i} ${D}${sysconfdir}/pcmcia/
 	done
 	for i in ${INSTALL_ETC_DATA}; do
-		install -m 0644 etc/${i} ${D}/${sysconfdir}/pcmcia/
+		install -m 0644 etc/${i} ${D}${sysconfdir}/pcmcia/
 	done
 
 	# ensure that config.opts always exists, albeit empty
-	echo >> ${D}/${sysconfdir}/pcmcia/config.opts
+	echo >> ${D}${sysconfdir}/pcmcia/config.opts
 
-	install -m 0644 ${WORKDIR}/ide.opts ${D}/${sysconfdir}/pcmcia/
-	install -m 0644 ${WORKDIR}/wireless.opts ${D}/${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/ide.opts ${D}${sysconfdir}/pcmcia/
+	install -m 0644 ${WORKDIR}/wireless.opts ${D}${sysconfdir}/pcmcia/
 	for i in etc/cis/*; do
-		install -m 0644 $i ${D}/${sysconfdir}/pcmcia/cis/
+		install -m 0644 $i ${D}${sysconfdir}/pcmcia/cis/
 	done
-	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
-	install -d ${D}/${sysconfdir}/sysconfig
-	install -m 0755 ${WORKDIR}/pcmcia ${D}/${sysconfdir}/sysconfig/pcmcia
+	install -m 0755 etc/rc.pcmcia ${D}${sysconfdir}/init.d/pcmcia
+	install -d ${D}${sysconfdir}/sysconfig
+	install -m 0755 ${WORKDIR}/pcmcia ${D}${sysconfdir}/sysconfig/pcmcia
 }
 
 PACKAGES =+ "${PN}-ftl ${PN}-pcinitrd"

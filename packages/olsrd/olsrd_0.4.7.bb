@@ -22,8 +22,8 @@ do_compile() {
 
 do_install () {
 	oe_runmake INSTALL_PREFIX=${D} install install_libs
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/olsrd
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/olsrd
 }
 
 CONFFILES_${PN} = "/etc/olsrd.conf"

@@ -26,8 +26,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/portmap.init ${D}/${sysconfdir}/init.d/portmap
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
 	oe_runmake 'docdir=${docdir}/portmap' \
 		   'DESTDIR=${D}' install
 }

@@ -61,7 +61,7 @@ do_stage () {
 }
 
 do_install_append () {
-	install -d ${D}/${sysconfdir}/gtk-2.0
+	install -d ${D}${sysconfdir}/gtk-2.0
 }
 
 python populate_packages_prepend () {

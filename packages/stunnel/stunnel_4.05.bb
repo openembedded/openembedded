@@ -23,7 +23,7 @@ EXTRA_OECONF = "--with-ssl=${STAGING_LIBDIR}/.."
 
 do_install() {
 	autotools_do_install
-	install -d ${D}/${sysconfdir}/stunnel ${D}/${sysconfdir}/init.d
-	install -m 755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/stunnel
-	install -m 644 ${WORKDIR}/stunnel.conf ${D}/${sysconfdir}/stunnel
+	install -d ${D}${sysconfdir}/stunnel ${D}${sysconfdir}/init.d
+	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/stunnel
+	install -m 644 ${WORKDIR}/stunnel.conf ${D}${sysconfdir}/stunnel
 }

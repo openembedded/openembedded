@@ -20,10 +20,10 @@ do_install() {
 
 	for dir in apps apps/Games bin pics
 	do
-		install -d ${D}/opt/QtPalmtop/$dir
+		install -d ${D}opt/QtPalmtop/$dir
 	done
 	
-	install -m 755 ${WORKDIR}/opie-sh-snes.sh ${D}/opt/QtPalmtop/bin
-	install -m 644 ${WORKDIR}/*.png ${D}/opt/QtPalmtop/pics
-	install -m 644 ${WORKDIR}/*.desktop ${D}/opt/QtPalmtop/apps/Games
+	install -m 755 ${WORKDIR}/opie-sh-snes.sh ${D}opt/QtPalmtop/bin
+	install -m 644 ${WORKDIR}/*.png ${D}opt/QtPalmtop/pics
+	install -m 644 ${WORKDIR}/*.desktop ${D}opt/QtPalmtop/apps/Games
 }	   

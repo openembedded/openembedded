@@ -19,9 +19,9 @@ PARALLEL_MAKE = ""
 inherit opie
 
 do_install() {
-    install -d ${D}/${palmtopdir}/pics/${APPNAME}
-    install -d ${D}/${palmtopdir}/lib/
-    oe_libinstall -so libcamera ${D}/${palmtopdir}/lib
-    install -m 0755 capture ${D}/${palmtopdir}/bin/
-    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+    install -d ${D}${palmtopdir}/pics/${APPNAME}
+    install -d ${D}${palmtopdir}/lib/
+    oe_libinstall -so libcamera ${D}${palmtopdir}/lib
+    install -m 0755 capture ${D}${palmtopdir}/bin/
+    install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 }

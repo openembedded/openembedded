@@ -30,15 +30,15 @@ do_install() {
 
 		for f in libAportis libPlucker libppms libCHM libWeasel libiSilo   
 		do
-			oe_libinstall -so -C ${S}/ $f ${D}/${palmtopdir}/plugins/reader/codecs/
+			oe_libinstall -so -C ${S}/ $f ${D}${palmtopdir}/plugins/reader/codecs/
 		done
 
 		for f in libreader_codec libreader_pdb libreader_pluckerbase
 		do
-			oe_libinstall -so -C ${S}/ $f ${D}/${palmtopdir}/lib/
+			oe_libinstall -so -C ${S}/ $f ${D}${palmtopdir}/lib/
 		done
-		oe_libinstall -so -C ${S}/ libHTMLfilter ${D}/${palmtopdir}/plugins/reader/filters/
-		install -m 0644 ${S}/HTMLentities ${D}/${palmtopdir}/plugins/reader/data/
+		oe_libinstall -so -C ${S}/ libHTMLfilter ${D}${palmtopdir}/plugins/reader/filters/
+		install -m 0644 ${S}/HTMLentities ${D}${palmtopdir}/plugins/reader/data/
 		
 }
 

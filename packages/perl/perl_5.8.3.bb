@@ -37,7 +37,7 @@ do_compile() {
 
 do_install() {
 	oe_runmake install
-	mv ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
+	mv ${D}${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/libperl.so ${D}${libdir}/libperl.so.${PV}
 	( cd ${D}${bindir}/; rm perl; ln -s perl${PV} perl )
 }
 

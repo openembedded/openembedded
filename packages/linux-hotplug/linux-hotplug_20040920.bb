@@ -45,16 +45,16 @@ FILES_hotplug-doc_append = " ${oldmandir}"
 
 export DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
 do_install () {
-	install -d ${D}/${sysconfdir}/logcheck/ignore.d
-	install -d ${D}/${oldmandir}
-	install -d ${D}/${oldsbindir}
-	#install -d ${D}/${sysconfdir}/default
+	install -d ${D}${sysconfdir}/logcheck/ignore.d
+	install -d ${D}${oldmandir}
+	install -d ${D}${oldsbindir}
+	#install -d ${D}${sysconfdir}/default
 	oe_runmake prefix=${D}${prefix} exec_prefix=${D}${exec_prefix} \
 		   etcdir=${D}${sysconfdir} sbindir=${D}${sbindir} \
 		   mandir=${D}${oldmandir} install
 	sh ${WORKDIR}/fix-net.agent ${D} || :
-	install -m 0755 ${WORKDIR}/update-usb.usermap ${D}/${oldsbindir}/
-	install -m 0644 ${WORKDIR}/logcheck-ignore ${D}/${sysconfdir}/logcheck/ignore.d/hotplug
+	install -m 0755 ${WORKDIR}/update-usb.usermap ${D}${oldsbindir}/
+	install -m 0644 ${WORKDIR}/logcheck-ignore ${D}${sysconfdir}/logcheck/ignore.d/hotplug
 	install -m 0755 ${WORKDIR}/sleeve.agent ${D}${sysconfdir}/hotplug/
 	install -m 0755 ${WORKDIR}/sleeve.rc ${D}${sysconfdir}/hotplug/
 	install -m 0755 ${WORKDIR}/mmc.agent ${D}${sysconfdir}/hotplug/
@@ -62,6 +62,6 @@ do_install () {
 	#install -m 0755 ${WORKDIR}/usbd ${D}${sysconfdir}/default/usbd
 	install -d ${D}${sysconfdir}/sysconfig
 	install -m 0644 ${WORKDIR}/sysconfig-hotplug ${D}${sysconfdir}/sysconfig/hotplug
-	install -m 0644 ${WORKDIR}/sysconfig-usb ${D}/${sysconfdir}/sysconfig/usb
+	install -m 0644 ${WORKDIR}/sysconfig-usb ${D}${sysconfdir}/sysconfig/usb
 	install -m 0755 ${WORKDIR}/usb-storage ${D}${sysconfdir}/hotplug/usb
 }

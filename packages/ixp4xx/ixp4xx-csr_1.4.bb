@@ -40,6 +40,6 @@ do_stage () {
 }
 
 do_install () {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400
-	install -m 0644 lib/linuxbe/ixp400.ko ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400/
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400
+	install -m 0644 lib/linuxbe/ixp400.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400/
 }

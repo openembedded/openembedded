@@ -54,10 +54,10 @@ do_stage() {
 }
 
 do_install() {
-    install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages/
+    install -d ${D}${libdir}/${PYTHON_DIR}/site-packages/
     for module in ${SIP_MODULES}
     do
-        install -m 0755 ${module}/lib${module}.so ${D}/${libdir}/${PYTHON_DIR}/site-packages/${module}.so
+        install -m 0755 ${module}/lib${module}.so ${D}${libdir}/${PYTHON_DIR}/site-packages/${module}.so
     done
 }
 

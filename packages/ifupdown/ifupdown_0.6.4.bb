@@ -23,11 +23,11 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/network \
-		   ${D}/${base_sbindir}
-	install -m 0755 ifup ${D}/${base_sbindir}/
-	ln ${D}/${base_sbindir}/ifup ${D}/${base_sbindir}/ifdown
-	install -m 0644 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/networking
-	install -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
+	install -d ${D}${sysconfdir}/init.d \
+		   ${D}${sysconfdir}/network \
+		   ${D}${base_sbindir}
+	install -m 0755 ifup ${D}${base_sbindir}/
+	ln ${D}${base_sbindir}/ifup ${D}${base_sbindir}/ifdown
+	install -m 0644 ${WORKDIR}/init ${D}${sysconfdir}/init.d/networking
+	install -m 0644 ${WORKDIR}/interfaces ${D}${sysconfdir}/network/interfaces
 }

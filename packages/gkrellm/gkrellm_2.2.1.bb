@@ -15,12 +15,12 @@ export LINK_FLAGS = "${LDFLAGS}"
 export SMC_LIBS = "-lSM -lICE"
 
 do_install () {
-	oe_runmake 'INSTALLDIR=${D}/${bindir}' \
-		   'SINSTALLDIR=${D}/${bindir}' \
-		   'MANDIR=${D}/${mandir}/man1' \
-		   'SMANDIR=${D}/${mandir}/man1' \
-		   'INCLUDEDIR=${D}/${includedir}' \
-		   'PKGCONFIGDIR=${D}/${libdir}/pkgconfig' \
-		   'LOCALEDIR=${D}/${datadir}/locale' \
+	oe_runmake 'INSTALLDIR=${D}${bindir}' \
+		   'SINSTALLDIR=${D}${bindir}' \
+		   'MANDIR=${D}${mandir}/man1' \
+		   'SMANDIR=${D}${mandir}/man1' \
+		   'INCLUDEDIR=${D}${includedir}' \
+		   'PKGCONFIGDIR=${D}${libdir}/pkgconfig' \
+		   'LOCALEDIR=${D}${datadir}/locale' \
 		   install
 }

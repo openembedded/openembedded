@@ -21,6 +21,6 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sbindir}
-	install -m 0755 lockstat ${D}/${sbindir}/
+	install -d ${D}${sbindir}
+	install -m 0755 lockstat ${D}${sbindir}/
 }

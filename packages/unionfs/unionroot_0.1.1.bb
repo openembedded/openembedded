@@ -17,8 +17,8 @@ ALTERNATIVE_PATH = "/sbin/init.unionroot"
 ALTERNATIVE_PRIORITY = "100"
 
 do_install () {
-        install -d ${D}/${base_sbindir}
-        install -m 0755 ${WORKDIR}/init.unionroot ${D}/${base_sbindir}/
+        install -d ${D}${base_sbindir}
+        install -m 0755 ${WORKDIR}/init.unionroot ${D}${base_sbindir}/
 }
 
 pkg_postinst () {

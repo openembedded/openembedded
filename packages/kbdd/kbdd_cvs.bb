@@ -14,8 +14,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${bindir}
-	install -d ${D}/${docdir}/kbdd/
-	install -m 0755 kbdd ${D}/${bindir}/
-	install -m 0644 README ${D}/${docdir}/kbdd/
+	install -d ${D}${bindir}
+	install -d ${D}${docdir}/kbdd/
+	install -m 0755 kbdd ${D}${bindir}/
+	install -m 0644 README ${D}${docdir}/kbdd/
 }

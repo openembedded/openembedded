@@ -24,11 +24,11 @@ CFLAGS_append = " -I${STAGING_KERNEL_DIR}/include"
 LDFLAGS_append = " -Wl,--export-dynamic"
 
 do_install_append () {
-        mkdir -p  ${D}/${datadir}/pixmaps
+        mkdir -p  ${D}${datadir}/pixmaps
         install -m 0644 ${WORKDIR}/gkdial.png ${D}${datadir}/pixmaps/gkdial.png
         mkdir -p  ${D}${datadir}/applications
         install -m 0644 ${WORKDIR}/gkdial.desktop ${D}${datadir}/applications/gkdial.desktop
-	mkdir -p ${D}/${sysconfdir}/chatscripts
-        mkdir -p ${D}/${sysconfdir}/gconf/schemas
-        install -m 0644 ${S}/gkdial.schemas ${D}/${sysconfdir}/gconf/schemas/gkdial.schemas
+	mkdir -p ${D}${sysconfdir}/chatscripts
+        mkdir -p ${D}${sysconfdir}/gconf/schemas
+        install -m 0644 ${S}/gkdial.schemas ${D}${sysconfdir}/gconf/schemas/gkdial.schemas
 }

@@ -12,7 +12,7 @@ def define_os (d):
 CFLAGS += " ${@define_os(d)}"
 
 do_install () {
-	install -d ${D}/${includedir}
-	install -m 0644 ${S}/../matrixSsl.h ${D}/${includedir}/
-	oe_libinstall -so libmatrixssl ${D}/${libdir}/
+	install -d ${D}${includedir}
+	install -m 0644 ${S}/../matrixSsl.h ${D}${includedir}/
+	oe_libinstall -so libmatrixssl ${D}${libdir}/
 }

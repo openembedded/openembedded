@@ -18,9 +18,9 @@ inherit palmtop
 QMAKE_PROFILES = "subapplet.pro"
 
 do_install() {
-    install -d ${D}/${palmtopdir}/plugins/applets ${D}/${palmtopdir}/pics/subapplet/
-    install -m 0644 *.png ${D}/${palmtopdir}/pics/subapplet/
-    oe_libinstall -so -C rel${palmtopdir}/plugins/applets libsubapplet ${D}/${palmtopdir}/plugins/applets/
+    install -d ${D}${palmtopdir}/plugins/applets ${D}${palmtopdir}/pics/subapplet/
+    install -m 0644 *.png ${D}${palmtopdir}/pics/subapplet/
+    oe_libinstall -so -C rel${palmtopdir}/plugins/applets libsubapplet ${D}${palmtopdir}/plugins/applets/
 }
 
 pkg_postinst() {

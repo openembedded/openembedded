@@ -19,8 +19,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${bindir}
+	install -d ${D}${bindir}
 	oe_runmake -C src BINDIR="${bindir}" DESTDIR="${D}" install
-	install -d ${D}/${sysconfdir}/
-	install -m 0644 ${WORKDIR}/gputty ${D}/${sysconfdir}/
+	install -d ${D}${sysconfdir}/
+	install -m 0644 ${WORKDIR}/gputty ${D}${sysconfdir}/
 }

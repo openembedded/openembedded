@@ -21,10 +21,10 @@ do_configure_prepend() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin \
-		   ${D}/${palmtopdir}/pics/${PN}/ \
-		   ${D}/${palmtopdir}/apps/Applications
-	install -m 0644 apps/Applications/justreader.desktop ${D}/${palmtopdir}/apps/Applications/
-	install -m 0755 bin/justreader ${D}/${palmtopdir}/bin/
-	install -m 0644 pics/* ${D}/${palmtopdir}/pics/justreader/
+	install -d ${D}${palmtopdir}/bin \
+		   ${D}${palmtopdir}/pics/${PN}/ \
+		   ${D}${palmtopdir}/apps/Applications
+	install -m 0644 apps/Applications/justreader.desktop ${D}${palmtopdir}/apps/Applications/
+	install -m 0755 bin/justreader ${D}${palmtopdir}/bin/
+	install -m 0644 pics/* ${D}${palmtopdir}/pics/justreader/
 }

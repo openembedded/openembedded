@@ -20,7 +20,7 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${bindir}
-	install -m 0755 xmame.SDL ${D}/${bindir}
+	install -d ${D}${bindir}
+	install -m 0755 xmame.SDL ${D}${bindir}
 }
 

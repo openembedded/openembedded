@@ -22,11 +22,11 @@ export BUILDCFLAGS = "${BUILD_CFLAGS}"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
-	install -d ${D}/${sysconfdir}
-	rm ${D}/${base_sbindir}/lsmod
-	install -d ${D}/${base_bindir}/
-	ln -s ../sbin/insmod ${D}/${base_bindir}/lsmod
-        for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do                mv ${D}/$f ${D}/$f.24
+	install -d ${D}${sysconfdir}
+	rm ${D}${base_sbindir}/lsmod
+	install -d ${D}${base_bindir}/
+	ln -s ../sbin/insmod ${D}${base_bindir}/lsmod
+        for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do                mv ${D}$f ${D}$f.24
         done
 }
 

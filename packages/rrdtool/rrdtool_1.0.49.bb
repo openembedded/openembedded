@@ -11,11 +11,11 @@ inherit autotools
 EXTRA_OECONF = "--enable-shared --enable-local-libpng --enable-local-zlib --program-prefix=''"
 
 do_install_append() {
-	install -d ${D}/${docdir}/rrdtool/
-	mv ${D}/usr/html ${D}/${docdir}/rrdtool/
-	mv ${D}/usr/doc/* ${D}/${docdir}/rrdtool/
-	mv ${D}/usr/examples ${D}/${docdir}/rrdtool/
-	mv ${D}/usr/contrib ${D}/${docdir}/rrdtool/
+	install -d ${D}${docdir}/rrdtool/
+	mv ${D}usr/html ${D}${docdir}/rrdtool/
+	mv ${D}usr/doc/* ${D}${docdir}/rrdtool/
+	mv ${D}usr/examples ${D}${docdir}/rrdtool/
+	mv ${D}usr/contrib ${D}${docdir}/rrdtool/
 }
 
 FILES_${PN} += "${libdir}/perl"

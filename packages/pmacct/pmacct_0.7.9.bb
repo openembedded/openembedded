@@ -16,10 +16,10 @@ do_configure () {
 
 do_install() {
 	autotools_do_install
-	install -d ${D}/${sysconfdir}/init.d/
-	install -d ${D}/${sysconfdir}/pmacct
-	install -m 755 ${WORKDIR}/pmacct.init ${D}/${sysconfdir}/init.d/pmacct
-	install -m 644 ${WORKDIR}/pmacct.conf.eth0 ${D}/${sysconfdir}/pmacct
+	install -d ${D}${sysconfdir}/init.d/
+	install -d ${D}${sysconfdir}/pmacct
+	install -m 755 ${WORKDIR}/pmacct.init ${D}${sysconfdir}/init.d/pmacct
+	install -m 644 ${WORKDIR}/pmacct.conf.eth0 ${D}${sysconfdir}/pmacct
 }
 
 CONFFILES_nylon = "/etc/pmacct/pmacct.conf.eth0"

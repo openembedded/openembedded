@@ -15,10 +15,10 @@ S = "${WORKDIR}/wireless_tools.${PV}"
 
 CFLAGS =+ "-I${S}"
 EXTRA_OEMAKE = "-e 'BUILD_SHARED=y' \
-		'INSTALL_DIR=${D}/${base_sbindir}' \
-		'INSTALL_LIB=${D}/${libdir}' \
-		'INSTALL_INC=${D}/${includedir}' \
-		'INSTALL_MAN=${D}/${mandir}'"
+		'INSTALL_DIR=${D}${base_sbindir}' \
+		'INSTALL_LIB=${D}${libdir}' \
+		'INSTALL_INC=${D}${includedir}' \
+		'INSTALL_MAN=${D}${mandir}'"
 
 do_compile() {
 	oe_runmake all libiw.a
@@ -32,8 +32,8 @@ do_stage () {
 
 do_install() {
 	oe_runmake PREFIX=${D} install install-static
-	install -d ${D}/${sysconfdir}/network/if-pre-up.d
-	install ${WORKDIR}/wireless-tools.if-pre-up ${D}/${sysconfdir}/network/if-pre-up.d/wireless-tools
+	install -d ${D}${sysconfdir}/network/if-pre-up.d
+	install ${WORKDIR}/wireless-tools.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/wireless-tools
 }
 
 PACKAGES = "libiw libiw-dev libiw-doc ${PN} ${PN}-doc"

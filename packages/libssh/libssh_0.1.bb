@@ -22,12 +22,12 @@ do_stage () {
 }
 
 do_install () {
-	oe_runmake "prefix=${D}/${prefix}" \
-		   "exec_prefix=${D}/${exec_prefix}" \
-		   "bindir=${D}/${bindir}" \
-		   "incldir=${D}/${includedir}" \
-		   "infodir=${D}/${infodir}" \
-		   "mandir=${D}/${mandir}/man1" \
-		   "libdir=${D}/${libdir}" \
+	oe_runmake "prefix=${D}${prefix}" \
+		   "exec_prefix=${D}${exec_prefix}" \
+		   "bindir=${D}${bindir}" \
+		   "incldir=${D}${includedir}" \
+		   "infodir=${D}${infodir}" \
+		   "mandir=${D}${mandir}/man1" \
+		   "libdir=${D}${libdir}" \
 		   install
 }

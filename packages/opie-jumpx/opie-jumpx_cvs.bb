@@ -32,7 +32,7 @@ if [ -n "$D" ]; then exit 1; fi
 
 # FILES plugins/inputmethods/libqjumpx.so* pics/jumpx
 do_install() {
-	install -d ${D}/${palmtopdir}/pics/jumpx/
-	install -m 0644 ${WORKDIR}/pics/jumpx/*.png ${D}/${palmtopdir}/pics/jumpx/
+	install -d ${D}${palmtopdir}/pics/jumpx/
+	install -m 0644 ${WORKDIR}/pics/jumpx/*.png ${D}${palmtopdir}/pics/jumpx/
 }
 

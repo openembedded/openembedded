@@ -19,9 +19,9 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${libdir} \
-		   ${D}/${includedir}
-	oe_libinstall -so -C lib libqwt ${D}/${libdir}
-	cp -a include/* ${D}/${includedir}
+	install -d ${D}${libdir} \
+		   ${D}${includedir}
+	oe_libinstall -so -C lib libqwt ${D}${libdir}
+	cp -a include/* ${D}${includedir}
 }
 

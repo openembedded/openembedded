@@ -113,20 +113,20 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin
-	install -d ${D}/${sbindir}/
-	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}/${sbindir}/
+	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${sbindir}/
+	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}${sbindir}/
 	install -d ${D}${palmtopdir}/lib/fonts/
 	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
 
 	for lib in Core Gui Network Sql Xml
 	do
-		oe_soinstall lib/libQt${lib}.so.4.0.0 ${D}/${palmtopdir}/lib
+		oe_soinstall lib/libQt${lib}.so.4.0.0 ${D}${palmtopdir}/lib
 	done
 
 	for i in `find . -perm 0755 -type f`
 	do
-		install -m 0755 $i ${D}/${palmtopdir}/bin/`basename $i`
+		install -m 0755 $i ${D}${palmtopdir}/bin/`basename $i`
 	done
 }
 

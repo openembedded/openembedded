@@ -11,8 +11,8 @@ SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \
 inherit autotools
 
 do_install_append() {
-       install -d ${D}/${datadir}
-       install -m 0655 units.dat ${D}/${datadir}
+       install -d ${D}${datadir}
+       install -m 0655 units.dat ${D}${datadir}
 }
 
 FILES_${PN} += "${datadir}/units.dat"

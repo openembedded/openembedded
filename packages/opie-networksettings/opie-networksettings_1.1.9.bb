@@ -28,21 +28,21 @@ do_stage() {
 
 do_install() {
 	# Create dir for changedns and the opie-kppp peer
-	install -d ${D}/${bindir}/
-	install -d ${D}/${sysconfdir}/
-	install -d ${D}/${sysconfdir}/ppp/
-	install -d ${D}/${sysconfdir}/ppp/peers/
+	install -d ${D}${bindir}/
+	install -d ${D}${sysconfdir}/
+	install -d ${D}${sysconfdir}/ppp/
+	install -d ${D}${sysconfdir}/ppp/peers/
 	
-	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
-	install -d ${D}/${palmtopdir}/pics/Network/
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/pics/Network/
 	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${WORKDIR}/pics/Network/*.* ${D}${palmtopdir}/pics/Network/
-	install -d ${D}/${palmtopdir}/lib/
+	install -d ${D}${palmtopdir}/lib/
 	oe_libinstall -so libinterfaces ${D}${palmtopdir}/lib
-	install -d ${D}/${palmtopdir}/plugins/networksettings/
+	install -d ${D}${palmtopdir}/plugins/networksettings/
 	for plugin in kppp wlan
 	do
-		install lib$plugin.so ${D}/${palmtopdir}/plugins/networksettings/
+		install lib$plugin.so ${D}${palmtopdir}/plugins/networksettings/
 	done
 
 	# install changedns script

@@ -10,9 +10,9 @@ SRC_URI = "http://www.red-bean.com/~proski/firmware/1.7.4.tar.gz"
 INHIBIT_PACKAGE_STRIP = "1"
 
 do_install() {
-	install -d ${D}/tmp
-	install ${WORKDIR}/${PV}/pk010101.hex ${D}/tmp
-	install ${WORKDIR}/${PV}/sf010704.hex ${D}/tmp
+	install -d ${D}tmp
+	install ${WORKDIR}/${PV}/pk010101.hex ${D}tmp
+	install ${WORKDIR}/${PV}/sf010704.hex ${D}tmp
 }
 
 pkg_postinst() {

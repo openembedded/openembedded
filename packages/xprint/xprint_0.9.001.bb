@@ -22,7 +22,7 @@ do_compile() {
 do_install() {
 	make -C programs/Xserver DESTDIR="${D}" install
 	install -d ${D}${bindir}/
-	mv ${D}/usr/X11R6/bin/* ${D}${bindir}/
-	rmdir ${D}/usr/X11R6/bin/
+	mv ${D}usr/X11R6/bin/* ${D}${bindir}/
+	rmdir ${D}usr/X11R6/bin/
 }
 

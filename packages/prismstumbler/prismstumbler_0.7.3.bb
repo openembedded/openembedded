@@ -53,5 +53,5 @@ do_configure() {
 }
 
 do_install_append() {
-  chmod a+s ${D}/${bindir}/prismstumbler
+  chmod a+s ${D}${bindir}/prismstumbler
 }

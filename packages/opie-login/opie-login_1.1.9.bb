@@ -25,13 +25,13 @@ EXTRA_QMAKEVARS_POST_append = " DEFINES-=USEPAM"
 
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin
-	install -d ${D}/${palmtopdir}/etc
-	install -d ${D}/${palmtopdir}/share/opie-login
+	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${palmtopdir}/etc
+	install -d ${D}${palmtopdir}/share/opie-login
 
-	install -m 755 ${WORKDIR}/${PN}/opie-login ${D}/${palmtopdir}/bin
-	install -m 644 ${WORKDIR}/*-session ${D}/${palmtopdir}/share/opie-login
-	install -m 644 ${WORKDIR}/opie-login.conf ${D}/${palmtopdir}/etc
+	install -m 755 ${WORKDIR}/${PN}/opie-login ${D}${palmtopdir}/bin
+	install -m 644 ${WORKDIR}/*-session ${D}${palmtopdir}/share/opie-login
+	install -m 644 ${WORKDIR}/opie-login.conf ${D}${palmtopdir}/etc
 }
 
 do_configure() {

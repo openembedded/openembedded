@@ -15,10 +15,10 @@ do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
 }
 
-export PREFIX = "${D}/${prefix}"
-export SBINDIR = "${D}/${sbindir}"
-export SHAREDIR = "${D}/${datadir}"
-export MANDIR = "${D}/${mandir}"
+export PREFIX = "${D}${prefix}"
+export SBINDIR = "${D}${sbindir}"
+export SHAREDIR = "${D}${datadir}"
+export MANDIR = "${D}${mandir}"
 
 do_install () {
 	oe_runmake install

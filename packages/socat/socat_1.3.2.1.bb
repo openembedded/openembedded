@@ -10,5 +10,5 @@ S = "${WORKDIR}/socat-1.3"
 inherit autotools
 
 do_install_prepend () {
-	install -d ${D}/${bindir} ${D}/${mandir}/man1
+	install -d ${D}${bindir} ${D}${mandir}/man1
 }

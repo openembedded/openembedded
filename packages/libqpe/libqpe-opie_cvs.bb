@@ -55,7 +55,7 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so libqpe ${D}/${palmtopdir}/lib
+	oe_libinstall -so libqpe ${D}${palmtopdir}/lib
 }
 
 PACKAGES = "libqpe1"

@@ -13,7 +13,7 @@ RDEPENDS = "iproute2 (>= 2.6.8-r1)"
 S="${WORKDIR}"
 
 do_install() {
-	install -d ${D}/${sysconfdir}/init.d
-	install -d ${D}/${sysconfdir}/htb
-	install -m 755 ${S}/htb.init-v${PV} ${D}/${sysconfdir}/init.d/htb
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/htb
+	install -m 755 ${S}/htb.init-v${PV} ${D}${sysconfdir}/init.d/htb
 }

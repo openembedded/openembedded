@@ -24,11 +24,11 @@ do_configure() {
 }
 
 do_install() {
-	install -d ${D}/${sysconfdir} ${D}/${bindir}
-	install -m 0644 wpa_supplicant.conf ${D}/${sysconfdir}/wpa_supplicant.conf.sample
-	install -m 0644 ../wpa_supplicant_default.conf ${D}/${sysconfdir}/wpa_supplicant.conf
-	install -m 0755 wpa_passphrase ${D}/${bindir}
-	install -m 0755 wpa_cli        ${D}/${bindir}
-	install -m 0755 wpa_supplicant ${D}/${bindir}
+	install -d ${D}${sysconfdir} ${D}${bindir}
+	install -m 0644 wpa_supplicant.conf ${D}${sysconfdir}/wpa_supplicant.conf.sample
+	install -m 0644 ../wpa_supplicant_default.conf ${D}${sysconfdir}/wpa_supplicant.conf
+	install -m 0755 wpa_passphrase ${D}${bindir}
+	install -m 0755 wpa_cli        ${D}${bindir}
+	install -m 0755 wpa_supplicant ${D}${bindir}
 }
 

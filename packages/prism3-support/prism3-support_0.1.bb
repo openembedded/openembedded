@@ -7,8 +7,8 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 do_install() {
-	install -d ${D}/${sysconfdir}/network/if-pre-up.d/
-	cat >${D}/${sysconfdir}/network/if-pre-up.d/hostap-fw-load <<EOF
+	install -d ${D}${sysconfdir}/network/if-pre-up.d/
+	cat >${D}${sysconfdir}/network/if-pre-up.d/hostap-fw-load <<EOF
 #!/bin/sh
                                                        
 # Special case for prism3 cards needing firmware upload
@@ -21,6 +21,6 @@ fi
   
 # lets hope that run-parts obeys the order :D
 EOF
-	chmod a+rx ${D}/${sysconfdir}/network/if-pre-up.d/hostap-fw-load
+	chmod a+rx ${D}${sysconfdir}/network/if-pre-up.d/hostap-fw-load
 }
 

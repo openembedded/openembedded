@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-${PV}.tar.gz \
 inherit autotools
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/init.d
-	install -d ${D}/${sysconfdir}/openvpn
-	install -m 755 ${WORKDIR}/openvpn ${D}/${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/openvpn
+	install -m 755 ${WORKDIR}/openvpn ${D}${sysconfdir}/init.d
 }

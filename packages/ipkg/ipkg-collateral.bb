@@ -16,6 +16,6 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}/
-	install -m 0644 ${WORKDIR}/ipkg.conf ${D}/${sysconfdir}/ipkg.conf
+	install -d ${D}${sysconfdir}/
+	install -m 0644 ${WORKDIR}/ipkg.conf ${D}${sysconfdir}/ipkg.conf
 }

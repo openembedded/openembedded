@@ -24,8 +24,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/char
-	install -m 0644 drivers/lirc_sir/lirc_sir.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/char
+	install -m 0644 drivers/lirc_sir/lirc_sir.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/char/lirc_sir.o
 }
 
 pkg_postinst() {

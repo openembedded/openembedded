@@ -8,8 +8,8 @@ SRC_URI = "http://gallium.prg.dtu.dk/HVSC/random/HVSC_${PV}-all-of-them.zip"
 S = "${WORKDIR}"
 
 do_install() {
-	install -d ${D}/${datadir}/hvsc
-	unzip -d ${D}/${datadir}/hvsc C64Music.zip
+	install -d ${D}${datadir}/hvsc
+	unzip -d ${D}${datadir}/hvsc C64Music.zip
 }
 
 PACKAGE_ARCH = "all"

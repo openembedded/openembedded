@@ -25,15 +25,15 @@ do_configure() {
 }
 
 do_install () {
-	oe_runmake prefix="${D}/${prefix}" \
-		bindir="${D}/${bindir}" \
-		libdir="${D}/${libdir}" \
-		includedir="${D}/${includedir}" \
+	oe_runmake prefix="${D}${prefix}" \
+		bindir="${D}${bindir}" \
+		libdir="${D}${libdir}" \
+		includedir="${D}${includedir}" \
 		install
 
 	# put the docs where they belong
 	# might need further investigation in case giac needs
 	# them in the original place
-	install -d ${D}/${docdir}
-	mv ${D}/${datadir}/${PN}/doc ${D}/${docdir}/${PN}
+	install -d ${D}${docdir}
+	mv ${D}${datadir}/${PN}/doc ${D}${docdir}/${PN}
 }

@@ -12,6 +12,6 @@ S = "${WORKDIR}/qcop"
 inherit opie
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin/
-	install -m 0755 ${S}/qcop ${D}/${palmtopdir}/bin/qcop
+	install -d ${D}${palmtopdir}/bin/
+	install -m 0755 ${S}/qcop ${D}${palmtopdir}/bin/qcop
 }

@@ -17,6 +17,6 @@ do_compile () {
 }
 
 do_install () {
-	oe_runmake 'BINPATH=${D}/${base_sbindir}/' 'MANDIR=${D}/${mandir}/' \
-		   'ETHERTYPESPATH=${D}/${sysconfdir}/' install
+	oe_runmake 'BINPATH=${D}${base_sbindir}/' 'MANDIR=${D}${mandir}/' \
+		   'ETHERTYPESPATH=${D}${sysconfdir}/' install
 }

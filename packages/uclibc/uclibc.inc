@@ -147,21 +147,21 @@ do_install() {
 		install_dev install_runtime install_utils
 
 	# We don't really need this in ${includedir}
-	rm -f ${D}/${prefix}/include/.cvsignore
+	rm -f ${D}${prefix}/include/.cvsignore
 
 	# This conflicts with the c++ version of this header
-	rm -f ${D}/${prefix}/include/bits/atomicity.h
+	rm -f ${D}${prefix}/include/bits/atomicity.h
 
-	install -d ${D}/${includedir}
-	mv ${D}/${prefix}/include/* ${D}/${includedir}/
-	rmdir ${D}/${prefix}/include
+	install -d ${D}${includedir}
+	mv ${D}${prefix}/include/* ${D}${includedir}/
+	rmdir ${D}${prefix}/include
 
-	install -d ${D}/${libdir}
-	mv ${D}/${prefix}/lib/* ${D}/${libdir}/
-	rmdir ${D}/${prefix}/lib
+	install -d ${D}${libdir}
+	mv ${D}${prefix}/lib/* ${D}${libdir}/
+	rmdir ${D}${prefix}/lib
 
-	install -d ${D}/${bindir}
-	mv ${D}/usr/bin/* ${D}/${bindir}/
-	rmdir ${D}/usr/bin
+	install -d ${D}${bindir}
+	mv ${D}usr/bin/* ${D}${bindir}/
+	rmdir ${D}usr/bin
 }
 

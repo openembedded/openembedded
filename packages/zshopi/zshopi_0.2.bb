@@ -37,7 +37,7 @@ do_install() {
 
 	
 	install -d ${D}${palmtopdir}/i18n/de	
-	install -d ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/zshopi.png ${D}/${palmtopdir}/pics/	
+	install -d ${D}${palmtopdir}/pics/
+	install -m 0644 ${WORKDIR}/zshopi.png ${D}${palmtopdir}/pics/	
 	install -m 0644 ${WORKDIR}/${PN}_${PV}/zshopi/zshopi.de.qm ${D}${palmtopdir}/i18n/de/zshopi.qm
 }

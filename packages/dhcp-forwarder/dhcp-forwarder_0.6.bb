@@ -19,9 +19,9 @@ INITSCRIPT_NAME="dhcp-forwarder"
 INITSCRIPT_PARAMS="defaults"
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/dhcp-forwarder
-	install -m 0644 ${WORKDIR}/dhcp-fwd.cfg ${D}/${sysconfdir}
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/dhcp-forwarder
+	install -m 0644 ${WORKDIR}/dhcp-fwd.cfg ${D}${sysconfdir}
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/dhcp-fwd.cfg"

@@ -16,10 +16,10 @@ FILES_kernel-module-bt950-cs = "/etc/pcmcia/bt950.conf /lib/modules/${KERNEL_VER
 inherit module
 
 do_install() {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/ \
-				${D}/${sysconfdir}/pcmcia/
-	install -m 0644 bt950_cs.o ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/
-	install -m 0644 bt950.conf ${D}/${sysconfdir}/pcmcia/
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/ \
+				${D}${sysconfdir}/pcmcia/
+	install -m 0644 bt950_cs.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/
+	install -m 0644 bt950.conf ${D}${sysconfdir}/pcmcia/
 }
 
 pkg_postinst() {

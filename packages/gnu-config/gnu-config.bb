@@ -15,11 +15,11 @@ FILES_${PN} = "${bindir} \
 	       ${datadir}/gnu-config"
 
 do_install () {
-	install -d ${D}/${datadir}/gnu-config \
-		   ${D}/${bindir}
+	install -d ${D}${datadir}/gnu-config \
+		   ${D}${bindir}
 	cat ${WORKDIR}/gnu-configize.in | \
 		sed -e 's,@gnu-configdir@,${datadir}/gnu-config,' \
 		    -e 's,@autom4te_perllibdir@,${STAGING_DATADIR}/autoconf,' > ${STAGING_BINDIR}/gnu-configize
-	chmod 755 ${D}/${bindir}/gnu-configize
-	install -m 0644 config.guess config.sub ${D}/${datadir}/gnu-config/
+	chmod 755 ${D}${bindir}/gnu-configize
+	install -m 0644 config.guess config.sub ${D}${datadir}/gnu-config/
 }

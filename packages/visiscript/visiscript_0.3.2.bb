@@ -25,8 +25,8 @@ do_compile_prepend() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/pics/
-	install -m 0644 Visiscript.png ${D}/${palmtopdir}/pics
+	install -d ${D}${palmtopdir}/pics/
+	install -m 0644 Visiscript.png ${D}${palmtopdir}/pics
 }
 
 #FIXME: package help and translation

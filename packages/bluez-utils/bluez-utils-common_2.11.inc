@@ -13,13 +13,13 @@ S = "${WORKDIR}/bluez-utils-${PV}"
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} --enable-pcmcia --enable-initscripts"
 
 do_install_append() {
-	install -d ${D}/${base_sbindir} ${D}/${base_bindir}/
-	mv ${D}${sbindir}/* ${D}/${base_sbindir}/
-	mv ${D}${bindir}/* ${D}/${base_bindir}/
+	install -d ${D}${base_sbindir} ${D}${base_bindir}/
+	mv ${D}${sbindir}/* ${D}${base_sbindir}/
+	mv ${D}${bindir}/* ${D}${base_bindir}/
 	rmdir ${D}${bindir} ${D}${sbindir}
-	chmod u+s ${D}/${base_sbindir}/hciattach ${D}/${base_sbindir}/hciconfig
-	chmod 755 ${D}/${sysconfdir}/pcmcia/bluetooth
-	install -m 0644 ${WORKDIR}/hcid.conf ${D}/${sysconfdir}/bluetooth/
+	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
+	chmod 755 ${D}${sysconfdir}/pcmcia/bluetooth
+	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
 }
 
 inherit autotools update-rc.d

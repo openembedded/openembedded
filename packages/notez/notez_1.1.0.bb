@@ -17,7 +17,7 @@ file://fix-encoding.patch;patch=1"
 inherit opie
 
 do_install () {
-	install -d ${D}/${palmtopdir}/pics/
-	install -m 0644 notez.png ${D}/${palmtopdir}/pics/noteZ.png
+	install -d ${D}${palmtopdir}/pics/
+	install -m 0644 notez.png ${D}${palmtopdir}/pics/noteZ.png
 }
 

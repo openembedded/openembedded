@@ -13,8 +13,8 @@ SRC_URI = "http://www.cartel-securite.fr/pbiondi/python/scapy-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 do_install() {
-	install -d ${D}/${libdir}/${PYTHON_DIR}
-	install -m 0755 ${S}/scapy.py ${D}/${libdir}/${PYTHON_DIR}/
+	install -d ${D}${libdir}/${PYTHON_DIR}
+	install -m 0755 ${S}/scapy.py ${D}${libdir}/${PYTHON_DIR}/
 }
 
 FILES_${PN} = "${libdir}/${PYTHON_DIR}/"

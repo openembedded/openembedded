@@ -22,5 +22,5 @@ do_stage () {
 }
 
 do_install() {
-	oe_libinstall -so libmailwrapper ${D}/${palmtopdir}/lib
+	oe_libinstall -so libmailwrapper ${D}${palmtopdir}/lib
 }

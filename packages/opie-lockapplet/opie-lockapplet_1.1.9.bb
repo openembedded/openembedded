@@ -33,8 +33,8 @@ pkg_postrm() {
 }
 
 do_install() {
-    install -d ${D}/${palmtopdir}/plugins/applets ${D}/${palmtopdir}/pics/security/
-    install -m 0644 ${WORKDIR}/pics/security/lock.png ${D}/${palmtopdir}/pics/security/
-    oe_libinstall -so liblockapplet ${D}/${palmtopdir}/plugins/applets/
+    install -d ${D}${palmtopdir}/plugins/applets ${D}${palmtopdir}/pics/security/
+    install -m 0644 ${WORKDIR}/pics/security/lock.png ${D}${palmtopdir}/pics/security/
+    oe_libinstall -so liblockapplet ${D}${palmtopdir}/plugins/applets/
 }
 

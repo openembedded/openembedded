@@ -37,12 +37,12 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${bindir} ${D}/${mandir} \
-		   ${D}/${libdir} ${D}/${includedir}
+	install -d ${D}${bindir} ${D}${mandir} \
+		   ${D}${libdir} ${D}${includedir}
 	unset LDFLAGS
 	oe_runmake 'prefix=${prefix}' 'DESTDIR=${D}' \
-		   'DB=${D}/${bindir}' 'DI=${D}/${includedir}' \
-		   'DL=${D}/${libdir}' 'DM=${D}/${mandir}' \
+		   'DB=${D}${bindir}' 'DI=${D}${includedir}' \
+		   'DL=${D}${libdir}' 'DM=${D}${mandir}' \
 		   install
 }
 

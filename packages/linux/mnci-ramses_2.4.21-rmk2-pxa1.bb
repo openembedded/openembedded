@@ -56,10 +56,10 @@ kernel_do_install() {
 	else
 		oenote "no modules to install"
 	fi
-	install -d ${D}/tmp
-	install -m 0644 ${KERNEL_OUTPUT} ${D}/tmp
-	install -d ${D}/boot
-	install -m 0644 .config ${D}/boot/config-${PV}
-	bzip2 -9 ${D}/boot/*
-	install -d ${D}/${sysconfdir}/modutils
+	install -d ${D}tmp
+	install -m 0644 ${KERNEL_OUTPUT} ${D}tmp
+	install -d ${D}boot
+	install -m 0644 .config ${D}boot/config-${PV}
+	bzip2 -9 ${D}boot/*
+	install -d ${D}${sysconfdir}/modutils
 }

@@ -32,17 +32,17 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${bindir}
+	install -d ${D}${bindir}
 
-	install -m 755 daemons/irrecord ${D}/${bindir}/irrecord
-	install -m 755 daemons/lircd ${D}/${bindir}/lircd
+	install -m 755 daemons/irrecord ${D}${bindir}/irrecord
+	install -m 755 daemons/lircd ${D}${bindir}/lircd
 
 	oe_libinstall -so -C tools liblirc_client ${D}${libdir}/
 	install -d ${D}${includedir}
 	install -m 0644 tools/lirc_client.h ${D}${includedir}/
 
-	install -d ${D}/${sysconfdir}/init.d
-	install ${WORKDIR}/lircd.init ${D}/${sysconfdir}/init.d/lircd
+	install -d ${D}${sysconfdir}/init.d
+	install ${WORKDIR}/lircd.init ${D}${sysconfdir}/init.d/lircd
 
 	install -d ${D}${datadir}/lirc/
 	cp -a remotes ${D}${datadir}/lirc/

@@ -23,7 +23,7 @@ EXTRA_OECONF = "--with-readline=${STAGING_LIBDIR}/.. \
 
 do_install_append() {
 	install -d ${D}${datadir}/applications/
-	install -m 0644 ${WORKDIR}/gnuplot.desktop ${D}/${datadir}/applications/
+	install -m 0644 ${WORKDIR}/gnuplot.desktop ${D}${datadir}/applications/
 	install -d ${D}${datadir}/pixmaps/
 	install -m 0644 ${WORKDIR}/gnuplot.png ${D}${datadir}/pixmaps/
 }

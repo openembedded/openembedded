@@ -14,9 +14,9 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${base_sbindir} ${D}/${bindir} ${D}/${mandir}/man8 \
-		   ${D}/${sysconfdir}/sysconfig/devlabel.d
-	install -m 755 devlabel ${D}/${base_sbindir}/devlabel
+	install -d ${D}${base_sbindir} ${D}${bindir} ${D}${mandir}/man8 \
+		   ${D}${sysconfdir}/sysconfig/devlabel.d
+	install -m 755 devlabel ${D}${base_sbindir}/devlabel
 	install -m 755 scsi_unique_id ${D}${bindir}/
 	install -m 755 partition_uuid ${D}${bindir}/
 	install -m 644 devlabel.8.gz ${D}${mandir}/man8/

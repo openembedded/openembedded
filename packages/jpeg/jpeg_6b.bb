@@ -29,7 +29,7 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${bindir} ${D}/${includedir} \
-		   ${D}/${mandir}/man1 ${D}/${libdir}
+	install -d ${D}${bindir} ${D}${includedir} \
+		   ${D}${mandir}/man1 ${D}${libdir}
 	oe_runmake 'DESTDIR=${D}' install
 }

@@ -30,26 +30,26 @@ export LCRYPT = "-lcrypt"
 
 
 do_install () {
-	install -d ${D}/${bindir} ${D}/${sbindir} \
-		   ${D}/${base_sbindir} ${D}/${sysconfdir}/default \
-		   ${D}/${sysconfdir}/init.d
+	install -d ${D}${bindir} ${D}${sbindir} \
+		   ${D}${base_sbindir} ${D}${sysconfdir}/default \
+		   ${D}${sysconfdir}/init.d
 	install -m 755 halt killall5 \
-		runlevel shutdown ${D}/${base_sbindir}/
-	install -m 755 init ${D}/${base_sbindir}/sysvinit
+		runlevel shutdown ${D}${base_sbindir}/
+	install -m 755 init ${D}${base_sbindir}/sysvinit
 	install -m 755 mesg last ${D}${bindir}
-	install -m 0755 ${WORKDIR}/need		${D}/${base_sbindir}/need.sysvinit
-	install -m 0755 ${WORKDIR}/provide		${D}/${base_sbindir}/provide.sysvinit
-	ln -sf halt ${D}/${base_sbindir}/reboot
-	ln -sf halt ${D}/${base_sbindir}/poweroff
-	ln -sf init ${D}/${base_sbindir}/telinit
-	ln -sf killall5 ${D}/${base_sbindir}/pidof
+	install -m 0755 ${WORKDIR}/need		${D}${base_sbindir}/need.sysvinit
+	install -m 0755 ${WORKDIR}/provide		${D}${base_sbindir}/provide.sysvinit
+	ln -sf halt ${D}${base_sbindir}/reboot
+	ln -sf halt ${D}${base_sbindir}/poweroff
+	ln -sf init ${D}${base_sbindir}/telinit
+	ln -sf killall5 ${D}${base_sbindir}/pidof
 	ln -sf last ${D}${bindir}/lastb
-	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
+	install -m 0644 ${WORKDIR}/inittab ${D}${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
-		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}/${sysconfdir}/inittab
+		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}${sysconfdir}/inittab
 	fi
 	if [ "${USE_VT}" == "1" ]; then
-		cat <<EOF >>${D}/${sysconfdir}/inittab
+		cat <<EOF >>${D}${sysconfdir}/inittab
 # ${base_sbindir}/getty invocations for the runlevels.
 #
 # The "id" field MUST be the same as the last
@@ -64,14 +64,14 @@ do_install () {
 # 4:23:respawn:${base_sbindir}/getty 38400 tty4
 EOF
 	fi
-	install -m 0644    ${WORKDIR}/rcS-default	${D}/${sysconfdir}/default/rcS
-	install -m 0755    ${WORKDIR}/rc		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/rcS		${D}/${sysconfdir}/init.d
+	install -m 0644    ${WORKDIR}/rcS-default	${D}${sysconfdir}/default/rcS
+	install -m 0755    ${WORKDIR}/rc		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/rcS		${D}${sysconfdir}/init.d
 }
 
 
 do_install_append_ramses () {
-	cat <<EOF >>${D}/${sysconfdir}/inittab
+	cat <<EOF >>${D}${sysconfdir}/inittab
 # Bluetooth
 #1:2345:respawn:${base_sbindir}/getty -L 115200 tts/1
 # External serial port

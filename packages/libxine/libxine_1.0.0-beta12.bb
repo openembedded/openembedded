@@ -65,21 +65,21 @@ do_stage() {
 do_install() {
         oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool \
           -C src install-data \
-          'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
-          'includedir=${D}/${includedir}' 
+          'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}${libdir}' \
+          'includedir=${D}${includedir}' 
 
         oe_runmake -e LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool \
           -C include install-data \
-          'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}/${libdir}' \
-          'includedir=${D}/${includedir}'
+          'prefix=${D}' 'exec_prefix=${D}' 'libdir=${D}${libdir}' \
+          'includedir=${D}${includedir}'
 
         for plugin in `find ${S}/src -type f -name xineplug*.la`; do
           dir=`dirname $plugin`
           libname=`basename $plugin|sed -e's,\.la,,'`
-          oe_libinstall -so -C $dir $libname ${D}/${libdir}/xine/plugins/1.0.0
+          oe_libinstall -so -C $dir $libname ${D}${libdir}/xine/plugins/1.0.0
         done
 
-        oe_libinstall -so -C src/xine-engine libxine ${D}/${libdir}
+        oe_libinstall -so -C src/xine-engine libxine ${D}${libdir}
 }
 
 python populate_packages_prepend () {

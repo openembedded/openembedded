@@ -19,10 +19,10 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${base_bindir}
-	install -m 4755 tinylogin ${D}/${base_bindir}/tinylogin
+	install -d ${D}${base_bindir}
+	install -m 4755 tinylogin ${D}${base_bindir}/tinylogin
 	for i in `cat tinylogin.links`; do
-		mkdir -p ${D}/`dirname $i`
-		ln -sf /bin/tinylogin ${D}/$i
+		mkdir -p ${D}`dirname $i`
+		ln -sf /bin/tinylogin ${D}$i
 	done
 }

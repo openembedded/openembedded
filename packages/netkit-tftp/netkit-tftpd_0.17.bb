@@ -20,8 +20,8 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sbindir}
-	install -m 0755 tftpd/tftpd ${D}/${sbindir}/tftpd
+	install -d ${D}${sbindir}
+	install -m 0755 tftpd/tftpd ${D}${sbindir}/tftpd
 }
 
 pkg_postinst () {

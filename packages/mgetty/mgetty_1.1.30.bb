@@ -63,5 +63,5 @@ do_compile () {
 }
 
 do_install () {
-	oe_runmake install DESTDIR="${D}" prefix="${D}/${prefix}"
+	oe_runmake install DESTDIR="${D}" prefix="${D}${prefix}"
 }

@@ -36,6 +36,6 @@ do_install () {
 	install -d ${D}${datadir}/fbvncserver
 	install -m 0644 ${WORKDIR}/zaurus_panel.jpg ${D}${datadir}/fbvncserver/
 	
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/fbvncinput
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/fbvncinput
 }

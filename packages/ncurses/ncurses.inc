@@ -50,8 +50,8 @@ do_install() {
 	autotools_do_install
 
 	# our ncurses has termcap support
-	ln -sf libncurses.so ${D}/${libdir}/libtermcap.so
-	ln -sf libncurses.a ${D}/${libdir}/libtermcap.a
+	ln -sf libncurses.so ${D}${libdir}/libtermcap.so
+	ln -sf libncurses.a ${D}${libdir}/libtermcap.a
 
 	# include some basic terminfo files
 	# stolen ;) from gentoo and modified a bit
@@ -62,15 +62,15 @@ do_install() {
 
                 if [ -n "${termfile}" ]
                 then
-                        install -d ${D}/${sysconfdir}/terminfo/${basedir}
-                        mv ${termfile} ${D}/${sysconfdir}/terminfo/${basedir}/
+                        install -d ${D}${sysconfdir}/terminfo/${basedir}
+                        mv ${termfile} ${D}${sysconfdir}/terminfo/${basedir}/
                         ln -s /etc/terminfo/${basedir}/${x} \
                                 ${D}${datadir}/terminfo/${basedir}/${x}
                 fi
         done
 	# i think we can use xterm-color as default xterm
-	if [ -e ${D}/${sysconfdir}/terminfo/x/xterm-color ]
+	if [ -e ${D}${sysconfdir}/terminfo/x/xterm-color ]
 	then
-		ln -sf xterm-color ${D}/${sysconfdir}/terminfo/x/xterm
+		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
 }

@@ -33,10 +33,10 @@ FILES_lib${PN}-dev = "${includedir}/jni* \
 		      ${libdir}/lib${PN}.la"
 
 do_install_append() {
-	install -d ${D}/${docdir}
-	mv ${D}/${datadir}/${PN} ${D}/${docdir}/
+	install -d ${D}${docdir}
+	mv ${D}${datadir}/${PN} ${D}${docdir}/
 
 	# symlink only present in the deb...
-	install -d ${D}/${libdir}/${PN}/bin
-	cd ${D}/${libdir}/${PN}/bin && ln -sf ../../../bin/java-sablevm java
+	install -d ${D}${libdir}/${PN}/bin
+	cd ${D}${libdir}/${PN}/bin && ln -sf ../../../bin/java-sablevm java
 }

@@ -64,9 +64,9 @@ do_configure() {
 }
 
 do_install_append () {
-        install -d ${D}/${libdir} ${D}${includedir} ${D}${includedir}/postproc
+        install -d ${D}${libdir} ${D}${includedir} ${D}${includedir}/postproc
         install -m 0644 libavcodec/libpostproc/postprocess.h ${D}${includedir}/postproc/
-        oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}/${libdir}
+        oe_libinstall -so -C ${S}/libavcodec/libpostproc libpostproc ${D}${libdir}
         cp ${S}/libavcodec/libpostproc/libpostproc.so ${D}${libdir}/libpostproc.so.0.0.0
         cd ${D}${libdir}
         ln -sf libpostproc.so.0.0.0 libpostproc.so.0

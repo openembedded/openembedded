@@ -34,8 +34,8 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages/
-	install libsip.so.1.0.0 ${D}/${libdir}/${PYTHON_DIR}/site-packages/sip.so
+	install -d ${D}${libdir}/${PYTHON_DIR}/site-packages/
+	install libsip.so.1.0.0 ${D}${libdir}/${PYTHON_DIR}/site-packages/sip.so
 }
 
 FILES_${PN} = "${libdir}/${PYTHON_DIR}/site-packages/sip.so"

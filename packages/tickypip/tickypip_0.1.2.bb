@@ -20,13 +20,13 @@ QMAKE_PROFILES = "tickypip.pro"
 EXTRA_QMAKEVARS_POST += "DEFINES-=LOCAL_COMPILE"
 
 do_install () {
-	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
-	install -m 0644 ${WORKDIR}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
-	install -m 0644 ${S}/images/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${WORKDIR}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${S}/images/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 
 # copy share
-	install -d ${D}/${palmtopdir}/share/${APPNAME}/levels
-	install -m 0644 ${S}/levels/* ${D}/${palmtopdir}/share/${APPNAME}/levels/
+	install -d ${D}${palmtopdir}/share/${APPNAME}/levels
+	install -m 0644 ${S}/levels/* ${D}${palmtopdir}/share/${APPNAME}/levels/
 }
 
 

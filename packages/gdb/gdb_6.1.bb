@@ -37,9 +37,9 @@ do_configure () {
 do_install () {
 	make -C bfd/doc chew LDFLAGS= CFLAGS=-O2
 	oe_runmake install \
-	    'prefix=${D}/${prefix}' 'exec_prefix=${D}/${prefix}' 'bindir=${D}/${bindir}' \
-	    'sbindir=${D}/${sbindir}' 'infodir=${D}/${infodir}' 'libdir=${D}/${libdir}' \
-	    'mandir=${D}/${mandir}' 'includedir=${D}/${includedir}'
+	    'prefix=${D}${prefix}' 'exec_prefix=${D}${prefix}' 'bindir=${D}${bindir}' \
+	    'sbindir=${D}${sbindir}' 'infodir=${D}${infodir}' 'libdir=${D}${libdir}' \
+	    'mandir=${D}${mandir}' 'includedir=${D}${includedir}'
 	install -d ${D}${bindir}
 	install -m 0755 gdb/gdbserver/gdbserver ${D}${bindir}
 }

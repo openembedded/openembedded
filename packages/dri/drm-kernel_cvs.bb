@@ -14,9 +14,9 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drm
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm
 	cd linux
-	for i in *.ko; do install -m 0644 $i ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drm/; done
+	for i in *.ko; do install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm/; done
 }
 
 python populate_packages_prepend () {

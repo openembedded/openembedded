@@ -20,7 +20,7 @@ do_install() {
 
         for i in `find . -perm 0755 -type f`
         do
-                install -m 0755 $i ${D}/${palmtopdir}/bin/`basename $i`
+                install -m 0755 $i ${D}${palmtopdir}/bin/`basename $i`
         done
 }
 

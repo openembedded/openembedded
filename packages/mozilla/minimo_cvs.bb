@@ -39,16 +39,16 @@ do_install () {
 	mkdir -p ${mozdir}
 	cp -rL $MOZ_OBJDIR/dist/Embed/* ${mozdir}/
 	rm -f ${mozdir}/TestGtkEmbed
-	mkdir -p ${D}/${datadir}/applications
-	install -m 0644 ${WORKDIR}/minimo.desktop ${D}/${datadir}/applications/minimo.desktop
-	mkdir -p ${D}/${datadir}/pixmaps
-	install -m 0644 ${WORKDIR}/minimo.png ${D}/${datadir}/pixmaps/minimo.png
-	mkdir -p ${D}/${bindir}
-	echo "#!/bin/sh" > ${D}/${bindir}/minimo
-	cat >>${D}/${bindir}/minimo << EOF
+	mkdir -p ${D}${datadir}/applications
+	install -m 0644 ${WORKDIR}/minimo.desktop ${D}${datadir}/applications/minimo.desktop
+	mkdir -p ${D}${datadir}/pixmaps
+	install -m 0644 ${WORKDIR}/minimo.png ${D}${datadir}/pixmaps/minimo.png
+	mkdir -p ${D}${bindir}
+	echo "#!/bin/sh" > ${D}${bindir}/minimo
+	cat >>${D}${bindir}/minimo << EOF
 cd ${libdir}/mozilla-minimo
 export LD_LIBRARY_PATH=${libdir}/mozilla-minimo
 exec ./Minimo http://www.mozilla.org/projects/minimo/home.html
 EOF
-	chmod 755 ${D}/${bindir}/minimo
+	chmod 755 ${D}${bindir}/minimo
 }

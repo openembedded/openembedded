@@ -27,10 +27,10 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${prefix} ${D}/${includedir} ${D}/${libdir}
-	oe_runmake "prefix=${D}/${prefix}" \
-		   "exec_prefix=${D}/${exec_prefix}" \
-		   "man3dir=${D}/${mandir}/man3" \
-		   "includedir=${D}/${includedir}" \
-		   "libdir=${D}/${libdir}" install
+	install -d ${D}${prefix} ${D}${includedir} ${D}${libdir}
+	oe_runmake "prefix=${D}${prefix}" \
+		   "exec_prefix=${D}${exec_prefix}" \
+		   "man3dir=${D}${mandir}/man3" \
+		   "includedir=${D}${includedir}" \
+		   "libdir=${D}${libdir}" install
 }

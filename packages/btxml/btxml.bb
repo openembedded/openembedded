@@ -14,6 +14,6 @@ do_compile() {
 }
 
 do_install() {
-    install -d ${D}/${bindir}/
-    install -m 0775 btxml ${D}/${bindir}/
+    install -d ${D}${bindir}/
+    install -m 0775 btxml ${D}${bindir}/
 }

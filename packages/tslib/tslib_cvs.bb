@@ -40,8 +40,8 @@ do_install_prepend () {
 }
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/profile.d/
-	install -m 0755 ${WORKDIR}/tslib.sh ${D}/${sysconfdir}/profile.d/
+	install -d ${D}${sysconfdir}/profile.d/
+	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
 	h3600 | h3900)
 		install -d ${D}${datadir}/tslib

@@ -55,20 +55,21 @@ do_compile() {
 
 do_install() {
 	oe_runmake install DESTDIR=${D} TARGET_MODDIR=
-	mkdir -p ${D}/${sysconfdir}/modutils/
-	mkdir -p ${D}/${sysconfdir}/hotplug/
-	mkdir -p ${D}/${base_sbindir}/
-	install -m 0644 ${WORKDIR}/wlan-ng.modutils ${D}/${sysconfdir}/modutils/wlan-ng.conf
-	install -m 0755 ${WORKDIR}/wlan.agent ${D}/${sysconfdir}/hotplug/wlan.agent
-	install -d ${D}/${sysconfdir}/network/if-pre-up.d
-	install -m 0755 ${WORKDIR}/pre-up ${D}/${sysconfdir}/network/if-pre-up.d/wlan-ng
-	install -d ${D}/${sysconfdir}/network/if-post-down.d
-	install -m 0755 ${WORKDIR}/post-down ${D}/${sysconfdir}/network/if-post-down.d/wlan-ng
-	install -d ${D}/${sysconfdir}/apm/resume.d
-	install -m 0755 ${WORKDIR}/resume ${D}/${sysconfdir}/apm/resume.d/wlan-ng
-	install -m 0755 ${WORKDIR}/usbctl ${D}/${base_sbindir}/usbctl
-	install -d ${D}/${mandir}
-	mv ${D}/usr/local/man/* ${D}/${mandir}
+	echo "YYYYYYYYYYYYYYYYY"
+	mkdir -p ${D}${sysconfdir}/modutils/
+	mkdir -p ${D}${sysconfdir}/hotplug/
+	mkdir -p ${D}${base_sbindir}/
+	install -m 0644 ${WORKDIR}/wlan-ng.modutils ${D}${sysconfdir}/modutils/wlan-ng.conf
+	install -m 0755 ${WORKDIR}/wlan.agent ${D}${sysconfdir}/hotplug/wlan.agent
+	install -d ${D}${sysconfdir}/network/if-pre-up.d
+	install -m 0755 ${WORKDIR}/pre-up ${D}${sysconfdir}/network/if-pre-up.d/wlan-ng
+	install -d ${D}${sysconfdir}/network/if-post-down.d
+	install -m 0755 ${WORKDIR}/post-down ${D}${sysconfdir}/network/if-post-down.d/wlan-ng
+	install -d ${D}${sysconfdir}/apm/resume.d
+	install -m 0755 ${WORKDIR}/resume ${D}${sysconfdir}/apm/resume.d/wlan-ng
+	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
+	install -d ${D}${mandir}
+	mv ${D}/usr/local/man/* ${D}${mandir}
 	rm -r ${D}/usr/local/man
 	rm -rf ${D}/${sysconfdir}/init.d
 }

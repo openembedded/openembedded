@@ -27,29 +27,29 @@ BINCOMMANDS = "dbclient ssh scp"
 EXTRA_OEMAKE = 'MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
 
 do_install() {
-	install -d ${D}/${sysconfdir} \
-		   ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/default \
-		   ${D}/${sysconfdir}/dropbear \
-                   ${D}/${bindir} \
-		   ${D}/${sbindir} \
-		   ${D}/${localstatedir}
+	install -d ${D}${sysconfdir} \
+		   ${D}${sysconfdir}/init.d \
+		   ${D}${sysconfdir}/default \
+		   ${D}${sysconfdir}/dropbear \
+                   ${D}${bindir} \
+		   ${D}${sbindir} \
+		   ${D}${localstatedir}
 
-	install -m 0755 dropbearmulti ${D}/${sbindir}/
+	install -m 0755 dropbearmulti ${D}${sbindir}/
 	for i in ${BINCOMMANDS}
 	do
-		ln -s ${sbindir}/dropbearmulti ${D}/${bindir}/$i
+		ln -s ${sbindir}/dropbearmulti ${D}${bindir}/$i
 	done
 	for i in ${SBINCOMMANDS}
 	do
-		ln -s ./dropbearmulti ${D}/${sbindir}/$i
+		ln -s ./dropbearmulti ${D}${sbindir}/$i
 	done
 	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
 				  -e 's,/usr/sbin,${sbindir},g' \
 				  -e 's,/var,${localstatedir},g' \
 				  -e 's,/usr/bin,${bindir},g' \
-				  -e 's,/usr,${prefix},g' > ${D}/${sysconfdir}/init.d/dropbear
-	chmod 755 ${D}/${sysconfdir}/init.d/dropbear
+				  -e 's,/usr,${prefix},g' > ${D}${sysconfdir}/init.d/dropbear
+	chmod 755 ${D}${sysconfdir}/init.d/dropbear
 }
 
 pkg_postrm_append () {

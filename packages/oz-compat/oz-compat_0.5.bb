@@ -20,33 +20,33 @@ INITSCRIPT_NAME = "quickexec"
 INITSCRIPT_PARAMS = "defaults 10"
 
 do_install() {
-	install -d ${D}/opt/QtPalmtop/apps/Settings
-	install -d ${D}/opt/QtPalmtop/bin/
-	install -d ${D}/opt/QtPalmtop/etc/
-	install -d ${D}/opt/QtPalmtop/pics/
+	install -d ${D}opt/QtPalmtop/apps/Settings
+	install -d ${D}opt/QtPalmtop/bin/
+	install -d ${D}opt/QtPalmtop/etc/
+	install -d ${D}opt/QtPalmtop/pics/
 	
-	install -d ${D}/opt/QtPalmtop.compat/bin
-	install -d ${D}/opt/QtPalmtop.compat/binlib
-	install -d ${D}/opt/QtPalmtop.compat/lib
+	install -d ${D}opt/QtPalmtop.compat/bin
+	install -d ${D}opt/QtPalmtop.compat/binlib
+	install -d ${D}opt/QtPalmtop.compat/lib
 	
-	install -d ${D}/${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/init.d
 	
-	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/apps/Settings/makecompat.desktop ${D}/opt/QtPalmtop/apps/Settings		
-	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/etc/quickexec.libs ${D}/opt/QtPalmtop/etc/quickexec.libs
-	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/pics/libraries.png ${D}/opt/QtPalmtop/pics/libraries.png
+	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/apps/Settings/makecompat.desktop ${D}opt/QtPalmtop/apps/Settings		
+	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/etc/quickexec.libs ${D}opt/QtPalmtop/etc/quickexec.libs
+	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop/pics/libraries.png ${D}opt/QtPalmtop/pics/libraries.png
 	
-	install -m 0755 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/bin/* ${D}/opt/QtPalmtop.compat/bin
-	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/lib/* ${D}/opt/QtPalmtop.compat/lib
+	install -m 0755 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/bin/* ${D}opt/QtPalmtop.compat/bin
+	install -m 0644 ${WORKDIR}/oz-compat-0.5/opt/QtPalmtop.compat/lib/* ${D}opt/QtPalmtop.compat/lib
 	
-	install -m 0755 ${WORKDIR}/oz-compat-0.5/etc/init.d/quickexec ${D}/${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/oz-compat-0.5/etc/init.d/quickexec ${D}${sysconfdir}/init.d
 			
-	cd ${D}/opt/QtPalmtop/bin
+	cd ${D}opt/QtPalmtop/bin
 	for file in chkhinge makecompat qeserver quickexec runcompat
 	do
 		ln -s /opt/QtPalmtop.compat/bin/$file
 	done
 	
-	cd ${D}/opt/QtPalmtop.compat/lib
+	cd ${D}opt/QtPalmtop.compat/lib
 	ln -s libqpe.so.1.5.0 libqpe.so.1.5
 	ln -s libqpe.so.1.5.0 libqpe.so.1
 	ln -s libqpe.so.1.5.0 libqpe.so

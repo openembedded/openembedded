@@ -75,11 +75,11 @@ do_install() {
 	make -C programs/Xserver DESTDIR="${D}" CC="${CC}" LD="${LD}" CC_STAGING="-I${STAGING_INCDIR}" LD_STAGING="-L${STAGING_LIBDIR}" INSTALLED_LIBS="" install
 	make -C lib/font DESTDIR="${D}" CC="${CC}" LD="${LD}" CC_STAGING="-I${STAGING_INCDIR}" LD_STAGING="-L${STAGING_LIBDIR}" INSTALLED_LIBS="" install
 	
-	install -d ${D}/${palmtopdir}/apps/Applications
-	install -d ${D}/${palmtopdir}/pics/Xqt
+	install -d ${D}${palmtopdir}/apps/Applications
+	install -d ${D}${palmtopdir}/pics/Xqt
 	
-	install -m 0644 programs/Xserver/hw/xqt/Xqt.png ${D}/${palmtopdir}/pics/Xqt
-	install -m 0644 IPKG/Xqt.desktop ${D}/${palmtopdir}/apps/Applications		
+	install -m 0644 programs/Xserver/hw/xqt/Xqt.png ${D}${palmtopdir}/pics/Xqt
+	install -m 0644 IPKG/Xqt.desktop ${D}${palmtopdir}/apps/Applications		
 }
 
 do_stage() {

@@ -21,6 +21,6 @@ SRC_URI = "http://www.codemonkey.org.uk/projects/bitkeeper/sparse/sparse-${@get_
 S = "${WORKDIR}/sparse-bk"
 
 do_install () {
-	install -d ${D}/${bindir}
-	install -m 0755 check ${D}/${bindir}/sparse
+	install -d ${D}${bindir}
+	install -m 0755 check ${D}${bindir}/sparse
 }

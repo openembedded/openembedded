@@ -12,8 +12,8 @@ do_configure_prepend () {
 }
 
 do_install () {
-	install -d ${D}/${bindir} ${D}/${sysconfdir} ${D}/${mandir}
-	oe_runmake 'prefix=${D}/${prefix}' 'BINDIR=${D}/${bindir}' \
-		   'SYSCONFDIR=${D}/${sysconfdir}' 'mandir=${D}/${mandir}' \
+	install -d ${D}${bindir} ${D}${sysconfdir} ${D}${mandir}
+	oe_runmake 'prefix=${D}${prefix}' 'BINDIR=${D}${bindir}' \
+		   'SYSCONFDIR=${D}${sysconfdir}' 'mandir=${D}${mandir}' \
 		   install
 }

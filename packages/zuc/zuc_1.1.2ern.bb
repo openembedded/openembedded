@@ -20,8 +20,8 @@ do_configure_append() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/pics/
-        install -m 0644 *.png ${D}/${palmtopdir}/pics/
-	install -d ${D}/${palmtopdir}/etc/
-	install -m 0644 ${WORKDIR}/nick.kreucher.net/zuc_units ${D}/${palmtopdir}/etc/
+	install -d ${D}${palmtopdir}/pics/
+        install -m 0644 *.png ${D}${palmtopdir}/pics/
+	install -d ${D}${palmtopdir}/etc/
+	install -m 0644 ${WORKDIR}/nick.kreucher.net/zuc_units ${D}${palmtopdir}/etc/
 }

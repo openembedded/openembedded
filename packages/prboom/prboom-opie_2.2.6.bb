@@ -11,12 +11,12 @@ SRC_URI_append = " file://prboom.png \
 
 
 do_install_append() {
-        install -d ${D}/${palmtopdir}/apps/Games \
-        	   ${D}/${palmtopdir}/pics \
+        install -d ${D}${palmtopdir}/apps/Games \
+        	   ${D}${palmtopdir}/pics \
 
-	install -m 0755 ${WORKDIR}/prboom.sh ${D}/${bindir}
-	install -m 0644 ${WORKDIR}/prboom.png ${D}/${palmtopdir}/pics/prboom.png
-	install -m 0644 ${WORKDIR}/prboom.desktop ${D}/${palmtopdir}/apps/Games/prboom.desktop
+	install -m 0755 ${WORKDIR}/prboom.sh ${D}${bindir}
+	install -m 0644 ${WORKDIR}/prboom.png ${D}${palmtopdir}/pics/prboom.png
+	install -m 0644 ${WORKDIR}/prboom.desktop ${D}${palmtopdir}/apps/Games/prboom.desktop
 }
 
 FILES_${PN}_append = " ${palmtopdir}"

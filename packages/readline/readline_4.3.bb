@@ -26,8 +26,8 @@ do_configure () {
 do_install () {
 	autotools_do_install
 	# Make install doesn't properly install these
-	oe_libinstall -so -C shlib libhistory ${D}/${libdir}
-	oe_libinstall -so -C shlib libreadline ${D}/${libdir}
+	oe_libinstall -so -C shlib libhistory ${D}${libdir}
+	oe_libinstall -so -C shlib libreadline ${D}${libdir}
 }
 
 do_stage() {

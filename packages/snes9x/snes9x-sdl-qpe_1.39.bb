@@ -17,7 +17,7 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin/
-	install -m 0755 snes9x ${D}/${palmtopdir}/bin/snes9x
+	install -d ${D}${palmtopdir}/bin/
+	install -m 0755 snes9x ${D}${palmtopdir}/bin/snes9x
 }
 

@@ -18,5 +18,5 @@ inherit xfce
 
 do_install() {
 	oe_runmake DESTDIR=${D} install
-	rm -rf ${D}/${sysconfdir}/xfce4/menu.xml.*
+	rm -rf ${D}${sysconfdir}/xfce4/menu.xml.*
 }

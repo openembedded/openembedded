@@ -33,8 +33,8 @@ if [ -n "$D" ]; then exit 1; fi
 # FILES plugins/inputmethods/libqdasher.so* share/dasher/alphabet.xml
 # FILES share/dasher/training_*.txt
 do_install() {
-	install -d ${D}/${palmtopdir}/share/dasher/
-	install -m 0644 ${WORKDIR}/share/dasher/alphabet.xml ${D}/${palmtopdir}/share/dasher/
+	install -d ${D}${palmtopdir}/share/dasher/
+	install -m 0644 ${WORKDIR}/share/dasher/alphabet.xml ${D}${palmtopdir}/share/dasher/
 	for f in ${WORKDIR}/share/dasher/training_*.txt
 	do
 #		echo Installing Dasher Language $f

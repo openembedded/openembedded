@@ -29,8 +29,8 @@ pkg_postrm() {
 }
 
 do_install() {
-    install -d ${D}/${palmtopdir}/plugins/applets ${D}/${palmtopdir}/pics/memory/
-    install -m 0644 ${WORKDIR}/pics/memory/*.png ${D}/${palmtopdir}/pics/memory/
-    oe_libinstall -so libmemoryapplet ${D}/${palmtopdir}/plugins/applets/
+    install -d ${D}${palmtopdir}/plugins/applets ${D}${palmtopdir}/pics/memory/
+    install -m 0644 ${WORKDIR}/pics/memory/*.png ${D}${palmtopdir}/pics/memory/
+    oe_libinstall -so libmemoryapplet ${D}${palmtopdir}/plugins/applets/
 }
 

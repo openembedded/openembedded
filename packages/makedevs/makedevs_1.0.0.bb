@@ -15,6 +15,6 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${base_sbindir}
-	install -m 0755 ${S}/makedevs ${D}/${base_sbindir}/makedevs
+	install -d ${D}${base_sbindir}
+	install -m 0755 ${S}/makedevs ${D}${base_sbindir}/makedevs
 }

@@ -15,8 +15,8 @@ S = "${WORKDIR}/${APPNAME}"
 inherit opie
 
 do_install() {
-	install -d ${D}/${palmtopdir}/pics/${APPNAME}
-	install -m 0655 ${WORKDIR}/pics/${APPNAME}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -d ${D}${palmtopdir}/pics/${APPNAME}
+	install -m 0655 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 }
 
 pkg_postinst() {

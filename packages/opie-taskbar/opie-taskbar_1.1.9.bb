@@ -58,44 +58,44 @@ SECTIONS = "1Pim Applications Examples Games Opie-SH Python Settings"
 PICS = "opielogo32x32.png start_button.png new_wait.png opielogo16x16.png sidebar.png"
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin
+	install -d ${D}${palmtopdir}/bin
 	for i in ${SECTIONS}
 	do
-		install -d ${D}/${palmtopdir}/apps/$i/
-		install -m 0644 ${WORKDIR}/apps/$i/.directory ${D}/${palmtopdir}/apps/$i/
+		install -d ${D}${palmtopdir}/apps/$i/
+		install -m 0644 ${WORKDIR}/apps/$i/.directory ${D}${palmtopdir}/apps/$i/
 	done
-	install -d ${D}/${palmtopdir}/pics/launcher
-	install -d ${D}/${palmtopdir}/pics/logo
-	install -d ${D}/${palmtopdir}/pics/RoH/star/
-	install -d ${D}/${sysconfdir}/init.d
-	install -d ${D}/${sysconfdir}/profile.d
-	install -d ${D}/${palmtopdir}/etc/colors
-	install -d ${D}/${palmtopdir}/etc/skel
+	install -d ${D}${palmtopdir}/pics/launcher
+	install -d ${D}${palmtopdir}/pics/logo
+	install -d ${D}${palmtopdir}/pics/RoH/star/
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/profile.d
+	install -d ${D}${palmtopdir}/etc/colors
+	install -d ${D}${palmtopdir}/etc/skel
 
-	install -m 0755 ${S}/qpe ${D}/${palmtopdir}/bin/qpe
-	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}/${palmtopdir}/bin/
-	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}/${palmtopdir}/apps/Settings/
-	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}/${palmtopdir}/apps/Settings/
-	install -m 0644 ${WORKDIR}/opie_defaults ${D}/${sysconfdir}/profile.d/
+	install -m 0755 ${S}/qpe ${D}${palmtopdir}/bin/qpe
+	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}${palmtopdir}/bin/
+	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}${palmtopdir}/apps/Settings/
+	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}${palmtopdir}/apps/Settings/
+	install -m 0644 ${WORKDIR}/opie_defaults ${D}${sysconfdir}/profile.d/
 
 	for p in ${PICS}
 	do
-		install -m 0644 ${WORKDIR}/pics/launcher/$p ${D}/${palmtopdir}/pics/launcher/$p
+		install -m 0644 ${WORKDIR}/pics/launcher/$p ${D}${palmtopdir}/pics/launcher/$p
 	done
-	install -m 0644 ${WORKDIR}/pics/launcher/firstuse${PIXMAP_SIZE}.jpg ${D}/${palmtopdir}/pics/launcher/firstuse.jpg
-	install -m 0644 ${WORKDIR}/pics/launcher/opie-background${PIXMAP_SIZE}.jpg ${D}/${palmtopdir}/pics/launcher/opie-background.jpg
+	install -m 0644 ${WORKDIR}/pics/launcher/firstuse${PIXMAP_SIZE}.jpg ${D}${palmtopdir}/pics/launcher/firstuse.jpg
+	install -m 0644 ${WORKDIR}/pics/launcher/opie-background${PIXMAP_SIZE}.jpg ${D}${palmtopdir}/pics/launcher/opie-background.jpg
 
-	install -m 0644 ${WORKDIR}/pics/logo/*.* ${D}/${palmtopdir}/pics/logo/
-	install -m 0644 ${WORKDIR}/pics/RoH/star/*.png ${D}/${palmtopdir}/pics/RoH/star/
+	install -m 0644 ${WORKDIR}/pics/logo/*.* ${D}${palmtopdir}/pics/logo/
+	install -m 0644 ${WORKDIR}/pics/RoH/star/*.png ${D}${palmtopdir}/pics/RoH/star/
 
-	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}/${palmtopdir}/etc/colors/
-	install -m 0644 ${WORKDIR}/etc/mime.types ${D}/${sysconfdir}/
+	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}${palmtopdir}/etc/colors/
+	install -m 0644 ${WORKDIR}/etc/mime.types ${D}${sysconfdir}/
 
-	install -m 0755 ${WORKDIR}/opie ${D}/${sysconfdir}/init.d/opie
-	install -m 0644 ${WORKDIR}/qpe.conf ${D}/${palmtopdir}/etc/skel/
+	install -m 0755 ${WORKDIR}/opie ${D}${sysconfdir}/init.d/opie
+	install -m 0644 ${WORKDIR}/qpe.conf ${D}${palmtopdir}/etc/skel/
 
-	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}/${palmtopdir}/pics/
-	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}/${palmtopdir}/pics/
+	install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}${palmtopdir}/pics/
+	install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}${palmtopdir}/pics/
 }
 
 FILES_opie-taskbar_append = " /etc /etc/profile.d ${palmtopdir}/apps ${palmtopdir}/pics"

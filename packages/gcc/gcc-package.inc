@@ -65,31 +65,31 @@ do_install () {
 	autotools_do_install
 
 	# Cleanup some of the ${libdir}{,exec}/gcc stuff ...
-	rm -r ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/install-tools
-	rm -r ${D}/${libexecdir}/gcc/${TARGET_SYS}/${PV}/install-tools
+	rm -r ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/install-tools
+	rm -r ${D}${libexecdir}/gcc/${TARGET_SYS}/${PV}/install-tools
 
 	# Hack around specs file assumptions
-	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/specs
+	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/specs
 
 	# Move libgcc_s into /lib
-	mkdir -p ${D}/${base_libdir}
-	mv ${D}/${libdir}/libgcc_s.so.* ${D}/${base_libdir}
-	rm ${D}/${libdir}/libgcc_s.so
+	mkdir -p ${D}${base_libdir}
+	mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
+	rm ${D}${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${PV} \
 		| tr -s / \
 		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.1 \
-		      ${D}/${libdir}/gcc/${TARGET_SYS}/${PV}/libgcc_s.so
+		      ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/libgcc_s.so
 
 	# We don't need libtool libraries
-	rm ${D}/${libdir}/libg2c.la
+	rm ${D}${libdir}/libg2c.la
 
 	# Cleanup manpages..
-	rm -r ${D}/${mandir}/man7
+	rm -r ${D}${mandir}/man7
 
 	# We use libiberty from binutils
-	rm ${D}/${libdir}/libiberty.a
+	rm ${D}${libdir}/libiberty.a
 
-	cd ${D}/${bindir}
+	cd ${D}${bindir}
 
 	# We care about g++ not c++
 	rm *c++

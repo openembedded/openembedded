@@ -18,7 +18,7 @@ do_compile() {
 }
 
 do_install() {
-	oe_runmake install PREFIX=${D}/${prefix} HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
+	oe_runmake install PREFIX=${D}${prefix} HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
 }
 
 FILES_${PN} = "${prefix}"

@@ -11,7 +11,7 @@ S = "${WORKDIR}/quicklauncher"
 inherit opie
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin/
-	install -m 755 quicklauncher ${D}/${palmtopdir}/bin/
+	install -d ${D}${palmtopdir}/bin/
+	install -m 755 quicklauncher ${D}${palmtopdir}/bin/
 
 }

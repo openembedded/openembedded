@@ -16,7 +16,7 @@ CFLAGS = "-DLINUX_OS -D__KERNEL__ -DMODULE -I${S}/src/includes -I${S}/src/includ
 
 do_compile() {
 	export INC="${S}/src/includes"
-	export OBJDIR="${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/"
+	export OBJDIR="${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/"
 	export KERNEL_PATH="${STAGING_KERNEL_DIR}"
 	export KERNEL_SRC="${STAGING_KERNEL_DIR}"
 	export CC="${KERNEL_CC}" 
@@ -31,9 +31,9 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${sysconfdir}/pcmcia
-	install -m 0644 ${WORKDIR}/pcmf502rd.conf ${D}/${sysconfdir}/pcmcia/
+	install -d ${D}${sysconfdir}/pcmcia
+	install -m 0644 ${WORKDIR}/pcmf502rd.conf ${D}${sysconfdir}/pcmcia/
 
 	# remove any maps that were installed
-	rm -f ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/*.map
+	rm -f ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/*.map
 }

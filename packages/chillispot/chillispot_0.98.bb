@@ -11,9 +11,9 @@ RRECOMMENDS = "kernel-module-tun"
 inherit autotools
 
 do_install_append() {
-	install -d ${D}/${sysconfdir} ${D}/${sysconfdir}/init.d
-	install ${S}/doc/chilli.conf ${D}/${sysconfdir}
-	install -m 755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/chillispot
+	install -d ${D}${sysconfdir} ${D}${sysconfdir}/init.d
+	install ${S}/doc/chilli.conf ${D}${sysconfdir}
+	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/chillispot
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/chilli.conf"

@@ -54,15 +54,15 @@ EXTRA_OEMAKE += "'INSTALL=install' \
 
 do_install () {
 	oe_runmake 'ROOT=${D}' install
-	install -d ${D}/${sysconfdir} \
-		   ${D}/${sysconfdir}/default \
-		   ${D}/${sysconfdir}/init.d
-	install -m 0644 ${WORKDIR}/inittab ${D}/${sysconfdir}/inittab
+	install -d ${D}${sysconfdir} \
+		   ${D}${sysconfdir}/default \
+		   ${D}${sysconfdir}/init.d
+	install -m 0644 ${WORKDIR}/inittab ${D}${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
-		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}/${sysconfdir}/inittab
+		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}${sysconfdir}/inittab
 	fi
 	if [ "${USE_VT}" == "1" ]; then
-		cat <<EOF >>${D}/${sysconfdir}/inittab
+		cat <<EOF >>${D}${sysconfdir}/inittab
 # ${base_sbindir}/getty invocations for the runlevels.
 #
 # The "id" field MUST be the same as the last
@@ -77,23 +77,23 @@ do_install () {
 # 4:23:respawn:${base_sbindir}/getty 38400 tty4
 EOF
 	fi
-	install -m 0644    ${WORKDIR}/rcS-default	${D}/${sysconfdir}/default/rcS
-	install -m 0755    ${WORKDIR}/rc		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/rcS		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/bootlogd.init     ${D}/${sysconfdir}/init.d/bootlogd
-	ln -sf bootlogd ${D}/${sysconfdir}/init.d/stop-bootlogd
-	install -d ${D}/${sysconfdir}/rcS.d
-	ln -sf ../init.d/bootlogd ${D}/${sysconfdir}/rcS.d/S07bootlogd
+	install -m 0644    ${WORKDIR}/rcS-default	${D}${sysconfdir}/default/rcS
+	install -m 0755    ${WORKDIR}/rc		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/rcS		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/bootlogd.init     ${D}${sysconfdir}/init.d/bootlogd
+	ln -sf bootlogd ${D}${sysconfdir}/init.d/stop-bootlogd
+	install -d ${D}${sysconfdir}/rcS.d
+	ln -sf ../init.d/bootlogd ${D}${sysconfdir}/rcS.d/S07bootlogd
 	for level in 2 3 4 5; do
-		install -d ${D}/${sysconfdir}/rc$level.d
-		ln -s ../init.d/stop-bootlogd ${D}/${sysconfdir}/rc$level.d/S99stop-bootlogd
+		install -d ${D}${sysconfdir}/rc$level.d
+		ln -s ../init.d/stop-bootlogd ${D}${sysconfdir}/rc$level.d/S99stop-bootlogd
 	done
-	mv                 ${D}/${base_sbindir}/init               ${D}/${base_sbindir}/init.sysvinit
+	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.sysvinit
 }
 
 
 do_install_append_ramses () {
-	cat <<EOF >>${D}/${sysconfdir}/inittab
+	cat <<EOF >>${D}${sysconfdir}/inittab
 # Bluetooth
 #1:2345:respawn:${base_sbindir}/getty -L 115200 tts/1
 # External serial port

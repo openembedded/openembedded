@@ -28,20 +28,20 @@ EXTRA_QMAKEVARS_POST += "CONFIG-=desktop"
 # lrelease portabase.pro
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin \
-			${D}/${palmtopdir}/apps/Applications \
-			${D}/${palmtopdir}/pics/${APPNAME}		\
-			${D}/${palmtopdir}/help/en
-	install -D -m 0755 ${APPNAME} ${D}/${palmtopdir}/bin/${APPNAME}
-	install -m 0644 package/${APPNAME}.desktop ${D}/${palmtopdir}/apps/Applications/${APPNAME}.desktop
+	install -d ${D}${palmtopdir}/bin \
+			${D}${palmtopdir}/apps/Applications \
+			${D}${palmtopdir}/pics/${APPNAME}		\
+			${D}${palmtopdir}/help/en
+	install -D -m 0755 ${APPNAME} ${D}${palmtopdir}/bin/${APPNAME}
+	install -m 0644 package/${APPNAME}.desktop ${D}${palmtopdir}/apps/Applications/${APPNAME}.desktop
 	 
-	install -D -m 0644 pics/PortaBase.png ${D}/${palmtopdir}/pics/PortaBase.png
+	install -D -m 0644 pics/PortaBase.png ${D}${palmtopdir}/pics/PortaBase.png
 	for f in calculator.png checked.png image.png note.png save.png save_disabled.png unchecked.png calendar.xpm QtaDatePickerNext.xpm QtaDatePickerPrev.xpm
 	do
-		install -D -m 0644 pics/$f ${D}/${palmtopdir}/pics/${APPNAME}/$f
+		install -D -m 0644 pics/$f ${D}${palmtopdir}/pics/${APPNAME}/$f
 	done         
 
-	install -D -m 0644 help/html/${APPNAME}.html ${D}/${palmtopdir}/help/en/html/${APPNAME}.html
+	install -D -m 0644 help/html/${APPNAME}.html ${D}${palmtopdir}/help/en/html/${APPNAME}.html
 } 
 
 

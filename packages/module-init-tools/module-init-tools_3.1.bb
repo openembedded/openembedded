@@ -27,7 +27,7 @@ inherit autotools
 do_install() {
 	autotools_do_install
 	for f in bin/lsmod sbin/insmod sbin/rmmod sbin/modprobe sbin/modinfo sbin/depmod; do
-		mv ${D}/$f ${D}/$f.26
+		mv ${D}$f ${D}$f.26
 	done
 }
 

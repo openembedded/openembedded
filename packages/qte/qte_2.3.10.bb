@@ -121,7 +121,7 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so -C lib libqte ${D}/${palmqtdir}/lib/
+	oe_libinstall -so -C lib libqte ${D}${palmqtdir}/lib/
 }
 
 FILES_${PN} = "${palmqtdir}"

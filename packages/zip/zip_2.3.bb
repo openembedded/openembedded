@@ -12,7 +12,7 @@ do_compile() {
 
 do_install() {
 	oe_runmake -f unix/Makefile prefix=${D}${prefix} \
-		   BINDIR=${D}/${bindir} MANDIR=${D}/${mandir}/man1 \
+		   BINDIR=${D}${bindir} MANDIR=${D}${mandir}/man1 \
 		   install
 }
 

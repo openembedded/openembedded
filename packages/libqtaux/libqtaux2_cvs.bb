@@ -25,7 +25,7 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so libqtaux2 ${D}/${palmtopdir}/lib
+	oe_libinstall -so libqtaux2 ${D}${palmtopdir}/lib
 }
 
 FILES_${PN}=${palmtopdir}/lib

@@ -27,7 +27,7 @@ do_stage() {
 }
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/X11/Xsession.d
-	install ${WORKDIR}/gstreamer.xsession ${D}/${sysconfdir}/X11/Xsession.d/90gst-register
+	install -d ${D}${sysconfdir}/X11/Xsession.d
+	install ${WORKDIR}/gstreamer.xsession ${D}${sysconfdir}/X11/Xsession.d/90gst-register
 }
 

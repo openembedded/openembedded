@@ -40,10 +40,10 @@ do_compile_prepend() {
 }
 
 do_install() {
-    install -d ${D}/${palmtopdir}/share/
-    install -d ${D}/${palmtopdir}/share/config/
+    install -d ${D}${palmtopdir}/share/
+    install -d ${D}${palmtopdir}/share/config/
     
-    install -m 0644 ${WORKDIR}/konq-embedrc ${D}/${palmtopdir}/share/config/
+    install -m 0644 ${WORKDIR}/konq-embedrc ${D}${palmtopdir}/share/config/
     
     autotools_do_install
 }

@@ -25,8 +25,8 @@ do_compile() {
 
 do_install() {
 	oe_runmake PREFIX=${D} install
-	install -d ${D}/${sysconfdir}/network/if-pre-up.d
-	install ${WORKDIR}/wireless-tools.if-pre-up ${D}/${sysconfdir}/network/if-pre-up.d/wireless-tools
+	install -d ${D}${sysconfdir}/network/if-pre-up.d
+	install ${WORKDIR}/wireless-tools.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/wireless-tools
 }
 
 FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \

@@ -15,6 +15,6 @@ inherit autotools
 CFLAGS += '-DDROPPRIVS_ONLY_ROOT=0 -DDROPPRIVS_USER=\""nobody\"" -DUSE_DROPPRIVS=1'
 
 do_install () {
-	install -d ${D}/${bindir}
-	install -m 0755 ngrep ${D}/${bindir}/
+	install -d ${D}${bindir}
+	install -m 0755 ngrep ${D}${bindir}/
 }

@@ -14,8 +14,8 @@ do_install () {
         done 
 
 	# fontconfig ships this too.  not sure what to do about it.
-        #install -d ${D}/${sysconfdir}/fonts 
-        #install -m 644 local.conf ${D}/${sysconfdir}/fonts/local.conf 
+        #install -d ${D}${sysconfdir}/fonts 
+        #install -m 644 local.conf ${D}${sysconfdir}/fonts/local.conf 
 
 
         install -d ${D}${prefix}/share/doc/${PN}/ 

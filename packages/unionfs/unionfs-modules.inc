@@ -27,9 +27,9 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs
-	install -m 0644 unionfs${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs
+	install -m 0644 unionfs${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/
 
-	install -d ${D}/${mandir}/man4
-	install -m 0644 man/unionfs.4 ${D}/${mandir}/man4/
+	install -d ${D}${mandir}/man4
+	install -m 0644 man/unionfs.4 ${D}${mandir}/man4/
 }

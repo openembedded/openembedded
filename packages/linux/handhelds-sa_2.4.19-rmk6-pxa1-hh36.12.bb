@@ -53,6 +53,6 @@ do_configure_prepend() {
 }
 
 do_install_append() {
-        install -d ${D}/${sysconfdir}/init.d
-        install ${WORKDIR}/ipaq-hal.init ${D}/${sysconfdir}/init.d/ipaq-hal
+        install -d ${D}${sysconfdir}/init.d
+        install ${WORKDIR}/ipaq-hal.init ${D}${sysconfdir}/init.d/ipaq-hal
 }

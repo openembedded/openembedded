@@ -10,6 +10,6 @@ S = "${WORKDIR}/metalog-${PV}"
 inherit autotools
 
 do_install_append() {
-        install -d ${D}/${sysconfdir}/metalog
+        install -d ${D}${sysconfdir}/metalog
         install -m 0755 ${S}/metalog.conf ${D}${sysconfdir}/metalog/metalog.conf
 }

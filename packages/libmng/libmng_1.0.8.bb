@@ -19,9 +19,9 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${bindir} ${D}/${mandir} \
-		   ${D}/${libdir} ${D}/${includedir}
+	install -d ${D}${bindir} ${D}${mandir} \
+		   ${D}${libdir} ${D}${includedir}
 	unset LDFLAGS
 	oe_runmake -f makefiles/makefile.linux install \
-	INCPATH="${D}/${includedir}" LIBPATH="${D}/${libdir}" prefix=${prefix}
+	INCPATH="${D}${includedir}" LIBPATH="${D}${libdir}" prefix=${prefix}
 }

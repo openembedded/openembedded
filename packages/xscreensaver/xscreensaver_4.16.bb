@@ -43,8 +43,8 @@ do_install() {
 	oe_runmake -C ${S}/hacks install_prefix=${D} install-program
 
 	# Install the defaults file
-	install -d ${D}/usr/X11R6/lib/X11/app-defaults
-	install -m 0644 ${WORKDIR}/XScreenSaver ${D}/usr/X11R6/lib/X11/app-defaults
+	install -d ${D}usr/X11R6/lib/X11/app-defaults
+	install -m 0644 ${WORKDIR}/XScreenSaver ${D}usr/X11R6/lib/X11/app-defaults
 }
 
 python populate_packages_prepend () {

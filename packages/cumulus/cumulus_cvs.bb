@@ -29,15 +29,15 @@ do_compile() {
 }
 
 do_install() {
-        install -d ${D}/${palmtopdir}/pics/mapicons \
-                   ${D}/${palmtopdir}/pics/mapicons/small \
-                   ${D}/${palmtopdir}/pics/mapicons/windarrows
-        install -m 0644 ../cumulus.png ${D}/${palmtopdir}/pics/cumulus.png
-        install -m 0644 map-icons/*.png ${D}/${palmtopdir}/pics/mapicons
-        install -m 0644 map-icons/*.xpm ${D}/${palmtopdir}/pics/mapicons
-        install -m 0644 map-icons/small/*.png ${D}/${palmtopdir}/pics/mapicons/small
-        install -m 0644 map-icons/small/*.xpm ${D}/${palmtopdir}/pics/mapicons/small
-        install -m 0644 map-icons/windarrows/*.png ${D}/${palmtopdir}/pics/mapicons/windarrows
+        install -d ${D}${palmtopdir}/pics/mapicons \
+                   ${D}${palmtopdir}/pics/mapicons/small \
+                   ${D}${palmtopdir}/pics/mapicons/windarrows
+        install -m 0644 ../cumulus.png ${D}${palmtopdir}/pics/cumulus.png
+        install -m 0644 map-icons/*.png ${D}${palmtopdir}/pics/mapicons
+        install -m 0644 map-icons/*.xpm ${D}${palmtopdir}/pics/mapicons
+        install -m 0644 map-icons/small/*.png ${D}${palmtopdir}/pics/mapicons/small
+        install -m 0644 map-icons/small/*.xpm ${D}${palmtopdir}/pics/mapicons/small
+        install -m 0644 map-icons/windarrows/*.png ${D}${palmtopdir}/pics/mapicons/windarrows
 
-	install -m 0755 gpsClient ${D}/${palmtopdir}/bin/
+	install -m 0755 gpsClient ${D}${palmtopdir}/bin/
 }

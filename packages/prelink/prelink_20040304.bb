@@ -13,8 +13,8 @@ S = "${WORKDIR}/prelink-0.0.${PV}"
 inherit autotools 
 
 do_install_append () {
-	install -d ${D}/${sysconfdir}/cron.daily ${D}/${sysconfdir}/default
-	install -m 0644 ${WORKDIR}/prelink.conf ${D}/${sysconfdir}/prelink.conf
-	install -m 0644 ${WORKDIR}/prelink.cron.daily ${D}/${sysconfdir}/cron.daily/prelink
-	install -m 0644 ${WORKDIR}/prelink.default ${D}/${sysconfdir}/default/prelink
+	install -d ${D}${sysconfdir}/cron.daily ${D}${sysconfdir}/default
+	install -m 0644 ${WORKDIR}/prelink.conf ${D}${sysconfdir}/prelink.conf
+	install -m 0644 ${WORKDIR}/prelink.cron.daily ${D}${sysconfdir}/cron.daily/prelink
+	install -m 0644 ${WORKDIR}/prelink.default ${D}${sysconfdir}/default/prelink
 }

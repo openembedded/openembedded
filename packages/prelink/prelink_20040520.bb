@@ -12,5 +12,5 @@ EXTRA_OECONF = "--disable-64bit"
 inherit autotools 
 
 do_install_append () {
-	install -d ${D}/${sysconfdir}/cron.daily ${D}/${sysconfdir}/default
+	install -d ${D}${sysconfdir}/cron.daily ${D}${sysconfdir}/default
 }

@@ -35,8 +35,8 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${bindir} ${D}/${libdir}
-	install -m 0755 src/lib/*.so ${D}/${libdir}
-	install -m 0755 src/bin/nano-X ${D}/${bindir}/nano-X
-	#install -m 0755 src/bin/nxcal ${D}/${bindir}/nxcal
+	install -d ${D}${bindir} ${D}${libdir}
+	install -m 0755 src/lib/*.so ${D}${libdir}
+	install -m 0755 src/bin/nano-X ${D}${bindir}/nano-X
+	#install -m 0755 src/bin/nxcal ${D}${bindir}/nxcal
 }

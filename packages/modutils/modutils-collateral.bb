@@ -10,7 +10,7 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}
-	install -m 0644 ${WORKDIR}/modules ${D}/${sysconfdir}/modules
-	install -m 0644 ${WORKDIR}/modules.conf ${D}/${sysconfdir}/modules.conf
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/modules ${D}${sysconfdir}/modules
+	install -m 0644 ${WORKDIR}/modules.conf ${D}${sysconfdir}/modules.conf
 }

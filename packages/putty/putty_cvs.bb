@@ -32,11 +32,11 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/${libdir}
-	oe_libinstall -so libputty ${D}/${libdir}
-	install -d ${D}/${bindir}/
-	install -m 0755 plink ${D}/${bindir}/ssh
-	install -m 0755 pscp ${D}/${bindir}/scp
-	install -m 0755 psftp ${D}/${bindir}/sftp
+	install -d ${D}${libdir}
+	oe_libinstall -so libputty ${D}${libdir}
+	install -d ${D}${bindir}/
+	install -m 0755 plink ${D}${bindir}/ssh
+	install -m 0755 pscp ${D}${bindir}/scp
+	install -m 0755 psftp ${D}${bindir}/sftp
 }
 

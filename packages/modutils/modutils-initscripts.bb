@@ -13,6 +13,6 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}/init.d/
-	install -m 0755 ${WORKDIR}/modutils.sh ${D}/${sysconfdir}/init.d/
+	install -d ${D}${sysconfdir}/init.d/
+	install -m 0755 ${WORKDIR}/modutils.sh ${D}${sysconfdir}/init.d/
 }

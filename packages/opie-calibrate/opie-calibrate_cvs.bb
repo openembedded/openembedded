@@ -11,6 +11,6 @@ S = "${WORKDIR}/calibrate"
 inherit opie
 
 do_install() {
-	install -d ${D}/${palmtopdir}/bin/
-	install -m 0755 calibrate ${D}/${palmtopdir}/bin/
+	install -d ${D}${palmtopdir}/bin/
+	install -m 0755 calibrate ${D}${palmtopdir}/bin/
 }

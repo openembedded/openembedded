@@ -52,91 +52,91 @@ do_install () {
 #
 # Create directories and install device independent scripts
 #
-	install -d ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/rcS.d \
-		   ${D}/${sysconfdir}/rc0.d \
-		   ${D}/${sysconfdir}/rc1.d \
-		   ${D}/${sysconfdir}/rc2.d \
-		   ${D}/${sysconfdir}/rc3.d \
-		   ${D}/${sysconfdir}/rc4.d \
-		   ${D}/${sysconfdir}/rc5.d \
-		   ${D}/${sysconfdir}/rc6.d \
-		   ${D}/${sysconfdir}/default
+	install -d ${D}${sysconfdir}/init.d \
+		   ${D}${sysconfdir}/rcS.d \
+		   ${D}${sysconfdir}/rc0.d \
+		   ${D}${sysconfdir}/rc1.d \
+		   ${D}${sysconfdir}/rc2.d \
+		   ${D}${sysconfdir}/rc3.d \
+		   ${D}${sysconfdir}/rc4.d \
+		   ${D}${sysconfdir}/rc5.d \
+		   ${D}${sysconfdir}/rc6.d \
+		   ${D}${sysconfdir}/default
 
-	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/checkroot.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/finish		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/halt		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/hostname.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/mountall.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/mountnfs.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/ramdisk		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/reboot		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/rmnologin	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/sendsigs		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/single		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/urandom		${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/devpts.sh	${D}/${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/devpts		${D}/${sysconfdir}/default
-	install -m 0755    ${WORKDIR}/sysfs.sh		${D}/${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/checkroot.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/finish		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/halt		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/hostname.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/mountall.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/mountnfs.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/ramdisk		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/reboot		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/rmnologin	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/sendsigs		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/single		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/urandom		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/devpts.sh	${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/devpts		${D}${sysconfdir}/default
+	install -m 0755    ${WORKDIR}/sysfs.sh		${D}${sysconfdir}/init.d
 	if [ "${TARGET_ARCH}" = "arm" ]; then
-		install -m 0755 ${WORKDIR}/alignment.sh	${D}/${sysconfdir}/init.d
+		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
 	fi
 #
 # Install device dependent scripts
 #
 
 	if [ "${DISTRO}" == "openzaurus" ]; then
-		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}/${sysconfdir}/init.d/checkversion
-        	chmod 0755 				${D}/${sysconfdir}/init.d/checkversion
-		ln -sf          ../init.d/checkversion  ${D}/${sysconfdir}/rcS.d/S00version
+		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}${sysconfdir}/init.d/checkversion
+        	chmod 0755 				${D}${sysconfdir}/init.d/checkversion
+		ln -sf          ../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S00version
 	fi
 
 	if [ "${MACHINE}" == "c7x0" ]; then
-		install -m 0755    ${WORKDIR}/corgikeymap-2.6.map		${D}/${sysconfdir}
-		install -m 0755    ${WORKDIR}/keymap				${D}/${sysconfdir}/init.d
-		ln -sf          ../init.d/keymap  				${D}/${sysconfdir}/rcS.d/S04keymap
+		install -m 0755    ${WORKDIR}/corgikeymap-2.6.map		${D}${sysconfdir}
+		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
+		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S04keymap
 	fi
 
 
-	install -m 0755 ${WORKDIR}/banner	${D}/${sysconfdir}/init.d/banner
-	install -m 0755 ${WORKDIR}/devices	${D}/${sysconfdir}/init.d/devices
-	install -m 0755 ${WORKDIR}/umountfs	${D}/${sysconfdir}/init.d/umountfs
+	install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
+	install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
+	install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
 #
 # Create runlevel links
 #
-	ln -sf		../init.d/rmnologin	${D}/${sysconfdir}/rc2.d/S99rmnologin
-	ln -sf		../init.d/rmnologin	${D}/${sysconfdir}/rc3.d/S99rmnologin
-	ln -sf		../init.d/rmnologin	${D}/${sysconfdir}/rc4.d/S99rmnologin
-	ln -sf		../init.d/rmnologin	${D}/${sysconfdir}/rc5.d/S99rmnologin
-	ln -sf		../init.d/sendsigs	${D}/${sysconfdir}/rc6.d/S20sendsigs
-#	ln -sf		../init.d/urandom	${D}/${sysconfdir}/rc6.d/S30urandom
-	ln -sf		../init.d/umountnfs.sh	${D}/${sysconfdir}/rc6.d/S31umountnfs.sh
-#	ln -sf		../init.d/umountfs	${D}/${sysconfdir}/rc6.d/S40umountfs
-	ln -sf          ../init.d/ramdisk       ${D}/${sysconfdir}/rcS.d/S30ramdisk 
-	ln -sf		../init.d/reboot	${D}/${sysconfdir}/rc6.d/S90reboot
-	ln -sf		../init.d/sendsigs	${D}/${sysconfdir}/rc0.d/S20sendsigs
-#	ln -sf		../init.d/urandom	${D}/${sysconfdir}/rc0.d/S30urandom
-	ln -sf		../init.d/umountnfs.sh	${D}/${sysconfdir}/rc0.d/S31umountnfs.sh
-#	ln -sf		../init.d/umountfs	${D}/${sysconfdir}/rc0.d/S40umountfs
-	ln -sf		../init.d/halt		${D}/${sysconfdir}/rc0.d/S90halt
-	ln -sf		../init.d/banner	${D}/${sysconfdir}/rcS.d/S01banner
-	ln -sf		../init.d/checkroot.sh	${D}/${sysconfdir}/rcS.d/S10checkroot.sh
-#	ln -sf		../init.d/checkfs.sh	${D}/${sysconfdir}/rcS.d/S30checkfs.sh
-	ln -sf		../init.d/mountall.sh	${D}/${sysconfdir}/rcS.d/S35mountall.sh
-	ln -sf		../init.d/hostname.sh	${D}/${sysconfdir}/rcS.d/S40hostname.sh
-	ln -sf		../init.d/mountnfs.sh	${D}/${sysconfdir}/rcS.d/S45mountnfs.sh
-	ln -sf		../init.d/bootmisc.sh	${D}/${sysconfdir}/rcS.d/S55bootmisc.sh
-#	ln -sf		../init.d/urandom	${D}/${sysconfdir}/rcS.d/S55urandom
-	ln -sf		../init.d/finish	${D}/${sysconfdir}/rcS.d/S99finish
-	ln -sf		../init.d/devices	${D}/${sysconfdir}/rcS.d/S04devices
+	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc2.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc3.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc4.d/S99rmnologin
+	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc5.d/S99rmnologin
+	ln -sf		../init.d/sendsigs	${D}${sysconfdir}/rc6.d/S20sendsigs
+#	ln -sf		../init.d/urandom	${D}${sysconfdir}/rc6.d/S30urandom
+	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc6.d/S31umountnfs.sh
+#	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc6.d/S40umountfs
+	ln -sf          ../init.d/ramdisk       ${D}${sysconfdir}/rcS.d/S30ramdisk 
+	ln -sf		../init.d/reboot	${D}${sysconfdir}/rc6.d/S90reboot
+	ln -sf		../init.d/sendsigs	${D}${sysconfdir}/rc0.d/S20sendsigs
+#	ln -sf		../init.d/urandom	${D}${sysconfdir}/rc0.d/S30urandom
+	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
+#	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
+	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
+	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S01banner
+	ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
+#	ln -sf		../init.d/checkfs.sh	${D}${sysconfdir}/rcS.d/S30checkfs.sh
+	ln -sf		../init.d/mountall.sh	${D}${sysconfdir}/rcS.d/S35mountall.sh
+	ln -sf		../init.d/hostname.sh	${D}${sysconfdir}/rcS.d/S40hostname.sh
+	ln -sf		../init.d/mountnfs.sh	${D}${sysconfdir}/rcS.d/S45mountnfs.sh
+	ln -sf		../init.d/bootmisc.sh	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
+#	ln -sf		../init.d/urandom	${D}${sysconfdir}/rcS.d/S55urandom
+	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
+	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S04devices
 	# udev will run at S03 if installed
-	ln -sf		../init.d/sysfs.sh	${D}/${sysconfdir}/rcS.d/S02sysfs
-	ln -sf		../init.d/devpts.sh	${D}/${sysconfdir}/rcS.d/S38devpts.sh
+	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S02sysfs
+	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
-		ln -sf	../init.d/alignment.sh	${D}/${sysconfdir}/rcS.d/S05alignment
+		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S05alignment
 	fi
 
-	install -m 0755    ${WORKDIR}/device_table.txt		${D}/${sysconfdir}/device_table
+	install -m 0755    ${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
 }

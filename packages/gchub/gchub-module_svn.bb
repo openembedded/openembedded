@@ -12,6 +12,6 @@ S = "${WORKDIR}/gchub/kernel"
 inherit module
 
 do_install() {
-        install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb
-	install gchub.ko -m 0644 ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/gchub.ko
+        install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb
+	install gchub.ko -m 0644 ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/gchub.ko
 }

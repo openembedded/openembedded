@@ -65,10 +65,10 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${palmtopdir}/lib
+	install -d ${D}${palmtopdir}/lib
 	for f in ${LIBS}
 	do
-		oe_libinstall -so libopie$f ${D}/${palmtopdir}/lib
+		oe_libinstall -so libopie$f ${D}${palmtopdir}/lib
 	done
 }
 

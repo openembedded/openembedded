@@ -25,11 +25,11 @@ update-modules || true
 }
 
 do_install() {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/
-	for i in ${MODULES}; do install -m 0644 $i ${D}/${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/$i; done
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/
+	for i in ${MODULES}; do install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/$i; done
 
 	if [ "${MACHINE}" = "h3900" ]; then
-		install -d ${D}/${sysconfdir}/modutils
-		echo "at76c503-rfmd" > ${D}/${sysconfdir}/modutils/at76c503-rfmd
+		install -d ${D}${sysconfdir}/modutils
+		echo "at76c503-rfmd" > ${D}${sysconfdir}/modutils/at76c503-rfmd
 	fi
 }

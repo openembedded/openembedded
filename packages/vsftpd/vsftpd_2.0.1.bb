@@ -16,7 +16,7 @@ do_install() {
 	install -d ${D}${mandir}/man8
 	install -d ${D}${mandir}/man5
 	oe_runmake 'DESTDIR=${D}' install
-	install -d ${D}/${sysconfdir}
+	install -d ${D}${sysconfdir}
 	install -m 0755 ${S}/vsftpd.conf ${D}${sysconfdir}/vsftpd.conf
 }
 

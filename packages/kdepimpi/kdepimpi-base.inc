@@ -69,42 +69,42 @@ do_configure_prepend() {
 }
 
 do_install() {
-    install -d ${D}/${palmtopdir}/bin \
-               ${D}/${palmtopdir}/lib \
-               ${D}/${palmtopdir}/apps/1Pim \
-               ${D}/${palmtopdir}/pics/kdepim/korganizer/icons16 \
-               ${D}/${palmtopdir}/pics/kdepim/korganizer/iconsmini \
-               ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons16 \
-               ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22 \
-               ${D}/${palmtopdir}/plugins/applets
+    install -d ${D}${palmtopdir}/bin \
+               ${D}${palmtopdir}/lib \
+               ${D}${palmtopdir}/apps/1Pim \
+               ${D}${palmtopdir}/pics/kdepim/korganizer/icons16 \
+               ${D}${palmtopdir}/pics/kdepim/korganizer/iconsmini \
+               ${D}${palmtopdir}/pics/kdepim/kaddressbook/icons16 \
+               ${D}${palmtopdir}/pics/kdepim/kaddressbook/icons22 \
+               ${D}${palmtopdir}/plugins/applets
 
-    install -m 0644 ${S}/bin/kdepim/korganizer/ko16.png ${D}/${palmtopdir}/pics/
-    install -m 0644 ${S}/bin/kdepim/korganizer/ko24.png ${D}/${palmtopdir}/pics/
-    install -m 0644 ${S}/bin/kdepim/korganizer/*.* ${D}/${palmtopdir}/pics/kdepim/korganizer
-    install -m 0644 ${S}/bin/kdepim/korganizer/icons16/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer/icons16
-    install -m 0644 ${S}/bin/kdepim/korganizer/iconsmini/*.png ${D}/${palmtopdir}/pics/kdepim/korganizer/iconsmini
-    install -m 0644 korganizer/korganizer.desktop ${D}/${palmtopdir}/apps/1Pim/korganizer.desktop
+    install -m 0644 ${S}/bin/kdepim/korganizer/ko16.png ${D}${palmtopdir}/pics/
+    install -m 0644 ${S}/bin/kdepim/korganizer/ko24.png ${D}${palmtopdir}/pics/
+    install -m 0644 ${S}/bin/kdepim/korganizer/*.* ${D}${palmtopdir}/pics/kdepim/korganizer
+    install -m 0644 ${S}/bin/kdepim/korganizer/icons16/*.png ${D}${palmtopdir}/pics/kdepim/korganizer/icons16
+    install -m 0644 ${S}/bin/kdepim/korganizer/iconsmini/*.png ${D}${palmtopdir}/pics/kdepim/korganizer/iconsmini
+    install -m 0644 korganizer/korganizer.desktop ${D}${palmtopdir}/apps/1Pim/korganizer.desktop
 
-    install -m 0644 ${S}/bin/kdepim/kaddressbook/*.* ${D}/${palmtopdir}/pics/kdepim/kaddressbook
-    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons16/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons16
-    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}/${palmtopdir}/pics/kdepim/kaddressbook/icons22
-    install -m 0644 kaddressbook/kaddressbook.desktop ${D}/${palmtopdir}/apps/1Pim/kaddressbook.desktop
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/*.* ${D}${palmtopdir}/pics/kdepim/kaddressbook
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons16/*.png ${D}${palmtopdir}/pics/kdepim/kaddressbook/icons16
+    install -m 0644 ${S}/bin/kdepim/kaddressbook/icons22/*.png ${D}${palmtopdir}/pics/kdepim/kaddressbook/icons22
+    install -m 0644 kaddressbook/kaddressbook.desktop ${D}${palmtopdir}/apps/1Pim/kaddressbook.desktop
 
     for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat libmicrokabc_file libmicrokabc_dir libmicrokabcformat_binary libmicrokabc_qtopia 
     do
-        oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/lib
+        oe_libinstall -so -C ${S}/dest/ $f ${D}${palmtopdir}/lib
     done
 
-    install -m 0755 ${S}/dest/kopi ${D}/${palmtopdir}/bin/kopi
-    install -m 0755 ${S}/dest/kapi ${D}/${palmtopdir}/bin/kapi
+    install -m 0755 ${S}/dest/kopi ${D}${palmtopdir}/bin/kopi
+    install -m 0755 ${S}/dest/kapi ${D}${palmtopdir}/bin/kapi
     
-    install -d ${D}/${bindir} ${D}/${libdir}
-    install -m 0755 ${S}/dest/kammu ${D}/${bindir}/kammu
-    oe_libinstall -so -C ${S}/dest/ libmicrokammu ${D}/${libdir}
+    install -d ${D}${bindir} ${D}${libdir}
+    install -m 0755 ${S}/dest/kammu ${D}${bindir}/kammu
+    oe_libinstall -so -C ${S}/dest/ libmicrokammu ${D}${libdir}
 
     for f in libkopialarmapplet
     do
-        oe_libinstall -so -C ${S}/dest/ $f ${D}/${palmtopdir}/plugins/applets
+        oe_libinstall -so -C ${S}/dest/ $f ${D}${palmtopdir}/plugins/applets
     done
 }
 

@@ -28,7 +28,7 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}/${prefix} ${D}/${includedir} ${D}/${libdir}
-	oe_runmake "prefix=${D}/${prefix}" "includedir=${D}/${includedir}" \
-		   "libdir=${D}/${libdir}" install
+	install -d ${D}${prefix} ${D}${includedir} ${D}${libdir}
+	oe_runmake "prefix=${D}${prefix}" "includedir=${D}${includedir}" \
+		   "libdir=${D}${libdir}" install
 }

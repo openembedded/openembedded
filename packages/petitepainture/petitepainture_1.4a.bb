@@ -18,7 +18,7 @@ inherit opie
 QMAKE_PROFILES = "spainter.pro"
 
 do_install() {
-        install -d ${D}/${palmtopdir}/pics
-        install -m 0644 *.png ${D}/${palmtopdir}/pics/
-        install -m 0644 ${WORKDIR}/petitpeintu.png ${D}/${palmtopdir}/pics/
+        install -d ${D}${palmtopdir}/pics
+        install -m 0644 *.png ${D}${palmtopdir}/pics/
+        install -m 0644 ${WORKDIR}/petitpeintu.png ${D}${palmtopdir}/pics/
 }

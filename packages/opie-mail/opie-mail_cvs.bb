@@ -19,7 +19,7 @@ inherit opie
 # FILES plugins/application/libopiemail.so* bin/opiemail apps/1Pim/mail.desktop pics/mail/*.png
 
 do_install() {
-	install -d ${D}/${palmtopdir}/pics/mail/
-	install -m 0644 ${WORKDIR}/pics/mail/*.png ${D}/${palmtopdir}/pics/mail/
+	install -d ${D}${palmtopdir}/pics/mail/
+	install -m 0644 ${WORKDIR}/pics/mail/*.png ${D}${palmtopdir}/pics/mail/
 }
 

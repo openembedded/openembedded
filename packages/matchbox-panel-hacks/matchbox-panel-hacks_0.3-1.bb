@@ -9,10 +9,10 @@ PR = "r1"
 LICENSE = "MIT"
 
 do_install() {
-        install -d ${D}/${bindir}
-        install -d ${D}/${datadir}/applications
-        install -d ${D}/${datadir}/pixmaps
-	install -m 0755 ${WORKDIR}/xrandr-panelapp.sh ${D}/${bindir}/
-	install -m 0644 ${WORKDIR}/xrandr-panelapp.desktop ${D}/${datadir}/applications/
-	install -m 0644 ${WORKDIR}/xrandr.png ${D}/${datadir}/pixmaps/
+        install -d ${D}${bindir}
+        install -d ${D}${datadir}/applications
+        install -d ${D}${datadir}/pixmaps
+	install -m 0755 ${WORKDIR}/xrandr-panelapp.sh ${D}${bindir}/
+	install -m 0644 ${WORKDIR}/xrandr-panelapp.desktop ${D}${datadir}/applications/
+	install -m 0644 ${WORKDIR}/xrandr.png ${D}${datadir}/pixmaps/
 }

@@ -12,7 +12,7 @@ SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2 \
 	file://gtkstylus.sh"
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/profile.d
-	install ${WORKDIR}/gtkstylus.sh ${D}/${sysconfdir}/profile.d/
+	install -d ${D}${sysconfdir}/profile.d
+	install ${WORKDIR}/gtkstylus.sh ${D}${sysconfdir}/profile.d/
 }
 

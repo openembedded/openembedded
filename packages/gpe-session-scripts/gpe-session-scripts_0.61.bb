@@ -14,9 +14,9 @@ DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question 
 SRC_URI += "file://change-default-applets.patch;patch=1"
 
 do_install_append() {
-	install -d ${D}/${sysconfdir}/gpe/xsettings-default.d
+	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
-		echo "Gtk/ToolbarStyle:S:icons" > ${D}/${sysconfdir}/gpe/xsettings-default.d/toolbar
+		echo "Gtk/ToolbarStyle:S:icons" > ${D}${sysconfdir}/gpe/xsettings-default.d/toolbar
 	fi
 }
 

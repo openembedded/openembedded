@@ -13,10 +13,10 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}/init.d ${D}/${sbindir}
-	install -m 0755 inetd/inetd ${D}/${sbindir}/inetd
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/inetd
-	install -m 0644 ${WORKDIR}/inetd.conf ${D}/${sysconfdir}
+	install -d ${D}${sysconfdir}/init.d ${D}${sbindir}
+	install -m 0755 inetd/inetd ${D}${sbindir}/inetd
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/inetd
+	install -m 0644 ${WORKDIR}/inetd.conf ${D}${sysconfdir}
 }
 
 pkg_postinst () {

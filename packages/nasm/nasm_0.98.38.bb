@@ -10,8 +10,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/nasm/nasm-${PV}.tar.bz2"
 inherit autotools
 
 do_install() {
-	install -d ${D}/${bindir}
-	install -d ${D}/${mandir}/man1
+	install -d ${D}${bindir}
+	install -d ${D}${mandir}/man1
 
 	oe_runmake 'INSTALLROOT=${D}' install
 }

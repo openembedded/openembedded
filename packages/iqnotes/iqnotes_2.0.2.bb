@@ -21,14 +21,14 @@ export OE_QMAKE_LINK="${CXX}"
 
 
 do_install() {
-        install -d ${D}/${palmtopdir}/help/html \
-		   ${D}/${palmtopdir}/bin \
-		   ${D}/${palmtopdir}/apps/Applications \
-		   ${D}/${palmtopdir}/pics/iqnotes/items \
-		   ${D}/${palmtopdir}/iqnotes/icons
-        install -m 0755 ${S}/../bin/iqnotes ${D}/${palmtopdir}/bin/
-        install -m 0644 ${S}/../apps/Applications/*.desktop ${D}/${palmtopdir}/apps/Applications/
-        install -m 0644 ${S}/../pics/iqnotes/*.png ${D}/${palmtopdir}/pics/iqnotes/
-        install -m 0644 ${S}/../help/html/iqnotes.html ${D}/${palmtopdir}/help/html/
-        install -m 0644 ${S}/../pics/*.xpm ${D}/${palmtopdir}/pics/
+        install -d ${D}${palmtopdir}/help/html \
+		   ${D}${palmtopdir}/bin \
+		   ${D}${palmtopdir}/apps/Applications \
+		   ${D}${palmtopdir}/pics/iqnotes/items \
+		   ${D}${palmtopdir}/iqnotes/icons
+        install -m 0755 ${S}/../bin/iqnotes ${D}${palmtopdir}/bin/
+        install -m 0644 ${S}/../apps/Applications/*.desktop ${D}${palmtopdir}/apps/Applications/
+        install -m 0644 ${S}/../pics/iqnotes/*.png ${D}${palmtopdir}/pics/iqnotes/
+        install -m 0644 ${S}/../help/html/iqnotes.html ${D}${palmtopdir}/help/html/
+        install -m 0644 ${S}/../pics/*.xpm ${D}${palmtopdir}/pics/
 }

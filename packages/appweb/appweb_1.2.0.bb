@@ -101,10 +101,10 @@ do_install () {
 }
 
 #do_install () {
-#	install -d ${D}/${sbindir} ${D}/${sysconfdir}/appWeb/lib \
-#		   ${D}/${libexecdir}/appWeb ${D}/${libdir}
-#	install -m 0755 appWeb/appWeb ${D}/${sbindir}/
-#	install -m 0644 appWeb/appWeb.conf ${D}/${sysconfdir}/appWeb/
-#	install -m 0755 bin/${APPWEB_OS}/* ${D}/${libexecdir}/appWeb/
-#	install -m 0755 lib/lib*.so* ${D}/${sysconfdir}/appWeb/lib/
+#	install -d ${D}${sbindir} ${D}${sysconfdir}/appWeb/lib \
+#		   ${D}${libexecdir}/appWeb ${D}${libdir}
+#	install -m 0755 appWeb/appWeb ${D}${sbindir}/
+#	install -m 0644 appWeb/appWeb.conf ${D}${sysconfdir}/appWeb/
+#	install -m 0755 bin/${APPWEB_OS}/* ${D}${libexecdir}/appWeb/
+#	install -m 0755 lib/lib*.so* ${D}${sysconfdir}/appWeb/lib/
 #}

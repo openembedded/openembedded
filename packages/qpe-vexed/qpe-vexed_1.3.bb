@@ -19,11 +19,11 @@ S = "${WORKDIR}/qpe-vexed_arm/"
 inherit opie
 
 do_install () {
-	install -d ${D}/${palmtopdir}/pics/${APPNAME}/ \
-		   ${D}/${palmtopdir}/apps/Games/ \
-		   ${D}/${palmtopdir}/bin/
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/ \
+		   ${D}${palmtopdir}/apps/Games/ \
+		   ${D}${palmtopdir}/bin/
 
-	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed.png ${D}/${palmtopdir}/pics/
-	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
-	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed/*.bmp ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed.png ${D}${palmtopdir}/pics/
+	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${S}/pkg/opt/QtPalmtop/pics/qpe-vexed/*.bmp ${D}${palmtopdir}/pics/${APPNAME}/
 }

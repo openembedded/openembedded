@@ -34,10 +34,10 @@ do_compile() {
 do_install() {
 	install -d ${D}${palmtopdir}/pics/zbedic/
 	install -d ${D}${palmtopdir}/help/html/
-	install -m 0644 ${ZS}/misc/*.png ${D}/${palmtopdir}/pics/zbedic/
-	install -m 0644 ${ZS}/misc/zbedic.png ${D}/${palmtopdir}/pics/
-	install -m 0644 ${ZS}/doc/manual/*.html ${D}/${palmtopdir}/help/html/
-	rm ${D}/${palmtopdir}/pics/zbedic/zbedic.png
+	install -m 0644 ${ZS}/misc/*.png ${D}${palmtopdir}/pics/zbedic/
+	install -m 0644 ${ZS}/misc/zbedic.png ${D}${palmtopdir}/pics/
+	install -m 0644 ${ZS}/doc/manual/*.html ${D}${palmtopdir}/help/html/
+	rm ${D}${palmtopdir}/pics/zbedic/zbedic.png
 }
 
 PACKAGES =+ "zbedic-help-en"

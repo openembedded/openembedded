@@ -23,5 +23,5 @@ do_compile () {
 
 do_install () {
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
-	rm -f ${D}/${datadir}/applications/gpe-conf.desktop
+	rm -f ${D}${datadir}/applications/gpe-conf.desktop
 }

@@ -28,11 +28,11 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}/${sbindir}
+        install -d ${D}${sbindir}
 	for u in ${UTILS}
 	do
-		install -m 0755 ${S}/${u}/${u} ${D}/${sbindir}/
+		install -m 0755 ${S}/${u}/${u} ${D}${sbindir}/
 	done
-	install -d ${D}/${sysconfdir}/init.d/
-	install -m 0755 ${WORKDIR}/sltime.sh ${D}/${sysconfdir}/init.d/sltime
+	install -d ${D}${sysconfdir}/init.d/
+	install -m 0755 ${WORKDIR}/sltime.sh ${D}${sysconfdir}/init.d/sltime
 }

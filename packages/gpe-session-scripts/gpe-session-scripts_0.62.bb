@@ -21,20 +21,20 @@ SRC_URI += "file://zaurus.sh \
 	file://disable-composite.xsettings"
 
 do_install_append() {
-	install ${WORKDIR}/zaurus.sh ${D}/${sysconfdir}/X11/Xinit.d/11zaurus
-	install ${WORKDIR}/keymap.sh ${D}/${sysconfdir}/X11/Xinit.d/12keymap
+	install ${WORKDIR}/zaurus.sh ${D}${sysconfdir}/X11/Xinit.d/11zaurus
+	install ${WORKDIR}/keymap.sh ${D}${sysconfdir}/X11/Xinit.d/12keymap
 	for m in simpad shepherd collie; do
-		install -m 0644 ${WORKDIR}/$m.xmodmap ${D}/${sysconfdir}/X11/
+		install -m 0644 ${WORKDIR}/$m.xmodmap ${D}${sysconfdir}/X11/
 	done
-	install -d ${D}/${sysconfdir}/gpe/xsettings-default.d
+	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
-		echo "Gtk/ToolbarStyle:S:icons" > ${D}/${sysconfdir}/gpe/xsettings-default.d/toolbar
+		echo "Gtk/ToolbarStyle:S:icons" > ${D}${sysconfdir}/gpe/xsettings-default.d/toolbar
 	fi
-	install -d ${D}/${sysconfdir}/matchbox
-	install ${WORKDIR}/matchbox-session ${D}/${sysconfdir}/matchbox/session
+	install -d ${D}${sysconfdir}/matchbox
+	install ${WORKDIR}/matchbox-session ${D}${sysconfdir}/matchbox/session
 
-	install -d ${D}/${sysconfdir}/gpe/xsettings-default.d
-	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}/${sysconfdir}/gpe/xsettings-default.d/disable-composite
+	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
+	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately

@@ -25,7 +25,7 @@ do_compile() {
 do_install() {
     cd ../ && autotools_do_install
     install -d ${D}${datadir}/applications/
-    install -m 0644 ${WORKDIR}/hugs.desktop ${D}/${datadir}/applications/
+    install -m 0644 ${WORKDIR}/hugs.desktop ${D}${datadir}/applications/
     install -d ${D}${datadir}/pixmaps/
     install -m 0644 ${WORKDIR}/hugs.png ${D}${datadir}/pixmaps/
 }

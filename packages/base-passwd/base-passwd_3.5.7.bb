@@ -13,32 +13,32 @@ inherit autotools
 FILES_${PN}-doc += "${docdir}"
 
 do_install () {
-	install -d -m 755 ${D}/${sbindir}
-	install -p -m 755 update-passwd ${D}/${sbindir}/
+	install -d -m 755 ${D}${sbindir}
+	install -p -m 755 update-passwd ${D}${sbindir}/
 	install -d -m 755 \
-		${D}/${mandir}/man8 ${D}/${mandir}/pl/man8
+		${D}${mandir}/man8 ${D}${mandir}/pl/man8
 	install -p -m 644 man/update-passwd.8 \
-		${D}/${mandir}/man8/
+		${D}${mandir}/man8/
 	install -p -m 644 man/update-passwd.pl.8 \
-		${D}/${mandir}/pl/man8/update-passwd.8
-	gzip -9 ${D}/${mandir}/man8/* \
-		${D}/${mandir}/pl/man8/*
-	install -d -m 755 ${D}/${datadir}/base-passwd
+		${D}${mandir}/pl/man8/update-passwd.8
+	gzip -9 ${D}${mandir}/man8/* \
+		${D}${mandir}/pl/man8/*
+	install -d -m 755 ${D}${datadir}/base-passwd
 	install -p -m 644 passwd.master \
-		${D}/${datadir}/base-passwd/
+		${D}${datadir}/base-passwd/
 	install -p -m 644 group.master \
-		${D}/${datadir}/base-passwd/
+		${D}${datadir}/base-passwd/
 
-	install -d -m 755 ${D}/${docdir}/${PN}
-	install -p -m 644 debian/changelog ${D}/${docdir}/${PN}/
-	gzip -9 ${D}/${docdir}/${PN}/*
-	install -p -m 644 README ${D}/${docdir}/${PN}/
-	install -p -m 644 debian/copyright ${D}/${docdir}/${PN}/
+	install -d -m 755 ${D}${docdir}/${PN}
+	install -p -m 644 debian/changelog ${D}${docdir}/${PN}/
+	gzip -9 ${D}${docdir}/${PN}/*
+	install -p -m 644 README ${D}${docdir}/${PN}/
+	install -p -m 644 debian/copyright ${D}${docdir}/${PN}/
 }
 
 
 do_install_append_ramses() {
-	echo "0:Jn6tcg/qjqvUE:0:0:root:/root:/bin/sh" >>${D}/${datadir}/base-passwd/passwd.master
+	echo "0:Jn6tcg/qjqvUE:0:0:root:/root:/bin/sh" >>${D}${datadir}/base-passwd/passwd.master
 }
 
 

@@ -22,16 +22,16 @@ MAKE_TARGETS = "KERNEL_PATH=${KERNEL_SOURCE} MAKE='make -e'"
 NET_MODULES = "hostap hostap_pci hostap_crypt_ccmp hostap_crypt_tkip hostap_crypt_wep"
 
 do_install() {
-	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net \
-		   ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia \
-        	   ${D}/${sysconfdir}/pcmcia
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/net \
+		   ${D}${base_libdir}/modules/${KERNEL_VERSION}/pcmcia \
+        	   ${D}${sysconfdir}/pcmcia
 	for i in ${NET_MODULES}
 	do
-		install -m 0644 driver/modules/$i${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/net/
+		install -m 0644 driver/modules/$i${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/net/
 	done
-	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}/${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
-	install -m 0644 driver/etc/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
-	cat ${WORKDIR}/hostap_cs.conf >>${D}/${sysconfdir}/pcmcia/hostap_cs.conf
+	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
+	install -m 0644 driver/etc/hostap_cs.conf ${D}${sysconfdir}/pcmcia/hostap_cs.conf
+	cat ${WORKDIR}/hostap_cs.conf >>${D}${sysconfdir}/pcmcia/hostap_cs.conf
 }
 
 PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"

@@ -76,25 +76,25 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
 	# Move libgcc_s into /lib
-	mkdir -p ${D}/${base_libdir}
+	mkdir -p ${D}${base_libdir}
 	if [ "${BUILD_SYS}" == "${TARGET_SYS}" ]; then
 		# native builds drop one pathname component
-		mv -f ${D}/${prefix}/lib/libgcc_s.so.* ${D}/${base_libdir}
+		mv -f ${D}${prefix}/lib/libgcc_s.so.* ${D}${base_libdir}
 	else
-		mv -f ${D}/${prefix}/*/lib/libgcc_s.so.* ${D}/${base_libdir}
+		mv -f ${D}${prefix}/*/lib/libgcc_s.so.* ${D}${base_libdir}
 	fi
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
 	TGT_LIBDIR=`echo ${libdir} | sed -e 's,${CROSS_DIR},/usr,'`
-	mkdir -p ${D}/${TGT_LIBDIR}
-	mv -f ${D}/${prefix}/*/lib/libstdc++.so.* ${D}/${TGT_LIBDIR}
-	mv -f ${D}/${prefix}/*/lib/libg2c.so.* ${D}/${TGT_LIBDIR}
+	mkdir -p ${D}${TGT_LIBDIR}
+	mv -f ${D}${prefix}/*/lib/libstdc++.so.* ${D}${TGT_LIBDIR}
+	mv -f ${D}${prefix}/*/lib/libg2c.so.* ${D}${TGT_LIBDIR}
 
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
 	if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
-		${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libstdc++.so.*
-		${TARGET_PREFIX}strip ${D}/${TGT_LIBDIR}/libg2c.so.*
-		${TARGET_PREFIX}strip ${D}/${base_libdir}/libgcc_s.so.*
+		${TARGET_PREFIX}strip ${D}${TGT_LIBDIR}/libstdc++.so.*
+		${TARGET_PREFIX}strip ${D}${TGT_LIBDIR}/libg2c.so.*
+		${TARGET_PREFIX}strip ${D}${base_libdir}/libgcc_s.so.*
 	fi
 }

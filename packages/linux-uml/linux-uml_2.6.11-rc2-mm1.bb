@@ -51,8 +51,8 @@ do_stage_prepend() {
 do_install() {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
         #oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" modules_install
-        install -d ${D}/boot
-        install -m 0755 linux ${D}/boot/linux-${PV}
-        install -m 0644 System.map ${D}/boot/System.map-${PV}
-        install -m 0644 .config ${D}/boot/config-${PV}
+        install -d ${D}boot
+        install -m 0755 linux ${D}boot/linux-${PV}
+        install -m 0644 System.map ${D}boot/System.map-${PV}
+        install -m 0644 .config ${D}boot/config-${PV}
 }

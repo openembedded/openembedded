@@ -16,9 +16,9 @@ do_compile () {
 }
 
 do_install () {
-	oe_runmake 'prefix=${D}/${prefix}' 'exec_prefix=${D}/${exec_prefix}' \
-		   'bindir=${D}/${bindir}' 'mandir=${D}/${mandir}' \
-		   'etcdir=${D}/${sysconfdir}' GEN_CONFIG="`which echo`" install
-	install -d ${D}/${sysconfdir}/ssmtp
-	install -m 0644 ${WORKDIR}/ssmtp.conf ${D}/${sysconfdir}/ssmtp/ssmtp.conf
+	oe_runmake 'prefix=${D}${prefix}' 'exec_prefix=${D}${exec_prefix}' \
+		   'bindir=${D}${bindir}' 'mandir=${D}${mandir}' \
+		   'etcdir=${D}${sysconfdir}' GEN_CONFIG="`which echo`" install
+	install -d ${D}${sysconfdir}/ssmtp
+	install -m 0644 ${WORKDIR}/ssmtp.conf ${D}${sysconfdir}/ssmtp/ssmtp.conf
 }

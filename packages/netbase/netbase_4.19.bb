@@ -16,22 +16,22 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://interfaces"
 
 do_install () {
-	install -d ${D}/${sysconfdir}/init.d \
-		   ${D}/${sbindir} \
-		   ${D}/${mandir}/man8 \
-		   ${D}/${sysconfdir}/network/if-pre-up.d \
-		   ${D}/${sysconfdir}/network/if-up.d \
-		   ${D}/${sysconfdir}/network/if-down.d \
-		   ${D}/${sysconfdir}/network/if-post-down.d
-	install -m 0644 ${WORKDIR}/options ${D}/${sysconfdir}/network/options
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/networking
-	install -m 0644 ${WORKDIR}/hosts ${D}/${sysconfdir}/hosts
-	install -m 0644 etc-rpc ${D}/${sysconfdir}/rpc
-	install -m 0644 etc-protocols ${D}/${sysconfdir}/protocols
-	install -m 0644 etc-services ${D}/${sysconfdir}/services
-	install -m 0755 update-inetd ${D}/${sbindir}/
-	install -m 0644 update-inetd.8 ${D}/${mandir}/man8/
-	install -m 0644 ${WORKDIR}/interfaces ${D}/${sysconfdir}/network/interfaces
+	install -d ${D}${sysconfdir}/init.d \
+		   ${D}${sbindir} \
+		   ${D}${mandir}/man8 \
+		   ${D}${sysconfdir}/network/if-pre-up.d \
+		   ${D}${sysconfdir}/network/if-up.d \
+		   ${D}${sysconfdir}/network/if-down.d \
+		   ${D}${sysconfdir}/network/if-post-down.d
+	install -m 0644 ${WORKDIR}/options ${D}${sysconfdir}/network/options
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/networking
+	install -m 0644 ${WORKDIR}/hosts ${D}${sysconfdir}/hosts
+	install -m 0644 etc-rpc ${D}${sysconfdir}/rpc
+	install -m 0644 etc-protocols ${D}${sysconfdir}/protocols
+	install -m 0644 etc-services ${D}${sysconfdir}/services
+	install -m 0755 update-inetd ${D}${sbindir}/
+	install -m 0644 update-inetd.8 ${D}${mandir}/man8/
+	install -m 0644 ${WORKDIR}/interfaces ${D}${sysconfdir}/network/interfaces
 }
 
 CONFFILES_${PN} = "${sysconfdir}/network/options ${sysconfdir}/hosts ${sysconfdir}/network/interfaces"

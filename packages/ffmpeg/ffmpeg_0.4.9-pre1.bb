@@ -48,7 +48,7 @@ EXTRA_OECONF=" \
 	--extra-libs=\$(TARGET_LDFLAGS) \
 	\
 	--cpu=${PACKAGE_ARCH} \
-	--prefix=${D}/${prefix} \
+	--prefix=${D}${prefix} \
 "
 
 PACKAGES += "libavcodec libavcodec-dev libavformat libavformat-dev"

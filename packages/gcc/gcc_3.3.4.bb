@@ -135,27 +135,27 @@ do_install () {
 	autotools_do_install
 
 	# Cleanup some of the gcc-lib stuff
-	rm -rf ${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
+	rm -rf ${D}${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
 
 	# Move libgcc_s into /lib
-	mkdir -p ${D}/${base_libdir}
-	mv -f ${D}/${libdir}/libgcc_s.so.* ${D}/${base_libdir}
-	rm -f ${D}/${libdir}/libgcc_s.so
+	mkdir -p ${D}${base_libdir}
+	mv -f ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
+	rm -f ${D}${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc-lib/${TARGET_SYS}/${PV} | tr -s / |
 		sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \
-		${D}/${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc_s.so
+		${D}${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc_s.so
 
 	# Cleanup manpages..
-	rm -rf ${D}/${mandir}/man7
-	mv ${D}/${mandir}/man1/cpp.1 \
-	   ${D}/${mandir}/man1/${TARGET_SYS}-cpp.1
-	mv ${D}/${mandir}/man1/gcov.1 \
-	   ${D}/${mandir}/man1/${TARGET_SYS}-gcov.1
+	rm -rf ${D}${mandir}/man7
+	mv ${D}${mandir}/man1/cpp.1 \
+	   ${D}${mandir}/man1/${TARGET_SYS}-cpp.1
+	mv ${D}${mandir}/man1/gcov.1 \
+	   ${D}${mandir}/man1/${TARGET_SYS}-gcov.1
 
 	# We use libiberty from binutils
-	rm -f ${D}/${libdir}/libiberty.a
+	rm -f ${D}${libdir}/libiberty.a
 
-	cd ${D}/${bindir}
+	cd ${D}${bindir}
 
 	# We care about g++ not c++
 	rm -f *c++

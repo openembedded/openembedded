@@ -16,7 +16,7 @@ inherit module-base
 # Hack Alert :D
 ARCH_mipsel = "mips"
 
-EXTRA_OEMAKE = "KDIR=${STAGING_KERNEL_DIR} KMISC=${D}/${base_libdir}/modules/${KERNEL_VERSION}/net KVER=${KERNEL_VERSION}"
+EXTRA_OEMAKE = "KDIR=${STAGING_KERNEL_DIR} KMISC=${D}${base_libdir}/modules/${KERNEL_VERSION}/net KVER=${KERNEL_VERSION}"
 
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS

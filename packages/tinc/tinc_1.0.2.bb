@@ -27,6 +27,6 @@ do_compile() {
 
 do_install() {
         oe_runmake install DESTDIR=${D}
-	install -d ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/tinc
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/tinc
 }

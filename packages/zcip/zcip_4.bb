@@ -13,6 +13,6 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sbindir}
-	install -m 0744 make-arp zcip ${D}/${sbindir}/
+	install -d ${D}${sbindir}
+	install -m 0744 make-arp zcip ${D}${sbindir}/
 }

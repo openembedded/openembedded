@@ -17,13 +17,13 @@ INITSCRIPT_NAME = "dnsmasq"
 INITSCRIPT_PARAMS = "defaults"
 
 do_install () {
-	oe_runmake "PREFIX=${D}/${prefix}" \
-		   "BINDIR=${D}/${bindir}" \
-		   "MANDIR=${D}/${mandir}" \
+	oe_runmake "PREFIX=${D}${prefix}" \
+		   "BINDIR=${D}${bindir}" \
+		   "MANDIR=${D}${mandir}" \
 		   install
-	install -d ${D}/${sysconfdir}/ ${D}/${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/dnsmasq.conf ${D}/${sysconfdir}/
-	install -m 755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/dnsmasq
+	install -d ${D}${sysconfdir}/ ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/dnsmasq.conf ${D}${sysconfdir}/
+	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/dnsmasq
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/dnsmasq.conf"

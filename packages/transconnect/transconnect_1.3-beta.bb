@@ -13,8 +13,8 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${sysconfdir}
-	install -m 0644 tconn.conf ${D}/${sysconfdir}/
-	install -d ${D}/${libdir}/tconn
-	oe_libinstall -so tconn ${D}/${libdir}/tconn/
+	install -d ${D}${sysconfdir}
+	install -m 0644 tconn.conf ${D}${sysconfdir}/
+	install -d ${D}${libdir}/tconn
+	oe_libinstall -so tconn ${D}${libdir}/tconn/
 }
