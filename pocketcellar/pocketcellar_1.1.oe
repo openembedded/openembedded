@@ -1,0 +1,28 @@
+DESCRIPTION="Benchmark for Opie/Qtopia"
+SECTION="base"
+PRIORITY="optional"
+MAINTAINER="Michael Lauer <mickey@Vanille.de>"
+LICENSE="GPL"
+RDEPENDS="libqpe1"
+DEPENDS=virtual/libc
+
+SRC_URI = http://www.staikos.net/~staikos/${PN}/${P}.tar.gz \
+          file://${FILESDIR}/gcc3.patch;patch=1
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST= DESTDIR=pkg-cellar/home/QtPalmtop/bin/
+
+do_install() {
+        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
+	install -d ${D}/home/root/Settings/
+	cp -a pkg-pcellar/home/QtPalmtop/* ${D}/opt/QtPalmtop/
+	cp -a pkg-pcellar/home/root/Settings/* ${D}/home/root/Settings/
+        install -D -m 755 pkg-cellar/home/QtPalmtop/bin/pocketcellar ${D}/opt/QtPalmtop/bin/pocketcellar
+        install -D -m 644 pocketcellar.desktop ${D}/opt/QtPalmtop/apps/Applications/pocketcellar.desktop
+        cp pocketcellar.png ${D}/opt/QtPalmtop/pics/
+}
+
+FILES_${PN}=
+FILES_${PN}=/
+
