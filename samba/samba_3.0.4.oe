@@ -4,6 +4,10 @@ SRC_URI := "http://samba.mirror.ac.uk/samba/ftp/samba-${PV}.tar.gz \
 	   file://${FILESDIR}/configure.patch;patch=1"
 S := ${WORKDIR}/${P}/source
 
+PACKAGES =+ "libsmbclient libsmbclient-dev "
+FILES_libsmbclient = "${libdir}/libsmbclient.so.*"
+FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
+
 inherit autotools
 
 EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
@@ -13,6 +17,13 @@ do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
 		cat aclocal.m4 > acinclude.m4
 	fi
+}
+
+do_install_append() {
+	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0
+	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
+	rm -f ${D}${bindir}/*.old
+	rm -f ${D}${sbindir}/*.old
 }
 
 do_stage() {
