@@ -6,6 +6,7 @@ LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "0.0cvs${CVSDATE}"
+PR = "r1"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
