@@ -1,0 +1,27 @@
+DESCRIPTION = "Bartender drink receipe database"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopie2core"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "bartender"
+APPTYPE = "binary"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/opie-bartender;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/opie-bartender"
+
+inherit opie
+
+# FILES bin/bartender apps/Applications/bartender.desktop etc/bartender/drinkdb.txt
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -d ${D}/etc/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 db/drinkdb.txt ${D}/etc/
+}
+
+FILES_opie-bartender_append = " /etc"
