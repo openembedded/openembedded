@@ -10,7 +10,12 @@ FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 PR = "r1"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+python () {
+	mach = oe.data.getVar('MACHINE', d, 1)
+	if mach:
+		oe.data.setVar('PACKAGE_ARCH', oe.data.getVar('MACHINE_ARCH', d, 1), d)
+}
+
 USE_VT ?= "1"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
