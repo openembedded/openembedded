@@ -4,18 +4,19 @@ LICENSE  = "GPL LGPL W3C Classpath BSD"
 
 DEPENDS = "jikes-native fastjar-native"
 
-SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe \
-           file://disable-automake-checks.patch;patch=1"
-S = "${WORKDIR}/kaffe"
+SRC_URI += "file://disable-automake-checks.patch;patch=1"
 
 inherit autotools gettext
 
-EXTRA_OECONF = "--with-engine=jit \
+EXTRA_OECONF = "--with-engine=intrp \
+	--with-libffi \
 	--with-threads=unix-pthreads \
 	--disable-alsatest \
 	--disable-esdtest \
 	--disable-sound \
 	--with-jikes"
+
+CFLAGS += "-D_GNU_SOURCE"
 
 # kaffe installs to non-standard locations. apply a similar workaround to 
 # the one used in debian. i.e. override prefix
@@ -41,7 +42,11 @@ oe_runconf () {
 		oefatal "no configure script found"
 	fi
 }
+
+PACKAGES =+ "${PN}-common"
 FILES_${PN} += "${libdir}/${PN}"
+RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
+FILES_${PN}-common = "${libdir}/${PN}/jre/lib/*.jar"
 
 do_install () {
 	autotools_do_install
@@ -49,6 +54,7 @@ do_install () {
 	# move partially duplicate stuff to a single location
 	mv -f ${D}${libdir}/${PN}/bin/* ${D}${libdir}/${PN}/jre/bin
 	rmdir ${D}${libdir}/${PN}/bin
+	cd ${D}${libdir}/${PN} && ln -s jre/bin
 }
 
 # use update-alternatives for the various wrapper scripts

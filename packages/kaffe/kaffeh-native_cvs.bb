@@ -1,6 +1,8 @@
-include kaffe.inc
-
 PV = "1.1.4+cvs${CVSDATE}"
+SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
+S = "${WORKDIR}/kaffe"
+
+include kaffe.inc
 
 inherit native
 

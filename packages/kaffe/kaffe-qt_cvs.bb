@@ -1,6 +1,11 @@
-include kaffe.inc
+BROKEN = "1"
 
 PV = "1.1.4+cvs${CVSDATE}"
+SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
+S = "${WORKDIR}/kaffe"
+
+include kaffe.inc
+
 DEPENDS += "libqpe-opie"
 
 CXXFLAGS += " -DQPE "
