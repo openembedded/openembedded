@@ -4,7 +4,7 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://www.gzip.org/zlib/"
 LICENSE = "zlib"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz \
 	   file://visibility.patch;patch=1"

@@ -25,7 +25,7 @@ do_compile () {
 do_stage () {
 	oe_libinstall -C lib liblua ${STAGING_LIBDIR}/
 	oe_libinstall -C lib liblualib ${STAGING_LIBDIR}/
-	install -m 0644 include/lua.h include/lualib.h ${STAGING_INCDIR}/
+	install -m 0644 include/lua.h include/lualib.h include/lauxlib.h ${STAGING_INCDIR}/
 }
 
 do_install () {

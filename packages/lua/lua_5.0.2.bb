@@ -1,6 +1,7 @@
 include lua.inc
 
-PR = "r1"
+DEPENDS += "readline"
+PR = "r3"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
 	   file://make.patch;patch=1 \
@@ -10,3 +11,4 @@ S = "${WORKDIR}/lua-${PV}"
 FILESPATH = "${FILE_DIRNAME}/lua-${PV}:${FILE_DIRNAME}/lua:${FILE_DIRNAME}/files"
 
 include lua-build.inc
+inherit binconfig

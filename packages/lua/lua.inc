@@ -3,7 +3,6 @@ for extending applications."
 LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS += "readline"
 
 PACKAGES = "${PN} liblua ${PN}-doc liblua-dev \
 	    liblualib liblualib-dev"
@@ -14,7 +13,7 @@ FILES_liblua-dev = "${libdir}/liblua.so ${libdir}/liblua.a \
 		    ${includedir}/lua.h"
 FILES_liblualib = "${libdir}/liblualib.so.*"
 FILES_liblualib-dev = "${libdir}/liblualib.so ${libdir}/liblualib.a \
-		       ${includedir}/lualib.h"
+		       ${includedir}/lualib.h ${includedir}/lauxlib.h"
 SECTION_${PN} = "interpreters"
 SECTION_${PN}-doc = "doc"
 SECTION_liblua = "libs"
