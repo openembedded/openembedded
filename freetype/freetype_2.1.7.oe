@@ -9,7 +9,8 @@ SRC_URI = ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
 
 inherit autotools libtool pkgconfig
 
-EXTRA_OEMAKE="'LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool'"
+LIBTOOL=${S}/builds/unix/${HOST_SYS}-libtool
+EXTRA_OEMAKE="'LIBTOOL=${LIBTOOL}'"
 
 do_configure () {
 	cd builds/unix
@@ -26,7 +27,8 @@ do_stage () {
 
 	install -m 0644 objs/.libs/libfreetype.lai ${STAGING_LIBDIR}/libfreetype.la
 	cp -a include/*.h ${STAGING_INCDIR}
-	cp -a include/freetype ${STAGING_INCDIR}
+	install -d ${STAGING_INCDIR}/freetype2
+	cp -a include/freetype ${STAGING_INCDIR}/freetype2/
 
 	sed -e 's,/usr,${STAGING_DIR}/target,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
 	chmod u+x ${STAGING_BINDIR}/freetype-config

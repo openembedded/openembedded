@@ -1,0 +1,41 @@
+DESCRIPTION = A library for configuring and customizing font access.
+DEPENDS = virtual/libc expat freetype freetype-native
+RDEPENDS = libc6 expat freetype
+
+FC_SONAME = 1.0.4
+
+SRC_URI = http://pdx.freedesktop.org/~fontconfig/release/fontconfig-2.2.92.tar.gz \
+	file://${FILESDIR}/freetype-includes.patch;patch=1;pnum=0 \
+	file://${FILESDIR}/makefile1.patch;patch=1 \
+	file://${FILESDIR}/makefile2.patch;patch=1 
+
+S = "${WORKDIR}/fontconfig-2.2.92"
+
+inherit autotools libtool pkgconfig
+
+EXTRA_OECONF=" --disable-docs "
+
+do_compile () {
+# XXX 2.2.92 dist missing some files !
+	   touch fc-list/fc-list.1
+	   touch fc-cache/fc-cache.1
+	   oe_runmake -C fc-lang      'CC=${BUILD_CC}' \
+	   	'CFLAGS=${BUILD_CFLAGS}' 'LDFLAGS=${BUILD_LDFLAGS}' \
+	   	'CPPFLAGS=${BUILD_CPPFLAGS}' 'CXXFLAGS=${BUILD_CXXFLAGS}' \
+		'FREETYPE_CFLAGS=-I${STAGING_INCDIR}/freetype2' 'FREETYPE_LIBS=-lfreetype -lz'
+	   oe_runmake -C fc-glyphname 'CC=${BUILD_CC}' \
+	   	'CFLAGS=${BUILD_CFLAGS}' 'LDFLAGS=${BUILD_LDFLAGS}' \
+	   	'CPPFLAGS=${BUILD_CPPFLAGS}' 'CXXFLAGS=${BUILD_CXXFLAGS}'
+		'FREETYPE_CFLAGS=-I${STAGING_INCDIR}/freetype2' 'FREETYPE_LIBS=-lfreetype -lz'
+	   oe_runmake
+}
+
+
+do_stage () {
+	install -m 755 -D src/.libs/libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so.${FC_SONAME}
+	ln -sf ./libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so.6
+	ln -sf ./libfontconfig.so.${FC_SONAME} ${STAGING_LIBDIR}/libfontconfig.so
+	install -d ${STAGING_INCDIR}/fontconfig
+	cp -a fontconfig/*.h ${STAGING_INCDIR}/fontconfig/
+}
+
