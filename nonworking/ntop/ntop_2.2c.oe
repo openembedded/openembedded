@@ -1,0 +1,5 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz
+S = ${WORKDIR}/ntop
