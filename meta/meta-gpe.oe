@@ -84,3 +84,12 @@ gpe-task-apps = "\
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"
+
+gpe-task-games = "\
+    gpe-tetris \
+    gpe-othello \
+    gweled"
+
+RDEPENDS_gpe-task-games := "${gpe-task-games}"
+DEPENDS += "${gpe-task-games}"
+
