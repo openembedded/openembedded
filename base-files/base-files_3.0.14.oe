@@ -1,7 +1,7 @@
-xDESCRIPTION = "Base system miscellaneous files."
+DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
@@ -121,6 +121,15 @@ do_install () {
         ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
         ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
     fi
+
+    #
+    # populate some common mountpoints
+    #
+    install -m 0755 -d                              ${D}/mnt
+    install -m 0755 -d                              ${D}/mnt/card
+    install -m 0755 -d                              ${D}/mnt/cf
+    install -m 0755 -d                              ${D}/mnt/net
+    install -m 0755 -d                              ${D}/mnt/ram
 }
 
 PACKAGES = "${PN}-doc ${PN}"
