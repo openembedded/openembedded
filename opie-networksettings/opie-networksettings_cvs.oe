@@ -3,7 +3,7 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PV = "1.1.4-${CVSDATE}"
+PV = "1.1.5-${CVSDATE}"
 
 APPNAME = "networksettings"
 
