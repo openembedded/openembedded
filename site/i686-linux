@@ -190,3 +190,9 @@ ac_cv_have_broken_snprintf=${ac_cv_have_broken_snprintf=no}
 ac_cv_have_accrights_in_msghdr=${ac_cv_have_accrights_in_msghdr=no}
 ac_cv_have_control_in_msghdr=${ac_cv_have_control_in_msghdr=yes}
 ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug=yes}
+
+# libxfce4util
+with_broken_putenv=${with_broken_putenv=no}
+
+# xffm
+jm_cv_func_working_readdir=yes
