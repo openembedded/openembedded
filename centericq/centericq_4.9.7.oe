@@ -1,0 +1,10 @@
+DEPENDS = virtual/libc openssl ncurses
+RDEPENDS = libc6 openssl ncurses
+
+SRC_URI = http://thekonst.net/download/centericq-4.9.7.tar.bz2 \
+	  file://${FILESDIR}/configure.patch;patch=1 \
+	  file://${FILESDIR}/m4.patch;patch=1
+
+inherit autotools
+
+EXTRA_OECONF = '--with-ssl --with-openssl=${STAGING_DIR}/target'

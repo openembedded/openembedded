@@ -1,0 +1,45 @@
+SRC_URI = http://www.openssl.org/source/${P}.tar.gz \
+	  file://${FILESDIR}/debian.patch;patch=1
+S = ${WORKDIR}/${PN}-${PV}
+
+DEPENDS = virtual/libc
+SECTION = libs
+DESCRIPTION = Secure Socket Layer (SSL) binary and related cryptographic tools.
+
+AR_append = " r"
+export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -Wall ${FULL_OPTIMIZATION}"
+export DIRS = "crypto ssl"
+export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
+
+do_compile () {
+	perl util/perlpath.pl /usr/bin
+	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
+	if test "X${TARGET_OS}" = "Xlinux"; then
+		target=${TARGET_OS}-elf
+	else
+		target=${TARGET_OS}
+	fi
+	if ! test "X${BUILD_SYS}" = "X${TARGET_SYS}" -o \
+		"X${TARGET_ARCH}" = "Xi386" -o \
+		"X${TARGET_ARCH}" = "Xi686" -o \
+		"X${TARGET_ARCH}" = "Xi586" -o \
+		"X${TARGET_ARCH}" = "Xi486"; then
+		target="$target-${TARGET_ARCH}"
+	fi
+	perl ./Configure shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
+	oe_runmake -f Makefile.ssl
+	perl ./Configure no-shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
+	oe_runmake -f Makefile.ssl
+}
+
+do_stage () {
+	cp --dereference -R include/openssl ${STAGING_DIR}/target/include/
+	install -m 0755 libcrypto.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libcrypto.so.0.9.7 ${STAGING_LIBDIR}/libcrypto.so
+	install -m 0755 libssl.so.0.9.7 ${STAGING_LIBDIR}/
+	ln -sf libssl.so.0.9.7 ${STAGING_LIBDIR}/libssl.so
+}
+
+do_install () {
+	oe_runmake -f Makefile.ssl INSTALL_PREFIX="${D}" install
+}

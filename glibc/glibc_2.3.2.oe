@@ -77,7 +77,21 @@ glibcbuild_do_unpack () {
 	if [ -e "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" ]; then 
 		cp -a "${FILESDIR}/asm-${TARGET_ARCH}-unistd.h" "${WORKDIR}/linux/include/asm-${TARGET_ARCH}/unistd.h"
 	fi
-	ln -sf "asm-${TARGET_ARCH}" "${WORKDIR}/linux/include/asm"
+	case "${TARGET_ARCH}" in
+	i686)
+		TARGET_ARCH=i386
+		;;
+	i586)
+		TARGET_ARCH=i386
+		;;
+	i486)
+		TARGET_ARCH=i386
+		;;
+	esac
+	if test !  -e ${WORKDIR}/linux/include/asm-$TARGET_ARCH; then
+		oefatal unable to create asm symlink in kernel headers
+	fi
+	ln -sf "asm-$TARGET_ARCH" "${WORKDIR}/linux/include/asm"
 }
 
 python do_unpack () {
@@ -119,12 +133,19 @@ do_stage() {
 	mv '${STAGING_LIBDIR}/libpthread.so' '${STAGING_LIBDIR}/libpthread-old.so'
 	cat '${STAGING_LIBDIR}/libpthread-old.so' | sed -e's,/lib/,,g' > '${STAGING_LIBDIR}/libpthread.so'
 	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
-	cp -a '${WORKDIR}/linux/include/asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/'
+	install -d ${STAGING_DIR}/target/include/gnu \
+		   ${STAGING_DIR}/target/include/bits
+	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_DIR}/target/include/gnu/
+	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_DIR}/target/include/bits/
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_DIR}/target/include/rpcsvc/
 	done
-	ln -sf 'asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/asm'
+	cp -a '${WORKDIR}/linux/include/asm' '${STAGING_DIR}/target/include/'
+	cp -a "${WORKDIR}/linux/include/`readlink ${WORKDIR}/linux/include/asm`" '${STAGING_DIR}/target/include/'
+	install -m 0644 ${B}/libc_nonshared.a ${STAGING_LIBDIR}/
+	install -m 0644 ${B}/libc_pic.a ${STAGING_LIBDIR}/
+	install -m 0644 ${B}/libc.a ${STAGING_LIBDIR}/
 }
 
 do_install() {

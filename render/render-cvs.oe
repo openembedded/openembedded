@@ -1,0 +1,19 @@
+SECTION="libs"
+PRIORITY="optional"
+MAINTAINER="Greg Gilbert <greg@treke.net>"
+RDEPENDS="libc6"
+DEPENDS=virtual/libc 
+
+SRC_URI =   cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Render
+S=${WORKDIR}/Render
+
+inherit autotools pkgconfig
+
+do_stage() {
+	oe_runmake install DESTDIR=${STAGING_DIR} \
+	       bindir=/build/bin \
+	       includedir=/target/include \
+	       libdir=/target/lib \
+	       datadir=/share
+	       prefix=
+}

@@ -61,6 +61,10 @@ python do_patch () {
 	oe.build.exec_func('binutilsbuild_do_patch', d)
 }
 
+do_configure () {
+	oe_runconf
+}
+
 do_install () {
 	autotools_do_install
 	cd ${D}/${bindir}

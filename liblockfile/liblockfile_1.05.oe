@@ -2,8 +2,9 @@ DEPENDS = virtual/libc
 RDEPENDS = libc6
 
 SRC_URI = ${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
-	  file:/${FILESDIR}/install.patch;patch=1 \
-	  file:/${FILESDIR}/configure.patch;patch=1
+	  file://${FILESDIR}/install.patch;patch=1 \
+	  file://${FILESDIR}/configure.patch;patch=1 \
+	  file://${FILESDIR}/ldflags.patch;patch=1
 
 inherit autotools
 

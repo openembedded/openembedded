@@ -23,6 +23,5 @@ do_stage () {
 	do
 		install -m 0644 include/${X} ${STAGING_DIR}/target/include/bluetooth/${X}
 	done
-
+	install -m 0644 src/.libs/libbluetooth.lai ${STAGING_LIBDIR}/libbluetooth.la
 }
-
