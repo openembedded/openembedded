@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r11"
+PR = "r12"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -33,20 +33,20 @@ B = "${S}/src"
 inherit update-alternatives
 
 ALTERNATIVE_NAME = "init"
-ALTERNATIVE_LINK = "/sbin/init"
-ALTERNATIVE_PATH = "/sbin/init.sysvinit"
+ALTERNATIVE_LINK = "${base_sbindir}/init"
+ALTERNATIVE_PATH = "${base_sbindir}/init.sysvinit"
 ALTERNATIVE_PRIORITY = "50"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
-FILES_${PN} += "${base_sbindir} /bin"
-FILES_sysvinit-pidof = "/bin/pidof"
-FILES_sysvinit-sulogin = "/sbin/sulogin"
+FILES_${PN} += "${base_sbindir} ${base_bindir}"
+FILES_sysvinit-pidof = "${base_bindir}/pidof"
+FILES_sysvinit-sulogin = "${base_sbindir}/sulogin"
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"
 EXTRA_OEMAKE += "'INSTALL=install' \
-		 'bindir=/bin' \
-		 'sbindir=/sbin' \
+		 'bindir=${base_bindir}' \
+		 'sbindir=${base_sbindir}' \
 		 'usrbindir=${bindir}' \
 		 'usrsbindir=${sbindir}' \
 		 'includedir=${includedir}' \

@@ -50,7 +50,7 @@ do_configure () {
 
 do_install_append() {
 	# follow debian and move this to $includedir
-	mv ${D}${libdir}/gcc/arm-linux/3.4.1/include/libffi/ffitarget.h ${D}${includedir}/
+	mv ${D}${libdir}/gcc/${TARGET_SYS}/${GCC_VER}/include/libffi/ffitarget.h ${D}${includedir}/
 }
 
 ffi_include = "ffi.h ffitarget.h"

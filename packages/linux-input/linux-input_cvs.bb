@@ -1,5 +1,5 @@
 SECTION = "unknown"
-PR = "r1"
+PR = "r2"
 PV = "0.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@cvs1.sourceforge.net/cvsroot/linuxconsole;module=ruby \
@@ -7,7 +7,6 @@ SRC_URI = "cvs://anonymous@cvs1.sourceforge.net/cvsroot/linuxconsole;module=ruby
 	file://makefile.patch;patch=1;pnum=0 \
 	file://snes232.patch;patch=1;pnum=0"
 LICENSE = "GPL"
-inherit module-base
 
 S = "${WORKDIR}/ruby/utils"
 
