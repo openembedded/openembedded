@@ -1,0 +1,10 @@
+--- mozilla/toolkit/mozapps/extensions/src/nsExtensionManager.js.in.old	2004-08-03 11:45:51.000000000 +0100
++++ mozilla/toolkit/mozapps/extensions/src/nsExtensionManager.js.in	2004-08-03 11:46:04.000000000 +0100
+@@ -1429,6 +1429,7 @@
+       win.close();
+       
+     }
++    needsRestart = false;
+     return needsRestart;
+   },
+ 

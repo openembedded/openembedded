@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- pyvorbis-1.3/setup.py~disable-oggcheck	2003-08-15 10:42:02.000000000 +0200
++++ pyvorbis-1.3/setup.py	2004-01-21 16:32:56.000000000 +0100
+@@ -16,7 +16,7 @@
+     print '''You must have the Ogg Python bindings
+ installed in order to build and install
+ these bindings. Import of ogg._ogg failed.'''
+-    sys.exit(1)
++    #sys.exit(1)
+ 
+ def get_setup():
+     data = {}

@@ -1,0 +1,62 @@
+--- bash/doc/bash.1~	2003-11-11 00:09:34.000000000 +0100
++++ bash/doc/bash.1	2004-01-21 07:33:45.000000000 +0100
+@@ -169,7 +169,9 @@
+ .PD
+ Execute commands from
+ .I file
+-instead of the standard personal initialization file
++instead of the system wide initialization file
++.I /etc/bash.bashrc
++and the standard personal initialization file
+ .I ~/.bashrc
+ if the shell is interactive (see
+ .SM
+@@ -200,7 +202,9 @@
+ below).
+ .TP
+ .B \-\-norc
+-Do not read and execute the personal initialization file
++Do not read and execute the system wide initialization file
++.I /etc/bash.bashrc
++and the personal initialization file
+ .I ~/.bashrc
+ if the shell is interactive.
+ This option is on by default if the shell is invoked as
+@@ -308,13 +312,15 @@
+ .PP
+ When an interactive shell that is not a login shell is started,
+ .B bash
+-reads and executes commands from \fI~/.bashrc\fP, if that file exists.
++reads and executes commands from \fI/etc/bash.bashrc\fP and \fI~/.bashrc\fP,
++if these files exist.
+ This may be inhibited by using the
+ .B \-\-norc
+ option.
+ The \fB\-\-rcfile\fP \fIfile\fP option will force
+ .B bash
+-to read and execute commands from \fIfile\fP instead of \fI~/.bashrc\fP.
++to read and execute commands from \fIfile\fP instead of
++\fI/etc/bash.bashrc\fP and \fI~/.bashrc\fP.
+ .PP
+ When
+ .B bash
+@@ -399,7 +405,8 @@
+ If
+ .B bash
+ determines it is being run by \fIrshd\fP, it reads and executes
+-commands from \fI~/.bashrc\fP, if that file exists and is readable.
++commands from \fI/etc/bash.bashrc\fP and \fI~/.bashrc\fP,
++if these files exist and are readable.
+ It will not do this if invoked as \fBsh\fP.
+ The
+ .B \-\-norc
+@@ -8273,6 +8280,9 @@
+ .FN /etc/profile
+ The systemwide initialization file, executed for login shells
+ .TP
++.FN /etc/bash.bashrc
++The systemwide per-interactive-shell startup file
++.TP
+ .FN ~/.bash_profile
+ The personal initialization file, executed for login shells
+ .TP

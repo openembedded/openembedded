@@ -1,0 +1,11 @@
+--- Shopper/shoppingitem.h.orig	2004-03-07 12:02:51.087057272 +0000
++++ Shopper/shoppingitem.h	2004-03-07 12:03:09.285290720 +0000
+@@ -33,7 +33,7 @@
+ 
+ public:
+   ShoppingItemCheckBox (const QString & text, QWidget * parent,
+-			const char * name=0 );
++			const char * name );
+ signals:
+   void edit();
+ 

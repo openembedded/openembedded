@@ -1,0 +1,41 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- camE-1.7/webcam.c~compile
++++ camE-1.7/webcam.c
+@@ -39,6 +39,13 @@
+ 
+ #define VERSION "1.7"
+ 
++#ifndef TRUE
++# define TRUE 1
++#endif
++#ifndef FALSE
++# define FALSE 0
++#endif
++
+ void log(char *fmt,
+          ...);
+ 
+--- camE-1.7/Makefile~compile
++++ camE-1.7/Makefile
+@@ -5,6 +5,7 @@
+ exec_prefix=${prefix}
+ bindir=${exec_prefix}/bin
+ mandir=${prefix}/man
++docdir=${prefix}/doc/camE-1.7
+ 
+ CC=gcc
+ CFLAGS=-O2 -g -Wall
+@@ -34,6 +35,9 @@
+ install: all
+ 	$(INSTALL_DIR) $(DESTDIR)$(bindir)
+ 	$(INSTALL_PROGRAM) camE $(DESTDIR)$(bindir)
++	$(INSTALL_DIR) $(DESTDIR)$(docdir)
++	$(INSTALL_DATA) camE_text.style camE_title.style \
++			example.camErc.ssh example.camErc $(DESTDIR)$(docdir)
+ 
+ clean:
+ 	-rm -f $(OBJS) *.moc *~ core* *.bak TAGS camE

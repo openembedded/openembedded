@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- nano-1.3.0/src/Makefile.am~make
++++ nano-1.3.0/src/Makefile.am
+@@ -1,7 +1,7 @@
+ 
+ DEFS= -DSYSCONFDIR=\"$(sysconfdir)\"
+ localedir = $(datadir)/locale
+-INCLUDES = -Iintl -DLOCALEDIR=\"$(localedir)\" -I@includedir@
++INCLUDES = -Iintl -DLOCALEDIR=\"$(localedir)\"
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 

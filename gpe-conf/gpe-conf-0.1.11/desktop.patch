@@ -1,0 +1,12 @@
+--- gpe-conf-0.1.11/gpe-conf.desktop.in.old	2004-08-03 15:57:42.000000000 +0100
++++ gpe-conf-0.1.11/gpe-conf.desktop.in	2004-08-03 15:57:56.000000000 +0100
+@@ -4,7 +4,7 @@
+ Exec=gpe-appmgr -g Settings -D /usr/share/applications/gpe-conf.desktop
+ Terminal=0
+ Type=Application
+-Icon=gpe-conf.png
+-Categories=Application;SystemSettings;GPE
++Icon=gpe-config.png
++Categories=Application;GPE
+ StartupNotify=True
+ SingleInstance=True

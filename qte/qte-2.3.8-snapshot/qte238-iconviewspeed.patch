@@ -1,0 +1,145 @@
+Speed up patches backported from
+
+http://robotics.dei.unipd.it/~koral/KDE/kflicker.html
+
+and
+
+http://lists.kde.org/?l=kde-optimize&m=105382164111363&w=2 (complete thread)
+
+
+
+
+
+
+
+diff -ur qt-2.3.8-old/src/iconview/qiconview.cpp qt-2.3.8/src/iconview/qiconview.cpp
+--- qt-2.3.8-old/src/iconview/qiconview.cpp	2004-07-22 01:07:46.000000000 +0200
++++ qt-2.3.8/src/iconview/qiconview.cpp	2004-07-23 19:13:09.000000000 +0200
+@@ -224,6 +224,7 @@
+     QIconView::SelectionMode selectionMode;
+     QIconViewItem *currentItem, *tmpCurrentItem, *highlightedItem, *startDragItem, *pressedItem, *selectAnchor;
+     QRect *rubber;
++    QPixmap *backBuffer;
+     QTimer *scrollTimer, *adjustTimer, *updateTimer, *inputTimer,
+ 	*fullRedrawTimer;
+     int rastX, rastY, spacing;
+@@ -2267,6 +2268,7 @@
+     d->currentItem = 0;
+     d->highlightedItem = 0;
+     d->rubber = 0;
++    d->backBuffer = 0;
+     d->scrollTimer = 0;
+     d->startDragItem = 0;
+     d->tmpCurrentItem = 0;
+@@ -2415,6 +2417,8 @@
+ 	delete item;
+ 	item = tmp;
+     }
++    delete d->backBuffer;
++    d->backBuffer = 0;
+     delete d->fm;
+     d->fm = 0;
+ #ifndef QT_NO_TOOLTIP
+@@ -2881,6 +2885,48 @@
+ }
+ 
+ /*!
++    This function grabs all paintevents that otherwise would have been
++    processed by the QScrollView::viewportPaintEvent(). Here we use a
++    doublebuffer to reduce 'on-paint' flickering on QIconView
++    (and of course its childs).
++
++    \sa QScrollView::viewportPaintEvent(), QIconView::drawContents()
++*/
++
++void QIconView::bufferedPaintEvent( QPaintEvent* pe )
++{
++    QWidget* vp = viewport();
++    QRect r = pe->rect() & vp->rect();
++    int ex = r.x() + contentsX();
++    int ey = r.y() + contentsY();
++    int ew = r.width();
++    int eh = r.height();
++
++    if ( !d->backBuffer )
++	d->backBuffer = new QPixmap(vp->size());
++    if ( d->backBuffer->size() != vp->size() ) {
++	//Resize function (with hysteesis). Uses a good compromise between memory
++	//consumption and speed (number) of resizes.
++        float newWidth = (float)vp->width();
++	float newHeight = (float)vp->height();
++	if ( newWidth > d->backBuffer->width() || newHeight > d->backBuffer->height() )
++	{
++	    newWidth *= 1.1892;
++	    newHeight *= 1.1892;
++	    d->backBuffer->resize( (int)newWidth, (int)newHeight );
++	} else if ( 1.5*newWidth < d->backBuffer->width() || 1.5*newHeight < d->backBuffer->height() )
++	    d->backBuffer->resize( (int)newWidth, (int)newHeight );
++    }
++
++    QPainter p;
++    p.begin(d->backBuffer, vp);
++    drawContentsOffset(&p, contentsX(), contentsY(), ex, ey, ew, eh);
++    p.end();
++    bitBlt(vp, r.x(), r.y(), d->backBuffer, r.x(), r.y(), ew, eh);
++}
++
++/*!
++
+   \reimp
+ */
+ 
+@@ -4937,7 +4983,7 @@
+ 		if ( !d->rubber )
+ 		    drawDragShapes( d->oldDragPos );
+ 	    }
+-	    viewportPaintEvent( (QPaintEvent*)e );
++            bufferedPaintEvent ((QPaintEvent*)e );
+ 	    if ( d->dragging ) {
+ 		if ( !d->rubber )
+ 		    drawDragShapes( d->oldDragPos );
+@@ -5374,11 +5420,19 @@
+ 	return;
+ 
+     if ( item->d->container1 && d->firstContainer ) {
+-	item->d->container1->items.removeRef( item );
++       //Special-case checking of the last item, since this may be
++       //called a few times for the same item.
++        if (item->d->container1->items.last() == item)
++            item->d->container1->items.removeLast();
++        else
++            item->d->container1->items.removeRef( item );
+     }
+     item->d->container1 = 0;
+     if ( item->d->container2 && d->firstContainer ) {
+-	item->d->container2->items.removeRef( item );
++        if (item->d->container2->items.last() == item)
++            item->d->container2->items.removeLast();
++        else
++            item->d->container2->items.removeRef( item );
+     }
+     item->d->container2 = 0;
+ 
+diff -ur qt-2.3.8-old/src/iconview/qiconview.h qt-2.3.8/src/iconview/qiconview.h
+--- qt-2.3.8-old/src/iconview/qiconview.h	2004-07-22 01:07:46.000000000 +0200
++++ qt-2.3.8/src/iconview/qiconview.h	2004-07-23 19:13:09.000000000 +0200
+@@ -444,6 +444,7 @@
+     virtual void contentsDropEvent( QDropEvent *e );
+ #endif
+ 
++    void bufferedPaintEvent( QPaintEvent* );
+     virtual void resizeEvent( QResizeEvent* e );
+     virtual void keyPressEvent( QKeyEvent *e );
+     virtual void focusInEvent( QFocusEvent *e );
+--- qt-2.3.8-old/src/widgets/qscrollview.cpp	2004-07-22 01:07:44.000000000 +0200
++++ qt-2.3.8/src/widgets/qscrollview.cpp	2004-07-23 19:21:06.000000000 +0200
+@@ -1280,6 +1280,9 @@
+ 	case QEvent::LayoutHint:
+ 	    d->autoResizeHint(this);
+ 	    break;
++	case QEvent::WindowActivate:
++	case QEvent::WindowDeactivate:
++	    return TRUE;
+ 	default:
+ 	    break;
+ 	}

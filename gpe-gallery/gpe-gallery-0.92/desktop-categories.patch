@@ -1,0 +1,9 @@
+--- gpe-gallery-0.91/gpe-gallery.desktop.old	2004-08-03 17:45:01.000000000 +0100
++++ gpe-gallery-0.91/gpe-gallery.desktop	2004-08-03 17:45:08.000000000 +0100
+@@ -5,5 +5,5 @@
+ Terminal=0
+ Type=Application
+ Icon=gpe-gallery.png
+-Categories=Application;Utility;GPE
++Categories=Application;Utility;GPE;Office;
+ StartupNotify=True

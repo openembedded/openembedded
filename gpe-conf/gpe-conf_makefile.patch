@@ -1,0 +1,118 @@
+diff -urN gpe-conf-0.1.7.orig/Makefile gpe-conf-0.1.7/Makefile
+--- gpe-conf-0.1.7.orig/Makefile	2004-03-19 20:38:33.000000000 +1100
++++ gpe-conf-0.1.7/Makefile	2004-04-30 12:39:59.000000000 +1000
+@@ -25,27 +25,28 @@
+ 	gpe-conf-users.desktop.in \
+ 	gpe-conf-sysinfo.desktop.in	
+ 
++PACKAGE_CFLAGS = `pkg-config --cflags gtk+-2.0 gdk-2.0 gdk-pixbuf-2.0 libgpewidget x11 xrandr xext xft xau xrandr`
++PACKAGE_LDFLAGS = `pkg-config --libs gtk+-2.0 gdk-2.0 gdk-pixbuf-2.0 libgpewidget x11 xrandr xext xft xau xrandr`
++PACKAGE_LDFLAGS += -lexpat
++
+ ifeq ($(CVSBUILD),yes)
+-LIBS += -L../libgpewidget -L../libxsettings  -L../libxsettings-client -L../libdotdesktop  -L.
+-CFLAGS += -Wall -I../libgpewidget -I../libxsettings-client -I../libxsettings -I../libdotdesktop
++PACKAGE_LDFLAGS += -L../libxsettings  -L../libxsettings-client -L../libdotdesktop  -L.
++PACKAGE_CFLAGS += -Wall -I../libxsettings-client -I../libxsettings -I../libdotdesktop
+ BUILD = ../build
+ else
+-CFLAGS += -I/usr/local/include/gpe -Wall
++PACKAGE_CFLAGS += -I/usr/local/include/gpe -Wall
+ BUILD = build
+ endif
+ 
+ ifeq ($(DEBUG),yes)
+-CFLAGS += -g -DDEBUG
++PACKAGE_CFLAGS += -g -DDEBUG
+ else
+-CFLAGS += -Os -fomit-frame-pointer
++PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+ 
+-LIBS += -lXsettings -lXsettings-client -lcrypt
+-CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
+-CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+-
+-GTKCFLAGS = `pkg-config --cflags gtk+-2.0` 
+-GTKLDFLAGS += `pkg-config --libs gtk+-2.0 gdk-2.0` 
++PACKAGE_LDFLAGS += -lXsettings -lXsettings-client -lcrypt
++PACKAGE_CPPFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
++PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ # setup how to compile
+ ifeq ($(NATIVE),yes)
+@@ -53,21 +54,19 @@
+ STRIP=strip
+ CC=gcc
+ 
+-CFLAGS += `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0` -Wall
+-LIBS += -lgpewidget `pkg-config --libs gtk+-2.0 gdk-pixbuf-2.0` -ldotdesktop 
+-
+ else # we do cross-compile...
+ 
+ CC=arm-linux-gcc
+ STRIP=arm-linux-strip
+ 
+-CFLAGS += -march=armv4 -mtune=strongarm
+-CFLAGS += `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0` -Wall 
+-LIBS += -L/skiff/local/arm-linux/lib -L/skiff/local/arm-linux/lib/X11  
+-LIBS += -lgpewidget -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoxft-1.0 
+-LIBS += -lpangox-1.0 -lpango-1.0 -lgdk_pixbuf-2.0 -lm -lgobject-2.0 
+-LIBS += -lgmodule-2.0 -ldl -lglib-2.0 -ldotdesktop -lXinerama
+-LIBS += -lX11 -lXext -lXrender -lgdk-x11-2.0
++# PACKAGE_CFLAGS += -march=armv4 -mtune=strongarm
++PACKAGE_CFLAGS += `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0` -Wall 
++
++PACKAGE_LDFLAGS += -lgpewidget -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0
++PACKAGE_LDFLAGS += -lpangoxft-1.0 -lpangox-1.0 -lpango-1.0 -lgdk_pixbuf-2.0
++PACKAGE_LDFLAGS += -lm -lgobject-2.0  -lgmodule-2.0 -ldl -lglib-2.0
++PACKAGE_LDFLAGS += -ldotdesktop -lXinerama  -lX11 -lXext -lXrender
++PACKAGE_LDFLAGS += -lgdk-x11-2.0
+ 
+ endif #native or cross-compile
+ 
+@@ -77,21 +76,17 @@
+ MEMBERS += misc
+ MEMBERS += unimplemented
+ MEMBERS += timeanddate
+-MEMBERS += appmgr_setup ../gpe-appmgr/package 
+-MEMBERS += ipaqscreen/main ipaqscreen/brightness  ipaqscreen/rotation ipaqscreen/calibrate ipaqscreen/callbacks ipaqscreen/xset 
+ MEMBERS += kbd
+ MEMBERS += network
+ MEMBERS += theme
+ MEMBERS += keyctl
+ MEMBERS += ownerinfo
+ MEMBERS += login-setup
+-MEMBERS += sleep/main sleep/interface sleep/callbacks sleep/conf sleep/confGUI 
+ MEMBERS += users/interface users/callbacks  
+ MEMBERS += cfgfile
+ MEMBERS += gpe-admin
+ MEMBERS += widgets/sp-color-slider
+ MEMBERS += serial
+-MEMBERS += cardinfo
+ MEMBERS += tools/interface
+ MEMBERS += tasks
+ 
+@@ -99,7 +94,6 @@
+ MEMBERS_INFO += storage
+ MEMBERS_INFO += logread
+ MEMBERS_INFO += tools/interface
+-MEMBERS_INFO += battery
+ MEMBERS_INFO += sysinfo
+ MEMBERS_INFO += parser
+ 
+@@ -167,12 +161,12 @@
+ all: $(PACKAGE) gpe-info
+ 
+ $(PACKAGE): $(OBJS)
+-	$(CC) -g -o $@ $(OBJS) $(LIBS)
++	$(CC) -g -o $@ $(OBJS) ${PACKAGE_LDFLAGS} $(LIBS)
+ 	cp $(PACKAGE) gpe-conf.pc
+ 	$(STRIP) $(PACKAGE)
+ 
+ gpe-info: $(OBJS_INFO)
+-	$(CC) -g -o $@ $(OBJS_INFO) $(LIBS)
++	$(CC) -g -o $@ $(OBJS_INFO) ${PACKAGE_LDFLAGS} $(LIBS)
+ 	$(STRIP) gpe-info
+ 	
+ install-program: all all-desktop

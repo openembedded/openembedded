@@ -1,0 +1,3 @@
+dest root /
+dest cf /mnt/cf/
+dest ram /mnt/ram/

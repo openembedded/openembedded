@@ -1,0 +1,14 @@
+diff -uprN gpe-dm-0.38-r0/gpe-dm-0.38/Xserver gpe-dm-0.37-r0/gpe-dm-0.37/Xserver
+--- gpe-dm-0.38/Xserver	2004-07-06 11:34:01.000000000 +0100
++++ gpe-dm-0.37/Xserver	2004-07-05 23:27:01.000000000 +0100
+@@ -39,10 +39,6 @@ case `module_id` in
+ 		ARGS="$ARGS -screen 320x240@270 -rgba vrgb" ;;
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		ARGS="$ARGS -rgba rgb"
+-		chkhinge -e
+-		if [ $? = 10 ]; then
+-			ARGS="$ARGS -screen 480x640@270"
+-		fi
+ 		export TSLIB_TSDEVICE="/dev/sharp_ts" ;;
+ 	"Simpad")
+ 		ARGS="$ARGS -rgba rgb" ;;

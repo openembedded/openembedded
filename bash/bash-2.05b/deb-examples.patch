@@ -1,0 +1,9 @@
+--- ./examples/loadables/README.orig	Thu May  7 20:31:34 1998
++++ ./examples/loadables/README	Thu Nov 11 20:32:57 1999
+@@ -31,3 +31,6 @@
+ the canonical example.  There is no real `builtin writers' programming
+ guide'.  The file template.c provides a template to use for creating
+ new loadable builtins.
++
++On Debian GNU/Linux systems, the bash headers are in /usr/include/bash.
++The appropriate options are already set in the example Makefile.

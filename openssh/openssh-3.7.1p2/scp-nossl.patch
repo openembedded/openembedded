@@ -1,0 +1,24 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- openssh-3.6.1p2/Makefile.in~scp-nossl
++++ openssh-3.6.1p2/Makefile.in
+@@ -43,6 +43,7 @@
+ CFLAGS=@CFLAGS@
+ CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(PATHS) @DEFS@
+ LIBS=@LIBS@
++SCP_LIBS=
+ LIBPAM=@LIBPAM@
+ LIBWRAP=@LIBWRAP@
+ AR=@AR@
+@@ -134,7 +135,7 @@
+ 	$(LD) -o $@ $(SSHDOBJS) $(LDFLAGS) -lssh -lopenbsd-compat $(LIBWRAP) $(LIBPAM) $(LIBS)
+ 
+ scp$(EXEEXT): $(LIBCOMPAT) libssh.a scp.o progressmeter.o
+-	$(LD) -o $@ scp.o progressmeter.o $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
++	$(LD) -o $@ scp.o progressmeter.o $(LDFLAGS) -lssh -lopenbsd-compat $(SCP_LIBS)
+ 
+ ssh-add$(EXEEXT): $(LIBCOMPAT) libssh.a ssh-add.o
+ 	$(LD) -o $@ ssh-add.o $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS) 

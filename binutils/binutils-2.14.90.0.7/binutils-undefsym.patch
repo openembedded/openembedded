@@ -1,0 +1,49 @@
+  gas/ChangeLog
+  2004-07-01  Nick Clifton  <nickc@redhat.com>
+
+        * config/tc-arm.c (md_apply_fix3:BFD_RELOC_ARM_IMMEDIATE): Do not
+        allow values which have come from undefined symbols.
+        Always consider this fixup to have been processed as a reloc
+        cannot be generated for it.
+
+
+Index: gas/config/tc-arm.c
+===================================================================
+RCS file: /work/repositories/sourceware/src/gas/config/tc-arm.c,v
+retrieving revision 1.140.2.1
+diff -c -3 -p -r1.140.2.1 tc-arm.c
+*** gas/config/tc-arm.c	13 Jun 2003 16:34:31 -0000	1.140.2.1
+--- gas/config/tc-arm.c	1 Jul 2004 17:22:43 -0000
+*************** md_apply_fix3 (fixP, valP, seg)
+*** 10693,10698 ****
+--- 10693,10712 ----
+    switch (fixP->fx_r_type)
+      {
+      case BFD_RELOC_ARM_IMMEDIATE:
++       /* We claim that this fixup has been processed here,
++ 	 even if in fact we generate an error because we do
++ 	 not have a reloc for it, so tc_gen_reloc will reject it.  */
++       fixP->fx_done = 1;
++ 
++       if (fixP->fx_addsy
++ 	  && ! S_IS_DEFINED (fixP->fx_addsy))
++ 	{
++ 	  as_bad_where (fixP->fx_file, fixP->fx_line,
++ 			_("undefined symbol %s used as an immediate value"),
++ 			S_GET_NAME (fixP->fx_addsy));
++ 	  break;
++ 	}
++ 
+        newimm = validate_immediate (value);
+        temp = md_chars_to_number (buf, INSN_SIZE);
+  
+*************** md_apply_fix3 (fixP, valP, seg)
+*** 10709,10715 ****
+  
+        newimm |= (temp & 0xfffff000);
+        md_number_to_chars (buf, (valueT) newimm, INSN_SIZE);
+-       fixP->fx_done = 1;
+        break;
+  
+      case BFD_RELOC_ARM_ADRL_IMMEDIATE:
+--- 10723,10728 ----

@@ -1,0 +1,36 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libtool-1.4.3/ltmain.sh~libdir
++++ libtool-1.4.3/ltmain.sh
+@@ -2030,16 +2030,18 @@
+ 		esac
+ 		if grep "^installed=no" $deplib > /dev/null; then
+ 		  path="-L$absdir/$objdir"
+-		else
+-		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
+-		  if test -z "$libdir"; then
+-		    $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
+-		    exit 1
+-		  fi
+-		  if test "$absdir" != "$libdir"; then
+-		    $echo "$modename: warning: \`$deplib' seems to be moved" 1>&2
+-		  fi
+-		  path="-L$absdir"
++### Disabling this block to prevent picking up the libdir from .la files,
++### since it breaks crosscompilation badly.
++#		else
++#		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
++#		  if test -z "$libdir"; then
++#		    $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
++#		    exit 1
++#		  fi
++#		  if test "$absdir" != "$libdir"; then
++#		    $echo "$modename: warning: \`$deplib' seems to be moved" 1>&2
++#		  fi
++#		  path="-L$absdir"
+ 		fi
+ 		;;
+ 	      *) continue ;;

@@ -1,0 +1,58 @@
+--- libdotdesktop-0.11.orig/Makefile	2004-01-13 09:21:54.000000000 +1100
++++ libdotdesktop-0.11/Makefile	2004-04-28 15:36:02.000000000 +1000
+@@ -4,7 +4,7 @@
+ VERSION = 0.11
+ CC=gcc
+ STRIP=strip
+-BUILD = ../build
++BUILD = build
+ 
+ LINGUAS = 
+ 
+@@ -22,7 +22,8 @@
+ endif
+ CFLAGS += -MD
+ 
+-CPPFLAGS += -I./gpe `pkg-config --cflags glib-2.0`
++PACKAGE_CFLAGS = `pkg-config --cflags glib-2.0`
++PACKAGE_LDFLAGS = `pkg-config --libs glib-2.0`
+ 
+ HEADERS = dotdesktop.h
+ 
+@@ -36,13 +37,13 @@
+ 	ln -sf $^ $@
+ 
+ $(SONAME): $(OBJS)
+-	$(CC) -nostartfiles -shared -o $@ $^ -Wl,-soname -Wl,$(SONAME) $(LDFLAGS)
++	$(CC) -nostartfiles -shared -o $@ $^ -Wl,-soname -Wl,$(SONAME) $(PACKAGE_LDFLAGS) $(LDFLAGS)
+ 
+ libdotdesktop.a: $(OBJS)
+ 	ar cq $@ $^
+ 
+-.c.s:;
+-	$(CC) $(CFLAGS) -S $<
++.c.o:;
++	$(CC) $(PACKAGE_CFLAGS) $(MY_CFLAGS) $(CFLAGS) -c $< -o $@
+ 
+ upstream: clean
+ 	( VERSION=`dpkg-parsechangelog | grep ^Version | cut -d\  -f2 | cut -d- -f1`; cd ..; cp -a libdotdesktop libdotdesktop-$$VERSION.orig; tar czf libdotdesktop_$$VERSION.orig.tar.gz --exclude=libdotdesktop-$$VERSION.orig/debian --exclude=libdotdekstop-$$VERSION.orig/CVS --exclude=libdotdesktop-$$VERSION.orig/familiar libdotdesktop-$$VERSION.orig ; rm -rf libdotdesktop-$$VERSION.orig )
+@@ -55,18 +56,9 @@
+ 	$(STRIP) $(DESTDIR)$(PREFIX)/lib/$(SONAME)
+ 
+ install-devel:
+-	for i in $(HEADERS); do install -m 644 -D $$i $(DESTDIR)$(PREFIX)/include/gpe/$$i; done
++	install -m 644 -D dotdesktop.h $(DESTDIR)$(PREFIX)/include/gpe/dotdesktop.h
+ 	ln -s $(SONAME) $(DESTDIR)$(PREFIX)/lib/libdotdesktop.so
+ 
+-#ipkg: clean
+-#	rm -rf familiar/dist
+-#	mkdir -p familiar/dist/CONTROL
+-#	cp familiar/$(CONTROL) familiar/dist/CONTROL/control
+-#	cp familiar/postinst familiar/dist/CONTROL
+-#	make DESTDIR=`pwd`/familiar/dist PREFIX=/usr DEBUG=no install
+-#	chown -R root.root familiar/dist
+-#	ipkg-build familiar/dist
+-
+ clean:
+ 	rm -f $(OBJS) $(SONAME) libdotdesktop.so $(DEPS)
+ 

@@ -1,0 +1,60 @@
+--- tmp/base/libnids-1.18-r0/libnids-1.18/configure.in	Tue Oct 14 18:40:00 2003
++++ libnids-1.18/configure.in	Wed Nov  5 16:01:27 2003
+@@ -65,12 +65,15 @@
+      ;;
+   *)
+      AC_MSG_RESULT($withval)
+-     if test -f $withval/pcap.h -a -f $withval/libpcap.a; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-	PCAP_CFLAGS="-I$withval -I$withval/bpf"
+-	PCAPLIB="-L$withval -lpcap"
+-     else
++     for i in $withval $withval/include $withval/lib $withval/include/pcap; do
++        if test -f $i/pcap.h; then
++           PCAP_CFLAGS="-I$i -I$i/bpf"
++        fi
++        if test -f $i/libpcap.a; then
++           PCAPLIB="-L$i -lpcap"
++        fi
++     done
++     if test -z "$PCAP_CFLAGS" -o -z "$PCAPLIB"; then
+         AC_ERROR(pcap.h or libpcap.a not found in $withval)
+      fi
+      ;;
+@@ -127,20 +130,22 @@
+      ;;
+   *)
+      AC_MSG_RESULT($withval)
+-     if test -f $withval/include/libnet.h -a -f $withval/lib/libnet.a -a -f $withval/libnet-config ; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-	LNET_CFLAGS="-I$withval/include `$withval/libnet-config --defines`"
+-	LNETLIB="-L$withval/lib -lnet"
+-     elif test -f $withval/include/libnet.h -a -f $withval/src/libnet.a; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-	LNET_CFLAGS="-I$withval/include"
+-	LNETLIB="-L$withval/src -lnet"
+-     else
+-	echo "A working combination of libnet.h, libnet.a and libnet-config not found in $withval; get libnet from www.packetfactory.net/projects/libnet and reinstall"
+-        AC_ERROR(libnet)
++     LNETC="`which libnet-config 2>/dev/null`"
++     for i in $withval $withval/include $withval/lib $withval/bin; do
++        if test -f $i/libnet-config; then
++           LNETC"=$i/libnet-config"
++        fi
++        if test -f $i/libnet.h; then
++           LNET_CFLAGS="-I$i"
++        fi
++        if test -f $i/libnet.a; then
++           LNETLIB="-L$i -lnet"
++        fi
++     done
++     if test -z "$LNET_CFLAGS" -o -z "$LNETLIB" -o -z "$LNETC"; then
++        AC_ERROR([libnet not found in $withval])
+      fi
++     LNET_CFLAGS="$LNET_CFLAGS `$LNETC --defines`"
+      ;;
+   esac ],
+ [ if test "x"$LIBNET_VER = "x"-1 ; then

@@ -1,0 +1,55 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- xine-lib/configure.ac~uclibc	2003-09-28 16:42:13.000000000 +0200
++++ xine-lib/configure.ac	2003-09-28 16:42:13.000000000 +0200
+@@ -190,7 +190,7 @@
+   *)
+     AC_CHECK_LIB(pthread, pthread_create,
+   	     [THREAD_LIBS="-lpthread"],
+- 	     [AC_MSG_ERROR(pthread needed)])
++ 	     [AC_MSG_WARN(pthread needed)])
+     ;;
+ esac
+ AC_SUBST(THREAD_LIBS)
+--- xine-lib/src/xine-engine/osd.c~uclibc	2003-04-27 17:57:54.000000000 +0200
++++ xine-lib/src/xine-engine/osd.c	2003-09-28 16:42:13.000000000 +0200
+@@ -34,10 +34,6 @@
+ #include <dirent.h>
+ #include <errno.h>
+ 
+-#ifndef _MSC_VER 
+-#include <iconv.h>
+-#endif /* _MSC_VER */
+-
+ #ifdef HAVE_LANGINFO_CODESET
+ #include <langinfo.h>
+ #endif
+@@ -98,6 +94,8 @@
+ };
+ #endif
+ 
++#define _MSC_VER
++
+ /*
+  * open a new osd object. this will allocated an empty (all zero) drawing
+  * area where graphic primitives may be used.
+@@ -1220,3 +1218,6 @@
+ 
+   return this;
+ }
++
++#undef _MSC_VER
++
+--- xine-lib/src/video_out/video_out_fb.c~uclibc	2003-03-19 16:29:27.000000000 +0100
++++ xine-lib/src/video_out/video_out_fb.c	2003-09-28 17:16:05.000000000 +0200
+@@ -71,7 +71,6 @@
+ #include <netinet/in.h>
+ 
+ #include <linux/fb.h>
+-#include <linux/kd.h>
+ #include <linux/vt.h>
+ 
+ #include "xine_internal.h"

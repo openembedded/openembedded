@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ebtables-v2.0.6/ebtables.c~gcc34	2003-11-02 12:22:56.000000000 -0600
++++ ebtables-v2.0.6/ebtables.c	2004-06-03 13:27:28.000000000 -0500
+@@ -1170,7 +1170,7 @@
+ 		if (!t->compare(t->t, u_e->t))
+ 			continue;
+ 		return i;
+-letscontinue:
++letscontinue:;
+ 	}
+ 	return -1;
+ }

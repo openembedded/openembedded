@@ -1,0 +1,14 @@
+diff -urNd ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/interface.c gpe-package-0.0.9-1/interface.c
+--- ../gpe-package-0.0.9-1-r0/gpe-package-0.0.9-1/interface.c	2004-03-12 12:00:46.000000000 +0000
++++ gpe-package-0.0.9-1/interface.c	2004-07-27 14:40:06.000000000 +0100
+@@ -61,8 +61,8 @@
+ #define TREE_SHOW_INST		0x01
+ #define TREE_SHOW_NOTINST	0x02
+ 
+-#define HELPMESSAGE "GPE-Package\nVersion " VERSION \
+-		"\nGPE frontend for ipkg\n\nflorian@handhelds.org"
++#define HELPMESSAGE "GPE-Package\nVersion "
++#define VERSION "\nGPE frontend for ipkg\n\nflorian@handhelds.org"
+ 
+ #define NOHELPMESSAGE N_("Displaying help failed.")
+ 

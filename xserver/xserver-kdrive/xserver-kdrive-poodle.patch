@@ -1,0 +1,37 @@
+--- xserver/hw/kdrive/fbdev/fbdev.c.old	2004-06-28 01:48:51.000000000 +0100
++++ xserver/hw/kdrive/fbdev/fbdev.c	2004-07-28 15:05:55.000000000 +0100
+@@ -190,6 +190,7 @@
+     var.nonstd = 0;
+     var.grayscale = 0;
+ 
++    /* commented out for poodle 
+     k = ioctl (priv->fd, FBIOPUT_VSCREENINFO, &var);
+ 
+     if (k < 0)
+@@ -197,7 +198,9 @@
+ 	fprintf (stderr, "error: %s\n", strerror (errno));
+ 	return FALSE;
+     }
+-
++    */
++    
++    
+     /* Now get the new screeninfo */
+     ioctl (priv->fd, FBIOGET_VSCREENINFO, &priv->var);
+     depth = priv->var.bits_per_pixel;
+@@ -623,13 +626,14 @@
+     priv->var.activate = FB_ACTIVATE_NOW|FB_CHANGE_CMAP_VBL;
+     
+     /* display it on the LCD */
++    /* commented out for poodle
+     k = ioctl (priv->fd, FBIOPUT_VSCREENINFO, &priv->var);
+     if (k < 0)
+     {
+ 	perror ("FBIOPUT_VSCREENINFO");
+ 	return FALSE;
+     }
+-    
++    */
+     if (priv->fix.visual == FB_VISUAL_DIRECTCOLOR)
+     {
+ 	struct fb_cmap	cmap;

@@ -1,0 +1,12 @@
+--- Makefile.old	2004-10-09 22:58:10.000000000 +0100
++++ Makefile	2004-10-09 22:58:27.000000000 +0100
+@@ -32,8 +32,7 @@
+ CC		= gcc
+ CFLAGS		= -g -O2 -Wall -I../linux/include
+ 
+-PROGRAMS	= evtest inputattach jstest jscal fftest ffmvforce ffset \
+-		  ffcfstress acceltest
++PROGRAMS	= evtest inputattach jstest jscal fftest
+ 
+ compile: $(PROGRAMS)
+ 

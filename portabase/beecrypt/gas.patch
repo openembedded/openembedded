@@ -1,0 +1,166 @@
+diff -ur beecrypt-3.1.0/gas.orig/aesopt.ppc.m4 beecrypt-3.1.0/gas/aesopt.ppc.m4
+--- beecrypt-3.1.0/gas.orig/aesopt.ppc.m4	2003-06-09 08:03:21 +0200
++++ beecrypt-3.1.0/gas/aesopt.ppc.m4	2004-10-06 17:59:31 +0200
+@@ -21,7 +21,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/ppc.m4)
++include(ppc.m4)
+ 
+ define(`s0',`r24')
+ define(`s1',`r25')
+diff -ur beecrypt-3.1.0/gas.orig/aesopt.x86.m4 beecrypt-3.1.0/gas/aesopt.x86.m4
+--- beecrypt-3.1.0/gas.orig/aesopt.x86.m4	2003-06-09 10:35:39 +0200
++++ beecrypt-3.1.0/gas/aesopt.x86.m4	2004-10-06 17:54:36 +0200
+@@ -1,5 +1,5 @@
+ include(config.m4)
+-include(ASM_SRCDIR/x86.m4)
++include(x86.m4)
+ 
+ ifdef(`USE_MMX',`
+ 
+diff -ur beecrypt-3.1.0/gas.orig/blowfishopt.i586.m4 beecrypt-3.1.0/gas/blowfishopt.i586.m4
+--- beecrypt-3.1.0/gas.orig/blowfishopt.i586.m4	2003-06-09 10:25:11 +0200
++++ beecrypt-3.1.0/gas/blowfishopt.i586.m4	2004-10-06 17:54:58 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/x86.m4)
++include(x86.m4)
+ 
+ dnl during this macro we assume:
+ dnl	bp in %esi, xl and xr in %ecx and %edx, %eax and %ebx clear
+diff -ur beecrypt-3.1.0/gas.orig/blowfishopt.ppc.m4 beecrypt-3.1.0/gas/blowfishopt.ppc.m4
+--- beecrypt-3.1.0/gas.orig/blowfishopt.ppc.m4	2003-06-04 19:39:57 +0200
++++ beecrypt-3.1.0/gas/blowfishopt.ppc.m4	2004-10-06 17:59:36 +0200
+@@ -21,7 +21,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/ppc.m4)
++include(ppc.m4)
+ 
+ define(`round',`
+ 	lwz r9,$3(r3)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.alpha.m4 beecrypt-3.1.0/gas/mpopt.alpha.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.alpha.m4	2003-05-29 10:44:37 +0200
++++ beecrypt-3.1.0/gas/mpopt.alpha.m4	2004-10-06 17:57:20 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/alpha.m4)
++include(alpha.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpadd)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.ia64.m4 beecrypt-3.1.0/gas/mpopt.ia64.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.ia64.m4	2003-05-28 10:40:44 +0200
++++ beecrypt-3.1.0/gas/mpopt.ia64.m4	2004-10-06 17:57:32 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/ia64.m4)
++include(ia64.m4)
+ 
+ define(`sze',`r14')
+ define(`dst',`r15')
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.m68k.m4 beecrypt-3.1.0/gas/mpopt.m68k.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.m68k.m4	2003-04-26 14:01:57 +0200
++++ beecrypt-3.1.0/gas/mpopt.m68k.m4	2004-10-06 17:57:38 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+ include(config.m4)
+-include(ASM_SRCDIR/m68k.m4)
++include(m68k.m4)
+ 
+ dnl works
+ C_FUNCTION_BEGIN(mpadd)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.ppc64.m4 beecrypt-3.1.0/gas/mpopt.ppc64.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.ppc64.m4	2003-04-19 18:05:43 +0200
++++ beecrypt-3.1.0/gas/mpopt.ppc64.m4	2004-10-06 17:57:54 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+ include(config.m4)
+-include(ASM_SRCDIR/ppc64.m4)
++include(ppc64.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpaddw)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.ppc.m4 beecrypt-3.1.0/gas/mpopt.ppc.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.ppc.m4	2003-04-19 18:05:43 +0200
++++ beecrypt-3.1.0/gas/mpopt.ppc.m4	2004-10-06 17:57:50 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+ include(config.m4)
+-include(ASM_SRCDIR/ppc.m4)
++include(ppc.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpaddw)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.sparcv8.m4 beecrypt-3.1.0/gas/mpopt.sparcv8.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.sparcv8.m4	2003-04-19 18:05:43 +0200
++++ beecrypt-3.1.0/gas/mpopt.sparcv8.m4	2004-10-06 17:56:54 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/sparc.m4)
++include(sparc.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpsetmul)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.sparcv8plus.m4 beecrypt-3.1.0/gas/mpopt.sparcv8plus.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.sparcv8plus.m4	2003-04-19 18:05:43 +0200
++++ beecrypt-3.1.0/gas/mpopt.sparcv8plus.m4	2004-10-06 17:57:04 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/sparc.m4)
++include(sparc.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpaddw)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.x86_64.m4 beecrypt-3.1.0/gas/mpopt.x86_64.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.x86_64.m4	2003-05-29 14:40:37 +0200
++++ beecrypt-3.1.0/gas/mpopt.x86_64.m4	2004-10-06 17:56:14 +0200
+@@ -21,7 +21,7 @@
+ 	.file "mpopt.s"
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/x86_64.m4)
++include(x86_64.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpzero)
+diff -ur beecrypt-3.1.0/gas.orig/mpopt.x86.m4 beecrypt-3.1.0/gas/mpopt.x86.m4
+--- beecrypt-3.1.0/gas.orig/mpopt.x86.m4	2003-06-04 19:39:58 +0200
++++ beecrypt-3.1.0/gas/mpopt.x86.m4	2004-10-06 17:56:27 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+ include(config.m4)
+-include(ASM_SRCDIR/x86.m4)
++include(x86.m4)
+ 
+ 
+ C_FUNCTION_BEGIN(mpzero)
+diff -ur beecrypt-3.1.0/gas.orig/sha1opt.x86.m4 beecrypt-3.1.0/gas/sha1opt.x86.m4
+--- beecrypt-3.1.0/gas.orig/sha1opt.x86.m4	2003-05-08 19:52:54 +0200
++++ beecrypt-3.1.0/gas/sha1opt.x86.m4	2004-10-06 17:55:20 +0200
+@@ -19,7 +19,7 @@
+ dnl  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ include(config.m4)
+-include(ASM_SRCDIR/x86.m4)
++include(x86.m4)
+ 
+ 	.equ	K00,	0x5a827999
+ 	.equ	K20,	0x6ed9eba1

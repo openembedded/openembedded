@@ -1,0 +1,29 @@
+--- glibc-2.2.3/elf/ldconfig.c~	Tue Mar 20 11:44:35 2001
++++ glibc-2.2.3/elf/ldconfig.c	Tue Apr 24 18:14:05 2001
+@@ -287,6 +287,26 @@
+     dir_entries = entry;
+   else if (ptr == NULL)
+     prev->next = entry;
++#ifdef __sparc__
++#define MSUBDIR "64"
++  if (ptr == NULL) {
++    int si = strlen(entry->path) - strlen(MSUBDIR);
++    if (strcmp (entry->path + (si <= 0 ? 0 : si), MSUBDIR) != 0) {
++      /* Handle subdirectory later.  */
++      struct dir_entry *new_entry;
++
++      new_entry = xmalloc (sizeof (struct dir_entry));
++      new_entry->path = xmalloc(strlen(entry->path)+strlen(MSUBDIR)+1);
++      new_entry->flag = entry->flag;
++      new_entry->next = NULL;
++      sprintf(new_entry->path, "%s%s", entry->path, MSUBDIR);
++      if (opt_verbose)
++        printf("Adding implicit multilib directory:\n\t%s\n", new_entry->path);
++      add_single_dir (new_entry, 0);
++    }
++  }
++#undef MSUBDIR
++#endif
+ }
+ 
+ /* Add one directory to the list of directories to process.  */

@@ -1,0 +1,110 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.26/arch/um/fs/hostfs/externfs.c~unbreak-hostfs	2004-05-18 22:01:16.000000000 +0200
++++ linux-2.4.26/arch/um/fs/hostfs/externfs.c	2004-05-18 22:43:11.000000000 +0200
+@@ -1133,7 +1133,7 @@
+ 	if((mount_arg != NULL) && (*mount_arg != '\0'))
+ 		root = mount_arg;
+ 
+-	return(uml_strdup(mount_arg));
++	return(uml_strdup(root));
+ }
+ 
+ struct super_block *hostfs_read_super(struct super_block *sb, void *data, 
+--- linux-2.4.26/arch/um/fs/hostfs/host_file.c~unbreak-hostfs	2004-05-18 22:01:16.000000000 +0200
++++ linux-2.4.26/arch/um/fs/hostfs/host_file.c	2004-05-18 22:45:17.000000000 +0200
+@@ -72,28 +72,21 @@
+ {
+ 	char tmp[HOSTFS_BUFSIZE], *file;
+ 	int mode = 0, err;
++	struct openflags flags = OPENFLAGS();
+ 
+-	if(r && !w) 
+-		mode = O_RDONLY;
+-	else if(!r && w) 
+-		mode = O_WRONLY;
+-	else if(r && w) 
+-		mode = O_RDWR;
+-	else {
+-	  	printk("Impossible mode in host_open_file - r = %d, w = %d", 
+-		       r, w);
+-		return(-EINVAL);
+-	}
+-
++	if (r)
++		flags = of_read(flags);
++	if (w)
++		flags = of_write(flags);
+ 	if(append)
+-		mode |= O_APPEND;
++		flags = of_append(flags);
+ 
+ 	err = -ENOMEM;
+ 	file = get_path(path, tmp, sizeof(tmp));
+ 	if(file == NULL)
+ 		goto out;
+ 	
+-	err = open_filehandle(file, of_create(of_rdwr(OPENFLAGS())), mode, fh);
++	err = open_filehandle(file, flags, 0, fh);
+  out:
+ 	free_path(file, tmp);
+ 	return(err);
+--- linux-2.4.26/arch/um/fs/hostfs/host_fs.c~unbreak-hostfs	2004-05-18 22:01:16.000000000 +0200
++++ linux-2.4.26/arch/um/fs/hostfs/host_fs.c	2004-05-18 22:50:11.000000000 +0200
+@@ -111,10 +111,13 @@
+ {
+ 	const char *path[] = { jail_dir, mount, file, NULL };
+ 	int uid;
++	int gid;
++	int rc;
+ 
+ 	*uid_out = 0;
++	*gid_out = 0;
+ 	return(host_stat_file(path, dev_out, inode_out, mode_out, nlink_out, 
+-			      &uid, gid_out, size_out, atime_out, mtime_out, 
++			      &uid, &gid, size_out, atime_out, mtime_out, 
+ 			      ctime_out, blksize_out, blocks_out));
+ }
+ 
+@@ -138,6 +141,12 @@
+ 		goto out;
+ 
+ 	err = host_open_file(path, 1, 1, fh);
++	if (err == -EISDIR) {
++		kfree(fh);
++		return NULL;
++	}
++	if (err == -EPERM)
++		err = host_open_file(path, 1, 0, fh);
+ 	if(err)
+ 		goto out_free;
+ 
+@@ -175,10 +184,9 @@
+ 				len - ignore_end);
+ 
+  out:
+-	if(err < 0)
+-		(*completion)(buf, err, arg);
+-	else err = 0;
+-
++	(*completion)(buf, err, arg);
++	if (err > 0)
++		err = 0;
+ 	return(err);
+ }
+ 
+@@ -191,8 +199,9 @@
+ 
+ 	err = write_file(fh, offset + start, buf + start, len);
+ 
+-	if(err < 0)
+-		(*completion)((char *) buf, err, arg);
++	(*completion)((char *) buf, err, arg);
++	if (err > 0)
++		err = 0;
+ 	return(err);
+ }
+ 

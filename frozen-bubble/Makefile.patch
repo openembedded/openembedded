@@ -1,0 +1,16 @@
+--- frozen-bubble/c_stuff/Makefile.old	2004-06-25 20:04:03.000000000 +0100
++++ frozen-bubble/c_stuff/Makefile	2004-06-25 20:07:25.000000000 +0100
+@@ -1,11 +1,11 @@
+ .PHONY: clean
+ 
+ fb_c_stuff: %: %.xs
+-	test -e Makefile_c || perl Makefile.PL INSTALLDIRS=$(INSTALLDIRS)
++	test -e Makefile_c || perl Makefile.PL INSTALLDIRS=$(INSTALLDIRS) CC="$(CC)" LD="$(LD)"
+ 	$(MAKE) -f Makefile_c
+ 
+ install:
+-	test -e Makefile_c || perl Makefile.PL INSTALLDIRS=$(INSTALLDIRS)
++	test -e Makefile_c || perl Makefile.PL INSTALLDIRS=$(INSTALLDIRS) CC="$(CC)" LD="$(LD)"
+ 	$(MAKE) -f Makefile_c install
+ 
+ clean:

@@ -1,0 +1,46 @@
+*** ../bash-2.05b/parse.y	Tue May 21 11:57:30 2002
+--- ./parse.y	Thu Sep 26 12:08:19 2002
+***************
+*** 4525,4529 ****
+  set_line_mbstate ()
+  {
+!   int i, previ, len;
+    mbstate_t mbs, prevs;
+    size_t mbclen;
+--- 4534,4538 ----
+  set_line_mbstate ()
+  {
+!   int i, previ, len, c;
+    mbstate_t mbs, prevs;
+    size_t mbclen;
+***************
+*** 4540,4544 ****
+        mbs = prevs;
+  
+!       if (shell_input_line[i] == EOF)
+  	{
+  	  int j;
+--- 4549,4554 ----
+        mbs = prevs;
+  
+!       c = shell_input_line[i];
+!       if (c == EOF)
+  	{
+  	  int j;
+***************
+*** 4564,4568 ****
+        else
+  	{
+! 	  /* mbrlen doesn't return any other values */
+  	}
+  
+--- 4574,4582 ----
+        else
+  	{
+! 	  /* XXX - what to do if mbrlen returns 0? (null wide character) */
+! 	  int j;
+! 	  for (j = i; j < len; j++)
+! 	    shell_input_line_property[j] = 1;
+! 	  break;
+  	}
+  

@@ -1,0 +1,16 @@
+diff -urN mtd.orig/fs/jffs2/compr_rtime.c mtd/fs/jffs2/compr_rtime.c
+--- mtd.orig/fs/jffs2/compr_rtime.c	2004-04-02 20:36:01.000000000 -0500
++++ mtd/fs/jffs2/compr_rtime.c	2004-04-02 20:35:37.000000000 -0500
+@@ -21,11 +21,7 @@
+  *
+  */
+ 
+-#include <linux/kernel.h>
+-#include <linux/types.h>
+-#include <linux/errno.h>
+-#include <linux/string.h> 
+-
++#include <string.h> 
+ #include <stdint.h>
+ 
+ /* _compress returns the compressed size, -1 if bigger */

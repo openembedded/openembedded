@@ -1,0 +1,23 @@
+--- libts-0.0/tests/ts_calibrate.c.orig	2003-03-12 16:23:56.000000000 +0000
++++ libts-0.0/tests/ts_calibrate.c	2003-03-12 16:24:12.000000000 +0000
+@@ -231,11 +231,6 @@
+ 		close_framebuffer();
+ 		exit(1);
+ 	}
+-	close_framebuffer();
+-	if (open_framebuffer()) {
+-		close_framebuffer();
+-		exit(1);
+-	}
+ 
+ 	setcolors(0x48ff48,0x880000);
+ 
+@@ -245,7 +240,7 @@
+ 	printf("xres = %d, yres = %d\n",xres,yres);
+ 
+ // Read a touchscreen event to clear the buffer
+-	//getxy(ts, 0, 0);
++	getxy(ts, 0, 0);
+ 
+ // Now paint a crosshair on the upper left and start taking calibration
+ // data

@@ -1,0 +1,12 @@
+diff -ur aliens_V1.0.0.orig/aliens.desktop aliens_V1.0.0/aliens.desktop
+--- aliens_V1.0.0.orig/aliens.desktop	2004-06-16 23:20:02.000000000 +0200
++++ aliens_V1.0.0/aliens.desktop	2004-06-16 23:20:15.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Aliens
+ Name[de]=Aliens
+-Icon=aliens
++Icon=aliens/aliens
+ Exec=aliens
+ Comment=A classic arcade-style shooter.
+ Comment[de]=Ein klassisches Weltraum-Ballerspiel.

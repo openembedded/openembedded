@@ -1,0 +1,44 @@
+Index: obex.sym
+===================================================================
+RCS file: /cvsroot/openobex/openobex/lib/src/obex.sym,v
+retrieving revision 1.7
+retrieving revision 1.8
+diff -u -r1.7 -r1.8
+--- openobex/src/obex.sym	15 Nov 2002 09:14:11 -0000	1.7
++++ openobex/src/obex.sym	30 Jan 2004 19:25:45 -0000	1.8
+@@ -1,27 +1,31 @@
+ OBEX_Init
+ OBEX_Cleanup
++OBEX_SetUserData
++OBEX_GetUserData
++OBEX_SetUserCallBack
++OBEX_SetTransportMTU
++OBEX_GetFD
+ OBEX_RegisterCTransport
+ OBEX_SetCustomData
+ OBEX_GetCustomData
+ OBEX_TransportConnect
+ OBEX_TransportDisconnect
+ OBEX_CustomDataFeed
+-OBEX_GetFD
+ OBEX_HandleInput
+ OBEX_ServerRegister
++OBEX_ServerAccept
+ OBEX_Request
+ OBEX_CancelRequest
+-OBEX_SetUserData
+-OBEX_GetUserData
+ OBEX_ObjectNew
+ OBEX_ObjectDelete
+ OBEX_ObjectAddHeader
+ OBEX_ObjectGetNextHeader
+-OBEX_ObjectReadStream
++OBEX_ObjectReParseHeaders
+ OBEX_ObjectSetRsp
+ OBEX_ObjectGetNonHdrData
+ OBEX_ObjectSetNonHdrData
+ OBEX_ObjectSetHdrOffset
++OBEX_ObjectReadStream
+ OBEX_UnicodeToChar
+ OBEX_CharToUnicode
+ OBEX_ResponseToString

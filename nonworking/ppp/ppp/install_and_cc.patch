@@ -1,0 +1,219 @@
+diff -ur ppp.old/chat/Makefile.linux ppp/chat/Makefile.linux
+--- ppp.old/chat/Makefile.linux	2004-01-13 05:00:17.000000000 +0100
++++ ppp/chat/Makefile.linux	2004-08-22 00:46:05.000000000 +0200
+@@ -21,7 +21,7 @@
+ 
+ install: chat
+ 	mkdir -p $(BINDIR)
+-	$(INSTALL) -s -c chat $(BINDIR)
++	$(INSTALL) -c chat $(BINDIR)
+ 	$(INSTALL) -c -m 644 chat.8 $(MANDIR)/man8
+ 
+ clean:
+diff -ur ppp.old/linux/Makefile.top ppp/linux/Makefile.top
+--- ppp.old/linux/Makefile.top	2002-06-10 15:56:02.000000000 +0200
++++ ppp/linux/Makefile.top	2004-08-22 00:46:05.000000000 +0200
+@@ -3,7 +3,7 @@
+ 
+ BINDIR = $(DESTDIR)/usr/sbin
+ INCDIR = $(DESTDIR)/usr/include
+-MANDIR = $(DESTDIR)/usr/man
++MANDIR = $(DESTDIR)/usr/share/man
+ ETCDIR = $(DESTDIR)/etc/ppp
+ 
+ # uid 0 = root
+diff -ur ppp.old/pppd/plugins/Makefile.linux ppp/pppd/plugins/Makefile.linux
+--- ppp.old/pppd/plugins/Makefile.linux	2004-01-13 05:00:17.000000000 +0100
++++ ppp/pppd/plugins/Makefile.linux	2004-08-22 00:46:05.000000000 +0200
+@@ -1,8 +1,8 @@
+-CC	= gcc
++# CC	= gcc
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
+ LDFLAGS	= -shared
+-INSTALL	= install -o root
++INSTALL	= install 
+ 
+ SUBDIRS := rp-pppoe
+ # Uncomment the next line to include the radius authentication plugin
+diff -ur ppp.old/pppd/plugins/radius/Makefile.linux ppp/pppd/plugins/radius/Makefile.linux
+--- ppp.old/pppd/plugins/radius/Makefile.linux	2002-10-05 06:40:14.000000000 +0200
++++ ppp/pppd/plugins/radius/Makefile.linux	2004-08-22 00:46:05.000000000 +0200
+@@ -30,29 +30,29 @@
+ install: all
+ 	$(MAKE) $(MFLAGS) -C radiusclient install
+ 	$(INSTALL) -d -m 755 $(LIBDIR)
+-	$(INSTALL) -s -c -m 755 radius.so $(LIBDIR)
+-	$(INSTALL) -s -c -m 755 radattr.so $(LIBDIR)
+-	$(INSTALL) -s -c -m 755 radrealms.so $(LIBDIR)
++	$(INSTALL) -c -m 755 radius.so $(LIBDIR)
++	$(INSTALL) -c -m 755 radattr.so $(LIBDIR)
++	$(INSTALL) -c -m 755 radrealms.so $(LIBDIR)
+ 	$(INSTALL) -c -m 444 pppd-radius.8 $(MANDIR)/man8
+ 	$(INSTALL) -c -m 444 pppd-radattr.8 $(MANDIR)/man8
+ 
+ radius.so: radiusclient/lib/.libs/libradiusclient.a radius.o
+-	gcc -o radius.so -shared radius.o radiusclient/lib/.libs/libradiusclient.a
++	$(CC) -o radius.so -shared radius.o radiusclient/lib/.libs/libradiusclient.a
+ 
+ radattr.so: radattr.o
+-	gcc -o radattr.so -shared radattr.o
++	$(CC) -o radattr.so -shared radattr.o
+ 
+ radrealms.so: radrealms.o
+-	gcc -o radrealms.so -shared radrealms.o
++	$(CC) -o radrealms.so -shared radrealms.o
+ 
+ radius.o: radius.c
+-	gcc $(CFLAGS) -c -o radius.o -fPIC radius.c
++	$(CC) $(CFLAGS) -c -o radius.o -fPIC radius.c
+ 
+ radattr.o: radattr.c
+-	gcc $(CFLAGS) -c -o radattr.o -fPIC radattr.c
++	$(CC) $(CFLAGS) -c -o radattr.o -fPIC radattr.c
+ 
+ radrealms.o: radrealms.c
+-	gcc $(CFLAGS) -c -o radrealms.o -fPIC radrealms.c
++	$(CC) $(CFLAGS) -c -o radrealms.o -fPIC radrealms.c
+ 
+ radiusclient/lib/.libs/libradiusclient.a:
+ 	test -r radiusclient/Makefile ||           \
+diff -ur ppp.old/pppd/plugins/rp-pppoe/Makefile.linux ppp/pppd/plugins/rp-pppoe/Makefile.linux
+--- ppp.old/pppd/plugins/rp-pppoe/Makefile.linux	2004-08-22 00:17:31.000000000 +0200
++++ ppp/pppd/plugins/rp-pppoe/Makefile.linux	2004-08-22 00:58:13.000000000 +0200
+@@ -21,38 +21,38 @@
+ all: rp-pppoe.so pppoe-discovery
+ 
+ pppoe-discovery: libplugin.a pppoe-discovery.o
+-	gcc -o pppoe-discovery pppoe-discovery.o libplugin.a
++	$(CC) -o pppoe-discovery pppoe-discovery.o libplugin.a
+ 
+ pppoe-discovery.o: pppoe-discovery.c
+-	gcc $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o pppoe-discovery.o pppoe-discovery.c
++	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o pppoe-discovery.o pppoe-discovery.c
+ 
+ rp-pppoe.so: libplugin.a plugin.o
+-	gcc -o rp-pppoe.so -shared plugin.o libplugin.a
++	$(CC) -o rp-pppoe.so -shared plugin.o libplugin.a
+ 
+ install: all
+ 	$(INSTALL) -d -m 755 $(LIBDIR)
+-	$(INSTALL) -s -c -m 4550 rp-pppoe.so $(LIBDIR)
++	$(INSTALL) -c -m 4750 rp-pppoe.so $(LIBDIR)
+ 	$(INSTALL) -d -m 755 $(BINDIR)
+-	$(INSTALL) -s -c -m 555 pppoe-discovery $(BINDIR)/pppoe-discovery
++	$(INSTALL) -c -m 755 pppoe-discovery $(BINDIR)/pppoe-discovery
+ 
+ clean:
+ 	rm -f *.o *.so
+ 
+ plugin.o: plugin.c
+-	gcc '-DRP_VERSION="$(VERSION)"' $(CFLAGS) -I../../..  -c -o plugin.o -fPIC plugin.c
++	$(CC) '-DRP_VERSION="$(VERSION)"' $(CFLAGS) -I../../..  -c -o plugin.o -fPIC plugin.c
+ 
+ libplugin.a: discovery.o if.o common.o debug.o
+-	ar -rc $@ $^
++	$(AR) -rc $@ $^
+ 
+ discovery.o: discovery.c
+-	gcc $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o discovery.o -fPIC discovery.c
++	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o discovery.o -fPIC discovery.c
+ 
+ if.o: if.c
+-	gcc $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o if.o -fPIC if.c
++	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o if.o -fPIC if.c
+ 
+ debug.o: debug.c
+-	gcc $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o debug.o -fPIC debug.c
++	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o debug.o -fPIC debug.c
+ 
+ common.o: common.c
+-	gcc $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o common.o -fPIC common.c
++	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o common.o -fPIC common.c
+ 
+diff -ur ppp.old/pppdump/Makefile.linux ppp/pppdump/Makefile.linux
+--- ppp.old/pppdump/Makefile.linux	1999-08-12 06:39:07.000000000 +0200
++++ ppp/pppdump/Makefile.linux	2004-08-22 00:46:05.000000000 +0200
+@@ -13,5 +13,5 @@
+ 
+ install:
+ 	mkdir -p $(BINDIR) $(MANDIR)/man8
+-	$(INSTALL) -s -c pppdump $(BINDIR)
++	$(INSTALL) -c pppdump $(BINDIR)
+ 	$(INSTALL) -c -m 444 pppdump.8 $(MANDIR)/man8
+diff -ur ppp.old/pppstats/Makefile.linux ppp/pppstats/Makefile.linux
+--- ppp.old/pppstats/Makefile.linux	2002-10-27 14:00:08.000000000 +0100
++++ ppp/pppstats/Makefile.linux	2004-08-22 00:46:05.000000000 +0200
+@@ -11,7 +11,7 @@
+ COMPILE_FLAGS = -I../include
+ LIBS =
+ 
+-INSTALL= install -o root -g daemon
++INSTALL= install 
+ 
+ CFLAGS = $(COPTS) $(COMPILE_FLAGS)
+ 
+@@ -19,7 +19,7 @@
+ 
+ install: pppstats
+ 	-mkdir -p $(MANDIR)/man8
+-	$(INSTALL) -s -c pppstats $(BINDIR)/pppstats
++	$(INSTALL) -c pppstats $(BINDIR)/pppstats
+ 	$(INSTALL) -c -m 444 pppstats.8 $(MANDIR)/man8/pppstats.8
+ 
+ pppstats: $(PPPSTATSRCS)
+--- ppp.old/pppd/Makefile.linux	2004-08-22 00:17:31.000000000 +0200
++++ ppp/pppd/Makefile.linux	2004-08-22 01:07:20.000000000 +0200
+@@ -5,7 +5,7 @@
+ 
+ # Default installation locations
+ BINDIR = $(DESTDIR)/usr/sbin
+-MANDIR = $(DESTDIR)/usr/man
++MANDIR = $(DESTDIR)/usr/share/man
+ INCDIR = $(DESTDIR)/usr/include
+ 
+ TARGETS = pppd
+@@ -76,7 +76,7 @@
+ 
+ INCLUDE_DIRS= -I../include
+ 
+-COMPILE_FLAGS= -DHAVE_PATHS_H -DIPX_CHANGE -DHAVE_MMAP
++COMPILE_FLAGS= -DHAVE_PATHS_H -DIPX_CHANGE 
+ 
+ CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS)
+ 
+@@ -103,7 +103,7 @@
+ ifdef USE_SRP
+ CFLAGS	+= -DUSE_SRP
+ TARGETS	+= srp-entry
+-EXTRAINSTALL = $(INSTALL) -s -c -m 555 srp-entry $(BINDIR)/srp-entry
++EXTRAINSTALL = $(INSTALL) -c -m 755 srp-entry $(BINDIR)/srp-entry
+ MANPAGES += srp-entry.8
+ EXTRACLEAN += srp-entry.o
+ NEEDDES=y
+@@ -197,7 +197,7 @@
+ 
+ ifdef FILTER
+ LIBS    += -lpcap
+-CFLAGS  += -DPPP_FILTER -I/usr/include/pcap
++CFLAGS  += -DPPP_FILTER 
+ endif
+ 
+ ifdef HAVE_INET6
+@@ -218,14 +218,14 @@
+      CFLAGS += -DMAXOCTETS
+ endif
+ 
+-INSTALL= install -o root
++INSTALL= install 
+ 
+ all: $(TARGETS)
+ 
+ install: pppd
+ 	mkdir -p $(BINDIR) $(MANDIR)
+ 	$(EXTRAINSTALL)
+-	$(INSTALL) -s -c -m 555 pppd $(BINDIR)/pppd
++	$(INSTALL) -c -m 755 pppd $(BINDIR)/pppd
+ 	if chgrp pppusers $(BINDIR)/pppd 2>/dev/null; then \
+ 	  chmod o-rx,u+s $(BINDIR)/pppd; fi
+ 	$(INSTALL) -c -m 444 pppd.8 $(MANDIR)/man8

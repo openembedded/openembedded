@@ -1,0 +1,27 @@
+--- qwsmouse_qws.cpp~qwsmouse-c700	2004-09-20 00:01:42.000000000 +1000
++++ qt-2.3.9/src/kernel/qwsmouse_qws.cpp	2004-09-20 13:04:29.000000000 +1000
+@@ -71,14 +71,18 @@
+ #elif defined(QT_QWS_SL5XXX)
+ #define QT_QWS_SL5XXX_RAW
+ typedef struct {
+-       long y;
+-       long x;
+-       long pressure;
+-       long long millisecs;
++        unsigned short pressure;
++        unsigned short x;
++        unsigned short y;
++        unsigned short pad;
++//        long y;
++//        long x;
++//        long pressure;
++//        long long millisecs;
+ } TS_EVENT;
+ #define QT_QWS_TP_SAMPLE_SIZE 10
+ #define QT_QWS_TP_MINIMUM_SAMPLES 4
+-#define QT_QWS_TP_PRESSURE_THRESHOLD 500
++#define QT_QWS_TP_PRESSURE_THRESHOLD 1
+ #define QT_QWS_TP_MOVE_LIMIT 50
+ #define QT_QWS_TP_JITTER_LIMIT 2
+ #endif
+

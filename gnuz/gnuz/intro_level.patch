@@ -1,0 +1,14 @@
+--- ../intro.conf.orig	2003-09-13 18:55:01 +0200
++++ ../intro.conf	2004-10-12 23:35:18 +0200
+@@ -1,8 +1,9 @@
+ LevelName=Welcome Screen
+ LevelAuthor=WarCow
+-LevelPicFilename=intro_new.png
+-LevelMaskFilename=intro_new_mask.png
++LevelPicFilename=intro.png
++LevelMaskFilename=intro_mask.png
+ LevelDifficulty=0
++LevelParTime=0
+ 
+ GnuCount=23
+ GnuMinSave=0

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+modprobe usb_ohci_tc6393
+
+if test ! -d /dev/usb
+then
+	mkdir -p /dev/usb
+fi
+if test ! -c /dev/usb/host_ohci
+then
+	printf "*\tCreating /dev/usb/host_ohci node\n"
+	mknod /dev/usb/host_ohci c 10 222
+fi
+
+case $0 in
+wlanup|/sbin/wlanup)
+	printf "*\tStarting up wlan-ng interface\n"
+	modprobe prism2_usb
+	/sbin/usbctl on 1
+	/etc/init.d/wlan start
+	;;
+wlandown|/sbin/wlandown)
+	printf "*\tShutting down wlan-ng interface\n"
+	/etc/init.d/wlan stop
+	/sbin/usbctl off 1
+	rmmod prism2_usb
+	;;
+*)
+	printf "*\tUSAGE: $0\n"
+	;;
+esac

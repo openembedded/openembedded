@@ -1,0 +1,126 @@
+Status: ok
+
+diff ./p~current~ ./p
+
+ ----------- Diffstat output ------------
+ ./p |   66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 62 insertions(+), 4 deletions(-)
+
+diff ./p~current~ ./p
+--- ./p~current~	2004-02-03 13:18:55.000000000 +1100
++++ ./p	2004-02-03 13:19:20.000000000 +1100
+@@ -146,7 +146,7 @@ all_files()
+ 
+ diff_one()
+ {
+-	if cmp -s "$1~current~" "$1"
++	if cmp -s "$1~current~" "$1" || [ ! -f "$1" -a ! -f "$1~current~" ]
+ 	then :
+ 	else
+ 		echo
+@@ -168,10 +168,12 @@ diff_one_orig()
+ 
+ commit_one()
+ {
+-	rm -f "$1~current~"
++    rm -f "$1~current~"
++    if [  -f "$1" ] ; then
+ 	mv "$1" "$1~current~"
+ 	cp -p "$1~current~" $1
+ 	chmod u+w $1
++    fi
+ }
+ 
+ discard_one()
+@@ -623,6 +625,33 @@ case $cmd in
+ 	while [ -s "$pfile" ]  &&
+ 	     p apply last && p commit ; do : ; done
+ 	;;
++  decommit )
++	make_diff
++	get_meta
++	if [ -s .patches/patch ]
++	then
++	    echo >&2 Patch $name already open - please commit ; exit 1;
++	fi
++	if [ $# -eq 0 ]
++	then
++	    echo "Applied patches are:"
++	    ls .patches/applied
++	    exit 0
++	fi
++	if [ $# -ne 1 ]
++	then echo >&2 "Usage: p decommit patchname"; exit 1
++	fi
++	case $1 in
++	    last ) pfile=`ls -d .patches/applied/[0-9]* | tail -1` ; echo last is "$pfile";;
++	    */* ) pfile=$1 ;;
++	    * ) pfile=`echo .patches/applied/*$1*`
++	esac
++	if [ ! -f "$pfile" ]
++	then echo >&2 "Cannot find unique patch '$1' - found: $pfile"; exit 1
++	fi
++	while [ -s "$pfile" ]  &&
++	     p open last && p discard ; do : ; done
++	;;
+   snapshot )
+ 	all_files snap_one
+ 	;;
+@@ -653,6 +682,12 @@ case $cmd in
+         cd .patches/SOURCE && bk pull
+ 	;;
+   update )
++	make_diff
++	get_meta
++	if [ -s .patches/patch ]
++	then 
++		echo >&2 Patch $name already open - please commit; exit 1;
++	fi
+         p openall && p clean &&
+ 	  (cd .patches/SOURCE ; bk export -tpatch -rLATEST, ) > .patches/imported-patch &&
+ 	  patch --dry-run -f -p1 < .patches/imported-patch &&
+@@ -678,9 +713,32 @@ case $cmd in
+ 	    echo "Your address and other headers must be in .patches/owner"
+ 	    exit 1;
+ 	fi
++	messid="<`date +'%Y%m%d%H%M%S'`.$$.patches@`uname -n`>"
+ 	cnt=$(ls .patches/applied/???${1}* | wc -l)
+ 	cnt=$(echo $cnt)  # discard spaces
+ 	this=1
++	{
++	    cat .patches/owner
++	    echo "To: `cat .patches/maintainer`"
++	    if [ -s .patches/cc ] ; then
++		while read word prefix addr
++		  do if [ " $word" = " $1" ] ; then
++			echo "Cc: $addr" 
++			sprefix="$prefix - "
++		    fi
++		  done < .patches/cc
++	    fi
++	    if [ $cnt = 1 ]
++		  then
++		  echo "Subject: [PATCH] $sprefix Intro"
++		  else
++		  echo "Subject: [PATCH] ${sprefix}0 of $cnt - Introduction"
++	    fi
++	    echo "Message-ID: $messid"
++	    echo
++	    echo PUT COMMENTS HERE
++	} > .patches/mail/000Intro
++
+ 	for patch in .patches/applied/???${1}*
+ 	do
+ 	  {
+@@ -702,9 +760,9 @@ case $cmd in
+ 		  else
+ 		  echo "Subject: [PATCH] $sprefix$this of $cnt - $head"
+ 	      fi
++	      echo "References: $messid"
+ 	      echo
+-	      echo '### Comments for ChangeSet'
+-	      sed -e '1,/^[^S]/d' $patch
++	      sed -e '1,3d' $patch
+ 	  } > .patches/mail/${patch#.patches/applied/}
+ 	  this=$(expr $this + 1)
+ 	done

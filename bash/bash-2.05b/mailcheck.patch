@@ -1,0 +1,82 @@
+--- bash-2.05b/mailcheck.c	2002-01-10 14:23:15.000000000 -0500
++++ bash-2.05b.mailcheck/mailcheck.c	2003-07-28 20:58:10.000000000 -0400
+@@ -69,20 +69,40 @@
+ 
+ static char *parse_mailpath_spec __P((char *));
+ 
+-/* Returns non-zero if it is time to check mail. */
+-int
+-time_to_check_mail ()
+-{
++intmax_t get_mailcheck(int first_check) {
+   char *temp;
+-  time_t now;
+   intmax_t seconds;
++  /* Terrible kluge, but expedient.  Purpose is to ensure we don't allow
++     a mail check until after user init files are read. */
++  static int passed_first_check = 0;
++
++  if(first_check)
++    passed_first_check = 1;
++
++  if(!passed_first_check)
++    return -1;
+ 
+   temp = get_string_value ("MAILCHECK");
+ 
+   /* Negative number, or non-numbers (such as empty string) cause no
+      checking to take place. */
+   if (temp == 0 || legal_number (temp, &seconds) == 0 || seconds < 0)
+-    return (0);
++    return -1;
++
++  return seconds;
++}
++
++/* Returns non-zero if it is time to check mail. */
++int
++time_to_check_mail ()
++{
++  time_t now;
++  intmax_t seconds;
++
++  seconds = get_mailcheck(0);
++
++  if(seconds < 0)
++    return 0;
+ 
+   now = NOW;
+   /* Time to check if MAILCHECK is explicitly set to zero, or if enough
+--- bash-2.05b/mailcheck.h	1999-08-05 07:21:16.000000000 -0400
++++ bash-2.05b.mailcheck/mailcheck.h	2003-07-28 20:58:10.000000000 -0400
+@@ -29,5 +29,6 @@
+ extern char *make_default_mailpath __P((void));
+ extern void remember_mail_dates __P((void));
+ extern void check_mail __P((void));
++extern intmax_t get_mailcheck __P((int));
+ 
+ #endif /* _MAILCHECK_H */
+--- bash-2.05b/shell.c	2002-07-01 11:27:11.000000000 -0400
++++ bash-2.05b.mailcheck/shell.c	2003-07-28 20:58:10.000000000 -0400
+@@ -652,7 +652,8 @@
+   if (interactive_shell)
+     {
+       /* Set up for checking for presence of mail. */
+-      remember_mail_dates ();
++      if(get_mailcheck(1) >= 0)
++	remember_mail_dates ();
+       reset_mail_timer ();
+ 
+ #if defined (HISTORY)
+--- bash-2.05b/variables.c	2002-06-25 09:43:33.000000000 -0400
++++ bash-2.05b.mailcheck/variables.c	2003-07-28 20:58:10.000000000 -0400
+@@ -3507,7 +3507,8 @@
+   else
+     {
+       free_mail_files ();
+-      remember_mail_dates ();
++      if(get_mailcheck(0) >= 0)
++	remember_mail_dates ();
+     }
+ }
+ 

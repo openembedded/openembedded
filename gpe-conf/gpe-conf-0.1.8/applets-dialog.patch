@@ -1,0 +1,25 @@
+Index: applets.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/applets.c,v
+retrieving revision 1.24
+diff -r1.24 applets.c
+345c345
+< 	GtkWidget *hbox;
+---
+> 	GtkWidget *hbox, *btn;
+365,366d364
+< 						      GTK_STOCK_OK,
+< 						      GTK_RESPONSE_ACCEPT,
+368,369c366,374
+< 		label = gtk_label_new (_
+< 				       ("Some options are only\naccessible for user root.\nPlease enter password."));
+---
+> 		btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
+> 				GTK_STOCK_OK,
+> 				GTK_RESPONSE_ACCEPT);
+> 		GTK_WIDGET_SET_FLAGS (btn, GTK_CAN_DEFAULT);
+> 		gtk_widget_grab_default(btn);
+> 
+> 		
+> 		label = gtk_label_new (_ ("Some options are only\n"\
+> 			"accessible for user root.\nPlease enter password."));

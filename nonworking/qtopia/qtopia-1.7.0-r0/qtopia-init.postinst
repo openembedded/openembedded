@@ -1,0 +1,9 @@
+#!/bin/sh
+ln -sf /etc/init.d/qpe /etc/rc0.d/K98qpe
+ln -sf /etc/init.d/qpe /etc/rc1.d/K98qpe
+ln -sf /etc/init.d/qpe /etc/rc6.d/K98qpe
+ln -sf /etc/init.d/qpe /etc/rc2.d/S98qpe
+ln -sf /etc/init.d/qpe /etc/rc3.d/S98qpe
+ln -sf /etc/init.d/qpe /etc/rc4.d/S98qpe
+ln -sf /etc/init.d/qpe /etc/rc5.d/S98qpe
+exit 0

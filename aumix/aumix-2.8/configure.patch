@@ -1,0 +1,28 @@
+--- tmp/base/aumix-2.8-r0/aumix-2.8/configure.in	Sun Nov 24 19:04:16 2002
++++ aumix-2.8/configure.in	Fri Oct 24 18:36:12 2003
+@@ -83,8 +83,7 @@
+   AC_ARG_WITH(sysmouse,
+     [  --without-sysmouse      Compile only without sysmouse support],
+     AC_MSG_RESULT([Compiling without sysmouse support]),
+-    dnl Checks for sysmouse availability.
+-    AC_CHECK_HEADERS(sys/consio.h machine/console.h, break)
++    dnl AC_CHECK_HEADERS(sys/consio.h machine/console.h, break)
+     AC_CACHE_CHECK([for CONS_MOUSECTL],
+       aumix_cv_cons_mousectl,
+       [AC_EGREP_CPP([A mouse is a mouse is a mouse],
+--- tmp/base/aumix-2.8-r0/aumix-2.8/src/Makefile.am	Mon Mar 18 19:09:17 2002
++++ aumix-2.8/src/Makefile.am	Fri Oct 24 18:39:10 2003
+@@ -7,9 +7,10 @@
+ 		mouse.c common.h curses.h gpm-xterm.h gtk.h interactive.h  \
+ 		mouse.h play.xpm record.xpm
+ localedir	= $(datadir)/locale
+-INCLUDES	= -I../intl -DLOCALEDIR=\"$(localedir)\" -I@includedir@
+-CFLAGS		= @CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@
+-LDADD		= -L@libdir@
++#INCLUDES	= -I../intl -DLOCALEDIR=\"$(localedir)\" -I@includedir@
++INCLUDES	= -I../intl -DLOCALEDIR=\"$(localedir)\"
++AM_CFLAGS		= @CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@
++#LDADD		= -L@libdir@
+ LIBS		= @LIBS@ @GTK_LIBS@ @INTLLIBS@
+ DEFS		= @DEFS@
+ 

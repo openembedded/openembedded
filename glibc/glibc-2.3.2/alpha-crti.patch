@@ -1,0 +1,10 @@
+--- linuxthreads/sysdeps/alpha/elf/pt-initfini.c	5 Jul 2003 22:56:39 -0000	1.3
++++ linuxthreads/sysdeps/alpha/elf/pt-initfini.c	29 Jul 2003 19:15:35 -0000
+@@ -75,7 +75,6 @@
+ 	subq	$30, 16, $30				\n\
+ 	stq	$26, 0($30)				\n\
+ 	stq	$29, 8($30)				\n\
+-	.prologue 1					\n\
+ 	.align 3					\n\
+ /*@_fini_PROLOG_ENDS*/					\n\
+ 							\n\

@@ -1,0 +1,24 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- puzzle_arm/OptionsDialog.cpp~gcc3	2002-07-16 04:01:12.000000000 +0200
++++ puzzle_arm/OptionsDialog.cpp	2004-02-19 21:10:32.000000000 +0100
+@@ -24,14 +24,14 @@
+ 
+ int OptionsDialog::sOptions[5]={60,50,40,30,20};
+ 
+-OptionsDialog::OptionsDialog(QString *currLevel,QString *th, bool *se,bool *ar,bool *tl, int *gs, QWidget *parent=0,const char *name=0):QDialog(parent,name,true,WStyle_Customize|WStyle_NoBorderEx )
++OptionsDialog::OptionsDialog(QString *currLevel,QString *th, bool *se,bool *ar,bool *tlx, int *gs, QWidget *parent,const char *name):QDialog(parent,name,true,WStyle_Customize|WStyle_NoBorderEx )
+ {
+     the=th;
+     ile=currLevel;
+     ise=se;
+     iar=ar;
+     igs=gs;
+-    itl=tl;
++    itl=tlx;
+ 
+     QFont f=font();
+     f.setBold(true);

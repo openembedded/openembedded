@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- rxvt-unicode-3.7/src/command.C~gcc34
++++ rxvt-unicode-3.7/src/command.C
+@@ -4250,7 +4250,7 @@
+     {
+       if (v_buflen == 0)
+         {
+-          ssize_t written = write (pty.pty, data, min (len, MAX_PTY_WRITE));
++          ssize_t written = write (pty.pty, data, min (len, int(MAX_PTY_WRITE)));
+ 
+           if ((unsigned int)written == len)
+             return;
+@@ -4268,7 +4268,7 @@
+ 
+   for (;;)
+     {
+-      int written = write (pty.pty, v_buffer, min (MAX_PTY_WRITE, v_buflen));
++      int written = write (pty.pty, v_buffer, min (int(MAX_PTY_WRITE), v_buflen));
+ 
+       if (written > 0)
+         {
+--- rxvt-unicode-3.7/src/rxvtutil.C~gcc34
++++ rxvt-unicode-3.7/src/rxvtutil.C
+@@ -6,6 +6,8 @@
+ 
+ class byteorder byteorder;
+ 
++static unsigned int byteorder::byteorder::e;
++
+ byteorder::byteorder ()
+ {
+   union {

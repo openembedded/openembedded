@@ -1,0 +1,13 @@
+--- mono-1.0/runtime/net_1_1/Makefile.am.old	2004-07-21 20:30:21.101405400 +0100
++++ mono-1.0/runtime/net_1_1/Makefile.am	2004-07-21 20:31:05.209699920 +0100
+@@ -91,8 +91,8 @@
+ 	@if test -n '$(gac_assemblies)'; then \
+ 	  for i in ''$(gac_assemblies); do \
+ 	    echo "MONO_PATH=$(srcdir) $(mono_runtime) --config ../../data/config $(gacutil) /i $(srcdir)/$$i /f /package 1.0 /gacdir $(GAC_DIR) /root $(GAC_ROOT_DIR)" ; \
+-	    MONO_PATH=$(srcdir) \
+-	      $(LIBTOOL) --mode=execute $(mono_runtime) --config ../../data/config $(gacutil) /i $(srcdir)/$$i /f /package 1.0 /gacdir $(GAC_DIR) /root $(GAC_ROOT_DIR) || exit 1 ; \
++	    cd $(srcdir); MONO_PATH=$(srcdir) \
++	      $(LIBTOOL) --mode=execute $(mono_runtime) --config ../../data/config $(gacutil) /i $$i /f /package 1.0 /gacdir $(GAC_DIR) /root $(GAC_ROOT_DIR) || exit 1 ; \
+ 	  done; fi
+ 
+ uninstall-local:

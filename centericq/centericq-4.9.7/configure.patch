@@ -1,0 +1,312 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- centericq-4.9.7/./libyahoo2-0.1/configure.in~configure
++++ centericq-4.9.7/./libyahoo2-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(libyahoo2, 0.1)
+ 
+ AC_PROG_RANLIB
+@@ -11,4 +12,5 @@
+     AC_PROG_CXX
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./configure.in~configure
++++ centericq-4.9.7/./configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(src/centericq.cc)
++AC_INIT
++AC_CONFIG_SRCDIR([src/centericq.cc])
+ AM_INIT_AUTOMAKE(centericq, 4.9.7)
+ 
+ AC_CANONICAL_HOST
+@@ -10,8 +11,7 @@
+ 
+ AM_CONFIG_HEADER(config.h)
+ 
+-AC_LANG_SAVE
+-AC_LANG_CPLUSPLUS
++AC_LANG_PUSH([C++])
+ 
+ ###     use option --enable-locales-fix to fix problems with double-byte
+ ###     encodings on systems with broken locale, iscntrl()
+@@ -83,11 +83,11 @@
+     else
+ 	AC_MSG_RESULT([not found or disabled])
+ 
+-	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
+-	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
+-	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
+-	    AC_DEFINE(HAVE_GNUTLS, 1, [use gnutls])
+-	])
++#	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
++#	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
++#	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
++#	    AC_DEFINE(HAVE_GNUTLS, 1, [use gnutls])
++#	])
+     fi
+ fi
+ 
+@@ -110,7 +110,7 @@
+ AC_CHECK_LIB(ncurses, initscr,,
+     [AC_CHECK_LIB(curses, initscr,, AC_MSG_ERROR(The ncurses terminal library is required in order to build the program))])
+ 
+-AC_LANG_RESTORE
++AC_LANG_POP()
+ 
+ case "$host_os" in
+ 	darwin*)
+@@ -172,4 +172,5 @@
+ ALL_LINGUAS="zh_TW.Big5 uk sv ru ro pt_BR pl nl ms it hu fr es de cs bg"
+ AM_GNU_GETTEXT
+ AC_CONFIG_SUBDIRS(blip-0.1 firetalk-0.1 kkconsui-0.1 kkstrtext-0.1 libicq2000-0.1 libjabber-0.1 libyahoo2-0.1 kksystr-0.1 connwrap-0.1)
+-AC_OUTPUT(Makefile contrib/Makefile contrib/spanish/Makefile misc/Makefile share/Makefile src/Makefile src/hooks/Makefile po/Makefile.in intl/Makefile)
++AC_CONFIG_FILES([Makefile contrib/Makefile contrib/spanish/Makefile misc/Makefile share/Makefile src/Makefile src/hooks/Makefile po/Makefile.in intl/Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./kkconsui-0.1/configure.in~configure
++++ centericq-4.9.7/./kkconsui-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(kkconsui, 0.1)
+ 
+ AC_CANONICAL_HOST
+@@ -58,4 +59,5 @@
+ 
+ AC_CHECK_HEADERS(_G_config.h)
+ 
+-AC_OUTPUT(Makefile include/Makefile src/Makefile)
++AC_CONFIG_FILES([Makefile include/Makefile src/Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./blip-0.1/configure.in~configure
++++ centericq-4.9.7/./blip-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(blip, 0.1)
+ 
+ AC_PROG_RANLIB
+@@ -11,4 +12,5 @@
+     AC_PROG_CXX
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./firetalk-0.1/configure.in~configure
++++ centericq-4.9.7/./firetalk-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(firetalk, 0.1)
+ 
+ AC_PROG_RANLIB
+@@ -16,19 +17,19 @@
+ 
+     AC_MSG_CHECKING(for inet_aton() presence)
+ 
+-    AC_TRY_LINK([
++    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+ 
+     #include <sys/types.h>
+     #include <sys/socket.h>
+     #include <netinet/in.h>
+     #include <arpa/inet.h>
+ 
+-    ], [
++    ]], [[
+ 
+     struct in_addr inp;
+     inet_aton("address", &inp);
+ 
+-    ], have_aton=yes, have_aton=no)
++    ]])],[have_aton=yes],[have_aton=no])
+ 
+     if test "$have_aton" = "yes"; then
+ 	AC_DEFINE(HAVE_INET_ATON)
+@@ -38,4 +39,5 @@
+     fi
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./kksystr-0.1/configure.in~configure
++++ centericq-4.9.7/./kksystr-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(kksystr, 0.1)
+ 
+ AC_PROG_CC
+@@ -7,4 +8,5 @@
+ 
+ AC_CHECK_HEADERS(_G_config.h ftw.h)
+ 
+-AC_OUTPUT(Makefile include/Makefile src/Makefile)
++AC_CONFIG_FILES([Makefile include/Makefile src/Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./libicq2000-0.1/configure.in~configure
++++ centericq-4.9.7/./libicq2000-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(libicq2000, 0.1)
+ 
+ AM_CONFIG_HEADER(config.h)
+@@ -10,8 +11,7 @@
+ 
+ AC_STRUCT_TIMEZONE
+ 
+-AC_LANG_SAVE
+-AC_LANG_CPLUSPLUS
++AC_LANG_PUSH([C++])
+ 
+ AC_CHECK_HEADERS([vector iostream fstream string algorithm list memory iterator exception utility],,
+   AC_MSG_ERROR([You need to have the libstdc++ headers installed]))
+@@ -26,15 +26,16 @@
+   [AC_CHECK_HEADERS(strstream,,
+     AC_MSG_ERROR([Your libstdc++ doesn't have the sstream or strstream classes]))])
+ 
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+     #include <sys/types.h>
+     #include <sys/socket.h>
+-],[ socklen_t foo; ], ac_cv_c_socklen_t=yes, ac_cv_c_socklen_t=no)
++]], [[ socklen_t foo; ]])],[ac_cv_c_socklen_t=yes],[ac_cv_c_socklen_t=no])
+ 
+ if test $ac_cv_c_socklen_t = no; then
+   AC_DEFINE(socklen_t, int, [Define type of socklen_t for systems missing it])
+ fi
+ 
+-AC_LANG_RESTORE
++AC_LANG_POP()
+ 
+-AC_OUTPUT(Makefile libicq2000/Makefile src/Makefile)
++AC_CONFIG_FILES([Makefile libicq2000/Makefile src/Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./connwrap-0.1/configure.in~configure
++++ centericq-4.9.7/./connwrap-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(connwrap, 0.1)
+ 
+ AC_PROG_RANLIB
+@@ -45,29 +46,29 @@
+     else
+ 	AC_MSG_RESULT([not found or disabled])
+ 
+-	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
+-	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
+-	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
+-	    AC_DEFINE(HAVE_GNUTLS)
+-	])
++#	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
++#	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
++#	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
++#	    AC_DEFINE(HAVE_GNUTLS)
++#	])
+     fi
+ fi
+ 
+ AC_MSG_CHECKING(for inet_aton() presence)
+ 
+-AC_TRY_LINK([
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+ 
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ 
+-], [
++]], [[
+ 
+ struct in_addr inp;
+ inet_aton("address", &inp);
+ 
+-], have_aton=yes, have_aton=no)
++]])],[have_aton=yes],[have_aton=no])
+ 
+ if test "$have_aton" = "yes"; then
+     AC_DEFINE(HAVE_INET_ATON)
+@@ -76,4 +77,5 @@
+     AC_MSG_RESULT(no)
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./libjabber-0.1/configure.in~configure
++++ centericq-4.9.7/./libjabber-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(libjabber, 0.1)
+ 
+ AC_PROG_RANLIB
+@@ -11,4 +12,5 @@
+     AC_PROG_CXX
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- centericq-4.9.7/./kkstrtext-0.1/configure.in~configure
++++ centericq-4.9.7/./kkstrtext-0.1/configure.in
+@@ -1,4 +1,5 @@
+-AC_INIT(aclocal.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([aclocal.m4])
+ AM_INIT_AUTOMAKE(kkstrtext, 0.1)
+ 
+ AC_PROG_CC
+@@ -14,7 +15,7 @@
+ 
+ AC_CHECK_HEADERS(_G_config.h)
+ 
+-AC_LANG_CPLUSPLUS
++AC_LANG([C++])
+ 
+ #
+ # iconv const checking
+@@ -24,13 +25,11 @@
+     AC_DEFINE(HAVE_ICONV_H)
+     AC_MSG_CHECKING([for twisted iconv()])
+ 
+-    AC_TRY_COMPILE([ #include <iconv.h> ], [
++    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[ #include <iconv.h> ]], [[
+ 	char *inbuf, *outbuf; iconv_t k; size_t a, b;
+ 	iconv(k, &inbuf, &a, &outbuf, &b);
+-    ],
+-	iconv_const=no,
+-	iconv_const=yes
+-    )
++    ]])],[iconv_const=no],[iconv_const=yes
++    ])
+ 
+     AC_MSG_RESULT($iconv_const)
+ 
+@@ -39,4 +38,5 @@
+     fi
+ fi
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT

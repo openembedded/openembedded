@@ -1,0 +1,55 @@
+--- ../ipkg-link-1.6cvs-r0/ipkg-utils/ipkg-link	2003-03-25 23:23:56.000000000 +0000
++++ ipkg-utils/ipkg-link	2004-08-18 13:27:51.000000000 +0100
+@@ -18,19 +18,22 @@
+ 	# Does the list file exist?
+ 	if [ -e "/mnt/card/usr/lib/ipkg/info/$PACKAGE.list" ]; then
+ 		PREFIX="/mnt/card"
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" |sed -e 's/\/mnt\/card//g'`
+ 	else
+ 		if [ -e "/mnt/cf/usr/lib/ipkg/info/$PACKAGE.list" ]; then
+-			PREFIX="/mnt/cf"		
++			PREFIX="/mnt/cf"
++			files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" |sed -e 's/\/mnt\/cf//g'`	
+ 		else
+ 			if [ -e "/mnt/ram/usr/lib/ipkg/info/$PACKAGE.list" ]; then
+ 				PREFIX="/mnt/ram"
++				files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" |sed -e 's/\/mnt\/ram//g'`
+ 			else
+ 				echo "Package \"$PACKAGE\" not found."
+ 				exit
+ 			fi
+ 		fi
+ 	fi
+-	files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list"`
++	[ -z "$files" ] && files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list"`
+ 	echo "*** Found package on $PREFIX"
+ }
+ 
+@@ -45,6 +48,7 @@
+ 				`mkdir "$line"`
+ 			else
+ 				# It's a file.
++				[ ! -d `dirname $line` ] && mkdir -p `dirname $line`
+ 				`ln -s "$PREFIX$line" "$line"`
+ 			fi
+ 		fi
+@@ -53,7 +57,18 @@
+ 
+ remove () {
+ 	echo "*** Removing $PACKAGE"
+-	files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sort -r`
++	if [ "$PREFIX" = "/mnt/ram" ]; then
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sed -e 's/\/mnt\/ram//g' | sort -r`
++
++	elif [ "$PREFIX" = "/mnt/card" ]; then
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sed -e 's/\/mnt\/card//g' | sort -r`
++
++	elif [ "$PREFIX" = "/mnt/cf" ]; then
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sed -e 's/\/mnt\/cf//g' | sort -r`
++
++	else
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sort -r`
++	fi
+ 	echo "$files" |
+ 	while read line; do
+ 		if [ -e "$line" ]; then

@@ -1,0 +1,11 @@
+--- /mnt/bdisk/openembedded/oetmp/base/opensimpad-2.4.25-vrs2-pxa1-jpm1-r5/linux-2.4.25/drivers/misc/ucb1x00-ts.c	2004-07-01 21:10:30.000000000 +0200
++++ drivers/misc/ucb1x00-ts.c	2004-07-04 02:00:56.000000000 +0200
+@@ -35,7 +35,7 @@
+ /*
+  * Define this if you want the UCB1x00 stuff to talk to the input layer
+  */
+-#ifdef CONFIG_INPUT
++#if defined(CONFIG_INPUT) && !defined(CONFIG_SA1100_SIMPAD)
+ #define USE_INPUT
+ #else
+ #undef USE_INPUT

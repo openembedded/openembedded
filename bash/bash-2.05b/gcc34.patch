@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- bash-2.05b/lib/malloc/malloc.c~gcc34
++++ bash-2.05b/lib/malloc/malloc.c
+@@ -878,7 +878,7 @@
+   nextf[nunits] = p;
+   busy[nunits] = 0;
+ 
+-free_return:
++free_return:;
+ 
+ #ifdef MALLOC_STATS
+   _mstats.nmalloc[nunits]--;

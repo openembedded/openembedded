@@ -1,0 +1,12 @@
+--- doc/bash.1~	Sun Apr 29 23:35:03 2001
++++ doc/bash.1	Sat Jul 21 21:48:33 2001
+@@ -2301,6 +2301,9 @@
+ \fB$((\fP\fIexpression\fP\fB))\fP
+ .RE
+ .PP
++The old format \fB$[\fP\fIexpression\fP\fB]\fP is deprecated and will
++be removed in upcoming versions of bash.
++.PP
+ The
+ .I expression
+ is treated as if it were within double quotes, but a double quote

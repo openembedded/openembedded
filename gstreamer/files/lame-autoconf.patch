@@ -1,0 +1,18 @@
+--- gst-plugins-0.8.4/configure.ac.old	2004-09-11 00:35:27.000000000 +0100
++++ gst-plugins-0.8.4/configure.ac	2004-09-11 00:35:27.000000000 +0100
+@@ -1196,6 +1196,7 @@
+   GST_CHECK_LIBHEADER(LAME, mp3lame, lame_init, -lm, lame/lame.h, HAVE_LAME="yes" LAME_LIBS="-lmp3lame -lm")
+ ])
+ dnl is lame presets available
++if test "x$HAVE_LAME" = "xyes"; then
+ LAME_CFLAGS=""
+ AC_TRY_RUN([
+ #include <lame/lame.h>
+@@ -1205,6 +1206,7 @@
+   return 0;
+ }
+ ],[LAME_CFLAGS="-DGSTLAME_PRESET"],[LAME_CFLAGS=""])
++fi
+ AC_SUBST(LAME_CFLAGS)
+ AC_SUBST(LAME_LIBS)
+ 

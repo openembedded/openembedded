@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if ( uname -r | grep -q embedix ) && \
+   [ ".$@" = ".-s" -o ".$@" = ".--suspend" ]; then
+	killall -USR1 apmd || /usr/bin/apm.orig -s
+else
+	/usr/bin/apm.orig "$@"
+fi
+

@@ -1,0 +1,40 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- imlib2-1.1.0/configure.ac~pkglibdir.patch
++++ imlib2-1.1.0/configure.ac
+@@ -59,8 +59,8 @@
+ fi
+ AM_CONDITIONAL(HAVE_MMX, test x$mmx = xyes)
+ 
+-pkglibdir='${libdir}'/loaders
+-AC_SUBST(pkglibdir)
++loadersdir='${pkglibdir}'/loaders
++AC_SUBST(loadersdir)
+ 
+ AC_C_BIGENDIAN	      
+ 
+--- imlib2-1.1.0/loaders/Makefile.am~pkglibdir.patch
++++ imlib2-1.1.0/loaders/Makefile.am
+@@ -10,7 +10,7 @@
+                        -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
+                        $(X_CFLAGS)
+ 
+-pkgdir		     = $(libdir)/loaders/image
++pkgdir		     = $(loadersdir)/image
+ 
+ if JPEG_LOADER
+ JPEG_L              = jpeg.la
+--- imlib2-1.1.0/filters/Makefile.am~pkglibdir.patch
++++ imlib2-1.1.0/filters/Makefile.am
+@@ -10,7 +10,7 @@
+                        -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
+                        $(X_CFLAGS)
+ 
+-pkgdir		     = $(libdir)/loaders/filter
++pkgdir		     = $(loadersdir)/filter
+ pkg_LTLIBRARIES	     = testfilter.la bump_map.la colormod.la
+ 
+ testfilter_la_SOURCES  = filter_test.c

@@ -1,0 +1,14 @@
+--- rxvt-unicode-3.1/src/screen.C~	2004-06-21 20:56:06.000000000 +0100
++++ rxvt-unicode-3.1/src/screen.C	2004-06-27 18:16:38.000000000 +0100
+@@ -3473,9 +3473,11 @@
+ 
+       // Xwc doesn't handle iso-10646 in wchar_t gracefully, so maybe recode it
+       // manually for XUTF8StringStyle.
++#ifdef HAVE_XWC
+       if (XwcTextListToTextProperty (display->display, &cl, 1, style, &ct) >= 0)
+         freect = 1;
+       else
++#endif
+         {
+           /* if we failed to convert then send it raw */
+           ct.value = (unsigned char *)cl;

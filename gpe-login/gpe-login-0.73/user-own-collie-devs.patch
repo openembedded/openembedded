@@ -1,0 +1,33 @@
+diff -urNd ../gpe-login-0.73-r1/gpe-login-0.73/X11/gpe-login.pre-session gpe-login-0.73/X11/gpe-login.pre-session
+--- ../gpe-login-0.73-r1/gpe-login-0.73/X11/gpe-login.pre-session	2004-01-17 11:24:23.000000000 +0000
++++ gpe-login-0.73/X11/gpe-login.pre-session	2004-09-17 13:07:56.000000000 +0100
+@@ -6,10 +6,18 @@
+ chown $USER /dev/sound/dsp
+ fi
+ 
++if [ -e /dev/dsp ]; then
++chown $USER /dev/dsp
++fi
++
+ if [ -e /dev/sound/mixer ]; then
+ chown $USER /dev/sound/mixer
+ fi
+ 
++if [ -e /dev/mixer ]; then
++chown $USER /dev/mixer
++fi
++
+ if [ -e /dev/touchscreen/0raw ]; then
+ chown $USER /dev/touchscreen/0raw
+ fi
+@@ -18,6 +26,10 @@
+ chown $USER /dev/touchscreen/0
+ fi
+ 
++if [ -e /dev/collie-fl ]; then
++chown $USER /dev/collie-fl
++fi
++
+ if [ -e /dev/misc/buzzer ]; then
+ chown $USER /dev/misc/buzzer
+ fi

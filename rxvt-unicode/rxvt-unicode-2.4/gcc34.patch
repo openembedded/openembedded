@@ -1,0 +1,12 @@
+diff -urNd rxvt-unicode-2.4-r0.orig/rxvt-unicode-2.4/src/rxvtcolor.C rxvt-unicode-2.4-r0/rxvt-unicode-2.4/src/rxvtcolor.C
+--- rxvt-unicode-2.4/src/rxvtcolor.C	2004-03-14 17:03:03.000000000 +0000
++++ rxvt-unicode-2.4/src/rxvtcolor.C	2004-06-21 00:47:50.937819832 +0000
+@@ -259,7 +259,7 @@
+ 
+ /////////////////////////////////////////////////////////////////////////////
+ 
+-template refcache<rxvt_display>;
++template class refcache<rxvt_display>;
+ refcache<rxvt_display> displays;
+ 
+ /////////////////////////////////////////////////////////////////////////////

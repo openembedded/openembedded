@@ -1,0 +1,24 @@
+--- gpsd-1.10/nmea_parse.c.orig	2004-03-01 23:32:52.147650832 +0000
++++ gpsd-1.10/nmea_parse.c	2004-03-01 23:32:43.544958640 +0000
+@@ -261,7 +261,7 @@
+     unsigned char sum = '\0';
+     char c, *p = sentence;
+ 
+-    while ((c = *p++) != '*')
++    while ((c = *p++) != '*' && c != '\0')
+ 	sum ^= c;
+ 
+     sprintf(p, "%02X\r\n", sum);
+@@ -276,10 +276,10 @@
+ static char *field(char *sentence, short n)
+ {
+     static char result[100];
+-    char *p = sentence;
++    char c, *p = sentence;
+ 
+     while (n-- > 0)
+-	while (*p++ != ',');
++	while ((c = *p++) != ',' && c != '\0');
+     strcpy(result, p);
+     p = result;
+     while (*p && *p != ',' && *p != '*' && *p != '\r')

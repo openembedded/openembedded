@@ -1,0 +1,10 @@
+--- matchbox-panel-0.8.1/applets/Makefile.am.old	2004-07-03 11:37:03.000000000 +0100
++++ matchbox-panel-0.8.1/applets/Makefile.am	2004-07-03 11:37:07.000000000 +0100
+@@ -13,7 +13,6 @@
+   mb-applet-clock    mb-applet-menu-launcher  mb-applet-wireless  \
+   mb-applet-launcher mb-applet-system-monitor mb-applet-battery
+ mb_applet_battery_SOURCES =        mb-applet-battery.c
+-mb_applet_battery_OBJECTS =        mb-applet-battery.$(OBJEXT)
+ mb_applet_battery_LDADD   =        $(LIBMB_LIBS) $(SN_LIBS) -lapm  
+ mb-applet-battery$(EXEEXT): $(mb_applet_battery_OBJECTS) 
+ 	@rm -f mb-applet-battery$(EXEEXT)

@@ -1,0 +1,114 @@
+
+Fixes raw() and uses it in check_one_sigio; also fixes a silly panic (EINTR returned by call).
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/include/user_util.h |    4 ++-
+ uml-linux-2.6.7-paolo/arch/um/kernel/sigio_user.c |   11 +++-----
+ uml-linux-2.6.7-paolo/arch/um/kernel/user_util.c  |   29 ++++++++++++++++++----
+ 3 files changed, 31 insertions(+), 13 deletions(-)
+
+diff -puN arch/um/kernel/sigio_user.c~Add_os_make_pty_raw arch/um/kernel/sigio_user.c
+--- uml-linux-2.6.7/arch/um/kernel/sigio_user.c~Add_os_make_pty_raw	2004-06-29 21:03:03.157157408 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/sigio_user.c	2004-06-29 21:03:03.161156800 +0200
+@@ -16,6 +16,7 @@
+ #include "init.h"
+ #include "user.h"
+ #include "kern_util.h"
++#include "user_util.h"
+ #include "sigio.h"
+ #include "helper.h"
+ #include "os.h"
+@@ -50,7 +51,6 @@ static void openpty_cb(void *arg)
+ void __init check_one_sigio(void (*proc)(int, int))
+ {
+ 	struct sigaction old, new;
+-	struct termios tt;
+ 	struct openpty_arg pty = { .master = -1, .slave = -1 };
+ 	int master, slave, err;
+ 
+@@ -68,12 +68,9 @@ void __init check_one_sigio(void (*proc)
+ 		return;
+ 	}
+ 
+-	/* XXX These can fail with EINTR */
+-	if(tcgetattr(master, &tt) < 0)
+-		panic("check_sigio : tcgetattr failed, errno = %d\n", errno);
+-	cfmakeraw(&tt);
+-	if(tcsetattr(master, TCSADRAIN, &tt) < 0)
+-		panic("check_sigio : tcsetattr failed, errno = %d\n", errno);
++	err = __raw(master, 1, 0); //Not now, but complain so we now where we failed.
++	if (err < 0)
++		panic("check_sigio : __raw failed, errno = %d\n", -err);
+ 
+ 	err = os_sigio_async(master, slave);
+ 	if(err < 0)
+diff -puN arch/um/kernel/user_util.c~Add_os_make_pty_raw arch/um/kernel/user_util.c
+--- uml-linux-2.6.7/arch/um/kernel/user_util.c~Add_os_make_pty_raw	2004-06-29 21:03:03.158157256 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/user_util.c	2004-06-29 21:03:03.162156648 +0200
+@@ -119,18 +119,37 @@ int wait_for_stop(int pid, int sig, int 
+ 	}
+ }
+ 
+-int raw(int fd, int complain)
++int __raw(int fd, int complain, int now)
+ {
+ 	struct termios tt;
+ 	int err;
++	int when;
++
++	while (((err = tcgetattr(fd, &tt)) < 0) && errno == EINTR)
++		;
++
++	if (err < 0) {
++		if (complain)
++			printk("tcgetattr failed, errno = %d\n", errno);
++		return(-errno);
++	}
+ 
+-	tcgetattr(fd, &tt);
+ 	cfmakeraw(&tt);
+-	err = tcsetattr(fd, TCSANOW, &tt);
+-	if((err < 0) && complain){
+-		printk("tcsetattr failed, errno = %d\n", errno);
++
++	if (now)
++		when = TCSANOW;
++	else
++		when = TCSADRAIN;
++
++	while (((err = tcsetattr(fd, when, &tt)) < 0) && errno == EINTR)
++		;
++	if (err < 0) {
++		if (complain)
++			printk("tcsetattr failed, errno = %d\n", errno);
+ 		return(-errno);
+ 	}
++	/*XXX: tcsetattr could have applied only some changes
++	 * (and cfmakeraw() is a set of changes) */
+ 	return(0);
+ }
+ 
+diff -puN arch/um/include/user_util.h~Add_os_make_pty_raw arch/um/include/user_util.h
+--- uml-linux-2.6.7/arch/um/include/user_util.h~Add_os_make_pty_raw	2004-06-29 21:03:03.159157104 +0200
++++ uml-linux-2.6.7-paolo/arch/um/include/user_util.h	2004-06-29 21:03:03.162156648 +0200
+@@ -62,7 +62,6 @@ extern void set_cmdline(char *cmd);
+ extern void input_cb(void (*proc)(void *), void *arg, int arg_len);
+ extern int get_pty(void);
+ extern void *um_kmalloc(int size);
+-extern int raw(int fd, int complain);
+ extern int switcheroo(int fd, int prot, void *from, void *to, int size);
+ extern void setup_machinename(char *machine_out);
+ extern void setup_hostinfo(void);
+@@ -90,6 +89,9 @@ extern void forward_pending_sigio(int ta
+ extern int can_do_skas(void);
+ extern void arch_init_thread(void);
+ 
++extern int __raw(int fd, int complain, int now);
++#define raw(fd, complain) __raw((fd), (complain), 1)
++
+ #endif
+ 
+ /*
+_

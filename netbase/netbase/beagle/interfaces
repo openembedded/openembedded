@@ -1,0 +1,18 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo usbf
+iface lo inet loopback
+
+# Wireless interfaces
+iface wlan0 inet dhcp
+wireless_mode managed
+iface atml0 inet dhcp
+
+# Wired or wireless interfaces
+iface eth0 inet dhcp
+iface eth1 inet dhcp
+
+# Zaurus usbnet
+iface usbf inet dhcp
+

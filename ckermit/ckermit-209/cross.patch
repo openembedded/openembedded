@@ -1,0 +1,11 @@
+--- ckermit-209/makefile~crosscompile
++++ ckermit-209/makefile
+@@ -1391,7 +1391,7 @@
+ ckctel.$(EXT): ckcsym.h ckcdeb.h ckcker.h ckcnet.h ckctel.h ckclib.h
+ 
+ wart: ckwart.$(EXT)
+-	$(CC) $(LNKFLAGS) -o wart ckwart.$(EXT) $(LIBS)
++	$(CC_FOR_BUILD) -o wart ckwart.c
+ 
+ ckcmdb.$(EXT): ckcmdb.c ckcdeb.h ckcsym.h ckclib.h
+ 

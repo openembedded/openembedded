@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- fam-2.7.0/src/Listener.c++~compile-fix	2003-01-20 01:37:29.000000000 +0100
++++ fam-2.7.0/src/Listener.c++	2004-02-28 23:53:57.000000000 +0100
+@@ -45,7 +45,7 @@
+ #include "BTree.h"
+ 
+ #if !(HAVE_BINDRESVPORT_PROTO)
+-extern "C" int bindresvport(int sd, struct sockaddr_in *);
++extern "C" int bindresvport(int sd, struct sockaddr_in *) throw();
+ #endif
+ 
+ struct NegotiatingClient
+--- fam-2.7.0/src/Log.c++~compile-fix	2003-01-18 15:18:12.000000000 +0100
++++ fam-2.7.0/src/Log.c++	2004-02-29 02:23:23.000000000 +0100
+@@ -264,7 +264,7 @@
+ //  New back end for assert() will log to syslog, put core file
+ //  in known directory.
+ 
+-void __assert(const char *msg, const char *file, int line)
++void __assert(const char *msg, const char *file, int line) throw()
+ {
+     char *dirname = new char[strlen(Log::getName()) + 20];
+     (void) sprintf(dirname, "/usr/tmp/%s.%d", Log::getName(), getpid());

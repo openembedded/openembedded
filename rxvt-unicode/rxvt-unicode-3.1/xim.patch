@@ -1,0 +1,142 @@
+--- rxvt-unicode-3.1/src/rxvtcolor.C~	2004-05-10 19:46:33.000000000 +0100
++++ rxvt-unicode-3.1/src/rxvtcolor.C	2004-06-27 18:15:28.000000000 +0100
+@@ -102,6 +102,8 @@
+     put (*this->begin ());
+ }
+ 
++#ifdef USE_XIM
++
+ /////////////////////////////////////////////////////////////////////////////
+ 
+ static void
+@@ -141,6 +143,8 @@
+ 
+ /////////////////////////////////////////////////////////////////////////////
+ 
++#endif
++
+ rxvt_display::rxvt_display (const char *id)
+ : refcounted (id)
+ , x_ev (this, &rxvt_display::x_cb)
+@@ -185,7 +189,9 @@
+   fcntl (fd, F_SETFD, FD_CLOEXEC);
+ 
+   XSelectInput (display, root, PropertyChangeMask);
++#ifdef USE_XIM
+   xa_xim_servers = XInternAtom (display, "XIM_SERVERS", 0);
++#endif
+ 
+   flush ();
+ 
+@@ -200,12 +206,16 @@
+     XCloseDisplay (display);
+ }
+ 
++#ifdef USE_XIM
++
+ void rxvt_display::im_change_cb ()
+ {
+   for (im_watcher **i = imw.begin (); i != imw.end (); ++i)
+     (*i)->call ();
+ }
+ 
++#endif
++
+ void rxvt_display::x_cb (io_watcher &w, short revents)
+ {
+   do
+@@ -215,10 +225,12 @@
+ 
+       //printf ("T %d w %lx\n", xev.type, xev.xany.window);//D
+ 
++#ifdef USE_XIM
+       if (xev.type == PropertyNotify
+           && xev.xany.window == root
+           && xev.xproperty.atom == xa_xim_servers)
+         im_change_cb ();
++#endif
+ 
+       for (int i = xw.size (); i--; )
+         {
+@@ -258,6 +270,8 @@
+     xw[w->active - 1] = 0;
+ }
+ 
++#ifdef USE_XIM
++
+ void rxvt_display::reg (im_watcher *w)
+ {
+   imw.push_back (w);
+@@ -267,6 +281,7 @@
+ {
+   imw.erase (find (imw.begin (), imw.end (), w));
+ }
++#endif
+ 
+ void rxvt_display::set_selection_owner (rxvt_term *owner)
+ {
+@@ -276,6 +291,8 @@
+   selection_owner = owner;
+ }
+ 
++#ifdef USE_XIM
++
+ rxvt_xim *rxvt_display::get_xim (const char *locale, const char *modifiers)
+ {
+   char *id;
+@@ -302,6 +319,8 @@
+   xims.put (xim);
+ }
+ 
++#endif
++
+ Atom rxvt_display::atom (const char *name)
+ {
+   return XInternAtom (display, name, False);
+--- rxvt-unicode-3.1/src/rxvtcolor.h~	2004-04-02 19:59:08.000000000 +0100
++++ rxvt-unicode-3.1/src/rxvtcolor.h	2004-06-27 18:13:24.000000000 +0100
+@@ -61,16 +61,20 @@
+ };
+ 
+ struct rxvt_display : refcounted {
++#ifdef USE_XIM
+   Atom xa_xim_servers;
++#endif
+ 
+   io_manager_vec<xevent_watcher> xw;
+ 
+   io_watcher x_ev; void x_cb (io_watcher &w, short revents);
+ 
++#ifdef USE_XIM
+   refcache<rxvt_xim> xims;
+   vector<im_watcher *> imw;
+ 
+   void im_change_cb ();
++#endif
+ 
+ //public
+   Display  *display;
+@@ -94,12 +98,15 @@
+ 
+   void set_selection_owner (rxvt_term *owner);
+ 
++#ifdef USE_XIM
+   rxvt_xim *get_xim (const char *locale, const char *modifiers);
+   void put_xim (rxvt_xim *xim);
++#endif
+ 
+   Atom atom (const char *name);
+ };
+ 
++#ifdef USE_XIM
+ struct im_watcher : watcher, callback0<void> {
+   template<class O1, class O2>
+   im_watcher (O1 *object, void (O2::*method) ())
+@@ -115,6 +122,7 @@
+     display->unreg (this);
+   }
+ };
++#endif
+ 
+ struct xevent_watcher : watcher, callback1<void, XEvent &> {
+   Window window;

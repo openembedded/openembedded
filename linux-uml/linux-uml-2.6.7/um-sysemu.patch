@@ -1,0 +1,145 @@
+
+Turns off syscall emulation patch for ptrace (SYSEMU) on.
+SYSEMU is a performance-patch introduced by Laurent Vivier. It changes
+behaviour of ptrace() and helps reducing host context switch rate.
+To make it working, you need a kernel patch for your host, too.
+See http://perso.wanadoo.fr/laurent.vivier/UML/ for further information.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/kernel/process.c                  |   35 ++++++++++
+ uml-linux-2.6.7-paolo/arch/um/kernel/skas/include/ptrace-skas.h |    7 ++
+ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process.c             |   22 ++++++
+ 3 files changed, 64 insertions(+)
+
+diff -puN arch/um/kernel/process.c~um-sysemu arch/um/kernel/process.c
+--- uml-linux-2.6.7/arch/um/kernel/process.c~um-sysemu	2004-06-29 21:03:03.801059520 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/process.c	2004-06-29 21:03:03.806058760 +0200
+@@ -19,6 +19,7 @@
+ #include <asm/sigcontext.h>
+ #include <asm/unistd.h>
+ #include <asm/page.h>
++#include <asm/user.h>
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "user.h"
+@@ -227,6 +228,40 @@ void __init check_ptrace(void)
+ 	}
+ 	stop_ptraced_child(pid, stack, 0);
+ 	printk("OK\n");
++
++#ifdef PTRACE_SYSEMU
++	printk("Checking syscall emulation patch for ptrace...");
++	use_sysemu = 0;
++	pid = start_ptraced_child(&stack);
++	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) >= 0) {
++		struct user_regs_struct regs;
++
++		if (waitpid(pid, &status, WUNTRACED) < 0)
++			panic("check_ptrace : wait failed, errno = %d", errno);
++		if(!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
++			panic("check_ptrace : expected SIGTRAP, "
++			      "got status = %d", status);
++
++		if (ptrace(PTRACE_GETREGS, pid, 0, &regs) < 0)
++			panic("check_ptrace : failed to read child "
++			      "registers, errno = %d", errno);
++		regs.orig_eax = pid;
++		if (ptrace(PTRACE_SETREGS, pid, 0, &regs) < 0)
++			panic("check_ptrace : failed to modify child "
++			      "registers, errno = %d", errno);
++
++		stop_ptraced_child(pid, stack, 0);
++
++		printk("OK\n");
++		use_sysemu = 1;
++	}
++	else
++	{
++		printk("missing\n");
++		stop_ptraced_child(pid, stack, 1);
++	}
++
++# endif /* PTRACE_SYSEMU */
+ }
+ 
+ int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr)
+diff -puN arch/um/kernel/skas/include/ptrace-skas.h~um-sysemu arch/um/kernel/skas/include/ptrace-skas.h
+--- uml-linux-2.6.7/arch/um/kernel/skas/include/ptrace-skas.h~um-sysemu	2004-06-29 21:03:03.802059368 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/skas/include/ptrace-skas.h	2004-06-29 21:03:03.806058760 +0200
+@@ -10,6 +10,13 @@
+ 
+ #ifdef UML_CONFIG_MODE_SKAS
+ 
++/* syscall emulation path in ptrace */
++
++#ifndef PTRACE_SYSEMU
++#define PTRACE_SYSEMU 31
++#endif
++extern int use_sysemu;
++
+ #include "skas_ptregs.h"
+ 
+ #define HOST_FRAME_SIZE 17
+diff -puN arch/um/kernel/skas/process.c~um-sysemu arch/um/kernel/skas/process.c
+--- uml-linux-2.6.7/arch/um/kernel/skas/process.c~um-sysemu	2004-06-29 21:03:03.803059216 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process.c	2004-06-29 21:03:03.806058760 +0200
+@@ -28,6 +28,10 @@
+ #include "chan_user.h"
+ #include "signal_user.h"
+ 
++#ifdef PTRACE_SYSEMU
++int use_sysemu = 0;
++#endif
++
+ int is_skas_winch(int pid, int fd, void *data)
+ {
+ 	if(pid != getpid())
+@@ -68,6 +72,10 @@ static void handle_trap(int pid, union u
+ 		return;
+ 	}
+ 
++#ifdef PTRACE_SYSEMU
++	if (!use_sysemu)
++	{
++#endif
+ 	err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
+ 	if(err < 0)
+ 	        panic("handle_trap - nullifying syscall failed errno = %d\n", 
+@@ -82,6 +90,9 @@ static void handle_trap(int pid, union u
+ 	if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+ 		panic("handle_trap - failed to wait at end of syscall, "
+ 		      "errno = %d, status = %d\n", errno, status);
++#ifdef PTRACE_SYSEMU
++	}
++#endif
+ 
+ 	handle_syscall(regs);
+ }
+@@ -139,6 +150,11 @@ void userspace(union uml_pt_regs *regs)
+ 
+ 	restore_registers(regs);
+ 		
++#ifdef PTRACE_SYSEMU
++	if (use_sysemu)
++		err = ptrace(PTRACE_SYSEMU, pid, 0, 0);
++	else
++#endif
+ 	err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
+ 	if(err)
+ 		panic("userspace - PTRACE_SYSCALL failed, errno = %d\n", 
+@@ -177,6 +193,12 @@ void userspace(union uml_pt_regs *regs)
+ 
+ 		restore_registers(regs);
+ 
++#ifdef PTRACE_SYSEMU
++		if (use_sysemu)
++			op = singlestepping_skas() ? PTRACE_SINGLESTEP :
++				PTRACE_SYSEMU;
++		else
++#endif
+ 		op = singlestepping_skas() ? PTRACE_SINGLESTEP : 
+ 			PTRACE_SYSCALL;
+ 		err = ptrace(op, pid, 0, 0);
+_

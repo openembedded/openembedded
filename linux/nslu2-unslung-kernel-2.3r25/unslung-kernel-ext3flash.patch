@@ -1,0 +1,28 @@
+--- linux-2.4.22/drivers/scsi/scsi_scan.c.orig	2004-09-23 22:26:35.000000000 +0930
++++ linux-2.4.22/drivers/scsi/scsi_scan.c	2004-09-23 22:38:30.000000000 +0930
+@@ -704,6 +704,7 @@
+         /* restrict device on certain port grant */
+ 	SDpnt->host->hostt->removable = SDpnt->removable;
+ 
++#if 0
+         if ( SDpnt->removable && (USB_DEVPATH_1 == SDpnt->host->hostt->port) )
+         {
+ 		create_proc_read_entry("usb_err",
+@@ -729,6 +730,7 @@
+ 				NULL
+ 			);
+ 	}else {
++#endif
+ 		printk("%x port connect!!!!!\n",SDpnt->host->hostt->port);
+ 		if(0x31 == SDpnt->host->hostt->port){
+ 			*IXP425_GPIO_GPOUTR &= 0xfff7;
+@@ -747,7 +749,9 @@
+ 					NULL
+ 			);
+ 		}
++#if 0
+ 	}
++#endif
+ 		//end
+ 	/*
+ 	 * Check the peripheral qualifier field - this tells us whether LUNS

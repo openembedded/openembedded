@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- sudo-1.6.7p5/Makefile.in~nostrip.patch
++++ sudo-1.6.7p5/Makefile.in
+@@ -308,8 +308,8 @@
+ 	    $(DESTDIR)$(mandirsu) $(DESTDIR)$(mandirform)
+ 
+ install-binaries: $(PROGS)
+-	$(INSTALL) $(install_owncmd) -m 4555 -s sudo $(DESTDIR)$(sudodir)/sudo
+-	$(INSTALL) $(install_owncmd) -m 0555 -s visudo $(DESTDIR)$(visudodir)/visudo
++	$(INSTALL) $(install_owncmd) -m 4555 sudo $(DESTDIR)$(sudodir)/sudo
++	$(INSTALL) $(install_owncmd) -m 0555 visudo $(DESTDIR)$(visudodir)/visudo
+ 
+ install-sudoers:
+ 	test -f $(DESTDIR)$(sudoersdir)/sudoers || \
+@@ -376,8 +376,6 @@
+ 	      -e 's/@_mansectform@/$(mansectform)/g' $(srcdir)/Makefile.binary \
+ 	      > $$tdir/Makefile ; \
+ 	)  
+-	strip sudo
+-	strip visudo
+ 	( cd tmp.`arch -l` && tar Ocf ../sudo-$(VERSION)-`arch -l`.tar sudo-$(VERSION) )
+ 	gzip --best sudo-$(VERSION)-`arch -l`.tar
+ 	rm -rf tmp.`arch -l`

@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libetpan-0.33pre/tools/mailstream_socket.c~mailstream_socket	2004-03-07 01:59:01.000000000 +0100
++++ libetpan-0.33pre/tools/mailstream_socket.c	2004-03-11 14:48:47.000000000 +0100
+@@ -44,6 +44,7 @@
+ */
+ #include <sys/time.h>
+ #include <sys/types.h>
++#include <sys/socket.h>
+ #include <unistd.h>
+ #include <sys/select.h>
+ 
+@@ -176,8 +177,8 @@
+     if (!FD_ISSET(socket_data->fd, &fds_read))
+       return 0;
+   }
+-  
+-  return read(socket_data->fd, buf, count);
++ 
++  return recv(socket_data->fd,buf,count,MSG_NOSIGNAL);
+ }
+ 
+ static ssize_t mailstream_low_socket_write(mailstream_low * s,
+@@ -207,8 +208,7 @@
+     if (!FD_ISSET(socket_data->fd, &fds_write))
+       return 0;
+   }
+-  
+-  return write(socket_data->fd, buf, count);
++  return send(socket_data->fd,buf,count,MSG_NOSIGNAL);
+ }
+ 
+ 

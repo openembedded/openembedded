@@ -1,0 +1,112 @@
+--- glibc-2.3.2/csu/Makefile.old	2004-04-25 20:56:43.000000000 -0400
++++ glibc-2.3.2/csu/Makefile	2004-04-25 20:57:15.000000000 -0400
+@@ -104,7 +104,7 @@
+ $(crtstuff:%=$(objpfx)%.o): %.o: %.S $(objpfx)defs.h
+ 	$(compile.S) -g0 $(ASFLAGS-.os) -o $@
+ 
+-CFLAGS-initfini.s = -g0 -fPIC -fno-inline-functions
++CFLAGS-initfini.s = -g0 -fPIC -fno-inline-functions $(fno-unit-at-a-time)
+ 
+ vpath initfini.c $(full_config_sysdirs)
+ 
+--- glibc-2.3.2/linuxthreads/Makefile.old	2004-04-25 21:37:45.000000000 -0400
++++ glibc-2.3.2/linuxthreads/Makefile	2004-04-25 21:38:03.000000000 -0400
+@@ -271,6 +271,7 @@
+ 
+ $(objpfx)pt-initfini.s: pt-initfini.c
+ 	$(compile.c) -S $(CFLAGS-pt-initfini.s) -finhibit-size-directive \
++		$(fno-unit-at-a-time) \
+ 		$(patsubst -f%,-fno-%,$(exceptions)) -o $@
+ 
+ # We only have one kind of startup code files.  Static binaries and
+--- glibc-2.3.2/configure.in.old	2004-04-25 20:10:45.000000000 -0400
++++ glibc-2.3.2/configure.in	2004-04-25 20:52:41.000000000 -0400
+@@ -1371,6 +1371,23 @@
+ fi
+ AC_SUBST(libc_cv_z_combreloc)
+ 
++AC_CACHE_CHECK(for -fno-unit-at-a-time, libc_cv_fno_unit_at_a_time, [dnl
++cat > conftest.c <<EOF
++int foo;
++EOF
++if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS -S -fno-unit-at-a-time
++			    conftest.c 1>&AS_MESSAGE_LOG_FD])
++then
++  libc_cv_fno_unit_at_a_time=yes
++else
++  libc_cv_fno_unit_at_a_time=no
++fi
++rm -f conftest*])
++if test $libc_cv_fno_unit_at_a_time = yes; then
++  fno_unit_at_a_time=-fno-unit-at-a-time
++fi
++AC_SUBST(fno_unit_at_a_time)
++
+ if test $elf != yes; then
+   AC_CACHE_CHECK(for .init and .fini sections, libc_cv_have_initfini,
+ 		 [AC_TRY_COMPILE(, [asm (".section .init");
+--- glibc-2.3.2/configure.old	2004-04-25 20:54:28.000000000 -0400
++++ glibc-2.3.2/configure	2004-04-25 20:56:31.000000000 -0400
+@@ -309,7 +309,7 @@
+ # include <unistd.h>
+ #endif"
+ 
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS with_fp with_cvs enable_check_abi oldest_abi subdirs force_install all_warnings build build_cpu build_vendor build_os host host_cpu host_vendor host_os base_machine sysnames INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT BUILD_CC cross_compiling CPP CXX CXXFLAGS ac_ct_CXX AR OBJDUMP RANLIB ac_ct_RANLIB MIG AS LD PWD_P MAKE MSGFMT MAKEINFO SED AUTOCONF CCVERSION SYSINCLUDES libc_cv_gcc_static_libgcc BASH libc_cv_have_bash2 KSH libc_cv_have_ksh AWK PERL INSTALL_INFO OLD_DEBIAN_INSTALL_INFO BISON VERSIONING libc_cv_asm_protected_directive libc_cv_initfinit_array libc_cv_z_nodelete libc_cv_z_nodlopen libc_cv_z_initfirst libc_cv_Bgroup ASFLAGS_config libc_cv_z_combreloc libc_cv_have_initfini libc_cv_cpp_asm_debuginfo no_whole_archive exceptions LIBGD EGREP sizeof_long_double libc_cv_gcc_unwind_find_fde uname_sysname uname_release uname_version old_glibc_headers libc_cv_slibdir libc_cv_localedir libc_cv_sysconfdir libc_cv_rootsbindir libc_cv_forced_unwind use_ldconfig ldd_rewrite_script gnu_ld gnu_as elf xcoff static shared pic_default profile omitfp bounded static_nss nopic_initfini DEFINES linux_doors mach_interface_list VERSION RELEASE LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS with_fp with_cvs enable_check_abi oldest_abi subdirs force_install all_warnings build build_cpu build_vendor build_os host host_cpu host_vendor host_os base_machine sysnames INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT BUILD_CC cross_compiling CPP CXX CXXFLAGS ac_ct_CXX AR OBJDUMP RANLIB ac_ct_RANLIB MIG AS LD PWD_P MAKE MSGFMT MAKEINFO SED AUTOCONF CCVERSION SYSINCLUDES libc_cv_gcc_static_libgcc BASH libc_cv_have_bash2 KSH libc_cv_have_ksh AWK PERL INSTALL_INFO OLD_DEBIAN_INSTALL_INFO BISON VERSIONING libc_cv_asm_protected_directive libc_cv_initfinit_array libc_cv_z_nodelete libc_cv_z_nodlopen libc_cv_z_initfirst libc_cv_Bgroup ASFLAGS_config libc_cv_z_combreloc fno_unit_at_a_time libc_cv_have_initfini libc_cv_cpp_asm_debuginfo no_whole_archive exceptions LIBGD EGREP sizeof_long_double libc_cv_gcc_unwind_find_fde uname_sysname uname_release uname_version old_glibc_headers libc_cv_slibdir libc_cv_localedir libc_cv_sysconfdir libc_cv_rootsbindir libc_cv_forced_unwind use_ldconfig ldd_rewrite_script gnu_ld gnu_as elf xcoff static shared pic_default profile omitfp bounded static_nss nopic_initfini DEFINES linux_doors mach_interface_list VERSION RELEASE LIBOBJS LTLIBOBJS'
+ ac_subst_files=''
+ 
+ # Initialize some variables set by options.
+@@ -5306,6 +5306,35 @@
+ fi
+ 
+ 
++echo "$as_me:$LINENO: checking for -fno-unit-at-a-time" >&5
++echo $ECHO_N "checking for -fno-unit-at-a-time... $ECHO_C" >&6
++if test "${libc_cv_fno_unit_at_a_time+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++  cat > conftest.c <<EOF
++int foo;
++EOF
++if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS -S -fno-unit-at-a-time
++			    conftest.c 1>&5'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }
++then
++  libc_cv_fno_unit_at_a_time=yes
++else
++  libc_cv_fno_unit_at_a_time=no
++fi
++rm -f conftest*
++fi
++echo "$as_me:$LINENO: result: $libc_cv_fno_unit_at_a_time" >&5
++echo "${ECHO_T}$libc_cv_fno_unit_at_a_time" >&6
++if test $libc_cv_fno_unit_at_a_time = yes; then
++  fno_unit_at_a_time=-fno-unit-at-a-time
++fi
++
++
+ if test $elf != yes; then
+   echo "$as_me:$LINENO: checking for .init and .fini sections" >&5
+ echo $ECHO_N "checking for .init and .fini sections... $ECHO_C" >&6
+@@ -7580,6 +7609,7 @@
+ s,@libc_cv_Bgroup@,$libc_cv_Bgroup,;t t
+ s,@ASFLAGS_config@,$ASFLAGS_config,;t t
+ s,@libc_cv_z_combreloc@,$libc_cv_z_combreloc,;t t
++s,@fno_unit_at_a_time@,$fno_unit_at_a_time,;t t
+ s,@libc_cv_have_initfini@,$libc_cv_have_initfini,;t t
+ s,@libc_cv_cpp_asm_debuginfo@,$libc_cv_cpp_asm_debuginfo,;t t
+ s,@no_whole_archive@,$no_whole_archive,;t t
+--- glibc-2.3.2/config.make.in.old	2004-04-25 20:10:33.000000000 -0400
++++ glibc-2.3.2/config.make.in	2004-04-25 20:53:20.000000000 -0400
+@@ -53,6 +53,7 @@
+ have-cpp-asm-debuginfo = @libc_cv_cpp_asm_debuginfo@
+ enable-check-abi = @enable_check_abi@
+ have-forced-unwind = @libc_cv_forced_unwind@
++fno-unit-at-a-time = @fno_unit_at_a_time@
+ 
+ static-libgcc = @libc_cv_gcc_static_libgcc@
+ 

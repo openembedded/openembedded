@@ -1,0 +1,37 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- epeg/src/lib/Makefile.am~dirs	2004-01-19 18:53:41.000000000 -0600
++++ epeg/src/lib/Makefile.am	2004-07-13 16:29:16.000000000 -0500
+@@ -5,10 +5,7 @@
+ # A list of all the files in the current directory which can be regenerated
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+-LDFLAGS		     = -L/usr/local/lib
+-INCLUDES	     = -I/usr/local/include \
+-		       -I$(includedir) \
+-		       @my_includes@
++INCLUDES	     = @my_includes@
+ 
+ lib_LTLIBRARIES      = libepeg.la
+ include_HEADERS      = Epeg.h
+@@ -17,6 +14,6 @@
+ epeg_memfile.c \
+ epeg_private.h
+ 
+-libepeg_la_LIBADD       = $(LDFLAGS) @my_libs@
++libepeg_la_LIBADD       = @my_libs@
+ libepeg_la_DEPENDENCIES = $(top_builddir)/config.h
+ libepeg_la_LDFLAGS      = -version-info 9:0:9
+--- epeg/src/bin/Makefile.am~dirs	2004-07-08 10:42:50.000000000 -0500
++++ epeg/src/bin/Makefile.am	2004-07-13 16:29:21.000000000 -0500
+@@ -2,7 +2,6 @@
+ 
+ INCLUDES = \
+ -I../lib \
+--I/usr/local/include \
+ -I$(top_srcdir)/src/lib \
+ @my_includes@
+ 

@@ -1,0 +1,125 @@
+Index: pkg_depends.c
+===================================================================
+RCS file: /cvs/familiar/dist/ipkg/C/pkg_depends.c,v
+retrieving revision 1.60
+diff -u -r1.60 pkg_depends.c
+--- C/pkg_depends.c	10 Mar 2004 21:27:36 -0000	1.60
++++ C/pkg_depends.c	5 Aug 2004 19:54:40 -0000
+@@ -36,7 +36,7 @@
+ static int pkg_installed_and_constraint_satisfied(pkg_t *pkg, void *cdata)
+ {
+      depend_t *depend = (depend_t *)cdata;
+-     if (pkg->state_status == SS_INSTALLED && version_constraints_satisfied(depend, pkg))
++     if ((pkg->state_status == SS_INSTALLED || pkg->state_status == SS_UNPACKED) && version_constraints_satisfied(depend, pkg))
+ 	  return 1;
+      else
+ 	  return 0;
+@@ -136,13 +136,26 @@
+ 										pkg_scout, 
+ 										tmp_vec,
+ 										&newstuff);
+-				   if (rc == 0 && newstuff == NULL) {
+-					/* mark this one for installation */
+-					ipkg_message(conf, IPKG_NOTICE, "Adding satisfier for greedy dependence: %s\n", pkg_scout->name);
+-					pkg_vec_insert(unsatisfied, pkg_scout);
++				   if (newstuff == NULL) {
++					int i;
++					int ok = 1;
++					for (i = 0; i < rc; i++) {
++					    pkg_t *p = tmp_vec->pkgs[i];
++					    if (p->state_want == SW_INSTALL)
++						continue;
++					    ipkg_message(conf, IPKG_DEBUG, "not installing %s due to requirement for %s\n", pkg_scout->name, p->name);
++					    ok = 0;
++					    break;
++					}
++					pkg_vec_free (tmp_vec);
++					if (ok) {
++					    /* mark this one for installation */
++					    ipkg_message(conf, IPKG_NOTICE, "Adding satisfier for greedy dependence: %s\n", pkg_scout->name);
++					    pkg_vec_insert(unsatisfied, pkg_scout);
++					}
+ 				   } else  {
+-					if (newstuff)
+-					     free (newstuff);
++					ipkg_message(conf, IPKG_DEBUG, "not installing %s due to broken depends %s\n", pkg_scout->name, newstuff);
++					free (newstuff);
+ 				   }
+ 			      }
+ 			 }
+@@ -160,7 +173,7 @@
+ 	       pkg_t *satisfying_pkg = 
+ 		    pkg_hash_fetch_best_installation_candidate(conf, satisfying_apkg, 
+ 							       pkg_installed_and_constraint_satisfied, 
+-							       dependence_to_satisfy);
++							       dependence_to_satisfy, 1);
+ 	       ipkg_message(conf, IPKG_DEBUG, "%s:%d: satisfying_pkg=%p\n", __FILE__, __LINE__, satisfying_pkg);
+ 	       if (satisfying_pkg != NULL) {
+ 		    found = 1;
+@@ -178,7 +191,7 @@
+ 		    pkg_t *satisfying_pkg = 
+ 			 pkg_hash_fetch_best_installation_candidate(conf, satisfying_apkg, 
+ 								    pkg_constraint_satisfied, 
+-								    dependence_to_satisfy);
++								    dependence_to_satisfy, 1);
+ 
+ 		    /* user request overrides package recommendation */
+ 		    if (satisfying_pkg != NULL
+Index: pkg_hash.c
+===================================================================
+RCS file: /cvs/familiar/dist/ipkg/C/pkg_hash.c,v
+retrieving revision 1.65
+diff -u -r1.65 pkg_hash.c
+--- C/pkg_hash.c	17 Mar 2004 21:17:37 -0000	1.65
++++ C/pkg_hash.c	5 Aug 2004 19:54:41 -0000
+@@ -113,7 +113,7 @@
+ 
+ 
+ pkg_t *pkg_hash_fetch_best_installation_candidate(ipkg_conf_t *conf, abstract_pkg_t *apkg, 
+-						  int (*constraint_fcn)(pkg_t *pkg, void *cdata), void *cdata)
++						  int (*constraint_fcn)(pkg_t *pkg, void *cdata), void *cdata, int quiet)
+ {
+      int i; 
+      int nprovides = 0;
+@@ -218,7 +218,7 @@
+ 	  }
+      }
+ 
+-     if (!held_pkg && !latest_installed_parent && matching_apkgs->len > 1) {
++     if (!held_pkg && !latest_installed_parent && matching_apkgs->len > 1 && !quiet) {
+ 	  ipkg_message(conf, IPKG_ERROR, "Package=%s, %d matching providers\n",
+ 		       apkg->name, matching_apkgs->len);
+ 	  if (conf->verbosity > 1) {
+@@ -240,7 +240,6 @@
+ 	  }
+      }
+ 
+- done:
+      nmatching = matching_apkgs->len;
+ 
+      pkg_vec_free(matching_pkgs);
+@@ -284,7 +283,7 @@
+      if (!(apkg = abstract_pkg_fetch_by_name(hash, name)))
+ 	  return NULL;
+ 
+-     return pkg_hash_fetch_best_installation_candidate(conf, apkg, pkg_name_constraint_fcn, apkg->name);
++     return pkg_hash_fetch_best_installation_candidate(conf, apkg, pkg_name_constraint_fcn, apkg->name, 0);
+ }
+ 
+ 
+Index: pkg_hash.h
+===================================================================
+RCS file: /cvs/familiar/dist/ipkg/C/pkg_hash.h,v
+retrieving revision 1.19
+diff -u -r1.19 pkg_hash.h
+--- C/pkg_hash.h	10 Apr 2003 21:43:51 -0000	1.19
++++ C/pkg_hash.h	5 Aug 2004 19:54:41 -0000
+@@ -43,7 +43,7 @@
+ 				       const char * version);
+ abstract_pkg_vec_t *pkg_hash_fetch_all_installation_candidates(hash_table_t *hash, const char *name);
+ pkg_t *pkg_hash_fetch_best_installation_candidate(ipkg_conf_t *conf, abstract_pkg_t *apkg, 
+-						  int (*constraint_fcn)(pkg_t *pkg, void *data), void *cdata);
++						  int (*constraint_fcn)(pkg_t *pkg, void *data), void *cdata, int quiet);
+ pkg_t *pkg_hash_fetch_best_installation_candidate_by_name(ipkg_conf_t *conf, const char *name);
+ pkg_t *pkg_hash_fetch_installed_by_name(hash_table_t *hash,
+ 					const char *pkg_name);

@@ -1,0 +1,32 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- autofs-4.1.3/configure.in~cross
++++ autofs-4.1.3/configure.in
+@@ -134,12 +134,14 @@
+ cat > pietest.c <<EOF
+ int main(void) { return 0; }
+ EOF
++AF_tmp_ldflags="$LDFLAGS"
++AF_tmp_cflags="$CFLAGS"
+ CFLAGS=-fPIE
+ LDFLAGS=-pie
+ DAEMON_CFLAGS=
+ DAEMON_LDFLAGS=
+ AC_MSG_CHECKING([whether gcc -fPIE works])
+-AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[int main(void) {return 0;}]])],
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[int main(void) {return 0;}]])],
+ 	      [gcc_supports_pie=yes], [gcc_supports_pie=no])
+ AC_MSG_RESULT([$gcc_supports_pie])
+ if test $gcc_supports_pie = yes ; then
+@@ -149,6 +151,8 @@
+ rm -f pietest.c
+ AC_SUBST(DAEMON_CFLAGS)
+ AC_SUBST(DAEMON_LDFLAGS)
++CFLAGS="${AF_tmp_cflags}"
++LDFLAGS="${AF_tmp_ldflags}"
+ 
+ #
+ # Location of init.d directory?

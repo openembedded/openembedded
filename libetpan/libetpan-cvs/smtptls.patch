@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libetpan-0.33pre/smtp/mailsmtp_helper.c~smtptls	2004-03-11 14:29:59.000000000 +0100
++++ libetpan-0.33pre/smtp/mailsmtp_helper.c	2004-02-12 22:07:24.000000000 +0100
+@@ -42,19 +42,14 @@
+ {
+   int r;
+ 
++  session->esmtp = 0;
+   r = mailesmtp_ehlo(session);
+ 
+   if (r == MAILSMTP_NO_ERROR) {
+-    session->esmtp = TRUE;
+     return MAILSMTP_NO_ERROR;
+   }
+ 
+   r = mailsmtp_helo(session);
+-  if (r == MAILSMTP_NO_ERROR) {
+-    session->esmtp = FALSE;
+-    return MAILSMTP_NO_ERROR;
+-  }
+-
+   return r;
+ }
+ 

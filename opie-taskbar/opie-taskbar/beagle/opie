@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/root
+[ -z $HOME ] && export HOME=/$LOGNAME
+
+export QTDIR=/opt/QtPalmtop
+export OPIEDIR=/opt/QtPalmtop
+export QPEDIR=/opt/QtPalmtop
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
+export PATH=$PATH:$OPIEDIR/bin
+# FIXME: add check for qt version here. the statement above applies to qt >=2.3.9
+# export QWS_KEYBOARD=KernelTTY
+
+if [ -e /proc/cpuinfo ] ; then
+	model=`grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
+	
+    case "$model" in	
+        "HP IPAQ H3100" | "HP IPAQ H3800" )
+	     export QWS_DISPLAY=Transformed:Rot90:0 ;;
+	"HP IPAQ H5400" | "HP JORNADA 56X" | "HP IPAQ H2200" | "SHARP Tosa" )
+	     export QWS_DISPLAY=Transformed:Rot0:0 ;;
+	*SIMPAD* )
+	     export QWS_KEYBOARD='SIMpad'
+             export QWS_DISPLAY=Transformed:Rot0:0 ;;
+	     
+	*)
+	     export QWS_DISPLAY=Transformed:Rot270:0 ;;
+    esac
+else
+    export QWS_DISPLAY=Transformed:Rot270:0
+fi
+
+if [ ! -x "$OPIEDIR/bin/qpe" ] ; then 
+    echo Opie not installed
+    exit 0 
+fi
+
+. /etc/profile
+
+
+# beagle hack? make it a package?
+if [ ! -e "/home/root" ] ;  then
+    mkdir /home/root
+fi
+
+if [ ! -e "$HOME/Settings/qpe.conf" ] ; then
+    echo "Copying default qpe.conf into $HOME/Settings/"
+    mkdir -p $HOME/Settings/
+    cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
+fi
+
+if [ ! -e "$HOME/Settings/locale.conf" -a -e "$OPIEDIR/etc/skel/locale.conf" ] ; then
+    cat $OPIEDIR/etc/skel/locale.conf >$HOME/Settings/locale.conf
+fi
+
+case $1 in
+'start')
+    /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
+    
+    if [ -x "$OPIEDIR/bin/opie-login" ]; then
+            echo Starting Opie-login....
+            $OPIEDIR/bin/opie-login -terminal 2
+    else
+        $OPIEDIR/bin/opie-reorgfiles
+        if [ -x /usr/bin/ssh-agent ]; then
+             SSHAGENT=/usr/bin/ssh-agent
+        else
+             SSHAGENT=""
+        fi
+        
+        if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
+            export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
+        fi           
+        echo Starting Opie....
+        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
+    fi
+
+    ;;
+
+'stop')
+    echo "Stopping Opie..."
+    killall qpe
+    killall opie-login
+    killall quicklauncher
+
+    ;;
+
+'restart')
+	$0 stop && $0 start
+
+	;;
+
+*)
+    echo "usage: $0 { start | stop | restart }"
+
+    ;;
+
+esac
+

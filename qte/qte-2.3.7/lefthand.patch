@@ -1,0 +1,126 @@
+diff -u qt-2.3.7_orig/src/widgets/qscrollview.cpp qt-2.3.7/src/widgets/qscrollview.cpp
+--- qt-2.3.7_orig/src/widgets/qscrollview.cpp	2004-06-13 20:42:54.000000000 +0200
++++ qt-2.3.7/src/widgets/qscrollview.cpp	2004-06-13 20:45:16.000000000 +0200
+@@ -526,15 +526,16 @@
+ 	     this, SLOT( doDragAutoScroll() ) );
+ #endif
+ 
+-    connect( &d->hbar, SIGNAL( valueChanged( int ) ),
+-	this, SLOT( hslide( int ) ) );
+-    connect( &d->vbar, SIGNAL( valueChanged( int ) ),
+-	this, SLOT( vslide( int ) ) );
++    connect( &d->hbar, SIGNAL( valueChanged(int) ),
++	this, SLOT( hslide(int) ) );
++    connect( &d->vbar, SIGNAL( valueChanged(int) ),
++	this, SLOT( vslide(int) ) );
+     d->viewport.installEventFilter( this );
+ 
+     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+     setLineWidth( style().defaultFrameWidth() );
+     setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
++
+ }
+ 
+ 
+@@ -683,6 +684,11 @@
+ 		  h-tmarg-bmarg - (showh ? hsbExt : 0) );
+ }
+ 
++/*
++  The surrounding environment (or application, if there is no
++  environment, may set this. Requires Qt >= 2.3.8.
++*/
++bool qt_left_hand_scrollbars = FALSE;
+ 
+ /*!
+   Updates scrollbars - all possibilities considered.  You should never
+@@ -786,45 +792,50 @@
+ 
+     // Position the scrollbars, viewport, and corner widget.
+     int bottom;
++    int xoffset = ( qt_left_hand_scrollbars && ( showv || cornerWidget() ) ) ? vsbExt : 0;
++    int xpos    =   qt_left_hand_scrollbars ? 0 : w-vsbExt;
++    xpos    =  (style() == WindowsStyle) && qt_left_hand_scrollbars ? xpos + fw : xpos - fw;
++    int ypos    = tmarg;
++    ypos        = (style() == WindowsStyle) ? ypos +fw : 0;
+     if ( showh ) {
+ 	int right = ( showv || cornerWidget() ) ? w-vsbExt : w;
+ 	if ( style() == WindowsStyle )
+-            setHBarGeometry(d->hbar, fw, h-hsbExt-fw,
++            setHBarGeometry(d->hbar, fw + xoffset , h-hsbExt-fw,
+                             right-fw-fw, hsbExt );
+ 	else
+-            setHBarGeometry(d->hbar, 0, h-hsbExt, right,
++            setHBarGeometry(d->hbar, 0+  xoffset, h-hsbExt, right,
+                             hsbExt );
+ 	bottom=h-hsbExt;
+     } else {
+         bottom=h;
+     }
+     if ( showv ) {
+-	clipper()->setGeometry( lmarg, tmarg,
++	clipper()->setGeometry( lmarg + xoffset, tmarg,
+                                 w-vsbExt-lmarg-rmarg,
+                                 bottom-tmarg-bmarg );
+ 	d->viewportResized( w-vsbExt-lmarg-rmarg, bottom-tmarg-bmarg );
+ 	if ( style() == WindowsStyle )
+-	    changeFrameRect(QRect(0, 0, w, h) );
++	    changeFrameRect(QRect(xoffset, 0, w, h) );
+ 	else
+-	    changeFrameRect(QRect(0, 0, w-vsbExt, bottom));
++	    changeFrameRect(QRect(xoffset, 0, w-vsbExt, bottom));
+ 	if (cornerWidget()) {
+ 	    if ( style() == WindowsStyle )
+-                setVBarGeometry( d->vbar, w-vsbExt-fw,
+-                                 fw, vsbExt,
+-                                 h-hsbExt-fw-fw );
++                setVBarGeometry( d->vbar, xpos,
++                                 ypos, vsbExt,
++                                 bottom-fw-ypos );
+ 	    else
+-                setVBarGeometry( d->vbar, w-vsbExt, 0,
++                setVBarGeometry( d->vbar, xpos, ypos,
+                                  vsbExt,
+-                                 h-hsbExt );
++                                 bottom-ypos );
+ 	}
+ 	else {
+ 	    if ( style() == WindowsStyle )
+-                setVBarGeometry( d->vbar, w-vsbExt-fw,
+-                                 fw, vsbExt,
+-                                 bottom-fw-fw );
++                setVBarGeometry( d->vbar, xpos,
++                                 ypos, vsbExt,
++                                 bottom-fw-ypos );
+ 	    else
+-                setVBarGeometry( d->vbar, w-vsbExt, 0,
+-                                 vsbExt, bottom );
++                setVBarGeometry( d->vbar, xpos, ypos,
++                                 vsbExt, bottom-ypos );
+ 	}
+     } else {
+ 	if ( style() == WindowsStyle )
+@@ -837,12 +848,12 @@
+     }
+     if ( d->corner ) {
+ 	if ( style() == WindowsStyle )
+-            d->corner->setGeometry( w-vsbExt-fw,
++            d->corner->setGeometry( xpos,
+                                     h-hsbExt-fw,
+                                     vsbExt,
+                                     hsbExt );
+ 	else
+-            d->corner->setGeometry( w-vsbExt,
++            d->corner->setGeometry( xpos,
+                                     h-hsbExt,
+                                     vsbExt,
+                                     hsbExt );
+@@ -1675,7 +1686,7 @@
+ }
+ 
+ /*!
+- Scrolls the content by \a x to the left and \a y upwards.
++ Scrolls the content by \a dx to the left and \a dy upwards.
+ */
+ void QScrollView::scrollBy( int dx, int dy )
+ {

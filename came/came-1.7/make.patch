@@ -1,0 +1,46 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- camE-1.7/Makefile~make
++++ camE-1.7/Makefile
+@@ -1,13 +1,16 @@
+ srcdir=.
+ 
+-ROOT=
++DESTDIR=
+ prefix=/usr/local
+ exec_prefix=${prefix}
+-bindir=$(ROOT)${exec_prefix}/bin
+-mandir=$(ROOT)${prefix}/man
++bindir=${exec_prefix}/bin
++mandir=${prefix}/man
+ 
+ CC=gcc
+-CFLAGS=-O3 -g -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags`
++CFLAGS=-O2 -g -Wall
++C_CFLAGS=-I$(srcdir) -D_GNU_SOURCE `giblib-config --cflags`
++LIBS=`giblib-config --libs` -lcurl
++LDFLAGS=
+ 
+ INSTALL=/usr/bin/install -c
+ INSTALL_PROGRAM=${INSTALL}
+@@ -23,11 +26,14 @@
+ all build: $(PROGS)
+ 
+ camE: $(OBJS)
+-	$(CC) $(CFLAGS) -o $@ $(OBJS) `giblib-config --libs` -lcurl
++	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
++
++%.o: %.c
++	$(CC) $(C_CFLAGS) $(CFLAGS) $< -c -o $@
+ 
+ install: all
+-	$(INSTALL_DIR) $(bindir)
+-	$(INSTALL_PROGRAM) camE $(bindir)
++	$(INSTALL_DIR) $(DESTDIR)$(bindir)
++	$(INSTALL_PROGRAM) camE $(DESTDIR)$(bindir)
+ 
+ clean:
+ 	-rm -f $(OBJS) *.moc *~ core* *.bak TAGS camE

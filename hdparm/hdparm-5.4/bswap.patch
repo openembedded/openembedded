@@ -1,0 +1,32 @@
+diff -Naur hdparm-5.4/hdparm.c hdparm-5.4-fix/hdparm.c
+--- hdparm-5.4/hdparm.c	2004-07-14 01:29:30.000000000 +0200
++++ hdparm-5.4-fix/hdparm.c	2004-07-14 01:28:31.000000000 +0200
+@@ -20,7 +20,9 @@
+ #include <linux/types.h>
+ #include <linux/hdreg.h>
+ #include <linux/major.h>
+-#include <asm/byteorder.h>
++#include <byteswap.h>
++
++#define le16_to_cpus(x) bswap_16(htons(x))
+ 
+ #include "hdparm.h"
+ 
+@@ -1299,7 +1301,7 @@
+ 			}
+ 		}
+ 		for(i=0; i<(sizeof args)/2; i+=2) {
+-		    __le16_to_cpus((__u16 *)(&args[i]));
++		    le16_to_cpus(*(__u16 *)(&args[i]));
+ 		}    
+ 		identify((void *)&args[4], NULL);
+ identify_abort:	;
+@@ -1499,7 +1501,7 @@
+ 	}
+ 	for (i = 0; count >= 4; ++i) {
+ 		sbuf[i] = (fromhex(b[0]) << 12) | (fromhex(b[1]) << 8) | (fromhex(b[2]) << 4) | fromhex(b[3]);
+-		__le16_to_cpus((__u16 *)(&sbuf[i]));
++		le16_to_cpus((__u16 *)(&sbuf[i]));
+ 		b += 5;
+ 		count -= 5;
+ 	}

@@ -1,0 +1,258 @@
+--- links-2.1pre14/configure.in~configure
++++ links-2.1pre14/configure.in
+@@ -3,7 +3,8 @@
+ #          Martin 'PerM' Pergel
+ # This file is a part of the Links program, released under GPL.
+ 
+-AC_INIT(main.c)
++AC_INIT
++AC_CONFIG_SRCDIR([main.c])
+ 
+ AM_INIT_AUTOMAKE(links, 2.1pre14)
+ 
+@@ -13,12 +14,12 @@
+ AUTOHEADER="./missing autoheader"
+ image_formats="GIF PNG XBM"
+ 
+-AM_CONFIG_HEADER(config.h)
++AC_CONFIG_HEADERS([config.h])
+ 
+ dnl Checks for programs.
+ AC_PROG_CC
+ 
+-#AC_PROG_CXX
++AC_PROG_CXX
+ #AC_PROG_AWK
+ #AM_PROG_LEX
+ #AC_PROG_YACC
+@@ -27,20 +28,20 @@
+ #AC_CHECK_LIB(fl,main,AC_DEFINE(JS) LIBS="$LIBS -lfl",AC_MSG_WARN(You don't have libfl; you won't be able to run javascript))
+ 
+ AC_CACHE_CHECK([for EMX], ac_cv_have_emx,
+-	AC_TRY_COMPILE(, [#ifndef __EMX__
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[#ifndef __EMX__
+ 	kill me!
+-	#endif ], ac_cv_have_emx=yes, ac_cv_have_emx=no)
++	#endif ]])],[ac_cv_have_emx=yes],[ac_cv_have_emx=no])
+ )
+ test "$ac_cv_have_emx" = yes && LDFLAGS=`echo "$LDFLAGS" | sed "s/-Zexe//g" | sed "s/-Zbin-files//g"`
+ 
+ AC_CACHE_CHECK([for typeof], ac_cv_have_typeof,
+-	AC_TRY_COMPILE(, [int a;
+-	typeof(a) b;], ac_cv_have_typeof=yes, ac_cv_have_typeof=no)
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int a;
++	typeof(a) b;]])],[ac_cv_have_typeof=yes],[ac_cv_have_typeof=no])
+ 	)
+ test "$ac_cv_have_typeof" = yes && AC_DEFINE(HAVE_TYPEOF)
+ 
+ AC_CACHE_CHECK([for long long], ac_cv_have_long_long,
+-	AC_TRY_COMPILE(, [unsigned long long a; ], ac_cv_have_long_long=yes, ac_cv_have_long_long=no)
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[unsigned long long a; ]])],[ac_cv_have_long_long=yes],[ac_cv_have_long_long=no])
+ )
+ test "$ac_cv_have_long_long" = yes && AC_DEFINE(HAVE_LONG_LONG)
+ 
+@@ -87,7 +88,7 @@
+ AC_CHECK_SIZEOF(long, "$default_int")
+ AC_CHECK_SIZEOF(unsigned long, "$default_int")
+ AC_CACHE_CHECK([for big endian], ac_cv_big_endian,
+-	AC_TRY_RUN([
++	AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ 	long l;
+ 	char *c = (char *)&l;
+ 	int main()
+@@ -95,10 +96,10 @@
+ 		l = 0x12345678L;
+ 		return !(c[[sizeof(long) - 1]] == 0x78 && c[[sizeof(long) - 2]] == 0x56 && c[[sizeof(long) - 3]] == 0x34 && c[[sizeof(long) - 4]] == 0x12);
+ 	}
+-	], ac_cv_big_endian=yes, ac_cv_big_endian=no, ac_cv_big_endian=no)
++	]])],[ac_cv_big_endian=yes],[ac_cv_big_endian=no],[ac_cv_big_endian=no])
+ )
+ AC_CACHE_CHECK([for little endian], ac_cv_little_endian,
+-	AC_TRY_RUN([
++	AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ 	long l;
+ 	char *c = (char *)&l;
+ 	int main()
+@@ -106,9 +107,12 @@
+ 		l = 0x12345678L;
+ 		return !(c[[0]] == 0x78 && c[[1]] == 0x56 && c[[2]] == 0x34 && c[[3]] == 0x12);
+ 	}
+-	], ac_cv_little_endian=yes, ac_cv_little_endian=no, ac_cv_little_endian="$ac_cv_have_emx")
++	]])],[ac_cv_little_endian=yes],[ac_cv_little_endian=no],[ac_cv_little_endian="$ac_cv_have_emx"])
+ )
+ 
++AC_DEFUN([AC_BIG_ENDIAN],[],[])
++AC_DEFUN([AC_LITTLE_ENDIAN],[],[])
++
+ if test "$ac_cv_big_endian" = yes; then
+ 	AC_DEFINE(AC_BIG_ENDIAN)
+ else if test "$ac_cv_little_endian" = yes; then
+@@ -122,19 +126,19 @@
+ AC_TYPE_SIGNAL
+ AC_FUNC_STRFTIME
+ AC_FUNC_VPRINTF
+-AC_HAVE_FUNCS(calloc)
+-AC_HAVE_FUNCS(snprintf)
+-AC_HAVE_FUNCS(gettimeofday mkdir select strcspn strerror strstr strtol strtoul alarm chmod)
+-AC_HAVE_FUNCS(getpid setpgid getpgid setpgrp getpgrp)
+-AC_HAVE_FUNCS(popen)
+-AC_HAVE_FUNCS(uname)
+-AC_HAVE_FUNCS(strptime)
+-AC_HAVE_FUNCS(setlocale)
+-AC_HAVE_FUNCS(nl_langinfo)
+-dnl AC_HAVE_FUNCS(sigsetjmp siglongjmp)
++AC_CHECK_FUNCS([calloc])
++AC_CHECK_FUNCS([snprintf])
++AC_CHECK_FUNCS([gettimeofday mkdir select strcspn strerror strstr strtol strtoul alarm chmod])
++AC_CHECK_FUNCS([getpid setpgid getpgid setpgrp getpgrp])
++AC_CHECK_FUNCS([popen])
++AC_CHECK_FUNCS([uname])
++AC_CHECK_FUNCS([strptime])
++AC_CHECK_FUNCS([setlocale])
++AC_CHECK_FUNCS([nl_langinfo])
++dnl AC_CHECK_FUNCS([sigsetjmp siglongjmp])
+ 
+ AC_CACHE_CHECK([for sigsetjmp/siglongjmp], ac_cv_have_sigsetjmp,
+-	AC_TRY_LINK([#include <setjmp.h>], [sigjmp_buf env;sigsetjmp(env, 1);siglongjmp(env, 2);], ac_cv_have_sigsetjmp=yes, ac_cv_have_sigsetjmp=no)
++	AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <setjmp.h>]], [[sigjmp_buf env;sigsetjmp(env, 1);siglongjmp(env, 2);]])],[ac_cv_have_sigsetjmp=yes],[ac_cv_have_sigsetjmp=no])
+ )
+ if test "$ac_cv_have_sigsetjmp" = yes; then
+ 	AC_DEFINE(HAVE_SIGSETJMP)
+@@ -153,7 +157,7 @@
+ fi
+ 
+ #AC_MSG_CHECKING([for gethostbyname])
+-#AC_TRY_LINK([#include <netdb.h>], [gethostbyname("")], cf_result=yes, cf_result=no)
++#AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <netdb.h>]], [[gethostbyname("")]])],[cf_result=yes],[cf_result=no])
+ #AC_MSG_RESULT($cf_result)
+ AC_CHECK_FUNC(gethostbyname, cf_result=yes, cf_result=no)
+ if test "$cf_result" = no; then
+@@ -168,7 +172,7 @@
+ AC_CHECK_FUNC(herror, AC_DEFINE(HAVE_HERROR))
+ AC_CHECK_FUNC(cfmakeraw, AC_DEFINE(HAVE_CFMAKERAW))
+ 
+-AC_HAVE_FUNCS(cygwin_conv_to_full_win32_path)
++AC_CHECK_FUNCS([cygwin_conv_to_full_win32_path])
+ 
+ AC_MSG_CHECKING([if you want to enable javascript])
+ AC_ARG_ENABLE(javascript, [  --enable-javascript     use javascript interpreter], cf_use_javascript=yes, cf_use_javascript=no)
+@@ -192,7 +196,7 @@
+ AC_CACHE_CHECK([for OS/2 threads], ac_cv_have_beginthread,
+ 	CFLAGS_X="$CFLAGS"
+ 	CFLAGS="$CFLAGS -Zmt"
+-	AC_TRY_LINK([#include <stdlib.h>], [_beginthread(NULL, NULL, 0, NULL)], ac_cv_have_beginthread=yes, ac_cv_have_beginthread=no)
++	AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>]], [[_beginthread(NULL, NULL, 0, NULL)]])],[ac_cv_have_beginthread=yes],[ac_cv_have_beginthread=no])
+ 	CFLAGS="$CFLAGS_X"
+ )
+ if test "$ac_cv_have_beginthread" = yes; then
+@@ -209,8 +213,8 @@
+ fi
+ #AC_CHECK_FUNC(clone, AC_DEFINE(HAVE_CLONE))
+ AC_CHECK_HEADERS(atheos/threads.h)
+-AC_HAVE_FUNCS(spawn_thread)
+-AC_HAVE_FUNCS(resume_thread)
++AC_CHECK_FUNCS([spawn_thread])
++AC_CHECK_FUNCS([resume_thread])
+ 
+ AC_CHECK_FUNC(MouOpen, AC_DEFINE(HAVE_MOUOPEN))
+ AC_CHECK_FUNC(_read_kbd, AC_DEFINE(HAVE_READ_KBD))
+@@ -222,10 +226,10 @@
+ 	if test -n "$X11ROOT"; then
+ 		CPPFLAGS="$CPPFLAGS_X -I$X11ROOT/XFree86/include"
+ 		LIBS="$LIBS_X -L$X11ROOT/XFree86/lib -lxf86_gcc"
+-		AC_TRY_LINK([#include <pty.h>], [struct winsize win;ptioctl(1, TIOCGWINSZ, &win)], ac_cv_have_x2=xf86_gcc, ac_cv_have_x2=no)
++		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pty.h>]], [[struct winsize win;ptioctl(1, TIOCGWINSZ, &win)]])],[ac_cv_have_x2=xf86_gcc],[ac_cv_have_x2=no])
+ 		if test "$ac_cv_have_x2" = no; then
+ 			LIBS="$LIBS_X -L$X11ROOT/XFree86/lib -lxf86"
+-			AC_TRY_LINK([#include <pty.h>], [struct winsize win;ptioctl(1, TIOCGWINSZ, &win)], ac_cv_have_x2=xf86, ac_cv_have_x2=no)
++			AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pty.h>]], [[struct winsize win;ptioctl(1, TIOCGWINSZ, &win)]])],[ac_cv_have_x2=xf86],[ac_cv_have_x2=no])
+ 		fi
+ 	fi
+ 	CPPFLAGS="$CPPFLAGS_X"
+@@ -254,9 +258,9 @@
+ 			else
+ 				LIBS="-lssl -lcrypto $LIBS_X"
+ 			fi
+-			AC_TRY_LINK([#include <openssl/ssl.h>], [OpenSSL_add_all_algorithms()], cf_result=yes, cf_result=no)
++			AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <openssl/ssl.h>]], [[OpenSSL_add_all_algorithms()]])],[cf_result=yes],[cf_result=no])
+ 			if test "$cf_result" != yes; then
+-				AC_TRY_LINK([#include <openssl/ssl.h>], [SSLeay_add_ssl_algorithms()], cf_result=yes, cf_result=no)
++				AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <openssl/ssl.h>]], [[SSLeay_add_ssl_algorithms()]])],[cf_result=yes],[cf_result=no])
+ 			fi
+ 		fi
+ 	done
+@@ -287,14 +291,14 @@
+ 	AC_CHECK_HEADERS(png.h libpng/png.h)
+ 	AC_CHECK_LIB(png, png_create_info_struct)
+ 	if test "$ac_cv_header_png_h" != yes && test "$ac_cv_header_libpng_png_h" != yes || test "$ac_cv_lib_png_png_create_info_struct" != yes; then
+-		AC_ERROR([You need libpng to compile Links in graphics mode])
++		AC_MSG_ERROR([You need libpng to compile Links in graphics mode])
+ 	fi
+ 
+-	AC_HAVE_FUNCS(png_set_rgb_to_gray)
++	AC_CHECK_FUNCS([png_set_rgb_to_gray])
+ 
+ 	AC_CACHE_CHECK(if you can include both setjmp.h and png.h, ac_cv_include_setjmp_png,
+-		AC_TRY_COMPILE([#include <setjmp.h>
+-		#include <png.h>], [jmp_buf bla;], ac_cv_include_setjmp_png=yes, ac_cv_include_setjmp_png=no)
++		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <setjmp.h>
++		#include <png.h>]], [[jmp_buf bla;]])],[ac_cv_include_setjmp_png=yes],[ac_cv_include_setjmp_png=no])
+ 	)
+ 
+ 	if test "$ac_cv_include_setjmp_png" != yes; then
+@@ -338,7 +342,7 @@
+ 	AC_CACHE_CHECK([for svgalib], ac_cv_have_svgalib,
+ 		LIBS_X="$LIBS"
+ 		LIBS="$LIBS -lvga"
+-		AC_TRY_LINK([#include <vga.h>], [vga_setmode(0)], ac_cv_have_svgalib=yes, ac_cv_have_svgalib=no)
++		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <vga.h>]], [[vga_setmode(0)]])],[ac_cv_have_svgalib=yes],[ac_cv_have_svgalib=no])
+ 		LIBS="$LIBS_X"
+ 	)
+ 
+@@ -351,9 +355,9 @@
+ 
+ dnl		braine, tohle jsem predelal
+ dnl 	AC_CACHE_CHECK([for framebuffer], ac_cv_have_fb,
+-dnl 		AC_TRY_RUN([#include <stdio.h>
++dnl 		AC_RUN_IFELSE([AC_LANG_SOURCE([[#include <stdio.h>
+ dnl 		#include <fcntl.h>
+-dnl 		main(){return open("/dev/fb",O_RDWR)==-1;}], ac_cv_have_fb=yes, ac_cv_have_fb=no, ac_cv_have_fb=no)
++dnl 		main(){return open("/dev/fb",O_RDWR)==-1;}]])],[ac_cv_have_fb=yes],[ac_cv_have_fb=no],[ac_cv_have_fb=no])
+ dnl 	)
+ 	
+ if test "$disable_fb" != yes ; then
+@@ -406,14 +410,12 @@
+ 
+ if test "$disable_pmshell" != yes ; then
+ 	AC_CACHE_CHECK([for pmshell], ac_cv_have_pmshell,
+-		AC_TRY_LINK([#define INCL_WIN
++		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define INCL_WIN
+ 			#define INCL_GPI
+ 			#include <os2.h>
+-			#include <sys/fmutex.h>],
+-			[_fmutex mutex;
++			#include <sys/fmutex.h>]], [[_fmutex mutex;
+ 			WinDrawText(NULLHANDLE, -1, NULL, NULL, 0, 0, 0),
+-			GpiSetPel(NULLHANDLE, NULL)],
+-		ac_cv_have_pmshell=yes, ac_cv_have_pmshell=no)
++			GpiSetPel(NULLHANDLE, NULL)]])],[ac_cv_have_pmshell=yes],[ac_cv_have_pmshell=no])
+ 	)
+ 			
+ 	if test "$ac_cv_have_pmshell" = yes; then
+@@ -463,7 +465,8 @@
+ test "$ac_cv_have_emx" = yes && LDFLAGS="$LDFLAGS -Zexe"
+ test "$ac_cv_have_emx" = yes && LDFLAGS=`echo "$LDFLAGS" | sed "s/-Zbin-files//g"`
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+ 
+ echo "---------------------------------------------------------"
+ echo "Configuration results:"
+@@ -485,5 +488,5 @@
+ #rm Makefile.tmp
+ 
+ #if test -z "$AWK"; then
+-#	AC_WARN([awk not found. You won't be able to rebuild code page table.]);
++#	AC_MSG_WARN([awk not found. You won't be able to rebuild code page table.]);
+ #fi

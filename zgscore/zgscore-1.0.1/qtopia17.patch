@@ -1,0 +1,25 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- zgscore-src/zgscore_main.cpp~qtopia17	2004-04-07 16:22:03.000000000 +0200
++++ zgscore-src/zgscore_main.cpp	2004-04-08 16:34:31.000000000 +0200
+@@ -1,5 +1,15 @@
+ #include "zgscore.h"
+ #include <qpe/qpeapplication.h>
+ 
+-QTOPIA_ADD_APPLICATION("zgs", ZGS)
+-QTOPIA_MAIN
++//QTOPIA_ADD_APPLICATION("zgs", ZGS)
++//QTOPIA_MAIN
++
++int main(int argc, char** argv)
++{
++	QPEApplication a( argc, argv );
++	ZGS* zgs = new ZGS();
++	a.showMainWidget( zgs );
++	a.exec();
++}
++
++

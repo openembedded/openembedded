@@ -1,0 +1,63 @@
+Status: ok
+
+Fix off-by-one-error when extracting a merge file.
+
+If a merge ended at EOF, --extract wouldn't interpret it properly.
+
+ ----------- Diffstat output ------------
+ ./extract.c |    8 ++++----
+ ./p         |    2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff ./extract.c~current~ ./extract.c
+--- ./extract.c~current~	2004-02-03 13:18:41.000000000 +1100
++++ ./extract.c	2004-02-03 13:18:55.000000000 +1100
+@@ -207,7 +207,7 @@ int split_merge(struct stream f, struct 
+ 		lineno++;
+ 		switch(state) {
+ 		case 0:
+-			if (len>8 &&
++			if (len>=8 &&
+ 			    strncmp(cp, "<<<<<<<", 7)==0 &&
+ 			    (cp[7] == ' ' || cp[7] == '\n')
+ 				) {
+@@ -222,7 +222,7 @@ int split_merge(struct stream f, struct 
+ 			}
+ 			break;
+ 		case 1:
+-			if (len>8 &&
++			if (len>=8 &&
+ 			    strncmp(cp, "|||||||", 7)==0 &&
+ 			    (cp[7] == ' ' || cp[7] == '\n')
+ 				) {
+@@ -232,7 +232,7 @@ int split_merge(struct stream f, struct 
+ 				copyline(&r1, &cp, end);
+ 			break;
+ 		case 2:
+-			if (len>8 &&
++			if (len>=8 &&
+ 			    strncmp(cp, "=======", 7)==0 &&
+ 			    (cp[7] == ' ' || cp[7] == '\n')
+ 				) {
+@@ -242,7 +242,7 @@ int split_merge(struct stream f, struct 
+ 				copyline(&r2, &cp, end);
+ 			break;
+ 		case 3:
+-			if (len>8 &&
++			if (len>=8 &&
+ 			    strncmp(cp, ">>>>>>>", 7)==0 &&
+ 			    (cp[7] == ' ' || cp[7] == '\n')
+ 				) {
+
+diff ./p~current~ ./p
+--- ./p~current~	2004-02-03 13:18:44.000000000 +1100
++++ ./p	2004-02-03 13:18:55.000000000 +1100
+@@ -170,7 +170,7 @@ commit_one()
+ {
+ 	rm -f "$1~current~"
+ 	mv "$1" "$1~current~"
+-	cp "$1~current~" $1
++	cp -p "$1~current~" $1
+ 	chmod u+w $1
+ }
+ 

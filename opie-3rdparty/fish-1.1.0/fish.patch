@@ -1,0 +1,12 @@
+diff -ur fish_V1.1.0.orig/fish.desktop fish_V1.1.0/fish.desktop
+--- fish_V1.1.0.orig/fish.desktop	2004-06-17 00:14:52.000000000 +0200
++++ fish_V1.1.0/fish.desktop	2004-06-17 00:15:10.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Fish
+ Name[de]=Aquarium
+-Icon=fish
++Icon=fish/fish
+ Exec=fish
+ Comment=A fishtank for your Zaurus.
+ Comment[de]=Ein Aquarium am Bildschirm

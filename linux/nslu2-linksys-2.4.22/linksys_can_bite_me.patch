@@ -1,0 +1,34 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.22/drivers/usb/Config.in~linksys_can_bite_me	2004-09-08 19:14:15.000000000 -0500
++++ linux-2.4.22/drivers/usb/Config.in	2004-09-08 19:19:37.000000000 -0500
+@@ -120,6 +120,4 @@
+    fi
+ fi
+ 
+-source drivers/usb/gadget/Config.in
+-
+ endmenu
+--- linux-2.4.22/drivers/ixp400/Makefile~linksys_can_bite_me	2004-09-08 19:14:08.000000000 -0500
++++ linux-2.4.22/drivers/ixp400/Makefile	2004-09-08 19:32:55.000000000 -0500
+@@ -78,7 +78,9 @@
+ # DAMAGE."
+ #
+ # -- End Intel/GPL Copyright Notice --
++#
+ 
++ifdef CONFIG_IXP425_CSR
+ include $(ROOTDIR)/IXP400lib/ixp400_xscale_sw/buildUtils/environment.linux
+ # IX_XSCALE_SW=$(ROOTDIR)/IXP400lib/ixp400_xscale_sw/
+ # The kernel makefiles override the value of CFLAGS on the make
+@@ -148,6 +150,7 @@
+ # directory. Note that they must be filenames in this directory - the
+ # ramdisk rules cannot handle paths in this list.
+ obj-m := $(IXP400_MODULES)
++endif
+ 
+ # Include the generic kernel build system rules
+ include $(TOPDIR)/Rules.make

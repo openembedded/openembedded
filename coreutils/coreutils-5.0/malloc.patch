@@ -1,0 +1,19 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- coreutils-5.0/lib/putenv.c~malloc
++++ coreutils-5.0/lib/putenv.c
+@@ -34,9 +34,11 @@
+ char *malloc ();
+ void free ();
+ 
++#if 0
+ #if defined (__GNU_LIBRARY__) || defined (HAVE_STRING_H)
+ # include <string.h>
+ #endif
++#endif
+ #if defined (__GNU_LIBRARY__) || defined (HAVE_UNISTD_H)
+ # include <unistd.h>
+ #endif

@@ -1,0 +1,41 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- qplot/qplotmain/calciface.cpp~gcc3	2002-04-18 19:13:29.000000000 +0200
++++ qplot/qplotmain/calciface.cpp	2004-02-19 17:19:37.000000000 +0100
+@@ -38,7 +38,7 @@
+ 	printf("ibase=%d\n", ibase);
+ }
+ */
+-void sendSpecialVarDecCommand(const char *var, int scale, bool return_to_prev_ibase=true) {
++void sendSpecialVarDecCommand(const char *var, int scale, bool return_to_prev_ibase) {
+ 	printf("ibase_save=ibase\nibase=ibase_decimal\n");
+ 	printf("%s=%d\n", var, scale);
+ 	if( return_to_prev_ibase ) {
+@@ -78,4 +78,4 @@
+ 		    "\n");
+ 	while ( receiveResult() == NULL )
+ 	    usleep(50);
+-}
+\ Kein Zeilenumbruch am Dateiende.
++}
+--- qplot/qplotmain/calciface.h~gcc3	2002-04-18 19:13:08.000000000 +0200
++++ qplot/qplotmain/calciface.h	2004-02-19 17:21:38.000000000 +0100
+@@ -18,6 +18,9 @@
+ #include <unistd.h>
+ #include <string.h>
+ 
++#ifndef CALCIFACE_H
++#define CALCIFACE_H
++
+ void		resetEngineState		( );
+ void		saveIBaseDecimal		( );
+ void		saveScaleWorkaround		( bool save);
+@@ -29,3 +32,5 @@
+ 
+ char *		receiveResult			( );
+ 
++#endif
++

@@ -1,0 +1,48 @@
+--- orinoco-0.13e/Makefile~crosscompile	2003-05-12 08:22:27.000000000 +0200
++++ orinoco-0.13e/Makefile	2003-06-15 18:17:21.000000000 +0200
+@@ -19,7 +19,7 @@
+ endif
+ endif
+ 
+-MODULES = hermes.o orinoco.o orinoco_cs.o orinoco_plx.o orinoco_tmd.o orinoco_pci.o
++MODULES = hermes.o orinoco.o orinoco_cs.o orinoco_plx.o orinoco_tmd.o orinoco_pci.o spectrum_cs.o
+ ifeq ($(shell uname -m),ppc)
+ MODULES += airport.o
+ endif
+@@ -27,9 +27,9 @@
+ SRCS = hermes.c \
+ 	orinoco.c \
+ 	airport.c orinoco_cs.c orinoco_plx.c orinoco_tmd.c orinoco_pci.c \
+-	userhermes.c
++	userhermes.c spectrum_cs.c
+ HDRS = hermes.h hermes_rid.h ieee802_11.h orinoco.h
+-CONF = hermes.conf
++CONF = hermes.conf spectrum.conf
+ TAR = tar
+ 
+ DISTFILES = $(SRCS) $(HDRS) $(CONF) Makefile README.orinoco
+@@ -41,7 +41,7 @@
+ all: modules
+ 
+ installconf:
+-	if [ -d $(CONF_DIR) ]; then install -m 644 -o 0 -g 0 $(CONF) $(CONF_DIR)/$(CONF); fi
++	if [ -d $(CONF_DIR) ]; then install -m 644 $(CONF) $(CONF_DIR)/; fi
+ 
+ 
+ userhermes: userhermes.c
+@@ -118,12 +118,12 @@
+ 	mkdir -p $(MODULE_DIR_WIRELESS)
+ 	for f in $(MODULES); do \
+ 	    if test -e $(MODULE_DIR_PCMCIA)/$$f; then \
+-		install -m 644 -o 0 -g 0 $$f $(MODULE_DIR_PCMCIA)/$$f; \
++		install -m 644 $$f $(MODULE_DIR_PCMCIA)/$$f; \
+ 	    else \
+-		install -m 644 -o 0 -g 0 $$f $(MODULE_DIR_WIRELESS)/$$f; \
++		install -m 644 $$f $(MODULE_DIR_WIRELESS)/$$f; \
+ 	    fi; \
+ 	done
+-	depmod -a
++	#depmod -a
+ 
+ %.o: %.c
+ 	$(CC) -MD $(CFLAGS) $(CPPFLAGS) $(MFLAG) -c $<

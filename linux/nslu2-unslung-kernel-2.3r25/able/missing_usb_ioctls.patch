@@ -1,0 +1,11 @@
+--- linux-2.4.22/include/linux/usbdevice_fs.h.orig	2004-10-31 20:05:45.989296261 +1100
++++ linux-2.4.22/include/linux/usbdevice_fs.h	2004-10-31 22:55:50.470987905 +1100
+@@ -142,6 +142,8 @@
+ #define USBDEVFS_HUB_PORTINFO      _IOR('U', 19, struct usbdevfs_hub_portinfo)
+ #define USBDEVFS_RESET             _IO('U', 20)
+ #define USBDEVFS_CLEAR_HALT        _IOR('U', 21, unsigned int)
++#define USBDEVFS_DISCONNECT        _IO('U', 22)
++#define USBDEVFS_CONNECT           _IO('U', 23)
+ 
+ /* --------------------------------------------------------------------- */
+ 

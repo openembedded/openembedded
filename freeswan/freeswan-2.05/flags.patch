@@ -1,0 +1,145 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- freeswan-2.05/lib/libdes/Makefile~flags	2003-04-22 20:38:03.000000000 -0400
++++ freeswan-2.05/lib/libdes/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -58,9 +58,10 @@
+ #CC=gcc
+ #CFLAG= -O4 -funroll-loops -fomit-frame-pointer
+ # normally overridden by FreeS/WAN Makefiles anyway
+-CFLAG= -O3 -fomit-frame-pointer -I${KLIPSD}/include -I${SRCDIR}
++CFLAG= -O3 -fomit-frame-pointer
+ 
+-CFLAGS=$(OPTS) $(CFLAG)
++CFLAGS=$(CFLAG)
++override CFLAGS += $(OPTS) -I${KLIPSD}/include -I${SRCDIR}
+ CPP=$(CC) -E
+ 
+ # Assember version of des_encrypt*().
+--- freeswan-2.05/lib/libfreeswan/Makefile~flags	2003-12-11 15:09:30.000000000 -0500
++++ freeswan-2.05/lib/libfreeswan/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -44,7 +44,7 @@
+ 
+ LIB=libfreeswan.a
+ # Original flags
+-CFLAGS=-I. -I${SRCDIR} -I${KLIPSD} -I${FREESWANSRCDIR} $(USERCOMPILE)
++CFLAGS=$(USERCOMPILE)
+ CFLAGS+= -Wall
+ #CFLAGS+= -Wconversion
+ #CFLAGS+= -Wmissing-prototypes
+@@ -56,6 +56,7 @@
+ #CFLAGS+= -W
+ #CFLAGS+= -Wwrite-strings
+ CFLAGS+= -Wbad-function-cast 
++override CFLAGS += -I. -I${SRCDIR} -I${KLIPSD} -I${FREESWANSRCDIR}
+ 
+ 
+ 
+--- freeswan-2.05/lib/libipsecpolicy/Makefile~flags	2003-12-04 17:03:19.000000000 -0500
++++ freeswan-2.05/lib/libipsecpolicy/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -30,12 +30,13 @@
+ 
+ LIB=libipsecpolicy.a
+ # Original flags
+-CFLAGS=-I. -I${KLIPSD} -I${FREESWANSRCDIR} $(USERCOMPILE)
++CFLAGS = $(USERCOMPILE)
+ CFLAGS+= -Wall
+ CFLAGS+= -Wpointer-arith
+ CFLAGS+= -Wcast-qual
+ CFLAGS+= -Wstrict-prototypes
+ CFLAGS+= -Wbad-function-cast 
++override CFLAGS += -I. -I${KLIPSD} -I${FREESWANSRCDIR} $(USERCOMPILE)
+ 
+ MANS=
+ 
+--- freeswan-2.05/lib/liblwres/Makefile~flags	2003-04-11 13:15:40.000000000 -0400
++++ freeswan-2.05/lib/liblwres/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -24,7 +24,8 @@
+ CDEFINES = -g
+ CWARNINGS = -Werror
+ 
+-CFLAGS=${CINCLUDES} ${CDEFINES} ${CWARNINGS}
++CFLAGS=${CDEFINES} ${CWARNINGS}
++override CFLAGS+=${CINCLUDES}
+ 
+ VERSION="@(\#) freeswan-hacking-9.2.1-for-fs2"
+ LIBINTERFACE=2
+--- freeswan-2.05/programs/Makefile.program~flags	2003-06-29 17:34:49.000000000 -0400
++++ freeswan-2.05/programs/Makefile.program	2004-02-25 18:49:22.000000000 -0500
+@@ -1,7 +1,7 @@
+ 
+ include ${FREESWANSRCDIR}/Makefile.ver
+ 
+-CFLAGS+=$(USERCOMPILE) -I${KLIPSINC}
++override CFLAGS+=-I${KLIPSINC}
+ 
+ CFLAGS+= $(USERCOMPILE)
+ CFLAGS+= -Wall
+@@ -24,7 +24,7 @@
+ CFLAGS+= ${WERROR}
+ 
+ ifneq ($(LD_LIBRARY_PATH),)
+-LDFLAGS=-L$(LD_LIBRARY_PATH)
++LDFLAGS+=-L$(LD_LIBRARY_PATH)
+ endif
+ 
+ MANDIR8=$(MANTREE)/man8
+--- freeswan-2.05/programs/lwdnsq/Makefile~flags	2003-12-07 22:29:18.000000000 -0500
++++ freeswan-2.05/programs/lwdnsq/Makefile	2004-02-25 18:50:10.000000000 -0500
+@@ -24,9 +24,9 @@
+ LWRESINCL=${LWRESDIR}/include
+ 
+ LIBS:=${FREESWANLIB} ${LWRESLIB} ${BIND9STATICLIBDIR}/libdns.a ${BIND9STATICLIBDIR}/libisc.a
+-CFLAGS+=-I${LWRESINCL}
++override CFLAGS+=-I${LWRESINCL}
+ ifneq (${BIND9INCDIR},/usr/local/include)
+-CFLAGS+=-I${BIND9INCDIR}
++override CFLAGS+=-I${BIND9INCDIR}
+ endif
+ #USERCOMPILE=-g
+ 
+--- freeswan-2.05/programs/pluto/Makefile~flags	2003-11-06 21:58:07.000000000 -0500
++++ freeswan-2.05/programs/pluto/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -108,7 +108,7 @@
+ 	-DGCC_LINT \
+ 	# -DLEAK_DETECTIVE
+ 
+-CPPFLAGS = $(HDRDIRS) $(DEFINES) \
++override CPPFLAGS += $(HDRDIRS) $(DEFINES) \
+ 	-DSHARED_SECRETS_FILE=\"${FINALCONFDIR}/ipsec.secrets\" \
+ 	-DPOLICYGROUPSDIR=\"${FINALCONFDDIR}/policies\" \
+ 	-DPERPEERLOGDIR=\"${FINALLOGDIR}/pluto/peer\"
+@@ -121,7 +121,7 @@
+ LIBSPLUTO+= -lgmp -lresolv # -lefence
+ 
+ ifneq ($(LD_LIBRARY_PATH),)
+-LDFLAGS=-L$(LD_LIBRARY_PATH)
++LDFLAGS+=-L$(LD_LIBRARY_PATH)
+ endif
+ 
+ LIBSADNS = $(FREESWANLIB)
+--- freeswan-2.05/testing/utils/ikeping/Makefile~flags	2002-03-27 18:28:25.000000000 -0500
++++ freeswan-2.05/testing/utils/ikeping/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -35,7 +35,7 @@
+ 
+ HDRDIRS =  $(FREESWANINCLS)
+ 
+-CPPFLAGS = $(HDRDIRS) $(BYTE_ORDER) -DDEBUG 
++override CPPFLAGS += $(HDRDIRS) $(BYTE_ORDER) -DDEBUG 
+ 
+ ALLFLAGS = $(CPPFLAGS) $(CFLAGS)
+ 
+--- freeswan-2.05/testing/utils/uml_netjig/Makefile~flags	2002-11-07 17:17:49.000000000 -0500
++++ freeswan-2.05/testing/utils/uml_netjig/Makefile	2004-02-25 18:49:22.000000000 -0500
+@@ -43,7 +43,8 @@
+ #PCAPH=-I/home/mcr/src/libpcap
+ #PCAPLIB=-L/home/mcr/src/linux/i386/libpcap -lpcap
+ 
+-CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
++CFLAGS = -g -Wall
++override CFLAGS += ${PCAPH} ${NETDISSECTH} ${OPTIONS}
+ LIBS = ${NETDISSECTLIB} ${PCAPLIB} ${OPENSSL}
+ 
+ 

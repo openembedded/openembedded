@@ -1,0 +1,11 @@
+--- Makefile.am~	2004-03-18 10:25:53.000000000 +0000
++++ Makefile.am	2004-03-28 19:30:22.000000000 +0100
+@@ -2,7 +2,7 @@
+ 
+ lib_LTLIBRARIES = libXtst.la
+ 
+-libXtst_la_SOURCES = XRecord.c XTest.c
++libXtst_la_SOURCES = XTest.c
+ 
+ libXtst_la_LIBADD = @X_LIBS@
+ 

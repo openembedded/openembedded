@@ -1,0 +1,37 @@
+diff -urNd ../gpe-package-0.0.12-r1/gpe-package-0.0.12/interface.c gpe-package-0.0.12/interface.c
+--- ../gpe-package-0.0.12-r1/gpe-package-0.0.12/interface.c	2004-08-25 16:00:59.000000000 +0100
++++ gpe-package-0.0.12/interface.c	2004-09-13 21:05:18.000000000 +0100
+@@ -42,8 +42,8 @@
+ #include "packages.h"
+ #include "interface.h"
+ #include "main.h"
+-//#include "filesel.h"
+-#include "filechooser.h"
++#include "filesel.h"
++//#include "filechooser.h"
+ 
+ #define N_(x) (x)
+ 
+@@ -730,8 +730,8 @@
+ 
+ void on_select_local(GtkButton *button, gpointer user_data)
+ {
+-	//ask_user_a_file("/tmp",_("Select package file"),do_local_install,NULL,NULL);
+-	package_choose(fMain, do_local_install);
++	ask_user_a_file("/tmp",_("Select package file"),do_local_install,NULL,NULL);
++	//package_choose(fMain, do_local_install);
+ }
+ 
+ 
+diff -urNd ../gpe-package-0.0.12-r1/gpe-package-0.0.12/Makefile gpe-package-0.0.12/Makefile
+--- ../gpe-package-0.0.12-r1/gpe-package-0.0.12/Makefile	2004-08-25 19:10:54.000000000 +0100
++++ gpe-package-0.0.12/Makefile	2004-09-13 21:22:44.000000000 +0100
+@@ -18,7 +18,7 @@
+ BUILD = build
+ endif
+ 
+-MEMBERS  = main interface packages filechooser
++MEMBERS  = main interface packages filesel
+ 
+ ifeq ($(DEBUG),yes)
+ CFLAGS += -g -DDEBUG

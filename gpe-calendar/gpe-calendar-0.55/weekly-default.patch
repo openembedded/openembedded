@@ -1,0 +1,51 @@
+Index: event-ui.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-calendar/event-ui.c,v
+retrieving revision 1.107
+diff -u -r1.107 event-ui.c
+--- event-ui.c	5 Aug 2004 15:52:07 -0000	1.107
++++ event-ui.c	24 Aug 2004 17:18:26 -0000
+@@ -93,6 +93,7 @@
+   g_free (p);
+ }
+ 
++
+ static void
+ recalculate_sensitivities (GtkWidget *widget,
+                            GtkWidget *d)
+@@ -182,6 +183,26 @@
+     }
+ }
+ 
++
++static void
++weekly_toggled (GtkWidget *widget,
++                           GtkWidget *d)
++{
++  struct edit_state *s = g_object_get_data (G_OBJECT (d), "edit_state");
++  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
++  {
++     if (!s->ev || !s->ev->recur || !s->ev->recur->daymask)
++     {
++        time_t t = time(NULL);
++        struct tm *lt = localtime(&t);
++          
++        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (s->checkbuttonwday[(lt->tm_wday+6)%7]), TRUE);
++     }
++  }
++  recalculate_sensitivities(widget, d);
++}
++
++
+ static void
+ unschedule_alarm (event_t ev)
+ {
+@@ -1061,7 +1082,7 @@
+   g_signal_connect (G_OBJECT (radiobuttondaily), "toggled",
+                     G_CALLBACK (recalculate_sensitivities), window);
+   g_signal_connect (G_OBJECT (radiobuttonweekly), "toggled",
+-                    G_CALLBACK (recalculate_sensitivities), window);
++                    G_CALLBACK (weekly_toggled), window);
+   g_signal_connect (G_OBJECT (radiobuttonmonthly), "toggled",
+                     G_CALLBACK (recalculate_sensitivities), window);
+   g_signal_connect (G_OBJECT (radiobuttonyearly), "toggled",

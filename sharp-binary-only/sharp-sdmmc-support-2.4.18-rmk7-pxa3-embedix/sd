@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# rc.sd 1.00 2001/08/08 22:40:44 (Hideki Hayami)
+#
+# Tags for init configuration tools
+#
+# processname: sdmgr
+# pidfile: /var/run/sdmgr.pid
+# description: currently SD support is only for memory devices \
+#              which is used as block device.
+
+# Source function library.
+# . /etc/rc.d/init.d/functions
+
+MODULE=sharp_mmcsd_m
+
+usage()
+{
+    echo "Usage: $0 {start|stop|status|restart|reload}"
+}
+
+
+
+if [ $# -lt 1 ] ; then usage ; break ; fi
+action=$1
+
+case "$action" in
+
+start)
+    echo -n "Start SD services:"
+	/sbin/modprobe $MODULE 2>/dev/null
+	if [ -s /var/run/sdmgr.pid ]; then
+	    kill -0 `cat /var/run/sdmgr.pid` 2>/dev/null;
+	else
+	    /sbin/sdmgr >/dev/null 2>&1 &
+	    RETVAL=$?
+	    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/sd
+	fi
+    sleep 1
+    echo " sdmgr."
+    ;;
+
+stop)
+    echo -n "Stop SD services:"
+    killall sdmgr
+    if grep -q $MODULE /proc/modules ; then
+	/sbin/rmmod $MODULE
+    fi
+    rm -f /var/lock/subsys/sd
+    echo " sdmgr."
+    ;;
+
+status)
+    ;;
+
+restart|reload)
+    $0 stop
+    $0 start
+    ;;
+
+*)
+    usage
+    ;;
+
+esac
+
+exit 0

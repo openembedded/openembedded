@@ -1,0 +1,11 @@
+--- src/ui.c.orig	2004-08-09 17:26:37.000000000 +0200
++++ src/ui.c	2004-08-09 17:22:02.000000000 +0200
+@@ -582,7 +582,7 @@
+ 	/* just put one here and hide it afterwards. we need the button
+ 			for working key accelerators. */
+ 	if (prefs.mode == BASIC_MODE) 
+-		ui_main_window_set_dispctrl (DISPCTRL_BOTTOM);
++		ui_main_window_set_dispctrl (DISPCTRL_RIGHT);
+ 	else if (current_status.notation == CS_RPN)
+ 		ui_main_window_set_dispctrl (DISPCTRL_RIGHTV);
+ 	else ui_main_window_set_dispctrl (DISPCTRL_RIGHT);

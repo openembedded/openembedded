@@ -1,0 +1,11 @@
+--- arch/mips/zboot/Makefile.o	2004-10-09 19:44:27.380145288 +0200
++++ arch/mips/zboot/Makefile	2004-10-09 19:46:17.643382728 +0200
+@@ -27,7 +27,7 @@
+ 
+ CFLAGS	:= $(CPPFLAGS) -O2 -D__BOOTER__ \
+ 	-fomit-frame-pointer -fno-strict-aliasing -fno-common \
+-	-G 0 -mno-abicalls -fno-pic -mcpu=r4600 -mips2 \
++	-G 0 -mno-abicalls -fno-pic -mabi=32 -march=mips32 -mips32 \
+ 		-I$(TOPDIR)/arch/$(ARCH)/zboot/include \
+ 		-I$(TOPDIR)/include/asm
+ AFLAGS	+= -D__BOOTER__

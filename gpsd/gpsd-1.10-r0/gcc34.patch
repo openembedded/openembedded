@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- gpsd-1.10/Makefile.in~gcc34.patch	2003-08-27 05:43:51.000000000 +0200
++++ gpsd-1.10/Makefile.in	2004-06-13 23:40:12.000000000 +0200
+@@ -126,7 +126,7 @@
+ all: $(PROGRAMS) $(MOTIF_PROGRAMS)
+ 
+ gpsd: gpsd.o libgpsd.a
+-	$(LINK.c) -o $@ gpsd.o -L. -lgpsd $(NETLIBS) $(LIBS)
++	$(LINK.c) -o $@ gpsd.o -L. -lgpsd $(NETLIBS) -lm
+ 
+ gpsplay: gpsplay.o libgpsd.a
+ 	$(LINK.c) -o $@ gpsplay.o -L. -lgpsd $(NETLIBS) $(LIBS)

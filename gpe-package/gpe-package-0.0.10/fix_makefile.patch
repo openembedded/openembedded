@@ -1,0 +1,37 @@
+diff -urNd ../gpe-package-0.0.10-r0/gpe-package-0.0.10/Makefile gpe-package-0.0.10/Makefile
+--- ../gpe-package-0.0.10-r0/gpe-package-0.0.10/Makefile	2004-07-29 14:44:24.000000000 +0100
++++ gpe-package-0.0.10/Makefile	2004-08-03 14:02:56.000000000 +0100
+@@ -3,7 +3,6 @@
+ CVSBUILD = no
+ DEBUG = no
+ INSTALL = install
+-STRIP = strip
+ PREFIX = /usr/local
+ DESTDIR = /
+ 
+@@ -28,13 +27,13 @@
+ 
+ PACKAGE_CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
+ PACKAGE_CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+-PACKAGE_CFLAGS += -DIPKG_LIB  -I/skiff/local/arm-linux/include/libipkg
++PACKAGE_CFLAGS += -DIPKG_LIB  -I$(STAGING_INCDIR)/libipkg
+ 
+ GTKCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0 libipkg` 
+ GTKLDFLAGS = `pkg-config --libs gtk+-2.0 gdk-2.0 gdk-pixbuf-2.0 libipkg`
+ 
+ PACKAGE_CFLAGS += $(GPECFLAGS) $(GTKCFLAGS) $(STANDARD_CFLAGS) 
+-PACKAGE_LDFLAGS += $(GPELIBS) $(GTKLDFLAGS) $(STANDARD_LDFLAGS)
++PACKAGE_LDFLAGS += $(GPELIBS) $(GTKLDFLAGS) $(STANDARD_LDFLAGS) -lipkg
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ DEPS = $(patsubst %,%.d,$(MEMBERS))
+@@ -53,8 +52,7 @@
+ 	sed -e s/VERSION/$(VERSION)/ < familiar/control > $(DESTDIR)/CONTROL/control
+ 	mkdir -p $(DESTDIR)/etc/gpe
+ 	mkdir -p $(DESTDIR)/$(PREFIX)/bin
+-	$(INSTALL) $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+-	$(STRIP) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	$(INSTALL) -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	for i in $(PIXMAPS); do install -m 644 -D pixmaps/$$i $(DESTDIR)$(PREFIX)/share/pixmaps/$$i; done
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications

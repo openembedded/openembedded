@@ -1,0 +1,45 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libetpan-0.33pre/configure.in~pkgconfig	2004-07-14 18:13:06.000000000 -0500
++++ libetpan-0.33pre/configure.in	2004-07-15 19:03:18.000000000 -0500
+@@ -198,7 +198,7 @@
+ AC_SUBST(VERSION)
+ 
+ 
+-AC_OUTPUT(Makefile Rules libetpan-config generic/libetpan_version.h)
++AC_OUTPUT(Makefile Rules libetpan-config libetpan.pc generic/libetpan_version.h)
+ 
+ dnl includes that depend on configure
+ 
+--- /dev/null	2004-06-02 16:28:12.000000000 -0500
++++ libetpan-0.33pre/libetpan.pc.in	2004-07-15 19:06:41.000000000 -0500
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: libetpan
++Description: a mail library
++Version: @VERSION@
++Libs: -L${libdir} -letpan @LDFLAGS@ @LIBS@ @SSLLIBS@ @LIBICONV@ @DBLIB@
++Cflags: -I${includedir}
+--- libetpan-0.33pre/Makefile.in~pkgconfig	2004-07-15 19:05:01.000000000 -0500
++++ libetpan-0.33pre/Makefile.in	2004-07-15 19:04:54.000000000 -0500
+@@ -64,11 +64,13 @@
+ 	$(INSTALL) -m 755 libetpan-config $(bindir)
+ 	$(INSTALL) -m 644 libetpan-config.h $(includedir)/libetpan
+ 	$(INSTALL) -m 644 generic/libetpan.h $(includedir)
++	$(INSTALL) -m 644 libetpan.pc $(libdir)/pkgconfig
+ 
+ install-dirs:
+ 	$(INSTALL) -d -m 755 $(includedir)
+ 	$(INSTALL) -d -m 755 $(includedir)/libetpan
+ 	$(INSTALL) -d -m 755 $(libdir)
++	$(INSTALL) -d -m 755 $(libdir)/pkgconfig
+ 	$(INSTALL) -d -m 755 $(bindir)
+ 
+ realclean: maintainer-clean

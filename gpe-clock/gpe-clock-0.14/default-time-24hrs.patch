@@ -1,0 +1,12 @@
+diff -urNd ../gpe-clock-0.14-r0/gpe-clock-0.14/clock.c gpe-clock-0.14/clock.c
+--- ../gpe-clock-0.14-r0/gpe-clock-0.14/clock.c	2004-08-23 22:38:21.000000000 +0100
++++ gpe-clock-0.14/clock.c	2004-09-16 11:32:43.000000000 +0100
+@@ -42,7 +42,7 @@
+ #define FORMAT_ANALOGUE		2
+ 
+ static gboolean show_seconds;
+-static int format = FORMAT_ANALOGUE;
++static int format = FORMAT_24;
+ 
+ struct alarm_state
+ {

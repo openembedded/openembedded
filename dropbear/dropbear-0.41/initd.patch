@@ -1,0 +1,21 @@
+diff -Naur dropbear-0.41-oe/debian/dropbear.init dropbear-0.41/debian/dropbear.init
+--- dropbear-0.41-oe/debian/dropbear.init	2003-06-22 16:04:18.000000000 +0200
++++ dropbear-0.41/debian/dropbear.init	2004-05-10 18:08:32.000000000 +0200
+@@ -50,7 +50,7 @@
+ 	;;
+   stop)
+ 	echo -n "Stopping $DESC: "
+-	start-stop-daemon --stop --quiet --oknodo --pidfile /var/run/$NAME.pid
++	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid
+ 	echo "$NAME."
+ 	;;
+   restart|force-reload)
+@@ -60,7 +60,7 @@
+ 	#	just the same as "restart".
+ 	#
+ 	echo -n "Restarting $DESC: "
+-	start-stop-daemon --stop --quiet --oknodo --pidfile \
++	start-stop-daemon --stop --quiet --pidfile \
+ 		/var/run/$NAME.pid
+ 	sleep 1
+ 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \

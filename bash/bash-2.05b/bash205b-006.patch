@@ -1,0 +1,90 @@
+*** ../bash-2.05b/lib/readline/display.c	Tue Jun  4 10:54:47 2002
+--- lib/readline/display.c	Fri Sep 13 16:22:57 2002
+***************
+*** 71,75 ****
+  
+  #if defined (HANDLE_MULTIBYTE)
+! static int _rl_col_width PARAMS((char *, int, int));
+  static int *_rl_wrapped_line;
+  #else
+--- 71,75 ----
+  
+  #if defined (HANDLE_MULTIBYTE)
+! static int _rl_col_width PARAMS((const char *, int, int));
+  static int *_rl_wrapped_line;
+  #else
+***************
+*** 1349,1355 ****
+  	      _rl_output_some_chars (nfd + lendiff, temp - lendiff);
+  #if 0
+- 	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-lendiff) - col_lendiff;
+- #else
+  	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
+  #endif
+  	    }
+--- 1349,1355 ----
+  	      _rl_output_some_chars (nfd + lendiff, temp - lendiff);
+  #if 0
+  	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
++ #else
++ 	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-lendiff);
+  #endif
+  	    }
+***************
+*** 1511,1516 ****
+    /* If we have multibyte characters, NEW is indexed by the buffer point in
+       a multibyte string, but _rl_last_c_pos is the display position.  In
+!      this case, NEW's display position is not obvious. */
+!   if ((MB_CUR_MAX == 1 || rl_byte_oriented ) && _rl_last_c_pos == new) return;
+  #else
+    if (_rl_last_c_pos == new) return;
+--- 1511,1523 ----
+    /* If we have multibyte characters, NEW is indexed by the buffer point in
+       a multibyte string, but _rl_last_c_pos is the display position.  In
+!      this case, NEW's display position is not obvious and must be
+!      calculated. */
+!   if (MB_CUR_MAX == 1 || rl_byte_oriented)
+!     {
+!       if (_rl_last_c_pos == new)
+! 	return;
+!     }
+!   else if (_rl_last_c_pos == _rl_col_width (data, 0, new))
+!     return;
+  #else
+    if (_rl_last_c_pos == new) return;
+***************
+*** 1595,1603 ****
+      {
+        if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+! 	{
+! 	  tputs (_rl_term_cr, 1, _rl_output_character_function);
+! 	  for (i = 0; i < new; i++)
+! 	    putc (data[i], rl_outstream);
+! 	}
+        else
+  	_rl_backspace (_rl_last_c_pos - new);
+--- 1602,1606 ----
+      {
+        if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+! 	_rl_backspace (_rl_last_c_pos - _rl_col_width (data, 0, new));
+        else
+  	_rl_backspace (_rl_last_c_pos - new);
+***************
+*** 2118,2122 ****
+  static int
+  _rl_col_width (str, start, end)
+!      char *str;
+       int start, end;
+  {
+--- 2121,2125 ----
+  static int
+  _rl_col_width (str, start, end)
+!      const char *str;
+       int start, end;
+  {
+***************
+*** 2194,2196 ****
+  }
+  #endif /* HANDLE_MULTIBYTE */
+- 	  
+--- 2197,2198 ----

@@ -1,0 +1,11 @@
+--- xine-lib/src/libvorbis/xine_decoder.c	2003-08-10 14:48:38.000000000 +0200
++++ xine-lib/src/libvorbis/xine_decoder.c.patched	2003-08-10 14:48:17.000000000 +0200
+@@ -34,7 +34,7 @@
+ #include "buffer.h"
+ 
+ #include <ogg/ogg.h>
+-#include <vorbis/codec.h>
++#include <tremor/ivorbiscodec.h>
+ 
+ #define MAX_NUM_SAMPLES 4096
+ 

@@ -1,0 +1,11 @@
+--- builtins/shift.def.orig	2002-10-22 01:05:10.000000000 -0400
++++ builtins/shift.def	2002-10-22 01:05:06.000000000 -0400
+@@ -68,7 +68,7 @@
+   else if (times > number_of_args ())
+     {
+       if (print_shift_error)
+-	sh_erange (list->word->word, "shift count");
++	sh_erange (list ? list->word->word : NULL, "shift count");
+       return (EXECUTION_FAILURE);
+     }
+ 

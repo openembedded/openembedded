@@ -1,0 +1,23 @@
+diff -u libgpepimc-0.2.orig/libgpepimc.pc.in libgpepimc-0.2/libgpepimc.pc.in
+--- libgpepimc-0.2.orig/libgpepimc.pc.in	2004-02-18 07:33:19.000000000 +1100
++++ libgpepimc-0.2/libgpepimc.pc.in	2004-04-23 15:52:38.000000000 +1000
+@@ -6,6 +6,6 @@
+ Name: libgpevtype
+ Description: GPE PIM Categories Library
+ Version: VERSION
+-Requires: gtk-2.0
++Requires: gtk+-2.0
+ Libs: -L${libdir} -lgpepimc
+ Cflags: -I${includedir}
+diff -u libgpepimc-0.2.orig/libgpepimc-uninstalled.pc.in libgpepimc-0.2/libgpepimc-uninstalled.pc.in
+--- libgpepimc-0.2.orig/libgpepimc-uninstalled.pc.in	2004-02-18 07:33:38.000000000 +1100
++++ libgpepimc-0.2/libgpepimc-uninstalled.pc.in	2004-04-23 15:52:48.000000000 +1000
+@@ -1,6 +1,6 @@
+ Name: libgpevtype
+ Description: GPE PIM Categories Library (not installed)
+ Version: VERSION
+-Requires: gtk-2.0
++Requires: gtk+-2.0
+ Libs: -LBUILDDIR -lgpepimc
+ Cflags: -IBUILDDIR
+Common subdirectories: libgpepimc-0.2.orig/po and libgpepimc-0.2/po

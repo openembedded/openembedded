@@ -1,0 +1,27 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libtool-1.4.3/libtoolize.in~libtoolize-staging
++++ libtool-1.4.3/libtoolize.in
+@@ -33,9 +33,16 @@
+ 
+ # Directory names.
+ prefix=@prefix@
+-datadir=@datadir@
+-pkgdatadir=@pkgdatadir@
+-aclocaldir=@aclocaldir@
++
++if [ -n "${STAGING_DIR}" ]; then
++	datadir=${STAGING_DIR}/share
++	pkgdatadir=${STAGING_DIR}/share/libtool
++	aclocaldir=${STAGING_DIR}/share/aclocal
++else
++	datadir=@datadir@
++	pkgdatadir=@pkgdatadir@
++	aclocaldir=@aclocaldir@
++fi
+ 
+ libtool_m4="$aclocaldir/libtool.m4"
+ ltdl_m4="$aclocaldir/ltdl.m4"

@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- file-4.06/magic/Makefile.am~fileexec
++++ file-4.06/magic/Makefile.am
+@@ -16,10 +16,10 @@
+ 	done >> $@
+ 
+ magic.mgc: magic
+-	$(top_builddir)/src/file -C -m magic
++	file -C -m magic
+ 
+ magic.mime.mgc: magic.mime
+-	$(top_builddir)/src/file -C -m magic.mime
++	file -C -m magic.mime
+ 
+ magic_FRAGMENTS = \
+ Magdir/acorn \
+--- file-4.06/magic/Makefile.in~fileexec
++++ file-4.06/magic/Makefile.in
+@@ -499,10 +499,10 @@
+ 	done >> $@
+ 
+ magic.mgc: magic
+-	$(top_builddir)/src/file -C -m magic
++	file -C -m magic
+ 
+ magic.mime.mgc: magic.mime
+-	$(top_builddir)/src/file -C -m magic.mime
++	file -C -m magic.mime
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:

@@ -1,0 +1,11 @@
+--- dropbear-0.42/options.h.orig	2004-06-16 07:08:27.000000000 +0200
++++ dropbear-0.42/options.h	2004-07-04 22:41:25.000000000 +0200
+@@ -184,7 +184,7 @@
+  * "make clean; make dropbearmulti". You'll need to install the binary
+  * manually, see MULTI for details */
+ 
+-/* #define DROPBEAR_MULTI */
++#define DROPBEAR_MULTI
+ 
+ /* The three multi binaries: dropbear, dropbearkey, dropbearconvert
+  * Comment out these if you don't want some of them */

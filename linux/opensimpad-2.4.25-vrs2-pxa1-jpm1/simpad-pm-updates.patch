@@ -1,0 +1,47 @@
+--- arch/arm/mach-sa1100/pm-sa1100.c	2004-07-14 01:21:38.000000000 +0200
++++ /home/fuchs/Projekte/simpad/kernel/linux-2.4.25/arch/arm/mach-sa1100/pm-sa1100.c	2004-07-22 00:41:57.000000000 +0200
+@@ -69,6 +69,7 @@
+ 	SLEEP_SAVE_ICMR,
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	SLEEP_SAVE_MECR, /* needed by SIMpad to get PCMCIA working after resume */
++	SLEEP_SAVE_Ser4MCCR0, SLEEP_SAVE_Ser4MCSR, SLEEP_SAVE_Ser4MCCR1, /* touchscreen */	
+ #endif
+ 	SLEEP_SAVE_Ser1SDCR0,
+ 
+@@ -82,7 +83,7 @@
+ int pm_do_suspend(void)
+ {
+ 	unsigned long sleep_save[SLEEP_SAVE_SIZE];
+-
++	
+ 	cli();
+ 
+ 	leds_event(led_stop);
+@@ -113,10 +114,13 @@
+ 	SAVE(ICMR);
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	SAVE(MECR);
+-#endif
+-        SAVE(PWER);
+-        SAVE(MSC1);
+-        SAVE(MSC2);
++	SAVE(Ser4MCCR0);
++	SAVE(Ser4MCSR);
++	SAVE(Ser4MCCR1);
++#endif
++	SAVE(PWER);
++	SAVE(MSC1);
++	SAVE(MSC2);
+ 
+ 	/* ... maybe a global variable initialized by arch code to set this? */
+ 	GRER &= PWER;
+@@ -194,6 +198,9 @@
+ 	RESTORE(ICMR);
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	RESTORE(MECR);
++	RESTORE(Ser4MCCR0);
++	RESTORE(Ser4MCSR);
++	RESTORE(Ser4MCCR1);
+ #endif
+ 	RESTORE(PWER);
+ 	RESTORE(MSC1);

@@ -1,0 +1,133 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- mgetty-1.1.30/Makefile~install
++++ mgetty-1.1.30/Makefile
+@@ -170,10 +170,13 @@
+ # if your systems doesn't have one, use the shell script that I provide
+ # in "inst.sh" (taken from X11R5). Needed on IRIX5.2
+ INSTALL=install -c
+-#INSTALL=install -c -o root -g wheel		# NeXT/BSD
++#INSTALL=install -c -g wheel		# NeXT/BSD
+ #INSTALL=/usr/ucb/install -c -o bin -g bin	# AIX, Solaris 2.x
+ #INSTALL=installbsd -c -o bin -g bin		# OSF/1, AIX 4.1, 4.2
+ #INSTALL=/usr/bin/X11/bsdinst -c -o bin 	# IRIX
++
++# tool to strip binaries
++STRIP=strip
+ #
+ # prefix, where most (all?) of the stuff lives, usually /usr/local or /usr
+ #
+@@ -586,6 +589,8 @@
+ 
+ install: install.bin install.doc
+ 
++install.doc: install.man install.info
++
+ install.bin: mgetty sendfax newslock \
+ 		login.config mgetty.config sendfax.config 
+ #
+@@ -597,8 +602,10 @@
+ 	-test -d $(SBINDIR) || ( ./mkidirs $(SBINDIR) ; chmod 755 $(SBINDIR) )
+ 	-mv -f $(SBINDIR)/mgetty $(SBINDIR)/mgetty.old
+ 	-mv -f $(SBINDIR)/sendfax $(SBINDIR)/sendfax.old
+-	$(INSTALL) -s -m 755 mgetty $(SBINDIR)
+-	$(INSTALL) -s -m 755 sendfax $(SBINDIR)
++	$(INSTALL) -m 755 mgetty $(SBINDIR)
++	$(STRIP) $(SBINDIR)/mgetty
++	$(INSTALL) -m 755 sendfax $(SBINDIR)
++	$(STRIP) $(SBINDIR)/sendfax
+ #
+ # data files + directories
+ #
+@@ -607,15 +614,15 @@
+ 	test -d $(CONFDIR) || \
+ 		( ./mkidirs $(CONFDIR) && chmod 755 $(CONFDIR))
+ 	test -f $(CONFDIR)/login.config || \
+-		$(INSTALL) -o root -m 600 login.config $(CONFDIR)/
++		$(INSTALL) -m 600 login.config $(CONFDIR)/
+ 	test -f $(CONFDIR)/mgetty.config || \
+-		$(INSTALL) -o root -m 600 mgetty.config $(CONFDIR)/
++		$(INSTALL) -m 600 mgetty.config $(CONFDIR)/
+ 	test -f $(CONFDIR)/sendfax.config || \
+-		$(INSTALL) -o root -m 644 sendfax.config $(CONFDIR)/
++		$(INSTALL) -m 644 sendfax.config $(CONFDIR)/
+ 	test -f $(CONFDIR)/dialin.config || \
+-		$(INSTALL) -o root -m 600 dialin.config $(CONFDIR)/
++		$(INSTALL) -m 600 dialin.config $(CONFDIR)/
+ 	test -f $(CONFDIR)/faxrunq.config || \
+-		$(INSTALL) -o root -m 644 faxrunq.config $(CONFDIR)/
++		$(INSTALL) -m 644 faxrunq.config $(CONFDIR)/
+ #
+ # test for outdated stuff
+ #
+@@ -630,37 +637,36 @@
+ # fax spool directories
+ #
+ 	test -d $(spool) || \
+-		( mkdir $(spool) && chmod 755 $(spool) )
++		( mkdir -p $(spool) && chmod 755 $(spool) )
+ 	test -d $(FAX_SPOOL) || \
+-		( mkdir $(FAX_SPOOL) && \
+-		  chown $(FAX_OUT_USER) $(FAX_SPOOL) && \
++		( mkdir -p $(FAX_SPOOL) && \
+ 		  chmod 755 $(FAX_SPOOL) )
+ 	test -d $(FAX_SPOOL_IN) || \
+-		( mkdir $(FAX_SPOOL_IN) && chmod 755 $(FAX_SPOOL_IN) )
++		( mkdir -p $(FAX_SPOOL_IN) && chmod 755 $(FAX_SPOOL_IN) )
+ 	test -d $(FAX_SPOOL_OUT) || \
+-		  mkdir $(FAX_SPOOL_OUT)
+-	chown $(FAX_OUT_USER) $(FAX_SPOOL_OUT)
++		  mkdir -p $(FAX_SPOOL_OUT)
+ 	chmod 755 $(FAX_SPOOL_OUT)
+ #
+ # g3 tool programs
+ #
+ 	cd g3 ; $(MAKE) install INSTALL="$(INSTALL)" \
+ 				BINDIR=$(BINDIR) \
+-				LIBDIR=$(LIBDIR) CONFDIR=$(CONFDIR)
++				LIBDIR=$(LIBDIR) CONFDIR=$(CONFDIR) STRIP=$(STRIP)
+ #
+ # fax programs / scripts / font file
+ #
+ 	cd fax ; $(MAKE) install INSTALL="$(INSTALL)" \
+ 				FAX_OUT_USER=$(FAX_OUT_USER) \
+ 				BINDIR=$(BINDIR) SBINDIR=$(SBINDIR) \
+-				LIBDIR=$(LIBDIR) CONFDIR=$(CONFDIR)
++				LIBDIR=$(LIBDIR) CONFDIR=$(CONFDIR) STRIP=$(STRIP)
+ #
+ # compatibility
+ #
+ 	if [ ! -z "$(INSTALL_MECHO)" ] ; then \
+ 	    cd compat ; \
+ 	    $(CC) $(CFLAGS) -o mg.echo mg.echo.c && \
+-	    $(INSTALL) -s -m 755 mg.echo $(BINDIR) ; \
++	    $(INSTALL) -m 755 mg.echo $(BINDIR) ; \
++	    $(STRIP) $(BINDIR)/mg.echo ; \
+ 	fi
+ 
+ #
+--- mgetty-1.1.30/fax/Makefile~install
++++ mgetty-1.1.30/fax/Makefile
+@@ -61,7 +61,6 @@
+ 	done
+ 	$(INSTALL) -m 755 faxrunqd $(SBINDIR)
+ 	$(INSTALL) faxq-helper $(LIBDIR)
+-	chown $(FAX_OUT_USER) $(LIBDIR)/faxq-helper
+ 	chmod 4711 $(LIBDIR)/faxq-helper
+ #
+ # data files
+--- mgetty-1.1.30/g3/Makefile~install
++++ mgetty-1.1.30/g3/Makefile
+@@ -37,7 +37,8 @@
+ # install programs
+ #
+ 	for f in $(G3_PROGRAMS) ; do \
+-		$(INSTALL) -s -m 755 $$f $(BINDIR) ; \
++		$(INSTALL) -m 755 $$f $(BINDIR) ; \
++		$(STRIP) $(BINDIR)/$$f ; \
+ 	done
+ #
+ # make symlink for "g3topbm" (so third-party fax viewers won't fail)

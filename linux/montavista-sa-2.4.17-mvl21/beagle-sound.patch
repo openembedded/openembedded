@@ -1,0 +1,57 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.17_mvl21/drivers/sound/assabet-uda1341.c~beagle-sound.patch
++++ linux-2.4.17_mvl21/drivers/sound/assabet-uda1341.c
+@@ -49,7 +49,9 @@
+ #ifdef CONFIG_SA1100_BEAGLE
+ #include <linux/timer.h>
+ #include <linux/sysctl.h>
+-#include <asm/io.h>
++
++#define CCR_ADDR 0xf2000000
++
+ #endif
+ 
+ #include "sa1100-audio.h"
+@@ -142,15 +144,12 @@
+ 	/* MasterIA support full sampling rate in BEAGLE and
+ 	   provide click from other device */
+ 
+-	unsigned int ccr_addr;
+ 	unsigned int frg_set;
+ 	unsigned int frg_get = -1;
+ 	int count;
+ 
+ 	audio_samplerate = val;
+ 
+-	ccr_addr = (unsigned int)__ioremap((unsigned long)0x18000000, 0x00100000, 0);
+-
+ 	switch(val) {
+    		case  8000: frg_set = 0x01; break;
+ 	    case 11025: frg_set = 0x02; break;
+@@ -165,18 +164,16 @@
+ 	count = 0;
+ 	while(frg_set != frg_get) {
+ 	    /* Ensure CPLD read we gave */
+-	    *((volatile unsigned int*)(ccr_addr+0x04)) = frg_set;
++	    *((volatile unsigned int*)(CCR_ADDR+0x04)) = frg_set;
+ 
+-	    frg_get = *((volatile unsigned int*)(ccr_addr+0x0024)) & 0xFF;
++	    frg_get = *((volatile unsigned int*)(CCR_ADDR+0x0024)) & 0xFF;
+ 	    if ( ++count >= 10 ) {
+ 		schedule_timeout( 1 );
+ 		count = 0;
+ 	    }
+-//	    printk("*** Sound: write %02x[%08x], read %02x[%08x]\n", frg_set, ccr_addr+0x04,
+-//								     frg_get, ccr_addr+0x24);
++//	    printk("*** Sound: write %02x[%08x], read %02x[%08x]\n", frg_set, CCR_ADDR+0x04,
++//								     frg_get, CCR_ADDR+0x24);
+ 	}
+-
+-	__iounmap((void*)ccr_addr);
+ #else
+ 	struct uda1341_cfg cfg;
+ 	u_int clk_ref, clk_div;

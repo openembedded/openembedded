@@ -1,0 +1,14 @@
+diff -urN xmms-embedded.orig/xmms/Output/OSS/init.c xmms-embedded/xmms/Output/OSS/init.c
+--- xmms-embedded.orig/xmms/Output/OSS/init.c	2003-04-01 12:55:54.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/init.c	2004-03-28 22:17:07.000000000 -0500
+@@ -30,8 +30,8 @@
+ 
+ 	oss_cfg.audio_device = 0;
+ 	oss_cfg.mixer_device = 0;
+-	oss_cfg.buffer_size = 3000;
+-	oss_cfg.prebuffer = 25;
++	oss_cfg.buffer_size = 3;
++	oss_cfg.prebuffer = 1;
+ 	oss_cfg.use_alt_audio_device = FALSE;
+ 	oss_cfg.alt_audio_device = NULL;
+ 	oss_cfg.use_master=0;

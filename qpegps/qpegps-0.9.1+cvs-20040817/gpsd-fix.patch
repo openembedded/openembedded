@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qpegps/client.cpp~gpss-fix
++++ qpegps/client.cpp
+@@ -301,6 +301,7 @@
+       dataPos = dataStr.find('=')-1;
+     }
+   }
++  while( socket->getch()>0){;}
+   if(positionChanged)
+   {
+     gpsData->adjustDatum();

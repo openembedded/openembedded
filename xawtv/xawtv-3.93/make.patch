@@ -1,0 +1,147 @@
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/common/Subdir.mk	2003-02-14 09:14:04.000000000 -0500
++++ xawtv-3.93/common/Subdir.mk	2004-06-08 16:50:35.382555000 -0400
+@@ -17,7 +17,7 @@
+ 
+ # RegEdit.c is good old K&R ...
+ common/RegEdit.o: CFLAGS += -Wno-missing-prototypes -Wno-strict-prototypes
+-common/channel-no-x11.o: CFLAGS += -DNO_X11=1 
++common/channel-no-x11.o: DEFS += -DNO_X11=1 
+ 
+ common/channel-no-x11.o: common/channel.c
+ 	@$(echo_compile_c)
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/configure.ac	2004-03-10 11:34:37.000000000 -0500
++++ xawtv-3.93/configure.ac	2004-06-08 17:01:42.023414000 -0400
+@@ -150,6 +150,12 @@
+   ATHENA=""
+   FSLIB=""
+ fi
++if test "x$x_includes" = "x"; then
++    x_includes=/usr/X11R6/include
++fi
++if test "x$x_libraries" = "x"; then
++    x_libraries=/usr/X11R6/lib
++fi
+ AC_SUBST(X_CFLAGS)
+ AC_SUBST(X_PRE_LIBS)
+ AC_SUBST(X_EXTRA_LIBS)
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/console/Subdir.mk	2003-02-14 09:14:04.000000000 -0500
++++ xawtv-3.93/console/Subdir.mk	2004-06-08 16:54:22.296488000 -0400
+@@ -84,11 +84,11 @@
+ console/v4l-conf : LDLIBS  += $(ATHENA_LIBS)
+ 
+ # linker flags
+-console/fbtv     : LDFLAGS := $(DLFLAGS)
+-console/ttv      : LDFLAGS := $(DLFLAGS)
+-console/scantv   : LDFLAGS := $(DLFLAGS)
+-console/streamer : LDFLAGS := $(DLFLAGS)
+-console/webcam   : LDFLAGS := $(DLFLAGS)
++console/fbtv     : LDLIBS += $(DLFLAGS)
++console/ttv      : LDLIBS += $(DLFLAGS)
++console/scantv   : LDLIBS += $(DLFLAGS)
++console/streamer : LDLIBS += $(DLFLAGS)
++console/webcam   : LDLIBS += $(DLFLAGS)
+ 
+ # global targets
+ all:: $(TARGETS-console) $(TARGETS-v4l-conf)
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/libng/contrib-plugins/Subdir.mk	2003-02-14 09:14:05.000000000 -0500
++++ xawtv-3.93/libng/contrib-plugins/Subdir.mk	2004-06-08 16:53:10.545928000 -0400
+@@ -18,7 +18,7 @@
+ 
+ # linear-blend has mmx support ...
+ ifeq ($(USE_MMX),yes)
+-libng/contrib-plugins/linear-blend.so : CFLAGS += -DMMX=1
++libng/contrib-plugins/linear-blend.so : DEFS += -DMMX=1
+ endif
+ 
+ # global targets
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/Makefile.in	2004-04-22 10:52:29.000000000 -0400
++++ xawtv-3.93/Makefile.in	2004-06-08 17:06:40.828711000 -0400
+@@ -28,12 +28,13 @@
+ 
+ # for CFLAGS
+ WARN_FLAGS	:= -Wall -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith
+-LFS_FLAGS	:= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-X11_FLAGS	:= @X_CFLAGS@ @XFT_FLAGS@ -I/usr/X11R6/include/X11/fonts
+-LIB_FLAGS	:= -I. -I./vbistuff -I./x11 \
++LFS_DEFS	:= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
++X11_DEFS	:= @X_CFLAGS@ @XFT_FLAGS@ -I@x_includes@/X11/fonts -I@x_includes@/X11/FS
++LIB_DEFS	:= -I. -I./vbistuff -I./x11 \
+ 		   -I$(srcdir)/jwz -I$(srcdir)/common -I$(srcdir)/console \
+ 		   -I$(srcdir)/x11 -I$(srcdir)/structs \
+-		   -I$(srcdir)/libng -Llibng
++		   -I$(srcdir)/libng
++LIB_LIBS	:= -Llibng
+ 
+ # various libraries
+ ATHENA_LIBS	:= @X_LIBS@ @XFT_LIBS@ @LIBS@ @ATHENA@
+@@ -67,24 +68,25 @@
+ # build final cflags
+ CFLAGS   := @CFLAGS@
+ CFLAGS   += $(WARN_FLAGS)
+-CFLAGS   += $(LFS_FLAGS)
+-CFLAGS   += $(X11_FLAGS)
+-CFLAGS   += $(LIB_FLAGS)
+-CFLAGS   += -DCONFIGFILE='"$(config)"'
+-CFLAGS   += -DLIBDIR='"$(libdir)"'
+-CFLAGS   += -DDATADIR='"$(datadir)"'
+-CFLAGS   += -DVERSION='"$(VERSION)"'
++DEFS   += $(LFS_DEFS)
++DEFS   += $(X11_DEFS)
++DEFS   += $(LIB_DEFS)
++DEFS   += -DCONFIGFILE='"$(config)"'
++DEFS   += -DLIBDIR='"$(libdir)"'
++DEFS   += -DDATADIR='"$(datadir)"'
++DEFS   += -DVERSION='"$(VERSION)"'
+ CXXFLAGS := $(CFLAGS)
+ 
+ # for gcc3
+ #CFLAGS   += -std-gnu99
+ 
+ # shared objects need -fPIC
+-%.so : CFLAGS   += -fPIC
+-%.so : CXXFLAGS += -fPIC
++%.so : DEFS   += -fPIC
+ 
+ # libraries
++LDFLAGS := @LDFLAGS@
+ LDLIBS  := @LDLIBS@
++LDLIBS  += $(LIB_LIBS)
+ 
+ 
+ #########################################################
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/mk/Compile.mk	2003-02-14 09:14:08.000000000 -0500
++++ xawtv-3.93/mk/Compile.mk	2004-06-08 16:53:52.030861000 -0400
+@@ -20,8 +20,8 @@
+ depfile		= mk/$(subst /,_,$*).dep
+ depfiles	= mk/*.dep
+ 
+-compile_c	= $(CC) $(CFLAGS) -Wp,-MD,$(tmpdep) -c -o $@ $<
+-compile_cc	= $(CXX) $(CXXFLAGS) -Wp,-MD,$(tmpdep) -c -o $@ $<
++compile_c	= $(CC) $(CFLAGS) $(DEFS) -Wp,-MD,$(tmpdep) -c -o $@ $<
++compile_cc	= $(CXX) $(CXXFLAGS) $(DEFS) -Wp,-MD,$(tmpdep) -c -o $@ $<
+ fixup_deps	= sed -e "s|.*\.o:|$@:|" < $(tmpdep) > $(depfile) && rm -f $(tmpdep)
+ 
+ link_app	= $(CC) $(LDFLAGS) -o $@  $^ $(LDLIBS)
+--- tmp/base/xawtv-3.93-r0/xawtv-3.93/x11/Subdir.mk	2004-01-12 12:56:17.000000000 -0500
++++ xawtv-3.93/x11/Subdir.mk	2004-06-08 16:53:36.097733000 -0400
+@@ -110,14 +110,14 @@
+ x11/propwatch    : LDLIBS  += $(ATHENA_LIBS)
+ 
+ # linker flags
+-x11/xawtv        : LDFLAGS := $(DLFLAGS)
+-x11/motv         : LDFLAGS := $(DLFLAGS)
+-x11/v4lctl       : LDFLAGS := $(DLFLAGS)
+-x11/pia          : LDFLAGS := $(DLFLAGS)
++x11/xawtv        : LDLIBS += $(DLFLAGS)
++x11/motv         : LDLIBS += $(DLFLAGS)
++x11/v4lctl       : LDLIBS += $(DLFLAGS)
++x11/pia          : LDLIBS += $(DLFLAGS)
+ 
+ # compile flags
+-x11/complete-xaw.o   : CFLAGS += -DATHENA=1
+-x11/complete-motif.o : CFLAGS += -DMOTIF=1
++x11/complete-xaw.o   : DEFS += -DATHENA=1
++x11/complete-motif.o : DEFS += -DMOTIF=1
+ 
+ 
+ # i18n

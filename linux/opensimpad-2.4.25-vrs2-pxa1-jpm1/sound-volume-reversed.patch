@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.25/drivers/misc/ucb1x00-audio.c~sound-volume-reversed.patch	2004-03-31 17:15:12.000000000 +0200
++++ linux-2.4.25/drivers/misc/ucb1x00-audio.c	2004-03-31 17:15:13.000000000 +0200
+@@ -97,7 +97,7 @@
+ 				ucba->output_level = gain | gain << 8;
+ 				ucba->mod_cnt++;
+ 				ucba->ctrl_b = (ucba->ctrl_b & 0xff00) |
+-					       ((gain * 31) / 100);
++					       (((100-gain) * 31) / 100);
+ 				ucb1x00_reg_write(ucba->ucb, UCB_AC_B,
+ 						  ucba->ctrl_b);
+ 				ret = 0;

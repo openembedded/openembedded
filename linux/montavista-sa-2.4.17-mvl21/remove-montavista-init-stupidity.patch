@@ -1,0 +1,23 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.17_mvl21/init/main.c~remove-montavista-init-stupidity
++++ linux-2.4.17_mvl21/init/main.c
+@@ -852,15 +852,11 @@
+ 	 * trying to recover a really broken machine.
+ 	 */
+ 
+-#ifndef CONFIG_SA1100_BEAGLE
+ 	if (execute_command)
+ 		execve(execute_command,argv_init,envp_init);
+ 	execve("/sbin/init",argv_init,envp_init);
+ 	execve("/etc/init",argv_init,envp_init);
+ 	execve("/bin/init",argv_init,envp_init);
+-#else
+-	strcpy( argv_init[0], "--login" );
+-#endif
+ 	execve("/bin/sh",argv_init,envp_init);
+ 	panic("No init found.  Try passing init= option to kernel.");
+ }

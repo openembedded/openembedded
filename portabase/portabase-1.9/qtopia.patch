@@ -1,0 +1,20 @@
+--- portabase/portabase.pro.orig	2004-08-01 16:20:02.000000000 +0200
++++ portabase/portabase.pro	2004-08-01 16:20:30.000000000 +0200
+@@ -7,7 +7,7 @@
+                   portabase_zh_TW.ts
+ # determine which version to compile for
+ # options are desktop, qtopia, or sharp (add "test" for the test environment)
+-CONFIG         += desktop
++CONFIG         += qtopia
+ 
+ # Files common between all versions
+ HEADERS         = portabase.h \
+@@ -120,7 +120,7 @@
+                   metakitfuncs.cpp
+ 
+ # Stuff for all Linux/UNIX versions
+-unix:LIBS       += -lm -lmk4 -lbeecrypt -ljpeg
++unix:LIBS       += -lm -lmk4 -lbeecrypt -ljpeg -lstdc++
+ 
+ # Stuff for older Zaurus ROMs
+ qtopia:CONFIG  += zaurus

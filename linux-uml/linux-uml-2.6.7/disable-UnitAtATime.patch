@@ -1,0 +1,22 @@
+
+Avoid that gcc breaks UML with "unit at a time" compilation mode.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/Makefile |    2 ++
+ 1 files changed, 2 insertions(+)
+
+diff -puN arch/um/Makefile~disable-UnitAtATime arch/um/Makefile
+--- uml-linux-2.6.7/arch/um/Makefile~disable-UnitAtATime	2004-06-29 21:03:00.859506704 +0200
++++ uml-linux-2.6.7-paolo/arch/um/Makefile	2004-06-29 21:03:00.861506400 +0200
+@@ -61,6 +61,8 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
+ 	-D_LARGEFILE64_SOURCE $(ARCH_INCLUDE) -Derrno=kernel_errno \
+ 	-Dsigprocmask=kernel_sigprocmask $(MODE_INCLUDE)
+ 
++CFLAGS += $(call check_gcc,-fno-unit-at-a-time,)
++
+ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+ 
+ # These are needed for clean and mrproper, since in that case .config is not
+_

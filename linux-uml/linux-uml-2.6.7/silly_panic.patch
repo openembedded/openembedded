@@ -1,0 +1,22 @@
+---
+
+ uml-linux-2.6.7-paolo/arch/um/kernel/trap_kern.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff -puN arch/um/kernel/trap_kern.c~silly_panic arch/um/kernel/trap_kern.c
+--- uml-linux-2.6.7/arch/um/kernel/trap_kern.c~silly_panic	2004-06-28 21:42:06.025387464 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/trap_kern.c	2004-06-28 21:43:47.676934080 +0200
+@@ -54,8 +54,10 @@ int handle_page_fault(unsigned long addr
+ 	if(is_write && !(vma->vm_flags & VM_WRITE)) 
+ 		goto out;
+ 	page = address & PAGE_MASK;
+-	if(page == (unsigned long) current_thread + PAGE_SIZE)
+-		panic("Kernel stack overflow");
++	if (mode_tt) {
++		if(page == (unsigned long) current_thread + PAGE_SIZE)
++			panic("Kernel stack overflow");
++	}
+ 	pgd = pgd_offset(mm, page);
+ 	pmd = pmd_offset(pgd, page);
+ 	do {
+_

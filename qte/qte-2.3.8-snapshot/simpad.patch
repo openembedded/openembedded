@@ -1,0 +1,403 @@
+diff -u qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp qt-2.3.7/src/kernel/qkeyboard_qws.cpp
+--- qt-2.3.7.orig/src/kernel/qkeyboard_qws.cpp	2004-07-06 23:02:40.000000000 +0200
++++ qt-2.3.7/src/kernel/qkeyboard_qws.cpp	2004-07-06 23:03:00.000000000 +0200
+@@ -37,6 +37,7 @@
+ #include <qapplication.h>
+ #include <qsocketnotifier.h>
+ #include <qnamespace.h>
++#include <qdatetime.h>
+ #include <qtimer.h>
+ 
+ #include <stdlib.h>
+@@ -131,6 +132,59 @@
+ 
+ #endif // QNX6
+ 
++/*
++ * SIMpad switches handler
++ * (C) 2003 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
++ */
++
++//TODO: guard this against inclusion with #ifdef QT_QWS_SIMPAD
++
++#include <linux/switches.h>
++#define SIMPAD_SWITCHES_DEVICE "/dev/misc/switches"
++
++// switches from left top to right down over the SIMpad surface
++
++#define SIMPAD_SWITCH_POWER 0x02
++#define SIMPAD_SWITCH_UPPER 0x10
++#define SIMPAD_SWITCH_UP 0x20
++#define SIMPAD_SWITCH_DOWN 0x40
++#define SIMPAD_SWITCH_LEFT 0x80
++#define SIMPAD_SWITCH_RIGHT 0x100
++#define SIMPAD_SWITCH_LOWER 0x8
++
++class QWSsimpadButtonsHandler : public QWSKeyboardHandler
++{
++  Q_OBJECT
++
++  public:
++    QWSsimpadButtonsHandler();
++    virtual ~QWSsimpadButtonsHandler();
++
++    bool isOpen() { return fd > 0; }
++
++  private slots:
++    void readSwitchesData();
++    void autoRepeat();
++
++  private:
++    switches_mask_t switches;
++
++    int fd;
++    int repeatdelay;
++    int repeatperiod;
++
++    int lastCode;         // last native code
++    int lastPress;        // last press/release state
++
++    int k;                // last emitted Qt key code
++    int shiftKeyPressed;  // true if one of the SHIFT keys has been pressed and not yet released
++    bool shiftUsed;       // true if SHIFT has been used
++
++    QTime eventTimer;     // tracks time between raw events
++    QTimer* repeater;
++    QSocketNotifier *notifier;
++};
++
+ #ifdef QT_QWS_SL5XXX
+ static const QWSServer::KeyMap keyM[] = {
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  }, // 00
+@@ -1479,7 +1533,11 @@
+     } else {
+ 	type = spec;
+     }
+-
++    if ( type == "SIMpad" )
++    {
++        qDebug( "QWSKeyboardHandler: using SIMpad keyboard handler..." );
++        handler = new QWSsimpadButtonsHandler();
++    }
+     if ( type == "Buttons" ) {
+ #if defined(QT_QWS_YOPY)
+ 	handler = new QWSyopyButtonsHandler();
+@@ -1508,6 +1566,217 @@
+     return keyM;
+ }
+ 
+-#endif // QT_NO_QWS_KEYBOARD
+ 
++/*
++ * SIMpad switches handler
++ * (C) 2003 Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
++ */
++
++
++QWSsimpadButtonsHandler::QWSsimpadButtonsHandler()
++                        :QWSKeyboardHandler(), fd( -1 ),
++                        repeatdelay( 700 ), repeatperiod( 80 ),
++                        lastCode( 0 ), lastPress( 0 ),
++                        k( -1 ), shiftKeyPressed( 0 ), shiftUsed( false )
++{
++    qDebug( "SimpadButtonsHandler() - V4.1" );
++    fd = ::open( SIMPAD_SWITCHES_DEVICE, O_RDWR | O_NDELAY, 0 );
++    if ( fd < 0 )
++    {
++        qWarning( "SimpadButtonsHandler(): can't open %s", SIMPAD_SWITCHES_DEVICE );
++        return;
++    }
++
++    notifier = new QSocketNotifier( fd, QSocketNotifier::Read, this );
++    connect( notifier, SIGNAL( activated(int) ),this, SLOT( readSwitchesData() ) );
++
++    repeater = new QTimer(this);
++    connect(repeater, SIGNAL(timeout()), this, SLOT(autoRepeat()));
++
++}
++
++
++QWSsimpadButtonsHandler::~QWSsimpadButtonsHandler()
++{
++    qDebug( "~SimpadButtonsHandler()" );
++    if ( fd > 0 )
++    {
++        ::close( fd );
++        fd = -1;
++    }
++}
++
++
++void QWSsimpadButtonsHandler::readSwitchesData()
++{
++    qDebug( "SimpadButtonsHandler() - detected switches action" );
++
++    if ( ::read( fd, &switches, sizeof switches ) < 0 )
++    {
++        qWarning( "SimpadButtonsHandler() - switches read error!" );
++        return;
++    }
++
++    qDebug( "SimpadButtonsHandler() - Shift: %0x [used: %0x] + Event = %0x | %0x",
++            shiftKeyPressed, shiftUsed, switches.events[0], switches.states[0] );
++
++    bool press = switches.states[0]; // == switches.event[0];
++    int code = switches.events[0];
++
++    //=========================================================================
++
++    /**
++     * Work around a bug in the kernel keyboard driver emitting
++     * bogus events when pressing multiple switches at once
++     **/
++
++    if ( lastCode == 0 )
++    {
++        // first press ever
++        eventTimer.start();
++        lastPress = press;
++        lastCode = code;
++    }
++    else
++    {
++        int interval = eventTimer.restart();
++        qDebug( "event interval = %d", interval );
++        if ( code == lastCode && interval < 10 )
++        {
++            qDebug( "event interval too small - ignoring bogus event" );
++            qDebug( "did I say i hate buggy kernel drivers? :-D" );
++            return;
++        }
++
++        lastPress = press;
++        lastCode = code;
++    }
++
++    /**
++     * Actually it may also be a hardware problem, but I really don't like
++     * to review kernel code for further inquiry. So just being lazy and
++     * do the workaround in user space :-D
++     **/
++
++     //=====================================================================
++
++    if ( shiftKeyPressed )
++    {
++        // a shift key obviously is being held
++        qDebug( "while shift key is being held..." );
++
++        if ( code != shiftKeyPressed )
++        {
++            // another key is being touched - that means shift mode for us!
++            qDebug( "       another key is being touched -> shift use now = true" );
++
++            shiftUsed = true;
++
++            if ( shiftKeyPressed == SIMPAD_SWITCH_LOWER ) // SHIFT 1
++            {
++                qDebug( "           shift mode 1" );
++                switch(code)
++                {
++                    case SIMPAD_SWITCH_UP:    k = Qt::Key_F9;  break; // Shift1-Up = Calendar
++                    case SIMPAD_SWITCH_DOWN:  k = Qt::Key_F10; break; // Shift1-Down = Contacts
++                    case SIMPAD_SWITCH_LEFT:  k = Qt::Key_F13; break; // Shift1-Left = Mail
++                    case SIMPAD_SWITCH_RIGHT: k = Qt::Key_F11; break; // Shift1-Up = Menu
++                    case SIMPAD_SWITCH_UPPER: k = Qt::Key_F12; break; // Shift1-Upper = Home
++                    default: k=-1; qWarning( "SimpadButtonsHandler() - unhandled event for Shift 1 !" ); break;
++                }
++            }
++            else if ( shiftKeyPressed == SIMPAD_SWITCH_UPPER ) // SHIFT 2
++            {
++                qDebug( "           shift mode 2" );
++                switch(code)
++                {
++                    case SIMPAD_SWITCH_UP:    k = Qt::Key_F5; break;  // Shift2-Up = F5
++                    case SIMPAD_SWITCH_DOWN:  k = Qt::Key_F6; break;  // Shift2-Down = F6
++                    case SIMPAD_SWITCH_LEFT:  k = Qt::Key_F7; break;  // Shift2-Left = F7
++                    case SIMPAD_SWITCH_RIGHT: k = Qt::Key_F8; break;  // Shift2-Up = F8
++                    case SIMPAD_SWITCH_LOWER: k = Qt::Key_F9; break;  // Shift2-Lower = F9
++                    default: k=-1; qWarning( "SimpadButtonsHandler() - unhandled event for Shift 2!" ); break;
++                }
++            }
++        }
++        else
++        {
++            qDebug( "       shift key has been released. checking if being used..." );
++            shiftKeyPressed = 0;
++
++            if ( !shiftUsed )
++            {
++                qDebug( "       ... has _not_ being used -> really emit the key" );
++                k = ( code == SIMPAD_SWITCH_UPPER ? Qt::Key_Escape : Qt::Key_Return );
++                qDebug( "Emitting key = %d (pressed)", k );
++                processKeyEvent( 0, k, 0, true, true );
++                qDebug( "Emitting key = %d (released)", k );
++                processKeyEvent( 0, k, 0, false, true );
++                return;
++            }
++            else
++            {
++                qDebug( "       ... has being used -> doing nothing" );
++                return;
++            }
++        }
++    }
++    else
++    {
++        qDebug( "standard mode - no shift yet..." );
+ 
++        switch(code)
++        {
++            case SIMPAD_SWITCH_UP:    k = Qt::Key_Up;       break;
++            case SIMPAD_SWITCH_DOWN:  k = Qt::Key_Down;     break;
++            case SIMPAD_SWITCH_LEFT:  k = Qt::Key_Left;     break;
++            case SIMPAD_SWITCH_RIGHT: k = Qt::Key_Right;    break;
++
++            case SIMPAD_SWITCH_UPPER: k=-1; shiftKeyPressed = press? code:0; shiftUsed = false; qDebug( "shiftkey pressed now = %d", shiftKeyPressed ); return;
++            case SIMPAD_SWITCH_LOWER: k=-1; shiftKeyPressed = press? code:0; shiftUsed = false; qDebug( "shiftkey pressed now = %d", shiftKeyPressed ); return;
++
++            default: k=-1; qWarning( "SimpadButtonsHandler() - unhandled event!" ); break;
++        }
++    }
++
++    if ( k == -1 )
++    {
++        qDebug( "no key to emit - returning." );
++        return;
++    }
++
++    bool repeatable = ( k == Qt::Key_Up || k == Qt::Key_Down ||
++                        k == Qt::Key_Right || k == Qt::Key_Left );
++
++    qDebug( "key to emit = %d [%s] [repeat=%s]", k,
++            press ? "press" : "release",
++            repeatable ? "true":"false" );
++
++    if ( qt_screen->isTransformed() && k >= Qt::Key_Left && k <= Qt::Key_Down )
++    {
++        qDebug( "SimpadButtonsHandler() - We are transformed! Correcting..." );
++        int oldK = k;
++        k = xform_dirkey( k );
++        qDebug( "SimpadButtonsHandler() - Old Key: %d - New Key %d", oldK, k );
++    }
++
++    if ( repeatable && press )
++        repeater->start( repeatdelay, true );
++    else
++        repeater->stop();
++
++    qwsServer->processKeyEvent( 0, k, 0, press, false );
++}
++
++
++void QWSsimpadButtonsHandler::autoRepeat()
++{
++    qDebug( "Emitting key = %d (released)", k );
++    processKeyEvent( 0, k, 0, false, true );
++    qDebug( "Emitting key = %d (pressed)", k );
++    processKeyEvent( 0, k, 0, true, true );
++    repeater->start(repeatperiod);
++}
++
++
++#endif // QT_NO_QWS_KEYBOARD
+diff -u qt-2.3.7.orig/src/kernel/qsoundqss_qws.cpp qt-2.3.7/src/kernel/qsoundqss_qws.cpp
+--- qt-2.3.7.orig/src/kernel/qsoundqss_qws.cpp	2004-07-06 23:02:40.000000000 +0200
++++ qt-2.3.7/src/kernel/qsoundqss_qws.cpp	2004-07-06 23:03:00.000000000 +0200
+@@ -47,8 +47,8 @@
+ #include <sys/ioctl.h>
+ #include <sys/soundcard.h>
+ 
+-#define QT_QWS_SOUND_16BIT 1 // or 0, or undefined for always 0
+-#define QT_QWS_SOUND_STEREO 1 // or 0, or undefined for always 0
++#define QT_QWS_SOUND_16BIT 0 // or 0, or undefined for always 0
++#define QT_QWS_SOUND_STEREO 0 // or 0, or undefined for always 0
+ 
+ static int sound_speed = 44100;
+ #ifndef QT_NO_SOUNDSERVER
+diff -u qt-2.3.7.orig/src/kernel/qwsmouse_qws.cpp qt-2.3.7/src/kernel/qwsmouse_qws.cpp
+--- qt-2.3.7.orig/src/kernel/qwsmouse_qws.cpp	2004-07-06 23:02:39.000000000 +0200
++++ qt-2.3.7/src/kernel/qwsmouse_qws.cpp	2004-07-06 22:57:44.000000000 +0200
+@@ -51,6 +51,7 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <sys/ioctl.h>
++#include <sys/time.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -74,6 +75,7 @@
+         unsigned short x;
+         unsigned short y;
+         unsigned short pad;
++        struct timeval stamp;
+ } TS_EVENT;
+ #elif defined(QT_QWS_SL5XXX)
+ #define QT_QWS_SL5XXX_RAW
+@@ -1472,29 +1474,13 @@
+     : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0),
+     numSamples(0), skipCount(0)
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+-#if defined(QT_QWS_IPAQ)
+-# ifdef QT_QWS_IPAQ_RAW
+-    if ((mouseFD = open( "/dev/h3600_tsraw", O_RDONLY | O_NDELAY)) < 0) {
+-# else
+-    if ((mouseFD = open( "/dev/h3600_ts", O_RDONLY | O_NDELAY)) < 0) {
+-# endif
+-        qWarning( "Cannot open /dev/h3600_ts (%s)", strerror(errno));
+-	return;
+-    }
+-#elif defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
+-//# ifdef QT_QWS_SL5XXX_TSRAW
+-# if 0
+-    if ((mouseFD = open( "/dev/tsraw", O_RDONLY | O_NDELAY)) < 0) {
+-        qWarning( "Cannot open /dev/tsraw (%s)", strerror(errno));
+-       return;
+-    }
+-# else
+-    if ((mouseFD = open( "/dev/ts", O_RDONLY | O_NDELAY)) < 0) {
+-        qWarning( "Cannot open /dev/ts (%s)", strerror(errno));
++#ifdef QT_QWS_SIMPAD
++     if ((mouseFD = open( "/dev/touchscreen/ucb1x00", O_RDONLY | O_NONBLOCK ))
++< 0) {
++         qWarning( "Cannot open /dev/touchscreen/ucb1x00 (%s)", strerror(errno)
++);
+         return;
+      }
+-# endif
+ #endif
+ 
+     QSocketNotifier *mouseNotifier;
+@@ -1503,12 +1489,11 @@
+     connect(mouseNotifier, SIGNAL(activated(int)),this, SLOT(readMouseData()));
+     waspressed=FALSE;
+     mouseIdx = 0;
+-#endif
+ }
+ 
+ QTPanelHandlerPrivate::~QTPanelHandlerPrivate()
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
+     if (mouseFD >= 0)
+ 	close(mouseFD);
+ #endif
+@@ -1516,7 +1501,7 @@
+ 
+ void QTPanelHandlerPrivate::readMouseData()
+ {
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
+     if(!qt_screen)
+ 	return;
+ 
+@@ -1929,7 +1914,7 @@
+ 	    handler = new QCustomTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #elif defined(QT_QWS_YOPY)
+ 	    handler = new QYopyTPanelHandlerPrivate( mouseProtocol, mouseDev );
+-#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700)
++#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
+ 	    handler = new QTPanelHandlerPrivate( mouseProtocol, mouseDev );
+ #elif defined(QT_QWS_CASSIOPEIA)
+ 	    handler = new QVrTPanelHandlerPrivate( mouseProtocol, mouseDev );

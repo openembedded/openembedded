@@ -1,0 +1,10 @@
+--- glibc-2.3.2/Makerules.orig	2003-10-28 18:27:11.000000000 -0500
++++ glibc-2.3.2/Makerules	2003-10-28 18:27:31.000000000 -0500
+@@ -479,6 +479,7 @@ ifeq (yes,$(elf))
+ # not for shared objects
+ $(common-objpfx)shlib.lds: $(common-objpfx)config.make $(..)Makerules
+ 	$(LINK.o) -shared -Wl,-O1 \
++		  -nostdlib -nostartfiles \
+ 		  $(sysdep-LDFLAGS) $(config-LDFLAGS) $(LDFLAGS.so) \
+ 		  -Wl,--verbose 2>&1 | \
+ 	  sed > $@T \

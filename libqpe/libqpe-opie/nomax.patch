@@ -1,0 +1,79 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- opie-x86/library/qpeapplication.cpp~nomax
++++ opie-x86/library/qpeapplication.cpp
+@@ -251,6 +251,8 @@
+ 
+     static bool read_widget_rect(const QString &app, bool &maximized, QPoint &p, QSize &s)
+     {
++#ifndef OPIE_NO_WINDOWED
++ 
+     maximized = TRUE;
+     // 350 is the trigger in qwsdefaultdecoration for providing a resize button
+     if ( qApp->desktop()->width() <= 350 )
+@@ -272,11 +274,10 @@
+ 
+         return TRUE;
+     }
+-
++#endif
+     return FALSE;
+     }
+ 
+-
+         static bool validate_widget_size(const QWidget *w, QPoint &p, QSize &s)
+     {
+ #ifndef Q_WS_QWS
+@@ -320,6 +321,8 @@
+ 
+     static void store_widget_rect(QWidget *w, QString &app)
+     {
++#ifndef OPIE_NO_WINDOWED
++
+     // 350 is the trigger in qwsdefaultdecoration for providing a resize button
+     if ( qApp->desktop()->width() <= 350 )
+         return;
+@@ -340,6 +343,8 @@
+     QString s;
+     s.sprintf("%d,%d,%d,%d,%d", r.left() + offsetX, r.top() + offsetY, r.width(), r.height(), w->isMaximized() );
+     cfg.writeEntry( app, s );
++#endif
++
+     }
+ 
+     static bool setWidgetCaptionFromAppName( QWidget* /*mw*/, const QString& /*appName*/, const QString& /*appsPath*/ )
+--- opie-x86/library/qpeapplication.h~nomax
++++ opie-x86/library/qpeapplication.h
+@@ -205,7 +205,10 @@
+     else
+     {
+         if ( !nomax
+-                && ( qApp->desktop()->width() <= 320 ) )
++#ifndef OPIE_NO_WINDOWED
++                && ( qApp->desktop()->width() <= 320 ) 
++#endif
++        )
+         {
+             wg->showMaximized();
+         } else {
+--- opie-x86/library/qpedecoration_qws.cpp~nomax
++++ opie-x86/library/qpedecoration_qws.cpp
+@@ -628,6 +628,7 @@
+ 	case Menu:
+ 	    break;
+ 	case Maximize:
++#ifndef OPIE_NO_WINDOWED
+ 	    if ( !widget->inherits( "QDialog" ) && qApp->desktop()->width() > 350 ) {
+ 		int maximizeWidth = wdiface->metric(WindowDecorationInterface::MaximizeWidth,&wd);
+ 		int left = rect.right() - maximizeWidth - closeWidth;
+@@ -636,6 +637,7 @@
+ 		QRect r(left, rect.top() - titleHeight, closeWidth, titleHeight);
+ 		region = r;
+ 	    }
++#endif
+ 	    break;
+ 	case Minimize:
+ 	    if ( ((DecorHackWidget *)widget)->needsOk() ) {

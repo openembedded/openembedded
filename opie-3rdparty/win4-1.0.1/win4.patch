@@ -1,0 +1,20 @@
+diff -ur win4_V1.0.1.orig/tools/Makefile win4_V1.0.1/tools/Makefile
+--- win4_V1.0.1.orig/tools/Makefile	2004-06-16 22:45:42.000000000 +0200
++++ win4_V1.0.1/tools/Makefile	2004-06-16 22:45:54.000000000 +0200
+@@ -1,3 +1,3 @@
+ bin2c:
+-	gcc -O2 -Wall -o bin2c bin2c.c
++	$(BUILD_CC) -O2 -Wall -o bin2c bin2c.c
+ 
+diff -ur win4_V1.0.1.orig/win4.desktop win4_V1.0.1/win4.desktop
+--- win4_V1.0.1.orig/win4.desktop	2004-06-16 22:45:42.000000000 +0200
++++ win4_V1.0.1/win4.desktop	2004-06-16 22:46:01.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Win4
+ Name[de]=Win4
+-Icon=win4
++Icon=win4/win4
+ Exec=win4
+ Comment=Line up four coins to win.
+ Comment[de]=Bring vier Steine in eine Reihe.

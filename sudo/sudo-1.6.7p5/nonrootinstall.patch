@@ -1,0 +1,58 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- sudo-1.6.7p5/Makefile.in~nonrootinstall
++++ sudo-1.6.7p5/Makefile.in
+@@ -64,7 +64,7 @@
+ # C preprocessor flags
+ CPPFLAGS = -I. -I$(srcdir) @CPPFLAGS@
+ 
+-# Usually -O and/or -g
++# Usually -o and/or -g
+ CFLAGS = @CFLAGS@
+ 
+ # Flags to pass to the link stage
+@@ -96,10 +96,16 @@
+ mandirform = $(mandir)/$(mantype)$(mansectform)
+ 
+ # User and group ids the installed files should be "owned" by
++ifeq ($(DESTDIR),)
++install_owncmd = -o $(install_uid) -g $(install_gid)
++endif
+ install_uid = 0
+ install_gid = 0
+ 
+ # User, group, and mode the sudoers file should be "owned" by (configure)
++ifeq ($(DESTDIR),)
++sudoers_owncmd = -o $(sudoers_uid) -g $(sudoers_gid)
++endif
+ sudoers_uid = @SUDOERS_UID@
+ sudoers_gid = @SUDOERS_GID@
+ sudoers_mode = @SUDOERS_MODE@
+@@ -302,18 +308,18 @@
+ 	    $(DESTDIR)$(mandirsu) $(DESTDIR)$(mandirform)
+ 
+ install-binaries: $(PROGS)
+-	$(INSTALL) -O $(install_uid) -G $(install_gid) -M 4111 -s sudo $(DESTDIR)$(sudodir)/sudo
+-	$(INSTALL) -O $(install_uid) -G $(install_gid) -M 0111 -s visudo $(DESTDIR)$(visudodir)/visudo
++	$(INSTALL) $(install_owncmd) -m 4555 -s sudo $(DESTDIR)$(sudodir)/sudo
++	$(INSTALL) $(install_owncmd) -m 0555 -s visudo $(DESTDIR)$(visudodir)/visudo
+ 
+ install-sudoers:
+ 	test -f $(DESTDIR)$(sudoersdir)/sudoers || \
+-	    $(INSTALL) -O $(sudoers_uid) -G $(sudoers_gid) -M $(sudoers_mode) \
++	    $(INSTALL) $(sudoers_owncmd) -m $(sudoers_mode) \
+ 		$(srcdir)/sudoers $(DESTDIR)$(sudoersdir)/sudoers
+ 
+ install-man:
+-	$(INSTALL) -O $(install_uid) -G $(install_gid) -M 0444 @mansrcdir@/sudo.$(mantype) $(DESTDIR)$(mandirsu)/sudo.$(mansectsu)
+-	$(INSTALL) -O $(install_uid) -G $(install_gid) -M 0444 @mansrcdir@/visudo.$(mantype) $(DESTDIR)$(mandirsu)/visudo.$(mansectsu)
+-	$(INSTALL) -O $(install_uid) -G $(install_gid) -M 0444 @mansrcdir@/sudoers.$(mantype) $(DESTDIR)$(mandirform)/sudoers.$(mansectform)
++	$(INSTALL) $(install_owncmd) -m 0444 @mansrcdir@/sudo.$(mantype) $(DESTDIR)$(mandirsu)/sudo.$(mansectsu)
++	$(INSTALL) $(install_owncmd) -m 0444 @mansrcdir@/visudo.$(mantype) $(DESTDIR)$(mandirsu)/visudo.$(mansectsu)
++	$(INSTALL) $(install_owncmd) -m 0444 @mansrcdir@/sudoers.$(mantype) $(DESTDIR)$(mandirform)/sudoers.$(mansectform)
+ @MAN_POSTINSTALL@
+ 
+ check:

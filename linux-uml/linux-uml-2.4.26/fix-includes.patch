@@ -1,0 +1,26 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.21/arch/um/Makefile~remove-bogus-includes	2004-02-01 15:44:08.000000000 +0100
++++ linux-2.4.21/arch/um/Makefile	2004-02-01 15:51:52.000000000 +0100
+@@ -107,7 +107,7 @@
+ linux: setup $(ARCH_DIR)/main.o vmlinux $(LD_SCRIPT-y)
+ 	mv vmlinux vmlinux.o
+ 	$(CC) -Wl,-T,$(LD_SCRIPT-y) $(LINK-y) $(LINK_WRAPS) \
+-		-o linux $(ARCH_DIR)/main.o vmlinux.o -L/usr/lib -lutil
++		-o linux $(ARCH_DIR)/main.o vmlinux.o -L$(STAGING_LIBDIR) -lutil
+ 
+ USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
+ USER_CFLAGS := $(patsubst -Derrno=kernel_errno,,$(USER_CFLAGS))
+--- linux-2.4.21/arch/um/kernel/tt/Makefile~remove-bogus-includes	2004-02-01 15:44:08.000000000 +0100
++++ linux-2.4.21/arch/um/kernel/tt/Makefile	2004-02-01 15:51:39.000000000 +0100
+@@ -34,6 +34,6 @@
+ 	$(CC) $(UNMAP_CFLAGS) -c -o $@ $<
+ 
+ unmap_fin.o : unmap.o
+-	ld -r -o $@ $< -lc -L/usr/lib
++	ld -r -o $@ $< -lc -L$(STAGING_LIBDIR)
+ 
+ clean :

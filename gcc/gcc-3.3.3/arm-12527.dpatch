@@ -1,0 +1,84 @@
+#! /bin/sh -e
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+        echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+        exit 1
+esac
+exit 0
+
+# DP: 2004-01-14  Richard Earnshaw  <rearnsha@arm.com>
+# DP: 
+# DP: 	PR bootstrap/12527
+# DP: 	* config.gcc (arm*-*-linux*): Don't include unknown-elf.h in tm_file.
+# DP: 	Move linux-gas.h and linux-elf.h before aout.h.
+# DP: 	* arm/arm.h (INITIALIZE_TRAMPOLINE): Only define if not already.
+# DP: 	* arm/linux-elf.h (SUBTARGET_CPU_DEFAULT): Define.
+
+
+--- gcc/config.gcc.orig	2004-01-21 07:45:04.000000000 +0100
++++ gcc/config.gcc	2004-02-05 23:17:56.000000000 +0100
+@@ -698,7 +698,7 @@
+ 	use_collect2=yes
+ 	;;
+ arm*-*-linux*)			# ARM GNU/Linux with ELF
+-	tm_file="dbxelf.h elfos.h arm/unknown-elf.h arm/elf.h arm/aout.h arm/arm.h arm/linux-gas.h arm/linux-elf.h"
++	tm_file="dbxelf.h elfos.h arm/elf.h arm/linux-gas.h arm/linux-elf.h arm/aout.h arm/arm.h"
+ 	tmake_file="t-slibgcc-elf-ver t-linux arm/t-linux"
+ 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
+ 	gnu_ld=yes
+--- gcc/config/arm/arm.h.orig	2003-08-12 07:46:29.000000000 +0200
++++ gcc/config/arm/arm.h	2004-02-05 23:14:03.000000000 +0100
+@@ -1770,13 +1770,19 @@
+ /* Emit RTL insns to initialize the variable parts of a trampoline.
+    FNADDR is an RTX for the address of the function's pure code.
+    CXT is an RTX for the static chain value for the function.  */
+-#define INITIALIZE_TRAMPOLINE(TRAMP, FNADDR, CXT)  					\
+-{											\
+-  emit_move_insn									\
+-    (gen_rtx_MEM (SImode, plus_constant (TRAMP, TARGET_ARM ? 8 : 16)), CXT);		\
+-  emit_move_insn									\
+-    (gen_rtx_MEM (SImode, plus_constant (TRAMP, TARGET_ARM ? 12 : 20)),	FNADDR);	\
++#ifndef INITIALIZE_TRAMPOLINE
++#define INITIALIZE_TRAMPOLINE(TRAMP, FNADDR, CXT)			\
++{									\
++  emit_move_insn (gen_rtx_MEM (SImode,					\
++			       plus_constant (TRAMP,			\
++					      TARGET_ARM ? 8 : 16)),	\
++		  CXT);							\
++  emit_move_insn (gen_rtx_MEM (SImode,					\
++			       plus_constant (TRAMP,			\
++					      TARGET_ARM ? 12 : 20)),	\
++		  FNADDR);						\
+ }
++#endif
+ 
+ 
+ /* Addressing modes, and classification of registers for them.  */
+--- gcc/config/arm/linux-elf.h.orig	2003-09-21 22:38:15.000000000 +0200
++++ gcc/config/arm/linux-elf.h	2004-02-05 23:14:03.000000000 +0100
+@@ -34,6 +34,8 @@
+ #undef  TARGET_DEFAULT
+ #define TARGET_DEFAULT (ARM_FLAG_APCS_32 | ARM_FLAG_MMU_TRAPS)
+ 
++#define SUBTARGET_CPU_DEFAULT TARGET_CPU_arm6
++
+ #define SUBTARGET_EXTRA_LINK_SPEC " -m armelf_linux -p"
+ 
+ #undef  MULTILIB_DEFAULTS

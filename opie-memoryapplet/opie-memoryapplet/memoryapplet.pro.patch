@@ -1,0 +1,34 @@
+--- memoryapplet/memoryapplet.pro.orig	2004-05-20 23:16:40.000000000 +0200
++++ memoryapplet/memoryapplet.pro	2004-06-08 18:17:14.000000000 +0200
+@@ -1,14 +1,14 @@
+ TEMPLATE    = lib
+ CONFIG      += qt plugin warn_on 
+-HEADERS     = ../../settings/sysinfo/graph.h \
+-            ../../settings/sysinfo/load.h  \
+-            ../../settings/sysinfo/memory.h  \
++HEADERS     = ../sysinfo/graph.h \
++            ../sysinfo/load.h  \
++            ../sysinfo/memory.h  \
+             memorymeter.h  \
+             memorystatus.h \
+             swapfile.h
+-SOURCES     = ../../settings/sysinfo/graph.cpp \
+-            ../../settings/sysinfo/load.cpp \
+-            ../../settings/sysinfo/memory.cpp \
++SOURCES     = ../sysinfo/graph.cpp \
++            ../sysinfo/load.cpp \
++            ../sysinfo/memory.cpp \
+             memorymeter.cpp \
+             memorystatus.cpp \
+             swapfile.cpp
+--- memoryapplet/memorystatus.cpp.orig	2004-03-13 22:53:54.000000000 +0100
++++ memoryapplet/memorystatus.cpp	2004-06-08 18:21:04.000000000 +0200
+@@ -18,7 +18,7 @@
+ **
+ **********************************************************************/
+ #include "memorystatus.h"
+-#include "../../settings/sysinfo/memory.h"
++#include "../sysinfo/memory.h"
+ #include "swapfile.h"
+ 
+ #include <qpainter.h>

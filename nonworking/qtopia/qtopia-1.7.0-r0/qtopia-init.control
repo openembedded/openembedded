@@ -1,0 +1,8 @@
+Package: qtopia-init
+Files: etc/init.d/qpe
+Priority: optional
+Section: base
+Maintainer: Warwick Allison <warwick@trolltech.com>
+Version: 1.0.0-5
+Architecture: arm
+Description: qtopia init

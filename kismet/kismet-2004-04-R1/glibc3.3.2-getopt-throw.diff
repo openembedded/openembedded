@@ -1,0 +1,36 @@
+--- getopt.h.o	2004-10-10 19:48:48.409249432 +0200
++++ getopt.h	2004-10-10 19:51:42.610766776 +0200
+@@ -20,6 +20,14 @@
+ 
+ #include "config.h"
+ 
++#ifndef __THROW
++# if defined __cplusplus && __GNUC_PREREQ (2,8)
++#  define __THROW       throw ()
++# else
++#  define __THROW
++# endif
++#endif
++
+ #ifdef	__cplusplus
+ extern "C" {
+ #endif
+@@ -103,15 +111,15 @@
+ /* Many other libraries have conflicting prototypes for getopt, with
+    differences in the consts, in stdlib.h.  To avoid compilation
+    errors, only prototype getopt for the GNU C library.  */
+-extern int getopt (int argc, char *const *argv, const char *shortopts);
++extern int getopt (int argc, char *const *argv, const char *shortopts) __THROW;
+ #else /* not __GNU_LIBRARY__ */
+ /* extern int getopt (); */
+ #endif /* not __GNU_LIBRARY__ */
+ extern int getopt_long (int argc, char *const *argv, const char *shortopts,
+-		        const struct option *longopts, int *longind);
++		        const struct option *longopts, int *longind) __THROW;
+ extern int getopt_long_only (int argc, char *const *argv,
+ 			     const char *shortopts,
+-		             const struct option *longopts, int *longind);
++		             const struct option *longopts, int *longind) __THROW;
+ 
+ /* Internal only.  Users should not call this directly.  */
+ extern int _getopt_internal (int argc, char *const *argv,

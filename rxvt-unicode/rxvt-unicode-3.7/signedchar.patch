@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- rxvt-unicode-3.7/src/command.C~signedchar
++++ rxvt-unicode-3.7/src/command.C
+@@ -1831,7 +1831,7 @@
+ #endif				/* NO_SCROLLBAR_REPORT */
+ 
+         {
+-          char            upordown = 0;
++          signed char     upordown = 0;
+ 
+           if (scrollBar.style == R_SB_NEXT)
+             {

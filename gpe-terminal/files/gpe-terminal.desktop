@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Terminal
+Comment=Open a new terminal
+Exec=x-terminal-emulator
+Terminal=0
+Type=Application
+Icon=gpe-terminal.png
+Categories=Utility;GPE

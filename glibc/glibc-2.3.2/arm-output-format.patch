@@ -1,0 +1,11 @@
+--- scripts/output-format.sed	8 Dec 2002 08:13:16 -0000	1.2
++++ scripts/output-format.sed	26 Aug 2003 15:01:13 -0000
+@@ -18,7 +18,7 @@
+ s/\n//
+ s/^\([^,]*\),\([^,]*\),B/OUTPUT_FORMAT(\1)/p
+ s/^\([^,]*\),\([^,]*\),L/OUTPUT_FORMAT(\2)/p
+-/,/s|^|*** BUG in libc/scripts/output-format.sed *** |p
++/,/Q
+ q
+ : q
+ s/"//g

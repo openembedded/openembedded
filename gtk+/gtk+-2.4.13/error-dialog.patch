@@ -1,0 +1,11 @@
+--- gtk+-2.4.4/gtk/gtkstock.c.old	Fri Aug 20 09:33:22 2004
++++ gtk+-2.4.4/gtk/gtkstock.c	Fri Aug 20 09:34:17 2004
+@@ -284,7 +284,7 @@
+  
+   { GTK_STOCK_DIALOG_INFO, N_("Information"), 0, 0, GETTEXT_PACKAGE },
+   { GTK_STOCK_DIALOG_WARNING, N_("Warning"), 0, 0, GETTEXT_PACKAGE },
+-  { GTK_STOCK_DIALOG_ERROR, N_("Error"), 0, 0, GETTEXT_PACKAGE },
++  { GTK_STOCK_DIALOG_ERROR, N_("Information"), 0, 0, GETTEXT_PACKAGE },
+   { GTK_STOCK_DIALOG_QUESTION, N_("Question"), 0, 0, GETTEXT_PACKAGE },
+ 
+   /*  FIXME these need accelerators when appropriate, and

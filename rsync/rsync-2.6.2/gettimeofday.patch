@@ -1,0 +1,18 @@
+--- rsync-2.6.2/configure.in	2004-07-09 14:32:16.000000000 +0200
++++ rsync-2.6.2/configure.in	2004-07-09 14:31:26.000000000 +0200
+@@ -539,11 +539,12 @@
+ fi
+ 
+ AC_CACHE_CHECK([if gettimeofday takes tz argument],rsync_cv_HAVE_GETTIMEOFDAY_TZ,[
+-AC_TRY_RUN([
++AC_TRY_COMPILE([
+ #include <sys/time.h>
+ #include <unistd.h>
+-main() { struct timeval tv; exit(gettimeofday(&tv, NULL));}],
+-           rsync_cv_HAVE_GETTIMEOFDAY_TZ=yes,rsync_cv_HAVE_GETTIMEOFDAY_TZ=no,rsync_cv_HAVE_GETTIMEOFDAY_TZ=cross)])
++],
++[struct timeval tv; exit(gettimeofday(&tv, NULL));],
++           rsync_cv_HAVE_GETTIMEOFDAY_TZ=yes,rsync_cv_HAVE_GETTIMEOFDAY_TZ=no)])
+ if test x"$rsync_cv_HAVE_GETTIMEOFDAY_TZ" = x"yes"; then
+     AC_DEFINE(HAVE_GETTIMEOFDAY_TZ, 1, [ ])
+ fi

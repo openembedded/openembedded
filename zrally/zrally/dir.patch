@@ -1,0 +1,11 @@
+--- src/zrally.cpp.orig	2003-02-15 17:34:08 +0100
++++ src/zrally.cpp	2004-10-16 00:02:23 +0200
+@@ -69,7 +69,7 @@
+ #ifdef _WIN32
+    picsDirectory = "./";
+ #else
+-   picsDirectory = "/home/QtPalmtop/pics/zrally/";
++   picsDirectory = "/opt/QtPalmtop/pics/zrally/";
+ #endif
+    mainWin->setBackgroundColor(QColor (0x00, 0x80, 0x00));
+    

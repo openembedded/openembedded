@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- sparse-bk/expression.c~compile	2004-09-13 17:42:22.642639000 -0400
++++ sparse-bk/expression.c	2004-09-13 17:44:59.147847520 -0400
+@@ -8,7 +8,7 @@
+  *
+  * This is the expression parsing part of parsing C.
+  */
+-#define _ISOC99_SOURCE
++//#define _ISOC99_SOURCE
+ #include <stdarg.h>
+ #include <stdlib.h>
+ #include <stdio.h>

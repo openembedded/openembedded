@@ -1,0 +1,140 @@
+
+Reduces code in *_user files, by moving it in _kern files if already possible.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/drivers/chan_kern.c |   47 +++++++++++++++++++++
+ uml-linux-2.6.7-paolo/arch/um/drivers/chan_user.c |   48 ----------------------
+ 2 files changed, 47 insertions(+), 48 deletions(-)
+
+diff -puN arch/um/drivers/chan_kern.c~Move_away_from_user arch/um/drivers/chan_kern.c
+--- uml-linux-2.6.7/arch/um/drivers/chan_kern.c~Move_away_from_user	2004-06-29 21:03:02.858202856 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/chan_kern.c	2004-06-29 21:03:02.861202400 +0200
+@@ -17,6 +17,7 @@
+ #include "irq_user.h"
+ #include "sigio.h"
+ #include "line.h"
++#include "os.h"
+ 
+ static void *not_configged_init(char *str, int device, struct chan_opts *opts)
+ {
+@@ -87,6 +88,52 @@ static struct chan_ops not_configged_ops
+ 	.winch		= 0,
+ };
+ 
++void generic_close(int fd, void *unused)
++{
++	os_close_file(fd);
++}
++
++int generic_read(int fd, char *c_out, void *unused)
++{
++	int n;
++
++	n = os_read_file(fd, c_out, sizeof(*c_out));
++
++	if(n == -EAGAIN)
++		return(0);
++	else if(n == 0)
++		return(-EIO);
++	return(n);
++}
++
++int generic_write(int fd, const char *buf, int n, void *unused)
++{
++	return(os_write_file(fd, buf, n));
++}
++
++int generic_window_size(int fd, void *unused, unsigned short *rows_out,
++			unsigned short *cols_out)
++{
++	int rows, cols;
++	int ret;
++
++	ret = os_window_size(fd, &rows, &cols);
++	if(ret < 0)
++		return(ret);
++
++	ret = ((*rows_out != rows) || (*cols_out != cols));
++
++	*rows_out = rows;
++	*cols_out = cols;
++
++	return(ret);
++}
++
++void generic_free(void *data)
++{
++	kfree(data);
++}
++
+ static void tty_receive_char(struct tty_struct *tty, char ch)
+ {
+ 	if(tty == NULL) return;
+diff -puN arch/um/drivers/chan_user.c~Move_away_from_user arch/um/drivers/chan_user.c
+--- uml-linux-2.6.7/arch/um/drivers/chan_user.c~Move_away_from_user	2004-06-29 21:03:02.859202704 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/chan_user.c	2004-06-29 21:03:02.861202400 +0200
+@@ -21,31 +21,6 @@
+ #include "choose-mode.h"
+ #include "mode.h"
+ 
+-void generic_close(int fd, void *unused)
+-{
+-	os_close_file(fd);
+-}
+-
+-int generic_read(int fd, char *c_out, void *unused)
+-{
+-	int n;
+-
+-	n = os_read_file(fd, c_out, sizeof(*c_out));
+-
+-	if(n == -EAGAIN) 
+-		return(0);
+-	else if(n == 0) 
+-		return(-EIO);
+-	return(n);
+-}
+-
+-/* XXX Trivial wrapper around os_write_file */
+-
+-int generic_write(int fd, const char *buf, int n, void *unused)
+-{
+-	return(os_write_file(fd, buf, n));
+-}
+-
+ int generic_console_write(int fd, const char *buf, int n, void *unused)
+ {
+ 	struct termios save, new;
+@@ -62,29 +37,6 @@ int generic_console_write(int fd, const 
+ 	return(err);
+ }
+ 
+-int generic_window_size(int fd, void *unused, unsigned short *rows_out,
+-			unsigned short *cols_out)
+-{
+-	int rows, cols;
+-	int ret;
+-
+-	ret = os_window_size(fd, &rows, &cols);
+-	if(ret < 0)
+-		return(ret);
+-
+-	ret = ((*rows_out != rows) || (*cols_out != cols));
+-
+-	*rows_out = rows;
+-	*cols_out = cols;
+-
+-	return(ret);
+-}
+-
+-void generic_free(void *data)
+-{
+-	kfree(data);
+-}
+-
+ static void winch_handler(int sig)
+ {
+ }
+_

@@ -1,0 +1,10 @@
+*** ../bash-2.05b/lib/readline/readline.c	Wed Mar 13 17:10:46 2002
+--- lib/readline/readline.c	Tue Jul 30 17:46:44 2002
+***************
+*** 685,688 ****
+--- 685,689 ----
+  #if defined (VI_MODE)
+    if (rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap &&
++       key != ANYOTHERKEY &&
+        _rl_vi_textmod_command (key))
+      _rl_vi_set_last (key, rl_numeric_arg, rl_arg_sign);

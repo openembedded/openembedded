@@ -1,0 +1,14 @@
+--- linux/include/linux/jffs2_fs_i.h.old	2003-02-01 00:24:48.000000000 -0600
++++ linux/include/linux/jffs2_fs_i.h	2003-02-01 00:25:14.000000000 -0600
+@@ -48,9 +48,11 @@
+ 	uint32_t nr_frags;
+ #endif
+ 
++#ifdef KERNEL_VERSION
+ #if LINUX_VERSION_CODE > KERNEL_VERSION(2,5,2)
+ 	struct inode vfs_inode;
+ #endif
++#endif
+ };
+ 
+ #endif /* _JFFS2_FS_I */

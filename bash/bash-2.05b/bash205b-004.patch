@@ -1,0 +1,22 @@
+*** ../bash-2.05b/subst.c	Mon Jun 24 07:59:45 2002
+--- subst.c	Sat Aug 17 17:28:46 2002
+***************
+*** 1639,1647 ****
+  /* This performs word splitting and quoted null character removal on
+     STRING. */
+! #if 0
+! #define issep(c)	((separators)[1] ? (member ((c), separators)) : (c) == (separators)[0])
+! #else
+! #define issep(c)	((separators)[1] ? isifs(c) : (c) == (separators)[0])
+! #endif
+  
+  WORD_LIST *
+--- 1639,1646 ----
+  /* This performs word splitting and quoted null character removal on
+     STRING. */
+! #define issep(c) \
+! 	(((separators)[0]) ? ((separators)[1] ? isifs(c) \
+! 					      : (c) == (separators)[0]) \
+! 			   : 0)
+  
+  WORD_LIST *

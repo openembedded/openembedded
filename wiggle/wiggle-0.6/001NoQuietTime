@@ -1,0 +1,79 @@
+Status: ok
+
+Don't use --quiet in dotest
+
+--quiet is Debian specific.
+See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=56853
+Just use grep to make time quiet.
+
+ ----------- Diffstat output ------------
+ ./dotest |   32 ++++++++++++++++----------------
+ 1 files changed, 16 insertions(+), 16 deletions(-)
+
+diff ./dotest~current~ ./dotest
+--- ./dotest~current~	2004-02-03 13:00:48.000000000 +1100
++++ ./dotest	2004-02-03 13:01:10.000000000 +1100
+@@ -34,47 +34,47 @@ do
+     case $base in 
+ 	script ) ./script ;;
+ 	diff ) if [ -f new ]
+-		then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dw orig new | diff -u diff - ; xit=$?
+-		else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dwp1 orig patch | diff -u diff - ; xit=$?
++		then /usr/bin/time -o .time -f '%U' $WIGGLE -dw orig new | diff -u diff - ; xit=$?
++		else /usr/bin/time -o .time -f '%U' $WIGGLE -dwp1 orig patch | diff -u diff - ; xit=$?
+ 		fi
+ 		;;
+ 	ldiff ) if [ -f new ]
+-		then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dl orig new | diff -u ldiff - ; xit=$?
+-		else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dlp1 orig patch | diff -u ldiff - ; xit=$?
++		then /usr/bin/time -o .time -f '%U' $WIGGLE -dl orig new | diff -u ldiff - ; xit=$?
++		else /usr/bin/time -o .time -f '%U' $WIGGLE -dlp1 orig patch | diff -u ldiff - ; xit=$?
+ 		fi
+ 		;;
+-	reldiff ) /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dl patch | diff -u reldiff - ; xit=$?
++	reldiff ) /usr/bin/time -o .time -f '%U' $WIGGLE -dl patch | diff -u reldiff - ; xit=$?
+ 		;;
+-	rediff ) /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -dw patch | diff -u rediff - ; xit=$?
++	rediff ) /usr/bin/time -o .time -f '%U' $WIGGLE -dw patch | diff -u rediff - ; xit=$?
+ 		;;
+ 	merge )  if [ -f patch ]
+-		 then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -m orig patch | diff -u merge - ; xit=$?
++		 then /usr/bin/time -o .time -f '%U' $WIGGLE -m orig patch | diff -u merge - ; xit=$?
+ 		 elif [ -f new ] 
+-                 then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -m orig new new2 | diff -u merge - ; xit=$?
+-		 else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -m orig | diff -u merge - ; xit=$?
++                 then /usr/bin/time -o .time -f '%U' $WIGGLE -m orig new new2 | diff -u merge - ; xit=$?
++		 else /usr/bin/time -o .time -f '%U' $WIGGLE -m orig | diff -u merge - ; xit=$?
+ 		 fi
+ 		;;
+ 	replace ) cp orig orig.tmp
+ 		 if [ -f patch ]
+-		 then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -mr orig.tmp patch 
+-		 else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -mr orig.tmp new new2
++		 then /usr/bin/time -o .time -f '%U' $WIGGLE -mr orig.tmp patch 
++		 else /usr/bin/time -o .time -f '%U' $WIGGLE -mr orig.tmp new new2
+ 		 fi
+ 		 diff -u merge orig.tmp ; xit=$?
+ 		 rm  orig.tmp orig.tmp.porig
+ 		;;
+ 	lmerge )  if [ -f patch ]
+-		 then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -ml orig patch | diff -u lmerge - ; xit=$?
+-		 else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -ml orig new new2 | diff -u lmerge - ; xit=$?
++		 then /usr/bin/time -o .time -f '%U' $WIGGLE -ml orig patch | diff -u lmerge - ; xit=$?
++		 else /usr/bin/time -o .time -f '%U' $WIGGLE -ml orig new new2 | diff -u lmerge - ; xit=$?
+ 		 fi
+ 		 ;;
+ 	wmerge )  if [ -f patch ]
+-		 then /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -mw orig patch | diff -u wmerge - ; xit=$?
+-		 else /usr/bin/time --quiet -o .time -f '%U' $WIGGLE -mw orig new new2 | diff -u wmerge - ; xit=$?
++		 then /usr/bin/time -o .time -f '%U' $WIGGLE -mw orig patch | diff -u wmerge - ; xit=$?
++		 else /usr/bin/time -o .time -f '%U' $WIGGLE -mw orig new new2 | diff -u wmerge - ; xit=$?
+ 		 fi
+ 		 ;;
+    esac
+    if [ $xit = 0 ]; then msg=SUCCEEDED; else msg=FAILED; fi
+-   echo $path $msg `cat .time 2> /dev/null`
++   echo $path $msg `grep -v 'Command exited' .time 2> /dev/null`
+    rm -f .time
+    exit $xit
+   ) 

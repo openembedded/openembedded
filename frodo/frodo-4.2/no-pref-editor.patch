@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- Src/main_x.h~no-pref-editor	2004-01-14 18:24:19.000000000 +0100
++++ Src/main_x.h	2004-01-21 01:24:56.000000000 +0100
+@@ -101,15 +101,18 @@
+ 	}
+ 	ThePrefs.Load(prefs_path);
+ 
++#ifdef HAVE_GLADE
+ 	// Show preferences editor
+ 	if (ThePrefs.ShowEditor(true, prefs_path)) {
+-
++#endif
+ 		// Create and start C64
+ 		TheC64 = new C64;
+ 		load_rom_files();
+ 		TheC64->Run();
+ 		delete TheC64;
++#ifdef HAVE_GLADE
+ 	}
++#endif
+ }
+ 
+ 

@@ -1,0 +1,13 @@
+--- configure.ac~	2004-06-03 12:37:47.000000000 +0100
++++ configure.ac	2004-06-04 13:31:02.000000000 +0100
+@@ -172,6 +172,10 @@
+ ],
+ [
+   AC_MSG_RESULT(no)
++],
++[
++  AC_MSG_RESULT(cross-compiling, assumed yes)
++  GST_PKG_CFLAGS="-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+ ])
+ 
+ dnl check for mmap

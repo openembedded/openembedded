@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/malloc/tst-calloc.c~glibc-test-lowram.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/malloc/tst-calloc.c	2004-09-03 19:00:38.000000000 -0500
+@@ -24,9 +24,8 @@
+ #include <stdio.h>
+ 
+ 
+-/* Number of samples per size.  */
+-#define N 50000
+-
++/* Number of samples per size.  This is also the maximum memory consumption in kilobytes. */
++#define N 8000
+ 
+ static void
+ fixed_test (int size)

@@ -1,0 +1,23 @@
+
+Makes "make help ARCH=um" work.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/Makefile |    6 ++++++
+ 1 files changed, 6 insertions(+)
+
+diff -puN arch/um/Makefile~MakeHelp arch/um/Makefile
+--- uml-linux-2.6.7/arch/um/Makefile~MakeHelp	2004-06-29 21:03:01.703378416 +0200
++++ uml-linux-2.6.7-paolo/arch/um/Makefile	2004-06-29 21:03:01.705378112 +0200
+@@ -209,3 +209,9 @@ $(ARCH_DIR)/util: FORCE
+ 	$(Q)$(MAKE) $(build)=$@
+ 
+ export SUBARCH USER_CFLAGS OS 
++
++all: linux
++
++define archhelp
++  echo  '* linux	- Binary kernel image (./linux)'
++endef
+_

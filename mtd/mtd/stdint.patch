@@ -1,0 +1,11 @@
+--- fs/jffs2/compr_rtime.c	2004-04-01 00:07:53.000000000 +0100
++++ fs/jffs2/compr_rtime.c	2004-04-01 00:07:53.000000000 +0100
+@@ -26,6 +26,8 @@
+ #include <linux/errno.h>
+ #include <linux/string.h> 
+ 
++#include <stdint.h>
++
+ /* _compress returns the compressed size, -1 if bigger */
+ int jffs2_rtime_compress(unsigned char *data_in, unsigned char *cpage_out, 
+ 		   uint32_t *sourcelen, uint32_t *dstlen)

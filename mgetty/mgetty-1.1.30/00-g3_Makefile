@@ -1,0 +1,11 @@
+--- mgetty-1.1.27.orig/g3/Makefile
++++ mgetty-1.1.27/g3/Makefile
+@@ -5,7 +5,7 @@
+ #
+ 
+ CC=gcc
+-CFLAGS=-O2 -I.. -g
++CFLAGS=-O2 -I.. #-g
+ 
+ G3_PROGRAMS=pbm2g3 g3cat g32pbm
+ 

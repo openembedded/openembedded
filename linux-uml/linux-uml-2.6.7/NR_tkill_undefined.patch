@@ -1,0 +1,27 @@
+
+Avoids compile failure when host misses tkill(), by simply using kill() in
+that case.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/os-Linux/process.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletion(-)
+
+diff -puN arch/um/os-Linux/process.c~NR_tkill_undefined arch/um/os-Linux/process.c
+--- uml-linux-2.6.7/arch/um/os-Linux/process.c~NR_tkill_undefined	2004-06-29 21:03:02.577245568 +0200
++++ uml-linux-2.6.7-paolo/arch/um/os-Linux/process.c	2004-06-29 21:03:02.579245264 +0200
+@@ -93,8 +93,11 @@ void os_kill_process(int pid, int reap_c
+ 
+ void os_usr1_process(int pid)
+ {
++#ifdef __NR_tkill
+ 	syscall(__NR_tkill, pid, SIGUSR1); 
+-	/* kill(pid, SIGUSR1); */
++#else
++	kill(pid, SIGUSR1);
++#endif
+ }
+ 
+ int os_getpid(void)
+_

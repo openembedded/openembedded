@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libetpan-0.33pre/configure.in~config_iconv	2004-03-07 01:59:00.000000000 +0100
++++ libetpan-0.33pre/configure.in	2004-04-07 16:30:42.286805212 +0200
+@@ -92,14 +92,6 @@
+ fi
+ AC_SUBST(SSLLIBS)
+ 
+-dnl iconv
+-AC_ARG_ENABLE(iconv,
+-	[ --disable-iconv	make a version not using iconv],
+-		enable_iconv=no, enable_iconv=yes)
+-if test x$enable_iconv = xyes; then
+-   AM_ICONV
+-fi
+-
+ dnl Berkeley DB
+ 
+ DBVERS=0

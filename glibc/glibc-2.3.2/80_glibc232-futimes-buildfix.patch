@@ -1,0 +1,10 @@
+--- sysdeps/unix/sysv/linux/futimes.c	12 Jul 2003 22:50:45 -0000	1.4
++++ sysdeps/unix/sysv/linux/futimes.c	16 Jul 2003 00:09:41 -0000	1.5
+@@ -19,6 +19,7 @@
+ 
+ #include <errno.h>
+ #include <sysdep.h>
++#include <string.h>
+ #include <utime.h>
+ #include <sys/time.h>
+ #include <stdio-common/_itoa.h>

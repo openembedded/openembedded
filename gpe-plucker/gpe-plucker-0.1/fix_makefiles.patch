@@ -1,0 +1,82 @@
+diff -urNd ../gpe-plucker-0.1-r0/gpe-plucker-0.1/Makefile gpe-plucker-0.1/Makefile
+--- ../gpe-plucker-0.1-r0/gpe-plucker-0.1/Makefile	2004-08-03 04:09:37.000000000 +0100
++++ gpe-plucker-0.1/Makefile	2004-08-03 13:36:22.000000000 +0100
+@@ -8,40 +8,42 @@
+ MEMBERS = gpe-plucker
+ 
+ GTKCFLAGS = `pkg-config --cflags gtk+-2.0` -DGTK_DISABLE_DEPRECATED
+-#GTKLDFLAGS += -L/skiff/local/arm-linux/lib/X11 `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext -lXinerama
+-GTKLDFLAGS += -L/usr/X11R6/lib `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext -lXinerama
++#GTKLDFLAGS += -L/skiff/local/arm-linux/lib/X11 `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext
++GTKLDFLAGS += -L/usr/X11R6/lib `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext
+ 
+-CFLAGS = $(GTKCFLAGS) -Iunpluck/ -DUSE_GPE -D_GNU_SOURCE -Wall
++PACKAGE_CFLAGS = $(GTKCFLAGS) -Iunpluck/ -DUSE_GPE -D_GNU_SOURCE -Wall
+ ifeq ($(DEBUG),yes)
+-CFLAGS += -O2 -g
+-LDFLAGS = -g #-lefence
++PACKAGE_CFLAGS += -O2 -g
++PACKAGE_LDFLAGS = -g #-lefence
+ else
+-CFLAGS += -Os -fomit-frame-pointer
++PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+-CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
++PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ ifeq ($(CVSBUILD),yes)
+-CFLAGS += -I../libgpewidget
+-LDFLAGS += -L../libgpewidget
++PACKAGE_CFLAGS += -I../libgpewidget
++PACKAGE_LDFLAGS += -L../libgpewidget
+ BUILD = ../build
+ else
+-CFLAGS += -I/usr/include/gpe
++PACKAGE_CFLAGS += -I/usr/include/gpe
+ BUILD = build
+ endif
+-LDFLAGS += -lgpewidget $(GTKLDFLAGS) -Lunpluck/ -lunpluck -lz
++PACKAGE_LDFLAGS += -lgpewidget $(GTKLDFLAGS) -Lunpluck -lunpluck -lz
+ 
+ #OBJS = $(patsubst %,%.o,$(MEMBERS))
+ #SOURCES = $(patsubst %,%.c,$(MEMBERS))
+ SOURCES = image.c library.c viewer.c
+ OBJS = ${SOURCES:.c=.o}
+ 
++.PHONY: unpluck
++
+ all: unpluck $(PACKAGE)
+ 
+ unpluck:
+-	(cd unpluck; make)
++	make -C unpluck
+ 
+ $(PACKAGE): $(OBJS) $(LIB)
+-	$(CC) -o $@ $^ $(LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all $(PACKAGE).desktop
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+diff -urNd ../gpe-plucker-0.1-r0/gpe-plucker-0.1/unpluck/Makefile gpe-plucker-0.1/unpluck/Makefile
+--- ../gpe-plucker-0.1-r0/gpe-plucker-0.1/unpluck/Makefile	2003-11-24 00:32:30.000000000 +0000
++++ gpe-plucker-0.1/unpluck/Makefile	2004-08-03 13:32:01.000000000 +0100
+@@ -5,15 +5,14 @@
+ # -DFILE_SEPARATOR_CHAR_S="/"
+ # -DOS_SECTION_NAME="posix"
+ 
+-CC	=	gcc
+ AR	=	ar
+ RANLIB	=	ranlib
+ 
+-CFLAGS	=	-Wall -O2 -g
++PACKAGE_CFLAGS	=	-Wall -O2 -g
+ 
+-CFLAGS +=	-DPLUCKER_VERSION="1.6.1" -DPLUCKER_CONFIG_DIR="/etc"
+-CFLAGS +=	-DSYS_CONFIG_FILE_NAME="pluckerrc" -DUSER_CONFIG_FILE_NAME=".pluckerrc"
+-CFLAGS +=	-DFILE_SEPARATOR_CHAR_S="/" -DOS_SECTION_NAME="posix"
++PACKAGE_CFLAGS +=	-DPLUCKER_VERSION="1.6.1" -DPLUCKER_CONFIG_DIR="/etc"
++PACKAGE_CFLAGS +=	-DSYS_CONFIG_FILE_NAME="pluckerrc" -DUSER_CONFIG_FILE_NAME=".pluckerrc"
++PACKAGE_CFLAGS +=	-DFILE_SEPARATOR_CHAR_S="/" -DOS_SECTION_NAME="posix"
+ 
+ SRC	=	config.c unpluck.c util.c
+ OBJS	=	${SRC:.c=.o}

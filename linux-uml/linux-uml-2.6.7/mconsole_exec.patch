@@ -1,0 +1,130 @@
+
+
+Adds the "exec" command to mconsole; the command is passed to /bin/sh -c, so
+you know its syntax. It uses call_usermodehelper.
+
+
+---
+
+ uml-linux-2.6.7-paolo/arch/um/Kconfig                 |    9 +++++
+ uml-linux-2.6.7-paolo/arch/um/drivers/mconsole_kern.c |   32 +++++++++++++++++-
+ uml-linux-2.6.7-paolo/arch/um/drivers/mconsole_user.c |    4 ++
+ uml-linux-2.6.7-paolo/arch/um/include/mconsole.h      |    1 
+ 4 files changed, 45 insertions(+), 1 deletion(-)
+
+diff -puN arch/um/drivers/mconsole_kern.c~mconsole_exec arch/um/drivers/mconsole_kern.c
+--- uml-linux-2.6.7/arch/um/drivers/mconsole_kern.c~mconsole_exec	2004-06-21 16:54:17.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/mconsole_kern.c	2004-06-21 16:54:17.000000000 +0200
+@@ -19,6 +19,7 @@
+ #include "linux/fs.h"
+ #include "linux/namei.h"
+ #include "linux/proc_fs.h"
++#include "linux/kmod.h"
+ #include "asm/irq.h"
+ #include "asm/uaccess.h"
+ #include "user_util.h"
+@@ -118,6 +119,27 @@ void mconsole_log(struct mc_request *req
+ 	mconsole_reply(req, "", 0, 0);
+ }
+ 
++
++#ifdef CONFIG_MCONSOLE_EXEC
++void mconsole_exec(struct mc_request *req)
++{
++	int res;
++
++	char *envp[] = { "HOME=/", "TERM=linux", "PATH=/sbin:/usr/sbin:/bin:/usr/bin", NULL };
++	char *argv[] = { "/bin/sh", "-c", req->request.data + strlen("exec "), NULL };
++	res = call_usermodehelper("/bin/sh", argv, envp, 0);
++
++	if (res < 0) {
++		char buf[60];
++		snprintf(buf, 60, "call_usermodehelper failed in mconsole_exec with error code: %d", -res);
++		mconsole_reply(req, buf, 1, 0);
++		return;
++	}
++
++	mconsole_reply(req, "The command has been started successfully.", 0, 0);
++}
++#endif
++
+ void mconsole_proc(struct mc_request *req)
+ {
+ 	struct nameidata nd;
+@@ -193,6 +215,14 @@ void mconsole_proc(struct mc_request *re
+  out: ;
+ }
+ 
++#ifdef CONFIG_MCONSOLE_EXEC
++#  define EXEC_HELPTEXT "\
++    exec <command> - runs the specified command through /bin/sh -c\n"
++#else
++#  define EXEC_HELPTEXT ""
++#endif
++
++    /*exec - execute a command as root inside the UML\n"*/
+ #define UML_MCONSOLE_HELPTEXT \
+ "Commands: \n\
+     version - Get kernel version \n\
+@@ -207,7 +237,7 @@ void mconsole_proc(struct mc_request *re
+     cad - invoke the Ctl-Alt-Del handler \n\
+     stop - pause the UML; it will do nothing until it receives a 'go' \n\
+     go - continue the UML after a 'stop' \n\
+-    log <string> - make UML enter <string> into the kernel log\n\
++    log <string> - make UML enter <string> into the kernel log\n" EXEC_HELPTEXT "\
+     proc <file> - returns the contents of the UML's /proc/<file>\n\
+ "
+ 
+diff -puN arch/um/drivers/mconsole_user.c~mconsole_exec arch/um/drivers/mconsole_user.c
+--- uml-linux-2.6.7/arch/um/drivers/mconsole_user.c~mconsole_exec	2004-06-21 16:54:17.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/mconsole_user.c	2004-06-21 16:54:17.000000000 +0200
+@@ -16,6 +16,7 @@
+ #include "user.h"
+ #include "mconsole.h"
+ #include "umid.h"
++#include "uml-config.h"
+ 
+ static struct mconsole_command commands[] = {
+ 	{ "version", mconsole_version, MCONSOLE_INTR },
+@@ -30,6 +31,9 @@ static struct mconsole_command commands[
+ 	{ "go", mconsole_go, MCONSOLE_INTR },
+ 	{ "log", mconsole_log, MCONSOLE_INTR },
+ 	{ "proc", mconsole_proc, MCONSOLE_PROC },
++#ifdef UML_CONFIG_MCONSOLE_EXEC
++	{ "exec", mconsole_exec, MCONSOLE_PROC },
++#endif
+ };
+ 
+ /* Initialized in mconsole_init, which is an initcall */
+diff -puN arch/um/Kconfig~mconsole_exec arch/um/Kconfig
+--- uml-linux-2.6.7/arch/um/Kconfig~mconsole_exec	2004-06-21 16:54:17.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/Kconfig	2004-06-21 16:56:00.000000000 +0200
+@@ -129,6 +129,15 @@ config MCONSOLE
+ 
+         It is safe to say 'Y' here.
+ 
++config MCONSOLE_EXEC
++	bool "Management console 'exec' support"
++	depends on MCONSOLE
++	help
++	Adds the 'exec' command to mconsole, which allows execution of arbitrary command
++	inside UML.
++	All its parameters are passed to /bin/sh -c inside UML, so you can use the full
++	shell syntax, especially redirections.
++
+ config MAGIC_SYSRQ
+ 	bool "Magic SysRq key"
+ 	depends on MCONSOLE
+diff -puN arch/um/include/mconsole.h~mconsole_exec arch/um/include/mconsole.h
+--- uml-linux-2.6.7/arch/um/include/mconsole.h~mconsole_exec	2004-06-21 16:54:17.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/include/mconsole.h	2004-06-21 16:54:17.000000000 +0200
+@@ -80,6 +80,7 @@ extern void mconsole_cad(struct mc_reque
+ extern void mconsole_stop(struct mc_request *req);
+ extern void mconsole_go(struct mc_request *req);
+ extern void mconsole_log(struct mc_request *req);
++extern void mconsole_exec(struct mc_request *req);
+ extern void mconsole_proc(struct mc_request *req);
+ 
+ extern int mconsole_get_request(int fd, struct mc_request *req);
+
+_

@@ -1,0 +1,20 @@
+[External Protocols]
+mailto=opiemail
+aj=@http://www.ask.com/main/askJeeves.asp?ask=
+av=@http://www.altavista.com/sites/search/web?q=
+dj=@http://www.deja.com/dnquery.xp?QRY=
+ex=@http://search.excite.com/search.gw?search=
+gg=@http://www.google.com/search?q=
+hb=@http://hotbot.lycos.com/?MT=
+ly=@http://search.lycos.com/main/?query=
+ya=@http://search.yahoo.com/bin/search?p=
+
+[Local Protocols]
+
+[http Settings]
+UseCache=true
+CacheDir=/tmp
+
+[HTML Settings]
+FixedFontSize=0
+

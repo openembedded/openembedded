@@ -1,0 +1,32 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ssmtp-2.60/./configure.in~configure
++++ ssmtp-2.60/./configure.in
+@@ -1,5 +1,6 @@
+ dnl Process this file with autoconf to produce a configure script.
+-AC_INIT(ssmtp.c)
++AC_INIT
++AC_CONFIG_SRCDIR([ssmtp.c])
+ 
+ dnl Checks for programs.
+ AC_PROG_INSTALL
+@@ -13,8 +14,7 @@
+ 
+ 
+ AC_CACHE_CHECK([for obsolete openlog],ssmtp_cv_obsolete_openlog,
+-	[ AC_TRY_COMPILE([#include <syslog.h> ] , [ openlog("xx",1); ] , 
+-	ssmtp_cv_obsolete_openlog=yes, ssmtp_cv_obsolete_openlog=no)]
++	[ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <syslog.h>  ]], [[ openlog("xx",1);  ]])],[ssmtp_cv_obsolete_openlog=yes],[ssmtp_cv_obsolete_openlog=no])]
+ )
+ 
+ 
+@@ -70,4 +70,5 @@
+ fi
+ enableval=""
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT

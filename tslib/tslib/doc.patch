@@ -1,0 +1,50 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- tslib/README~doc
++++ tslib/README
+@@ -35,8 +35,42 @@
+ There are a couple of programs in the tslib/test directory which give example
+ usages.  They are by no means exhaustive, nor probably even good examples.
+ They are basically the programs I used to test this library.
++ 
++
++Environment Variables
++=====================
++
++TSLIB_TSEVENTTYPE		Event type for non input api raw reads.
++				Default: UCB1x00
++TSLIB_TSDEVICE			TS device file name.
++				Default (non inputapi): /dev/touchscreen/ucb1x00  
++				Default (inputapi): /dev/input/event0
++TSLIB_CALIBFILE			Calibration file.
++				Default: ${sysconfdir}/pointercal
++TSLIB_CONFFILE			Config file.
++				Default: ${sysconfdir}/ts.conf
++TSLIB_PLUGINDIR			Plugin directory.
++				Default: ${datadir}/plugins
++TSLIB_CONSOLEDEVICE		Console device.
++				Default: /dev/tty
++TSLIB_FBDEVICE			Framebuffer device.
++				Default: /dev/fb0
+ 
+ 
++Module Creation Notes
++=====================
++
++For those creating tslib modules, it is important to note a couple things with
++regard to handling of the ability for a user to request more than one ts event
++at a time.  The first thing to note is that the lower layers may send up less
++events than the user requested, but only if that was a result of a pen release.
++Next, your module should send up just as many events as the user requested in
++nr.  If your module is one that consumes events, such as variance, then you
++loop on the read from the lower layers, and only send the events up when
++1) you have the number of events requested by the user, or 2) one of the events
++from the lower layers was a pen release.
++
++ 
+ Module Parameters
+ =================
+ 

@@ -1,0 +1,12 @@
+diff -ur tron_V1.0.0.orig/tron.desktop tron_V1.0.0/tron.desktop
+--- tron_V1.0.0.orig/tron.desktop	2004-06-16 22:43:33.000000000 +0200
++++ tron_V1.0.0/tron.desktop	2004-06-16 22:43:40.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Tron
+ Name[de]=Tron
+-Icon=tron
++Icon=tron/tron
+ Exec=tron
+ Comment=The famous racing game known from the film Tron.
+ Comment[de]=Das bekannte Rennspiel aus dem Film Tron.

@@ -1,0 +1,461 @@
+diff -ur qt-2.3.7_clean/include/qcstring.h qt-2.3.7/include/qcstring.h
+--- qt-2.3.7_clean/include/qcstring.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/include/qcstring.h	2004-06-04 02:24:25.000000000 +0200
+@@ -119,7 +119,7 @@
+ //                   We want to keep source compatibility for 2.x
+ // ### TODO for 4.0: completely remove these and the cstr* functions
+ 
+-#if !defined(QT_GENUINE_STR)
++#if 0
+ 
+ #undef	strlen
+ #define strlen qstrlen
+diff -ur qt-2.3.7_clean/include/qglobal.h qt-2.3.7/include/qglobal.h
+--- qt-2.3.7_clean/include/qglobal.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/include/qglobal.h	2004-06-04 02:29:41.000000000 +0200
+@@ -207,8 +207,16 @@
+ #if __GNUC__ == 2 && __GNUC_MINOR__ == 96
+ #define Q_FP_CCAST_BROKEN
+ #endif
++/* ARM gcc pads structs to 32 bits, even when they contain a single
++   char, or short.  We tell gcc to pack QChars to 16 bits, to avoid
++   QString bloat. However, gcc 3.4 doesn't allow us to create references to
++   members of a packed struct. (Pointers are OK, because then you
++   supposedly know what you are doing.) */
+ #if (defined(__arm__) || defined(__ARMEL__)) && !defined(QT_MOC_CPP)
+ #define Q_PACKED __attribute__ ((packed))
++#    if __GNUC__ == 3 && __GNUC_MINOR__ >= 4
++#      define Q_NO_PACKED_REFERENCE
++#    endif
+ #endif
+ #elif defined(__xlC__)
+ #define _CC_XLC_
+diff -ur qt-2.3.7_clean/include/qsortedlist.h qt-2.3.7/include/qsortedlist.h
+--- qt-2.3.7_clean/include/qsortedlist.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/include/qsortedlist.h	2004-06-04 02:24:25.000000000 +0200
+@@ -48,7 +48,7 @@
+ public:
+     QSortedList() {}
+     QSortedList( const QSortedList<type> &l ) : QList<type>(l) {}
+-    ~QSortedList() { clear(); }
++    ~QSortedList() { this->clear(); }
+     QSortedList<type> &operator=(const QSortedList<type> &l)
+       { return (QSortedList<type>&)QList<type>::operator=(l); }
+ 
+diff -ur qt-2.3.7_clean/include/qstring.h qt-2.3.7/include/qstring.h
+--- qt-2.3.7_clean/include/qstring.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/include/qstring.h	2004-06-04 02:54:16.000000000 +0200
+@@ -163,8 +163,16 @@
+     bool isLetterOrNumber() const;
+     bool isDigit() const;
+ 
++
++#ifdef Q_NO_PACKED_REFERENCE
++    uchar& cell() { return *(&cl); }
++    uchar& row()  { return *(&rw); }
++#else
+     uchar& cell() { return cl; }
+-    uchar& row() { return rw; }
++    uchar& row()  { return rw; }
++#endif
++
++  
+     uchar cell() const { return cl; }
+     uchar row() const { return rw; }
+ 
+diff -ur qt-2.3.7_clean/src/kernel/qgfxtransformed_qws.cpp qt-2.3.7/src/kernel/qgfxtransformed_qws.cpp
+--- qt-2.3.7_clean/src/kernel/qgfxtransformed_qws.cpp	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/kernel/qgfxtransformed_qws.cpp	2004-06-04 02:24:25.000000000 +0200
+@@ -671,11 +671,11 @@
+     inline int tx( int x, int y ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		return y - xoffs + yoffs;
++		return y - this->xoffs + this->yoffs;
+ 	    case QTransformedScreen::Rot180:
+-		return (width - x - 1) - xoffs - xoffs;
++		return (this->width - x - 1) - this->xoffs - this->xoffs;
+ 	    case QTransformedScreen::Rot270:
+-		return (height - y - 1) - xoffs - yoffs;
++		return (this->height - y - 1) - this->xoffs - this->yoffs;
+ 	    default:
+ 		return x;
+ 	}
+@@ -683,11 +683,11 @@
+     inline int ty( int x, int y ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		return (width - x - 1) - yoffs - xoffs;
++		return (this->width - x - 1) - this->yoffs - this->xoffs;
+ 	    case QTransformedScreen::Rot180:
+-		return (height - y - 1) - yoffs - yoffs;
++		return (this->height - y - 1) - this->yoffs - this->yoffs;
+ 	    case QTransformedScreen::Rot270:
+-		return x - yoffs + xoffs;
++		return x - this->yoffs + this->xoffs;
+ 	    default:
+ 		return y;
+ 	}
+@@ -715,23 +715,23 @@
+ template <const int depth, const int type>
+ void QGfxTransformedRaster<depth,type>::setSourceWidgetOffset(int x, int y)
+ {
+-    if ( srcbits == buffer ) {
++    if ( this->srcbits == this->buffer ) {
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	    case QTransformedScreen::Rot90:
+-		srcwidgetoffs = QPoint( y, width - x - srcwidth );
++		this->srcwidgetoffs = QPoint( y, this->width - x - this->srcwidth );
+ 		break;
+ 	    case QTransformedScreen::Rot180:
+-		srcwidgetoffs = QPoint( width - x - srcwidth, height - y - srcheight );
++		this->srcwidgetoffs = QPoint( this->width - x - this->srcwidth, this->height - y - this->srcheight );
+ 		break;
+ 	    case QTransformedScreen::Rot270:
+-		srcwidgetoffs = QPoint( height - y - srcheight, x );
++		this->srcwidgetoffs = QPoint( this->height - y - this->srcheight, x );
+ 		break;
+ 	    default:
+-		srcwidgetoffs = QPoint( x, y );
++		this->srcwidgetoffs = QPoint( x, y );
+ 		break;
+ 	}
+     } else
+-	srcwidgetoffs = QPoint( x, y );
++	this->srcwidgetoffs = QPoint( x, y );
+ }
+ 
+ template <const int depth, const int type>
+@@ -739,8 +739,8 @@
+ {
+     QT_TRANS_GFX_BASE<depth,type>::setSource(i);
+     QSize s = qt_screen->mapToDevice( QSize(i->width(), i->height()) );
+-    srcwidth = s.width();
+-    srcheight = s.height();
++    this->srcwidth = s.width();
++    this->srcheight = s.height();
+ }
+ 
+ template <const int depth, const int type>
+@@ -782,7 +782,7 @@
+     if ( w == 0 || h == 0 )
+ 	return;
+     QRect r( x, y, w, h );
+-    if ( cbrush.style() == SolidPattern ) {
++    if ( this->cbrush.style() == Qt::SolidPattern ) {
+ 	r.setCoords( tx(x,y), ty(x,y), tx(x+w-1,y+h-1), ty(x+w-1,y+h-1) );
+ 	r = r.normalize();
+     }
+@@ -797,7 +797,7 @@
+     // solution. The brush offset logic is complicated enough, so we don't
+     // fastpath patternedbrush.
+     
+-    if ( inDraw  || cpen.style()==NoPen || patternedbrush ) {
++    if ( inDraw  || this->cpen.style()==Qt::NoPen || this->patternedbrush ) {
+ 	//slowpath
+ 	QT_TRANS_GFX_BASE<depth,type>::drawPolygon( a, w, idx, num );
+     } else {
+@@ -819,29 +819,29 @@
+ template <const int depth, const int type>
+ void QGfxTransformedRaster<depth,type>::processSpans( int n, QPoint* point, int* width )
+ {
+-    if ( inDraw || patternedbrush && srcwidth != 0 && srcheight != 0 ) {
++    if ( inDraw || this->patternedbrush && this->srcwidth != 0 && this->srcheight != 0 ) {
+ 	//in the patternedbrush case, we let blt do the transformation
+ 	// so we leave inDraw false.
+-	QT_TRANS_GFX_BASE<depth,type>::processSpans( n, point, width );		    
++	QT_TRANS_GFX_BASE<depth,type>::processSpans( n, point, width );
+     } else {
+ 	inDraw = TRUE;
+ 	while (n--) {
+ 	    if ( *width > 0 ) {
+-		int x=tx(point->x(),point->y())+xoffs;
+-		int y=ty(point->x(),point->y())+yoffs;
++		int x=tx(point->x(),point->y())+this->xoffs;
++		int y=ty(point->x(),point->y())+this->yoffs;
+ 
+ 		switch( qt_trans_screen->transformation() ) {
+ 		case QTransformedScreen::Rot90:
+-		    vline( x, y-(*width-1), y );
++		    this->vline( x, y-(*width-1), y );
+ 		    break;
+ 		case QTransformedScreen::Rot180:
+-		    hline( x - (*width-1), x, y );
++		    this->hline( x - (*width-1), x, y );
+ 		    break;
+ 		case QTransformedScreen::Rot270:
+-		    vline( x, y, y+*width-1 );
++		    this->vline( x, y, y+*width-1 );
+ 		    break;
+ 		default:
+-		    hline( x, x+*width-1, y );
++		    this->hline( x, x+*width-1, y );
+ 		    break;
+ 		}
+ 	    }
+@@ -896,14 +896,14 @@
+ 	switch ( qt_trans_screen->transformation() ) {
+ 	case QTransformedScreen::Rot90:
+ 	    rsx = sy;
+-	    rsy = srcwidth - sx - w;
++	    rsy = this->srcwidth - sx - w;
+ 	    break;
+ 	case QTransformedScreen::Rot180:
+-	    rsx = srcwidth - sx - w;
+-	    rsy = srcheight - sy - h;
++	    rsx = this->srcwidth - sx - w;
++	    rsy = this->srcheight - sy - h;
+ 	    break;
+ 	case QTransformedScreen::Rot270:
+-	    rsx = srcheight - sy - h;
++	    rsx = this->srcheight - sy - h;
+ 	    rsy = sx;
+ 	    break;
+ 	default:
+@@ -941,39 +941,39 @@
+     r.setCoords( tx(rx,ry), ty(rx,ry), tx(rx+w-1,ry+h-1), ty(rx+w-1,ry+h-1) );
+     r = r.normalize();
+ 
+-    QPoint oldBrushOffs = brushoffs;
++    QPoint oldBrushOffs = this->brushoffs;
+     int brx, bry;
+     switch ( qt_trans_screen->transformation() ) {
+ 	case QTransformedScreen::Rot90:
+-	    brx = brushoffs.y();
+-	    bry = srcwidth - brushoffs.x() - w;
++	    brx = this->brushoffs.y();
++	    bry = this->srcwidth - this->brushoffs.x() - w;
+ 	    break;
+ 	case QTransformedScreen::Rot180:
+-	    brx = srcwidth - brushoffs.x() - w;
+-	    bry = srcheight - brushoffs.y() - h;
++	    brx = this->srcwidth - this->brushoffs.x() - w;
++	    bry = this->srcheight - this->brushoffs.y() - h;
+ 	    break;
+ 	case QTransformedScreen::Rot270:
+-	    brx = srcheight - brushoffs.y() - h;
+-	    bry = brushoffs.x();
++	    brx = this->srcheight - this->brushoffs.y() - h;
++	    bry = this->brushoffs.x();
+ 	    break;
+ 	default:
+-	    brx = brushoffs.x();
+-	    bry = brushoffs.y();
++	    brx = this->brushoffs.x();
++	    bry = this->brushoffs.y();
+ 	    break;
+     }
+-    brushoffs = QPoint( brx, bry );
++    this->brushoffs = QPoint( brx, bry );
+ 
+-    int oldsw = srcwidth;
+-    int oldsh = srcheight;
+-    QSize s = qt_screen->mapToDevice( QSize(srcwidth,srcheight) );
+-    srcwidth = s.width();
+-    srcheight = s.height();
++    int oldsw = this->srcwidth;
++    int oldsh = this->srcheight;
++    QSize s = qt_screen->mapToDevice( QSize(this->srcwidth,this->srcheight) );
++    this->srcwidth = s.width();
++    this->srcheight = s.height();
+ 
+     QT_TRANS_GFX_BASE<depth,type>::tiledBlt( r.x(), r.y(), r.width(), r.height() );
+ 
+-    srcwidth = oldsw;
+-    srcheight = oldsh;
+-    brushoffs = oldBrushOffs;
++    this->srcwidth = oldsw;
++    this->srcheight = oldsh;
++    this->brushoffs = oldBrushOffs;
+     inDraw = FALSE;
+ }
+ 
+diff -ur qt-2.3.7_clean/src/kernel/qgfxvfb_qws.cpp qt-2.3.7/src/kernel/qgfxvfb_qws.cpp
+--- qt-2.3.7_clean/src/kernel/qgfxvfb_qws.cpp	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/kernel/qgfxvfb_qws.cpp	2004-06-04 02:24:25.000000000 +0200
+@@ -31,7 +31,6 @@
+ **********************************************************************/
+ 
+ #include "qgfxraster_qws.h"
+-
+ #ifndef QT_NO_QWS_VFB
+ 
+ #include <sys/ipc.h>
+@@ -140,8 +139,8 @@
+ void QGfxVFb<depth,type>::drawPoint( int x, int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, 1, 1 ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, 1, 1 ) );
+     QGfxRaster<depth,type>::drawPoint( x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -150,8 +149,8 @@
+ void QGfxVFb<depth,type>::drawPoints( const QPointArray &pa,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPoints( pa, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -160,9 +159,9 @@
+ void QGfxVFb<depth,type>::drawLine( int x1,int y1,int x2,int y2 )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx ) {
++    if ( this->is_screen_gfx ) {
+ 	QRect r;
+-	r.setCoords( x1+xoffs, y1+yoffs, x2+xoffs, y2+yoffs );
++	r.setCoords( x1+this->xoffs, y1+this->yoffs, x2+this->xoffs, y2+this->yoffs );
+ 	qvfb_screen->setDirty( r.normalize() );
+     }
+     QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
+@@ -173,8 +172,8 @@
+ void QGfxVFb<depth,type>::fillRect( int x,int y,int w,int h )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, w, h ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, w, h ) );
+     QGfxRaster<depth,type>::fillRect( x, y, w, h );
+     QWSDisplay::ungrab();
+ }
+@@ -183,8 +182,8 @@
+ void QGfxVFb<depth,type>::drawPolyline( const QPointArray &pa,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPolyline( pa, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -193,8 +192,8 @@
+ void QGfxVFb<depth,type>::drawPolygon( const QPointArray &pa,bool w,int x,int y )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( clipbounds );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( this->clipbounds );
+     QGfxRaster<depth,type>::drawPolygon( pa, w, x, y );
+     QWSDisplay::ungrab();
+ }
+@@ -203,8 +202,8 @@
+ void QGfxVFb<depth,type>::blt( int x,int y,int w,int h, int sx, int sy )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x+xoffs, y+yoffs, w, h ) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x+this->xoffs, y+this->yoffs, w, h ) );
+     QGfxRaster<depth,type>::blt( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+ }
+@@ -215,8 +214,8 @@
+     QWSDisplay::grab( TRUE );
+     int dy = sy - y;
+     int dx = sx - x;
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect(QMIN(x,sx) + xoffs, QMIN(y,sy) + yoffs,
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect(QMIN(x,sx) + this->xoffs, QMIN(y,sy) + this->yoffs,
+ 			   w+abs(dx), h+abs(dy)) );
+     QGfxRaster<depth,type>::scroll( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+@@ -227,8 +226,8 @@
+ void QGfxVFb<depth,type>::stretchBlt( int x,int y,int w,int h,int sx,int sy )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect( x + xoffs, y + yoffs, w, h) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect( x + this->xoffs, y + this->yoffs, w, h) );
+     QGfxRaster<depth,type>::stretchBlt( x, y, w, h, sx, sy );
+     QWSDisplay::ungrab();
+ }
+@@ -238,8 +237,8 @@
+ void QGfxVFb<depth,type>::tiledBlt( int x,int y,int w,int h )
+ {
+     QWSDisplay::grab( TRUE );
+-    if ( is_screen_gfx )
+-	qvfb_screen->setDirty( QRect(x + xoffs, y + yoffs, w, h) );
++    if ( this->is_screen_gfx )
++	qvfb_screen->setDirty( QRect(x + this->xoffs, y + this->yoffs, w, h) );
+     QGfxRaster<depth,type>::tiledBlt( x, y, w, h );
+     QWSDisplay::ungrab();
+ }
+diff -ur qt-2.3.7_clean/src/tools/qcstring.h qt-2.3.7/src/tools/qcstring.h
+--- qt-2.3.7_clean/src/tools/qcstring.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/tools/qcstring.h	2004-06-04 02:24:25.000000000 +0200
+@@ -119,7 +119,7 @@
+ //                   We want to keep source compatibility for 2.x
+ // ### TODO for 4.0: completely remove these and the cstr* functions
+ 
+-#if !defined(QT_GENUINE_STR)
++#if 0
+ 
+ #undef	strlen
+ #define strlen qstrlen
+diff -ur qt-2.3.7_clean/src/tools/qglobal.h qt-2.3.7/src/tools/qglobal.h
+--- qt-2.3.7_clean/src/tools/qglobal.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/tools/qglobal.h	2004-06-04 02:29:41.000000000 +0200
+@@ -207,8 +207,16 @@
+ #if __GNUC__ == 2 && __GNUC_MINOR__ == 96
+ #define Q_FP_CCAST_BROKEN
+ #endif
++/* ARM gcc pads structs to 32 bits, even when they contain a single
++   char, or short.  We tell gcc to pack QChars to 16 bits, to avoid
++   QString bloat. However, gcc 3.4 doesn't allow us to create references to
++   members of a packed struct. (Pointers are OK, because then you
++   supposedly know what you are doing.) */
+ #if (defined(__arm__) || defined(__ARMEL__)) && !defined(QT_MOC_CPP)
+ #define Q_PACKED __attribute__ ((packed))
++#    if __GNUC__ == 3 && __GNUC_MINOR__ >= 4
++#      define Q_NO_PACKED_REFERENCE
++#    endif
+ #endif
+ #elif defined(__xlC__)
+ #define _CC_XLC_
+Nur in qt-2.3.7/src/tools: qglobal.h~.
+diff -ur qt-2.3.7_clean/src/tools/qsortedlist.h qt-2.3.7/src/tools/qsortedlist.h
+--- qt-2.3.7_clean/src/tools/qsortedlist.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/tools/qsortedlist.h	2004-06-04 02:24:25.000000000 +0200
+@@ -48,7 +48,7 @@
+ public:
+     QSortedList() {}
+     QSortedList( const QSortedList<type> &l ) : QList<type>(l) {}
+-    ~QSortedList() { clear(); }
++    ~QSortedList() { this->clear(); }
+     QSortedList<type> &operator=(const QSortedList<type> &l)
+       { return (QSortedList<type>&)QList<type>::operator=(l); }
+ 
+diff -ur qt-2.3.7_clean/src/tools/qstring.h qt-2.3.7/src/tools/qstring.h
+--- qt-2.3.7_clean/src/tools/qstring.h	2004-06-04 02:17:53.000000000 +0200
++++ qt-2.3.7/src/tools/qstring.h	2004-06-04 02:54:16.000000000 +0200
+@@ -163,8 +163,16 @@
+     bool isLetterOrNumber() const;
+     bool isDigit() const;
+ 
++
++#ifdef Q_NO_PACKED_REFERENCE
++    uchar& cell() { return *(&cl); }
++    uchar& row()  { return *(&rw); }
++#else
+     uchar& cell() { return cl; }
+-    uchar& row() { return rw; }
++    uchar& row()  { return rw; }
++#endif
++
++  
+     uchar cell() const { return cl; }
+     uchar row() const { return rw; }
+ 
+Nur in qt-2.3.7/src/tools: qstring.h~.

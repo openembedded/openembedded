@@ -1,0 +1,55 @@
+---
+
+ uml-linux-2.6.7-paolo/arch/um/os-Linux/process.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
+
+diff -puN arch/um/os-Linux/process.c~Fix_os_process_pc arch/um/os-Linux/process.c
+--- uml-linux-2.6.7/arch/um/os-Linux/process.c~Fix_os_process_pc	2004-06-21 17:51:56.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/os-Linux/process.c	2004-06-21 18:08:59.000000000 +0200
+@@ -16,9 +16,12 @@
+ #define ARBITRARY_ADDR -1
+ #define FAILURE_PID    -1
+ 
++#define STAT_PATH_LEN sizeof("/proc/#######/stat\0")
++#define COMM_SCANF "%*[^)])"
++
+ unsigned long os_process_pc(int pid)
+ {
+-	char proc_stat[sizeof("/proc/#####/stat\0")], buf[256];
++	char proc_stat[STAT_PATH_LEN], buf[256];
+ 	unsigned long pc;
+ 	int fd, err;
+ 
+@@ -38,9 +41,9 @@ unsigned long os_process_pc(int pid)
+ 	}
+ 	os_close_file(fd);
+ 	pc = ARBITRARY_ADDR;
+-	if(sscanf(buf, "%*d %*s %*c %*d %*d %*d %*d %*d %*d %*d %*d "
++	if(sscanf(buf, "%*d " COMM_SCANF " %*c %*d %*d %*d %*d %*d %*d %*d %*d "
+ 		  "%*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d "
+-		  "%*d %*d %*d %*d %ld", &pc) != 1){
++		  "%*d %*d %*d %*d %lu", &pc) != 1){
+ 		printk("os_process_pc - couldn't find pc in '%s'\n", buf);
+ 	}
+ 	return(pc);
+@@ -48,7 +51,7 @@ unsigned long os_process_pc(int pid)
+ 
+ int os_process_parent(int pid)
+ {
+-	char stat[sizeof("/proc/nnnnn/stat\0")];
++	char stat[STAT_PATH_LEN];
+ 	char data[256];
+ 	int parent, n, fd;
+ 
+@@ -70,8 +73,7 @@ int os_process_parent(int pid)
+ 	}
+ 
+ 	parent = FAILURE_PID;
+-	/* XXX This will break if there is a space in the command */
+-	n = sscanf(data, "%*d %*s %*c %d", &parent);
++	n = sscanf(data, "%*d " COMM_SCANF " %*c %d", &parent);
+ 	if(n != 1) 
+ 		printk("Failed to scan '%s'\n", data);
+ 
+
+_

@@ -1,0 +1,14 @@
+--- linux/init/main.c	2002-02-25 13:38:13.000000000 -0600
++++ linux.new/init/main.c	2003-03-16 11:49:45.000000000 -0600
+@@ -830,8 +830,10 @@
+ 	 * trying to recover a really broken machine.
+ 	 */
+ 
+-	if (execute_command)
++	if (execute_command) {
++		argv_init[0] = execute_command; 
+ 		execve(execute_command,argv_init,envp_init);
++	}
+ 	execve("/sbin/init",argv_init,envp_init);
+ 	execve("/etc/init",argv_init,envp_init);
+ 	execve("/bin/init",argv_init,envp_init);

@@ -1,0 +1,11 @@
+--- gpsd-1.07/netlib.c~gcc3	2002-04-02 04:48:10.000000000 +0200
++++ gpsd-1.07/netlib.c	2003-08-07 20:52:38.000000000 +0200
+@@ -9,7 +9,7 @@
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+-#include <varargs.h>
++#include <stdarg.h>
+ #include <netdb.h>
+ #include <stdio.h>
+ #include <arpa/inet.h>

@@ -1,0 +1,199 @@
+diff -Nurb unik-olsrd-0.4.5/Makefile unik-olsrd-0.4.5.mod/Makefile
+--- unik-olsrd-0.4.5/Makefile	2004-06-29 12:17:40.000000000 +0200
++++ unik-olsrd-0.4.5.mod/Makefile	2004-08-03 14:44:45.935335232 +0200
+@@ -5,7 +5,7 @@
+ INSTALL_PREFIX ?=
+ 
+ 
+-# Keep OS spesific files last
++# Keep OS specific files last
+ 
+ SRCS=	src/interface.c src/parser.c src/build_msg.c \
+ 	src/scheduler.c src/main.c src/two_hop_neighbor_table.c \
+@@ -48,18 +48,34 @@
+ 	src/linux/net.h src/kernel_routes.h \
+ 	src/linux/link_layer.h
+ 
+-all:	olsrd
++all:	olsrd libs
+ 
+ olsrd:	$(OBJS)
+ 	$(CC) $(LIBS) -o bin/$@ $(OBJS)
+ 
+-clean:
++libs: 
++	for i in lib/*; do \
++		$(MAKE) -C $$i; \
++	done; 
++
++clean: clean_libs
+ 	rm -f $(OBJS)
++	rm -f bin/olsrd
++	
++clean_libs: 
++	for i in lib/*; do \
++		$(MAKE) -C $$i clean; \
++	done; 
+ 
+ install_bin:
+ 	install -D -m 755 bin/olsrd $(INSTALL_PREFIX)/usr/sbin/olsrd
+ 
+-install: install_bin
++install_libs:
++	for i in lib/*; do \
++		$(MAKE) -C $$i LIBDIR=$(INSTALL_PREFIX)/usr/lib install; \
++	done; 	
++ 
++install: install_bin install_libs
+ 	@echo olsrd uses the configfile $(INSTALL_PREFIX)/etc/olsr.conf
+ 	@echo a default configfile. A sample configfile
+ 	@echo can be installed
+diff -Nurb unik-olsrd-0.4.5/lib/dot_draw/Makefile unik-olsrd-0.4.5.mod/lib/dot_draw/Makefile
+--- unik-olsrd-0.4.5/lib/dot_draw/Makefile	2004-06-29 12:17:02.000000000 +0200
++++ unik-olsrd-0.4.5.mod/lib/dot_draw/Makefile	2004-08-03 14:48:22.986338464 +0200
+@@ -5,12 +5,12 @@
+ 
+ #Alter this file to fit your needs
+ 
+-CC=gcc
+-NAME=olsrd_dot_draw.so.0.1
+-LIBDIR=/usr/lib
++CC ?= gcc
++NAME = olsrd_dot_draw.so.0.1
++LIBDIR ?= $(INSTALL_PREFIX)/usr/lib
+ # -fPIC creates position independent code
+-CFLAGS=-Wall -fPIC -g # Uncomment -g for debugging
+-LIBS=-lc -lm
++MYFLAGS ?= -Wall -fPIC -g # Uncomment -g for debugging
++LIBS = -lc -lm
+ 
+ #Sourcefiles
+ #add yours here
+@@ -32,13 +32,13 @@
+ 
+ 
+ plugin: $(OBJS)
+-	$(CC) -g -shared -Wl,-soname,$(NAME) \
++	$(CC) $(LDFLAGS) $(MYFLAGS) -g -shared -Wl,-soname,$(NAME) \
+ 	-o $(NAME) $(OBJS) $(LIBS)
+ 
+ 
+ install:
+-	install -m 755 $(NAME) $(LIBDIR)/$(NAME)
++	install -D -m 755 $(NAME) $(LIBDIR)/$(NAME)
+ 	/sbin/ldconfig -n $(LIBDIR)
+ 
+ clean:
+-	rm -f $(OBJS)
++	rm -f $(OBJS) $(NAME)
+diff -Nurb unik-olsrd-0.4.5/lib/dyn_gw/Makefile unik-olsrd-0.4.5.mod/lib/dyn_gw/Makefile
+--- unik-olsrd-0.4.5/lib/dyn_gw/Makefile	2004-06-29 12:17:02.000000000 +0200
++++ unik-olsrd-0.4.5.mod/lib/dyn_gw/Makefile	2004-08-03 14:48:11.108144224 +0200
+@@ -5,12 +5,12 @@
+ 
+ #Alter this file to fit your needs
+ 
+-CC=gcc
+-NAME=olsrd_dyn_gw.so.0.1
+-LIBDIR=/usr/lib
++CC ?= gcc
++NAME = olsrd_dyn_gw.so.0.1
++LIBDIR ?= $(INSTALL_PREFIX)/usr/lib
+ # -fPIC creates position independent code
+-CFLAGS=-Wall -fPIC -g # Uncomment -g for debugging
+-LIBS=-lc -lm
++MYFLAGS ?= -Wall -fPIC -g # Uncomment -g for debugging
++LIBS = -lc -lm
+ 
+ #Sourcefiles
+ #add yours here
+@@ -32,13 +32,13 @@
+ 
+ 
+ plugin: $(OBJS)
+-	$(CC) -g -shared -Wl,-soname,$(NAME) \
++	$(CC) $(LDFLAGS) $(MYFLAGS) -g -shared -Wl,-soname,$(NAME) \
+ 	-o $(NAME) $(OBJS) $(LIBS)
+ 
+ 
+ install:
+-	install -m 755 $(NAME) $(LIBDIR)/$(NAME)
++	install -D -m 755 $(NAME) $(LIBDIR)/$(NAME)
+ 	/sbin/ldconfig -n $(LIBDIR)
+ 
+ clean:
+-	rm -f $(OBJS)
++	rm -f $(OBJS) $(NAME)
+diff -Nurb unik-olsrd-0.4.5/lib/powerinfo/Makefile unik-olsrd-0.4.5.mod/lib/powerinfo/Makefile
+--- unik-olsrd-0.4.5/lib/powerinfo/Makefile	2004-06-29 12:17:02.000000000 +0200
++++ unik-olsrd-0.4.5.mod/lib/powerinfo/Makefile	2004-08-03 15:00:23.850750416 +0200
+@@ -5,12 +5,12 @@
+ 
+ #Alter this file to fit your needs
+ 
+-CC=gcc
+-NAME=olsrd_power.so.0.1
+-LIBDIR=/usr/lib
++CC ?= gcc
++NAME = olsrd_power.so.0.1
++LIBDIR ?= $(INSTALL_PREFIX)/usr/lib
+ # -fPIC creates position independent code
+-CFLAGS=-Wall -fPIC -g # Uncomment -g for debugging
+-LIBS=-lc -lm
++MYFLAGS ?= -Wall -fPIC -g # Uncomment -g for debugging
++LIBS = -lc -lm
+ 
+ #Sourcefiles
+ #add yours here
+@@ -32,13 +32,13 @@
+ 
+ 
+ plugin: $(OBJS)
+-	$(CC) -g -shared -Wl,-soname,$(NAME) \
++	$(CC) $(LDFLAGS) $(MYFLAGS) -g -shared -Wl,-soname,$(NAME) \
+ 	-o $(NAME) $(OBJS) $(LIBS)
+ 
+ 
+ install:
+-	install -m 755 $(NAME) $(LIBDIR)/$(NAME)
++	install -D -m 755 $(NAME) $(LIBDIR)/$(NAME)
+ 	/sbin/ldconfig -n $(LIBDIR)
+ 
+ clean:
+-	rm -f $(OBJS)
++	rm -f $(OBJS) $(NAME)
+Files unik-olsrd-0.4.5/lib/powerinfo/uolsrd_power.so.0.1 and unik-olsrd-0.4.5.mod/lib/powerinfo/uolsrd_power.so.0.1 differ
+diff -Nurb unik-olsrd-0.4.5/lib/secure/Makefile unik-olsrd-0.4.5.mod/lib/secure/Makefile
+--- unik-olsrd-0.4.5/lib/secure/Makefile	2004-06-29 12:17:02.000000000 +0200
++++ unik-olsrd-0.4.5.mod/lib/secure/Makefile	2004-08-03 14:47:49.992354312 +0200
+@@ -6,12 +6,11 @@
+ #Alter this file to fit your needs
+ 
+ CC ?= gcc
+-NAME ?= olsrd_secure.so.0.2
+-INSTALL_PREFIX ?=
++NAME = olsrd_secure.so.0.2
+ LIBDIR ?= $(INSTALL_PREFIX)/usr/lib
+ # -fPIC creates position independent code
+-CFLAGS ?= -Wall -fPIC -g #-DDEBUG# Uncomment -g for debugging
+-LIBS ?= -lc -lssl -lcrypto -lm
++MYFLAGS = -Wall -fPIC -g #-DDEBUG# Uncomment -g for debugging
++LIBS = -lc -lssl -lcrypto -lm
+ 
+ #Sourcefiles
+ #add yours here
+@@ -33,7 +32,7 @@
+ 
+ 
+ plugin: $(OBJS)
+-	$(CC) -g -shared -Wl,-soname,$(NAME) \
++	$(CC) $(LDFLAGS) $(MYFLAGS) -g -shared -Wl,-soname,$(NAME) \
+ 	-o $(NAME) $(OBJS) $(LIBS)
+ 
+ 
+@@ -42,4 +41,4 @@
+ 	/sbin/ldconfig -n $(LIBDIR)
+ 
+ clean:
+-	rm -f $(OBJS)
++	rm -f $(OBJS) $(NAME)

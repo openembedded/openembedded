@@ -1,0 +1,417 @@
+
+Folds hostaudio_user.c into hostaudio_kern.c. A lot of code less.
+Also note that I no more update ppos(as I used to do in the 2.4 patch):
+I checked that OSS never changes ppos, so hostaudio did the right thing.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/drivers/Makefile         |    2 
+ uml-linux-2.6.7-paolo/arch/um/drivers/hostaudio_kern.c |   73 ++++++---
+ uml-linux-2.6.7/arch/um/drivers/hostaudio_user.c       |  130 -----------------
+ uml-linux-2.6.7/arch/um/include/hostaudio.h            |   48 ------
+ 4 files changed, 50 insertions(+), 203 deletions(-)
+
+diff -puN arch/um/drivers/hostaudio_kern.c~Hostaudio_clean arch/um/drivers/hostaudio_kern.c
+--- uml-linux-2.6.7/arch/um/drivers/hostaudio_kern.c~Hostaudio_clean	2004-06-29 21:03:03.471109680 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/hostaudio_kern.c	2004-06-29 21:03:03.477108768 +0200
+@@ -13,7 +13,18 @@
+ #include "asm/uaccess.h"
+ #include "kern_util.h"
+ #include "init.h"
+-#include "hostaudio.h"
++#include "os.h"
++
++struct hostaudio_state {
++  int fd;
++};
++
++struct hostmixer_state {
++  int fd;
++};
++
++#define HOSTAUDIO_DEV_DSP "/dev/sound/dsp"
++#define HOSTAUDIO_DEV_MIXER "/dev/sound/mixer"
+ 
+ /* Only changed from linux_main at boot time */
+ char *dsp = HOSTAUDIO_DEV_DSP;
+@@ -61,7 +72,7 @@ static ssize_t hostaudio_read(struct fil
+ {
+         struct hostaudio_state *state = file->private_data;
+ 	void *kbuf;
+-	int err;
++	int ret;
+ 
+ #ifdef DEBUG
+         printk("hostaudio: read called, count = %d\n", count);
+@@ -71,16 +82,16 @@ static ssize_t hostaudio_read(struct fil
+ 	if(kbuf == NULL)
+ 		return(-ENOMEM);
+ 
+-        err = hostaudio_read_user(state, kbuf, count, ppos);
+-	if(err < 0)
++	ret = os_read_file(state->fd, kbuf, count);
++	if(ret < 0)
+ 		goto out;
+ 
+-	if(copy_to_user(buffer, kbuf, err))
+-		err = -EFAULT;
++	if(copy_to_user(buffer, kbuf, ret))
++		ret = -EFAULT;
+ 
+  out:
+ 	kfree(kbuf);
+-	return(err);
++	return(ret);
+ }
+ 
+ static ssize_t hostaudio_write(struct file *file, const char *buffer, 
+@@ -88,7 +99,7 @@ static ssize_t hostaudio_write(struct fi
+ {
+         struct hostaudio_state *state = file->private_data;
+ 	void *kbuf;
+-	int err;
++	int ret;
+ 
+ #ifdef DEBUG
+         printk("hostaudio: write called, count = %d\n", count);
+@@ -98,17 +109,17 @@ static ssize_t hostaudio_write(struct fi
+ 	if(kbuf == NULL)
+ 		return(-ENOMEM);
+ 
+-	err = -EFAULT;
++	ret = -EFAULT;
+ 	if(copy_from_user(kbuf, buffer, count))
+ 		goto out;
+ 
+-        err = hostaudio_write_user(state, kbuf, count, ppos);
+-	if(err < 0)
++	ret = os_write_file(state->fd, kbuf, count);
++	if(ret < 0)
+ 		goto out;
+ 
+  out:
+ 	kfree(kbuf);
+-	return(err);
++	return(ret);
+ }
+ 
+ static unsigned int hostaudio_poll(struct file *file, 
+@@ -128,7 +139,7 @@ static int hostaudio_ioctl(struct inode 
+ {
+         struct hostaudio_state *state = file->private_data;
+ 	unsigned long data = 0;
+-	int err;
++	int ret;
+ 
+ #ifdef DEBUG
+         printk("hostaudio: ioctl called, cmd = %u\n", cmd);
+@@ -147,7 +158,7 @@ static int hostaudio_ioctl(struct inode 
+ 		break;
+ 	}
+ 
+-        err = hostaudio_ioctl_user(state, cmd, (unsigned long) &data);
++	ret = os_ioctl_generic(state->fd, cmd, (unsigned long) &data);
+ 
+ 	switch(cmd){
+ 	case SNDCTL_DSP_SPEED:
+@@ -163,7 +174,7 @@ static int hostaudio_ioctl(struct inode 
+ 		break;
+ 	}
+ 
+-	return(err);
++	return(ret);
+ }
+ 
+ static int hostaudio_open(struct inode *inode, struct file *file)
+@@ -182,12 +193,17 @@ static int hostaudio_open(struct inode *
+         if(file->f_mode & FMODE_READ) r = 1;
+         if(file->f_mode & FMODE_WRITE) w = 1;
+ 
+-        ret = hostaudio_open_user(state, r, w, dsp);
++	ret = os_open_file(dsp, of_set_rw(OPENFLAGS(), r, w), 0);
++
+         if(ret < 0){
++		printk("hostaudio_open failed to open '%s', err = %d\n",
++		       dsp, -ret);
+ 		kfree(state);
+ 		return(ret);
+         }
+ 
++	state->fd = ret;
++
+         file->private_data = state;
+         return(0);
+ }
+@@ -195,16 +211,19 @@ static int hostaudio_open(struct inode *
+ static int hostaudio_release(struct inode *inode, struct file *file)
+ {
+         struct hostaudio_state *state = file->private_data;
+-        int ret;
+ 
+ #ifdef DEBUG
+         printk("hostaudio: release called\n");
+ #endif
+ 
+-        ret = hostaudio_release_user(state);
++	if(state->fd >= 0){
++		os_close_file(state->fd);
++		state->fd = -1;
++	}
++
+         kfree(state);
+ 
+-        return(ret);
++	return(0);
+ }
+ 
+ /* /dev/mixer file operations */
+@@ -218,7 +237,7 @@ static int hostmixer_ioctl_mixdev(struct
+         printk("hostmixer: ioctl called\n");
+ #endif
+ 
+-        return(hostmixer_ioctl_mixdev_user(state, cmd, arg));
++	return(os_ioctl_generic(state->fd, cmd, arg));
+ }
+ 
+ static int hostmixer_open_mixdev(struct inode *inode, struct file *file)
+@@ -237,13 +256,17 @@ static int hostmixer_open_mixdev(struct 
+         if(file->f_mode & FMODE_READ) r = 1;
+         if(file->f_mode & FMODE_WRITE) w = 1;
+ 
+-        ret = hostmixer_open_mixdev_user(state, r, w, mixer);
++	ret = os_open_file(mixer, of_set_rw(OPENFLAGS(), r, w), 0);
+         
+         if(ret < 0){
++		printk("hostaudio_open_mixdev failed to open '%s', err = %d\n",
++		       dsp, -ret);
+ 		kfree(state);
+ 		return(ret);
+         }
+ 
++	state->fd = ret;
++
+         file->private_data = state;
+         return(0);
+ }
+@@ -251,16 +274,18 @@ static int hostmixer_open_mixdev(struct 
+ static int hostmixer_release(struct inode *inode, struct file *file)
+ {
+         struct hostmixer_state *state = file->private_data;
+-	int ret;
+ 
+ #ifdef DEBUG
+         printk("hostmixer: release called\n");
+ #endif
+ 
+-        ret = hostmixer_release_mixdev_user(state);
++	if(state->fd >= 0){
++		os_close_file(state->fd);
++		state->fd = -1;
++	}
+         kfree(state);
+ 
+-        return(ret);
++	return(0);
+ }
+ 
+ 
+diff -L arch/um/drivers/hostaudio_user.c -puN arch/um/drivers/hostaudio_user.c~Hostaudio_clean /dev/null
+--- uml-linux-2.6.7/arch/um/drivers/hostaudio_user.c
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,130 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Steve Schmidtke 
+- * Licensed under the GPL
+- */
+-
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include "hostaudio.h"
+-#include "user_util.h"
+-#include "kern_util.h"
+-#include "user.h"
+-#include "os.h"
+-
+-/* /dev/dsp file operations */
+-
+-ssize_t hostaudio_read_user(struct hostaudio_state *state, char *buffer, 
+-			    size_t count, loff_t *ppos)
+-{
+-#ifdef DEBUG
+-        printk("hostaudio: read_user called, count = %d\n", count);
+-#endif
+-
+-	return(os_read_file(state->fd, buffer, count));
+-}
+-
+-ssize_t hostaudio_write_user(struct hostaudio_state *state, const char *buffer,
+-			     size_t count, loff_t *ppos)
+-{
+-#ifdef DEBUG
+-        printk("hostaudio: write_user called, count = %d\n", count);
+-#endif
+-
+-	return(os_write_file(state->fd, buffer, count));
+-}
+-
+-int hostaudio_ioctl_user(struct hostaudio_state *state, unsigned int cmd, 
+-			 unsigned long arg)
+-{
+-#ifdef DEBUG
+-        printk("hostaudio: ioctl_user called, cmd = %u\n", cmd);
+-#endif
+-
+-	return(os_ioctl_generic(state->fd, cmd, arg));
+-}
+-
+-int hostaudio_open_user(struct hostaudio_state *state, int r, int w, char *dsp)
+-{
+-#ifdef DEBUG
+-        printk("hostaudio: open_user called\n");
+-#endif
+-
+-	state->fd = os_open_file(dsp, of_set_rw(OPENFLAGS(), r, w), 0);
+-
+-	if(state->fd < 0) {
+-		printk("hostaudio_open_user failed to open '%s', err = %d\n",
+-		       dsp, -state->fd);
+-		return(state->fd); 
+-	}
+-        
+-	return(0);
+-}
+-
+-int hostaudio_release_user(struct hostaudio_state *state)
+-{
+-#ifdef DEBUG
+-        printk("hostaudio: release called\n");
+-#endif
+-	if(state->fd >= 0){
+-		os_close_file(state->fd);
+-		state->fd = -1;
+-	}
+-
+-        return(0);
+-}
+-
+-/* /dev/mixer file operations */
+-
+-int hostmixer_ioctl_mixdev_user(struct hostmixer_state *state, 
+-				unsigned int cmd, unsigned long arg)
+-{
+-#ifdef DEBUG
+-        printk("hostmixer: ioctl_user called cmd = %u\n",cmd);
+-#endif
+-
+-	return(os_ioctl_generic(state->fd, cmd, arg));
+-}
+-
+-int hostmixer_open_mixdev_user(struct hostmixer_state *state, int r, int w,
+-			       char *mixer)
+-{
+-#ifdef DEBUG
+-        printk("hostmixer: open_user called\n");
+-#endif
+-
+-        state->fd = os_open_file(mixer, of_set_rw(OPENFLAGS(), r, w), 0);
+-
+-	if(state->fd < 0) {
+-	        printk("hostaudio_open_mixdev_user failed to open '%s', "
+-		       "err = %d\n", mixer, state->fd);
+-		return(state->fd); 
+-	}
+-        
+-	return(0);
+-}
+-
+-int hostmixer_release_mixdev_user(struct hostmixer_state *state)
+-{
+-#ifdef DEBUG
+-        printk("hostmixer: release_user called\n");
+-#endif
+-
+-        if(state->fd >= 0){
+-		os_close_file(state->fd);
+-		state->fd = -1;
+-        }
+-
+-        return 0;
+-}
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/drivers/Makefile~Hostaudio_clean arch/um/drivers/Makefile
+--- uml-linux-2.6.7/arch/um/drivers/Makefile~Hostaudio_clean	2004-06-29 21:03:03.474109224 +0200
++++ uml-linux-2.6.7-paolo/arch/um/drivers/Makefile	2004-06-29 21:03:03.478108616 +0200
+@@ -15,7 +15,7 @@ mcast-objs := mcast_kern.o mcast_user.o
+ #pcap-objs := pcap_kern.o pcap_user.o $(PCAP)
+ net-objs := net_kern.o net_user.o
+ mconsole-objs := mconsole_kern.o mconsole_user.o
+-hostaudio-objs := hostaudio_kern.o hostaudio_user.o
++hostaudio-objs := hostaudio_kern.o
+ ubd-objs := ubd_kern.o ubd_user.o
+ port-objs := port_kern.o port_user.o
+ harddog-objs := harddog_kern.o harddog_user.o
+diff -L arch/um/include/hostaudio.h -puN arch/um/include/hostaudio.h~Hostaudio_clean /dev/null
+--- uml-linux-2.6.7/arch/um/include/hostaudio.h
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,48 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Steve Schmidtke 
+- * Licensed under the GPL
+- */
+-
+-#ifndef HOSTAUDIO_H
+-#define HOSTAUDIO_H
+-
+-#define HOSTAUDIO_DEV_DSP "/dev/sound/dsp"
+-#define HOSTAUDIO_DEV_MIXER "/dev/sound/mixer"
+-
+-struct hostaudio_state {
+-  int fd;
+-};
+-
+-struct hostmixer_state {
+-  int fd;
+-};
+-
+-/* UML user-side protoypes */
+-extern ssize_t hostaudio_read_user(struct hostaudio_state *state, char *buffer,
+-				   size_t count, loff_t *ppos);
+-extern ssize_t hostaudio_write_user(struct hostaudio_state *state, 
+-				    const char *buffer, size_t count, 
+-				    loff_t *ppos);
+-extern int hostaudio_ioctl_user(struct hostaudio_state *state, 
+-				unsigned int cmd, unsigned long arg);
+-extern int hostaudio_open_user(struct hostaudio_state *state, int r, int w, 
+-			       char *dsp);
+-extern int hostaudio_release_user(struct hostaudio_state *state);
+-extern int hostmixer_ioctl_mixdev_user(struct hostmixer_state *state, 
+-				unsigned int cmd, unsigned long arg);
+-extern int hostmixer_open_mixdev_user(struct hostmixer_state *state, int r, 
+-				      int w, char *mixer);
+-extern int hostmixer_release_mixdev_user(struct hostmixer_state *state);
+-
+-#endif /* HOSTAUDIO_H */
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+_

@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- BitchX/source/term.c~gcc34
++++ BitchX/source/term.c
+@@ -92,7 +92,7 @@
+ #endif
+ 
+ extern  char    *getenv();
+-extern	char	*tparm();
++//extern	char	*tparm();
+ 
+ /*
+  * The old code assumed termcap. termcap is almost always present, but on

@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- dropbear-0.41/auth.c~allow-nopw
++++ dropbear-0.41/auth.c
+@@ -225,6 +225,7 @@
+ 	}
+ 
+ 	/* check for an empty password */
++#ifdef DISALLOW_EMPTY_PW
+ 	if (ses.authstate.pw->pw_passwd[0] == '\0') {
+ 		TRACE(("leave checkusername: empty pword"));
+ 		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
+@@ -232,6 +233,7 @@
+ 		send_msg_userauth_failure(0, 1);
+ 		return DROPBEAR_FAILURE;
+ 	}
++#endif
+ 
+ 	TRACE(("shell is %s", ses.authstate.pw->pw_shell));
+ 
+--- dropbear-0.41/authpasswd.c~allow-nopw
++++ dropbear-0.41/authpasswd.c
+@@ -65,9 +65,13 @@
+ 	 * since the shadow password may differ to that tested
+ 	 * in auth.c */
+ 	if (passwdcrypt[0] == '\0') {
++#ifdef DISALLOW_EMPTY_PASSWD
+ 		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
+ 				ses.authstate.printableuser);
+ 		send_msg_userauth_failure(0, 1);
++#else
++ 		send_msg_userauth_success();
++#endif
+ 		return;
+ 	}
+ 

@@ -1,0 +1,11 @@
+--- grub-0.93/stage2/fsys_reiserfs.c~	2002-11-29 17:46:01.000000000 +0000
++++ grub-0.93/stage2/fsys_reiserfs.c	2004-01-04 12:16:34.000000000 +0000
+@@ -112,7 +112,7 @@
+   /* offset in the log of where to start replay after a crash */
+   __u32 j_first_unflushed_offset;
+   /* mount id to detect very old transactions */
+-  __u32 long j_mount_id;
++  __u32 j_mount_id;
+ };
+ 
+ /* magic string to find desc blocks in the journal */

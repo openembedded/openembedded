@@ -1,0 +1,8 @@
+firefox
+	command=firefox
+	name=Firefox Browser
+	can_open_multiple_files=true
+	expects_uris=true
+	requires_terminal=false
+	supported_uri_schemes=file,http,ftp,telnet,gopher
+	mime_types=text/html,x-directory/webdav,x-directory/webdav-prefer-directory,image/gif,image/jpeg,text/xml

@@ -1,0 +1,510 @@
+---
+
+ uml-linux-2.6.7-paolo/arch/um/include/kern_util.h        |   11 +
+ uml-linux-2.6.7-paolo/arch/um/kernel/process_kern.c      |   11 +
+ uml-linux-2.6.7-paolo/arch/um/kernel/reboot.c            |    1 
+ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process.c      |   73 -----------
+ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process_kern.c |   93 +++++++++++++--
+ uml-linux-2.6.7-paolo/arch/um/kernel/smp.c               |    4 
+ uml-linux-2.6.7-paolo/arch/um/kernel/tt/process_kern.c   |    5 
+ uml-linux-2.6.7-paolo/arch/um/sys-i386/ldt.c             |   11 +
+ uml-linux-2.6.7-paolo/include/asm-um/smp.h               |   21 ++-
+ uml-linux-2.6.7-paolo/include/asm-um/spinlock.h          |   13 ++
+ 10 files changed, 150 insertions(+), 93 deletions(-)
+
+diff -puN arch/um/kernel/skas/process.c~SMP_fix arch/um/kernel/skas/process.c
+--- uml-linux-2.6.7/arch/um/kernel/skas/process.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process.c	2004-06-21 20:03:56.000000000 +0200
+@@ -100,7 +100,6 @@ static int userspace_tramp(void *arg)
+ }
+ 
+ /* Each element set once, and only accessed by a single processor anyway */
+-#define NR_CPUS 1
+ int userspace_pid[NR_CPUS];
+ 
+ void start_userspace(int cpu)
+@@ -301,39 +300,6 @@ void switch_threads(void *me, void *next
+ 		siglongjmp(*next_buf, 1);
+ }
+ 
+-static jmp_buf initial_jmpbuf;
+-
+-/* XXX Make these percpu */
+-static void (*cb_proc)(void *arg);
+-static void *cb_arg;
+-static jmp_buf *cb_back;
+-
+-int start_idle_thread(void *stack, void *switch_buf_ptr, void **fork_buf_ptr)
+-{
+-	jmp_buf **switch_buf = switch_buf_ptr;
+-	int n;
+-
+-	*fork_buf_ptr = &initial_jmpbuf;
+-	n = sigsetjmp(initial_jmpbuf, 1);
+-	if(n == 0)
+-		new_thread_proc((void *) stack, new_thread_handler);
+-	else if(n == 1)
+-		remove_sigstack();
+-	else if(n == 2){
+-		(*cb_proc)(cb_arg);
+-		siglongjmp(*cb_back, 1);
+-	}
+-	else if(n == 3){
+-		kmalloc_ok = 0;
+-		return(0);
+-	}
+-	else if(n == 4){
+-		kmalloc_ok = 0;
+-		return(1);
+-	}
+-	siglongjmp(**switch_buf, 1);
+-}
+-
+ void remove_sigstack(void)
+ {
+ 	stack_t stack = ((stack_t) { .ss_flags	= SS_DISABLE,
+@@ -344,36 +310,6 @@ void remove_sigstack(void)
+ 		panic("disabling signal stack failed, errno = %d\n", errno);
+ }
+ 
+-void initial_thread_cb_skas(void (*proc)(void *), void *arg)
+-{
+-	jmp_buf here;
+-
+-	cb_proc = proc;
+-	cb_arg = arg;
+-	cb_back = &here;
+-
+-	block_signals();
+-	if(sigsetjmp(here, 1) == 0)
+-		siglongjmp(initial_jmpbuf, 2);
+-	unblock_signals();
+-
+-	cb_proc = NULL;
+-	cb_arg = NULL;
+-	cb_back = NULL;
+-}
+-
+-void halt_skas(void)
+-{
+-	block_signals();
+-	siglongjmp(initial_jmpbuf, 3);
+-}
+-
+-void reboot_skas(void)
+-{
+-	block_signals();
+-	siglongjmp(initial_jmpbuf, 4);
+-}
+-
+ int new_mm(int from)
+ {
+ 	struct proc_mm_op copy;
+@@ -400,8 +336,7 @@ void switch_mm_skas(int mm_fd)
+ {
+ 	int err;
+ 
+-#warning need cpu pid in switch_mm_skas
+-	err = ptrace(PTRACE_SWITCH_MM, userspace_pid[0], 0, mm_fd);
++	err = ptrace(PTRACE_SWITCH_MM, userspace_pid[cpu()], 0, mm_fd);
+ 	if(err)
+ 		panic("switch_mm_skas - PTRACE_SWITCH_MM failed, errno = %d\n",
+ 		      errno);
+@@ -409,8 +344,10 @@ void switch_mm_skas(int mm_fd)
+ 
+ void kill_off_processes_skas(void)
+ {
+-#warning need to loop over userspace_pids in kill_off_processes_skas
+-	os_kill_process(userspace_pid[0], 1);
++	int i;
++	for(i = 0; i < ncpus; i++){
++		os_kill_process(userspace_pid[i], 1);
++	}
+ }
+ 
+ void init_registers(int pid)
+diff -puN arch/um/kernel/skas/process_kern.c~SMP_fix arch/um/kernel/skas/process_kern.c
+--- uml-linux-2.6.7/arch/um/kernel/skas/process_kern.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/skas/process_kern.c	2004-06-21 19:48:57.000000000 +0200
+@@ -3,6 +3,11 @@
+  * Licensed under the GPL
+  */
+ 
++/*I checked that this is safe to include here; if it becomes not,
++ * we can always wrap it*/
++
++#include <setjmp.h>
++
+ #include "linux/sched.h"
+ #include "linux/slab.h"
+ #include "linux/ptrace.h"
+@@ -10,6 +15,7 @@
+ #include "linux/file.h"
+ #include "linux/errno.h"
+ #include "linux/init.h"
++#include "linux/percpu.h"
+ #include "asm/uaccess.h"
+ #include "asm/atomic.h"
+ #include "kern_util.h"
+@@ -22,6 +28,7 @@
+ #include "frame.h"
+ #include "kern.h"
+ #include "mode.h"
++#include "asm/smp.h"
+ 
+ #ifdef PTRACE_SYSEMU
+ static atomic_t using_sysemu;
+@@ -91,7 +98,10 @@ void *switch_to_skas(void *prev, void *n
+ 	from = prev;
+ 	to = next;
+ 
+-	/* XXX need to check runqueues[cpu].idle */
++	/* XXX need to check runqueues[cpu].idle. jdike*/
++	/* Are you sure? 1) runqueues is private to sched.c
++	 * 2) The idle tasks have *always* pid 0
++	 * Blaisorblade*/
+ 	if(current->pid == 0)
+ 		switch_timers(0);
+ 
+@@ -197,7 +207,7 @@ int copy_thread_skas(int nr, unsigned lo
+ 
+ void init_idle_skas(void)
+ {
+-	cpu_tasks[current_thread->cpu].pid = os_getpid();
++	cpu_tasks[smp_processor_id()].pid = os_getpid();
+ 	default_idle();
+ }
+ 
+@@ -236,14 +246,83 @@ int start_uml_skas(void)
+ 
+ int external_pid_skas(struct task_struct *task)
+ {
+-#warning Need to look up userspace_pid by cpu	
+-	return(userspace_pid[0]);
++	return(userspace_pid[smp_processor_id()]);
++}
++
++static jmp_buf initial_jmpbuf;
++
++/* XXX Make these percpu */
++/*static void (*cb_proc)(void *arg);
++static void *cb_arg;
++static jmp_buf *cb_back;*/
++static DEFINE_PER_CPU(void (*)(void*), cb_proc);
++static DEFINE_PER_CPU(void*, cb_arg);
++static DEFINE_PER_CPU(jmp_buf*, cb_back);
++
++int start_idle_thread(void *stack, void *switch_buf_ptr, void **fork_buf_ptr)
++{
++	jmp_buf **switch_buf = switch_buf_ptr;
++	int n;
++
++	*fork_buf_ptr = &initial_jmpbuf;
++	n = sigsetjmp(initial_jmpbuf, 1);
++	if(n == 0)
++		new_thread_proc((void *) stack, new_thread_handler);
++	else if(n == 1)
++		remove_sigstack();
++	else if(n == 2){
++		jmp_buf* loc_cb_back;
++
++		preempt_disable();
++
++		(*__get_cpu_var(cb_proc))(__get_cpu_var(cb_arg));
++		loc_cb_back = __get_cpu_var(cb_back);
++
++		preempt_enable();
++
++		siglongjmp(*loc_cb_back, 1);
++	}
++	else if(n == 3){
++		kmalloc_ok = 0;
++		return(0);
++	}
++	else if(n == 4){
++		kmalloc_ok = 0;
++		return(1);
++	}
++	siglongjmp(**switch_buf, 1);
++}
++
++void initial_thread_cb_skas(void (*proc)(void *), void *arg)
++{
++	jmp_buf here;
++
++	preempt_disable();
++	__get_cpu_var(cb_proc) = proc;
++	__get_cpu_var(cb_arg) = arg;
++	__get_cpu_var(cb_back) = &here;
++
++	block_signals();
++	if(sigsetjmp(here, 1) == 0)
++		siglongjmp(initial_jmpbuf, 2);
++	unblock_signals();
++
++	__get_cpu_var(cb_proc) = NULL;
++	__get_cpu_var(cb_arg) = NULL;
++	__get_cpu_var(cb_back) = NULL;
++	preempt_enable();
++}
++
++void halt_skas(void)
++{
++	block_signals();
++	siglongjmp(initial_jmpbuf, 3);
+ }
+ 
+-int thread_pid_skas(struct task_struct *task)
++void reboot_skas(void)
+ {
+-#warning Need to look up userspace_pid by cpu	
+-	return(userspace_pid[0]);
++	block_signals();
++	siglongjmp(initial_jmpbuf, 4);
+ }
+ 
+ /*
+diff -puN arch/um/kernel/process_kern.c~SMP_fix arch/um/kernel/process_kern.c
+--- uml-linux-2.6.7/arch/um/kernel/process_kern.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/process_kern.c	2004-06-21 19:48:57.000000000 +0200
+@@ -43,6 +43,7 @@
+ #include "mode.h"
+ #include "mode_kern.h"
+ #include "choose-mode.h"
++#include "asm/smp.h"
+ 
+ /* This is a per-cpu array.  A processor only modifies its entry and it only
+  * cares about its entry, so it's OK if another processor is modifying its
+@@ -62,6 +63,7 @@ struct task_struct *get_task(int pid, in
+         return(ret);
+ }
+ 
++/*Call with preempt disabled (with preempt on we can change CPU, and then even external_pid)*/
+ int external_pid(void *t)
+ {
+ 	struct task_struct *task = t ? t : current;
+@@ -110,6 +112,7 @@ int kernel_thread(int (*fn)(void *), voi
+ 	return(pid);
+ }
+ 
++/*Must be called with preempt disabled.*/
+ void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
+ 	       struct task_struct *tsk)
+ {
+@@ -119,11 +122,12 @@ void switch_mm(struct mm_struct *prev, s
+ 	set_bit(cpu, &next->cpu_vm_mask);
+ }
+ 
++/*Must be called with preempt disabled.*/
+ void set_current(void *t)
+ {
+ 	struct task_struct *task = t;
+ 
+-	cpu_tasks[task->thread_info->cpu] = ((struct cpu_task) 
++	cpu_tasks[smp_processor_id()] = ((struct cpu_task)
+ 		{ external_pid(task), task });
+ }
+ 
+@@ -377,8 +381,9 @@ int strlen_user_proc(char *str)
+ int smp_sigio_handler(void)
+ {
+ #ifdef CONFIG_SMP
+-	int cpu = current_thread->cpu;
++	int cpu = get_cpu();
+ 	IPI_handler(cpu);
++	put_cpu();
+ 	if(cpu != 0)
+ 		return(1);
+ #endif
+@@ -392,7 +397,7 @@ int um_in_interrupt(void)
+ 
+ int cpu(void)
+ {
+-	return(current_thread->cpu);
++	return(smp_processor_id());
+ }
+ 
+ /*
+diff -puN arch/um/include/kern_util.h~SMP_fix arch/um/include/kern_util.h
+--- uml-linux-2.6.7/arch/um/include/kern_util.h~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/include/kern_util.h	2004-06-21 20:02:22.000000000 +0200
+@@ -6,8 +6,15 @@
+ #ifndef __KERN_UTIL_H__
+ #define __KERN_UTIL_H__
+ 
+-#include "linux/threads.h"
+ #include "sysdep/ptrace.h"
++#include "uml-config.h"
++
++#undef NR_CPUS
++#ifdef UML_CONFIG_SMP
++#define NR_CPUS		UML_CONFIG_NR_CPUS
++#else
++#define NR_CPUS		1
++#endif
+ 
+ extern int ncpus;
+ extern char *linux_prog;
+@@ -17,8 +24,6 @@ extern int timer_irq_inited;
+ extern int jail;
+ extern int nsyscalls;
+ 
+-extern struct task_struct *idle_threads[NR_CPUS];
+-
+ #define UML_ROUND_DOWN(addr) ((void *)(((unsigned long) addr) & PAGE_MASK))
+ #define UML_ROUND_UP(addr) \
+ 	UML_ROUND_DOWN(((unsigned long) addr) + PAGE_SIZE - 1)
+diff -puN arch/um/kernel/reboot.c~SMP_fix arch/um/kernel/reboot.c
+--- uml-linux-2.6.7/arch/um/kernel/reboot.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/reboot.c	2004-06-21 19:48:57.000000000 +0200
+@@ -11,6 +11,7 @@
+ #include "os.h"
+ #include "mode.h"
+ #include "choose-mode.h"
++#include "asm/smp.h"
+ 
+ #ifdef CONFIG_SMP
+ static void kill_idlers(int me)
+diff -puN include/asm-um/smp.h~SMP_fix include/asm-um/smp.h
+--- uml-linux-2.6.7/include/asm-um/smp.h~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/include/asm-um/smp.h	2004-06-21 19:48:57.000000000 +0200
+@@ -1,26 +1,35 @@
+ #ifndef __UM_SMP_H
+ #define __UM_SMP_H
+ 
++#ifndef __KERNEL__
++#error Cannot be included from user-space files!
++#endif
++#include "linux/config.h"
++
+ #ifdef CONFIG_SMP
+ 
+-#include "linux/config.h"
+ #include "linux/bitops.h"
+ #include "asm/current.h"
+ #include "linux/cpumask.h"
++#include "linux/threads.h"
+ 
+ extern cpumask_t cpu_online_map;
+ 
+ #define smp_processor_id() (current_thread->cpu)
+-#define cpu_logical_map(n) (n)
+-#define cpu_number_map(n) (n)
+ #define PROC_CHANGE_PENALTY	15 /* Pick a number, any number */
+ extern int hard_smp_processor_id(void);
++/*XXX figure out what to do with this, which was added in 2.6 asm-i386/smp.h */
++/*static __inline int logical_smp_processor_id(void)*/
+ #define NO_PROC_ID -1
+ 
+-#define cpu_online(cpu) cpu_isset(cpu, cpu_online_map)
++/*XXX check we can remove these. Already out of the i386 one.*/
++/*#define cpu_logical_map(n) (n)
++#define cpu_number_map(n) (n)
++#define cpu_online(cpu) cpu_isset(cpu, cpu_online_map)*/
+ 
+ extern int ncpus;
+ 
++extern struct task_struct *idle_threads[NR_CPUS];
+ 
+ extern inline void smp_cpus_done(unsigned int maxcpus)
+ {
+@@ -28,4 +37,8 @@ extern inline void smp_cpus_done(unsigne
+ 
+ #endif
+ 
++#ifdef CONFIG_MODE_SKAS
++extern int userspace_pid[NR_CPUS];
++#endif
++
+ #endif
+diff -puN arch/um/kernel/smp.c~SMP_fix arch/um/kernel/smp.c
+--- uml-linux-2.6.7/arch/um/kernel/smp.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/smp.c	2004-06-21 19:48:57.000000000 +0200
+@@ -29,7 +29,9 @@ DEFINE_PER_CPU(struct mmu_gather, mmu_ga
+ #include "os.h"
+ 
+ /* CPU online map, set by smp_boot_cpus */
+-unsigned long cpu_online_map = CPU_MASK_NONE;
++cpumask_t cpu_online_map = CPU_MASK_NONE;
++cpumask_t cpu_possible_map;
++cpumask_t cpu_present_map;
+ 
+ EXPORT_SYMBOL(cpu_online_map);
+ 
+diff -puN arch/um/sys-i386/ldt.c~SMP_fix arch/um/sys-i386/ldt.c
+--- uml-linux-2.6.7/arch/um/sys-i386/ldt.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/sys-i386/ldt.c	2004-06-21 19:48:57.000000000 +0200
+@@ -5,8 +5,10 @@
+ 
+ #include "linux/config.h"
+ #include "linux/slab.h"
++#include "linux/types.h"
+ #include "asm/uaccess.h"
+ #include "asm/ptrace.h"
++#include "asm/smp.h"
+ #include "choose-mode.h"
+ #include "kern.h"
+ 
+@@ -21,13 +23,13 @@ int sys_modify_ldt_tt(int func, void *pt
+ #endif
+ 
+ #ifdef CONFIG_MODE_SKAS
+-extern int userspace_pid;
+ 
+ int sys_modify_ldt_skas(int func, void *ptr, unsigned long bytecount)
+ {
+ 	struct ptrace_ldt ldt;
+ 	void *buf;
+ 	int res, n;
++	u32 cpu;
+ 
+ 	buf = kmalloc(bytecount, GFP_KERNEL);
+ 	if(buf == NULL)
+@@ -50,7 +52,12 @@ int sys_modify_ldt_skas(int func, void *
+ 	ldt = ((struct ptrace_ldt) { .func	= func,
+ 				     .ptr	= buf,
+ 				     .bytecount = bytecount });
+-	res = ptrace(PTRACE_LDT, userspace_pid, 0, (unsigned long) &ldt);
++
++	cpu = get_cpu();
++
++	res = ptrace(PTRACE_LDT, userspace_pid[cpu], 0, (unsigned long) &ldt);
++
++	put_cpu();
+ 	if(res < 0)
+ 		goto out;
+ 
+diff -puN /dev/null include/asm-um/spinlock.h
+--- /dev/null	2002-11-29 19:17:06.000000000 +0100
++++ uml-linux-2.6.7-paolo/include/asm-um/spinlock.h	2004-06-21 19:48:57.000000000 +0200
+@@ -0,0 +1,13 @@
++#ifndef __UM_SPINLOCK_H
++#define __UM_SPINLOCK_H
++
++#ifndef __KERNEL__
++#error Cannot be included from userspace files!
++#endif
++#include "linux/config.h"
++
++#ifdef CONFIG_SMP
++#include "asm/arch/spinlock.h"
++#endif
++
++#endif
+diff -puN arch/um/kernel/tt/process_kern.c~SMP_fix arch/um/kernel/tt/process_kern.c
+--- uml-linux-2.6.7/arch/um/kernel/tt/process_kern.c~SMP_fix	2004-06-21 19:48:57.000000000 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/tt/process_kern.c	2004-06-21 19:48:57.000000000 +0200
+@@ -512,11 +512,6 @@ int external_pid_tt(struct task_struct *
+ 	return(task->thread.mode.tt.extern_pid);
+ }
+ 
+-int thread_pid_tt(struct task_struct *task)
+-{
+-	return(task->thread.mode.tt.extern_pid);
+-}
+-
+ int is_valid_pid(int pid)
+ {
+ 	struct task_struct *task;
+
+_

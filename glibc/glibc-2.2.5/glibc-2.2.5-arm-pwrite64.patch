@@ -1,0 +1,23 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/sysdeps/unix/sysv/linux/arm/sysdep.h~glibc-2.2.5-arm-pwrite64.patch	2004-09-03 19:00:37.000000000 -0500
++++ glibc-2.2.5/sysdeps/unix/sysv/linux/arm/sysdep.h	2004-09-03 19:00:38.000000000 -0500
+@@ -32,6 +32,15 @@
+ #define SWI_BASE  (0x900000)
+ #define SYS_ify(syscall_name)	(__NR_##syscall_name)
+ 
++/* This is a kludge to make syscalls.list find these under the names
++   pread and pwrite, since some kernel headers define those names
++   and some define the *64 names for the same system calls.  */
++#if !defined __NR_pread && defined __NR_pread64
++# define __NR_pread __NR_pread64
++#endif
++#if !defined __NR_pwrite && defined __NR_pwrite64
++# define __NR_pwrite __NR_pwrite64
++#endif
+ 
+ #ifdef __ASSEMBLER__
+ 

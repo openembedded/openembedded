@@ -1,0 +1,58 @@
+--- glibc-2.3.2/elf/rtld.c.orig	2003-11-02 16:12:36.000000000 -0500
++++ glibc-2.3.2/elf/rtld.c	2003-11-02 16:24:43.000000000 -0500
+@@ -966,6 +966,55 @@ of this helper program; chances are you 
+   GL(dl_rtld_map).l_prev = GL(dl_loaded);
+   ++GL(dl_nloaded);
+ 
++#if defined(__linux__) && defined(__i386__)
++  /* Debian note: this code imported from Red Hat.  */
++  /* Force non-TLS libraries for glibc 2.0 binaries
++     or if a buggy binary references non-TLS errno or h_errno.  */                                     
++  if (__builtin_expect (GL(dl_loaded)->l_info[DT_NUM
++					     + DT_THISPROCNUM
++					     + DT_VERSIONTAGIDX (DT_VERNEED)]
++			== NULL, 0)
++      && GL(dl_loaded)->l_info[DT_DEBUG])
++    GL(dl_osversion) = 0x20401;
++  else if ((__builtin_expect (mode, normal) != normal
++	    || GL(dl_loaded)->l_info [ADDRIDX (DT_GNU_LIBLIST)] == NULL)
++	   /* Only binaries have DT_DEBUG dynamic tags...  */
++	   && GL(dl_loaded)->l_info[DT_DEBUG])
++    {
++      /* Workaround for buggy binaries.  This doesn't handle buggy
++	 libraries.  */
++      bool buggy = false;
++      const ElfW(Sym) *symtab = (const void *) D_PTR (GL(dl_loaded), l_info[DT_SYMTAB]);
++      const char *strtab = (const void *) D_PTR (GL(dl_loaded), l_info[DT_STRTAB]);
++      Elf_Symndx symidx;
++      for (symidx = GL(dl_loaded)->l_buckets[0x6c994f % GL(dl_loaded)->l_nbuckets];
++	   !buggy && symidx != STN_UNDEF;
++	   symidx = GL(dl_loaded)->l_chain[symidx])
++	{
++	  if (__builtin_expect (strcmp (strtab + symtab[symidx].st_name,
++					"errno") == 0, 0)
++	      && ELFW(ST_TYPE) (symtab[symidx].st_info) != STT_TLS)
++	    buggy = true;
++	}
++      for (symidx = GL(dl_loaded)->l_buckets[0xe5c992f % GL(dl_loaded)->l_nbuckets];
++	   !buggy && symidx != STN_UNDEF;
++	   symidx = GL(dl_loaded)->l_chain[symidx])
++	{
++	  if (__builtin_expect (strcmp (strtab + symtab[symidx].st_name,
++					"h_errno") == 0, 0)
++	      && ELFW(ST_TYPE) (symtab[symidx].st_info) != STT_TLS)
++	    buggy = true;
++	}
++      if (__builtin_expect (buggy, false))
++	{
++	  if (GL(dl_osversion) > 0x20401)
++	    GL(dl_osversion) = 0x20401;
++	  _dl_error_printf ("ld.so: Incorrectly built binary which accesses errno or h_errno directly.\n"
++			    "ld.so: See /usr/share/doc/libc6/FAQ.gz.\n");
++	}
++    }
++#endif
++
+   /* Set up the program header information for the dynamic linker
+      itself.  It is needed in the dl_iterate_phdr() callbacks.  */
+   ElfW(Ehdr) *rtld_ehdr = (ElfW(Ehdr) *) GL(dl_rtld_map).l_map_start;

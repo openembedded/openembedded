@@ -1,0 +1,12 @@
+diff -ur crossword_V0.0.3.orig/crossword.desktop crossword_V0.0.3/crossword.desktop
+--- crossword_V0.0.3.orig/crossword.desktop	2004-06-17 00:13:02.000000000 +0200
++++ crossword_V0.0.3/crossword.desktop	2004-06-17 00:13:11.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Crossword
+ Name[de]=Kreuzwort Rätsel
+-Icon=crossword
++Icon=crossword/crossword
+ Exec=crossword
+ Comment=This is a crossword application that supports .puz and .tpz files
+ Comment[de]=Eine Applikation zum Lösen von Kreuzworträtseln im.puz und .tpz Format

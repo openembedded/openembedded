@@ -1,0 +1,21 @@
+Index: sysinfo.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/sysinfo.c,v
+retrieving revision 1.9
+diff -r1.9 sysinfo.c
+91c91
+< 	GError *err;
+---
+> 	GError *err = NULL;
+126c126
+< 	GError *err;
+---
+> 	GError *err = NULL;
+188c188
+< 	GError *err;
+---
+> 	GError *err = NULL;
+204c204
+< 	GError *err;
+---
+> 	GError *err = NULL;

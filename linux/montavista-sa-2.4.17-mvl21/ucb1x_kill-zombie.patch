@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.17_mvl21/drivers/misc/beagle-ts.c~ucb1x_kill_daemon
++++ linux-2.4.17_mvl21/drivers/misc/beagle-ts.c
+@@ -372,6 +372,7 @@
+     ts->rtask = tsk;
+     
+     daemonize();
++    reparent_to_init();
+     tsk->tty = NULL;
+     //tsk->policy = SCHED_FIFO;
+     //tsk->rt_priority = 1;

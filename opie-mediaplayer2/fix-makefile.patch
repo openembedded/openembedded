@@ -1,0 +1,151 @@
+--- ../opie-mediaplayer2-1.1.5-cvs-20040815-r0/opieplayer2/Makefile	2004-08-17 19:00:02.000000000 +0100
++++ opieplayer2/Makefile	2004-08-17 19:21:53.000000000 +0100
+@@ -4737,6 +4737,7 @@
+ 		$(OPIEDIR)/include/libintl.h \
+ 		$(OPIEDIR)/include/bits/locale.h \
+ 		$(OPIEDIR)/include/xine/xine_plugin.h
++	$(CC) -c $(CFLAGS) $(INCPATH) -o alphablend.o alphablend.c
+ 
+ yuv2rgb.o: yuv2rgb.c $(OPIEDIR)/include/stdio.h \
+ 		$(OPIEDIR)/include/stdlib.h \
+@@ -4812,8 +4813,115 @@
+ 		$(OPIEDIR)/include/bits/local_lim.h \
+ 		$(OPIEDIR)/include/linux/limits.h \
+ 		$(OPIEDIR)/include/xine.h
++	$(CC) -c $(CFLAGS) $(INCPATH) -o yuv2rgb.o yuv2rgb.c
+ 
+-nullvideo.o: nullvideo.o 
++nullvideo.o: nullvideo.c $(OPIEDIR)/include/stdlib.h \
++		$(OPIEDIR)/include/stdio.h \
++		$(OPIEDIR)/include/math.h \
++		$(OPIEDIR)/include/xine.h \
++		$(OPIEDIR)/include/xine/video_out.h \
++		$(OPIEDIR)/include/xine/xine_internal.h \
++		$(OPIEDIR)/include/xine/vo_scale.h \
++		$(OPIEDIR)/include/xine/buffer.h \
++		$(OPIEDIR)/include/pthread.h \
++		alphablend.h \
++		yuv2rgb.h \
++		$(OPIEDIR)/include/features.h \
++		$(OPIEDIR)/include/bits/waitflags.h \
++		$(OPIEDIR)/include/bits/waitstatus.h \
++		$(OPIEDIR)/include/xlocale.h \
++		$(OPIEDIR)/include/sys/types.h \
++		$(OPIEDIR)/include/alloca.h \
++		$(OPIEDIR)/include/sys/cdefs.h \
++		$(OPIEDIR)/include/gnu/stubs.h \
++		$(OPIEDIR)/include/bits/endian.h \
++		$(OPIEDIR)/include/bits/wordsize.h \
++		$(OPIEDIR)/include/bits/typesizes.h \
++		$(OPIEDIR)/include/bits/types.h \
++		$(OPIEDIR)/include/libio.h \
++		$(OPIEDIR)/include/bits/stdio_lim.h \
++		$(OPIEDIR)/include/bits/sys_errlist.h \
++		$(OPIEDIR)/include/getopt.h \
++		$(OPIEDIR)/include/bits/stdio.h \
++		$(OPIEDIR)/include/_G_config.h \
++		$(OPIEDIR)/include/bits/stdio-lock.h \
++		$(OPIEDIR)/include/wchar.h \
++		$(OPIEDIR)/include/gconv.h \
++		$(OPIEDIR)/include/bits/wchar.h \
++		$(OPIEDIR)/include/wctype.h \
++		$(OPIEDIR)/include/endian.h \
++		$(OPIEDIR)/include/ctype.h \
++		$(OPIEDIR)/include/bits/libc-lock.h \
++		$(OPIEDIR)/include/sched.h \
++		$(OPIEDIR)/include/time.h \
++		$(OPIEDIR)/include/signal.h \
++		$(OPIEDIR)/include/bits/pthreadtypes.h \
++		$(OPIEDIR)/include/bits/initspin.h \
++		$(OPIEDIR)/include/bits/sigthread.h \
++		$(OPIEDIR)/include/bits/sched.h \
++		$(OPIEDIR)/include/sys/time.h \
++		$(OPIEDIR)/include/bits/time.h \
++		$(OPIEDIR)/include/sys/select.h \
++		$(OPIEDIR)/include/bits/select.h \
++		$(OPIEDIR)/include/bits/sigset.h \
++		$(OPIEDIR)/include/bits/signum.h \
++		$(OPIEDIR)/include/bits/siginfo.h \
++		$(OPIEDIR)/include/bits/sigaction.h \
++		$(OPIEDIR)/include/bits/sigcontext.h \
++		$(OPIEDIR)/include/bits/sigstack.h \
++		$(OPIEDIR)/include/sys/ucontext.h \
++		$(OPIEDIR)/include/asm/sigcontext.h \
++		$(OPIEDIR)/include/sys/signal.h \
++		$(OPIEDIR)/include/sys/procfs.h \
++		$(OPIEDIR)/include/sys/user.h \
++		$(OPIEDIR)/include/bits/huge_val.h \
++		$(OPIEDIR)/include/bits/huge_valf.h \
++		$(OPIEDIR)/include/bits/huge_vall.h \
++		$(OPIEDIR)/include/bits/inf.h \
++		$(OPIEDIR)/include/bits/nan.h \
++		$(OPIEDIR)/include/bits/mathdef.h \
++		$(OPIEDIR)/include/bits/mathcalls.h \
++		$(OPIEDIR)/include/bits/mathinline.h \
++		$(OPIEDIR)/include/unistd.h \
++		$(OPIEDIR)/include/inttypes.h \
++		$(OPIEDIR)/include/bits/posix_opt.h \
++		$(OPIEDIR)/include/bits/environments.h \
++		$(OPIEDIR)/include/bits/confname.h \
++		$(OPIEDIR)/include/stdint.h \
++		$(OPIEDIR)/include/xine/input_plugin.h \
++		$(OPIEDIR)/include/xine/demux.h \
++		$(OPIEDIR)/include/xine/audio_out.h \
++		$(OPIEDIR)/include/xine/metronom.h \
++		$(OPIEDIR)/include/xine/spu_decoder.h \
++		$(OPIEDIR)/include/xine/lrb.h \
++		$(OPIEDIR)/include/xine/spu_decoder_api.h \
++		$(OPIEDIR)/include/xine/osd.h \
++		$(OPIEDIR)/include/xine/scratch.h \
++		$(OPIEDIR)/include/xine/xineintl.h \
++		$(OPIEDIR)/include/xine/plugin_catalog.h \
++		$(OPIEDIR)/include/xine/video_decoder.h \
++		$(OPIEDIR)/include/xine/audio_decoder.h \
++		$(OPIEDIR)/include/xine/xineutils.h \
++		$(OPIEDIR)/include/xine/configfile.h \
++		$(OPIEDIR)/include/string.h \
++		$(OPIEDIR)/include/xine/attributes.h \
++		$(OPIEDIR)/include/xine/compat.h \
++		$(OPIEDIR)/include/xine/xmlparser.h \
++		$(OPIEDIR)/include/xine/xine_buffer.h \
++		$(OPIEDIR)/include/bits/string.h \
++		$(OPIEDIR)/include/bits/string2.h \
++		$(OPIEDIR)/include/limits.h \
++		$(OPIEDIR)/include/bits/posix1_lim.h \
++		$(OPIEDIR)/include/bits/posix2_lim.h \
++		$(OPIEDIR)/include/bits/xopen_lim.h \
++		$(OPIEDIR)/include/bits/local_lim.h \
++		$(OPIEDIR)/include/linux/limits.h \
++		$(OPIEDIR)/include/xine/video_overlay.h \
++		$(OPIEDIR)/include/locale.h \
++		$(OPIEDIR)/include/libintl.h \
++		$(OPIEDIR)/include/bits/locale.h \
++		$(OPIEDIR)/include/xine/xine_plugin.h
++	$(CC) -c $(CFLAGS) $(INCPATH) -o nullvideo.o nullvideo.c
+ 
+ frame.o: frame.cpp frame.h \
+ 		$(OPIEDIR)/include/xine.h \
+@@ -4870,6 +4978,7 @@
+ 		$(OPIEDIR)/include/sys/signal.h \
+ 		$(OPIEDIR)/include/sys/procfs.h \
+ 		$(OPIEDIR)/include/sys/user.h
++	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o frame.o frame.cpp
+ 
+ lib.o: lib.cpp xinevideowidget.h \
+ 		frame.h \
+@@ -4993,6 +5102,7 @@
+ 		$(OPIEDIR)/include/qimage.h \
+ 		$(OPIEDIR)/include/qfontmanager_qws.h \
+ 		$(OPIEDIR)/include/qpixmap.h
++	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lib.o lib.cpp
+ 
+ mainTest.o: mainTest.cpp $(OPIEDIR)/include/stdlib.h \
+ 		$(OPIEDIR)/include/stdio.h \
+@@ -5163,6 +5273,7 @@
+ 		$(OPIEDIR)/include/qglist.h \
+ 		$(OPIEDIR)/include/qcollection.h \
+ 		$(OPIEDIR)/include/qregexp.h
++	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_lib.o moc_lib.cpp
+ 
+ moc_lib.cpp: $(MOC) lib.h
+ 	$(MOC) lib.h -o moc_lib.cpp

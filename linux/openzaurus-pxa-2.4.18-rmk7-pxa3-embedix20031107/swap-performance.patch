@@ -1,0 +1,19 @@
+*** ../linux/mm/swap.c	Tue Jan 14 14:54:41 2003
+--- linux/mm/swap.c	Sun Sep 28 21:34:25 2003
+***************
+*** 32,38 ****
+  int page_cluster;
+  
+  pager_daemon_t pager_daemon = {
+! 	512,	/* base number for calculating the number of tries */
+  	SWAP_CLUSTER_MAX,	/* minimum number of tries */
+  	8,	/* do swap I/O in clusters of this size */
+  };
+--- 32,38 ----
+  int page_cluster;
+  
+  pager_daemon_t pager_daemon = {
+! 	128,	/* base number for calculating the number of tries */
+  	SWAP_CLUSTER_MAX,	/* minimum number of tries */
+  	8,	/* do swap I/O in clusters of this size */
+  };

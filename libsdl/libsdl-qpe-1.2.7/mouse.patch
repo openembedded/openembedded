@@ -1,0 +1,47 @@
+--- ./src/video/qtopia/SDL_QWin.cc.old	2004-05-16 20:28:36.000000000 +0930
++++ ./src/video/qtopia/SDL_QWin.cc	2004-05-16 20:31:39.000000000 +0930
+@@ -169,7 +169,12 @@
+   Qt::ButtonState button = e->button();
+   int sdlstate = 0;
+   if( (button & Qt::LeftButton)) {
+-    sdlstate |= SDL_BUTTON_LMASK;
++    if (mouse_button_mode == 3)
++     sdlstate |= SDL_BUTTON_RMASK;
++	else if (mouse_button_mode == 2)
++     sdlstate |= SDL_BUTTON_MMASK;
++	else
++     sdlstate |= SDL_BUTTON_LMASK;
+   }
+   if( (button & Qt::RightButton)) {
+     sdlstate |= SDL_BUTTON_RMASK;
+@@ -539,20 +544,20 @@
+     case Qt::Key_F6: scancode = SDLK_F6; break;
+     case Qt::Key_F7: scancode = SDLK_F7; break;
+     case Qt::Key_F8: scancode = SDLK_F8; break;
+-    case Qt::Key_F9: scancode = SDLK_F9; break;
+-    case Qt::Key_F10: 
+-      scancode = SDLK_F10;
++    case Qt::Key_F9: 
++      scancode = SDLK_F9;
+       mouse_button_mode=1;
+       break;
+-    case Qt::Key_F11:
+-      scancode = SDLK_F11;
+-      mouse_button_mode=3;
+-      break;
+-    case Qt::Key_F12:
+-      scancode = SDLK_F12;
++    case Qt::Key_F10:
++      scancode = SDLK_F10;
+       mouse_button_mode=2;
+       break;
+-    case Qt::Key_F13: scancode = SDLK_F13; break;
++    case Qt::Key_F11: scancode = SDLK_F11; break;
++    case Qt::Key_F12: scancode = SDLK_F12; break;
++    case Qt::Key_F13:
++      scancode = SDLK_F13;
++      mouse_button_mode=3;
++      break;
+     case Qt::Key_F14: scancode = SDLK_F14; break;
+     case Qt::Key_F15: scancode = SDLK_F15; break;
+     case Qt::Key_Super_L: scancode = SDLK_LSUPER; break;

@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- units-1.80/units.c~units.c	2003-11-04 16:45:07.000000000 +0000
++++ units-1.80/units.c	2003-11-04 16:45:54.000000000 +0000
+@@ -2356,11 +2356,3 @@
+ crude example to convert lines in a file 'feet' from ft to m might be:
+ */
+ 
+-#if 0
+-
+-    "sed 's/.*/& ft\"
+-    "m/' feet|units -q|sed 's/^[[:space:]]*\* //"
+-    "/^[[:space:]]*\//d'"
+-
+-#endif
+-

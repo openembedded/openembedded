@@ -1,0 +1,10 @@
+--- ./support/bashbug.sh~	Mon Nov 27 17:15:21 2000
++++ ./support/bashbug.sh	Tue Feb  6 18:54:48 2001
+@@ -98,6 +98,7 @@
+ 		esac ;;
+ esac
+ 
++BUGBASH="${BUGBASH},bash@packages.debian.org"
+ BUGADDR="${1-$BUGBASH}"
+ 
+ if [ -z "$DEFEDITOR" ] && [ -z "$EDITOR" ]; then

@@ -1,0 +1,145 @@
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/ChangeLog,v
+retrieving revision 1.179
+diff -u -r1.179 ChangeLog
+--- ChangeLog	10 Jun 2004 10:18:04 -0000	1.179
++++ ChangeLog	11 Jun 2004 17:19:02 -0000
+@@ -1,3 +1,8 @@
++2004-06-11	Florian Boor  	<florian.boor@kernelconcepts.de>
++	* logread.c: Fixed missing setup of scrollbars.
++	* sysinfo.c: Fixed multiple sources of segfaults on non-iPaq platforms.
++	* sysinfo.c, Makefile: Improved information on several platforms.
++	
+ 2004-06-10	Florian Boor  	<florian.boor@kernelconcepts.de>
+ 	* Released V 0.1.10
+ 	* Removed obsolete file.
+Index: Makefile
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/Makefile,v
+retrieving revision 1.110
+diff -u -r1.110 Makefile
+--- Makefile	10 Jun 2004 10:18:04 -0000	1.110
++++ Makefile	11 Jun 2004 17:19:02 -0000
+@@ -8,7 +8,7 @@
+ DESTDIR = /
+ PACKAGETOOL = no
+ STRIP = strip
+-MACHINE = other
++MACHINE = unknown
+ 
+ 
+ LINGUAS = pt ro de fr cs nl sv sk ru
+@@ -50,7 +50,7 @@
+ GTKCFLAGS = `pkg-config --cflags gtk+-2.0` 
+ GTKLDFLAGS = `pkg-config --libs gtk+-2.0 gdk-2.0` 
+ 
+-PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS) -I.
++PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS) -I. 
+ PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GTKCFLAGS) $(GPECFLAGS) -I.
+ PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GTKLDFLAGS) $(GPELIBS) -lXsettings -lXsettings-client -lcrypt -L/usr/X11R6/lib -lXrandr
+ 
+@@ -60,7 +60,7 @@
+ PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+ 
+-PACKAGE_CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE 
++PACKAGE_CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE -DMACHINE=\"$(MACHINE)\"
+ PACKAGE_CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ 
+Index: logread.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/logread.c,v
+retrieving revision 1.10
+diff -u -r1.10 logread.c
+--- logread.c	12 Jan 2004 16:07:59 -0000	1.10
++++ logread.c	11 Jun 2004 17:19:02 -0000
+@@ -227,6 +227,8 @@
+ 
+   tc = gtk_scrolled_window_new(NULL,NULL);
+   gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(tc),GTK_SHADOW_IN);
++  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(tc),
++		GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+   gtk_box_pack_start(GTK_BOX(vbox),tc,TRUE,TRUE,0);
+ 
+   tw = gtk_text_view_new();	
+Index: sysinfo.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/sysinfo.c,v
+retrieving revision 1.10
+diff -u -r1.10 sysinfo.c
+--- sysinfo.c	4 Jun 2004 12:55:42 -0000	1.10
++++ sysinfo.c	11 Jun 2004 17:19:02 -0000
+@@ -170,6 +170,24 @@
+ 		}
+ 		g_strfreev(strv);
+ 	}
++#else
++#ifdef __arm__
++	result.cpu = g_strdup(_("ARM"));
++#endif
++#ifdef __i386__
++	result.cpu = g_strdup(_("Intel x86 or compatible"));
++#endif
++#ifdef __mips__
++	result.cpu = g_strdup(_("Mips"));
++	#ifdef __sgi__
++		result.model = g_strdup(_("Silicon Graphics Machine"));
++	#endif
++#endif
++#ifdef _POWER
++	result.cpu = g_strdup(_("IBM Power or PowerPC"));
++#endif
++	if (!result.model)
++		result.model = g_strdup(MACHINE);
+ #endif
+ 	
+ 	/* memory and flash size */
+@@ -191,8 +209,9 @@
+ 	{
+ 		if (strchr(result,'\n'))
+ 			strchr(result,'\n')[0] = 0;
++	 	return g_strstrip(result);
+ 	}
+-	return g_strstrip(result);
++	return result;
+ }
+ 
+ 
+@@ -207,8 +226,9 @@
+ 	{
+ 		if (strchr(result,'\n'))
+ 			strchr(result,'\n')[0] = 0;
++		return g_strstrip(result);
+ 	}
+-	return g_strstrip(result);
++	return result;
+ }
+ 
+ 
+@@ -427,7 +447,7 @@
+ 		gtk_table_attach(GTK_TABLE(table),tw,0,1,4,7,GTK_FILL | GTK_EXPAND,
+ 						 GTK_FILL,0,0);
+ 		tw = gtk_label_new(NULL);
+-    /*TRANSLATORS: "Familiar" is the name of the linux disrtribution.*/
++    /*TRANSLATORS: "Familiar" is the name of the linux distribution.*/
+ 		ts = g_strdup_printf("<i>%s</i>",_("Familiar Version"));
+ 		gtk_label_set_markup(GTK_LABEL(tw),ts);
+ 		gtk_misc_set_alignment(GTK_MISC(tw),0.0,0.8);
+Index: users/interface.h
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/users/interface.h,v
+retrieving revision 1.7
+diff -u -r1.7 interface.h
+--- users/interface.h	3 Jun 2004 17:35:23 -0000	1.7
++++ users/interface.h	11 Jun 2004 17:19:02 -0000
+@@ -1,9 +1,6 @@
+ #include <pwd.h>
+ #include <sys/types.h>
+ 
+-#if MACHINE == ipaq
+-#endif
+-
+ #ifndef __arm__
+ #define MINUSERUID 500
+ #else

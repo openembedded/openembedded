@@ -1,0 +1,11 @@
+--- gpe-bootsplash-1.11/gpe-bootsplash.init.old	2004-07-06 12:30:10.000000000 +0100
++++ gpe-bootsplash-1.11/gpe-bootsplash.init	2004-07-06 12:30:33.000000000 +0100
+@@ -5,6 +5,8 @@
+     echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
+ }
+ 
++chvt 2
++
+ mount /proc
+ 
+ case $1 in

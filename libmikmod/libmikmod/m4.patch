@@ -1,0 +1,11 @@
+--- libmikmod-3.2.0-beta2/libmikmod.m4.orig	2004-01-21 02:36:34 +0100
++++ libmikmod-3.2.0-beta2/libmikmod.m4	2004-08-12 11:28:30 +0200
+@@ -8,7 +8,7 @@
+ dnl Test for libmikmod, and define LIBMIKMOD_CFLAGS, LIBMIKMOD_LIBS and
+ dnl LIBMIKMOD_LDADD
+ dnl
+-AC_DEFUN(AM_PATH_LIBMIKMOD,
++AC_DEFUN([AM_PATH_LIBMIKMOD],
+ [dnl 
+ dnl Get the cflags and libraries from the libmikmod-config script
+ dnl

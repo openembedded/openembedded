@@ -1,0 +1,11 @@
+Package: timezones
+Files: etc/zoneinfo
+Priority: optional
+Section: base
+Maintainer: Warwick Allison <warwick@trolltech.com>
+Version: 1.0.0-6
+Architecture: arm
+Description: Timezone data
+ These files are not included in the Familiar libc6 package.
+ This package contains just the non-redundant parts, and uses
+ about 180K with jffs2.

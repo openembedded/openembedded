@@ -1,0 +1,13 @@
+--- kdepim/libkcal/libkcalE.pro.orig	2004-06-29 18:51:39.000000000 +0200
++++ kdepim/libkcal/libkcalE.pro	2004-07-05 21:58:01.000000000 +0200
+@@ -8,8 +8,8 @@
+ OBJECTS_DIR = obj/$(PLATFORM)
+ MOC_DIR = moc/$(PLATFORM)
+ DESTDIR = $(QPEDIR)/lib
+-LIBS += ../libical/lib/$(PLATFORM)/libical.a
+-LIBS += ../libical/lib/$(PLATFORM)/libicalss.a
++LIBS += ../dest/libical.a
++LIBS += ../dest/libicalss.a
+ 
+ INTERFACES = \
+ 

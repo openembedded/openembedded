@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Petite Peinture
+Exec=petitpeintu
+Icon=petitpeintu
+Type=Application
+Display=640x480/144dpi,480x640/144dpi
+MimeType=imageptpt/*;image/ptpt
+MimeTypeIcons=image_ptpt
+Comment=a simple painter

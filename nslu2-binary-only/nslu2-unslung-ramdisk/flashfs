@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Copyright (C) 2004 by Oleg I. Vdovikin <oleg@cs.msu.su>
+# Modified for Unslung by Rod Whitby
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+
+VERSION="$(cat /.unslung)"
+FLASHFS=/share/flash/data/flashfs.tar.gz
+
+case "$1" in
+	status)
+		echo "$VERSION"
+		;;
+	start)
+		if [ -f ${FLASHFS} ]; then
+			tar -C / -zxf ${FLASHFS}
+		fi
+		;;
+	clear)
+		rm -f ${FLASHFS}
+		;;
+	load)
+		tar -C / -zxvf ${FLASHFS}
+		;;
+	list)
+		tar -C / -ztf ${FLASHFS}
+		;;
+	save)
+		[ -f /unslung/.files ] && FILES=$(cat /unslung/.files)
+		rm -f /tmp/flash.tar.gz
+		tar -C / -zcvf /tmp/flash.tar.gz /unslung $FILES && 
+		cp /tmp/flash.tar.gz ${FLASHFS} &&
+		ls -l ${FLASHFS} &&
+		echo "Saved."
+		;;
+	*)
+		echo "Usage: $0 status|clear|load|list|save"
+		;;
+esac

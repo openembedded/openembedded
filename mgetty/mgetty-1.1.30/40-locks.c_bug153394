@@ -1,0 +1,60 @@
+--- mgetty-1.1.28.old/locks.c	2001-01-06 12:46:34.000000000 -0500
++++ mgetty-1.1.28/locks.c	2002-08-03 16:25:02.000000000 -0400
+@@ -394,9 +394,42 @@
+ 
+ #else	/* not SVR4 */ 
+ 
++static char * unslash_name _P1 ( (device),
++				 char *device )
++{
++    char *lock_device, *ldev_begin, *ldevice_orig;
++
++    ldevice_orig = malloc( strlen (device) + 1 );
++    sprintf( ldevice_orig, "%s", device );
++
++    lock_device = strchr( ldevice_orig, '/' );
++    while (lock_device)
++      {
++	*lock_device = '_';
++	lock_device = strchr( lock_device, '/' );
++      }
++
++    if ( *ldevice_orig == '_' )
++      {
++	lock_device = strchr( ldevice_orig + 1, '_' );
++	if (! lock_device)
++	  lock_device = ldevice_orig;
++	lock_device++;
++      }
++    else
++      lock_device = ldevice_orig;
++
++    ldev_begin = malloc( strlen( lock_device ) + 1 );
++    sprintf( ldev_begin, "%s", lock_device );
++    free( ldevice_orig );
++
++    return ldev_begin;
++}
++
+ static char * get_lock_name _P2( (lock_name, device),
+ 			  char * lock_name, char * device )
+ {
++    char *lock;
+ #ifdef LOCKS_LOWERCASE
+     /* sco locking convention -> change all device names to lowercase */
+ 
+@@ -425,10 +458,10 @@
+ #endif	/* LOCKS_LOWERCASE */
+ 
+     /* throw out all directory prefixes */
+-    if ( strchr( device, '/' ) != NULL )
+-        device = strrchr( device, '/' ) +1;
+-    
+-    sprintf( lock_name, LOCK, device);
++
++    lock = unslash_name ( device );
++    sprintf( lock_name, LOCK, lock );
++    free ( lock );
+ 
+     return lock_name;
+ }

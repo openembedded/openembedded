@@ -1,0 +1,30 @@
+Index: suid.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/suid.c,v
+retrieving revision 1.52
+diff -u -r1.52 suid.c
+--- suid.c	16 Oct 2004 16:03:43 -0000	1.52
++++ suid.c	25 Oct 2004 15:00:56 -0000
+@@ -95,6 +95,7 @@
+ 	}
+ 	else			// if ok, update rtc time
+ 	{
++		system("/sbin/hwclock --systohc");
+ 		system ("echo > /var/spool/at/trigger");
+ 	}
+ 	g_free(tstr);
+@@ -337,11 +338,11 @@
+ 					time_t t;
+ 					fscanf (in, "%ld", &t);
+ 					if (stime (&t) == -1)
+-						fprintf (stderr,
+-							 "Error while setting the time: %d\n",
+-							 errno);
++						fprintf (stderr, "Error while setting the time: %d\n",
++						         errno);
+ 					else	// if ok, update rtc time
+ 					{
++						system("/sbin/hwclock --systohc");
+ 						system ("echo > /var/spool/at/trigger");
+ 					}
+ 				}

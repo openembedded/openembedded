@@ -1,0 +1,41 @@
+Index: main.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-calendar/main.c,v
+retrieving revision 1.90
+diff -b -B -u -r1.90 main.c
+--- main.c	10 Aug 2004 10:40:31 -0000	1.90
++++ main.c	18 Aug 2004 13:25:56 -0000
+@@ -49,6 +49,7 @@
+ GList *times;
+ time_t viewtime;
+ gboolean force_today = FALSE;
++gboolean just_new = FALSE;
+ 
+ GtkWidget *main_window, *pop_window;
+ GtkWidget *notebook;
+@@ -172,10 +173,24 @@
+     } while (w != NULL);
+ }
+ 
++static gboolean
++do_reset_new(gpointer d)
++{
++  just_new = FALSE;
++  return FALSE;
++}
++
+ static void
+ new_appointment (void)
+ {
+-  GtkWidget *appt = new_event (viewtime, 0);
++  GtkWidget *appt;
++  
++  if (just_new)
++    return;
++  just_new = TRUE;
++  g_timeout_add(2000, do_reset_new, NULL);
++  
++  appt = new_event (viewtime, 0);
+   gtk_widget_show (appt);
+ }
+ 

@@ -1,0 +1,8 @@
+--- mgetty-1.1.30.orig/samples/new_fax.pbm	Thu Jan  2 15:40:12 1997
++++ mgetty-1.1.30/samples/new_fax.pbm	Sun Sep 28 16:46:09 2003
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # From:	michael@hal6000.thp.uni-duisburg.de (Michael Staats)
+ # Subject: Re: Fax notify without in/output redirection?
+ # To:	mgetty@greenie.muc.de

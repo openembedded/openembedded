@@ -1,0 +1,20 @@
+--- bash-2.05b/shell.c.ORI	2003-01-16 12:23:56.000000000 +0100
++++ bash-2.05b/shell.c	2003-01-16 12:25:52.000000000 +0100
+@@ -1065,7 +1065,7 @@
+   if (restricted)
+     return 1;
+   temp = base_pathname (name);
+-  return (STREQ (temp, RESTRICTED_SHELL_NAME));
++  return ( (STREQ (temp, RESTRICTED_SHELL_NAME)) || (STREQ (temp, ("-"RESTRICTED_SHELL_NAME))) );
+ }
+ 
+ /* Perhaps make this shell a `restricted' one, based on NAME.  If the
+@@ -1082,7 +1082,7 @@
+   char *temp;
+ 
+   temp = base_pathname (name);
+-  if (restricted || (STREQ (temp, RESTRICTED_SHELL_NAME)))
++  if (restricted || (STREQ (temp, RESTRICTED_SHELL_NAME)) || (STREQ (temp, ("-"RESTRICTED_SHELL_NAME))) )
+     {
+       set_var_read_only ("PATH");
+       set_var_read_only ("SHELL");

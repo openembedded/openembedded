@@ -1,0 +1,10 @@
+--- ./Makefile.am.old	2004-09-25 21:39:22.000000000 +0930
++++ ./Makefile.am	2004-09-25 21:39:30.000000000 +0930
+@@ -2,7 +2,3 @@
+ 
+ EXTRA_DIST = faad2.spec
+ 
+-rpm:    Makefile
+-       make dist
+-       $(RPMBUILD) -ta $(PACKAGE)-$(VERSION).tar.gz
+-       rm $(PACKAGE)-$(VERSION).tar.gz

@@ -1,0 +1,682 @@
+--- openssl-0.9.7b.orig/apps/der_chop
++++ openssl-0.9.7b/apps/der_chop
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ #
+ # der_chop ... this is one total hack that Eric is really not proud of
+ #              so don't look at it and don't ask for support
+--- openssl-0.9.7b.orig/apps/Makefile.ssl
++++ openssl-0.9.7b/apps/Makefile.ssl
+@@ -3,7 +3,7 @@
+ #
+ 
+ DIR=		apps
+-TOP=		..
++TOP=		$(shell pwd)/..
+ CC=		cc
+ INCLUDES=	-I$(TOP) -I../include $(KRB5_INCLUDES)
+ CFLAG=		-g -static
+@@ -30,9 +30,14 @@
+ 
+ GENERAL=Makefile makeapps.com install.com
+ 
++TOP=$(shell pwd)/..
++#DLIBCRYPTO=../crypto/.libs/libcrypto.a
+ DLIBCRYPTO=../libcrypto.a
++#DLIBSSL=../ssl/.libs/libssl.a
+ DLIBSSL=../libssl.a
++#LIBCRYPTO=-L$(TOP)/crypto/.libs -lcrypto
+ LIBCRYPTO=-L.. -lcrypto
++#LIBSSL=-L$(TOP)/ssl/.libs -lssl
+ LIBSSL=-L.. -lssl
+ 
+ PROGRAM= openssl
+@@ -136,6 +141,8 @@
+ clean:
+ 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff $(EXE)
+ 	rm -f req
++	rm -f *.lo
++	rm -fr .libs
+ 
+ $(DLIBSSL):
+ 	(cd ..; $(MAKE) DIRS=ssl all)
+--- openssl-0.9.7b.orig/apps/progs.h
++++ openssl-0.9.7b/apps/progs.h
+@@ -35,9 +35,7 @@
+ extern int spkac_main(int argc,char *argv[]);
+ extern int smime_main(int argc,char *argv[]);
+ extern int rand_main(int argc,char *argv[]);
+-#ifndef OPENSSL_NO_ENGINE
+ extern int engine_main(int argc,char *argv[]);
+-#endif
+ extern int ocsp_main(int argc,char *argv[]);
+ 
+ #define FUNC_TYPE_GENERAL	1
+@@ -94,9 +92,7 @@
+ #if !defined(OPENSSL_NO_SOCK) && !(defined(OPENSSL_NO_SSL2) && defined(OPENSSL_NO_SSL3))
+ 	{FUNC_TYPE_GENERAL,"s_client",s_client_main},
+ #endif
+-#ifndef OPENSSL_NO_SPEED
+ 	{FUNC_TYPE_GENERAL,"speed",speed_main},
+-#endif
+ #if !defined(OPENSSL_NO_SOCK) && !(defined(OPENSSL_NO_SSL2) && defined(OPENSSL_NO_SSL3))
+ 	{FUNC_TYPE_GENERAL,"s_time",s_time_main},
+ #endif
+@@ -115,9 +111,7 @@
+ 	{FUNC_TYPE_GENERAL,"spkac",spkac_main},
+ 	{FUNC_TYPE_GENERAL,"smime",smime_main},
+ 	{FUNC_TYPE_GENERAL,"rand",rand_main},
+-#ifndef OPENSSL_NO_ENGINE
+ 	{FUNC_TYPE_GENERAL,"engine",engine_main},
+-#endif
+ 	{FUNC_TYPE_GENERAL,"ocsp",ocsp_main},
+ #ifndef OPENSSL_NO_MD2
+ 	{FUNC_TYPE_MD,"md2",dgst_main},
+--- openssl-0.9.7b.orig/Configure
++++ openssl-0.9.7b/Configure
+@@ -1,4 +1,4 @@
+-:
++#!/usr/bin/perl
+ eval 'exec perl -S $0 ${1+"$@"}'
+     if $running_under_some_shell;
+ ##
+@@ -1257,7 +1290,8 @@
+ 	elsif ($shared_extension ne "" && $shared_extension =~ /^\.s([ol])\.[^\.]*\.[^\.]*$/)
+ 		{
+ 		my $sotmp = $1;
+-		s/^SHARED_LIBS_LINK_EXTS=.*/SHARED_LIBS_LINK_EXTS=.s$sotmp.\$(SHLIB_MAJOR) .s$sotmp/;
++#		s/^SHARED_LIBS_LINK_EXTS=.*/SHARED_LIBS_LINK_EXTS=.s$sotmp.\$(SHLIB_MAJOR) .s$sotmp/;
++		s/^SHARED_LIBS_LINK_EXTS=.*/SHARED_LIBS_LINK_EXTS=.s$sotmp/;
+ 		}
+ 	elsif ($shared_extension ne "" && $shared_extension =~ /^\.[^\.]*\.[^\.]*\.dylib$/)
+ 		{
+--- openssl-0.9.7b.orig/crypto/asn1/charmap.pl
++++ openssl-0.9.7b/crypto/asn1/charmap.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/bin/perl
+ 
+ use strict;
+ 
+--- openssl-0.9.7b.orig/crypto/Makefile.ssl
++++ openssl-0.9.7b/crypto/Makefile.ssl
+@@ -34,6 +34,7 @@
+ 
+ GENERAL=Makefile README crypto-lib.com install.com
+ 
++#LIB= libcrypto.la
+ LIB= $(TOP)/libcrypto.a
+ SHARED_LIB= libcrypto$(SHLIB_EXT)
+ LIBSRC=	cryptlib.c mem.c mem_clr.c mem_dbg.c cversion.c ex_data.c tmdiff.c cpt_err.c ebcdic.c uid.c o_time.c
+@@ -69,8 +70,9 @@
+ 	@for i in $(SDIRS) ;\
+ 	do \
+ 	(cd $$i && echo "making all in crypto/$$i..." && \
+-	$(MAKE) CC='$(CC)' INCLUDES='${INCLUDES}' CFLAG='${CFLAG}' INSTALLTOP='${INSTALLTOP}' PEX_LIBS='${PEX_LIBS}' EX_LIBS='${EX_LIBS}' BN_ASM='${BN_ASM}' DES_ENC='${DES_ENC}' SHA1_ASM_OBJ='${SHA1_ASM_OBJ}' MD5_ASM_OBJ='${MD5_ASM_OBJ}' RMD160_ASM_OBJ='${RMD160_ASM_OBJ}' BF_ENC='${BF_ENC}' CAST_ENC='${CAST_ENC}' RC4_ENC='${RC4_ENC}' RC5_ENC='${RC5_ENC}' AR='${AR}' PROCESSOR='${PROCESSOR}' PERL='${PERL}' RANLIB='${RANLIB}' all ) || exit 1; \
++	$(MAKE) CC='$(CC)' INCLUDES='${INCLUDES}' CFLAG='${CFLAG}' INSTALLTOP='${INSTALLTOP}' PEX_LIBS='${PEX_LIBS}' EX_LIBS='${EX_LIBS}' BN_ASM='${BN_ASM}' DES_ENC='${DES_ENC}' SHA1_ASM_OBJ='${SHA1_ASM_OBJ}' MD5_ASM_OBJ='${MD5_ASM_OBJ}' RMD160_ASM_OBJ='${RMD160_ASM_OBJ}' BF_ENC='${BF_ENC}' CAST_ENC='${CAST_ENC}' RC4_ENC='${RC4_ENC}' RC5_ENC='${RC5_ENC}' AR='${AR}' PROCESSOR='${PROCESSOR}' PERL='${PERL}' RANLIB='true' all ) || exit 1; \
+ 	done;
++#	$(AR) $(LIB) *.lo */*.lo
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl Makefile.ssl >> $(TOP)/MINFO
+@@ -145,7 +147,9 @@
+ 	done;
+ 
+ clean:
+-	rm -f buildinf.h *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
++	rm -f buildinf.h *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff date.h
++	$(RM) -f *.lo */*.lo *.la
++	$(RM) -rf .libs
+ 	@for i in $(SDIRS) ;\
+ 	do \
+ 	(cd $$i && echo "making clean in crypto/$$i..." && \
+--- openssl-0.9.7b.orig/crypto/md5/asm/md5-sparcv9.S
++++ openssl-0.9.7b/crypto/md5/asm/md5-sparcv9.S
+@@ -72,14 +72,14 @@
+ #define Dval	R8
+ 
+ #if defined(MD5_BLOCK_DATA_ORDER)
+-# if defined(OPENSSL_SYSNAME_ULTRASPARC)
++/*# if defined(OPENSSL_SYSNAME_ULTRASPARC)*/
+ #  define	LOAD			lda
+ #  define	X(i)			[%i1+i*4]%asi
+ #  define	md5_block		md5_block_asm_data_order_aligned
+ #  define	ASI_PRIMARY_LITTLE	0x88
+-# else
++/*# else
+ #  error "MD5_BLOCK_DATA_ORDER is supported only on UltraSPARC!"
+-# endif
++# endif*/
+ #else
+ # define	LOAD			ld
+ # define	X(i)			[%i1+i*4]
+--- openssl-0.9.7b.orig/crypto/opensslconf.h
++++ openssl-0.9.7b/crypto/opensslconf.h
+@@ -4,17 +4,38 @@
+ /* OpenSSL was configured with the following options: */
+ #ifndef OPENSSL_DOING_MAKEDEPEND
+ 
++#ifndef OPENSSL_NO_IDEA
++# define OPENSSL_NO_IDEA
++#endif
++#ifndef OPENSSL_NO_MDC2
++# define OPENSSL_NO_MDC2
++#endif
++#ifndef OPENSSL_NO_RC5
++# define OPENSSL_NO_RC5
++#endif
+ #ifndef OPENSSL_NO_KRB5
+ # define OPENSSL_NO_KRB5
+ #endif
+ 
+ #endif /* OPENSSL_DOING_MAKEDEPEND */
++#ifndef OPENSSL_THREADS
++# define OPENSSL_THREADS
++#endif
+ 
+ /* The OPENSSL_NO_* macros are also defined as NO_* if the application
+    asks for it.  This is a transient feature that is provided for those
+    who haven't had the time to do the appropriate changes in their
+    applications.  */
+ #ifdef OPENSSL_ALGORITHM_DEFINES
++# if defined(OPENSSL_NO_IDEA) && !defined(NO_IDEA)
++#  define NO_IDEA
++# endif
++# if defined(OPENSSL_NO_MDC2) && !defined(NO_MDC2)
++#  define NO_MDC2
++# endif
++# if defined(OPENSSL_NO_RC5) && !defined(NO_RC5)
++#  define NO_RC5
++# endif
+ # if defined(OPENSSL_NO_KRB5) && !defined(NO_KRB5)
+ #  define NO_KRB5
+ # endif
+@@ -27,7 +48,7 @@
+ 
+ #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
+ #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
+-#define OPENSSLDIR "/usr/local/ssl"
++#define OPENSSLDIR "/usr/lib/ssl"
+ #endif
+ #endif
+ 
+@@ -79,7 +100,7 @@
+ 
+ #if defined(HEADER_BN_H) && !defined(CONFIG_HEADER_BN_H)
+ #define CONFIG_HEADER_BN_H
+-#undef BN_LLONG
++#define BN_LLONG
+ 
+ /* Should we define BN_DIV2W here? */
+ 
+@@ -98,7 +119,7 @@
+ #define CONFIG_HEADER_RC4_LOCL_H
+ /* if this is defined data[i] is used instead of *data, this is a %20
+  * speedup on x86 */
+-#undef RC4_INDEX
++#define RC4_INDEX
+ #endif
+ 
+ #if defined(HEADER_BF_LOCL_H) && !defined(CONFIG_HEADER_BF_LOCL_H)
+@@ -112,14 +133,14 @@
+ /* the following is tweaked from a config script, that is why it is a
+  * protected undef/define */
+ #ifndef DES_PTR
+-#undef DES_PTR
++#define DES_PTR
+ #endif
+ 
+ /* This helps C compiler generate the correct code for multiple functional
+  * units.  It reduces register dependancies at the expense of 2 more
+  * registers */
+ #ifndef DES_RISC1
+-#undef DES_RISC1
++#define DES_RISC1
+ #endif
+ 
+ #ifndef DES_RISC2
+@@ -133,7 +154,7 @@
+ /* Unroll the inner loop, this sometimes helps, sometimes hinders.
+  * Very mucy CPU dependant */
+ #ifndef DES_UNROLL
+-#undef DES_UNROLL
++#define DES_UNROLL
+ #endif
+ 
+ /* These default values were supplied by
+--- openssl-0.9.7b.orig/demos/tunala/configure.in
++++ openssl-0.9.7b/demos/tunala/configure.in
+@@ -1,4 +1,4 @@
+-dnl Process this file with autoconf to produce a configure script.
++#!/usr/local/bin/perl
+ AC_INIT(tunala.c)
+ AM_CONFIG_HEADER(config.h)
+ AM_INIT_AUTOMAKE(tunala, 0.0.1-dev)
+--- openssl-0.9.7b.orig/doc/crypto/RAND_add.pod
++++ openssl-0.9.7b/doc/crypto/RAND_add.pod
+@@ -2,8 +2,7 @@
+ 
+ =head1 NAME
+ 
+-RAND_add, RAND_seed, RAND_status, RAND_event, RAND_screen - add
+-entropy to the PRNG
++RAND_add, RAND_seed, RAND_status, RAND_event, RAND_screen - add entropy to the PRNG
+ 
+ =head1 SYNOPSIS
+ 
+--- openssl-0.9.7b.orig/doc/Makefile.ssl
++++ openssl-0.9.7b/doc/Makefile.ssl
+@@ -0,0 +1,40 @@
++VERSION =
++
++#PODS = $(wildcard *.pod)
++#MANS = $(addsuffix .man, $(basename $(PODS)))
++
++MANS = openssl.1 ssl.3 crypto.3
++
++P2M = pod2man --center='OpenSSL Documentation' --release="OpenSSL $(VERSION)"
++
++all: manpages
++
++.PHONY: manpages 
++
++manpages: openssl.1 crypto.3 ssl.3
++
++openssl.1:
++	$(P2M) --section=1 openssl.pod > openssl.1
++
++crypto.3:
++	$(P2M) --section=3 crypto.pod > crypto.3
++
++ssl.3:
++	$(P2M) --section=3 ssl.pod > ssl.3
++
++.PHONY: install
++install:
++	mkdir -p $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man1
++	mkdir -p $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	install -m 644 -p openssl.1 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man1
++	install -m 644 -p crypto.3 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	install -m 644 -p ssl.3 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	rm -f $(MANS)
++
++.PHONY: clean
++clean:
++	rm -f $(MANS)
++
++.PHONY: realclean
++realclean:
++	-$(MAKE) clean
+--- openssl-0.9.7b.orig/Makefile.org
++++ openssl-0.9.7b/Makefile.org
+@@ -57,6 +57,7 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
++#TOP=$(shell pwd)
+ CC= gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+ CFLAG= -DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -m486 -Wall -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+@@ -173,7 +174,7 @@
+ # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
+ SHLIB_MARK=
+ 
+-DIRS=   crypto ssl $(SHLIB_MARK) apps test tools
++DIRS=   crypto ssl $(SHLIB_MARK) apps doc tools
+ SHLIBDIRS= crypto ssl
+ 
+ # dirs in crypto to build
+@@ -191,7 +192,8 @@
+ MAKEFILE= Makefile.ssl
+ MAKE=     make -f Makefile.ssl
+ 
+-MANDIR=$(OPENSSLDIR)/man
++MANDIR=/usr/share/man
++MANSUF=ssl
+ MAN1=1
+ MAN3=3
+ SHELL=/bin/sh
+@@ -792,7 +794,7 @@
+ 	do \
+ 		if [ -f "$$i" ]; then \
+ 		(       echo installing $$i; \
+-			cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
++			cp -d $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			$(RANLIB) $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i ); \
+@@ -847,33 +849,35 @@
+ 	for i in doc/apps/*.pod; do \
+ 		fn=`basename $$i .pod`; \
+ 		if [ "$$fn" = "config" ]; then sec=5; else sec=1; fi; \
+-		echo "installing man$$sec/$$fn.$$sec"; \
++		secsuf=`echo -n $$sec; echo $(MANSUF)`; \
++		echo "installing man$$sec/$$fn.$$secsuf"; \
+ 		(cd `$(PERL) util/dirname.pl $$i`; \
+ 		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
++			--section=$$secsuf --center=OpenSSL \
+ 			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$sec; \
++			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$secsuf; \
+ 		$(PERL) util/extract-names.pl < $$i | \
+ 			grep -v $$filecase "^$$fn\$$" | \
+ 			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+ 			 while read n; do \
+-				$$here/util/point.sh $$fn.$$sec $$n.$$sec; \
++				$$here/util/point.sh $$fn.$$secsuf $$n.$$secsuf; \
+ 			 done); \
+ 	done; \
+ 	for i in doc/crypto/*.pod doc/ssl/*.pod; do \
+ 		fn=`basename $$i .pod`; \
+ 		if [ "$$fn" = "des_modes" ]; then sec=7; else sec=3; fi; \
+-		echo "installing man$$sec/$$fn.$$sec"; \
++		secsuf=`echo -n $$sec; echo $(MANSUF)`; \
++		echo "installing man$$sec/$$fn.$$secsuf"; \
+ 		(cd `$(PERL) util/dirname.pl $$i`; \
+ 		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
++			--section=$$secsuf --center=OpenSSL \
+ 			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$sec; \
++			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$secsuf; \
+ 		$(PERL) util/extract-names.pl < $$i | \
+ 			grep -v $$filecase "^$$fn\$$" | \
+ 			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+ 			 while read n; do \
+-				$$here/util/point.sh $$fn.$$sec $$n.$$sec; \
++				$$here/util/point.sh $$fn.$$secsuf $$n.$$secsuf; \
+ 			 done); \
+ 	done
+ 
+--- openssl-0.9.7b.orig/Makefile.ssl
++++ openssl-0.9.7b/Makefile.ssl
+@@ -11,11 +11,11 @@
+ SHLIB_VERSION_HISTORY=
+ SHLIB_MAJOR=0
+ SHLIB_MINOR=9.7
+-SHLIB_EXT=
+-PLATFORM=dist
+-OPTIONS= no-krb5
+-CONFIGURE_ARGS=dist
+-SHLIB_TARGET=
++SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
++PLATFORM=debian-i386
++OPTIONS=--prefix=/usr --openssldir=/usr/lib/ssl no-idea no-mdc2 no-rc5 no-krb5
++CONFIGURE_ARGS=--prefix=/usr --openssldir=/usr/lib/ssl no-idea no-mdc2 no-rc5 debian-i386
++SHLIB_TARGET=linux-shared
+ 
+ # HERE indicates where this Makefile lives.  This can be used to indicate
+ # where sub-Makefiles are expected to be.  Currently has very limited usage,
+@@ -26,10 +26,10 @@
+ # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
+ # Normally it is left empty.
+ INSTALL_PREFIX=
+-INSTALLTOP=/usr/local/ssl
++INSTALLTOP=/usr
+ 
+ # Do not edit this manually. Use Configure --openssldir=DIR do change this!
+-OPENSSLDIR=/usr/local/ssl
++OPENSSLDIR=/usr/lib/ssl
+ 
+ # NO_IDEA - Define to build without the IDEA algorithm
+ # NO_RC4  - Define to build without the RC4 algorithm
+@@ -59,20 +59,21 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
+-CC= cc
++#TOP=$(shell pwd)
++CC= gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+-CFLAG= -DOPENSSL_NO_KRB5 -O
+-DEPFLAG= 
++CFLAG= -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DOPENSSL_NO_KRB5 -DOPENSSL_NO_IDEA -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall
++DEPFLAG= -DOPENSSL_NO_IDEA -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 
+ PEX_LIBS= 
+-EX_LIBS= 
++EX_LIBS= -ldl
+ EXE_EXT= 
+ ARFLAGS= 
+ AR=ar $(ARFLAGS) r
+ RANLIB= /usr/bin/ranlib
+-PERL= /usr/local/bin/perl
++PERL= /usr/bin/perl
+ TAR= tar
+ TARFLAGS= --no-recursion
+-MAKEDEPPROG=makedepend
++MAKEDEPPROG= gcc
+ 
+ # We let the C compiler driver to take care of .s files. This is done in
+ # order to be excused from maintaining a separate set of architecture
+@@ -175,13 +176,13 @@
+ # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
+ SHLIB_MARK=
+ 
+-DIRS=   crypto ssl $(SHLIB_MARK) apps test tools
++DIRS=   crypto ssl $(SHLIB_MARK) apps doc tools
+ SHLIBDIRS= crypto ssl
+ 
+ # dirs in crypto to build
+ SDIRS=  \
+-	md2 md4 md5 sha mdc2 hmac ripemd \
+-	des rc2 rc4 rc5 idea bf cast \
++	md2 md4 md5 sha hmac ripemd \
++	des rc2 rc4 bf cast \
+ 	bn ec rsa dsa dh dso engine aes \
+ 	buffer bio stack lhash rand err objects \
+ 	evp asn1 pem x509 x509v3 conf txt_db pkcs7 pkcs12 comp ocsp ui krb5
+@@ -193,7 +194,8 @@
+ MAKEFILE= Makefile.ssl
+ MAKE=     make -f Makefile.ssl
+ 
+-MANDIR=$(OPENSSLDIR)/man
++MANDIR=/usr/share/man
++MANSUF=ssl
+ MAN1=1
+ MAN3=3
+ SHELL=/bin/sh
+@@ -206,7 +208,7 @@
+ SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
+ SHARED_SSL=libssl$(SHLIB_EXT)
+ SHARED_LIBS=
+-SHARED_LIBS_LINK_EXTS=
++SHARED_LIBS_LINK_EXTS=.so
+ SHARED_LDFLAGS=
+ 
+ GENERAL=        Makefile
+@@ -794,7 +796,7 @@
+ 	do \
+ 		if [ -f "$$i" ]; then \
+ 		(       echo installing $$i; \
+-			cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
++			cp -d $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			$(RANLIB) $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
+ 			mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i ); \
+@@ -849,33 +851,35 @@
+ 	for i in doc/apps/*.pod; do \
+ 		fn=`basename $$i .pod`; \
+ 		if [ "$$fn" = "config" ]; then sec=5; else sec=1; fi; \
+-		echo "installing man$$sec/$$fn.$$sec"; \
++		secsuf=`echo -n $$sec; echo $(MANSUF)`; \
++		echo "installing man$$sec/$$fn.$$secsuf"; \
+ 		(cd `$(PERL) util/dirname.pl $$i`; \
+ 		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
++			--section=$$secsuf --center=OpenSSL \
+ 			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$sec; \
++			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$secsuf; \
+ 		$(PERL) util/extract-names.pl < $$i | \
+ 			grep -v $$filecase "^$$fn\$$" | \
+ 			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+ 			 while read n; do \
+-				$$here/util/point.sh $$fn.$$sec $$n.$$sec; \
++				$$here/util/point.sh $$fn.$$secsuf $$n.$$secsuf; \
+ 			 done); \
+ 	done; \
+ 	for i in doc/crypto/*.pod doc/ssl/*.pod; do \
+ 		fn=`basename $$i .pod`; \
+ 		if [ "$$fn" = "des_modes" ]; then sec=7; else sec=3; fi; \
+-		echo "installing man$$sec/$$fn.$$sec"; \
++		secsuf=`echo -n $$sec; echo $(MANSUF)`; \
++		echo "installing man$$sec/$$fn.$$secsuf"; \
+ 		(cd `$(PERL) util/dirname.pl $$i`; \
+ 		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
++			--section=$$secsuf --center=OpenSSL \
+ 			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$sec; \
++			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$$secsuf; \
+ 		$(PERL) util/extract-names.pl < $$i | \
+ 			grep -v $$filecase "^$$fn\$$" | \
+ 			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+ 			 while read n; do \
+-				$$here/util/point.sh $$fn.$$sec $$n.$$sec; \
++				$$here/util/point.sh $$fn.$$secsuf $$n.$$secsuf; \
+ 			 done); \
+ 	done
+ 
+--- openssl-0.9.7b.orig/ssl/Makefile.ssl
++++ openssl-0.9.7b/ssl/Makefile.ssl
+@@ -24,6 +24,7 @@
+ TEST=ssltest.c
+ APPS=
+ 
++#LIB=libssl.la
+ LIB=$(TOP)/libssl.a
+ SHARED_LIB= libssl$(SHLIB_EXT)
+ LIBSRC=	\
+@@ -58,6 +59,7 @@
+ all:	lib shared
+ 
+ lib:	$(LIBOBJ)
++#	$(AR) $(LIB) *.lo
+ 	$(AR) $(LIB) $(LIBOBJ)
+ 	$(RANLIB) $(LIB) || echo Never mind.
+ 	@touch lib
+@@ -100,6 +102,8 @@
+ 
+ clean:
+ 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
++	rm -f *.lo *.la
++	rm -rf .libs
+ 
+ # DO NOT DELETE THIS LINE -- make depend depends on it.
+ 
+--- openssl-0.9.7b.orig/ssl/ssl_algs.c
++++ openssl-0.9.7b/ssl/ssl_algs.c
+@@ -109,3 +109,8 @@
+ 	return(1);
+ 	}
+ 
++#undef SSLeay_add_ssl_algorithms
++int SSLeay_add_ssl_algorithms(void)
++    {
++         return SSL_library_init();
++    }
+--- openssl-0.9.7b.orig/test/Makefile.ssl
++++ openssl-0.9.7b/test/Makefile.ssl
+@@ -3,7 +3,7 @@
+ #
+ 
+ DIR=		test
+-TOP=		..
++TOP=		$(shell pwd)/..
+ CC=		cc
+ INCLUDES=	-I$(TOP) -I../include $(KRB5_INCLUDES)
+ CFLAG=		-g
+@@ -29,6 +29,10 @@
+ 	tpkcs7.com tpkcs7d.com tverify.com testgen.com testss.com testssl.com \
+ 	testca.com VMSca-response.1 VMSca-response.2
+ 
++#DLIBCRYPTO= ../crypto/.libs/libcrypto.a
++#DLIBSSL= ../ssl/.libs/libssl.a
++#LIBCRYPTO= -L$(TOP)/crypto/.libs -lcrypto
++#LIBSSL= -L$(TOP)/ssl/.libs -lssl
+ DLIBCRYPTO= ../libcrypto.a
+ DLIBSSL= ../libssl.a
+ LIBCRYPTO= -L.. -lcrypto
+--- openssl-0.9.7b.orig/tools/c_rehash
++++ openssl-0.9.7b/tools/c_rehash
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ 
+ # Perl c_rehash script, scan all files in a directory
+@@ -6,7 +6,7 @@
+ 
+ my $openssl;
+ 
+-my $dir = "/usr/local/ssl";
++my $dir = "/usr/lib/ssl";
+ 
+ if(defined $ENV{OPENSSL}) {
+ 	$openssl = $ENV{OPENSSL};
+--- openssl-0.9.7b.orig/tools/c_rehash.in
++++ openssl-0.9.7b/tools/c_rehash.in
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ 
+ # Perl c_rehash script, scan all files in a directory
+--- openssl-0.9.7b.orig/util/clean-depend.pl
++++ openssl-0.9.7b/util/clean-depend.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ # Clean the dependency list in a makefile of standard includes...
+ # Written by Ben Laurie <ben@algroup.co.uk> 19 Jan 1999
+ 
+--- openssl-0.9.7b.orig/util/extract-names.pl
++++ openssl-0.9.7b/util/extract-names.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/local/bin/perl
+ 
+ $/ = "";			# Eat a paragraph at once.
+ while(<STDIN>) {
+--- openssl-0.9.7b.orig/util/mkdef.pl
++++ openssl-0.9.7b/util/mkdef.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ #
+ # generate a .def file
+ #
+--- openssl-0.9.7b.orig/util/mkerr.pl
++++ openssl-0.9.7b/util/mkerr.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ 
+ my $config = "crypto/err/openssl.ec";
+ my $debug = 0;
+--- openssl-0.9.7b.orig/util/mkstack.pl
++++ openssl-0.9.7b/util/mkstack.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ 
+ # This is a utility that searches out "DECLARE_STACK_OF()"
+ # declarations in .h and .c files, and updates/creates/replaces
+--- openssl-0.9.7b.orig/util/pod2man.pl
++++ openssl-0.9.7b/util/pod2man.pl
+@@ -1,4 +1,4 @@
+-: #!/usr/bin/perl-5.005
++#!/usr/local/bin/perl
+     eval 'exec /usr/bin/perl -S $0 ${1+"$@"}'
+ 	if $running_under_some_shell;
+ 
+--- openssl-0.9.7b.orig/util/selftest.pl
++++ openssl-0.9.7b/util/selftest.pl
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ #
+ # Run the test suite and generate a report
+ #

@@ -1,0 +1,13 @@
+--- tslib/tests/ts_calibrate.c~pointercal
++++ tslib/tests/ts_calibrate.c
+@@ -303,8 +303,8 @@
+ 		} else {
+ 			cal_fd = open("/etc/pointercal",O_CREAT|O_RDWR);
+ 		}
+-		sprintf(cal_buffer,"%d %d %d %d %d %d %d",cal.a[1],cal.a[2],cal.a[0],cal.a[4],cal.a[5],cal.a[3],cal.a[6]);
+-		write(cal_fd,cal_buffer,strlen(cal_buffer)+1);
++		sprintf(cal_buffer,"%d %d %d %d %d %d %d\n",cal.a[1],cal.a[2],cal.a[0],cal.a[4],cal.a[5],cal.a[3],cal.a[6]);
++		write(cal_fd,cal_buffer,strlen(cal_buffer));
+ 		close(cal_fd);	
+ 	} else {
+ 		printf("Calibration failed.\n");

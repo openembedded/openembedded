@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- portaudio/configure.in~flags
++++ portaudio/configure.in
+@@ -78,7 +78,7 @@
+             [  --with-dxdir (default=/usr/local/dx7sdk)],
+             with_dxdir=$withval, with_dxdir="/usr/local/dx7sdk")
+ 
+-CFLAGS="-g -O2 -Wall"
++test -z "$CFLAGS" && CFLAGS="-g -O2 -Wall"
+ 
+ if [[ $ac_cv_c_bigendian = "yes" ]] ; then
+    CFLAGS="$CFLAGS -DPA_BIG_ENDIAN"
+--- portaudio/Makefile.in~flags
++++ portaudio/Makefile.in
+@@ -7,6 +7,7 @@
+ PREFIX = @prefix@
+ CC = @CC@
+ CFLAGS = @CFLAGS@ -Ipa_common @DEFS@
++LDFLAGS = @LDFLAGS@
+ LIBS = @LIBS@
+ AR = @AR@
+ RANLIB = @RANLIB@
+@@ -130,10 +131,10 @@
+ 	$(RANLIB) lib/$(PALIB)
+ 
+ lib/$(PADLLV): lib/ $(OBJS) Makefile $(PAINC)
+-	$(CC) $(SHARED_FLAGS) -o lib/$(PADLLV) $(OBJS) $(DLL_LIBS)
++	$(CC) $(SHARED_FLAGS) -o lib/$(PADLLV) $(OBJS) $(LDFLAGS) $(DLL_LIBS)
+ 
+ $(TESTS): bin/%: lib/$(PALIB) Makefile $(PAINC) pa_tests/%.c
+-	$(CC) -o $@ $(CFLAGS) pa_tests/$*.c lib/$(PALIB) $(LIBS)
++	$(CC) -o $@ $(CFLAGS) pa_tests/$*.c lib/$(PALIB) $(LDFLAGS) $(LIBS)
+ 
+ install: lib/$(PALIB) lib/$(PADLLV)
+ 	$(INSTALL) -m 644 lib/$(PADLLV) $(PREFIX)/lib/$(PADLLV)

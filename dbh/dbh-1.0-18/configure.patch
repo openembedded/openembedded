@@ -1,0 +1,20 @@
+--- dbh_1.0-18/configure.ac	2004-03-16 16:02:20.000000000 -0700
++++ dbh_1.0-18.new/configure.ac	2004-05-05 18:49:31.925894072 -0700
+@@ -34,6 +34,8 @@
+ 
+ dnl Initialize libtool
+ AC_CANONICAL_HOST
++AC_CANONICAL_TARGET
++
+ # libtool.m4 is a bit outof sync.
+ AC_PROG_LIBTOOL
+ 
+@@ -130,7 +132,7 @@
+ "NONE")
+ ;;
+ *)
+-   CFLAGS="$CFLAGS -march=$target"
++   CFLAGS="$CFLAGS -march=$target_cpu"
+    ;;
+ esac
+ 

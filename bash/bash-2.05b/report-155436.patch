@@ -1,0 +1,11 @@
+--- include/shmbutil.h.orig	2002-08-05 06:26:13.000000000 +0900
++++ include/shmbutil.h	2002-08-05 06:19:37.000000000 +0900
+@@ -120,6 +120,8 @@
+ 		state = state_bak; \
+ 		(_i)++; \
+ 	      } \
++            else if (mblength == 0) \
++              (_i)++; \
+ 	    else \
+ 	      (_i) += mblength; \
+ 	  } \

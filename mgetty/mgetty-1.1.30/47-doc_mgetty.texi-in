@@ -1,0 +1,14 @@
+--- mgetty-1.1.30.old/doc/mgetty.texi-in	2002-11-17 16:19:45.000000000 -0500
++++ mgetty-1.1.30/doc/mgetty.texi-in	2003-07-05 22:23:20.000000000 -0400
+@@ -7,6 +7,11 @@
+ @finalout
+ 
+ @ifinfo
++@dircategory Communication
++@direntry
++* Mgetty: (mgetty).				     A smart modem replacement for getty.
++@end direntry
++
+ This is the online documentation for the mgetty + sendfax
+ package.
+ 

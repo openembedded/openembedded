@@ -1,0 +1,13 @@
+diff -urNd ../gpe-dm-0.40-r0/gpe-dm-0.40/Xserver gpe-dm-0.40/Xserver
+--- ../gpe-dm-0.40-r0/gpe-dm-0.40/Xserver	2004-09-06 16:26:52.000000000 +0100
++++ gpe-dm-0.40/Xserver	2004-09-15 19:37:09.000000000 +0100
+@@ -39,7 +39,8 @@
+ 		ARGS="$ARGS -rgba rgb" ;;
+ 	# both 'Sharp-Collie' and just 'Collie' have been reported
+ 	*Collie | *Poodle)
+-		ARGS="$ARGS -screen 320x240@270 -rgba vrgb" ;;
++		ARGS="$ARGS -screen 320x240@270 -rgba vrgb"
++		rm -f /dev/apm_bios ;;
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		ARGS="$ARGS -rgba rgb"
+ 		export TSLIB_TSDEVICE="/dev/sharp_ts" ;;

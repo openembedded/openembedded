@@ -1,0 +1,24 @@
+Index: ewmh.c
+===================================================================
+RCS file: /cvs/apps/matchbox/matchbox-window-manager/src/ewmh.c,v
+retrieving revision 1.4
+retrieving revision 1.5
+diff -u -r1.4 -r1.5
+--- matchbox/src/ewmh.c	22 Apr 2004 09:34:24 -0000	1.4
++++ matchbox/src/ewmh.c	4 Jun 2004 15:48:48 -0000	1.5
+@@ -194,10 +194,11 @@
+    } else if (e->message_type == w->atoms[_NET_SHOW_DESKTOP]
+ 	      && wm_get_desktop(w) ) {
+      dbg("%s() got desktop message\n", __func__);
+-     if (e->data.l[0] == 1 && !(w->flags & DESKTOP_RAISED_FLAG))
+-       { 			/* Show the desktop */
+-	 wm_toggle_desktop(w);
+-       } else {                 /* Hide the desktop */
++     if (e->data.l[0] == 1)
++       { 			/* Show the desktop, if not shown */
++	 if (!(w->flags & DESKTOP_RAISED_FLAG))
++	   wm_toggle_desktop(w);
++       } else {                 /* Hide the desktop, if shown */
+ 	 if (w->flags & DESKTOP_RAISED_FLAG)
+ 	   wm_toggle_desktop(w);
+        }

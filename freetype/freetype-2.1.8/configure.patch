@@ -1,0 +1,29 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- freetype-2.1.7/builds/unix/configure.ac~configure
++++ freetype-2.1.7/builds/unix/configure.ac
+@@ -111,8 +111,8 @@
+ # Check for system zlib
+ 
+ AC_ARG_WITH([zlib],
+-  dnl don't quote AS_HELP_STRING!
+-  AS_HELP_STRING([--without-zlib],
++  dnl don't quote AC_HELP_STRING!
++  AC_HELP_STRING([--without-zlib],
+                  [use internal zlib instead of system-wide]))
+ if test x$with_zlib != xno && test -z "$LIBZ"; then
+   AC_CHECK_LIB([z], [gzsetparams], [AC_CHECK_HEADER([zlib.h], [LIBZ='-lz'])])
+@@ -127,8 +127,8 @@
+ # Whether to use Mac OS resource-based fonts or not
+ 
+ AC_ARG_WITH([old-mac-fonts],
+-  dnl don't quote AS_HELP_STRING!
+-  AS_HELP_STRING([--with-old-mac-fonts],
++  dnl don't quote AC_HELP_STRING!
++  AC_HELP_STRING([--with-old-mac-fonts],
+                  [allow Mac resource-based fonts to be used]))
+ if test x$with_old_mac_fonts = xyes; then
+   CFLAGS="$CFLAGS -DTARGET_API_MAC_CARBON"

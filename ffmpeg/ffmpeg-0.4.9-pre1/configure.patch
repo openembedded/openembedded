@@ -1,0 +1,113 @@
+--- ./configure~configure.patch	2004-07-06 03:36:16.000000000 +0930
++++ ./configure	2004-09-27 00:07:23.000000000 +0930
+@@ -88,7 +88,7 @@
+ mandir=""
+ bindir=""
+ cross_prefix=""
+-cc="gcc"
++cc="$CC"
+ ar="ar"
+ ranlib="ranlib"
+ make="make"
+@@ -104,7 +104,7 @@
+     cpu="x86"
+   ;;
+   # armv4l is a subset of armv5tel
+-  armv4l|armv5tel)
++  armv4l|armv5tel|arm|xscale)
+     cpu="armv4l"
+   ;;
+   alpha)
+@@ -434,6 +434,37 @@
+   esac
+ done
+ 
++case "$cpu" in
++  i386|i486|i586|i686|i86pc|BePC)
++    cpu="x86"
++  ;;
++  # armv4l is a subset of armv5tel
++  armv4l|armv5tel|arm|xscale)
++    cpu="armv4l"
++  ;;
++  alpha)
++    cpu="alpha"
++  ;;
++  "Power Macintosh"|ppc)
++    cpu="powerpc"
++  ;;
++  mips)
++    cpu="mips"
++  ;;
++  sun4u|sparc64)
++    cpu="sparc64"
++  ;;
++  sparc)
++    cpu="sparc"
++  ;;
++  sh4)
++    cpu="sh4"
++  ;;
++  *)
++    cpu="unknown"
++  ;;
++esac
++
+ if test "$gpl" != "yes"; then
+     if test "$pp" != "no" -o "$shared_pp" != "no"; then
+         echo "The Postprocessing code is under GPL and --enable-gpl is not specified"
+@@ -662,7 +693,6 @@
+     bindir="$prefix"
+ fi
+ 
+-cc="${cross_prefix}${cc}"
+ ar="${cross_prefix}${ar}"
+ ranlib="${cross_prefix}${ranlib}"
+ strip="${cross_prefix}${strip}"
+@@ -753,21 +783,6 @@
+ fi
+ 
+ if test "$zlib" = "yes"; then
+-# check for zlib - mmu_man
+-cat > $TMPC << EOF
+-#include <zlib.h>
+-int main ( void ) {
+-if (zlibVersion() != ZLIB_VERSION)
+-   puts("zlib version differs !!!");
+-   return 1;
+-return 0;
+-}
+-EOF
+-$cc $CFLAGS -o $TMPE $TMPC -lz 2> /dev/null || zlib="no"
+-# $TMPE 2> /dev/null > /dev/null || zlib="no"
+-# XXX: more tests needed - runtime test
+-fi
+-if test "$zlib" = "yes"; then
+ extralibs="$extralibs -lz"
+ fi
+ 
+@@ -881,24 +896,8 @@
+ ##########################################
+ # SDL probe
+ 
+-cat > $TMPC << EOF
+-#include <SDL.h>
+-#undef main /* We don't want SDL to override our main() */
+-int main( void ) { return SDL_Init (SDL_INIT_VIDEO); }
+-EOF
+-
+ sdl_too_old=no
+-sdl=no
+-if sdl-config --version >/dev/null 2>&1 ; then
+-if $cc -o $TMPE `sdl-config --cflags` $TMPC `sdl-config --libs`  > /dev/null 2>&1  ; then
+-_sdlversion=`sdl-config --version | sed 's/[^0-9]//g'`
+-if test "$_sdlversion" -lt 121 ; then
+-sdl_too_old=yes
+-else
+ sdl=yes
+-fi
+-fi
+-fi
+ 
+ ##########################################
+ # texi2html probe

@@ -1,0 +1,4 @@
+/dev/cramfs	/ 	cramfs	ro		1  1 
+tmpfs		/var	tmpfs	defaults	0  0
+proc		/proc	proc	defaults	0  0
+tmpfs		/tmp	tmpfs	defaults	0  0

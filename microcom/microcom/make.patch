@@ -1,0 +1,44 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- microcom-1.02-r0/Makefile~make
++++ microcom-1.02-r0/Makefile
+@@ -18,20 +18,30 @@
+ #** Rev. 0.9 - Sept. 1999
+ #** Rev. 0.91 - Jan. 2000 - minor fixes, compiled under Mandrake 6.0
+ #****************************************************************************/
++CC = gcc
++CCLD = gcc
++LDFLAGS =
++CFLAGS = -W -Wall -O2
++
+ microcom: microcom.o mux.o script.o help.o autodet.o
+-	gcc -o microcom microcom.o mux.o script.o help.o autodet.o
++	$(CCLD) $(LDFLAGS) -o microcom microcom.o mux.o script.o help.o autodet.o
+ 
+ autodet.o: autodet.c microcom.h
+-	gcc -O -c autodet.c
++	$(CC) $(CFLAGS) -O -c autodet.c
+ 
+ script.o: script.c script.h microcom.h
+-	gcc -O -c script.c
++	$(CC) $(CFLAGS) -O -c script.c
+ 
+ mux.o: mux.c microcom.h
+-	gcc -O -c mux.c
++	$(CC) $(CFLAGS) -O -c mux.c
+ 
+ microcom.o: microcom.c microcom.h
+-	gcc -O -c microcom.c
++	$(CC) $(CFLAGS) -O -c microcom.c
+ 
+ help.o: help.c microcom.h
+-	gcc -O -c help.c
++	$(CC) $(CFLAGS) -O -c help.c
++
++clean:
++	rm -f *.o microcom
++
++distclean: clean

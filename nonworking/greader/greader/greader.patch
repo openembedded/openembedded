@@ -1,0 +1,96 @@
+diff -Naur greader/src/Makefile.am greader_new/src/Makefile.am
+--- greader/src/Makefile.am	2003-05-03 21:34:43.000000000 +0200
++++ greader_new/src/Makefile.am	2004-09-12 15:21:35.000000000 +0200
+@@ -13,5 +13,5 @@
+ 	interface.c interface.h \
+ 	callbacks.c callbacks.h
+ 
+-greader_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
++greader_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -lz
+ 
+diff -Naur greader/src/Makefile.in greader_new/src/Makefile.in
+--- greader/src/Makefile.in	2003-05-09 07:26:49.000000000 +0200
++++ greader_new/src/Makefile.in	2004-09-12 15:21:41.000000000 +0200
+@@ -88,7 +88,7 @@
+ greader_SOURCES =  	main.c 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h
+ 
+ 
+-greader_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
++greader_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -lz
+ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+ CONFIG_HEADER = ../config.h
+ CONFIG_CLEAN_FILES = 
+diff -Naur greader/src/callbacks.c greader_new/src/callbacks.c
+--- greader/src/callbacks.c	2003-06-01 21:19:38.000000000 +0200
++++ greader_new/src/callbacks.c	2004-09-12 15:43:25.000000000 +0200
+@@ -19,8 +19,33 @@
+ 
+ #define BUFFER_SIZE 8192
+ 
++void
++button_press (  GtkWidget *widget,
++		GdkEventButton *event,
++		gpointer d)
++{
++	GtkWidget *toolbar = lookup_widget(widget,"toolbar2");
++	GtkWidget *statusbar = lookup_widget(widget,"statusbar1");
++	GtkWidget *window = lookup_widget(widget,"main_window");
++	
++	if(event->button == 1){
++		if(GTK_WIDGET_VISIBLE(toolbar) && GTK_WIDGET_VISIBLE(statusbar)){
++			gtk_widget_hide(toolbar);
++			gtk_widget_hide(statusbar);
++			gtk_window_set_decorated(window,0);
++			gtk_window_fullscreen(window);
++		}else{
++			gtk_widget_show(toolbar);
++			gtk_widget_show(statusbar);
++			gtk_window_set_decorated(window,1);
++			gtk_window_unfullscreen(window);
++		}
++	}
++	return TRUE;
++}
++		
+ void main_keypress(GtkWidget *wid, GdkEventKey *kp) {
+-  //printf("kp is %d\n",kp->keyval);
++//  printf("kp is %d\n",kp->keyval);
+   switch (kp->keyval) {
+   case 65362: on_back_button_clicked(NULL,NULL);break;      //up
+   case 65364: on_forward_button_clicked(NULL,NULL);break;   // down
+diff -Naur greader/src/callbacks.h greader_new/src/callbacks.h
+--- greader/src/callbacks.h	2003-05-11 04:08:29.000000000 +0200
++++ greader_new/src/callbacks.h	2004-09-12 12:20:15.000000000 +0200
+@@ -133,3 +133,9 @@
+ void
+ on_apply_bm_button_clicked             (GtkButton       *button,
+                                         gpointer         user_data);
++
++void
++button_press (  GtkWidget *widget,
++		GdkEventButton *event,
++		gpointer d);
++
+diff -Naur greader/src/interface.c greader_new/src/interface.c
+--- greader/src/interface.c	2003-05-19 03:24:30.000000000 +0200
++++ greader_new/src/interface.c	2004-09-12 12:50:33.000000000 +0200
+@@ -187,6 +187,8 @@
+   g_signal_connect ((gpointer) forward_button, "clicked",
+                     G_CALLBACK (on_forward_button_clicked),
+                     NULL);
++  g_signal_connect(G_OBJECT(textview), "button-press-event",
++		                     G_CALLBACK (button_press),NULL);
+ 
+   /* Store pointers to all widgets, for use by lookup_widget(). */
+   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
+diff -Naur greader/src/main.c greader_new/src/main.c
+--- greader/src/main.c	2003-05-11 04:08:29.000000000 +0200
++++ greader_new/src/main.c	2004-09-12 12:23:52.000000000 +0200
+@@ -37,6 +37,7 @@
+   pr.mainwin=main_window = create_main_window ();
+   gtk_signal_connect(GTK_OBJECT(main_window),"key_press_event",GTK_SIGNAL_FUNC(main_keypress),NULL);
+   
++  
+   prefload();
+   gtk_widget_show (main_window);
+ 

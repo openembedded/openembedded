@@ -1,0 +1,3433 @@
+diff -Nur linux-2.4.18/drivers/usb/device/bi/sa1100.c linux-2.4.18-usb-storage/drivers/usb/device/bi/sa1100.c
+--- linux-2.4.18/drivers/usb/device/bi/sa1100.c	2003-05-13 13:18:44.000000000 +0400
++++ linux-2.4.18-usb-storage/drivers/usb/device/bi/sa1100.c	2004-03-01 07:20:38.000000000 +0300
+@@ -440,6 +440,7 @@
+                                         udc_interrupts, *(UDCSR), *(UDCCS0), *(UDCAR));
+ 
+ 			usbd_device_event (udc_device, DEVICE_RESET, 0);
++			usbd_device_event (udc_device, DEVICE_ADDRESS_ASSIGNED,0);
+ 		}
+ 
+ 		if (status & UDCSR_SUSIR) {
+diff -Nur linux-2.4.18/drivers/usb/device/Config.in linux-2.4.18-usb-storage/drivers/usb/device/Config.in
+--- linux-2.4.18/drivers/usb/device/Config.in	2003-05-13 13:18:45.000000000 +0400
++++ linux-2.4.18-usb-storage/drivers/usb/device/Config.in	2003-11-07 05:35:14.000000000 +0300
+@@ -34,6 +34,7 @@
+    comment 'USB Device functions'
+    source drivers/usb/device/net_fd/Config.in
+    source drivers/usb/device/serial_fd/Config.in
++   source drivers/usb/device/storage_fd/Config.in
+ 	
+    comment 'USB Device bus interfaces'
+    source drivers/usb/device/bi/Config.in
+diff -Nur linux-2.4.18/drivers/usb/device/Makefile linux-2.4.18-usb-storage/drivers/usb/device/Makefile
+--- linux-2.4.18/drivers/usb/device/Makefile	2003-05-13 13:18:45.000000000 +0400
++++ linux-2.4.18-usb-storage/drivers/usb/device/Makefile	2003-11-07 05:35:01.000000000 +0300
+@@ -20,6 +20,7 @@
+ 
+ subdir-$(CONFIG_USBD_NET) += net_fd
+ subdir-$(CONFIG_USBD_SERIAL) += serial_fd
++subdir-$(CONFIG_USBD_STORAGE) += storage_fd
+ 
+ #subdir-$(CONFIG_USBD_GENERIC_BUS) += gen_bi
+ #subdir-$(CONFIG_USBD_L7205_BUS) += l7205_bi
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/Config.help linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Config.help
+--- linux-2.4.18/drivers/usb/device/storage_fd/Config.help	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Config.help	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,55 @@
++CONFIG_USBD_STORAGE
++  Enable the generic mass storage function driver. This function is
++  used emulating a Linux block driver.
++
++CONFIG_USBD_STORAGE_VENDORID
++  Optionally specify the mass storage USB Device Vendor ID. The top
++  level Vendor ID will be used if this is not specified.
++
++CONFIG_USBD_STORAGE_PRODUCTID
++  Optionally specify the mass storage USB Device Product ID. The top
++  level Vendor ID will be used if this is not specified.
++
++CONFIG_USBD_STORAGE_OUT_ENDPOINT
++  Specify the preferred OUT (received data) endpoint number. This is a
++  number from 0-15 and must be allowed by the bus interface device.
++
++  Some devices such as the SA-1110 or L7205/L7210 may override this
++  value with a fixed value.
++
++CONFIG_USBD_STORAGE_IN_ENDPOINT
++  Specify the preferred IN (transmit data) endpoint number. This is a
++  number from 0-15 and must be allowed by the bus interface device.
++
++  Some devices such as the SA-1110 or L7205/L7210 may override this
++  value with a fixed value.
++
++CONFIG_USBD_STORAGE_INT_ENDPOINT
++  Specify the preferred INT (interrupt) endpoint number. This is a
++  number from 0-15 and must be allowed by the bus interface device.
++
++  Some devices such as the L7205/L7210 may override this value with a
++  fixed value. Others such as the SA-1110 do not allow an interrupt
++  value.
++
++CONFIG_USBD_STORAGE_OUT_PKTSIZE
++  Specify the maximum packet size for the OUT endpoint. This allowable
++  values are normally 16, 32 and 64. 
++
++  Some devices such as the Linkup L7205/L7210 may override this value
++  with a lower maximum value (such as 32).
++
++CONFIG_USBD_STORAGE_IN_PKTSIZE
++  Specify the maximum packet size for the IN endpoint. This allowable
++  values are normally 16, 32 and 64. 
++
++  Some devices such as the Linkup L7205/L7210 may override this value
++  with a lower maximum value (such as 32).
++
++CONFIG_USBD_STORAGE_INT_PKTSIZE
++  Specify the maximum packet size for the INT endpoint. This allowable
++  values are normally 8 and 16. Some bus interface devices may not
++  support all values.
++
++CONFIG_USBD_STORAGE_DEF_DEVICE_NAME
++  Specify the default block device name to used on mass storage.
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/Config.in linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Config.in
+--- linux-2.4.18/drivers/usb/device/storage_fd/Config.in	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Config.in	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,29 @@
++#
++#  Generic Mass Storage Function Driver
++#
++# Copyright (c) 2003 Communication Technology Inc.
++# Copyright (C) 2001 Lineo, Inc.
++# Copyright (C) 2001 Hewlett-Packard Co.
++mainmenu_option next_comment
++comment "Mass Storage Function"
++
++dep_tristate '  Mass Storage Function Driver' CONFIG_USBD_STORAGE $CONFIG_USBD
++if [ "$CONFIG_USBD_STORAGE" = "y" -o "$CONFIG_USBD_STORAGE" = "m" ]; then
++   hex     ' Overide VendorID (hex value)' CONFIG_USBD_STORAGE_VENDORID "0000"
++   hex     ' Overide ProductID (hex value)' CONFIG_USBD_STORAGE_PRODUCTID "0000"
++
++   # allow setting of endpoint configurations for some architectures
++   int     '    OUT Endpoint (0-15)' CONFIG_USBD_STORAGE_OUT_ENDPOINT "1"
++   int     '   OUT PacketSize (16, 32, 64)' CONFIG_USBD_STORAGE_OUT_PKTSIZE "64"
++   int     '    IN  Endpoint (0-15)' CONFIG_USBD_STORAGE_IN_ENDPOINT "2"
++   int     '   IN  PacketSize (16, 32, 64)' CONFIG_USBD_STORAGE_IN_PKTSIZE "64"
++
++   if [ ! "$CONFIG_ARCH_SA1100" = "y" -a ! "$CONFIG_ARCH_L7200" = "y" ]; then
++      int  '    INT Endpoint (0-15)' CONFIG_USBD_STORAGE_INT_ENDPOINT "3"
++      int  '   INT PacketSize (8, 16)' CONFIG_USBD_STORAGE_INT_PKTSIZE "16"
++   fi
++
++   string  '   Default Mass Storage device name' CONFIG_USBD_STORAGE_DEF_DEVICE_NAME ""
++fi
++
++endmenu
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/Makefile linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Makefile
+--- linux-2.4.18/drivers/usb/device/storage_fd/Makefile	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/Makefile	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,58 @@
++#
++# SA1100 Function driver for a network USB Device
++#
++# Copyright (C) 2001 Lineo, Inc.
++# Copyright (C) 2001 Hewlett-Packard Co.
++
++
++O_TARGET	:= storage_fd_drv.o
++list-multi	:= storage_fd.o
++
++storage_fd-objs	:= storage-fd.o storageproto.o schedule_task.o # netproto.o crc32.o 
++
++# Object file lists.
++
++obj-y		:=
++obj-m		:=
++obj-n		:=
++obj-		:=
++
++# Each configuration option enables a list of files.
++
++obj-$(CONFIG_USBD_STORAGE)   += storage_fd.o
++
++# Extract lists of the multi-part drivers.
++# The 'int-*' lists are the intermediate files used to build the multi's.
++
++multi-y		:= $(filter $(list-multi), $(obj-y))
++multi-m		:= $(filter $(list-multi), $(obj-m))
++int-y		:= $(sort $(foreach m, $(multi-y), $($(basename $(m))-objs)))
++int-m		:= $(sort $(foreach m, $(multi-m), $($(basename $(m))-objs)))
++
++# Files that are both resident and modular: remove from modular.
++
++obj-m		:= $(filter-out $(obj-y), $(obj-m))
++int-m		:= $(filter-out $(int-y), $(int-m))
++
++# Translate to Rules.make lists.
++
++O_OBJS		:= $(filter-out $(export-objs), $(obj-y))
++OX_OBJS		:= $(filter     $(export-objs), $(obj-y))
++M_OBJS		:= $(sort $(filter-out $(export-objs), $(obj-m)))
++MX_OBJS		:= $(sort $(filter     $(export-objs), $(obj-m)))
++MI_OBJS		:= $(sort $(filter-out $(export-objs), $(int-m)))
++MIX_OBJS	:= $(sort $(filter     $(export-objs), $(int-m)))
++
++# The global Rules.make.
++
++include $(TOPDIR)/Rules.make
++
++# Link rules for multi-part drivers.
++
++storage_fd.o: $(storage_fd-objs)
++	$(LD) -r -o $@ $(storage_fd-objs)
++
++# dependencies:
++
++storage-fd.o: ../usbd.h ../usbd-bus.h ../usbd-func.h
++
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/schedule_task.c linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/schedule_task.c
+--- linux-2.4.18/drivers/usb/device/storage_fd/schedule_task.c	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/schedule_task.c	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,230 @@
++/*
++ * linux/drivers/usb/device/storage_fd/schedule_task.c - schedule task library
++ *
++ * Copyright (c) 2003 Lineo Solutions, Inc.
++ *
++ * Written by Shunnosuke kabata
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++/******************************************************************************
++** Include File
++******************************************************************************/
++#include <linux/config.h>
++#include <linux/fs.h>
++#include <linux/string.h>
++#include <linux/mm.h>
++#include <linux/dcache.h>
++#include <linux/init.h>
++#include <linux/quotaops.h>
++#include <linux/slab.h>
++#include <linux/cache.h>
++#include <linux/swap.h>
++#include <linux/swapctl.h>
++#include <linux/prefetch.h>
++#include <linux/locks.h>
++#include <asm/uaccess.h>
++
++#include "schedule_task.h"
++
++/******************************************************************************
++** Macro Define
++******************************************************************************/
++#define TASK_DESC_NUM   (512)
++
++/******************************************************************************
++** Structure Define
++******************************************************************************/
++
++/**************************************
++** TASK_DESC
++**************************************/
++typedef struct _TASK_DESC{
++    struct _TASK_DESC*  next;
++    SCHEDULE_TASK_FUNC  task_entry;
++    int                 task_param1;
++    int                 task_param2;
++    int                 task_param3;
++    int                 task_param4;
++    int                 task_param5;
++    char*               file;
++    int                 line;
++} TASK_DESC;
++
++/**************************************
++** OS_WRP_TASK_DATA
++**************************************/
++typedef struct{
++    volatile TASK_DESC* read_desc;
++    volatile TASK_DESC* write_desc;
++    TASK_DESC           desc_pool[TASK_DESC_NUM];
++    spinlock_t          spin_lock;
++    struct tq_struct    task_que;
++    unsigned long       use_num;
++    unsigned long       max_num;
++} TASK_DATA;
++
++/******************************************************************************
++** Variable Declaration
++******************************************************************************/
++static TASK_DATA    TaskData;
++
++/******************************************************************************
++** Local Function Prototype
++******************************************************************************/
++static void task_entry(void*);
++
++/******************************************************************************
++** Global Function
++******************************************************************************/
++void schedule_task_init(void)
++{
++    int i;
++    
++    /* 0 clear */
++    memset(&TaskData, 0x00, sizeof(TaskData));
++    
++    /* Read/write pointer initialize */
++    TaskData.read_desc = TaskData.write_desc = &TaskData.desc_pool[0];
++    
++    /* Ling buffer initialize */
++    for(i=0; i<(TASK_DESC_NUM-1); i++){
++        TaskData.desc_pool[i].next = &TaskData.desc_pool[i+1];
++    }
++    TaskData.desc_pool[i].next = &TaskData.desc_pool[0];
++    
++    /* Spin lock initialize */
++    spin_lock_init(&TaskData.spin_lock);
++    
++    /* Task queue initialize */
++    PREPARE_TQUEUE(&TaskData.task_que, task_entry, &TaskData);
++    
++    return;
++}
++
++int schedule_task_register(SCHEDULE_TASK_FUNC entry, int param1, int param2,
++                           int param3, int param4, int param5)
++{
++    unsigned long   flags = 0;
++    
++    spin_lock_irqsave(&TaskData.spin_lock, flags);
++    
++    /* Free descriptor check */
++    if(TaskData.write_desc->next == TaskData.read_desc){
++        printk(KERN_INFO "storage_fd: schedule task no descriptor.\n");
++        spin_unlock_irqrestore(&TaskData.spin_lock, flags);
++        return -1;
++    }
++    
++    /* Descriptor set */
++    TaskData.write_desc->task_entry  = entry;
++    TaskData.write_desc->task_param1 = param1;
++    TaskData.write_desc->task_param2 = param2;
++    TaskData.write_desc->task_param3 = param3;
++    TaskData.write_desc->task_param4 = param4;
++    TaskData.write_desc->task_param5 = param5;
++    
++    /* Pointer update */
++    TaskData.write_desc = TaskData.write_desc->next;
++    
++    /* Statistics set */
++    TaskData.use_num++;
++    if(TaskData.use_num > TaskData.max_num){
++        TaskData.max_num = TaskData.use_num;
++    }
++    
++    spin_unlock_irqrestore(&TaskData.spin_lock, flags);
++    
++    /* Task queue register */
++    schedule_task(&TaskData.task_que);
++    
++    return 0;
++}
++
++void schedule_task_all_unregister(void)
++{
++    unsigned long   flags = 0;
++    
++    spin_lock_irqsave(&TaskData.spin_lock, flags);
++    TaskData.read_desc = TaskData.write_desc;
++    TaskData.use_num = 0;
++    spin_unlock_irqrestore(&TaskData.spin_lock, flags);
++}
++
++ssize_t schedule_task_proc_read(struct file* file, char* buf, size_t count,
++                                loff_t* pos)
++{
++    char    string[1024];
++    int     len = 0;
++
++    len += sprintf(string + len, "Schedule task max num:0x%d\n",
++            TASK_DESC_NUM);
++
++    len += sprintf(string + len, "Schedule task use num:0x%ld\n",
++            TaskData.use_num);
++
++    len += sprintf(string + len, "Schedule task max use num:0x%ld\n",
++            TaskData.max_num);
++    
++    *pos += len;
++    if(len > count){
++        len = -EINVAL;
++    }
++    else
++    if(len > 0 && copy_to_user(buf, string, len)) {
++        len = -EFAULT;
++    }
++
++    return len;
++}
++
++/******************************************************************************
++** Local Function
++******************************************************************************/
++static void task_entry(void* data)
++{
++    int                 cond;
++    unsigned long       flags = 0;
++    volatile TASK_DESC* desc;
++    
++    for(;;){
++        
++        spin_lock_irqsave(&TaskData.spin_lock, flags);
++        desc = TaskData.read_desc;
++        cond = (TaskData.read_desc == TaskData.write_desc);
++        spin_unlock_irqrestore(&TaskData.spin_lock, flags);
++        
++        if(cond) break;
++        
++        /* Task call */
++        desc->task_entry(desc->task_param1, desc->task_param2,
++                      desc->task_param3, desc->task_param4, desc->task_param5);
++        
++        spin_lock_irqsave(&TaskData.spin_lock, flags);
++        
++        /* Pointer update */
++        TaskData.read_desc = TaskData.read_desc->next;
++        
++        /* Statistics set */
++        TaskData.use_num--;
++        
++        spin_unlock_irqrestore(&TaskData.spin_lock, flags);
++    }
++    
++    return;
++}
++
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/schedule_task.h linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/schedule_task.h
+--- linux-2.4.18/drivers/usb/device/storage_fd/schedule_task.h	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/schedule_task.h	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,41 @@
++/*
++ * linux/drivers/usb/device/storage_fd/schedule_task.h - schedule task library header
++ *
++ * Copyright (c) 2003 Lineo Solutions, Inc.
++ *
++ * Written by Shunnosuke kabata
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#ifndef _SCHEDULE_TASK_H_
++#define _SCHEDULE_TASK_H_
++
++/******************************************************************************
++** Macro Define
++******************************************************************************/
++typedef int (*SCHEDULE_TASK_FUNC)(int, int, int, int, int);
++
++/******************************************************************************
++** Global Function Prototype
++******************************************************************************/
++void    schedule_task_init(void);
++int     schedule_task_register(SCHEDULE_TASK_FUNC, int, int, int, int, int);
++void    schedule_task_all_unregister(void);
++ssize_t schedule_task_proc_read(struct file*, char*, size_t, loff_t*);
++
++#endif  /* _SCHEDULE_TASK_H_ */
++
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/storage-fd.c linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storage-fd.c
+--- linux-2.4.18/drivers/usb/device/storage_fd/storage-fd.c	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storage-fd.c	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,865 @@
++/*
++ * linux/drivers/usb/device/storage_fd/storage-fd.c - mass storage function driver
++ *
++ * Copyright (c) 2003 Lineo Solutions, Inc.
++ *
++ * Written by Shunnosuke kabata
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ * Based on
++ *
++ * linux/drivers/usbd/net_fd/net-fd.c - network function driver
++ *
++ * Copyright (c) 2000, 2001, 2002 Lineo
++ * Copyright (c) 2001 Hewlett Packard
++ *
++ * By: 
++ *      Stuart Lynne <sl@lineo.com>, 
++ *      Tom Rushworth <tbr@lineo.com>, 
++ *      Bruce Balden <balden@lineo.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++/******************************************************************************
++** Include File
++******************************************************************************/
++#include <linux/config.h>
++#include <linux/module.h>
++
++#include "../usbd-export.h"
++#include "../usbd-build.h"
++#include "../usbd-module.h"
++
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/netdevice.h>
++#include <linux/skbuff.h>
++#include <linux/etherdevice.h>
++#include <linux/rtnetlink.h>
++#include <linux/smp_lock.h>
++#include <linux/ctype.h>
++#include <linux/timer.h>
++#include <linux/string.h>
++#include <linux/atmdev.h>
++#include <linux/pkt_sched.h>
++#include <linux/delay.h>
++#include <asm/uaccess.h>
++#include <asm/system.h>
++#include <net/arp.h>
++
++#include <linux/autoconf.h>
++
++#include "../usbd.h"
++#include "../usbd-func.h"
++#include "../usbd-bus.h"
++#include "../usbd-inline.h"
++#include "../usbd-arch.h"
++#include "../hotplug.h"
++
++#include "schedule_task.h"
++#include "storageproto.h"
++
++/******************************************************************************
++** Macro Define
++******************************************************************************/
++
++/**************************************
++** Module Information
++**************************************/
++
++MODULE_AUTHOR("Shunnosuke kabata");
++MODULE_DESCRIPTION("USB Device Mass Storage Function");
++USBD_MODULE_INFO("storage_fd 0.1");
++
++/**************************************
++** Configration Check
++**************************************/
++
++#if !defined (CONFIG_USBD_VENDORID) && !defined(CONFIG_USBD_STORAGE_VENDORID)
++#error No Vendor ID
++#endif
++#if !defined (CONFIG_USBD_PRODUCTID) && !defined(CONFIG_USBD_STORAGE_PRODUCTID)
++#error No Product ID
++#endif
++
++#if defined(CONFIG_USBD_STORAGE_VENDORID) && (CONFIG_USBD_STORAGE_VENDORID > 0)
++#undef CONFIG_USBD_VENDORID
++#define CONFIG_USBD_VENDORID    CONFIG_USBD_STORAGE_VENDORID
++#endif
++
++#if defined(CONFIG_USBD_STORAGE_PRODUCTID) && (CONFIG_USBD_STORAGE_PRODUCTID > 0)
++#undef CONFIG_USBD_PRODUCTID
++#define CONFIG_USBD_PRODUCTID   CONFIG_USBD_STORAGE_PRODUCTID
++#endif
++
++#ifndef CONFIG_USBD_MAXPOWER
++#define CONFIG_USBD_MAXPOWER            0
++#endif
++
++#ifndef CONFIG_USBD_MANUFACTURER
++#define CONFIG_USBD_MANUFACTURER        "Sharp"
++#endif
++
++#define MAXTRANSFER                     (512)
++
++#ifndef CONFIG_USBD_VENDORID
++#error "CONFIG_USBD_VENDORID not defined"
++#endif
++
++#ifndef CONFIG_USBD_PRODUCTID
++#error "CONFIG_USBD_PRODUCTID not defined"
++#endif
++
++#ifndef CONFIG_USBD_PRODUCT_NAME
++#define CONFIG_USBD_PRODUCT_NAME        "Linux Mass Storage Driver"
++#endif
++
++#ifndef CONFIG_USBD_SERIAL_NUMBER_STR
++#define CONFIG_USBD_SERIAL_NUMBER_STR   ""
++#endif
++
++/*
++ * USB 2.0 spec does not mention it, but MaxPower is expected to be at least one 
++ * and is tested for in USB configuration tests.
++ */
++
++#ifdef CONFIG_USBD_SELFPOWERED
++#define BMATTRIBUTE BMATTRIBUTE_RESERVED | BMATTRIBUTE_SELF_POWERED
++#define BMAXPOWER   1
++#else
++#define BMATTRIBUTE BMATTRIBUTE_RESERVED
++#define BMAXPOWER   CONFIG_USBD_MAXPOWER
++#endif
++
++/*
++ * setup some default values for pktsizes and endpoint addresses.
++ */
++
++#ifndef CONFIG_USBD_STORAGE_OUT_PKTSIZE
++#define CONFIG_USBD_STORAGE_OUT_PKTSIZE     64
++#endif
++
++#ifndef CONFIG_USBD_STORAGE_IN_PKTSIZE
++#define CONFIG_USBD_STORAGE_IN_PKTSIZE      64
++#endif
++
++#ifndef CONFIG_USBD_STORAGE_INT_PKTSIZE
++#define CONFIG_USBD_STORAGE_INT_PKTSIZE     16
++#endif
++
++#ifndef CONFIG_USBD_STORAGE_OUT_ENDPOINT
++#define CONFIG_USBD_STORAGE_OUT_ENDPOINT    1
++#endif
++
++#ifndef CONFIG_USBD_STORAGE_IN_ENDPOINT
++#define CONFIG_USBD_STORAGE_IN_ENDPOINT     2
++#endif
++
++#ifndef CONFIG_USBD_STORAGE_INT_ENDPOINT
++#define CONFIG_USBD_STORAGE_INT_ENDPOINT    3
++#endif
++
++/*
++ * check for architecture specific endpoint configurations
++ */
++
++#if defined(ABS_OUT_ADDR)
++    //#warning
++    //#warning USING ABS ENDPOINT OUT ADDRESS
++    #undef CONFIG_USBD_STORAGE_OUT_ENDPOINT
++
++    #if ABS_OUT_ADDR > 0
++        #define CONFIG_USBD_STORAGE_OUT_ENDPOINT    ABS_OUT_ADDR
++    #endif
++
++#elif defined(MAX_OUT_ADDR) && defined(CONFIG_USBD_STORAGE_OUT_ENDPOINT) && (CONFIG_USBD_STORAGE_OUT_ENDPOINT > MAX_OUT_ADDR)
++    //#warning
++    //#warning USING DEFAULT ENDPOINT OUT ADDRESS
++    #undef CONFIG_USBD_STORAGE_OUT_ENDPOINT
++    #define CONFIG_USBD_STORAGE_OUT_ENDPOINT        DFL_OUT_ADDR
++
++#endif  /* elif */
++
++#if defined(ABS_IN_ADDR)
++    //#warning
++    //#warning USING ABS ENDPOINT IN ADDRESS
++    #undef CONFIG_USBD_STORAGE_IN_ENDPOINT
++
++    #if ABS_IN_ADDR > 0
++        #define CONFIG_USBD_STORAGE_IN_ENDPOINT     ABS_IN_ADDR
++    #endif
++
++#elif defined(MAX_IN_ADDR) && defined(CONFIG_USBD_STORAGE_IN_ENDPOINT) && (CONFIG_USBD_STORAGE_IN_ENDPOINT > MAX_IN_ADDR)
++    //#warning
++    //#warning USING DEFAULT ENDPOINT IN ADDRESS
++    #undef CONFIG_USBD_STORAGE_IN_ENDPOINT
++    #define CONFIG_USBD_STORAGE_IN_ENDPOINT         DFL_IN_ADDR
++
++#endif  /* elif */
++
++#if defined(ABS_INT_ADDR)
++    //#warning
++    //#warning USING ABS ENDPOINT INT ADDRESS
++    #undef CONFIG_USBD_STORAGE_INT_ENDPOINT
++
++    #if ABS_INT_ADDR
++        #define CONFIG_USBD_STORAGE_INT_ENDPOINT    ABS_INT_ADDR
++    #endif
++
++#elif defined(MAX_INT_ADDR) && defined(CONFIG_USBD_STORAGE_INT_ENDPOINT) && (CONFIG_USBD_STORAGE_INT_ENDPOINT > MAX_INT_ADDR)
++    //#warning
++    //#warning USING DEFAULT ENDPOINT INT ADDRESS
++    #undef CONFIG_USBD_STORAGE_INT_ENDPOINT
++    #define CONFIG_USBD_STORAGE_INT_ENDPOINT        DFL_INT_ADDR
++
++#endif  /* elif */
++
++#if defined(MAX_OUT_PKTSIZE) && defined(CONFIG_USBD_STORAGE_OUT_PKTSIZE) && CONFIG_USBD_STORAGE_OUT_PKTSIZE > MAX_OUT_PKTSIZE
++    //#warning
++    //#warning OVERIDING ENDPOINT OUT PKTSIZE 
++    #undef CONFIG_USBD_STORAGE_OUT_PKTSIZE
++    #define CONFIG_USBD_STORAGE_OUT_PKTSIZE         MAX_OUT_PKTSIZE
++#endif
++
++#if defined(MAX_IN_PKTSIZE) && defined(CONFIG_USBD_STORAGE_IN_PKTSIZE) && CONFIG_USBD_STORAGE_IN_PKTSIZE > MAX_IN_PKTSIZE
++    //#warning
++    //#warning OVERIDING ENDPOINT IN PKTSIZE 
++    #undef CONFIG_USBD_STORAGE_IN_PKTSIZE
++    #define CONFIG_USBD_STORAGE_IN_PKTSIZE          MAX_IN_PKTSIZE
++#endif
++
++#if defined(MAX_INT_PKTSIZE) && defined(CONFIG_USBD_STORAGE_INT_PKTSIZE) && CONFIG_USBD_STORAGE_INT_PKTSIZE > MAX_INT_PKTSIZE
++    //#warning
++    //#warning OVERIDING ENDPOINT INT PKTSIZE
++    #undef CONFIG_USBD_STORAGE_INT_PKTSIZE
++    #define CONFIG_USBD_STORAGE_INT_PKTSIZE         MAX_INT_PKTSIZE
++#endif
++
++/******************************************************************************
++** Variable Declaration
++******************************************************************************/
++
++/**************************************
++** Module Parameters
++**************************************/
++
++static u32  vendor_id;
++static u32  product_id;
++static int  out_pkt_sz = CONFIG_USBD_STORAGE_OUT_PKTSIZE;
++static int  in_pkt_sz  = CONFIG_USBD_STORAGE_IN_PKTSIZE;
++
++MODULE_PARM(vendor_id, "i");
++MODULE_PARM(product_id, "i");
++MODULE_PARM(out_pkt_sz, "i");
++MODULE_PARM(in_pkt_sz, "i");
++
++MODULE_PARM_DESC(vendor_id, "vendor id");
++MODULE_PARM_DESC(product_id, "product id");
++
++/**************************************
++** Mass Storage Configuration
++**************************************/
++
++/*
++ * Data Interface Alternate 1 endpoints
++ */
++static __initdata struct usb_endpoint_description StorageAlt1Endpoints[] = {
++    {
++        bEndpointAddress:CONFIG_USBD_STORAGE_OUT_ENDPOINT,
++        bmAttributes:BULK,
++        wMaxPacketSize:CONFIG_USBD_STORAGE_OUT_PKTSIZE,
++        bInterval:0,
++        direction:OUT,
++        transferSize:MAXTRANSFER,
++    },
++
++    {
++        bEndpointAddress:CONFIG_USBD_STORAGE_IN_ENDPOINT,
++        bmAttributes:BULK,
++        wMaxPacketSize:CONFIG_USBD_STORAGE_IN_PKTSIZE,
++        bInterval:0,
++        direction:IN,
++        transferSize:MAXTRANSFER,
++    },
++
++#if defined(CONFIG_USBD_STORAGE_INT_ENDPOINT) && (CONFIG_USBD_STORAGE_INT_ENDPOINT > 0)
++    {
++        bEndpointAddress:CONFIG_USBD_STORAGE_INT_ENDPOINT,
++        bmAttributes:INTERRUPT,
++        wMaxPacketSize:CONFIG_USBD_STORAGE_INT_PKTSIZE,
++        bInterval:10,
++        direction:IN,
++        transferSize:CONFIG_USBD_STORAGE_INT_PKTSIZE,
++    },
++#endif
++};
++
++
++/*
++ * Data Interface Alternate description(s)
++ */
++static __initdata struct usb_alternate_description StorageAlternateDescriptions[] = {
++    {
++        #if defined(CONFIG_USBD_STORAGE_NO_STRINGS)
++        iInterface:"",
++        #else
++        iInterface:"Mass Storage Interface",
++        #endif
++        bAlternateSetting:0,
++        classes:0,
++        class_list:NULL,
++        endpoints:sizeof (StorageAlt1Endpoints) / sizeof (struct usb_endpoint_description),
++        endpoint_list:StorageAlt1Endpoints,
++    },
++};
++
++/*
++ * Interface description(s)
++ */
++static __initdata struct usb_interface_description StorageInterfaces[] = {
++    {
++        #if defined(CONFIG_USBD_STORAGE_NO_STRINGS)
++        iInterface:"",
++        #else
++        iInterface:"Mass Storage Interface",
++        #endif
++        bInterfaceClass:MASS_STORAGE_CLASS,
++        bInterfaceSubClass:MASS_STORAGE_SUBCLASS_SCSI,
++        bInterfaceProtocol:MASS_STORAGE_PROTO_BULK_ONLY,
++        alternates:sizeof (StorageAlternateDescriptions) / sizeof (struct usb_alternate_description),
++        alternate_list:StorageAlternateDescriptions,
++    },
++};
++
++/******************************************************************************
++** USB Configuration
++******************************************************************************/
++
++/*
++ * Configuration description(s)
++ */
++struct __initdata usb_configuration_description StorageDescription[] = {
++    {
++        #if defined(CONFIG_USBD_STORAGE_NO_STRINGS)
++        iConfiguration:"",
++        #else
++        iConfiguration:"Mass Storage Configuration",
++        #endif
++        bmAttributes:BMATTRIBUTE,
++        bMaxPower:BMAXPOWER,
++        interfaces:sizeof (StorageInterfaces) / sizeof (struct usb_interface_description),
++        interface_list:StorageInterfaces,
++    },
++};
++
++/*
++ * Device Description
++ */
++struct __initdata usb_device_description StorageDeviceDescription = {
++    bDeviceClass:0,
++    bDeviceSubClass:0,  // XXX
++    bDeviceProtocol:0,  // XXX
++    idVendor:CONFIG_USBD_VENDORID,
++    idProduct:CONFIG_USBD_PRODUCTID,
++    iManufacturer:CONFIG_USBD_MANUFACTURER,
++    iProduct:CONFIG_USBD_PRODUCT_NAME,
++    iSerialNumber:CONFIG_USBD_SERIAL_NUMBER_STR,
++};
++
++/**************************************
++** Other Variable
++**************************************/
++static int              storage_exit_flag = 0;
++static pid_t            storage_pid = 0;
++static struct semaphore storage_sem;
++struct timer_list       storage_usb_event_tim;
++
++
++/******************************************************************************
++** Global Function
++******************************************************************************/
++
++void storage_urb_send(struct usb_device_instance* device, void* buffer,
++                      int length)
++{
++    int         port = 0;
++    struct urb* urb;
++
++    if(!(urb = usbd_alloc_urb(device,
++                              device->function_instance_array + port,
++                              CONFIG_USBD_STORAGE_IN_ENDPOINT,
++                              length + 5 + in_pkt_sz))){
++        printk(KERN_INFO "storage_fd: usbd_alloc_urb failed. length '%d'.\n", length);
++        return;
++    }
++
++    if(buffer){
++        memcpy(urb->buffer, buffer, length);
++    }
++    else{
++        memset(urb->buffer, 0x00, length);
++    }
++    urb->actual_length = length;
++
++    if(usbd_send_urb(urb)){
++        printk(KERN_INFO "storage_fd: usbd_send_urb failed.\n");
++        usbd_dealloc_urb(urb);
++        return;
++    }
++
++    return;
++}
++
++/******************************************************************************
++** Local Function
++******************************************************************************/
++
++/**************************************
++** Called when a USB Device is created or destroyed
++**************************************/
++
++static int storage_thread(void *_c)
++{
++    siginfo_t           info;
++    unsigned long       signr;
++    char                buff[32];
++
++    /* current status set */
++    daemonize();
++
++    /* PID set */
++    storage_pid = current->pid;
++
++    /* thread name set */
++    sprintf(current->comm, STORAGE_THREAD_NAME);
++    (current)->nice = 10;
++
++    /* signal register */
++    spin_lock_irq(&current->sigmask_lock);
++    siginitsetinv(&current->blocked,
++                  sigmask(SIGUSR1) | sigmask(SIGHUP) | sigmask(SIGKILL) |
++                  sigmask(SIGSTOP) | sigmask(SIGCONT) | sigmask(SIGTERM) |
++                  sigmask(SIGALRM));
++    recalc_sigpending(current);
++    spin_unlock_irq(&current->sigmask_lock);
++
++    /* media open */
++    schedule_task_register(
++        (SCHEDULE_TASK_FUNC)storageproto_media_status_check, CONTEXT_STORAGE,
++        0, 0, 0, 0);
++
++    /* thread active indicate */
++    sprintf(buff, "%d\n", storage_pid);
++    hotplug("usbdstorage", buff, "active");
++
++    for(;;){
++        set_current_state(TASK_INTERRUPTIBLE);
++
++        if (!signal_pending(current)) {
++            schedule();
++            continue;
++        }
++
++        spin_lock_irq(&current->sigmask_lock);
++        signr = dequeue_signal(&current->blocked, &info);
++        spin_unlock_irq(&current->sigmask_lock);
++
++        switch(signr) {
++        case SIGHUP:
++            /* media signal indicate */
++            schedule_task_register(
++                (SCHEDULE_TASK_FUNC)storageproto_media_status_check, CONTEXT_STORAGE,
++                0, 0, 0, 0);
++
++            DBG_STORAGE_FD(KERN_INFO "storage_fd: signal receive 'SIGHUP'.\n");
++            break;
++
++        default:
++            DBG_STORAGE_FD(KERN_INFO "storage_fd: signal receive '%ld'\n", signr);
++            break;
++        }
++
++        if(storage_exit_flag) break;
++    }
++    /* current status set */
++    current->state = TASK_RUNNING;
++
++    /* PID clear */
++    storage_pid = 0;
++
++    /* thread inactive indicate */
++    hotplug("usbdstorage", buff, "inactive");
++
++    up(&storage_sem);
++
++    return 0;
++}
++
++static void storage_function_init(struct usb_bus_instance* bus,
++                              struct usb_device_instance* device,
++                              struct usb_function_driver* function_driver)
++{
++    /* schedule task init */
++    schedule_task_init();
++
++    /* storage protocol initialize */
++    storageproto_init();
++
++    /* semaphore init */
++    sema_init(&storage_sem, 0);
++
++    /* timer initialize */
++    init_timer(&storage_usb_event_tim);
++
++    /* thread create */
++    storage_pid = kernel_thread(storage_thread, NULL, 0);
++
++    return;
++}
++
++static void storage_function_exit(struct usb_device_instance* device)
++{
++    /* thread kill */
++    storage_exit_flag = 1;
++    kill_proc(storage_pid, SIGKILL, 1);
++    down(&storage_sem);
++
++    /* delete timer */
++    del_timer(&storage_usb_event_tim);
++
++    /* storage protocol exit */
++    storageproto_exit();
++
++    /* schedule task delete */
++    schedule_task_all_unregister();
++
++    return;
++}
++
++
++/**************************************
++** Called to handle USB Events
++**************************************/
++
++static void storage_usb_event_delay_timeout(unsigned long param)
++{
++    /* media signal indicate */
++    schedule_task_register(
++        (SCHEDULE_TASK_FUNC)storageproto_usb_status_check, (int)param,
++        0, 0, 0, 0);
++
++    return;
++}
++
++/*
++ * storage_event - process a device event
++ * @device: usb device 
++ * @event: the event that happened
++ *
++ * Called by the usb device core layer to respond to various USB events.
++ *
++ * This routine IS called at interrupt time. Please use the usual precautions.
++ *
++ */
++void storage_event(struct usb_device_instance* device,
++                   usb_device_event_t event, int data)
++{
++#if 0
++    static struct {
++        usb_device_event_t  event;
++        char*               string;
++    } eventAnal[] = {
++        {DEVICE_UNKNOWN,            "DEVICE_UNKNOWN"},
++        {DEVICE_INIT,               "DEVICE_INIT"},
++        {DEVICE_CREATE,             "DEVICE_CREATE"},
++        {DEVICE_HUB_CONFIGURED,     "DEVICE_HUB_CONFIGURED"},
++        {DEVICE_RESET,              "DEVICE_RESET"},
++        {DEVICE_ADDRESS_ASSIGNED,   "DEVICE_ADDRESS_ASSIGNED"},
++        {DEVICE_CONFIGURED,         "DEVICE_CONFIGURED"},
++        {DEVICE_SET_INTERFACE,      "DEVICE_SET_INTERFACE"},
++        {DEVICE_SET_FEATURE,        "DEVICE_SET_FEATURE"},
++        {DEVICE_CLEAR_FEATURE,      "DEVICE_CLEAR_FEATURE"},
++        {DEVICE_DE_CONFIGURED,      "DEVICE_DE_CONFIGURED"},
++        {DEVICE_BUS_INACTIVE,       "DEVICE_BUS_INACTIVE"},
++        {DEVICE_BUS_ACTIVITY,       "DEVICE_BUS_ACTIVITY"},
++        {DEVICE_POWER_INTERRUPTION, "DEVICE_POWER_INTERRUPTION"},
++        {DEVICE_HUB_RESET,          "DEVICE_HUB_RESET"},
++        {DEVICE_DESTROY,            "DEVICE_DESTROY"},
++        {DEVICE_FUNCTION_PRIVATE,   "DEVICE_FUNCTION_PRIVATE"}
++    };
++    int i;
++
++    for(i=0; i<(sizeof(eventAnal)/sizeof(eventAnal[0])); i++){
++        if(event == eventAnal[i].event){
++            DBG_STORAGE_FD(KERN_INFO "storage_fd: event receive '%s'.\n",
++                eventAnal[i].string);
++            break;
++        }
++    }
++    if(i == (sizeof(eventAnal)/sizeof(eventAnal[0]))){
++        DBG_STORAGE_FD(KERN_INFO "storage_fd: unknown event receive.\n");
++    }
++#endif
++
++    switch(event){
++    case DEVICE_ADDRESS_ASSIGNED:
++        {
++        static int  Is1stCheck = 1;
++        if(Is1stCheck){
++            Is1stCheck = 0;
++
++            /* delay timer set */
++            del_timer(&storage_usb_event_tim);
++            storage_usb_event_tim.expires  = jiffies + ((USB_EVENT_DELAY_TIM * HZ) / 1000);
++            storage_usb_event_tim.data     = USB_DISCONNECT;
++            storage_usb_event_tim.function = storage_usb_event_delay_timeout;
++            add_timer(&storage_usb_event_tim);
++            break;
++        }
++        }
++    case DEVICE_BUS_ACTIVITY:
++        /* delay timer set */
++        del_timer(&storage_usb_event_tim);
++        storage_usb_event_tim.expires  = jiffies + ((USB_EVENT_DELAY_TIM * HZ) / 1000);
++        storage_usb_event_tim.data     = USB_CONNECT;
++        storage_usb_event_tim.function = storage_usb_event_delay_timeout;
++        add_timer(&storage_usb_event_tim);
++        break;
++
++    case DEVICE_BUS_INACTIVE:
++        /* delay timer set */
++        del_timer(&storage_usb_event_tim);
++        storage_usb_event_tim.expires  = jiffies + ((USB_EVENT_DELAY_TIM * HZ) / 1000);
++        storage_usb_event_tim.data     = USB_DISCONNECT;
++        storage_usb_event_tim.function = storage_usb_event_delay_timeout;
++        add_timer(&storage_usb_event_tim);
++        break;
++
++    case DEVICE_RESET:
++        schedule_task_register(
++            (SCHEDULE_TASK_FUNC)storageproto_usb_reset_ind,
++            0, 0, 0, 0, 0);
++        break;
++
++    default:
++        break;
++    }
++
++    return;
++}
++
++/*
++ * storage_recv_setup - called with a control URB 
++ * @urb - pointer to struct urb
++ *
++ * Check if this is a setup packet, process the device request, put results
++ * back into the urb and return zero or non-zero to indicate success (DATA)
++ * or failure (STALL).
++ *
++ * This routine IS called at interrupt time. Please use the usual precautions.
++ *
++ */
++int storage_recv_setup(struct urb* urb)
++{
++    return 0;
++}
++
++/*
++ * storage_recv_urb - called with a received URB 
++ * @urb - pointer to struct urb
++ *
++ * Return non-zero if we failed and urb is still valid (not disposed)
++ *
++ * This routine IS called at interrupt time. Please use the usual precautions.
++ *
++ */
++int storage_recv_urb(struct urb* urb)
++{
++    int                             port = 0;   // XXX compound device
++    struct usb_device_instance*     device;
++    struct usb_function_instance*   function;
++
++    if(!urb || !(device = urb->device) ||
++       !(function = device->function_instance_array + port)){
++        return -EINVAL;
++    }
++
++    if(urb->status != RECV_OK){
++        return -EINVAL;
++    }
++
++    /* URB urb_analysis */
++    schedule_task_register(
++        (SCHEDULE_TASK_FUNC)storageproto_urb_analysis, (int)urb,
++        0, 0, 0, 0);
++
++    return 0;
++}
++
++/*
++ * storage_urb_sent - called to indicate URB transmit finished
++ * @urb: pointer to struct urb
++ * @rc: result
++ *
++ * The usb device core layer will use this to let us know when an URB has
++ * been finished with.
++ *
++ * This routine IS called at interrupt time. Please use the usual precautions.
++ *
++ */
++int storage_urb_sent(struct urb* urb, int rc)
++{
++    int                             port = 0;   // XXX compound device
++    struct usb_device_instance*     device;
++    struct usb_function_instance*   function;
++
++    if(!urb || !(device = urb->device) ||
++       !(function = device->function_instance_array + port)){
++        return -EINVAL;
++    }
++
++    usbd_dealloc_urb (urb);
++
++    return 0;
++}
++
++/**************************************
++** Proc file system
++**************************************/
++
++static ssize_t storage_proc_read(struct file* file, char* buf, size_t count,
++                                 loff_t* pos)
++{
++    int len = 0, ret;
++
++    if(*pos > 0) return 0;
++
++    if((ret = storageproto_proc_read(file, buf + len, count - len, pos)) < 0){
++        return ret;
++    }
++    len += ret;
++
++    if((ret = schedule_task_proc_read(file, buf + len, count - len, pos)) < 0){
++        return ret;
++    }
++    len += ret;
++
++    return len;
++}
++
++static struct file_operations StorageProcOps = {
++    read:storage_proc_read,
++};
++
++/**************************************
++** Module init and exit
++**************************************/
++
++struct usb_function_operations StorageFunctionOps = {
++    event:storage_event,
++    recv_urb:storage_recv_urb,
++    recv_setup:storage_recv_setup,
++    urb_sent:storage_urb_sent,
++    function_init:storage_function_init,
++    function_exit:storage_function_exit,
++};
++
++struct usb_function_driver StorageFunctionDriver = {
++    name:"Mass Storage",
++    ops:&StorageFunctionOps,
++    device_description:&StorageDeviceDescription,
++    configurations:sizeof (StorageDescription) / sizeof (struct usb_configuration_description),
++    configuration_description:StorageDescription,
++    this_module:THIS_MODULE,
++};
++
++/*
++ * net_modinit - module init
++ *
++ */
++static int __init net_modinit(void)
++{
++    struct proc_dir_entry*  proc_entry;
++
++    printk(KERN_INFO "storage_fd: %s (OUT=%d,IN=%d)\n",
++        __usbd_module_info, out_pkt_sz, in_pkt_sz);
++
++    printk(KERN_INFO "storage_fd: vendorID: %x productID: %x\n",
++        CONFIG_USBD_VENDORID, CONFIG_USBD_PRODUCTID);
++
++    // verify pkt sizes not too small
++    if (out_pkt_sz < 3 || in_pkt_sz < 3){
++        printk(KERN_INFO "storage_fd: Rx pkt size %d or Tx pkt size %d too small\n",
++            out_pkt_sz, in_pkt_sz);
++        return (-EINVAL);
++    }
++
++    if(vendor_id){
++        StorageDeviceDescription.idVendor = vendor_id;
++    }
++    if(product_id){
++        StorageDeviceDescription.idProduct = product_id;
++    }
++
++    // register us with the usb device support layer
++    if(usbd_register_function(&StorageFunctionDriver)){
++        printk(KERN_INFO "storage_fd: usbd_register_function failed.\n");
++        return -EINVAL;
++    }
++
++    // create proc entry
++    if ((proc_entry = create_proc_entry("usb-storage", 0, 0)) == NULL) {
++        usbd_deregister_function (&StorageFunctionDriver);
++        printk(KERN_INFO "storage_fd: create_proc_entry failed.\n");
++        return -ENOMEM;
++    }
++    proc_entry->proc_fops = &StorageProcOps;
++
++    return 0;
++}
++
++/*
++ * function_exit - module cleanup
++ *
++ */
++static void __exit net_modexit (void)
++{
++    // de-register us with the usb device support layer
++    usbd_deregister_function (&StorageFunctionDriver);
++
++    // remove proc entry
++    remove_proc_entry("usb-storage", NULL);
++
++    return;
++}
++
++module_init (net_modinit);
++module_exit (net_modexit);
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/storageproto.c linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storageproto.c
+--- linux-2.4.18/drivers/usb/device/storage_fd/storageproto.c	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storageproto.c	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,1505 @@
++/*
++ * linux/drivers/usb/device/storage_fd/storageproto.c - mass storage protocol library
++ *
++ * Copyright (c) 2003 Lineo Solutions, Inc.
++ *
++ * Written by Shunnosuke kabata
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++/******************************************************************************
++** Include File
++******************************************************************************/
++#include <linux/config.h>
++#include <linux/module.h>
++
++#include "../usbd-export.h"
++#include "../usbd-build.h"
++#include "../usbd-module.h"
++
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/netdevice.h>
++#include <linux/skbuff.h>
++#include <linux/etherdevice.h>
++#include <linux/rtnetlink.h>
++#include <linux/smp_lock.h>
++#include <linux/ctype.h>
++#include <linux/timer.h>
++#include <linux/string.h>
++#include <linux/atmdev.h>
++#include <linux/pkt_sched.h>
++#include <linux/delay.h>
++#include <linux/blkdev.h>
++#include <linux/file.h>
++#include <asm/uaccess.h>
++#include <asm/system.h>
++#include <net/arp.h>
++
++#include <linux/autoconf.h>
++
++#include "../usbd.h"
++#include "../usbd-func.h"
++#include "../usbd-bus.h"
++#include "../usbd-inline.h"
++#include "../usbd-arch.h"
++#include "../hotplug.h"
++
++#include "schedule_task.h"
++#include "storageproto.h"
++
++/******************************************************************************
++** macro define
++******************************************************************************/
++
++#define DEVICE_BLOCK_SIZE       512
++
++#define BLOCK_BUFFER_SIZE       (1024 * 64)
++
++#define DEF_NUMBER_OF_HEADS     0x10
++#define DEF_SECTORS_PER_TRACK   0x20
++
++/******************************************************************************
++** Structure Define
++******************************************************************************/
++
++typedef struct{
++    unsigned char   scsi_command;
++    unsigned char*  command_name;
++    void            (*scsi_func)(struct usb_device_instance*,
++                                 COMMAND_BLOCK_WRAPPER*);
++} SCSI_ANALYSIS_TBL;
++
++typedef struct{
++    unsigned char   scsi_command;
++    unsigned char*  command_name;
++    void            (*bulkout_func)(struct usb_device_instance*,
++                                    void*, int);
++} SCSI_BULKOUT_ANALYSIS_TBL;
++
++/******************************************************************************
++** Variable Declaration
++******************************************************************************/
++
++/**************************************
++** Module Parameters
++**************************************/
++
++static char*    storage_device = CONFIG_USBD_STORAGE_DEF_DEVICE_NAME;
++MODULE_PARM(storage_device, "s");
++
++/**************************************
++** Device Information
++**************************************/
++
++static struct file*     DeviceFile      = NULL;
++static int              DeviceSize      = 0;
++static int              DeviceBlockSize = DEVICE_BLOCK_SIZE;
++static int              DeviceWrProtect = WR_PROTECT_OFF;
++
++/**************************************
++** Status
++**************************************/
++
++static int  StorageStatus  = STORAGE_IDLE;
++static int  UsbStatus      = USB_DISCONNECT;
++static int  MediaStatus    = MEDIA_EJECT;
++static int  MediaChange    = MEDIA_CHANGE_OFF;
++
++/**************************************
++** Keep Information
++**************************************/
++
++static SCSI_REQUEST_SENSE_DATA  RequestSenseData;
++static COMMAND_BLOCK_WRAPPER    KeepCBW;
++static unsigned long            BulkOutLength = 0;
++static unsigned char            BlockBuffer[BLOCK_BUFFER_SIZE];
++
++/**************************************
++** Statistics
++**************************************/
++static unsigned long    StatMaxBulkInSize  = 0;
++static unsigned long    StatMaxBulkOutSize = 0;
++static unsigned long    StatDevWriteError  = 0;
++static unsigned long    StatDevReadError   = 0;
++static unsigned long    StatDevFlushError  = 0;
++static unsigned long    StatWriteTimout    = 0;
++static unsigned long    StatMaxWriteTime   = 0;
++
++/**************************************
++** Timer
++**************************************/
++static struct timer_list    BulkOutTim;
++static struct timer_list    MediaCheckTim;
++
++/******************************************************************************
++** Local Function
++******************************************************************************/
++
++static void storage_bulkout_timeout(unsigned long param)
++{
++    /* statistics update */
++    StatWriteTimout++;
++    printk(KERN_INFO "storage_fd: write bulk out timeout. length '%ld/%ld'.\n",
++        BulkOutLength, KeepCBW.dCBWDataTransferLength);
++
++    return;
++}
++
++static void media_check_timeout(unsigned long param)
++{
++    /* media check */
++    schedule_task_register(
++        (SCHEDULE_TASK_FUNC)storageproto_media_status_check, CONTEXT_TIMER,
++        0, 0, 0, 0);
++
++    return;
++}
++
++static void request_sense_data_set(unsigned char sense_key, unsigned char asc,
++                                   unsigned char ascq, unsigned long info)
++{
++    /*
++     * set REQUEST SENSE DATA
++     */
++
++    memset(&RequestSenseData, 0x00, sizeof(RequestSenseData));
++
++    RequestSenseData.ErrorCode                    = 0x70;
++    RequestSenseData.Valid                        = (info) ? 1 : 0;
++    RequestSenseData.SenseKey                     = sense_key;
++    memcpy(RequestSenseData.Information, &info, sizeof(info));
++    RequestSenseData.AdditionalSenseLength        = 0x0a;
++    RequestSenseData.AdditionalSenseCode          = asc;
++    RequestSenseData.AdditionalSenseCodeQualifier = ascq;
++
++    return;
++}
++
++static void scsi_inquiry_analysis(struct usb_device_instance* device,
++                                  COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_INQUIRY_DATA       data;
++    COMMAND_STATUS_WRAPPER  csw;
++    unsigned long           data_len;
++
++    /*
++     * data transport
++     */
++
++    memset(&data, 0x00, sizeof(data));
++
++    data.PeripheralDeviceType = 0x00;
++    data.RMB                  = 1;
++    data.ResponseDataFormat   = 0x01;
++    data.AdditionalLength     = 0x1f;
++    strncpy(data.VendorInformation, CONFIG_USBD_MANUFACTURER,
++            sizeof(data.VendorInformation));
++    strncpy(data.ProductIdentification, CONFIG_USBD_PRODUCT_NAME,
++            sizeof(data.ProductIdentification));
++    strncpy(data.ProductRevisionLevel, PRODUCT_REVISION_LEVEL,
++            sizeof(data.ProductRevisionLevel));
++
++    data_len = sizeof(data);
++    if(cbw->dCBWDataTransferLength < data_len){
++        data_len = cbw->dCBWDataTransferLength;
++    }
++
++    storage_urb_send(device, &data, data_len);
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++    csw.bCSWStatus      = 0;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_read_format_capacity_analysis(struct usb_device_instance* device,
++                                               COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_READ_FORMAT_CAPACITY_DATA  data;
++    COMMAND_STATUS_WRAPPER          csw;
++    unsigned long                   block_num, data_len;
++    unsigned short                  block_len;
++
++    /*
++     * data transport
++     */
++
++    block_num = 0xffffffff;
++    block_len = (unsigned short)DeviceBlockSize;
++    block_num = htonl(block_num);
++    block_len = htons(block_len);
++
++    memset(&data, 0x00, sizeof(data));
++
++    data.CapacityListHeader.CapacityListLength =
++        sizeof(data.CurrentMaximumCapacityDescriptor);
++    memcpy(data.CurrentMaximumCapacityDescriptor.NumberofBlocks, &block_num,
++           sizeof(block_num));
++    data.CurrentMaximumCapacityDescriptor.DescriptorCode = 0x03;
++    memcpy(data.CurrentMaximumCapacityDescriptor.BlockLength + 1, &block_len,
++           sizeof(block_len));
++
++    data_len = sizeof(data);
++    if(cbw->dCBWDataTransferLength < data_len){
++        data_len = cbw->dCBWDataTransferLength;
++    }
++
++    storage_urb_send(device, &data, data_len);
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++    csw.bCSWStatus      = 0;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_read_capacity_analysis(struct usb_device_instance* device,
++                                        COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_READ_CAPACITY_DATA data;
++    COMMAND_STATUS_WRAPPER  csw;
++    unsigned char           data_len, status = 0;
++
++    if(DeviceFile == NULL){
++        /* 0 clear */
++        memset(&data, 0x00, sizeof(data));
++
++        /* data length set */
++        data_len = cbw->dCBWDataTransferLength;
++
++        /* status set */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++    }
++    else
++    if(MediaChange == MEDIA_CHANGE_ON){
++        /* 0 clear */
++        memset(&data, 0x00, sizeof(data));
++
++        /* data length set */
++        data_len = cbw->dCBWDataTransferLength;
++
++        /* status set */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++        /* media change flag off */
++        MediaChange = MEDIA_CHANGE_OFF;
++    }
++    else{
++        unsigned long   last_lba, block_len;
++
++        /* 0 clear */
++        memset(&data, 0x00, sizeof(data));
++
++        /* data set */
++        last_lba  = (DeviceSize / DeviceBlockSize) - 1;
++        block_len = DeviceBlockSize;
++        last_lba  = htonl(last_lba);
++        block_len = htonl(block_len);
++
++        memcpy(data.LastLogicalBlockAddress, &last_lba, sizeof(last_lba));
++        memcpy(data.BlockLengthInBytes, &block_len, sizeof(block_len));
++
++        /* data length set */
++        data_len = sizeof(data);
++
++        /* status set */
++        status = 0;
++    }
++
++    /*
++     * data transport
++     */
++
++    if(cbw->dCBWDataTransferLength < data_len){
++        data_len = cbw->dCBWDataTransferLength;
++    }
++
++    storage_urb_send(device, &data, data_len);
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_request_sense_analysis(struct usb_device_instance* device,
++                                        COMMAND_BLOCK_WRAPPER* cbw)
++{
++    COMMAND_STATUS_WRAPPER  csw;
++    unsigned long           data_len;
++
++    /*
++     * data transport
++     */
++
++    data_len = sizeof(RequestSenseData);
++    if(cbw->dCBWDataTransferLength < data_len){
++        data_len = cbw->dCBWDataTransferLength;
++    }
++
++    storage_urb_send(device, &RequestSenseData, data_len);
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++    csw.bCSWStatus      = 0;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_read_10_analysis(struct usb_device_instance* device,
++                                  COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_READ_10_COMMAND*   command = (SCSI_READ_10_COMMAND*)cbw->CBWCB;
++    COMMAND_STATUS_WRAPPER  csw;
++    unsigned char           status = 0;
++    unsigned short          len;
++    unsigned long           lba, size, offset;
++
++    memcpy(&lba, command->LogicalBlockAddress, sizeof(lba));
++    memcpy(&len, command->TransferLength, sizeof(len));
++    lba    = ntohl(lba);
++    len    = ntohs(len);
++    offset = lba * DeviceBlockSize;
++    size   = cbw->dCBWDataTransferLength;
++
++    if(DeviceFile == NULL){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++
++        /*
++         * data transport
++         */
++
++        storage_urb_send(device, NULL, size);
++    }
++    else
++    if(MediaChange == MEDIA_CHANGE_ON){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++        /* media change flag off */
++        MediaChange = MEDIA_CHANGE_OFF;
++
++        /*
++         * data transport
++         */
++
++        storage_urb_send(device, NULL, size);
++    }
++    else{
++        unsigned long   count, read_size;
++
++        /*
++         * data transport
++         */
++
++        /* device seek */
++        DeviceFile->f_op->llseek(DeviceFile, offset, 0);
++
++        /* device read */
++        for(count = size; count; count -= read_size){
++            read_size = (count > sizeof(BlockBuffer)) ?
++                            sizeof(BlockBuffer) : count;
++            if(DeviceFile &&
++               DeviceFile->f_op->read(DeviceFile, BlockBuffer, read_size,
++                                      &DeviceFile->f_pos) != read_size){
++
++                /* command fail */
++                status = 1;
++
++                /* error code save REQUEST SENSE */
++                request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++
++                /* statistics update */
++                StatDevReadError++;
++                printk(KERN_INFO "storage_fd: device read error. length '%ld'.\n", read_size);
++            }
++
++            storage_urb_send(device, BlockBuffer, read_size);
++        }
++    }
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - size;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_mode_sense_analysis(struct usb_device_instance* device,
++                                     COMMAND_BLOCK_WRAPPER* cbw)
++{
++    static READ_WRITE_ERROR_RECOVERY_PAGE           page_01 = {
++        PageCode:0x01,
++        PageLength:0x0A,
++        ReadRetryCount:0x03,
++        WriteRetryCount:0x80,
++    };
++    static FLEXIBLE_DISK_PAGE                       page_05 = {
++        PageCode:0x05,
++        PageLength:0x1E,
++        TransferRate:{0x00, 0xFA},
++        NumberofHeads:0xA0,
++        SectorsperTrack:0x00,
++        DataBytesperSector:{0x02, 0x00},
++        NumberofCylinders:{0x00, 0x00},
++        MotorOnDelay:0x05,
++        MotorOffDelay:0x1E,
++        MediumRotationRate:{0x01, 0x68},
++    };
++    static REMOVABLE_BLOCK_ACCESS_CAPABILITIES_PAGE page_1b = {
++        PageCode:0x1B,
++        PageLength:0x0A,
++        TLUN:0x01,
++    };
++    static TIMER_AND_PROTECT_PAGE                   page_1c = {
++        PageCode:0x1c,
++        PageLength:0x06,
++        InactivityTimeMultiplier:0x0A,
++    };
++
++
++    SCSI_MODE_SENSE_COMMAND*    command = (SCSI_MODE_SENSE_COMMAND*)cbw->CBWCB;
++    SCSI_MODE_SENSE_DATA        data;
++    COMMAND_STATUS_WRAPPER      csw;
++    unsigned char               data_len, status = 0;
++    unsigned short              cylinder, sector;
++    unsigned long               size;
++
++    /*
++     * data transport
++     */
++
++    memset(&data, 0x00, sizeof(data));
++
++    /* set write protect */
++    data.ModeParameterHeader.WP = DeviceWrProtect;
++
++    /* set Flexible Disk Page */
++    if(DeviceFile == NULL){
++        sector   = (unsigned short)DeviceBlockSize;
++        cylinder = 0;
++        sector   = htons(sector);
++        cylinder = htons(cylinder);
++
++        page_05.NumberofHeads      = 0;
++        page_05.SectorsperTrack    = 0;
++        memcpy(page_05.DataBytesperSector, &sector, sizeof(sector));
++        memcpy(page_05.NumberofCylinders, &cylinder, sizeof(cylinder));
++    }
++    else{
++        sector   = (unsigned short)DeviceBlockSize;
++        size     = DEF_NUMBER_OF_HEADS * DEF_SECTORS_PER_TRACK * sector;
++        cylinder = DeviceSize / size;
++        sector   = htons(sector);
++        cylinder = htons(cylinder);
++
++        page_05.NumberofHeads      = DEF_NUMBER_OF_HEADS;
++        page_05.SectorsperTrack    = DEF_SECTORS_PER_TRACK;
++        memcpy(page_05.DataBytesperSector, &sector, sizeof(sector));
++        memcpy(page_05.NumberofCylinders, &cylinder, sizeof(cylinder));
++    }
++
++    if(command->PC == 0 && command->PageCode == 0x01){
++        data_len = sizeof(MODE_PARAMETER_HEADER) + sizeof(page_01);
++        data.ModeParameterHeader.ModeDataLength = data_len - 1;
++        memcpy(&data.ModePages, &page_01, sizeof(page_01));
++    }
++    else
++    if(command->PC == 0 && command->PageCode == 0x05){
++        data_len = sizeof(MODE_PARAMETER_HEADER) + sizeof(page_05);
++        data.ModeParameterHeader.ModeDataLength = data_len - 1;
++        memcpy(&data.ModePages, &page_05, sizeof(page_05));
++    }
++    else
++    if(command->PC == 0 && command->PageCode == 0x1b){
++        data_len = sizeof(MODE_PARAMETER_HEADER) + sizeof(page_1b);
++        data.ModeParameterHeader.ModeDataLength = data_len - 1;
++        memcpy(&data.ModePages, &page_1b, sizeof(page_1b));
++    }
++    else
++    if(command->PC == 0 && command->PageCode == 0x1c){
++        data_len = sizeof(MODE_PARAMETER_HEADER) + sizeof(page_1c);
++        data.ModeParameterHeader.ModeDataLength = data_len - 1;
++        memcpy(&data.ModePages, &page_1c, sizeof(page_1c));
++    }
++    else
++    if(command->PC == 0 && command->PageCode == 0x3f){
++        data_len = sizeof(MODE_PARAMETER_HEADER) + sizeof(MODE_ALL_PAGES);
++        data.ModeParameterHeader.ModeDataLength = data_len - 1;
++        memcpy(&data.ModePages.ModeAllPages.ReadWriteErrorRecoveryPage,
++               &page_01, sizeof(page_01));
++        memcpy(&data.ModePages.ModeAllPages.FlexibleDiskPage,
++               &page_05, sizeof(page_05));
++        memcpy(&data.ModePages.ModeAllPages.RemovableBlockAccessCapabilitiesPage,
++               &page_1b, sizeof(page_1b));
++        memcpy(&data.ModePages.ModeAllPages.TimerAndProtectPage,
++               &page_1c, sizeof(page_1c));
++    }
++    else{
++        /* command fail */
++        status = 1;
++        data_len = cbw->dCBWDataTransferLength;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x05, 0x24, 0x00, 0x00);
++    }
++
++    if(cbw->dCBWDataTransferLength < data_len){
++        data_len = cbw->dCBWDataTransferLength;
++    }
++
++    storage_urb_send(device, &data, data_len);
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_test_unit_ready_analysis(struct usb_device_instance* device,
++                                          COMMAND_BLOCK_WRAPPER* cbw)
++{
++    COMMAND_STATUS_WRAPPER      csw;
++    unsigned char               status = 0;
++
++    if(DeviceFile == NULL){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++    }
++    else
++    if(MediaChange == MEDIA_CHANGE_ON){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++        /* media change flag off */
++        MediaChange = MEDIA_CHANGE_OFF;
++    }
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_prevent_allow_medium_removal_analysis(struct usb_device_instance* device,
++                                                       COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL_COMMAND*  command = (SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL_COMMAND*)cbw->CBWCB;
++    COMMAND_STATUS_WRAPPER                      csw;
++    unsigned char                               status = 0;
++
++    if(command->Prevent){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x05, 0x24, 0x00, 0x00);
++    }
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_start_stop_analysis(struct usb_device_instance* device,
++                                     COMMAND_BLOCK_WRAPPER* cbw)
++{
++    SCSI_START_STOP_COMMAND*    command = (SCSI_START_STOP_COMMAND*)cbw->CBWCB;
++    COMMAND_STATUS_WRAPPER      csw;
++    unsigned char               status = 0;
++
++    if(DeviceFile == NULL){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++    }
++    else
++    if(MediaChange == MEDIA_CHANGE_ON){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++        /* media change flag off */
++        MediaChange = MEDIA_CHANGE_OFF;
++    }
++    else
++    if(command->Start && command->LoEj){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x05, 0x24, 0x00, 0x00);
++    }
++
++    /* device buffer flush */
++    if(DeviceFile && DeviceFile->f_op->ioctl(DeviceFile->f_dentry->d_inode,
++                                             DeviceFile, BLKFLSBUF, 0) != 0){
++        /* statistics update */
++        StatDevFlushError++;
++        printk(KERN_INFO "storage_fd: device flush error.\n");
++    }
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_write_10_analysis(struct usb_device_instance* device,
++                                   COMMAND_BLOCK_WRAPPER* cbw)
++{
++    /* status set */
++    BulkOutLength = 0;
++    StorageStatus = STORAGE_BULKOUT;
++
++    /* timer set */
++    del_timer(&BulkOutTim);
++    BulkOutTim.expires  = jiffies + ((WR_BULKOUT_CHK_TIM * HZ) / 1000);
++    BulkOutTim.data     = 0;
++    BulkOutTim.function = storage_bulkout_timeout;
++    add_timer(&BulkOutTim);
++
++    return;
++}
++
++static void scsi_verify_analysis(struct usb_device_instance* device,
++                                 COMMAND_BLOCK_WRAPPER* cbw)
++{
++    COMMAND_STATUS_WRAPPER      csw;
++    unsigned char               status = 0;
++
++    if(DeviceFile == NULL){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++    }
++    else
++    if(MediaChange == MEDIA_CHANGE_ON){
++        /* command fail */
++        status = 1;
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++        /* media change flag off */
++        MediaChange = MEDIA_CHANGE_OFF;
++    }
++
++    /*
++     * status transport
++     */
++
++    memset(&csw, 0x00, sizeof(csw));
++
++    csw.dCSWSignature   = CSW_SIGNATURE;
++    csw.dCSWTag         = cbw->dCBWTag;
++    csw.dCSWDataResidue = cbw->dCBWDataTransferLength;
++    csw.bCSWStatus      = status;
++
++    storage_urb_send(device, &csw, sizeof(csw));
++
++    return;
++}
++
++static void scsi_unsupport_analysis(struct usb_device_instance* device,
++                                    COMMAND_BLOCK_WRAPPER* cbw)
++{
++    COMMAND_STATUS_WRAPPER csw;
++    unsigned char          data_len = 0;
++
++    if(((cbw->bmCBWFlags & 0x80) == 0x00) && (cbw->dCBWDataTransferLength)){
++        /* BLKOUT */
++
++        /* status set */
++        BulkOutLength = 0;
++        StorageStatus = STORAGE_BULKOUT;
++    }
++    else{
++        /* BLKIN */
++
++        if(cbw->dCBWDataTransferLength){
++            data_len = cbw->dCBWDataTransferLength;
++            storage_urb_send(device, NULL, data_len);
++        }
++
++        /*
++         * status transport
++         */
++
++        memset(&csw, 0x00, sizeof(csw));
++
++        csw.dCSWSignature   = CSW_SIGNATURE;
++        csw.dCSWTag         = cbw->dCBWTag;
++        csw.dCSWDataResidue = cbw->dCBWDataTransferLength - data_len;
++        csw.bCSWStatus      = 0x01;
++        storage_urb_send(device, &csw, sizeof(csw));
++
++    }
++
++    /* error code save REQUEST SENSE */
++    request_sense_data_set(0x05, 0x20, 0x00, 0x00);
++
++    return;
++}
++
++static void scsi_bulkout_write_10_analysis(struct usb_device_instance* device,
++                                           void* buffer, int length)
++{
++    COMMAND_STATUS_WRAPPER  csw;
++    unsigned char           status = 0;
++    unsigned long           buff_used_len, buff_offset;
++    unsigned long           s_tick, e_tick, wr_tick;
++
++    buff_offset = BulkOutLength % sizeof(BlockBuffer);
++
++    memcpy(BlockBuffer + buff_offset, buffer, length);
++    BulkOutLength += length;
++
++    buff_used_len = BulkOutLength % sizeof(BlockBuffer);
++    if(buff_used_len == 0) buff_used_len = sizeof(BlockBuffer);
++
++    /* delete timer */
++    if(BulkOutLength >= KeepCBW.dCBWDataTransferLength){
++        del_timer(&BulkOutTim);
++    }
++
++    if(buff_used_len >= sizeof(BlockBuffer) ||
++       BulkOutLength >= KeepCBW.dCBWDataTransferLength){
++
++        /* buffer full */
++        SCSI_WRITE_10_COMMAND*  command = (SCSI_WRITE_10_COMMAND*)&KeepCBW.CBWCB;
++        unsigned short          len;
++        unsigned long           lba, offset;
++
++        memcpy(&lba, command->LogicalBlockAddress, sizeof(lba));
++        memcpy(&len, command->TransferLength, sizeof(len));
++        lba = ntohl(lba);
++        len = ntohs(len);
++
++        offset = (lba * DeviceBlockSize) +
++                 (sizeof(BlockBuffer) * ((BulkOutLength - 1) / sizeof(BlockBuffer)));
++
++        /* device check */
++        if(DeviceFile &&
++           MediaChange != MEDIA_CHANGE_ON &&
++           DeviceWrProtect != WR_PROTECT_ON){
++
++            /* write before jiffies get */
++            s_tick = jiffies;
++
++            /* device seek */
++            DeviceFile->f_op->llseek(DeviceFile, offset, 0);
++
++            /* device write */
++            if(DeviceFile->f_op->write(DeviceFile, BlockBuffer, buff_used_len,
++                                       &DeviceFile->f_pos) != buff_used_len){
++                /* statistics update */
++                StatDevWriteError++;
++                printk(KERN_INFO "storage_fd: device write error. length '%ld'.\n", buff_used_len);
++            }
++
++            /* write after jiffies get */
++            e_tick = jiffies;
++
++            /* statistics update */
++            wr_tick = e_tick - s_tick;
++            if(wr_tick > StatMaxWriteTime){
++                StatMaxWriteTime = wr_tick;
++            }
++        }
++    }
++
++    if(BulkOutLength >= KeepCBW.dCBWDataTransferLength){
++        if(DeviceFile == NULL){
++            /* command fail */
++            status = 1;
++
++            /* error code save REQUEST SENSE */
++            request_sense_data_set(0x02, 0x3a, 0x00, 0x00);
++        }
++        else
++        if(MediaChange == MEDIA_CHANGE_ON){
++            /* command fail */
++            status = 1;
++
++            /* error code save REQUEST SENSE */
++            request_sense_data_set(0x06, 0x28, 0x00, 0x00);
++
++            /* media change flag off */
++            MediaChange = MEDIA_CHANGE_OFF;
++        }
++        else
++        if(DeviceWrProtect == WR_PROTECT_ON){
++            /* command fail */
++            status = 1;
++
++            /* error code save REQUEST SENSE */
++            request_sense_data_set(0x07, 0x27, 0x00, 0x00);
++
++            /* media change flag off */
++            MediaChange = MEDIA_CHANGE_OFF;
++        }
++
++        /*
++         * status transport
++         */
++
++        memset(&csw, 0x00, sizeof(csw));
++
++        csw.dCSWSignature   = CSW_SIGNATURE;
++        csw.dCSWTag         = KeepCBW.dCBWTag;
++        csw.dCSWDataResidue = KeepCBW.dCBWDataTransferLength - BulkOutLength;
++        csw.bCSWStatus      = status;
++
++        storage_urb_send(device, &csw, sizeof(csw));
++
++        /* status reset */
++        BulkOutLength = 0;
++        StorageStatus = STORAGE_IDLE;
++
++        /* flush before jiffies get */
++        s_tick = jiffies;
++
++        /* device buffer flush */
++        if(DeviceFile && DeviceFile->f_op->ioctl(DeviceFile->f_dentry->d_inode,
++                                                 DeviceFile, BLKFLSBUF, 0) != 0){
++            /* statistics update */
++            StatDevFlushError++;
++            printk(KERN_INFO "storage_fd: device flush error.\n");
++        }
++
++        /* flush after jiffies get */
++        e_tick = jiffies;
++
++        /* statistics update */
++        wr_tick = e_tick - s_tick;
++        if(wr_tick > StatMaxWriteTime){
++            StatMaxWriteTime = wr_tick;
++        }
++
++    }
++
++    return;
++}
++
++static void scsi_bulkout_unsupport_analysis(struct usb_device_instance* device,
++                                            void* buffer, int length)
++{
++    COMMAND_STATUS_WRAPPER  csw;
++
++    BulkOutLength += length;
++
++    if(BulkOutLength >= KeepCBW.dCBWDataTransferLength){
++        /*
++         * status transport
++         */
++
++        memset(&csw, 0x00, sizeof(csw));
++
++        csw.dCSWSignature   = CSW_SIGNATURE;
++        csw.dCSWTag         = KeepCBW.dCBWTag;
++        csw.dCSWDataResidue = KeepCBW.dCBWDataTransferLength - BulkOutLength;
++        csw.bCSWStatus      = 1;
++
++        storage_urb_send(device, &csw, sizeof(csw));
++
++        /* error code save REQUEST SENSE */
++        request_sense_data_set(0x05, 0x20, 0x00, 0x00);
++
++        /* status reset */
++        BulkOutLength = 0;
++        StorageStatus = STORAGE_IDLE;
++    }
++
++    return;
++}
++
++/******************************************************************************
++** Global Function
++******************************************************************************/
++
++static SCSI_ANALYSIS_TBL    ScsiAnalysisTbl[] = {
++    {SCSI_FORMAT_UNT,                   "SCSI_FORMAT_UNT",                   NULL},
++    {SCSI_INQUIRY,                      "SCSI_INQUIRY",                      scsi_inquiry_analysis},
++    {SCSI_START_STOP,                   "SCSI_START_STOP",                   scsi_start_stop_analysis},
++    {SCSI_MODE_SELECT,                  "SCSI_MODE_SELECT",                  NULL},
++    {SCSI_MODE_SENSE,                   "SCSI_MODE_SENSE",                   scsi_mode_sense_analysis},
++    {SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL, "SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL", scsi_prevent_allow_medium_removal_analysis},
++    {SCSI_READ_10,                      "SCSI_READ_10",                      scsi_read_10_analysis},
++    {SCSI_READ_12,                      "SCSI_READ_12",                      NULL},
++    {SCSI_READ_CAPACITY,                "SCSI_READ_CAPACITY",                scsi_read_capacity_analysis},
++    {SCSI_READ_FORMAT_CAPACITY,         "SCSI_READ_FORMAT_CAPACITY",         scsi_read_format_capacity_analysis},
++    {SCSI_REQUEST_SENSE,                "SCSI_REQUEST_SENSE",                scsi_request_sense_analysis},
++    {SCSI_REZERO_UNIT,                  "SCSI_REZERO_UNIT",                  NULL},
++    {SCSI_SEEK_10,                      "SCSI_SEEK_10",                      NULL},
++    {SCSI_SEND_DIAGNOSTIC,              "SCSI_SEND_DIAGNOSTIC",              NULL},
++    {SCSI_TEST_UNIT_READY,              "SCSI_TEST_UNIT_READY",              scsi_test_unit_ready_analysis},
++    {SCSI_VERIFY,                       "SCSI_VERIFY",                       scsi_verify_analysis},
++    {SCSI_WRITE_10,                     "SCSI_WRITE_10",                     scsi_write_10_analysis},
++    {SCSI_WRITE_12,                     "SCSI_WRITE_12",                     NULL},
++    {SCSI_WRITE_AND_VERIFY,             "SCSI_WRITE_AND_VERIFY",             NULL}
++};
++
++static SCSI_BULKOUT_ANALYSIS_TBL    ScsiBlkOutAnalysisTbl[] = {
++    {SCSI_WRITE_10,                     "SCSI_WRITE_10",                     scsi_bulkout_write_10_analysis},
++};
++
++void storageproto_urb_analysis(struct urb* urb)
++{
++    COMMAND_BLOCK_WRAPPER*  cbw = (COMMAND_BLOCK_WRAPPER*)urb->buffer;
++    int                     i;
++
++    /* status BLKOUT check */
++    if(StorageStatus == STORAGE_BULKOUT){
++        for(i = 0;
++            i < sizeof(ScsiBlkOutAnalysisTbl) / sizeof(SCSI_ANALYSIS_TBL);
++            i++){
++            if(ScsiBlkOutAnalysisTbl[i].scsi_command == KeepCBW.CBWCB[0]){
++                if(ScsiBlkOutAnalysisTbl[i].bulkout_func){
++                    ScsiBlkOutAnalysisTbl[i].bulkout_func(urb->device,
++                                                          urb->buffer,
++                                                          urb->actual_length);
++                    goto RETURN_LABEL;
++                }
++                break;
++            }
++        }
++        scsi_bulkout_unsupport_analysis(urb->device, urb->buffer, urb->actual_length);
++        goto RETURN_LABEL;
++    }
++
++    /* signature check */
++    if(cbw->dCBWSignature != CBW_SIGNATURE){
++        printk(KERN_INFO "storage_fd: signature error. '0x%08lx'.\n",
++            cbw->dCBWSignature);
++        goto RETURN_LABEL;
++    }
++
++    /* statistics set */
++    if(cbw->dCBWDataTransferLength){
++        if(((cbw->bmCBWFlags & 0x80) == 0x00) && (cbw->dCBWDataTransferLength)){
++            /* BULK OUT */
++            if(StatMaxBulkOutSize < cbw->dCBWDataTransferLength){
++                StatMaxBulkOutSize = cbw->dCBWDataTransferLength;
++            }
++        }
++        else{
++            /* BULK IN */
++            if(StatMaxBulkInSize < cbw->dCBWDataTransferLength){
++                StatMaxBulkInSize = cbw->dCBWDataTransferLength;
++            }
++        }
++    }
++
++    /* save CBW and set storage status */
++    memcpy(&KeepCBW, cbw, sizeof(KeepCBW));
++
++    /* UFI command analysis */
++    for(i = 0; i < sizeof(ScsiAnalysisTbl) / sizeof(SCSI_ANALYSIS_TBL); i++){
++        if(ScsiAnalysisTbl[i].scsi_command == cbw->CBWCB[0]){
++            if(ScsiAnalysisTbl[i].scsi_func){
++                ScsiAnalysisTbl[i].scsi_func(urb->device, cbw);
++                goto RETURN_LABEL;
++            }
++            break;
++        }
++    }
++
++    scsi_unsupport_analysis(urb->device, cbw);
++    printk(KERN_INFO "storage_fd: SCSI command error. '0x%02x'.\n",
++        cbw->CBWCB[0]);
++    goto RETURN_LABEL;
++
++RETURN_LABEL:
++
++    /* URB free */
++    usbd_recycle_urb(urb);
++
++    return;
++}
++
++int storageproto_device_open_check(void)
++{
++    struct file*    file;
++    struct inode*   inode;
++    kdev_t          dev;
++    int             read_org;
++
++    /* device already open check */
++    if(DeviceFile){
++        storageproto_device_close();
++    }
++
++    /* device open */
++    file = filp_open(storage_device, O_RDWR, 0000);
++    if(IS_ERR(file)){
++        file = filp_open(storage_device, O_RDONLY, 0000);
++        if(IS_ERR(file)){
++            storageproto_device_close();
++            return MEDIA_EJECT;
++        }
++        DeviceWrProtect = WR_PROTECT_ON;
++    }
++
++    file->f_op->llseek(file, 0, 0);
++    if(file->f_op->read(file, (void*)&read_org, sizeof(read_org), &file->f_pos)
++                        != sizeof(read_org)){
++        filp_close(file, NULL);
++        storageproto_device_close();
++        return MEDIA_EJECT;
++    }
++
++    /* struct file pointer save */
++    DeviceFile = file;
++
++    /* device information */
++    inode = file->f_dentry->d_inode;
++    dev = inode->i_rdev;
++
++    if (blk_size[MAJOR(dev)]){
++        DeviceSize = blk_size[MAJOR(dev)][MINOR(dev)] << BLOCK_SIZE_BITS;
++    }
++    else{
++        DeviceSize = INT_MAX << BLOCK_SIZE_BITS;
++    }
++
++    if(blksize_size[MAJOR(dev)] && blksize_size[MAJOR(dev)][MINOR(dev)]){
++        DeviceBlockSize = DEVICE_BLOCK_SIZE;
++    }
++    else{
++        DeviceBlockSize = DEVICE_BLOCK_SIZE;
++    }
++
++    return MEDIA_INSERT;
++}
++
++void storageproto_device_close(void)
++{
++    if(DeviceFile){
++        filp_close(DeviceFile, NULL);
++        DeviceFile      = NULL;
++        DeviceSize      = 0;
++        DeviceBlockSize = DEVICE_BLOCK_SIZE;
++        DeviceWrProtect = WR_PROTECT_OFF;
++    }
++
++    return;
++}
++
++void storageproto_usb_status_check(int status)
++{
++    static int  Is1stCheck = 1;
++
++    /* USB status check */
++    if(Is1stCheck){
++        Is1stCheck = 0;
++    }
++    else{
++        if(UsbStatus == status) goto RETURN_LABEL;
++    }
++
++    /* set status */
++    UsbStatus = status;
++
++    switch(UsbStatus){
++    case USB_CONNECT:
++        /* media status check */
++        storageproto_media_status_check(CONTEXT_SCHEDULE);
++
++        switch(MediaStatus){
++        case MEDIA_EJECT:
++            break;
++
++        case MEDIA_INSERT:
++            hotplug("usbdstorage", storage_device, "umount");
++            break;
++
++        default:
++            break;
++        }
++        hotplug("usbdstorage", storage_device, "connect");
++        break;
++
++    case USB_DISCONNECT:
++        /* device close */
++        storageproto_device_close();
++
++        switch(MediaStatus){
++        case MEDIA_EJECT:
++            break;
++
++        case MEDIA_INSERT:
++            hotplug("usbdstorage", storage_device, "mount");
++            break;
++
++        default:
++            break;
++        }
++        hotplug("usbdstorage", storage_device, "disconnect");
++        break;
++
++    default:
++        break;
++    }
++
++RETURN_LABEL:
++    DBG_STORAGE_FD(KERN_INFO "storage_fd: USB check '%s' '%s' 'file:%p'.\n",
++        (UsbStatus) ? "USB_CONNECT" : "USB_DISCONNECT",
++        (MediaStatus) ? "MEDIA_INSERT" : "MEDIA_EJECT", DeviceFile);
++
++    return;
++}
++
++void storageproto_media_status_check(int call_context)
++{
++    static unsigned long    RetryCount = 0;
++    int status;
++
++    /* media open check */
++    status = storageproto_device_open_check();
++
++    /* media status check retry */
++    if(status == MEDIA_EJECT){
++        switch(call_context){
++        case CONTEXT_STORAGE:
++
++            /* retry counter init */
++            RetryCount = 0;
++
++            /* timer set */
++            del_timer(&MediaCheckTim);
++            MediaCheckTim.expires  = jiffies + ((MEDIA_CHECK_TIM * HZ) / 1000);
++            MediaCheckTim.data     = 0;
++            MediaCheckTim.function = media_check_timeout;
++            add_timer(&MediaCheckTim);
++
++            break;
++
++        case CONTEXT_TIMER:
++
++            /* retry counter update */
++            RetryCount++;
++
++            /* retry counter check */
++            if(RetryCount >= MEDIA_CHECK_RETRY) break;
++
++            /* timer set */
++            del_timer(&MediaCheckTim);
++            MediaCheckTim.expires  = jiffies + ((MEDIA_CHECK_TIM * HZ) / 1000);
++            MediaCheckTim.data     = 0;
++            MediaCheckTim.function = media_check_timeout;
++            add_timer(&MediaCheckTim);
++
++            break;
++
++        default:
++            break;
++        }
++    }
++    else
++    if(status == MEDIA_INSERT){
++        /* delete timer */
++        del_timer(&MediaCheckTim);
++    }
++
++    /* media status check */
++    if(status == MediaStatus){
++        if(UsbStatus == USB_DISCONNECT){
++            storageproto_device_close();
++        }
++        if(MediaStatus == MEDIA_INSERT){
++            if(call_context == CONTEXT_STORAGE || call_context == CONTEXT_TIMER){
++                MediaChange = MEDIA_CHANGE_ON;
++            }
++        }
++        goto RETURN_LABEL;
++    }
++
++    /* set status */
++    MediaStatus = status;
++
++    switch(MediaStatus){
++    case MEDIA_INSERT:
++        /* set status */
++        MediaChange = MEDIA_CHANGE_ON;
++
++        switch(UsbStatus){
++        case USB_DISCONNECT:
++            storageproto_device_close();
++            break;
++
++        case USB_CONNECT:
++            break;
++
++        default:
++            break;
++        }
++        hotplug("usbdstorage", storage_device, "insert");
++        break;
++
++    case MEDIA_EJECT:
++        switch(UsbStatus){
++        case USB_DISCONNECT:
++            storageproto_device_close();
++            break;
++
++        case USB_CONNECT:
++            break;
++
++        default:
++            break;
++        }
++        hotplug("usbdstorage", storage_device, "eject");
++        break;
++
++    default:
++        break;
++    }
++
++RETURN_LABEL:
++    DBG_STORAGE_FD(KERN_INFO "storage_fd: media check. '%s' '%s' 'file:%p' '%s'.\n",
++        (UsbStatus) ? "USB_CONNECT" : "USB_DISCONNECT",
++        (MediaStatus) ? "MEDIA_INSERT" : "MEDIA_EJECT", DeviceFile,
++        (call_context == CONTEXT_SCHEDULE) ? "CONTEXT_SCHEDULE" : 
++        (call_context == CONTEXT_STORAGE)  ? "CONTEXT_STORAGE" : "CONTEXT_TIMER");
++
++    return;
++}
++
++void storageproto_usb_reset_ind(void)
++{
++    /* status reset */
++    BulkOutLength = 0;
++    StorageStatus = STORAGE_IDLE;
++
++    DBG_STORAGE_FD(KERN_INFO "storage_fd: storage protocol reset.\n");
++
++    return;
++}
++
++void storageproto_init(void)
++{
++    /* timer init */
++    init_timer(&BulkOutTim);
++
++    /* timer init */
++    init_timer(&MediaCheckTim);
++
++    return;
++}
++
++void storageproto_exit(void)
++{
++    /* device close */
++    storageproto_device_close();
++
++    /* delete timer */
++    del_timer(&BulkOutTim);
++
++    /* delete timer */
++    del_timer(&MediaCheckTim);
++
++    return;
++}
++
++ssize_t storageproto_proc_read(struct file* file, char* buf, size_t count,
++                               loff_t* pos)
++{
++    char    string[1024];
++    int     len = 0;
++
++    len += sprintf(string + len, "Protocol status:%s\n",
++            (StorageStatus == STORAGE_IDLE)   ? "STORAGE_IDLE" :
++            (StorageStatus == STORAGE_BULKIN) ? "STORAGE_BULKIN" :
++                                                "STORAGE_BULKOUT");
++
++    len += sprintf(string + len, "USB status:%s\n",
++            (UsbStatus == USB_DISCONNECT) ? "USB_DISCONNECT" :
++                                            "USB_CONNECT");
++
++    len += sprintf(string + len, "Media status:%s\n",
++            (MediaStatus == MEDIA_EJECT) ? "MEDIA_EJECT" :
++                                           "MEDIA_INSERT");
++
++    len += sprintf(string + len, "Media chage:%s\n",
++            (MediaChange == MEDIA_CHANGE_OFF) ? "MEDIA_CHANGE_OFF" :
++                                                "MEDIA_CHANGE_ON");
++
++    len += sprintf(string + len, "Device name:%s\n",
++            storage_device);
++
++    len += sprintf(string + len, "Device file descriptor:0x%p\n",
++            DeviceFile);
++
++    len += sprintf(string + len, "Device size:0x%d\n",
++            DeviceSize);
++
++    len += sprintf(string + len, "Device block size:0x%d\n",
++            DeviceBlockSize);
++
++    len += sprintf(string + len, "Device write protect:%s\n",
++            (DeviceWrProtect == WR_PROTECT_OFF) ? "WR_PROTECT_OFF":
++                                                  "WR_PROTECT_ON");
++
++    len += sprintf(string + len, "Bulk in max size:%ld\n",
++            StatMaxBulkInSize);
++
++    len += sprintf(string + len, "Bulk out max size:%ld\n",
++            StatMaxBulkOutSize);
++
++    len += sprintf(string + len, "device write error:%ld\n",
++            StatDevWriteError);
++
++    len += sprintf(string + len, "device read error:%ld\n",
++            StatDevReadError);
++
++    len += sprintf(string + len, "device flush error:%ld\n",
++            StatDevFlushError);
++
++    len += sprintf(string + len, "write data bulk out timout:%ld\n",
++            StatWriteTimout);
++
++    len += sprintf(string + len, "device write max time:%ld msec\n",
++            (StatMaxWriteTime * 1000) / HZ);
++
++    *pos += len;
++    if(len > count){
++        len = -EINVAL;
++    }
++    else
++    if(len > 0 && copy_to_user(buf, string, len)) {
++        len = -EFAULT;
++    }
++
++    return len;
++}
++
+diff -Nur linux-2.4.18/drivers/usb/device/storage_fd/storageproto.h linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storageproto.h
+--- linux-2.4.18/drivers/usb/device/storage_fd/storageproto.h	1970-01-01 03:00:00.000000000 +0300
++++ linux-2.4.18-usb-storage/drivers/usb/device/storage_fd/storageproto.h	2003-11-07 05:34:43.000000000 +0300
+@@ -0,0 +1,585 @@
++/*
++ * linux/drivers/usb/device/storage_fd/storageproto.h - mass storage protocol library header
++ *
++ * Copyright (c) 2003 Lineo Solutions, Inc.
++ *
++ * Written by Shunnosuke kabata
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#ifndef _STORAGEPROTO_H_
++#define _STORAGEPROTO_H_
++
++/******************************************************************************
++** Macro Define
++******************************************************************************/
++
++/**************************************
++** Class Code
++**************************************/
++
++/*
++ * Class
++ */
++
++#define MASS_STORAGE_CLASS                  0x08
++
++/*
++ * SubClass
++ */
++
++#define MASS_STORAGE_SUBCLASS_RBC           0x01
++#define MASS_STORAGE_SUBCLASS_SFF8020I      0x02
++#define MASS_STORAGE_SUBCLASS_QIC157        0x03
++#define MASS_STORAGE_SUBCLASS_UFI           0x04
++#define MASS_STORAGE_SUBCLASS_SFF8070I      0x05
++#define MASS_STORAGE_SUBCLASS_SCSI          0x06
++
++/*
++ * Protocol
++ */
++
++#define MASS_STORAGE_PROTO_CBI_WITH_COMP    0x00
++#define MASS_STORAGE_PROTO_CBI_NO_COMP      0x01
++#define MASS_STORAGE_PROTO_BULK_ONLY        0x50
++
++/**************************************
++** SCSI Command
++**************************************/
++
++#define SCSI_FORMAT_UNT                      0x04
++#define SCSI_INQUIRY                         0x12
++#define SCSI_START_STOP                      0x1b
++#define SCSI_MODE_SELECT                     0x55
++#define SCSI_MODE_SENSE                      0x1a
++#define SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL    0x1e
++#define SCSI_READ_10                         0x28
++#define SCSI_READ_12                         0xa8
++#define SCSI_READ_CAPACITY                   0x25
++#define SCSI_READ_FORMAT_CAPACITY            0x23
++#define SCSI_REQUEST_SENSE                   0x03
++#define SCSI_REZERO_UNIT                     0x01
++#define SCSI_SEEK_10                         0x2b
++#define SCSI_SEND_DIAGNOSTIC                 0x1d
++#define SCSI_TEST_UNIT_READY                 0x00
++#define SCSI_VERIFY                          0x2f
++#define SCSI_WRITE_10                        0x2a
++#define SCSI_WRITE_12                        0xaa
++#define SCSI_WRITE_AND_VERIFY                0x2e
++
++/**************************************
++** SCSI Command Parameter
++**************************************/
++
++#define CBW_SIGNATURE           0x43425355  /* USBC */
++#define CSW_SIGNATURE           0x53425355  /* USBS */
++
++#define PRODUCT_REVISION_LEVEL  "1.00"
++
++/**************************************
++** Status
++**************************************/
++
++#define WR_PROTECT_OFF      0
++#define WR_PROTECT_ON       1
++
++#define STORAGE_IDLE        0
++#define STORAGE_BULKIN      1
++#define STORAGE_BULKOUT     2
++
++#define USB_DISCONNECT      0
++#define USB_CONNECT         1
++
++#define MEDIA_EJECT         0
++#define MEDIA_INSERT        1
++
++#define MEDIA_CHANGE_OFF    0
++#define MEDIA_CHANGE_ON     1
++
++/**************************************
++** Mass Storage Thread Name
++**************************************/
++
++#define STORAGE_THREAD_NAME "usbdstorage"
++
++/**************************************
++** Media Signal Delay Time(ms)
++**************************************/
++
++#define USB_EVENT_DELAY_TIM 1000
++
++/**************************************
++** Write Bulk Out Check Time(ms)
++**************************************/
++
++#define WR_BULKOUT_CHK_TIM  1000
++
++/**************************************
++** Media Check Time(ms)
++**************************************/
++
++#define MEDIA_CHECK_TIM     3000
++#define MEDIA_CHECK_RETRY   3
++
++/**************************************
++** Context
++**************************************/
++
++#define CONTEXT_SCHEDULE    0
++#define CONTEXT_STORAGE     1
++#define CONTEXT_TIMER       2
++
++/**************************************
++** Debug Message
++**************************************/
++#if 0
++#define DBG_STORAGE_FD(fmt, args...)    printk(fmt, ##args)
++#else
++#define DBG_STORAGE_FD(fmt, args...)
++#endif
++
++/******************************************************************************
++** Structure Define
++******************************************************************************/
++
++/**************************************
++** Command Block Wrapper / Command Status Wrapper
++**************************************/
++
++/*
++ * Command Block Wrapper
++ */
++typedef struct{
++    unsigned long   dCBWSignature;
++    unsigned long   dCBWTag;
++    unsigned long   dCBWDataTransferLength;
++    unsigned char   bmCBWFlags;
++    unsigned char   bCBWLUN:4,
++                    Reserved:4;
++    unsigned char   bCBWCBLength:5,
++                    Reserved2:3;
++    unsigned char   CBWCB[16];
++} __attribute__((packed)) COMMAND_BLOCK_WRAPPER;
++
++/*
++ * Command Status Wrapper
++ */
++typedef struct{
++    unsigned long   dCSWSignature;
++    unsigned long   dCSWTag;
++    unsigned long   dCSWDataResidue;
++    unsigned char   bCSWStatus;
++} __attribute__((packed)) COMMAND_STATUS_WRAPPER;
++
++/**************************************
++** SCSI Command
++**************************************/
++
++/*
++ * INQUIRY
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   EVPD:1,
++                    Reserved1:4,
++                    LogicalUnitNumber:3;
++    unsigned char   PageCode;
++    unsigned char   Reserved2;
++    unsigned char   AllocationLength;
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++} __attribute__((packed)) SCSI_INQUIRY_COMMAND;
++
++typedef struct{
++    unsigned char   PeripheralDeviceType:5,
++                    Reserved1:3;
++    unsigned char   Reserved2:7,
++                    RMB:1;
++    unsigned char   ANSIVersion:3,
++                    ECMAVersion:3,
++                    ISOVersion:2;
++    unsigned char   ResponseDataFormat:4,
++                    Reserved3:4;
++    unsigned char   AdditionalLength;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   VendorInformation[8];
++    unsigned char   ProductIdentification[16];
++    unsigned char   ProductRevisionLevel[4];
++} __attribute__((packed)) SCSI_INQUIRY_DATA;
++
++/*
++ * READ FORMAT CAPACITY
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   Reserved1:5,
++                    LogicalUnitNumber:3;
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   AllocationLength[2];
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++} __attribute__((packed)) SCSI_READ_FORMAT_CAPACITY_COMMAND;
++
++typedef struct{
++    struct{
++        unsigned char   Reserved1;
++        unsigned char   Reserved2;
++        unsigned char   Reserved3;
++        unsigned char   CapacityListLength;
++    } __attribute__((packed)) CapacityListHeader;
++    struct{
++        unsigned char   NumberofBlocks[4];
++        unsigned char   DescriptorCode:2,
++                        Reserved1:6;
++        unsigned char   BlockLength[3];
++    } __attribute__((packed)) CurrentMaximumCapacityDescriptor;
++} __attribute__((packed)) SCSI_READ_FORMAT_CAPACITY_DATA;
++
++/*
++ * READ FORMAT CAPACITY
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   RelAdr:1,
++                    Reserved1:4,
++                    LogicalUnitNumber:3;
++    unsigned char   LogicalBlockAddress[4];
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   PMI:1,
++                    Reserved4:7;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++} __attribute__((packed)) SCSI_READ_CAPACITY_COMMAND;
++
++typedef struct{
++    unsigned char   LastLogicalBlockAddress[4];
++    unsigned char   BlockLengthInBytes[4];
++} __attribute__((packed)) SCSI_READ_CAPACITY_DATA;
++
++/*
++ * REQUEST SENSE
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   Reserved1:5,
++                    LogicalUnitNumber:3;
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   AllocationLength;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++    unsigned char   Reserved10;
++} __attribute__((packed)) SCSI_REQUEST_SENSE_COMMAND;
++
++typedef struct{
++    unsigned char   ErrorCode:7,
++                    Valid:1;
++    unsigned char   Reserved1;
++    unsigned char   SenseKey:4,
++                    Reserved2:4;
++    unsigned char   Information[4];
++    unsigned char   AdditionalSenseLength;
++    unsigned char   Reserved3[4];
++    unsigned char   AdditionalSenseCode;
++    unsigned char   AdditionalSenseCodeQualifier;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5[3];
++} __attribute__((packed)) SCSI_REQUEST_SENSE_DATA;
++
++/*
++ * READ(10)
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   RelAdr:1,
++                    Reserved1:2,
++                    FUA:1,
++                    DPO:1,
++                    LogicalUnitNumber:3;
++    unsigned char   LogicalBlockAddress[4];
++    unsigned char   Reserved2;
++    unsigned char   TransferLength[2];
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++} __attribute__((packed)) SCSI_READ_10_COMMAND;
++
++/*
++ * MODE SENSE
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   Reserved1:3,
++                    DBD:1,
++                    Reserved2:1,
++                    LogicalUnitNumber:3;
++    unsigned char   PageCode:6,
++                    PC:2;
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   ParameterListLength[2];
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++} __attribute__((packed)) SCSI_MODE_SENSE_COMMAND;
++
++typedef struct{
++    unsigned char   ModeDataLength;
++    unsigned char   MediumTypeCode;
++    unsigned char   Reserved1:4,
++                    DPOFUA:1,
++                    Reserved2:2,
++                    WP:1;
++    unsigned char   Reserved3;
++} __attribute__((packed)) MODE_PARAMETER_HEADER;
++
++typedef struct{
++    unsigned char   PageCode:6,
++                    Reserved1:1,
++                    PS:1;
++    unsigned char   PageLength;
++    unsigned char   DCR:1,
++                    Reserved2:1,
++                    PER:1,
++                    Reserved3:1,
++                    RC:1,
++                    Reserved4:1,
++                    Reserved5:1,
++                    AWRE:1;
++    unsigned char   ReadRetryCount;
++    unsigned char   Reserved6[4];
++    unsigned char   WriteRetryCount;
++    unsigned char   Reserved7[3];
++} __attribute__((packed)) READ_WRITE_ERROR_RECOVERY_PAGE;
++
++typedef struct{
++    unsigned char   PageCode:6,
++                    Reserved1:1,
++                    PS:1;
++    unsigned char   PageLength;
++    unsigned char   TransferRate[2];
++    unsigned char   NumberofHeads;
++    unsigned char   SectorsperTrack;
++    unsigned char   DataBytesperSector[2];
++    unsigned char   NumberofCylinders[2];
++    unsigned char   Reserved2[9];
++    unsigned char   MotorOnDelay;
++    unsigned char   MotorOffDelay;
++    unsigned char   Reserved3[7];
++    unsigned char   MediumRotationRate[2];
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++} __attribute__((packed)) FLEXIBLE_DISK_PAGE;
++
++typedef struct{
++    unsigned char   PageCode:6,
++                    Reserved1:1,
++                    PS:1;
++    unsigned char   PageLength;
++    unsigned char   Reserved2:6,
++                    SRFP:1,
++                    SFLP:1;
++    unsigned char   TLUN:3,
++                    Reserved3:3,
++                    SML:1,
++                    NCD:1;
++    unsigned char   Reserved4[8];
++} __attribute__((packed)) REMOVABLE_BLOCK_ACCESS_CAPABILITIES_PAGE;
++
++typedef struct{
++    unsigned char   PageCode:6,
++                    Reserved1:1,
++                    PS:1;
++    unsigned char   PageLength;
++    unsigned char   Reserved2;
++    unsigned char   InactivityTimeMultiplier:4,
++                    Reserved3:4;
++    unsigned char   SWPP:1,
++                    DISP:1,
++                    Reserved4:6;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++} __attribute__((packed)) TIMER_AND_PROTECT_PAGE;
++
++typedef struct{
++    READ_WRITE_ERROR_RECOVERY_PAGE              ReadWriteErrorRecoveryPage;
++    FLEXIBLE_DISK_PAGE                          FlexibleDiskPage;
++    REMOVABLE_BLOCK_ACCESS_CAPABILITIES_PAGE    RemovableBlockAccessCapabilitiesPage;
++    TIMER_AND_PROTECT_PAGE                      TimerAndProtectPage;
++} __attribute__((packed)) MODE_ALL_PAGES;
++
++typedef struct{
++    MODE_PARAMETER_HEADER   ModeParameterHeader;
++    union{
++        READ_WRITE_ERROR_RECOVERY_PAGE              ReadWriteErrorRecoveryPage;
++        FLEXIBLE_DISK_PAGE                          FlexibleDiskPage;
++        REMOVABLE_BLOCK_ACCESS_CAPABILITIES_PAGE    RemovableBlockAccessCapabilitiesPage;
++        TIMER_AND_PROTECT_PAGE                      TimerAndProtectPage;
++        MODE_ALL_PAGES                              ModeAllPages;
++    } __attribute__((packed)) ModePages;
++} __attribute__((packed)) SCSI_MODE_SENSE_DATA;
++
++/*
++ * TEST UNIT READY
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   Reserved1:5,
++                    LogicalUnitNumber:3;
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++    unsigned char   Reserved10;
++    unsigned char   Reserved11;
++} __attribute__((packed)) SCSI_TEST_UNIT_READY_COMMAND;
++
++/*
++ * PREVENT-ALLOW MEDIUM REMOVAL
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   Reserved1:5,
++                    LogicalUnitNumber:3;
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   Prevent:1,
++                    Reserved4:7;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++    unsigned char   Reserved10;
++    unsigned char   Reserved11;
++} __attribute__((packed)) SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL_COMMAND;
++
++/*
++ * START-STOP UNIT
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   IMMED:1,
++                    Reserved1:4,
++                    LogicalUnitNumber:3;
++    unsigned char   Reserved2;
++    unsigned char   Reserved3;
++    unsigned char   Start:1,
++                    LoEj:1,
++                    Reserved4:6;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++    unsigned char   Reserved7;
++    unsigned char   Reserved8;
++    unsigned char   Reserved9;
++    unsigned char   Reserved10;
++    unsigned char   Reserved11;
++} __attribute__((packed)) SCSI_START_STOP_COMMAND;
++
++/*
++ * WRITE(10)
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   RelAdr:1,
++                    Reserved1:2,
++                    FUA:1,
++                    DPO:1,
++                    LogicalUnitNumber:3;
++    unsigned char   LogicalBlockAddress[4];
++    unsigned char   Reserved2;
++    unsigned char   TransferLength[2];
++    unsigned char   Reserved3;
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++} __attribute__((packed)) SCSI_WRITE_10_COMMAND;
++
++/*
++ * VERIFY
++ */
++
++typedef struct{
++    unsigned char   OperationCode;
++    unsigned char   RelAdr:1,
++                    ByteChk:1,
++                    Reserved1:1,
++                    Reserved2:1,
++                    DPO:1,
++                    LogicalUnitNumber:3;
++    unsigned char   LogicalBlockAddress[4];
++    unsigned char   Reserved3;
++    unsigned char   VerificationLength[2];
++    unsigned char   Reserved4;
++    unsigned char   Reserved5;
++    unsigned char   Reserved6;
++} __attribute__((packed)) SCSI_VERIFY_COMMAND;
++
++/******************************************************************************
++** Global Function Prototype
++******************************************************************************/
++
++/* storage-fd.c */
++void    storage_urb_send(struct usb_device_instance*, void*, int);
++
++/* storageproto.c */
++void    storageproto_urb_analysis(struct urb*);
++int     storageproto_device_open_check(void);
++void    storageproto_device_close(void);
++void    storageproto_usb_status_check(int);
++void    storageproto_media_status_check(int);
++void    storageproto_usb_reset_ind(void);
++ssize_t storageproto_proc_read(struct file*, char*, size_t, loff_t* pos);
++void    storageproto_init(void);
++void    storageproto_exit(void);
++
++#endif  /* _STORAGEPROTO_H_ */
++

@@ -1,0 +1,11 @@
+--- xmms-embedded/xmms/Input/mikmod/drv_xmms.c.orig	2002-10-10 19:46:47 +0200
++++ xmms-embedded/xmms/Input/mikmod/drv_xmms.c	2004-11-02 13:29:06 +0100
+@@ -65,7 +65,7 @@
+ 	if (!(audiobuffer = (SBYTE *) g_malloc0(buffer_size)))
+ 		return 1;
+ 	
+-	fmt = (md_mode & DMODE_16BITS) ? FMT_S16_LE : FMT_U8;
++	fmt = (md_mode & DMODE_16BITS) ? FMT_S16_NE : FMT_U8;
+ 	nch = (md_mode & DMODE_STEREO) ? 2 : 1;
+ 
+ 	if (audio_open)

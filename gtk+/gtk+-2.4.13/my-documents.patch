@@ -1,0 +1,19 @@
+--- gtk+-2.4.4/gtk/gtkfilechooserdefault.c.old	Sat Aug 14 00:23:16 2004
++++ gtk+-2.4.4/gtk/gtkfilechooserdefault.c	Sat Aug 14 00:26:11 2004
+@@ -1061,12 +1061,14 @@
+ static void
+ shortcuts_append_home (GtkFileChooserDefault *impl)
+ {
+-  const char *home;
++  const char *home, *docs;
+   GtkFilePath *home_path;
+   GError *error;
+ 
+   home = g_get_home_dir ();
+-  home_path = gtk_file_system_filename_to_path (impl->file_system, home);
++  docs = g_strdup_printf ("%s/My Documents", home);
++  home_path = gtk_file_system_filename_to_path (impl->file_system, docs);
++  g_free (docs);
+ 
+   error = NULL;
+   impl->has_home = shortcuts_insert_path (impl, -1, FALSE, NULL, home_path, _("Home"), FALSE, &error);

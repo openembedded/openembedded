@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment=Shopping list for the Zaurus.
+Exec=zshopi
+Icon=zshopi
+Type=Application
+Name=ZShopi

@@ -1,0 +1,19 @@
+--- configure	2002-09-06 20:04:34.000000000 -0400
++++ configure.new	2002-09-06 20:04:16.000000000 -0400
+@@ -250,7 +250,7 @@
+ PLATFORM=
+ XPLATFORM=
+ FROMMAKE=
+-QT_CXX=""
++QT_CXX=" \$(CXXFLAGS_EXTRA)"
+ 
+ 
+ # Parse the arguments, setting things to "yes" or "no".
+@@ -1356,6 +1356,7 @@
+ COMPILER=`echo $PLATFORM | cut -f 2- -d-`
+ if [ "$COMPILER" = "g++" ]
+ then
++	QT_CXX="$QT_CXX -fpermissive"
+     if [ "$GPLUSPLUS_EXCEPTIONS" = "no" ]
+     then
+        QT_C="$QT_C -fno-exceptions"

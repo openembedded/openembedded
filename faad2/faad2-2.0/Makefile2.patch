@@ -1,0 +1,20 @@
+--- ./Makefile.old	2004-09-25 21:53:20.000000000 +0930
++++ ./Makefile	2004-09-25 21:53:50.000000000 +0930
+@@ -108,7 +108,7 @@
+ INSTALL_DATA = ${INSTALL} -m 644
+ INSTALL_PROGRAM = ${INSTALL}
+ INSTALL_SCRIPT = ${INSTALL}
+-INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
++INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c 
+ LDFLAGS = -L/cc/build-corgi/tmp/staging/arm-linux/lib -Wl,-rpath-link,/cc/build-corgi/tmp/staging/arm-linux/lib -Wl,-rpath,/usr/lib
+ LIBOBJS = 
+ LIBS = 
+@@ -521,7 +521,7 @@
+ installcheck: installcheck-recursive
+ install-strip:
+ 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+-	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
++	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=  \
+ 	  `test -z '$(STRIP)' || \
+ 	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+ mostlyclean-generic:

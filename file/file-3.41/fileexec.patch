@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- file-3.41/Makefile.am~fileexec
++++ file-3.41/Makefile.am
+@@ -37,10 +37,10 @@
+ 	done >> $@
+ 
+ magic.mgc: magic file
+-	./file -C -m magic
++	file -C -m magic
+ 
+ magic.mime.mgc: magic.mime file
+-	./file -C -m $(srcdir)/magic.mime
++	file -C -m $(srcdir)/magic.mime
+ 
+ file.1:	Makefile file.man
+ 	@rm -f $@
+--- file-3.41/Makefile.in~fileexec
++++ file-3.41/Makefile.in
+@@ -677,10 +677,10 @@
+ 	done >> $@
+ 
+ magic.mgc: magic file
+-	./file -C -m magic
++	file -C -m magic
+ 
+ magic.mime.mgc: magic.mime file
+-	./file -C -m $(srcdir)/magic.mime
++	file -C -m $(srcdir)/magic.mime
+ 
+ file.1:	Makefile file.man
+ 	@rm -f $@

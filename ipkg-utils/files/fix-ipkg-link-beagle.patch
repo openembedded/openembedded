@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ipkg-utils/ipkg-link~fix-ipkg-link-beagle
++++ ipkg-utils/ipkg-link
+@@ -3,6 +3,7 @@
+ # <zaurus@bredband.net>
+ # Modified by Aman Gupta <oz@themastermind1.net>
+ 
++
+ usage () {
+ 	echo "Usage: "
+ 	echo "    $0 add    packagename (links \"packagename\" to root filesystem)"
+@@ -28,8 +29,13 @@
+ 				PREFIX="/mnt/ram"
+ 				files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" |sed -e 's/\/mnt\/ram//g'`
+ 			else
++			    if [ -e "/home/usr/lib/ipkg/info/$PACKAGE.list" ]; then
++				PREFIX="/home"
++				files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" |sed -e 's/\/home//g'`
++			    else
+ 				echo "Package \"$PACKAGE\" not found."
+ 				exit
++			    fi
+ 			fi
+ 		fi
+ 	fi
+@@ -66,6 +72,9 @@
+ 	elif [ "$PREFIX" = "/mnt/cf" ]; then
+ 		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sed -e 's/\/mnt\/cf//g' | sort -r`
+ 
++	elif [ "$PREFIX" = "/home" ]; then
++		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sed -e 's/\/home//g' | sort -r`
++	
+ 	else
+ 		files=`cat "$PREFIX/usr/lib/ipkg/info/$PACKAGE.list" | sort -r`
+ 	fi

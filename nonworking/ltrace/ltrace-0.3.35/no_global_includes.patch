@@ -1,0 +1,11 @@
+--- ltrace-0.3.35/Makefile.old	2003-03-30 16:38:05.000000000 +0200
++++ ltrace-0.3.35/Makefile.in	2004-08-14 20:40:50.000000000 +0200
+@@ -14,7 +14,7 @@
+ docdir		= $(prefix)/doc/ltrace
+ 
+ CC	=	@CC@
+-CPPFLAGS =	-I$(TOPDIR) -I$(TOPDIR)/sysdeps/$(OS) -I- @DEFS@
++CPPFLAGS =	-I$(TOPDIR) -I$(TOPDIR)/sysdeps/$(OS)  @DEFS@
+ CFLAGS	=	-Wall @CFLAGS@ -DSYSCONFDIR=\"$(sysconfdir)\"
+ LDFLAGS	=
+ LIBS	=	@LIBS@

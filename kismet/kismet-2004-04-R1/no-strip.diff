@@ -1,0 +1,45 @@
+--- Makefile.in.o	2004-10-08 18:59:21.294566720 +0200
++++ Makefile.in	2004-10-08 18:59:40.034717784 +0200
+@@ -130,23 +130,23 @@
+ 	fi
+ 
+ binuserinstall:
+-	install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(PS) $(BIN)/$(PS); 
+-	install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(DRONE) $(BIN)/$(DRONE);
++	install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(PS) $(BIN)/$(PS); 
++	install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(DRONE) $(BIN)/$(DRONE);
+ 
+ binsuidinstall:
+-	install -o $(INSTUSR) -g $(INSTGRP) -s -m 4755 $(PS) $(BIN)/$(PS); 
+-	install -o $(INSTUSR) -g $(INSTGRP) -s -m 4755 $(DRONE) $(BIN)/$(DRONE);
++	install -o $(INSTUSR) -g $(INSTGRP) -m 4755 $(PS) $(BIN)/$(PS); 
++	install -o $(INSTUSR) -g $(INSTGRP) -m 4755 $(DRONE) $(BIN)/$(DRONE);
+ 	
+ commoninstall:
+ 	mkdir -p $(ETC)
+ 	mkdir -p $(BIN)
+ 
+ 	install -o $(INSTUSR) -g $(INSTGRP) -m 755 scripts/kismet $(BIN)/kismet
+-	install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(NC) $(BIN)/$(NC)
+-	# install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(HOPPER) $(BIN)/$(HOPPER)
++	install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(NC) $(BIN)/$(NC)
++	# install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(HOPPER) $(BIN)/$(HOPPER)
+ 	@if test "$(ZAURUS)" = "yes"; then \
+-		install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(BUZZER) $(BIN)/buzzme; \
+-		echo install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(BUZZER) $(BIN)/buzzme; \
++		install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(BUZZER) $(BIN)/buzzme; \
++		echo install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(BUZZER) $(BIN)/buzzme; \
+ 	fi
+ #install -o $(INSTUSR) -g $(INSTGRP) -m 755 scripts/kismet_monitor $(BIN)/kismet_monitor
+ #install -o $(INSTUSR) -g $(INSTGRP) -m 755 scripts/kismet_unmonitor $(BIN)/kismet_unmonitor
+@@ -161,8 +161,8 @@
+ 	install -o $(INSTUSR) -g $(MANGRP) -m 644 man/kismet_drone.conf.5 $(MAN)/man5/kismet_drone.conf.5
+ 
+ 	@if test "$(GPSLBUILD)" = "$(GPSL)"; then \
+-		install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(GPSL) $(BIN)/$(GPSL); \
+-		echo install -o $(INSTUSR) -g $(INSTGRP) -s -m 755 $(GPSL) $(BIN)/$(GPSL); \
++		install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(GPSL) $(BIN)/$(GPSL); \
++		echo install -o $(INSTUSR) -g $(INSTGRP) -m 755 $(GPSL) $(BIN)/$(GPSL); \
+ 		install -o $(INSTUSR) -g $(INSTGRP) -m 755 scripts/gpsmap-helper-earthamaps $(BIN)/gpsmap-helper-earthamaps; \
+ 		echo install -o $(INSTUSR) -g $(INSTGRP) -m 755 scripts/gpsmap-helper-earthamaps $(BIN)/gpsmap-helper-earthamaps; \
+ 		install -o $(INSTUSR) -g $(MANGRP) -m 644 man/gpsmap.1 $(MAN)/man1/gpsmap.1; \

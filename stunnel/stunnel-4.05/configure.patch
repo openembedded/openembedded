@@ -1,0 +1,31 @@
+diff -urN stunnel-4.05.orig/configure.ac stunnel-4.05/configure.ac
+--- stunnel-4.05.orig/configure.ac	2003-12-28 15:47:49.000000000 -0500
++++ stunnel-4.05/configure.ac	2004-03-21 20:43:07.000000000 -0500
+@@ -71,11 +71,11 @@
+     [RANDOM_FILE="$withval"],
+     [
+         dnl Check for random device
+-        AC_CHECK_FILE("/dev/urandom",
+-            [
++#        AC_CHECK_FILE("/dev/urandom",
++#            [
+                 RANDOM_FILE="/dev/urandom";
+-            ]
+-        )
++#            ]
++#        )
+     ]
+ )
+ if test -n "$RANDOM_FILE" ; then
+@@ -176,8 +176,9 @@
+ [AC_MSG_RESULT([no])]; LIBS="$saved_LIBS")
+ 
+ dnl Check PTY device files.
+-AC_CHECK_FILE("/dev/ptmx", AC_DEFINE(HAVE_DEV_PTMX))
+-AC_CHECK_FILE("/dev/ptc", AC_DEFINE(HAVE_DEV_PTS_AND_PTC))
++AC_DEFINE(HAVE_DEV_PTMX)
++#AC_CHECK_FILE("/dev/ptmx", AC_DEFINE(HAVE_DEV_PTMX))
++#AC_CHECK_FILE("/dev/ptc", AC_DEFINE(HAVE_DEV_PTS_AND_PTC))
+ 
+ dnl Checks for header files.
+ # AC_HEADER_DIRENT
