@@ -6,7 +6,7 @@ PACKAGE_ARCH = "ipaqsa"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')}    \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')}    \
            \
            file://${FILESDIR}/mkdep.patch;patch=1"
 
