@@ -1,7 +1,10 @@
 DESCRIPTION = "SysV init scripts"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+SECTION = "base"
+PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
+
 SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/ramdisk \
 	   file://${FILESDIR}/umountfs \
@@ -24,6 +27,7 @@ SRC_URI = "file://${FILESDIR}/halt \
 	   file://${FILESDIR}/simpad/banner \
 	   file://${FILESDIR}/single \
 	   file://${FILESDIR}/sendsigs \
+	   file://${FILESDIR}/packages \
 	   file://${FILESDIR}/urandom \
 	   file://${FILESDIR}/rmnologin \
 	   file://${FILESDIR}/extractfs \
@@ -53,6 +57,7 @@ do_install () {
 	install -m 0755    ${FILESDIR}/hostname.sh	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/mountall.sh	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/mountnfs.sh	${D}/etc/init.d
+	install -m 0755    ${FILESDIR}/packages		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/reboot		${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/rmnologin	${D}/etc/init.d
 	install -m 0755    ${FILESDIR}/sendsigs		${D}/etc/init.d

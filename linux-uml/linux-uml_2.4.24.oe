@@ -1,11 +1,12 @@
 DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
-PR = "2"
+PR = "3"
 DEPENDS = "virtual/libc"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
            http://mirror.usermodelinux.org/uml/uml-patch-${PV}-${PR}.bz2;patch=1 \
-	   file://${FILESDIR}/fix-includes.patch;patch=1"
+	   file://${FILESDIR}/fix-includes.patch;patch=1 \
+	   file://${FILESDIR}/fix-arg-max.patch;patch=1"
 S = "${WORKDIR}/linux-${PV}"
 
 inherit kernel
@@ -15,9 +16,11 @@ ARCH = "um"
 SUBARCH = "${TARGET_ARCH}"
 KERNEL_IMAGETYPE = "linux"
 
-do_configure_prepend () {
+do_configure() {
 	install -m 0644 ${FILESDIR}/defconfig .config
 	oe_runmake oldconfig
+	install -d arch/um/include/linux/
+	install -m 0644 ${FILESDIR}/aio_abi.h arch/um/include/linux/
 }
 
 do_compile() {
