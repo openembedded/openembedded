@@ -1,9 +1,11 @@
 PR = "r1"
 
-DEPENDS = "libxml2 gconf libbonobo bzip2 gnome-mime-data"
+DEPENDS = "libxml2 gconf libbonobo bzip2 gnome-mime-data orbit2"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/2.6/${PN}-${PV}.tar.bz2 \
 	file://gconftool-lossage.patch;patch=1;pnum=1"
+
+ORBIT_IDL_SRC = "${STAGING_BINDIR}/orbit-idl-2"
 
 inherit autotools pkgconfig
 
@@ -56,10 +58,18 @@ gnome-vfs-module-callback-module-api.h \
 gnome-vfs-mime.h \
 gnome-vfs-socket-buffer.h"
 
+do_compile() {
+	oe_runmake ORBIT_IDL="${ORBIT_IDL_SRC}"
+}
+
 do_stage() {
 	oe_libinstall -so -C libgnomevfs libgnomevfs-2 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/gnome-vfs-2.0/libgnomevfs
 	for i in ${GNOME_VFS_HEADERS}; do install -m 0644 libgnomevfs/$i ${STAGING_INCDIR}/gnome-vfs-2.0/libgnomevfs/; done
 	install -d ${STAGING_INCDIR}/gnome-vfs-module-2.0/libgnomevfs
 	for i in ${GNOME_VFS_MODULE_HEADERS}; do install -m 0644 libgnomevfs/$i ${STAGING_INCDIR}/gnome-vfs-module-2.0/libgnomevfs/; done
+}
+
+do_install() {
+	oe_runmake ORBIT_IDL="${ORBIT_IDL_SRC}" DESTDIR="${D}" install
 }

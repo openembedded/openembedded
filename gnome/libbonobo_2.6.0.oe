@@ -40,6 +40,8 @@ do_stage() {
 	install -d ${STAGING_INCDIR}/libbonobo-2.0/bonobo
 	for i in ${BONOBO_HEADERS}; do install -m 0644 bonobo/$i ${STAGING_INCDIR}/libbonobo-2.0/bonobo/; done
 	install -m 0644 libbonobo.h ${STAGING_INCDIR}/libbonobo-2.0/
+	install -d ${STAGING_DATADIR}/idl/bonobo-activation-2.0/
+	install idl/*.idl ${STAGING_DATADIR}/idl/bonobo-activation-2.0/
 	oe_libinstall -so -C bonobo libbonobo-2 ${STAGING_LIBDIR}
 	oe_libinstall -so -C bonobo-activation libbonobo-activation ${STAGING_LIBDIR}
 }
