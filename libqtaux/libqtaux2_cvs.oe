@@ -14,6 +14,8 @@ inherit qmake
 export QTDIR = "${STAGING_LIBDIR}/.."
 export OPIEDIR = "${STAGING_LIBDIR}/.."
 
+EXTRA_QMAKEVARS_POST = 'DEFINES+=QWS'
+
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
 	for i in `find . -name "*.h"`
