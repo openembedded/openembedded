@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r23"
+PR = "r24"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -38,7 +38,7 @@ dirs755 = "/bin /boot /dev ${sysconfdir} ${sysconfdir}/default \
 	   ${localstatedir}/lock/subsys ${localstatedir}/log \
 	   ${localstatedir}/run ${localstatedir}/spool \
 	   /mnt /media /media/card /media/cf /media/net /media/ram \
-	   /media/union /media/realroot"
+	   /media/union /media/realroot /media/hdd"
 conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
 	     ${sysconfdir}/inputrc ${sysconfdir}/issue /${sysconfdir}/issue.net \
 	     ${sysconfdir}/nsswitch.conf ${sysconfdir}/profile \
