@@ -2,6 +2,7 @@ DESCRIPTION = "Qt/Embedded version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL/QPL"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
 PR = "r16"
@@ -156,6 +157,7 @@ ${sbindir}/update-qtfontdir
 PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-large \
 			qte-font-smoothtimes qte-font-smallsmooth qte-font-unicode qte-font-lcd \
 			qte-font-japanese qte-font-micro qte-font-courier"
+PACKAGE_ARCH_libqte2 = "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"

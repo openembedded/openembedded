@@ -1,0 +1,200 @@
+DESCRIPTION = "Qt/Embedded version ${PV}"
+SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "GPL/QPL"
+DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
+PROVIDES = "virtual/qte virtual/libqte2"
+PR = "r1"
+palmtopdir="/opt/Qtopia"
+
+# CVSDATE="20040818"
+
+VERSION="2.3.8"
+PV = "${VERSION}-snapshot" 
+DEFAULT_PREFERENCE = "-1"
+
+#-${CVSDATE}"
+# PR = ""
+# SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
+
+SRC_URI="ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}-${CVSDATE}.tar.gz \
+    file://no-moc.patch;patch=1 \
+    file://tslib.patch;patch=1 \
+    file://update-qtfontdir "
+
+SRC_URI_append_simpad   = "file://devfs.patch;patch=1 file://simpad.patch;patch=1 "
+SRC_URI_append_h3600    = "file://devfs.patch;patch=1 "
+SRC_URI_append_h3900    = "file://devfs.patch;patch=1 "
+SRC_URI_append_beagle	= "file://devfs.patch;patch=1 "
+SRC_URI_append_corgi	= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_shepherd	= "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_husky	= "file://kernel-keymap.patch;patch=1 "
+
+
+# SRC_URI_append		= "file://gcc3_4.patch;patch=1 "
+S = "${WORKDIR}/qt-${PV}-${CVSDATE}"
+
+export QTDIR = "${S}"
+
+def qte_arch(d):
+	import oe, re
+	arch = oe.data.getVar('TARGET_ARCH', d, 1)
+	if re.match("^i.86$", arch):
+		arch = "x86"
+	elif arch == "x86_64":
+		arch = "x86"
+	elif arch == "mipsel":
+		arch = "mips"
+	return arch
+
+QTE_ARCH := "${@qte_arch(d)}"
+
+EXTRA_OECONF_CONFIG = "-qconfig qpe"
+EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
+		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 16,32"
+EXTRA_OEMAKE = "-e"
+
+#
+# FIXME: Add more here
+#
+EXTRA_DEFINES 		= "-DQWS_TSLIB -DWARNING_UNKNOWN_DEVICE"
+EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_poodle	= "-DQWS_TSLIB -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_h3600     = "-DQWS_TSLIB -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS" 
+EXTRA_DEFINES_h3900 	= "-DQWS_TSLIB -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS"
+EXTRA_DEFINES_simpad	= "-DQWS_TSLIB -DQT_QWS_IPAQ -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
+EXTRA_DEFINES_corgi     = "-DQWS_TSLIB -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_beagle	= "-DQWS_TSLIB -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS"
+
+export SYSCONF_CC = "${CC}"
+export SYSCONF_CXX = "${CXX}"
+export SYSCONF_LINK = "${CCLD}"
+export SYSCONF_SHLIB = "${CCLD}"
+export SYSCONF_CFLAGS = "${CFLAGS}"
+export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
+export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
+export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
+export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
+
+do_configure() {
+#	for f in ${S}/configs/linux-*-g++-shared; do
+#		sed -e 's,-linux-,-linux-uclibc-,g' < $f \
+#			> `echo $f | sed -e 's,linux-,linux-uclibc-,'`
+#	done
+	install -m 0644 ${WORKDIR}/qconfig-qpe.h ${S}/src/tools/
+	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+}
+
+do_compile() {
+	unset CC LD CCLD CXX RANLIB AR STRIP CFLAGS LDFLAGS CXXFLAGS CPPFLAGS
+	install -d include/asm/	
+	install -m 0644 ${WORKDIR}/sharp_char.h include/asm/
+	install -d include/linux/
+	install -m 0644 ${WORKDIR}/switches.h   include/linux/
+	oe_runmake
+}
+
+do_stage() {
+	oe_libinstall -so -C lib libqte ${STAGING_LIBDIR}
+	rm -f include/qxt.h
+	cp -pfLR include/* ${STAGING_INCDIR}/
+}
+
+do_install() {
+	install -d ${D}/${sbindir}/
+	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}/${sbindir}/
+	install -d ${D}${palmtopdir}/lib/fonts/
+	oe_libinstall -so -C lib libqte ${D}/${palmtopdir}/lib
+	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
+}
+
+pkg_postinst() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+pkg_postinst_qte-font-unicode() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+pkg_postinst_qte-font-lcd () {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+pkg_postinst_qte-font-japanese() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+pkg_postinst_qte-font-micro() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+pkg_postinst_qte-font-courier() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-large \
+			qte-font-smoothtimes qte-font-smallsmooth \ 
+      qte-font-smoothmono-small qte-font-smoothmono-large \
+      qte-font-smoothsans-small qte-font-smoothsans-large \
+      qte-font-smoothserif-small qte-font-smoothserif-large  \
+      qte-font-unicode qte-font-lcd qte-font-japanese qte-font-micro \
+      qte-font-courier"
+
+PACKAGE_ARCH_libqte2 = "${MACHINE_ARCH}"
+
+FILES_${PN} = ""
+FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
+FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
+FILES_qte-font-helvetica-small = "${palmtopdir}/lib/fonts/helvetica_80*.qpf \
+	${palmtopdir}/lib/fonts/helvetica_100*.qpf ${palmtopdir}/lib/fonts/helvetica_120*.qpf"
+FILES_qte-font-helvetica-large = "${palmtopdir}/lib/fonts/helvetica_140*.qpf \
+	${palmtopdir}/lib/fonts/helvetica_180*.qpf ${palmtopdir}/lib/fonts/helvetica_240*.qpf"
+FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*.qpf"
+FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*.qpf"
+FILES_qte-font-smoothmono-small = "${palmtopdir}/lib/fonts/smoothmono_90*.qpf \
+  ${palmtopdir}/lib/fonts/smoothmono_100*.qpf	${palmtopdir}/lib/fonts/smoothmono_110*.qpf \
+  ${palmtopdir}/lib/fonts/smoothmono_120*.qpf"
+FILES_qte-font-smoothmono-large = "${palmtopdir}/lib/fonts/smoothmono_140*.qpf \
+	${palmtopdir}/lib/fonts/smoothmono_180*.qpf ${palmtopdir}/lib/fonts/smoothmono_240*.qpf"
+FILES_qte-font-smoothsans-small = "${palmtopdir}/lib/fonts/smoothsans_90*.qpf \
+	${palmtopdir}/lib/fonts/smoothsans_100*.qpf ${palmtopdir}/lib/fonts/smoothsans_110*.qpf \
+  ${palmtopdir}/lib/fonts/smoothsans_120*.qpf"
+FILES_qte-font-smoothsans-large = "${palmtopdir}/lib/fonts/smoothsans_140*.qpf \
+	 ${palmtopdir}/lib/fonts/smoothsans_180*.qpf ${palmtopdir}/lib/fonts/smoothsans_240*.qpf"
+FILES_qte-font-smoothserif-small = "${palmtopdir}/lib/fonts/smoothserif_90*.qpf \
+	${palmtopdir}/lib/fonts/smoothserif_100*.qpf ${palmtopdir}/lib/fonts/smoothserif_110*.qpf \
+	${palmtopdir}/lib/fonts/smoothserif_120*.qpf"
+FILES_qte-font-smoothserif-large = "${palmtopdir}/lib/fonts/smoothserif_140*.qpf \
+	${palmtopdir}/lib/fonts/smoothserif_180*.qpf ${palmtopdir}/lib/fonts/smoothserif_240*.qpf"
+FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*.qpf"
+FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
+FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/japanese*"
+FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*.qpf"
+FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
+
