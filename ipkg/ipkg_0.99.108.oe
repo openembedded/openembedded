@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PROVIDES = "virtual/ipkg"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=${@'V' + string.replace(oe.data.getVar('PV',d,1), '.', '-')} \
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=${@'V' + oe.data.getVar('PV',d,1).replace('.', '-')} \
 	 file://${FILESDIR}/libipkg-dev.patch;patch=1"
 S = "${WORKDIR}/ipkg/C"
 

@@ -69,14 +69,14 @@ do_stage () {
 }
 
 python populate_packages_prepend () {
-	import string, os
+	import os
 	def do_split(root, pattern, format, description, postinst):
 		dvar = oe.data.getVar('D', d, 1)
 		if not dvar:
 			oe.error("D not defined")
 			return
 
-		packages = string.split(oe.data.getVar('PACKAGES', d, 1))
+		packages = oe.data.getVar('PACKAGES', d, 1).split()
 		if not packages:
 			oe.error("PACKAGES not defined")
 			return
@@ -97,7 +97,7 @@ python populate_packages_prepend () {
 			oe.data.setVar('DESCRIPTION_' + pkg, description % on, d)
 			oe.data.setVar('pkg_postinst_' + pkg, postinst, d)
 
-		oe.data.setVar('PACKAGES', string.join(packages, ' '), d)
+		oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
 	libdir = oe.data.getVar('libdir', d, 1)
 	if not libdir:

@@ -17,9 +17,8 @@ python do_fetch () {
 }
 
 python do_unpack () {
-	import string
 	src_uri = oe.data.getVar("SRC_URI", d)
-	src_uri = string.replace(src_uri, "-tar", ".tar")
+	src_uri = src_uri.replace("-tar", ".tar")
 	oe.data.setVar("SRC_URI", src_uri, d)
 	oe.build.exec_func("base_do_unpack", d)
 }
