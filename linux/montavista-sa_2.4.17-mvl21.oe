@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
 MVLV = "${@oe.data.getVar('PV',d,True).split('-')[1]}"
-PR = "r5"
+PR = "r6"
 DEPENDS = "cetools-native"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/montavista-sa-${PV}"
@@ -30,6 +30,17 @@ KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
 
 EXTRA_OEMAKE = ""
+
+module_conf_sa1100_ir = "alias irda0 sa1100_ir"
+module_conf_pcmcia_core = "options pcmcia_core ignore_cis_vcc=1"
+module_conf_ppp_async = "alias ppp0 ppp_async"
+module_conf_orinoco_cs = "options orinoco_cs ignore_cis_vcc=1"
+module_conf_hostap_cs = "options hostap_cs ignore_cis_vcc=1"
+module_conf_spectrum_cs = "options spectrum_cs ignore_cis_vcc=1"
+
+module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
+module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
+module_autoload_sa1100_bi = "sa1100_bi"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
