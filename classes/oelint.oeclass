@@ -18,18 +18,58 @@ python do_lint() {
 
 
 	##############################
+	# Test that HOMEPAGE exists
+	#
+	s = testVar("HOMEPAGE")
+	if s=="unknown":
+		oe.error("HOMEPAGE is not set")
+	elif not s.startswith("http://"):
+		oe.error("HOMEPAGE doesn't start with http://")
+
+
+
+	##############################
 	# Test for valid LICENSE
 	#
+	valid_licenses = {
+		"GPL-2"		: "GPLv2",
+		"GPL LGPL FDL"	: True,
+		"GPL PSF"	: True,
+		"GPL/QPL"	: True,
+		"GPL"		: True,
+		"GPLv2"		: True,
+		"IBM"		: True,
+		"LGPL GPL"	: True,
+		"LGPL"		: True,
+		"MIT"		: True,
+		"OSL"		: True,
+		"Perl"		: True,
+		"Public Domain"	: True,
+		"QPL"		: "GPL/QPL",
+		}
 	s = testVar("LICENSE")
 	if s=="unknown":
 		oe.error("LICENSE is not set")
+	elif s.startswith("Vendor"):
+		pass
+	else:
+		try:
+			newlic = valid_licenses[s]
+			if newlic == False:
+				oe.note("LICENSE '%s' is not recommended" % s)
+			elif newlic != True:
+				oe.note("LICENSE '%s' is not recommended, better use '%s'" % (s, newsect))
+		except:
+			oe.note("LICENSE '%s' is not recommended" % s)
 
 
 	##############################
 	# Test for valid MAINTAINER
 	#
 	s = testVar("MAINTAINER")
-	if s and s.find("@") == -1:
+	if s=="OpenEmbedded Team <oe@handhelds.org>":
+		oe.error("explicit MAINTAINER is missing, using default")
+	elif s and s.find("@") == -1:
 		oe.error("You forgot to put an e-mail address into MAINTAINER")
 
 

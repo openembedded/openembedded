@@ -1,5 +1,5 @@
 DESCRIPTION = "Linux kernel for MNCI device"
-MAINTAINER = "M&N Solutions"
+MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 LICENSE = "GPL"
 KV = "2.4.21"
 RMKV = "2"
