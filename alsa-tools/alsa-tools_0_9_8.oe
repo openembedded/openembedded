@@ -1,0 +1,11 @@
+DESCRIPTION="Alsa Tools"
+MAINTAINER="Lorn Potter <lpotter@trolltech.com>"
+LICENSE="GPL"
+DEPENDS="virtual/libc"
+
+SCR_URI="ftp://ftp.alsa-project.org/pub/lib/alsa-tools-${PV}.tar.bz2"
+
+S="${WORKDIR}/${P}"
+
+inherit autotools
+#  libtool
