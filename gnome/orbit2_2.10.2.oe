@@ -1,0 +1,40 @@
+DESCRIPTION = "CORBA ORB"
+SECTION = "gnome/base"
+SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.10/ORBit2-${PV}.tar.bz2 \
+	   file://${FILESDIR}/gtk-doc.m4 \
+	   file://${FILESDIR}/configure-lossage.patch;patch=1;pnum=1"
+DEPENDS = "libidl popt orbit2-native"
+
+S = "${WORKDIR}/ORBit2-${PV}"
+
+inherit autotools libtool pkgconfig
+
+do_compile() {
+	oe_runmake IDL_COMPILER="`which orbit-idl-2`"
+}
+
+do_configure_prepend() {
+	install -d m4
+	install ${FILESDIR}/gtk-doc.m4 m4/
+}
+
+do_stage() {
+	oe_soinstall src/orb/.libs/libORBit-2.so.0.0.0 ${STAGING_LIBDIR}
+	install -m 0644 src/orb/.libs/libORBit-2.lai ${STAGING_LIBDIR}/libORBit-2.la
+	oe_soinstall src/services/name/.libs/libORBitCosNaming-2.so.0.0.0 ${STAGING_LIBDIR}
+	install -m 0644 src/services/name/.libs/libORBitCosNaming-2.lai ${STAGING_LIBDIR}/libORBitCosNaming-2.la
+	oe_soinstall src/services/imodule/.libs/libORBit-imodule-2.so.0.0.0 ${STAGING_LIBDIR}
+	install -m 0644 src/services/imodule/.libs/libORBit-imodule-2.lai ${STAGING_LIBDIR}/libORBit-imodule-2.la
+
+	for dir in orbit orbit/poa orbit/orb-core orbit/util orbit/dynamic; do
+		install -d ${STAGING_INCDIR}/orbit-2.0/$dir
+		( cd include/$dir; for i in *.h; do install -m 0644 $i ${STAGING_INCDIR}/orbit-2.0/$dir/$i; done )
+	done
+
+	install -d ${STAGING_INCDIR}/orbit-2.0/ORBitservices
+	install -m 0644 src/services/name/CosNaming.h ${STAGING_INCDIR}/orbit-2.0/ORBitservices/
+	install -m 0644 src/services/name/CosNaming_impl.h ${STAGING_INCDIR}/orbit-2.0/ORBitservices/
+	install -m 0644 src/services/imodule/orbit-imodule.h ${STAGING_INCDIR}/orbit-2.0/ORBitservices/
+
+	install -m 0644 src/services/name/libname-server-2.a ${STAGING_LIBDIR}/
+}
