@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SRC_URI = "file://gtkrc file://gtkrc-global"
 DEPENDS = "gnome-themes"
 RDEPENDS = "gtk-engine-mist"
-PR = "r1"
+PR = "r2"
 
 FILES_${PN} += "${datadir}/themes"
 
@@ -13,4 +13,5 @@ do_install() {
 
 	install -d ${D}${sysconfdir}/gtk-2.0
 	install -m 0644 ${WORKDIR}/gtkrc-global ${D}${sysconfdir}/gtk-2.0/gtkrc
+	echo "include \"${datadir}/themes/Angelistic/gtk-2.0/gtkrc\"" >> ${D}${sysconfdir}/gtk-2.0/gtkrc
 }
