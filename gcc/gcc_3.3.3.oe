@@ -82,7 +82,8 @@ SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://${FILESDIR}/arm-tune.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-xscale.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-14302.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-ldm-peephole.patch;patch=1;pnum=0"
+	   file://${FILESDIR}/arm-ldm-peephole.patch;patch=1;pnum=0 \
+	   file://${FILESDIR}/libibery-crosstool.patch;patch=1;pnum=1"
 
 MIRRORS_prepend () {
 ${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
