@@ -436,9 +436,9 @@ python base_do_patch() {
 		local = os.path.join('/', bb.fetch.localpath(url, d))
 
 		# did it need to be unpacked?
-		dots = local.split(".")
+		dots = os.path.basename(local).split(".")
 		if dots[-1] in ['gz', 'bz2', 'Z']:
-			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),os.path.basename('.'.join(dots[0:-1])))
+			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),'.'.join(dots[0:-1]))
 		else:
 			unpacked = local
 		unpacked = bb.data.expand(unpacked, d)
@@ -452,7 +452,7 @@ python base_do_patch() {
 		if len(dots) > 1:
 			pname = ".".join(dots[:-1])
 		else:
-			pname = unpacked
+			pname = os.path.basename(unpacked)
 
 		bb.note("Applying patch '%s'" % pname)
 		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
