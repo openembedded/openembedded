@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = " \
            file://etc/nsswitch.conf \
@@ -113,6 +113,7 @@ do_install () {
         ln -s ../init.d/populate-var ${D}/etc/rcS.d/S37populate-var
         ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
         ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
+        ln -s /proc/mounts ${D}/etc/mtab
     fi
 
     #
