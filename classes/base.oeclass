@@ -248,12 +248,8 @@ python do_showdata() {
 	oe.data.emit_env(sys.__stdout__, d, True)
 	# emit the metadata which isnt valid shell
 	for e in d.keys():
-		if oe.data.getVarFlag(e, 'python', d):
-			sys.__stdout__.write("\npython %s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
-		elif oe.data.getVarFlag(e, 'func', d):
-			sys.__stdout__.write("\n%s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
-		else:
-			sys.__stdout__.write("%s=%s\n" % (e, oe.data.getVar(e, d, 1)))
+	    if oe.data.getVarFlag(e, 'python', d):
+	        sys.__stdout__.write("\npython %s () {\n%s}\n" % (e, oe.data.getVar(e, d, 1)))
 }
 
 addtask listtasks
@@ -659,23 +655,20 @@ python __anonymous () {
 
 python () {
 	import oe, os
-	machine = oe.data.getVar('MACHINE', d, 1)
-	if not machine:
-		# can't specialise if MACHINE not defined
-		return
+	mach_arch = oe.data.getVar('MACHINE_ARCH', d, 1)
 	old_arch = oe.data.getVar('PACKAGE_ARCH', d, 1)
-	if (old_arch == machine):
+	if (old_arch == mach_arch):
 		# Nothing to do
 		return
 	paths = []
 	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
-		paths.append(oe.data.expand(os.path.join(p, machine), d))
+		paths.append(oe.data.expand(os.path.join(p, mach_arch), d))
 	for s in oe.data.getVar('SRC_URI', d, 1).split():
 		local = oe.data.expand(oe.fetch.localpath(s, d), d)
 		for mp in paths:
 			if local.startswith(mp):
-#				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, machine))
-				oe.data.setVar('PACKAGE_ARCH', machine, d)
+#				oe.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, mach_arch))
+				oe.data.setVar('PACKAGE_ARCH', mach_arch, d)
 				return
 }
 

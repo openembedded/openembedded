@@ -10,11 +10,9 @@ FILES_${PN} = "/sbin ${bindir} ${sysconfdir}"
 FILES_sysv-rc = "${sbindir}"
 PR = "r1"
 
-python () {
-	mach = oe.data.getVar('MACHINE', d, 1)
-	if mach:
-		oe.data.setVar('PACKAGE_ARCH', oe.data.getVar('MACHINE_ARCH', d, 1), d)
-}
+# USE_VT and SERIAL_CONSLE are generally defined by the MACHINE .conf.
+# Set PACKAGE_ARCH appropriately.
+PACKAGE_ARCH := "${MACHINE_ARCH}"
 
 USE_VT ?= "1"
 

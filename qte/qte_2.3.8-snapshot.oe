@@ -166,7 +166,7 @@ PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica-small qte-font-helvetica-l
       qte-font-unicode qte-font-lcd qte-font-japanese qte-font-micro \
       qte-font-courier"
 
-PACKAGE_ARCH_libqte2 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_libqte2 := "${MACHINE_ARCH}"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"

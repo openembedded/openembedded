@@ -14,9 +14,9 @@ DEPENDS_corgi += "sharp-aticore"
 DEPENDS_shepherd += "sharp-aticore"
 DEPENDS_husky += "sharp-aticore"
 
-PACKAGE_ARCH_corgi = "${MACHINE}"
-PACKAGE_ARCH_shepherd = "${MACHINE}"
-PACKAGE_ARCH_husky = "${MACHINE}"
+PACKAGE_ARCH_corgi := "${MACHINE_ARCH}"
+PACKAGE_ARCH_shepherd := "${MACHINE_ARCH}"
+PACKAGE_ARCH_husky := "${MACHINE_ARCH}"
 
 SRC_URI_append_corgi = "file://mplayer-w100_1.0pre3.1.modified.diff;patch=1 \
                         file://Makefile-vidix.patch;patch=0 "

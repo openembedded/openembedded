@@ -128,5 +128,4 @@ do_install_append_tosa () {
 
 FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
+PACKAGE_ARCH := "${MACHINE_ARCH}"

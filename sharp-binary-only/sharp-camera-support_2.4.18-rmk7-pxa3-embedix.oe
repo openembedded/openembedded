@@ -23,8 +23,4 @@ do_install() {
 
 FILES_${PN} = "/"
 
-python () {
-	mach = oe.data.getVar('MACHINE', d, 1)
-	if mach:
-		oe.data.setVar('PACKAGE_ARCH', oe.data.getVar('MACHINE_ARCH', d, 1), d)
-}
+PACKAGE_ARCH := "${MACHINE_ARCH}"
