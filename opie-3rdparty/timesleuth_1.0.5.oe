@@ -1,0 +1,26 @@
+DESCRIPTION = "Time Sleuth"
+SECTION = "opie/applications"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+AUTHOR = "Dafydd Walters"
+HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/applications-TimeSleuth.html"
+
+
+SRC_URI = "http://handhelds.org/~zecke/oe_packages/timesleuth_V1.05ern.tar.gz \
+	   file://time.patch;patch=1"
+
+PV = "1.05ern"
+S = "${WORKDIR}/timesleuth_V${PV}"
+
+APPNAME = "timesleuthqpe"
+APPTYPE = "binary"
+APPDESKTOP = "${S}"
+
+do_install () {
+	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
+	install -m 0644 ${S}/*.png ${D}/${palmtopdir}/pics/${APPNAME}/
+	
+}
+
+inherit opie
