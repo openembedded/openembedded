@@ -5,7 +5,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
-PR = "r1"
+PV = "cvs${CVSDATE}"
 
 SRC_URI = "svn://meshcube.org/svn/scripts;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"
