@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://pcmcia-cs.sourceforge.net/ftp/contrib/wireless_tools.${PV}.tar.gz \
 	   file://man.patch;patch=1 \

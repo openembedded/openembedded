@@ -7,6 +7,14 @@ if [ ! -x $IWCONFIG ]; then
   exit 0
 fi
 
+# Detect and do nothing for linux-wlan-ng interfaces;
+# which are configured by thier own if-pre-up script.
+if [ -x /sbin/wlancfg ]; then
+  if /sbin/wlancfg show $IFACE >/dev/null 2>&1; then
+    exit 0
+  fi
+fi
+
 if [ -n "$IF_NEEDS_RESET" ]; then
   $IWPRIV "$IFACE" reset 1
   sleep 1
