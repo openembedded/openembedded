@@ -4,10 +4,11 @@ HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-jscore-${PV}.tar.gz \
-           file://missing-includes.patch;patch=1"
+           file://missing-includes.patch;patch=1 \
+           file://libm.patch;patch=1"
 
 inherit autotools pkgconfig
 
