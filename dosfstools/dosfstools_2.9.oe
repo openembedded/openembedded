@@ -1,7 +1,7 @@
+BROKEN = "1"
 DESCRIPTION = "DOS FAT Filesystem Utilities"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
 	   file://alignment_hack.patch;patch=1 \
