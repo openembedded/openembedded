@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r34"
+PR = "r35"
 
 ALLOW_EMPTY = 1
 
@@ -33,6 +33,7 @@ gpe-task-base = "\
     libgtkstylus \
     gpe-appmgr \
     detect-stylus \
+    teleport \	
     xauth"
 
 RDEPENDS_gpe-task-base := "gdk-pixbuf-loader-png \
