@@ -8,6 +8,9 @@ SDK_OUTPUT = "${SDK_DIR}/image"
 IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
+HOST_INSTALL = "binutils-cross-sdk gcc-cross-sdk gdb-cross"
+TARGET_INSTALL = "libc6 glibc-dev"
+
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
@@ -24,9 +27,9 @@ src oe file:${DEPLOY_DIR_IPK}
 arch ${TARGET_ARCH} 1
 EOF
 	${IPKG_HOST} update
-	${IPKG_HOST} --nodeps install binutils-cross-sdk gcc-cross-sdk gdb-cross-sdk
+	${IPKG_HOST} --nodeps install ${HOST_INSTALL}
 	${IPKG_TARGET} update
-	${IPKG_TARGET} install glibc-dev 
+	${IPKG_TARGET} install ${TARGET_INSTALL}
 }
 
 do_populate_sdk[nostamp] = 1
