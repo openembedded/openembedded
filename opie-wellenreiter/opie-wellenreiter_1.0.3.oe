@@ -3,6 +3,8 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+RDEPENDS = "manufacturers"
+PR = "r1"
 
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
