@@ -6,7 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qpe"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount \

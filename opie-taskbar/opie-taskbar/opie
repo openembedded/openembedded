@@ -75,8 +75,13 @@ case $1 in
 
     ;;
 
+'restart')
+	$0 stop && $0 start
+
+	;;
+
 *)
-    echo "usage: $0 { start | stop }"
+    echo "usage: $0 { start | stop | restart }"
 
     ;;
 
