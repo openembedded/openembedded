@@ -8,9 +8,9 @@ RDEPENDS = "opie-pics"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opiemail"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/net/mail \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 
 S = "${WORKDIR}/mail"
 

@@ -7,8 +7,8 @@ RDEPENDS = "opie-pics"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "todolist"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/todo;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/todo \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/todo"
 

@@ -7,7 +7,7 @@ DEPENDS = " "
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opie-help-en"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/help/en/html;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/help/en/html "
 
 S = "${WORKDIR}/html"
 

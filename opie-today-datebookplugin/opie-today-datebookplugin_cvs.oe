@@ -6,7 +6,7 @@ RDEPENDS = "opie-today"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "todaydatebookplugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/today/plugins/datebook;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/today/plugins/datebook "
 
 S = "${WORKDIR}/datebook"
 

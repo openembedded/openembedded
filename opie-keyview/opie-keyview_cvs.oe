@@ -6,7 +6,7 @@ DEPENDS = "virtual/libqpe"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "keyview"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/keyview;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/keyview "
 
 S = "${WORKDIR}/${APPNAME}"
 

@@ -6,8 +6,8 @@ LICENSE = "GPL"
 DEPENDS = "uicmoc3-native"
 PV = "1.1.5-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/opie-lupdate;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/shared;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/opie-lupdate \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/shared"
 
 S = "${WORKDIR}/opie-lupdate"
 

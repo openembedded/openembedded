@@ -7,7 +7,7 @@ RDEPENDS = "fortune-mod opie-today"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "todayfortuneplugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/fortune;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/todayplugins/fortune "
 
 S = "${WORKDIR}/fortune"
 

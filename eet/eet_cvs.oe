@@ -7,7 +7,7 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "zlib jpeg"
 PV = "${CVSDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet;date=${CVSDATE} \
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet \
 	   file://flags.patch;patch=1"
 S = "${WORKDIR}/eet"
 

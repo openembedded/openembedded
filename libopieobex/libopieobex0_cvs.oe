@@ -7,8 +7,8 @@ DEPENDS = "opie-taskbar openobex"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "obex"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/obex;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/obex \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 S = "${WORKDIR}/obex"
 
 inherit opie

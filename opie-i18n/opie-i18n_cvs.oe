@@ -7,8 +7,8 @@ DEPENDS = "opie-lrelease-native"
 PV = "1.1.5-cvs-${CVSDATE}"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n;date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/dict;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/dict"
 S = "${WORKDIR}/i18n"
 
 do_compile() {

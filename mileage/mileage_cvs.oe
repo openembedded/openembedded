@@ -1,0 +1,21 @@
+DESCRIPTION = "A Car Mileage Calculator."
+HOMEPAGE = "http://mileage.sourceforge.net"
+SECTION = "apps"
+PRIORITY = "optional"
+PV = "4.2.0-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/mileage;module=mileage"
+S = "${WORKDIR}/mileage"
+
+inherit palmtop
+
+do_install() {
+	install -d ${D}/${palmtopdir}/apps/Applications/
+	install -d ${D}/${palmtopdir}/pics/${PN}/
+	install -d ${D}/${palmtopdir}/bin/
+	install -m 0755 ${PN} ${D}/${palmtopdir}/bin/
+	install -m 0644 ${PN}.desktop ${D}/${palmtopdir}/apps/Applications/
+	install -m 0644 ${PN}.png ${D}/${palmtopdir}/pics/${PN}/
+#FIXME: Package and install help files seperatly
+}
+

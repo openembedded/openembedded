@@ -9,7 +9,7 @@ APPNAME = "packagemanager"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/${APPNAME};cvsdate=${CVSDATE} \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;cvsdate=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

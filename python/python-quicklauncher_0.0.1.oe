@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-pyqt"
 PR = "ml1"
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/pyquicklauncher;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/tools/pyquicklauncher"
 S = "${WORKDIR}/pyquicklauncher"
 
 inherit distutils

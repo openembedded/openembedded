@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qjumpx"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/jumpx;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/jumpx \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 
 S = "${WORKDIR}/jumpx"

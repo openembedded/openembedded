@@ -7,8 +7,8 @@ DEPENDS = "opie-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qdvorak"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dvorak;date=${CVSDATE} \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/pickboard;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dvorak \
+	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/pickboard"
 
 S = "${WORKDIR}/dvorak"
 

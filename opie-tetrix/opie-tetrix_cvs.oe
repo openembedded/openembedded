@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "tetrix"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/games/tetrix;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/games/tetrix \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

@@ -7,7 +7,7 @@ DEPENDS = "uicmoc-native qte-for-opie"
 PROVIDES = "virtual/libqpe"
 PV = "1.1.5-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/library"
 S = "${WORKDIR}/library"
 
 inherit qmake

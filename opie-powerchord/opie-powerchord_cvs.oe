@@ -7,10 +7,10 @@ PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "powerchord"
 APPTYPE = "binary"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/powerchord;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/powerchord \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/${APPNAME}"
 

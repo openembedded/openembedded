@@ -8,8 +8,8 @@ RDEPENDS = "opie-pics"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qmultikey"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey;date=${CVSDATE} \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/multikey \
+	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share"
 
 S = "${WORKDIR}/multikey"
 

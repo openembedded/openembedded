@@ -7,7 +7,7 @@ DEPENDS = "opie-pickboard"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qkeyboard"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/keyboard;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/keyboard "
 
 S = "${WORKDIR}/keyboard"
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 RDEPENDS = "apmd"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/opiealarm;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/opiealarm \
            file://01opiealarm "
 S = "${WORKDIR}/opiealarm"
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "aboutapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/aboutapplet;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/aboutapplet"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

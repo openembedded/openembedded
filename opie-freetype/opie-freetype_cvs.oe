@@ -7,7 +7,7 @@ DEPENDS = "freetype"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "freetypefactory"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/freetype;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/freetype \
 	   file://modern-freetype-includes.patch;patch=1"
 S = "${WORKDIR}/freetype"
 

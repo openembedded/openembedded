@@ -7,13 +7,13 @@ PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qpe"
 PR = "r9"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/launcher;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/mediummount \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/launcher \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/root \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc \
            file://server.pro \
            file://opie-reorgfiles \
            file://opie \

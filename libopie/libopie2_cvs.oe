@@ -8,7 +8,7 @@ PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libo
 PV = "1.1.5-cvs-${CVSDATE}"
 PR = "r2"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/libopie2 \
            file://include.pro"
 S = "${WORKDIR}/libopie2"
 

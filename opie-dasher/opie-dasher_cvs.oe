@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qdasher"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dasher;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/dasher \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share "
 
 S = "${WORKDIR}/dasher"
 

@@ -7,8 +7,8 @@ RDEPENDS = "opie-vmemo-settings"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "vmemoapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/vmemo;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/vmemo \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
 
 S = "${WORKDIR}/vmemo"
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "libqpe-opie"
 PV = "1.0.0-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/qcop;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/qcop"
 S = "${WORKDIR}/qcop"
 
 inherit palmtop

@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "autorotateapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/autorotateapplet;date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/autorotateapplet \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 
 S = "${WORKDIR}/${APPNAME}"
 

@@ -5,7 +5,7 @@ MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/rsync;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/rsync"
 S = "${WORKDIR}/rsync"
 
 inherit opie

@@ -8,7 +8,7 @@ RDEPENDS = "opie-mediaplayer1"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "madplugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer \
 	   file://libmadplugin.pro"
 
 S = "${WORKDIR}/opieplayer/libmad"

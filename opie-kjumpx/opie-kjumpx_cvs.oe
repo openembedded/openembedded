@@ -7,7 +7,7 @@ RDEPENDS = "opie-pics"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qkjumpx"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/kjumpx;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/kjumpx \
 	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 
 S = "${WORKDIR}/kjumpx"

@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "memoryapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/memoryapplet;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/sysinfo;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/memoryapplet \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/sysinfo \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
            file://memoryapplet.pro.patch;patch=1"
 
 S = "${WORKDIR}/memoryapplet"

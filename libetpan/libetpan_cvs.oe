@@ -5,7 +5,7 @@ DEPENDS = "gettext-native openssl"
 PR = "r3"
 S = "${WORKDIR}/libetpan"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan;date=${CVSDATE} \
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;module=libetpan \
           file://gcc34.patch;patch=1 \
           file://destdir.patch;patch=1"
 

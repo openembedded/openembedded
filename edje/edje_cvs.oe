@@ -4,7 +4,7 @@ SECTION = "libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "${CVSDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje;date=${CVSDATE}"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje"
 S = "${WORKDIR}/edje"
 
 inherit autotools pkgconfig

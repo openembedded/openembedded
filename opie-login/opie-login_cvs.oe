@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "opie-login"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/${APPNAME};date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate;date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/launcher;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/${APPNAME} \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/calibrate \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/launcher"
 
 S = "${WORKDIR}/${APPNAME}"
 

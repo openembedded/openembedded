@@ -7,8 +7,8 @@ RDEPENDS = "opie-networksettings"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "networkapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/networkapplet;date=${CVSDATE} \
-	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/applets/networkapplet \
+	   cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics"
 
 S = "${WORKDIR}/${APPNAME}"
 

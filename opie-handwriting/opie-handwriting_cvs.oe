@@ -7,8 +7,8 @@ PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "qhandwriting"
 PR = "2"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/handwriting;date=${CVSDATE} \
-	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/qimpen;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/inputmethods/handwriting \
+	cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/etc/qimpen"
 
 S = "${WORKDIR}/handwriting"
 
