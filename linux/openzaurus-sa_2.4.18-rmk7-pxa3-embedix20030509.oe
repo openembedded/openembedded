@@ -60,12 +60,16 @@ do_configure_prepend() {
         oe_runmake oldconfig
 }
 
-do_compile_prepend() {
+do_compile() {
         cd ${S}
         test -f ${S}/.hdepend || touch ${S}/include/linux/version.h
-        oe_runmake dep-files
+        oe_runmake dep-files CC=${HOST_PREFIX}gcc-2.95 LD=${HOST_PREFIX}ld-2.11.2
         cd ${S}/arch/arm/tools
-        ${MAKE} dep
+        ${MAKE} dep CC=${HOST_PREFIX}gcc-2.95 LD=${HOST_PREFIX}ld-2.11.2
         rm -f ${S}/include/linux/version.h
         cd ${S}
+        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+        oe_runmake dep CC=${HOST_PREFIX}gcc-2.95 LD=${HOST_PREFIX}ld-2.11.2
+        oe_runmake ${KERNEL_IMAGETYPE} CC=${HOST_PREFIX}gcc-2.95 LD=${HOST_PREFIX}ld-2.11.2
+        oe_runmake modules CC=${HOST_PREFIX}gcc-2.95 LD=${HOST_PREFIX}ld-2.11.2
 }
