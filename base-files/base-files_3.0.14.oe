@@ -101,6 +101,7 @@ do_install () {
     if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
         # /var is in a ramdisk
         install -d ${D}/etc/init.d ${D}/etc/rcS.d
+	echo "#!/bin/sh" >> ${D}/etc/init.d/populate-var
         for d in `(cd ${D}/var; ls)`; do
             mode=`stat -c %a ${D}/var/$d`
             echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
