@@ -23,7 +23,7 @@ OPIE_FONTS_LARGE = "qte-font-smoothsans-120 qte-font-smoothsans-140 qte-font-smo
 
 OPIE_LIBS_DEPENDS = "qte libopie2 qpf-qte qpf-font-common"
 OPIE_LIBS_RDEPENDS = "${OPIE_FONTS_SMALL}"
-OPIE_BASE = "opie-pics opie-sounds opie-qcop opie-quicklauncher opie-taskbar"
+OPIE_BASE = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics opie-sounds"
 
 #
 # High res displays need some additional larger fonts

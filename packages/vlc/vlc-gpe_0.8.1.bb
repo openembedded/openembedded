@@ -74,8 +74,8 @@ EXTRA_OECONF = "--disable-plugins \
 do_install() {
 	autotools_do_install
 
-	install -d ${D}/${datadir}/applications
-	install -m 644 ipkg/vlc.gpe ${D}/${datadir}/applications/vlc-gpe.desktop
+	install -d ${D}${datadir}/applications
+	install -m 644 ipkg/vlc.gpe ${D}${datadir}/applications/vlc-gpe.desktop
 }
 
 FILES_${PN} = "${bindir}/vlc \

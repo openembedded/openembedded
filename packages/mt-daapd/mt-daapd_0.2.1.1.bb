@@ -6,7 +6,7 @@ DEPENDS = "zlib gdbm libid3tag"
 PR = "r2"
 LICENSE = "GPL"
 
-SRC_URI = "http://optusnet.dl.sourceforge.net/sourceforge/mt-daapd-0.2.1.1.tar.gz \
+SRC_URI = "http://optusnet.dl.sourceforge.net/sourceforge/mt-daapd/mt-daapd-0.2.1.1.tar.gz \
 	   file://mt-daapd.init"
 S = "${WORKDIR}/mt-daapd-0.2.1.1/"
 

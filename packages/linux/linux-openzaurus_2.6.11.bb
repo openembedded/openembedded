@@ -5,11 +5,11 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r4"
+PR = "r10"
 
-DOSRC="http://www.do13.in-berlin.de/openzaurus"
-RPSRC="http://www.rpsys.net/openzaurus/patches"
-JLSRC="http://www.cs.wisc.edu/~lenz/zaurus/files/"
+DOSRC = "http://www.do13.in-berlin.de/openzaurus"
+RPSRC = "http://www.rpsys.net/openzaurus/patches"
+JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files/"
 
 # Handy URLs
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-${KV}.tar.gz \
@@ -22,41 +22,45 @@ JLSRC="http://www.cs.wisc.edu/~lenz/zaurus/files/"
 #          ${RPSRC}/corgi_kbd1-r1.patch;patch=1 \
 #          ${RPSRC}/corgi_kbd3-r5.patch;patch=1 \
 #          ${RPSRC}/sharp_multi_scoop-r2.patch;patch=1 \
+# When ready to upgrade to 2.6.12-rc1
+#          ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.12-rc1.bz2;patch=1 \
+#          ${RPSRC}/input_power-r1.patch;patch=1 \
 
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
            ${RPSRC}/rndis_fix-r0.patch;patch=1 \
-           ${RPSRC}/w100_malloc-r1.patch;patch=1 \
+           ${RPSRC}/w100_malloc-r2.patch;patch=1 \
            ${RPSRC}/pxairq_printk-r0.patch;patch=1 \	   
            ${RPSRC}/corgi_kbd-r14.patch;patch=1 \
            ${RPSRC}/corgi_ts-r10.patch;patch=1 \
+           ${RPSRC}/sharp_multi_scoop-r1.patch;patch=1 \
+           ${RPSRC}/corgi_kbd1-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_param-r5.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r1.patch;patch=1 \
-           ${RPSRC}/corgi_kbd1-r0.patch;patch=1 \
-	   ${RPSRC}/pxaudc_susres-r0.patch;patch=1 \
-	   ${RPSRC}/sharp_multi_scoop-r1.patch;patch=1 \
-	   ${RPSRC}/sharp_multi_pcmcia-r1.patch;patch=1 \
-           ${RPSRC}/sharpsl_param-r3.patch;patch=1 \
+           ${RPSRC}/pxaudc_susres-r1.patch;patch=1 \
+           ${RPSRC}/sharp_multi_pcmcia-r1.patch;patch=1 \
+           ${RPSRC}/pxa_turbo-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_mapprom-r1.patch;patch=1 \
            ${RPSRC}/input_power-r1.patch;patch=1 \
-	   ${RPSRC}/corgi_irda-r2.patch;patch=1 \
+           ${RPSRC}/corgi_irda-r2.patch;patch=1 \
            ${RPSRC}/corgi_base_extras1-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/corgi_power-r17.patch;patch=1 \
-	   ${RPSRC}/corgi_power1-r1.patch;patch=1 \
+           ${RPSRC}/corgi_power1-r1.patch;patch=1 \
            ${RPSRC}/ide_fixes-r1.patch;patch=1 \
            ${RPSRC}/mmc_sd-r4.patch;patch=1 \
            ${RPSRC}/corgi_snd-r4.patch;patch=1 \
-           ${RPSRC}/w100_split-r2.patch;patch=1 \
+           ${RPSRC}/w100_split-r5.patch;patch=1 \
            ${DOSRC}/pxa2xx-ir-dma-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r2.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r2.patch;patch=1 \
-           ${DOSRC}/tosa-machine-base-r2.patch;patch=1 \
+           ${DOSRC}/tosa-machine-base-r4.patch;patch=1 \
            ${DOSRC}/tosa-keyboard-r2.patch;patch=1 \
-           ${DOSRC}/tc6393fb-r1.patch;patch=1 \
+           ${DOSRC}/tc6393fb-r3.patch;patch=1 \
            ${DOSRC}/tosa-power-r2.patch;patch=1 \
-           ${DOSRC}/tosa-mmc-r1.patch;patch=1 \
-	   ${DOSRC}/sharpsl-flash-tosa-r0.patch;patch=1 \
+           ${DOSRC}/tosa-mmc-r2.patch;patch=1 \
            ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
            ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \	   
            file://add-oz-release-string.patch;patch=1 \
@@ -69,15 +73,13 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
 
 SRC_URI_append_collie = " ${RPSRC}/jl1/collie_keymap.patch;patch=1 "
 SRC_URI_append_poodle = " ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
-			  ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "			  "
+                          ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "			  "
 SRC_URI_append_tosa = " ${DOSRC}/nand-readid-r0.patch;patch=1 \
                         ${DOSRC}/ac97-r1.patch;patch=1 \
-			${DOSRC}/tosa-bl-r2.patch;patch=1 \
-                        ${DOSRC}/tosa-udc-r1.patch;patch=1 \
-                        ${DOSRC}/tosa-irda-r0.patch;patch=1 \
-			${RPSRC}/rpextra_tosa-r0.patch;patch=1 "
-#                        ${DOSRC}/tosa-pcmcia-r1.patch;patch=1 "
-
+                        ${DOSRC}/tosa-detection-r0.patch;patch=1 \
+                        ${DOSRC}/tosa-bl-r2.patch;patch=1 \
+                        ${DOSRC}/tosa-udc-r2.patch;patch=1 \
+                        ${DOSRC}/tosa-irda-r1.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.11"
 
@@ -86,7 +88,7 @@ inherit kernel
 ##############################################################
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
-FILES_kernel = ""
+FILES_kernel-image = ""
 ALLOW_EMPTY = 1
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"

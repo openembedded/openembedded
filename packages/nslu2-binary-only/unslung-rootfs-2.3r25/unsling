@@ -1,31 +1,45 @@
 #!/bin/sh
 
+usage="Usage: $0 [flash|hdd|flash-data|hdd-data|jffs2-flash|jffs2-hdd|jffs2-flash-data|jffs2-hdd-data]"
+
 # Set or seach for target disk
 
 if [ $# -gt 1 ] ; then
-    echo "Usage: $0 [flash|hdd|flash-data|hdd-data]"
+    echo $usage
     exit 1
 fi
 
 if [ $# -eq 1 ] ; then
     if [ "$1" = "flash-data" ] ; then
 	targ=/share/flash/data
+	copy=true
     elif [ "$1" = "hdd-data" ] ; then
 	targ=/share/hdd/data
+	copy=true
     elif [ "$1" = "flash" ] ; then
 	targ=/share/flash/conf
+	copy=true
     elif [ "$1" = "hdd" ] ; then
 	targ=/share/hdd/conf
+	copy=true
+    elif [ "$1" = "jffs2-flash-data" ] ; then
+	targ=/share/flash/data
+	copy=
+    elif [ "$1" = "jffs2-hdd-data" ] ; then
+	targ=/share/hdd/data
+	copy=
+    elif [ "$1" = "jffs2-flash" ] ; then
+	targ=/share/flash/conf
+	copy=
+    elif [ "$1" = "jffs2-hdd" ] ; then
+	targ=/share/hdd/conf
+	copy=
     else
-	echo "Usage: $0 [flash|hdd|flash-data|hdd-data]"
+	echo $usage
 	exit 1
     fi
-elif [ -d /share/hdd/conf/lost+found ] ; then
-    targ=/share/hdd/conf
-elif [ -d /share/flash/conf/lost+found ] ; then
-    targ=/share/flash/conf
 else
-    echo "Cannot locate target disk"
+    echo $usage
     exit 1
 fi
 
@@ -42,45 +56,69 @@ fi
 
 cd /
 
-# Ensure /opt is there.
+if [ -z "$copy" ] ; then
 
-if [ ! -d $targ/opt ] ; then
-    echo "Creating new /opt directory on target disk."
-    mkdir -p $targ/opt
-else
-    echo "Preserving existing /opt directory on target disk."
-fi
+    # Ensure /opt is there.
+
+    if [ ! -d $targ/opt ] ; then
+	echo "Creating new /opt directory on target disk."
+	mkdir -p $targ/opt
+    else
+	echo "Preserving existing /opt directory on target disk."
+    fi
   
-if [ -d /opt -a ! -h /opt ] ; then
-    echo "Copying existing /opt directory from root disk to target disk."
-    tar cf - opt | ( cd $targ ; tar xf - )
-    mv /opt /opt.old
-fi
+    if [ -d /opt -a ! -h /opt ] ; then
+	echo "Copying existing /opt directory from root disk to target disk."
+	tar cf - opt | ( cd $targ ; tar xf - )
+	mv /opt /opt.old
+    fi
 
-echo "Linking /opt directory from target disk to root disk."
-rm -f /opt ; ln -s $targ/opt /opt
+    echo "Linking /opt directory from target disk to root disk."
+    rm -f /opt ; ln -s $targ/opt /opt
 
-# Ensure /usr/lib/ipkg is there.
+    # Ensure /usr/lib/ipkg is there.
 
-if [ ! -d $targ/usr/lib/ipkg ] ; then
-    echo "Creating new /usr/lib/ipkg directory on target disk."
-    mkdir -p $targ/usr/lib/ipkg
-fi
+    if [ ! -d $targ/usr/lib/ipkg ] ; then
+	echo "Creating new /usr/lib/ipkg directory on target disk."
+	mkdir -p $targ/usr/lib/ipkg
+    fi
   
-if [ ! -f $targ/usr/lib/ipkg/status -a -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
-    echo "Copying existing /usr/lib/ipkg directory from root disk to target disk."
-    tar cf - usr/lib/ipkg | ( cd $targ ; tar xf - )
+    if [ ! -f $targ/usr/lib/ipkg/status -a -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
+	echo "Copying existing /usr/lib/ipkg directory from root disk to target disk."
+	tar cf - usr/lib/ipkg | ( cd $targ ; tar xf - )
+    else
+	echo "Preserving existing ipkg database on target disk."
+    fi
+
+    if [ -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
+	echo "Saving /usr/lib/ipkg directory on root disk in /usr/lib/ipkg.old"
+	rm -rf /usr/lib/ipkg.old
+	mv /usr/lib/ipkg /usr/lib/ipkg.old
+    fi
+
+    echo "Linking /usr/lib/ipkg directory from target disk to root disk."
+    rm -f /usr/lib/ipkg ; ln -s $targ/usr/lib/ipkg /usr/lib/ipkg
+
 else
-    echo "Preserving existing ipkg database on target disk."
-fi
 
-if [ -d /usr/lib/ipkg -a ! -h /usr/lib/ipkg ] ; then
-    echo "Saving /usr/lib/ipkg directory on root disk in /usr/lib/ipkg.old"
-    rm -rf /usr/lib/ipkg.old
-    mv /usr/lib/ipkg /usr/lib/ipkg.old
-fi
+    # Copy the complete rootfs to the target.
 
-echo "Linking /usr/lib/ipkg directory from target disk to root disk."
-rm -f /usr/lib/ipkg ; ln -s $targ/usr/lib/ipkg /usr/lib/ipkg
+    /usr/bin/find / -print0 -mount | /usr/bin/cpio -p -0 -d -m -u $targ
+    rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
+    rm -rf $targ/var ; mv $targ/var.state $targ/var
+
+    rm -f /.sda1root /.sda2root /.sdb1root /.sdb2root
+
+    if [ "$targ" = "/share/hdd/data" ] ; then
+	echo > /.sda1root
+    elif [ "$targ" = "/share/hdd/conf" ] ; then
+	echo > /.sda2root
+    elif [ "$targ" = "/share/flash/data" ] ; then
+	echo > /.sdb1root
+    elif [ "$targ" = "/share/flash/conf" ] ; then
+	echo > /.sdb2root
+    fi
+
+fi
 
 exit 0

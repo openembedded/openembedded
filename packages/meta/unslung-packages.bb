@@ -1,15 +1,15 @@
 DESCRIPTION = "Packages that are compatible with the Unslung firmware"
-PR = "r1"
+LICENSE = MIT
+PR = "r2"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-DEPENDS = ' \
-	${UNSLUNG_EXTRA_DEPENDS}'
+UNSLUNG_PACKAGES = "\
+	"
 
-RDEPENDS = ' \
-	${UNSLUNG_EXTRA_RDEPENDS}'
+BROKEN_PACKAGES = "\
+	"
 
-RRECOMMENDS = ' \
-	${UNSLUNG_EXTRA_RRECOMMENDS}'
-LICENSE = MIT
+DEPENDS = 'unslung-image \
+	${UNSLUNG_PACKAGES}'

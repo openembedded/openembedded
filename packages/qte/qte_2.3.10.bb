@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -36,10 +36,11 @@ SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 "
 SRC_URI_append_ramses           = "file://devfs.patch;patch=1 \
                                    file://ramses.patch;patch=1 \
-                                   file://ramses-keyboard.patch;patch=1 \
-                                   file://ramses-touchscreen.patch;patch=1 "
-SRC_URI_append_h3600            = "file://ipaq-keyboard.patch;patch=1 "
-SRC_URI_append_h3900            = "file://ipaq-keyboard.patch;patch=1 "
+                                   file://ramses-touchscreen.patch;patch=1 \
+				   file://qkeyboard_qws.h \
+				   file://qkeyboard_qws.cpp "
+SRC_URI_append_h3600            = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_h3900            = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"
@@ -93,6 +94,12 @@ export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_LFLAGS_ramses = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
+
+do_configure_prepend_ramses() {
+	chmod -R a+w ${S}/src/kernel
+	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
+	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel
+}
 
 do_configure() {
 	for f in ${S}/configs/linux-*-g++-shared; do

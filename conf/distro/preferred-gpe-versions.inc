@@ -3,7 +3,7 @@
 #
 
 #work around some breakages
-CVSDATE_xserver-kdrive=20050207
+#CVSDATE_xserver-kdrive=20050207
 
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox = "1.6"
@@ -25,6 +25,7 @@ PREFERRED_VERSION_xcursor-transparent-theme = "0.1.1"
 PREFERRED_VERSION_rxvt-unicode = "5.3"
 PREFERRED_VERSION_gtk2-theme-angelistic = "0.3"
 PREFERRED_VERSION_xst = "0.14"
+PREFERRED_VERSION_xextensions = "0.0cvs${CVSDATE}"
 PREFERRED_VERSION_xprop = "0.0cvs${CVSDATE}" 
 PREFERRED_VERSION_xhost = "0.0cvs20040413"
 PREFERRED_VERSION_xrdb = "0.0cvs${CVSDATE}"
@@ -34,7 +35,7 @@ PREFERRED_VERSION_gpe-soundserver = "0.4-1"
 PREFERRED_VERSION_gpe-todo = "0.50"
 PREFERRED_VERSION_gpe-calendar = "0.61"
 PREFERRED_VERSION_gpe-sketchbox = "0.2.8"
-PREFERRED_VERSION_gpe-contacts = "0.35"
+PREFERRED_VERSION_gpe-contacts = "0.36"
 PREFERRED_VERSION_gpe-today = "0.08"
 PREFERRED_VERSION_matchbox-panel-manager = "0.1"
 PREFERRED_VERSION_dbus = "0.23"

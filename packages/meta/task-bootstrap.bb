@@ -33,7 +33,7 @@ def bootstrap_modutils_rdepends(d):
 
 HOTPLUG ?= "linux-hotplug"
 
-DEPENDS = 'base-files base-passwd-3.5.7 \
+DEPENDS = 'base-files base-passwd-3.5.9 \
 	busybox dropbear initscripts modutils netbase \
 	sysvinit tinylogin portmap \
 	modutils-initscripts \

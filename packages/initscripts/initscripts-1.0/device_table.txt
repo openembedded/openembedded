@@ -10,7 +10,7 @@
 /dev/audio3	c	660	0	29	14	52	-	-	-
 /dev/bty	c	644	0	0	60	0	0	1	5
 /dev/sharp_fl	c	640	0	44	254	0	-	-	-
-/dev/console	c	662	0	5	5	1	-	-
+/dev/console	c	660	0	5	5	1	-	-
 /dev/cusa0	c	640	0	0	205	5	-	-	-
 /dev/cusa1	c	640	0	0	205	6	-	-	-
 /dev/cusa2	c	640	0	0	205	7	-	-	-
@@ -152,7 +152,7 @@
 /dev/st1a	c	660	0	11	9	97	-	-	-
 /dev/st1l	c	660	0	11	9	33	-	-	-
 /dev/st1m	c	660	0	11	9	65	-	-	-
-/dev/tty	c	662	0	5	5	0	-	-	-
+/dev/tty	c	664	0	5	5	0	-	-	-
 /dev/tty	c	666	0	5	4	0	0	1	9
 /dev/ttyS	c	640	0	5	4	64	0	1	4
 /dev/ttySA	c	640	0	5	204	5	0	1	4

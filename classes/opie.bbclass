@@ -52,6 +52,7 @@ python opie_do_opie_install() {
 			"Security"	: ( "/plugins/security",	None			),
 			"Styles"	: ( "/plugins/styles",		None			),
 			"Today"		: ( "/plugins/today",		None			),
+			"Datebook"	: ( "/plugins/holidays",	None			),
 		"Networksettings"	: ( "/plugins/networksettings", None			) }
 
 	if section not in dirmap:

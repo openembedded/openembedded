@@ -1,9 +1,11 @@
 SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
-SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
-S = "${WORKDIR}/sysfsutils-${PV}"
 LICENSE = "GPLv2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz \
+	   file://libsysfs-write-attribute.patch;patch=1"
+S = "${WORKDIR}/sysfsutils-${PV}"
+PR = "r1"
 
 inherit autotools
 

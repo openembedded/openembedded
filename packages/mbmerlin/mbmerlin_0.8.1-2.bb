@@ -16,3 +16,4 @@ SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
 
 S = "${WORKDIR}/mbmerlin"
 
+CFLAGS += " -D_GNU_SOURCE"

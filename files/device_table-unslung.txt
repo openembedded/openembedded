@@ -35,6 +35,8 @@
 /dev/tty	c	644	0	0	4	0	0	1	10
 /dev/ttyS	c	644	0	0	4	64	0	1	2
 /dev/ttyp	c	644	0	0	3	0	0	1	10
+/dev/ttyUSB	c	644	0	0	188	0	0	1	4
 /dev/urandom	c	644	0	0	1	9	-	-	-
+/dev/video0	c	644	0	0	81	0	-	-	-
 /dev/zero	c	666	0	0	1	5	-	-	-
 /bin/tinylogin	f	6755	0	0	-	-	-	-	-

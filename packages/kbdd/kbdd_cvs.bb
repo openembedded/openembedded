@@ -1,23 +1,45 @@
 SECTION = "console/utils"
 DESCRIPTION = "User-space keyboard daemon for external keyboards"
 MAINTAINER = "Paul Eggleton <paule@handhelds.org>"
-SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${CVSDATE}"
 HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
 LICENSE = "GPLv2"
+DEPENDS = "virtual/kernel"
+RDEPENDS = "kernel-module-keybdev kernel-module-uinput"
+SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${CVSDATE} \
+           file://kbdd.init \
+           file://kbdd.conf \
+           file://kbdd-modules"
 
 PV="0.8+cvs-${CVSDATE}"
-PR="r2"
+PR="r3"
 
+inherit update-rc.d
 
 S = "${WORKDIR}/kbdd"
-LICENSE = "GPL"
+INITSCRIPT_NAME = "kbdd"
+INITSCRIPT_PARAMS = "defaults"
+
 do_compile() {
 	oe_runmake CFLAGS="${CFLAGS} -DVERSION=\\\"${PV}\\\""
 }
 
 do_install() {
-	install -d ${D}${bindir}
+	install -d ${D}${sbindir}
 	install -d ${D}${docdir}/kbdd/
-	install -m 0755 kbdd ${D}${bindir}/
+	install -m 0755 kbdd ${D}${sbindir}/
 	install -m 0644 README ${D}${docdir}/kbdd/
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/kbdd.conf ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/kbdd.init ${D}${sysconfdir}/init.d/kbdd
+	install -d ${D}${sysconfdir}/modutils
+	install -m 0644 ${WORKDIR}/kbdd-modules ${D}${sysconfdir}/modutils/
+}
+
+pkg_postinst () {
+	update-modules
+}
+
+pkg_postrm () {
+	update-modules
 }

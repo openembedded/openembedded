@@ -79,11 +79,9 @@ sectest-task-apps = "\
     nmap \
     ettercap \
     stunnel \
-    btscanner \
     curl \
     dsniff \
     prismstumbler \
-    dillo2 \
     tcpdump \
     miniclipboard"
 

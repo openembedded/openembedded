@@ -6,7 +6,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r16"
+PR = "r17"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
@@ -47,7 +47,7 @@ inherit kernel
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
-FILES_kernel = ""
+FILES_kernel-image = ""
 ALLOW_EMPTY = 1
 
 KERNEL_CCSUFFIX = "-2.95"

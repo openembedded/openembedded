@@ -7,7 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r34"
+PR = "r35"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 ALLOW_EMPTY_kernel = "1"
@@ -77,7 +77,7 @@ CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
-FILES_kernel = ""
+FILES_kernel-image = ""
 
 EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"

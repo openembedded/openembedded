@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r20"
+PR = "r21"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -10,7 +10,7 @@ PACKAGES = "task-opie-applets task-opie-applications task-opie-base \
 	task-opie-decorations task-opie-games task-opie-inputmethods \
 	task-opie-multimedia task-opie-pim task-opie-settings \
 	task-opie-styles task-opie-todayplugins task-opie-bluetooth \
-	task-opie-wlan \
+	task-opie-wlan task-opie-datebookplugins \
 	task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
 	task-qpe-fonts task-qpe-settings"
@@ -298,7 +298,7 @@ opie-search \
 opie-textedit \
 opie-today \
 opie-todo "
-RDEPENDS_task-opie-pim = "${task-opie-pim} task-opie-todayplugins"
+RDEPENDS_task-opie-pim = "${task-opie-pim} task-opie-todayplugins task-opie-datebookplugins"
 DEPENDS += " ${task-opie-pim}"
 
 task-kdepim = "\
@@ -358,6 +358,13 @@ opie-today-weatherplugin "
 RDEPENDS_task-opie-todayplugins = "${task-opie-todayplugins}"
 DEPENDS += " ${task-opie-todayplugins}"
 
+task-opie-datebookplugins= "\
+opie-datebook-birthdayplugin \
+opie-datebook-chrisholidayplugin \
+opie-datebook-nationalholidayplugin "
+RDEPENDS_task-opie-datebookplugins = "${task-opie-datebookplugins}"
+DEPENDS += " ${task-opie-datebookplugins}"
+
 task-opie-bluetooth = "\
 opie-bluepin \
 opie-bluetoothmanager \
@@ -379,12 +386,22 @@ RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
 DEPENDS += " ${task-qpe-emulators}"
 
 task-qpe-fonts = "\
+qpf-bitstream-vera \
+qpf-bitstream-vera-sans-mono \
+qpf-dejavusans \
+qpf-dejavusansmono \
+qpf-dejavuserif \
+qpf-dejavuserifcondensed \
+qpf-freemono \
+qpf-freeserif \
+qpf-hunky \
+qpf-hunkysans \
+qpf-hunkyserif \
+qpf-qte \
 qpf-helvetica \
 qpf-unifont \
 qpf-utopia \
 terminus \
-qpf-bitstream-vera-sans-mono \
-qpf-bitstream-vera \
 "
 DEPENDS += " ${task-qpe-fonts}"
 

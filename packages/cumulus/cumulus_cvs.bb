@@ -7,12 +7,14 @@ APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
 PV = "1.2+cvs-${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://cumulus.kflog.org/download/snapshot/cumulus-snapshot.tbz"
 S = "${WORKDIR}/cumulus/cumulus"
 
 inherit opie
+
+DEFAULT_PREFERENCE = "-1"
 
 export OE_QMAKE_LINK="${CXX}"
 EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=-I."
