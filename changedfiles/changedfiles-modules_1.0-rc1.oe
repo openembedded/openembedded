@@ -11,7 +11,7 @@ S = "${WORKDIR}/changedfiles-${PV}/module"
 inherit module
 
 do_compile() {
-        ${CC} -Wall -DMODULE -D__KERNEL__ -I${KERNEL_STAGING_DIR}/include -c changedfiles.c
+        ${CC} -Wall -DMODULE -D__KERNEL__ -I${STAGING_KERNEL_DIR}/include -c changedfiles.c
 }
 
 pkg_postinst() {

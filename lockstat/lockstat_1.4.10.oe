@@ -5,7 +5,6 @@ DEPENDS = "virtual/kernel"
 SRC_URI = "ftp://oss.sgi.com/projects/lockmeter/download/lockstat-${PV}.tar.gz"
 S = "${WORKDIR}/lockstat"
 
-KERNEL_STAGING_DIR = "${STAGING_DIR}/${HOST_SYS}/kernel"
 export KERNEL_VERSION = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-version')}
 export KERNEL_SOURCE = ${@base_read_file('${STAGING_DIR}/${HOST_SYS}/kernel/kernel-source')}
 CFLAGS += " -I${KERNEL_SOURCE}/include"
