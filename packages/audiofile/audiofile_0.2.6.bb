@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 SECTION = "libs"
 LICENSE = "LGPL GPL"
 DESCRIPTION = "The Audio File Library provides a uniform and elegant \
@@ -10,6 +10,7 @@ PACKAGES += "${PN}-bin"
 FILES_${PN} = "${libdir}/libaudiofile*.so.*"
 FILES_${PN}-dev += "${bindir}/*-config"
 FILES_${PN}-bin += "${bindir}"
+RPROVIDES_${PN} += "audiofile"
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 
