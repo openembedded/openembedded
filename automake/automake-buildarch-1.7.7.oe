@@ -1,4 +1,0 @@
-include automake-${PV}.oe
-S = ${WORKDIR}/automake-${PV}
-
-inherit native
