@@ -1,5 +1,6 @@
 export ARCH = "${TARGET_ARCH}"
 export ARCH_i686 = "i386"
+export ARCH_mipsel = "mips"
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 
