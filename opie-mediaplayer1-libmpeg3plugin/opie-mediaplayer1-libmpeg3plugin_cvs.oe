@@ -2,14 +2,17 @@ DESCRIPTION = "Mpeg video file plugin using libmad"
 SECTION = "opie/codecs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe"
+DEPENDS = "opie-mediaplayer"
+RDEPENDS = "opie-mediaplayer"
 PV = "1.1.5-cvs-${CVSDATE}"
 APPNAME = "mpeg3plugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer/libmpeg3;date=${CVSDATE} "
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer;date=${CVSDATE} "
 
-S = "${WORKDIR}/libmpeg3"
+S = "${WORKDIR}/opieplayer/libmpeg3"
 
 inherit opie
+
+EXTRA_QMAKEVARS_POST += "DEFINES+=USE_FIXED_POINT"
 
 # FILES plugins/codecs/libmpeg3plugin.so

@@ -1,3 +1,4 @@
+BROKEN = "1"
 DEPENDS = "docbook-utils-native"
 DESCRIPTION = "Utilities for the IP protocol."
 

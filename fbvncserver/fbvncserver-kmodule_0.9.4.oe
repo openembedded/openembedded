@@ -1,3 +1,4 @@
+BROKEN = "1"
 DESCRIPTION = "framebuffer VNC server keyboard events module"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
