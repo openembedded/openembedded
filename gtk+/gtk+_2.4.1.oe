@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -21,6 +21,9 @@ do_configure_prepend() {
 	install -d m4
 	install ${WORKDIR}/gtk-doc.m4 m4/
 }
+
+FILES_${PN} += "${datadir}/themes"
+FILES_${PN}-dev += "${datadir}/gtk-2.0/include"
 
 EXTRA_OECONF = "--without-libtiff --enable-debug=no --disable-xkb"
 # --disable-cruft
