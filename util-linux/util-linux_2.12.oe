@@ -4,6 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "zlib ncurses"
 PR = "r1"
 
+inherit autotools
+
 SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz \
            file://MCONFIG \
            file://make_include \
