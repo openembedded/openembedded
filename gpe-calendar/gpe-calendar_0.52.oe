@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 inherit gpe
 
 DEPENDS = "libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration"

@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 inherit gpe
 
 DESCRIPTION = "Displays a summary of appointments and tasks for the day ahead"

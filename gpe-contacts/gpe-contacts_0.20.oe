@@ -1,0 +1,9 @@
+LICENSE = "GPL"
+inherit gpe
+
+DEPENDS = "libgpewidget libgpepimc libdisplaymigration libgpevtype"
+SECTION = "gpe"
+RDEPENDS = "gpe-icons"
+DESCRIPTION = "GPE contacts manager"
+
+SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-contacts-${PV}.tar.gz"

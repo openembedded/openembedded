@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 inherit gpe update-rc.d
 
 DESCRIPTION = "GPE Desktop Manager"

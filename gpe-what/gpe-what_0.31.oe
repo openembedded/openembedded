@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 SECTION = "gpe"
 inherit gpe
 

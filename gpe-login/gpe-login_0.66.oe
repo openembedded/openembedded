@@ -1,3 +1,4 @@
+LICENSE = "GPL"
 inherit gpe
 
 DESCRIPTION = "GPE user login screen"
