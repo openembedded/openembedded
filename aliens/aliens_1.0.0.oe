@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe libsdl-qpe libsdl-mixer libsdl-image"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/aliens/src/aliens_V${PV}.tar.gz"
 S = "${WORKDIR}/aliens_V${PV}"
@@ -24,5 +24,5 @@ do_install() {
         	   ${D}/${palmtopdir}/share/aliens
         install -D -m 0755 aliens ${D}${palmtopdir}/bin/aliens
 	install -D -m 0644 aliens.png ${D}${palmtopdir}/pics/aliens.png
-        install -D -m 0644 aliens.desktop ${D}${palmtopdir}/Games/aliens.desktop
+        install -D -m 0644 aliens.desktop ${D}${palmtopdir}/apps/Games/aliens.desktop
 }
