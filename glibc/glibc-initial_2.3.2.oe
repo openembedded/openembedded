@@ -10,7 +10,7 @@ PACKAGES = ""
 do_configure () {
 	sed -ie 's,{ (exit 1); exit 1; }; },{ (exit 0); }; },g' ${S}/configure
 	CC="${BUILD_CC}" CPP="${BUILD_CPP}" LD="${BUILD_LD}" ${S}/configure --host=${TARGET_SYS} --build=${BUILD_SYS} \
-		--without-cvs --disable-sanity-checks --with-headers=${WORKDIR}/linux/include \
+		--without-cvs --disable-sanity-checks --with-headers=${HEADERS_DIR}/include \
 		--enable-hacker-mode
 	if grep -q GLIBC_2.3 ${S}/ChangeLog; then
 		# glibc-2.3.x passes cross options to $(CC) when generating errlist-compat.c, which fails without a real cross-compiler.
@@ -38,8 +38,8 @@ do_stage () {
 	touch ${CROSS_DIR}/${TARGET_SYS}/include/gnu/stubs.h
 	cp ${S}/include/features.h ${CROSS_DIR}/${TARGET_SYS}/include/features.h
 	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm
-	cp -a ${WORKDIR}/linux/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
-	cp -R ${WORKDIR}/linux/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -a ${HEADERS_DIR}/include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
+	cp -R ${HEADERS_DIR}/include/asm/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
 }
 
 do_install () {
