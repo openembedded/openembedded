@@ -4,9 +4,7 @@ DEPENDS = "ncurses"
 SECTION = "base/shell"
 LICENSE = "GPL"
 PROVIDES = "virtual/sh"
-PR = "r2"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
 	file://signames-mipsel.diff;patch=1"
@@ -16,7 +14,7 @@ inherit autotools
 bindir = "/bin"
 sbindir = "/sbin"
 
-EXTRA_OECONF = "--with-curses"
+EXTRA_OECONF = "--with-ncurses"
 export CC_FOR_BUILD = "${BUILD_CC}"
 
 do_configure () {
