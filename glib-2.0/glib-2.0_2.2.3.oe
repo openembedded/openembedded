@@ -7,6 +7,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0-native"
+DEPENDS += "virtual/libiconv virtual/libintl gettext-native"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
            file://automake-lossage.patch;patch=1 \
