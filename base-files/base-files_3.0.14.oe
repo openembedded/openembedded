@@ -1,4 +1,4 @@
-DESCRIPTION = "Base system miscellaneous files."
+xDESCRIPTION = "Base system miscellaneous files."
 SECTION = "base"
 PRIORITY = "required"
 PR = "r4"
@@ -77,9 +77,7 @@ do_install () {
     install -p -m 644 licenses/* ${D}${datadir}/common-licenses
     ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
     ln -s GPL-2    ${D}${datadir}/common-licenses/GPL
-    for i in `ls etc/|grep -v debian`; do install -p -m 644 etc/$i ${D}/etc; done
-    rm -f ${D}/etc/motd
-    cat etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
+
     cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
     gzip -9 ${D}/${docdir}/changelog
 #   chown -R root:root ${D}
@@ -91,11 +89,16 @@ do_install () {
     cd ${D} && chmod 2775 `cat ${S}/debian/2775-dirs`
 
     install -d ${D}/${sysconfdir}
-    oe_machinstall -m 0644 ${FILESDIR}/fstab ${D}/${sysconfdir}/fstab
-    oe_machinstall -m 0644 ${FILESDIR}/hostname ${D}/${sysconfdir}/hostname
-    oe_machinstall -m 0644 ${FILESDIR}/profile ${D}/${sysconfdir}/profile
+    oe_machinstall -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
+    oe_machinstall -m 0644 ${WORKDIR}/hostname ${D}/${sysconfdir}/hostname
+    oe_machinstall -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
     install -m 0644 ${FILESDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
     install -m 0644 ${FILESDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
+    cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
+    for f in debian_version inputrc nsswitch.conf host.conf profile
+    do
+        install -m 0644 ${WORKDIR}/etc/$f ${D}/${sysconfdir}/
+    done
 
     install -m 0755 ${D}/usr/share/base-files/dot.profile ${D}/root/.profile
 
