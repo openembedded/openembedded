@@ -167,8 +167,8 @@ python do_package_ipk () {
 			raise bb.build.FuncFailed("Missing field for ipk generation: %s" % value)
 		# more fields
 		rdepends = explode_deps(bb.data.getVar("RDEPENDS", localdata, 1) or "")
+		rrecommends = explode_deps(bb.data.getVar("RRECOMMENDS", localdata, 1) or "")
 		rsuggests = (bb.data.getVar("RSUGGESTS", localdata, 1) or "").split()
-		rrecommends = (bb.data.getVar("RRECOMMENDS", localdata, 1) or "").split()
 		rprovides = (bb.data.getVar("RPROVIDES", localdata, 1) or "").split()
 		rreplaces = (bb.data.getVar("RREPLACES", localdata, 1) or "").split()
 		rconflicts = (bb.data.getVar("RCONFLICTS", localdata, 1) or "").split()
