@@ -30,6 +30,8 @@ DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPENDS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {
 
+	test -z "${FEED_URIS}" && exit 0
+
  	# comment out existing feed-sources inserted by ipkg-collateral
 	cat ${IMAGE_ROOTFS}/etc/ipkg.conf | sed "s/^src\ /#src\ /" > ${IMAGE_ROOTFS}/etc/ipkg.conf_
 	rm ${IMAGE_ROOTFS}/etc/ipkg.conf && mv ${IMAGE_ROOTFS}/etc/ipkg.conf_ ${IMAGE_ROOTFS}/etc/ipkg.conf
