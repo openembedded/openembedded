@@ -1,0 +1,26 @@
+DESCRIPTION = "Matchbox window manager core library"
+LICENSE = "GPL"
+DEPENDS = "virtual/libc x11 xext xft pango jpeg libpng zlib"
+RDEPENDS = "libc6 x11 xext xft pango jpeg libpng zlib"
+
+SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/libmatchbox/${PV}/libmatchbox-${PV}.tar.bz2"
+S = "${WORKDIR}/libmatchbox-${PV}"
+
+inherit autotools libtool pkgconfig
+
+EXTRA_OECONF = "--enable-jpeg --enable-pango"
+
+headers = "hash.h mbconfig.h mbdotdesktop.h mbexp.h \
+	   mb.h mbmenu.h mbpixbuf.h mbtray.h mbutil.h"
+
+do_stage () {
+	install -d ${STAGING_INCDIR}/libmb
+	for h in ${headers}; do
+		install -m 0644 ${S}/libmb/$h ${STAGING_INCDIR}/libmb/
+	done
+
+	cp -a ${S}/libmb/.libs/libmb.a ${STAGING_LIBDIR}/libmb.a
+	cp -a ${S}/libmb/libmb.lai ${STAGING_LIBDIR}/libmb.la
+	oe_soinstall ${S}/libmb/.libs/libmb.so.1.0.1 ${STAGING_LIBDIR}/
+#	cp -a ${S}/libmb.pc ${STAGING_LIBDIR}/pkgconfig/libmb.pc
+}
