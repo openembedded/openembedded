@@ -7,6 +7,8 @@ SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
+DEFAULT_PREFERENCE = "-1"
+
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
 
