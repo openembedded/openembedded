@@ -1,7 +1,8 @@
 DESCRIPTION = "modutils configuration files"
-SRC_URI = "file://modutils"
+SRC_URI = "file://modutils.sh"
+PR = "r1"
 
-INITSCRIPT_NAME = "modutils"
+INITSCRIPT_NAME = "modutils.sh"
 INITSCRIPT_PARAMS = "start 20 S ."
 
 inherit update-rc.d
@@ -11,5 +12,5 @@ do_compile () {
 
 do_install () {
 	install -d ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/modutils ${D}/etc/init.d/
+	install -m 0755 ${WORKDIR}/modutils.sh ${D}/etc/init.d/
 }
