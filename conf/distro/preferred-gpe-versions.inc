@@ -4,7 +4,7 @@
 
 #work around some breakages
 CVSDATE_xserver-kdrive=20050207
-CVSDATE_minimo=20050316
+CVSDATE_minimo=20050401
 CVSDATE_cairo=20050330
 
 #specify versions, as the header says :)
