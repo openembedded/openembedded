@@ -1,0 +1,6 @@
+DEPENDS =+ "ccdv-native"
+MAKE += "-s"
+CCDV = "ccdv"
+CC =+ "${CCDV}"
+BUILD_CC =+ "${CCDV}"
+CCLD =+ "${CCDV}"
