@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r12"
+PR = "r13"
 
 ALLOW_EMPTY = 1
 
