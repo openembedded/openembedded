@@ -5,8 +5,9 @@ HOMEPAGE = "http://www.openswan.org"
 LICENSE = "GPLv2"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 DEPENDS = "gmp flex-native"
-RDEPENDS = "kernel-module-ipsec perl"
-PR = "r1"
+RRECOMMENDS = "kernel-module-ipsec"
+RDEPENDS_nylon = "perl"
+PR = "r2"
 
 SRC_URI = "http://www.openswan.org/code/openswan-${PV}.tar.gz \
 	   file://openswan-2.2.0-gentoo.patch;patch=1"
