@@ -9,12 +9,6 @@ SRC_URI = ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.
 	  file://${FILESDIR}/alignment_hack.patch;patch=1 \
 	  file://${FILESDIR}/mkdosfs-errno.patch;patch=1
 
-inherit autotools
-	  
-EXTRA_OECONF = "--with-curses-terminfo"
-#EXTRA_OECONF = "--with-curses-terminfo --enable-libs='-lncurses'"
-
 do_install () {
-	set -e
 	oe_runmake 'PREFIX=${D}' install
 }
