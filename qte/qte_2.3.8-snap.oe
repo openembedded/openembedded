@@ -21,6 +21,8 @@ def qte_arch(d):
 		arch = "x86"
 	elif arch == "x86_64":
 		arch = "x86"
+	elif arch == "mipsel":
+		arch = "mips"
 	return arch
 
 QTE_ARCH := "${@qte_arch(d)}"
