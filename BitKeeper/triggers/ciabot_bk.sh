@@ -32,7 +32,6 @@ for file in `bk changes -n -v -r"$REV" -d"\\\$unless(:GFILE:=ChangeSet){:GFILE:}
     files="$files<file>$file</file>"
 done
 
-sendmail_command=cat
 # Send an email with the final XML message
 (cat <<EOF
 From: $return_address
