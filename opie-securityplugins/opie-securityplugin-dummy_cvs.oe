@@ -1,0 +1,21 @@
+DESCRIPTION = "Dummy plugin for opie-security authentication."
+SECTION = "opie/settings"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "opie-security"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "multiauthdummyplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/dummy \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "
+
+S = "${WORKDIR}/dummy"
+
+inherit opie
+
+# FILES plugins/security/libmultiauthdummyplugin.so* pics/security/dummyplugin.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/security
+        install -m 0644 ${WORKDIR}/pics/security/dummyplugin.png ${D}${palmtopdir}/pics/security/
+}
+

@@ -1,0 +1,21 @@
+DESCRIPTION = "PIN plugin for opie-security authentication."
+SECTION = "opie/settings"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "opie-security"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "multiauthpinplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/pin \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "
+
+S = "${WORKDIR}/pin"
+
+inherit opie
+
+# FILES plugins/security/libmultiauthpinplugin.so* pics/security/pinplugin.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/security/
+        install -m 0644 ${WORKDIR}/pics/security/pinplugin.png ${D}${palmtopdir}/pics/security/
+}
+

@@ -1,0 +1,21 @@
+DESCRIPTION = "Blueping plugin for opie-security authentication."
+SECTION = "opie/settings"
+PRIORITY = "optional"
+LICENSE = "GPL"
+RDEPENDS = "opie-security bluez-utils"
+PV = "1.1.5-cvs-${CVSDATE}"
+APPNAME = "multiauthbluepingplugin"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/securityplugins/blueping \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics "
+
+S = "${WORKDIR}/blueping"
+
+inherit opie
+
+# FILES plugins/security/libmultiauthbluepingplugin.so* pics/security/bluepingplugin.png root/etc/suspend-scripts/S50bluetooth
+do_install() {
+        install -d ${D}${palmtopdir}/pics/security/
+        install -m 0644 ${WORKDIR}/pics/security/bluepingplugin.png ${D}${palmtopdir}/pics/security/
+}
+
