@@ -38,7 +38,7 @@ OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh opie-style-metal opie-style-web opie-style-phase"
 
 OPIE_BASE_DEPENDS = "ipkg ntp bluez-utils-nodbus irda-utils openobex-apps"
-OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex"
+OPIE_BASE_RDEPENDS = "ntpdate opie-handwriting-classicset bluez-utils-nodbus openobex-apps libopieobex0"
 
 #
 # Additional things for a standard 16MB distribution
