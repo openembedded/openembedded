@@ -1,0 +1,11 @@
+include glibc_${PV}.oe
+
+do_install () {
+	:
+}
+
+PACKAGES = ""
+PROVIDES = "virtual/${TARGET_PREFIX}libc-for-gcc"
+DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
+LIBC_ADDONS = "linuxthreads"
+LIBC_EXTRA_OECONF = ""
