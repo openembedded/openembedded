@@ -1,4 +1,0 @@
-dest root /
-dest cf /mnt/cf/
-dest sd /mnt/card/
-dest ram /mnt/ram/

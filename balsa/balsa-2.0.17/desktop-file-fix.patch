@@ -1,8 +1,0 @@
---- balsa-2.0.17/balsa.desktop~	2003-07-08 15:37:35.000000000 +0100
-+++ balsa-2.0.17/balsa.desktop	2004-08-03 23:23:50.000000000 +0100
-@@ -80,4 +80,4 @@
- Terminal=0
- Type=Application
- StartupNotify=true
--Categories=GNOME;Application;Network
-+Categories=GNOME;Application;Network;

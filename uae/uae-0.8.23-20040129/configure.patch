@@ -1,9 +1,0 @@
---- tmp/base/uae-0.8.23-20040129-r0/uae-0.8.23-20040129/configure.in	2004-01-29 00:38:18.000000000 -0500
-+++ uae-0.8.23-20040129/configure.in	2004-03-05 17:26:12.000000000 -0500
-@@ -1032,5 +1032,5 @@
-   export CC=$CC_FOR_BUILD
-   export CFLAGS=$CFLAGS_FOR_BUILD
-   mkdir -p src/tools
--  cd  src/tools && ../../"$srcdir"/src/tools/configure --cache-file=/dev/null --host=$build --target=$host
-+  cd  src/tools && "$srcdir"/src/tools/configure --cache-file=/dev/null --host=$build --target=$host
- fi

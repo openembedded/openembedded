@@ -1,7 +1,0 @@
-gpe-contacts
-	requires_terminal=false
-	expects_uris=false
-	command=gpe-contacts -i
-	can_open_multiple_files=false
-	name=Contacts
-	mime_types=text/vcard

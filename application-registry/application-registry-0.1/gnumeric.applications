@@ -1,7 +1,0 @@
-gnumeric
-	command=gnumeric
-	name=Gnumeric
-	can_open_multiple_files=true
-	expects_uris=false
-	requires_terminal=false
-	mime_types=application/x-gnumeric,application/x-applix-spreadsheet,application/vnd.ms-excel,application/vnd.lotus-1-2-3,application/x-oleo,application/x-xbase,text/spreadsheet,text/x-comma-separated-values,text/tab-separated-values

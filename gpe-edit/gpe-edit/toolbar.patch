@@ -1,7 +1,0 @@
-Index: main.c
-===================================================================
-RCS file: /cvs/gpe/base/gpe-edit/main.c,v
-retrieving revision 1.46
-diff -r1.46 main.c
-582d581
-<   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);

@@ -1,9 +1,0 @@
-diff -urNd ../matchbox-desktop-0.8.1-r0/matchbox-desktop-0.8.1/data/mbdesktop_modules.in matchbox-desktop-0.8.1/data/mbdesktop_modules.in
---- ../matchbox-desktop-0.8.1-r0/matchbox-desktop-0.8.1/data/mbdesktop_modules.in	2004-07-22 12:51:25.000000000 +0100
-+++ matchbox-desktop-0.8.1/data/mbdesktop_modules.in	2004-09-18 15:54:52.000000000 +0100
-@@ -6,4 +6,4 @@
- 
- @MBDESKTOP_PLUGIN_DIR@/tasks.so
- @MBDESKTOP_PLUGIN_DIR@/dotdesktop.so
--# @MBDESKTOP_PLUGIN_DIR@/simplefilebrowser.so /
-+@MBDESKTOP_PLUGIN_DIR@/simplefilebrowser.so /

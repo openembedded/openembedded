@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=xmonobut
-Comment=A tool to modify mouse button behaviour.
-Exec=xmonobut
-Type=PanelApp
-Icon=xmonobut.xpm
-Categories=Panel;Utility

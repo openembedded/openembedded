@@ -1,4 +1,0 @@
-#!/bin/sh
-
-logger -t ddclient $PPP_IFACE $PPP_LOCAL
-ddclient -daemon=0 -syslog -use=if -if=$PPP_IFACE >/dev/null 2>&1

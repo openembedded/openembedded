@@ -1,9 +1,0 @@
-diff -urN stunnel-4.05.orig/Makefile.am stunnel-4.05/Makefile.am
---- stunnel-4.05.orig/Makefile.am	2003-01-11 23:30:48.000000000 -0500
-+++ stunnel-4.05/Makefile.am	2004-03-21 20:57:58.000000000 -0500
-@@ -1,4 +1,4 @@
--SUBDIRS = src doc tools
-+SUBDIRS = src doc
- 
- # extra_src = src/gui.c src/resources.rc src/stunnel.ico src/stunnel.exe
- # extra_doc = doc/stunnel.pod doc/stunnel.8 doc/stunnel.html doc/en doc/pl

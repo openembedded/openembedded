@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Modem Dialer
-Comment=Configure and start modem connections
-Exec=gkdial
-Terminal=false
-Type=Application
-Icon=gkdial.png
-Categories=Application;Utility;PPP;
-StartupNotify=true

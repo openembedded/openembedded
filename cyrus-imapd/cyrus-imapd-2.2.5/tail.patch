@@ -1,8 +1,0 @@
---- cyrus-imapd-2.2.5/imap/xversion.sh.orig	2003-10-22 20:03:00 +0200
-+++ cyrus-imapd-2.2.5/imap/xversion.sh	2004-08-26 16:57:29 +0200
-@@ -22,4 +22,4 @@
- 	match ($0, pattern) {
- 	    printf "\"%s\"\n", substr($0, RSTART, RLENGTH)
- 	}' pattern="$DATEPAT $TIMEPAT" | \
--	sort | tail -1 >> xversion.h
-+	sort | tail -n 1 >> xversion.h

@@ -1,8 +1,0 @@
-#!/bin/sh
-
-rm -f /dev/ts
-mkfifo /dev/ts
-mkfifo /dev/tssim
-mknod /dev/kbdsim c 61 0
-insmod -f kbdsim
-/usr/bin/tssimd
