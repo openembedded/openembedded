@@ -784,7 +784,7 @@ diff -Nuar linux-2.4.18/drivers/sound/colliebuzzer.h linux-2.4.18p/drivers/sound
 +		sa1100_dma_queue_buffer(COLLIE_BUZZER_DMA_CHANNEL,
 +		 			(void *) b, b->dma_addr, b->size);
 +
-+		Collie_volume_set(50);
++		Collie_volume_set(4);
 +
 +		b->size = 0;    /* indicate that the buffer has been sent */
 +		NEXT_BUF(s, buf);
