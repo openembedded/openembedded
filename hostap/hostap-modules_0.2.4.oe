@@ -6,7 +6,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
-           file://hostap_cs.conf"
+           file://hostap_cs.conf \
+	   file://Makefile.patch;patch=1"
 S = "${WORKDIR}/hostap-driver-${PV}"
 
 inherit module
