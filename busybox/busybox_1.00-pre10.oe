@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 LICENSE = "GPL"
 DESCRIPTION = "BusyBox version ${PV}. \
 BusyBox combines tiny versions of many common UNIX utilities into a single \
@@ -22,7 +22,10 @@ export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 FILES_${PN} += " ${datadir}/udhcpc"
 
-inherit cml1
+inherit cml1 update-rc.d
+
+INITSCRIPT_NAME = "syslog"
+INITSCRIPT_PARAMS = "defaults"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
