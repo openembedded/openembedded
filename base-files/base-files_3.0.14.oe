@@ -6,18 +6,12 @@ PR = "r13"
 SRC_URI = " \
            file://etc/nsswitch.conf \
            file://etc/motd \
-           file://etc/issue.net- \
-           file://etc/issue-opensimpad \
-           file://etc/issue.net-opensimpad \
-           file://etc/issue- \
-           file://etc/issue-openzaurus \
-           file://etc/issue.net-openzaurus \
-           file://etc/issue-familiar \
-           file://etc/issue.net-familiar \
            file://etc/inputrc \
            file://etc/host.conf \
            file://etc/profile \
            file://fstab \
+           file://issue.net \
+           file://issue \
            file://usbd \
            file://share/dot.bashrc \
            file://share/dot.profile \
@@ -78,8 +72,8 @@ do_install () {
     install -m 0644 ${WORKDIR}/usbd ${D}/${sysconfdir}/default/usbd
     [ -z "${MACHINE}" ] && echo "openembedded" >${D}/${sysconfdir}/hostname || echo ${MACHINE} >${D}/${sysconfdir}/hostname
     install -m 0644 ${WORKDIR}/etc/profile ${D}/${sysconfdir}/profile
-    install -m 0644 ${WORKDIR}/etc/issue-${DISTRO} ${D}/${sysconfdir}/issue
-    install -m 0644 ${WORKDIR}/etc/issue.net-${DISTRO} ${D}/${sysconfdir}/issue.net
+    install -m 0644 ${WORKDIR}/issue ${D}/${sysconfdir}/issue
+    install -m 0644 ${WORKDIR}/issue.net ${D}/${sysconfdir}/issue.net
     cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
     for f in inputrc nsswitch.conf host.conf
     do
