@@ -6,7 +6,7 @@ PROVIDES = "xdmcp"
 DESCRIPTION = "X Display Manager Control Protocol library."
 S = "${WORKDIR}/libXdmcp-${PV}"
 
-SRC_URI = "http://freedesktop.org/~xlibs/release/libXdmcp-${PV}.tar.bz2"
+SRC_URI = "${XLIBS_MIRROR}/libXdmcp-${PV}.tar.bz2"
 
 inherit autotools pkgconfig 
 

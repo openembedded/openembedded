@@ -4,7 +4,7 @@ DESCRIPTION = "network API translation layer to \
 insulate X applications and libraries from OS \
 network vageries."
 
-SRC_URI = "http://freedesktop.org/~xlibs/release/libXtrans-0.1.tar.bz2"
+SRC_URI = "${XLIBS_MIRROR}/libXtrans-0.1.tar.bz2"
 S = "${WORKDIR}/libXtrans-${PV}"
 
 inherit autotools  pkgconfig
