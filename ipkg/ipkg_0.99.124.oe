@@ -2,7 +2,7 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "libipkg-dev libipkg "
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
@@ -19,9 +19,9 @@ pkg_postinst_ipkg () {
 #!/bin/sh
 if [ "x$D" != "x" ]; then
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d
-	# this needs to happen after S35mountall so that /tmp is available
-	echo -e "#!/bin/sh\nipkg-cl configure\nrm -f \$0" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S36configure
-	chmod 755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S36configure
+	# this happens at S98 where our good 'ole packages script used to run
+	echo -e "#!/bin/sh\nipkg-cl configure\nrm -f \$0" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S98configure
+	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S98configure
 fi
 
 update-alternatives --install /usr/bin/ipkg ipkg /usr/bin/ipkg-cl 100

@@ -6,16 +6,12 @@ QPEDIR=/opt/QtPalmtop
 QTDIR=/opt/QtPalmtop
 PATH="/opt/QtPalmtop/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games"
 
+if [ "`id -u`" -eq 0 ]; then
+   PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:
+fi
 if [ "$PS1" ]; then
-  if [ "$BASH" ]; then
-    PS1='\u@\h:\w\$ '
-  else
-    if [ "`id -u`" -eq 0 ]; then
-      PS1='# '
-    else
-      PS1='$ '
-    fi
-  fi
+# works for bash and ash (no other shells known to be in use here)
+   PS1='\u@\h:\w\$ '
 fi
 
 export PATH PS1 OPIEDIR QPEDIR QTDIR
