@@ -15,7 +15,7 @@
 # 
 # Name of the project, such as "BitKeeper" or "The GNU C compiler".
 # 
-description: OpenEmbedded Package Metadata Repository 
+description: OpenEmbedded Metadata Repository 
 # 
 # What (RedHat package) category this project fits into, if any.
 # 
