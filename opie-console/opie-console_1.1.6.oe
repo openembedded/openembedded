@@ -3,8 +3,8 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-RDEPENDS = "opie-keytabs"
-PR = "r1"
+RDEPENDS = "opie-keytabs qte-font-fixed"
+PR = "r2"
 
 APPNAME = "opie-console"
 APPTYPE = binary
