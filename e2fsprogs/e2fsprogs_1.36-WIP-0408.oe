@@ -1,0 +1,26 @@
+DESCRIPTION = "EXT2 Filesystem Utilities"
+SECTION = "base"
+PRIORITY = "optional"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
+	   file://ln.patch;patch=1 \
+	   file://configure.patch;patch=1 \
+	   file://m4.patch;patch=1 \
+	   file://ldflags.patch;patch=1"
+S = "${WORKDIR}/e2fsprogs-1.35"
+
+inherit autotools
+
+EXTRA_OECONF = "--enable-dynamic-e2fsck"
+
+sbindir = "/sbin"
+
+do_compile_prepend () {
+	find ./ -print|xargs chmod u=rwX
+	( cd util; ${BUILD_CC} subst.c -o subst )
+}
+
+PACKAGES_prepend = "e2fsprogs-e2fsck e2fsprogs-mke2fs "
+FILES_e2fsprogs-e2fsck = "${sbindir}/e2fsck ${sbindir}/fsck.ext2 ${sbindir}/fsck.ext3"
+FILES_e2fsprogs-mke2fs = "${sbindir}/mke2fs ${sbindir}/mkfs.ext2 ${sbindir}/mkfs.ext3"
