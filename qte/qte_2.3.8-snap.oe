@@ -1,4 +1,4 @@
-SNAPDATE=20040107
+SNAPDATE="${@'%d%02d%02d' % ( time.localtime()[0], time.localtime()[1], time.localtime()[2]-1 )}" 
 DESCRIPTION="Qt/Embedded version ${PV}shot as of ${SNAPDATE}"
 LICENSE="GPL/QPL"
 SRC_URI="ftp://ftp.trolltech.com/pub/qt/snapshots/qt-embedded-${PV}shot-${SNAPDATE}.tar.gz \
