@@ -3,11 +3,12 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
 	   file://network.patch;patch=1 \
+	   file://pcmcia \
 	   file://ide.opts \
 	   file://wireless.opts \
 	   file://network.conf"
@@ -73,6 +74,8 @@ do_install() {
 		install -m 0644 $i ${D}/${sysconfdir}/pcmcia/cis/
 	done
 	install -m 0755 etc/rc.pcmcia ${D}/${sysconfdir}/init.d/pcmcia
+	install -d ${D}/${sysconfdir}/sysconfig
+	install -m 0755 ${WORKDIR}/pcmcia ${D}/${sysconfdir}/sysconfig/pcmcia
 }
 
 FILES_${PN} = "${sbindir} ${sysconfdir}"
