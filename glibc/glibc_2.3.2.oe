@@ -3,9 +3,16 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+
+# This will ONLY build to this target
+TARGET_VENDOR = ""
+TARGET_SYS = "${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
+TARGET_PREFIX = "${TARGET_SYS}-"
+
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
 PROVIDES = "virtual/libc"
 PACKAGES = "glibc glibc-dev glibc-doc glibc-i18n glibc-locale"
+
 FILES_glibc_append = " ${datadir}/zoneinfo"
 FILES_glibc-dev_append = " ${libdir}/*.o"
 FILES_glibc-gconv = "${libdir}/gconv"
