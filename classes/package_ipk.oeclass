@@ -60,6 +60,7 @@ python package_ipk_install () {
 }
 
 python package_ipk_do_package_ipk () {
+	import copy # to back up env data
 	import sys
 
 	workdir = oe.data.getVar('WORKDIR', d, 1)
@@ -95,8 +96,8 @@ python package_ipk_do_package_ipk () {
 		return
 
 	for pkg in packages.split():
-		localdata = {}
-		oe.data.linkDataSet(localdata,d)
+		from copy import deepcopy
+		localdata = deepcopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
 
 		oe.data.setVar('ROOT', '', localdata)

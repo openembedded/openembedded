@@ -107,8 +107,8 @@ python do_package_rpm () {
 	packages = oe.data.expand(packages, d)
 
 	for pkg in packages.split():
-		localdata = {}
-		oe.data.linkDataSet(localdata,d)
+		from copy import copy, deepcopy
+		localdata = deepcopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
 
 		oe.data.setVar('ROOT', '', localdata)
