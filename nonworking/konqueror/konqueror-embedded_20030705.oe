@@ -25,7 +25,7 @@ EXTRA_OECONF = "--prefix=${palmtopdir} --exec-prefix=${palmtopdir}              
                 --with-ssl-version=0.9.7c --with-ssl-dir=${STAGING_LIBDIR}/..                   \
                 --with-qt-dir=${STAGING_LIBDIR}/.. --with-qtopia-dir=${STAGING_LIBDIR}/..       "
 
-CXXFLAGS += "-DOPIE_NO_ERASE_RECT_FIX -DOPIE_NEW_MALLOC"
+CXXFLAGS += "-DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC"
 
 do_compile_prepend() {
 	perl admin/am_edit
