@@ -14,5 +14,5 @@ inherit palmtop
 do_install() {
         install -d ${D}
 	cp -dfR `ls -dp ${FILESDIR}/$u/*|grep -v SCCS` ${D}/$u/
-        install -D -m 755 txdrug ${D}${palmtopdir}bin/txdrug
+        install -D -m 755 txdrug ${D}${palmtopdir}/bin/txdrug
 }

@@ -11,25 +11,25 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/freedroid/freedroid-${PV}.tar.gz"
 inherit autotools libtool
 
 do_compile() {
-	oe_runmake pkgdatadir=${palmtopdir}share/freedroid
+	oe_runmake pkgdatadir=${palmtopdir}/share/freedroid
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}{bin,apps/Games,pics,share/freedroid/{graphics,map,sound}}
-        install -D -m 0755 src/freedroid ${D}${palmtopdir}bin/freedroid
-	install -D -m 0644 ${FILESDIR}/icon.png ${D}${palmtopdir}pics/freedroid.png
+        install -d ${D}${palmtopdir}/{bin,apps/Games,pics,share/freedroid/{graphics,map,sound}}
+        install -D -m 0755 src/freedroid ${D}${palmtopdir}/bin/freedroid
+	install -D -m 0644 ${FILESDIR}/icon.png ${D}${palmtopdir}/pics/freedroid.png
 
-	cp -a graphics/* ${D}${palmtopdir}share/freedroid/graphics
-	cp -a map/* ${D}${palmtopdir}share/freedroid/map
-	cp -a sound/* ${D}${palmtopdir}share/freedroid/sound
+	cp -a graphics/* ${D}${palmtopdir}/share/freedroid/graphics
+	cp -a map/* ${D}${palmtopdir}/share/freedroid/map
+	cp -a sound/* ${D}${palmtopdir}/share/freedroid/sound
 
-	echo "[Desktop Entry]" >${D}${palmtopdir}apps/Games/freedroid.desktop
-	echo "Comment=A Paradroid Clone" >>${D}${palmtopdir}apps/Games/freedroid.desktop
-	echo "Exec=freedroid" >>${D}${palmtopdir}apps/Games/freedroid.desktop
-	echo "Icon=freedroid" >>${D}${palmtopdir}apps/Games/freedroid.desktop
-	echo "Type=Application" >>${D}${palmtopdir}apps/Games/freedroid.desktop
-	echo "Name=Freedroid" >>${D}${palmtopdir}apps/Games/freedroid.desktop
+	echo "[Desktop Entry]" >${D}${palmtopdir}/Games/freedroid.desktop
+	echo "Comment=A Paradroid Clone" >>${D}${palmtopdir}/Games/freedroid.desktop
+	echo "Exec=freedroid" >>${D}${palmtopdir}/Games/freedroid.desktop
+	echo "Icon=freedroid" >>${D}${palmtopdir}/Games/freedroid.desktop
+	echo "Type=Application" >>${D}${palmtopdir}/Games/freedroid.desktop
+	echo "Name=Freedroid" >>${D}${palmtopdir}/Games/freedroid.desktop
 }
 
 FILES_${PN} = ""
-FILES_${PN} = "${palmtopdir}"
+FILES_${PN} = "${palmtopdir}/"

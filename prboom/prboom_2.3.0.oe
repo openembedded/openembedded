@@ -16,10 +16,10 @@ do_configure() {
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}{bin,apps/Games,pics}
-	install -m 0755 src/prboom ${D}${palmtopdir}bin/prboom
-	install -m 0644 ${FILESDIR}/prboom.png ${D}${palmtopdir}pics/prboom.png
-	install -m 0644 ${FILESDIR}/prboom.desktop ${D}${palmtopdir}apps/Games/prboom.desktop
+	install -d ${D}${palmtopdir}/{bin,apps/Games,pics}
+	install -m 0755 src/prboom ${D}${palmtopdir}/bin/prboom
+	install -m 0644 ${FILESDIR}/prboom.png ${D}${palmtopdir}/pics/prboom.png
+	install -m 0644 ${FILESDIR}/prboom.desktop ${D}${palmtopdir}/Games/prboom.desktop
 }
 
-FILES_${PN} = "${palmtopdir}
+FILES_${PN} = "${palmtopdir}/

@@ -12,8 +12,8 @@ S = "${WORKDIR}/zmerlin"
 inherit palmtop
 
 do_install() {
-        install -m 0755 zmerlin ${S}/ipk${palmtopdir}bin/zmerlin
-	install -d ${D}${palmtopdir}
+        install -m 0755 zmerlin ${S}/ipk${palmtopdir}/bin/zmerlin
+	install -d ${D}${palmtopdir}/
         cp -a ipk/opt/* ${D}/opt
 }
 

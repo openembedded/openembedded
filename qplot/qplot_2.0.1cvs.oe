@@ -13,12 +13,12 @@ S = "${WORKDIR}/qplot"
 inherit palmtop
 
 do_install() {
-        install -d ${D}${palmtopdir}{bin,apps/Applications,pics,lib,plugins/inputmethods}
-        install -D -m 755 qplotmain/qplot ${D}${palmtopdir}bin/qplot
-        install -D -m 644 qplotmain/qplot.png ${D}${palmtopdir}pics/
-        install -D -m 644 qplotmain/qplot-const.b ${D}${palmtopdir}lib/
-        install -D -m 644 qplotmain/qplot-math.b ${D}${palmtopdir}lib/
-	oe_soinstall qplotmath/libqplotmath.so.1.0.0 ${D}${palmtopdir}plugins/inputmethods/
-        install -D -m 644 qplot.desktop ${D}${palmtopdir}apps/Applications/qplot.desktop
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics,lib,plugins/inputmethods}
+        install -D -m 755 qplotmain/qplot ${D}${palmtopdir}/bin/qplot
+        install -D -m 644 qplotmain/qplot.png ${D}${palmtopdir}/pics/
+        install -D -m 644 qplotmain/qplot-const.b ${D}${palmtopdir}/lib/
+        install -D -m 644 qplotmain/qplot-math.b ${D}${palmtopdir}/lib/
+	oe_soinstall qplotmath/libqplotmath.so.1.0.0 ${D}${palmtopdir}/plugins/inputmethods/
+        install -D -m 644 qplot.desktop ${D}${palmtopdir}/Applications/qplot.desktop
 }
 

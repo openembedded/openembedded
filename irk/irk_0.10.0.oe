@@ -15,12 +15,12 @@ EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia"
 
 do_install() {
 	install -d ${D}/${sysconfdir}
-	install -d ${D}${palmtopdir}plugins/inputmethods/
+	install -d ${D}${palmtopdir}/plugins/inputmethods/
 	install -d ${D}/home/root/Settings/
 
 	install chicony.conf ${D}/${sysconfdir}/lircd.conf
 	install IRK.conf ${D}/${sysconfdir}
-	oe_soinstall libirk.so.1.0.0 ${D}${palmtopdir}plugins/inputmethods/
+	oe_soinstall libirk.so.1.0.0 ${D}${palmtopdir}/plugins/inputmethods/
 }
 
 FILES_irk_append=" /etc /home/root"

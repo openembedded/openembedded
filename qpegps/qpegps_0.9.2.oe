@@ -15,11 +15,11 @@ inherit palmtop
 QMAKE_PROFILES = "qpegps.pro"
 
 do_install() {
-        install -d ${D}${palmtopdir}{help/html/qpegps_icons,bin,apps/Applications,pics/qpegps,qpegps/{maps,icons,tracks}}
-        install -m 0755 qpegps ${D}${palmtopdir}bin/
-        install -m 0644 ${FILESDIR}/qpegps.desktop ${D}${palmtopdir}apps/Applications/
-        install -m 0644 ${FILESDIR}/qpegps.png ${D}${palmtopdir}pics/qpegps/
-        install -m 0644 doc/qpegps.html ${D}${palmtopdir}help/html/
-        install -m 0644 doc/qpegps_icons/*.png ${D}${palmtopdir}help/html/qpegps_icons/
-        install -m 0644 icons/*.xpm ${D}${palmtopdir}qpegps/icons/
+        install -d ${D}${palmtopdir}/{help/html/qpegps_icons,bin,apps/Applications,pics/qpegps,qpegps/{maps,icons,tracks}}
+        install -m 0755 qpegps ${D}${palmtopdir}/bin/
+        install -m 0644 ${FILESDIR}/qpegps.desktop ${D}${palmtopdir}/Applications/
+        install -m 0644 ${FILESDIR}/qpegps.png ${D}${palmtopdir}/pics/qpegps/
+        install -m 0644 doc/qpegps.html ${D}${palmtopdir}/help/html/
+        install -m 0644 doc/qpegps_icons/*.png ${D}${palmtopdir}/help/html/qpegps_icons/
+        install -m 0644 icons/*.xpm ${D}${palmtopdir}/qpegps/icons/
 }

@@ -19,10 +19,10 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}{bin,apps/Applications,pics}
-        install -D -m 0755 cumulus/cumulus ${D}${palmtopdir}bin/cumulus
-        install -D -m 0644 cumulus/cumulus.desktop ${D}${palmtopdir}apps/Applications/cumulus.desktop
-        install -D -m 0644 cumulus.png ${D}${palmtopdir}pics/cumulus.png
-        install -d ${D}${palmtopdir}pics/mapicons
-        cp -a cumulus/map-icons/* ${D}${palmtopdir}pics/mapicons
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
+        install -D -m 0755 cumulus/cumulus ${D}${palmtopdir}/bin/cumulus
+        install -D -m 0644 cumulus/cumulus.desktop ${D}${palmtopdir}/Applications/cumulus.desktop
+        install -D -m 0644 cumulus.png ${D}${palmtopdir}/pics/cumulus.png
+        install -d ${D}${palmtopdir}/pics/mapicons
+        cp -a cumulus/map-icons/* ${D}${palmtopdir}/pics/mapicons
 }

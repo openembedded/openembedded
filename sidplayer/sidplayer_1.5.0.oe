@@ -15,6 +15,6 @@ EXTRA_QMAKEVARS_PRE = "QMAKE_INCDIR=${STAGING_INCDIR}/sidplay"
 inherit palmtop
 
 do_install() {
-        install -d ${D}${palmtopdir}{bin,apps/Applications,pics}
-	cp -a ../apps ../bin ../pics ${D}${palmtopdir}        
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
+	cp -a ../apps ../bin ../pics ${D}${palmtopdir}/        
 }
