@@ -12,6 +12,7 @@ SECTION = "opie/pim"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
 # we can't build:
 # kabc/plugins/sharpdtm - wants libsl     (Sharp ROM 3.x closed source library)
@@ -19,7 +20,6 @@ HOMEPAGE = "http://www.pi-sync.net/ http://sf.net/projects/kdepimpi/"
 # kabc/plugins/opie     - wants libopie1  (we don't plan to have it in OE)
 # kmicromail            - conflict with OE libetpan, libmailwrapper/OPIE
 
-SRC_URI_append = "file://opie-fontselector-copy.patch;patch=1"
 PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/kdepim"
@@ -52,11 +52,6 @@ SUBDIRS="qtcompat libical/src/libical libical/src/libicalss microkde libkcal lib
 
 inherit palmtop
 
-do_compile() {
-    export KDEPIMDIR=${S}
-    oe_runmake
-}
-
 do_configure_prepend() {
         mv ${S}/kabc/formats/binary/kabcformat_binaryE.pro ${S}/kabc/formats/binary/binaryE.pro
         echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
@@ -67,6 +62,11 @@ do_configure_prepend() {
                 mv -f ${d}/`basename ${d}`E.pro ${d}/`basename ${d}`.pro
             fi
         done
+}
+
+do_compile() {
+    export KDEPIMDIR=${S}
+    oe_runmake
 }
 
 HEADERS_DIRS = "qtcompat \
@@ -81,13 +81,28 @@ kabc \
 libkcal \
 libkdepim "
 
+do_unstage() {
+
+	for dir in ${HEADERS_DIRS};
+	do
+		rm -rf ${STAGING_INCDIR}/$dir
+	done
+
+    for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
+    do
+        rm -f ${STAGING_LIBDIR}/$f*
+    done
+}
+
+addtask unstage before do_configure
+
 do_stage() {
 
-for dir in ${HEADERS_DIRS};
-do
-    install -d ${STAGING_INCDIR}/$dir
-    install -m 0644 ${S}/$dir/*.h ${STAGING_INCDIR}/$dir/
-done
+	for dir in ${HEADERS_DIRS};
+	do
+		install -d ${STAGING_INCDIR}/$dir
+		install -m 0644 ${S}/$dir/*.h ${STAGING_INCDIR}/$dir/
+	done
 
     for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
     do
