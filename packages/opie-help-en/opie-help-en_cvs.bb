@@ -4,6 +4,8 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.9+cvs-${CVSDATE}"
+ALLOW_EMPTY = 1
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/help/en/html "
 S = "${WORKDIR}/html"
