@@ -85,51 +85,6 @@ ${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
 ${GNU_MIRROR}/gcc/	http://mirrors.rcn.net/pub/sourceware/gcc/releases/
 }
 
-gccbuild_uclibc_do_patch () {
-	#
-	# Hack things to use the correct shared lib loader
-	#
-	#LIST=`grep -lr -- "-dynamic-linker.*\.so[\.0-9]*" .`
-	#if [ -n "$LIST" ] ; then
-	#	perl -i -p -e "s,-dynamic-linker.*\.so[\.0-9]*},-dynamic-linker /lib/ld-uClibc.so.0},;" $LIST
-	#fi
-
-	#
-	# Prevent system glibc start files from leaking in uninvited...
-	#
-	perl -i -p -e "s,standard_startfile_prefix_1 = \".*,standard_startfile_prefix_1 = \"${CROSS_DIR}/${TARGET_SYS}/lib/\";,;" gcc/gcc.c
-	perl -i -p -e "s,standard_startfile_prefix_2 = \".*,standard_startfile_prefix_2 = \"${CROSS_DIR}/${TARGET_SYS}/usr/lib/\";,;" gcc/gcc.c
-
-	#
-	# Prevent system glibc include files from leaking in uninvited...
-	#
-	perl -i -p -e "s,^NATIVE_SYSTEM_HEADER_DIR.*,NATIVE_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
-	perl -i -p -e "s,^CROSS_SYSTEM_HEADER_DIR.*,CROSS_SYSTEM_HEADER_DIR=${CROSS_DIR}/${TARGET_SYS}/include,;" gcc/Makefile.in
-	perl -i -p -e "s,^#define.*STANDARD_INCLUDE_DIR.*,#define STANDARD_INCLUDE_DIR \"${CROSS_DIR}/${TARGET_SYS}/include\",;" gcc/cppdefault.h
-
-	#
-	# Prevent system glibc libraries from being found by collect2 
-	# when it calls locatelib() and rummages about the system looking 
-	# for libraries with the correct name...
-	#
-	perl -i -p -e "s,\"/lib,\"${CROSS_DIR}/${TARGET_SYS}/lib,g;" \
-		gcc/collect2.c
-	perl -i -p -e "s,\"/usr/,\"${CROSS_DIR}/${TARGET_SYS}/usr/,g;" \
-		gcc/collect2.c
-
-	#
-	# Prevent gcc from using the unwind-dw2-fde-glibc code
-	#
-	perl -i -p -e "s,^#ifndef inhibit_libc,#define inhibit_libc\n#ifndef inhibit_libc,g;" gcc/unwind-dw2-fde-glibc.c
-}
-
-python do_patch () {
-    import oe, re
-    oe.build.exec_func('base_do_patch', d)
-    if (re.match('.*uclibc$', oe.data.getVar('TARGET_OS', d, 1)) != None):
-        oe.build.exec_func('gccbuild_uclibc_do_patch', d)
-}
-
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
