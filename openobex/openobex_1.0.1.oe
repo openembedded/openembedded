@@ -4,7 +4,7 @@ open source implementation of the Object Exchange \
 (OBEX) protocol."
 
 # put openobex-config into -dev package
-FILES_${PN} = "${libdir}"
+FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
