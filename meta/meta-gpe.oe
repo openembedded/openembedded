@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r3"
+PR = "r4"
 
 ALLOW_EMPTY = 1
 
@@ -16,6 +16,7 @@ gpe-base = "\
     gpe-icons \
     gpe-confd \
     gpe-autostarter \
+    gpe-bootsplash \
     xst"
 
 RDEPENDS_gpe-task-base := "${gpe-base} libfontconfig-utils"
