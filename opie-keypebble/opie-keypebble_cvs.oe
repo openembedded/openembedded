@@ -1,0 +1,23 @@
+DESCRIPTION = "A VNC Viewer"
+SECTION = "opie/Applications"
+PRIORITY = "optional"
+MAINTAINER = "Greg Gilbert <greg@treke.net>"
+LICENSE = "GPL"
+DEPENDS = "libopie2"
+PV = "1.0.2-cvs-${CVSDATE}"
+
+SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/comm/keypebble;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE}                     \
+           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/keypebble"
+
+inherit opie
+
+do_install() {
+	install -d ${D}${palmtopdir}/{bin,apps/Applications,pics/vnc}
+	install -m 0755 ${S}/keypebble ${D}${palmtopdir}/bin/keypebble
+	install -m 0644 ${WORKDIR}/apps/Applications/keypebble.desktop ${D}${palmtopdir}/apps/Applications/keypebble.desktop
+	install -m 0644 ${WORKDIR}/pics/vnc/*.* ${D}${palmtopdir}/pics/vnc/
+}
+
