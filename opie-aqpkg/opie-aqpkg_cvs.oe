@@ -1,0 +1,23 @@
+DESCRIPTION = "A Package Manager"
+SECTION = "opie/settings"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2 libopieui2"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "aqpkg"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/aqpkg;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+# FILES plugins/application/libaqpkg.so* bin/aqpkg pics/aqpkg apps/Settings/aqpkg.desktop
+do_install() {
+        install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+
