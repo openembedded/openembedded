@@ -6,3 +6,13 @@ SRC_URI = "http://www.ohse.de/uwe/releases/lrzsz-${PV}.tar.gz \
 	  file://${FILESDIR}/makefile.patch;patch=1"
 
 inherit autotools
+
+do_install() {
+	install -d ${D}/${bindir}/
+	install -m 0755 src/lrz src/lsz ${D}/${bindir}/
+	ln -sf ./lrz ${D}/${bindir}/lrx
+	ln -sf ./lrz ${D}/${bindir}/lrb
+	ln -sf ./lsz ${D}/${bindir}/lsx
+	ln -sf ./lsz ${D}/${bindir}/lsb
+}
+
