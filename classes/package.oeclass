@@ -342,7 +342,7 @@ python package_do_shlibs() {
 			fd.write(ver + '\n')
 			fd.close()
 		if needs_ldconfig:
-			oe.note('adding ldconfig call to postinst for %s' % pkg)
+			oe.debug(1, 'adding ldconfig call to postinst for %s' % pkg)
 			postinst = oe.data.getVar('pkg_postinst_%s' % pkg, d, 1) or oe.data.getVar('pkg_postinst', d, 1)
 			if not postinst:
 				postinst = '#!/bin/sh\n'
