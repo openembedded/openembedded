@@ -63,6 +63,7 @@ EXTRA_OECONF = "-embedded ${QTE_ARCH} \
 		"
 
 EXTRA_OEMAKE = "-e"
+PARALLEL_MAKE = ""
 
 export EXTRA_CFLAGS = "-I${STAGING_INCDIR}"
 export EXTRA_CXXFLAGS = "-I${STAGING_INCDIR}"

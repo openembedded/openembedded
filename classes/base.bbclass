@@ -454,12 +454,10 @@ python base_do_patch() {
 		else:
 			pname = unpacked
 
-		patchdir = bb.data.getVar('S', d, 1)
-		os.chdir(patchdir)
-
 		bb.note("Applying patch '%s'" % pname)
 		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
 		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
+		bb.data.setVarFlag("do_patchcmd", "dirs", "${WORKDIR} ${S}", d)
 		bb.build.exec_func("do_patchcmd", d)
 }
 
@@ -471,6 +469,7 @@ python base_eventhandler() {
 	import os
 
 	messages = {}
+	messages["Completed"] = "completed"
 	messages["Succeeded"] = "completed"
 	messages["Started"] = "started"
 	messages["Failed"] = "failed"

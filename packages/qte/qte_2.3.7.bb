@@ -48,11 +48,12 @@ QTE_ARCH := "${@qte_arch(d)}"
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 16,32"
-EXTRA_OEMAKE = "-e"
 EXTRA_OECONF_beagle = "-system-jpeg -system-libpng -system-zlib -no-qvfb \
 		       -no-xft -no-vnc -gif \
                        -xplatform ${TARGET_OS}-${QTE_ARCH}-g++ \
 		       ${EXTRA_OECONF_CONFIG} -depths 8,16,32 "
+EXTRA_OEMAKE = "-e"
+PARALLEL_MAKE = ""
 
 #
 # FIXME: Add more here
@@ -83,7 +84,7 @@ export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
 do_configure() {
 	for f in ${S}/configs/linux-*-g++-shared; do
 		sed -e 's,-linux-,-linux-uclibc-,g' < $f \
-			> `echo $f | sed -e 's,linux-,linux-uclibc-,'`
+			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibc-,'`
 	done
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
