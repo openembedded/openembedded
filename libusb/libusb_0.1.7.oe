@@ -1,0 +1,7 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
+	  file://${FILESDIR}/configure.patch;patch=1
+
+inherit autotools libtool
