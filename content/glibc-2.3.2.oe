@@ -1,8 +1,6 @@
 DESCRIPTION="GNU C Library"
 LICENSE="LGPL"
 SECTION="libs"
-DEPENDS=""
-RDEPENDS=""
 PRIORITY=required
 MAINTAINER="Chris Larson <kergoth@handhelds.org>"
 
@@ -66,7 +64,7 @@ SRC_URI_append=' file://${FILESDIR}/syslog-backrev.patch;patch=1;pnum=0'
 PROVIDES=virtual/libc
 
 S="${WORKDIR}/${P}"
-builddir="${WORKDIR}/build-${SYS}"
+builddir="${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
@@ -77,7 +75,7 @@ glibcbuild_do_unpack () {
 	mv "${WORKDIR}/linuxthreads" "${WORKDIR}/linuxthreads_db" "${S}/"
 # kernel headers
 	cp -a "${FILESDIR}/version.h" "${FILESDIR}/autoconf.h" "${WORKDIR}/linux/include/linux/"
-	ln -sf "asm-${ARCH}" "${WORKDIR}/linux/include/asm"
+	ln -sf "asm-${TARGET_ARCH}" "${WORKDIR}/linux/include/asm"
 }
 
 python do_unpack () {
@@ -91,7 +89,7 @@ do_configure_prepend() {
 }
 
 do_compile_prepend() {
-	touch sysdeps/${ARCH}/framestate.c
+	touch sysdeps/${TARGET_ARCH}/framestate.c
 	cd "${builddir}"
 }
 
@@ -105,12 +103,12 @@ do_stage() {
 	mv '${STAGING_LIBDIR}/libpthread.so' '${STAGING_LIBDIR}/libpthread-old.so'
 	cat '${STAGING_LIBDIR}/libpthread-old.so' | sed -e's,/lib/,,g' > '${STAGING_LIBDIR}/libpthread.so'
 	cp -a '${WORKDIR}/linux/include/linux' '${STAGING_DIR}/target/include/'
-	cp -a '${WORKDIR}/linux/include/asm-${ARCH}' '${STAGING_DIR}/target/include/'
-	ln -sf 'asm-${ARCH}' '${STAGING_DIR}/target/include/asm'
+	cp -a '${WORKDIR}/linux/include/asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/'
+	ln -sf 'asm-${TARGET_ARCH}' '${STAGING_DIR}/target/include/asm'
 }
 
 do_install() {
 	oe_runmake -C ${builddir} install_root=${D} install
 	cp -a ${WORKDIR}/linux/include/linux ${D}/${includedir}/
-	cp -a ${WORKDIR}/linux/include/asm-${ARCH} ${D}/${includedir}/asm
+	cp -a ${WORKDIR}/linux/include/asm-${TARGET_ARCH} ${D}/${includedir}/asm
 }

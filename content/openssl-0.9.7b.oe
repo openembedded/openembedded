@@ -12,7 +12,7 @@ export DIRS = "crypto ssl"
 export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
 do_compile () {
 	perl util/perlpath.pl /usr/bin
-	perl ./Configure shared --prefix=/usr --openssldir=/usr/lib/ssl linux-elf-arm
+	perl ./Configure shared --prefix=/usr --openssldir=/usr/lib/ssl ${TARGET_OS}-elf-${TARGET_ARCH}
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
 	oe_runmake -f Makefile.ssl
 }
