@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 ALLOW_EMPTY = 1
-PR = "r1"
+PR = "r2"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -10,14 +10,19 @@ PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
 		    task-opie-styles task-opie-today task-opie-bluetooth \
 			task-opie-wlan"
 
-DEPENDS_opie = "\
-opie-sh \
-opie-help-en \
+DEPENDS = "\
+opie-examples-python \
 opie-freetype \
+opie-help-en \
+opie-i18n \
+opie-keytabs \
 opie-libqrsync \
-opie-symlinker \
-opie-calibrate \
 opie-login \
+opie-securityplugin-blueping \
+opie-securityplugin-dummy \
+opie-securityplugin-notice \
+opie-securityplugin-pin \
+opie-sh \
 opie-symlinker \
 "
 
@@ -25,6 +30,7 @@ task-opie-applets = "\
 opie-aboutapplet \
 opie-autorotateapplet \
 opie-batteryapplet \
+opie-bluetoothapplet \
 opie-cardmon \
 opie-clipboardapplet \
 opie-clockapplet \
@@ -59,6 +65,7 @@ opie-camera \
 opie-checkbook \
 opie-clock \
 opie-console \
+opie-dagger \
 opie-embeddedkonsole \
 opie-euroconv \
 opie-eye \
@@ -158,6 +165,7 @@ opie-dvorak \
 opie-handwriting \
 opie-jumpx \
 opie-keyboard \
+opie-keyview \
 opie-kjumpx \
 opie-multikey \
 opie-pickboard \
@@ -188,6 +196,7 @@ opie-datebook \
 opie-drawpad \
 opie-mail \
 opie-osearch \
+opie-pimconverter \
 opie-search \
 opie-textedit \
 opie-today \
@@ -200,6 +209,7 @@ opie-appearance \
 opie-aqpkg \
 opie-backup \
 opie-button-settings \
+opie-calibrate \
 opie-citytime \
 opie-confeditor \
 opie-doctab \
@@ -208,6 +218,7 @@ opie-language \
 opie-launcher-settings \
 opie-light-and-power \
 opie-mediummount \
+opie-networksettings \
 opie-packagemanager \
 opie-security \
 opie-sshkeys \
