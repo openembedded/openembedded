@@ -5,7 +5,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r12"
+PR = "r13"
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
@@ -26,6 +26,7 @@ SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${
 	   http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
 	   file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
+	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
            file://defconfig-${MACHINE} \
 	   "
 

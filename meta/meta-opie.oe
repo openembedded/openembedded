@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r13"
+PR = "r14"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -223,6 +223,7 @@ scummvm \
 shisensho \
 sokoban \
 tickypip \
+tickypip-levels \
 tron \
 vectoroids \
 win4 \

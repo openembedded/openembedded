@@ -82,6 +82,9 @@ ac_cv_func_getaddrinfo=${ac_cv_func_getaddrinfo=yes}
 # D-BUS
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
 
+# samba
+samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 

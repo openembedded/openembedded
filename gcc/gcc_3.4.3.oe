@@ -4,7 +4,6 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-DEFAULT_PREFERENCE = "-1"
 
 inherit autotools gettext
 

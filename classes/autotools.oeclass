@@ -94,6 +94,23 @@ autotools_do_configure() {
 			if ! echo ${EXTRA_AUTORECONF} | grep -q "aclocal"; then
 				rm -f aclocal.m4
 			fi
+			if [ -e configure.in ]; then
+			  CONFIGURE_AC=configure.in
+			else
+			  CONFIGURE_AC=configure.ac
+			fi
+			if grep "^AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+			  if grep "sed.*POTFILES" configure.ac >/dev/null; then
+			    : do nothing -- we still have an old unmodified configure.ac
+			  else
+			    oenote Executing glib-gettextize --force --copy
+			    echo "no" | glib-gettextize --force --copy
+			  fi
+			fi
+			if grep "^AC_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
+			  oenote Executing intltoolize --copy --force --automake
+			  intltoolize --copy --force --automake
+			fi
 			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
 			mkdir -p m4
 			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."

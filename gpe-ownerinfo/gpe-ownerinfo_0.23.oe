@@ -6,8 +6,6 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libgpewidget"
 
-SRC_URI = "http://gpe.handhelds.org/pub/projects/gpe/source/gpe-ownerinfo-${PV}.tar.gz"
-
 do_stage () {
 	oe_libinstall -a libgpe-ownerinfo ${STAGING_LIBDIR}
 	install -m 0644 gpe-ownerinfo.h ${STAGING_INCDIR}/ 

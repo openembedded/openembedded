@@ -1,5 +1,5 @@
---- xserver/hw/kdrive/fbdev/fbdev.c.old	2004-06-28 01:48:51.000000000 +0100
-+++ xserver/hw/kdrive/fbdev/fbdev.c	2004-07-28 15:05:55.000000000 +0100
+--- xserver/hw/kdrive/fbdev/fbdev.c.orig	2004-11-29 20:00:00.000000000 +0000
++++ xserver/hw/kdrive/fbdev/fbdev.c	2004-11-29 20:04:10.000000000 +0000
 @@ -190,6 +190,7 @@
      var.nonstd = 0;
      var.grayscale = 0;
@@ -8,18 +8,15 @@
      k = ioctl (priv->fd, FBIOPUT_VSCREENINFO, &var);
  
      if (k < 0)
-@@ -197,7 +198,9 @@
- 	fprintf (stderr, "error: %s\n", strerror (errno));
- 	return FALSE;
-     }
--
+@@ -202,6 +203,7 @@
+     k = ioctl (priv->fd, FBIOGET_FSCREENINFO, &priv->fix);
+     if (k < 0)
+         perror ("FBIOGET_FSCREENINFO");
 +    */
-+    
-+    
+ 
      /* Now get the new screeninfo */
      ioctl (priv->fd, FBIOGET_VSCREENINFO, &priv->var);
-     depth = priv->var.bits_per_pixel;
-@@ -623,13 +626,14 @@
+@@ -659,13 +661,14 @@
      priv->var.activate = FB_ACTIVATE_NOW|FB_CHANGE_CMAP_VBL;
      
      /* display it on the LCD */

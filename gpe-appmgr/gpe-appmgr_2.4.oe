@@ -1,0 +1,10 @@
+SECTION = "gpe"
+DESCRIPTION = "GPE application launcher"
+DEPENDS = "libgpewidget libgpelaunch"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+LICENSE = "GPL"
+
+inherit gpe
+
+SRC_URI += "file://groups.patch;patch=1"
+

@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r19"
+PR = "r21"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,6 +30,7 @@ SRC_URI = "file://halt \
            file://sysfs.sh \
            file://device_table.txt"
 
+SRC_URI_append_arm = " file://alignment.sh"
 
 do_install () {
 #
@@ -63,6 +64,9 @@ do_install () {
 	install -m 0755    ${WORKDIR}/devpts.sh	${D}/etc/init.d
 	install -m 0755    ${WORKDIR}/devpts		${D}/etc/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}/etc/init.d
+	if [ "${TARGET_ARCH}" = "arm" ]; then
+		install -m 0755 ${WORKDIR}/alignment.sh	${D}/etc/init.d
+	fi
 #
 # Install device dependent scripts
 #
@@ -100,6 +104,9 @@ do_install () {
 	# udev will run at S03 if installed
 	ln -sf		../init.d/sysfs.sh	${D}/etc/rcS.d/S02sysfs
 	ln -sf		../init.d/devpts.sh	${D}/etc/rcS.d/S38devpts.sh
+	if [ "${TARGET_ARCH}" = "arm" ]; then
+		ln -sf	../init.d/alignment.sh	${D}/etc/rcS.d/S05alignment
+	fi
 
 	install -m 0755    ${WORKDIR}/device_table.txt		${D}/etc/device_table
 }

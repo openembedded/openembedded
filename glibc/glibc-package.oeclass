@@ -7,6 +7,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
 	install -d ${D}${libdir}/locale
 	make -f ${WORKDIR}/generate-supported.mk IN="${S}/localedata/SUPPORTED" OUT="${WORKDIR}/SUPPORTED"
+	rm -f ${D}/etc/rpc
 }
 
 TMP_LOCALE="/tmp/locale/${libdir}/locale"

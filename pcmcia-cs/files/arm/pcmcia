@@ -11,3 +11,7 @@ case `awk 'BEGIN { FS=":" } /Processor/ { gsub(/ /, "", $2) ; print $2 } ' </pro
     ;;
 esac
 
+if grep -q iPAQ /proc/cpuinfo; then
+  PCIC_EXTRA=h3600_generic_sleeve
+fi
+
