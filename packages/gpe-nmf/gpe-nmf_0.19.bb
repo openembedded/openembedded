@@ -6,5 +6,6 @@ DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins"
 RDEPENDS = "gst-plugins"
 SECTION = "gpe"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
+PARALLEL_MAKE=""
