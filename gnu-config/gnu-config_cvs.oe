@@ -1,15 +1,14 @@
-PV = "0.1cvs${CVSDATE}"
+DESCRIPTION = "gnu-configize"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-SRC_URI = "cvs://anoncvs:@savannah.gnu.org/cvsroot/config;module=config;method=ext;rsh=ssh \
-	   file://gnu-configize.in"
-S = "${WORKDIR}/config"
-
-INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = ""
-PACKAGES = "${PN}"
-FILES_${PN} = "${bindir} \
-	       ${datadir}/gnu-config"
+INHIBIT_DEFAULT_DEPS = "1"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+PV = "0.1cvs${CVSDATE}"
+PR = "r1"
+
+SRC_URI = "cvs://anoncvs:@savannah.gnu.org/cvsroot/config;module=config;method=ext;rsh=ssh \
+           file://gnu-configize.in"
+S = "${WORKDIR}/config"
 
 do_compile() {
 	:
@@ -20,7 +19,10 @@ do_install () {
 		   ${D}/${bindir}
 	cat ${WORKDIR}/gnu-configize.in | \
 		sed -e 's,@gnu-configdir@,${datadir}/gnu-config,' \
-		    -e 's,@autom4te_perllibdir@,${STAGING_DATADIR}/autoconf,' > ${STAGING_BINDIR}/gnu-configize
+		    -e 's,@autom4te_perllibdir@,${D}/${datadir}/autoconf,' > ${D}/${bindir}/gnu-configize
 	chmod 755 ${D}/${bindir}/gnu-configize
 	install -m 0644 config.guess config.sub ${D}/${datadir}/gnu-config/
 }
+
+PACKAGES = "${PN}"
+FILES_${PN} = "${bindir} ${datadir}/gnu-config"
