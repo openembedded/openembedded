@@ -77,7 +77,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 	oe.data.setVar('PACKAGES', ' '.join(packages), d)
 
 python populate_packages () {
-	import glob, stat, errno, re
+	import glob, stat, errno, re, copy
 
 	workdir = oe.data.getVar('WORKDIR', d, 1)
 	if not workdir:

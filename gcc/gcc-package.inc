@@ -29,6 +29,8 @@ FILES_${PN}-f77 = "${bindir}/${TARGET_PREFIX}g77 \
 FILES_${PN}-f77-symlinks = "${bindir}/g77 \
 			    ${bindir}/f77"
 
+PACKAGE_ARCH_libg2c = "${TARGET_ARCH}"
+PACKAGE_ARCH_libg2c-dev = "${TARGET_ARCH}"
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "/usr/lib/libg2c.so.*"
 FILES_libg2c-dev = "/usr/lib/libg2c.so \
@@ -40,8 +42,11 @@ FILES_${PN}-c++ = "${bindir}/${TARGET_PREFIX}g++ \
 FILES_${PN}-c++-symlinks = "${bindir}/c++ \
 			    ${bindir}/g++"
 
+PACKAGE_ARCH_libgcc = "${TARGET_ARCH}"
 FILES_libgcc = "/lib/libgcc_s.so.1"
 
+PACKAGE_ARCH_libstdc++ = "${TARGET_ARCH}"
+PACKAGE_ARCH_libstdc++-dev = "${TARGET_ARCH}"
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libstdc++ = "/usr/lib/libstdc++.so.*"
 FILES_libstdc++-dev = "/usr/include/c++/${PV} \
