@@ -3,7 +3,7 @@ DESCRIPTION="binutils 2.13 from FSF"
 LICENSE="GPL"
 RDEPEND=""
 DEPEND=""
-PROVIDES="virtual/${ARCH}-${OS}-binutils"
+PROVIDES="virtual/${TARGET_ARCH}-${TARGET_OS}-binutils"
 
 SRC_URI="ftp://ftp.gnu.org/pub/gnu/binutils/binutils-2.13.2.tar.gz"
 S = ${WORKDIR}/binutils-${PV}
