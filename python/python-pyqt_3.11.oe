@@ -36,10 +36,10 @@ do_configure_prepend() {
 }
 
 do_stage() {
-    install -d ${STAGING_SIPDIR}
+    install -d ${STAGING_SIPDIR}/qt/
     for module in ${SIP_MODULES}
     do
-        cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/
+        cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/qt/
 	install -m 0755 ${module}/libcmodule.so ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so
     done
 }

@@ -7,7 +7,7 @@ RDEPENDS = "python-core python-pyqt (${PV}) python-numeric qwt"
 DEPENDS = "virtual/libqte2 python-numeric python-pyqt qwt"
 SRCNAME = "pyqwt"
 
-SRC_URI = "http://pyqwt.sourceforge.net/snapshot/PyQwt-20040118.tar.gz \
+SRC_URI = "http://www.vanille.de/mirror/PyQwt-20040118.tar.gz \
            file://qt2.x-compat.patch;patch=1 \
            file://qtmod-sip-staging.patch;patch=1 \
            file://features"
@@ -40,15 +40,15 @@ do_generate_prepend() {
     echo 'HEADERS = $H' >>sip/qwtmod.sip
     echo "%End" >>sip/qwtmod.sip
 
-    mkdir sip/qwt/
+    mkdir -p sip/qwt/
     mv sip/*.* sip/qwt/
 }
 
 do_stage() {
-    install -d ${STAGING_SIPDIR}
+    install -d ${STAGING_SIPDIR}/qwt/
     for module in ${SIP_MODULES}
     do
-        cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/
+        cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/qwt/
         install -m 0755 ${module}/libcmodule.so ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so
     done
 }

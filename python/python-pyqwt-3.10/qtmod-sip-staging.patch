@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- PyQwt-20040118/sip/qwtmod.sip~qtmod-sip-staging	2004-02-14 15:48:17.000000000 +0100
++++ PyQwt-20040118/sip/qwtmod.sip	2004-02-14 15:52:49.000000000 +0100
+@@ -34,7 +34,7 @@
+ 
+ %Include features.sip
+ 
+-%Import qt/qtmod.sip
++%Import qtmod.sip
+ 
+ %ModuleHeaderCode
+ #include <qwt_python.h>
