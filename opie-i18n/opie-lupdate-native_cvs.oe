@@ -5,6 +5,7 @@ MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc3-native"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/opie-lupdate \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/development/translation/shared"
@@ -14,7 +15,8 @@ S = "${WORKDIR}/opie-lupdate"
 inherit native qmake
 
 export OE_QMAKE_LINK="${CXX}"
-EXTRA_QMAKEVARS_POST_append = "LIBS+=-ldl"
+EXTRA_QMAKEVARS_POST_append = "LIBS+=-ldl "
+EXTRA_QMAKEVARS_POST_append = "CONFIG-=thread "
 
 do_stage() {
 	install -m 0755 opie-lupdate ${STAGING_BINDIR}/
