@@ -1,77 +1,59 @@
 DESCRIPTION = "Python Qt/Embedded + Qt/Palmtop Bindings"
+HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "python-core"
-DEPENDS = "virtual/libc virtual/libqte2 virtual/libqpe libsip sip-native"
+DEPENDS = "virtual/libqte2 virtual/libqpe"
 SRCNAME = "pyqt"
+PR = "2"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz"
 
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
-#
-# FIXME - This should be updated to use OE's qmake-base.oeclass
-#         or the full qmake.oeclass.
-#
+inherit qmake sip
 
-export QTDIR = "${STAGING_LIBDIR}/.."
+QMAKE_PROFILES = "pyqt.pro"
+
+EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"
+
+SIP_MODULES = "qt qtcanvas qttable qtpe"
+
+SIP_FEATURES = "${FILESDIR}/features"
+
+EXTRA_OEMAKE = " MAKEFLAGS= "
 
 EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
                          CONFIG=qte CONFIG+=warn_on CONFIG+=release \
-                         DESTDIR=${STAGING_LIBDIR}/python2.3/site-packages \
-                         DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT \
+                         TARGET=cmodule DESTDIR= VERSION=1.0.0 \
+                         DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=QWS \
                          INCLUDEPATH=. \
                          INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
                          INCLUDEPATH+=${STAGING_INCDIR} \
                          LIBS=-L${STAGING_LIBDIR}/python2.3/site-packages \
                          LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe LIBS+=-lsip "
 
-PYTHON = "${STAGING_BINDIR}/python"
-SIP = "${STAGING_BINDIR}/sip"
-QMAKE = "${STAGING_BINDIR}/qmake"
-QMAKESPEC = "${QMAKE_MKSPEC_PATH}/${TARGET_OS}-oe-g++"
-
-MODULES = "qt qtcanvas qttable qtpe"
-
-do_configure() {
-    for module in ${MODULES}
-    do
-        mkdir -p ${module}
-        ${SIP} -Isip -tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1 -z${FILESDIR}/features -c ${module} -m ${module}.pro.in sip/${module}/${module}mod.sip
-        mv -f ${module}.pro.in ${module}/${module}.pro
-    done
-
-    for module in ${MODULES}
-    do
-        cd ${S}/${module}
-        ${QMAKE} -spec ${QMAKESPEC} -after TARGET=${module}cmodule ${EXTRA_QMAKEVARS_POST}
-    done
-}
-
-do_compile() {
-    for module in ${MODULES}
-    do
-        cd ${S}/${module}
-        oe_runmake
-    done
+do_configure_prepend() {
+    echo -e "TEMPLATE=subdirs\nSUBDIRS=qt qtcanvas qttable qtpe\n" >pyqt.pro
 }
 
 do_stage() {
     install -d ${STAGING_SIPDIR}
-    for module in ${MODULES}
+    for module in ${SIP_MODULES}
     do
         cp -a ${S}/sip/${module}/*.sip ${STAGING_SIPDIR}/
+	install -m 0755 ${module}/libcmodule.so ${STAGING_LIBDIR}/python2.3/site-packages/lib${module}cmodule.so
     done
 }
 
 do_install() {
     install -d ${D}/${libdir}/python2.3/site-packages/
     oe_libinstall -so -C ${STAGING_LIBDIR}/python2.3/site-packages libsip ${D}/${libdir}/python2.3/site-packages
-    for module in ${MODULES}
+    for module in ${SIP_MODULES}
     do
-	oe_libinstall -so -C ${STAGING_LIBDIR}/python2.3/site-packages lib${module}cmodule ${D}/${libdir}/python2.3/site-packages
+	install -m 0755 ${module}/libcmodule.so ${D}/${libdir}/python2.3/site-packages/lib${module}cmodule.so
         install -m 0644 ${module}/${module}.py ${D}/${libdir}/python2.3/site-packages/
     done
 }
