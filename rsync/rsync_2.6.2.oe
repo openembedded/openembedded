@@ -1,0 +1,12 @@
+DESCRIPTION = "A file-synchronization tool"
+SECTION = "net"
+PRIORITY = "optional"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+
+SRC_URI = "http://rsync.samba.org/ftp/rsync/rsync-${PV}.tar.gz \
+           file://fixedwidthtypes.patch;patch=1 \
+           file://gettimeofday.patch;patch=1"
+
+inherit autotools
+
+EXTRA_OEMAKE='STRIP=""'
