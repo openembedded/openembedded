@@ -14,6 +14,6 @@ inherit autotools pkgconfig libtool
 do_stage () {
 	install -m 0644 ${S}/lib/xpm.h ${STAGING_INCDIR}/X11/xpm.h
 	install -m 0644 lib/.libs/libXpm.a ${STAGING_LIBDIR}/libXpm.a
-	install -m 0644 lib/libXpm.lai ${STAGING_LIBDIR}/libXpm.la
+	install -m 0644 lib/.libs/libXpm.lai ${STAGING_LIBDIR}/libXpm.la
 	oe_soinstall lib/.libs/libXpm.so.4.5.0 ${STAGING_LIBDIR}/
 }
