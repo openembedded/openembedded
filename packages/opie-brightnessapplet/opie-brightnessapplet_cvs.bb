@@ -3,9 +3,6 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-
-CVSDATE = "20041001"
-
 PV = "1.1.8+cvs-${CVSDATE}"
 APPNAME = "brightnessapplet"
 
