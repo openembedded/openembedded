@@ -25,8 +25,8 @@ gpe-task-pim = "\
     gpe-todo \
     gpe-calendar \
     gpe-sketchbook \
-    gpe-contacts"
-#    gpe-today
+    gpe-contacts \
+    gpe-today"
 RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
 DEPENDS += " ${gpe-task-pim}"
 
