@@ -72,9 +72,10 @@ do_stage_append () {
 	rm -rf ${CROSS_DIR}/share
 }
 
-python do_package_prepend() {
+python do_package() {
 	if oe.data.getVar('DEBIAN_NAMES', d, 1):
 		oe.data.setVar('PKG_libgcc', 'libgcc1', d)
+	oe.build.exec_func('package_do_package', d)
 }
 
 do_install () {
