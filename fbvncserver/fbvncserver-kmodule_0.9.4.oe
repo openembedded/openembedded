@@ -1,6 +1,5 @@
-SECTION = "base"
-BROKEN = "1"
 DESCRIPTION = "framebuffer VNC server keyboard events module"
+SECTION = "kernel"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
            file://libvncs0.6.patch;patch=1 \
@@ -11,14 +10,9 @@ S = "${WORKDIR}/fbvncserver-${PV}"
 
 inherit module
 
-#export INCLUDES = ${KERNEL_PATH}/include
-
-do_compile () {
-	oe_runmake KERNEL_PATH=${KERNEL_PATH} KERNEL_INCLUDES=-I${KERNEL_PATH}/include zaurus_kbdsim.o
-	mv zaurus_kbdsim.o kbdsim.o
-}
+EXTRA_OEMAKE = "KERNEL_INCLUDES=-I${STAGING_KERNEL_DIR}/include zaurus_kbdsim.o"
 
 do_install () {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc
-	install -m 0755 kbdsim.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc/
+	install -m 0755 zaurus_kbdsim.o ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/misc/
 }
