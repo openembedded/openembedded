@@ -66,6 +66,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} --with-headers=${HEADERS_DIR}/include ${GLIBC_EXTRA_OECONF}"
+EXTRA_OECONF_append_ramses = " --without-fp"
 
 glibcbuild_do_unpack () {
 # kernel headers
