@@ -1,0 +1,7 @@
+export IMAGE_BASENAME = "bootstrap-image"
+
+export IPKG_INSTALL = "task-bootstrap"
+
+DEPENDS = "${IPKG_INSTALL}"
+
+inherit image_ipk
