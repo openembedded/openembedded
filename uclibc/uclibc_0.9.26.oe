@@ -81,16 +81,17 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
-do_compile () {
-	oe_runmake all utils
-}
-
 do_stage() {
 	# Install into the cross dir (this MUST be done first because we
 	# will install crt1.o in the install_dev stage and gcc needs it)
 	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
-		install_dev install_runtime install_utils
+		install_dev install_runtime
+
+	oe_runmake utils
+	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
+		install_utils
 
 	# We don't really need this
 	rm -f ${UCLIBC_PREFIX}/include/.cvsignore
