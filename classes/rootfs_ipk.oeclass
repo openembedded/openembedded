@@ -1,0 +1,79 @@
+#
+# Creates a root filesystem out of IPKs
+#
+# This rootfs can be mounted via root-nfs or it can be put into an cramfs/jffs etc.
+# See image_ipk.oeclass for a usage of this.
+#
+
+DEPENDS_prepend="ipkg-native ipkg-utils-native fakeroot-native "
+DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
+
+PACKAGES = ""
+
+do_images[nostamp] = 1
+do_images[dirs] = ${TOPDIR}
+
+IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
+
+IMAGE_POSTPROCESS_COMMAND ?= ""
+
+fakeroot do_rootfs () {
+	set -x
+	rm -rf ${IMAGE_ROOTFS}
+
+	mkdir -p ${IMAGE_ROOTFS}/dev
+
+	rm -f ${DEPLOY_DIR_IPK}/Packages
+	touch ${DEPLOY_DIR_IPK}/Packages
+	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+	mkdir -p ${T}
+	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
+	cat <<EOF >>${T}/ipkg.conf
+arch all 1
+arch any 1
+arch noarch 1
+arch ${TARGET_ARCH} 10
+EOF
+	if [ ! -z ${MACHINE} ]; then
+		echo "arch ${MACHINE} 20" >>${T}/ipkg.conf
+	fi
+	for i in ${IPKG_ARCHS}; do
+		if [ $i != "all" ] && [ $i != "${TARGET_ARCH}" ] && [ $i != "${MACHINE}" ]; then
+			echo "arch $i 5" >> ${T}/ipkg.conf
+		fi
+	done
+	ipkg-cl ${IPKG_ARGS} update
+	ipkg-cl ${IPKG_ARGS} install ${IPKG_INSTALL}
+
+	export D=${IMAGE_ROOTFS}
+	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
+
+	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.preinst; do
+		if [ -f $i ] && ! sh $i; then
+			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .preinst`
+		fi
+	done
+	for i in ${IMAGE_ROOTFS}/usr/lib/ipkg/info/*.postinst; do
+		if [ -f $i ] && ! sh $i; then
+			ipkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
+		fi
+	done
+
+	install -d ${IMAGE_ROOTFS}/${sysconfdir}
+	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
+
+	${IMAGE_POSTPROCESS_COMMAND}
+}
+
+# set '*' as the rootpassword so the images
+# can decide if they want it or not
+
+zap_root_password () {
+	sed 's%^root:[^:]*:%root:*:%' < ${IMAGE_ROOTFS}/etc/passwd >${IMAGE_ROOTFS}/etc/passwd.new
+	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd	
+} 
+
+# export the zap_root_password
+EXPORT_FUNCTIONS zap_root_password
+
+addtask rootfs before do_build after do_install
