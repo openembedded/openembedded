@@ -7,9 +7,9 @@ DEPENDS = "virtual/libc libopie2"
 PV = "0.8.0-cvs-${CVSDATE}"
 APPNAME = "checkbook"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/noncore/apps/${APPNAME};date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/apps/${APPNAME};date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

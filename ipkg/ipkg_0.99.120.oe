@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PROVIDES = "virtual/ipkg"
 DEPENDS = "virtual/libc"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=familiar/dist/ipkg;tag=${@'V' + oe.data.getVar('PV',d,1).replace('.', '-')}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=familiar/dist/ipkg;tag=${@'V' + oe.data.getVar('PV',d,1).replace('.', '-')}"
 S = "${WORKDIR}/ipkg/C"
 
 inherit autotools libtool

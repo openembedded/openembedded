@@ -7,9 +7,9 @@ DEPENDS = "libopie2 libqtaux2"
 PV = "1.1.3-cvs-${CVSDATE}"
 APPNAME = "embeddedkonsole"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/apps/${APPNAME};date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/pics;date=${CVSDATE} \
-           cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/apps;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/apps/${APPNAME};date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie

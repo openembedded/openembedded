@@ -8,7 +8,7 @@ LICENSE = "GPL"
 #DEPENDS = "virtual/libc"
 RDEPENDS = "python"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=ipkg-utils"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=ipkg-utils"
 S = "${WORKDIR}/ipkg-utils"
 
 inherit distutils

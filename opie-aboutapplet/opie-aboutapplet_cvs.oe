@@ -7,7 +7,7 @@ DEPENDS = "virtual/libc"
 PV = "1.1.3-cvs-${CVSDATE}"
 APPNAME = "aboutapplet"
 
-SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=opie/core/applets/aboutapplet;date=${CVSDATE}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/applets/aboutapplet;date=${CVSDATE}"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
