@@ -1,16 +1,17 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "GPG-Error library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
 
-SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgpg-error/libgpg-error-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgpg-error/libgpg-error-${PV}.tar.gz \
+	   file://pkgconfig.patch;patch=1"
 
 # move libgpg-error-config into -dev package
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 do_stage() {
 	oe_libinstall -a -so -C src libgpg-error ${STAGING_LIBDIR}
