@@ -1,0 +1,138 @@
+addtask lint before do_fetch
+do_lint[nostamp] = 1
+python do_lint() {
+	def testVar(var, explain=None):
+		try:
+			s = d[var]
+			return s["content"]
+		except KeyError:
+			oe.error("%s is not set" % var)
+			if explain: oe.note(explain)
+			return None
+
+
+	##############################
+	# Test that DESCRIPTION exists
+	#
+	testVar("DESCRIPTION")
+
+
+	##############################
+	# Test for valid LICENSE
+	#
+	s = testVar("LICENSE")
+	if s=="unknown":
+		oe.error("LICENSE is not set")
+
+
+	##############################
+	# Test for valid MAINTAINER
+	#
+	s = testVar("MAINTAINER")
+	if s and s.find("@") == -1:
+		oe.error("You forgot to put an e-mail address into MAINTAINER")
+
+
+	##############################
+	# Test for valid SECTION
+	#
+	# if Correct section: True	section name is valid
+	#                     False	section name is invalid, no suggestion
+	#                     string	section name is invalid, better name suggested
+	#
+	valid_sections = {
+		# Current Section         Correct section
+		"applications"		: True,
+		"Applications"		: "applications",
+		"apps"			: True,
+		"audio"			: True,
+		"base"			: True,
+		"console/games"		: True,
+		"console/net"		: "network",
+		"console/network"	: True,
+		"console/utils"		: True,
+		"devel"			: True,
+		"developing"		: "devel",
+		"devel/python"		: True,
+		"dvb"			: "multimedia",
+		"fonts"			: True,
+		"games"			: True,
+		"games/libs"		: True,
+		"gnome/base"		: True,
+		"gnome/libs"		: True,
+		"gpe"			: True,
+		"gpe/libs"		: True,
+		"gui"			: False,
+		"libc"			: True,
+		"libs"			: True,
+		"libs/net"		: True,
+		"multimedia"		: True,
+		"net"			: "network",
+		"NET"			: "network",
+		"network"		: True,
+		"opie/applets"		: True,
+		"opie/applications"	: True,
+		"opie/base"		: True,
+		"opie/codecs"		: True,
+		"opie/decorations"	: True,
+		"opie/fontfactories"	: True,
+		"opie/fonts"		: True,
+		"opie/games"		: True,
+		"opie/help"		: True,
+		"opie/inputmethods"	: True,
+		"opie/libs"		: True,
+		"opie/multimedia"	: True,
+		"opie/pim"		: True,
+		"opie/setting"		: True,
+		"opie/settings"		: True,
+		"opie/Shell"		: False,
+		"opie/styles"		: True,
+		"opie/today"		: True,
+		"scientific"		: True,
+		"tools"		 	: "utils",
+		"utils"			: True,
+		"x11"			: True,
+		"x11/libs"		: True,
+		"x11/wm"		: True,
+		}
+	s = testVar("SECTION")
+	if s:
+		try:
+			newsect = valid_sections[s]
+			if newsect == False:
+				oe.note("SECTION '%s' is not recommended" % s)
+			elif newsect != True:
+				oe.note("SECTION '%s' is not recommended, better use '%s'" % (s, newsect))
+		except:
+			oe.note("SECTION '%s' is not recommended" % s)
+
+		if not s.islower():
+			oe.error("SECTION should only use lower case")
+
+
+
+	
+	##############################
+	# Test for valid PRIORITY
+	#
+	valid_priorities = {
+		"standed"		: True,
+		"required"		: True,
+		"optional"		: True,
+		"extra"			: True,
+		}
+	s = testVar("PRIORITY")
+	if s:
+		try:
+			newprio = valid_priorities[s]
+			if newprio == False:
+				oe.note("PRIORITY '%s' is not recommended" % s)
+			elif newprio != True:
+				oe.note("PRIORITY '%s' is not recommended, better use '%s'" % (s, newprio))
+		except:
+			oe.note("PRIORITY '%s' is not recommended" % s)
+
+		if not s.islower():
+			oe.error("PRIORITY should only use lower case")
+	
+}
