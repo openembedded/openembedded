@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games 
 DESCRIPTION = "Meta-package for GPE Security Testing Image"
 MAINTAINER = "Bob Davies tyggerbob@rogers.com>"
-PR = "r25"
+PR = "r3"
 
 ALLOW_EMPTY = 1
 
@@ -83,8 +83,7 @@ gpe-task-apps = "\
     curl \
     dsniff \
     prismstumbler \
-    prismstumbler-frontend \
-    dillo \
+    dillo2 \
     tcpdump \
     miniclipboard"
 
