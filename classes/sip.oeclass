@@ -32,7 +32,11 @@ sip_do_generate() {
 		oenote "calling 'sip -I sip -I ${STAGING_SIPDIR} ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.pro.in sip/${module}/${module}mod.sip'"
 		sip -I ${STAGING_SIPDIR} -I sip ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.sbf sip/${module}/${module}mod.sip \
 		|| die "Error calling sip on ${module}"
-		cat ${module}/${module}.sbf | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, >${module}/${module}.pro
+		cat ${module}/${module}.sbf 	| sed s,target,TARGET, \
+						| sed s,sources,SOURCES, \
+						| sed s,headers,HEADERS, \
+						| sed s,"moc_HEADERS =","HEADERS +=", \
+		>${module}/${module}.pro
 		echo "TEMPLATE=lib" >>${module}/${module}.pro
 		[ "${module}" = "qt" ] 		&& echo "" 		>>${module}/${module}.pro
 		[ "${module}" = "qtcanvas" ] 	&& echo ""		>>${module}/${module}.pro
