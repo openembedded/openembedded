@@ -13,6 +13,13 @@ do_compile () {
 	oe_runmake -C util
 }
 
+do_stage () {
+	install -d ${STAGING_INCDIR}/mtd
+	for f in ${S}/include/mtd/*.h; do
+		install -m 0644 $f ${STAGING_INCDIR}/mtd/
+	done
+}
+
 do_install () {
 	install -d ${D}${bindir}
 	for binary in ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
