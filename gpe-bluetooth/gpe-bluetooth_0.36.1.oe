@@ -1,0 +1,11 @@
+inherit gpe
+
+DESCRIPTION = "GPE bluetooth support"
+DEPENDS = "gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus libglade"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+SECTION = "gpe"
+PRIORITY = "optional"
+
+FILES_${PN} += ' ${datadir}/gpe ${datadir}/bluez-pin'
+
+SRC_URI = "${GPE_MIRROR}/gpe-bluetooth-${PV}.tar.gz"
