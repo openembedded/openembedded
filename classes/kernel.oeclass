@@ -43,6 +43,13 @@ def get_kernelversion(p):
 
 KERNEL_VERSION = "${@get_kernelversion('${S}/include/linux/version.h')}"
 
+# kernels are generally machine specific
+python () {
+	mach = oe.data.getVar('MACHINE', d, 1)
+	if mach:
+		oe.data.setVar('PACKAGE_ARCH', oe.data.getVar('MACHINE_ARCH', d, 1), d)
+}
+
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
