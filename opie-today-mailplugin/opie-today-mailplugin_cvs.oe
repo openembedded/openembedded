@@ -3,7 +3,7 @@ SECTION = "opie/today"
 PRIORITY = "optional"
 MAINTAINER = "Open Embedded <oe@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "opie-today opie-mailapplet"
+RDEPENDS = "opie-today opie-mailapplet"
 PV = "1.1.4-cvs-${CVSDATE}"
 APPNAME = "todaymailplugin"
 

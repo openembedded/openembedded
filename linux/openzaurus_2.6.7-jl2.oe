@@ -1,0 +1,56 @@
+DESCRIPTION = "Linux kernel 2.6 for Zaurus devices."
+LICENSE = "GPL"
+KV = "${@oe.data.getVar('PV',d,True).split('-')[0]}"
+
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
+           http://www.cs.wisc.edu/~lenz/zaurus/files/patch-${PV}.diff.gz;patch=1 \
+           file://patch-2.6.5-rp1.diff;patch=1 \
+           file://collie-config-${PV} \
+           file://poodle-config-${PV} \
+           file://husky-config-${PV}"
+S = "${WORKDIR}/linux-${KV}"
+
+inherit kernel
+
+#
+# Compensate for sucky bootloader on all Sharp Zaurus models
+#
+FILES_kernel = ""
+ALLOW_EMPTY = 1 
+        
+EXTRA_OEMAKE = ""
+COMPATIBLE_HOST = "arm.*-linux"
+KERNEL_CCSUFFIX = "-3.3.3"
+
+#FIXME: Use configuration system
+export MEM = "32"
+export RD = "32"
+export CMDLINE = "noinitrd root=/dev/mtdblock2 rootfstype=jffs2 console=tty0 jffs2_orphand_inodes=delete"
+export CMDLINEpxa = "console=ttyS0,9600n8 9600n8 noinitrd root=/dev/mtdblock2 rootfstype=jffs2 console=tty0 jffs2_orphand_inodes=delete"
+
+do_configure() {
+        install -m 0644 ${WORKDIR}/${MACHINE}-config-${PV} ${S}/.config || die "No default configuration for ${MACHINE} available."
+
+        if [ "${MACHINE}" == "collie" ]
+	then
+		mem=${MEM}
+		rd=${RD}
+		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
+		rdsize=`echo "$rd * 1024" | bc`
+		total=`expr $mem + $rd`
+		addr=`echo "obase=16; ibase=16; C000000 + $mempos" | bc`
+	 	if [ "$rd" == "0" ]
+	 	then
+			echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
+		else
+			echo "CONFIG_MTD_MTDRAM_SA1100=y"           >> ${S}/.config
+			echo "CONFIG_MTDRAM_TOTAL_SIZE=$rdsize"     >> ${S}/.config
+			echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
+			echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
+		fi
+		echo "CONFIG_CMDLINE=\"$CMDLINE mem=${mem}M\"" >> ${S}/.config
+	else
+		echo "CONFIG_CMDLINE=\"$CMDLINEpxa\"" >> ${S}/.config
+	fi
+        oe_runmake oldconfig
+}

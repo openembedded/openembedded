@@ -4,27 +4,23 @@ PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
-	   file://tslib.patch;patch=1 \
-	   file://devfs.patch;patch=1 \
 	   file://no-moc.patch;patch=1 \
 	   file://gcc3_4.patch;patch=1 \
 	   file://update-qtfontdir \
 	   file://sharp_char.h \
 	   file://switches.h "
 
-#
-# FIXME: Apply the SIMpad hardware patch for SIMpad.
-#
-SRC_URI_append_simpad = "file://simpad.patch;patch=1 "
-#
-# FIXME: Apply the C7xx hardware patch for shepherd/husky/boxer
-#
-#SRC_URI_append_<machine> = "file://c700-hardware.patch;patch=1 "
+SRC_URI_append_simpad   = "file://simpad.patch;patch=1 file://devfs.patch;patch=1 "
+SRC_URI_append_corgi    = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 "
+SRC_URI_append_shepherd = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 " 
+SRC_URI_append_husky    = "file://c700-hardware.patch;patch=1 file://tslib.patch;patch=1 " 
+SRC_URI_append_h3600    = "file://tslib.patch;patch=1 file://devfs.patch;patch=1 "
+SRC_URI_append_h3900    = "file://tslib.patch;patch=1 file://devfs.patch;patch=1 "
 
 S = "${WORKDIR}/qt-${PV}"
 
@@ -52,8 +48,9 @@ EXTRA_OEMAKE = "-e"
 # FIXME: Add more here
 #
 EXTRA_DEFINES 		= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
-EXTRA_DEFINES_collie 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_h3600 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_collie 	= "            -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_h3600     = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS" 
+EXTRA_DEFINES_h3900 	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ                 -DQT_QWS_DEVFS"
 EXTRA_DEFINES_simpad	= "            -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
 EXTRA_DEFINES_shepherd  = "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
 EXTRA_DEFINES_husky	= "-DQWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700"
@@ -100,7 +97,7 @@ do_install() {
 	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
 }
 
-pkg_postinst () {
+pkg_postinst() {
 #!/bin/sh
 if [ -n "$D" ]; then exit 1; fi
 set -e
@@ -108,31 +105,58 @@ set -e
 ${sbindir}/update-qtfontdir
 }
 
-#
-# FIXME: Don't use the above but make the following work:
-#
+pkg_postinst_qte-font-unicode() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
 
-#pkg_postinst_qte-font-fixed() {
-#if [ -n $D ]; then exit 1; fi
-#/usr/sbin/update-qtfontdir
-#}
+pkg_postinst_qte-font-lcd () {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
 
-#pkg_postinst_qte-font-helvetica() {
-#if [ -n $D ]; then exit 1; fi
-#/usr/sbin/update-qtfontdir
-#}
+pkg_postinst_qte-font-japanese() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
 
-#pkg_postinst_qte-fonts-smoothtimes() {
-#if [ -n $D ]; then exit 1; fi
-#/usr/sbin/update-qtfontdir
-#}
+pkg_postinst_qte-font-micro() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
 
-PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica qte-font-smoothtimes qte-font-smallsmooth"
+pkg_postinst_qte-font-courier() {
+#!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
+set -e
+. /etc/profile
+${sbindir}/update-qtfontdir
+}
+
+PACKAGES = "libqte2 qte-font-fixed qte-font-helvetica qte-font-smoothtimes qte-font-smallsmooth \
+            qte-font-unicode qte-font-lcd qte-font-japanese qte-font-micro qte-font-courier"
 
 FILES_${PN} = ""
 FILES_libqte2 = "${palmtopdir}/lib/libqte.so* /usr/sbin/update-qtfontdir"
 FILES_qte-font-fixed = "${palmtopdir}/lib/fonts/fixed*"
-FILES_qte-font-helvetica = "${palmtopdir}/lib/fonts/helvetica*"
+FILES_qte-font-helvetica = "${palmtopdir}/lib/fonts/helv*"
 FILES_qte-font-smoothtimes = "${palmtopdir}/lib/fonts/smoothtimes*"
 FILES_qte-font-smallsmooth = "${palmtopdir}/lib/fonts/smallsmooth*"
+FILES_qte-font-unicode = "${palmtopdir}/lib/fonts/unifont*"
+FILES_qte-font-lcd = "${palmtopdir}/lib/fonts/lcd*"
+FILES_qte-font-japanese = "${palmtopdir}/lib/fonts/jap*"
+FILES_qte-font-micro = "${palmtopdir}/lib/fonts/micro*"
+FILES_qte-font-courier = "${palmtopdir}/lib/fonts/cour*"
 
