@@ -6,13 +6,14 @@ LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "0.0cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
 FILES_${PN} = " \
 	${bindir}/${TARGET_PREFIX}* \
-	${libdir}/lib*-*.so"
+	${libdir}/lib*-*.so \
+	${prefix}/${TARGET_SYS}/bin/*"
 
 FILES_${PN}-dev = " \
 	${includedir} \
@@ -98,6 +99,14 @@ do_install () {
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${D}/${libdir}/ldscripts
+
+	# Fix the /usr/${TARGET_SYS}/bin/* links
+	for l in ${D}/${prefix}/${TARGET_SYS}/bin/*; do
+		rm -f $l
+		ln -sf `echo ${prefix}/${TARGET_SYS}/bin \
+			| tr -s / \
+			| sed -e 's,^/,,' -e 's,[^/]*,..,g'`${bindir}/${TARGET_PREFIX}`basename $l` $l
+	done
 
 	# Install the libiberty header
 	install -m 644 ${S}/include/ansidecl.h ${D}/${includedir}
