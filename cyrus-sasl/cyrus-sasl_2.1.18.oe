@@ -13,7 +13,7 @@ EXTRA_OECONF = "--enable-shared --enable-static --with-dblib=berkeley \
 		--without-opie --without-des"
 
 do_configure_prepend () {
-	rm -f acinclude.m4
+	rm -f acinclude.m4 config/libtool.m4
 }
 
 do_compile_prepend () {
