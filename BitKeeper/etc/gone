@@ -1,4 +1,3 @@
-kergoth@direwolf.ppp.ti.com|tmp/base/make-3.80-r0/make-3.80/s.conftest|20030930212318|63110|da37c84ab4cbd31
 kergoth@direwolf.ppp.ti.com|tmp/base/apache-2.0.47-r0/httpd-2.0.47/.patches/configure.patch|20031017000313|22103|55fb394e85ed9a27
 kergoth@direwolf.ppp.ti.com|tmp/base/avr-libc-1.0-r0/avr-libc-1.0/.patches/configure.patch|20031017000314|20947|86c76bf82d67da92
 kergoth@direwolf.ppp.ti.com|tmp/base/base-passwd-3.5.4-r0/base-passwd-3.5.4/.patches/configure.patch|20031017000313|25095|6eff6e911a09618d
@@ -26,6 +25,8 @@ kergoth@direwolf.ppp.ti.com|tmp/base/libogg-1.0.0-r0/libogg-1.0.0/.patches/confi
 kergoth@direwolf.ppp.ti.com|tmp/base/libpcap-0.7.2-r0/libpcap-0.7.2/.patches/configure.patch|20031017000313|57191|23994653174049d0
 kergoth@direwolf.ppp.ti.com|tmp/base/links-2.1pre12-r0/links-2.1pre12/.patches/configure.patch|20031017000313|58632|2e4454542c2a571
 kergoth@direwolf.ppp.ti.com|tmp/base/mailutils-0.3.1-r0/mailutils-0.3.1/.patches/configure.patch|20031017000313|64970|bdce432bdccd1c79
+kergoth@direwolf.ppp.ti.com|tmp/base/make-3.80-r0/make-3.80/s.conftest|20030930212318|63110|da37c84ab4cbd31
+kergoth@direwolf.ppp.ti.com|tmp/base/make-3.80-r0/make-3.80/s.conftest|20031223192004|25012|264605837342a3ef
 kergoth@direwolf.ppp.ti.com|tmp/base/modutils-2.4.25-r0/modutils-2.4.25/.patches/configure.patch|20031017000313|00714|f378c3a7f0788548
 kergoth@direwolf.ppp.ti.com|tmp/base/mp3blaster-3.1.3-r0/mp3blaster-3.1.3/.patches/configure.patch|20031017000313|01960|693a1a85687857b9
 kergoth@direwolf.ppp.ti.com|tmp/base/mutt-1.5.4i-r0/mutt-1.5.4/.patches/configure.patch|20031017000313|03256|760ff87da881b5c
@@ -48,4 +49,4 @@ kergoth@direwolf.ppp.ti.com|tmp/base/tmdns-20030116-r0/tmdns/.patches/configure.
 kergoth@direwolf.ppp.ti.com|tmp/base/tremor-20030325-r0/Tremor/.patches/configure.patch|20031017000313|11433|5d97ad5efbd728ad
 kergoth@direwolf.ppp.ti.com|tmp/base/tslib-1.0-r0/tslib/.patches/configure.patch|20031017000313|10146|424e0abc38251984
 kergoth@direwolf|tmp/base/make-3.80-r0/make-3.80/s.conftest|20031121052259|39582|c6bf26cbc42ce43
-kergoth@direwolf.ppp.ti.com|tmp/base/make-3.80-r0/make-3.80/s.conftest|20031223192004|25012|264605837342a3ef
+linux-c860-20040124.patch
