@@ -2,7 +2,7 @@ DESCRIPTION = "A multi protocol instant messager application, Qt/Embedded based 
 SECTION = "opie/applications"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "qpe-libgaim glib-2.0"
-RDEPENDS = "libgaim-plugins"
+RDEPENDS = "libgaim-plugins glibc-gconv-iso8859-1"
 LICENSE = "GPL"
 HOMEPAGE = "http://qpe-gaim.sourceforge.net/"
 APPNAME = "gaim"
@@ -10,6 +10,7 @@ APPTYPE = "binary"
 LICENSE = "GPL"
 APPDESKTOP = "${S}"
 PV = "0.4+cvs-20041030"
+PR = "r1"
 
 SRC_URI = "http://www.vanille.de/mirror/qpe-gaim_20041030.tar.bz2 \
            file://libopie2.patch;patch=1"

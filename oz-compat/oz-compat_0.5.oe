@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Tim Ansell <mithro AT mithis.net>"
 LICENSE = "GPL"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://openzaurus.org/mirror/oz-compat_0.5.tar.gz \
 	   file://hentges.patch;patch=0"
