@@ -6,6 +6,7 @@ USERCONF = '-DLUA_USERCONFIG="\"$(LUA)/etc/saconfig.c\"" -DUSE_READLINE'
 # EXTRA_LIBS= "-lm -ldl -lreadline # -lhistory -lcurses -lncurses"
 EXTRA_LIBS= "-lm -ldl -lreadline"
 
+PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "'CC=${CC}' 'MYCFLAGS=${MYCFLAGS}' \
 		'MYLDFLAGS=${MYLDFLAGS}' 'WARN=' \
 		'INSTALL_EXEC=install -m 0755' \
