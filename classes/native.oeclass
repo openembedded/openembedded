@@ -1,0 +1,38 @@
+inherit base
+
+PACKAGES = ""
+
+TARGET_ARCH = "${BUILD_ARCH}"
+TARGET_OS = "${BUILD_OS}"
+TARGET_VENDOR = "${BUILD_VENDOR}"
+TARGET_PREFIX = "${BUILD_PREFIX}"
+TARGET_CC_ARCH = "${BUILD_CC_ARCH}"
+
+HOST_ARCH = "${BUILD_ARCH}"
+HOST_OS = "${BUILD_OS}"
+HOST_VENDOR = "${BUILD_VENDOR}"
+HOST_PREFIX = "${BUILD_PREFIX}"
+HOST_CC_ARCH = "${BUILD_CC_ARCH}"
+
+CPPFLAGS = "${BUILD_CPPFLAGS}"
+CFLAGS = "${BUILD_CFLAGS}"
+CXXFLAGS = "${BUILD_CFLAGS}"
+LDFLAGS = "${BUILD_LDFLAGS}"
+
+prefix = "${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}"
+exec_prefix = "${prefix}"
+bindir = "${STAGING_BINDIR}"
+sbindir = "${STAGING_BINDIR}"
+libdir = "${STAGING_LIBDIR}"
+includedir = "${STAGING_INCDIR}"
+oldincludedir = "${includedir}"
+sysconfdir = "${STAGING_DIR}/etc"
+datadir = "${STAGING_DATADIR}"
+
+do_stage () {
+	oe_runmake install
+}
+
+do_install () {
+	true
+}

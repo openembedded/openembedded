@@ -10,14 +10,9 @@ PV = "${CVSDATE}"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/embryo"
 S = "${WORKDIR}/embryo"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 do_stage () {
 	oe_libinstall -C src/lib libembryo ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/lib/Embryo.h ${STAGING_INCDIR}/
-	cat embryo-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/embryo-config
-	chmod u+x ${STAGING_BINDIR}/embryo-config
 }

@@ -1,0 +1,9 @@
+include eet_${PV}.oe
+inherit native
+DEPENDS = "zlib-native"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/eet"
+
+do_stage () {
+        oe_libinstall -C src/lib libeet ${STAGING_LIBDIR}/
+        install -m 0644 ${S}/src/lib/Eet.h ${STAGING_INCDIR}/
+}

@@ -1,0 +1,15 @@
+DESCRIPTION = "The Enlightened Widget Library, \
+a simple-to-use general purpose widget library based on the Evas canvas."
+SECTION = "libs"
+DEPENDS = "edb evas ecore etox edje"
+PV = "${CVSDATE}"
+
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl"
+S = "${WORKDIR}/ewl"
+
+inherit autotools binconfig
+
+do_stage () {
+	oe_libinstall -C src libewl ${STAGING_LIBDIR}/
+	install -m 0644 ${S}/src/Ewl.h ${STAGING_INCDIR}/
+}

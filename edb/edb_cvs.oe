@@ -8,7 +8,7 @@ PV = "${CVSDATE}"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edb"
 S = "${WORKDIR}/edb"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "--disable-gtk \
 		--disable-ncurses"
@@ -16,9 +16,4 @@ EXTRA_OECONF = "--disable-gtk \
 do_stage () {
 	oe_libinstall -C src libedb ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/Edb.h ${STAGING_INCDIR}/
-	cat edb-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/edb-config
-	chmod u+x ${STAGING_BINDIR}/edb-config
 }

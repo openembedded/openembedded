@@ -1,0 +1,13 @@
+DESCRIPTION = "Meta-package for the Enlightenment Palmtop Environment (Codename: EpiCenter)"
+PACKAGES = "e e-libs e-base"
+
+ALLOW_EMPTY = 1
+
+task-elibs = "evas edb ecore eet embryo edje etox ewl"
+task-ebase = ""
+
+RDEPENDS_elibs = "${task-elibs}"
+DEPENDS += "${task-elibs}"
+
+RDEPENDS_ebase = "${task-ebase}"
+DEPENDS += "${task-ebase"

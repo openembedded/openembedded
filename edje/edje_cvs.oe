@@ -1,13 +1,14 @@
 DESCRIPTION = "edje is a complex graphical design & layout library."
-DEPENDS = "freetype evas ecore embryo eet edb"
+DEPENDS = "freetype evas ecore embryo eet edb edje-native"
 SECTION = "libs"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "${CVSDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje \
+	   file://fix-hardcoded-imlib2-config.patch;patch=1"
 S = "${WORKDIR}/edje"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 export EDB_CONFIG = "${STAGING_BINDIR}/edb-config"
 export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
@@ -23,9 +24,4 @@ do_stage () {
 	oe_libinstall -C src/lib libedje ${STAGING_LIBDIR}/
 	oe_libinstall -C src/lib libedje_edit ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/lib/Edje.h ${STAGING_INCDIR}/
-	cat edje-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/edje-config
-	chmod u+x ${STAGING_BINDIR}/edje-config
 }

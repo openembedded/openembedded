@@ -11,7 +11,7 @@ PR = "r1"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
 S = "${WORKDIR}/ecore"
 
-inherit autotools
+inherit autotools binconfig
 
 export EDB_CONFIG = "${STAGING_BINDIR}/edb-config"
 export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
@@ -42,9 +42,4 @@ do_stage () {
 	done
 	install -m 0644 ${S}/src/lib/ecore/Ecore_Data.h ${STAGING_INCDIR}/
 	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
-	cat ecore-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/ecore-config
-	chmod u+x ${STAGING_BINDIR}/ecore-config
 }

@@ -1,0 +1,22 @@
+DESCRIPTION = "Freetype font rendering library"
+
+SRC_URI = "ftp://ftp.freetype.org/freetype/freetype2/freetype-${PV}.tar.bz2 \
+	   file://${FILESDIR}/configure.patch;patch=1"
+
+inherit autotools pkgconfig native binconfig
+DEPENDS = "patcher-native"
+FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/freetype-${PV}"
+S = "${WORKDIR}/freetype-${PV}"
+PACKAGES = ""
+
+do_configure () {
+	(cd builds/unix && gnu-configize) || die "failure running gnu-configize"
+	oe_runconf
+}
+
+do_stage () {
+	oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
+	cp -a ${S}/include/*.h ${STAGING_INCDIR}
+	install -d ${STAGING_INCDIR}/freetype2
+	cp -a ${S}/include/freetype ${STAGING_INCDIR}/freetype2/
+}

@@ -14,7 +14,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
            file://pkg.m4"
 S = "${WORKDIR}/evas"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "--enable-fb			\
 		--disable-directfb		\
@@ -74,15 +74,9 @@ headers = "Evas_Engine_Buffer.h \
 # Evas_Engine_Software_X11.h
 # Evas_Engine_Software_Qtopia.h \
 
-
 do_stage () {
 	for i in ${headers}; do
 		install -m 0644 ${S}/src/lib/$i ${STAGING_INCDIR}/
 	done
 	oe_libinstall -C src/lib libevas ${STAGING_LIBDIR}/
-	cat evas-config | sed -e 's,/usr/include,${STAGING_INCDIR},g; \
-				      s,/usr/lib,${STAGING_LIBDIR},g; \
-				      s,/usr/bin,${STAGING_BINDIR},g; \
-				      s,/usr,${STAGING_LIBDIR}/..,g;' > ${STAGING_BINDIR}/evas-config
-	chmod u+x ${STAGING_BINDIR}/evas-config
 }
