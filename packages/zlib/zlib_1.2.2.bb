@@ -6,8 +6,7 @@ HOMEPAGE = "http://www.gzip.org/zlib/"
 LICENSE = "zlib"
 PR = "r2"
 
-SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz \
-	   file://visibility.patch;patch=1"
+SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz "
 S = "${WORKDIR}/zlib-${PV}"
 
 export LDSHARED = "${CC} -shared -Wl,-soname,libz.so.1"

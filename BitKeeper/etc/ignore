@@ -6,3 +6,4 @@ tmp
 meta/treke-image.oe
 patches
 .pc
+packages/find_no_ver.sh
