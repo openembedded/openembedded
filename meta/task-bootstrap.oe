@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r9"
+PR = "r10"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
