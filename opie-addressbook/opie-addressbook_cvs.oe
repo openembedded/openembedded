@@ -1,0 +1,18 @@
+DESCRIPTION = "Contacts"
+SECTION = "opie/pim"
+PRIORITY = "optional"
+MAINTAINER = "Open Embedded <oe@handhelds.org>"
+LICENSE = "GPL"
+DEPENDS = "libopiecore2 libopieui2 libopiepim2"
+RDEPENDS = "opie-pics"
+PV = "1.1.3-cvs-${CVSDATE}"
+APPNAME = "addressbook"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/pim/addressbook;date=${CVSDATE} \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps;date=${CVSDATE}"
+
+S = "${WORKDIR}/addressbook"
+
+inherit opie
+
+# FILES plugins/application/libaddressbook.so* bin/addressbook apps/1Pim/addressbook.desktop
