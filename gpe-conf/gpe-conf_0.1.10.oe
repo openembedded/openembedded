@@ -1,8 +1,9 @@
-PR = "r1"
+PR = "r2"
 
 inherit gpe pkgconfig
 
-DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client libdotdesktop pcmcia-cs"
+DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client libdotdesktop pcmcia-cs xst"
+RDEPENDS = "xst"
 SECTION = "gpe"
 PRIORITY = "optional"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps ${datadir}/applications"
