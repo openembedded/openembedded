@@ -1,16 +1,12 @@
-SECTION = "libs"
-PRIORITY = "optional"
-MAINTAINER = "Michael Lauer <mickey@Vanille.de>"
-DEPENDS = "jpeg libpng zlib"
 DESCRIPTION = "DirectFB is a thin library that provides developers \
 with hardware graphics acceleration, input device handling and \
 abstraction, an integrated windowing system with support for \
 translucent windows and multiple display layers on top of the \
 Linux framebuffer device."
-FILES_directfb_append = " ${libdir}/directfb-${PV}/systems/*.so \
-			  ${libdir}/directfb-${PV}/inputdrivers/*.so \
-			  ${libdir}/directfb-${PV}/interfaces/*/*.so \
-			  ${datadir}/directfb-${PV}"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+DEPENDS = "jpeg libpng zlib"
 
 SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz"
 S = "${WORKDIR}/DirectFB-${PV}"
@@ -20,18 +16,23 @@ inherit autotools libtool pkgconfig
 EXTRA_OECONF = "--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=no --enable-sdl=no"
 
 do_stage() {
-	oe_runmake -C src 'libdir=/target/lib' 'includedir=/target/include/directfb' \
-			  'oldincludedir=/target/include' 'datadir=/share' \
+	oe_runmake -C src 'libdir=/lib' 'includedir=/include/directfb' \
+			  'oldincludedir=/include' 'datadir=/share' \
 			  'DESTDIR=${STAGING_DIR}' \
-			  'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
+			  'INTERNALINCLUDEDIR=/include/directfb-internal' \
 			  install-internalincludeHEADERS install-libLTLIBRARIES
-	oe_runmake -C include 'libdir=/target/lib' 'includedir=/target/include/directfb' \
-			      'oldincludedir=/target/include' 'datadir=/share' \
+	oe_runmake -C include 'libdir=/lib' 'includedir=/include/directfb' \
+			      'oldincludedir=/include' 'datadir=/share' \
 	       		      'DESTDIR=${STAGING_DIR}' \
-			      'INTERNALINCLUDEDIR=/target/include/directfb-internal' \
+			      'INTERNALINCLUDEDIR=/include/directfb-internal' \
 			      install-internalincludeHEADERS install-includeHEADERS
 }
 
 do_install() {
         oe_runmake 'DESTDIR=${D}' install
 }
+
+FILES_directfb_append = " ${libdir}/directfb-${PV}/systems/*.so \
+                          ${libdir}/directfb-${PV}/inputdrivers/*.so \
+                          ${libdir}/directfb-${PV}/interfaces/*/*.so \
+                          ${datadir}/directfb-${PV}"
