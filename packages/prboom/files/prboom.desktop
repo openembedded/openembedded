@@ -1,0 +1,7 @@
+[Desktop Entry]
+Comment=Doom Emulator
+Exec=prboom.sh
+Icon=prboom
+Type=Application
+Name=PrBoom
+
