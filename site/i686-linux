@@ -84,3 +84,8 @@ ac_cv_func_getaddrinfo=${ac_cv_func_getaddrinfo=yes}
 
 # D-BUS
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
+
+# mysql
+mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=yes}
+mysql_cv_func_atomic_add=${mysql_cv_func_atomic_add=yes}
+ac_cv_conv_longlong_to_float=${ac_cv_conv_longlong_to_float=yes}
