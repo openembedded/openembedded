@@ -1,4 +1,6 @@
 DESCRIPTION = "Qt/Embedded version ${PV}"
+SECTION = "libs"
+PRIORITY = "optional"
 LICENSE = "GPL/QPL"
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 	 file://${FILESDIR}/qpe.patch;patch=1 \
@@ -8,15 +10,6 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}.tar.gz \
 DEPENDS = "virtual/libc base/zlib base/libpng base/jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
 S = "${WORKDIR}/qt-${PV}"
-
-# strip off leading and trailing whitespace, and made the vars single word
-#CXX:="${@oe.data.getVar('CXX', d, 1).strip().split()[-1]}"
-#CC:="${@oe.data.getVar('CC', d, 1).strip().split()[-1]}"
-#BUILD_CXX:="${@oe.data.getVar('BUILD_CXX', d, 1).strip().split()[-1]}"
-#BUILD_CC:="${@oe.data.getVar('BUILD_CC', d, 1).strip().split()[-1]}"
-#CFLAGS:="${@oe.data.getVar('CFLAGS', d, 1).strip()}"
-#CXXFLAGS:="${@oe.data.getVar('CXXFLAGS', d, 1).strip()}"
-#LDFLAGS:="${@oe.data.getVar('LDFLAGS', d, 1).strip()}"
 
 export QTDIR = "${S}"
 
@@ -51,8 +44,7 @@ export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
 
 do_configure() {
-	oenote ./configure ${EXTRA_OECONF}
-	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed"
+	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 do_compile() {
