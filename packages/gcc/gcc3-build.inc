@@ -9,8 +9,6 @@ gcclibdir ?= "${libdir}/gcc"
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-# We pass --disable-hosted-libstdcxx to build a "free standing library implementation".
-# This ensures that precompiled headers aren't built, nor is the abi check. -CL
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
                 --enable-shared \
@@ -21,7 +19,7 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 --enable-c99 \
                 --enable-long-long \
                 --enable-symvers=gnu \
-                --disable-hosted-libstdcxx \
+                --enable-libstdcxx-pch \
                 --program-prefix=${TARGET_PREFIX} \
                 ${EXTRA_OECONF_PATHS} \
                 ${EXTRA_OECONF_DEP}"
