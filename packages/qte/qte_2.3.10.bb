@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -33,8 +33,8 @@ SRC_URI_append_spitz		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap
 SRC_URI_append_akita            = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
 SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
-SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_jornada720       = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_ramses           = "file://devfs.patch;patch=1 \
                                    file://ramses.patch;patch=1 \
                                    file://ramses-touchscreen.patch;patch=1 \
