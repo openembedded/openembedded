@@ -1,4 +1,4 @@
-PV_append = "${DATE}"
+PV_append = "${CVSDATE}"
 DESCRIPTION = "Itsy Package Manager utilities"
 DEPENDS = ""
 SECTION = "base"

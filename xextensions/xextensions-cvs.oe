@@ -1,4 +1,4 @@
-PV = "0.0cvs${DATE}"
+PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 PROVIDES = "xextensions"

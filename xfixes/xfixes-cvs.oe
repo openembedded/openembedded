@@ -1,4 +1,4 @@
-PV = "0.0cvs${DATE}"
+PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 DEPENDS = "virtual/libc x11-cvs fixesext-cvs"
 PROVIDES = "xfixes"

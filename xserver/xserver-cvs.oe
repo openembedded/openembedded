@@ -1,4 +1,4 @@
-PV = "0.0cvs${DATE}"
+PV = "0.0cvs${CVSDATE}"
 RDEPENDS = "libc6"
 DEPENDS = "virtual/libc xproto-cvs xdmcp-cvs xextensions-cvs xtrans-cvs xau-cvs x11-cvs xext-cvs randr-cvs render-cvs xrender-cvs xrandr-cvs fixesext-cvs damageext-cvs xfont-cvs resourceext-cvs compositeext-cvs"
 RDEPENDS = "libc6 xau-cvs xdmcp-cvs zlib xfont-cvs x11-cvs xext-cvs"

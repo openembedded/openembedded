@@ -1,4 +1,4 @@
-PV = "0.0cvs${DATE}"
+PV = "0.0cvs${CVSDATE}"
 SECTION = "libs"
 DEPENDS = "virtual/libc randr-cvs x11-cvs render-cvs xrender-cvs"
 PROVIDES = "xrandr"

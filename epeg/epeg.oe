@@ -1,4 +1,4 @@
-PV = "${DATE}"
+PV = "0.0cvs${CVSDATE}"
 
 DEPENDS = "virtual/libc jpeg"
 RDEPENDS = "libc6 libjpeg"
