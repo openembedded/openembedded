@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r6"
+PR = "r7"
 PACKAGE_ARCH = "all"
 
 PACKAGES = "opie task-opie-applets task-opie-applications task-opie-base \
@@ -98,6 +98,7 @@ opie-tableviewer \
 opie-tinykate \
 opie-ubrowser \
 opie-wellenreiter \
+manufacturers \
 opie-write \
 opie-zsafe "
 RDEPENDS_task-opie-applications = "${task-opie-applications}"
