@@ -1,3 +1,4 @@
+BROKEN = "yes"
 SECTION = "apps"
 PRIORITY = "optional"
 DEPENDS = "virtual/libc zlib tremor libmad libid3tag libsidplay glib-2.0 virtual/libqpe uicmoc-native"
@@ -11,6 +12,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms
            file://glib2.patch;patch=1 \
            file://tremorlib.patch;patch=1 \
            file://bufferdefaults.patch;patch=1 \
+           file://${FILESDIR}/gcc34.patch;patch=1 \
            file://xmms.png"
 
 S = "${WORKDIR}/xmms-embedded"
