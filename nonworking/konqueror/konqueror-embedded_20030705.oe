@@ -8,7 +8,7 @@ SRC_URI = http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snaps
 
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
-inherit autotools libtool
+inherit  libtool
 
 FILES=
 FILES_${PN}=/opt/QtPalmtop
@@ -22,3 +22,37 @@ EXTRA_OECONF = --enable-static --disable-shared --disable-debug --enable-qpe --e
                --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR} --with-ssl-version=0.9.7c \
                --with-ssl-dir=${STAGING_DIR}/target --with-qtopia-dir=${STAGING_DIR}/target --prefix=/opt/QtPalmtop --with-javascript=static
 
+
+do_configure () {
+	./configure \
+	--build=${BUILD_SYS} \
+	--host=${HOST_SYS} \
+	--target=${TARGET_SYS} \
+	--prefix=${prefix} \
+	--exec_prefix=${exec_prefix} \
+	--bindir=${bindir} \
+	--sbindir=${sbindir} \
+	--libexecdir=${libexecdir} \
+	--datadir=${datadir} \
+	--sysconfdir=${sysconfdir} \
+	--sharedstatedir=${sharedstatedir} \
+	--localstatedir=${localstatedir} \
+	--libdir=${libdir} \
+	--includedir=${includedir} \
+	--oldincludedir=${oldincludedir} \
+	--infodir=${infodir} \
+	--mandir=${mandir} \
+	--enable-static  \
+	--disable-shared  \
+	--disable-debug  \
+	--enable-qpe \
+	--enable-embedded     \           
+	--with-extra-includes=${STAGING_INCDIR} \
+	--with-extra-libs=${STAGING_LIBDIR} \
+	--with-ssl-version=0.9.7c \    
+	--with-ssl-dir=${STAGING_DIR}/target \
+	--with-qtopia-dir=${STAGING_DIR}/target \
+	--prefix=/opt/QtPalmtop \
+	--with-javascript=static
+
+}
