@@ -1,6 +1,6 @@
 DESCRIPTION = "Script to manage module configuration files"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://update-modules"
 
