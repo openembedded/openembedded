@@ -37,6 +37,9 @@ gpe-task-utils = "\
     gpe-conf \
     gpe-wlancfg \
     gpe-gallery \
+    minilite \
+    gpe-taskmanager \
+    gpe-clock \
     gpe-shield"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
