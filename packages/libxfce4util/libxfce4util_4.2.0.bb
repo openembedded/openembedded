@@ -10,6 +10,13 @@ DEPENDS = "glib-2.0"
 # | checking whether putenv() implementation is broken... configure: error: cannot run test program while cross compiling
 BROKEN = "1"
 
+# Fixed on i386/i486/i586/i686 - needs to be confirmed on other platforms
+
+BROKEN_i386="0"
+BROKEN_i486="0"
+BROKEN_i586="0"
+BROKEN_i686="0"
+
 inherit xfce pkgconfig
 
 XFCE_HEADERS="debug.h utf8.h xfce-generics.h   xfce-resource.h \
