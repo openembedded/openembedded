@@ -1,0 +1,25 @@
+DESCRIPTION = "The mediaplayer for Opie. It plays mp3, mpeg, wav, ogg, quicktime, divx and more. Also it is streaming capable."
+SECTION = "opie/multimedia"
+PRIORITY = "optional"
+LICENSE = "GPL"
+MAINTAINER = "Team Opie <opie@handhelds.org>
+PV = "1.1.5-cvs-${CVSDATE}"
+DEPENDS = "libxine"
+RDEPENDS = "opie-mediaplayer2-skin"
+APPNAME = "opieplayer2"
+
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/multimedia/opieplayer2 \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+	   file://fix-switch-yuv2rgb_arm2.patch;patch=1"
+S = "${WORKDIR}/${APPNAME}"
+
+inherit opie
+
+QMAKE_PROFILES = "opieplayer2.pro"
+
+do_install() {
+	install -d ${D}${palmtopdir}/pics/${APPNAME}/
+        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+}
+
