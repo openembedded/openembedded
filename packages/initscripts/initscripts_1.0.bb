@@ -44,7 +44,9 @@ def read_kernel_version(d):
 		return file( filename + "/kernel-abiversion", "r" ).read().strip()
 	else:
 		return "not important"
-KERNEL_VERSION = "${@read_kernel_version(d)}"
+KERNEL_VERSION = ""
+KERNEL_VERSION_openzaurus = "${@read_kernel_version(d)}"
+PACKAGE_ARCH_openzaurus = "${MACHINE_ARCH}"
 
 do_install () {
 #
