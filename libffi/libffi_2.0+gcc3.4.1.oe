@@ -4,7 +4,7 @@ LICENSE = "libffi"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 
-inherit autotools
+inherit autotools gettext
 
 PACKAGES = "${PN} ${PN}-dev"
 
@@ -28,8 +28,7 @@ ${GNU_MIRROR}/gcc/	http://mirrors.rcn.net/pub/sourceware/gcc/releases/
 S = "${WORKDIR}/gcc-${GCC_VER}/libffi"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--disable-nls \
-                --with-gnu-ld \
+EXTRA_OECONF = "--with-gnu-ld \
                 --enable-shared \
                 --enable-target-optspace \
                 --enable-languages=c,c++,f77 \

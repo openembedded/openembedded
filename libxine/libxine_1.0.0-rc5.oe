@@ -1,0 +1,69 @@
+# libxine OE build file
+# Modified by Advanced Micro Devices, Inc.
+
+DESCRIPTION = "libxine"
+SECTION = "libs"
+PRIORITY = "optional"
+MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
+DEPENDS = "zlib libogg libvorbis libmad"
+
+inherit autotools pkgconfig gettext
+
+S = "${WORKDIR}/xine-lib-1-rc5"
+
+SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-1-rc5.tar.gz \
+	file://cpu.patch;patch=1 \
+	file://configure.patch;patch=1"
+
+SOV = "1.0.6"
+
+# Omit the annoying xine-config in /usr/bin
+FILES_${PN}="/usr/lib/*.so*"
+
+# And include it in the dev package
+FILES_${PN}-dev += " /usr/bin"
+
+EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
+	--with-vorbis-prefix=${STAGING_DIR}/${HOST_SYS} \
+	--disable-oggtest \
+	--with-ogg-prefix=${STAGING_DIR}/${HOST_SYS} \
+	--disable-altivec --disable-vis --disable-mlib \
+	--disable-fb --disable-alsa --disable-vcd \
+	--disable-asf --disable-faad --disable-iconv \
+	--disable-aalib \
+	--without-v4l --without-arts --without-sdl"
+			      
+do_compile() {
+	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool
+}
+
+do_install() {
+	oe_runmake DESTDIR=${D} LIBTOOL=${S}/${TARGET_SYS}-libtool install
+}
+
+HEADERS="src/xine-engine/xineintl.h src/xine-utils/xineutils.h \
+	src/xine-engine/xine_internal.h src/xine-engine/xine_plugin.h \
+	src/xine-utils/xine_buffer.h"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/xine
+
+	install -m 0644 ${S}/include/xine.h ${STAGING_INCDIR}
+
+	for file in ${HEADERS}; do
+		cp ${S}/$file ${STAGING_INCDIR}/xine/`basename $file`
+	done
+
+	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
+}
+
+python populate_packages_prepend () {
+	plugindir = oe.data.expand('${libdir}/xine/plugins/1.0.0', d)
+	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s')
+
+	postdir = oe.data.expand('${libdir}/xine/plugins/1.0.0/post', d)
+	do_split_packages(d, postdir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s')
+
+	fontdir = oe.data.expand('${datadir}/xine/libxine1/fonts', d)
+	do_split_packages(d, fontdir, '^(.*).xinefont.gz$', 'libxine-font-%s', 'Xine font %s')
+}

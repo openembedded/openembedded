@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 PR = "r4"
 
-inherit autotools
+inherit autotools gettext
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
@@ -50,8 +50,7 @@ SRC_URI = \
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--disable-nls \
-		--program-prefix=${TARGET_PREFIX} \
+EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 
 # This is necessary due to a bug in the binutils Makefiles

@@ -31,7 +31,7 @@ MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "zlib libogg libvorbis libmad"
 PROVIDES = "virtual/libxine"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gettext
 
 S = "${WORKDIR}/xine-lib-1-rc7"
 
@@ -55,7 +55,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--enable-shared --disable-static \ 
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \
-	--disable-nls --disable-aalib --with-xv-path=${STAGING_LIBDIR} \
+	--disable-aalib --with-xv-path=${STAGING_LIBDIR} \
 	--without-v4l --without-arts --without-sdl"
 			      
 do_compile() {

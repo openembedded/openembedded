@@ -1,5 +1,5 @@
 SECTION = "devel"
-inherit autotools
+inherit autotools gettext
 
 DESCRIPTION = "A GNU collection of binary utilities"
 LICENSE = "GPL"
@@ -48,7 +48,6 @@ S = "${WORKDIR}/src"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--with-sysroot=${prefix} \
-		--disable-nls \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 

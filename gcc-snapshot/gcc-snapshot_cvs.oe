@@ -1,5 +1,5 @@
 SECTION = "devel"
-inherit autotools
+inherit autotools gettext
 
 PV = "${CVSDATE}"
 DESCRIPTION = "The GNU cc and gcc C compilers."
@@ -119,8 +119,7 @@ python do_patch () {
 S = "${WORKDIR}/gcc"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--disable-nls \
-                --with-gnu-ld \
+EXTRA_OECONF = "--with-gnu-ld \
                 --enable-shared \
                 --enable-multilib \
                 --enable-target-optspace \
