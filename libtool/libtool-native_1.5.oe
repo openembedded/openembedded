@@ -13,8 +13,6 @@ S = "${WORKDIR}/libtool-${PV}"
 prefix = "${CROSS_DIR}"
 exec_prefix = "${prefix}"
 
-EXTRA_OECONF_append = " --program-prefix=${TARGET_SYS}-"
-
 do_stage () {
         oe_runmake install
         install -d ${STAGING_DATADIR}/libtool \
@@ -34,5 +32,4 @@ do_stage () {
 }
 
 do_install () {
-        :
 }
