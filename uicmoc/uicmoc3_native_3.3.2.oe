@@ -11,7 +11,7 @@ S = "${WORKDIR}/qt-embedded-free-3.3.2"
 inherit native qmake-base
 
 export QTDIR = "${S}"
-
+export OE_QMAKE_LINK="${CXX}"
 CXXFLAGS += " -DQWS"
 
 QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound \
