@@ -5,12 +5,12 @@ PACKAGES = "${PN}"
 
 DEPENDS = 'virtual/libc base-files base-passwd-3.5.7 \
 	busybox dropbear hotplug ipkg initscripts modutils netbase \
-	modutils-collateral resolvconf sysvinit tinylogin lrzsz \
+	resolvconf sysvinit tinylogin lrzsz \
 	${BOOTSTRAP_EXTRA_DEPENDS}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	hotplug ipkg initscripts modutils-depmod \
-	modutils-collateral netbase \
+	netbase \
 	resolvconf sysvinit tinylogin \
 	${BOOTSTRAP_EXTRA_RDEPENDS}'
 
