@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie and QPE"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r11"
+PR = "r12"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -122,6 +122,7 @@ petitepainture \
 pocketcellar \
 poqetpresenter \
 portabase \
+qpealarmclock \
 qpe-gaim \
 qpegps \
 qplot \
