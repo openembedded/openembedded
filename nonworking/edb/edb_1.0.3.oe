@@ -1,5 +1,0 @@
-DEPENDS = "gtk+ ncurses"
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/enlightenment/edb-${PV}.tar.gz"
-
-inherit autotools
