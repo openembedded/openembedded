@@ -1,7 +1,7 @@
 DESCRIPTION = "Blueping plugin for opie-security authentication. \
 This is a bluetooth-based authentication plugin (you need \
 to have another Bluetooth device around to use it)."
-SECTION = "opie/settings"
+SECTION = "opie/security"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
@@ -9,7 +9,7 @@ I18N_FILES = "libmultiauthbluepingplugin.ts"
 RDEPENDS = "opie-security bluez-utils"
 PV = "1.1.8+cvs-${CVSDATE}"
 APPNAME = "multiauthbluepingplugin"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/blueping \
            ${HANDHELDS_CVS};module=opie/pics "

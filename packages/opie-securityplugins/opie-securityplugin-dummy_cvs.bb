@@ -1,7 +1,7 @@
 DESCRIPTION = "Dummy plugin for opie-security authentication. \
 This is a very simple authentication plugin (you just have \
 to press a button basically), for demonstration purpose."
-SECTION = "opie/settings"
+SECTION = "opie/security"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
@@ -9,7 +9,7 @@ I18N_FILES = "libmultiauthdummyplugin.ts"
 RDEPENDS = "opie-security"
 PV = "1.1.8+cvs-${CVSDATE}"
 APPNAME = "multiauthdummyplugin"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/dummy \
            ${HANDHELDS_CVS};module=opie/pics "
