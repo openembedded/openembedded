@@ -35,7 +35,7 @@ fi
 
 . /etc/profile
 
-if [ ! -x "$HOME/Settings/qpe.conf" ] ; then
+if [ ! -e "$HOME/Settings/qpe.conf" ] ; then
     echo "Copying default qpe.conf into $HOME/Settings/"
     mkdir -p $HOME/Settings/
     cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
