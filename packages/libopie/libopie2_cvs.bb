@@ -10,7 +10,7 @@ PR = "r12"
 PV = "1.1.9+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
-           file://include.pro"
+           file://include-cvs.pro"
 S = "${WORKDIR}/libopie2"
 
 inherit opie
@@ -58,7 +58,7 @@ do_stage() {
 		oe_libinstall -so libopie$f ${STAGING_LIBDIR}/
 	done
 
-	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/
+	install -m 0644 ${WORKDIR}/include-cvs.pro ${OPIEDIR}/include.pro
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
