@@ -7,7 +7,7 @@ LICENSE = "GPL"
 RDEPENDS = "python-core python-sip"
 DEPENDS = "virtual/libqte2 virtual/libqpe"
 SRCNAME = "pyqt"
-PR = "r3"
+PR = "ml1"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
            file://features"
@@ -29,7 +29,7 @@ EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BIN
                          INCLUDEPATH+=${STAGING_INCDIR}/python2.3 \
                          INCLUDEPATH+=${STAGING_INCDIR} \
                          LIBS+=-L${STAGING_LIBDIR}/python2.3/site-packages \
-                         LIBS+=-L${STAGING_LIBDIR} LIBS+=-lqte LIBS+=-lqpe "
+                         LIBS+=-L${QTDIR}/lib LIBS+=-lqte LIBS+=-lqpe "
 
 do_configure_prepend() {
     echo -e "TEMPLATE=subdirs\nSUBDIRS=qt qtcanvas qttable qtpe\n" >pyqt.pro

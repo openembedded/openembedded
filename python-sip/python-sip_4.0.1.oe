@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 python"
 RDEPENDS = "python-core"
-PR = "r3"
+PR = "ml1"
 
 SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"
