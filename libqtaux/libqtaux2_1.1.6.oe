@@ -1,0 +1,36 @@
+DESCRIPTION = "Qt/Embedded 2 Auxilliary libraries"
+HOMEPAGE = "http://opie.handhelds.org"
+SECTION = "opie/libs"
+PRIORITY = "optional"
+MAINTAINER = "Team Opie <opie@handhelds.org>"
+LICENSE = "GPL"
+
+TAG = "${@'v' + oe.data.getVar('PV',d,1).replace('.', '_')}"
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;tag=${TAG};module=opie/libqtaux"
+S = "${WORKDIR}/libqtaux"
+
+inherit qmake
+
+export OPIEDIR = "${STAGING_LIBDIR}/.."
+
+EXTRA_QMAKEVARS_POST = 'DEFINES+=QWS'
+
+do_compile() {
+	install -d ${STAGING_INCDIR}/opie2
+	for i in `find . -name "*.h"`
+	do
+		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
+	done
+	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+}
+
+# no staging neessary, becaue
+# include files already done during do_compile
+# lib files already done during do_compile
+
+do_install() {
+	oe_libinstall -so -C ${STAGING_LIBDIR} libqtaux2 ${D}/${palmtopdir}/lib
+}
+
+FILES_${PN}=${palmtopdir}/lib
+
