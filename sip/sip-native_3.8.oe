@@ -1,3 +1,0 @@
-inherit native
-include sip_${PV}.oe
-DEPENDS=
