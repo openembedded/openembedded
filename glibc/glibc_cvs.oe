@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/glibc-cvs"
 PV = "2.3.2+cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "GNU C Library"
 LICENSE = "LGPL"
 SECTION = "libs"
@@ -53,7 +53,9 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://${FILESDIR}/arm-no-hwcap.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-memcpy.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0 \
-	   file://${FILESDIR}/arm-machine-gmon.patch;patch=1;pnum=0"
+	   file://${FILESDIR}/arm-machine-gmon.patch;patch=1;pnum=0 \
+	   \
+           file://${FILESDIR}/etc/ld.so.conf"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -187,6 +189,7 @@ do_install() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
+	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
 }
 
 python package_do_split_gconvs () {

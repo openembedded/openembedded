@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-
+PR = "r1"
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -97,7 +97,9 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://${FILESDIR}/arm-longlong.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/arm-machine-gmon.patch;patch=1;pnum=0 \
 	   file://${FILESDIR}/glibc232-gcc34-i386-fixup-attribute.patch;patch=1;pnum=1 \
-	   file://${FILESDIR}/glibc232-gcc34-no-unit-at-a-time.patch;patch=1;pnum=1"
+	   file://${FILESDIR}/glibc232-gcc34-no-unit-at-a-time.patch;patch=1;pnum=1 \
+	   \
+	   file://${FILESDIR}/etc/ld.so.conf"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -232,6 +234,7 @@ do_install() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
+	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
 }
 
 python package_do_split_gconvs () {
