@@ -34,7 +34,7 @@ def beagle_multiline_ppp():
 
 inherit kernel
 
-CMDLINE = "root=/dev/mtdblock/1 mem=32M console=ttySA0 noinitrd"
+CMDLINE    = "root=/dev/mtdblock/1 mem=32M console=ttySA0 noinitrd"
 
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
@@ -54,7 +54,6 @@ module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_sa1100_bi = "below sa1100_bi net_fd usbdcore "
 
 
-module_autoload_sa1100_bi = "sa1100_bi"
 module_autoload_sa1100_pcmcia = "sa1100_pcmcia"
 module_autoload_unix = "unix"
 module_autoload_usb-eth = "usb-eth"
