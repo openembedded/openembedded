@@ -1,9 +1,11 @@
 DESCRIPTION = "Virtual Machine for LucasArts Adventures"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libc libsdl-qpe libmad libvorbis libogg zlib"
+DEPENDS = "virtual/libc libsdl-qpe libmad tremor libogg zlib"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
+			file://${FILESDIR}/sword1.patch;patch=1 \
+			file://${FILESDIR}/tremor.patch;patch=1 "
 
 inherit autotools 
 
@@ -13,7 +15,7 @@ EXTRA_OECONF = "--host=${HOST_SYS} \
 		--disable-alsa \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
 		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \
-		--disable-mpeg2 \
+		--with-mpeg2-prefix=${STAGING_LIBDIR}/.. \
 		--with-mad-prefix=${STAGING_BINDIR}/.. "
 
 do_configure() {
@@ -21,8 +23,8 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" \
-                   DEFINES="-DUNIX -DSCUMM_NEED_ALIGNMENT -DQTOPIA -DUSE_MAD -DUSE_VORBIS -DUSE_ZLIB"
+	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS} -lmpeg2" \
+                   DEFINES="-DUNIX -DSCUMM_NEED_ALIGNMENT -DQTOPIA -DUSE_MAD -DUSE_VORBIS -DUSE_ZLIB -DUSE_MPEG2"
 }
 
 do_install() {
