@@ -7,12 +7,13 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
 PV_append = "${CVSDATE}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
 	   file://fix-ipkg-link.patch;patch=1 \
-	   file://fix-ipkg-tar.patch;patch=1 "
-SRC_URI_append_beagle = " file://fix-ipkg-link-beagle.patch;patch=1 "	   
+	   file://fix-ipkg-tar.patch;patch=1 \
+	   file://ipkg-link-oe.patch;patch=1"
+	   
 S = "${WORKDIR}/ipkg-utils"
 
 INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg-link ipkg.py"
