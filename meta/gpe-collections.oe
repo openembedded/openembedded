@@ -13,10 +13,10 @@ GPE_BASE_DEPENDS = "\
     xprop \
     xhost \
     xrdb \
-    gpe-soundserver"
+    gpe-soundserver \
+    ttf-bitstream-vera"
 
 GPE_BASE_RDEPENDS = "\
-    ttf-bitstream-vera \
     glibc-gconv \
     glibc-gconv-iso8859-1 \
     gdk-pixbuf-loader-png \
@@ -84,3 +84,5 @@ GPE_EXTRA_INSTALL_smallscreen = "minimo linphone-hh"
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
+
+XSERVER ?= "xserver-kdrive-fbdev"
