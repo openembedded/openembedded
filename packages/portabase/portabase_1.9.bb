@@ -5,12 +5,14 @@ LICENSE = "GPL"
 HOMEPAGE = "http://portabase.sourceforge.net/"
 DEPENDS = "metakit beecrypt"
 APPNAME = "portabase"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/portabase/portabase_${PV}.tar.gz \
 	   file://qtopia.patch;patch=1 		\
 	   file://fileselector.patch;patch=1    \
-           file://qtversion.patch;patch=1"
+           file://qtversion.patch;patch=1 \
+           file://qt2310-fontbug.patch;patch=1"
+
 S = "${WORKDIR}/portabase"
 
 inherit palmtop 
