@@ -5,22 +5,17 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 RDEPENDS = "gtk"
 DEPENDS = "gtk+"
 
-inherit pkgconfig
+inherit pkgconfig gpe
 
 SRC_URI = http://gpe.handhelds.org/pub/projects/gpe/source/libgpewidget-${PV}.tar.gz
 
 headers = "init.h render.h errorbox.h smallbox.h pixmaps.h gtkdatecombo.h dirbrowser.h stylus.h picturebutton.h spacing.h translabel.h question.h windows.h gpe-iconlist.h gtksimplemenu.h gpewindowlist.h tray.h popup.h"
 
 do_stage () {
-	install -m 0755 libgpewidget.so.1 ${STAGING_LIBDIR}/
-	ln -s libgpewidget.so.1 ${STAGING_LIBDIR}/libgpewidget.so
+	oe_soinstall libgpewidget.so.1 ${STAGING_LIBDIR}/
 
 	mkdir -p ${STAGING_INCDIR}/gpe
 	for h in ${headers}; do
 		install -m 0644 gpe/$h ${STAGING_INCDIR}/gpe/${h}
 	done
-}
-
-do_install() {
-	oe_runmake 'DESTDIR=${D}' install
 }

@@ -9,7 +9,7 @@ LICENSE = "GPL"
 RDEPENDS = "python"
 
 SRC_URI = "cvs://anoncvs:anoncvs@192.58.209.91/cvs;module=ipkg-utils"
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/ipkg-utils"
 
 inherit distutils
 

@@ -5,7 +5,8 @@ RDEPENDS = "gtk+ libxml2"
 DEPENDS = "virtual/libc libxml2 gtk+"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-SRC_URI = ftp://ftp.gnome.org/pub/GNOME/sources/${PN}/2.0/${P}.tar.bz2
+SRC_URI = ftp://ftp.gnome.org/pub/GNOME/sources/${PN}/2.0/${P}.tar.bz2 \
+	  file://${FILESDIR}/glade-cruft.patch;patch=1;pnum=0
 
 inherit autotools pkgconfig libtool
 
@@ -18,9 +19,7 @@ do_configure_prepend() {
 }
 
 do_stage () {
-	install -m 0755 glade/.libs/${libname} ${STAGING_LIBDIR}/
-	ln -sf ${libname} ${STAGING_LIBDIR}/libglade-2.0.so.2
-	ln -sf ${libname} ${STAGING_LIBDIR}/libglade-2.0.so
+	oe_soinstall glade/.libs/${LIBNAME} ${STAGING_LIBDIR}/
 	install -m 0644 glade/.libs/libglade-2.0.lai ${STAGING_LIBDIR}/libglade-2.0.la
 
 	mkdir -p ${STAGING_INCDIR}/libglade-2.0/glade
