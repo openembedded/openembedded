@@ -4,19 +4,21 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PV = "1.1.5-cvs-${CVSDATE}"
+PR = "r1"
 APPNAME = "sysinfo"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/noncore/settings/sysinfo \
            cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/pics \
-           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps"
-
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/apps \
+           cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/share"
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-# FILES plugins/application/libsysinfo.so* bin/sysinfo apps/Settings/sysinfo.desktop pics/sysinfo
 do_install() {
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
+        install -d ${D}${palmtopdir}/share/sysinfo/
+        install -m 0644 ${WORKDIR}/share/sysinfo/results ${D}${palmtopdir}/share/sysinfo/results
 }
 
