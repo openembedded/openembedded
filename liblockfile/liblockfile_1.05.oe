@@ -18,6 +18,5 @@ do_stage () {
 }
 
 do_install () {
-	install -d ${D}/${includedir}
 	oe_runmake 'ROOT=${D}' INSTGRP='' install
 }

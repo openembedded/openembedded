@@ -1,0 +1,12 @@
+DEPENDS = virtual/libc
+RDEPENDS = libc6
+
+SRC_URI = ${SOURCEFORGE_MIRROR}/lex/flex-2.5.31.tar.bz2 \
+	  file://${FILESDIR}/include.patch;patch=1
+
+inherit autotools
+
+do_stage () {
+	install -m 0644 libfl.a ${STAGING_LIBDIR}/
+	install -m 0644 FlexLexer.h ${STAGING_DIR}/target/include/
+}

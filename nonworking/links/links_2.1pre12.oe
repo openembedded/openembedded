@@ -1,0 +1,13 @@
+DEPENDS = virtual/libc jpeg libpng gpm flex openssl zlib
+RDEPENDS = libc6 libjpeg libpng gpm openssl zlib1g
+
+SRC_URI = http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-2.1pre12.tar.bz2
+S = ${WORKDIR}/${P}
+
+inherit autotools
+
+EXTRA_OECONF = '--enable-javascript --with-libfl --enable-graphics \
+	        --with-ssl=${STAGING_DIR}/target --with-libjpeg \
+	        --without-libtiff --without-svgalib --without-x --with-fb \
+	        --without-directfb --without-pmshell --without-atheos \
+	        --without-x'

@@ -1,0 +1,9 @@
+DEPENDS = virtual/libc openssl
+RDEPENDS = libc6 libssl0
+
+SRC_URI = http://thekonst.net/download/centericq-4.9.7.tar.bz2
+S = ${WORKDIR}/${P}
+
+inherit autotools
+
+EXTRA_OECONF = '--with-ssl --with-openssl=${STAGING_DIR}/target'
