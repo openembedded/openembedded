@@ -87,8 +87,6 @@ do_compile () {
 		${S}/home/httpd/html/Management/upgrade-nomaint.htm
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${UNSLUNG_VARIANT}-${UNSLUNG_VERSION}/ \
 		${S}/home/httpd/html/Management/upgrade.htm
-
-	echo > ${S}/.recovery
 }
 
 do_install () {
