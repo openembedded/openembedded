@@ -3,8 +3,8 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "libsdl-qpe"
-PR = "r1"
+DEPENDS = "libsdl-qpe libsdl-mixer libsdl-image"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
            file://directories.patch;patch=1"
