@@ -85,6 +85,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} \
 		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
+		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
