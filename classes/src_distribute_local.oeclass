@@ -8,6 +8,11 @@ SRC_DIST_LOCAL ?= "move+symlink"
 SRC_DISTRIBUTEDIR ?= "${DEPLOY_DIR}/sources"
 SRC_DISTRIBUTECOMMAND () {
 	s="${SRC}"
+	if [ ! -L "$s" ] && (echo "$s"|grep "^${DL_DIR}"); then
+		:
+	else
+		exit 0;
+	fi
 	mkdir -p ${SRC_DISTRIBUTEDIR}
 	case "${SRC_DIST_LOCAL}" in
 		copy)

@@ -1,0 +1,23 @@
+include conf/licenses.conf
+
+SRC_DISTRIBUTECOMMAND[func] = "1"
+python do_distribute_sources () {
+	import copy
+	l = copy.deepcopy(d)
+	oe.data.update_data(l)
+	license = oe.data.getVar('LICENSE', d, 1)
+	src_distribute_licenses = (oe.data.getVar('SRC_DISTRIBUTE_LICENSES', d, 1) or "").split()
+	if not oe.data.getVar('LICENSE', d, 1) in src_distribute_licenses:
+		oe.note("LICENSE not listed in SRC_DISTRIBUTE_LICENSES, skipping source distribution")
+		return
+	import re
+	for s in (oe.data.getVar('A', d, 1) or "").split():
+		s = re.sub(';.*$', '', s)
+		cmd = oe.data.getVar('SRC_DISTRIBUTECOMMAND', d, 1)
+		if not cmd:
+			raise oe.build.FuncFailed("Unable to distribute sources, SRC_DISTRIBUTECOMMAND not defined")
+		oe.data.setVar('SRC', s, d)
+		oe.build.exec_func('SRC_DISTRIBUTECOMMAND', d)
+}
+
+addtask distribute_sources before do_build after do_fetch
