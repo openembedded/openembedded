@@ -9,7 +9,8 @@ SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/vectoroids/src/vectoroids-${
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer \
+   			LIBS+=-lSDLmain LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
 
 do_configure_prepend() {
         qmake -project vectoroids.pro
