@@ -107,11 +107,11 @@ do_install () {
 		echo "chmod 0664 /var/run/utmp /var/log/wtmp"	>> ${D}/etc/init.d/populate-var.sh
 
 #		rmdir ${D}/var/*
-		chmod 0755 ${D}/etc/init.d/populate-var.sh
-		ln -sf ../init.d/populate-var.sh ${D}/etc/rcS.d/S37populate-var.sh
-		ln -sf /var/run/resolv.conf ${D}/etc/resolv.conf
-		ln -sf /var/run/ld.so.cache ${D}/etc/ld.so.cache
-		ln -sf /proc/mounts ${D}/etc/mtab
+		chmod 0755 ${D}/${sysconfdir}/init.d/populate-var.sh
+		ln -sf ../init.d/populate-var.sh ${D}/${sysconfdir}/rcS.d/S37populate-var.sh
+		ln -sf ${localstatedir}/run/resolv.conf ${D}/${sysconfdir}/resolv.conf
+		ln -sf ${localstatedir}/ld.so.cache ${D}/${sysconfdir}/ld.so.cache
+		ln -sf /proc/mounts ${D}/${sysconfdir}/mtab
 	fi
 }
 
