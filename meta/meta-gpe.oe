@@ -1,7 +1,7 @@
 PACKAGES = gpe gpe-task-base gpe-task-utils gpe-task-pim
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r7"
+PR = "r8"
 
 ALLOW_EMPTY = 1
 
@@ -52,7 +52,10 @@ gpe-task-utils = "\
     gpe-filemanager \
     gpe-what \
     gpe-shield \
-    keylaunch"
+    keylaunch \
+    gpe-mininet \
+    mbmerlin \
+    detect-stylus"
 
 RDEPENDS_gpe-task-utils := "${gpe-task-utils}"
 DEPENDS += " ${gpe-task-utils}"
