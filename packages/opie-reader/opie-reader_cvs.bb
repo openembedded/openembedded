@@ -14,6 +14,7 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
 S = "${WORKDIR}/opie-reader"
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
+PARALLEL_MAKE = ""
 
 inherit opie
 
