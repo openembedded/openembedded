@@ -13,13 +13,23 @@ MOUNT_POINT=/media/card
 SMB_MOUNT=/home/samba/SD_Card
 INSTALL_DIR=Documents/Install_Files
 
+ENABLE_LOG="no"
+LOGFILE="/tmp/sdcontrol.log"
+
+vecho() {
+	stamp="`date +"%d-%m-%y %H:%M:%S"`"
+	echo -e "$1"
+	test "$ENABLE_LOG" = "yes" -a -n "$LOGFILE" && echo -e "$1" | sed "s/\(.*\)/[$stamp]\ \1/">> "$LOGFILE"
+}
+
+
 # import FS mount options from fstab or use defaults
 # if detection fails
 SD_OPTS="`grep "$MOUNT_POINT" /etc/fstab | awk '{print $4}'`" 
 if test -z "$SD_OPTS"
 then
 	SD_OPTS="noatime,sync"
-	echo -e "\nWARNING: Couldn't determine SD mount options from /etc/fstab, using defaults\n"
+	vecho "\nWARNING: Couldn't determine SD mount options from /etc/fstab, using defaults\n"
 fi
 
 # The "quiet" option fails on non-VFAT cards. Nice trick ;)
@@ -79,13 +89,18 @@ kill_task()
 }
 ###### for QPE ######
 
-
 case "$ACTION" in
 'insert')
 	
-	echo "Beginning SD auto-mount..:"
+	
+	vecho "Beginning SD auto-mount..:"
+	
+	ps ax > "$LOGFILE-ps"
+	
 	# Read available partitions from /proc/partitions.
 	OK_PARTS="`cat /proc/partitions |awk '{print $4}'| grep mmcd`"
+	
+	cat /proc/partitions |awk '{print $4}'| grep mmcd > "$LOGFILE-part"	
 	
 	if test "`echo "$OK_PARTS" | wc -l | awk '{print $1}`" -gt 1
 	then
@@ -94,12 +109,12 @@ case "$ACTION" in
 	
 	if test -z "$OK_PARTS"
 	then
-		echo -e "\n\nWARNING: Trying failsafe partition mode\n\n"
+		vecho "\n\nWARNING: Trying failsafe partition mode\n\n"
 		OK_PARTS="mmcda1 mmcda2 mmcda3 mmcda4"
 	fi
 
 	
-	echo "-> Valid SD partitions are: [$OK_PARTS]"
+	vecho "-> Valid SD partitions are: [$OK_PARTS]"
 	
 	# Allow for "#" in fstab.
 	fstab_txt="`cat /etc/fstab | grep -v ^#`"
@@ -107,7 +122,7 @@ case "$ACTION" in
 	cnt=1
 	for part in $OK_PARTS
 	do
-		echo -e "\n* * * * * Working on [/dev/$part] * * * * *\n"
+		vecho "\n* * * * * Working on [/dev/$part] * * * * *\n"
 		# Read the mount-point for this partition from fstab 
 		FS_MOUNT_POINT="`echo "$fstab_txt" | grep "/dev/$part" | awk '{print $2}`"
 
@@ -131,7 +146,7 @@ case "$ACTION" in
 					do
 						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>1 >/dev/null
 						then
-							echo "-> $MOUNT_POINT is reserved by fstab"
+							vecho "-> $MOUNT_POINT is reserved by fstab"
 							found=1
 						fi
 					done
@@ -150,9 +165,9 @@ case "$ACTION" in
 				FS_MOUNT_POINT="$MOUNT_POINT$cnt"
 				let cnt=$cnt+1				
 			fi
-			echo "-> Using mountpoint [$FS_MOUNT_POINT]"
+			vecho "-> Using mountpoint [$FS_MOUNT_POINT]"
 		else
-			echo "-> Using mountpoint [$FS_MOUNT_POINT] from fstab"
+			vecho "-> Using mountpoint [$FS_MOUNT_POINT] from fstab"
 		fi
 
 		! test -d $FS_MOUNT_POINT && mkdir -p $FS_MOUNT_POINT	
@@ -165,24 +180,24 @@ case "$ACTION" in
 			mknod mmcda$DEV_NUM b 60 $DEV_NUM
 		fi
 				
-		echo "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
+		vecho "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
         	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT 2>1 >/dev/null
 		MOUNT_RES=`mount | grep $DEVICE`
 
 
 		if [ "$MOUNT_RES" = "" ]; then
-			echo "-> Trying ext2 mount [$SD_OPTS]..."
+			vecho "-> Trying ext2 mount [$SD_OPTS]..."
 	        	mount $FSTYPE -o $SD_OPTS $DEVICE $FS_MOUNT_POINT
 		else
-			echo "-> VFAT mount was successfull"
+			vecho "-> VFAT mount was successfull"
 		fi
 
 		MOUNT_RES=`mount | grep $DEVICE`
 		if [ "$MOUNT_RES" = "" ]; then
-			echo "-> Trying failsafe mount..."
+			vecho "-> Trying failsafe mount..."
 	        	mount $FSTYPE $DEVICE $FS_MOUNT_POINT
 		else
-			echo "-> EXT2 mount was successfull"			
+			vecho "-> EXT2 mount was successfull"			
 		fi
 
 		# Um what was the function of that?
