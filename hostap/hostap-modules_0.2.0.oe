@@ -16,8 +16,8 @@ do_install() {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/net \
 		   ${D}/lib/modules/${KERNEL_VERSION}/pcmcia \
         	   ${D}/${sysconfdir}/pcmcia
-	install -m 0755 driver/modules/hostap_crypt_wep.o ${D}/lib/modules/${KERNEL_VERSION}/net/
-	install -m 0755 driver/modules/hostap.o ${D}/lib/modules/${KERNEL_VERSION}/net/
-	install -m 0755 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
+	install -m 0644 driver/modules/hostap_crypt_wep.o ${D}/lib/modules/${KERNEL_VERSION}/net/
+	install -m 0644 driver/modules/hostap.o ${D}/lib/modules/${KERNEL_VERSION}/net/
+	install -m 0644 driver/modules/hostap_cs.o ${D}/lib/modules/${KERNEL_VERSION}/pcmcia/
         install -m 0644 ${WORKDIR}/hostap_cs.conf ${D}/${sysconfdir}/pcmcia/hostap_cs.conf
 }
