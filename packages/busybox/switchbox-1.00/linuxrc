@@ -7,14 +7,14 @@ prefroot=
 /bin/mount -t proc proc /proc
 /bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
 
-sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 2>/dev/null | hexdump -n 6 -e '"%02d"'`
+sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 2>/dev/null | /usr/bin/hexdump -n 6 -e '"%02d"'`
 ipaddr=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep ip_addr | sed -e s/ip_addr=//`
 netmask=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep netmask | sed -e s/netmask=//`
 gateway=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep gateway | sed -e s/gateway=//`
 nfsrootloc=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep nfsroot | sed -e s/nfsroot=// | cut -d, -f 1`
 nfsrootopts=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep nfsroot | sed -e s/nfsroot=// | cut -d, -f 2- | sed -e s/\"//g` 
 device=/dev/`/bin/sed -n -e 's/^\(mtd[0-9]*\): .* "FIS directory"/\1/p' /proc/mtd`   
-length=`/bin/dd if=$device bs=2 skip=2048 2>/dev/null | /bin/hexdump -n 4 -e '4/1 "%02X"' $device`
+length=`/bin/dd if=$device bs=2 skip=2048 2>/dev/null | /usr/bin/hexdump -n 4 -e '4/1 "%02X"' $device`
 
 # Determine desired rootfs
 if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/jffs2 ; then
@@ -144,7 +144,7 @@ fi
 # Pivot
 if [ -n "$mounted" ] ; then
     if [ $prefroot = "nfsroot" ] ; then
-	/bin/killall portmap
+	/usr/bin/killall portmap
     fi
     if [ $mounted != "/mnt/jffs2" ] ; then
         sleep 1
@@ -162,7 +162,7 @@ if [ -n "$mounted" ] ; then
 	runboot=/bin/sh
     fi
     /sbin/pivot_root . initrd
-    exec chroot . $runboot  < dev/console > dev/console 2>&1
+    exec /usr/sbin/chroot . $runboot  < dev/console > dev/console 2>&1
 fi
 
 #if [ -z "$mounted" ] ; then

@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://sysconfsetup \
 	   file://kern_header.c"
@@ -28,3 +28,5 @@ do_install() {
 	install -m 0755 ${D}/../sysconfsetup ${D}/${sysconfdir}/init.d/
 	ln  -s /etc/init.d/sysconfsetup ${D}/${sysconfdir}/rcS.d/S39sysconfsetup
 }
+
+FILES_${PN} += "/initrd"

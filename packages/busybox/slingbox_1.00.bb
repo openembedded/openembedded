@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r4"
+PR = "r6"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
@@ -22,7 +22,7 @@ export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 
 PACKAGES = "${PN}"
-FILES_${PN} = "/bin /sbin"
+FILES_${PN} = "/"
 FILES_${PN}-doc = ""
 FILES_${PN}-dev = ""
 FILES_${PN}-locale = ""
