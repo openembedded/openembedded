@@ -1,5 +1,5 @@
 DEPENDS = "xt xi zip-native gtk+ orbit2"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/firefox-${PV}-source.tar.bz2 \
 	file://mozconfig \
@@ -43,7 +43,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/mozilla-firefox.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-firefox.png ${D}${datadir}/pixmaps/
 	rm -f ${D}${libdir}/firefox-${PV}/TestGtkEmbed
-	rm -f ${D}${libdir}/firefox-${PV}/libmozz.so
 }
 
 pkg_postinst_firefox() {
