@@ -1,0 +1,47 @@
+export IMAGE_BASENAME = "opie-image"
+
+#
+# Libraries and Files to get the launcher up and running
+#
+
+OPIE_LIBS = "libqte2 qpf-bitstream-vera-small libqpe1 libopiecore2 libopieui2 libopienet2 libopiepim2 libopiemm2"
+OPIE_LIBS_DEPEND = "qte-for-opie libopie2 qpf-bitstream-vera"
+OPIE_BASE = "opie-qcop opie-quicklauncher opie-taskbar"
+
+#
+# Things for reasonable bootstrap image
+#
+
+OPIE_BASE_APPLETS = "opie-aboutapplet      opie-clockapplet      opie-logoutapplet    opie-suspendapplet \
+		     opie-batteryapplet    opie-homeapplet       opie-multikeyapplet  opie-rotateapplet  \
+		     opie-volumeapplet     opie-clipboardapplet  opie-irdaapplet      opie-restartapplet \
+		     opie-screenshotapplet opie-vtapplet         opie-cardmon"
+
+OPIE_BASE_APPS = "opie-aqpkg opie-console"
+
+OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime"
+
+#
+# Additional things for a standard 16MB distribution
+#
+
+OPIE_PIM = "opie-alarm opie-addressbook opie-datebook opie-textedit opie-todo opie-today"
+
+OPIE_EXTRA_APPLETS = ""
+
+OPIE_EXTRA_APPS = "opie-advancedfm"
+
+OPIE_EXTRA_SETTINGS = ""
+
+#
+# Putting it altogether. Better state IPKG_INSTALL and DEPENDS twice, because library names != package names.
+#
+
+export IPKG_INSTALL = "task-bootstrap ${OPIE_LIBS} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
+                               ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
+
+DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPEND} ${OPIE_BASE} ${OPIE_BASE_APPLETS}  ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} \
+                               ${OPIE_PIM}  ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS}"
+
+
+inherit image_ipk
