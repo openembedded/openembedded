@@ -19,8 +19,10 @@ SRC_URI = ${DEBIAN_MIRROR}/main/libt/${PN}/${PN}_${PV}.orig.tar.gz \
 S = "${WORKDIR}/${P}"
 
 EXTRA_OECONF = --disable-ltdl-install
-do_binary () {
+EXTRA_OEMAKE =
+do_compile () {
 	set -e
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC CPP
 	./bootstrap
 	oe_runconf
 }
