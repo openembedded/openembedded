@@ -1,0 +1,30 @@
+DESCRIPTION = "Kphone/Pi is a 'Voice Over Internet' phone which uses the Session Initiation Protocol (SIP)."
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS ="virtual/libqpe openssl"
+
+# if someone can then please mirror it somewhere
+SRC_URI = "http://www.hrw.one.pl/_pliki/oe/kphone_pi${PV}.tar.gz "
+
+S = "${WORKDIR}/kphone_pi"
+
+inherit palmtop
+
+EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, OBJECTS_DIR=obj/ MOC_DIR=moc/ TARGET=${S}/dest/kppi HEADERS-=kphone/qptrlisth HEADERS+=kphone/qptrlist.h"
+QMAKE_PROFILES= "kphone.pro"
+
+do_configure_prepend() {
+	mkdir ${S}/dest/
+}
+
+do_install() {
+    install -d ${D}/${palmtopdir}/bin \
+               ${D}/${palmtopdir}/apps/Applications \
+               ${D}/${palmtopdir}/pics/kphone/ 
+
+    install -m 0644 ${S}/icons/kphone/*.png ${D}/${palmtopdir}/pics/kphone/
+    install -m 0644 ${S}/kphone.desktop ${D}/${palmtopdir}/apps/Applications/
+
+    install -m 0755 ${S}/dest/kppi ${D}/${palmtopdir}/bin/kppi
+}
