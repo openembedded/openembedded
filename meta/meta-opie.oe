@@ -200,6 +200,8 @@ pipeman \
 powermanga \
 prboom \
 puzz-le \
+qmatrix \
+qfish2 \
 rott \
 scummvm \
 shisensho \
@@ -216,10 +218,6 @@ zmerlin \
 zrev7 \
 zsubhunt \
 ztappy "
-task-qpe-games_append_corgi = "qmatrix qfish2 "
-task-qpe-games_append_shepherd = "qmatrix qfish2 "
-task-qpe-games_append_husky = "qmatrix qfish2 "
-task-qpe-games_append_tosa = "qmatrix qfish2 "
 RDEPENDS_task-qpe-games = "${task-qpe-games}"
 DEPENDS += " ${task-qpe-games}"
 
