@@ -3,6 +3,8 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
 
 PACKAGE_ARCH = "ipaqsa"
+KERNEL_CCSUFFIX = "-3.3.3"
+COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(oe.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 
@@ -23,7 +25,7 @@ HHV     = "${@oe.data.getVar('PV',d,1).split('-')[3].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(oe.data.getVar('K_MAJOR',d,1)) * 100000000 + int(oe.data.getVar('K_MINOR',d,1)) * 1000000 + int(oe.data.getVar('K_MICRO',d,1)) * 10000 + int(oe.data.getVar('RMKV',d,1)) * 1000 + int(oe.data.getVar('PXAV',d,1)) * 100 + float(oe.data.getVar('HHV',d,1)))}"
 
-do_configure_prepend() {
+do_configure() {
 	oe_runmake ipaqsa_config
         (echo N; echo m; echo N) | oe_runmake oldconfig
 }

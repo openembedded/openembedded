@@ -3,6 +3,8 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
 
 PACKAGE_ARCH = "ipaqpxa"
+KERNEL_CCSUFFIX = "-3.3.3"
+COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=linux/kernel;tag=${@'K' + oe.data.getVar('PV',d,1).replace('.', '-')} \
 	   file://${FILESDIR}/linux-2.4-no-short-loads.patch;patch=1 \
@@ -23,5 +25,4 @@ KERNEL_PRIORITY = "${@'%d' % (int(oe.data.getVar('K_MAJOR',d,1)) * 100000000 + i
 
 do_configure_prepend() {
 	oe_runmake ipaqpxa_config
-        yes '' | oe_runmake oldconfig
 }
