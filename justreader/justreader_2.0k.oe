@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/justreader/justreader_${PV}.tgz"
 S = "${WORKDIR}/TextReader2"
@@ -18,7 +19,9 @@ do_configure_prepend() {
 
 do_install() {
 	install -d ${D}/${palmtopdir}/bin \
-		   ${D}/${palmtopdir}/pics \
+		   ${D}/${palmtopdir}/pics/${PN}/ \
 		   ${D}/${palmtopdir}/apps/Applications
-	cp -dfR apps bin pics ${D}/${palmtopdir}/
+	install -m 0644 apps/Applications/justreader.desktop ${D}/${palmtopdir}/apps/Applications/
+	install -m 0755 bin/justreader ${D}/${palmtopdir}/bin/
+	install -m 0644 pics/* ${D}/${palmtopdir}/pics/justreader/
 }
