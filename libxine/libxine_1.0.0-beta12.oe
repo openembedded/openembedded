@@ -9,7 +9,7 @@ PRIORITY = "optional"
 DEPENDS = "zlib libogg tremor libmad"
 PR = "r4"
 
-inherit autotools pkgconfig binconfig
+inherit autotools pkgconfig binconfig gettext
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-1-beta12.tar.gz \
 	   file://full.patch;patch=1 \
@@ -31,7 +31,7 @@ do_configure() {
 	      --enable-shared --disable-static --prefix=${prefix} \
 	      --with-zlib-path=${STAGING_DIR}/${HOST_SYS} --with-vorbis-prefix=${STAGING_DIR}/${HOST_SYS} \
 	      --disable-oggtest --with-ogg-prefix=${STAGING_DIR}/${HOST_SYS} --without-x \
-	--disable-iconv --disable-nls --without-arts --without-sdl \
+	--disable-iconv --without-arts --without-sdl \
 	--disable-aalib
 }
 
