@@ -1,7 +1,7 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "opie/multimedia"
 DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
@@ -14,12 +14,11 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms
            file://gcc34.patch;patch=1 \
            file://gcc34-enum.patch;patch=1 \
            file://xmms.png"
-
 S = "${WORKDIR}/xmms-embedded"
-
 
 inherit palmtop
 
+EXTRA_QMAKEVARS_POST += "CONFIG-=thread LIBS+=-lpthread LIBS+=-Wl,-rpath-link,${STAGING_LIBDIR}"
 QMAKE_PROFILES = "xmms-e.pro"
 export OE_QMAKE_LINK="${CXX}"
 
