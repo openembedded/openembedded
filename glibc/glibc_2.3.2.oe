@@ -1,8 +1,9 @@
-PR = "r3"
 DESCRIPTION = "GNU C Library"
+HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
+PR = "r4"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -47,16 +48,6 @@ FILES_glibc-pcprofile = "/lib/libpcprofile.so"
 FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
 
-#	   file://noinfo.patch;patch=1 \
-#	   file://ldconfig.patch;patch=1;pnum=0 \
-
-#	 file://dyn-ldconfig.diff;patch=1;pnum=0
-#	  file://glibcbug.patch;patch=1;pnum=0
-#	  file://nptl-pthread-once.patch;patch=1;pnum=1
-#	  file://50_glibc232-hppa-full-nptl-2003-10-22.patch;patch=1;pnum=1
-#	  file://alpha-crti.patch;patch=1;pnum=1
-#	  file://glibc-make-check-perms.patch;patch=1;pnum=0
-# This patch is needed for builds against recent 2.5/2.6 kernel headers:
 SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
 	   file://noinfo.patch;patch=1 \
