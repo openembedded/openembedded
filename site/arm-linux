@@ -345,3 +345,9 @@ rsync_cv_REPLACE_INET_ATON=${rsync_cv_REPLACE_INET_ATON=no}
 
 # sudo
 sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv_va_val_copy=${ac_cv_va_val_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
