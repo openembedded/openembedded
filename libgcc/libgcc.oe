@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "required"
 DEPENDS = "virtual/libc"
 RDEPENDS = "libc6"
-PV = "${@os.popen("%s -dumpversion" % oe.data.getVar("CC",d,1)).readline().strip()}
+PV = "${@os.popen("%s -dumpversion" % oe.data.getVar("CC",d,1)).readline().strip()}"
 
 do_install() {
 	install -d ${D}/${libdir}/
