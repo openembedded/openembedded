@@ -1,13 +1,13 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = " \
-           file://etc/nsswitch.conf \
-           file://etc/motd \
-           file://etc/inputrc \
-           file://etc/host.conf \
+           file://nsswitch.conf \
+           file://motd \
+           file://inputrc \
+           file://host.conf \
            file://profile \
            file://fstab \
 	   file://filesystems \
@@ -16,23 +16,6 @@ SRC_URI = " \
            file://usbd \
            file://share/dot.bashrc \
            file://share/dot.profile \
-           file://share/info.dir \
-           file://share/motd.md5sums \
-           file://debian/FAQ \
-           file://debian/directory-list \
-           file://debian/control \
-           file://debian/1777-dirs \
-           file://debian/rules \
-           file://debian/conffiles \
-           file://debian/changelog \
-           file://debian/copyright.in \
-           file://debian/postinst \
-           file://debian/README.FHS \
-           file://debian/2775-dirs \
-           file://debian/preinst.in \
-           file://debian/remove-base \
-           file://debian/README.base \
-           file://debian/current-md5sums \
            file://licenses/BSD \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
@@ -41,100 +24,107 @@ SRC_URI = " \
 S = "${WORKDIR}"
 
 docdir_append = "/${P}"
+dirs1777 = "/tmp ${localstatedir}/lock ${localstatedir}/tmp"
+dirs2775 = "/home ${prefix}/src ${localstatedir}/local"
+dirs755 = "/bin /boot /dev ${sysconfdir} ${sysconfdir}/default \
+	   ${sysconfdir}/skel /lib /mnt /proc /root /sbin \
+	   ${prefix} ${bindir} ${docdir} /usr/games ${includedir} \
+	   ${libdir} ${sbindir} ${datadir} \
+	   ${datadir}/common-licenses ${datadir}/dict ${infodir} \
+	   ${mandir} ${datadir}/misc ${localstatedir} \
+	   ${localstatedir}/backups ${localstatedir}/cache \
+	   ${localstatedir}/lib /sys ${localstatedir}/lib/misc \
+	   ${localstatedir}/lock/subsys ${localstatedir}/log \
+	   ${localstatedir}/run ${localstatedir}/spool \
+	   /mnt /mnt/card /mnt/cf /mnt/net /mnt/ram"
+conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
+	     ${sysconfdir}/inputrc ${sysconfdir}/issue /${sysconfdir}/issue.net \
+	     ${sysconfdir}/nsswitch.conf ${sysconfdir}/profile \
+	     ${sysconfdir}/default"
+
+hostname = "openembedded"
+hostname_ramses = "MNCI"
 
 do_install () {
-    install -d ${D}/${docdir}
-    install -d ${D}${datadir}/${PN}
-    install -m 644 debian/changelog debian/FAQ debian/README.FHS debian/README.base ${D}/${docdir}/
-    cat ${S}/debian/copyright.in | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}/${docdir}/copyright
-    install -m 755 debian/remove-base ${D}/${docdir}
-    ( cd ${D} && install -d `cat ${S}/debian/directory-list` )
-    install -d ${D}/sys
-
-    install -p -m 644 share/* ${D}${datadir}/base-files
-    install -p -m 644 licenses/* ${D}${datadir}/common-licenses
-    ln -s LGPL-2.1 ${D}${datadir}/common-licenses/LGPL
-    ln -s GPL-2    ${D}${datadir}/common-licenses/GPL
-
-    cat share/info.dir | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/info.dir
-    gzip -9 ${D}/${docdir}/changelog
-    cd ${D} && chmod 755  `find . -type d`
-    cd ${D} && chmod 1777 `cat ${S}/debian/1777-dirs`
-    cd ${D} && chmod 2775 `cat ${S}/debian/2775-dirs`
-
-    install -d ${D}/${sysconfdir}/default
-    install -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
-    install -m 0644 ${WORKDIR}/filesystems ${D}${sysconfdir}/filesystems
-    install -m 0644 ${WORKDIR}/usbd ${D}/${sysconfdir}/default/usbd
-    [ -z "${MACHINE}" ] && echo "openembedded" >${D}/${sysconfdir}/hostname || echo ${MACHINE} >${D}/${sysconfdir}/hostname
-    install -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
-    install -m 0644 ${WORKDIR}/issue ${D}/${sysconfdir}/issue
-    install -m 0644 ${WORKDIR}/issue.net ${D}/${sysconfdir}/issue.net
-    cat ${WORKDIR}/etc/motd | sed -e "s&#OSNAME#&${TARGET_OS}&g" > ${D}${datadir}/base-files/motd
-    for f in inputrc nsswitch.conf host.conf
-    do
-        install -m 0644 ${WORKDIR}/etc/$f ${D}/${sysconfdir}/
-    done
-
-    install -m 0755 ${D}/usr/share/base-files/dot.profile ${D}/root/.profile
-
-    # debian ships these, but they are useless to us
-    rmdir ${D}/var/lib/dpkg \
-          ${D}/var/lib/misc \
-          ${D}/var/backups  \
-          ${D}/usr/src      \
-          ${D}/usr/info     \
-          ${D}/usr/games    \
-          ${D}/usr/doc      \
-          ${D}/usr/include  \
-          ${D}/usr/share/dict
-    rm -r ${D}/usr/share/base-files
-
-    if grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab; then
-        # /var is in a ramdisk
-        install -d ${D}/etc/init.d ${D}/etc/rcS.d
-
-	for d in `(cd ${D}/var; ls)`; do
-		echo "mkdir -p /var/$d" >> ${D}/etc/init.d/populate-var
-		echo "chmod --reference=${D}/var/$d /var/$d" >> ${D}/etc/init.d/populate-var.sh
+	for d in ${dirs755}; do
+		install -m 0755 -d ${D}/$d
 	done
-	
-	echo "mkdir -p /var/lock/subsys" 		>> ${D}/etc/init.d/populate-var.sh
-	echo "chmod 755 /var/lock/subsys" 		>> ${D}/etc/init.d/populate-var.sh
-	echo ">/var/run/utmp" 				>> ${D}/etc/init.d/populate-var.sh
-	echo "touch /var/log/wtmp" 			>> ${D}/etc/init.d/populate-var.sh
-	echo "chmod 0664 /var/run/utmp /var/log/wtmp"	>> ${D}/etc/init.d/populate-var.sh
-	echo "rm -f /var/run/utmpx"			>> ${D}/etc/init.d/populate-var.sh
+	for d in ${dirs1777}; do
+		install -m 1777 -d ${D}/$d
+	done
+	for d in ${dirs2775}; do
+		install -m 2755 -d ${D}/$d
+	done
 
-        rmdir ${D}/var/*
-        chmod a+x ${D}/etc/init.d/populate-var.sh
-        ln -s ../init.d/populate-var.sh ${D}/etc/rcS.d/S37populate-var.sh
-        ln -s /var/run/resolv.conf ${D}/etc/resolv.conf
-        ln -s /var/run/ld.so.cache ${D}/etc/ld.so.cache
-        ln -s /proc/mounts ${D}/etc/mtab
-    fi
+	if [ -z "${MACHINE}" -a "${hostname}" == "openembedded" ]; then
+		echo ${MACHINE} > ${D}/${sysconfdir}/hostname
+	else
+		echo ${hostname} > ${D}/${sysconfdir}/hostname
+	fi
 
-    #
-    # populate some common mountpoints
-    #
-    install -m 0755 -d                              ${D}/mnt
-    install -m 0755 -d                              ${D}/mnt/card
-    install -m 0755 -d                              ${D}/mnt/cf
-    install -m 0755 -d                              ${D}/mnt/net
-    install -m 0755 -d                              ${D}/mnt/ram
+	install -m 0644 ${WORKDIR}/fstab ${D}/${sysconfdir}/fstab
+	install -m 0644 ${WORKDIR}/filesystems ${D}${sysconfdir}/filesystems
+	install -m 0644 ${WORKDIR}/usbd ${D}/${sysconfdir}/default/usbd
+	install -m 0644 ${WORKDIR}/profile ${D}/${sysconfdir}/profile
+	install -m 0644 ${WORKDIR}/issue ${D}/${sysconfdir}/issue
+	install -m 0644 ${WORKDIR}/issue.net ${D}/${sysconfdir}/issue.net
+	install -m 0755 ${WORKDIR}/share/dot.profile ${D}/${sysconfdir}/skel/.profile
+	install -m 0755 ${WORKDIR}/share/dot.bashrc ${D}/${sysconfdir}/skel/.bashrc
+	install -m 0644 ${WORKDIR}/inputrc ${D}/${sysconfdir}/inputrc
+	install -m 0644 ${WORKDIR}/nsswitch.conf ${D}/${sysconfdir}/nsswitch.conf
+	install -m 0644 ${WORKDIR}/host.conf ${D}/${sysconfdir}/host.conf
+	install -m 0644 ${WORKDIR}/motd ${D}/${sysconfdir}/motd
+
+	for license in BSD GPL-2 LGPL-2 LGPL-2.1 Artistic; do
+		install -m 0644 ${WORKDIR}/licenses/$license ${D}/${datadir}/common-licenses/
+	done
+
+	if (grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}/etc/fstab); then
+		# /var is in a ramdisk
+		install -d ${D}/etc/init.d ${D}/etc/rcS.d
+		for d in ${dirs775}; do
+			if (echo $d|grep -q "^${localstatedir}"); then
+				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
+				echo "chmod 0775 $d" > ${D}/etc/init.d/populate-var.sh
+			fi
+		done
+		for d in ${dirs1777}; do
+			if (echo $d|grep -q "^${localstatedir}"); then
+				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
+				echo "chmod 1777 $d" > ${D}/etc/init.d/populate-var.sh
+			fi
+		done
+		for d in ${dirs2775}; do
+			if (echo $d|grep -q "^${localstatedir}"); then
+				echo "mkdir -p $d" > ${D}/etc/init.d/populate-var.sh
+				echo "chmod 2775 $d" > ${D}/etc/init.d/populate-var.sh
+			fi
+		done
+
+
+		echo ">/var/run/utmp" >> ${D}/etc/init.d/populate-var.sh
+		echo ">/var/log/wtmp" >> ${D}/etc/init.d/populate-var.sh
+		echo "chmod 0664 /var/run/utmp /var/log/wtmp"	>> ${D}/etc/init.d/populate-var.sh
+
+#		rmdir ${D}/var/*
+		chmod 0755 ${D}/etc/init.d/populate-var.sh
+		ln -sf ../init.d/populate-var.sh ${D}/etc/rcS.d/S37populate-var.sh
+		ln -sf /var/run/resolv.conf ${D}/etc/resolv.conf
+		ln -sf /var/run/ld.so.cache ${D}/etc/ld.so.cache
+		ln -sf /proc/mounts ${D}/etc/mtab
+	fi
 }
 
 
 do_install_append_ramses () {
-    echo "MNCI" >${D}/${sysconfdir}/hostname
-    rmdir ${D}/tmp
-    mkdir -p ${D}/var/tmp
-    ln -s var/tmp ${D}/tmp
+	rmdir ${D}/tmp
+	mkdir -p ${D}/var/tmp
+	ln -s var/tmp ${D}/tmp
 }
 
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
-FILES_${PN}-doc = "/usr/share/doc /usr/share/common-licenses"
+FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"
 
 
 # Unslung distribution specific packages follow ...
