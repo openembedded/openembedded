@@ -172,14 +172,12 @@ CONFIG_BINFMT_ELF=y
 CONFIG_PM=y
 CONFIG_APM=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="noinitrd root=/dev/mtdblock/1 init=/linuxrc mem=27M console=ttySA0"
+CONFIG_CMDLINE="root=/dev/mtdblock/1 mem=27M console=ttySA0 noinitrd"
 CONFIG_LEDS=y
 CONFIG_LEDS_TIMER=y
 # CONFIG_LEDS_CPU is not set
 CONFIG_ALIGNMENT_TRAP=y
 CONFIG_PREEMPT=y
-# CONFIG_PREEMPT_TIMES is not set
-# CONFIG_LOCK_BREAK is not set
 
 #
 # Parallel port support
@@ -699,7 +697,7 @@ CONFIG_DEVFS_MOUNT=y
 # CONFIG_QNX4FS_FS is not set
 # CONFIG_QNX4FS_RW is not set
 # CONFIG_ROMFS_FS is not set
-# CONFIG_EXT2_FS is not set
+CONFIG_EXT2_FS=m
 # CONFIG_SYSV_FS is not set
 # CONFIG_UDF_FS is not set
 # CONFIG_UDF_RW is not set
