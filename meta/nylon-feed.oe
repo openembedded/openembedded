@@ -1,0 +1,72 @@
+DEPENDS = " \
+base-files \
+bash \
+bridge-utils \
+busybox \
+db3 \
+dhcp-forwarder \
+dhcp \
+gdb \
+glib-2.0 \
+glibc \
+gmp \
+gnupg \
+hostap-modules \
+hostap-utils \
+hostap-daemon \
+hotplug \
+initscripts \
+iperf \
+ipkg \
+iproute2 \
+iptables \
+virtual/kernel \
+less \
+libmail-sendmail-perl \
+libnetserver-generic-perl \
+libpcap \
+lsof \
+lzo \
+maradns \
+mc \
+mobilemesh \
+modutils \
+mtd \
+nano \
+ncurses \
+netbase \
+netperf \
+ntp \
+openssh \
+openssl \
+openvpn \
+openswan \
+perl \
+ppp \
+rp-pppoe \
+prism54-module \
+prism54-firmware \
+stunnel \
+sysvinit \
+tcpdump \
+tinc \
+unik-olsrd \
+vtun \
+wireless-tools \
+zlib \
+"
+
+# ksymoops / binutils
+# wlan-ng
+# madwifi-modules \
+# prism54 cvs
+# strace \
+
+# egrep -i Pattern matched against "$Section $Package-Name"
+export FEED_PATTERN = "^locale-|^glibc-|^net|^libs|^base"
+export FEED_NAME = "nylon-${MACHINE}"
+
+# egrep -i regexp matching package name
+export EXCLUDE_FROM_FEED = ""
+
+inherit split_ipk_feeds
