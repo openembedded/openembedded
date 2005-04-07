@@ -63,7 +63,6 @@ if ! [ -z "$DO_FSTAB" ]; then
 fi
 
 # Get mount-point for device name, if device name is given
-# Why would we need that? A possible device would have been found in the for-loop.
 if echo "$MOUNT_POINT" | grep -q "^${DEVICE}"; then
 	MOUNT_POINT_TEMP=`echo $MOUNT_POINT | sed -e "s/\//\\\\\\\\\//g"`
 	NEW_MOUNT_POINT=`awk "/$MOUNT_POINT_TEMP/ {print "'$2'"}" /etc/fstab`

@@ -7,6 +7,8 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 
+PR = "2"
+
 SRC_URI = "file://mount.unionroot \
 	   file://umount.unionroot"
 
