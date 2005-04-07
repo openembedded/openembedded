@@ -7,7 +7,7 @@ PROVIDES = "gconf"
 RPROVIDES = "gconf"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gconf;tag=gconf-dbus-2-6 \
            file://gconf-dbus-update.patch;patch=1;pnum=0 \
