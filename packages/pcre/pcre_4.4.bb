@@ -25,10 +25,14 @@ do_compile () {
 }
 
 do_stage () {
-	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
 	oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
+	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
 	install -m 0644 pcre.h ${STAGING_INCDIR}/
 	install -m 0644 pcreposix.h ${STAGING_INCDIR}/
+
+	# pcreposix linked originally to the libpcre in it's working directory. That messed
+	# the .la file up. I fix this manually here:
+	sed -i 's:${S}:${STAGING_LIBDIR}:' ${STAGING_LIBDIR}/libpcreposix.la
 }
 
 FILES_${PN} = "${libdir}/lib*.so*"
