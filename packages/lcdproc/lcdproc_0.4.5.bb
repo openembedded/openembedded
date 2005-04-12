@@ -1,11 +1,13 @@
-SECTION = "base"
 DESCRIPTION = "LCDproc is a client/Server suite to drive all kinds of LCD (-like) devices. The client \
 shipped with this package can be used to acquire various kinds of system stats."
 HOMEPAGE = "http://lcdproc.org"
-PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
-DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'curses,text').find('curses') != -1) and 'ncurses' or ''}"
 LICENSE ="GPL"
+PRIORITY = "optional"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+SECTION = "utils"
+
+DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'curses,text').find('curses') != -1) and 'ncurses' or ''}"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/lcdproc-${PV}.tar.gz"
 
 inherit autotools
@@ -21,9 +23,7 @@ do_install () {
 	install -D -m 0755 scripts/init-LCDd.debian ${D}${sysconfdir}/init.d/lcdd
 	# prevent lcdproc from starting if no SCREENS are set.
 	# will be fixed in next upstream release
-	cat scripts/init-lcdproc.debian | sed -e 's/C X//' | sed -e 's/case/[ -n $SCREENS ] || exit 0
-
-case/' > ${D}${sysconfdir}/init.d/lcdproc
+	cat scripts/init-lcdproc.debian | sed -e 's/C X//' | sed -e 's/case/[ -n $SCREENS ] || exit 0\n\ncase/' > ${D}${sysconfdir}/init.d/lcdproc
 	chmod 0755 ${D}${sysconfdir}/init.d/lcdproc
 
 	# configuration files

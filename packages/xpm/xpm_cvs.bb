@@ -7,8 +7,7 @@ DEPENDS = "xproto x11"
 DESCRIPTION = "X Pixmap library."
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xpm \
-	   file://autofoo.patch;patch=1"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xpm"
 S = "${WORKDIR}/Xpm"
 
 inherit autotools pkgconfig 

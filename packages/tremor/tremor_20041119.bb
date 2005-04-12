@@ -7,6 +7,8 @@ LICENSE = "BSD"
 CVSDATE = "${PV}"
 PR = "r1"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http"
 
 S = "${WORKDIR}/Tremor"

@@ -13,8 +13,8 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.ta
 	   file://try-esdsink.patch;patch=1"
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts \
-                --disable-artsc --disable-libfame --disable-sdl --disable-shout2 \
-		--disable-gnome_vfs --disable-gconf --disable-libcaca"
+                --disable-artsc --disable-jack  --disable-libfame --disable-sdl --disable-shout2 \
+		--disable-gnome_vfs --disable-gconf --disable-libcaca  --disable-directfb "
 
 inherit autotools pkgconfig gconf
 

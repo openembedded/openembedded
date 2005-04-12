@@ -1,12 +1,13 @@
 LICENSE = GPL
-# libxine OE build file
-# Modified by Advanced Micro Devices, Inc.
-
 DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "zlib libogg libvorbis libmad"
+DEPENDS = "zlib libogg tremor libmad esound-gpe"
+PROVIDES = "virtual/libxine"
+PR = "r1"
+
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig gettext
 
@@ -14,7 +15,10 @@ S = "${WORKDIR}/xine-lib-1-rc5"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-1-rc5.tar.gz \
 	file://cpu.patch;patch=1 \
-	file://configure.patch;patch=1"
+	file://configure.patch;patch=1 \
+	file://no-caca-no-aalib.patch;patch=1 \
+	file://libxine-tremor-autoconf.patch;patch=1 \
+	file://libxine-libvorbis.patch;patch=1"
 
 SOV = "1.0.6"
 
@@ -31,7 +35,6 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-altivec --disable-vis --disable-mlib \
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \
-	--disable-aalib \
 	--without-v4l --without-arts --without-sdl"
 			      
 do_compile() {
@@ -55,10 +58,14 @@ do_stage() {
 		cp ${S}/$file ${STAGING_INCDIR}/xine/`basename $file`
 	done
 
+	install -m 0644 ${S}/m4/xine.m4 ${STAGING_DATADIR}/aclocal/
+
 	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }
 
 python populate_packages_prepend () {
+	bb.data.setVar('PKG_libxine', 'libxine', d)
+
 	plugindir = bb.data.expand('${libdir}/xine/plugins/1.0.0', d)
 	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s')
 

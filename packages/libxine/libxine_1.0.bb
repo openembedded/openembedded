@@ -1,36 +1,12 @@
 LICENSE = GPL
-# libxine OE build file
-# Modified by Advanced Micro Devices, Inc.
-
-#FIXME: libxine doesn't build when X11 has been built before:
-#| In file included from video_out_dxr3.c:55:
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:16: error: parse error before "Bool"
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:17: error: parse error before '*' token
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:20: warning: type defaults to `int' in declaration of 
-#`XineramaQueryExtension'
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:20: warning: data definition has no type or storage class
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:22: error: parse error before "XineramaQueryVersion"
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:23: error: parse error before '*' token
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:26: warning: type defaults to `int' in declaration of 
-#`XineramaQueryVersion'
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:26: warning: data definition has no type or storage class
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: error: parse error before "XineramaIsActive"
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: error: parse error before '*' token
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: warning: type defaults to `int' in declaration of 
-#`XineramaIsActive'
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:28: warning: data definition has no type or storage class
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/X11/extensions/Xinerama.h:41: error: parse error before '*' token
-#| In file included from /local/pkg/oe/collie/tmp/staging/arm-linux/include/inttypes.h:28,
-#|                  from ../../src/xine-engine/xine_internal.h:31,
-#|                  from video_out_dxr3.c:65:
-#| /local/pkg/oe/collie/tmp/staging/arm-linux/include/stdint.h:49: error: syntax error before "typedef"
 
 DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "zlib libogg libvorbis libmad"
+DEPENDS = "zlib libogg tremor libmad esound-gpe"
 PROVIDES = "virtual/libxine"
+PR = "r1"
 
 inherit autotools pkgconfig gettext
 
@@ -38,7 +14,13 @@ S = "${WORKDIR}/xine-lib-${PV}"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.gz \
 	file://cpu-${PV}.patch;patch=1 \
-	file://configure-${PV}.patch;patch=1"
+	file://configure-${PV}.patch;patch=1 \
+	file://libxine-tremor-autoconf.patch;patch=1 \
+	file://libxine-libvorbis.patch;patch=1 \
+	file://libxine-ffmpeg-enable-arm.patch;patch=1 \
+	file://no-caca-no-aalib.patch;patch=1 \
+	file://dont-have-xv.patch;patch=1 \
+	file://restore-esd.patch;patch=1"
 
 SOV = "1.0.7"
 
@@ -53,10 +35,8 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-oggtest \
 	--with-ogg-prefix=${STAGING_DIR}/${HOST_SYS} \
 	--disable-altivec --disable-vis --disable-mlib \
-	--enable-shared --disable-static \
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \
-	--disable-aalib --with-xv-path=${STAGING_LIBDIR} \
 	--without-v4l --without-arts --without-sdl"
 			      
 do_compile() {
@@ -97,6 +77,8 @@ do_stage() {
 }
 
 python populate_packages_prepend () {
+	bb.data.setVar('PKG_libxine', 'libxine', d)
+
 	plugindir = bb.data.expand('${libdir}/xine/plugins/1.0.0', d)
 	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s', extra_depends='' )
 
