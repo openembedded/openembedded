@@ -1,5 +1,5 @@
 DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
-SECTION = "net"
+SECTION = "network"
 PRIORITY = "optional"
 MAINTAINER = "Jose Bernardo Silva <jbs@bandos.homelinux.com> \
 		Robert Anderson <rea@sr.unh.edu> \

@@ -3,7 +3,7 @@ DESCRIPTION = "whois is an improved whois client"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://www.linux.it/~md/software/"
-SECTION = "net"
+SECTION = "network"
 
 def whois_intl(bb, d):
 	# FIXME: This is ugly.. we already have the virtual for this,
