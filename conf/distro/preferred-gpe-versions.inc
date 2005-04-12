@@ -4,9 +4,9 @@
 
 #work around some breakages
 CVSDATE_xserver-kdrive=20050207
-#CVSDATE_minimo=20050401
 CVSDATE_cairo=20050330
 CVSDATE_xext=20050222
+CVSDATE_libsvg-cairo=20050330
 
 #set some preferred providers:
 PREFERRED_PROVIDER_gconf=gconf-dbus
