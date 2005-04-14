@@ -13,3 +13,4 @@ INITSCRIPT_PARAMS = "defaults 99"
 
 SRC_URI += " file://source-xsession-scripts.patch;patch=1 \
 	     file://collie-suspend-hack.patch;patch=1"
+SRC_URI_append_ramses = " file://ramses.patch;patch=1"

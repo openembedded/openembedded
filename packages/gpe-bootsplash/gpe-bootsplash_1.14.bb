@@ -8,6 +8,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI += "file://splash-p.svg file://splash-l.svg"
+SRC_URI_append_ramses = " file://ramses.patch;patch=1"
 
 FILES_${PN} += "${datadir}/gpe"
 
