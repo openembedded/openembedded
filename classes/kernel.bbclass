@@ -62,13 +62,23 @@ kernel_do_compile() {
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
-	install -d ${STAGING_KERNEL_DIR}/include/{$ASMDIR,asm-generic,linux,net,pcmcia}
-	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
-	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
+
+	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
 	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+
+	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
+
+	mkdir -p ${STAGING_KERNEL_DIR}/include/linux
+	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
+
+	mkdir -p ${STAGING_KERNEL_DIR}/include/net
 	cp -fR include/net/* ${STAGING_KERNEL_DIR}/include/net/
+
+	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
+
 	install -m 0644 .config ${STAGING_KERNEL_DIR}/config-${PV}${KERNEL_LOCALVERSION}
 	ln -sf config-${PV}${KERNEL_LOCALVERSION} ${STAGING_KERNEL_DIR}/.config
 	ln -sf config-${PV}${KERNEL_LOCALVERSION} ${STAGING_KERNEL_DIR}/kernel-config
