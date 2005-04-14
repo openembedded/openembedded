@@ -92,9 +92,11 @@ OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-sec
 #
 
 OPIE_DEPENDS_24  = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
-                    qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix"
+                    qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
+                    opie-irc "
 OPIE_RDEPENDS_24 = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
-                    qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix"
+                    qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
+                    opie-irc "
 
 #
 #
