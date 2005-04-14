@@ -8,7 +8,7 @@ inherit gnome pkgconfig
 
 DEPENDS = "libxml2 gconf dbus bzip2 gnome-mime-data zlib samba"
 
-SRC_URI = "http://ftp.imendio.com/pub/extra/gnome-vfs-dbus/gnome-vfs-dbus-2.8.4.4.tar.gz \
+SRC_URI = "http://ftp.imendio.com/pub/extra/${PN}/${PN}-${PV}.tar.gz \
            file://gconftool-lossage.patch;patch=1;pnum=1"
 
 EXTRA_OECONF = "--with-ipc=dbus"
