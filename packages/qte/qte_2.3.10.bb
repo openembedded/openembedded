@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
