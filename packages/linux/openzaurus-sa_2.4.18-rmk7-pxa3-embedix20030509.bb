@@ -27,6 +27,7 @@ SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${
 	   file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
 	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
+	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we17-13.diff;patch=1 \
 	   file://ir240_sys_max_tx-2.diff;patch=1 \
 	   file://ir241_qos_param-2.diff;patch=1 \
            file://defconfig-${MACHINE} \

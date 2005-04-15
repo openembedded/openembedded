@@ -7,7 +7,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r37"
+PR = "r38"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
@@ -43,6 +43,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
            http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
+	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we17-13.diff;patch=1 \
            file://ir240_sys_max_tx-2.diff;patch=1 \
            file://ir241_qos_param-2.diff;patch=1 \
            http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz \
