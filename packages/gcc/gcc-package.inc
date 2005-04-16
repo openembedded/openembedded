@@ -1,4 +1,5 @@
 gcclibdir ?= "${libdir}/gcc"
+BINV ?= "${PV}"
 
 # libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
 # packaged in the respective cross packages.
@@ -12,18 +13,18 @@ PACKAGES = "${PN} ${PN}-symlinks \
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
 	       ${bindir}/${TARGET_PREFIX}gccbug \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1 \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${PV}/collect2 \
-	       ${gcclibdir}/${TARGET_SYS}/${PV}/*.o \
-	       ${gcclibdir}/${TARGET_SYS}/${PV}/specs \
-	       ${gcclibdir}/${TARGET_SYS}/${PV}/lib* \
-	       ${gcclibdir}/${TARGET_SYS}/${PV}/include"
+	       ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1 \
+	       ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2 \
+	       ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
+	       ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
+	       ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
+	       ${gcclibdir}/${TARGET_SYS}/${BINV}/include"
 FILES_${PN}-symlinks = "${bindir}/cc \
 			${bindir}/gcc \
 			${bindir}/gccbug"
 
 FILES_g77 = "${bindir}/${TARGET_PREFIX}g77 \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/f771"
+		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771"
 FILES_g77-symlinks = "${bindir}/g77 \
 			    ${bindir}/f77"
 
@@ -41,12 +42,12 @@ FILES_libg2c-dev = "${libdir}/libg2c.so \
 		    ${libdir}/libfrtbegin.a"
 
 FILES_g++ = "${bindir}/${TARGET_PREFIX}g++ \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${PV}/cc1plus"
+		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus"
 FILES_g++-symlinks = "${bindir}/c++ \
 			    ${bindir}/g++"
 
 PACKAGE_ARCH_libstdc++-dev = "${TARGET_ARCH}"
-FILES_libstdc++-dev = "${includedir}/c++/${PV} \
+FILES_libstdc++-dev = "${includedir}/c++/${BINV} \
 		       ${libdir}/libstdc++.so \
 		       ${libdir}/libstdc++.la \
 		       ${libdir}/libstdc++.a \
@@ -55,27 +56,27 @@ FILES_libstdc++-dev = "${includedir}/c++/${PV} \
 
 FILES_${PN}-doc = "${infodir} \
 		   ${mandir} \
-		   ${gcclibdir}/${TARGET_SYS}/${PV}/include/README"
+		   ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README"
 
 
 do_install () {
 	autotools_do_install
 
 	# Cleanup some of the ${libdir}{,exec}/gcc stuff ...
-	rm -r ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/install-tools
-	rm -r ${D}${libexecdir}/gcc/${TARGET_SYS}/${PV}/install-tools
+	rm -r ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/install-tools
+	rm -r ${D}${libexecdir}/gcc/${TARGET_SYS}/${BINV}/install-tools
 
 	# Hack around specs file assumptions
-	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/specs
+	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}${base_libdir}
 	mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
 	rm ${D}${libdir}/libgcc_s.so
-	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${PV} \
+	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
 		| tr -s / \
 		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.1 \
-		      ${D}${libdir}/gcc/${TARGET_SYS}/${PV}/libgcc_s.so
+		      ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/libgcc_s.so
 
 	# We don't need libtool libraries
 	rm ${D}${libdir}/libg2c.la

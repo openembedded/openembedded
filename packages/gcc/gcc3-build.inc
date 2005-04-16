@@ -8,6 +8,7 @@ ${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
 gcclibdir ?= "${libdir}/gcc"
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
+BINV ?= "${PV}"
 
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
@@ -26,7 +27,7 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
 
 EXTRA_OECONF_PATHS = " \
                       --with-local-prefix=${prefix}/local \
-                      --with-gxx-include-dir=${includedir}/c++/${PV}"
+                      --with-gxx-include-dir=${includedir}/c++/${BINV}"
 
 EXTRA_OECONF_DEP = ""
 EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
