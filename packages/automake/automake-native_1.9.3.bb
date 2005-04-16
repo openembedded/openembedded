@@ -1,0 +1,1 @@
+include automake-native.inc
