@@ -1,0 +1,2 @@
+LICENSE = GPL
+inherit gnome
