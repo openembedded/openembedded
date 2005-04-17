@@ -3,7 +3,8 @@ SECTION = "x11/fonts"
 PRIORITY = "optional"
 LICENSE = "Bitstream Vera"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
+RDEPENDS = "libfontconfig-utils"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-${PV}.tar.bz2" 
 
