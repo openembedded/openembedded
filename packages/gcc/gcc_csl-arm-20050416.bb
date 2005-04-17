@@ -1,5 +1,9 @@
 include gcc_csl-arm.bb
 
+SRC_URI += "file://15342.patch;patch=1"
+
+PR = "r1"
+
 CVSDATE = "20050416"
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
 DEFAULT_PREFERENCE_arm-linux = "1"
