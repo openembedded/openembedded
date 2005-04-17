@@ -131,7 +131,7 @@ do_install () {
 #	ln -sf		../init.d/urandom	${D}${sysconfdir}/rcS.d/S55urandom
 	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
-	# udev will run at S03 if installed
+	# udev will run at S04 if installed
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
 	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
