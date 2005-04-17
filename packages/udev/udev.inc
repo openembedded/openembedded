@@ -1,7 +1,7 @@
 DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "udev-utils"
 FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
@@ -9,7 +9,7 @@ FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
 inherit update-rc.d
 
 INITSCRIPT_NAME = "udev"
-INITSCRIPT_PARAMS = "start 03 S ."
+INITSCRIPT_PARAMS = "start 04 S ."
 
 export HOSTCC = "${BUILD_CC}"
 export udevdir ?= "/dev"

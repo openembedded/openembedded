@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r39"
+PR = "r40"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -90,13 +90,13 @@ do_install () {
 	if [ "${DISTRO}" == "openzaurus" ]; then
 		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}${sysconfdir}/init.d/checkversion
         	chmod 0755 				${D}${sysconfdir}/init.d/checkversion
-		ln -sf          ../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S00version
+		ln -sf          ../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
 	fi
 
 	if [ "${MACHINE}" == "c7x0" ]; then
 		install -m 0755    ${WORKDIR}/corgikeymap-2.6.map		${D}${sysconfdir}
 		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
-		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S04keymap
+		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
 	fi
 
 
@@ -121,7 +121,7 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
-	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S01banner
+	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S02banner
 	ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}${sysconfdir}/rcS.d/S30checkfs.sh
 	ln -sf		../init.d/mountall.sh	${D}${sysconfdir}/rcS.d/S35mountall.sh
@@ -130,12 +130,12 @@ do_install () {
 	ln -sf		../init.d/bootmisc.sh	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	ln -sf		../init.d/urandom	${D}${sysconfdir}/rcS.d/S55urandom
 	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
-	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S04devices
+	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S03 if installed
-	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S02sysfs
+	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
 	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
-		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S05alignment
+		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S06alignment
 	fi
 
 	install -m 0755    ${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
