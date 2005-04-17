@@ -87,6 +87,7 @@ B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
 
+
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
@@ -95,6 +96,9 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		${GLIBC_EXTRA_OECONF}"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+
+OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+EXTRA_OECONF_append_arm-linuxeabi = " --without-fp"
 
 def get_glibc_fpu_setting(bb, d):
 	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
