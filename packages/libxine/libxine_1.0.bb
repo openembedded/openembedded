@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "zlib libogg tremor libmad esound-gpe"
 PROVIDES = "virtual/libxine"
-PR = "r2"
+PR = "r3"
 
 inherit autotools pkgconfig gettext
 
@@ -21,7 +21,10 @@ SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.
 	file://no-caca-no-aalib.patch;patch=1 \
 	file://dont-have-xv.patch;patch=1 \
 	file://restore-esd.patch;patch=1 \
-	file://fix-syntax-xine-vorbis-decoder.patch;patch=1"
+	file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
+	file://libxine-cut-memusage.patch;patch=1 \
+	file://mpegvideo-static-inlinine.patch;patch=1 \
+	file://libxine-libavcodec.patch;patch=1"
 
 SOV = "1.0.7"
 
