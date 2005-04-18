@@ -91,7 +91,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 #CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) mem=64M"
 #CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
 
-CMDLINE_CON = "console=ttyS0,115200n8 noinitrd"
+CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
 
