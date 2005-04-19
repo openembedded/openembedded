@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r12"
+PR = "r14"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"

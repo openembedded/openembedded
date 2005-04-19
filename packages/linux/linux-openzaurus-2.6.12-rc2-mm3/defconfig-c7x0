@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.11
-# Mon Apr 18 19:47:51 2005
+# Tue Apr 19 12:37:37 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -158,7 +158,7 @@ CONFIG_PM=y
 CONFIG_PREEMPT=y
 CONFIG_APM=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="console=ttyS0,115200n8 noinitrd root=/dev/mtdblock2 rootfstype=jffs2   "
+CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2   "
 CONFIG_ALIGNMENT_TRAP=y
 
 #
@@ -375,11 +375,19 @@ CONFIG_PXA_FICP=y
 CONFIG_BT=m
 CONFIG_BT_L2CAP=m
 CONFIG_BT_SCO=m
+CONFIG_BT_RFCOMM=m
+CONFIG_BT_RFCOMM_TTY=y
+CONFIG_BT_BNEP=m
+# CONFIG_BT_BNEP_MC_FILTER is not set
+# CONFIG_BT_BNEP_PROTO_FILTER is not set
+CONFIG_BT_HIDP=m
 
 #
 # Bluetooth device drivers
 #
 CONFIG_BT_HCIUART=m
+# CONFIG_BT_HCIUART_H4 is not set
+# CONFIG_BT_HCIUART_BCSP is not set
 CONFIG_BT_HCIDTL1=m
 CONFIG_BT_HCIBT3C=m
 CONFIG_BT_HCIBLUECARD=m
@@ -568,7 +576,10 @@ CONFIG_HW_CONSOLE=y
 #
 # Serial drivers
 #
-# CONFIG_SERIAL_8250 is not set
+CONFIG_SERIAL_8250=m
+CONFIG_SERIAL_8250_CS=m
+CONFIG_SERIAL_8250_NR_UARTS=4
+# CONFIG_SERIAL_8250_EXTENDED is not set
 
 #
 # Non-8250 serial port support
