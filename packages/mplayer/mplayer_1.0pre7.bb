@@ -12,7 +12,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://libmpcodecs-ogg-include.patch;patch=1 "
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS="mplayer-atty"
-PR = "r0"
+PR = "r1"
 
 PARALLEL_MAKE = ""
 
