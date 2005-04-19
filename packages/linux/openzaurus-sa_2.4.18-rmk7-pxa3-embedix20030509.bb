@@ -6,10 +6,10 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r18"
+PR = "r19"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
-SRC_URI = "http://aurach.ewu.edu/ield_software/ch5/ROM3.10_stuff/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
+SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
            file://cacko.patch;patch=1 \
            file://battery.patch;patch=1 \
            file://bluetooth-2.4.18-mh15.patch;patch=1 \
