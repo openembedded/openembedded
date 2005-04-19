@@ -28,6 +28,7 @@ JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files/"
 
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
+           http://www.kernel.org/pub/linux/kernel/people/rml/inotify/v2.6/0.22/inotify-0.22-rml-2.6.11-1.patch;patch=1 \
            ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
            ${RPSRC}/rndis_fix-r0.patch;patch=1 \
            ${RPSRC}/w100_malloc-r2.patch;patch=1 \
