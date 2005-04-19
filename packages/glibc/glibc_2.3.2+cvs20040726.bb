@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "linux-libc-headers"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r15"
+PR = "r16"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""

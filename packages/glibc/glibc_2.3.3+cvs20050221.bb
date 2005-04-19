@@ -6,7 +6,7 @@ PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r0"
+PR = "r1"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -39,24 +39,6 @@ PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' 
 PROVIDES += "virtual/libintl virtual/libiconv"
 DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
-
-libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
-
-FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
-FILES_ldd = "${bindir}/ldd"
-FILES_libsegfault = "/lib/libSegFault*"
-FILES_glibc-extra-nss = "/lib/libnss*"
-FILES_sln = "/sbin/sln"
-FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
-FILES_nscd = "${sbindir}/nscd*"
-FILES_glibc-utils = "${bindir} ${sbindir}"
-FILES_glibc-gconv = "${libdir}/gconv"
-FILES_catchsegv = "${bindir}/catchsegv"
-DEPENDS_catchsegv = "libsegfault"
-FILES_glibc-pcprofile = "/lib/libpcprofile.so"
-FILES_glibc-thread-db = "/lib/libthread_db*"
-FILES_localedef = "${bindir}/localedef"
-RPROVIDES_glibc-dev += "libc-dev"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
