@@ -8,12 +8,14 @@ SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
 	   file://sdl.patch;patch=1 \
 	   file://Makefile-libs.patch;patch=1 \
-	   file://dsputil.patch;patch=1"
+	   file://dsputil.patch;patch=1 \
+           file://libmpdemux-ogg-include.patch;patch=1 \
+           file://libmpcodecs-ogg-include.patch;patch=1 "
 
 RCONFLICTS="mplayer"
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 
-PR = "r2"
+PR = "r3"
 
 PARALLEL_MAKE = ""
 
