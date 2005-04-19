@@ -15,9 +15,9 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 		return
 
 	if postinst:
-		postinst = '#!/bin/sh\n' + postinst
+		postinst = '#!/bin/sh\n' + postinst + '\n'
 	if postrm:
-		postrm = '#!/bin/sh\n' + postrm
+		postrm = '#!/bin/sh\n' + postrm + '\n'
 	if not recursive:
 		objs = os.listdir(dvar + root)
 	else:
