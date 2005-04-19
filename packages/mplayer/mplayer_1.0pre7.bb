@@ -7,7 +7,9 @@ LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://Makefile.patch;patch=1 \
            file://sdl.patch;patch=0 \
-           file://zlib.patch;patch=0 "
+           file://zlib.patch;patch=0 \
+           file://libmpdemux-ogg-include.patch;patch=1 \
+           file://libmpcodecs-ogg-include.patch;patch=1 "
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS="mplayer-atty"
 PR = "r0"
@@ -54,7 +56,7 @@ EXTRA_OECONF = " \
         --with-sdl-config=${STAGING_BINDIR}/sdl-config \
         \
         --enable-mad \
-        --enable-vorbis \
+	--enable-tremor-low \
         \
         --enable-ossaudio \
         \
