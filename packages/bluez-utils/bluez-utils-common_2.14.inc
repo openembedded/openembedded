@@ -5,7 +5,7 @@ DEPENDS = "bluez-libs-2.14 pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
 PACKAGES =+ "${PN}-ciptool ${PN}-bluepin"
-PR = "r4"
+PR = "r5"
 
 FILES_${PN}-ciptool = "/bin/ciptool"
 FILES_${PN}-bluepin = "/bin/bluepin"
@@ -14,7 +14,8 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
 	file://blueboxes.patch;patch=1 \
 	file://hcid.conf \
-	file://bluetooth.default"
+	file://bluetooth.default \
+	file://bluetooth.conf "
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
@@ -29,6 +30,7 @@ do_install_append() {
 	chmod 755 ${D}${sysconfdir}/pcmcia/bluetooth
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
 	install -m 0644 ${WORKDIR}/bluetooth.default ${D}${sysconfdir}/default/bluetooth
+	cat ${WORKDIR}/bluetooth.conf >> ${D}${sysconfdir}/pcmcia/bluetooth.conf
 }
 
 inherit autotools update-rc.d
