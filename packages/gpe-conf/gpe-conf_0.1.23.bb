@@ -19,7 +19,7 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
 		${datadir}/applications ${datadir}/gpe/pixmaps \
 		${datadir}/gpe-conf"
 
-SRC_URI += "file://remove-popup.patch;patch=1;pnum=2"
+SRC_URI += "file://remove-popup.patch;patch=1;pnum=1"
 
 do_compile () {
 	oe_runmake PREFIX=${prefix}
