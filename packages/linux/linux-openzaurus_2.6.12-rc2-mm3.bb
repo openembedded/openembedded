@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r2"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -46,6 +46,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \	   
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
+           file://pxa-serial-hack.patch;patch=1 \ 
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \	   
            file://defconfig-c7x0 \
            file://defconfig-collie \
