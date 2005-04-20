@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 inherit gpe
-PR="r1"
+PR="r2"
 
 #SRC_URI += "file://gpe-conf-0.1.22-20041124.patch;patch=1;pnum=0 \
 #	file://desktop-categories.patch;patch=1 \
@@ -18,6 +18,8 @@ PRIORITY = "optional"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
 		${datadir}/applications ${datadir}/gpe/pixmaps \
 		${datadir}/gpe-conf"
+
+SRC_URI += "file://remove-popup.patch;patch=1;pnum=2"
 
 do_compile () {
 	oe_runmake PREFIX=${prefix}
