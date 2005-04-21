@@ -103,6 +103,9 @@ do_configure_prepend_ramses() {
 	chmod -R a+w ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel
+	mkdir bin
+	ln -sf ${STAGING_BINDIR}/moc bin/moc
+	ln -sf ${STAGING_BINDIR}/uic bin/uic
 }
 
 do_configure() {
