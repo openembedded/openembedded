@@ -1,3 +1,21 @@
+#
+# For now, we will skip building of a gcc package if it is a uclibc one
+# and our build is not a uclibc one, and we skip a glibc one if our build
+# is a uclibc build.
+#
+# See the note in gcc/gcc_3.4.0.oe
+#
+
+python __anonymous () {
+    import bb, re
+    uc_os = (re.match('.*uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None)
+    if uc_os:
+        raise bb.parse.SkipPackage("incompatible with target %s" %
+                                   bb.data.getVar('TARGET_OS', d, 1))
+}
+
+DEPENDS = "linux-libc-headers"
+
 PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
@@ -24,6 +42,16 @@ DESCRIPTION_glibc-extra-nss = "glibc: nis, nisplus and hesiod search services"
 DESCRIPTION_ldd = "glibc: print shared library dependencies"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
+
+def get_glibc_fpu_setting(bb, d):
+	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+		return "--without-fp"
+	return ""
+
+EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+
+OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+EXTRA_OECONF_append_arm-linuxeabi = " --without-fp"
 
 do_install() {
 	oe_runmake install_root=${D} install

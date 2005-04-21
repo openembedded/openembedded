@@ -16,24 +16,6 @@ DEFAULT_PREFERENCE_i686 = "0"
 DEFAULT_PREFERENCE_sh3 = "0"
 DEFAULT_PREFERENCE_sh4 = "0"
 
-#
-# For now, we will skip building of a gcc package if it is a uclibc one
-# and our build is not a uclibc one, and we skip a glibc one if our build
-# is a uclibc build.
-#
-# See the note in gcc/gcc_3.4.0.oe
-#
-
-python __anonymous () {
-    import bb, re
-    uc_os = (re.match('.*uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None)
-    if uc_os:
-        raise bb.parse.SkipPackage("incompatible with target %s" %
-                                   bb.data.getVar('TARGET_OS', d, 1))
-}
-
-PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
-
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
 PROVIDES += "virtual/libintl virtual/libiconv"
@@ -70,13 +52,6 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
-
-EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
-
-def get_glibc_fpu_setting(bb, d):
-	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-		return "--without-fp"
-	return ""
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
