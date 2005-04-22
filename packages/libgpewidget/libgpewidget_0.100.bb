@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ cairo libxrender gtk-doc intltool-native"
 
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 
 inherit pkgconfig autotools
 
