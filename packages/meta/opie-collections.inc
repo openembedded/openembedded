@@ -30,6 +30,8 @@ OPIE_BASE = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics opie-s
 #
 OPIE_LIBS_RDEPENDS_append_c7x0 = " ${OPIE_FONTS_LARGE}"
 OPIE_LIBS_RDEPENDS_append_tosa = " ${OPIE_FONTS_LARGE}"
+OPIE_LIBS_RDEPENDS_append_spitz = " ${OPIE_FONTS_LARGE}"
+OPIE_LIBS_RDEPENDS_append_akita = " ${OPIE_FONTS_LARGE}"
 
 #
 # Things for reasonable bootstrap image
@@ -60,6 +62,8 @@ OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset \
 # Clamshell models can benefit from the autorotate applet
 #
 OPIE_BASE_DEPENDS_append_c7x0 = " opie-autorotateapplet"
+OPIE_LIBS_RDEPENDS_append_spitz = " opie-autorotateapplet"
+OPIE_LIBS_RDEPENDS_append_akita = " opie-autorotateapplet"
 
 # Zaurus models can benefit from the VT and logout applets
 OPIE_BASE_APPLETS_append_openzaurus = " opie-vtapplet opie-logoutapplet"
