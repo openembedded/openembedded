@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
@@ -13,12 +13,11 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://ratoc-cfu1u.patch;patch=1 \
 	   file://pcmcia \
 	   file://ide.opts \
-	   file://ide.opts.spitz \
 	   file://wireless.opts \
 	   file://network.conf \
 	   file://wnv.conf"
 
-SRC_URI_append_spitz += " file://nocleanup.patch;patch=1"
+SRC_URI_append_spitz = " file://nocleanup.patch;patch=1"
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 INITSCRIPT_NAME = "pcmcia"
@@ -82,16 +81,8 @@ do_install() {
 
 	# ensure that config.opts always exists, albeit empty
 	echo >> ${D}${sysconfdir}/pcmcia/config.opts
-
-	case ${MACHINE} in
-	spitz)
-		install -m 0644 ${WORKDIR}/ide.opts.spitz \
-			${D}${sysconfdir}/pcmcia/ide.opts
-		;;
-	*)
-		install -m 0644 ${WORKDIR}/ide.opts ${D}${sysconfdir}/pcmcia/
-		;;
-	esac
+	
+	install -m 0644 ${WORKDIR}/ide.opts ${D}${sysconfdir}/pcmcia/
 	install -m 0644 ${WORKDIR}/wireless.opts ${D}${sysconfdir}/pcmcia/
 	for i in etc/cis/*; do
 		install -m 0644 $i ${D}${sysconfdir}/pcmcia/cis/
