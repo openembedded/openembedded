@@ -1,5 +1,4 @@
 include ${PN}.inc
-    
  
 PR = "r3"
 
