@@ -1,9 +1,8 @@
 include ${PN}.inc
     
 PV = "1.2.0+cvs-${CVSDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/multimedia/opieplayer2 \
            ${HANDHELDS_CVS};module=opie/pics \
-           ${HANDHELDS_CVS};module=opie/apps \
-	   file://fix-switch-yuv2rgb_arm2.patch;patch=1"
+           ${HANDHELDS_CVS};module=opie/apps"
