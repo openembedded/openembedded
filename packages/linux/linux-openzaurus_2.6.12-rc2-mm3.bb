@@ -7,6 +7,8 @@ KV = "${@bb.data.getVar('PV',d,True)}"
 
 PR = "r2"
 
+DEFAULT_PREFERENCE = "-1"
+
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files/"
