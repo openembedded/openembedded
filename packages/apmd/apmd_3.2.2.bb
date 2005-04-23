@@ -1,15 +1,9 @@
-PR = "r2"
+DESCRIPTION = "Set of tools for managing notebook power consumption."
 SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
-DESCRIPTION = "Set of tools for managing notebook power consumption."
-LICENSE="GPL"
-
-PACKAGES =+ "libapm libapm-dev apm"
-
-FILES_libapm = "${libdir}/libapm.so.*"
-FILES_libapm-dev = "${libdir}/libapm.* ${includedir}"
-FILES_apm = "${bindir}/apm*"
+LICENSE = "GPL"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://debian.patch;patch=1 \
@@ -63,3 +57,11 @@ do_install() {
 	cat ${WORKDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}${sysconfdir}/init.d/apmd
 	chmod 755 ${D}${sysconfdir}/init.d/apmd
 }
+
+PACKAGES =+ "libapm libapm-dev apm"
+
+FILES_libapm = "${libdir}/libapm.so.*"
+FILES_libapm-dev = "${libdir}/libapm.* ${includedir}"
+FILES_apm = "${bindir}/apm*"
+
+
