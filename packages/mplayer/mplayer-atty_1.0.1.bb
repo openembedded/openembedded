@@ -4,6 +4,10 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad libogg libvorbis zlib libpng jpeg"
 LICENSE = "GPL"
+RCONFLICTS = "mplayer"
+MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
+PR = "r5"
+
 SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
 	   file://sdl.patch;patch=1 \
@@ -12,17 +16,12 @@ SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
            file://libmpdemux-ogg-include.patch;patch=1 \
            file://libmpcodecs-ogg-include.patch;patch=1 "
 
-RCONFLICTS="mplayer"
-MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
-
-PR = "r4"
-
 PARALLEL_MAKE = ""
 
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
 PACKAGE_ARCH_akita = "${MACHINE_ARCH}"
-PACKAGE_ARCH_spitze = "${MACHINE_ARCH}"
+PACKAGE_ARCH_spitz = "${MACHINE_ARCH}"
 
 S = "${WORKDIR}/mplayer-${PV}"
 
