@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -30,16 +30,12 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-2
            file://iw241_we16-6.diff;patch=1 \
            file://iw249_we17-13.diff;patch=1 \
            file://bluecard_cs.patch;patch=1 \
-           file://enable-sysrq.patch;patch=1 \
            file://compile.patch;patch=1 \
            file://idecs.patch;patch=1 \
            file://logo.patch;patch=1 \
            file://initsh.patch;patch=1 \
-           file://keyboard-ctrl+alt.patch;patch=1 \
-           file://keymap-more-sane.patch;patch=1 \
            file://disable-pcmcia-probe.patch;patch=1 \
            file://deviceinfo.patch;patch=1 \  
-           file://tosa_ts.patch;patch=1 \
            file://corgi-fbcon-logo.patch;patch=1 \
            file://corgi-default-brightness.patch;patch=1 \
            file://1764-1.patch;patch=1 \
