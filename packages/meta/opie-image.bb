@@ -1,12 +1,12 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
  
-FEED_URIS_append_openzaurus = " opie##http://oz.hentges.net/snapshots/3.5.3-2/collie/feed"
+FEED_URIS_append_openzaurus = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r12"
+PR = "r13"
 
 include opie-collections.inc
 
