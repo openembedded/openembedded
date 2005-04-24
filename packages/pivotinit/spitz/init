@@ -1,0 +1,25 @@
+#!/bin/sh
+
+mount -t proc proc /proc
+mount -o remount,rw /
+cardmgr -o
+umount /proc
+echo Mounting hda1.
+mount -t ext3 /dev/hda1 /media/hdd
+
+# For some reason the Spitz tar doesn't create the devices.
+if [ ! -b /media/hdd/dev/hda1 ]; then
+	echo Creating non existant device files.
+	/media/hdd/sbin/makedevs -D /media/hdd/etc/device_table -r /media/hdd/
+fi
+
+if [ -e /media/hdd/sbin/init -o -L /media/hdd/sbin/init ]; then
+	echo "Found /sbin/init on HD; pivoting."
+	cd /media/hdd
+	pivot_root . media/realroot
+	cd /
+	exec /sbin/init
+fi
+
+echo Dropping to a shell due to problems.
+exec /bin/sh
