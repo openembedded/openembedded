@@ -7,4 +7,6 @@ PRIORITY = "optional"
 
 PARALLEL_MAKE=""
 
-SRC_URI += "file://fix_makefiles.patch;patch=1"
+SRC_URI += "file://fix_makefiles.patch;patch=1 \
+            file://remove-render.patch;patch=1"
+
