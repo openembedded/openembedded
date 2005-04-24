@@ -39,7 +39,7 @@ fi
 if test ! -L /tmp && test -d /var/tmp
 then
 	rm -rf /tmp
-	ln -sf /var/tmp tmp
+	ln -sf /var/tmp /tmp
 fi
 
 #
