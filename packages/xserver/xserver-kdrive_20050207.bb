@@ -15,7 +15,7 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-PR = "r0"
+PR = "r1"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
@@ -35,7 +35,10 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;
 SRC_URI_append_ramses = " file://onlyfb.patch;patch=1"
 SRC_URI_append_ramses = " file://devfs.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
+SRC_URI_append_c7x0 = " file://disable-apm.patch;patch=1"
+
 PACKAGE_ARCH_poodle = "poodle"
+PACKAGE_ARCH_c7x0 = "c7x0"
 
 S = "${WORKDIR}/xserver"
 
