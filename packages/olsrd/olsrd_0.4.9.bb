@@ -5,6 +5,8 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
+RDEPENDS_olsrd = "olsrd-libs"
+PR = "r1"
 
 SRC_URI="http://www.olsr.org/releases/0.4/olsrd-${PV}.tar.bz2 \
 	file://0.4.9-httpinfo-makefile.diff;patch=1 \
