@@ -5,6 +5,9 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 DEPENDS = "file"
 RRECOMMENDS = "file"
 LICENSE = "PD"
+PACKAGE_ARCH = "all"
+PR = "r1"
+
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"
 
