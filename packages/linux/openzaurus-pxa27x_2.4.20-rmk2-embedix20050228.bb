@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -75,8 +75,8 @@ KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
 
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
-module_conf_pxa_bi = "below pxa27x_bi net_fd usbdcore "
-module_autoload_pxa_bi = "pxa27x_bi"
+module_conf_pxa27x_bi = "below pxa27x_bi net_fd usbdcore "
+module_autoload_pxa27x_bi = "pxa27x_bi"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
