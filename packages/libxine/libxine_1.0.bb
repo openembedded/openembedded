@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "zlib libogg tremor libmad esound-gpe"
 PROVIDES = "virtual/libxine"
-PR = "r3"
+PR = "r4"
 
 inherit autotools pkgconfig gettext
 
@@ -76,6 +76,8 @@ do_stage() {
 	for file in ${HEADERS}; do
 		cp ${S}/$file ${STAGING_INCDIR}/xine/`basename $file`
 	done
+
+	install -m 0644 ${S}/m4/xine.m4 ${STAGING_DATADIR}/aclocal/
 
 	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }
