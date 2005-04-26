@@ -20,11 +20,15 @@ COPTS='-G 0 -mno-abicalls -fno-pic -Wa,--trap -fno-strict-aliasing -fno-common -
 
 do_compile() {
 	oe_runmake
+	cd tools; oe_runmake
 }
 
 do_install() {
 	oe_runmake DESTDIR=${D} install
-	
+	install -d ${D}${sbindir}
+	cd tools; 
+	oe_runmake DESTDIR=${D} BINDIR=${sbindir} install
+	install -m 755 athchans athctrl athkey ${D}${sbindir}
 }
 
 pkg_postinst() {
@@ -35,4 +39,6 @@ else
 fi
 }
 
+PACKAGES = "madwifi-tools ${PN}"
 FILES_${PN} = "/lib/modules/"
+FILES_madwifi-tools = "/usr/"
