@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "xtst"
 SECTION = "x11/wm"
 PR="r1"
+PV = "0.0+svn${CVSDATE}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 
