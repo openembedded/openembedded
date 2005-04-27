@@ -1,25 +1,21 @@
+PACKAGES = "gpe-conf gpe-conf-panel"
 LICENSE = "GPL"
-inherit gpe
-PR="r2"
-
-#SRC_URI += "file://gpe-conf-0.1.22-20041124.patch;patch=1;pnum=0 \
-#	file://desktop-categories.patch;patch=1 \
-#	file://fix-wificonfig.patch;patch=1;pnum=0 \
-#	file://serial_tts.patch;patch=1 \
-#	file://battery_with_no_lifetime.patch;patch=1 \
-#	file://ignore_invalid_battery_values.patch;patch=1"
-
-SRC_URI += "file://desktop-categories.patch;patch=1"
-
-DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"
-RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
 SECTION = "gpe"
 PRIORITY = "optional"
-FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
-		${datadir}/applications ${datadir}/gpe/pixmaps \
-		${datadir}/gpe-conf"
+
+inherit gpe
+PR="r3"
 
 SRC_URI += "file://remove-popup.patch;patch=1;pnum=1"
+SRC_URI += "file://desktop-categories.patch;patch=1"
+
+DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons gpe-appmgr"
+RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
+RDEPENDS_gpe-conf-panel = "gpe-conf gpe-appmgr"
+FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
+		${datadir}/applications/gpe-conf-* ${datadir}/gpe/pixmaps \
+		${datadir}/gpe-conf"
+FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
 
 do_compile () {
 	oe_runmake PREFIX=${prefix}
@@ -29,4 +25,5 @@ do_compile () {
 do_install () {
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
 }
+
 
