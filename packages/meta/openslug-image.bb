@@ -1,4 +1,4 @@
-PR = "r7"
+PR = "r9"
 
 IMAGE_BASENAME = "openslug"
 
@@ -8,7 +8,7 @@ USE_DEVFS = "1"
 OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATCH_DEPENDS} virtual/armeb-linux-uclibc-gcc \
 	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware "
 
-DEPENDS = "virtual/kernel base-files base-passwd-3.5.9 \
+DEPENDS = "virtual/kernel base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
         sysvinit tinylogin lrzsz portmap \
         ixp4xx-csr ixp425-eth openslug-init \
@@ -17,6 +17,8 @@ DEPENDS = "virtual/kernel base-files base-passwd-3.5.9 \
 	cpio findutils e2fsprogs mtd-utils \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
+# NOTE: file system kernel modules are defined in openslug.conf
+# (OPENSLUG_EXTRA_FILESYSTEMS, included in OPENSLUG_EXTRA_INSTALL)
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
         update-modules sysvinit tinylogin lrzsz portmap \
@@ -25,7 +27,6 @@ IPKG_INSTALL = "base-files base-passwd \
         ipkg-collateral ipkg ipkg-link diffutils \
 	cpio findutils e2fsprogs-mke2fs \
 	e2fsprogs-fsck e2fsprogs-e2fsck \
-	kernel-module-nfs kernel-module-sunrpc kernel-module-lockd  \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk

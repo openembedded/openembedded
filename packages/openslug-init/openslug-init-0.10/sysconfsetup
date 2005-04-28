@@ -7,6 +7,9 @@ then
 #  So the driver can actually load the first time
    /usr/sbin/update-modules
 
+#  Set the default root password so ppl can ssh in
+   sed -i -e 's/root::/root:uf8TRGX9WDuH2:/' /etc/passwd
+
    dd if=/dev/mtdblock1 of=/etc/linksysconf
    cat <<EOF > /etc/original-network-settings
 # /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)

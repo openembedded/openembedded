@@ -6,52 +6,65 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_DEVELOPMENT = "\
-	autoconf  \
-	automake  \
-	bash  \
-	bison  \
-	bzip2  \
-	coreutils  \
+	autoconf \
+	automake \
+	bash \
+	bison \
+	bzip2 \
+	coreutils \
 	cvs \
-	diffutils  \
-	findutils  \
-	flex  \
+	diffutils \
+	findutils \
+	flex \
 	gawk \
-	gcc  \
-	gdb  \
-	grep   \
-	lsof  \
-	m4  \
-	make  \
-	ncurses  \
-	openssh  \
-	pciutils  \
-	perl  \
-	quilt  \
-	sed  \
-	strace  \
-	tar thttpd  \
+	gcc \
+	gdb \
+	grep \
+	lsof \
+	m4 \
+	make \
+	ncurses \
+	openssh \
+	pciutils \
+	quilt \
+	sed \
+	"
+
+# These packages only build on TARGET_OS=linux, not
+# TARGET_OS=linux-uclibc
+OPENSLUG_DEVELOPMENT_append_linux = "\
+	perl \
+	tar \
 	"
 
 
 OPENSLUG_PACKAGES = "\
 	atftp \
 	bash \
-	bluez-utils-nodbus \
+	bluez-utils-nodbus bridge-utils \
 	coreutils cvs\
-	miau \
-	microcom \
-	mt-daapd \
+	expat \
+	miau microcom mt-daapd mysql \
 	nail \
 	openssh \
-	ppp puppy \
+	ppp puppy pwc \
 	rsync \
-	strace sudo \
+	sudo sysfsutils \
 	thttpd \
+	db4 \
+	openldap \
+	"
+
+# These packages only build on TARGET_OS=linux, not
+# TARGET_OS=linux-uclibc
+OPENSLUG_PACKAGES_append_linux = "\
+	php \
+	yp-tools ypbind ypserv \
 	"
 
 BROKEN_PACKAGES = "\
 	mgetty \
+	strace  \
 	"
 
 DEPENDS = 'openslug-image \

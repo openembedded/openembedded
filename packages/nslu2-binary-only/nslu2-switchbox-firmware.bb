@@ -3,9 +3,9 @@ DEPENDS = ""
 PACKAGES = ""
 LICENSE = "BSD"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r18"
+PR = "r19"
 
-SRC_URI = "http://nslu.sf.net/downloads/switchbox-4.10.tar.gz"
+SRC_URI = "http://nslu.sf.net/downloads/switchbox-4.11.tar.gz"
 S = "${WORKDIR}"
 
 python () {

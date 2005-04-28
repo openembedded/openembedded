@@ -20,7 +20,7 @@
 +fi
 +
 +# Wait for the USB disks to be recognised.
-+sleep 5
++sleep 10
 +
 +if ( [ -f /proc/hd_conn ] ) ; then
 +  if ( [ -f /.sda1root ] ) ; then

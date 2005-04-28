@@ -75,7 +75,7 @@ CONFIG_UNZIP=y
 CONFIG_CHROOT=y
 # CONFIG_CMP is not set
 # CONFIG_CP is not set
-# CONFIG_CUT is not set
+CONFIG_CUT=y
 # CONFIG_DATE is not set
 # CONFIG_DD is not set
 # CONFIG_DF is not set
@@ -98,7 +98,7 @@ CONFIG_FEATURE_FANCY_HEAD=y
 # CONFIG_LS is not set
 CONFIG_MD5SUM=y
 # CONFIG_MKDIR is not set
-# CONFIG_MKFIFO is not set
+CONFIG_MKFIFO=y
 # CONFIG_MKNOD is not set
 # CONFIG_MV is not set
 # CONFIG_OD is not set
@@ -115,7 +115,7 @@ CONFIG_SORT=y
 # CONFIG_SYNC is not set
 CONFIG_TAIL=y
 CONFIG_FEATURE_FANCY_TAIL=y
-# CONFIG_TEE is not set
+CONFIG_TEE=y
 # CONFIG_TEST is not set
 # CONFIG_TOUCH is not set
 # CONFIG_TR is not set
@@ -153,7 +153,7 @@ CONFIG_FEATURE_MD5_SHA1_SUM_CHECK=y
 #
 # Debian Utilities
 #
-# CONFIG_MKTEMP is not set
+CONFIG_MKTEMP=y
 # CONFIG_PIPE_PROGRESS is not set
 # CONFIG_READLINK is not set
 # CONFIG_RUN_PARTS is not set

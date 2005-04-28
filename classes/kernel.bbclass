@@ -220,11 +220,11 @@ python populate_packages_prepend () {
 		f = os.popen(cmd, 'r')
 
 		deps = {}
-		pattern0 = "^(.*\.o):..*$"
-		pattern1 = "^(.*\.o):\t(.*\.o)$"
-		pattern2 = "^(.*\.o):\t(.*\.o) \\\$"
-		pattern3 = "^\t(.*\.o) \\\$"
-		pattern4 = "^\t(.*\.o)$"
+		pattern0 = "^(.*\.k?o):..*$"
+		pattern1 = "^(.*\.k?o):\s*(.*\.k?o)\s*$"
+		pattern2 = "^(.*\.k?o):\s*(.*\.k?o)\s*\\\$"
+		pattern3 = "^\t(.*\.k?o)\s*\\\$"
+		pattern4 = "^\t(.*\.k?o)\s*$"
 
 		line = f.readline()
 		while line:
@@ -233,19 +233,19 @@ python populate_packages_prepend () {
 				continue
 			m1 = re.match(pattern1, line)
 			if m1:
-				deps[m1.group(1)] = [m1.group(2)]
+				deps[m1.group(1)] = m1.group(2).split()
 			else:
 				m2 = re.match(pattern2, line)
 				if m2:
-					deps[m2.group(1)] = [m2.group(2)]
+					deps[m2.group(1)] = m2.group(2).split()
 					line = f.readline()
 					m3 = re.match(pattern3, line)
 					while m3:
-						deps[m2.group(1)].append(m3.group(1))
+						deps[m2.group(1)].extend(m3.group(1).split())
 						line = f.readline()
 						m3 = re.match(pattern3, line)
 					m4 = re.match(pattern4, line)
-					deps[m2.group(1)].append(m4.group(1))
+					deps[m2.group(1)].extend(m4.group(1).split())
 			line = f.readline()
 		f.close()
 		return deps

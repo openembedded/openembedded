@@ -1,18 +1,15 @@
 #!/bin/sh
 
 mounted=
-runboot=
 prefroot=
+runboot=
 
 /bin/mount -t proc proc /proc
-/bin/echo "0x0100" > /proc/sys/kernel/real-root-dev
 
 sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 2>/dev/null | /usr/bin/hexdump -n 6 -e '"%02d"'`
 ipaddr=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep ip_addr | sed -e s/ip_addr=//`
 netmask=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep netmask | sed -e s/netmask=//`
 gateway=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep gateway | sed -e s/gateway=//`
-nfsrootloc=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep nfsroot | sed -e s/nfsroot=// | cut -d, -f 1`
-nfsrootopts=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep nfsroot | sed -e s/nfsroot=// | cut -d, -f 2- | sed -e s/\"//g` 
 device=/dev/`/bin/sed -n -e 's/^\(mtd[0-9]*\): .* "FIS directory"/\1/p' /proc/mtd`   
 length=`/bin/dd if=$device bs=2 skip=2048 2>/dev/null | /usr/bin/hexdump -n 4 -e '4/1 "%02X"' $device`
 
@@ -22,6 +19,10 @@ if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/jffs2 ; then
 	/bin/echo "Preferred root device is /dev/ram0 (recovery)"
 	mounted=
 	prefroot=
+    elif [ -f /mnt/jffs2/.ramdisk ] ; then
+	/bin/echo "Preferred root device is /dev/ram1 (maintenence)"
+	mounted=/mnt/newroot
+	prefroot=maintenence
     elif [ -f /mnt/jffs2/.sda1root ] ; then
 	/bin/echo "Preferred root device is /dev/sda1 (disk 1)"
 	mounted=/mnt/newroot
@@ -38,10 +39,10 @@ if [ -z "$mounted" ] && /bin/mount -rt jffs2 /dev/mtdblock4 /mnt/jffs2 ; then
 	/bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
 	mounted=/mnt/newroot
 	prefroot=sdb2
-    elif [ -f /mnt/jffs2/.ramdisk ] ; then
-	/bin/echo "Preferred root device is /dev/ram1 (maintenence)"
+    elif [ -f /mnt/jffs2/.altroot ] ; then
+	/bin/echo "Preferred root device is a user defined blockdevice"
 	mounted=/mnt/newroot
-	prefroot=maintenence
+	prefroot=altroot
     elif [ -f /mnt/jffs2/.nfsroot ] ; then
 	/bin/echo "Preferred root device is through NFS"
         mounted=/mnt/newroot
@@ -76,7 +77,7 @@ if [ -n "$prefroot" ] ; then
         /bin/dd if=/dev/zero of=/dev/ram1 bs=1k count=12k 2>/dev/null 
         /bin/mkdir /lib
         /bin/ln -s /mnt/jffs2/lib/* /lib
-        /bin/mkdir /usr/bin
+        /bin/mkdir -p /usr/bin
         /bin/ln -s /mnt/jffs2/usr/bin/mke2fs /usr/bin
         /bin/ln -s /mnt/jffs2/usr/bin/find /usr/bin
         /bin/ln -s /mnt/jffs2/usr/bin/cpio /usr/bin
@@ -107,12 +108,26 @@ if [ -n "$prefroot" ] ; then
 
     fi
 
-    if [ $prefroot = "nfsroot" ] ; then
+    if [ $prefroot = "altroot" ] ; then
+        # The altrootloc and altrootopts vars MUST be chosen here.
+	# ie: $altrootopts="-rt ext3" and $altrootloc=/dev/md0
+	# Also modules can be loaded here.
+	# also if you have a really slow starting disk, you can put a large sleep value here.
+        . /mnt/jffs2/.altroot
 
-	/bin/mkdir -p /lib
-	/bin/ln -s /mnt/jffs2/lib/* /lib
-	/bin/mkdir -p /sbin
-	/bin/ln -s /mnt/jffs2/sbin/portmap /sbin
+        /bin/mount $altrootopts $altrootloc /mnt/newroot
+	if [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
+	     -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
+	    /bin/echo "Root filesystem will be mounted from a user defined rootfs (altroot) ..."
+	else
+	    /bin/umount /mnt/newroot
+	    /bin/echo "Cant find valid rootfs on user defined rootfs (altroot), using jffs2 ..."
+	    mounted=/mnt/jffs2
+	    prefroot=jffs2
+	fi
+    fi
+
+    if [ $prefroot = "nfsroot" ] ; then
 
 	/sbin/insmod ixp400
 	/sbin/insmod ixp425_eth
@@ -120,16 +135,15 @@ if [ -n "$prefroot" ] ; then
 	/sbin/route add default gw $gateway
 
 	/sbin/ifconfig lo up 127.0.0.1
-	/sbin/portmap
 
 	# The nfsrootloc and nfsrootopts vars can be overridden here.
 	. /mnt/jffs2/.nfsroot
 
-	mount -o $nfsrootopts $nfsrootloc /mnt/newroot
+	/bin/mount $nfsrootopts $nfsrootloc /mnt/newroot
 
     	if  [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
 	      -L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
-	    /bin/echo "Root filesystem will be mounted from a NFS root ..."
+	    /bin/echo "Root filesystem will be mounted from an NFS root ..."
 	    mounted=/mnt/newroot
 	else
 	    /bin/umount /mnt/newroot
@@ -154,14 +168,11 @@ fi
 
 # Pivot
 if [ -n "$mounted" ] ; then
-    if [ $prefroot = "nfsroot" ] ; then
-	/usr/bin/killall portmap
-    fi
     if [ $mounted != "/mnt/jffs2" ] ; then
         sleep 1
         /bin/umount /mnt/jffs2
     fi
-    umount /proc
+    /bin/umount /proc
     cd $mounted
     if [ -x ./linuxrc -o -L ./linuxrc ] ; then
 	runboot=/linuxrc
@@ -173,7 +184,7 @@ if [ -n "$mounted" ] ; then
 	runboot=/bin/sh
     fi
     /sbin/pivot_root . initrd
-    exec /usr/sbin/chroot . $runboot  < dev/console > dev/console 2>&1
+    exec /usr/sbin/chroot . $runboot < /dev/console 1> /dev/console 2> /dev/console
 fi
 
 if [ -z "$mounted" ] ; then
