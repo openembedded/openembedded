@@ -1,0 +1,23 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- src/main.cpp~compilefix
++++ src/main.cpp
+@@ -25,5 +25,13 @@
+ #include "zbedic.h"
+ #include <qtopia/qpeapplication.h>
+ 
+-QTOPIA_ADD_APPLICATION("myapp", ZBEDic)
+-QTOPIA_MAIN
++//QTOPIA_ADD_APPLICATION("myapp", ZBEDic)
++//QTOPIA_MAIN
++
++int main(int argc, char** argv)
++{
++       QPEApplication a( argc, argv );
++       ZBEDic* myapp = new ZBEDic();
++       a.showMainWidget( myapp );
++       a.exec();
++}
