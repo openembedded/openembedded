@@ -4,7 +4,7 @@ DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "zlib libogg tremor libmad esound-gpe"
+DEPENDS = "zlib libogg libvorbis tremor libmad esound-gpe"
 PROVIDES = "virtual/libxine"
 PR = "r4"
 
