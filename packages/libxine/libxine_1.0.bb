@@ -6,9 +6,9 @@ PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "zlib libogg libvorbis tremor libmad esound-gpe"
 PROVIDES = "virtual/libxine"
-PR = "r4"
+PR = "r5"
 
-inherit autotools pkgconfig gettext
+inherit autotools pkgconfig gettext binconfig
 
 S = "${WORKDIR}/xine-lib-${PV}"
 
