@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r60"
+PR = "r61"
 
-UNSLUNG_VERSION = "4.16-alpha"
+UNSLUNG_VERSION = "4.17-alpha"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -12,6 +12,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r25.tar.bz2 \
 	   file://unsling \
 	   file://resling \
 	   file://slingover \
+	   file://linuxrc \
 	   file://nsswitch.conf \
 	   file://rc.unslung-start \
 	   file://rc.unslung-stop \
@@ -62,6 +63,8 @@ do_compile () {
 	# Somehow these two slipped through - this is easier than updating the tar file.
 	rm -f ${S}/etc/rc.orig
 	rm -f ${S}/etc/rc.d/rc.1.orig
+
+	install -m 755 ${WORKDIR}/linuxrc ${S}/linuxrc
 
 	# Allow rc.bootbin to be diverted.
 	mv ${S}/etc/rc.d/rc.bootbin ${S}/sbin/rc.bootbin
