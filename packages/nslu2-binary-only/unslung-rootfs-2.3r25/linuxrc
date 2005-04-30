@@ -117,13 +117,13 @@ if [ $prefroot = "jffs2" ] ; then
 fi
 
 
+/bin/umount /proc
+
 # Pivot to the desired rootfs and run the initial executable.
 
 runboot=
 
 if [ -n "$mounted" ] ; then
-
-    /bin/umount /proc
 
     cd $mounted
 
@@ -140,8 +140,11 @@ if [ -n "$mounted" ] ; then
     /sbin/pivot_root . initrd
 
     exec /usr/sbin/chroot . $runboot < /dev/console 1> /dev/console 2> /dev/console
-fi
 
-/bin/umount /proc
+else
+
+    exec /bin/init
+
+fi
 
 exit 0
