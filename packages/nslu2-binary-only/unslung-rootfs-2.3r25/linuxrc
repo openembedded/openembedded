@@ -79,7 +79,7 @@ fi
 if [ $prefroot = "nfsroot" ] ; then
 
     sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 2>/dev/null | /usr/bin/hexdump -n 6 -e '"%02d"'`
-    ipaddr= `/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep ip_addr | sed -e s/ip_addr=//`
+    ipaddr=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep ip_addr | sed -e s/ip_addr=//`
     netmask=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep netmask | sed -e s/netmask=//`
     gateway=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep gateway | sed -e s/gateway=//`
 
@@ -89,7 +89,6 @@ if [ $prefroot = "nfsroot" ] ; then
     /sbin/route add default gw $gateway
 
     /sbin/ifconfig lo up 127.0.0.1
-    /sbin/ifup
 
     # The nfsrootloc and nfsrootopts vars can be overridden here.
     . /.nfsroot
@@ -145,4 +144,5 @@ fi
 /bin/echo "Can't chroot to $prefroot, using jffs2 ..."
 exec /bin/init
 
-exit 0
+# Last-resort fall-back - this should never be reached.
+/bin/sh
