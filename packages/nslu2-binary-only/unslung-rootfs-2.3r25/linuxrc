@@ -6,32 +6,29 @@
 
 # Determine the desired rootfs based on user flag files.
 
-mounted=
-prefroot=
-
 if [ -f /.ramdisk ] ; then
     /bin/echo "Preferred root device is /dev/ram0 (maintenence)"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=maintenence
 elif [ -f /.sda1root ] ; then
     /bin/echo "Preferred root device is /dev/sda1 (disk 1)"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=sda1
 elif [ -f /.sda2root ] ; then
     /bin/echo "Preferred root device is /dev/sda2 (disk 1)"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=sda2
 elif [ -f /.sdb1root ] ; then
     /bin/echo "Preferred root device is /dev/sdb1 (disk 2)"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=sdb1
 elif [ -f /.sdb2root ] ; then
     /bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=sdb2
 elif [ -f /.nfsroot ] ; then
     /bin/echo "Preferred root device is NFS"
-    mounted=/mnt/newroot
+    mounted=/mnt/tmpmnt
     prefroot=nfsroot
 else
     /bin/echo "Preferred root device is jffs2"
@@ -47,13 +44,13 @@ fi
 if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot = "sdb2" ] ; then
     /bin/echo "Sleeping 10sec while waiting for disk..."
     sleep 10
-    /bin/mount -rt ext3 /dev/$prefroot /mnt/newroot
-    if [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
-	-L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
+    /bin/mount -rt ext3 /dev/$prefroot /mnt/tmpmnt
+    if [ -L /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/sbin/init -o \
+	-L /mnt/tmpmnt/bin/init  -o -x /mnt/tmpmnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
     else
-	/bin/umount /mnt/newroot
-	/bin/echo "Cant find valid rootfs on /dev/$prefroot, using jffs2 ..."
+	/bin/umount /mnt/tmpmnt
+	/bin/echo "Can't find valid rootfs on /dev/$prefroot, using jffs2 ..."
 	mounted=
 	prefroot=jffs2
     fi
@@ -62,22 +59,21 @@ fi
 if [ $prefroot = "maintenence" ] ; then
     /bin/dd if=/dev/zero of=/dev/ram0 bs=1k count=12k 2>/dev/null 
     /usr/bin/mke2fs -m 0 /dev/ram0 12288
-    /bin/mount -t ext2 /dev/ram0 /mnt/newroot
-    ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/newroot )
-    if [ -r /mnt/newroot/.unslung ] ; then
-        /bin/cp /mnt/newroot/home/httpd/html/Management/upgrade.cgi /mnt/newroot/home/httpd/html/Management/upgrade-real.cgi
-        /bin/echo "#!/bin/sh" > /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo "/bin/mount -t ramfs none /upload -o size=8196 2>/dev/null" \
-            >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo "/bin/dd if=/dev/zero of=/upload/free-ram bs=1k count=8k 2>/dev/null" \
-            >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo "/bin/umount /upload 2>/dev/null" \
-            >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo "exec /home/httpd/html/Management/upgrade-real.cgi" \
-            >> /mnt/newroot/home/httpd/html/Management/upgrade.cgi
-        /bin/echo "Root filesystem will be mounted from /dev/ram0 (a copy of /dev/mtdblock4) ..."
-    fi
+    /bin/mount -t ext2 /dev/ram0 /mnt/tmpmnt
+    ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/tmpmnt )
+    /bin/rm -f /mnt/tmpmnt/linuxrc
+    /bin/cp /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi /mnt/tmpmnt/home/httpd/html/Management/upgrade-real.cgi
+    /bin/echo "#!/bin/sh" > /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo >> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo "/bin/mount -t ramfs none /upload -o size=8196 2>/dev/null" \
+	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo "/bin/dd if=/dev/zero of=/upload/free-ram bs=1k count=8k 2>/dev/null" \
+	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo "/bin/umount /upload 2>/dev/null" \
+	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo "exec /home/httpd/html/Management/upgrade-real.cgi" \
+	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
+    /bin/echo "Root filesystem will be mounted from /dev/ram0 (a copy of /dev/mtdblock4) ..."
 fi
 
 if [ $prefroot = "nfsroot" ] ; then
@@ -97,15 +93,15 @@ if [ $prefroot = "nfsroot" ] ; then
     # The nfsrootloc and nfsrootopts vars can be overridden here.
     . /.nfsroot
 
-    /bin/mount $nfsrootopts $nfsrootloc /mnt/newroot
+    /bin/mount $nfsrootopts $nfsrootloc /mnt/tmpmnt
 
-    if  [ -L /mnt/newroot/sbin/init -o -x /mnt/newroot/sbin/init -o \
-	-L /mnt/newroot/bin/init  -o -x /mnt/newroot/bin/init ] ; then
+    if  [ -L /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/sbin/init -o \
+	-L /mnt/tmpmnt/bin/init  -o -x /mnt/tmpmnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from an NFS root ..."
-	mounted=/mnt/newroot
+	mounted=/mnt/tmpmnt
     else
-	/bin/umount /mnt/newroot
-	/bin/echo "Cant find valid NFS rootfs, using jffs2 ..."
+	/bin/umount /mnt/tmpmnt
+	/bin/echo "Can't find valid NFS rootfs, using jffs2 ..."
 	mounted=
 	prefroot=jffs2
     fi
@@ -120,8 +116,6 @@ fi
 /bin/umount /proc
 
 # Pivot to the desired rootfs and run the initial executable.
-
-runboot=
 
 if [ -n "$mounted" ] ; then
 
@@ -146,5 +140,8 @@ else
     exec /bin/init
 
 fi
+
+/bin/echo "Can't chroot to $prefroot, using jffs2 ..."
+exec /bin/init
 
 exit 0
