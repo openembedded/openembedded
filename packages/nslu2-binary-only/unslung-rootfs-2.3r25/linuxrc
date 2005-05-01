@@ -89,6 +89,7 @@ if [ $prefroot = "nfsroot" ] ; then
     /sbin/route add default gw $gateway
 
     /sbin/ifconfig lo up 127.0.0.1
+    /sbin/ifup
 
     # The nfsrootloc and nfsrootopts vars can be overridden here.
     . /.nfsroot
