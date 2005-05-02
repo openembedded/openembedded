@@ -17,15 +17,6 @@ JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files/"
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.11-rc1-bk7.gz;patch=1 \
 # ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.11-rc5.bz2;patch=1 \
 
-# To be added after OZ 3.5.3
-#          ${RPSRC}/corgi_kbd2-r0.patch;patch=1 \
-#          ${RPSRC}/corgi_kbd1-r1.patch;patch=1 \
-#          ${RPSRC}/corgi_kbd3-r5.patch;patch=1 \
-#          ${RPSRC}/sharp_multi_scoop-r2.patch;patch=1 \
-# When ready to upgrade to 2.6.12-rc1
-#          ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.12-rc1.bz2;patch=1 \
-#          ${RPSRC}/input_power-r1.patch;patch=1 \
-
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            http://www.kernel.org/pub/linux/kernel/people/rml/inotify/v2.6/0.22/inotify-0.22-rml-2.6.11-1.patch;patch=1 \
