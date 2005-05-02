@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs-${PV} pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
@@ -12,6 +12,11 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
 	file://bluetooth.default \
 	file://bluetooth.conf "
+
+# Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
+# Let's default to that instead of 'any' and see if we break something with that
+SRC_URI_append_familiar   = " file://default-manfid-0x0-to-bcps.patch"
+SRC_URI_append_openzaurus = " file://default-manfid-0x0-to-bcps.patch"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
