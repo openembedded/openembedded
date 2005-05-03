@@ -1,6 +1,6 @@
 DESCRIPTION= "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r1"
+PR = "r2"
 
 NONWORKING = "  python-codes		\
 		python-crypto		\
@@ -8,7 +8,8 @@ NONWORKING = "  python-codes		\
 		python-pysqlite		\
 		python-pygtk		\
 		python-pyqwt		\
-		python-sgmlop"
+		python-sgmlop		\
+		python-vorbis"
 
 DEPENDS = "	python-ao 		\
 		python-constraint	\
@@ -47,7 +48,6 @@ DEPENDS = "	python-ao 		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
-		python-vorbis		\
 		moin			\
 		plone			\
 		twisted			\

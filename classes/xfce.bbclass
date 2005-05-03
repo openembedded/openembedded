@@ -18,9 +18,9 @@ EXTRA_OECONF += "--with-pluginsdir=${libdir}/xfce4/panel-plugins/"
 
 # FIXME:  Put icons in their own package too?
 
-PACKAGES += "${PN}-mcs-plugins ${PN}-panel-plugins"
+PACKAGES += "${PN}-mcs-plugins ${PN}-plugins"
 
 FILES_${PN} += "${datadir}/icons/* ${datadir}/applications/* ${libdir}/xfce4/modules/*.so*"
-FILES_${PN}-panel-plugins += "${libdir}/xfce4/panel-plugins/*.so*"
+FILES_${PN}-plugins += "${libdir}/xfce4/panel-plugins/*.so*"
 FILES_${PN}-doc += " ${datadir}/xfce4/doc"
 FILES_${PN}-mcs-plugins="${libdir}/xfce4/mcs-plugins/*.so"
