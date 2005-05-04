@@ -2,9 +2,10 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r18"
+PR = "r19"
 
-SRC_URI = "file://sysconfsetup \
+SRC_URI = "file://linuxrc \
+	   file://sysconfsetup \
 	   file://turnup \
 	   file://modutils.txt \
 	   file://modprobe.conf \
@@ -30,6 +31,8 @@ do_install() {
                    ${D}/${sysconfdir}/rcS.d \
 		   ${D}/${sbindir} 
 		  
+	install -m 0755 ${D}/../linuxrc ${D}/linuxrc
+
 	install -d ${D}/initrd
 
 	install -m 0755 ${D}/../kern_header ${D}${sbindir}/kern_header

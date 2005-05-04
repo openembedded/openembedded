@@ -62,18 +62,6 @@ if [ $prefroot = "maintenence" ] ; then
     /bin/mount -t ext2 /dev/ram0 /mnt/tmpmnt
     ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/tmpmnt )
     /bin/rm -f /mnt/tmpmnt/linuxrc
-    /bin/cp /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi /mnt/tmpmnt/home/httpd/html/Management/upgrade-real.cgi
-    /bin/echo "#!/bin/sh" > /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo >> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo "/bin/mount -t ramfs none /upload -o size=8196 2>/dev/null" \
-	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo "/bin/dd if=/dev/zero of=/upload/free-ram bs=1k count=8k 2>/dev/null" \
-	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo "/bin/umount /upload 2>/dev/null" \
-	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo "exec /home/httpd/html/Management/upgrade-real.cgi" \
-	>> /mnt/tmpmnt/home/httpd/html/Management/upgrade.cgi
-    /bin/echo "Root filesystem will be mounted from /dev/ram0 (a copy of /dev/mtdblock4) ..."
 fi
 
 if [ $prefroot = "nfsroot" ] ; then

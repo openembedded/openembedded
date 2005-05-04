@@ -3,11 +3,11 @@ LICENSE = "BSD"
 DESCRIPTION = "Slugimage is a small app to disassemble and reassemble \
 flash images for the Linksys NSLU2 device. It also has jffs2 support"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r2"
+PR = "r3"
 
 RDEPENDS = "perl-native"
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_1"
+SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_2"
 S = "${WORKDIR}"
 
 

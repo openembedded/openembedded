@@ -1,4 +1,4 @@
-PR = "r9"
+PR = "r10"
 
 IMAGE_BASENAME = "openslug"
 
@@ -6,7 +6,7 @@ IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
 OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATCH_DEPENDS} virtual/armeb-linux-uclibc-gcc \
-	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware nslu2-switchbox-firmware "
+	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware "
 
 DEPENDS = "virtual/kernel base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
