@@ -121,9 +121,7 @@ if [ -n "$mounted" ] ; then
 
     cd $mounted
 
-    if [ -x ./linuxrc -o -L ./linuxrc ] ; then
-	runboot=/linuxrc
-    elif [ -x ./sbin/init -o -L ./sbin/init ] ; then
+    if [ -x ./sbin/init -o -L ./sbin/init ] ; then
 	runboot=/sbin/init
     elif [ -x ./bin/init -o -L ./bin/init ] ; then
 	runboot=/bin/init

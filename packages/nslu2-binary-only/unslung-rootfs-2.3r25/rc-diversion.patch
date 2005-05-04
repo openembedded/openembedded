@@ -15,7 +15,7 @@
 +fi
 +
 +if ( [ -f /.sda1root ] || [ -f /.sdb1root ] || [ -f /.sda2root ] || [ -f /.sdb2root ] ) ; then
-+   echo "Root filesystem is running a external disk ..."
++   echo "Root filesystem is running from an external disk ..."
 +   ( cd /home/httpd/html/Management ; cp upgrade-maint.htm upgrade.htm )
 +fi
 +
