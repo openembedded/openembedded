@@ -49,6 +49,7 @@ EXTRA_OECONF = " \
         --disable-tv-bsdbt848 \
         --disable-mencoder \
 	--disable-live \
+	--disable-smb \
         \
         --enable-dynamic-plugins \
         --enable-fbdev \

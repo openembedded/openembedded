@@ -6,7 +6,7 @@ DEPENDS = "virtual/libsdl libmad libogg libvorbis zlib libpng jpeg"
 LICENSE = "GPL"
 RCONFLICTS = "mplayer"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
@@ -50,6 +50,7 @@ EXTRA_OECONF = " \
         --disable-tv-bsdbt848 \
         --disable-mencoder \
         --disable-live \
+	--disable-smb \
         \
         --enable-dynamic-plugins \
         --enable-fbdev \
