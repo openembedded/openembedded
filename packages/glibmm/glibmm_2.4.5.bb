@@ -1,11 +1,11 @@
-LICENSE = LGPL
 DESCRIPTION = "C++ bindings for the glib library."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
-DEPENDS = "gtk+ libsigc++"
-PR = "r0"
+LICENSE = "LGPL"
+DEPENDS = "gtk+ libsigc++-1.2"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/glibmm/2.4/glibmm-${PV}.tar.bz2"
 
