@@ -4,8 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 LICENSE = "LGPL"
-DEPENDS = "gtk+ libsigc++-1.2"
-PR = "r1"
+DEPENDS = "gtk+ libsigc++-2.0"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/glibmm/2.4/glibmm-${PV}.tar.bz2"
 
