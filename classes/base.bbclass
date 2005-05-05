@@ -795,7 +795,7 @@ ftp://ftp.kernel.org/pub	ftp://ftp.uk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.hk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.au.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.jp.kernel.org/pub
-ftp://.*/.*/	http://www.oesources.org/source/current
-http://.*/.*/	http://www.oesources.org/source/current
+ftp://.*/.*/	http://www.oesources.org/source/current/
+http://.*/.*/	http://www.oesources.org/source/current/
 }
 
