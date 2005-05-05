@@ -8,27 +8,27 @@
 
 if [ -f /.ramdisk ] ; then
     /bin/echo "Preferred root device is /dev/ram0 (maintenence)"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=maintenence
 elif [ -f /.sda1root ] ; then
     /bin/echo "Preferred root device is /dev/sda1 (disk 1)"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=sda1
 elif [ -f /.sda2root ] ; then
     /bin/echo "Preferred root device is /dev/sda2 (disk 1)"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=sda2
 elif [ -f /.sdb1root ] ; then
     /bin/echo "Preferred root device is /dev/sdb1 (disk 2)"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=sdb1
 elif [ -f /.sdb2root ] ; then
     /bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=sdb2
 elif [ -f /.nfsroot ] ; then
     /bin/echo "Preferred root device is NFS"
-    mounted=/mnt/tmpmnt
+    mounted=/mnt
     prefroot=nfsroot
 else
     /bin/echo "Preferred root device is jffs2"
@@ -44,12 +44,12 @@ fi
 if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot = "sdb2" ] ; then
     /bin/echo "Sleeping 10sec while waiting for disk..."
     sleep 10
-    /bin/mount -rt ext3 /dev/$prefroot /mnt/tmpmnt
-    if [ -L /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/sbin/init -o \
-	-L /mnt/tmpmnt/bin/init  -o -x /mnt/tmpmnt/bin/init ] ; then
+    /bin/mount -rt ext3 /dev/$prefroot /mnt
+    if [ -L /mnt/sbin/init -o -x /mnt/sbin/init -o \
+	-L /mnt/bin/init  -o -x /mnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
     else
-	/bin/umount /mnt/tmpmnt
+	/bin/umount /mnt
 	/bin/echo "Can't find valid rootfs on /dev/$prefroot, using jffs2 ..."
 	mounted=
 	prefroot=jffs2
@@ -59,9 +59,9 @@ fi
 if [ $prefroot = "maintenence" ] ; then
     /bin/dd if=/dev/zero of=/dev/ram0 bs=1k count=12k 2>/dev/null 
     /usr/bin/mke2fs -m 0 /dev/ram0 12288
-    /bin/mount -t ext2 /dev/ram0 /mnt/tmpmnt
-    ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt/tmpmnt )
-    /bin/rm -f /mnt/tmpmnt/linuxrc
+    /bin/mount -t ext2 /dev/ram0 /mnt
+    ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt )
+    /bin/rm -f /mnt/linuxrc
 fi
 
 if [ $prefroot = "nfsroot" ] ; then
@@ -81,14 +81,14 @@ if [ $prefroot = "nfsroot" ] ; then
     # The nfsrootloc and nfsrootopts vars can be overridden here.
     . /.nfsroot
 
-    /bin/mount $nfsrootopts $nfsrootloc /mnt/tmpmnt
+    /bin/mount $nfsrootopts $nfsrootloc /mnt
 
-    if  [ -L /mnt/tmpmnt/sbin/init -o -x /mnt/tmpmnt/sbin/init -o \
-	-L /mnt/tmpmnt/bin/init  -o -x /mnt/tmpmnt/bin/init ] ; then
+    if  [ -L /mnt/sbin/init -o -x /mnt/sbin/init -o \
+	-L /mnt/bin/init  -o -x /mnt/bin/init ] ; then
 	/bin/echo "Root filesystem will be mounted from an NFS root ..."
-	mounted=/mnt/tmpmnt
+	mounted=/mnt
     else
-	/bin/umount /mnt/tmpmnt
+	/bin/umount /mnt
 	/bin/echo "Can't find valid NFS rootfs, using jffs2 ..."
 	mounted=
 	prefroot=jffs2
