@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r20"
+PR = "r21"
 
 SRC_URI = "file://linuxrc \
 	   file://sysconfsetup \

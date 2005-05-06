@@ -135,12 +135,12 @@ if [ -n "$mounted" ] ; then
 
 else
 
-    exec /bin/init
+    exec /sbin/init
 
 fi
 
 /bin/echo "Can't chroot to $prefroot, using jffs2 ..."
-exec /bin/init
+exec /sbin/init
 
 # Last-resort fall-back - this should never be reached.
 /bin/sh
