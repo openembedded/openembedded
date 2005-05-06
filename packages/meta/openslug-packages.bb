@@ -53,6 +53,7 @@ OPENSLUG_PACKAGES = "\
 	thttpd \
 	db4 \
 	openldap \
+	ntp \
 	"
 
 # These packages only build on TARGET_OS=linux, not
