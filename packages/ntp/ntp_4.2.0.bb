@@ -6,7 +6,7 @@ HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
-PR = "r1"
+PR = "r2"
 # OE core: this is here to prevent this version of ntp from
 # changing OE distros other than openslug.  This code has
 # only been tested on openslug.  Feel free to remove these lines!
@@ -37,7 +37,10 @@ PROVIDES = "ntpdate-${PV} ntpdate-${PV}-${PR} ntpdate"
 
 # This should use rc.update
 FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/init.d/ntpdate"
-RDEPENDS_ntp-bin = perl
+#This is too painful - perl is only needed for ntp-wait and ntptrace, which are
+#perl scripts, and installing perl is an enormous overhead for a user who only
+#needs ntpq
+#RDEPENDS_ntp-bin = perl
 FILES_ntp-bin = "${bindir}/ntp-wait ${bindir}/ntpdc ${bindir}/ntpq ${bindir}/ntptime ${bindir}/ntptrace"
 FILES_ntp = "${bindir}/ntpd ${bindir}/tickadj ${sysconfdir}/ntp.conf ${sysconfdir}/init.d/ntpd"
 
