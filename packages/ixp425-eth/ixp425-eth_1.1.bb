@@ -4,14 +4,22 @@ MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPatch-1_1.zip \
 	   file://makefile.patch;patch=1 \
 	   file://ethhdr.patch;patch=1 \
-	   file://intdriven.patch;patch=1"
-PR = "r1"
+	   file://intdriven.patch;patch=1 \
+	   file://pollcontroller.patch;patch=1 \
+	   file://mm4.patch;patch=1"
+PR = "r3"
 
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
 
 inherit module
+
+# Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
+# required.  Notice that this has to be done for each separately built
+# module as well!
+KERNEL_CC += "${TARGET_CC_ARCH} -mno-thumb-interwork"
+# KERNEL_LD +=
 
 do_ixp425_c_patch_fetch () {
 	if test ! -e ${DL_DIR}/ixp425_eth.c.patch.md5; then
