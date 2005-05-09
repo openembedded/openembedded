@@ -2,7 +2,7 @@ DESCRIPTION = "The MySQL Open Source Database System"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "libs"
 DEPENDS += "ncurses mysql-native"
-PR = "r3"
+PR = "r4"
 LICENSE = "GPL"
 SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -16,7 +16,8 @@ EXTRA_OECONF = " --with-embedded-server "
 
 do_stage() {
 	autotools_stage_includes
-	oe_libinstall -a -so -C libmysql libmysqlclient libmysqld ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
+	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
 }
 
 do_install() {

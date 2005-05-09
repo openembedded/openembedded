@@ -5,7 +5,8 @@ MAINTAINER = "Jose Bernardo Silva <jbs@bandos.homelinux.com> \
 		Robert Anderson <rea@sr.unh.edu> \
 		Stephan Zalewski <stephan.zalewski@uni-dusseldorf.de>"
 LICENSE = "GPL"
-PR = "r2"
+DEPENDS = "ncurses"
+PR = "r3"
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
 	file://gpsd"
