@@ -64,27 +64,31 @@ wait_release()
 
 kill_task()
 {
-    ps_line=`ps ax | grep 'qpe$'` # no -w on busybox
-    qpe_pid=`get_pid $ps_line`
-    #echo qpe_pid = $qpe_pid >> /tmp/sd
-    target_pids=`fuser -m $DEVICE | cut -d : -f2`
-    #echo $target_pids >> /tmp/sd
-    if [ "$target_pids" = "" ]; then
-        return
-    fi
-    is_exist_qpe=`echo $target_pids | grep $qpe_pid` # no -w on busybox
-    if [ "$is_exist_qpe" = "" ]; then
-	kill -9 $target_pids
-        #echo kill -9 $target_pids >> /tmp/sd
-    else
-        #echo "found qpe!!!" >> /tmp/sd
-	target_pids=`echo $target_pids | sed -e "s/$qpe_pid//"`
-	if [ "$target_pids" != "" ]; then
-            kill -9 $target_pids
-            #echo kill -9 $target_pids >> /tmp/sd
-        fi
-        wait_release
-        exit 0
+  
+    if ! test -z "`which fuser`"
+    then  
+	    ps_line=`ps ax | grep 'qpe$'` # no -w on busybox
+	    qpe_pid=`get_pid $ps_line`
+	    #echo qpe_pid = $qpe_pid >> /tmp/sd
+	    target_pids=`fuser -m $DEVICE | cut -d : -f2`
+	    #echo $target_pids >> /tmp/sd
+	    if [ "$target_pids" = "" ]; then
+        	return
+	    fi
+	    is_exist_qpe=`echo $target_pids | grep $qpe_pid` # no -w on busybox
+	    if [ "$is_exist_qpe" = "" ]; then
+		kill -9 $target_pids
+        	#echo kill -9 $target_pids >> /tmp/sd
+	    else
+        	#echo "found qpe!!!" >> /tmp/sd
+		target_pids=`echo $target_pids | sed -e "s/$qpe_pid//"`
+		if [ "$target_pids" != "" ]; then
+        	    kill -9 $target_pids
+        	    #echo kill -9 $target_pids >> /tmp/sd
+        	fi
+        	wait_release
+        	exit 0
+	    fi
     fi
 }
 ###### for QPE ######
@@ -230,17 +234,13 @@ case "$ACTION" in
 'compeject')
 	for part in `mount | grep mmcda|awk '{print $1}'`
 	do
-		DEVICE="$part"
+		DEVICE="$part" || echo "umount $DEVICE failed!"
 	
 	        kill_task       # for QPE
 		
-       		 #fuser -k -m $DEVICE > /dev/null
-	        umount $DEVICE
-        	if [ $? != 0 ]; then
-                	usleep 500000
-                	umount $DEVICE
-        	fi
-		rm $SMB_MOUNT
+	        umount $DEVICE >/dev/null 2>&1 || echo -e "\n* * * WARNING: umount $DEVICE failed! * * *"
+
+		test -e "$SMB_MOUNT" && rm $SMB_MOUNT
 	done
         ;;
 'change')
