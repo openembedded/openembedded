@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r21"
+PR = "r22"
 
 SRC_URI = "file://linuxrc \
 	   file://sysconfsetup \
@@ -12,7 +12,8 @@ SRC_URI = "file://linuxrc \
 	   file://leds_rs_green \
 	   file://leds.h \
 	   file://leds.c \
-	   file://kern_header.c"
+	   file://kern_header.c \
+	   file://update-kernel"
 
 inherit autotools update-rc.d
 
@@ -36,6 +37,7 @@ do_install() {
 	install -d ${D}/initrd
 
 	install -m 0755 ${D}/../kern_header ${D}${sbindir}/kern_header
+	install -m 0755 ${D}/../update-kernel ${D}${sbindir}/update-kernel
 	install -m 0755 ${D}/../turnup ${D}${sbindir}/turnup
 	install -m 0755 ${D}/../leds ${D}${sbindir}/leds
 	install -m 0755 ${D}/../sysconfsetup ${D}${sysconfdir}/init.d/
