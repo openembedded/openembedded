@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r16"
+PR = "r17"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -148,6 +148,17 @@ do_configure() {
 	fi
 
 	yes '' | oe_runmake oldconfig
+}
+
+# Check the kernel is below the 1272*1024 byte limit for the c7x0
+do_compile_append() {
+	if [ "${MACHINE}" == "c7x0" ]; then
+		size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
+		if [ $size -ge 1271 ]; then
+			rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+			die "This kernel is too big for the c7x0 and will destroy your machine if you flash it!!!"
+		fi
+	fi
 }
 
 do_deploy() {
