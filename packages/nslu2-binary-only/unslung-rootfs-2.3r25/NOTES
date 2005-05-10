@@ -405,5 +405,20 @@ Added /dev/dsp and updated the README and NOTES files.
 
 Added the /sbin/slingover script for migrating packages from the 3.x locations.
 
+4.17:
 
+Developer-only release booting straight from jffs2 instead of using switchbox.
 
+4.18:
+
+A number of /linuxrc fixes.  Removed support for alternate rootfs under expert
+user control (expert users can now just edit the /linuxrc in jffs2 directly).
+
+4.19:
+
+Removed all trace of switchbox from the firmware.  This saves 128Kb of flash,
+and about 1MB of RAM.
+
+4.20:
+
+First public release of 4.x firmware.
