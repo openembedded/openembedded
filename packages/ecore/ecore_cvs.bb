@@ -8,10 +8,9 @@ LEAD_SONAME = "libecore.so"
 LICENSE = "MIT"
 PV = "${CVSDATE}"
 DEPENDS = "edb eet evas freetype edb-native"
-PR = "r5"
+PR = "r6"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore \
-           file://no-x-test.patch;patch=1"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
 S = "${WORKDIR}/ecore"
 
 inherit autotools binconfig
