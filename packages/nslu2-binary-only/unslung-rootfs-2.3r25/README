@@ -34,7 +34,7 @@ PRE-INSTALLATION CONSIDERATIONS
           loading things into memory and starting Linux.  By testing your
           ability to telnet into Redboot, you are ensuring that if you injure
           your NSLU2 with a bad flash you should be able to follow the "How
-	  To Recover From A Bad Flash" instructions at
+          To Recover From A Bad Flash" instructions at
 
           http://www.nslu2-linux.org/wiki/HowTo/RecoverFromABadFlash
 
@@ -42,7 +42,7 @@ PRE-INSTALLATION CONSIDERATIONS
      It is possible to make changes to the root filesystem in the internal
      flash storage, but the space is very limited.  In fact, just running
      "ipkg update" on an NSLU2 which does not have an external disk attached
-     is likely to render the NSLU2 unusable due to filling up the flash (if
+     will most likely render the NSLU2 unusable due to filling up the flash (if
      this happens then you will need to follow the recovery instructions in
      the previous step).  So unless you are an expert, then use an external
      disk.
@@ -86,9 +86,10 @@ FIRMWARE INSTALLATION DETAILS
           disks attached.  This CANNOT be emphasized enough.  Are you sure you
           unplugged the disks before powering up?  If so, you may continue.
 
-2) Access the Web interface '''using admin as username, and admin as password.'''
-   ''None of the users you have previously defined will run as I guess they are
-   all stored in the passwd file that is on the disk you just disconnected.''
+2) Access the Web interface.  Note that you should use the username "admin" and
+     password "admin" for the web interface at this point (as no disks are
+     attached, the default username and password is the only way to access the 
+     Management web pages).
 
      2-a) If you are installing Unslung 4.x onto an NSLU2 unit with Linksys
           standard firmware *or* UNSLUNG 1.x or 2.x, flash unslung-4.x.bin as
@@ -100,17 +101,15 @@ FIRMWARE INSTALLATION DETAILS
           maintenance mode before you can use the web interface to flash a new
           version.  Just click the "Enter Maintenance Mode" link on the web
           interface "Upgrade Firmware" page, wait for the NSLU2 to reboot, and
-          then flash the new firmware in the normal manner (using the web
-          interface "Upgrade Firmware" page).
+          then flash the new firmware in the normal manner.
 
      - During firmware flashing, the top LED - Ready/Status - flashes red and
-          green (approximately 5 minutes), and you should receive a Javascript
-          message that indicates that the flash of the firmware was successful.
+          green (approximately 5 minutes, but can be much longer), and you
+          should receive a Javascript message that indicates that the flash
+          of the firmware was successful.  
 
-          During flashing, some browsers may hog 100% CPU, and the flashing may
-          take a long time, longer than 5 mins as reported by the web
-          interface. You are advised not to have other activities going on at
-          the client while flashing.
+     - During flashing, some browsers may hog 100% CPU, and you are advised not
+          to have other activities going on at the client while flashing.
 
      - The NSLU2 will reboot after the flashing is complete.
 
@@ -118,17 +117,17 @@ FIRMWARE INSTALLATION DETAILS
 
 4) Verify your NSLU2 is working normally again at this point in the web
      interface.  In  particular, you should ensure that all your disks are still
-     recognized as they were before you updated the firmware (including
-     any shares and data you had previously stored.)  If not, DO NOT CONTINUE.
+     recognized as they were before you updated the firmware (including any
+     shares and data you had previously stored.)  If not, DO NOT CONTINUE.
      You may want to check out "How To Troubleshoot A Drive Missing Condition"
      at:
 
      http://www.nslu2-linux.org/wiki/HowTo/TroubleshootADriveMissingCondition
 
-     - If you are not "unslinging", you can stop at this point.  The only
-          reason for not unslinging would be in the case of a re-flash of the
-          SAME firmware.  Even if this is a point firmware upgrade, you will
-          need to unsling.
+     - If you are not "unslinging", you can stop at this point.  *HOWEVER!*,   
+          the only reason for not unslinging would be in the case of a re-flash
+          of the SAME firmware.  Even if this is a point firmware upgrade, you
+          will need to unsling.
 
      ***** If you do not choose to do the unslinging procedure described below,
           DO NOT install packages unless you are SURE you know what you are
@@ -153,23 +152,18 @@ booting in the future.
 To run the unsling-script you have to be logged in as root (with a telnet
 session).
 
-NOTE: There are two root-passwords. One is saved in a internal file called
+NOTE:  There are two root-passwords.  One is saved in a internal file called
 /usr/local/passwd (we know this one - it's "uNSLUng" and used when you boot
 without a attached harddisk) the other is stored in a external file called
 /share/hdd/conf/passwd (we don't know this one - it's used when you boot with a
-external harddisk attached). Later in the process you can change both of
-them. That means: Everytime you boot WITHOUT a attached harddisk you gain
-root-access with the "uNSLUng" password. If you boot WITH an attached harddisk,
+external harddisk attached).  Later in the process you can change both of
+them. That means:  Everytime you boot WITHOUT a attached harddisk you gain
+root-access with the "uNSLUng" password.  If you boot WITH an attached harddisk,
 you won't have access until you change the file /share/hdd/conf/passwd.
 
 1) Power up the NSLU2 without any disks connected.
 
-     - This only has to be done when you update the firmware, and because
-          UNSLUNG 3.x now runs completely from the internal flash memory, it is
-          no longer necessary to "unsling" to an external disk unless you wish
-          to store downloadable packages on that disk - which you will probably
-          want to do, because the internal flash memory only has enough spare
-          room for one or two very small packages.
+     - This only has to be done when you update the firmware.
 
      ***** To reiterate, you should not have a disk plugged in at this stage.
           If you powered up your NSLU2 with a disk attached, shutdown the
@@ -180,7 +174,7 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 
      - If you had previously changed the IP address of your NSLU2 from
           192.168.1.77 to something else, then you should use that new IP
-          address to enable telnet.  Also note that you should use the username
+          address to enable telnet.  Again note that you should use the username
           "admin" and password "admin" for the web interface at this point (as
           no disks are attached, the default username and password is the only
           way to access the Management web pages).
@@ -216,21 +210,21 @@ you won't have access until you change the file /share/hdd/conf/passwd.
      ***** Unsling will not change the password on your disk, so if you had
           previously changed the password on a disk, then your password will
           not be changed.  Also note that simply editing the /etc/passwd file
-          is not enough to permanently change a password.  See
-
-          http://www.nslu2-linux.org/wiki/HowTo/ChangePasswordsFromTheCommandLine
+          is not enough to permanently change a password.  See:
+         
+     http://www.nslu2-linux.org/wiki/HowTo/ChangePasswordsFromTheCommandLine
 
 6) If you wish to migrate your packages from the old Unslung 3.x location in
      the /share/hdd/conf (disk1) or /share/flash/conf (disk2) partitions to the
-     new Unslung 4.x location on the data partition, then run:
+     new Unslung 4.x location on the data partition, then run:  
      "/sbin/slingover disk1" (if your packages were previously on disk1 and you
      ran "/sbin/unsling disk1" in step 5) or "/sbin/slingover disk2" (if your
      packages were previously on disk2 and you ran "/sbin/unsling disk2" in
      step 5).
 
      - If your packages were not stored in /share/hdd/conf or /share/flash/conf
-	  (e.g. you had previously moved your packages from the conf partition
- 	  to the data partition), then all bets are off and you will need to
+          (e.g. you had previously moved your packages from the conf partition
+          to the data partition), then all bets are off and you will need to
           read the /sbin/slingover script and perform the appropriate steps
           manually.
 
