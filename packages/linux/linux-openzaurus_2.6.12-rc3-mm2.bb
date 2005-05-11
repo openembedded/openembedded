@@ -1,4 +1,4 @@
-DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices."
+DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
@@ -25,7 +25,7 @@ JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files/"
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.12-rc3.bz2;patch=1 \
            ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.12-rc3/2.6.12-rc3-mm2/2.6.12-rc3-mm2.bz2;patch=1 \
-	   ${RPSRC}/machtype_update-r1.patch;patch=1 \
+           ${RPSRC}/machtype_update-r1.patch;patch=1 \
            ${RPSRC}/corgi_kbd3-r6.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r1.patch;patch=1 \
@@ -37,11 +37,16 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/ide_drivermodel-r0.patch;patch=1 \	   
            ${RPSRC}/corgi_power-r17.patch;patch=1 \
            ${RPSRC}/corgi_power1-r1.patch;patch=1 \
-           ${RPSRC}/mmc_sd-r4.patch;patch=1 \
+           ${RPSRC}/mmc_sd-r5.patch;patch=1 \
            ${RPSRC}/corgi_snd-r6.patch;patch=1 \
            ${RPSRC}/w100_split-r8.patch;patch=1 \
            ${RPSRC}/pxa_i2c-r1.patch;patch=1 \
-	   ${RPSRC}/spitz_mtd-r0.patch;patch=1 \
+           ${RPSRC}/spitz_mtd-r0.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_base-r11.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_bl-r0.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_pcmcia-r0.patch;patch=1 \
+           ${RPSRC}/ipaq/pxa_keys-r0.patch;patch=1 \
+           ${RPSRC}/ipaq/tsc2101-r5.patch;patch=1 \
            ${DOSRC}/pxa2xx-ir-dma-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r2.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r2.patch;patch=1 \
@@ -52,6 +57,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            file://pxa-serial-hack.patch;patch=1 \ 
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \	   
            file://defconfig-c7x0 \
+           file://defconfig-ipaq-pxa-2.6 \
            file://defconfig-collie \
            file://defconfig-poodle \
            file://defconfig-tosa "
@@ -87,15 +93,6 @@ ALLOW_EMPTY = 1
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
 
-##############################################################
-# Create the kernel command line (mtdparts deprecated)
-#
-#CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
-#CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
-#CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
-#CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) mem=64M"
-#CMDLINE_MTDPARTS_tosa     = "mtdparts=sharpsl-nand:7168k@0k(smf),28672k@7168k(root),-(home) EQUIPMENT=2"
-
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
@@ -107,7 +104,7 @@ export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
 export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
 
 CMDLINE_MEM_collie = "mem=${mem}M"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_MEM}"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM}"
 
 ###############################################################
 # Enable or disable ELPP via local.conf - default is "no"
