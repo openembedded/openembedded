@@ -9,9 +9,9 @@ PR="r3"
 SRC_URI += "file://remove-popup.patch;patch=1;pnum=1"
 SRC_URI += "file://desktop-categories.patch;patch=1"
 
-DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons gpe-appmgr"
+DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
-RDEPENDS_gpe-conf-panel = "gpe-conf gpe-appmgr"
+RDEPENDS_gpe-conf-panel = "gpe-conf"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
 		${datadir}/applications/gpe-conf-* ${datadir}/gpe/pixmaps \
 		${datadir}/gpe-conf"

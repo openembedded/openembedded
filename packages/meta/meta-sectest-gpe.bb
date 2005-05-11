@@ -31,7 +31,6 @@ gpe-task-base = "\
     gpe-autostarter \
     gpe-bootsplash \
     libgtkstylus \
-    gpe-appmgr \
     detect-stylus"
 
 RDEPENDS_gpe-task-base := "gdk-pixbuf-loader-png \
@@ -83,7 +82,8 @@ sectest-task-apps = "\
     dsniff \
     prismstumbler \
     tcpdump \
-    miniclipboard"
+    kismet \
+	miniclipboard"
 
 RDEPENDS_sectest-task-apps := "${sectest-task-apps}"
 DEPENDS += " ${sectest-task-apps}"
