@@ -29,7 +29,6 @@ gpe-task-base = "\
     gpe-icons \
     gpe-confd \
     gpe-autostarter \
-    gpe-bootsplash \
     libgtkstylus \
     detect-stylus"
 
