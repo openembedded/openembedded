@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r5"
+PR = "r6"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -35,14 +35,14 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/corgi_base_extras1-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/ide_drivermodel-r0.patch;patch=1 \	   
-           ${RPSRC}/corgi_power-r17.patch;patch=1 \
+           ${RPSRC}/corgi_power-r18.patch;patch=1 \
            ${RPSRC}/corgi_power1-r1.patch;patch=1 \
            ${RPSRC}/mmc_sd-r5.patch;patch=1 \
            ${RPSRC}/corgi_snd-r6.patch;patch=1 \
            ${RPSRC}/w100_split-r8.patch;patch=1 \
            ${RPSRC}/pxa_i2c-r1.patch;patch=1 \
            ${RPSRC}/spitz_mtd-r0.patch;patch=1 \
-           ${RPSRC}/ipaq/hx2750_base-r11.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_base-r12.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_bl-r0.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_pcmcia-r0.patch;patch=1 \
            ${RPSRC}/ipaq/pxa_keys-r0.patch;patch=1 \
@@ -160,7 +160,7 @@ do_compile_append() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"
