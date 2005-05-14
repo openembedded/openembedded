@@ -47,7 +47,8 @@ OPIE_BASE_APPS = "opie-packagemanager opie-keytabs opie-console opie-clock \
                   opie-citytime opie-backup"
 
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime \
-                      opie-sysinfo opie-networksettings opie-button-settings"
+                      opie-sysinfo opie-networksettings opie-button-settings \
+					  opie-icon-reload"
 
 OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 

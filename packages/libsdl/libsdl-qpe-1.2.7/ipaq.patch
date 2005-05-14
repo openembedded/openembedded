@@ -1,16 +1,15 @@
-diff -Ndru SDL-1.2.7_old/src/video/qtopia/Makefile.am SDL-1.2.7/src/video/qtopia/Makefile.am
---- SDL-1.2.7_old/src/video/qtopia/Makefile.am	2005-03-08 15:13:16.000000000 -0200
-+++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-03-08 15:16:17.000000000 -0200
+diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/Makefile.am tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/Makefile.am
+--- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/Makefile.am	2005-05-13 22:34:49.000000000 -0200
++++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/Makefile.am	2005-05-13 22:36:41.000000000 -0200
 @@ -22,4 +22,4 @@
  # overwrite USER variables
  CXXLD = $(CC)
  CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 -	$(AM_LDFLAGS) $(LDFLAGS) -lsupc++ -o $@
 +	$(AM_LDFLAGS) $(LDFLAGS) -lopiecore2 -lsupc++ -o $@
- 		$(TAGS_FILES) $(LISP)
-diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
---- SDL-1.2.7_old/src/video/qtopia/SDL_QWin.cc	2005-03-08 15:13:16.000000000 -0200
-+++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-03-08 15:16:17.000000000 -0200
+diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+--- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-05-13 22:34:49.000000000 -0200
++++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-05-13 22:36:41.000000000 -0200
 @@ -29,8 +29,11 @@
  #include "SDL_QWin.h"
  #include <qapplication.h>
@@ -73,9 +72,9 @@ diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_QWin.cc SDL-1.2.7/src/video/qtopia
      default:
        scancode = SDLK_UNKNOWN;
        break;
-diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
---- SDL-1.2.7_old/src/video/qtopia/SDL_sysvideo.cc	2005-03-08 15:13:15.000000000 -0200
-+++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-03-08 15:43:30.000000000 -0200
+diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+--- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-05-13 22:34:49.000000000 -0200
++++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-05-13 22:42:03.000000000 -0200
 @@ -45,6 +45,7 @@
  #include <qapplication.h>
  #include <qpe/qpeapplication.h>
@@ -123,13 +122,17 @@ diff -Ndru SDL-1.2.7_old/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.7/src/video/qt
        }
        fclose(fp);
      } else {
-@@ -679,6 +691,11 @@
+@@ -679,6 +691,15 @@
      if (machine == MACHINE_SHARP_SL5500)
        qteRotation = 3;
  
 +    // HP IPaq
-+    if ( ODevice::inst ( )-> series ( ) == Model_iPAQ )
++    if ( ODevice::inst( )-> series ( ) == Model_iPAQ ) {
 +      qteRotation = 3;
++    }
++    if ( ODevice::inst ( )-> model ( ) == Model_iPAQ_H38xx ) {
++      qteRotation = 1;
++    }
 +
 +    
      // SL-B500 用ハック(とりあえず、ね)

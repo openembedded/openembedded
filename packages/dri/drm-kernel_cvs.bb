@@ -10,12 +10,12 @@ PV = "0.0cvs${CVSDATE}"
 S = "${WORKDIR}/drm"
 
 do_compile() {
-	oe_runmake -C linux LINUXDIR="${KERNEL_SOURCE}"
+	oe_runmake -C linux-core LINUXDIR="${KERNEL_SOURCE}"
 }
 
 do_install() {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm
-	cd linux
+	cd linux-core
 	for i in *.ko; do install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm/; done
 }
 

@@ -25,6 +25,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://below.patch;patch=1 \
 	   file://fbset.patch;patch=1 \
 	   file://mount-all-type.patch;patch=1 \
+           file://celf-ash-builtins.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \

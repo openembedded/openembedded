@@ -87,7 +87,6 @@ opie-gutenbrowser \
 opie-helpbrowser \
 opie-irc \
 opie-keypebble \
-opie-mobilemsg \
 opie-odict \
 opie-oxygen \
 opie-rdesktop \

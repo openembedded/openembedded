@@ -10,7 +10,7 @@ SRC_URI = "http://www.tzi.de/~plasmahh/orinoco-0.13e-SN-6.tar.bz2 \
            file://orinoco_cs.conf"
 S = "${WORKDIR}/orinoco-0.13e-SN-6"
 
-PR = "r2"
+PR = "r3"
 
 # use only w/ kernel 2.6
 DEFAULT_PREFERENCE_arm = "-1"

@@ -5,7 +5,7 @@
 
 --- /dev/null
 +++ orinoco-0.13e-SN-6/spectrum_cs.c
-@@ -0,0 +1,1220 @@
+@@ -0,0 +1,1209 @@
 +/*
 + * spectrum_cs.c
 + *
@@ -284,8 +284,6 @@
 +#define CS_CHECK(fn, ret) \
 +       do { last_fn = (fn); if ((last_ret = (ret)) != 0) goto cs_failed; } while (0)
 +
-+static void spectrum_cs_error(client_handle_t handle, int func, int ret);
-+
 +/*
 + * Reset the card using configuration registers COR and CCSR.
 + * If IDLE is 1, stop the firmware, so that it can be safely rewritten.
@@ -339,7 +337,7 @@
 +	return 0;
 +
 +      cs_failed:
-+	spectrum_cs_error(link->handle, last_fn, last_ret);
++	cs_error(link->handle, last_fn, last_ret);
 +	return -ENODEV;
 +}
 +
@@ -606,15 +604,6 @@
 +/* PCMCIA stuff     						    */
 +/********************************************************************/
 +
-+/* In 2.5 (as of 2.5.69 at least) there is a cs_error exported which
-+ * does this, but it's not in 2.4 so we do our own for now. */
-+static void
-+spectrum_cs_error(client_handle_t handle, int func, int ret)
-+{
-+	error_info_t err = { func, ret };
-+	pcmcia_report_error(handle, &err);
-+}
-+
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
 +/* Remove zombie instances (card removed, detach pending) */
 +static void
@@ -705,7 +694,7 @@
 +
 +	ret = pcmcia_register_client(&link->handle, &client_reg);
 +	if (ret != CS_SUCCESS) {
-+		spectrum_cs_error(link->handle, RegisterClient, ret);
++		cs_error(link->handle, RegisterClient, ret);
 +		spectrum_cs_detach(link);
 +		return NULL;
 +	}
@@ -1007,7 +996,7 @@
 +	return;
 +
 + cs_failed:
-+	spectrum_cs_error(link->handle, last_fn, last_ret);
++	cs_error(link->handle, last_fn, last_ret);
 +
 + failed:
 +	spectrum_cs_release(link);
@@ -5798,7 +5787,7 @@
 +0x02,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x06,0x00,0x02,0x00,
 +0x01,0x00,0x02,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x33,0x05,
 +};
---- orinoco-0.13e-SN-6/Makefile~add-spectrum-support
+--- orinoco-0.13e-SN-6/Makefile~add-spectrum-support.patch
 +++ orinoco-0.13e-SN-6/Makefile
 @@ -20,7 +20,7 @@
  endif

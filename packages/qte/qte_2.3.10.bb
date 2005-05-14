@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
    	   file://qpe.patch;patch=1 \
@@ -27,7 +27,8 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
 	   file://qte-fix-iconsize.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://key.patch;patch=1 \
-	   file://switches.h "
+	   file://switches.h \
+           file://bidimetrics.patch;patch=5 "
 
 SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 "
@@ -92,8 +93,8 @@ export SYSCONF_LINK = "${CCLD}"
 export SYSCONF_SHLIB = "${CCLD}"
 export SYSCONF_CFLAGS = "${CFLAGS}"
 export SYSCONF_LINK_SHLIB = "${CCLD}"
-export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES}"
-#export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES}"
+export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
+#export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_LFLAGS_ramses = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
