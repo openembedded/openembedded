@@ -20,8 +20,6 @@ EXTRA_OECONF_append_h3600 = " --with-driver=sa1100 --without-x"
 EXTRA_OECONF_append_beagle = " --with-driver=sa1100 --without-x"
 EXTRA_OECONF_append_simpad = " --with-driver=sa1100 --without-x"
 
-export TOPDIR = "${STAGING_KERNEL_DIR}"
-
 do_compile() {
 	cd drivers && oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 }
