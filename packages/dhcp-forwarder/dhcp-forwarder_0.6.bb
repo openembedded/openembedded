@@ -3,11 +3,11 @@ DESCRIPTION = "This program is used to forward DHCP and BOOTP messages between t
  networks with different broadcast domains. \
  It works better with ppp - and especially with ipsec over ppp - than \
  dhcp-relay from ISC and has a smaller foot print."
-HOMEPAGE = "http://www-user.tu-chemnitz.de/~ensc/dhcp-fwd/"
+HOMEPAGE = "http://www.nongnu.org/dhcp-fwd/"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
  
-SRC_URI = "http://www-user.tu-chemnitz.de/~ensc/dhcp-fwd/files/dhcp-forwarder-0.6.tar.bz2 \
+SRC_URI = "http://savannah.nongnu.org/download/dhcp-fwd/dhcp-forwarder-${PV}.tar.bz2 \
 	file://init \
 	file://dhcp-fwd.cfg"
 

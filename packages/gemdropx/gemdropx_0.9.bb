@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.newbreedsoftware.com/gemdropx/"
 DEPENDS = "virtual/libqpe libsdl-qpe"
 PR = "r3"
 
-SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.billsgames.com/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
            file://directories.patch;patch=1 \
            file://icon.png"
 

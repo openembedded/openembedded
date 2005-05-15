@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqpe libsdl-qpe libsdl-image libsdl-mixer"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/x/vectoroids/src/vectoroids-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.billsgames.com/unix/x/vectoroids/src/vectoroids-${PV}.tar.gz"
 
 inherit palmtop
 
