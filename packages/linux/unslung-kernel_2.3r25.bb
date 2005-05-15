@@ -4,7 +4,7 @@ include nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
 MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
-PR = "r16"
+PR = "r17"
 
 KERNEL_SUFFIX = "unslung"
 
@@ -20,6 +20,7 @@ SRC_URI += "file://limit1gb.patch;patch=1 \
 	    file://anonymiser.patch;patch=1 \
 	    file://ppp_mppe.patch;patch=1 \
 	    file://nfs-blocksize.patch;patch=1 \
+	    file://pl2303.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
 # file://pl2303.patch;patch=1
