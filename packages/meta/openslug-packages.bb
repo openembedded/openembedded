@@ -44,6 +44,7 @@ OPENSLUG_PACKAGES = "\
 	bluez-utils-nodbus bridge-utils \
 	coreutils cvs\
 	expat \
+	less \
 	miau microcom mt-daapd mysql \
 	nail \
 	openssh \
