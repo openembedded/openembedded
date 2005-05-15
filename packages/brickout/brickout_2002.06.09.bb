@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-image"
 PR = "r4"
 
-SRC_URI = "ftp://ftp.sonic.net/pub/users/nbs/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.billsgames.com/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
            file://directories.patch;patch=1"
 
 inherit palmtop
