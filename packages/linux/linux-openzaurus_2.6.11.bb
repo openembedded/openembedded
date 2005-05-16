@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r19"
+PR = "r20"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -39,7 +39,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/corgi_irda-r2.patch;patch=1 \
            ${RPSRC}/corgi_base_extras1-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
-           ${RPSRC}/corgi_power-r20.patch;patch=1 \
+           ${RPSRC}/corgi_power-r22.patch;patch=1 \
            ${RPSRC}/corgi_power1-r1.patch;patch=1 \
            ${RPSRC}/ide_fixes-r1.patch;patch=1 \
            ${RPSRC}/mmc_sd-r4.patch;patch=1 \
