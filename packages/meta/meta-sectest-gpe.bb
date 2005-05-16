@@ -82,6 +82,9 @@ sectest-task-apps = "\
     prismstumbler \
     tcpdump \
     kismet \
+    hydra \
+    thcrut \
+    driftnet \		
 	miniclipboard"
 
 RDEPENDS_sectest-task-apps := "${sectest-task-apps}"
