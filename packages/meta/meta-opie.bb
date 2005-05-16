@@ -266,11 +266,13 @@ opie-mediaplayer1-libmadplugin \
 opie-mediaplayer1-libmodplugin \
 opie-mediaplayer1-libtremorplugin \
 opie-mediaplayer1-libwavplugin \
+opie-mediaplayer1-ogg-mp3 \
 opie-mediaplayer2 \
 opie-mediaplayer2-skin-default \
 opie-mediaplayer2-skin-default-landscape \
 opie-mediaplayer2-skin-pod \
 opie-mediaplayer2-skin-techno \
+opie-mediaplayer2-divx \
 opie-powerchord \
 opie-recorder \
 opie-tonleiter \

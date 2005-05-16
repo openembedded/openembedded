@@ -1,15 +1,17 @@
-diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/Makefile.am tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/Makefile.am
---- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/Makefile.am	2005-05-13 22:34:49.000000000 -0200
-+++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/Makefile.am	2005-05-13 22:36:41.000000000 -0200
+Index: SDL-1.2.7/src/video/qtopia/Makefile.am
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/Makefile.am	2005-05-16 14:21:01.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-05-16 14:24:02.000000000 +0200
 @@ -22,4 +22,4 @@
  # overwrite USER variables
  CXXLD = $(CC)
  CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 -	$(AM_LDFLAGS) $(LDFLAGS) -lsupc++ -o $@
 +	$(AM_LDFLAGS) $(LDFLAGS) -lopiecore2 -lsupc++ -o $@
-diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
---- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-05-13 22:34:49.000000000 -0200
-+++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-05-13 22:36:41.000000000 -0200
+Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_QWin.cc	2005-05-16 14:21:01.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/SDL_QWin.cc	2005-05-16 14:24:02.000000000 +0200
 @@ -29,8 +29,11 @@
  #include "SDL_QWin.h"
  #include <qapplication.h>
@@ -72,9 +74,10 @@ diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_QWin.
      default:
        scancode = SDLK_UNKNOWN;
        break;
-diff -uNrd tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
---- tmp/work/libsdl-qpe-1.2.7-r4_old/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-05-13 22:34:49.000000000 -0200
-+++ tmp/work/libsdl-qpe-1.2.7-r4/SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-05-13 22:42:03.000000000 -0200
+Index: SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc
+===================================================================
+--- SDL-1.2.7.orig/src/video/qtopia/SDL_sysvideo.cc	2005-05-16 14:21:00.000000000 +0200
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-05-16 14:24:02.000000000 +0200
 @@ -45,6 +45,7 @@
  #include <qapplication.h>
  #include <qpe/qpeapplication.h>
