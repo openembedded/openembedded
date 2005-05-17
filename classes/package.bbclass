@@ -82,7 +82,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 
 python populate_packages () {
-	import glob, stat, errno, re, copy
+	import glob, stat, errno, re
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -122,7 +122,7 @@ python populate_packages () {
 		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	for pkg in packages.split():
-		localdata = copy.deepcopy(d)
+		localdata = bb.data.createCopy(d)
 		root = os.path.join(workdir, "install", pkg)
 
 		os.system('rm -rf %s' % root)
@@ -457,7 +457,7 @@ python package_do_pkgconfig () {
 			for file in files:
 				m = pc_re.match(file)
 				if m:
-					pd = {}
+					pd = bb.data.init()
 					name = m.group(1)
 					pkgconfig_provided[pkg].append(name)
 					path = os.path.join(root, file)

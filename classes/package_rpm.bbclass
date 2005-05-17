@@ -108,8 +108,7 @@ python do_package_rpm () {
 	packages = bb.data.expand(packages, d)
 
 	for pkg in packages.split():
-		from copy import copy, deepcopy
-		localdata = deepcopy(d)
+		localdata = bb.data.createCopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
 
 		bb.data.setVar('ROOT', '', localdata)

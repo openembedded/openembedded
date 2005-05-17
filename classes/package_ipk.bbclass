@@ -98,8 +98,7 @@ python do_package_ipk () {
 		return
 
 	for pkg in packages.split():
-		from copy import deepcopy
-		localdata = deepcopy(d)
+		localdata = bb.data.createCopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
 
 		bb.data.setVar('ROOT', '', localdata)

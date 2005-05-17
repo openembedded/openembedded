@@ -314,9 +314,9 @@ addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
 do_fetch[nostamp] = "1"
 python base_do_fetch() {
-	import sys, copy
+	import sys
 
-	localdata = copy.deepcopy(d)
+	localdata = bb.data.createCopy(d)
 	bb.data.update_data(localdata)
 
 	src_uri = bb.data.getVar('SRC_URI', localdata, 1)
@@ -393,9 +393,9 @@ def oe_unpack_file(file, data, url = None):
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
 python base_do_unpack() {
-	import re, copy, os
+	import re, os
 
-	localdata = copy.deepcopy(d)
+	localdata = bb.data.createCopy(d)
 	bb.data.update_data(localdata)
 
 	src_uri = bb.data.getVar('SRC_URI', localdata)
