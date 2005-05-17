@@ -12,3 +12,8 @@ inherit kernel
 
 COMPATIBLE_HOST = "i.86.*-linux"
 KERNEL_IMAGETYPE = "bzImage"
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+}
+
