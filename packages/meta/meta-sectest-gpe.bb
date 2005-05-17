@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim sectest-task-apps gpe-task-games 
 DESCRIPTION = "Meta-package for GPE Security Testing Image"
 MAINTAINER = "Bob Davies tyggerbob@rogers.com>"
-PR = "r4"
+PR = "r5"
 
 ALLOW_EMPTY = 1
 
