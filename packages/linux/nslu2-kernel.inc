@@ -148,7 +148,7 @@ python () {
     # bb.note("N2K_SRCURI := %s" % ' '.join(patch_uri))
     bb.data.setVar("N2K_FILESPATH", ':'.join(filepath), d)
     # bb.note("N2K_FILESPATH := %s" % ' '.join(filepath))
-    bb.data.setVar("DEFAULT_PREFERENCE", pref-mmac)
+    bb.data.setVar("DEFAULT_PREFERENCE", pref-mmac, d)
     # bb.note("DEFAULT_PREFERENCE := %s" % pref-mmac)
 }
 
