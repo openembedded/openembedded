@@ -324,7 +324,7 @@ python base_do_fetch() {
 		return 1
 
 	try:
-		bb.fetch.init(src_uri.split())
+		bb.fetch.init(src_uri.split(),d)
 	except bb.fetch.NoMethodError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("No method: %s" % value)
@@ -438,7 +438,7 @@ python base_do_patch() {
 		if not "patch" in parm:
 			continue
 
-		bb.fetch.init([url])
+		bb.fetch.init([url], d)
 		url = bb.encodeurl((type, host, path, user, pswd, []))
 		local = os.path.join('/', bb.fetch.localpath(url, d))
 
