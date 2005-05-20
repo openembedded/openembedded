@@ -21,6 +21,7 @@ ac_cv_sizeof_short=${ac_cv_sizeof_short=2}
 ac_cv_sizeof_size_t=${ac_cv_sizeof_size_t=4}
 ac_cv_sizeof_ssize_t=${ac_cv_sizeof_ssize_t=4}
 ac_cv_sizeof_void_p=${ac_cv_sizeof_void_p=4}
+ac_cv_sizeof_float=${ac_cv_sizeof_float=4}
 apr_cv_process_shared_works=${apr_cv_process_shared_works=no}
 bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 db_cv_alignp_t=${db_cv_alignp_t='unsigned long'}
