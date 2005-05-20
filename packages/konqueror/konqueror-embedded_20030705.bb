@@ -5,7 +5,7 @@ DEPENDS = "libqpe-opie openssl pcre"
 LICENSE = "LGPL/GPL"
 PR = "r3"
 
-SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/konqueror-embedded-snapshot-${PV}.tar.gz \
+SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedded-snapshot-${PV}.tar.gz \
            file://opie1.patch;patch=1 \
            file://packing.patch;patch=1 \
 	   file://include_qconfig.patch;patch=1 \
