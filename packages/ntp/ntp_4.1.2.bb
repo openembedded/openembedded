@@ -6,7 +6,7 @@ HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.1/ntp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -18,7 +18,7 @@ inherit autotools
 EXTRA_OECONF = "--without-openssl"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
-PACKAGES = "ntpdate ntp"
+PACKAGES =+ "ntpdate"
 
 FILES_ntpdate = "${bindir}/ntpdate /etc/init.d/ntpdate"
 

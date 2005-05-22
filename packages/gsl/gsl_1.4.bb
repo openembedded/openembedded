@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.mirror.ac.uk/sites/sources.redhat.com/pub/gsl/gsl-${PV}.tar.gz"
+SRC_URI = "${GNU_MIRROR}/gsl/gsl-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
