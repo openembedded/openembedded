@@ -16,6 +16,7 @@ inherit kernel
 PAKCAGE_ARCH = "ipaqsa"
 PACKAGE_ARCH_jornada56x = "jornada56x"
 PACKAGE_ARCH_jornada720 = "jornada720"
+PACKAGE_ARCH_simpad     = "simpad"
 
 do_configure() {
 	install -m 0644 ${S}/arch/arm/configs/${MACHINE}_defconfig ${S}/.config || die "No default configuration for ${MACHINE} available."

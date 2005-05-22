@@ -10,8 +10,6 @@ SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
            file://description"
 S = "${WORKDIR}/Phalanx-XXII"
 
-palmtopdir = "/opt/QtPalmtop"
-
 do_compile() {
 	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" STRIP=echo LD="${CC}"
 }
