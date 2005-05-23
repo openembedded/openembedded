@@ -1,63 +1,143 @@
 #!/bin/sh
-if [ ! -e /etc/linksysconf ]
+# This script is run once when the system first boots.  Its sole
+# purpose is to create /etc/default/sysconf (the overall system
+# configuration file) and other files derived from this.
+#
+# The script runs immediately after S10checkroot.sh - this is the
+# point at which the rootfs will be mounted rw even if the kernel
+# booted with it ro.
+#
+# rm or mv the file to run this again.  If this is done the
+# following configuration files will be rewritten:
+#
+# /etc/default/sysconf
+# /etc/hostname
+# /etc/defaultdomain
+# /etc/network/interfaces
+# /etc/resolv.conf
+#
+test -r /etc/default/sysconf && exit 0
+#
+# /etc/default/functions contains useful utility functions - it's
+# in a separate file so that it can be loaded by any script
+. /etc/default/functions
+#
+# Utility to deal with absence of DNS configuration
+echodns(){
+	local dns
+	if test $# -gt 0
+	then
+		for dns in "$@"
+		do
+			echo "nameserver $dns"
+		done
+	fi
+}
+#
+# The SysConf device must exist in /dev at this point for this script
+# to work.
+#
+# It is important not to hard-wire the name of the device because of
+# the posibility of changing the flash partition layout.
+sysdev="$(mtdev SysConf)"
+if test -n "$sysdev" -a -c "$sysdev"
 then
-
-#  Ok this may be a little hack for now
-#  but Make sure the kernel module info is updated
-#  So the driver can actually load the first time
-   /usr/sbin/update-modules
-
-#  Set the default root password so ppl can ssh in
-   sed -i -e 's/root::/root:uf8TRGX9WDuH2:/' /etc/passwd
-
-   dd if=/dev/mtdblock1 of=/etc/linksysconf
-   cat <<EOF > /etc/original-network-settings
-# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
-
-# The loopback interface
-auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet static
-EOF
-
-   # Use the bootproto key to set "static" or "dhcp", then do other stuff based on that.
-   # strings /etc/linksysconf | grep bootproto >> /etc/original-network-settings
-   # sed -i -e 's/bootproto=//' /etc/original-network-settings
-
-   strings /etc/linksysconf | grep ip_addr >> /etc/original-network-settings
-   strings /etc/linksysconf | grep ^netmask >> /etc/original-network-settings
-   strings /etc/linksysconf | grep ^gateway=. >> /etc/original-network-settings
-   strings /etc/linksysconf | grep hw_addr >> /etc/original-network-settings
-   sed -i -e 's/ip_addr=/        address /' /etc/original-network-settings
-   sed -i -e 's/netmask=/        netmask /' /etc/original-network-settings
-   sed -i -e 's/gateway=/        gateway /' /etc/original-network-settings
-   sed -i -e 's/hw_addr=/        hwaddress ether /' /etc/original-network-settings
-
-   mv /etc/network/interfaces /etc/network/interfaces.old
-   cp /etc/original-network-settings /etc/network/interfaces
-
-   echo "Configured /etc/network/interfaces from /etc/linksysconf"
-
-   strings /etc/linksysconf | grep disk_server_name >> /tmp/hostname
-   sed -i -e 's/disk_server_name=//' /tmp/hostname
-
-   if [ -s /tmp/hostname ] ; then
-       mv /etc/hostname /etc/hostname.old
-       mv /tmp/hostname /etc/hostname
-       echo "Configured /etc/hostname from /etc/linksysconf"
-   fi
-
-   strings /etc/linksysconf | grep dns_server1 >> /tmp/resolv.conf
-   sed -i -e 's/dns_server1=/nameserver /' /tmp/resolv.conf
-
-   if [ -s /tmp/resolv.conf ] ; then
-       mv /etc/resolv.conf /etc/resolv.conf.old
-       mv /tmp/resolv.conf /etc/resolv.conf
-       echo "Configured /etc/resolv.conf from /etc/linksysconf"
-   fi
-
+	# Read the defined part of SysConf into /etc/default/sysconf.
+	# SysConf has lines of two forms:
+	#
+	#  [section]
+	#  name=value
+	#
+	# In practice SysConf also contains other stuff, use the command:
+	#
+	#  devio '<</dev/mtd1;cpb'
+	#
+	# to examine the current settings.  The badly formatted stuff
+	# is removed (to be exact, the sed script selects only lines
+	# which match one of the two above).  The lan interface, which
+	# defaults to ixp0, is changed to the correct value for openslug,
+	# eth0
+	devio '<<'"$sysdev"';cpb;fb1,10' | sed -n '/^\[[^][]*\]$/p;
+		s/^lan_interface=ixp0$/lan_interface=eth0/;
+		/^[-a-zA-Z0-9_][-a-zA-Z0-9_]*=/p' >/etc/default/sysconf
+	#
+	# Now take the result and set up the 'standard' files in the
+	# root file system (these couldn't be set up before because
+	# they depend on stuff which RedBoot puts into SysConf from the
+	# ID info on the specific machine - in particular the hardware
+	# address of eth0, which must be the one assigned for *this*
+	# box!)
+	#
+	# HOSTNAME: defaults to LGK<mac> i.e. something derived from
+	# the ethernet hardware.  LinkSys documentation explains how
+	# to determine this.  Set by the user in linksys setup software.
+	# DOMAINNAME: LinkSys puts this in w_d_name.
+	test -n "$(config host)" && config host >/etc/hostname
+	domain="$(config domain)"
+	test -n "$domain" && echo "$domain" >/etc/defaultdomain
+	#
+	# Ethernet information.  This goes into /etc/network/interfaces,
+	# however this is only used for static setup (and this is not
+	# the default).  With dhcp the openslug udhcp script,
+	# /etc/udhcpc.d/50default, loads the values from sysconf.  The
+	# lan_interface config value must exist for the file to be
+	# overwritten here.
+	iface="$(config iface)"
+	if test -n "$iface"
+	then
+		boot="$(config boot)"
+		# Only dhcp and static are supported at present - bootp
+		# support requires installation of appropriate packages
+		# dhcp is the fail-safe
+		case "$boot" in
+		dhcp|static) ;;
+		*)    boot=dhcp;;
+		esac
+		#
+		mac="$(config mac)"
+		ip="$(config ip)"
+		netmask="$(config netmask)"
+		gateway="$(config gateway)"
+		{
+			echo "# /etc/network/interfaces"
+			echo "# configuration file for ifup(8), ifdown(8)"
+			echo "#"
+			echo "# The loopback interface"
+			echo "auto lo"
+			echo "iface lo inet loopback"
+			echo "#"
+			echo "# The NSLU2 built-in ethernet"
+			echo "auto eth0"
+			echo "# Automatically generated from /etc/default/sysconf"
+			if test -n "$mac"
+			then
+				echo "# The pre-up option must always be supplied, regardless"
+				echo "# of configuration, to set the hardware correctly."
+				echo "# Severe network problems may result if this option is"
+				echo "# removed."
+				c=
+			else
+				echo "# WARNING: improperly configured network interface."
+				echo "# WARNING: the pre-up line must be corrected or severe"
+				echo "# WARNING: network problems may result."
+				c='#'
+				mac='<WARNING: unknown hardware address>'
+			fi
+			echo "iface $iface inet $boot"
+			echo "${c}	pre-up ifconfig $iface hw ether $mac"
+			# The following are ignored for DHCP but are harmless
+			test -n "$ip"      && echo "	address $ip"
+			test -n "$netmask" && echo "	netmask $netmask"
+			test -n "$gateway" && echo "	gateway $gateway"
+		} >/etc/network/interfaces
+	fi
+	#
+	# The DNS server information gives up to three nameservers, but this
+	# currently only binds in the first.
+	{
+		test -n "$domain" && echo "search $domain"
+		echodns $(config dns) $(config dns1) $(config dns2)
+	} >/etc/resolv.conf
 fi
 
-# Module loading handled more properly by update-modules and modprobe.conf
+exit 0

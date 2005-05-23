@@ -2,9 +2,17 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r22"
+PR = "r24"
 
 SRC_URI = "file://linuxrc \
+	   file://boot/flash \
+	   file://boot/disk \
+	   file://boot/nfs \
+	   file://boot/ram \
+	   file://boot/network \
+	   file://boot/udhcpc.script \
+	   file://functions \
+	   file://rmrecovery \
 	   file://sysconfsetup \
 	   file://turnup \
 	   file://modutils.txt \
@@ -13,49 +21,101 @@ SRC_URI = "file://linuxrc \
 	   file://leds.h \
 	   file://leds.c \
 	   file://kern_header.c \
+	   file://devio.c \
 	   file://update-kernel"
 
-inherit autotools update-rc.d
+SBINPROGS = "devio leds"
+USRSBINPROGS = "kern_header"
+CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
+SCRIPTS = "turnup update-kernel"
+BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 
-INITSCRIPT_NAME = "sysconfsetup"
-INITSCRIPT_PARAMS = "defaults 39"
+# This jsut makes things easier...
+S="${WORKDIR}"
 
 do_compile() {
-	${CC} -o ${S}/../kern_header ${S}/../kern_header.c
-	${CC} -o ${S}/../leds ${S}/../leds.c
+	set -ex
+	for p in ${CPROGS}
+	do
+		${CC} ${CFLAGS} -o $p $p.c
+	done
+	set +ex
 }
 
 do_install() {
-        install -d ${D}/${sysconfdir} \
-                   ${D}/${sysconfdir}/init.d \
-		   ${D}/${sysconfdir}/modutils \
-                   ${D}/${sysconfdir}/rcS.d \
-		   ${D}/${sbindir} 
+	set -ex
+
+	# Directories
+        install -d ${D}${sysconfdir} \
+                   ${D}${sysconfdir}/default \
+                   ${D}${sysconfdir}/init.d \
+		   ${D}${sysconfdir}/modutils \
+		   ${D}${sbindir} \
+		   ${D}${base_sbindir} \
+		   ${D}/initrd \
+		   ${D}/boot
 		  
-	install -m 0755 ${D}/../linuxrc ${D}/linuxrc
+	# linuxrc
+	rm -f ${D}/linuxrc
+	ln -s boot/flash ${D}/linuxrc
 
-	install -d ${D}/initrd
-
-	install -m 0755 ${D}/../kern_header ${D}${sbindir}/kern_header
-	install -m 0755 ${D}/../update-kernel ${D}${sbindir}/update-kernel
-	install -m 0755 ${D}/../turnup ${D}${sbindir}/turnup
-	install -m 0755 ${D}/../leds ${D}${sbindir}/leds
-	install -m 0755 ${D}/../sysconfsetup ${D}${sysconfdir}/init.d/
-	install -m 0755 ${D}/../leds_rs_green ${D}${sysconfdir}/init.d/
-	install -m 0644 ${D}/../modutils.txt ${D}${sysconfdir}/modutils/
-	install -m 0644 ${D}/../modprobe.conf ${D}${sysconfdir}/
-	rm -f ${D}${sysconfdir}/rcS.d/S39sysconfsetup
-	ln -s ../init.d/sysconfsetup ${D}${sysconfdir}/rcS.d/S39sysconfsetup
-	# Put this into the user run levels, after the rmnologin (which is
-	# the thing that allows a user log in!)
-	for l in 2 3 4 5
+	# C programs
+	for p in ${USRSBINPROGS}
 	do
-		install -d ${D}/${sysconfdir}/rc$l.d
-		rm -f ${D}${sysconfdir}/rc$l.d/S99zleds_rs_green
-		ln -s ../init.d/leds_rs_green ${D}${sysconfdir}/rc$l.d/S99zleds_rs_green
+		install -m 0755 $p ${D}${sbindir}/$p
 	done
+	for p in ${SBINPROGS}
+	do
+		install -m 0755 $p ${D}${base_sbindir}/$p
+	done
+
+	# Shell scripts
+	for p in ${SCRIPTS}
+	do
+		install -m 0755 $p ${D}${sbindir}/$p
+	done
+
+	#
+	# Init scripts
+	install -m 0644 functions ${D}${sysconfdir}/default
+	install -m 0755 rmrecovery ${D}${sysconfdir}/init.d/
+	install -m 0755 sysconfsetup ${D}${sysconfdir}/init.d/
+	install -m 0755 leds_rs_green ${D}${sysconfdir}/init.d/zleds_rs
+
+	#
+	# Boot scripts
+	for p in ${BOOTSCRIPTS}
+	do
+		install -m 0755 boot/$p ${D}/boot
+	done
+
+	# Configuration files
+	#XXinstall -m 0644 modutils.txt ${D}${sysconfdir}/modutils/
+	install -m 0644 modprobe.conf ${D}${sysconfdir}/
+
+	set +ex
 }
 
+# If the package is installed on an NSLU2 $D will be empty, in that
+# case it is normal to run 'start' and 'stop', but because the conf
+# files installed don't actually start or stop anything this is
+# unnecessary, so the package postfoo handling is simplified here.
+pkg_postinst_openslug-init() {
+	opt=
+	test -n "$D" && opt="-r $D"
+	update-rc.d $opt sysconfsetup start 11 S .
+	update-rc.d $opt zleds_rs start 99 S 1 2 3 4 5 . stop 05 0 1 2 3 4 5 6 .
+}
+
+pkg_postrm_openslug-init() {
+	opt=
+	test -n "$D" && opt="-r $D"
+	update-rc.d $opt sysconfsetup remove
+	update-rc.d $opt zleds_rs remove
+}
+
+PACKAGES = "${PN}"
 FILES_${PN} = "/"
 
-CONFFILES_${PN} = "${sysconfdir}/modutils/modutils.txt ${sysconfdir}/modprobe.conf"
+#CONFFILES_${PN} = "${sysconfdir}/modutils/modutils.txt ${sysconfdir}/modprobe.conf"
+CONFFILES_${PN} = "${sysconfdir}/modprobe.conf"

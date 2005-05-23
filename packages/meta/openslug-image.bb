@@ -1,4 +1,4 @@
-PR = "r10"
+PR = "r11"
 
 IMAGE_BASENAME = "openslug"
 
@@ -19,6 +19,7 @@ DEPENDS = "virtual/kernel base-files base-passwd \
 
 # NOTE: file system kernel modules are defined in openslug.conf
 # (OPENSLUG_EXTRA_FILESYSTEMS, included in OPENSLUG_EXTRA_INSTALL)
+# kernel-module-af-packet must be in the image for DHCP to work
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
         update-modules sysvinit tinylogin lrzsz portmap \
@@ -27,6 +28,8 @@ IPKG_INSTALL = "base-files base-passwd \
         ipkg-collateral ipkg ipkg-link diffutils \
 	cpio findutils e2fsprogs-mke2fs \
 	e2fsprogs-fsck e2fsprogs-e2fsck \
+	kernel-module-af-packet \
+	kernel-module-netconsole \
         ${OPENSLUG_EXTRA_INSTALL}"
 
 inherit image_ipk
