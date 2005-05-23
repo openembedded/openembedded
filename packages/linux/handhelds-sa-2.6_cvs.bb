@@ -15,7 +15,7 @@ inherit kernel
 #
 PAKCAGE_ARCH = "ipaqsa"
 PACKAGE_ARCH_jornada56x = "jornada56x"
-PACKAGE_ARCH_jornada720 = "jornada720"
+PACKAGE_ARCH_jornada7xx = "jornada7xx"
 PACKAGE_ARCH_simpad     = "simpad"
 
 do_configure() {
