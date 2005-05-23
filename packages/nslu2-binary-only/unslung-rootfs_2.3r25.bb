@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r64"
+PR = "r65"
 
-UNSLUNG_VERSION = "4.20-beta"
+UNSLUNG_VERSION = "4.21-beta"
 
 DEPENDS = "nslu2-linksys-libs"
 

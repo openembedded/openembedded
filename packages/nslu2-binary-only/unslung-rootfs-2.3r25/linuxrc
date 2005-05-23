@@ -62,6 +62,7 @@ if [ $prefroot = "maintenence" ] ; then
     /bin/mount -t ext2 /dev/ram0 /mnt
     ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt )
     /bin/rm -f /mnt/linuxrc
+    /bin/mkdir /mnt/mnt/repair
 fi
 
 if [ $prefroot = "nfsroot" ] ; then
