@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r5"
+PR = "r6"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -55,17 +55,18 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${BASRC}/spitz-detection-r0.patch;patch=1 \
            ${DOSRC}/pxa2xx-ir-dma-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r4.patch;patch=1 \
-           ${DOSRC}/tc6393_nand-r3.patch;patch=1 \
+           ${DOSRC}/tc6393_nand-r4.patch;patch=1 \
            ${DOSRC}/tosa-machine-base-r6.patch;patch=1 \
-           ${DOSRC}/tosa-keyboard-r3.patch;patch=1 \
+           ${DOSRC}/tosa-keyboard-r4.patch;patch=1 \
            ${DOSRC}/tc6393fb-r6.patch;patch=1 \
-           ${DOSRC}/tosa-power-r4.patch;patch=1 \
+           ${DOSRC}/tosa-power-r5.patch;patch=1 \
            ${DOSRC}/tosa-mmc-r3.patch;patch=1 \
            ${DOSRC}/tosa-udc-r3.patch;patch=1 \
            ${DOSRC}/tosa-irda-r2.patch;patch=1 \
            ${DOSRC}/tosa-lcd-r2.patch;patch=1 \
            ${DOSRC}/tosa-bl-r4.patch;patch=1 \
            ${DOSRC}/pxa-ac97-alsa-r0.patch;patch=1 \
+           ${DOSRC}/pxa-ac97-alsa-resume-r0.patch;patch=1 \
            ${DOSRC}/ac97-bus-r0.patch;patch=1 \
            ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
            ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
@@ -87,7 +88,7 @@ SRC_URI_append_collie = "${RPSRC}/jl1/collie_keymap.patch;patch=1 "
 SRC_URI_append_poodle = "${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 \
                          ${RPSRC}/rpextra_poodle-r0.patch;patch=1 "
 SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
-                       ${DOSRC}/tosa-pxaac97-r0.patch;patch=1 "
+                       ${DOSRC}/tosa-pxaac97-r1.patch;patch=1 "
 SRC_URI_append_spitz = "${BASRC}/spitz-cf-support-r0.patch;patch=1 \
                         ${BASRC}/spitz-base-r2.patch;patch=1 "
 
