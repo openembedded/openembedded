@@ -1,6 +1,5 @@
 PR = "r1"
 
-inherit autotools
 include util-linux.inc
 
 SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz \

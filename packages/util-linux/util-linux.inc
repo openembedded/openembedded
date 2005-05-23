@@ -2,7 +2,15 @@ DESCRIPTION = "Util-linux is a suite of essential utilities for any Linux system
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses"
-PR="r1"
+
+inherit autotools
+
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/util-linux/util-linux-${PV}.tar.bz2 \
+           file://gcc34.patch;patch=1 \
+           file://MCONFIG \
+           file://make_include \
+           file://swapargs.h \
+           file://defines.h"
 
 PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-readprofile "
 
