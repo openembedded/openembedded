@@ -4,9 +4,10 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
-# seems to cause problems on arm
+# seems to cause problems on 2.4 arm kernels
+# known to work on 2.6.12-rc4-mm3
 DEFAULT_PREFERENCE_arm = "-1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \

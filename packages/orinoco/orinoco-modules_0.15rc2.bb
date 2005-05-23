@@ -5,16 +5,15 @@ PRIORITY = "optional"
 PROVIDES = "spectrum-modules"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 # seems to cause problems on arm
 DEFAULT_PREFERENCE_arm = "-1"
 
-export EXTRACFLAGS = "-mstructure-size-boundary=32"
-
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz \
            file://list-move.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \
+           file://disable-pci.patch;patch=1 \
            file://spectrum.conf \
            file://spectrum_fw.h \
 	   file://orinoco_cs.conf"
