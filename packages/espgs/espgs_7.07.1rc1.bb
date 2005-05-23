@@ -2,7 +2,7 @@ SECTION = "unknown"
 DEPENDS = "jpeg zlib libpng espgs-native"
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.easysw.com/pub/ghostscript/espgs-${PV}-source.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/espgs/espgs-${PV}-source.tar.bz2"
 S = "${WORKDIR}/espgs-${PV}"
 
 inherit autotools

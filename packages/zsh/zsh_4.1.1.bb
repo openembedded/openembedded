@@ -6,7 +6,7 @@ DEPENDS = "ncurses pcre"
 PR = "r1"
 LICENSE = "zsh"
 
-SRC_URI = "http://www.zsh.org/pub/zsh-${PV}.tar.bz2 \
+SRC_URI = "http://www.zsh.org/pub/old/zsh-${PV}.tar.bz2 \
 	 file://configure.patch;patch=1"
 
 inherit autotools
