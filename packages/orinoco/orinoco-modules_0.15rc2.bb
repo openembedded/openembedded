@@ -11,9 +11,9 @@ PR = "r5"
 DEFAULT_PREFERENCE_arm = "-1"
 
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz \
+           file://makefile_fix.patch;patch=1 \
            file://list-move.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \
-           file://disable-pci.patch;patch=1 \
            file://spectrum.conf \
            file://spectrum_fw.h \
 	   file://orinoco_cs.conf"

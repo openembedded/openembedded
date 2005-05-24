@@ -6,9 +6,6 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r3"
 
-# later versions don't seem to work on arm
-DEFAULT_PREFERENCE_arm = "1"
-
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz; \
            file://crosscompile.patch;patch=1 \
            file://monitor-${PV}.patch;patch=1 \

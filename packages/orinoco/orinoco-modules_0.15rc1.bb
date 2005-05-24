@@ -6,11 +6,8 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r4"
 
-# seems to cause problems on 2.4 arm kernels
-# known to work on 2.6.12-rc4-mm3
-DEFAULT_PREFERENCE_arm = "-1"
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \
+           file://makefile_fix.patch;patch=1 \
            file://list-move.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \
            file://spectrum.conf \
