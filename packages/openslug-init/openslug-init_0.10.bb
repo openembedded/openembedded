@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r24"
+PR = "r25"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -18,6 +18,7 @@ SRC_URI = "file://linuxrc \
 	   file://modutils.txt \
 	   file://modprobe.conf \
 	   file://leds_rs_green \
+	   file://leds_startup \
 	   file://leds.h \
 	   file://leds.c \
 	   file://kern_header.c \
@@ -30,7 +31,7 @@ CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup update-kernel"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 
-# This jsut makes things easier...
+# This just makes things easier...
 S="${WORKDIR}"
 
 do_compile() {
@@ -80,6 +81,7 @@ do_install() {
 	install -m 0644 functions ${D}${sysconfdir}/default
 	install -m 0755 rmrecovery ${D}${sysconfdir}/init.d/
 	install -m 0755 sysconfsetup ${D}${sysconfdir}/init.d/
+	install -m 0755 leds_startup ${D}${sysconfdir}/init.d/
 	install -m 0755 leds_rs_green ${D}${sysconfdir}/init.d/zleds_rs
 
 	#
@@ -105,6 +107,8 @@ pkg_postinst_openslug-init() {
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt sysconfsetup start 11 S .
 	update-rc.d $opt zleds_rs start 99 S 1 2 3 4 5 . stop 05 0 1 2 3 4 5 6 .
+	# bug fix for startup
+	update-rc.d $opt leds_startup start 01 1 2 3 4 5 .
 }
 
 pkg_postrm_openslug-init() {
@@ -112,6 +116,7 @@ pkg_postrm_openslug-init() {
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt sysconfsetup remove
 	update-rc.d $opt zleds_rs remove
+	update-rc.d $opt leds_startup remove
 }
 
 PACKAGES = "${PN}"

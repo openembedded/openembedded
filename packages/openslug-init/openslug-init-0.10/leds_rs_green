@@ -22,7 +22,7 @@ colour() {
 	case "$1" in
 	S|0|1|6) echo gr;;
 	2|3|4|5) echo g;;
-	N)       echo gr;; # apparently used for S as well
+	N)       echo r;;
 	*)       echo "led change: $runlevel: runlevel unknown" >&2
 		 echo r;;
 	esac
