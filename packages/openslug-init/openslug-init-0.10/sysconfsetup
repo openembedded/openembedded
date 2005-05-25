@@ -39,8 +39,11 @@ echodns(){
 #
 # It is important not to hard-wire the name of the device because of
 # the posibility of changing the flash partition layout.
-sysdev="$(mtdev SysConf)"
-if test -n "$sysdev" -a -c "$sysdev"
+#
+# The block device is used here because at present udev does not
+# show the character devices
+sysdev="$(mtblockdev SysConf)"
+if test -n "$sysdev" -a -b "$sysdev"
 then
 	# Read the defined part of SysConf into /etc/default/sysconf.
 	# SysConf has lines of two forms:

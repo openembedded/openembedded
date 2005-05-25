@@ -2,7 +2,7 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r25"
+PR = "r26"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -15,7 +15,6 @@ SRC_URI = "file://linuxrc \
 	   file://rmrecovery \
 	   file://sysconfsetup \
 	   file://turnup \
-	   file://modutils.txt \
 	   file://modprobe.conf \
 	   file://leds_rs_green \
 	   file://leds_startup \
@@ -92,7 +91,6 @@ do_install() {
 	done
 
 	# Configuration files
-	#XXinstall -m 0644 modutils.txt ${D}${sysconfdir}/modutils/
 	install -m 0644 modprobe.conf ${D}${sysconfdir}/
 
 	set +ex
@@ -122,5 +120,6 @@ pkg_postrm_openslug-init() {
 PACKAGES = "${PN}"
 FILES_${PN} = "/"
 
-#CONFFILES_${PN} = "${sysconfdir}/modutils/modutils.txt ${sysconfdir}/modprobe.conf"
-CONFFILES_${PN} = "${sysconfdir}/modprobe.conf"
+# It is bad to overwrite /linuxrc as it puts the system back to
+# a flash boot (and the flash has potentially not been upgraded!)
+CONFFILES_${PN} = "${sysconfdir}/modprobe.conf /linuxrc"
