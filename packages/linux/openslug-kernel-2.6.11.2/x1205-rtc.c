@@ -351,62 +351,37 @@ static int x1205_detach(struct i2c_client *client)
 // make sure the rtc_time values are in bounds
 static int x1205_validate_tm(struct rtc_time *tm, int datetoo)
 {
-	int result = NOERR;
+	if (datetoo) {
+		/* This used to be 1900, not epoch, but all the read APIs subtract
+		 * epoch, not 1900, and the result of these APIs *is* fed back in
+		 * to x1205_command (which calls this.)
+		 */
+		tm->tm_year += epoch;
 
-	tm->tm_year += epoch;
-
-	/* The RTC uses a byte containing a BCD year value, so this is
-	 * limited to the range 0..99 from rtc_epoch.
-	 */
-	if (tm->tm_year < rtc_epoch || tm->tm_year > rtc_epoch + 99)
-		goto baddate;
-
-	if ((tm->tm_mon > 11) || tm->tm_mon < 0 || (tm->tm_mday == 0))
-		goto baddate;
-
-	if (tm->tm_mday < 0)
-		goto baddate;
-
-	if (tm->tm_mday > (days_in_mo[tm->tm_mon] + ( (tm->tm_mon == 1) && 
-		((!(tm->tm_year % 4) && (tm->tm_year % 100) ) || !(tm->tm_year % 400)))))
-		goto baddate;
-
-	/* This special check shouldn't fire, it's here to detect a possible invalid
-	 * input which seems to happen to the clock on shutdown (detach?)
-	 */
-	if (tm->tm_year == rtc_epoch && tm->tm_mon == 0 && tm->tm_mday == 0) {
-		printk(KERN_DEBUG "x1205_validate_tm: date is being zapped\n");
-		/* FIXME: this is a hack to test the problem. */
-		tm->tm_year = rtc_epoch+45-epoch;
-		return NOERR;
-
-	baddate:
-		if (datetoo) {
+		/* The RTC uses a byte containing a BCD year value, so this is
+		 * limited to the range 0..99 from rtc_epoch.
+		 */
+		if ((tm->tm_year < rtc_epoch || tm->tm_year > rtc_epoch + 99) ||
+			((tm->tm_mon > 11) || tm->tm_mon < 0 || (tm->tm_mday <= 0)) ||
+			(tm->tm_mday > (days_in_mo[tm->tm_mon] + ( (tm->tm_mon == 1) && 
+			((!(tm->tm_year % 4) && (tm->tm_year % 100) ) || !(tm->tm_year % 400)))))
+			) {
 			printk(KERN_DEBUG "x1205_validate_tm: invalid date:\t%04d,%02d,%02d\n",
-				tm->tm_year, tm->tm_mon, tm->tm_mday);
+					tm->tm_year, tm->tm_mon, tm->tm_mday);
 			return -EINVAL;
-		} else {
-			/* I believe this case is the one where the kernel crashed
-			 * because tm_mon is large and negative (uninitialised).
-			 */
-			printk(KERN_DEBUG "x1205_validate_tm: unset date:\t%04d,%02d,%02d\n",
-				tm->tm_year, tm->tm_mon, tm->tm_mday);
 		}
+
+		tm->tm_year -= epoch;
 	}
 
-	tm->tm_year -= epoch;
-
-	if ((tm->tm_hour < 0) || (tm->tm_min < 0) || (tm->tm_sec < 0))
-		result = -EINVAL;
-	if ((tm->tm_hour >= 24) || (tm->tm_min >= 60) || (tm->tm_sec >= 60))
-		result = -EINVAL;
-
-	if (result == -EINVAL) {
+	if (((tm->tm_hour < 0) || (tm->tm_min < 0) || (tm->tm_sec < 0)) ||
+		((tm->tm_hour >= 24) || (tm->tm_min >= 60) || (tm->tm_sec >= 60))) {
 		printk(KERN_DEBUG "x1205_validate_tm: invalid time:\t%02d,%02d,%02d\n",
 			tm->tm_hour, tm->tm_min, tm->tm_sec);
+		return -EINVAL;
 	}
 
-	return result;
+	return NOERR;
 }
 
 static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
@@ -486,19 +461,79 @@ static int x1205_sync_rtc(void)
 	 * that this will tend to fire for small drifts close to UTC midnight.
 	 */
 	cmd = RTC_SETTIME;
-	div = new_s - mktime(tm.tm_year+epoch, tm.tm_mon+1, tm.tm_mday,
+	rem = new_s - mktime(tm.tm_year+epoch, tm.tm_mon+1, tm.tm_mday,
 				tm.tm_hour, tm.tm_min, tm.tm_sec);
-	if (div != 0) {
-		/* Convert to days. */
-		printk(KERN_DEBUG "x1205_sync_rtc exit (change tm_mday %d)\n",
-			div);
-		div /= 86400;
-		if (div <= 0) --div;
-		cmd = RTC_SETDATETIME;
-		return 1;
-	}
+	if (rem != 0) {
+		int dif;
 
-	printk(KERN_DEBUG "x1205_sync_rtc exit (change seconds %d)\n", new_s-old_s);
+		/* Make an approximation to year/month/day. */
+		rem = div;
+		div = (2*div)/61;  // 30.5 days/month
+		tm.tm_mday = 1 + rem - (div*61)/2;
+		rem = div;
+		div /= 12;
+		rem -= 12*div;
+		while (tm.tm_mday > days_in_mo[rem]) {
+			tm.tm_mday -= days_in_mo[rem];
+			if (++rem >= 12) {
+				rem -= 12;
+				++div;
+			}
+		}
+		tm.tm_mon = rem;
+		div += 1970;       // base of tv_sec
+
+		/* Calculate the error in the approximation as a signed
+		 * int value.
+		 */
+		dif = new_s - mktime(div, tm.tm_mon+1, tm.tm_mday,
+				tm.tm_hour, tm.tm_min, tm.tm_sec);
+		while (dif < 0) {
+			--(tm.tm_mday);
+			dif += 86400;
+		}
+		while (dif >= 86400) {
+			++(tm.tm_mday);
+			dif -= 86400;
+		}
+		if (dif != 0)
+			printk(KERN_ERR "x1205_sync_rtc (error in date %d)\n", dif);
+
+		/* Normalise the result. */
+		while (tm.tm_mday <= 0) {
+			if (--(tm.tm_mon) < 0) {
+				tm.tm_mon += 12;
+				--div;
+			}
+			tm.tm_mday += days_in_mo[tm.tm_mon] + (tm.tm_mon==1 &&
+				((!(div % 4) && (div % 100) ) || !(div % 400)));
+		}
+
+		do {
+			rem = days_in_mo[tm.tm_mon] + (tm.tm_mon==1 &&
+				((!(div % 4) && (div % 100) ) || !(div % 400)));
+			if (tm.tm_mday > rem) {
+				tm.tm_mday -= rem;
+				if (++(tm.tm_mon) >= 12) {
+					tm.tm_mon -= 12;
+					++div;
+				}
+			} else {
+				break;
+			}
+		} while (1);
+
+		tm.tm_year = div-epoch;
+		cmd = RTC_SETDATETIME;
+		printk(KERN_DEBUG "x1205_sync_rtc exit (change date %d)\n", new_s-old_s);
+	} else {
+		printk(KERN_DEBUG "x1205_sync_rtc exit (change seconds %d)\n", new_s-old_s);
+		/* But avoid the race condition when the date is about to
+		 * change.
+		 */
+		if (tm.tm_min == 59 && tm.tm_hour == 23)
+			cmd = RTC_SETDATETIME;
+	}
 
 	return x1205_command(&x1205_i2c_client, cmd, &tm);
 }
