@@ -1,6 +1,8 @@
 DEPENDS_append = " update-rc.d"
 RDEPENDS_append = " update-rc.d"
 
+INITSCRIPT_PARAMS ?= "defaults"
+
 INIT_D_DIR = "${sysconfdir}/init.d"
 
 updatercd_postinst() {
