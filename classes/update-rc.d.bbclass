@@ -22,26 +22,38 @@ update-rc.d $D ${INITSCRIPT_NAME} remove
 }
 
 python __anonymous() {
-	if bb.data.getVar('INITSCRIPT_NAME', d) == None:
-		raise bb.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_NAME" % bb.data.getVar('FILE', d)
-	if bb.data.getVar('INITSCRIPT_PARAMS', d) == None:
-		raise bb.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_PARAMS" % bb.data.getVar('FILE', d)
+	if bb.data.getVar('INITSCRIPT_PACKAGES', d) == None:
+		if bb.data.getVar('INITSCRIPT_NAME', d) == None:
+			raise bb.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_NAME" % bb.data.getVar('FILE', d)
+		if bb.data.getVar('INITSCRIPT_PARAMS', d) == None:
+			raise bb.build.FuncFailed, "%s inherits update-rc.d but doesn't set INITSCRIPT_PARAMS" % bb.data.getVar('FILE', d)
 }
 
 python populate_packages_prepend () {
-	pkg = bb.data.getVar('PN', d, 1)
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	if not pkg in packages:
-		pkg = packages[0]
-	bb.debug(1, 'adding update-rc.d calls to postinst/postrm for %s' % pkg)
-	postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, 1) or bb.data.getVar('pkg_postinst', d, 1)
-	if not postinst:
-		postinst = '#!/bin/sh\n'
-	postinst += bb.data.getVar('updatercd_postinst', d, 1)
-	bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
-	postrm = bb.data.getVar('pkg_postrm_%s' % pkg, d, 1) or bb.data.getVar('pkg_postrm', d, 1)
-	if not postrm:
-		postrm = '#!/bin/sh\n'
-	postrm += bb.data.getVar('updatercd_postrm', d, 1)
-	bb.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
+	def update_rcd_package(pkg):
+		bb.debug(1, 'adding update-rc.d calls to postinst/postrm for %s' % pkg)
+		localdata = bb.data.createCopy(d)
+		overrides = bb.data.getVar("OVERRIDES", localdata, 1)
+		bb.data.setVar("OVERRIDES", "%s:%s" % (pkg, overrides), localdata)
+		bb.data.update_data(localdata)
+
+		postinst = bb.data.getVar('pkg_postinst', localdata, 1)
+		if not postinst:
+			postinst = '#!/bin/sh\n'
+		postinst += bb.data.getVar('updatercd_postinst', localdata, 1)
+		bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
+		postrm = bb.data.getVar('pkg_postrm', localdata, 1)
+		if not postrm:
+			postrm = '#!/bin/sh\n'
+		postrm += bb.data.getVar('updatercd_postrm', localdata, 1)
+		bb.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
+
+	pkgs = bb.data.getVar('INITSCRIPT_PACKAGES', d, 1)
+	if pkgs == None:
+		pkgs = bb.data.getVar('PN', d, 1)
+		packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+		if not pkgs in packages:
+			pkgs = packages[0]
+	for pkg in pkgs.split():
+		update_rcd_package(pkg)
 }

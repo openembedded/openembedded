@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r20"
+PR = "r21"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -41,12 +41,17 @@ S = "${WORKDIR}/busybox-${PV}"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
+PACKAGES =+ "${PN}-httpd"
+
+FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
+
 FILES_${PN} += " ${datadir}/udhcpc"
 
-inherit cml1 update-rc.d
+INITSCRIPT_PACKAGES = "${PN} ${PN}-httpd"
+INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
+INITSCRIPT_NAME_${PN} = "syslog"
 
-INITSCRIPT_NAME = "syslog"
-INITSCRIPT_PARAMS = "defaults"
+inherit cml1 update-rc.d
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
@@ -68,6 +73,7 @@ do_install () {
 	fi
 	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then 
 		install -m 0755 ${WORKDIR}/busybox-httpd ${D}${sysconfdir}/init.d/
+		install -d ${D}/srv/www
 	fi
 	if grep "CONFIG_UDHCPD=y" ${WORKDIR}/defconfig; then 
 		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}${sysconfdir}/init.d/

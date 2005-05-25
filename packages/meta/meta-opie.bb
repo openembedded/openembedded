@@ -328,7 +328,6 @@ opie-security \
 opie-sshkeys \
 opie-sysinfo \
 opie-systemtime \
-opie-tabmanager \
 opie-usermanager \
 opie-icon-reload \
 opie-vmemo-settings "
