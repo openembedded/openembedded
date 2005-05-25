@@ -121,7 +121,7 @@ static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm, u8
 static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, int datetoo, u8 reg_base);
 static int x1205_attach(struct i2c_adapter *adapter);
 static int x1205_detach(struct i2c_client *client);
-static int x1205_validate_tm(struct rtc_time *tm);
+static int x1205_validate_tm(struct rtc_time *tm, int datetoo);
 static int x1205_command(struct i2c_client *client, unsigned int cmd, void *arg);
 static int x1205_sync_rtc(void);
 static int x1205_read(struct file *file, char *buf, size_t count, loff_t *ptr);
@@ -249,19 +249,21 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 	
 #else		//do this if page writes aren't working
 
-	int i,xfer;
+	int i,xfer,count;
 	static unsigned char data[3]  = { 0,};
 	static unsigned char buf[8];
 
 	buf[CCR_SEC]  = BIN2BCD(tm->tm_sec);
 	buf[CCR_MIN]  = BIN2BCD(tm->tm_min);
 	buf[CCR_HOUR] = BIN2BCD(tm->tm_hour) | X1205_MILBIT; // set 24 hour format
+	count = CCR_HOUR+1;
 	if (datetoo == 1) {
 		buf[CCR_MDAY]  = BIN2BCD(tm->tm_mday);
 		buf[CCR_MONTH] = BIN2BCD(tm->tm_mon);		// input is 0-11	
 		buf[CCR_YEAR]  = BIN2BCD((tm->tm_year + epoch - rtc_epoch));	// input is yrs since 1900
 		buf[CCR_WDAY]  = tm->tm_wday & 7;
 		buf[CCR_Y2K]   = BIN2BCD((rtc_epoch/100));
+		count = CCR_Y2K+1;
 	}
 	printk(KERN_DEBUG "rtc_time input - sec-%02d min-%02d hour-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
 		tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday, epoch, rtc_epoch);
@@ -276,7 +278,7 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 	if (xfer != 3)
 		return -EIO;
 
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < count; i++) {
 		data[1] = i + reg_base;
 		data[2] =  buf[i];
 		xfer = i2c_master_send(client, data, 3);
@@ -288,7 +290,7 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 	xfer = i2c_master_send(client, diswe, 3);
 	printk(KERN_DEBUG "wdis - %x\n", xfer);
 	if (xfer != 3)
-		return -EIO;		
+		return -EIO;
 	return NOERR;
 #endif
 }
@@ -309,7 +311,16 @@ static int x1205_attach(struct i2c_adapter *adapter)
 	if ((errno = i2c_attach_client(&x1205_i2c_client)) != NOERR)
 		return errno;
 
-	tv.tv_nsec = tm.tm_sec * 10000000;
+	/* IMPORTANT: the RTC only stores whole seconds.  It is arbitrary whether
+	 * it stores the most close value or the value with partial seconds
+	 * truncated, however it is important for x1205_sync_rtc that it be
+	 * defined to store the truncated value.  This is because otherwise it
+	 * is necessary to read both xtime.tv_sec and xtime.tv_nsec in the
+	 * sync function, and atomic reads of >32bits on ARM are not possible.
+	 * So storing the most close value would slow down the sync API.  So
+	 * Here we have the truncated value and the best guess is to add 0.5s
+	 */
+	tv.tv_nsec = NSEC_PER_SEC >> 1;
 	/* WARNING: this is not the C library 'mktime' call, it is a built in
 	 * inline function from include/linux/time.h.  It expects (requires)
 	 * the month to be in the range 1-12
@@ -338,26 +349,64 @@ static int x1205_detach(struct i2c_client *client)
 }
 
 // make sure the rtc_time values are in bounds
-static int x1205_validate_tm(struct rtc_time *tm)
+static int x1205_validate_tm(struct rtc_time *tm, int datetoo)
 {
-	tm->tm_year += 1900;
+	int result = NOERR;
 
-	if (tm->tm_year < 1970)
-		return -EINVAL;
+	tm->tm_year += epoch;
+
+	/* The RTC uses a byte containing a BCD year value, so this is
+	 * limited to the range 0..99 from rtc_epoch.
+	 */
+	if (tm->tm_year < rtc_epoch || tm->tm_year > rtc_epoch + 99)
+		goto baddate;
 
 	if ((tm->tm_mon > 11) || tm->tm_mon < 0 || (tm->tm_mday == 0))
-		return -EINVAL;
+		goto baddate;
+
+	if (tm->tm_mday < 0)
+		goto baddate;
 
 	if (tm->tm_mday > (days_in_mo[tm->tm_mon] + ( (tm->tm_mon == 1) && 
 		((!(tm->tm_year % 4) && (tm->tm_year % 100) ) || !(tm->tm_year % 400)))))
-		return -EINVAL;
+		goto baddate;
 
-	if ((tm->tm_year -= epoch) > 255)
-		return -EINVAL;
-			
+	/* This special check shouldn't fire, it's here to detect a possible invalid
+	 * input which seems to happen to the clock on shutdown (detach?)
+	 */
+	if (tm->tm_year == rtc_epoch && tm->tm_mon == 0 && tm->tm_mday == 0) {
+		printk(KERN_DEBUG "x1205_validate_tm: date is being zapped\n");
+		/* FIXME: this is a hack to test the problem. */
+		tm->tm_year = rtc_epoch+45-epoch;
+		return NOERR;
+
+	baddate:
+		if (datetoo) {
+			printk(KERN_DEBUG "x1205_validate_tm: invalid date:\t%04d,%02d,%02d\n",
+				tm->tm_year, tm->tm_mon, tm->tm_mday);
+			return -EINVAL;
+		} else {
+			/* I believe this case is the one where the kernel crashed
+			 * because tm_mon is large and negative (uninitialised).
+			 */
+			printk(KERN_DEBUG "x1205_validate_tm: unset date:\t%04d,%02d,%02d\n",
+				tm->tm_year, tm->tm_mon, tm->tm_mday);
+		}
+	}
+
+	tm->tm_year -= epoch;
+
+	if ((tm->tm_hour < 0) || (tm->tm_min < 0) || (tm->tm_sec < 0))
+		result = -EINVAL;
 	if ((tm->tm_hour >= 24) || (tm->tm_min >= 60) || (tm->tm_sec >= 60))
-		return -EINVAL;
-	return NOERR;
+		result = -EINVAL;
+
+	if (result == -EINVAL) {
+		printk(KERN_DEBUG "x1205_validate_tm: invalid time:\t%02d,%02d,%02d\n",
+			tm->tm_hour, tm->tm_min, tm->tm_sec);
+	}
+
+	return result;
 }
 
 static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
@@ -378,7 +427,7 @@ static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
 	case RTC_SETTIME:		// note fall thru
 		dodate = RTC_NODATE;
 	case RTC_SETDATETIME:
-		if ((errno = x1205_validate_tm(tm)) < NOERR)
+		if ((errno = x1205_validate_tm(tm, dodate)) < NOERR)
 			return errno;
 		return x1205_set_datetime(client, tm, dodate, X1205_CCR_BASE);
 
@@ -389,33 +438,69 @@ static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
 
 static int x1205_sync_rtc(void)
 {
-	struct rtc_time new_tm, old_tm;
-	unsigned long cur_secs = xtime.tv_sec;
+	/* sync to xtime, tv_nsec is ignored (see the command above about
+	 * use of the truncated value) so this is pretty easy.  kas11's
+	 * code took are to do RTC_SETTIME - i.e. not set the date.  My
+	 * assumption is that this may be because date setting is slow, so
+	 * this feature is retained.  NTP does a sync when the time is
+	 * changed, including significant changes.  The sync needs to
+	 * set the date correctly if necessary.
+	 */
+	struct rtc_time tm;
+	time_t new_s, old_s, div, rem;
+	unsigned int cmd;
 
 	printk(KERN_DEBUG "x1205_sync_rtc entry\n");
 
-	if (x1205_command(&x1205_i2c_client, RTC_GETDATETIME, &old_tm))
-		return 0;
+	{
+		int err = x1205_command(&x1205_i2c_client, RTC_GETDATETIME, &tm);
+		if (err != NOERR) {
+			printk(KERN_DEBUG "x1205_sync_rtc exit (failed to get date)\n");
+			return err;
+		}
+	}
 
-//	xtime.tv_nsec = old_tm.tm_sec * 10000000;   //FIXME:
-	new_tm.tm_sec  = cur_secs % 60;
-	cur_secs /= 60;
-	new_tm.tm_min  = cur_secs % 60;
-	cur_secs /= 60;
-	new_tm.tm_hour = cur_secs % 24;
+	old_s = mktime(tm.tm_year+epoch, tm.tm_mon+1, tm.tm_mday,
+			tm.tm_hour, tm.tm_min, tm.tm_sec);
+	new_s = xtime.tv_sec;
 
-	/*
-	 * avoid writing when we're going to change the day
-	 * of the month.  We will retry in the next minute.
-	 * This basically means that if the RTC must not drift
-	 * by more than 1 minute in 11 minutes.
+	/* Optimisation, the clock only stores seconds so it's pointless
+	 * to reset it if it is within 1s of now.
 	 */
-	if ((old_tm.tm_hour == 23 && old_tm.tm_min == 59) ||
-	    (new_tm.tm_hour == 23 && new_tm.tm_min == 59))
-		return 1;
-	printk(KERN_DEBUG "x1205_sync_rtc exit\n");
+	if (old_s - 1 <= new_s && new_s <= old_s + 1) {
+		printk(KERN_DEBUG "x1205_sync_rtc exit (RTC in sync)\n");
+		return NOERR;
+	}
 
-	return x1205_command(&x1205_i2c_client, RTC_SETTIME, &new_tm);
+	div = new_s / 60;
+	tm.tm_sec = new_s - div*60;
+	rem = div;
+	div /= 60;
+	tm.tm_min = rem - div*60;
+	rem = div;
+	div /= 24;
+	tm.tm_hour = rem - div*24;
+
+	/* Now subtract the result from the original 'new' value.  This
+	 * should be zero, if not an mday change is required.  Notice
+	 * that this will tend to fire for small drifts close to UTC midnight.
+	 */
+	cmd = RTC_SETTIME;
+	div = new_s - mktime(tm.tm_year+epoch, tm.tm_mon+1, tm.tm_mday,
+				tm.tm_hour, tm.tm_min, tm.tm_sec);
+	if (div != 0) {
+		/* Convert to days. */
+		printk(KERN_DEBUG "x1205_sync_rtc exit (change tm_mday %d)\n",
+			div);
+		div /= 86400;
+		if (div <= 0) --div;
+		cmd = RTC_SETDATETIME;
+		return 1;
+	}
+
+	printk(KERN_DEBUG "x1205_sync_rtc exit (change seconds %d)\n", new_s-old_s);
+
+	return x1205_command(&x1205_i2c_client, cmd, &tm);
 }
 
 static int x1205_read(struct file *file, char *buf, size_t count, loff_t *ptr)
@@ -449,7 +534,7 @@ static int x1205_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 
 		if (copy_from_user(&tm, (struct rtc_time *) arg, sizeof(struct rtc_time))) 
 			return -EFAULT;
-		if ((errno = x1205_validate_tm(&tm)) < NOERR)
+		if ((errno = x1205_validate_tm(&tm, RTC_DATETOO)) < NOERR)
 			return errno;
 		return x1205_set_datetime(&x1205_i2c_client, &tm, RTC_DATETOO, X1205_CCR_BASE);
 
