@@ -1,0 +1,16 @@
+LICENSE =	""
+MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+
+DEPENDS = 	"gtk+ gnome-vfs-dbus"
+SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/osso-thumbnail/osso-thumbnail_${PV}.tar.gz"
+S = 	"${WORKDIR}/osso-thumbnail-0.3.1"
+
+inherit pkgconfig autotools
+EXTRA_OECONF =	"--disable-gtk-doc"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}
+	install -m 644 thumbs/*.h ${STAGING_INCDIR}
+}
+
+

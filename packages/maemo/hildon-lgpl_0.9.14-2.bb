@@ -10,3 +10,8 @@ S =	"${WORKDIR}/hildon-lgpl-0.9.14"
 EXTRA_OECONF =	"--disable-gtk-doc"
 
 inherit pkgconfig autotools
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/hildon-widgets
+	install -m 644 hildon-lgpl/*.h ${STAGING_INCDIR}/hildon-widgets
+}
