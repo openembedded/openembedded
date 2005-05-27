@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r9"
+PR = "r10"
 
 KERNEL_SUFFIX = "openslug"
 

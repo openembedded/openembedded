@@ -1,4 +1,4 @@
-PR = "r11"
+PR = "r12"
 
 IMAGE_BASENAME = "openslug"
 
@@ -10,11 +10,11 @@ OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATC
 
 DEPENDS = "virtual/kernel base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
-        sysvinit tinylogin lrzsz portmap \
+        sysvinit tinylogin portmap \
         ixp4xx-csr ixp425-eth openslug-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link diffutils \
-	cpio findutils e2fsprogs mtd-utils \
+	cpio findutils mtd-utils \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
 # NOTE: file system kernel modules are defined in openslug.conf
@@ -22,12 +22,11 @@ DEPENDS = "virtual/kernel base-files base-passwd \
 # kernel-module-af-packet must be in the image for DHCP to work
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear hotplug-ng initscripts netbase \
-        update-modules sysvinit tinylogin lrzsz portmap \
+        update-modules sysvinit tinylogin portmap \
         ixp4xx-csr ixp425-eth openslug-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link diffutils \
-	cpio findutils e2fsprogs-mke2fs \
-	e2fsprogs-fsck e2fsprogs-e2fsck \
+	cpio findutils \
 	kernel-module-af-packet \
 	kernel-module-netconsole \
         ${OPENSLUG_EXTRA_INSTALL}"

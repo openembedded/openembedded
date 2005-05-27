@@ -2,6 +2,7 @@ DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
 PR = "r3"
 
+INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
@@ -55,12 +56,14 @@ OPENSLUG_PACKAGES = "\
 	db4 \
 	openldap \
 	ntp \
+	reiserfsprogs reiser4progs \
 	"
 
 # These packages only build on TARGET_OS=linux, not
 # TARGET_OS=linux-uclibc
 OPENSLUG_PACKAGES_append_linux = "\
 	php \
+	libpam \
 	yp-tools ypbind ypserv \
 	"
 
