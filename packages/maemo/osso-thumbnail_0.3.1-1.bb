@@ -8,9 +8,17 @@ S = 	"${WORKDIR}/osso-thumbnail-0.3.1"
 inherit pkgconfig autotools
 EXTRA_OECONF =	"--disable-gtk-doc"
 
+
+do_install_prepend() {
+	install -d ${D}/${libdir}
+	install thumbs/.libs/libossothumbnail.so.0.0.3 ${D}${libdir}/libossothumbnail.so
+}
+
 do_stage() {
 	install -d ${STAGING_INCDIR}
+	install -d ${STAGING_LIBDIR}
 	install -m 644 thumbs/*.h ${STAGING_INCDIR}
+	install thumbs/.libs/libossothumbnail.so.0.0.3 ${STAGING_LIBDIR}/libossothumbnail.so
 }
 
 

@@ -3,8 +3,8 @@
 #
 
 #work around some breakages
-CVSDATE_xserver-kdrive=20050207
-CVSDATE_xext=20050222
+#CVSDATE_xserver-kdrive=20050207
+#CVSDATE_xext=20050222
 
 #set some preferred providers:
 PREFERRED_PROVIDER_gconf=gconf-dbus
@@ -44,7 +44,7 @@ PREFERRED_VERSION_xrdb ?= "0.0cvs${CVSDATE}"
 #PREFERRED_VERSION_gpe-contacts ?= "0.36"
 #PREFERRED_VERSION_gpe-today ?= "0.08"
 #PREFERRED_VERSION_matchbox-panel-manager ?= "0.1"
-PREFERRED_VERSION_dbus ?= "0.23"
+PREFERRED_VERSION_dbus ?= "0.23.4"
 #PREFERRED_VERSION_gpe-bluetooth ?= "0.38"
 #PREFERRED_VERSION_gpe-su ?= "0.18"
 #PREFERRED_VERSION_gpe-conf ?= "0.1.23"
