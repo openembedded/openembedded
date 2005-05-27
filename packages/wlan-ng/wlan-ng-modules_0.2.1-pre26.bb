@@ -4,7 +4,7 @@ SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
@@ -13,6 +13,8 @@ SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 inherit module
+
+PARALLEL_MAKE = ""
 
 do_configure() {
 	install -m 0655 ${WORKDIR}/config.in ${S}/config.in
@@ -39,7 +41,7 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake all
+	oe_runmake -C src all
 }
 
 do_install() {
