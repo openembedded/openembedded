@@ -15,9 +15,7 @@ FILES_portmap-utils = "/sbin/pmap_set /sbin/pmap_dump"
 FILES_${PN}-doc += "${docdir}"
 
 INITSCRIPT_NAME = "portmap"
-INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . start 18 2 3 4 5 . stop 81 1 ."
-# openslug: need start in S (for nfs) and stop in 0/6 only, allow for NFS root
-INITSCRIPT_PARAMS_openslug = "start 43 S . stop 32 0 6 ."
+INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . stop 81 1 ."
 
 inherit update-rc.d
 
