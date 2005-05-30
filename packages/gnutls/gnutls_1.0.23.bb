@@ -4,7 +4,7 @@ PR = "r4"
 
 LICENSE = "LGPL"
 
-SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/attic/gnutls-${PV}.tar.gz \
 	file://gnutls-openssl.patch;patch=1"
 
 inherit autotools
