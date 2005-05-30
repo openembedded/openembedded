@@ -12,7 +12,7 @@ DEPENDS = "	python-ao 		\
 		python-gmpy		\
 		python-gnosis		\
 		python-hmm		\
-		python-irclib		\
+		python-inotify		\
 		python-irclib		\
 		python-logilab		\
 		python-libgmail		\
