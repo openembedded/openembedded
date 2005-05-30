@@ -1,4 +1,4 @@
-PR = "r12"
+PR = "r13"
 
 IMAGE_BASENAME = "openslug"
 
@@ -9,7 +9,7 @@ OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATC
 	virtual/libc makedevs-native mtd-utils-native slugimage-native nslu2-linksys-firmware "
 
 DEPENDS = "virtual/kernel base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts netbase \
+        busybox dropbear hotplug-ng initscripts-openslug netbase \
         sysvinit tinylogin portmap \
         ixp4xx-csr ixp425-eth openslug-init \
 	module-init-tools modutils-initscripts \
@@ -21,7 +21,7 @@ DEPENDS = "virtual/kernel base-files base-passwd \
 # (OPENSLUG_EXTRA_FILESYSTEMS, included in OPENSLUG_EXTRA_INSTALL)
 # kernel-module-af-packet must be in the image for DHCP to work
 IPKG_INSTALL = "base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts netbase \
+        busybox dropbear hotplug-ng initscripts-openslug netbase \
         update-modules sysvinit tinylogin portmap \
         ixp4xx-csr ixp425-eth openslug-init \
 	module-init-tools modutils-initscripts \

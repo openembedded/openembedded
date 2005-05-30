@@ -54,6 +54,9 @@ INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd" 
 INITSCRIPT_NAME_${PN} = "syslog"
 
+# This disables the syslog startup links in openslug (see openslug-init)
+INITSCRIPT_PARAMS_${PN}_openslug = "start 20 ."
+
 inherit cml1 update-rc.d
 
 do_configure () {

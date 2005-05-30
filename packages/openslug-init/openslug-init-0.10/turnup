@@ -8,6 +8,55 @@
 # force: override certain checks
 force=
 #
+# fstype new
+#  The type of the file system mounted on "new"  Outputs the last
+#  piece of information found, which should be the one for the
+#  currently visible mount!
+fstype() {
+	local cwd dev mp type options pass freq result
+	cwd="$(cd "$1"; /bin/pwd)"
+	result=
+	while read dev mp type options pass freq
+	do
+		case "$mp" in
+		"$cwd")	result="$type";;
+		esac
+	done </proc/mounts
+	echo "$result"
+}
+#
+# fsoptions arguments
+#  Collapses the mount (-o) options into a single list which is
+#  printed on stdout.  Accepts an arbitrary list of options and
+#  just joins them together.
+fsoptions() {
+	local options
+	options=
+	while test $# -gt 1
+	do
+		case "$1" in
+		-t)	shift;;
+		-o)	if test -n "$2"
+			then
+				if test -n "$options"
+				then
+					options="$options,$2"
+				else
+					options="$2"
+				fi
+			fi
+			shift;;
+		esac
+		shift
+	done
+	if test -n "$options"
+	then
+		echo "$options"
+	else
+		echo defaults
+	fi
+}
+#
 # check_rootfs [-i] <root fs directory>
 #  Make sure the candidate rootfs is empty
 check_rootfs() {
@@ -87,8 +136,8 @@ setup_dev() {
 		return 1
 	}
 	echo "done" >&2
-	# now remove the startup links which mount the ramfs on /dev
-	rm "$1"/etc/rc?.d/[KS]??devices
+	# now prevent this being done each time
+	:>"$1"/dev/.permanent
 	return 0
 }
 
@@ -128,8 +177,8 @@ setup_var() {
 		echo "turnup: /var: could not populate directory" >&2
 		return 1
 	}
-	# and remove the startup links
-	rm "$1"/etc/rc?.d/[KS]??populate-var.sh
+	# the startup link is left for the moment, this seems safer
+	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
 	# remove the /var tmpfs entry from the new /etc/fstab
 	case "$2" in
 	disk)	sed -i '\@\s/var\s\s*tmpfs\s@d' "$1"/etc/fstab
@@ -138,10 +187,9 @@ setup_var() {
 		echo "turnup: tmpfs /var mount moved to /var/tmp" >&2;;
 	esac
 	#
-	# warn the user - it's not enough to put the /var mount back, it
-	# is necessary to reinsert the populate-var.sh links!
-	echo " If you remount tmpfs on /var it must be populated at boot, use:" >&2
-	echo "        update-rc.d populate-var.sh start 37 S ." >&2
+	# Previous versions of turnup removed populate-var.sh from the
+	# startup links, this one doesn't, so /var can be made back into
+	# a tmpfs just by a change to /etc/fstab.
 	return 0
 }
 
@@ -223,6 +271,23 @@ setup_rootfs() {
 	esac
 	# return code of last setup function
 }
+
+#
+# setup_fstab new fsdev fstype fsoptions
+#  Alters the /etc/fstab entry for / to refer to the correct device and
+#  have the correct type and options.  Essential for checkroot to remount
+#  / with the correct options.
+#  bad, since sed won't fail even if it changes nothing.
+setup_fstab() {
+	sed -i '\@^[^ 	]*\s\s*/\s@s@^.*$@'"$2	/	$3	$4	1  1"'@' "$1"/etc/fstab
+	egrep -q "^$2	/	$3	$4	1  1\$" "$1"/etc/fstab || {
+		echo "turnup: /etc/fstab: root(/) entry not changed" >&2
+		echo "  you probably need to check the options in /etc/fstab" >&2
+		echo "  to ensure that the root partition is mounted correctly" >&2
+		return 1
+	}
+}
+
 
 #
 # boot_rootfs <boot type> <flash file system> <sleep time> <device> [options]
@@ -342,7 +407,7 @@ mountflash() {
 # disk [-m] [-i] [-s<time>] <device> {options}
 #  Carefully copy the flash file system to the named device.
 disk() {
-	local setup_type sleep init device new ffs
+	local setup_type sleep init device new ffs fst fso
 
 	setup_type=disk
 	sleep=0
@@ -388,7 +453,16 @@ disk() {
 	# read only is *not* an option, this is important because the boot/disk
 	# script needs a rw file system
 	status=1
+	fst=
+	fso="$(fsoptions "$@")"
 	if mount "$@" "$device" "$new"
+	then
+		fst="$(fstype "$new")"
+		umount "$new" ||
+			echo "turnup disk: $device($new): umount does not seem to work" >&2
+	fi
+
+	if test -n "$fst" && mount -t "$fst" -o "$fso" "$device" "$new"
 	then
 		if check_rootfs $init "$new" && {
 			test -z "$init" || {
@@ -397,14 +471,20 @@ disk() {
 			}
 		   }
 		then
+			setup_fstab "$new" "$device" "$fst" "$fso"
 			status=0
 		fi
 
 		# clean up the disk.  It is worrying if this umount fails!
-		umount "$new" || {
+		umount "$new" || test "$force" = "-f" || {
 			echo "turnup disk: $device: umount failed" >&2
 			echo "  you must unmount this device cleanly yourself, then use" >&2
-			echo "  the -i option to boot from the device" >&2
+			if test -z "$init"
+			then
+				echo "  turnup with the -f option to boot from the device" >&2
+			else
+				echo "  turnup without the -i option to boot from the device" >&2
+			fi
 			status=1
 		}
 
@@ -412,10 +492,15 @@ disk() {
 		if test $status -eq 0
 		then
 			# memsticks boot like disks, so ignore the -m
-			boot_rootfs disk "$ffs" "$sleep" "$device" "$@"
+			boot_rootfs disk "$ffs" "$sleep" "$device" -t "$fst" -o "$fso"
 		fi
 	else
 		echo "turnup disk: $device($*): unable to mount device on $new" >&2
+		# If it worked first time
+		if test -n "$fst"
+		then
+			echo "  options used: -t $fst -o $fso [error in this script]" >&2
+		fi
 	fi
 
 	# clean up the flash file system
@@ -501,7 +586,19 @@ nfs() {
 	# read only is *not* an option, this is important because the boot/disk
 	# script needs a rw file system
 	status=1
-	if mount -t nfs -o nolock,noatime,hard,intr,rsize=1024,wsize=1024,"$@" "$nfsroot" "$new"
+	fst=
+	# These settings for for NFS, something better will probably have to
+	# be done to support other network file systems.
+	nfsopt="nolock,noatime,hard,intr,rsize=1024,wsize=1024"
+	fso="$(fsoptions -o "$nfsopt" "$@")"
+	if mount -o "$nfsopt" "$@" "$nfsroot" "$new"
+	then
+		fst="$(fstype "$new")"
+		umount "$new" ||
+			echo "turnup nfs: $nfsroot($new): umount does not seem to work" >&2
+	fi
+
+	if test -n "$fst" && mount -t "$fst" -o "$fso" "$nfsroot" "$new"
 	then
 		if :>"$new"/ttt && test -O "$new"/ttt && rm "$new"/ttt
 		then
@@ -512,19 +609,25 @@ nfs() {
 				}
 			   }
 			then
+				setup_fstab "$new" "$nfsroot" "$fst" "$fso"
 				status=0
 			fi
 		else
-			echo "turnup nfs: $nfsroot: partition must be mounted no_root_squash" >&2
+			echo "turnup nfs: $nfsroot: partition must be exported no_root_squash" >&2
 		fi
 
 		# clean up the disk.  It is worrying if this umount fails!
-		umount "$new" || {
+		umount "$new" || test "$force" = "-f" || {
 			echo "turnup nfs: $nfsroot: umount failed" >&2
 			if test $status -eq 0
 			then
 				echo "  you must unmount this partition cleanly yourself, then use" >&2
-				echo "  the -i option to boot from the NFS root" >&2
+				if test -z "$init"
+				then
+					echo "  turnup with the -f option to boot from the NFS root" >&2
+				else
+					echo "  turnup without the -i option to boot from the NFS root" >&2
+				fi
 				status=1
 			fi
 		}
@@ -533,11 +636,15 @@ nfs() {
 		if test $status -eq 0
 		then
 			# the options used are exactly those which worked before.
-			boot_rootfs nfs "$ffs" 0 "$nfsroot" -t nfs \
-				-o nolock,noatime,hard,intr,rsize=1024,wsize=1024,"$@"
+			boot_rootfs nfs "$ffs" 0 "$nfsroot" -t nfs -o "$fso"
 		fi
 	else
-		echo "turnup disk: $nfsroot($*): unable to mount device on $new" >&2
+		echo "turnup nfs: $nfsroot($*): unable to mount device on $new" >&2
+		# If it worked first time
+		if test -n "$fst"
+		then
+			echo "  options obtained: -t $fst -o $fso" >&2
+		fi
 	fi
 
 	# clean up the flash file system
@@ -588,10 +695,9 @@ usage: turnup command [options]
     partition must be available to be mounted without root id
     sqashing (i.e. root must be root) and it will be selected
     as the root file system for subsequent reboots.
-    The options are added to the -o list, therefore to give
-    additional flag arguments specify an empty first option.
-    The options may be used to override the defaults just by
-    specifying the new value.
+    A default set of -o options are provided, additional options
+    may be given on the command line (multiple -o options will
+    be combined into a single -o).
   flash
     Revert to booting from the flash disk on next reboot.
   ram

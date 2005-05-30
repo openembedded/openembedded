@@ -2,7 +2,8 @@ DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files"
-PR = "r26"
+RDEPENDS = "busybox"
+PR = "r27"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -11,13 +12,17 @@ SRC_URI = "file://linuxrc \
 	   file://boot/ram \
 	   file://boot/network \
 	   file://boot/udhcpc.script \
+	   file://initscripts/syslog.buffer \
+	   file://initscripts/syslog.file \
+	   file://initscripts/syslog.network \
+	   file://initscripts/zleds \
+	   file://initscripts/leds_startup \
+	   file://initscripts/rmrecovery \
+	   file://initscripts/sysconfsetup \
+	   file://initscripts/umountinitrd.sh \
 	   file://functions \
-	   file://rmrecovery \
-	   file://sysconfsetup \
 	   file://turnup \
 	   file://modprobe.conf \
-	   file://leds_rs_green \
-	   file://leds_startup \
 	   file://leds.h \
 	   file://leds.c \
 	   file://kern_header.c \
@@ -29,6 +34,8 @@ USRSBINPROGS = "kern_header"
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup update-kernel"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
+INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
+	leds_startup rmrecovery sysconfsetup umountinitrd.sh"
 
 # This just makes things easier...
 S="${WORKDIR}"
@@ -78,10 +85,10 @@ do_install() {
 	#
 	# Init scripts
 	install -m 0644 functions ${D}${sysconfdir}/default
-	install -m 0755 rmrecovery ${D}${sysconfdir}/init.d/
-	install -m 0755 sysconfsetup ${D}${sysconfdir}/init.d/
-	install -m 0755 leds_startup ${D}${sysconfdir}/init.d/
-	install -m 0755 leds_rs_green ${D}${sysconfdir}/init.d/zleds_rs
+	for s in ${INITSCRIPTS}
+	do
+		install -m 0755 initscripts/$s ${D}${sysconfdir}/init.d/
+	done
 
 	#
 	# Boot scripts
@@ -100,21 +107,30 @@ do_install() {
 # case it is normal to run 'start' and 'stop', but because the conf
 # files installed don't actually start or stop anything this is
 # unnecessary, so the package postfoo handling is simplified here.
+#NB: do not use '08' (etc) for the first argument after start/stop,
+# the value is interpreted as an octal number if there is a leading
+# zero.
 pkg_postinst_openslug-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
-	update-rc.d $opt sysconfsetup start 11 S .
-	update-rc.d $opt zleds_rs start 99 S 1 2 3 4 5 . stop 05 0 1 2 3 4 5 6 .
+	update-rc.d $opt hwclock.sh		start  8 S . start 45 0 6 .
+	update-rc.d $opt umountinitrd.sh	start  9 S .
+	update-rc.d $opt syslog.buffer		start 11 S . start 49 0 6 .
+	update-rc.d $opt sysconfsetup		start 12 S .
+	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .
+	update-rc.d $opt syslog.network		start 44 S . start 39 0 6 .
+	update-rc.d $opt zleds			start 99 S 1 2 3 4 5 . stop  5 0 1 2 3 4 5 6 .
 	# bug fix for startup
-	update-rc.d $opt leds_startup start 01 1 2 3 4 5 .
+	update-rc.d $opt leds_startup		start  1 1 2 3 4 5 .
 }
 
 pkg_postrm_openslug-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
-	update-rc.d $opt sysconfsetup remove
-	update-rc.d $opt zleds_rs remove
-	update-rc.d $opt leds_startup remove
+	for s in ${INITSCRIPTS}
+	do
+		update-rc.d $opt "$s" remove
+	done
 }
 
 PACKAGES = "${PN}"
