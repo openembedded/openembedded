@@ -2,11 +2,13 @@ include bison_${PV}.bb
 SECTION = "devel"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/bison-${PV}"
 S = "${WORKDIR}/bison-${PV}"
-PR = "r1"
+PR = "r2"
 
 inherit native autotools
 
 do_stage() {
+	rm -f ${STAGING_BINDIR}/yacc
+	rm -f ${STAGING_BINDIR}/bison
 	install -m 0755 src/bison ${STAGING_BINDIR}/
 	cat >${STAGING_BINDIR}/yacc <<EOF
 #!/bin/sh
