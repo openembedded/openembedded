@@ -8,7 +8,7 @@ DEPENDS = "phalanx"
 RDEPENDS = "phalanx"
 PR = "r2"
 
-SRC_URI = "http://www.houseoffish.org/knights/downloads/knights.tar.gz \
+SRC_URI = "http://www.openzaurus.org/mirror/knights.tar.gz \
            file://libqpe-opie.patch;patch=1 \
            file://gcc3.patch;patch=1"
 S = "${WORKDIR}/knights"

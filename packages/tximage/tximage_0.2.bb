@@ -6,7 +6,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://community.zaurus.com/projects/tximage/"
 PR = "r1"
 
-SRC_URI = "http://downloads.zaurususergroup.com/community/66.180.235.230/download.php/253/tximage-${PV}.tar.gz \
+SRC_URI = "http://www.openzaurus.org/mirror/tximage-${PV}.tar.gz \
            file://gcc3.patch;patch=1"
 
 inherit palmtop
