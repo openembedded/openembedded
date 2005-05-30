@@ -85,12 +85,12 @@ do_unstage() {
 
 	for dir in ${HEADERS_DIRS};
 	do
-		rm -rf ${STAGING_INCDIR}/$dir
+		rm -rf ${STAGING_INCDIR}/kdepimpi/$dir
 	done
 
     for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
     do
-        rm -f ${STAGING_LIBDIR}/$f*
+        rm -f ${STAGING_LIBDIR}/kdepimpi/$f*
     done
 }
 
@@ -100,13 +100,13 @@ do_stage() {
 
 	for dir in ${HEADERS_DIRS};
 	do
-		install -d ${STAGING_INCDIR}/$dir
-		install -m 0644 ${S}/$dir/*.h ${STAGING_INCDIR}/$dir/
+		install -d ${STAGING_INCDIR}/kdepimpi/$dir
+		install -m 0644 ${S}/$dir/*.h ${STAGING_INCDIR}/kdepimpi/$dir/
 	done
 
     for f in libmicrokde libmicrokdepim libmicrokabc libmicrokcal libmicroqtcompat
     do
-        oe_libinstall -so -C ${S}/dest/ $f ${STAGING_LIBDIR}
+        oe_libinstall -so -C ${S}/dest/ $f ${STAGING_LIBDIR}/kdepimpi/
     done
 }
 

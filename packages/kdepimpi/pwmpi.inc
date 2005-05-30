@@ -10,6 +10,11 @@ SUBDIRS="pwmanager/libcrypt/mpi  \
         "
 export OE_QMAKE_LINK="${CXX}"
 
+EXTRA_QMAKEVARS_POST += " \
+INCLUDEPATH+=${STAGING_INCDIR}/kdepimpi/ \
+LIBS+=-L${STAGING_LIBDIR}/kdepimpi/ \
+"
+
 do_stage() {
 }
 
