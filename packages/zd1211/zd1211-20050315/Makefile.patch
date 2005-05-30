@@ -1,0 +1,15 @@
+--- zd1211/Makefile	2005-03-15 00:23:52.000000000 -1000
++++ zd1211-new/Makefile	2005-05-30 02:39:34.447198051 -1000
+@@ -4,9 +4,9 @@
+ #
+ 
+ # Some commands
+-CC=gcc
+-CPP=g++
+-LD=ld
++#CC=gcc
++#CPP=g++
++#LD=ld
+ RM=rm -f -r
+ CVS=cvs
+ TAR=tar
