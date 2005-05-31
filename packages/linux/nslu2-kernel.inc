@@ -113,13 +113,13 @@ python () {
 	pname = '-'.join(name)
     	if patch[0:2] == "rc" or patch[0:3] == "pre":
 	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/testing/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
-	    kernel[-1] = kernel[-1] - 1
+	    kernel[-1] = str(int(kernel[-1]) - 1)
 	    if patch[0:2] == "rc" and pref == 10:
 	    	pref = 6
 		filepath[0:0] = [ filedir % (name[0] + "-rc") ]
 	    else:
 	    	pref = 2
-	elif patch[0:2] == "bk":
+	elif patch[0:2] == "bk" or patch[0:3] == "git":
 	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
 	    pref = 2
 	elif patch[0:2] == "ac":
@@ -149,7 +149,7 @@ python () {
     bb.data.setVar("N2K_FILESPATH", ':'.join(filepath), d)
     # bb.note("N2K_FILESPATH := %s" % ' '.join(filepath))
     bb.data.setVar("DEFAULT_PREFERENCE", pref-mmac, d)
-    # bb.note("DEFAULT_PREFERENCE := %s" % pref-mmac)
+    # bb.note("DEFAULT_PREFERENCE := %s" % (pref-mmac))
 }
 
 # FILESPATH: this list is in order last-searched-first, therefore
