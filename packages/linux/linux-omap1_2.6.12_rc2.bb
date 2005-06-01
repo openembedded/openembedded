@@ -3,8 +3,9 @@ DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.12-rc2.tar.bz2 \
-           http://www.muru.com/linux/omap/patches/patch-2.6.12-rc2-omap1.bz2;patch=1 \
-           file://defconfig"
+           http://www.muru.com/linux/omap/patches/patch-2.6.12-rc2-omap1.bz2;patch=1"
+
+SRC_URI_append_omap5912osk = "file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.12-rc2"
 
@@ -23,12 +24,12 @@ python __anonymous () {
 }
 
 
-do_configure_prepend() {
+do_configure_prepend_omap5912osk() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
         oe_runmake oldconfig
 }
 
-do_deploy() {
+do_deploy_omap5912osk() {
         install -d ${DEPLOY_DIR}/images
         arm-linux-objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux ${DEPLOY_DIR}/linux.bin
         gzip -f -9 ${DEPLOY_DIR}/linux.bin
@@ -36,6 +37,7 @@ do_deploy() {
         cp ${DEPLOY_DIR}/uImage_bb.cc /tftpboot
 #        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
 }
+
 
 do_deploy[dirs] = "${S}"
 
