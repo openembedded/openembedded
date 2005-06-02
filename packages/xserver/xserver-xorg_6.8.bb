@@ -1,6 +1,8 @@
 SECTION = "x11/base"
-PR = "r5"
+RPROVIDES = "virtual/xserver"
+PROVIDES = "virtual/xserver"
 LICENSE = "Xorg"
+PR = "r6"
 
 DEPENDS = "freetype libxi xmu flex-2.5.4-native"
 
