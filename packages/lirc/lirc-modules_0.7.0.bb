@@ -12,15 +12,11 @@ S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools module-base
 
-EXTRA_OECONF = "--with-kerneldir=${STAGING_KERNEL_DIR}"
-EXTRA_OECONF_append_epia = " --with-driver=serial"
-EXTRA_OECONF_append_collie = " --with-driver=sa1100 --without-x"
-EXTRA_OECONF_append_h3600 = " --with-driver=sa1100 --without-x"
-EXTRA_OECONF_append_beagle = " --with-driver=sa1100 --without-x"
-EXTRA_OECONF_append_simpad = " --with-driver=sa1100 --without-x"
+include lirc-config.inc
 
 do_compile() {
-	cd drivers && oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	# ${KERNEL_LD} doesn't understand the LDFLAGS, so suppress them
+	cd drivers && oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}" LDFLAGS=""
 }
 
 fakeroot do_install() {
