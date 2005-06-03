@@ -7,7 +7,7 @@ RPROVIDES = "hotplug"
 RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
 SECTION = "base"
-PR = "r3"
+PR = "r4"
 RSUGGESTS = "pciutils usbutils"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
@@ -43,8 +43,8 @@ oldmandir := "${mandir}"
 oldsbindir := "${sbindir}"
 prefix = ""
 exec_prefix = ""
-FILES_hotplug_append = " ${oldsbindir}"
-FILES_hotplug-doc_append = " ${oldmandir}"
+FILES_${PN} += "${oldsbindir}"
+FILES_${PN}-doc += "${oldmandir}"
 
 export DEBFIX = "sed -e 's:sysconfig/usb:default/hotplug.usb:'"
 do_install () {
