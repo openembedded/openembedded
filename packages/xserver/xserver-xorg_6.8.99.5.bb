@@ -4,11 +4,12 @@ PROVIDES = "virtual/xserver"
 LICENSE = "Xorg"
 PR = "r1"
 
-DEPENDS = "fontconfig freetype libxi xmu flex-2.5.4-native"
+DEPENDS = "fontconfig freetype libxi xmu flex-native zlib"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;method=pserver;tag=XORG-6_8_99_5 \
 	file://imake-staging.patch;patch=1 \
 	file://imake-installed.patch;patch=1 \
+	file://fontfile.patch;patch=1 file://freetype.patch;patch=1 \
 	file://dri.patch;patch=1"
 
 PACKAGES =+ "xserver-xorg-xprint xserver-xorg-xvfb xserver-xorg-utils"
