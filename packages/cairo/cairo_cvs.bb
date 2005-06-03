@@ -7,7 +7,7 @@ DEPENDS = "x11 libpixman libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
 PR = "r2"
-
+DEFAULT_PREFERENCE = "-1"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=cairo"
 S = "${WORKDIR}/cairo"
 

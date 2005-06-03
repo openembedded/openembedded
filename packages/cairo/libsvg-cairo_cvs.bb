@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libsvg cairo"
 DESCRIPTION = "SVG rendering library"
-
+DEFAULT_PREFERENCE = "-1"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg-cairo"
 S = "${WORKDIR}/libsvg-cairo"
 

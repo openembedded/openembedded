@@ -8,6 +8,8 @@ LICENSE = "X11"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libpixman"
 S = "${WORKDIR}/libpixman"
 
+DEFAULT_PREFERENCE = "-1"
+
 inherit autotools pkgconfig 
 
 do_stage () {

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PROVIDES = "python python-core"
 DEPENDS = "python-native zlib gdbm openssl"
-PR = "ml1"
+PR = "ml2"
 
 PYTHON_MAJMIN = "2.4"
 
