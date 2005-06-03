@@ -1,7 +1,6 @@
 SECTION = "x11/base"
 LICENSE = "MIT"
-SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
-	file://config.patch;patch=1"
+SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver"
 
 PV = "0.0cvs${CVSDATE}"
 PR = "r2"
