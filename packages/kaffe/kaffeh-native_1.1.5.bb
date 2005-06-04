@@ -1,6 +1,6 @@
 SRC_URI = "http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development/kaffe-${PV}.tar.gz"
 S = "${WORKDIR}/kaffe-${PV}"
-PR = "r1"
+PR = "r2"
 
 include kaffe.inc
 
@@ -12,6 +12,7 @@ EXTRA_OECONF = "--disable-alsatest \
 	--with-jikes \
 	--without-classpath-gtk-awt \
 	--without-gmp \
+	--enable-pure-java-math \
 	--disable-native-awt \
 	--disable-sound \
 	--without-x \
