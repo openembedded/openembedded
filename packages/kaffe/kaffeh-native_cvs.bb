@@ -8,7 +8,11 @@ include kaffe.inc
 
 inherit native
 
-EXTRA_OECONF += " --without-classpath-gtk-awt \
+EXTRA_OECONF = "--disable-alsatest \
+	--disable-esdtest \
+	--disable-sound \
+	--with-jikes \
+	--without-classpath-gtk-awt \
 	--disable-native-awt \
 	--disable-sound \
 	--without-x \
