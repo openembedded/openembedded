@@ -3,7 +3,7 @@ DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-gtk2/sylpheed-${PV}.tar.gz \
 	file://sylpheed-gnutls.patch;patch=1"
@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-gtk2/sylpheed-${PV}.tar.gz \
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN}-doc += "${datadir}"
 
-EXTRA_OECONF = "--with-gnutls"
+EXTRA_OECONF = "--enable-gnutls"
 
 CFLAGS += "-D_GNU_SOURCE"
 

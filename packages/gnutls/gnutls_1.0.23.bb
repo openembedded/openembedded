@@ -1,11 +1,12 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt"
-PR = "r4"
+PR = "r5"
 
 LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/attic/gnutls-${PV}.tar.gz \
-	file://gnutls-openssl.patch;patch=1"
+	file://gnutls-openssl.patch;patch=1 \
+	file://export-symbols.patch;patch=1"
 
 inherit autotools
 inherit binconfig
