@@ -378,7 +378,7 @@ DEPENDS += " ${task-opie-wlan}"
 task-qpe-emulators = "\
 frodo \
 snes9x-sdl-qpe \
-uae \
+e-uae \
 "
 RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
 DEPENDS += " ${task-qpe-emulators}"

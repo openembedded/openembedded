@@ -4,7 +4,7 @@ MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
 LICENSE = "GPL"
 PR = "r2"
 
-KERNEL_CCSUFFIX = "-3.3.3"
+KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
