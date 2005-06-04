@@ -10,11 +10,18 @@ S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 BINV ?= "${PV}"
 
+# gcj doesn't work on arm
+JAVA = ",java"
+JAVA_arm = ""
+# gcc4-build sets this to f95
+FORTRAN ?= "f77"
+LANGUAGES ?= "c,c++,${FORTRAN}${JAVA}"
+
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
                 --enable-shared \
                 --enable-target-optspace \
-                --enable-languages=c,c++,f77 \
+                --enable-languages=${LANGUAGES} \
                 --enable-threads=posix \
                 --enable-multilib \
                 --enable-c99 \
