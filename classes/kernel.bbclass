@@ -148,6 +148,7 @@ FILES_kernel-dev = "/boot/System.map* /boot/config*"
 RDEPENDS_kernel = "kernel-image-${KERNEL_VERSION}"
 PKG_kernel-image = "kernel-image-${KERNEL_VERSION}"
 ALLOW_EMPTY_kernel = "1"
+ALLOW_EMPTY_kernel-image = "1"
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
