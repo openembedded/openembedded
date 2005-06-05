@@ -10,7 +10,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${
            file://modutils-notest.patch;patch=1 \
            file://configure.patch;patch=1 \
            file://program_prefix.patch;patch=1 \
-           file://armeb.patch;patch=1"
+           file://armeb.patch;patch=1 \
+	   file://gcc4.patch;patch=1"
 
 inherit autotools
 
