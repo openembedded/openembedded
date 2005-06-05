@@ -4,11 +4,11 @@ include nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
 MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
-PR = "r18"
+PR = "r19"
 
 KERNEL_SUFFIX = "unslung"
 
-CMDLINE_ROOT ?= "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
+CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
 
 UNSLUNG_KERNEL_EXTRA_SRC_URI ?=
 
