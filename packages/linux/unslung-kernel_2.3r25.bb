@@ -8,7 +8,7 @@ PR = "r17"
 
 KERNEL_SUFFIX = "unslung"
 
-CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
+CMDLINE_ROOT ?= "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
 
 UNSLUNG_KERNEL_EXTRA_SRC_URI ?=
 
