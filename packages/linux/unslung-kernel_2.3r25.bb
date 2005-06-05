@@ -4,7 +4,7 @@ include nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
 MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
-PR = "r17"
+PR = "r18"
 
 KERNEL_SUFFIX = "unslung"
 
@@ -23,10 +23,7 @@ SRC_URI += "file://limit1gb.patch;patch=1 \
 	    file://pl2303.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
-# file://pl2303.patch;patch=1
-
-
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel-${PV}', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 python () {
 	# Don't build unslung kernel unless we're targeting an nslu2
