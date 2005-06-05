@@ -1,0 +1,47 @@
+#!/bin/sh
+# boot from the hard disk partition "$1" (which
+# must be given) using options from the rest of
+# the command line.
+#
+/sbin/leds -A '!gr'
+#
+# Use the standard init path (see /etc/init.d/rcS)
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+#
+# Load the helper functions
+. /etc/default/functions
+#
+if test -n "$1"
+then
+	device="$1"
+	shift
+	echo "boot: rootfs: mount $* $device"
+	#
+	# prepare the device.  This uses tmpfs to avoid dependency
+	# on non-built-in file systems and because tmpfs can expand
+	# to bigger than the 10MByte ram0 partition used before.
+	# The 'device' is currently unused.
+	if mount -t tmpfs "$@" tmpfs /mnt
+	then
+		cd /
+		# filter out boot (with zimage), linuxrc and anything
+		# below /var, keep dev or the boot will fail (note that
+		# nothing is mounted this early in the bootstrap).
+		find . -mount -print |
+		sed '\@^./boot/@d;\@^./boot$@d;\@^./linuxrc@d;\@^./var/@d' |
+		cpio -p -d -m -u /mnt
+		# checkmount checks for sh, init and no .recovery plus
+		# either mnt or initrd, mnt must exist!
+		if checkmount /mnt
+		then
+			# pivot to /mnt
+			cd /
+			swivel mnt mnt
+			# swivel failed
+		fi
+		# Failure: unmount the partition.
+		umount /mnt
+	fi
+fi
+# fallback - use the flash boot
+exec /boot/flash
