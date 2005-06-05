@@ -1,5 +1,5 @@
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r4"
+PR = "r5"
 DESCRIPTION = "GNU C Library"
 HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
@@ -205,7 +205,6 @@ do_stage() {
 	for i in libc.a libc_pic.a libc_nonshared.a; do
 		install -m 0644 ${B}/$i ${STAGING_LIBDIR}/ || die "failed to install $i"
 	done
-	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_LIBDIR}/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_LIBDIR}/libc.so
 
 	rm -f ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so.6
@@ -240,7 +239,6 @@ do_stage() {
 	for i in libc.a libc_pic.a libc_nonshared.a; do
 		install -m 0644 ${B}/$i ${CROSS_DIR}/${TARGET_SYS}/lib/ || die "failed to install $i"
 	done
-	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
