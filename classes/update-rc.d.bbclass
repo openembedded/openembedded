@@ -14,7 +14,7 @@ fi
 update-rc.d $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
 }
 
-updatercd_postrm() {
+updatercd_prerm() {
 if test "x$D" != "x"; then
 	D="-r $D"
 else
