@@ -44,11 +44,11 @@ python populate_packages_prepend () {
 			postinst = '#!/bin/sh\n'
 		postinst += bb.data.getVar('updatercd_postinst', localdata, 1)
 		bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
-		postrm = bb.data.getVar('pkg_postrm', localdata, 1)
-		if not postrm:
-			postrm = '#!/bin/sh\n'
-		postrm += bb.data.getVar('updatercd_postrm', localdata, 1)
-		bb.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
+		prerm = bb.data.getVar('pkg_prerm', localdata, 1)
+		if not prerm:
+			prerm = '#!/bin/sh\n'
+		prerm += bb.data.getVar('updatercd_prerm', localdata, 1)
+		bb.data.setVar('pkg_prerm%s' % pkg, prerm, d)
 
 	pkgs = bb.data.getVar('INITSCRIPT_PACKAGES', d, 1)
 	if pkgs == None:
