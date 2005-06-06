@@ -12,6 +12,9 @@ SECTION = "base"
 PRIORITY = "required"
 PR = "r24"
 
+SPURION = "file://ifupdown-spurious-environ.patch;patch=1"
+SPURION_nslu2 = ""
+
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
 	   file://udhcpscript.patch;patch=1 \
@@ -27,7 +30,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mount-all-type.patch;patch=1 \
            file://celf-ash-builtins.patch;patch=1 \
 	   file://dhcp-hostname.patch;patch=1 \
-	   file://ifupdown-spurious-environ.patch;patch=1 \
+	   ${SPURION} \
 	   file://gzip-spurious-const.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
