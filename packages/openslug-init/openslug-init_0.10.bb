@@ -1,9 +1,9 @@
 DESCRIPTION = "Openslug initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
-DEPENDS = "base-files"
-RDEPENDS = "busybox"
-PR = "r27"
+DEPENDS = "base-files devio"
+RDEPENDS = "busybox devio"
+PR = "r28"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -26,10 +26,9 @@ SRC_URI = "file://linuxrc \
 	   file://leds.h \
 	   file://leds.c \
 	   file://kern_header.c \
-	   file://devio.c \
 	   file://update-kernel"
 
-SBINPROGS = "devio leds"
+SBINPROGS = "leds"
 USRSBINPROGS = "kern_header"
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup update-kernel"
