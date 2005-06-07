@@ -9,7 +9,7 @@ PRIORITY = "optional"
 
 PR = "r2gpe1"
 
-SRC_URI = "http://gkdial.sourceforge.net/downloads/${PN}-${PV}.tar.gz \
+SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
            file://gkdial-pgpe.patch;patch=1 \
            file://gkdial-ungnome.patch;patch=1;pnum=0 \
            file://gkdial-gladedir.patch;patch=1;pnum=0 \

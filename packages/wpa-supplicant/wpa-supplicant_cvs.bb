@@ -5,7 +5,7 @@ MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 PV = "0.0cvs${CVSDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@hostap.epitest.fi/cvs;module=hostap \
 	file://use-channel.patch;patch=1 \
@@ -54,6 +54,6 @@ do_install () {
 	install -d ${D}${sysconfdir}/init.d
 	install -m700 ${WORKDIR}/init.sh ${D}${sysconfdir}/init.d/wpa
 
-	install -d ${D}${sysconfdir}/defaults
-	install -m600 ${WORKDIR}/defaults ${D}${sysconfdir}/defaults/wpa
+	install -d ${D}${sysconfdir}/default
+	install -m600 ${WORKDIR}/defaults ${D}${sysconfdir}/default/wpa
 }

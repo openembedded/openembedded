@@ -48,7 +48,7 @@ python populate_packages_prepend () {
 		if not prerm:
 			prerm = '#!/bin/sh\n'
 		prerm += bb.data.getVar('updatercd_prerm', localdata, 1)
-		bb.data.setVar('pkg_prerm%s' % pkg, prerm, d)
+		bb.data.setVar('pkg_prerm_%s' % pkg, prerm, d)
 
 	pkgs = bb.data.getVar('INITSCRIPT_PACKAGES', d, 1)
 	if pkgs == None:
