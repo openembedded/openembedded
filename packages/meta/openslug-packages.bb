@@ -46,7 +46,8 @@ OPENSLUG_PACKAGES = "\
 	coreutils cvs\
 	dnsmasq \
 	expat \
-	less \
+	ftpd-topfield \
+	less libusb \
 	miau microcom mt-daapd mysql \
 	nail \
 	openssh \
