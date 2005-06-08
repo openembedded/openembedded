@@ -6,14 +6,14 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PROVIDES = "python python-core"
 DEPENDS = "python-native zlib gdbm openssl"
-PR = "ml2"
+PR = "ml3"
 
 PYTHON_MAJMIN = "2.4"
 
-SRC_URI = "ftp://www.python.org/pub/python/2.4/Python-2.4.tar.bz2 \
+SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
 	   file://bindir-libdir.patch;patch=1 \
 	   file://crosscompile.patch;patch=1"
-S = "${WORKDIR}/Python-2.4"
+S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
 
