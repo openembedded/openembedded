@@ -43,6 +43,11 @@ else
 	cd /
 	mkdir -p dev/msys
 	mkdir -p dev/pts
+        mkdir -p dev/input
+        mkdir -p dev/vc
+        for i in 0 1 2 3 4 5 6 7 8 9; do
+                ln -s /dev/tty$i /dev/vc/$i
+        done
 	ln -sf /dev/sharp_ts /dev/ts
         ln -sf /dev/sharp_fl /dev/fl
 	ln -sf /proc/self/fd /dev/fd

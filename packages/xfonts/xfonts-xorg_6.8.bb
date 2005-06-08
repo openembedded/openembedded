@@ -5,7 +5,6 @@ LICENSE = "XFree86"
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
         file://imake-staging.patch;patch=1"
 
-inherit native
 
 PACKAGES = "${PN}-75dpi ${PN}-100dpi ${PN}-type1 ${PN}-cyrillic ${PN}-ttf ${PN}"
 FILES_${PN}-75dpi = "${libdir}/X11/fonts/75dpi"
