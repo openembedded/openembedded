@@ -1,5 +1,6 @@
 SECTION = "x11/base"
-PR = "r0"
+PR = "r1"
+# XXX Is this true?  These fonts are from X.org.
 LICENSE = "XFree86"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
