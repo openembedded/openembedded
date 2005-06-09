@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "ipkg configuration files"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
 file://ipkg.conf.comments	\

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
  
-PV = "0.0.1"
+PV = "0.0.1+cvs-${CVSDATE}"
 PR = "r2"
 
 
