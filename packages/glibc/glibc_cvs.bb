@@ -6,10 +6,10 @@ PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r1"
-PV = "2.3.3+cvs${CVSDATE}"
+PR = "r0"
+PV = "2.3.4+cvs${CVSDATE}"
 
-GLIBC_ADDONS ?= "linuxthreads"
+GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
 
 DEFAULT_PREFERENCE = "-1"
@@ -38,15 +38,16 @@ INHIBIT_DEFAULT_DEPS = "1"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
+#	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
+#	   file://arm-memcpy.patch;patch=1;pnum=0 \
+#	   file://arm-longlong.patch;patch=1;pnum=0 \
+#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+#	   \
+#	   file://arm-ioperm.patch;patch=1;pnum=0 \
+#	   file://ldd.patch;patch=1;pnum=0 \
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
-	   file://arm-ioperm.patch;patch=1;pnum=0 \
-	   file://ldd.patch;patch=1;pnum=0 \
+	   cvs://anoncvs@sources.redhat.com/cvs/glibc;module=ports \
 	   file://fhs-linux-paths.patch;patch=1 \
-	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
-	   file://arm-memcpy.patch;patch=1;pnum=0 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
-	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
@@ -76,6 +77,8 @@ def get_glibc_fpu_setting(bb, d):
 	return ""
 
 do_configure () {
+# Integrate ports into tree
+	if [ ! -d ${S}/ports ]; then mv ${WORKDIR}/ports ${S}; fi
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
@@ -93,8 +96,6 @@ rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
 	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
 
 do_compile () {
-	# this really is arm specific
-	touch ${S}/sysdeps/arm/framestate.c
 	# -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
 	unset LDFLAGS
 	base_do_compile

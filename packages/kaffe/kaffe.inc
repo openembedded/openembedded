@@ -73,13 +73,13 @@ rmic \
 rmiregistry \
 serialver"
 
-pkg_postinst() {
+pkg_postinst_${PN} () {
 	for name in ${alternative_names}; do
 		update-alternatives --install ${bindir}/$name $name ${libdir}/${PN}/jre/bin/$name 300
 	done
 }
 
-pkg_postrm() {
+pkg_postrm_${PN} () {
 	for name in ${alternative_names}; do
 		update-alternatives --remove $name ${libdir}/${PN}/jre/bin/$name
 	done
