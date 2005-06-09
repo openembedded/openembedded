@@ -11,14 +11,16 @@ EXTRA_OECONF =	"--disable-gtk-doc"
 
 do_install_prepend() {
 	install -d ${D}/${libdir}
-	install thumbs/.libs/libossothumbnail.so.0.0.3 ${D}${libdir}/libossothumbnail.so
+	install thumbs/.libs/libossothumbnail.so.0.0.3 ${D}${libdir}/
 }
 
 do_stage() {
 	install -d ${STAGING_INCDIR}
 	install -d ${STAGING_LIBDIR}
 	install -m 644 thumbs/*.h ${STAGING_INCDIR}
-	install thumbs/.libs/libossothumbnail.so.0.0.3 ${STAGING_LIBDIR}/libossothumbnail.so
+	install thumbs/.libs/libossothumbnail.so ${STAGING_LIBDIR}
+	install thumbs/.libs/libossothumbnail.so.0 ${STAGING_LIBDIR}
+	install thumbs/.libs/libossothumbnail.so.0.0.3 ${STAGING_LIBDIR}
 }
 
 
