@@ -8,10 +8,12 @@ USE_DEVFS = "1"
 
 DEPENDS  = "unslung-kernel unslung-rootfs \
 	glibc slingbox ipkg wget cpio findutils portmap-unslung \
+	devio \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 IPKG_INSTALL = "unslung-rootfs \
 	libc6-unslung slingbox ipkg wget cpio findutils portmap-unslung \
+	devio \
 	${UNSLUNG_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
