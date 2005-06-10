@@ -32,7 +32,6 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver \
 	file://kmode.patch;patch=1 \
-	file://epson.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1"
 
 SRC_URI_append_ramses = " file://onlyfb.patch;patch=1"
