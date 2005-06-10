@@ -37,7 +37,7 @@ do_configure() {
 }
 
 do_compile() {
-	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" clean imake
+	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" CROSSCOMPILEDIR="${CROSS_DIR}/${TARGET_SYS}/bin" PREPROCESS_CMD="gcc -E" clean imake
 	make CC="${BUILD_CC}" xmakefile
 	make Makefiles
 	make clean
