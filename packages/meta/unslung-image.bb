@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r5"
+PR = "r6"
 
 IMAGE_BASENAME = "unslung"
 
@@ -31,6 +31,8 @@ unslung_clean_image () {
 	rm -f ${IMAGE_ROOTFS}/${sysconfdir}/version
 	# Tidy up some thing which are in the wrong place
 	mv ${IMAGE_ROOTFS}${libdir}/libipkg* ${IMAGE_ROOTFS}/lib/
+	# Remove the ipkg symlink - unsling puts it back in
+	rm -f ${IMAGE_ROOTFS}${bindir}/ipkg
 	# Hack out the modutils stuff - it's too hard to make it work
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/update-modules.postinst
 	rm -rf ${IMAGE_ROOTFS}/etc/rcS.d

@@ -423,7 +423,11 @@ and about 1MB of RAM.
 
 First public release of 4.x firmware.
 
-4.21:
+5.1:
 
 Upgraded to Linksys firmware V2.3R29, but kept telnetd.
-Fixed maintenance mode.
+
+5.2:
+
+Removed the ipkg link, and made unsling put it back on an external disk.
+
