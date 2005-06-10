@@ -3,7 +3,6 @@
 #
 
 #work around some breakages
-#CVSDATE_xserver-kdrive=20050207
 #CVSDATE_xext=20050222
 
 #set some preferred providers:
