@@ -30,6 +30,7 @@ case `uname -r` in
 esac
 
 if [ "$ACTION" = "add" ] ; then
+    sleep 1	
     echo -n add > /dev/console
     for n in 1 2 3 4 ; do
 	device=/dev/$devpath$n
@@ -39,7 +40,7 @@ if [ "$ACTION" = "add" ] ; then
 	    card=/mnt/card$n
 	fi
 	[ -b $device ] || break
-	echo flash on $device > /dev/console
+	echo " flash on $device" > /dev/console
 	[ -d $card ] || mkdir -p $card
 	mount $MMC_MOUNT_OPTIONS $device $card
     done
