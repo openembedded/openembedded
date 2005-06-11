@@ -59,6 +59,10 @@ OPENSLUG_PACKAGES = "\
 	openldap \
 	ntp \
 	reiserfsprogs reiser4progs \
+	python \
+	samba \
+	strace \
+	wget \
 	"
 
 # These packages only build on TARGET_OS=linux, not
@@ -67,13 +71,14 @@ OPENSLUG_PACKAGES_append_linux = "\
 	php \
 	libpam \
 	yp-tools ypbind ypserv \
+	nfs-utils \
 	"
-
 BROKEN_PACKAGES = "\
+	cron \
 	mgetty \
-	strace  \
 	"
 
 DEPENDS = 'openslug-image \
 	${OPENSLUG_PACKAGES} \
-	${OPENSLUG_DEVELOPMENT}'
+	${OPENSLUG_DEVELOPMENT} \
+	package-index'
