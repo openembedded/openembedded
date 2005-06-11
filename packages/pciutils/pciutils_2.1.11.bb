@@ -6,6 +6,8 @@ LICENSE = "GPLv2"
 
 PR="r1"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://configure-uclibc.patch;patch=1 \
