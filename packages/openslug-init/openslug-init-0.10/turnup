@@ -386,24 +386,6 @@ boot_rootfs() {
 }
 
 #
-# mountflash <flash root directory>
-#  Finds and mounts the flash file system
-mountflash() {
-	local ffsdev
-
-	ffsdev="$(mtblockdev Flashdisk)"
-	test -n "$ffsdev" -a -b "$ffsdev" || {
-		echo "turnup disk: unable to find flash file system to copy ($ffsdev)" >&2
-		return 1
-	}
-	mount -t jffs2 "$ffsdev" "$1" || {
-		echo "turnup disk: $ffsdev: unable to mount flash file system on $1" >&2
-		return 1
-	}
-	return 0
-}
-
-#
 # disk [-m] [-i] [-s<time>] <device> {options}
 #  Carefully copy the flash file system to the named device.
 disk() {
@@ -654,12 +636,179 @@ nfs() {
 }
 
 #
+# fix_hw_addr
+#  Called when the configuration is invalid to reset /etc/default/sysconf
+fix_hw_addr() {
+	# first look on the flash disk (ideally this stuff would only
+	# be called from flash, but there is no way of guaranteeing that).
+	local ffsdev ffs mac name force
+
+	case "$1" in
+	-f)	force="$1";;
+	esac
+
+	ffsdev="$(mtblockdev Flashdisk)"
+	test -n "$ffsdev" -a -b "$ffsdev" || {
+		echo "turnup init: the flash file system device is missing" >&2
+		echo "  The device (typically /dev/mtdblock4) must exist and" >&2
+		echo "  it must identify a flash partition called 'Flashdisk'" >&2
+		echo "  It may be that the /dev directory has not been initialised." >&2
+		echo "  This script cannot correct this problem." >&2
+		return 1
+	}
+
+	test -x /etc/init.d/sysconfsetup || {
+		echo "turnup init: /etc/init.d/sysconfsetup: script not executable" >&2
+		echo "  or script not present.  turnup init requires this script to" >&2
+		echo "  exist to correct the initialisation" >&2
+		return 1
+	}
+
+	# use devio to find out if this *is* the flash disk.
+	ffs=
+	if test "$(devio "<<$ffsdev" prd)" -ne "$(devio '<</etc/init.d/sysconfsetup' prd)"
+	then
+		# this isn't the flash device
+		ffs="/tmp/flashdisk.$$"
+		# make sure we can get to the flash file system first
+		mountflash "$ffs" || {
+			rmdir "$ffs"
+			return 1
+		}
+
+		# copy if available
+		if test -r "$ffs/etc/default/sysconf"
+		then
+			cp "$ffs/etc/default/sysconf"
+			force=
+		fi
+
+		umount "$ffs"
+		rmdir "$ffs"
+	fi
+
+	# if the config is still not valid generate sysconf from the slug
+	# label.
+	config valid && test -z "$force" || {
+		mac=
+		until test -n "$mac"
+		do
+			echo "turnup init: please find the 'MAC Address' of your NSLU2" >&2
+			echo "  The required number is on a label on the bottom of the NSLU2" >&2
+			echo "  It will be something like 'LKG1A2B3C'" >&2
+			echo -n "Enter the mac address: " >/dev/tty
+			read name </dev/tty
+			case "$name" in
+			[Ll][Kk][Gg][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])
+				mac="$(echo "$name" |
+					sed -n 's/^...\(..\)\(..\)\(..\)$/00:0F:66:\1:\2:\3/p')";;
+			[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f])
+				mac="$name"
+				name=
+				;;
+			"")	return 1;;
+			*)	echo "$name: not recognised as a LinkSys mac address" >&2
+				echo "  Enter the LinkSys value or a full Ethernet MAC addrress" >&2
+				mac=;;
+			esac
+
+			# Now generate the correct sysconf
+			{	echo '[network]'
+				echo "hw_addr=$mac"
+				test -n "$name" && echo "default_server_name=$name"
+			} >/etc/default/sysconf
+		done
+	}
+
+	# the configuration should be valid now
+	/etc/init.d/sysconfsetup reload
+}
+
+#
+# read_one 'prompt' 'group' 'name'
+#  read a single value
+read_one() {
+	local n o
+	o="$(sysval "$2" "$3")"
+	echo -n "$1 [$o]: " >/dev/tty
+	read n </dev/tty
+	test -z "$n" && n="$o"
+	eval "$3='$n'"
+}
+#
+# init_network
+#  Change the network initialisation
+init_network() {
+	# fix the root password
+	echo "Please enter a new password for 'root'." >/dev/tty
+	echo "The password must be non-empty for ssh login to succeed!" >/dev/tty
+	passwd
+	# now the network configuration
+	read_one "Host name" network disk_server_name
+	read_one "Domain name" network w_d_name
+	read_one "Boot protocol (dhcp|static)" network bootproto
+	case "$bootproto" in
+	static) read_one "IP address" network ip_addr
+		read_one "IP netmask" network netmask
+		read_one "IP gateway" network gateway
+		read_one "First DNS server" network dns_server1
+		read_one "Second DNS server" network dns_server2
+		read_one "Third DNS server" network dns_server3
+		;;
+	dhcp)	;;
+	*)	bootproto=dhcp;;
+	esac
+	#
+	# The other stuff which cannot be changed
+	hw_addr="$(config mac)"
+	lan_interface="$(config iface)"
+	#
+	# Write this out to a new sysconf
+	{	echo "[network]"
+		echo "hw_addr=$hw_addr"
+		echo "lan_interface=$lan_interface"
+		test -n "$disk_server_name" && echo "disk_server_name=$disk_server_name"
+		test -n "$w_d_name" && echo "w_d_name=$w_d_name"
+		echo "bootproto=$bootproto"
+		case "$bootproto" in
+		static)	echo "ip_addr=$ip_addr"
+			test -n "$netmask" && echo "netmask=$netmask"
+			test -n "$gateway" && echo "gateway=$gateway"
+			test -n "$dns_server1" && echo "dns_server1=$dns_server1"
+			test -n "$dns_server2" && echo "dns_server2=$dns_server2"
+			test -n "$dns_server3" && echo "dns_server3=$dns_server3"
+			;;
+		esac
+	} >/etc/default/sysconf
+	#
+	# And reload the result
+	/etc/init.d/sysconfsetup reload
+	#
+	# The remove the spurious 'init' motd
+	rm /etc/motd
+}
+
+#
 # Basic command switch (this should be the only thing in this
 # script which actually does anything!)
 case "$1" in
 init)	shift
-	echo "turnup init: NYI" >&2
-	exit 1;;
+	if config valid && test "$1" != -f
+	then
+		if init_network "$@"
+		then
+			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
+		else
+			exit 1
+		fi
+	else
+		if fix_hw_addr "$@"
+		then
+			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
+		else
+			exit 1
+		fi
+	fi;;
 disk)	shift
 	disk "$@";;
 memstick)
@@ -675,7 +824,9 @@ usage: turnup command [options]
   help
     output this help
   init
+    correct errors in network information
     initialise network information when DHCP is not available
+    change network information
   disk [-i] [-s<seconds>] <device> [mount options]
     With -i make <device> a bootable file system then (with or
     without -i) arrange for the next reboot to use that device.

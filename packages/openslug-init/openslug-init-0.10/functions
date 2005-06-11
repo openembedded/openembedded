@@ -1,0 +1,261 @@
+# . this file to load the following utility functions
+#
+# mtdev "name"
+#  return (output) the character device name for flash parition "name"
+#  /proc/mtd has the general form:
+#    dev:    size   erasesize  name
+#    mtd5: 00020000 00020000 "FIS directory"
+#  use this rather than hard-wiring the device because the partition
+#  table can change - looking in /proc/mtd is more reliable.
+mtdev(){
+	sed -n 's!^\(mtd[0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/\1!p' /proc/mtd
+}
+#
+# mtblockdev "name"
+#  as mtdev but output the name of the block (not character) device
+mtblockdev(){
+	sed -n 's!^mtd\([0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/mtdblock\1!p' /proc/mtd
+}
+#
+# mtsize "name"
+#  the size of the partition as a hexadecimal value (with 0x at the front)
+mtsize(){
+	sed -n 's!^mtd[0-9][0-9]*: \([^ ]*\)[^"]*"'"$1"'"$!0x\1!p' /proc/mtd
+}
+#
+# sysvalmatch "section" "name" 'pattern' "configuration file"
+# sysvalof "section" "name" "configuration file"
+# sysval "section" "name"
+#  outputs the value of the SysConf variable 'name' from section 'section',
+#  this is a bit gross, when it gets a match it copies the value to the
+#  hold space, if no match it jumps over the copy, at the end ($) it copies
+#  the hold space to the pattern space and prints the result, thus it only
+#  ever prints the last match
+# BUG FIX: busybox sed doesn't initialise the hold space and crashes if it
+#  is used before initialisation, so temporarily this script does it's own
+#  tail by hand.
+# NOTE: these functions should only be used internally, add entries to 'config'
+#  below if necessary.  This is because 'config' does the defaulting and in the
+#  recovering case (zero or absent SysConf) /etc/default/sysconf only contains
+#  the hw_addr entry!
+sysvalmatch(){
+	# sed -n '/^\['"$1"'\]$/,/^\[.*\]$/s/^'"$2"'=\('"$3"'\)$/\1/;tH;bE;:H;h;:E;$g;$p' "$4"
+	sed -n '/^\['"$1"'\]$/,/^\[.*\]$/s/^'"$2"'=\('"$3"'\)$/\1/p' "$4" | sed -n '$p'
+}
+sysvalof(){
+	sysvalmatch "$1" "$2" '.*' "$3"
+}
+sysval(){
+	sysvalof "$1" "$2" /etc/default/sysconf
+}
+#
+# config "value"
+#  convenience callers for specific values to avoid mis-typing in scripts
+#  NOTE: this function does the defaulting, 'sysval' does not!  Validity
+#  of the sysconf file is determined by the presence of the all important
+#  hw_addr.
+config(){
+	local mac
+	mac=
+	test -r /etc/default/sysconf &&
+		mac="$(sysvalmatch network hw_addr '[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]' /etc/default/sysconf)"
+	if test -n "$mac"
+	then
+		case "$1" in
+		mac)	echo "$mac";;
+		host)	if test -n "$(sysval network disk_server_name)"
+			then
+				sysval network disk_server_name
+			elif test -n "$(sysval network default_server_name)"
+			then
+				sysval network default_server_name
+			else
+				echo "$mac" | sed -n 's/^..:..:..:\(..\):\(..\):\(..\)$/LKG\1\2\3/p'
+			fi;;
+		domain)	sysval network w_d_name;;
+		iface)  if test -n "$(sysval network lan_interface)"
+			then
+				sysval network lan_interface
+			else
+				echo eth0
+			fi;;
+		ip)	if test -n "$(sysval network ip_addr)"
+			then
+				sysval network ip_addr
+			else
+				echo 192.168.1.77
+			fi;;
+		netmask)sysval network netmask;;
+		gateway)sysval network gateway;;
+		dns)	sysval network dns_server1;;
+		dns2)	sysval network dns_server2;;
+		dns3)	sysval network dns_server3;;
+		boot)	if test -n "$(sysval network bootproto)"
+			then
+				sysval network bootproto
+			else
+				echo dhcp
+			fi;;
+		valid)	return 0;;
+		*)	return 1;;
+		esac
+	else
+		# These are the defaults for an invalid mac address, use the compiled
+		# in hardware address.
+		case "$1" in
+		mac)	echo "00:02:B3:02:02:01";;
+		host)	echo "brokenslug";;
+		iface)  echo eth0;;
+		ip)	echo 192.168.1.77;;
+		boot)	echo dhcp;;
+		*)	return 1;;
+		esac
+	fi
+}
+#
+# checkif "iface"
+#  Validate an interface name by making sure that it exists
+#  in /proc/net/dev (and is not lo).  The listing outputs the
+#  interface followed by a :, the check function looks for
+#  something of the form '$1[a-zA-Z0-9]*:' and outputs the
+#  part preceding the ':'
+checkif(){
+	sed -n '/^[ 	]*lo:/d;s/^[ 	]*\('"$1"'[a-zA-Z0-9]*\):.*$/\1/p;tE;d;:E;q' /proc/net/dev
+}
+#
+# checkmount "mountpoint"
+#  tests an already mounted mountpoint to see whether to attempt to
+#  boot with this as root.  Returns success if it appears ok.
+checkmount(){
+	# basic test for init (the kernel will try to load this)
+	# but require a shell in bin/sh and no .recovery too
+	test	\( ! -f "$1/.recovery" \) -a \
+		\( -d "$1/initrd" -o -d "$1/mnt" \) -a \
+		\( -x "$1/bin/sh" -o -h "$1/bin/sh" \) -a \
+		\( -x "$1/sbin/init" -o -h "$1/sbin/init" -o \
+		-x "$1/etc/init" -o -h "$1/etc/init" -o \
+		-x "$1/bin/init" -o -h "$1/bin/init" \)
+}
+#
+# swivel "new root" "old root"
+#  NOTE: the arguments must be paths relative to /, bad things
+#  will happen if the arguments themselves start with /
+#  Pivot to a new root.  This does all the fancy pivot_root stuff
+#  including closing streams and does a umount /proc - it doesn't
+#  matter if this fails (failure codes are ignored), but if /proc
+#  was mounted it must be restored by the caller on return.
+#  Normally this function never returns!
+#  On return 0,1,2 are connected to /dev/console - this may not
+#  have been true before!
+swivel() {
+	cd "$1"
+	exec <&- >&- 2>&-
+	# This is just-in-case the called mounted /proc and was
+	# unable to close it because of the streams
+	umount /proc 2>/dev/null
+	if pivot_root . "$2"
+	then
+		# everything must move out of the old root, this process
+		# is $2/bin/sh so it must die, IO is redirected
+		# just in case - typically it will be to a device so it
+		# won't hold the old root open.
+		# the exec here is the first point at which the old root
+		# is unused - before the exec regardless of the close of
+		# 0,1,2 above ash still has *this* shell script open!
+		# (it's on fd 10).
+		# init closes all file descriptors, there's no point
+		# supplying it with fds.
+		exec "$2/usr/sbin/chroot" . bin/sh -c "\
+			test -x sbin/init && exec sbin/init
+			test -x etc/init && exec etc/init
+			test -x bin/init && exec bin/init
+			leds -A +gr1 '!g1'
+			sleep 10 >/.recovery
+			sync;sync;sync
+			exit 1"
+	fi
+	#
+	# recovery - must restore the old root
+	cd "$2"
+	sbin/pivot_root . "$1"
+	# cd is back to $1 - either pivot_root doesn't change it and the
+	# chroot above was not executed, or pivot_root does change it and
+	# has just changed it back!
+	exec <>/dev/console >&0 2>&0
+}
+#
+# ifup "interface"
+#  bring that interface up with the configured ip and other
+#  information
+ifup(){
+	local ip hostname router subnet iface HOSTNAME NETMASK BROADCAST
+
+	iface="$1"
+	ip="$(config ip)"
+	hostname="$(config host)"
+	router="$(config gateway)"
+	broadcast=
+
+	if test -n "$ip"
+	then
+		# only if an ip was specified
+		subnet="$(config netmask)"
+	else
+		ip=192.168.1.77
+	fi
+
+	# First try udhcpc - note that the /boot/udhcpc.script
+	# simply records the values returned and the udhcpc
+	# is not left running so this will only work for
+	# the lease length time!
+	ifconfig "$iface" up
+	test -n "$hostname" && HOSTNAME="-H $hostname"
+	# The script writes the required shell variable assignments
+	# to file descriptor 9
+	eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)
+
+	test -n "$broadcast" && BROADCAST="broadcast $broadcast"
+	test -n "$subnet" && NETMASK="netmask $subnet"
+
+	if ifconfig "$iface" "$ip" $NETMASK $BROADCAST
+	then
+		for route in $router
+		do
+			route add default gw "$route" dev "$iface"
+		done
+		return 0
+	else
+		ifconfig "$iface" down
+		return 1
+	fi
+}
+#
+# ifdown "interface"
+#  take the interface down
+ifdown(){
+	ifconfig "$1" down
+}
+#
+# mountflash "flash root directory" {mount options}
+#  Finds and mounts the flash file system on the given directory
+mountflash() {
+	local ffsdev ffsdir
+
+	ffsdir="$1"
+	test -n "$ffsdir" -a -d "$ffsdir" || {
+		echo "$0: mountflash $ffsdir: not a directory (internal error)" >&2
+		return 1
+	}
+	shift
+
+	ffsdev="$(mtblockdev Flashdisk)"
+	test -n "$ffsdev" -a -b "$ffsdev" || {
+		echo "$0: unable to find flash file system to copy ($ffsdev)" >&2
+		return 1
+	}
+	mount -t jffs2 "$@" "$ffsdev" "$ffsdir" || {
+		echo "$0: $ffsdev: unable to mount flash file system on $ffsdir" >&2
+		return 1
+	}
+	return 0
+}

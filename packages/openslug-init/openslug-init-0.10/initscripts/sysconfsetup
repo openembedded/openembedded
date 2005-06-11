@@ -1,0 +1,229 @@
+#!/bin/sh
+# This script is run once when the system first boots.  Its sole
+# purpose is to create /etc/default/sysconf (the overall system
+# configuration file) and other files derived from this.
+#
+# The script runs immediately after S10checkroot.sh - this is the
+# point at which the rootfs will be mounted rw even if the kernel
+# booted with it ro.
+#
+# rm or mv the file to run this again.  If this is done the
+# following configuration files will be rewritten:
+#
+# /etc/default/sysconf
+# /etc/hostname
+# /etc/defaultdomain
+# /etc/network/interfaces
+# /etc/resolv.conf
+#
+# /etc/default/functions contains useful utility functions - it's
+# in a separate file so that it can be loaded by any script
+. /etc/default/functions
+#
+config valid && test "$1" != reload && exit 0
+#
+# Utility to deal with absence of DNS configuration
+echodns(){
+	local dns
+	if test $# -gt 0
+	then
+		for dns in "$@"
+		do
+			echo "nameserver $dns"
+		done
+	fi
+}
+#
+# The SysConf device must exist in /dev at this point for this script
+# to work.
+#
+# It is important not to hard-wire the name of the device because of
+# the posibility of changing the flash partition layout.
+#
+# The block device is used here because at present udev does not
+# show the character devices
+sysdev=
+config valid || sysdev="$(mtblockdev SysConf)"
+if test -n "$sysdev" -a -b "$sysdev"
+then
+	# Read the defined part of SysConf into /etc/default/sysconf.
+	# SysConf has lines of two forms:
+	#
+	#  [section]
+	#  name=value
+	#
+	# In practice SysConf also contains other stuff, use the command:
+	#
+	#  devio '<</dev/mtd1;cpb'
+	#
+	# to examine the current settings.  The badly formatted stuff
+	# is removed (to be exact, the sed script selects only lines
+	# which match one of the two above).  The lan interface, which
+	# defaults to ixp0, is changed to the correct value for openslug,
+	# eth0
+	devio "<<$sysdev" cpb fb1,10 | sed -n '/^\[[^][]*\]$/p;
+		s/^lan_interface=ixp0$/lan_interface=eth0/;
+		/^[-a-zA-Z0-9_][-a-zA-Z0-9_]*=/p' >/etc/default/sysconf
+	#
+	# The SysConf must have a hardware id, if it doesn't it has
+	# probably been erased or never set in the first place and the
+	# hardware id is retrieved from the RedBoot partition.  This is
+	# the only thing which cannot be defaulted.
+fi
+#
+# Error recovery: no SysConf or invalid SysConf.  Make a new one from the
+# RedBoot hardware ID information.
+# NOTE: this block of code overwrites the shell script arguments.
+config valid || {
+	reddev="$(mtblockdev RedBoot)"
+	initmac=
+	if test -n "$reddev" -a -b "$reddev"
+	then
+		# The hardware id starts 80 bytes before the end of the
+		# block, the block ends (or should end) with the signature
+		# <4 bytes> sErCoMm <bytes> sErCoMm.  Note that devio 'pf'
+		# empties the stack.
+		set -- $(devio "<<$reddev" '
+			<= $80-
+			.= @
+			pf %02X
+			A= 5
+			$( 1
+				A= @,A1-
+				pf :%02X
+			$) A
+			pn
+			<=f4+;cp7;pn
+			<=$7-;cp7;pn')
+		if test $# -eq 3 -a "$2" = sErCoMm -a "$3" = sErCoMm
+		then
+			initmac="$1"
+		fi
+	fi
+	#
+	# APEX: may need extra code to set initmac here.
+	#
+	if test -n "$initmac"
+	then
+		#
+		# Generate a complete /etc/default/sysconf based on just
+		# one number ;-)
+		{	echo '[network]'
+			echo "hw_addr=$initmac"
+		} >/etc/default/sysconf
+		#
+		# See /etc/default/functions (the config function) for
+		# the derivation of the rest of the information.
+	fi
+}
+#
+# The config function will now return the correct values - even if sysconf
+# is still missing.  'config valid' says if valid configuration information
+# is available.
+#
+# Set up the 'standard' files in the root file system (these couldn't be set
+# up before because they depend on stuff which RedBoot puts into SysConf from
+# the ID info on the specific machine - in particular the hardware address of
+# eth0, which must be the one assigned for *this* box!)
+#
+# HOSTNAME: defaults to LGK<mac> i.e. something derived from
+# the ethernet hardware.  LinkSys documentation explains how
+# to determine this.  Set by the user in linksys setup software.
+# DOMAINNAME: LinkSys puts this in w_d_name.
+test -n "$(config host)" && config host >/etc/hostname
+domain="$(config domain)"
+test -n "$domain" && echo "$domain" >/etc/defaultdomain
+#
+# Ethernet information.  This goes into /etc/network/interfaces,
+# however this is only used for static setup (and this is not
+# the default).  With dhcp the openslug udhcp script,
+# /etc/udhcpc.d/50default, loads the values from sysconf.  The
+# lan_interface config value must exist for the file to be
+# overwritten here.
+iface="$(config iface)"
+if test -n "$iface"
+then
+	boot="$(config boot)"
+	# Only dhcp and static are supported at present - bootp
+	# support requires installation of appropriate packages
+	# dhcp is the fail-safe
+	case "$boot" in
+	dhcp|static) ;;
+	*)    boot=dhcp;;
+	esac
+	#
+	mac="$(config mac)"
+	ip="$(config ip)"
+	netmask="$(config netmask)"
+	gateway="$(config gateway)"
+	{
+		echo "# /etc/network/interfaces"
+		echo "# configuration file for ifup(8), ifdown(8)"
+		echo "#"
+		echo "# The loopback interface"
+		echo "auto lo"
+		echo "iface lo inet loopback"
+		echo "#"
+		echo "# The NSLU2 built-in ethernet"
+		echo "auto $iface"
+		echo "# Automatically generated from /etc/default/sysconf"
+		if config valid
+		then
+			echo "# The pre-up option must always be supplied, regardless"
+			echo "# of configuration, to set the hardware correctly."
+			echo "# Severe network problems may result if this option is"
+			echo "# removed."
+			c=
+		else
+			echo "# WARNING: improperly configured network interface."
+			echo "# WARNING: the pre-up line must be corrected or severe"
+			echo "# WARNING: network problems may result."
+			c='#'
+			mac='<WARNING: unknown hardware address>'
+		fi
+		echo "iface $iface inet $boot"
+		echo "${c}	pre-up ifconfig $iface hw ether $mac"
+		# The following are ignored for DHCP but are harmless
+		test -n "$ip"      && echo "	address $ip"
+		test -n "$netmask" && echo "	netmask $netmask"
+		test -n "$gateway" && echo "	gateway $gateway"
+	} >/etc/network/interfaces
+fi
+#
+# The DNS server information gives up to three nameservers, but this
+# currently only binds in the first.
+{
+	test -n "$domain" && echo "search $domain"
+	echodns $(config dns) $(config dns1) $(config dns2)
+} >/etc/resolv.conf
+#
+# Invalid config must be handled, do this by hacking /etc/motd.
+if config valid
+then
+	echo "Host name:           $(config host)"
+	echo "Host ID:             $mac"
+	echo "Network boot method: $boot"
+	case "$boot" in
+	static) echo "Host IP address:     $ip";;
+	esac
+	echo "Use 'turnup init' to reset the configuration"
+	echo "Use 'turnup disk|nfs -i <device> options to initialise a non-flash root"
+	echo "Use 'turnup help' for more information"
+else
+	echo "+=====================================================================+"
+	echo "|                   +-----------------------+                         |"
+	echo "|                   | INITIALISATION FAILED |                         |"
+	echo "|                   +-----------------------+                         |"
+	echo "|                                                                     |"
+	echo "| This machine has been booted with a temporary ethernet id           |"
+	echo "| The initialisation failed because the machine id was not available  |"
+	echo "| within the flash memory of the NSLU2.  You must run:                |"
+	echo "|                                                                     |"
+	echo "|       turnup init                                                   |"
+	echo "|                                                                     |"
+	echo "| To correct this problem.  Severe network problems may occur if this |"
+	echo "| is not done.                                                        |"
+	echo "+=====================================================================+"
+fi >/etc/motd
+
+exit 0

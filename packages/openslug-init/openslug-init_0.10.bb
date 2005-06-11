@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r28"
+PR = "r29"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -21,17 +21,18 @@ SRC_URI = "file://linuxrc \
 	   file://initscripts/sysconfsetup \
 	   file://initscripts/umountinitrd.sh \
 	   file://functions \
+	   file://conffiles \
 	   file://turnup \
+	   file://reflash \
 	   file://modprobe.conf \
 	   file://leds.h \
 	   file://leds.c \
-	   file://kern_header.c \
-	   file://update-kernel"
+	   "
 
 SBINPROGS = "leds"
-USRSBINPROGS = "kern_header"
+USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
-SCRIPTS = "turnup update-kernel"
+SCRIPTS = "turnup reflash"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
 	leds_startup rmrecovery sysconfsetup umountinitrd.sh"
@@ -97,6 +98,7 @@ do_install() {
 	done
 
 	# Configuration files
+	install -m 0644 conffiles ${D}${sysconfdir}/default
 	install -m 0644 modprobe.conf ${D}${sysconfdir}/
 
 	set +ex
@@ -137,4 +139,4 @@ FILES_${PN} = "/"
 
 # It is bad to overwrite /linuxrc as it puts the system back to
 # a flash boot (and the flash has potentially not been upgraded!)
-CONFFILES_${PN} = "${sysconfdir}/modprobe.conf /linuxrc"
+CONFFILES_${PN} = "${sysconfdir}/modprobe.conf /linuxrc ${sysconfdir}/default/conffiles"
