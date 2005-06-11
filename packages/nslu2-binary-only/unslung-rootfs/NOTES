@@ -1,4 +1,4 @@
-UNSLUNG-4.x Family Release Notes
+Unslung-5.x Family Release Notes
 
 Unslung is a replacement firmware image for the Linksys NSLU2 which is designed
 to allow you to make changes to the root filesystem (including the installation
@@ -18,7 +18,7 @@ posting to the mailing list or asking a question in the IRC channel
 OK! Now that that's out of the way...
 
 This file is provided to give general information and usage notes for the
-UNSLUNG-4.x firmware.  If you are looking for installation instructions, please
+Unslung 5.x firmware.  If you are looking for installation instructions, please
 stop now and go to the README file.  Follow the README instructions WORD for
 WORD to keep from turning your NSLU2 into a brick.  The information contained
 in this file will make more sense if you have already "unslung" your NSLU2.
@@ -38,8 +38,8 @@ GENERAL INFORMATION
 As stated above, Unslung firmware is a replacement firmware image for the
 Linksys NSLU2.  The Unslung firmware is intended to be used for loading new
 packages (giving enhanced or additional functionality) with minimal changes
-to the standard user interface and firmware.  The differences in the UNSLUNG 4.x
-firmware from the standard Linksys 2.3R25 firmware can be found at:
+to the standard user interface and firmware.  The differences in the Unslung 5.x
+firmware from the standard Linksys 2.3R29 firmware can be found at:
 
 	http://www.nslu2-linux.org/wiki/Unslung/UnslungFeatures
 
@@ -431,3 +431,6 @@ Upgraded to Linksys firmware V2.3R29, but kept telnetd.
 
 Removed the ipkg link, and made unsling put it back on an external disk.
 
+5.3:
+
+Replaced maintenance mode with code to allow entry into RedBoot Upgrade Mode.
