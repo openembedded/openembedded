@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r3"
+PR = "r5"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -37,10 +37,8 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r29.tar.bz2 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://wait-for-quotacheck.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
-	   file://maintmode.cgi file://upgrade-maint.htm \
-	   file://upgrade-nomaint.htm file://upgrade-inhibit.htm \
+	   file://upgrade.htm file://upgrade.cgi \
 	   file://rc.bootbin \
-	   file://upgrade.cgi \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r29"
@@ -87,19 +85,13 @@ do_compile () {
 	# Remove the libraries, because they are in nslu2-linksys-libs now
 	rm -rf ${S}/lib
 
-	# Install maintenance mode files
-	mv ${S}/home/httpd/html/Management/upgrade.cgi ${S}/home/httpd/html/Management/upgrade-real.cgi 
+	# Install upgrade mode files
+	mv ${S}/home/httpd/html/Management/upgrade.htm ${S}/home/httpd/html/Management/upgrade-old.htm 
+	mv ${S}/home/httpd/html/Management/upgrade.cgi ${S}/home/httpd/html/Management/upgrade-old.cgi 
+	install -m 644 ${WORKDIR}/upgrade.htm ${S}/home/httpd/html/Management
 	install -m 755 ${WORKDIR}/upgrade.cgi ${S}/home/httpd/html/Management
-	install -m 755 ${WORKDIR}/maintmode.cgi ${S}/home/httpd/html/Management
-	install -m 644 ${WORKDIR}/upgrade-maint.htm ${S}/home/httpd/html/Management/upgrade-maint.htm
-	install -m 644 ${WORKDIR}/upgrade-nomaint.htm ${S}/home/httpd/html/Management/upgrade-nomaint.htm
-	install -m 644 ${WORKDIR}/upgrade-inhibit.htm ${S}/home/httpd/html/Management/upgrade-inhibit.htm
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \
-		${S}/home/httpd/html/Management/upgrade-maint.htm
-	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \
-		${S}/home/httpd/html/Management/upgrade-nomaint.htm
-	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \
-		${S}/home/httpd/html/Management/upgrade-inhibit.htm
+		${S}/home/httpd/html/Management/upgrade.htm
 }
 
 do_install () {
