@@ -3,7 +3,7 @@ PRIORITY = "optional
 SECTION = "console/networking"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = GPL
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://acinclude-lossage.patch;patch=1 \
@@ -16,7 +16,7 @@ inherit autotools
 
 EXTRA_OECONF = "--with-statduser=nobody \
 		--enable-nfsv3 \
-		--with-statedir=/var/lib/nfs"
+		--with-statedir=${localstatedir}/lib/nfs"
 
 do_compile() {
 	# UGLY HACK ALERT
@@ -25,19 +25,20 @@ do_compile() {
 }
 
 do_install() {
-	mkdir -p ${D}var/lib/nfs
-	touch ${D}var/lib/nfs/xtab; chmod 644 ${D}var/lib/nfs/xtab
-	touch ${D}var/lib/nfs/etab; chmod 644 ${D}var/lib/nfs/etab
-	touch ${D}var/lib/nfs/smtab; chmod 644 ${D}var/lib/nfs/smtab
+	mkdir -p ${D}${localstatedir}/lib/nfs
+	touch ${D}${localstatedir}/lib/nfs/xtab; chmod 644 ${D}${localstatedir}/lib/nfs/xtab
+	touch ${D}${localstatedir}/lib/nfs/etab; chmod 644 ${D}${localstatedir}/lib/nfs/etab
+	touch ${D}${localstatedir}/lib/nfs/smtab; chmod 644 ${D}${localstatedir}/lib/nfs/smtab
+	touch ${D}${localstatedir}/lib/nfs/rmtab; chmod 644 ${D}${localstatedir}/lib/nfs/rmtab
 
-	mkdir -p ${D}var/lib/nfs/sm
-	mkdir -p ${D}var/lib/nfs/sm.bak
+	mkdir -p ${D}${localstatedir}/lib/nfs/sm
+	mkdir -p ${D}${localstatedir}/lib/nfs/sm.bak
 
-	touch ${D}var/lib/nfs/state
+	touch ${D}${localstatedir}/lib/nfs/state
 
-	chmod go-rwx ${D}var/lib/nfs/sm
-	chmod go-rwx ${D}var/lib/nfs/sm.bak
-	chmod go-rwx ${D}var/lib/nfs/state
+	chmod go-rwx ${D}${localstatedir}/lib/nfs/sm
+	chmod go-rwx ${D}${localstatedir}/lib/nfs/sm.bak
+	chmod go-rwx ${D}${localstatedir}/lib/nfs/state
 	# they should be owned by statduser, how to do that..
 
 	install -d ${D}${sbindir}
