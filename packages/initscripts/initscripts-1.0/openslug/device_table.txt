@@ -8,8 +8,9 @@
 /dev/audio1	c	660	0	29	14	20	-	-	-
 /dev/audio2	c	660	0	29	14	36	-	-	-
 /dev/audio3	c	660	0	29	14	52	-	-	-
-/dev/bty	c	644	0	0	60	0	0	1	5
-/dev/sharp_fl	c	640	0	44	254	0	-	-	-
+#/dev/bty	c	644	0	0	60	0	0	1	5
+/dev/buzzer	c	660	0	0	62	0	-	-	-
+#/dev/sharp_fl	c	640	0	44	254	0	-	-	-
 /dev/console	c	662	0	5	5	1	-	-
 /dev/cusa0	c	640	0	0	205	5	-	-	-
 /dev/cusa1	c	640	0	0	205	6	-	-	-
@@ -39,7 +40,7 @@
 /dev/jbm	c	660	0	0	10	4	-	-	-
 /dev/kmem	c	640	0	15	1	2	-	-	-
 /dev/leds	c	660	0	0	126	0	-	-	-
-/dev/lirc	c	660	0	5	61	0	-	-	-
+#/dev/lirc	c	660	0	5	61	0	-	-	-
 /dev/logibm	c	660	0	0	10	0	-	-	-
 /dev/loop0	b	660	0	11	7	0	-	-	-
 /dev/loop1	b	660	0	11	7	1	-	-	-
@@ -75,6 +76,7 @@
 /dev/par0	c	660	0	7	6	0	-	-	-
 /dev/par1	c	660	0	7	6	1	-	-	-
 /dev/par2	c	660	0	7	6	2	-	-	-
+/dev/pbuttons	c	660	0	0	61	0	-	-	-
 /dev/port	c	640	0	15	1	4	-	-	-
 /dev/ppp	c	640	0	0	108	0	-	-	-
 /dev/psaux	c	660	0	0	10	1	-	-	-
@@ -97,6 +99,7 @@
 /dev/ptyaf	c	660	0	5	2	191	-	-	-
 /dev/ram	b	640	0	0	1	0	0	1	4
 /dev/random	c	444	0	0	1	8	-	-	-
+/dev/rbuttons	c	660	0	0	60	0	-	-	-
 /dev/rfcomm	c	666	0	0	216	0	0	1	4
 /dev/rmidi0	c	660	0	0	35	64	-	-	-
 /dev/rmidi1	c	660	0	0	35	65	-	-	-
@@ -136,11 +139,11 @@
 /dev/sdc8	b	660	0	6	8	40	-	-	-
 /dev/sdc9	b	660	0	6	8	41	-	-	-
 /dev/sd_slotstat	c	660	0	6	10	240	-	-	-
-/dev/sharp_audioctl	c	660	0	29	10	213	-	-	-
-/dev/sharp_buz	c	660	0	29	10	211	-	-	-
-/dev/sharp_kbdctl	c	660	0	45	10	214	-	-	-
-/dev/sharp_led	c	660	0	48	10	210	-	-	-
-/dev/sharp_ts	c	640	0	45	11	0	-	-	-
+#/dev/sharp_audioctl	c	660	0	29	10	213	-	-	-
+#/dev/sharp_buz	c	660	0	29	10	211	-	-	-
+#/dev/sharp_kbdctl	c	660	0	45	10	214	-	-	-
+#/dev/sharp_led	c	660	0	48	10	210	-	-	-
+#/dev/sharp_ts	c	640	0	45	11	0	-	-	-
 /dev/smtpe0	c	640	0	0	35	128	-	-	-
 /dev/smtpe1	c	640	0	0	35	129	-	-	-
 /dev/smtpe2	c	640	0	0	35	130	-	-	-
@@ -154,7 +157,7 @@
 /dev/st1a	c	660	0	11	9	97	-	-	-
 /dev/st1l	c	660	0	11	9	33	-	-	-
 /dev/st1m	c	660	0	11	9	65	-	-	-
-/dev/tty	c	662	0	5	5	0	-	-	-
+/dev/tty	c	666	0	5	5	0	-	-	-
 /dev/tty	c	666	0	5	4	0	0	1	9
 /dev/ttyS	c	640	0	5	4	64	0	1	4
 /dev/ttySA	c	640	0	5	204	5	0	1	4
