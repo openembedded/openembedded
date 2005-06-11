@@ -9,6 +9,8 @@ SRC_URI = "${XLIBS_MIRROR}/libXt-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/libXt-${PV}"
 
+PARALLEL_MAKE = ""
+
 inherit autotools pkgconfig 
 
 #nasty hack as utils need to be native
