@@ -27,20 +27,20 @@ do_configure() {
 	echo "#define ProjectRoot /usr" >> config/cf/host.def
 	echo "#define XnestServer NO"  >> config/cf/host.def
 	echo "#define XdmxServer NO"  >> config/cf/host.def
-	echo "#define CcCmd ${CC}" >> config/cf/host.def
-	echo "#define LdCmd ${LD}" >> config/cf/host.def
+	echo "#define CcCmd gcc" >> config/cf/host.def
+	echo "#define LdCmd gcc" >> config/cf/host.def
 	echo "#define HasFreetype2 YES" >> config/cf/host.def
 	echo "#define HasFontconfig YES" >> config/cf/host.def
 	echo "#define BuildDevelDRIDrivers YES" >>config/cf/host.def
 	echo "" > config/cf/date.def
 	rm -f include/extensions/panoramiX.h
-}
-
-do_compile() {
 	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" CROSSCOMPILEDIR="${CROSS_DIR}/${TARGET_SYS}/bin" PREPROCESS_CMD="gcc -E" clean imake
 	make CC="${BUILD_CC}" xmakefile
 	make Makefiles
 	make clean
+}
+
+do_compile() {
 	#make depend
 	make includes
 	make -C config/util CC="${BUILD_CC}"
