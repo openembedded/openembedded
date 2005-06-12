@@ -1,0 +1,12 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.halt.orig	2004-07-27 23:37:55.000000000 -0400
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.halt	2004-09-01 21:57:01.000000000 -0400
+@@ -1,4 +1,9 @@
+ #!/bin/sh
++
++if ( [ -r /unslung/rc.halt ] && . /unslung/rc.halt ) ; then return 0 ; fi
++
++/bin/echo  "Stopping UNSLUNG Packages:"; ( . /etc/rc.d/rc.unslung-stop )
++
+ /bin/killall -2 upnpd &>/dev/null
+ /bin/killall nmbd &>/dev/null
+ /bin/killall smbd &>/dev/null

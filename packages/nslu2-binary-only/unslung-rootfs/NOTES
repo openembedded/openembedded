@@ -434,3 +434,12 @@ Removed the ipkg link, and made unsling put it back on an external disk.
 5.3:
 
 Replaced maintenance mode with code to allow entry into RedBoot Upgrade Mode.
+
+5.4:
+
+Removed all maintenance mode support, and also removed support for rootfs on
+jffs2 but packages on external disk (it's either all or nothing).
+Removed unused /mnt/sda1, /mnt/sda2, /mnt/sdb1, and /mnt/sdb2.
+Disabled the download process (superceded by upgrade mode).
+Disabled the generation of the "ourtelnetrescue" user (too insecure).
+Added disk auto-wait countdown to /linuxrc (courtesy of glc).

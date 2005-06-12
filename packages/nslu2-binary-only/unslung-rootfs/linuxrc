@@ -6,11 +6,7 @@
 
 # Determine the desired rootfs based on user flag files.
 
-if [ -f /.ramdisk ] ; then
-    /bin/echo "Preferred root device is /dev/ram0 (maintenence)"
-    mounted=/mnt
-    prefroot=maintenence
-elif [ -f /.sda1root ] ; then
+if [ -f /.sda1root ] ; then
     /bin/echo "Preferred root device is /dev/sda1 (disk 1)"
     mounted=/mnt
     prefroot=sda1
@@ -42,8 +38,18 @@ fi
 /bin/mount -t proc proc /proc
 
 if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot = "sdb2" ] ; then
-    /bin/echo "Sleeping 10sec while waiting for disk..."
-    sleep 10
+    /bin/echo "Sleeping while waiting for disk..."
+    cnt=20
+    while [ $cnt -gt 0 ] ; do
+      echo -ne "\r$cnt "
+      sleep 1
+      [ $prefroot = "sda1" ] && [ -f /proc/hd_conn ] && cnt=0
+      [ $prefroot = "sda2" ] && [ -f /proc/hd_conn ] && cnt=0
+      [ $prefroot = "sdb1" ] && [ -f /proc/hd2_conn ] && cnt=0
+      [ $prefroot = "sdb2" ] && [ -f /proc/hd2_conn ] && cnt=0
+      cnt=`expr $cnt - 1`
+    done
+    echo
     /bin/mount -rt ext3 /dev/$prefroot /mnt
     if [ -L /mnt/sbin/init -o -x /mnt/sbin/init -o \
 	-L /mnt/bin/init  -o -x /mnt/bin/init ] ; then
@@ -54,15 +60,6 @@ if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot
 	mounted=
 	prefroot=jffs2
     fi
-fi
-
-if [ $prefroot = "maintenence" ] ; then
-    /bin/dd if=/dev/zero of=/dev/ram0 bs=1k count=12k 2>/dev/null 
-    /usr/bin/mke2fs -m 0 /dev/ram0 12288
-    /bin/mount -t ext2 /dev/ram0 /mnt
-    ( /usr/bin/find . -print0 -mount | /usr/bin/cpio -p -0 -d -m -u /mnt )
-    /bin/rm -f /mnt/linuxrc
-    /bin/mkdir /mnt/mnt/backup /mnt/mnt/repair /mnt/mnt/tmpmnt
 fi
 
 if [ $prefroot = "nfsroot" ] ; then

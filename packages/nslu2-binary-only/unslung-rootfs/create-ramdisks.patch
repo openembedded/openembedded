@@ -6,7 +6,7 @@
 -/bin/echo  "Creating ramfs for /var/lock/samba:"; mount -t ramfs none /var/lock/samba -o maxsize=64
 -/bin/echo  "Limit the space of log folder:"; mount -t ramfs none /var/log -o maxsize=128
 +
-+if ( [ ! -f /.ramdisk ] && [ ! -f /.sda1root ] && [ ! -f /.sda2root ] && [ ! -f /.sdb1root ] && [ ! -f /.sdb2root ] ) ; then
++if ( [ ! -f /.sda1root ] && [ ! -f /.sda2root ] && [ ! -f /.sdb1root ] && [ ! -f /.sdb2root ] ) ; then
 +  /bin/echo "Creating ramfs for /dev:"
 +  /bin/mount -t ramfs ramfs /mnt/tmpmnt
 +  /bin/cp -rp /dev/* /mnt/tmpmnt/

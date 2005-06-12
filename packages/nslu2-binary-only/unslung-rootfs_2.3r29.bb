@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r6"
+PR = "r8"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -37,6 +37,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r29.tar.bz2 \
 	   file://initialise-mtab.patch;patch=1 \
 	   file://wait-for-quotacheck.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
+	   file://security-fixes.patch;patch=1 \
 	   file://upgrade.htm file://upgrade.cgi \
 	   file://rc.bootbin \
 	   "
