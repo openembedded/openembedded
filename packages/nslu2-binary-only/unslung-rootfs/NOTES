@@ -443,3 +443,7 @@ Removed unused /mnt/sda1, /mnt/sda2, /mnt/sdb1, and /mnt/sdb2.
 Disabled the download process (superceded by upgrade mode).
 Disabled the generation of the "ourtelnetrescue" user (too insecure).
 Added disk auto-wait countdown to /linuxrc (courtesy of glc).
+
+5.5:
+
+First public release of 5.x firmware.
