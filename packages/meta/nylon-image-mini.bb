@@ -1,6 +1,7 @@
-export IMAGE_BASENAME = "nylon-base"
+export IMAGE_BASENAME = "nylon-mini"
  
 NYLON_BASE = "base-files base-passwd busybox \
+	dropbear \
 	miniinit \
 	netbase \
 	wireless-tools"
@@ -14,9 +15,6 @@ RDEPENDS = "kernel \
 export IPKG_INSTALL = "${RDEPENDS}" 
 
 IMAGE_LINGUAS = ""
-
-# we dont need the kernel in the image
-ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/boot/zImage*"
 
 inherit image_ipk
 LICENSE = "MIT"
