@@ -4,7 +4,7 @@ PR = "r1"
 LICENSE = "XFree86"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
-        file://imake-staging.patch;patch=1"
+	file://lexer.patch;patch=1"
 
 
 PACKAGES = "${PN}-75dpi ${PN}-100dpi ${PN}-type1 ${PN}-cyrillic ${PN}-ttf ${PN}"
@@ -23,19 +23,22 @@ do_configure() {
 	echo "#define ProjectRoot /usr" >> config/cf/host.def
 	echo "#define XnestServer NO"  >> config/cf/host.def
 	echo "#define XdmxServer NO"  >> config/cf/host.def
-	echo "#define CcCmd ${CC}" >> config/cf/host.def
-	echo "#define LdCmd ${LD}" >> config/cf/host.def
+	echo "#define CcCmd ${BUILD_CC}" >> config/cf/host.def
+	echo "#define LdCmd ${BUILD_LD}" >> config/cf/host.def
+	echo "#define BuildFreetype2Library YES" >> config/cf/host.def
+	echo "#define HasFreetype2 NO" >> config/cf/host.def
 	echo "" > config/cf/date.def
-}
-
-do_compile() {
 	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" clean imake
 	make CC="${BUILD_CC}" xmakefile
 	make Makefiles
 	make clean
+}
+
+do_compile() {
 	#make depend
 	make includes
 	make -C config/util
+	make -C lib/freetype2
 	make -C lib/font
 	make -C lib/fontenc
 	make -C lib/fontconfig
