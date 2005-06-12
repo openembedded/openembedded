@@ -9,6 +9,9 @@ include initscripts_${PV}.bb
 MAINTAINER = "John Bowler <jbowler@acm.org>"
 RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
+# Except the PR which is hacked here.  The format used is
+# a suffix
+PR := "${PR}.1"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

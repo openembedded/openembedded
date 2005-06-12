@@ -118,26 +118,21 @@ copy_rootfs() {
 
 #
 # setup_dev new device_table
-#  Populates the /dev directory, removes the ramfs mount of /dev by
-#  removing the links to the devices startup file.
+#  In flash file systems /dev is in ramfs, in disk systems /dev
+#  can be populated permanently.  This is done by creating a
+#  single entry '.noram' in /dev - the devices init script will
+#  then populate the directory.  The passed in device_table is
+#  not currently used.
 setup_dev() {
 	test -n "$1" -a -d "$1"/dev -a -r "$2" || {
 		echo "turnup: setup_dev($1,$2): expected a directory and a file" >&2
 		return 1
 	}
 	# at present the device_table is not used because it is incomplete,
-	# /etc/init.d/devices adds extra stuff.  So this script copies the
-	# existing /dev.  FIXME.
-	echo "turnup: copying dev file system" >&2
-	(	cd /
-		find dev -print0 | cpio -p -0 -d -m -u "$1"
-	) || {
-		echo "turnup: rootfs: cpio /dev $1 failed" >&2
-		return 1
-	}
-	echo "done" >&2
-	# now prevent this being done each time
-	:>"$1"/dev/.permanent
+	# /etc/init.d/devices adds extra stuff, it seems fine to leave
+	# things this way
+	echo "turnup: initialising dev file system" >&2
+	:>"$1"/dev/.noram
 	return 0
 }
 
