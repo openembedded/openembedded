@@ -31,4 +31,4 @@ wrt_create_images() {
 
 IMAGE_POSTPROCESS_COMMAND += "wrt_create_images;"
 
-DEPENDS += "wrt-imagetools"
+DEPENDS_prepend = "${@["wrt-imagetools-native ", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
