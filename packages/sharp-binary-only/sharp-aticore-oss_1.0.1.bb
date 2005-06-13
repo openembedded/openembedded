@@ -1,15 +1,13 @@
 DESCRIPTION = "Driver for the Ati W100 found on the Sharp Zaurus C[87]x0"
-SECTION = "base"
+SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://mirror1.pdaxrom.org/source/src/AtiCore-1.0.1.tar.bz2 \
 		file://aticore-2.6.patch;patch=1"
 S = "${WORKDIR}/AtiCore-1.0.1"
 
-#FILES_${PN}="${libdir}/*.so* ${bindir}/*"
-	  
 EXTRA_OEMAKE="CC='${CC}' AS='${AS}' AR='${AR}' LD='${LD}' FPU='${TARGET_FPU}'"
 
 do_install() {
@@ -34,3 +32,7 @@ do_stage() {
 	install -m 0644 aticore.h ${STAGING_INCDIR}
 	oe_libinstall -so libaticore ${STAGING_LIBDIR}
 }
+
+PACKAGES =+ "sharp-aticore-oss-examples"
+FILES_sharp-aticore-oss-examples = "${bindir}"
+
