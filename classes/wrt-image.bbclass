@@ -3,15 +3,14 @@ ROOTFS_POSTPROCESS_COMMAND += "rm -f ${IMAGE_ROOTFS}/boot/zImage*"
 
 def wrt_get_kernel_version(d):
 	import bb
-	if not bb.data.inherits_class('native', d):
+	if bb.data.inherits_class('image_ipk', d):
 		skd = bb.data.getVar('STAGING_KERNEL_DIR', d, 1)
 		return base_read_file(skd+'/kernel-abiversion')
-	return "-no kernel version for native-"
-
-KERNEL_VERSION = "${@wrt_get_kernel_version(d)}"
+	return "-no kernel version for available-"
 	
 wrt_create_images() {
 	I=${DEPLOY_DIR}/images
+	KERNEL_VERSION="${@wrt_get_kernel_version(d)}"
 
 	for type in ${IMAGE_FSTYPES}; do
 		# generic

@@ -4,6 +4,8 @@ HOMEPAGE = "http://openwrt.org"
 LICENSE = "GPL"
 PR = "r1"
 
+DEPENDS = "lzma-native"
+
 SRC_URI = "http://www.fi.kernel.org/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2 \
 	cvs://anonymous@openwrt.org/openwrt;module=openwrt/package/linux/kernel-source;tag=TESTED \
 	http://downloads.openwrt.org/kernel-binary-wl-0.2.tar.gz \
