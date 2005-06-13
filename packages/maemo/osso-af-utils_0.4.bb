@@ -6,7 +6,3 @@ SRC_URI =	"http://stage.maemo.org:80/pool/maemo/ossw/source/o/osso-af-utils/osso
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_includes
-
-}
