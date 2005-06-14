@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r10"
+PR = "r11"
 
 SRC_URI += "file://wget-long-options.patch;patch=1 \
 	   file://df_rootfs.patch;patch=1 \
