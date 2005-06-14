@@ -6,6 +6,8 @@ LICENSE = "flite"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r1"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "http://www.speech.cs.cmu.edu/flite/packed/flite-${PV}/flite-${PV}-release.tar.bz2 \
            file://fix-read-only-assignments.patch;patch=1"
 S = "${WORKDIR}/flite-${PV}-release"
