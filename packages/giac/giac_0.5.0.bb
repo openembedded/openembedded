@@ -3,11 +3,11 @@ DESCRIPTION = "A free computer algebra system"
 HOMEPAGE = "http://www-fourier.ujf-grenoble.fr/~parisse/giac.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "fltk gmp mpfr gsl"
 #          ntl pari"
 
-SRC_URI = "ftp://ftp-fourier.ujf-grenoble.fr/xcas/giac_unstable.tgz"
+SRC_URI = "ftp://ftp-fourier.ujf-grenoble.fr/xcas/giac-${PV}.tar.gz"
 
 inherit autotools
 
