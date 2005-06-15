@@ -55,6 +55,12 @@
 #include <asm-arm/delay.h>
 #include <asm-arm/signal.h>
 
+/* Set this to 1 to output lots of debug messages. */
+#if NSLU2_IO_DEBUG
+#define nslu2_io_debug(args) printk args
+#else
+#define nslu2_io_debug(args) ((void)0)
+#endif
 
 #define VERSION			"0.1.7"
 
@@ -215,7 +221,7 @@ static void n2lm_d2_handler(unsigned long data)
 static void n2lm_timer_start(unsigned long led)
 {
 
-	printk(KERN_DEBUG "timer: %ld\n",led);
+	nslu2_io_debug((KERN_DEBUG "timer: %ld\n",led));
 
 	switch(led) {
 		case LED_RS_RED:
@@ -282,7 +288,7 @@ static void n2lm_timer_stop_all(void)
 static void n2lm_ledon(unsigned long led)
 {
 
-	printk(KERN_DEBUG "ledon: %ld\n", led);
+	nslu2_io_debug((KERN_DEBUG "ledon: %ld\n", led));
 
 	switch (led) {
 		case LED_RS_RED:	
@@ -333,7 +339,7 @@ static void n2lm_ledoff(unsigned long led)
 static int n2lm_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long led)
 {
 
-	printk(KERN_DEBUG "cmd=%d, led=%ld\n", cmd, led);
+	nslu2_io_debug((KERN_DEBUG "cmd=%d, led=%ld\n", cmd, led));
 	
 	if (led < 0 || led >= PHYS_LEDS)
 		return -EINVAL;
@@ -421,7 +427,7 @@ static void n2bz_handler(unsigned long data)
 		add_timer(&n2bz_timer);					//reinit timer
 	}
 	n2_buzz(tone/2, ontime);
-	printk(KERN_DEBUG "Count = %d\tOntime = %d\n", bz_repeatcnt, ontime);
+	nslu2_io_debug((KERN_DEBUG "Count = %d\tOntime = %d\n", bz_repeatcnt, ontime));
 	return;
 }
 
@@ -498,7 +504,7 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 	remove_proc_entry(PWR_OFF_STR, NULL);		//no parent	
 	n2_buzz(N2_BEEP_PITCH_MED, N2_BEEP_DUR_MED);
 	ret = create_proc_entry(PWR_OFF_STR, 0, NULL);
-	printk(KERN_DEBUG "cpe ret = %p\n", ret);
+	nslu2_io_debug((KERN_DEBUG "cpe ret = %p\n", ret));
 
 // WARNING: This is RUDE...it unconditionally pulls the power plug.
 // Your data will be at risk...since this is just a test system
@@ -560,7 +566,7 @@ static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 				 N2LM_ALL_ON,0
 	};
 
-	printk("Reset Entry IRQ =%d Presses = %d Jiffies = %08lx\tIO = %x\tIOW = %x\n", irq, rb_presses, jiffies, (int)_IO('M',rb_presses), (int)_IOW('M',rb_presses,long));
+	nslu2_io_debug(("Reset Entry IRQ =%d Presses = %d Jiffies = %08lx\tIO = %x\tIOW = %x\n", irq, rb_presses, jiffies, (int)_IO('M',rb_presses), (int)_IOW('M',rb_presses,long)));
 
 	wake_up(&n2rb_waitq);	
   	while ((*IXP4XX_GPIO_GPINR & GPIO_RB_BM) == 0)
@@ -571,7 +577,7 @@ static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 	tone = (rb_presses * 50) + 200;
 	ontime = (rb_presses*10) + 100;
 	offtime = 500 - (rb_presses*20);
-	printk("Ontime = %d\tOfftime = %d\tTone = %d\n",ontime,offtime,tone);
+	nslu2_io_debug(("Ontime = %d\tOfftime = %d\tTone = %d\n",ontime,offtime,tone));
  	rb_presses++;
 
 	n2bz_ioctl(NULL,NULL, N2BZ_BEEPS, rb_presses);	
@@ -598,7 +604,7 @@ static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 //		n2lm_timer_start(rb_presses);
 //	};
 
-	printk(KERN_DEBUG "Reset Exit IRQ=%d Presses= %d Jiffies= %08lx\n", irq, rb_presses, jiffies);
+	nslu2_io_debug((KERN_DEBUG "Reset Exit IRQ=%d Presses= %d Jiffies= %08lx\n", irq, rb_presses, jiffies));
 	return IRQ_HANDLED;
 
 }

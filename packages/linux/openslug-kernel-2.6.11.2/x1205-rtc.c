@@ -115,6 +115,12 @@ struct i2c_adapter {
 #endif
 
 #define		DEBUG			KERN_DEBUG
+/* This, if defined to 1, turns on a lot of debugging meessages. */
+#if X1205_DEBUG
+#define x1205_debug(args) printk args
+#else
+#define x1205_debug(args) ((void)0)
+#endif
 
 
 static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm, u8 reg_base);
@@ -183,8 +189,8 @@ static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm, u8
 	};
 	addr[1] = reg_base;
 	if ((i2c_transfer(client->adapter, msgs, 2)) == 2) {	//did we read 2 messages?
-		printk(KERN_DEBUG "raw x1205 read data  - sec-%02x min-%02x hr-%02x mday-%02x mon-%02x year-%02x wday-%02x y2k-%02x\n", 
-			buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6], buf[7]);
+		x1205_debug((KERN_DEBUG "raw x1205 read data  - sec-%02x min-%02x hr-%02x mday-%02x mon-%02x year-%02x wday-%02x y2k-%02x\n", 
+			buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6], buf[7]));
 		tm->tm_sec  = BCD2BIN(buf[CCR_SEC]);
 		tm->tm_min  = BCD2BIN(buf[CCR_MIN]);
 		buf[CCR_HOUR] &= ~X1205_MILBIT;
@@ -194,8 +200,8 @@ static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm, u8
 		rtc_epoch   = BCD2BIN(buf[CCR_Y2K]) * 100;
 		tm->tm_year = BCD2BIN(buf[CCR_YEAR]) + rtc_epoch - epoch;
 		tm->tm_wday = buf[CCR_WDAY];
-		printk(KERN_DEBUG "rtc_time output data - sec-%02d min-%02d hr-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
-			tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday,epoch, rtc_epoch);
+		x1205_debug((KERN_DEBUG "rtc_time output data - sec-%02d min-%02d hr-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
+			tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday,epoch, rtc_epoch));
 	} else {
 		printk(KERN_DEBUG "i2c_transfer Read Error\n");
 		return -EIO;
@@ -238,10 +244,10 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 		buf[CCR_Y2K+2]   = BIN2BCD((rtc_epoch/100));
 		msgs[2].len += 5;				//5 more bytes to set date
 	}
-	printk(KERN_DEBUG "rtc_time input - sec-%02d min-%02d hour-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
-		tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday, epoch, rtc_epoch);
-	printk(KERN_DEBUG "BCD write data - sec-%02x min-%02x hour-%02x mday-%02x mon-%02x year-%02x wday-%02x y2k-%02x\n",
-		buf[2],buf[3],buf[4],buf[5],buf[6], buf[7], buf[8], buf[9]);
+	x1205_debug((KERN_DEBUG "rtc_time input - sec-%02d min-%02d hour-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
+		tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday, epoch, rtc_epoch));
+	x1205_debug((KERN_DEBUG "BCD write data - sec-%02x min-%02x hour-%02x mday-%02x mon-%02x year-%02x wday-%02x y2k-%02x\n",
+		buf[2],buf[3],buf[4],buf[5],buf[6], buf[7], buf[8], buf[9]));
 
 	if ((i2c_transfer(client->adapter, msgs, 4)) != 4)
 		return -EIO;
@@ -265,16 +271,16 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 		buf[CCR_Y2K]   = BIN2BCD((rtc_epoch/100));
 		count = CCR_Y2K+1;
 	}
-	printk(KERN_DEBUG "rtc_time input - sec-%02d min-%02d hour-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
-		tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday, epoch, rtc_epoch);
+	x1205_debug((KERN_DEBUG "rtc_time input - sec-%02d min-%02d hour-%02d mday-%02d mon-%02d year-%02d wday-%02d epoch-%d rtc_epoch-%d\n",
+		tm->tm_sec,tm->tm_min,tm->tm_hour,tm->tm_mday,tm->tm_mon,tm->tm_year,tm->tm_wday, epoch, rtc_epoch));
 
 	xfer = i2c_master_send(client, wel, 3);
-	printk(KERN_DEBUG "wen - %x\n", xfer);
+	x1205_debug((KERN_DEBUG "wen - %x\n", xfer));
 	if (xfer != 3)
 		return -EIO;
 
 	xfer = i2c_master_send(client, rwel, 3);
-	printk(KERN_DEBUG "wenb - %x\n", xfer);
+	x1205_debug((KERN_DEBUG "wenb - %x\n", xfer));
 	if (xfer != 3)
 		return -EIO;
 
@@ -282,13 +288,13 @@ static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm, in
 		data[1] = i + reg_base;
 		data[2] =  buf[i];
 		xfer = i2c_master_send(client, data, 3);
-		printk(KERN_DEBUG "xfer - %d addr - %02x  data - %02x\n", xfer, data[1], data[2]);
+		x1205_debug((KERN_DEBUG "xfer - %d addr - %02x  data - %02x\n", xfer, data[1], data[2]));
 		if (xfer != 3)
 			return -EIO;
 	};
 
 	xfer = i2c_master_send(client, diswe, 3);
-	printk(KERN_DEBUG "wdis - %x\n", xfer);
+	x1205_debug((KERN_DEBUG "wdis - %x\n", xfer));
 	if (xfer != 3)
 		return -EIO;
 	return NOERR;
@@ -393,7 +399,7 @@ static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
 	if (!capable(CAP_SYS_TIME))
 		return -EACCES;
 
-	printk(KERN_DEBUG "x1205_command %d\n", cmd);
+	x1205_debug((KERN_DEBUG "x1205_command %d\n", cmd));
 
 	switch (cmd) {
 	case RTC_GETDATETIME:
@@ -425,7 +431,7 @@ static int x1205_sync_rtc(void)
 	time_t new_s, old_s, div, rem;
 	unsigned int cmd;
 
-	printk(KERN_DEBUG "x1205_sync_rtc entry\n");
+	x1205_debug((KERN_DEBUG "x1205_sync_rtc entry\n"));
 
 	{
 		int err = x1205_command(&x1205_i2c_client, RTC_GETDATETIME, &tm);
@@ -443,7 +449,7 @@ static int x1205_sync_rtc(void)
 	 * to reset it if it is within 1s of now.
 	 */
 	if (old_s - 1 <= new_s && new_s <= old_s + 1) {
-		printk(KERN_DEBUG "x1205_sync_rtc exit (RTC in sync)\n");
+		x1205_debug((KERN_DEBUG "x1205_sync_rtc exit (RTC in sync)\n"));
 		return NOERR;
 	}
 
@@ -555,7 +561,7 @@ static int x1205_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 	struct rtc_time tm;
 	int errno;
 
-	printk(KERN_DEBUG "ioctl = %x\n", cmd);
+	x1205_debug((KERN_DEBUG "ioctl = %x\n", cmd));
 	
 	switch (cmd) {
 	case RTC_RD_TIME:
@@ -615,8 +621,8 @@ static int x1205_read_proc(char *buf, char **start, off_t off, int len, int *eof
 //	here we return the real year and the month as 1-12 since it is human-readable
 	slen = sprintf(buf, "rtc_time\t: %02d:%02d:%02d\nrtc_date\t: %04d-%02d-%02d\n",
 		tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_year + 1900, tm.tm_mon+1, tm.tm_mday);
- 	printk(KERN_DEBUG "raw rtc_time\t: %02d:%02d:%02d\nraw rtc_date\t: %04d-%02d-%02d\n",
-		tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_year, tm.tm_mon, tm.tm_mday);
+ 	x1205_debug((KERN_DEBUG "raw rtc_time\t: %02d:%02d:%02d\nraw rtc_date\t: %04d-%02d-%02d\n",
+		tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_year, tm.tm_mon, tm.tm_mday));
 
 	if (slen <= off + len)
 		*eof = 1;
