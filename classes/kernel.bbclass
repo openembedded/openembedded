@@ -41,7 +41,16 @@ def get_kernelversion(p):
 			return m.group(1)
 	return None
 
+def get_kernelmajorversion(p):
+	import re
+	r = re.compile("([0-9]+\.[0-9]+).*")
+	m = r.match(p);
+	if m:
+		return m.group(1)
+	return None
+
 KERNEL_VERSION = "${@get_kernelversion('${S}/include/linux/version.h')}"
+KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
 KERNEL_LOCALVERSION ?= ""
 
@@ -340,7 +349,7 @@ python populate_packages_prepend () {
 
 	v = bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) or "0"
 	if v == "1":
-		kv = bb.data.getVar("KERNEL_VERSION", d, 1)
+		kv = bb.data.getVar("KERNEL_MAJOR_VERSION", d, 1)
 		packages = bb.data.getVar("PACKAGES", d, 1)
 		module_re = re.compile("^kernel-module-")
 		for p in packages.split():

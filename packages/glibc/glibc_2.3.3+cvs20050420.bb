@@ -40,7 +40,7 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.dat
 # seems to fail on tls platforms
 SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
 
-SRC_URI_append_ramses = " file://ldsocache-varrun.patch;patch=1"
+SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"

@@ -5,15 +5,15 @@ PR = "r19"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
-PACKAGE_ARCH_ramses = "${MACHINE}"
+PACKAGE_ARCH_mnci = "${MACHINE}"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
 	   file://ts.conf-h3600 file://ts.conf-h3600-2.4 file://ts.conf-h2200 \
 	   file://ts.conf-corgi file://ts.conf-corgi-2.4 \
 	   file://tslib.sh"
-SRC_URI_append_ramses += " file://devfs.patch;patch=1"
-SRC_URI_append_ramses += " file://event1.patch;patch=1"
+SRC_URI_append_mnci += " file://devfs.patch;patch=1"
+SRC_URI_append_mnci += " file://event1.patch;patch=1"
 S = "${WORKDIR}/tslib"
 LICENSE = "LGPL"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
@@ -21,8 +21,8 @@ CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 inherit autotools
 
 PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
-EXTRA_OECONF = "--enable-shared"
-EXTRA_OECONF_ramses = "--enable-shared --disable-h3600 --enable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
+EXTRA_OECONF        = "--enable-shared"
+EXTRA_OECONF_mnci   = "--enable-shared --disable-h3600 --enable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 EXTRA_OECONF_beagle = "--enable-shared --enable-h3600 --disable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 
 do_stage () {

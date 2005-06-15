@@ -15,7 +15,7 @@ EXTRA_OECONF_append_h3600 = " --enable-small-icons "
 EXTRA_OECONF_append_h3900 = " --enable-small-icons "
 EXTRA_OECONF_append_collie = " --enable-small-icons "
 EXTRA_OECONF_append_poodle = " --enable-small-icons "
-EXTRA_OECONF_append_ramses = " --enable-small-icons "
+EXTRA_OECONF_append_mnci = " --enable-small-icons "
 
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \

@@ -158,7 +158,7 @@ EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
 EXTRA_OECONF_DEP = ""
 EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
 EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
-EXTRA_OECONF_append_ramses = " --with-float=soft "
+EXTRA_OECONF_append_openmn = " --with-float=soft "
 
 python __anonymous () {
     import bb, re

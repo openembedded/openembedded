@@ -88,7 +88,7 @@ do_install() {
         install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}${palmtopdir}/pics/
 }
 
-updatercd_postinst_ramses() {
+updatercd_postinst_mnci() {
 if test "x$D" != "x"; then
         D="-r $D"
 else

@@ -21,7 +21,7 @@ CXXFLAGS_append_tosa =  " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_spitz = " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_akita = " -DOPIE_NO_WINDOWED "
 
-do_compile_prepend_ramses () {
+do_compile_prepend_mnci () {
 	ln -s custom-ramses.h custom.h
 }
 

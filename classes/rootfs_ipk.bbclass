@@ -30,9 +30,11 @@ real_do_rootfs () {
 		
 	mkdir -p ${IMAGE_ROOTFS}/dev
 
-	rm -f ${DEPLOY_DIR_IPK}/Packages
-	touch ${DEPLOY_DIR_IPK}/Packages
-	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+	if -z "${DEPLOY_KEEP_PACKAGES}"; then
+		rm -f ${DEPLOY_DIR_IPK}/Packages
+		touch ${DEPLOY_DIR_IPK}/Packages
+		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+	fi
 	mkdir -p ${T}
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
 	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"

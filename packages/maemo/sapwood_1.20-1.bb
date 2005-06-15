@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engine Sapwood"
@@ -15,3 +15,10 @@ S = ${WORKDIR}/${PN}-1.20
 EXTRA_OECONF = "--enable-abstract-sockets=no"
 
 inherit autotools pkgconfig
+
+do_install_append () {
+	install -d ${D}${sysconfdir}/osso-af-init
+	install -m755 ${S}/debian/sapwood-server.sh  ${D}${sysconfdir}/osso-af-init/sapwood-server.sh
+}
+
+

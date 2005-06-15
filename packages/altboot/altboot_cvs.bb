@@ -5,8 +5,9 @@ PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
  
+
 PV = "0.0.1+cvs-${CVSDATE}"
-PR = "r2"
+PR = "r3"
 
 
 SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;module=hentgescvs/hentges-utils/files;method=pserver \
@@ -19,6 +20,7 @@ do_install() {
 	install -d ${D}/usr/share/doc/altboot
 	
 	install -m 0644 ${WORKDIR}/altboot.cfg ${D}/etc
+	install -m 0644 ${WORKDIR}/files/altboot.func ${D}/etc
 	install -m 0644 docs/altboot/*.txt ${D}/usr/share/doc/altboot
 	install -m 0755 init.altboot ${D}/sbin	
 	install -m 0755 altboot-menu/*-* ${D}/etc/altboot-menu

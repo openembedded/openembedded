@@ -69,7 +69,7 @@ OPIE_BASE_DEPENDS_append_akita = " opie-autorotateapplet"
 
 # Zaurus models can benefit from the VT and logout applets
 OPIE_BASE_APPLETS_append_openzaurus = " opie-vtapplet opie-logoutapplet"
-OPIE_BASE_APPLETS_append_ramses     = " opie-vtapplet opie-logoutapplet"
+OPIE_BASE_APPLETS_append_mnci       = " opie-vtapplet opie-logoutapplet"
 
 #
 # Additional things for a standard 16MB distribution

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
-DEPENDS_ramses = "zlib libpng jpeg uicmoc-native"
+DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
 PR = "r17"
@@ -39,9 +39,9 @@ SRC_URI_append_tosa		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-
 SRC_URI_append_beagle   	= "file://beagle.patch;patch=1 "
 SRC_URI_append_jornada7xx       = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x       = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_ramses           = "file://devfs.patch;patch=1 \
-                                   file://ramses.patch;patch=1 \
-                                   file://ramses-touchscreen.patch;patch=1 \
+SRC_URI_append_mnci             = "file://devfs.patch;patch=1 \
+                                   file://mnci.patch;patch=1 \
+                                   file://mnci-touchscreen.patch;patch=1 \
 				   file://qkeyboard_qws.h \
 				   file://qkeyboard_qws.cpp "
 SRC_URI_append_h3600            = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
@@ -88,7 +88,7 @@ EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_S
 EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_beagle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
-EXTRA_DEFINES_ramses 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
+EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
@@ -99,11 +99,11 @@ export SYSCONF_LINK_SHLIB = "${CCLD}"
 export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
-export SYSCONF_LFLAGS_ramses = "${LDFLAGS}"
+export SYSCONF_LFLAGS_mnci = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
 
-do_configure_prepend_ramses() {
+do_configure_prepend_mnci() {
 	chmod -R a+w ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel

@@ -91,15 +91,3 @@ EOF
 	done
 	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.sysvinit
 }
-
-
-do_install_append_ramses () {
-	cat <<EOF >>${D}${sysconfdir}/inittab
-# Bluetooth
-#1:2345:respawn:${base_sbindir}/getty -L 115200 tts/1
-# External serial port
-4:2345:respawn:${base_sbindir}/getty -L 115200 tts/4
-# Framebuffer
-v1:2345:respawn:${base_sbindir}/getty -L 115200 vc/1
-EOF
-}
