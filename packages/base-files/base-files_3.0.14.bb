@@ -46,9 +46,11 @@ conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
 	     ${sysconfdir}/default"
 
 hostname = "openembedded"
-hostname_mnci = "MNCI"
-hostname_rt3000 = "MNRT"
 hostname_openslug = "openslug"
+hostname_mnci = "MNCI"
+PACKAGE_ARCH_mnci = "mnci"
+hostname_rt3000 = "MNRT"
+PACKAGE_ARCH_rt3000 = "rt3000"
 
 do_install () {
 	for d in ${dirs755}; do

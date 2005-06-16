@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lirc_sir-sa1100.patch;patch=1"
@@ -27,7 +27,7 @@ fakeroot do_install() {
 pkg_postinst() {
 #!/bin/sh
 set -e
-if [ ! -c ${D}/dev/lirc ]; then mknod ${D}/dev/lirc c 61 0; fi
+if [ ! -c $D/dev/lirc ]; then mknod $D/dev/lirc c 61 0; fi
 exit 0
 }
 
