@@ -1,6 +1,3 @@
-
-include kdepimpi-base.inc
-
 DEPENDS_append = "kdepimpi-${PV}"
 
 SUBDIRS="pwmanager/libcrypt/mpi  \
