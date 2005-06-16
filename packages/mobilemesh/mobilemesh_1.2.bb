@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.mitre.org/work/tech_transfer/mobilemesh/"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
-SRC_URI = "svn://meshcube.org/svn/application;module=mobilemesh;proto=http"
+SRC_URI = "http://meshcube.org/download/mobilemesh_1.2.tgz"
 PR = "r1"
 
 S = "${WORKDIR}/mobilemesh"
