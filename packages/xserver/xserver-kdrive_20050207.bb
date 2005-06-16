@@ -1,5 +1,6 @@
 PV = "0.0cvs${FIXEDCVSDATE}"
 FIXEDCVSDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
+DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
 DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext recordext"

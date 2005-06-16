@@ -1,4 +1,6 @@
 PV = "0.0cvs${CVSDATE}"
+DEFAULT_PREFERENCE = "-2"
+
 LICENSE = "MIT"
 DEPENDS = "tslib xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext recordext"
 PROVIDES = "virtual/xserver"
