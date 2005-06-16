@@ -4,16 +4,20 @@
 auto lo
 iface lo inet loopback
 
-# ethernet interface
-auto eth0
-iface eth0 inet static
+# the 4 LAN ports
+auto vlan0
+iface vlan0 inet static
 	address 192.168.1.1
 	netmask 255.255.255.0
+
+# WAN port
+auto vlan1
+iface vlan1 inet dhcp
 
 # wireless interface
 auto eth1
 iface eth1 inet static
 	wireless_mode master
 	wireless_essid wrt
-	address 192.168.0.1
+	address 10.0.0.1
 	netmask 255.255.255.0
