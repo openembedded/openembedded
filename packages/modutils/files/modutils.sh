@@ -1,11 +1,16 @@
 #!/bin/sh
 
+LOAD_MODULE=modprobe
 [ -f /proc/modules ] || exit 0
-[ -e /sbin/depmod ] || exit 0
 [ -f /etc/modules ] || exit 0
+[ -e /sbin/modprobe ] || LOAD_MODULE=insmod
 
-[ "$VERBOSE" != no ] && echo "Calculating module dependencies ..."
-depmod -Ae
+if [ ! -e /sbin/depmod ]; then
+	[ -f /lib/modules/`uname -r`/modules.dep ] || LOAD_MODULE=insmod
+else 
+	[ "$VERBOSE" != no ] && echo "Calculating module dependencies ..."
+	depmod -Ae
+fi
 
 [ "$VERBOSE" != no ] && echo -n "Loading modules: "
 (cat /etc/modules; echo; ) |
@@ -15,7 +20,7 @@ do
 		\#*|"") continue ;;
 	esac
 	[ "$VERBOSE" != no ] && echo -n "$module "
-	modprobe $module $args >/dev/null 2>&1
+	eval "$LOAD_MODULE $module $args >/dev/null 2>&1"
 done
 [ "$VERBOSE" != no ] && echo
 

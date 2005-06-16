@@ -151,6 +151,8 @@ do_install_append_nylon() {
 	touch ${D}${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt/*
 	rm -r ${D}/media
+	rm -rf ${D}/tmp
+	ln -sf /var/tmp ${D}/tmp
 }
 
 do_install_append_openslug() {
