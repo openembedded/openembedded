@@ -1,5 +1,5 @@
-PV = "1.7"
-PR = "r1"
+PV = "1.8"
+PR = "r0"
 
 DEPENDS = "xfonts-xorg"
 RDEPENDS_${PN} = "xfonts-xorg"

@@ -1,16 +1,16 @@
 SECTION = "x11/base"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 
 SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver"
 
-inherit module-base
+nherit module-base
 
 PV = "0.0cvs${CVSDATE}"
 S = "${WORKDIR}/drm"
 
 do_compile() {
-	oe_runmake -C linux-core LINUXDIR="${KERNEL_SOURCE}"
+	oe_runmake -C linux-core LINUXDIR="${KERNEL_SOURCE}" CC="${KERNEL_CC}"
 }
 
 do_install() {
