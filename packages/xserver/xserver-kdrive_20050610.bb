@@ -34,6 +34,7 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;date=${FIXEDCVSDATE} \
 	file://kmode.patch;patch=1 \
+	file://touchscreen_hack.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
