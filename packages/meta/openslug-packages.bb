@@ -63,6 +63,7 @@ OPENSLUG_PACKAGES = "\
 	samba \
 	strace \
 	wget \
+	unionfs-modules unionfs-utils \
 	"
 
 # These packages only build on TARGET_OS=linux, not
