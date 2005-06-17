@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r11"
+PR = "r12"
 
 KERNEL_SUFFIX = "openslug"
 
@@ -11,6 +11,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.2.tar.bz2 \
 	   file://usbnet.patch;patch=1 \
 	   file://ixp4xx_copy_from.patch;patch=1 \
 	   file://anonymiser.patch;patch=1 \
+	   file://xscale-reset.patch;patch=1 \
            file://defconfig \
            file://x1205-rtc.c \
            file://nslu2-io.c \
@@ -27,7 +28,7 @@ inherit kernel
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 CMDLINE_CONSOLE ?= "ttyS0,115200n8"
-CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
+CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s"
 #CMDLINE_ROOT ?= "root=/dev/ram0 rw rootfstype=ext2,jffs2 initrd=0x01000000,10M init=/linuxrc mem=32M@0x00000000"
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 

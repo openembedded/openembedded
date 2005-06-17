@@ -47,6 +47,7 @@
 #include <linux/interrupt.h>
 #include <linux/moduleparam.h>
 #include <linux/timer.h>
+#include <linux/reboot.h>
 
 #include <asm/system.h>
 #include <asm/uaccess.h>
@@ -298,10 +299,10 @@ static void n2lm_ledon(unsigned long led)
 			*IXP4XX_GPIO_GPOUTR |= RS_GRN_ON;	//2
 			return;
 		case LED_DISK1:
-			*IXP4XX_GPIO_GPOUTR &= DISK1_ON;	//0xfffffffb
+			*IXP4XX_GPIO_GPOUTR &= DISK1_ON;	//0xfffffff7
 			return;
 		case LED_DISK2:	
-			*IXP4XX_GPIO_GPOUTR &= DISK2_ON;	//0xfffffff7
+			*IXP4XX_GPIO_GPOUTR &= DISK2_ON;	//0xfffffffb
 			return;
 		case LED_ALL:					//all green
 			*IXP4XX_GPIO_GPOUTR |= RS_GRN_ON;
@@ -323,10 +324,10 @@ static void n2lm_ledoff(unsigned long led)
 			*IXP4XX_GPIO_GPOUTR &= RS_GRN_OFF;	//0xfffffffd
 			return;
 		case LED_DISK1:
-			*IXP4XX_GPIO_GPOUTR |= DISK1_OFF;	//0x00000004
+			*IXP4XX_GPIO_GPOUTR |= DISK1_OFF;	//0x00000008
 			return;
 		case LED_DISK2:	
-			*IXP4XX_GPIO_GPOUTR |= DISK2_OFF;	//0x00000008
+			*IXP4XX_GPIO_GPOUTR |= DISK2_OFF;	//0x00000004
 			return;
 		case LED_ALL:
 			*IXP4XX_GPIO_GPOUTR &= (RS_GRN_OFF & RS_RED_OFF);
@@ -512,8 +513,7 @@ static irqreturn_t n2pb_handler (int irq, void *dev_id, struct pt_regs *regs)
 // message, do an orderly shutdown and use an ioctl or something in
 // /proc/powerdowm to actually have us pull the plug.
 
-	*IXP4XX_GPIO_GPOER &= ~GPIO_PO_BM;	// enable the pwr cntl gpio
-	*IXP4XX_GPIO_GPOUTR |= GPIO_PO_BM;	// do the deed
+	machine_power_off();
 
 	return IRQ_HANDLED;
 }
@@ -543,27 +543,27 @@ static irqreturn_t n2rb_handler (int irq, void *dev_id, struct pt_regs *regs)
 {
 
 	static struct testr test[] = {
-				 N2LM_ALL_OFF,0,
-				 N2LM_ON,0,
-				 N2LM_OFF,0,
-				 N2LM_ON,1,
-				 N2LM_ALL_OFF,1, 
-				 N2LM_ON,2,
-				 N2LM_OFF,2,
-				 N2LM_ON,3,
-				 N2LM_OFF,3,
-				 N2LM_BLINK,0,
-				 N2LM_OFF,0,
-				 N2LM_BLINK,1,
-				 N2LM_OFF,1,
-				 N2LM_BLINK,2,
-				 N2LM_OFF,2,
-				 N2LM_BLINK,3,
-				 N2LM_OFF,3,
-				 N2LM_ALL_OFF,0,
-				 N2LM_ALT,1,
-				 N2LM_OFF,1,
-				 N2LM_ALL_ON,0
+				 { N2LM_ALL_OFF,0 },
+				 { N2LM_ON,0 },
+				 { N2LM_OFF,0 },
+				 { N2LM_ON,1 },
+				 { N2LM_ALL_OFF,1 },
+				 { N2LM_ON,2 },
+				 { N2LM_OFF,2 },
+				 { N2LM_ON,3 },
+				 { N2LM_OFF,3 },
+				 { N2LM_BLINK,0 },
+				 { N2LM_OFF,0 },
+				 { N2LM_BLINK,1 },
+				 { N2LM_OFF,1 },
+				 { N2LM_BLINK,2 },
+				 { N2LM_OFF,2 },
+				 { N2LM_BLINK,3 },
+				 { N2LM_OFF,3 },
+				 { N2LM_ALL_OFF,0 },
+				 { N2LM_ALT,1 },
+				 { N2LM_OFF,1 },
+				 { N2LM_ALL_ON,0 }
 	};
 
 	nslu2_io_debug(("Reset Entry IRQ =%d Presses = %d Jiffies = %08lx\tIO = %x\tIOW = %x\n", irq, rb_presses, jiffies, (int)_IO('M',rb_presses), (int)_IOW('M',rb_presses,long)));
