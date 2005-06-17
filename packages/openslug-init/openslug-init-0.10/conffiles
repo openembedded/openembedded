@@ -20,30 +20,30 @@
 #   preserve  Preserve this file unconditionally
 #   diff      Compare file with the new version, ask if different
 #
-preserve        linuxrc
+preserve	linuxrc
 preserve	etc/.configured
-preserve	etc/default/sysconf
+preserve	etc/TZ
 diff		etc/default/conffiles
 diff		etc/default/devpts
 diff		etc/default/rcS
+preserve	etc/default/sysconf
 diff		etc/default/usbd
-preserve	etc/profile
-preserve	etc/hostname
-preserve	etc/hosts
 preserve	etc/defaultdomain
-preserve	etc/resolv.conf
-preserve	etc/syslog.conf
-preserve	etc/motd
-preserve	etc/network/interfaces
-preserve	etc/dropbear/dropbear_rsa_host_key
 preserve	etc/dropbear/dropbear_dss_host_key
-preserve	etc/passwd
-preserve	etc/shadow
+preserve	etc/dropbear/dropbear_rsa_host_key
 preserve	etc/group
 preserve	etc/gshadow
-preserve	etc/ntp.drift
-preserve	etc/timezone
+preserve	etc/hostname
+preserve	etc/hosts
 preserve	etc/localtime
-preserve	etc/TZ
-ignore		etc/modules.conf
 ignore		etc/modules
+ignore		etc/modules.conf
+preserve	etc/motd
+preserve	etc/network/interfaces
+preserve	etc/ntp.drift
+preserve	etc/passwd
+preserve	etc/profile
+preserve	etc/resolv.conf
+preserve	etc/shadow
+preserve	etc/syslog.conf
+preserve	etc/timezone
