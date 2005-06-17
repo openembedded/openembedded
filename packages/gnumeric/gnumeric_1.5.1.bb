@@ -4,7 +4,6 @@ PR = "r0"
 S = "${WORKDIR}/gnumeric-${PV}"
 DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
-DEFAULT_PREFERENCE=-1
 
 inherit gnome flow-lossage
 
