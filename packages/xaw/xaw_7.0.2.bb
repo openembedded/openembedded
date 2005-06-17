@@ -5,7 +5,9 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "xproto x11 xt xmu xpm"
 DESCRIPTION = "X Athena Widgets library"
 
-SRC_URI = "${XLIBS_MIRROR}/libXaw-${PV}.tar.bz2"
+SRC_URI = "${XLIBS_MIRROR}/libXaw-${PV}.tar.bz2 \
+	   file://auxdir.patch;patch=1"
+
 S = "${WORKDIR}/libXaw-${PV}"
 
 inherit autotools pkgconfig 
