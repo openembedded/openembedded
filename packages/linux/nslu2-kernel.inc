@@ -24,6 +24,7 @@
 #   file://usbnet.patch;patch=1
 #   file://ixp4xx_copy_from.patch;patch=1
 #   file://anonymiser.patch;patch=1
+#   file://xscale-reset.patch;patch=1
 #   ${N2K_EXTRA_PATCHES}
 #
 # N2K_SUFFIX - the suffix to add after 'zImage-' in the
@@ -187,6 +188,7 @@ N2K_PATCHES ?= "\
     file://usbnet.patch;patch=1 \
     file://ixp4xx_copy_from.patch;patch=1 \
     file://anonymiser.patch;patch=1 \
+    file://xscale-reset.patch;patch=1 \
     ${N2K_EXTRA_PATCHES}"
 
 N2K_SUFFIX ?= "openslug"
