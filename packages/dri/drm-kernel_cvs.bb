@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver"
 
-nherit module-base
+inherit module-base
 
 PV = "0.0cvs${CVSDATE}"
 S = "${WORKDIR}/drm"
