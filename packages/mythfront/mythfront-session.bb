@@ -1,4 +1,4 @@
-PV = "1.4"
+PV = "1.5"
 LICENSE = "MIT"
 SRC_URI = "file://mythfront.sh"
 
