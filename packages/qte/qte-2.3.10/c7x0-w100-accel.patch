@@ -1,0 +1,2108 @@
+ATI IMAGEON (W100) Accelerated support
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/configure~w100
++++ qt-2.3.10/configure
+@@ -325,6 +325,9 @@
+    -accel-matrox)
+ 	QWS_ACCEL_MATROX=y
+ 	;;
++   -accel-w100)
++	QWS_ACCEL_W100=y
++	;;
+    -qvfb)
+ 	QWS_QVFB=y
+ 	;;
+@@ -726,6 +729,10 @@
+ then
+     QT_CXX="$QT_CXX -DQT_NO_QWS_MATROX"
+ fi
++if [ -z "$QWS_ACCEL_W100" -a -n "$EMB" ]
++then
++    QT_CXX="$QT_CXX -DQT_NO_QWS_W100"
++fi
+ if [ -z "$QWS_VNC" -a -n "$EMB" ]
+ then
+     QT_CXX="$QT_CXX -DQT_NO_QWS_VNC"
+@@ -1338,6 +1345,7 @@
+     -accel-voodoo3 ..... Enable Voodoo3 acceleration.
+     -accel-mach64 ...... Enable Mach64 acceleration.
+     -accel-matrox ...... Enable Matrox MGA acceleration.
++    -accel-w100 ........ Enable ATI Imageon w100 acceleration (experimental).
+     -qvfb .............. Enable X11-based Qt Virtual Frame Buffer.
+     -vnc ............... Enable VNC server (requires network module).
+ 
+@@ -1462,6 +1470,7 @@
+ [ "x$JPEG" = "xyes" ] && QT_LIBS="${QT_LIBS} -ljpeg"
+ [ "x$MNG" = "xyes" ] && QT_LIBS="${QT_LIBS} -lmng -ljpeg" # assume JNG support
+ [ "x$NAS_SOUND" = "xyes" ] && QT_LIBS="${QT_LIBS} -laudio -lXt" # Xt junk in audio library
++[ "x$QWS_ACCEL_W100" = "xy" ] && QT_LIBS="${QT_LIBS} -laticore" # Aticore W100 support
+ QT_LIBS="$L_FLAGS $R_FLAGS $QT_LIBS $l_FLAGS"
+ 
+ 
+--- qt-2.3.10/src/kernel/qgfxraster_qws.cpp~w100
++++ qt-2.3.10/src/kernel/qgfxraster_qws.cpp
+@@ -5945,6 +5945,10 @@
+ # include "qgfxmatrox_qws.cpp"
+ #endif
+ 
++#if !defined(QT_NO_QWS_W100)
++# include "qgfxw100_qws.cpp"
++#endif
++
+ #if !defined(QT_NO_QWS_VFB)
+ # include "qgfxvfb_qws.cpp"
+ #endif
+@@ -5999,6 +6003,9 @@
+ #if !defined(QT_NO_QWS_MATROX)
+     { "Matrox", qt_get_screen_matrox, 1 },
+ #endif
++#if !defined(QT_NO_QWS_W100)
++    { "W100", qt_get_screen_w100, 1 },
++#endif
+ #if !defined(QT_NO_QWS_TRANSFORMED)
+     { "Transformed", qt_get_screen_transformed, 0 },
+ #endif
+--- /dev/null
++++ qt-2.3.10/src/3rdparty/kernel/aticore/aticore.h
+@@ -0,0 +1,567 @@
++/*
++ * AtiCore 2D acceleration API
++ *
++ */
++
++#include <inttypes.h>
++#include <sys/types.h>
++
++#ifndef __W100API_H__
++#define __W100API_H__
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define SolidRop_GXclear	0x00	/* 0 */
++#define SolidRop_GXand		0xa0	/* src AND dst */
++#define	SolidRop_GXandReverse	0x50	/* src AND NOT dst */
++#define	SolidRop_GXcopy		0xf0	/* src */
++#define SolidRop_GXandInverted	0x0a	/* NOT src AND dst */
++#define	SolidRop_GXnoop		0xaa	/* dst */
++#define	SolidRop_GXxor		0x5a	/* src XOR dst */
++#define	SolidRop_GXor		0xfa	/* src OR dst */
++#define	SolidRop_GXnor		0x05	/* NOT src AND NOT dst */
++#define	SolidRop_GXequiv	0xa5	/* NOT src XOR dst */
++#define	SolidRop_GXinvert	0x55	/* NOT dst */
++#define	SolidRop_GXorReverse	0xf5	/* src OR NOT dst */
++#define	SolidRop_GXcopyInverted	0x0f	/* NOT src */
++#define	SolidRop_GXorInverted	0xaf	/* NOT src OR dst */
++#define	SolidRop_GXnand		0x5f	/* NOT src OR NOT dst */
++#define	SolidRop_GXset		0xff	/* 1 */
++
++#define	BltRop_GXclear		0x00	/* 0 */
++#define	BltRop_GXand		0x88	/* src AND dst */
++#define	BltRop_GXandReverse	0x44	/* src AND NOT dst */
++#define	BltRop_GXcopy		0xcc	/* src */
++#define	BltRop_GXandInverted	0x22	/* NOT src AND dst */
++#define	BltRop_GXnoop		0xaa	/* dst */
++#define	BltRop_GXxor		0x66	/* src XOR dst */
++#define	BltRop_GXor		0xee	/* src OR dst */
++#define	BltRop_GXnor		0x11	/* NOT src AND NOT dst */
++#define	BltRop_GXequiv		0x99	/* NOT src XOR dst */
++#define	BltRop_GXinvert		0x55	/* NOT dst */
++#define	BltRop_GXorReverse	0xdd	/* src OR NOT dst */
++#define	BltRop_GXcopyInverted	0x33	/* NOT src */
++#define	BltRop_GXorInverted	0xbb	/* NOT src OR dst */
++#define	BltRop_GXnand		0x77	/* NOT src OR NOT dst */
++#define	BltRop_GXset		0xff	/* 1 */
++
++#define DSTTYPE_8BPP            2   //8bpp
++#define DSTTYPE_16BPP_1555	3   //16 bpp aRGB 1555
++#define DSTTYPE_16BPP_444	5   //16 bpp aRGB 4444
++
++#define SRCTYPE_1BPP_OPA        0       //mono (expanded to frgd, bkgd)
++#define SRCTYPE_1BPP_TRA        1       //mono (expanded to frgd, leave_alone)
++#define SRCTYPE_EQU_DST         3       //color (same as DST)
++#define SRCTYPE_SOLID_COLOR_BLT 4       //solid color for Blt (use frgd)
++#define SRCTYPE_4BPP            5       //4 bpp
++#define SRCTYPE_12BPP_PACKED    6       //12 bpp packed
++  
++#define ROP3_SRCCOPY		0xcc
++#define ROP3_PATCOPY		0xf0
++  
++#define OVLTYPE_YUV420          7
++#define OVLTYPE_RGB565          8
++
++#define DP_BRUSH_8x8MONOOPA     0 //8x8 mono pattern (expanded to frgd, bkgd )
++#define DP_BRUSH_8x8MONOTRA     1 //8x8 mono pattern (expanded to frgd, leave alone )
++#define DP_PEN_32x1MONOOPA      6 //32x1 mono pattern (expanded to frgd, bkgd)
++#define DP_PEN_32x1MONOTRA      7 //32x1 mono pattern (expanded to frgd, leave alone)
++#define DP_BRUSH_8x8COLOR       10 //8x8 color pattern
++#define DP_BRUSH_SOLIDCOLOR     13 //solid color pattern (frgd)
++#define DB_BRUSH_NONE           15 //No brush used
++
++  typedef struct {
++    int16_t XCoord;
++    int16_t YCoord;
++  } ATI_POINT;
++  
++  typedef struct {
++    int16_t XCoord;
++    int16_t YCoord;
++    int16_t Width;
++    int16_t Height;
++  } ATI_RECT;
++  
++  typedef struct {
++    int16_t X_Top_Left;                  // x coordinate of top left corner
++    int16_t Y_Top_Left;                  // y coordinate of top left corner
++    int16_t X_Bottom_Right;              // x coordinate of bottom right corner
++    int16_t Y_Bottom_Right;              // y coordinate of bottom right corner
++  } ATI_CLIPRECT;
++  
++  typedef struct {
++    uint32_t Count; 
++    uint8_t ScaleXFactor;
++    uint8_t ScaleYFactor;
++    uint8_t BlendOn;
++    uint8_t dummy1;
++  } ATI_STRETCH;
++  
++  typedef struct {
++    uint32_t *lpSrcBitmap;                /* サーフェスのオフセット */
++    uint16_t XCoord;                      /* +4  確定:サーフェス内のx座標 */
++    uint16_t YCoord;                      /* +6  確定:サーフェス内のy座標 */
++    uint16_t SrcPitch;                    /* +8  確定: */
++    uint16_t SrcHeight;                   /* +10 確定: */
++    uint16_t OverlayWidth;                /* オーバレイの幅(Srcと違う値にしても、動的に拡大縮小されたりはしない、意味あんの？) */
++    uint16_t OverlayHeight;
++    uint32_t lpOverlayKey;                /* +16 確定:謎(カラーキー？) */
++    uint8_t OverlayFormat;               /* +20 確定 */
++    uint8_t dummy1;
++    uint16_t dummy2;
++  } ATI_OVERLAYPROP;                      /* 24bytes? */
++  
++  typedef struct {
++    int HInvert;
++    int VInvert;
++  } ATI_EXTVIDEOPROP;
++  
++  typedef struct {
++    ATI_EXTVIDEOPROP ExtVideoProp;
++  } ATI_UNKNOWN1;
++  
++  typedef struct {
++    unsigned long clr_cmp_fcn_src   :3;
++    unsigned long                   :5;
++    unsigned long clr_cmp_fcn_dst   :3;
++    unsigned long                   :13;
++    unsigned long clr_cmp_src       :2;
++    unsigned long                   :6;
++  } clr_cmp_cntl_t;
++
++  typedef struct {
++    uint16_t x;
++    uint16_t y;
++    uint16_t w;
++    uint16_t h;
++    clr_cmp_cntl_t cmp_cntl;
++    unsigned long tcolour;
++  } transbitblt_t;
++
++  typedef struct {
++    uint32_t dummy1;
++    uint32_t dummy2;
++    uint8_t HExpansion;                   /* +8  確定 */
++    uint8_t VExpansion;                   /* +9  確定 */
++    uint8_t dummy3;
++    uint8_t dummy4;
++    uint8_t RConversion;                  /* +12 確定 */
++    uint8_t dummy5;
++    uint8_t dummy6;
++    uint8_t dummy7;
++    ATI_UNKNOWN1 x;
++  } ATI_EXTENDEDOVERLAYPROP;              /* 16byte? */
++  
++  /**
++   * AtiCore initialization.
++   * Sets up the shared memory area
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessAttach( void );
++  
++  /**
++   * AtiCore finish.
++   *
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessDetach( void );
++  
++  /**
++   * Allocates a surface on the internal RAM.
++   * Perhaps there's a way to indicate to allocate on the 
++   * internal RAM?
++   * @arg handle Reference to the returned surface handle
++   * @arg offset Returned offset of this surface on the video memory
++   * @arg size   Size (bytes) to be reserved (16 multiple)
++   * @arg direction 
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_AllocateSurface( uint16_t *handle, uint32_t *offset,
++			       uint32_t size, uint32_t direction );
++  
++  /**
++   * Deallocates a given surface.
++   * @arg handle Handle to the allocated surface 
++   * (As returned by AllocateSurface)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_DestroySurface( uint16_t handle );
++
++  /**
++   * Sets the kind of Raster Operation.
++   * @param rop Raster operation to be performed
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetRopOperation( uint32_t rop );
++  
++  /**
++   * Sets the destination type for raster operation.
++   * @param dsttype
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDstType( uint32_t dsttype );
++  
++  /**
++   * Sets the source type for raster operation.
++   * @param srctype
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetSrcType( uint32_t srctype );
++  
++  /**
++   * Sets Source clipping rectangle.
++   * @param cliprect Rectangle to perform clipping.
++   * @return 1:success, 0:fail
++   */ 
++  int AtiCore_SetSrcClippingRect( ATI_CLIPRECT *cliprect );
++  
++  /**
++   * Sets Destination clipping rectangle.
++   * @param cliprect Rectangle to perform clipping.
++   * @return 1:success, 0:fail
++   */ 
++  int AtiCore_SetDstClippingRect(ATI_CLIPRECT *cliprect);
++  
++  /**
++   * Sets pitch and offset for source in a raster operation.
++   * @param pitch Pitch (line width) of source
++   * @param offset Offset of source
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetSrcPitchOffset( int pitch, int offset );
++  
++  /**
++   * Sets pitch and offset destination source in a raster operation.
++   * @param pitch Pitch (line width) of destination
++   * @param offset Offset of destination (memory offset)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDstPitchOffset( int pitch, int offset );
++  
++  /**
++   * Performs a BitBlt with source rotation.
++   * @param flags Rotation degree
++   * @param dstRect Rectangle for destination Bitblitting
++   * @param srcRect Rectangle for origin bitblitting
++   * @test Tested with specified flags parameter
++   */
++  int AtiCore_BitBltFilpRotate( int flags,
++				ATI_RECT *dstRect, 
++				ATI_RECT *srcRect);
++  
++  /**
++   * Performs a BitBlt with source stretching.
++   * @param option Unknown
++   * @param point Unknown
++   * @param srcRect Source blitting surface
++   * @test Untested
++   */
++  int AtiCore_StretchBlt( ATI_STRETCH *option,
++			  ATI_POINT *point, 
++			  ATI_RECT *srcRect);
++  
++  /**
++   * Waits for the FIFO to be idle at least msecs.
++   * @param msecs Maximum time to wait for FIFO to idle
++   * @return 1:success, 0:fail
++   * @test Untested
++   */
++  int AtiCore_WaitComplete( int msec );
++
++  /**
++   * Allocates a new overlay handle.
++   * @param   handle overlay
++   * @return  1:success, 0:fail
++   * @test Yes
++   */
++  int AtiCore_AllocOverlay( uint16_t *handle );
++
++  /**
++   * Deallocates a overlay handle.
++   * @param  handle overlay
++   * @return 1:success, 0:fail
++   * @test Yes
++   */
++  int AtiCore_ReleaseOverlay( uint16_t handle );
++
++  /**
++   * Sets up an overlay given a handle an a set of properties.
++   * @param handle Allocated handle to setup the overlay.
++   * @param props Overlay properties struct
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetupOverlay( uint16_t handle, ATI_OVERLAYPROP *props );
++
++  /**
++   * Sets up extended overlay features.
++   * @param handle Allocated handle to an overlay
++   * @param props Extended overlay properties
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetupOverlayExtended( uint16_t handle, 
++				    ATI_EXTENDEDOVERLAYPROP *props );
++
++  /**
++   * Enable/Disable an overlayed surface.
++   * @param   handle Overlay to be enabled/disabled
++   * @param   enable 1: Enable, 0: Disable
++   * @return  1:success, 0:fail
++   * @test Tested
++   */
++  int AtiCore_SetOverlayOnOff( uint16_t handle, int enable );
++
++  /**
++   * Sets up the overlay position for a given handle.
++   * @param handle Overlay Handle
++   * @param x X Coordinate (Seems to be a bug with x < 4 )
++   * @param y Y Coordinate
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetOverlayPos( uint16_t handle, 
++			     uint16_t x, 
++			     uint16_t y );
++
++  /**
++   * Translates between physical/virtual addresses.
++   * @param offset VRAM offset to be translated
++   * @param viraddr Virtual address for VRAM
++   * @return 1:success,0:fail
++   */
++  int AtiCore_SetupMemoryTransfer( uint32_t offset, 
++				   uint32_t *viraddr );
++
++  /**
++   * Related with the previous one. It seems to be necesary to be called
++   * but I'm not sure of its function.
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_TerminateMemoryTransfer( void );
++
++  /**
++   * Returns the frontbuffer pitch and offset.
++   * @param pitch Return value for the frontbuffer pitch (width)
++   * @param offset Return value for the frontbuffer offset
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_GetFrontBufferPitchOffset( uint32_t *pitch, 
++					 uint32_t *offset );
++
++  /**
++   * Changes display brighness ?
++   * @param  brightness  -64...63
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDisplayBrightness( int brightness );
++
++  /**
++   * Returns the amount of available internal/external memory.
++   * @param  internal Pointer to return internal memory size
++   * @param  external Pointer to return external memory size
++   * @return 1:success, 0:fail
++   */
++  int GetAvailableVideoMem( uint32_t *internal, 
++			    uint32_t *external );
++
++/**
++ *
++ * 
++ *
++ 
++ {
++    (uint32_t) 0
++    (uint32_t) 0
++    (uint16_t) 480
++    (uint16_t) 640
++    (uint16_t) 480
++    (uint16_t) 640
++    (uint32_t) 5
++ */
++
++  typedef struct {
++    uint32_t	dummy1;
++    ATI_RECT	Size;
++    uint16_t	Width;
++    uint16_t	Height;
++    uint32_t	Flag;
++  } ATI_GRAPHICWINDOW;
++ 
++ int AtiCore_SetupGraphicWindow(void* );
++
++  /**
++   * It seems to be necessary after AtiCore_ProcessAttach
++   * @param mode: 0xaaab for portrait, 0xaaaa for landscape
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessAttachSpecialMode( int mode );
++
++  /**
++   * Sets up the position of the Graphic viewport ?
++   * @param x X coordinate
++   * @param y Y coordinate
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetGraphicWindowPos( int x, int y );
++
++  /**
++   * Get the graphic viewport position.
++   * @param x Pointer to xcoord placeholder
++   * @param y Pointer to ycoord placeholder
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_GetGraphicWindowPos( int *x, int *y );
++
++  /**
++   * Sets up the frontbuffer position.
++   * @param offset VRAM offset to be used.
++   * @param x X Coordinate?
++   * @param y Y Coordinate?
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetFrontBuffer( int offset, int x, int y );
++
++  /**
++   * Enable/Disable the frontbuffer?
++   * @param enable 1 enables/ 0 disables
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetGraphicWindowOnOff( int enable );
++
++  /*
++   * Sets the foreground color.
++   * @param colour Color in 565 format (perhaps depends on the source format)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetFrgColour( int colour );
++
++  /*
++   * Sets the background colour.
++   * @param colour Colour in 565 format (perhaps depends on the source format)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetBkgColour( int colour );
++  
++  /**
++   * Changes the painting brush
++   * @param btype Type of brush to use
++   *        4: Uses the pattern
++   *        6: SolidLine
++   * @param pattern Pointer to a 32 bit pattern
++   * @return 1:success, 0:fail
++   * @test Some values for btype produces a kind of antialiasing line
++   */
++  int AtiCore_BrushType( int btype, unsigned int *pattern );
++
++  /**
++   * Performs a rectangle paint.
++   * @param nrects Number of rectangles to be painted
++   * @param rects Array of rectangles to be painted
++   * @return 1:success, 0:fail
++   * @test Tested with nrects==1
++   */
++  int AtiCore_PaintRect( int nrects , 
++			 ATI_RECT rects[] );
++
++  /**
++   * Draws a set of lines.
++   * @param npoints Number of points in the polyline set
++   * @param points  Pointer to an array of ATI_POINT
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_Polyline( int npoints, ATI_POINT points[] );
++
++  int AtiCore_GetPitchOffsetProperty( void *, void *);
++
++  int AtiCore_CursorOnOff( int, int );
++
++  /**
++   * Performs a BitBlt ROP operation.
++   * @param unk Unknown (Always set to 1)
++   * @param dstrect Bounding destination rect
++   * @param srcrect Bounding source rect
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_BitBlt( int unk, 
++		      ATI_RECT *dstrect, 
++		      ATI_RECT *srcrect );
++
++  /**
++   * Performs a Transparent BitBlt ROP operation.
++   * @param dstrect Transparent DstRect bitblt argument
++   * @param srcrect Transparent SrcRect bitblt argument
++   * @return 1:success, 0:fail
++   * @test Doesn't work. It sets to zero CLR_CMP_CNTL and CLR_CMP_MSK
++   */
++  int AtiCore_TransBitBlt( transbitblt_t *dstrect,
++			   transbitblt_t *srcrect );
++
++  int AtiCore_WakeUpCall( void );
++
++  /**
++   * Draws a set of pixels
++   * @param npoints Number of points to draw
++   * @param points Pointer to an array of ATI_POINT
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_DrawPixel( int npoints, ATI_POINT *points );
++
++  int AtiCore_SetSysClk( unsigned short in0 );
++  int AtiCore_SetFastSysClk( unsigned short in0 );
++  int AtiCore_SetSlowSysClk( unsigned short in0 );
++
++  int AtiCore_GetCursorPos( unsigned long in0,
++			    unsigned short *x,
++			    unsigned short *y );
++  
++
++
++/* ================================================================ */
++/* from libqte.so.2.3.2 */
++/*
++AtiCore_AlphaBlend
++
++AtiCore_Flush
++AtiCore_GammaCorrection
++AtiCore_GetCRC
++AtiCore_GetCursorPos
++AtiCore_GetDeviceInfo
++AtiCore_GetGPIO_Data
++AtiCore_GetGraphicExtended
++AtiCore_GetGraphicWindowPos
++AtiCore_GetLargestVideoMemBlock
++AtiCore_GetLastError
++AtiCore_GetMultiCRC
++AtiCore_GetOverlayPos
++AtiCore_Host
++AtiCore_LoadCursorBitMap
++AtiCore_PolyScanline
++AtiCore_ProcessAttachMinimal(void)?
++AtiCore_ProcessDetachMinimal(void)?
++AtiCore_ProcessDetachSpecialMode
++AtiCore_ReadCfgReg
++AtiCore_ReadMem(int, int)?
++AtiCore_ReadReg(int, int)?
++AtiCore_ScanlineShading
++AtiCore_SetApertures
++AtiCore_SetBytePixelOrder
++AtiCore_SetCursorPos
++AtiCore_SetDisplayParameters
++AtiCore_SetDriverBehaviour
++AtiCore_SetGPIO_Data
++AtiCore_SetOverlayPosUsingGraphicWindowXY
++AtiCore_SetPartialCursor
++AtiCore_SetupGraphicExtended
++AtiCore_SetupPM4
++AtiCore_SmallText
++AtiCore_SubmitPM4Packet
++AtiCore_WriteCfgReg
++AtiCore_WriteMem
++AtiCore_WriteReg
++ */
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+--- /dev/null
++++ qt-2.3.10/src/kernel/qgfxw100_qws.cpp
+@@ -0,0 +1,1466 @@
++/***************************************************************************
++
++** Imageon driver for qte using libAticore
++** Manuel Teira( 2005 )
++** BUGS
++*  - Enable again internal memory surfaces.
++****************************************************************************/
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <dirent.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <time.h>
++
++#include <qapplication.h>
++
++#ifndef __sparc__
++#include <sys/io.h>
++#endif
++
++#include "qgfxraster_qws.h"
++#include "qgfxlinuxfb_qws.h"
++#include <aticore/aticore.h>
++
++#include <stdarg.h>
++
++class W100Control {
++public:
++
++  typedef enum Loglevel {
++    ERROR = 0,
++    WARNING,
++    INFO
++  };
++
++  typedef enum Opcodes {
++    DRAWLINE = 1,
++    DRAWPOINT,
++    DRAWPOINTS,
++    FILLRECT,
++    SCROLL,
++    BITBLT,
++    POLYLINE,
++    EOO
++  };
++
++  typedef struct Opcode {
++    QString str;
++    int index;
++    bool accelerated;
++    int hits;
++    int misses;
++  };
++
++  static Opcode lOpcodes[];
++
++  static QString level2str( int level )
++  {
++    switch( level ) {
++    case ERROR:
++      return QString( "ERROR" );
++      break;
++    case WARNING:
++      return QString( "WARNING" );
++      break;
++    case INFO:
++      return QString( "INFO" );
++      break;
++    default:
++      return QString( "UNKNOWN" );
++      break;
++    }
++  }
++
++  W100Control():
++    m_loglevel( 0 ),
++    m_enabled( 0 )
++  {
++    m_loglevel = 0;
++    char *var;
++    if ( var = getenv( "W100_DEBUG" ) ) {
++      if ( strtol( var, 0, 0 ) == 1 ) {
++	m_enabled = 1;
++      }
++    }
++
++    if ( m_enabled ) {
++      if ( var = getenv( "W100_DEBUGLEVEL" ) ) {
++	if ( ( m_loglevel = strtol( var, 0, 0 ) ) < 0 ) {
++	  m_loglevel = 0;
++	}
++      }
++
++      QString path( "/mnt/card/w100/w100debug.log" );
++      if ( var = getenv( "W100_DEBUGPATH" ) ) {
++	path = QString( var ) + "/w100debug.log";
++      } 
++      m_logfile = fopen( path.latin1(), "w" );
++      if ( m_logfile == NULL ) m_enabled = 0;
++    }
++
++    Opcode *opcodePtr = lOpcodes;
++    int i = 1;
++    while ( opcodePtr->index != EOO ) {
++      if ( opcodePtr->index != i ) {
++	fprintf( stderr, "Opcode list is not ordered!!\n" );
++	abort();
++      }
++
++      QString varName = "W100_ACCEL_" + opcodePtr->str;
++      char *varPtr;
++      if ( ( varPtr = getenv( varName.latin1() ) )  ) {
++	if ( ( strtol( varPtr, NULL, 0 ) == 0 ) ||
++	     ( strcmp( varPtr, "false" ) == 0 ) )  {
++	  opcodePtr->accelerated = false;
++	}
++      }
++      opcodePtr++;
++      i++;
++    }
++  }
++
++  ~W100Control()
++  {
++    //Dump statistics about any opcode
++    Opcode *opcodePtr = lOpcodes;
++    while ( opcodePtr->index != EOO ) {
++      log( WARNING, "Opcode %s. Accelerated=%s. Hits=%d. Misses=%d",
++	   opcodePtr->str.latin1(),
++	   opcodePtr->accelerated ? "true" : "false",
++	   opcodePtr->hits,
++	   opcodePtr->misses );
++      opcodePtr++;
++    }
++    if ( m_enabled && m_logfile ) {
++      fclose( m_logfile );
++    }
++  }
++
++  bool accelerated( int opcode )
++  {
++    if ( opcode < EOO ) {
++      return lOpcodes[opcode].accelerated;
++    }
++    return false;
++  }
++
++  void addHit( int opcode )
++  {
++    lOpcodes[opcode].hits++;
++    ( *lastop ) = opcode;
++  }
++
++  int lastOp( void ) const
++  {
++    return ( *lastop );
++  }
++
++  void addMiss( int opcode )
++  {
++    lOpcodes[opcode].misses++;
++  }
++
++  void log( int level, const char *fmt, ... )
++  {
++    if ( m_enabled && ( level <= m_loglevel ) ) {
++      char buffer[1024];
++      va_list ap;
++      va_start( ap, fmt );
++      vsnprintf( buffer, 1023, fmt, ap );
++      va_end( ap );
++      fprintf( m_logfile, "%d:%s:%s\n", getpid(),
++	       level2str( level ).latin1(), 
++	       buffer );
++    }
++  }
++
++private:
++  FILE *m_logfile;
++  int m_loglevel;
++  bool m_enabled;
++};
++
++W100Control::Opcode W100Control::lOpcodes[] = {
++  { "DRAWLINE",   W100Control::DRAWLINE,   true, 0, 0 },
++  { "DRAWPOINT",  W100Control::DRAWPOINT,  true, 0, 0 },
++  { "DRAWPOINTS", W100Control::DRAWPOINTS, true, 0, 0 },
++  { "FILLRECT",   W100Control::FILLRECT,   true, 0, 0 },
++  { "SCROLL",     W100Control::SCROLL,     true, 0, 0 },
++  { "BITBLT",     W100Control::BITBLT,     true, 0, 0 },
++  { "POLYLINE",   W100Control::POLYLINE,   true, 0, 0 },
++  { ""      ,     W100Control::EOO,        false, 0, 0 }
++};
++
++W100Control control;
++
++static int W100_ProcessAttach( void )
++{
++  return( AtiCore_ProcessAttach() );
++}
++
++static int W100_ProcessDetach( void )
++{
++  return( AtiCore_ProcessDetach() );
++}
++
++static int W100_AllocateSurface( uint16_t *handle, uint32_t *offset,
++				 uint32_t size, uint32_t direction )
++{
++  int retcode = AtiCore_AllocateSurface( handle, offset, size, direction );
++  return( retcode );
++}
++
++static int W100_DestroySurface( uint16_t handle )
++{
++  int retcode = AtiCore_DestroySurface( handle );
++  return( retcode );
++}
++
++static int W100_DrawPixel( int npoints, ATI_POINT *points )
++{
++  return( AtiCore_DrawPixel( npoints, points ) );
++}
++
++static int W100_SetRopOperation( uint32_t rop )
++{
++  return( AtiCore_SetRopOperation( rop ) );
++}
++
++static int W100_SetDstType( uint32_t dtype )
++{
++  return( AtiCore_SetDstType( dtype ) );
++}
++
++static int W100_SetSrcType( uint32_t stype )
++{
++  return( AtiCore_SetSrcType( stype ) );
++}
++
++static int W100_SetSrcClippingRect( ATI_CLIPRECT *cliprect )
++{
++  return( AtiCore_SetSrcClippingRect( cliprect ) );
++}
++
++
++static int W100_SetDstClippingRect( ATI_CLIPRECT *cliprect )
++{
++  return( AtiCore_SetDstClippingRect( cliprect ) );
++}
++
++static int W100_SetSrcPitchOffset( int pitch, int offset )
++{
++  return( AtiCore_SetSrcPitchOffset( pitch, offset ) );
++}
++
++static int W100_SetDstPitchOffset( int pitch, int offset )
++{
++  return( AtiCore_SetDstPitchOffset( pitch, offset ) );
++}
++
++static int W100_BitBltFilpRotate( int flags, 
++				  ATI_RECT *dstRect,
++				  ATI_RECT *srcRect )
++{
++  return( AtiCore_BitBltFilpRotate( flags, dstRect, srcRect ) );
++}
++
++static int W100_StretchBlt( ATI_STRETCH *option,
++			    ATI_POINT *point,
++			    ATI_RECT *srcRect )
++{
++  return( AtiCore_StretchBlt( option, point, srcRect ) );
++}
++
++static int W100_WaitComplete( int msec )
++{
++  return( AtiCore_WaitComplete( msec ) );
++}
++
++static int W100_AllocOverlay( uint16_t *handle ) 
++{
++  return( AtiCore_AllocOverlay( handle ) );
++}
++
++static int W100_ReleaseOverlay( uint16_t handle )
++{
++  return( AtiCore_ReleaseOverlay( handle ) );
++}
++
++static int W100_SetupOverlay( uint16_t handle, ATI_OVERLAYPROP *prop )
++{
++  return( AtiCore_SetupOverlay( handle, prop ) );
++}
++
++static int W100_SetupOverlayExtended( uint16_t handle, ATI_EXTENDEDOVERLAYPROP *prop )
++{
++  return( AtiCore_SetupOverlayExtended( handle, prop ) );
++}
++
++static int W100_SetOverlayOnOff( uint16_t handle, int isShow )
++{
++  return( AtiCore_SetOverlayOnOff( handle, isShow ) );
++}
++
++static int W100_SetOverlayPos( uint16_t handle, uint16_t x, uint16_t y )
++{
++  return( AtiCore_SetOverlayPos( handle, x, y ) );
++}
++
++static int W100_SetupMemoryTransfer( uint32_t offset, uint32_t *regdata )
++{
++  return( AtiCore_SetupMemoryTransfer( offset, regdata ) );
++}
++
++static int W100_TerminateMemoryTransfer( void )
++{
++  return( AtiCore_TerminateMemoryTransfer() );
++}
++
++static int W100_GetFrontBufferPitchOffset( uint32_t *pitch, uint32_t *offset )
++{
++  return( AtiCore_GetFrontBufferPitchOffset( pitch, offset ) );
++}
++
++static int W100_SetDisplayBrightness( int bri )
++{
++  return( AtiCore_SetDisplayBrightness( bri ) );
++}
++
++static int W100_GetAvailableVideoMem( uint32_t *internal, uint32_t *external )
++{
++  return( GetAvailableVideoMem( internal, external ) );
++}
++
++static int W100_SetupGraphicWindow( ATI_GRAPHICWINDOW *win )
++{
++  return( AtiCore_SetupGraphicWindow( ( void * ) win ) );
++}
++
++static int W100_ProcessAttachSpecialMode( int mode )
++{
++  return( AtiCore_ProcessAttachSpecialMode( mode ) );
++}
++
++static int W100_SetGraphicWindowPos( int x, int y )
++{
++  return( AtiCore_SetGraphicWindowPos( x, y ) );
++}
++
++static int W100_SetFrontBuffer( int offset, int a, int b )
++{
++  return( AtiCore_SetFrontBuffer( offset, a, b ) );
++}
++
++static int W100_SetGraphicWindowOnOff( int val )
++{
++  return( AtiCore_SetGraphicWindowOnOff( val ) );
++}
++
++static unsigned long ccolor( unsigned int rgb )
++{
++  unsigned char r = ( rgb & 0xff0000 ) >> 19;
++  unsigned char g = ( rgb & 0xff00 ) >> 10;
++  unsigned char b = ( rgb & 0xff ) >> 3;
++  return ( ( ( ( unsigned short )0x1f & r ) << 11 ) |
++	   ( ( ( unsigned short )0x3f & g ) << 5 ) |
++	   ( ( ( unsigned short )0x1f & b ) )  ); 
++}
++
++static int W100_SetFrgColour( int val )
++{
++  return( AtiCore_SetFrgColour( ccolor( val ) ) );
++}
++
++static int W100_BrushType( int type, unsigned int pattern )
++{
++  return( AtiCore_BrushType( type, &pattern ) );
++}
++
++static int W100_PaintRect( int flags, ATI_RECT *rect )
++{
++  return( AtiCore_PaintRect( flags, rect ) );
++}
++
++static int W100_Polyline( int npoints, ATI_POINT *points )
++{
++  return( AtiCore_Polyline( npoints, points ) );
++}
++
++static int W100_GetPitchOffsetProperty( void *pitch, void *offset )
++{
++  return( AtiCore_GetPitchOffsetProperty( pitch, offset ) );
++}
++
++static int W100_CursorOnOff( int a, int b )
++{
++  return( AtiCore_CursorOnOff( a, b ) );
++}
++
++static int W100_BitBlt( int flags, ATI_RECT *dst, ATI_RECT *src )
++{
++  return( AtiCore_BitBlt( flags, dst, src ) );
++}
++
++static int W100_WakeUpCall( void )
++{
++  return( AtiCore_WakeUpCall() );
++}
++
++
++template <const int depth, const int type>
++class QGfxW100 : public QGfxRaster<depth,type> {
++
++public:
++  QGfxW100( unsigned char *b, int w, int h );
++  virtual void drawLine( int, int, int, int);
++  virtual void fillRect( int, int, int, int);
++  virtual void blt( int, int, int, int, int, int );
++  virtual void sync();
++  virtual void setOffset( int x, int y );
++  virtual void setPen( const QPen & p );
++  
++  virtual void drawPolyline( const QPointArray &, int, int );
++  virtual void drawPolygon( const QPointArray &, bool, int, int );
++  virtual void drawPoint( int, int );
++  virtual void drawPoints( const QPointArray &, int, int );
++  virtual void scroll( int, int, int, int, int, int );
++  
++
++private:
++  bool checkDest( bool setsrc = false );
++  bool checkSourceDest();
++};
++
++template<const int depth,const int type>
++QGfxW100<depth,type>::QGfxW100( unsigned char * b, int w, int h )
++  : QGfxRaster<depth,type>(b, w, h)
++{
++}
++
++
++template<const int depth,const int type>
++inline void QGfxW100<depth,type>::setOffset( int x, int y )
++{
++  QGfxRaster<depth,type>::setOffset( x, y );
++}
++
++static QString penStyleStr( const QPen &pen ) 
++{
++  QString res;
++  switch( pen.style() ) {
++  case Qt::NoPen:
++    res = "NoPen";
++    break;
++  case Qt::SolidLine:
++    res = "SolidLine";
++    break;
++  case Qt::DashLine:
++    res = "DashLine";
++    break;
++  case Qt::DotLine:
++    res = "DotLine";
++    break;
++  case Qt::DashDotLine:
++    res = "DashDotLine";
++    break;
++  case Qt::DashDotDotLine:
++    res = "DashDotDotLine";
++    break;
++  default:
++    res = "Unknown";
++  }
++  return res;
++}
++
++template<const int depth, const int type>
++inline void QGfxW100<depth,type>::setPen( const QPen &p )
++{
++  QGfxRaster<depth,type>::setPen( p );
++}
++
++template<const int depth,const int type>
++inline bool QGfxW100<depth,type>::checkSourceDest()
++{
++  if ( !checkDest() ) {
++    return FALSE;
++  }
++
++  int sourcepixelpitch;
++  ulong src_buffer_offset;
++  if ( this->srctype == this->SourcePen ) {
++    src_buffer_offset = -1;
++    return FALSE;
++  } else {
++    if ( !qt_screen->onCard( this->srcbits, src_buffer_offset ) ) {
++      return FALSE;
++    }
++    sourcepixelpitch = ( this->srclinestep * 8 ) / this->srcdepth;
++    W100_SetSrcPitchOffset( sourcepixelpitch,
++			    src_buffer_offset );
++  }
++  return TRUE;
++}
++
++template< const int depth, const int type>
++inline bool QGfxW100<depth, type>::checkDest( bool setsrc )
++{
++  //Main framebuffer should be registered as a hardware surface
++  ulong buffer_offset;
++  if ( !qt_screen->onCard( this->buffer, buffer_offset ) ) {
++    return FALSE;
++  }
++  int pixelstep = ( this->linestep() * 8 ) / depth;
++  W100_SetDstPitchOffset( pixelstep, buffer_offset );
++  if ( setsrc ) {
++    W100_SetSrcPitchOffset( pixelstep, buffer_offset );
++  }
++  return TRUE;
++}
++
++template<const int depth,const int type>
++void QGfxW100<depth,type>::drawLine( int x1, int y1, int x2, int y2 )
++{
++  // No point going any further if the window isn't visible
++  if( this->ncliprect < 1 ) {
++    return;
++  }
++
++  if ( !control.accelerated( W100Control::DRAWLINE ) ) {
++    control.addMiss( W100Control::DRAWLINE );
++    QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
++    return;
++  }
++
++  // Only handle 'normal' lines
++  if ( ( this->cpen.style() != this->SolidLine ) || 
++       ( this->myrop != this->CopyROP ) ||
++       ( this->cpen.width() > 1 ) ||
++       ( this->dashedLines ) ) {
++    control.addMiss( W100Control::DRAWLINE );
++    QGfxRaster<depth,type>::drawLine(x1,y1,x2,y2);
++    return;
++  }
++
++  // Stop anyone else trying to access optype/lastop/the graphics engine
++  // to avoid synchronization problems with other processes
++  QWSDisplay::grab( TRUE );
++  if ( !checkDest() ) {
++    QWSDisplay::ungrab();
++    control.addMiss( W100Control::DRAWLINE );
++    QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2);
++    return;
++  }
++
++  // Note that the last operation used the 2d engine
++  ( *optype ) = 1;
++
++
++
++  // Add the offset of the gfx - used to make the origin the right
++  // place for windows
++  x1 = x1 + this->xoffs;
++  y1 = y1 + this->yoffs;
++  x2 = x2 + this->xoffs;
++  y2 = y2 + this->yoffs;
++
++  // Only cope with lines going from left to right
++  // - swap them round if this isn't TRUE
++  if ( x1 > x2 ) {
++    int x3 = x2;
++    int y3 = y2;
++    x2 = x1;
++    y2 = y1;
++    x1 = x3;
++    y1 = y3;
++  }
++
++  GFX_START( QRect( x1, 
++		    y1 < y2 ? y1 : y2, 
++		    ( x2 - x1  + 1 ), 
++		    QABS( y2 - y1 ) + 1 ) );
++
++  // The clip region is defined as a series of rectangles
++  // We repeatedly set up the hardware clip rectangle to one of
++  // these rectangles and re-draw the line - an alternative approach
++  // would be to clip to the rectangle in software
++    
++
++
++  /*
++   * Just a dirty hack. Comment it out for now
++   if ( this->dashedLines ) {
++   W100_BrushType( 4, 0xaaaaaaaa );
++   } else {
++   W100_BrushType( 6, 0 );
++   }
++   switch( this->cpen.style() ) {
++   case Qt::NoPen:
++   //W100DEBUG( "Using pen style NoPen" );
++   break;
++   case Qt::SolidLine:
++   //W100DEBUG( "Using pen style SolidLine" );
++   break;
++   case Qt::DashLine:
++   //W100DEBUG( "Using pen style DashLine" );
++   break;
++   case Qt::DotLine:
++   //W100DEBUG( "Using pen style DotLine" );
++   break;
++   case Qt::DashDotLine:
++   //W100DEBUG( "Using pen style DashDotLine" );
++   break;
++   case Qt::DashDotDotLine:
++   //W100DEBUG( "Using pen style DashDotDotLine" );
++   break;
++   default:
++   //W100DEBUG( "Using unknown type of pen" );
++   }
++  */
++
++  //if ( control.lastOp() != W100Control::DRAWLINE &&
++  //control.lastOp() != W100Control::POLYLINE ) {
++  W100_SetDstType( DSTTYPE_16BPP_1555 );
++  W100_SetSrcType( SRCTYPE_EQU_DST );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  W100_BrushType( 6, 0 );
++  //}
++  W100_SetFrgColour( this->cpen.color().rgb() );
++  control.addHit( W100Control::DRAWLINE );
++
++  //The imageon seems not to write on the edge of the clip
++  //for the polyline op. 
++  //We are using a three points array repeating the last point
++  //to get the last single point painted.
++  ATI_POINT points[3];
++  points[0].XCoord = x1;
++  points[0].YCoord = y1;
++  points[1].XCoord = x2;
++  points[1].YCoord = y2;
++  points[2].XCoord = x2;
++  points[2].YCoord = y2;
++  for ( int loopc = 0 ; loopc < this->ncliprect; loopc++ ) {
++    ATI_CLIPRECT clip;
++    clip.X_Top_Left = this->cliprect[loopc].x();
++    clip.Y_Top_Left = this->cliprect[loopc].y();
++    clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++    clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++    W100_SetDstClippingRect( &clip );
++
++    W100_Polyline( 3, points );
++  }
++
++  // Software mouse cursor stuff
++  GFX_END;
++
++  // Release display again - not doing so will cause Qt/Embedded applications
++  // to deadlock
++  QWSDisplay::ungrab();
++
++}
++
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPolyline( const QPointArray &a, 
++					   int index, 
++					   int npoints )
++{
++
++  if ( ( this->ncliprect < 1 ) || ( npoints < 1 ) ) {
++    return;
++  }
++
++  if ( !control.accelerated( W100Control::POLYLINE ) ) {
++    control.addMiss( W100Control::POLYLINE );
++    QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++    return;
++  }
++
++  if ( this->cpen.style() != this->SolidLine ||
++       this->myrop != this->CopyROP ) {
++    control.addMiss( W100Control::POLYLINE );
++    QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++    return;
++  }
++
++  QWSDisplay::grab( TRUE );
++  if ( !checkDest() ) {
++    QWSDisplay::ungrab();
++    control.addMiss( W100Control::POLYLINE );
++    QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++    return;
++  }
++
++  ( *optype ) = 1;
++
++  //if ( control.lastOp() != W100Control::POLYLINE &&
++  //control.lastOp() != W100Control::DRAWLINE ) {
++
++  W100_SetDstType( DSTTYPE_16BPP_1555 );
++  W100_SetSrcType( SRCTYPE_EQU_DST );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  W100_BrushType( 6, 0 );
++  
++  //}
++
++  W100_SetFrgColour( this->cpen.color().rgb() );
++
++  control.addHit( W100Control::POLYLINE );
++
++  ATI_POINT *points = new ATI_POINT[ npoints + 1 ];
++
++  for ( int i = 0; i < npoints; i++ ) {
++    points[i].XCoord = a[ i + index ].x() + this->xoffs;
++    points[i].YCoord = a[ i + index ].y() + this->yoffs;
++  }
++  //Hack to get the last point of the last line painted
++  points[ npoints ] = points[ npoints - 1 ];
++
++
++  GFX_START( clipbounds );
++  W100_SetFrgColour( this->cpen.color().rgb() );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++    ATI_CLIPRECT clip;
++    clip.X_Top_Left = this->cliprect[loopc].x();
++    clip.Y_Top_Left = this->cliprect[loopc].y();
++    clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++    clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++    W100_SetDstClippingRect( &clip );
++    W100_Polyline( npoints + 1, points );
++  }
++  GFX_END;
++
++  delete [] points;
++    
++  QWSDisplay::ungrab();
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPolygon( const QPointArray &a, bool b, int c, int d )
++{
++  QGfxRaster<depth,type>::drawPolygon( a, b, c, d );
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPoint( int a, int b )
++{
++
++  if ( this->ncliprect < 1 ) {
++    //W100DEBUG( "ncliprect=%d", this->ncliprect );
++    return;
++  }
++
++  if ( !control.accelerated( W100Control::DRAWPOINT) ) {
++    control.addMiss( W100Control::DRAWPOINT );
++    QGfxRaster<depth,type>::drawPoint( a, b );
++    return;
++  }
++
++  if ( this->cpen.style() != this->SolidLine ||
++       this->myrop != this->CopyROP ) {
++    control.addMiss( W100Control::DRAWPOINT );
++    QGfxRaster<depth,type>::drawPoint( a, b );
++    return;
++  }
++
++  QWSDisplay::grab( TRUE );
++  if ( !checkDest() ) {
++    QWSDisplay::ungrab();
++    control.addMiss( W100Control::DRAWPOINT );
++    QGfxRaster<depth,type>::drawPoint( a, b );
++    return;
++  }
++
++  control.addHit( W100Control::DRAWPOINT );
++  ( *optype ) = 1;
++  
++  ATI_POINT point;
++  point.XCoord = a + this->xoffs;
++  point.YCoord = b + this->yoffs;
++
++  GFX_START( clipbounds );
++  W100_SetFrgColour( this->cpen.color().rgb() );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++    ATI_CLIPRECT clip;
++    clip.X_Top_Left = this->cliprect[loopc].x();
++    clip.Y_Top_Left = this->cliprect[loopc].y();
++    clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++    clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++    W100_SetDstClippingRect( &clip );
++    W100_DrawPixel( 1, &point );
++  }
++  GFX_END;
++  QWSDisplay::ungrab();
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPoints( const QPointArray &a, 
++					 int index, 
++					 int npoints )
++{
++  if ( ( this->ncliprect < 1 ) || ( npoints < 1 ) ) {
++    return;
++  }
++
++  if ( !control.accelerated( W100Control::DRAWPOINTS ) ) {
++    control.addMiss( W100Control::DRAWPOINTS );
++    QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++    return;
++  }
++
++  if ( this->cpen.style() != this->SolidLine ||
++       this->myrop != this->CopyROP ) {
++    control.addMiss( W100Control::DRAWPOINTS );
++    QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++    return;
++  }
++
++  QWSDisplay::grab( TRUE );
++  if ( !checkDest() ) {
++    QWSDisplay::ungrab();
++    control.addMiss( W100Control::DRAWPOINTS );
++    QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++    return;
++  }
++
++  control.addHit( W100Control::DRAWPOINTS );
++  ( *optype ) = 1;
++  
++  ATI_POINT *points = new ATI_POINT[ npoints ];
++  for ( int i = 0; i < npoints; i++ ) {
++    points[i].XCoord = a[ i + index ].x() + this->xoffs;
++    points[i].YCoord = a[ i + index ].y() + this->yoffs;
++  }
++
++  GFX_START( clipbounds );
++  W100_SetFrgColour( this->cpen.color().rgb() );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++    ATI_CLIPRECT clip;
++    clip.X_Top_Left = this->cliprect[loopc].x();
++    clip.Y_Top_Left = this->cliprect[loopc].y();
++    clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++    clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++    W100_SetDstClippingRect( &clip );
++    W100_DrawPixel( npoints, points );
++  }
++  GFX_END;
++
++  delete [] points;
++  QWSDisplay::ungrab();
++}
++
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::scroll( int rx, int ry,
++				     int w, int h, 
++				     int sx, int sy )
++{
++  if ( !control.accelerated( W100Control::SCROLL ) ) {
++    control.addMiss( W100Control::SCROLL );
++    QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
++    return;
++  }
++
++  if ( this->ncliprect < 1 ) return;
++
++  if ( ( w < 1 )  || ( h < 1 ) ) return;
++
++  int dy = sy - ry;
++  int dx = sx - rx;
++
++  if ( dx == 0 && dy == 0 ) return;
++
++
++  QWSDisplay::grab( TRUE );
++
++  if ( checkDest( true ) ) {
++
++
++    rx += this->xoffs;
++    sx += this->xoffs;
++    ry += this->yoffs;
++    sy += this->yoffs;
++
++    GFX_START( QRect( QMIN( rx , sx  ),
++		      QMIN( ry , sy  ),
++		      w + QABS( dx ) + 1,
++		      h + QABS( dy ) + 1 ) );
++    ( *optype ) = 1;
++
++
++    //if ( control.lastOp() != W100Control::SCROLL ) {
++    W100_SetRopOperation( ROP3_SRCCOPY );
++    W100_SetDstType( DSTTYPE_16BPP_1555 );
++    W100_SetSrcType( SRCTYPE_EQU_DST );
++    //}
++
++    control.addHit( W100Control::SCROLL );
++
++    ATI_RECT srcrect, dstrect;
++
++    srcrect.XCoord = sx;
++    srcrect.YCoord = sy;
++    srcrect.Width = w;
++    srcrect.Height = h;
++    dstrect.XCoord = rx;
++    dstrect.YCoord = ry;
++    dstrect.Width = w;
++    dstrect.Height = h;
++
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++      ATI_CLIPRECT clip;
++      clip.X_Top_Left     = this->cliprect[ loopc ].x();
++      clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++      clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++      clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++      W100_SetDstClippingRect( &clip );
++      W100_BitBlt( 1, &dstrect, &srcrect );
++    }
++    GFX_END;
++    QWSDisplay::ungrab();
++
++  } else {
++    QWSDisplay::ungrab();
++    // software fallback
++    control.addMiss( W100Control::SCROLL );
++    QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
++  }
++}
++
++
++  
++template< const int depth, const int type >
++void QGfxW100< depth, type>::fillRect( int rx, int ry, int w, int h )
++{
++
++  if ( w <= 0 || h <= 0 || this->ncliprect < 1 ) return;
++
++  if ( !control.accelerated( W100Control::FILLRECT ) ) {
++    control.addMiss( W100Control::FILLRECT );
++    QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
++    return;
++  }
++
++  if ( ( this->cbrush.style() != this->NoBrush ) && 
++       ( this->cbrush.style() != this->SolidPattern ) ) {
++    control.addMiss( W100Control::FILLRECT );
++    QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
++    return;
++  }
++
++  if ( !checkDest() || ( this->myrop != this->CopyROP ) ) {
++    control.addMiss( W100Control::FILLRECT );
++    QGfxRaster<depth,type>::fillRect(rx,ry,w,h);
++    return;
++  }
++
++  QWSDisplay::grab( TRUE );
++  rx += this->xoffs;
++  ry += this->yoffs;
++
++  GFX_START( QRect( rx, ry, w+1, h+1 ) );
++
++  ( *optype ) = 1;
++  control.log( W100Control::INFO, "QGfxW100::fillRect( +%d+%d %dx%d )",
++	       rx, ry, w, h );
++
++
++  //if ( control.lastOp() != W100Control::FILLRECT ) {
++  W100_SetDstType( DSTTYPE_16BPP_1555 );
++  W100_SetSrcType( SRCTYPE_EQU_DST );
++  W100_SetRopOperation( ROP3_PATCOPY );
++  W100_BrushType( 6, 0 );
++  //}
++  W100_SetFrgColour( this->cbrush.color().rgb() );
++
++  control.addHit( W100Control::FILLRECT );
++
++  if ( this->cbrush.style() != this->NoBrush ) {
++    //Using all the cliprects
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++      ATI_CLIPRECT clip;
++      ATI_RECT rect;
++
++      clip.X_Top_Left     = this->cliprect[ loopc ].x();
++      clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++      clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++      clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++
++      W100_SetDstClippingRect( &clip );
++      rect.XCoord = rx;
++      rect.YCoord = ry;
++      rect.Width  = w;
++      rect.Height = h;
++      W100_PaintRect( 1, &rect );
++    }
++  }
++  GFX_END;
++      
++  QWSDisplay::ungrab();
++}
++
++template< const int depth, const int type >
++inline void QGfxW100< depth, type>::blt( int rx, int ry, 
++					 int w, int h,
++					 int sx, int sy )
++{
++  control.log( W100Control::INFO, "QGfxW100::blt( +%d+%d %dx%d )",
++	       rx, ry, w, h );
++  if ( !w || !h || this->ncliprect < 1 ) {
++    return;
++  }
++
++  if ( !control.accelerated( W100Control::BITBLT ) ) {
++    control.addMiss( W100Control::BITBLT );
++    QGfxRaster<depth,type>::blt(rx,ry,w,h,sx,sy);
++    return;
++  }
++
++  if ( this->alphatype == this->BigEndianMask ||
++       this->alphatype == this->LittleEndianMask ||
++       this->alphatype == this->SeparateAlpha ||
++       this->srctype == this->SourcePen ||
++       ( this->myrop != this->CopyROP ) ) {
++    control.addMiss( W100Control::BITBLT );
++    QGfxRaster<depth,type>::blt(rx,ry,w,h,sx,sy);
++    return;
++  }
++
++  if( ( this->srcdepth != 16 ) || this->alphatype != this->IgnoreAlpha ) {
++    control.addMiss( W100Control::BITBLT );
++    QGfxRaster<depth,type>::blt(rx,ry,w,h,sx,sy);
++    return;
++  }
++
++  QWSDisplay::grab( TRUE );
++
++  if( checkSourceDest() ) {
++    GFX_START( QRect( rx + xoffs, ry + yoffs , w+1, h+1 ) );
++    ( *optype ) = 1;
++
++    //if ( control.lastOp() != W100Control::BITBLT ) {
++    W100_SetRopOperation( ROP3_SRCCOPY );
++    W100_SetDstType( DSTTYPE_16BPP_1555 );
++    W100_SetSrcType( SRCTYPE_EQU_DST );
++    //}
++
++    control.addHit( W100Control::BITBLT );
++
++    ATI_RECT rect1;
++    ATI_RECT rect2;
++	
++    rect1.XCoord = this->srcwidgetoffs.x() + sx;
++    rect1.YCoord = this->srcwidgetoffs.y() + sy;
++    rect1.Width  = w;
++    rect1.Height = h;
++    rect2.XCoord = this->xoffs + rx;
++    rect2.YCoord = this->yoffs + ry;
++    rect2.Width = w;
++    rect2.Height = h;
++    for(int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++      ATI_CLIPRECT clip;
++      clip.X_Top_Left     = this->cliprect[ loopc ].x();
++      clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++      clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++      clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++      W100_SetDstClippingRect( &clip );
++      W100_BitBlt( 1, &rect2, &rect1 );
++    }
++    GFX_END;
++      
++    QWSDisplay::ungrab();
++    return;
++  } else {
++    QWSDisplay::ungrab();
++    // software fallback
++    control.addMiss( W100Control::BITBLT );
++    QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
++  }
++}
++
++
++template<const int depth,const int type>
++void QGfxW100<depth,type>::sync()
++{
++  W100_WaitComplete( -1 );
++}
++
++class QW100Screen : public QLinuxFbScreen {
++
++public:
++  class HWSurface {
++  public:
++    HWSurface( void ):
++      m_handle( 0 ),
++      m_offset( 0 ),
++      m_addr( 0 ),
++      m_size( 0 ),
++      m_internal( false ),
++      m_clientid( -1 ) {};
++    HWSurface( unsigned short handle,
++	       uint32_t sOffset,
++	       unsigned char *localAddr, 
++	       int amount,
++	       bool internal,
++	       int clientid ):
++      m_handle( handle ),
++      m_offset( sOffset ),
++      m_addr( localAddr ),
++      m_size( amount ),
++      m_internal( internal ),
++      m_clientid( clientid ) {};
++    HWSurface( uint32_t sOffset, 
++	       unsigned char *localAddr,
++	       bool internal,
++	       int amount ):
++      m_handle( 0 ),
++      m_offset( sOffset ),
++      m_addr( localAddr ),
++      m_size( amount ),
++      m_internal( internal ),
++      m_clientid( -1 ) {};
++    bool operator!=( HWSurface &other ) {
++      return( m_offset == other.getSOffset() );
++    };
++    HWSurface &operator=( const HWSurface &c ) {
++      m_handle = c.getHandle();
++      m_offset = c.getSOffset();
++      m_addr = c.getAddr();
++      m_size = c.getSize();
++      m_clientid= c.getCId();
++      m_internal = c.internal();
++      return( *this );
++    };
++    unsigned short getHandle( void ) const { return m_handle; };
++    uint32_t getSOffset( void ) const { return m_offset; };
++    unsigned char *getAddr( void ) const { return m_addr; };
++    unsigned int getSize( void ) const { return m_size; };
++    int getCId( void ) const { return m_clientid; };
++    bool internal( void ) const { return m_internal; };
++
++  private:
++    unsigned short m_handle;
++    uint32_t m_offset;
++    unsigned char *m_addr;
++    int m_size;
++    bool m_internal;
++    int m_clientid;
++  };
++    
++  QW100Screen( int display_id );
++  virtual ~QW100Screen();
++  virtual bool connect( const QString &spec );
++  virtual void disconnect( void );
++  virtual bool initDevice();
++  virtual void shutdownDevice();
++  virtual bool useOffscreen() { return TRUE; }
++  virtual QGfx * createGfx( unsigned char *, int, int, int, int);
++  virtual uchar *cache( int amount, int optim );
++  virtual void uncache( uchar *c );
++  virtual bool onCard( unsigned char *p ) const;
++  virtual bool onCard( unsigned char *p, ulong& offset ) const;
++  QMap< uchar*, HWSurface > *getPSurfaceMap( void ) const;
++  void clearCache( int clientId );
++protected:
++  static void clearCache( QScreen *instance, int clientId );
++  QMap< uchar*, HWSurface > surfaceMap;
++  int vramoffset;
++  virtual int pixmapLinestepAlignment() { return 128; }
++};
++
++QW100Screen::QW100Screen( int display_id )
++  :QLinuxFbScreen( display_id )
++{
++  vramoffset = ( w == 320 ) ? 0: 0x0f000000;
++  clearCacheFunc = &clearCache;
++}
++
++bool QW100Screen::connect( const QString &displaySpec )
++{
++
++  if ( QLinuxFbScreen::connect( displaySpec ) ) {
++    if ( W100_ProcessAttach() ) {
++      W100_ProcessAttachSpecialMode( ( w == 480 ) ? 0xaaab:0xaaaa );
++      surfaceMap.insert( 0, HWSurface( vramoffset, 
++				       data , false, 
++				       w*h*d/8 ) );
++      canaccel = TRUE;
++      return TRUE;
++    }
++  }
++  return FALSE;
++}
++
++void QW100Screen::disconnect( void )
++{
++  QLinuxFbScreen::disconnect();
++  W100_ProcessDetach();
++}
++
++QW100Screen::~QW100Screen()
++{
++}
++
++bool QW100Screen::initDevice()
++{
++  ATI_GRAPHICWINDOW win;
++  ATI_CLIPRECT      clip;
++  uint16_t overlay;
++  int ret;
++  uint32_t extm, intm;
++  W100_GetAvailableVideoMem( &intm, &extm );
++  ret = W100_CursorOnOff( 1, 0 );
++  ret = W100_CursorOnOff( 2, 0 );
++  ret = W100_CursorOnOff( 3, 0 );
++  win.dummy1 = 0;
++  win.Size.XCoord = 0;
++  win.Size.YCoord = 0;
++  win.Size.Width = w;
++  win.Size.Height = h;
++  win.Width = w > h ? h : w;
++  win.Height = w > h ? w : h;
++  win.Flag = DSTTYPE_16BPP_444; //(5)
++    
++  ret = W100_SetupGraphicWindow( &win );
++  if ( !ret ) {
++    return FALSE;
++  }
++  ret = W100_SetGraphicWindowPos( 0, 0 );
++
++  ret = W100_SetFrontBuffer( vramoffset, 0, 0 );
++  ret = W100_SetDstPitchOffset( w, vramoffset );
++  ret = W100_SetDstType( DSTTYPE_16BPP_444 );
++  ret = W100_SetSrcPitchOffset( w, vramoffset );
++  ret = W100_SetSrcType( SRCTYPE_SOLID_COLOR_BLT );
++  clip.X_Top_Left = 0;
++  clip.Y_Top_Left = 0;
++  clip.X_Bottom_Right = w;
++  clip.Y_Bottom_Right = h;
++  ret = W100_SetDstClippingRect( &clip );
++    
++  clip.X_Top_Left = 0xE000;
++  clip.Y_Top_Left = 0xE000;
++  clip.X_Bottom_Right = 0x1FFF;
++  clip.Y_Bottom_Right = 0x1FFF;
++    
++  ret = W100_SetSrcClippingRect( &clip );
++  ret = W100_SetRopOperation( ROP3_SRCCOPY );
++  ret = W100_SetGraphicWindowOnOff( 1 );
++    
++  ret = W100_AllocOverlay( &overlay );
++  ret = W100_SetOverlayOnOff( overlay, 0 );
++  ret = W100_ReleaseOverlay( overlay );
++  ret = W100_SetDstPitchOffset( w, vramoffset );
++  ret = W100_SetDstClippingRect( NULL );
++  
++  if ( QLinuxFbScreen::initDevice() ) {
++    //HACK
++    //Some sprite corruption seems to be avoided
++    //reserving some upper memory on the offscreen framebuffer memory
++    QLinuxFbScreen::cache( 65535 * 2, 0 );
++    return true;
++  }
++  return false;
++}
++
++void QW100Screen::shutdownDevice()
++{
++  QLinuxFbScreen::shutdownDevice();
++  W100_ProcessDetach();
++}
++
++QGfx *QW100Screen::createGfx( unsigned char *b,
++			      int w, int h, int d, int linestep )
++{
++  //We need ALL the gfx created to be QGfxW100 to allow software
++  //drawing syncing after hardware operations
++  QGfx * ret=0;
++  if ( false ) {
++#ifndef QT_NO_QWS_DEPTH_1
++  } else if ( d == 1 ) {
++    ret = new QGfxW100<1,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_4
++  } else if ( d == 4 ) {
++    ret = new QGfxW100<4,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_8
++  } else if ( d == 8 ) {
++    ret = new QGfxW100<8,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_16    
++  } else if  ( d == 16 ) {
++    ret = new QGfxW100<16,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_24
++  } else if ( d == 24 ) {
++    ret = new QGfxW100<24,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_32
++  } else if ( d == 32 ) {
++    ret = new QGfxW100<32,0>( b, w, h );
++#endif
++  } else {
++    qFatal( "Unsupported depth %d\n", d );
++    ret = 0;
++  }
++
++  ret->setLineStep( linestep );
++  return ret;    
++}
++
++static int sinternal = 0;
++static int sexternal = 0;
++
++uchar *QW100Screen::cache( int amount, int optim )
++{
++  unsigned short hSurface = 0;
++  uint32_t surfaceOffset = 0;
++  uchar* localAddr = 0;
++  bool internal = false;
++
++  /* The size must have 0xF bit zeroed (16 multiple)*/
++  /* Perhaps this is not needed anymore, after setting
++   * QW100Screen::pixmapLinestepAlignment to 128
++   */
++  amount = ( amount & 0x0F ) ? ( amount | 0x10 ) & ~0x0F : amount;
++
++  /* Experimenting memory corruption with the
++   * internal AtiCore memory allocation routines
++   * disabled for now
++   */
++#if 1
++  if ( !( localAddr = QLinuxFbScreen::cache( amount, optim ) ) ) {
++    return( 0 );
++  }
++  surfaceOffset = vramoffset + ( uint32_t ) localAddr - ( uint32_t )data;
++
++#else
++  int retcode = 0;
++  qt_fbdpy->grab();
++  retcode = W100_AllocateSurface( &hSurface,
++				  &surfaceOffset,
++				  amount, 1 );
++  qt_fbdpy->ungrab();
++  if ( retcode ) {
++    internal = true;
++    W100_SetupMemoryTransfer( surfaceOffset, (uint32_t*) &localAddr );
++    W100_TerminateMemoryTransfer();
++  } else {
++    // Try to use the offscreen framebuffer memory
++    // to allocate the surface. Use the qgfxlinuxfb routines
++    if ( !( localAddr = QLinuxFbScreen::cache( amount, optim ) ) ) {
++      return( 0 );
++    }
++    //Distance between physical vram start and surface should be
++    //the same than distance between logical addresses
++    surfaceOffset = vramoffset + ( uint32_t ) localAddr - ( uint32_t ) data;
++  }
++#endif
++    
++  HWSurface surface( hSurface, surfaceOffset,
++		     localAddr, amount, 
++		     internal,
++		     qws_client_id );
++#if 0
++  if ( internal ) {
++    sinternal++;
++  } else {
++    sexternal++;
++  }
++#endif
++  surfaceMap.insert( surface.getAddr(), surface );
++  return( ( uchar* ) localAddr );
++}
++
++void QW100Screen::uncache( uchar *c )
++{
++  QMap< uchar*, HWSurface >::Iterator itr;
++  if ( ( itr = surfaceMap.find( c ) ) != surfaceMap.end() ) {
++    if ( itr.data().internal() ) {
++      qt_fbdpy->grab();
++      W100_DestroySurface( itr.data().getHandle() );
++      qt_fbdpy->ungrab();
++      --sinternal;
++    } else {
++      --sexternal;
++      QLinuxFbScreen::uncache( c );
++    }
++    surfaceMap.remove( itr );
++  } 
++}
++
++bool QW100Screen::onCard( uchar *p ) const
++{
++  QMap< uchar*, HWSurface >::ConstIterator itr = surfaceMap.begin();
++  for ( ; itr != surfaceMap.end(); itr++ ) {
++    uchar *begin;
++    if ( ( begin = itr.data().getAddr() ) <= p ) {
++      if ( ( itr.data().getSize() + begin ) >= p ) {
++	return TRUE;
++      }
++    }
++  }
++  return FALSE;
++}
++
++bool QW100Screen::onCard( unsigned char *p, ulong& offset ) const
++{
++  QMap< uchar*, HWSurface >::ConstIterator itr;
++  for ( itr = surfaceMap.begin(); itr != surfaceMap.end(); itr++ ) {
++    uchar *begin;
++    if ( ( begin = itr.data().getAddr() ) <= p ) {
++      if ( ( itr.data().getSize() + begin ) >= p ) {
++	offset = itr.data().getSOffset() + ( p - begin );
++	return TRUE;
++      }
++    }
++  }
++  return FALSE;
++}
++
++QMap< uchar*, QW100Screen::HWSurface > 
++*QW100Screen::getPSurfaceMap( void ) const
++{
++  return ( QMap<uchar*,HWSurface> *) &surfaceMap;
++}
++
++void QW100Screen::clearCache( int clientId )
++{
++  QMap< uchar*, HWSurface >::Iterator itr = surfaceMap.begin();
++  while ( itr != surfaceMap.end() ) {
++    if ( itr.data().getCId() == clientId ) {
++      if ( itr.data().internal() ) {
++	qt_fbdpy->grab();
++	W100_DestroySurface( itr.data().getHandle() );
++	qt_fbdpy->ungrab();
++	--sinternal;
++      } else {
++	QLinuxFbScreen::uncache( itr.data().getAddr() );
++	--sexternal;
++      }
++      surfaceMap.remove( itr );
++    }
++    itr++;
++  }
++}
++
++void QW100Screen::clearCache( QScreen *instance, int clientId )
++{
++  QW100Screen *screen = ( QW100Screen * )instance;
++  screen->clearCache( clientId );
++}
++
++extern bool qws_accel;
++
++extern "C" QScreen * qt_get_screen_w100( int display_id )
++{
++    return( new QW100Screen( display_id ) );
++}
