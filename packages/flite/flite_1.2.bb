@@ -38,5 +38,10 @@ do_install() {
 
 do_stage () {
         install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/
-        oe_runmake -C lib INSTALLLIBDIR="${STAGING_LIBDIR}" install
+        oe_libinstall -C lib -a -so libflite ${STAGING_LIBDIR}
+        oe_libinstall -C lib -a -so libflite_cmu_time_awb ${STAGING_LIBDIR}
+        oe_libinstall -C lib -a -so libflite_cmulex ${STAGING_LIBDIR}
+        oe_libinstall -C lib -a -so libflite_usenglish ${STAGING_LIBDIR}
+        oe_libinstall -C lib -a -so libflite_cmu_us_kal ${STAGING_LIBDIR}
+        oe_libinstall -C lib -a -so libflite_cmu_us_kal16 ${STAGING_LIBDIR}
 }

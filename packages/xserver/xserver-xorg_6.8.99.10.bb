@@ -2,7 +2,7 @@ SECTION = "x11/base"
 RPROVIDES = "virtual/xserver"
 PROVIDES = "virtual/xserver"
 LICENSE = "Xorg"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "fontconfig freetype libxi xmu flex-native zlib"
 
@@ -23,15 +23,18 @@ FILES_${PN} += "${libdir}/modules/*.o "${libdir}/modules/*/*.o ${libdir}/X11/Opt
 FILES_${PN}-doc += "${libdir}/X11/doc"
 
 do_configure() {
-	echo "#define BuildServersOnly YES" > config/cf/host.def
-	echo "#define ProjectRoot /usr" >> config/cf/host.def
-	echo "#define XnestServer NO"  >> config/cf/host.def
-	echo "#define XdmxServer NO"  >> config/cf/host.def
-	echo "#define CcCmd gcc" >> config/cf/host.def
-	echo "#define LdCmd ld" >> config/cf/host.def
-	echo "#define HasFreetype2 YES" >> config/cf/host.def
-	echo "#define HasFontconfig YES" >> config/cf/host.def
-	echo "#define BuildDevelDRIDrivers YES" >>config/cf/host.def
+	cat <<EOF > config/cf/host.def
+#define BuildServersOnly YES
+#define ProjectRoot ${prefix}
+#define XnestServer NO
+#define XdmxServer NO
+#define CcCmd gcc
+#define LdCmd ld
+#define HasFreetype2 YES
+#define HasFontconfig YES
+#define BuildDevelDRIDrivers YES
+#define BuildXF86DRI YES
+EOF
 	echo "" > config/cf/date.def
 	rm -f include/extensions/panoramiX.h
 	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" CROSSCOMPILEDIR="${CROSS_DIR}/${TARGET_SYS}/bin" PREPROCESS_CMD="gcc -E" clean imake

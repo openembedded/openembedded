@@ -6,3 +6,7 @@ PR = "r0"
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps"
+
+DEPENDS += " flite "
+EXTRA_QMAKEVARS_POST += " SUBDIRS+=FliteDyn SUBDIRS+=FliteDyn16 "
+
