@@ -212,9 +212,10 @@ case "$ACTION" in
 	# I have no idea what this is good for....
 	if [ -d $SMB_MOUNT ] ; then
 		rm -rf $SMB_MOUNT
+		ln -s /mnt/card $SMB_MOUNT
+		mkdir -p $FS_MOUNT_POINT/$INSTALL_DIR		
 	fi
-	ln -s /mnt/card $SMB_MOUNT
-	mkdir -p $FS_MOUNT_POINT/$INSTALL_DIR
+
 
         ;;
 'eject')
