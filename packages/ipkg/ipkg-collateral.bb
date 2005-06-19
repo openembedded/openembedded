@@ -1,18 +1,20 @@
-SECTION = "base"
 DESCRIPTION = "ipkg configuration files"
+SECTION = "base"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r1"
 
 SRC_URI = " \
 file://ipkg.conf.comments	\
+file://lists \
 file://dest \
 file://src \
 "
 
 do_compile () {
 	cat ${WORKDIR}/ipkg.conf.comments >${WORKDIR}/ipkg.conf
-	cat ${WORKDIR}/src  >>${WORKDIR}/ipkg.conf
-	cat ${WORKDIR}/dest >>${WORKDIR}/ipkg.conf
+	cat ${WORKDIR}/src	>>${WORKDIR}/ipkg.conf
+	cat ${WORKDIR}/dest	>>${WORKDIR}/ipkg.conf
+	cat ${WORKDIR}/lists	>>${WORKDIR}/ipkg.conf
 }
 
 do_install () {
