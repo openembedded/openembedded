@@ -206,9 +206,9 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
-CMDLINE_CONSOLE ?= "ttyS0,115200n8"
-CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
-#CMDLINE_ROOT ?= "root=/dev/ram0 rw rootfstype=ext2,jffs2 initrd=0x01000000,10M init=/linuxrc mem=32M@0x00000000"
+# To specify the console set KERNEL_CONSOLE in the .bb
+# file.  The default is currently set in machine/nslu2.conf
+CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s"
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
