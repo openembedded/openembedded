@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.11.2
-# Thu May 26 13:35:59 2005
+# Sat Jun 18 15:52:14 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -160,7 +160,7 @@ CONFIG_PM=y
 # CONFIG_PREEMPT is not set
 CONFIG_APM=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc console=ttyS0,115200n8"
+CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s console=ttyS0,115200n8"
 CONFIG_ALIGNMENT_TRAP=y
 
 #
