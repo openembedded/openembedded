@@ -106,7 +106,8 @@ python () {
     major = '.'.join(name[0].split('.')[0:2])
     patch_uri = [ None ]
     filedir = "${FILE_DIRNAME}/nslu2-kernel/%s"
-    filepath = [ filedir % major ]
+    # This entry will become the last one (everything is insertd before it)
+    filepath = [ filedir % "files" ]
     pref = 10
     mmac = 0
     for patch in pv[1:]:
@@ -117,6 +118,7 @@ python () {
 	    kernel[-1] = str(int(kernel[-1]) - 1)
 	    if patch[0:2] == "rc" and pref == 10:
 	    	pref = 6
+		filepath[0:0] = [ filedir % name[0] ]
 		filepath[0:0] = [ filedir % (name[0] + "-rc") ]
 	    else:
 	    	pref = 2
@@ -139,7 +141,7 @@ python () {
     base = '.'.join(kernel)
     patch_uri[0] = "ftp://ftp.kernel.org/pub/linux/kernel/v%s/linux-%s.tar.bz2" % (major, base)
     filepath[-1:-1] = [ filedir % base ]
-    filepath[-1:-1] = [ filedir % "files" ]
+    filepath[-1:-1] = [ filedir % major ]
 
     bb.data.setVar("N2K_SRCMAJ", major, d)
     # bb.note("N2K_SRCMAJ := %s" % major)
