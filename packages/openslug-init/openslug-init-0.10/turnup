@@ -182,9 +182,9 @@ setup_var() {
 	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
 	# remove the /var tmpfs entry from the new /etc/fstab
 	case "$2" in
-	disk)	sed -i '\@\s/var\s\s*tmpfs\s@d' "$1"/etc/fstab
+	disk)	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@d' "$1"/etc/fstab
 		echo "turnup: tmpfs will no longer be mounted on /var" >&2;;
-	nfs)	sed -i '\@\s/var\s\s*tmpfs\s@s@\s/var@&/tmp@' "$1"/etc/fstab
+	nfs)	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@s@[ 	]/var@&/tmp@' "$1"/etc/fstab
 		echo "turnup: tmpfs /var mount moved to /var/tmp" >&2;;
 	esac
 	#
@@ -280,7 +280,7 @@ setup_rootfs() {
 #  / with the correct options.
 #  bad, since sed won't fail even if it changes nothing.
 setup_fstab() {
-	sed -i '\@^[^ 	]*\s\s*/\s@s@^.*$@'"$2	/	$3	$4	1  1"'@' "$1"/etc/fstab
+	sed -i '\@^[^ 	]*[ 	][ 	]*/[ 	]@s@^.*$@'"$2	/	$3	$4	1  1"'@' "$1"/etc/fstab
 	egrep -q "^$2	/	$3	$4	1  1\$" "$1"/etc/fstab || {
 		echo "turnup: /etc/fstab: root(/) entry not changed" >&2
 		echo "  you probably need to check the options in /etc/fstab" >&2
