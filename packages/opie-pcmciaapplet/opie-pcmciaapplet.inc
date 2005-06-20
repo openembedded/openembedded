@@ -3,9 +3,9 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-APPNAME = "pcmcia"
+APPNAME = "pcmciaapplet"
 
-S = "${WORKDIR}/${APPNAME}"
+S = "${WORKDIR}/pcmcia"
 
 inherit opie
 
@@ -26,6 +26,6 @@ if [ -n "$D" ]; then exit 1; fi
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/pics/${APPNAME}/
-        install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/ 
+        install -d ${D}${palmtopdir}/pics/pcmcia/
+        install -m 0644 ${WORKDIR}/pics/pcmcia/*.png ${D}${palmtopdir}/pics/pcmcia/ 
 }

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 PROVIDES = "spectrum-modules"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 # seems to cause problems on arm
 DEFAULT_PREFERENCE_arm = "-1"
@@ -14,6 +14,7 @@ SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz \
            file://makefile_fix.patch;patch=1 \
            file://list-move.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \
+           file://catch-up-with-kernel-changes.patch;patch=1 \
            file://spectrum.conf \
            file://spectrum_fw.h \
 	   file://orinoco_cs.conf"
