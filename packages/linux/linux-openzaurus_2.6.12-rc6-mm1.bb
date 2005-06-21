@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r3"
+PR = "r4"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -20,17 +20,21 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 
 #           ${RPSRC}/corgi_kbd1-r1.patch;patch=1 \
 #           ${RPSRC}/sharpsl_mapprom-r1.patch;patch=1 \
+#           ${RPSRC}/mmtree_revert_armsmp-r0.patch;patch=1 \
 
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.12-rc6.bz2;patch=1 \
            ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.12-rc6/2.6.12-rc6-mm1/2.6.12-rc6-mm1.bz2;patch=1 \
            ${RPSRC}/machtype_update-r1.patch;patch=1 \
-           ${RPSRC}/mmtree_revert_armsmp-r0.patch;patch=1 \
+           ${RPSRC}/collie_typofix-r0.patch;patch=1 \
+           ${RPSRC}/rmk_armsmp_fix-r0.patch;patch=1 \
+           ${RPSRC}/corgi_tspmu-r1.patch;patch=1 \	   	   
            ${RPSRC}/oprofile_trace-r3.patch;patch=1 \
            ${RPSRC}/preempt_nwfpe-r0.patch;patch=1 \
            ${RPSRC}/copypagefix-r1.patch;patch=1 \
            ${RPSRC}/corgi_kbd3-r6.patch;patch=1 \
+           ${RPSRC}/corgi_kbd_susres-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r2.patch;patch=1 \
            ${RPSRC}/sharp_multi_pcmcia-r2.patch;patch=1 \
@@ -42,8 +46,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${RPSRC}/corgi_power1-r1.patch;patch=1 \
            ${RPSRC}/mmc_sd-r5.patch;patch=1 \
            ${RPSRC}/corgi_snd-r6.patch;patch=1 \
-           ${RPSRC}/w100_split-r10.patch;patch=1 \
-           ${RPSRC}/corgi_tspmu-r0.patch;patch=1 \	   
+           ${RPSRC}/w100_split-r11.patch;patch=1 \
            ${RPSRC}/pxa_i2c-r2.patch;patch=1 \
            ${DOSRC}/pxa-i2c-suspend-r0.patch;patch=1 \
            ${DOSRC}/pxa-i2c-func-r0.patch;patch=1 \           
