@@ -1,3 +1,5 @@
+USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
+
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		      --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++"
 
