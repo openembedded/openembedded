@@ -97,10 +97,10 @@ OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-sec
 # Additional things for a >= 24MB distribution
 #
 
-OPIE_DEPENDS_24  = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
+OPIE_DEPENDS_24  = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop \
                     qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
                     opie-irc "
-OPIE_RDEPENDS_24 = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop opie-reader \
+OPIE_RDEPENDS_24 = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop \
                     qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
                     opie-irc "
 
