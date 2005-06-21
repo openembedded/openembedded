@@ -10,6 +10,8 @@ S = "${WORKDIR}/AtiCore-1.0.1"
 
 EXTRA_OEMAKE="CC='${CC}' AS='${AS}' AR='${AR}' LD='${LD}' FPU='${TARGET_FPU}'"
 
+PARALLEL_MAKE = ""
+
 do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 testcore ${D}${bindir}/testcore
