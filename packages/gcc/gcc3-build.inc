@@ -14,6 +14,7 @@ BINV ?= "${PV}"
 JAVA = ",java"
 JAVA_arm = ""
 JAVA_armeb = ""
+JAVA_mipsel = ""
 # gcc4-build sets this to f95
 FORTRAN ?= "f77"
 LANGUAGES ?= "c,c++,${FORTRAN}${JAVA}"
