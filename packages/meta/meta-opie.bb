@@ -49,6 +49,7 @@ opie-memoryapplet \
 opie-multikeyapplet \
 opie-networkapplet \
 opie-notesapplet \
+opie-pcmciaapplet \
 opie-pyquicklaunchapplet \
 opie-restartapplet \
 opie-restartapplet2 \

@@ -37,9 +37,10 @@ OPIE_LIBS_RDEPENDS_append_akita = " ${OPIE_FONTS_LARGE}"
 # Things for reasonable bootstrap image
 #
 
-OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet opie-suspendapplet opie-batteryapplet \
-                     opie-homeapplet opie-multikeyapplet opie-rotateapplet opie-cardmon \
-                     opie-irdaapplet opie-brightnessapplet"
+OPIE_BASE_APPLETS = "opie-aboutapplet opie-clockapplet      opie-suspendapplet	\
+                     opie-homeapplet  opie-multikeyapplet   opie-rotateapplet 	\
+                     opie-irdaapplet  opie-brightnessapplet opie-batteryapplet  \
+                     opie-pcmciaapplet "
 
 OPIE_BASE_INPUTMETHODS = "opie-multikey opie-handwriting opie-pickboard"
 
