@@ -5,10 +5,11 @@ libraries) behind a consistent interface."
 HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPL"
 SECTION = "devel"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
+	   file://3figures.patch;patch=1 \
 	   file://uclibc.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
