@@ -7,6 +7,7 @@ RPROVIDES = "gnome-vfs"
 inherit gnome pkgconfig
 
 DEPENDS = "libxml2 gconf-osso dbus bzip2 gnome-mime-data zlib samba osso-gwconnect"
+RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz \
            file://gconftool-lossage.patch;patch=1;pnum=1"

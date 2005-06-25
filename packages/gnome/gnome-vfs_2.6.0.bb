@@ -4,6 +4,7 @@ PR = "r3"
 inherit gnome
 
 DEPENDS = "libxml2 gconf libbonobo bzip2 gnome-mime-data orbit2 zlib samba"
+RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1"
 

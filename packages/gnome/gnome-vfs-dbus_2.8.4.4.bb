@@ -7,6 +7,8 @@ RPROVIDES = "gnome-vfs"
 inherit gnome pkgconfig
 
 DEPENDS = "libxml2 gconf-dbus dbus bzip2 gnome-mime-data zlib samba"
+RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
+
 
 SRC_URI = "http://ftp.imendio.com/pub/extra/${PN}/${PN}-${PV}.tar.gz \
            file://gconftool-lossage.patch;patch=1;pnum=1"
