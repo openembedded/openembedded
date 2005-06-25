@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r22"
+PR = "r23"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
@@ -35,7 +35,7 @@ HOTPLUG ?= "linux-hotplug"
 
 DEPENDS = 'base-files base-passwd-3.5.9 \
 	busybox dropbear initscripts modutils netbase \
-	sysvinit tinylogin portmap \
+	sysvinit tinylogin portmap psmisc setserial\
 	modutils-initscripts \
 	${HOTPLUG} \
 	${BOOTSTRAP_EXTRA_DEPENDS} \
@@ -44,7 +44,7 @@ DEPENDS = 'base-files base-passwd-3.5.9 \
 RDEPENDS = 'base-files base-passwd busybox \
 	initscripts \
 	netbase sysvinit sysvinit-pidof tinylogin \
-	modutils-initscripts \
+	modutils-initscripts fuser setserial\
 	${HOTPLUG} \
 	${BOOTSTRAP_EXTRA_RDEPENDS} \
 	${@bootstrap_modutils_rdepends(d)}'
