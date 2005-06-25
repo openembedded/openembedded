@@ -16,6 +16,8 @@ INSTALL_DIR=Documents/Install_Files
 ENABLE_LOG="no"
 LOGFILE="/tmp/sdcontrol.log"
 
+DEBUG=0
+
 vecho() {
 	stamp="`date +"%d-%m-%y %H:%M:%S"`"
 	echo -e "$1"
@@ -42,6 +44,10 @@ get_pid()
     echo $1
 }
 
+decho() {
+	test "$DEBUG" = 1 && echo "<DEBUG> $*"
+}
+
 wait_release()
 {
     count=1
@@ -52,13 +58,19 @@ wait_release()
             #echo umount >> /tmp/sd
             return
         fi
+	
+	if ! (mount | grep -q "$MOUNT_POINT")
+	then
+		return
+	fi
+	
         echo count=$count >> /tmp/sd
         if [ `expr $count \>= 500` = 1 ]; then
             #echo time out >> /tmp/sd
             return
         fi
         count=`expr $count + 1`
-        usleep 200000
+        usleep 200000 || sleep 2
     done
 }
 
@@ -67,28 +79,47 @@ kill_task()
   
     if ! test -z "`which fuser`"
     then  
-	    ps_line=`ps ax | grep 'qpe$'` # no -w on busybox
+    	    echo "Using 'fuser' to kill  \"busy\" tasks"
+	    ps_line=`ps ax | grep 'qpe$' | grep -v grep` # no -w on busybox
+	    decho "* 1 *"
+	    decho "ps_line [$ps_line]"
 	    qpe_pid=`get_pid $ps_line`
-	    #echo qpe_pid = $qpe_pid >> /tmp/sd
-	    target_pids=`fuser -m $DEVICE | cut -d : -f2`
+	    
+	    decho "qpe_pid [$qpe_pid]"
+	    decho "* 1.1 *"
+	    
+	    target_pids=`fuser -m $1 | cut -d : -f2 | sed "s/[a-z]//g"` >/dev/null 2>&1
+		
+	    decho "* 1.2 *"
 	    #echo $target_pids >> /tmp/sd
-	    if [ "$target_pids" = "" ]; then
+	    if ! (echo "$target_pids" | grep -q "[0-9]"); then
+	    	decho "* 2 *"
         	return
 	    fi
-	    is_exist_qpe=`echo $target_pids | grep $qpe_pid` # no -w on busybox
+	    decho "Killing PIDs: [$target_pids]"
+	    decho "* 3 *"
+	    ! test -z "$qpe_pid" && is_exist_qpe=`echo $target_pids | grep "$qpe_pid"` # no -w on busybox
+	    
+	    decho "is_exist_qpe [$is_exist_qpe]"
 	    if [ "$is_exist_qpe" = "" ]; then
 		kill -9 $target_pids
+		decho "* 4 *"
         	#echo kill -9 $target_pids >> /tmp/sd
 	    else
+	    	decho "* 5 *"
         	#echo "found qpe!!!" >> /tmp/sd
 		target_pids=`echo $target_pids | sed -e "s/$qpe_pid//"`
-		if [ "$target_pids" != "" ]; then
+		if (echo "$target_pids" | grep -q "[0-9]"); then
+			echo "* 6 *"
         	    kill -9 $target_pids
+		    
         	    #echo kill -9 $target_pids >> /tmp/sd
         	fi
         	wait_release
-        	exit 0
+#        	exit 0
 	    fi
+    else
+    	echo "No 'fuser' found. Running tasks may keep partitions busy."
     fi
 }
 ###### for QPE ######
@@ -102,9 +133,11 @@ case "$ACTION" in
 	ps ax > "$LOGFILE-ps"
 	
 	# Read available partitions from /proc/partitions.
-	OK_PARTS="`cat /proc/partitions |awk '{print $4}'| grep mmcd`"
+	OK_PARTS=` head -20 /proc/partitions |grep mmcda | sort| uniq | awk '{print $4}'`
 	
-	cat /proc/partitions |awk '{print $4}'| grep mmcd > "$LOGFILE-part"	
+	decho "OK_PARTS [$OK_PARTS]"
+	
+	echo $OK_PARTS > "$LOGFILE-part"
 	
 	if test "`echo "$OK_PARTS" | wc -l | awk '{print $1}`" -gt 1
 	then
@@ -185,7 +218,7 @@ case "$ACTION" in
 		fi
 				
 		vecho "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
-        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT 2>&1 >/dev/null
+        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT >/dev/null 2>&1 
 		MOUNT_RES=`mount | grep $DEVICE`
 
 
@@ -233,16 +266,16 @@ case "$ACTION" in
 	done
         ;;
 'compeject')
-	for part in `mount | grep mmcda|awk '{print $1}'`
-	do
-		DEVICE="$part" || echo "umount $DEVICE failed!"
-	
-	        kill_task       # for QPE
+	for part in `mount | grep mmcda|awk '{print $3}'`
+	do		 
+		found_something=1
+	        kill_task "$part"      # for QPE
 		
-	        umount $DEVICE >/dev/null 2>&1 || echo -e "\n* * * WARNING: umount $DEVICE failed! * * *"
+	        umount $part >/dev/null 2>&1 && echo "Umounted [$part]" || echo -e "\n* * * WARNING: umount $part failed! * * *"
 
 		test -e "$SMB_MOUNT" && rm $SMB_MOUNT
 	done
+	test -z "$found_something" && echo "Nothing to do."
         ;;
 'change')
         $0 compeject

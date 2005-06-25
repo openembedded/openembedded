@@ -42,7 +42,10 @@ start)
 
 stop)
     echo -n "Stop SD services:"
+
+    /etc/sdcontrol compeject >/dev/null
     killall sdmgr
+
     if grep -q $MODULE /proc/modules ; then
 	/sbin/rmmod $MODULE
     fi
