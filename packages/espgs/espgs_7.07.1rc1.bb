@@ -5,6 +5,8 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/espgs/espgs-${PV}-source.tar.bz2"
 S = "${WORKDIR}/espgs-${PV}"
 
+PARALLEL_MAKE=""
+
 inherit autotools
 
 EXTRA_OECONF = "--with-drivers= \
