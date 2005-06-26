@@ -7,7 +7,7 @@ DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -26,6 +26,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://qtabbar.patch;patch=1 \
 	   file://increase-qxml-robustness.patch;patch=1 \
 	   file://qte-fix-iconsize.patch;patch=1 \
+	   file://fix-linuxfb-setmode.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://key.patch;patch=1 \
 	   file://switches.h \
