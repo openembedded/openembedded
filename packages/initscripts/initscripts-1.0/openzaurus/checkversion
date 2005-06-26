@@ -1,5 +1,7 @@
 #!/bin/sh
+
 found=`cat /proc/version | cut -d ' ' -f3`
+echo "$found" | grep -q "snapshot" && exit 0
 
 if [ "VERSION" != "$found" ] ; then
 	echo -e >/dev/tty1
