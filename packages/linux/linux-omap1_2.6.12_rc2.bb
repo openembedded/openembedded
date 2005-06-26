@@ -3,9 +3,9 @@ DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.12-rc2.tar.bz2 \
-           http://www.muru.com/linux/omap/patches/patch-2.6.12-rc2-omap1.bz2;patch=1"
+           http://www.muru.com/linux/omap/patches/patch-2.6.12-rc2-omap1.bz2;patch=1 \
+	   file://defconfig"
 
-SRC_URI_append_omap5912osk = "file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.12-rc2"
 
