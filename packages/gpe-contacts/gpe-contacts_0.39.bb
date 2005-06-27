@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 inherit gpe autotools
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
 SECTION = "gpe"
