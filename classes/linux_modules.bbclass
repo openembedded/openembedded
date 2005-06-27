@@ -7,11 +7,12 @@ def get_kernelmajorversion(p):
 	return None
 
 def linux_module_packages(s, d):
-	import bb
+	import bb, os.path
+	suffix = ""
 	if (bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) == "1"):
-		suffix = "-%s" % (get_kernelmajorversion(base_read_file(bb.data.expand('${STAGING_KERNEL_DIR}/kernel-abiversion', d))))
-	else:
-		suffix = ""
+		file = bb.data.expand('${STAGING_KERNEL_DIR}/kernel-abiversion', d)
+		if (os.path.exists(file)):
+		     suffix = "-%s" % (get_kernelmajorversion(base_read_file(file)))
 	return " ".join(map(lambda s: "kernel-module-%s%s" % (s.lower().replace('_', '-').replace('@', '+'), suffix), s.split()))
 
 # that's all
