@@ -35,12 +35,12 @@ PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' 
 PROVIDES += "virtual/libintl virtual/libiconv"
 DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 INHIBIT_DEFAULT_DEPS = "1"
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
 #	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
 #	   file://arm-memcpy.patch;patch=1;pnum=0 \
-#	   file://arm-longlong.patch;patch=1;pnum=0 \
 #	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
@@ -50,14 +50,15 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
 	   file://arm-memcpy.patch;patch=1 \
+	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://fhs-linux-paths.patch;patch=1 \
+	   file://dl-cache-libcmp.patch;patch=1 \
+	   file://ldsocache-varrun.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
-#SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
-
-SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
+SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
