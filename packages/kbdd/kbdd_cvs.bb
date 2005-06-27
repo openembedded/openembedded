@@ -4,16 +4,16 @@ MAINTAINER = "Paul Eggleton <paule@handhelds.org>"
 HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
-RDEPENDS = "kernel-module-keybdev kernel-module-uinput"
+RRECOMMENDS_${PN} = "${@linux_module_packages('keybdev uinput', d)}"
 SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${CVSDATE} \
            file://kbdd.init \
            file://kbdd.conf \
            file://kbdd-modules"
 
 PV="0.8+cvs-${CVSDATE}"
-PR="r3"
+PR="r5"
 
-inherit update-rc.d
+inherit update-rc.d linux_modules
 
 S = "${WORKDIR}/kbdd"
 INITSCRIPT_NAME = "kbdd"
