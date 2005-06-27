@@ -3,6 +3,7 @@ DESCRIPTION = "A daemon for delivering ACPI events."
 LICENSE="GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz \
+   	   file://gcc40.patch;patch=1 \
            file://init"
 
 EXTRA_OEMAKE = ""
