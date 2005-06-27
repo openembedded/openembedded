@@ -88,6 +88,12 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
+	if [ -d drivers/sound ]; then
+		# 2.4 alsa needs some headers from this directory
+		mkdir -p ${STAGING_KERNEL_DIR}/include/drivers/sound
+		cp -fR drivers/sound/*.h ${STAGING_KERNEL_DIR}/include/drivers/sound/
+	fi
+
 	install -m 0644 .config ${STAGING_KERNEL_DIR}/config-${PV}${KERNEL_LOCALVERSION}
 	ln -sf config-${PV}${KERNEL_LOCALVERSION} ${STAGING_KERNEL_DIR}/.config
 	ln -sf config-${PV}${KERNEL_LOCALVERSION} ${STAGING_KERNEL_DIR}/kernel-config
