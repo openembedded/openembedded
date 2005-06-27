@@ -27,5 +27,5 @@ if [ -n "$D" ]; then exit 1; fi
 
 do_install() {
         install -d ${D}${palmtopdir}/pics/pcmcia/
-        install -m 0644 ${WORKDIR}/pics/pcmcia/*.png ${D}${palmtopdir}/pics/pcmcia/ 
+#        install -m 0644 ${WORKDIR}/pics/pcmcia/*.png ${D}${palmtopdir}/pics/pcmcia/ 
 }
