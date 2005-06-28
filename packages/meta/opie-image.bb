@@ -6,7 +6,7 @@ FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r13"
+PR = "r14"
 
 include opie-collections.inc
 

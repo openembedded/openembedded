@@ -3,35 +3,12 @@
 #
 
 #
-# Fonts for 240x320 displays
-#
-
-OPIE_FONTS_SMALL = "qte-font-smoothsans-90 qte-font-smoothsans-100 qte-font-smoothsans-110 \
-                    qte-font-smoothmono-90 qte-font-smoothmono-100 qte-font-smoothmono-110 \
-                    qte-font-fixed-70 qte-font-fixed-120 qpf-font-common "
-
-#
-# Fonts for >= 640x480 displays
-#
-
-OPIE_FONTS_LARGE = "qte-font-smoothsans-120 qte-font-smoothsans-140 qte-font-smoothsans-180 \
-                    qte-font-smoothmono-120 qte-font-smoothmono-140 qte-font-smoothmono-180 "
-
-#
 # Dependencies to get the launcher up and running
 #
 
-OPIE_LIBS_DEPENDS = "qte libopie2 qpf-qte qpf-font-common"
-OPIE_LIBS_RDEPENDS = "${OPIE_FONTS_SMALL}"
+OPIE_LIBS_DEPENDS  = "qte libopie2 opie-ttf-support ttf-dejavu"
+OPIE_LIBS_RDEPENDS = "opie-ttf-support ttf-dejavu-sans ttf-dejavu-sans-mono"
 OPIE_BASE = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics opie-sounds"
-
-#
-# High res displays need some additional larger fonts
-#
-OPIE_LIBS_RDEPENDS_append_c7x0 = " ${OPIE_FONTS_LARGE}"
-OPIE_LIBS_RDEPENDS_append_tosa = " ${OPIE_FONTS_LARGE}"
-OPIE_LIBS_RDEPENDS_append_spitz = " ${OPIE_FONTS_LARGE}"
-OPIE_LIBS_RDEPENDS_append_akita = " ${OPIE_FONTS_LARGE}"
 
 #
 # Things for reasonable bootstrap image
@@ -49,7 +26,7 @@ OPIE_BASE_APPS = "opie-packagemanager opie-keytabs opie-console opie-clock \
 
 OPIE_BASE_SETTINGS = "opie-light-and-power opie-appearance opie-systemtime \
                       opie-sysinfo opie-networksettings opie-button-settings \
-					  opie-icon-reload"
+                      opie-icon-reload"
 
 OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 
@@ -68,7 +45,7 @@ OPIE_BASE_DEPENDS_append_c7x0 = " opie-autorotateapplet"
 OPIE_BASE_DEPENDS_append_spitz = " opie-autorotateapplet"
 OPIE_BASE_DEPENDS_append_akita = " opie-autorotateapplet"
 
-# Zaurus models can benefit from the VT and logout applets
+# Keyboard models can benefit from the VT and logout applets
 OPIE_BASE_APPLETS_append_openzaurus = " opie-vtapplet opie-logoutapplet"
 OPIE_BASE_APPLETS_append_mnci       = " opie-vtapplet opie-logoutapplet"
 
