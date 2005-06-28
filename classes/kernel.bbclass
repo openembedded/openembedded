@@ -277,7 +277,12 @@ python populate_packages_prepend () {
 				if not m:
 					continue
 				on = legitimize_package_name(m.group(1))
-				dependencies.append(format % on)
+				dependency_pkg = format % on
+        			v = bb.data.getVar("PARALLEL_INSTALL_MODULES", d, 1) or "0"
+	        		if v == "1":
+		                	kv = bb.data.getVar("KERNEL_MAJOR_VERSION", d, 1)
+					dependency_pkg = "%s-%s" % (dependency_pkg, kv)
+				dependencies.append(dependency_pkg)
 			return dependencies
 		return []
 
