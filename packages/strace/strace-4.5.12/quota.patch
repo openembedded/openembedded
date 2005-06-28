@@ -1,0 +1,10 @@
+--- strace-4.5.12/resource.c.old	2005-06-28 14:05:33.000000000 +0100
++++ strace-4.5.12/resource.c	2005-06-28 14:05:37.000000000 +0100
+@@ -36,7 +36,6 @@
+ #ifdef LINUX
+ #include <sys/times.h>
+ #include <linux/kernel.h>
+-#define _LINUX_QUOTA_VERSION 1
+ #include <sys/quota.h>
+ #endif /* LINUX */
+ #ifdef SUNOS4
