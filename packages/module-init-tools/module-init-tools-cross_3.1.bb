@@ -2,7 +2,7 @@ LICENSE = GPL
 include module-init-tools_${PV}.bb
 inherit cross
 DEFAULT_PREFERENCE = "0"
-PROVIDES += "virtual/${TARGET_PREFIX}depmod"
+PROVIDES += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}depmod-2.6"
 
 PR=r3
 
