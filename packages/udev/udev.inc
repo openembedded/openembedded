@@ -1,7 +1,9 @@
 DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
+
+UDEV_DEVFS_RULES ?= "0"
 
 PACKAGES =+ "udev-utils"
 FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
@@ -32,4 +34,7 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
+	if [ "${UDEV_DEVFS_RULES}" = "1" ]; then
+		install -m 0644 ${S}/etc/udev/udev.rules.devfs ${D}${sysconfdir}/udev/rules.d/50-udev.rules
+	fi
 }
