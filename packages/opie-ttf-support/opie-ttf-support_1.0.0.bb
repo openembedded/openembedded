@@ -2,7 +2,7 @@ DESCRIPTION = "Meta-package for Opie TTF support"
 DEPENDS = "freetype opie-freetype"
 RDEPENDS = "opie-freetype"
 SECTION = "opie/fonts"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://update-qtttffontdir.c"
 S = "${WORKDIR}"
@@ -19,5 +19,6 @@ do_install() {
 pkg_postinst() {
 #!/bin/sh
 if [ -n "$D" ]; then exit 1; fi
+mkdir -p /opt/QtPalmtop/lib/fonts/
 ${sbindir}/update-qtttffontdir ${datadir}/fonts/truetype >/opt/QtPalmtop/lib/fonts/fontdir
 }
