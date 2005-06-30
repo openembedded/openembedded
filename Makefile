@@ -22,10 +22,10 @@ optware-build:
 
 monotone-setup monotone/nslu2-linux.db unslung/Makefile openslug/Makefile:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
-	( monotone -d monotone/nslu2-linux.db pull ewi546.ewi.utwente.nl org.openembedded )
+	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded )
 	( monotone -d monotone/nslu2-linux.db unset database default-server )
 	( monotone -d monotone/nslu2-linux.db unset database default-collection )
-	( monotone -d monotone/nslu2-linux.db pull mtn.nslu2-linux.org org )
+	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org )
 	[ -e MT ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 	[ -e downloads ] || mkdir -p downloads
 	[ -e unslung/downloads ]  || ( cd unslung  ; ln -s ../downloads . )
