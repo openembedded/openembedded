@@ -1,0 +1,96 @@
+OEROOT = "%%%OEROOT%%%"
+
+# Use this to specify where OE should place the downloaded sources into
+DL_DIR = "${OEROOT}/downloads"
+
+# Delete the line below. Then specify which .oe files to consider for
+# your build. Typically this will be something like OEFILES = "/path/to/packages/*/*.oe"
+# BBFILES := "/home/slug/openembedded/packages/*/*.bb"
+BBFILES := "${OEROOT}/oe-symlinks/packages/*/*.bb"
+
+# Use the OEMASK below to instruct OE to _NOT_ consider some .oe files
+# This is a regulary expression, so be sure to get your parenthesis balanced.
+OEMASK = ""
+
+# Uncomment this if you want to use a prebuilt toolchain. You will need to
+# provide packages for toolchain and additional libraries yourself. You also
+# have to set PATH in your environment to make sure OE finds additional binaries.
+# Note: You will definitely need to say:
+#     ASSUME_PROVIDED = "virtual/arm-linux-gcc-2.95"
+# to build any of two Linux 2.4 Embedix kernels,
+# i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18 - and don't forget
+# to rename the binaries as instructed in the Wiki.
+# ASSUME_PROVIDED = "virtual/${TARGET_PREFIX}gcc virtual/libc"
+
+# Select between multiple alternative providers, if more than one is eligible.
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc:gcc-cross"
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
+
+# Uncomment this to specify where OE should create its temporary files.
+# Note that a full build of everything in OE will take GigaBytes of hard
+# disk space, so make sure to free enough space. The default TMPDIR is
+# <build directory>/tmp
+TMPDIR = ${OEROOT}/tmp
+
+# Uncomment this to specify a machine to build for. See the conf directory
+# for machines currently known to OpenEmbedded.
+MACHINE = "nslu2"
+
+# Uncomment this to select a distribution policy. See the conf directory
+# for distributions currently known to OpenEmbedded.
+DISTRO = "openslug"
+
+# Add to this any extra projects (packages) to be built with the image
+# (look in openembedded/packages/openslug-packages.bb for a list of
+# packages known to build with openslug.)
+OPENSLUG_EXTRA_DEPENDS = ""
+
+# Add to this specific built .ipk package names to add to the image.
+# These will be included in the root flash file system stored on the
+# NSLU2.  Be careful not to fill the file system, OpenSlug will not
+# boot if the file system is close to full.
+OPENSLUG_EXTRA_RDEPENDS = ""
+
+# Support for a variety of file systems is built in to the openslug
+# image, programs to format disks with these file systems may be
+# added or removed.  By default ext2. ext3 and reiserfs supported
+# is included by the following lines.
+# 
+# These lines add support for formatting ext2 and ext3 file systems
+# on a hard disk attached to the NSLU2.  ext3 is the standard Linux
+# file system.  (OPENSLUG_EXT2_PROGS is defined in
+# openembedded/conf/distro/openslug.conf)
+OPENSLUG_EXTRA_DEPENDS += "e2fsprogs"
+OPENSLUG_EXTRA_RDEPENDS += "${OPENSLUG_EXT2_PROGS}"
+
+# These lines add support for formatting reiserfs file systems on
+# a hard disk.
+OPENSLUG_EXTRA_DEPENDS += "reiserfsprogs"
+OPENSLUG_EXTRA_RDEPENDS += "reiserfsprogs"
+
+# These lines add a build of the 'upslug' program which may be
+# used to download the final image to an NSLU2.  The program can
+# be found within the tmp/work/upslug-native* directory.
+OPENSLUG_EXTRA_DEPENDS += "upslug-native"
+
+# These lines add support for an X/Y/ZModem package called lrzsz
+# (this is of use for people with modified NSLU2 hardware which
+# supports a serial port.)
+OPENSLUG_EXTRA_DEPENDS += "lrzsz"
+OPENSLUG_EXTRA_RDEPENDS += "lrzsz"
+
+
+# Uncomment this to disable the parse cache (not recommended).
+CACHE = "${OEROOT}/tmp/cache"
+
+# Uncomment this if you want OE to emit the log if a build fails.
+OEINCLUDELOGS = "yes"
+
+# Specifies a location to search for pre-generated tarballs when fetching
+# a cvs:// URI.  Uncomment this, if you not want to pull directly from CVS.
+CVS_TARBALL_STASH = "http://www.oesources.org/source/current/"
+
+# INHERIT += "src_distribute_local pkg_distribute"
+
+# EDIT THIS FILE and then remove the line below before using!
