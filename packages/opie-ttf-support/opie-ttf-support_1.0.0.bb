@@ -18,11 +18,6 @@ do_install() {
 
 pkg_postinst() {
 #!/bin/sh
-if [ -n "$D" ]
-then
-	${sbindir}/update-qtttffontdir /usr/local/share/fonts/truetype >/opt/QtPalmtop/lib/fonts/fontdir
-	exit 0
-else
-	exit 1
-fi
+if [ -n "$D" ]; then exit 1; fi
+${sbindir}/update-qtttffontdir ${datadir}/fonts/truetype >/opt/QtPalmtop/lib/fonts/fontdir
 }
