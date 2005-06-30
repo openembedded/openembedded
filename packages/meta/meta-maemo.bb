@@ -1,8 +1,8 @@
 
-PACKAGES = maemo-task-base maemo-task-apps maemo-task-libs-install
+PR          = "r4"
+PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install
 DESCRIPTION = "Meta-package for maemo environment"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
-PR = "r1"
+MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
 
 ALLOW_EMPTY = 1
 
@@ -67,7 +67,10 @@ maemo-task-apps = "\
     hildon-status-bar \
     hildon-home \
     hildon-navigator \
-    hildon-control-panel"
+    hildon-control-panel \
+    osso-application-installer \ 
+    gpe-todo-hildon \
+    gpe-contacts-maemo"
 
 RDEPENDS_maemo-task-apps := "${maemo-task-apps}"
 DEPENDS += " ${maemo-task-apps}"
