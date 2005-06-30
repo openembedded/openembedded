@@ -1,0 +1,19 @@
+--- kismet-2004-04-R1/packet.h.orig	2005-02-04 09:12:36.000000000 +0000
++++ kismet-2004-04-R1/packet.h	2005-02-04 09:13:14.000000000 +0000
+@@ -550,7 +550,7 @@
+     // This isn't quite like STL iterators, because I'm too damned lazy to deal with all
+     // the nasty STL hoop-jumping.  This does provide a somewhat-stl-ish interface to
+     // iterating through the singleton and masked maps
+-    friend class iterator {
++    class iterator {
+         friend class macmap;
+ 
+     public:
+@@ -643,6 +643,7 @@
+         int vector_itr;
+         macmap<T> *owner;
+     };
++    friend class iterator;
+ 
+     iterator begin() {
+         iterator ret(this);

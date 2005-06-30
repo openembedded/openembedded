@@ -1,0 +1,36 @@
+Index: Makefile
+===================================================================
+RCS file: /cvsroot/fltk/fltk/Makefile,v
+retrieving revision 1.12.2.6.2.14.2.7
+diff -u -r1.12.2.6.2.14.2.7 Makefile
+--- fltk.orig/Makefile	6 Jul 2004 00:22:49 -0000	1.12.2.6.2.14.2.7
++++ fltk/Makefile	7 Aug 2004 13:20:20 -0000
+@@ -33,7 +33,7 @@
+ all: makeinclude
+ 	for dir in $(DIRS); do\
+ 		echo "=== making $$dir ===";\
+-		(cd $$dir; $(MAKE) $(MFLAGS)) || break;\
++		cd $$dir; $(MAKE) $(MFLAGS);\
+ 	done
+ 
+ install: makeinclude
+Index: makeinclude.in
+===================================================================
+RCS file: /cvsroot/fltk/fltk/makeinclude.in,v
+retrieving revision 1.7.2.11.2.23.2.11
+diff -u -r1.7.2.11.2.23.2.11 makeinclude.in
+--- fltk.orig/makeinclude.in	28 Jul 2004 05:25:35 -0000	1.7.2.11.2.23.2.11
++++ fltk/makeinclude.in	7 Aug 2004 14:46:12 -0000
+@@ -109,9 +109,9 @@
+ POSTBUILD	= @POSTBUILD@
+ 
+ # DSO version information...
+-FL_DSO_MAJOR	= @FL_DSO_MAJOR
+-FL_DSO_MINOR	= @FL_DSO_MINOR
+-FL_DSO_VERSION	= @FL_DSO_VERSION
++FL_DSO_MAJOR	= @FL_DSO_MAJOR@
++FL_DSO_MINOR	= @FL_DSO_MINOR@
++FL_DSO_VERSION	= @FL_DSO_VERSION@
+ 
+ # Man page extensions...
+ CAT1EXT		= @CAT1EXT@

@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- irk/irk.cpp~install-default-config
++++ irk/irk.cpp
+@@ -470,6 +470,10 @@
+ 
+ void CGIRK::readConfig()
+ {
++	// check if the config is there, if not copy it from default location
++	// FIXME: Do it properly once confirmed that it works :D
++	::system( "if [ ! -e \"$HOME/Settings/IRK.conf\" ]; then cat $OPIEDIR/etc/skel/IRK.conf >$HOME/Settings/IRK.conf; fi" );
++
+ 	// clear the keyboard list ready for the new one to be loaded in
+ 	m_keyboardList.clear();
+ #if !POCKETOP_BUILD

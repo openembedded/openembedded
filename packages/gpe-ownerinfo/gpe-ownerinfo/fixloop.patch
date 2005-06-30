@@ -1,0 +1,16 @@
+Index: gpe-ownerinfo.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-ownerinfo/gpe-ownerinfo.c,v
+retrieving revision 1.36
+diff -u -r1.36 gpe-ownerinfo.c
+--- gpe-ownerinfo.c	4 Jul 2004 12:10:12 -0000	1.36
++++ gpe-ownerinfo.c	20 Dec 2004 16:32:21 -0000
+@@ -302,7 +302,7 @@
+   height /= PANGO_SCALE;
+ 
+   if (height < allocation->height)
+-    height = allocation->height;
++    height = allocation->height + 20;
+ 
+   lost_height = height - allocation->height;
+ 

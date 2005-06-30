@@ -1,0 +1,33 @@
+--- configure.in.orig	2005-01-23 23:46:16.000000000 +0100
++++ configure.in	2005-01-23 23:47:46.000000000 +0100
+@@ -10,8 +10,7 @@
+ AM_PROG_CC_STDC
+ AC_HEADER_STDC
+ 
+-pkg_modules="gtk+-2.0 >= 2.0.0, libglade-2.0 >= 2.0.0 gconf-2.0 >= 2.0.0 \
+-libgnomeui-2.0 >= 1.102.0 libgnome-2.0 >= 2.0"
++pkg_modules="gtk+-2.0 >= 2.0.0, libglade-2.0 >= 2.0.0 gconf-2.0 >= 2.0.0"
+ 
+ PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
+ AC_SUBST(PACKAGE_CFLAGS)
+--- src/main.c.orig	2005-01-24 00:07:02.000000000 +0100
++++ src/main.c	2005-01-24 00:08:39.000000000 +0100
+@@ -10,8 +10,6 @@
+ #include <gtk/gtk.h>
+ #include <glade/glade.h>
+ #include <gconf/gconf-client.h>
+-#include <libgnome/libgnome.h>
+-#include <libgnomeui/libgnomeui.h>
+ 
+ #include "gkdial.h"
+ #include "defines.h"
+@@ -457,8 +455,7 @@
+ 
+   gtk_set_locale ();
+ 
+-  gnome_program_init (PACKAGE, VERSION,
+-		      LIBGNOMEUI_MODULE, argc, argv, GNOME_PARAM_NONE);
++  gtk_init(&argc, &argv);
+ 
+   glade_init ();
+ 

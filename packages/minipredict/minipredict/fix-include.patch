@@ -1,0 +1,11 @@
+--- ../minipredict-1.0-r0/minipredict/minipredict.c	2003-02-16 00:18:02 +00:00
++++ minipredict/minipredict.c	2005-03-04 04:54:13 +00:00
+@@ -16,7 +16,7 @@
+ #include <locale.h>
+ 
+ 
+-#include "../libdictionary/predictive_dictionary.h"
++#include <libdictionary/predictive_dictionary.h>
+ 
+ 
+ #define MAX_WORD 30

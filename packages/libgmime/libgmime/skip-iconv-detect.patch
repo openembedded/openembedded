@@ -1,0 +1,17 @@
+--- gmime-2.1.7/configure.in.orig	2004-07-05 20:17:32.000000000 +0100
++++ gmime-2.1.7/configure.in	2004-07-22 12:58:26.000000000 +0100
+@@ -146,6 +146,14 @@
+ 	*** working iconv library such as the one found at
+ 	*** ftp://ftp.gnu.org/pub/gnu/libiconv
+ 	])
++],[
++	AC_MSG_RESULT([cross-compiling, making some assumptions...])
++	AC_DEFINE(HAVE_ICONV_DETECT_H)
++	cat >iconv-detect.h <<EOF
++#define ICONV_ISO_D_FORMAT "iso-%d-%d"
++#define ICONV_ISO_S_FORMAT "iso-%d-%s"
++#define ICONV_10646 "iso-10646"
++EOF
+ ])
+ 
+ CFLAGS="$CFLAGS_save"

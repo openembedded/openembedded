@@ -1,0 +1,20 @@
+--- aspell-0.50.5/common/Makefile.am~	2002-11-05 00:24:14.000000000 +0000
++++ aspell-0.50.5/common/Makefile.am	2004-06-27 14:33:37.000000000 +0100
+@@ -4,7 +4,7 @@
+ pkgdatadir = @pkgdatadir@
+ pkglibdir = @pkglibdir@
+ 
+-noinst_PROGRAMS = mk-dirs_h
++#noinst_PROGRAMS = mk-dirs_h
+ 
+ dirs.h: mk-dirs_h
+ 	echo '#define PREFIX "${prefix}"'            >  dirs.h
+@@ -12,7 +12,7 @@
+ 	./mk-dirs_h ${prefix} DATA_DIR ${pkgdatadir} >> dirs.h
+ 	./mk-dirs_h ${prefix} CONF_DIR ${sysconfdir} >> dirs.h
+ 
+-mk_dirs_h_SOURCES = mk-dirs_h.cpp
++#mk_dirs_h_SOURCES = mk-dirs_h.cpp
+ 
+ config.cpp: dirs.h
+ 

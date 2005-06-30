@@ -1,0 +1,12 @@
+Index: stunnel-4.09/Makefile.am
+===================================================================
+--- stunnel-4.09.orig/Makefile.am	2004-10-10 01:37:15.000000000 -0400
++++ stunnel-4.09/Makefile.am	2005-04-01 22:09:06.819735144 -0500
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-SUBDIRS = src doc tools
++SUBDIRS = src doc
+ 
+ # extra_src = src/gui.c src/resources.rc src/stunnel.ico src/stunnel.exe
+ # extra_doc = doc/stunnel.pod doc/stunnel.8 doc/stunnel.html doc/en doc/pl

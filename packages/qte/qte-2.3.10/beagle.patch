@@ -1,0 +1,32 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp~beagle
++++ qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp
+@@ -138,7 +138,7 @@
+ #include <asm/sharp_char.h>
+ #endif
+ 
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_BEAGLE)
+ #define QT_QWS_AUTOREPEAT_MANUALLY
+ #endif
+ 
+@@ -492,9 +492,15 @@
+ #endif
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  }, // 90
++#ifdef QT_QWS_BEAGLE
++    {   Qt::Key_F13,        0xffff  , 0xffff  , 0xffff  }, // lightning
++    {   Qt::Key_Up,         0xffff  , 0xffff  , 0xffff  }, // Wheel Up
++    {   Qt::Key_Down,       0xffff  , 0xffff  , 0xffff  }, // Wheel Down
++#else
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
++#endif
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_unknown,    0xffff  , 0xffff  , 0xffff  },
+     {   Qt::Key_Enter,      13      , 13      , 0xffff  },

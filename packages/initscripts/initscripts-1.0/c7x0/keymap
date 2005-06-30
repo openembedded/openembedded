@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ `uname -r | cut -d '.' -f 1,2` != "2.4" ]; then
+  loadkeys /etc/corgikeymap-2.6.map
+fi

@@ -1,0 +1,43 @@
+--- bl.c.orig	2004-12-23 00:15:06.000000000 +0100
++++ bl.c	2004-12-23 00:22:59.000000000 +0100
+@@ -38,8 +38,39 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <linux/ioctl.h>
+-#include <linux/h3600_ts.h>
+ 
++enum flite_mode {
++  FLITE_MODE1 = 1,
++  FLITE_AUTO_MODE   = 1,     /* for reference only */
++  FLITE_MANUAL_MODE = 2,     /* Use this normally? */
++  FLITE_GET_LIGHT_SENSOR = 3 /* Returns light reading in "brightness" field */
++};
++enum flite_pwr {
++  FLITE_PWR_OFF = 0,
++  FLITE_PWR_ON  = 1
++};
++ 
++typedef struct h3600_ts_flite {
++  unsigned char mode;
++  unsigned char pwr;
++  unsigned char brightness;
++} FLITE_IN;
++                              
++/*************************** Updated "universal" structures *******************/
++                                                                     
++/* Sets backlight for both H3100 and H3600 models - technically "frontlight" for H3600 */
++struct h3600_ts_backlight {
++enum flite_pwr power;          /* 0 = off, 1 = on */
++unsigned char  brightness;     /* 0 - 255         */
++};
++
++/* Use 'f' as magic number */
++#define IOC_H3600_TS_MAGIC  'f'
++
++#define TS_GET_BACKLIGHT        _IOR(IOC_H3600_TS_MAGIC, 20, struct h3600_ts_backlight)
++#define TS_SET_BACKLIGHT        _IOW(IOC_H3600_TS_MAGIC, 20, struct h3600_ts_backlight)
++#define FLITE_ON                _IOW(IOC_H3600_TS_MAGIC,  7, struct h3600_ts_flite)
++                                                                       
+ /* The ioctl can be called from a ts, tsraw or key file descriptor */
+ #define DEV_NODE "/dev/touchscreen/0"
+ int debug = 0;

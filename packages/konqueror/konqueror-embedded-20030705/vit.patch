@@ -1,0 +1,18 @@
+--- konqueror-embedded-snapshot-20030705/konq-embed/src/main.cc~	2003-07-03 21:37:09.000000000 +0400
++++ konqueror-embedded-snapshot-20030705/konq-embed/src/main.cc	2005-02-21 23:02:24.000000000 +0300
+@@ -369,6 +369,7 @@
+     toplevel->show();
+ 
+     app.setMainWidget( toplevel );
++#endif
+ 
+     for ( int i = 1; i < argc; i++ )
+     {
+@@ -382,7 +383,6 @@
+            }
+        }
+     }
+-#endif
+ 
+     if ( !openedMainWindow )
+ 	openedMainWindow = toplevel->goSpecialURL( "init" );

@@ -1,0 +1,346 @@
+--- linux-orig/arch/arm/mach-pxa/sharpsl_battery.c	2004-02-18 23:41:57.000000000 +0300
++++ linux/arch/arm/mach-pxa/sharpsl_battery.c	2004-02-24 06:21:56.000000000 +0300
+@@ -197,7 +197,7 @@
+ #define SHARPSL_CHECK_BATTERY_WAIT_TIME_VOLT	1	// 10msec
+ #define SHARPSL_CHECK_BATTERY_WAIT_TIME_JKVAD	1	// 10msec
+ #define SHARPSL_CORGI_FATAL_ACIN_VOLT		182	// 3.45V
+-#define SHARPSL_CORGI_FATAL_NOACIN_VOLT		179	// 3.40V
++#define SHARPSL_CORGI_FATAL_NOACIN_VOLT		170	// 3.40V
+ #define SHARPSL_CORGI_WAIT_CO_TIME		15	// 15 Sec
+ 							//NOTICE !!  you want to change this value , so you must change
+ 							//           alarm check mirgin time ( +30 ) in the sharpsl_power.c.
+@@ -245,10 +245,17 @@
+ BATTERY_THRESH *GetMainLevel( int Volt );
+ int sharpsl_get_main_battery(void);
+ int suspend_sharpsl_read_Voltage(void);
++int GetMainPercent(int);
+ int GetMainChargePercent(int);
+ int Get_DAC_Value(int);
+ int sharpsl_check_battery(int mode);
+ 
++// remove warnings
++static int sharpsl_battery_thread_main(void);
++int handle_scancode(int, int);
++int sharpsl_ac_check(void);
++void sharpsl_charge_err_off(void);
++
+ /*** extern ***********************************************************************/
+ extern u32 apm_wakeup_src_mask;
+ #if defined(CONFIG_ARCH_PXA_POODLE) || defined(CONFIG_ARCH_PXA_CORGI)
+@@ -269,7 +276,6 @@
+ 
+ /*** variables ********************************************************************/
+ 
+-
+ #if defined(CONFIG_ARCH_PXA_POODLE)
+ 
+ BATTERY_THRESH  sharpsl_main_battery_thresh_fl[] = {
+@@ -293,20 +299,26 @@
+ #elif defined(CONFIG_ARCH_PXA_CORGI)
+ 
+ BATTERY_THRESH  sharpsl_main_battery_thresh_fl[] = {
+-    { 194, 100, SHARPSL_BATTERY_STATUS_HIGH},
+-    { 188,  75, SHARPSL_BATTERY_STATUS_HIGH},
++    { 999, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 210, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 194,  90, SHARPSL_BATTERY_STATUS_HIGH},
++    { 188,  70, SHARPSL_BATTERY_STATUS_HIGH},
+     { 184,  50, SHARPSL_BATTERY_STATUS_HIGH},
+     { 180,  25, SHARPSL_BATTERY_STATUS_LOW},
+-    { 171,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
++    { 174,  10, SHARPSL_BATTERY_STATUS_LOW},
++    { 170,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
+     {   0,   0, SHARPSL_BATTERY_STATUS_CRITICAL},
+ };
+ 
+ BATTERY_THRESH  sharpsl_main_battery_thresh_nofl[] = {
+-    { 194, 100, SHARPSL_BATTERY_STATUS_HIGH},
+-    { 188,  75, SHARPSL_BATTERY_STATUS_HIGH},
++    { 999, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 210, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 194,  90, SHARPSL_BATTERY_STATUS_HIGH},
++    { 188,  70, SHARPSL_BATTERY_STATUS_HIGH},
+     { 184,  50, SHARPSL_BATTERY_STATUS_HIGH},
+     { 180,  25, SHARPSL_BATTERY_STATUS_LOW},
+-    { 171,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
++    { 174,  10, SHARPSL_BATTERY_STATUS_LOW},
++    { 170,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
+     {   0,   0, SHARPSL_BATTERY_STATUS_CRITICAL},
+ };
+ #endif
+@@ -332,25 +344,36 @@
+ #elif defined(CONFIG_ARCH_PXA_CORGI)
+ 
+ BATTERY_THRESH sharpsl_main_battery_thresh_charge_fl[] = {
+-    { 200, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 999, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 210, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 200,  95, SHARPSL_BATTERY_STATUS_HIGH},
+     { 196,  75, SHARPSL_BATTERY_STATUS_HIGH},
+     { 192,  50, SHARPSL_BATTERY_STATUS_HIGH},
+     { 187,  25, SHARPSL_BATTERY_STATUS_LOW},
+-    { 171,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
++    { 182,  10, SHARPSL_BATTERY_STATUS_LOW},
++    { 170,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
+     {   0,   0, SHARPSL_BATTERY_STATUS_CRITICAL},
+ };
+ 
+ BATTERY_THRESH sharpsl_main_battery_thresh_charge_nofl[] = {
+-    { 200, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 999, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 210, 100, SHARPSL_BATTERY_STATUS_HIGH},
++    { 200,  95, SHARPSL_BATTERY_STATUS_HIGH},
+     { 196,  75, SHARPSL_BATTERY_STATUS_HIGH},
+     { 192,  50, SHARPSL_BATTERY_STATUS_HIGH},
+     { 187,  25, SHARPSL_BATTERY_STATUS_LOW},
+-    { 171,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
++    { 182,  10, SHARPSL_BATTERY_STATUS_LOW},
++    { 170,   5, SHARPSL_BATTERY_STATUS_VERYLOW},
+     {   0,   0, SHARPSL_BATTERY_STATUS_CRITICAL},
+ };
+ 
+ #endif
+ 
++//#if defined(CONFIG_ARCH_PXA_CORGI)
++#define MAIN_BATTERY_THRES (sizeof(sharpsl_main_battery_thresh_charge_nofl) / sizeof(BATTERY_THRESH) - 1)
++//#endif
++
++
+ #if 1
+ static struct file_operations sharpsl_battery_fops = {
+ };
+@@ -389,6 +412,8 @@
+ int sharpsl_main_battery   = SHARPSL_BATTERY_STATUS_HIGH;
+ int sharpsl_main_battery_percentage = 100;
+ int sharpsl_main_charge_battery = 100;
++int sharpsl_main_battery_voltage = 200;
++
+ int sharpsl_ac_status = APM_AC_OFFLINE;
+ 
+ static int MainCntWk = SHARPSL_MAIN_GOOD_COUNT;
+@@ -498,7 +523,7 @@
+ //          2 : check battery w/  refresh battery status.
+ void sharpsl_kick_battery_check(int before_waitms,int after_waitms,int flag)
+ {
+-  int start;
++  //int start;
+ 
+ 
+   MainCntWk = MainCnt + 1;
+@@ -604,6 +629,7 @@
+   }
+ #endif
+ 
++    return 0;
+ }
+ 
+ 
+@@ -920,13 +946,17 @@
+ #endif
+ 
+ 		voltage = sharpsl_cnv_value(voltage);
+-
++		sharpsl_main_battery_voltage = voltage;
++	
+ 		thresh = GetMainLevel(voltage);
+ 
++		sharpsl_main_battery = thresh->status;
++		sharpsl_main_battery_percentage = GetMainPercent(voltage);
++		sharpsl_main_charge_battery = GetMainChargePercent(voltage);
++
+ 		// if battery is low , backlight driver become to save power.
+ 		if ( ( ( thresh->status == SHARPSL_BATTERY_STATUS_VERYLOW  ) ||
+-		       ( thresh->status == SHARPSL_BATTERY_STATUS_CRITICAL ) ||
+-		       ( thresh->status == SHARPSL_BATTERY_STATUS_LOW      ) ) &&
++		       ( thresh->status == SHARPSL_BATTERY_STATUS_CRITICAL )) &&
+ 		       ( !sharpsl_main_bk_flag ) ) {
+ 		  SHARPSL_LIMIT_CONTRAST(SHARPSL_CAUTION_CONTRAST);
+ 		}
+@@ -934,11 +964,7 @@
+ 		if ( sharpsl_main_bk_flag == 0 ) {
+ 		  return sharpsl_main_battery;
+ 		}
+-		sharpsl_main_battery = thresh->status;
+-		sharpsl_main_battery_percentage = thresh->percentage;
+-		sharpsl_main_charge_battery = GetMainChargePercent(voltage);
+-
+-		//printk("bat : main battery = %d\n",sharpsl_main_battery);
++		
+ 
+ 		if ( sharpsl_debug_flag != 0 ) {
+ 		  int i;
+@@ -946,7 +972,8 @@
+ 		  sharpsl_main_battery = sharpsl_debug_flag;
+ 		  for (i = 0; sharpsl_main_battery_thresh_nofl[i].voltage > 0; i++) {
+ 		    if ( sharpsl_debug_flag == sharpsl_main_battery_thresh_nofl[i].status ) {
+-		      sharpsl_main_battery_percentage = sharpsl_main_battery_thresh_nofl[i].percentage;
++		      //sharpsl_main_battery_percentage = sharpsl_main_battery_thresh_nofl[i].percentage;
++		      sharpsl_main_battery_percentage = GetMainPercent(voltage);
+ 		      break;
+ 		    }
+ 		  }
+@@ -965,7 +992,7 @@
+ 		  sharpsl_main_battery_percentage = sharpsl_main_percent_bk;
+ 		}
+ 
+-		DPRINTK2("charge percent = %d ( at %d ) \n",sharpsl_main_charge_battery,(int)jiffies);
++		//DPRINTK2("charge percent = %d ( at %d ) \n",sharpsl_main_charge_battery,(int)jiffies);
+ 		DPRINTK(" get Main battery status %d\n",sharpsl_main_battery);
+ 
+ 	} else {
+@@ -975,40 +1002,79 @@
+ 	return sharpsl_main_battery;
+ }
+ 
+-int GetMainChargePercent( int Volt )
++int GetLevelIndex(BATTERY_THRESH *thresh, int Volt)
++{
++    int i = MAIN_BATTERY_THRES;
++
++    DPRINTK("volt = %d \n", Volt);
++	while (i > 0 && (Volt > thresh[i].voltage))
++		i--;
++		
++	return i;
++}
++
++int GetPercent(BATTERY_THRESH *thresh, int Volt)
++{
++    int i = GetLevelIndex(thresh, Volt);
++    
++	/* i is now between 0 and MAIN_BATTERY_THRES. That means
++	 * we can safely access main_batt_thres[i] and
++	 * main_batt_thres[i+1] */
++	
++	{
++//	    long percentage = thresh[i].percentage;
++	    
++        long deltav = thresh[i].voltage - thresh[i + 1].voltage;
++        long deltap = thresh[i].percentage - thresh[i + 1].percentage;
++    
++    	long percentage = 
++    	   	   thresh[i + 1].percentage + 
++    	   	   deltap * (Volt - thresh[i + 1].voltage) /
++    	   	   deltav; 
++
++        DPRINTK("percentage = %d \n", percentage);
++        return percentage;
++	}
++	
++    return thresh[i].percentage;
++}
++
++int GetMainPercent( int Volt )
+ {
+-    int i;
+     BATTERY_THRESH *thresh;
+ 
+-    DPRINTK("  volt = %d  \n",Volt);
++    if (counter_step_contrast)
++	    thresh = sharpsl_main_battery_thresh_fl;
++    else
++	    thresh = sharpsl_main_battery_thresh_nofl;
++
++    return GetPercent(thresh, Volt);
++}
++
++int GetMainChargePercent( int Volt )
++{
++    BATTERY_THRESH *thresh;
+ 
+     if (counter_step_contrast)
+-	thresh = sharpsl_main_battery_thresh_charge_fl;
++	    thresh = sharpsl_main_battery_thresh_charge_fl;
+     else
+-	thresh = sharpsl_main_battery_thresh_charge_nofl;
+-    for (i = 0; thresh[i].voltage > 0; i++) {
+-	if (Volt >= thresh[i].voltage)
+-	    return thresh[i].percentage;
+-    }
+-    return thresh[i].percentage;
++	    thresh = sharpsl_main_battery_thresh_charge_nofl;
++
++    return GetPercent(thresh, Volt);
+ }
+ 
+ BATTERY_THRESH *GetMainLevel( int Volt )
+ {
+-    int i;
+     BATTERY_THRESH *thresh;
+ 
+     DPRINTK("  volt = %d  \n",Volt);
+ 
+     if (counter_step_contrast)
+-	thresh = sharpsl_main_battery_thresh_fl;
++	    thresh = sharpsl_main_battery_thresh_fl;
+     else
+-	thresh = sharpsl_main_battery_thresh_nofl;
+-    for (i = 0; thresh[i].voltage > 0; i++) {
+-	if (Volt >= thresh[i].voltage)
+-	    return &thresh[i];
+-    }
+-    return &thresh[i];
++	    thresh = sharpsl_main_battery_thresh_nofl;
++	    
++    return &thresh[GetLevelIndex(thresh, Volt)];
+ }
+ 
+ 
+@@ -1018,7 +1084,7 @@
+ int Get_DAC_Value(int channel)
+ {
+ 	unsigned long cmd;
+-	unsigned int dummy;
++	unsigned int dummy;
+ 	int voltage;
+ 
+ #if defined(CONFIG_ARCH_PXA_POODLE)
+@@ -1263,7 +1329,7 @@
+ //        0: OK
+ int sharpsl_ac_check(void)
+ {
+-	int temp, i, volt;
++	int temp, i; //, volt;
+ 	int buff[5];
+ 
+ 	if ( in_interrupt() ) {
+@@ -1835,14 +1901,18 @@
+ 	int		def_value;
+ 	char*		name;
+ 	char*		description;
++	char		readonly;	
+ 	unsigned short	low_ino;
+ } sharpsl_battery_entry_t;
+ 
+ static sharpsl_battery_entry_t sharpsl_battery_params[] = {
+ /*  { addr,	def_value,	name,	    description }*/
+-  { &msglevel,	0,		"msglevel",    "debug message output level" },
+-  { &sharpsl_debug_flag , 0 , "dflag", "debug flag" },
+-  { &sharpsl_change_battery_status , 0 , "chg_status", "Change status" }
++  { &msglevel,	0,		"msglevel",    "debug message output level", 0 },
++  { &sharpsl_debug_flag , 0 , "dflag", "debug flag", 0 },
++  { &sharpsl_change_battery_status , 0 , "chg_status", "Change status", 1 },
++  { &sharpsl_main_battery_percentage , 0 , "charge_percentage", "Charge percentage", 1 },
++  { &sharpsl_main_battery_voltage , 0 , "main_voltage", "Main voltage", 1 },                // alias
++  { &sharpsl_main_battery_voltage , 0 , "charge_voltage", "Charge voltage", 1 }
+ };
+ #define NUM_OF_BATTERY_ENTRY	(sizeof(sharpsl_battery_params)/sizeof(sharpsl_battery_entry_t))
+ 
+@@ -1866,7 +1936,7 @@
+ 	if (current_param==NULL) {
+ 		return -EINVAL;
+ 	}
+-	count = sprintf(outputbuf, "0x%08X\n",
++	count = sprintf(outputbuf, "%04i\n",
+ 			*((volatile Word *) current_param->addr));
+ 	*ppos += count;
+ 	if (count>nbytes)	/* Assume output can be read at one time */
+@@ -1891,7 +1961,7 @@
+ 			break;
+ 		}
+ 	}
+-	if (current_param==NULL) {
++	if (current_param==NULL || current_param->readonly) {
+ 		return -EINVAL;
+ 	}
+ 

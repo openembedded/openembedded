@@ -1,0 +1,22 @@
+--- sysdeps/unix/sysv/linux/configure.in	2003-03-23 16:18:07.000000000 +0900
++++ sysdeps/unix/sysv/linux/configure.in.new	2003-03-23 16:19:08.000000000 +0900
+@@ -65,7 +65,7 @@
+     ;;
+   hppa*)
+     libc_cv_gcc_unwind_find_fde=yes
+-    arch_minimum_kernel=2.4.19
++    arch_minimum_kernel=2.4.17
+     ;;
+   m68k*)
+     arch_minimum_kernel=2.0.10
+--- sysdeps/unix/sysv/linux/configure	2003-03-23 16:15:05.000000000 +0900
++++ sysdeps/unix/sysv/linux/configure.new	2003-03-23 16:21:47.000000000 +0900
+@@ -106,7 +106,7 @@
+     ;;
+   hppa*)
+     libc_cv_gcc_unwind_find_fde=yes
+-    arch_minimum_kernel=2.4.19
++    arch_minimum_kernel=2.4.17
+     ;;
+   m68k*)
+     arch_minimum_kernel=2.0.10

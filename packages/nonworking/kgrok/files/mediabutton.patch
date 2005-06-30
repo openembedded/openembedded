@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- src/mediabutton.C~mediabutton
++++ src/mediabutton.C
+@@ -23,6 +23,7 @@
+ #include <qwidget.h>
+ #include <qdrawutil.h>
+ #include "bluebutton.h"
++#include "mediabutton.h"
+ 
+ extern QApplication	*app;
+ 

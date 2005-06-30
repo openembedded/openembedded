@@ -1,0 +1,81 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp~kernel-keymap-tosa
++++ qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp
+@@ -355,14 +355,24 @@
+     {	Qt::Key_CapsLock,	0xffff  , 0xffff  , 0xffff  }, // 3c 60
+     {	Qt::Key_At,		'@'     , 's'     , 'S'-64  }, // 3d
+     {	Qt::Key_Question,	'?'     , '?'     , 0xffff  }, // 3e
++#ifdef QT_QWS_SL6000
++    {	Qt::Key_Comma,		','     , ';'     , 0xffff  }, // 3f
++    {	Qt::Key_Period,		'.'     , ':'     , 0xffff  }, // 40
++#else
+     {	Qt::Key_Comma,		','     , ','     , 0xffff  }, // 3f
+     {	Qt::Key_Period,		'.'     , '.'     , 0xffff  }, // 40
++#endif
+     {	Qt::Key_Tab,		9       , '\\'    , 0xffff  }, // 41
+     {	Qt::Key_X,		0xffff 	, 'x'  	  , 'X'-64  }, // 42
+     {	Qt::Key_C,		0xffff 	, 'c'     , 'C'-64  }, // 43
+     {	Qt::Key_V,		0xffff 	, 'v'     , 'V'-64  }, // 44
++#ifdef QT_QWS_SL6000
++    {	Qt::Key_Slash,		'/'     , '?'     , 0xffff  }, // 45
++    {	Qt::Key_Apostrophe,	'\''    , '"'    , 0xffff  }, // 46 70
++#else
+     {	Qt::Key_Slash,		'/'     , '/'     , 0xffff  }, // 45
+     {	Qt::Key_Apostrophe,	'\''    , '\''    , 0xffff  }, // 46 70
++#endif
+     {	Qt::Key_Semicolon,	';'     , ';'     , 0xffff  }, // 47
+     {	Qt::Key_QuoteDbl,	'\"'    , '\"'    , 0xffff  }, // 48
+     {	Qt::Key_Colon,		':'     , ':'     , 0xffff  }, // 49
+@@ -572,6 +582,32 @@
+ static const int keyMSize = sizeof(keyM)/sizeof(QWSServer::KeyMap)-1;
+ static QIntDict<QWSServer::KeyMap> *overrideMap = 0;
+ 
++#if defined(QT_QWS_SL6000)
++/* Translation table to obtain a 'legacy' keycode corresponding to
++   Fn+key on tosa
++   Other devices obviously send different keycodes while Fn is down, tosa sends
++   the same keys as usual bracketed by Fn-down/Fn-up.
++   This table is used while Fn is down to obtain the key-code the SL-5xxx would
++   send, so the rest of keyboard processing does not need to be adjusted. */
++static const uchar sl6kFnTrans[] = { 0x00,
++       0x5e, 0x3a, 0x43, 0x4a, 0x2b, 0x4b, 0x4c, 0x4d, 0x30, 0x4e, 0x4f, 0x50,
++    //    !,    -,  cpy,    #,    3,    $,    %,    _,    8,    &,    *,    (,
++       0x53, 0x3b, 0x31, 0x32, 0x29, 0x2c, 0x3d, 0x2d, 0x2f, 0x44, 0x2a, 0x42,
++    //    =,    +,    9,    0,    1,    4,    @,    5,    7, pste,    2,  cut,
++    // padding for keycodes which don't ever get directly sent on tosa
++    // except for y->6, ret->'>', BS->DEL
++       0x2e, 0x00, 0x00, 0x57, 0x00, 0x00, 0x51, 0x00, 0x00, 0x00, 0x00, 0x00,
++    //    6,   _Z, shft,  ret,  F11,   fn,  BS?,  F31, lght, cncl,  lft,   up,
++       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++    //   dn, rght,   OK, home,    1,    2,    3,    4,    5,    6,    7,    8,
++       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++    //    9,    0,  UNK,  UNK,  UNK,  UNK,  UNK,  UNK,  UNK,    -,    +, caps,
++    // here are a few translatable codes again...
++       0x00, 0x00, 0x54, 0x56, 0x3c, 0x00, 0x00, 0x00, 0x70, 0x55 };
++    //    @,    ?,    ,,    .,  tab,  cut,  cpy, pste,    /,    '
++static const int sl6kFnSize = sizeof(sl6kFnTrans);
++#endif
++
+ /*!
+   Changes the mapping of the keyboard; adding the scancode to Unicode
+   mappings from \a map. The server takes over ownership of \a map
+@@ -882,6 +918,15 @@
+     int keypad = 0;
+ 
+ #ifndef QT_QWS_USE_KEYCODES
++#if defined(QT_QWS_SL6000)
++    qDebug("Key pressed: %x", code);
++    if (fn)
++        if (code < sl6kFnSize) {
++            code = sl6kFnTrans[code];
++            qDebug("Translated Fn: %x", code);
++        } else
++            qDebug("Untranslatable Fn: %x", code);
++#endif
+ #if defined(QT_QWS_IPAQ)
+     // map ipaq 'action' key (0x60, 0xe0)
+     if ((code & 0x7f) == 0x60) {

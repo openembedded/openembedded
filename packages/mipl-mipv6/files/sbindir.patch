@@ -1,0 +1,13 @@
+--- mobile-ip6.in	2005-02-04 15:12:08.225877344 +0100
++++ mobile-ip6.in.new	2005-02-04 15:12:57.588373104 +0100
+@@ -24,8 +24,8 @@
+ SUBSYS=$1
+ LOCKDIR=@LOCKDIR@
+ 
+-MODPROBE=@sbindir@/modprobe
+-LSMOD=@sbindir@/lsmod
++MODPROBE=`which modprobe`
++LSMOD=`which lsmod`
+ 
+ # Test if 'functions' exists. If not, define our own 'action'
+ if test -x /etc/rc.d/init.d/functions ; then

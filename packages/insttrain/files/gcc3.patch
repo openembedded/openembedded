@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- src/top.cpp~gcc3
++++ src/top.cpp
+@@ -18,6 +18,7 @@
+ //static char rcsid[] = "$Id: top.cpp,v 1.1 2002/10/06 04:17:00 bjj Rel $";
+ 
+ #include "top.h"
++#include <qapplication.h>
+ #include <qmenubar.h>
+ #include <qpopupmenu.h>
+ #include <qframe.h>
+@@ -90,7 +91,7 @@
+ }
+ 
+ 
+-Top::Top(QWidget *parent = 0, const char *name = 0, WFlags f = WType_TopLevel)
++Top::Top(QWidget *parent, const char *name, WFlags f)
+ 	: QMainWindow(parent, name, f)
+ {
+ 	setCaption("Instrument Trainer");
+@@ -172,7 +173,7 @@
+ void
+ Top::Exit()
+ {
+-	exit(0);
++	qApp->quit();
+ }
+ 
+ void

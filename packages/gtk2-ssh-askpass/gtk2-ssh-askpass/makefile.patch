@@ -1,0 +1,19 @@
+--- gtk2-ssh-askpass-0.3/Makefile	2003-03-07 06:47:38.000000000 -0700
++++ gtk2-ssh-askpass-0.3.new/Makefile	2004-07-13 11:16:07.242199368 -0700
+@@ -1,5 +1,13 @@
++CC=gcc
++CFLAGS=-O2
++
++GTK_CFLAGS := `pkg-config --cflags gtk+-2.0`
++
++LDFLAGS=
++GTK_LDFLAGS := `pkg-config --libs gtk+-2.0`
++
+ all:
+-	gcc -o gtk2-ssh-askpass gtk2-ssh-askpass.c `pkg-config --libs gtk+-2.0` `pkg-config --cflags gtk+-2.0`
++	$(CC) -o gtk2-ssh-askpass $(CFLAGS) $(GTK_CFLAGS) gtk2-ssh-askpass.c $(LDFLAGS) $(GTK_LDFLAGS) 
+ 
+ clean:
+-	rm gtk2-ssh-askpass
+\ No newline at end of file
++	rm gtk2-ssh-askpass

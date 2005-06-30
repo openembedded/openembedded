@@ -1,0 +1,60 @@
+Index: oprofile/libpp/profile.cpp
+===================================================================
+--- oprofile.orig/libpp/profile.cpp	2005-05-02 16:07:03.000000000 +0100
++++ oprofile/libpp/profile.cpp	2005-06-13 14:28:22.000000000 +0100
+@@ -127,6 +127,11 @@
+ 	// if the image contains no symbol the vma range is [0 - filesize]
+ 	// in this case we can't substract start_offset else we will underflow
+ 	// and the iterator range will be empty.
++	
++	if (start < start_offset)
++		return make_pair(const_iterator(ordered_samples.end(), 0), 
++			const_iterator(ordered_samples.end(), 0));
++	
+ 	if (start)
+ 		start -= start_offset;
+ 
+Index: oprofile/libpp/callgraph_container.cpp
+===================================================================
+--- oprofile.orig/libpp/callgraph_container.cpp	2005-05-02 16:07:02.000000000 +0100
++++ oprofile/libpp/callgraph_container.cpp	2005-06-13 14:27:57.000000000 +0100
+@@ -139,21 +139,24 @@
+ 		unsigned long end;
+ 		b.get_symbol_range(i, start, end);
+ 
+-		profile_t::iterator_pair p_it = profile.samples_range(
+-			caller_to_key(start - boffset),
+-			caller_to_key(end - boffset));
+-
+-		// Our odb_key_t contain (from_eip << 32 | to_eip), the range
+-		// of key we selected above contain one caller but different
+-		// callee and due to the ordering callee offsets are not
+-		// consecutive so we must sort them first.
+-
+-		samples.clear();
+-
+-		for (; p_it.first != p_it.second; ++p_it.first) {
+-			samples.push_back(make_pair(p_it.first.vma(),
+-				p_it.first.count()));
+-		}
++		if (start > boffset) {
++			profile_t::iterator_pair p_it = profile.samples_range(
++				caller_to_key(start - boffset),
++				caller_to_key(end - boffset));
++
++			// Our odb_key_t contain (from_eip << 32 | to_eip), the range
++			// of key we selected above contain one caller but different
++			// callee and due to the ordering callee offsets are not
++			// consecutive so we must sort them first.
++
++			samples.clear();
++
++			for (; p_it.first != p_it.second; ++p_it.first) {
++				samples.push_back(make_pair(p_it.first.vma(),
++					p_it.first.count()));
++			}
++		} else
++			samples.clear();
+ 
+ 		sort(samples.begin(), samples.end(), compare_by_callee_vma);
+ 		

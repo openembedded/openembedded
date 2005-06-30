@@ -1,0 +1,28 @@
+--- src/Makefile~cross	2004-03-01 19:12:37.000000000 -0500
++++ src/Makefile	2004-06-04 21:59:55.527364588 -0400
+@@ -12,14 +12,14 @@
+ #
+ #   Debug flags and C flags
+ #
+-DFLAGS	= -O3
++CFLAGS	= -O3
+ #
+ # To build a debug version of the MatrixSSL library, uncomment the DFLAGS line
+ # below and remove the strip command in the .so target below.
+ #
+-#DFLAGS	= -g -DDEBUG
++#CFLAGS	= -g -DDEBUG
+ 
+-CFLAGS  = -DLINUX $(DFLAGS)
++override CFLAGS += -DLINUX
+ LDFLAGS = -Wl -lc -lpthread
+ 
+ all: compile
+@@ -56,7 +56,6 @@
+ #
+ libmatrixssl.so: $(OBJECTS)
+ 	$(CC) -shared -nostdlib -o $@ $^ $(LDFLAGS)
+-	strip $(LIBRARIES)
+ 
+ #
+ #	Clean up workspace

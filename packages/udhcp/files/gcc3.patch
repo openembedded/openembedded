@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- udhcp-0.9.8/dhcpc.c~gcc3
++++ udhcp-0.9.8/dhcpc.c
+@@ -132,6 +132,7 @@
+ 		state = INIT_SELECTING;
+ 		break;
+ 	case INIT_SELECTING:
++		;
+ 	}
+ 
+ 	/* start things over */

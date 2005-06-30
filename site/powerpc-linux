@@ -1,0 +1,20 @@
+# libc-initial
+libc_cv_ppc_machine=${libc_cv_ppc_machine='yes'}
+
+# bash
+ac_cv_func_setvbuf_reversed=${ac_cv_func_setvbuf_reversed='no'}
+bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t='yes'}
+
+# openssh
+ac_cv_have_broken_dirname=${ac_cv_have_broken_dirname='yes'}
+ac_cv_have_space_d_name_in_struct_dirent=${ac_cv_have_space_d_name_in_struct_dirent='no'}
+ac_cv_have_broken_snprintf=${ac_cv_have_broken_snprintf='no'}
+ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug='yes'}
+ac_cv_have_accrights_in_msghdr=${ac_cv_have_accrights_in_msghdr='no'}
+ac_cv_have_control_in_msghdr=${ac_cv_have_control_in_msghdr='yes'}
+
+# libpcap
+ac_cv_linux_vers=${ac_cv_linux_vers='2'}
+
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int='4'}

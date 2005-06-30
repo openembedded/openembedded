@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- kernel-aodv_v2.2.2/Makefile~fix-makefile	2004-05-21 23:56:52.000000000 +0200
++++ kernel-aodv_v2.2.2/Makefile	2004-07-09 23:20:56.000000000 +0200
+@@ -35,9 +35,9 @@
+ 	MODCFLAGS :=  -O3 -DMODULE -D__KERNEL__ -DLINUX 
+ endif
+ ifeq ($(TARGET),arm)
+-	CC := arm-linux-gcc
+-	LD := arm-linux-ld -m armelf -r
+-	KPATH := /home/adhoc/ipaq/include/
++	#CC := arm-linux-gcc
++	#LD := arm-linux-ld -m armelf -r
++	KPATH := $(KERNEL_PATH)/include/
+ 	MODCFLAGS :=  -O3 -DMODULE -D__KERNEL__ -DLINUX -DARM
+ endif
+ ifeq ($(TARGET),mipsel)

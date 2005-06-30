@@ -1,0 +1,24 @@
+Index: rpm-4.4/configure.ac
+===================================================================
+--- rpm-4.4.orig/configure.ac	2005-01-29 10:54:37.698359056 -0500
++++ rpm-4.4/configure.ac	2005-01-29 10:55:16.492461456 -0500
+@@ -321,10 +321,8 @@
+ 
+ localdone=
+ 
+-dirs=$prefix
+ if test "$cross_compiling" != "yes"; then
+-  dirs="$dirs /usr/local"
+-fi
++dirs="$prefix /usr/local"
+ for dir in $dirs
+ do
+ 	case $dir in
+@@ -366,6 +364,7 @@
+ else
+ 	AC_MSG_RESULT(no)
+ fi
++fi
+ 
+ dnl
+ dnl Check for features

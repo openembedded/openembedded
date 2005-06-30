@@ -1,0 +1,102 @@
+Status: ok
+
+rpm .spec file and minor ANNOUNCE corrections
+
+from  Horst von Brand <vonbrand@inf.utfsm.cl>
+
+ ----------- Diffstat output ------------
+ ./ANNOUNCE    |   10 +++++-----
+ ./wiggle.spec |   55 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+), 5 deletions(-)
+
+diff ./ANNOUNCE~current~ ./ANNOUNCE
+--- ./ANNOUNCE~current~	2004-02-03 13:01:02.000000000 +1100
++++ ./ANNOUNCE	2004-02-03 13:18:38.000000000 +1100
+@@ -1,4 +1,4 @@
+-ANNOUNCE: wiggle - a tools for applying patches with conflicts
++ANNOUNCE: wiggle - a tool for applying patches with conflicts
+ 
+ I am pleased to announce the first public release of 'wiggle'.
+ 
+@@ -7,7 +7,7 @@ apply due to conflicting changes in the 
+ 
+ Wiggle will always apply all changes in the patch to the original.
+ If it cannot find a way to cleanly apply a patch, it inserts it
+-in the original in a manner similar to 'merge', and report an
++in the original in a manner similar to 'merge', and reports an
+ unresolvable conflict.  Such a conflict will look like:
+ 
+ <<<<<<<
+@@ -19,9 +19,9 @@ Some text that the patch changes
+ Some text that is the result of the patch
+ >>>>>>>
+ 
+-with the meaning that the "text that the patch
+-changes" was expected somewhere in the "text from the original 
+-file" and should be replaced with "the result of the patch".
++with the meaning that the "text that the patch changes"
++was expected somewhere in the "text from the original file"
++and should be replaced with "the result of the patch".
+ 
+ wiggle analyses the file and the patch in terms of words rather than
+ whole lines and so is able to find matches that patch is
+
+diff ./wiggle.spec~current~ ./wiggle.spec
+--- ./wiggle.spec~current~	2004-02-03 13:01:02.000000000 +1100
++++ ./wiggle.spec	2004-02-03 13:18:38.000000000 +1100
+@@ -0,0 +1,55 @@
++Summary: A tool for applying patches with conflicts
++Name: wiggle
++Version: 0.6
++Release: 1
++License: GPL
++Group: Development/Tools 
++URL: http://www.cse.unsw.edu.au/~neilb/source/wiggle/
++Source0: http://www.cse.unsw.edu.au/~neilb/source/wiggle/%{name}-%{version}.tar.gz
++BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
++
++%description
++Wiggle is a program for applying patches that 'patch' cannot
++apply due to conflicting changes in the original.
++
++Wiggle will always apply all changes in the patch to the original.
++If it cannot find a way to cleanly apply a patch, it inserts it
++in the original in a manner similar to 'merge', and report an
++unresolvable conflict.
++
++%prep
++%setup -q
++
++%build
++make BINDIR=/usr/bin \
++     MANDIR=%{_mandir} MAN1DIR=%{_mandir}/man1 MAN5DIR=%{_mandir}/man5 \
++     CFLAGS="$RPM_OPT_FLAGS" \
++     wiggle
++
++%install
++rm -rf $RPM_BUILD_ROOT
++mkdir -p $RPM_BUILD_ROOT/usr/bin
++mkdir -p $RPM_BUILD_ROOT%{_mandir}/man{1,5}
++
++make BINDIR=$RPM_BUILD_ROOT/usr/bin \
++     MANDIR=$RPM_BUILD_ROOT%{_mandir} \
++     MAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
++     MAN5DIR=$RPM_BUILD_ROOT%{_mandir}/man5 \
++     install
++
++%clean
++rm -rf $RPM_BUILD_ROOT
++
++%files
++%defattr(-,root,root,-)
++/usr/bin/wiggle
++%{_mandir}/man1/wiggle.1*
++%doc ANNOUNCE TODO notes
++%doc p p.help
++
++
++%changelog
++* Thu May 22 2003 Horst von Brand <vonbrand@inf.utfsm.cl> 0.6-1 
++- Initial build.
++
++

@@ -1,0 +1,42 @@
+2005-05-07  Steven Brown  <swbrown@ucsd.edu>
+
+	* conftools/ac_cxx_template_keyword_qualifier.m4: Upgrade to
+	2004/02/15 version, as the older version fails with gcc 3.4.
+
+
+diff -ruN EasySoap++-0.6.1-old/conftools/ac_cxx_template_keyword_qualifier.m4 EasySoap++-0.6.1/conftools/ac_cxx_template_keyword_qualifier.m4
+--- EasySoap++-0.6.1-old/conftools/ac_cxx_template_keyword_qualifier.m4	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/conftools/ac_cxx_template_keyword_qualifier.m4	Fri Jan 21 21:36:37 2005
+@@ -3,8 +3,8 @@
+ dnl If the compiler supports use of the template keyword as a qualifier,
+ dnl define HAVE_TEMPLATE_KEYWORD_QUALIFIER.
+ dnl
+-dnl @version $Id: ac_cxx_template_keyword_qualifier.m4,v 1.1 2001/11/12 07:48:22 dcrowley Exp $
+-dnl @author Luc Maisonobe
++dnl @version $Id: ac_cxx_template_keyword_qualifier.m4,v 1.2 2004/02/15 10:04:12 guidod Exp $
++dnl @author Todd Veldhuizen, Bernardo Innocenti, and Luc Maisonobe <luc@spaceroots.org>
+ dnl
+ AC_DEFUN([AC_CXX_TEMPLATE_KEYWORD_QUALIFIER],
+ [AC_CACHE_CHECK(whether the compiler supports use of the template keyword as a qualifier,
+@@ -12,9 +12,18 @@
+ [AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  AC_TRY_COMPILE([
+-class A { public : A() {}; template<class T> static T convert() { return T(); }
+-};
+-],[double z = A::template convert<double>(); return 0;],
++  class X
++  {
++    public:
++    template<int> void member() {}
++    template<int> static void static_member() {}
++  };
++  template<class T> void f(T* p)
++  {
++    p->template member<200>(); // OK: < starts template argument
++    T::template static_member<100>(); // OK: < starts explicit qualification
++  }
++],[X x; f(&x); return 0;],
+  ac_cv_cxx_template_keyword_qualifier=yes, ac_cv_cxx_template_keyword_qualifier=no)
+  AC_LANG_RESTORE
+ ])

@@ -1,0 +1,63 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libetpan/src/data-types/mailsem.c~reentrant	2005-01-28 02:43:11.000000000 +0100
++++ libetpan/src/data-types/mailsem.c	2005-03-10 14:32:31.717000768 +0100
+@@ -34,7 +34,9 @@
+  */
+ 
+ #include "mailsem.h"
++#ifdef LIBETPAN_REENTRANT
+ #include <semaphore.h>
++#endif
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
+@@ -50,6 +52,7 @@
+ 
+ struct mailsem * mailsem_new(void)
+ {
++#ifdef LIBETPAN_REENTRANT
+   struct mailsem * sem;
+   int r;
+   
+@@ -82,11 +85,13 @@
+   return sem;
+   
+  err:
++#endif
+   return NULL;
+ }
+ 
+ void mailsem_free(struct mailsem * sem)
+ {
++#ifdef LIBETPAN_REENTRANT
+   if (sem->sem_kind == SEMKIND_SEMOPEN) {
+     char name[SEMNAME_LEN];
+     
+@@ -101,14 +106,23 @@
+     free(sem->sem_sem);
+   }
+   free(sem);
++#endif
+ }
+ 
+ int mailsem_up(struct mailsem * sem)
+ {
++#ifdef LIBETPAN_REENTRANT
+   return sem_wait((sem_t *) sem->sem_sem);
++#else
++  return 0;
++#endif
+ }
+ 
+ int mailsem_down(struct mailsem * sem)
+ {
++#ifdef LIBETPAN_REENTRANT
+   return sem_post((sem_t *) sem->sem_sem);
++#else
++  return 0;
++#endif
+ }

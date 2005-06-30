@@ -1,0 +1,92 @@
+#
+# Try to remove hardcoded /home path
+#
+--- pocketcellar-1.1/winedb.cpp.old	2005-02-28 13:43:30.000000000 +0000
++++ pocketcellar-1.1/winedb.cpp	2005-02-28 13:40:55.000000000 +0000
+@@ -141,6 +141,7 @@
+ #include <qdatastream.h>
+ #include <qtextstream.h>
+ #include <qfile.h>
++#include <qdir.h>
+ 
+ 
+ QDataStream& operator>>(QDataStream& s, Wine& w) {
+@@ -209,15 +210,15 @@
+ 
+ 
+ bool WineDB::load(QListView *parent, int loc) {
+-	QString path("/home");
++	QString path(QDir::homeDirPath());
+ 	
+ 	if (loc == 1)
+-		path = "/usr/mnt.rom/cf";
++		path = "/media/cf";
+ 	else if (loc == 2)
+-		path = "/usr/mnt.rom/card";
++		path = "/media/card";
+ 
+-	mkdir(QString(path + "/QtPalmtop/data/PocketCellar").ascii(), 755);
+-	QFile f(path + "/QtPalmtop/data/PocketCellar/PCWineDB");
++	mkdir(QString(path + "/Documents/application/PocketCellar").ascii(), 755);
++	QFile f(path + "/Documents/application/PocketCellar/PCWineDB");
+ 
+ 	if (!f.open(IO_ReadOnly))
+ 		return false;
+@@ -240,26 +241,26 @@
+ 
+ 	f.close();
+ 
+-	if (loc != 0)
++/*	if (loc != 0)
+ 		unlink("/home/QtPalmtop/data/PocketCellar/PCWineDB");
+ 	if (loc != 1)
+ 		unlink("/usr/mnt.rom/cf/QtPalmtop/data/PocketCellar/PCWineDB");
+ 	if (loc != 2)
+-		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCWineDB");
++		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCWineDB");*/
+ return true;
+ }
+ 
+ 
+ bool WineDB::save(QListView *parent, int loc) {
+-	QString path("/home");
++	QString path(QDir::homeDirPath());
+ 	
+ 	if (loc == 1)
+-		path = "/usr/mnt.rom/cf";
++		path = "/media/cf";
+ 	else if (loc == 2)
+-		path = "/usr/mnt.rom/card";
++		path = "/media/card";
+ 
+-	mkdir(QString(path + "/QtPalmtop/data/PocketCellar").ascii(), 755);
+-	QFile f(path + "/QtPalmtop/data/PocketCellar/PCWineDB");
++	mkdir(QString(path + "/Documents/application/PocketCellar").ascii(), 755);
++	QFile f(path + "/Documents/application/PocketCellar/PCWineDB");
+ 
+ 	if (!f.open(IO_WriteOnly))
+ 		return false;
+@@ -277,12 +278,12 @@
+ 
+ 	f.close();
+ 
+-	if (loc != 0)
++/*	if (loc != 0)
+ 		unlink("/home/QtPalmtop/data/PocketCellar/PCWineDB");
+ 	if (loc != 1)
+ 		unlink("/usr/mnt.rom/cf/QtPalmtop/data/PocketCellar/PCWineDB");
+ 	if (loc != 2)
+-		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCWineDB");
++		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCWineDB");*/
+ 	return true;
+ }
+ 
+@@ -290,7 +291,7 @@
+ QStringList WineDB::grapeList;
+ 
+ bool WineDB::loadGrapeList() {
+-	QFile f("/home/QtPalmtop/data/PocketCellar/grapelist.txt");
++	QFile f("/opt/QtPalmtop/data/PocketCellar/grapelist.txt");
+ 
+ 	if (!f.open(IO_ReadOnly))
+ 		return false;

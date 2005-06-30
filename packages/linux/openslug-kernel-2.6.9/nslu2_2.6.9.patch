@@ -1,0 +1,312 @@
+diff -purN linux-2.6.9/arch/arm/mach-ixp4xx/Kconfig linux-2.6.9-new/arch/arm/mach-ixp4xx/Kconfig
+--- linux-2.6.9/arch/arm/mach-ixp4xx/Kconfig	2004-06-15 22:19:01.000000000 -0700
++++ linux-2.6.9-new/arch/arm/mach-ixp4xx/Kconfig	2004-09-14 03:59:28.000000000 -0700
+@@ -29,6 +29,13 @@ config ARCH_IXDP425
+ 	  IXDP425 Development Platform (Also known as Richfield).  
+ 	  For more information on this platform, see Documentation/arm/IXP4xx.
+ 
++config ARCH_NSLU2
++	bool "NSLU2"
++	help
++	  Say 'Y' here if you want your kernel to support Linksys's 
++	  NSLU2 NAS device. For more information on this platform, 
++	  see http://www.nslu2-linux.org
++
+ #
+ # IXCDP1100 is the exact same HW as IXDP425, but with a different machine 
+ # number from the bootloader due to marketing monkeys, so we just enable it
+--- linux-2.6.9.orig/arch/arm/mach-ixp4xx/Makefile	2004-06-16 01:18:59.000000000 -0400
++++ linux-2.6.9/arch/arm/mach-ixp4xx/Makefile	2004-09-24 01:35:22.051627330 -0400
+@@ -4,7 +4,6 @@
+ 
+ obj-y	+= common.o common-pci.o 
+ 
+-obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pci.o ixdp425-setup.o
+ obj-$(CONFIG_ARCH_ADI_COYOTE)	+= coyote-pci.o coyote-setup.o
+ obj-$(CONFIG_ARCH_PRPMC1100)	+= prpmc1100-pci.o prpmc1100-setup.o
+-
++obj-$(CONFIG_ARCH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-part.o nslu2-io.o
+diff -purN linux-2.6.9/drivers/mtd/maps/ixp4xx.c linux-2.6.9-new/drivers/mtd/maps/ixp4xx.c
+--- linux-2.6.9/drivers/mtd/maps/ixp4xx.c	2004-06-15 22:18:38.000000000 -0700
++++ linux-2.6.9-new/drivers/mtd/maps/ixp4xx.c	2004-09-14 03:59:28.000000000 -0700
+@@ -82,7 +82,11 @@ struct ixp4xx_flash_info {
+ 	struct resource *res;
+ };
+ 
++#ifdef CONFIG_ARCH_NSLU2
++static const char *probes[] = { "cmdlinepart", "RedBoot", "NSLU2", NULL };
++#else
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
++#endif
+ 
+ static int
+ ixp4xx_flash_remove(struct device *_dev)
+diff -purN linux-2.6.9/include/asm-arm/arch-ixp4xx/hardware.h linux-2.6.9-new/include/asm-arm/arch-ixp4xx/hardware.h
+--- linux-2.6.9/include/asm-arm/arch-ixp4xx/hardware.h	2004-06-15 22:19:02.000000000 -0700
++++ linux-2.6.9-new/include/asm-arm/arch-ixp4xx/hardware.h	2004-09-14 03:59:28.000000000 -0700
+@@ -37,5 +37,6 @@
+ #include "ixdp425.h"
+ #include "coyote.h"
+ #include "prpmc1100.h"
++#include "nslu2.h"
+ 
+ #endif  /* _ASM_ARCH_HARDWARE_H */
+diff -purN linux-2.6.9/include/asm-arm/arch-ixp4xx/irqs.h linux-2.6.9-new/include/asm-arm/arch-ixp4xx/irqs.h
+--- linux-2.6.9/include/asm-arm/arch-ixp4xx/irqs.h	2004-06-15 22:19:37.000000000 -0700
++++ linux-2.6.9-new/include/asm-arm/arch-ixp4xx/irqs.h	2004-09-14 03:59:28.000000000 -0700
+@@ -75,4 +75,12 @@
+ #define	IRQ_COYOTE_PCI_SLOT1	IRQ_IXP4XX_GPIO11
+ #define	IRQ_COYOTE_IDE		IRQ_IXP4XX_GPIO5
+ 
++/*
++ * NSLU2 board IRQs
++ */
++#define	IRQ_NSLU2_PCI_INTA	IRQ_IXP4XX_GPIO11
++#define	IRQ_NSLU2_PCI_INTB	IRQ_IXP4XX_GPIO10
++#define	IRQ_NSLU2_PCI_INTC	IRQ_IXP4XX_GPIO9
++
++
+ #endif
+diff -Nru linux-2.6.9/arch/arm/mach-ixp4xx/common-pci.c linux-2.6.9/arch/arm/mach-ixp4xx/common-pci.c
+--- linux-2.6.9/arch/arm/mach-ixp4xx/common-pci.c	2004-10-08 13:59:23 -07:00
++++ linux-2.6.9/arch/arm/mach-ixp4xx/common-pci.c	2004-10-08 13:59:23 -07:00
+@@ -239,9 +239,10 @@
+ 	return 0xffffffff;
+ }
+ 
+-static int read_config(u8 bus_num, u16 devfn, int where, int size, u32 *value)
++static int ixp4xx_pci_read_config(struct pci_bus *bus, u16 devfn, int where, int size, u32 *value)
+ {
+ 	u32 n, byte_enables, addr, data;
++	u8 bus_num = bus->number;
+ 
+ 	pr_debug("read_config from %d size %d dev %d:%d:%d\n", where, size,
+ 		bus_num, PCI_SLOT(devfn), PCI_FUNC(devfn));
+@@ -261,9 +262,10 @@
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-static int write_config(u8 bus_num, u16 devfn, int where, int size, u32 value)
++static int ixp4xx_pci_write_config(struct pci_bus *bus,  u16 devfn, int where, int size, u32 value)
+ {
+ 	u32 n, byte_enables, addr, data;
++	u8 bus_num = bus->number;
+ 
+ 	pr_debug("write_config_byte %#x to %d size %d dev %d:%d:%d\n", value, where,
+ 		size, bus_num, PCI_SLOT(devfn), PCI_FUNC(devfn));
+@@ -281,30 +283,10 @@
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-/*
+- *	Generalized PCI config access functions.
+- */
+-static int ixp4xx_read_config(struct pci_bus *bus, unsigned int devfn,
+-	int where, int size, u32 *value)
+-{
+-	if (bus->number && !PCI_SLOT(devfn))
+-		return local_read_config(where, size, value);
+-	return read_config(bus->number, devfn, where, size, value);
+-}
+-
+-static int ixp4xx_write_config(struct pci_bus *bus, unsigned int devfn,
+-	int where, int size, u32 value)
+-{
+-	if (bus->number && !PCI_SLOT(devfn))
+-		return local_write_config(where, size, value);
+-	return write_config(bus->number, devfn, where, size, value);
+-}
+-
+ struct pci_ops ixp4xx_ops = {
+-	.read =  ixp4xx_read_config,
+-	.write = ixp4xx_write_config,
++	.read =  ixp4xx_pci_read_config,
++	.write = ixp4xx_pci_write_config,
+ };
+-
+ 
+ /*
+  * PCI abort handler
+diff -Nru linux-2.6.9/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h linux-2.6.9/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h
+--- linux-2.6.9/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h	2004-10-08 13:59:23 -07:00
++++ linux-2.6.9/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h	2004-10-08 13:59:23 -07:00
+@@ -55,7 +55,7 @@
+  * PCI Config registers
+  */
+ #define IXP4XX_PCI_CFG_BASE_PHYS	(0xC0000000)
+-#define	IXP4XX_PCI_CFG_BASE_VIRT	(0xFFBFD000)
++#define	IXP4XX_PCI_CFG_BASE_VIRT	(0xFFBFE000)
+ #define IXP4XX_PCI_CFG_REGION_SIZE	(0x00001000)
+ 
+ /*
+--- linux-2.6.9/drivers/i2c/chips/Kconfig.orig	2004-06-16 01:19:35.000000000 -0400
++++ linux-2.6.9/drivers/i2c/chips/Kconfig	2004-09-22 18:09:48.454794342 -0400
+@@ -240,6 +240,16 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called pcf8591.
+ 
++config SENSORS_X1205
++ 	tristate "Xicor X1205 RTC chip"
++ 	depends on I2C && EXPERIMENTAL
++ 	select I2C_SENSOR
++ 	help
++ 	  If you say yes here you get support for the Xicor x1205 RTC chip.
++ 
++ 	  This driver can also be built as a module.  If so, the module
++ 	  will be called x1205-rtc
++
+ config SENSORS_RTC8564
+ 	tristate "Epson 8564 RTC chip"
+ 	depends on I2C && EXPERIMENTA
+--- linux-2.6.9/drivers/i2c/chips/Makefile.old	2004-06-16 01:20:26.000000000 -0400
++++ linux-2.6.9/drivers/i2c/chips/Makefile	2004-09-22 16:48:06.435580334 -0400
+@@ -25,6 +25,7 @@
+ obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564.o
+ obj-$(CONFIG_SENSORS_VIA686A)	+= via686a.o
+ obj-$(CONFIG_SENSORS_W83L785TS)	+= w83l785ts.o
++obj-$(CONFIG_SENSORS_X1205)     += x1205-rtc.o
+ obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+
+--- linux-2.6.9/arch/arm/mach-ixp4xx/common.c.orig	2004-10-18 17:54:25.000000000 -0400
++++ linux-2.6.9/arch/arm/mach-ixp4xx/common.c	2004-10-21 14:22:40.766271419 -0400
+@@ -227,10 +227,10 @@
+ 	/*
+ 	 * Catch up with the real idea of time
+ 	 */
+-	do {	
++	while((*IXP4XX_OSTS - last_jiffy_time) > LATCH) {
+ 		timer_tick(regs);
+ 		last_jiffy_time += LATCH;
+-	} while((*IXP4XX_OSTS - last_jiffy_time) > LATCH);
++	};
+ 
+ 	return IRQ_HANDLED;
+ }
+--- linux-2.6.9/include/linux/i2c-id.h.orig	2004-10-18 17:53:10.000000000 -0400
++++ linux-2.6.9/include/linux/i2c-id.h	2004-10-21 14:14:17.115262597 -0400
+@@ -109,7 +109,7 @@
+ #define I2C_DRIVERID_OVCAMCHIP	61	/* OmniVision CMOS image sens.	*/
+ #define I2C_DRIVERID_TDA7313	62	/* TDA7313 audio processor	*/
+ #define I2C_DRIVERID_MAX6900	63	/* MAX6900 real-time clock	*/
+-
++#define I2C_DRIVERID_X1205	0xF0
+ 
+ #define I2C_DRIVERID_EXP0	0xF0	/* experimental use id's	*/
+ #define I2C_DRIVERID_EXP1	0xF1
+diff -Nru a/arch/arm/kernel/entry-header.S b/arch/arm/kernel/entry-header.S
+--- a/arch/arm/kernel/entry-header.S	2004-10-08 13:59:23 -07:00
++++ b/arch/arm/kernel/entry-header.S	2004-10-08 13:59:23 -07:00
+@@ -4,8 +4,9 @@
+ #include <asm/assembler.h>
+ #include <asm/constants.h>
+ #include <asm/errno.h>
+ #include <asm/hardware.h>
+ #include <asm/arch/irqs.h>
++#include <asm/arch/entry-macro.S>
+ 
+ #ifndef MODE_SVC
+ #define MODE_SVC 0x13
+diff -Nru a/include/asm-arm/arch-ixp4xx/entry-macro.S b/include/asm-arm/arch-ixp4xx/entry-macro.S
+--- /dev/null	Wed Dec 31 16:00:00 1969
++++ b/include/asm-arm/arch-ixp4xx/entry-macro.S	Thu Sep 16 13:15:46 2004
+@@ -0,0 +1,25 @@
++/*
++ * include/asm-arm/arch-ixp4xx/entry-macro.S
++ *
++ * Low-level IRQ helper macros for IXP4xx-based platforms
++ * 
++ * This file is licensed under  the terms of the GNU General Public 
++ * License version 2. This program is licensed "as is" without any 
++ * warranty of any kind, whether express or implied.
++ */
++
++		.macro	disable_fiq
++		.endm
++
++		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
++
++		ldr	\irqstat, =(IXP4XX_INTC_BASE_VIRT+IXP4XX_ICIP_OFFSET)
++		ldr	\irqstat, [\irqstat]		@ get interrupts
++		cmp	\irqstat, #0
++		beq	1001f
++		clz     \irqnr, \irqstat
++		mov     \base, #31
++		subs    \irqnr, \base, \irqnr
++		
++1001:
++		.endm
+
+diff -purN linux-2.6.9.orig/arch/arm/boot/compressed/head.S linux-2.6.9/arch/arm/boot/compressed/head.S
+--- linux-2.6.9.orig/arch/arm/boot/compressed/head.S	2004-10-18 17:55:07.000000000 -0400
++++ linux-2.6.9/arch/arm/boot/compressed/head.S	2004-10-31 03:05:25.011878371 -0500
+@@ -79,6 +79,7 @@
+ 		.endm
+ 		.macro	writeb, rb
+ 		str	\rb, [r3, #0]
++		.endm
+ #elif defined(CONFIG_ARCH_IXP2000)
+ 		.macro	loadsp, rb
+ 		mov	\rb, #0xc0000000
+diff -purN linux-2.6.9.orig/arch/arm/boot/compressed/head-xscale.S linux-2.6.9/arch/arm/boot/compressed/head-xscale.S
+--- linux-2.6.9.orig/arch/arm/boot/compressed/head-xscale.S	2004-10-18 17:53:45.000000000 -0400
++++ linux-2.6.9/arch/arm/boot/compressed/head-xscale.S	2004-10-31 03:05:25.013878040 -0500
+@@ -56,3 +56,7 @@ __XScale_start:
+ 		mov	r7, #MACH_TYPE_COTULLA_IDP
+ #endif
+ 
++#ifdef CONFIG_ARCH_NSLU2
++		mov	r7, #(MACH_TYPE_NSLU2 & 0xff)
++		orr	r7, r7, #(MACH_TYPE_NSLU2 & 0xff00)
++#endif
+--- linux-2.6.9.orig/arch/arm/tools/mach-types	2004-10-18 17:54:08.000000000 -0400
++++ linux-2.6.9/arch/arm/tools/mach-types	2004-10-31 03:05:25.006879199 -0500
+@@ -6,7 +6,7 @@
+ # To add an entry into this database, please see Documentation/arm/README,
+ # or contact rmk@arm.linux.org.uk
+ #
+-# Last update: Thu Sep 30 15:23:21 2004
++# Last update: Mon Oct 25 04:14:24 2004
+ #
+ # machine_is_xxx	CONFIG_xxxx		MACH_TYPE_xxx		number
+ #
+@@ -595,8 +595,8 @@ pxa_dnp2110		MACH_PXA_DNP2110	PXA_DNP211
+ xaeniax			MACH_XAENIAX		XAENIAX			585
+ somn4250		MACH_SOMN4250		SOMN4250		586
+ pleb2			MACH_PLEB2		PLEB2			587
+-cwl			MACH_CWL		CWL			588
+-gd			MACH_GD			GD			589
++cornwallis		MACH_CORNWALLIS		CORNWALLIS		588
++gurney_drv		MACH_GURNEY_DRV		GURNEY_DRV		589
+ chaffee			MACH_CHAFFEE		CHAFFEE			590
+ rms101			MACH_RMS101		RMS101			591
+ rx3715			MACH_RX3715		RX3715			592
+@@ -604,7 +604,7 @@ swift			MACH_SWIFT		SWIFT			593
+ roverp7			MACH_ROVERP7		ROVERP7			594
+ pr818s			MACH_PR818S		PR818S			595
+ trxpro			MACH_TRXPRO		TRXPRO			596
+-nslu2			MACH_NSLU2		NSLU2			597
++nslu2			ARCH_NSLU2		NSLU2			597
+ e400			MACH_E400		E400			598
+ trab			MACH_TRAB		TRAB			599
+ cmc_pu2			MACH_CMC_PU2		CMC_PU2			600
+@@ -615,3 +615,18 @@ ixdpg425		MACH_IXDPG425		IXDPG425		604
+ tomtomgo		MACH_TOMTOMGO		TOMTOMGO		605
+ versatile_ab		MACH_VERSATILE_AB	VERSATILE_AB		606
+ edb9307			MACH_EDB9307		EDB9307			607
++sg565			MACH_SG565		SG565			608
++lpd79524		MACH_LPD79524		LPD79524		609
++lpd79525		MACH_LPD79525		LPD79525		610
++rms100			MACH_RMS100		RMS100			611
++kb9200			MACH_KB9200		KB9200			612
++sx1			MACH_SX1		SX1			613
++hms39c7092		MACH_HMS39C7092		HMS39C7092		614
++armadillo		MACH_ARMADILLO		ARMADILLO		615
++ipcu			MACH_IPCU		IPCU			616
++loox720			MACH_LOOX720		LOOX720			617
++ixdp465			MACH_IXDP465		IXDP465			618
++ixdp2351		MACH_IXDP2351		IXDP2351		619
++adsvix			MACH_ADSVIX		ADSVIX			620
++dm270			MACH_DM270		DM270			621
++

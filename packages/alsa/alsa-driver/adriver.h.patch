@@ -1,0 +1,23 @@
+--- ./include/adriver.h.orig    2003-09-22 22:04:21.000000000 +0200
++++ ./include/adriver.h   2005-06-26 10:33:15.000000000 +0200
+@@ -328,8 +328,18 @@
+ #endif /* SND_NEED_USB_WRAPPER && CONFIG_USB */
+ 
+ /* workqueue-alike; 2.5.45 */
+-#include <linux/workqueue.h>
++#include <linux/workqueue.h> 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 5, 45) && !defined(__WORK_INITIALIZER)
++#ifdef work_struct
++#undef work_struct
++#endif
++#ifdef INIT_WORK
++#undef INIT_WORK
++#endif
++#ifdef schedule_work
++#undef schedule_work
++#endif
++
+ struct work_struct {
+        void (*func)(void *);
+        void *data;
+

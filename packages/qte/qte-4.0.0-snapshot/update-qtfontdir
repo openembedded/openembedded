@@ -1,0 +1,62 @@
+#!/bin/sh
+
+usage()
+{
+    echo "usage: $0 [font directory, defaults to QTDIR/lib/fonts]"
+    exit 1
+}
+
+setVar()
+{
+    eval "$1='$2'"
+}
+
+getVar()
+{
+    eval "echo \$$1"
+}
+
+handleQPF()
+{
+    base=`basename $1`
+    family=`echo $base|cut -d_ -f1`
+    pt=`echo $base|cut -d_ -f2`
+    weight=`echo $base|cut -d_ -f3|sed -e 's,i$,,'`
+    if (echo $base|cut -d_ -f3|grep -q 'i$'); then
+        italic="y"
+    else
+        italic="n"
+    fi
+    echo "$family $base.qpf QPF $italic $weight $pt u"
+}
+
+if [ -z "$1" ]; then
+    if [ -n "$QTDIR" ]; then
+        fontdir=$QTDIR/lib/fonts
+    else
+        fontdir=/opt/QtPalmtop/lib/fonts
+    fi
+else
+    fontdir=$1
+fi
+    
+if ! [ -d $fontdir ]; then
+    echo Error: $fontdir not a directory
+    exit 1
+fi
+
+if [ -e $fontdir/fontdir ]; then
+    cat $fontdir/fontdir | grep -v '\.qpf' > $fontdir/fontdir.new
+fi
+
+(
+    for file in `ls $fontdir/*.qpf|sed -e's,\.qpf$,,; s,_t[^_]*$,,;'|sort -u`; do
+        handleQPF $file
+    done
+) >> $fontdir/fontdir.new
+
+mv $fontdir/fontdir.new $fontdir/fontdir
+
+exit 0
+
+# vim:ai:et:sts=4:sw=4:tw=0:

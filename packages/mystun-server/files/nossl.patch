@@ -1,0 +1,12 @@
+diff -Nur mystun.orig/globals.h mystun/globals.h
+--- mystun.orig/globals.h	2004-01-18 22:37:40.000000000 +0100
++++ mystun/globals.h	2005-03-21 13:33:56.000000000 +0100
+@@ -29,7 +29,7 @@
+ #define BUF_SIZE 65535
+ #define TIMER_RESOLUTION 60 //resolution for timer process in seconds
+ 
+-#ifndef WIN32
++#if !defined(WIN32) && defined(OPENSSL_NO_KRB5)
+ #include <openssl/ssl.h>
+ #include <openssl/err.h>
+ #endif

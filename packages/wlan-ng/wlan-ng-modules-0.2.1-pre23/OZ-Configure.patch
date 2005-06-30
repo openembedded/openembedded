@@ -1,0 +1,19 @@
+--- linux-wlan-ng-0.2.1pre22/Configure-dist	2004-08-05 00:55:27.000000000 +1000
++++ linux-wlan-ng-0.2.1pre22/Configure	2004-10-28 02:28:06.000000000 +1000
+@@ -431,16 +431,8 @@
+ 	if [ -d /etc/rc.d/init.d -o -d /etc/init.d -o -d /sbin/init.d ] ; then
+ 	$ECHO "It looks like you have a System V init file setup."
+ 	SYSV_INIT=y
+-	if [ -d /etc/rc.d/init.d ] ; then
+-		$ECHO "RC_DIR=/etc/rc.d" >> $CONFIG
+-		$ECHO "RC_DIR=/etc/rc.d" >> $CONFIG_MK
+-	elif [ -d /sbin/init.d ] ; then
+-		$ECHO "RC_DIR=/sbin" >> $CONFIG
+-		$ECHO "RC_DIR=/sbin" >> $CONFIG_MK
+-	else
+ 		$ECHO "RC_DIR=/etc" >> $CONFIG
+ 		$ECHO "RC_DIR=/etc" >> $CONFIG_MK
+-	fi
+ 	else
+ 	$ECHO "It looks like you have a BSD-ish init file setup."
+ 	if ! grep rc.wlan /etc/rc.d/rc.S >/dev/null ; then

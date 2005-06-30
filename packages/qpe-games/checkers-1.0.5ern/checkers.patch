@@ -1,0 +1,12 @@
+diff -ur checkers_V1.0.5ern.orig/checkers.desktop checkers_V1.0.5ern/checkers.desktop
+--- checkers_V1.0.5ern.orig/checkers.desktop	2004-06-17 00:06:55.000000000 +0200
++++ checkers_V1.0.5ern/checkers.desktop	2004-06-17 00:07:03.000000000 +0200
+@@ -2,7 +2,7 @@
+ Comment=Checkers (Draughts) for the Zaurus
+ Comment[de]=Das klassische Damespiel
+ Exec=checkers
+-Icon=Checkers
++Icon=checkers/Checkers
+ Type=Application
+ Type[de]=Anwendung
+ Name=Checkers

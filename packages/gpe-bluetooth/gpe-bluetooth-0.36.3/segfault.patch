@@ -1,0 +1,30 @@
+Index: main.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-bluetooth/main.c,v
+retrieving revision 1.51
+retrieving revision 1.52
+diff -u -r1.51 -r1.52
+--- main.c	7 Mar 2004 17:41:27 -0000	1.51
++++ main.c	7 Sep 2004 00:01:17 -0000	1.52
+@@ -508,7 +508,7 @@
+ {
+   GtkWidget *window;
+   GdkBitmap *bitmap;
+-  GtkWidget *menu_remove, *menu_file;
++  GtkWidget *menu_remove;
+   GtkTooltips *tooltips;
+   int dd;
+ 
+@@ -560,12 +560,10 @@
+ 
+   gtk_widget_show (menu_devices);
+   gtk_widget_show (menu_remove);
+-  gtk_widget_show (menu_file);
+ 
+   gtk_menu_append (GTK_MENU (menu), menu_radio_on);
+   gtk_menu_append (GTK_MENU (menu), menu_radio_off);
+   gtk_menu_append (GTK_MENU (menu), menu_devices);
+-  gtk_menu_append (GTK_MENU (menu), menu_file);
+   gtk_menu_append (GTK_MENU (menu), menu_remove);
+ 
+   if (gpe_load_icons (my_icons) == FALSE)

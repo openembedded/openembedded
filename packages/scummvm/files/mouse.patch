@@ -1,0 +1,36 @@
+--- ./backends/sdl/sdl-common.cpp~mouse.patch	2004-03-05 07:23:04.000000000 +1030
++++ ./backends/sdl/sdl-common.cpp	2004-05-16 07:53:24.000000000 +0930
+@@ -866,6 +866,9 @@
+ 			return true;
+ 
+ 		case SDL_MOUSEBUTTONDOWN:
++#ifdef QTOPIA
++			event->event_code = EVENT_LBUTTONDOWN;
++#else
+ 			if (ev.button.button == SDL_BUTTON_LEFT)
+ 				event->event_code = EVENT_LBUTTONDOWN;
+ 			else if (ev.button.button == SDL_BUTTON_RIGHT)
+@@ -878,18 +881,23 @@
+ #endif
+ 			else
+ 				break;
++#endif
+ 
+ 			fillMouseEvent(*event, ev.button.x, ev.button.y);
+ 
+ 			return true;
+ 
+ 		case SDL_MOUSEBUTTONUP:
++#ifdef QTOPIA
++			event->event_code = EVENT_LBUTTONUP;
++#else
+ 			if (ev.button.button == SDL_BUTTON_LEFT)
+ 				event->event_code = EVENT_LBUTTONUP;
+ 			else if (ev.button.button == SDL_BUTTON_RIGHT)
+ 				event->event_code = EVENT_RBUTTONUP;
+ 			else
+ 				break;
++#endif
+ 			fillMouseEvent(*event, ev.button.x, ev.button.y);
+ 
+ 			return true;

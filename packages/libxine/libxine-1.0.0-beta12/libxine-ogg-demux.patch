@@ -1,0 +1,22 @@
+Copyright (C) 2002, Fred Boulay <dilb@handhelds.org>
+Licensed under GPL v2
+
+--- src/demuxers/demux_ogg.c.orig	2002-12-17 18:46:48.000000000 +0100
++++ src/demuxers/demux_ogg.c	2002-12-17 18:47:26.000000000 +0100
+@@ -35,7 +35,7 @@
+ #include <stdlib.h>
+ 
+ #include <ogg/ogg.h>
+-#include <vorbis/codec.h>
++#include <tremor/ivorbiscodec.h>
+ 
+ #include "xine_internal.h"
+ #include "xineutils.h"
+--- src/demuxers/Makefile.am.orig	2002-12-19 17:18:12.000000000 +0100
++++ src/demuxers/Makefile.am	2002-12-19 17:18:32.000000000 +0100
+@@ -1,4 +1,4 @@
+-AM_CFLAGS = $(OGG_CFLAGS) @ANSI_FLAGS@
++AM_CFLAGS = $(OGG_CFLAGS) $(VORBIS_CFLAGS) @ANSI_FLAGS@
+ 
+ LIBTOOL = $(SHELL) $(top_builddir)/libtool-nofpic
+ 

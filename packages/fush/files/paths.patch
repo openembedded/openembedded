@@ -1,0 +1,96 @@
+Index: fush-0-9-0/configure.in
+===================================================================
+--- fush-0-9-0.orig/configure.in	2005-01-19 17:52:07.000000000 -0600
++++ fush-0-9-0/configure.in	2005-01-19 17:54:08.000000000 -0600
+@@ -71,21 +71,20 @@
+ 
+ 
+ AC_SUBST(USER)
+-AC_OUTPUT([Makefile src/Makefile])
+ 
+ 
+ if test -s $USER_HOME; then
+ 	echo "configuration directory: $USER_HOME";
+-	echo "#define _CONFIGDIR_ \"$USER_HOME\"" >> config.h
+ 	CONFDIR="$USER_HOME"
+ else
+-	echo "configuration directory: $prefix/etc/fush";
+-	echo "#define _CONFIGDIR_ \"$prefix/etc/fush\"" >> config.h
+-	CONFDIR="$prefix/etc/fush"
++	echo "configuration directory: $sysconfdir/fush";
++	CONFDIR="$sysconfdir/fush"
+ fi
++PATH_DEFS="$PATH_DEFS -D_CONFIGDIR_=\\\"$CONFDIR\\\" -D_BINDIR_=\\\"\$(bindir)\\\" -D_PREFIX_=\\\"\$(prefix)\\\" -D_SYSCONFDIR_=\\\"\$(sysconfdir)\\\""
++AC_SUBST(PATH_DEFS)
++
+ 
+ if test $ac_cv_lib_readline_readline_ != yes; then
+ 	AC_WARN(readline(3) library not be found.  fush was built but will have reduced functionality.  Command entry without readline(3) is on the roadmap for version 1.2.  Send a message to the support forum on http://sourceforge.net/projects/foosh to increase priority for this support.)
+ fi
+-
+-echo "#define _PREFIX_ \"$prefix\"" >> config.h
++AC_OUTPUT([Makefile src/Makefile])
+Index: fush-0-9-0/src/Makefile.in
+===================================================================
+--- fush-0-9-0.orig/src/Makefile.in	2005-01-19 17:52:07.000000000 -0600
++++ fush-0-9-0/src/Makefile.in	2005-01-19 17:52:08.000000000 -0600
+@@ -1,5 +1,5 @@
+ CC =		@CC@
+-CFLAGS =	-Wall @CFLAGS@ @CPPFLAGS@ @DEFS@
++CFLAGS =	-Wall @CFLAGS@ @CPPFLAGS@ @DEFS@ @PATH_DEFS@
+ LDFLAGS =	@LDFLAGS@ @LIBS@
+ OBJS =		fush.o fushtools.o fuparse.o md5.o linklist.o @PWCACHE_OBJS@
+ ADMOBJS = fushadmin.o md5.o
+Index: fush-0-9-0/src/fushadmin.c
+===================================================================
+--- fush-0-9-0.orig/src/fushadmin.c	2004-01-25 18:52:01.000000000 -0600
++++ fush-0-9-0/src/fushadmin.c	2005-01-19 17:53:43.000000000 -0600
+@@ -404,7 +404,7 @@
+ # set to the main system wide profile (cshrc, zshenv, bashrc, etc...)\n\
+ # special note: fush will not correctly process if then statements etc...\n\
+ # (set to 'no' to disable)\n\
+-fu_system_rc=/etc/profile\n\
++fu_system_rc=" _SYSCONFDIR_ "/profile\n\
+ \n\
+ # home system profile (the users home dir is auto prepended)\n\
+ # (set to 'no' to disable)\n\
+@@ -413,7 +413,7 @@
+ # enable home .fushrc profile (yes or no)\n\
+ fu_use_homerc=yes\n\
+ \n\
+-# enable system _CONFIGDIR_/fushrc profile (yes or no)\n\
++# enable system " _CONFIGDIR_ "/fushrc profile (yes or no)\n\
+ fu_use_systemrc=yes\n\
+ \n\
+ # maximum number of backgrounded commands\n\
+@@ -448,7 +448,7 @@
+ subst_command emacs=rvim\n\
+ \n\
+ # command substitutions, by fullpath\n\
+-subst_path /bin/sh=/usr/local/bin/fush\n\
++subst_path /bin/sh=" _BINDIR_ "/fush\n\
+ \n\
+ \n\
+ # policy enforced environment variables\n\
+@@ -456,7 +456,7 @@
+ set_env DT_RUN_PATH=\n\
+ set_env DT_RPATH=\n\
+ set_env LD_LIBRARY_PATH=\n\
+-set_env SHELL=/usr/local/bin/fush\n\
++set_env SHELL=" _BINDIR_ "/fush\n\
+ set_env PAGER=more\n\
+ \n\
+ \n\
+Index: fush-0-9-0/src/fushtools.c
+===================================================================
+--- fush-0-9-0.orig/src/fushtools.c	2005-01-19 17:52:07.000000000 -0600
++++ fush-0-9-0/src/fushtools.c	2005-01-19 17:52:08.000000000 -0600
+@@ -658,7 +658,7 @@
+   fu_add_value( &g_seconf, "fu_logical_and", "yes" );
+ 
+   /* default for system resource script */
+-  fu_add_value( &g_seconf, "fu_system_rc", "/etc/profile" );
++  fu_add_value( &g_seconf, "fu_system_rc", _CONFIGDIR_ "/profile" );
+ 
+   /* default for home resource script */
+   fu_add_value( &g_seconf, "fu_home_rc", ".profile" );

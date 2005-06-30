@@ -1,0 +1,24 @@
+diff -urNd ../libxine-1.0.0-rc5-r0.old/xine-lib-1-rc5/configure.ac xine-lib-1-rc5/configure.ac
+--- ../libxine-1.0.0-rc5-r0.old/xine-lib-1-rc5/configure.ac	2004-06-21 00:39:04 +01:00
++++ xine-lib-1-rc5/configure.ac	2005-04-08 02:47:53 +01:00
+@@ -607,16 +607,16 @@
+ dnl Checks for Ascii-Art library
+ dnl ---------------------------------------------
+ 
+-AM_PATH_AALIB(1.4,, AC_MSG_RESULT([*** All of AALIB dependent parts will be disabled ***]))
+-AM_CONDITIONAL(HAVE_AA, test x$no_aalib != "xyes")
++dnl AM_PATH_AALIB(1.4,, AC_MSG_RESULT([*** All of AALIB dependent parts will be disabled ***]))
++AM_CONDITIONAL(HAVE_AA, 0)
+ 
+ 
+ dnl ---------------------------------------------
+ dnl Checks for Color AsCii Art library
+ dnl ---------------------------------------------
+ 
+-AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
+-AM_CONDITIONAL(HAVE_CACA, test x$no_caca != "xyes")
++dnl AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
++AM_CONDITIONAL(HAVE_CACA, 0)
+ 
+ 
+ dnl ---------------------------------------------

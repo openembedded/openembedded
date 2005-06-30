@@ -1,0 +1,54 @@
+--- matchbox-panel-0.8.1/src/panel.c	Mon Oct 25 00:15:53 2004
++++ matchbox-panel-0.8.1/src/panel.c	Tue Oct 26 21:40:56 2004
+@@ -813,6 +813,7 @@
+   int app_origin_dist = 0;
+   char *cmd_str = NULL;
+   MBPanelApp *new_papp = NULL;
++  Bool from_session = False;
+ 
+   util_get_command_str_from_win(panel, win, &cmd_str); /* cmd_str freed l8r */
+ 
+@@ -820,9 +821,10 @@
+     {
+       app_origin_dist = panel->session_init_offset;
+       session_preexisting_clear_current(panel);
++      from_session = True;
+     }
+ 
+-  new_papp = panel_app_new(panel, win, cmd_str);
++  new_papp = panel_app_new(panel, win, cmd_str, from_session);
+ 
+   if (new_papp) 
+     {
+--- matchbox-panel-0.8.1/src/panel_app.c	Mon Oct 25 00:15:53 2004
++++ matchbox-panel-0.8.1/src/panel_app.c	Tue Oct 26 21:39:28 2004
+@@ -239,7 +239,7 @@
+ }
+ 
+ MBPanelApp *
+-panel_app_new(MBPanel *panel, Window win, char *cmd_str)
++panel_app_new(MBPanel *panel, Window win, char *cmd_str, Bool from_session)
+ {
+   MBPanelApp        *papp;
+   XWindowAttributes  attr;
+@@ -261,7 +261,7 @@
+   papp->w = attr.width;
+   papp->h = attr.height;
+ 
+-  if (session_preexisting_restarting(panel) && !panel->session_run_first_time)
++  if (session_preexisting_restarting(panel) && !panel->session_run_first_time && from_session)
+     {
+       if (panel->session_cur_gravity == PAPP_GRAVITY_START)
+ 	add_at_start = True;
+--- matchbox-panel-0.8.1/src/panel_app.h	Tue Feb  3 15:11:25 2004
++++ matchbox-panel-0.8.1/src/panel_app.h	Tue Oct 26 21:42:07 2004
+@@ -61,7 +61,8 @@
+ 
+ MBPanelApp* panel_app_new(MBPanel *panel, 
+ 			  Window   win, 
+-			  char    *cmd );
++			  char    *cmd,
++			  Bool     from_session);
+ 
+ void panel_app_handle_configure_request(MBPanel *panel, 
+ 					XConfigureRequestEvent *ev);

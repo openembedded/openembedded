@@ -1,0 +1,11 @@
+--- atmelwlandriver/src/Pcmcia_Pci/Makefile.old	2005-02-06 14:29:48.000000000 +0000
++++ atmelwlandriver/src/Pcmcia_Pci/Makefile	2005-02-06 14:30:01.000000000 +0000
+@@ -65,7 +65,7 @@
+ 	@for i in $(PCMCIA-y); do make $$i || exit 1; done
+ 
+ final: $(objs) $(DEBUGORNO) fastvnet_cs.o
+-	ld -r -o $(OBJDIR)/$(MODULE).o fastvnet_cs.o $(DEBUGORNO) $(objs)
++	$(LD) -r -o $(OBJDIR)/$(MODULE).o fastvnet_cs.o $(DEBUGORNO) $(objs)
+ 	nm $(OBJDIR)/$(MODULE).o |sort -u >$(OBJDIR)/$(patsubst %.o,%.map,$(MODULE).o); 
+ 
+ rfmdD:

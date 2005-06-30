@@ -1,0 +1,172 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: fush-0-9-0/configure.in
+===================================================================
+--- fush-0-9-0.orig/configure.in	2004-01-25 18:52:01.000000000 -0600
++++ fush-0-9-0/configure.in	2005-01-18 13:41:06.000000000 -0600
+@@ -27,7 +27,7 @@
+ # Checks for header files.
+ AC_HEADER_STDC
+ AC_HEADER_SYS_WAIT
+-AC_CHECK_HEADERS([fcntl.h stdlib.h string.h sys/ioctl.h sys/param.h syslog.h unistd.h string.h sys/types.h syslog.h glob.h time.h errno.h libutil.h termios.h])
++AC_CHECK_HEADERS([fcntl.h stdlib.h string.h sys/ioctl.h sys/param.h syslog.h unistd.h string.h sys/types.h syslog.h glob.h time.h errno.h libutil.h pty.h termios.h])
+ 
+ # Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+@@ -35,6 +35,14 @@
+ AC_STRUCT_TM
+ AC_TYPE_UID_T
+ AC_CHECK_TYPE( mode_t, unsigned short )
++AC_CHECK_DECLS( [user_from_uid], [], [], [
++#if HAVE_LIBUTIL_H
++# include <libutil.h>
++#endif] )
++if test x"$HAVE_DECL_USER_FROM_UID" = "x"; then
++  PWCACHE_OBJS="pwcache.o"
++fi
++AC_SUBST(PWCACHE_OBJS)
+ 
+ # Checks for library functions.
+ AC_FUNC_FORK
+Index: fush-0-9-0/src/fushtools.c
+===================================================================
+--- fush-0-9-0.orig/src/fushtools.c	2004-01-25 18:52:01.000000000 -0600
++++ fush-0-9-0/src/fushtools.c	2005-01-18 13:41:30.000000000 -0600
+@@ -23,7 +23,13 @@
+ #include "linklist.h"
+ #include "md5.h"
+ #include <pwd.h>
+-#include <libutil.h>
++#if HAVE_LIBUTIL_H
++# include <libutil.h>
++#else
++# include <pty.h>
++# include <utmp.h>
++# include "pwcache.h"
++#endif
+ #include <termios.h>
+ 
+ extern List g_replace;
+Index: fush-0-9-0/src/pwcache.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ fush-0-9-0/src/pwcache.c	2005-01-18 15:38:02.000000000 -0600
+@@ -0,0 +1,88 @@
++// Copyright (C) 1992-1998 by Michael K. Johnson, johnsonm@redhat.com
++// Note: most likely none of his code remains
++//
++// Copyright 2002, Albert Cahalan
++//
++// This file is placed under the conditions of the GNU Library
++// General Public License, version 2, or any later version.
++// See file COPYING for information on distribution conditions.
++
++#include <stdio.h>
++#include <sys/types.h>
++#include <stdlib.h>
++#include <pwd.h>
++//#include "alloc.h"
++#include "pwcache.h"
++#include <grp.h>
++
++// might as well fill cache lines... else we waste memory anyway
++
++#define	HASHSIZE	64		/* power of 2 */
++#define	HASH(x)		((x) & (HASHSIZE - 1))
++
++#define NAMESIZE	20
++#define NAMELENGTH	"19"
++
++static struct pwbuf {
++    struct pwbuf *next;
++    uid_t uid;
++    char name[NAMESIZE];
++} *pwhash[HASHSIZE];
++
++char *user_from_uid(uid_t uid, int nouser)
++{
++    struct pwbuf **p;
++    struct passwd *pw;
++    char *ret;
++
++    p = &pwhash[HASH(uid)];
++    while (*p) {
++	if ((*p)->uid == uid)
++	    return((*p)->name);
++	p = &(*p)->next;
++    }
++    *p = (struct pwbuf *) malloc(sizeof(struct pwbuf));
++    (*p)->uid = uid;
++    ret = (*p)->name;
++    if ((pw = getpwuid(uid)) == NULL)
++	if (nouser)
++	    ret = NULL;
++	else
++	    sprintf((*p)->name, "#%d", uid);
++    else
++	sprintf((*p)->name, "%-." NAMELENGTH "s", pw->pw_name);
++    (*p)->next = NULL;
++    return ret;
++}
++
++static struct grpbuf {
++    struct grpbuf *next;
++    gid_t gid;
++    char name[NAMESIZE];
++} *grphash[HASHSIZE];
++
++char *group_from_gid(gid_t gid, int nogroup)
++{
++    struct grpbuf **g;
++    struct group *gr;
++    char *ret;
++
++    g = &grphash[HASH(gid)];
++    while (*g) {
++       if ((*g)->gid == gid)
++           return((*g)->name);
++       g = &(*g)->next;
++    }
++    *g = (struct grpbuf *) malloc(sizeof(struct grpbuf));
++    (*g)->gid = gid;
++    ret = (*g)->name;
++    if ((gr = getgrgid(gid)) == NULL)
++       if (nogroup)
++	   ret = NULL;
++       else
++           sprintf((*g)->name, "#%d", gid);
++    else
++       sprintf((*g)->name, "%-." NAMELENGTH "s", gr->gr_name);
++    (*g)->next = NULL;
++    return ret;
++}
+Index: fush-0-9-0/src/pwcache.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ fush-0-9-0/src/pwcache.h	2005-01-18 13:45:17.000000000 -0600
+@@ -0,0 +1,9 @@
++#ifndef PROCPS_PROC_PWCACHE_H
++#define PROCPS_PROC_PWCACHE_H
++
++#include <sys/types.h>
++
++extern char *user_from_uid(uid_t uid, int nouser);
++extern char *group_from_gid(gid_t gid, int nogroup);
++
++#endif
+Index: fush-0-9-0/src/Makefile.in
+===================================================================
+--- fush-0-9-0.orig/src/Makefile.in	2004-01-25 18:52:01.000000000 -0600
++++ fush-0-9-0/src/Makefile.in	2005-01-18 13:37:23.000000000 -0600
+@@ -1,7 +1,7 @@
+ CC =		@CC@
+ CFLAGS =	-Wall @CFLAGS@ @CPPFLAGS@ @DEFS@
+ LDFLAGS =	@LDFLAGS@ @LIBS@
+-OBJS =		fush.o fushtools.o fuparse.o md5.o linklist.o
++OBJS =		fush.o fushtools.o fuparse.o md5.o linklist.o @PWCACHE_OBJS@
+ ADMOBJS = fushadmin.o md5.o
+ HEADERS = fush.h
+ 

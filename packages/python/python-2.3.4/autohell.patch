@@ -16,7 +16,7 @@
 @@ -4,8 +4,8 @@
  m4_define(PYTHON_VERSION, 2.3)
  
- AC_REVISION($Revision$)
+ AC_REVISION($Revision: 1.427.4.10 $)
 -AC_PREREQ(2.53)
 -AC_INIT(python, PYTHON_VERSION)
 +AC_PREREQ(2.59)

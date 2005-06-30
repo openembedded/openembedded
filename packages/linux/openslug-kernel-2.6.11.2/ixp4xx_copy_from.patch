@@ -1,0 +1,27 @@
+--- linux-2.6.11/drivers/mtd/maps/ixp4xx.c.orig	2005-03-05 20:00:28.000000000 +0100
++++ linux-2.6.11/drivers/mtd/maps/ixp4xx.c	2005-03-05 22:10:48.000000000 +0100
+@@ -29,6 +29,8 @@
+ #include <asm/mach-types.h>
+ #include <asm/mach/flash.h>
+ 
++#include <asm/unaligned.h>
++
+ #include <linux/reboot.h>
+ 
+ #ifndef __ARMEB__
+@@ -60,13 +62,13 @@ static void ixp4xx_copy_from(struct map_
+ 	u16 data;
+ 
+ 	for (i = 0; i < (len / 2); i++) {
+-		data = src[i];
++		data = get_unaligned((u16*)(src + i));
+ 		dest[i * 2] = BYTE0(data);
+ 		dest[i * 2 + 1] = BYTE1(data);
+ 	}
+ 
+ 	if (len & 1)
+-		dest[len - 1] = BYTE0(src[i]);
++		dest[len - 1] = BYTE0(get_unaligned((u16*)(src + i)));
+ }
+ 
+ /* 

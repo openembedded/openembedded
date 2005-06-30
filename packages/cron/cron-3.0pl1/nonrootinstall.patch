@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- cron3.0pl1/Makefile~nonrootinstall
++++ cron3.0pl1/Makefile
+@@ -77,6 +77,9 @@
+ #<<the name of the BSD-like install program>>
+ #INSTALL = installbsd
+ INSTALL = install
++ifeq ($(DESTDIR),)
++INSTALLOWN = -o root
++endif
+ #<<any special load flags>>
+ LDFLAGS		=
+ #################################### end configurable stuff
+@@ -113,8 +116,8 @@
+ 			$(CC) $(LDFLAGS) -o crontab $(CRONTAB_OBJ) $(LIBS)
+ 
+ install		:	all
+-			$(INSTALL) -c -m  111 -o root -s cron    $(DESTSBIN)/
+-			$(INSTALL) -c -m 4111 -o root -s crontab $(DESTBIN)/
++			$(INSTALL) -c -m  111 $(INSTALLOWN) -s cron    $(DESTSBIN)/
++			$(INSTALL) -c -m 4111 $(INSTALLOWN) -s crontab $(DESTBIN)/
+ 			sh putman.sh crontab.1 $(DESTMAN)
+ 			sh putman.sh cron.8    $(DESTMAN)
+ 			sh putman.sh crontab.5 $(DESTMAN)

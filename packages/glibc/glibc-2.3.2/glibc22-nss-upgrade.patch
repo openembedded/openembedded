@@ -1,0 +1,26 @@
+--- glibc22/nss/nsswitch.c~	Fri Mar 31 15:38:32 2000
++++ glibc22/nss/nsswitch.c	Thu Nov  9 17:28:45 2000
+@@ -333,9 +333,20 @@
+ 	      ni->library->lib_handle = __libc_dlopen (shlib_name);
+ 	      if (ni->library->lib_handle == NULL)
+ 		{
+-		  /* Failed to load the library.  */
+-		  ni->library->lib_handle = (void *) -1l;
+-		  __set_errno (saved_errno);
++		  /* Failed to load the library. Try a fallback.  */
++		  int n = __snprintf(shlib_name, shlen, "libnss_%s.so.%d.%d",
++				   ni->library->name, __GLIBC__, __GLIBC_MINOR__);
++		  if (n >= shlen)
++		    ni->library->lib_handle = NULL;
++		  else
++		    ni->library->lib_handle = __libc_dlopen (shlib_name);
++
++		  if (ni->library->lib_handle == NULL)
++		    {
++		      /* Ok, really fail now.  */
++		      ni->library->lib_handle = (void *) -1l;
++		      __set_errno (saved_errno);
++		    }
+ 		}
+ 	    }
+ 

@@ -1,0 +1,12 @@
+diff -urNd glibc-2.3.2-ct25/linuxthreads/Makefile glibc-2.3.2/linuxthreads/Makefile
+--- glibc-2.3.2-ct25/linuxthreads/Makefile	2004-06-25 13:48:03.000000000 +0200
++++ glibc-2.3.2/linuxthreads/Makefile	2004-06-25 13:53:02.000000000 +0200
+@@ -81,7 +81,7 @@
+ extra-objs += crti.o crtn.o
+ omit-deps += crti crtn
+ 
+-CFLAGS-pt-initfini.s = -g0 -fPIC -fno-inline-functions $(fno-unit-at-a-time)
++CFLAGS-pt-initfini.s = -O1 -g0 -fPIC -fno-inline-functions $(fno-unit-at-a-time)
+ endif
+ 
+ librt-tests = ex10 ex11

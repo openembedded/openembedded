@@ -1,0 +1,19 @@
+--- rp-pppoe-3.5.clean/src/Makefile.in	2002-07-08 16:38:24.000000000 +0200
++++ rp-pppoe-3.5/src/Makefile.in	2004-08-06 19:49:46.720397496 +0200
+@@ -135,11 +135,11 @@
+ 
+ install: all
+ 	-mkdir -p $(RPM_INSTALL_ROOT)$(sbindir)
+-	$(install) -m 755 -s pppoe $(RPM_INSTALL_ROOT)$(sbindir)
+-	$(install) -m 755 -s pppoe-server $(RPM_INSTALL_ROOT)$(sbindir)
+-	if test -x licensed-only/pppoe-server-control ; then $(install) -m 755 -s licensed-only/pppoe-server-control $(RPM_INSTALL_ROOT)$(sbindir); fi
+-	if test -x pppoe-relay ; then $(install) -m 755 -s pppoe-relay $(RPM_INSTALL_ROOT)$(sbindir); fi
+-	if test -x pppoe-sniff; then $(install) -m 755 -s pppoe-sniff $(RPM_INSTALL_ROOT)$(sbindir); fi
++	$(install) -m 755 pppoe $(RPM_INSTALL_ROOT)$(sbindir)
++	$(install) -m 755 pppoe-server $(RPM_INSTALL_ROOT)$(sbindir)
++	if test -x licensed-only/pppoe-server-control ; then $(install) -m 755 licensed-only/pppoe-server-control $(RPM_INSTALL_ROOT)$(sbindir); fi
++	if test -x pppoe-relay ; then $(install) -m 755 pppoe-relay $(RPM_INSTALL_ROOT)$(sbindir); fi
++	if test -x pppoe-sniff; then $(install) -m 755 pppoe-sniff $(RPM_INSTALL_ROOT)$(sbindir); fi
+ 	$(install) -m 755 ../scripts/adsl-connect $(RPM_INSTALL_ROOT)$(sbindir)
+ 	$(install) -m 755 ../scripts/adsl-start $(RPM_INSTALL_ROOT)$(sbindir)
+ 	$(install) -m 755 ../scripts/adsl-status $(RPM_INSTALL_ROOT)$(sbindir)

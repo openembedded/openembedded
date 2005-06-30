@@ -1,0 +1,30 @@
+Index: giblib-1.2.4/giblib-config.in
+===================================================================
+--- giblib-1.2.4.orig/giblib-config.in	2004-09-04 10:40:40.000000000 -0400
++++ giblib-1.2.4/giblib-config.in	2005-03-12 19:42:13.902432000 -0500
+@@ -3,6 +3,8 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ exec_prefix_set=no
++libdir=@libdir@
++incluedir=@includedir@
+ 
+ usage="\
+ Usage: giblib-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags]"
+@@ -39,13 +41,13 @@
+       echo @VERSION@
+       ;;
+     --cflags)
+-      if test @includedir@ != /usr/include ; then
+-        includes=-I@includedir@
++      if test ${includedir} != /usr/include ; then
++        includes=-I${includedir}
+       fi
+       echo $includes -I$prefix/include/giblib @IMLIB_CFLAGS@
+       ;;
+     --libs)
+-      libdirs=-L@libdir@
++      libdirs=-L${libdir}
+       echo $libdirs -lgiblib @LDFLAGS@ @IMLIB_LIBS@
+       ;;
+     *)

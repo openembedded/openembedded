@@ -1,0 +1,38 @@
+#! /bin/sh
+#
+# This is an init script for Familiar
+# Copy it to /etc/init.d/lirc and type
+# > update-rc.d lirc defaults 20
+#
+
+
+test -f /usr/bin/lircmd || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting lirc daemon: lircmd"
+    start-stop-daemon --start --quiet --exec /usr/bin/lircmd
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping lirc daemon: lircmd"
+    start-stop-daemon --stop --quiet --exec /usr/bin/lircmd
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec /usr/bin/lircmd
+    ;;
+  restart)
+    echo -n "Stopping lirc daemon: lircmd"
+    start-stop-daemon --stop --quiet --exec /usr/bin/lircmd
+    sleep 1
+    echo -n "Starting lirc daemon: lircmd"
+    start-stop-daemon --start --quiet --exec /usr/bin/lircmd
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/lircmd {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0

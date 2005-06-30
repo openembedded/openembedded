@@ -1,0 +1,14 @@
+#!/bin/sh
+# boot from the current (flash) root partition
+# nothing need be done, make the power led flash
+# amber to indicate runlevel S
+/sbin/leds -A '!gr'
+exec /sbin/init
+# fallback if /sbin/init has been deleted (bad!)
+# flashing amber/red - failed early boot
+# disk lights flashing: failed in flash boot!
+/sbin/leds +A '!g12'
+exec <>/dev/console >&0 2>&0
+exec /sbin/sulogin
+exec /bin/sh
+exit 1

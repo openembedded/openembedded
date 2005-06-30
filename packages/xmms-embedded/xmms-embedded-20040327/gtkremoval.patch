@@ -1,0 +1,722 @@
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/configure.c xmms-embedded/xmms/Input/fixpvorbis/configure.c
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/configure.c	2002-10-10 13:46:55.000000000 -0400
++++ xmms-embedded/xmms/Input/fixpvorbis/configure.c	2004-03-28 17:39:52.000000000 -0500
+@@ -3,11 +3,13 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ #include "vorbis.h"
+ #include "libxmms/configfile.h"
+-#include "libxmms/dirbrowser.h"
++//#include "libxmms/dirbrowser.h"
+ #include "libxmms/titlestring.h"
+ #include "xmms/i18n.h"
+ #include "libxmms/util.h"
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/fileinfo.c xmms-embedded/xmms/Input/fixpvorbis/fileinfo.c
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/fileinfo.c	2002-12-02 17:14:40.000000000 -0500
++++ xmms-embedded/xmms/Input/fixpvorbis/fileinfo.c	2004-03-28 17:39:52.000000000 -0500
+@@ -27,7 +27,9 @@
+ #include <string.h>
+ #include <pthread.h>
+ #include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <tremor/ogg.h>
+ #include <tremor/ivorbiscodec.h>
+ #include <tremor/ivorbisfile.h>
+@@ -253,10 +255,11 @@
+ 	return retval;
+ }
+ 
+-
++#ifndef NOGUI
+ static void label_set_text(GtkWidget * label, char *str, ...)
+ {
+ }
++#endif
+ 
+ /***********************************************************************/
+ 
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro	2002-12-02 15:21:42.000000000 -0500
++++ xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -17,4 +17,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = fixpvorbisplugin
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/http.c xmms-embedded/xmms/Input/fixpvorbis/http.c
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/http.c	2003-06-04 18:33:40.000000000 -0400
++++ xmms-embedded/xmms/Input/fixpvorbis/http.c	2004-03-28 17:39:52.000000000 -0500
+@@ -23,7 +23,9 @@
+ #include <arpa/inet.h>
+ #include <netdb.h>
+ #include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <string.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -50,7 +52,9 @@
+ static guint64 buffer_read = 0;
+ static gchar *buffer;
+ static pthread_t thread;
++#ifndef NOGUI
+ static GtkWidget *error_dialog = NULL;
++#endif
+ 
+ extern vorbis_config_t vorbis_cfg;
+ extern InputPlugin vorbis_ip;
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/vorbis.c xmms-embedded/xmms/Input/fixpvorbis/vorbis.c
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/vorbis.c	2003-06-04 18:33:40.000000000 -0400
++++ xmms-embedded/xmms/Input/fixpvorbis/vorbis.c	2004-03-28 17:39:52.000000000 -0500
+@@ -31,7 +31,9 @@
+ #include <string.h>
+ #include <pthread.h>
+ #include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <tremor/ogg.h>
+ #include <tremor/ivorbiscodec.h>
+ #include <tremor/ivorbisfile.h>
+diff -urN xmms-embedded.orig/xmms/Input/mikmod/mikmod-plugin.h xmms-embedded/xmms/Input/mikmod/mikmod-plugin.h
+--- xmms-embedded.orig/xmms/Input/mikmod/mikmod-plugin.h	2002-10-10 13:46:47.000000000 -0400
++++ xmms-embedded/xmms/Input/mikmod/mikmod-plugin.h	2004-03-28 17:39:52.000000000 -0500
+@@ -5,7 +5,9 @@
+ #include <stdio.h>
+ #include <limits.h>
+ #include <pthread.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include "xmms/plugin.h"
+ #include <mikmod.h>
+ 
+diff -urN xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro xmms-embedded/xmms/Input/mikmod/mikmod.pro
+--- xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro	2002-10-10 13:46:48.000000000 -0400
++++ xmms-embedded/xmms/Input/mikmod/mikmod.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -10,4 +10,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = mikmod
+diff -urN xmms-embedded.orig/xmms/Input/mikmod/plugin.c xmms-embedded/xmms/Input/mikmod/plugin.c
+--- xmms-embedded.orig/xmms/Input/mikmod/plugin.c	2002-12-11 16:26:36.000000000 -0500
++++ xmms-embedded/xmms/Input/mikmod/plugin.c	2004-03-28 17:39:52.000000000 -0500
+@@ -26,7 +26,9 @@
+ #include "libxmms/configfile.h"
+ #include "libxmms/util.h"
+ #include "libxmms/titlestring.h"
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ #include "mikmod.xpm"
+ 
+@@ -42,7 +44,9 @@
+ static void aboutbox(void);
+ static void get_song_info(char *filename, char **title, int *length);
+ static void configure();
++#ifndef NOGUI
+ static void config_ok(GtkWidget * widget, gpointer data);
++#endif
+ 
+ static pthread_t decode_thread;
+ 
+@@ -68,7 +72,9 @@
+ 
+ 
+ static void *play_loop(void *arg);
++#ifndef NOGUI
+ static void config_ok(GtkWidget * widget, gpointer data);
++#endif
+ 
+ 
+ static void aboutbox()
+@@ -349,11 +355,12 @@
+      configure()
+ {
+ }
+-
++#ifndef NOGUI
+ static void config_ok(GtkWidget * widget, gpointer data)
+ {
+ 
+ }
++#endif
+ 
+ InputPlugin mikmod_ip =
+ {
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro xmms-embedded/xmms/Input/mplayer/mplayer.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro	2004-03-28 17:18:51.000000000 -0500
++++ xmms-embedded/xmms/Input/mplayer/mplayer.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -9,4 +9,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = mplayer
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/wav.pro xmms-embedded/xmms/Input/mplayer/wav.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/wav.pro	2002-10-10 13:47:06.000000000 -0400
++++ xmms-embedded/xmms/Input/mplayer/wav.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -9,4 +9,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = mplayer
+diff -urN xmms-embedded.orig/xmms/Input/shorten/gtk.c xmms-embedded/xmms/Input/shorten/gtk.c
+--- xmms-embedded.orig/xmms/Input/shorten/gtk.c	2002-10-10 13:47:10.000000000 -0400
++++ xmms-embedded/xmms/Input/shorten/gtk.c	2004-03-28 17:47:14.000000000 -0500
+@@ -24,9 +24,9 @@
+ #include <glib.h>
+ #include <xmms/util.h>
+ #include <libxmms/configfile.h>
+-#include <libxmms/dirbrowser.h>
++//#include <libxmms/dirbrowser.h>
+ #include "shorten.h"
+-
++#ifndef NOGUI
+ static GtkWidget *shn_configurewin = NULL,
+ 		 *about_box,
+ 		 *vbox,
+@@ -53,7 +53,7 @@
+ 		 *ok,
+ 		 *cancel,
+ 		 *apply;
+-
++#endif
+ void display_shn_about(void)
+ {
+ }
+@@ -65,11 +65,11 @@
+ void destroy_path_dirbrowser()
+ {
+ }
+-
++#ifndef NOGUI
+ static void path_browse_cb(GtkWidget * w, gpointer data)
+ {
+ }
+-
++#endif
+ void shn_configurewin_save(void)
+ {
+ }
+diff -urN xmms-embedded.orig/xmms/Input/shorten/shorten.pro xmms-embedded/xmms/Input/shorten/shorten.pro
+--- xmms-embedded.orig/xmms/Input/shorten/shorten.pro	2002-10-10 13:47:06.000000000 -0400
++++ xmms-embedded/xmms/Input/shorten/shorten.pro	2004-03-28 17:44:34.000000000 -0500
+@@ -21,4 +21,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = shorten
+diff -urN xmms-embedded.orig/xmms/Input/wav/wav.pro xmms-embedded/xmms/Input/wav/wav.pro
+--- xmms-embedded.orig/xmms/Input/wav/wav.pro	2002-10-10 13:47:05.000000000 -0400
++++ xmms-embedded/xmms/Input/wav/wav.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -9,4 +9,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = wav
+diff -urN xmms-embedded.orig/xmms/Input/xmms-mad/fileinfo.c xmms-embedded/xmms/Input/xmms-mad/fileinfo.c
+--- xmms-embedded.orig/xmms/Input/xmms-mad/fileinfo.c	2002-11-18 05:13:21.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-mad/fileinfo.c	2004-03-28 17:39:52.000000000 -0500
+@@ -30,11 +30,11 @@
+ #include "input.h"
+ 
+ #include <xmms/util.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
+ 
+ /* #define DEBUG */
+ 
+-#ifndef NOGUI
+ static GtkWidget *window = 0;
+ static GtkWidget *filename_entry, *id3_frame;
+ static GtkWidget *title_entry, *artist_entry, *album_entry;
+diff -urN xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.c xmms-embedded/xmms/Input/xmms-mad/xmms-mad.c
+--- xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.c	2002-12-03 04:46:37.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-mad/xmms-mad.c	2004-03-28 17:39:52.000000000 -0500
+@@ -25,7 +25,9 @@
+ #include "libxmms/configfile.h"
+ 
+ #include <pthread.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <xmms/util.h>
+ #include <stdarg.h>
+ #include <fcntl.h>
+@@ -41,8 +43,10 @@
+ static pthread_t *decode_thread; /**< the single decoder thread */
+ static struct mad_info_t info;   /**< info for current track */
+ 
++#ifndef NOGUI
+ static GtkWidget *about_window = 0;
+ static GtkWidget *error_dialog = 0;
++#endif
+ 
+ static void
+ xmmsmad_init ()
+diff -urN xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro
+--- xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro	2002-12-02 17:14:40.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -17,6 +17,7 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DNOGUI -DSLOWCPU
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = xmms-mad
+ 
+ 
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro	2002-10-10 13:47:05.000000000 -0400
++++ xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -16,4 +16,5 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops "-DVERSION=\"1.0.0\""
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Input
++DEFINES += NOGUI
+ TARGET = xmms-sid
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xs_about.c xmms-embedded/xmms/Input/xmms-sid/xs_about.c
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xs_about.c	2002-10-10 13:47:04.000000000 -0400
++++ xmms-embedded/xmms/Input/xmms-sid/xs_about.c	2004-03-28 17:39:52.000000000 -0500
+@@ -23,11 +23,14 @@
+ */
+ 
+ #include "xmms-sid.h"
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include "xmms-sid-logo.xpm"
+ 
+-
++#ifndef NOGUI
+ static GtkWidget *xs_aboutwin = NULL;
++#endif
+ 
+ 
+ 
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xs_config.c xmms-embedded/xmms/Input/xmms-sid/xs_config.c
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xs_config.c	2002-10-10 13:47:04.000000000 -0400
++++ xmms-embedded/xmms/Input/xmms-sid/xs_config.c	2004-03-28 17:39:52.000000000 -0500
+@@ -23,13 +23,16 @@
+ */
+ #include "xmms-sid.h"
+ #include <libxmms/configfile.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <stdio.h>
+ 
+ 
+ /*
+  * General stuff
+  */
++#ifndef NOGUI
+ static GtkWidget *xs_configwin = NULL;
+ static GtkWidget *xs_fileselector = NULL;
+ 
+@@ -38,7 +41,7 @@
+ static GtkWidget *cfg_chn_stereo, *cfg_chn_autopan, *cfg_mem_banksw, *cfg_mem_transrom, *cfg_mem_playsid;
+ static GtkWidget *cfg_songnameformat, *cfg_clock_pal, *cfg_clock_ntsc, *cfg_clock_force, *cfg_ok, *cfg_cancel;
+ static GtkWidget *cfg_wav_mos6581, *cfg_wav_mos8580, *cfg_emufilters, *cfg_stil_browse, *cfg_stil_use, *cfg_stil_path;
+-
++#endif
+ 
+ 
+ /*
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xs_fileinfo.cc xmms-embedded/xmms/Input/xmms-sid/xs_fileinfo.cc
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xs_fileinfo.cc	2002-10-10 13:47:04.000000000 -0400
++++ xmms-embedded/xmms/Input/xmms-sid/xs_fileinfo.cc	2004-03-28 17:43:11.000000000 -0500
+@@ -23,16 +23,19 @@
+ 
+ 
+ #include "xmms-sid.h"
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ #include <sidplay/sidtune.h>
+ #include <stdio.h>
+ #include <string.h>
+ 
++#ifndef NOGUI
+ static GtkWidget *xs_fileinfowin = NULL;
+ static GtkWidget *fileinfo_filename, *fileinfo_songname, *fileinfo_composer;
+ static GtkWidget *fileinfo_copyright, *fileinfo_ok, *fileinfo_sub_comment;
+ static GtkWidget *fileinfo_sub_tune, *fileinfo_sub_tune_menu, *fileinfo_sub_artist, *fileinfo_sub_title;
+-
++#endif
+ 
+ 
+ 
+diff -urN xmms-embedded.orig/xmms/libxmms/libxmms.pro xmms-embedded/xmms/libxmms/libxmms.pro
+--- xmms-embedded.orig/xmms/libxmms/libxmms.pro	2002-10-10 13:51:46.000000000 -0400
++++ xmms-embedded/xmms/libxmms/libxmms.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -3,22 +3,23 @@
+  
+ HEADERS = configfile.h \
+ config.h \
+-dirbrowser.h \
++#dirbrowser.h \
+ formatter.h \
+ titlestring.h \
+ util.h \
+ xmmsctrl.h 
+ 
+ SOURCES = configfile.c \
+-dirbrowser.c \
++#dirbrowser.c \
+ formatter.c \
+ titlestring.c \
+ util.c \
+ xmmsctrl.c
+ 
+-INCLUDEPATH = . /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/include/gtk-1.2 /usr/X11R6/include
++INCLUDEPATH = . /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/X11R6/include
+ LIBS = -lglib -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = -export-dynamic
+ DESTDIR = ../../compiled
++DEFINES += NOGUI
+ TARGET = xmms
+diff -urN xmms-embedded.orig/xmms/libxmms/titlestring.c xmms-embedded/xmms/libxmms/titlestring.c
+--- xmms-embedded.orig/xmms/libxmms/titlestring.c	2002-10-10 13:51:48.000000000 -0400
++++ xmms-embedded/xmms/libxmms/titlestring.c	2004-03-28 17:39:52.000000000 -0500
+@@ -287,8 +287,9 @@
+ 	{'c', N_("Comment")},
+ };
+ 
++#ifndef NOGUI
+ GtkWidget* xmms_titlestring_descriptions(char* tags, int columns)
+ {
+ 	return NULL;
+ }
+-
++#endif
+diff -urN xmms-embedded.orig/xmms/libxmms/titlestring.h xmms-embedded/xmms/libxmms/titlestring.h
+--- xmms-embedded.orig/xmms/libxmms/titlestring.h	2002-10-10 13:51:48.000000000 -0400
++++ xmms-embedded/xmms/libxmms/titlestring.h	2004-03-28 17:39:52.000000000 -0500
+@@ -21,7 +21,9 @@
+ #define XMMS_TITLESTRING_H
+ 
+ #include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ 
+ /*
+@@ -77,7 +79,9 @@
+ #endif
+ 
+ gchar *xmms_get_titlestring(gchar *fmt, TitleInput *input);
++#ifndef NOGUI
+ GtkWidget* xmms_titlestring_descriptions(char* tags, int rows);
++#endif
+ 
+ #ifdef __cplusplus
+ };
+diff -urN xmms-embedded.orig/xmms/libxmms/util.c xmms-embedded/xmms/libxmms/util.c
+--- xmms-embedded.orig/xmms/libxmms/util.c	2002-11-18 05:13:24.000000000 -0500
++++ xmms-embedded/xmms/libxmms/util.c	2004-03-28 17:39:52.000000000 -0500
+@@ -1,8 +1,9 @@
+ #if defined(HAVE_CONFIG_H)
+ #include "config.h"
+ #endif
+-
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ #ifdef HAVE_SCHED_H
+ #include <sched.h>
+@@ -33,13 +34,13 @@
+ #endif
+ 
+ #include "util.h"
+-
++#ifndef NOGUI
+ GtkWidget *xmms_show_message(gchar * title, gchar * text, gchar * button_text, gboolean modal, GtkSignalFunc button_action, gpointer action_data)
+ {
+ 
+ 	return NULL;
+ }
+-
++#endif
+ gboolean xmms_check_realtime_priority(void)
+ {
+ #ifdef HAVE_SCHED_SETSCHEDULER
+diff -urN xmms-embedded.orig/xmms/libxmms/util.h xmms-embedded/xmms/libxmms/util.h
+--- xmms-embedded.orig/xmms/libxmms/util.h	2002-11-18 05:13:25.000000000 -0500
++++ xmms-embedded/xmms/libxmms/util.h	2004-03-28 17:39:52.000000000 -0500
+@@ -1,6 +1,9 @@
+ #ifndef XMMS_UTIL_H
+ #define XMMS_UTIL_H
++#include <glib.h>
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ #define MYREMOTEFILE 1
+ #define NOTMYREMOTEFILE 2
+@@ -10,8 +13,9 @@
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+-
++#ifndef NOGUI
+ GtkWidget *xmms_show_message(gchar * title, gchar * text, gchar * button_text, gboolean modal, GtkSignalFunc button_action, gpointer action_data);
++#endif
+ gboolean xmms_check_realtime_priority(void);
+ void xmms_usleep(gint usec);
+ int is_my_remote_file(char *filename, char *pluginid);
+diff -urN xmms-embedded.orig/xmms/Output/OSS/configure.c xmms-embedded/xmms/Output/OSS/configure.c
+--- xmms-embedded.orig/xmms/Output/OSS/configure.c	2002-10-10 13:51:51.000000000 -0400
++++ xmms-embedded/xmms/Output/OSS/configure.c	2004-03-28 17:39:52.000000000 -0500
+@@ -19,10 +19,12 @@
+ #include "xmms/i18n.h"
+ #include "OSS.h"
+ 
++#ifndef NOGUI
+ static GtkWidget *configure_win = NULL;
+ static GtkWidget *mixer_usemaster_check, *buffer_size_spin, *buffer_pre_spin;
+ static GtkWidget *adevice_use_alt_check, *audio_alt_device_entry;
+ static GtkWidget *mdevice_use_alt_check, *mixer_alt_device_entry;
++#endif
+ static gint audio_device, mixer_device;
+ 
+ 
+diff -urN xmms-embedded.orig/xmms/Output/OSS/OSS.h xmms-embedded/xmms/Output/OSS/OSS.h
+--- xmms-embedded.orig/xmms/Output/OSS/OSS.h	2003-04-01 12:55:54.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/OSS.h	2004-03-28 17:39:52.000000000 -0500
+@@ -22,7 +22,7 @@
+ 
+ #include <unistd.h>
+ #include <inttypes.h>
+-#include <gtk/gtk.h>
++#include <glib.h>
+ 
+ #include <sys/types.h>
+ #include <sys/ioctl.h>
+diff -urN xmms-embedded.orig/xmms/Output/OSS/oss.pro xmms-embedded/xmms/Output/OSS/oss.pro
+--- xmms-embedded.orig/xmms/Output/OSS/oss.pro	2002-10-10 13:51:52.000000000 -0400
++++ xmms-embedded/xmms/Output/OSS/oss.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -10,10 +10,11 @@
+ mixer.c \
+ OSS.c
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/X11R6/include 
+ LIBS = -lglib -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Output
++DEFINES += NOGUI
+ TARGET = oss
+ 
+diff -urN xmms-embedded.orig/xmms/Output/OSS/OSS.pro xmms-embedded/xmms/Output/OSS/OSS.pro
+--- xmms-embedded.orig/xmms/Output/OSS/OSS.pro	2004-03-28 17:18:51.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/OSS.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -15,5 +15,6 @@
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+ DESTDIR = ../../../compiled/xmms/Output
++DEFINES += NOGUI
+ TARGET = oss
+ 
+diff -urN xmms-embedded.orig/xmms/xmms/main.c xmms-embedded/xmms/xmms/main.c
+--- xmms-embedded.orig/xmms/xmms/main.c	2002-12-25 13:24:00.000000000 -0500
++++ xmms-embedded/xmms/xmms/main.c	2004-03-28 17:39:52.000000000 -0500
+@@ -19,11 +19,12 @@
+  */
+ #include "xmms.h"
+ #include "eoss.h"
+-
++#ifndef NOGUI
+ #include <gdk/gdkx.h>
+ #include <gdk/gdk.h>
+ #include <X11/Xlib.h>
+ #include <X11/Xatom.h>
++#endif
+ #include <getopt.h>
+ #include <signal.h>
+ #include <ctype.h>
+diff -urN xmms-embedded.orig/xmms/xmms/titlestring.h xmms-embedded/xmms/xmms/titlestring.h
+--- xmms-embedded.orig/xmms/xmms/titlestring.h	2002-10-10 13:52:48.000000000 -0400
++++ xmms-embedded/xmms/xmms/titlestring.h	2004-03-28 17:39:52.000000000 -0500
+@@ -21,7 +21,10 @@
+ #define XMMS_TITLESTRING_H
+ 
+ #include <glib.h>
++
++#ifndef NOGUI
+ #include <gtk/gtk.h>
++#endif
+ 
+ 
+ /*
+@@ -77,7 +80,9 @@
+ #endif
+ 
+ gchar *xmms_get_titlestring(gchar *fmt, TitleInput *input);
++#ifndef NOGUI
+ GtkWidget* xmms_titlestring_descriptions(char* tags, int rows);
++#endif
+ 
+ #ifdef __cplusplus
+ };
+diff -urN xmms-embedded.orig/xmms/xmms/util.c xmms-embedded/xmms/xmms/util.c
+--- xmms-embedded.orig/xmms/xmms/util.c	2002-10-10 13:51:57.000000000 -0400
++++ xmms-embedded/xmms/xmms/util.c	2004-03-28 17:39:52.000000000 -0500
+@@ -18,8 +18,10 @@
+  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+  */
+ #include "xmms.h"
++#ifndef NOGUI
+ #include <gdk/gdkprivate.h>
+ #include <X11/Xlib.h>
++#endif
+ #include <sys/ipc.h>
+ #include <ctype.h>
+ #ifdef HAVE_FTS_H
+@@ -165,11 +167,12 @@
+ #endif /* !HAVE_FTS_H */
+ }
+ 
++#ifndef NOGUI
+ GdkImage *create_dblsize_image(GdkImage * img)
+ {
+ 	return NULL;
+ }
+-
++#endif
+ char *read_ini_string(const char *filename, const char *section, const char *key)
+ {
+ 	FILE *file;
+@@ -331,6 +334,7 @@
+ 	gint y;
+ };
+ 
++#ifndef NOGUI
+ static void util_menu_position(GtkMenu *menu, gint *x, gint *y, gpointer data)
+ {
+ }
+@@ -362,12 +366,13 @@
+ 	util_item_factory_popup_with_data(ifactory, NULL, NULL, x, y,
+ 					  mouse_button, time);
+ }
+-
++#endif
+ static gint util_find_compare_func(gconstpointer a, gconstpointer b)
+ {
+ 	return strcasecmp(a, b);
+ }
+ 
++#ifndef NOGUI
+ static void util_add_url_callback(GtkWidget *w, GtkWidget *entry)
+ {
+ }
+@@ -375,7 +380,7 @@
+ GtkWidget* util_create_add_url_window(gchar *caption, GtkSignalFunc ok_func, GtkSignalFunc enqueue_func)
+ {
+ }
+-
++#endif
+ static int int_compare_func(gconstpointer a, gconstpointer b)
+ {
+ 	if (GPOINTER_TO_INT(a) < GPOINTER_TO_INT(b))
+@@ -386,6 +391,7 @@
+ 		return 0;
+ }
+ 
++#ifndef NOGUI
+ static void filebrowser_changed(GtkWidget * w, GtkFileSelection * filesel)
+ {
+ }
+@@ -431,7 +437,7 @@
+ void util_set_cursor(GtkWidget *window)
+ {
+ }
+-
++#endif
+ void util_dump_menu_rc(void)
+ {
+ }
+diff -urN xmms-embedded.orig/xmms/xmms/util.h xmms-embedded/xmms/xmms/util.h
+--- xmms-embedded.orig/xmms/xmms/util.h	2002-10-10 13:51:57.000000000 -0400
++++ xmms-embedded/xmms/xmms/util.h	2004-03-28 17:39:52.000000000 -0500
+@@ -21,17 +21,21 @@
+ #define UTIL_H
+ 
+ #include "i18n.h"
++#include <glib.h>
++#ifndef NOGUI
+ #include <gdk/gdk.h>
+ #include <gtk/gtk.h>
++#endif
+ 
+ gchar *find_file_recursively(const char *dirname, const char *file);
+ void del_directory(const char *dirname);
+-GdkImage *create_dblsize_image(GdkImage * img);
+ char *read_ini_string(const char *filename, const char *section, const char *key);
+ GArray *read_ini_array(const gchar * filename, const gchar * section, const gchar * key);
+ GArray *string_to_garray(const gchar * str);
+ void glist_movedown(GList * list);
+ void glist_moveup(GList * list);
++#ifndef NOGUI
++GdkImage *create_dblsize_image(GdkImage * img);
+ void util_item_factory_popup(GtkItemFactory * ifactory, guint x, guint y, guint mouse_button, guint32 time);
+ void util_item_factory_popup_with_data(GtkItemFactory * ifactory, gpointer data, GtkDestroyNotify destroy, guint x, guint y, guint mouse_button, guint32 time);
+ GtkWidget *util_create_add_url_window(gchar *caption, GtkSignalFunc ok_func, GtkSignalFunc enqueue_func);
+@@ -39,6 +43,7 @@
+ gboolean util_filebrowser_is_dir(GtkFileSelection * filesel);
+ GdkFont *util_font_load(gchar *name);
+ void util_set_cursor(GtkWidget *window);
++#endif
+ void util_dump_menu_rc(void);
+ void util_read_menu_rc(void);
+ 
+diff -urN xmms-embedded.orig/xmms/xmms/xmms.h xmms-embedded/xmms/xmms/xmms.h
+--- xmms-embedded.orig/xmms/xmms/xmms.h	2002-10-10 13:52:24.000000000 -0400
++++ xmms-embedded/xmms/xmms/xmms.h	2004-03-28 17:39:52.000000000 -0500
+@@ -18,10 +18,12 @@
+ #ifndef XMMS_H
+ #define XMMS_H
+ 
++#ifndef NOGUI
+ #include <gtk/gtk.h>
+ #include <gdk/gdkx.h>
+ #include <gdk/gdkkeysyms.h>
+ #include <X11/Xlib.h>
++#endif
+ 
+ #include <sys/time.h>
+ #include <sys/types.h>
+diff -urN xmms-embedded.orig/xmms/xmms/xmms.pro xmms-embedded/xmms/xmms/xmms.pro
+--- xmms-embedded.orig/xmms/xmms/xmms.pro	2002-10-10 13:52:48.000000000 -0400
++++ xmms-embedded/xmms/xmms/xmms.pro	2004-03-28 17:39:52.000000000 -0500
+@@ -30,9 +30,10 @@
+ pluginenum.c \
+ urldecode.c \
+ util.c 
+-INCLUDEPATH = . .. /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/include/gtk-1.2 /usr/X11R6/include
++INCLUDEPATH = . .. /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/X11R6/include
+ LIBS = -lglib -L../../compiled -lxmms 
+ TMAKE_CFLAGS = -g -O2 -Wall -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DPLUGIN_DIR=\"/opt/QtPalmtop/lib/xmms\" -DLOCALEDIR=\"/usr/local/share/locale\" -DPLUGINSUBS=\"Output\",\"Input\",\"Effect\",\"General\"
+ TMAKE_LFLAGS = -export-dynamic
+ DESTDIR = ../../compiled/bin
++DEFINES += NOGUI
+ TARGET = xmms

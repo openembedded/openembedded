@@ -1,0 +1,76 @@
+This are some fixes for real bugs that I had with the driver in my
+environment.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- wlags/wl_wext.c~bugs
++++ wlags/wl_wext.c
+@@ -3811,9 +3811,11 @@
+     /* NOTE: Format of MAC address (using colons to seperate bytes) may cause
+              a problem in future versions of the supplicant, if they ever
+              actually parse these parameters */
++#if DBG
+     sprintf( msg, "MLME-MICHAELMICFAILURE.indication(keyid=%d %scast addr="
+              "%s)", key_idx, addr1[0] & 0x01 ? "broad" : "uni",
+              DbgHwAddr( addr2 ));
++#endif
+     wrqu.data.length = strlen( msg );
+ 	wireless_send_event( dev, IWEVCUSTOM, &wrqu, msg );
+ #endif /* WIRELESS_EXT > 14 */
+--- wlags/mmd.c~bugs
++++ wlags/mmd.c
+@@ -233,7 +233,17 @@
+ 		i = 0;
+ 	}
+ #endif // HCF_ASSERT
+-	return i > 3 && supp->len == sizeof(CFG_SUP_RANGE_STRCT)/sizeof(hcf_16) - 1 ?
+-		   (CFG_RANGE_SPEC_STRCT*)actq : NULL;														/* 8 */
++/*
++ * Originally there was this code here:
++ * 
++ * return i > 3 && supp->len == sizeof(CFG_SUP_RANGE_STRCT)/sizeof(hcf_16) - 1 ?
++ *            (CFG_RANGE_SPEC_STRCT*)actq : NULL;
++ *
++ * Unfortunately, the sizeof() boogy was not working correctly on the Intel PXA2550 cpu.
++ * sizeof(CFG_SUP_RANGE_STRCT)==16 there. So I had to uncomment this.
++ * Holger Schurig <hs4233@mail.mn-solutions.de>
++ */
++
++	return i > 3 ? (CFG_RANGE_SPEC_STRCT*)actq : NULL;														/* 8 */
+ } // mmd_check_comp
+ 
+--- wlags/dhf.c~bugs
++++ wlags/dhf.c
+@@ -554,7 +554,6 @@
+ {
+ plugrecord  	*plugrecordp = fw->pdaplug;
+ int         	rc = HCF_SUCCESS;
+-int				plugrc = HCF_SUCCESS;
+ CFG_PROG_STRCT	*ltvp;
+ hcf_32      	code; 				// Code to plug
+ hcf_16      	*pdap;				// pointer to matching code found in pda
+@@ -565,7 +564,22 @@
+ 	while( ( rc == HCF_SUCCESS ) && ( code = plugrecordp->code ) != 0 ) {
+ 		pdap = apply_plug_rules(&cfg_prod_data[2], (hcf_16)(code & CODEMASK) );
+ 		if ( pdap ) {
++#if 0
++/*
++ * For plug record code=0x00000150, I get
++ *
++ *	(CNV_LITTLE_TO_INT(*pdap) - 1) * 2  == 4
++ * and
++ * 	plugrecordp->len                    == 2
++ *
++ * Therefore the download failed. Therefore, I disable this check.
++ * Holger Schurig, hs4233@mail.mn-solutions.de
++ */
++ 
+ 			if ( (CNV_LITTLE_TO_INT(*pdap) - 1) * 2 != plugrecordp->len ) {
++#else
++			if (0) {
++#endif
+ 				//!! Be aware of the difference with primary plug records:
+ 				//!! as opposed to plug_pri_records '!=' rather than '>'
+ 				//!! production data plug records must fit exactly at their location

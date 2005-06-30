@@ -1,0 +1,42 @@
+--- nautilus-cd-burner-2.8.5/Makefile.am	2004-10-20 15:52:13.000000000 -0700
++++ nautilus-cd-burner-2.8.5.new/Makefile.am	2004-11-15 16:57:16.530130640 -0700
+@@ -52,6 +51,8 @@
+ CLEANFILES = $(desktop_in_files:.desktop.in=.desktop) \
+ 	     $(schema_DATA) $(CDRECMARSHALFILES)
+ 
++DISTCLEANFILES = intltool-extract intltool-merge intltool-update
++
+ modulesconfdir=$(sysconfdir)/gnome-vfs-2.0/modules
+ modulesconf_DATA = mapping-modules.conf
+ modulesdir = $(libdir)/gnome-vfs-2.0/modules
+@@ -109,6 +110,12 @@
+ 	mapping-protocol.c \
+ 	$(NULL)
+ 
++# we set this so that Automake will use different file names when
++# compiling, so that the copy of mapping-method.o compiled for
++# libmapping.la doesn't conflict with the copy compiled for
++# mapping-daemon (the library one should be PIC code).
++libmapping_la_CFLAGS =
++
+ libmapping_la_LDFLAGS = $(module_flags)
+ libmapping_la_LIBADD = $(MAPPING_LIBS)
+ 
+@@ -142,12 +149,11 @@
+ 
+ if LIBSTDCXX_HACK
+ AM_CXXFLAGS = -fno-exceptions -fno-rtti
+-CXXLD=--tag=CC $(CXX)
+-else
+-# If we don't set it, it doesn't seem to appear in the Makefile at all
+-# and we can't recursively set it, hence
+-CXXLD=$(CXX)
+-endif
++CXX_LINK_TAG = --tag=CC
++endif 
++CXXLINK = $(LIBTOOL) --mode=link $(CXX_LINK_TAG) $(CXXLD) $(AM_CXXFLAGS) \
++  $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
++
+ 
+ libnautilus_burn_la_LIBADD = $(BURN_LIBS)
+ libnautilus_burnincludedir = $(includedir)/libnautilus-burn/

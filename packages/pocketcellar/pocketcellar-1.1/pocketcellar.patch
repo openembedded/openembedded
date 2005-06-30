@@ -1,0 +1,14 @@
+--- pocketcellar-1.1/pocketcellar.cpp.old
++++ pocketcellar-1.1/pocketcellar.cpp
+@@ -395,9 +395,9 @@
+ 	_wines->setText(QString::number(stats._wines));
+ 	_bottles->setText(QString::number(stats._bottles));
+ 	QString tmp;
+-	tmp.sprintf(tr("$%.2f"), stats._totalPrice);
++	tmp.sprintf(tr("%.2f"), stats._totalPrice);
+ 	_value->setText(tmp);
+-	tmp.sprintf(tr("$%.2f ... $%.2f, avg $%.2f"), 
++	tmp.sprintf(tr("%.2f ... %.2f, avg %.2f"), 
+ 			stats._minPrice <= stats._maxPrice ?
+ 			stats._minPrice : 0.0,
+ 			stats._maxPrice, stats._bottles > 0 ? 

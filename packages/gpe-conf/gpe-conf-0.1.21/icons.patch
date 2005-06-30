@@ -1,0 +1,51 @@
+Index: sound/sound.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/sound/sound.c,v
+retrieving revision 1.9
+diff -u -r1.9 sound.c
+--- sound/sound.c	12 Oct 2004 21:07:03 -0000	1.9
++++ sound/sound.c	1 Nov 2004 13:31:37 -0000
+@@ -14,7 +14,6 @@
+ 
+ /*
+   ToDo
+-  - move mixer icons to gpe-icons
+   - Filtering for different platforms.
+   - Additional settings.
+   - Update settings from system.
+@@ -39,22 +38,21 @@
+ #include "soundctrl.h"
+ #define MAX_CHANNELS 24
+ 
+-#warning needs gpe-mixer
+ struct gpe_icon mixer_icons[] = 
+ {
+-	{ "line" , PREFIX "/share/gpe-mixer/line.png"},
+-	{ "line1" , PREFIX "/share/gpe-mixer/line.png"},
+-	{ "cd" , PREFIX "/share/gpe-mixer/cd.png"},
+-	{ "bass" , PREFIX "/share/gpe-mixer/bass.png"},
+-	{ "vol" , PREFIX "/share/gpe-mixer/volume.png"},
+-	{ "treble" , PREFIX "/share/gpe-mixer/treble.png"},
+-	{ "synth" , PREFIX "/share/gpe-mixer/synth.png"},
+-	{ "speaker" , PREFIX "/share/gpe-mixer/speaker.png"},
+-	{ "phout" , PREFIX "/share/gpe-mixer/speaker.png"},
+-	{ "pcm" , PREFIX "/share/gpe-mixer/pcm.png"},
+-	{ "pcm2" , PREFIX "/share/gpe-mixer/pcm.png"},
+-	{ "mic" , PREFIX "/share/gpe-mixer/mic.png"},
+-	{ "unkn" , PREFIX "/share/gpe-mixer/unkn.png"},
++	{ "line" , "line"},
++	{ "line1" , "line"},
++	{ "cd" , "cd"},
++	{ "bass" , "bass"},
++	{ "vol" , "volume"},
++	{ "treble" , "treble"},
++	{ "synth" , "synth"},
++	{ "speaker" , "speaker"},
++	{ "phout" , "speaker"},
++	{ "pcm" , "pcm"},
++	{ "pcm2" , "pcm"},
++	{ "mic" , "mic"},
++	{ "unkn" , "unkn"},
+ 	{ "alarm" , "bell" },
+ 	{NULL, NULL}
+ };

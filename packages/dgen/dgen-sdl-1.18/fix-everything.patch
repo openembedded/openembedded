@@ -1,0 +1,260 @@
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/Makefile dgen-sdl-1.18/Makefile
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/Makefile	1999-08-08 21:29:03 +01:00
++++ dgen-sdl-1.18/Makefile	2005-02-25 04:26:39 +00:00
+@@ -13,7 +13,7 @@
+ 
+ DGENOBJS = rc.o romload.o md.o mdfr.o md-joe.o decode.o vdp.o mem.o \
+ 	save.o graph.o myfm.o fm.o sn76496.o ras.o main.o pd.a \
+-	$(STAR) $(MUSA) $(M68KEM) $(Z80) $(TILES) $(CTV) $(JOY) $(MEMCPY) \
++	$(STAR) $(MUSA) $(M68KEM) $(Z80) $(TILES) $(CTV) $(JOY) $(MEMCPY)
+ 
+ .PHONY: all setuidroot install clean bindist
+ 
+@@ -22,7 +22,7 @@
+ 	@echo "Or, $(MAKE) install to copy dgen to /usr/local/bin."
+ 
+ dgen : $(DGENOBJS)
+-	g++ $(STRIP) -o dgen $(LIB) $(DGENOBJS) $(LIBS) $(PDLIBS)
++	$(CXX) -o dgen $(LIB) $(LIBS) $(PDLIBS) $(DGENOBJS)
+ 
+ pd.a :
+ 	$(MAKE) -C $(INTERFACE)
+@@ -45,7 +45,7 @@
+ 	cp mz80/mz80.o .
+ 
+ ras.o : ras.cpp ras-drawplane.h
+-	$(CPP) $(INCLUDE) -c ras.cpp
++	$(CXX) $(INCLUDE) -c ras.cpp
+ 
+ zz80.o : zz80.c
+ 	$(CCNW) -c zz80.c
+@@ -58,10 +58,10 @@
+ gra.asm_: mkgra
+ 	./mkgra
+ mkgra : mkgra.c
+-	$(CC) -o mkgra mkgra.c
++	$(HOSTCC) -o mkgra mkgra.c
+ 
+ %.o : %.cpp
+-	$(CPP) $(INCLUDE) -c $<
++	$(CXX) $(INCLUDE) -c $<
+ %.o : %.c
+ 	$(CC) $(INCLUDE) -c $<
+ %.o : %.asm
+@@ -98,4 +98,4 @@
+ 	tar cvzf dgen-sdl-linuxi386_1.17.tar.gz dgen README sample.dgenrc.?
+ 
+ tobin: tobin.c romload.o
+-	gcc -o tobin tobin.c romload.o
++	$(CC) -o tobin tobin.c romload.o
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/Makefile.config dgen-sdl-1.18/Makefile.config
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/Makefile.config	1999-08-08 21:42:22 +01:00
++++ dgen-sdl-1.18/Makefile.config	2005-02-25 05:19:26 +00:00
+@@ -4,37 +4,37 @@
+ # Otherwise, you have to use the slower C-based Musashi emulator.
+ # Define at least one of these CPU core emulators!  :)
+ # You can define all or one, and hot swap them during the game with F11 [PKH]
+-STAR=starcpu.o
++#STAR=starcpu.o
+ MUSA=musa68.a
+ #M68KEM=68kem.a # Not just yet... but there's some code there. Want to fix? :)
+ 
+ # Similarly, you can use the assembler MZ80 emulator, or the C ZZ80 emulator.
+ # But not both!
+-Z80=mz80.o
+-#Z80=zz80.o
++#Z80=mz80.o
++Z80=zz80.o
+ 
+ # If you are on a Linux platform and have fairly recent joystick drivers,
+ # define JOYSTICK_SUPPORT and enable it using the -j runtime switch.
+-JOY=md-phil.o
++#JOY=md-phil.o
+ 
+ # If you use StarScream and you want the insanest maximum speed possible, you
+ # can use its 'hog mode', which increases speed at the cost of ~130K (!)
+ # executable size.
+-HOG=-hog
++#HOG=-hog
+ 
+ # Also, you may uncomment this if you want to try the assembler crap TV
+ # filters. Worth a look! Only works in 16-bit or 15-bit color modes
+-CTV=ctv.o
++#CTV=ctv.o
+ 
+ # Most Linux/ELF and *BSD systems don't put underscores at the beginning of
+ # symbol names, but many other systems do. If your system doesn't, uncomment
+ # this. (no effect unless you're using assembler routines)
+-NO_USCORE = 1
++#NO_USCORE = 1
+ 
+ # Phil has done it again, with some assembly language memcpy() substitutes!
+ # asm_memcpy.o is the straight assembler version; mmx_memcpy.o uses MMX.
+ # Or pick neither, and use the standard libc memcpy().
+-MEMCPY = mmx_memcpy.o
++#MEMCPY = mmx_memcpy.o
+ #MEMCPY = asm_memcpy.o
+ 
+ # Pick the object format your system uses, for NASM
+@@ -42,7 +42,7 @@
+ #			aoutb (*BSD a.out)
+ #			coff  (COFF ;)
+ #			elf   (Linux/BeOS/FreeBSD ELF)
+-NASM_FMT=elf
++NASM_FMT=aout
+ 
+ # If your processor is big-endian, try uncommenting this. But all the endian
+ # bugs aren't quite ironed out yet, so YMMV.
+@@ -55,8 +55,8 @@
+ # Add any other directories you want to grab includes and libraries from, for
+ # the SDL includes and libraries
+ #INCLUDE = -I/usr/local/include
+-INCLUDE = -I/usr/local/include -I/usr/local/include/SDL
+-LIB = -L/usr/local/lib
++INCLUDE = -I$(STAGING_INCDIR) -I$(STAGING_INCDIR)/SDL
++LIB = -L$(STAGING_LIBDIR) -Wl,-rpath-link,$(STAGING_LIBDIR) -Wl,-rpath,${libdir}
+ 
+ # If your libraries use the pthread library, use this.
+ # Linux libc5 systems should comment this (as well as any other systems without 
+@@ -68,7 +68,7 @@
+ DEFINES += -D_REENTRANT
+ 
+ # Uncomment this for assembler tile rendering. Thanks Phil!
+-TILES=asm_tiles.o
++#TILES=asm_tiles.o
+ 
+ # My cflags, for pgcc on an AMD K6
+ #CFLAGS = -O3 -mk6 -march=k6 -fstrength-reduce \
+@@ -78,10 +78,10 @@
+ #	 -fomit-frame-pointer
+ 
+ # For gcc/egcs on Intel:
+-CFLAGS = -O3 -mpentium -march=pentium -fstrength-reduce -fomit-frame-pointer \
+-         -frerun-cse-after-loop -funroll-loops \
+-	 -ffast-math -malign-functions=5 -malign-jumps=5 -malign-loops=5 \
+-	 -malign-double -fno-exceptions -fno-rtti
++#CFLAGS = -O3 -mpentium -march=pentium -fstrength-reduce -fomit-frame-pointer \
++#         -frerun-cse-after-loop -funroll-loops \
++#	 -ffast-math -malign-functions=5 -malign-jumps=5 -malign-loops=5 \
++#	 -malign-double -fno-exceptions -fno-rtti
+ 
+ # For egcs on non-Intel (probably not optimal):
+ #CFLAGS = -O3 -ffast-math -fomit-frame-pointer -fno-exceptions -fno-rtti \
+@@ -94,12 +94,12 @@
+ 
+ # To strip the executable, leave this uncommented. Recommended, unless you're
+ # debugging
+-STRIP = -s
++#STRIP = -s
+ 
+ # Adjust these for your C and C++ compilers
+-CPP=g++ -Wall -W $(CFLAGS)
+-CCNW=gcc -w $(CFLAGS)
+-CC=gcc -Wall -W $(CFLAGS)
++CXX=$(TARGET_CXX) -Wall -W $(CFLAGS)
++CCNW=$(TARGET_CC) -w $(CFLAGS)
++CC=$(TARGET_CC) -Wall -W $(CFLAGS)
+ 
+ ########## No more configuration options, run make and have fun ##########
+ ##########  Don't edit below this line, unless you want to. ;)  ##########
+@@ -142,6 +142,6 @@
+ 
+ INCLUDE += -I$(INTERFACE) -I. -I..
+ 
+-CPP  += $(DEFINES) $(INCLUDE)
++CXX  += $(DEFINES) $(INCLUDE)
+ CC   += $(DEFINES) $(INCLUDE)
+ CCNW += $(DEFINES) $(INCLUDE)
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/musa/Makefile dgen-sdl-1.18/musa/Makefile
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/musa/Makefile	1999-06-19 19:56:48 +01:00
++++ dgen-sdl-1.18/musa/Makefile	2005-02-25 02:47:27 +00:00
+@@ -1,7 +1,7 @@
+ include ../Makefile.config
+ 
+ test: musa68.a test.o
+-	gcc -s -o test -Wall -W test.c musa68.a
++	$(CC) -s -o test -Wall -W test.c musa68.a
+ 
+ %.o : %.c
+ 	$(CC) -c $<
+@@ -27,7 +27,7 @@
+ 	./m68kmake
+ 
+ m68kmake : m68kmake.c
+-	$(CC) m68kmake.c -o m68kmake
++	$(HOSTCC) m68kmake.c -o m68kmake
+ 
+ clean:
+ 	rm -f test
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/rc.cpp dgen-sdl-1.18/rc.cpp
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/rc.cpp	1999-07-28 00:42:34 +01:00
++++ dgen-sdl-1.18/rc.cpp	2005-02-25 05:35:11 +00:00
+@@ -252,6 +252,12 @@
+   return -1;
+ }
+ 
++/* Wrapper for atoi to put it in the struct below */
++static int _atoi(char *string)
++{
++	return atoi(string);
++}
++
+ /* This is a table of all the RC options, the variables they affect, and the
+  * functions to parse their values. */
+ struct rc_field {
+@@ -310,10 +316,10 @@
+   { "bool_show_carthead", boolean, &dgen_show_carthead },
+   { "ctv_craptv_startup", ctv, &dgen_craptv },
+   { "bool_sound", boolean, &dgen_sound },
+-  { "int_soundrate", atoi, &dgen_soundrate },
++  { "int_soundrate", _atoi, &dgen_soundrate },
+   { "bool_16bit", boolean, &dgen_16bit },
+-  { "int_soundsegs", atoi, &dgen_soundsegs },
+-  { "int_nice", atoi, &dgen_nice },
++  { "int_soundsegs", _atoi, &dgen_soundsegs },
++  { "int_nice", _atoi, &dgen_nice },
+   { "bool_joystick", boolean, &dgen_joystick },
+ #if defined (__linux) && (JOYSTICK_SUPPORT)
+   { "joypad1_b0", jsmap, &js_map_button[0][1] },
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/Makefile dgen-sdl-1.18/sdl/Makefile
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/Makefile	1999-07-24 22:18:23 +01:00
++++ dgen-sdl-1.18/sdl/Makefile	2005-02-25 04:27:19 +00:00
+@@ -19,10 +19,13 @@
+ dgenfont.cpp: pbm2df dgenfont.pbm
+ 	./pbm2df dgenfont.pbm dgenfont.cpp
+ 
++pbm2df: pbm2df.c
++	$(HOSTCC) $(INCLUDE) -o $@ $<
++
+ %: %.c
+ 	$(CC) $(INCLUDE) -o $@ $<
+ %.o: %.cpp
+-	$(CPP) $(INCLUDE) -c $<
++	$(CXX) $(INCLUDE) -c $<
+ %.o: %.c
+ 	$(CC) $(INCLUDE) -c $<
+ 
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/Makefile.pd dgen-sdl-1.18/sdl/Makefile.pd
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/Makefile.pd	1999-08-08 21:42:33 +01:00
++++ dgen-sdl-1.18/sdl/Makefile.pd	2005-02-25 05:14:53 +00:00
+@@ -1,4 +1,4 @@
+ # Platform-dependent libraries
+ # Put the libraries your interface needs to link to here.
+-PDLIBS = -lSDL -ldl
++PDLIBS = `$(STAGING_BINDIR)/sdl-config --libs`
+ 
+diff -urNd ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/sdl.cpp dgen-sdl-1.18/sdl/sdl.cpp
+--- ../dgen-sdl-1.18-r0/dgen-sdl-1.18/sdl/sdl.cpp	1999-07-25 01:18:40 +01:00
++++ dgen-sdl-1.18/sdl/sdl.cpp	2005-02-25 04:23:31 +00:00
+@@ -123,9 +123,9 @@
+   SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+   SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
+   SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
+-  SDL_EventState(SDL_JOYMOTION, SDL_IGNORE);
++/*  SDL_EventState(SDL_JOYMOTION, SDL_IGNORE);
+   SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
+-  SDL_EventState(SDL_JOYBUTTONUP, SDL_IGNORE);
++  SDL_EventState(SDL_JOYBUTTONUP, SDL_IGNORE); */
+   SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
+ 
+   // Set up the MegaDrive screen

@@ -1,0 +1,32 @@
+--- libffi.orig/Makefile.am	2003-10-21 21:01:53.000000000 +0200
++++ libffi/Makefile.am	2004-08-09 13:26:13.000000000 +0200
+@@ -175,7 +175,7 @@
+ 
+ AM_CFLAGS = -Wall -g -fexceptions
+ 
+-libffi_la_LDFLAGS = -release $(VERSION) 
++libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
+ 
+ INCLUDES = -I. -I$(top_srcdir)/include -Iinclude -I$(top_srcdir)/src
+ 
+--- libffi.orig/libtool-version	1970-01-01 01:00:00.000000000 +0100
++++ libffi/libtool-version	2004-08-09 13:24:18.000000000 +0200
+@@ -0,0 +1,6 @@
++# This file is used to maintain libtool version info for libffi.  See
++# the libtool manual to understand the meaning of the fields.  This is
++# a separate file so that version updates don't involve re-running
++# automake.
++# CURRENT:REVISION:AGE
++3:0:0
+
+--- libtool.orig/Makefile.in	2004-08-09 14:29:09.000000000 +0200
++++ libtool/Makefile.in	2004-08-09 14:29:53.000000000 +0200
+@@ -226,7 +226,7 @@
+ 
+ AM_CFLAGS = -Wall -g -fexceptions
+ 
+-libffi_la_LDFLAGS = -release $(VERSION) 
++libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
+ 
+ INCLUDES = -I. -I$(top_srcdir)/include -Iinclude -I$(top_srcdir)/src
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

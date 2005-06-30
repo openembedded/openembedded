@@ -1,0 +1,109 @@
+diff -ur af-sb-init.sh.in.old af-sb-init.sh.in
+--- af-sb-init.sh.in.old	2005-06-14 16:45:53.000000000 +0200
++++ af-sb-init.sh.in	2005-06-14 16:48:46.000000000 +0200
+@@ -45,7 +45,7 @@
+   exit 2
+ fi
+ 
+-source $AF_DEFS
++. $AF_DEFS
+ 
+ # let's use /var/run as pid dir and make sure it is not a link
+ export AF_PIDDIR=/var/run
+@@ -64,14 +64,14 @@
+ export HOME="/home/$USER"
+ export MYDOCSDIR=$HOME/MyDocs
+ 
+-source $DIR/osso-gtk.defs
++. $DIR/osso-gtk.defs
+ 
+ # Let's use SB launcher wrapper
+ export LAUNCHWRAPPER=/usr/bin/scratchbox-launcher.sh
+ 
+ # Check our environment
+ if [ -e /targets/links/scratchbox.config ]; then
+-  source /targets/links/scratchbox.config
++  . /targets/links/scratchbox.config
+   if echo $SBOX_CPUTRANSPARENCY_METHOD | grep "sbrsh$" >/dev/null; then
+     if [ -z "$SBOX_TARGET_NAME" ]; then
+       echo "$0: SBOX_CPUTRANSPARENCY_METHOD defined but SBOX_TARGET_NAME not!"
+@@ -102,7 +102,7 @@
+   
+ fi
+ 
+-# we need to save these, because the source commands below messes them up
++# we need to save these, because the . commands below messes them up
+ TMPSTART=$START
+ TMPSTOP=$STOP
+ if [ "$STOP" = "TRUE" ]; then
+@@ -118,16 +118,16 @@
+       dbus-systembus;
+   do
+     if [ -e $DIR/$svc.defs ]; then
+-      source $DIR/$svc.defs
++      . $DIR/$svc.defs
+     fi
+     if [ -e $DIR/$svc.sh ]; then
+-      source $DIR/$svc.sh stop
++      . $DIR/$svc.sh stop
+     fi
+   done
+ 
+   # stop
+   if [ -r /usr/bin/osso-connectivity-ui.sh ]; then
+-    source /usr/bin/osso-connectivity-ui.sh stop
++    . /usr/bin/osso-connectivity-ui.sh stop
+   fi
+ 
+   # remove dbus own dbus pid file
+@@ -193,14 +193,14 @@
+       statusbar;
+   do
+     if [ -e $DIR/$svc.defs ]; then
+-      source $DIR/$svc.defs
++      . $DIR/$svc.defs
+     fi
+     if [ -e $DIR/$svc.sh ]; then
+-      source $DIR/$svc.sh start
++      . $DIR/$svc.sh start
+     fi
+   done
+ 
+   if [ -e /usr/bin/osso-connectivity-ui.sh ]; then
+-    source /usr/bin/osso-connectivity-ui.sh start
++    . /usr/bin/osso-connectivity-ui.sh start
+   fi
+ fi
+diff -ur run-standalone.sh.old run-standalone.sh
+--- run-standalone.sh.old	2005-06-14 16:45:53.000000000 +0200
++++ run-standalone.sh	2005-06-14 16:48:46.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ if [ -e /etc/osso-af-init/af-defines.sh ]
+ then
+-  source /etc/osso-af-init/af-defines.sh
++  . /etc/osso-af-init/af-defines.sh
+ else
+   echo "/etc/osso-af-init/af-defines.sh not found!"
+   exit 1
+@@ -10,7 +10,7 @@
+ 
+ for i in /etc/osso-af-init/*.defs
+ do
+-  source $i
++  . $i
+ done
+ 
+ $*
+diff -ur scratchbox-launcher.sh.old scratchbox-launcher.sh
+--- scratchbox-launcher.sh.old	2005-06-14 16:45:53.000000000 +0200
++++ scratchbox-launcher.sh	2005-06-14 16:48:46.000000000 +0200
+@@ -35,7 +35,7 @@
+ PIDFILE="$AF_PIDDIR/$BASENAME-$TMPSVC.pid"
+ 
+ if [ -e /targets/links/scratchbox.config ]; then
+-  source /targets/links/scratchbox.config
++  . /targets/links/scratchbox.config
+   if echo $SBOX_CPUTRANSPARENCY_METHOD | grep "sbrsh$" >/dev/null; then
+     if [ -z "$SBOX_TARGET_NAME" ]; then
+       echo "$0: SBOX_CPUTRANSPARENCY_METHOD defined but SBOX_TARGET_NAME not!"

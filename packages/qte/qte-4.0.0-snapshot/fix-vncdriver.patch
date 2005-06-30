@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-embedded-opensource-4.0.0-b1/src/gui/embedded/qgfxvnc_qws.cpp~fix-vncdriver
++++ qt-embedded-opensource-4.0.0-b1/src/gui/embedded/qgfxvnc_qws.cpp
+@@ -31,7 +31,7 @@
+ #include "qgfxvnc_qws.h"
+ #include <private/qsharedmemory_p.h>
+ #include <stdlib.h>
+-
++#include <stdio.h>
+ extern QString qws_qtePipeFilename();
+ 
+ #define MAP_TILE_SIZE            16

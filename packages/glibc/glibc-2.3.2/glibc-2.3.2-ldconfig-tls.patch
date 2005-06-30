@@ -1,0 +1,19 @@
+--- glibc-2.3.2/elf/cache.c.orig	2003-10-24 19:57:55.000000000 -0400
++++ glibc-2.3.2/elf/cache.c	2003-10-24 20:06:06.000000000 -0400
+@@ -246,6 +246,16 @@ int compare (const struct cache_entry *e
+ 	return 1;
+       else if (e1->flags > e2->flags)
+ 	return -1;
++#ifdef USE_TLS
++      /* ld.so doesn't sort by "most specific hwcap".  It searches based on
++         the numbering of the bits, and TLS takes precedence.  This still
++         doesn't bring us in line with ld.so, but it does bring us closer - 
++         close enough for Debian's current needs.  */
++      else if ((e2->hwcap & (1ULL << 63)) && ! (e1->hwcap & (1ULL << 63)))
++        return 1;
++      else if ((e1->hwcap & (1ULL << 63)) && ! (e2->hwcap & (1ULL << 63)))
++        return -1;
++#endif
+       /* Sort by most specific hwcap.  */
+       else if (e2->bits_hwcap > e1->bits_hwcap)
+ 	return 1;

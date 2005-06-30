@@ -1,0 +1,12 @@
+--- sysdeps/unix/sysv/linux/mips/Versions.orig	Tue Sep 24 15:56:55 2002
++++ sysdeps/unix/sysv/linux/mips/Versions	Tue Sep 24 15:49:27 2002
+@@ -34,3 +34,9 @@
+     _sys_errlist; sys_errlist; _sys_nerr; sys_nerr;
+   }
+ }
++librt {
++  GLIBC_2.0 {
++    # c*
++    clock_gettime; clock_settime;
++  }
++}

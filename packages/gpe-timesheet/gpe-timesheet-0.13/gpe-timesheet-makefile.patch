@@ -1,0 +1,22 @@
+diff -u gpe-timesheet-0.13.orig/Makefile gpe-timesheet-0.13/Makefile
+--- gpe-timesheet-0.13.orig/Makefile	2003-10-10 05:56:43.000000000 +1000
++++ gpe-timesheet-0.13/Makefile	2004-04-29 15:09:46.000000000 +1000
+@@ -21,7 +21,7 @@
+ 
+ CFLAGS += -MD -Wall $(GTKCFLAGS)
+ 
+-CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
++PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ MEMBERS = main sql
+ 
+@@ -40,6 +40,9 @@
+ $(PACKAGE): $(OBJS)
+ 	$(CC) -o $@ $^ $(LGPEWIDGET) $(GTKLDFLAGS) -lsqlite $(LDFLAGS)
+ 
++.c.o:;
++	$(CC) $(PACKAGE_CPPFLAGS)  $(CFLAGS) $(GTKCFLAGS) -c $< -o $@
++
+ install-program: all $(PACKAGE).desktop
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+ 	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)

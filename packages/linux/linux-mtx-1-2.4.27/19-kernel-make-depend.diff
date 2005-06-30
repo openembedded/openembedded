@@ -1,0 +1,11 @@
+--- linux/Makefile~	2004-02-09 10:35:08.000000000 -0500
++++ linux/Makefile	2004-02-12 20:38:04.000000000 -0500
+@@ -538,7 +538,7 @@
+ ifdef CONFIG_MODVERSIONS
+ 	$(MAKE) update-modverfile
+ endif
+-	scripts/mkdep -- `find $(FINDHPATH) \( -name SCCS -o -name .svn \) -prune -o -follow -name \*.h ! -name modversions.h -print` > .hdepend
++	(find $(FINDHPATH) \( -name SCCS -o -name .svn \) -prune -o -follow -name \*.h ! -name modversions.h -print | xargs -r scripts/mkdep -- ) > .hdepend
+ 	scripts/mkdep -- init/*.c > .depend
+ 	(find $(TOPDIR) \( -name .depend -o -name .hdepend \) -print | xargs $(AWK) -f scripts/include_deps) > tmp_include_depends
+ 	sed -ne 's/^\([^ ].*\):.*/  \1 \\/p' tmp_include_depends > tmp_include_depends_1

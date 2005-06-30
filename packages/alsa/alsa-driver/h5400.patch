@@ -1,0 +1,12 @@
+--- ./alsa-kernel/arm/h5400-ak4535.c.orig 2005-06-26 22:12:57.000000000 +0200
++++ ./alsa-kernel/arm/h5400-ak4535.c      2005-06-26 22:13:08.000000000 +0200
+@@ -36,7 +36,7 @@
+ #include <asm/arch-sa1100/h3600_hal.h>
+ #include <asm/arch-sa1100/h3600_asic.h>
+ #include <asm/arch-pxa/h5400-asic.h>
+-#include <asm/arch-pxa/pxa-i2s.h>
++#include <drivers/sound/pxa-i2s.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+

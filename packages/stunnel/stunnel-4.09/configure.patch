@@ -1,0 +1,37 @@
+Index: stunnel-4.09/configure.ac
+===================================================================
+--- stunnel-4.09.orig/configure.ac	2005-02-28 11:24:17.000000000 -0500
++++ stunnel-4.09/configure.ac	2005-04-01 22:12:06.007494464 -0500
+@@ -35,8 +35,30 @@
+ AC_CHECK_SIZEOF(unsigned long)
+ 
+ AC_MSG_NOTICE([**************************************** PTY device files])
+-AC_CHECK_FILE("/dev/ptmx", AC_DEFINE(HAVE_DEV_PTMX))
+-AC_CHECK_FILE("/dev/ptc", AC_DEFINE(HAVE_DEV_PTS_AND_PTC))
++AC_ARG_WITH(ptmx,
++    [  --with-ptmx      /dev/ptmx exists (default: check for existance)],
++    [
++        if test x"$withval" = "xyes"; then
++           AC_DEFINE(HAVE_DEV_PTMX)
++        fi
++    ],
++    [
++        # Check for ptmx device
++        AC_CHECK_FILE("/dev/ptmx", AC_DEFINE(HAVE_DEV_PTMX))
++    ]
++)
++AC_ARG_WITH(ptc,
++    [  --with-ptc      /dev/ptc exists (default: check for existance)],
++    [
++        if test x"$withval" = "xyes"; then
++           AC_DEFINE(HAVE_DEV_PTS_AND_PTC)
++        fi
++    ],
++    [
++        # Check for ptc device
++        AC_CHECK_FILE("/dev/ptc", AC_DEFINE(HAVE_DEV_PTS_AND_PTC))
++    ]
++)
+ 
+ AC_MSG_NOTICE([**************************************** SSL and entropy])
+ checkssldir() { :

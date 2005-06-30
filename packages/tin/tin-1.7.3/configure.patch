@@ -1,0 +1,205 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- tin-1.7.3/configure.in~configure
++++ tin-1.7.3/configure.in
+@@ -34,8 +34,9 @@
+ dnl
+ dnl Process this file with autoconf to produce a configure script.
+ 
+-AC_PREREQ(2.13.20020210)
+-AC_INIT(include/tin.h)
++AC_PREREQ(2.57)
++AC_INIT
++AC_CONFIG_SRCDIR([include/tin.h])
+ AC_CONFIG_HEADER(include/autoconf.h:include/autoconf.hin)
+ AC_PREFIX_DEFAULT(/usr/local)
+ 
+@@ -406,7 +407,7 @@
+ 		CF_NCURSES_LIBS(ncursesw)
+ 		CF_NCURSES_VERSION
+ 		CF_XOPEN_CURSES
+-		test "$cf_cv_need_xopen_extension" = unknown && AC_ERROR(X/Open curses not found)
++		test "$cf_cv_need_xopen_extension" = unknown && AC_MSG_ERROR([X/Open curses not found])
+ 		;;
+ 	curses) #(vi
+ 		CF_CURSES_CPPFLAGS
+@@ -432,25 +433,25 @@
+ fi
+ 
+ ## debugging libraries (do this after other libraries)
+-AC_MSG_CHECKING(if you want dbmalloc library)
++AC_MSG_CHECKING([if you want dbmalloc library])
+ debug_malloc=none
+-AC_ARG_WITH(dbmalloc,
++AC_ARG_WITH([dbmalloc],
+ 	[  --with-dbmalloc         use Conor Cahill's dbmalloc library],
+-	[AC_MSG_RESULT(yes)
+-	 AC_CHECK_LIB(dbmalloc,debug_malloc,
+-	 AC_CHECK_HEADER(dbmalloc.h,debug_malloc=DBMALLOC))],
+-	AC_MSG_RESULT(no))
++	[AC_MSG_RESULT([yes])
++	 AC_CHECK_LIB([dbmalloc],[debug_malloc],[
++	 AC_CHECK_HEADER([dbmalloc.h],[debug_malloc=DBMALLOC])])],
++	AC_MSG_RESULT([no]))
+ 
+-AC_MSG_CHECKING(if you want dmalloc library)
+-AC_ARG_WITH(dmalloc,
++AC_MSG_CHECKING([if you want dmalloc library])
++AC_ARG_WITH([dmalloc],
+ 	[  --with-dmalloc          use Gray Watson's dmalloc library],
+ 	[AC_MSG_RESULT(yes)
+-	 AC_CHECK_LIB(dmalloc,dmalloc_debug,
+-	 AC_CHECK_HEADER(dmalloc.h,debug_malloc=DMALLOC))],
++	 AC_CHECK_LIB([dmalloc],[dmalloc_debug],[
++	 AC_CHECK_HEADER([dmalloc.h],[debug_malloc=DMALLOC])])],
+ 	AC_MSG_RESULT(no))
+ 
+-AC_MSG_CHECKING(if you want debugging-trace)
+-AC_ARG_WITH(trace,
++AC_MSG_CHECKING([if you want debugging-trace])
++AC_ARG_WITH([trace],
+ 	[  --with-trace            use debugging/traces],
+ 	[use_trace=yes],
+ 	[use_trace=no])
+@@ -667,7 +668,7 @@
+ 
+ ### checks for compiler characteristics
+ CF_MAKEFLAGS
+-AC_LANG_C
++AC_LANG([C])
+ AC_C_CONST
+ AC_C_INLINE
+ CF_CPP_EXPANDS
+@@ -763,14 +764,13 @@
+ 
+ dnl test to see if quad_t is defined
+ AC_MSG_CHECKING(for quad_t)
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+ #if 0
+ #include <stdlib.h>
+ #include <stddef.h>
+ #endif /* 0 */
+-],[quad_t x; x = 0],
+-ac_cv_quad_t=yes, ac_cv_quad_t=no)
++]], [[quad_t x; x = 0]])],[ac_cv_quad_t=yes],[ac_cv_quad_t=no])
+ AC_MSG_RESULT($ac_cv_quad_t)
+ if test $ac_cv_quad_t = yes; then
+ 	AC_DEFINE(HAVE_QUAD_T)
+@@ -778,10 +778,9 @@
+ 
+ dnl test to see if long long is defined
+ AC_MSG_CHECKING(for long long)
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+-],[long long x; x = 0],
+-ac_cv_long_long=yes, ac_cv_long_long=no)
++]], [[long long x; x = 0]])],[ac_cv_long_long=yes],[ac_cv_long_long=no])
+ AC_MSG_RESULT($ac_cv_long_long)
+ if test $ac_cv_long_long = yes; then
+ 	AC_DEFINE(HAVE_LONG_LONG)
+@@ -789,7 +788,7 @@
+ 
+ dnl test to see if nl_item is defined
+ AC_MSG_CHECKING(for nl_item)
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #ifdef HAVE_LANGINFO_H
+ #include <langinfo.h>
+ #else
+@@ -797,8 +796,7 @@
+ #include <nl_types.h>
+ #endif
+ #endif
+-],[nl_item x; x = 0],
+-ac_cv_nl_item=yes, ac_cv_nl_item=no)
++]], [[nl_item x; x = 0]])],[ac_cv_nl_item=yes],[ac_cv_nl_item=no])
+ AC_MSG_RESULT($ac_cv_nl_item)
+ if test $ac_cv_nl_item = yes; then
+         AC_DEFINE(HAVE_NL_ITEM)
+@@ -845,14 +843,13 @@
+ 		cf_save_LIBS="$LIBS"
+ 		cf_try_icuuc="no"
+ 		LIBS="$LIBS -licuuc"
+-		AC_TRY_LINK([#include <unicode/unorm.h>], [
++		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <unicode/unorm.h>]], [[
+ 			int32_t needed, ustr = NULL;
+  			UErrorCode status;
+-			needed = unorm_normalize(ustr, -1, UNORM_DEFAULT, 0, NULL, 0, &status);], [
++			needed = unorm_normalize(ustr, -1, UNORM_DEFAULT, 0, NULL, 0, &status);]])],[
+ 			AC_DEFINE(HAVE_LIBICUUC)
+-			cf_try_icuuc="yes"],
+-			LIBS=$cf_save_LIBS
+-		)
++			cf_try_icuuc="yes"],[LIBS=$cf_save_LIBS
++		])
+ 		AC_MSG_RESULT($cf_try_icuuc)
+ 	])
+ ])
+@@ -866,15 +863,13 @@
+ 	AC_MSG_CHECKING(if we should include termcap.h)
+ 	cf_save_CFLAGS="$CFLAGS"
+ 	CFLAGS="$CFLAGS -I$srcdir/include"
+-	AC_TRY_COMPILE([
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #define HAVE_TERMCAP_H 1
+-#include <tcurses.h>],[
++#include <tcurses.h>]], [[
+ #ifdef NCURSES_VERSION
+ make an error
+ #endif
+-],
+-		[cf_result=yes],
+-		[cf_result=no])
++]])],[cf_result=yes],[cf_result=no])
+ 	AC_MSG_RESULT($cf_result)
+ 	CFLAGS="$cf_save_CFLAGS"
+ 	test $cf_result = yes && AC_DEFINE(HAVE_TERMCAP_H)
+@@ -889,8 +884,7 @@
+ 	cf_tc_externs="$cf_tc_funcs tgoto tigetstr tputs tigetflag"
+ elif test ".$cf_cv_termlib" = .termcap ; then
+ 	# BSD 'tputs()' may need 'PC' to be set.
+-	AC_TRY_LINK([],[extern char PC; PC = 0],
+-		[AC_DEFINE(HAVE_EXTERN_TCAP_PC)])
++	AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[extern char PC; PC = 0]])],[AC_DEFINE(HAVE_EXTERN_TCAP_PC)],[])
+ 	cf_tc_funcs="tgetint tgetnum tparam tparm"
+ 	cf_tc_externs="$cf_tc_funcs tgoto tgetstr tputs tgetent tgetflag"
+ fi
+@@ -1172,7 +1166,7 @@
+ 
+ CF_CHECK_HEADERS(iconv.h)
+ AC_MSG_CHECKING(for iconv_open() //TRANSLIT extension)
+-AC_TRY_RUN([
++AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ #ifdef HAVE_ICONV_H
+ #	include <iconv.h>
+ #endif /* HAVE_ICONV_H */
+@@ -1185,11 +1179,8 @@
+ 	if ((cd = iconv_open("US-ASCII//TRANSLIT", "ISO-8859-1")) == (iconv_t) (-1))
+ 		exit(1);
+ 	exit(0);
+-}],
+-	AC_DEFINE(HAVE_ICONV_OPEN_TRANSLIT) AC_MSG_RESULT(yes),
+-	AC_MSG_RESULT(no),
+-	AC_MSG_RESULT(unknown)
+-)
++}]])],[AC_DEFINE(HAVE_ICONV_OPEN_TRANSLIT) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)],[AC_MSG_RESULT(unknown)
++])
+ 
+ 
+ # tin has mkdirs.sh instead of mkinstalldirs, overwrite the result of test
+@@ -1223,6 +1214,7 @@
+ CF_DEFINE_STRING(TIN_LDFLAGS,  "$LDFLAGS")
+ CF_DEFINE_STRING(TIN_LIBS,     "$LIBS")
+ 
+-AC_OUTPUT($PCRE_MAKEFILE
++AC_CONFIG_FILES([$PCRE_MAKEFILE
+ 	$SUB_MAKEFILE
+-	src/Makefile)
++	src/Makefile])
++AC_OUTPUT

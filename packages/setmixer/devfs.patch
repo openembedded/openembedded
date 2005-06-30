@@ -1,0 +1,25 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- setmixer-27DEC94.orig/setmixer.c~devfs
++++ setmixer-27DEC94.orig/setmixer.c
+@@ -27,7 +27,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/soundcard.h>
+ 
+-#define MIXER "/dev/mixer"
++#define MIXER "/dev/sound/mixer"
+ 
+ const char * dname[] = SOUND_DEVICE_NAMES;
+     
+@@ -65,7 +65,7 @@
+     }
+ 
+     if ((mixer_fd = open(MIXER, O_RDWR)) < 0) {
+-	fprintf(stderr, "Error opening /dev/mixer.");
++	fprintf(stderr, "Error opening /dev/sound/mixer.");
+ 	exit(1);
+     }
+     if (ioctl(mixer_fd, SOUND_MIXER_READ_DEVMASK, &devmask) == -1) {

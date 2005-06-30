@@ -1,0 +1,101 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- /dev/null
++++ portabase/packages/portabase/portabase-1.9/qtversion.patch
+@@ -0,0 +1,49 @@
++
++#
++# Patch managed by http://www.holgerschurig.de/patcher.html
++#
++
++--- portabase/datewidget.cpp~qtversion.patch
+++++ portabase/datewidget.cpp
++@@ -21,7 +21,7 @@
++ #include "desktop/resource.h"
++ #endif
++ 
++-#if QT_VERSION >= 300
+++#if QT_VERSION >= 0x030000
++ #include "desktop/QtaDatePicker.h"
++ #else
++ #include "QtaDatePicker.h"
++--- portabase/metakitfuncs.cpp~qtversion.patch
+++++ portabase/metakitfuncs.cpp
++@@ -19,7 +19,7 @@
++ 
++ int compareStrings(const QString &s1, const QString &s2)
++ {
++-#if QT_VERSION >= 300
+++#if QT_VERSION >= 0x030000
++     return s1.localeAwareCompare(s2);
++ #else
++     // do the right thing for null and empty
++--- portabase/roweditor.cpp~qtversion.patch
+++++ portabase/roweditor.cpp
++@@ -26,7 +26,7 @@
++ #include "roweditor.h"
++ #include "timewidget.h"
++ 
++-#if QT_VERSION >= 300
+++#if QT_VERSION >= 0x030000
++ #include "desktop/dynamicedit.h"
++ #else
++ #include "dynamicedit.h"
++--- portabase/shadedlistitem.cpp~qtversion.patch
+++++ portabase/shadedlistitem.cpp
++@@ -45,7 +45,7 @@
++ void ShadedListItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
++ {
++     QColorGroup colors(cg);
++-#if QT_VERSION >=300
+++#if QT_VERSION >= 0x030000
++     const QWidget::BackgroundMode bgmode = lv->viewport()->backgroundMode();
++     const QColorGroup::ColorRole crole = QPalette::backgroundRoleFromMode(bgmode);
++ #else
+--- portabase/datewidget.cpp~qtversion
++++ portabase/datewidget.cpp
+@@ -21,7 +21,7 @@
+ #include "desktop/resource.h"
+ #endif
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+ #include "desktop/QtaDatePicker.h"
+ #else
+ #include "QtaDatePicker.h"
+--- portabase/roweditor.cpp~qtversion
++++ portabase/roweditor.cpp
+@@ -26,7 +26,7 @@
+ #include "roweditor.h"
+ #include "timewidget.h"
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+ #include "desktop/dynamicedit.h"
+ #else
+ #include "dynamicedit.h"
+--- portabase/shadedlistitem.cpp~qtversion
++++ portabase/shadedlistitem.cpp
+@@ -45,7 +45,7 @@
+ void ShadedListItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+ {
+     QColorGroup colors(cg);
+-#if QT_VERSION >=300
++#if QT_VERSION >= 0x030000
+     const QWidget::BackgroundMode bgmode = lv->viewport()->backgroundMode();
+     const QColorGroup::ColorRole crole = QPalette::backgroundRoleFromMode(bgmode);
+ #else
+--- portabase/metakitfuncs.cpp~qtversion
++++ portabase/metakitfuncs.cpp
+@@ -19,7 +19,7 @@
+ 
+ int compareStrings(const QString &s1, const QString &s2)
+ {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     return s1.localeAwareCompare(s2);
+ #else
+     // do the right thing for null and empty

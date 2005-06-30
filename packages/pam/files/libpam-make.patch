@@ -1,0 +1,10 @@
+--- Linux-PAM-0.79/Make.Rules.in.orig	2005-04-15 01:28:45.695508120 -0700
++++ Linux-PAM-0.79/Make.Rules.in	2005-04-15 01:28:10.274892872 -0700
+@@ -122,3 +122,7 @@
+ ifdef DYNAMIC
+ CFLAGS += $(PIC)
+ endif
++
++ifdef DESTDIR
++FAKEROOT = $(DESTDIR)
++endif

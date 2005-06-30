@@ -1,0 +1,74 @@
+--- ffmpeg-0.4.9-pre1/libavcodec/Makefile.orig	2004-08-25 22:36:39.000000000 +0200
++++ ffmpeg-0.4.9-pre1/libavcodec/Makefile	2004-08-25 22:37:22.000000000 +0200
+@@ -7,7 +7,7 @@
+ VPATH=$(SRC_PATH)/libavcodec
+ 
+ # NOTE: -I.. is needed to include config.h
+-CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
++CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -fPIC -DPIC
+ 
+ OBJS= common.o utils.o mem.o allcodecs.o \
+       mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
+@@ -197,7 +197,7 @@
+ 	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
+ 	-lib /machine:i386 /def:$(@:.dll=.def)
+ else
+-	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS) $(LDFLAGS)
++	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS) $(LDFLAGS) -Wl,-soname -Wl,libavcodec.so.0
+ endif
+ 
+ dsputil.o: dsputil.c dsputil.h
+@@ -269,8 +269,9 @@
+ 	install -s -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
+-	ln -sf libavcodec-$(VERSION).so $(prefix)/lib/libavcodec.so
++	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec.so.0.4.9
++	ln -sf libavcodec.so.0.4.9 $(prefix)/lib/libavcodec.so.0
++	ln -sf libavcodec.so.0.4.9 $(prefix)/lib/libavcodec.so
+ 	ldconfig || true
+ endif
+ else
+
+--- ffmpeg-0.4.9-pre1/libavformat/Makefile.orig	2004-08-26 13:45:12.000000000 +0200
++++ ffmpeg-0.4.9-pre1/libavformat/Makefile	2004-08-26 13:46:00.000000000 +0200
+@@ -6,7 +6,7 @@
+ 
+ VPATH=$(SRC_PATH)/libavformat
+ 
+-CFLAGS=$(OPTFLAGS) -I.. -I$(SRC_PATH) -I$(SRC_PATH)/libavcodec -DHAVE_AV_CONFIG_H -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
++CFLAGS=$(OPTFLAGS) -I.. -I$(SRC_PATH) -I$(SRC_PATH)/libavcodec -DHAVE_AV_CONFIG_H -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -fPIC -DPIC
+ 
+ OBJS= utils.o cutils.o os_support.o allformats.o
+ PPOBJS=
+@@ -54,6 +54,7 @@
+ ifeq ($(CONFIG_AUDIO_BEOS),yes)
+ PPOBJS+= beosaudio.o
+ EXTRALIBS+=-lbe -lmedia
++else
+ # this should be the default !
+ EXTRALIBS+=-lavcodec -L../libavcodec
+ endif
+@@ -93,7 +94,7 @@
+ 	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS) $(VPATH)/../libavcodec/avcodec.dll
+ 	-lib /machine:i386 /def:$(@:.dll=.def)
+ else
+-	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS)
++	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS) -Wl,-soname -Wl,libavformat.so.0
+ endif
+ 
+ depend: $(SRCS)
+@@ -105,8 +106,9 @@
+ 	install -s -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
+-	ln -sf libavformat-$(VERSION).so $(prefix)/lib/libavformat.so
++	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat.so.0.4.9
++	ln -sf libavformat.so.0.4.9 $(prefix)/lib/libavformat.so.0
++	ln -sf libavformat.so.0.4.9 $(prefix)/lib/libavformat.so
+ 	ldconfig || true
+ endif
+ else
+

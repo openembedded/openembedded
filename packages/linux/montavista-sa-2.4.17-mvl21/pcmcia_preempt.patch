@@ -1,0 +1,180 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.17_mvl21/drivers/pcmcia/sa1100_generic.c~pcmcia_preempt.patch
++++ linux-2.4.17_mvl21/drivers/pcmcia/sa1100_generic.c
+@@ -172,7 +172,7 @@
+   struct pcmcia_state state[SA1100_PCMCIA_MAX_SOCK];
+   struct pcmcia_state_array state_array;
+   unsigned int i, clock;
+-  unsigned long mecr;
++  unsigned long mecr, irq_flags;
+ 
+   printk(KERN_INFO "SA-1100 PCMCIA (CS release %s)\n", CS_RELEASE);
+ 
+@@ -278,10 +278,12 @@
+     return -EIO;
+   }
+ 
++  preempt_disable();
++  
+   /* We initialize the MECR to default values here, because we are
+    * not guaranteed to see a SetIOMap operation at runtime.
+    */
+-  mecr=0;
++  mecr=MECR;
+ 
+   clock = cpufreq_get(0);
+ 
+@@ -311,11 +313,14 @@
+     sa1100_pcmcia_socket[i].speed_mem=SA1100_PCMCIA_5V_MEM_ACCESS;
+   }
+ 
++  local_irq_save(irq_flags);
+   MECR=mecr;
++  local_irq_restore(irq_flags);
+ 
+ #ifdef CONFIG_CPU_FREQ
+   if(cpufreq_register_notifier(&sa1100_pcmcia_notifier_block) < 0){
+     printk(KERN_ERR "Unable to register CPU frequency change notifier\n");
++    preempt_enable();
+     return -ENXIO;
+   }
+ #endif
+@@ -324,12 +329,14 @@
+   if(register_ss_entry(sa1100_pcmcia_socket_count, 
+ 		       &sa1100_pcmcia_operations)<0){
+     printk(KERN_ERR "Unable to register socket service routine\n");
++    preempt_enable();
+     return -ENXIO;
+   }
+ 
+   /* Start the event poll timer.  It will reschedule by itself afterwards. */
+   sa1100_pcmcia_poll_event(0);
+ 
++  preempt_enable();
+   DEBUG(1, "sa1100: initialization complete\n");
+ 
+   return 0;
+@@ -813,7 +820,7 @@
+ static int sa1100_pcmcia_set_io_map(unsigned int sock,
+ 				    struct pccard_io_map *map){
+   unsigned int clock, speed;
+-  unsigned long mecr, start;
++  unsigned long mecr, start, irq_flags;
+ 
+   DEBUG(4, "%s() for sock %u\n", __FUNCTION__, sock);
+ 
+@@ -836,7 +843,8 @@
+   }
+ 
+   if(map->flags&MAP_ACTIVE){
+-
++    preempt_disable();
++    
+     speed=(map->speed>0)?map->speed:SA1100_PCMCIA_IO_ACCESS;
+ 
+     clock = cpufreq_get(0);
+@@ -852,8 +860,10 @@
+ 	  MECR_BSM_GET(mecr, sock), sock, MECR_BSA_GET(mecr, sock), 
+ 	  sock, MECR_BSIO_GET(mecr, sock));
+ 
++    local_irq_save(irq_flags);
+     MECR=mecr;
+-
++    local_irq_restore(irq_flags);
++    preempt_enable();
+   }
+ 
+   start=map->start;
+@@ -909,8 +919,10 @@
+ static int sa1100_pcmcia_set_mem_map(unsigned int sock,
+ 				     struct pccard_mem_map *map){
+   unsigned int clock, speed;
+-  unsigned long mecr, start;
+-
++  unsigned long mecr, start, irq_flags;
++ 
++  preempt_disable();
++  
+   DEBUG(4, "%s() for sock %u\n", __FUNCTION__, sock);
+ 
+   DEBUG(4, "\tmap %u  speed %u\n\tsys_start  %#lx\n"
+@@ -929,6 +941,7 @@
+   if(map->map>=MAX_WIN){
+     printk(KERN_ERR "%s(): map (%d) out of range\n", __FUNCTION__,
+ 	   map->map);
++    preempt_enable();
+     return -1;
+   }
+ 
+@@ -968,9 +981,10 @@
+ 	  __FUNCTION__, sock, MECR_FAST_GET(mecr, sock), sock,
+ 	  MECR_BSM_GET(mecr, sock), sock, MECR_BSA_GET(mecr, sock), 
+ 	  sock, MECR_BSIO_GET(mecr, sock));
+-    
+-    MECR=mecr;
+ 
++    local_irq_save(irq_flags);
++    MECR=mecr;	
++    local_irq_restore(irq_flags);
+   }
+ 
+   start=map->sys_start;
+@@ -986,6 +1000,8 @@
+ 
+   sa1100_pcmcia_socket[sock].mem_map[map->map]=*map;
+ 
++  preempt_enable();
++  
+   return 0;
+ 
+ }  /* sa1100_pcmcia_set_mem_map() */
+@@ -1026,8 +1042,13 @@
+ 				     int count, int *eof, void *data){
+   char *p=buf;
+   unsigned int sock=(unsigned int)data;
+-  unsigned int clock = cpufreq_get(0);
+-  unsigned long mecr = MECR;
++  unsigned int clock;
++  unsigned long mecr;
++
++  preempt_disable();
++  clock = cpufreq_get(0);
++  mecr  = MECR;
++  preempt_enable();
+ 
+   p+=sprintf(p, "k_flags  : %s%s%s%s%s%s%s\n", 
+ 	     sa1100_pcmcia_socket[sock].k_state.detect?"detect ":"",
+@@ -1101,8 +1122,13 @@
+ void sa1100_pcmcia_update_mecr( void )
+ {
+   unsigned int sock;
+-  unsigned long mecr = MECR;
+-  unsigned int clock = cpufreq_get(0);
++  unsigned long mecr;
++  unsigned int clock;
++  unsigned long irq_flags;
++  
++  preempt_disable();
++  mecr = MECR;
++  clock = cpufreq_get(0);
+ 
+   if ( clock <= 148000 )
+     clock = 59000;
+@@ -1122,10 +1148,11 @@
+ 				       clock));
+   }
+ 
+-  cli();
++  local_irq_save(irq_flags);
+   MECR = mecr;
+-  sti();
++  local_irq_restore(irq_flags);
+ 
++  preempt_enable();
+ }
+ #endif
+ 

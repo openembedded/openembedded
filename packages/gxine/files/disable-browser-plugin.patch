@@ -1,0 +1,25 @@
+diff -urNd ../gxine-0.4.1-r0.old/gxine-0.4.1/Makefile.am gxine-0.4.1/Makefile.am
+--- ../gxine-0.4.1-r0.old/gxine-0.4.1/Makefile.am	2004-12-14 21:48:24 +00:00
++++ gxine-0.4.1/Makefile.am	2005-04-08 03:40:48 +01:00
+@@ -1,4 +1,4 @@
+-SUBDIRS = m4 pixmaps include src doc browser-plugin misc po
++SUBDIRS = m4 pixmaps include src doc misc po
+ 
+ #DEB_FILES = debian/rules debian/changelog debian/control debian/copyright debian/README.Debian debian/menu
+ EXTRA_DIST = config.rpath gxine.desktop autogen.sh @DEPCOMP@ 
+diff -urNd ../gxine-0.4.1-r0.old/gxine-0.4.1/configure.ac gxine-0.4.1/configure.ac
+--- ../gxine-0.4.1-r0.old/gxine-0.4.1/configure.ac	2005-04-08 04:00:05 +01:00
++++ gxine-0.4.1/configure.ac	2005-04-08 03:47:22 +01:00
+@@ -42,12 +42,6 @@
+ AC_PATH_XTRA
+ 
+ dnl ---------------------------------------------
+-dnl Check for Xaw headers
+-dnl ---------------------------------------------
+-AC_CHECK_HEADER(X11/Xaw/Form.h,,
+-       [AC_MSG_ERROR([you need to install libxaw header files (-dev package)])])
+-
+-dnl ---------------------------------------------
+ dnl check for gtk 2
+ dnl ---------------------------------------------
+ PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.4.0)

@@ -1,0 +1,9 @@
+--- gpe-edit-0.23/gpe-edit.desktop.in.old	2004-08-03 15:40:26.000000000 +0100
++++ gpe-edit-0.23/gpe-edit.desktop.in	2004-08-03 15:40:32.000000000 +0100
+@@ -5,5 +5,5 @@
+ Terminal=0
+ Type=Application
+ Icon=gpe-edit.png
+-Categories=Application;Utility;GPE
++Categories=Application;Utility;GPE;Office;
+ StartupNotify=True

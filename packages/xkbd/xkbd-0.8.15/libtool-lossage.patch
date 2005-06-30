@@ -1,0 +1,43 @@
+--- clean/xkbd-0.8.12/configure.ac	2003-06-03 17:27:20.000000000 +0100
++++ xkbd-0.8.12/configure.ac	2004-03-28 19:35:33.000000000 +0100
+@@ -46,11 +46,11 @@
+       CFLAGS="$CFLAGS -g -DDEBUG"
+   fi])
+ 
++PKG_CHECK_MODULES(XTEST, xtst xext)
+ 
+ # Checks for programs.
+ AC_PROG_CC
+ AC_PROG_INSTALL
+-AC_PROG_LIBTOOL
+ 
+ # Checks for libraries.
+ 
+@@ -70,6 +70,8 @@
+ 
+ AC_SUBST(XFT_LIBS)
+ AC_SUBST(XPM_LIBS)
++AC_SUBST(XTEST_LIBS)
++AC_SUBST(XTEST_CFLAGS)
+ 
+ AC_OUTPUT(Makefile 
+           src/Makefile
+@@ -78,4 +80,4 @@
+           data/img/Makefile
+           packaging/Makefile
+           packaging/ipkg/Makefile
+-          packaging/ipkg/control )
+\ No newline at end of file
++          packaging/ipkg/control )
+--- clean/xkbd-0.8.12/src/Makefile.am	2003-06-03 17:31:07.000000000 +0100
++++ xkbd-0.8.12/src/Makefile.am	2004-03-28 19:34:39.000000000 +0100
+@@ -1,7 +1,7 @@
+ DEFAULT_CONFIG=$(pkgdatadir)/en_GB.qwerty.xkbd
+ 
+-LDADD = @X_LIBS@ -lX11 -lXtst $(XPM_LIBS) $(XFT_LIBS)
+-CFLAGS = @CFLAGS@ -DDEFAULTCONFIG=\"$(DEFAULT_CONFIG)\"
++LDADD = @XTEST_LIBS@ $(XPM_LIBS) $(XFT_LIBS)
++AM_CFLAGS = @XTEST_CFLAGS@ @CFLAGS@ -DDEFAULTCONFIG=\"$(DEFAULT_CONFIG)\"
+ 
+ bin_PROGRAMS = xkbd
+ xkbd_SOURCES = xkbd.c libXkbd.c box.c button.c kb.c libvirtkeys.c \

@@ -1,0 +1,18 @@
+[GENERAL]
+NAME=Phalanx
+VERSION=0.1.2
+exec=phalanx
+cmd=-l- -P /opt/QtPalmtop/chess/engines/Phalanx -S /opt/QtPalmtop/chess/engines/Phalanx
+
+[CAPABILITIES]
+UNDO=1
+EDIT=1
+BOOK=1
+
+[DIFFICULTY]
+level_very_easy_cmd=-e 100
+level_easy_cmd=-e 75
+level_moderate_cmd=-e 42
+level_hard_cmd=-e 15
+level_very_hard_cmd=-e 0
+

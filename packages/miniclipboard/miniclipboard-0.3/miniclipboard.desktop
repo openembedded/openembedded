@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Clipboard control
+Comment=Panel based clipboard control
+Exec=miniclipboard
+Type=PanelApp
+Icon=paste.xpm
+Categories=Panel;Utility

@@ -1,0 +1,58 @@
+2005-05-07  Steven Brown  <swbrown@ucsd.edu>
+
+	* Makefile.am: Remove $(top_srcdir) from ACLOCAL_AMFLAGS, as it can't
+	be substituted when calling autoreconf and friends.
+
+	* configure.in: Remove unnecessary sinclude lines (this is aclocal's
+	job), and outdated AC_CYGWIN test.
+
+	* src/Makefile.am: Remove duplicate library generation (libtool
+	static+dynamic vs. non-libtool static).
+
+
+diff -ruN EasySoap++-0.6.1-old/Makefile.am EasySoap++-0.6.1/Makefile.am
+--- EasySoap++-0.6.1-old/Makefile.am	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/Makefile.am	Sat May  7 19:55:42 2005
+@@ -1,5 +1,5 @@
+ SUBDIRS = include src proj tests validator simpleserver google
+-ACLOCAL_AMFLAGS = -I $(top_srcdir)/conftools
++ACLOCAL_AMFLAGS = -I conftools
+ EXTRA_DIST = \
+ 	README \
+ 	README.borland \
+diff -ruN EasySoap++-0.6.1-old/configure.in EasySoap++-0.6.1/configure.in
+--- EasySoap++-0.6.1-old/configure.in	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/configure.in	Sat May  7 19:55:57 2005
+@@ -21,15 +21,7 @@
+ AM_INIT_AUTOMAKE(EasySoap++, 0.6.1)
+ AM_CONFIG_HEADER(include/easysoap/es_config.h)
+ 
+-dnl
+-dnl Include other macros we need...
+-sinclude(conftools/ac_cxx_namespaces.m4)
+-sinclude(conftools/ac_cxx_template_keyword_qualifier.m4)
+-sinclude(conftools/ac_cxx_partial_specialization.m4)
+-sinclude(conftools/peti_with_dmalloc.m4)
+-
+ AC_CANONICAL_HOST
+-AC_CYGWIN
+ 
+ dnl Checks for programs.
+ AC_PROG_CXX
+diff -ruN EasySoap++-0.6.1-old/src/Makefile.am EasySoap++-0.6.1/src/Makefile.am
+--- EasySoap++-0.6.1-old/src/Makefile.am	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/src/Makefile.am	Sat May  7 19:56:11 2005
+@@ -1,5 +1,4 @@
+ lib_LTLIBRARIES = libeasysoap.la
+-lib_LIBRARIES = libeasysoap.a
+ THESOURCES = \
+ 	SOAPBase64.cpp \
+ 	SOAPBody.cpp \
+@@ -33,7 +32,6 @@
+ 	XMLParser.cpp 
+ 
+ libeasysoap_la_SOURCES = $(THESOURCES)
+-libeasysoap_a_SOURCES = $(THESOURCES)
+ noinst_HEADERS = \
+ 	SOAPBodyHandler.h \
+ 	SOAPClientSocketImp.h \

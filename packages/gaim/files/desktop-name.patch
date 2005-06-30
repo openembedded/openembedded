@@ -1,0 +1,10 @@
+--- gaim-1.0.3/gaim.desktop.old	2005-01-01 16:48:58.000000000 +0000
++++ gaim-1.0.3/gaim.desktop	2005-01-01 16:49:15.000000000 +0000
+@@ -1,6 +1,6 @@
+ [Desktop Entry]
+ Encoding=UTF-8
+-Name=Gaim Internet Messenger
++Name=Gaim
+ Name[de]=Gaim Internet Messenger
+ Name[da]=Gaim - internet beskeder
+ Name[fr]=Gaim Messagerie Instantanée

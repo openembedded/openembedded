@@ -1,0 +1,86 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- irssi/configure.in~autofoo
++++ irssi/configure.in
+@@ -280,39 +280,24 @@
+ AC_CHECK_SIZEOF(long long)
+ 
+ dnl * older autoconfs don't include sys/types.h, so do it manually
+-AC_MSG_CHECKING([size of off_t])
+-AC_TRY_RUN([
+-  #include <stdio.h>
+-  #include <sys/types.h>
+-  int main() {
+-    FILE *f=fopen("conftestval", "w");
+-    if (!f) exit(1);
+-    fprintf(f, "%d\n", sizeof(off_t));
+-    return 0;
+-  }
+-], [
+-  sizeof_off_t=`cat conftestval`
+-  rm -f conftestval
+-], [
+-  AC_ERROR([Unsupported off_t size])
+-])
+-AC_MSG_RESULT($sizeof_off_t)
++dnl * we use current autotools, so do it properly. --CL
++AC_CHECK_SIZEOF(off_t)
+ 
+-if test $sizeof_off_t = 8; then
++if test $ac_cv_sizeof_off_t = 8; then
+   offt_64bit=yes
+ else
+   offt_64bit=no
+ fi
+ 
+-if test x$sizeof_off_t = x$ac_cv_sizeof_long; then
++if test x$ac_cv_sizeof_off_t = x$ac_cv_sizeof_long; then
+   # try to use unsigned long always first
+   AC_DEFINE_UNQUOTED(PRIuUOFF_T, "lu")
+   AC_DEFINE(UOFF_T_LONG)
+-elif test x$sizeof_off_t = x$ac_cv_sizeof_int; then
++elif test x$ac_cv_sizeof_off_t = x$ac_cv_sizeof_int; then
+   # next try int
+   AC_DEFINE_UNQUOTED(PRIuUOFF_T, "u")
+   AC_DEFINE(UOFF_T_INT)
+-elif test x$sizeof_off_t = x$ac_cv_sizeof_long_long; then
++elif test x$ac_cv_sizeof_off_t = x$ac_cv_sizeof_long_long; then
+   # and finally long long
+   AC_DEFINE_UNQUOTED(PRIuUOFF_T, "llu")
+   AC_DEFINE(UOFF_T_LONG_LONG)
+@@ -541,13 +526,13 @@
+ int modfunc(){return (int)floor(1.2);}
+ EOF
+ 
+-./libtool --mode=compile $CC $CFLAGS -c conftest.c 2> /dev/null > /dev/null
++./*libtool --mode=compile $CC $CFLAGS -c conftest.c 2>log >&2 
+ if test ! -s conftest.lo; then
+   AC_ERROR([error compiling test module])
+ fi
+ 
+ dnl ** link to library
+-./libtool --mode=link $CC $CFLAGS $LDFLAGS -rpath /usr/lib conftest.lo -lm -o libconftest.la > /dev/null
++./*libtool --mode=link $CC $CFLAGS $LDFLAGS -rpath /usr/lib conftest.lo -lm -o libconftest.la > /dev/null
+ if test ! -s .libs/libconftest.a; then
+   AC_ERROR([error, can't even find .a library])
+ fi
+@@ -755,14 +740,14 @@
+ 			perl_module_fe_lib=
+ 			perl_static_lib=libperl_core_static.la
+ 			perl_static_fe_lib=libfe_perl_static.la
+-			PERL_LIBTOOL='$(SHELL) $(top_builddir)/libtool'
++			PERL_LIBTOOL="$LIBTOOL"
+ 		else
+ 			dnl * build dynamic library of perl module
+ 			perl_module_lib=libperl_core.la
+ 			perl_module_fe_lib=libfe_perl.la
+ 			perl_static_lib=
+ 			perl_static_fe_lib=
+-			PERL_LIBTOOL='$(SHELL) $(top_builddir)/libtool'
++			PERL_LIBTOOL="$LIBTOOL"
+ 		fi
+ 
+ 		if test "x$want_staticperllib" = "xyes"; then

@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/widgets/qtabbar.cpp~qtabbar
++++ qt-2.3.10/src/widgets/qtabbar.cpp
+@@ -260,7 +260,6 @@
+ 	lstatic->insert( index, newTab );
+ 
+     layoutTabs();
+-    updateArrowButtons();
+     makeVisible( tab( currentTab() ) );
+ 
+ #ifndef QT_NO_ACCEL
+@@ -282,7 +281,6 @@
+     l->remove( t );
+     lstatic->remove( t );
+     layoutTabs();
+-    updateArrowButtons();
+     makeVisible( tab( currentTab() ) );
+     update();
+ }
+@@ -887,6 +885,7 @@
+     }
+     for ( t = lstatic->first(); t; t = lstatic->next() )
+ 	t->r.setHeight( r.height() );
++    updateArrowButtons();
+ }
+ 
+ /*!
+@@ -977,7 +976,6 @@
+     d->leftB->setGeometry( width() - 2*arrowWidth, 0, arrowWidth, height() );
+ #endif
+     layoutTabs();
+-    updateArrowButtons();
+     makeVisible( tab( currentTab() ));
+ }
+ 

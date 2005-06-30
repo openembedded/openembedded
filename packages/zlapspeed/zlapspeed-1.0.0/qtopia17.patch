@@ -1,0 +1,25 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- zlaps-src/zlaps_main.cpp~qtopia17	2004-04-15 04:44:10.000000000 +0200
++++ zlaps-src/zlaps_main.cpp	2004-04-18 12:54:08.000000000 +0200
+@@ -1,5 +1,15 @@
+ #include "zlaps.h"
+ #include <qpe/qpeapplication.h>
+ 
+-QTOPIA_ADD_APPLICATION("zlaps", zlaps)
+-QTOPIA_MAIN
++//QTOPIA_ADD_APPLICATION("zlaps", zlaps)
++//QTOPIA_MAIN
++
++int main(int argc, char** argv)
++{
++       QPEApplication a( argc, argv );
++       zlaps* w = new zlaps();
++       a.showMainWidget( w );  
++       a.exec();
++}
++
++

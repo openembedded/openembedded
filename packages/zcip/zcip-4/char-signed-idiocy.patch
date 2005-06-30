@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- zcip-4/zcip.c~char-signed-idiocy
++++ zcip-4/zcip.c
+@@ -1243,7 +1243,7 @@
+ 
+ int main(int argc, char *argv[]) {
+     int r, rand_seed = 0;
+-    char c;
++    int c;
+     char ebuf[LIBNET_ERRBUF_SIZE];
+ 
+     struct option longopts[] = {

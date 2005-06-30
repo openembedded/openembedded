@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- netkit-tftp-0.17/tftpd/tftpd.c~tftpd_add_debug
++++ netkit-tftp-0.17/tftpd/tftpd.c
+@@ -252,6 +252,8 @@
+ 	char *filename, *mode = NULL;
+ 
+ 	filename = cp = tp->th_stuff;
++	syslog(LOG_NOTICE, "tp->th_opcode=%x, tp = %p, &(tp->th_stuff)=%p, filename=%s", tp->th_opcode,tp, &(tp->th_stuff),filename);
++
+ again:
+ 	while (cp < buf + size) {
+ 		if (*cp == '\0')
+@@ -340,8 +342,10 @@
+ 			return(EACCESS);
+ 		}
+ 	}
+-	if (stat(filename, &stbuf) < 0)
++	if (stat(filename, &stbuf) < 0) {
++		syslog(LOG_NOTICE, "file %s not found", filename);
+ 		return (errno == ENOENT ? ENOTFOUND : EACCESS);
++	}
+ #if 0
+ 	/*
+ 	 * The idea is that symlinks are dangerous. However, a symlink

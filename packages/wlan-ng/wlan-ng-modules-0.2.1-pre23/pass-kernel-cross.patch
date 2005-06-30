@@ -1,0 +1,140 @@
+--- src/p80211/Makefile.orig	2004-09-13 16:53:46.000000000 +0200
++++ src/p80211/Makefile	2004-10-18 18:20:37.130194928 +0200
+@@ -44,6 +44,13 @@
+ 
+ include $(WLAN_SRC)../../config.mk
+ 
++passvars = \
++      KERNEL_PATH='$(KERNEL_PATH)' \
++      KERNEL_SRC='$(KERNEL_SRC)' \
++      KERNEL_VERSION='$(KERNEL_VERSION)' \
++      CC='$(KERNEL_CC)' \
++      LD='$(KERNEL_LD)'
++
+ ifeq ($(WLAN_DEBUG), y)
+ WLAN_INCLUDE_DEBUG=-DWLAN_INCLUDE_DEBUG
+ endif
+@@ -89,11 +96,11 @@
+ 	fi
+ 
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(PWD)/ \
+-		MODVERDIR=$(PWD)/../.tmp_versions modules
++		MODVERDIR=$(PWD)/../.tmp_versions $(passvars) modules
+ else # kbuild 2.4
+ 
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(PWD)/ \
+-		modules
++		$(passvars) modules
+ endif # kbuild switch
+ 
+ endif  # KERNELRELEASE
+--- src/prism2/driver/Makefile.orig	2004-08-04 19:27:56.000000000 +0200
++++ src/prism2/driver/Makefile	2004-10-18 18:20:06.614833968 +0200
+@@ -44,6 +44,13 @@
+ 
+ include $(WLAN_SRC)../../../config.mk
+ 
++passvars = \
++      KERNEL_PATH='$(KERNEL_PATH)' \
++      KERNEL_SRC='$(KERNEL_SRC)' \
++      KERNEL_VERSION='$(KERNEL_VERSION)' \
++      CC='$(KERNEL_CC)' \
++      LD='$(KERNEL_LD)'
++
+ ifeq ($(WLAN_DEBUG), y)
+ WLAN_INCLUDE_DEBUG=-DWLAN_INCLUDE_DEBUG
+ endif
+@@ -85,11 +92,11 @@
+ default:
+ ifeq ($(KERN_25), y)
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(PWD)/ \
+-		MODVERDIR=$(PWD)/../.tmp_versions modules
++		MODVERDIR=$(PWD)/../.tmp_versions $(passvars) modules
+ else # kbuild 2.4
+ 
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(PWD)/ \
+-		modules
++		$(passvars) modules
+ 
+ endif # kbuild switch
+ 
+--- src/prism2/Makefile.orig	2004-02-13 19:47:37.000000000 +0100
++++ src/prism2/Makefile	2004-10-18 18:19:13.511906840 +0200
+@@ -44,6 +44,13 @@
+ 
+ include ../../config.mk
+ 
++passvars = \
++      KERNEL_PATH='$(KERNEL_PATH)' \
++      KERNEL_SRC='$(KERNEL_SRC)' \
++      KERNEL_VERSION='$(KERNEL_VERSION)' \
++      KERNEL_CC='$(KERNEL_CC)' \
++      KERNEL_LD='$(KERNEL_LD)'
++
+ DIRS=driver ridlist download
+ 
+ ifneq ($(wildcard *.addon),) 
+@@ -51,10 +58,10 @@
+ endif
+ 
+ all:
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars); done
+ 
+ clean:
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d clean ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars) clean ; done
+ 	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags
+ 	for i in *_obj; do if [ -d $$i ]; then rm -fr $$i; fi; done
+ 
+@@ -68,7 +75,7 @@
+ 			cp $$x $(TARGET_ROOT_ON_HOST)$(FIRMWARE_DIR)/prism2_`echo $$x |  cut -c1-2`.hex ; \
+ 		fi; \
+ 	done 
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d install ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars) install ; done
+ 
+ ctags:
+ 	ctags -R
+--- Makefile.orig	2004-02-13 19:47:36.000000000 +0100
++++ Makefile	2004-10-18 18:16:58.126488552 +0200
+@@ -42,6 +42,12 @@
+ #
+ # --------------------------------------------------------------------
+ 
++passvars = \
++      KERNEL_PATH='$(KERNEL_PATH)' \
++      KERNEL_SRC='$(KERNEL_SRC)' \
++      KERNEL_VERSION='$(KERNEL_VERSION)' \
++      KERNEL_CC='$(KERNEL_CC)' \
++      KERNEL_LD='$(KERNEL_LD)'
+ 
+ DIRS = src doc man etc
+ 
+@@ -60,7 +66,7 @@
+ 	@echo " "
+ 
+ all:    config.mk
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars); done
+ 
+ mrproper: clean
+ 	rm -f config.out
+@@ -68,7 +74,7 @@
+ 
+ clean:
+ 	touch config.mk config.new
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d clean ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars) clean ; done
+ 	rm -f core core.* *.o .*.o *.s *.a .depend tmp_make *~ tags 
+ 	for i in *_obj; do if [ -d $$i ]; then rm -fr $$i; fi; done
+ 	rm -f config.mk config.new
+@@ -76,7 +82,7 @@
+ 
+ install:
+ 	find . -name .depend -exec rm {} \;
+-	set -e; for d in $(DIRS); do $(MAKE) -C $$d install ; done
++	set -e; for d in $(DIRS); do $(MAKE) -C $$d $(passvars) install ; done
+ 
+ auto_config config.mk:
+ 	@touch config.mk config.new

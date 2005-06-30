@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libpcap-0.8.1/configure.in~configure
++++ libpcap-0.8.1/configure.in
+@@ -32,13 +32,11 @@
+ AC_CHECK_FUNCS(ether_hostton strerror strlcpy)
+ 
+ needsnprintf=no
+-LIBOBJS=
+ AC_CHECK_FUNCS(vsnprintf snprintf,,
+ 	[needsnprintf=yes])
+ if test $needsnprintf = yes; then
+-	LIBOBJS="$LIBOBJS snprintf.o"
++	AC_LIBOBJ([snprintf])
+ fi
+-AC_SUBST(LIBOBJS)
+ 
+ dnl to pacify those who hate protochain insn
+ AC_MSG_CHECKING(if --disable-protochain option is specified)

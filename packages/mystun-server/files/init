@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+case "$1" in
+	start)
+		echo -n "Starting mystun server"
+		test -d /var/run || mkdir -p /var/run
+		mystun-server -D -P /var/run/mystun-server.pid
+		echo "."
+	;;
+	stop)
+		echo -n "Stopping mystun server"
+		kill $(cat /var/run/mystun-server.pid)
+		echo "."
+	;;
+	restart)
+		$0 stop
+		$0 start
+	;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+	;;
+esac
+
+exit 0

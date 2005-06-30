@@ -1,0 +1,1 @@
+set linuxargs "root=/dev/mtdblock1 init=/linuxrc noinitrd console=none"

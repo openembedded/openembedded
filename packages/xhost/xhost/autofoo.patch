@@ -23,7 +23,7 @@ diff -urN xhost.orig/Makefile.am xhost/Makefile.am
 +++ xhost/Makefile.am	2004-08-15 17:43:47.000000000 +0200
 @@ -0,0 +1,53 @@
 +# 
-+#  $Id$
++#  $Id: Makefile.am,v 1.2 2004/06/25 19:38:50 markh Exp $
 +# 
 +#  Copyright © 2003 Keith Packard
 +# 
@@ -80,7 +80,7 @@ diff -urN xhost.orig/configure.ac xhost/configure.ac
 +++ xhost/configure.ac	2004-08-15 17:43:42.000000000 +0200
 @@ -0,0 +1,57 @@
 +dnl
-+dnl $Id$
++dnl $Id: configure.ac,v 1.1 2003/10/09 06:16:59 keithp Exp $
 +dnl
 +dnl Copyright © 2003 Keith Packard
 +dnl

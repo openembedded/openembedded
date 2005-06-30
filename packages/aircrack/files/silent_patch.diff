@@ -1,0 +1,87 @@
+--- aircrack.c.o	2005-02-14 01:10:25.000000000 +0100
++++ aircrack.c	2005-02-14 01:11:00.000000000 +0100
+@@ -44,6 +44,7 @@
+ "\n"
+ "  usage: aircrack [options] <pcap file> <pcap file> ...\n"
+ "\n"
++"      -S         : silent - usefull for embedded devices\n"
+ "      -d <start> : debug - specify beginning of the key\n"
+ "      -f <fudge> : bruteforce fudge factor (default: 2)\n"
+ "      -m <maddr> : MAC address to filter usable packets\n"
+@@ -53,6 +54,7 @@
+ 
+ /* command-line parameters */
+ 
++int silent = 0;                 /* Silent, just display wep key if found  */
+ int debug_lvl = 0;              /* # of keybytes fixed  */
+ int macfilter = 0;              /* BSSID check flag     */
+ int stability = 0;              /* unstable attacks on  */
+@@ -803,7 +805,10 @@
+ 
+         wepkey[B] = wpoll[B][depth[B]].index;
+ 
+-        show_stats( B );
++        if (! silent)
++        {
++           show_stats( B );
++        }
+ 
+         if( B == 4 && weplen == 13 )
+         {
+@@ -832,14 +837,20 @@
+ 
+                 /* we have a valid key */
+ 
++               if (! silent )
++               {
+                 show_stats( B );
+-
+                 printf( "                 \33[31;1mKEY FOUND! [ " );
+-
+                 for( i = 0; i < weplen; i++ )
+                     printf( "%02X", wepkey[i] );
+-
+                 printf( " ]\33[0m\n\n" );
++               } else
++               {
++                printf( "KEY FOUND! [ " );
++                for( i = 0; i < weplen; i++ )
++                    printf( "%02X", wepkey[i] );
++                printf( "]\n\n" );
++               }
+ 
+                 kill( 0, SIGTERM );
+ 
+@@ -893,7 +904,7 @@
+ 
+     while( 1 )
+     {
+-        int option = getopt( argc, argv, "d:f:m:n:p:s:" );
++        int option = getopt( argc, argv, "Sd:f:m:n:p:s:" );
+ 
+         if( option < 0 ) break;
+ 
+@@ -997,6 +1008,10 @@
+ 
+                 break;
+ 
++            case 'S':
++		silent=1;
++                break;
++
+             default : goto usage;
+         }
+     }
+@@ -1072,7 +1087,11 @@
+     tm_start = time( NULL );
+     tm_prev  = time( NULL );
+ 
+-    printf( "\33[2J" );
++    if (!silent)
++    {
++      printf( "\33[2J" );
++    }
++
+     fflush( stdout );
+ 
+     return( do_wep_crack( 0 ) );

@@ -1,0 +1,10 @@
+--- home-launch.sh.old	2005-06-14 17:15:55.000000000 +0200
++++ home-launch.sh	2005-06-14 17:16:13.000000000 +0200
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-source af.conf
++. af.conf
+ 
+ if [ "$1" != "start" ] && [ "$1" != "stop" ] && [ "$1" != "restart" ]; then
+   echo "Usage: $0 {start|stop|restart}"

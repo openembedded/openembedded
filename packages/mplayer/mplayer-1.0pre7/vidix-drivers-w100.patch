@@ -1,0 +1,17 @@
+--- MPlayer-1.0pre6a/vidix/drivers/Makefile.orig	2005-04-05 14:17:28.130812264 +0000
++++ MPlayer-1.0pre6a/vidix/drivers/Makefile	2005-04-05 14:18:09.294554424 +0000
+@@ -70,7 +70,13 @@
+ SAVAGE_LIBS=-L../../libdha -ldha -lm
+ SAVAGE_CFLAGS=$(OPTFLAGS) -fPIC -I. -I..
+ 
+-all:    $(CYBERBLADE_VID) $(RADEON_VID) $(RAGE128_VID) $(MACH64_VID) $(NVIDIA_VID) $(GENFB_VID) $(MGA_VID) $(MGA_CRTC2_VID) $(PM3_VID) $(SIS_VID) $(UNICHROME_VID) $(SAVAGE_VID)
++W100_VID=w100_vid.so
++W100_SRCS=w100_vid.c
++W100_OBJS=w100_vid.o
++W100_LIBS=-L$(QPEDIR)/lib -laticore
++W100_CFLAGS=$(OPTFLAGS) -fPIC -I. -I..
++
++all:    $(W100_VID)
+ 
+ 
+ .SUFFIXES: .c .o

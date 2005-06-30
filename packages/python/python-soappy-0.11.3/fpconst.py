@@ -22,7 +22,7 @@ Copyright: (c) 2003, Pfizer, Inc.
 """
 
 __version__ = "0.6.0"
-ident = "$Id$"
+ident = "$Id: fpconst.py,v 1.8 2003/05/12 15:14:00 warnes Exp $"
 
 import struct
 

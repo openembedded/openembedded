@@ -1,0 +1,56 @@
+--- rp-pppoe-3.5.clean/src/configure.in	2002-07-08 16:38:24.000000000 +0200
++++ rp-pppoe-3.5/src/configure.in	2004-08-06 19:24:56.593931152 +0200
+@@ -131,13 +131,16 @@
+ 
+ dnl Check for Linux-specific kernel support for PPPoE
+ AC_MSG_CHECKING(for Linux 2.4.X kernel-mode PPPoE support)
+-if test "`uname -s`" = "Linux" ; then
++AC_CACHE_VAL(ac_cv_linux_kernel_pppoe,[
++if test "`uname -s`" = "Linux"; then
++if test $cross_compiling = "no"; then
+ dnl Do a bunch of modprobes.  Can't hurt; might help.
+ modprobe ppp_generic > /dev/null 2>&1
+ modprobe ppp_async > /dev/null 2>&1
+ modprobe n_hdlc > /dev/null 2>&1
+ modprobe ppp_synctty > /dev/null 2>&1
+ modprobe pppoe > /dev/null 2>&1
++fi
+ AC_TRY_RUN([#include <sys/socket.h>
+ #include <net/ethernet.h>
+ #include <linux/if.h>
+@@ -146,10 +149,11 @@
+ {
+ 	if (socket(AF_PPPOX, SOCK_DGRAM, PX_PROTO_OE) >= 0) return 0; else return 1;
+ }
+-], ac_cv_linux_kernel_pppoe=yes, ac_cv_linux_kernel_pppoe=no)
++], ac_cv_linux_kernel_pppoe=yes, ac_cv_linux_kernel_pppoe=no, [ac_cv_linux_kernel_pppoe=no; $ECHO "cross-compiling, default: "] )
+ else
+ 	ac_cv_linux_kernel_pppoe=no
+ fi
++])
+ 
+ $ECHO $ac_cv_linux_kernel_pppoe
+ if test "$ac_cv_linux_kernel_pppoe" != yes ; then
+@@ -208,7 +212,7 @@
+ esac
+ 
+ dnl Figure out packing order of structures
+-AC_MSG_CHECKING(packing order of bit fields)
++AC_CACHE_CHECK([packing order of bit fields],rpppoe_cv_pack_bitfields,[
+ AC_TRY_RUN([
+ union foo {
+     struct bar {
+@@ -231,9 +235,11 @@
+     } else {
+ 	return 2;
+     }
+-}], PACK=normal, PACK=rev)
++}], rpppoe_cv_pack_bitfields=normal, rpppoe_cv_pack_bitfields=rev, 
++$ECHO "no defaults for cross-compiling"; exit 0)
++])
+ 
+-if test "$PACK" = "rev" ; then
++if test "$rpppoe_cv_pack_bitfields" = "rev" ; then
+ 	$ECHO "reversed"
+ 	AC_DEFINE(PACK_BITFIELDS_REVERSED)
+ else

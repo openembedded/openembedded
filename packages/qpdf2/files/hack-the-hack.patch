@@ -1,0 +1,173 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qpdf2_2.2.1/qpdfview.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qpdfview.cpp
+@@ -4,7 +4,7 @@
+ #ifdef __GNUC__
+ #pragma implementation
+ #endif
+-
++#define private public
+ #include "aconf.h"
+ 
+ #include "qpdf.h"
+--- qpdf2_2.2.1/qpdf.h~hack-the-hack.patch
++++ qpdf2_2.2.1/qpdf.h
+@@ -1,3 +1,4 @@
++#define private public
+ #ifndef __QPDF_H__
+ #define __QPDF_H__
+ 
+@@ -12,6 +13,8 @@
+ 
+ #include "signal.h"
+ 
++#define private public
++#include <qobject.h>
+ #include <qpe/qpeapplication.h>
+ #include <qpe/resource.h>
+ #include <qpe/applnk.h>
+--- qpdf2_2.2.1/qpdf.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qpdf.cpp
+@@ -12,11 +12,11 @@
+ //
+ //========================================================================
+ 
+-
++#define private public
+ #include "qpdf.h"
+ #include <qpe/qpemenubar.h>
+ #include <qdir.h>
+-
++#include <errno.h>
+ #ifdef AUTOTEST
+ #define MAX_ZOOM 1.2
+ #else
+@@ -2636,15 +2636,6 @@
+   setRenameBar( false );
+ }
+ 
+-
+-#ifdef ARM
+-extern int errno;
+-#else
+-extern "C" {
+-  int errno;
+-};
+-#endif
+-
+ void
+ QPDFWindow::writeConfig()
+ {
+--- qpdf2_2.2.1/textedit.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/textedit.cpp
+@@ -19,7 +19,7 @@
+ **********************************************************************/
+ 
+ #include <stdlib.h> //getenv
+-
++#define private public
+ #include <qpe/global.h>
+ #include <qpe/fileselector.h>
+ #include <qpe/applnk.h>
+--- qpdf2_2.2.1/autotest.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/autotest.cpp
+@@ -7,7 +7,7 @@
+   qobject.h    -  make the activate_xxx functions public
+ 
+ */
+-
++#define private public
+ #include "qpdf.h"
+ #ifdef AUTOTEST
+ //#define MEM_LEAKS_EVENT_COUNT 50000
+--- qpdf2_2.2.1/qpdffileselector.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qpdffileselector.cpp
+@@ -3,7 +3,7 @@
+ 
+ 
+ */
+-
++#define private public
+ #include "qpdf.h"
+ 
+ #include <qwmatrix.h>
+--- qpdf2_2.2.1/qpdfconfig.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qpdfconfig.cpp
+@@ -1,3 +1,4 @@
++#define private public
+ #include "qpdf.h"
+ #include <qpushbutton.h>
+ #include <qradiobutton.h>
+--- qpdf2_2.2.1/qqimage.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qqimage.cpp
+@@ -8,7 +8,7 @@
+ "protected:" and add "friend class QQImage" to class QImage.
+ 
+ */
+-
++#define private public
+ 
+ /****************************************************************************
+ ** $Id: qt/src/kernel/qimage.cpp   2.3.8-snapshot-20040114   edited 2003-12-29 $
+--- qpdf2_2.2.1/qdocnotes.cpp~hack-the-hack.patch
++++ qpdf2_2.2.1/qdocnotes.cpp
+@@ -5,7 +5,7 @@
+ #include <qpe/stringutil.h>
+ #include <qfile.h>
+ #include <qfileinfo.h>
+-
++#include <errno.h>
+ #define assert(X)
+ 
+ QDocNote::QDocNote()
+@@ -698,18 +698,6 @@
+   return(save(m_filepath, state));
+ }
+ 
+-
+-#ifdef ARM
+-extern int errno;
+-extern char *strerror(int);
+-#else
+-extern "C" {
+-  int errno;
+-  extern char *strerror(int);
+-}
+-#endif
+-
+-
+ bool
+ QDocNotes::save(const QString &filepath, QDocState *state)
+ {
+--- qpdf2_2.2.1/xpdf/PDFDoc.cc~hack-the-hack.patch
++++ qpdf2_2.2.1/xpdf/PDFDoc.cc
+@@ -7,7 +7,7 @@
+ //========================================================================
+ 
+ #include <aconf.h>
+-
++#include <errno.h>
+ #ifdef USE_GCC_PRAGMAS
+ #pragma implementation
+ #endif
+@@ -205,16 +205,6 @@
+   }
+ }
+ 
+-#ifdef ARM
+-extern int errno;
+-extern char *strerror(int);
+-#else
+-extern "C" {
+-  int errno;
+-  extern char *strerror(int);
+-}
+-#endif
+-
+ void PDFDoc::displayPage(OutputDev *out, int page, fouble hDPI, fouble vDPI,
+ 			 int rotate, GBool doLinks,
+ 			 GBool (*abortCheckCbk)(void *data),

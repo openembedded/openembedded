@@ -1,0 +1,22 @@
+--- qtopia-free-1.7.0/src/libraries/qtopia/storage.cpp.~1~	2003-06-04 10:56:51.000000000 +1000
++++ qtopia-free-1.7.0/src/libraries/qtopia/storage.cpp	2003-09-05 17:38:09.000000000 +1000
+@@ -179,6 +179,8 @@
+ 		    || fs.left(8) == "/dev/ram"
+ 		    || fs.left(8) == "/dev/mtd"
+ 		    || fs.left(9) == "/dev/mmcd"
++		    || fs.left( 14 ) == "/dev/mmc/part1" //familiar
++		    || fs.left(5)=="tmpfs" || fs.left(9)=="/dev/root" //openzaurus
+ 			    // "which-qtopia" may be running off the SD card
+ 			    && (QString(me->mnt_dir)!="/home/QtPalmtop"
+ 			        && QString(me->mnt_dir)!="/opt/Qtopia")
+@@ -232,6 +234,10 @@
+ 		humanname = tr("Internal Storage") + " " + humanname.mid(13);
+ 	    else if ( humanname.left(8) == "/dev/ram" )
+ 		humanname = tr("RAM disk") + " " + humanname.mid(8);
++	    else if ( humanname.left(9) == "/dev/root" ) //openzaurus
++		humanname = tr("Internal Storage") + " " + humanname.mid(9);
++	    else if ( humanname.left(5) == "tmpfs" ) //ipaqs /mnt/ramfs
++		humanname = tr("Internal Memory");
+ 	    FileSystem *fs = new FileSystem( *it, *fsit, humanname, removable, opts );
+ 	    mFileSystems.append( fs );
+ 	}

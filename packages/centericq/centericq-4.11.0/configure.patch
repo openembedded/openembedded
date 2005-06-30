@@ -1,0 +1,66 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- centericq-4.11.0/./configure.in~configure
++++ centericq-4.11.0/./configure.in
+@@ -85,12 +85,12 @@
+ 	AC_MSG_RESULT([not found or disabled])
+ 	with_ssl="no"
+ 
+-	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
+-	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
+-	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
+-	    AC_DEFINE(HAVE_GNUTLS, 1, [use gnutls])
+-	    with_ssl="yes"
+-	])
++#	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
++#	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
++#	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
++#	    AC_DEFINE(HAVE_GNUTLS, 1, [use gnutls])
++#	    with_ssl="yes"
++#	])
+     fi
+ fi
+ 
+--- centericq-4.11.0/./connwrap-0.1/configure.in~configure
++++ centericq-4.11.0/./connwrap-0.1/configure.in
+@@ -45,29 +45,29 @@
+     else
+ 	AC_MSG_RESULT([not found or disabled])
+ 
+-	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
+-	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
+-	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
+-	    AC_DEFINE(HAVE_GNUTLS)
+-	])
++#	AM_PATH_LIBGNUTLS_EXTRA(0.0.1, [
++#	    CXXFLAGS="$CXXFLAGS $LIBGNUTLS_CFLAGS"
++#	    LIBS="$LIBS $LIBGNUTLS_LIBS -lgnutls-extra"
++#	    AC_DEFINE(HAVE_GNUTLS)
++#	])
+     fi
+ fi
+ 
+ AC_MSG_CHECKING(for inet_aton() presence)
+ 
+-AC_TRY_LINK([
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+ 
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ 
+-], [
++]], [[
+ 
+ struct in_addr inp;
+ inet_aton("address", &inp);
+ 
+-], have_aton=yes, have_aton=no)
++]])],[have_aton=yes],[have_aton=no])
+ 
+ if test "$have_aton" = "yes"; then
+     AC_DEFINE(HAVE_INET_ATON)

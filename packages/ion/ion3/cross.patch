@@ -1,0 +1,49 @@
+--- tmp/work/arm-linux/ion3-0.0+ds20041104-r0/ion-3ds-20041104/configure.ac	2004-11-04 08:55:55.000000000 -0600
++++ ion-3ds-20041104/configure.ac	2004-12-28 13:47:05.000000000 -0600
+@@ -74,26 +74,7 @@
+                                the -i18n command line option])])
+ 
+ if test "x$enable_Xutf8" = xyes; then
+-    AC_MSG_CHECKING([for Xutf8*])
+-    save_CFLAGS="$CFLAGS"
+-    CFLAGS="$CFLAGS $X_CFLAGS"
+-    AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <X11/Xlib.h>
+-
+-int main()
+-{
+-#ifdef X_HAVE_UTF8_STRING
+-    exit(0);
+-#else
+-    exit(1);
+-#endif
+-}
+-                  ]])],
+-                  [AC_MSG_RESULT([yes])
+-                   _DCF_DE_USE_XUTF8="-DCF_DE_USE_XUTF8"],
+-                  [AC_MSG_RESULT([no])
+-                   exit 1])
+-    CFLAGS="$save_CFLAGS"
++	AC_CHECK_DECLS ([ X_HAVE_UTF8_STRING ], _DCF_DE_USE_XUTF8="-DCF_DE_USE_XUTF8", , [[#include <X11/Xlib.h>]])
+ fi
+ 
+ dnl }}}
+@@ -263,7 +250,8 @@
+ ]])],
+               [AC_MSG_RESULT([yes])],
+               [AC_MSG_RESULT([no])
+-               exit 1])
++               exit 1],
++              [AC_MSG_RESULT([crosscompiling, assuming yes])])
+ CFLAGS="$save_CFLAGS"
+ LIBS="$save_LIBS"
+ dnl }}}
+@@ -334,7 +322,7 @@
+ AC_MSG_CHECKING([for va_copy])
+ save_CFLAGS="$CFLAGS"
+ CFLAGS="$CFLAGS $C99_SOURCE"
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
++AC_LINK_IFELSE([AC_LANG_SOURCE([[
+ 
+ #include <stdarg.h>
+ #include <stdlib.h>

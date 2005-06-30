@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- DamageExt/configure.ac~autofoo.patch	2003-11-25 22:47:58.000000000 -0500
++++ DamageExt/configure.ac	2005-01-16 11:50:07.183554728 -0500
+@@ -25,9 +25,9 @@
+ 
+ AC_PREREQ([2.57])
+ AC_INIT([damageext], [1.0], [keithp@keithp.com], damageext)
++AC_CONFIG_AUX_DIR(.)
+ AM_INIT_AUTOMAKE([dist-bzip2])
+ AM_MAINTAINER_MODE
+-AC_CONFIG_AUX_DIR(.)
+ 
+ PKG_CHECK_MODULES(FIXESEXT, fixesext)
+ 
+--- DamageExt/ChangeLog~autofoo.patch	2004-02-03 15:44:42.000000000 -0500
++++ DamageExt/ChangeLog	2005-01-16 11:52:45.455493736 -0500
+@@ -1,3 +1,7 @@
++2005-01-16  Chris Larson <kergoth@handhelds.org>
++
++	* configure.ac: Fix to work with automake 1.9.x.
++
+ 2004-02-03  Jim Gettys  <jg@freedesktop.org>
+ 
+ 	* AUTHORS: Add AUTHORS to file

@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/sysdeps/unix/sysv/linux/arm/sysdep.h~arm-asm-clobber.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/sysdeps/unix/sysv/linux/arm/sysdep.h	2004-09-03 19:01:07.000000000 -0500
+@@ -131,7 +131,7 @@
+        asm volatile ("swi	%1	@ syscall " #name	\
+ 		     : "=r" (_a1)				\
+ 		     : "i" (SYS_ify(name)) ASM_ARGS_##nr	\
+-		     : "a1", "memory");				\
++		     : "memory");				\
+        _sys_result = _a1;					\
+      }								\
+      if (_sys_result >= (unsigned int) -4095)			\

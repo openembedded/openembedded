@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- tmdns/init.d/Makefile.am~install-init.d
++++ tmdns/init.d/Makefile.am
+@@ -23,6 +23,7 @@
+ install:
+ 	if [ -f initscript ] ;\
+ 	then \
+-	  install -m 755 initscript $(DESTDIR)$(INIT_DIR)/tmdns ;\
++	  install -d $(DESTDIR)$(INIT_DIR); \
++	  install -m 755 initscript $(DESTDIR)$(INIT_DIR)/tmdns; \
+ 	fi
+ 
+--- tmdns/init.d/Makefile.in~install-init.d
++++ tmdns/init.d/Makefile.in
+@@ -274,7 +274,8 @@
+ install:
+ 	if [ -f initscript ] ;\
+ 	then \
+-	  install -m 755 initscript $(DESTDIR)$(INIT_DIR)/tmdns ;\
++	  install -d $(DESTDIR)$(INIT_DIR); \
++	  install -m 755 initscript $(DESTDIR)$(INIT_DIR)/tmdns; \
+ 	fi
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.

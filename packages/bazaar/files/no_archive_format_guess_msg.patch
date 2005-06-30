@@ -1,0 +1,10 @@
+--- bazaar-1.2.orig/src/baz/libarch/archive-pfs.c
++++ bazaar-1.2/src/baz/libarch/archive-pfs.c
+@@ -240,7 +240,6 @@
+   else if (arch_pfs_file_exists (arch->pfs, meta_info_path))
+     {
+       /* most likely a mirror that's missing a .archive-version file */
+-      safe_printfmt (2, _("Guessing archive format as tla 1.0. This is normal with old archives, you can ignore it unless other errors occur.\n"));
+       contents = str_save (0, arch_tree_format_1_str);
+     }
+   else

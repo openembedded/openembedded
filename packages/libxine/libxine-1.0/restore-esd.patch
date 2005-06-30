@@ -1,0 +1,15 @@
+diff -urNd ../libxine-1.0-r1/xine-lib-1.0/configure.ac xine-lib-1.0/configure.ac
+--- ../libxine-1.0-r1/xine-lib-1.0/configure.ac	2005-04-09 04:38:41 +01:00
++++ xine-lib-1.0/configure.ac	2005-04-09 04:39:54 +01:00
+@@ -1080,8 +1080,9 @@
+ dnl ESD support
+ dnl ---------------------------------------------
+ 
+-AM_CONDITIONAL(HAVE_ESD, 0)
+-
++AM_PATH_ESD(0.2.8,
++        AC_DEFINE(HAVE_ESD,1,[Define this if you have ESD (libesd) installed]),-        AC_MSG_RESULT(*** All of ESD dependent parts will be disabled ***))
++AM_CONDITIONAL(HAVE_ESD, test x"$no_esd" != "xyes")
+ 
+ dnl ---------------------------------------------
+ dnl ARTS support

@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ecore-0.9.9.007/configure.in~fix-configure
++++ ecore-0.9.9.007/configure.in
+@@ -15,7 +15,6 @@
+ AC_CHECK_SIZEOF(int, 4)
+ AM_ENABLE_SHARED
+ AM_PROG_LIBTOOL
+-AC_C___ATTRIBUTE__
+ 
+ if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+   if test "x${exec_prefix}" = "xNONE"; then

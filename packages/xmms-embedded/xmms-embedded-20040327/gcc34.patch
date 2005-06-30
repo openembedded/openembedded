@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- xmms-embedded/xmms/Output/OSS/convert.c~gcc34	2003-06-05 00:33:40.000000000 +0200
++++ xmms-embedded/xmms/Output/OSS/convert.c	2004-05-22 18:02:50.000000000 +0200
+@@ -178,7 +178,7 @@
+     	    break;
+     	case AFMT_S16_LE: /*FIXME endiannes */ 
+     	    break;
+-    	default:
++    	default:;
+     }		
+         
+     

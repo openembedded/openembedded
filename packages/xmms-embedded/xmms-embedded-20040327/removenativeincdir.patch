@@ -1,0 +1,120 @@
+diff -urN xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro
+--- xmms-embedded.orig/xmms/Input/fixpvorbis/fixpvorbis.pro	2002-12-02 15:21:42.000000000 -0500
++++ xmms-embedded/xmms/Input/fixpvorbis/fixpvorbis.pro	2004-03-28 17:13:46.000000000 -0500
+@@ -12,7 +12,7 @@
+ vcedit.c \
+ vorbis.c
+ 
+-INCLUDEPATH = . ../../include ../.. ../../../Tremor /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../.. ../../../Tremor
+ LIBS = -lglib -lm -ldl -L../../../compiled -lvorbisidec 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro xmms-embedded/xmms/Input/mikmod/mikmod.pro
+--- xmms-embedded.orig/xmms/Input/mikmod/mikmod.pro	2002-10-10 13:46:48.000000000 -0400
++++ xmms-embedded/xmms/Input/mikmod/mikmod.pro	2004-03-28 17:13:39.000000000 -0500
+@@ -5,7 +5,7 @@
+ SOURCES = drv_xmms.c \
+ plugin.c
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../..
+ LIBS = -lglib -lm -ldl -lmikmod
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/wav.pro xmms-embedded/xmms/Input/mplayer/wav.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/wav.pro	2004-03-28 16:59:42.000000000 -0500
++++ xmms-embedded/xmms/Input/mplayer/wav.pro	2004-03-28 17:13:26.000000000 -0500
+@@ -4,7 +4,7 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../..
+ LIBS = -lglib -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/shorten/shorten.pro xmms-embedded/xmms/Input/shorten/shorten.pro
+--- xmms-embedded.orig/xmms/Input/shorten/shorten.pro	2002-10-10 13:47:06.000000000 -0400
++++ xmms-embedded/xmms/Input/shorten/shorten.pro	2004-03-28 17:13:17.000000000 -0500
+@@ -16,7 +16,7 @@
+ wave.c
+ 
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../..
+ LIBS = -lglib -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/wav/wav.pro xmms-embedded/xmms/Input/wav/wav.pro
+--- xmms-embedded.orig/xmms/Input/wav/wav.pro	2002-10-10 13:47:05.000000000 -0400
++++ xmms-embedded/xmms/Input/wav/wav.pro	2004-03-28 17:13:10.000000000 -0500
+@@ -4,7 +4,7 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../..
+ LIBS = -lglib -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro
+--- xmms-embedded.orig/xmms/Input/xmms-mad/xmms-mad.pro	2002-12-02 17:14:40.000000000 -0500
++++ xmms-embedded/xmms/Input/xmms-mad/xmms-mad.pro	2004-03-28 17:13:02.000000000 -0500
+@@ -11,7 +11,7 @@
+ xing.c \
+ xmms-mad.c
+ 
+-INCLUDEPATH = . ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../..
+ LIBS = -lid3tag -lz -lmad -lglib -ldl -L../../../compiled -lxmms -lm
+ #TMAKE_CFLAGS = -O2 -fPIC -DHAVE_CONFIG_H -DPIC 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DNOGUI -DSLOWCPU
+diff -urN xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro
+--- xmms-embedded.orig/xmms/Input/xmms-sid/xmms-sid.pro	2002-10-10 13:47:05.000000000 -0400
++++ xmms-embedded/xmms/Input/xmms-sid/xmms-sid.pro	2004-03-28 17:12:51.000000000 -0500
+@@ -11,7 +11,7 @@
+ xs_init.c \
+ xs_stil.c
+ 
+-INCLUDEPATH = . ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/gtk-1.2 /usr/X11R6/include 
++INCLUDEPATH = . ../..
+ LIBS = -lglib -lm -ldl -lsidplay
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops "-DVERSION=\"1.0.0\""
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/libxmms/libxmms.pro xmms-embedded/xmms/libxmms/libxmms.pro
+--- xmms-embedded.orig/xmms/libxmms/libxmms.pro	2004-03-28 16:51:11.000000000 -0500
++++ xmms-embedded/xmms/libxmms/libxmms.pro	2004-03-28 17:11:46.000000000 -0500
+@@ -16,7 +16,7 @@
+ util.c \
+ xmmsctrl.c
+ 
+-INCLUDEPATH = . /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/X11R6/include
++INCLUDEPATH = . ../include
+ LIBS = -lglib -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = -export-dynamic
+diff -urN xmms-embedded.orig/xmms/Output/OSS/oss.pro xmms-embedded/xmms/Output/OSS/oss.pro
+--- xmms-embedded.orig/xmms/Output/OSS/oss.pro	2004-03-28 16:53:38.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/oss.pro	2004-03-28 17:12:34.000000000 -0500
+@@ -10,7 +10,7 @@
+ mixer.c \
+ OSS.c
+ 
+-INCLUDEPATH = . ../../include ../.. /usr/include/glib-1.2 /usr/lib/glib/include /usr/X11R6/include 
++INCLUDEPATH = . ../../include ../.. 
+ LIBS = -lglib -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/xmms/xmms.pro xmms-embedded/xmms/xmms/xmms.pro
+--- xmms-embedded.orig/xmms/xmms/xmms.pro	2004-03-28 16:43:27.000000000 -0500
++++ xmms-embedded/xmms/xmms/xmms.pro	2004-03-28 17:11:19.000000000 -0500
+@@ -30,7 +30,7 @@
+ pluginenum.c \
+ urldecode.c \
+ util.c 
+-INCLUDEPATH = . .. /usr/include/glib-1.2 /usr/lib/glib/include ../include /usr/X11R6/include
++INCLUDEPATH = . .. ../include
+ LIBS = -lglib -L../../compiled -lxmms 
+ TMAKE_CFLAGS = -g -O2 -Wall -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H -DPLUGIN_DIR=\"/opt/QtPalmtop/lib/xmms\" -DLOCALEDIR=\"/usr/local/share/locale\" -DPLUGINSUBS=\"Output\",\"Input\",\"Effect\",\"General\"
+ TMAKE_LFLAGS = -export-dynamic

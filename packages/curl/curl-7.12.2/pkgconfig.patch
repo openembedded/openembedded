@@ -1,0 +1,47 @@
+--- tmp/work/curl-7.12.0-r0/curl-7.12.0/configure.ac	2004-05-25 16:43:39.000000000 -0500
++++ curl-7.12.0/configure.ac	2004-07-15 18:13:18.000000000 -0500
+@@ -1389,7 +1389,8 @@
+            packages/EPM/curl.list \
+            packages/EPM/Makefile \
+            packages/vms/Makefile \
+-           curl-config
++           curl-config \
++	   curl.pc
+ ])
+ AC_OUTPUT
+ 
+--- tmp/work/curl-7.12.0-r0/curl-7.12.0/Makefile.am	2004-05-17 16:41:02.000000000 -0500
++++ curl-7.12.0/Makefile.am	2004-07-15 18:10:32.000000000 -0500
+@@ -24,10 +24,16 @@
+ AUTOMAKE_OPTIONS = foreign
+ 
+ EXTRA_DIST = CHANGES COPYING maketgz reconf Makefile.dist	\
+-  curl-config.in curl-style.el sample.emacs testcurl.sh RELEASE-NOTES
++  curl-config.in curl-style.el sample.emacs testcurl.sh RELEASE-NOTES \
++  curl.pc.in
+ 
+ bin_SCRIPTS = curl-config
+ 
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = curl.pc
++
++$(pkgconfig_DATA): config.status
++
+ SUBDIRS = lib src
+ DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
+ 
+--- tmp/work/curl-7.12.0-r0/curl-7.12.0/curl.pc.in	1969-12-31 18:00:00.000000000 -0600
++++ curl-7.12.0/curl.pc.in	2004-07-15 18:09:14.000000000 -0500
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++versionnum=@VERSIONNUM@
++features=@FEATURES@
++
++Name: curl
++Description: a library that groks URLs
++Version: @VERSION@
++Libs: -L${libdir} -lcurl @LDFLAGS@ @LIBS@
++Cflags: -I${includedir}

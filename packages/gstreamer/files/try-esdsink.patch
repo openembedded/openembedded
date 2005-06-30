@@ -1,0 +1,22 @@
+--- gst-plugins-0.8.1/gst-libs/gst/gconf/gconf.c~	2004-08-17 17:55:46.000000000 +0100
++++ gst-plugins-0.8.1/gst-libs/gst/gconf/gconf.c	2004-08-17 18:04:00.000000000 +0100
+@@ -204,10 +204,16 @@
+   if (!ret) {
+     ret = gst_element_factory_make ("osssink", NULL);
+ 
+-    if (!ret)
+-      g_warning ("No GConf default audio sink key and osssink doesn't work");
+-    else
++    if (!ret) {
++      ret = gst_element_factory_make ("esdsink", NULL);
++
++      if (!ret)
++        g_warning ("No GConf default audio sink key and osssink & esdsink don't work");
++      else
++        g_print ("GConf audio sink and osssink not found, using esdsink\n");
++    } else {
+       g_print ("GConf audio sink not found, using osssink\n");
++    }
+   }
+ 
+   return ret;

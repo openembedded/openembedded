@@ -1,0 +1,10 @@
+--- glibc/Makefile	9 Sep 2003 02:30:15 -0000	1.234
++++ glibc/Makefile	12 Oct 2003 23:24:08 -0000
+@@ -232,6 +232,7 @@ tests: $(objpfx)c++-types-check.out
+ ifneq ($(CXX),no)
+ ifneq (,$(wildcard scripts/data/c++-types-$(base-machine)-$(config-os).data))
+ $(objpfx)c++-types-check.out: scripts/data/c++-types-$(base-machine)-$(config-os).data
++	chmod a+x scripts/check-c++-types.sh
+ 	scripts/check-c++-types.sh $^ $(CXX) $(filter-out -std=gnu99,$(CFLAGS)) $(CPPFLAGS) > $@
+ else
+ $(objpfx)c++-types-check.out:

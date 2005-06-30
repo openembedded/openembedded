@@ -1,0 +1,11 @@
+--- /tmp/hildon-lgpl-0.9.14/configure.ac	2005-05-22 21:57:07.000000000 +0200
++++ hildon-lgpl-0.9.14/configure.ac	2005-05-26 09:21:09.170471824 +0200
+@@ -14,7 +14,7 @@
+ PKG_CHECK_MODULES(OUTO, outo >= 0.1.1)
+ AC_SUBST(OUTO_CFLAGS)
+ 
+-CFLAGS="$CFLAGS -Wall -ansi -pedantic -Wmissing-prototypes -Wmissing-declarations -Werror -DHILDON_USE_TIMESTAMPING"
++CFLAGS="$CFLAGS -Wall -ansi -pedantic -Wmissing-prototypes -Wmissing-declarations  -DHILDON_USE_TIMESTAMPING"
+ 
+ GTK_VERSION=2.6.4
+ 

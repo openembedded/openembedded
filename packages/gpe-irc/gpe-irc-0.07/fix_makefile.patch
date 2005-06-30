@@ -1,0 +1,36 @@
+diff -urNd ../gpe-irc-0.07-r0/gpe-irc-0.07/Makefile gpe-irc-0.07/Makefile
+--- ../gpe-irc-0.07-r0/gpe-irc-0.07/Makefile	2004-08-03 15:40:50.000000000 +0100
++++ gpe-irc-0.07/Makefile	2004-08-03 16:01:29.000000000 +0100
+@@ -1,12 +1,13 @@
+ PREFIX = /usr/local
+ PACKAGE = gpe-irc
+ VERSION = 0.07
+-DEBUG = yes
++DEBUG = no
+ CVSBUILD = no
++BUILD = ./build
+ 
+ ifeq ($(DEBUG),yes)
+ CFLAGS += -O2 -g -DDEBUG
+-LDFLAGS = -g #-lefence
++LDFLAGS += -g #-lefence
+ else
+ CFLAGS += -Os -fomit-frame-pointer
+ endif
+@@ -41,7 +42,7 @@
+ 	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all
+-	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -D -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(PACKAGE).png
+ 	install -d $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/irc
+ 	install -d $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/irc/smileys
+@@ -56,7 +57,6 @@
+ 	install -m 644 pixmaps/colors/blue.png $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/irc/colors/blue.png
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
+ 	install -m 644 $(PACKAGE).desktop $(DESTDIR)$(PREFIX)/share/applications/
+-	strip $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 
+ clean:
+ 	rm -f $(PACKAGE) $(OBJS) $(DEPS)

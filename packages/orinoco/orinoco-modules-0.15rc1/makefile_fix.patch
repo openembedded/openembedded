@@ -1,0 +1,13 @@
+Index: orinoco-0.15rc1/Makefile
+===================================================================
+--- orinoco-0.15rc1.orig/Makefile	2004-04-19 06:08:24.000000000 +0100
++++ orinoco-0.15rc1/Makefile	2005-05-23 23:07:00.000000000 +0100
+@@ -12,7 +12,7 @@
+ 
+ # The default kernel is the one you are running, but you may want to set
+ # it to another configured Linux source tree
+-KERNEL_SRC = /lib/modules/$(shell uname -r)/build
++KERNEL_SRC = $(KERNEL_SOURCE)
+ 
+ # You don't need to change anything below this line in most cases
+ 

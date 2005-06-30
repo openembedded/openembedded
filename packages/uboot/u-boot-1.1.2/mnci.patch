@@ -1,0 +1,1007 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- u-boot-1.1.2/CREDITS~mnci
++++ u-boot-1.1.2/CREDITS
+@@ -360,6 +360,9 @@
+ E: r.schwebel@pengutronix.de
+ D: Support for csb226, logodl and innokom boards (PXA2xx)
+ 
++N: Holger Schurig
++D: Support for MNCI-RX "Ramses"
++
+ N: Yasushi Shoji
+ E: yashi@atmark-techno.com
+ D: Support for Xilinx MicroBlaze, for Atmark Techno SUZAKU FPGA board
+--- u-boot-1.1.2/MAINTAINERS~mnci
++++ u-boot-1.1.2/MAINTAINERS
+@@ -396,6 +396,10 @@
+ 	csb226			xscale
+ 	innokom			xscale
+ 
++Holger Schurig
++
++	mnci			xscale
++
+ Andrea Scian <andrea.scian@dave-tech.it>
+ 
+ 	B2				ARM7TDMI (S3C44B0X)
+--- u-boot-1.1.2/Makefile~mnci
++++ u-boot-1.1.2/Makefile
+@@ -1388,6 +1388,9 @@
+ wepep250_config	:	unconfig
+ 	@./mkconfig $(@:_config=) arm pxa wepep250
+ 
++mnci_config	:	unconfig
++	@./mkconfig $(@:_config=) arm pxa mnci
++
+ xaeniax_config	:	unconfig
+ 	@./mkconfig $(@:_config=) arm pxa xaeniax
+ 
+--- /dev/null
++++ u-boot-1.1.2/board/mnci/Makefile
+@@ -0,0 +1,49 @@
++#
++# (C) Copyright 2000
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++# (C) Copyright 2005
++# M&N Solutions GmbH, Rosbach, Germany, Holger Schurig
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB    = lib$(BOARD).a
++
++OBJS   := mnci.o
++SOBJS  := memsetup.o
++
++$(LIB): $(OBJS) $(SOBJS)
++	$(AR) crv $@ $(OBJS) $(SOBJS)
++
++clean:
++	rm -f $(SOBJS) $(OBJS
++
++distclean: clean
++	rm -f $(LIB) core *.bak .depend
++
++#########################################################################
++
++.depend: Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c)
++	$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) > $@
++
++-include .depend
++
++#########################################################################
+--- /dev/null
++++ u-boot-1.1.2/board/mnci/config.mk
+@@ -0,0 +1 @@
++TEXT_BASE = 0xa1fe0000
+--- /dev/null
++++ u-boot-1.1.2/board/mnci/u-boot.lds
+@@ -0,0 +1,55 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
++OUTPUT_ARCH(arm)
++ENTRY(_start)
++SECTIONS
++{
++	. = 0x00000000;
++
++	. = ALIGN(4);
++	.text      :
++	{
++	  cpu/pxa/start.o	(.text)
++	  *(.text)
++	}
++
++	. = ALIGN(4);
++	.rodata : { *(.rodata) }
++
++	. = ALIGN(4);
++	.data : { *(.data) }
++
++	. = ALIGN(4);
++	.got : { *(.got) }
++
++	__u_boot_cmd_start = .;
++	.u_boot_cmd : { *(.u_boot_cmd) }
++	__u_boot_cmd_end = .;
++
++	. = ALIGN(4);
++	__bss_start = .;
++	.bss : { *(.bss) }
++	_end = .;
++}
+--- /dev/null
++++ u-boot-1.1.2/board/mnci/mnci.c
+@@ -0,0 +1,174 @@
++/*
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/mach-types.h>
++
++/**
++ * board_init: - setup some data structures
++ *
++ * @return: 0 in case of success
++ */
++
++int board_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	/* memory and cpu-speed are setup before relocation */
++	/* so we do _nothing_ here */
++
++	gd->bd->bi_arch_number = MACH_TYPE_RAMSES;
++	gd->bd->bi_boot_params = 0xa0000100;
++#if 0
++	gd->bd->bi_baudrate = 115200;
++#endif
++
++#if 0
++	CKEN |= CKEN2_AC97;
++	GCR = GCR_COLD_RST;
++#endif
++
++	return 0;
++}
++
++
++int board_late_init(void)
++{
++	setenv("stdout", "serial");
++	setenv("stderr", "serial");
++	return 0;
++}
++
++
++/**
++ * dram_init: - setup dynamic RAM
++ *
++ * @return: 0 in case of success
++ */
++
++int dram_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
++	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
++
++	return 0;
++}
++
++
++
++#ifdef CFG_JFFS_CUSTOM_PART
++
++#include <jffs2/jffs2.h>
++
++#define FLASH_DEBUG 1
++
++/* Some debug macros */
++#if (FLASH_DEBUG > 2 )
++#define PRINTK3(args...) printf(args)
++#else
++#define PRINTK3(args...)
++#endif
++
++#if FLASH_DEBUG > 1
++#define PRINTK2(args...) printf(args)
++#else
++#define PRINTK2(args...)
++#endif
++
++#ifdef FLASH_DEBUG
++#define PRINTK(args...) printf(args)
++#else
++#define PRINTK(args...)
++#endif
++
++
++#define FLASH_BANK_SIZE 0x02000000	/* 32 MB (during development)       */
++#define MAIN_SECT_SIZE  0x00040000	/* 256k per sector                  */
++
++#ifndef CFG_FLASH_CFI
++flash_info_t    flash_info[CFG_MAX_FLASH_BANKS];
++#endif
++
++static struct part_info part;
++static int current_part = -1;
++
++struct part_info* jffs2_part_info(int part_num) {
++	void *jffs2_priv_saved = part.jffs2_priv;
++
++	PRINTK2("jffs2_part_info: part_num=%i\n",part_num);
++
++	if (current_part == part_num)
++		return &part;
++
++	/* u-boot partition */
++	if(part_num==0){
++		memset(&part, 0, sizeof(part));
++
++		part.offset=(char*)0x00000000;
++		part.size=0x00040000;
++
++		/* Mark the struct as ready */
++		current_part = part_num;
++
++		PRINTK("part.offset = 0x%08x\n",(unsigned int)part.offset);
++		PRINTK("part.size   = 0x%08x\n",(unsigned int)part.size);
++	}
++
++	/* primary Kernel partition */
++	if(part_num==1){
++		memset(&part, 0, sizeof(part));
++
++		part.offset=(char*)0x00040000;
++		part.size=0x00040000*4;
++
++		/* Mark the struct as ready */
++		current_part = part_num;
++
++		PRINTK("part.offset = 0x%08x\n",(unsigned int)part.offset);
++		PRINTK("part.size   = 0x%08x\n",(unsigned int)part.size);
++	}
++
++	/* data partition */
++	if(part_num==3){
++		memset(&part, 0, sizeof(part));
++
++		part.offset=(char*)0x00140000;
++		part.size=FLASH_BANK_SIZE-0x00140000;
++
++		/* Mark the struct as ready */
++		current_part = part_num;
++
++		PRINTK("part.offset = 0x%08x\n",(unsigned int)part.offset);
++		PRINTK("part.size   = 0x%08x\n",(unsigned int)part.size);
++	}
++
++	if (current_part == part_num) {
++		part.usr_priv = &current_part;
++		part.jffs2_priv = jffs2_priv_saved;
++		return &part;
++	}
++
++	PRINTK("jffs2_part_info: end of partition table\n");
++	return 0;
++}
++#endif
+--- /dev/null
++++ u-boot-1.1.2/include/configs/mnci.h
+@@ -0,0 +1,309 @@
++/*
++ * (C) Copyright 2005
++ * Holger Schurig, M&N Solutions GmbH, Rosbach, Germany
++ *
++ * Configuration for the Auerswald Innokom CPU board.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++#include <asm/arch/pxa-regs.h>
++
++/*
++ * If we are developing, we might want to start armboot from ram
++ * so we MUST NOT initialize critical regs like mem-timing ...
++ */
++#define CONFIG_INIT_CRITICAL			/* undef for developing */
++
++/*
++ * define the following to enable debug blinks.  A debug blink function
++ * must be defined in memsetup.S
++ */
++#undef DEBUG_BLINK_ENABLE	
++#undef DEBUG_BLINKC_ENABLE	
++
++/*
++ * High Level Configuration Options
++ * (easy to change)
++ */
++#define CONFIG_PXA250		1	/* This is an PXA250 CPU    */
++
++#undef CONFIG_LCD
++#ifdef CONFIG_LCD
++#define CONFIG_SHARP_LM8V31
++#endif
++
++#define CONFIG_MMC		1
++#define BOARD_LATE_INIT		1
++
++#undef CONFIG_USE_IRQ			/* we don't need IRQ/FIQ stuff */
++
++/*
++ * Size of malloc() pool
++ */
++#define CFG_MALLOC_LEN	    (CFG_ENV_SIZE + 128*1024)
++#define CFG_GBL_DATA_SIZE	128	/* size in bytes reserved for initial data */
++
++/*
++ * MNCI memory map information
++ */
++
++#define MNCI_CS5_ETH_OFFSET	0x03400000
++
++
++/*
++ * Hardware drivers
++ */
++#if 0
++#define CONFIG_DRIVER_SMC91111		
++#define CONFIG_SMC91111_BASE	(PXA_CS5_PHYS + MNCI_CS5_ETH_OFFSET + 0x300)	
++#define CONFIG_SMC_USE_32_BIT	1
++//#define CONFIG_SMC_USE_IOFUNCS
++#endif
++
++/* the following has to be set high -- suspect something is wrong with
++ * with the tftp timeout routines. FIXME!!!
++ */
++#define CONFIG_NET_RETRY_COUNT	100
++
++/*
++ * select serial console configuration
++ */
++#define CONFIG_FFUART	       1       /* we use FFUART on MNCI */
++
++/* allow to overwrite serial and ethaddr */
++//#define CONFIG_ENV_OVERWRITE
++
++#define CONFIG_BAUDRATE		115200
++
++#define CONFIG_COMMANDS ( 0			\
++			| CFG_CMD_ENV		\
++			| CFG_CMD_FLASH		\
++			| CFG_CMD_LINUX		\
++			| CFG_CMD_JFFS2		\
++			| CFG_CMD_LOADB		\
++			| CFG_CMD_MEMORY	\
++			| CFG_CMD_MISC		\
++			| CFG_CMD_RUN		\
++			)
++
++/* this must be included AFTER the definition of CONFIG_COMMANDS (if any) */
++#include <cmd_confdefs.h>
++
++#define CONFIG_BOOTDELAY	0
++#define CONFIG_BOOTCOMMAND	"linux"
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 rootfstype=jffs2 root=/dev/mtdblock2"
++//#define CONFIG_BOOTARGS	"console=ttyS0,115200 root=/dev/nfsroot ip=192.168.233.14:192.168.233.1:192.168.233.1:255.255.255.0:ramses2:eth0:off"
++#define CONFIG_CMDLINE_TAG	1
++#define CONFIG_SETUP_MEMORY_TAGS 1
++#define CFG_CONSOLE_INFO_QUIET  1
++#define CFG_JFFS_SINGLE_PART	1
++
++/* 
++ * Current memory map for MNCI supplied Linux images:
++ * 
++ * Flash: 
++ * 0x00000  - 0x003ffff: bootloader
++ * 0x040000 - 0x013ffff: kernel
++ * 0x140000 - 0x1ffffff: file system
++ * 
++ * RAM:
++ * 0xa0008000 - kernel is loaded
++ * 0xa1fe0000 - Uboot runs (48MB into RAM)
++ *
++ */
++
++#define MY_CONFIG_EXTRA_ENV_SETTINGS					\
++	"prog_boot_mmc="						\
++			"mw.b 0xa0000000 0xff 0x40000; "		\
++			"if	 mmcinit && "				\
++				"fatload mmc 0 0xa0000000 u-boot.bin; "	\
++			"then "						\
++				"protect off 0x0 0x3ffff; "		\
++				"erase 0x0 0x3ffff; "			\
++				"cp.b 0xa0000000 0x0 0x40000; "		\
++				"reset;"				\
++			"fi\0"						\
++	"prog_uImage_mmc="						\
++			"mw.b 0xa0000000 0xff 0x1C0000; "		\
++			"if	 mmcinit && "				\
++				"fatload mmc 0 0xa0000000 uImage; "	\
++			"then "						\
++				"protect off 0x40000 0x13ffff; "		\
++				"erase 0x40000 0x13ffff; "		\
++				"cp.b 0xa0000000 0x40000 0x1C0000; "	\
++			"fi\0"						\
++	"prog_jffs_mmc="						\
++			"mw.b 0xa0000000 0xff 0x1e00000; "		\
++			"if	 mmcinit && "				\
++				"fatload mmc 0 0xa0000000 root.jffs; "	\
++			"then "						\
++				"protect off 0x200000 0x13fffff; "	\
++				"erase 0x200000 0x13fffff; "		\
++				"cp.b 0xa0000000 0x200000 0x1e00000; "	\
++			"fi\0"						\
++	"boot_mmc="							\
++			"if	 mmcinit && "				\
++				"fatload mmc 0 0xa1000000 uImage && "	\
++			"then "						\
++				"bootm 0xa1000000; "			\
++			"fi\0"						\
++	"prog_boot_net="						\
++			"mw.b 0xa0000000 0xff 0x100000; "		\
++			"if	 bootp 0xa0000000 u-boot.bin; "		\
++			"then "						\
++				"protect off 0x0 0x3ffff; "		\
++				"erase 0x0 0x3ffff; "			\
++				"cp.b 0xa0000000 0x0 0x40000; "		\
++				"reset; "				\
++			"fi\0"						\
++	"prog_uImage_net="						\
++			"mw.b 0xa0000000 0xff 0x1C0000; "		\
++			"if	 bootp 0xa0000000 uImage; "		\
++			"then "						\
++				"protect off 0x40000 0x13ffff; "		\
++				"erase 0x40000 0x13ffff; "		\
++				"cp.b 0xa0000000 0x40000 0x1C0000; "	\
++			"fi\0"						\
++	"boot_uImage_net="						\
++			"mw.b 0xa0000000 0xff 0x1C0000; "		\
++			"if	 bootp 0xa0000000 uImage; "		\
++			"then "						\
++				 "bootm 0xa0000000; "			\
++			"fi\0"						\
++	"prog_jffs_net="						\
++			"mw.b 0xa0000000 0xff 0x1e00000; "		\
++			"if	 bootp 0xa0000000 root.jffs; "		\
++			"then "						\
++				"protect off 0x200000 0x13fffff; "	\
++				"erase 0x200000 0x13fffff; "		\
++				"cp.b 0xa0000000 0x200000 0x1e00000; "	\
++			"fi\0"
++
++#define CONFIG_EXTRA_ENV_SETTINGS					\
++	"bootargsnfs=console=ttyS0,115200 root=/dev/nfsroot ip=192.168.233.14:192.168.233.1:192.168.233.1:255.255.255.0:ramses2:eth0:off;\0" \
++	"boot_nfs="							\
++			"set bootargs $bootargsnfs; "			\
++			"linux\0"
++			
++
++#if (CONFIG_COMMANDS & CFG_CMD_KGDB)
++#define CONFIG_KGDB_BAUDRATE	115200		/* speed to run kgdb serial port */
++#define CONFIG_KGDB_SER_INDEX	2		/* which serial port to use */
++#endif
++
++/*
++ * Miscellaneous configurable options
++ */
++//#define CFG_HUSH_PARSER		1
++//#define CFG_PROMPT_HUSH_PS2	"> "
++
++#define CFG_LONGHELP				/* undef to save memory		*/
++#define CFG_PROMPT		"mnci> "	/* Monitor Command Prompt */
++#define CFG_CBSIZE		256		/* Console I/O Buffer Size	*/
++#define CFG_PBSIZE (CFG_CBSIZE+sizeof(CFG_PROMPT)+16) /* Print Buffer Size */
++#define CFG_MAXARGS		16		/* max number of command args	*/
++#define CFG_BARGSIZE		CFG_CBSIZE	/* Boot Argument Buffer Size	*/
++#define CFG_DEVICE_NULLDEV	1
++
++#define CFG_MEMTEST_START	0xa0400000	/* memtest works on	*/
++#define CFG_MEMTEST_END		0xa0800000	/* 4 ... 8 MB in DRAM	*/
++
++#undef	CFG_CLKS_IN_HZ		/* everything, incl board info, in Hz */
++
++#define CFG_LOAD_ADDR		0x40000		/* default load address */
++
++#define CFG_HZ			3686400		/* incrementer freq: 3.6864 MHz */
++#define CFG_CPUSPEED		0x141		/* set core clock to 400/200/100 MHz */
++
++//#define RTC	1				/* enable 32KHz osc */
++
++						/* valid baudrates */
++#define CFG_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200 }
++
++#define CFG_MMC_BASE		0xF0000000
++
++/*
++ * Stack sizes
++ *
++ * The stack sizes are set up in start.S using the settings below
++ */
++#define CONFIG_STACKSIZE	(256*1024)	/* regular stack */
++#ifdef CONFIG_USE_IRQ
++#define CONFIG_STACKSIZE_IRQ	(4*1024)	/* IRQ stack */
++#define CONFIG_STACKSIZE_FIQ	(4*1024)	/* FIQ stack */
++#endif
++
++
++/*
++ * Environment
++ */
++#define CFG_MONITOR_BASE	0
++#define CFG_MONITOR_LEN		0x40000
++
++#define CFG_ENV_IS_IN_FLASH	1
++#define CFG_ENV_ADDR		0x20000
++#define CFG_ENV_SIZE		0x4000
++#define	CFG_ENV_SECT_SIZE	0x40000
++
++/*
++ * Physical Memory Map
++ */
++#define CONFIG_NR_DRAM_BANKS	1	   /* we have 1 banks of DRAM */
++#define PHYS_SDRAM_1		0xa0000000 /* SDRAM Bank #1 */
++#define PHYS_SDRAM_1_SIZE	0x08000000 /* 64 MB */
++
++#define PHYS_FLASH_1		0x00000000 /* Flash Bank #1 */
++#define PHYS_FLASH_2		0x02000000 /* Flash Bank #2 */
++#define PHYS_FLASH_SIZE		0x02000000 /* 32 MB */
++//#define PHYS_FLASH_BANK_SIZE	0x02000000 /* 32 MB Banks */
++//#define PHYS_FLASH_SECT_SIZE	0x00040000 /* 256 KB sectors (x2) */
++
++#define CFG_DRAM_BASE		PHYS_SDRAM_1
++#define CFG_DRAM_SIZE		PHYS_SDRAM_1_SIZE
++
++#define CFG_FLASH_BASE		PHYS_FLASH_1
++
++
++/*
++ * JFFS2 Partitions
++ */
++#define CFG_JFFS_CUSTOM_PART	1		/* see board/innokom/flash.c */
++
++
++/*
++ * FLASH organization
++ */
++#define CFG_FLASH_CFI
++#define CFG_FLASH_CFI_DRIVER	1
++
++#define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks		*/
++#define CFG_MAX_FLASH_SECT	128  /* max number of sectors on one chip    */
++
++#define CFG_FLASH_USE_BUFFER_WRITE	1
++
++/* timeout values are in ticks */
++#define CFG_FLASH_ERASE_TOUT	(25*CFG_HZ) /* Timeout for Flash Erase */
++#define CFG_FLASH_WRITE_TOUT	(25*CFG_HZ) /* Timeout for Flash Write */
++
++
++#endif	/* __CONFIG_H */
+--- /dev/null
++++ u-boot-1.1.2/board/mnci/memsetup.S
+@@ -0,0 +1,359 @@
++/*
++ * Memory & peripheral setup of the XScale PXA250
++ *
++ * Written October 2002 by H.Schurig for M&N Logistik-Lösungen Online GmbH
++ * http://www.mn-logistik.de/unsupported/pxa250/
++ *
++ * Number in Parentheses like (3-29) refer to pages in the
++ *
++ *     Intel PXA250 and PXA210
++ *     Application Processor
++ *     Developer's Manual
++ *     February 2002
++ *
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++
++/**********************************************************************
++ *
++ * reginit
++ *
++ * PURPOSE:   initialize stuff using a addr/data pair table
++ * PARAMS:    r0 - address the the table
++ * REGISTERS: r0, r1, r2, r3
++ * CALLS:     Nothing
++ * RETURNS:   Nothing
++ **********************************************************************/
++reginit:
++1:	ldmia	r0!, {r1,r2}			@ load reg/value from regtable
++	cmp	r1, #0				@ at end?
++	strne	r2, [r1]			@ if not, store value into reg
++	ldrne	r3, [r1]			@ if not, read it back (see PXA errata)
++	bne	1b				@ if not, branch back
++	mov	pc, lr
++
++
++/**********************************************************************
++ *
++ * memsetup
++ *
++ * PURPOSE:
++ * PARAMS:
++ * REGISTERS:
++ * CALLS:     
++ * RETURNS:   Nothing
++ **********************************************************************/
++
++.globl memsetup
++memsetup:
++	mov	r11, lr
++
++	adr	r0, SystemUnitTable
++	bl	reginit
++
++	@ Steps 2a..4d
++	adr	r0,MemTable1
++	bl	reginit
++
++	@ Step 4e wait 200 usec
++	ldr	r0, oscr_addr
++	ldr	r1, [r0]
++	add	r1,r1,#0x300			@ Current OSCR+0x300
++1:
++	ldr	r2, [r0]
++	cmp	r1, r2
++	bgt	1b
++	
++	@ TODO: data cache must be off, see Developers Manual, Section 6.12,
++	@ page 6-77, point 6.
++
++	@ Step 4f attempt read access to trigger a number of refresh cycles
++	ldr     r2, =CFG_DRAM_BASE
++.rept 8
++	str	r2, [r2]
++.endr
++
++	@ TODO: re-enable data cache
++
++	@ Steps 4g..4h
++	adr	r0,MemTable2
++	bl	reginit
++	@ Done with memory setup
++
++
++	@ Check if we return from Sleep Mode via RCSR (3-33)
++	ldr	r0, rcsr_addr
++	ldr	r1, [r0]
++	and	r1,r1,#0xf			@ mask RCSR_HWR|RCSR_WDR|RCSR_SMR|RCSR_GPR
++	str	r1, [r0]			@ clear Reset Controll State Register
++	teq	r1, #4				@ RCSR_SMR (Sleep Mode)
++	beq	WakeUp
++
++	@ Issue Frequency Change Sequence
++freqchange:
++	mov	r0, #3
++	mcr	p14, 0, r0, c6, c0, 0
++	mov	pc, r11
++
++WakeUp:
++	@ retrieve the scratchpad value and jump to that address
++	ldr	r0, pspr_addr
++	ldr	pc, [r0]
++
++
++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++
++	
++SystemUnitTable:
++	@ (4-22) Mask all interrupts
++	.long	ICMR,	0x00000000		@ PM
++	@ (4-22) Interrupts are IRQs, not FIQs
++	.long	ICLR,	0x00000000
++	@ (4-23) Only enabled and unmasked interrupts bring the CPU out of idle mode
++	.long	ICCR,	0x00000001
++	@ (4-41) Clear OS Timer Match bits
++	.long	OSSR,	0x0000000f		@ NO PM
++	@ (3-34) Set clock register (we change CP14,6 at the end of this function)
++	.long	CCCR,	0x00000161		@ NO PM, 121 is slow, 241 is medium, 161 is fast
++	@ (3-38) Enable 32 kHz Oszillator
++	.long	OSCC,	0x00000002
++
++	@ (3-36) Enable needed clocks
++	.long	CKEN,	0x00000043		@ PM: FFUART, PWM0, PWM1
++
++	.long	0x17c00004,8			@ CPLD: PER_PWR_EN
++
++// Bit       GPIO  Level  Function     Direct  Altern Function
++// --------------------------------------------------
++// 00000001  0     1      nc           Input   0 normal GPIO
++// 00000002  1     1      nPFI         Input   0 normal GPIO
++// 00000004  2     1      BAT_DATA     Input   0 normal GPIO
++// 00000008  3     1      IRQ_KEY      Input   0 normal GPIO
++// 00000010  4     0      IRQ_ETH      Input   0 normal GPIO
++// 00000020  5     1      nc           Input   0 normal GPIO
++// 00000040  6     0      MMC_CLK      Output  1 MMC_CLK
++// 00000080  7     1      IRQ_GSM      Input   0 normal GPIO
++// 00000100  8     1      nPCC_S1_CD   Input   0 normal GPIO
++// 00000200  9     1      nMMC_CD      Input   0 normal GPIO
++// 00000400  10    1      IRQ_RTC      Input   0 normal GPIO
++// 00000800  11    0      nc 3M6       Output  1 3.6 MHz
++// 00001000  12    1      nc           Input   0 normal GPIO
++// 00002000  13    1      IRQ_DOCK     Input   0 normal GPIO
++// 00004000  14    1      nc           Input   0 normal GPIO
++// 00008000  15    1      nc nCS1      Output  2 nCS1
++
++// 00010000  16    1      PWM0         Output  2 PWM0
++// 00020000  17    1      PWM1         Output  2 PWM1
++// 00040000  18    1      RDY          Input   1 RDY
++// 00080000  19    1      nPCC_S0_IRQ  Input   0 normal GPIO
++// 00100000  20    1      nc           Input   0 normal GPIO
++// 00200000  21    1      AC97_IRQ     Input   0 normal GPIO
++// 00400000  22    1      nPCC_S1_IRQ  Input   0 normal GPIO
++// 00800000  23    1      nc IRQ_GSM   Input   0 normal GPIO
++// 01000000  24    0      UART_INTB    Input   0 normal GPIO
++// 02000000  25    0      UART_INTC    Input   0 normal GPIO
++// 04000000  26    1      UART_INTD    Input   0 normal GPIO
++// 08000000  27    0      nc cpldfree  Input   0 normal GPIO
++// 10000000  28    1      AUD_BITCLK   Input   1 97_BITCLK
++// 20000000  29    0      AUD_SDIN0    Input   1 97_SDATAIN0
++// 40000000  30    0      AUD_SDOUT    Output  2 97_SDATAOUT
++// 80000000  31    0      AUD_SYNC     Output  2 97_SYNC
++
++	.long	GPSR0,	0x00008000		@ set nCS1
++	.long	GPDR0,	0xd0038840		@ out MMC_CLK, 3M6, nCS1, PWM0, PWM1
++	.long	GAFR0_L,0x80401000		@ MMC_CLK:1, 3M6:1, nCS1:2
++	.long	GAFR0_U,0xA500001a		@ PWM0:2, PWM1:2, RDY:1
++						@ 97_BITCLK:1, 97_SDATAIN0:1, 97_SDATAOUT:2, 97_SYNC:2
++	.long	PGSR0,	0x00028000		@ sleep set: nCS1, PWM1
++	.long	GRER0,	0x00000000		@ rising edge detect: none
++	.long	GFER0,	0x00000000		@ falling edge detect: none
++
++
++// 00000001  32    0      USB_INT      Input   0 normal GPIO
++// 00000002  33    1      nCS5         Output  2 nCS5
++// 00000004  34    1      FF_RXD       Input   1 FF_RXD
++// 00000008  35    1      FF_CTS       Input   1 FF_CTS
++// 00000010  36    1      FF_DCD       Input   1 FF_DCD
++// 00000020  37    1      FF_DSR       Input   1 FF_DSR
++// 00000040  38    1      FF_RI        Input   1 FF_RI
++// 00000080  39    0      FF_TXD       Output  2 FF_TXD
++// 00000100  40    0      FF_DTR       Output  2 FF_DTR
++// 00000200  41    0      FF_RTS       Output  2 FF_RTS
++// 00000400  42    1      BT_RXD       Input   1 BT_RXD
++// 00000800  43    1      BT_TXD       Output  2 BT_TXD
++// 00001000  44    0      BT_CTS       Input   1 BT_CTS
++// 00002000  45    1      BT_RTS       Output  2 BT_RTS
++// 00004000  46    1      IR_RXD       Input   1 ICP_RXD
++// 00008000  47    0      IR_TXD       Output  2 ICP_TXD
++// 00010000  48    1      nPOE         Output  2 nPOE
++// 00020000  49    1      nPWE         Output  2 nPWE
++// 00040000  50    1      nPIOR        Output  2 nPIOR
++// 00080000  51    1      nPIOW        Output  2 nPIOW
++// 00100000  52    1      nPCE1        Output  2 nPCE1
++// 00200000  53    1      nPCE2        Output  2 nPCE2
++// 00400000  54    0      nPKTSEL      Output  2 nPKTSEL
++// 00800000  55    1      nPREG        Output  2 nPREG
++// 01000000  56    1      nPWAIT       Input   1 nPWAIT
++// 02000000  57    1      nIOIS16      Input   1 nIOI16
++// 04000000  58    0      LDD0         Output  2 LDD0
++// 08000000  59    1      LDD1         Output  2 LDD1
++// 10000000  60    0      LDD2         Output  2 LDD2
++// 20000000  61    1      LDD3         Output  2 LDD3
++// 40000000  62    0      LDD4         Output  2 LDD4
++// 80000000  63    0      LDD5         Output  2 LDD5
++
++	.long	GPSR1,	0x00020302		@ set nCS5, FF_RTS, FF_DTR, nPWE
++	.long	GPCR1,	0x00000080		@ clear FF_TXD
++	.long	GPDR1,	0xfcffab82		@ out: nCS5, FF_TXD, FF_DTR, FF_RTS, BT_TXD,
++						@      BT_RTS, IR_TXD, nPOE...nPREG, LDD0..LDD5
++	.long	GAFR1_L,0x999a9558		@
++	.long	GAFR1_U,0xaaa5aaaa		@
++	.long	PGSR1,	0x00020002		@ sleep set: nCS5, nPWE
++	.long	GRER1,	0x00000000		@
++	.long	GFER1,	0x00000000		@
++
++
++
++// 00000001  64    0      LDD6         Output  2 LDD6
++// 00000002  65    1      LDD7         Output  2 LDD7
++// 00000004  66    1      LDD8         Output  2 LDD8
++// 00000008  67    0      LDD9         Output  2 LDD9
++// 00000010  68    1      LDD10        Output  2 LDD10
++// 00000020  69    0      LDD11        Output  2 LDD11
++// 00000040  70    0      LDD12        Output  2 LDD12
++// 00000080  71    1      LDD13        Output  2 LDD13
++// 00000100  72    0      LDD14        Output  2 LDD14
++// 00000200  73    0      LDD15        Output  2 LDD15
++// 00000400  74    1      FCLK         Output  2 FCLK
++// 00000800  75    1      LCLK         Output  2 LCLK
++// 00001000  76    1      PCLK         Output  2 PCLK
++// 00002000  77    0      BIAS         Output  2 ACBIAS
++// 00004000  78    1      nCS2         Output  2 nCS2
++// 00008000  79    1      nCS3         Output  2 nCS3
++// 00010000  80    1      nCS4         Output  2 nCS4
++// 00020000  81    1      nc           Input   0 normal GPIO
++// 00040000  82    1      nc           Input   0 normal GPIO
++// 00080000  83    1      nc           Input   0 normal GPIO
++// 00100000  84    1      nc           Input   0 normal GPIO
++
++	.long	GPSR2,	0x0001c000		@ set nCS2..4
++	.long	GPDR2,	0x0001FFFF		@ out: LDD6..nCS4
++	.long	GAFR2_L,0xaaaaaaaa		@
++	.long	GAFR2_U,0x00000002		@
++	.long	PGSR2,	0x0001c000		@ sleep set: nCS2..4
++	.long	GRER2,	0x00000000		@
++	.long	GFER2,	0x00000000		@
++
++	@ (3-25) Power Wakeup Registers
++	.long	PWER,	0x00000008		@ wake up on IRQ_KEY
++	.long	PRER,	0x00000008		@ detect rising edge on IRQ_KEY
++	.long	PFER,	0x00000000		@ dont detect falling edges
++
++	@ (3-28) Power Manager Edge Detect Status Register
++	.long	PEDR,	0x00000008		@ clear edge detect status for IRQ_KEY
++
++	@ (3-29) Sleep State Register
++	.long	PSSR,	0x00000030		@ clear PH and RDH
++
++	.long	PWM_CTRL0,     0
++	.long	PWM_CTRL0,     0
++	.long	PWM_PERVAL0, 512
++	.long	PWM_PERVAL1, 512
++	.long	PWM_PWDUTY0, 440
++	.long	PWM_PWDUTY1, 450
++
++	@ End
++	.long	0,0
++
++
++
++
++MemTable1:
++	@ Info on this sequence is in the OS Developers Guide, Section 10.0 on page 13
++	@ also see Developers Manual, Section 6.12 on page 6-76
++
++	@ write MSC0, MSC1, MSC2 (6-44)
++	.long	MSC0,	0x7ff0fdc3		@ f4c0
++	.long	MSC1,	0x29842981
++	.long	MSC2,	0x29842984
++
++	@ no synchronous static stuff here
++	.long	SXCNFG,	0x00000000		@ (6-31)
++
++	@ write MECR (6-60), MCMEMx (6-57), MCATTx (6-58), MCIOx (6-58)
++	.long	MECR,	0x00000003
++	.long	MCMEM0,	0x00020418
++	.long	MCMEM1,	0x00020418
++	.long	MCATT0,	0x0002449D
++	.long	MCATT1,	0x0002449D
++	.long	MCIO0,	0x00014290
++	.long	MCIO1,	0x00014290
++
++	@ write FLYCNFG (that register is now undocumented)
++
++	@ OS Developers Manual: write MDREFR (6-15), K0RUN and K0PIN are
++	@ 	set for synchronous static memory. The desired value of
++	@ 	K0DB2 can be programmed. KxFREE can be deasserted. APD must
++	@ 	remain deasserted and SLFRSH must remain asserted.
++	@ Developers Manual: write K0RUN and E0PIN. Configure K0DB2. Retain
++	@	the current values of APD and SLFRSH. DRI must contain a
++	@	valid value. Deassert KxFREE.
++	.long	MDREFR,	0x00400016		@ 2d KxFREE & APD deasserted, SLFRSH asserted
++
++	@ Developers Manual: in systems containing Synchronous Static Memory, write
++	@ to SXCNFG, including the enable bits.
++	@.long	SXCNFG,	0x00000000		@ no Synchronous Static Memory
++
++	@ Assert K1RUN and K2RUN and configure K1DB2 and K2DB2
++	.long	MDREFR,	0x00450016		@ 4a
++	.long	MDREFR,	0x00050016		@ 4b deassert SLFRFH
++	.long	MDREFR,	0x00058016		@ 4c assert E1PIN
++	.long	MDCNFG,	0x0A000AC8		@ 4d without DE0/DE1 (6-10)
++	.long	0,0
++
++oscr_addr:
++	.long	OSCR
++rcsr_addr:
++	.long	RCSR
++pspr_addr:
++	.long	PSPR
++
++
++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++
++	
++MemTable2:
++	.long	MDCNFG,	0x0A000ACB		@ 4d with DE0/DE1
++	.long	MDMRS,  0x00000000		@ 4h
++	.long	MDREFR, 0x00118016		@ 5 (optional) turn APD on
++	.long	0x17C0002C, 0x00000011		@ MNCI: enable FFUART driver
++	.long	0x17c00034, 0x00000000		@ MNCI: enable flash write
++	.long	0x17c00028, 0x00000000		@ MNCI: turn off CF-Card enable
++	.long	0x17c00014, 0x00000000		@ MNCI: turn off CF-Card power
++ 	.long	0x10000000, 0x0000d803		@ MNCI: disable all LEDs, SCANNER_WAKE & SCANNER_TRIG on
++@ 	.long	0x10000000, 0x0000d80b		@ MNCI: disable all LEDs, SCANNER_WAKE, SCANNER_TRIG & UARTB on
++	.long	0,0

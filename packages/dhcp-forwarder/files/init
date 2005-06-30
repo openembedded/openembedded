@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#$Header: /data/cvs/mtx/system/dhcp-forwarder/ipkg/etc/init.d/dhcp-fwd,v 1.1 2004/04/21 08:42:05 ml Exp $
+
+CONFFILE=/etc/dhcp-fwd.cfg
+DAEMON=/usr/sbin/dhcp-fwd
+
+case "$1" in
+	start)
+		start-stop-daemon -S -x $DAEMON -- -c $CONFFILE
+		;;
+	stop)
+		start-stop-daemon -K -x $DAEMON
+		;;
+	restart | force-reload)
+		$0 stop
+		sleep 2
+		$0 start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|force-reload}"
+		exit 1 
+esac
+
+exit 0

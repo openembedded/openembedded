@@ -1,0 +1,122 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- u-boot-1.1.2/include/cmd_confdefs.h~cmd-arm-linux
++++ u-boot-1.1.2/include/cmd_confdefs.h
+@@ -92,6 +92,7 @@
+ #define CFG_CMD_XIMG	0x0400000000000000ULL	/* Load part of Multi Image	*/
+ #define CFG_CMD_UNIVERSE 0x0800000000000000ULL	/* Tundra Universe Support      */
+ #define CFG_CMD_EXT2    0x1000000000000000ULL	/* EXT2 Support                 */
++#define CFG_CMD_LINUX	0x2000000000000000ULL	/* boot zImage directly		*/
+ 
+ #define CFG_CMD_ALL	0xFFFFFFFFFFFFFFFFULL	/* ALL commands			*/
+ 
+--- u-boot-1.1.2/lib_arm/armlinux.c~cmd-arm-linux
++++ u-boot-1.1.2/lib_arm/armlinux.c
+@@ -271,6 +271,104 @@
+ }
+ 
+ 
++#if (CONFIG_COMMANDS & CFG_CMD_LINUX)
++void do_linux(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	ulong initrd_start = 0;
++	ulong initrd_end = 0;
++	ulong data;
++	void (*theKernel)(int zero, int arch, uint params);
++	bd_t *bd = gd->bd;
++
++
++#ifdef CONFIG_CMDLINE_TAG
++	char cmdline[128];
++	char *s;
++#endif
++
++#ifdef CONFIG_CMDLINE_TAG
++	if (argc > 1) {
++		ulong len;
++		int   i;
++
++		for (i=1, len=0 ; i<argc ; i+=1) {
++			if (i > 1)
++				cmdline[len++] = ' ';
++			strcpy (&cmdline[len], argv[i]);
++			len += strlen(argv[i]);
++		}
++	} else
++	if ((s = getenv("bootargs")) != NULL) {
++		strcpy(cmdline, s);
++	} else {
++		strcpy(cmdline, "");
++	}
++#endif
++
++	theKernel = (void (*)(int, int, uint))load_addr;
++
++	SHOW_BOOT_PROGRESS (14);
++
++#ifdef DEBUG
++	printf ("## Transferring control to Linux (at address %08lx) ...\n",
++		(ulong)theKernel);
++#endif
++
++#if defined (CONFIG_SETUP_MEMORY_TAGS) || \
++    defined (CONFIG_CMDLINE_TAG) || \
++    defined (CONFIG_INITRD_TAG) || \
++    defined (CONFIG_SERIAL_TAG) || \
++    defined (CONFIG_REVISION_TAG) || \
++    defined (CONFIG_LCD) || \
++    defined (CONFIG_VFD)
++	setup_start_tag(bd);
++#ifdef CONFIG_SERIAL_TAG
++	setup_serial_tag(&params);
++#endif
++#ifdef CONFIG_REVISION_TAG
++	setup_revision_tag(&params);
++#endif
++#ifdef CONFIG_SETUP_MEMORY_TAGS
++	setup_memory_tags(bd);
++#endif
++#ifdef CONFIG_CMDLINE_TAG
++	setup_commandline_tag(bd, cmdline);
++#endif
++#ifdef CONFIG_INITRD_TAG
++	setup_initrd_tag(bd, initrd_start, initrd_end);
++#endif
++#if defined (CONFIG_VFD) || defined (CONFIG_LCD)
++	setup_videolfb_tag ((gd_t *) gd);
++#endif
++	setup_end_tag(bd);
++#endif
++
++	/* we assume that the kernel is in place */
++	printf("\nStarting kernel ...\n");
++
++#ifdef CONFIG_USB_DEVICE
++	{
++		extern void udc_disconnect (void);
++		udc_disconnect ();
++	}
++#endif
++	cleanup_before_linux();
++
++	//TODO: CONFIG_TAG_ADDR is now bd->bi_boot_params ?
++	theKernel(0, bd->bi_arch_number, bd->bi_boot_params);
++}
++
++
++U_BOOT_CMD(
++ 	linux,	CFG_MAXARGS,	0,	do_linux,
++	"linux	- boot Linux zImage directly\n",
++        "[arg ...]\n    - boot Linux zImage, passing arguments 'arg ...'\n"
++);
++#endif
++
++
+ #if defined (CONFIG_SETUP_MEMORY_TAGS) || \
+     defined (CONFIG_CMDLINE_TAG) || \
+     defined (CONFIG_INITRD_TAG) || \

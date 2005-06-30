@@ -1,0 +1,12 @@
+Index: udev-050/extras/volume_id/udev_volume_id.c
+===================================================================
+--- udev-050.orig/extras/volume_id/udev_volume_id.c	2004-12-18 00:53:07.000000000 -0500
++++ udev-050/extras/volume_id/udev_volume_id.c	2005-01-21 19:26:44.992472232 -0500
+@@ -37,7 +37,6 @@
+ #define BLKGETSIZE64 _IOR(0x12,114,size_t)
+ 
+ #ifdef LOG
+-unsigned char logname[LOGNAME_SIZE];
+ void log_message(int level, const char *format, ...)
+ {
+ 	va_list args;

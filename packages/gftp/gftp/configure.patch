@@ -1,0 +1,31 @@
+--- gftp-2.0.18rc1/configure.in	2004-11-09 19:32:01.000000000 -0700
++++ gftp-2.0.18rc1.new/configure.in	2005-01-04 15:04:31.297074928 -0700
+@@ -41,7 +41,8 @@
+ AM_C_PROTOTYPES
+ AC_C_CONST
+ AC_C_INLINE
+-AC_INTL_PRINTF
++
++AC_DEFINE(HAVE_INTL_PRINTF,1,Define if printf supports %'ld)
+ 
+ AM_MAINTAINER_MODE
+ 
+@@ -79,7 +80,7 @@
+ fi
+ 
+ if test "x$GFTP_TEXT" = "x" -a $found_glib20 = 0 ; then
+-  AM_PATH_GLIB(1.2.3, , AC_MSG_ERROR(gFTP needs GLIB 1.2.3 or higher))
++  AC_MSG_ERROR(gFTP needs GLIB 2.0 or higher)
+ fi
+ 
+ EXTRA_LIBS=""
+@@ -195,8 +196,7 @@
+   fi
+ 
+   if test "x$GFTP_GTK" = "x" ; then
+-    AM_PATH_GTK(1.2.3, GFTP_GTK=gftp-gtk, AC_MSG_WARN(gFTP needs GTK+ 1.2.3 or higher for the graphical version. Only building the text version))
+-    GTHREAD_LIBS="-lgthread"
++    AC_MSG_ERROR(gFTP needs GTK 2.0 or higher)
+   else
+     GTHREAD_LIBS="-lgthread-2.0"
+   fi

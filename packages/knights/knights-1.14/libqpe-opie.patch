@@ -1,0 +1,26 @@
+--- knights/knights/core.cpp~knights-opie	2002-09-01 12:02:49.000000000 +0200
++++ knights/knights/core.cpp	2003-06-24 14:38:11.000000000 +0200
+@@ -24,9 +24,8 @@
+ #include <qmessagebox.h>
+ #include <qpe/fileselector.h>
+ #include "core.h"
+-#include "qinputdialog.h"
++#include <qtcompat/qinputdialog.h>
+ #include <unistd.h>
+-#include "qinputdialog.h"
+ 
+ ///////////////////////////////////////
+ //
+@@ -864,9 +863,9 @@
+ if (fileSelectorDialog->exec()==QDialog::Accepted)
+ {
+    
+-   const DocLnk *d = selector->selected();
+-   load(*d);
+-   delete d;
++   // const DocLnk *d = selector->selected();
++   // load(*d);
++   // delete d;
+ }
+ delete fileSelectorDialog;
+ 

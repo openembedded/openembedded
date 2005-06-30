@@ -1,0 +1,11 @@
+--- ppp-2.4.1/linux/Makefile.top.orig	2000-04-17 12:39:26.000000000 +0200
++++ ppp-2.4.1/linux/Makefile.top	2004-07-03 21:59:05.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ 
+ BINDIR = $(DESTDIR)/usr/sbin
+-MANDIR = $(DESTDIR)/usr/man
++MANDIR = $(DESTDIR)/usr/share/man
+ ETCDIR = $(DESTDIR)/etc/ppp
+ 
+ # uid 0 = root

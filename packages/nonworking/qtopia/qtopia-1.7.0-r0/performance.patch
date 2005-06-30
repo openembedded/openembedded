@@ -1,0 +1,18 @@
+--- qtopia-free-1.7.0/src/tools/performance/performancetest.cpp.~1~	2003-06-04 11:07:19.000000000 +1000
++++ qtopia-free-1.7.0/src/tools/performance/performancetest.cpp	2003-09-19 13:21:17.000000000 +1000
+@@ -1,5 +1,6 @@
+ 
+ #include "performancetest.h"
++#include <qimage.h>
+ #include <qtopia/qpeapplication.h>
+ #include <qpushbutton.h>
+ #include <qframe.h>
+--- qtopia-free-1.7.0/apps/Applications/performance.desktop.~1~	2003-09-19 13:41:11.000000000 +1000
++++ qtopia-free-1.7.0/apps/Applications/performance.desktop	2003-09-19 13:40:56.000000000 +1000
+@@ -0,0 +1,6 @@
++[Desktop Entry]
++Comment=Performance test
++Exec=performance
++Icon=Generic
++Type=Application
++Name=Performance

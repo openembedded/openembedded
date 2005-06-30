@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/grp/initgroups.c~glibc-2.2.5-allow-gcc-3.4-grp.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/grp/initgroups.c	2004-09-03 19:00:38.000000000 -0500
+@@ -176,7 +176,7 @@
+ 
+       /* This is really only for debugging.  */
+       if (NSS_STATUS_TRYAGAIN > status || status > NSS_STATUS_RETURN)
+-	__libc_fatal ("illegal status in " __FUNCTION__);
++	__libc_fatal ("illegal status in internal_getgrouplist");
+ 
+       if (status != NSS_STATUS_SUCCESS
+ 	  && nss_next_action (nip, status) == NSS_ACTION_RETURN)
+@@ -214,7 +214,7 @@
+     }
+   else
+     *ngroups = result;
+-      
++
+   memcpy (groups, newgroups, *ngroups * sizeof (gid_t));
+ 
+   free (newgroups);
+--- glibc-2.2.5/nss/nsswitch.c~glibc-2.2.5-allow-gcc-3.4-grp.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/nss/nsswitch.c	2004-09-03 19:00:38.000000000 -0500
+@@ -178,7 +178,7 @@
+     {
+       /* This is really only for debugging.  */
+        if (NSS_STATUS_TRYAGAIN > status || status > NSS_STATUS_RETURN)
+-	 __libc_fatal ("illegal status in " __FUNCTION__);
++	 __libc_fatal ("illegal status in __nss_next");
+ 
+        if (nss_next_action (*ni, status) == NSS_ACTION_RETURN)
+ 	 return 1;

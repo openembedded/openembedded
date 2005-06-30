@@ -1,0 +1,11 @@
+--- linux-2.4.22/include/linux/nfsd/const.h.orig	2005-04-02 16:02:17.000000000 +0930
++++ linux-2.4.22/include/linux/nfsd/const.h	2005-04-02 16:02:25.000000000 +0930
+@@ -21,7 +21,7 @@
+ /*
+  * Maximum blocksize supported by daemon currently at 8K
+  */
+-#define NFSSVC_MAXBLKSIZE	(8*1024)
++#define NFSSVC_MAXBLKSIZE	(32*1024)
+ 
+ #ifdef __KERNEL__
+ 

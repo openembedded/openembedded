@@ -1,0 +1,20 @@
+--- iqnotes/md5.cpp.orig	2004-02-08 19:34:32.000000000 +0000
++++ iqnotes/md5.cpp	2004-03-27 23:21:58.349894440 +0000
+@@ -151,7 +151,7 @@
+ 
+     while (stream.good())
+     {
+-        stream.read(buffer, 1024); // note that return value of read is unusable.
++        stream.read((char *)buffer, 1024); // note that return value of read is unusable.
+         len=stream.gcount();
+         update(buffer, len);
+     }
+@@ -174,7 +174,7 @@
+ 
+     while (stream.good())
+     {
+-        stream.read(buffer, 1024); // note that return value of read is unusable.
++        stream.read((char *)buffer, 1024); // note that return value of read is unusable.
+         len=stream.gcount();
+         update(buffer, len);
+     }

@@ -1,0 +1,16 @@
+Index: gpe-conf-0.1.22/battery.c
+===================================================================
+--- gpe-conf-0.1.22.orig/battery.c	2004-10-25 19:28:49.000000000 +0100
++++ gpe-conf-0.1.22/battery.c	2005-02-17 13:04:41.000000000 +0000
+@@ -346,8 +346,10 @@
+ 			
+ 			if (ac_connected)
+ 				sprintf(tmp,"%s",_("AC connected"));
+-			else
++			else if (remaining > 0)
+ 				sprintf(tmp,"%s: %d min.",_("Lifetime"), remaining);
++                        else 
++                                sprintf(tmp,"");
+ 			gtk_label_set_text(GTK_LABEL(batt_int.llifetime),tmp);
+ 		}
+ 	}

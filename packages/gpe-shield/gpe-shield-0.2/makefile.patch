@@ -1,0 +1,79 @@
+? .tm_project.cache
+? gpe-shield
+? gpe-shield.desktop
+? gpe-shield_0.2.batch
+? gpe-shield_0.2_arm.ipk
+? gpe-shield_0.2_arm.ipk.asc
+? gpe-shield_0.2_arm.ipk.upload.html
+? makefile.patch
+? po
+Index: Makefile
+===================================================================
+RCS file: /cvs/gpe/base/gpe-shield/Makefile,v
+retrieving revision 1.2
+diff -r1.2 Makefile
+14a15,17
+> GTKCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-2.0`
+> GTKLDFLAGS = `pkg-config --libs gtk+-2.0 gdk-2.0`
+> 
+16,17c19,20
+< GTKLDFLAGS += -L../libgpewidget -L.
+< CFLAGS += -Wall -I../libgpewidget -I.
+---
+> PACKAGE_LDFLAGS += -L../libgpewidget -L.
+> PACKAGE_CFLAGS += -I../libgpewidget -I.
+20d22
+< GTKCFLAGS += -I$(PREFIX)/include/gpe
+23a26,30
+> PACKAGE_CPPFLAGS = $(STANDARD_CPPFLAGS)
+> PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GTKCFLAGS) $(GPECFLAGS)
+> PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS) $(GTKLDFLAGS)
+> 
+> 
+27c34
+< CFLAGS += -g -DDEBUG
+---
+> PACKAGE_CFLAGS += -g -DDEBUG
+29c36
+< CFLAGS += -Os -fomit-frame-pointer
+---
+> PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+32,58c39,40
+< CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
+< CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+< 
+< GTKCFLAGS += `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0` 
+< GTKLDFLAGS += `pkg-config --libs gtk+-2.0 gdk-2.0 gdk-pixbuf-2.0`
+< 
+< # setup how to compile
+< ifeq ($(NATIVE),yes)
+< 
+< STRIP=strip
+< CC=gcc
+< 
+< CFLAGS += $(GTKCFLAGS) -Wall
+< LDFLAGS += -lgpewidget $(GTKLDFLAGS)
+< 
+< else # we do cross-compile...
+< 
+< CC=arm-linux-gcc
+< STRIP=arm-linux-strip
+< 
+< CFLAGS += -march=armv4 -mtune=strongarm
+< CFLAGS += $(GTKCFLAGS) -Wall 
+< LDFLAGS += -lgpewidget $(GTKLDFLAGS) -Wall 
+< LDFLAGS += -lXinerama
+< 
+< endif #native or cross-compile
+< 
+---
+> PACKAGE_CFLAGS += -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -D_GNU_SOURCE
+> PACKAGE_CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+70c52
+< 	$(CC) -g -o $@ $(OBJS) $(LDFLAGS) -lgpewidget $(GTKLDFLAGS)
+---
+> 	$(CC) -g -o $@ $(OBJS) $(LDFLAGS) $(PACKAGE_LDFLAGS)
+80c62
+< 	for i in $(PIXMAPS); do install -m 644 -D pixmaps/$$i $(DESTDIR)$(PREFIX)/share/pixmaps/$$i; done
+---
+> 	for i in $(PIXMAPS); do install -m 4755 -D pixmaps/$$i $(DESTDIR)$(PREFIX)/share/pixmaps/$$i; done

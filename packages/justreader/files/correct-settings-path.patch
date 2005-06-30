@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- TextReader2/qpex/config.cpp~correct-settings-path
++++ TextReader2/qpex/config.cpp
+@@ -109,7 +109,7 @@
+ 	case User: {
+ 	  QString homeDirPath = QDir::homeDirPath();
+ 
+-	  QDir dir = (homeDirPath + "/Choices/common");
++	  QDir dir = (homeDirPath + "/Settings");
+ 	    if ( !dir.exists() )
+ #ifndef Q_OS_WIN32
+ 		mkdir(dir.path().local8Bit(),0700);

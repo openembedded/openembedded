@@ -1,0 +1,13 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- hotplug-2004_03_29/etc/hotplug.d/default/default.hotplug~busybox	2004-03-26 23:34:34.000000000 +0100
++++ hotplug-2004_03_29/etc/hotplug.d/default/default.hotplug	2004-06-18 23:33:22.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # This version of /sbin/hotplug should works on most GNU/Linux systems
+ # using Linux 2.2.18+ or 2.4.* kernels.  On 2.2.*, only USB has such

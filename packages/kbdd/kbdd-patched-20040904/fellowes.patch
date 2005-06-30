@@ -1,0 +1,425 @@
+--- kbd.c	2004-07-06 08:07:38.000000000 -0700
++++ ../kbdd.works/kbd.c	2005-01-01 07:59:00.000000000 -0800
+@@ -21,12 +21,14 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/ioctl.h>
+ #include <fcntl.h>
+ #include <termios.h>
+ #include <unistd.h>
+ #include <string.h>
+ #include <errno.h>
+ #include <limits.h>
++#include <signal.h>
+ 
+ #include "keyboards.h"
+ #include "dev_uinput.h"
+@@ -37,6 +39,7 @@
+ 
+ char debug=0;
+ int uindev=0;
++static int reinit=0;
+ char TTY_PORT[PATH_MAX];
+ 
+ int open_serial(char *port, speed_t  baud)
+@@ -122,6 +125,250 @@
+ return 0;
+ }
+ 
++int stowaway_init(int fd)
++{
++int status;
++unsigned char buf[16];
++fd_set fds;
++struct timeval tv;
++	
++	ioctl(fd, TIOCMGET, &status);
++	status |= TIOCM_DTR;  /* Set DTR */
++	status &= ~TIOCM_RTS; /* Clear RTS */
++	ioctl(fd, TIOCMSET, &status);
++	
++	/* Unfortunately, DCD seems to be high all of the time on H3900, so the following can't be used */
++	/* ioctl(fd, TIOCMIWAIT, TIOCM_CAR */
++	/* So we just wait instead */
++	usleep(1000000);
++	
++	ioctl(fd, TIOCMGET, &status);
++	status |= TIOCM_RTS;  /* Set RTS */
++	ioctl(fd, TIOCMSET, &status);
++	/* Stowaway will send back 0xFA 0xFD indicating successful init */
++	tv.tv_sec = 2;
++	tv.tv_usec = 0;
++	FD_ZERO(&fds);
++	FD_SET(fd, &fds);
++	if(select(fd+1, &fds, NULL, NULL, &tv)) {
++		read(fd, buf, 2);
++		if((buf[0] = 0xFA) && (buf[0] = 0xFD))
++			if (debug) fprintf(stderr, "keyboard initialised\n");
++	}
++	
++	return 0;
++}
++
++void stowaway_sig(int sig) {
++	reinit = 1;
++}
++
++int stowaway(void)
++{
++int fd;
++unsigned char buf[16];
++char fn=0;
++struct sigaction act;
++int rc;
++
++	fd = open_serial(TTY_PORT, B9600);
++	if (fd <= 0)
++		return (-1);
++	
++	/* Make SIGHUP cause a reinit of the keyboard */
++	act.sa_handler = stowaway_sig;
++	sigemptyset(&act.sa_mask);
++	act.sa_flags = 0;
++	sigaction(SIGHUP, &act, NULL);
++
++	while (fd > 0) {
++		
++		stowaway_init(fd);
++			
++		while (fd > 0) {
++			rc = read (fd, buf, 1);
++			if(rc == -1) {
++				if(reinit) {
++					reinit = 0;
++					break;
++				}
++				else {
++					perror("read");
++					return 1;
++				}
++			}
++			
++			if ( ((unsigned char)buf[0] & (unsigned char)0x80) == 0 ) {
++				if (debug) fprintf(stderr, "press: %d\n", buf[0]);
++				if (buf[0] == 0x08) {
++					fn=1;
++					continue;
++				}
++				if (fn)
++					buf[0]=stowaway_function[buf[0]];
++				else
++					buf[0]=stowaway_normal[buf[0]];
++				if (debug) fprintf(stderr,"= 0x%02x\n", buf[0]);
++				if (buf[0] > 0)
++					dev_uinput_key(uindev, (unsigned short)buf[0], KEY_PRESSED);
++			} else {
++				if (debug) fprintf(stderr, "rel. : %d\n", buf[0] & ~0x80);
++				if ((buf[0] & ~0x80) == 0x08) {
++					fn = 0;
++					continue;
++				}
++				if (fn)
++					buf[0]=stowaway_function[(unsigned char)buf[0] & (unsigned char)~0x80];
++				else
++					buf[0]=stowaway_normal[(unsigned char)buf[0] & (unsigned char)~0x80];
++				if (debug) fprintf(stderr,"= 0x%02x\n", buf[0]);
++				if (buf[0] > 0)
++					dev_uinput_key(uindev, (unsigned short)buf[0], KEY_RELEASED);
++			}
++		}
++	}
++
++return 0;
++}
++
++
++int fellowes(void)
++{
++#define FELLOWES_GR_FN 33
++#define FELLOWES_BL_FN 34
++
++
++  int fd;
++  unsigned char buf[16];
++  char bluefn=0,greenfn=0;
++  struct sigaction act;
++  int rc;
++
++
++  fd = open_serial(TTY_PORT, B9600);
++  if (fd <= 0)
++    return (-1);
++  
++  /* Make SIGHUP cause a reinit of the keyboard */
++  act.sa_handler = stowaway_sig;
++  sigemptyset(&act.sa_mask);
++  act.sa_flags = 0;
++  sigaction(SIGHUP, &act, NULL);
++  
++  while (fd > 0) {
++    stowaway_init(fd);
++    
++    while (fd > 0) {
++      rc = read (fd, buf, 1);
++      if(rc == -1) {
++	if(reinit) {
++	  reinit = 0;
++	  break;
++	}
++	else {
++	  perror("read");
++	  return 1;
++	}
++      }
++      
++
++
++      if ( ((unsigned char)buf[0] & (unsigned char)0x80) == 0 ) {
++	/* KEY PRESSED */
++	if (debug) fprintf(stderr, "press: %d\n", buf[0]);
++	if (buf[0] == FELLOWES_BL_FN) {
++	  bluefn=1;
++	  continue;
++	}
++
++	if (buf[0] == FELLOWES_GR_FN)  {
++	  greenfn=1;
++	  dev_uinput_key(uindev,42,KEY_PRESSED);
++	  continue;
++	}
++
++	if (bluefn)
++	  buf[0]=fellowes_function[buf[0]];
++	else if (greenfn) {
++	  buf[0]=fellowes_function[buf[0]];
++
++	  /* fixup where green function is not shift blue function */
++	  switch(buf[0]) {
++	  case KEY_UP:
++	    buf[0]=KEY_PAGEUP;
++	    break;
++	  case KEY_LEFT:
++	    buf[0]=KEY_HOME;
++	    break;
++	  case KEY_DOWN:
++	    buf[0]=KEY_PAGEDOWN;
++	    break;
++	  case KEY_RIGHT:
++	    buf[0]=KEY_END;
++	    break;
++	  case KEY_INTL2:
++	    buf[0]=KEY_INTL3;
++	    break;
++	    
++	  }
++	} else
++	  buf[0]=fellowes_normal[buf[0]];
++
++	if (debug) fprintf(stderr,"= 0x%02x\n", buf[0]);
++	if (buf[0] != KEY_RESERVED)
++	  dev_uinput_key(uindev, (unsigned short)buf[0], KEY_PRESSED);
++
++      } else {
++	/* KEY RELEASED */
++	if (debug) fprintf(stderr, "rel. : %d\n", buf[0] & ~0x80);
++
++	if ((buf[0] & ~0x80) == FELLOWES_BL_FN) {
++	  bluefn = 0;
++	  continue;
++	}
++
++	if ((buf[0] & ~0x80) == FELLOWES_GR_FN) {
++	  greenfn = 0;
++	  dev_uinput_key(uindev,42,KEY_RELEASED);
++	  continue;
++	}
++
++	if (bluefn)
++	  buf[0]=fellowes_function[(unsigned char)buf[0] & (unsigned char)~0x80];
++	else if (greenfn) {
++	  buf[0]=fellowes_function[(unsigned char)buf[0] & (unsigned char)~0x80];
++
++	  /* fixup where green function is not shift blue function */
++	  switch(buf[0]) {
++	  case KEY_UP:
++	    buf[0]=KEY_PAGEUP;
++	    break;
++	  case KEY_LEFT:
++	    buf[0]=KEY_HOME;
++	    break;
++	  case KEY_DOWN:
++	    buf[0]=KEY_PAGEDOWN;
++	    break;
++	  case KEY_RIGHT:
++	    buf[0]=KEY_END;
++	    break;
++	  case KEY_INTL2:
++	    buf[0]=KEY_INTL3;
++	    break;
++	  }
++	} else
++	  buf[0]=fellowes_normal[(unsigned char)buf[0] & (unsigned char)~0x80];
++
++	if (debug) fprintf(stderr,"= 0x%02x\n", buf[0]);
++	if (buf[0] != KEY_RESERVED)
++	  dev_uinput_key(uindev, (unsigned short)buf[0], KEY_RELEASED);
++      }
++    }
++  }
++  
++  return 0;
++}
++
+ 
+ int snapntype(void)
+ {
+@@ -177,6 +424,8 @@
+ 	fprintf (stderr, "-t <kbd type>\n");
+ 	fprintf (stderr, "\tspecify the serial keyboard type, supported are:\n");
+ 	fprintf (stderr, "\tfoldable - Compaq/HP foldable keyboard\n");
++	fprintf (stderr, "\tstowaway - Targus Stowaway keyboard\n");
++	fprintf (stderr, "\tfellowes - fellowes serial keyboard\n");
+ 	fprintf (stderr, "\tsnapntype- Snap'n'Type\n\n");
+ 	fprintf (stderr, "Example:\n\t%s -t foldable\n", arg0);
+ }
+@@ -184,6 +433,8 @@
+ #define KBD_TYPE_NONE		0
+ #define KBD_TYPE_FOLDABLE	1
+ #define KBD_TYPE_SNAPNTYPE	2
++#define KBD_TYPE_STOWAWAY	3
++#define KBD_TYPE_FELLOWES	4
+ 
+ int main(int argc, char **argv)
+ {
+@@ -204,7 +455,13 @@
+ 					kbdtype = KBD_TYPE_FOLDABLE;
+ 				} else if (strncmp("snapntype", optarg, 9) == 0) {
+ 					kbdtype = KBD_TYPE_SNAPNTYPE;
++				} else if (strncmp("stowaway", optarg, 8) == 0) {
++					kbdtype = KBD_TYPE_STOWAWAY;
++				} else if (strncmp("fellowes", optarg, 8) == 0) {
++					kbdtype = KBD_TYPE_FELLOWES;
+ 				}
++				else
++					fprintf(stderr, "unrecognised keyboard type %s\n", optarg);
+ 				break;
+ 			case 'p':
+ 				strcpy(TTY_PORT, optarg);
+@@ -226,6 +483,10 @@
+ 		compaq_foldable();
+ 	else if (kbdtype == KBD_TYPE_SNAPNTYPE)
+ 		snapntype();
++	else if (kbdtype == KBD_TYPE_STOWAWAY)
++		stowaway();
++	else if (kbdtype == KBD_TYPE_FELLOWES)
++		fellowes();
+ 
+ return 0;
+ }
+--- keyboards.h	2004-07-09 17:15:52.000000000 -0700
++++ ../kbdd.works/keyboards.h	2005-01-01 07:58:19.000000000 -0800
+@@ -24,6 +24,7 @@
+ 
+ #include "uinput.h"
+ 
++
+ /***********************************************************************************
+  *   iConcepts
+  * 
+@@ -139,6 +140,95 @@
+         108, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  };
+ 
++/***********************************************************************************
++ *   Targus Stowaway keyboard                                                     
++ *
++ * 9600 baud, 8N1
++ *
++ * Initialisation: raise DTR and drop RTS, wait for DCD pulse, then raise RTS
++ *   keyboard will then send back 0xFA 0xFD
++ *
++ * Key down sends one byte
++ * Key up sends one byte & 0x80, and if the key up is the last key up (ie, no more
++ *   keys held down), then the key code & 0x80 is repeated
++ ***********************************************************************************/
++
++static unsigned char stowaway_normal[128] = {
++      /*   0, 001, 002, 003, 004, 005, 006, 007, 008, 009 */
++/*000*/    2,   3,   4,  44,   5,   6,   7,   8,   0,  16,
++/*010*/   17,  18,  19,  20,  21,  41,  45,  30,  31,  32,
++/*020*/   33,  34,  35,  57,  58,  15,  29,   0,   0,   0,
++/*030*/    0,   0,   0,   0,   0,  56,   0,   0,   0,   0,
++/*040*/    0,   0,   0,   0,  46,  47,  48,  49,  12,  13,
++/*050*/   14,  87,   9,  10,  11,  57,  26,  27,  43, 220,
++/*060*/   22,  23,  24,  25,  40,  28, 219,   0,  36,  37,
++/*070*/   38,  39,  53, 144, 183,   0,  50,  51,  52,   0,
++/*080*/  111, 146, 155, 151,   0,   0,   0,   0,  42,  54,
++/*090*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*100*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*110*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*120*/    0,   0,   0,   0,   0,   0,   0,   0,  };
++
++static unsigned char stowaway_function[128] = {
++      /*   0, 001, 002, 003, 004, 005, 006, 007, 008, 009 */
++/*000*/   59,  60,  61,   0,  62,  63,  64,  65,   0,   0,
++/*010*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*020*/    0,   0,   0,   0,   0,   1,   0,   0,   0,   0,
++/*030*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*040*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*050*/   92,   0,  66,  67,  68,   0,   0,   0,   0,   0,
++/*060*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*070*/    0,   0,   0, 104,   0,   0,   0,   0,   0,   0,
++/*080*/    0, 102, 109, 107,   0,   0,   0,   0,   0,   0,
++/*090*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*100*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*110*/    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
++/*120*/    0,   0,   0,   0,   0,   0,   0,   0,  };
++
++
++
++/***********************************************************************************
++ *   ThinkOutside / Fellowes Stowaway XT
++ *
++ *  9600 baud, 8N1
++ *
++ *  Notes:
++ *   the green function key is basically shift + scancode - handled elsewhere
++ *
++ ***********************************************************************************/
++unsigned char fellowes_normal[128] = {
++  /* 000 */ 0, 0, 0, KEY_Z, 0, 0, 0, 0, KEY_LEFTMETA, KEY_Q,
++  /* 010 */ KEY_W, KEY_E, KEY_R, KEY_T, KEY_Y, 0,KEY_X, KEY_A, KEY_S, KEY_D,
++  /* 020 */ KEY_F, KEY_G, KEY_H, KEY_SPACE, KEY_CAPSLOCK, KEY_TAB, KEY_LEFTCTRL, 0, 0, 0,
++  /* 030 */ 0, 0, 0, 0, 0, KEY_LEFTALT, 0, 0, 0, 0,
++  /* 040 */ 0, 0, 0, 0, KEY_C, KEY_V, KEY_B, KEY_N, 0, 0,
++  /* 050 */ KEY_BACKSPACE, 0, 0, 0, 0, KEY_SPACE, KEY_MINUS, KEY_EQUAL, KEY_SLASH, 0,
++  /* 060 */ KEY_U, KEY_I, KEY_O, KEY_P, KEY_APOSTROPHE, KEY_ENTER, 0, 0, KEY_J, KEY_K,
++  /* 070 */ KEY_L, KEY_SEMICOLON, KEY_UP, 0, 0, 0, KEY_M, KEY_COMMA, KEY_DOT, 0,
++  /* 080 */ KEY_DELETE, KEY_LEFT, KEY_DOWN, KEY_RIGHT, 0, 0, 0, 0, KEY_LEFTSHIFT, KEY_RIGHTSHIFT,
++  /* 090 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 100 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 110 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 120 */ 0, 0, 0, 0, 0, 0, 0, 0
++};
++
++unsigned fellowes_function[128] = {
++  /* 000 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_1,
++  /* 010 */ KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, 0, 0, KEY_F9, KEY_F10, KEY_F11,
++  /* 020 */ KEY_F12, 0, 0, 0, KEY_NUMLOCK, KEY_ESC, 0, 0, 0, 0,
++  /* 030 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 040 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 050 */ 0, 0, 0, 0, 0, 0, KEY_LEFTBRACE, KEY_RIGHTBRACE, KEY_BACKSLASH, 0,
++  /* 060 */ KEY_7, KEY_8, KEY_9, KEY_0, 0, 0, 0, 0, 0, 0,
++  /* 070 */ 0, KEY_WWW, KEY_UP, 0, 0, 0, 0, KEY_INTL1, KEY_INTL2, 0,
++  /* 080 */ 0, KEY_LEFT, KEY_DOWN, KEY_RIGHT, 0, 0, 0, 0, 0, 0,
++  /* 090 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 100 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 110 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
++  /* 120 */ 0, 0, 0, 0, 0, 0, 0, 0
++};
++
++ 
+ 
+ /***********************************************************************************
+  *   HP foldable keyboard                                                     

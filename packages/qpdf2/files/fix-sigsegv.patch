@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qpdf2_2.2.1/qpdf.cpp~fix-sigsegv
++++ qpdf2_2.2.1/qpdf.cpp
+@@ -42,10 +42,10 @@
+ {
+ 	QPEApplication app ( argc, argv );
+ 
+-	if (argc >= 1 
+-	    && strcmp(argv[1],"-d") == 0) {
+-	  qpdf_debug_level = atoi(argv[2]);
+-	}
++//	if (argc >= 1 
++//	    && strcmp(argv[1],"-d") == 0) {
++//	  qpdf_debug_level = atoi(argv[2]);
++//	}
+ 
+ 	// read config file
+ 	globalParams = new GlobalParams ( "" );

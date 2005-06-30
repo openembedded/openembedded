@@ -1,0 +1,36 @@
+--- openldap-2.2.24/.pc/ucgendat.patch/libraries/liblunicode/Makefile.in	2005-01-20 09:01:03.000000000 -0800
++++ openldap-2.2.24/libraries/liblunicode/Makefile.in	2005-04-18 07:57:11.364118488 -0700
+@@ -31,16 +31,30 @@
+ 
+ ucgendat: $(XLIBS) ucgendat.o
+ 	$(LTLINK) -o $@ ucgendat.o $(LIBS)
+-	./ucgendat $(srcdir)/UnicodeData.txt -x $(srcdir)/CompositionExclusions.txt
++	./ucgendat $(srcdir)/UnicodeData.txt -x $(srcdir)/CompositionExclusions.txt || \
++		touch ./nodat
+ 
+ DATFILES = case.dat cmbcl.dat comp.dat ctype.dat decomp.dat num.dat kdecomp.dat
+ 
++# This deals with cross compilation - ucgendat must be run on the host after
++# the install!
+ install-local: $(PROGRAMS) FORCE
+ 	-$(MKDIR) $(DESTDIR)$(datadir)/ucdata
+-	@for i in $(DATFILES); do \
++	@if test -e nodat;\
++	then\
++		echo $(LTINSTALL) $(INSTALLFLAGS) -s -m 755 ucgendat $(DESTDIR)$(datadir)/ucdata;\
++		$(LTINSTALL) $(INSTALLFLAGS) -s -m 755 ucgendat $(DESTDIR)$(datadir)/ucdata;\
++		for i in UnicodeData.txt CompositionExclusions.txt;\
++		do\
++			echo $(INSTALL) $(INSTALLFLAGS) -m 644 $$i $(DESTDIR)$(datadir)/ucdata;\
++			$(INSTALL) $(INSTALLFLAGS) -m 644 $$i $(DESTDIR)$(datadir)/ucdata;\
++		done;\
++	else\
++	for i in $(DATFILES); do \
+ 		echo $(INSTALL) $(INSTALLFLAGS) -m 644 $$i $(DESTDIR)$(datadir)/ucdata; \
+ 		$(INSTALL) $(INSTALLFLAGS) -m 644 $$i $(DESTDIR)$(datadir)/ucdata; \
+-	done
++	done;\
++	fi
+ 
+ .links :
+ 	@for i in $(XXSRCS) $(XXHEADERS); do \

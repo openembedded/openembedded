@@ -1,0 +1,15 @@
+--- libgpewidget-0.99/doc/Makefile.am.orig	2005-04-19 13:32:58.335718432 +0100
++++ libgpewidget-0.99/doc/Makefile.am	2005-04-19 13:33:06.755438440 +0100
+@@ -26,12 +26,6 @@
+ 	gtkdoc-mkdb --module=$(DOC_MODULE) $(MKDB_OPTIONS) --source-dir=../gpe --source-dir=.. --main-sgml-file=$(DOC_MAIN_SGML_FILE)
+ 	gtkdoc-mkhtml $(DOC_MODULE) $(DOC_MAIN_SGML_FILE)
+ 
+-else
+-all: doc
+-doc:
+-	@echo "Use \"configure --enable-gtk-doc\" to enable documentation"
+-	@exit 1
+-
+ endif
+ 
+ clean-local:

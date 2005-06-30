@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GPSDrive
+Comment=GPS map software
+Exec=gpsdrive -p -1
+Terminal=0
+Type=Application
+Icon=gpsicon.png
+Categories=Application;Other
+StartupNotify=False

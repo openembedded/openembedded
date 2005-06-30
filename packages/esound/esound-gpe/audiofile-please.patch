@@ -1,0 +1,40 @@
+--- esound/esd.h~	2002-07-19 13:36:44.000000000 +0100
++++ esound/esd.h	2004-05-16 11:04:29.000000000 +0100
+@@ -1,6 +1,8 @@
+ #ifndef ESD_H
+ #define ESD_H
+ 
++#define SUPPORT_AUDIOFILE
++
+ #ifdef SUPPORT_AUDIOFILE
+ #include <audiofile.h>
+ #endif
+--- esound/Makefile.am~	2002-07-19 13:36:44.000000000 +0100
++++ esound/Makefile.am	2004-05-16 10:56:35.000000000 +0100
+@@ -26,8 +26,8 @@
+ lib_LTLIBRARIES = libesd.la $(libesddsp_la)
+ 
+ libesd_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
+-#libesd_la_LIBADD = $(AUDIOFILE_LIBS) $(SOUND_LIBS)
+-libesd_la_LIBADD = $(SOUND_LIBS)
++libesd_la_LIBADD = $(AUDIOFILE_LIBS) $(SOUND_LIBS)
++#libesd_la_LIBADD = $(SOUND_LIBS)
+ 
+ libesd_la_SOURCES = \
+ 	esdlib.c	\
+@@ -36,6 +36,7 @@
+ 	audio.c		\
+ 	genrand.c	\
+ 	genrand.h	\
++	esdfile.c	\
+ 	util.c
+ 
+ # one of these gets included by audio.c
+@@ -79,7 +80,6 @@
+ 	proto.c		\
+ 	samples.c	\
+ 	$(getopt_src)   \
+-	util.c		\
+ 	esd-server.h
+ 
+ esdcat_SOURCES = \

@@ -1,0 +1,26 @@
+# Added support to store the configuration in the user home directory
+# Released under the original terms of the package
+# Submitted ustream 12/03/04
+
+--- gputty-0.9.7/src/gputty.c	2004-06-28 06:23:36.000000000 -0700
++++ gputty-0.9.7.new/src/gputty.c	2004-07-12 13:32:41.632259216 -0700
+@@ -424,8 +424,18 @@
+ 			(void*)gtk_entry_get_text(GTK_ENTRY(g->hn_eusername)));
+ 	if(g->config == NULL)
+ 		fprintf(stderr, "%s", "gputty: not saving configuration\n");
+-	else if(config_save(g->config, ".gputty") != 0)
++	else {
++		char filename[64];
++
++		if (getenv("HOME")) 
++			snprintf(filename, sizeof(filename) - 1, 
++				"%s/.gputty\n", getenv("HOME"));
++		else 
++			strncpy(filename, ".gputty", sizeof(filename) - 1);
++
++		if(config_save(g->config, filename) != 0)
+ 		fprintf(stderr, "%s", "gputty: an error occured while saving configuration\n");
++	}
+ 	gtk_main_quit();
+ }
+ 

@@ -1,0 +1,77 @@
+Index: matchbox-panel-0.9.1/applets/mb-applet-battery.c
+===================================================================
+--- matchbox-panel-0.9.1.orig/applets/mb-applet-battery.c	2005-02-16 14:29:16.000000000 +0000
++++ matchbox-panel-0.9.1/applets/mb-applet-battery.c	2005-02-16 16:45:55.000000000 +0000
+@@ -273,24 +273,28 @@
+ 	  mb_pixbuf_img_plot_pixel(pb, img_backing, x, y, r, g, b);
+     }
+ 
+-  /* Bubble alerts  */
+-  if ((time_left_idx > 0) 
+-      && !ac_power
+-      && apm_vals[PERCENTAGE] > 0
+-      /* && apm_vals[TIME_LEFT]  > 0 XXX Less strict */ 
+-      && (apm_vals[TIME_LEFT] < time_left_alerts[time_left_idx]))
++  /*dont do this if time values arent supported by this bios*/
++  if (apm_vals[TIME_LEFT] > 0 )
+     {
+-      char tray_msg[256];
+-      sprintf(tray_msg, 
+-	      _("Battery power very low !\n\nTime Left: %.2i minutes"), 
+-	      time_left_alerts[time_left_idx]);
+-      mb_tray_app_tray_send_message(app, tray_msg, 0);
+-      time_left_idx--;
+-    }
+-  else if (time_left_idx < 4 
+-	   && apm_vals[TIME_LEFT] > time_left_alerts[time_left_idx+1])
+-    {
+-      time_left_idx++;
++    /* Bubble alerts  */
++    if ((time_left_idx > 0) 
++        && !ac_power
++       && apm_vals[PERCENTAGE] > 0
++        /* && apm_vals[TIME_LEFT]  > 0 XXX Less strict */ 
++        && (apm_vals[TIME_LEFT] < time_left_alerts[time_left_idx]))
++      {
++        char tray_msg[256];
++        sprintf(tray_msg, 
++   	        _("Battery power very low !\n\nTime Left: %.2i minutes"), 
++	        time_left_alerts[time_left_idx]);
++        mb_tray_app_tray_send_message(app, tray_msg, 0);
++        time_left_idx--;
++      }
++    else if (time_left_idx < 4 
++  	     && apm_vals[TIME_LEFT] > time_left_alerts[time_left_idx+1])
++      {
++        time_left_idx++;
++      }
+     }
+ 
+   mb_pixbuf_img_render_to_drawable(pb, img_backing, drw, 0, 0);
+@@ -385,12 +389,20 @@
+ 	sprintf(tray_msg, _("AC Connected\nFully charged.\n"));
+     } else {
+       if (apm_vals[PERCENTAGE] > 0 
+-	  && apm_vals[PERCENTAGE] <= 100 
+-	  /* && apm_vals[TIME_LEFT] > 0 Less strict */)
+-	{
+-	  sprintf(tray_msg, 
+-		  _("Battery Power\nJuice %.2i %%\nTime left: %.2i mins\n"), apm_vals[PERCENTAGE], apm_vals[TIME_LEFT]);
+-	}
++	  && apm_vals[PERCENTAGE] <= 100 )
++        {
++	  if (apm_vals[TIME_LEFT] > 0 )
++	    {
++	      sprintf(tray_msg, 
++	   	      _("Battery Power\nJuice %.2i %%\nTime left: %.2i mins\n"), apm_vals[PERCENTAGE], apm_vals[TIME_LEFT]);
++	    }
++          else
++	    {
++	      sprintf(tray_msg, 
++	   	      _("Battery Power\nJuice %.2i %%\n"), apm_vals[PERCENTAGE]);
++	    }
++
++        }
+       else sprintf(tray_msg, _("Battery Power\n Device read error.\n"));
+     }
+   mb_tray_app_tray_send_message(app, tray_msg, 5000);

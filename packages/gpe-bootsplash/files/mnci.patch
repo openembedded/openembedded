@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- gpe-bootsplash-1.14/gpe-bootsplash.init~ramses.patch
++++ gpe-bootsplash-1.14/gpe-bootsplash.init
+@@ -5,7 +5,7 @@
+     echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
+ }
+ 
+-mount /proc
++mount /proc 2>/dev/null
+ 
+ case $1 in
+ 'start')
+@@ -14,7 +14,7 @@
+ 			ARGS="--mono --force-portrait" ;;
+ 		"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE)
+ 		    	ARGS="--flip --force-portrait" ;;
+-		"HP IPAQ H3800")
++		"HP IPAQ H3800" | "RAMSES")
+ 			ARGS="--force-portrait" ;;
+ 		"SHARP SHEPHERD" | "SHARP HUSKY" | "SHARP CORGI")
+ 			ARGS="--force-landscape --flip" ;;
+--- gpe-bootsplash-1.14/splash.c~ramses.patch
++++ gpe-bootsplash-1.14/splash.c
+@@ -118,6 +118,8 @@
+ 
+   tty = open ("/dev/tty0", O_RDWR);
+   if (tty < 0)
++	tty = open ("/dev/vc/0", O_RDWR);
++  if (tty < 0)
+     perror ("open");
+   else
+     {

@@ -1,0 +1,2 @@
+patch AC_PATH_GLIB to use pkgconfig rather than glib-config, and glib-config to use pkgconfig
+

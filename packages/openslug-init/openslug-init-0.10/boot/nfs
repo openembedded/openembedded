@@ -1,0 +1,17 @@
+#!/bin/sh
+# boot from the nfs partition "$1" (which
+# must be given) using options from the rest of
+# the command line.
+#
+/sbin/leds -A '!gr'
+#
+# Use the standard init path (see /etc/init.d/rcS)
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+if /boot/network
+then
+	# network is up and running, the NFS mount will
+	# now succeed (possibly), use /boot/disk
+	exec /boot/disk "$@"
+fi
+# fallback - use the flash boot
+exec /boot/flash

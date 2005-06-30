@@ -1,0 +1,10 @@
+--- quake1src/Makefile~	2004-10-07 14:29:11.000000000 +0100
++++ quake1src/Makefile	2005-05-06 16:04:50.808451944 +0100
+@@ -97,7 +92,6 @@
+ 		r_misc.o \
+ 		snd_mix.o \
+ 		wad.o \
+-		cd_sdl.o \
+ 		crc.o \
+ 		d_sprite.o \
+ 		model.o \

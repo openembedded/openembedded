@@ -1,0 +1,84 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- mailutils-0.3.1/./configure.ac~configure
++++ mailutils-0.3.1/./configure.ac
+@@ -17,14 +17,14 @@
+ # Foundation, Inc.
+ # 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+-AC_INIT([GNU Mailutils], [0.3.1], [bug-mailutils@gnu.org], [mailutils])
++AC_INIT([GNU Mailutils],[0.3.1],[bug-mailutils@gnu.org],[mailutils])
+ AC_CONFIG_SRCDIR([mailbox/mailbox.c])
+ AC_CONFIG_AUX_DIR([scripts])
+ AC_CANONICAL_TARGET([])
+ AM_INIT_AUTOMAKE
+ AC_CONFIG_HEADERS([config.h])
+ 
+-AC_PREREQ(2.54)
++AC_PREREQ(2.57)
+ 
+ dnl Check for programs
+ AC_PROG_CC
+@@ -237,8 +237,7 @@
+ AC_ARG_WITH([log-facility],
+             AC_HELP_STRING([--with-log-facility=facility],
+                            [enable logging to the given facility]),
+-            [AC_TRY_COMPILE([#include <syslog.h>], int lf = $withval,
+-	     log_facility=$withval)])
++            [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <syslog.h>]], [[int lf = $withval]])],[log_facility=$withval],[])])
+ AC_DEFINE_UNQUOTED(LOG_FACILITY, $log_facility,
+                    [Default syslog facility to use])
+ AC_MSG_RESULT($log_facility)
+@@ -260,7 +259,8 @@
+ AC_TYPE_SIZE_T
+ AC_CHECK_TYPE(ssize_t, , AC_DEFINE(ssize_t, int, [Define to int if <sys/types.h> does not define]))
+ AC_TYPE_SIGNAL
+-AC_DECL_SYS_SIGLIST
++AC_CHECK_DECLS([sys_siglist])
++
+ AC_STRUCT_TIMEZONE
+ AC_CHECK_TYPE(ino_t, , AC_DEFINE(ino_t, unsigned long, [Define to unsigned long if <sys/types.h> does not define]))
+ AC_CHECK_TYPE(dev_t, , AC_DEFINE(dev_t, unsigned long, [Define to unsigned long if <sys/types.h> does not define]))
+@@ -360,13 +360,10 @@
+ fi
+ 
+ AC_MSG_CHECKING(whether extern program_invocation_name is present)
+-AC_TRY_COMPILE([#include <argp.h>
+-#include <errno.h>],
+-[ program_invocation_name = "test"; ],
+-[AC_DEFINE(PROGRAM_INVOCATION_NAME_DECLARED,1,
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <argp.h>
++#include <errno.h>]], [[ program_invocation_name = "test"; ]])],[AC_DEFINE(PROGRAM_INVOCATION_NAME_DECLARED,1,
+            [Define if program_invocation_name is declared in argp.h])
+- AC_MSG_RESULT(yes)],
+-[AC_MSG_RESULT(no)])
++ AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ AH_BOTTOM([
+ #ifndef PROGRAM_INVOCATION_NAME_DECLARED
+@@ -376,18 +373,15 @@
+ 
+ 
+ AC_MSG_CHECKING(whether program_invocation_name is declared)
+-AC_TRY_COMPILE([#include <argp.h>
+-#include <errno.h>],
+-[
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <argp.h>
++#include <errno.h>]], [[
+ #ifndef PROGRAM_INVOCATION_NAME_DECLARED
+ 	extern char *program_invocation_name;
+ #endif
+ 	program_invocation_name = "test";
+-],
+-[AC_DEFINE(HAVE_PROGRAM_INVOCATION_NAME,1,
++]])],[AC_DEFINE(HAVE_PROGRAM_INVOCATION_NAME,1,
+            [Define if the variable program_invocation_name exists])
+- AC_MSG_RESULT(yes)],
+-[AC_MSG_RESULT(no)])
++ AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ AC_CHECK_FUNCS(_obstack_begin,
+                [AC_DEFINE(HAVE_OBSTACK,1,[Define if GNU obstack is present])],

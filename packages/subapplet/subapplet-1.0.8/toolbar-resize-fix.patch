@@ -1,0 +1,11 @@
+--- SubApplet-1.0.8/subapplet.cpp.orig	2004-05-04 00:26:22 +0200
++++ SubApplet-1.0.8/subapplet.cpp	2004-12-22 10:11:52 +0100
+@@ -115,6 +115,8 @@
+     setToggleType(QButton::Toggle);
+     setOnIconSet(QIconSet(mPixmapOpen, QIconSet::Small));
+     setOffIconSet(QIconSet(mPixmapClosed, QIconSet::Small));
++    setFixedWidth(mPixmapOpen.width());
++    setFixedHeight(mPixmapOpen.height());
+     setOn(false);
+     setDown(false);
+     setAutoRaise(mUseFlatButton);

@@ -1,0 +1,112 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: unionfs-1.0.11/Makefile
+===================================================================
+--- unionfs-1.0.11.orig/Makefile	2005-03-23 22:25:47.000000000 -0500
++++ unionfs-1.0.11/Makefile	2005-03-24 20:27:27.386361872 -0500
+@@ -3,14 +3,20 @@
+ #
+ 
+ # this should point to where your kernel headers are
+-KVERS=$(shell uname -r)
++KVERS:=$(shell uname -r)
+ MODDIR= /lib/modules/$(KVERS)
+ LINUXSRC = /lib/modules/$(KVERS)/build
+ TOPINC   = -I${LINUXSRC}/include
+ # This is where the make install target will put stuff
+-PREFIX   = /usr/local
++DESTDIR =
++prefix = /usr/local
+ MANDIR   = ${PREFIX}/man
+-MODPREFIX=
++sbindir = ${prefix}/sbin
++mandir = ${prefix}/man
++man4dir = ${mandir}/man4
++man8dir = ${mandir}/man8
++moduledir = /lib/modules/${KERNELVER}
++
+ VERSION  = 1.0.11
+ TAROPTS = czvf
+ COMPEXT = .gz
+@@ -29,6 +35,7 @@
+ endif
+ 
+ CC	= gcc
++LD	= ld
+ KERNELVERSION=$(shell echo $(KVERS) | cut -d. -f1,2)
+ ifeq ($(KERNELVERSION),2.4)
+ CFLAGS = -D__KERNEL__ -DMODULE -I. ${TOPINC} -Wall -Wno-unused-label -Werror -fno-strict-aliasing ${EXTRACFLAGS} ${UNIONFS_DEBUG_CFLAG} ${UNIONFS_OPT_CFLAG}
+@@ -51,13 +58,15 @@
+ 	@echo "******************************************************************************"
+ 	@echo ""
+ 
+-unionfs2.6:
++unionfs2.6: unionfs.ko
++
++unionfs.ko:
+ 	make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk modules
+ 
+ unionfs2.4: ${obj-m}
+ 
+ ${obj-m}: ${unionfs-objs}
+-	ld -o ${obj-m} -r ${unionfs-objs}
++	${LD} -o ${obj-m} -r ${unionfs-objs}
+ 
+ unionctl: unionctl.c
+ 	${CC} -o $@ $? ${UCFLAGS}
+@@ -88,28 +97,37 @@
+ utils: ${BINS}
+ 
+ install-utils: utils
+-	mkdir -p ${PREFIX}/sbin
+-	cp unionctl ${PREFIX}/sbin
+-	cp uniondbg ${PREFIX}/sbin
+-	mkdir -p ${MANDIR}/man4
+-	mkdir -p ${MANDIR}/man8
+-	cp man/unionfs.4 ${MANDIR}/man4
+-	cp man/unionctl.8 ${MANDIR}/man8
+-	cp man/uniondbg.8 ${MANDIR}/man8
++	mkdir -p ${DESTDIR}${sbindir}
++	cp unionctl ${DESTDIR}${sbindir}
++	cp uniondbg ${DESTDIR}${sbindir}
++	mkdir -p ${DESTDIR}${man4dir}
++	mkdir -p ${DESTDIR}${man8dir}
++	cp man/unionfs.4 ${DESTDIR}${man4dir}
++	cp man/unionctl.8 ${DESTDIR}${man8dir}
++	cp man/uniondbg.8 ${DESTDIR}${man8dir}
+ 
+ install-mod: unionfs$(KERNELVERSION)
+ 	mkdir -p ${MODPREFIX}/${MODDIR}/kernel/fs
+-	if [ -f unionfs.ko ] ; then cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs ; else cp unionfs.o ${MODPREFIX}/${MODDIR}/kernel/fs ; fi
++	mkdir -p ${DESTDIR}${moduledir}/kernel/fs
++ifeq (${KERNELVERSION},2.4)
++	cp unionfs.o ${DESTDIR}${moduledir}/kernel/fs
++else
++	cp unionfs.ko ${DESTDIR}${moduledir}/kernel/fs
++endif
+ 
+ install: install-utils install-mod
+ 
+ uninstall:
+-	if [ -f unionfs.ko ] ; then rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.ko ; else rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.o ; fi
+-	rm ${MANDIR}/man8/unionctl.8
+-	rm ${MANDIR}/man8/uniondbg.8
+-	rm ${MANDIR}/man4/unionfs.4
+-	rm ${PREFIX}/sbin/unionctl
+-	rm ${PREFIX}/sbin/uniondbg
++ifeq (${KERNELVERSION},2.4)
++	rm ${MODPREFIX}${DESTDIR}${moduledir}/kernel/fs/unionfs.o
++else
++	rm ${MODPREFIX}${DESTDIR}${moduledir}/kernel/fs/unionfs.ko
++endif
++	rm ${DESTDIR}${man8dir}/unionctl.8
++	rm ${DESTDIR}${man8dir}/uniondbg.8
++	rm ${DESTDIR}${man4dir}/unionfs.4
++	rm ${DESTDIR}${sbindir}/unionctl
++	rm ${DESTDIR}${sbindir}/uniondbg
+ 
+ release: unionfs-${VERSION}.tar${COMPEXT}
+ 

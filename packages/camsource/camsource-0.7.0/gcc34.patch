@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- camsource-0.7.0/src/mod_handle.c~gcc34	2002-09-27 14:54:05.000000000 -0500
++++ camsource-0.7.0/src/mod_handle.c	2004-06-15 16:50:30.000000000 -0500
+@@ -306,7 +306,7 @@
+ 				goto inuse;	/* break */
+ 		}
+ 		dlclose(dlh);
+-inuse:
++inuse:;
+ 	}
+ }
+ 

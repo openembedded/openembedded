@@ -1,0 +1,238 @@
+--- htb.init-v0.8.5	2004-10-25 11:01:42.000000000 +0200
++++ htb	2004-10-25 18:26:29.720551256 +0200
+@@ -27,6 +27,12 @@
+ #
+ # VERSION HISTORY
+ # ---------------
++#	- Bruno Randolf <bruno.randolf at 4g-systems.biz>
++#	  - added ingress limiting
++#	  - added predefined PREDEF filter rules
++#	  - added PROTOCOL filter rule
++#	  - added TOS filter rule
++#	  - added VERBOSE option
+ # v0.8.5- Nathan Shafer <nicodemus at users.sourceforge.net>
+ #	  - allow symlins to class files
+ #	- Seth J. Blank <antifreeze at users.sourceforge.net>
+@@ -175,6 +181,14 @@
+ #	fairness but allows HTB to be used on very fast network devices.
+ #	This is turned off by default.
+ #
++# INGRESS=<speed>				optional
++# INGRESS=900Kbit
++#
++#	This parameters activates the limiting of incoming traffic. 
++#	Everything exceeding this rate will be dropped. This can be
++#	useful to keep the queues of DSL modems empty to allow
++#	low latency interactive traffic.
++#
+ ### HTB class parameters
+ #
+ # The following are parameters for HTB classes and are expected
+@@ -334,6 +348,17 @@
+ #	use multiple MARK fields per config.
+ #
+ #
++#
++# PREDEF=ack|icmp|ssh-interactive|ssh-scp
++#
++#	This are some predefined u32 filters.
++#	* ack: small acknowledgement packets
++#	* icmp: icmp packets
++#	* ssh-interactive: interactive SSH sessions (not scp)
++#	* ssh-scp: ssh file transfer (scp)
++#
++#
++#
+ # Note:	Rules for different filter types can be combined. Attention must be
+ #	paid to the priority of filter rules, which can be set below through
+ #	the PRIO_{RULE,MARK,REALM} variables.
+@@ -427,15 +452,17 @@
+ 
+ ### Modules to probe for. Uncomment the last HTB_PROBE
+ ### line if you have QoS support compiled into kernel
+-HTB_PROBE="sch_htb sch_sfq cls_fw cls_u32 cls_route"
++HTB_PROBE="sch_htb sch_sfq cls_fw cls_u32 cls_route sch_ingress"
+ #HTB_PROBE=""
+ 
+ ### Config keywords
+-HTB_QDISC="DEFAULT\|DCACHE\|R2Q"
++HTB_QDISC="DEFAULT\|DCACHE\|R2Q\|INGRESS"
+ HTB_CLASS="RATE\|CEIL\|BURST\|CBURST\|PRIO\|LEAF\|MTU"
+ HTB_CLASS="$HTB_CLASS\|PRIO_RULE\|PRIO_MARK\|PRIO_REALM"
+ HTB_CLASS="$HTB_CLASS\|LIMIT\|QUANTUM\|PERTURB"
+ 
++### uncomment to print some info while setting up
++#VERBOSE="yes"
+ 
+ #############################################################################
+ ############################# SUPPORT FUNCTIONS #############################
+@@ -565,6 +592,7 @@
+ ### Remove root class from device $1
+ htb_device_off () {
+ 	tc qdisc del dev $1 root 2> /dev/null
++	tc qdisc del dev $1 ingress 2> /dev/null
+ } # htb_device_off
+ 
+ 
+@@ -605,7 +633,7 @@
+ 
+ ### Display traffic control setup
+ htb_show () {
+-	for dev in `all_device_list`; do
++	for dev in `htb_device_list`; do
+ 		[ `tc qdisc show dev $dev| wc -l` -eq 0 ] && continue
+ 		echo -e "### $dev: queueing disciplines\n"
+ 		tc $1 qdisc show dev $dev; echo
+@@ -701,6 +729,10 @@
+ 		echo "$TC $@"
+ 	} # tc
+ 
++	print () {
++		echo "[ -n \"\$VERBOSE\" ] && echo '$@'"
++	}
++	
+ elif [ -n "$HTB_DEBUG" ]; then
+ 	echo -e "# `date`" > $HTB_DEBUG
+ 
+@@ -715,6 +747,11 @@
+ 		echo -e "\n# tc $@" >> $HTB_DEBUG
+ 		$TC "$@" 2>&1 | tee -a $HTB_DEBUG
+ 	} # tc
++	
++	print () {
++		echo -e "\n# [ -n \"\$VERBOSE\" ] && echo '$@'" >> $HTB_DEBUG
++		[ -n "$VERBOSE" ] && echo "$@"
++	}
+ else
+ 	# default wrappers
+ 	
+@@ -725,6 +762,11 @@
+ 	tc () {
+ 		$TC "$@"
+ 	} # tc
++	
++	print () {
++		[ -n "$VERBOSE" ] && echo "$@"
++	}
++
+ fi # ip/tc wrappers
+ 
+ 
+@@ -768,6 +810,7 @@
+ [ -z "$DEVICES" ] && htb_failure "no configured devices found!"
+ 
+ for dev in $DEVICES; do
++	print "setting up $dev..."
+ 	### Retrieve root qdisc options
+ 	DEFAULT=""; DCACHE=""; R2Q=""
+ 	eval `htb_filter_file $dev| grep "^\($HTB_QDISC\)="`
+@@ -781,6 +824,15 @@
+ 	default ${DEFAULT:-0} ${R2Q:+r2q $R2Q} $DCACHE ||
+ 		htb_fail_off "failed to set root qdisc on $dev!"
+ 
++	# attach ingress filter
++	if [ "$INGRESS" != "" ]; then
++		print " shaping incoming traffic to $INGRESS"
++		tc qdisc add dev $dev handle ffff: ingress
++		# drop everything that's coming in too fast:
++		tc filter add dev $dev parent ffff: protocol ip prio 50 u32 match ip src \
++   		0.0.0.0/0 police rate ${INGRESS} burst 10k drop flowid :1
++	fi
++	
+ 	[ "$1" = "compile" ] && echo
+ done # dev
+ 
+@@ -789,6 +841,8 @@
+ for classfile in `htb_class_list`; do
+ 	htb_load_class $classfile
+ 
++	print " class $CLASS (rate: $RATE, ceil: $CEIL)"
++	
+ 	### Create the class
+ 	tc class add dev $DEVICE parent 1:$PARENT classid 1:$CLASS \
+ 	htb rate $RATE ${CEIL:+ceil $CEIL} ${BURST:+burst $BURST} \
+@@ -813,6 +867,7 @@
+ 
+ 	### Create fw filter for MARK fields
+ 	for mark in `htb_cfile_rules MARK`; do
++		print "  mark $mark"
+ 		### Attach fw filter to root class
+ 		tc filter add dev $DEVICE parent 1:0 protocol ip \
+ 		prio $PRIO_MARK handle $mark fw classid 1:$CLASS
+@@ -827,6 +882,7 @@
+ 		### Convert asterisks to empty strings
+ 		SREALM=${SREALM#\*}; DREALM=${DREALM#\*}
+ 
++		print "  realm $SREALM $DREALM"
+ 		### Attach route filter to the root class
+ 		tc filter add dev $DEVICE parent 1:0 protocol ip \
+ 		prio $PRIO_REALM route ${SREALM:+from $SREALM} \
+@@ -870,12 +926,68 @@
+ 
+ 		### Uncomment the following if you want to see parsed rules
+ 		#echo "$rule: $u32_s $u32_d"
++		print "  source: $SRC dest: $DST"
+ 
+ 		### Attach u32 filter to the appropriate class
+ 		tc filter add dev $DEVICE parent 1:0 protocol ip \
+ 		prio $PRIO_RULE u32 $u32_s $u32_d classid 1:$CLASS
+ 	done ### rule
+ 
++	### Create u32 filter for TOS fields
++	for tos in `htb_cfile_rules TOS`; do
++		### Attach to root class
++		print "  tos $tos"
++	        tc filter add dev $DEVICE parent 1:0 protocol ip \
++	        prio $PRIO_RULE u32 match ip tos $tos 0xff classid 1:$CLASS
++	done ### tos
++	
++	### Create u32 filter for PROTOCOL fields
++	for p in `htb_cfile_rules PROTOCOL`; do
++	        ### Attach to root class
++		print "  protocol $p"
++	        tc filter add dev $DEVICE parent 1:0 protocol ip \
++		prio $PRIO_RULE u32 match ip protocol $p 0xff classid 1:$CLASS
++        done ### protocol
++
++	### some predefined u32 filters for convenience
++	for a in `htb_cfile_rules PREDEF`; do
++		case "$a" in
++		"ack")
++			print "  ACK"
++			# IP protocol 6,
++			# IP header length 0x5(32 bit words),
++			# IP Total length 0x34 (ACK + 12 bytes of TCP options)
++			# TCP ack set (bit 5, offset 33)
++			tc filter add dev $DEVICE parent 1:0 protocol ip \
++			prio $PRIO_RULE u32 \
++			match ip protocol 6 0xff \
++			match u8 0x05 0x0f at 0 \
++			match u16 0x0000 0xffc0 at 2 \
++			match u8 0x10 0xff at 33 \
++			classid 1:$CLASS
++			;;
++		"icmp")
++			print "  ICMP"
++			tc filter add dev $DEVICE parent 1:0 protocol ip \
++			prio $PRIO_RULE u32 match ip protocol 1 0xff classid 1:$CLASS
++			;;
++		"ssh-interactive")
++			print "  ssh-interactive"
++			tc filter add dev $DEVICE parent 1:0 protocol ip \
++			prio $PRIO_RULE u32 \
++			match ip dport 22 0xffff \
++			match ip tos 0x10 0xff classid 1:$CLASS
++			;;
++		"ssh-scp")
++			print "  scp"
++			tc filter add dev $DEVICE parent 1:0 protocol ip \
++			prio $PRIO_RULE u32 \
++			match ip dport 22 0xffff \
++			match ip tos 0x08 0xff classid 1:$CLASS
++			;;
++		esac
++	done
++	
+ 	[ "$1" = "compile" ] && echo
+ done ### classfile
+ ;;

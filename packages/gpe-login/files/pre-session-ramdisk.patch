@@ -1,0 +1,26 @@
+diff -ur gpe-login-0.73.orig/X11/gpe-login.pre-session gpe-login-0.73/X11/gpe-login.pre-session
+--- gpe-login-0.73.orig/X11/gpe-login.pre-session	2004-01-17 12:24:23.000000000 +0100
++++ gpe-login-0.73/X11/gpe-login.pre-session	2004-10-03 10:04:52.000000000 +0200
+@@ -22,9 +22,18 @@
+ chown $USER /dev/misc/buzzer
+ fi
+ 
+-mkdir -p /mnt/ramfs/home/$USER
+-chown $USER /mnt/ramfs/home/$USER
++# check for ramdisk location
++if [ -d /mnt/ramfs ]; then
++# old location as used in familiar <= 0.7.2
++RAMDISK="/mnt/ramfs"
++else
++# default to new style location
++RAMDISK="/mnt/ram"
++fi
++
++mkdir -p $RAMDISK/home/$USER
++chown $USER $RAMDISK/home/$USER
+ 
+ # this location MUST be consistent with HOME_VOLATILE in /etc/X11/Xsession
+-ln -s /mnt/ramfs/home/$USER /home/$USER/ramdisk
+-ln -s /home/$USER/ramdisk/.xsession-errors /home/$USER/.xsession-errors
++ln -sf $RAMDISK/home/$USER /home/$USER/ramdisk
++ln -sf /home/$USER/ramdisk/.xsession-errors /home/$USER/.xsession-errors

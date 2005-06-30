@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- changedfiles-1.0-rc1/configure.in~autofoo
++++ changedfiles-1.0-rc1/configure.in
+@@ -9,11 +9,14 @@
+ case "$host" in
+ 	alpha*-*-linux*-*) AC_DEFINE( IS_ALPHA, 1, [System is DEC alpha based] );;
+ 	*-linux*) 
+-		AC_MSG_CHECKING( linux version )
+-		case `uname -r` in
+-		*2.4*) AC_MSG_RESULT( [ Supported ] );;
+-		*) AC_MSG_ERROR( [`uname -r` is an unsupported kernel (only version 2.4 is supported)] );;
+-		esac;;
++		if test x"$cross_compiling" = "x"; then
++			AC_MSG_CHECKING( linux version )
++			case `uname -r` in
++			*2.4*) AC_MSG_RESULT( [ Supported ] );;
++			*) AC_MSG_ERROR( [`uname -r` is an unsupported kernel (only version 2.4 is supported)] );;
++			esac
++		fi
++		;;
+ *-solaris*) AC_MSG_WARN( [Solaris port is still experimental, use at your own risk.] ); LIBS="$VAR -lfget -lsocket -lnsl";;
+ *) AC_MSG_ERROR( [$host is an unsuppored platform.] );;
+ esac

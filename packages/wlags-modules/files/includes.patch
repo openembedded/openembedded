@@ -1,0 +1,450 @@
+I keep all files in a flat directory. This patch changes the #include lines
+accordingly.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- wlags/wl_main.c~includes
++++ wlags/wl_main.c
+@@ -79,7 +79,7 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/module.h>
+ #include <linux/types.h>
+@@ -104,29 +104,29 @@
+ #include <linux/if_arp.h>
+ #include <linux/ioport.h>
+ 
+-#include <hcf/debug.h>
++#include "debug.h"
+ 
+-#include <hcf.h>
+-#include <dhf.h>
+-#include <hcfdef.h>
++#include "hcf.h"
++#include "dhf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_netdev.h>
+-#include <wireless/wl_wext.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
++#include "wl_main.h"
++#include "wl_netdev.h"
++#include "wl_wext.h"
+ 
+ #ifdef USE_PROFILE
+-#include <wireless/wl_profile.h>
++#include "wl_profile.h"
+ #endif  /* USE_PROFILE */
+ 
+ #ifdef BUS_PCMCIA
+-#include <wireless/wl_cs.h>
++#include "wl_cs.h"
+ #endif  /* BUS_PCMCIA */
+ 
+ #ifdef BUS_PCI
+-#include <wireless/wl_pci.h>
++#include "wl_pci.h"
+ #endif  /* BUS_PCI */
+ 
+ 
+--- wlags/wl_cs.c~includes
++++ wlags/wl_cs.c
+@@ -79,7 +79,7 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+@@ -108,18 +108,18 @@
+ #include <pcmcia/cisreg.h>
+ #include <pcmcia/ciscode.h>
+ #include <pcmcia/ds.h>
+-#include <hcf/debug.h>
++#include "debug.h"
+ 
+-#include <hcf.h>
+-#include <dhf.h>
+-#include <hcfdef.h>
++#include "hcf.h"
++#include "dhf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_netdev.h>
+-#include <wireless/wl_cs.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
++#include "wl_main.h"
++#include "wl_netdev.h"
++#include "wl_cs.h"
+ 
+ 
+ 
+--- wlags/wl_enc.c~includes
++++ wlags/wl_enc.c
+@@ -78,12 +78,12 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+-#include <hcf/debug.h>
+-#include <hcf.h>
++#include "debug.h"
++#include "hcf.h"
+ 
+-#include <wireless/wl_enc.h>
++#include "wl_enc.h"
+ 
+ 
+ 
+--- wlags/wl_netdev.c~includes
++++ wlags/wl_netdev.c
+@@ -79,7 +79,7 @@
+ /*******************************************************************************
+  * include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/module.h>
+ #include <linux/types.h>
+@@ -104,30 +104,30 @@
+ #include <linux/if_arp.h>
+ #include <linux/ioport.h>
+ 
+-#include <hcf/debug.h>
++#include "debug.h"
+ 
+-#include <hcf.h>
+-#include <dhf.h>
+-#include <hcfdef.h>
++#include "hcf.h"
++#include "dhf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_priv.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_netdev.h>
+-#include <wireless/wl_wext.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
++#include "wl_priv.h"
++#include "wl_main.h"
++#include "wl_netdev.h"
++#include "wl_wext.h"
+ 
+ #ifdef USE_PROFILE
+-#include <wireless/wl_profile.h>
++#include "wl_profile.h"
+ #endif  /* USE_PROFILE */
+ 
+ #ifdef BUS_PCMCIA
+-#include <wireless/wl_cs.h>
++#include "wl_cs.h"
+ #endif  /* BUS_PCMCIA */
+ 
+ #ifdef BUS_PCI
+-#include <wireless/wl_pci.h>
++#include "wl_pci.h"
+ #endif  /* BUS_PCI */
+ 
+ 
+--- wlags/wl_priv.c~includes
++++ wlags/wl_priv.c
+@@ -78,24 +78,24 @@
+ /*******************************************************************************
+  * include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/if_arp.h>
+ #include <linux/ioport.h>
+ #include <linux/delay.h> 
+ #include <asm/uaccess.h>
+ 
+-#include <hcf/debug.h>
+-#include <hcf.h>
+-#include <hcfdef.h>
++#include "debug.h"
++#include "hcf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_enc.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_priv.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_netdev.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_enc.h"
++#include "wl_main.h"
++#include "wl_priv.h"
++#include "wl_util.h"
++#include "wl_netdev.h"
+ 
+ 
+ 
+--- wlags/wl_profile.c~includes
++++ wlags/wl_profile.c
+@@ -95,23 +95,23 @@
+ /*******************************************************************************
+  * include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/unistd.h>
+ #include <asm/uaccess.h>
+ 
+-#include <hcf/debug.h>
+-#include <hcf.h>
+-#include <hcfdef.h>
++#include "debug.h"
++#include "hcf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_enc.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_profile.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
++#include "wl_enc.h"
++#include "wl_main.h"
++#include "wl_profile.h"
+ 
+ 
+ 
+--- wlags/wl_util.c~includes
++++ wlags/wl_util.c
+@@ -78,7 +78,7 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+@@ -99,13 +99,13 @@
+ #include <linux/if_arp.h>
+ #include <linux/ioport.h>
+ 
+-#include <hcf/debug.h>
+-#include <hcf.h>
+-#include <hcfdef.h>
++#include "debug.h"
++#include "hcf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
+ 
+ 
+ 
+--- wlags/wl_wext.c~includes
++++ wlags/wl_wext.c
+@@ -74,22 +74,22 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ #include <linux/if_arp.h>
+ #include <linux/ioport.h>
+ #include <linux/delay.h>
+ #include <asm/uaccess.h>
+ 
+-#include <hcf/debug.h>
+-#include <hcf.h>
+-#include <hcfdef.h>
++#include "debug.h"
++#include "hcf.h"
++#include "hcfdef.h"
+ 
+-#include <wireless/wl_if.h>
+-#include <wireless/wl_internal.h>
+-#include <wireless/wl_util.h>
+-#include <wireless/wl_main.h>
+-#include <wireless/wl_wext.h>
++#include "wl_if.h"
++#include "wl_internal.h"
++#include "wl_util.h"
++#include "wl_main.h"
++#include "wl_wext.h"
+ 
+ 
+ 
+@@ -212,7 +212,7 @@
+             break;
+ 
+ 
+-	    case SIOCSIWSPY:        // Set the spy list
++	case SIOCSIWSPY:        // Set the spy list
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWNAME\n" );
+             ret = wireless_set_spy_addrs( wrq, lp );
+@@ -220,7 +220,7 @@
+             break;
+ 
+ 
+-	    case SIOCGIWSPY:        // Get the spy list
++	case SIOCGIWSPY:        // Get the spy list
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCSIWSPY\n" );
+             ret = wireless_get_spy_addrs( wrq, lp );
+@@ -239,6 +239,7 @@
+ 
+ 
+ #if (HCF_TYPE) & HCF_TYPE_STA
++
+         case SIOCGIWAP:         // Get the MAC Address of current AP
+ 
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWAP\n" );
+@@ -248,7 +249,6 @@
+ 
+ #endif //HCF_STA
+ 
+-
+         case SIOCGIWAPLIST:
+ 
+             /* NOTE: SIOCGIWAPLIST has been deprecated by SIOCSIWSCAN/SIOCGIWSCAN.
+@@ -267,7 +267,7 @@
+             break;
+ 
+ 
+-	    case SIOCSIWSENS:       // Set the desired AP density
++	case SIOCSIWSENS:       // Set the desired AP density
+ 
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCSIWSENS\n" );
+             ret = wireless_set_sensitivity( wrq, lp );
+@@ -275,7 +275,7 @@
+             break;
+ 
+ 
+-	    case SIOCGIWSENS:       // Get the current AP density
++	case SIOCGIWSENS:       // Get the current AP density
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWSENS\n" );
+             wireless_get_sensitivity( wrq, lp );
+@@ -287,7 +287,7 @@
+ 
+ #if WIRELESS_EXT > 5
+ 
+-	    case SIOCSIWESSID:      // Set the desired network name (ESSID)
++	case SIOCSIWESSID:      // Set the desired network name (ESSID)
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCSIWESSID\n" );
+             ret = wireless_set_essid( wrq, lp );
+@@ -295,7 +295,7 @@
+             break;
+ 
+ 
+-	    case SIOCGIWESSID:      // Get the current network name (ESSID)
++	case SIOCGIWESSID:      // Get the current network name (ESSID)
+             
+             DBG_TRACE(DbgInfo, "IOCTL: SIOCGIWESSID\n");  
+             ret = wireless_get_essid( wrq, lp );
+@@ -307,7 +307,7 @@
+ 
+ #if WIRELESS_EXT > 7
+ 
+-	    case SIOCSIWNICKN:      // Set desired station nickname
++	case SIOCSIWNICKN:      // Set desired station nickname
+            
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCSIWNICKN\n" );
+             ret = wireless_set_nickname( wrq, lp );
+@@ -315,7 +315,7 @@
+             break;
+ 	
+ 
+-	    case SIOCGIWNICKN:      // Get current station nickname
++	case SIOCGIWNICKN:      // Get current station nickname
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWNICKN\n" );
+             ret = wireless_get_nickname( wrq, lp );
+@@ -323,7 +323,7 @@
+             break;
+ 
+ 
+-        case SIOCSIWRTS:        // Set the desired RTS threshold
++	case SIOCSIWRTS:        // Set the desired RTS threshold
+            
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCSIWRTS\n" );
+             ret = wireless_set_rts_threshold( wrq, lp );
+@@ -331,7 +331,7 @@
+             break;
+ 	
+ 
+-	    case SIOCGIWRTS:        // Get the current RTS threshold
++	case SIOCGIWRTS:        // Get the current RTS threshold
+             
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWRTS\n" );
+             wireless_get_rts_threshold( wrq, lp );
+@@ -382,7 +382,7 @@
+             break;
+ 
+ 
+-	    case SIOCGIWENCODE:     // Get the encryption keys
++	case SIOCGIWENCODE:     // Get the encryption keys
+            
+             DBG_TRACE( DbgInfo, "IOCTL: SIOCGIWENCODE\n" );
+             ret = wireless_get_encode( wrq, lp );
+@@ -503,7 +503,7 @@
+ 
+ #endif  // WIRELESS_EXT > 11
+ 
+-	    case SIOCGIWPRIV:       // Get private ioctl interface info
++	case SIOCGIWPRIV:       // Get private ioctl interface info
+ 
+             DBG_TRACE(DbgInfo, "IOCTL: SIOCGIWPRIV NOT SUPPORTED!!!\n");
+             ret = -EOPNOTSUPP;
+--- wlags/hcfcfg.h~includes
++++ wlags/hcfcfg.h
+@@ -764,7 +764,7 @@
+ 
+ #include <asm/io.h>
+ #include <linux/module.h>
+-#include <wireless/wl_version.h>
++#include "wl_version.h"
+ 
+ /* The following macro ensures that no symbols are exported, minimizing the chance of a symbol
+    collision in the kernel */

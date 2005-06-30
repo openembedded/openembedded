@@ -1,0 +1,29 @@
+diff -urNd ../gsoko-0.4.2-gpe5-r0/gsoko-0.4.2-gpe5/Makefile gsoko-0.4.2-gpe5/Makefile
+--- ../gsoko-0.4.2-gpe5-r0/gsoko-0.4.2-gpe5/Makefile	2004-09-18 00:03:00.000000000 +0100
++++ gsoko-0.4.2-gpe5/Makefile	2004-09-20 20:14:46.000000000 +0100
+@@ -1,16 +1,21 @@
+ 
+-PACKAGE_CFLAGS = -Wall $(GPECFLAGS) $(GTKCFLAGS) -DPREFIX=\"$(PREFIX)\"
++PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GPECFLAGS) $(GTKCFLAGS) -DPREFIX=\"$(PREFIX)\"
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS)
+ OBJS = control.o game.o gfx.o gsoko.o init.o interface.o move.o
+ VERSION = 0.4.2-gpe6
+ PACKAGE = gsoko
+ 
+-PREFIX = /usr/local
+-BUILD = ../../base/build
++PREFIX = /usr
++ifeq ($(CVSBUILD),yes)
++BUILD = ../build
++else
++BUILD = build
++endif
+ 
+ all:	gsoko
+ 
+ gsoko:	$(OBJS)
+-	$(CC) $(CFLAGS) $(PACKAGE_CFLAGS) -o $@ $(OBJS) `pkg-config --libs gtk+-2.0`
++	$(CC) $(CFLAGS) $(PACKAGE_CFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ clean:
+ 	rm -f *.o

@@ -1,0 +1,44 @@
+--- wellenreiter/gui/gui.pro	2004-12-25 09:13:32.000000000 +1300
++++ wellenreiter/gui/gui.pro	2005-04-24 21:43:30.000000000 +1200
+@@ -33,6 +33,9 @@
+ DEPENDPATH      += $(OPIEDIR)/include
+ INTERFACES      = configbase.ui
+ TARGET          = wellenreiter
++VERSION         = 1.0.5
++
++DEFINES         += WELLENREITER_VERSION='"$$VERSION (GPL) Opie"'
+ 
+ !contains( platform, x11 ) {
+   message( qws )
+--- wellenreiter/gui/wellenreiter.cpp	2004-10-29 23:51:08.000000000 +1300
++++ wellenreiter/gui/wellenreiter.cpp	2005-04-24 21:43:30.000000000 +1200
+@@ -569,7 +569,8 @@
+         }
+ 
+         // check if wireless extension version matches
+-        if ( ONetwork::wirelessExtensionCompileVersion() != iface->wirelessExtensionDriverVersion() )
++        if ( ONetwork::wirelessExtensionCompileVersion() != iface->wirelessExtensionDriverVersion()
++             && ( ONetwork::wirelessExtensionCompileVersion() <= 15 || iface->wirelessExtensionDriverVersion() <= 15 ) )
+         {
+             QMessageBox::critical( this, "Wellenreiter II", tr( "<p>The Wireless Extension Versions<br>do not match!<p>"
+                                     "  Wellenreiter II : WE V%1<br>Interface driver: WE V%2" )
+--- wellenreiter/gui/wellenreiterbase.cpp	2004-08-24 23:53:44.000000000 +1200
++++ wellenreiter/gui/wellenreiterbase.cpp	2005-04-24 21:43:30.000000000 +1200
+@@ -33,8 +33,6 @@
+ #include <qtabwidget.h>
+ #endif
+ 
+-#define WELLENREITER_VERSION "V1.0.3 (unofficial)"
+-
+ /*
+  *  Constructs a WellenreiterBase which is a child of 'parent', with the
+  *  name 'name' and widget flags set to 'f'
+@@ -111,7 +109,7 @@
+     QPainter draw( &logo );
+     draw.setPen( Qt::black );
+     draw.setFont( QFont( "Fixed", 8 ) );
+-    draw.drawText( 30, 10, WELLENREITER_VERSION );
++    draw.drawText( 5, 10, WELLENREITER_VERSION );
+ 
+     PixmapLabel1_3_2->setPixmap( logo );
+     PixmapLabel1_3_2->setScaledContents( TRUE );

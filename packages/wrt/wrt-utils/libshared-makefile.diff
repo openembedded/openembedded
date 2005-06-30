@@ -1,0 +1,13 @@
+--- libshared/Makefile.orig	2005-06-11 17:22:59.000000000 +0200
++++ libshared/Makefile	2005-06-11 17:22:42.000000000 +0200
+@@ -1,9 +1,8 @@
+ # $Id: Makefile,v 1.2 2005/03/19 14:40:56 wbx Exp $
+ 
+-include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=libshared
+-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
++PKG_BUILD_DIR:=.
+ 
+ EXTRA_CFLAGS := -c -I. -I../include
+ 

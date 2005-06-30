@@ -1,0 +1,11 @@
+--- status-bar-launch.sh.old	2005-06-14 17:12:10.000000000 +0200
++++ status-bar-launch.sh	2005-06-14 17:12:15.000000000 +0200
+@@ -21,7 +21,7 @@
+ # 02110-1301 USA
+ #
+ 
+-source af.conf
++. af.conf
+ 
+ if [ "$1" != "start" ] && [ "$1" != "stop" ] && [ "$1" != "restart" ]; then
+   echo "Usage: $0 {start|stop|restart}"

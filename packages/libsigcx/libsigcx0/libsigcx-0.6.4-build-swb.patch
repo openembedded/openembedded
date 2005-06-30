@@ -1,0 +1,71 @@
+Backport of libsigcx-200504101-build-swb.patch for use with the 0.6.4 release.
+
+- Steven Brown <swbrown@ucsd.edu>
+
+
+diff -ru libsigcx-0.6.4-old/configure.ac libsigcx-0.6.4/configure.ac
+--- libsigcx-0.6.4-old/configure.ac	Tue Jun  3 09:58:34 2003
++++ libsigcx-0.6.4/configure.ac	Fri May  6 20:04:21 2005
+@@ -69,6 +69,16 @@
+ AC_SUBST(SIGC_LIBS)
+ AC_SUBST(SIGC_CFLAGS)
+ 
++dnl SigC++ macros
++AC_MSG_CHECKING([for SigC++ macros])
++SIGC_MACROS="`pkg-config --variable=prefix sigc++-1.2`/include/sigc++-1.2/sigc++/macros"
++if test "$?" != "0"; then
++  AC_MSG_ERROR([failed to locate the SigC++ macros])
++else
++  AC_MSG_RESULT([$SIGC_MACROS])
++fi
++AC_SUBST(SIGC_MACROS)
++
+ dnl Check for thread support
+ AC_ARG_WITH(threads, 
+             AC_HELP_STRING([--with-threads], 
+diff -ru libsigcx-0.6.4-old/sigcx/Makefile.am libsigcx-0.6.4/sigcx/Makefile.am
+--- libsigcx-0.6.4-old/sigcx/Makefile.am	Thu Apr 24 06:47:32 2003
++++ libsigcx-0.6.4/sigcx/Makefile.am	Fri May  6 20:04:39 2005
+@@ -20,7 +20,7 @@
+ 		          dispatch.cc thread_tunnel.cc convert.cc
+ 
+ libsigcx_0_6_la_LIBADD = $(THREAD_LIBS) $(SIGC_LIBS)
+-libsigcx_0_6_la_LDFLAGS = -version-info "2:0:0"
++libsigcx_0_6_la_LDFLAGS = -version-info "2:0:0" -no-undefined
+ 
+ libsigcdir = $(prefix)/include/sigcx
+ 
+@@ -34,7 +34,7 @@
+ libsigcx_gtk_0_6_la_SOURCES = gtk_dispatch.cc
+ libsigcx_gtk_0_6_la_LIBADD = libsigcx-@SIGCX_DEVBRANCH@.la \
+ 			     $(THREAD_LIBS) $(SIGC_LIBS) $(GTK_LIBS)
+-libsigcx_gtk_0_6_la_LDFLAGS = -version-info "1:0:0" -rpath $(libdir)
++libsigcx_gtk_0_6_la_LDFLAGS = -version-info "1:0:0" -rpath $(libdir) -no-undefined
+ 
+ EXTRA_DIST = sigcx-@SIGCX_BRANCH@.pc.in sigcx-@SIGCX_BRANCH@-gtk+.pc.in \
+ 	     $(BUILT_SOURCES) \
+@@ -48,10 +48,5 @@
+ 	$(M4) $(M4_INCLUDES) $(DEFINES) $<  > $@
+ 
+ bind3.h: $(M4_DIR)/bind3.h.m4 $(M4_DIR)/template.macros.m4
+-	$(M4) $(M4_INCLUDES) -I`pkg-config --variable=prefix sigc++-1.2`/include/sigc++-1.2/sigc++/macros \
++	$(M4) $(M4_INCLUDES) -I$(SIGC_MACROS) \
+ 	  $(DEFINES) $<  > $@
+-
+-# We use libtool 1.5, which does proper linking against libstdc++ for libs,
+-# if called with --tag=CXX, but AM doesn't understand that yet
+-CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) \
+-	  $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+diff -ru libsigcx-0.6.4-old/sigcx/dispatch.cc libsigcx-0.6.4/sigcx/dispatch.cc
+--- libsigcx-0.6.4-old/sigcx/dispatch.cc	Sun Apr 27 09:48:30 2003
++++ libsigcx-0.6.4/sigcx/dispatch.cc	Fri May  6 20:04:21 2005
+@@ -19,6 +19,9 @@
+ #include <iostream>
+ 
+ #include <signal.h>
++#include <sys/time.h>
++#include <sys/types.h>
++#include <unistd.h>
+ 
+ #include "sigcx/dispatch.h"
+ 

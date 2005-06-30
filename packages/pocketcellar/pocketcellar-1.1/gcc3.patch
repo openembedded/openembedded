@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- pocketcellar-1.1/wineentry.cpp~gcc3	2002-11-15 02:06:44.000000000 +0100
++++ pocketcellar-1.1/wineentry.cpp	2004-02-11 14:27:26.000000000 +0100
+@@ -35,7 +35,7 @@
+ #include "winedb.h"
+ 
+ 
+-WineEditor::WineEditor(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0)
++WineEditor::WineEditor(QWidget* parent, const char* name, bool modal, WFlags fl)
+ : WineEditorBase(parent, name, modal, fl), _databaseList(0)
+ {
+ }

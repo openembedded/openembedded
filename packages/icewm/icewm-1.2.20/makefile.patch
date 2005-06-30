@@ -1,0 +1,26 @@
+--- ./src/Makefile.in	2005-02-01 21:56:08.000000000 +0100
++++ ./src/Makefile.in	2005-02-01 21:55:12.000000000 +0100
+@@ -206,10 +206,21 @@
+ %.o: %.cc
+ 	@echo "  CXX   " $@
+ 	@$(CXX) $(CXXFLAGS) $(GCCDEP) -c $<
+-	
+-genpref $(BINARIES):
++
++HOSTCXX=g++
++HOSTLD=g++
++
++genpref.o: genpref.cc
++	@echo "  HOSTCXX   " $@
++	@$(HOSTCXX) $(CXXFLAGS) $(GCCDEP) -c $<
++
++$(BINARIES):
+ 	@echo "  LD    " $@
+ 	@$(LD) -o $@$(EXEEXT) $($@_OBJS) $(LFLAGS) $($@_LFLAGS) $(LIBS) $($@_LIBS)
++	
++genpref:
++	@echo "  HOSTLD    " $@
++	@$(HOSTLD) -o $@$(EXEEXT) $($@_OBJS) $(LFLAGS) $($@_LFLAGS) $(LIBS) $($@_LIBS)
+ 
+ ################################################################################
+ 

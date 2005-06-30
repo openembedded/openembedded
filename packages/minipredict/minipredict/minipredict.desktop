@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Word completion
+Comment=Word completion for X
+Exec=mb-applet-launcher -na --title "Word completion" /usr/share/pixmaps/minipredict.png minipredict
+Type=PanelApp
+Icon=minipredict.png
+Categories=Panel;Utility;MB

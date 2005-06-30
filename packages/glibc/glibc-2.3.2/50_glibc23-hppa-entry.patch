@@ -1,0 +1,13 @@
+--- glibc/sysdeps/hppa/elf/entry.h	2003-05-15 22:29:52.000000000 -0700
++++ glibc/sysdeps/hppa/elf/entry.h	2003-05-15 22:29:52.000000000 -0700
+@@ -0,0 +1,10 @@
++#ifndef __ASSEMBLY__
++extern void _start (void);
++#endif
++
++/* The function's entry point is stored in the first word of the
++   function descriptor (plabel) of _start().  */
++#define ENTRY_POINT (*(long *)(((long)_start) & ~2))
++
++/* We have to provide a special declaration.  */
++#define ENTRY_POINT_DECL(class) class void _start (void);

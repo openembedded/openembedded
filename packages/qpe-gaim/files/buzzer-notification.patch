@@ -1,0 +1,48 @@
+#
+# with this patch qpe-gaim also notifies if it is minimized to the taskbar.
+# this could be nice if you have more apps open
+#
+# Author: Patrick Steiner <patrick.steiner@a1.ner>
+# Version: 1.01 (20050328)
+#
+
+Index: qpe-gaim/src/QGaimConvWindow.cpp
+===================================================================
+--- qpe-gaim.orig/src/QGaimConvWindow.cpp	2005-04-03 19:57:31.924379043 +0200
++++ qpe-gaim/src/QGaimConvWindow.cpp	2005-04-03 20:02:03.281769318 +0200
+@@ -175,24 +175,20 @@
+ 		win = gaim_conversation_get_window(conv);
+ 		activeConv = gaim_conv_window_get_active_conversation(win);
+ 
+-		if (conv != activeConv ||
+-			win != qGaimGetMainWindow()->getLastActiveConvWindow())
+-		{
+-			const char *prefName;
++		const char *prefName;
+ 
+-			if (gaim_conversation_get_type(conv) == GAIM_CONV_CHAT)
+-				prefName = "/gaim/qpe/notify/incoming_chat";
+-			else
+-				prefName = "/gaim/qpe/notify/incoming_im";
++		if (gaim_conversation_get_type(conv) == GAIM_CONV_CHAT)
++			prefName = "/gaim/qpe/notify/incoming_chat";
++		else
++			prefName = "/gaim/qpe/notify/incoming_im";
+ 
+-			if (gaim_prefs_get_bool(prefName))
+-			{
+-				if (notifying)
+-					qGaimNotifyUserStop();
++		if (gaim_prefs_get_bool(prefName))
++		{
++			if (notifying)
++				qGaimNotifyUserStop();
+ 
+-				qGaimNotifyUser();
+-				notifying = true;
+-			}
++			qGaimNotifyUser();
++			notifying = true;
+ 		}
+ 	}
+ }

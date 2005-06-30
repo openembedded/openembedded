@@ -1,0 +1,7 @@
+gpe-calendar
+	requires_terminal=false
+	expects_uris=false
+	command=gpe-calendar -i
+	can_open_multiple_files=false
+	name=Calendar
+	mime_types=text/x-vcalendar

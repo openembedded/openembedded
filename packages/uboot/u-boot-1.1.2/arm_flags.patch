@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- u-boot-1.1.2/cpu/pxa/config.mk~armflags
++++ u-boot-1.1.2/cpu/pxa/config.mk
+@@ -23,6 +23,6 @@
+ #
+ 
+ PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 \
+-	-mshort-load-bytes -msoft-float
++	-msoft-float
+ 
+ PLATFORM_CPPFLAGS += -mapcs-32 -march=armv4 -mtune=strongarm1100

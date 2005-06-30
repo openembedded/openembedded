@@ -1,0 +1,23 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- clucene-0.8.11-r0/src/CLucene/store/Lock.cpp~compile-fix	2004-04-13 15:43:21.000000000 +0200
++++ clucene-0.8.11-r0/src/CLucene/store/Lock.cpp	2004-07-08 00:21:06.000000000 +0200
+@@ -1,6 +1,6 @@
+ #include "CLucene/StdHeader.h"
+ #include "Lock.h"
+-
++using namespace std;
+ namespace lucene{ namespace store{
+ 
+ 		LuceneLockWith::~LuceneLockWith(){
+--- clucene-0.8.11-r0/Makefile.am~compile-fix	2003-11-04 07:54:04.000000000 +0100
++++ clucene-0.8.11-r0/Makefile.am	2004-07-08 00:22:43.000000000 +0200
+@@ -2,4 +2,4 @@
+ 
+ INCLUDES   =  -I$(top_srcdir)
+ 
+-SUBDIRS = src wrappers examples .
++SUBDIRS = src wrappers .

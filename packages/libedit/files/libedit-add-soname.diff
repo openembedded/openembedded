@@ -1,0 +1,8 @@
+--- Makefile.orig	2005-04-20 18:12:45.000000000 +0200
++++ Makefile	2005-04-20 18:14:37.000000000 +0200
+@@ -101,4 +101,4 @@
+ libedit.a: ${OOBJS}
+ 	ar -r $@ .a/*
+ libedit.so: ${OOBJS}
+-	${CC} --shared -o $@ .so/* ${LIBS}
++	${CC} --shared -Wl,-soname=libedit.so.0 -o $@ .so/* ${LIBS}

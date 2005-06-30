@@ -1,0 +1,17 @@
+case `awk 'BEGIN { FS=":" } /Processor/ { gsub(/ /, "", $2) ; print $2 } ' </proc/cpuinfo` in
+  *XScale-PXA2*)
+    PCIC=pxa_cs
+    ;;
+  *StrongARM-1100* | *StrongARM-1110*)
+    PCIC=sa1100_cs
+    ;;
+  *)
+    echo "Unable to determine PCIC value for this CPU"
+    exit 1
+    ;;
+esac
+
+if grep -q iPAQ /proc/cpuinfo; then
+  PCIC_EXTRA=h3600_generic_sleeve
+fi
+

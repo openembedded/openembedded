@@ -1,0 +1,17 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/sysdeps/sh/bits/setjmp.h~sh-setjmp-fix.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/sysdeps/sh/bits/setjmp.h	2004-09-03 19:00:39.000000000 -0500
+@@ -42,7 +42,9 @@
+   } __jmp_buf[1];
+ #endif
+ 
++#if defined __USE_MISC || defined _ASM
+ #define JB_SIZE		(4 * 15)
++#endif
+ 
+ /* Test if longjmp to JMPBUF would unwind the frame
+    containing a local variable at ADDRESS.  */

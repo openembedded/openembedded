@@ -1,0 +1,174 @@
+diff -urNd ../dillo2-0.6.6-r0/dillo2-0.6.6/src/IO/about.c dillo2-0.6.6/src/IO/about.c
+--- ../dillo2-0.6.6-r0/dillo2-0.6.6/src/IO/about.c	2003-04-21 19:36:31.000000000 +0100
++++ dillo2-0.6.6/src/IO/about.c	2004-09-11 10:58:48.000000000 +0100
+@@ -28,88 +28,88 @@
+  * HTML text for startup screen
+  */
+ static char *Splash=
+-"Content-type: text/html
+-
+-<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">
+-<html>
+-<head>
+-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
+-</head>
+-
+-<body  bgcolor=\"gray\" link=\"aqua\" vlink=\"black\">
+-
+-<table WIDTH=\"100%\" BORDER=0 CELLSPACING=0 CELLPADDING=5>
+-<tr>
+-<td BGCOLOR=\"gray\">
+-<hr>
+- <A HREF='http://dillo.cipsga.org.br/dillo-help.html'>Help</A><br>
+- <A HREF='http://dillo.cipsga.org.br/'>Home Page</A><br>
+- <A HREF='http://dillo.cipsga.org.br/ChangeLog.html'>
+-  Full&nbsp;ChangeLog</A><br>
+- <A HREF='http://www.google.com/'>Google</A><br>
+-<hr>
+-</td>
+-
+-<td BGCOLOR=\"#9090F0\">
+-<h1><b>Dillo 0.6.7-pre</b></h1>
+-
+-<hr>
+- <h1>Dillo project<br>
+-     <h3>Version 0.6.7-pre<BR> <EM>(this is alpha code)</EM> </h3></h1>
+-<h4> License: </h4>
+-<p>
+-    This program is free software; you can redistribute it and/or modify
+-    it under the terms of the GNU General Public License as published by
+-    the Free Software Foundation; either version 2 of the License, or
+-    (at your option) any later version.
+-<p>
+-    This program is distributed in the hope that it will be useful,
+-    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-    GNU General Public License for more details.
+-
+-<hr>
+-<h4> Release overview: </h4>
+-<BLOCKQUOTE>
+- [...]
+-</BLOCKQUOTE><BLOCKQUOTE>
+- Remember that dillo project uses a release model where every new
+-browser shall be better than the former.
+-<EM>Keep up with the latest one!</EM>
+-</BLOCKQUOTE>
+-<hr>
+-<h4>NOTES:</h4>
+-<p>
+-<ul>
+-<li> There's a <STRONG>dillorc</STRONG> (readable config) file within the
+-tarball; It is well commented and has plenty of options to customize dillo,
+-so <STRONG>copy it</STRONG> to your <STRONG>~/.dillo/</STRONG> directory,
+-and modify to your taste.
+-<li> There's documentation for developers in the <CODE>/doc</CODE>
+-dir within the tarball;
+-you can find directions on everything else at the home page. </li>
+-<li> Dillo has context sensitive menus on the right-mouse-button
+- (pages, links, Back and Forward buttons)</li>
+-<li> Dillo behaves very nice when browsing local files, images, and HTML.
+-It's also very good for Internet searching (try Google!).</li>
+-<li> This release is mainly intended <strong>for developers</strong>
+-and <em>advanced users</em></li>
+-</ul>
+-<hr>
+-<h4>Notes to Xfce users:</h4>
+-<P> Please bear in mind that dillo is alpha code; it is not ready for
+-end users yet. Anyway, local browsing (files and local HTTP) is quite stable
+-and chances are you'll not be disappointed.
+-<P> Tip: if you set BROWSER=dillo, Xfce's help will be a sweet tour!
+-<P> TABLES are a work in progress.
+-<P> FRAMES, Java, and Javascript are not supported.
+-<hr>
+-<hr>
+-
+-</td>
+-</table>
+-</body>
+-</html>
++"Content-type: text/html \
++ \
++<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\"> \
++<html> \
++<head> \
++<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"> \
++</head> \
++ \
++<body  bgcolor=\"gray\" link=\"aqua\" vlink=\"black\"> \
++ \
++<table WIDTH=\"100%\" BORDER=0 CELLSPACING=0 CELLPADDING=5> \
++<tr> \
++<td BGCOLOR=\"gray\"> \
++<hr> \
++ <A HREF='http://dillo.cipsga.org.br/dillo-help.html'>Help</A><br> \
++ <A HREF='http://dillo.cipsga.org.br/'>Home Page</A><br> \
++ <A HREF='http://dillo.cipsga.org.br/ChangeLog.html'> \
++  Full&nbsp;ChangeLog</A><br> \
++ <A HREF='http://www.google.com/'>Google</A><br> \
++<hr> \
++</td> \
++ \
++<td BGCOLOR=\"#9090F0\"> \
++<h1><b>Dillo 0.6.7-pre</b></h1> \
++ \
++<hr> \
++ <h1>Dillo project<br> \
++     <h3>Version 0.6.7-pre<BR> <EM>(this is alpha code)</EM> </h3></h1> \
++<h4> License: </h4> \
++<p> \
++    This program is free software; you can redistribute it and/or modify \
++    it under the terms of the GNU General Public License as published by \
++    the Free Software Foundation; either version 2 of the License, or \
++    (at your option) any later version. \
++<p> \
++    This program is distributed in the hope that it will be useful, \
++    but WITHOUT ANY WARRANTY; without even the implied warranty of \
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \
++    GNU General Public License for more details. \
++ \
++<hr> \
++<h4> Release overview: </h4> \
++<BLOCKQUOTE> \
++ [...] \
++</BLOCKQUOTE><BLOCKQUOTE> \
++ Remember that dillo project uses a release model where every new \
++browser shall be better than the former. \
++<EM>Keep up with the latest one!</EM> \
++</BLOCKQUOTE> \
++<hr> \
++<h4>NOTES:</h4> \
++<p> \
++<ul> \
++<li> There's a <STRONG>dillorc</STRONG> (readable config) file within the \
++tarball; It is well commented and has plenty of options to customize dillo, \
++so <STRONG>copy it</STRONG> to your <STRONG>~/.dillo/</STRONG> directory, \
++and modify to your taste. \
++<li> There's documentation for developers in the <CODE>/doc</CODE> \
++dir within the tarball; \
++you can find directions on everything else at the home page. </li> \
++<li> Dillo has context sensitive menus on the right-mouse-button \
++ (pages, links, Back and Forward buttons)</li> \
++<li> Dillo behaves very nice when browsing local files, images, and HTML. \
++It's also very good for Internet searching (try Google!).</li> \
++<li> This release is mainly intended <strong>for developers</strong> \
++and <em>advanced users</em></li> \
++</ul> \
++<hr> \
++<h4>Notes to Xfce users:</h4> \
++<P> Please bear in mind that dillo is alpha code; it is not ready for \
++end users yet. Anyway, local browsing (files and local HTTP) is quite stable \
++and chances are you'll not be disappointed. \
++<P> Tip: if you set BROWSER=dillo, Xfce's help will be a sweet tour! \
++<P> TABLES are a work in progress. \
++<P> FRAMES, Java, and Javascript are not supported. \
++<hr> \
++<hr> \
++ \
++</td> \
++</table> \
++</body> \
++</html> \
+ ";
+ 
+ 

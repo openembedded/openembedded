@@ -1,0 +1,11 @@
+--- sablevm-classpath-1.1.7/configure.ac.orig	2004-11-26 00:23:01.000000000 +0100
++++ sablevm-classpath-1.1.7/configure.ac	2004-11-26 00:23:46.000000000 +0100
+@@ -34,7 +34,7 @@
+ AC_SUBST(CLASSPATH_MODULE)
+ 
+ AC_PREREQ(2.59)
+-AM_INIT_AUTOMAKE([1.9.0 gnu std-options tar-ustar])
++AM_INIT_AUTOMAKE
+ AC_CONFIG_HEADERS([include/config.h])
+ AC_PREFIX_DEFAULT(/usr/local)
+ 

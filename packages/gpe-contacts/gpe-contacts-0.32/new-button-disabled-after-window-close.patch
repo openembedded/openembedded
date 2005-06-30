@@ -1,0 +1,37 @@
+--- editing.orig	2004-10-17 00:11:23.000000000 +0200
++++ editing.c	2004-10-18 23:52:14.000000000 +0200
+@@ -28,6 +28,7 @@
+ #include "namedetail.h"
+ 
+ void on_edit_cancel_clicked (GtkButton * button, gpointer user_data);
++void on_edit_window_closed_clicked (gpointer user_data);
+ void on_edit_save_clicked (GtkButton * button, gpointer user_data);
+ void on_edit_bt_image_clicked (GtkWidget *image, gpointer user_data);
+ void on_categories_clicked (GtkButton *button, gpointer user_data);
+@@ -377,6 +378,11 @@
+ 		    G_CALLBACK (on_edit_cancel_clicked), edit);
+   g_signal_connect (G_OBJECT (edit_save), "clicked",
+ 		    G_CALLBACK (on_edit_save_clicked), edit);
++
++  /* Call the on_edit_window_closed_clicked function when the window is destroyed,
++   * otherwise the new button gets disabled */
++  g_signal_connect (G_OBJECT (edit), "delete_event",
++		  	G_CALLBACK (on_edit_window_closed_clicked), edit);
+             
+   g_signal_connect (G_OBJECT (action_area), "key_press_event", 
+ 		    G_CALLBACK (action_area_key_press_event), notebook2);
+@@ -1008,6 +1014,14 @@
+   gtk_widget_destroy (GTK_WIDGET (edit));
+ }
+ 
++void
++on_edit_window_closed_clicked (gpointer user_data)
++{
++	GtkWidget *edit = user_data;
++	update_display ();
++	gtk_widget_destroy (GTK_WIDGET (edit));
++}
++
+ void        
+ tv_move_cursor (GtkTextView *textview,
+                 GtkMovementStep arg1,

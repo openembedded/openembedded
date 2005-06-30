@@ -1,0 +1,12 @@
+diff -Nru linphone-0.12.2.orig/share/linphone.desktop linphone-0.12.2/share/linphone.desktop
+--- linphone-0.12.2.orig/share/linphone.desktop 2005-03-02 22:11:15.000000000 +0100
++++ linphone-0.12.2/share/linphone.desktop      2005-03-02 22:11:27.000000000 +0100
+@@ -4,7 +4,7 @@
+ Comment[fr]=Linphone est un web-phone.
+ Comment[de]=Linphone ist ein web-phone.
+ Type=Application
+-Exec=linphone
++Exec=linphone-gpe
+ Icon=linphone/linphone2.png
+ Terminal=0
+ Categories=Application;Network;

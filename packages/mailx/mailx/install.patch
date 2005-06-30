@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- mailx-8.1.2-0.20031014cvs.orig/Makefile~install
++++ mailx-8.1.2-0.20031014cvs.orig/Makefile
+@@ -26,6 +26,11 @@
+ EFILES=	mail.rc
+ MFILES=	mail.1
+ 
++bindir=/usr/bin
++mandir=/usr/share/man
++sysconfdir=/etc
++datadir=/usr/share
++
+ all: $(PROG)
+ 
+ beforeinstall:
+@@ -52,7 +57,9 @@
+ 	rm -f $(PROG) $(OBJS) *~ core
+  
+ install:
+-	install -p -c -m 755 $(PROG) $(DESTDIR)/usr/bin/
+-	install -p -c -m 644 $(MFILES) $(DESTDIR)/usr/share/man/man1/
+-	cd misc && install -p -c -m 644 $(EFILES) $(DESTDIR)/etc/
+-	cd misc && install -p -c -m 644 $(SFILES) $(DESTDIR)/usr/share/mailx/
++	install -d $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
++		   $(DESTDIR)$(sysconfdir) $(DESTDIR)$(datadir)/mailx
++	install -p -c -m 755 $(PROG) $(DESTDIR)$(bindir)/
++	install -p -c -m 644 $(MFILES) $(DESTDIR)$(mandir)/man1/
++	cd misc && install -p -c -m 644 $(EFILES) $(DESTDIR)$(sysconfdir)/
++	cd misc && install -p -c -m 644 $(SFILES) $(DESTDIR)$(datadir)/mailx/

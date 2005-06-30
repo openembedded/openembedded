@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Hiragana and Katakana Test
+Name[es]=Prueba de Hiragana y Katakana
+Comment=Hiragana and Katakana drill tool
+Comment[es]=Herramienta de entrenamiento en Hiragana y Katakana
+Exec=kanatest
+Icon=kanatest.png
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Application;Game;

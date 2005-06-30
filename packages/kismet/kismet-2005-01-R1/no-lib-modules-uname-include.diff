@@ -1,0 +1,15 @@
+--- configure.orig	2005-02-21 12:12:23.061566024 +0000
++++ configure	2005-02-21 12:12:34.560817872 +0000
+@@ -6225,9 +6225,9 @@
+ if test "$wireless" = "yes"; then
+     # If we're compiling under linux and we need the wireless extentions,
+     # then we should try to look in the current kernel module build dir, too.
+-    if test "$linux" = "yes"; then
+-        CPPFLAGS="$CPPFLAGS -I/lib/modules/$(uname -r)/build/include/"
+-    fi
++    #if test "$linux" = "yes"; then
++    #    CPPFLAGS="$CPPFLAGS -I/lib/modules/$(uname -r)/build/include/"
++    #fi
+ 
+     echo "$as_me:$LINENO: checking that linux/wireless.h is what we expect" >&5
+ echo $ECHO_N "checking that linux/wireless.h is what we expect... $ECHO_C" >&6

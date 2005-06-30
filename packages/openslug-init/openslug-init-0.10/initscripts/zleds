@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# This script is executed at the start and end of each run-level
+# transition.  It is the first 'stop' script and the last 'start'
+# script.
+#
+# 'stop'  sets the correct colour power LED to flash between the
+#         two colours of the previous and next runlevel.
+# 'start' sets the LED to steady
+#
+# 'red'   is the initial setting on kernel boot
+#
+# 'amber' is used for run levels S (from /linuxrc), 0 (halt),
+#         1 (single user) and 6 (reboot).  halt and reboot do not
+#         terminate therefore the LED remains flashing until the
+#         kernel terminates.
+#
+# 'green' is used for run levels 2-5 - the normal user run levels.
+#
+# colours are 'g' (green), 'r' (red) or 'gr' (amber).
+colour() {
+	case "$1" in
+	S|0|1|6) echo gr;;
+	2|3|4|5) echo g;;
+	N)       echo r;;
+	*)       echo "led change: $runlevel: runlevel unknown" >&2
+		 echo r;;
+	esac
+}
+
+# leds syntax is -A +<init state> /<new state>
+case "$1" in
+start) leds -A +"$(colour "$runlevel")";;
+stop)  leds -A +"$(colour "$previous")" /"$(colour "$runlevel")";;
+*)     echo "led change: $1: command ignored" >&2;;
+esac
+
+exit 0

@@ -1,0 +1,15 @@
+--- ion3-20041104.orig/etc/cfg_kludges.lua	2004-07-28 01:17:34.000000000 +0000
++++ ion3-20041104/etc/cfg_kludges.lua	2004-11-27 22:39:50.000000000 +0000
+@@ -17,6 +17,12 @@
+     transient_mode = "current",
+ }
+ 
++defwinprop{
++    class = "Evolution-mail",
++    instance = "evolution-mail",
++    transient_mode = "current"
++}
++
+ -- You might want to enable these if you really must use XMMS. 
+ --[[
+ defwinprop{

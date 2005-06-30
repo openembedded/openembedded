@@ -1,0 +1,371 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- asterisk-1.0.7/Makefile~makefile.patch
++++ asterisk-1.0.7/Makefile
+@@ -127,64 +127,67 @@
+ AGI_DIR=$(ASTVARLIBDIR)/agi-bin
+ 
+ INCLUDE=-Iinclude -I../include
+-CFLAGS=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
+-CFLAGS+=$(OPTIMIZE)
++my_CFLAGS=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
++my_CFLAGS+=$(OPTIMIZE)
+ 
+ ifneq ($(PROC),ultrasparc)
+-CFLAGS+=$(shell if $(CC) -march=$(PROC) -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-march=$(PROC)"; fi)
++my_CFLAGS+=$(shell if $(CC) -march=$(PROC) -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-march=$(PROC)"; fi)
+ endif
+ 
+-CFLAGS+=$(shell if uname -m | grep -q ppc; then echo "-fsigned-char"; fi)
+-CFLAGS+=$(shell if [ -f /usr/include/osp/osp.h ]; then echo "-DOSP_SUPPORT -I/usr/include/osp" ; fi)
++my_CFLAGS+=$(shell if uname -m | grep -q ppc; then echo "-fsigned-char"; fi)
++my_CFLAGS+=$(shell if [ -f /usr/include/osp/osp.h ]; then echo "-DOSP_SUPPORT -I/usr/include/osp" ; fi)
+ 
+ ifeq (${OSARCH},FreeBSD)
+ OSVERSION=$(shell make -V OSVERSION -f /usr/share/mk/bsd.port.subdir.mk)
+-CFLAGS+=$(shell if test ${OSVERSION} -lt 500016 ; then echo "-D_THREAD_SAFE"; fi)
++my_CFLAGS+=$(shell if test ${OSVERSION} -lt 500016 ; then echo "-D_THREAD_SAFE"; fi)
+ LIBS+=$(shell if test  ${OSVERSION} -lt 502102 ; then echo "-lc_r"; else echo "-pthread"; fi)
+ INCLUDE+=-I/usr/local/include
+-CFLAGS+=$(shell if [ -d /usr/local/include/spandsp ]; then echo "-I/usr/local/include/spandsp"; fi)
++my_CFLAGS+=$(shell if [ -d /usr/local/include/spandsp ]; then echo "-I/usr/local/include/spandsp"; fi)
+ MPG123TARG=freebsd
+ endif # FreeBSD
+ 
+ ifeq (${OSARCH},NetBSD)
+-CFLAGS+=-pthread
++my_CFLAGS+=-pthread
+ INCLUDE+=-I/usr/local/include -I/usr/pkg/include
+ MPG123TARG=netbsd
+ endif
+ 
+ ifeq (${OSARCH},OpenBSD)
+-CFLAGS+=-pthread
++my_CFLAGS+=-pthread
+ endif
+ 
+ #Uncomment this to use the older DSP routines
+ #CFLAGS+=-DOLD_DSP_ROUTINES
+ 
+-CFLAGS+=$(shell if [ -f /usr/include/linux/zaptel.h ]; then echo "-DZAPTEL_OPTIMIZATIONS"; fi)
+-CFLAGS+=$(shell if [ -f /usr/local/include/zaptel.h ]; then echo "-DZAPTEL_OPTIMIZATIONS"; fi)
++my_CFLAGS+=$(shell if [ -f /usr/include/linux/zaptel.h ]; then echo "-DZAPTEL_OPTIMIZATIONS"; fi)
++my_CFLAGS+=$(shell if [ -f /usr/local/include/zaptel.h ]; then echo "-DZAPTEL_OPTIMIZATIONS"; fi)
+ 
+ LIBEDIT=editline/libedit.a
+ 
+ ASTERISKVERSION=$(shell if [ -f .version ]; then cat .version; else if [ -d CVS ]; then if [ -f CVS/Tag ] ; then echo "CVS-`sed 's/^T//g' CVS/Tag`-`date +"%D-%T"`"; else echo "CVS-HEAD-`date +"%D-%T"`"; fi; fi; fi)
+ HTTPDIR=$(shell if [ -d /var/www ]; then echo "/var/www"; else echo "/home/httpd"; fi)
+ RPMVERSION=$(shell if [ -f .version ]; then sed 's/[-\/:]/_/g' .version; else echo "unknown" ; fi)
+-CFLAGS+=-DASTERISK_VERSION=\"$(ASTERISKVERSION)\"
+-CFLAGS+=-DINSTALL_PREFIX=\"$(INSTALL_PREFIX)\"
+-CFLAGS+=-DASTETCDIR=\"$(ASTETCDIR)\"
+-CFLAGS+=-DASTLIBDIR=\"$(ASTLIBDIR)\"
+-CFLAGS+=-DASTVARLIBDIR=\"$(ASTVARLIBDIR)\"
+-CFLAGS+=-DASTVARRUNDIR=\"$(ASTVARRUNDIR)\"
+-CFLAGS+=-DASTSPOOLDIR=\"$(ASTSPOOLDIR)\"
+-CFLAGS+=-DASTLOGDIR=\"$(ASTLOGDIR)\"
+-CFLAGS+=-DASTCONFPATH=\"$(ASTCONFPATH)\"
+-CFLAGS+=-DASTMODDIR=\"$(MODULES_DIR)\"
+-CFLAGS+=-DASTAGIDIR=\"$(AGI_DIR)\"
++my_CFLAGS+=-DASTERISK_VERSION=\"$(ASTERISKVERSION)\"
++my_CFLAGS+=-DINSTALL_PREFIX=\"$(INSTALL_PREFIX)\"
++my_CFLAGS+=-DASTETCDIR=\"$(ASTETCDIR)\"
++my_CFLAGS+=-DASTLIBDIR=\"$(ASTLIBDIR)\"
++my_CFLAGS+=-DASTVARLIBDIR=\"$(ASTVARLIBDIR)\"
++my_CFLAGS+=-DASTVARRUNDIR=\"$(ASTVARRUNDIR)\"
++my_CFLAGS+=-DASTSPOOLDIR=\"$(ASTSPOOLDIR)\"
++my_CFLAGS+=-DASTLOGDIR=\"$(ASTLOGDIR)\"
++my_CFLAGS+=-DASTCONFPATH=\"$(ASTCONFPATH)\"
++my_CFLAGS+=-DASTMODDIR=\"$(MODULES_DIR)\"
++my_CFLAGS+=-DASTAGIDIR=\"$(AGI_DIR)\"
++
++my_CFLAGS+= $(DEBUG_THREADS)
++my_CFLAGS+= $(TRACE_FRAMES)
++my_CFLAGS+= $(MALLOC_DEBUG)
++my_CFLAGS+= $(BUSYDETECT)
++my_CFLAGS+= $(OPTIONS)
++my_CFLAGS+=# -fomit-frame-pointer 
++
++override CFLAGS += $(my_CFLAGS)
+ 
+-CFLAGS+= $(DEBUG_THREADS)
+-CFLAGS+= $(TRACE_FRAMES)
+-CFLAGS+= $(MALLOC_DEBUG)
+-CFLAGS+= $(BUSYDETECT)
+-CFLAGS+= $(OPTIONS)
+-CFLAGS+=# -fomit-frame-pointer 
+ SUBDIRS=res channels pbx apps codecs formats agi cdr astman stdtime
+ ifeq (${OSARCH},Linux)
+ LIBS=-ldl -lpthread
+@@ -296,7 +299,7 @@
+ 	fi
+ 
+ asterisk: editline/libedit.a db1-ast/libdb1.a stdtime/libtime.a $(OBJS)
+-	$(CC) $(DEBUG) -o asterisk $(ASTLINK) $(OBJS) $(LIBEDIT) db1-ast/libdb1.a stdtime/libtime.a $(LIBS)
++	$(CC) $(DEBUG) -o asterisk $(ASTLINK) $(OBJS) $(LIBEDIT) db1-ast/libdb1.a stdtime/libtime.a $(LDFLAGS) $(LIBS)
+ 
+ muted: muted.o
+ 	$(CC) -o muted muted.o
+--- asterisk-1.0.7/res/Makefile~makefile.patch
++++ asterisk-1.0.7/res/Makefile
+@@ -13,15 +13,13 @@
+ 
+ MODS=res_adsi.so res_features.so res_crypto.so res_musiconhold.so res_indications.so res_monitor.so \
+      res_agi.so
+-MODS+=$(shell if [ -f "/usr/include/odbcinst.h" ]; then echo "res_odbc.so res_config_odbc.so"; fi)
+-MODS+=$(shell if [ -f "/usr/local/include/odbcinst.h" ]; then echo "res_odbc.so res_config_odbc.so"; fi)
+-MODS+=$(shell if [ -f "/usr/include/osp/osp.h" ]; then echo "res_osp.so"; fi)
++MODS+=$(shell if [ -f "${STAGING_INCDIR}/odbcinst.h" ]; then echo "res_odbc.so res_config_odbc.so"; fi)
++MODS+=$(shell if [ -f "${STAGING_INCDIR}/osp/osp.h" ]; then echo "res_osp.so"; fi)
+ 
+ CRYPTO_LIBS=-lssl -lcrypto
+ 
+ CFLAGS+=
+-CFLAGS+=$(shell [ -f /usr/include/linux/zaptel.h ] && echo " -DZAPATA_MOH")
+-CFLAGS+=$(shell [ -f /usr/local/include/zaptel.h ] && echo " -DZAPATA_MOH")
++CFLAGS+=$(shell [ -f ${STAGING_INCDIR}/linux/zaptel.h ] && echo " -DZAPATA_MOH")
+ #
+ # Work around buggy RedHat 9.0
+ #
+@@ -37,7 +35,7 @@
+ 	for x in $(MODS); do $(INSTALL) -m 755 $$x $(DESTDIR)$(MODULES_DIR) ; done
+ 
+ res_crypto.so: res_crypto.o
+-	$(CC) $(SOLINK) -o $@ $< $(CRYPTO_LIBS)
++	$(CC) $(SOLINK) -o $@ $< $(LDFLAGS) $(CRYPTO_LIBS)
+ 
+ clean:
+ 	rm -f *.so *.o .depend
+--- asterisk-1.0.7/channels/Makefile~makefile.patch
++++ asterisk-1.0.7/channels/Makefile
+@@ -71,22 +71,20 @@
+ CHANNEL_LIBS+=chan_oss.so
+ endif
+ 
+-CHANNEL_LIBS+=$(shell [ -f /usr/include/linux/ixjuser.h ] && echo chan_phone.so)
+-CHANNEL_LIBS+=$(shell [ -f /usr/local/include/ixjuser.h ] && echo chan_phone.so)
++CHANNEL_LIBS+=$(shell [ -f ${STAGING_INCDIR}/linux/ixjuser.h ] && echo chan_phone.so)
+ CHANNEL_LIBS+=$(shell [ -f h323/libchanh323.a ] && echo chan_h323.so)
+ 
+ CFLAGS+=-Wno-missing-prototypes -Wno-missing-declarations
+-CFLAGS+=$(shell [ ! -f /usr/include/linux/if_wanpipe.h ] && echo " -DOLD_SANGOMA_API")
+-CHANNEL_LIBS+=$(shell [ -f /usr/include/alsa/asoundlib.h ] && echo "chan_alsa.so")
+-CFLAGS+=$(shell [ -f /usr/lib/libpri.so.1 ] && echo " -DZAPATA_PRI")
+-CFLAGS+=$(shell [ -f /usr/lib/libmfcr2.so.1 ] && echo " -DZAPATA_R2")
++CFLAGS+=$(shell [ ! -f ${STAGING_INCDIR}/linux/if_wanpipe.h ] && echo " -DOLD_SANGOMA_API")
++CHANNEL_LIBS+=$(shell [ -f ${STAGING_INCDIR}/alsa/asoundlib.h ] && echo "chan_alsa.so")
++CFLAGS+=$(shell [ -f ${STAGING_LIBDIR}/libpri.so.1 ] && echo " -DZAPATA_PRI")
++CFLAGS+=$(shell [ -f ${STAGING_LIBDIR}/libmfcr2.so.1 ] && echo " -DZAPATA_R2")
+ CFLAGS+=$(shell [ -f alsa-monitor.h ] && echo " -DALSA_MONITOR")
+-ZAPPRI=$(shell [ -f /usr/lib/libpri.so.1 ] && echo "-lpri")
+-ZAPR2=$(shell [ -f /usr/lib/libmfcr2.so.1 ] && echo "-lmfcr2")
+-CFLAGS+=$(shell [ -f /usr/include/linux/zaptel.h ] && echo "-DIAX_TRUNKING")
+-CFLAGS+=$(shell [ -f /usr/local/include/zaptel.h ] && echo "-DIAX_TRUNKING")
+-CHANNEL_LIBS+=$(shell [ -f /usr/include/vpbapi.h ] && echo "chan_vpb.so" )
+-CFLAGS+=$(shell [ -f /usr/include/vpbapi.h ] && echo " -DLINUX")
++ZAPPRI=$(shell [ -f ${STAGING_LIBDIR}/libpri.so.1 ] && echo "-lpri")
++ZAPR2=$(shell [ -f ${STAGING_LIBDIR}/libmfcr2.so.1 ] && echo "-lmfcr2")
++CFLAGS+=$(shell [ -f ${STAGING_INCDIR}/linux/zaptel.h ] && echo "-DIAX_TRUNKING")
++CHANNEL_LIBS+=$(shell [ -f ${STAGING_INCDIR}/vpbapi.h ] && echo "chan_vpb.so" )
++CFLAGS+=$(shell [ -f ${STAGING_INCDIR}/vpbapi.h ] && echo " -DLINUX")
+ 
+ ALSA_SRC=chan_alsa.c
+ ALSA_SRC+=$(shell [ -f alsa-monitor.h ] && echo "alsa-monitor.h")
+@@ -106,10 +104,9 @@
+ 
+ ZAPDIR=/usr/lib
+ 
+-CHANNEL_LIBS+=$(shell [ -f /usr/include/linux/zaptel.h ] && echo "chan_zap.so")
+-CHANNEL_LIBS+=$(shell [ -f /usr/local/include/zaptel.h ] && echo "chan_zap.so")
++CHANNEL_LIBS+=$(shell [ -f ${STAGING_INCDIR}/linux/zaptel.h ] && echo "chan_zap.so")
+ 
+-CHANNEL_LIBS+=$(shell [ -f /usr/include/nbs.h ] && echo "chan_nbs.so" )
++CHANNEL_LIBS+=$(shell [ -f ${STAGING_INCDIR}/nbs.h ] && echo "chan_nbs.so" )
+ 
+ ifndef OPENH323DIR
+ OPENH323DIR=$(HOME)/openh323
+@@ -135,10 +132,10 @@
+ endif
+ 
+ gentone: gentone.c
+-	$(CC) -o gentone gentone.c -lm
++	$(BUILD_CC) -o gentone gentone.c -lm
+ 
+ gentone-ulaw: gentone-ulaw.c
+-	$(CC) -o gentone-ulaw gentone-ulaw.c -lm
++	$(BUILD_CC) -o gentone-ulaw gentone-ulaw.c -lm
+ 
+ busy.h: gentone
+ 	./gentone busy 480 620
+--- asterisk-1.0.7/pbx/Makefile~makefile.patch
++++ asterisk-1.0.7/pbx/Makefile
+@@ -16,7 +16,7 @@
+ PBX_LIBS=pbx_config.so pbx_wilcalu.so pbx_spool.so     # pbx_gtkconsole.so pbx_kdeconsole.so
+ 
+ # Add GTK console if appropriate
+-PBX_LIBS+=$(shell gtk-config --cflags >/dev/null 2>/dev/null && echo "pbx_gtkconsole.so")
++PBX_LIBS+=$(shell ${STAGING_BINDIR}/gtk-config --cflags >/dev/null 2>/dev/null && echo "pbx_gtkconsole.so")
+ # Add KDE Console if appropriate
+ #PBX_LIBS+=$(shell [ "$$QTDIR" != "" ] && echo "pbx_kdeconsole.so")
+ 
+--- asterisk-1.0.7/codecs/gsm/Makefile~makefile.patch
++++ asterisk-1.0.7/codecs/gsm/Makefile
+@@ -37,20 +37,6 @@
+ ######### ppro's, etc, as well as the AMD K6 and K7.  The compile will
+ ######### probably require gcc. 
+ 
+-ifneq (${OSARCH},Darwin)
+-ifneq (${PROC},x86_64)
+-ifneq (${PROC},ultrasparc)
+-ifneq ($(shell uname -m),ppc)
+-ifneq ($(shell uname -m),alpha)
+-ifneq (${PROC},sparc64)
+-OPTIMIZE+=-march=$(PROC)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-
+ #The problem with sparc is the best stuff is in newer versions of gcc (post 3.0) only.
+ #This works for even old (2.96) versions of gcc and provides a small boost either way.
+ #A ultrasparc cpu is really v9 but the stock debian stable 3.0 gcc doesn't support it.
+@@ -212,17 +198,6 @@
+ 		$(SRC)/gsm_option.c	\
+ 		$(SRC)/short_term.c	\
+ 		$(SRC)/table.c
+-ifeq (${OSARCH},Linux)
+-ifneq ($(shell uname -m),x86_64)
+-ifneq ($(shell uname -m),ppc)
+-ifneq ($(shell uname -m),alpha)
+-ifneq ($(shell uname -m),sparc64)
+-GSM_SOURCES+= $(SRC)/k6opt.s
+-endif
+-endif
+-endif
+-endif
+-endif
+ 
+ TOAST_SOURCES = $(SRC)/toast.c 		\
+ 		$(SRC)/toast_lin.c	\
+@@ -268,18 +243,6 @@
+ 		$(SRC)/short_term.o	\
+ 		$(SRC)/table.o
+ 
+-ifeq (${OSARCH},Linux)
+-ifneq ($(shell uname -m), x86_64)
+-ifneq ($(shell uname -m), ppc)
+-ifneq ($(shell uname -m), alpha)
+-ifneq ($(shell uname -m), sparc64)
+-GSM_OBJECTS+= $(SRC)/k6opt.o
+-endif
+-endif
+-endif
+-endif
+-endif
+-
+ TOAST_OBJECTS =	$(SRC)/toast.o 		\
+ 		$(SRC)/toast_lin.o	\
+ 		$(SRC)/toast_ulaw.o	\
+--- asterisk-1.0.7/codecs/lpc10/Makefile~makefile.patch
++++ asterisk-1.0.7/codecs/lpc10/Makefile
+@@ -25,28 +25,6 @@
+ CFLAGS += $(OPTIMIZE) -I$(LIB_TARGET_DIR) $(WARNINGS) -fPIC
+ #CFLAGS+= $(shell if uname -m | grep -q 86; then echo "-mpentium" ; fi)
+ 
+-#fix for PPC processors and ALPHA, And UltraSparc too
+-ifneq ($(OSARCH),Darwin)
+-ifneq ($(findstring BSD,${OSARCH}),BSD)
+-ifneq ($(PROC),ppc)
+-ifneq ($(PROC),x86_64)
+-ifneq ($(PROC),alpha)
+-#The problem with sparc is the best stuff is in newer versions of gcc (post 3.0) only.
+-#This works for even old (2.96) versions of gcc and provides a small boost either way.
+-#A ultrasparc cpu is really v9 but the stock debian stable 3.0 gcc doesn.t support it.
+-#So we go lowest common available by gcc and go a step down, still a step up from
+-#the default as we now have a better instruction set to work with. - Belgarath
+-ifeq ($(PROC),ultrasparc)
+-        CFLAGS+= -mtune=$(PROC) -mcpu=v8 -O3 -fomit-frame-pointer
+-else
+-        CFLAGS+= -march=$(PROC)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-
+ LIB = $(LIB_TARGET_DIR)/liblpc10.a
+ 
+ .PHONY: all clean
+--- asterisk-1.0.7/cdr/Makefile~makefile.patch
++++ asterisk-1.0.7/cdr/Makefile
+@@ -37,36 +37,25 @@
+ #
+ # unixODBC stuff...
+ #
+-MODS+=$(shell if [ -f "/usr/include/odbcinst.h" ]; then echo "cdr_odbc.so"; fi)
+-MODS+=$(shell if [ -f "/usr/local/include/odbcinst.h" ]; then echo "cdr_odbc.so"; fi) 
++MODS+=$(shell if [ -f "${STAGING_INCDIR}/odbcinst.h" ]; then echo "cdr_odbc.so"; fi)
+ 
+ #
+ # FreeTDS stuff...
+ #
+-MODS+=$(shell if [ -f "/usr/include/tds.h" ]; then echo "cdr_tds.so"; fi)
+-MODS+=$(shell if [ -f "/usr/local/include/tds.h" ]; then echo "cdr_tds.so"; fi)
++MODS+=$(shell if [ -f "${STAGING_INCDIR}/tds.h" ]; then echo "cdr_tds.so"; fi)
+ 
+ #
+ # PGSQL stuff...  Autoconf anyone??
+ #
+-MODS+=$(shell if [ -d /usr/local/pgsql/include ] || [ -d /usr/include/pgsql ] || [ -d /usr/local/include/pgsql ] || [ -d /opt/pgsql/include ] || [ -f /usr/include/libpq-fe.h ] ; then echo "cdr_pgsql.so"; fi)
+-CFLAGS+=$(shell if [ -d /usr/local/pgsql/include ]; then echo "-I/usr/local/pgsql/include"; fi)
+-CFLAGS+=$(shell if [ -d /usr/include/pgsql ]; then echo "-I/usr/include/pgsql"; fi)
+-CFLAGS+=$(shell if [ -d /usr/include/postgresql ]; then echo "-I/usr/include/postgresql"; fi)
+-CFLAGS+=$(shell if [ -d /usr/local/include/pgsql ]; then echo "-I/usr/local/include/pgsql"; fi)
+-CFLAGS+=$(shell if [ -d /opt/pgsql/include ]; then echo "-I/opt/pgsql/include"; fi)
+-#CFLAGS+=$(shell if [ -f /usr/include/libpq-fe.h ]; then echo "-I/usr/include"; fi)
++CFLAGS+=$(shell if [ -d ${STAGING_INCDIR}/pgsql ]; then echo "-I${STAGING_INCDIR}/pgsql"; fi)
++CFLAGS+=$(shell if [ -d ${STAGING_INCDIR}/postgresql ]; then echo "-I${STAGING_INCDIR}/postgresql"; fi)
+ MLFLAGS=
+-MLFLAGS+=$(shell if [ -d /usr/lib/pgsql ]; then echo "-L/usr/lib/pgsql"; fi)
+-MLFLAGS+=$(shell if [ -d /usr/local/pgsql/lib ]; then echo "-L/usr/local/pgsql/lib"; fi)
+-MLFLAGS+=$(shell if [ -d /usr/local/lib/pgsql ]; then echo "-L/usr/local/lib/pgsql"; fi)
+-MLFLAGS+=$(shell if [ -d /opt/pgsql/lib ]; then echo "-L/opt/pgsql/lib"; fi)
+-MLFLAGS+=$(shell if [ -f /usr/lib/libpq.so ]; then echo "-L/usr/lib"; fi)
++MLFLAGS+=$(shell if [ -d ${STAGING_LIBDIR}/pgsql ]; then echo "-L${STAGING_LIBDIR}/pgsql"; fi)
+ 
+ #
+ # SQLIte stuff...
+ #
+-MODS+=$(shell if [ -f "/usr/include/sqlite.h" ]; then echo "cdr_sqlite.so"; fi)
++MODS+=$(shell if [ -f "${STAGING_INCDIR}/sqlite.h" ]; then echo "cdr_sqlite.so"; fi)
+ 
+ all: depend $(MODS)
+ 
+@@ -84,16 +73,16 @@
+ endif
+ 
+ cdr_odbc.so: cdr_odbc.o
+-	$(CC) $(SOLINK) -o $@ $< -lodbc $(MLFLAGS)
++	$(CC) $(SOLINK) -o $@ $< -lodbc $(LDFLAGS) $$(MLFLAGS)
+ 
+ cdr_tds.so: cdr_tds.o
+-	$(CC) $(SOLINK) -o $@ $< -ltds $(MLFLAGS)
++	$(CC) $(SOLINK) -o $@ $< -ltds $(LDFLAGS) $$(MLFLAGS)
+ 
+ cdr_pgsql.so: cdr_pgsql.o
+-	$(CC) $(SOLINK) -o $@ $< -lpq -lz $(MLFLAGS)
++	$(CC) $(SOLINK) -o $@ $< -lpq -lz $(LDFLAGS) $$(MLFLAGS)
+ 
+ cdr_sqlite.so: cdr_sqlite.o
+-	$(CC) $(SOLINK) -o $@ $< -lsqlite $(MLFLAGS)
++	$(CC) $(SOLINK) -o $@ $< -lsqlite $(LDFLAGS) $(MLFLAGS)
+ 
+ depend: .depend
+ 

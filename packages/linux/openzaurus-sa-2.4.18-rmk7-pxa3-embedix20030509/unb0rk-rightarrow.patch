@@ -1,0 +1,28 @@
+--- linux/arch/arm/mach-sa1100/collie_apm.c.orig	2005-06-25 22:49:51.842092545 +0200
++++ linux/arch/arm/mach-sa1100/collie_apm.c	2005-06-25 22:49:56.931171657 +0200
+@@ -57,6 +57,7 @@
+ #include <asm/arch/collie.h>
+ #include <linux/ioctl.h>
+ #include <asm/sharp_char.h>
++#include <asm/arch/keyboard_collie.h>
+ #endif	// CONFIG_SA1100_COLLIE
+ #include <asm/arch/power.h>
+ 
+@@ -89,6 +90,8 @@
+ int collie_get_on_mode;
+ int idleCancel	    = 0;
+ 
++extern kbd_keyinfo sharppda_kbdstate[(NR_KEYCODES+1)];
++
+ #endif	// CONFIG_SA1100_COLLIE
+ 
+ 
+@@ -584,7 +587,7 @@
+ 
+ 	if (irq == IRQ_GPIO_ON_KEY) {	/* suspend */
+ 		//DPRINTK("irq=%d count=%d collie_suspend_request%d\n",irq, count, collie_suspend_request);
+-		if ( GPLR & GPIO_ON_KEY ) {
++		if ( GPLR & GPIO_ON_KEY || (!sharppda_kbdstate[1].in)) { //1 is the hard keycode for Cancel. GPIO_ON_KEY is active for all 4 keys in that row (why? no idea.)
+ 			/* release */
+ 			count = 0;
+ 		} else {

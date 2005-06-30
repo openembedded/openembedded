@@ -1,0 +1,41 @@
+#! /bin/sh
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/mt-daapd and type
+# > update-rc.d mt-daapd defaults 60
+#
+
+
+test -f /usr/sbin/mt-daapd || exit 0
+
+test -d /var/spool/mt-daapd || mkdir -p /var/spool/mt-daapd
+
+case "$1" in
+  start)
+    echo -n "Starting mt-daapd daemon: mt-daapd"
+    start-stop-daemon --start --quiet --exec /usr/sbin/mt-daapd
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping mt-daapd daemon: mt-daapd"
+    start-stop-daemon --stop --quiet --exec /usr/sbin/mt-daapd
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec /usr/sbin/mt-daapd
+    ;;
+  restart)
+    echo -n "Stopping mt-daapd daemon: mt-daapd"
+    start-stop-daemon --stop --quiet --exec /usr/sbin/mt-daapd
+    sleep 1
+    echo -n "Starting mt-daapd daemon: mt-daapd"
+    start-stop-daemon --start --quiet --exec /usr/sbin/mt-daapd
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/mt-daapd {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0
+

@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- uClibc-0.9.26/utils/Makefile~dyn-ldconfig	2003-12-14 18:52:57.000000000 -0500
++++ uClibc-0.9.26/utils/Makefile	2004-09-18 07:34:04.706187200 -0400
+@@ -50,7 +50,7 @@
+ 	$(STRIPTOOL) -x -R .note -R .comment $@
+ 
+ ldconfig:	ldconfig.c readsoname.c
+-	$(CC) $(CFLAGS) $(XXFLAGS) -Wl,-s -static \
++	$(CC) $(CFLAGS) $(XXFLAGS) -Wl,-s \
+ 		-DUCLIBC_RUNTIME_PREFIX=$(R_PREFIX) \
+ 		-DUCLIBC_LDSO=$(UCLIBC_LDSO) -I. -I../ldso/include \
+ 		$^ -o $@ $(LDADD_LIBFLOAT) -L../lib

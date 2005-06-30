@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- lua-5.0.2/Makefile~make	2004-12-18 02:09:42.006884000 -0500
++++ lua-5.0.2/Makefile	2004-12-18 02:10:35.951683632 -0500
+@@ -38,10 +38,10 @@
+ 
+ # shared libraries (for Linux)
+ so:
+-	gcc -o lib/liblua.so.$V -shared -Wl,-soname,liblua.so.$V \
++	$(CC) -o lib/liblua.so.$V -shared -Wl,-soname,liblua.so.$V \
+                src/*.os -lc
+ 	ln -fs liblua.so.$V lib/liblua-build.so
+-	gcc -o lib/liblualib.so.$V -shared -Wl,-soname,liblualib.so.$V \
++	$(CC) -o lib/liblualib.so.$V -shared -Wl,-soname,liblualib.so.$V \
+                src/lib/*.os -Llib -llua-build -lm -ldl -lc
+ 	cd lib; ln -fs liblua.so.$V liblua.so; \
+                 ln -fs liblualib.so.$V liblualib.so

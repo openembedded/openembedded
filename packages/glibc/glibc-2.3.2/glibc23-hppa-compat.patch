@@ -1,0 +1,80 @@
+--- glibc-2.3.1/sysdeps/hppa/Makefile.orig	2003-02-25 22:21:14.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Makefile	2003-02-25 22:22:01.000000000 -0800
+@@ -31,3 +31,14 @@
+ dl-routines += dl-symaddr dl-fptr
+ rtld-routines += dl-symaddr dl-fptr
+ endif
++
++ifeq ($(subdir),csu)
++ifeq (yes,$(build-shared))
++# Compatibility
++ifeq (yes,$(have-protected))
++CPPFLAGS-libgcc-compat.c = -DHAVE_DOT_HIDDEN
++endif
++sysdep_routines += libgcc-compat
++shared-only-routines += libgcc-compat
++endif
++endif
+--- glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
++++ glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
+@@ -0,0 +1,43 @@
++/* pre-.hidden libgcc compatibility
++   Copyright (C) 2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Randolph Chung
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++
++#include <stdint.h>
++#include <shlib-compat.h>
++
++#if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_2_6)
++
++symbol_version (__clz_tab_internal, __clz_tab, GLIBC_2.2);
++
++typedef unsigned int UQItype  __attribute__ ((mode (QI)));
++
++const UQItype __clz_tab_internal[] =
++{
++  0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
++  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
++  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
++  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++};
++
++#endif
+--- glibc-2.3.1/sysdeps/hppa/Dist.orig	2003-02-26 09:02:52.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Dist	2003-02-26 09:04:03.000000000 -0800
+@@ -1,2 +1,3 @@
++libgcc-compat.c
+ dl-symaddr.c
+ dl-fptr.c
+--- glibc-2.3.1/sysdeps/hppa/Versions.orig	2002-02-01 13:16:41.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Versions	2003-02-27 13:23:03.000000000 -0800
+@@ -5,3 +5,8 @@
+     _dl_function_address;
+   }
+ }
++libc {
++  GLIBC_2.2 {
++    __clz_tab;
++  }
++}

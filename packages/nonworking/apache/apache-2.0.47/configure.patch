@@ -1,0 +1,903 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- httpd-2.0.47/./configure.in~configure	2003-05-21 00:46:00.000000000 -0400
++++ httpd-2.0.47/./configure.in	2004-01-26 19:43:04.000000000 -0500
+@@ -4,8 +4,9 @@
+ dnl     Use ./buildconf to produce a configure script
+ dnl
+ 
+-AC_PREREQ(2.13)
+-AC_INIT(ABOUT_APACHE)
++AC_PREREQ(2.57)
++AC_INIT
++AC_CONFIG_SRCDIR([ABOUT_APACHE])
+ 
+ AC_CONFIG_HEADER(include/ap_config_auto.h)
+ AC_CONFIG_AUX_DIR(build)
+@@ -55,7 +56,7 @@
+ dnl shared library support for these packages doesn't currently
+ dnl work on some platforms
+ 
+-AC_CANONICAL_SYSTEM
++AC_CANONICAL_TARGET([])
+ 
+ orig_prefix="$prefix"
+ 
+@@ -209,7 +210,7 @@
+       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+       ;;
+   *-solaris2*)
+-      dnl This is a hack -- we should be using AC_TRY_RUN instead
++      dnl This is a hack -- we should be using AC_RUN_IFELSE([AC_LANG_SOURCE([[]])],[],[],[]) instead
+       ap_platform_runtime_link_flag="-R"
+       dnl solaris 8 and above don't have a thundering herd
+       dnl not sure about rev's before this one.
+@@ -286,7 +287,7 @@
+ dnl ## Check for typedefs, structures, and compiler characteristics.
+ 
+ AC_C_CONST
+-if test "$ac_cv_prog_gcc" = "yes"; then
++if test "$ac_cv_c_compiler_gnu" = "yes"; then
+   APR_ADDTO(NOTEST_CPPFLAGS,-DAP_HAVE_DESIGNATED_INITIALIZER)
+ fi
+ 
+@@ -305,9 +306,8 @@
+ 
+ dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
+ AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
+-[AC_TRY_COMPILE([#include <sys/types.h>
+-#include <time.h>], [struct tm tm; tm.tm_gmtoff;],
+-  ac_cv_struct_tm_gmtoff=yes, ac_cv_struct_tm_gmtoff=no)])
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
++#include <time.h>]], [[struct tm tm; tm.tm_gmtoff;]])],[ac_cv_struct_tm_gmtoff=yes],[ac_cv_struct_tm_gmtoff=no])])
+ if test "$ac_cv_struct_tm_gmtoff" = "yes"; then
+     AC_DEFINE(HAVE_GMTOFF)
+ fi
+@@ -566,7 +566,9 @@
+ dnl Ensure that docs/conf is created.
+ test -d docs/conf||$mkdir_p docs/conf
+ 
+-AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd-std.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,[true],[
++AC_CONFIG_FILES([$APACHE_OUTPUT_FILES docs/conf/httpd-std.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk])
++AC_CONFIG_COMMANDS([default],[[true]],[[
+   APACHE_GEN_MAKEFILES
+-])
++]])
++AC_OUTPUT
+ 
+--- httpd-2.0.47/./srclib/apr/configure.in~configure	2003-06-11 11:20:33.000000000 -0400
++++ httpd-2.0.47/./srclib/apr/configure.in	2004-01-26 19:39:34.000000000 -0500
+@@ -4,7 +4,8 @@
+ dnl Process this file with autoconf to produce a configure script.
+ dnl Use ./buildconf to prepare build files and run autoconf for APR.
+ 
+-AC_INIT(build/apr_common.m4)
++AC_INIT
++AC_CONFIG_SRCDIR([build/apr_common.m4])
+ AC_CONFIG_HEADER(include/arch/unix/apr_private.h)
+ AC_CONFIG_AUX_DIR(build)
+ 
+@@ -29,7 +30,7 @@
+ dnl
+ APR_CONFIG_NICE(config.nice)
+ 
+-AC_CANONICAL_SYSTEM
++AC_CANONICAL_TARGET([])
+ echo "Configuring APR library"
+ echo "Platform: $host"
+ 
+@@ -510,18 +511,14 @@
+             dnl Linux is silly as it has pthread_rwlock_init defined
+             dnl but keeps the pthread_rwlock_t structure hidden unless 
+             dnl special things are defined.
+-            AC_TRY_COMPILE([#include <sys/types.h>
+-#include <pthread.h>], 
+-                [pthread_rwlock_t rwlock=PTHREAD_RWLOCK_INITIALIZER;],
+-                 ac_cv_struct_pthread_rw=yes, ac_cv_struct_pthread_rw=no)
++            AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
++#include <pthread.h>]], [[pthread_rwlock_t rwlock=PTHREAD_RWLOCK_INITIALIZER;]])],[ac_cv_struct_pthread_rw=yes],[ac_cv_struct_pthread_rw=no])
+             if test "$ac_cv_struct_pthread_rw" = "no"; then
+-                AC_TRY_COMPILE([#define _XOPEN_SOURCE 500
++                AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _XOPEN_SOURCE 500
+ #define _BSD_SOURCE
+ #define _SVID_SOURCE
+ #include <sys/types.h>
+-#include <pthread.h>], 
+-                    [pthread_rwlock_t rwlock=PTHREAD_RWLOCK_INITIALIZER;],
+-                    ac_cv_struct_pthread_rw=yes, ac_cv_struct_pthread_rw=no)
++#include <pthread.h>]], [[pthread_rwlock_t rwlock=PTHREAD_RWLOCK_INITIALIZER;]])],[ac_cv_struct_pthread_rw=yes],[ac_cv_struct_pthread_rw=no])
+                 if test "$ac_cv_struct_pthread_rw" = "yes"; then
+                     APR_ADDTO(CPPFLAGS, [-D_XOPEN_SOURCE=500 -D_BSD_SOURCE])
+                     APR_ADDTO(CPPFLAGS, [-D_SVID_SOURCE])
+@@ -602,7 +599,7 @@
+ if test "$ac_cv_func_mmap" = "yes" &&
+    test "$ac_cv_file__dev_zero" = "yes"; then
+     AC_MSG_CHECKING(for mmap that can map /dev/zero)
+-    AC_TRY_RUN([
++    AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -625,7 +622,7 @@
+             return 3;
+         }
+         return 0;
+-    }], [], [ac_cv_file__dev_zero=no], [ac_cv_file__dev_zero=no])
++    }]])],[],[ac_cv_file__dev_zero=no],[ac_cv_file__dev_zero=no])
+ 
+     AC_MSG_RESULT($ac_cv_file__dev_zero)
+ fi
+@@ -829,7 +826,8 @@
+ AC_SUBST(sendfile)
+ 
+ AC_CHECK_FUNCS(sigaction, [ have_sigaction="1" ], [ have_sigaction="0" ]) 
+-AC_DECL_SYS_SIGLIST
++AC_CHECK_DECLS([sys_siglist])
++
+ 
+ AC_CHECK_FUNCS(fork, [ fork="1" ], [ fork="0" ])
+ APR_CHECK_INET_ADDR
+@@ -936,12 +934,11 @@
+ # being included by itself.  Check for <netinet/tcp.h> manually,
+ # including another header file first.
+ AC_CACHE_CHECK([for netinet/tcp.h], [apr_cv_hdr_netinet_tcp_h],
+-[AC_TRY_CPP(
+-[#ifdef HAVE_NETINET_IN_H
++[AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#ifdef HAVE_NETINET_IN_H
+ #include <netinet/in.h>
+ #endif
+ #include <netinet/tcp.h>
+-], [apr_cv_hdr_netinet_tcp_h=yes], [apr_cv_hdr_netinet_tcp_h=no])])
++]])],[apr_cv_hdr_netinet_tcp_h=yes],[apr_cv_hdr_netinet_tcp_h=no])])
+ if test "$apr_cv_hdr_netinet_tcp_h" = "yes"; then
+    netinet_tcph=1
+    AC_DEFINE([HAVE_NETINET_TCP_H], 1, [Defined if netinet/tcp.h is present])
+@@ -1012,7 +1009,7 @@
+ if test "x$ac_cv_sizeof_voidp" != "x"; then
+     voidp_size=$ac_cv_sizeof_voidp
+ else
+-    AC_ERROR([Cannot determine size of void*])
++    AC_MSG_ERROR([Cannot determine size of void*])
+ fi
+ 
+ dnl Checks for integer size
+@@ -1351,7 +1348,7 @@
+ fi
+ 
+ AC_CACHE_CHECK(struct rlimit,ac_cv_struct_rlimit,[
+-AC_TRY_RUN([
++AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ #include <sys/types.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
+@@ -1361,10 +1358,10 @@
+     limit.rlim_cur = 0;
+     limit.rlim_max = 0;
+     exit(0);
+-}], [
+-    ac_cv_struct_rlimit=yes ], [
+-    ac_cv_struct_rlimit=no ], [
+-    ac_cv_struct_rlimit=no ] ) ] )
++}]])],[
++    ac_cv_struct_rlimit=yes ],[
++    ac_cv_struct_rlimit=no ],[
++    ac_cv_struct_rlimit=no  ]) ] )
+ struct_rlimit=0
+ test "x$ac_cv_struct_rlimit" = xyes && struct_rlimit=1
+ AC_SUBST(struct_rlimit)
+@@ -1378,7 +1375,7 @@
+ 
+ # Some systems return ENOSYS from sem_open.
+ AC_CACHE_CHECK(for working sem_open,ac_cv_func_sem_open,[
+-AC_TRY_RUN([
++AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <fcntl.h>
+@@ -1397,22 +1394,21 @@
+     sem_close(psem);
+     sem_unlink(sem_name);
+     exit(0);
+-}], [ac_cv_func_sem_open=yes], [ac_cv_func_sem_open=no],
+-[ac_cv_func_sem_open=no])])
++}]])],[ac_cv_func_sem_open=yes],[ac_cv_func_sem_open=no],[ac_cv_func_sem_open=no])])
+ 
+ # It's stupid, but not all platforms have union semun, even those that need it.
+ AC_MSG_CHECKING(for union semun in sys/sem.h)
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+ #include <sys/sem.h>
+-],[
++]], [[
+ union semun arg;
+ semctl(0, 0, 0, arg);
+-], [have_union_semun="1" union_semun=yes ]
+-msg=yes, [
++]])],[have_union_semun="1" union_semun=yes 
++msg=yes],[
+ have_union_semun="0"
+-msg=no ] )
++msg=no  ])
+ AC_MSG_RESULT([$msg])
+ AC_SUBST(have_union_semun)
+ 
+@@ -1434,7 +1430,7 @@
+     # Linux and older versions of AIX have this problem.
+     APR_IFALLYES(header:pthread.h define:PTHREAD_PROCESS_SHARED func:pthread_mutexattr_setpshared, [
+       AC_CACHE_CHECK([for working PROCESS_SHARED locks], apr_cv_process_shared_works, [
+-      AC_TRY_RUN([
++      AC_RUN_IFELSE([AC_LANG_SOURCE([[
+ #include <sys/types.h>
+ #include <pthread.h>
+         int main()
+@@ -1452,7 +1448,7 @@
+             if (pthread_mutex_destroy(&mutex))
+                 exit(5);
+             exit(0);
+-        }], [apr_cv_process_shared_works=yes], [apr_cv_process_shared_works=no])])
++        }]])],[apr_cv_process_shared_works=yes],[apr_cv_process_shared_works=no],[])])
+       # Override detection of pthread_mutexattr_setpshared
+       ac_cv_func_pthread_mutexattr_setpshared=$apr_cv_process_shared_works])
+ 
+@@ -1461,15 +1457,15 @@
+         if test "$ac_cv_func_pthread_mutexattr_setrobust_np" = "no"; then
+             AC_CACHE_CHECK([for pthread_mutexattr_setrobust_np with _POSIX_THREAD_PRIO_INHERIT],
+             [apr_cv_setrobust_with_prio_inherit], [
+-            AC_TRY_COMPILE([#define _POSIX_THREAD_PRIO_INHERIT
++            AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _POSIX_THREAD_PRIO_INHERIT
+ #include <sys/types.h>
+-#include <pthread.h>],[
++#include <pthread.h>]], [[
+             int main()
+             {
+                 pthread_mutexattr_t attr;
+                 pthread_mutexattr_setrobust_np(&attr, PTHREAD_MUTEX_ROBUST_NP);
+                 return 0;
+-            }], [apr_cv_setrobust_with_prio_inherit=yes], [apr_cv_setrobust_with_prio_inherit=no])])
++            }]])],[apr_cv_setrobust_with_prio_inherit=yes],[apr_cv_setrobust_with_prio_inherit=no])])
+             if test "$apr_cv_setrobust_with_prio_inherit" = "yes"; then
+                 ac_cv_func_pthread_mutexattr_setrobust_np=yes
+                 APR_ADDTO(CPPFLAGS, -D_POSIX_THREAD_PRIO_INHERIT)
+@@ -1637,7 +1633,7 @@
+     if test -r "$apr_devrandom"; then
+       rand="1"
+     else
+-      AC_ERROR([$apr_devrandom not found or unreadable.])
++      AC_MSG_ERROR([$apr_devrandom not found or unreadable.])
+     fi
+   fi
+ 
+@@ -1673,9 +1669,8 @@
+ dnl ----------------------------- Checking for Time Support 
+ echo "${nl}Checking for Time Support..."
+ AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
+-[AC_TRY_COMPILE([#include <sys/types.h>
+-#include <time.h>], [struct tm tm; tm.tm_gmtoff;],
+-  ac_cv_struct_tm_gmtoff=yes, ac_cv_struct_tm_gmtoff=no)])
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
++#include <time.h>]], [[struct tm tm; tm.tm_gmtoff;]])],[ac_cv_struct_tm_gmtoff=yes],[ac_cv_struct_tm_gmtoff=no])])
+ 
+ if test "$ac_cv_struct_tm_gmtoff" = "yes"; then
+     AC_DEFINE(HAVE_GMTOFF, 1, [Define if struct tm has a tm_gmtoff field])
+@@ -1684,14 +1679,14 @@
+ dnl ----------------------------- Checking for Networking Support 
+ echo "${nl}Checking for Networking support..."
+ AC_MSG_CHECKING(for in_addr in netinet/in.h)
+-AC_TRY_COMPILE([
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+ #include <netinet/in.h>
+-],[
++]], [[
+ struct in_addr arg;
+ arg.s_addr = htonl(INADDR_ANY);
+-], [ have_in_addr="1" 
+-msg=yes ] , [ have_in_addr="0"
++]])],[ have_in_addr="1" 
++msg=yes  ],[ have_in_addr="0"
+ msg=no ])
+ AC_MSG_RESULT([$msg])
+ 
+@@ -1898,12 +1893,13 @@
+ dir=include/arch/unix
+ test -d $dir || $MKDIR $dir
+ 
+-AC_OUTPUT([
++AC_CONFIG_FILES([
+ 	$MAKEFILE1 $MAKEFILE2 $MAKEFILE3
+ 	include/apr.h
+ 	build/apr_rules.mk
+ 	apr-config
+-],[
++])
++AC_CONFIG_COMMANDS([default],[[
+ for i in $SAVE_FILES; do
+   if cmp -s $i $i.save 2>/dev/null; then
+     mv $i.save $i
+@@ -1912,7 +1908,8 @@
+   rm -f $i.save
+ done
+ chmod +x apr-config
+-])
++]],[[]])
++AC_OUTPUT
+ 
+ dnl ----------------------------- Fixup Makefiles for VPATH support
+ 
+--- httpd-2.0.47/./srclib/pcre/configure.in~configure	2002-03-20 01:56:34.000000000 -0500
++++ httpd-2.0.47/./srclib/pcre/configure.in	2004-01-26 19:43:27.000000000 -0500
+@@ -3,7 +3,8 @@
+ dnl This is required at the start; the name is the name of a file
+ dnl it should be seeing, to verify it is in the same directory.
+ 
+-AC_INIT(dftables.c)
++AC_INIT
++AC_CONFIG_SRCDIR([dftables.c])
+ 
+ dnl Arrange to build config.h from config.in. Note that pcre.h is
+ dnl built differently, as it is just a "substitution" file.
+@@ -101,4 +102,6 @@
+ AC_SUBST(PCRE_POSIXLIB_VERSION)
+ 
+ dnl This must be last; it determines what files are written as well as config.h
+-AC_OUTPUT(Makefile pcre.h:pcre.in pcre-config,[chmod a+x pcre-config])
++AC_CONFIG_FILES([Makefile pcre.h:pcre.in pcre-config])
++AC_CONFIG_COMMANDS([default],[[chmod a+x pcre-config]],[[]])
++AC_OUTPUT
+--- httpd-2.0.47/./srclib/apr-util/xml/expat/configure.in~configure	2001-07-08 22:31:04.000000000 -0400
++++ httpd-2.0.47/./srclib/apr-util/xml/expat/configure.in	2004-01-26 19:39:34.000000000 -0500
+@@ -10,7 +10,8 @@
+ dnl   in the file COPYING that comes with this distribution.
+ dnl
+ 
+-AC_INIT(Makefile.in)
++AC_INIT
++AC_CONFIG_SRCDIR([Makefile.in])
+ AC_CONFIG_AUX_DIR(conftools)
+ 
+ dnl
+@@ -45,7 +46,7 @@
+ 
+ AC_CONFIG_HEADER(config.h)
+ 
+-AC_CANONICAL_SYSTEM
++AC_CANONICAL_TARGET([])
+ case "$host_alias" in
+ *os2*)
+     # Use a custom made libtool replacement
+@@ -106,4 +107,5 @@
+ 
+ AC_CHECK_FUNCS(memmove bcopy)
+ 
+-AC_OUTPUT(Makefile lib/Makefile lib/expat.h)
++AC_CONFIG_FILES([Makefile lib/Makefile lib/expat.h])
++AC_OUTPUT
+--- httpd-2.0.47/./srclib/apr-util/configure.in~configure	2003-06-12 03:27:10.000000000 -0400
++++ httpd-2.0.47/./srclib/apr-util/configure.in	2004-01-26 19:39:34.000000000 -0500
+@@ -2,8 +2,9 @@
+ dnl Process this file with autoconf to produce a configure script
+ dnl
+ 
+-AC_PREREQ(2.13)
+-AC_INIT(export_vars.sh.in)
++AC_PREREQ(2.57)
++AC_INIT
++AC_CONFIG_SRCDIR([export_vars.sh.in])
+ 
+ AC_CONFIG_HEADER(include/private/apu_config.h)
+ AC_CONFIG_AUX_DIR(build)
+@@ -29,7 +30,7 @@
+   USE_VPATH=1
+ fi
+ 
+-AC_CANONICAL_SYSTEM
++AC_CANONICAL_TARGET([])
+ 
+ dnl
+ dnl compute the top directory of the build
+@@ -191,13 +192,15 @@
+ dnl
+ dnl everthing is done. 
+ MAKEFILES="Makefile buckets/Makefile crypto/Makefile dbm/Makefile dbm/sdbm/Makefile encoding/Makefile hooks/Makefile ldap/Makefile uri/Makefile xml/Makefile misc/Makefile strmatch/Makefile xlate/Makefile $test_Makefile"
+-AC_OUTPUT([
++AC_CONFIG_FILES([
+     export_vars.sh
+     apu-config
+     include/private/apu_select_dbm.h
+     include/apr_ldap.h
+     include/apu.h
+     $MAKEFILES
+-	],[
++	])
++AC_CONFIG_COMMANDS([default],[[
+ chmod +x apu-config
+-])
++]],[[]])
++AC_OUTPUT
+--- httpd-2.0.47/acinclude.m4~configure	2002-11-29 06:05:57.000000000 -0500
++++ httpd-2.0.47/acinclude.m4	2004-01-26 19:39:34.000000000 -0500
+@@ -4,25 +4,25 @@
+ dnl AC_HELP_STRING, so let's try to call it if we can.
+ dnl Note: this define must be on one line so that it can be properly returned
+ dnl as the help string.
+-AC_DEFUN(APACHE_HELP_STRING,[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING($1,$2),[  ]$1 substr([                       ],len($1))$2)])dnl
++AC_DEFUN([APACHE_HELP_STRING],[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING($1,$2),[  ]$1 substr([                       ],len($1))$2)])dnl
+ 
+ dnl APACHE_SUBST(VARIABLE)
+ dnl Makes VARIABLE available in generated files
+ dnl (do not use @variable@ in Makefiles, but $(variable))
+-AC_DEFUN(APACHE_SUBST,[
++AC_DEFUN([APACHE_SUBST],[
+   APACHE_VAR_SUBST="$APACHE_VAR_SUBST $1"
+   AC_SUBST($1)
+ ])
+ 
+ dnl APACHE_FAST_OUTPUT(FILENAME)
+ dnl Perform substitutions on FILENAME (Makefiles only)
+-AC_DEFUN(APACHE_FAST_OUTPUT,[
++AC_DEFUN([APACHE_FAST_OUTPUT],[
+   APACHE_FAST_OUTPUT_FILES="$APACHE_FAST_OUTPUT_FILES $1"
+ ])
+ 
+ dnl APACHE_GEN_CONFIG_VARS
+ dnl Creates config_vars.mk
+-AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
++AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
+   APACHE_SUBST(abs_srcdir)
+   APACHE_SUBST(bindir)
+   APACHE_SUBST(sbindir)
+@@ -104,14 +104,14 @@
+ 
+ dnl APACHE_GEN_MAKEFILES
+ dnl Creates Makefiles
+-AC_DEFUN(APACHE_GEN_MAKEFILES,[
++AC_DEFUN([APACHE_GEN_MAKEFILES],[
+   $SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $BSD_MAKEFILE $APACHE_FAST_OUTPUT_FILES
+ ])
+ 
+ dnl ## APACHE_OUTPUT(file)
+ dnl ## adds "file" to the list of files generated by AC_OUTPUT
+ dnl ## This macro can be used several times.
+-AC_DEFUN(APACHE_OUTPUT, [
++AC_DEFUN([APACHE_OUTPUT], [
+   APACHE_OUTPUT_FILES="$APACHE_OUTPUT_FILES $1"
+ ])
+ 
+@@ -120,7 +120,7 @@
+ dnl
+ dnl If rlim_t is not defined, define it to int
+ dnl
+-AC_DEFUN(APACHE_TYPE_RLIM_T, [
++AC_DEFUN([APACHE_TYPE_RLIM_T], [
+   AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
+     AC_TRY_COMPILE([
+ #include <sys/types.h>
+@@ -138,7 +138,7 @@
+ ])
+ 
+ dnl APACHE_MODPATH_INIT(modpath)
+-AC_DEFUN(APACHE_MODPATH_INIT,[
++AC_DEFUN([APACHE_MODPATH_INIT],[
+   current_dir=$1
+   modpath_current=modules/$1
+   modpath_static=
+@@ -147,7 +147,7 @@
+   > $modpath_current/modules.mk
+ ])dnl
+ dnl
+-AC_DEFUN(APACHE_MODPATH_FINISH,[
++AC_DEFUN([APACHE_MODPATH_FINISH],[
+   echo "DISTCLEAN_TARGETS = modules.mk" >> $modpath_current/modules.mk
+   echo "static = $modpath_static" >> $modpath_current/modules.mk
+   echo "shared = $modpath_shared" >> $modpath_current/modules.mk
+@@ -160,7 +160,7 @@
+ ])dnl
+ dnl
+ dnl APACHE_MODPATH_ADD(name[, shared[, objects [, ldflags[, libs]]]])
+-AC_DEFUN(APACHE_MODPATH_ADD,[
++AC_DEFUN([APACHE_MODPATH_ADD],[
+   if test -z "$3"; then
+     objects="mod_$1.lo"
+   else
+@@ -203,7 +203,7 @@
+ dnl            setting. otherwise, fall under the "all" setting.
+ dnl            explicit yes/no always overrides.
+ dnl
+-AC_DEFUN(APACHE_MODULE,[
++AC_DEFUN([APACHE_MODULE],[
+   AC_MSG_CHECKING(whether to enable mod_$1)
+   define([optname],[--]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
+   AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),,enable_$1=ifelse($5,,maybe-all,$5))
+@@ -273,7 +273,7 @@
+ dnl
+ dnl APACHE_LAYOUT(configlayout, layoutname)
+ dnl
+-AC_DEFUN(APACHE_LAYOUT,[
++AC_DEFUN([APACHE_LAYOUT],[
+   if test ! -f $srcdir/config.layout; then
+     echo "** Error: Layout file $srcdir/config.layout not found"
+     echo "** Error: Cannot use undefined layout '$LAYOUT'"
+@@ -325,7 +325,7 @@
+ dnl
+ dnl APACHE_ENABLE_LAYOUT
+ dnl
+-AC_DEFUN(APACHE_ENABLE_LAYOUT,[
++AC_DEFUN([APACHE_ENABLE_LAYOUT],[
+ AC_ARG_ENABLE(layout,
+ [  --enable-layout=LAYOUT],[
+   LAYOUT=$enableval
+@@ -343,7 +343,7 @@
+ dnl
+ dnl APACHE_ENABLE_MODULES
+ dnl
+-AC_DEFUN(APACHE_ENABLE_MODULES,[
++AC_DEFUN([APACHE_ENABLE_MODULES],[
+   module_selection=default
+   module_default=yes
+ 
+@@ -372,7 +372,7 @@
+   ])
+ ])
+ 
+-AC_DEFUN(APACHE_REQUIRE_CXX,[
++AC_DEFUN([APACHE_REQUIRE_CXX],[
+   if test -z "$apache_cxx_done"; then
+     AC_PROG_CXX
+     AC_PROG_CXXCPP
+@@ -389,7 +389,7 @@
+ dnl and then AC_TRY_LINK to test the libraries directly for the version,
+ dnl but that will require someone who knows how to program openssl.
+ dnl
+-AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
++AC_DEFUN([APACHE_CHECK_SSL_TOOLKIT],[
+ if test "x$ap_ssltk_base" = "x"; then
+   AC_MSG_CHECKING(for SSL/TLS toolkit base)
+   ap_ssltk_base=""
+@@ -499,14 +499,14 @@
+ dnl apache will use while generating scripts like autoconf and apxs and
+ dnl the default config file.
+ 
+-AC_DEFUN(APACHE_SUBST_EXPANDED_ARG,[
++AC_DEFUN([APACHE_SUBST_EXPANDED_ARG],[
+   APR_EXPAND_VAR(exp_$1, [$]$1)
+   APACHE_SUBST(exp_$1)
+   APR_PATH_RELATIVE(rel_$1, [$]exp_$1, ${prefix})
+   APACHE_SUBST(rel_$1)
+ ])
+ 
+-AC_DEFUN(APACHE_EXPORT_ARGUMENTS,[
++AC_DEFUN([APACHE_EXPORT_ARGUMENTS],[
+   APACHE_SUBST_EXPANDED_ARG(exec_prefix)
+   APACHE_SUBST_EXPANDED_ARG(bindir)
+   APACHE_SUBST_EXPANDED_ARG(sbindir)
+--- httpd-2.0.47/srclib/apr/build/apr_common.m4~configure	2003-04-05 16:42:20.000000000 -0500
++++ httpd-2.0.47/srclib/apr/build/apr_common.m4	2004-01-26 19:39:34.000000000 -0500
+@@ -6,7 +6,7 @@
+ dnl
+ dnl Saves a snapshot of the configure command-line for later reuse
+ dnl
+-AC_DEFUN(APR_CONFIG_NICE,[
++AC_DEFUN([APR_CONFIG_NICE],[
+   rm -f $1
+   cat >$1<<EOF
+ #! /bin/sh
+@@ -55,7 +55,7 @@
+ 
+ dnl APR_MKDIR_P_CHECK(fallback-mkdir-p)
+ dnl checks whether mkdir -p works
+-AC_DEFUN(APR_MKDIR_P_CHECK,[
++AC_DEFUN([APR_MKDIR_P_CHECK],[
+   AC_CACHE_CHECK(for working mkdir -p, ac_cv_mkdir_p,[
+     test -d conftestdir && rm -rf conftestdir
+     mkdir -p conftestdir/somedir >/dev/null 2>&1
+@@ -93,7 +93,7 @@
+ dnl Trying to optimize this is left as an exercise to the reader who wants
+ dnl to put up with more autoconf craziness.  I give up.
+ dnl
+-AC_DEFUN(APR_SUBDIR_CONFIG, [
++AC_DEFUN([APR_SUBDIR_CONFIG], [
+   # save our work to this point; this allows the sub-package to use it
+   AC_CACHE_SAVE
+ 
+@@ -158,7 +158,7 @@
+ dnl
+ dnl Stores the variable (usually a Makefile macro) for later restoration
+ dnl
+-AC_DEFUN(APR_SAVE_THE_ENVIRONMENT,[
++AC_DEFUN([APR_SAVE_THE_ENVIRONMENT],[
+   apr_ste_save_$1="$$1"
+ ])dnl
+ 
+@@ -170,7 +170,7 @@
+ dnl and restoring the original variable contents.  This makes it possible
+ dnl for a user to override configure when it does something stupid.
+ dnl
+-AC_DEFUN(APR_RESTORE_THE_ENVIRONMENT,[
++AC_DEFUN([APR_RESTORE_THE_ENVIRONMENT],[
+ if test "x$apr_ste_save_$1" = "x"; then
+   $2$1="$$1"
+   $1=
+@@ -192,7 +192,7 @@
+ dnl
+ dnl  Set variable iff it's currently null
+ dnl
+-AC_DEFUN(APR_SETIFNULL,[
++AC_DEFUN([APR_SETIFNULL],[
+   if test -z "$$1"; then
+     echo "  setting $1 to \"$2\""
+     $1="$2"
+@@ -204,7 +204,7 @@
+ dnl
+ dnl  Set variable no matter what
+ dnl
+-AC_DEFUN(APR_SETVAR,[
++AC_DEFUN([APR_SETVAR],[
+   echo "  forcing $1 to \"$2\""
+   $1="$2"
+ ])dnl
+@@ -214,7 +214,7 @@
+ dnl
+ dnl  Add value to variable
+ dnl
+-AC_DEFUN(APR_ADDTO,[
++AC_DEFUN([APR_ADDTO],[
+   if test "x$$1" = "x"; then
+     echo "  setting $1 to \"$2\""
+     $1="$2"
+@@ -241,7 +241,7 @@
+ dnl
+ dnl Remove a value from a variable
+ dnl
+-AC_DEFUN(APR_REMOVEFROM,[
++AC_DEFUN([APR_REMOVEFROM],[
+   if test "x$$1" = "x$2"; then
+     echo "  nulling $1"
+     $1=""
+@@ -265,7 +265,7 @@
+ dnl
+ dnl APR_CHECK_DEFINE_FILES( symbol, header_file [header_file ...] )
+ dnl
+-AC_DEFUN(APR_CHECK_DEFINE_FILES,[
++AC_DEFUN([APR_CHECK_DEFINE_FILES],[
+   AC_CACHE_CHECK([for $1 in $2],ac_cv_define_$1,[
+     ac_cv_define_$1=no
+     for curhdr in $2
+@@ -287,7 +287,7 @@
+ dnl
+ dnl APR_CHECK_DEFINE(symbol, header_file)
+ dnl
+-AC_DEFUN(APR_CHECK_DEFINE,[
++AC_DEFUN([APR_CHECK_DEFINE],[
+   AC_CACHE_CHECK([for $1 in $2],ac_cv_define_$1,[
+     AC_EGREP_CPP(YES_IS_DEFINED, [
+ #include <$2>
+@@ -304,7 +304,7 @@
+ dnl
+ dnl APR_CHECK_APR_DEFINE( symbol )
+ dnl
+-AC_DEFUN(APR_CHECK_APR_DEFINE,[
++AC_DEFUN([APR_CHECK_APR_DEFINE],[
+ apr_old_cppflags=$CPPFLAGS
+ CPPFLAGS="$CPPFLAGS $INCLUDES"
+ AC_EGREP_CPP(YES_IS_DEFINED, [
+@@ -329,7 +329,7 @@
+  fi])
+ ])
+ 
+-define(APR_IFALLYES,[dnl
++define([APR_IFALLYES],[dnl
+ ac_rc=yes
+ for ac_spec in $1; do
+     ac_type=`echo "$ac_spec" | sed -e 's/:.*$//'`
+@@ -364,14 +364,14 @@
+ ])
+ 
+ 
+-define(APR_BEGIN_DECISION,[dnl
++define([APR_BEGIN_DECISION],[dnl
+ ac_decision_item='$1'
+ ac_decision_msg='FAILED'
+ ac_decision=''
+ ])
+ 
+ 
+-define(APR_DECIDE,[dnl
++define([APR_DECIDE],[dnl
+ ac_decision='$1'
+ ac_decision_msg='$2'
+ ac_decision_$1=yes
+@@ -379,7 +379,7 @@
+ ])
+ 
+ 
+-define(APR_DECISION_OVERRIDE,[dnl
++define([APR_DECISION_OVERRIDE],[dnl
+     ac_decision=''
+     for ac_item in $1; do
+          eval "ac_decision_this=\$ac_decision_${ac_item}"
+@@ -391,13 +391,13 @@
+ ])
+ 
+ 
+-define(APR_DECISION_FORCE,[dnl
++define([APR_DECISION_FORCE],[dnl
+ ac_decision="$1"
+ eval "ac_decision_msg=\"\$ac_decision_${ac_decision}_msg\""
+ ])
+ 
+ 
+-define(APR_END_DECISION,[dnl
++define([APR_END_DECISION],[dnl
+ if test ".$ac_decision" = .; then
+     echo "[$]0:Error: decision on $ac_decision_item failed" 1>&2
+     exit 1
+@@ -417,7 +417,7 @@
+ dnl A variant of AC_CHECK_SIZEOF which allows the checking of
+ dnl sizes of non-builtin types
+ dnl
+-AC_DEFUN(APR_CHECK_SIZEOF_EXTENDED,
++AC_DEFUN([APR_CHECK_SIZEOF_EXTENDED],
+ [changequote(<<,>>)dnl
+ dnl The name to #define
+ define(<<AC_TYPE_NAME>>, translit(sizeof_$2, [a-z *], [A-Z_P]))dnl
+@@ -450,7 +450,7 @@
+ dnl Tries a compile test with warnings activated so that the result
+ dnl is false if the code doesn't compile cleanly.
+ dnl
+-AC_DEFUN(APR_TRY_COMPILE_NO_WARNING,
++AC_DEFUN([APR_TRY_COMPILE_NO_WARNING],
+ [if test "x$CFLAGS_WARN" = "x"; then
+   apr_tcnw_flags=""
+ else
+@@ -489,7 +489,7 @@
+ dnl  string.
+ dnl
+ dnl
+-AC_DEFUN(APR_CHECK_STRERROR_R_RC,[
++AC_DEFUN([APR_CHECK_STRERROR_R_RC],[
+ AC_MSG_CHECKING(for type of return code from strerror_r)
+ AC_TRY_RUN([
+ #include <errno.h>
+@@ -522,7 +522,7 @@
+ dnl  Decide which of a couple of flavors of crypt_r() is necessary for
+ dnl  this platform.
+ dnl
+-AC_DEFUN(APR_CHECK_CRYPT_R_STYLE,[
++AC_DEFUN([APR_CHECK_CRYPT_R_STYLE],[
+ AC_CACHE_CHECK(style of crypt_r, ac_cv_crypt_r_style,[
+ dnl
+ ac_cv_crypt_r_style=none
+@@ -576,7 +576,7 @@
+ dnl  structure on this platform.  Single UNIX Spec says d_ino,
+ dnl  BSD uses d_fileno.  Undef to find the real beast.
+ dnl
+-AC_DEFUN(APR_CHECK_DIRENT_INODE, [
++AC_DEFUN([APR_CHECK_DIRENT_INODE], [
+ AC_CACHE_CHECK([for inode member of struct dirent], apr_cv_dirent_inode, [
+ apr_cv_dirent_inode=no
+ AC_TRY_COMPILE([
+@@ -613,7 +613,7 @@
+ dnl  Note that this is worthless without DT_xxx macros, so
+ dnl  look for one while we are at it.
+ dnl
+-AC_DEFUN(APR_CHECK_DIRENT_TYPE,[
++AC_DEFUN([APR_CHECK_DIRENT_TYPE],[
+ AC_CACHE_CHECK([for file type member of struct dirent], apr_cv_dirent_type,[
+ apr_cv_dirent_type=no
+ AC_TRY_COMPILE([
+@@ -645,8 +645,8 @@
+ dnl  within each iteration.
+ dnl
+ changequote({,})
+-define({APR_COMMA_ARGS},{patsubst([$}{1],[[}apr_whitespace{]+],[,])})
+-define({APR_FOREACH},
++define([{APR_COMMA_ARGS}],{patsubst([$}{1],[[}apr_whitespace{]+],[,])})
++define([{APR_FOREACH}],
+   {ifelse($}{2,,,
+           [define([eachval],
+                   $}{2)$}{1[]APR_FOREACH([$}{1],
+@@ -661,7 +661,7 @@
+ dnl  all "." and "-" chars. If the 3rd parameter is "yes" then instead of
+ dnl  setting to 1 or 0, we set FLAG-TO-SET to yes or no.
+ dnl  
+-AC_DEFUN(APR_FLAG_HEADERS,[
++AC_DEFUN([APR_FLAG_HEADERS],[
+ AC_CHECK_HEADERS($1)
+ for aprt_i in $1
+ do
+@@ -682,7 +682,7 @@
+ dnl  is "yes" then instead of setting to 1 or 0, we set FLAG-TO-SET
+ dnl  to yes or no.
+ dnl
+-AC_DEFUN(APR_FLAG_FUNCS,[
++AC_DEFUN([APR_FLAG_FUNCS],[
+ AC_CHECK_FUNCS($1)
+ for aprt_j in $1
+ do
+@@ -707,7 +707,7 @@
+ dnl APR_EXPAND_VAR(fraz, $baz)
+ dnl   $fraz is now "1/2/3"
+ dnl 
+-AC_DEFUN(APR_EXPAND_VAR,[
++AC_DEFUN([APR_EXPAND_VAR],[
+ ap_last=
+ ap_cur="$2"
+ while test "x${ap_cur}" != "x${ap_last}";
+@@ -726,7 +726,7 @@
+ dnl orig_path="${prefix}/bar"
+ dnl APR_PATH_RELATIVE(final_path, $orig_path, $prefix)
+ dnl    $final_path now contains "bar"
+-AC_DEFUN(APR_PATH_RELATIVE,[
++AC_DEFUN([APR_PATH_RELATIVE],[
+ ap_stripped=`echo $2 | sed -e "s#^$3##"`
+ # check if the stripping was successful
+ if test "x$2" != "x${ap_stripped}"; then
+@@ -744,12 +744,12 @@
+ dnl Note: this define must be on one line so that it can be properly returned
+ dnl as the help string.  When using this macro with a multi-line RHS, ensure
+ dnl that you surround the macro invocation with []s
+-AC_DEFUN(APR_HELP_STRING,[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING([$1],[$2]),[  ][$1] substr([                       ],len($1))[$2])])
++AC_DEFUN([APR_HELP_STRING],[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING([$1],[$2]),[  ][$1] substr([                       ],len($1))[$2])])
+ 
+ dnl
+ dnl APR_LAYOUT(configlayout, layoutname [, extravars])
+ dnl
+-AC_DEFUN(APR_LAYOUT,[
++AC_DEFUN([APR_LAYOUT],[
+   if test ! -f $srcdir/config.layout; then
+     echo "** Error: Layout file $srcdir/config.layout not found"
+     echo "** Error: Cannot use undefined layout '$LAYOUT'"
+@@ -805,7 +805,7 @@
+ dnl
+ dnl APR_ENABLE_LAYOUT(default layout name [, extra vars])
+ dnl
+-AC_DEFUN(APR_ENABLE_LAYOUT,[
++AC_DEFUN([APR_ENABLE_LAYOUT],[
+ AC_ARG_ENABLE(layout,
+ [  --enable-layout=LAYOUT],[
+   LAYOUT=$enableval
+@@ -826,7 +826,7 @@
+ dnl a reimplementation of autoconf's argument parser,
+ dnl used here to allow us to co-exist layouts and argument based
+ dnl set ups.
+-AC_DEFUN(APR_PARSE_ARGUMENTS,[
++AC_DEFUN([APR_PARSE_ARGUMENTS],[
+ ac_prev=
+ for ac_option
+ do
+@@ -948,7 +948,7 @@
+ dnl
+ dnl Determine what program we can use to generate .deps-style dependencies
+ dnl
+-AC_DEFUN(APR_CHECK_DEPEND,[
++AC_DEFUN([APR_CHECK_DEPEND],[
+ dnl Try to determine what depend program we can use
+ dnl All GCC-variants should have -MM.
+ dnl If not, then we can check on those, too.
+--- httpd-2.0.47/srclib/apr/build/find_apr.m4~configure	2002-11-05 17:09:19.000000000 -0500
++++ httpd-2.0.47/srclib/apr/build/find_apr.m4	2004-01-26 19:39:34.000000000 -0500
+@@ -37,7 +37,7 @@
+ dnl value of apr_config to fetch any necessary build/link information.
+ dnl
+ 
+-AC_DEFUN(APR_FIND_APR, [
++AC_DEFUN([APR_FIND_APR], [
+   apr_found="no"
+ 
+   if test "$ac_cv_emxos2" = "yes"; then
+--- httpd-2.0.47/srclib/apr-util/build/find_apu.m4~configure	2002-11-05 17:13:42.000000000 -0500
++++ httpd-2.0.47/srclib/apr-util/build/find_apu.m4	2004-01-26 19:39:34.000000000 -0500
+@@ -41,7 +41,7 @@
+ dnl value of apu_config to fetch any necessary build/link information.
+ dnl
+ 
+-AC_DEFUN(APR_FIND_APU, [
++AC_DEFUN([APR_FIND_APU], [
+   apu_found="no"
+ 
+   AC_MSG_CHECKING(for APR-util)

@@ -1,0 +1,145 @@
+--- mgetty-1.1.30.orig/voice/libvoice/Lucent.c	2001-04-13 04:01:44.000000000 -0700
++++ mgetty-1.1.30/voice/libvoice/Lucent.c	2003-09-07 14:58:41.000000000 -0700
+@@ -66,6 +66,7 @@
+ 
+ static int Lucent_set_compression (int *compression, int *speed, int *bits)
+      {
++     char buffer[VOICE_BUF_LEN];
+      reset_watchdog();
+ 
+      if (*compression == 0)
+@@ -86,7 +87,8 @@
+ 			  return(FAIL); 
+ 		 }
+ 
+-               if (voice_command("AT+VSM=128", "OK") != VMA_USER_1)
++	       sprintf(buffer, "AT+VSM=128,%d", *speed);
++               if (voice_command(buffer, "OK") != VMA_USER_1)
+                     return(FAIL);
+ 
+                break;
+@@ -100,8 +102,8 @@
+ 			  return(FAIL); 
+ 		 }
+ 	       
+-
+-               if (voice_command("AT+VSM=129", "OK") != VMA_USER_1)
++	       sprintf(buffer, "AT+VSM=129,%d", *speed);
++               if (voice_command(buffer, "OK") != VMA_USER_1)
+                     return(FAIL);
+ 
+                break;
+@@ -115,8 +117,8 @@
+ 			  return(FAIL); 
+ 		 }
+ 
+-
+-               if (voice_command("AT+VSM=130,8000", "OK") != VMA_USER_1)
++	       sprintf(buffer, "AT+VSM=130,%d", *speed);
++               if (voice_command(buffer, "OK") != VMA_USER_1)
+                     return(FAIL);
+ 
+                break;
+@@ -130,24 +132,27 @@
+ 				  voice_modem_name, *speed);
+ 		return(FAIL); 
+ 	      }
+-               if (voice_command("AT+VSM=131,8000", "OK") != VMA_USER_1)
+-                    return(FAIL);
+-
+-               break;
++	    sprintf(buffer, "AT+VSM=131,%d", *speed);
++	    if (voice_command(buffer, "OK") != VMA_USER_1)
++	      return(FAIL);
++	    
++	    break;
+ 
+ 	  case 5:
+ 	    *bits = 4;
+ 
+-	    if ( *speed != 8000 )
++	    if ((*speed != 8000) && (*speed != 7200) && (*speed != 11025))
+ 	      {
+ 		lprintf(L_WARN, "%s: Illegal sample rate (%d)", 
+ 				  voice_modem_name, *speed);
+ 		return(FAIL); 
+ 	      }
+-               if (voice_command("AT+VSM=132,8000", "OK") != VMA_USER_1)
+-                    return(FAIL);
+ 
+-               break;
++	    sprintf(buffer, "AT+VSM=132,%d", *speed);
++	    if (voice_command(buffer, "OK") != VMA_USER_1)
++	      return(FAIL);
++	    
++	    break;
+ 
+           default:
+                lprintf(L_WARN, "%s: Illegal voice compression method (%d)",
+--- mgetty-1.1.30.orig/voice/pvftools/pvftormd.c	2002-11-19 07:39:34.000000000 -0800
++++ mgetty-1.1.30/voice/pvftools/pvftormd.c	2003-09-07 14:11:26.000000000 -0700
+@@ -535,12 +535,13 @@
+           {
+           header_out.bits = 4;
+ 
+-          if (header_in.speed != 8000) 
++	  if ((header_in.speed != 7200)  && (header_in.speed != 8000) &&
++	      (header_in.speed != 11025))
+              {
+                 fprintf(stderr, "%s: Unsupported sample speed (%d)\n",
+                  program_name, header_in.speed);
+                 fprintf(stderr,
+-                 "%s: The Lucent only supports 8000 samples/second\n",
++		 "%s: The Lucent only supports 7.2k, 8k and 11.025k samples/second\n",
+                  program_name);
+                 fclose(fd_out);
+
+--- mgetty-1.1.30.orig/voice/libvoice/V253modem.c	2002-11-25 13:14:51.000000000 -0800
++++ mgetty-1.1.30/voice/libvoice/V253modem.c	2003-09-11 08:40:51.000000000 -0700
+@@ -177,26 +177,26 @@
+        case 2:       /*  2bit ADPCM for some ELSA-modems */
+        {
+          *bits = 2;
+-         if (voice_command("AT+VSM=140,7200", "OK")!= VMA_USER_1)
+-         {
++	 sprintf(buffer, "AT+VSM=140,%d", *speed);
++	 if (voice_command(buffer, "OK") != VMA_USER_1)
++	 {
+          /* there are two diffrent implementations trying one first,
+             if this fails we try the other one later */
+-           Kompressionmethod = 129;
+-         }
+-         else
+-         {
+-           Kompressionmethod = 140;
+-         }
+-         *speed=7200;
++	   Kompressionmethod = 129;
++	 }
++	 else
++	 {
++	   Kompressionmethod = 140;
++	 }
+          break;
+         }
+        case 4:           /* 4bit ADPCM for some ELSA-modems */
+        {
+-         if (voice_command("AT+VSM=141,7200", "OK")!= VMA_USER_1)
++	 sprintf(buffer, "AT+VSM=141,%d", *speed);
++         if (voice_command(buffer, "OK")!= VMA_USER_1)
+          {
+          /* there are two diffrent implementations trying one first,
+             if this fails we try the other one later */
+-
+            Kompressionmethod = 131;
+          }
+          else
+@@ -204,7 +204,6 @@
+            Kompressionmethod = 141;
+          }
+          *bits=4;
+-         *speed=7200;
+          break;
+        }
+        case 5:
+ 

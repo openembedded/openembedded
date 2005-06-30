@@ -1,0 +1,11 @@
+
+DejaVuSans /usr/share/fonts/truetype/DejaVuSans.ttf FT n 50 80 su
+DejaVuSans /usr/share/fonts/truetype/DejaVuSans-Bold.ttf FT n 75 80 su
+DejaVuSans /usr/share/fonts/truetype/DejaVuSans-BoldOblique.ttf FT y 75 80 su
+DejaVuSans /usr/share/fonts/truetype/DejaVuSans-Oblique.ttf FT y 50 80 su
+ 
+DejaVuMono /usr/share/fonts/truetype/DejaVuSansMono-Roman.ttf FT n 50 80 su
+DejaVuMono /usr/share/fonts/truetype/DejaVuSansMono-Bold.ttf FT n 75 80 su
+DejaVuMono /usr/share/fonts/truetype/DejaVuSansMono-BoldOb.ttf FT y 75 80 su
+DejaVuMono /usr/share/fonts/truetype/DejaVuSansMono-Oblique.ttf FT y 50 80 su
+

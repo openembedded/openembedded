@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment = Drug Lookup
+Exec = txdrug
+Type = Application
+Icon = txdrug
+Name = TxDrug

@@ -1,0 +1,7 @@
+ipkg
+	command=ipkg install
+	name=Install Package (ipkg)
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=true
+	mime_types=application/x-ipk

@@ -1,0 +1,13 @@
+Nur in qpealarmclock_V1.0.4: AlarmDetails.h~.
+diff -ur qpealarmclock_V1.0.4.orig/qpealarmclock.desktop qpealarmclock_V1.0.4/qpealarmclock.desktop
+--- qpealarmclock_V1.0.4.orig/qpealarmclock.desktop	2004-06-17 00:35:48.000000000 +0200
++++ qpealarmclock_V1.0.4/qpealarmclock.desktop	2004-06-17 00:36:13.000000000 +0200
+@@ -3,7 +3,7 @@
+ Comment[de]=Ein Wecker
+ Comment[ru]=Будильник
+ Exec=qpealarmclock
+-Icon=QpeAlarmClock
++Icon=qpealarmclock/QpeAlarmClock
+ Name=Alarm Clock
+ Name[de]=Wecker
+ Type=Application

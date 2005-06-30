@@ -1,0 +1,11 @@
+--- gkdial-1.8.1-gnomeless/src/ppp_info.c~	2003-06-27 00:14:51.000000000 +0100
++++ gkdial-1.8.1-gnomeless/src/ppp_info.c	2004-06-11 11:24:03.000000000 +0100
+@@ -11,7 +11,7 @@
+ 
+ #include <linux/if.h>
+ #include <linux/ppp_defs.h>
+-#include <linux/ppp.h>
++#include <linux/if_ppp.h>
+ 
+ #include <time.h>
+ #include <ctype.h>

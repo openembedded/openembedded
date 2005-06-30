@@ -1,0 +1,13 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- regex-markup-0.9.0/src/compat/Makefile.am~fix-configure
++++ regex-markup-0.9.0/src/compat/Makefile.am
+@@ -12,5 +12,3 @@
+ 	vasprintf.c \
+ 	vasprintf.h
+ 
+-lib_compat_a_LIBADD = @LIBOBJS@
+-lib_compat_a_DEPENDENCIES = $(lib_compat_a_LIBADD)

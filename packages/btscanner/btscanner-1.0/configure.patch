@@ -1,0 +1,45 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- btscanner-1.0/configure.in~configure.patch	2003-10-14 13:01:20.000000000 +0200
++++ btscanner-1.0/configure.in	2004-07-16 11:55:24.000000000 +0200
+@@ -10,9 +10,8 @@
+ AC_PROG_CC
+ 
+ # Checks for libraries.
+-AC_HAVE_LIBRARY(curses,,[AC_MSG_ERROR([Curses not found])])
++AC_HAVE_LIBRARY(ncurses,,[AC_MSG_ERROR([Curses not found])])
+ AC_HAVE_LIBRARY(bluetooth,,[AC_MSG_ERROR([Bluetooth not found])])
+-AC_HAVE_LIBRARY(sdp,,[AC_MSG_ERROR([SDP not found])])
+ AC_HAVE_LIBRARY(pthread,,[AC_MSG_ERROR([Pthreads not found])])
+ AC_HAVE_LIBRARY(gdbm,,[AC_MSG_ERROR([GDBM not found])])
+ 
+--- btscanner-1.0/Makefile.in~configure.patch	2003-10-14 14:16:23.000000000 +0200
++++ btscanner-1.0/Makefile.in	2004-07-16 11:54:45.000000000 +0200
+@@ -6,9 +6,12 @@
+ CP		=	cp
+ MV		=	mv
+ RM		=	rm
++INSTALL		=	install
+ GZIP	=	gzip
+ MKDIR	=	mkdir
+ 
++DESTDIR = 
++
+ all:	$(EXECS)
+ 
+ btscanner.o:	btscanner.c btscanner.h
+@@ -34,7 +37,7 @@
+ 	$(CC) $(CFLAGS) -c $*.c
+ 
+ install:	all
+-	$(MKDIR) -p @prefix@/bin
+-	$(CP) $(EXECS) @prefix@/bin/
+-	$(MKDIR) -p @prefix@/etc
+-	$(CP) oui.txt @prefix@/etc/oui.txt
++	$(INSTALL) -d $(DESTDIR)/@prefix@/bin
++	$(INSTALL) -m 0755 $(EXECS) $(DESTDIR)/@prefix@/bin/
++	$(INSTALL) -d $(DESTDIR)/@prefix@/etc
++	$(INSTALL) -m 0444 oui.txt $(DESTDIR)/@prefix@/etc/oui.txt

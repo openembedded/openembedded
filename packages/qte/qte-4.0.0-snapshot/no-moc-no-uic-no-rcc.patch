@@ -1,0 +1,25 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-embedded-opensource-4.0.0-b1/src/src.pro~no-moc-no-uic-no-rcc
++++ qt-embedded-opensource-4.0.0-b1/src/src.pro
+@@ -3,16 +3,13 @@
+ 
+ # this order is important
+ win32:SUBDIRS += winmain
+-SUBDIRS += moc core gui sql
++SUBDIRS += core gui sql
+ contains(QT_CONFIG, opengl): SUBDIRS +=  opengl
+ SUBDIRS += xml network
+ contains(QT_CONFIG, compat): SUBDIRS += compat
+ 
+ SUBDIRS += plugins
+ 
+-embedded:SUBDIRS -= opengl
+-SUBDIRS += tools
+-
+ # This gives us a top level debug/release
+ unix {
+      EXTRA_DEBUG_TARGETS =

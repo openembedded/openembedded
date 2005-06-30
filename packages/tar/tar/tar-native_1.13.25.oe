@@ -1,0 +1,27 @@
+SECTION = "base"
+DESCRIPTION = "This version of GNU tar is only used for compatibility \
+reasons, where an old ipkg (e.g. ipkg 0.99.84) has to extract and \
+install *.ipk files created with OpenEmbedded."
+LICENSE = "GPL"
+MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+
+SRC_URI = "ftp://alpha.gnu.org/gnu/tar/tar-${PV}.tar.gz"
+
+inherit autotools
+inherit native
+
+S = "${WORKDIR}/tar-${PV}"
+
+OEDEBUG = 2
+
+do_configure() {
+	oe_runconf
+}
+
+do_stage() {
+	install -m 755 src/tar ${STAGING_BINDIR}
+}
+
+do_install() {
+	true
+}

@@ -1,0 +1,38 @@
+--- linux-2.6.11/.pc/2.6.patch/drivers/i2c/chips/Kconfig	2005-06-17 17:51:28.635578329 -0700
++++ linux-2.6.11/drivers/i2c/chips/Kconfig	2005-06-17 17:51:32.565982545 -0700
+@@ -430,6 +430,15 @@
+ 	  
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called isp1301_omap.
++config SENSORS_X1205
++       tristate "Xicor X1205 RTC chip"
++       depends on I2C && EXPERIMENTAL
++       select I2C_SENSOR
++       help
++         If you say yes here you get support for the Xicor x1205 RTC chip.
++ 
++         This driver can also be built as a module.  If so, the module
++         will be called x1205-rtc
+ 
+ config SENSORS_M41T00
+ 	tristate "ST M41T00 RTC chip"
+--- linux-2.6.11/.pc/2.6.patch/drivers/i2c/chips/Makefile	2005-06-17 17:51:28.636578177 -0700
++++ linux-2.6.11/drivers/i2c/chips/Makefile	2005-06-17 17:51:32.566982394 -0700
+@@ -41,6 +41,7 @@
+ obj-$(CONFIG_SENSORS_VIA686A)	+= via686a.o
+ obj-$(CONFIG_SENSORS_W83L785TS)	+= w83l785ts.o
+ obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
++obj-$(CONFIG_SENSORS_X1205)     += x1205-rtc.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+ EXTRA_CFLAGS += -DDEBUG
+--- linux-2.6.11/.pc/2.6.patch/include/linux/i2c-id.h	2005-06-17 17:51:31.358165630 -0700
++++ linux-2.6.11/include/linux/i2c-id.h	2005-06-17 17:51:32.569981939 -0700
+@@ -108,6 +108,7 @@
+ #define I2C_DRIVERID_TDA7313	62	/* TDA7313 audio processor	*/
+ #define I2C_DRIVERID_MAX6900	63	/* MAX6900 real-time clock	*/
+ #define I2C_DRIVERID_SAA7114H	64	/* video decoder		*/
++#define I2C_DRIVERID_X1205	0xF0
+ 
+ 
+ #define I2C_DRIVERID_EXP0	0xF0	/* experimental use id's	*/

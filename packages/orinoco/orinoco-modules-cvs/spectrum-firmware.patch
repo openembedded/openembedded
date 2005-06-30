@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- orinoco/spectrum_cs.c~spectrum-firmware.patch
++++ orinoco/spectrum_cs.c
+@@ -55,7 +55,7 @@
+  * hotplug firmware directory (typically /usr/lib/hotplug/firmware) and
+  * make sure that you have hotplug installed and enabled in the kernel.
+  */
+-/* #define SPECTRUM_FW_INCLUDED 1 */
++#define SPECTRUM_FW_INCLUDED 1
+ 
+ #ifdef SPECTRUM_FW_INCLUDED
+ /* Header with the firmware */

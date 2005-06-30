@@ -1,0 +1,86 @@
+--- binutils-2.14.90.0.6/bfd/doc/Makefile.am.cflags_for_build	2003-12-04 21:51:44.000000000 -0500
++++ binutils-2.14.90.0.6/bfd/doc/Makefile.am	2003-12-04 21:52:33.000000000 -0500
+@@ -55,10 +55,10 @@
+ MKDOC = chew$(EXEEXT_FOR_BUILD)
+ 
+ $(MKDOC): chew.o
+-	$(CC_FOR_BUILD) -o $(MKDOC) chew.o $(CFLAGS) $(LOADLIBES) $(LDFLAGS)
++	$(CC_FOR_BUILD) -o $(MKDOC) chew.o $(CFLAGS_FOR_BUILD) $(LOADLIBES) $(LDFLAGS_FOR_BUILD)
+ 
+ chew.o: chew.c
+-	$(CC_FOR_BUILD) -c -I.. -I$(srcdir)/.. -I$(srcdir)/../../include -I$(srcdir)/../../intl -I../../intl $(H_CFLAGS) $(CFLAGS) $(srcdir)/chew.c
++	$(CC_FOR_BUILD) -c -I.. -I$(srcdir)/.. -I$(srcdir)/../../include -I$(srcdir)/../../intl -I../../intl $(H_CFLAGS) $(CFLAGS_FOR_BUILD) $(srcdir)/chew.c
+ 
+ protos: libbfd.h libcoff.h bfd.h
+ 
+--- binutils-2.14.90.0.6/binutils/Makefile.am.cflags_for_build	2003-12-04 21:51:44.000000000 -0500
++++ binutils-2.14.90.0.6/binutils/Makefile.am	2003-12-04 21:53:16.000000000 -0500
+@@ -219,20 +219,20 @@
+ 	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >sysroff.h
+ 
+ sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
+-	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) -o $@ sysinfo.o syslex.o 
++	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ sysinfo.o syslex.o 
+ 
+ syslex.o: syslex.c sysinfo.h
+ 	if [ -r syslex.c ]; then \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS)  syslex.c  ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD)  syslex.c  ; \
+ 	else \
+-	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(CFLAGS) $(srcdir)/syslex.c ;\
++	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(CFLAGS_FOR_BUILD) $(srcdir)/syslex.c ;\
+ 	fi
+ 
+ sysinfo.o: sysinfo.c
+ 	if [ -r sysinfo.c ]; then \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS)  sysinfo.c  ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD)  sysinfo.c  ; \
+ 	else \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS) $(srcdir)/sysinfo.c ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD) $(srcdir)/sysinfo.c ; \
+ 	fi
+ 
+ # We need these for parallel make.
+--- binutils-2.14.90.0.6/bfd/doc/Makefile.in~	2003-07-23 11:08:09.000000000 -0400
++++ binutils-2.14.90.0.6/bfd/doc/Makefile.in	2003-12-04 23:16:31.000000000 -0500
+@@ -469,10 +469,10 @@
+ 
+ 
+ $(MKDOC): chew.o
+-	$(CC_FOR_BUILD) -o $(MKDOC) chew.o $(CFLAGS) $(LOADLIBES) $(LDFLAGS)
++	$(CC_FOR_BUILD) -o $(MKDOC) chew.o $(CFLAGS_FOR_BUILD) $(LOADLIBES) $(LDFLAGS_FOR_BUILD)
+ 
+ chew.o: chew.c
+-	$(CC_FOR_BUILD) -c -I.. -I$(srcdir)/.. -I$(srcdir)/../../include -I$(srcdir)/../../intl -I../../intl $(H_CFLAGS) $(CFLAGS) $(srcdir)/chew.c
++	$(CC_FOR_BUILD) -c -I.. -I$(srcdir)/.. -I$(srcdir)/../../include -I$(srcdir)/../../intl -I../../intl $(H_CFLAGS) $(CFLAGS_FOR_BUILD) $(srcdir)/chew.c
+ 
+ protos: libbfd.h libcoff.h bfd.h
+ 
+--- binutils-2.14.90.0.6/binutils/Makefile.in~	2003-08-21 11:28:48.000000000 -0400
++++ binutils-2.14.90.0.6/binutils/Makefile.in	2003-12-04 23:17:34.000000000 -0500
+@@ -978,20 +978,20 @@
+ 	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >sysroff.h
+ 
+ sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
+-	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) -o $@ sysinfo.o syslex.o 
++	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ sysinfo.o syslex.o 
+ 
+ syslex.o: syslex.c sysinfo.h
+ 	if [ -r syslex.c ]; then \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS)  syslex.c  ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD)  syslex.c  ; \
+ 	else \
+-	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(CFLAGS) $(srcdir)/syslex.c ;\
++	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(CFLAGS_FOR_BUILD) $(srcdir)/syslex.c ;\
+ 	fi
+ 
+ sysinfo.o: sysinfo.c
+ 	if [ -r sysinfo.c ]; then \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS)  sysinfo.c  ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD)  sysinfo.c  ; \
+ 	else \
+-	  $(CC_FOR_BUILD) -c -I. $(CFLAGS) $(srcdir)/sysinfo.c ; \
++	  $(CC_FOR_BUILD) -c -I. $(CFLAGS_FOR_BUILD) $(srcdir)/sysinfo.c ; \
+ 	fi
+ 
+ # We need these for parallel make.

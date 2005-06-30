@@ -1,0 +1,68 @@
+--- libusb-0.1.8.orig/libusb.pc.in
++++ libusb-0.1.8/libusb.pc.in
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: libusb
++Description: USB access library
++Version: @VERSION@
++Libs: -L${libdir} -lusb
++Cflags: -I${includedir}
++
+--- libusb-0.1.8.orig/configure.in
++++ libusb-0.1.8/configure.in
+@@ -219,6 +219,26 @@
+     AC_DEFINE_UNQUOTED(HAVE_OLD_DEV_USB_USB_H)])
+ fi
+ 
++#pkg-config: pkg-config is a tool to simplify checks for libraries and versions.
++pkgconfig_msg="no (http://www.freedesktop.org/software/pkgconfig)"
++try_pkgconfig=true
++have_pkgconfig=false
++AC_ARG_WITH(pkgconfig, [  --without-pkgconfig     don't use pkg-config],[
++  if test x$withval = xno; then
++    try_pkgconfig=false
++    pkgconfig_msg="no (not requested)"
++  fi])
++if $try_pkgconfig; then
++  AC_PATH_PROG(PKG_CONFIG,pkg-config)
++  if test -n "${PKG_CONFIG}"; then
++    have_pkgconfig=true
++    pkgconfig_msg="yes"
++  fi
++fi
++# guessing directory to install *.pc into
++pkgconfigdir='${libdir}/pkgconfig'
++AC_SUBST(pkgconfigdir)
++
+ # Check if the user wants to enable documentation
+ AC_MSG_CHECKING(if we should build the documentation)
+ AC_ARG_ENABLE(build-docs, [  --disable-build-docs    turn off building documentation],
+@@ -249,6 +269,7 @@
+ AC_OUTPUT([
+   Makefile
+   doc/Makefile
++  libusb.pc
+   libusb.spec
+   libusb-config
+   tests/Makefile
+--- libusb-0.1.8.orig/Makefile.am
++++ libusb-0.1.8/Makefile.am
+@@ -12,11 +12,13 @@
+ 
+ bin_SCRIPTS = libusb-config
+ 
+-EXTRA_DIST = LICENSE libusb.spec.in libusb.spec libusb-config.in README.in README INSTALL.libusb.in INSTALL.libusb
++EXTRA_DIST = LICENSE libusb.spec.in libusb.spec libusb-config.in README.in README INSTALL.libusb.in INSTALL.libusb libusb.pc.in
+ EXTRA_libusb_la_SOURCE = linux.c linux.h bsd.c darwin.c
+ 
+ lib_LTLIBRARIES = libusb.la
+ 
++pkgconfig_DATA= libusb.pc
++
+ if LINUX_API
+ OS_SUPPORT = linux.c linux.h
+ else

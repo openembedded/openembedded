@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Invoke the syslog startup if the configuration
+# uses 'file' (and, optionally, buffer) as the DESTINATION
+DESTINATION=
+test -f /etc/syslog.conf && . /etc/syslog.conf
+doit=
+
+for d in $DESTINATION
+do
+	case "$d" in
+	buffer)	:;;
+	file)	doit=1;;
+	remote)	exit 0;;
+	*)	echo "/etc/syslog.conf: $d: unknown destination" >&2
+		exit 1;;
+	esac
+done
+
+test -n "$doit" -a -x /etc/init.d/syslog &&
+	exec /etc/init.d/syslog "$@"
+
+exit 0

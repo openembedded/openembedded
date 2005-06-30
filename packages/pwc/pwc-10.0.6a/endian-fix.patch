@@ -1,0 +1,47 @@
+--- pwc-10.0.6a.orig/pwc-if.c	2005-03-31 22:17:29.000000000 +0200
++++ pwc-10.0.6a/pwc-if.c.new	2005-04-01 09:31:39.099541224 +0200
+@@ -846,7 +846,7 @@
+ 	pdev->vmax_packet_size = -1;
+ 	for (i = 0; i < idesc->desc.bNumEndpoints; i++)
+ 		if ((idesc->endpoint[i].desc.bEndpointAddress & 0xF) == pdev->vendpoint) {
+-			pdev->vmax_packet_size = idesc->endpoint[i].desc.wMaxPacketSize;
++			pdev->vmax_packet_size = le16_to_cpu(idesc->endpoint[i].desc.wMaxPacketSize);
+ 			break;
+ 		}
+ 	
+@@ -1689,9 +1689,14 @@
+ 	int video_nr = -1; /* default: use next available device */
+ 	char serial_number[30], *name;
+ 
++	/* added le16_to_cpu to fix big endian issues */
++	vendor_id = le16_to_cpu(udev->descriptor.idVendor);
++	product_id = le16_to_cpu(udev->descriptor.idProduct);
++
+ 	/* Check if we can handle this device */
++	
+ 	Trace(TRACE_PROBE, "probe() called [%04X %04X], if %d\n", 
+-		udev->descriptor.idVendor, udev->descriptor.idProduct, 
++		vendor_id, product_id, 
+ 		intf->altsetting->desc.bInterfaceNumber);
+ 
+ 	/* the interfaces are probed one by one. We are only interested in the
+@@ -1701,9 +1706,7 @@
+ 	if (intf->altsetting->desc.bInterfaceNumber > 0)
+ 		return -ENODEV;
+ 
+-	vendor_id = udev->descriptor.idVendor;
+-	product_id = udev->descriptor.idProduct;
+-
++	
+ 	if (vendor_id == 0x0471) {
+ 		switch (product_id) {
+ 		case 0x0302:
+@@ -1954,7 +1957,7 @@
+ 	pdev->vdev->owner = THIS_MODULE;
+ 	video_set_drvdata(pdev->vdev, pdev);
+ 
+-	pdev->release = udev->descriptor.bcdDevice;
++	pdev->release = le16_to_cpu(udev->descriptor.bcdDevice);
+ 	Trace(TRACE_PROBE, "Release: %04x\n", pdev->release);
+ 
+ 	/* Now search device_hint[] table for a match, so we can hint a node number. */

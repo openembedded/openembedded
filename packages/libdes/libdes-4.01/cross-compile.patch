@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libdes/Makefile~cross-compile	1997-01-13 18:27:30.000000000 +0100
++++ libdes/Makefile	2004-02-15 01:57:46.000000000 +0100
+@@ -42,10 +42,10 @@
+ #DES_ENC=asm/dx86-sol.o	# solaris format x86 
+ #DES_ENC=asm/dx86bsdi.o	# bsdi format x86 
+ 
+-LIBDIR=/usr/local/lib
+-BINDIR=/usr/local/bin
+-INCDIR=/usr/local/include
+-MANDIR=/usr/local/man
++LIBDIR=$(DESTDIR)/usr/lib
++BINDIR=$(DESTDIR)/usr/bin
++INCDIR=$(DESTDIR)/usr/include
++MANDIR=$(DESTDIR)/usr/man
+ MAN1=1
+ MAN3=3
+ SHELL=/bin/sh
+@@ -94,10 +94,8 @@
+ 
+ $(DLIB): $(OBJS)
+ 	/bin/rm -f $(DLIB)
+-	ar cr $(DLIB) $(OBJS)
+-	-if test -s /bin/ranlib; then /bin/ranlib $(DLIB); \
+-	else if test -s /usr/bin/ranlib; then /usr/bin/ranlib $(DLIB); \
+-	else exit 0; fi; fi
++	$(AR) cr $(DLIB) $(OBJS)
++	$(RANLIB) $(DLIB)
+ 
+ des_opts: des_opts.o libdes.a
+ 	$(CC) $(CFLAGS) -o des_opts des_opts.o libdes.a

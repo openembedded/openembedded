@@ -1,0 +1,11 @@
+--- osb-browser-0.5.0.orig/configure.in	2004-10-18 17:40:28.000000000 +0200
++++ osb-browser-0.5.0/configure.in	2004-10-24 01:23:26.000000000 +0200
+@@ -54,7 +54,7 @@
+ if test "x$GCC" = "xyes"; then
+   case " $CFLAGS " in
+   *[\ \	]-Wall[\ \	]*) ;;
+-  *) CFLAGS="$CFLAGS -Wall -Werror -ansi -pedantic" ;;
++  *) CFLAGS="$CFLAGS -Wall -Werror -ansi" ;;
+   esac
+ fi
+ changequote([,])dnl

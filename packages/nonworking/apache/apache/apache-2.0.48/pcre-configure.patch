@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- httpd-2.0.47/srclib/pcre/configure.in~pcre-configure
++++ httpd-2.0.47/srclib/pcre/configure.in
+@@ -72,7 +72,8 @@
+ AC_ARG_ENABLE(newline-is-cr,
+ [  --enable-newline-is-cr  use CR as the newline character],
+ if test "$enableval" = "yes"; then
+-  NEWLINE=-DNEWLINE=13
++  AC_DEFINE(NEWLINE, 13)
++#  NEWLINE=-DNEWLINE=13
+ fi
+ )
+ 
+@@ -81,7 +82,8 @@
+ AC_ARG_ENABLE(newline-is-lf,
+ [  --enable-newline-is-lf  use LF as the newline character],
+ if test "$enableval" = "yes"; then
+-  NEWLINE=-DNEWLINE=10
++  AC_DEFINE(NEWLINE, 10)
++#  NEWLINE=-DNEWLINE=10
+ fi
+ )
+ 
+@@ -91,7 +93,7 @@
+ AC_SUBST(HAVE_STRERROR)
+ AC_SUBST(LIBTOOL)
+ AC_SUBST(LIBSUFFIX)
+-AC_SUBST(NEWLINE)
++#AC_SUBST(NEWLINE)
+ AC_SUBST(UTF8)
+ AC_SUBST(PCRE_MAJOR)
+ AC_SUBST(PCRE_MINOR)

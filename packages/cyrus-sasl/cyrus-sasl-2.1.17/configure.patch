@@ -1,0 +1,193 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- cyrus-sasl-2.1.17/configure.in~configure
++++ cyrus-sasl-2.1.17/configure.in
+@@ -123,7 +123,7 @@
+   AC_DEFINE(TRY_DLOPEN_WHEN_STATIC,[],[Should we try to dlopen() plugins while staticly compiled?])
+ fi
+ 
+-if test "$ac_cv_prog_gcc" = yes; then
++if test "$ac_cv_c_compiler_gnu" = yes; then
+   CFLAGS="-Wall -W ${CFLAGS}"
+ fi
+ 
+@@ -143,7 +143,7 @@
+   AC_PATH_PROGS(JAVAH, javah kaffeh, no)
+   AC_CHECK_PROGS(JAVADOC, javadoc, :)	
+   if test "$JAVAC" = "no" -o "$JAVAH" = "no"; then
+-    AC_WARN([Disabling Java support])
++    AC_MSG_WARN([Disabling Java support])
+     enable_java=no
+   fi
+ else
+@@ -363,7 +363,7 @@
+     LDFLAGS="$LDFLAGS -L$digest/lib"
+   fi
+   if test "$with_des" = no; then
+-    AC_WARN(No DES support for DIGEST-MD5)
++    AC_MSG_WARN([No DES support for DIGEST-MD5])
+   fi
+ fi
+ 
+@@ -385,7 +385,7 @@
+   otp=yes)
+ 
+ if test "$with_openssl" = no; then
+-  AC_WARN([OpenSSL not found -- OTP will be disabled])
++  AC_MSG_WARN([OpenSSL not found -- OTP will be disabled])
+   otp=no
+ fi
+ 
+@@ -441,7 +441,7 @@
+   srp=no)
+ 
+ if test "$with_openssl" = no; then
+-  AC_WARN([OpenSSL not found -- SRP will be disabled])
++  AC_MSG_WARN([OpenSSL not found -- SRP will be disabled])
+   srp=no
+ fi
+ 
+@@ -522,7 +522,7 @@
+   ntlm=no)
+ 
+ if test "$with_openssl" = no; then
+-  AC_WARN([OpenSSL not found -- NTLM will be disabled])
++  AC_MSG_WARN([OpenSSL not found -- NTLM will be disabled])
+   ntlm=no
+ fi
+ 
+@@ -839,7 +839,7 @@
+ AC_CHECK_FUNC(snprintf, [AC_DEFINE(HAVE_SNPRINTF,[],[Does the system have snprintf()?])], [sasl_cv_snprintf=yes])
+ AC_CHECK_FUNC(vsnprintf, [AC_DEFINE(HAVE_VSNPRINTF,[],[Does the system have vsnprintf()?])], [sasl_cv_snprintf=yes])
+ if test $sasl_cv_snprintf = yes; then
+-	LIBOBJS="$LIBOBJS snprintf.o"
++	AC_LIBOBJ([snprintf])
+         SNPRINTFOBJS="snprintf.o"
+         LTSNPRINTFOBJS="snprintf.lo"
+ fi
+@@ -856,7 +856,7 @@
+                 [AC_DEFINE(HAVE_GETADDRINFO,[],[Do we have a getaddrinfo() function?])
+                 sasl_cv_getaddrinfo=no])])
+ if test $sasl_cv_getaddrinfo = yes; then
+-    LIBOBJS="$LIBOBJS getaddrinfo.o"
++    AC_LIBOBJ([getaddrinfo])
+     GETADDRINFOOBJS="getaddrinfo.o"
+     LTGETADDRINFOOBJS="getaddrinfo.lo"
+ fi
+@@ -869,16 +869,16 @@
+ IPv6_CHECK_FUNC(getnameinfo,
+ 		[AC_DEFINE(HAVE_GETNAMEINFO,[],[Do we have a getnameinfo() function?])], [sasl_cv_getnameinfo=yes])
+ if test $sasl_cv_getnameinfo = yes; then
+-	LIBOBJS="$LIBOBJS getnameinfo.o"
++	AC_LIBOBJ([getnameinfo])
+         GETNAMEINFOOBJS="getnameinfo.o"
+         LTGETNAMEINFOOBJS="getnameinfo.lo"
+ fi
+ AC_SUBST(GETNAMEINFOOBJS)
+ AC_SUBST(LTGETNAMEINFOOBJS)
+ 
+-LTLIBOBJS=`echo "$LIBOBJS" | sed 's/\.o/.lo/g'`
+-AC_SUBST(LIBOBJS)
+-AC_SUBST(LTLIBOBJS)
++#LTLIBOBJS=`echo "$LIBOBJS" | sed 's/\.o/.lo/g'`
++#AC_SUBST(LIBOBJS)
++#AC_SUBST(LTLIBOBJS)
+ 
+ AC_C_CONST
+ AC_C_INLINE
+@@ -1092,7 +1092,7 @@
+ 
+ AC_CONFIG_HEADERS(config.h)
+ 
+-AC_OUTPUT(Makefile
++AC_CONFIG_FILES([Makefile
+ include/Makefile
+ sasldb/Makefile
+ plugins/Makefile
+@@ -1108,6 +1108,7 @@
+ java/javax/security/auth/Makefile
+ java/javax/security/auth/callback/Makefile
+ pwcheck/Makefile
+-man/Makefile)
++man/Makefile])
++AC_OUTPUT
+ 
+ echo Configuration Complete.  Type \'make\' to build.
+--- cyrus-sasl-2.1.17/saslauthd/auth_rimap.c~configure
++++ cyrus-sasl-2.1.17/saslauthd/auth_rimap.c
+@@ -59,6 +59,7 @@
+ /* PUBLIC DEPENDENCIES */
+ #include "mechanisms.h"
+ 
++#include <config.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <assert.h>
+--- cyrus-sasl-2.1.17/saslauthd/auth_sia.c~configure
++++ cyrus-sasl-2.1.17/saslauthd/auth_sia.c
+@@ -36,6 +36,7 @@
+ 
+ #ifdef AUTH_SIA
+ 
++#include <libio.h> /* NULL */
+ #include <string.h>
+ #include <sia.h>
+ #include <siad.h>
+--- cyrus-sasl-2.1.17/saslauthd/configure.in~configure
++++ cyrus-sasl-2.1.17/saslauthd/configure.in
+@@ -61,7 +61,7 @@
+     AC_DEFINE(HAVE_SIA,[],[Include SIA Support])
+     LIB_SIA="-lsecurity -ldb -lm -laud"
+   else
+-    AC_ERROR([No support for SIA found])
++    AC_MSG_ERROR([No support for SIA found])
+   fi
+ fi
+ AC_SUBST(LIB_SIA)
+@@ -298,6 +298,42 @@
+ #endif
+ ])
+ 
++AH_TEMPLATE([AUTH_SASLDB], [])
++AH_TEMPLATE([HAVE_FUNC], [])
++AH_TEMPLATE([HAVE_FUNCTION], [])
++AH_TEMPLATE([HAVE_GSSAPI], [])
++AH_TEMPLATE([HAVE_LDAP], [])
++AH_TEMPLATE([HAVE_PAM], [])
++AH_TEMPLATE([HAVE_PRETTY_FUNCTION], [])
++AH_TEMPLATE([HAVE_SASLAUTHD], [])
++AH_TEMPLATE([HAVE_SIA], [])
++AH_TEMPLATE([HAVE_STRUCT_SOCKADDR_STORAGE], [])
++AH_TEMPLATE([KRB5_HEIMDAL], [])
++AH_TEMPLATE([PATH_SASLAUTHD_RUNDIR], [])
++AH_TEMPLATE([SASLAUTHD_THREADED], [])
++AH_TEMPLATE([USE_DOORS], [])
++AH_TEMPLATE([HAVE_GETADDRINFO], [])
++AH_TEMPLATE([HAVE_GETNAMEINFO], [])
++AH_TEMPLATE([HAVE_OPENSSL], [])
++AH_TEMPLATE([HAVE_SOCKADDR_SA_LEN], [])
++AH_TEMPLATE([HAVE_SOCKLEN_T], [])
++AH_TEMPLATE([HAVE_SS_FAMILY], [])
++AH_TEMPLATE([HAVE_GETADDRINFO], [])
++AH_TEMPLATE([HAVE_GETNAMEINFO], [])
++AH_TEMPLATE([HAVE_OPENSSL], [])
++AH_TEMPLATE([HAVE_SOCKADDR_SA_LEN], [])
++AH_TEMPLATE([HAVE_SOCKLEN_T], [])
++AH_TEMPLATE([HAVE_SS_FAMILY], [])
++AH_TEMPLATE([HAVE_KRB], [])
++AH_TEMPLATE([SASL_BERKELEYDB], [])
++AH_TEMPLATE([SASL_DB_PATH], [])
++AH_TEMPLATE([SASL_GDBM], [])
++AH_TEMPLATE([SASL_NDBM], [])
++AH_TEMPLATE([STATIC_KERBEROS4], [])
++AH_TEMPLATE([STATIC_SASLDB], [])
++AH_TEMPLATE([WITH_DES], [])
++AH_TEMPLATE([WITH_SSL_DES], [])
+ AC_CONFIG_HEADERS(saslauthd.h)
+ 
+-AC_OUTPUT(Makefile)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT

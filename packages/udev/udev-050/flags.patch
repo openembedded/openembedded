@@ -1,0 +1,69 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: udev-050/Makefile
+===================================================================
+--- udev-050.orig/Makefile	2004-12-18 00:53:07.000000000 -0500
++++ udev-050/Makefile	2005-01-21 19:23:45.699728872 -0500
+@@ -114,16 +114,18 @@
+ CFLAGS := -pipe
+ 
+ ifeq ($(strip $(USE_LOG)),true)
+-	CFLAGS  += -DLOG
++	override CFLAGS  += -DLOG
+ endif
+ 
+ # if DEBUG is enabled, then we do not strip or optimize
++override CFLAGS += -D_GNU_SOURCE
+ ifeq ($(strip $(DEBUG)),true)
+-	CFLAGS  += -O1 -g -DDEBUG -D_GNU_SOURCE
++	CFLAGS += -O1 -g
++	override CFLAGS += -DDEBUG
+ 	LDFLAGS += -Wl,-warn-common
+ 	STRIPCMD = /bin/true -Since_we_are_debugging
+ else
+-	CFLAGS  += $(OPTIMIZATION) -fomit-frame-pointer -D_GNU_SOURCE
++	CFLAGS  += $(OPTIMIZATION) -fomit-frame-pointer
+ 	LDFLAGS += -s -Wl,-warn-common
+ 	STRIPCMD = $(STRIP) -s --remove-section=.note --remove-section=.comment
+ endif
+@@ -144,8 +146,8 @@
+ 
+ 	CRT0 = $(KLIBC_DIR)/crt0.o
+ 	LIBC = $(ARCH_LIB_OBJS) $(LIB_OBJS) $(CRT0)
+-	CFLAGS += $(WARNINGS) -nostdinc				\
+-		$(OPTFLAGS)					\
++	CFLAGS += $(WARNINGS) $(OPTFLAGS)
++	override CFLAGS += -nostdinc				\
+ 		-D__KLIBC__ -fno-builtin-printf			\
+ 		-I$(KLIBC_FIXUPS_DIR)				\
+ 		-include $(KLIBC_FIXUPS_DIR)/klibc_fixups.h	\
+@@ -155,12 +157,13 @@
+ 		-I$(GCCINCDIR)					\
+ 		-I$(LINUX_INCLUDE_DIR)
+ 	LIB_OBJS =
+-	LDFLAGS = --static --nostdlib -nostartfiles -nodefaultlibs
++	override LDFLAGS += --static --nostdlib -nostartfiles -nodefaultlibs
+ else
+ 	WARNINGS += -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
+ 	CRT0 =
+ 	LIBC =
+-	CFLAGS += $(WARNINGS) -I$(GCCINCDIR)
++	CFLAGS += $(WARNINGS)
++	override CFLAGS += -I$(GCCINCDIR)
+ 	LIB_OBJS = -lc
+ 	LDFLAGS =
+ endif
+@@ -170,8 +173,8 @@
+ 	LIB_OBJS += -lselinux
+ endif
+ 
+-CFLAGS +=	-I$(PWD)/libsysfs/sysfs \
+-		-I$(PWD)/libsysfs
++override CFLAGS += -I$(PWD)/libsysfs/sysfs \
++		   -I$(PWD)/libsysfs
+ 
+ # config files automatically generated
+ GEN_CONFIGS =	$(LOCAL_CFG_DIR)/udev.conf

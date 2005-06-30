@@ -1,0 +1,55 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ebtables-v2.0.6/Makefile~installnonroot	2003-11-02 12:22:56.000000000 -0600
++++ ebtables-v2.0.6/Makefile	2004-06-03 13:34:17.000000000 -0500
+@@ -7,6 +7,7 @@
+ MANDIR?=/usr/local/man
+ CFLAGS:=-Wall -Wunused
+ CC:=gcc
++INSTALLOWN=$(if $(filter 0,$(shell id -u)),-o root -g root)
+ 
+ ifeq ($(shell uname -m),sparc64)
+ CFLAGS+=-DEBT_MIN_ALIGN=8 -DKERNEL_64_USERSPACE_32
+@@ -46,15 +47,15 @@
+ 
+ $(MANDIR)/man8/ebtables.8: ebtables.8
+ 	mkdir -p $(@D)
+-	install -m 0644 -o root -g root $< $@
++	install -m 0644 $(INSTALLOWN) $< $@
+ 
+ $(ETHERTYPESFILE): ethertypes
+ 	mkdir -p $(@D)
+-	install -m 0644 -o root -g root $< $@
++	install -m 0644 $(INSTALLOWN) $< $@
+ 
+ .PHONY: exec
+ exec: ebtables
+-	install -m 0755 -o root -g root $< $(BINFILE)
++	install -m 0755 $(INSTALLOWN) $< $(BINFILE)
+ 
+ .PHONY: install
+ install: $(MANDIR)/man8/ebtables.8 $(ETHERTYPESFILE) exec
+@@ -70,16 +71,16 @@
+ .PHONY: release
+ release:
+ 	mkdir -p include/linux/netfilter_bridge
+-	install -m 0644 -o root -g root \
++	install -m 0644 $(INSTALLOWN) \
+ 		$(KERNEL_INCLUDES)/linux/netfilter_bridge.h include/linux/
+ # To keep possible compile error complaints about undefined ETH_P_8021Q
+ # off my back
+-	install -m 0644 -o root -g root \
++	install -m 0644 $(INSTALLOWN) \
+ 		$(KERNEL_INCLUDES)/linux/if_ether.h include/linux/
+-	install -m 0644 -o root -g root \
++	install -m 0644 $(INSTALLOWN) \
+ 		$(KERNEL_INCLUDES)/linux/netfilter_bridge/*.h \
+ 		include/linux/netfilter_bridge/
+-	install -m 0644 -o root -g root \
++	install -m 0644 $(INSTALLOWN) \
+ 		include/ebtables.h include/linux/netfilter_bridge/
+ 	make clean
+ 	touch *

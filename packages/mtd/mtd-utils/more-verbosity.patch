@@ -1,0 +1,17 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- mtd/util/mkfs.jffs2.c~add-progress	2005-01-31 22:55:34.662944000 +0100
++++ mtd/util/mkfs.jffs2.c	2005-01-31 23:45:50.604511261 +0100
+@@ -374,6 +374,9 @@
+ 	struct filesystem_entry *entry;
+ 	struct ignorepath_entry* element = ignorepath;
+ 
++        if (verbose) {
++                printf( "mkfs.jffs2: scanning '%s'...\n", targetpath );
++        }
+ 
+ 	if (lstat(hostpath, &sb)) {
+ 		perror_msg_and_die("%s", hostpath);

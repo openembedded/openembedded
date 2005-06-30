@@ -1,0 +1,30 @@
+--- kernel/drivers/usb/gadget/ether.c	2005-04-24 12:40:08.867411535 +0200
++++ /tmp/ether.c	2005-04-24 12:39:02.119093498 +0200
+@@ -231,6 +231,16 @@
+ MODULE_PARM(host_addr, "s");
+ MODULE_PARM_DESC(host_addr, "Host Ethernet Address");
+ 
++#ifdef CONFIG_USB_ETH_RNDIS
++/* setting it to 1 disables the RNDIS extension,
++ *	needed to make g_ether compatible with usbnet from kernel < 2.6.10:
++ * - simple vendor/product
++ *	- just the CDC interface
++ */
++static u8 __initdata compat_mode;
++MODULE_PARM(compat_mode, "b");
++MODULE_PARM_DESC(compat_mode, "non-zero value reverts to traditional usbnet compatibility (RNDIS disabled)");
++#endif
+ 
+ /*-------------------------------------------------------------------------*/
+ 
+@@ -2336,6 +2346,10 @@
+ #endif
+ #ifndef	CONFIG_USB_ETH_RNDIS
+ 	rndis = 0;
++#else
++	if (compat_mode) {
++		rndis = 0;
++	}
+ #endif
+ 
+ 	/* Because most host side USB stacks handle CDC Ethernet, that

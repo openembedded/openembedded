@@ -1,0 +1,17 @@
+Index: src/sketchpad.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-sketchbook/src/sketchpad.c,v
+retrieving revision 1.30
+diff -r1.30 sketchpad.c
+74,75c74,75
+<   drawing_area_width  = SKETCH_WIDTH;
+<   drawing_area_height = SKETCH_HEIGHT;
+---
+>   drawing_area_width  = gdk_screen_width() - 26; //SKETCH_WIDTH;
+>   drawing_area_height = gdk_screen_height() - 130; // SKETCH_HEIGHT;
+202,203c202,203
+<   drawing_area_width = SKETCH_WIDTH;
+<   drawing_area_height = SKETCH_HEIGHT;
+---
+>   drawing_area_width  = gdk_screen_width() - 26; //SKETCH_WIDTH;
+>   drawing_area_height = gdk_screen_height() - 130; // SKETCH_HEIGHT;

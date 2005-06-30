@@ -1,0 +1,12 @@
+--- mgetty-1.1.27.orig/mgetty.cfg.in
++++ mgetty-1.1.27/mgetty.cfg.in
+@@ -20,6 +20,9 @@
+ # access the modem(s) with @SPEED@ bps
+ speed @SPEED@
+ 
++# use an alternate issue file, to avoid being bitten by linuxlogo
++issue-file /etc/issue.mgetty
++
+ #  use these options to make the /dev/tty-device owned by "uucp.uucp" 
+ #  and mode "rw-rw-r--" (0664). *LEADING ZERO NEEDED!*
+ #port-owner uucp

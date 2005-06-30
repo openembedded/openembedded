@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux/drivers/video/corgi_backlight.c~reduce-default-brightness-on-corgi
++++ linux/drivers/video/corgi_backlight.c
+@@ -65,7 +65,7 @@
+ static int is_corgibl_pm = 0;
+ 
+ #define CORGI_LIGHT_SETTING 7     // range setting : 0(OFF) dim 1 2 3 4 5(MAX)
+-#define CORGI_LIGHT_DEFAULT 6
++#define CORGI_LIGHT_DEFAULT 3
+ static int is_corgibl_blank = 0;
+ int counter_step_contrast = CORGI_LIGHT_DEFAULT;
+ static corgibl_limit = CORGI_LIGHT_SETTING - 1;

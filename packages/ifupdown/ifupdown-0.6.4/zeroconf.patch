@@ -1,0 +1,21 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ifupdown-0.6.4/inet.defn~zeroconf
++++ ifupdown-0.6.4/inet.defn
+@@ -120,3 +120,13 @@
+   down
+     /sbin/start-stop-daemon -X -x /usr/bin/wvdial \
+                       -p /var/run/wvdial.%iface%
++
++method zeroconf
++  description
++    This method uses zeroconf to configure an interface.  See the man page
++    for zcip for details.
++  up
++    /sbin/start-stop-daemon -S -x /usr/sbin/zcip -p /var/run/zcip.%iface% \
++    		      -- -s -i %iface%
++  down
++    /sbin/start-stop-daemon -X -x /usr/sbin/zcip -p /var/run/zcip.%iface%

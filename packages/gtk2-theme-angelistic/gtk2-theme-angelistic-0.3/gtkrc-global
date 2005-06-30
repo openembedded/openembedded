@@ -1,0 +1,14 @@
+# GPE specifics
+style "filesel"
+{
+        GtkFileSelection::show_fileops_default = 0
+        GtkFileSelection::border_width = 1
+}
+
+style "entry"
+{
+        GtkEntry::min_width = 25
+}
+
+class "GtkEntry" style "entry"
+class "GtkFileSelection" style "filesel"

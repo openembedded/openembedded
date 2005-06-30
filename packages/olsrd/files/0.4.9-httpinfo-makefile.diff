@@ -41,7 +41,7 @@
 +# to the project. For more information see the website or contact
 +# the copyright holders.
 +#
-+# $Id$
++# $Id: Makefile,v 1.20 2005/04/25 11:36:23 br1 Exp $
  
 +PLUGIN_NAME =	olsrd_httpinfo
 +PLUGIN_VER =	0.1

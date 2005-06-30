@@ -1,0 +1,31 @@
+Index: fush-0-9-0/Makefile.in
+===================================================================
+--- fush-0-9-0.orig/Makefile.in	2004-01-25 18:52:01.000000000 -0600
++++ fush-0-9-0/Makefile.in	2005-01-18 15:39:24.000000000 -0600
+@@ -1,6 +1,7 @@
+ CC =		@CC@
+ CFLAGS =	-Wall @CFLAGS@ @CPPFLAGS@ @DEFS@
+ LDFLAGS =	@LDFLAGS@ @LIBS@
++DESTDIR=
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ bindir=@bindir@
+@@ -31,12 +32,12 @@
+ 	cd src && $(MAKE) fuadmin
+ 
+ install : fush fuadmin
+-	$(INSTALL) -c -m 0755 src/fush $(bindir)/fush
+-	$(INSTALL) -c -m 0755 src/fuadmin $(sbindir)/fuadmin
+-	chown $(user) $(bindir)/fush
+-	chmod 4755 $(bindir)/fush
+-	$(INSTALL) -c -m 0755 man/fush.1.gz $(mandir)/man1/fush.1.gz
+-	$(INSTALL) -c -m 0755 man/fuadmin.1.gz $(mandir)/man1/fuadmin.1.gz
++	$(INSTALL) -c -m 0755 src/fush $(DESTDIR)$(bindir)/fush
++	$(INSTALL) -c -m 0755 src/fuadmin $(DESTDIR)$(sbindir)/fuadmin
++	-chown $(user) $(DESTDIR)$(bindir)/fush
++	-chmod 4755 $(DESTDIR)$(bindir)/fush
++	$(INSTALL) -c -m 0755 man/fush.1.gz $(DESTDIR)$(mandir)/man1/fush.1.gz
++	$(INSTALL) -c -m 0755 man/fuadmin.1.gz $(DESTDIR)$(mandir)/man1/fuadmin.1.gz
+ 
+ config :
+ 	src/fuadmin -c

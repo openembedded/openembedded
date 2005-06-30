@@ -1,0 +1,110 @@
+This are misc fixes to warnings.
+
+Somehow I have the feeling that Agere never used -Wall or is still using
+ancient compilers (e.g. gcc-2.95.x) so that they don't see those warnings.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- wlags/wl_main.c~fixes
++++ wlags/wl_main.c
+@@ -81,6 +81,7 @@
+  ******************************************************************************/
+ #include "wl_version.h"
+ 
++#include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+@@ -1122,7 +1123,6 @@
+         VALID_PARAM( PARM_PM_ENABLED <= WVLAN_PM_STATE_STANDARD );
+         VALID_PARAM( !PARM_CREATE_IBSS || strchr( "NnYy", PARM_CREATE_IBSS[0] ) != NULL );
+         VALID_PARAM( !PARM_RX_MULTICAST || strchr( "NnYy", PARM_RX_MULTICAST[0] ) != NULL );
+-        VALID_PARAM(( PARM_MAX_SLEEP <= PARM_MAX_MAX_PM_SLEEP ));
+         VALID_PARAM(( PARM_AUTHENTICATION <= PARM_MAX_AUTHENTICATION ));
+         VALID_PARAM(( PARM_OWN_ATIM_WINDOW <= PARM_MAX_OWN_ATIM_WINDOW ));
+         VALID_PARAM(( PARM_PM_HOLDOVER_DURATION <= PARM_MAX_PM_HOLDOVER_DURATION ));
+@@ -1513,6 +1513,7 @@
+         WL_WDS_NETDEV_REGISTER( lp );
+ 
+ 
++#ifdef USE_OLD_PARMS
+         /* Reset the DownloadFirmware variable in the private struct. If the
+            config file is not used, this will not matter; if it is used, it
+            will be reparsed in wl_open(). This is done because logic in wl_open
+@@ -1520,6 +1521,7 @@
+            the file here; however, this parsing is needed to register WDS ports
+            in AP mode, if they are configured */
+         lp->DownloadFirmware = download_firmware;
++#endif
+ 
+ 
+ #ifdef USE_RTS
+@@ -1539,10 +1541,12 @@
+     DBG_TRACE( DbgInfo, "%s: Wireless, io_addr %#03lx, irq %d, ""mac_address ",
+                dev->name, dev->base_addr, dev->irq );
+ 
++#if 0
+     for( i = 0; i < ETH_ALEN; i++ )
+     {
+         printk( "%02X%c", dev->dev_addr[i], (( i < ( ETH_ALEN-1 )) ? ':' : '\n' ));
+     }
++#endif
+    
+     
+     DBG_LEAVE( DbgInfo );
+@@ -4078,6 +4082,7 @@
+ 
+         break;
+ 
++#if DBG
+     case CFG_LINK_STAT:
+         DBG_TRACE( DbgInfo, "CFG_LINK_STAT\n" );
+ 
+@@ -4254,6 +4259,7 @@
+     default:
+         DBG_TRACE( DbgInfo, "CFG_TALLIES\n" );
+         break;
++#endif
+     }
+ 
+ 
+--- wlags/hcf.c~fixes
++++ wlags/hcf.c
+@@ -181,11 +181,14 @@
+ 
+ 	COMP_ROLE_SUPL,
+ 	COMP_ID_DUI,
+-	{	DUI_COMPAT_VAR,
++	{
++		{
++		DUI_COMPAT_VAR,
+ 		DUI_COMPAT_BOT,
+ 		DUI_COMPAT_TOP
++		}
+ 	}
+-} ;
++};
+ 
+ struct CFG_RANGE3_STRCT BASED cfg_drv_act_ranges_pri = {
+ 	sizeof(cfg_drv_act_ranges_pri)/sizeof(hcf_16) - 1,	//length of RID
+@@ -3603,7 +3606,7 @@
+ 
+ 	if ( (ifbp->IFB_CardStat & (CARD_STAT_INCOMP_PRI|CARD_STAT_INCOMP_FW) ) == 0 &&			/* 20*/
+ 		 ( (CFG_RID_CFG_MIN <= ltvp->typ && ltvp->typ <= CFG_RID_CFG_MAX ) ||
+-		 (0xFFE0 <= ltvp->typ && ltvp->typ <= 0xFFFF ) )) {
++		 (0xFFE0 <= ltvp->typ) )) {
+ 
+ #if HCF_ASSERT
+ 		if ( ltvp->typ != CFG_DEFAULT_KEYS			&& ltvp->typ != CFG_ADD_TKIP_DEFAULT_KEY	&& \
+--- wlags/wl_enc.c~fixes
++++ wlags/wl_enc.c
+@@ -78,6 +78,7 @@
+ /*******************************************************************************
+  *  include files
+  ******************************************************************************/
++#include <asm/uaccess.h>
+ #include "wl_version.h"
+ 
+ #include "debug.h"

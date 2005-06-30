@@ -1,0 +1,15 @@
+--- src/audio_out/Makefile.am.patched	2003-12-07 14:59:19.466805328 -0600
++++ src/audio_out/Makefile.am	2003-12-07 14:59:43.083215088 -0600
+@@ -6,9 +6,9 @@
+ 
+ libdir = $(XINE_PLUGINDIR)
+ 
+-if HAVE_OSS
++#if HAVE_OSS
+ oss_module = xineplug_ao_out_oss.la
+-endif
++#endif
+ 
+ if HAVE_ALSA
+ if HAVE_ALSA09
+

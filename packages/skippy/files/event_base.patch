@@ -1,0 +1,11 @@
+--- skippy-xd-0.5.0/mainwin.c.old	2005-04-29 03:54:32 +01:00
++++ skippy-xd-0.5.0/mainwin.c	2005-04-29 03:55:06 +01:00
+@@ -67,7 +67,7 @@
+ 	XRenderPictureAttributes pa;
+ 	XRenderColor clear;
+ 	int error_base;
+-#ifdef XINERAMA
++#if 1
+ 	int event_base;
+ #endif /* XINERAMA */
+ 	

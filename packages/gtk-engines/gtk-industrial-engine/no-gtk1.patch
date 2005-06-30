@@ -1,0 +1,31 @@
+--- gtk-industrial-engine-0.2.36.2/configure.ac.old	2004-11-28 16:48:45.000000000 +0000
++++ gtk-industrial-engine-0.2.36.2/configure.ac	2004-11-28 16:48:54.000000000 +0000
+@@ -27,11 +27,6 @@
+ AC_SUBST(GTK2_LIBS)
+ AC_SUBST(GTK2_VERSION)
+ 
+-AM_PATH_GTK(1.2.9, ,
+-        AC_MSG_ERROR([*** GTK+-1.2.9 not installed - please install first ***]))AC_CHECK_LIB(gtk, gtk_style_set_prop_experimental, :,
+-             AC_MSG_ERROR([*** gtk_style_set_prop_experimental() not found; perhaps you have an old CVS version of GTK+ ***]),
+-             $GTK_LIBS)
+-
+ AC_CONFIG_FILES([
+ Makefile
+ icons/24x24/apps/Makefile
+@@ -56,8 +51,6 @@
+ icons/192x192/apps/Makefile
+ icons/192x192/filesystems/Makefile
+ icons/192x192/Makefile
+-gtk1-engine/Makefile
+-gtk1-engine/gtk/Makefile
+ gtk2-engine/Makefile
+ gtk2-engine/gtk-2.0/Makefile
+ gtk2-engine/gtk-2.0/gtkrc
+--- gtk-industrial-engine-0.2.36.2/Makefile.am.old	2004-11-28 16:49:02.000000000 +0000
++++ gtk-industrial-engine-0.2.36.2/Makefile.am	2004-11-28 16:49:08.000000000 +0000
+@@ -1,4 +1,4 @@
+-SUBDIRS = icons gtk1-engine gtk2-engine metacity po
++SUBDIRS = icons gtk2-engine metacity po
+ 
+ THEME_IN_FILES=index.theme.in
+ 

@@ -1,0 +1,63 @@
+--- gnuboy/qtopiagnuboyl/main.cpp~qtopiagnuboyl-hwkeys	2002-02-19 22:06:57.000000000 -0600
++++ gnuboy/qtopiagnuboyl/main.cpp	2003-04-03 08:57:35.000000000 -0600
+@@ -8,6 +8,14 @@
+     QtopiaGnuboyL mainWin(NULL, "mainWin");
+     
+     app.showMainWidget(&mainWin);
+-    
+-    return app.exec();
++    app.grabKeyboard();    
++    if (app.exec()) {
++       app.grabKeyboard();
++       app.ungrabKeyboard();
++       return 1;
++    } else {
++       app.grabKeyboard();
++       app.ungrabKeyboard();
++       return 0;
++    }
+ }
+--- gnuboy/gnuboy-1.0.3-qtopia2/sys/qtopia/mainwindow.cpp~qtopiagnuboyl-hwkeys	2001-12-27 07:46:03.000000000 -0600
++++ gnuboy/gnuboy-1.0.3-qtopia2/sys/qtopia/mainwindow.cpp	2003-04-03 08:58:52.000000000 -0600
+@@ -2,6 +2,8 @@
+ 
+ #include <qevent.h>
+ 
++#include <qpe/qpeapplication.h>
++
+ #include "mainwidget.h"
+ #include "mainwindow.h"
+ 
+@@ -12,6 +14,8 @@
+  
+     m_DisplayWidget->setBackgroundColor(black);
+     m_DisplayWidget->setFocus();
++
++    QPEApplication::grabKeyboard();
+  
+     setCentralWidget(m_DisplayWidget);
+ }
+@@ -24,6 +28,8 @@
+ {
+     if (m_DisplayWidget)
+         m_DisplayWidget->close();
++
++    QPEApplication::ungrabKeyboard();
+     
+     e->ignore();
+     QMainWindow::closeEvent(e);
+--- gnuboy/gnuboy-1.0.3-qtopia2/sys/qtopia/mainwidget.cpp~qtopiagnuboyl-hwkeys	2001-12-27 07:46:03.000000000 -0600
++++ gnuboy/gnuboy-1.0.3-qtopia2/sys/qtopia/mainwidget.cpp	2003-04-03 08:58:52.000000000 -0600
+@@ -16,9 +16,9 @@
+      m_Keymap[(int)Qt::Key_Up] = K_UP;
+      m_Keymap[(int)Qt::Key_Down] = K_DOWN;
+      m_Keymap[(int)Qt::Key_Enter] = K_ENTER;
+-     m_Keymap[(int)Qt::Key_Return] = K_ENTER; // start
+-     m_Keymap[Qt::Key_L] = (int)'s';          // b
+-     m_Keymap[Qt::Key_J] = (int)'d';          // a
++     m_Keymap[(int)Qt::Key_F12] = K_ENTER; // start
++     m_Keymap[Qt::Key_F10] = (int)'s';          // b
++     m_Keymap[Qt::Key_F9] = (int)'d';          // a
+      m_Keymap[Qt::Key_Space] = K_SPACE;       // select
+     }
+     
