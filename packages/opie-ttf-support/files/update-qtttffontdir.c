@@ -53,7 +53,6 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
-			fprintf(stderr, "plik: %s\n\n", plik->d_name);
 			if(!FT_New_Face(library, plik->d_name, 0, &face))
 			{
 				/*
