@@ -2,6 +2,8 @@
 # and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
 
 PATH="/usr/local/bin:/usr/bin:/bin"
+EDITOR="/bin/vi"	# needed for packages like cron
+TERM="vt100"		# Basic terminal capab. For screen etc.
 
 if [ "`id -u`" -eq 0 ]; then
    PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:
@@ -18,7 +20,7 @@ if [ -d /etc/profile.d ]; then
   unset i
 fi
 
-export PATH PS1 OPIEDIR QPEDIR QTDIR
+export PATH PS1 OPIEDIR QPEDIR QTDIR EDITOR TERM
 
 umask 022
 
