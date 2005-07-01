@@ -2932,3 +2932,32 @@ Manuel Teira <manuel.teira@telefonica.net>
 +{
 +    return( new QW100Screen( display_id ) );
 +}
+--- qt-2.3.10/src/kernel/qapplication_qws.cpp~w100
++++ qt-2.3.10/src/kernel/qapplication_qws.cpp
+@@ -1450,16 +1450,25 @@
+ extern void qws_clearLoadedFonts();
+ #endif
+ 
++#ifndef QT_NO_QWS_W100
++extern void qws_w100Transformation( int t );
++#endif
++
+ void QWSDisplay::setTransformation( int t )
+ {
+-#ifndef QT_NO_QWS_TRANSFORMED
++#if !defined(QT_NO_QWS_TRANSFORMED) || !defined(QT_NO_QWS_W100)
+     QRect mwr = qt_screen->mapToDevice(qt_maxWindowRect,
+ 	QSize(qt_screen->width(), qt_screen->height()) );
+ 
+     QPixmapCache::clear();
+     qws_clearLoadedFonts();
+     qws_mapPixmaps( TRUE );
++#ifndef QT_NO_QWS_TRANSFORMED
+     qws_setScreenTransformation( t );
++#endif
++#ifndef QT_NO_QWS_W100
++    qws_w100Transformation( t );
++#endif
+     qws_mapPixmaps( FALSE );
+ 
+     if ( qt_fbdpy->d->directServerConnection() ) {
