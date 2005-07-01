@@ -17,15 +17,14 @@ fi
 
 . /etc/profile
 
-if [ ! -e "$HOME/Settings/qpe.conf" ] ; then
-    echo "Copying default qpe.conf into $HOME/Settings/"
-    mkdir -p $HOME/Settings/
-    cat $OPIEDIR/etc/skel/qpe.conf >$HOME/Settings/qpe.conf
-fi
-
-if [ ! -e "$HOME/Settings/locale.conf" -a -e "$OPIEDIR/etc/skel/locale.conf" ] ; then
-    cat $OPIEDIR/etc/skel/locale.conf >$HOME/Settings/locale.conf
-fi
+for conf in $OPIEDIR/etc/skel/*.conf; do
+	conf_basename=`basename $conf`
+	if [ ! -e "$HOME/Settings/$conf_basename" ] ; then
+		echo "Copying default $conf_basename into $HOME/Settings/"
+		mkdir -p $HOME/Settings/
+		cat $conf >$HOME/Settings/$conf_basename
+	fi
+done
 
 if [ ! -e "$HOME/systeminfo/linkver" ] ; then
     mkdir -p $HOME/systeminfo/

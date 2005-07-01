@@ -7,7 +7,7 @@ DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r19"
+PR = "r21"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -27,10 +27,12 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://increase-qxml-robustness.patch;patch=1 \
 	   file://qte-fix-iconsize.patch;patch=1 \
 	   file://fix-linuxfb-setmode.patch;patch=1 \
+       file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
+       file://fix-qscreen-sync.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://key.patch;patch=1 \
 	   file://switches.h \
-           file://bidimetrics.patch;patch=5 "
+       file://bidimetrics.patch;patch=5 "
 
 SRC_URI_append_simpad   	= "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0		= "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://c7x0-w100-accel.patch;patch=1 "
