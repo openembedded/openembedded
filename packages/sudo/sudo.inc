@@ -10,7 +10,7 @@ SECTION = "admin"
 
 inherit autotools
 
-EXTRA_OECONF = "--with-env-editor"
+EXTRA_OECONF = "--with-editor=/bin/vi --with-env-editor"
 
 do_configure_prepend () {
 	rm -f acsite.m4

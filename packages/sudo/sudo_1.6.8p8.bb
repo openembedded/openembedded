@@ -5,4 +5,4 @@ SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz \
 	   file://noexec-link.patch;patch=1"
 
 include sudo.inc
-PR = "r2"
+PR = "r3"
