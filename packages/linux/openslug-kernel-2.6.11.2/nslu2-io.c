@@ -65,9 +65,9 @@
 
 #define VERSION			"0.1.7"
 
-#define N2RB_MAJOR		60
-#define N2PB_MAJOR		61
-#define	N2BZ_MAJOR		62
+#define N2RB_MAJOR		60		//rbuttons
+#define N2PB_MAJOR		61		//pbuttons
+#define	N2BZ_MAJOR		62		//buzzer
 #define N2LM_MAJOR		126
 
 #define N2PB_IRQ		22		//gpio5
@@ -175,6 +175,9 @@ static struct timer_list n2lm_d2_timer;		//drive 2
 static struct timer_list n2rb_timer;
 static struct timer_list n2pb_timer;
 static struct timer_list n2bz_timer;		//beeper
+
+// sysfs class
+static struct class_simple *n2lm_class;
 
 //==================================================================================================
 //
@@ -693,21 +696,35 @@ static int __init n2iom_init(void)
 	printk(KERN_DEBUG "init_jiffy=%ld\n",init_jiffy);
 	n2iom_initarch();
 
+	n2lm_class = class_simple_create(THIS_MODULE, "nslu2");
+
 	if (register_chrdev(N2RB_MAJOR, "n2_rbm", &n2pb_fops) < NOERR) {
 		printk(KERN_DEBUG "Reset Button Major %d not available\n", N2RB_MAJOR);
 		return -EBUSY;
+	}
+	else {
+		class_simple_device_add(n2lm_class, MKDEV(N2RB_MAJOR, 0), NULL, "rbuttons");
 	}
 	if (register_chrdev(N2PB_MAJOR, "n2_pbm", &n2rb_fops) < NOERR) {
 		printk(KERN_DEBUG "Power Button Major %d not available\n", N2PB_MAJOR);
 		return -EBUSY;
 	}
+	else {
+		class_simple_device_add(n2lm_class, MKDEV(N2PB_MAJOR, 0), NULL, "pbuttons");
+	}
 	if (register_chrdev(N2LM_MAJOR, "n2_ledm", &n2lm_fops) < NOERR) {
 		printk(KERN_DEBUG "Led Manager Major %d not available\n", N2LM_MAJOR);
 		return -EBUSY;
 	}
+	else {
+		class_simple_device_add(n2lm_class, MKDEV(N2LM_MAJOR, 0), NULL, "leds");
+	}
 	if (register_chrdev(N2BZ_MAJOR, "n2_bzm", &n2bz_fops) < NOERR) {
 		printk(KERN_DEBUG "Buzzer Major %d not available\n", N2BZ_MAJOR);
 		return -EBUSY;
+	}
+	else {
+		class_simple_device_add(n2lm_class, MKDEV(N2BZ_MAJOR, 0), NULL, "buzzer");
 	}
 
 	if (request_irq(N2RB_IRQ, &n2rb_handler, SA_INTERRUPT, "n2_rb", NULL) < NOERR) {
@@ -732,14 +749,20 @@ static void __exit n2iom_exit(void)
 	del_timer(&n2rb_timer);
 	free_irq(N2RB_IRQ,NULL);
 	unregister_chrdev(N2PB_MAJOR, "n2pb");
+	class_simple_device_remove(MKDEV(N2PB_MAJOR, 0));
 	del_timer(&n2pb_timer);	
 	free_irq(N2PB_IRQ, NULL);
 	unregister_chrdev(N2RB_MAJOR, "n2rb" );
+	class_simple_device_remove(MKDEV(N2RB_MAJOR, 0));
 	del_timer(&n2lm_rsg_timer);
 	del_timer(&n2lm_rsr_timer);
 	del_timer(&n2lm_d1_timer);
 	del_timer(&n2lm_d2_timer);	
 	unregister_chrdev(N2LM_MAJOR, "n2lm" );
+	class_simple_device_remove(MKDEV(N2LM_MAJOR, 0));
+	unregister_chrdev(N2BZ_MAJOR, "n2bz");
+	class_simple_device_remove(MKDEV(N2BZ_MAJOR, 0));
+	class_simple_destroy(n2lm_class);
 }
 
 module_init (n2iom_init);
