@@ -3,6 +3,7 @@
 [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
 [ -z $HOME ] && export HOME=/home/$LOGNAME
 
+export QWS_DISPLAY=Transformed:Rot0:0
 export QTDIR=/opt/QtPalmtop
 export OPIEDIR=/opt/QtPalmtop
 export QPEDIR=/opt/QtPalmtop
