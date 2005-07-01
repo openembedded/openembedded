@@ -1,0 +1,5 @@
+PREFERRED_PROVIDER_gconf = "gconf-osso"
+PREFERRED_PROVIDER_tslib = "tslib-maemo"
+PREFERRED_VERSION_dbus = "0.23.1-osso5"
+PREFERRED_VERSION_audiofile = "0.2.6-3osso4"
+PREFERRED_PROVIDER_esd = "osso-esd"

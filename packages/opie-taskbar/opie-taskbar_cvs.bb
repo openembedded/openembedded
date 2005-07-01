@@ -1,7 +1,7 @@
 include ${PN}.inc
     
 PV = "1.2.0+cvs-${CVSDATE}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \
@@ -10,10 +10,10 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/apps \
            ${HANDHELDS_CVS};module=opie/root \
            ${HANDHELDS_CVS};module=opie/etc \
-	   file://nomax.patch;patch=1;pnum=3 \
+           file://nomax.patch;patch=1;pnum=3 \
            file://server.pro \
            file://opie-reorgfiles \
            file://opie \
            file://qpe.conf \
-	   file://locale.conf \
-	   file://opie_defaults"
+           file://locale.conf \
+           file://opie_defaults"

@@ -2,6 +2,7 @@ DESCRIPTION = "Linux Bluetooth Stack Userland Libaries."
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r0"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-libs-${PV}.tar.gz"
 

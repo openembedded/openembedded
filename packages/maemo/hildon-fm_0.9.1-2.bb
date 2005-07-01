@@ -1,12 +1,12 @@
+PR 	= 	"r1"
 LICENSE =	"GPL/LGPL"
-MAINTAINER = 	"Koen Kooi <koen@handhelds.org>"
-PR =		"r1"	
+MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
 DEPENDS =	"gtk+-2.6.4-1.osso7 outo libxi xt libpng gconf hildon-lgpl osso-thumbnail osso-gwconnect"
 SRC_URI = 	"http://repository.maemo.org/pool/maemo/ossw/source/h/hildon-fm/hildon-fm_${PV}.tar.gz"
 
-S = 		"${WORKDIR}/hildon-fm-0.9.1"
-FILES_${PN} += 	"${libdir}/outo/*.so"
+S = 	"${WORKDIR}/hildon-fm-0.9.1"
+FILES_${PN} += "${libdir}/outo/*.so"
 
 inherit pkgconfig autotools
 
