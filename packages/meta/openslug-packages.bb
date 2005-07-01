@@ -42,7 +42,6 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 
 OPENSLUG_PACKAGES = "\
-	atftp \
 	bash \
 	bluez-utils-nodbus bridge-utils \
 	coreutils cron \
@@ -78,6 +77,7 @@ OPENSLUG_PACKAGES_append_linux = "\
 	nfs-utils \
 	"
 BROKEN_PACKAGES = "\
+	atftp \
 	strace \
 	mgetty \
 	"
