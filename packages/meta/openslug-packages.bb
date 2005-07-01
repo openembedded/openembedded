@@ -65,7 +65,6 @@ OPENSLUG_PACKAGES = "\
 	reiserfsprogs reiser4progs \
 	python \
 	samba \
-	strace \
 	wget \
 	unionfs-modules unionfs-utils \
 	"
@@ -79,6 +78,7 @@ OPENSLUG_PACKAGES_append_linux = "\
 	nfs-utils \
 	"
 BROKEN_PACKAGES = "\
+	strace \
 	mgetty \
 	"
 
