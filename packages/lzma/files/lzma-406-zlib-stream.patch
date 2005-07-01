@@ -42,7 +42,7 @@ diff -BurN lzma406/SRC/7zip/Compress/LZMA_Lib/makefile lzma/SRC/7zip/Compress/LZ
 +CXX = g++ -O3 -Wall
 +AR = ar
 +RM = rm -f
-+CFLAGS = -c -I ../../../ 
++CFLAGS = -c
 +
 +OBJS = \
 +  ZLib.o \
