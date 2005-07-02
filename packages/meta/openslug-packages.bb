@@ -10,6 +10,7 @@ OPENSLUG_DEVELOPMENT = "\
 	autoconf \
 	automake \
 	bash \
+	binutils \
 	bison \
 	bzip2 \
 	coreutils \
@@ -20,6 +21,7 @@ OPENSLUG_DEVELOPMENT = "\
 	gawk \
 	gcc \
 	gdb \
+	gnu-config \
 	grep \
 	lsof \
 	m4 \
@@ -40,10 +42,10 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 
 OPENSLUG_PACKAGES = "\
-	atftp \
 	bash \
 	bluez-utils-nodbus bridge-utils \
-	coreutils cvs\
+	coreutils cron \
+	cvs\
 	dnsmasq \
 	expat \
 	ftpd-topfield \
@@ -51,6 +53,7 @@ OPENSLUG_PACKAGES = "\
 	miau microcom mt-daapd mysql \
 	nail \
 	openssh \
+	openvpn \
 	ppp puppy pwc \
 	rsync \
 	sudo sysfsutils \
@@ -61,7 +64,6 @@ OPENSLUG_PACKAGES = "\
 	reiserfsprogs reiser4progs \
 	python \
 	samba \
-	strace \
 	wget \
 	unionfs-modules unionfs-utils \
 	"
@@ -75,7 +77,8 @@ OPENSLUG_PACKAGES_append_linux = "\
 	nfs-utils \
 	"
 BROKEN_PACKAGES = "\
-	cron \
+	atftp \
+	strace \
 	mgetty \
 	"
 

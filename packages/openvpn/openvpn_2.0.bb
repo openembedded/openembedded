@@ -6,11 +6,13 @@ LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "lzo openssl"
 RDEPENDS = "kernel-module-tun"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://openvpn.net/release/openvpn-${PV}.tar.gz \
 	file://openvpn"
 S = "${WORKDIR}/openvpn-${PV}"
+
+CFLAGS += "-fno-inline"
 
 inherit autotools
 

@@ -30,7 +30,7 @@ do_install_append() {
 	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
 	rm -f ${D}${bindir}/*.old
 	rm -f ${D}${sbindir}/*.old
-	mv mount.cifs  ${D}${bindir}/mount.cifs
+	install -c -m 755 mount.cifs  ${D}${bindir}/mount.cifs
 }
 
 do_stage() {
