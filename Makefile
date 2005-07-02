@@ -28,14 +28,19 @@ openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf
 optware build-optware: optware/Makefile
 	( cd optware ; make )
 
-.PHONY: setup-master
-setup-master monotone/nslu2-linux.db unslung/Makefile openslug/Makefile:
+.PHONY: setup-monotone
+setup-monotone monotone/nslu2-linux.db:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
 	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded )
 	( monotone -d monotone/nslu2-linux.db unset database default-server )
 	( monotone -d monotone/nslu2-linux.db unset database default-collection )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org )
+
+unslung/Makefile openslug/Makefile: monotone/nslu2-linux.db
 	[ -e MT ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
+
+.PHONY: setup-master
+setup-master: setup-monotone unslung/Makefile openslug/Makefile
 	[ -e downloads ] || mkdir -p downloads
 	[ -e unslung/downloads ]  || ( cd unslung  ; ln -s ../downloads . )
 	[ -e openslug/downloads ] || ( cd openslug ; ln -s ../downloads . )
@@ -59,7 +64,11 @@ setup-optware optware/Makefile:
 
 .PHONY: update-master
 update-master: monotone/nslu2-linux.db
-	monotone pull && monotone update
+	monotone pull
+	monotone update
+	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.nslu2-linux.dev ; \
+	fi
 
 .PHONY: update-bitbake
 update-bitbake: bitbake/bin/bitbake
@@ -67,7 +76,11 @@ update-bitbake: bitbake/bin/bitbake
 
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
-	( cd openembedded ; monotone pull && monotone update )
+	monotone pull
+	( cd openembedded ; monotone update )
+	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.nslu2-linux ; \
+	fi
 
 .PHONY: update-oe-symlinks
 update-oe-symlinks: oe-symlinks/packages
@@ -81,9 +94,9 @@ update-optware: optware/Makefile
 push-master: monotone/nslu2-linux.db
 	monotone push
 
-.PHONY: upload-master
-upload-master: push-master
-	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
+.PHONY: push-openembedded
+push-openembedded: openembedded/conf/machine/nslu2.conf
+	( cd openembedded ; monotone push )
 
 .PHONY: clobber-bitbake
 clobber-bitbake:
@@ -106,5 +119,40 @@ clobber-optware:
 unslung-build  : build-unslung
 openslug-build : build-openslug
 optware-build  : build-optware
+
+# Core team use only targets
+
+.PHONY: publish-master
+publish-master: push-master
+	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
+
+.PHONY: import-openembedded
+import-openembedded: openembedded/conf/machine/nslu2.conf
+	monotone pull monotone.vanille.de org.openembedded
+	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.dev ; \
+	fi
+
+.PHONY: propagate-from-oe
+propagate-from-oe: 
+	monotone propagate org.openembedded.dev org.openembedded.nslu2-linux
+	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.nslu2-linux ; \
+	fi
+
+.PHONY: propagate-to-oe
+propagate-to-oe: 
+	monotone propagate org.openembedded.nslu2-linux org.openembedded.dev
+	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.dev ; \
+	fi
+
+.PHONY: export-openembedded
+export-openembedded: openembedded/conf/machine/nslu2.conf
+	monotone push monotone.vanille.de org.openembedded
+
+.PHONY: publish-openembedded
+publish-openembedded: import-openembedded propagate-from-oe update-openembedded \
+		      propagate-to-oe push-openembedded export-openembedded
 
 # End of Makefile
