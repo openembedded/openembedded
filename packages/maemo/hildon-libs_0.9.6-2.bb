@@ -1,16 +1,19 @@
-PR =		"r1"
+PR 	= 	"r1"
 LICENSE = 	"LGPL"
-MAINTAINER = 	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
 DEPENDS =	"dbus hildon-lgpl hildon-fm outo gtk+-2.6.4-1.osso7"
-SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/h/hildon-libs/hildon-libs_${PV}.tar.gz \
-		file://hildon-libs-no-werror.patch;patch=1"
+SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/h/${PN}/${PN}_${PV}.tar.gz \
+			file://hildon-libs-no-werror.patch;patch=1"
 
-S =	"${WORKDIR}/hildon-libs-0.9.6"
+S = "${WORKDIR}/hildon-libs-0.9.6"
 
-inherit pkgconfig autotools
+inherit autotools pkgconfig
+
 EXTRA_OECONF =	"--disable-gtk-doc"
 
+
+FILES_${PN} += "${libdir}/outo/*.so"
 
 do_stage() {
   install -d ${STAGING_LIBDIR}/outo
@@ -20,4 +23,3 @@ do_stage() {
   install -d ${STAGING_INCDIR}/hildon-widgets
   install -m 644 hildon-widgets/*.h ${STAGING_INCDIR}/hildon-widgets
 }
-

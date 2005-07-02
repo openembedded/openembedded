@@ -1,18 +1,15 @@
+PR 	= "r2"
 LICENSE =	""
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
-DEPENDS = 	"gtk+-2.6.4-1.osso7 osso-gnome-vfs2"
+DEPENDS = "gtk+-2.6.4-1.osso7 osso-gnome-vfs2"
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/osso-thumbnail/osso-thumbnail_${PV}.tar.gz"
-S = 	"${WORKDIR}/osso-thumbnail-0.3.1"
+
+S = "${WORKDIR}/osso-thumbnail-0.3.1"
 
 inherit pkgconfig autotools
 EXTRA_OECONF =	"--disable-gtk-doc"
 
-
-do_install_prepend() {
-	install -d ${D}/${libdir}
-	install thumbs/.libs/libossothumbnail.so.0.0.3 ${D}${libdir}/
-}
 
 do_stage() {
 	install -d ${STAGING_INCDIR}
