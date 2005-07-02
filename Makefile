@@ -79,11 +79,11 @@ update-optware: optware/Makefile
 
 .PHONY: push-master
 push-master: monotone/nslu2-linux.db
-	monotone merge && monotone push
+	monotone push
 
 .PHONY: upload-master
-upload-master: monotone/nslu2-linux.db
-	scp Makefile www.nslu2-linux.org:/home/nslu2/public_html/Makefile
+upload-master: push-master
+	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
 
 .PHONY: clobber-bitbake
 clobber-bitbake:
