@@ -77,6 +77,14 @@ update-oe-symlinks: oe-symlinks/packages
 update-optware: optware/Makefile
 	( cd optware ; cvs update -d -P )
 
+.PHONY: push-master
+push-master: monotone/nslu2-linux.db
+	monotone merge && monotone push
+
+.PHONY: upload-master
+upload-master: monotone/nslu2-linux.db
+	scp Makefile www.nslu2-linux.org:/home/nslu2/public_html/Makefile
+
 .PHONY: clobber-bitbake
 clobber-bitbake:
 	rm -rf bitbake
