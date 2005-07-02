@@ -36,8 +36,8 @@ setup-monotone monotone/nslu2-linux.db:
 	( monotone -d monotone/nslu2-linux.db unset database default-collection )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org )
 
-unslung/Makefile openslug/Makefile: monotone/nslu2-linux.db
-	[ -e MT ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
+unslung/Makefile openslug/Makefile MT/revision: monotone/nslu2-linux.db
+	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 
 .PHONY: setup-master
 setup-master: setup-monotone unslung/Makefile openslug/Makefile
@@ -50,7 +50,7 @@ setup-bitbake bitbake/bin/bitbake:
 	[ -e bitbake/bin/bitbake ] || ( svn co svn://svn.berlios.de/bitbake/trunk/bitbake )
 
 .PHONY: setup-openembedded
-setup-openembedded openembedded/conf/machine/nslu2.conf: monotone/nslu2-linux.db
+setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 
 .PHONY: setup-oe-symlinks
@@ -63,7 +63,7 @@ setup-optware optware/Makefile:
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
 .PHONY: update-master
-update-master: monotone/nslu2-linux.db
+update-master: MT/revision
 	monotone pull
 	monotone update
 	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
