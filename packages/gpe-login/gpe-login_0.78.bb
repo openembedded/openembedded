@@ -8,4 +8,6 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS = "xkbd"
 RPROVIDES = "gpe-session-starter"
-PR = "r0"
+PR = "r1"
+
+SRC_URI += "file://fixMakefile.translation.patch;patch=1;pnum=0"
