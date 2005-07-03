@@ -1,5 +1,5 @@
 
-PR          = "r7"
+PR          = "r6"
 PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme
 DESCRIPTION = "Meta-package for maemo environment"
 MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
@@ -43,7 +43,8 @@ maemo-task-base = "\
     osso-core-config \
     osso-gnome-vfs2 \
     osso-thumbnail \
-    xauth"
+    xauth \
+    esd"
 
 RDEPENDS_maemo-task-base := "gdk-pixbuf-loader-png \
 			   gdk-pixbuf-loader-xpm \

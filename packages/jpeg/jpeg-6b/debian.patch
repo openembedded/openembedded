@@ -6995,7 +6995,7 @@
 +end
 --- /dev/null
 +++ jpeg-6b/ltconfig.new
-@@ -0,0 +1,3017 @@
+@@ -0,0 +1,3016 @@
 +#! /bin/sh
 +
 +# ltconfig - Create a system-specific libtool.
@@ -8931,7 +8931,6 @@
 +  else
 +    # Only the GNU ld.so supports shared libraries on MkLinux.
 +    case "$host_cpu" in
-+    powerpc*) dynamic_linker=no ;;
 +    *) dynamic_linker='Linux ld.so' ;;
 +    esac
 +  fi
