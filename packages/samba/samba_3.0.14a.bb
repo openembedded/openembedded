@@ -1,4 +1,5 @@
-PR = "r6"
+
+PR = "r7"
 
 # Ugly patch to hack configure.in to set the CPPFLAGS without actually checking for LFS support
 # For nslu2. Will probably work for forcing for other archs as well. 
@@ -10,6 +11,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://cifs.patch;patch=1 \
 	   ${LFS_SRC_URI} \
 	   file://init \
+           file://quota.patch;patch=1;pnum=0 \
 	   "
 S := ${WORKDIR}/${P}/source
 
