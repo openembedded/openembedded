@@ -104,9 +104,10 @@ python () {
     base = pv[0]
     name = [base]
     major = '.'.join(name[0].split('.')[0:2])
+    minor = '.'.join(name[0].split('.')[0:3])
     patch_uri = [ None ]
     filedir = "${FILE_DIRNAME}/nslu2-kernel/%s"
-    # This entry will become the last one (everything is insertd before it)
+    # This entry will become the last one (everything is inserted before it)
     filepath = [ filedir % "files" ]
     pref = 10
     mmac = 0
@@ -141,6 +142,8 @@ python () {
     base = '.'.join(kernel)
     patch_uri[0] = "ftp://ftp.kernel.org/pub/linux/kernel/v%s/linux-%s.tar.bz2" % (major, base)
     filepath[-1:-1] = [ filedir % base ]
+    if base != minor:
+	    filepath[-1:-1] = [ filedir % minor ]
     filepath[-1:-1] = [ filedir % major ]
 
     bb.data.setVar("N2K_SRCMAJ", major, d)
