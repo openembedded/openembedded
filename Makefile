@@ -17,11 +17,11 @@ update: update-master update-bitbake update-openembedded update-oe-symlinks upda
 clobber: clobber-optware clobber-oe-symlinks clobber-openembedded clobber-bitbake
 
 .PHONY: unslung build-unslung
-unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+unslung build-unslung: unslung/Makefile downloads bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
 	( cd unslung ; make )
 
 .PHONY: openslug build-openslug
-openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+openslug build-openslug: openslug/Makefile downloads bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
 	( cd openslug ; make )
 
 .PHONY: optware build-optware
@@ -40,7 +40,7 @@ unslung/Makefile openslug/Makefile MT/revision: monotone/nslu2-linux.db
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 
 .PHONY: setup-master
-setup-master: setup-monotone unslung/Makefile openslug/Makefile
+setup-master downloads: setup-monotone unslung/Makefile openslug/Makefile
 	[ -e downloads ] || mkdir -p downloads
 	[ -e unslung/downloads ]  || ( cd unslung  ; ln -s ../downloads . )
 	[ -e openslug/downloads ] || ( cd openslug ; ln -s ../downloads . )
@@ -87,7 +87,7 @@ update-oe-symlinks: oe-symlinks/packages
 	( cd oe-symlinks ; svn update )
 
 .PHONY: update-optware
-update-optware: optware/Makefile
+update-optware: optware/Makefile downloads
 	( cd optware ; cvs update -d -P )
 
 .PHONY: push-master
