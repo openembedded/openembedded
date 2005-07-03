@@ -3,8 +3,10 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-2.3.9-snapshot-20050114/configure~devfs
-+++ qt-2.3.9-snapshot-20050114/configure
+Index: qt-2.3.10/configure
+===================================================================
+--- qt-2.3.10.orig/configure	2005-07-03 12:26:10.000000000 +0200
++++ qt-2.3.10/configure	2005-07-03 12:30:36.000000000 +0200
 @@ -412,6 +412,9 @@
     -visibility-hidden)
     	VISIBILITY=YES
@@ -35,8 +37,10 @@
  if [ "x$THREAD" = "xyes" ]
  then
     cat >src-mt.mk <<EOF
---- qt-2.3.9-snapshot-20050114/src/kernel/qgfxlinuxfb_qws.cpp~devfs
-+++ qt-2.3.9-snapshot-20050114/src/kernel/qgfxlinuxfb_qws.cpp
+Index: qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qgfxlinuxfb_qws.cpp	2005-07-03 12:26:13.000000000 +0200
++++ qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp	2005-07-03 12:30:36.000000000 +0200
 @@ -101,11 +101,19 @@
  bool QLinuxFbScreen::connect( const QString &displaySpec )
  {
@@ -105,21 +109,11 @@
      const char** dev=tt;
      while (*dev) {
  	int tty=::open(*dev,O_WRONLY);
-@@ -792,7 +816,11 @@
-     fb_var_screeninfo vinfo;
- 
-     if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
-+#ifdef QT_QWS_DEVFS
-+	perror("reading /dev/fb/0");
-+#else
- 	perror("reading /dev/fb0");
-+#endif
- 	qFatal("Error reading fixed information");
-     }
- 
---- qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp~devfs
-+++ qt-2.3.9-snapshot-20050114/src/kernel/qkeyboard_qws.cpp
-@@ -1192,7 +1192,11 @@
+Index: qt-2.3.10/src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qkeyboard_qws.cpp	2005-07-03 12:26:13.000000000 +0200
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2005-07-03 12:30:36.000000000 +0200
+@@ -1253,7 +1253,11 @@
  
  QWSTtyKeyboardHandler::QWSTtyKeyboardHandler(const QString& device)
  {
@@ -131,8 +125,10 @@
  
      if ( kbdFD >= 0 ) {
  	QSocketNotifier *notifier;
---- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp~devfs
-+++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp
+Index: qt-2.3.10/src/kernel/qwindowsystem_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qwindowsystem_qws.cpp	2005-07-03 12:26:11.000000000 +0200
++++ qt-2.3.10/src/kernel/qwindowsystem_qws.cpp	2005-07-03 12:30:36.000000000 +0200
 @@ -836,7 +836,11 @@
      void openDevice()
      {
@@ -145,8 +141,10 @@
  	    if ( fd < 0 ) {
  		// For debugging purposes - defined QT_NO_SOUND if you
  		// don't have sound hardware!
---- qt-2.3.9-snapshot-20050114/src/kernel/qsoundqss_qws.cpp~devfs
-+++ qt-2.3.9-snapshot-20050114/src/kernel/qsoundqss_qws.cpp
+Index: qt-2.3.10/src/kernel/qsoundqss_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qsoundqss_qws.cpp	2005-01-23 15:00:46.000000000 +0100
++++ qt-2.3.10/src/kernel/qsoundqss_qws.cpp	2005-07-03 12:30:36.000000000 +0200
 @@ -1088,7 +1088,12 @@
  	    // Don't block open right away.
  	    //
