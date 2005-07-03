@@ -1,4 +1,4 @@
-PR      = "r1"
+PR      = "r2"
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
@@ -26,7 +26,7 @@ python __anonymous () {
 }
 
 
-do_configure_prepend_omap5912osk() {
+do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
         oe_runmake oldconfig
 }
