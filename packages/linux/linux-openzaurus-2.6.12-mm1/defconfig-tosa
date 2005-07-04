@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.12-rc6-mm1
-# Wed Jun 15 22:40:11 2005
+# Linux kernel version: 2.6.12-mm1
+# Mon Jul  4 15:43:10 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -719,7 +719,7 @@ CONFIG_NET_PCMCIA=y
 # CONFIG_PCMCIA_3C589 is not set
 # CONFIG_PCMCIA_3C574 is not set
 # CONFIG_PCMCIA_FMVJ18X is not set
-CONFIG_PCMCIA_PCNET=y
+CONFIG_PCMCIA_PCNET=m
 # CONFIG_PCMCIA_NMCLAN is not set
 # CONFIG_PCMCIA_SMC91C92 is not set
 # CONFIG_PCMCIA_XIRC2PS is not set
@@ -908,10 +908,13 @@ CONFIG_I2C_PXA=y
 # Other I2C Chip support
 #
 # CONFIG_SENSORS_DS1337 is not set
+# CONFIG_SENSORS_DS1374 is not set
 # CONFIG_SENSORS_EEPROM is not set
 # CONFIG_SENSORS_PCF8574 is not set
+# CONFIG_SENSORS_PCA9539 is not set
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_RTC8564 is not set
+# CONFIG_SENSORS_MAX6875 is not set
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set
@@ -983,11 +986,13 @@ CONFIG_FONTS=y
 CONFIG_FONT_8x8=y
 # CONFIG_FONT_8x16 is not set
 # CONFIG_FONT_6x11 is not set
+# CONFIG_FONT_7x14 is not set
 # CONFIG_FONT_PEARL_8x8 is not set
 # CONFIG_FONT_ACORN_8x8 is not set
 # CONFIG_FONT_MINI_4x6 is not set
 # CONFIG_FONT_SUN8x16 is not set
 # CONFIG_FONT_SUN12x22 is not set
+# CONFIG_FONT_10x18 is not set
 
 #
 # Logo configuration

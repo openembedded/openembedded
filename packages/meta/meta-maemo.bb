@@ -1,6 +1,6 @@
 
-PR          = "r4"
-PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install
+PR          = "r6"
+PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme
 DESCRIPTION = "Meta-package for maemo environment"
 MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
 
@@ -28,21 +28,14 @@ RDEPENDS_maemo-task-libs-install := "${maemo-task-libs-install}"
 maemo-task-base = "\
     bluez-utils-dbus \
     matchbox \
-    xcursor-transparent-theme \
-    sdk-default-theme \
-    sdk-default-theme-config \
-    sdk-default-icons \
-    sapwood \
     shared-mime-info \
     rxvt-unicode \
     xst \
     xhost \
     xrdb \
-    ttf-bitstream-vera \
     libgtkstylus \
     detect-stylus \
     outo \
-    sapwood \
     hildon-initscripts \
     libosso \
     osso-af-utils \
@@ -50,7 +43,8 @@ maemo-task-base = "\
     osso-core-config \
     osso-gnome-vfs2 \
     osso-thumbnail \
-    xauth"
+    xauth \
+    esd"
 
 RDEPENDS_maemo-task-base := "gdk-pixbuf-loader-png \
 			   gdk-pixbuf-loader-xpm \
@@ -58,7 +52,25 @@ RDEPENDS_maemo-task-base := "gdk-pixbuf-loader-png \
 			   pango-module-basic-x \
 			   pango-module-basic-fc \
 			   ${maemo-task-base}"
+
 DEPENDS += " ${maemo-task-base}"
+
+
+maemo-task-theme = "\
+    xcursor-transparent-theme \
+    sdk-default-theme \
+    sdk-default-theme-config \
+    sdk-default-icons \
+    sapwood \
+    ttf-bitstream-vera \
+    sapwood \
+    osso-sounds"
+
+RDEPENDS_maemo-task-theme := "${maemo-task-theme}"
+
+DEPENDS += " ${maemo-task-theme}"
+
+
 
 maemo-task-apps = "\
     osso-gwobex \
@@ -69,8 +81,10 @@ maemo-task-apps = "\
     hildon-navigator \
     hildon-control-panel \
     osso-application-installer \ 
+    osso-app-killer \
+    osso-screenshot-tool \
     gpe-todo-hildon \
-    gpe-contacts-maemo"
+    gpe-contacts-hildon"
 
 RDEPENDS_maemo-task-apps := "${maemo-task-apps}"
 DEPENDS += " ${maemo-task-apps}"
