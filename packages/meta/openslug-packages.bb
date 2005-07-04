@@ -61,6 +61,7 @@ OPENSLUG_PACKAGES = "\
 	db4 \
 	openldap \
 	ntp \
+	openntpd \
 	reiserfsprogs reiser4progs \
 	python \
 	samba \
