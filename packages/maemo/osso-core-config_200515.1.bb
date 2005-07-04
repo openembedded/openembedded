@@ -1,6 +1,6 @@
-LICENSE =	"unknown"
-MAINTAINER=	"Florian Boor <florian@kernelconcepts.de"
-PR 	= "r4"
+LICENSE    = "unknown"
+MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
+PR         = "r5"
 
 DEPENDS =	"base-passwd osso-af-startup"
 RDEPENDS =	"base-passwd osso-af-startup"
@@ -35,7 +35,15 @@ fi
 MAEMOUSER=user
 MAEMOHOME=/home/user
 
+addgroup "$MAEMOUSER"
 mkdir -p $MAEMOHOME/MyDocs || true
-chgrp "$MAEMOUSER" "$MAEMOHOME" 2>/dev/null || addgroup "$MAEMOUSER"
-adduser --system --home "$MAEMOHOME" --no-create-home --disabled-password --ingroup "$MAEMOUSER" "$MAEMOUSER" || chown -R "$MAEMOUSER"."$MAEMOUSER" "$MAEMOHOME" 2>/dev/null
+adduser --system --home "$MAEMOHOME" --no-create-home --disabled-password --ingroup "$MAEMOUSER" "$MAEMOUSER"
+chown -R "$MAEMOUSER"."$MAEMOUSER" "$MAEMOHOME" 2>/dev/null
+chgrp "$MAEMOUSER" "$MAEMOHOME" 2>/dev/null
+# set up some links to firmware and modules in initrd
+
+mkdir -p /lib/firmware
+ln -sf /mnt/initfs/lib/firmware/* /lib/firmware/
+rm -rf /lib/modules
+ln -s /mnt/initfs/lib/modules /lib/modules
 }
