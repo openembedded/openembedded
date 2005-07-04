@@ -60,9 +60,11 @@ then
 	# is removed (to be exact, the sed script selects only lines
 	# which match one of the two above).  The lan interface, which
 	# defaults to ixp0, is changed to the correct value for openslug,
-	# eth0
+	# eth0.  The bootproto, which LinkSys sets to static in manufacturing,
+	# is reset to dhcp if the IP is still the original (192.168.1.77)
 	devio "<<$sysdev" cpb fb1,10 | sed -n '/^\[[^][]*\]$/p;
 		s/^lan_interface=ixp0$/lan_interface=eth0/;
+		/^ip_addr=192\.168\.1\.77$/,/^bootproto/s/^bootproto=static$/bootproto=dhcp/;
 		/^[-a-zA-Z0-9_][-a-zA-Z0-9_]*=/p' >/etc/default/sysconf
 	#
 	# The SysConf must have a hardware id, if it doesn't it has
