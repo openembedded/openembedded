@@ -2,7 +2,7 @@ PR         = "r0"
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 PROVIDES   = "esd"
-RPROVIDES  = "esd"
+RPROVIDES_${PN}  = "esd"
 
 DEPENDS = "audiofile osso-dsp-headers"
 
