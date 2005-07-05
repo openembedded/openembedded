@@ -1,6 +1,6 @@
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
-PR         = "r1"
+PR         = "r2"
 
 DEPENDS    = "base-passwd hotplug-dbus"
 
@@ -31,6 +31,7 @@ if [ "x$D" != "x" ]; then
 fi
 
 # set up some links to firmware and modules in initrd
+	mkdir -p /lib/firmware
         ln -sf /mnt/initfs/lib/firmware/* /lib/firmware/
 
 	rm -rf /lib/modules
