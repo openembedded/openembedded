@@ -1,6 +1,6 @@
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
-PR         = "r1"
+PR         = "r2"
 
 DEPENDS    = "base-passwd hotplug-dbus"
 
@@ -17,7 +17,7 @@ INITSCRIPT_PARAMS = "defaults 01"
 
 do_install () {
         install -d ${D}${sysconfdir}/init.d
-        install -m 755 ${S}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
+        install -m 755 ${WORKDIR}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
 
 	install -d ${D}/lib/firmware
 }
@@ -31,6 +31,7 @@ if [ "x$D" != "x" ]; then
 fi
 
 # set up some links to firmware and modules in initrd
+	mkdir -p /lib/firmware
         ln -sf /mnt/initfs/lib/firmware/* /lib/firmware/
 
 	rm -rf /lib/modules
