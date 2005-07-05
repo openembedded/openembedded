@@ -17,7 +17,7 @@ INITSCRIPT_PARAMS = "defaults 01"
 
 do_install () {
         install -d ${D}${sysconfdir}/init.d
-        install -m 755 ${S}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
+        install -m 755 ${WORKDIR}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
 
 	install -d ${D}/lib/firmware
 }
