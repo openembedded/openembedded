@@ -14,9 +14,9 @@ do_configure_prepend() {
 }
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
-        install -D -m 755 freenoteeintu ${D}/opt/QtPalmtop/bin/freenoteeintu
-        install -D -m 644 ${FILESDIR}/freenoteeintu.desktop ${D}/opt/QtPalmtop/apps/Applications/freenoteeintu.desktop
-        install -d ${D}/opt/QtPalmtop/pics
-        cp -a *.png ${D}/opt/QtPalmtop/pics/
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
+        install -D -m 755 freenoteeintu ${D}${palmtopdir}/bin/freenoteeintu
+        install -D -m 644 ${FILESDIR}/freenoteeintu.desktop ${D}${palmtopdir}/apps/Applications/freenoteeintu.desktop
+        install -d ${D}/${palmtopdir}/pics
+        cp -a *.png ${D}${palmtopdir}/pics/
 }
