@@ -9,6 +9,7 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
+PR = "r1"
 
 # need debian package naming for the libs
 inherit debian
@@ -18,7 +19,10 @@ DEPENDS += "boost-jam-native"
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 BOOST_P = "boost_${BOOST_VER}"
-SRC_URI = "http://download.sourceforge.net/boost/${BOOST_P}.tar.bz2"
+SRC_URI = "http://download.sourceforge.net/boost/${BOOST_P}.tar.bz2 \
+		file://unit_test_log10f.patch;patch=1 \
+		file://linux-uclibc.patch;patch=1 \
+		"
 
 S = "${WORKDIR}/${BOOST_P}"
 
@@ -72,9 +76,33 @@ FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
 # NOTE: if you leave <debug-symbols>on then in a debug build the build sys
 # objcopy will be invoked, and that won't work.  Building debug apparently
 # requires hacking gcc-tools.jam
+#
+# Sometimes I wake up screaming.  Famous figures are gathered in the nightmare,
+# Steve Bourne, Larry Wall, the whole of the ANSI C committee.  They're just
+# standing there, waiting, but the truely terrifying thing is what they carry
+# in their hands.  At first sight each seems to bear the same thing, but it is
+# not so for the forms in their grasp are ever so slightly different one from
+# the other.  Each is twisted in some grotesque way from the other to make each
+# an unspeakable perversion impossible to perceive without the onset of madness.
+# True insanity awaits anyone who perceives all of these horrors together.
+#
+# Quotation marks, there might be an easier way to do this, but I can't find
+# it.  The problem is that the user.hpp configuration file must receive a
+# pre-processor macro defined as the appropriate string - complete with "'s
+# around it.  (<> is a possibility here but the danger to that is that the
+# failure case interprets the < and > as shell redirections, creating 
+# random files in the source tree.)
+#
+#bjam: '-DBOOST_PLATFORM_CONFIG=\"config\"'
+#do_compile: '-sGCC=... '"'-DBOOST_PLATFORM_CONFIG=\"config\"'"
+SQD = '"'
+EQD = '\"'
+#boost.bb:   "...  '-sGCC=... '${SQD}'-DBOOST_PLATFORM_CONFIG=${EQD}config${EQD}'${SQD} ..."
+BJAM_CONF = "${SQD}'-DBOOST_PLATFORM_CONFIG=${EQD}boost/config/platform/${TARGET_OS}.hpp${EQD}'${SQD}"
+
 BJAM_TOOLS   = "-sTOOLS=gcc \
-		'-sGCC=${CC}' \
-		'-sGXX=${CXX}' \
+		'-sGCC=${CC} '${BJAM_CONF} \
+		'-sGXX=${CXX} '${BJAM_CONF} \
 		-sBUILD='release <optimization>space <inlining>on <debug-symbols>off' \
 		'-sPYTHON_VERSION=${PYTHON_VERSION}' \
 		--layout=system \
