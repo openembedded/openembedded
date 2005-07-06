@@ -1,6 +1,6 @@
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
-PR         = "r2"
+PR         = "r3"
 
 DEPENDS    = "base-passwd hotplug-dbus"
 
@@ -32,7 +32,9 @@ fi
 
 # set up some links to firmware and modules in initrd
 	mkdir -p /lib/firmware
-        ln -sf /mnt/initfs/lib/firmware/* /lib/firmware/
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/3825.arm /lib/firmware/3825.arm
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/brf6150fw.bin /lib/firmware/brf6150fw.bin
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/mtlm3825.arm /lib/firmware/mtlm3825.arm
 
 	rm -rf /lib/modules
 	ln -s /mnt/initfs/lib/modules /lib/modules
