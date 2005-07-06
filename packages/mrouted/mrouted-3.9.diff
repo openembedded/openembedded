@@ -1,0 +1,138 @@
+diff -Naur mrouted-3.9-beta3.orig/Makefile mrouted-3.9-beta3.neu/Makefile
+--- mrouted-3.9-beta3.orig/Makefile	1998-03-01 04:09:11.000000000 +0100
++++ mrouted-3.9-beta3.neu/Makefile	2005-04-09 12:49:39.000000000 +0200
+@@ -24,22 +24,22 @@
+ #
+ # Uncomment the following three lines if you want to use RSRR (Routing
+ # Support for Resource Reservations), currently used by RSVP.
+-#RSRRDEF=	-DRSRR
+-#RSRRC=		rsrr.c
+-#RSRRO=		rsrr.o
++RSRRDEF=	-DRSRR
++RSRRC=		rsrr.c
++RSRRO=		rsrr.o
+ #
+ LDFLAGS=
+-CFLAGS=		-O ${MCAST_INCLUDE} ${SNMPDEF} ${RSRRDEF}	## SunOS, OSF1, FreeBSD, IRIX
++#CFLAGS=		-O ${MCAST_INCLUDE} ${SNMPDEF} ${RSRRDEF}	## SunOS, OSF1, FreeBSD, IRIX
+ #CFLAGS=		-O ${MCAST_INCLUDE} ${SNMPDEF} ${RSRRDEF} -DSYSV -DSUNOS5	## Solaris 2.x
+ #LIB2=-lsocket -lnsl	## Solaris 2.x
+-#CFLAGS=		-O ${MCAST_INCLUDE} ${SNMPDEF} ${RSRRDEF} -D__BSD_SOURCE -DRAW_INPUT_IS_RAW -DRAW_OUTPUT_IS_RAW -DIOCTL_OK_ON_RAW_SOCKET	## Linux
++CFLAGS=		-O ${MCAST_INCLUDE} ${SNMPDEF} ${RSRRDEF} -D__BSD_SOURCE -DRAW_INPUT_IS_RAW -DRAW_OUTPUT_IS_RAW -DIOCTL_OK_ON_RAW_SOCKET	## Linux
+ LIBS=		${SNMPLIBDIR} ${SNMPLIBS} ${LIB2}
+ LINTFLAGS=	${MCAST_INCLUDE}
+ IGMP_SRCS=	igmp.c inet.c kern.c
+ IGMP_OBJS=	igmp.o inet.o kern.o
+-ROUTER_SRCS=	config.c cfparse.y main.c route.c vif.c prune.c callout.c \
++ROUTER_SRCS=	config.c y.y main.c route.c vif.c prune.c callout.c \
+ 		icmp.c ipip.c ${SNMPC} ${RSRRC}
+-ROUTER_OBJS=	config.o cfparse.o main.o route.o vif.o prune.o callout.o \
++ROUTER_OBJS=	config.o y.o main.o route.o vif.o prune.o callout.o \
+ 		icmp.o ipip.o ${SNMPO} ${RSRRO}
+ MAPPER_SRCS=	mapper.c
+ MAPPER_OBJS=	mapper.o
+@@ -58,6 +58,8 @@
+ 
+ all: mrouted map-mbone mrinfo ${MSTAT}
+ 
++install:
++
+ mrouted: ${IGMP_OBJS} ${ROUTER_OBJS} vers.o ${CMULIBS}
+ 	rm -f $@
+ 	${CC} ${LDFLAGS} -o $@ ${CFLAGS} ${IGMP_OBJS} ${ROUTER_OBJS} vers.o ${LIBS}
+@@ -79,7 +81,7 @@
+ 	${CC} ${LDFLAGS} -o $@ ${CFLAGS} ${MSTAT_OBJS} -Lsnmplib -lsnmp
+ 
+ clean: FRC ${SNMPCLEAN}
+-	rm -f ${OBJS} core mrouted map-mbone mrinfo mstat tags TAGS
++	rm -f ${OBJS} vers.o core mrouted map-mbone mrinfo mstat tags TAGS
+ 
+ snmpclean:	FRC
+ 	-(cd snmpd; make clean)
+diff -Naur mrouted-3.9-beta3.orig/defs.h mrouted-3.9-beta3.neu/defs.h
+--- mrouted-3.9-beta3.orig/defs.h	1998-03-01 03:51:42.000000000 +0100
++++ mrouted-3.9-beta3.neu/defs.h	2005-04-09 11:52:46.000000000 +0200
+@@ -45,7 +45,7 @@
+ #undef rtentry
+ #endif
+ #endif
+-#include <netinet/ip_mroute.h>
++#include "netinet/ip_mroute.h"
+ #ifdef RSRR
+ #include <sys/un.h>
+ #endif /* RSRR */
+@@ -180,7 +180,7 @@
+ #if !(defined(BSD) && (BSD >= 199103))
+ extern int		errno;
+ extern int		sys_nerr;
+-extern char *		sys_errlist[];
++/*extern char *		sys_errlist[];*/
+ #endif
+ 
+ #ifdef OLD_KERNEL
+diff -Naur mrouted-3.9-beta3.orig/main.c mrouted-3.9-beta3.neu/main.c
+--- mrouted-3.9-beta3.orig/main.c	1998-03-01 02:49:00.000000000 +0100
++++ mrouted-3.9-beta3.neu/main.c	2005-04-09 11:52:46.000000000 +0200
+@@ -32,6 +32,8 @@
+ #include "snmp.h"
+ #endif
+ 
++#include <time.h>
++
+ #ifndef lint
+ static char rcsid[] = "@(#) $Id: \
+ main.c,v 3.8.4.29 1998/03/01 01:49:00 fenner Exp $";
+diff -Naur mrouted-3.9-beta3.orig/mrouted.conf mrouted-3.9-beta3.neu/mrouted.conf
+--- mrouted-3.9-beta3.orig/mrouted.conf	1995-11-29 23:40:47.000000000 +0100
++++ mrouted-3.9-beta3.neu/mrouted.conf	2005-04-09 11:52:46.000000000 +0200
+@@ -30,7 +30,7 @@
+ #
+ #
+ # Template tunnel for mcast_install
+-tunnel 128.4.0.77 128.4.0.8 metric 1 threshold 64 rate_limit 500  # <-- REPLACE
++#tunnel 128.4.0.77 128.4.0.8 metric 1 threshold 64 rate_limit 500  # <-- REPLACE
+ #	boundary LOCAL
+ #
+ # You might want to specify a boundary on your tunnel to the outside world,
+diff -Naur mrouted-3.9-beta3.orig/netinet/ip_mroute.h mrouted-3.9-beta3.neu/netinet/ip_mroute.h
+--- mrouted-3.9-beta3.orig/netinet/ip_mroute.h	1970-01-01 01:00:00.000000000 +0100
++++ mrouted-3.9-beta3.neu/netinet/ip_mroute.h	2005-04-09 13:09:11.905210112 +0200
+@@ -0,0 +1,12 @@
++#ifndef __NETINET_IP_MROUTE_H
++#define __NETINET_IP_MROUTE_H
++
++#define _LINUX_IN_H
++
++#ifndef __u32
++#define __u32 unsigned long
++#endif
++
++#include <linux/mroute.h>
++
++#endif
+diff -Naur mrouted-3.9-beta3.orig/pathnames.h mrouted-3.9-beta3.neu/pathnames.h
+--- mrouted-3.9-beta3.orig/pathnames.h	1995-11-29 23:36:57.000000000 +0100
++++ mrouted-3.9-beta3.neu/pathnames.h	2005-04-09 11:52:46.000000000 +0200
+@@ -12,14 +12,14 @@
+ 
+ #define _PATH_MROUTED_CONF	"/etc/mrouted.conf"
+ 
+-#if (defined(BSD) && (BSD >= 199103))
++/*#if (defined(BSD) && (BSD >= 199103))*/
+ #define _PATH_MROUTED_PID	"/var/run/mrouted.pid"
+ #define _PATH_MROUTED_GENID	"/var/run/mrouted.genid"
+ #define _PATH_MROUTED_DUMP	"/var/tmp/mrouted.dump"
+ #define _PATH_MROUTED_CACHE	"/var/tmp/mrouted.cache"
+-#else
++/*#else
+ #define _PATH_MROUTED_PID	"/etc/mrouted.pid"
+ #define _PATH_MROUTED_GENID	"/etc/mrouted.genid"
+ #define _PATH_MROUTED_DUMP	"/usr/tmp/mrouted.dump"
+ #define _PATH_MROUTED_CACHE	"/usr/tmp/mrouted.cache"
+-#endif
++#endif*/
+diff -Naur mrouted-3.9-beta3.orig/vers.c mrouted-3.9-beta3.neu/vers.c
+--- mrouted-3.9-beta3.orig/vers.c	1970-01-01 01:00:00.000000000 +0100
++++ mrouted-3.9-beta3.neu/vers.c	2005-04-09 11:52:46.000000000 +0200
+@@ -0,0 +1 @@
++char todaysversion[]="3.9-beta3";
