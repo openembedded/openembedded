@@ -6,10 +6,14 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "MIT"
 SUBV = "1"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.venge.net/monotone/downloads/monotone_${PV}-${SUBV}.tar.gz \
-	   file://txt2c-cross.patch;patch=1"
+	   file://txt2c-cross.patch;patch=1 \
+	   file://cryptopp-endianness.patch;patch=1"
+DEPENDS += "boost"
+# Following may be required, not proved yet...
+#TARGET_CFLAGS += "-fno-strict-aliasing"
 
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone"

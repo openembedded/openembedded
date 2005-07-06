@@ -1,0 +1,24 @@
+--- intel-0.19/cryptopp/config.h.orig	2005-07-05 22:35:21.352503986 -0700
++++ intel-0.19/cryptopp/config.h	2005-07-05 22:35:24.303056731 -0700
+@@ -5,6 +5,13 @@
+ 
+ // ***************** Important Settings ********************
+ 
++#if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && defined(__BIG_ENDIAN)
++#  if __BYTE_ORDER == __LITTLE_ENDIAN
++#	define IS_LITTLE_ENDIAN
++#  elif __BYTE_ORDER == __BIG_ENDIAN
++#	define IS_BIG_ENDIAN
++#  endif
++#else
+ // define this if running on a big-endian CPU
+ #if !defined(IS_LITTLE_ENDIAN) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
+ #	define IS_BIG_ENDIAN
+@@ -15,6 +22,7 @@
+ #ifndef IS_BIG_ENDIAN
+ #	define IS_LITTLE_ENDIAN
+ #endif
++#endif /* Linux endiannes macros not defined */
+ 
+ // define this if you want to disable all OS-dependent features,
+ // such as sockets and OS-provided random number generators
