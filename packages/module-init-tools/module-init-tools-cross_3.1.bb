@@ -1,10 +1,10 @@
-LICENSE = GPL
+LICENSE = "GPL"
 include module-init-tools_${PV}.bb
 inherit cross
 DEFAULT_PREFERENCE = "0"
 PROVIDES += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}depmod-2.6"
 
-PR=r3
+PR="r3"
 
 # When cross compiling depmod as shipped cannot handle endian
 # differences between host and target, this fixes the problem.
