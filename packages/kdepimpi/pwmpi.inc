@@ -12,6 +12,9 @@ INCLUDEPATH+=${STAGING_INCDIR}/kdepimpi/ \
 LIBS+=-L${STAGING_LIBDIR}/kdepimpi/ \
 "
 
+do_configure_prepend() {
+}
+
 do_stage() {
 }
 
