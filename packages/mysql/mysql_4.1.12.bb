@@ -15,7 +15,7 @@ inherit autotools
 
 
 EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
-EXTRA_OECONF = " --with-embedded-server --prefix=/usr --datadir=/var/share --sysconfdir=/etc --localstatedir=/var/state --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
+EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
 
 do_stage() {
 	autotools_stage_includes
