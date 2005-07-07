@@ -5,10 +5,14 @@ DEPENDS = "zlib"
 DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libid3tag-${PV}.tar.gz "
+PR = "r1"
+
+SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libid3tag-${PV}.tar.gz \
+    file://pkgconfig.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/libid3tag-${PV}"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "-enable-speed"
 
