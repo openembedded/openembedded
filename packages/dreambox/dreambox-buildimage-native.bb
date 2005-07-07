@@ -1,0 +1,16 @@
+DESCRIPTION = "create Dreambox NAND boot images"
+SECTION = "console/utils"
+MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
+
+SRC_URI = "file://buildimage.c"
+
+inherit native
+
+do_compile() {
+	cp ${WORKDIR}/buildimage.c .
+	${CXX} -I. -o buildimage buildimage.c
+}
+
+do_stage() {
+	install -m 0755 buildimage ${STAGING_BINDIR}/
+}
