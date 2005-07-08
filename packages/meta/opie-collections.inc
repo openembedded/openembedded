@@ -36,7 +36,7 @@ OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh \
 OPIE_BASE_DEPENDS = "ipkg timezones ntp bluez-utils-nodbus irda-utils \
                      openobex-apps libopieobex0 wireless-tools usbutils"
 OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset \
-                      bluez-utils-nodbus openobex-apps libopieobex0 wireless-tools usbutils"
+                      bluez-utils-nodbus openobex-apps libopieobex0 wireless-tools "
 
 #
 # Clamshell models can benefit from the autorotate applet
@@ -98,5 +98,9 @@ def opie_more_rdepends(d):
         if root_flash_size >= 24: return bb.data.getVar( "OPIE_RDEPENDS_24", d, True )
         else: return " "
 
-OPIE_MORE_DEPENDS := "${@opie_more_depends(d)}"    
-OPIE_MORE_RDEPENDS := "${@opie_more_rdepends(d)}"
+OPIE_MORE_DEPENDS := "${@opie_more_depends(d)}"
+
+
+
+
+# # OPIE_MORE_RDEPENDS := "${@opie_more_rdepends(d)}"
