@@ -195,20 +195,6 @@ setup_var() {
 }
 
 #
-# setup_files new
-#  At present just puts the rmrecovery links in.
-setup_files() {
-	test -n "$1" -a -d "$1"/etc || {
-		echo "turnup: setup_files($1): expected a directory" >&2
-		return 1
-	}
-	#
-	# add the script to remove .recovery
-	update-rc.d -r "$1" rmrecovery start 99 1 2 3 4 5 .
-	return 0
-}
-
-#
 # setup_syslog new
 #  Moves the syslog to a file - appropriate for disk and nfs types, not
 #  otherwise.
@@ -258,14 +244,11 @@ setup_rootfs() {
 	flash)	return 0;;
 	disk)	setup_dev "$new" "$table" &&
 		setup_var "$new" disk &&
-		setup_files "$new" &&
 		setup_syslog "$new";;
 	memstick)
-		setup_bootdev "$new" "$table" &&
-		setup_files "$new";;
+		setup_bootdev "$new" "$table" ;;
 	nfs)	setup_dev "$new" "$table" &&
 		setup_var "$new" nfs &&
-		setup_files "$new" &&
 		setup_syslog "$new";;
 	*)	echo "turnup: setup_rootfs: $type: unknown rootfs type" >&2
 		return 1;;
