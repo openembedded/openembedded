@@ -648,7 +648,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +#endif
 --- /dev/null
 +++ qt-2.3.10/src/kernel/qgfxw100_qws.cpp
-@@ -0,0 +1,2283 @@
+@@ -0,0 +1,2514 @@
 + /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil -*- */
 +/***************************************************************************
 +
@@ -680,7 +680,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +#include <stdarg.h>
 +
-+class W100Control {
++class W100Driver {
 +public:
 +
 +    typedef enum Loglevel {
@@ -699,6 +699,12 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        POLYLINE,
 +        EOO
 +    };
++
++    typedef enum Retcodes {
++        codOK,
++        codError
++    };
++        
 +
 +    typedef struct Opcode {
 +        QString str;
@@ -728,19 +734,20 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        }
 +    }
 +
-+    W100Control():
++    W100Driver():
 +        m_loglevel( 0 ),
-+        m_enabled( 0 )
++        m_logenabled( 0 ),
++        m_attached( false )
 +    {
 +        m_loglevel = 0;
 +        char *var;
 +        if ( var = getenv( "W100_DEBUG" ) ) {
 +            if ( strtol( var, 0, 0 ) == 1 ) {
-+                m_enabled = 1;
++                m_logenabled = 1;
 +            }
 +        }
 +
-+        if ( m_enabled ) {
++        if ( m_logenabled ) {
 +            if ( var = getenv( "W100_DEBUGLEVEL" ) ) {
 +                if ( ( m_loglevel = strtol( var, 0, 0 ) ) < 0 ) {
 +                    m_loglevel = 0;
@@ -752,7 +759,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                path = QString( var ) + "/w100debug.log";
 +            } 
 +            m_logfile = fopen( path.latin1(), "a" );
-+            if ( m_logfile == NULL ) m_enabled = 0;
++            if ( m_logfile == NULL ) m_logenabled = 0;
 +        }
 +
 +        Opcode *opcodePtr = lOpcodes;
@@ -769,7 +776,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        }
 +    }
 +
-+    ~W100Control()
++    ~W100Driver()
 +    {
 +        //Dump statistics about any opcode
 +        Opcode *opcodePtr = lOpcodes;
@@ -781,13 +788,14 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                 opcodePtr->misses );
 +            opcodePtr++;
 +        }
-+        if ( m_enabled && m_logfile ) {
++        if ( m_logenabled && m_logfile ) {
 +            fclose( m_logfile );
 +        }
 +    }
 +
 +    bool accelerated( int opcode )
 +    {
++        if ( !m_attached ) return false;
 +        if ( opcode < EOO ) {
 +            return lOpcodes[opcode].accelerated;
 +        }
@@ -806,7 +814,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +    void log( int level, const char *fmt, ... )
 +    {
-+        if ( m_enabled && ( level <= m_loglevel ) ) {
++        if ( m_logenabled && ( level <= m_loglevel ) ) {
 +            char buffer[1024];
 +            va_list ap;
 +            va_start( ap, fmt );
@@ -819,234 +827,434 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        }
 +    }
 +
++
++    int processAttach( void )
++    {
++        if ( !m_attached ) {
++            if ( AtiCore_ProcessAttach() ) {
++                m_attached = true;
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int processDetach( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessDetach() ) {
++                m_attached = false;
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int allocateSurface( uint16_t *handle, uint32_t *offset,
++                              uint32_t size, uint32_t direction )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_AllocateSurface( handle, offset, 
++                                          size, direction ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int destroySurface( uint16_t handle )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_DestroySurface( handle ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int drawPixel( int npoints, ATI_POINT *points )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_DrawPixel( npoints, points ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setRopOperation( uint32_t rop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetRopOperation( rop ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setDstType( uint32_t dtype )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstType( dtype ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setSrcType( uint32_t stype )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcType( stype ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setSrcClippingRect( ATI_CLIPRECT *cliprect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcClippingRect( cliprect ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setDstClippingRect( ATI_CLIPRECT *cliprect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstClippingRect( cliprect ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setSrcPitchOffset( int pitch, int offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcPitchOffset( pitch, offset ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setDstPitchOffset( int pitch, int offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstPitchOffset( pitch, offset ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int bitBltFlipRotate( int rot, 
++                          ATI_RECT *dstRect,
++                          ATI_RECT *srcRect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BitBltFilpRotate( rot, dstRect, srcRect ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int stretchBlt( ATI_STRETCH *option,
++                    ATI_POINT *point,
++                    ATI_RECT *srcRect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_StretchBlt( option, point, srcRect ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int waitComplete( int msec )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_WaitComplete( msec ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int allocOverlay( uint16_t *handle ) 
++    {
++        if ( m_attached ) {
++            if ( AtiCore_AllocOverlay( handle ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int releaseOverlay( uint16_t handle )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ReleaseOverlay( handle ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setupOverlay( uint16_t handle, ATI_OVERLAYPROP *prop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupOverlay( handle, prop ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setupOverlayExtended( uint16_t handle, 
++                                   ATI_EXTENDEDOVERLAYPROP *prop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupOverlayExtended( handle, prop ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setOverlayOnOff( uint16_t handle, int isShow )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetOverlayOnOff( handle, isShow ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setOverlayPos( uint16_t handle, uint16_t x, uint16_t y )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetOverlayPos( handle, x, y ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setupMemoryTransfer( uint32_t offset, uint32_t *regdata )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupMemoryTransfer( offset, regdata ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int terminateMemoryTransfer( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_TerminateMemoryTransfer() ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int getFrontBufferPitchOffset( uint32_t *pitch, uint32_t *offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_GetFrontBufferPitchOffset( pitch, offset ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setDisplayBrightness( int bri )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDisplayBrightness( bri ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int getAvailableVideoMem( uint32_t *internal, uint32_t *external )
++    {
++        if ( m_attached ) {
++            if ( GetAvailableVideoMem( internal, external ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setupGraphicWindow( ATI_GRAPHICWINDOW *win )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupGraphicWindow( ( void * ) win ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int processAttachSpecialMode( int mode )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessAttachSpecialMode( mode ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setGraphicWindowPos( int x, int y )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetGraphicWindowPos( x, y ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setFrontBuffer( int offset, int a, int b )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetFrontBuffer( offset, a, b ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int setGraphicWindowOnOff( int val )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetGraphicWindowOnOff( val ) ) {
++                return codOK;
++            }
++        }
++    }
++
++    static unsigned long ccolor( unsigned int rgb )
++    {
++        unsigned char r = ( rgb & 0xff0000 ) >> 19;
++        unsigned char g = ( rgb & 0xff00 ) >> 10;
++        unsigned char b = ( rgb & 0xff ) >> 3;
++        return ( ( ( ( unsigned short )0x1f & r ) << 11 ) |
++                 ( ( ( unsigned short )0x3f & g ) << 5 ) |
++                 ( ( ( unsigned short )0x1f & b ) )  ); 
++    }
++
++    int setFrgColour( int val )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetFrgColour( ccolor( val ) ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int brushType( int type, unsigned int pattern )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BrushType( type, &pattern ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int paintRect( int flags, ATI_RECT *rect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_PaintRect( flags, rect ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int polyline( int npoints, ATI_POINT *points )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_Polyline( npoints, points ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int getPitchOffsetProperty( void *pitch, void *offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_GetPitchOffsetProperty( pitch, offset ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int cursorOnOff( int a, int b )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_CursorOnOff( a, b ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int bitBlt( int flags, ATI_RECT *dst, ATI_RECT *src )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BitBlt( flags, dst, src ) ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
++    int wakeUpCall( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_WakeUpCall() ) {
++                return codOK;
++            }
++        }
++        return codError;
++    }
++
 +private:
 +    FILE *m_logfile;
 +    int m_loglevel;
-+    bool m_enabled;
++    bool m_logenabled;
++    bool m_attached;
 +};
 +
-+W100Control::Opcode W100Control::lOpcodes[] = {
-+    { "DRAWLINE",   W100Control::DRAWLINE,   true, 0, 0 },
-+    { "DRAWPOINT",  W100Control::DRAWPOINT,  true, 0, 0 },
-+    { "DRAWPOINTS", W100Control::DRAWPOINTS, true, 0, 0 },
-+    { "FILLRECT",   W100Control::FILLRECT,   true, 0, 0 },
-+    { "SCROLL",     W100Control::SCROLL,     true, 0, 0 },
-+    { "BITBLT",     W100Control::BITBLT,     true, 0, 0 },
-+    { "POLYLINE",   W100Control::POLYLINE,   true, 0, 0 },
-+    { ""      ,     W100Control::EOO,        false, 0, 0 }
++W100Driver::Opcode W100Driver::lOpcodes[] = {
++    { "DRAWLINE",   W100Driver::DRAWLINE,   true, 0, 0 },
++    { "DRAWPOINT",  W100Driver::DRAWPOINT,  true, 0, 0 },
++    { "DRAWPOINTS", W100Driver::DRAWPOINTS, true, 0, 0 },
++    { "FILLRECT",   W100Driver::FILLRECT,   true, 0, 0 },
++    { "SCROLL",     W100Driver::SCROLL,     true, 0, 0 },
++    { "BITBLT",     W100Driver::BITBLT,     true, 0, 0 },
++    { "POLYLINE",   W100Driver::POLYLINE,   true, 0, 0 },
++    { ""      ,     W100Driver::EOO,        false, 0, 0 }
 +};
 +
-+W100Control control;
-+
-+static int W100_ProcessAttach( void )
-+{
-+    return( AtiCore_ProcessAttach() );
-+}
-+
-+static int W100_ProcessDetach( void )
-+{
-+    return( AtiCore_ProcessDetach() );
-+}
-+
-+static int W100_AllocateSurface( uint16_t *handle, uint32_t *offset,
-+                                 uint32_t size, uint32_t direction )
-+{
-+    return( AtiCore_AllocateSurface( handle, offset, size, direction ) );
-+}
-+
-+static int W100_DestroySurface( uint16_t handle )
-+{
-+    return( AtiCore_DestroySurface( handle ) );
-+}
-+
-+static int W100_DrawPixel( int npoints, ATI_POINT *points )
-+{
-+    return( AtiCore_DrawPixel( npoints, points ) );
-+}
-+
-+static int W100_SetRopOperation( uint32_t rop )
-+{
-+    return( AtiCore_SetRopOperation( rop ) );
-+}
-+
-+static int W100_SetDstType( uint32_t dtype )
-+{
-+    return( AtiCore_SetDstType( dtype ) );
-+}
-+
-+static int W100_SetSrcType( uint32_t stype )
-+{
-+    return( AtiCore_SetSrcType( stype ) );
-+}
-+
-+static int W100_SetSrcClippingRect( ATI_CLIPRECT *cliprect )
-+{
-+    return( AtiCore_SetSrcClippingRect( cliprect ) );
-+}
-+
-+static int W100_SetDstClippingRect( ATI_CLIPRECT *cliprect )
-+{
-+    return( AtiCore_SetDstClippingRect( cliprect ) );
-+}
-+
-+static int W100_SetSrcPitchOffset( int pitch, int offset )
-+{
-+    return( AtiCore_SetSrcPitchOffset( pitch, offset ) );
-+}
-+
-+static int W100_SetDstPitchOffset( int pitch, int offset )
-+{
-+    return( AtiCore_SetDstPitchOffset( pitch, offset ) );
-+}
-+
-+static int W100_BitBltFilpRotate( int flags, 
-+                                  ATI_RECT *dstRect,
-+                                  ATI_RECT *srcRect )
-+{
-+    return( AtiCore_BitBltFilpRotate( flags, dstRect, srcRect ) );
-+}
-+
-+static int W100_StretchBlt( ATI_STRETCH *option,
-+                            ATI_POINT *point,
-+                            ATI_RECT *srcRect )
-+{
-+    return( AtiCore_StretchBlt( option, point, srcRect ) );
-+}
-+
-+static int W100_WaitComplete( int msec )
-+{
-+    return( AtiCore_WaitComplete( msec ) );
-+}
-+
-+static int W100_AllocOverlay( uint16_t *handle ) 
-+{
-+    return( AtiCore_AllocOverlay( handle ) );
-+}
-+
-+static int W100_ReleaseOverlay( uint16_t handle )
-+{
-+    return( AtiCore_ReleaseOverlay( handle ) );
-+}
-+
-+static int W100_SetupOverlay( uint16_t handle, ATI_OVERLAYPROP *prop )
-+{
-+    return( AtiCore_SetupOverlay( handle, prop ) );
-+}
-+
-+static int W100_SetupOverlayExtended( uint16_t handle, ATI_EXTENDEDOVERLAYPROP *prop )
-+{
-+    return( AtiCore_SetupOverlayExtended( handle, prop ) );
-+}
-+
-+static int W100_SetOverlayOnOff( uint16_t handle, int isShow )
-+{
-+    return( AtiCore_SetOverlayOnOff( handle, isShow ) );
-+}
-+
-+static int W100_SetOverlayPos( uint16_t handle, uint16_t x, uint16_t y )
-+{
-+    return( AtiCore_SetOverlayPos( handle, x, y ) );
-+}
-+
-+static int W100_SetupMemoryTransfer( uint32_t offset, uint32_t *regdata )
-+{
-+    return( AtiCore_SetupMemoryTransfer( offset, regdata ) );
-+}
-+
-+static int W100_TerminateMemoryTransfer( void )
-+{
-+    return( AtiCore_TerminateMemoryTransfer() );
-+}
-+
-+static int W100_GetFrontBufferPitchOffset( uint32_t *pitch, uint32_t *offset )
-+{
-+    return( AtiCore_GetFrontBufferPitchOffset( pitch, offset ) );
-+}
-+
-+static int W100_SetDisplayBrightness( int bri )
-+{
-+    return( AtiCore_SetDisplayBrightness( bri ) );
-+}
-+
-+static int W100_GetAvailableVideoMem( uint32_t *internal, uint32_t *external )
-+{
-+    return( GetAvailableVideoMem( internal, external ) );
-+}
-+
-+static int W100_SetupGraphicWindow( ATI_GRAPHICWINDOW *win )
-+{
-+    return( AtiCore_SetupGraphicWindow( ( void * ) win ) );
-+}
-+
-+static int W100_ProcessAttachSpecialMode( int mode )
-+{
-+    return( AtiCore_ProcessAttachSpecialMode( mode ) );
-+}
-+
-+static int W100_SetGraphicWindowPos( int x, int y )
-+{
-+    return( AtiCore_SetGraphicWindowPos( x, y ) );
-+}
-+
-+static int W100_SetFrontBuffer( int offset, int a, int b )
-+{
-+    return( AtiCore_SetFrontBuffer( offset, a, b ) );
-+}
-+
-+static int W100_SetGraphicWindowOnOff( int val )
-+{
-+    return( AtiCore_SetGraphicWindowOnOff( val ) );
-+}
-+
-+static unsigned long ccolor( unsigned int rgb )
-+{
-+    unsigned char r = ( rgb & 0xff0000 ) >> 19;
-+    unsigned char g = ( rgb & 0xff00 ) >> 10;
-+    unsigned char b = ( rgb & 0xff ) >> 3;
-+    return ( ( ( ( unsigned short )0x1f & r ) << 11 ) |
-+             ( ( ( unsigned short )0x3f & g ) << 5 ) |
-+             ( ( ( unsigned short )0x1f & b ) )  ); 
-+}
-+
-+static int W100_SetFrgColour( int val )
-+{
-+    return( AtiCore_SetFrgColour( ccolor( val ) ) );
-+}
-+
-+static int W100_BrushType( int type, unsigned int pattern )
-+{
-+    return( AtiCore_BrushType( type, &pattern ) );
-+}
-+
-+static int W100_PaintRect( int flags, ATI_RECT *rect )
-+{
-+    return( AtiCore_PaintRect( flags, rect ) );
-+}
-+
-+static int W100_Polyline( int npoints, ATI_POINT *points )
-+{
-+    return( AtiCore_Polyline( npoints, points ) );
-+}
-+
-+static int W100_GetPitchOffsetProperty( void *pitch, void *offset )
-+{
-+    return( AtiCore_GetPitchOffsetProperty( pitch, offset ) );
-+}
-+
-+static int W100_CursorOnOff( int a, int b )
-+{
-+    return( AtiCore_CursorOnOff( a, b ) );
-+}
-+
-+static int W100_BitBlt( int flags, ATI_RECT *dst, ATI_RECT *src )
-+{
-+    return( AtiCore_BitBlt( flags, dst, src ) );
-+}
-+
-+static int W100_WakeUpCall( void )
-+{
-+    return( AtiCore_WakeUpCall() );
-+}
++W100Driver driver;
 +
 +class QW100Screen;
 +static QW100Screen *qt_w100_screen = 0;
@@ -1128,6 +1336,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QMap< uchar*, HWSurface > *getPSurfaceMap( void ) const;
 +    void clearCache( int clientId );
 +
++    // Suspend/resume hooks
++    virtual void prepareToSuspend();
++    virtual void prepareToResume();
 +    // Rotation stuff
 +    enum Transformation { None, Rot90, Rot180, Rot270 };
 +    void setTransformation( Transformation t );
@@ -1153,6 +1364,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    static void clearCache( QScreen *instance, int clientId );
 +    QMap< uchar*, HWSurface > surfaceMap;
 +    int vramoffset;
++    bool m_isServer;
 +    virtual int pixmapLinestepAlignment() { return 128; }
 +};
 +
@@ -1282,8 +1494,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +            return FALSE;
 +        }
 +        sourcepixelpitch = ( this->srclinestep * 8 ) / this->srcdepth;
-+        W100_SetSrcPitchOffset( sourcepixelpitch,
-+                                src_buffer_offset );
++        driver.setSrcPitchOffset( sourcepixelpitch,
++                                       src_buffer_offset );
 +    }
 +    return TRUE;
 +}
@@ -1297,9 +1509,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return FALSE;
 +    }
 +    int pixelstep = ( this->linestep() * 8 ) / depth;
-+    W100_SetDstPitchOffset( pixelstep, buffer_offset );
++    driver.setDstPitchOffset( pixelstep, buffer_offset );
 +    if ( setsrc ) {
-+        W100_SetSrcPitchOffset( pixelstep, buffer_offset );
++        driver.setSrcPitchOffset( pixelstep, buffer_offset );
 +    }
 +    return TRUE;
 +}
@@ -1325,8 +1537,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !control.accelerated( W100Control::DRAWLINE ) ) {
-+        control.addMiss( W100Control::DRAWLINE );
++    if ( !driver.accelerated( W100Driver::DRAWLINE ) ) {
++        driver.addMiss( W100Driver::DRAWLINE );
 +        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
 +        return;
 +    }
@@ -1336,7 +1548,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +         ( this->myrop != this->CopyROP ) ||
 +         ( this->cpen.width() > 1 ) ||
 +         ( this->dashedLines ) ) {
-+        control.addMiss( W100Control::DRAWLINE );
++        driver.addMiss( W100Driver::DRAWLINE );
 +        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2);
 +        return;
 +    }
@@ -1346,7 +1558,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QWSDisplay::grab( true );
 +    if ( !checkDest() ) {
 +        QWSDisplay::ungrab();
-+        control.addMiss( W100Control::DRAWLINE );
++        driver.addMiss( W100Driver::DRAWLINE );
 +        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
 +        return;
 +    }
@@ -1389,9 +1601,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    /*
 +     * Just a dirty hack. Comment it out for now
 +     if ( this->dashedLines ) {
-+     W100_BrushType( 4, 0xaaaaaaaa );
++     brushType( 4, 0xaaaaaaaa );
 +     } else {
-+     W100_BrushType( 6, 0 );
++     brushType( 6, 0 );
 +     }
 +     switch( this->cpen.style() ) {
 +     case Qt::NoPen:
@@ -1417,15 +1629,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +     }
 +    */
 +
-+    //if ( control.lastOp() != W100Control::DRAWLINE &&
-+    //control.lastOp() != W100Control::POLYLINE ) {
-+    W100_SetDstType( DSTTYPE_16BPP_1555 );
-+    W100_SetSrcType( SRCTYPE_EQU_DST );
-+    W100_SetRopOperation( ROP3_PATCOPY );
-+    W100_BrushType( 6, 0 );
++    //if ( driver.lastOp() != W100Driver::DRAWLINE &&
++    //driver.lastOp() != W100Driver::POLYLINE ) {
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
 +    //}
-+    W100_SetFrgColour( this->cpen.color().rgb() );
-+    control.addHit( W100Control::DRAWLINE );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.addHit( W100Driver::DRAWLINE );
 +
 +    //The imageon seems not to write on the edge of the clip
 +    //for the polyline op. 
@@ -1444,9 +1656,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        clip.Y_Top_Left = this->cliprect[loopc].y();
 +        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
 +        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
-+        W100_SetDstClippingRect( &clip );
++        driver.setDstClippingRect( &clip );
 +
-+        W100_Polyline( 3, points );
++        driver.polyline( 3, points );
 +    }
 +
 +    // Software mouse cursor stuff
@@ -1488,15 +1700,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !control.accelerated( W100Control::POLYLINE ) ) {
-+        control.addMiss( W100Control::POLYLINE );
++    if ( !driver.accelerated( W100Driver::POLYLINE ) ) {
++        driver.addMiss( W100Driver::POLYLINE );
 +        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
 +        return;
 +    }
 +
 +    if ( this->cpen.style() != this->SolidLine ||
 +         this->myrop != this->CopyROP ) {
-+        control.addMiss( W100Control::POLYLINE );
++        driver.addMiss( W100Driver::POLYLINE );
 +        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
 +        return;
 +    }
@@ -1504,26 +1716,26 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QWSDisplay::grab( TRUE );
 +    if ( !checkDest() ) {
 +        QWSDisplay::ungrab();
-+        control.addMiss( W100Control::POLYLINE );
++        driver.addMiss( W100Driver::POLYLINE );
 +        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
 +        return;
 +    }
 +
 +    ( *optype ) = 1;
 +
-+    //if ( control.lastOp() != W100Control::POLYLINE &&
-+    //control.lastOp() != W100Control::DRAWLINE ) {
++    //if ( driver.lastOp() != W100Driver::POLYLINE &&
++    //driver.lastOp() != W100Driver::DRAWLINE ) {
 +
-+    W100_SetDstType( DSTTYPE_16BPP_1555 );
-+    W100_SetSrcType( SRCTYPE_EQU_DST );
-+    W100_SetRopOperation( ROP3_PATCOPY );
-+    W100_BrushType( 6, 0 );
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
 +  
 +    //}
 +
-+    W100_SetFrgColour( this->cpen.color().rgb() );
++    driver.setFrgColour( this->cpen.color().rgb() );
 +
-+    control.addHit( W100Control::POLYLINE );
++    driver.addHit( W100Driver::POLYLINE );
 +
 +    ATI_POINT *points = new ATI_POINT[ npoints + 1 ];
 +
@@ -1536,16 +1748,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +
 +    GFX_START( clipbounds );
-+    W100_SetFrgColour( this->cpen.color().rgb() );
-+    W100_SetRopOperation( ROP3_PATCOPY );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
 +    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
 +        ATI_CLIPRECT clip;
 +        clip.X_Top_Left = this->cliprect[loopc].x();
 +        clip.Y_Top_Left = this->cliprect[loopc].y();
 +        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
 +        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
-+        W100_SetDstClippingRect( &clip );
-+        W100_Polyline( npoints + 1, points );
++        driver.setDstClippingRect( &clip );
++        driver.polyline( npoints + 1, points );
 +    }
 +    GFX_END;
 +
@@ -1598,15 +1810,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !control.accelerated( W100Control::DRAWPOINT) ) {
-+        control.addMiss( W100Control::DRAWPOINT );
++    if ( !driver.accelerated( W100Driver::DRAWPOINT) ) {
++        driver.addMiss( W100Driver::DRAWPOINT );
 +        QGfxRaster<depth,type>::drawPoint( x, y );
 +        return;
 +    }
 +
 +    if ( this->cpen.style() != this->SolidLine ||
 +         this->myrop != this->CopyROP ) {
-+        control.addMiss( W100Control::DRAWPOINT );
++        driver.addMiss( W100Driver::DRAWPOINT );
 +        QGfxRaster<depth,type>::drawPoint( x, y );
 +        return;
 +    }
@@ -1614,12 +1826,12 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QWSDisplay::grab( TRUE );
 +    if ( !checkDest() ) {
 +        QWSDisplay::ungrab();
-+        control.addMiss( W100Control::DRAWPOINT );
++        driver.addMiss( W100Driver::DRAWPOINT );
 +        QGfxRaster<depth,type>::drawPoint( x, y );
 +        return;
 +    }
 +
-+    control.addHit( W100Control::DRAWPOINT );
++    driver.addHit( W100Driver::DRAWPOINT );
 +    ( *optype ) = 1;
 +  
 +    ATI_POINT point;
@@ -1627,16 +1839,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    point.YCoord = y + this->yoffs;
 +
 +    GFX_START( clipbounds );
-+    W100_SetFrgColour( this->cpen.color().rgb() );
-+    W100_SetRopOperation( ROP3_PATCOPY );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
 +    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
 +        ATI_CLIPRECT clip;
 +        clip.X_Top_Left = this->cliprect[loopc].x();
 +        clip.Y_Top_Left = this->cliprect[loopc].y();
 +        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
 +        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
-+        W100_SetDstClippingRect( &clip );
-+        W100_DrawPixel( 1, &point );
++        driver.setDstClippingRect( &clip );
++        driver.drawPixel( 1, &point );
 +    }
 +    GFX_END;
 +    QWSDisplay::ungrab();
@@ -1667,15 +1879,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !control.accelerated( W100Control::DRAWPOINTS ) ) {
-+        control.addMiss( W100Control::DRAWPOINTS );
++    if ( !driver.accelerated( W100Driver::DRAWPOINTS ) ) {
++        driver.addMiss( W100Driver::DRAWPOINTS );
 +        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
 +        return;
 +    }
 +
 +    if ( this->cpen.style() != this->SolidLine ||
 +         this->myrop != this->CopyROP ) {
-+        control.addMiss( W100Control::DRAWPOINTS );
++        driver.addMiss( W100Driver::DRAWPOINTS );
 +        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
 +        return;
 +    }
@@ -1683,12 +1895,12 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QWSDisplay::grab( TRUE );
 +    if ( !checkDest() ) {
 +        QWSDisplay::ungrab();
-+        control.addMiss( W100Control::DRAWPOINTS );
++        driver.addMiss( W100Driver::DRAWPOINTS );
 +        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
 +        return;
 +    }
 +
-+    control.addHit( W100Control::DRAWPOINTS );
++    driver.addHit( W100Driver::DRAWPOINTS );
 +    ( *optype ) = 1;
 +  
 +    ATI_POINT *points = new ATI_POINT[ npoints ];
@@ -1698,16 +1910,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    }
 +
 +    GFX_START( clipbounds );
-+    W100_SetFrgColour( this->cpen.color().rgb() );
-+    W100_SetRopOperation( ROP3_PATCOPY );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
 +    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
 +        ATI_CLIPRECT clip;
 +        clip.X_Top_Left = this->cliprect[loopc].x();
 +        clip.Y_Top_Left = this->cliprect[loopc].y();
 +        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
 +        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
-+        W100_SetDstClippingRect( &clip );
-+        W100_DrawPixel( npoints, points );
++        driver.setDstClippingRect( &clip );
++        driver.drawPixel( npoints, points );
 +    }
 +    GFX_END;
 +
@@ -1740,8 +1952,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                                      int w, int h, 
 +                                      int sx, int sy )
 +{
-+    if ( !control.accelerated( W100Control::SCROLL ) ) {
-+        control.addMiss( W100Control::SCROLL );
++    if ( !driver.accelerated( W100Driver::SCROLL ) ) {
++        driver.addMiss( W100Driver::SCROLL );
 +        QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
 +        return;
 +    }
@@ -1773,13 +1985,13 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        ( *optype ) = 1;
 +
 +
-+        //if ( control.lastOp() != W100Control::SCROLL ) {
-+        W100_SetRopOperation( ROP3_SRCCOPY );
-+        W100_SetDstType( DSTTYPE_16BPP_1555 );
-+        W100_SetSrcType( SRCTYPE_EQU_DST );
++        //if ( driver.lastOp() != W100Driver::SCROLL ) {
++        driver.setRopOperation( ROP3_SRCCOPY );
++        driver.setDstType( DSTTYPE_16BPP_1555 );
++        driver.setSrcType( SRCTYPE_EQU_DST );
 +        //}
 +
-+        control.addHit( W100Control::SCROLL );
++        driver.addHit( W100Driver::SCROLL );
 +
 +        ATI_RECT srcrect, dstrect;
 +
@@ -1791,7 +2003,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        dstrect.YCoord = ry;
 +        dstrect.Width = w;
 +        dstrect.Height = h;
-+        control.log( W100Control::WARNING, 
++        driver.log( W100Driver::WARNING, 
 +                     "scroll [%d,%d,%d,%d] ->[%d,%d,%d,%d]",
 +                     sx, sy, w, h, rx, ry, w, h );
 +        for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
@@ -1801,8 +2013,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
 +            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
 +
-+            W100_SetDstClippingRect( &clip );
-+            W100_BitBlt( 1, &dstrect, &srcrect );
++            driver.setDstClippingRect( &clip );
++            driver.bitBlt( 1, &dstrect, &srcrect );
 +        }
 +        GFX_END;
 +        QWSDisplay::ungrab();
@@ -1810,7 +2022,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    } else {
 +        QWSDisplay::ungrab();
 +        // software fallback
-+        control.addMiss( W100Control::SCROLL );
++        driver.addMiss( W100Driver::SCROLL );
 +        QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
 +    }
 +}
@@ -1834,21 +2046,21 @@ Manuel Teira <manuel.teira@telefonica.net>
 +{
 +    if ( w <= 0 || h <= 0 || this->ncliprect < 1 ) return;
 +
-+    if ( !control.accelerated( W100Control::FILLRECT ) ) {
-+        control.addMiss( W100Control::FILLRECT );
++    if ( !driver.accelerated( W100Driver::FILLRECT ) ) {
++        driver.addMiss( W100Driver::FILLRECT );
 +        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
 +        return;
 +    }
 +
 +    if ( ( this->cbrush.style() != this->NoBrush ) && 
 +         ( this->cbrush.style() != this->SolidPattern ) ) {
-+        control.addMiss( W100Control::FILLRECT );
++        driver.addMiss( W100Driver::FILLRECT );
 +        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
 +        return;
 +    }
 +
 +    if ( !checkDest() || ( this->myrop != this->CopyROP ) ) {
-+        control.addMiss( W100Control::FILLRECT );
++        driver.addMiss( W100Driver::FILLRECT );
 +        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
 +        return;
 +    }
@@ -1860,15 +2072,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    GFX_START( QRect( rx, ry, w + 1, h + 1 ) );
 +
 +    ( *optype ) = 1;
-+    //if ( control.lastOp() != W100Control::FILLRECT ) {
-+    W100_SetDstType( DSTTYPE_16BPP_1555 );
-+    W100_SetSrcType( SRCTYPE_EQU_DST );
-+    W100_SetRopOperation( ROP3_PATCOPY );
-+    W100_BrushType( 6, 0 );
++    //if ( driver.lastOp() != W100Driver::FILLRECT ) {
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
 +    //}
-+    W100_SetFrgColour( this->cbrush.color().rgb() );
++    driver.setFrgColour( this->cbrush.color().rgb() );
 +
-+    control.addHit( W100Control::FILLRECT );
++    driver.addHit( W100Driver::FILLRECT );
 +
 +    if ( this->cbrush.style() != this->NoBrush ) {
 +        //Using all the cliprects
@@ -1881,12 +2093,12 @@ Manuel Teira <manuel.teira@telefonica.net>
 +            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
 +            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
 +
-+            W100_SetDstClippingRect( &clip );
++            driver.setDstClippingRect( &clip );
 +            rect.XCoord = rx;
 +            rect.YCoord = ry;
 +            rect.Width  = w;
 +            rect.Height = h;
-+            W100_PaintRect( 1, &rect );
++            driver.paintRect( 1, &rect );
 +        }
 +    }
 +    GFX_END;
@@ -1940,8 +2152,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !control.accelerated( W100Control::BITBLT ) ) {
-+        control.addMiss( W100Control::BITBLT );
++    if ( !driver.accelerated( W100Driver::BITBLT ) ) {
++        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
 +        return;
 +    }
@@ -1951,13 +2163,13 @@ Manuel Teira <manuel.teira@telefonica.net>
 +         this->alphatype == this->SeparateAlpha ||
 +         this->srctype == this->SourcePen ||
 +         ( this->myrop != this->CopyROP ) ) {
-+        control.addMiss( W100Control::BITBLT );
++        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
 +        return;
 +    }
 +
 +    if( ( this->srcdepth != 16 ) || this->alphatype != this->IgnoreAlpha ) {
-+        control.addMiss( W100Control::BITBLT );
++        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
 +        return;
 +    }
@@ -1969,13 +2181,13 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                          w + 1, h + 1 ) );
 +        ( *optype ) = 1;
 +
-+        //if ( control.lastOp() != W100Control::BITBLT ) {
-+        W100_SetRopOperation( ROP3_SRCCOPY );
-+        W100_SetDstType( DSTTYPE_16BPP_1555 );
-+        W100_SetSrcType( SRCTYPE_EQU_DST );
++        //if ( driver.lastOp() != W100Driver::BITBLT ) {
++        driver.setRopOperation( ROP3_SRCCOPY );
++        driver.setDstType( DSTTYPE_16BPP_1555 );
++        driver.setSrcType( SRCTYPE_EQU_DST );
 +        //}
 +
-+        control.addHit( W100Control::BITBLT );
++        driver.addHit( W100Driver::BITBLT );
 +
 +        ATI_RECT rect1;
 +        ATI_RECT rect2;
@@ -1997,8 +2209,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +            clip.Y_Top_Left     = this->cliprect[ loopc ].y();
 +            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
 +            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
-+            W100_SetDstClippingRect( &clip );
-+            W100_BitBlt( 1, &rect2, &rect1 );
++            driver.setDstClippingRect( &clip );
++            driver.bitBlt( 1, &rect2, &rect1 );
 +        }
 +        GFX_END;
 +      
@@ -2007,7 +2219,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    } else {
 +        QWSDisplay::ungrab();
 +        // software fallback
-+        control.addMiss( W100Control::BITBLT );
++        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, 
 +                                     w, h, sx, sy );
 +    }
@@ -2077,7 +2289,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +template<const int depth,const int type>
 +void QGfxW100<depth,type>::sync()
 +{
-+    W100_WaitComplete( -1 );
++    driver.waitComplete( -1 );
 +}
 +
 +template <const int depth, const int type>
@@ -2142,11 +2354,10 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    }
 +}
 +
-+
-+
 +QW100Screen::QW100Screen( int display_id )
 +    :QLinuxFbScreen( display_id ),
-+     vramoffset( 0 )
++     vramoffset( 0 ),
++     m_isServer( false )
 +{
 +    qt_w100_screen = this;
 +    vramoffset = 0;
@@ -2190,14 +2401,14 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +bool QW100Screen::connect( const QString &displaySpec )
 +{
-+    control.log( W100Control::WARNING, "QW100Screen::connect('%s')",
++    driver.log( W100Driver::WARNING, "QW100Screen::connect('%s')",
 +                 displaySpec.latin1() );
 +    trans = getTransSpec( displaySpec );
 +
 +    if ( QLinuxFbScreen::connect( displaySpec ) ) {
 +        vramoffset = ( w == 320 ) ? 0 : 0x0f000000;
-+        if ( W100_ProcessAttach() ) {
-+            W100_ProcessAttachSpecialMode( ( w == 480 ) ? 0xaaab : 0xaaaa );
++        if ( driver.processAttach() == W100Driver::codOK ) {
++            driver.processAttachSpecialMode( ( w == 480 ) ? 0xaaab : 0xaaaa );
 +            surfaceMap.clear();
 +            surfaceMap.insert( 0, HWSurface( vramoffset, 
 +                                             data , false, 
@@ -2214,12 +2425,31 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +void QW100Screen::disconnect( void )
 +{
-+    control.log( W100Control::WARNING, "QW100Screen::disconnect()" );
-+    W100_ProcessDetach();
++    driver.log( W100Driver::WARNING, "QW100Screen::disconnect()" );
++    driver.processDetach();
 +    QLinuxFbScreen::disconnect();
 +    printf( "[%d]QW100Screen disconnected with %d surfaces\n", 
 +            getpid(), surfaceMap.count() );
 +    surfaceMap.clear();
++}
++
++void QW100Screen::prepareToSuspend( void )
++{
++    driver.log( W100Driver::WARNING, 
++                 "QW100Screen::prepareToSuspend. Server = %s",
++                 m_isServer ? "true" : "false" );
++    driver.processDetach();
++}
++
++void QW100Screen::prepareToResume( void )
++{
++    driver.log( W100Driver::WARNING, 
++                 "QW100Screen::prepareToResume. Server = %s",
++                 m_isServer ? "true": "false" );
++    driver.processAttach();
++    if ( m_isServer ) {
++        w100init();
++    }
 +}
 +
 +QW100Screen::~QW100Screen()
@@ -2228,11 +2458,10 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +bool QW100Screen::w100init()
 +{
-+    control.log( W100Control::WARNING, 
++    driver.log( W100Driver::WARNING,
 +                 "QW100Screen::w100init(%dx%d)", dw, dh );
 +    ATI_GRAPHICWINDOW win;
 +    ATI_CLIPRECT      clip;
-+    int ret;
 +
 +    win.dummy1 = 0;
 +    win.Size.XCoord = 0;
@@ -2243,30 +2472,29 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    win.Height = dw > dh ? dw : dh;
 +    win.Flag = DSTTYPE_16BPP_444;
 +    
-+    ret = W100_SetupGraphicWindow( &win );
-+    if ( !ret ) {
++    if ( driver.setupGraphicWindow( &win ) != W100Driver::codOK ) {
 +        return false;
 +    }
-+    ret = W100_SetGraphicWindowPos( 0, 0 );
++    driver.setGraphicWindowPos( 0, 0 );
 +
-+    ret = W100_SetFrontBuffer( vramoffset, 0, 0 );
-+    ret = W100_SetDstPitchOffset( dw, vramoffset );
-+    ret = W100_SetDstType( DSTTYPE_16BPP_444 );
-+    ret = W100_SetSrcPitchOffset( dw, vramoffset );
-+    ret = W100_SetSrcType( SRCTYPE_SOLID_COLOR_BLT );
++    driver.setFrontBuffer( vramoffset, 0, 0 );
++    driver.setDstPitchOffset( dw, vramoffset );
++    driver.setDstType( DSTTYPE_16BPP_444 );
++    driver.setSrcPitchOffset( dw, vramoffset );
++    driver.setSrcType( SRCTYPE_SOLID_COLOR_BLT );
 +    clip.X_Top_Left = 0;
 +    clip.Y_Top_Left = 0;
 +    clip.X_Bottom_Right = dw;
 +    clip.Y_Bottom_Right = dh;
-+    ret = W100_SetDstClippingRect( &clip );
++    driver.setDstClippingRect( &clip );
 +    
 +    clip.X_Top_Left = 0xE000;
 +    clip.Y_Top_Left = 0xE000;
 +    clip.X_Bottom_Right = 0x1FFF;
 +    clip.Y_Bottom_Right = 0x1FFF;
 +    
-+    ret = W100_SetSrcClippingRect( &clip );
-+    ret = W100_SetGraphicWindowOnOff( 1 );
++    driver.setSrcClippingRect( &clip );
++    driver.setGraphicWindowOnOff( 1 );
 +    return true;
 +}
 +
@@ -2276,8 +2504,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +bool QW100Screen::initDevice()
 +{
-+    control.log( W100Control::WARNING, "initDevice( dw=%d, dh=%d )",
++    driver.log( W100Driver::WARNING, "initDevice( dw=%d, dh=%d )",
 +                 dw, dh );
++    m_isServer = true;
 +
 +    if ( !w100init() ) return false;
 +
@@ -2293,19 +2522,20 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +void QW100Screen::shutdownDevice()
 +{
-+    control.log( W100Control::WARNING, "Shutting down device" );
++    driver.log( W100Driver::WARNING, "Shutting down device" );
 +    QLinuxFbScreen::shutdownDevice();
 +}
 +
 +void QW100Screen::restore()
 +{
-+    control.log( W100Control::WARNING, "Restoring W100..." );
++    driver.log( W100Driver::WARNING, "Restoring W100..." );
 +    /*
-+      W100_WakeUpCall();
++      wakeUpCall();
 +      initDevice();
-+      QLinuxFbScreen::restore();
++ 
 +    */
-+    control.log( W100Control::WARNING, "Restoring done" );
++    QLinuxFbScreen::restore();
++    driver.log( W100Driver::WARNING, "Restoring done" );
 +}
 +
 +
@@ -2376,14 +2606,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +#else
 +    int retcode = 0;
 +    qt_fbdpy->grab( true );
-+    retcode = W100_AllocateSurface( &hSurface,
-+                                    &surfaceOffset,
-+                                    amount, 1 );
++    retcode = driver.allocateSurface( &hSurface,
++                                           &surfaceOffset,
++                                           amount, 1 );
 +    qt_fbdpy->ungrab();
 +    if ( retcode ) {
 +        internal = true;
-+        W100_SetupMemoryTransfer( surfaceOffset, (uint32_t*) &localAddr );
-+        W100_TerminateMemoryTransfer();
++        driver.setupMemoryTransfer( surfaceOffset, 
++                                         (uint32_t*) &localAddr );
++        driver.terminateMemoryTransfer();
 +    } else {
 +        // Try to use the offscreen framebuffer memory
 +        // to allocate the surface. Use the qgfxlinuxfb routines
@@ -2408,10 +2639,10 @@ Manuel Teira <manuel.teira@telefonica.net>
 +{
 +    QMap< uchar*, HWSurface >::Iterator itr;
 +    if ( ( itr = surfaceMap.find( c ) ) != surfaceMap.end() ) {
-+        W100_WaitComplete( -1 );
++        driver.waitComplete( -1 );
 +        if ( itr.data().internal() ) {
 +            qt_fbdpy->grab( true );
-+            W100_DestroySurface( itr.data().getHandle() );
++            driver.destroySurface( itr.data().getHandle() );
 +            qt_fbdpy->ungrab();
 +        } else {
 +            QLinuxFbScreen::uncache( c );
@@ -2458,13 +2689,13 @@ Manuel Teira <manuel.teira@telefonica.net>
 +void QW100Screen::clearCache( int clientId )
 +{
 +    printf( "[%d] CLEARING CACHE FOR %d\n", getpid(), clientId );
-+    control.log( W100Control::WARNING, "Cleaning cache for '%d'", clientId );
++    driver.log( W100Driver::WARNING, "Cleaning cache for '%d'", clientId );
 +    QMap< uchar*, HWSurface >::Iterator itr = surfaceMap.begin();
 +    while ( itr != surfaceMap.end() ) {
 +        if ( itr.data().getCId() == clientId ) {
 +            if ( itr.data().internal() ) {
 +                qt_fbdpy->grab();
-+                W100_DestroySurface( itr.data().getHandle() );
++                driver.destroySurface( itr.data().getHandle() );
 +                qt_fbdpy->ungrab();
 +            }
 +            surfaceMap.remove( itr );
