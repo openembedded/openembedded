@@ -10,7 +10,8 @@ SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
 inherit autotools
 
 EXTRA_OECONF = "--with-auth=unix \
-		--without-perl"
+		--without-perl \
+		--without-snmp"
 
 FILES_${PN} += "${prefix}/cyrus/bin"
 
