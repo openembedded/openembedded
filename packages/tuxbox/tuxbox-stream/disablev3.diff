@@ -1,0 +1,1494 @@
+diff -Naur stream_org/Makefile.am stream/Makefile.am
+--- stream_org/Makefile.am	2004-11-15 22:10:30.000000000 +0100
++++ stream/Makefile.am	2004-11-15 22:14:16.000000000 +0100
+@@ -1,4 +1,4 @@
+-sbin_PROGRAMS = streampes streamts streamsec udpstreamts streamfile fserver
++sbin_PROGRAMS = streampes streamts streamsec udpstreamts
+ 
+ INCLUDES = @MPEGTOOLS_CFLAGS@
+ 
+@@ -6,8 +6,5 @@
+ streamts_SOURCES = streamts.c
+ streamsec_SOURCES = streamsec.c
+ udpstreamts_SOURCES = udpstreamts.c
+-streamfile_SOURCES = streamfile.c ringbuffer.c
+-fserver_SOURCES = fserver.c
+ 
+ streamts_LDADD = @MPEGTOOLS_LIBS@
+-streamfile_LDADD = @MPEGTOOLS_LIBS@ -lpthread
+diff -Naur stream_org/streamfile.c stream/streamfile.c
+--- stream_org/streamfile.c	2004-05-02 13:23:31.000000000 +0200
++++ stream/streamfile.c	1970-01-01 01:00:00.000000000 +0100
+@@ -1,421 +0,0 @@
+-/*
+- * $Id: streamfile.c,v 1.19 2004/05/02 11:23:31 diemade Exp $
+- * 
+- * streaming ts to file/disc
+- * 
+- * Copyright (C) 2004 Axel Buehning <diemade@tuxbox.org>,
+- *                    thegoodguy <thegoodguy@berlios.de>
+- *
+- * based on code which is
+- * Copyright (C) 2001 TripleDES
+- * Copyright (C) 2000, 2001 Marcus Metzler <marcus@convergence.de>
+- * Copyright (C) 2002 Andreas Oberritter <obi@tuxbox.org>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; either version 2
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- * Or, point your browser to http://www.gnu.org/copyleft/gpl.html
+- *
+- */
+-
+-#ifdef HAVE_CONFIG_H
+-#include <config.h>
+-#endif
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/ioctl.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <time.h>
+-#include <unistd.h>
+-
+-#include <linux/dvb/dmx.h>
+-#include <transform.h>
+-#include <pthread.h>
+-#include <signal.h>
+-
+-#include "ringbuffer.h"
+-
+-/* conversion buffer sizes */
+-// TS_SIZE is 188
+-#define IN_SIZE		(TS_SIZE * 362)
+-
+-#define RINGBUFFERSIZE IN_SIZE * 20
+-#define MAXREADSIZE IN_SIZE
+-#define MINREADSIZE IN_SIZE
+-
+-/* demux buffer size */
+-#define DMX_BUFFER_SIZE (256 * 1024)
+-
+-/* maximum number of pes pids */
+-#define MAXPIDS		64
+-
+-/* devices */
+-#define DMXDEV	"/dev/dvb/adapter0/demux0"
+-#define DVRDEV	"/dev/dvb/adapter0/dvr0"
+-
+-unsigned char * buf;
+-
+-static int dvrfd;
+-static int demuxfd[MAXPIDS];
+-
+-static unsigned char demuxfd_count = 0;
+-static unsigned char exit_flag = 0;
+-
+-static ringbuffer_t *ringbuf;
+-static int fd2 = -1;
+-
+-static int silent = 0;
+-#define dprintf(fmt, args...) {if(!silent) printf( "[streamfile] " fmt, ## args);}
+-
+-unsigned int limit=2;
+-
+-void clean_exit(int signal);
+-
+-static int sync_byte_offset (const unsigned char * buf, const unsigned int len) {
+-
+-	unsigned int i;
+-
+-	for (i = 0; i < len; i++)
+-		if (buf[i] == 0x47)
+-			return i;
+-
+-	return -1;
+-}
+-
+-
+-static int setPesFilter (const unsigned short pid)
+-{
+-	int fd;
+-	struct dmx_pes_filter_params flt; 
+-
+-	if ((fd = open(DMXDEV, O_RDWR)) < 0)
+-		return -1;
+-
+-	if (ioctl(fd, DMX_SET_BUFFER_SIZE, DMX_BUFFER_SIZE) < 0)
+-		return -1;
+-
+-	flt.pid = pid;
+-	flt.input = DMX_IN_FRONTEND;
+-	flt.output = DMX_OUT_TS_TAP;
+-	flt.pes_type = DMX_PES_OTHER;
+-	flt.flags = 0;
+-
+-	if (ioctl(fd, DMX_SET_PES_FILTER, &flt) < 0)
+-		return -1;
+-
+-	if (ioctl(fd, DMX_START, 0) < 0)
+-		return -1;
+-
+-	return fd;
+-}
+-
+-
+-static void unsetPesFilter (int fd) {
+-	ioctl(fd, DMX_STOP);
+-	close(fd);
+-}
+-
+-
+-void *FileThread (void *v_arg)
+-{
+-	ringbuffer_data_t vec[2];
+-	size_t readsize, maxreadsize=0;
+-	unsigned int filecount = 0;
+-	const unsigned long long splitsize=((1024*1024*1024)/TS_SIZE)*TS_SIZE * limit; // 1GB%188
+-	unsigned long long remfile=0;
+-	char filename[512];
+-	time_t timer1 = 0;
+-	unsigned long long filesize2 = 0;
+-	unsigned int bitrate = 0;
+-
+-	while (1)
+-	{
+-		ringbuffer_get_read_vector(ringbuf, &(vec[0]));
+-		readsize = vec[0].len + vec[1].len;
+-		if (readsize)
+-		{
+-			if ((!silent)&&(readsize > maxreadsize))
+-			{
+-				maxreadsize = readsize;
+-			}
+-
+-			// Do Splitting if necessary
+-			if (remfile == 0)
+-			{
+-				sprintf(filename, "%s.%3.3d.ts", (char *)v_arg, ++filecount);
+-				if (fd2 != -1)
+-					close(fd2);
+-				if ((fd2 = open(filename, O_WRONLY | O_CREAT | O_SYNC | O_TRUNC | O_LARGEFILE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
+-				{
+-					perror("[streamfile]: opening outfile");
+-					exit_flag = 1;
+-					pthread_exit(NULL);
+-				}
+-				remfile = splitsize;
+-				timer1 = time(NULL);
+-			}
+-
+-			/* make sure file contains complete TS-packets and is <= splitsize */
+-			if ((unsigned long long)readsize > remfile)
+-			{ 
+-				readsize = remfile;
+-
+-				if (vec[0].len > readsize)
+-					vec[0].len = readsize;
+-
+-				vec[1].len = readsize - vec[0].len;
+-			}
+-
+-			ssize_t written;
+-
+-			while (1)
+-			{
+-				if ((written = write(fd2, vec[0].buf, vec[0].len)) < 0)
+-				{
+-					if (errno != EAGAIN)
+-					{
+-						exit_flag = 1;
+-						perror("[streamfile]: write");
+-						goto terminate_thread;
+-					}
+-				}
+-				else
+-				{
+-					ringbuffer_read_advance(ringbuf, written);
+-					
+-					if (vec[0].len == written)
+-					{
+-						if (vec[1].len == 0)
+-						{
+-							goto all_bytes_written;
+-						}
+-						
+-						vec[0] = vec[1];
+-						vec[1].len = 0;
+-					}
+-					else
+-					{
+-						vec[0].len -= written;
+-						vec[0].buf += written;
+-					}
+-				}
+-			}
+-
+-		all_bytes_written:
+-			fdatasync(fd2);
+-			
+-			remfile -= (unsigned long long)readsize;
+-			if (!silent)
+-			{
+-				filesize2 += (unsigned long long)readsize;
+-			
+-				if ((time(NULL) - timer1) > 10)
+-				{
+-					bitrate = (filesize2 / (time(NULL) - timer1) * 8);
+-					printf("Datarate %d bits/sec, %d Kbits/sec, max. rb used %d bytes\n"
+-					       , (int)bitrate, (int)bitrate/1024, maxreadsize);
+-					filesize2 = 0;
+-					timer1 = time(NULL);
+-				}
+-			}
+-		}
+-		else
+-		{
+-			if (exit_flag)
+-				goto terminate_thread;
+-			usleep(1000);
+-		}
+-	}
+- terminate_thread:
+-	if (fd2 != -1)
+-		close (fd2);
+-
+-	pthread_exit(NULL);
+-}
+-
+-
+-int
+-main (int argc, char ** argv) {
+-
+-	int pid;
+-	int pids[MAXPIDS];
+-	char *fname;
+-	ssize_t written;
+-	int i;
+-	pthread_t rcst;
+-	int fd;
+-
+-	if (argc < 4 ) {
+-		dprintf("Usage: streamfile file vpid apid [ pid3 pid4 ... ] (HEX-values without leading 0x!)\n");
+-		dprintf("file: filename without trailing '.ts'\n");
+-		return EXIT_FAILURE;
+-	}
+-
+-	// set signal handler for clean termination
+-	signal(SIGTERM, clean_exit);
+-
+-	buf = (unsigned char *) malloc(IN_SIZE);
+-	memset(buf, 0x00, IN_SIZE);
+-
+-	if (buf == NULL) {
+-		perror("malloc buf");
+-		return EXIT_FAILURE;
+-	}
+-
+-	i = 1;
+-	while (argv[i][0] == '-') {
+-		if (!strcmp(argv[i], "-s"))
+-			silent = 1;
+-		if (!strcmp(argv[i], "-l"))
+-			sscanf(argv[++i], "%d", &limit);
+-		i++;
+-	}
+-	if (limit <= 0)
+-		limit=2;
+-
+-	fname = argv[i++];
+-	for (; i < argc; i++) {
+-		sscanf(argv[i], "%x", &pid);
+-
+-		if (pid>0x1fff){
+-			printf ("invalid pid 0x%04x specified\n",pid);
+-			return EXIT_FAILURE;
+-		}
+-		
+-		pids[demuxfd_count] = pid;
+-
+-		if ((demuxfd[demuxfd_count] = setPesFilter(pid)) < 0)
+-			break;
+-
+-		dprintf("set filter for pid 0x%x\n", pid);
+-
+-		demuxfd_count++;
+-	}
+-
+-	// create and delete temp-file to wakeup the disk from standby
+-	sprintf(buf, "%s.tmp", fname);
+-	fd = open(buf, O_SYNC | O_WRONLY | O_CREAT | O_TRUNC | O_NONBLOCK, S_IRUSR | S_IWUSR);
+-	write(fd, buf, IN_SIZE);
+-	fdatasync(fd);
+-	close(fd);
+-	unlink(buf);
+-
+-	if ((dvrfd = open(DVRDEV, O_RDONLY)) < 0) {
+-		free(buf);
+-		perror ("[streamfile]: open dvr");
+-		return EXIT_FAILURE;
+-	}
+-
+-	ringbuf = ringbuffer_create (RINGBUFFERSIZE);
+-	pthread_create (&rcst, 0, FileThread, fname);
+-	
+-	/* write raw transport stream */
+-	int offset=0;
+-
+-	ringbuffer_data_t vec[2];
+-	ssize_t r=0;
+-	ssize_t todo;
+-	ssize_t todo2;
+-
+-	while (!exit_flag)
+-	{
+-		r = read(dvrfd, buf, IN_SIZE);
+-		if (r > 0)
+-		{
+-			offset = sync_byte_offset(buf, r);
+-			if (offset != -1)
+-				break;
+-		}
+-	}
+-
+-	written = ringbuffer_write(ringbuf, buf + offset, r - offset);
+-	// TODO: Retry
+-	if (written != r - offset) {
+-		dprintf("PANIC: wrote less than requested to ringbuffer, written %d, requested %d\n", written, r - offset);
+-		exit_flag = 1;
+-	}
+-	todo = IN_SIZE - (r - offset);
+-
+-	if (todo == 0)
+-		todo = IN_SIZE;
+-
+-	while (!exit_flag)
+-	{
+-		ringbuffer_get_write_vector(ringbuf, &(vec[0]));
+-		todo2 = todo - vec[0].len;
+-		if (todo2 < 0)
+-		{
+-			todo2 = 0;
+-		}
+-		else
+-		{
+-			if (todo2 > vec[1].len)
+-			{
+-				dprintf("PANIC: not enough space in ringbuffer, available %d, needed %d\n", vec[0].len + vec[1].len, todo + todo2);
+-				exit_flag = 1;
+-			}
+-			todo = vec[0].len;
+-		}
+-
+-		while (!exit_flag)
+-		{
+-			r = read(dvrfd, vec[0].buf, todo);
+-			
+-			if (r > 0)
+-			{
+-				ringbuffer_write_advance(ringbuf, r);
+-
+-				if (todo == r)
+-				{
+-					if (todo2 == 0)
+-						goto next;
+-
+-					todo = todo2;
+-					todo2 = 0;
+-					vec[0].buf = vec[1].buf;
+-				}
+-				else
+-				{
+-					vec[0].buf += r;
+-					todo -= r;
+-				}
+-			}
+-		}
+-	next:
+-		todo = IN_SIZE;
+-	}
+-	//sleep(1); // give FileThread some time to write remaining content of ringbuffer to file
+-	//	pthread_kill(rcst, SIGKILL);
+-
+-	while (demuxfd_count > 0)
+-		unsetPesFilter(demuxfd[--demuxfd_count]);
+-
+-	close(dvrfd);
+-
+-	pthread_join(rcst,NULL);
+-	
+-	free(buf);
+-
+-	ringbuffer_free(ringbuf);
+-
+-	dprintf("End of main(). All filters are unset now.\n");
+-	return EXIT_SUCCESS;
+-}
+-
+-void clean_exit(int signal)
+-{
+-	dprintf("Received signal. Terminating.\n");
+-	exit_flag = 1;
+-}
+diff -Naur stream_org/streampes.c stream/streampes.c
+--- stream_org/streampes.c	2004-11-15 22:10:31.000000000 +0100
++++ stream/streampes.c	2004-11-15 22:20:39.000000000 +0100
+@@ -39,7 +39,7 @@
+ #include <errno.h>
+ #include <string.h>
+ 
+-#include <linux/dvb/dmx.h>
++#include <ost/dmx.h>
+ 
+ #define BSIZE					 1024*16
+ void send_udp(int fd, int port);
+@@ -48,7 +48,7 @@
+ {
+ 	int fd,port,ppid;
+ 	unsigned short pid;
+-	struct dmx_pes_filter_params flt; 
++	struct dmxPesFilterParams flt; 
+ 	char buffer[BSIZE], *bp;
+ 	unsigned char c;
+ 	
+@@ -74,10 +74,10 @@
+ 
+ 	fflush(stdout);
+ 
+-	fd = open("/dev/dvb/adapter0/demux0", O_RDWR);
++	fd = open("/dev/dvb/card0/demux1", O_RDWR);
+ 
+ 	if (fd < 0) {
+-		perror("/dev/dvb/adapter0/demux0");
++		perror("/dev/dvb/card0/demux1");
+ 		return -fd;
+ 	}
+ 
+@@ -94,7 +94,7 @@
+ 	flt.pid = pid;
+ 	flt.input = DMX_IN_FRONTEND;
+ 	flt.output = DMX_OUT_TAP;
+-	flt.pes_type = DMX_PES_OTHER;
++	flt.pesType = DMX_PES_OTHER;
+ 	flt.flags = DMX_IMMEDIATE_START;
+ 
+ 	if (ioctl(fd, DMX_SET_PES_FILTER, &flt) < 0) {
+diff -Naur stream_org/streamts.c stream/streamts.c
+--- stream_org/streamts.c	2004-11-15 22:10:31.000000000 +0100
++++ stream/streamts.c	2004-11-15 22:20:39.000000000 +0100
+@@ -46,7 +46,7 @@
+ #include <time.h>
+ #include <unistd.h>
+ 
+-#include <linux/dvb/dmx.h>
++#include <ost/dmx.h>
+ #include <transform.h>
+ 
+ 
+@@ -64,8 +64,8 @@
+ #define PACKET_SIZE	1448
+ 
+ /* devices */
+-#define DMXDEV	"/dev/dvb/adapter0/demux0"
+-#define DVRDEV	"/dev/dvb/adapter0/dvr0"
++#define DMXDEV	"/dev/dvb/card0/demux1"
++#define DVRDEV	"/dev/dvb/card0/dvr1"
+ 
+ unsigned char * buf;
+ 
+@@ -294,7 +294,7 @@
+ setPesFilter (const unsigned short pid)
+ {
+ 	int fd;
+-	struct dmx_pes_filter_params flt; 
++	struct dmxPesFilterParams flt; 
+ 
+ 	if ((fd = open(DMXDEV, O_RDWR)) < 0)
+ 		return -1;
+@@ -305,7 +305,7 @@
+ 	flt.pid = pid;
+ 	flt.input = DMX_IN_FRONTEND;
+ 	flt.output = DMX_OUT_TS_TAP;
+-	flt.pes_type = DMX_PES_OTHER;
++	flt.pesType = DMX_PES_OTHER;
+ 	flt.flags = 0;
+ 
+ 	if (ioctl(fd, DMX_SET_PES_FILTER, &flt) < 0)
+diff -Naur stream_org/udpstreamts.c stream/udpstreamts.c
+--- stream_org/udpstreamts.c	2002-11-29 13:10:28.000000000 +0100
++++ stream/udpstreamts.c	2004-11-15 22:20:39.000000000 +0100
+@@ -37,7 +37,7 @@
+ 
+ #include <arpa/inet.h>
+ #include <fcntl.h>
+-#include <linux/dvb/dmx.h>
++#include <ost/dmx.h>
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <stdio.h>
+@@ -50,8 +50,8 @@
+ #include <unistd.h>
+ 
+ 
+-#define DVR "/dev/dvb/adapter0/dvr0"
+-#define DMX "/dev/dvb/adapter0/demux0"
++#define DVR "/dev/dvb/card0/dvr1"
++#define DMX "/dev/dvb/card0/demux1"
+ 
+ #define TS_SYNC_BYTE (0x47)
+ #define TS_PACKET_SIZE (188)
+@@ -62,13 +62,13 @@
+ static int
+ dmx_pid_filter_start(unsigned short pid)
+ {
+-	struct dmx_pes_filter_params flt;
++	struct dmxPesFilterParams flt;
+ 	int fd;
+ 
+ 	flt.pid = pid;
+ 	flt.input = DMX_IN_FRONTEND;
+ 	flt.output = DMX_OUT_TS_TAP;
+-	flt.pes_type = DMX_PES_OTHER;
++	flt.pesType = DMX_PES_OTHER;
+ 	flt.flags = DMX_IMMEDIATE_START;
+ 
+ 	if ((fd = open(DMX, O_RDWR)) < 0) {
+diff -Naur stream_org/fserver.c stream/fserver.c
+--- stream_org/fserver.c	2004-04-30 14:24:06.000000000 +0200
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,518 +0,0 @@
+-/*
+-This program is free software; you can redistribute it and/or
+-modify it under the terms of the GNU General Public License
+-as published by the Free Software Foundation; either version 2
+-of the License, or (at your option) any later version.
+-
+-This program is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; if not, write to the Free Software
+-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+-
+-program: fserver by Axel Buehning <mail at diemade.de>
+-
+-$Id: fserver.c,v 1.5 2004/04/30 12:24:06 gagga Exp $
+-
+-*/
+-
+-#include <stdlib.h>
+-#include <netdb.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <stdio.h>
+-#include <time.h>
+-#include <sys/socket.h>
+-#include <sys/wait.h>
+-#include <netinet/in.h>
+-#include <arpa/inet.h>
+-#include <signal.h>
+-#include "fserver.h"
+-
+-#define BUFLEN 10240
+-#define LISTENPORT 4000
+-
+-int AnalyzeXMLRequest(char *szXML, RecordingData   *rdata);
+-char *UTF8_to_Latin1(char *s);
+-
+-void clean_exit(int signal);
+-
+-int pid = 0;
+-	
+-int main(int argc, char * argv[])
+-{
+-	RecordingData recdata;
+-	struct sockaddr_in  servaddr;
+-	int ListenSocket, ConnectionSocket;
+-	u_short Port = LISTENPORT;
+-	u_short splitsize = 0;
+-	char buf[BUFLEN];
+-	char * p_act;
+-	int rc;
+-	time_t t;
+-	char * a_arg[50];
+-	char a_grabname[256];
+-	char a_vpid[20];
+-	char a_apid[20];
+-	char a_filename[256];
+-	char a_path[256]="";
+-	char a_host[256];
+-	int	i,n;
+-	struct sockaddr_in cliaddr;
+-	socklen_t clilen = sizeof(cliaddr);
+-
+-	printf("[fserver.c] fserver version $Id: fserver.c,v 1.5 2004/04/30 12:24:06 gagga Exp $\n");
+-	
+-	// set signal handler for clean termination
+-	signal(SIGTERM, clean_exit);
+-	
+-	for (i = 1; i < argc; i++) {
+-		if (!strcmp("-sport",argv[i])) {
+-			i++; if (i >= argc) { fprintf(stderr, "[fserver.c] need port for -sport\n"); return -1; }
+-			Port = atoi(argv[i]);
+-		}
+-		else if (!strcmp("-splitsize",argv[i])) {
+-			i++; if (i >= argc) { fprintf(stderr, "[fserver.c] need size for -splizsize\n"); return -1; }
+-			splitsize = atoi(argv[i]);
+-		}
+-		else if (!strcmp("-o",argv[i])) {
+-			i++; if (i >= argc) { fprintf(stderr, "[fserver.c] need path for -o\n"); return -1; }
+-			strcpy (a_path, argv[i]);
+-		}
+-		else {
+-			a_arg[n++]=argv[i];
+-		}
+-	}
+-
+-	strcpy (a_grabname,argv[0]);
+-	if (strrchr(a_grabname,'/')){
+-		strcpy (strrchr(a_grabname,'/') + 1, "streamfile");
+-	}
+-	else {
+-		strcpy(a_grabname,"streamfile");
+-	}
+-
+-	n=0;
+-	a_arg[n] = a_grabname;
+-	n++;
+-	a_arg[n] = "-s";
+-	n++;
+-	if (splitsize > 0) {
+-    	a_arg[n] = "-l";
+-    	n++;
+-    	char splitsize_string[10];
+-    	sprintf(splitsize_string, "%d",splitsize);
+-    	a_arg[n] = splitsize_string;
+-    	n++;
+-	}
+-	a_arg[n] = a_filename;
+-	n++;
+-	a_arg[n] = a_vpid;
+-	n++;
+-	a_arg[n] = a_apid;
+-	n++;
+-	a_arg[n] = 0;
+-
+-	//network-setup
+-	ListenSocket = socket(AF_INET, SOCK_STREAM, 0);
+-	memset(&servaddr, 0, sizeof(servaddr));
+-	servaddr.sin_family = AF_INET;
+-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+-	servaddr.sin_port = htons(Port);
+-
+-	i = 0;
+-	while ((rc = bind(ListenSocket, (struct sockaddr *)&servaddr, sizeof(struct sockaddr_in))))
+-	{
+-		fprintf(stderr, "[fserver.c] bind to port %d failed, RC=%d...\n",Port, rc);
+-		if (i == 10) {
+-			fprintf(stderr, "[fserver.c] Giving up\n");
+-			exit(1);
+-		}
+-		fprintf(stderr, "[fserver.c] %d. try, wait for 2 s\n",i++);
+-		sleep(2);
+-	}
+-
+-	if (listen(ListenSocket, 5))
+-	{
+-		fprintf(stderr,"[fserver.c] listen failed\n");
+-		exit(1);
+-	}
+-	printf("[fserver.c] fserver successfully started\n");
+-
+-	do
+-	{
+-		memset(&cliaddr, 0, sizeof(cliaddr));
+-		if((ConnectionSocket = accept(ListenSocket, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen)) == -1){
+-			fprintf(stderr,"[fserver.c] accept failed\n");
+-			exit(1);
+-		}
+-		strcpy(a_host,inet_ntoa(cliaddr.sin_addr));
+-		fprintf(stderr,"[fserver.c] got request from dbox ip :%s\n",a_host);
+-
+-		do
+-		{
+-			rc = recv(ConnectionSocket, buf, BUFLEN, 0);
+-			if ((rc > 0))
+-			{
+-				memset((void *)&recdata, 0, sizeof(recdata));
+-				AnalyzeXMLRequest(buf, &recdata);
+-
+-				switch (recdata.cmd) 
+-				{
+-					case CMD_VCR_UNKNOWN:
+-						fprintf(stderr, "[fserver.c] VCR_UNKNOWN NOT HANDLED\n");
+-						break;
+-					case CMD_VCR_RECORD:
+-						fprintf(stderr, "[fserver.c] ********************** START RECORDING **********************\n");
+-						fprintf(stderr, "[fserver.c] APID		: %x\n", recdata.apid);
+-						fprintf(stderr, "[fserver.c] VPID		: %x\n", recdata.vpid);
+-						fprintf(stderr, "[fserver.c] CHANNELNAME : %s\n", recdata.channelname);
+-						fprintf(stderr, "[fserver.c] EPG TITLE   : %s\n", recdata.epgtitle);
+-						fprintf(stderr, "[fserver.c] ***********************************************************\n");
+-						sprintf(a_vpid,"%03x",recdata.vpid);	
+-						sprintf(a_apid,"%03x",recdata.apid);
+-
+-						// Create filename for recording
+-						strcpy (a_filename,a_path);
+-							
+-						if (strlen(a_filename)) {
+-							strcat(a_filename,"/");
+-						}
+-
+-						if (strlen(recdata.channelname) > 0)
+-						{
+-							p_act = recdata.channelname;
+-							do {
+-								p_act +=  strcspn(p_act, "/ \"%&-\t`'´!,:;");
+-								if (*p_act) {
+-									*p_act++ = '_';
+-								}
+-							} while (*p_act);
+-								
+-							strcat(a_filename, recdata.channelname);
+-							strcat(a_filename, "_");
+-						}
+-
+-						if (strlen(recdata.epgtitle) > 0)
+-						{
+-							p_act = recdata.epgtitle;
+-							do {
+-								p_act +=  strcspn(p_act, "/ \"%&-\t`'~<>!,:;?^°$\\=*#@¤|µöäüÖÄÜß");
+-								if (*p_act) {
+-									*p_act++ = '_';
+-								}
+-							} while (*p_act);
+-
+-							p_act = recdata.epgtitle;
+-							do {
+-								if ((unsigned char) (*p_act) > 128) {
+-									*p_act = '_';
+-								}
+-							} while (*p_act++);
+-							
+-							strcat(a_filename, recdata.epgtitle);
+-							strcat(a_filename, "_");
+-						}
+-
+-						t = time (&t);
+-						strftime (buf, sizeof(a_filename)-1, "%Y%m%d_%H%M%S", localtime(&t));
+-						strcat(a_filename, buf);
+-
+-						// start streaming process
+-						pid = fork();
+-						if (pid == -1) {
+-							fprintf(stderr, "[fserver.c] fork process failed\n");
+-							break;
+-						}
+-						if (pid == 0) {
+-							execvp(a_arg[0], a_arg);
+-							fprintf(stderr,"[fserver.c] execv of %s failed", a_arg[0]);
+-							perror("");
+-						}
+-						break;
+-					case CMD_VCR_STOP:
+-						if (pid > 0) {
+-							if(kill(pid,SIGTERM)) {
+-								printf ("[fserver.c] streamfile process not killed\n");
+-							}
+-							waitpid(pid,0,0);
+-							fprintf(stderr,"\n[fserver.c] Stop recording\n");
+-						}
+-						break;
+-					case CMD_VCR_PAUSE:
+-						fprintf(stderr, "[fserver.c] VCR_PAUSE NOT HANDLED\n");
+-						break;
+-					case CMD_VCR_RESUME:
+-						fprintf(stderr, "[fserver.c] VCR_RESUME NOT HANDLED\n");
+-						break;
+-					case CMD_VCR_AVAILABLE:
+-						fprintf(stderr, "[fserver.c] VCR_AVAILABLE NOT HANDLED\n");
+-						break;
+-					default:
+-						fprintf(stderr, "[fserver.c] unknown VCR command\n");
+-						break;
+-				}
+-			}
+-		} while((rc > 0));
+-	} while (1);
+-
+-	return 0;
+-}
+-
+-void clean_exit(int signal)
+-{
+-	fprintf(stderr,"[fserver.c] Received signal. Terminating.\n");
+-	if (pid > 0) {
+-		if(kill(pid,SIGTERM)) {
+-			printf ("[fserver.c] streamfile process not killed\n");
+-		}
+-		waitpid(pid,0,0);
+-		fprintf(stderr,"[fserver.c] Stopped recording\n");
+-	}
+-	fprintf(stderr,"[fserver.c] Received signal. Terminated.\n");
+-	exit(0);
+-}
+-
+-/* Shameless stolen from TuxVision */
+-char* ParseForString(char *szStr, char *szSearch, int ptrToEnd)
+-{
+-	char *p=NULL;
+-	p=strstr(szStr, szSearch);
+-	if (p==NULL)
+-		return(NULL);
+-	if (!ptrToEnd)
+-		return(p);
+-	else
+-		return(p+strlen(szSearch));
+-	
+-}
+-
+-char* ExtractQuotedString(char *szStr, char *szResult, int ptrToEnd)
+-{
+-	int i=0;
+-	int len=strlen(szStr);
+-	strcpy(szResult,"");
+-	for(i=0;i<len;i++)
+-		{
+-		if (szStr[i]=='\"')
+-			{
+-			char *pe=NULL;
+-			char *ps=szStr+i+1;	  
+-			pe=ParseForString(ps, "\"", 1);
+-			if (pe==NULL)
+-				return(NULL);
+-
+-			memcpy(szResult,ps, pe-ps-1);
+-			szResult[pe-ps-1]=0;					   
+-			if (ptrToEnd)
+-				return(pe);
+-			else
+-				return(ps);
+-			}
+-		}
+-	return(NULL);
+-}
+-
+-int AnalyzeXMLRequest(char *szXML, RecordingData   *rdata)
+-{
+-	char *p1=NULL;
+-	char *p2=NULL;
+-	char *p3=NULL;
+-	char szcommand[264]="";
+-	char szapid[264]="";
+-	char szvpid[264]="";
+-	char szmode[3]="";
+-	char szchannelname[264]="";
+-	char szepgtitle[264]="";
+-	int hr=0;
+-
+-	if ( (szXML==NULL) || (rdata==NULL) )
+-		return(0);
+-
+-	rdata->apid=0;
+-	rdata->vpid=0;
+-	rdata->cmd=CMD_VCR_UNKNOWN;
+-	strcpy(rdata->channelname,"");
+-
+-	p1=ParseForString(szXML,"<record ", 1);
+-	if (p1!=NULL)
+-		{
+-		p2=ParseForString(p1,"command=", 1);
+-		p1=NULL;
+-		if (p2!=NULL)
+-			p3=ExtractQuotedString(p2, szcommand, 1);
+-		if (p3!=NULL)
+-			p1=ParseForString(p3,">", 1);
+-		}
+-
+-	if (p1!=NULL)
+-		{
+-		p2=ParseForString(p1,"<channelname>", 1);
+-		p3=p2;
+-		p1=NULL;
+-		if (p2!=NULL)
+-			{
+-			p1=ParseForString(p2,"</channelname>", 0);
+-			if (p1!=NULL)
+-				{
+-				memcpy(szchannelname,p3,p1-p3);
+-				szchannelname[p1-p3]=0;
+-				strcpy(szchannelname, UTF8_to_Latin1(szchannelname));
+-				hr=1;
+-				}
+-			}
+-		}
+-	if (p1!=NULL)
+-		{
+-		p2=ParseForString(p1,"<epgtitle>", 1);
+-		p3=p2;
+-		p1=NULL;
+-		if (p2!=NULL)
+-			{
+-			p1=ParseForString(p2,"</epgtitle>", 0);
+-			if (p1!=NULL)
+-				{
+-				memcpy(szepgtitle,p3,p1-p3);
+-				szepgtitle[p1-p3]=0;
+-				strcpy(szepgtitle, UTF8_to_Latin1(szepgtitle));
+-				hr=1;
+-				}
+-			}
+-		}
+-	if (p1!=NULL)
+-		{
+-		p2=ParseForString(p1,"<mode>", 1);
+-		p3=p2;
+-		p1=NULL;
+-		if (p2!=NULL)
+-			{
+-			p1=ParseForString(p2,"</mode>", 0);
+-			if (p1!=NULL)
+-				{
+-				memcpy(szmode,p3,p1-p3);
+-				szmode[p1-p3]=0;
+-				hr=1;
+-				}
+-			}
+-		}
+-	
+-	p2=ParseForString(szXML,"<videopid>", 1);
+-	if (p2!=NULL)
+-		{
+-		p3=p2;
+-		p1=NULL;
+-		p1=ParseForString(p2,"</videopid>", 0);
+-		if (p1!=NULL)
+-			{
+-			memcpy(szvpid,p3,p1-p3);
+-			szvpid[p1-p3]=0;
+-			hr=1;
+-			}
+-		}
+-
+-	p2=ParseForString(szXML,"<audiopids selected=", 1);
+-	if (p2!=NULL)
+-		{
+-		p3=ExtractQuotedString(p2, szapid, 1);
+-		if (p3!=NULL)
+-			p1=ParseForString(p3,">", 1);
+-		}
+-
+-	if (!hr)
+-		return(hr);
+-
+-	strcpy(rdata->channelname, szchannelname);
+-	strcpy(rdata->epgtitle, szepgtitle);
+-
+-	if (strlen(szvpid)>0)
+-		rdata->vpid=atoi(szvpid);
+-
+-	if (strlen(szapid)>0)
+-		rdata->apid=atoi(szapid);
+-
+-	if (!strcmp(szcommand,"record"))
+-		rdata->cmd=CMD_VCR_RECORD;
+-	if (!strcmp(szcommand,"stop"))
+-		rdata->cmd=CMD_VCR_STOP;
+-	if (!strcmp(szcommand,"pause"))
+-		rdata->cmd=CMD_VCR_PAUSE;
+-	if (!strcmp(szcommand,"resume"))
+-		rdata->cmd=CMD_VCR_RESUME;
+-	if (!strcmp(szcommand,"available"))
+-		rdata->cmd=CMD_VCR_AVAILABLE;
+-
+-	return(hr);
+-}
+-
+-// TODO: rename to something more meaningfull
+-// converts XML UTF-8 back to Latin1
+-char *UTF8_to_Latin1(char *s)
+-{
+-	static char r[1024];
+-	int i=0;
+-	char c;
+-
+-	while ((*s) != 0)
+-	{
+-		if (((*s) & 0xf0) == 0xf0)      /* skip (can't be encoded in Latin1) */
+-		{
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-		}
+-		else if (((*s) & 0xe0) == 0xe0) /* skip (can't be encoded in Latin1) */
+-		{
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-		}
+-		else if (((*s) & 0xc0) == 0xc0)
+-		{
+-			c = (((*s) & 3) << 6);
+-			s++;
+-			if ((*s) == 0)
+-				goto end_while;
+-			r[i++] = (c | ((*s) & 0x3f));
+-			r[i+1] = 0x00;
+-		}
+-		else 
+-		{
+-			r[i++] = *s;
+-			r[i+1] = 0x00;
+-		}
+-		s++;
+-	}
+-	end_while:
+-/*
+-			case '<':           
+-				r += "&lt;";
+-				break;
+-			case '>':
+-				r += "&gt;";
+-				break;
+-			case '&':
+-				r += "&amp;";
+-				break;
+-			case '\"':
+-				r += "&quot;";
+-				break;
+-			case '\'':
+-				r += "&apos;";
+-				break;
+-
+-*/
+-	return r;
+-}
+-
+diff -Naur stream_org/fserver.h stream/fserver.h
+--- stream_org/fserver.h	2004-04-26 12:02:11.000000000 +0200
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,45 +0,0 @@
+-/*
+-This program is free software; you can redistribute it and/or
+-modify it under the terms of the GNU General Public License
+-as published by the Free Software Foundation; either version 2
+-of the License, or (at your option) any later version.
+-
+-This program is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; if not, write to the Free Software
+-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+-
+-program: fserver by Axel Buehning <mail at diemade.de>
+-
+-$Id: fserver.h,v 1.2 2004/04/26 10:02:11 diemade Exp $
+-
+-*/
+-
+-typedef enum CVCRStates 
+-    {
+-    CMD_VCR_UNKNOWN     = 0,
+-    CMD_VCR_RECORD      = 1,
+-    CMD_VCR_STOP        = 2,
+-    CMD_VCR_PAUSE       = 3,
+-    CMD_VCR_RESUME      = 4,
+-    CMD_VCR_AVAILABLE   = 5
+-    }CVCRCommand;
+-
+-enum CVCRDevices
+-    {
+-    DEVICE_VCR,
+-    DEVICE_SERVER
+-    };
+-
+-typedef struct 
+-    {    
+-    int cmd; 
+-    int apid;
+-    int vpid;
+-    char    channelname[264];
+-    char    epgtitle[264];
+-    } RecordingData;
+diff -Naur stream_org/ringbuffer.c stream/ringbuffer.c
+--- stream_org/ringbuffer.c	2004-04-26 10:32:59.000000000 +0200
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,307 +0,0 @@
+-/*
+-  Copyright (C) 2000 Paul Davis
+-  Copyright (C) 2003 Rohan Drape
+-    
+-  This program is free software; you can redistribute it and/or modify
+-  it under the terms of the GNU Lesser General Public License as published by
+-  the Free Software Foundation; either version 2.1 of the License, or
+-  (at your option) any later version.
+-    
+-  This program is distributed in the hope that it will be useful,
+-  but WITHOUT ANY WARRANTY; without even the implied warranty of
+-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-  GNU Lesser General Public License for more details.
+-    
+-  You should have received a copy of the GNU Lesser General Public License
+-  along with this program; if not, write to the Free Software 
+-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-    
+-  ISO/POSIX C version of Paul Davis's lock free ringbuffer C++ code.
+-  This is safe for the case of one read thread and one write thread.
+-*/
+-
+-#include <stdlib.h>
+-#include <string.h>
+-#include <sys/mman.h>
+-#include "ringbuffer.h"
+-
+-/* Create a new ringbuffer to hold at least `sz' bytes of data. The
+-   actual buffer size is rounded up to the next power of two.  */
+-
+-ringbuffer_t *
+-ringbuffer_create (int sz)
+-{
+-  int power_of_two;
+-  ringbuffer_t *rb;
+-
+-  rb = malloc (sizeof (ringbuffer_t));
+-
+-  for (power_of_two = 1; 1 << power_of_two < sz; power_of_two++);
+-
+-  rb->size = 1 << power_of_two;
+-  rb->size_mask = rb->size;
+-  rb->size_mask -= 1;
+-  rb->write_ptr = 0;
+-  rb->read_ptr = 0;
+-  rb->buf = malloc (rb->size);
+-  rb->mlocked = 0;
+-
+-  return rb;
+-}
+-
+-/* Free all data associated with the ringbuffer `rb'. */
+-
+-void
+-ringbuffer_free (ringbuffer_t * rb)
+-{
+-  if (rb->mlocked) {
+-    munlock (rb->buf, rb->size);
+-  }
+-  free (rb->buf);
+-}
+-
+-/* Lock the data block of `rb' using the system call 'mlock'.  */
+-
+-int
+-ringbuffer_mlock (ringbuffer_t * rb)
+-{
+-  if (mlock (rb->buf, rb->size)) {
+-    return -1;
+-  }
+-  rb->mlocked = 1;
+-  return 0;
+-}
+-
+-/* Reset the read and write pointers to zero. This is not thread
+-   safe. */
+-
+-void
+-ringbuffer_reset (ringbuffer_t * rb)
+-{
+-  rb->read_ptr = 0;
+-  rb->write_ptr = 0;
+-}
+-
+-/* Return the number of bytes available for reading.  This is the
+-   number of bytes in front of the read pointer and behind the write
+-   pointer.  */
+-
+-size_t
+-ringbuffer_read_space (ringbuffer_t * rb)
+-{
+-  size_t w, r;
+-
+-  w = rb->write_ptr;
+-  r = rb->read_ptr;
+-
+-  if (w > r) {
+-    return w - r;
+-  } else {
+-    return (w - r + rb->size) & rb->size_mask;
+-  }
+-}
+-
+-/* Return the number of bytes available for writing.  This is the
+-   number of bytes in front of the write pointer and behind the read
+-   pointer.  */
+-
+-size_t
+-ringbuffer_write_space (ringbuffer_t * rb)
+-{
+-  size_t w, r;
+-
+-  w = rb->write_ptr;
+-  r = rb->read_ptr;
+-
+-  if (w > r) {
+-    return ((r - w + rb->size) & rb->size_mask) - 1;
+-  } else if (w < r) {
+-    return (r - w) - 1;
+-  } else {
+-    return rb->size - 1;
+-  }
+-}
+-
+-/* The copying data reader.  Copy at most `cnt' bytes from `rb' to
+-   `dest'.  Returns the actual number of bytes copied. */
+-
+-size_t
+-ringbuffer_read (ringbuffer_t * rb, char *dest, size_t cnt)
+-{
+-  size_t free_cnt;
+-  size_t cnt2;
+-  size_t to_read;
+-  size_t n1, n2;
+-
+-  if ((free_cnt = ringbuffer_read_space (rb)) == 0) {
+-    return 0;
+-  }
+-
+-  to_read = cnt > free_cnt ? free_cnt : cnt;
+-
+-  cnt2 = rb->read_ptr + to_read;
+-
+-  if (cnt2 > rb->size) {
+-    n1 = rb->size - rb->read_ptr;
+-    n2 = cnt2 & rb->size_mask;
+-  } else {
+-    n1 = to_read;
+-    n2 = 0;
+-  }
+-
+-  memcpy (dest, &(rb->buf[rb->read_ptr]), n1);
+-  rb->read_ptr += n1;
+-  rb->read_ptr &= rb->size_mask;
+-
+-  if (n2) {
+-    memcpy (dest + n1, &(rb->buf[rb->read_ptr]), n2);
+-    rb->read_ptr += n2;
+-    rb->read_ptr &= rb->size_mask;
+-  }
+-
+-  return to_read;
+-}
+-
+-/* The copying data writer.  Copy at most `cnt' bytes to `rb' from
+-   `src'.  Returns the actual number of bytes copied. */
+-
+-size_t
+-ringbuffer_write (ringbuffer_t * rb, char *src, size_t cnt)
+-{
+-  size_t free_cnt;
+-  size_t cnt2;
+-  size_t to_write;
+-  size_t n1, n2;
+-
+-  if ((free_cnt = ringbuffer_write_space (rb)) == 0) {
+-    return 0;
+-  }
+-
+-  to_write = cnt > free_cnt ? free_cnt : cnt;
+-
+-  cnt2 = rb->write_ptr + to_write;
+-
+-  if (cnt2 > rb->size) {
+-    n1 = rb->size - rb->write_ptr;
+-    n2 = cnt2 & rb->size_mask;
+-  } else {
+-    n1 = to_write;
+-    n2 = 0;
+-  }
+-
+-  memcpy (&(rb->buf[rb->write_ptr]), src, n1);
+-  rb->write_ptr += n1;
+-  rb->write_ptr &= rb->size_mask;
+-
+-  if (n2) {
+-    memcpy (&(rb->buf[rb->write_ptr]), src + n1, n2);
+-    rb->write_ptr += n2;
+-    rb->write_ptr &= rb->size_mask;
+-  }
+-
+-  return to_write;
+-}
+-
+-/* Advance the read pointer `cnt' places. */
+-
+-void
+-ringbuffer_read_advance (ringbuffer_t * rb, size_t cnt)
+-{
+-  rb->read_ptr += cnt;
+-  rb->read_ptr &= rb->size_mask;
+-}
+-
+-/* Advance the write pointer `cnt' places. */
+-
+-void
+-ringbuffer_write_advance (ringbuffer_t * rb, size_t cnt)
+-{
+-  rb->write_ptr += cnt;
+-  rb->write_ptr &= rb->size_mask;
+-}
+-
+-/* The non-copying data reader.  `vec' is an array of two places.  Set
+-   the values at `vec' to hold the current readable data at `rb'.  If
+-   the readable data is in one segment the second segment has zero
+-   length.  */
+-
+-void
+-ringbuffer_get_read_vector (ringbuffer_t * rb,
+-			    ringbuffer_data_t * vec)
+-{
+-  size_t free_cnt;
+-  size_t cnt2;
+-  size_t w, r;
+-
+-  w = rb->write_ptr;
+-  r = rb->read_ptr;
+-
+-  if (w > r) {
+-    free_cnt = w - r;
+-  } else {
+-    free_cnt = (w - r + rb->size) & rb->size_mask;
+-  }
+-
+-  cnt2 = r + free_cnt;
+-
+-  if (cnt2 > rb->size) {
+-
+-    /* Two part vector: the rest of the buffer after the current write
+-       ptr, plus some from the start of the buffer. */
+-
+-    vec[0].buf = &(rb->buf[r]);
+-    vec[0].len = rb->size - r;
+-    vec[1].buf = rb->buf;
+-    vec[1].len = cnt2 & rb->size_mask;
+-
+-  } else {
+-
+-    /* Single part vector: just the rest of the buffer */
+-
+-    vec[0].buf = &(rb->buf[r]);
+-    vec[0].len = free_cnt;
+-    vec[1].len = 0;
+-  }
+-}
+-
+-/* The non-copying data writer.  `vec' is an array of two places.  Set
+-   the values at `vec' to hold the current writeable data at `rb'.  If
+-   the writeable data is in one segment the second segment has zero
+-   length.  */
+-
+-void
+-ringbuffer_get_write_vector (ringbuffer_t * rb,
+-			     ringbuffer_data_t * vec)
+-{
+-  size_t free_cnt;
+-  size_t cnt2;
+-  size_t w, r;
+-
+-  w = rb->write_ptr;
+-  r = rb->read_ptr;
+-
+-  if (w > r) {
+-    free_cnt = ((r - w + rb->size) & rb->size_mask) - 1;
+-  } else if (w < r) {
+-    free_cnt = (r - w) - 1;
+-  } else {
+-    free_cnt = rb->size - 1;
+-  }
+-
+-  cnt2 = w + free_cnt;
+-
+-  if (cnt2 > rb->size) {
+-
+-    /* Two part vector: the rest of the buffer after the current write
+-       ptr, plus some from the start of the buffer. */
+-
+-    vec[0].buf = &(rb->buf[w]);
+-    vec[0].len = rb->size - w;
+-    vec[1].buf = rb->buf;
+-    vec[1].len = cnt2 & rb->size_mask;
+-  } else {
+-    vec[0].buf = &(rb->buf[w]);
+-    vec[0].len = free_cnt;
+-    vec[1].len = 0;
+-  }
+-}
+diff -Naur stream_org/ringbuffer.h stream/ringbuffer.h
+--- stream_org/ringbuffer.h	2004-04-26 10:32:59.000000000 +0200
++++ /dev/null	1970-01-01 01:00:00.000000000 +0100
+@@ -1,42 +0,0 @@
+-#ifndef _RINGBUFFER_H
+-#define _RINGBUFFER_H
+-
+-#include <sys/types.h>
+-
+-typedef struct  
+-{
+-  char *buf;
+-  size_t len;
+-} 
+-ringbuffer_data_t ;
+-
+-typedef struct
+-{
+-  char *buf;
+-  volatile size_t write_ptr;
+-  volatile size_t read_ptr;
+-  size_t size;
+-  size_t size_mask;
+-  int mlocked;
+-} 
+-ringbuffer_t ;
+-
+-ringbuffer_t *ringbuffer_create(int sz);
+-void ringbuffer_free(ringbuffer_t *rb);
+-
+-int ringbuffer_mlock(ringbuffer_t *rb);
+-void ringbuffer_reset(ringbuffer_t *rb);
+-
+-void ringbuffer_write_advance(ringbuffer_t *rb, size_t cnt);
+-void ringbuffer_read_advance(ringbuffer_t *rb, size_t cnt);
+-
+-size_t ringbuffer_write_space(ringbuffer_t *rb);
+-size_t ringbuffer_read_space(ringbuffer_t *rb);
+-
+-size_t ringbuffer_read(ringbuffer_t *rb, char *dest, size_t cnt);
+-size_t ringbuffer_write(ringbuffer_t *rb, char *src, size_t cnt);
+-
+-void ringbuffer_get_read_vector(ringbuffer_t *rb, ringbuffer_data_t *vec);
+-void ringbuffer_get_write_vector(ringbuffer_t *rb, ringbuffer_data_t *vec);
+-
+-#endif

@@ -1,0 +1,131 @@
+diff -Naur stream/AUTHORS stream_configure/AUTHORS
+--- stream/AUTHORS	1970-01-01 01:00:00.000000000 +0100
++++ stream_configure/AUTHORS	2004-09-17 17:47:12.000000000 +0200
+@@ -0,0 +1,22 @@
++In order of appearance in cvs:
++------------------------------------------------
++Felix Domke		<tmbinc@berlios.de>
++Andreas Oberritter	<obi@berlios.de>
++Steffen Hehn		<mcclean@berlios.de>
++Andreas Monzner		<ghostrider@berlios.de>
++Florian Roks		<trh@berlios.de>
++Ronny Strutz		<tripledes@berlios.de>
++Bastian Blank		<waldi@berlios.de>
++Henning Heinold		<woglinde@berlios.de>
++Rainer Scherg		<rasc@berlios.de>
++Steffen Buehl		<shadow@berlios.de>
++Wolfram Joost		<wjoost@berlios.de>
++Thomas Herold		<dertom@berlios.de>
++Stefan Pluecken		<thedoc@berlios.de>
++Florian Schirmer	<jolt@berlios.de>
++Christoph Ketzler	<chkdesign@berlios.de>
++Bernhard Roth		<bernroth@berlios.de>
++
++Also many thanks to everyone who supported development
++without having cvs write access
++
+diff -Naur stream/autogen.sh stream_configure/autogen.sh
+--- stream/autogen.sh	1970-01-01 01:00:00.000000000 +0100
++++ stream_configure/autogen.sh	2004-11-15 23:51:03.000000000 +0100
+@@ -0,0 +1,70 @@
++#!/bin/sh
++
++package="tuxbox-stream"
++
++srcdir=`dirname $0`
++test -z "$srcdir" && srcdir=.
++
++cd "$srcdir"
++DIE=0
++
++(autoconf --version) < /dev/null > /dev/null 2>&1 || {
++	echo
++	echo "You must have autoconf installed to compile $package."
++	echo "Download the appropriate package for your system,"
++	echo "or get the source from one of the GNU ftp sites"
++	echo "listed in http://www.gnu.org/order/ftp.html"
++	DIE=1
++}
++
++(automake --version) < /dev/null > /dev/null 2>&1 || {
++	echo
++	echo "You must have automake installed to compile $package."
++	echo "Download the appropriate package for your system,"
++	echo "or get the source from one of the GNU ftp sites"
++	echo "listed in http://www.gnu.org/order/ftp.html"
++	DIE=1
++}
++
++(libtool --version) < /dev/null > /dev/null 2>&1 || {
++	echo
++	echo "You must have libtool installed to compile $package."
++	echo "Download the appropriate package for your system,"
++	echo "or get the source from one of the GNU ftp sites"
++	echo "listed in http://www.gnu.org/order/ftp.html"
++	DIE=1
++}
++
++if test "$DIE" -eq 1; then
++	exit 1
++fi
++
++if [ "$1" = "copy" ]; then
++	COPY="-c";
++fi
++
++if [ ! -e acinclude.m4 ]; then
++	for i in .. ../.. ../../..; do
++		if [ -e `pwd`/$i/acinclude.m4 ]; then
++			if [ $COPY ]; then
++				cp `pwd`/$i/acinclude.m4 .
++                        else
++                                ln -s `pwd`/$i/acinclude.m4 .
++                        fi
++		fi
++	done
++fi
++
++echo "Generating configuration files for $package, please wait...."
++
++echo "  aclocal $ACLOCAL_FLAGS"
++aclocal $ACLOCAL_FLAGS
++echo "  libtoolize --automake"
++libtoolize --automake $COPY
++echo "  autoconf"
++autoconf
++echo "  autoheader"
++autoheader
++echo "  automake --add-missing"
++automake --add-missing $COPY
++
+diff -Naur stream/configure.ac stream_configure/configure.ac
+--- stream/configure.ac	1970-01-01 01:00:00.000000000 +0100
++++ stream_configure/configure.ac	2004-11-16 00:13:26.000000000 +0100
+@@ -0,0 +1,27 @@
++AC_INIT([tuxbox-stream],[1.0.0],[obi@tuxbox.org])
++AM_INIT_AUTOMAKE([dist-bzip2 no-define])
++
++TUXBOX_APPS
++TUXBOX_APPS_DIRECTORYY
++
++AC_PROG_CC
++AC_PROG_LIBTOOL
++AC_PROG_RANLIB
++
++TUXBOX_APPS_DVB
++TUXBOX_APPS_DRIVER
++
++TUXBOX_APPS_LIB_PKGCONFIG(MPEGTOOLS,tuxbox-mpegtools)
++
++AC_CHECK_HEADER([ost/dmx.h])
++
++if test "$ac_cv_header_ost_dmx_h" = yes; then
++	AC_DEFINE([HAVE_OST_DMX_H], 1, [define when ost/dmx.h is found])
++else
++	AC_MSG_ERROR([dvb api headers are required to build dvbsnoop])
++fi
++
++AC_OUTPUT([
++Makefile
++])
++

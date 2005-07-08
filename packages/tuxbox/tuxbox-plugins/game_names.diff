@@ -1,0 +1,82 @@
+diff -Naur a/fx2/master/master.cfg b/fx2/master/master.cfg
+--- a/fx2/master/master.cfg	2004-07-11 12:23:21.000000000 +0200
++++ b/fx2/master/master.cfg	2005-01-17 13:08:39.000000000 +0100
+@@ -1,4 +1,4 @@
+-name=Mastermind
++name=Mindmaster
+ desc=food for brain
+ type=1
+ needfb=1
+diff -Naur a/fx2/mines/mines.cfg b/fx2/mines/mines.cfg
+--- a/fx2/mines/mines.cfg	2004-07-11 12:23:21.000000000 +0200
++++ b/fx2/mines/mines.cfg	2005-01-17 13:09:35.000000000 +0100
+@@ -1,5 +1,5 @@
+-name=Minesweeper
+-desc=classic minesweeper
++name=Sweepminer
++desc=classic Sweepminer
+ type=1
+ needfb=1
+ needrc=1
+diff -Naur a/fx2/pac/pacman.cfg b/fx2/pac/pacman.cfg
+--- a/fx2/pac/pacman.cfg	2001-11-08 15:47:45.000000000 +0100
++++ b/fx2/pac/pacman.cfg	2005-01-17 13:10:12.000000000 +0100
+@@ -1,6 +1,6 @@
+ pluginversion=1
+-name=Pacman
+-desc=The good old pacman in new dboxII generation
++name=Paccer
++desc=The good old paccer
+ depend=libfx2.so
+ type=1
+ needfb=1
+diff -Naur a/fx2/sokoban/soko.cfg b/fx2/sokoban/soko.cfg
+--- a/fx2/sokoban/soko.cfg	2005-01-17 13:19:02.000000000 +0100
++++ b/fx2/sokoban/soko.cfg	2005-01-17 13:19:16.000000000 +0100
+@@ -1,4 +1,4 @@
+-name=Sokoban
++name=Zokoban
+ desc=Push it, baby!
+ type=1
+ needfb=1
+diff -Naur a/fx2/solitair/solitair.cfg b/fx2/solitair/solitair.cfg
+--- a/fx2/solitair/solitair.cfg	2003-08-25 15:56:57.000000000 +0200
++++ b/fx2/solitair/solitair.cfg	2005-01-17 13:12:16.000000000 +0100
+@@ -1,5 +1,5 @@
+ pluginversion=1
+-name=Solitair
++name=Solitaer
+ desc=a card game
+ depend=libfx2.so
+ type=1
+diff -Naur a/fx2/tank/tank.cfg b/fx2/tank/tank.cfg
+--- a/fx2/tank/tank.cfg	2005-01-17 13:20:11.000000000 +0100
++++ b/fx2/tank/tank.cfg	2005-01-17 13:20:46.000000000 +0100
+@@ -1,4 +1,4 @@
+-name=TankWars
++name=WarTank
+ desc=stay cool
+ depend=libfx2.so
+ type=1
+diff -Naur a/fx2/tetris/tetris.cfg b/fx2/tetris/tetris.cfg
+--- a/fx2/tetris/tetris.cfg	2004-07-11 12:23:22.000000000 +0200
++++ b/fx2/tetris/tetris.cfg	2005-01-17 13:12:46.000000000 +0100
+@@ -1,6 +1,6 @@
+ pluginversion=1
+-name=Tetris
+-desc=i break together - tetris  :)
++name=Blocktris
++desc=i break together - blocktris  :)
+ type=1
+ needfb=1
+ needrc=1
+diff -Naur a/fx2/yahtzee/yahtzee.cfg b/fx2/yahtzee/yahtzee.cfg
+--- a/fx2/yahtzee/yahtzee.cfg	2005-01-17 13:20:20.000000000 +0100
++++ b/fx2/yahtzee/yahtzee.cfg	2005-01-17 13:20:37.000000000 +0100
+@@ -1,5 +1,5 @@
+ pluginversion=1
+-name=Yahtzee
++name=Yahtzea
+ desc=a game for 1-4 player
+ depend=libfx2.so
+ type=1
