@@ -4,11 +4,14 @@ PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
+PR = "r1"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz \
+	file://pkgconfig.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/libmad-${PV}"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "-enable-speed --enable-shared"
 
