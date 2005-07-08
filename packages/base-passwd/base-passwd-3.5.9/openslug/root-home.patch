@@ -11,5 +11,4 @@
  irc:*:39:39:ircd:/var/run/ircd:/bin/sh
  gnats:*:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
 +ntpd:*:47:65534:OpenNTPd daemon:/var/shared/empty:/dev/null
-+mysql:*:48:48:MySQL daemon:/var/mysql:/dev/null
  nobody:*:65534:65534:nobody:/nonexistent:/bin/sh
