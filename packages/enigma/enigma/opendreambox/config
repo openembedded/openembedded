@@ -1,0 +1,9 @@
+i:/ezap/lcd/brightness=00000087
+i:/ezap/lcd/contrast=0000000a
+i:/ezap/lcd/inverted=00000000
+i:/ezap/lcd/standby=00000000
+i:/ezap/rc/repeatDelay=000001f4
+i:/ezap/rc/repeatRate=00000032
+i:/ezap/serviceselector/showButtons=00000001
+u:/elitedvb/video/vcr_switching=00000000
+u:/ezap/rc/TextInputField/nextCharTimeout=00000320
