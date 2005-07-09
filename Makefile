@@ -77,10 +77,10 @@ update-bitbake: bitbake/bin/bitbake
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone pull
-	( cd openembedded ; monotone update )
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
+	( cd openembedded ; monotone update )
 
 .PHONY: update-oe-symlinks
 update-oe-symlinks: oe-symlinks/packages
