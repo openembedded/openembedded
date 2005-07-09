@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
 MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "A file-synchronization tool"
 SECTION = "console/network"
 PRIORITY = "optional"

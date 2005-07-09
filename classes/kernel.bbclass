@@ -184,18 +184,21 @@ if [ x"$D" = "x" ]; then
 fi
 }
 
-# defaults
+# autoload defaults (alphabetically sorted)
+module_autoload_hidp = "hidp"
 module_autoload_ipv6 = "ipv6"
 module_autoload_ipsec = "ipsec"
 module_autoload_ircomm-tty = "ircomm-tty"
+module_autoload_rfcomm = "rfcomm"
 module_autoload_sa1100-rtc = "sa1100-rtc"
 
+# alias defaults (alphabetically sorted)
 module_conf_bluez = "alias net-pf-31 bluez"
+module_conf_bnep = "alias bt-proto-4 bnep"
+module_conf_hci_uart = "alias tty-ldisc-15 hci_uart"
 module_conf_l2cap = "alias bt-proto-0 l2cap"
 module_conf_sco = "alias bt-proto-2 sco"
 module_conf_rfcomm = "alias bt-proto-3 rfcomm"
-module_conf_bnep = "alias bt-proto-4 bnep"
-module_conf_hci_uart = "alias tty-ldisc-15 hci_uart"
 
 python populate_packages_prepend () {
 	def extract_modinfo(file):

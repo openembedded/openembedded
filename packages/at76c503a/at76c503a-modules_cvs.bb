@@ -7,8 +7,8 @@ PV = "0.0cvs${CVSDATE}"
 
 inherit module
 
-MODULES = at76c503.o at76_usbdfu.o at76c503-i3861.o at76c503-rfmd.o at76c503-rfmd-acc.o \
-          at76c505-rfmd.o at76c503-i3863.o at76c505-rfmd2958.o
+MODULES = "at76c503.o at76_usbdfu.o at76c503-i3861.o at76c503-rfmd.o at76c503-rfmd-acc.o \
+           at76c505-rfmd.o at76c503-i3863.o at76c505-rfmd2958.o"
 
 pkg_postinst() {
 #!/bin/sh

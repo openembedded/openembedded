@@ -1,5 +1,5 @@
 PV = "0.3.2svn${CVSDATE}"
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "C++ implementation of the Multimedia Internet KEYing (RFC3830)"
 SECTION = "libs"

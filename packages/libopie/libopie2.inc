@@ -32,10 +32,15 @@ python __anonymous () {
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
 	install -d ${STAGING_INCDIR}/opie2/private
-	for i in `find . -name "*.h"`
-	do
+        for module in opiecore opiedb opiemm opienet opiepim opiesecurity opieui
+        do
+            cd $module
+	    for i in `find . -name "*.h"`
+	    do
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
-	done
+	    done
+            cd ..
+        done
 
 	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h
 	do

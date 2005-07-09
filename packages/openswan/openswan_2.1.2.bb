@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/network"
 DESCRIPTION = "Openswan is an Open Source implementation of IPsec for the \
 Linux operating system."

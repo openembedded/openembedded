@@ -12,5 +12,5 @@ FILES_${PN} += "${datadir}/gpe/pixmaps"
 FILES_${PN} += "${datadir}/application-registry"
 
 DESCRIPTION = "GPE image viewer application"
-export CVSBUILD = no
+export CVSBUILD = "no"
 

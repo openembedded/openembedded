@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "devel"
 DESCRIPTION = "Generic library support script \
 This is GNU libtool, a generic library support script.  Libtool hides \

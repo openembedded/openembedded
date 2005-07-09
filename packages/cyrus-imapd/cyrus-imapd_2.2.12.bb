@@ -1,5 +1,5 @@
 SECTION = "console/network"
-DEPENDS = "cyrus-sasl"
+DEPENDS = "cyrus-sasl db3"
 PR = "r0"
 LICENSE = "BSD"
 

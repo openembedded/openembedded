@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "Library for parsing CORBA IDL files"
 SECTION = "gnome/libs"
 DEPENDS = "glib-2.0"

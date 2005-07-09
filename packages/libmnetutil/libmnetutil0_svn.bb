@@ -1,5 +1,5 @@
 PV = "0.2.2svn${CVSDATE}"
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "Networking class library for C++ programming"
 SECTION = "libs"

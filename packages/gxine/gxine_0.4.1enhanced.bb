@@ -27,7 +27,7 @@ RDEPENDS = "libxine-plugin-vo-out-xshm \
 	    libxine-plugin-dmx-image \
 	    libxine-plugin-dmx-avi"
 	    
-S = ${WORKDIR}/${PN}-0.4.1/
+S = "${WORKDIR}/${PN}-0.4.1/"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-0.4.1.tar.gz \
 	   file://rhythmbox-volume-max.png \
@@ -41,7 +41,7 @@ EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--disable-xinetest \
 		--with-xine-prefix=${STAGING_DIR}/${HOST_SYS}"
 
-LDFLAGS += -lxine
+LDFLAGS += "-lxine"
 
 inherit autotools pkgconfig
 

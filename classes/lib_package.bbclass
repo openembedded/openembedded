@@ -1,4 +1,4 @@
-PACKAGES = ${PN} ${PN}-dev ${PN}-doc ${PN}-bin
+PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-bin"
 
 FILES_${PN} = "${libexecdir} ${libdir}/lib*.so.* \
 	    ${sysconfdir} ${sharedstatedir} ${localstatedir} \

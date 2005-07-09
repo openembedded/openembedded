@@ -39,7 +39,7 @@ EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--disable-xinetest \
 		--with-xine-prefix=${STAGING_DIR}/${HOST_SYS}"
 
-LDFLAGS += -lxine
+LDFLAGS += "-lxine"
 
 inherit autotools pkgconfig
 

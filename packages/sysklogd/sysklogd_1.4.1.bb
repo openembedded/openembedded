@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "The sysklogd package implements \
 two system log daemons."

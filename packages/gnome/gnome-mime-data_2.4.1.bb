@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 inherit gnome
 
 DEPENDS += "intltool-native"

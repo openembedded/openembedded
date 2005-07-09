@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "ntop is network top"
 SECTION = "console/network"
 PRIORITY = "optional"

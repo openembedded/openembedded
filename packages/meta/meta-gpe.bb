@@ -3,7 +3,7 @@ DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r36"
 
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 gpe-base-depends = "\
     diet-x11 \
@@ -32,7 +32,7 @@ gpe-task-base = "\
     gpe-autostarter \
     libgtkstylus \
     detect-stylus \
-    teleport \	
+    teleport \
     xauth"
 
 RDEPENDS_gpe-task-base := "gdk-pixbuf-loader-png \
@@ -102,4 +102,4 @@ DEPENDS += " ${gpe-task-games}"
 
 DEPENDS += "matchbox-themes-extra"
 
-LICENSE = MIT
+LICENSE = "MIT"

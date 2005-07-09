@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/network"
 DESCRIPTION = "OLSR - routing protocol for wireless network"
 PRIORITY = "optional"

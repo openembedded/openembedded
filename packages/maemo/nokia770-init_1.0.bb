@@ -1,6 +1,6 @@
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
-PR         = "r1"
+PR         = "r3"
 
 DEPENDS    = "base-passwd hotplug-dbus"
 
@@ -17,7 +17,7 @@ INITSCRIPT_PARAMS = "defaults 01"
 
 do_install () {
         install -d ${D}${sysconfdir}/init.d
-        install -m 755 ${S}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
+        install -m 755 ${WORKDIR}/fixup-770.sh ${D}/${sysconfdir}/init.d/fixup-770.sh
 
 	install -d ${D}/lib/firmware
 }
@@ -31,7 +31,10 @@ if [ "x$D" != "x" ]; then
 fi
 
 # set up some links to firmware and modules in initrd
-        ln -sf /mnt/initfs/lib/firmware/* /lib/firmware/
+	mkdir -p /lib/firmware
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/3825.arm /lib/firmware/3825.arm
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/brf6150fw.bin /lib/firmware/brf6150fw.bin
+        ln -sf /mnt/initfs/usr/lib/hotplug/firmware/mtlm3825.arm /lib/firmware/mtlm3825.arm
 
 	rm -rf /lib/modules
 	ln -s /mnt/initfs/lib/modules /lib/modules

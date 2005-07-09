@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/utils"
 DESCRIPTION = "XawTV is a simple Xaw-based TV program which uses the bttw \
 driver or video4linux.  It also contains various command-line utilities for \

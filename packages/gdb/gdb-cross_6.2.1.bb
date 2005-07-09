@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "gdb - GNU debugger"
 SECTION = "base"
 PRIORITY = "optional"

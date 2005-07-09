@@ -32,8 +32,8 @@ EXTRA_OECONF += '--with-ssl-version=0.9.7e --with-ssl-dir=${STAGING_LIBDIR}/..'
 EXTRA_OECONF += '--with-qt-includes=${STAGING_INCDIR}/qt3'
 EXTRA_OECONF += '--with-qt-libraries=${STAGING_LIBDIR}'
 
-MOC = ${STAGING_BINDIR}/moc3
-UIC = ${STAGING_BINDIR}/uic3
+MOC = "${STAGING_BINDIR}/moc3"
+UIC = "${STAGING_BINDIR}/uic3"
 
 do_compile_prepend() {
 	perl admin/am_edit

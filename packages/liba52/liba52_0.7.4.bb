@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 
 DESCRIPTION = "Library for reading some sort of media format."
 SECTION = "libs"

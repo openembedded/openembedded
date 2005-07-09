@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "x11/libs"
 PR = "r1"
 DESCRIPTION = "GNOME Accessibility Implementation Library"

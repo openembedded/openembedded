@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/gnome"
 DESCRIPTION = "Bonobo CORBA interfaces library"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libbonobo/2.6/libbonobo-${PV}.tar.bz2 \

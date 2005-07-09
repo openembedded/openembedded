@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r1"
 DESCRIPTION = "utility to allow middle and right clicking with a stylus"
 SECTION = "x11/utils"

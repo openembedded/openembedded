@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "Class library implementing utilities for C++ programming"
 SECTION = "libs"

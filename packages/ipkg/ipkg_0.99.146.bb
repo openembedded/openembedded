@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
 PR = "r2"
 
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE="-1"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"

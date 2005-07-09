@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "unknown"
 DESCRIPTION = "Regex-markup performs regular expression-based text \
 markup according to used-defined rules."
