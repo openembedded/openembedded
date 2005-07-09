@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Plugins for GStreamer"
 SECTION = "x11/libs"
 PRIORITY = "optional"

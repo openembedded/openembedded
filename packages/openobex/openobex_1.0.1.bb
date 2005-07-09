@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "The Openobex project aims to make an \
 open source implementation of the Object Exchange \
 (OBEX) protocol."

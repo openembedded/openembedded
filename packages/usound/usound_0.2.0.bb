@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "The Useful Sound Daemon"
 SECTION = "libs"
 PRIORITY = "optional"

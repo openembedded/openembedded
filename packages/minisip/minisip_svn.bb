@@ -1,5 +1,5 @@
 PV = "0.6.2svn${CVSDATE}"
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
 MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"

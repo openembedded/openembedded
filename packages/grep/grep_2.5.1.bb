@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"

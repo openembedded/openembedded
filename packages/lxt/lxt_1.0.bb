@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "lxt ncurses filemanager xtree clone"
 PRIORITY = "optional"

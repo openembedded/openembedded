@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Python AO Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"

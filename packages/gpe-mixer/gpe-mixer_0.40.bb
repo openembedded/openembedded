@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r0"
 
 inherit gpe pkgconfig

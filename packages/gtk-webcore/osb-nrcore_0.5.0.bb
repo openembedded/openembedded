@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Gtk+ WebCore - rendering engine"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"

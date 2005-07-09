@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU nano (Nano's ANOther editor, or \
 Not ANOther editor) is an enhanced clone of the \
 Pico text editor."
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
 

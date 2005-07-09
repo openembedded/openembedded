@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Gtk+ WebCore - reference browser"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"

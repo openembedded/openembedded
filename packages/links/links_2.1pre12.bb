@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/network"
 DEPENDS = "jpeg libpng gpm flex openssl zlib"
 DESCRIPTION = "Links is graphics and text mode WWW \

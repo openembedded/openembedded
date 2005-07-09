@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/libs"
 DESCRIPTION = "HTML rendering/editing library"
 DEPENDS = "gtk+ gail libgnomeprint orbit2-native"

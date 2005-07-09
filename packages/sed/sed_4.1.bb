@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "sed is a Stream EDitor."
 

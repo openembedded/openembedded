@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "libs"
 DEPENDS = "libnet libpcap"
 DESCRIPTION = "Libnids performs assembly of TCP segments \
