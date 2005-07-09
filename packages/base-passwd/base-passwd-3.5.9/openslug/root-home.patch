@@ -1,14 +1,15 @@
---- base-passwd/passwd.master.orig	2005-03-21 10:16:56.000000000 +0100
-+++ base-passwd/passwd.master	2005-03-21 10:17:04.000000000 +0100
+--- base-passwd/passwd.master.orig	2005-07-08 06:26:22.000000000 +0200
++++ base-passwd/passwd.master	2005-07-08 06:31:58.000000000 +0200
 @@ -1,4 +1,4 @@
 -root::0:0:root:/root:/bin/sh
 +root:Xm./49bYkrkuo:0:0:root:/home/root:/bin/sh
  daemon:*:1:1:daemon:/usr/sbin:/bin/sh
  bin:*:2:2:bin:/bin:/bin/sh
  sys:*:3:3:sys:/dev:/bin/sh
-@@ -15,4 +15,5 @@
+@@ -15,4 +15,6 @@
  list:*:38:38:Mailing List Manager:/var/list:/bin/sh
  irc:*:39:39:ircd:/var/run/ircd:/bin/sh
  gnats:*:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
 +ntpd:*:47:65534:OpenNTPd daemon:/var/shared/empty:/dev/null
++mysql:*:64001:64001:MySQL daemon:/var/mysql:/dev/null
  nobody:*:65534:65534:nobody:/nonexistent:/bin/sh
