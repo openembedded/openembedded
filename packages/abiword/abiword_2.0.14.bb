@@ -31,7 +31,7 @@ ${datadir}/AbiSuite-2.0/templates/Memo.awt \
 ${datadir}/AbiSuite-2.0/templates/Press-Release.awt"
 
 #abiword needs this native tool
-export BUILD_CDUMPTOOL=${STAGING_BINDIR}/cdump
+export BUILD_CDUMPTOOL="${STAGING_BINDIR}/cdump"
 
 PARALLEL_MAKE=""
 
