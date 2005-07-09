@@ -1,9 +1,9 @@
-LICENSE = "GPL"
-SECTION = "base"
 DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
 removing kernel modules for Linux (versions 2.5.48 and above). It serves \
 the same function that the modutils package serves for Linux 2.4."
-PR = "r2"
+LICENSE = GPL
+SECTION = "base"
+PR = "r0"
 
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
@@ -15,8 +15,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/module-init-tools/module-
 	   file://ignore_arch_directory;patch=1 \
 	   file://modutils_extension;patch=1 \
 	   file://no_man_rebuild;patch=1 \
-	   file://manpagesopt;patch=1 \
-	   file://soc.patch;patch=1;pnum=0"
+	   file://manpagesopt;patch=1 "
 S = "${WORKDIR}/module-init-tools-${PV}"
 
 EXTRA_OECONF = "--disable-manpages"

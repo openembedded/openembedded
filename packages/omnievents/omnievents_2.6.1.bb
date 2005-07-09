@@ -1,5 +1,5 @@
 PR = "r0"
-DESCRIPTION = "OmniEvent service for omniORB
+DESCRIPTION = "OmniEvent service for omniORB"
 SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Philip Balister <philip@balister.org>"

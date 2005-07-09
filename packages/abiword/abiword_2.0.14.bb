@@ -13,7 +13,7 @@ S = "${WORKDIR}/abiword-${PV}/abi"
 
 SRC_URI = "http://download.sourceforge.net/abiword/abiword-${PV}.tar.bz2"
 
-FILES_${PN} += " ${datadir}/icons/* \
+FILES_${PN} += "${datadir}/icons/* \
 ${datadir}/AbiSuite-2.0/AbiWord/glade \
 ${datadir}/AbiSuite-2.0/AbiWord/scripts \
 ${datadir}/AbiSuite-2.0/AbiWord/system.profile-en \
@@ -21,7 +21,7 @@ ${datadir}/AbiSuite-2.0/AbiWord/system.profile-en_GB \
 #${datadir}/AbiSuite-2.0/templates/A4.awt \
 #${datadir}/AbiSuite-2.0/templates/US-Letter.awt \
 ${datadir}/AbiSuite-2.0/templates/normal.awt \
-${datadir}/AbiSuite-2.0/templates/normal.awt-en_GB \	
+${datadir}/AbiSuite-2.0/templates/normal.awt-en_GB \
 ${datadir}/AbiSuite-2.0/templates/Employee-Directory.awt \
 ${datadir}/AbiSuite-2.0/templates/Business-Report.awt \
 ${datadir}/AbiSuite-2.0/templates/Fax-Coversheet.awt \

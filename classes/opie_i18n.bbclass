@@ -9,7 +9,7 @@
 #
 
 I18N_STATS = "1"
-SRC_URI += "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/i18n" 
+SRC_URI += "${HANDHELDS_CVS};module=opie/i18n" 
 DEPENDS += "opie-i18n"
 	
 die () {
@@ -122,14 +122,14 @@ do_build_opie_i18n () {
 	
 	# If we don't adjust FILES to exclude the i18n directory, we will end up with
 	# _lots_ of empty i18n/$lang directories in the original .ipk.	
-	if (echo "${FILES}" | egrep "/opt/QtPalmtop/? |/opt/QtPalmtop/?$") &>/dev/null
+	if (echo "${FILES}" | egrep "${palmtopdir}/? |${palmtopdir}/?$") &>/dev/null
 	then
-		echo "NOTE: FILES was set to /opt/QtPalmtop which would include the i18n directory"
-		echo -e "\n\nI'll remove /opt/QtPalmtop from FILES and replace it with all directories"
+		echo "NOTE: FILES was set to ${palmtopdir} which would include the i18n directory"
+		echo -e "\n\nI'll remove ${palmtopdir} from FILES and replace it with all directories"
 		echo "below QtPalmtop, except i18n ($qt_dirs). See classes/opie_i18n.oeclass for details"
 
 		# Removes /opt/QtPalmtop from FILES but keeps /opt/QtPalmtop/$some_dir
-		FILES="`echo "$FILES"| sed "s#/opt/QtPalmtop[/]\?\$\|/opt/QtPalmtop[/]\? ##"`"
+		FILES="`echo "$FILES"| sed "s#${palmtopdir}[/]\?\$\|${palmtopdir}[/]\? ##"`"
 
 		echo "${PN}#$FILES $dir_" >> "${WORKDIR}/FILES.tmp"
 	fi
@@ -138,7 +138,7 @@ do_build_opie_i18n () {
 	if test -z "${FILES}"
 	then
 		echo "NOTE:"
-		echo -e "Since FILES is empty, i'll add all directories below /o/QtPalmtop to it,\nexcluding i18n: ( $qt_dirs )"
+		echo -e "Since FILES is empty, i'll add all directories below ${palmtopdir} to it,\nexcluding i18n: ( $qt_dirs )"
 		echo "${PN}#$FILES $dir_" >> "${WORKDIR}/FILES.tmp"
 	fi	
 	

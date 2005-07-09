@@ -21,7 +21,7 @@ SRC_URI = " \
            file://licenses/GPL-2 \
            file://licenses/LGPL-2 \
            file://licenses/LGPL-2.1 \
-           file://licenses/Artistic "	   
+           file://licenses/Artistic "
 S = "${WORKDIR}"
 
 docdir_append = "/${P}"
@@ -38,7 +38,7 @@ dirs755 = "/bin /boot /dev ${sysconfdir} ${sysconfdir}/default \
 	   ${localstatedir}/lock/subsys ${localstatedir}/log \
 	   ${localstatedir}/run ${localstatedir}/spool \
 	   /mnt /media /media/card /media/cf /media/net /media/ram \
-	   /media/union /media/realroot /media/hdd \ 
+	   /media/union /media/realroot /media/hdd \
            /media/mmc1"
 conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
 	     ${sysconfdir}/inputrc ${sysconfdir}/issue /${sysconfdir}/issue.net \

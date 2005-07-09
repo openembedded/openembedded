@@ -9,9 +9,9 @@ S = ${WORKDIR}/${PN}/src
 inherit palmtop
 
 do_install() {
-        install -d ${D}/opt/QtPalmtop/{bin,apps/Applications,pics}
-        install -D -m 755 qualendar ${D}/opt/QtPalmtop/bin/qualendar
-        install -D -m 644 qualendar.desktop ${D}/opt/QtPalmtop/apps/Applications/qualendar.desktop
-        install -d ${D}/opt/QtPalmtop/pics
-        cp -a *.png ${D}/opt/QtPalmtop/pics/
+        install -d ${D}${palmtopdir}/{bin,apps/Applications,pics}
+        install -D -m 755 qualendar ${D}${palmtopdir}/bin/qualendar
+        install -D -m 644 qualendar.desktop ${D}${palmtopdir}/apps/Applications/qualendar.desktop
+        install -d ${D}${palmtopdir}/pics
+        cp -a *.png ${D}${palmtopdir}/pics/
 }

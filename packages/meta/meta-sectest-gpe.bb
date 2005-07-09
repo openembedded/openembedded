@@ -3,7 +3,7 @@ DESCRIPTION = "Meta-package for GPE Security Testing Image"
 MAINTAINER = "Bob Davies tyggerbob@rogers.com>"
 PR = "r5"
 
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 gpe-base-depends = "\
     diet-x11 \
@@ -84,7 +84,7 @@ sectest-task-apps = "\
     kismet \
     hydra \
     thcrut \
-    driftnet \		
+    driftnet \
 	miniclipboard"
 
 RDEPENDS_sectest-task-apps := "${sectest-task-apps}"
@@ -93,4 +93,4 @@ DEPENDS += " ${sectest-task-apps}"
 
 DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
 
-LICENSE = MIT
+LICENSE = "MIT"
