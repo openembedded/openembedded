@@ -32,7 +32,7 @@ ${datadir}/AbiSuite-2.2/templates/Press-Release.awt "
 inherit autotools
 
 #abiword needs this native tool
-export BUILD_CDUMPTOOL=${STAGING_BINDIR}/cdump
+export BUILD_CDUMPTOOL="${STAGING_BINDIR}/cdump"
 
 PARALLEL_MAKE=""
 

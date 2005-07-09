@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "games"
 DEPENDS = "libsdl-mixer libsdl-image sdl-perl"
 

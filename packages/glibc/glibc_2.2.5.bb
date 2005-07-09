@@ -247,7 +247,7 @@ include glibc-package.bbclass
 
 # Unslung distribution specific packages follow ...
 
-PACKAGES_unslung = libc6-unslung
+PACKAGES_unslung = "libc6-unslung"
 PACKAGE_ARCH_nslu2 = "nslu2"
 MAINTAINER_libc6-unslung = "NSLU2 Linux <www.nslu2-linux.org>"
 RDEPENDS_libc6-unslung = "nslu2-linksys-libs"

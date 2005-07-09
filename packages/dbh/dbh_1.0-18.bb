@@ -9,7 +9,7 @@ LICENSE="QPL"
 SRC_URI="${SOURCEFORGE_MIRROR}/dbh/${PN}_${PV}.tar.bz2 \
 	file://${FILESDIR}/configure.patch;patch=1"
 
-S=${WORKDIR}/${PN}_${PV}
+S="${WORKDIR}/${PN}_${PV}"
 
 inherit autotools pkgconfig
 

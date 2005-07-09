@@ -6,7 +6,7 @@ MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 SECTION = "net"
 LICENSE = "MIT"
 
-DEPENDS = libusb
+DEPENDS = "libusb"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_1 \
 	   cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=LIBTOPFIELD_0_5_0 \

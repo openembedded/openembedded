@@ -4,7 +4,7 @@ DEPENDS     = "cdump-native libfribidi enchant jpeg libpng perl glibc"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
 
-BROKEN =1
+BROKEN = "1"
 inherit autotools
 
 PR = "r0"

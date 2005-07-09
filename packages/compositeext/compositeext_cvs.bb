@@ -4,7 +4,7 @@ SECTION = "libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions fixesext"
 DESCRIPTION = "X Composite extension headers and specification"
-DEFAULT_PREFERENCE = 1
+DEFAULT_PREFERENCE = "1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=CompositeExt"
 S = "${WORKDIR}/CompositeExt"

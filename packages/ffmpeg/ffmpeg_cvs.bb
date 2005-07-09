@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "zlib libvorbis faac liba52 lame"
 LICENSE = "GPL"
 PR = "r1"
-S = ${WORKDIR}/ffmpeg
+S = "${WORKDIR}/ffmpeg"
 DEFAULT_PREFERENCE = "-1"
 
 inherit autotools

@@ -8,7 +8,7 @@ PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 
 # Files for these are defined in the main gcc.oe
 PACKAGES = "libgcc libstdc++ libg2c"
-INHIBIT_PACKAGE_STRIP = 1
+INHIBIT_PACKAGE_STRIP = "1"
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++"
