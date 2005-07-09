@@ -1,5 +1,5 @@
 PV = "0.2.2svn${CVSDATE}"
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "Class library implementing utilities for C++ programming"
 SECTION = "libs"

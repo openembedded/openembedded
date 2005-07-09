@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "libs"
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libIDL/0.8/libIDL-0.8.2.tar.bz2"
 S = "${WORKDIR}/libIDL-${PV}"

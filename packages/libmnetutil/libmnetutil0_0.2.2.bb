@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "Networking class library for C++ programming"
 SECTION = "libs"

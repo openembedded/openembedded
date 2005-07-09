@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 PR = "r3"
 
 DESCRIPTION = "GStreamer is a multimedia framework for encoding and decoding video and sound. \

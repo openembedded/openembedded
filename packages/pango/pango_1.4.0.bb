@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "x11/libs"
 # Xt needed to keep autoconf's check for X11 happy
 DEPENDS = "glib-2.0 fontconfig freetype zlib x11 libxft xt"

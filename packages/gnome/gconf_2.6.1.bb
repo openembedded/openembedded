@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "x11/gnome"
 DESCRIPTION = "GNOME configuration database system"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.6/GConf-${PV}.tar.bz2 \
