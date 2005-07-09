@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "The sgml-common package gathers very basic \
 stuff necessary to work with SGML and XML, such as xml.dcl, \

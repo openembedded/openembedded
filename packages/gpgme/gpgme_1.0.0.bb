@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-${PV}.tar.gz"
 PR = "r1"
 

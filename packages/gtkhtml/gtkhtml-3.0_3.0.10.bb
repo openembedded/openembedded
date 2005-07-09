@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/libs"
 DESCRIPTION = "HTML rendering/editing library"
 DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui gal-2.0"

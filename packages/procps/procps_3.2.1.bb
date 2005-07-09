@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Procps is the package that has a bunch \
 of small useful utilities that give information \
 about processes using the /proc filesystem. The package \

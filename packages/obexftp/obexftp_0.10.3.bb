@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "OBEX Ftp Client"
 SECTION = "console/network"
 PRIORITY = "optional"

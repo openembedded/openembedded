@@ -17,4 +17,4 @@ do_install_prepend () {
 	install ${WORKDIR}/keylaunchrc ${S}/keylaunchrc
 }
 
-export CVSBUILD=no
+export CVSBUILD="no"

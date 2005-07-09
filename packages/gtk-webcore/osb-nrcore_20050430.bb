@@ -1,6 +1,6 @@
 DESCRIPTION = "Gtk+ WebCore - rendering engine"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
-LICENSE = GPL
+LICENSE = "GPL"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"

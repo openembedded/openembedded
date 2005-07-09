@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
 removing kernel modules for Linux (versions 2.5.48 and above). It serves \

@@ -10,7 +10,7 @@ PR="r1"
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
 	   file://adjtimex-${PV}.patch;patch=1 \
-	   file://makefile-install.patch;patch=1 \ 
+	   file://makefile-install.patch;patch=1 \
 	   file://init"
 S = "${WORKDIR}/openntpd-${PV}"
 

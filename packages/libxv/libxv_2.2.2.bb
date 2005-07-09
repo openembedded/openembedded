@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/libs"
 DEPENDS = "x11 xext"
 DESCRIPTION = "X Video extension library."

@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 DESCRIPTION = "C++ implementation Session Initiation Protocol (RFC3261)"
 SECTION = "libs"

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "unknown"
 PR = "r3"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/rhythmbox/0.8/rhythmbox-${PV}.tar.gz \

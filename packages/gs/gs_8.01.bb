@@ -1,12 +1,12 @@
 DESCRIPTION = "An interpreter of the Postscript language"
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 SRC_URI = "ftp://ftp.gnu.org/gnu/ghostscript/gnughostscript-${PV}.tar.gz"
 DEPENDS = "jpeg zlib"
 PR = "r2"
 
 # | make: ./obj/echogs: Command not found
-BROKEN = 1
+BROKEN = "1"
 
 S = "${WORKDIR}/gnughostscript-${PV}"
 

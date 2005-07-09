@@ -21,7 +21,7 @@ SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/d/${PN}/${PN}_${PV
 
 inherit autotools pkgconfig update-rc.d gettext
 
-S = ${WORKDIR}/dbus-0.23.1
+S = "${WORKDIR}/dbus-0.23.1"
 
 INITSCRIPT_NAME = "dbus-1"
 INITSCRIPT_PARAMS = "defaults"

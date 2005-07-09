@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/network"
 DESCRIPTION = "lsh is a GNU GPL-licensed implementation of the SSH \
 (version 2) protocol. It includes a server, a client, and some \

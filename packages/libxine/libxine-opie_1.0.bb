@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 # libxine OE build file
 # Modified by Advanced Micro Devices, Inc.
 

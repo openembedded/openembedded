@@ -9,8 +9,8 @@ SRC_URI = "http://dast.nlanr.net/Projects/Iperf/iperf-${PV}-source.tar.gz \
 
 inherit autotools
 
-S=${WORKDIR}/iperf-${PV}/cfg
-PATCHES_DIR=${WORKDIR}/iperf-${PV}
+S="${WORKDIR}/iperf-${PV}/cfg"
+PATCHES_DIR="${WORKDIR}/iperf-${PV}"
 
 do_configure() {
 	oe_runconf

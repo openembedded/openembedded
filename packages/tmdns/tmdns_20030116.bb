@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/network"
 DESCRIPTION = "tmdns is a multicast DNS server."
 

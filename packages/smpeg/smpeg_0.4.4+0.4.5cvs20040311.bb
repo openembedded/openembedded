@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "console/multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"

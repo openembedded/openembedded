@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "Runtime support for GTK interface builder"
 SECTION = "libs"
 PRIORITY = "optional"

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 inherit gpe pkgconfig
 
 DESCRIPTION = "GPE audio mixer"

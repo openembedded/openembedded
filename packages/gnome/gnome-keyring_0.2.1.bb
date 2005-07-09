@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/gnome"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/0.2/${PN}-${PV}.tar.bz2"
 

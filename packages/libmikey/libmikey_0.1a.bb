@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "libmikey is a C++ library that implements the IETF work-in-progress MIKEY protocol."
 HOMEPAGE = "http://minisip.org/libmikey"
 SECTION = "libs"

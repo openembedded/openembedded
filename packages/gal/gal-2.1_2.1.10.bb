@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/libs"
 DEPENDS = "intltool libgnomeprint gtk+ libglade libgnomeui libgnomecanvas libxml2 libgnomeprintui"
 

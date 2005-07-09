@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engines"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"

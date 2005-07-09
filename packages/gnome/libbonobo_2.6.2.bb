@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r1"
 SECTION = "x11/gnome/libs"
 DESCRIPTION = "Bonobo CORBA interfaces library"

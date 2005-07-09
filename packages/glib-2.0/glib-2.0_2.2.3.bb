@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "GLib is a general-purpose utility library, \
 which provides many useful data types, macros, \
 type conversions, string utilities, file utilities, a main \

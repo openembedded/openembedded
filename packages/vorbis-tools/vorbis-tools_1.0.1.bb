@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DEPENDS = "libogg libvorbis libao curl"
 DESCRIPTION = " vorbis-tools contains oggenc (an encoder), ogg123 (a playback tool), \
 ogginfo (displays ogg information), vcut (ogg file splitter), and \

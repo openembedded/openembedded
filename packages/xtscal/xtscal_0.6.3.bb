@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Touchscreen calibration utility"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11/base"

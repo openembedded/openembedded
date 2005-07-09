@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/games"
 DEPENDS = "gtk+"
 DESCRIPTION = "Embedded version of a popular FreeCiv game"

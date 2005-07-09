@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 SECTION = "x11/libs"
 DEPENDS = "glib-2.0 fontconfig freetype zlib x11 libxft xt"
 DESCRIPTION = "The goal of the Pango project is to provide an \

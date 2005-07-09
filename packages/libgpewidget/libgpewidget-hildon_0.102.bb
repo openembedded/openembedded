@@ -11,7 +11,7 @@ RPROVIDES   = "libgpewidget"
 
 SRC_URI     = "${GPE_MIRROR}/libgpewidget-${PV}.tar.bz2"
 
-S = ${WORKDIR}/libgpewidget-${PV}
+S = "${WORKDIR}/libgpewidget-${PV}"
 
 inherit pkgconfig autotools
 

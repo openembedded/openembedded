@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "C++ bindings for the GTK+ toolkit."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"

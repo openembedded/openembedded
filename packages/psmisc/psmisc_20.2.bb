@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "procfs tools"
 SECTION = "base"
 PRIORITY = "required"

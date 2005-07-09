@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Runtime libraries for parsing and creating MIME mail"
 SECTION = "libs"
 PRIORITY = "optional"

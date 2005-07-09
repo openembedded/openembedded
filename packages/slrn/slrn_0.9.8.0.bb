@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "slrn - console news reader"
 SECTION = "console/network"
 PRIORITY = "optional"

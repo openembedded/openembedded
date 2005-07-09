@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r2"
 DESCRIPTION = "CORBA ORB"
 SECTION = "x11/gnome/libs"
