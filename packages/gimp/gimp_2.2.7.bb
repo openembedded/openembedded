@@ -1,7 +1,7 @@
 DESCRIPTION =	"The GIMP is the GNU Image Manipulation Program."
 HOMEPAGE = 	"http://www.gimp.org"
 LICENSE =	"GPL"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>
+MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
 
 SRC_URI =	"ftp://ftp.gimp.org/pub/gimp/v2.2/gimp-${PV}.tar.bz2"
 

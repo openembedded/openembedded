@@ -1,8 +1,8 @@
 DESCRIPTION = "userspace utilities for kernel nfs"
-PRIORITY = "optional
+PRIORITY = "optional"
 SECTION = "console/networking"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \

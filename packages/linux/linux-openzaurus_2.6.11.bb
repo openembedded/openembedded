@@ -23,7 +23,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
            ${RPSRC}/rndis_fix-r0.patch;patch=1 \
            ${RPSRC}/w100_malloc-r2.patch;patch=1 \
-           ${RPSRC}/pxairq_printk-r0.patch;patch=1 \	   
+           ${RPSRC}/pxairq_printk-r0.patch;patch=1 \
            ${RPSRC}/corgi_kbd-r14.patch;patch=1 \
            ${RPSRC}/corgi_ts-r10.patch;patch=1 \
            ${RPSRC}/sharp_multi_scoop-r1.patch;patch=1 \
@@ -55,11 +55,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.gz \
            ${DOSRC}/tosa-power-r2.patch;patch=1 \
            ${DOSRC}/tosa-mmc-r2.patch;patch=1 \
            ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
-           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \	   
+           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
-           ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \	   
+           ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-collie \
            file://defconfig-poodle \

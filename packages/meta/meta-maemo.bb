@@ -4,7 +4,7 @@ PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task
 DESCRIPTION = "Meta-package for maemo environment"
 MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
 
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 maemo-base-depends = "\
     diet-x11 \
@@ -80,7 +80,7 @@ maemo-task-apps = "\
     hildon-home \
     hildon-navigator \
     hildon-control-panel \
-    osso-application-installer \ 
+    osso-application-installer \
     osso-app-killer \
     osso-screenshot-tool \
     gpe-todo-hildon \
@@ -89,4 +89,4 @@ maemo-task-apps = "\
 RDEPENDS_maemo-task-apps := "${maemo-task-apps}"
 DEPENDS += " ${maemo-task-apps}"
 
-LICENSE = MIT
+LICENSE = "MIT"
