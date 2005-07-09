@@ -13,7 +13,7 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.ta
 	   file://try-esdsink.patch;patch=1 \
 	   file://lame-autoconf.patch;patch=1"
 
-S = ${WORKDIR}/gst-plugins-${PV}/
+S = "${WORKDIR}/gst-plugins-${PV}/"
 
 EXTRA_OECONF = "--disable-docs-build \
 		--disable-dependency-tracking \

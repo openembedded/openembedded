@@ -5,7 +5,7 @@ include ipkg_${PV}.bb
 # things into the wrong location inside of offline_root.  Backup
 # the target libdir and use that.
 target_libdir := "${libdir}"
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE="-1"
 
 inherit native
 

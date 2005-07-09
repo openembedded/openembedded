@@ -6,7 +6,7 @@ DEPENDS = "jpeg zlib"
 PR = "r2"
 
 # | make: ./obj/echogs: Command not found
-BROKEN = 1
+BROKEN = "1"
 
 S = "${WORKDIR}/gnughostscript-${PV}"
 

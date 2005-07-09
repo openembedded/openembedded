@@ -7,7 +7,7 @@ PV = "0.0+svn${CVSDATE}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig gettext
 
