@@ -22,9 +22,34 @@ test -x "$NFS_NFSD" || exit 0
 # ridiculous 99
 test "$NFS_SERVERS" -gt 0 && "$NFS_SERVERS" -lt 100 || NFS_SERVERS=8
 #
+# The default state directory is /var/lib/nfs
+test -n "$NFS_STATEDIR" || NFS_STATEDIR=/var/lib/nfs
+#
 #----------------------------------------------------------------------
 # Startup and shutdown functions.
 #  Actual startup/shutdown is at the end of this file.
+#directories
+create_directories(){
+	echo -n 'creating NFS state directory: '
+	mkdir -p "$NFS_STATEDIR"
+	(	cd "$NFS_STATEDIR"
+		umask 077
+		mkdir -p sm sm.bak
+		test -w sm/state || {
+			rm -f sm/state
+			:>sm/state
+		}
+		umask 022
+		for file in xtab etab smtab rmtab
+		do
+			test -w "$file" || {
+				rm -f "$file"
+				:>"$file"
+			}
+		done
+	)
+	echo done
+}
 #mountd
 start_mountd(){
 	echo -n 'starting mountd: '
@@ -39,7 +64,7 @@ stop_mountd(){
 #
 #nfsd
 start_nfsd(){
-	echo -n 'starting $1 nfsd kernel threads: '
+	echo -n "starting $1 nfsd kernel threads: "
 	start-stop-daemon --start --exec "$NFS_NFSD" -- "$@"
 	echo done
 }
@@ -90,7 +115,8 @@ stop_nfsd(){
 #  restart: stops and starts mountd
 #FIXME: need to create the /var/lib/nfs/... directories
 case "$1" in
-start)	start_nfsd "$NFS_SERVERS"
+start)	create_directories
+	start_nfsd "$NFS_SERVERS"
 	start_mountd
 	test -r /etc/exports && exportfs -a;;
 stop)	exportfs -ua

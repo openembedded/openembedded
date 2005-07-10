@@ -3,20 +3,31 @@ PRIORITY = "optional"
 SECTION = "console/networking"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://acinclude-lossage.patch;patch=1 \
 	file://rpcgen-lossage.patch;patch=1 \
 	file://stat-include.patch;patch=1 \
+	file://nfsserver \
 	file://forgotten-defines"
 S = ${WORKDIR}/nfs-utils-${PV}/
+
+# Only kernel-module-nfsd is required here - the nfsd module will
+# pull in the remainder of the dependencies.
+RDEPENDS = "portmap kernel-module-nfsd"
+
+INITSCRIPT_NAME = "nfsserver"
+# The server has no dependencies at the user run levels, so just put
+# it in at the default levels.  It must be terminated before the network
+# in the shutdown levels, but that works fine.
+INITSCRIPT_PARAMS = "defaults"
 
 inherit autotools
 
 EXTRA_OECONF = "--with-statduser=nobody \
 		--enable-nfsv3 \
-		--with-statedir=${localstatedir}/lib/nfs"
+		--with-statedir=/var/lib/nfs"
 
 do_compile() {
 	# UGLY HACK ALERT
@@ -25,21 +36,8 @@ do_compile() {
 }
 
 do_install() {
-	mkdir -p ${D}${localstatedir}/lib/nfs
-	touch ${D}${localstatedir}/lib/nfs/xtab; chmod 644 ${D}${localstatedir}/lib/nfs/xtab
-	touch ${D}${localstatedir}/lib/nfs/etab; chmod 644 ${D}${localstatedir}/lib/nfs/etab
-	touch ${D}${localstatedir}/lib/nfs/smtab; chmod 644 ${D}${localstatedir}/lib/nfs/smtab
-	touch ${D}${localstatedir}/lib/nfs/rmtab; chmod 644 ${D}${localstatedir}/lib/nfs/rmtab
-
-	mkdir -p ${D}${localstatedir}/lib/nfs/sm
-	mkdir -p ${D}${localstatedir}/lib/nfs/sm.bak
-
-	touch ${D}${localstatedir}/lib/nfs/state
-
-	chmod go-rwx ${D}${localstatedir}/lib/nfs/sm
-	chmod go-rwx ${D}${localstatedir}/lib/nfs/sm.bak
-	chmod go-rwx ${D}${localstatedir}/lib/nfs/state
-	# they should be owned by statduser, how to do that..
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/nfsserver ${D}${sysconfdir}/init.d/nfsserver
 
 	install -d ${D}${sbindir}
 	install -m 0755 ${S}/utils/exportfs/exportfs ${D}${sbindir}/exportfs
@@ -69,4 +67,3 @@ do_install() {
 	install -m 0644 ${S}/utils/showmount/showmount.man ${D}${mandir}/man8/showmount.8
 	install -m 0644 ${S}/utils/statd/statd.man ${D}${mandir}/man8/statd.8
 }
-
