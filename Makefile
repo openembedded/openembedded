@@ -72,7 +72,7 @@ update-master: MT/revision
 
 .PHONY: update-bitbake
 update-bitbake: bitbake/bin/bitbake
-	( cd bitbake ; svn update )
+	( cd bitbake ; svn -r 269 update )
 
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
