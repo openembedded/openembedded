@@ -1,6 +1,6 @@
 MAINTAINER="Oyvind Repvik <nail@nslu2-linux.org>"
 DESCRIPTION="Scanner drivers for SANE"
-PR="r1"
+PR="r2"
 DEPENDS="jpeg libusb"
 
 SRC_URI="ftp://ftp.sane-project.org/pub/sane/sane-backends-${PV}/sane-backends-${PV}.tar.gz \
