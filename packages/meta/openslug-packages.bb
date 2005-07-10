@@ -53,6 +53,9 @@ OPENSLUG_PACKAGES = "\
 	expat \
 	ftpd-topfield \
 	gphoto2 \
+	glib-2.0 \
+	gtk-doc \
+	libxml \ 
 	less libusb \
 	miau \ 
 	microcom \
@@ -61,6 +64,7 @@ OPENSLUG_PACKAGES = "\
 	nail \
 	openssh \
 	openvpn \
+	pcre \
 	ppp \
 	puppy \
 	pwc \
