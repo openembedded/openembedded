@@ -14,6 +14,8 @@ EXTRA_OECONF = "--enable-shared --enable-static --with-dblib=berkeley \
 	        --with-bdb-incdir=${STAGING_INCDIR} \
 		--without-opie --without-des"
 
+FILES_${PN} += "${prefix}/lib/sasl2/*.so*"
+
 do_configure_prepend () {
 	rm -f acinclude.m4 config/libtool.m4
 }
