@@ -1,6 +1,8 @@
 # Makefile for the NSLU2 Linux development system
 # Licensed under the GPL v2 or later
 
+BITBAKE_REVISION="-r 269"	# Fetch this revision of BitBake. Unset this to fetch bleeding edge.
+
 .PHONY: all
 all: update build
 
@@ -50,7 +52,7 @@ setup-master downloads: setup-monotone unslung/Makefile openslug/Makefile
 
 .PHONY: setup-bitbake
 setup-bitbake bitbake/bin/bitbake:
-	[ -e bitbake/bin/bitbake ] || ( svn co -r 269 svn://svn.berlios.de/bitbake/trunk/bitbake )
+	[ -e bitbake/bin/bitbake ] || ( svn co ${BITBAKE_REVISION} svn://svn.berlios.de/bitbake/trunk/bitbake )
 
 .PHONY: setup-openembedded
 setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
@@ -84,7 +86,7 @@ update-master: MT/revision
 
 .PHONY: update-bitbake
 update-bitbake: bitbake/bin/bitbake
-	( cd bitbake ; svn -r 269 update )
+	( cd bitbake ; svn ${BITBAKE_REVISION} update )
 
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
