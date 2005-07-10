@@ -10,6 +10,9 @@ build: build-unslung build-openslug build-optware
 .PHONY: setup
 setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks setup-optware
 
+.PHONY: setup-developer
+setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks-developer setup-optware-developer
+
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-oe-symlinks update-optware
 
@@ -60,6 +63,15 @@ setup-oe-symlinks oe-symlinks/packages:
 .PHONY: setup-optware
 setup-optware optware/Makefile:
 	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
+	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
+
+.PHONY: setup-oe-symlinks-developer
+setup-oe-symlinks-developer oe-symlinks/packages:
+	[ -e oe-symlinks/packages ] || ( svn co svn+ssh://${SVN_USER}@svn.berlios.de/svnroot/repos/openslug/trunk/openslug/nslu2-linux oe-symlinks )
+
+.PHONY: setup-optware-developer
+setup-optware-developer optware/Makefile:
+	[ -e optware/Makefile ] || ( cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
 .PHONY: update-master
