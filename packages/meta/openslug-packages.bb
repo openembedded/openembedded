@@ -45,17 +45,17 @@ OPENSLUG_PACKAGES = "\
 	bash \
 	bluez-utils-nodbus bridge-utils \
 	coreutils cron \
-	cvs\
+	cvs cyrus-imapd \
 	dnsmasq \
 	expat \
 	ftpd-topfield \
 	gphoto2 \
 	less libusb \
-	miau microcom mt-daapd mysql \
+	miau microcom mt-daapd mutt mysql \
 	nail \
 	openssh \
 	openvpn \
-	ppp puppy pwc \
+	postfix ppp puppy pwc \
 	rsync \
 	sudo sysfsutils \
 	thttpd \
