@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "lftp is a sophisticated command line based file \
 transfer program. Supported protocols include FTP, HTTP, \
 and FISH."

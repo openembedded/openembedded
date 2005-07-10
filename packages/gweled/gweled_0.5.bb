@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 inherit autotools
 SECTION = "x11/games"
 DESCRIPTION = "Clone of Bejeweled for Gnome, modified for GPE."

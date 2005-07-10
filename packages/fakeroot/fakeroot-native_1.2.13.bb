@@ -4,7 +4,7 @@ include fakeroot_${PV}.bb
 inherit native
 
 SRC_URI += "file://fix-prefix.patch;patch=1"
-S = ${WORKDIR}/fakeroot-${PV}
+S = "${WORKDIR}/fakeroot-${PV}"
 
 EXTRA_OECONF = "--program-prefix="
 

@@ -49,6 +49,7 @@ OPENSLUG_PACKAGES = "\
 	dnsmasq \
 	expat \
 	ftpd-topfield \
+	gphoto2 \
 	less libusb \
 	miau microcom mt-daapd mysql \
 	nail \
@@ -60,11 +61,12 @@ OPENSLUG_PACKAGES = "\
 	thttpd \
 	db4 \
 	openldap \
-	ntp \
 	openntpd \
+	ntp \
 	reiserfsprogs reiser4progs \
 	python \
 	samba \
+	sane-backends \
 	wget \
 	unionfs-modules unionfs-utils \
 	"

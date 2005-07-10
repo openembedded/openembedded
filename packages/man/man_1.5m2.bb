@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \

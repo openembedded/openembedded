@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/utils"
 PRIORITY = "required"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"

@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "C++ bindings for the libglade library."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Transparent xcursor theme for handheld systems"
 SECTION = "x11/base"
 

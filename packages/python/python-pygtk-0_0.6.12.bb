@@ -1,4 +1,4 @@
-LICENSE = LGPL
+LICENSE = "LGPL"
 DESCRIPTION = "Python GTK+ 1.2 Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"

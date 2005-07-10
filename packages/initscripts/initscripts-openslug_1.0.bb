@@ -23,7 +23,7 @@ SRC_URI += "file://rootopts.patch;patch=1"
 SRC_URI += "file://devices.patch;patch=1"
 
 # Without this it is not possible to patch checkroot.sh
-S = ${WORKDIR}
+S = "${WORKDIR}"
 
 do_install_append() {
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d

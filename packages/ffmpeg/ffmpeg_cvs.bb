@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "zlib libvorbis faac liba52 lame"
 LICENSE = "GPL"
 PR = "r1"
-S = ${WORKDIR}/ffmpeg
+S = "${WORKDIR}/ffmpeg"
 DEFAULT_PREFERENCE = "-1"
 
 inherit autotools
@@ -60,7 +60,7 @@ FILES_libavformat = "${libdir}/libavformat*.so.*"
 FILES_libavformat-dev = "${libdir}/libavformat*.so ${libdir}/libavformat*.la ${libdir}/libavformat*.a"
 
 # We do this because the install program is called with -s which causes it to call "strip" and it then mangles cross compiled stuff..
-PATH_prepend=${CROSS_DIR}/${TARGET_SYS}/bin:
+PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
 
 
 do_configure_prepend() {

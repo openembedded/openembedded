@@ -11,7 +11,7 @@ RPROVIDES   = "libgepepimc"
 SRC_URI     = "${GPE_MIRROR}/libgpepimc-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--enable-hildon"
-S = ${WORKDIR}/libgpepimc-${PV}
+S = "${WORKDIR}/libgpepimc-${PV}"
 
 inherit pkgconfig autotools
 

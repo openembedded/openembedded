@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "console/multimedia"
 DESCRIPTION = "A console MP3 player based on ncurses"
 DEPENDS = "ncurses libsidplay libogg libvorbis"

@@ -11,7 +11,7 @@ S = "${WORKDIR}/Keyring"
 
 inherit palmtop
 
-QPEDIR = ${OPIEDIR}
+QPEDIR = "${OPIEDIR}"
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

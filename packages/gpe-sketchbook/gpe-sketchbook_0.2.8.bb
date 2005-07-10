@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PR = "r4"
 
 inherit gpe pkgconfig
@@ -9,7 +9,7 @@ MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 DESCRIPTION = "A GPE notebook to sketch your notes"
-export CVSBUILD = no
+export CVSBUILD = "no"
 
 CFLAGS +="-D_GNU_SOURCE"
 

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Wiggle is a program for applying patches that patch cannot \
 apply because of conflicting changes."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"

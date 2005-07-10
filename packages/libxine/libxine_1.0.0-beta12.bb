@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "libxine is a library for multimedia players. \
 It plays back CDs, DVDs, and VCDs. It also decodes multimedia \
 files like AVI, MOV, WMV, and MP3 from local disk drives, \

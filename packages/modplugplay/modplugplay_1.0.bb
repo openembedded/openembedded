@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "modplugplay is a commandline mod-like audio file player."
 SECTION = "console/multimedia"
 MAINTAINER = "Michael 'Mickey' Lauer"

@@ -13,7 +13,7 @@ SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PRIORITY = "optional"
 
-S = ${WORKDIR}/dillo-${PV}/
+S = "${WORKDIR}/dillo-${PV}/"
 
 inherit autotools pkgconfig
 

@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Scapy is a powerful interactive packet manipulation tool, \
 packet generator, network scanner, network discovery, packet sniffer, etc. \
 It can for the moment replace hping, 85% of nmap, arpspoof, arp-sk, arping, \

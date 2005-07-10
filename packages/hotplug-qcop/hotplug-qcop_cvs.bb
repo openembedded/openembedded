@@ -10,7 +10,7 @@ S = "${WORKDIR}/hotplug-qcop"
 
 inherit opie
 
-sbindir=/sbin
+sbindir="/sbin"
 
 do_install() {
 	install -d ${D}${sbindir}

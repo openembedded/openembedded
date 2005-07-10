@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "Applications for OpenOBEX"
 SECTION = "console/network"
 PRIORITY = "optional"

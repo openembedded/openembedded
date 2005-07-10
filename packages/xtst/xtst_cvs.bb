@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 PV = "0.0cvs${CVSDATE}"
 SECTION = "x11/libs"
 PRIORITY = "optional"

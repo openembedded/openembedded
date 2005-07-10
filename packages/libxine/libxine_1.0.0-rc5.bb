@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 DESCRIPTION = "libxine"
 SECTION = "libs"
 PRIORITY = "optional"

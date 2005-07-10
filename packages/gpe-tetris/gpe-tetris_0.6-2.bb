@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 inherit gpe
 
 DESCRIPTION = "GTK+2 port of the well known game, Tetris."

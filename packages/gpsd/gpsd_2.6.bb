@@ -12,7 +12,7 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
 
-LDFLAGS = -lm
+LDFLAGS = "-lm"
 
 do_configure() {
 	oe_runconf 

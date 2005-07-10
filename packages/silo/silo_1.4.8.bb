@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "unknown"
 DEPENDS = "elftoaout-native"
 

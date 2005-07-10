@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "libs"
 DEPENDS = "openssl"
 DESCRIPTION = "LibESMTP is a library to manage posting \

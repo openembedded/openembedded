@@ -1,4 +1,4 @@
-LICENSE = GPL
+LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r3"
 S = "${WORKDIR}/gnumeric-${PV}"
