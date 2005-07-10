@@ -43,6 +43,7 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 OPENSLUG_PACKAGES = "\
 	bash \
+	bind \
 	bluez-utils-nodbus \
 	bridge-utils \
 	coreutils \

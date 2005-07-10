@@ -1,0 +1,14 @@
+--- bind-9.3.1/configure.in.orig	2005-07-10 21:21:18.000000000 +0200
++++ bind-9.3.1/configure.in	2005-07-10 21:24:31.000000000 +0200
+@@ -1414,7 +1414,10 @@
+         [AC_MSG_RESULT(no)
+         ISC_EXTRA_OBJS="$ISC_EXTRA_OBJS inet_ntop.$O"
+         ISC_EXTRA_SRCS="$ISC_EXTRA_SRCS inet_ntop.c"
+-        ISC_PLATFORM_NEEDNTOP="#define ISC_PLATFORM_NEEDNTOP 1"])
++        ISC_PLATFORM_NEEDNTOP="#define ISC_PLATFORM_NEEDNTOP 1"],
++
++	[AC_MSG_RESULT(assuming target platform has working inet_ntop)
++	ISC_PLATFORM_NEEDNTOP="#undef ISC_PLATFORM_NEEDNTOP"])
+ 
+ 
+ # On NetBSD 1.4.2 and maybe others, inet_pton() incorrectly accepts
