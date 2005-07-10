@@ -43,21 +43,29 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 OPENSLUG_PACKAGES = "\
 	bash \
-	bluez-utils-nodbus bridge-utils \
-	coreutils cron \
+	bluez-utils-nodbus \
+	bridge-utils \
+	coreutils \
+	cron \
 	cvs\
 	dnsmasq \
 	expat \
 	ftpd-topfield \
 	gphoto2 \
 	less libusb \
-	miau microcom mt-daapd mysql \
+	miau \ 
+	microcom \
+	mt-daapd \
+	mysql \
 	nail \
 	openssh \
 	openvpn \
-	ppp puppy pwc \
+	ppp \
+	puppy \
+	pwc \
 	rsync \
-	sudo sysfsutils \
+	sudo \
+	sysfsutils \
 	thttpd \
 	db4 \
 	openldap \
