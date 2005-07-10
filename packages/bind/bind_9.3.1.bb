@@ -1,7 +1,7 @@
 DEPENDS = ""
 RPEDENDS = ""
 DESCRIPTION = "ISC Internet Domain Name Server"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
+MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.1/bind-9.3.1.tar.gz \
