@@ -30,3 +30,7 @@ do_stage() {
                 install -m 0644 ${S}/libgphoto2_port/libgphoto2_port/$X ${STAGING_INCDIR}/gphoto2/$X
         done
 }
+PACKAGES =+ "libgphoto2-camlibs"
+FILES_libgphoto2-camlibs = "/usr/lib/gphoto2_port/ /usr/lib/gphoto2/"
+RDEPENDS_libgphoto2 = "libgphoto2-camlibs"
+
