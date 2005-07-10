@@ -77,10 +77,10 @@ update-bitbake: bitbake/bin/bitbake
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone pull
-	( cd openembedded ; monotone update )
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
+	( cd openembedded ; monotone update )
 
 .PHONY: update-oe-symlinks
 update-oe-symlinks: oe-symlinks/packages
@@ -89,14 +89,6 @@ update-oe-symlinks: oe-symlinks/packages
 .PHONY: update-optware
 update-optware: optware/Makefile downloads
 	( cd optware ; cvs update -d -P )
-
-.PHONY: push-master
-push-master: monotone/nslu2-linux.db
-	monotone push
-
-.PHONY: push-openembedded
-push-openembedded: openembedded/conf/machine/nslu2.conf
-	( cd openembedded ; monotone push )
 
 .PHONY: clobber-bitbake
 clobber-bitbake:
@@ -114,13 +106,17 @@ clobber-oe-symlinks:
 clobber-optware:
 	rm -rf optware
 
-# Deprecated targets
+# Targets for use by those with write access to the repositories
 
-unslung-build  : build-unslung
-openslug-build : build-openslug
-optware-build  : build-optware
+.PHONY: push-master
+push-master: monotone/nslu2-linux.db
+	monotone push
 
-# Core team use only targets
+.PHONY: push-openembedded
+push-openembedded: openembedded/conf/machine/nslu2.conf
+	( cd openembedded ; monotone push )
+
+# Targets for use by core team members only
 
 .PHONY: publish-master
 publish-master: push-master
