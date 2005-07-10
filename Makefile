@@ -47,7 +47,7 @@ setup-master downloads: setup-monotone unslung/Makefile openslug/Makefile
 
 .PHONY: setup-bitbake
 setup-bitbake bitbake/bin/bitbake:
-	[ -e bitbake/bin/bitbake ] || ( svn co svn://svn.berlios.de/bitbake/trunk/bitbake )
+	[ -e bitbake/bin/bitbake ] || ( svn co -r 269 svn://svn.berlios.de/bitbake/trunk/bitbake )
 
 .PHONY: setup-openembedded
 setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
