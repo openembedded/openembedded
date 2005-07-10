@@ -2,6 +2,7 @@ SECTION = "console/network"
 DEPENDS = "db3"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz"
 
