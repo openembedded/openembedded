@@ -8,7 +8,7 @@ RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
 SECTION = "base"
 RSUGGESTS = "pciutils usbutils"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
 	file://userspecified_hcd.patch;patch=1 \
@@ -17,16 +17,16 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_2
 	file://fix-net.agent \
 	file://update-usb.usermap \
 	file://logcheck-ignore \
-	   file://sleeve.agent \
-	   file://sleeve.rc \
-	   file://mmc.agent \
-	   file://usbd.agent \
-	   file://usbd \
-	   file://sysconfig-hotplug \
-	   file://sysconfig-usb \
-	   file://isapnp-exit.diff;patch=1 \
-	   file://usb-storage \
-	   file://soc.agent"
+	file://sleeve.agent \
+	file://sleeve.rc \
+	file://mmc.agent \
+	file://usbd.agent \
+	file://usbd \
+	file://sysconfig-hotplug \
+	file://sysconfig-usb \
+	file://isapnp-exit.diff;patch=1 \
+	file://usb-storage \
+	file://soc.agent"
 	   
 S = "${WORKDIR}/hotplug-2004_09_20"
 
@@ -54,7 +54,7 @@ do_install () {
 	#install -d ${D}${sysconfdir}/default
 	oe_runmake prefix=${D}${prefix} exec_prefix=${D}${exec_prefix} \
 		   etcdir=${D}${sysconfdir} sbindir=${D}${sbindir} \
-		   mandir=${D}${oldmandir} install
+		   mandir=${D}${oldmandir} INSTALL=install install
 	sh ${WORKDIR}/fix-net.agent ${D} || :
 	install -m 0755 ${WORKDIR}/update-usb.usermap ${D}${oldsbindir}/
 	install -m 0644 ${WORKDIR}/logcheck-ignore ${D}${sysconfdir}/logcheck/ignore.d/hotplug
