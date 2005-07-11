@@ -1,7 +1,8 @@
 # Makefile for the NSLU2 Linux development system
 # Licensed under the GPL v2 or later
 
-BITBAKE_REVISION="-r 269"	# Fetch this revision of BitBake. Unset this to fetch bleeding edge.
+# Fetch this revision of BitBake. Unset this to fetch bleeding edge.
+BITBAKE_REVISION=-r 269
 
 .PHONY: all
 all: update build
