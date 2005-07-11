@@ -2,11 +2,10 @@ DESCRIPTION = "Network Packet Capture Library"
 HOMEPAGE = "http://www.tcpdump.org/"
 LICENSE = "BSD"
 SECTION = "libs"
-PRIORITY = "required"
+PR = "r1"
 
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz; \
 	   file://shared.patch;patch=1"
-#	   file://configure.patch;patch=1"
 
 inherit autotools
 
@@ -26,5 +25,6 @@ do_stage () {
 	install -m 0644 pcap-namedb.h ${STAGING_INCDIR}/pcap-namedb.h
 	install -m 0644 pcap-bpf.h ${STAGING_INCDIR}/pcap-bpf.h
 	oe_libinstall -a -so libpcap ${STAGING_LIBDIR}
-	ln -sf ${STAGING_INCDIR}/pcap-bpf.h  ${STAGING_INCDIR}/net/bpf.h
+	install -d ${STAGING_INCDIR}/net
+	ln -sf ${STAGING_INCDIR}/pcap-bpf.h ${STAGING_INCDIR}/net/bpf.h
 }
