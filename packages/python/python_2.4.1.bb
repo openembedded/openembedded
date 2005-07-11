@@ -5,8 +5,8 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PROVIDES = "python python-core"
-DEPENDS = "python-native zlib gdbm openssl"
-PR = "ml5"
+DEPENDS = "python-native readline zlib gdbm openssl"
+PR = "ml6"
 
 PYTHON_MAJMIN = "2.4"
 
