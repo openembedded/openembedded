@@ -1,4 +1,4 @@
-DEPENDS = ""
+DEPENDS = "openssl"
 RPEDENDS = ""
 DESCRIPTION = "ISC Internet Domain Name Server"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
