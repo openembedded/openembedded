@@ -52,11 +52,11 @@ OPENSLUG_PACKAGES = "\
 	dnsmasq \
 	expat \
 	ftpd-topfield \
-	gphoto2 \
 	glib-2.0 \
+	gphoto2 \
 	gtk-doc \
-	libxml \ 
 	less libusb \
+	libxml \
 	miau \ 
 	microcom \
 	mt-daapd \
@@ -80,6 +80,7 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	vlan \
 	wget \
 	unionfs-modules unionfs-utils \
 	"
