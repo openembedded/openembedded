@@ -56,6 +56,7 @@ OPENSLUG_PACKAGES = "\
 	gtk-doc \
 	less libusb \
 	libxml2 \
+	mgetty \
 	miau \ 
 	microcom \
 	mt-daapd \
@@ -96,7 +97,6 @@ OPENSLUG_PACKAGES_append_linux = "\
 BROKEN_PACKAGES = "\
 	atftp \
 	strace \
-	mgetty \
 	"
 
 DEPENDS = 'openslug-image \
