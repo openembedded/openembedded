@@ -467,7 +467,7 @@ CONFIG_FEATURE_MOUNT_FORCE=y
 #
 # Common options for mount/umount
 #
-# CONFIG_FEATURE_MOUNT_LOOP is not set
+CONFIG_FEATURE_MOUNT_LOOP=y
 # CONFIG_FEATURE_MTAB_SUPPORT is not set
 
 #
