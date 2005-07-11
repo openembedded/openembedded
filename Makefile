@@ -1,8 +1,12 @@
 # Makefile for the NSLU2 Linux development system
 # Licensed under the GPL v2 or later
 
+# Change these if you are unfortunate enough to have a split net personality.
+SVN_USER ?= ${USER}
+CVS_USER ?= ${USER}
+
 # Fetch this revision of BitBake. Unset this to fetch bleeding edge.
-BITBAKE_REVISION=-r 269
+BITBAKE_REVISION = -r 269
 
 .PHONY: all
 all: update build
@@ -14,7 +18,7 @@ build: build-unslung build-openslug build-optware
 setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks setup-optware
 
 .PHONY: setup-developer
-setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks-developer setup-optware-developer
+setup-developer: setup-master setup-bitbake setup-openembedded setup-oe-symlinks-developer setup-optware-developer
 
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-oe-symlinks update-optware
@@ -63,18 +67,20 @@ setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
 setup-oe-symlinks oe-symlinks/packages:
 	[ -e oe-symlinks/packages ] || ( svn co svn://svn.berlios.de/openslug/trunk/openslug/nslu2-linux oe-symlinks )
 
+.PHONY: setup-oe-symlinks-developer
+setup-oe-symlinks-developer:
+	[ -e oe-symlinks ] && ( mv oe-symlinks oe-symlinks-user )
+	svn co svn+ssh://${SVN_USER}@svn.berlios.de/svnroot/repos/openslug/trunk/openslug/nslu2-linux oe-symlinks
+
 .PHONY: setup-optware
 setup-optware optware/Makefile:
 	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
-.PHONY: setup-oe-symlinks-developer
-setup-oe-symlinks-developer oe-symlinks/packages:
-	[ -e oe-symlinks/packages ] || ( svn co svn+ssh://${SVN_USER}@svn.berlios.de/svnroot/repos/openslug/trunk/openslug/nslu2-linux oe-symlinks )
-
 .PHONY: setup-optware-developer
-setup-optware-developer optware/Makefile:
-	[ -e optware/Makefile ] || ( cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
+setup-optware-developer:
+	[ -e optware ] && ( mv optware optware-user )
+	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
 .PHONY: update-master
