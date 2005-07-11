@@ -1,8 +1,11 @@
 DESCRIPTION= "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r2"
+HOMEPAGE = "http://www.vanille.de/projects/python.spy"
+LICENSE = "MIT"
+PR = "ml3"
 
-NONWORKING = "  python-codes		\
+NONWORKING = "\
+		python-codes		\
 		python-crypto		\
 		python-gmpy		\
 		python-pysqlite		\
@@ -11,7 +14,9 @@ NONWORKING = "  python-codes		\
 		python-sgmlop		\
 		python-vorbis"
 
-DEPENDS = "	python-ao 		\
+DEPENDS = "\
+		python-ao 			\
+		python-bluez		\
 		python-constraint	\
 		python-dialog		\
 		python-egenix-mx-base   \
@@ -58,4 +63,3 @@ RDEPENDS=${DEPENDS}
 #fixme add python-pyx once kpathwhich-native is there
 #fixme add packages dynamically
 #fixme python-numarray doesn't work with soft-float
-LICENSE = MIT
