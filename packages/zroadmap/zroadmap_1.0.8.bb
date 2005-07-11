@@ -10,7 +10,7 @@ AUTHOR = "Pascal Martin <pascal.martin@iname.com>"
 HOMEPAGE = "http://roadmap.digitalomaha.net/maps.html"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://roadmap.digitalomaha.net/roadmap/roadmap_1_0_8_src.tar.gz \
            http://roadmap.digitalomaha.net/maps/usdir.rdm.tgz \
@@ -21,7 +21,7 @@ S = "${WORKDIR}/roadmap-${PV}/src/qt"
 inherit palmtop
 
 EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} \
-                GUILDFLAGS="-lz -lpng -ljpeg -lts -lqte -lqpe -L${STAGING_LIBDIR} -L${QTDIR}/lib"'
+                GUILDFLAGS="-lz -lpng -ljpeg -lts -lqte -lqpe -Wl,-rpath-link,${STAGING_LIBDIR} -L${STAGING_LIBDIR} -L${QTDIR}/lib"'
 PARALLEL_MAKE = ""
 
 do_configure() {
