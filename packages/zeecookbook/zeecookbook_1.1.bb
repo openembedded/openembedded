@@ -13,7 +13,7 @@ SRC_URI = "http://sf.gds.tuwien.ac.at/z/ze/zeecookbook/zeecookbook-1.1.zip \
 		file://zeecookbook.patch;patch=1"
 
 S="${WORKDIR}/zeecookbook-1.1/src/zeecookbook"
-QPEDIR=${OPIEDIR}
+QPEDIR="${OPIEDIR}"
 
 inherit palmtop
 

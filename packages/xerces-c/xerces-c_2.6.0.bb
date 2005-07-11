@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "MIT"
 
-S=${WORKDIR}/xerces-c-src_2_6_0
+S="${WORKDIR}/xerces-c-src_2_6_0"
 
 SRC_URI = "http://www.axint.net/apache/xml/xerces-c/xerces-c-src_2_6_0.tar.gz"
 

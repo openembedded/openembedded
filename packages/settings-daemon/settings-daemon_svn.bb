@@ -6,7 +6,7 @@ SECTION = "gpe"
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://70settings-daemon"
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig gettext
 
