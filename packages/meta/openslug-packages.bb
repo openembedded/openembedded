@@ -43,7 +43,6 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 OPENSLUG_PACKAGES = "\
 	bash \
-	bind \
 	bluez-utils-nodbus \
 	bridge-utils \
 	coreutils \
@@ -88,6 +87,7 @@ OPENSLUG_PACKAGES = "\
 # These packages only build on TARGET_OS=linux, not
 # TARGET_OS=linux-uclibc
 OPENSLUG_PACKAGES_append_linux = "\
+	bind \
 	php \
 	libpam \
 	yp-tools ypbind ypserv \
