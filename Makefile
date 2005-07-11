@@ -27,11 +27,11 @@ update: update-master update-bitbake update-openembedded update-oe-symlinks upda
 clobber: clobber-optware clobber-oe-symlinks clobber-openembedded clobber-bitbake
 
 .PHONY: unslung build-unslung
-unslung build-unslung: unslung/Makefile downloads bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
 	( cd unslung ; make )
 
 .PHONY: openslug build-openslug
-openslug build-openslug: openslug/Makefile downloads bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
 	( cd openslug ; make )
 
 .PHONY: optware build-optware
@@ -46,12 +46,16 @@ setup-monotone monotone/nslu2-linux.db:
 	( monotone -d monotone/nslu2-linux.db unset database default-collection )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org )
 
-unslung/Makefile openslug/Makefile MT/revision: monotone/nslu2-linux.db
+downloads:
+	[ -e downloads ] || mkdir -p downloads
+
+unslung/Makefile openslug/Makefile MT/revision:
+	${MAKE} downloads
+	[ -e monotone/nslu2-linux.db ] || ( ${MAKE} monotone/nslu2-linux.db )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 
 .PHONY: setup-master
-setup-master downloads: setup-monotone unslung/Makefile openslug/Makefile
-	[ -e downloads ] || mkdir -p downloads
+setup-master: setup-monotone unslung/Makefile openslug/Makefile
 	[ -e unslung/downloads ]  || ( cd unslung  ; ln -s ../downloads . )
 	[ -e openslug/downloads ] || ( cd openslug ; ln -s ../downloads . )
 
@@ -60,7 +64,8 @@ setup-bitbake bitbake/bin/bitbake:
 	[ -e bitbake/bin/bitbake ] || ( svn co ${BITBAKE_REVISION} svn://svn.berlios.de/bitbake/trunk/bitbake )
 
 .PHONY: setup-openembedded
-setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
+setup-openembedded openembedded/conf/machine/nslu2.conf:
+	${MAKE} MT/revision
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 
 .PHONY: setup-oe-symlinks
@@ -74,11 +79,13 @@ setup-oe-symlinks-developer:
 
 .PHONY: setup-optware
 setup-optware optware/Makefile:
+	${MAKE} downloads
 	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
 .PHONY: setup-optware-developer
 setup-optware-developer:
+	${MAKE} downloads
 	[ -e optware ] && ( mv optware optware-user )
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
@@ -108,7 +115,7 @@ update-oe-symlinks: oe-symlinks/packages
 	( cd oe-symlinks ; svn update )
 
 .PHONY: update-optware
-update-optware: optware/Makefile downloads
+update-optware: optware/Makefile
 	( cd optware ; cvs update -d -P )
 
 .PHONY: clobber-bitbake
@@ -130,7 +137,7 @@ clobber-optware:
 # Targets for use by those with write access to the repositories
 
 .PHONY: push-master
-push-master: monotone/nslu2-linux.db
+push-master: MT/revision
 	monotone push
 
 .PHONY: push-openembedded
