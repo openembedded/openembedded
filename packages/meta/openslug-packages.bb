@@ -56,7 +56,7 @@ OPENSLUG_PACKAGES = "\
 	gphoto2 \
 	gtk-doc \
 	less libusb \
-	libxml \
+	libxml2 \
 	miau \ 
 	microcom \
 	mt-daapd \
