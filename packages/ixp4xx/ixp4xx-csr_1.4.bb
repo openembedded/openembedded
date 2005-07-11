@@ -7,7 +7,7 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400AccessLibrary-1_4.zip
 	   file://badpaths.patch;patch=1 \
 	   file://build-timing-annoyance.patch;patch=1"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
 
