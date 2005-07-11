@@ -7,16 +7,16 @@ RPROVIDES = "hotplug"
 RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
 SECTION = "base"
-PR = "r4"
 RSUGGESTS = "pciutils usbutils"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
-	   file://userspecified_hcd.patch;patch=1 \
-	   file://hotplug-net-agent-usb.patch;patch=1 \
-           file://usbrc-busybox.patch;patch=1 \
-           file://fix-net.agent \
-           file://update-usb.usermap \
-           file://logcheck-ignore \
+	file://userspecified_hcd.patch;patch=1 \
+	file://hotplug-net-agent-usb.patch;patch=1 \
+	file://usbrc-busybox.patch;patch=1 \
+	file://fix-net.agent \
+	file://update-usb.usermap \
+	file://logcheck-ignore \
 	   file://sleeve.agent \
 	   file://sleeve.rc \
 	   file://mmc.agent \

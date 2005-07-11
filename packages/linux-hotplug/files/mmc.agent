@@ -30,7 +30,7 @@ case `uname -r` in
 esac
 
 if [ "$ACTION" = "add" ] ; then
-    sleep 1	
+    sleep 4
     echo -n add > /dev/console
     for n in 1 2 3 4 ; do
 	device=/dev/$devpath$n
