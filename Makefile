@@ -136,6 +136,9 @@ clobber-optware:
 
 # Targets for use by those with write access to the repositories
 
+.PHONY: push
+push: push-master push-openembedded
+
 .PHONY: push-master
 push-master: update-master
 	monotone push
