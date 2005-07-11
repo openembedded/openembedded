@@ -43,21 +43,33 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 OPENSLUG_PACKAGES = "\
 	bash \
-	bluez-utils-nodbus bridge-utils \
-	coreutils cron \
+	bluez-utils-nodbus \
+	bridge-utils \
+	coreutils \
+	cron \
 	cvs\
 	dnsmasq \
 	expat \
 	ftpd-topfield \
+	glib-2.0 \
 	gphoto2 \
+	gtk-doc \
 	less libusb \
-	miau microcom mt-daapd mysql \
+	libxml2 \
+	miau \ 
+	microcom \
+	mt-daapd \
+	mysql \
 	nail \
 	openssh \
 	openvpn \
-	ppp puppy pwc \
+	pcre \
+	ppp \
+	puppy \
+	pwc \
 	rsync \
-	sudo sysfsutils \
+	sudo \
+	sysfsutils \
 	thttpd \
 	db4 \
 	openldap \
@@ -67,6 +79,7 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	vlan \
 	wget \
 	unionfs-modules unionfs-utils \
 	"
@@ -74,6 +87,7 @@ OPENSLUG_PACKAGES = "\
 # These packages only build on TARGET_OS=linux, not
 # TARGET_OS=linux-uclibc
 OPENSLUG_PACKAGES_append_linux = "\
+	bind \
 	php \
 	libpam \
 	yp-tools ypbind ypserv \
