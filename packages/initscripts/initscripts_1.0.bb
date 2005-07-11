@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r46"
+PR = "r47"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,8 +30,8 @@ SRC_URI = "file://halt \
            file://umountnfs.sh \
            file://sysfs.sh \
            file://device_table.txt \
-	   file://corgikeymap-2.6.map \
-	   file://tosakeymap-2.6.map"
+           file://corgikeymap-2.6.map \
+           file://tosakeymap-2.6.map"
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"

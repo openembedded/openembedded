@@ -5,6 +5,11 @@
 
 . /etc/default/rcS
 
+# exit without doing anything if udev is active
+if test -e /dev/.udevdb; then
+    exit 0
+fi
+
 if test -e /dev/.devfsd
 then
 	if test "$VERBOSE" != "no"; then echo -n "Setting up device links for devfs: "; fi

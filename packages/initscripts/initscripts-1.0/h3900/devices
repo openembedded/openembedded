@@ -3,6 +3,11 @@
 # Devfs handling script.  Since we arent running devfsd due to various reasons
 # which I will not lay out here, we need to create some links for compatibility.
 
+# exit without doing anything if udev is active
+if test -e /dev/.udevdb; then
+    exit 0
+fi
+
     test -n "$VERBOSE" && echo -n "Setting up device links for devfs: "
     (
     ln -s /dev/vc/0 /dev/tty0
