@@ -3,7 +3,7 @@ PRIORITY = "standard"
 DESCRIPTION = "Manage symlinks in /etc/rcN.d"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-S = ${WORKDIR}/update-rc.d
+S = "${WORKDIR}/update-rc.d"
 PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7"

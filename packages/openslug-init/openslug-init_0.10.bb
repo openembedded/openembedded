@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r33"
+PR = "r34"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -121,6 +121,7 @@ pkg_postinst_openslug-init() {
 	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .
 	update-rc.d $opt syslog.network		start 44 S . start 39 0 6 .
 	update-rc.d $opt zleds			start 99 S 1 2 3 4 5 . stop  5 0 1 2 3 4 5 6 .
+	update-rc.d $opt rmrecovery             start 99 1 2 3 4 5 .
 	# bug fix for startup
 	update-rc.d $opt leds_startup		start  1 1 2 3 4 5 .
 }

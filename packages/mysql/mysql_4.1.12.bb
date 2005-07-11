@@ -2,7 +2,7 @@ DESCRIPTION = "The MySQL Open Source Database System"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "libs"
 DEPENDS += "ncurses mysql-native"
-PR = "r2"
+PR = "r3"
 LICENSE = "GPL"
 SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -27,6 +27,14 @@ do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 	mv -f ${D}${libdir}/mysql/* ${D}${libdir}
 	rmdir ${D}${libdir}/mysql
+}
+
+pkg_postinst () {
+	grep mysql /etc/passwd || adduser --disabled-password --home=/var/mysql --ingroup nogroup mysql
+}
+
+pkg_postrm () {
+	grep mysql /etc/passwd && deluser mysql
 }
 
 PACKAGES =+ "libmysqlclient libmysqlclient-dev"

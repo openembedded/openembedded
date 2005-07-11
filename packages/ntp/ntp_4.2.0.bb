@@ -6,7 +6,7 @@ HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
-PR = "r2"
+PR = "r3"
 # OE core: this is here to prevent this version of ntp from
 # changing OE distros other than openslug.  This code has
 # only been tested on openslug.  Feel free to remove these lines!
