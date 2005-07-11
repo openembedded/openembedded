@@ -137,11 +137,11 @@ clobber-optware:
 # Targets for use by those with write access to the repositories
 
 .PHONY: push-master
-push-master: MT/revision
+push-master: update-master
 	monotone push
 
 .PHONY: push-openembedded
-push-openembedded: openembedded/conf/machine/nslu2.conf
+push-openembedded: update-openembedded
 	( cd openembedded ; monotone push )
 
 # Targets for use by core team members only
