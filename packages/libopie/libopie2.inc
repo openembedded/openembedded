@@ -22,6 +22,10 @@ EXTRA_QMAKEVARS_POST = 'DEFINES+=OPIE_NEW_MALLOC \
 
 EXTRA_QMAKEVARS_PRE = 'ENABLE_SQL_PIM_BACKEND=y'
 
+MODULES = "opiecore opiedb opiemm opienet opiepim opiesecurity opieui"
+LIBS    = "core2    db2    mm2    net2    pim2    security2    ui2"
+PRIVATE = "opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h"
+
 # uclibc doesn't have backtrace()
 python __anonymous () {
     import bb, re
@@ -32,7 +36,7 @@ python __anonymous () {
 do_compile() {
 	install -d ${STAGING_INCDIR}/opie2
 	install -d ${STAGING_INCDIR}/opie2/private
-        for module in opiecore opiedb opiemm opienet opiepim opiesecurity opieui
+        for module in ${MODULES}
         do
             cd $module
 	    for i in `find . -name "*.h"`
@@ -42,24 +46,21 @@ do_compile() {
             cd ..
         done
 
-	for i in opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h
+	for header in ${PRIVATE}
 	do
-		install -m 0644 opiepim/private/$i ${STAGING_INCDIR}/opie2/private/
+		install -m 0644 opiepim/private/$header ${STAGING_INCDIR}/opie2/private/
 	done
 
 	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
 }
 
-LIBS = "core2 ui2 db2 mm2 net2 pim2 security2"
-
-# need some special case for uic-created header files here
 do_stage() {
         for f in ${LIBS}
 	do
 		oe_libinstall -so libopie$f ${STAGING_LIBDIR}/
 	done
-
 	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/include.pro
+	# special case for uic-created header files
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
@@ -73,14 +74,22 @@ do_install() {
 	done
 }
 
-PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2"
+PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2 libopiebluez2"
 
+DESCRIPTION_libopiecore2 = "Opie Development Platform 1.x Core Library"
 FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so*"
+DESCRIPTION_libopiedb2 = "Opie Development Platform 1.x Database Library"
 FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so*"
+DESCRIPTION_libopiemm2 = "Opie Development Platform 1.x Multimedia Library"
 FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so*"
+DESCRIPTION_libopienet2 = "Opie Development Platform 1.x Network Library"
 FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so*"
+DESCRIPTION_libopiepim2 = "Opie Development Platform 1.x PIM Library"
 FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so*"
+DESCRIPTION_libopieui2 = "Opie Development Platform 1.x User Interface Library"
 FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so*"
+DESCRIPTION_libopiesecurity2 = "Opie Development Platform 1.x Security Library"
 FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so*"
+DESCRIPTION_libopiebluez2 = "Opie Development Platform 1.x Bluetooth Library"
+FILES_libopiebluez2 = "${palmtopdir}/lib/libopiebluez2.so*"
 
-#FIXME: Add individual package descriptions and dependencies
