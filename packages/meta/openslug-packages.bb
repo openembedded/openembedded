@@ -83,6 +83,7 @@ OPENSLUG_PACKAGES = "\
 	vlan \
 	wget \
 	unionfs-modules unionfs-utils \
+	xinetd \
 	"
 
 # These packages only build on TARGET_OS=linux, not
