@@ -4,10 +4,11 @@ PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://www.gzip.org/zlib/"
 LICENSE = "zlib"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.libpng.org/pub/png/src/zlib-${PV}.tar.gz \
-	   file://visibility.patch;patch=1"
+		file://visibility.patch;patch=1 \
+		file://zlib_1.2.2-8.diff.gz;patch=1 "
 S = "${WORKDIR}/zlib-${PV}"
 
 export LDSHARED = "${CC} -shared -Wl,-soname,libz.so.1"
