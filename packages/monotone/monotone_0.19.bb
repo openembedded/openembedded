@@ -6,7 +6,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "MIT"
 SUBV = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.venge.net/monotone/downloads/monotone_${PV}-${SUBV}.tar.gz \
 	   file://txt2c-cross.patch;patch=1 \
@@ -18,6 +18,9 @@ DEPENDS += "boost"
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
+RDEPENDS_${PN}-testsuite += "bash sed grep cvs"
+# The testsuite also requires the following - not yet available...
+#RDEPENDS_${PN}-testsuite += "patch perl"
 
 # no cross compile support - it tries to run the test program even with
 # --enable_ipv6=yes
