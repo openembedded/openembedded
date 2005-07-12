@@ -158,16 +158,17 @@ setup_bootdev() {
 
 #
 # setup_var new type
-#  Populates /var.  Should only be called for true disk systems and NFS -
-#  it's a waste on USB memory sticks!  Removes the /var tmpfs setting
-#  for disks, sets it to /var/tmp for NFS.
+#  Populates /var.
+#  Removes the /var tmpfs entry from /etc/fstab.
+#  Creates links from /var into /media/ram for NFS and Memstick.
+
 setup_var() {
 	test -n "$1" -a -d "$1"/var || {
 		echo "turnup: setup_var($1,$2): expected a directory" >&2
 		return 1
 	}
 	case "$2" in
-	disk|nfs);;
+	disk|nfs|memstick);;
 	*)	echo "turnup: setup_var($1,$2): expected 'disk' or 'nfs'" >&2
 		return 1;;
 	esac
@@ -178,15 +179,24 @@ setup_var() {
 		echo "turnup: /var: could not populate directory" >&2
 		return 1
 	}
+
+	case "$2" in
+	nfs|memstick)
+	        for d in "cache" "lock" "log" "run" "tmp" "lib/ipkg"; do
+		  RAMDIR="/media/ram/${d}"
+		  VARDIR="/var/${d}"
+		  rm -rf "${1}/${VARDIR}"
+		  ln -s "${RAMDIR}" "${1}/${VARDIR}"
+		  sed -i "s@ ${VARDIR}@ ${RAMDIR}@" "$1"/etc/init.d/populate-var.sh
+		  done
+		echo "mkdir -p /media/ram/lib/ipkg" >>"$1"/etc/init.d/populate-var.sh
+		;;
+	esac
 	# the startup link is left for the moment, this seems safer
 	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
 	# remove the /var tmpfs entry from the new /etc/fstab
-	case "$2" in
-	disk)	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@d' "$1"/etc/fstab
-		echo "turnup: tmpfs will no longer be mounted on /var" >&2;;
-	nfs)	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@s@[ 	]/var@&/tmp@' "$1"/etc/fstab
-		echo "turnup: tmpfs /var mount moved to /var/tmp" >&2;;
-	esac
+	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@d' "$1"/etc/fstab
+	echo "turnup: tmpfs will no longer be mounted on /var" >&2
 	#
 	# Previous versions of turnup removed populate-var.sh from the
 	# startup links, this one doesn't, so /var can be made back into
@@ -243,12 +253,13 @@ setup_rootfs() {
 	case "$type" in
 	flash)	return 0;;
 	disk)	setup_dev "$new" "$table" &&
-		setup_var "$new" disk &&
+		setup_var "$new" "$type" &&
 		setup_syslog "$new";;
 	memstick)
-		setup_bootdev "$new" "$table" ;;
+		setup_bootdev "$new" "$table" &&
+		setup_var "$new" "$type" ;;
 	nfs)	setup_dev "$new" "$table" &&
-		setup_var "$new" nfs &&
+		setup_var "$new" "$type" &&
 		setup_syslog "$new";;
 	*)	echo "turnup: setup_rootfs: $type: unknown rootfs type" >&2
 		return 1;;
