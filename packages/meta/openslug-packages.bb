@@ -54,17 +54,20 @@ OPENSLUG_PACKAGES = "\
 	glib-2.0 \
 	gphoto2 \
 	gtk-doc \
-	less libusb \
+	less \
+	libusb \
 	libxml2 \
 	mgetty \
 	miau \ 
 	microcom \
 	mt-daapd \
+	mutt \
 	mysql \
 	nail \
 	openssh \
 	openvpn \
 	pcre \
+	postfix \
 	ppp \
 	puppy \
 	pwc \
