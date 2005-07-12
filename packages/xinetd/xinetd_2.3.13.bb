@@ -1,7 +1,7 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
-PR="r1"
+PR="r2"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \
 	  file://xinetd.init \
@@ -34,3 +34,5 @@ do_install() {
 	install -m 755 "${S}/xinetd/itox" "${D}/usr/sbin"
 
 }
+
+CONFFILES_${PN} = "${sysconfdir}/xinetd.conf"
