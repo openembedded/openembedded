@@ -93,14 +93,10 @@ def opie_more_depends(d):
 	else: return " "
 
 def opie_more_rdepends(d):  
-        import bb
-        root_flash_size = int( bb.data.getVar( "ROOT_FLASH_SIZE", d, True ) or "16" )
-        if root_flash_size >= 24: return bb.data.getVar( "OPIE_RDEPENDS_24", d, True )
-        else: return " "
+	import bb
+	root_flash_size = int( bb.data.getVar( "ROOT_FLASH_SIZE", d, True ) or "16" )
+	if root_flash_size >= 24: return bb.data.getVar( "OPIE_RDEPENDS_24", d, True )
+	else: return " "
 
 OPIE_MORE_DEPENDS := "${@opie_more_depends(d)}"
-
-
-
-
-# # OPIE_MORE_RDEPENDS := "${@opie_more_rdepends(d)}"
+OPIE_MORE_RDEPENDS := "${@opie_more_rdepends(d)}"

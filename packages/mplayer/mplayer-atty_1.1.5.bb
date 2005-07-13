@@ -2,11 +2,11 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://atty.jp/?Zaurus%2Fmplayer"
-DEPENDS = "virtual/libsdl libmad libogg libvorbis zlib libpng jpeg"
+DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg"
 LICENSE = "GPL"
 RCONFLICTS = "mplayer"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
@@ -65,6 +65,7 @@ EXTRA_OECONF = " \
 	--disable-ipp \
 	--disable-iwmmxt \
         \
+	--enable-freetype \
         --with-extralibdir=${STAGING_LIBDIR} "
 
 EXTRA_OECONF_append_c7x0 = " --enable-w100"
