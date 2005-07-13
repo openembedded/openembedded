@@ -26,6 +26,7 @@ OPENSLUG_DEVELOPMENT = "\
 	lsof \
 	m4 \
 	make \
+	monotone \
 	ncurses \
 	openssh \
 	pciutils \
