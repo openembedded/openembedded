@@ -59,7 +59,6 @@ do_stage() {
 	do
 		oe_libinstall -so libopie$f ${STAGING_LIBDIR}/
 	done
-
 	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/include.pro
 	# special case for uic-created header files
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
