@@ -1,12 +1,12 @@
 SECTION = "base"
 DESCRIPTION = "MIME files 'mime.types' & 'mailcap', and support programs"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 
 DEPENDS = "file"
 RRECOMMENDS = "file"
 LICENSE = "PD"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"

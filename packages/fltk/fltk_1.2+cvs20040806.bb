@@ -3,9 +3,9 @@ LICENSE ="LGPL"
 HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "jpeg libpng zlib"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/fltk;module=fltk;method=pserver;tag=v1_2;date=${@bb.data.getVar('PV', d, 1)[7:]} \
 	   file://makefiles.patch;patch=1 \

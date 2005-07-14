@@ -1,9 +1,9 @@
 SECTION = "console/network"
 DESCRIPTION = "Enables PPP dial-in through a serial connection"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
-PR = "r3"
+PR = "r4"
 LICENSE = "MIT"
 
 SRC_URI = "file://host-peer \
