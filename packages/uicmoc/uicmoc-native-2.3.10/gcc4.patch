@@ -1,0 +1,12 @@
+--- qt-2.3.10/src/kernel/qwindowsystem_qws.h.orig	2005-07-13 20:23:30.061728456 +0100
++++ qt-2.3.10/src/kernel/qwindowsystem_qws.h	2005-07-13 20:37:57.183905848 +0100
+@@ -168,6 +168,9 @@
+ class QWSMouseHandler;
+ struct QWSCommandStruct;
+ 
++class QWSInputMethod;
++class QWSGestureMethod;
++
+ #ifndef QT_NO_QWS_MULTIPROCESS
+ class QWSServer : public QWSServerSocket
+ #else
