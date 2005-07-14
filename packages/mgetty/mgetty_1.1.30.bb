@@ -43,6 +43,11 @@ SRC_URI = "http://nslu.sf.net/downloads/mgetty_1.1.30.orig.tar.gz \
 
 CFLAGS_prepend = "-DAUTO_PPP -DFIDO "
 
+# This is necessary because of the way the mgetty Makefile works,
+# it effectively recursively makes . - without passing MAKE the -e
+# flag.  Oops.
+export MAKE = "make -e"
+
 do_compile () {
         cp ${WORKDIR}/policy.h ${WORKDIR}/voice-defs.h .
 	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} \

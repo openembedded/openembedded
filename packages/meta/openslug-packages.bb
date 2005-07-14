@@ -58,9 +58,9 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
-	mgetty \
 	miau \ 
 	microcom \
+	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
@@ -68,7 +68,6 @@ OPENSLUG_PACKAGES = "\
 	openssh \
 	openvpn \
 	pcre \
-	postfix \
 	ppp \
 	puppy \
 	pwc \
@@ -84,21 +83,25 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	thttpd \
 	vlan \
 	wget \
 	unionfs-modules unionfs-utils \
-	xinetd \
 	"
 
 # These packages only build on TARGET_OS=linux, not
 # TARGET_OS=linux-uclibc
 OPENSLUG_PACKAGES_append_linux = "\
 	bind \
-	php \
-	libpam \
-	yp-tools ypbind ypserv \
+	mgetty \
 	nfs-utils \
+	libpam \
+	php \
+	postfix \
+	xinetd \
+	yp-tools ypbind ypserv \
 	"
+
 BROKEN_PACKAGES = "\
 	atftp \
 	strace \
