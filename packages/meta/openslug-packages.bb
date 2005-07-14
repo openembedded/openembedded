@@ -83,6 +83,7 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	thttpd \
 	vlan \
 	wget \
 	unionfs-modules unionfs-utils \

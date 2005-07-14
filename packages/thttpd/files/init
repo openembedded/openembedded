@@ -18,7 +18,7 @@ case "$1" in
     ;;
   stop)
     echo -n "Stopping thttpd"
-    start-stop-daemon --stop --quiet $thttpd
+    start-stop-daemon --stop --quiet --exec $thttpd
     echo "."
     ;;
   reload|force-reload)
@@ -26,7 +26,7 @@ case "$1" in
     ;;
   restart)
     echo -n "Stopping thttpd"
-    start-stop-daemon --stop --quiet $thttpd
+    start-stop-daemon --stop --quiet --exec $thttpd
     echo "."
     echo -n "Waiting for thttpd to die off"
     for i in 1 2 3 ;
