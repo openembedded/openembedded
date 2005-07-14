@@ -29,9 +29,11 @@ OPENSLUG_DEVELOPMENT = "\
 	monotone \
 	ncurses \
 	openssh \
+	patch \
 	pciutils \
 	quilt \
 	sed \
+	util-linux \
 	"
 
 # These packages only build on TARGET_OS=linux, not
