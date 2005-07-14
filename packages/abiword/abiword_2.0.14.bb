@@ -1,6 +1,6 @@
 DESCRIPTION = "AbiWord Word Processor"
 
-DEPENDS     = "cdump-native libfribidi enchant jpeg libpng perl glibc"
+DEPENDS     = "cdump-native libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
 

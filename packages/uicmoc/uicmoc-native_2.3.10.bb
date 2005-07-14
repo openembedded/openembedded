@@ -7,7 +7,8 @@ PR = "r0"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
            file://fix-makefile.patch;patch=1 \
-           file://gcc3_4.patch;patch=1"
+           file://gcc3_4.patch;patch=1" \
+           file://gcc4.patch;patch=1"
 S = "${WORKDIR}/qt-${PV}"
 
 inherit native qmake-base
