@@ -1,9 +1,9 @@
 DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 RPROVIDES = "httpd"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "mime-support"
 RDEPENDS = "mime-support"

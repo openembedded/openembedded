@@ -3,9 +3,9 @@ LICENSE = "MIT"
 PV = "0.0cvs${FIXEDCVSDATE}"
 DEPENDS = "x11 xext xmu"
 DESCRIPTION = "server access control program for X"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xhost;date=${FIXEDCVSDATE} \
            file://autofoo.patch;patch=1"

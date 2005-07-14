@@ -1,9 +1,12 @@
-SECTION = "libs"
 DESCRIPTION = "A C library for multiple-precision floating-point \
 	       computations with exact rounding"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
-DEPENDS = "gmp"
 LICENSE = "LGPL"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+SECTION = "libs"
+PR = "r1"
+
+DEPENDS = "gmp"
+
 SRC_URI = "http://www.mpfr.org/mpfr-current/mpfr-${PV}.tar.bz2"
 
 inherit autotools

@@ -2,7 +2,8 @@ SECTION = "libs"
 DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <reenoo@gmx.de>"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+PR = "r1"
 
 inherit autotools gettext
 
