@@ -13,7 +13,7 @@ test -x "$thttpd" || exit 0
 case "$1" in
   start)
     echo -n "Starting thttpd"
-    start-stop-daemon --start --quiet --exec $thttpd
+    start-stop-daemon --start --quiet --exec $thttpd -- -d @@SRVDIR
     echo "."
     ;;
   stop)
@@ -22,11 +22,11 @@ case "$1" in
     echo "."
     ;;
   reload|force-reload)
-    start-stop-daemon --stop --quiet --signal 1 --exec $thttpd
+    start-stop-daemon --stop --quiet --signal 1 --exec $thttpd 
     ;;
   restart)
     echo -n "Stopping thttpd"
-    start-stop-daemon --stop --quiet --exec $thttpd
+    start-stop-daemon --stop --quiet --exec $thttpd -- -d @@SRVDIR
     echo "."
     echo -n "Waiting for thttpd to die off"
     for i in 1 2 3 ;
@@ -36,7 +36,7 @@ case "$1" in
     done
     echo ""
     echo -n "Starting thttpd"
-    start-stop-daemon --start --quiet --exec $thttpd
+    start-stop-daemon --start --quiet --exec $thttpd -- -d @@SRVDIR
     echo "."
     ;;
   *)
