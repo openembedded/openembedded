@@ -5,7 +5,8 @@ HOMEPAGE = "http://www.acme.com/software/thttpd/"
 
 SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
 	   file://install.patch;patch=1 \
-	   file://acinclude.m4"
+	   file://acinclude.m4 \
+	   file://init"
 S = "${WORKDIR}/thttpd-${PV}"
 
 inherit autotools
@@ -16,4 +17,9 @@ FILES_${PN}_append = " ${servicedir}"
 do_configure () {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 	autotools_do_configure
+}
+
+do_install_append () {
+	install -d "${D}${sysconfdir}/init.d"
+	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/thttpd
 }
