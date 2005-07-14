@@ -30,6 +30,8 @@ setup-env:
 	echo 'unset LC_CTYPE' >> setup-env
 	echo 'unset CC' >> setup-env
 	echo 'unset CXX' >> setup-env
+	echo 'unset MFLAGS' >> setup-env
+	echo 'unset MAKEFLAGS' >> setup-env
 	echo 'alias bb=bitbake' >> setup-env
 	echo 'echo Environment set up for OpenSlug development.' >> setup-env
 
