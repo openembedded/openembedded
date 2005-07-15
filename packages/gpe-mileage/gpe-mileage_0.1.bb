@@ -6,6 +6,4 @@ SECTION = "gpe"
 
 DEPENDS = "glib-2.0 gtk+ libglade sqlite"
 
-SRC_URI = "http://handhelds.org/~rw/gpe/${PN}/${P}.tar.gz"
-
-inherit autotools
+inherit gpe autotools
