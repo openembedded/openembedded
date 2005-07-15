@@ -4,15 +4,14 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;method=ext \
            file://acinclude.m4 \
-	   file://enable_dreambox.diff;patch=1;pnum=1 \
            file://remove_nonworking.diff;patch=1;pnum=1 \
-	   file://game_names.diff;patch=1;pnum=1 \
-	   file://enable_tuxmail_oe.diff;patch=1;pnum=1 \
-	   file://disable_libtuxbox.diff;patch=1;pnum=1"
-	   
-CVSDATE = "20050628"
-PV = "${CVSDATE}"
-PR = "r2"
+           file://game_names.diff;patch=1;pnum=1"
+
+CVSDATE = "20050716"
+PV = "0.0+cvs${CVSDATE}"
+PR = "r0"
+
+CFLAGS_append = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX -DOE"
 
 PACKAGES = "tuxbox-plugins-dev tuxbox-plugin-tuxtxt tuxbox-plugin-tuxmail tuxbox-plugin-tuxcom tuxbox-plugin-mines tuxbox-plugin-pacman \
 	tuxbox-plugin-tetris tuxbox-plugin-snake tuxbox-plugin-yahtzee tuxbox-plugin-master tuxbox-plugin-tank tuxbox-plugin-lemmings \
