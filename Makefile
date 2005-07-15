@@ -41,10 +41,10 @@ optware build-optware: optware/Makefile
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
-	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded )
+	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded.* )
 	( monotone -d monotone/nslu2-linux.db unset database default-server )
-	( monotone -d monotone/nslu2-linux.db unset database default-collection )
-	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org )
+	( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
+	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
 
 downloads:
 	[ -e downloads ] || mkdir -p downloads
@@ -159,7 +159,7 @@ upload-openslug-cross: openslug/Makefile
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
-	monotone pull monotone.vanille.de org.openembedded
+	monotone pull monotone.vanille.de org.openembedded.*
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
 	fi
@@ -180,7 +180,7 @@ propagate-to-oe:
 
 .PHONY: export-openembedded
 export-openembedded: openembedded/conf/machine/nslu2.conf
-	monotone push monotone.vanille.de org.openembedded
+	monotone push monotone.vanille.de org.openembedded.*
 
 .PHONY: publish-openembedded
 publish-openembedded: import-openembedded propagate-from-oe update-openembedded \
