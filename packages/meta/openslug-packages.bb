@@ -26,7 +26,7 @@ OPENSLUG_DEVELOPMENT = "\
 	lsof \
 	m4 \
 	make \
-	monotone \
+	monotone-4 monotone-5 \
 	ncurses \
 	openssh \
 	patch \
@@ -62,7 +62,6 @@ OPENSLUG_PACKAGES = "\
 	libxml2 \
 	miau \ 
 	microcom \
-	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
@@ -92,10 +91,13 @@ OPENSLUG_PACKAGES = "\
 	"
 
 # These packages only build on TARGET_OS=linux, not
-# TARGET_OS=linux-uclibc
+# TARGET_OS=linux-uclibc  (Note that for several this
+# is because of use of single precision FP interfaces
+# such as sinf.)
 OPENSLUG_PACKAGES_append_linux = "\
 	bind \
 	mgetty \
+	mpd \
 	nfs-utils \
 	libpam \
 	php \
