@@ -753,8 +753,10 @@ init_network() {
 		read_one "First DNS server" network dns_server1
 		read_one "Second DNS server" network dns_server2
 		read_one "Third DNS server" network dns_server3
+		echo "$ip_addr       $disk_server_name" >> /etc/hosts
 		;;
-	dhcp)	;;
+	dhcp)	sed -i -e "s/localhost\$/localhost $disk_server_name/" /etc/hosts
+		;;
 	*)	bootproto=dhcp;;
 	esac
 	#

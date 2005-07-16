@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r36"
+PR = "r37"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
