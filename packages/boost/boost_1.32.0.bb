@@ -6,7 +6,8 @@
 DESCRIPTION = "Free peer-reviewed portable C++ source libraries"
 HOMEPAGE = "http://www.boost.org/"
 MAINTAINER = "John Bowler <jbowler@acm.org>"
-SECTION = "devel"
+SECTION = "libs"
+DEPENDS = "boost-jam-native"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
 PR = "r1"
@@ -14,12 +15,10 @@ PR = "r1"
 # need debian package naming for the libs
 inherit debian
 
-DEPENDS += "boost-jam-native"
-
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 BOOST_P = "boost_${BOOST_VER}"
-SRC_URI = "http://download.sourceforge.net/boost/${BOOST_P}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
 		file://unit_test_log10f.patch;patch=1 \
 		file://linux-uclibc.patch;patch=1 \
 		"
