@@ -4,6 +4,10 @@
 #
 . /etc/default/functions
 
+INRAM_MEMSTICK="/var/cache /var/lock /var/log /var/run /var/tmp /var/lib/ipkg"
+INRAM_NFS="/var/cache /var/run"
+INRAM_DISK=""
+
 #
 # force: override certain checks
 force=
@@ -169,29 +173,29 @@ setup_var() {
 	}
 	case "$2" in
 	disk|nfs|memstick);;
-	*)	echo "turnup: setup_var($1,$2): expected 'disk' or 'nfs'" >&2
+	*)	echo "turnup: setup_var($1,$2): expected 'disk', 'nfs' or 'memstick'" >&2
 		return 1;;
 	esac
 	#
 	# populate /var, there is a shell script to do this, but it uses
 	# absolute path names
-	chroot "$1" /bin/busybox sh /etc/init.d/populate-var.sh || {
+	chroot "$1" /bin/busybox sh /etc/init.d/populate-volatile.sh || {
 		echo "turnup: /var: could not populate directory" >&2
 		return 1
 	}
 
 	case "$2" in
-	nfs|memstick)
-	        for d in "cache" "lock" "log" "run" "tmp" "lib/ipkg"; do
-		  RAMDIR="/media/ram/${d}"
-		  VARDIR="/var/${d}"
-		  rm -rf "${1}/${VARDIR}"
-		  ln -s "${RAMDIR}" "${1}/${VARDIR}"
-		  sed -i "s@ ${VARDIR}@ ${RAMDIR}@" "$1"/etc/init.d/populate-var.sh
-		  done
-		echo "mkdir -p /media/ram/lib/ipkg" >>"$1"/etc/init.d/populate-var.sh
-		;;
+	disk) RAMTARGETS=${INRAM_DISK};;
+	nfs) RAMTARGETS=${INRAM_NFS};;
+	memstick) RAMTARGETS=${INRAM_MEMSTICK};;
 	esac
+
+	for d in ${RAMTARGETS}; do
+	  RAMDIR="/media/ram${d}"
+	  REALDIR="${d}"
+	  rm -rf "${1}${REALDIR}"
+	  ln -s "${RAMDIR}" "${1}${REALDIR}"
+	  done
 	# the startup link is left for the moment, this seems safer
 	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
 	# remove the /var tmpfs entry from the new /etc/fstab
@@ -749,8 +753,10 @@ init_network() {
 		read_one "First DNS server" network dns_server1
 		read_one "Second DNS server" network dns_server2
 		read_one "Third DNS server" network dns_server3
+		echo "$ip_addr       $disk_server_name" >> /etc/hosts
 		;;
-	dhcp)	;;
+	dhcp)	sed -i -e "s/localhost\$/localhost $disk_server_name/" /etc/hosts
+		;;
 	*)	bootproto=dhcp;;
 	esac
 	#
