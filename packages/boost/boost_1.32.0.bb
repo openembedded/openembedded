@@ -28,31 +28,31 @@ S = "${WORKDIR}/${BOOST_P}"
 # Make a package for each library, plus -dev and -python
 PACKAGES =
 
-PACKAGES += boost-date-time
+PACKAGES += "boost-date-time"
 FILES_boost-date-time = "${libdir}/libboost_date_time.so.${PV}"
 
-PACKAGES += boost-filesystem
+PACKAGES += "boost-filesystem"
 FILES_boost-filesystem = "${libdir}/libboost_filesystem.so.${PV}"
 
-PACKAGES += boost-prg-exec-monitor
+PACKAGES += "boost-prg-exec-monitor"
 FILES_boost-prg-exec-monitor = "${libdir}/libboost_prg_exec_monitor.so.${PV}"
 
-PACKAGES += boost-program-options
+PACKAGES += "boost-program-options"
 FILES_boost-program-options = "${libdir}/libboost_program_options.so.${PV}"
 
-PACKAGES += boost-regex
+PACKAGES += "boost-regex"
 FILES_boost-regex = "${libdir}/libboost_regex.so.${PV}"
 
-PACKAGES += boost-signals
+PACKAGES += "boost-signals"
 FILES_boost-signals = "${libdir}/libboost_signals.so.${PV}"
 
-PACKAGES += boost-test-exec-monitor
+PACKAGES += "boost-test-exec-monitor"
 FILES_boost-test-exec-monitor = "${libdir}/libboost_test_exec_monitor.so.${PV}"
 
-PACKAGES += boost-thread-mt
+PACKAGES += "boost-thread-mt"
 FILES_boost-thread-mt = "${libdir}/libboost_thread-mt.so.${PV}"
 
-PACKAGES += boost-unit-test-framework
+PACKAGES += "boost-unit-test-framework"
 FILES_boost-unit-test-framework = "${libdir}/libboost_unit_test_framework.so.${PV}"
 
 # Python - remove this and set:
@@ -62,7 +62,7 @@ DEPENDS += "python"
 PYTHON_ROOT = "${STAGING_DIR}/${HOST_SYS}"
 PYTHON_VERSION = "2.4"
 
-PACKAGES += boost-python
+PACKAGES += "boost-python"
 FILES_boost-python = "${libdir}/libboost_python.so.${PV}"
 
 # -dev last to pick up the remaining stuff

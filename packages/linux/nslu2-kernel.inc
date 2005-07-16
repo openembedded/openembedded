@@ -198,9 +198,9 @@ N2K_PATCHES ?= "\
 
 N2K_SUFFIX ?= "openslug"
 
-SRC_URI  = ${N2K_SRCURI}
-SRC_URI += ${N2K_SRCFILES}
-SRC_URI += ${N2K_PATCHES}
+SRC_URI  = "${N2K_SRCURI}"
+SRC_URI += "${N2K_SRCFILES}"
+SRC_URI += "${N2K_PATCHES}"
 SRC_URI += "file://defconfig"
 
 COMPATIBLE_HOST = 'arm.*-linux'
