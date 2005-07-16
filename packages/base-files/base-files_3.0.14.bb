@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r35"
+PR = "r36"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -103,41 +103,6 @@ do_install () {
 		install -m 0644 ${WORKDIR}/licenses/$license ${D}${datadir}/common-licenses/
 	done
 
-	if (grep -q "^\(tmpfs\|ramfs\)\W\+/var" ${D}${sysconfdir}/fstab); then
-		# /var is in a ramdisk
-		install -d ${D}${sysconfdir}/init.d ${D}${sysconfdir}/rcS.d
-		for d in ${dirs755}; do
-			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-				echo "chmod 0775 $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-			fi
-		done
-		for d in ${dirs1777}; do
-			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-				echo "chmod 1777 $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-			fi
-		done
-		for d in ${dirs2775}; do
-			if (echo $d|grep -q "^${localstatedir}"); then
-				echo "mkdir -p $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-				echo "chmod 2775 $d" >> ${D}${sysconfdir}/init.d/populate-var.sh
-			fi
-		done
-
-
-		echo ">/var/run/utmp" >> ${D}${sysconfdir}/init.d/populate-var.sh
-		echo ">/var/log/wtmp" >> ${D}${sysconfdir}/init.d/populate-var.sh
-		echo ">/var/log/lastlog" >> ${D}${sysconfdir}/init.d/populate-var.sh
-		echo "chmod 0664 /var/run/utmp /var/log/wtmp /var/log/lastlog"	>> ${D}${sysconfdir}/init.d/populate-var.sh
-		echo "touch /var/run/resolv.conf"	>> ${D}${sysconfdir}/init.d/populate-var.sh
-
-#		rmdir ${D}${localstatedir}/*
-		chmod 0755 ${D}${sysconfdir}/init.d/populate-var.sh
-		ln -sf ../init.d/populate-var.sh ${D}${sysconfdir}/rcS.d/S37populate-var.sh
-		ln -sf ${localstatedir}/run/resolv.conf ${D}${sysconfdir}/resolv.conf
-		ln -sf ${localstatedir}/ld.so.cache ${D}${sysconfdir}/ld.so.cache
-	fi
 	ln -sf /proc/mounts ${D}${sysconfdir}/mtab
 }
 
@@ -149,8 +114,7 @@ do_install_append_mnci () {
 }
 
 do_install_append_nylon() {
-	rm ${D}${sysconfdir}/resolv.conf
-	touch ${D}${sysconfdir}/resolv.conf
+	printf "" "" >${D}${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt/*
 	rm -r ${D}/media
 	rm -rf ${D}/tmp
@@ -158,8 +122,7 @@ do_install_append_nylon() {
 }
 
 do_install_append_openslug() {
-	rm ${D}${sysconfdir}/resolv.conf
-	touch ${D}${sysconfdir}/resolv.conf
+	printf "" "" >${D}${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt/*
 }
 
