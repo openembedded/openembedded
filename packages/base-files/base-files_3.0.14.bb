@@ -124,7 +124,7 @@ do_install_append_nylon() {
 do_install_append_openslug() {
 	printf "" "" >${D}${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt/*
-	rmdir /home/root
+	rmdir ${D}/home/root
 	install -m 0755 -d ${D}/root
 }
 
