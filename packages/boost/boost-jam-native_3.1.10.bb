@@ -9,12 +9,12 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
+PR = "r0"
 
-SRC_URI = "http://download.sourceforge.net/boost/boost-jam-${PV}.tgz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/boost/boost-jam-${PV}.tgz"
+S = "${WORKDIR}/boost-jam-${PV}"
 
 inherit native
-
-S = "${WORKDIR}/boost-jam-${PV}"
 
 do_compile() {
 	set -ex
@@ -27,9 +27,9 @@ do_compile() {
 # rely on only one bin.foo directory being created.
 do_stage() {
 	set -ex
-	install -c -m 755 bin.*/jam ${bindir}
-	install -c -m 755 bin.*/mkjambase ${bindir}
-	install -c -m 755 bin.*/yyacc ${bindir}
-	rm -f ${bindir}/bjam
-	ln ${bindir}/jam ${bindir}/bjam
+	install -c -m 755 bin.*/jam ${STAGING_BINDIR}/
+	install -c -m 755 bin.*/mkjambase ${STAGING_BINDIR}/
+	install -c -m 755 bin.*/yyacc ${STAGING_BINDIR}/
+	rm -f ${STAGING_BINDIR}/bjam
+	ln -sf ./jam ${STAGING_BINDIR}/bjam
 }
