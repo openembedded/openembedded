@@ -1,5 +1,5 @@
 # This package builds the ftpd-topfield program
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "ftpd-topfield - FTP access to TopField PVR"
 HOMEPAGE = "http://sourceforge.net/projects/puppy"
 MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
