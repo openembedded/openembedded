@@ -6,5 +6,8 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 
 include udev.inc
 
-PR = "r3"
-# CFLAGS += -I${STAGING_INCDIR}/sysfs
+PR = "r0"
+
+#FIXME a) udevd doesn't start with our init script (the init script seems to be pretty oudated)
+#FIXME b) lots of alignment errors when manually starting udevd
+DEFAULT_PREFERENCE = "-1"
