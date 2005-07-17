@@ -3,10 +3,11 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-SRCNAME = "imdbpy"
+SRCNAME = "IMDbPY"
+PR = "ml0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
-S = "${WORKDIR}/IMDbPY-${PV}"
+SRC_URI = "${SOURCEFORGE_MIRROR}/imbdbpy/${SRCNAME}-${PV}.tar.gz"
+S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
