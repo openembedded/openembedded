@@ -199,7 +199,7 @@ oe_libinstall() {
 					oefatal "oe_libinstall: $dir/$f not found."
 				fi
 			elif [ -L "$f" ]; then
-				__runcmd cp --no-dereference "$f" $destpath/
+				__runcmd cp -P "$f" $destpath/
 			elif [ ! -L "$f" ]; then
 				libfile="$f"
 				__runcmd install -m 0755 $libfile $destpath/

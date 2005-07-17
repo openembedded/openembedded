@@ -1,5 +1,5 @@
 # Kernel for NSLU2
-PR = "r0"
+PR = "r2"
 include nslu2-kernel.inc
 
 # N2K_EXTRA_PATCHES - list of patches to apply (can include
@@ -20,4 +20,5 @@ N2K_PATCHES = "\
 	file://anonymiser.patch;patch=1 \
 	file://xscale-reset.patch;patch=1 \
 	file://x1205-rtc.c-id.patch;patch=1 \
+	file://mtd-shutdown.patch;patch=1 \
 "

@@ -33,5 +33,10 @@ do_compile () {
 }
 
 do_install () {
-	oe_runmake 'DESTDIR=${D}' install
+	# with ccache the timestamps on compiled files may
+	# end up earlier than on their inputs, this allows
+	# for the resultant compilation in the install step.
+	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
+		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
+		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
 }

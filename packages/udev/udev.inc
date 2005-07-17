@@ -1,7 +1,6 @@
 DESCRIPTION = "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
-PR = "r3"
 
 UDEV_DEVFS_RULES ?= "0"
 
@@ -37,4 +36,7 @@ do_install () {
 	if [ "${UDEV_DEVFS_RULES}" = "1" ]; then
 		install -m 0644 ${S}/etc/udev/udev.rules.devfs ${D}${sysconfdir}/udev/rules.d/50-udev.rules
 	fi
+	install -d ${D}${sysconfdir}/udev/rules.d/
+	install -m 0644 ${S}/etc/udev/debian/permissions.rules ${D}${sysconfdir}/udev/rules.d/
 }
+

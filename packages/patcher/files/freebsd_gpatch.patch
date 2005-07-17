@@ -1,0 +1,28 @@
+On FreeBSD the default patch program has a different command line
+interface than GNU patch. Make patcher use the GNU patch.
+
+
+--- patcher/patcher.py.old	Mon Sep 13 21:59:05 2004
++++ patcher/patcher.py	Sun Jul 17 14:24:50 2005
+@@ -631,8 +631,8 @@
+ 	my $res;
+ 
+ 	# ... then we look if the patch would apply cleanly ...
+-	print "DEBUG: patch --dry-run $opt\n" if $debug > 1;
+-	$res = system("patch --dry-run $opt >$patchlog 2>/dev/null");
++	print "DEBUG: gpatch --dry-run $opt\n" if $debug > 1;
++	$res = system("gpatch --dry-run $opt >$patchlog 2>/dev/null");
+ 	if ($res != 0) {
+ 		unless ($do_force) {
+ 			unlink($patchlog);
+@@ -669,8 +669,8 @@
+ 	# Finally we apply the patch. No need to create backup copies with -b,
+ 	# that has been done by PutIntoPatch()
+ 	$opt = "-f $opt" if $do_force;
+-	print  "DEBUG: patch $opt\n" if $debug > 1;
+-	$res = system("patch $opt >$patchlog");
++	print  "DEBUG: gpatch $opt\n" if $debug > 1;
++	$res = system("gpatch $opt >$patchlog");
+ 	unlink($patchlog);
+ 	$res = 0 if $do_force && $res == 256;
+ 	if ($res != 0) {
