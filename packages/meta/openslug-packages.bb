@@ -33,7 +33,6 @@ OPENSLUG_DEVELOPMENT = "\
 	pciutils \
 	quilt \
 	sed \
-	util-linux \
 	"
 
 # These packages only build on TARGET_OS=linux, not
@@ -41,6 +40,7 @@ OPENSLUG_DEVELOPMENT = "\
 OPENSLUG_DEVELOPMENT_append_linux = "\
 	perl \
 	tar \
+	util-linux \
 	"
 
 
