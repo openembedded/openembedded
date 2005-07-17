@@ -1,0 +1,53 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- udev-062/Makefile~flags.patch
++++ udev-062/Makefile
+@@ -151,16 +151,17 @@
+ 
+ SYSFS = $(PWD)/libsysfs/sysfs.a
+ 
+-CFLAGS +=	-I$(PWD)/libsysfs/sysfs \
++override CFLAGS +=	-I$(PWD)/libsysfs/sysfs \
+ 		-I$(PWD)/libsysfs
+ 
+ ifeq ($(strip $(USE_LOG)),true)
+-	CFLAGS += -DUSE_LOG
++	override CFLAGS += -DUSE_LOG
+ endif
+ 
+ # if DEBUG is enabled, then we do not strip or optimize
+ ifeq ($(strip $(DEBUG)),true)
+-	CFLAGS  += -O1 -g -DDEBUG
++	CFLAGS  += -O1 -g
++	override CFLAGS += -DDEBUG
+ 	LDFLAGS += -Wl
+ 	STRIPCMD = /bin/true -Since_we_are_debugging
+ else
+@@ -176,19 +177,20 @@
+ 	KLCC		= $(KLIBC_INSTALL)/bin/$(CROSS)klcc
+ 	CC		= $(KLCC)
+ 	LD		= $(KLCC)
++	override LDFLAGS += -static
+ else
+-	CFLAGS		+= -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
++	override CFLAGS		+= -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
+ endif
+ 
+ ifeq ($(strip $(USE_SELINUX)),true)
+ 	UDEV_OBJS += udev_selinux.o
+ 	LIB_OBJS += -lselinux
+-	CFLAGS += -DUSE_SELINUX
++	override CFLAGS += -DUSE_SELINUX
+ endif
+ 
+ ifeq ($(strip $(USE_STATIC)),true)
+-	CFLAGS += -DUSE_STATIC
+-	LDFLAGS += -static
++	override CFLAGS += -DUSE_STATIC
++	override LDFLAGS += -static
+ endif
+ 
+ ifeq ($(strip $(V)),false)
