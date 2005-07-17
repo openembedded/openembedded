@@ -1,0 +1,12 @@
+--- jamvm-1.3.1.orig/src/jam.h	2005-07-17 23:53:34.000000000 +0200
++++ jamvm-1.3.1/src/jam.h	2005-07-17 23:54:17.000000000 +0200
+@@ -548,7 +548,9 @@
+ #endif
+ 
+ /* default size of the Java stack */
++#ifndef DEFAULT_STACK
+ #define DEFAULT_STACK 64*KB
++#endif
+ 
+ /* size of emergency area - big enough to create
+    a StackOverflow exception */
