@@ -1,5 +1,5 @@
 # This package builds the ftpd-topfield program
-PR = "r1"
+PR = "r0"
 DESCRIPTION = "ftpd-topfield - FTP access to TopField PVR"
 HOMEPAGE = "http://sourceforge.net/projects/puppy"
 MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
@@ -8,7 +8,7 @@ LICENSE = "MIT"
 
 DEPENDS = "libusb"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_1 \
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_2 \
 	   cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=LIBTOPFIELD_0_5_0 \
 	   file://init"
 
