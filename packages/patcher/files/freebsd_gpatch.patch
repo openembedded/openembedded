@@ -2,8 +2,8 @@ On FreeBSD the default patch program has a different command line
 interface than GNU patch. Make patcher use the GNU patch.
 
 
---- patcher.py.old	Mon Sep 13 21:59:05 2004
-+++ patcher.py	Sun Jul 17 14:24:50 2005
+--- patcher/patcher.py.old	Mon Sep 13 21:59:05 2004
++++ patcher/patcher.py	Sun Jul 17 14:24:50 2005
 @@ -631,8 +631,8 @@
  	my $res;
  
