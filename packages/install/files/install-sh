@@ -67,6 +67,7 @@ mvcmd="$mvprog"
 src=
 dst=
 dir_arg=
+preserve_arg=
 dstarg=
 no_target_directory=
 
@@ -81,10 +82,13 @@ In the 4th, create DIRECTORIES.
 
 Options:
 -c         (ignored)
+-D         (ignored)
 -d         create directories instead of installing files.
 -g GROUP   $chgrpprog installed files to GROUP.
 -m MODE    $chmodprog installed files to MODE.
 -o USER    $chownprog installed files to USER.
+-p         apply access/modification times of SRCFILE files
+           to corresponding DSTFILE files
 -s         $stripprog installed files.
 -t DIRECTORY  install into DIRECTORY.
 -T         report an error if DSTFILE is a directory.
@@ -99,6 +103,9 @@ while test -n "$1"; do
   case $1 in
     -c) shift
         continue;;
+
+    -D) shift
+    	continue;;
 
     -d) dir_arg=true
         shift
@@ -120,6 +127,10 @@ while test -n "$1"; do
         shift
         shift
         continue;;
+
+    -p) preserve_arg="-p"
+    	shift
+	continue;;
 
     -s) stripcmd=$stripprog
         shift
@@ -265,7 +276,7 @@ do
     trap '(exit $?); exit' 1 2 13 15
 
     # Copy the file name to the temp name.
-    $doit $cpprog "$src" "$dsttmp" &&
+    $doit $cpprog $preserve_arg "$src" "$dsttmp" &&
 
     # and set any options; do chmod last to preserve setuid bits.
     #
