@@ -3777,7 +3777,7 @@ diff -urN GConf-2.6.4/autom4te.cache/output.0 GConf-2.6.4.new/autom4te.cache/out
 +    host_alias=$ac_optarg ;;
 +
 +  -includedir | --includedir | --includedi | --included | --include \
-+  | --includ | --inclu | --incl | --inc)
++  | -includ | --inclu | --incl | --inc)
 +    ac_prev=includedir ;;
 +  -includedir=* | --includedir=* | --includedi=* | --included=* | --include=* \
 +  | --includ=* | --inclu=* | --incl=* | --inc=*)
