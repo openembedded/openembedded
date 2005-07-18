@@ -102,7 +102,7 @@
 +	ldr	r7, =IXP4XX_TIMER_BASE_VIRT
 +	ldr	r8, =IXP4XX_WDT_KEY		@ set key
 +	str	r8, [r7, #IXP4XX_OSWK_OFFSET]
-+	mov	r8, #0x10000000			@ about 4 seconds
++	mov	r8, #0x1000000			@ about 0.25 seconds
 +	str	r8, [r7, #IXP4XX_OSWT_OFFSET]	@ set timer
 +	mov	r8, #(IXP4XX_WDT_RESET_ENABLE | IXP4XX_WDT_COUNT_ENABLE)
 +	str	r8, [r7, #IXP4XX_OSWE_OFFSET]	@ enable reset

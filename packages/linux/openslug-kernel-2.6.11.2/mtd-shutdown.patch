@@ -1,0 +1,66 @@
+# Ensure that the MTD is shut down on halt/reboot, otherwise the
+# hardware reset hangs
+
+--- linux-2.6.12.2/drivers/mtd/maps/ixp4xx.c.orig	2005-07-17 15:07:47.790388300 -0700
++++ linux-2.6.12.2/drivers/mtd/maps/ixp4xx.c	2005-07-17 17:00:08.082672710 -0700
+@@ -144,6 +144,52 @@
+ 	return 0;
+ }
+ 
++static void ixp4xx_flash_shutdown(struct device *_dev)
++{
++	struct platform_device *dev = to_platform_device(_dev);
++	struct flash_platform_data *plat = dev->dev.platform_data;
++	struct ixp4xx_flash_info *info = dev_get_drvdata(&dev->dev);
++	map_word d;
++
++	dev_set_drvdata(&dev->dev, NULL);
++
++	if(!info)
++		return;
++
++	/*
++	 * This is required for a soft reboot to work.
++	 */
++	d.x[0] = 0xff;
++	ixp4xx_write16(&info->map, d, 0x55 * 0x2);
++
++#if 0
++	/* This is commented out because it seems to cause a kernel
++	 * panic (at least if it isn't commented out the kernel fails
++	 * to shut down).  Should be investigated.
++	 */
++	if (info->mtd) {
++		del_mtd_partitions(info->mtd);
++		map_destroy(info->mtd);
++	}
++#endif
++	if (info->map.map_priv_1)
++		iounmap((void *) info->map.map_priv_1);
++
++	if (info->partitions)
++		kfree(info->partitions);
++
++	if (info->res) {
++		release_resource(info->res);
++		kfree(info->res);
++	}
++
++	if (plat->exit)
++		plat->exit();
++
++	/* Disable flash write */
++	*IXP4XX_EXP_CS0 &= ~IXP4XX_FLASH_WRITABLE;
++}
++
+ static int ixp4xx_flash_probe(struct device *_dev)
+ {
+ 	struct platform_device *dev = to_platform_device(_dev);
+@@ -243,6 +289,7 @@
+ 	.bus		= &platform_bus_type,
+ 	.probe		= ixp4xx_flash_probe,
+ 	.remove		= ixp4xx_flash_remove,
++	.shutdown	= ixp4xx_flash_shutdown,
+ };
+ 
+ static int __init ixp4xx_flash_init(void)
