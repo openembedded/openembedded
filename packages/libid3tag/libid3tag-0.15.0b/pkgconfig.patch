@@ -1,0 +1,24 @@
+diff -Nurd libid3tag-0.15.0b-r0/libid3tag-0.15.0b/configure.ac libid3tag-0.15.0b-r0-fixed/libid3tag-0.15.0b/configure.ac
+--- libid3tag-0.15.0b/configure.ac	2003-06-05 04:48:13.000000000 +0200
++++ libid3tag-0.15.0b_f/configure.ac	2004-07-05 09:51:39.000000000 +0200
+@@ -201,5 +201,5 @@
+ dnl AC_SUBST(LTLIBOBJS)
+ 
+ AC_CONFIG_FILES([Makefile msvc++/Makefile  \
+-	libid3tag.list])
++	libid3tag.list id3tag.pc])
+ AC_OUTPUT
+--- libid3tag-0.15.0b/id3tag.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ libid3tag-0.15.0b_f/id3tag.pc.in	2004-07-05 09:50:22.000000000 +0200
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: id3tag
++Description: ID3 tag reading library
++Requires:
++Version: 0.15.0b
++Libs: -L${libdir} -lid3tag -lz
++Cflags: -I${includedir}

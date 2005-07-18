@@ -1,0 +1,74 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- freetype-2.0.9/builds/unix/install.mk	2004-11-11 20:18:08.000000000 +0100
++++ freetype-2.0.9/builds/unix/install.mk	2004-11-11 20:17:32.000000000 +0100
+@@ -17,42 +17,42 @@
+ 
+ # Unix installation and deinstallation targets.
+ install: $(PROJECT_LIBRARY)
+-	$(MKINSTALLDIRS) $(libdir)                                 \
+-                         $(includedir)/freetype2/freetype/config   \
+-                         $(includedir)/freetype2/freetype/internal \
+-                         $(includedir)/freetype2/freetype/cache    \
+-                         $(bindir)
+-	$(LIBTOOL) --mode=install $(INSTALL) $(PROJECT_LIBRARY) $(libdir)
++	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)                                 \
++                         $(DESTDIR)$(includedir)/freetype2/freetype/config   \
++                         $(DESTDIR)$(includedir)/freetype2/freetype/internal \
++                         $(DESTDIR)$(includedir)/freetype2/freetype/cache    \
++                         $(DESTDIR)$(bindir)
++	$(LIBTOOL) --mode=install $(INSTALL) $(PROJECT_LIBRARY) $(DESTDIR)$(libdir)
+ 	-for P in $(PUBLIC_H) ; do                               \
+-          $(INSTALL_DATA) $$P $(includedir)/freetype2/freetype ; \
++          $(INSTALL_DATA) $$P $(DESTDIR)$(includedir)/freetype2/freetype ; \
+         done
+ 	-for P in $(BASE_H) ; do                                          \
+-          $(INSTALL_DATA) $$P $(includedir)/freetype2/freetype/internal ; \
++          $(INSTALL_DATA) $$P $(DESTDIR)$(includedir)/freetype2/freetype/internal ; \
+         done
+ 	-for P in $(CONFIG_H) ; do                                      \
+-          $(INSTALL_DATA) $$P $(includedir)/freetype2/freetype/config ; \
++          $(INSTALL_DATA) $$P $(DESTDIR)$(includedir)/freetype2/freetype/config ; \
+         done
+ 	-for P in $(CACHE_H) ; do                                      \
+-          $(INSTALL_DATA) $$P $(includedir)/freetype2/freetype/cache ; \
++          $(INSTALL_DATA) $$P $(DESTDIR)$(includedir)/freetype2/freetype/cache ; \
+         done
+-	$(INSTALL_DATA) $(BUILD)/ft2unix.h $(includedir)/ft2build.h
++	$(INSTALL_DATA) $(BUILD)/ft2unix.h $(DESTDIR)$(includedir)/ft2build.h
+ 	$(INSTALL_SCRIPT) -m 755 $(BUILD)/freetype-config \
+-          $(bindir)/freetype-config
++          $(DESTDIR)$(bindir)/freetype-config
+ 
+ 
+ uninstall:
+-	-$(LIBTOOL) --mode=uninstall $(RM) $(libdir)/$(LIBRARY).$A
+-	-$(DELETE) $(includedir)/freetype2/freetype/cache/*
+-	-$(DELDIR) $(includedir)/freetype2/freetype/cache
+-	-$(DELETE) $(includedir)/freetype2/freetype/config/*
+-	-$(DELDIR) $(includedir)/freetype2/freetype/config
+-	-$(DELETE) $(includedir)/freetype2/freetype/internal/*
+-	-$(DELDIR) $(includedir)/freetype2/freetype/internal
+-	-$(DELETE) $(includedir)/freetype2/freetype/*
+-	-$(DELDIR) $(includedir)/freetype2/freetype
+-	-$(DELDIR) $(includedir)/freetype2
+-	-$(DELETE) $(includedir)/ft2build.h
+-	-$(DELETE) $(bindir)/freetype-config
++	-$(LIBTOOL) --mode=uninstall $(RM) $(DESTDIR)$(libdir)/$(LIBRARY).$A
++	-$(DELETE) $(DESTDIR)$(includedir)/freetype2/freetype/cache/*
++	-$(DELDIR) $(DESTDIR)$(includedir)/freetype2/freetype/cache
++	-$(DELETE) $(DESTDIR)$(includedir)/freetype2/freetype/config/*
++	-$(DELDIR) $(DESTDIR)$(includedir)/freetype2/freetype/config
++	-$(DELETE) $(DESTDIR)$(includedir)/freetype2/freetype/internal/*
++	-$(DELDIR) $(DESTDIR)$(includedir)/freetype2/freetype/internal
++	-$(DELETE) $(DESTDIR)$(includedir)/freetype2/freetype/*
++	-$(DELDIR) $(DESTDIR)$(includedir)/freetype2/freetype
++	-$(DELDIR) $(DESTDIR)$(includedir)/freetype2
++	-$(DELETE) $(DESTDIR)$(includedir)/ft2build.h
++	-$(DELETE) $(DESTDIR)$(bindir)/freetype-config
+ 
+ 
+ .PHONY: clean_project_unix distclean_project_unix

@@ -1,0 +1,52 @@
+DESCRIPTION = "Tuxbox common files"
+LICENSE = "GPL"
+MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
+
+SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz"
+
+PN = "tuxbox-common"
+PR = "r6"
+
+FILES_${PN} = "/"
+
+S = "${WORKDIR}/tuxbox-common-${PR}"
+
+do_install() {
+
+	install -d ${D}/etc/init.d
+	install -d ${D}/etc/rcS.d
+	install -d ${D}/etc/tuxbox/
+	install -m 0644 ${S}/scart.conf ${D}/etc/tuxbox/scart.conf
+	install -m 0644 ${S}/satellites.xml ${D}/etc/tuxbox/satellites.xml
+	install -m 0644 ${S}/cables.xml ${D}/etc/tuxbox/cables.xml
+	install -m 0644 ${S}/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
+	install -m 0644 ${S}/timezone.xml ${D}/etc/tuxbox/timezone.xml
+
+	echo "ln -s /etc/tuxbox /var/" > ${D}/etc/init.d/tuxbox-links.sh
+	echo "ln -s /etc /var/" >> ${D}/etc/init.d/tuxbox-links.sh
+	echo "mkdir -p /var/tuxbox/config" >> ${D}/etc/init.d/tuxbox-links.sh
+	echo "ln -s /etc/enigma /var/tuxbox/config/" >> ${D}/etc/init.d/tuxbox-links.sh
+
+	cat <<EOF >> ${D}/etc/init.d/tuxbox-hdd.sh
+# sleep after 10min
+hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+# accustic management
+hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+EOF
+
+	chmod a+x ${D}/etc/init.d/tuxbox-links.sh
+	ln -sf ../init.d/tuxbox-links.sh ${D}/etc/rcS.d/S38tuxbox-links.sh
+	chmod a+x ${D}/etc/init.d/tuxbox-hdd.sh
+	ln -sf ../init.d/tuxbox-hdd.sh ${D}/etc/rcS.d/S38tuxbox-hdd.sh
+	ln -sf /etc/tuxbox/timezone.xml ${D}/etc/
+
+	install -d ${D}/usr/share/tuxbox
+
+	ln -sf /usr/share ${D}/share
+
+	for i in satellites.xml cables.xml terrestrial.xml; do
+		ln -sf /etc/tuxbox/$i ${D}/etc/;
+		ln -sf /etc/tuxbox/$i ${D}/usr/share/;
+		ln -sf /etc/tuxbox/$i ${D}/usr/share/tuxbox/;
+	done;
+}

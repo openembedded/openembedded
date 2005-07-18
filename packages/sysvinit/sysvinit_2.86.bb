@@ -72,7 +72,7 @@ do_install () {
 # Format:
 #  <id>:<runlevels>:<action>:<process>
 #
-1:2345:respawn:${base_sbindir}/getty 38400 tty1
+#1:2345:respawn:${base_sbindir}/getty 38400 tty1
 # 2:23:respawn:${base_sbindir}/getty 38400 tty2
 # 3:23:respawn:${base_sbindir}/getty 38400 tty3
 # 4:23:respawn:${base_sbindir}/getty 38400 tty4
@@ -90,4 +90,11 @@ EOF
 		ln -s ../init.d/stop-bootlogd ${D}${sysconfdir}/rc$level.d/S99stop-bootlogd
 	done
 	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.sysvinit
+}
+
+do_install_append_opendreambox () {
+	cat <<EOF >>${D}/etc/inittab
+# enigma
+gui:2:respawn:/usr/bin/enigma.sh
+EOF
 }

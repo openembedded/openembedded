@@ -576,9 +576,10 @@ python package_do_split_locales() {
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 
-	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
-	rdep.append('%s-locale*' % pn)
-	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
+# we don't want to RDEPEND any package on created locales.
+#	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
+#	rdep.append('%s-locale*' % pn)
+#	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
 PACKAGEFUNCS = "do_install package_do_split_locales \
