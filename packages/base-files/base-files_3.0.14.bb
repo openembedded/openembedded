@@ -129,8 +129,7 @@ do_install_append_openslug() {
 }
 
 do_install_append_opendreambox() {
-	rm ${D}/${sysconfdir}/resolv.conf
-	touch ${D}/${sysconfdir}/resolv.conf
+	> ${D}/${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt
 	ln -s /media/hdd ${D}/hdd
 	ln -s /media ${D}/mnt
