@@ -90,6 +90,18 @@ setup-optware-developer:
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
 
+.PHONY: setup-slugimage-developer
+setup-slugimage-developer:
+	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co slugimage
+
+.PHONY: setup-upslug-developer
+setup-upslug-developer:
+	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co upslug
+
+.PHONY: setup-sluggo-developer
+setup-sluggo-developer:
+	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co sluggo
+
 .PHONY: update-master
 update-master: MT/revision
 	monotone pull
