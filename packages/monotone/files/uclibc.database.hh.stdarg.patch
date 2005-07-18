@@ -1,0 +1,10 @@
+--- monotone-0.21/database.hh.orig	2005-07-17 19:59:00.312846093 -0700
++++ monotone-0.21/database.hh	2005-07-17 19:59:56.259365537 -0700
+@@ -14,6 +14,7 @@
+ #include <set>
+ #include <map>
+ #include <string>
++#include <stdarg.h>
+ 
+ #include <boost/filesystem/path.hpp>
+ 
