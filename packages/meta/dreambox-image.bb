@@ -5,7 +5,8 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	base-passwd enigma ncurses joe mc tuxbox-common vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  dreambox-dvb-tools \
 	dreambox-dccamd tuxbox-stream dreambox-keymaps tuxbox-image-info dvbsnoop \
-	ipkgpl dreamdata"
+	ipkgpl dreamdata \
+	dreambox-compat"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs tuxbox-plugins links-dream enigma-modem \
 			ppp module-init-tools modutils-initscripts"
