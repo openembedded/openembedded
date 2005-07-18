@@ -209,10 +209,13 @@ ifup(){
 	# is not left running so this will only work for
 	# the lease length time!
 	ifconfig "$iface" up
-	test -n "$hostname" && HOSTNAME="-H $hostname"
-	# The script writes the required shell variable assignments
-	# to file descriptor 9
-	eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)
+	if test "$(config boot)" != static
+	then
+		test -n "$hostname" && HOSTNAME="-H $hostname"
+		# The script writes the required shell variable assignments
+		# to file descriptor 9
+		eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)
+	fi
 
 	test -n "$broadcast" && BROADCAST="broadcast $broadcast"
 	test -n "$subnet" && NETMASK="netmask $subnet"
