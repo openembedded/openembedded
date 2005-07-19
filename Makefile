@@ -102,6 +102,10 @@ setup-upslug-developer:
 setup-sluggo-developer:
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co sluggo
 
+.PHONY: setup-apex-developer
+setup-apex-developer:
+	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
+
 .PHONY: update-master
 update-master: MT/revision
 	monotone pull
