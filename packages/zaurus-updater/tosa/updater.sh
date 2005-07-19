@@ -67,7 +67,7 @@ then
 	./consolescroll
 fi
 
-for TARGETFILE in zImage zimage ZIMAGE initrd.bin INITRD.BIN mversion.bin MVERSION.BIN
+for TARGETFILE in zImage zimage.bin ZIMAGE initrd.bin INITRD.BIN mversion.bin MVERSION.BIN
 do
 	if [ -e $TARGETFILE ]
 	then
@@ -78,8 +78,8 @@ do
 		#echo $TARGETFILE':'$DATASIZE'bytes'
 		TARGETTYPE=Invalid
 		case "$TARGETFILE" in
-##		zImage) TARGETTYPE=Kernel;;
-		zimage) TARGETTYPE=Kernel;;
+		zImage) TARGETTYPE=Kernel;;
+		zimage.bin) TARGETTYPE=Kernel;;
 		ZIMAGE) TARGETTYPE=Kernel;;
 		initrd.bin) TARGETTYPE=RoFs;;
 		INITRD.BIN) TARGETTYPE=RoFs;;
