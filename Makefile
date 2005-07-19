@@ -38,10 +38,6 @@ openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf
 optware build-optware: optware/Makefile
 	( cd optware ; make )
 
-.PHONY: apex build-apex
-apex build-apex: apex/Makefile
-	( cd apex ; make nslu2_config ; make oldconfig ; make CROSS_COMPILE=../openslug/tmp/cross/bin/armeb-linux- )
-
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
