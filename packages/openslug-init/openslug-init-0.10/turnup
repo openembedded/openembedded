@@ -4,10 +4,13 @@
 #
 . /etc/default/functions
 
+#
+# configuration
+#  The following variables control which directories in /var end up on the rootfs
+#  and which end up in a temporary file system.
 INRAM_MEMSTICK="/var/cache /var/lock /var/log /var/run /var/tmp /var/lib/ipkg"
-INRAM_NFS="/var/cache /var/run"
+INRAM_NFS="/var/cache /var/lock /var/run /var/tmp"
 INRAM_DISK=""
-
 #
 # force: override certain checks
 force=
@@ -59,6 +62,23 @@ fsoptions() {
 	else
 		echo defaults
 	fi
+}
+#
+# get_flash <directory> {mount options}
+#  mount the flash device, writeable, on the given directory
+get_flash() {
+	local ffsdir ffsdev
+
+	ffsdir="$1"
+	shift
+	test -n "$ffsdir" -a -d "$ffsdir" || {
+		echo "$0: $ffsdir: internal error, flash mount point not a directory" >&2
+		return 1
+	}
+
+	ffsdev="$(mtblockdev Flashdisk)"
+	umountflash "$ffsdev" &&
+	mountflash "$ffsdev" "$ffsdir" "$@"
 }
 #
 # check_rootfs [-i] <root fs directory>
@@ -425,7 +445,7 @@ disk() {
 	}
 
 	# make sure we can get to the flash file system first
-	mountflash "$ffs" || {
+	get_flash "$ffs" || {
 		rmdir "$new" "$ffs"
 		return 1
 	}
@@ -509,7 +529,7 @@ boot_reset() {
 		return 1
 	}
 
-	mountflash "$ffs" || {
+	get_flash "$ffs" || {
 		rmdir "$ffs"
 		return 1
 	}
@@ -558,7 +578,7 @@ nfs() {
 	}
 
 	# make sure we can get to the flash file system first
-	mountflash "$ffs" || {
+	get_flash "$ffs" || {
 		rmdir "$new" "$ffs"
 		return 1
 	}
@@ -670,7 +690,7 @@ fix_hw_addr() {
 		# this isn't the flash device
 		ffs="/tmp/flashdisk.$$"
 		# make sure we can get to the flash file system first
-		mountflash "$ffs" || {
+		get_flash "$ffs" || {
 			rmdir "$ffs"
 			return 1
 		}

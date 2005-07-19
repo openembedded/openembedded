@@ -211,10 +211,12 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
-# To specify the console set KERNEL_CONSOLE in the .bb
-# file.  The default is currently set in machine/nslu2.conf
+# To specify the console set KERNEL_CONSOLE in the .bb file.
+# CMDLINE_ROOT contains the boot options
 CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s"
-CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
+# Add distro specific debug (or non-debug) options to this
+CMDLINE_DEBUG ?= ""
+CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
 # required.  Notice that this has to be done for each separately built
