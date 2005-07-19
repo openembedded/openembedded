@@ -213,59 +213,15 @@ then
 		exit 1
 	}
 fi
-#
-# find the device number of the flash partition then make sure it isn't
-# mounted anywhere.
-if test -n "$ffsdev"
-then
-	ffsno="$(devio "<<$ffsdev" prd)"
-	test -n "$ffsno" -a "$ffsno" -ge 0 || {
-		echo "reflash: $ffsdev: device number $ffsno is not valid, cannot continue." >&2
-		exit 1
-	}
-	#
-	# Make sure that Flashdisk isn't mounted on /
-	if test "$(devio "<</etc/init.d/sysconfsetup" prd)" -eq "$ffsno"
-	then
-		echo "reflash: $ffsdev is mounted on /, use turnup ram to reflash" >&2
-		exit 1
-	fi
-fi
+
 #
 # INPUTS OK, ENVIRONMENT OK, UMOUNT ANY EXISTING MOUNT OF THE FLASHDISK
 # ---------------------------------------------------------------------
 # This is only required if the device is going to be used
 if test -n "$ffsdev"
 then
-	echo "reflash: umounting any existing mount of $ffsdev" >&2
-	#
-	# check each mount point, do this last first because otherwise nested
-	# mounts of ffsdev cannot be umounted.
-	ffs_umount() {
-		local device mp type options stuff
-
-		read device mp type options stuff
-		test -z "$device" && return 0
-
-		# handle following entries first
-		ffs_umount || return 1
-
-		# handle this entry
-		case "$type" in
-		jffs2)	test "$(devio "<<$mp/etc/init.d/sysconfsetup" prd)" -ne "$ffsno" ||
-			umount "$mp" || {
-				echo "reflash: $mp: unable to umount $ffsdev" >&2
-				return 1
-			};;
-		esac
-
-		return 0
-	}
-	#
-	ffs_umount </proc/mounts || {
-		echo "reflash: umount $ffsdev from all mount points then re-run reflash" >&2
-		exit 1
-	}
+	# -r causes this to fail if the flash device is mounted on /
+	umountflash -r "$ffsdev" || exit 1
 	#
 	# Everything is umounted, now remount on a temporary directory.
 	ffsdir="/tmp/flashdisk.$$"
@@ -274,7 +230,7 @@ then
 		exit 1
 	}
 	#
-	mountflash "$ffsdir" -o ro || {
+	mountflash "$ffsdev" "$ffsdir" -o ro || {
 		rmdir "$ffsdir"
 		exit 1
 	}
@@ -471,7 +427,7 @@ echo "reflash: restoring saved configuration files" >&2
 # /etc/rcS.d/S99finish on first boot (if it does not exist).  We need
 # a timestamp earlier than any files we create so touch it here, this
 # also acts as a test on the mounted file system
-mountflash "$ffsdir" && :>"$ffsdir/etc/.configured" || {
+mountflash "$ffsdev" "$ffsdir" && :>"$ffsdir/etc/.configured" || {
 	rmdir "$ffsdir"
 	echo "reflash: mount of new flash root file system failed" >&2
 	if test -d "$ffsdir/etc"
