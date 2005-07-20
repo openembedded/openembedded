@@ -1,13 +1,12 @@
 LICENSE = "MIT"
 DEPENDS = "xsp tslib-maemo xproto xdmcp xextensions xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext recordext"
-RDEPENDS = "libts-0.0-0"
 PROVIDES = "virtual/xserver"
 PACKAGES = "${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-omap = "X server from freedesktop.org with patches from maemo.org, supporting X on OMAP based devices"
 
-PR = "r1"
+PR = "r2"
 
 FILES_${PN} = "${bindir}/Xomap"
 
