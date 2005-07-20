@@ -1,9 +1,4 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- mozilla/nsprpub/config/rules.mk~host_ldflags_fix.patch
+--- mozilla/nsprpub/config/rules.mk.old
 +++ mozilla/nsprpub/config/rules.mk
 @@ -87,6 +87,9 @@
  CCC=$(HOST_CXX)
@@ -15,12 +10,12 @@
  endif
  endif
  endif
---- mozilla/configure.in~host_ldflags_fix.patch
+--- mozilla/configure.in.old
 +++ mozilla/configure.in
-@@ -5496,12 +5496,17 @@
+@@ -6098,12 +6098,17 @@
  
  if test -n "$CROSS_COMPILE"; then
-     if test -z "$HOST_LIBIDL_CONFIG"; then
+      if test -z "$HOST_LIBIDL_CONFIG"; then
 +        AC_MSG_WARN([HOST_LIBIDL_CONFIG not defined])
          HOST_LIBIDL_CONFIG="$LIBIDL_CONFIG"
      fi
@@ -35,12 +30,12 @@
          HOST_LIBIDL_CFLAGS="$LIBIDL_CFLAGS"
          HOST_LIBIDL_LIBS="$LIBIDL_LIBS"
      fi
---- mozilla/configure~host_ldflags_fix.patch
+--- mozilla/configure.old
 +++ mozilla/configure
-@@ -16289,11 +16289,18 @@
+@@ -17604,11 +17604,18 @@
  
  if test -n "$CROSS_COMPILE"; then
-     if test -z "$HOST_LIBIDL_CONFIG"; then
+      if test -z "$HOST_LIBIDL_CONFIG"; then
 +        echo "HOST_LIBIDL_CONFIG nto defined"
          HOST_LIBIDL_CONFIG="$LIBIDL_CONFIG"
      fi
