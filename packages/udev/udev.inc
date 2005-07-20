@@ -12,6 +12,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "udev"
 INITSCRIPT_PARAMS = "start 04 S ."
 
+export CROSS = "${TARGET_PREFIX}"
 export HOSTCC = "${BUILD_CC}"
 export udevdir ?= "/dev"
 export usrbindir := "${bindir}"
@@ -21,7 +22,7 @@ LD = "${CC}"
 bindir = "/bin"
 sbindir = "/sbin"
 
-UDEV_EXTRAS = "extras/scsi_id/ extras/volume_id/"
+UDEV_EXTRAS = "<override me>"
 FILES_${PN} += "${usrbindir} ${usrsbindir}"
 EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
@@ -39,4 +40,3 @@ do_install () {
 	install -d ${D}${sysconfdir}/udev/rules.d/
 	install -m 0644 ${S}/etc/udev/debian/permissions.rules ${D}${sysconfdir}/udev/rules.d/
 }
-
