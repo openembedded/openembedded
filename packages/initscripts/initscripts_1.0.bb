@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r48"
+PR = "r49"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -33,12 +33,14 @@ SRC_URI = "file://halt \
 	   file://populate-volatile.sh \
 	   file://volatiles \
            file://corgikeymap-2.6.map \
-           file://tosakeymap-2.6.map"
+           file://tosakeymap-2.6.map \
+	   file://akitakeymap.map"
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
 SRC_URI_append_c7x0 =    " file://keymap"
 SRC_URI_append_tosa =    " file://keymap"
+SRC_URI_append_akita =    " file://keymap"
 
 def read_kernel_version(d):
 	import bb
@@ -107,6 +109,12 @@ do_install () {
 
 	if [ "${MACHINE}" == "tosa" ]; then
 		install -m 0755    ${WORKDIR}/tosakeymap-2.6.map		${D}${sysconfdir}
+		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
+		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
+	fi
+
+	if [ "${MACHINE}" == "akita" ]; then
+		install -m 0644    ${WORKDIR}/akitakeymap.map			${D}${sysconfdir}
 		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
 		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
 	fi
