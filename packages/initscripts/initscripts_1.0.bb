@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r50"
+PR = "r51"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -32,11 +32,14 @@ SRC_URI = "file://halt \
            file://device_table.txt \
            file://populate-volatile.sh \
            file://volatiles \
-           file://keymap \
-           file://keymap*.map"
+           file://keymap"
 
-SRC_URI_append_arm = " file://alignment.sh"
-SRC_URI_append_openzaurus = " file://checkversion"
+SRC_URI_append_arm          = " file://alignment.sh"
+SRC_URI_append_openzaurus   = " file://checkversion"
+SRC_URI_append_c7x0         = " file://keymap-*.map"
+SRC_URI_append_tosa         = " file://keymap-*.map"
+SRC_URI_append_akita        = " file://keymap-*.map"
+SRC_URI_append_spitz        = " file://keymap-*.map"
 
 def read_kernel_version(d):
 	import bb
@@ -93,14 +96,23 @@ do_install () {
 
 	if [ "${DISTRO}" == "openzaurus" ]; then
 		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}${sysconfdir}/init.d/checkversion
-        	chmod 0755 				${D}${sysconfdir}/init.d/checkversion
-		ln -sf          ../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
+		chmod 0755	${D}${sysconfdir}/init.d/checkversion
+		ln -sf		../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
 	fi
+
+    case ${MACHINE} in
+        c7x0 | tosa | spitz | akita )
+			install -m 0755 ${WORKDIR}/keymap		${D}${sysconfdir}/init.d
+			ln -sf	../init.d/keymap	${D}${sysconfdir}/rcS.d/S00keymap
+			install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
+			;;
+        *)
+			;;
+    esac
 
 	install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
 	install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
 	install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
-	install -m 0755 ${WORKDIR}/keymap	${D}${sysconfdir}/init.d/keymap
 #
 # Create runlevel links
 #
@@ -119,7 +131,6 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
-	ln -sf		../init.d/keymap	${D}${sysconfdir}/rcS.d/S00keymap
 	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S02banner
 	ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}${sysconfdir}/rcS.d/S30checkfs.sh
@@ -139,5 +150,4 @@ do_install () {
 	fi
 
 	install -m 0755		${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
-	install -m 0644		${WORKDIR}/keymap*.map			${D}${sysconfdir}
 }
