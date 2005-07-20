@@ -19,9 +19,11 @@ CFLAGS_append = " -D_REENTRANT"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"
 
 do_compile () {
-	${BUILD_CC} -DLINK_SIZE=2 -I${S}/include -c dftables.c
-	${BUILD_CC} dftables.o -o dftables
-	oe_runmake
+	# The generation of dftables can lead to timestamp problems with ccache
+	# because the generated config.h seems newer.  It is sufficient to ensure that the
+	# attempt to build dftables inside make will actually work (foo_FOR_BUILD is
+	# only used for this).
+	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC}"
 }
 
 do_stage () {

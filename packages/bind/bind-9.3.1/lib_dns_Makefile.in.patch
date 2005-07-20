@@ -5,7 +5,7 @@
  
  gen: gen.c
 -	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
-+	cc ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
++	${BUILD_CC} ${EXT_CFLAGS} ${BUILD_CFLAGS} ${ALL_CPPFLAGS} ${BUILD_LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
  
  rbtdb64.@O@: rbtdb.c
  

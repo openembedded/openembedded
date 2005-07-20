@@ -17,11 +17,11 @@ GPE_EXTRA_THEMES = "gtk-theme-industrial matchbox-themes-extra-industrial"
 
 #GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
 #GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
-GPE_EXTRA_DEPENDS_bigscreen = "minimo figment"
-GPE_EXTRA_INSTALL_bigscreen = "minimo figment gpe-task-games ${GPE_EXTRA_THEMES}"
+GPE_EXTRA_DEPENDS_bigscreen = "figment"
+GPE_EXTRA_INSTALL_bigscreen = " figment gpe-task-games ${GPE_EXTRA_THEMES}"
 
-GPE_EXTRA_DEPENDS_smallscreen = "minimo figment linphone-hh"
-GPE_EXTRA_INSTALL_smallscreen = "minimo figment linphone-hh gpe-task-games ${GPE_EXTRA_THEMES}"
+GPE_EXTRA_DEPENDS_smallscreen = "gpe-mini-browser figment linphone-hh"
+GPE_EXTRA_INSTALL_smallscreen = "gpe-mini-browser figment linphone-hh gpe-task-games ${GPE_EXTRA_THEMES}"
 
 #h3900 has 32mb of *useable* flash
 #GPE_EXTRA_DEPENDS_append_h3900 = " vlc-gpe "
