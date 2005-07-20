@@ -1,7 +1,7 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 LICENSE = "GPL"
 PR = "r0"
 
