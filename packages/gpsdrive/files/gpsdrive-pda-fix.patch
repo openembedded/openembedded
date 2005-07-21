@@ -1,5 +1,5 @@
---- src/gpsdrive.c	2005-07-22 23:17:36.452918848 +0200
-+++ src/gpsdrive.c	2005-07-23 01:02:40.482560672 +0200
+--- gpsdrive/src/gpsdrive.c	2005-07-22 23:17:36.452918848 +0200
++++ gpsdrive/src/gpsdrive.c	2005-07-23 01:02:40.482560672 +0200
 @@ -10516,7 +10516,7 @@
  			PangoFontDescription *font_desc;
  			font_desc =
