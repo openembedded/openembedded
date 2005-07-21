@@ -1,9 +1,9 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
-DEPENDS = "gtk+ gpgme gnutls"
+DEPENDS = "gtk+ gpgme gnutls openssl"
 MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.0beta/sylpheed-2.0.0beta6.tar.bz2 \
 	file://sylpheed-gnutls_2.0.0beta6.patch;patch=1"
