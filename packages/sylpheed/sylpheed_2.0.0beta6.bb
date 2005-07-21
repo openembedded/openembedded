@@ -3,8 +3,7 @@ DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
 MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 LICENSE = "GPL"
-PR = "r3"
-DEFAULT_PREFERENCE = "-1"
+PR = "r2"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.0beta/sylpheed-2.0.0beta6.tar.bz2 \
 	file://sylpheed-gnutls_2.0.0beta6.patch;patch=1 \
