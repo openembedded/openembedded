@@ -187,7 +187,7 @@ oe_libinstall() {
 		__runcmd install -m 0644 $dota $destpath/
 	fi
 	dotlai=$libname.lai
-	if [ -f "$dotlai" -o -n "$libtool" ]; then
+	if [ -f "$dotlai" -a -n "$libtool" ]; then
 		__runcmd install -m 0644 $dotlai $destpath/$libname.la
 	fi
 
