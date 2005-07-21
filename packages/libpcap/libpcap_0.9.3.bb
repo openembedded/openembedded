@@ -2,7 +2,7 @@ DESCRIPTION = "Network Packet Capture Library"
 HOMEPAGE = "http://www.tcpdump.org/"
 LICENSE = "BSD"
 SECTION = "libs/network"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz \
            file://shared.patch;patch=1"
@@ -28,5 +28,4 @@ do_stage () {
 	oe_libinstall -a -so libpcap ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/net
 	ln -sf ${STAGING_INCDIR}/pcap-bpf.h ${STAGING_INCDIR}/net/bpf.h
-	install -m 0644 acinclude.m4 ${STAGING_DATADIR}/aclocal/libpcap.m4
 }
