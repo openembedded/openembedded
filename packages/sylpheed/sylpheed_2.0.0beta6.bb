@@ -1,13 +1,12 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
-MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.0beta/sylpheed-2.0.0beta6.tar.bz2 \
-	file://sylpheed-gnutls_2.0.0beta6.patch;patch=1 \
-	file://sylpheed-gnutls-extra.patch;patch=1 "
+	file://sylpheed-gnutls_2.0.0beta6.patch;patch=1"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN}-doc += "${datadir}"

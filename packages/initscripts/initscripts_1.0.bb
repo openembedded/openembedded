@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r48"
+PR = "r47"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,8 +30,6 @@ SRC_URI = "file://halt \
            file://umountnfs.sh \
            file://sysfs.sh \
            file://device_table.txt \
-	   file://populate-volatile.sh \
-	   file://volatiles \
            file://corgikeymap-2.6.map \
            file://tosakeymap-2.6.map"
 
@@ -84,8 +82,6 @@ do_install () {
 	install -m 0755    ${WORKDIR}/devpts.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/devpts		${D}${sysconfdir}/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/populate-volatile.sh ${D}${sysconfdir}/init.d
-	install -m 0644    ${WORKDIR}/volatiles		${D}${sysconfdir}/default
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
 	fi
@@ -144,7 +140,6 @@ do_install () {
 	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
-	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
 	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S06alignment
