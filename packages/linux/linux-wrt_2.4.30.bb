@@ -1,15 +1,14 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys WRT54 devices"
 HOMEPAGE = "http://openwrt.org"
+DEPENDS = "lzma-native"
 LICENSE = "GPL"
 PR = "r2"
 
-DEPENDS = "lzma-native"
-
 SRC_URI = "http://www.fi.kernel.org/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2 \
 	cvs://anonymous@openwrt.org/openwrt;module=openwrt/package/linux/kernel-source;tag=TESTED \
-	http://downloads.openwrt.org/kernel-binary-wl-0.2.tar.gz \
-	http://downloads.openwrt.org/kernel-source-et-0.6.tar.gz \
+	http://downloads.openwrt.org/sources/kernel-binary-wl-0.2.tar.gz \
+	http://downloads.openwrt.org/sources/kernel-source-et-0.6.tar.gz \
 	file://000-linux-mips-2_4_30.patch;patch=1 \
 	file://001-Makefile;patch=1 \
 	file://002-Rules_make;patch=1 \

@@ -1,6 +1,6 @@
 SECTION = "base"
 include modutils_${PV}.bb
-PR = "r5"
+PR = "r6"
 inherit cross
 S = "${WORKDIR}/modutils-${PV}"
 DEPENDS = ""
