@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r37"
+PR = "r38"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -126,6 +126,7 @@ do_install_append_openslug() {
 	rm -r ${D}/mnt/*
 	rmdir ${D}/home/root
 	install -m 0755 -d ${D}/root
+	ln -s ../root ${D}/home/root
 }
 
 PACKAGES = "${PN}-doc ${PN}"

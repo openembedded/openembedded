@@ -2,7 +2,7 @@ LICENSE = "LGPL"
 DESCRIPTION = "GPE program launcher library"
 SECTION = "libs"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "gtk+ startup-notification"
+DEPENDS = "gtk+ libgpewidget startup-notification"
 
 inherit autotools pkgconfig
 

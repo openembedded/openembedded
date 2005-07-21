@@ -1,14 +1,15 @@
-SECTION = "console/utils"
-HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
-DESCRIPTION = "festival light speech synthesizer"
+DESCRIPTION = "flite - the festival light speech synthesizer"
 PRIORITY = "optional"
+HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
+SECTION = "console/utils"
 LICENSE = "flite"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r1"
+MAINTAINER = "Patrick Ohly <Patrick.Ohly@gmx.de>"
+PR = "r2"
 
 PARALLEL_MAKE = ""
 
 SRC_URI = "http://www.speech.cs.cmu.edu/flite/packed/flite-${PV}/flite-${PV}-release.tar.bz2 \
+           file://configure-with-audio.patch;patch=1 \
            file://fix-read-only-assignments.patch;patch=1"
 S = "${WORKDIR}/flite-${PV}-release"
 

@@ -16,6 +16,7 @@ INITSCRIPT_NAME = "samba"
 # level, later levels put the shutdown later too - see the links
 # in rc6.d, the shutdown must precede network shutdown).
 INITSCRIPT_PARAMS = "defaults"
+#CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
 
 # The file system settings --foodir=dirfoo and overridden unconditionally
 # in the samba config by --with-foodir=dirfoo - even if the --with is not
@@ -39,7 +40,7 @@ do_install_append() {
 	install -d "${D}${sysconfdir}/init.d"
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
 	install -d "${D}${sysconfdir}/samba"
-	install -c -m 644 ../examples/smb.conf.default ${D}${sysconfdir}/samba/smb.conf.default
+	install -c -m 644 ../examples/smb.conf.default ${D}${sysconfdir}/samba/smb.conf
 }
 
 PACKAGES =+ "swat"

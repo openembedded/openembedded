@@ -209,10 +209,13 @@ ifup(){
 	# is not left running so this will only work for
 	# the lease length time!
 	ifconfig "$iface" up
-	test -n "$hostname" && HOSTNAME="-H $hostname"
-	# The script writes the required shell variable assignments
-	# to file descriptor 9
-	eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)
+	if test "$(config boot)" != static
+	then
+		test -n "$hostname" && HOSTNAME="-H $hostname"
+		# The script writes the required shell variable assignments
+		# to file descriptor 9
+		eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)
+	fi
 
 	test -n "$broadcast" && BROADCAST="broadcast $broadcast"
 	test -n "$subnet" && NETMASK="netmask $subnet"
@@ -236,10 +239,17 @@ ifdown(){
 	ifconfig "$1" down
 }
 #
-# mountflash "flash root directory" {mount options}
+# mountflash "flash device" "flash root directory" {mount options}
 #  Finds and mounts the flash file system on the given directory
 mountflash() {
 	local ffsdev ffsdir
+
+	ffsdev="$1"
+	test -n "$ffsdev" -a -b "$ffsdev" || {
+		echo "$0: unable to find flash file system to copy ($ffsdev)" >&2
+		return 1
+	}
+	shift
 
 	ffsdir="$1"
 	test -n "$ffsdir" -a -d "$ffsdir" || {
@@ -248,14 +258,71 @@ mountflash() {
 	}
 	shift
 
-	ffsdev="$(mtblockdev Flashdisk)"
-	test -n "$ffsdev" -a -b "$ffsdev" || {
-		echo "$0: unable to find flash file system to copy ($ffsdev)" >&2
-		return 1
-	}
 	mount -t jffs2 "$@" "$ffsdev" "$ffsdir" || {
 		echo "$0: $ffsdev: unable to mount flash file system on $ffsdir" >&2
 		return 1
 	}
+	return 0
+}
+#
+# umountflash [-r] "flash device"
+#  unmount any instance of the given flash device, if -r is specified a mount on
+#  root is an error, otherwise a mount on root is ignored (and remains).
+umountflash() {
+	local rootok ffsno ffsdev
+	rootok=1
+	case "$1" in
+	-r)	rootok=
+		shift;;
+	esac
+	#
+	# The argument is ffsdev
+	ffsdev="$1"
+	ffsno="$(devio "<<$ffsdev" prd)"
+	test -n "$ffsno" -a "$ffsno" -ge 0 || {
+		echo "$0: $ffsdev: device number $ffsno is not valid, cannot continue." >&2
+		return 1
+	}
+	#
+	# Make sure that Flashdisk isn't mounted on /
+	if test -z "$rootok" -a "$(devio "<</etc/init.d/sysconfsetup" prd)" -eq "$ffsno"
+	then
+		echo "$0: $ffsdev is mounted on /, use turnup ram" >&2
+		return 1
+	fi
+	#
+	# The function is currently always used interactively, so output 
+	echo "$0: umounting any existing mount of $ffsdev" >&2
+	#
+	# check each mount point, do this last first because otherwise nested
+	# mounts of ffsdev cannot be umounted.
+	ffs_umount() {
+		local device mp type options stuff
+
+		read device mp type options stuff
+		test -z "$device" && return 0
+
+		# handle following entries first
+		ffs_umount || return 1
+
+		# handle this entry, since this is currently only used for unmounting
+		# the flash root partition we know a file which must exist...
+		case "$mp/$type" in
+		//jffs2);; # skip /
+		*/jffs2)test "$(devio "<<$mp/etc/init.d/sysconfsetup" prd 2>/dev/null)" -ne "$ffsno" ||
+			umount "$mp" || {
+				echo "$0: $mp: unable to umount $ffsdev" >&2
+				return 1
+			};;
+		esac
+
+		return 0
+	}
+	#
+	ffs_umount </proc/mounts || {
+		echo "$0: umount $ffsdev from all mount points then re-run reflash" >&2
+		return 1
+	}
+
 	return 0
 }

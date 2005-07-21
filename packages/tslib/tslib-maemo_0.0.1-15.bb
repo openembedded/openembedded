@@ -1,7 +1,8 @@
+DEFAULT_PREFERENCE = "-1"
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library (maemo patched version)."
 PR = "r1"
-PROVIDES = "virtual/tslib"
+PROVIDES = "tslib"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -36,6 +37,12 @@ do_install_append() {
 }
 
 RDEPENDS_libts-maemo = "tslib-maemo-conf"
+
+RPROVIDES_tslib-maemo-conf = "tslib-conf"
+RPROVIDES_libts-maemo = "libts"
+RPROVIDES_libts-maemo-dev = "libts-dev"
+RPROVIDES_tslib-maemo-calibrate = "tslib-calibrate"
+RPROVIDES_tslib-maemo-tests = "tslib-tests"
 
 FILES_tslib-maemo-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh ${datadir}/tslib"
 FILES_libts-maemo = "${libdir}/*.so.* ${datadir}/ts/plugins/*.so*"
