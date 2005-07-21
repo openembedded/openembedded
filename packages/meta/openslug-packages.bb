@@ -114,4 +114,5 @@ BROKEN_PACKAGES = "\
 DEPENDS = 'openslug-image \
 	${OPENSLUG_PACKAGES} \
 	${OPENSLUG_DEVELOPMENT} \
+	openslug-native \
 	package-index'
