@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r49"
+PR = "r47"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,17 +30,13 @@ SRC_URI = "file://halt \
            file://umountnfs.sh \
            file://sysfs.sh \
            file://device_table.txt \
-	   file://populate-volatile.sh \
-	   file://volatiles \
            file://corgikeymap-2.6.map \
-           file://tosakeymap-2.6.map \
-	   file://akitakeymap.map"
+           file://tosakeymap-2.6.map"
 
 SRC_URI_append_arm = " file://alignment.sh"
 SRC_URI_append_openzaurus = " file://checkversion"
 SRC_URI_append_c7x0 =    " file://keymap"
 SRC_URI_append_tosa =    " file://keymap"
-SRC_URI_append_akita =    " file://keymap"
 
 def read_kernel_version(d):
 	import bb
@@ -86,8 +82,6 @@ do_install () {
 	install -m 0755    ${WORKDIR}/devpts.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/devpts		${D}${sysconfdir}/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/populate-volatile.sh ${D}${sysconfdir}/init.d
-	install -m 0644    ${WORKDIR}/volatiles		${D}${sysconfdir}/default
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
 	fi
@@ -109,12 +103,6 @@ do_install () {
 
 	if [ "${MACHINE}" == "tosa" ]; then
 		install -m 0755    ${WORKDIR}/tosakeymap-2.6.map		${D}${sysconfdir}
-		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
-		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
-	fi
-
-	if [ "${MACHINE}" == "akita" ]; then
-		install -m 0644    ${WORKDIR}/akitakeymap.map			${D}${sysconfdir}
 		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
 		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
 	fi
@@ -152,7 +140,6 @@ do_install () {
 	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
-	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
 	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S06alignment
