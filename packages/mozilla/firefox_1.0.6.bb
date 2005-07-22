@@ -8,6 +8,8 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 
 S = "${WORKDIR}/mozilla"
 
+EXCLUDE_FROM_SHLIBS = "1"
+
 inherit mozilla
 
 include firefox.inc
