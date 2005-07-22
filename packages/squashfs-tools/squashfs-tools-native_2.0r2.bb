@@ -1,4 +1,4 @@
-include ${PN_BASE}_${PV}.bb
+include squashfs-tools_${PV}.bb
 
 DEPENDS = "lzma-native"
 PN_BASE = "squashfs-tools"
