@@ -5,9 +5,6 @@
 SVN_USER ?= ${USER}
 CVS_USER ?= ${USER}
 
-# Fetch this revision of BitBake. Unset this to fetch bleeding edge.
-BITBAKE_REVISION = -r 269
-
 .PHONY: all
 all: update build
 
@@ -61,7 +58,8 @@ setup-master: setup-monotone unslung/Makefile openslug/Makefile
 
 .PHONY: setup-bitbake
 setup-bitbake bitbake/bin/bitbake:
-	[ -e bitbake/bin/bitbake ] || ( svn co ${BITBAKE_REVISION} svn://svn.berlios.de/bitbake/trunk/bitbake )
+	${MAKE} MT/revision
+	[ -e bitbake/bin/bitbake ] || monotone co -b org.nslu2-linux.bitbake bitbake
 
 .PHONY: setup-openembedded
 setup-openembedded openembedded/conf/machine/nslu2.conf:
@@ -113,6 +111,9 @@ setup-apex-developer:
 .PHONY: update-master
 update-master: MT/revision
 	monotone pull
+	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.nslu2-linux.dev ; \
+	fi
 	monotone update
 	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.nslu2-linux.dev ; \
@@ -120,7 +121,14 @@ update-master: MT/revision
 
 .PHONY: update-bitbake
 update-bitbake: bitbake/bin/bitbake
-	( cd bitbake ; svn ${BITBAKE_REVISION} update )
+	monotone pull
+	if [ `monotone automate heads org.nslu2-linux.bitbake | wc -l` != "1" ] ; then \
+	  monotone merge -b org.nslu2-linux.bitbake ; \
+	fi
+	( cd bitbake ; monotone update )
+	if [ `monotone automate heads org.nslu2-linux.bitbake | wc -l` != "1" ] ; then \
+	  monotone merge -b org.nslu2-linux.bitbake ; \
+	fi
 
 .PHONY: update-openembedded
 update-openembedded: openembedded/conf/machine/nslu2.conf
@@ -129,6 +137,9 @@ update-openembedded: openembedded/conf/machine/nslu2.conf
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
 	( cd openembedded ; monotone update )
+	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.nslu2-linux ; \
+	fi
 
 .PHONY: update-oe-symlinks
 update-oe-symlinks: oe-symlinks/packages
