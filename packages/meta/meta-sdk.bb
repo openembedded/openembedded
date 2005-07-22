@@ -1,7 +1,7 @@
-PR = "r3"
-
+PR      = "r4"
+LICENSE = MIT
 DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
-DEPENDS += "libidl libsvg-cairo"
+DEPENDS += "libidl libsvg-cairo sed-native"
 
 PACKAGES = ""
 
@@ -153,6 +153,18 @@ EOF
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
 
+	# remove broken .la files
+	rm ${SDK_OUTPUT}/${prefix}/arm-linux/lib/*.la
+
+	# fix pkgconfig data files
+	cd ${SDK_OUTPUT}/${prefix}/arm-linux/lib/pkgconfig
+	for f in *.pc ; do
+		sed -i 's%=/usr%=${prefix}/arm-linux%g' "$f"
+	done
+	for f in *.pc ; do
+		sed -i 's%${STAGING_DIR}%/usr/local/arm/oe%g' "$f"
+	done
+
         mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
 	fakeroot tar cfj ${SDK_DEPLOY}/oe-sdk-$(date +"%Y%m%d%H%M%S").tar.bz2 .
@@ -160,4 +172,3 @@ EOF
 
 do_populate_sdk[nostamp] = 1
 addtask populate_sdk before do_build after do_install
-LICENSE = MIT
