@@ -1,6 +1,7 @@
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
+DEPENDS += "libidl libsvg-cairo"
 
 PACKAGES = ""
 
@@ -19,7 +20,7 @@ compositeext-dev \
 damageext-dev \
 dbus-dev \
 fixesext-dev \
-gconf-dev \
+gconf-dbus-dev \
 gtk+-dev \
 gtk-engines-dev \
 libapm-dev \
@@ -86,17 +87,15 @@ libxtst-dev \
 libz-dev \
 matchbox-desktop-dev \
 ncurses-dev \
-orbit2-dev \
 pango-dev \
 randrext-dev \
 recordext-dev \
 renderext-dev \
 resourceext-dev \
-rxvt-unicode-dev \
-wireless-tools-dev \
+libiw-dev \
 xcalibrateext-dev \
 xextensions-dev \
-xmu-dev \
+libxmu-dev \
 xproto-dev \
 xtrans-dev \
 "
@@ -148,7 +147,7 @@ EOF
         echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
         echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}${libdir}/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	mv ${SDK_OUTPUT}${libdir}/../arm-linux/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
 	rm -rf ${SDK_OUTPUT}${libdir}/ipkg
 
 	# remove unwanted executables
