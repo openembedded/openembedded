@@ -14,8 +14,6 @@ FILES_${PN} += "${libdir}/mozilla-minimo"
 PR = "r8"
 LICENSE = "MPL/LGPL/GPL"
 
-EXCLUDE_FROM_SHLIBS = "1"
-
 inherit mozilla
 
 EXTRA_OECONF += "--enable-application=suite"
