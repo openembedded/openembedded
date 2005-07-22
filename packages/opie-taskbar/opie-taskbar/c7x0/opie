@@ -3,6 +3,11 @@
 [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
 [ -z $HOME ] && export HOME=/home/$LOGNAME
 
+# we need to tinker directly with qws_display until the ODevice
+# default (which is now W100:Rot0:0) works flawlessly with rotation
+# and survives a suspend/resume cycle
+export QWS_DISPLAY=Transformed:Rot0:0
+# export QWS_DISPLAY=W100:Rot0:0
 export QTDIR=/opt/QtPalmtop
 export OPIEDIR=/opt/QtPalmtop
 export QPEDIR=/opt/QtPalmtop
