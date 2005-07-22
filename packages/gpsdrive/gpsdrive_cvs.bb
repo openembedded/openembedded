@@ -1,6 +1,7 @@
 inherit autotools pkgconfig
 
 PR = "r0"
+PV = "2.10pre3+cvs-${CVSDATE}"
 DEFAULT_PREFERENCE="-1"
 
 PACKAGES += "gpsdrive-add"
@@ -12,9 +13,10 @@ SECTION = "x11"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "cvs://www.ostertag.name/tweety/Projekte/gpsdrive/gpsdrive-2.10pre3.tar.gz \
+SRC_URI = "cvs://anonymous@cvs.gpsdrive.cc/cvsroot;module=gpsdrive \
            file://gpsdrive.desktop"
 
+S = "${WORKDIR}/gpsdrive"
 CFLAGS += "-D_GNU_SOURCE"
 
 FILES_${PN} = "${bindir}/gpsdrive ${bindir}/wpcvt ${bindir}/wpget ${datadir}/pixmaps ${datadir}/applications"
