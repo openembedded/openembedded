@@ -8,6 +8,7 @@ RDEPENDS = "makedevs"
 LICENSE = "GPL"
 PR = "r48"
 
+
 SRC_URI = "file://halt \
            file://ramdisk \
            file://umountfs \
