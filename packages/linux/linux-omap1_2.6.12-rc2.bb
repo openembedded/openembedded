@@ -1,4 +1,4 @@
-PR      = "r2"
+PR      = "r3"
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
@@ -12,7 +12,7 @@ S = "${WORKDIR}/linux-2.6.12-rc2"
 
 KERNEL_IMAGETYPE = "vmlinux"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/compressed/${KERNEL_IMAGETYPE}"
-KERNEL_CCSUFFIX = "-3.3.3"
+KERNEL_CCSUFFIX = "-3.3.4"
 
 #DEPENDS = "uboot"
 
