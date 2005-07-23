@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libqpe libopie2"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \
@@ -13,7 +13,8 @@ SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://gcc34.patch;patch=1 \
            file://mouse.patch;patch=1 \
 	   file://kill-stdc++.patch;patch=1 \
-	   file://ipaq.patch;patch=1 "
+	   file://ipaq.patch;patch=1 \
+	   file://SDL-Akita.patch;patch=1"
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools
