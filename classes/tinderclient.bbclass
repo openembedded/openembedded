@@ -96,7 +96,7 @@ def base_do_tinder_report(event):
     import smtplib
     from email.MIMEText import MIMEText
     msg = MIMEText(header +'\n' + log)
-    msg['Subject'] = "Tinder-Client build log"
+    msg['Subject'] = data.getVar('TINDER_SUBJECT',event.data, True) or "Tinder-Client build log"
     msg['To']      = data.getVar('TINDER_MAILTO',event.data, True)
     msg['From']    = data.getVar('TINDER_FROM',  event.data, True)
 
