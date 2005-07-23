@@ -51,8 +51,8 @@ def base_do_tinder_report(event):
 
     if name == "PkgFailed" or name == "BuildCompleted":
         status = 'build_failed'
-            if name == "BuildCompleted":
-                status = "success"
+	if name == "BuildCompleted":
+	    status = "success"
             header = base_prepare_mail_header(event.data, status)
             # append the log
             log_file = data.getVar('TINDER_LOG', event.data, True)
@@ -107,7 +107,9 @@ def base_do_tinder_report(event):
     s.close()
 
 addhandler tinderclient_eventhandler
-python base_eventhandler() {
+python tinderclient_eventhandler() {
+    from bb import note, error, data
+    from bb.event import NotHandled
 
     do_tinder_report = data.getVar('TINDER_REPORT', e.data, True)
     if do_tinder_report and do_tinder_report == "1":
