@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "A collection of core GNU utilities."
 RREPLACES = "textutils shellutils fileutils"
 RPROVIDES = "textutils shellutils fileutils"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
            file://install-cross.patch;patch=1;pnum=0 \
@@ -31,7 +31,10 @@ do_install () {
 	
 	# Renaming the utilities that should go in /usr/bin
 	for i in ${bindir_progs}; do mv ${D}${bindir}/$i ${D}${bindir}/$i.${PN}; done
-	mv ${D}${bindir}/[ ${D}${bindir}/[.${PN}
+	# [ requires special handling because [.coreutils will cause the sed stuff
+	# in update-alternatives to fail, therefore use lbracket - the name used
+	# for the actual source file.
+	mv ${D}${bindir}/[ ${D}${bindir}/lbracket.${PN}
 	
 	# Renaming and moving the utilities that should go in /bin (FHS)
 	install -d ${D}${base_bindir}
@@ -45,7 +48,7 @@ do_install () {
 pkg_postinst_${PN} () {
 	# The utilities in /usr/bin
 	for i in ${bindir_progs}; do update-alternatives --install ${bindir}/$i $i $i.${PN} 100; done
-	update-alternatives --install "${bindir}/\[" "\[" "\[.${PN}" 100
+	update-alternatives --install '${bindir}/[' '[' 'lbracket.${PN}' 100
 	
 	# The utilities in /bin
 	for i in ${base_bindir_progs}; do update-alternatives --install ${base_bindir}/$i $i $i.${PN} 100; done
@@ -57,7 +60,7 @@ pkg_postinst_${PN} () {
 pkg_prerm_${PN} () {
 	# The utilities in /usr/bin
 	for i in ${bindir_progs}; do update-alternatives --remove $i $i.${PN}; done
-	update-alternatives --remove "\[" "\[.${PN}"
+	update-alternatives --remove '[' 'lbracket.${PN}'
 
 	# The utilities in /bin
 	for i in ${base_bindir_progs}; do update-alternatives --remove $i $i.${PN}; done
