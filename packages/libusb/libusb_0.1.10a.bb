@@ -2,10 +2,9 @@ DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
-	file://ARMfix.patch;patch=1 \ 
 	file://debian-changes.patch;patch=1" 
 
 inherit autotools pkgconfig
