@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r48"
+PR = "r51"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,15 +30,16 @@ SRC_URI = "file://halt \
            file://umountnfs.sh \
            file://sysfs.sh \
            file://device_table.txt \
-	   file://populate-volatile.sh \
-	   file://volatiles \
-           file://corgikeymap-2.6.map \
-           file://tosakeymap-2.6.map"
+           file://populate-volatile.sh \
+           file://volatiles \
+           file://keymap"
 
-SRC_URI_append_arm = " file://alignment.sh"
-SRC_URI_append_openzaurus = " file://checkversion"
-SRC_URI_append_c7x0 =    " file://keymap"
-SRC_URI_append_tosa =    " file://keymap"
+SRC_URI_append_arm          = " file://alignment.sh"
+SRC_URI_append_openzaurus   = " file://checkversion"
+SRC_URI_append_c7x0         = " file://keymap-*.map"
+SRC_URI_append_tosa         = " file://keymap-*.map"
+SRC_URI_append_akita        = " file://keymap-*.map"
+SRC_URI_append_spitz        = " file://keymap-*.map"
 
 def read_kernel_version(d):
 	import bb
@@ -95,21 +96,19 @@ do_install () {
 
 	if [ "${DISTRO}" == "openzaurus" ]; then
 		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}${sysconfdir}/init.d/checkversion
-        	chmod 0755 				${D}${sysconfdir}/init.d/checkversion
-		ln -sf          ../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
+		chmod 0755	${D}${sysconfdir}/init.d/checkversion
+		ln -sf		../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
 	fi
 
-	if [ "${MACHINE}" == "c7x0" ]; then
-		install -m 0755    ${WORKDIR}/corgikeymap-2.6.map		${D}${sysconfdir}
-		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
-		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
-	fi
-
-	if [ "${MACHINE}" == "tosa" ]; then
-		install -m 0755    ${WORKDIR}/tosakeymap-2.6.map		${D}${sysconfdir}
-		install -m 0755    ${WORKDIR}/keymap				${D}${sysconfdir}/init.d
-		ln -sf          ../init.d/keymap  				${D}${sysconfdir}/rcS.d/S00keymap
-	fi
+    case ${MACHINE} in
+        c7x0 | tosa | spitz | akita )
+			install -m 0755 ${WORKDIR}/keymap		${D}${sysconfdir}/init.d
+			ln -sf	../init.d/keymap	${D}${sysconfdir}/rcS.d/S00keymap
+			install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
+			;;
+        *)
+			;;
+    esac
 
 	install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
 	install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
@@ -150,5 +149,5 @@ do_install () {
 		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S06alignment
 	fi
 
-	install -m 0755    ${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
+	install -m 0755		${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
 }
