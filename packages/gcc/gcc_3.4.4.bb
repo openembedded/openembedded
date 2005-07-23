@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
