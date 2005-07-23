@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r15"
+PR = "r16"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -40,7 +40,7 @@ ALTERNATIVE_PRIORITY = "50"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
 FILES_${PN} += "${base_sbindir} ${base_bindir}"
-FILES_sysvinit-pidof = "${base_bindir}/pidof"
+FILES_sysvinit-pidof = "${base_bindir}/pidof.sysvinit"
 FILES_sysvinit-sulogin = "${base_sbindir}/sulogin"
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
@@ -89,5 +89,38 @@ EOF
 		install -d ${D}${sysconfdir}/rc$level.d
 		ln -s ../init.d/stop-bootlogd ${D}${sysconfdir}/rc$level.d/S99stop-bootlogd
 	done
-	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.sysvinit
+	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.${PN}
+	mv ${D}${base_bindir}/pidof ${D}${base_bindir}/pidof.${PN}
+	mv ${D}${base_sbindir}/halt ${D}${base_sbindir}/halt.${PN}
+	mv ${D}${base_sbindir}/reboot ${D}${base_sbindir}/reboot.${PN}
+	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
+	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
+	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
+	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 200
+	update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 200
+	update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
+	update-alternatives --install ${bindir}/last last last.${PN} 200
+	update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 200
+	update-alternatives --install ${bindir}/wall wall wall.${PN} 200
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove halt halt.${PN}
+	update-alternatives --remove reboot reboot.${PN}
+	update-alternatives --remove shutdown shutdown.${PN}
+	update-alternatives --remove last last.${PN}
+	update-alternatives --remove mesg mesg.${PN}
+	update-alternatives --remove wall wall.${PN}
+}
+
+pkg_postinst_sysvinit-pidof () {
+	update-alternatives --install ${base_bindir}/pidof pidof pidof.${PN} 200
+}
+
+pkg_prerm_sysvinit-pidof () {
+	update-alternatives --remove pidof pidof.${PN}
 }

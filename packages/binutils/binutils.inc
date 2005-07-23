@@ -16,7 +16,6 @@ FILES_${PN}-dev = " \
 
 FILES_${PN}-symlinks = " \
 	${bindir}/addr2line \
-	${bindir}/ar \
 	${bindir}/as \
 	${bindir}/c++filt \
 	${bindir}/gprof \
@@ -27,7 +26,6 @@ FILES_${PN}-symlinks = " \
 	${bindir}/ranlib \
 	${bindir}/readelf \
 	${bindir}/size \
-	${bindir}/strings \
 	${bindir}/strip"
 
 EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
@@ -101,4 +99,19 @@ do_install () {
 	for p in ${TARGET_SYS}-* ; do
 		ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
 	done
+
+	rm ${D}${bindir}/ar ${D}${bindir}/strings
 }
+
+
+pkg_postinst_${PN}-symlinks () {
+	update-alternatives --install ${bindir}/ar ar ${TARGET_SYS}-ar 100
+	update-alternatives --install ${bindir}/strings strings ${TARGET_SYS}-strings 100
+}
+
+
+pkg_prerm_${PN}-symlinks () {
+	update-alternatives --remove ar ${TARGET_SYS}-ar
+	update-alternatives --remove strings ${TARGET_SYS}-strings
+}
+

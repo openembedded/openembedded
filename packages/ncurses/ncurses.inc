@@ -12,7 +12,7 @@ inherit autotools
 
 # This keeps only tput/tset in ncurses
 # clear/reset are in already busybox
-FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear ${bindir}/reset ${bindir}/tack "
+FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear.${PN} ${bindir}/reset.${PN} ${bindir}/tack "
 FILES_ncurses-terminfo = "${datadir}/terminfo"
 FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* usr/share/tabset etc/terminfo"
 
@@ -73,4 +73,19 @@ do_install() {
 	then
 		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
+
+	mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}
+	mv ${D}${bindir}/reset ${D}${bindir}/reset.${PN}
+}
+		
+		
+pkg_postinst_ncurses-tools () {
+	update-alternatives --install ${bindir}/clear clear clear.${PN} 100
+	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+}
+				
+			
+pkg_prerm_ncurses-tools () {
+	update-alternatives --remove clear clear.${PN}
+	update-alternatives --remove reset reset.${PN}
 }

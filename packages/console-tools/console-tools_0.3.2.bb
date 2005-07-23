@@ -1,6 +1,7 @@
 SECTION = "base"
 LICENSE = "GPL"
 DESCRIPTION = "Allows you to set-up and manipulate the Linux console."
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lct/console-tools-${PV}.tar.gz \
            file://codepage.patch;patch=1 \
@@ -23,3 +24,23 @@ do_compile () {
 }
 
 inherit autotools 
+
+do_install () {
+	autotools_do_install
+	mv ${D}${bindir}/chvt ${D}${bindir}/chvt.${PN}
+	mv ${D}${bindir}/deallocvt ${D}${bindir}/deallocvt.${PN}
+	mv ${D}${bindir}/openvt ${D}${bindir}/openvt.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${bindir}/chvt chvt chvt.${PN} 100
+	update-alternatives --install ${bindir}/deallocvt deallocvt deallocvt.${PN} 100
+	update-alternatives --install ${bindir}/openvt openvt openvt.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove chvt chvt.${PN}
+	update-alternatives --remove deallocvt deallocvt.${PN}
+	update-alternatives --remove openvt openvt.${PN}
+}
+			
