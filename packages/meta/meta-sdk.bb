@@ -1,6 +1,7 @@
-PR = "r2"
-
+PR      = "r4"
+LICENSE = MIT
 DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
+DEPENDS += "libidl libsvg-cairo sed-native"
 
 PACKAGES = ""
 
@@ -19,7 +20,7 @@ compositeext-dev \
 damageext-dev \
 dbus-dev \
 fixesext-dev \
-gconf-dev \
+gconf-dbus-dev \
 gtk+-dev \
 gtk-engines-dev \
 libapm-dev \
@@ -86,17 +87,15 @@ libxtst-dev \
 libz-dev \
 matchbox-desktop-dev \
 ncurses-dev \
-orbit2-dev \
 pango-dev \
 randrext-dev \
 recordext-dev \
 renderext-dev \
 resourceext-dev \
-rxvt-unicode-dev \
-wireless-tools-dev \
+libiw-dev \
 xcalibrateext-dev \
 xextensions-dev \
-xmu-dev \
+libxmu-dev \
 xproto-dev \
 xtrans-dev \
 "
@@ -148,11 +147,23 @@ EOF
         echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
         echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}${libdir}/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	mv ${SDK_OUTPUT}${libdir}/../arm-linux/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
 	rm -rf ${SDK_OUTPUT}${libdir}/ipkg
 
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
+
+	# remove broken .la files
+	rm ${SDK_OUTPUT}/${prefix}/arm-linux/lib/*.la
+
+	# fix pkgconfig data files
+	cd ${SDK_OUTPUT}/${prefix}/arm-linux/lib/pkgconfig
+	for f in *.pc ; do
+		sed -i 's%=/usr%=${prefix}/arm-linux%g' "$f"
+	done
+	for f in *.pc ; do
+		sed -i 's%${STAGING_DIR}%/usr/local/arm/oe%g' "$f"
+	done
 
         mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
@@ -161,4 +172,3 @@ EOF
 
 do_populate_sdk[nostamp] = 1
 addtask populate_sdk before do_build after do_install
-LICENSE = MIT
