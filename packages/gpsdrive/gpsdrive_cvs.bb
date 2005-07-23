@@ -1,6 +1,6 @@
 inherit autotools pkgconfig
 
-PR = "r0"
+PR = "r1"
 PV = "2.10pre3+cvs-${CVSDATE}"
 DEFAULT_PREFERENCE="-1"
 
@@ -14,6 +14,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "cvs://anonymous@cvs.gpsdrive.cc/cvsroot;module=gpsdrive \
+	   file://gpsdrive-pda-fix.patch;patch=1;pnum=1 \
            file://gpsdrive.desktop"
 
 S = "${WORKDIR}/gpsdrive"
