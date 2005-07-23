@@ -7,7 +7,7 @@ def base_prepare_mail_header(data, status):
     import bb
 
     str  = "tinderbox: administrator: %s\n" % bb.data.getVar('TINDER_ADMIN', data, True)
-    str += "tinderbox: starttime: %s\n"     % bb.data.getVar('TINDER_START', bb.make.cfg, True)
+    str += "tinderbox: starttime: %s\n"     % bb.data.getVar('TINDER_START', data, True)
     str += "tinderbox: buildname: %s\n"     % bb.data.getVar('TINDER_BUILD', data, True)
     str += "tinderbox: errorparser: %s\n"   % bb.data.getVar('TINDER_ERROR', data, True)
     str += "tinderbox: status: %s\n"        % status
@@ -36,7 +36,6 @@ def base_do_tinder_report(event):
 
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
-        data.setVar('TINDER_START', base_tinder_time(), event.data)
         header = base_prepare_mail_header(event.data, 'building')
         # generate
         for var in os.environ:
