@@ -151,7 +151,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s console=ttyS0,115200n8"
+CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc reboot=s noirqdebug console=ttyS0,115200n8"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -426,8 +426,14 @@ CONFIG_INET_ESP=m
 CONFIG_INET_IPCOMP=m
 CONFIG_INET_TUNNEL=m
 CONFIG_IP_TCPDIAG=m
-# CONFIG_IP_TCPDIAG_IPV6 is not set
-# CONFIG_IPV6 is not set
+CONFIG_IP_TCPDIAG_IPV6=y
+CONFIG_IPV6=m
+# CONFIG_IPV6_PRIVACY is not set
+CONFIG_INET6_AH=m
+CONFIG_INET6_ESP=m
+CONFIG_INET6_IPCOMP=m
+CONFIG_INET6_TUNNEL=m
+CONFIG_IPV6_TUNNEL=m
 # CONFIG_NETFILTER is not set
 CONFIG_XFRM=y
 # CONFIG_XFRM_USER is not set
@@ -829,7 +835,17 @@ CONFIG_VIDEO_DEV=m
 #
 # Sound
 #
-# CONFIG_SOUND is not set
+CONFIG_SOUND=m
+
+#
+# Advanced Linux Sound Architecture
+#
+# CONFIG_SND is not set
+
+#
+# Open Sound System
+#
+# CONFIG_SOUND_PRIME is not set
 
 #
 # USB support
@@ -862,10 +878,12 @@ CONFIG_USB_OHCI_LITTLE_ENDIAN=y
 #
 # USB Device Class drivers
 #
+CONFIG_USB_AUDIO=m
 
 #
 # USB Bluetooth TTY can only be used with disabled Bluetooth subsystem
 #
+# CONFIG_USB_MIDI is not set
 CONFIG_USB_ACM=m
 CONFIG_USB_PRINTER=m
 
