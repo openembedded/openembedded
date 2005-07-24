@@ -23,5 +23,5 @@ To make a prism3 card w/ downloadable firmware work, do the following:
 EOF
 }
 
-PACKAGE_ARCH = "noarch"
+PACKAGE_ARCH = "all"
 
