@@ -1,0 +1,25 @@
+*** procps-3.2.5/Makefile.orig	Sun Jul 24 03:29:32 2005
+--- procps-3.2.5/Makefile	Sun Jul 24 03:30:14 2005
+***************
+*** 211,220 ****
+  ###### install
+  
+  $(BINFILES) : all
+! 	$(install) --mode a=rx $(notdir $@) $@
+  
+  $(MANFILES) : all
+! 	$(install) --mode a=r $(notdir $@) $@
+  
+  install: $(filter-out $(SKIP) $(addprefix $(DESTDIR),$(SKIP)),$(INSTALL))
+  	cd $(usr/bin) && $(ln_f) skill snice
+--- 211,220 ----
+  ###### install
+  
+  $(BINFILES) : all
+! 	$(install) -m 555 $(notdir $@) $@
+  
+  $(MANFILES) : all
+! 	$(install) -m 444 $(notdir $@) $@
+  
+  install: $(filter-out $(SKIP) $(addprefix $(DESTDIR),$(SKIP)),$(INSTALL))
+  	cd $(usr/bin) && $(ln_f) skill snice
