@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -56,7 +56,7 @@ inherit kernel
 CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  EQUIPMENT=0"
 CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) EQUIPMENT=4"
 
-CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
+CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
 # CMDLINE_INIT = "init=/bin/busybox ash"
 CMDLINE_INIT = " "
 CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
