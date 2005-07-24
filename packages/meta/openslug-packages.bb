@@ -70,6 +70,7 @@ OPENSLUG_PACKAGES = "\
 	mysql \
 	nail \
 	ncftp \
+	obexftp openobex openobex-apps ircp \
 	openssh \
 	openvpn \
 	pcre \
