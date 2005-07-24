@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -41,7 +41,7 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-2
            file://1764-1.patch;patch=1 \
            file://armdeffix.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
-	   file://saner-spitz-keymap.patch;patch=1 \
+           file://saner-spitz-keymap.patch;patch=1 \
            file://defconfig-${MACHINE} "
 
 S = "${WORKDIR}/linux_n1"
@@ -50,6 +50,9 @@ inherit kernel
 
 # Breaks compilation for now, needs to be fixed
 # SRC_URI += "file://CPAR050218.patch;patch=1"
+
+# autoload modules
+module_autoload_usb-ohci-pxa27x = "usb-ohci-pxa27x"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
