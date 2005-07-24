@@ -52,12 +52,12 @@ def base_do_tinder_report(event):
         status = 'build_failed'
 	if name == "BuildCompleted":
 	    status = "success"
-            header = base_prepare_mail_header(event.data, status)
-            # append the log
-            log_file = data.getVar('TINDER_LOG', event.data, True)
-            file     = open(log_file, 'r')
-            for line in file.readlines():
-                log += line
+        header = base_prepare_mail_header(event.data, status)
+        # append the log
+        log_file = data.getVar('TINDER_LOG', event.data, True)
+        file     = open(log_file, 'r')
+        for line in file.readlines():
+            log += line
 
     if verbose and name == "TaskStarted":
         header = base_prepare_mail_header(event.data, 'building')
