@@ -185,7 +185,7 @@ push-openembedded: update-openembedded
 publish-master: push-master
 	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
 
-.PHONY: upload-openembedded-cross
+.PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
 	rsync -avr openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
 
