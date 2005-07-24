@@ -9,8 +9,8 @@ PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
-	   file://3figures.patch;patch=1 \
-	   file://uclibc.patch;patch=1"
+	   file://uclibc.patch;patch=1 \
+	   file://3figures.patch;patch=1" 
 S = "${WORKDIR}/libtool-${PV}"
 
 PACKAGES = "libltdl libltdl-dev ${PN}"

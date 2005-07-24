@@ -1,5 +1,5 @@
---- /tmp/ltmain.sh	2005-06-24 19:26:47.008095648 +0200
-+++ libtool-1.5.10/ltmain.sh	2005-06-24 19:28:16.356512624 +0200
+--- /tmp/ltmain.in	2005-07-24 18:52:11.867735112 +0200
++++ libtool-1.5.10/ltmain.in	2005-07-24 18:55:49.204694872 +0200
 @@ -3101,7 +3101,7 @@
  
  	# Check that each of the things are valid numbers.
