@@ -3,8 +3,10 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- /dev/null
-+++ linux-2.6.12/Documentation/fb/elpp.txt
+Index: linux-2.6.12/Documentation/fb/elpp.txt
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.12/Documentation/fb/elpp.txt	2005-07-24 18:21:08.000000000 +0100
 @@ -0,0 +1,181 @@
 +
 +	ELPP, The Enhanced Linux Progress Patch v1.0
@@ -187,8 +189,10 @@
 +            -----------------------------------------
 +            Comments, queries and changes welcome at:
 +            Matthias Kunze <elpp at foofighter.de>
---- linux-2.6.12/drivers/video/Kconfig~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/Kconfig
+Index: linux-2.6.12/drivers/video/Kconfig
+===================================================================
+--- linux-2.6.12.orig/drivers/video/Kconfig	2005-07-24 18:20:46.000000000 +0100
++++ linux-2.6.12/drivers/video/Kconfig	2005-07-24 18:21:08.000000000 +0100
 @@ -108,6 +108,11 @@
  	 This is particularly important to one driver, matroxfb.  If
  	 unsure, say N.
@@ -201,8 +205,10 @@
  config FB_CIRRUS
  	tristate "Cirrus Logic support"
  	depends on FB && (ZORRO || PCI)
---- linux-2.6.12/drivers/video/console/Makefile~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/console/Makefile
+Index: linux-2.6.12/drivers/video/console/Makefile
+===================================================================
+--- linux-2.6.12.orig/drivers/video/console/Makefile	2005-07-24 18:20:21.000000000 +0100
++++ linux-2.6.12/drivers/video/console/Makefile	2005-07-24 18:21:08.000000000 +0100
 @@ -31,6 +31,8 @@
  obj-$(CONFIG_FRAMEBUFFER_CONSOLE)     += tileblit.o
  endif
@@ -212,8 +218,10 @@
  obj-$(CONFIG_FB_STI)              += sticore.o font.o
  
  # Targets that kbuild needs to know about
---- /dev/null
-+++ linux-2.6.12/drivers/video/console/elpp.c
+Index: linux-2.6.12/drivers/video/console/elpp.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.12/drivers/video/console/elpp.c	2005-07-24 18:21:08.000000000 +0100
 @@ -0,0 +1,685 @@
 +
 +/* 
@@ -900,8 +908,10 @@
 +    return -1;
 +}
 +
---- linux-2.6.12/drivers/video/console/fbcon.c~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/console/fbcon.c
+Index: linux-2.6.12/drivers/video/console/fbcon.c
+===================================================================
+--- linux-2.6.12.orig/drivers/video/console/fbcon.c	2005-07-24 18:20:21.000000000 +0100
++++ linux-2.6.12/drivers/video/console/fbcon.c	2005-07-24 18:21:08.000000000 +0100
 @@ -91,6 +91,9 @@
  #include <asm/machdep.h>
  #include <asm/setup.h>
@@ -921,7 +931,7 @@
  static signed char con2fb_map_boot[MAX_NR_CONSOLES];
  static int logo_height;
  static int logo_lines;
-@@ -1002,6 +1005,19 @@
+@@ -996,6 +999,19 @@
  			softback_top = 0;
  		}
  	}
@@ -941,7 +951,7 @@
  }
  
  static void fbcon_deinit(struct vc_data *vc)
-@@ -2002,6 +2018,12 @@
+@@ -1996,6 +2012,12 @@
  		logo_shown = fg_console;
  		/* This is protected above by initmem_freed */
  		fb_show_logo(info);
@@ -954,8 +964,10 @@
  		update_region(vc,
  			      vc->vc_origin + vc->vc_size_row * vc->vc_top,
  			      vc->vc_size_row * (vc->vc_bottom -
---- /dev/null
-+++ linux-2.6.12/drivers/video/console/symbols_16x16.c
+Index: linux-2.6.12/drivers/video/console/symbols_16x16.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.12/drivers/video/console/symbols_16x16.c	2005-07-24 18:21:08.000000000 +0100
 @@ -0,0 +1,123 @@
 +
 +#include <linux/font.h>
@@ -1080,8 +1092,10 @@
 +	0
 +};
 +
---- linux-2.6.12/drivers/video/fbmem.c~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/fbmem.c
+Index: linux-2.6.12/drivers/video/fbmem.c
+===================================================================
+--- linux-2.6.12.orig/drivers/video/fbmem.c	2005-07-24 18:20:37.000000000 +0100
++++ linux-2.6.12/drivers/video/fbmem.c	2005-07-24 18:21:08.000000000 +0100
 @@ -360,7 +360,13 @@
  		fb_logo.depth = 4;
  	else
@@ -1119,18 +1133,22 @@
  		info->fbops->fb_imageblit(info, &image);
  	}
  	
---- linux-2.6.12/drivers/video/logo/Makefile~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/logo/Makefile
-@@ -12,6 +12,7 @@
- obj-$(CONFIG_LOGO_SUPERH_MONO)		+= logo_superh_mono.o
+Index: linux-2.6.12/drivers/video/logo/Makefile
+===================================================================
+--- linux-2.6.12.orig/drivers/video/logo/Makefile	2005-07-24 18:20:21.000000000 +0100
++++ linux-2.6.12/drivers/video/logo/Makefile	2005-07-24 18:22:21.000000000 +0100
+@@ -13,6 +13,7 @@
  obj-$(CONFIG_LOGO_SUPERH_VGA16)		+= logo_superh_vga16.o
  obj-$(CONFIG_LOGO_SUPERH_CLUT224)	+= logo_superh_clut224.o
+ obj-$(CONFIG_LOGO_M32R_CLUT224)		+= logo_m32r_clut224.o
 +obj-$(CONFIG_FB_ELPP)			+= logo_linux_elpp.o
  
  # How to generate logo's
  
---- linux-2.6.12/drivers/video/logo/logo.c~add-elpp-stuff.patch
-+++ linux-2.6.12/drivers/video/logo/logo.c
+Index: linux-2.6.12/drivers/video/logo/logo.c
+===================================================================
+--- linux-2.6.12.orig/drivers/video/logo/logo.c	2005-07-24 18:20:21.000000000 +0100
++++ linux-2.6.12/drivers/video/logo/logo.c	2005-07-24 18:23:04.000000000 +0100
 @@ -14,6 +14,10 @@
  #include <linux/stddef.h>
  #include <linux/module.h>
@@ -1142,18 +1160,18 @@
  #ifdef CONFIG_M68K
  #include <asm/setup.h>
  #endif
-@@ -33,6 +37,8 @@
- extern const struct linux_logo logo_superh_mono;
+@@ -34,6 +38,8 @@
  extern const struct linux_logo logo_superh_vga16;
  extern const struct linux_logo logo_superh_clut224;
+ extern const struct linux_logo logo_m32r_clut224;
 +extern const struct linux_logo logo_linux_elpp;
 +extern struct elpp_struct elpp;
  
  
  const struct linux_logo *fb_find_logo(int depth)
-@@ -97,6 +103,12 @@
- 		/* SuperH Linux logo */
- 		logo = &logo_superh_clut224;
+@@ -102,6 +108,12 @@
+ 		/* M32R Linux logo */
+ 		logo = &logo_m32r_clut224;
  #endif
 +#ifdef CONFIG_FB_ELPP
 +		if( elpp.logo != (void*)0)
@@ -1164,8 +1182,10 @@
  	}
  	return logo;
  }
---- /dev/null
-+++ linux-2.6.12/drivers/video/logo/logo_linux_elpp.c
+Index: linux-2.6.12/drivers/video/logo/logo_linux_elpp.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.12/drivers/video/logo/logo_linux_elpp.c	2005-07-24 18:21:08.000000000 +0100
 @@ -0,0 +1,25669 @@
 +/*
 + *  DO NOT EDIT THIS FILE!
@@ -26836,8 +26856,10 @@
 +    .data	= logo_linux_elpp_data
 +};
 +
---- /dev/null
-+++ linux-2.6.12/include/linux/elpp.h
+Index: linux-2.6.12/include/linux/elpp.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.12/include/linux/elpp.h	2005-07-24 18:21:08.000000000 +0100
 @@ -0,0 +1,96 @@
 +
 +/* 
@@ -26935,9 +26957,11 @@
 +extern struct elpp_struct elpp;
 +
 +#endif
---- linux-2.6.12/init/main.c~add-elpp-stuff.patch
-+++ linux-2.6.12/init/main.c
-@@ -107,6 +107,12 @@
+Index: linux-2.6.12/init/main.c
+===================================================================
+--- linux-2.6.12.orig/init/main.c	2005-07-24 18:20:41.000000000 +0100
++++ linux-2.6.12/init/main.c	2005-07-24 18:21:08.000000000 +0100
+@@ -108,6 +108,12 @@
  enum system_states system_state;
  EXPORT_SYMBOL(system_state);
  
@@ -26950,7 +26974,7 @@
  /*
   * Boot command-line arguments
   */
-@@ -521,6 +527,9 @@
+@@ -523,6 +529,9 @@
  	signals_init();
  	/* rootfs populating might need page-writeback */
  	page_writeback_init();
@@ -26960,7 +26984,7 @@
  #ifdef CONFIG_PROC_FS
  	proc_root_init();
  #endif
-@@ -562,7 +571,7 @@
+@@ -564,7 +573,7 @@
  		}
  
  		(*call)();
@@ -26969,7 +26993,7 @@
  		msg = NULL;
  		if (preempt_count() != count) {
  			msg = "preemption imbalance";
-@@ -629,6 +638,13 @@
+@@ -631,6 +640,13 @@
  #ifdef CONFIG_SMP
  	int i;
  
