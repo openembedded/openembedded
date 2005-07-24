@@ -99,6 +99,24 @@ setup-apex apex/Makefile:
 setup-apex-developer:
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
 
+.PHONY: setup-host-debian
+setup-host-debian:
+	sudo apt-get install \
+		autoconf automake automake1.9 \
+		bison \
+		ccache \
+		cvs \
+		docbook \
+		flex \
+		g++ gawk gcj gettext \
+		libc6-dev libglib2.0-dev libtool \
+		m4 make \
+		patch pkg-config \
+		python python-dev python-psyco python2.4 python2.4-dev \
+		sed \
+		texinfo \
+		unzip
+
 .PHONY: update-master
 update-master: MT/revision
 	monotone pull
