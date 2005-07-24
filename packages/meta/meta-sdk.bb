@@ -1,7 +1,11 @@
-PR      = "r4"
+DESCRIPTION = "Meta package for SDK including GPE and Opie"
 LICENSE = MIT
-DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
-DEPENDS += "libidl libsvg-cairo sed-native"
+DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
+           binutils-cross-sdk gcc-cross-sdk gdb-cross \
+           libidl libsvg-cairo sed-native \
+           meta-gpe \
+           opie-mail"
+PR = "r5"
 
 PACKAGES = ""
 
@@ -29,6 +33,7 @@ libaudiofile-dev \
 libbluetooth-dev \
 libcairo-dev \
 libdisplaymigration-dev \
+libetpan-dev \
 libesd-dev \
 libeventdb-dev \
 libexpat-dev \
@@ -46,14 +51,24 @@ libice-dev \
 libidl-2-dev \
 libipkg-dev \
 libjpeg-dev \
+libmailwrapper-dev \
 libmb-dev \
 libmimedir-dev \
 libopenobex-1.0-dev \
+libopiebluez2-dev \
+libopiedb2-dev \
+libopiecore2-dev \
+libopienet2-dev \
+libopiepim2-dev \
+libopieui2-dev \
 libpcap-dev \
 libpixman-dev \
 libpng-dev \
 libpng12-dev \
 libpopt-dev \
+libqpe1-dev \
+libqte2-dev \
+libqtaux2-dev \
 libreadline-dev \
 libschedule-dev \
 libsm-dev \
