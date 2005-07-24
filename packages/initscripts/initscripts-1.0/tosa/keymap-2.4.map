@@ -1,4 +1,4 @@
-keymaps 0-1,4-5
+keymaps 0-2,4-5
 alt_is_meta
 keycode   1 = a              
 keycode   2 = b               
@@ -34,10 +34,12 @@ keycode  31 = BackSpace
 keycode  32 = Num_Lock             
 keycode  33 = F15 
 keycode  34 = Escape          
-keycode  35 = Left            
+keycode  35 = Left           
+	altgr keycode 35 = Decr_Console
 keycode  36 = Up              
 keycode  37 = Down            
 keycode  38 = Right           
+	altgr keycode 38 = Incr_Console
 keycode  39 = Return          
 keycode  40 = F12
 keycode  41 = one             exclam
@@ -95,7 +97,7 @@ keycode  91 = space
 keycode  92 = space           
 	control	keycode  92 = nul             
 keycode  93 =  
-keycode  94 = exclam          
+keycode  94 = AltGr          
 keycode  95 = semicolon
 keycode  96 = colon
 keycode  97 = bracketright
