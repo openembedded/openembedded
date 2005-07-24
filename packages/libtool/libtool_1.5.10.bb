@@ -5,7 +5,7 @@ libraries) behind a consistent interface."
 HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPL"
 SECTION = "devel"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
@@ -32,4 +32,5 @@ do_configure () {
 do_stage () {
 	oe_libinstall -a -so -C libltdl libltdl ${STAGING_LIBDIR}
 	install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
+}
 }
