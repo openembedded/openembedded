@@ -41,52 +41,48 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-2
            file://1764-1.patch;patch=1 \
            file://armdeffix.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
-	   file://saner-spitz-keymap.patch;patch=1 \
+           file://saner-spitz-keymap.patch;patch=1 \
            file://defconfig-${MACHINE} "
+# Breaks compilation for now, needs to be fixed
+# SRC_URI += "file://CPAR050218.patch;patch=1"
 
 S = "${WORKDIR}/linux_n1"
 
 inherit kernel
 
-# Breaks compilation for now, needs to be fixed
-# SRC_URI += "file://CPAR050218.patch;patch=1"
+#
+# Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
+#
+CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  EQUIPMENT=0"
+CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) EQUIPMENT=4"
+
+CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
+# CMDLINE_INIT = "init=/bin/busybox ash"
+CMDLINE_INIT = " "
+CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
 ALLOW_EMPTY = "1"
 FILES_kernel-image = ""
-
-#
-# mtd layout on spitz (akita has same layout as husky)
-#
-# dev:    size   erasesize  name
-# mtd0: 006b0000 00020000 "Filesystem"
-# mtd1: 00700000 00004000 "smf"
-# mtd2: 00500000 00004000 "root"
-# mtd3: 00400000 00004000 "home"
-
-CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)"
-CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
-
-CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2 jffs2_orphaned_inodes=delete EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
-CMDLINE_INIT = " "
-CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
-
-
-PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
+PARALLEL_MAKE = ""
 
+#
+# autoload modules
+#
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_pxa27x_bi = "below pxa27x_bi net_fd usbdcore "
 module_autoload_pxa27x_bi = "pxa27x_bi"
+module_autoload_usb-ohci-pxa27x = "usb-ohci-pxa27x"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+        echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
 do_deploy() {
