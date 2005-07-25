@@ -41,7 +41,7 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-2
            file://1764-1.patch;patch=1 \
            file://armdeffix.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
-           file://saner-spitz-keymap.patch;patch=1 \
+	   file://saner-spitz-keymap.patch;patch=1 \
            file://defconfig-${MACHINE} "
 
 S = "${WORKDIR}/linux_n1"
@@ -50,9 +50,6 @@ inherit kernel
 
 # Breaks compilation for now, needs to be fixed
 # SRC_URI += "file://CPAR050218.patch;patch=1"
-
-# autoload modules
-module_autoload_usb-ohci-pxa27x = "usb-ohci-pxa27x"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
@@ -72,6 +69,11 @@ FILES_kernel-image = ""
 CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
 
+CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2 jffs2_orphaned_inodes=delete EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
+CMDLINE_INIT = " "
+CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
+
+
 PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"
@@ -84,6 +86,7 @@ module_autoload_pxa27x_bi = "pxa27x_bi"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
 do_deploy() {
