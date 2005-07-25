@@ -32,20 +32,24 @@ openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf
 	( cd openslug ; make )
 
 .PHONY: optware build-optware
-optware build-optware: optware/Makefile
-	( cd optware ; unset LD_LIBRARY_PATH; make )
+optware build-optware: build-optware-nslu2 build-optware-wl500g
+
+.PHONY: optware-nslu2 build-optware-nslu2
+optware-nslu2 build-optware-nslu2: optware/nslu2/Makefile
+	( cd optware/nslu2 ; make )
+
+.PHONY: optware-wl500g build-optware-wl500g
+optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
+	( cd optware/wl500g ; make )
 
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
-	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
+	[ -e monotone/nslu2-linux.db ] || \
+	( mkdir -p monotone && wget http://www.nslu2-linux.org/nslu2-linux.initial.db -O monotone/nslu2-linux.db )
 	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded.* )
 	( monotone -d monotone/nslu2-linux.db unset database default-server )
 	( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
-	# Above may be supplemented  by following someday
-	# It currently *requires* monotone 0.21, or it will fail with 
-	# a mysterious sounding database error.
-	# wget http://www.nslu2-linux.org/nslu2-linux.initial.db -O monotone/nslu2-linux.db
 
 downloads:
 	[ -e downloads ] || mkdir -p downloads
@@ -74,14 +78,35 @@ setup-openembedded openembedded/conf/machine/nslu2.conf:
 setup-optware optware/Makefile:
 	${MAKE} downloads
 	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
-	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
+
+optware/nslu2/Makefile : optware/Makefile
+	[ -e optware/nslu2/Makefile ]  || ( \
+		mkdir -p optware/nslu2 ; \
+		echo "OPTWARE_TARGET=nslu2" > optware/nslu2/Makefile ; \
+	 	echo "include ../Makefile" >> optware/nslu2/Makefile ; \
+		ln -s ../../downloads optware/nslu2/downloads ; \
+		ln -s ../make optware/nslu2/make ; \
+		ln -s ../scripts optware/nslu2/scripts ; \
+		ln -s ../sources optware/nslu2/sources ; \
+	)
+
+optware/wl500g/Makefile : optware/Makefile
+	[ -e optware/wl500g/Makefile ]  || ( \
+		mkdir -p optware/wl500g ; \
+		echo "OPTWARE_TARGET=wl500g" > optware/wl500g/Makefile ; \
+	 	echo "include ../Makefile" >> optware/wl500g/Makefile ; \
+		ln -s ../../downloads optware/wl500g/downloads ; \
+		ln -s ../make optware/wl500g/make ; \
+		ln -s ../scripts optware/wl500g/scripts ; \
+		ln -s ../sources optware/wl500g/sources ; \
+	)
 
 .PHONY: setup-optware-developer
 setup-optware-developer:
 	${MAKE} downloads
 	[ -e optware ] && ( mv optware optware-user )
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
-	[ -e optware/downloads ] || ( cd optware ; ln -s ../downloads . )
+	${MAKE} optware/nslu2/Makefile optware/wl500g/Makefile
 
 .PHONY: setup-slugimage-developer
 setup-slugimage-developer:
