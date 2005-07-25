@@ -79,20 +79,23 @@ CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT
 #
 ALLOW_EMPTY = "1"
 FILES_kernel-image = ""
-
 EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
+PARALLEL_MAKE = ""
 
+#
+# autoload modules
+#
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_pxa_bi = "below pxa_bi net_fd usbdcore "
 module_autoload_pxa_bi = "pxa_bi"
 
 do_configure_prepend() {
-	patch -p1 < cifs_24.patch
-	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+        patch -p1 < cifs_24.patch
+        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+        echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
 do_deploy() {
@@ -107,4 +110,3 @@ addtask deploy before do_build after do_compile
 PACKAGE_ARCH_corgi    = "c7x0"
 PACKAGE_ARCH_shepherd = "c7x0"
 PACKAGE_ARCH_husky    = "c7x0"
-
