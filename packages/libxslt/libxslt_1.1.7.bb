@@ -10,7 +10,7 @@ PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 FILES_${PN}-dev += "${bindir}/xslt-config"
 FILES_${PN}-utils += "${bindir}"
 
-SRC_URI = "http://xmlsoft.org/sources/libxslt-${PV}.tar.gz"
+SRC_URI = "http://xmlsoft.org/sources/old/libxslt-${PV}.tar.gz"
 S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig 
