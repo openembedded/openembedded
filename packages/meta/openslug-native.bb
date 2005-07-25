@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r3"
+PR = "r4"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -9,7 +9,7 @@ PACKAGES = "${PN}"
 OPENSLUG_NATIVE = "\
 	automake \
 	bash \
-	binutils binutils-dev \
+	binutils binutils-dev binutils-symlinks \
 	bison \
 	bzip2 \
 	coreutils \
@@ -40,14 +40,4 @@ OPENSLUG_NATIVE = "\
 	"
 
 RDEPENDS = '${OPENSLUG_NATIVE}'
-
-pkg_postinst_${PN} () {
-	# Fix some strange .so-files with strange comments in them. This should
-	# really be done in the packages providing these, but untill that, this
-	# works, and will not break anything when it actually gets fixed
-	tail -n 2 /usr/lib/libc.so > /tmp/tmpfile
-	mv /tmp/tmpfile /usr/lib/libc.so
-	tail -n 2 /usr/lib/libpthread.so > /tmp/tmpfile
-	mv /tmp/tmpfile /usr/lib/libpthread.so
-}
 
