@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r4"
+PR = "r5"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -31,6 +31,7 @@ OPENSLUG_NATIVE = "\
 	lrzsz \
 	m4 \
 	make \
+	monotone-5 \
 	ncurses ncurses-dev ncurses-terminfo \
 	patch \
 	sed \

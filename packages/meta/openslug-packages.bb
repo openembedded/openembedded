@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r3"
+PR = "r4"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -23,6 +23,7 @@ OPENSLUG_DEVELOPMENT = "\
 	gdb \
 	gnu-config \
 	grep \
+	gzip \
 	lsof \
 	m4 \
 	make \
