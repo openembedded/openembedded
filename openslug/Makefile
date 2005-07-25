@@ -2,7 +2,7 @@
 # Licensed under the GPL v2 or later
 
 openslug-firmware: setup-env conf/local.conf
-	( source setup-env ; bitbake openslug-packages )
+	( . setup-env ; bitbake openslug-packages )
 
 # This does the same thing but with a clean environment
 # The HOME setting prevents user environment settings
@@ -11,7 +11,7 @@ openslug-firmware: setup-env conf/local.conf
 # .cache in the home directory.
 openslug-firmware-safe: setup-env conf/local.conf
 	env -i CCACHE_DISABLE=1 CCACHE_DIR="`pwd`/tmp/ccache" HOME=/dev/null \
-		sh -c 'source setup-env; bitbake openslug-packages'
+		sh -c '. setup-env; bitbake openslug-packages'
 
 setup-env:
 	[ -e bitbake ]      || ( ln -s ../bitbake . )
