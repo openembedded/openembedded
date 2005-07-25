@@ -74,6 +74,7 @@ OPENSLUG_PACKAGES = "\
 	openvpn \
 	pcre \
 	ppp \
+	procps \
 	psmisc \
 	puppy \
 	pwc \
