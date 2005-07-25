@@ -110,7 +110,7 @@ optware/wl500g/Makefile : optware/Makefile
 .PHONY: setup-optware-developer
 setup-optware-developer:
 	${MAKE} downloads
-	[ -e optware ] && ( mv optware optware-user )
+	[ ! -e optware ] || ( mv optware optware-user )
 	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	${MAKE} optware/nslu2/Makefile optware/wl500g/Makefile
 
