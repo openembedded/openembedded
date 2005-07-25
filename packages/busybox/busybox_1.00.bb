@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r28"
+PR = "r29"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -132,7 +132,7 @@ pkg_postinst_${PN} () {
 	# If we are not making an image we create links for the utilities that doesn't exist
 	# so the update-alternatives script will get the utilities it needs
 	# (update-alternatives have no problem replacing links later anyway)
-	alias test='busybox test'
+	test -n 2> /dev/null || alias test='busybox test'
 	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
 	
 	# This adds the links, remember that this has to work when building an image too, hence the $D

@@ -60,19 +60,25 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
+	man \
+	man-pages \
 	miau \ 
 	microcom \
 	mt-daapd \
 	mutt \
 	mysql \
 	nail \
+	ncftp \
 	openssh \
 	openvpn \
 	pcre \
 	ppp \
+	psmisc \
 	puppy \
 	pwc \
 	rsync \
+	screen \
+	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
