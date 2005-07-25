@@ -34,6 +34,7 @@ OPENSLUG_NATIVE = "\
 	monotone-5 \
 	ncurses ncurses-dev ncurses-terminfo \
 	patch \
+	python \
 	sed \
 	tar \
 	util-linux \
