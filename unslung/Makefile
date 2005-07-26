@@ -2,7 +2,7 @@
 # Licensed under the GPL v2 or later
 
 unslung-firmware: setup-env conf/local.conf
-	. setup-env ; bitbake unslung-packages
+	. ./setup-env ; bitbake unslung-packages
 
 # This does the same thing but with a clean environment
 # The HOME setting prevents user environment settings
@@ -11,7 +11,7 @@ unslung-firmware: setup-env conf/local.conf
 # .cache in the home directory.
 unslung-firmware-safe: setup-env conf/local.conf
 	env -i CCACHE_DISABLE=1 CCACHE_DIR="`pwd`/tmp/ccache" HOME=/dev/null \
-		sh -c '. setup-env; bitbake unslung-packages'
+		sh -c '. ./setup-env; bitbake unslung-packages'
 
 setup-env:
 	[ -e bitbake ]      || ln -s ../bitbake .
