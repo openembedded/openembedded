@@ -1,14 +1,15 @@
 DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Unix platforms"
 SECTION = "console/network"
+LICENSE = "MIT"
+PV = "0.58+cvs-${CVSDATE}"
 
-SRC_URI = "cvs://cvsuser:anonymous@cvs.tartarus.org/home/cvs;module=putty \
+SRC_URI = "svn://ixion.tartarus.org/main;module=putty \
 	   file://lib.pro \
 	   file://plink.pro \
 	   file://pscp.pro \
 	   file://psftp.pro"
-LICENSE = "MIT"
+
 TARGETS = "lib plink pscp psftp"
-PV = "0.54-cvs-${CVSDATE}"
 
 S = "${WORKDIR}/putty"
 
