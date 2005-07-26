@@ -1,9 +1,9 @@
-def base_tinder_time():
+def tinder_tinder_time():
     import time
     return time.strftime('%m/%d/%Y %H:%M:%S', time.localtime())
 
 # Prepare tinderbox mail header
-def base_prepare_mail_header(data, status):
+def tinder_prepare_mail_header(data, status):
     import bb
 
     str  = "tinderbox: administrator: %s\n" % bb.data.getVar('TINDER_ADMIN', data, True)
@@ -11,14 +11,14 @@ def base_prepare_mail_header(data, status):
     str += "tinderbox: buildname: %s\n"     % bb.data.getVar('TINDER_BUILD', data, True)
     str += "tinderbox: errorparser: %s\n"   % bb.data.getVar('TINDER_ERROR', data, True)
     str += "tinderbox: status: %s\n"        % status
-    str += "tinderbox: timenow: %s\n"       % base_tinder_time()
+    str += "tinderbox: timenow: %s\n"       % tinder_tinder_time()
     str += "tinderbox: tree: %s\n"          % bb.data.getVar('TINDER_TREE', data, True)
     str += "tinderbox: buildfamily: %s\n"   % "unix"
     str += "tinderbox: END"
 
     return str
 
-def base_do_tinder_report(event):
+def tinder_do_tinder_report(event):
     """
     Report to the tinderbox. Either we will report every step
     (depending on TINDER_VERBOSE_REPORT) at the end we will send the
@@ -36,7 +36,7 @@ def base_do_tinder_report(event):
 
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
-        header = base_prepare_mail_header(event.data, 'building')
+        header = tinder_prepare_mail_header(event.data, 'building')
         # generate
         for var in os.environ:
             log += "%s=%s\n" % (var, os.environ[var])
@@ -52,7 +52,7 @@ def base_do_tinder_report(event):
         status = 'build_failed'
 	if name == "BuildCompleted":
 	    status = "success"
-        header = base_prepare_mail_header(event.data, status)
+        header = tinder_prepare_mail_header(event.data, status)
         # append the log
         log_file = data.getVar('TINDER_LOG', event.data, True)
         file     = open(log_file, 'r')
@@ -60,15 +60,15 @@ def base_do_tinder_report(event):
             log += line
 
     if verbose and name == "TaskStarted":
-        header = base_prepare_mail_header(event.data, 'building')
+        header = tinder_prepare_mail_header(event.data, 'building')
         log    = "Task %s started" % event.task
 
     if verbose and name == "PkgStarted":
-        header = base_prepare_mail_header(event.data, 'building')
+        header = tinder_prepare_mail_header(event.data, 'building')
         log    = "Package %s started" % data.getVar('P', event.data, True)
 
     if verbose and name == "PkgSucceeded":
-        header = base_prepare_mail_header(event.data, 'building')
+        header = tinder_prepare_mail_header(event.data, 'building')
         log    = "Package %s done" % data.getVar('P', event.data, True)
 
     # Append the Task Log
@@ -84,7 +84,7 @@ def base_do_tinder_report(event):
 
             # append to the log
             if verbose:
-                header = base_prepare_mail_header(event.data, 'building')
+                header = tinder_prepare_mail_header(event.data, 'building')
                 for line in log_txt:
                     log += line
 
@@ -112,7 +112,7 @@ python tinderclient_eventhandler() {
 
     do_tinder_report = data.getVar('TINDER_REPORT', e.data, True)
     if do_tinder_report and do_tinder_report == "1":
-        base_do_tinder_report(e)
+        tinder_do_tinder_report(e)
 
     return NotHandled
 }
