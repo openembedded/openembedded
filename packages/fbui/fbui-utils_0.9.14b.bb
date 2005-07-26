@@ -3,7 +3,8 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SECTION = "base"
 
-SRC_URI = "http://home.comcast.net/~plinius/fbui-${PV}.tar.bz2"
+SRC_URI = "http://home.comcast.net/~fbui/fbui-${PV}.tar.bz2"
+
 S = "${WORKDIR}/libfbui"
 
 do_compile() {
