@@ -3,10 +3,8 @@ DESCRIPTION = "GKrellM is a GTK-based stacked monitor program."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "gtk+ glib-2.0 libsm ice"
-PR = "r1"
 
-SRC_URI = "http://web.wt.net/~billw/gkrellm/gkrellm-${PV}.tar.bz2"
-S = "${WORKDIR}/gkrellm-${PV}"
+SRC_URI = "http://members.dslextreme.com/users/billw/gkrellm/gkrellm-${PV}.tar.bz2"
 
 inherit pkgconfig
 
