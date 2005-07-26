@@ -12,23 +12,23 @@ all: update build
 build: build-unslung build-openslug build-optware
 
 .PHONY: setup
-setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks setup-optware
+setup: setup-master setup-bitbake setup-openembedded setup-optware
 
 .PHONY: setup-developer
-setup-developer: setup-master setup-bitbake setup-openembedded setup-oe-symlinks-developer setup-optware-developer
+setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-developer
 
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-optware
 
 .PHONY: clobber
-clobber: clobber-optware clobber-oe-symlinks clobber-openembedded clobber-bitbake
+clobber: clobber-optware clobber-openembedded clobber-bitbake
 
 .PHONY: unslung build-unslung
-unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
 	( cd unslung ; make )
 
 .PHONY: openslug build-openslug
-openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf oe-symlinks/packages
+openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
 	( cd openslug ; make )
 
 .PHONY: optware build-optware
@@ -65,15 +65,6 @@ setup-bitbake bitbake/bin/bitbake:
 setup-openembedded openembedded/conf/machine/nslu2.conf:
 	${MAKE} MT/revision
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
-
-.PHONY: setup-oe-symlinks
-setup-oe-symlinks oe-symlinks/packages:
-	[ -e oe-symlinks/packages ] || ( svn co svn://svn.berlios.de/openslug/trunk/openslug/nslu2-linux oe-symlinks )
-
-.PHONY: setup-oe-symlinks-developer
-setup-oe-symlinks-developer:
-	[ -e oe-symlinks ] && ( mv oe-symlinks oe-symlinks-user )
-	svn co svn+ssh://${SVN_USER}@svn.berlios.de/svnroot/repos/openslug/trunk/openslug/nslu2-linux oe-symlinks
 
 .PHONY: setup-optware
 setup-optware optware/Makefile:
@@ -141,10 +132,6 @@ update-openembedded: openembedded/conf/machine/nslu2.conf
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
 
-.PHONY: update-oe-symlinks
-update-oe-symlinks: oe-symlinks/packages
-	( cd oe-symlinks ; svn update )
-
 .PHONY: update-optware
 update-optware: optware/Makefile
 	( cd optware ; cvs update -d -P )
@@ -156,10 +143,6 @@ clobber-bitbake:
 .PHONY: clobber-openembedded
 clobber-openembedded:
 	rm -rf openembedded
-
-.PHONY: clobber-oe-symlinks
-clobber-oe-symlinks:
-	rm -rf oe-symlinks
 
 .PHONY: clobber-optware
 clobber-optware:

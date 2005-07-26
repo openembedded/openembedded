@@ -17,10 +17,9 @@ setup-env:
 	[ -e bitbake ]      || ( ln -s ../bitbake . )
 	[ -e downloads ]    || ( ln -s ../downloads . )
 	[ -e openembedded ] || ( ln -s ../openembedded . )
-	[ -e oe-symlinks ]  || ( ln -s ../oe-symlinks . )
 	echo 'OEROOT='`pwd` > setup-env
 	echo 'OESYS=$$OEROOT/bitbake/' >> setup-env
-	echo 'PKGDIR=$$OEROOT/openembedded/' >> setup-env
+	echo 'export PKGDIR=$$OEROOT/openembedded/' >> setup-env
 	echo 'OEBUILD=$$OEROOT' >> setup-env
 	echo 'export PYTHONPATH=$$OESYS/lib' >>setup-env
 	echo 'export BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
@@ -42,9 +41,9 @@ clobber:
 	rm -rf tmp
 
 openslug-source:
-	tar zcvf openslug-source.tar.gz --exclude=MT Makefile bitbake conf openembedded oe-symlinks
+	tar zcvf openslug-source.tar.gz --exclude=MT Makefile bitbake conf openembedded
 
 distclean: clobber
-	rm -rf setup-env conf/local.conf bitbake downloads openembedded oe-symlinks
+	rm -rf setup-env conf/local.conf bitbake downloads openembedded
 
 # End of Makefile

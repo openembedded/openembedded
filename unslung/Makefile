@@ -17,10 +17,9 @@ setup-env:
 	[ -e bitbake ]      || ( ln -s ../bitbake . )
 	[ -e downloads ]    || ( ln -s ../downloads . )
 	[ -e openembedded ] || ( ln -s ../openembedded . )
-	[ -e oe-symlinks ]  || ( ln -s ../oe-symlinks . )
 	echo 'OEROOT='`pwd` > setup-env
 	echo 'OESYS=$$OEROOT/bitbake/' >> setup-env
-	echo 'PKGDIR=$$OEROOT/openembedded/' >> setup-env
+	echo 'export PKGDIR=$$OEROOT/openembedded/' >> setup-env
 	echo 'OEBUILD=$$OEROOT' >> setup-env
 	echo 'BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
 	echo 'PATH=$$OESYS/bin/:$$PATH' >> setup-env
@@ -30,6 +29,8 @@ setup-env:
 	echo 'unset LC_CTYPE' >> setup-env
 	echo 'unset CC' >> setup-env
 	echo 'unset CXX' >> setup-env
+	echo 'unset MFLAGS' >> setup-env
+	echo 'unset MAKEFLAGS' >> setup-env
 	echo 'alias bb=bitbake' >> setup-env
 	echo 'echo Environment set up for Unslung development.' >> setup-env
 
@@ -40,9 +41,9 @@ clobber:
 	rm -rf tmp
 
 unslung-source:
-	tar zcvf unslung-source.tar.gz --exclude=MT Makefile bitbake conf openembedded oe-symlinks
+	tar zcvf unslung-source.tar.gz --exclude=MT Makefile bitbake conf openembedded
 
 distclean: clobber
-	rm -f setup-env conf/local.conf bitbake downloads openembedded oe-symlinks
+	rm -f setup-env conf/local.conf bitbake downloads openembedded
 
 # End of Makefile
