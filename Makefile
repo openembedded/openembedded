@@ -187,7 +187,7 @@ publish-master: push-master
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
-	rsync -avr openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
+	rsync --delete -av --exclude="morgue" openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
