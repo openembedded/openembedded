@@ -36,11 +36,11 @@ optware build-optware: build-optware-nslu2 build-optware-wl500g
 
 .PHONY: optware-nslu2 build-optware-nslu2
 optware-nslu2 build-optware-nslu2: optware/nslu2/Makefile
-	( cd optware/nslu2 ; make )
+	( cd optware/nslu2 ; make autoclean ; make )
 
 .PHONY: optware-wl500g build-optware-wl500g
 optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
-	( cd optware/wl500g ; make )
+	( cd optware/wl500g ; make autoclean ; make )
 
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
