@@ -33,7 +33,7 @@ openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf
 
 .PHONY: optware build-optware
 optware build-optware: optware/Makefile
-	( cd optware ; make )
+	( cd optware ; unset LD_LIBRARY_PATH; make )
 
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
