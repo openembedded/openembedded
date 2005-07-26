@@ -1,7 +1,7 @@
 SECTION = "base"
 DEPENDS = "unzip-native"
 
-SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci216.exe"
+SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci218c.exe"
 FILES_${PN} = '*'
 
 python do_unpack() {
