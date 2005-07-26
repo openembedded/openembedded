@@ -43,6 +43,8 @@ setup-monotone monotone/nslu2-linux.db:
 	( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
 	# Above may be supplemented  by following someday
+	# It currently *requires* monotone 0.21, or it will fail with 
+	# a mysterious sounding database error.
 	# wget http://www.nslu2-linux.org/nslu2-linux.initial.db -O monotone/nslu2-linux.db
 
 downloads:
