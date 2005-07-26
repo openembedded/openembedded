@@ -2,7 +2,7 @@ PR = "r1"
 
 SRC_URI = "http://stag.mind.be/gpe-helpviewer.tar.bz2"
 
-DEPENDS = "gtkhtml-3.0 gpe-helpviewer-${PN}-doc"
+DEPENDS = "gtkhtml-3.0"
 
 S = "${WORKDIR}/gpe-helpviewer"
 
