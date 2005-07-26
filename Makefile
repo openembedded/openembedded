@@ -20,6 +20,9 @@ setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-dev
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-optware
 
+.PHONY: upload
+upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross
+
 .PHONY: clobber
 clobber: clobber-optware clobber-openembedded clobber-bitbake
 
@@ -226,26 +229,31 @@ publish-master: push-master
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
-	rsync --omit-dir-times --delete -av --exclude="morgue" openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
+	rsync -vlt openslug/tmp/deploy/ipk/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
+	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
+	rsync -vlt --delete openslug/tmp/deploy/ipk/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
 	scripts/package-strip.pl kernel-module-\* unslung/tmp/deploy/ipk/Packages unslung/tmp/deploy/ipk/Packages.new
 	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
-	gzip -c unslung/tmp/deploy/ipk/Packages >unslung/tmp/deploy/ipk/Packages.gz
-	rsync -vrlt unslung/tmp/deploy/ipk/kernel-module-* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
-	rsync -vrl unslung/tmp/deploy/ipk/Packages* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+	gzip -c unslung/tmp/deploy/ipk/Packages > unslung/tmp/deploy/ipk/Packages.gz
+	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
+	rsync -vl unslung/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
+	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
 
 .PHONY: upload-optware-nslu2-cross
 upload-optware-nslu2-cross: optware/nslu2/Makefile
-	rsync -vrlt optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
-	rsync -vrl optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vlt optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vl optware/nslu2/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vlt --delete optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 
 .PHONY: upload-optware-wl500g-cross
 upload-optware-wl500g-cross: optware/wl500g/Makefile
-	rsync -vrlt optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
-	rsync -vrl optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vlt optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vlt --delete optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
