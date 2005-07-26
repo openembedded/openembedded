@@ -6,18 +6,23 @@ def tinder_send_email(data, header, log):
     import smtplib
     from email.MIMEText import MIMEText
     msg = MIMEText(header +'\n' + log)
-    msg['Subject'] = data.getVar('TINDER_SUBJECT',event.data, True) or "Tinder-Client build log"
-    msg['To']      = data.getVar('TINDER_MAILTO',event.data, True)
-    msg['From']    = data.getVar('TINDER_FROM',  event.data, True)
+    msg['Subject'] = bb.data.getVar('TINDER_SUBJECT',data, True) or "Tinder-Client build log"
+    msg['To']      = bb.data.getVar('TINDER_MAILTO' ,data, True)
+    msg['From']    = bb.data.getVar('TINDER_FROM',   data, True)
 
 
     s = smtplib.SMTP()
     s.connect()
-    s.sendmail(data.getVar('TINDER_FROM', event.data, True), [data.getVar('TINDER_MAILTO', event.data, True)], msg.as_string())
+    s.sendmail(bb.data.getVar('TINDER_FROM', data, True), [bb.data.getVar('TINDER_MAILTO', data, True)], msg.as_string())
     s.close()
 
 def tinder_send_http(data, header, log):
-    pass
+    cont = header + '\n' + log
+    import httplib
+    conn = httplib.HTPPConnection(bb.data.getVar('TINDER_HOST',data, True))
+    conn.request("POST", bb.data.getVar('TINDER_URL',data,True),body=cont)
+    conn.close() 
+
 
 # Prepare tinderbox mail header
 def tinder_prepare_mail_header(data, status):
