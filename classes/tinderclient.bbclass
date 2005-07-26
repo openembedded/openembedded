@@ -20,10 +20,9 @@ def tinder_send_email(da, header, log):
 def tinder_send_http(da, header, log):
     from bb import data
     import httplib, urllib
-    cont = "%s\n%s" % ( header, log)
+    cont = "\n%s\n%s" % ( header, log)
     headers = {"Content-type": "multipart/form-data" } 
   
-    print cont 
     conn = httplib.HTTPConnection(data.getVar('TINDER_HOST',da, True))
     conn.request("POST", data.getVar('TINDER_URL',da,True), cont, headers)
     conn.close() 
