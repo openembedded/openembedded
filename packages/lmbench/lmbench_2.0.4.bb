@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
-SRC_URI = "ftp://ftp.bitmover.com/lmbench/lmbench-${PV}.tgz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
 	   file://debian.patch;patch=1 \
 	   file://exe.patch;patch=1 \
 	   file://lmbench-run"
