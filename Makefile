@@ -210,6 +210,10 @@ push: push-master push-openembedded
 push-master: update-master
 	monotone push
 
+.PHONY: push-bitbake
+push-bitbake: update-bitbake
+	( cd bitbake ; monotone push )
+
 .PHONY: push-openembedded
 push-openembedded: update-openembedded
 	( cd openembedded ; monotone push )
@@ -239,6 +243,10 @@ import-openembedded: openembedded/conf/machine/nslu2.conf
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
 	fi
+
+.PHONY: import-bitbake
+import-bitbake: bitbake/bin/bitbake
+	svn co svn://svn.berlios.de/bitbake/trunk/bitbake
 
 .PHONY: propagate-from-oe
 propagate-from-oe: 
