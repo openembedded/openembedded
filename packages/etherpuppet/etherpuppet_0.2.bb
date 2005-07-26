@@ -6,7 +6,7 @@ You also have to run Etherpuppet on the victim interface's machine."
 SECTION = "console/network"
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.cartel-securite.fr/pbiondi/projects/etherpuppet/etherpuppet.c"
+SRC_URI = "http://www.secdev.org/projects/etherpuppet/files/etherpuppet.c"
 S = "${WORKDIR}"
 
 do_unpack() {
