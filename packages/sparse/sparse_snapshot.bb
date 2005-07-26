@@ -15,7 +15,7 @@ preprocessor (although it contains as a part of it a preprocessing phase)."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PV = "0.0${CVSDATE}"
 LICENSE = "OSL"
-SRC_URI = "http://www.codemonkey.org.uk/projects/bitkeeper/sparse/sparse-${@get_snapshot_date(d)}.tar.gz \
+SRC_URI = "http://www.codemonkey.org.uk/projects/git-snapshots/sparse/sparse-${@get_snapshot_date(d)}.tar.gz \
 	   file://compile.patch;patch=1 \
 	   file://vars.patch;patch=1"
 S = "${WORKDIR}/sparse-bk"
