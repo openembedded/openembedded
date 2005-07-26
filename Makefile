@@ -18,7 +18,7 @@ setup: setup-master setup-bitbake setup-openembedded setup-oe-symlinks setup-opt
 setup-developer: setup-master setup-bitbake setup-openembedded setup-oe-symlinks-developer setup-optware-developer
 
 .PHONY: update
-update: update-master update-bitbake update-openembedded update-oe-symlinks update-optware
+update: update-master update-bitbake update-openembedded update-optware
 
 .PHONY: clobber
 clobber: clobber-optware clobber-oe-symlinks clobber-openembedded clobber-bitbake
