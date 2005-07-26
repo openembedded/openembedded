@@ -2,6 +2,23 @@ def tinder_tinder_time():
     import time
     return time.strftime('%m/%d/%Y %H:%M:%S', time.localtime())
 
+def tinder_send_email(data, header, log):
+    import smtplib
+    from email.MIMEText import MIMEText
+    msg = MIMEText(header +'\n' + log)
+    msg['Subject'] = data.getVar('TINDER_SUBJECT',event.data, True) or "Tinder-Client build log"
+    msg['To']      = data.getVar('TINDER_MAILTO',event.data, True)
+    msg['From']    = data.getVar('TINDER_FROM',  event.data, True)
+
+
+    s = smtplib.SMTP()
+    s.connect()
+    s.sendmail(data.getVar('TINDER_FROM', event.data, True), [data.getVar('TINDER_MAILTO', event.data, True)], msg.as_string())
+    s.close()
+
+def tinder_send_http(data, header, log):
+    pass
+
 # Prepare tinderbox mail header
 def tinder_prepare_mail_header(data, status):
     import bb
@@ -92,18 +109,12 @@ def tinder_do_tinder_report(event):
     if len(log) == 0 or len(header) == 0:
         return
 
-    import smtplib
-    from email.MIMEText import MIMEText
-    msg = MIMEText(header +'\n' + log)
-    msg['Subject'] = data.getVar('TINDER_SUBJECT',event.data, True) or "Tinder-Client build log"
-    msg['To']      = data.getVar('TINDER_MAILTO',event.data, True)
-    msg['From']    = data.getVar('TINDER_FROM',  event.data, True)
+    log_post_method = tinder_send_email
+    if bb.data.getVar('TINDER_SENDLOG', event.data, True) == "http":
+	log_post_method = tinder_send_http
 
+    log_post_method(event.data, header, log)
 
-    s = smtplib.SMTP()
-    s.connect()
-    s.sendmail(data.getVar('TINDER_FROM', event.data, True), [data.getVar('TINDER_MAILTO', event.data, True)], msg.as_string())
-    s.close()
 
 addhandler tinderclient_eventhandler
 python tinderclient_eventhandler() {
