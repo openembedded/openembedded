@@ -1,0 +1,200 @@
+#!/bin/sh
+#
+# This script must be executed with the following environment variables
+# and arguments:
+#
+# export FROZEN_DIR=<place to write conf files>
+# export PKGDIR=<location of openembedded package source>
+# export DISTRO=<distro being frozen>
+# freeze {directories}
+#
+# where {directories} are one or more directories containing built
+# packages.  If not given or empty FROZEN_DIR defaults to the directory
+# on BBPATH containing conf/local.conf.  With no arguments $TMPDIR/work must
+# be the location of the built packages.
+#
+# The output of the script consists of two files:
+# 	$FROZEN_DIR/$DISTRO-bbfiles.conf
+#	  defines BBFILES to a list of all the .bb files required
+#
+#	$FROZEN_DIR/$DISTRO-packages.conf
+#	  defines BBFILES to a list of the directories containing
+#	  those bb files.
+#
+# The output path definitions use ${PKGDIR} (literally)
+#
+# Check the arguments.
+test -n "$DISTRO" || {
+	echo "FATAL: freeze: set \$DISTRO to the name of the distro to freeze" >&2
+	exit 1
+}
+test -r "$PKGDIR/packages/freeze/freeze.bb" || {
+	echo "FATAL: freeze: set \$PKGDIR to the directory containing OE packages" >&2
+	exit 1
+}
+if test -n "$FROZEN_DIR" -a -d "$FROZEN_DIR"
+then
+	: # ok, given a directory
+else
+	if test -n "$BBPATH"
+	then
+		FROZEN_DIR=""
+		for d in ${BBPATH//:/ }
+		do
+			if test -r "$d/conf/local.conf"
+			then
+				FROZEN_DIR="$d/conf"
+				break
+			elif test -z "$FROZEN_DIR" -a -d "$d"
+			then
+				# default to the first existing directory on
+				# the path
+				FROZEN_DIR="$d"
+			fi
+		done
+	fi
+	if test -n "$FROZEN_DIR"
+	then
+		echo "NOTE: freeze: \$FROZEN_DIR=\"$FROZEN_DIR\"" >&2
+		echo "NOTE:         (defaulted from \$BBPATH=\"$BBPATH\")" >&2
+	else
+		echo "FATAL: freeze: set \$FROZEN_DIR to the directory for the new .conf files" >&2
+		exit 1
+	fi
+fi
+test -d "$1" || {
+	if test -d "$TMPDIR/work"
+	then
+		set "$TMPDIR/work"
+	else
+		echo "FATAL: freeze: give one or more directories containing built packages" >&2
+		exit 1
+	fi
+}
+#
+# First some helper functions
+#
+# output "$@" if there is exactly one argument (so this selectively
+# outputs a file name if the pattern matches exactly one file).
+output() {
+	if test $# -eq 1 -a -r "$1"
+	then
+		echo '${PKGDIR}/packages/'"$1 \\"
+		return 0
+	else
+		return 1
+	fi
+}
+#
+# Perform edit '$1' on '$2' and check to see if the result is a valid
+# file name.  If '$1' is empty '$2' is checked with no edit
+check() {
+	local nf
+	if test -n "$1"
+	then
+		nf="$(echo "$2" | sed -n "$1")"
+		test -n "$nf" && output */$nf.bb
+	else
+		output */"$2.bb"
+	fi
+}
+#
+# Output a note - because bitbake swallows the stderr stream and redirects to the
+# log file, which never gets read, it is necessary to do something horrible here.
+bberror(){
+	echo "ERROR:" "$@" >/dev/tty
+}
+bbnote(){
+	echo "NOTE:" "$@" >/dev/tty
+}
+#
+# Say where the files go (this goes to the log file)
+bbnote "frozen bbfiles.conf  --> $FROZEN_DIR/$DISTRO-bbfiles.conf" >&2
+bbnote "frozen packages.conf --> $FROZEN_DIR/$DISTRO-packages.conf" >&2
+#
+# List the built packages, for each one find the corresponding bb file
+# (from the packages directory).
+for d in "$@"
+do
+	(cd "$d"; ls) | while read x
+	do
+		echo "$x" "$d/$x"
+	done
+done | {
+	report=
+	while read d full
+	do
+		if test ! -d "$full"
+		then
+			bberror "$full: not a directory, ignored" >&2
+		elif echo "$d" | egrep '\-[^-][^-]*-[a-z][a-z]*[0-9][0-9.]*$'
+		then
+			:
+		else
+			bberror "$full: expected package-version-rev" >&2
+			if test -z "$report"
+			then
+				bberror "  name not recognised as a package and so ignored" >&2
+				report="$d"
+			fi
+		fi
+	done
+	if test -n "$report"
+	then
+		bberror "$report: at least this directory was ignored" >&2
+		bberror "  The output files may be wrong, some .bb files may be missing!" >&2
+	fi
+} | sed 's/^\(.*\)-\([^-]*\)-\([^-]*\)$/\1 \2 \3/' | {
+	# the check commands need to be executed from the packages directory so they
+	# can use shell wildcarding to match the bb files
+	cd "$PKGDIR/packages"
+	# This would be several orders of magnitude easier if portmap did not have
+	# the version '5-7' (etc).  This is the only package with a '-' in the
+	# version number...
+	report=
+	while read p v r
+	do
+		# Each package/version must be found in $PKGDIR/packages, this search
+		# is a heuristic, note that there are never any '_' characters in the
+		# work directory name.
+		f="${p}_$v"
+		check '' "$f" ||
+		check 's/-/[-_]/gp' "$p-$v" ||
+		check 's/_1\.0$//p' "$f" ||
+		check 's/_\([0-9.]*\)cvs200[0-9]*$/_\1cvs/p' "$f" ||
+		check 's/_\([0-9.]*\)+cvs200[0-9]*$/_\1+cvs/p' "$f" ||
+		check 's/_0\.1cvs200[0-9]*$/_cvs/p' "$f" ||
+		check 's/_0\.1cvs\(200[0-9]*\)$/_\1/p' "$f" || {
+			bberror "($p,$v,$r): package not found" >&2
+			if test -z "$report"
+			then
+				report="($p,$v,$r)"
+				bberror "at least one package has not been found" >&2
+			fi
+		}
+	done
+	# in all cases add freeze and unfreeze
+	echo '${PKGDIR}/packages/freeze/freeze.bb '"\\"
+	echo '${PKGDIR}/packages/freeze/unfreeze.bb '"\\"
+	# check for a problem
+	if test -n "$report"
+	then
+		bberror "At least $report was not found." >&2
+		bberror "This can be ignored if the .bb file has been removed, however if not" >&2
+		bberror "the frozen .conf output files are useless unless you fix them up" >&2
+	fi
+} | sort | uniq | {
+	# the simple bb file list (package/bbfile.bb)
+	out="$FROZEN_DIR/$DISTRO-bbfiles.conf"
+	echo '# automatically generated by bitbake freeze' >"$out"
+	echo 'BBFILES := "\' >>"$out"
+	tee -a "$out"
+	echo '"' >>"$out"
+} | sed 's!^\(.*\)/[^/]*\.bb \\$!\1/*.bb \\!' | uniq | {
+	# the package directories list (package)
+	out="$FROZEN_DIR/$DISTRO-packages.conf"
+	echo '# automatically generated by bitbake freeze' >"$out"
+	echo 'BBFILES := "\' >>"$out"
+	cat >>"$out"
+	echo '"' >>"$out"
+}
