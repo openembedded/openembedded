@@ -2,7 +2,7 @@
 # Licensed under the GPL v2 or later
 
 unslung-firmware: setup-env conf/local.conf
-	(source setup-env ; bitbake unslung-packages)
+	. setup-env ; bitbake unslung-packages
 
 # This does the same thing but with a clean environment
 # The HOME setting prevents user environment settings
@@ -11,20 +11,19 @@ unslung-firmware: setup-env conf/local.conf
 # .cache in the home directory.
 unslung-firmware-safe: setup-env conf/local.conf
 	env -i CCACHE_DISABLE=1 CCACHE_DIR="`pwd`/tmp/ccache" HOME=/dev/null \
-		sh -c 'source setup-env; bitbake unslung-packages'
+		sh -c '. setup-env; bitbake unslung-packages'
 
 setup-env:
-	[ -e bitbake ]      || ( ln -s ../bitbake . )
-	[ -e downloads ]    || ( ln -s ../downloads . )
-	[ -e openembedded ] || ( ln -s ../openembedded . )
+	[ -e bitbake ]      || ln -s ../bitbake .
+	[ -e downloads ]    || ln -s ../downloads .
+	[ -e openembedded ] || ln -s ../openembedded .
 	echo 'OEROOT='`pwd` > setup-env
 	echo 'OESYS=$$OEROOT/bitbake/' >> setup-env
-	echo 'export PKGDIR=$$OEROOT/openembedded/' >> setup-env
 	echo 'OEBUILD=$$OEROOT' >> setup-env
-	echo 'BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
-	echo 'PATH=$$OESYS/bin/:$$PATH' >> setup-env
-	echo 'LD_LIBRARY_PATH=' >> setup-env
-	echo 'export PATH LD_LIBRARY_PATH BBPATH' >> setup-env
+	echo 'PKGDIR=$$OEROOT/openembedded/' >> setup-env
+	echo 'export BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
+	echo 'export PATH=$$OESYS/bin/:$$PATH' >> setup-env
+	echo 'export LD_LIBRARY_PATH=' >> setup-env
 	echo 'export LANG=C' >> setup-env
 	echo 'unset LC_CTYPE' >> setup-env
 	echo 'unset CC' >> setup-env
@@ -41,7 +40,7 @@ clobber:
 	rm -rf tmp
 
 unslung-source:
-	tar zcvf unslung-source.tar.gz --exclude=MT Makefile bitbake conf openembedded
+	tar zcf unslung-source.tar.gz --exclude=MT Makefile bitbake conf openembedded
 
 distclean: clobber
 	rm -f setup-env conf/local.conf bitbake downloads openembedded

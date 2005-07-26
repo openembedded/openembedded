@@ -3,10 +3,12 @@ OEROOT = "%%%OEROOT%%%"
 # Use this to specify where OE should place the downloaded sources into
 DL_DIR = "${OEROOT}/downloads"
 
-# Delete the line below. Then specify which .oe files to consider for
-# your build. Typically this will be something like OEFILES = "/path/to/packages/*/*.oe"
-# BBFILES := "/home/slug/openembedded/packages/*/*.bb"
-BBFILES := "${OEROOT}/oe-symlinks/packages/*/*.bb"
+# BBFILES defines the list of .bb files to consider when looking for a
+# way to build a package.  This gets overridden in the openslug and
+# unslung .conf files.  PKGDIR defines where to find the 'packages'
+# directory containing the package sub-directories.
+PKGDIR := "${OEROOT}/openembedded"
+BBFILES := "${PKGDIR}/packages/*/*.bb"
 
 # Use the OEMASK below to instruct OE to _NOT_ consider some .oe files
 # This is a regulary expression, so be sure to get your parenthesis balanced.
