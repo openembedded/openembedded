@@ -47,18 +47,12 @@ optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
 
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
-	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && monotone -d monotone/nslu2-linux.db db init )
-	( monotone -d monotone/nslu2-linux.db pull monotone.vanille.de org.openembedded.* )
-	( monotone -d monotone/nslu2-linux.db unset database default-server )
-	( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
+	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && \
+	wget http://ipkg-us-dyoung.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz && \
+	gunzip monotone/nslu2-linux.db.gz )
+	- ( monotone -d monotone/nslu2-linux.db unset database default-server )
+	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
-	# Above may be supplemented  by following someday
-	# It currently *requires* monotone 0.21, or it will fail with 
-	# a mysterious sounding database error.
-	# wget http://www.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz
-	# or
-	# wget http://ipkg-us-dyoung.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz
-	# followed by decompressing it
 
 downloads:
 	[ -e downloads ] || mkdir -p downloads
