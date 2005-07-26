@@ -7,7 +7,7 @@ def base_prepare_mail_header(data, status):
     import bb
 
     str  = "tinderbox: administrator: %s\n" % bb.data.getVar('TINDER_ADMIN', data, True)
-    str += "tinderbox: starttime: %s\n"     % bb.data.getVar('TINDER_START', data, True)
+    str += "tinderbox: starttime: %s\n"     % bb.data.getVar('BUILDSTART', data, True) or bb.data.getVar('TINDER_START', data, True)
     str += "tinderbox: buildname: %s\n"     % bb.data.getVar('TINDER_BUILD', data, True)
     str += "tinderbox: errorparser: %s\n"   % bb.data.getVar('TINDER_ERROR', data, True)
     str += "tinderbox: status: %s\n"        % status
