@@ -2,39 +2,44 @@ def tinder_tinder_time():
     import time
     return time.strftime('%m/%d/%Y %H:%M:%S', time.localtime())
 
-def tinder_send_email(data, header, log):
+def tinder_send_email(da, header, log):
     import smtplib
+    from bb import data
     from email.MIMEText import MIMEText
     msg = MIMEText(header +'\n' + log)
-    msg['Subject'] = bb.data.getVar('TINDER_SUBJECT',data, True) or "Tinder-Client build log"
-    msg['To']      = bb.data.getVar('TINDER_MAILTO' ,data, True)
-    msg['From']    = bb.data.getVar('TINDER_FROM',   data, True)
+    msg['Subject'] = data.getVar('TINDER_SUBJECT',da, True) or "Tinder-Client build log"
+    msg['To']      = data.getVar('TINDER_MAILTO' ,da, True)
+    msg['From']    = data.getVar('TINDER_FROM',   da, True)
 
 
     s = smtplib.SMTP()
     s.connect()
-    s.sendmail(bb.data.getVar('TINDER_FROM', data, True), [bb.data.getVar('TINDER_MAILTO', data, True)], msg.as_string())
+    s.sendmail(data.getVar('TINDER_FROM', da, True), [data.getVar('TINDER_MAILTO', da, True)], msg.as_string())
     s.close()
 
-def tinder_send_http(data, header, log):
-    cont = header + '\n' + log
-    import httplib
-    conn = httplib.HTPPConnection(bb.data.getVar('TINDER_HOST',data, True))
-    conn.request("POST", bb.data.getVar('TINDER_URL',data,True),body=cont)
+def tinder_send_http(da, header, log):
+    from bb import data
+    import httplib, urllib
+    cont = "%s\n%s" % ( header, log)
+    headers = {"Content-type": "multipart/form-data" } 
+  
+    print cont 
+    conn = httplib.HTTPConnection(data.getVar('TINDER_HOST',da, True))
+    conn.request("POST", data.getVar('TINDER_URL',da,True), cont, headers)
     conn.close() 
 
 
 # Prepare tinderbox mail header
-def tinder_prepare_mail_header(data, status):
-    import bb
+def tinder_prepare_mail_header(da, status):
+    from bb import data
 
-    str  = "tinderbox: administrator: %s\n" % bb.data.getVar('TINDER_ADMIN', data, True)
-    str += "tinderbox: starttime: %s\n"     % bb.data.getVar('BUILDSTART', data, True) or bb.data.getVar('TINDER_START', data, True)
-    str += "tinderbox: buildname: %s\n"     % bb.data.getVar('TINDER_BUILD', data, True)
-    str += "tinderbox: errorparser: %s\n"   % bb.data.getVar('TINDER_ERROR', data, True)
+    str  = "tinderbox: administrator: %s\n" % data.getVar('TINDER_ADMIN', da, True)
+    str += "tinderbox: starttime: %s\n"     % data.getVar('BUILDSTART', da, True) or data.getVar('TINDER_START', da, True)
+    str += "tinderbox: buildname: %s\n"     % data.getVar('TINDER_BUILD', da, True)
+    str += "tinderbox: errorparser: %s\n"   % data.getVar('TINDER_ERROR', da, True)
     str += "tinderbox: status: %s\n"        % status
     str += "tinderbox: timenow: %s\n"       % tinder_tinder_time()
-    str += "tinderbox: tree: %s\n"          % bb.data.getVar('TINDER_TREE', data, True)
+    str += "tinderbox: tree: %s\n"          % data.getVar('TINDER_TREE', da, True)
     str += "tinderbox: buildfamily: %s\n"   % "unix"
     str += "tinderbox: END"
 
@@ -115,7 +120,7 @@ def tinder_do_tinder_report(event):
         return
 
     log_post_method = tinder_send_email
-    if bb.data.getVar('TINDER_SENDLOG', event.data, True) == "http":
+    if data.getVar('TINDER_SENDLOG', event.data, True) == "http":
 	log_post_method = tinder_send_http
 
     log_post_method(event.data, header, log)
