@@ -234,8 +234,18 @@ upload-unslung-modules: unslung/Makefile
 	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
 	gzip -c unslung/tmp/deploy/ipk/Packages >unslung/tmp/deploy/ipk/Packages.gz
-	rsync -avr unslung/tmp/deploy/ipk/kernel-module-* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
-	rsync -avr unslung/tmp/deploy/ipk/Packages* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+	rsync -vrlt unslung/tmp/deploy/ipk/kernel-module-* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+	rsync -vrl unslung/tmp/deploy/ipk/Packages* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+
+.PHONY: upload-optware-nslu2-cross
+upload-optware-nslu2-cross: optware/nslu2/Makefile
+	rsync -vrlt optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vrl optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+
+.PHONY: upload-optware-wl500g-cross
+upload-optware-wl500g-cross: optware/wl500g/Makefile
+	rsync -vrlt optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vrl optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
