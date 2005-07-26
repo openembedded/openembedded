@@ -38,12 +38,13 @@ do_stage() {
 do_build[nostamp] = 1
 do_build() {
 	# export FROZEN_DIR=<place to write conf files>
-	# export PACKAGE_DIR=<location of openembedded package source>
+	# export PKGDIR=<location of openembedded package source>
+	# export DISTRO=<distro being frozen>
 	# freeze {directories}
 	set -x
 	if test -d "${PKGDIR}/packages"
 	then
-		FROZEN_DIR="${FROZEN_DIR}" DISTRO="${DISTRO}" \
+		FROZEN_DIR="${FROZEN_DIR}" PKGDIR="${PKGDIR}" DISTRO="${DISTRO}" \
 			sh "${WORKDIR}/freeze" "${TMPDIR}/work"
 	else
 		oenote "\$PKGDIR/packages ($PKGDIR/packages) not found"
