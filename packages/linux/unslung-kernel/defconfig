@@ -218,7 +218,7 @@ CONFIG_KCORE_ELF=y
 # CONFIG_KCORE_AOUT is not set
 CONFIG_BINFMT_AOUT=y
 CONFIG_BINFMT_ELF=y
-# CONFIG_BINFMT_MISC is not set
+CONFIG_BINFMT_MISC=m
 # CONFIG_PM is not set
 # CONFIG_ARTHUR is not set
 CONFIG_CMDLINE="console=ttyS0,115200n8 root=/dev/ram0 rw init=/linuxrc initrd=0x01000000,10M mem=32M@0x00000000"
