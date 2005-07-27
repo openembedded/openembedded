@@ -77,7 +77,7 @@ setup-openembedded openembedded/conf/machine/nslu2.conf:
 .PHONY: setup-optware
 setup-optware optware/Makefile:
 	${MAKE} downloads
-	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
+	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 
 optware/nslu2/Makefile:
 	${MAKE} optware/Makefile
@@ -107,28 +107,28 @@ optware/wl500g/Makefile:
 setup-optware-developer:
 	${MAKE} downloads
 	[ ! -e optware ] || ( mv optware optware-user )
-	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	${MAKE} optware/nslu2/Makefile optware/wl500g/Makefile
 
 .PHONY: setup-slugimage-developer
 setup-slugimage-developer:
-	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co slugimage
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co slugimage
 
 .PHONY: setup-upslug-developer
 setup-upslug-developer:
-	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co upslug
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co upslug
 
 .PHONY: setup-sluggo-developer
 setup-sluggo-developer:
-	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co sluggo
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co sluggo
 
 .PHONY: setup-apex
 setup-apex apex/Makefile:
-	cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co apex
+	cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co apex
 
 .PHONY: setup-apex-developer
 setup-apex-developer:
-	cvs -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
 
 .PHONY: setup-host-debian
 setup-host-debian:
@@ -183,7 +183,7 @@ update-openembedded: openembedded/conf/machine/nslu2.conf
 
 .PHONY: update-optware
 update-optware: optware/Makefile
-	( cd optware ; cvs update -d -P )
+	( cd optware ; cvs -q update -d -P )
 
 .PHONY: clobber-bitbake
 clobber-bitbake:
