@@ -205,7 +205,7 @@ push: push-master push-bitbake push-openembedded
 .PHONY: push-master
 push-master: update-master
 	monotone push
-	scp Makefile rwhitby@www.nslu2-linux.org:/home/nslu/public_html/Makefile
+	scp Makefile nslu@www.nslu2-linux.org:public_html/Makefile
 
 .PHONY: push-bitbake
 push-bitbake: update-bitbake
