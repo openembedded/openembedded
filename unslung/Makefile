@@ -21,6 +21,7 @@ setup-env:
 	echo 'OESYS=$$OEROOT/bitbake/' >> setup-env
 	echo 'OEBUILD=$$OEROOT' >> setup-env
 	echo 'PKGDIR=$$OEROOT/openembedded/' >> setup-env
+	echo 'export PYTHONPATH=$$OESYS/lib' >>setup-env
 	echo 'export BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
 	echo 'export PATH=$$OESYS/bin/:$$PATH' >> setup-env
 	echo 'export LD_LIBRARY_PATH=' >> setup-env
