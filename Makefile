@@ -189,6 +189,15 @@ publish-master: push-master
 upload-openslug-cross: openslug/Makefile
 	rsync -avr openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
 
+.PHONY: upload-unslung-modules
+upload-unslung-modules: unslung/Makefile
+	scripts/package-strip.pl kernel-module-\* unslung/tmp/deploy/ipk/Packages unslung/tmp/deploy/ipk/Packages.new
+	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
+	rm -f unslung/tmp/deploy/ipk/Packages.gz
+	gzip -c unslung/tmp/deploy/ipk/Packages >unslung/tmp/deploy/ipk/Packages.gz
+	rsync -avr unslung/tmp/deploy/ipk/kernel-module-* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+	rsync -avr unslung/tmp/deploy/ipk/Packages* unslung@nslu.sf.net:nslu/feeds/unslung/oe/
+
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone pull monotone.vanille.de org.openembedded.*
