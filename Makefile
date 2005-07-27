@@ -223,10 +223,10 @@ upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_ipk openslug/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_ipk openslug/cross
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_packages_clean openslug/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_packages_clean openslug/cross
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
@@ -235,30 +235,30 @@ upload-unslung-modules: unslung/Makefile
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
 	gzip -c unslung/tmp/deploy/ipk/Packages > unslung/tmp/deploy/ipk/Packages.gz
 	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_ipk unslung/oe
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_ipk unslung/oe
 	rsync -vl unslung/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_packages_clean unslung/oe
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_packages_clean unslung/oe
 #	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
 
 .PHONY: upload-optware-nslu2-cross
 upload-optware-nslu2-cross: optware/nslu2/Makefile
 	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_ipk unslung/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_ipk unslung/cross
 	rsync -vl optware/nslu2/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 	rsync -vlrt --delete optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_packages_clean unslung/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_packages_clean unslung/cross
 
 .PHONY: upload-optware-wl500g-cross
 upload-optware-wl500g-cross: optware/wl500g/Makefile
 	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_ipk unslung/wl500g
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_ipk unslung/wl500g
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
-	ssh nslu2@ipkg-us-dyoung.nslu2-linux.org mirror/sync_packages_clean unslung/wl500g
+	ssh nslu2@sources.nslu2-linux.org mirror/sync_packages_clean unslung/wl500g
 
 .PHONY: upload-sources
 upload-sources:
-	rsync -vlrt --exclude='ixp400*' downloads/ unslung@ipkg.nslu2-linux.org:nslu/sources/
+	rsync -vlrt --exclude='ixp400*' downloads/ nslu2@sources.nslu2-linux.org:ipkg/sources/
 
 .PHONY: import-bitbake
 import-bitbake: bitbake/bin/bitbake
