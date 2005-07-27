@@ -53,9 +53,8 @@ inherit kernel
 #
 # Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
 #
-CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  EQUIPMENT=0"
-CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) EQUIPMENT=4"
-
+CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  EQUIPMENT=4 RTC_RESET=1"
+CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) EQUIPMENT=0"
 CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
 # CMDLINE_INIT = "init=/bin/busybox ash"
 CMDLINE_INIT = " "
