@@ -14,3 +14,9 @@ do_configure_append() {
 	 sed -i 's:${SED}:sed:g' libtool
 	 sed -i 's:$SED:sed:g' libtool
 }
+
+do_stage() {
+	autotools_stage_includes
+	install -d ${STAGING_LIBDIR}
+	install -m 755 .libs/libgc.so* ${STAGING_LIBDIR}/
+}
