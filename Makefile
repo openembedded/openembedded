@@ -42,6 +42,10 @@ setup-monotone monotone/nslu2-linux.db:
 	( monotone -d monotone/nslu2-linux.db unset database default-server )
 	( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
+	# Above may be supplemented  by following someday
+	# It currently *requires* monotone 0.21, or it will fail with 
+	# a mysterious sounding database error.
+	# wget http://www.nslu2-linux.org/nslu2-linux.initial.db -O monotone/nslu2-linux.db
 
 downloads:
 	[ -e downloads ] || mkdir -p downloads
@@ -187,7 +191,7 @@ publish-master: push-master
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
-	rsync -avr openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
+	rsync --omit-dir-times --delete -av --exclude="morgue" openslug/tmp/deploy/ipk/ unslung@nslu.sf.net:nslu/feeds/openslug/unstable/
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
