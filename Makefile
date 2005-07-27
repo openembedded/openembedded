@@ -52,9 +52,9 @@ setup-monotone monotone/nslu2-linux.db:
 	# Above may be supplemented  by following someday
 	# It currently *requires* monotone 0.21, or it will fail with 
 	# a mysterious sounding database error.
-	# wget http://www.nslu2-linux.org/monotone/nslu2-linux.db -O monotone/nslu2-linux.db.gz
+	# wget http://www.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz
 	# or
-	# wget http://ipkg-us-dyoung.nslu2-linux.org/monotone/nslu2-linux.db -O monotone/nslu2-linux.db.gz
+	# wget http://ipkg-us-dyoung.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz
 	# followed by decompressing it
 
 downloads:
