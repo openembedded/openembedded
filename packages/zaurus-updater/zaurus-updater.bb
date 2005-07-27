@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://updater.sh"
 S = "${WORKDIR}"

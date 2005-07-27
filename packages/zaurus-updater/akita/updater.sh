@@ -198,9 +198,9 @@ do
 			DATAPOS=`expr $DATAPOS + $TMPSIZE`
 
 			#handle data file
-			echo 'ADDR='$ADDR
-			echo 'SIZE='$TMPSIZE
-			echo 'TMPDATA='$TMPDATA
+			#echo 'ADDR='$ADDR
+			#echo 'SIZE='$TMPSIZE
+			#echo 'TMPDATA='$TMPDATA
 			if [ $ISLOGICAL = 0 ]
 			then
 				next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
