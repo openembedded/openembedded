@@ -5,7 +5,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -53,12 +53,14 @@ inherit kernel
 #
 # Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
 #
-CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  EQUIPMENT=4 RTC_RESET=1"
-CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home) EQUIPMENT=0"
-CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
-# CMDLINE_INIT = "init=/bin/busybox ash"
-CMDLINE_INIT = " "
-CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
+CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)"
+CMDLINE_SHARP_spitz      = "RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
+
+CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
+CMDLINE_SHARP_akita      = "EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
+
+CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete"
+CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_SHARP}"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
@@ -77,7 +79,7 @@ PARALLEL_MAKE = ""
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"
 module_conf_pxa27x_bi = "below pxa27x_bi net_fd usbdcore "
 module_autoload_pxa27x_bi = "pxa27x_bi"
-module_autoload_usb-ohci-pxa27x = "usb-ohci-pxa27x"
+module_autoload_usb_ohci_pxa27x = "usb_ohci_pxa27x"
 
 do_configure_prepend() {
         install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
