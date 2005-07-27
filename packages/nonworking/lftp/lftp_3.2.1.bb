@@ -12,3 +12,11 @@ SRC_URI = "http://ftp.yars.free.net/pub/software/unix/net/ftp/client/lftp/lftp-$
 EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"
 
 inherit autotools gettext
+
+PARALLEL_MAKE = ""
+
+do_configure() {
+	gnu-configize
+	oe_runconf
+}
+
