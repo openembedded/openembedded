@@ -222,6 +222,7 @@ upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross 
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
+	rm -rf openslug/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync_ipk openslug/cross
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
@@ -230,6 +231,7 @@ upload-openslug-cross: openslug/Makefile
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
+	rm -rf unslung/tmp/deploy/ipk/morgue
 	scripts/package-strip.pl kernel-module-\* unslung/tmp/deploy/ipk/Packages unslung/tmp/deploy/ipk/Packages.new
 	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
