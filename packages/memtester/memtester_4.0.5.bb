@@ -3,7 +3,7 @@ DESCRIPTION = "Utility to test for faulty memory subsystem"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPLv2"
 
-SRC_URI = "http://www.qcc.ca/~charlesc/software/memtester/memtester-${PV}.tar.gz"
+SRC_URI = "http://pyropus.ca/software/memtester/memtester-${PV}.tar.gz"
 S = "${WORKDIR}/memtester-${PV}"
 
 do_compile () {
