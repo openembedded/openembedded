@@ -56,11 +56,10 @@ inherit kernel
 CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)"
 CMDLINE_SHARP_spitz      = "RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
 
-CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
-CMDLINE_SHARP_akita      = "EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
-
-CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete"
-CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_SHARP}"
+CMDLINE_ROOT = "root=/dev/mtdblock2 jffs2_orphaned_inodes=delete LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
+# CMDLINE_INIT = "init=/bin/busybox ash"
+CMDLINE_INIT = " "
+CMDLINE = "${CMDLINE_MTDPARTS} ${CMDLINE_ROOT} ${CMDLINE_CONSOLE} ${CMDLINE_INIT}"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
