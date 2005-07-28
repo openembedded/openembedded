@@ -19,6 +19,7 @@ SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
 inherit autotools
 
 EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
+		CPPFLAGS=-I${STAGING_INCDIR} \
                 LDFLAGS=-L${STAGING_LIBDIR} -Wl,--rpath-link,${STAGING_LIBDIR} \
                 CURSES=-lncurses \
                 install='install -D' \
