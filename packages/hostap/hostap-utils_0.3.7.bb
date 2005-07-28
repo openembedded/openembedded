@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "hostap-modules (${PV})"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-utils-${PV}.tar.gz \
 	   file://hostap-fw-load.patch;patch=1"
