@@ -217,6 +217,12 @@ push-openembedded: update-openembedded
 
 # Targets for use by core team members only
 
+.PHONY: autobuild
+autobuild:
+	while true ; do \
+	  ${MAKE} update build upload ; \
+	done
+
 .PHONY: upload
 upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
 
