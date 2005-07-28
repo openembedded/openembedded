@@ -229,9 +229,9 @@ publish-master: push-master
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
-	rsync -vlt openslug/tmp/deploy/ipk/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
+	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
-	rsync -vlt --delete openslug/tmp/deploy/ipk/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
+	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/unstable/
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
@@ -245,15 +245,15 @@ upload-unslung-modules: unslung/Makefile
 
 .PHONY: upload-optware-nslu2-cross
 upload-optware-nslu2-cross: optware/nslu2/Makefile
-	rsync -vlt optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 	rsync -vl optware/nslu2/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
-	rsync -vlt --delete optware/nslu2/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
+	rsync -vlrt --delete optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 
 .PHONY: upload-optware-wl500g-cross
 upload-optware-wl500g-cross: optware/wl500g/Makefile
-	rsync -vlt optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
-	rsync -vlt --delete optware/wl500g/packages/*.ipk unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
