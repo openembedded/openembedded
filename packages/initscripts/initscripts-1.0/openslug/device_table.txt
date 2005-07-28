@@ -164,5 +164,6 @@
 /dev/ttyUSB	c	660	0	5	188	0	0	1	2
 /dev/urandom	c	644	0	0	1	9	-	-	-
 /dev/usbmouse	c	640	0	45	10	32	-	-	-
+/dev/video	c	644	0	0	81	0	0	1	4	
 /dev/zero	c	644	0	0	1	5	-	-	-
 /dev/input/mice	c	660	0	0	13	63	-	-	-
