@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "http://kafka.fr.free.fr/slotsig/slotsig-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/slotsig/slotsig-${PV}.tar.bz2"
 
 do_compile() {
 	${CXX} -c -fPIC ${CXXFLAGS} -o slotsig_bases.o slotsig/slotsig_bases.cpp
