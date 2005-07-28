@@ -231,7 +231,7 @@ upload-openslug-cross: openslug/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages_clean openslug/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
@@ -243,7 +243,7 @@ upload-unslung-modules: unslung/Makefile
 	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/oe
 	rsync -vl unslung/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages_clean unslung/oe
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/oe
 #	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
 
 .PHONY: upload-optware-nslu2-cross
@@ -252,7 +252,7 @@ upload-optware-nslu2-cross: optware/nslu2/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
 	rsync -vl optware/nslu2/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 	rsync -vlrt --delete optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages_clean unslung/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
 
 .PHONY: upload-optware-wl500g-cross
 upload-optware-wl500g-cross: optware/wl500g/Makefile
@@ -260,7 +260,7 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages_clean unslung/wl500g
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
 
 .PHONY: upload-sources
 upload-sources:
