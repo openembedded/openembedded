@@ -219,9 +219,7 @@ push-openembedded: update-openembedded
 
 .PHONY: autobuild
 autobuild:
-	while true ; do \
-	  ${MAKE} update build upload ; \
-	done
+	${MAKE} update build upload
 
 .PHONY: upload
 upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
@@ -278,6 +276,9 @@ import-openembedded: openembedded/conf/machine/nslu2.conf
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
 	fi
+	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.nslu2-linux ; \
+	fi
 	monotone propagate org.openembedded.dev org.openembedded.nslu2-linux
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
@@ -285,6 +286,12 @@ import-openembedded: openembedded/conf/machine/nslu2.conf
 
 .PHONY: export-openembedded
 export-openembedded: openembedded/conf/machine/nslu2.conf
+	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.nslu2-linux ; \
+	fi
+	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.dev ; \
+	fi
 	monotone propagate org.openembedded.nslu2-linux org.openembedded.dev
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
