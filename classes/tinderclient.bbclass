@@ -51,7 +51,7 @@ def tinder_do_tinder_report(event):
     tinderclient.log
     """
     from bb.event import getName
-    from bb import data, make, mkdirhier
+    from bb import data, mkdirhier
     import os, glob
 
     # variables
