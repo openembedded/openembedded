@@ -1,3 +1,5 @@
+DEFAULT_PREFERENCE = "-1"
+
 SECTION = "x11/utils"
 DESCRIPTION = "Inkscape is an SVG-based graphics editor featuring alpha \
 blending, node editing, SVG to PNG export, and more. Its goal is for features \
