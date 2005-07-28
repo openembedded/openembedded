@@ -6,7 +6,7 @@ includes SFTP support, and a sample SSH client is provided."
 DEPENDS = "openssl"
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.0xbadc0de.be/projects/libssh/libssh-${PV}.tgz"
+SRC_URI = "http://www.0xbadc0de.be/libssh/libssh-${PV}.tgz"
 
 inherit autotools
 
