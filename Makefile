@@ -45,7 +45,7 @@ optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && \
-	wget http://ipkg-us-dyoung.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz && \
+	wget http://sources.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz && \
 	gunzip monotone/nslu2-linux.db.gz )
 	- ( monotone -d monotone/nslu2-linux.db unset database default-server )
 	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
