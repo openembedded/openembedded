@@ -20,9 +20,6 @@ setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-dev
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-optware
 
-.PHONY: upload
-upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross
-
 .PHONY: clobber
 clobber: clobber-optware clobber-openembedded clobber-bitbake
 
@@ -203,11 +200,12 @@ clobber-optware:
 # Targets for use by those with write access to the repositories
 
 .PHONY: push
-push: push-master push-openembedded
+push: push-master push-bitbake push-openembedded
 
 .PHONY: push-master
 push-master: update-master
 	monotone push
+	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
 
 .PHONY: push-bitbake
 push-bitbake: update-bitbake
@@ -219,9 +217,8 @@ push-openembedded: update-openembedded
 
 # Targets for use by core team members only
 
-.PHONY: publish-master
-publish-master: push-master
-	scp Makefile www.nslu2-linux.org:/home/nslu/public_html/Makefile
+.PHONY: upload
+upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
@@ -251,37 +248,30 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 
+.PHONY: import-bitbake
+import-bitbake: bitbake/bin/bitbake
+	svn co svn://svn.berlios.de/bitbake/trunk/bitbake
+
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone pull monotone.vanille.de org.openembedded.*
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
 	fi
-
-.PHONY: import-bitbake
-import-bitbake: bitbake/bin/bitbake
-	svn co svn://svn.berlios.de/bitbake/trunk/bitbake
-
-.PHONY: propagate-from-oe
-propagate-from-oe: 
 	monotone propagate org.openembedded.dev org.openembedded.nslu2-linux
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
 
-.PHONY: propagate-to-oe
-propagate-to-oe: 
+.PHONY: export-openembedded
+export-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone propagate org.openembedded.nslu2-linux org.openembedded.dev
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
 	fi
-
-.PHONY: export-openembedded
-export-openembedded: openembedded/conf/machine/nslu2.conf
 	monotone push monotone.vanille.de org.openembedded.*
 
 .PHONY: publish-openembedded
-publish-openembedded: import-openembedded propagate-from-oe update-openembedded \
-		      propagate-to-oe push-openembedded export-openembedded
+publish-openembedded: import-openembedded update-openembedded push-openembedded export-openembedded
 
 # End of Makefile
