@@ -9,7 +9,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-netclient python-netserver"
 SRCNAME = "scapy"
 
-SRC_URI = "http://www.cartel-securite.fr/pbiondi/python/scapy-${PV}.tar.gz"
+SRC_URI = "http://www.secdev.org/projects/scapy/files/scapy-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 do_install() {

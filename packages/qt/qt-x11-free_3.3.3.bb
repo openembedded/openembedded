@@ -4,15 +4,12 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://no-examples.patch;patch=1"
 S = "${WORKDIR}/qt-x11-free-${PV}"
-
-PACKAGES += "qt-x11-plugins"
-FILES_qt-x11-plugins = "${prefix}/plugins"
 
 inherit qmake-base qt3x11
 
@@ -23,6 +20,11 @@ EXTRA_OEMAKE = "-e"
 
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups -thread -plugin-sql-mysql -verbose"
+
+EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
+             INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
+             QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
+             MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"'
 
 do_configure() {
 	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast \
@@ -38,18 +40,8 @@ do_configure() {
 do_compile() {
 	unset CFLAGS
 	unset CXXFLAGS
-#	cd src && oe_runmake QMAKESPEC="${QMAKESPEC}" QMAKE="${STAGING_BINDIR}/qmake" MOC="moc3" UIC="uic3" MAKE="make -e"
-	oe_runmake -C src \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
-		INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
-		QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
-		MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"
-	oe_runmake -C plugins/src \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
-		INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR} \
-		QMAKE_LIBS_QT=-lqt QMAKE_LIBS_QT_THREAD=-lqt-mt" \
-		QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
-		MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"
+	oe_runmake -C src ${EXTRA_ENV}
+	oe_runmake -C plugins/src ${EXTRA_ENV}
 }
 
 do_stage() {
@@ -62,18 +54,16 @@ do_stage() {
 	done
 	for f in include/private/*.h
 	do
-	        install -m 0644 $f ${STAGING_QT_DIR}/include/private
+		install -m 0644 $f ${STAGING_QT_DIR}/include/private
 	done
 }
 
 do_install() {
 	install -d ${D}${libdir}/
 	oe_soinstall lib/libqt-mt.so.${PV} ${D}${libdir}/
-	oe_runmake -C plugins/src INSTALL_ROOT="${D}" \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
-		INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR} \
-		QMAKE_LIBS_QT=-lqt QMAKE_LIBS_QT_THREAD=-lqt-mt" \
-		QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
-		MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e" \
-		install
+	oe_runmake -C plugins/src INSTALL_ROOT="${D}" ${EXTRA_ENV} install
 }
+
+PACKAGES += "qt-x11-plugins"
+FILES_qt-x11-plugins = "${prefix}/plugins"
+

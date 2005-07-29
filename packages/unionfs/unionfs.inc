@@ -10,5 +10,5 @@ SRC_URI = "ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-${PV}.tar.gz \
 S = "${WORKDIR}/unionfs-${PV}"
 FILESPATH = "${FILE_DIRNAME}/unionfs-${PV}:${FILE_DIRNAME}/unionfs:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
-export UCFLAGS := "${CFLAGS} -DNODEBUG"
+export UCFLAGS = '${CFLAGS} -DNODEBUG -DUNIONFS_VERSION=\\"${PV}\\"'
 CFLAGS = "${BUILD_OPTIMIZATION}"
