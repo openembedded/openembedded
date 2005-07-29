@@ -82,7 +82,8 @@ setup-optware optware/Makefile:
 	${MAKE} downloads
 	[ -e optware/Makefile ] || ( cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 
-optware/nslu2/Makefile : optware/Makefile
+optware/nslu2/Makefile:
+	${MAKE} optware/Makefile
 	[ -e optware/nslu2/Makefile ]  || ( \
 		mkdir -p optware/nslu2 ; \
 		echo "OPTWARE_TARGET=nslu2" > optware/nslu2/Makefile ; \
@@ -93,7 +94,8 @@ optware/nslu2/Makefile : optware/Makefile
 		ln -s ../sources optware/nslu2/sources ; \
 	)
 
-optware/wl500g/Makefile : optware/Makefile
+optware/wl500g/Makefile:
+	${MAKE} optware/Makefile
 	[ -e optware/wl500g/Makefile ]  || ( \
 		mkdir -p optware/wl500g ; \
 		echo "OPTWARE_TARGET=wl500g" > optware/wl500g/Makefile ; \
