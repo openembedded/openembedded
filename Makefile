@@ -218,7 +218,7 @@ push-openembedded: update-openembedded
 # Targets for use by core team members only
 
 .PHONY: upload
-upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross
+upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
@@ -247,6 +247,10 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
+
+.PHONY: upload-sources
+upload-sources:
+	rsync -vlrt --exclude='ixp400*' downloads/ unslung@ipkg.nslu2-linux.org:nslu/sources/
 
 .PHONY: import-bitbake
 import-bitbake: bitbake/bin/bitbake
