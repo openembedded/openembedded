@@ -1,5 +1,6 @@
 DEPENDS_prepend = "coreutils-native virtual/libintl intltool-native "
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+GPE_SRC_COMPRESSION ?= "gz"
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.${GPE_SRC_COMPRESSION}"
 FILES_${PN} += "${datadir}/gpe ${datadir}/application-registry"
 
 inherit gettext
