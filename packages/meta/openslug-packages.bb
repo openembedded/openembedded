@@ -46,6 +46,7 @@ OPENSLUG_DEVELOPMENT_append_linux = "\
 
 
 OPENSLUG_PACKAGES = "\
+	atftp \
 	bash \
 	bluez-utils-nodbus \
 	bridge-utils \
@@ -81,6 +82,7 @@ OPENSLUG_PACKAGES = "\
 	pwc \
 	rsync \
 	screen \
+	setpwc \
 	streamripper \
 	sudo \
 	sysfsutils \
@@ -116,7 +118,6 @@ OPENSLUG_PACKAGES_append_linux = "\
 	"
 
 BROKEN_PACKAGES = "\
-	atftp \
 	strace \
 	"
 
