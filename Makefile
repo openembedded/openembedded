@@ -268,7 +268,11 @@ upload-sources:
 
 .PHONY: import-bitbake
 import-bitbake: bitbake/bin/bitbake
+	mv bitbake bitbake.old
 	svn co svn://svn.berlios.de/bitbake/trunk/bitbake
+	cp -rp bitbake.old/MT bitbake.old/.mt-attrs bitbake
+	rm -rf bitbake.old
+	( cd bitbake ; rm -rf .svn ; monotone status )
 
 .PHONY: import-openembedded
 import-openembedded: openembedded/conf/machine/nslu2.conf
