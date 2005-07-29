@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r36"
+PR = "r37"
 
 ALLOW_EMPTY = "1"
 
@@ -67,6 +67,7 @@ gpe-task-settings = "\
     gpe-taskmanager \
     keylaunch \
     minilite \
+    minimix \
     xmonobut"
 
 RDEPENDS_gpe-task-settings := "${gpe-task-settings}"
