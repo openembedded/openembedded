@@ -3,6 +3,8 @@ unionutils = "unionctl uniondbg"
 include unionfs.inc
 inherit module
 
+SECTION = "kernel/modules"
+
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' 'LD=${KERNEL_LD}' \
 		'KERNELVER=${KERNEL_VERSION}' \
 		'LINUXSRC=${STAGING_KERNEL_DIR}' \
@@ -13,6 +15,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' 'LD=${KERNEL_LD}' \
 KCFLAGS = "-D__KERNEL__ -DMODULE -DFISTGEN \
 	   -DUNIONFS_UNSUPPORTED -DNODEBUG \
 	   -I. -I${STAGING_KERNEL_DIR}/include \
+           -DUNIONFS_VERSION=\"${PV}\" \
 	   ${CFLAGS}"
 
 def get_flags(d, bb):

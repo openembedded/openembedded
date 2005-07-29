@@ -2,8 +2,7 @@ unionutils = "unionctl uniondbg"
 
 include unionfs.inc
 
-FILES_${PN} = "${sbindir}/unionctl"
-FILES_${PN}-dev = "${sbindir}/uniondbg"
+SECTION = "kernel/userland"
 
 do_compile () {
 	oe_runmake ${unionutils}
@@ -18,3 +17,7 @@ do_install () {
 		install -m 0644 man/$m.8 ${D}${mandir}/man8/ || exit 1
 	done
 }
+
+FILES_${PN} = "${sbindir}/unionctl"
+FILES_${PN}-dev = "${sbindir}/uniondbg"
+
