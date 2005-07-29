@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 inherit gpe
 
@@ -10,3 +10,4 @@ PRIORITY = "optional"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 LICENSE = "GPL"
 
+SRC_URI += "file://decl.patch;patch=1;pnum=0"
