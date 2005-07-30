@@ -6,15 +6,20 @@
 #
 # topdir must exist in the directory and define TOPDIR to
 # the full path name of the working directory
-. ./topdir.conf
+. ./conf/topdir.conf
 test -n "$TOPDIR" -a -d "$TOPDIR" || {
 	echo "environment: TOPDIR not defined" >&2
 	exit 1
 }
+
+. ./conf/auto.conf
+export DISTRO
+export MAKE_TARGET
+
 #
 # the following must match the definitions in common/conf/site.conf
 export PYTHONPATH="${TOPDIR}/bitbake/lib"
-export BBPATH="${TOPDIR}:${TOPDIR}/common:${TOPDIR}/openembedded:${TOPDIR}/bitbake"
+export BBPATH="${TOPDIR}:${TOPDIR}/openembedded:${TOPDIR}/bitbake"
 export PATH="${TOPDIR}/bitbake/bin:${PATH}"
 export LD_LIBRARY_PATH=
 export LANG=C

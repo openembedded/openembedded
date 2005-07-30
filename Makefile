@@ -64,13 +64,13 @@ setup-monotone monotone/nslu2-linux.db:
 downloads:
 	[ -e $@ ] || mkdir -p $@
 
-unslung/Makefile openslug/Makefile ucslugc/Makefile common/Make.rules MT/revision:
+unslung/Makefile openslug/Makefile common/openembedded.mk common/setup-openembedded MT/revision:
 	${MAKE} downloads
 	[ -e monotone/nslu2-linux.db ] || ( ${MAKE} monotone/nslu2-linux.db )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 
 .PHONY: setup-master
-setup-master: setup-monotone unslung/Makefile openslug/Makefile
+setup-master: setup-monotone unslung/Makefile openslug/Makefile ucslugc/Makefile
 	[ -e unslung/downloads ]  || ( cd unslung  ; ln -s ../downloads . )
 	[ -e openslug/downloads ] || ( cd openslug ; ln -s ../downloads . )
 
@@ -84,17 +84,29 @@ setup-openembedded openembedded/conf/machine/nslu2.conf:
 	${MAKE} MT/revision
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 
-.PHONY: setup-optware
-setup-optware optware/Makefile:
-	${MAKE} downloads
-	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
-
 .PHONY: setup-openslug-2.3-beta
 setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile: downloads
 	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
 	svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
 	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
 	ln -s ../../downloads releases/OpenSlug-2.3-beta/
+
+.PHONY: setup-ucslugc
+setup-ucslugc ucslugc/Makefile:
+	${MAKE} MT/revision
+	[ -d ucslugc ]                    || ( mkdir -p ucslugc )
+	[ -e ucslugc/Makefile ]           || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
+	[ -e ucslugc/setup-openembedded ] || ( cd ucslugc ; ln -s ../common/setup-openembedded . )
+	[ -e ucslugc/downloads ]          || ( cd ucslugc ; ln -s ../downloads . )
+	[ -e ucslugc/bitbake ]            || ( cd ucslugc ; ln -s ../bitbake . )
+	[ -e ucslugc/openembedded ]       || ( cd ucslugc ; ln -s ../openembedded . )
+	[ -d ucslugc/conf ]               || ( mkdir -p ucslugc/conf )
+	[ -e ucslugc/conf/site.conf ]     || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
+
+.PHONY: setup-optware
+setup-optware optware/Makefile:
+	${MAKE} downloads
+	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 
 optware/nslu2/Makefile:
 	${MAKE} optware/Makefile
