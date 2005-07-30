@@ -1,49 +1,57 @@
-# Makefile for Unslung
+# Makefile for UcSlugC
 # Licensed under the GPL v2 or later
+#
 
-unslung-firmware: setup-env conf/local.conf
-	. ./setup-env ; bitbake unslung-packages
+BUILD_DIRS = downloads
+REQUIRED_DIRS = bitbake openembedded
+FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
 
-# This does the same thing but with a clean environment
-# The HOME setting prevents user environment settings
-# from changing the build.  CCACHE_DIR is necessary to
-# prevent ccache (if installed) attempting to use a
-# .cache in the home directory.
-unslung-firmware-safe: setup-env conf/local.conf
-	env -i CCACHE_DISABLE=1 CCACHE_DIR="`pwd`/tmp/ccache" HOME=/dev/null \
-		sh -c '. ./setup-env; bitbake unslung-packages'
+# The default rule is to build the firmware in an unprotected environment.
+firmware: $(FIRMWARE_DEPS)
+	. ./setup-env; exec bitbake $${MAKE_TARGET}
 
-setup-env:
-	[ -e bitbake ]      || ln -s ../bitbake .
-	[ -e downloads ]    || ln -s ../downloads .
-	[ -e openembedded ] || ln -s ../openembedded .
-	echo 'OEROOT='`pwd` > setup-env
-	echo 'OESYS=$$OEROOT/bitbake/' >> setup-env
-	echo 'OEBUILD=$$OEROOT' >> setup-env
-	echo 'PKGDIR=$$OEROOT/openembedded/' >> setup-env
-	echo 'export PYTHONPATH=$$OESYS/lib' >>setup-env
-	echo 'export BBPATH=$$OEBUILD:$$PKGDIR:$$OESYS' >> setup-env
-	echo 'export PATH=$$OESYS/bin/:$$PATH' >> setup-env
-	echo 'export LD_LIBRARY_PATH=' >> setup-env
-	echo 'export LANG=C' >> setup-env
-	echo 'unset LC_CTYPE' >> setup-env
-	echo 'unset CC' >> setup-env
-	echo 'unset CXX' >> setup-env
-	echo 'unset MFLAGS' >> setup-env
-	echo 'unset MAKEFLAGS' >> setup-env
-	echo 'alias bb=bitbake' >> setup-env
-	echo 'echo Environment set up for Unslung development.' >> setup-env
+# This rule clobbers the environment (note that ccache uses '$HOME' by
+# default, so the cache will end up there).
+firmware-safe:
+	env -i HOME="$${HOME}" PATH="$${PATH}" $(MAKE) firmware
 
-conf/local.conf:
-	sed -e "s|%%%OEROOT%%%|`pwd`|" conf/local.conf.template > conf/local.conf
+# topdir.conf is re-created automatically if the directory is
+# moved - this will cause a full bitbake reparse
+.PHONY: create-topdir
+create-topdir: conf/topdir.conf
+	. conf/topdir.conf && test "`pwd`" = "$$TOPDIR" || echo "TOPDIR='`pwd`'" > conf/topdir.conf
 
+conf/topdir.conf:
+	echo "TOPDIR='`pwd`'" >$@
+
+# rules for directories - if a symlink exists and the target does not
+# exist something will go wrong in the build, therefore cause a failure
+# here by the mkdir.
+$(BUILD_DIRS):
+	test -d $@ || if test -d ../$@; then ln -s ../$@ .; else mkdir $@; fi
+
+# these directories must already exist - either in TOPDIR (here) or in ..
+$(REQUIRED_DIRS):
+	test -d $@ || if test -d ../$@; then ln -s ../$@ .; else exit 1; fi
+
+.PHONY: clobber
 clobber:
 	rm -rf tmp
 
-unslung-source:
-	tar zcf unslung-source.tar.gz --exclude=MT Makefile bitbake conf openembedded
+.PHONY: source
+source: $(REQUIRED_DIRS)
+	tar zcf $${DISTRO}.tar.gz --exclude=MT Makefile setup-env conf/site.conf conf/auto.conf \
+		conf/local.conf.sample $(REQUIRED_DIRS:=/.)
 
+# This target probably isn't important any longer, because the -source
+# target above does the right thing
+.PHONY:
 distclean: clobber
-	rm -f setup-env conf/local.conf bitbake downloads openembedded
+	rm -rf conf/topdir.conf conf/local.conf $(BUILD_DIRS)
 
-# End of Makefile
+# This target is mainly for testing - it is intended to put the disto directory
+# back to its original state, it will destroy a source-tarball system (because
+# it removes directories from the tarball).
+.PHONY:
+really-clean: distclean
+	rm -rf $(REQUIRED_DIRS) $${DISTRO}-source.tar.gz

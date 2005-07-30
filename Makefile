@@ -64,7 +64,7 @@ setup-monotone monotone/nslu2-linux.db:
 downloads:
 	[ -e $@ ] || mkdir -p $@
 
-unslung/Makefile openslug/Makefile common/openembedded.mk common/setup-env MT/revision:
+MT/revision:
 	${MAKE} downloads
 	[ -e monotone/nslu2-linux.db ] || ( ${MAKE} monotone/nslu2-linux.db )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
@@ -84,24 +84,61 @@ setup-openembedded openembedded/conf/machine/nslu2.conf:
 	${MAKE} MT/revision
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 
+.PHONY: setup-unslung
+setup-unslung unslung/Makefile:
+	${MAKE} MT/revision downloads
+	[ -d unslung ]                   || ( mkdir -p unslung )
+	[ ! -f unslung/Makefile ]        || ( cd unslung ; mv Makefile Makefile.delete-me)
+	[ -e unslung/Makefile ]          || ( cd unslung ; ln -s ../common/openembedded.mk Makefile )
+	[ ! -f unslung/setup-env ]       || ( cd unslung ; mv setup-env setup-env.delete-me )
+	[ -e unslung/setup-env ]         || ( cd unslung ; ln -s ../common/setup-env . )
+	[ -e unslung/downloads ]         || ( cd unslung ; ln -s ../downloads . )
+	[ -e unslung/bitbake ]           || ( cd unslung ; ln -s ../bitbake . )
+	[ -e unslung/openembedded ]      || ( cd unslung ; ln -s ../openembedded . )
+	[ -d unslung/conf ]              || ( mkdir -p unslung/conf )
+	[ ! -f unslung/conf/local.conf ] || ( cd unslung/conf ; mv local.conf local.conf.delete-me )
+	[ -e unslung/conf/site.conf ]    || ( cd unslung/conf ; ln -s ../../common/conf/site.conf . )
+	rm -rf unslung/tmp/cache
+
+.PHONY: setup-openslug
+setup-openslug openslug/Makefile:
+	${MAKE} MT/revision downloads
+	[ -d openslug ]                   || ( mkdir -p openslug )
+	[ ! -f openslug/Makefile ]        || ( cd openslug ; mv Makefile Makefile.delete-me)
+	[ -e openslug/Makefile ]          || ( cd openslug ; ln -s ../common/openembedded.mk Makefile )
+	[ ! -f openslug/setup-env ]       || ( cd openslug ; mv setup-env setup-env.delete-me )
+	[ -e openslug/setup-env ]         || ( cd openslug ; ln -s ../common/setup-env . )
+	[ -e openslug/downloads ]         || ( cd openslug ; ln -s ../downloads . )
+	[ -e openslug/bitbake ]           || ( cd openslug ; ln -s ../bitbake . )
+	[ -e openslug/openembedded ]      || ( cd openslug ; ln -s ../openembedded . )
+	[ -d openslug/conf ]              || ( mkdir -p openslug/conf )
+	[ ! -f openslug/conf/local.conf ] || ( cd openslug/conf ; mv local.conf local.conf.delete-me )
+	[ -e openslug/conf/site.conf ]    || ( cd openslug/conf ; ln -s ../../common/conf/site.conf . )
+	rm -rf openslug/tmp/cache
+
+.PHONY: setup-ucslugc
+setup-ucslugc ucslugc/Makefile:
+	${MAKE} MT/revision downloads
+	[ -d ucslugc ]                   || ( mkdir -p ucslugc )
+	[ ! -f ucslugc/Makefile ]        || ( cd ucslugc ; mv Makefile Makefile.delete-me)
+	[ -e ucslugc/Makefile ]          || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
+	[ ! -f ucslugc/setup-env ]       || ( cd ucslugc ; mv setup-env setup-env.delete-me )
+	[ -e ucslugc/setup-env ]         || ( cd ucslugc ; ln -s ../common/setup-env . )
+	[ -e ucslugc/downloads ]         || ( cd ucslugc ; ln -s ../downloads . )
+	[ -e ucslugc/bitbake ]           || ( cd ucslugc ; ln -s ../bitbake . )
+	[ -e ucslugc/openembedded ]      || ( cd ucslugc ; ln -s ../openembedded . )
+	[ -d ucslugc/conf ]              || ( mkdir -p ucslugc/conf )
+	[ ! -f ucslugc/conf/local.conf ] || ( cd ucslugc/conf ; mv local.conf local.conf.delete-me )
+	[ -e ucslugc/conf/site.conf ]    || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
+	rm -rf ucslugc/tmp/cache
+
 .PHONY: setup-openslug-2.3-beta
-setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile: downloads
+setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile:
+	${MAKE} downloads
 	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
 	svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
 	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
 	ln -s ../../downloads releases/OpenSlug-2.3-beta/
-
-.PHONY: setup-ucslugc
-setup-ucslugc ucslugc/Makefile:
-	${MAKE} MT/revision
-	[ -d ucslugc ]                || ( mkdir -p ucslugc )
-	[ -e ucslugc/Makefile ]       || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
-	[ -e ucslugc/setup-env ]      || ( cd ucslugc ; ln -s ../common/setup-env . )
-	[ -e ucslugc/downloads ]      || ( cd ucslugc ; ln -s ../downloads . )
-	[ -e ucslugc/bitbake ]        || ( cd ucslugc ; ln -s ../bitbake . )
-	[ -e ucslugc/openembedded ]   || ( cd ucslugc ; ln -s ../openembedded . )
-	[ -d ucslugc/conf ]           || ( mkdir -p ucslugc/conf )
-	[ -e ucslugc/conf/site.conf ] || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
 
 .PHONY: setup-optware
 setup-optware optware/Makefile:
