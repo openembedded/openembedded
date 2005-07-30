@@ -4,7 +4,7 @@ include perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux"
 
-PR = "r5"
+PR = "r6"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
@@ -32,11 +32,9 @@ do_install_append() {
 	ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
 }
 
-# Create a perl-modules package depending on all the other perl
-# packages (actually the non modules packages too)
-# This means creating lots of empty packages too, so its set to only
-# openslug for the time beeing
-ALLOW_EMPTY_openslug = 1
-PACKAGES_append_openslug = " perl-modules"
-RDEPENDS_perl-modules_openslug = "${PACKAGES}"
-RPROVIDES_perl-lib_openslug = "perl-lib"
+# Create a perl-modules package recommending all the other perl
+# packages (actually the non modules packages and not created too)
+ALLOW_EMPTY_perl-modules = 1
+PACKAGES_append = " perl-modules"
+RRECOMMENDS_perl-modules = "${PACKAGES}"
+RPROVIDES_perl-lib = "perl-lib"
