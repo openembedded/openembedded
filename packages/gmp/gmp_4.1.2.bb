@@ -5,7 +5,8 @@ LICENSE = "GPL LGPL"
 
 SRC_URI = "ftp://mirrors.kernel.org/gnu/gmp/gmp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
-	   file://amd64.patch;patch=1"
+	   file://amd64.patch;patch=1 \
+           file://gcc-compile.patch;patch=1 "
 
 inherit autotools 
 
