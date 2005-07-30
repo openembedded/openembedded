@@ -1,0 +1,20 @@
+--- mpc-0.11.2/configure.ac~	2005-03-11 10:04:35.000000000 +0100
++++ mpc-0.11.2/configure.ac	2005-07-28 00:51:32.000000000 +0200
+@@ -31,8 +31,6 @@
+   		ICONV_LIBS="-L$iconv_libraries"
+   	elif test "x$iconv_prefix" != "x" ; then
+     		ICONV_LIBS="-L$iconv_prefix/lib"
+-  	elif test "x$prefix" != "xNONE"; then
+-    		ICONV_LIBS="-L$libdir"
+   	fi
+ 
+   	ICONV_LIBS="$ICONV_LIBS -liconv"
+@@ -41,8 +39,6 @@
+   		ICONV_CFLAGS="-I$iconv_includes"
+   	elif test "x$iconv_prefix" != "x" ; then
+     		ICONV_CFLAGS="-I$iconv_prefix/include"
+-  	elif test "x$prefix" != "xNONE"; then
+-    		ICONV_CFLAGS="-I$includedir"
+   	fi
+ 
+ 	CFLAGS="$CFLAGS $ICONV_CFLAGS"
