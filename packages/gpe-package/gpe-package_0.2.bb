@@ -1,9 +1,9 @@
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 inherit gpe pkgconfig
 
 DESCRIPTION = "A package manager GUI for GPE"
-DEPENDS = "libipkg libgpewidget"
+DEPENDS = "ipkg libgpewidget"
 RDEPENDS = "gpe-icons"
 SECTION = "gpe"
 PRIORITY = "optional"
