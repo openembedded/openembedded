@@ -53,6 +53,7 @@ OPENSLUG_PACKAGES = "\
 	coreutils \
 	cron \
 	cvs\
+	cyrus-imapd \
 	dnsmasq \
 	expat \
 	ftpd-topfield \
