@@ -64,7 +64,7 @@ setup-monotone monotone/nslu2-linux.db:
 downloads:
 	[ -e $@ ] || mkdir -p $@
 
-unslung/Makefile openslug/Makefile common/openembedded.mk common/setup-openembedded MT/revision:
+unslung/Makefile openslug/Makefile common/openembedded.mk common/setup-env MT/revision:
 	${MAKE} downloads
 	[ -e monotone/nslu2-linux.db ] || ( ${MAKE} monotone/nslu2-linux.db )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
@@ -94,14 +94,14 @@ setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile: downloads
 .PHONY: setup-ucslugc
 setup-ucslugc ucslugc/Makefile:
 	${MAKE} MT/revision
-	[ -d ucslugc ]                    || ( mkdir -p ucslugc )
-	[ -e ucslugc/Makefile ]           || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
-	[ -e ucslugc/setup-openembedded ] || ( cd ucslugc ; ln -s ../common/setup-openembedded . )
-	[ -e ucslugc/downloads ]          || ( cd ucslugc ; ln -s ../downloads . )
-	[ -e ucslugc/bitbake ]            || ( cd ucslugc ; ln -s ../bitbake . )
-	[ -e ucslugc/openembedded ]       || ( cd ucslugc ; ln -s ../openembedded . )
-	[ -d ucslugc/conf ]               || ( mkdir -p ucslugc/conf )
-	[ -e ucslugc/conf/site.conf ]     || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
+	[ -d ucslugc ]                || ( mkdir -p ucslugc )
+	[ -e ucslugc/Makefile ]       || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
+	[ -e ucslugc/setup-env ]      || ( cd ucslugc ; ln -s ../common/setup-env . )
+	[ -e ucslugc/downloads ]      || ( cd ucslugc ; ln -s ../downloads . )
+	[ -e ucslugc/bitbake ]        || ( cd ucslugc ; ln -s ../bitbake . )
+	[ -e ucslugc/openembedded ]   || ( cd ucslugc ; ln -s ../openembedded . )
+	[ -d ucslugc/conf ]           || ( mkdir -p ucslugc/conf )
+	[ -e ucslugc/conf/site.conf ] || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
 
 .PHONY: setup-optware
 setup-optware optware/Makefile:

@@ -8,7 +8,7 @@ FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
 
 # The default rule is to build the firmware in an unprotected environment.
 firmware: $(FIRMWARE_DEPS)
-	. ./setup-openembedded; exec bitbake $${MAKE_TARGET}
+	. ./setup-env; exec bitbake $${MAKE_TARGET}
 
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).
@@ -40,7 +40,7 @@ clobber:
 
 .PHONY: source
 source: $(REQUIRED_DIRS)
-	tar zcf $${DISTRO}.tar.gz --exclude=MT Makefile setup-openembedded conf/site.conf conf/auto.conf \
+	tar zcf $${DISTRO}.tar.gz --exclude=MT Makefile setup-env conf/site.conf conf/auto.conf \
 		conf/local.conf.sample $(REQUIRED_DIRS:=/.)
 
 # This target probably isn't important any longer, because the -source
