@@ -21,8 +21,8 @@ def tinder_send_http(da, header, log):
     from bb import data
     import httplib, urllib
     cont = "\n%s\n%s" % ( header, log)
-    headers = {"Content-type": "multipart/form-data" } 
-  
+    headers = {"Content-type": "multipart/form-data" }
+
     conn = httplib.HTTPConnection(data.getVar('TINDER_HOST',da, True))
     conn.request("POST", data.getVar('TINDER_URL',da,True), cont, headers)
     conn.close() 
@@ -76,8 +76,8 @@ def tinder_do_tinder_report(event):
 
     if name == "PkgFailed" or name == "BuildCompleted":
         status = 'build_failed'
-	if name == "BuildCompleted":
-	    status = "success"
+        if name == "BuildCompleted":
+            status = "success"
         header = tinder_prepare_mail_header(event.data, status)
         # append the log
         log_file = data.getVar('TINDER_LOG', event.data, True)
@@ -120,7 +120,7 @@ def tinder_do_tinder_report(event):
 
     log_post_method = tinder_send_email
     if data.getVar('TINDER_SENDLOG', event.data, True) == "http":
-	log_post_method = tinder_send_http
+        log_post_method = tinder_send_http
 
     log_post_method(event.data, header, log)
 
