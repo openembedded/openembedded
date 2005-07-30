@@ -4,7 +4,7 @@ include perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux"
 
-PR = "r8"
+PR = "r9"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
@@ -30,6 +30,7 @@ do_configure() {
 
 do_install_append() {
 	ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+	sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/Config_heavy.pl
 }
 
 # Create a perl-modules package recommending all the other perl
