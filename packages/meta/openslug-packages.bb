@@ -40,7 +40,6 @@ OPENSLUG_DEVELOPMENT = "\
 # These packages only build on TARGET_OS=linux, not
 # TARGET_OS=linux-uclibc
 OPENSLUG_DEVELOPMENT_append_linux = "\
-	perl \
 	tar \
 	"
 
