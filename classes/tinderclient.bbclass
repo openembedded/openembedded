@@ -1,6 +1,26 @@
-def tinder_tinder_time():
-    import time
-    return time.strftime('%m/%d/%Y %H:%M:%S', time.localtime())
+def tinder_tz_offset(off):
+    # get the offset. Either it is a number like
+    # +200 or -300
+    try:
+        return int(off)
+    except ValueError:
+        if off == "Europe/Berlin":
+            return 200
+        else:
+            return 0
+
+def tinder_tinder_time(offset):
+    import datetime
+    td   = datetime.timedelta(tinder_tz_offset(offset))
+    time = datetime.datetime.utcnow() + td
+    return time.strftime('%m/%d/%Y %H:%M:%S')
+
+def tinder_tinder_start(date,offset):
+    import datetime, time
+    td   = datetime.timedelta(tinder_tz_offset(offset))
+    ti   = time.strptime(date, "%m/%d/%Y %H:%M:%S")
+    ti   = datetime.datetime(*ti[0:7])-td
+    return time.strftime('%m/%d/%Y %H:%M:%S')
 
 def tinder_send_email(da, header, log):
     import smtplib
@@ -33,11 +53,11 @@ def tinder_prepare_mail_header(da, status):
     from bb import data
 
     str  = "tinderbox: administrator: %s\n" % data.getVar('TINDER_ADMIN', da, True)
-    str += "tinderbox: starttime: %s\n"     % data.getVar('BUILDSTART', da, True) or data.getVar('TINDER_START', da, True)
+    str += "tinderbox: starttime: %s\n"     % tinder_tinder_start(data.getVar('TINDER_START', da, True) or data.getVar('BUILDSTART', da, True), data.getVar('TINDER_TZ', da, True))
     str += "tinderbox: buildname: %s\n"     % data.getVar('TINDER_BUILD', da, True)
     str += "tinderbox: errorparser: %s\n"   % data.getVar('TINDER_ERROR', da, True)
     str += "tinderbox: status: %s\n"        % status
-    str += "tinderbox: timenow: %s\n"       % tinder_tinder_time()
+    str += "tinderbox: timenow: %s\n"       % tinder_tinder_time(data.getVar('TINDER_TZ', da, True))
     str += "tinderbox: tree: %s\n"          % data.getVar('TINDER_TREE', da, True)
     str += "tinderbox: buildfamily: %s\n"   % "unix"
     str += "tinderbox: END"
