@@ -24,6 +24,8 @@ OPENSLUG_DEVELOPMENT = "\
 	gnu-config \
 	grep \
 	gzip \
+	ipkg-utils \
+	libtool \
 	lsof \
 	m4 \
 	make \
@@ -32,6 +34,7 @@ OPENSLUG_DEVELOPMENT = "\
 	openssh \
 	patch \
 	pciutils \
+	pkgconfig \
 	quilt \
 	sed \
 	strace \
