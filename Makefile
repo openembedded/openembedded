@@ -247,6 +247,7 @@ push-openembedded: update-openembedded
 .PHONY: autobuild
 autobuild:
 	${MAKE} update
+	${MAKE} build-ucslugc        upload-ucslugc-cross
 	${MAKE} build-openslug       upload-openslug-cross
 	${MAKE} build-unslung        upload-unslung-modules
 	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross
