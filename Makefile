@@ -61,7 +61,7 @@ setup-monotone monotone/nslu2-linux.db:
 	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
 
-downloads home:
+downloads:
 	[ -e $@ ] || mkdir -p $@
 
 unslung/Makefile openslug/Makefile ucslugc/Makefile common/Make.rules MT/revision:
@@ -263,16 +263,25 @@ upload-openslug-cross: openslug/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
+
+.PHONY: upload-openslug-2.3-beta-cross
+upload-openslug-2.3-beta-cross:
+	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
+	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
+	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
 .PHONY: upload-ucslugc-cross
 upload-ucslugc-cross: ucslugc/Makefile
 	rm -rf ucslugc/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
 	rsync -vl ucslugc/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
 	rsync -vlrt --delete ucslugc/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross/unstable
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
@@ -302,15 +311,6 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
-
-.PHONY: upload-openslug-2.3-beta-cross
-upload-openslug-2.3-beta-cross:
-	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
-	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
-	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
-	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
 .PHONY: upload-sources
 upload-sources:
