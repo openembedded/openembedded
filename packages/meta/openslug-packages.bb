@@ -53,6 +53,7 @@ OPENSLUG_PACKAGES = "\
 	coreutils \
 	cron \
 	cvs\
+	cyrus-imapd \
 	dnsmasq \
 	expat \
 	ftpd-topfield \
@@ -70,6 +71,7 @@ OPENSLUG_PACKAGES = "\
 	mutt \
 	mysql \
 	nail \
+	nano \
 	ncftp \
 	obexftp openobex openobex-apps ircp \
 	openssh \
