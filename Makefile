@@ -246,7 +246,12 @@ push-openembedded: update-openembedded
 
 .PHONY: autobuild
 autobuild:
-	${MAKE} update build upload
+	${MAKE} update
+	${MAKE} build-openslug       upload-openslug-cross
+	${MAKE} build-unslung        upload-unslung-modules
+	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross
+	${MAKE} build-optware-wl500g upload-optware-wl500g-cross
+	${MAKE}                      upload-sources
 
 .PHONY: upload
 upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
@@ -255,7 +260,7 @@ upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload
 upload-openslug-cross: openslug/Makefile
 	rm -rf openslug/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
@@ -302,11 +307,10 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 upload-openslug-2.3-beta-cross:
 	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/2.3-beta
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
 	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
 	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
-						
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
 .PHONY: upload-sources
 upload-sources:
