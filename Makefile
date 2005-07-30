@@ -13,7 +13,7 @@ all: update build
 build: build-unslung build-openslug build-ucslugc build-optware
 
 .PHONY: setup
-setup: setup-master setup-bitbake setup-openembedded setup-optware
+setup: setup-master setup-bitbake setup-openembedded setup-unslung setup-openslug setup-ucslugc setup-optware
 
 .PHONY: setup-developer
 setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-developer
