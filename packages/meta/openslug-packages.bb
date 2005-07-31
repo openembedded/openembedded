@@ -64,7 +64,6 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
-	man-pages \
 	miau \ 
 	microcom \
 	mt-daapd \
@@ -94,6 +93,7 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	strace \
 	thttpd \
 	vlan \
 	wget \
@@ -107,6 +107,7 @@ OPENSLUG_PACKAGES = "\
 OPENSLUG_PACKAGES_append_linux = "\
 	bind \
 	man \
+	man-pages \ 
 	mgetty \
 	mpd \
 	nfs-utils \
@@ -122,7 +123,6 @@ OPENSLUG_PACKAGES_append_linux = "\
 	"
 
 BROKEN_PACKAGES = "\
-	strace \
 	"
 
 DEPENDS = 'openslug-image \
