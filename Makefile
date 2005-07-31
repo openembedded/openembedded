@@ -195,6 +195,10 @@ update-openembedded: openembedded/conf/machine/nslu2.conf
 update-optware: optware/Makefile
 	( cd optware ; cvs -q update -d -P )
 
+.PHONY: update-openslug-2.3-beta
+update-openslug-2.3-beta: 
+	( cd releases/OpenSlug-2.3-beta ; svn up )
+
 .PHONY: clobber-bitbake
 clobber-bitbake:
 	rm -rf bitbake
