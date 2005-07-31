@@ -191,7 +191,7 @@ setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/.configured:
 	)
 	( cd releases/OpenSlug-2.3-beta ; ${MAKE} conf/local.conf setup-env )
 	[ -e downloads ] || ( mkdir -p downloads )
-	ln -s ../../downloads releases/OpenSlug-2.3-beta/
+	[ -e releases/OpenSlug-2.3-beta/downloads ] || ln -s ../../downloads releases/OpenSlug-2.3-beta/
 	touch releases/OpenSlug-2.3-beta/.configured
 
 .PHONY: setup-openslug-2.3-beta-developer
@@ -332,8 +332,8 @@ autobuild:
 	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross  || errors++; \
 	${MAKE} build-optware-wl500g upload-optware-wl500g-cross || errors++; \
 	${MAKE}                      upload-sources              || errors++ ; \
-	if [ "$errors" != "0" ] ; then \
-		echo "*** Errors during autobuild: $errors ***" ; \
+	if [ "$$errors" != "0" ] ; then \
+		echo "*** Errors during autobuild: $$errors ***" ; \
 	fi \
 	)
 
