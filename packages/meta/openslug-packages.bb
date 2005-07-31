@@ -69,8 +69,6 @@ OPENSLUG_PACKAGES = "\
 	microcom \
 	mt-daapd \
 	mutt \
-	mpc \
-	ncmpc \
 	mysql \
 	nail \
 	nano \
