@@ -276,6 +276,16 @@ upload-optware-wl500g-cross: optware/wl500g/Makefile
 	rsync -vlrt --delete optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
 
+.PHONY: upload-openslug-2.3-beta-cross
+upload-openslug-2.3-beta-cross:
+	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
+	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/2.3-beta
+	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
+						
+
 .PHONY: upload-sources
 upload-sources:
 	rsync -vlrt --exclude='ixp400*' downloads/ nslu2@sources.nslu2-linux.org:ipkg/sources/
