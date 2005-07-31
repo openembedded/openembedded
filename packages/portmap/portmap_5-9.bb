@@ -1,8 +1,7 @@
 DESCRIPTION = "RPC program number mapper."
 SECTION = "console/network"
 LICENSE = "GPL"
-RDEPENDS = "portmap-utils"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5.orig.tar.gz \
 	http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_${PV}.diff.gz;patch=1 \
