@@ -79,6 +79,12 @@ setup-optware optware/Makefile:
 	${MAKE} downloads
 	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 
+.PHONY: setup-openslug-2.3-beta
+setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile:
+	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
+	svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
+	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
+
 optware/nslu2/Makefile:
 	${MAKE} optware/Makefile
 	[ -e optware/nslu2/Makefile ]  || ( \
