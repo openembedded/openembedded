@@ -106,8 +106,7 @@ OPENSLUG_PACKAGES = "\
 # such as sinf.)
 OPENSLUG_PACKAGES_append_linux = "\
 	bind \
-	man \
-	man-pages \ 
+	man man-pages \
 	mgetty \
 	mpd \
 	nfs-utils \
