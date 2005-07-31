@@ -146,7 +146,7 @@ setup-apex-developer:
 .PHONY: setup-openslug-2.3-beta-developer
 setup-openslug-2.3-beta-developer:
 	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
-	svn checkout svn+ssh://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
+	svn checkout svn+ssh://svn.berlios.de/svnroot/repos/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
 	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
 
 .PHONY: setup-host-debian
