@@ -8,7 +8,6 @@
 #
 # DISTRO - the OpenEmbedded 'distro' to build
 # MACHINE - the OpenEmbedded build target machine
-# MAKE_TARGET - the target to pass to bitbake
 #
 # All of these values are (should be, must be) quoted in double quotes
 include conf/auto.conf
@@ -19,7 +18,7 @@ FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
 
 # The default rule is to build the firmware in an unprotected environment.
 firmware: $(FIRMWARE_DEPS)
-	. ./setup-env; exec bitbake $(MAKE_TARGET)
+	. ./setup-env; exec bitbake $(DISTRO)-packages
 
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).

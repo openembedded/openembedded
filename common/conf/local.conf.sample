@@ -1,7 +1,7 @@
 # Sample local configuration
 #
 # You do not need a 'local.conf' file, however you may use one to alter
-# how the UcSlugC build proceeds and to specify bitbake options.
+# how the build proceeds and to specify bitbake options.
 #
 #----------------------------------------------------------------------------------
 # bitbake options
@@ -19,12 +19,8 @@
 #	against a regular expression.  Typically you do not want to do this because
 #	bitbake freeze can be used to generate a minimal list for BBFILES.
 #
-#NOTE: you may prefer to make a global local.conf file in common/conf to specify
-# these options, however if you do this it will be overridden (ignored) if you also
-# specify a local.conf here.
-#
 #----------------------------------------------------------------------------------
-# UcSlugC options
+# OpenSlug (and derivatives) options
 #----------------------------------------------------------------------------------
 #FEED_URIS = "<name>##<url>"
 #	Define local feeds - <name> should be replaced by a name which identifies
@@ -32,18 +28,18 @@
 #	the Packages.gz file (and, therefore, all the ipks).  This is not required;
 #	the feed defaults to the internet one.
 #
-#UCLIBC_EXTRA_DEPENDS = "packages to add to the build"
+#<DISTRO>_EXTRA_DEPENDS = "packages to add to the build"
 #	Any packages in this list will be built as depenencies of the firmware
 #	image, but they will not be included in the image (see below).
 #
-#UCLIBC_EXTRA_RDEPENDS = "packages to add to the firmware image"
+#<DISTRO>_EXTRA_RDEPENDS = "packages to add to the firmware image"
 #	Any packages in this list will be added to the firmware image.  Please do
 #	not distribute such images - make a new DISTRO.conf file following the
 #	instructions in conf/distro/ucslugc.conf
 #
-#UCLIBC_EXTRA_BBFILES = "paths of extra .bb files"
+#<DISTRO>_EXTRA_BBFILES = "paths of extra .bb files"
 #	Files in this list will be parsed by bitbake to find packages in addition
-#	to the default list of bb files in conf/distro/ucslugc-packages.conf.  The
+#	to the default list of bb files in conf/distro/<distro>-packages.conf.  The
 #	setting of this variable is irrelevant after bb freeze has been built or if
 #	bb unfreeze is built (in the latter case bitbake will examine all of the
 #	openembedded packages).

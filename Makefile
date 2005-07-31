@@ -25,7 +25,8 @@ update: update-master update-bitbake update-openembedded update-optware
 status: status-master status-bitbake status-openembedded status-optware
 
 .PHONY: clobber
-clobber: clobber-master clobber-bitbake clobber-openembedded clobber-optware clobber-releases
+clobber: clobber-master clobber-bitbake clobber-openembedded \
+	 clobber-unslung clobber-openslug clobber-ucslugc clobber-optware clobber-releases
 
 .PHONY: unslung build-unslung
 unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.configured
@@ -75,59 +76,35 @@ setup-openembedded openembedded/.configured: MT/.configured
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 	touch openembedded/.configured
 
-.PHONY: setup-unslung
-setup-unslung unslung/.configured: MT/.configured
-	[ -d unslung ]                   || ( mkdir -p unslung )
-	[ -e downloads ]                 || ( mkdir -p downloads )
-	[ -L unslung/Makefile -o ! -e unslung/Makefile ] || ( cd unslung ; mv Makefile Makefile.delete-me)
-	[ -e unslung/Makefile ]          || ( cd unslung ; ln -s ../common/openembedded.mk Makefile )
-	[ -L unslung/setup-env -o ! -e unslung/setup-env ] || ( cd unslung ; mv setup-env setup-env.delete-me )
-	[ -e unslung/setup-env ]         || ( cd unslung ; ln -s ../common/setup-env . )
-	[ -e unslung/downloads ]         || ( cd unslung ; ln -s ../downloads . )
-	[ -e unslung/bitbake ]           || ( cd unslung ; ln -s ../bitbake . )
-	[ -e unslung/openembedded ]      || ( cd unslung ; ln -s ../openembedded . )
-	[ -d unslung/conf ]              || ( mkdir -p unslung/conf )
-	[ ! -f unslung/conf/local.conf ] || ( cd unslung/conf ; mv local.conf local.conf.delete-me )
-	[ -e unslung/conf/site.conf ]    || ( cd unslung/conf ; ln -s ../../common/conf/site.conf . )
-	rm -rf unslung/tmp/cache
-	touch unslung/.configured
+.PHONY: setup-unslung setup-openslug setup-ucslugc
+setup-unslung setup-openslug setup-ucslugc: setup-%: MT/.configured
+	rm -rf $*/.configured
+	${MAKE} $*/.configured
 
-.PHONY: setup-openslug
-setup-openslug openslug/.configured: MT/.configured
-	[ -d openslug ]                   || ( mkdir -p openslug )
-	[ -e downloads ]                 || ( mkdir -p downloads )
-	[ -L openslug/Makefile -o ! -e openslug/Makefile ] || ( cd openslug ; mv Makefile Makefile.delete-me)
-	[ -e openslug/Makefile ]          || ( cd openslug ; ln -s ../common/openembedded.mk Makefile )
-	[ -L openslug/setup-env -o ! -e openslug/setup-env ] || ( cd openslug ; mv setup-env setup-env.delete-me )
-	[ -e openslug/setup-env ]         || ( cd openslug ; ln -s ../common/setup-env . )
-	[ -e openslug/downloads ]         || ( cd openslug ; ln -s ../downloads . )
-	[ -e openslug/bitbake ]           || ( cd openslug ; ln -s ../bitbake . )
-	[ -e openslug/openembedded ]      || ( cd openslug ; ln -s ../openembedded . )
-	[ -d openslug/conf ]              || ( mkdir -p openslug/conf )
-	[ ! -f openslug/conf/local.conf ] || ( cd openslug/conf ; mv local.conf local.conf.delete-me )
-	[ -e openslug/conf/site.conf ]    || ( cd openslug/conf ; ln -s ../../common/conf/site.conf . )
-	rm -rf openslug/tmp/cache
-	touch openslug/.configured
-
-.PHONY: setup-ucslugc
-setup-ucslugc ucslugc/.configured: MT/.configured
-	[ -d ucslugc ]                   || ( mkdir -p ucslugc )
-	[ -e downloads ]                 || ( mkdir -p downloads )
-	[ -L ucslugc/Makefile -o ! -e ucslugc/Makefile ] || ( cd ucslugc ; mv Makefile Makefile.delete-me)
-	[ -e ucslugc/Makefile ]          || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
-	[ -L ucslugc/setup-env -o ! -e ucslugc/setup-env ] || ( cd ucslugc ; mv setup-env setup-env.delete-me )
-	[ -e ucslugc/setup-env ]         || ( cd ucslugc ; ln -s ../common/setup-env . )
-	[ -e ucslugc/downloads ]         || ( cd ucslugc ; ln -s ../downloads . )
-	[ -e ucslugc/bitbake ]           || ( cd ucslugc ; ln -s ../bitbake . )
-	[ -e ucslugc/openembedded ]      || ( cd ucslugc ; ln -s ../openembedded . )
-	[ -d ucslugc/conf ]              || ( mkdir -p ucslugc/conf )
-	[ ! -f ucslugc/conf/local.conf ] || ( cd ucslugc/conf ; mv local.conf local.conf.delete-me )
-	[ -e ucslugc/conf/site.conf ]    || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
-	rm -rf ucslugc/tmp/cache
-	touch ucslugc/.configured
+%/.configured: MT/.configured
+	[ -d $* ] || ( mkdir -p $* )
+	[ -e downloads ] || ( mkdir -p downloads )
+	[ -L $*/Makefile -o ! -e $*/Makefile ] || ( cd $* ; mv Makefile Makefile.delete-me)
+	[ -e $*/Makefile ] || ( cd $* ; ln -s ../common/openembedded.mk Makefile )
+	[ -L $*/setup-env -o ! -e $*/setup-env ] || ( cd $* ; mv setup-env setup-env.delete-me )
+	[ -e $*/setup-env ] || ( cd $* ; ln -s ../common/setup-env . )
+	[ -e $*/downloads ] || ( cd $* ; ln -s ../downloads . )
+	[ -e $*/bitbake ] || ( cd $* ; ln -s ../bitbake . )
+	[ -e $*/openembedded ] || ( cd $* ; ln -s ../openembedded . )
+	[ -d $*/conf ] || ( mkdir -p $*/conf )
+	[ ! -f $*/conf/local.conf ] || ( cd $*/conf ; mv local.conf local.conf.delete-me )
+	[ -e $*/conf/local.conf.sample ] || ( cd $*/conf ; ln -s ../../common/conf/local.conf.sample . )
+	[ -e $*/conf/site.conf ] || ( cd $*/conf ; ln -s ../../common/conf/site.conf . )
+	[ ! -f $*/conf/auto.conf ] || ( cd $*/conf ; rm -f auto.conf )
+	[ -e $*/conf/auto.conf ] || ( \
+		echo "DISTRO=\"$*\"" > $*/conf/auto.conf ; \
+		echo "MACHINE=\"nslu2\"" >> $*/conf/auto.conf \
+	)
+	rm -rf $*/tmp/cache
+	touch $*/.configured
 
 .PHONY: setup-optware
-setup-optware optware/.configured:
+setup-optware optware/.configured: MT/.configured
 	[ -e downloads ]        || ( mkdir -p downloads )
 	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 	touch optware/.configured
@@ -293,6 +270,18 @@ clobber-bitbake:
 .PHONY: clobber-openembedded
 clobber-openembedded:
 	rm -rf openembedded
+
+.PHONY: clobber-unslung
+clobber-unslung:
+	rm -rf unslung
+
+.PHONY: clobber-openslug
+clobber-openslug:
+	rm -rf openslug
+
+.PHONY: clobber-ucslugc
+clobber-ucslugc:
+	rm -rf ucslugc
 
 .PHONY: clobber-optware
 clobber-optware:
