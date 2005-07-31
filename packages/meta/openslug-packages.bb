@@ -115,6 +115,7 @@ OPENSLUG_PACKAGES_append_linux = "\
 	libpam \
 	php \
 	postfix \
+	timezones \
 	xinetd \
 	yp-tools ypbind ypserv \
 	"
