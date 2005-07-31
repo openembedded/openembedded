@@ -12,6 +12,8 @@ HOMEPAGE="http://lists.suse.com/archive/pwdutils/"
 
 include nis.inc
 
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
+
 # an selinux API is used even if no selinux is detected by
 # configure.
 SRC_URI += " file://no-selinux.patch;patch=1"
