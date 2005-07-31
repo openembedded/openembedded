@@ -325,13 +325,18 @@ push-openembedded: update-openembedded
 
 .PHONY: autobuild
 autobuild:
-	${MAKE} update
-	${MAKE} build-ucslugc        upload-ucslugc-cross
-	${MAKE} build-openslug       upload-openslug-cross
-	${MAKE} build-unslung        upload-unslung-modules
-	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross
-	${MAKE} build-optware-wl500g upload-optware-wl500g-cross
-	${MAKE}                      upload-sources
+	( set errors=0 ; \
+	${MAKE} update                                           || errors++; \
+	${MAKE} build-openslug       upload-openslug-cross       || errors++ ; \
+	${MAKE} build-ucslugc        upload-ucslugc-cross        || errors++; \
+	${MAKE} build-unslung        upload-unslung-modules      || errors++ ; \
+	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross  || errors++; \
+	${MAKE} build-optware-wl500g upload-optware-wl500g-cross || errors++; \
+	${MAKE}                      upload-sources              || errors++ ; \
+	if [ "$errors" != "0" ] ; then \
+		echo "*** Errors during autobuild: $errors ***" ; \
+	fi \
+	)
 
 .PHONY: upload
 upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
