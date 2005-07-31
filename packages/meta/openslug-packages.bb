@@ -64,7 +64,6 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
-	man \
 	man-pages \
 	miau \ 
 	microcom \
@@ -80,13 +79,10 @@ OPENSLUG_PACKAGES = "\
 	pcre \
 	ppp \
 	procps \
-	psmisc \
 	puppy \
 	pwc \
 	rsync \
-	screen \
 	setpwc \
-	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
