@@ -42,6 +42,10 @@ optware-nslu2 build-optware-nslu2: optware/nslu2/Makefile
 optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
 	( cd optware/wl500g ; make autoclean ; make )
 
+.PHONY: openslug-2.3-beta build-openslug-2.3-beta
+openslug-2.3-beta build-openslug-2.3-beta: 
+	( cd releases/OpenSlug-2.3-beta ; ${MAKE} openslug-firmware )
+
 .PHONY: setup-monotone
 setup-monotone monotone/nslu2-linux.db:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && \
