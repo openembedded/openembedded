@@ -64,6 +64,7 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
+	man \
 	man-pages \
 	miau \ 
 	microcom \
@@ -79,10 +80,13 @@ OPENSLUG_PACKAGES = "\
 	pcre \
 	ppp \
 	procps \
+	psmisc \
 	puppy \
 	pwc \
 	rsync \
+	screen \
 	setpwc \
+	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
@@ -116,11 +120,13 @@ OPENSLUG_PACKAGES_append_linux = "\
 	psmisc \
 	screen \
 	streamripper \
+	timezones \
 	xinetd \
 	yp-tools ypbind ypserv \
 	"
 
 BROKEN_PACKAGES = "\
+	strace \
 	"
 
 DEPENDS = 'openslug-image \
