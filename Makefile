@@ -4,6 +4,7 @@
 # Change these if you are unfortunate enough to have a split net personality.
 SVN_USER ?= ${USER}
 CVS_USER ?= ${USER}
+SVN_SSH ?= "-l ${SVN_USER}"
 
 .PHONY: all
 all: update build
@@ -84,10 +85,11 @@ setup-optware optware/Makefile:
 	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
 
 .PHONY: setup-openslug-2.3-beta
-setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile:
+setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile: downloads
 	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
 	svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
 	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
+	ln -s ../../downloads releases/OpenSlug-2.3-beta/
 
 optware/nslu2/Makefile:
 	${MAKE} optware/Makefile
