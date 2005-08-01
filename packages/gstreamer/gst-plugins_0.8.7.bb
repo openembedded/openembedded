@@ -3,7 +3,7 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag gpe-soundserver gconf"
 
@@ -14,7 +14,8 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/gst-plugins/gst-plugins-${PV}.ta
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts \
                 --disable-artsc --disable-jack  --disable-libfame --disable-sdl --disable-shout2 \
-		--disable-gnome_vfs --disable-gconf --disable-libcaca  --disable-directfb "
+		--disable-gnome_vfs --disable-gconf --disable-libcaca  --disable-directfb \
+		--disable-cairo"
 
 inherit autotools pkgconfig gconf
 
