@@ -34,6 +34,7 @@ OPENSLUG_DEVELOPMENT = "\
 	pciutils \
 	quilt \
 	sed \
+	strace \
 	util-linux \
 	"
 
@@ -63,8 +64,6 @@ OPENSLUG_PACKAGES = "\
 	less \
 	libusb \
 	libxml2 \
-	man \
-	man-pages \
 	miau \ 
 	microcom \
 	mt-daapd \
@@ -79,13 +78,10 @@ OPENSLUG_PACKAGES = "\
 	pcre \
 	ppp \
 	procps \
-	psmisc \
 	puppy \
 	pwc \
 	rsync \
-	screen \
 	setpwc \
-	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
@@ -97,6 +93,7 @@ OPENSLUG_PACKAGES = "\
 	python \
 	samba \
 	sane-backends \
+	strace \
 	thttpd \
 	vlan \
 	wget \
@@ -109,19 +106,22 @@ OPENSLUG_PACKAGES = "\
 # such as sinf.)
 OPENSLUG_PACKAGES_append_linux = "\
 	bind \
+	man man-pages \
 	mgetty \
 	mpd \
 	nfs-utils \
 	libpam \
 	php \
 	postfix \
+	psmisc \
+	screen \
+	streamripper \
 	timezones \
 	xinetd \
 	yp-tools ypbind ypserv \
 	"
 
 BROKEN_PACKAGES = "\
-	strace \
 	"
 
 DEPENDS = 'openslug-image \
