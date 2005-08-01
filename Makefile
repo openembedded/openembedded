@@ -20,7 +20,6 @@ setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-dev
 
 .PHONY: update
 update: update-master update-bitbake update-openembedded update-optware
-	[ ! -e releases/OpenSlug-2.3-beta/Makefile ] || ${MAKE} update-openslug-2.3-beta
 
 .PHONY: clobber
 clobber: clobber-optware clobber-openembedded clobber-bitbake
