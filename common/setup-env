@@ -12,10 +12,6 @@ test -n "$TOPDIR" -a -d "$TOPDIR" || {
 	exit 1
 }
 
-. ./conf/auto.conf
-export DISTRO
-export MAKE_TARGET
-
 #
 # the following must match the definitions in common/conf/site.conf
 export PYTHONPATH="${TOPDIR}/bitbake/lib"
@@ -31,10 +27,13 @@ unset CC
 unset CXX
 unset MFLAGS
 unset MAKEFLAGS
+unset DISTRO
+unset MACHINE
+unset MAKE_TARGET
 #
 # make bb into a 'safe' bitbake
 alias bb-safe="env -i \
-	HOME='${TOPDIR}/home' \
+	HOME='${HOME}' \
 	PYTHONPATH='${PYTHONPATH}' \
 	BBPATH='${BBPATH}' \
 	PATH='${PATH}' \

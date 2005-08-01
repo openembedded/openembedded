@@ -1,6 +1,17 @@
-# Makefile for UcSlugC
+#!/bin/make
+# Makefile for OpenEmbedded builds
 # Licensed under the GPL v2 or later
 #
+# conf/auto.conf must exist in the same directory as the Makefile (i.e.
+# the directory where Makefile is used - it may be a symbolic link to
+# this file).  conf/auto.conf defines:
+#
+# DISTRO - the OpenEmbedded 'distro' to build
+# MACHINE - the OpenEmbedded build target machine
+# MAKE_TARGET - the target to pass to bitbake
+#
+# All of these values are (should be, must be) quoted in double quotes
+include conf/auto.conf
 
 BUILD_DIRS = downloads
 REQUIRED_DIRS = bitbake openembedded
@@ -8,7 +19,7 @@ FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
 
 # The default rule is to build the firmware in an unprotected environment.
 firmware: $(FIRMWARE_DEPS)
-	. ./setup-env; exec bitbake $${MAKE_TARGET}
+	. ./setup-env; exec bitbake $(MAKE_TARGET)
 
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).
@@ -40,7 +51,7 @@ clobber:
 
 .PHONY: source
 source: $(REQUIRED_DIRS)
-	tar zcf $${DISTRO}.tar.gz --exclude=MT Makefile setup-env conf/site.conf conf/auto.conf \
+	tar zcf $(DISTRO).tar.gz --exclude=MT Makefile setup-env conf/site.conf conf/auto.conf \
 		conf/local.conf.sample $(REQUIRED_DIRS:=/.)
 
 # This target probably isn't important any longer, because the -source
@@ -54,4 +65,4 @@ distclean: clobber
 # it removes directories from the tarball).
 .PHONY:
 really-clean: distclean
-	rm -rf $(REQUIRED_DIRS) $${DISTRO}-source.tar.gz
+	rm -rf $(REQUIRED_DIRS) $(DISTRO)-source.tar.gz
