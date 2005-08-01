@@ -1,25 +1,25 @@
 def tinder_tz_offset(off):
-    # get the offset. Either it is a number like
+    # get the offset.n minutes Either it is a number like
     # +200 or -300
     try:
         return int(off)
     except ValueError:
         if off == "Europe/Berlin":
-            return 200
+            return 120
         else:
             return 0
 
 def tinder_tinder_time(offset):
     import datetime
-    td   = datetime.timedelta(tinder_tz_offset(offset))
+    td   = datetime.timedelta(minutes=tinder_tz_offset(offset))
     time = datetime.datetime.utcnow() + td
     return time.strftime('%m/%d/%Y %H:%M:%S')
 
 def tinder_tinder_start(date,offset):
     import datetime, time
-    td   = datetime.timedelta(tinder_tz_offset(offset))
+    td   = datetime.timedelta(minutes=tinder_tz_offset(offset))
     ti   = time.strptime(date, "%m/%d/%Y %H:%M:%S")
-    ti   = datetime.datetime(*ti[0:7])-td
+    time = datetime.datetime(*ti[0:7])+td
     return time.strftime('%m/%d/%Y %H:%M:%S')
 
 def tinder_send_email(da, header, log):
@@ -42,9 +42,16 @@ def tinder_send_http(da, header, log):
     import httplib, urllib
     cont = "\n%s\n%s" % ( header, log)
     headers = {"Content-type": "multipart/form-data" }
+    print cont
 
     conn = httplib.HTTPConnection(data.getVar('TINDER_HOST',da, True))
     conn.request("POST", data.getVar('TINDER_URL',da,True), cont, headers)
+
+    resp = conn.getresponse()
+    print resp.status, resp.reason
+    data = resp.read()
+    print data
+
     conn.close() 
 
 
