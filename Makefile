@@ -87,9 +87,9 @@ setup-openembedded openembedded/conf/machine/nslu2.conf:
 setup-unslung unslung/Makefile:
 	${MAKE} MT/revision downloads
 	[ -d unslung ]                   || ( mkdir -p unslung )
-	[ -L unslung/Makefile ]          || ( cd unslung ; mv Makefile Makefile.delete-me)
+	[ -L unslung/Makefile -o ! -e unslung/Makefile ]          || ( cd unslung ; mv Makefile Makefile.delete-me)
 	[ -e unslung/Makefile ]          || ( cd unslung ; ln -s ../common/openembedded.mk Makefile )
-	[ -L unslung/setup-env ]         || ( cd unslung ; mv setup-env setup-env.delete-me )
+	[ -L unslung/setup-env -o ! -e unslung/setup-env ]         || ( cd unslung ; mv setup-env setup-env.delete-me )
 	[ -e unslung/setup-env ]         || ( cd unslung ; ln -s ../common/setup-env . )
 	[ -e unslung/downloads ]         || ( cd unslung ; ln -s ../downloads . )
 	[ -e unslung/bitbake ]           || ( cd unslung ; ln -s ../bitbake . )
@@ -103,9 +103,9 @@ setup-unslung unslung/Makefile:
 setup-openslug openslug/Makefile:
 	${MAKE} MT/revision downloads
 	[ -d openslug ]                   || ( mkdir -p openslug )
-	[ -L openslug/Makefile ]          || ( cd openslug ; mv Makefile Makefile.delete-me)
+	[ -L openslug/Makefile -o ! -e openslug/Makefile ]          || ( cd openslug ; mv Makefile Makefile.delete-me)
 	[ -e openslug/Makefile ]          || ( cd openslug ; ln -s ../common/openembedded.mk Makefile )
-	[ -L openslug/setup-env ]         || ( cd openslug ; mv setup-env setup-env.delete-me )
+	[ -L openslug/setup-env -o ! -e openslug/setup-env ]         || ( cd openslug ; mv setup-env setup-env.delete-me )
 	[ -e openslug/setup-env ]         || ( cd openslug ; ln -s ../common/setup-env . )
 	[ -e openslug/downloads ]         || ( cd openslug ; ln -s ../downloads . )
 	[ -e openslug/bitbake ]           || ( cd openslug ; ln -s ../bitbake . )
@@ -119,9 +119,9 @@ setup-openslug openslug/Makefile:
 setup-ucslugc ucslugc/Makefile:
 	${MAKE} MT/revision downloads
 	[ -d ucslugc ]                   || ( mkdir -p ucslugc )
-	[ -L ucslugc/Makefile ]          || ( cd ucslugc ; mv Makefile Makefile.delete-me)
+	[ -L ucslugc/Makefile -o ! -e ucslugc/Makefile ]          || ( cd ucslugc ; mv Makefile Makefile.delete-me)
 	[ -e ucslugc/Makefile ]          || ( cd ucslugc ; ln -s ../common/openembedded.mk Makefile )
-	[ -L ucslugc/setup-env ]         || ( cd ucslugc ; mv setup-env setup-env.delete-me )
+	[ -L ucslugc/setup-env -o ! -e ucslugc/setup-env ]         || ( cd ucslugc ; mv setup-env setup-env.delete-me )
 	[ -e ucslugc/setup-env ]         || ( cd ucslugc ; ln -s ../common/setup-env . )
 	[ -e ucslugc/downloads ]         || ( cd ucslugc ; ln -s ../downloads . )
 	[ -e ucslugc/bitbake ]           || ( cd ucslugc ; ln -s ../bitbake . )
