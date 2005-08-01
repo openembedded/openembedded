@@ -7,4 +7,4 @@ include common/Make.rules
 
 # The following is required for bootstrapping
 common/Make.rules:
-	make -f ../common/Make.rules common
+	$(MAKE) -f ../common/Make.rules common
