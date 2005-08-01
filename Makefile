@@ -331,7 +331,7 @@ autobuild:
 	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross  || $$errors++; \
 	${MAKE} build-optware-wl500g upload-optware-wl500g-cross || $$errors++; \
 	${MAKE}                      upload-sources              || $$errors++ ; \
-	if [ "$$errors" != "0" ] ; then \
+	if [ $$errors ne 0 ] ; then \
 		echo "*** Errors during autobuild: $$errors ***" ; \
 	fi \
 	)
