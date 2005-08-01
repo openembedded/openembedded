@@ -1,8 +1,8 @@
 SECTION = "console/network"
-DEPENDS = "db openssl"
+DEPENDS = "db3 openssl"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1"
@@ -43,3 +43,14 @@ do_stage () {
 	install -m 0644 ${S}/include/saslutil.h ${STAGING_INCDIR}/sasl/
 	install -m 0644 ${S}/include/prop.h ${STAGING_INCDIR}/sasl/
 }
+
+pkg_postinst () {
+        grep cyrus /etc/passwd || adduser --disabled-password --home=/var/spool/mail --ingroup mail cyrus
+	echo "cyrus" | saslpasswd2 -c cyrus
+	chgrp mail /etc/sasldb2
+}
+
+pkg_postrm () {
+        grep cyrus /etc/passwd && deluser cyrus
+}
+
