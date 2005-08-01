@@ -27,26 +27,26 @@ clobber: clobber-optware clobber-openembedded clobber-bitbake
 
 .PHONY: unslung build-unslung
 unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
-	( cd unslung ; make )
+	( cd unslung ; ${MAKE} )
 
 .PHONY: openslug build-openslug
 openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
-	( cd openslug ; make )
+	( cd openslug ; ${MAKE} )
 
 .PHONY: ucslugc build-ucslugc
 ucslugc build-ucslugc: ucslugc/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
-	( cd ucslugc ; make )
+	( cd ucslugc ; ${MAKE} )
 
 .PHONY: optware build-optware
 optware build-optware: build-optware-nslu2 build-optware-wl500g
 
 .PHONY: optware-nslu2 build-optware-nslu2
 optware-nslu2 build-optware-nslu2: optware/nslu2/Makefile
-	( cd optware/nslu2 ; make autoclean ; make )
+	( cd optware/nslu2 ; ${MAKE} autoclean ; ${MAKE} )
 
 .PHONY: optware-wl500g build-optware-wl500g
 optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
-	( cd optware/wl500g ; make autoclean ; make )
+	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
 
 .PHONY: openslug-2.3-beta build-openslug-2.3-beta
 openslug-2.3-beta build-openslug-2.3-beta: 
