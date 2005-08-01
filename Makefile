@@ -33,6 +33,10 @@ unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/ma
 openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
 	( cd openslug ; make )
 
+.PHONY: ucslugc build-ucslugc
+ucslugc build-ucslugc: ucslugc/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
+	( cd ucslugc ; make )
+
 .PHONY: optware build-optware
 optware build-optware: build-optware-nslu2 build-optware-wl500g
 
@@ -57,10 +61,10 @@ setup-monotone monotone/nslu2-linux.db:
 	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
 
-downloads:
-	[ -e downloads ] || mkdir -p downloads
+downloads home:
+	[ -e $@ ] || mkdir -p $@
 
-unslung/Makefile openslug/Makefile MT/revision:
+unslung/Makefile openslug/Makefile ucslugc/Makefile common/Make.rules MT/revision:
 	${MAKE} downloads
 	[ -e monotone/nslu2-linux.db ] || ( ${MAKE} monotone/nslu2-linux.db )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
@@ -255,6 +259,15 @@ upload-openslug-cross: openslug/Makefile
 	rsync -vl openslug/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross
+
+.PHONY: upload-ucslugc-cross
+upload-ucslugc-cross: ucslugc/Makefile
+	rm -rf ucslugc/tmp/deploy/ipk/morgue
+	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross
+	rsync -vl ucslugc/tmp/deploy/ipk/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
+	rsync -vlrt --delete ucslugc/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/Makefile
