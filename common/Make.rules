@@ -41,13 +41,13 @@ clobber:
 
 .PHONY: $(DISTRO)-source
 $(DISTRO)-source: $(REQUIRED_DIRS)
-	tar zcf $@.tar.gz --exclude=MT Makefile conf/auto.conf $(REQUIRED_DIRS:=/.)
+	tar zcf $@.tar.gz --exclude=MT Makefile conf/auto.conf conf/local.conf.sample $(REQUIRED_DIRS:=/.)
 
 # This target probably isn't important any longer, because the -source
 # target above does the right thing
 .PHONY:
 distclean: clobber
-	rm -rf topdir.conf conf/local.conf $(BUILD_DIRS)
+	rm -rf topdir.conf conf/local.conf common/conf/local.conf $(BUILD_DIRS)
 
 # This target is mainly for testing - it is intended to put the disto directory
 # back to its original state, it will destroy a source-tarball system (because

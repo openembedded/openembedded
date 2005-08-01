@@ -28,15 +28,15 @@ unset MFLAGS
 unset MAKEFLAGS
 #
 # make bb into a 'safe' bitbake
-alias bb="env -i \
-	CCACHE_DISABLE='${CCACHE_DISABLE}' \
-	CCACHE_DIR='${CCACHE_DIR}' \
+alias bb-safe="env -i \
+	HOME='${TOPDIR}/home' \
 	PYTHONPATH='${PYTHONPATH}' \
 	BBPATH='${BBPATH}' \
 	PATH='${PATH}' \
 	LD_LIBRARY_PATH='${LD_LIBRARY_PATH}' \
 	LANG='${LANG}' \
 	'${TOPDIR}/bitbake/bin/bitbake'"
+alias bb="'${TOPDIR}/bitbake/bin/bitbake'"
 #
 # remove TOPDIR - not required
 unset TOPDIR
