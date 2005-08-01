@@ -42,9 +42,11 @@ SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1 \
                           file://disable-apm.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
 SRC_URI_append_c7x0 = " file://disable-apm.patch;patch=1"
+SRC_URI_append_ipaq-pxa270 = " file://disable-apm.patch;patch=1"
 
 PACKAGE_ARCH_poodle = "poodle"
 PACKAGE_ARCH_c7x0 = "c7x0"
+PACKAGE_ARCH_ipaq-pxa270 = "ipaq-pxa270"
 
 S = "${WORKDIR}/xserver"
 
