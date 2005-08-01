@@ -1,5 +1,5 @@
 
-PR          = "r6"
+PR          = "r7"
 PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme
 DESCRIPTION = "Meta-package for maemo environment"
 MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
@@ -84,7 +84,8 @@ maemo-task-apps = "\
     osso-app-killer \
     osso-screenshot-tool \
     gpe-todo-hildon \
-    gpe-contacts-hildon"
+    gpe-contacts-hildon \
+    gpe-mini-browser-hildon"
 
 RDEPENDS_maemo-task-apps := "${maemo-task-apps}"
 DEPENDS += " ${maemo-task-apps}"
