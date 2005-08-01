@@ -6,7 +6,7 @@ RDEPENDS_pine = "pico"
 HOMEPAGE = "http://www.washington.edu/pine/"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
-SRC_URI = "ftp://ftp.cac.washington.edu/pine/pine.tar.bz2"
+SRC_URI = "ftp://ftp.cac.washington.edu/pine/pine${PV}.tar.bz2"
 S = "${WORKDIR}/pine${PV}"
 
 inherit autotools
