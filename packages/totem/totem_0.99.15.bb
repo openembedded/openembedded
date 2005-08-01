@@ -1,3 +1,6 @@
+BROKEN = "1"
+# not fetchable
+
 SECTION = "x11/multimedia"
 # totem OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
