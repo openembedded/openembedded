@@ -10,7 +10,7 @@ SVN_SSH ?= "-l ${SVN_USER}"
 all: update build
 
 .PHONY: build
-build: build-unslung build-openslug build-optware
+build: build-unslung build-openslug build-ucslugc build-optware
 
 .PHONY: setup
 setup: setup-master setup-bitbake setup-openembedded setup-optware
@@ -249,7 +249,7 @@ autobuild:
 	${MAKE} update build upload
 
 .PHONY: upload
-upload: upload-openslug-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
+upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
 
 .PHONY: upload-openslug-cross
 upload-openslug-cross: openslug/Makefile
