@@ -7,7 +7,7 @@ HOMEPAGE="http://www.cgabriel.org/sw/gtk2-ssh-askpass/"
 LICENSE = "GPL"
 SECTION = "net-misc"
 
-SRC_URI="http://www.cgabriel.org/sw/gtk2-ssh-askpass/gtk2-ssh-askpass-${PV}.tar.gz \
+SRC_URI="http://src.gentoo.pl/distfiles/gtk2-ssh-askpass-${PV}.tar.gz \
 	file://makefile.patch;patch=1"
 
 DEPENDS="gtk+"
