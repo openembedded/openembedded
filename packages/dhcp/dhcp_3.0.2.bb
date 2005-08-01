@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.isc.org/"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "BSD"
 PR = "r1"
-SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://noattrmode.patch;patch=1 \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
