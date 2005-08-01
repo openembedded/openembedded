@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "unknown"
 
-SRC_URI = "http://www.red-bean.com/~proski/firmware/1.7.4.tar.gz"
+SRC_URI = "http://www.red-bean.com/~proski/firmware/${PV}.tar.bz2"
 
 INHIBIT_PACKAGE_STRIP = "1"
 
