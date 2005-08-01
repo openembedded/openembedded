@@ -7,6 +7,8 @@ DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
 inherit gnome flow-lossage
 
+SRC_URI += "file://remove-docs.patch;patch=1"
+
 EXTRA_OECONF=" --without-perl "
 
 python populate_packages_prepend () {
