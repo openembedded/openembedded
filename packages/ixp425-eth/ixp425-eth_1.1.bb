@@ -8,7 +8,7 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPa
 	   file://intdriven.patch;patch=1 \
 	   file://pollcontroller.patch;patch=1 \
 	   file://mm4.patch;patch=1"
-PR = "r6"
+PR = "r7"
 
 S = "${WORKDIR}"
 
@@ -32,11 +32,11 @@ KERNEL_CC += "${TARGET_CC_ARCH} -mno-thumb-interwork"
 #
 #addtask ixp425_c_patch_fetch after do_fetch before do_unpack
 
-do_ixp425_c_patch_unpack () {
-	install -m 0644 ${DL_DIR}/ixp425_eth.c.patch ${WORKDIR}/
-}
+#do_ixp425_c_patch_unpack () {
+#	install -m 0644 ${DL_DIR}/ixp425_eth.c.patch ${WORKDIR}/
+#}
 
-addtask ixp425_c_patch_unpack after do_unpack before do_pre_patch
+#addtask ixp425_c_patch_unpack after do_unpack before do_pre_patch
 
 do_pre_patch () {
 	patcher -p 0 -i ixp425_eth_1_1_update_nf_bridge.patch
