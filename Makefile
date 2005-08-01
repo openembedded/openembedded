@@ -6,6 +6,12 @@ SVN_USER ?= ${USER}
 CVS_USER ?= ${USER}
 SVN_SSH ?= "-l ${SVN_USER}"
 
+HOST_MACHINE:=$(shell uname -m | sed \
+	-e 's/i[3-9]86/i386/' \
+	-e 's/armv5teb/armeb/' \
+	-e 's/armv5b/armeb/' \
+	)
+
 .PHONY: all
 all: update build
 
@@ -97,7 +103,11 @@ setup-unslung setup-openslug setup-ucslugc: setup-%: MT/.configured
 	[ -e $*/conf/site.conf ] || ( cd $*/conf ; ln -s ../../common/conf/site.conf . )
 	[ ! -f $*/conf/auto.conf ] || ( cd $*/conf ; rm -f auto.conf )
 	[ -e $*/conf/auto.conf ] || ( \
-		echo "DISTRO=\"$*\"" > $*/conf/auto.conf ; \
+		if [ "${HOST_MACHINE}" = "armeb" ] ; then \
+			echo "DISTRO=\"$*-native\"" > $*/conf/auto.conf ; \
+		else \
+			echo "DISTRO=\"$*\"" > $*/conf/auto.conf ; \
+		fi ; \
 		echo "MACHINE=\"nslu2\"" >> $*/conf/auto.conf \
 	)
 	rm -rf $*/tmp/cache
