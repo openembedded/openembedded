@@ -2,9 +2,10 @@ MAINTAINER="David Karlstrom <daka@thg.se>"
 
 include perl.inc
 
-SRC_URI += "file://config.sh-armeb-linux"
+SRC_URI += "file://config.sh-armeb-linux \
+	    file://config.sh-i386-linux"
 
-PR = "r9"
+PR = "r10"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
@@ -14,6 +15,7 @@ do_configure() {
 	cp ${WORKDIR}/Makefile.SH.patch .
 	cp ${WORKDIR}/config.sh-mipsel-linux .
 	cp ${WORKDIR}/config.sh-i686-linux .
+	cp ${WORKDIR}/config.sh-i386-linux .
 	cp ${WORKDIR}/config.sh-armeb-linux .
 	for i in config.sh-*-linux; do
 		a="`echo $i|sed -e 's,^config.sh-,,; s,-linux$,,'`"
