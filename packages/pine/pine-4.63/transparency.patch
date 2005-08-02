@@ -1,0 +1,14 @@
+diff -ru pine4.55-orig/pico/osdep/unix pine4.55/pico/osdep/unix
+--- pine4.55-orig/pico/osdep/unix	2003-04-15 17:20:22.000000000 -0500
++++ pine4.55/pico/osdep/unix	2003-06-23 13:05:19.000000000 -0500
+@@ -998,7 +998,9 @@
+     if(ANSI_COLOR()){
+ 	char buf[10];
+ 
+-	if(color < 8)
++	if(color == 0)
++	  memcpy(buf, "\033[49m", 6);
++	else if(color < 8)
+ 	  sprintf(buf, "\033[4%cm",  color + '0');
+ 	else
+ 	  sprintf(buf, "\033[10%cm", (color-8) + '0');

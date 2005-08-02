@@ -1,0 +1,12 @@
+--- pine4.56/pine/osdep/os-lnx.h.orig	2003-07-23 07:23:26.000000000 -0700
++++ pine4.56/pine/osdep/os-lnx.h	2003-07-23 07:23:30.000000000 -0700
+@@ -295,5 +295,9 @@
+ #define MAX_ADDR_EXPN   (1000)  /* Longest expanded addr                    */
+ #define MAX_ADDR_FIELD (10000)  /* Longest fully-expanded addr field        */
+ 
++/*----------------------------------------------------------------------
++    Allow for caching of passwords between connections.
++ ----*/
++#define PASSFILE ".pinepw"
+ 
+ #endif /* _OS_INCLUDED */

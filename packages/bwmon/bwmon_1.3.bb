@@ -12,5 +12,6 @@ EXTRA_OEMAKE = "LDFLAGS=-L${STAGING_LIBDIR}"
 inherit autotools
 
 do_install () {
-	install ${S}/bwmon ${D}/usr/bin/bwmon
+	install -d ${D}${bindir}
+	install ${S}/bwmon ${D}${bindir}/bwmon
 }
