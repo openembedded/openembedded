@@ -22,7 +22,7 @@ setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-dev
 update: update-master update-bitbake update-openembedded update-optware
 
 .PHONY: clobber
-clobber: clobber-optware clobber-openembedded clobber-bitbake
+clobber: clobber-optware clobber-openembedded clobber-bitbake clobber-master
 
 .PHONY: unslung build-unslung
 unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
@@ -259,6 +259,10 @@ update-optware: optware/Makefile
 .PHONY: update-openslug-2.3-beta
 update-openslug-2.3-beta: 
 	( cd releases/OpenSlug-2.3-beta ; svn up )
+
+.PHONY: clobber-master
+clobber-master:
+	rm -rf MT common downloads openslug scripts ucslugc unslung
 
 .PHONY: clobber-bitbake
 clobber-bitbake:
