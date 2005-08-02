@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "Vixie cron."
 LICENSE = "cron"
-PR="r5"
+PR="r6"
 DEPENDS += "install-native"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
