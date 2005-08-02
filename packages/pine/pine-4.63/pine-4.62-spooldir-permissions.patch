@@ -1,0 +1,12 @@
+diff -bur pine4.62/imap/src/osdep/unix/env_unix.c pine4.62-gentoo/imap/src/osdep/unix/env_unix.c
+--- pine4.62/imap/src/osdep/unix/env_unix.c	2004-09-13 23:32:11.000000000 +0200
++++ pine4.62-gentoo/imap/src/osdep/unix/env_unix.c	2005-03-24 23:38:13.000000000 +0100
+@@ -106,7 +106,7 @@
+  * on the mail spool, or install mlock.
+  */
+ 				/* disable warning if can't make .lock file */
+-static short disableLockWarning = NIL;
++static short disableLockWarning = 1;
+ 
+ /* UNIX namespaces */
+ 
