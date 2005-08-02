@@ -11,8 +11,9 @@ inherit autotools
 
 do_install() {
 	# add startup and sample config
-	mkdir -p ${D}${sysconfdir}/init.d ${D}/usr/bin
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sbindir}
 	install -m 0755 ${WORKDIR}/ccxstream.init ${D}${sysconfdir}/init.d/ccxstream
 	install -m 0644 ${WORKDIR}/ccxstream.conf ${D}${sysconfdir}/ccxstream.conf
-	install -m 0755 ccxstream ${D}/usr/sbin/ccxstream || exit 1
+	install -m 0755 ccxstream ${D}${sbindir}/ccxstream || exit 1
 }
