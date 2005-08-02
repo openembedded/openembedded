@@ -6,7 +6,7 @@ LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "timezones"
-PR="r4"
+PR="r5"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -31,10 +31,12 @@ do_install_append() {
 
 pkg_postrm () {
 	grep ntpd /etc/passwd && deluser ntpd 
+	update-rc.d openntpd remove
 }
 
 pkg_postinst () {
 	grep ntpd /etc/passwd || adduser --disabled-password --home=/var/shared/empty --ingroup nogroup ntpd
 	chown root:root /var/shared/empty
+	update-rc.d openntpd defaults 66
 }
 	
