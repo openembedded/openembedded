@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "Vixie cron."
 LICENSE = "cron"
-PR="r4"
+PR="r5"
 DEPENDS += "install-native"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
@@ -19,3 +19,12 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 	chmod ugo+rx ${D}${sbindir}/* ${D}${bindir}/*
 }
+pkg_postinst() {
+        update-rc.d cron defaults 65
+}
+
+pkg_postrm() {
+	update-rc.d cron remove
+}
+		
+
