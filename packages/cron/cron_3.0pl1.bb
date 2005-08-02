@@ -10,6 +10,10 @@ SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
 	   file://init"
 S = "${WORKDIR}/cron${PV}"
 
+INITSCRIPT_NAME = "cron"
+INITSCRIPT_PARAMS = "defaults"
+
+
 CFLAGS_append = " -I${S} -DSYS_TIME_H=0"
 do_install () {
 	install -d ${D}${sbindir} ${D}${bindir}

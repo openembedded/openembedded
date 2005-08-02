@@ -43,14 +43,6 @@ do_install_append() {
 	install -c -m 644 ../examples/smb.conf.default ${D}${sysconfdir}/samba/smb.conf
 }
 
-pkg_postinst() {
-	update-rc.d samba defaults 60
-}
-
-pkg_postrm() {
-	update-rc.d samba remove
-}
-
 PACKAGES =+ "swat"
 
 FILES_swat = "${sbindir}/swat ${datadir}/swat ${libdir}/*.msg"

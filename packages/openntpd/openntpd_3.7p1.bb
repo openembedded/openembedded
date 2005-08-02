@@ -15,6 +15,10 @@ SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz
 	   file://init"
 S = "${WORKDIR}/openntpd-${PV}"
 
+INITSCRIPT_NAME = "openntpd"
+INITSCRIPT_PARAMS = "defaults"
+
+
 inherit autotools
 
 EXTRA_OECONF += "CFLAGS=-DUSE_ADJTIMEX --disable-strip --prefix=/usr \
@@ -31,12 +35,10 @@ do_install_append() {
 
 pkg_postrm () {
 	grep ntpd /etc/passwd && deluser ntpd 
-	update-rc.d openntpd remove
 }
 
 pkg_postinst () {
 	grep ntpd /etc/passwd || adduser --disabled-password --home=/var/shared/empty --ingroup nogroup ntpd
 	chown root:root /var/shared/empty
-	update-rc.d openntpd defaults 66
 }
 	

@@ -9,6 +9,7 @@ SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
 	   file://acinclude.m4 \
 	   file://init"
 S = "${WORKDIR}/thttpd-${PV}"
+
 INITSCRIPT_NAME = "thttpd"
 INITSCRIPT_PARAMS = "defaults"
 
@@ -28,11 +29,3 @@ do_install_append () {
 	install -c -m 755 ${WORKDIR}/thttpd ${D}${sysconfdir}/init.d/thttpd
 }
 
-pkg_postinst() {
-        update-rc.d thttpd defaults 67
-}
-
-pkg_postrm() {
-        update-rc.d thttpd remove
-}
-		
