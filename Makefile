@@ -191,7 +191,7 @@ setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/.configured:
 	)
 	( cd releases/OpenSlug-2.3-beta ; ${MAKE} conf/local.conf setup-env )
 	[ -e downloads ] || ( mkdir -p downloads )
-	ln -s ../../downloads releases/OpenSlug-2.3-beta/
+	[ -e releases/OpenSlug-2.3-beta/downloads ] || ln -s ../../downloads releases/OpenSlug-2.3-beta/
 	touch releases/OpenSlug-2.3-beta/.configured
 
 .PHONY: setup-openslug-2.3-beta-developer
