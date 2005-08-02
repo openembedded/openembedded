@@ -5,7 +5,8 @@ DEPENDS = "virtual/kernel"
 MAINTAINER = "Micah Dowty <micah@navi.cx>"
 LICENSE = "GPL"
 PV = "svn-${CVSDATE}"
-SRC_URI = "svn://navi.cx/svn/misc/trunk/wasabi/devices;module=gchub"
+
+SRC_URI = "svn://svn.navi.cx/misc/trunk/wasabi/devices;module=gchub;proto=http"
 
 S = "${WORKDIR}/gchub/kernel"
 

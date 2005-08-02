@@ -1,3 +1,6 @@
+BROKEN = "1"
+# is unfetchable now - upstream updated to 20050728
+
 DEPENDS += "lua-native lua x11 xext"
 DESCRIPTION = "Ion is a tiling tabbed window manager designed with keyboard \
 users in mind."

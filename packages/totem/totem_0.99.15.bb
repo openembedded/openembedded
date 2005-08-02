@@ -7,7 +7,7 @@ DESCRIPTION="A GTK2 based media player"
 HOMEPAGE="http://www.hadess.net/totem.php3"
 LICENSE="GPL"
 
-SRC_URI="http://www.hadess.net/files/software/totem/totem-${PV}.tar.gz \
+SRC_URI="http://ftp.acc.umu.se/pub/GNOME/sources/totem/0.99/totem-${PV}.tar.gz \
 	file://include.patch;patch=1 \
 	file://omf.patch;patch=1"
 
