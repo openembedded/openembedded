@@ -1,0 +1,38 @@
+#! /bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/cyrus/bin
+DAEMON=/usr/cyrus/bin/master
+NAME=master
+DESC="Cyrus IMAP Master Daemon"
+
+case "$1" in
+  start)
+        echo -n "Starting $DESC: $NAME"
+        start-stop-daemon --start --quiet --background --pidfile /var/run/$NAME.pid  --exec $DAEMON
+        echo "."
+        ;;
+  stop)
+        echo -n "Stopping $DESC: $NAME "
+        start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid --exec $DAEMON
+        sleep 1
+        killall imapd pop3d timsieved master lmtpd notifyd 2>/dev/null
+        echo "."
+        ;;
+  reload|force-reload)
+        echo "Reloading $DESC configuration..."
+        start-stop-daemon --stop --signal 1 --quiet --pidfile /var/run/$NAME.pid --exec $DAEMON
+        echo "done."
+        ;;
+  restart)
+        $0 stop
+        sleep 1
+        $0 start
+        ;;
+  *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|reload|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+exit 0
+

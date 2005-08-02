@@ -1,3 +1,6 @@
+BROKEN = "1"
+#linux-2.6.5-gnalm1-gum0.patch is not fetchable 
+
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"

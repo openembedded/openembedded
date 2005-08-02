@@ -1,6 +1,6 @@
 include prboom_${PV}.bb
 
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/prboom-${PV}"
 

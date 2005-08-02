@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r51"
+PR = "r53"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -66,7 +66,8 @@ do_install () {
 		   ${D}${sysconfdir}/rc4.d \
 		   ${D}${sysconfdir}/rc5.d \
 		   ${D}${sysconfdir}/rc6.d \
-		   ${D}${sysconfdir}/default
+		   ${D}${sysconfdir}/default \
+		   ${D}${sysconfdir}/default/volatiles
 
 	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/checkroot.sh	${D}${sysconfdir}/init.d
@@ -86,7 +87,7 @@ do_install () {
 	install -m 0755    ${WORKDIR}/devpts		${D}${sysconfdir}/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/populate-volatile.sh ${D}${sysconfdir}/init.d
-	install -m 0644    ${WORKDIR}/volatiles		${D}${sysconfdir}/default
+	install -m 0644    ${WORKDIR}/volatiles		${D}${sysconfdir}/default/volatiles/00_core
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
 	fi

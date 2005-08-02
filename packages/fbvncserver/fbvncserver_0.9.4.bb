@@ -9,6 +9,7 @@ SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
            file://libvncs0.6.patch;patch=1 \
            file://paths.patch;patch=1 \
            file://kernelinclude.patch;patch=1 \
+	   file://buildfix.patch;patch=1 \
            file://zaurus_panel.jpg \
            file://init"
 	  

@@ -8,6 +8,7 @@ PR = "r0"
 
 SRC_URI = "http://ftp.yars.free.net/pub/software/unix/net/ftp/client/lftp/lftp-${PV}.tar.bz2 \
 	   file://pty.patch;patch=1"
+S = "${WORKDIR}/lftp-${PV}"
 
 EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"
 
