@@ -1,6 +1,7 @@
 DESCRIPTION = "XStream Server"
 
 LICENSE = "GPL-2"
+PR = "r1"
 
 SRC_URI = "http://surfnet.dl.sourceforge.net/sourceforge/xbplayer/${P}.tar.gz \
 	file://ccxstream-termcap.patch;patch=1 \
