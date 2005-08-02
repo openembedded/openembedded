@@ -28,34 +28,34 @@ status: status-master status-bitbake status-openembedded status-optware
 clobber: clobber-optware clobber-openembedded clobber-bitbake clobber-master
 
 .PHONY: unslung build-unslung
-unslung build-unslung: unslung/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
+unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.configured
 	( cd unslung ; ${MAKE} )
 
 .PHONY: openslug build-openslug
-openslug build-openslug: openslug/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
+openslug build-openslug: openslug/.configured bitbake/.configured openembedded/.configured
 	( cd openslug ; ${MAKE} )
 
-.PHONY: openslug-2.3-beta build-openslug-2.3-beta
-openslug-2.3-beta build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/Makefile
-	( cd releases/OpenSlug-2.3-beta ; ${MAKE} openslug-firmware )
-
 .PHONY: ucslugc build-ucslugc
-ucslugc build-ucslugc: ucslugc/Makefile bitbake/bin/bitbake openembedded/conf/machine/nslu2.conf
+ucslugc build-ucslugc: ucslugc/.configured bitbake/.configured openembedded/.configured
 	( cd ucslugc ; ${MAKE} )
 
 .PHONY: optware build-optware
 optware build-optware: build-optware-nslu2 build-optware-wl500g
 
 .PHONY: optware-nslu2 build-optware-nslu2
-optware-nslu2 build-optware-nslu2: optware/nslu2/Makefile
+optware-nslu2 build-optware-nslu2: optware/nslu2/.configured
 	( cd optware/nslu2 ; ${MAKE} autoclean ; ${MAKE} )
 
 .PHONY: optware-wl500g build-optware-wl500g
-optware-wl500g build-optware-wl500g: optware/wl500g/Makefile
+optware-wl500g build-optware-wl500g: optware/wl500g/.configured
 	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
 
+.PHONY: openslug-2.3-beta build-openslug-2.3-beta
+openslug-2.3-beta build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
+	( cd releases/OpenSlug-2.3-beta ; ${MAKE} openslug-firmware )
+
 .PHONY: setup-master
-setup-master MT/revision:
+setup-master MT/.configured:
 	[ -e monotone/nslu2-linux.db ] || ( mkdir -p monotone && \
 	wget http://sources.nslu2-linux.org/monotone/nslu2-linux.db.gz -O monotone/nslu2-linux.db.gz && \
 	gunzip monotone/nslu2-linux.db.gz )
@@ -63,17 +63,20 @@ setup-master MT/revision:
 	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
 	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.openembedded.* org.nslu2-linux.* )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
+	touch MT/.configured
 
 .PHONY: setup-bitbake
-setup-bitbake bitbake/bin/bitbake: MT/revision
+setup-bitbake bitbake/.configured: MT/.configured
 	[ -e bitbake/bin/bitbake ] || monotone co -b org.nslu2-linux.bitbake bitbake
+	touch bitbake/.configured
 
 .PHONY: setup-openembedded
-setup-openembedded openembedded/conf/machine/nslu2.conf: MT/revision
+setup-openembedded openembedded/.configured: MT/.configured
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
+	touch openembedded/.configured
 
 .PHONY: setup-unslung
-setup-unslung unslung/Makefile: MT/revision
+setup-unslung unslung/.configured: MT/.configured
 	[ -d unslung ]                   || ( mkdir -p unslung )
 	[ -e downloads ]                 || ( mkdir -p downloads )
 	[ -L unslung/Makefile -o ! -e unslung/Makefile ] || ( cd unslung ; mv Makefile Makefile.delete-me)
@@ -87,9 +90,10 @@ setup-unslung unslung/Makefile: MT/revision
 	[ ! -f unslung/conf/local.conf ] || ( cd unslung/conf ; mv local.conf local.conf.delete-me )
 	[ -e unslung/conf/site.conf ]    || ( cd unslung/conf ; ln -s ../../common/conf/site.conf . )
 	rm -rf unslung/tmp/cache
+	touch unslung/.configured
 
 .PHONY: setup-openslug
-setup-openslug openslug/Makefile: MT/revision
+setup-openslug openslug/.configured: MT/.configured
 	[ -d openslug ]                   || ( mkdir -p openslug )
 	[ -e downloads ]                 || ( mkdir -p downloads )
 	[ -L openslug/Makefile -o ! -e openslug/Makefile ] || ( cd openslug ; mv Makefile Makefile.delete-me)
@@ -103,9 +107,10 @@ setup-openslug openslug/Makefile: MT/revision
 	[ ! -f openslug/conf/local.conf ] || ( cd openslug/conf ; mv local.conf local.conf.delete-me )
 	[ -e openslug/conf/site.conf ]    || ( cd openslug/conf ; ln -s ../../common/conf/site.conf . )
 	rm -rf openslug/tmp/cache
+	touch openslug/.configured
 
 .PHONY: setup-ucslugc
-setup-ucslugc ucslugc/Makefile: MT/revision
+setup-ucslugc ucslugc/.configured: MT/.configured
 	[ -d ucslugc ]                   || ( mkdir -p ucslugc )
 	[ -e downloads ]                 || ( mkdir -p downloads )
 	[ -L ucslugc/Makefile -o ! -e ucslugc/Makefile ] || ( cd ucslugc ; mv Makefile Makefile.delete-me)
@@ -119,23 +124,16 @@ setup-ucslugc ucslugc/Makefile: MT/revision
 	[ ! -f ucslugc/conf/local.conf ] || ( cd ucslugc/conf ; mv local.conf local.conf.delete-me )
 	[ -e ucslugc/conf/site.conf ]    || ( cd ucslugc/conf ; ln -s ../../common/conf/site.conf . )
 	rm -rf ucslugc/tmp/cache
-
-.PHONY: setup-openslug-2.3-beta
-setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/Makefile:
-	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
-	svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
-	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
-	[ -e downloads ] || ( mkdir -p downloads )
-	ln -s ../../downloads releases/OpenSlug-2.3-beta/
+	touch ucslugc/.configured
 
 .PHONY: setup-optware
-setup-optware optware/Makefile:
+setup-optware optware/.configured:
 	[ -e downloads ]        || ( mkdir -p downloads )
 	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
+	touch optware/.configured
 
-optware/nslu2/Makefile:
-	${MAKE} optware/Makefile
-	[ -e optware/nslu2/Makefile ]  || ( \
+optware/nslu2/.configured: optware/.configured
+	[ -e optware/nslu2/Makefile ] || ( \
 		mkdir -p optware/nslu2 ; \
 		echo "OPTWARE_TARGET=nslu2" > optware/nslu2/Makefile ; \
 	 	echo "include ../Makefile" >> optware/nslu2/Makefile ; \
@@ -144,10 +142,10 @@ optware/nslu2/Makefile:
 		ln -s ../scripts optware/nslu2/scripts ; \
 		ln -s ../sources optware/nslu2/sources ; \
 	)
+	touch optware/nslu2/.configured
 
-optware/wl500g/Makefile:
-	${MAKE} optware/Makefile
-	[ -e optware/wl500g/Makefile ]  || ( \
+optware/wl500g/.configured: optware/.configured
+	[ -e optware/wl500g/Makefile ] || ( \
 		mkdir -p optware/wl500g ; \
 		echo "OPTWARE_TARGET=wl500g" > optware/wl500g/Makefile ; \
 	 	echo "include ../Makefile" >> optware/wl500g/Makefile ; \
@@ -156,11 +154,13 @@ optware/wl500g/Makefile:
 		ln -s ../scripts optware/wl500g/scripts ; \
 		ln -s ../sources optware/wl500g/sources ; \
 	)
+	touch optware/wl500g/.configured
 
 .PHONY: setup-optware-developer
 setup-optware-developer:
 	[ ! -e optware ] || ( mv optware optware-user )
 	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
+	${MAKE} setup-optware
 
 .PHONY: setup-slugimage-developer
 setup-slugimage-developer:
@@ -182,11 +182,26 @@ setup-apex apex/Makefile:
 setup-apex-developer:
 	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
 
+.PHONY: setup-openslug-2.3-beta
+setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/.configured:
+	[ -e releases/OpenSlug-2.3-beta ] || ( \
+		mkdir -p releases ; \
+		svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-2.3-beta \
+			releases/OpenSlug-2.3-beta \
+	)
+	( cd releases/OpenSlug-2.3-beta ; ${MAKE} conf/local.conf setup-env )
+	[ -e downloads ] || ( mkdir -p downloads )
+	ln -s ../../downloads releases/OpenSlug-2.3-beta/
+	touch releases/OpenSlug-2.3-beta/.configured
+
 .PHONY: setup-openslug-2.3-beta-developer
 setup-openslug-2.3-beta-developer:
-	[ ! -e releases/OpenSlug-2.3-beta ] || mkdir -p releases
-	svn checkout svn+ssh://svn.berlios.de/svnroot/repos/openslug/releases/OpenSlug-2.3-beta releases/OpenSlug-2.3-beta
-	cd releases/OpenSlug-2.3-beta && ${MAKE} conf/local.conf setup-env
+	[ -e releases/OpenSlug-2.3-beta ] || ( \
+		mkdir -p releases ; \
+		svn checkout svn+ssh://svn.berlios.de/svnroot/repos/openslug/releases/OpenSlug-2.3-beta \
+			releases/OpenSlug-2.3-beta \
+	)
+	${MAKE} setup-openslug-2.3-beta
 
 .PHONY: setup-host-debian
 setup-host-debian:
@@ -207,7 +222,7 @@ setup-host-debian:
 		unzip
 
 .PHONY: update-master
-update-master: MT/revision
+update-master: MT/.configured
 	monotone pull
 	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.nslu2-linux.dev ; \
@@ -218,7 +233,7 @@ update-master: MT/revision
 	fi
 
 .PHONY: update-bitbake
-update-bitbake: bitbake/bin/bitbake
+update-bitbake: bitbake/.configured
 	monotone pull
 	if [ `monotone automate heads org.nslu2-linux.bitbake | wc -l` != "1" ] ; then \
 	  monotone merge -b org.nslu2-linux.bitbake ; \
@@ -229,7 +244,7 @@ update-bitbake: bitbake/bin/bitbake
 	fi
 
 .PHONY: update-openembedded
-update-openembedded: openembedded/conf/machine/nslu2.conf
+update-openembedded: openembedded/.configured
 	monotone pull
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
@@ -240,27 +255,27 @@ update-openembedded: openembedded/conf/machine/nslu2.conf
 	fi
 
 .PHONY: update-optware
-update-optware: optware/Makefile
+update-optware: optware/.configured
 	( cd optware ; cvs -q update -d -P )
 
 .PHONY: update-openslug-2.3-beta
-update-openslug-2.3-beta: 
+update-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
 	( cd releases/OpenSlug-2.3-beta ; svn up )
 
 .PHONY: status-master
-status-master: MT/revision
+status-master: MT/.configured
 	monotone status --brief
 
 .PHONY: status-bitbake
-status-bitbake: bitbake/bin/bitbake
+status-bitbake: bitbake/.configured
 	( cd bitbake ; monotone status --brief )
 
 .PHONY: status-openembedded
-status-openembedded: openembedded/conf/machine/nslu2.conf
+status-openembedded: openembedded/.configured
 	( cd openembedded ; monotone status --brief )
 
 .PHONY: status-optware
-status-optware: optware/Makefile
+status-optware: optware/.configured
 	( cd optware ; cvs -q update -d -P )
 
 .PHONY: status-openslug-2.3-beta
@@ -317,7 +332,7 @@ autobuild:
 upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
 
 .PHONY: upload-openslug-cross
-upload-openslug-cross: openslug/Makefile
+upload-openslug-cross: openslug/.configured
 	rm -rf openslug/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
@@ -326,7 +341,7 @@ upload-openslug-cross: openslug/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
 
 .PHONY: upload-openslug-2.3-beta-cross
-upload-openslug-2.3-beta-cross:
+upload-openslug-2.3-beta-cross: releases/OpenSlug-2.3-beta/.configured
 	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/openslug/cross/2.3-beta/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
@@ -335,7 +350,7 @@ upload-openslug-2.3-beta-cross:
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
 .PHONY: upload-ucslugc-cross
-upload-ucslugc-cross: ucslugc/Makefile
+upload-ucslugc-cross: ucslugc/.configured
 	rm -rf ucslugc/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ unslung@ipkg.nslu2-linux.org:nslu/feeds/ucslugc/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
@@ -344,7 +359,7 @@ upload-ucslugc-cross: ucslugc/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross/unstable
 
 .PHONY: upload-unslung-modules
-upload-unslung-modules: unslung/Makefile
+upload-unslung-modules: unslung/.configured
 	rm -rf unslung/tmp/deploy/ipk/morgue
 	scripts/package-strip.pl kernel-module-\* unslung/tmp/deploy/ipk/Packages unslung/tmp/deploy/ipk/Packages.new
 	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
@@ -357,7 +372,7 @@ upload-unslung-modules: unslung/Makefile
 #	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/oe/
 
 .PHONY: upload-optware-nslu2-cross
-upload-optware-nslu2-cross: optware/nslu2/Makefile
+upload-optware-nslu2-cross: optware/nslu2/.configured
 	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
 	rsync -vl optware/nslu2/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/cross/
@@ -365,7 +380,7 @@ upload-optware-nslu2-cross: optware/nslu2/Makefile
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
 
 .PHONY: upload-optware-wl500g-cross
-upload-optware-wl500g-cross: optware/wl500g/Makefile
+upload-optware-wl500g-cross: optware/wl500g/.configured
 	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
 	rsync -vl optware/wl500g/packages/Packages* unslung@ipkg.nslu2-linux.org:nslu/feeds/unslung/wl500g/
@@ -377,7 +392,7 @@ upload-sources:
 	rsync -vlrt --exclude='ixp400*' downloads/ nslu2@sources.nslu2-linux.org:ipkg/sources/
 
 .PHONY: import-bitbake
-import-bitbake: bitbake/bin/bitbake
+import-bitbake: bitbake/.configured
 	mv bitbake bitbake.old
 	svn co svn://svn.berlios.de/bitbake/trunk/bitbake
 	cp -rp bitbake.old/MT bitbake.old/.mt-attrs bitbake
@@ -385,7 +400,7 @@ import-bitbake: bitbake/bin/bitbake
 	( cd bitbake ; rm -rf .svn ; monotone status )
 
 .PHONY: import-openembedded
-import-openembedded: openembedded/conf/machine/nslu2.conf
+import-openembedded: openembedded/.configured
 	monotone pull monotone.vanille.de org.openembedded.*
 	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.dev ; \
@@ -399,7 +414,7 @@ import-openembedded: openembedded/conf/machine/nslu2.conf
 	fi
 
 .PHONY: export-openembedded
-export-openembedded: openembedded/conf/machine/nslu2.conf
+export-openembedded: openembedded/.configured
 	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
 	  monotone merge -b org.openembedded.nslu2-linux ; \
 	fi
