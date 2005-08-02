@@ -35,5 +35,6 @@ pkg_postrm () {
 
 pkg_postinst () {
 	grep ntpd /etc/passwd || adduser --disabled-password --home=/var/shared/empty --ingroup nogroup ntpd
+	chown root:root /var/shared/empty
 }
 	
