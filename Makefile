@@ -25,7 +25,7 @@ update: update-master update-bitbake update-openembedded update-optware
 status: status-master status-bitbake status-openembedded status-optware
 
 .PHONY: clobber
-clobber: clobber-optware clobber-openembedded clobber-bitbake clobber-master
+clobber: clobber-master clobber-bitbake clobber-openembedded clobber-optware clobber-releases
 
 .PHONY: unslung build-unslung
 unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.configured
@@ -298,6 +298,10 @@ clobber-openembedded:
 clobber-optware:
 	rm -rf optware
 
+.PHONY: clobber-releases
+clobber-releases:
+	rm -rf releases
+
 # Targets for use by those with write access to the repositories
 
 .PHONY: push
@@ -306,6 +310,7 @@ push: push-master push-bitbake push-openembedded
 .PHONY: push-master
 push-master: update-master
 	monotone push
+	# scp Makefile slug@www.nslu2-linux.org:htdocs/www/Makefile
 	scp Makefile nslu@www.nslu2-linux.org:public_html/Makefile
 
 .PHONY: push-bitbake
