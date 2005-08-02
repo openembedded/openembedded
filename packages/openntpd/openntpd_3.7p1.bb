@@ -5,7 +5,8 @@ HOMEPAGE = "http://www.openntpd.org/"
 LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
-PR="r2"
+DEPENDS = "timezones"
+PR="r4"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -26,7 +27,6 @@ do_install_prepend() {
 
 do_install_append() {
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/openntpd
-	install -d ${D}${localstatedir}/shared/empty
 }
 
 pkg_postrm () {
@@ -35,5 +35,6 @@ pkg_postrm () {
 
 pkg_postinst () {
 	grep ntpd /etc/passwd || adduser --disabled-password --home=/var/shared/empty --ingroup nogroup ntpd
+	chown root:root /var/shared/empty
 }
 	

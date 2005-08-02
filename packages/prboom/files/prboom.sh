@@ -9,6 +9,8 @@ case $model in
 *)		par="";;
 esac
 
+test -e /usr/share/games/doom/prboom.cfg && par="$par -config /usr/share/games/doom/prboom.cfg"
+
 echo "Model: [$model]"
 echo "Launching prboom $par $*"
 

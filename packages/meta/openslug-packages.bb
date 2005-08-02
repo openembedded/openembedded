@@ -54,6 +54,8 @@ OPENSLUG_PACKAGES = "\
 	bash \
 	bluez-utils-nodbus \
 	bridge-utils \
+	bwmon \
+	ccxstream \
 	coreutils \
 	cron \
 	cvs\
