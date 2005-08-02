@@ -2,7 +2,7 @@ DESCRIPTION = "A simple, small, portable, fast, and secure HTTP server."
 LICENSE = "BSD"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://www.acme.com/software/thttpd/"
-PR="r2"
+PR="r3"
 
 SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
 	   file://install.patch;patch=1 \
@@ -27,3 +27,12 @@ do_install_append () {
 	cat ${WORKDIR}/init | sed -e 's,@@SRVDIR,${servicedir}/www,g' > ${WORKDIR}/thttpd
 	install -c -m 755 ${WORKDIR}/thttpd ${D}${sysconfdir}/init.d/thttpd
 }
+
+pkg_postinst() {
+        update-rc.d thttpd defaults 67
+}
+
+pkg_postrm() {
+        update-rc.d thttpd remove
+}
+		
