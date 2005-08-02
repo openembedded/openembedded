@@ -1,4 +1,4 @@
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -41,6 +41,14 @@ do_install_append() {
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
 	install -d "${D}${sysconfdir}/samba"
 	install -c -m 644 ../examples/smb.conf.default ${D}${sysconfdir}/samba/smb.conf
+}
+
+pkg_postinst() {
+	update-rc.d samba defaults 60
+}
+
+pkg_postrm() {
+	update-rc.d samba remove
 }
 
 PACKAGES =+ "swat"
