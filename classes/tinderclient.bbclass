@@ -45,11 +45,6 @@ def tinder_send_http(da, header, log):
 
     conn = httplib.HTTPConnection(data.getVar('TINDER_HOST',da, True))
     conn.request("POST", data.getVar('TINDER_URL',da,True), cont, headers)
-
-    resp = conn.getresponse()
-    data = resp.read()
-    print data
-
     conn.close() 
 
 
