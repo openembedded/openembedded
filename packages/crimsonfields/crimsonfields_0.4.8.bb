@@ -23,7 +23,8 @@ do_configure() {
 	install -m 0644 ${STAGING_DIR}/${BUILD_SYS}/share/default.* tools/
 }
 
-do_install_append() {
+do_install() {
+	autotools_do_install
 	install -d ${D}${palmtopdir}/apps/Games/
 	install -d ${D}${palmtopdir}/pics/
 	install -m 0644 ${D}${datadir}/applications/crimson.desktop ${D}${palmtopdir}/apps/Games/

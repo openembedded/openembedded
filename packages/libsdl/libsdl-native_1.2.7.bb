@@ -47,7 +47,23 @@ do_stage() {
 
 	cat >${STAGING_BINDIR}/sdl-config-native <<EOF
 #!/bin/sh
-echo ""
+  case "\$1" in
+    --prefix)
+      echo /usr
+      ;;
+    --exec-prefix)
+      echo /usr 
+      ;;
+    --version)
+      echo ${PV}
+      ;;
+    --cflags)
+      echo -I${STAGING_INCDIR}/SDL -D_REENTRANT
+      ;;
+    --libs)
+      echo -lSDLmain -lSDL-1.2 -lpthread -L${STAGING_LIBDIR}
+      ;;
+  esac
 EOF
 	chmod a+rx ${STAGING_BINDIR}/sdl-config-native
 }
