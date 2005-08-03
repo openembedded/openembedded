@@ -58,6 +58,7 @@ UCSLUGC_PACKAGES = "\
 	miau \ 
 	microcom \
 	monotone-4 monotone-5 \
+	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
@@ -89,6 +90,7 @@ UCSLUGC_PACKAGES = "\
 	sed \
 	setpwc \
 	strace \
+	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
@@ -107,12 +109,10 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	libpam \
 	man man-pages \
 	mgetty \
-	mpd \
 	php \
 	postfix \
 	psmisc \
 	screen \
-	streamripper \
 	tar \
 	timezones \
 	xinetd \
