@@ -584,12 +584,12 @@ CONFIG_BLK_DEV_IDECS=y
 #
 # Input core support
 #
-# CONFIG_INPUT is not set
-# CONFIG_INPUT_KEYBDEV is not set
+CONFIG_INPUT=m
+CONFIG_INPUT_KEYBDEV=m
 # CONFIG_INPUT_MOUSEDEV is not set
 # CONFIG_INPUT_JOYDEV is not set
 # CONFIG_INPUT_EVDEV is not set
-# CONFIG_INPUT_UINPUT is not set
+CONFIG_INPUT_UINPUT=m
 
 #
 # Character devices
@@ -662,6 +662,32 @@ CONFIG_UNIX98_PTY_COUNT=256
 # Joysticks
 #
 # CONFIG_INPUT_GAMEPORT is not set
+# CONFIG_INPUT_NS558 is not set
+# CONFIG_INPUT_LIGHTNING is not set
+# CONFIG_INPUT_PCIGAME is not set
+# CONFIG_INPUT_CS461X is not set
+# CONFIG_INPUT_EMU10K1 is not set
+# CONFIG_INPUT_SERIO is not set
+# CONFIG_INPUT_SERPORT is not set
+# CONFIG_INPUT_ANALOG is not set
+# CONFIG_INPUT_A3D is not set
+# CONFIG_INPUT_ADI is not set
+# CONFIG_INPUT_COBRA is not set
+# CONFIG_INPUT_GF2K is not set
+# CONFIG_INPUT_GRIP is not set
+# CONFIG_INPUT_INTERACT is not set
+# CONFIG_INPUT_TMDC is not set
+# CONFIG_INPUT_SIDEWINDER is not set
+# CONFIG_INPUT_IFORCE_USB is not set
+# CONFIG_INPUT_IFORCE_232 is not set
+# CONFIG_INPUT_WARRIOR is not set
+# CONFIG_INPUT_MAGELLAN is not set
+# CONFIG_INPUT_SPACEORB is not set
+# CONFIG_INPUT_SPACEBALL is not set
+# CONFIG_INPUT_STINGER is not set
+# CONFIG_INPUT_DB9 is not set
+# CONFIG_INPUT_GAMECON is not set
+# CONFIG_INPUT_TURBOGRAFX is not set
 # CONFIG_QIC02_TAPE is not set
 
 #
@@ -973,6 +999,11 @@ CONFIG_USB=m
 # CONFIG_USB_STORAGE_JUMPSHOT is not set
 # CONFIG_USB_ACM is not set
 # CONFIG_USB_PRINTER is not set
+# CONFIG_USB_HID is not set
+# CONFIG_USB_HIDDEV is not set
+# CONFIG_USB_KBD is not set
+# CONFIG_USB_MOUSE is not set
+# CONFIG_USB_WACOM is not set
 # CONFIG_USB_DC2XX is not set
 # CONFIG_USB_MDC800 is not set
 # CONFIG_USB_SCANNER is not set
