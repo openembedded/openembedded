@@ -1,12 +1,13 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r9"
+PR = "r10"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_NATIVE = "\
+	autoconf \
 	automake \
 	bash \
 	binutils binutils-dev binutils-symlinks \
