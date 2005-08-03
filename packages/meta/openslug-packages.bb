@@ -63,8 +63,11 @@ OPENSLUG_PACKAGES = "\
 	glib-2.0 \
 	gphoto2 \
 	gtk-doc \
+	iperf \
+	jpeg \
 	less \
 	libpam \
+	libpng \
 	libusb \
 	libxml2 \
 	man man-pages \
@@ -78,6 +81,7 @@ OPENSLUG_PACKAGES = "\
 	nail \
 	nano \
 	ncftp \
+	netpbm \
 	nfs-utils \
 	ntp \
 	obexftp openobex openobex-apps ircp \
@@ -106,12 +110,14 @@ OPENSLUG_PACKAGES = "\
 	sysfsutils \
 	thttpd \
 	thttpd \
+	tiff \
 	timezones \
 	unionfs-modules unionfs-utils \
 	vlan \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
+	zlib \
 	"
 
 BROKEN_PACKAGES = "\

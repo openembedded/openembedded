@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl db3"
 LICENSE = "BSD"
-PR = "r3"
+PR = "r5"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
@@ -13,7 +13,10 @@ SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
 	   file://volatiles \
 	   "
 
-inherit autotools
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "cyrus"
+INITSCRIPT_PARAMS = "start 56 3 4 5 . stop 15 0 1 6 ."
 
 EXTRA_OECONF = "--with-auth=unix \
 		--without-perl \
@@ -38,8 +41,6 @@ do_install_append () {
 
 pkg_postinst () {
 	/etc/init.d/populate-volatile.sh
-	update-rc.d cyrus start 56 3 4 5 . stop 15 0 1 6 .
-	/etc/init.d/cyrus start
 }
 
 pkg_postrm () {
