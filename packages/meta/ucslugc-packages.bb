@@ -17,7 +17,6 @@ UCSLUGC_PACKAGES = "\
 	autoconf \
 	automake \
 	bash \
-	bash \
 	binutils \
 	bison \
 	bluez-utils-nodbus \
@@ -25,7 +24,6 @@ UCSLUGC_PACKAGES = "\
 	bwmon \
 	bzip2 \
 	ccxstream \
-	coreutils \
 	coreutils \
 	cron \
 	cvs \
@@ -48,7 +46,9 @@ UCSLUGC_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	ipkg-utils \
+	jpeg \
 	less \
+	libpng \
 	libtool \
 	libusb \
 	libxml2 \
@@ -70,11 +70,11 @@ UCSLUGC_PACKAGES = "\
 	openldap \
 	openntpd \
 	openssh \
-	openssh \
 	openvpn \
 	patch \
 	pciutils \
 	pcre \
+	perl \
 	pkgconfig \
 	ppp \
 	procps \
@@ -89,15 +89,15 @@ UCSLUGC_PACKAGES = "\
 	sed \
 	setpwc \
 	strace \
-	strace \
 	sudo \
 	sysfsutils \
 	thttpd \
-	thttpd \
+	tiff \
 	unionfs-modules unionfs-utils \
 	util-linux \
 	vlan \
 	wget \
+	zlib \
 	"
 
 # These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
@@ -108,7 +108,6 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	man man-pages \
 	mgetty \
 	mpd \
-	perl \
 	php \
 	postfix \
 	psmisc \
