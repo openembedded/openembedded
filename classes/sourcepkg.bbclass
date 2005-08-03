@@ -35,7 +35,7 @@ sourcepkg_do_create_orig_tgz(){
 	mkdir -p ${DEPLOY_DIR_SRC}
 	cd ${WORKDIR}
 	for i in ${EXCLUDE_FROM}; do
-		echo $i > temp/exclude-from-file
+		echo $i >> temp/exclude-from-file
 	done
 
 	src_tree=${@get_src_tree(d)}
@@ -85,6 +85,10 @@ python sourcepkg_do_dumpdata() {
 sourcepkg_do_create_diff_gz(){
 
 	cd ${WORKDIR}
+	for i in ${EXCLUDE_FROM}; do
+		echo $i >> temp/exclude-from-file
+	done
+
 
 	src_tree=${@get_src_tree(d)}
 
