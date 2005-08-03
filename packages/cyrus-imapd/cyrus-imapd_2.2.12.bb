@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl db3"
 LICENSE = "BSD"
-PR = "r4"
+PR = "r5"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
@@ -41,7 +41,6 @@ do_install_append () {
 
 pkg_postinst () {
 	/etc/init.d/populate-volatile.sh
-	/etc/init.d/cyrus start
 }
 
 pkg_postrm () {
