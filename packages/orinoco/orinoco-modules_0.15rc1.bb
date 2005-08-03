@@ -4,11 +4,14 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \
            file://makefile_fix.patch;patch=1 \
            file://list-move.patch;patch=1 \
+           file://add_event.patch;patch=1 \
+           file://add_utsname.patch;patch=1 \
+           file://spectrum_cs_ids.patch;patch=1 \
            file://spectrum-firmware.patch;patch=1 \
            file://spectrum.conf \
            file://spectrum_fw.h \
