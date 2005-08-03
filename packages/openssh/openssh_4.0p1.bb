@@ -11,7 +11,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r1"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -46,11 +46,13 @@ do_compile_append () {
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/sshd
+	mv ${D}${bindir}/scp ${D}${bindir}/scp.openssh
+	mv ${D}${bindir}/ssh ${D}${bindir}/ssh.openssh
 }
 
 PACKAGES =+ " openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc"
-FILES_openssh-scp = "${bindir}/scp"
-FILES_openssh-ssh = "${bindir}/ssh ${bindir}/slogin /${sysconfdir}/ssh/ssh_config"
+FILES_openssh-scp = "${bindir}/scp.${PN}"
+FILES_openssh-ssh = "${bindir}/ssh.${PN} ${bindir}/slogin /${sysconfdir}/ssh/ssh_config"
 FILES_openssh-sshd = "${sbindir}/sshd /${sysconfdir}/init.d/sshd ${bindir}/ssh-keygen"
 FILES_openssh-sshd += " /${sysconfdir}/ssh/moduli /${sysconfdir}/ssh/sshd_config /var/run/sshd"
 FILES_openssh-sftp = "${bindir}/sftp ${libdir}exec/sftp-server"
@@ -65,8 +67,16 @@ if test "x$D" != "x"; then
 else
 	addgroup sshd
 	adduser --system --home /var/run/sshd --no-create-home --disabled-password --ingroup sshd -s /bin/false sshd
-	update-rc.d sshd defaults
+	update-rc.d sshd defaults 9
 fi
+}
+
+pkg_postinst_openssh-scp() {
+	update-alternatives --install ${bindir}/scp scp scp.${PN} 90
+}
+
+pkg_postinst_openssh-ssh() {
+	update-alternatives --install ${bindir}/ssh ssh ssh.${PN} 90
 }
 
 pkg_postrm_openssh-sshd() {

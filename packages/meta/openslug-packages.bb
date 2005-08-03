@@ -34,24 +34,20 @@ OPENSLUG_DEVELOPMENT = "\
 	openssh \
 	patch \
 	pciutils \
+	perl \
 	pkgconfig \
 	quilt \
 	sed \
 	strace \
-	util-linux \
-	"
-
-# These packages only build on TARGET_OS=linux, not
-# TARGET_OS=linux-uclibc
-OPENSLUG_DEVELOPMENT_append_linux = "\
-	perl \
 	tar \
+	util-linux \
 	"
 
 
 OPENSLUG_PACKAGES = "\
 	atftp \
 	bash \
+	bind \
 	bluez-utils-nodbus \
 	bridge-utils \
 	bwmon \
@@ -60,6 +56,7 @@ OPENSLUG_PACKAGES = "\
 	cron \
 	cvs\
 	cyrus-imapd \
+	db4 \
 	dnsmasq \
 	expat \
 	ftpd-topfield \
@@ -67,61 +64,52 @@ OPENSLUG_PACKAGES = "\
 	gphoto2 \
 	gtk-doc \
 	less \
+	libpam \
 	libusb \
 	libxml2 \
+	man man-pages \
+	mgetty \
 	miau \ 
 	microcom \
+	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
 	nail \
 	nano \
 	ncftp \
+	nfs-utils \
+	ntp \
 	obexftp openobex openobex-apps ircp \
+	openldap \
+	openntpd \
 	openssh \
 	openvpn \
 	pcre \
+	php \
+	postfix \
 	ppp \
 	procps \
+	psmisc \
 	puppy \
 	pwc \
+	python \
+	reiserfsprogs reiser4progs \
 	rsync \
+	samba \
+	sane-backends \
+	screen \
 	setpwc \
+	strace \
+	streamripper \
 	sudo \
 	sysfsutils \
 	thttpd \
-	db4 \
-	openldap \
-	openntpd \
-	ntp \
-	reiserfsprogs reiser4progs \
-	python \
-	samba \
-	sane-backends \
-	strace \
 	thttpd \
+	timezones \
+	unionfs-modules unionfs-utils \
 	vlan \
 	wget \
-	unionfs-modules unionfs-utils \
-	"
-
-# These packages only build on TARGET_OS=linux, not
-# TARGET_OS=linux-uclibc  (Note that for several this
-# is because of use of single precision FP interfaces
-# such as sinf.)
-OPENSLUG_PACKAGES_append_linux = "\
-	bind \
-	man man-pages \
-	mgetty \
-	mpd \
-	nfs-utils \
-	libpam \
-	php \
-	postfix \
-	psmisc \
-	screen \
-	streamripper \
-	timezones \
 	xinetd \
 	yp-tools ypbind ypserv \
 	"
