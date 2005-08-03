@@ -31,8 +31,11 @@ update: update-master update-bitbake update-openembedded update-optware
 status: status-master status-bitbake status-openembedded status-optware
 
 .PHONY: clobber
-clobber: clobber-master clobber-bitbake clobber-openembedded \
-	 clobber-unslung clobber-openslug clobber-ucslugc clobber-optware clobber-releases
+clobber: clobber-unslung clobber-openslug clobber-ucslugc clobber-optware
+
+.PHONY: distclean
+distclean: distclean-master distclean-bitbake distclean-openembedded \
+	 distclean-unslung distclean-openslug distclean-ucslugc distclean-optware distclean-releases
 
 .PHONY: unslung build-unslung
 unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.configured
@@ -298,36 +301,59 @@ status-optware: optware/.configured
 status-openslug-2.3-beta: 
 	( cd releases/OpenSlug-2.3-beta ; svn status )
 
-.PHONY: clobber-master
-clobber-master:
-	rm -rf MT common downloads openslug scripts ucslugc unslung
-
-.PHONY: clobber-bitbake
-clobber-bitbake:
-	rm -rf bitbake
-
-.PHONY: clobber-openembedded
-clobber-openembedded:
-	rm -rf openembedded
-
 .PHONY: clobber-unslung
 clobber-unslung:
-	rm -rf unslung
+	[ ! -e unslung/Makefile ] || ( cd unslung ; ${MAKE} clobber )
 
 .PHONY: clobber-openslug
 clobber-openslug:
-	rm -rf openslug
+	[ ! -e openslug/Makefile ] || ( cd openslug ; ${MAKE} clobber )
 
 .PHONY: clobber-ucslugc
 clobber-ucslugc:
-	rm -rf ucslugc
+	[ ! -e ucslugc/Makefile ] || ( cd ucslugc ; ${MAKE} clobber )
 
 .PHONY: clobber-optware
-clobber-optware:
+clobber-optware: clobber-optware-nslu2 clobber-optware-wl500g
+
+.PHONY: clobber-optware-nslu2
+clobber-optware-nslu2:
+	[ ! -e optware/nslu2/Makefile ] || ( cd optware/nslu2 ; ${MAKE} distclean )
+
+.PHONY: clobber-optware-wl500g
+clobber-optware-wl500g:
+	[ ! -e optware/wl500g/Makefile ] || ( cd optware/wl500g ; ${MAKE} distclean )
+
+.PHONY: distclean-master
+distclean-master:
+	rm -rf MT common downloads openslug scripts ucslugc unslung
+
+.PHONY: distclean-bitbake
+distclean-bitbake:
+	rm -rf bitbake
+
+.PHONY: distclean-openembedded
+distclean-openembedded:
+	rm -rf openembedded
+
+.PHONY: distclean-unslung
+distclean-unslung:
+	rm -rf unslung
+
+.PHONY: distclean-openslug
+distclean-openslug:
+	rm -rf openslug
+
+.PHONY: distclean-ucslugc
+distclean-ucslugc:
+	rm -rf ucslugc
+
+.PHONY: distclean-optware
+distclean-optware:
 	rm -rf optware
 
-.PHONY: clobber-releases
-clobber-releases:
+.PHONY: distclean-releases
+distclean-releases:
 	rm -rf releases
 
 # Targets for use by those with write access to the repositories
