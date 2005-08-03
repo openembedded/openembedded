@@ -26,7 +26,3 @@ pkg_postinst () {
         grep postfix /etc/passwd || adduser --disabled-password --home=/var/spool/mail --ingroup nogroup postfix
 }
 
-pkg_postrm () {
-        grep postfix /etc/passwd && deluser postfix
-}
-		

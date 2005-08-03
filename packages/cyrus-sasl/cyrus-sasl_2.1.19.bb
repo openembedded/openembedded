@@ -2,7 +2,7 @@ SECTION = "console/network"
 DEPENDS = "db3 openssl"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1"
@@ -49,8 +49,3 @@ pkg_postinst () {
 	echo "cyrus" | saslpasswd2 -p -c cyrus
 	chgrp mail /etc/sasldb2
 }
-
-pkg_postrm () {
-        grep cyrus /etc/passwd && deluser cyrus
-}
-
