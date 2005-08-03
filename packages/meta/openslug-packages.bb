@@ -63,6 +63,7 @@ OPENSLUG_PACKAGES = "\
 	glib-2.0 \
 	gphoto2 \
 	gtk-doc \
+	iperf \
 	less \
 	libpam \
 	libusb \
