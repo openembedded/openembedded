@@ -6,7 +6,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r21"
+PR = "r22"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
