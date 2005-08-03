@@ -1,4 +1,4 @@
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -10,6 +10,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 S := ${WORKDIR}/${P}/source
 
 include samba.inc
+inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the

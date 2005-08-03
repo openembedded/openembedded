@@ -6,7 +6,7 @@ LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "timezones"
-PR="r6"
+PR="r7"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -19,7 +19,7 @@ INITSCRIPT_NAME = "openntpd"
 INITSCRIPT_PARAMS = "defaults"
 
 
-inherit autotools
+inherit autotools update-rc.d
 
 EXTRA_OECONF += "CFLAGS=-DUSE_ADJTIMEX --disable-strip --prefix=/usr \
 		--sysconfdir=/etc  --with-privsep-path=/var/shared/empty \
