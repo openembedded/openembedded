@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r7"
+PR = "r8"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -36,7 +36,7 @@ OPENSLUG_NATIVE = "\
 	ncurses ncurses-dev ncurses-terminfo \
 	patch \
 	perl perl-modules \
-	python-core python-io python-lang python-pickle python-shell python-textutils \
+	python-core python-crypt python-io python-lang python-pickle python-shell python-textutils \
 	sed \
 	tar \
 	util-linux \
