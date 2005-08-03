@@ -4,13 +4,10 @@
 
 # Global class to make it easier to maintain XFCE packages
 
-HOMEPAGE="http://www.xfce.org"
-LICENSE="LGPL-2"
+HOMEPAGE = "http://www.xfce.org"
+LICENSE = "LGPL-2"
 
-SRC_URI="http://www.us.xfce.org/archive/xfce-${PV}/src/${PN}-${PV}.tar.gz"
-
-# Most, but not *all* packages use pkgconfig, so we can't include it here
-# too
+SRC_URI = "http://www.us.xfce.org/archive/xfce-${PV}/src/${PN}-${PV}.tar.gz"
 
 inherit autotools
 
@@ -18,9 +15,5 @@ EXTRA_OECONF += "--with-pluginsdir=${libdir}/xfce4/panel-plugins/"
 
 # FIXME:  Put icons in their own package too?
 
-PACKAGES += "${PN}-mcs-plugins ${PN}-plugins"
-
 FILES_${PN} += "${datadir}/icons/* ${datadir}/applications/* ${libdir}/xfce4/modules/*.so*"
-FILES_${PN}-plugins += "${libdir}/xfce4/panel-plugins/*.so*"
-FILES_${PN}-doc += " ${datadir}/xfce4/doc"
-FILES_${PN}-mcs-plugins="${libdir}/xfce4/mcs-plugins/*.so"
+FILES_${PN}-doc += "${datadir}/xfce4/doc"
