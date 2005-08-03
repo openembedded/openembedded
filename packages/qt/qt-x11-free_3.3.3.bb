@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PR = "r6"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
@@ -24,6 +24,7 @@ QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
              QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
+             AR="${TARGET_PREFIX}ar cqs" \
              MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"'
 
 do_configure() {
@@ -35,6 +36,8 @@ do_configure() {
 	find . -name "Makefile"|xargs rm -f
 	(cd src && qmake -spec ${QMAKESPEC} )
 	(cd plugins/src && qmake -spec ${QMAKESPEC} )
+	(cd tools && qmake -spec ${QMAKESPEC} )
+	(cd tools/qvfb && qmake -spec ${QMAKESPEC} )
 }
 
 do_compile() {
@@ -42,6 +45,8 @@ do_compile() {
 	unset CXXFLAGS
 	oe_runmake -C src ${EXTRA_ENV}
 	oe_runmake -C plugins/src ${EXTRA_ENV}
+	oe_runmake -C tools ${EXTRA_ENV}
+	oe_runmake -C tools/qvfb ${EXTRA_ENV}
 }
 
 do_stage() {
@@ -56,14 +61,27 @@ do_stage() {
 	do
 		install -m 0644 $f ${STAGING_QT_DIR}/include/private
 	done
+	for f in lib/*.prl
+	do
+		install -m 0644 $f ${STAGING_QT_DIR}/lib
+	done
 }
 
 do_install() {
 	install -d ${D}${libdir}/
 	oe_soinstall lib/libqt-mt.so.${PV} ${D}${libdir}/
-	oe_runmake -C plugins/src INSTALL_ROOT="${D}" ${EXTRA_ENV} install
+	install -d ${D}${bindir}/
+	install -m 0755 bin/designer bin/assistant tools/qvfb/qvfb bin/qtconfig ${D}${bindir}
+	install -d ${D}${prefix}/plugins/
+	cp -a plugins/imageformats plugins/sqldrivers plugins/designer ${D}${prefix}/plugins/
 }
 
-PACKAGES += "qt-x11-plugins"
-FILES_qt-x11-plugins = "${prefix}/plugins"
-
+PACKAGES =+ "qt-x11-plugins-imageformats qt-x11-plugins-sqldrivers qt-x11-plugins-designer \
+             qt-x11-designer qt-x11-assistant qt-x11-qvfb qt-x11-qtconfig"
+FILES_qt-x11-plugins-imageformats = "${prefix}/plugins/imageformats"
+FILES_qt-x11-plugins-sqldrivers = "${prefix}/plugins/sqldrivers"
+FILES_qt-x11-plugins-designer = "${prefix}/plugins/designer"
+FILES_qt-x11-designer = "${bindir}/designer"
+FILES_qt-x11-assistant = "${bindir}/assistant"
+FILES_qt-x11-qvfb = "${bindir}/qvfb"
+FILES_qt-x11-qtconfig = "${bindir}/qtconfig"
