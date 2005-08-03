@@ -197,7 +197,7 @@ CONFIG_APM_CPU_IDLE=y
 CONFIG_APM_DISPLAY_BLANK=y
 CONFIG_APM_RTC_IS_GMT=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="console=ttyS0 root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphaned_inodes=delete mem=64M"
+CONFIG_CMDLINE="<see openzaurus-sa_*.bb file in OpenEmbedded metadata>"
 # CONFIG_SHARPSL_BOOTLDR_PARAMS is not set
 # CONFIG_LEDS is not set
 CONFIG_ALIGNMENT_TRAP=y
