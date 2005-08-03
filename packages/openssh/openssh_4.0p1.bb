@@ -11,7 +11,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -67,7 +67,7 @@ if test "x$D" != "x"; then
 else
 	addgroup sshd
 	adduser --system --home /var/run/sshd --no-create-home --disabled-password --ingroup sshd -s /bin/false sshd
-	update-rc.d sshd defaults
+	update-rc.d sshd defaults 9
 fi
 }
 
