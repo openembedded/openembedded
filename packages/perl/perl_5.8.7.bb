@@ -5,7 +5,7 @@ include perl.inc
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-i386-linux"
 
-PR = "r10"
+PR = "r11"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
