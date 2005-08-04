@@ -1,4 +1,5 @@
 MAINTAINER="David Karlstrom <daka@thg.se>"
+DEFAULT_PREFERENCE="-1"
 
 include perl.inc
 
