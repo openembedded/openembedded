@@ -4,8 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
-			file://tremor.patch;patch=1 \
-			file://mouse.patch;patch=1 "
+			file://tremor.patch;patch=1"
 
 inherit autotools 
 

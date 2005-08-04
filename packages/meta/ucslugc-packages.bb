@@ -66,6 +66,7 @@ UCSLUGC_PACKAGES = "\
 	nano \
 	ncftp \
 	ncurses \
+	netpbm \
 	ntp \
 	obexftp openobex openobex-apps ircp \
 	openldap \
@@ -98,6 +99,7 @@ UCSLUGC_PACKAGES = "\
 	unionfs-modules unionfs-utils \
 	util-linux \
 	vlan \
+	wakelan \
 	wget \
 	zlib \
 	"
