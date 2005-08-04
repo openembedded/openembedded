@@ -92,7 +92,7 @@ setup-unslung setup-openslug setup-ucslugc: setup-%: MT/.configured
 	[ -e $*/bitbake ] || ( cd $* ; ln -s ../bitbake . )
 	[ -e $*/openembedded ] || ( cd $* ; ln -s ../openembedded . )
 	[ -d $*/conf ] || ( mkdir -p $*/conf )
-	[ ! -f $*/conf/local.conf ] || ( cd $*/conf ; mv local.conf local.conf.delete-me )
+	[ ! -f $*/conf/local.conf -o -e $*/conf/auto.conf ] || ( cd $*/conf ; mv local.conf local.conf.delete-me )
 	[ -e $*/conf/local.conf.sample ] || ( cd $*/conf ; ln -s ../../common/conf/local.conf.sample . )
 	[ -e $*/conf/site.conf ] || ( cd $*/conf ; ln -s ../../common/conf/site.conf . )
 	[ ! -f $*/conf/auto.conf ] || ( cd $*/conf ; rm -f auto.conf )
