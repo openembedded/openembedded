@@ -17,6 +17,7 @@ UCSLUGC_PACKAGES = "\
 	autoconf \
 	automake \
 	bash \
+	bind \
 	binutils \
 	bison \
 	bluez-utils-nodbus \
@@ -55,6 +56,7 @@ UCSLUGC_PACKAGES = "\
 	lsof \
 	m4 \
 	make \
+	mgetty \
 	miau \ 
 	microcom \
 	monotone-4 monotone-5 \
@@ -94,6 +96,7 @@ UCSLUGC_PACKAGES = "\
 	streamripper \
 	sudo \
 	sysfsutils \
+	tar \
 	thttpd \
 	tiff \
 	unionfs-modules unionfs-utils \
@@ -107,15 +110,10 @@ UCSLUGC_PACKAGES = "\
 # These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_BROKEN_PACKAGES = "\
-	bind \
-	libpam \
 	man man-pages \
-	mgetty \
 	php \
-	postfix \
 	psmisc \
 	screen \
-	tar \
 	timezones \
 	xinetd \
 	"
@@ -123,7 +121,9 @@ UCSLUGC_BROKEN_PACKAGES = "\
 # These packages will never build because uclibc lacks (and always will lack)
 # appropriate support.  This define is for documentation of this fact!
 UCSLUGC_UNSUPPORTABLE_PACKAGES = "\
+	libpam \
 	nfs-utils \
+	postfix \
 	yp-tools ypbind ypserv \
 	"
 
