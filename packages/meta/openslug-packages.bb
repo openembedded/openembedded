@@ -114,6 +114,7 @@ OPENSLUG_PACKAGES = "\
 	timezones \
 	unionfs-modules unionfs-utils \
 	vlan \
+	wakelan \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
