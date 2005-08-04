@@ -1,5 +1,6 @@
 include scummvm.inc
 DEPENDS = "virtual/libsdl libmad tremor libogg zlib libmpeg2"
+SRC_URI += " file://mouse.patch;patch=1 "
 
 do_compile() {
 	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS} -lmpeg2" \

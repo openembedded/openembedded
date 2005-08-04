@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- crimson-0.4.8/Makefile.in~native-tools
++++ crimson-0.4.8/Makefile.in
+@@ -170,7 +170,7 @@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+ EXTRA_DIST = crimson.desktop crimson.spec.in README.bi2cf README.CoMET
+-SUBDIRS = doc src tools gfx levels locale music sfx
++SUBDIRS = doc src gfx levels locale music sfx
+ DISTCHECK_CONFIGURE_FLAGS = --enable-bi2cf --enable-cf2bmp --enable-cfed --enable-comet
+ desktopdir = $(datadir)/applications
+ desktop_DATA = crimson.desktop

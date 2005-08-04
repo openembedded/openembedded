@@ -5,5 +5,5 @@ SECTION = "gpe"
 
 DEPENDS = "libgpewidget"
 
-GPE_SRC_COMPRESSION = "bz2"
+GPE_TARBALL_SUFFIX = "bz2"
 inherit gpe autotools

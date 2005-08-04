@@ -1,12 +1,13 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r7"
+PR = "r10"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_NATIVE = "\
+	autoconf \
 	automake \
 	bash \
 	binutils binutils-dev binutils-symlinks \
@@ -29,6 +30,7 @@ OPENSLUG_NATIVE = "\
 	libreadline4 libreadline-dev \
 	libstdc++-dev \
 	libthread-db1 \
+	libtool \
 	lrzsz \
 	m4 \
 	make \
@@ -36,7 +38,9 @@ OPENSLUG_NATIVE = "\
 	ncurses ncurses-dev ncurses-terminfo \
 	patch \
 	perl perl-modules \
-	python-core python-io python-lang python-pickle python-shell python-textutils \
+	pkgconfig \
+	python-core python-crypt python-io python-lang python-pickle python-shell python-textutils \
+	quilt \
 	sed \
 	tar \
 	util-linux \

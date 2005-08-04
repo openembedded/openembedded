@@ -7,7 +7,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
 DEPENDS = "ncurses"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
            file://install.patch;patch=1 \

@@ -1,6 +1,6 @@
 DESCRIPTION = "Evince is simply a document viewer"
-LICENSE = ""
-DEPENDS = "tiff espgs-native espgs poppler gtk+ libgnomeui libgnomeprint libgnomeprintui"
+LICENSE = "GPL"
+DEPENDS = "tiff espgs poppler gtk+ libgnomeui libgnomeprint libgnomeprintui"
 RDEPENDS = "espgs"
 RRECOMMENDS = "gnome-vfs-plugin-file"
 

@@ -7,16 +7,6 @@ SECTION = "x11/libs"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0"
 
-# | checking whether putenv() implementation is broken... configure: error: cannot run test program while cross compiling
-BROKEN = "1"
-
-# Fixed on i386/i486/i586/i686 - needs to be confirmed on other platforms
-
-BROKEN_i386="0"
-BROKEN_i486="0"
-BROKEN_i586="0"
-BROKEN_i686="0"
-
 inherit xfce pkgconfig
 
 XFCE_HEADERS="debug.h utf8.h xfce-generics.h   xfce-resource.h \
@@ -24,11 +14,18 @@ XFCE_HEADERS="debug.h utf8.h xfce-generics.h   xfce-resource.h \
 		   xfce-desktopentry.h xfce-miscutils.h libxfce4util.h \
 		   xfce-fileutils.h xfce-rc.h"
 
+MACROS="m4/X11.m4 m4/debug.m4 m4/depends.m4 m4/i18n.m4"
+
 do_stage() {
-	install -d ${STAGING_LIBDIR} ${STAGING_INCDIR}/xfce4/libxfce4util
+	install -d ${STAGING_LIBDIR} ${STAGING_INCDIR}/libxfce4util
 	for file in ${XFCE_HEADERS}; do 
-		install -m 644 libxfce4util/$file ${STAGING_INCDIR}/xfce4/libxfce4util
+		install -m 644 libxfce4util/$file ${STAGING_INCDIR}/libxfce4util
 	done
 
 	oe_libinstall -C libxfce4util -so libxfce4util ${STAGING_LIBDIR}
+
+        install -d ${STAGING_DATADIR}/aclocal/
+        install -m 0644 ${MACROS} ${STAGING_DATADIR}/aclocal/
 }
+
+FILES_${PN}-dev += " ${datadir}/xfce4/m4"
