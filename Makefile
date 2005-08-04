@@ -12,6 +12,12 @@ HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/armv5b/armeb/' \
 	)
 
+HOST_FIRMWARE:=$(shell uname -m | sed \
+	-e 's/i[3-9]86/Linux/' \
+	-e 's/armv5teb/OpenSlug/' \
+	-e 's/armv5b/Unslung/' \
+	)
+
 .PHONY: all
 all: update build
 
@@ -19,13 +25,29 @@ all: update build
 build: build-unslung build-openslug build-ucslugc build-optware
 
 .PHONY: setup
+ifneq ($(HOST_MACHINE),armeb)
 setup: setup-master setup-bitbake setup-openembedded setup-unslung setup-openslug setup-ucslugc setup-optware
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+setup: setup-master setup-bitbake setup-openembedded setup-openslug
+else
+setup: setup-master setup-optware
+endif
+endif
 
 .PHONY: setup-developer
 setup-developer: setup-master setup-bitbake setup-openembedded setup-optware-developer
 
 .PHONY: update
+ifneq ($(HOST_MACHINE),armeb)
 update: update-master update-bitbake update-openembedded update-optware
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+update: update-master update-bitbake update-openembedded
+else
+update: update-master update-optware
+endif
+endif
 
 .PHONY: status
 status: status-master status-bitbake status-openembedded status-optware
@@ -38,30 +60,60 @@ distclean: distclean-master distclean-bitbake distclean-openembedded \
 	 distclean-unslung distclean-openslug distclean-ucslugc distclean-optware distclean-releases
 
 .PHONY: unslung build-unslung
+ifneq ($(HOST_MACHINE),armeb)
 unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.configured
 	( cd unslung ; ${MAKE} )
+else
+unslung build-unslung:
+endif
 
 .PHONY: openslug build-openslug
+ifneq ($(HOST_MACHINE),armeb)
 openslug build-openslug: openslug/.configured bitbake/.configured openembedded/.configured
 	( cd openslug ; ${MAKE} )
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+openslug build-openslug: openslug/.configured bitbake/.configured openembedded/.configured
+	( cd openslug ; ${MAKE} )
+else
+openslug build-openslug:
+endif
+endif
 
 .PHONY: ucslugc build-ucslugc
+ifneq ($(HOST_MACHINE),armeb)
 ucslugc build-ucslugc: ucslugc/.configured bitbake/.configured openembedded/.configured
 	( cd ucslugc ; ${MAKE} )
+else
+ucslugc build-ucslugc:
+endif
 
 .PHONY: optware build-optware
 optware build-optware: build-optware-nslu2 build-optware-wl500g
 
 .PHONY: optware-nslu2 build-optware-nslu2
+ifneq ($(HOST_MACHINE),armeb)
 optware-nslu2 build-optware-nslu2: optware/nslu2/.configured
 	( cd optware/nslu2 ; ${MAKE} autoclean ; ${MAKE} )
+else
+ifeq ($(HOST_FIRMWARE),Unslung)
+optware-nslu2 build-optware-nslu2: optware/nslu2/.configured
+	( cd optware/nslu2 ; ${MAKE} autoclean ; ${MAKE} )
+else
+optware-nslu2 build-optware-nslu2:
+endif
+endif
 
 .PHONY: optware-wl500g build-optware-wl500g
+ifneq ($(HOST_MACHINE),armeb)
 optware-wl500g build-optware-wl500g: optware/wl500g/.configured
 	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
+else
+optware-wl500g build-optware-wl500g:
+endif
 
 .PHONY: openslug-2.3-beta
-openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta-cross
+openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta
 
 .PHONY: build-openslug-2.3-beta
 build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
@@ -378,35 +430,66 @@ push-openembedded: update-openembedded
 
 .PHONY: autobuild
 autobuild:
-	( rm -rf builderrors.log ; \
-	${MAKE} update                                           || echo -n " update"         >> builderrors.log ; \
-	${MAKE} build-openslug       upload-openslug-cross       || echo -n " openslug"       >> builderrors.log ; \
-	${MAKE} build-ucslugc        upload-ucslugc-cross        || echo -n " ucslugc"        >> builderrors.log ; \
-	${MAKE} build-unslung        upload-unslung-modules      || echo -n " unslung"        >> builderrors.log ; \
-	${MAKE} build-optware-nslu2  upload-optware-nslu2-cross  || echo -n " optware/nslu2"  >> builderrors.log ; \
-	${MAKE} build-optware-wl500g upload-optware-wl500g-cross || echo -n " optware/wl500g" >> builderrors.log ; \
-	${MAKE}                      upload-sources              || echo -n " upload-sources" >> builderrors.log ; \
+	rm -rf builderrors.log
+	- ${MAKE} update                                      || echo -n " update"         >> builderrors.log
+ifneq ($(HOST_MACHINE),armeb)
+	- ${MAKE} build-openslug       upload-openslug        || echo -n " openslug"       >> builderrors.log
+	- ${MAKE} build-ucslugc        upload-ucslugc         || echo -n " ucslugc"        >> builderrors.log
+	- ${MAKE} build-unslung        upload-unslung-modules || echo -n " unslung"        >> builderrors.log
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+	- ${MAKE} build-openslug       upload-openslug        || echo -n " openslug"       >> builderrors.log
+endif
+endif
+ifneq ($(HOST_MACHINE),armeb)
+	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
+	- ${MAKE} build-optware-wl500g upload-optware-wl500g  || echo -n " optware/wl500g" >> builderrors.log
+else
+ifeq ($(HOST_FIRMWARE),Unslung)
+	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
+endif
+endif
+	- ${MAKE}                      upload-sources         || echo -n " upload-sources" >> builderrors.log
 	if [ -e builderrors.log ] ; then \
 		echo -n "*** Errors during autobuild:" ; \
 		cat builderrors.log ; \
 		echo " ***" ; \
-	fi \
-	)
+	fi
 
 .PHONY: upload
-upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload-optware-nslu2-cross upload-optware-wl500g-cross upload-sources
+ifneq ($(HOST_MACHINE),armeb)
+upload: upload-openslug upload-ucslugc upload-unslung-modules upload-optware-nslu2 upload-optware-wl500g upload-sources
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+upload: upload-openslug upload-sources
+else
+ifeq ($(HOST_FIRMWARE),Unslung)
+upload: upload-optware-nslu2 upload-sources
+else
+upload: upload-sources
+endif
+endif
+endif
 
-.PHONY: upload-openslug-cross
-upload-openslug-cross: openslug/.configured
+.PHONY: upload-openslug
+upload-openslug: openslug/.configured
 	rm -rf openslug/tmp/deploy/ipk/morgue
+ifneq ($(HOST_MACHINE),armeb)
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
 	rsync -vl openslug/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
+else
+	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/native/unstable
+	rsync -vl openslug/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
+	rsync -vlrt --delete openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/native/unstable
+endif
 
-.PHONY: upload-openslug-2.3-beta-cross
-upload-openslug-2.3-beta-cross: releases/OpenSlug-2.3-beta/.configured
+.PHONY: upload-openslug-2.3-beta
+upload-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
 	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
@@ -414,8 +497,8 @@ upload-openslug-2.3-beta-cross: releases/OpenSlug-2.3-beta/.configured
 	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
-.PHONY: upload-ucslugc-cross
-upload-ucslugc-cross: ucslugc/.configured
+.PHONY: upload-ucslugc
+upload-ucslugc: ucslugc/.configured
 	rm -rf ucslugc/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
@@ -436,16 +519,24 @@ upload-unslung-modules: unslung/.configured
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/oe
 #	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
 
-.PHONY: upload-optware-nslu2-cross
-upload-optware-nslu2-cross: optware/nslu2/.configured
+.PHONY: upload-optware-nslu2
+upload-optware-nslu2: optware/nslu2/.configured
+ifneq ($(HOST_MACHINE),armeb)
 	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
 	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
 	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
+else
+	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/native
+	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
+	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/native
+endif
 
-.PHONY: upload-optware-wl500g-cross
-upload-optware-wl500g-cross: optware/wl500g/.configured
+.PHONY: upload-optware-wl500g
+upload-optware-wl500g: optware/wl500g/.configured
 	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
 	rsync -vl optware/wl500g/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
