@@ -32,6 +32,7 @@ do_compile () {
 
 do_install () {
 	sh ./postfix-install 'install_root=${D}' -non-interactive
+	rm -rf ${D}/var/spool/postfix
         mv ${D}${sysconfdir}/postfix/main.cf ${D}${sysconfdir}/postfix/sample-main.cf
 	install -m 644 ${WORKDIR}/main.cf_2.0 ${D}${sysconfdir}/postfix/main.cf
         install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_postfix
@@ -44,5 +45,6 @@ pkg_postinst () {
         grep vmail /etc/group || addgroup vmail
         grep postfix /etc/passwd || adduser --disabled-password --home=/var/spool/postfix --ingroup postfix postfix
         grep vmail /etc/passwd || adduser --disabled-password --home=/var/spool/vmail --ingroup vmail vmail
+	/etc/init.d/populate-volatile.sh
 }
 
