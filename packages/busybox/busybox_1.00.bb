@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r29"
+PR = "r30"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -54,6 +54,7 @@ INITSCRIPT_PACKAGES = "${PN} ${PN}-httpd ${PN}-udhcpd"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd" 
 INITSCRIPT_NAME_${PN} = "syslog"
+CONFFILES_${PN} = "${sysconfdir}/syslog.conf"
 
 # This disables the syslog startup links in openslug (see openslug-init)
 INITSCRIPT_PARAMS_${PN}_openslug = "start 20 ."
