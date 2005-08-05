@@ -5,7 +5,7 @@
 SVN_USER ?= ${USER}
 CVS_USER ?= ${USER}
 SVN_SSH ?= "-l ${SVN_USER}"
-SSH_KEY ?= "~/.ssh/id_dsa"	# Default. Change if you have several keys you use on a regular basis
+SSH_KEY ?= ~/.ssh/id_dsa	# Default. Change if you have several keys you use on a regular basis
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
