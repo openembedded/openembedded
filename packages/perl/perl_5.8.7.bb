@@ -1,12 +1,11 @@
 MAINTAINER="David Karlstrom <daka@thg.se>"
-DEFAULT_PREFERENCE="-1"
 
 include perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-i386-linux"
 
-PR = "r12"
+PR = "r13"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
