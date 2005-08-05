@@ -1,7 +1,7 @@
 DESCRIPTION = "Pine(R) - a Program for Internet News & Email"
 SECTION = "console/network"
 LICENSE = "Pine"
-DEPENDS = "ncurses"
+DEPENDS = "ncurses openssl"
 RDEPENDS_pine = "pico"
 HOMEPAGE = "http://www.washington.edu/pine/"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
