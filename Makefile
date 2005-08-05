@@ -220,7 +220,7 @@ setup-host-gentoo:
         bison \
 	ccache \
         cvs \
-	flex \									        
+	flex \
 	glib \
 	libtool \
 	m4 \
