@@ -5,6 +5,7 @@
 SVN_USER ?= ${USER}
 CVS_USER ?= ${USER}
 SVN_SSH ?= "-l ${SVN_USER}"
+SSH_KEY ?= "~/.ssh/id_dsa"	# Default. Change if you have several keys you use on a regular basis
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
@@ -210,11 +211,11 @@ setup-host-debian:
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
-        su - -c "mkdir -p /etc/portage ; echo >> /etc/portage/package.keywords \
+	su - -c "mkdir -p /etc/portage ; echo >> /etc/portage/package.keywords \
         ; grep monotone /etc/portage/package.keywords || \
-	echo =dev-util/monotone-0.21 ~* >> /etc/portage/package.keywords ; \
+	echo ~dev-util/monotone-0.21 ~* >> /etc/portage/package.keywords ; \
         grep dev-libs/boost /etc/portage/package.keywords || \
-	echo \>=dev-libs/boost-1.32 ~* >> /etc/portage/package.keywords ; \
+	echo ~dev-libs/boost-1.32 ~* >> /etc/portage/package.keywords ; \
         emerge -n \
         autoconf automake \
         bison \
@@ -335,7 +336,7 @@ push: push-master push-bitbake push-openembedded
 .PHONY: push-master
 push-master: update-master
 	monotone push
-	scp Makefile slug@nugabe.nslu2-linux.org:htdocs/www/Makefile
+	scp -i $SSH_KEY Makefile slug@nugabe.nslu2-linux.org:htdocs/www/Makefile
 
 .PHONY: push-bitbake
 push-bitbake: update-bitbake
@@ -369,28 +370,28 @@ upload: upload-openslug-cross upload-ucslugc-cross upload-unslung-modules upload
 upload-openslug-cross: openslug/.configured
 	rm -rf openslug/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
 	rsync -vl openslug/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
 	rsync -vlrt --delete openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
 
 .PHONY: upload-openslug-2.3-beta-cross
 upload-openslug-2.3-beta-cross: releases/OpenSlug-2.3-beta/.configured
 	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
 	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
 	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
 
 .PHONY: upload-ucslugc-cross
 upload-ucslugc-cross: ucslugc/.configured
 	rm -rf ucslugc/tmp/deploy/ipk/morgue
 	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
 	rsync -vl ucslugc/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
 	rsync -vlrt --delete ucslugc/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross/unstable
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross/unstable
 
 .PHONY: upload-unslung-modules
 upload-unslung-modules: unslung/.configured
@@ -400,26 +401,26 @@ upload-unslung-modules: unslung/.configured
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
 	gzip -c unslung/tmp/deploy/ipk/Packages > unslung/tmp/deploy/ipk/Packages.gz
 	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/oe
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/oe
 	rsync -vl unslung/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/oe
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/oe
 #	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
 
 .PHONY: upload-optware-nslu2-cross
 upload-optware-nslu2-cross: optware/nslu2/.configured
 	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
 	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
 	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
 
 .PHONY: upload-optware-wl500g-cross
 upload-optware-wl500g-cross: optware/wl500g/.configured
 	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
 	rsync -vl optware/wl500g/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
 	rsync -vlrt --delete optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
+	ssh -i $SSH_KEY nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
 
 .PHONY: upload-sources
 upload-sources:
