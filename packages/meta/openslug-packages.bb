@@ -91,6 +91,7 @@ OPENSLUG_PACKAGES = "\
 	openvpn \
 	pcre \
 	php \
+	postfix \
 	ppp \
 	procps \
 	psmisc \
