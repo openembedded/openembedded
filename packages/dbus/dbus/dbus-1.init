@@ -55,7 +55,7 @@ shut_it_down()
       run-parts --reverse --arg=stop $EVENTDIR
   fi
   echo -n "Stopping $DESC: "
-  start-stop-daemon --stop --retry 60 --quiet --oknodo --pidfile $PIDFILE \
+  start-stop-daemon --stop  --quiet --pidfile $PIDFILE \
     --user $DAEMONUSER
   # We no longer include these arguments so that start-stop-daemon
   # can do its job even given that we may have been upgraded.
