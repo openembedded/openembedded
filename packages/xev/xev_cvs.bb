@@ -1,25 +1,21 @@
+PV = "0.0cvs${CVSDATE}"
 DESCRIPTION = "X Event Viewer"
-HOMEPAGE = "http://www.xfree86.org/current/xev.1.html"
-LICENSE = "GPLv2"
+HOMEPAGE = "http://freedesktop.org/wiki/Software_2fxapps"
+LICENSE = "MIT"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SECTION = "x11/utils"
+SECTION = "x11/base"
 DEPENDS = "x11 xau"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xapps;module=xev \
 	   file://diet-x11.patch;patch=1"
 S = "${WORKDIR}/xev"
-
-inherit autotools
 
 do_compile() {
 	${CC} -o xev xev.c -lX11 -lXau -I${STAGING_INCDIR} -L${STAGING_LIBDIR}
 }
 
 do_install() {
-  install -d ${D}/usr/bin/
-	install -m 755 ${PN} ${D}/usr/bin/${PN}
+	install -d ${D}${bindir}
+	install -m 755 ${PN} ${D}${bindir}
 }
-
-FILES = "/usr/bin/xev"
-
