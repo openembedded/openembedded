@@ -208,6 +208,27 @@ setup-host-debian:
 		texinfo \
 		unzip
 
+.PHONY: setup-host-gentoo
+setup-host-gentoo:
+	sudo emerge \
+		autoconf automake \
+		bison \
+		ccache \
+		cvs \
+		flex \
+		gawk gettext \
+		glib \
+		libtool \
+		m4 \ 
+		make \ 
+		patch \ 
+		pkgconfig \
+		sed \
+		sys-apps/texinfo \
+		unzip \
+		psyco \
+		svn 
+
 .PHONY: update-master
 update-master: MT/.configured
 	monotone pull
