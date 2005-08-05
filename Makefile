@@ -58,8 +58,11 @@ optware-nslu2 build-optware-nslu2: optware/nslu2/.configured
 optware-wl500g build-optware-wl500g: optware/wl500g/.configured
 	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
 
-.PHONY: openslug-2.3-beta build-openslug-2.3-beta
-openslug-2.3-beta build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
+.PHONY: openslug-2.3-beta
+openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta
+
+.PHONY: build-openslug-2.3-beta
+build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
 	( cd releases/OpenSlug-2.3-beta ; ${MAKE} openslug-firmware )
 
 .PHONY: setup-master
