@@ -58,7 +58,7 @@ optware-wl500g build-optware-wl500g: optware/wl500g/.configured
 	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
 
 .PHONY: openslug-2.3-beta
-openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta
+openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta-cross
 
 .PHONY: build-openslug-2.3-beta
 build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
