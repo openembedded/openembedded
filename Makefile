@@ -210,7 +210,7 @@ setup-host-debian:
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
-	su - -c "emerge \
+	su - -c "emerge -n \
 		autoconf automake \
 		bison \
 		ccache \
