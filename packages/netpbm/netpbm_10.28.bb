@@ -11,7 +11,7 @@ LICENSE = "GPL MIT Artistic"
 SECTION = "console/utils" 
 DEPENDS = "jpeg zlib libpng tiff install-native flex-native" 
 RDEPENDS = "perl\
-	perl-module-${TARGET_SYS}-xsloader\
+	perl-module-xsloader\
 	perl-module-carp\
 	perl-module-constant\
 	perl-module-english\
@@ -31,7 +31,7 @@ DESCRIPTION = "Netpbm is a toolkit for manipulation of graphic images, including
 conversion of images between a variety of different formats.  There\
 are over 220 separate tools in the package including converters for\
 about 100 graphics formats."
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \
