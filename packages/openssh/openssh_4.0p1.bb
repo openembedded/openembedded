@@ -11,7 +11,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -77,6 +77,14 @@ pkg_postinst_openssh-scp() {
 
 pkg_postinst_openssh-ssh() {
 	update-alternatives --install ${bindir}/ssh ssh ssh.${PN} 90
+}
+
+pkg_postrm_openssh-ssh() {
+        update-alternatives --remove ${bindir}/ssh ssh.${PN}
+}
+
+pkg_postrm_openssh-scp() {
+        update-alternatives --remove ${bindir}/scp scp.${PN}
 }
 
 pkg_postrm_openssh-sshd() {
