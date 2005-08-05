@@ -210,7 +210,7 @@ setup-host-debian:
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
-	sudo emerge \
+	su - -c "emerge \
 		autoconf automake \
 		bison \
 		ccache \
@@ -227,7 +227,7 @@ setup-host-gentoo:
 		sys-apps/texinfo \
 		unzip \
 		psyco \
-		svn 
+		subversion" 
 
 .PHONY: update-master
 update-master: MT/.configured
