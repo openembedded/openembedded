@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "A collection of core GNU utilities."
 RREPLACES = "textutils shellutils fileutils"
 RPROVIDES = "textutils shellutils fileutils"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
            file://install-cross.patch;patch=1;pnum=0 \
@@ -42,7 +42,7 @@ do_install () {
 	install -d ${D}${base_bindir}
 	for i in ${base_bindir_progs}; do mv ${D}${bindir}/$i ${D}${base_bindir}/$i.${PN}; done
 	mv ${D}${bindir}/hostname ${D}${base_bindir}/hostname.${PN}
-	mv ${D}${bindir}/uptime ${D}${base_bindir}/uptime.${PN}
+	mv ${D}${bindir}/uptime ${D}${bindir}/uptime.${PN}
 
 	# Renaming and moving the utilities that should go in /usr/sbin (FHS)
 	install -d ${D}${sbindir}
@@ -54,7 +54,7 @@ pkg_postinst_${PN} () {
 	for i in ${bindir_progs}; do update-alternatives --install ${bindir}/$i $i $i.${PN} 100; done
 	update-alternatives --install '${bindir}/[' '[' 'lbracket.${PN}' 100
 	# coreutils uptime is broken but busybox uptime works, put at priority 10
-	update-alternatives --install ${base_bindir}/uptime uptime uptime.${PN} 10
+	update-alternatives --install ${bindir}/uptime uptime uptime.${PN} 10
 
 	# The utilities in /bin
 	for i in ${base_bindir_progs}; do update-alternatives --install ${base_bindir}/$i $i $i.${PN} 100; done
@@ -79,5 +79,5 @@ pkg_prerm_${PN} () {
 
 	# The special cases
 	update-alternatives --remove ${bindir}/hostname hostname.${PN}
-	update-alternatives --remove ${base_bindir}/uptime uptime.${PN}
+	update-alternatives --remove ${bindir}/uptime uptime.${PN}
 }
