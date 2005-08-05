@@ -212,9 +212,9 @@ setup-host-debian:
 setup-host-gentoo:
         su - -c "mkdir -p /etc/portage ; echo >> /etc/portage/package.keywords \
         ; grep monotone /etc/portage/package.keywords || \
-	echo =dev-util/monotone-0.21 ~x86 >> /etc/portage/package.keywords ; \
+	echo =dev-util/monotone-0.21 ~* >> /etc/portage/package.keywords ; \
         grep dev-libs/boost /etc/portage/package.keywords || \
-	echo \>=dev-libs/boost-1.32 ~x86 >> /etc/portage/package.keywords ; \
+	echo \>=dev-libs/boost-1.32 ~* >> /etc/portage/package.keywords ; \
         emerge -n \
         autoconf automake \
         bison \
