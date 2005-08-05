@@ -43,6 +43,8 @@ do_install () {
 	mv ${D}${base_bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
 	mv ${D}${base_bindir}/more ${D}${base_bindir}/more.${PN}
+	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
+	mv ${D}${base_bindir}/umount ${D}${base_bindir}/umount.${PN}
 	mv ${D}${base_sbindir}/halt ${D}${base_sbindir}/halt.${PN}
 	mv ${D}${base_sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
 	mv ${D}${base_sbindir}/losetup ${D}${base_sbindir}/losetup.${PN}
@@ -67,6 +69,8 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/dmesg dmesg dmesg.${PN} 100
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 100
 	update-alternatives --install ${base_bindir}/more more more.${PN} 100
+	update-alternatives --install ${base_bindir}/mount mount mount.${PN} 100
+	update-alternatives --install ${base_bindir}/umount umount umount.${PN} 100
 	update-alternatives --install ${base_sbindir}/hwclock hwclock hwclock.${PN} 100
 	update-alternatives --install ${base_sbindir}/losetup losetup losetup.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
@@ -92,6 +96,8 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove dmesg dmesg.${PN}
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove more more.${PN}
+	update-alternatives --remove mount mount.${PN}
+	update-alternatives --remove umount umount.${PN}
 	update-alternatives --remove halt halt.${PN}
 	update-alternatives --remove hwclock hwclock.${PN}
 	update-alternatives --remove losetup losetup.${PN}
