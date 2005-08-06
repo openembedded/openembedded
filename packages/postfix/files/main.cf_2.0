@@ -1,11 +1,18 @@
+#!/bin/sh
+cat <<EOF
 mydomain=sample.com
 
 virtual_mailbox_domains = sample.com, other.net
-virtual_mailbox_base = /var/spool/vmail
 virtual_mailbox_maps = hash:/etc/postfix/virtual
 virtual_alias_maps = hash:/etc/postfix/virtual_alias
-virtual_uid_maps = static:vmail
-virtual_gid_maps = static:vmail
+
+# You'll start with the following lines for maildir storage
+virtual_mailbox_base = /var/spool/vmail
+virtual_uid_maps = static:`grep vmail /etc/passwd | cut -d ":" -f 3`
+virtual_gid_maps = static:`grep vmail /etc/passwd | cut -d ":" -f 4`
+
+# You'll start with the following lines for IMAP storage
+
 
 config_directory = /etc/postfix
 sample_directory = /etc/postfix
@@ -23,3 +30,4 @@ debug_peer_level = 2
 sendmail_path = /usr/sbin/sendmail
 newaliases_path = /usr/bin/newaliases
 mailq_path = /usr/bin/mailq
+EOF
