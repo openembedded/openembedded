@@ -252,6 +252,7 @@ ac_cv_strerror_r_SUSv3=${ac_cv_strerror_r_SUSv3=no}
 ac_cv_sizeof_wchar_t=4
 
 # lftp
+ac_cv_file___dev_ptc_=yes
 ac_cv_need_trio=${ac_cv_need_trio=no}
 lftp_cv_va_copy=${lftp_cv_va_copy=no}
 lftp_cv_va_val_copy=${lftp_cv_va_val_copy=yes}

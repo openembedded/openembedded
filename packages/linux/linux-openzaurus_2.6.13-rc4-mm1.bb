@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r0"
+PR = "r1"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -37,6 +37,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${RPSRC}/reverse_pagefault-r1.patch;patch=1 \
            ${RPSRC}/preempt_nwfpe-r2.patch;patch=1 \
            ${RPSRC}/oprofile_typo-r0.patch;patch=1 \
+           ${RPSRC}/corgi_tspmufix-r0.patch;patch=1 \
            ${RPSRC}/mmc_bytefix-r0.patch;patch=1 \
            ${RPSRC}/mmc_pxa_roswitch-r0.patch;patch=1 \
            ${RPSRC}/mmc_corgi_roswitch-r0.patch;patch=1 \
@@ -74,7 +75,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-udc-r3.patch;patch=1 \
            ${DOSRC}/tosa-irda-r2.patch;patch=1 \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
-           ${DOSRC}/tosa-2.6.13-r2.patch;patch=1 \
+           ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
            ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
