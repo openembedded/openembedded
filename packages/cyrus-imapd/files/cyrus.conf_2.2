@@ -23,10 +23,10 @@ SERVICES {
 
   # at least one LMTP is required for delivery
   #lmtp         cmd="lmtpd" listen="lmtp" prefork=0
-  lmtpunix      cmd="lmtpd" listen="/cyrus/tmp/socket/lmtp" prefork=0
+  lmtpunix      cmd="lmtpd" listen="/var/lib/cyrus/socket/lmtp" prefork=0
 
   # this is only necessary if using notifications
-  #notify       cmd="notifyd" listen="/var/imap/socket/notify" proto="udp" prefork=1
+  #notify       cmd="notifyd" listen="/var/lib/cyrus/socket/notify" proto="udp" prefork=1
 }
 
 EVENTS {
