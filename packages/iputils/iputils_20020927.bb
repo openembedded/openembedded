@@ -1,6 +1,6 @@
 SECTION = "console/utils"
 BROKEN = "1"
-DEPENDS = "docbook-utils-native"
+#DEPENDS = "docbook-utils-native"
 DESCRIPTION = "Utilities for the IP protocol."
 LICENSE ="BSD"
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz"
