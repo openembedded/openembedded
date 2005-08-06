@@ -115,6 +115,7 @@ OPENSLUG_PACKAGES = "\
 	unionfs-modules unionfs-utils \
 	vlan \
 	wakelan \
+	watchdog \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
