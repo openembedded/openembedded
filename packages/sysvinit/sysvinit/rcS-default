@@ -17,3 +17,5 @@ VERBOSE=no
 EDITMOTD=no
 # Set FSCKFIX to "yes" if you want to add "-y" to the fsck at startup.
 FSCKFIX=yes
+# Set TICKADJ to the correct tick value for this specific machine
+#TICKADJ=10000

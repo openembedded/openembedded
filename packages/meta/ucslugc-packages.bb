@@ -110,6 +110,7 @@ UCSLUGC_PACKAGES = "\
 # These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_BROKEN_PACKAGES = "\
+	iperf \
 	man man-pages \
 	php \
 	psmisc \
@@ -119,7 +120,10 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
-# appropriate support.  This define is for documentation of this fact!
+# appropriate support.  This define is for documentation of this fact!  The
+# normal cause is that the package uses the "NIS" interfaces (once known as
+# YP - a trademark of BT which SUN used without license - the missing function
+# calls often still have 'yp' in the name).
 UCSLUGC_UNSUPPORTABLE_PACKAGES = "\
 	libpam \
 	nfs-utils \
