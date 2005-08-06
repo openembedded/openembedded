@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl db3"
 LICENSE = "BSD"
-PR = "r5"
+PR = "r6"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
