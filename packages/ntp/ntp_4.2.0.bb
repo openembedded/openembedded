@@ -7,11 +7,6 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
 PR = "r4"
-# OE core: this is here to prevent this version of ntp from
-# changing OE distros other than openslug.  This code has
-# only been tested on openslug.  Feel free to remove these lines!
-DEFAULT_PREFERENCE = -1
-DEFAULT_PREFERENCE_openslug = 0
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${P}.tar.gz \
 	file://ntpdc.Makefile.am.maybe-layout.patch;patch=1 \
