@@ -261,7 +261,8 @@ setup-openslug-%-beta-developer:
 
 .PHONY: setup-host-debian
 setup-host-debian:
-	sudo apt-get install \
+	su - -c " \
+	apt-get install \
 		autoconf automake automake1.9 \
 		bison \
 		ccache \
@@ -275,7 +276,10 @@ setup-host-debian:
 		python python-dev python-psyco python2.4 python2.4-dev \
 		sed \
 		texinfo \
-		unzip
+		unzip \
+		subversion \
+		bzip2"
+	echo "You will have to install monotone separately.  See http://venge.net/monotone/"
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
@@ -301,7 +305,8 @@ setup-host-gentoo:
 	sys-apps/texinfo \
 	unzip \
 	psyco \
-	subversion"
+	subversion \
+	bzip2"
 
 .PHONY: update-master
 update-master: MT/.configured
@@ -447,6 +452,7 @@ ifneq ($(HOST_MACHINE),armeb)
 	- ${MAKE} build-unslung        upload-unslung-modules || echo -n " unslung"        >> builderrors.log
 else
 ifeq ($(HOST_FIRMWARE),OpenSlug)
+	rm -rf openslug/tmp/cache
 	- ${MAKE} build-openslug       upload-openslug        || echo -n " openslug"       >> builderrors.log
 endif
 endif
