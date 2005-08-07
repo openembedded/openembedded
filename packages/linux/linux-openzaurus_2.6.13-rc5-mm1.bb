@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r0"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -29,19 +29,20 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 #           ${RPSRC}/corgikbd_temphack-r0.patch;patch=1 \
 #           ${RPSRC}/2.6.13-rc3-mm3_fix-r0.patch;patch=1 \
 #           ${RPSRC}/mmc_sd-r5.patch;patch=1 \
+#           ${RPSRC}/preempt_nwfpe-r2.patch;patch=1 \
+#           ${RPSRC}/oprofile_typo-r0.patch;patch=1 \
+#           ${RPSRC}/mmc_bytefix-r0.patch;patch=1 \
+#           ${RPSRC}/mmc_pxa_roswitch-r0.patch;patch=1 \
+#           ${RPSRC}/mmc_corgi_roswitch-r0.patch;patch=1 \
+#           ${RPSRC}/corgi_base_extras1-r4.patch;patch=1 \	   
+
 
 # Patches submitted upstream are towards top of this list 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
-           ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.13-rc4.bz2;patch=1 \
-           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13-rc4/2.6.13-rc4-mm1/2.6.13-rc4-mm1.bz2;patch=1 \
-           ${RPSRC}/reverse_pagefault-r1.patch;patch=1 \
-           ${RPSRC}/preempt_nwfpe-r2.patch;patch=1 \
-           ${RPSRC}/oprofile_typo-r0.patch;patch=1 \
+           ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.13-rc5.bz2;patch=1 \
+           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13-rc5/2.6.13-rc5-mm1/2.6.13-rc5-mm1.bz2;patch=1 \
+           ${RPSRC}/reverse_pagefault-r2.patch;patch=1 \
            ${RPSRC}/corgi_tspmufix-r0.patch;patch=1 \
-           ${RPSRC}/mmc_bytefix-r0.patch;patch=1 \
-           ${RPSRC}/mmc_pxa_roswitch-r0.patch;patch=1 \
-           ${RPSRC}/mmc_corgi_roswitch-r0.patch;patch=1 \
-           ${RPSRC}/corgi_base_extras1-r4.patch;patch=1 \	   
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r2.patch;patch=1 \
            ${RPSRC}/sharp_multi_pcmcia-r2.patch;patch=1 \
@@ -77,7 +78,6 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
-           ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -90,8 +90,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            file://defconfig-spitz \
            file://defconfig-tosa "
 
-
-#${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
+#           ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
+#           ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
 #           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
 
 SRC_URI_append_collie = "${RPSRC}/jl1/collie_keymap.patch;patch=1 "
