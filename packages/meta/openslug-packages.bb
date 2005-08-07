@@ -1,83 +1,66 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r4"
+PR = "r5"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-OPENSLUG_DEVELOPMENT = "\
+OPENSLUG_PACKAGES = "\
+	atftp \
 	autoconf \
 	automake \
 	bash \
+	bind \
 	binutils \
 	bison \
-	bzip2 \
-	coreutils \
-	cvs \
-	diffutils \
-	findutils \
-	flex \
-	gawk \
-	gcc \
-	gdb \
-	gnu-config \
-	grep \
-	gzip \
-	ipkg-utils \
-	libtool \
-	lsof \
-	m4 \
-	make \
-	monotone-4 monotone-5 \
-	ncurses \
-	openssh \
-	patch \
-	pciutils \
-	perl \
-	pkgconfig \
-	quilt \
-	sed \
-	strace \
-	tar \
-	util-linux \
-	"
-
-
-OPENSLUG_PACKAGES = "\
-	atftp \
-	bash \
-	bind \
 	bluez-utils-nodbus \
 	bridge-utils \
 	bwmon \
+	bzip2 \
 	ccxstream \
 	coreutils \
 	cron \
 	ctorrent \
+	ctrlproxy \
 	cvs\
 	cyrus-imapd \
 	db4 \
 	diffstat \
+	diffutils \
 	dnsmasq \
 	expat \
+	findutils \
+	flex \
 	ftpd-topfield \
+	gawk \
+	gcc \
+	gdb \
 	glib-2.0 \
+	gnu-config \
 	gphoto2 \
+	grep \
 	gtk-doc \
+	gzip \
 	icecast \
 	iperf \
+	ipkg-utils \
 	jpeg \
 	less \
 	libpam \
 	libpng \
+	libtool \
 	libusb \
 	libxml2 \
+	lsof \
+	m4 \
 	mailx \
+	make \
 	man man-pages \
 	mgetty \
 	miau \ 
 	microcom \
+	monotone-5 \
 	mpd \
 	mt-daapd \
 	mutt \
@@ -85,6 +68,7 @@ OPENSLUG_PACKAGES = "\
 	nail \
 	nano \
 	ncftp \
+	ncurses \
 	netpbm \
 	nfs-utils \
 	ntp \
@@ -93,8 +77,12 @@ OPENSLUG_PACKAGES = "\
 	openntpd \
 	openssh \
 	openvpn \
+	patch \
+	pciutils \
 	pcre \
+	perl \
 	php \
+	pkgconfig \
 	postfix \
 	ppp \
 	procps \
@@ -102,22 +90,25 @@ OPENSLUG_PACKAGES = "\
 	puppy \
 	pwc \
 	python \
+	quilt \
 	reiserfsprogs reiser4progs \
 	rsync \
 	samba \
 	sane-backends \
 	screen \
+	sed \
 	setpwc \
 	ssmtp \
 	strace \
 	streamripper \
 	sudo \
 	sysfsutils \
-	thttpd \
+	tar \
 	thttpd \
 	tiff \
 	timezones \
 	unionfs-modules unionfs-utils \
+	util-linux \
 	vlan \
 	wakelan \
 	watchdog \
@@ -132,6 +123,5 @@ BROKEN_PACKAGES = "\
 
 DEPENDS = 'openslug-image \
 	${OPENSLUG_PACKAGES} \
-	${OPENSLUG_DEVELOPMENT} \
 	openslug-native \
 	package-index'
