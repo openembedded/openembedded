@@ -112,12 +112,14 @@ else
 optware-wl500g build-optware-wl500g:
 endif
 
-.PHONY: openslug-2.3-beta
-openslug-2.3-beta: update-openslug-2.3-beta build-openslug-2.3-beta upload-openslug-2.3-beta
+openslug-%-beta: update-openslug-%-beta build-openslug-%-beta upload-openslug-%-beta
+	echo "$@ completed"
 
-.PHONY: build-openslug-2.3-beta
 build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
 	( cd releases/OpenSlug-2.3-beta ; ${MAKE} openslug-firmware )
+
+build-openslug-%-beta: releases/OpenSlug-%-beta/.configured
+	( cd releases/OpenSlug-$*-beta ; ${MAKE} firmware )
 
 .PHONY: setup-master
 setup-master MT/.configured:
@@ -227,7 +229,6 @@ setup-apex apex/Makefile:
 setup-apex-developer:
 	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co apex
 
-.PHONY: setup-openslug-2.3-beta
 setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/.configured:
 	[ -e releases/OpenSlug-2.3-beta ] || ( \
 		mkdir -p releases ; \
@@ -239,14 +240,24 @@ setup-openslug-2.3-beta releases/OpenSlug-2.3-beta/.configured:
 	[ -e releases/OpenSlug-2.3-beta/downloads ] || ln -s ../../downloads releases/OpenSlug-2.3-beta/
 	touch releases/OpenSlug-2.3-beta/.configured
 
-.PHONY: setup-openslug-2.3-beta-developer
-setup-openslug-2.3-beta-developer:
-	[ -e releases/OpenSlug-2.3-beta ] || ( \
+setup-openslug-%-beta releases/OpenSlug-%-beta/.configured:
+	[ -e releases/OpenSlug-$*-beta ] || ( \
 		mkdir -p releases ; \
-		svn checkout svn+ssh://svn.berlios.de/svnroot/repos/openslug/releases/OpenSlug-2.3-beta \
-			releases/OpenSlug-2.3-beta \
+		svn checkout svn://svn.berlios.de/openslug/releases/OpenSlug-$*-beta \
+			releases/OpenSlug-$*-beta \
 	)
-	${MAKE} setup-openslug-2.3-beta
+	( cd releases/OpenSlug-$*-beta ; ${MAKE} setup-env )
+	[ -e downloads ] || ( mkdir -p downloads )
+	[ -e releases/OpenSlug-$*-beta/downloads ] || ln -s ../../downloads releases/OpenSlug-$*-beta/
+	touch releases/OpenSlug-$*-beta/.configured
+
+setup-openslug-%-beta-developer:
+	[ -e releases/OpenSlug-$*-beta ] || ( \
+		mkdir -p releases ; \
+		svn checkout svn+ssh://svn.berlios.de/svnroot/repos/openslug/releases/OpenSlug-$*-beta \
+			releases/OpenSlug-$*-beta \
+	)
+	${MAKE} setup-openslug-$*-beta
 
 .PHONY: setup-host-debian
 setup-host-debian:
@@ -329,9 +340,8 @@ update-openembedded: openembedded/.configured
 update-optware: optware/.configured
 	( cd optware ; cvs -q update -d -P )
 
-.PHONY: update-openslug-2.3-beta
-update-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
-	( cd releases/OpenSlug-2.3-beta ; svn up )
+update-openslug-%-beta: releases/OpenSlug-%-beta/.configured
+	( cd releases/OpenSlug-$*-beta ; svn up )
 
 .PHONY: status-master
 status-master: MT/.configured
@@ -349,9 +359,8 @@ status-openembedded: openembedded/.configured
 status-optware: optware/.configured
 	( cd optware ; cvs -q update -d -P )
 
-.PHONY: status-openslug-2.3-beta
-status-openslug-2.3-beta: 
-	( cd releases/OpenSlug-2.3-beta ; svn status )
+status-openslug-%-beta: 
+	( cd releases/OpenSlug-$*-beta ; svn status )
 
 .PHONY: clobber-unslung
 clobber-unslung:
@@ -488,14 +497,13 @@ else
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/native/unstable
 endif
 
-.PHONY: upload-openslug-2.3-beta
-upload-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
-	rm -rf releases/OpenSlug-2.3-beta/tmp/deploy/ipk/morgue
-	rsync -vlrt --exclude='Packages*' releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/2.3-beta
-	rsync -vl releases/OpenSlug-2.3-beta/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
-	rsync -vlrt --delete releases/OpenSlug-2.3-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/2.3-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/2.3-beta
+upload-openslug-%-beta: releases/OpenSlug-%-beta/.configured
+	rm -rf releases/OpenSlug-$*-beta/tmp/deploy/ipk/morgue
+	rsync -vlrt --exclude='Packages*' releases/OpenSlug-$*-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/$*-beta
+	rsync -vl releases/OpenSlug-$*-beta/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
+	rsync -vlrt --delete releases/OpenSlug-$*-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/$*-beta
 
 .PHONY: upload-ucslugc
 upload-ucslugc: ucslugc/.configured
