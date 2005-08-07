@@ -2,9 +2,8 @@ DESCRIPTION = "teTeX is a complete TeX distribution for UNIX compatible systems"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib x11 xau xext xt zlib"
-RDEPENDS_tetex = "tetex-data"
 TETEX_BUILDSYSTEM_TAMER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"
@@ -49,6 +48,7 @@ do_install() {
 	install -d ${D}${bindir}
 	install -d ${D}${libdir}
 	install -d ${D}${datadir}/texmf
+	install -d ${D}${localstatedir}/lib/textmf
 
 	export bindir="${D}${bindir}" \
 	sbindir="${D}${sbindir}" \
@@ -70,8 +70,10 @@ do_install() {
 	MAKE="make -e" oe_runmake -e install
 }
 
-#
-# FIXME: Package more fine granular
-#
-PACKAGES += "tetex-data"
-FILES_tetex-data = "${datadir}"
+RRECOMMENDS_${PN} = "tetex-texmf-dvips tetex-texmf-texconfig tetex-texmf-fonts"
+PACKAGES =+ "tetex-texmf-dvips tetex-texmf-texconfig tetex-texi2html"
+FILES_${PN} += "${localstatedir} ${datadir}"
+FILES_${PN}-doc += "${datadir}/texinfo ${datadir}/man ${datadir}/info"
+FILES_tetex-texmf-dvips = "${datadir}/texmf/dvips"
+FILES_tetex-texmf-texconfig = "${datadir}/texmf/texconfig"
+FILES_tetex-texi2html = "${datadir}/texi2html"
