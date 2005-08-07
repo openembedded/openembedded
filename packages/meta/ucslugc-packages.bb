@@ -31,6 +31,7 @@ UCSLUGC_PACKAGES = "\
 	cvs\
 	cyrus-imapd \
 	db4 \
+	diffstat \
 	diffutils \
 	dnsmasq \
 	expat \
