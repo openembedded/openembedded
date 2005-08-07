@@ -185,10 +185,11 @@ set_password() {
 	mount -o remount,rw /
 	if test -z "$MASTER_PASSWORD"
 	then
-		echo -e "\nAltboot is a boot-manager which allows to boot from SD, CF and NFS\n\n"
-		echo -e "\nFor security reasons altboot requires a password\nto boot into single-user mode or init=/bin/sh"
-		echo -e "\nThis is *not* your root password! It is used by altboot alone!"
-		echo -e "Please enter a new master password:\n"
+		echo -e "\nAltboot is a boot-manager which allows to boot from SD, CF and NFS"
+		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
+		echo -e "${C_RED}This is *not* your root password! It is used by altboot alone!${C_RESET}"
+		echo -e "${C_BLUE}\nNote:\tThe password will be echoed to the screen\n\tand it will be asked twice for confirmation.${C_RESET}"
+		echo -e "\nPlease enter a new master password:\n"
 
 		while true
 		do
@@ -203,18 +204,14 @@ set_password() {
 				then
 					crypt_pw="`echo "$junk1" | md5sum | awk '{print $1}'`"
 					
-					if test -e /etc/hutils.conf
-					then
-						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" /etc/hutils.conf > /etc/hutils.conf_
-						mv /etc/hutils.conf_ /etc/hutils.conf
-						echo "Password changed."
-					fi
 					if test -e /etc/altboot.cfg
 					then
 						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" /etc/altboot.cfg > /etc/altboot.cfg_
 						mv /etc/altboot.cfg_ /etc/altboot.cfg
 						MASTER_PASSWORD="$crypt_pw"
 						echo "Password changed."
+					else
+						echo "/etc/altboot.cfg is missing, no password saved"
 					fi
 					
 					break
