@@ -6,7 +6,6 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
  
 
-PV = "0.0.1+cvs-${CVSDATE}"
 PR = "r3"
 
 
@@ -49,9 +48,18 @@ pkg_postinst_spitz() {
 	# /l/m only exists on the HDD on spitz
 	if test -d /lib/modules
 	then
-		# FIXME: Do be written
-		a=a # do nothing
-	fi					
+		if [ -e /media/realroot/sbin/init ]; then
+		  ROOT_MOUNT_POINT="/media/realroot"
+		elif [ -e /media/ROM/sbin/init ]; then
+		   ROOT_MOUNT_POINT="/media/ROM"   
+		fi
+		ROOT_MOUNT_DEVICE = `cat /proc/mounts | grep $REALROOT | grep jffs2 | cut -d " " -f 1`
+		mount -oremount,rw $ROOT_MOUNT_DEVICE $ROOT_MOUNT_POINT
+		cp -R /etc/altboot* $ROOT_MOUNT_POINT/etc
+		cp /sbin/init.altboot $ROOT_MOINT_POINT/sbin
+		mv $ROOT_MOUNT_POINT/sbin/init $ROOT_MOUNT_POINT/sbin/init.orig
+		ln -s /sbin/init.altboot $ROOT_MOUNT_POINT/sbin/init
+	fi						
 }
 
 pkg_postrm() {
