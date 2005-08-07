@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r0"
+PR = "r1"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -41,7 +41,7 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.13-rc5.bz2;patch=1 \
            ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13-rc5/2.6.13-rc5-mm1/2.6.13-rc5-mm1.bz2;patch=1 \
-           ${RPSRC}/reverse_pagefault-r2.patch;patch=1 \
+           ${RPSRC}/reverse_pagefault-r3.patch;patch=1 \
            ${RPSRC}/corgi_tspmufix-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r2.patch;patch=1 \
