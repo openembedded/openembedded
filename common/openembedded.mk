@@ -15,15 +15,20 @@ include conf/auto.conf
 BUILD_DIRS = downloads
 REQUIRED_DIRS = bitbake openembedded
 FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
+BITBAKE = bitbake
 
 # The default rule is to build the firmware in an unprotected environment.
 firmware: $(FIRMWARE_DEPS)
-	. ./setup-env; exec bitbake $(DISTRO)-packages
+	. ./setup-env; exec ${BITBAKE} $(DISTRO)-packages
 
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).
 firmware-safe:
 	env -i HOME="$${HOME}" PATH="$${PATH}" $(MAKE) firmware
+
+# The default rule is to build the firmware in an unprotected environment.
+prefetch: $(FIRMWARE_DEPS)
+	. ./setup-env; exec ${BITBAKE} -cfetch $(DISTRO)-packages
 
 # topdir.conf is re-created automatically if the directory is
 # moved - this will cause a full bitbake reparse

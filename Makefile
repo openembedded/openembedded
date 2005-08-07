@@ -21,6 +21,9 @@ HOST_FIRMWARE:=$(shell uname -m | sed \
 .PHONY: all
 all: update build
 
+.PHONY: prefetch
+prefetch: prefetch-unslung prefetch-openslug prefetch-ucslugc prefetch-optware
+
 .PHONY: build
 build: build-unslung build-openslug build-ucslugc build-optware
 
@@ -58,6 +61,62 @@ clobber: clobber-unslung clobber-openslug clobber-ucslugc clobber-optware
 .PHONY: distclean
 distclean: distclean-master distclean-bitbake distclean-openembedded \
 	 distclean-unslung distclean-openslug distclean-ucslugc distclean-optware distclean-releases
+
+.PHONY: prefetch-unslung
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-unslung: unslung/.configured bitbake/.configured openembedded/.configured
+	( cd unslung ; ${MAKE} prefetch )
+else
+prefetch-unslung:
+endif
+
+.PHONY: prefetch-openslug
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-openslug: openslug/.configured bitbake/.configured openembedded/.configured
+	( cd openslug ; ${MAKE} prefetch )
+else
+ifeq ($(HOST_FIRMWARE),OpenSlug)
+prefetch-openslug: openslug/.configured bitbake/.configured openembedded/.configured
+	( cd openslug ; ${MAKE} prefetch )
+else
+prefetch-openslug:
+endif
+endif
+
+.PHONY: prefetch-ucslugc
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-ucslugc: ucslugc/.configured bitbake/.configured openembedded/.configured
+	( cd ucslugc ; ${MAKE} prefetch )
+else
+prefetch-ucslugc:
+endif
+
+.PHONY: prefetch-optware
+prefetch-optware: prefetch-optware-nslu2 prefetch-optware-wl500g
+
+.PHONY: prefetch-optware-nslu2
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-optware-nslu2: optware/nslu2/.configured
+	( cd optware/nslu2 ; ${MAKE} source )
+else
+ifeq ($(HOST_FIRMWARE),Unslung)
+prefetch-optware-nslu2: optware/nslu2/.configured
+	( cd optware/nslu2 ; ${MAKE} source )
+else
+prefetch-optware-nslu2:
+endif
+endif
+
+.PHONY: prefetch-optware-wl500g
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-optware-wl500g: optware/wl500g/.configured
+	( cd optware/wl500g ; ${MAKE} source )
+else
+prefetch-optware-wl500g:
+endif
+
+prefetch-openslug-%-beta: releases/OpenSlug-%-beta/.configured
+	( cd releases/OpenSlug-$*-beta ; ${MAKE} prefetch )
 
 .PHONY: unslung build-unslung
 ifneq ($(HOST_MACHINE),armeb)
