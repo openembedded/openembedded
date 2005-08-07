@@ -3,7 +3,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 inherit qmake update-rc.d
 
@@ -36,3 +36,7 @@ do_install() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/sltime.sh ${D}${sysconfdir}/init.d/sltime
 }
+
+PACKAGES =+ "slbl"
+FILES_slbl = "${sbindir}/slbl"
+
