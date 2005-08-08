@@ -6,12 +6,12 @@ To provide the best possible performance Epsilon can even integrate \
 with Epeg directly to harness it's speed."
 SECTION = "e/libs"
 LICENSE = "GPL"
-DEPENDS = "epeg libpng imlib2"
-PV = "${CVSDATE}"
-PR = "r1"
+DEPENDS = "epeg libpng virtual/imlib2"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epsilon"
-S = "${WORKDIR}/epsilon"
+SRC_URI = "http://enlightenment.freedesktop.org/files/epsilon-${PV}.tar.gz \
+           file://compile-fix.patch;patch=1"
+S = "${WORKDIR}/epsilon-${PV}"
 
 inherit autotools pkgconfig binconfig
 
@@ -19,3 +19,8 @@ do_stage () {
 	oe_libinstall -C src/lib libepsilon ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/lib/Epsilon.h ${STAGING_INCDIR}/
 }
+
+PACKAGES = "epsilon-examples epsilon-dev epsilon"
+FILES_${PN}-dev += "${bindir}/epsilon-config"
+FILES_epsilon-examples = "${bindir}/epsilon"
+
