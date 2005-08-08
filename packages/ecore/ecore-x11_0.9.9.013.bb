@@ -1,6 +1,5 @@
 include ecore_${PV}.inc
-
-DEPENDS += "x11"
+DEPENDS += "evas-x11"
 PR = "r1"
 
 EXTRA_OECONF = "--enable-ecore-fb \
