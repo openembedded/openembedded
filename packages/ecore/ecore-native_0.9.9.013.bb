@@ -16,3 +16,7 @@ do_stage () {
 	install -m 0644 ${S}/src/lib/ecore/Ecore_Data.h ${STAGING_INCDIR}/
 	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+do_install() {
+	:
+}

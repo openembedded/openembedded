@@ -4,3 +4,8 @@ DEPENDS = "freetype-native libpng-native jpeg-native"
 
 EXTRA_OECONF = "--disable-mmx \
                 --without-x"
+
+do_install() {
+	:
+}
+
