@@ -9,6 +9,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/evas"
 DEPENDS = "libpng jpeg edb eet freetype"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://pkg.m4"

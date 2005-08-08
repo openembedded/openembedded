@@ -2,6 +2,9 @@ include evas-fb_${PV}.bb
 inherit native
 DEPENDS = "freetype-native"
 
+export EDB_CONFIG = "${STAGING_BINDIR}/edb-config-native"
+export EET_CONFIG = "${STAGING_BINDIR}/eet-config-native"
+
 do_stage () {
         for i in ${headers}
         do

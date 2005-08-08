@@ -6,7 +6,7 @@ To provide the best possible performance Epsilon can even integrate \
 with Epeg directly to harness it's speed."
 SECTION = "e/libs"
 LICENSE = "GPL"
-DEPENDS = "epeg libpng virtual/imlib2"
+DEPENDS = "edje epeg libpng virtual/imlib2"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/epsilon-${PV}.tar.gz \

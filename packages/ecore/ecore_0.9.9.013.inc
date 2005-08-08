@@ -7,7 +7,7 @@ PRIORITY = "optional"
 LEAD_SONAME = "libecore.so"
 PROVIDES = "virtual/ecore"
 LICENSE = "MIT"
-DEPENDS = "edb eet virtual/evas freetype edb-native"
+DEPENDS = "curl edb eet virtual/evas freetype edb-native"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
