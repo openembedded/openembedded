@@ -20,7 +20,6 @@ INITSCRIPT_PARAMS = "defaults 20"
 EXTRA_OECONF_epia = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=serial"
 EXTRA_OECONF_collie = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=sa1100 --without-x"
 EXTRA_OECONF_h3600 = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=sa1100 --without-x"
-EXTRA_OECONF_beagle = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=sa1100 --without-x"
 EXTRA_OECONF_simpad = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=sa1100 --without-x"
 
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
