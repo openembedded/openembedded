@@ -22,7 +22,7 @@ do_stage () {
 	install -m 0644 ${S}/src/lib/Edje.h ${STAGING_INCDIR}/
 }
 
-BINARIES = "ejde edje_ls edje_test edje_cc edje_decc edje_thumb"
+BINARIES = "edje edje_ls edje_test edje_cc edje_decc edje_thumb"
 
 PACKAGES += "edje-examples"
 
