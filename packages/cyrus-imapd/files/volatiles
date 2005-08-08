@@ -1,4 +1,4 @@
-d cyrus mail 0750 /var/lib/cyrus
+d cyrus mail 0755 /var/lib/cyrus
 d cyrus root 0755 /var/lib/cyrus/db
 d cyrus mail 0755 /var/lib/cyrus/proc
 d cyrus mail 0755 /var/lib/cyrus/sieve

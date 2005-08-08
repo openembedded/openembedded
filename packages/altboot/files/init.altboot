@@ -252,7 +252,7 @@ else
 
 	# Execute scripts in /etc/altboot.rc before doing anything else.
 	# Required for special situations, like booting spitz
-	for file in `ls -1 /etc/altboot.rc/*.sh`
+	for file in `ls -1 /etc/altboot.rc/*.sh` >/dev/null 2>&1
 	do
 		 . $file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
 	done

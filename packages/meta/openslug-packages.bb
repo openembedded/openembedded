@@ -57,6 +57,7 @@ OPENSLUG_PACKAGES = "\
 	cvs\
 	cyrus-imapd \
 	db4 \
+	diffstat \
 	dnsmasq \
 	expat \
 	ftpd-topfield \
