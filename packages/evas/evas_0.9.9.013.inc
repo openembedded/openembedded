@@ -9,6 +9,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/evas"
 DEPENDS = "libpng jpeg edb eet freetype"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://pkg.m4"
@@ -36,4 +37,4 @@ PACKAGES =+ "evas-examples"
 
 FILES_${PN} = "${libdir}/libevas*.so*"
 FILES_${PN}-dev += "${bindir}/evas-config ${libdir}/pkgconfig"
-FILES_evas-examples = "${bindir}/evas_fb_test ${datadir}"
+FILES_evas-examples = "${bindir}/evas_fb_test ${bindir}/evas_software* ${datadir}"

@@ -1,6 +1,6 @@
 include evas_${PV}.inc
-DEPENDS += "x11"
-PR = "r1"
+DEPENDS += "x11 xext"
+PR = "r2"
 
 EXTRA_OECONF = "--enable-fb			\
 		--disable-directfb		\
