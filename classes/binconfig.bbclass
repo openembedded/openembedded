@@ -19,11 +19,25 @@ def get_binconfig_mangle(d):
 		s += " -e 's:OEEXECPREFIX:${STAGING_LIBDIR}/..:'"
 	return s
 
+# Native package configurations go in ${BINDIR}/<name>-config-native to prevent a collision with cross packages
+def is_native_pkg(d):
+	import bb.data, os
+	if not bb.data.inherits_class('native', d):
+		return "no"
+	else:
+		return "yes"
+
 do_stage_append() {
 	for config in `find ${S} -name '*-config'`; do
-		configname=`basename $config`
-		install -d ${STAGING_BINDIR}/${HOST_SYS}
-		cat $config | sed ${@get_binconfig_mangle(d)} > ${STAGING_BINDIR}/${HOST_SYS}/$configname
-		chmod u+x ${STAGING_BINDIR}/${HOST_SYS}/$configname
+		origname=`basename $config`
+		if [ "${@is_native_pkg(d)}" == "yes" ]
+		then
+			configname=$origname-native
+		else
+			configname=$origname
+		fi
+		install -d ${STAGING_BINDIR}
+		cat $config | sed ${@get_binconfig_mangle(d)} > ${STAGING_BINDIR}/$configname
+		chmod u+x ${STAGING_BINDIR}/$configname
 	done
 }
