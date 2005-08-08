@@ -13,4 +13,7 @@ do_stage () {
         oe_libinstall -C src/lib libevas ${STAGING_LIBDIR}/
 }
 
-#FIXME: Conflicts with zlib-devel on the build machine. Remove it and it builds.
+do_install() {
+	:
+}
+

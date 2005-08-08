@@ -16,3 +16,8 @@ do_stage() {
 		install -m 0755 src/bin/$i ${STAGING_BINDIR}
 	done
 }
+
+do_install() {
+	:
+}
+
