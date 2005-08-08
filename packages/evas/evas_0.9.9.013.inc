@@ -36,4 +36,4 @@ PACKAGES =+ "evas-examples"
 
 FILES_${PN} = "${libdir}/libevas*.so*"
 FILES_${PN}-dev += "${bindir}/evas-config ${libdir}/pkgconfig"
-FILES_evas-examples = "${bindir}/evas_fb_test ${datadir}"
+FILES_evas-examples = "${bindir}/evas_*_test ${datadir}"
