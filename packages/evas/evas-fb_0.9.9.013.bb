@@ -1,5 +1,5 @@
 include evas_${PV}.inc
-PR = "r1"
+PR = "r0"
 
 EXTRA_OECONF = "--enable-fb			\
 		--disable-directfb		\

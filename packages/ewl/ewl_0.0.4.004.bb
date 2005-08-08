@@ -1,7 +1,9 @@
 DESCRIPTION = "The Enlightened Widget Library, \
 a simple-to-use general purpose widget library based on the enlightenment foundation libraries."
 SECTION = "e/libs"
-DEPENDS = "edb eet evas ecore etox edje"
+DEPENDS = "edb eet virtual/evas virtual/ecore etox edje"
+HOMEPAGE = "http://www.enlightenment.org"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "MIT"
 PR = "r0"
 
@@ -10,6 +12,8 @@ SRC_URI = "http://enlightenment.freedesktop.org/files/ewl-${PV}.tar.gz \
 S = "${WORKDIR}/ewl-${PV}"
 
 inherit autotools binconfig
+
+PARALLEL_MAKE = ""
 
 do_stage () {
 	oe_libinstall -C src libewl ${STAGING_LIBDIR}/

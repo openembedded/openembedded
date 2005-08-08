@@ -8,6 +8,7 @@ LEAD_SONAME = "libecore.so"
 PROVIDES = "virtual/ecore"
 LICENSE = "MIT"
 DEPENDS = "edb eet virtual/evas freetype edb-native"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
            file://fix-configure.patch;patch=1"
@@ -29,8 +30,9 @@ do_stage () {
 	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES += "ecore-examples"
+PACKAGES =+ "ecore-examples ecore-config"
 
 FILES_${PN} = "${libdir}/libecore*.so* ${libdir}/ecore_config_ipc_ecore.so"
 FILES_${PN}-dev += "${bindir}/ecore-config ${libdir}/pkgconfig"
-FILES_${PN}-examples = "${bindir}/ecore_test ${bindir}/ecore_evas_test ${datadir}"
+FILES_ecore-config = "${bindir}/ecore_config"
+FILES_ecore-examples = "${bindir}/ecore_test ${bindir}/ecore_evas_test ${datadir}"

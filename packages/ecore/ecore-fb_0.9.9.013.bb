@@ -1,15 +1,17 @@
 include ecore_${PV}.inc
-
-PR = "r2"
+PR = "r0"
 
 EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-job \
 		--enable-ecore-file \
+		--enable-poll \
 		--enable-ecore-dbus \
+		--enable-ecore-evas \
 		--enable-ecore-evas-fb \
 		--disable-ecore-evas-x \
 		--disable-ecore-evas-gl \
 		--enable-ecore-con \
+		--enable-ecore-config \
 		--enable-ecore-ipc \
 		--enable-ecore-txt \
 		--disable-ecore-x \

@@ -2,8 +2,9 @@ DESCRIPTION = "Etox is a type setting and text layout library based on Evas. \
 Etox helps you when it comes to displaying, moving, resizing, layering, \
 clipping, aligning and coloring fonts in different styles, and more."
 SECTION = "e/libs"
-DEPENDS = "edb evas ecore"
+DEPENDS = "edb virtual/evas virtual/ecore"
 LICENSE = "MIT"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/etox-${PV}.tar.gz"

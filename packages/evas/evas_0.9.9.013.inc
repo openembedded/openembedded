@@ -8,6 +8,7 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 PROVIDES = "virtual/evas"
 DEPENDS = "libpng jpeg edb eet freetype"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://pkg.m4"
@@ -31,8 +32,8 @@ do_stage () {
 	oe_libinstall -C src/lib libevas ${STAGING_LIBDIR}/
 }
 
-PACKAGES += "evas-examples"
+PACKAGES =+ "evas-examples"
 
 FILES_${PN} = "${libdir}/libevas*.so*"
 FILES_${PN}-dev += "${bindir}/evas-config ${libdir}/pkgconfig"
-FILES_${PN}-examples = "${bindir}/evas_fb_test ${datadir}"
+FILES_evas-examples = "${bindir}/evas_fb_test ${datadir}"

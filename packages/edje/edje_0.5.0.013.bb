@@ -1,7 +1,9 @@
-DESCRIPTION = "edje is a complex graphical design & layout library."
-DEPENDS = "freetype evas ecore embryo eet edb edje-native"
+DESCRIPTION = "Edje is a complex graphical design & layout library."
+DEPENDS = "freetype virtual/evas virtual/ecore embryo eet edb edje-native"
 LICENSE = "MIT"
+HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/libs"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/edje-${PV}.tar.gz"
@@ -20,9 +22,10 @@ do_stage () {
 	install -m 0644 ${S}/src/lib/Edje.h ${STAGING_INCDIR}/
 }
 
+BINARIES = "ejde edje_ls edje_test edje_cc edje_decc edje_thumb"
+
 PACKAGES += "edje-examples"
 
 FILES_${PN} = "${libdir}/libedje*.so*"
-FILES_${PN}-dev += "${bindir}/edje-config ${libdir}/pkgconfig"
-FILES_${PN}-examples = "${bindir}/edje ${bindir}/edje_ls ${datadir}"
-
+FILES_${PN}-dev += "${bindir}/edje-config ${bindir}/edje_ls ${bindir}/edje_cc ${bindir}/edje_decc ${bindir}/edje_thumb ${libdir}/pkgconfig"
+FILES_${PN}-examples = "${bindir}/edje ${bindir}/edje_test ${datadir}"
