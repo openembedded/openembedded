@@ -1,7 +1,0 @@
-/dev/mtdblock1	/ 	jffs2	defaults	1  1
-/dev/mtdblock/2	/home	jffs2	defaults	1  1 
-proc            /proc   proc    defaults        0  0
-/dev/hda1	/mnt/cf	auto	defaults,sync,noauto,noatime,user,exec,suid	0  0
-/dev/mmcda1	/mnt/card	auto	defaults,sync,noauto,noatime,user,exec,suid	0  0
-tmpfs		/var	tmpfs	defaults	0  0
-
