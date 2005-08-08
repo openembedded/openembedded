@@ -1,7 +1,7 @@
 DESCRIPTION = "ESmart is a collection of smart Evas objects"
 SECTION = "e/libs"
 LICENSE = "MIT"
-DEPENDS = "eet evas-x11 ecore-x11 epsilon embryo imlib2 jpeg libtool"
+DEPENDS = "eet evas-x11 ecore-x11 epsilon embryo virtual/imlib2 jpeg libtool"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
