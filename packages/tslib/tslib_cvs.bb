@@ -23,7 +23,6 @@ inherit autotools
 PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
 EXTRA_OECONF        = "--enable-shared"
 EXTRA_OECONF_mnci   = "--enable-shared --disable-h3600 --enable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
-EXTRA_OECONF_beagle = "--enable-shared --enable-h3600 --disable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 
 do_stage () {
 	oe_libinstall -so -C src libts-0.0 ${STAGING_LIBDIR}
