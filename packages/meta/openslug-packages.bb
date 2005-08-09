@@ -54,6 +54,7 @@ OPENSLUG_PACKAGES = "\
 	ccxstream \
 	coreutils \
 	cron \
+	ctorrent \
 	cvs\
 	cyrus-imapd \
 	db4 \
