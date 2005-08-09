@@ -20,22 +20,13 @@ def get_binconfig_mangle(d):
 	return s
 
 # Native package configurations go in ${BINDIR}/<name>-config-native to prevent a collision with cross packages
-def is_native_pkg(d):
-	import bb.data, os
-	if not bb.data.inherits_class('native', d):
-		return "no"
-	else:
-		return "yes"
+def is_native(d):
+	import bb.data
+	return ["","-native"][bb.data.inherits_class('native', d)]
 
 do_stage_append() {
 	for config in `find ${S} -name '*-config'`; do
-		origname=`basename $config`
-		if [ "${@is_native_pkg(d)}" == "yes" ]
-		then
-			configname=$origname-native
-		else
-			configname=$origname
-		fi
+		configname=`basename $config`${@is_native(d)}
 		install -d ${STAGING_BINDIR}
 		cat $config | sed ${@get_binconfig_mangle(d)} > ${STAGING_BINDIR}/$configname
 		chmod u+x ${STAGING_BINDIR}/$configname
