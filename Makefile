@@ -503,6 +503,7 @@ push-openembedded: update-openembedded
 
 .PHONY: autobuild
 autobuild:
+	date
 	rm -rf builderrors.log
 	- ${MAKE} update                                      || echo -n " update"         >> builderrors.log
 ifneq ($(HOST_MACHINE),armeb)
@@ -524,10 +525,20 @@ ifeq ($(HOST_FIRMWARE),Unslung)
 endif
 endif
 	- ${MAKE}                      upload-sources         || echo -n " upload-sources" >> builderrors.log
+
+	date
 	if [ -e builderrors.log ] ; then \
-		echo -n "*** Errors during autobuild:" ; \
-		cat builderrors.log ; \
-		echo " ***" ; \
+	  echo -n "*** Errors during autobuild:" ; \
+	  cat builderrors.log ; \
+	  echo " ***" ; \
+	  if [ -e autobuild.log ] ; then \
+	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/www/autobuild-nudi-last.txt ; \
+	  fi \
+	else \
+	  if [ -e autobuild.log ] ; then \
+	    ssh slug@nugabe.nslu2-linux.org mv htdocs/www/autobuild-nudi-last.txt htdocs/www/autobuild-nudi-prev.txt ; \
+	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/www/autobuild-nudi-last.txt ; \
+	  fi \
 	fi
 
 .PHONY: upload
