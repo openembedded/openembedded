@@ -5,11 +5,7 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 PROVIDES = "virtual/imlib2"
 DEPENDS = "freetype libpng jpeg"
-
-do_prepsources () {
-	make clean distclean || true
-}
-addtask prepsources after do_fetch before do_unpack
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/imlib2-${PV}.tar.gz"
 S = "${WORKDIR}/imlib2-${PV}"
@@ -19,9 +15,37 @@ inherit autotools pkgconfig binconfig
 do_stage () {
 	oe_libinstall -C src/lib libImlib2 ${STAGING_LIBDIR}/
 	install -m 0644 ${S}/src/lib/Imlib2.h ${STAGING_INCDIR}/
+
+	install -d ${STAGING_LIBDIR}/imlib2/loaders
+	for i in src/modules/loaders/.libs/*.so
+	do
+		install -m 0755 $i ${STAGING_LIBDIR}/imlib2/loaders
+	done
+
+	install -d ${STAGING_LIBDIR}/imlib2/filters
+	for i in src/modules/filters/.libs/*.so
+	do
+		install -m 0755 $i ${STAGING_LIBDIR}/imlib2/filters
+	done
 }
 
-PACKAGES += "${PN}-bin"
+do_install_append() {
+        install -d ${D}${libdir}/imlib2/loaders
+        for i in src/modules/loaders/.libs/*.so
+        do
+                install -m 0755 $i ${D}${libdir}/imlib2/loaders
+        done
+
+        install -d ${D}${libdir}/imlib2/filters
+        for i in src/modules/filters/.libs/*.so
+        do
+                install -m 0755 $i ${D}${libdir}/imlib2/filters
+        done
+}
+
+PACKAGES =+ "imlib2-bin imlib2-loaders imlib2-filters"
 FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2"
 FILES_${PN}-dev += "${bindir}/imlib2-config"
-FILES_${PN}-bin = "${bindir}"
+FILES_imlib2-bin = "${bindir}"
+FILES_imlib2-loaders = "${libdir}/imlib2/loaders/*.so"
+FILES_imlib2-filters = "${libdir}/imlib2/filters/*.so"
