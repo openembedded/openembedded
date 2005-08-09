@@ -1,7 +1,6 @@
 # !/bin/sh
 M_TITLE="Copy rootfs to SD/CF"
 
-exit 0
 
 die() {
 	echo "ERROR: $1" >/dev/tty0

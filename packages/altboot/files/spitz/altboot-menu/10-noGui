@@ -33,7 +33,7 @@ run_module() {
 	# with CF)
 	for n in 1 2 3 4 5
 	do
-		mknod /dev/loop$n b 7 $n
+		! test -e /dev/loop$n && mknod /dev/loop$n b 7 $n
 	done
 	
 	# Check for /sbin/init and / or loop-images	
