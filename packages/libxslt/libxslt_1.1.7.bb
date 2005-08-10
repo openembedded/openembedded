@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "GNOME XSLT library"
 SECTION = "libs"
 PRIORITY = "optional"
@@ -28,11 +28,11 @@ do_stage () {
 	oe_libinstall -C libexslt -so -a libexslt ${STAGING_LIBDIR}
 
 	mkdir -p ${STAGING_INCDIR}/libxslt
-	for i in ${headers}; do
+	for i in ${xsltheaders}; do
 		install -m 0644 ${S}/libxslt/$i ${STAGING_INCDIR}/libxslt/$i
 	done
 	mkdir -p ${STAGING_INCDIR}/libexslt
-	for i in ${headers}; do
+	for i in ${exsltheaders}; do
 		install -m 0644 ${S}/libexslt/$i ${STAGING_INCDIR}/libexslt/$i
 	done
 
