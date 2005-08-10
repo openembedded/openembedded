@@ -6,10 +6,10 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
-PV = "1.2+cvs-${CVSDATE}"
-PR = "r2"
+PV = "1.2.1+cvs-${CVSDATE}"
+PR = "r0"
 
-SRC_URI = "http://cumulus.kflog.org/download/snapshot/cumulus-snapshot.tbz"
+SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/cumulus-snapshot.tbz"
 S = "${WORKDIR}/cumulus/cumulus"
 
 inherit opie
