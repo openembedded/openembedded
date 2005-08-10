@@ -5,7 +5,7 @@
  	"HP IPAQ H3100" | "HP IPAQ H3800" )
  		ARGS="-rotate 90" ;;
 -	"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE)
-+	"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE | *SPITZ | *AKITA)
++	"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE | *SPITZ | *AKITA | *BORZOI)
  		ARGS="-rotate 270" ;;
  	# H2200: works without rotation
  esac
