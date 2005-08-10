@@ -67,6 +67,7 @@ OPENSLUG_PACKAGES = "\
 	gtk-doc \
 	icecast \
 	iperf \
+	ifupdown \
 	jpeg \
 	less \
 	libpam \
