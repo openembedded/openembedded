@@ -42,7 +42,6 @@ OPENSLUG_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
-	icecast \
 	iperf \
 	ipkg-utils \
 	jpeg \
@@ -119,6 +118,8 @@ OPENSLUG_PACKAGES = "\
 	"
 
 BROKEN_PACKAGES = "\
+	groff \
+	icecast \
 	"
 
 DEPENDS = 'openslug-image \
