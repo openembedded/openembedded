@@ -2,7 +2,7 @@ SECTION = "console/network"
 
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
@@ -28,7 +28,7 @@ do_install () {
 }
 
 pkg_postinst () {
-	update-alternatives --install ${sbindir}/sendmail sendmail ${bindir}/ssmtp
+	update-alternatives --install ${sbindir}/sendmail sendmail ${bindir}/ssmtp 90
 }
 
 pkg_postrm () {
