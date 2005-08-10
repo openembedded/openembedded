@@ -12,7 +12,5 @@ S = "${WORKDIR}/entrance"
 
 inherit autotools
 
-# EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
-
-PARALLEL_MAKE = ""
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 
