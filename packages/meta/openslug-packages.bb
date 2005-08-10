@@ -65,6 +65,7 @@ OPENSLUG_PACKAGES = "\
 	glib-2.0 \
 	gphoto2 \
 	gtk-doc \
+	icecast \
 	iperf \
 	jpeg \
 	less \
