@@ -79,7 +79,7 @@ python debian_package_name_hook () {
 					if pkg == orig_pkg:
 						newpkg = pkgname
 					else:
-						newpkg = pkg.replace(orig_pkg, devname)
+						newpkg = pkg.replace(orig_pkg, devname, 1)
 					if newpkg != pkg:
 						bb.data.setVar('PKG_' + pkg, newpkg, d)
 
