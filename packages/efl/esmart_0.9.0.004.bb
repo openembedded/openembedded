@@ -28,7 +28,7 @@ mylibraries = "esmart_container \
 
 do_stage_append() {
 	install -d ${STAGING_INCDIR}/Esmart/
-	for i in ${headers}; do
+	for i in ${myheaders}; do
 		install -m 0644 ${S}/src/lib/$i ${STAGING_INCDIR}/Esmart/
 	done
 	oe_libinstall -C src/lib libsmart ${STAGING_LIBDIR}/

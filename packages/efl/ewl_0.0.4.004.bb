@@ -8,7 +8,10 @@ inherit efl
 
 SRC_URI += "file://ewl-configure.patch;patch=1"
 
-do_configure() {
-	gnu-configize
-	oe_runconf
+do_stage_append() {
+	for i in src/lib/ewl_*.h
+	do
+		install -m 0644 $i ${STAGING_INCDIR}
+	done
 }
+
