@@ -1,4 +1,5 @@
 include ecore.inc
+PROVIDES += "virtual/ecore"
 DEPENDS += "evas-x11"
 PR = "r1"
 

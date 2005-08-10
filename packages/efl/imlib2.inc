@@ -1,6 +1,5 @@
 DESCRIPTION = "A graphic library for file loading, saving, rendering, and manipulation."
 LICENSE = "BSD"
-PROVIDES = "virtual/imlib2"
 DEPENDS = "freetype libpng jpeg"
 
 inherit efl

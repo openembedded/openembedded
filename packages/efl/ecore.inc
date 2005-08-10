@@ -2,15 +2,15 @@ DESCRIPTION = "Ecore is the core event abstraction layer for the enlightenment \
 foundation libraries. It makes makes doing selections, drag and drop, event loops, \
 timeouts and idle handlers fast, optimized, and convenient."
 LEAD_SONAME = "libecore.so"
-PROVIDES = "virtual/ecore"
 LICENSE = "MIT"
 DEPENDS = "curl edb eet virtual/evas freetype edb-native"
 
 inherit efl
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
-           file://ecore-configure.patch;patch=1"
+           file://configure.patch;patch=1"
 S = "${WORKDIR}/ecore-${PV}"
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
 EXTRA_OECONF = "<override me>"
 

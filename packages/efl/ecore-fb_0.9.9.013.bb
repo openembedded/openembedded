@@ -1,4 +1,5 @@
 include ecore.inc
+PROVIDES += "virtual/ecore"
 PR = "r0"
 
 EXTRA_OECONF = "--enable-ecore-fb \

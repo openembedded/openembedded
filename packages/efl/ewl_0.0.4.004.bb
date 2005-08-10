@@ -8,8 +8,6 @@ inherit efl
 
 SRC_URI += "file://ewl-configure.patch;patch=1"
 
-export CURL_CONFIG = "${STAGING_BINDIR}/curl-config"
-
 do_configure() {
 	gnu-configize
 	oe_runconf

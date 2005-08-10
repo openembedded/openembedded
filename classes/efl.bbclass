@@ -15,6 +15,22 @@ libdirectory = "src/lib"
 libraries = "lib${SRCNAME}"
 headers = "${@bb.data.getVar('SRCNAME',d,1).capitalize()}.h"
 
+def binconfig_suffix(d):
+	import bb
+        return ["","-native"][bb.data.inherits_class('native', d)]
+
+export CURL_CONFIG	= "${STAGING_BINDIR}/curl-config${@binconfig_suffix(d)}"
+export EDB_CONFIG	= "${STAGING_BINDIR}/edb-config${@binconfig_suffix(d)}"
+export EET_CONFIG	= "${STAGING_BINDIR}/eet-config${@binconfig_suffix(d)}"
+export EVAS_CONFIG	= "${STAGING_BINDIR}/evas-config${@binconfig_suffix(d)}"
+export ECORE_CONFIG	= "${STAGING_BINDIR}/ecore-config${@binconfig_suffix(d)}"
+export EMBRYO_CONFIG	= "${STAGING_BINDIR}/embryo-config${@binconfig_suffix(d)}"
+export EPSILON_CONFIG	= "${STAGING_BINDIR}/epsilon-config${@binconfig_suffix(d)}"
+export EPEG_CONFIG	= "${STAGING_BINDIR}/epeg-config${@binconfig_suffix(d)}"
+export ESMART_CONFIG	= "${STAGING_BINDIR}/esmart-config${@binconfig_suffix(d)}"
+export FREETYPE_CONFIG	= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(d)}"
+export IMLIB2_CONFIG	= "${STAGING_BINDIR}/imlib2-config${@binconfig_suffix(d)}"
+
 do_stage_append () {
 	for i in ${libraries}
 	do

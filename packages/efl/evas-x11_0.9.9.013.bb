@@ -1,4 +1,5 @@
 include evas.inc
+PROVIDES += "virtual/evas"
 DEPENDS += "x11 xext"
 PR = "r2"
 

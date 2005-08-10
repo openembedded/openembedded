@@ -1,4 +1,5 @@
 include evas.inc
+PROVIDES += "virtual/evas"
 PR = "r0"
 
 EXTRA_OECONF = "--enable-fb			\

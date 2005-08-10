@@ -7,6 +7,9 @@ inherit efl
 
 SRC_URI += "file://compile-fix.patch;patch=1"
 
+headers = ""
+libraries = ""
+
 myheaders = "esmart_container/Esmart_Container.h \
              esmart_draggies/Esmart_Draggies.h \
              esmart_file_dialog/Esmart_File_Dialog.h \

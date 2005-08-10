@@ -1,7 +1,6 @@
 include imlib2.inc
+PROVIDES += "virtual/imlib2"
 DEPENDS += "x11 xext"
-
-export FREETYPE_CONFIG = "${STAGING_BINDIR}/freetype-config"
 
 EXTRA_OECONF = "--disable-mmx \
                 --with-x \
