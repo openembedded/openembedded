@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "db3 pcre postfix-native"
 LICENSE = "IPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -37,6 +37,7 @@ do_install () {
 	install -m 755 ${WORKDIR}/main.cf_2.0 ${D}/var/tmp/main_cf.sh
         install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_postfix
         install -m 755 ${WORKDIR}/postfix ${D}${sysconfdir}/init.d/postfix
+	mv ${D}${sbindir}/sendmail ${D}${sbindir}/sendmail.${PN}
 }
 
 pkg_postinst () {
@@ -55,5 +56,9 @@ pkg_postinst () {
 	/etc/init.d/populate-volatile.sh
 	touch /etc/aliases
 	newaliases
+	update-alternatives --install sendmail sendmail ${sbindir}/sendmail.${PN} 40
 }
 
+pkg_postrm () {
+	update-alternatives --remove sendmail ${sbindir}/sendmail 
+}
