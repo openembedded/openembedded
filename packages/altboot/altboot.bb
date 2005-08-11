@@ -6,7 +6,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
  
 
-PR = "r5"
+PR = "r7"
 
 
 SRC_URI = "file://altboot-menu \
@@ -39,27 +39,32 @@ pkg_postinst() {
 }
 
 pkg_postinst_spitz() {
-	
 	# Note: Spitz support is a royal pain in the ass.
 	#       Since Spitz pivot_roots by default, there is no real way
 	#	a user can install an altboot.ipk into the flash FS.
 	#	So we need to do that manually (*SIGH*)
-	
+
 	# /l/m only exists on the HDD on spitz
 	if test -d /lib/modules
 	then
-		if [ -e /media/realroot/sbin/init ]; then
-		  ROOT_MOUNT_POINT="/media/realroot"
-		elif [ -e /media/ROM/sbin/init ]; then
-		   ROOT_MOUNT_POINT="/media/ROM"   
-		fi
-		ROOT_MOUNT_DEVICE = `cat /proc/mounts | grep $REALROOT | grep jffs2 | cut -d " " -f 1`
-		mount -oremount,rw $ROOT_MOUNT_DEVICE $ROOT_MOUNT_POINT
-		cp -R /etc/altboot* $ROOT_MOUNT_POINT/etc
-		cp /sbin/init.altboot $ROOT_MOINT_POINT/sbin
-		mv $ROOT_MOUNT_POINT/sbin/init $ROOT_MOUNT_POINT/sbin/init.orig
-		ln -s /sbin/init.altboot $ROOT_MOUNT_POINT/sbin/init
-	fi						
+	   if [ -e /media/realroot/sbin/init ]; then
+	      ROOT_MOUNT_POINT="/media/realroot"
+	   elif [ -e /media/ROM/sbin/init ]; then
+	      ROOT_MOUNT_POINT="/media/ROM"
+	   fi
+	   if [ ! "$ROOT_MOUNT_POINT" = "" ]; then
+	      ROOT_MOUNT_DEVICE=`cat /proc/mounts | grep $ROOT_MOUNT_POINT | grep jffs2 | cut -d " " -f 1`
+	      if [ ! "$ROOT_MOUNT_DEVICE" = "" ]; then
+	         mount -oremount,rw $ROOT_MOUNT_DEVICE $ROOT_MOUNT_POINT
+	         cp -R /etc/altboot* $ROOT_MOUNT_POINT/etc
+	         cp /sbin/init.altboot $ROOT_MOUNT_POINT/sbin
+	         if [ -f $ROOT_MOUNT_POINT/sbin/init ]; then
+	         	 mv $ROOT_MOUNT_POINT/sbin/init $ROOT_MOUNT_POINT/sbin/init.orig
+	         fi
+	         ln -s /sbin/init.altboot $ROOT_MOUNT_POINT/sbin/init
+	      fi
+	   fi
+	fi
 }
 
 pkg_postrm() {
@@ -67,6 +72,25 @@ pkg_postrm() {
 }
 
 pkg_postrm_spitz() {
-	# FIXME: To be written
-	a=a # do nothing
+	if test -d /lib/modules
+        then
+           if [ -e /media/realroot/sbin/init ]; then
+              ROOT_MOUNT_POINT="/media/realroot"
+           elif [ -e /media/ROM/sbin/init ]; then
+              ROOT_MOUNT_POINT="/media/ROM"
+           fi
+           if [ ! "$ROOT_MOUNT_POINT" = "" ]; then
+              ROOT_MOUNT_DEVICE=`cat /proc/mounts | grep $ROOT_MOUNT_POINT | grep jffs2 | cut -d " " -f 1`
+              if [ ! "$ROOT_MOUNT_DEVICE" = "" ]; then
+                 mount -oremount,rw $ROOT_MOUNT_DEVICE $ROOT_MOUNT_POINT
+	         if [ -f $ROOT_MOUNT_POINT/sbin/init.orig ]; then
+	            rm $ROOT_MOUNT_POINT/sbin/init
+	            rm $ROOT_MOUNT_POINT/sbin/init.altboot
+	            mv $ROOT_MOUNT_POINT/sbin/init.orig $ROOT_MOUNT_POINT/sbin/init
+	         else
+	   	 echo "$ROOT_MOUNT_POINT/sbin/init.orig not found, not uninstalling altboot!"
+	         fi
+	      fi
+           fi
+	fi
 }

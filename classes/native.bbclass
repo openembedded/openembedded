@@ -50,14 +50,17 @@ libdir = "${exec_prefix}/lib"
 includedir = "${exec_prefix}/include"
 oldincludedir = "${exec_prefix}/include"
 
-# Datadir is made arch depenedent here, primarily
+# Datadir is made arch dependent here, primarily
 # for autoconf macros, and other things that
 # may be manipulated to handle crosscompilation
 # issues.
 datadir = "${exec_prefix}/share"
 
 do_stage () {
-	oe_runmake install
+	if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
+	then
+		oe_runmake install
+	fi
 }
 
 do_install () {

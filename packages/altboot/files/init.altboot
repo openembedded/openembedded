@@ -252,11 +252,11 @@ else
 
 	# Execute scripts in /etc/altboot.rc before doing anything else.
 	# Required for special situations, like booting spitz
-	RC_FILES=`ls /etc/altboot.rc | grep \\\\.sh$`
+	RC_FILES=`ls /etc/altboot.rc | grep \.sh$`
 
 	for file in $RC_FILES
 	do
-		 . $file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
+		 . /etc/altboot.rc/$file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
 	done
 	
 	if test "$ENABLE_ALTBOOT" != "yes" 

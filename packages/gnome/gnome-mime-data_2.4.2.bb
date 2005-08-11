@@ -1,5 +1,7 @@
 LICENSE = "GPL"
 inherit gnome
 
-DEPENDS += "intltool-native"
-PR = "r1"
+DEPENDS += "shared-mime-info intltool-native"
+RDEPENDS = "shared-mime-info"
+
+PR = "r2"

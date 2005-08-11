@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ecore-0.9.9.013/configure.in~configure.patch
++++ ecore-0.9.9.013/configure.in
+@@ -15,7 +15,6 @@
+ AC_CHECK_SIZEOF(int, 4)
+ AM_ENABLE_SHARED
+ AM_PROG_LIBTOOL
+-AC_C___ATTRIBUTE__
+ 
+ if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+   if test "x${exec_prefix}" = "xNONE"; then
+@@ -247,10 +246,8 @@
+       AM_CONDITIONAL(BUILD_ECORE_X, true)
+       AC_DEFINE(BUILD_ECORE_X, 1, [Build Ecore_X Module])
+       BUILD_ECORE_X=1
+-      x_dir=${x_dir:-/usr/X11R6}
+-      x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+-      x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+       x_ldflags=" "$ecore_x_libs;
++      x_libs="-lX11 -lXext";
+       ecore_x_libs="-lecore_x";
+     ],[
+       AM_CONDITIONAL(BUILD_ECORE_X, false)
