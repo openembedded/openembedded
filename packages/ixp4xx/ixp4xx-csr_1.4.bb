@@ -16,8 +16,8 @@ inherit module
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
 # required.  Notice that this has to be done for each separately built
 # module as well!
-KERNEL_CC += "${TARGET_CC_ARCH} -mno-thumb-interwork"
-# KERNEL_LD +=
+KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
+KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
 #LINUX_MACH_CFLAGS := -D__LINUX_ARM_ARCH__=5 -mcpu=xscale -mtune=xscale
 CFLAGS = "-fno-common -D__KERNEL__ -DMODULE -D__linux -DCPU=33 -DXSCALE=33 \
