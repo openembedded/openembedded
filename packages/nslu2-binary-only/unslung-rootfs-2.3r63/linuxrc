@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# ****  DO NOT EVEN THINK OF EDITING OR REMOVING THIS FILE  ****
+# **** UNLESS YOU REALLY KNOW *EXACTLY* WHAT YOU ARE DOING. ****
+
+
+# Perform prepatory tasks, and determine whether an alternate rootfs is viable.
+
+/bin/mount -t proc proc /proc
+
+echo "1" > /proc/sys/kernel/panic
+
+/bin/echo "Sleeping while waiting for disk..."
+cnt=20
+while [ $cnt -gt 0 ] ; do
+  echo -ne "\r$cnt "
+  sleep 1
+  [ -f /proc/hdd_sdb ] && cnt=0
+  [ -f /proc/hdd_sda ] && cnt=0
+  cnt=`expr $cnt - 1`
+done
+echo
+
+sleep 5
+
+mounted=
+
+for prefroot in sdb1 sda1 ; do
+  if [ -z "$mounted" ] ; then
+    if /bin/mount -rt ext3 /dev/$prefroot /mnt ; then
+      if [ -x /mnt/bin/init ] ; then
+        /bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
+        mounted=/mnt
+      else
+        /bin/umount /mnt
+        /bin/echo "Can't find valid rootfs on /dev/$prefroot ..."
+      fi
+    fi
+  fi
+done
+
+if [ -z "$mounted" ] ; then
+  /bin/echo "Can't find valid rootfs, using ramdisk ..."
+  mounted=
+fi
+
+/bin/umount /proc
+
+# Pivot to the desired rootfs and run the initial executable.
+
+if [ -n "$mounted" ] ; then
+
+    cd $mounted
+
+    /bin/echo "Pivoting to external rootfs ..."
+    /sbin/pivot_root . initrd
+
+    exec /usr/sbin/chroot . /bin/init < /dev/console 1> /dev/console 2> /dev/console
+
+else
+
+    exec /bin/init
+
+fi
+
+/bin/echo "Can't pivot to external rootfs, using ramdisk ..."
+exec /bin/init
+
+# Last-resort fall-back - this should never be reached.
+/bin/sh
