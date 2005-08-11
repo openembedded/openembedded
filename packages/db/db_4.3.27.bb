@@ -49,7 +49,12 @@ DB4_CONFIG ?= "--enable-o_direct --enable-smallbuild"
 # the default - "POSIX/pthreads/library".
 # Don't ignore the nice SWP instruction on the ARM:
 EXTRA_OECONF = "${DB4_CONFIG}"
-EXTRA_OECONF_nslu2 = "${DB4_CONFIG} --with-mutex=ARM/gcc-assembly"
+# These enable the ARM assembler mutex code, this won't
+# work with thumb compilation...
+ARM_MUTEX = "--with-mutex=ARM/gcc-assembly"
+ARM_MUTEX_thumb = ""
+# NOTE: only tested on nslu2, should probably be _armeb
+EXTRA_OECONF_nslu2 = "${DB4_CONFIG} ${ARM_MUTEX}"
 
 # Cancel the site stuff - it's set for db3 and destroys the
 # configure.
