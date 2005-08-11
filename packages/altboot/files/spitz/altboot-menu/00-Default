@@ -38,7 +38,7 @@ run_module() {
 
 	# There are no device files on Spitz yet, requires HDD (bad for testing
 	# with CF)
-	for n in 1 2 3 4 5
+	for n in 0 1 2 3 4 5
 	do
 		! test -e /dev/loop$n && mknod /dev/loop$n b 7 $n
 	done
