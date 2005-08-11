@@ -1,5 +1,3 @@
-DEFAULT_PREFERENCE_unslung = "-1"
-
 SECTION = "base"
 
 PR = "r0"
@@ -49,8 +47,7 @@ S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r63"
 python () {
 	# Don't build unslung images unless we're targeting an nslu2
 	mach = bb.data.getVar("MACHINE", d, 1)
-	dist = bb.data.getVar("DISTRO", d, 1)
-	if mach != 'nslu2' or dist != 'unslung':
+	if mach != 'nslu2':
 		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
 }
 

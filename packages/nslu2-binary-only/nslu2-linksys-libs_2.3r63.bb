@@ -1,5 +1,3 @@
-DEFAULT_PREFERENCE_unslung = "-1"
-
 DESCRIPTION = "Linksys NSLU2 Stock Firmware Libraries."
 PACKAGE_ARCH = "nslu2"
 SECTION = "base"

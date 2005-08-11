@@ -1,5 +1,3 @@
-DEFAULT_PREFERENCE_unslung = "-1"
-
 SECTION = "base"
 DEPENDS = "slugimage-native unzip-native"
 PACKAGES = ""
