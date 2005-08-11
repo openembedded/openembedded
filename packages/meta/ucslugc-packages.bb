@@ -14,6 +14,7 @@ PACKAGES = "${PN}"
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_PACKAGES = "\
 	atftp \
+	audiofile \
 	autoconf \
 	automake \
 	bash \
@@ -36,6 +37,7 @@ UCSLUGC_PACKAGES = "\
 	dnsmasq \
 	expat \
 	findutils \
+	flac \
 	flex \
 	ftpd-topfield \
 	gawk \
@@ -50,9 +52,15 @@ UCSLUGC_PACKAGES = "\
 	ipkg-utils \
 	jpeg \
 	less \
+	libao \
+	libid3tag \
+	libmad \
+	libmikmod \
+	libogg \
 	libpng \
 	libtool \
 	libusb \
+	libvorbis \
 	libxml2 \
 	lsof \
 	m4 \
@@ -118,6 +126,13 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	screen \
 	timezones \
 	xinetd \
+	"
+
+# These packages have problems with thumb or thumb-interwork compilation - they
+# should really be fixed (if still in the build it is because there is a hacky
+# work round.)  The problem here is that _call_via_r2 is apparently inaccessible
+# under some circumstances.
+THUMB_BROKEN_PACKAGES = "\
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)

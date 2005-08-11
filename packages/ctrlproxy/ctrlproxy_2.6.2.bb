@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0 libxml2 popt pcre openssl"
 PR = "r0"
 LICENSE = "GPL"
 
-SRC_URI = "http://ctrlproxy.vernstok.nl/releases/ctrlproxy-2.6.2.tar.gz"
+SRC_URI = "http://sources.nslu2-linux.org/sources/ctrlproxy-2.6.2.tar.gz"
 S = "${WORKDIR}/ctrlproxy-2.6.2/"
 
 inherit autotools

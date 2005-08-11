@@ -44,6 +44,12 @@ EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
 EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
 CPPFLAGS = ""
 
+# Used by configure to define additional values for FLAGS_FOR_TARGET -
+# passed to all the compilers.
+ARCH_FLAGS_FOR_TARGET = ""
+ARCH_FLAGS_FOR_TARGET_nslu2 = "${TARGET_CC_ARCH}"
+EXTRA_OEMAKE += "ARCH_FLAGS_FOR_TARGET='${ARCH_FLAGS_FOR_TARGET}'"
+
 def get_gcc_fpu_setting(bb, d):
 	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
 		return "--with-float=soft"
@@ -59,10 +65,14 @@ python __anonymous () {
 
 do_configure () {
 	# Setup these vars for cross building only
+	# ... because foo_FOR_TARGET apparently gets misinterpreted inside the
+	# gcc build stuff when the build is producing a cross compiler - i.e.
+	# when the 'current' target is the 'host' system, and the host is not
+	# the target (because the build is actually making a cross compiler!)
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
-		export CC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
-		export GCC_FOR_TARGET="${CCACHE} ${HOST_PREFIX}gcc"
-		export CXX_FOR_TARGET="${CCACHE} ${HOST_PREFIX}g++"
+		export CC_FOR_TARGET="${CC}"
+		export GCC_FOR_TARGET="${CC}"
+		export CXX_FOR_TARGET="${CXX}"
 		export AS_FOR_TARGET="${HOST_PREFIX}as"
 		export LD_FOR_TARGET="${HOST_PREFIX}ld"
 		export NM_FOR_TARGET="${HOST_PREFIX}nm"
@@ -75,6 +85,7 @@ do_configure () {
 	export CPPFLAGS_FOR_BUILD="${BUILD_CPPFLAGS}"
 	export CXXFLAGS_FOR_BUILD="${BUILD_CXXFLAGS}"
 	export LDFLAGS_FOR_BUILD="${BUILD_LDFLAGS}"
+	export ARCH_FLAGS_FOR_TARGET="${ARCH_FLAGS_FOR_TARGET}"
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
