@@ -13,7 +13,7 @@ do_compile_prepend () {
 	export RANLIB_FOR_TARGET="${TARGET_SYS}-ranlib"
 	export LD_FOR_TARGET="${TARGET_SYS}-ld"
 	export NM_FOR_TARGET="${TARGET_SYS}-nm"
-	export CC_FOR_TARGET="${CCACHE} ${TARGET_SYS}-gcc"
+	export CC_FOR_TARGET="${CCACHE} ${TARGET_SYS}-gcc ${TARGET_CC_ARCH}"
 }
 
 do_stage_append () {

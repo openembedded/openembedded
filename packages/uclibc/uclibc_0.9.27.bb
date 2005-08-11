@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r5"
+PR = "r6"
 
 include uclibc.inc
 
@@ -16,4 +16,7 @@ SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
             file://nokernelheadercheck.patch;patch=1"
 SRC_URI += " file://armeb-kernel-stat.h.patch;patch=1"
 SRC_URI += "${PATCH_ipc_h}"
+SRC_URI += " file://thumb-swi.patch;patch=1"
+SRC_URI += " file://thumb-swp.patch;patch=1"
+SRC_URI += " file://arm-thumb-defined.patch;patch=1"
 S = "${WORKDIR}/uClibc-${PV}"
