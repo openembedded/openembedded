@@ -1,5 +1,5 @@
 DESCRIPTION = "Enlightenment Window Mananger Library"
-DEPENDS = "freetype eet evas-x11 ecore-x11 embryo imlib2-x11 edje-native"
+DEPENDS = "freetype eet evas-x11 ecore-x11 embryo imlib2-x11 edje-native edje"
 LICENSE = "MIT"
 CVSDATE = "${PV}"
 PR = "r0"

@@ -30,9 +30,4 @@ do_configure() {
 do_stage() {
 	install -m 0755 bin/moc ${STAGING_BINDIR}/moc3
 	install -m 0755 bin/uic ${STAGING_BINDIR}/uic3
-	install -m 0655 lib/*.a ${STAGING_LIBDIR}/
-	for f in include/*.h
-	do
-		install -m 0644 $f ${STAGING_INCDIR}/
-	done
 }
