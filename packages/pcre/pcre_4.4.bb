@@ -27,6 +27,10 @@ do_compile () {
 }
 
 do_stage () {
+	# Force all -L(dir) output to be prepended with the staging libdir to stop libtool
+	# from trying to link to host libraries.
+	sed -i 's:-L\$:-L${STAGING_LIBDIR} -L\$:' ${S}/*libtool
+
 	oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
 	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
 	install -m 0644 pcre.h ${STAGING_INCDIR}/

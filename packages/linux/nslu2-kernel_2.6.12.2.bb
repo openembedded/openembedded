@@ -1,5 +1,5 @@
 # Kernel for NSLU2
-PR = "r8"
+PR = "r9"
 include nslu2-kernel.inc
 
 # N2K_EXTRA_PATCHES - list of patches to apply (can include
@@ -23,4 +23,5 @@ N2K_PATCHES = "\
 	file://mtd-shutdown.patch;patch=1 \
 	file://missing-exports.patch;patch=1 \
 	file://timer.patch;patch=1 \
+	file://nslu2-io_rpbutton.patch;patch=1 \
 "

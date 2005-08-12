@@ -5,7 +5,7 @@ MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
 
 SRC_URI =	"ftp://ftp.gimp.org/pub/gimp/v2.3/gimp-${PV}.tar.bz2"
 
-DEPENDS =	"sed-native gtk+ jpeg libpng libexif tiff"
+DEPENDS =	"sed-native libart-lgpl gtk+ jpeg libpng libexif tiff"
 
 inherit autotools pkgconfig
 #Don't laugh, this just builds a threaded gimp

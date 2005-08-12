@@ -44,8 +44,9 @@ do_stage_append () {
 	done
 }
 
-PACKAGES = "${SRCNAME}-dev ${SRCNAME}-examples ${SRCNAME}"
-FILES_${SRCNAME} = "${libdir} ${datadir}/${SRCNAME}/themes"
+PACKAGES = "${SRCNAME}-dev ${SRCNAME}-examples ${SRCNAME}-themes ${SRCNAME}"
+FILES_${SRCNAME} = "${libdir}"
+FILES_${SRCNAME}-theme = "${datadir}/${SRCNAME}/themes"
 FILES_${SRCNAME}-dev += "${bindir}/${SRCNAME}-config ${libdir}/pkgconfig"
 FILES_${SRCNAME}-examples = "${bindir} ${datadir}"
 

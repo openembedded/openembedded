@@ -27,4 +27,6 @@ l4:4:wait:/etc/init.d/rc 4
 l5:5:wait:/etc/init.d/rc 5
 l6:6:wait:/etc/init.d/rc 6
 # Normally not reached, but fallthrough in case of emergency.
-z6:6:respawn:/sbin/sulogin
+z6:6:respawn:/sbin/sulogini
+
+ca:123456:ctrlaltdel:/sbin/poweroff
