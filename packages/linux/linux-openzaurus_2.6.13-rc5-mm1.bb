@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r1"
+PR = "r3"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -78,6 +78,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
+           ${RPSRC}/pxa27x_extraregs-r0.patch;patch=1 \
+           ${RPSRC}/spitzbase-r0.patch;patch=1 \
+           ${RPSRC}/spitzkbd-r0.patch;patch=1 \
+           ${RPSRC}/spitzssp-r0.patch;patch=1 \
+           ${RPSRC}/spitzlcd-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -104,10 +109,8 @@ SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
 		       ${DOSRC}/wm9712-ts-r2.patch;patch=1 \
                        ${DOSRC}/tosa-pxaac97-r1.patch;patch=1 \
         	       ${DOSRC}/tosa-bluetooth-r0.patch;patch=1 "
-
-SRC_URI_append_spitz = "${BASRC}/spitz-cf-support-r0.patch;patch=1 \
-                        ${BASRC}/spitz-base-r2.patch;patch=1 "
-
+SRC_URI_append_spitz = "${RPSRC}/spitzcf-r0.patch;patch=1 \
+                        ${RPSRC}/spitzts-r0.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.12"
 
@@ -133,7 +136,7 @@ export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
 export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
 
 CMDLINE_MEM_collie = "mem=${mem}M"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM}"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} debug"
 
 ###############################################################
 # Enable or disable ELPP via local.conf - default is "no"
