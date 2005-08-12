@@ -40,6 +40,4 @@ do_install_append() {
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
-RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch"
-# The testsuite also requires the following - not yet available...
-#RDEPENDS_${PN}-testsuite += "perl"
+RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"
