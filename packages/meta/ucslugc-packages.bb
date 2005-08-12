@@ -43,6 +43,7 @@ UCSLUGC_PACKAGES = "\
 	gawk \
 	gcc \
 	gdb \
+	gdbm \
 	glib-2.0 \
 	gnu-config \
 	gphoto2 \
@@ -62,13 +63,15 @@ UCSLUGC_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
+	lrzsz \
 	lsof \
 	m4 \
 	make \
 	mgetty \
 	miau \ 
 	microcom \
-	monotone-4 monotone-5 \
+	monotone-4 \
+	monotone-5 \
 	mpd \
 	mt-daapd \
 	mutt \
@@ -94,6 +97,7 @@ UCSLUGC_PACKAGES = "\
 	puppy \
 	pwc \
 	python \
+	python-core \
 	quilt \
 	reiserfsprogs reiser4progs \
 	rsync \
@@ -149,4 +153,4 @@ UCSLUGC_UNSUPPORTABLE_PACKAGES = "\
 
 # The package-index at the end causes regeneration of the Packages.gz and
 # other control files.
-DEPENDS = "openslug-image ${UCSLUGC_PACKAGES} package-index"
+DEPENDS = "openslug-image ${UCSLUGC_PACKAGES} openslug-native package-index"
