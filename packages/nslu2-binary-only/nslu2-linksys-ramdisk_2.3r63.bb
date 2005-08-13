@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "required"
 PR = "r0"
 
-SRC_URI = "http://www.you-need-to-create-this-yourself.com/nslu2-linksys-ramdisk-2.3r63.tar.bz2"
+SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63.tar.bz2"
 
 do_install () {
 	( cd ${S} ; tar cvf - . ) | ( cd ${D} ; tar xvf - )
