@@ -70,6 +70,14 @@ else
 prefetch-unslung:
 endif
 
+.PHONY: prefetch-unslung-binary-kernel
+ifneq ($(HOST_MACHINE),armeb)
+prefetch-unslung-binary-kernel: unslung-binary-kernel/.configured bitbake/.configured openembedded/.configured
+	( cd unslung-binary-kernel ; ${MAKE} prefetch )
+else
+prefetch-unslung-binary-kernel:
+endif
+
 .PHONY: prefetch-openslug
 ifneq ($(HOST_MACHINE),armeb)
 prefetch-openslug: openslug/.configured bitbake/.configured openembedded/.configured
@@ -124,6 +132,14 @@ unslung build-unslung: unslung/.configured bitbake/.configured openembedded/.con
 	( cd unslung ; ${MAKE} )
 else
 unslung build-unslung:
+endif
+
+.PHONY: unslung-binary-kernel build-unslung-binary-kernel
+ifneq ($(HOST_MACHINE),armeb)
+unslung-binary-kernel build-unslung-binary-kernel: unslung-binary-kernel/.configured bitbake/.configured openembedded/.configured
+	( cd unslung-binary-kernel ; ${MAKE} )
+else
+unslung-binary-kernel build-unslung-binary-kernel:
 endif
 
 .PHONY: openslug build-openslug
@@ -201,8 +217,8 @@ setup-openembedded openembedded/.configured: MT/.configured
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
 	touch openembedded/.configured
 
-.PHONY: setup-unslung setup-openslug setup-ucslugc
-setup-unslung setup-openslug setup-ucslugc: setup-%: MT/.configured
+.PHONY: setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc
+setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc: setup-%: MT/.configured
 	rm -rf $*/.configured
 	${MAKE} $*/.configured
 
@@ -430,6 +446,10 @@ status-openslug-%-beta:
 clobber-unslung:
 	[ ! -e unslung/Makefile ] || ( cd unslung ; ${MAKE} clobber )
 
+.PHONY: clobber-unslung-binary-kernel
+clobber-unslung-binary-kernel:
+	[ ! -e unslung-binary-kernel/Makefile ] || ( cd unslung-binary-kernel ; ${MAKE} clobber )
+
 .PHONY: clobber-openslug
 clobber-openslug:
 	[ ! -e openslug/Makefile ] || ( cd openslug ; ${MAKE} clobber )
@@ -464,6 +484,10 @@ distclean-openembedded:
 .PHONY: distclean-unslung
 distclean-unslung:
 	rm -rf unslung
+
+.PHONY: distclean-unslung-binary-kernel
+distclean-unslung-binary-kernel:
+	rm -rf unslung-binary-kernel
 
 .PHONY: distclean-openslug
 distclean-openslug:
