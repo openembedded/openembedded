@@ -13,4 +13,4 @@ inherit autotools
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 
-FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} /etc/* /usr/sbin/*"
+FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"

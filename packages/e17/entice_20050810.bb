@@ -1,4 +1,4 @@
-DESCRIPTION = "Entice is a picture viewer"
+DESCRIPTION = "Entice is the E17 picture viewer"
 SECTION = "e/apps"
 # can also depend on GIMP for editing
 DEPENDS = "virtual/evas edb virtual/ecore edje"
@@ -15,5 +15,5 @@ inherit autotools
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 
-FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} /etc/* /usr/sbin/*"
+FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"
 
