@@ -1,5 +1,5 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
-DEPENDS = "virtual/evas virtual/ecore edje eet embryo e"
+DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
