@@ -1,17 +1,18 @@
-DESCRIPTION = "Entice is the E17 picture viewer"
+DESCRIPTION = "Eclair is the E17 multi media player"
 SECTION = "e/apps"
-# can also depend on GIMP for editing
-DEPENDS = "virtual/evas edb virtual/ecore edje"
+DEPENDS = "freetype eet virtual/evas virtual/ecore embryo virtual/imlib2 edje-native edje emotion libxml2 sqlite3 taglibc"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entice"
-S = "${WORKDIR}/entice"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/eclair"
+S = "${WORKDIR}/eclair"
 
 inherit autotools
+
+BROKEN = "1"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 

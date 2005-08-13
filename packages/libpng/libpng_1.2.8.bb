@@ -19,7 +19,7 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2"
 S = "${WORKDIR}/libpng-${PV}"
 
-inherit pkgconfig
+inherit pkgconfig binconfig
 
 EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
 
