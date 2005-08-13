@@ -1,6 +1,6 @@
 DESCRIPTION = "ESmart is a collection of smart Evas objects"
 LICENSE = "MIT"
-DEPENDS = "edje-native eet evas-x11 ecore-x11 epsilon embryo imlib2-x11 jpeg libtool"
+DEPENDS = "virtual/evas virtual/ecore virtual/imlib2 epsilon edje libtool"
 PR = "r1"
 
 inherit efl

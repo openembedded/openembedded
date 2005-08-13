@@ -1,0 +1,29 @@
+--- e/src/bin/e_menu.c.~1.38.~	2005-07-25 02:55:44.000000000 -0700
++++ e/src/bin/e_menu.c	2005-08-11 15:36:23.000000000 -0700
+@@ -1968,22 +1968,22 @@
+ 	E_Menu *m;
+ 
+ 	m = l->data;
+-	if (m->cur.x < m->zone->x)
++	if (m->cur.x < m->zone->x + 5)
+ 	  {
+ 	     i = m->zone->x - m->cur.x;
+ 	     if (i > outl) outl = i;
+ 	  }
+-	if (m->cur.y < m->zone->y)
++	if (m->cur.y < m->zone->y + 5)
+ 	  {
+ 	     i = m->zone->y - m->cur.y;
+ 	     if (i > outt) outt = i;
+ 	  }
+-	if ((m->cur.x + m->cur.w) > (m->zone->w))
++	if ((m->cur.x + m->cur.w) > (m->zone->w - 5))
+ 	  {
+ 	     i = m->cur.x + m->cur.w - (m->zone->x + m->zone->w);
+ 	     if (i > outr) outr = i;
+ 	  }
+-	if ((m->cur.y + m->cur.h) > (m->zone->h))
++	if ((m->cur.y + m->cur.h) > (m->zone->h - 5))
+ 	  {
+ 	     i = m->cur.y + m->cur.h - (m->zone->y + m->zone->h);
+ 	     if (i > outb) outb = i;

@@ -3,7 +3,8 @@ foundation libraries. It makes makes doing selections, drag and drop, event loop
 timeouts and idle handlers fast, optimized, and convenient."
 LEAD_SONAME = "libecore.so"
 LICENSE = "MIT"
-DEPENDS = "curl edb eet virtual/evas freetype edb-native"
+# can also have openssl, dbus
+DEPENDS = "virtual/evas curl eet"
 
 inherit efl
 

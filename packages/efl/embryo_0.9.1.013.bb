@@ -7,4 +7,3 @@ LICENSE = "MIT"
 PR = "r0"
 
 inherit efl
-

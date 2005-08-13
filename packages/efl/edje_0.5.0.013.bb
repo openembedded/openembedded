@@ -1,13 +1,13 @@
 DESCRIPTION = "Edje is a complex graphical design & layout library."
-DEPENDS = "freetype virtual/evas virtual/ecore embryo eet edb edje-native"
+# can also install vim data files
+DEPENDS = "virtual/evas virtual/ecore eet embryo edje-native virtual/imlib2"
 LICENSE = "MIT"
 PR = "r0"
 
 inherit efl
 
-EXTRA_OECONF = "--disable-edje-cc --enable-fb-only"
 LEAD_SONAME = "libedje.so"
 
-libraries += "libedje_edit"
+FILES_${PN}-dev += "${bindir}"
 
-BINARIES = "edje edje_ls edje_test edje_cc edje_decc edje_thumb"
+RDEPENDS_${PN}-dev += "cpp"

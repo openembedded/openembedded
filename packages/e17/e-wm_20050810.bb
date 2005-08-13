@@ -1,5 +1,5 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
-DEPENDS = "freetype eet evas-x11 ecore-x11 embryo imlib2-x11 edje-native e"
+DEPENDS = "virtual/evas virtual/ecore edje eet embryo e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
@@ -7,7 +7,8 @@ CVSDATE = "${PV}"
 PR = "r0"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
-           file://fix-configure.patch;patch=1"
+           file://fix-configure.patch;patch=1 \
+           file://fudge_screen_edges_for_menu.patch;patch=1"
 S = "${WORKDIR}/e"
 
 inherit autotools

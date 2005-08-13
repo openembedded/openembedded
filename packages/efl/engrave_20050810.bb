@@ -1,6 +1,7 @@
 DESCRIPTION = "Engrave is an Edje Editing Library"
 LICENSE = "MIT"
-DEPENDS = "jpeg edb ecore-x11 evas-x11 edje imlib2-x11"
+# also requires yacc and lex on host
+DEPENDS = "virtual/evas virtual/ecore"
 
 inherit efl
 
