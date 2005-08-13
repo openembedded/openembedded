@@ -1,6 +1,7 @@
 DESCRIPTION = "Entice is a picture viewer"
 SECTION = "e/apps"
-DEPENDS = "freetype eet virtual/evas virtual/ecore embryo virtual/imlib2 edje-native"
+# can also depend on GIMP for editing
+DEPENDS = "virtual/evas edb virtual/ecore edje"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"

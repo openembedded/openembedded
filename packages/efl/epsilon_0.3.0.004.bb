@@ -1,7 +1,7 @@
 DESCRIPTION = "Epsilon is a flexable and powerful image thumbnailing library \
 that is complient with the freedesktop.org Thumbnail Managing Standard."
 LICENSE = "GPL"
-DEPENDS = "edje epeg libpng virtual/imlib2"
+DEPENDS = "virtual/imlib2 epeg libpng virtual/evas virtual/ecore perl-native edje"
 
 inherit efl
 

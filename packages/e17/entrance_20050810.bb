@@ -1,7 +1,8 @@
-DESCRIPTION = "Entrace is the Enlightenment login manager for X11"
+DESCRIPTION = "Entrace is the Enlightenment login manager"
 SECTION = "e/apps"
 LICENSE = "MIT"
-DEPENDS = "ecore-x11 edje-native embryo-native esmart"
+# can also use pam and crypt
+DEPENDS = "edb virtual/evas virtual/ecore edje esmart"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"

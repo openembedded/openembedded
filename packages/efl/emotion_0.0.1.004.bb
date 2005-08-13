@@ -1,5 +1,5 @@
 DESCRIPTION = "Emotion is a multimedia library based on libxine"
 LICENSE = "MIT"
-DEPENDS = "libxine"
+DEPENDS = "eet virtual/evas edje virtual/ecore embryo libxine"
 
 inherit efl
