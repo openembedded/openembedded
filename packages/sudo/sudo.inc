@@ -18,3 +18,7 @@ do_configure_prepend () {
 		cat aclocal.m4 > acinclude.m4
 	fi
 }
+
+pkg_postinst() {
+	chmod 0440 ${sysconfdir}/sudoers
+}
