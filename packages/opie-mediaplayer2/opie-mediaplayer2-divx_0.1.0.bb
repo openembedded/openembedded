@@ -4,10 +4,11 @@ LICENSE = "GPL"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "all"
+PR = "r1"
 
 DEPENDS = "opie-mediaplayer2 \
 	   opie-mediaplayer2-skin-default \
-	   libxine-opie "
+	   libxine-fb "
 
 RDEPENDS = "opie-mediaplayer2 \
 	   opie-mediaplayer2-skin-default \
