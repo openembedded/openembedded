@@ -18,7 +18,7 @@ export KERNEL_DIR = "${STAGING_INCDIR}"
 
 do_compile () {
 	unset CFLAGS
-	oe_runmake BINDIR=${D}${bindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} NO_SHARED_LIBS=1
+	oe_runmake BINDIR=${D}${sbindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} NO_SHARED_LIBS=1
 }
 
 do_install () {
