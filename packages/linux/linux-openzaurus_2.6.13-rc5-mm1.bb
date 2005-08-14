@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r5"
+PR = "r6"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -79,9 +79,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
            ${RPSRC}/pxa27x_extraregs-r0.patch;patch=1 \
-           ${RPSRC}/spitzbase-r1.patch;patch=1 \
+           ${RPSRC}/spitzbase-r2.patch;patch=1 \
            ${RPSRC}/spitzkbd-r0.patch;patch=1 \
-           ${RPSRC}/spitzssp-r2.patch;patch=1 \
+           ${RPSRC}/spitzssp-r4.patch;patch=1 \
            ${RPSRC}/spitzbl-r1.patch;patch=1 \
            ${RPSRC}/spitzts-r1.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
