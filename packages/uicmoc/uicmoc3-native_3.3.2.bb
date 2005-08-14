@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-3.3.2.tar.bz2 \
 
 S = "${WORKDIR}/qt-embedded-free-3.3.2"
 
-inherit native qmake-base
+inherit native qmake-base qt3e
 
 export QTDIR = "${S}"
 export OE_QMAKE_LINK="${CXX}"
@@ -28,6 +28,15 @@ do_configure() {
 }
 
 do_stage() {
-	install -m 0755 bin/moc ${STAGING_BINDIR}/moc3
-	install -m 0755 bin/uic ${STAGING_BINDIR}/uic3
+	install -d ${OE_QMAKE_INCDIR_QT}
+	install -d ${OE_QMAKE_LIBDIR_QT}
+
+	install -m 0755 bin/moc ${OE_QMAKE_UIC}
+	install -m 0755 bin/uic ${OE_QMAKE_MOC}
+	install -m 0655 lib/*.a ${OE_QMAKE_LIBDIR_QT}
+
+	for f in include/*.h
+	do
+		install -m 0644 $f ${OE_QMAKE_INCDIR_QT}/
+	done
 }
