@@ -5,7 +5,7 @@
  
  # set auth to 1 for pam, 2 for shadow
 -edb_ed $DB add /entrance/auth int @auth_mode@
-+edb_ed $DB add /entrance/auth int 2
++edb_ed $DB add /entrance/auth int 0
  
  # uncomment the below to enable experimental OpenGL hardware acceleration
  #edb_ed $DB add /entrance/engine int 1
