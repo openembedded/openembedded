@@ -1,6 +1,6 @@
 DESCRIPTION = "Eclair is the E17 multi media player"
 SECTION = "e/apps"
-DEPENDS = "virtual/evas virtual/ecore embryo virtual/imlib2 edje-native edje emotion esmart libxml2 sqlite3 taglibc"
+DEPENDS = "evas-x11 ecore-x11 embryo imlib2-x11 edje-native edje libxine-x11 emotion esmart libxml2 sqlite3 taglibc"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
