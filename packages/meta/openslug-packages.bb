@@ -113,6 +113,7 @@ OPENSLUG_PACKAGES = "\
 	vlan \
 	wakelan \
 	watchdog \
+	wireless-tools \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
