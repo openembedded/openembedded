@@ -117,6 +117,7 @@ OPENSLUG_PACKAGES = "\
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
+	zd1211 \
 	zlib \
 	"
 
