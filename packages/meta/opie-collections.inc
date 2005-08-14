@@ -77,10 +77,10 @@ OPIE_EXTRA_SETTINGS = "opie-language opie-launcher-settings opie-doctab opie-sec
 
 OPIE_DEPENDS_24  = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop \
                     qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
-                    opie-irc "
+                    opie-irc opie-mediaplayer2"
 OPIE_RDEPENDS_24 = "konqueror-embedded opie-calculator opie-checkbook opie-mail opie-eye opie-rdesktop \
                     qpdf2 opie-wellenreiter opie-parashoot opie-mindbreaker opie-fifteen opie-tictac opie-tetrix   \
-                    opie-irc "
+                    opie-irc opie-mediaplayer2 libxine-plugin-decode-ff libxine-plugin-dmx-avi"
 
 #
 #
