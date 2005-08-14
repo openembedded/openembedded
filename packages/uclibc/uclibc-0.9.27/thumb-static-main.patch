@@ -1,0 +1,60 @@
+# This patch almost works, it allows a statically linked application
+# to be compiled with a thumb main and to have this work from a
+# non-thumb uClibc build.  However it stops the same thing working
+# in the dynamically linked case (because the value of 'main' doesn't
+# have the low bit set when loaded - something must be wrong with the
+# relocation for STT_ARM_TFUNC?)  At present it is not included for
+# this reason.
+--- uClibc-0.9.27/libc/misc/internals/__uClibc_main.c	2005-08-13 18:04:09.078682965 -0700
++++ uClibc-0.9.27/libc/misc/internals/__uClibc_main.c	2005-08-13 18:07:38.159839613 -0700
+@@ -32,6 +32,13 @@
+ /*
+  * Prototypes.
+  */
++#if (defined __arm__ || defined __thumb__) && defined __THUMB_INTERWORK__ && defined __linux__
++/* Because when linking statically the GNU linker provides no glue for
++ * main, so if main is thumb and we are arm or vice versa the static
++ * link fails.
++ */
++# define main __arm_main
++#endif
+ extern int  main(int argc, char **argv, char **envp);
+ extern void weak_function _stdio_init(void);
+ extern int *weak_const_function __errno_location(void);
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/Makefile	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/Makefile	2005-08-13 18:08:08.953777353 -0700
+@@ -25,7 +25,7 @@
+ CTOR_TARGETS=$(TOPDIR)lib/crti.o $(TOPDIR)lib/crtn.o
+ 
+ SSRC=__longjmp.S vfork.S clone.S setjmp.S bsd-setjmp.S \
+-	bsd-_setjmp.S sigrestorer.S mmap64.S
++	bsd-_setjmp.S sigrestorer.S mmap64.S mainglue.S
+ SOBJS=$(patsubst %.S,%.o, $(SSRC))
+ 
+ CSRC=brk.c syscall.c ioperm.c sigaction.c
+--- uClibc-0.9.27/.pc/thumb-static-main.patch/libc/sysdeps/linux/arm/mainglue.S	2005-08-13 18:20:44.181300825 -0700
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/mainglue.S	2005-08-13 19:11:05.031390937 -0700
+@@ -0,0 +1,23 @@
++/*
++ * Apparently the GNU linker doesn't generate the 'glue' code
++ * required for ARM/thumb interwork for the 'main' function -
++ * presumably glibc doesn't need it, but uClibc does.
++ *
++ * We can't provide this stuff, because the linker expects to
++ * have generated the glue code itself and asserts if the code
++ * is not in memory (because it has been read from a pre-existing
++ * definition), therefore we must avoid the glue - so we make
++ * __uClibc_main call __arm_main and define it here (in arm
++ * code).
++ */
++#if defined __THUMB_INTERWORK__
++	.text
++	.arm
++	.global	__arm_main
++	.type	__arm_main, %function
++__arm_main:
++	ldr	ip, [pc]
++	bx	ip
++	.word	main
++	.size	__arm_main,.-__arm_main
++#endif

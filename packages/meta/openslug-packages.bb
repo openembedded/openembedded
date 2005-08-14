@@ -44,6 +44,7 @@ OPENSLUG_PACKAGES = "\
 	gzip \
 	iperf \
 	ipkg-utils \
+	joe \
 	jpeg \
 	less \
 	libpam \
