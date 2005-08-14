@@ -1,5 +1,5 @@
 DESCRIPTION = "Enlightenment Window Manager Utilities"
-DEPENDS = "freetype eet evas-x11 ecore-x11 edje engrave esmart epsilon ewl imlib2-x11 e17"
+DEPENDS = "virtual/ecore virtual/evas esmart edje eet ewl engrave virtual/imlib2 e epsilon"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"

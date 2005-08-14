@@ -1,5 +1,5 @@
 DESCRIPTION = "Enlightenment Window Mananger Library"
-DEPENDS = "freetype eet evas-x11 ecore-x11 embryo imlib2-x11 edje-native edje"
+DEPENDS = "virtual/evas virtual/ecore edje eet embryo"
 LICENSE = "MIT"
 CVSDATE = "${PV}"
 PR = "r0"
@@ -25,7 +25,7 @@ do_compile() {
 	oe_runmake -C src/lib
 }
 
-headers = "E_Lib.h"
+headers = "E_Lib.h ../bin/e_*.h"
 
 do_install() {
 	oe_runmake -C src/lib install DESTDIR=${D}

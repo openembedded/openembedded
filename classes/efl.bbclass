@@ -8,6 +8,11 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit autotools pkgconfig binconfig
 
+do_prepsources () {
+  make clean distclean || true
+}
+addtask prepsources after do_fetch before do_unpack
+
 INHIBIT_AUTO_STAGE_INCLUDES  = "1"
 INHIBIT_NATIVE_STAGE_INSTALL = "1"
 
@@ -42,11 +47,30 @@ do_stage_append () {
 	do
 		install -m 0644 ${libdirectory}/$i ${STAGING_INCDIR}
 	done
+
+	# Install binaries automatically for native builds
+	if [ "${@binconfig_suffix(d)}" = "-native" ]
+	then
+
+		# Most EFL binaries start with the package name
+		for i in src/bin/${SRCNAME}*
+		do
+			if [ -x $i -a -f $i ]
+			then
+
+				# Don't install anything with an extension (.so, etc)
+				if echo $i | grep -v \\.
+				then
+					${HOST_SYS}-libtool --mode=install install -m 0755 $i ${STAGING_BINDIR}
+				fi
+			fi
+		done
+	fi
 }
 
 PACKAGES = "${SRCNAME}-dev ${SRCNAME}-examples ${SRCNAME}-themes ${SRCNAME}"
 FILES_${SRCNAME} = "${libdir}"
-FILES_${SRCNAME}-theme = "${datadir}/${SRCNAME}/themes"
-FILES_${SRCNAME}-dev += "${bindir}/${SRCNAME}-config ${libdir}/pkgconfig"
+FILES_${SRCNAME}-theme = "${datadir}/${SRCNAME}/themes ${datadir}/${SRCNAME}/data ${datadir}/${SRCNAME}/fonts ${datadir}/${SRCNAME}/pointers ${datadir}/${SRCNAME}/images ${datadir}/${SRCNAME}/users ${datadir}/${SRCNAME}/images ${datadir}/${SRCNAME}/styles"
+FILES_${SRCNAME}-dev += "${bindir}/${SRCNAME}-config ${libdir}/pkgconfig ${datadir}/${SRCNAME}/include"
 FILES_${SRCNAME}-examples = "${bindir} ${datadir}"
 

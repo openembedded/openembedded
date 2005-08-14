@@ -1,0 +1,25 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- mrxvt-0.4.1/src/rxvt.h~fix-compile
++++ mrxvt-0.4.1/src/rxvt.h
+@@ -387,15 +387,8 @@
+ ** which in turn is unsafe without checking.
+ ** Untainted defines the type of data that is safe.
+ */
+-#ifdef __GNUC__
+-# define $tainted
+-# define $untainted
+-# define TAINTED	$tainted
+-# define UNTAINTED	$untainted
+-#else
+-# define TAINTED
+-# define UNTAINTED
+-#endif
++#define TAINTED
++#define UNTAINTED
+ 
+ 
+ /*

@@ -1,5 +1,6 @@
 DESCRIPTION = "A graphic library for file loading, saving, rendering, and manipulation."
 LICENSE = "BSD"
+# can also depend on tiff34, ungif or gif, z, bz2, id3tag
 DEPENDS = "freetype libpng jpeg"
 
 inherit efl

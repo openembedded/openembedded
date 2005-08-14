@@ -149,7 +149,7 @@ pivot_image() {
 	# Busybox's "mount" doesn't seem to like "-o loop" for some reason
 	# It works on collie and b0rks on poodle.
 	if [ "$IMAGE_TYPE" = "" ]; then
-		$IMAGE_TYPE = "auto"
+		IMAGE_TYPE="auto"
 	fi
 	mount -t $IMAGE_TYPE /dev/loop0 /media/image || die "mount /dev/loop0 /media/image failed!"
 

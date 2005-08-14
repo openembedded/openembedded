@@ -1,5 +1,5 @@
-/dev/mtdblock/2 	/		jffs2	defaults		1  1		
-/dev/mtdblock/3 	/home   jffs2   defaults        1  1
+/dev/mtdblock2 	/		jffs2	defaults		1  1		
+/dev/mtdblock3 	/home   jffs2   defaults        1  1
 
 proc            /proc		proc    defaults        0  0
 sys             /sys        sysfs	defaults        0  0
