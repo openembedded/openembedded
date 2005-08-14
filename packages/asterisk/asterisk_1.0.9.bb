@@ -2,6 +2,7 @@ DESCRIPTION="The Astersisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 SRC_URI="http://www.asterisk.org/html/downloads/asterisk-${PV}.tar.gz \
+	 file://gsm.patch;patch=1 \
          file://makefile.patch;patch=1"
 
 DEPENDS="ncurses zlib openssl"
