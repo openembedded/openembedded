@@ -108,6 +108,7 @@ OPENSLUG_PACKAGES = "\
 	tiff \
 	timezones \
 	unionfs-modules unionfs-utils \
+	usbutils \
 	util-linux \
 	vlan \
 	wakelan \
