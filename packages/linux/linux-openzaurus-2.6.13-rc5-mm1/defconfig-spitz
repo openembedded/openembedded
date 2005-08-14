@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.13-rc5-mm1
-# Fri Aug 12 08:40:57 2005
+# Sat Aug 13 23:17:29 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -160,7 +160,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2 debug "
+CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2   debug"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -714,7 +714,7 @@ CONFIG_BACKLIGHT_CLASS_DEVICE=y
 CONFIG_BACKLIGHT_DEVICE=y
 CONFIG_LCD_CLASS_DEVICE=y
 CONFIG_LCD_DEVICE=y
-# CONFIG_BACKLIGHT_CORGI is not set
+CONFIG_BACKLIGHT_CORGI=y
 
 #
 # Speakup console speech
