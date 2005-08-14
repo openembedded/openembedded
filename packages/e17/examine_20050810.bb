@@ -1,7 +1,7 @@
 DESCRIPTION = "examine, the program configurator"
 DEPENDS = "virtual/ecore ewl"
 LICENSE = "MIT"
-SECTION = "e"
+SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r0"
 CVSDATE = "${PV}"
