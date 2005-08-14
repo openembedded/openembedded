@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if ! test -e /etc/pointercal
+then
+	xtscal
+fi
+
