@@ -2,7 +2,7 @@ SECTION = "console/network"
 
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-2.61"
 LICENSE = "GPL"
-CONFFILE = "${sysconfdir}/ssmtp/ssmtp.conf"
+#CONFFILES = "${sysconfdir}/ssmtp/ssmtp.conf ${sysconfdir}/ssmtp/revaliases"
 inherit autotools
 
 EXTRA_OECONF = "--enable-ssl"
@@ -28,7 +28,7 @@ do_install () {
 }
 
 pkg_postinst () {
-	update-alternatives --install ${sbindir}/sendmail sendmail ${bindir}/ssmtp 90
+	update-alternatives --install ${sbindir}/sendmail sendmail ${bindir}/ssmtp 30
 }
 
 pkg_postrm () {
