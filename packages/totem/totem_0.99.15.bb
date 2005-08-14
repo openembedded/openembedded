@@ -11,7 +11,7 @@ SRC_URI="http://ftp.acc.umu.se/pub/GNOME/sources/totem/0.99/totem-${PV}.tar.gz \
 	file://include.patch;patch=1 \
 	file://omf.patch;patch=1"
 
-DEPENDS="gtk+ libglade gnome-vfs gconf libxine libgnomeui"
+DEPENDS="gtk+ libglade gnome-vfs gconf libxine-x11 libgnomeui"
 RDEPENDS += " libgnomeui"
 
 inherit autotools

@@ -151,8 +151,9 @@ pivot_image() {
 	if [ "$IMAGE_TYPE" = "" ]; then
 		IMAGE_TYPE="auto"
 	fi
-	mount -t $IMAGE_TYPE /dev/loop0 /media/image || die "mount /dev/loop0 /media/image failed!"
-
+	# If mount fails it has the tendency to spew out a _lot_ of error messages.
+	# We direct the output to /dev/null so the user can see which step actually failed.
+	mount -t $IMAGE_TYPE /dev/loop0 /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE  /dev/loop0 /media/image failed!"
 
 	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Eclair is the E17 multi media player"
 SECTION = "e/apps"
-DEPENDS = "freetype eet virtual/evas virtual/ecore embryo virtual/imlib2 edje-native edje emotion libxml2 sqlite3 taglibc"
+DEPENDS = "evas-x11 ecore-x11 embryo imlib2-x11 edje-native edje libxine-x11 emotion esmart libxml2 sqlite3 taglibc"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
@@ -11,8 +11,6 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
 S = "${WORKDIR}/eclair"
 
 inherit autotools
-
-BROKEN = "1"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 

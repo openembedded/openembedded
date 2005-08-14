@@ -1,15 +1,22 @@
---- entrance/data/config/build_config.sh.in~	2005-08-13 02:56:11.000000000 -0700
-+++ entrance/data/config/build_config.sh.in	2005-08-13 02:56:35.000000000 -0700
+--- entrance/data/config/build_config.sh.in.orig	2005-08-14 18:19:30.912299673 +0200
++++ entrance/data/config/build_config.sh.in	2005-08-14 18:21:36.309692562 +0200
 @@ -3,7 +3,7 @@
  rm -f $DB
  
  # set auth to 1 for pam, 2 for shadow
 -edb_ed $DB add /entrance/auth int @auth_mode@
-+edb_ed $DB add /entrance/auth int 0
++edb_ed $DB add /entrance/auth int 2
  
  # uncomment the below to enable experimental OpenGL hardware acceleration
  #edb_ed $DB add /entrance/engine int 1
-@@ -25,25 +25,25 @@
+@@ -19,31 +19,31 @@
+ #edb_ed $DB add /entrance/fonts/1/str str "/usr/X11R6/lib/X11/fonts/Truetype/"
+ edb_ed $DB add /entrance/greeting/before str "Welcome to "
+ edb_ed $DB add /entrance/greeting/after str ""
+-edb_ed $DB add /entrance/session/count int 8
++edb_ed $DB add /entrance/session/count int 4
+ edb_ed $DB add /entrance/session/0/session str "default"
+ edb_ed $DB add /entrance/session/0/title str "Default"
  edb_ed $DB add /entrance/session/0/icon str "default.png"
  edb_ed $DB add /entrance/session/1/icon str "enlightenment.png"
  edb_ed $DB add /entrance/session/1/title str "Enlightenment"

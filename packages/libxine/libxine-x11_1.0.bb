@@ -1,54 +1,42 @@
-LICENSE = "GPL"
-# libxine OE build file
-# Modified by Advanced Micro Devices, Inc.
-
-DESCRIPTION = "libxine compiled for Opie"
+DESCRIPTION = "libxine is a versatile multimedia library decoding a lot of common audio and video formats. \
+This version is configued for the usage with X11"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
-DEPENDS = "zlib libogg tremor libmad"
+LICENSE = "GPL"
+DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound-gpe x11 xext"
 PROVIDES = "virtual/libxine"
+PR = "r0"
 
-inherit autotools pkgconfig gettext
-
-S = "${WORKDIR}/xine-lib-${PV}"
+inherit autotools pkgconfig gettext binconfig
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.gz \
 	file://cpu-${PV}.patch;patch=1 \
 	file://configure-${PV}.patch;patch=1 \
-	file://demuxogg.patch;patch=1 \
-	file://fix-syntax.patch;patch=1 \
-	file://libxine-cut-memusage.patch;patch=1 \
-	file://libxine-ffmpeg-enable-arm.patch;patch=1 \
-	file://libxine-libvorbis.patch;patch=1 \
 	file://libxine-tremor-autoconf.patch;patch=1 \
+	file://libxine-libvorbis.patch;patch=1 \
+	file://libxine-ffmpeg-enable-arm.patch;patch=1 \
+	file://no-caca-no-aalib.patch;patch=1 \
+	file://dont-have-xv.patch;patch=1 \
+	file://restore-esd.patch;patch=1 \
+	file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
+	file://libxine-cut-memusage.patch;patch=1 \
 	file://mpegvideo-static-inlinine.patch;patch=1 \
-	file://libxine-arm-configure.patch;patch=1 \
-	file://no-caca.patch;patch=1 "
-
-
+	file://libxine-libavcodec.patch;patch=1"
+S = "${WORKDIR}/xine-lib-${PV}"
 
 SOV = "1.0.7"
-
-# Omit the annoying xine-config in ${bindir}
-FILES_${PN}="${libdir}/*.so*"
-
-# And include it in the dev package
-FILES_${PN}-dev += " ${bindir}"
 
 EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--with-vorbis-prefix=${STAGING_DIR}/${HOST_SYS} \
 	--disable-oggtest \
 	--with-ogg-prefix=${STAGING_DIR}/${HOST_SYS} \
 	--disable-altivec --disable-vis --disable-mlib \
-	--enable-shared --disable-static \
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \
-	--disable-aalib                            \
 	--without-v4l --without-arts --without-sdl \
-	--disable-dxr3 --without-xv --without-xvmc \
-	--without-xxmc --without-Xshm --without-x "
-
+	--without-xv  --without-xxmc --without-xvmc \
+	--with-x --x-includes=${STAGING_INCDIR}/X11 --x-libraries=${STAGING_LIBDIR}"
+			      
 do_compile() {
 	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool
 }
@@ -83,10 +71,14 @@ do_stage() {
 		cp ${S}/$file ${STAGING_INCDIR}/xine/`basename $file`
 	done
 
+	install -m 0644 ${S}/m4/xine.m4 ${STAGING_DATADIR}/aclocal/
+
 	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }
 
 python populate_packages_prepend () {
+	bb.data.setVar('PKG_libxine', 'libxine', d)
+
 	plugindir = bb.data.expand('${libdir}/xine/plugins/1.0.0', d)
 	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s', extra_depends='' )
 
@@ -96,3 +88,9 @@ python populate_packages_prepend () {
 	fontdir = bb.data.expand('${datadir}/xine/libxine1/fonts', d)
 	do_split_packages(d, fontdir, '^(.*).xinefont.gz$', 'libxine-font-%s', 'Xine font %s', extra_depends='' )
 }
+
+# Omit the annoying xine-config in ${bindir}
+FILES_${PN}="${libdir}/*.so*"
+
+# And include it in the dev package
+FILES_${PN}-dev += " ${bindir}"
