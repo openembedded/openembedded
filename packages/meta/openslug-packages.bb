@@ -111,6 +111,7 @@ OPENSLUG_PACKAGES = "\
 	usbutils \
 	util-linux \
 	vlan \
+	vsftpd \
 	wakelan \
 	watchdog \
 	wireless-tools \
