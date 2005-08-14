@@ -7,7 +7,7 @@ RDEPENDS += "bash gpe-dm"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
            file://longer-sleep.patch;patch=1 \
