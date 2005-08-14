@@ -1,11 +1,12 @@
 DESCRIPTION = "Engage is the E17 icon dock"
-DEPENDS = "esmart virtual/imlib2 edje virtual/ecore virtual/evas ewl e-wm"
+DEPENDS = "evas-x11 ecore-x11 esmart imlib2-x11 edje ewl e"
 LICENSE = "MIT"
-SECTION = "e"
+SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=misc/engage"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=misc/engage \
+           file://no-local-includes.patch;patch=1"
 S = "${WORKDIR}/engage"
 
 inherit autotools pkgconfig binconfig
