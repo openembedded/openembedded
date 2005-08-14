@@ -6,7 +6,7 @@ LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "timezones"
-PR="r9"
+PR="r10"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -38,7 +38,7 @@ pkg_postrm () {
 }
 
 pkg_postinst () {
-	[ ! -d ${localstatedir}/shared/empty ] && mkdir -p ${localstatedir}/shared/empty
+	[ ! -d ${localstatedir}/shared ] && mkdir -p ${localstatedir}/shared
 	grep ntpd ${sysconfdir}/passwd || adduser --disabled-password --home=${localstatedir}/shared/empty --ingroup nogroup ntpd
 	chown root:root ${localstatedir}/shared/empty
 }
