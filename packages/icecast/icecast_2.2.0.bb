@@ -1,6 +1,7 @@
 DEPENDS = "libxslt"
 PR = "r1"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
+LICENCE = "GPL-2"
 
 DEPENDS = "libvorbis libogg"
 

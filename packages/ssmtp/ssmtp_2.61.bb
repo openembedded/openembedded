@@ -1,7 +1,8 @@
 SECTION = "console/network"
-
+MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
+LICENCE = "GPL"
 PR = "r4"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \

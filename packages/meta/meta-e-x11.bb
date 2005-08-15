@@ -12,12 +12,13 @@ ALLOW_EMPTY = 1
 # X
 #
 DEPENDS  += "diet-x11 rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo fontconfig \
-	     ttf-bitstream-vera bash"
-RDEPENDS += "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo            ttf-bitstream-vera"
+             ttf-bitstream-vera bash"
+RDEPENDS += "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo            \
+             ttf-bitstream-vera"
 
 #
 # E
 #
-DEPENDS  += "entrance e-wm entice"
-RDEPENDS += "entrance e-wm entice"
+DEPENDS  += "entrance e-wm entice eclair examine "
+RDEPENDS += "entrance e-wm entice eclair examine "
 

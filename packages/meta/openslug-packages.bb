@@ -111,11 +111,14 @@ OPENSLUG_PACKAGES = "\
 	usbutils \
 	util-linux \
 	vlan \
+	vsftpd \
 	wakelan \
 	watchdog \
+	wireless-tools \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
+	zd1211 \
 	zlib \
 	"
 
