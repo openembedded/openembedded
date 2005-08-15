@@ -1,10 +1,10 @@
 SECTION = "base"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "nslu2-linksys-libs"
 
-SRC_URI = "http://www.you-need-to-create-this-yourself.com/nslu2-linksys-ramdisk-2.3r63.tar.bz2 \
+SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63.tar.bz2 \
 	   file://README \
 	   file://NOTES \
 	   file://unsling \

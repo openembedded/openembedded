@@ -1,12 +1,11 @@
 SECTION = "base"
-DEPENDS = "slugimage-native unzip-native"
 PACKAGES = ""
 LICENSE = "GPL"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.you-need-to-get-this-one-yourself.com/NSLU2_V23R63.zip"
-S = "${WORKDIR}"
+SRC_URI = "http://nslu.sf.net/downloads/${PN}-${PV}.tar.bz2"
+S = "${WORKDIR}/${PN}-${PV}"
 
 python () {
 	# Don't build unless we're targeting an nslu2
@@ -15,11 +14,9 @@ python () {
 }
 
 do_compile () {
-	slugimage -u -i NSLU2_V23R63.bin -k vmlinuz -b RedBoot -s SysConf -r ramdisk.ext2.gz -t Trailer
 	install -d ${STAGING_LIBDIR}/nslu2-binaries
-	install -m 0755 RedBoot ${STAGING_LIBDIR}/nslu2-binaries/
-	install -m 0755 SysConf ${STAGING_LIBDIR}/nslu2-binaries/
-	install -m 0755 vmlinuz ${STAGING_LIBDIR}/nslu2-binaries/
-	install -m 0755 ramdisk.ext2.gz ${STAGING_LIBDIR}/nslu2-binaries/
-	install -m 0755 Trailer ${STAGING_LIBDIR}/nslu2-binaries/
+	install -m 0755 ${S}/RedBoot ${STAGING_LIBDIR}/nslu2-binaries/
+	install -m 0755 ${S}/SysConf ${STAGING_LIBDIR}/nslu2-binaries/
+	install -m 0755 ${S}/vmlinuz ${STAGING_LIBDIR}/nslu2-binaries/
+	install -m 0755 ${S}/Trailer ${STAGING_LIBDIR}/nslu2-binaries/
 }
