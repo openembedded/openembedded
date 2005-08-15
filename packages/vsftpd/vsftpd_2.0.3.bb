@@ -1,6 +1,7 @@
 DESCRIPTION = "Secure ftp daemon"
 SECTION = "console/network"
 DEPENDS = "openssl"
+MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 PR = "r3"
 LICENSE = "GPL"
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
