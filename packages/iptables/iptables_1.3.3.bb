@@ -2,10 +2,13 @@ DESCRIPTION = "iptables network filtering tools"
 HOMEPAGE = "http://www.netfilter.org/"
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR = "r1"
+RRECOMMENDS = "kernel-module-ip-tables kernel-module-iptable-filter"
+PR = "r3"
+
+
 
 PACKAGES =+ "${PN}-utils"
-FILES_${PN}-utils = "${bindir}/iptables-save ${bindir}/iptables-restore"
+FILES_${PN}-utils = "${sbindir}/iptables-save ${sbindir}/iptables-restore"
 
 SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2"
 
@@ -22,7 +25,7 @@ do_compile () {
 }
 
 do_install () {
-	oe_runmake BINDIR=${D}${bindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} install NO_SHARED_LIBS=1
+	oe_runmake BINDIR=${D}${sbindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} install NO_SHARED_LIBS=1
 }
 
 FILES_${PN}-doc += "${mandir}"
