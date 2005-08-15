@@ -1,0 +1,12 @@
+diff -Nurd treecc-0.3.6.orig/Makefile.in treecc-0.3.6/Makefile.in
+--- treecc-0.3.6.orig/Makefile.in	2005-01-15 15:16:06.000000000 -0800
++++ treecc-0.3.6/Makefile.in	2005-08-12 15:36:24.481697542 -0700
+@@ -77,7 +77,7 @@
+ VERSION = @VERSION@
+ YACC = @YACC@
+ 
+-SUBDIRS = . etc doc tests examples
++SUBDIRS = . etc doc tests
+ 
+ bin_PROGRAMS = treecc
+ noinst_LIBRARIES = libtreecc.a
