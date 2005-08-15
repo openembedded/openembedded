@@ -353,16 +353,17 @@ setup-host-debian:
 		texinfo \
 		unzip \
 		subversion \
-		bzip2"
-	echo "You will have to install monotone separately.  See http://venge.net/monotone/"
+		bzip2 ;\
+	echo You will have to install monotone separately.  See http://venge.net/monotone/
+	"
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
 	su - -c "mkdir -p /etc/portage ; echo >> /etc/portage/package.keywords ; \
-        grep monotone-0.21 /etc/portage/package.keywords || \
-	echo ~dev-util/monotone-0.21 ~* >> /etc/portage/package.keywords ; \
-        grep dev-libs/boost-1.32 /etc/portage/package.keywords || \
-	echo ~dev-libs/boost-1.32 ~* >> /etc/portage/package.keywords ; \
+        grep monotone-0.22 /etc/portage/package.keywords || \
+	echo ~dev-util/monotone-0.22 ~* >> /etc/portage/package.keywords ; \
+        grep dev-libs/boost-1.32.0 /etc/portage/package.keywords || \
+	echo ~dev-libs/boost-1.32.0 ~* >> /etc/portage/package.keywords ; \
         emerge -n \
         autoconf automake \
         bison \
