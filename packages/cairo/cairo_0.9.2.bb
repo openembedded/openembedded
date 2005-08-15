@@ -1,11 +1,10 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
-# DEPENDS = "x11 libpixman libpng fontconfig libxrender xcb glitz"
-DEPENDS = "x11 libpixman libpng fontconfig libxrender"
+DEPENDS = "x11 libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://cairographics.org/snapshots/cairo-${PV}.tar.gz"
 
