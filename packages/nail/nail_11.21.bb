@@ -13,9 +13,6 @@ S = "${WORKDIR}/nail-11.21/"
 
 inherit autotools
 
-# INITSCRIPT_NAME = "mt-daapd"
-# INITSCRIPT_PARAMS = "defaults 84"
-
 # EXTRA_OECONF = "ac_cv_func_setpgrp_void=yes"
 
 do_install() {
