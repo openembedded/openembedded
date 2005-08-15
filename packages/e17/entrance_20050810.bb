@@ -10,7 +10,6 @@ CVSDATE = "${PV}"
 PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
-           file://longer-sleep.patch;patch=1 \
            file://Xserver.patch;patch=1 \
            file://config-db.patch;patch=1 \
            file://allow-missing-xsession.patch;patch=1 \
