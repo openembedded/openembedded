@@ -3,10 +3,7 @@ SECTION = "base"
 DEPENDS = "zlib"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-mtd_utils = "ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
-	     mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info mtd_debug \
-	     flashcp nandwrite jffs2dump"
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-${PV}.tar.bz2 \
            file://add-exclusion-to-mkfs-jffs2.patch;patch=1 \
@@ -25,6 +22,10 @@ do_stage () {
 		install -m 0644 $f ${STAGING_INCDIR}/mtd/
 	done
 }
+
+mtd_utils = "ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
+             mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info mtd_debug \
+             flashcp nandwrite jffs2dump"
 
 do_install () {
 	install -d ${D}${bindir}
