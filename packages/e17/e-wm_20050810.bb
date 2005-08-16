@@ -4,11 +4,11 @@ LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
            file://fix-configure.patch;patch=1 \
-           file://fudge-menu-autoscroll.patch;patch=1"
+           file://add-menu-autoscroll-options.patch;patch=1"
 S = "${WORKDIR}/e"
 
 inherit autotools
