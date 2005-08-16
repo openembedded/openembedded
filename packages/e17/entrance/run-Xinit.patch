@@ -1,0 +1,17 @@
+--- entrance/src/daemon/entrance_wrapper.in.~1.1.~	2003-01-31 13:57:06.000000000 -0800
++++ entrance/src/daemon/entrance_wrapper.in	2005-08-15 20:13:57.000000000 -0700
+@@ -5,8 +5,13 @@
+ 
+ test -f /etc/profile && . /etc/profile
+ 
++if [ -x /etc/X11/Xinit.d/99gpe-login ]; then
++		chmod -x /etc/X11/Xinit.d/99gpe-login
++fi
++
++/etc/X11/Xinit
++
+ exec @prefix@/bin/entrance "$@"
+ 
+ #fallback
+ exec entrance "$@"
+-

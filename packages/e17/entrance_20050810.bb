@@ -13,8 +13,10 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
            file://Xserver.patch;patch=1 \
            file://config-db.patch;patch=1 \
            file://allow-missing-xsession.patch;patch=1 \
+           file://run-Xinit.patch;patch=1 \
+           file://use-bash.patch;patch=1 \
 	   file://Xinit.d \
-	   file://Session"
+	   file://Sessions"
 	   
 S = "${WORKDIR}/entrance"
 
@@ -28,9 +30,9 @@ FILES += "${datadir}"
 do_install_append() {
 	install -d ${D}/etc/X11/Xinit.d
 	install -d ${D}/etc/X11/Xsession.d
-	install -d ${D}/etc/X11/Session
+	install -d ${D}/etc/X11/Sessions
 	
 	install -m 755 ${WORKDIR}/Xinit.d/* ${D}/etc/X11/Xinit.d
-	install -m 755 ${WORKDIR}/Session/* ${D}/etc/X11/Session
+	install -m 755 ${WORKDIR}/Sessions/* ${D}/etc/X11/Sessions
 	
 }

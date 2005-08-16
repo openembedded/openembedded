@@ -1,0 +1,11 @@
+--- entrance/src/client/entrance_session.c.~1.71.~	2005-05-28 02:31:14.000000000 -0700
++++ entrance/src/client/entrance_session.c	2005-08-15 21:45:53.000000000 -0700
+@@ -451,7 +451,7 @@
+                     (int) pid);
+         }
+         _entrance_session_user_list_fix(e);
+-        shell = strdup("/bin/sh");
++        shell = strdup("/bin/bash");
+         /* this bypasses a race condition where entrance loses its x
+            connection before the wm gets it and x goes and resets itself */
+         sleep(10);
