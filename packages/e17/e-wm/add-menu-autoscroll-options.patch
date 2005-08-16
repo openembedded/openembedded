@@ -51,7 +51,7 @@ diff -Nur e~/src/bin/e_ipc_handlers.h e/src/bin/e_ipc_handlers.h
 +/****************************************************************************/
 +#define HDL E_IPC_OP_MENU_AUTOSCROLL_MARGIN_SET
 +#if (TYPE == E_REMOTE_OPTIONS)
-+   OP("-menu-autoscroll-margin-set", 1, "Set the menu autoscroll margin", 0, HDL)
++   OP("-menu-autoscroll-margin-set", 1, "Set the distance from the edge of the screen the menu will autoscroll to", 0, HDL)
 +#elif (TYPE == E_REMOTE_OUT)
 +   REQ_INT(atoi(params[0]), HDL);
 +#elif (TYPE == E_WM_IN)
@@ -67,7 +67,7 @@ diff -Nur e~/src/bin/e_ipc_handlers.h e/src/bin/e_ipc_handlers.h
 +/****************************************************************************/
 +#define HDL E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET
 +#if (TYPE == E_REMOTE_OPTIONS)
-+   OP("-menu-autoscroll-margin-get", 0, "Get the menu autoscroll margin", 1, HDL)
++   OP("-menu-autoscroll-margin-get", 0, "Get the distance from the edge of the screen the menu will autoscroll to", 1, HDL)
 +#elif (TYPE == E_REMOTE_OUT)
 +   REQ_NULL(HDL)
 +#elif (TYPE == E_WM_IN)
@@ -91,7 +91,7 @@ diff -Nur e~/src/bin/e_ipc_handlers.h e/src/bin/e_ipc_handlers.h
 +/****************************************************************************/
 +#define HDL E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_SET
 +#if (TYPE == E_REMOTE_OPTIONS)
-+   OP("-menu-autoscroll-cursor-margin-set", 1, "Set the menu autoscroll cursor margin", 0, HDL)
++   OP("-menu-autoscroll-cursor-margin-set", 1, "Set the distance from the edge of the screen the cursor needs to be to start menu autoscrolling", 0, HDL)
 +#elif (TYPE == E_REMOTE_OUT)
 +   REQ_INT(atoi(params[0]), HDL);
 +#elif (TYPE == E_WM_IN)
@@ -108,7 +108,7 @@ diff -Nur e~/src/bin/e_ipc_handlers.h e/src/bin/e_ipc_handlers.h
 +/****************************************************************************/
 +#define HDL E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET
 +#if (TYPE == E_REMOTE_OPTIONS)
-+   OP("-menu-autoscroll-cursor-margin-get", 0, "Get the menu autoscroll cursor margin", 1, HDL)
++   OP("-menu-autoscroll-cursor-margin-get", 0, "Get the distance from the edge of the screen the cursor needs to be to start menu autoscrolling", 1, HDL)
 +#elif (TYPE == E_REMOTE_OUT)
 +   REQ_NULL(HDL)
 +#elif (TYPE == E_WM_IN)
