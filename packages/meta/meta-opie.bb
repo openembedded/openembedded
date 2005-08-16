@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie and QPE"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r24"
+PR = "r25"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -273,7 +273,6 @@ opie-mediaplayer2-skin-default \
 opie-mediaplayer2-skin-default-landscape \
 opie-mediaplayer2-skin-pod \
 opie-mediaplayer2-skin-techno \
-opie-mediaplayer2-divx \
 opie-powerchord \
 opie-recorder \
 opie-tonleiter \
