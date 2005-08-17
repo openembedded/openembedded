@@ -410,6 +410,9 @@ setup-host-gentoo:
 
 .PHONY: update-master
 update-master: MT/.configured
+	if [ `monotone -d monotone/nslu2-linux.db list keys nslu2-linux@nslu2-linux.org | wc -l` == 8 ] ; then \
+		monotone -d monotone/nslu2-linux.db dropkey nslu2-linux@nslu2-linux.org ; \
+	fi
 	monotone pull
 	if [ `monotone automate heads org.nslu2-linux.dev | wc -l` != "1" ] ; then \
 	  monotone merge -b org.nslu2-linux.dev ; \
