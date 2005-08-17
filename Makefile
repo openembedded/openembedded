@@ -359,25 +359,25 @@ setup-host-debian:
 
 .PHONY: setup-host-ubuntu
 setup-host-ubuntu:
-        su - -c " \
-        apt-get install \
-                autoconf automake automake1.9 \
-                bison \
-                ccache \
-                cvs \
-                docbook \
-                flex \
-                g++ gawk gcj gettext \
-                libc6-dev libglib2.0-dev libtool \
-                m4 make \
-                patch pkg-config \
-                python python-dev python2.4-psyco python2.4 python2.4-dev \
-                sed \
-                texinfo \
-                unzip \
-                subversion \
-                bzip2 ;\
-        echo You will have to install monotone separately.  See http://venge.net/monotone/ \
+	su - -c " \
+	apt-get install \
+		autoconf automake automake1.9 \
+		bison \
+		ccache \
+		cvs \
+		docbook \
+		flex \
+		g++ gawk gcj gettext \
+		libc6-dev libglib2.0-dev libtool \
+		m4 make \
+		patch pkg-config \
+		python python-dev python2.4-psyco python2.4 python2.4-dev \
+		sed \
+		texinfo \
+		unzip \
+		subversion \
+		bzip2 ;\
+	echo You will have to install monotone separately.  See http://venge.net/monotone/ \
 		"
 
 
