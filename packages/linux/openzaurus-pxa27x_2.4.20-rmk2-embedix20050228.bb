@@ -4,7 +4,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -59,7 +59,7 @@ CMDLINE_INIT = ""
 CMDLINE_SHARP_spitz      = "RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
 CMDLINE_SHARP_akita      = "EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
 CMDLINE_ROOT = "root=/dev/mtdblock2"
-CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_SHARP} ${CMDLINE_INIT}"
+CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_SHARP} ${CMDLINE_INIT}"
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
