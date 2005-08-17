@@ -354,8 +354,7 @@ setup-host-debian:
 		unzip \
 		subversion \
 		bzip2 ;\
-	echo You will have to install monotone separately.  See http://venge.net/monotone/
-	"
+	echo You will have to install monotone separately.  See http://venge.net/monotone/ "
 
 .PHONY: setup-host-gentoo
 setup-host-gentoo:
