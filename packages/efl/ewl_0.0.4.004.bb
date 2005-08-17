@@ -1,8 +1,9 @@
 DESCRIPTION = "The Enlightened Widget Library, \
 a simple-to-use general purpose widget library based on the enlightenment foundation libraries."
 DEPENDS = "edb virtual/evas virtual/ecore edje emotion"
+RDEPENDS += "libewl-themes"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 inherit efl
 

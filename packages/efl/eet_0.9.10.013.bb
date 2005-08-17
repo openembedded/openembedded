@@ -4,6 +4,6 @@ each chunk (very much like a zip file) and allow fast \
 random-access reading of the file later on."
 DEPENDS = "zlib jpeg"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 inherit efl

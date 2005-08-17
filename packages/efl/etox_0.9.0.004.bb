@@ -3,7 +3,7 @@ Etox helps you when it comes to displaying, moving, resizing, layering, \
 clipping, aligning and coloring fonts in different styles, and more."
 DEPENDS = "edb virtual/evas virtual/ecore"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 inherit efl
 

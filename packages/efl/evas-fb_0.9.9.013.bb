@@ -1,6 +1,6 @@
 include evas.inc
 PROVIDES += "virtual/evas"
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = "--enable-fb			\
 		--disable-directfb		\

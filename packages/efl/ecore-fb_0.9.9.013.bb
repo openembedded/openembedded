@@ -1,6 +1,6 @@
 include ecore.inc
 PROVIDES += "virtual/ecore"
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-job \

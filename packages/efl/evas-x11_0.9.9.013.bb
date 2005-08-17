@@ -1,7 +1,7 @@
 include evas.inc
 PROVIDES += "virtual/evas"
 DEPENDS += "x11 xext"
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \

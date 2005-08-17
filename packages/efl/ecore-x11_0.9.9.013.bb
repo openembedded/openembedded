@@ -1,7 +1,7 @@
 include ecore.inc
 PROVIDES += "virtual/ecore"
 DEPENDS += "evas-x11"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-job \

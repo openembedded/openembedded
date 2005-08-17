@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is a complex graphical design & layout library."
 # can also install vim data files
 DEPENDS = "virtual/evas virtual/ecore eet embryo edje-native virtual/imlib2"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 inherit efl
 
