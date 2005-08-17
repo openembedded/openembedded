@@ -649,35 +649,35 @@ upload-unslung-modules: unslung/.configured
 	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
 	rm -f unslung/tmp/deploy/ipk/Packages.gz
 	gzip -c unslung/tmp/deploy/ipk/Packages > unslung/tmp/deploy/ipk/Packages.gz
-	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/oe
-	rsync -vl unslung/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/oe
-#	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/oe/
+	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/modules/stable
+	rsync -vl unslung/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/modules/stable
+#	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
 
 .PHONY: upload-optware-nslu2
 upload-optware-nslu2: optware/nslu2/.configured
 ifneq ($(HOST_MACHINE),armeb)
-	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/cross
-	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
-	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/cross/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/cross
+	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/nslu2/cross/unstable
+	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
+	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/nslu2/cross/unstable
 else
-	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/native
-	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
-	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/native/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/native
+	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/nslu2/native/unstable
+	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
+	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/nslu2/native/unstable
 endif
 
 .PHONY: upload-optware-wl500g
 upload-optware-wl500g: optware/wl500g/.configured
-	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/wl500g
-	rsync -vl optware/wl500g/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
-	rsync -vlrt --delete optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/wl500g/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/wl500g
+	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/wl500g/cross/unstable
+	rsync -vl optware/wl500g/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
+	rsync -vlrt --delete optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/wl500g/cross/unstable
 
 .PHONY: upload-sources
 upload-sources:
