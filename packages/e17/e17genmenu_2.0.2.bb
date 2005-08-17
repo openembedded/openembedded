@@ -14,4 +14,9 @@ export ENLIGHTENMENT_CONFIG	= "${STAGING_BINDIR}/enlightenment-config"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e17genmenu/e17genmenu-2.0.2.tar.gz"
 
+do_configure_prepend() {
+	find -type f | xargs sed -i 's:share/icons/%s/48x48/apps:share/pixmaps:'
+	find -type f | xargs sed -i 's:share/icons/hicolor/48x48/apps:share/pixmaps:'
+}
+
 inherit autotools
