@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "nslu2-linksys-libs"
 
