@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://projects.o-hand.com/matchbox/"
 
 SRC_URI="http://projects.o-hand.com/matchbox/sources/mb-desktop-xine/0.4/mb-desktop-xine-${PV}.tar.bz2"
-DEPENDS = "matchbox-desktop libxine"
+DEPENDS = "matchbox-desktop libxine-x11"
 RDEPENDS = "libxine-plugin-vo-out-xshm \
             libxine-plugin-vo-out-none \
             libxine-plugin-ao-out-esd \

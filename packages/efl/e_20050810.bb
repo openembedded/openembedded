@@ -25,7 +25,7 @@ do_compile() {
 	oe_runmake -C src/lib
 }
 
-headers = "E_Lib.h ../bin/e_*.h"
+headers = "E_Lib.h ../bin/e*.h"
 
 do_install() {
 	oe_runmake -C src/lib install DESTDIR=${D}

@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 PR = "r0"
 DESCRIPTION = "GNOME library for reading .desktop files"
-inherit gnome
+inherit gnome pkgconfig
 
 DEPENDS = "gnome-common libgnomeui"
 

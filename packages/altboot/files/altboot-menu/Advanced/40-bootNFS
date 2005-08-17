@@ -29,7 +29,7 @@ run_module() {
 	/etc/init.d/portmap start >/dev/tty1 2>&1 || die "/etc/init.d/portmap start failed!"
 	
 	# For some reason NFS mounts hang if /e/i/networking is not run.
-	# For the time beeing I'm to lazy to investigate ;)
+	# For the time beeing I'm too lazy to investigate ;)
 	/etc/init.d/networking start || die "/etc/init.d/networking start failed!"
 	
 	sleep 2
@@ -37,13 +37,43 @@ run_module() {
 	# After the PCMCIA service is started, an inserted WLAN card should automatically
 	# activate itself.
 	/etc/init.d/pcmcia start || die "/etc/init.d/pcmcia/start failed!"
-	
-	# Give WLAN time to login into the network
-	echo "Waiting for WLAN..."
-	sleep 8
-		 
+
+	nfs_host="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'|sed -n "s/\(.*\)\:\(.*\)/\1/p" `"
 	nfs_mounts="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'`"
 	nfs_mountpoints="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $2}'`"	
+	
+	
+	# WLAN with DHCP needs some time to get a lease, set up the routing, etc.	
+	echo -n "Waiting for WLAN"
+	cnt=0
+	while true
+	do
+		if (ping -c 1 $nfs_host) >/dev/null 2>&1
+		then
+			echo " found"
+			break
+		else
+			if test "$cnt" = 30 -o "$cnt" = 60
+			then
+				echo ""
+				echo "WARNING: WLAN didn't activate in $cnt seconds!"
+				
+				if test "$cnt" = 30
+				then
+					echo "Restarting udhcpc"
+					killall udhcpc
+					udhcpc -i wlan0 -H `cat /etc/hostname`	
+				else
+					die "Failed to activate WLAN!"
+					break			
+				fi
+			else
+				echo -n "."
+				let cnt=$cnt+1
+			fi
+		fi
+		sleep 1
+	done				
 	
 	if test "` echo "$nfs_mountpoints" |wc -l | tr -d " "`" -gt 1
 	then

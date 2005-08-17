@@ -44,6 +44,8 @@ OPENSLUG_PACKAGES = "\
 	gzip \
 	iperf \
 	ipkg-utils \
+	iptables \
+	joe \
 	jpeg \
 	less \
 	libpam \
@@ -107,13 +109,17 @@ OPENSLUG_PACKAGES = "\
 	tiff \
 	timezones \
 	unionfs-modules unionfs-utils \
+	usbutils \
 	util-linux \
 	vlan \
+	vsftpd \
 	wakelan \
 	watchdog \
+	wireless-tools \
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
+	zd1211 \
 	zlib \
 	"
 

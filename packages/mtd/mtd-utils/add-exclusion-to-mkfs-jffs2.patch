@@ -1,10 +1,10 @@
 
 #
-# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+# Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- mtd/util/mkfs.jffs2.c~add-exclusion-to-mkfs-jffs2	2004-11-27 00:00:13.000000000 +0100
-+++ mtd/util/mkfs.jffs2.c	2005-01-31 22:52:33.830141174 +0100
+--- mtd/util/mkfs.jffs2.c~add-exclusion-to-mkfs-jffs2.patch
++++ mtd/util/mkfs.jffs2.c
 @@ -92,7 +92,12 @@
  	struct filesystem_entry *files;	/* Only relevant to directories */
  };

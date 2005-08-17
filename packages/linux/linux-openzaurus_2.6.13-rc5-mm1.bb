@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r3"
+PR = "r8"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -43,9 +43,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13-rc5/2.6.13-rc5-mm1/2.6.13-rc5-mm1.bz2;patch=1 \
            ${RPSRC}/reverse_pagefault-r3.patch;patch=1 \
            ${RPSRC}/corgi_tspmufix-r0.patch;patch=1 \
+           ${RPSRC}/nwfpe_x80-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/pxa_irda-r2.patch;patch=1 \
-           ${RPSRC}/sharp_multi_pcmcia-r2.patch;patch=1 \
+           ${RPSRC}/sharp_multi_pcmcia-r3.patch;patch=1 \
            ${RPSRC}/input_power-r2.patch;patch=1 \
            ${RPSRC}/corgi_irda-r2.patch;patch=1 \
            ${RPSRC}/corgi_base_extras4-r0.patch;patch=1 \
@@ -78,11 +79,16 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
-           ${RPSRC}/pxa27x_extraregs-r0.patch;patch=1 \
-           ${RPSRC}/spitzbase-r0.patch;patch=1 \
+           ${RPSRC}/pxa27x_extraregs-r1.patch;patch=1 \
+           ${RPSRC}/spitzbase-r3.patch;patch=1 \
            ${RPSRC}/spitzkbd-r0.patch;patch=1 \
-           ${RPSRC}/spitzssp-r0.patch;patch=1 \
-           ${RPSRC}/spitzlcd-r0.patch;patch=1 \
+           ${RPSRC}/spitzssp-r4.patch;patch=1 \
+           ${RPSRC}/spitzbl-r1.patch;patch=1 \
+           ${RPSRC}/spitzts-r1.patch;patch=1 \
+           ${RPSRC}/spitzcf-r1.patch;patch=1 \
+           ${RPSRC}/pcmcia_dev_ids-r0.patch;patch=1 \
+           ${RPSRC}/pxa_cf_initorder_hack-r0.patch;patch=1 \
+           ${RPSRC}/pxa_pcmcia_init-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -109,8 +115,6 @@ SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
 		       ${DOSRC}/wm9712-ts-r2.patch;patch=1 \
                        ${DOSRC}/tosa-pxaac97-r1.patch;patch=1 \
         	       ${DOSRC}/tosa-bluetooth-r0.patch;patch=1 "
-SRC_URI_append_spitz = "${RPSRC}/spitzcf-r0.patch;patch=1 \
-                        ${RPSRC}/spitzts-r0.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.12"
 

@@ -30,8 +30,8 @@ colour() {
 
 # leds syntax is -A +<init state> /<new state>
 case "$1" in
-start) leds -A +"$(colour "$runlevel")";;
-stop)  leds -A +"$(colour "$previous")" /"$(colour "$runlevel")";;
+start) leds -gr +"$(colour "$runlevel")";;
+stop)  leds -gr +"$(colour "$previous")" /"$(colour "$runlevel")";;
 *)     echo "led change: $1: command ignored" >&2;;
 esac
 
