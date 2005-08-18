@@ -1,4 +1,6 @@
 inherit native
-include findutils_4.1.20.bb
+include findutils_${PV}.bb
 
-S = "${WORKDIR}/findutils-4.1.20"
+PR = "r1"
+
+S = "${WORKDIR}/findutils-${PV}"
