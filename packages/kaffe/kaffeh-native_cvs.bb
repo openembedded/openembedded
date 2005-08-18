@@ -1,6 +1,6 @@
 PV = "1.1.5+cvs${CVSDATE}"
 DEFAULT_PREFERENCE = "-1"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
 S = "${WORKDIR}/kaffe"
@@ -25,4 +25,8 @@ EXTRA_OECONF = "--disable-alsatest \
 
 do_stage() {
 	install -m 0755 kaffe/kaffeh/kaffeh ${STAGING_BINDIR}/
+
+        install -d ${STAGING_DATADIR}/kaffeh
+        install -m 0755 libraries/javalib/*.jar ${STAGING_DATADIR}/kaffeh/
 }
+
