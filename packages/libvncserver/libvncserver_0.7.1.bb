@@ -5,8 +5,10 @@ DEPENDS = "zlib jpeg"
 LICENSE = "GPL"
 PACKAGES = "libvncserver-storepasswd libvncserver-javaapplet"
 FILES_libvncserver-storepasswd = "${bindir}/storepasswd"
-FILES_libvncserver-javaapplet = "/${datadir}fbvncserver/classes/index.vnc \
-			         /${datadir}fbvncserver/classes/VncViewer.jar"
+FILES_libvncserver-javaapplet = "${datadir}/fbvncserver/classes/index.vnc \
+			         ${datadir}/fbvncserver/classes/VncViewer.jar"
+
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz"
 
@@ -29,7 +31,7 @@ do_stage () {
 do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 examples/storepasswd ${D}${bindir}
-	install -d ${D}${datadir}fbvncserver/classes
-	install -m 0644 classes/index.vnc ${D}${datadir}fbvncserver/classes/
-	install -m 0644 classes/VncViewer.jar ${D}${datadir}fbvncserver/classes/
+	install -d ${D}${datadir}/fbvncserver/classes
+	install -m 0644 classes/index.vnc ${D}${datadir}/fbvncserver/classes/
+	install -m 0644 classes/VncViewer.jar ${D}${datadir}/fbvncserver/classes/
 }
