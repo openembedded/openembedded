@@ -2,7 +2,7 @@ DESCRIPTION = "Kaffe is a clean room implementation of the Java Virtual Machine"
 HOMEPAGE = "http://www.kaffe.org/"
 LICENSE  = "GPL LGPL W3C Classpath BSD"
 
-DEPENDS = "jikes-native fastjar-native libffi"
+DEPENDS = "jikes-native fastjar-native libffi zip-native"
 
 SRC_URI += "file://disable-automake-checks.patch;patch=1"
 
