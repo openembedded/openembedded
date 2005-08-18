@@ -214,7 +214,7 @@ setup-bitbake bitbake/.configured: MT/.configured
 
 .PHONY: setup-openembedded
 setup-openembedded openembedded/.configured: MT/.configured
-	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.nslu2-linux openembedded
+	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.dev openembedded
 	touch openembedded/.configured
 
 .PHONY: setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc
@@ -435,13 +435,17 @@ update-bitbake: bitbake/.configured
 
 .PHONY: update-openembedded
 update-openembedded: openembedded/.configured
+	if grep "org.openembedded.nslu2-linux" openembedded/MT/options >/dev/null 2>&1 ; then \
+	  sed -i -e 's/org.openembedded.nslu2-linux/org.openembedded.dev/' openembedded/MT/options ; \
+	  monotone propagate org.openembedded.nslu2-linux org.openembedded.dev ; \
+	fi
 	monotone pull
-	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.nslu2-linux ; \
+	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.dev ; \
 	fi
 	( cd openembedded ; monotone update )
-	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.nslu2-linux ; \
+	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
+	  monotone merge -b org.openembedded.dev ; \
 	fi
 
 .PHONY: update-optware
@@ -690,36 +694,5 @@ import-bitbake: bitbake/.configured
 	cp -rp bitbake.old/MT bitbake.old/.mt-attrs bitbake
 	rm -rf bitbake.old
 	( cd bitbake ; rm -rf .svn ; monotone status )
-
-.PHONY: import-openembedded
-import-openembedded: openembedded/.configured
-	monotone pull monotone.vanille.de org.openembedded.*
-	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.dev ; \
-	fi
-	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.nslu2-linux ; \
-	fi
-	monotone propagate org.openembedded.dev org.openembedded.nslu2-linux
-	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.nslu2-linux ; \
-	fi
-
-.PHONY: export-openembedded
-export-openembedded: openembedded/.configured
-	if [ `monotone automate heads org.openembedded.nslu2-linux | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.nslu2-linux ; \
-	fi
-	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.dev ; \
-	fi
-	monotone propagate org.openembedded.nslu2-linux org.openembedded.dev
-	if [ `monotone automate heads org.openembedded.dev | wc -l` != "1" ] ; then \
-	  monotone merge -b org.openembedded.dev ; \
-	fi
-	monotone push monotone.vanille.de org.openembedded.*
-
-.PHONY: publish-openembedded
-publish-openembedded: import-openembedded update-openembedded push-openembedded export-openembedded
 
 # End of Makefile
