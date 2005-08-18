@@ -203,7 +203,7 @@ setup-master MT/.configured:
 	gunzip monotone/nslu2-linux.db.gz )
 	- ( monotone -d monotone/nslu2-linux.db unset database default-server )
 	- ( monotone -d monotone/nslu2-linux.db unset database default-include-pattern )
-	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.{nslu2-linux.*,openembedded.{dev,dreambox,nslu2-linux}} )
+	( monotone -d monotone/nslu2-linux.db pull monotone.nslu2-linux.org org.{nslu2-linux.*,openembedded.dev} )
 	[ -e MT/revision ] || ( monotone -d monotone/nslu2-linux.db co -b org.nslu2-linux.dev . )
 	touch MT/.configured
 
