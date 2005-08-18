@@ -5,6 +5,7 @@ DEPENDS = "findutils-native jikes-native kaffeh-native fastjar-native bluez-libs
 # Matthias Ringwald <mringwal@inf.ethz.ch> was helping me in the first phase. Thanks.
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
+HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
 PV = "0.0cvs${CVSDATE}"
 PR = "r0"
