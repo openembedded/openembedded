@@ -14,13 +14,9 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR} --with-dbm=gdbm --with-gdbm=${STAGI
 inherit autotools lib_package binconfig
 
 do_configure() {
-
   oe_runconf
-
 }
 
 do_stage() {
-
   oe_libinstall -a -so -C .libs libaprutil-1 ${STAGING_LIBDIR}
-
 }
