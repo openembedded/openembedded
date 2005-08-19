@@ -23,5 +23,5 @@ do_compile (){
 
 do_install () {
         install -d ${D}${bindir}
-        install -m4755 ${S}/bl ${D}${bindir}/bl
+        install -m 4755 ${S}/bl ${D}${bindir}/bl
 }
