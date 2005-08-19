@@ -1,0 +1,3 @@
+include efl++.inc
+
+EFL_CONFIGURATION = "DEFINES+=EFL_HAVE_X11"
