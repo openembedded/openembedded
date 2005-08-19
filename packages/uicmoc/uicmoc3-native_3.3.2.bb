@@ -31,8 +31,8 @@ do_stage() {
 	install -d ${OE_QMAKE_INCDIR_QT}
 	install -d ${OE_QMAKE_LIBDIR_QT}
 
-	install -m 0755 bin/moc ${OE_QMAKE_UIC}
-	install -m 0755 bin/uic ${OE_QMAKE_MOC}
+	install -m 0755 bin/moc ${OE_QMAKE_MOC}
+	install -m 0755 bin/uic ${OE_QMAKE_UIC}
 	install -m 0655 lib/*.a ${OE_QMAKE_LIBDIR_QT}
 
 	for f in include/*.h
