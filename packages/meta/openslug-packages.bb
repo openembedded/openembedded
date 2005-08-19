@@ -45,6 +45,7 @@ OPENSLUG_PACKAGES = "\
 	iperf \
 	ipkg-utils \
 	iptables \
+	irssi \
 	joe \
 	jpeg \
 	less \
