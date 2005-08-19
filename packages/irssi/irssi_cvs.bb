@@ -3,7 +3,7 @@ HOMEPAGE = "http://irssi.org/"
 SECTION = "console/network"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS += "ncurses glib-2.0"
+DEPENDS += "ncurses glib-1.2"
 PV = "0.8.9+cvs${CVSDATE}"
 PR = "r2"
 

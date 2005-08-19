@@ -1,15 +1,13 @@
 DESCRIPTION = "Packages that are to be compiled nativly for the OpenSlug firmware"
 LICENSE = MIT
-PR = "r2"
+PR = "r3"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-# Just something the test with
 OPENSLUG_NATIVE_PACKAGES = "\
-	gzip \
-	vlan \
+	apache \
 	"
 
 BROKEN_PACKAGES = "\
