@@ -4,9 +4,9 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-desktop-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://fix-mkspecs.patch;patch=1 "
-S = "${WORKDIR}/qt-x11-opensource-desktop-${PV}"
+S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 inherit native
 
