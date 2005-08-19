@@ -584,12 +584,12 @@ endif
 	  cat builderrors.log ; \
 	  echo " ***" ; \
 	  if [ -e autobuild.log ] ; then \
-	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/www/autobuild-nudi-last.txt ; \
+	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/logs/buildlogs/autobuild-`hostname`-last.txt ; \
 	  fi \
 	else \
 	  if [ -e autobuild.log ] ; then \
-	    ssh slug@nugabe.nslu2-linux.org mv htdocs/www/autobuild-nudi-last.txt htdocs/www/autobuild-nudi-prev.txt ; \
-	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/www/autobuild-nudi-last.txt ; \
+	    ssh slug@nugabe.nslu2-linux.org mv htdocs/logs/buildlogs/autobuild-`hostname`-last.txt htdocs/logs/buildlogs/autobuild-`hostname`-prev.txt ; \
+	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/logs/buildlogs/autobuild-`hostname`-last.txt ; \
 	  fi \
 	fi
 
