@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DEPENDS = "libol"
 

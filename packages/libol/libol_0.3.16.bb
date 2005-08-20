@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 
 SRC_URI = "http://www.balabit.com/downloads/libol/0.3/${PN}-${PV}.tar.gz"
