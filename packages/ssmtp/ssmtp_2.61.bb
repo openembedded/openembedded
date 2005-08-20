@@ -3,7 +3,7 @@ MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 LICENCE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
@@ -12,7 +12,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-2.61"
 LICENSE = "GPL"
-#CONFFILES = "${sysconfdir}/ssmtp/ssmtp.conf ${sysconfdir}/ssmtp/revaliases"
+CONFFILES_${PN} = "${sysconfdir}/ssmtp/ssmtp.conf ${sysconfdir}/ssmtp/revaliases"
 inherit autotools
 
 EXTRA_OECONF = "--enable-ssl"
