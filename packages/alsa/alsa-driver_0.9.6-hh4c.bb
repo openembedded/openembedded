@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa Drivers"
 MAINTAINER = "Pigi"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
 	file://sound.p.patch;patch=1 \
@@ -12,14 +12,33 @@ SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz
 
 inherit autotools module
 
-EXTRA_OECONF=" --with-sequencer=no \
+EXTRA_OECONF = "--with-sequencer=yes \
 	--with-isapnp=no \
 	--with-oss=yes \
 	--with-kernel=${STAGING_KERNEL_DIR} \
 	--with-kernel-version=${KERNEL_VERSION}"
 
+PACKAGES =+ "${PN}-midi ${PN}-misc"
 FILES_${PN} = "/lib/modules/*/misc/snd* \
 	${sysconfdir}/modutils/*"
+midi_modules = "snd-seq-midi-emul.o \
+	snd-seq-midi-event.o \
+	snd-seq-midi.o \
+	snd-seq-virmidi.o \
+	snd-seq-oss.o" 
+FILES_${PN}-midi = "${@' '.join(map ((lambda x: '/lib/modules/*/misc/%s' % x), bb.data.getVar('midi_modules', d).split()))}"
+misc_modules = "snd-gus-synth.o \
+	snd-emu8000-synth.o \
+	snd-emux-synth.o \
+	snd-ainstr-fm.o \
+	snd-ainstr-gf1.o \
+	snd-ainstr-iw.o \
+	snd-ainstr-simple.o"
+FILES_${PN}-misc = "${@' '.join(map ((lambda x: '/lib/modules/*/misc/%s' % x), bb.data.getVar('misc_modules', d).split()))}"
+
+# put in-kernel headers first in the include search path.
+# without this all configure checks fail
+CFLAGS =+ "-I${STAGING_KERNEL_DIR}/include"
 
 do_configure() {
 
@@ -46,15 +65,8 @@ fi
 if grep "CONFIG_ARCH_H3900=y" "${STAGING_KERNEL_DIR}/.config" ; then
   familiar_arch=ipaqpxa
 fi
-extra_modules="snd-gus-synth.o snd-emu8000-synth.o snd-emux-synth.o \
-        snd-ainstr-fm.o snd-ainstr-gf1.o snd-ainstr-iw.o snd-ainstr-simple.o \
-        snd-seq-midi-emul.o snd-seq-midi-event.o snd-seq-midi.o snd-seq-virmidi.o snd-seq-oss.o"
 
       fakeroot make -k NODEPMOD=yes DESTDIR=${D} install; 
-
-      for i in ${extra_modules}; 
-        do rm -f ${D}/lib/modules/*/misc/$i; 
-      done
 
       if [ -d ${D}${sysconfdir}/modutils/ ] ; then 
          rm -r ${D}${sysconfdir}/modutils/ ;
