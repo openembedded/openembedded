@@ -3,7 +3,7 @@ SECTION = "e/apps"
 LICENSE = "MIT"
 # can also use pam and crypt
 DEPENDS = "edb evas-x11 ecore-x11 edje esmart"
-RDEPENDS += "bash keylaunch detect-stylus gpe-session-scripts gpe-dm"
+RDEPENDS += "bash keylaunch detect-stylus x11-common"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
