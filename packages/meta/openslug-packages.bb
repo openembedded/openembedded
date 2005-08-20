@@ -104,7 +104,6 @@ OPENSLUG_PACKAGES = "\
 	strace \
 	streamripper \
 	sudo \
-	syslog-ng \
 	sysfsutils \
 	tar \
 	thttpd \
