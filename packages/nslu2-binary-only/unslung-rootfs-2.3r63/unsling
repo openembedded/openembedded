@@ -11,9 +11,11 @@ fi
 
 if [ $# -eq 1 ] ; then
     if [ "$1" = "disk1" ] ; then
+	mtch="/dev/sdb1 /share/hdd/data ext3 rw 0 0"
 	targ=/share/hdd/data
 	flag=.sda1root
     elif [ "$1" = "disk2" ] ; then
+	mtch="/dev/sda1 /share/flash/data ext3 rw 0 0"
 	targ=/share/flash/data
 	flag=.sdb1root
     else
@@ -27,11 +29,22 @@ fi
 
 # Check it's a real mount point
 
-if grep $targ /proc/mounts >/dev/null 2>&1 ; then
-    echo "Target disk is $targ"
-else
-    echo "Error: $targ is not a mounted disk"
-    exit 1
+echo "Waiting for $targ"
+CNT=120
+while [ $CNT -gt 0 ]
+do
+   if grep "$mtch" /proc/mounts >/dev/null 2>&1 ; then
+       echo "Target disk is $targ"
+       CNT=-1
+   else
+       echo -ne "\r$CNT   "
+       sleep 1
+       CNT=`expr $CNT - 1`
+   fi
+done
+if [ $CNT -eq 0 ] ; then
+   echo "Error: $targ is not a mounted disk"
+   exit 1
 fi
 
 # Start at the root directory

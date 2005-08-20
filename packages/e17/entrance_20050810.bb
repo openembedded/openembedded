@@ -3,7 +3,7 @@ SECTION = "e/apps"
 LICENSE = "MIT"
 # can also use pam and crypt
 DEPENDS = "edb evas-x11 ecore-x11 edje esmart"
-RDEPENDS += "bash keylaunch detect-stylus gpe-session-scripts gpe-dm"
+RDEPENDS += "bash keylaunch detect-stylus x11-common"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
@@ -20,7 +20,10 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
 	   
 S = "${WORKDIR}/entrance"
 
-inherit autotools
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "entrance"
+INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
                 --with-xsession=/etc/X11/Xsession"
