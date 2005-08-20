@@ -2,10 +2,11 @@ DESCRIPTION = "Alsa Drivers"
 MAINTAINER = "Pigi"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
 	file://sound.p.patch;patch=1 \
+	file://h5400.patch;patch=1 \
 	file://sa11xx.patch;patch=1 \
 	file://adriver.h.patch;patch=1"
 
