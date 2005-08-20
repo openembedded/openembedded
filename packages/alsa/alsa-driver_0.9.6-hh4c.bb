@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa Drivers"
 MAINTAINER = "Pigi"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
 	file://sound.p.patch;patch=1 \
@@ -17,6 +17,8 @@ EXTRA_OECONF=" --with-sequencer=no \
 	--with-kernel=${STAGING_KERNEL_DIR} \
 	--with-kernel-version=${KERNEL_VERSION}"
 
+FILES_${PN} = "/lib/modules/*/misc/snd* \
+	${sysconfdir}/modutils/*"
 
 do_configure() {
 
