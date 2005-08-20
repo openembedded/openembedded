@@ -105,6 +105,7 @@ OPENSLUG_PACKAGES = "\
 	streamripper \
 	sudo \
 	sysfsutils \
+	syslog-ng \
 	tar \
 	thttpd \
 	tiff \
