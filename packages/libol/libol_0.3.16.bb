@@ -1,6 +1,5 @@
 PR = "r3"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
-DEPENDS = "libol-native"
 
 SRC_URI = "http://www.balabit.com/downloads/libol/0.3/${PN}-${PV}.tar.gz"
 
