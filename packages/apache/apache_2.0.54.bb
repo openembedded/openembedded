@@ -2,7 +2,7 @@ MAINTAINER="David Karlstrom <daka@nslu2-linux.org>"
 SECTION = "net"
 DEPENDS = "openssl expat pcre"
 
-PR = "r2"
+PR = "r3"
 
 # ------------------------------------------
 # NOTE: This package is currently only meant
