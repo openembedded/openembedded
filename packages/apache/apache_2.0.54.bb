@@ -2,7 +2,7 @@ MAINTAINER="David Karlstrom <daka@nslu2-linux.org>"
 SECTION = "net"
 DEPENDS = "openssl expat pcre"
 
-PR = "r3"
+PR = "r4"
 
 # ------------------------------------------
 # NOTE: This package is currently only meant
@@ -16,7 +16,7 @@ S = "${WORKDIR}/httpd-${PV}"
 
 inherit autotools update-rc.d
 
-INITSCRIPT_NAME = "httpd"
+INITSCRIPT_NAME = "apache"
 INITSCRIPT_PARAMS = "defaults 91 20"
 
 CONFFILES_${PN} = "${sysconfdir}/apache/httpd.conf \
@@ -74,8 +74,8 @@ do_install_append () {
 		    -e 's,/usr/bin/,${bindir}/,g' \
 		    -e 's,/usr/lib,${libdir}/,g' \
 		    -e 's,/etc/,${sysconfdir}/,g' \
-		    -e 's,/usr/,${prefix}/,g' > ${D}/${sysconfdir}/init.d/httpd
-	chmod 755 ${D}/${sysconfdir}/init.d/httpd
+		    -e 's,/usr/,${prefix}/,g' > ${D}/${sysconfdir}/init.d/apache
+	chmod 755 ${D}/${sysconfdir}/init.d/apache
 	
 	install -m 0644 ${FILESDIR}/httpd.conf ${D}/${sysconfdir}/apache/httpd.conf
 	
