@@ -4,6 +4,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://www.holtmann.org/linux/bluetooth/bt950.html"
 DEPENDS = "pcmcia-cs"
 RDEPENDS = "pcmcia-cs"
+PR = "r1"
 
 SRC_URI = "http://www.holtmann.org/linux/bluetooth/bt950-${PV}.tar.gz \
 file://makefile.patch;patch=1"
@@ -20,18 +21,5 @@ do_install() {
 				${D}${sysconfdir}/pcmcia/
 	install -m 0644 bt950_cs.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/
 	install -m 0644 bt950.conf ${D}${sysconfdir}/pcmcia/
-}
-
-pkg_postinst() {
-#!/bin/sh
-if [ "x$D" != "x" ]; then
-  exit 1
-fi
-update-modules || true
-}
-
-pkg_postrm() {
-#!/bin/sh
-update-modules || true
 }
 
