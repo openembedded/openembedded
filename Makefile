@@ -180,7 +180,7 @@ else
 openslug build-openslug:
 endif
 
-.PHONY: ucslugc build-ucslugc
+.PHONY: ucslugc-image build-ucslugc-image
 ifneq ($(HOST_MACHINE),armeb)
 ucslugc-image build-ucslugc-image: ucslugc/.configured bitbake/.configured openembedded/.configured
 	( cd ucslugc ; ${MAKE} image)
