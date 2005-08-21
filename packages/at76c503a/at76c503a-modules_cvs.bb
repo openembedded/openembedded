@@ -3,26 +3,13 @@ LICENSE = "GPL"
 SRC_URI = "cvs://anonymous@cvs.berlios.de/cvsroot/at76c503a;module=at76c503a \
 	   file://makefile.cc.patch;patch=1"
 S = "${WORKDIR}/at76c503a"
-PR = "r3"
+PR = "r4"
 PV = "0.0cvs${CVSDATE}"
 
 inherit module
 
 MODULES = "at76c503 at76_usbdfu at76c503-i3861 at76c503-rfmd at76c503-rfmd-acc \
 	at76c505-rfmd at76c503-i3863 at76c505-rfmd2958"
-
-pkg_postinst() {
-#!/bin/sh
-if [ "x$D" != "x" ]; then
-  exit 1
-fi
-update-modules || true
-}
-
-pkg_postrm() {
-#!/bin/sh
-update-modules || true
-}
 
 do_install() {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/
