@@ -1,15 +1,16 @@
 MAINTAINER="David Karlstrom <daka@nslu2-linux.org>"
 SECTION = "net"
-DEPENDS = "openssl"
+DEPENDS = "openssl expat pcre"
 
-PR = "r1"
+PR = "r2"
 
 # ------------------------------------------
 # NOTE: This package is currently only meant
 # to be built nativly on the target device
 # ------------------------------------------
 
-SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.gz"
+SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.gz \
+	   "
 
 S = "${WORKDIR}/httpd-${PV}"
 
@@ -39,9 +40,20 @@ FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 
 CFLAGS_append = " -DPATH_MAX=4096"
 CFLAGS_prepend = "-I${STAGING_INCDIR}/openssl "
-EXTRA_OECONF = "--enable-ssl --with-ssl=${STAGING_LIBDIR}/.. --enable-dav \
-		--enable-dav-fs --with-dbm=sdbm --with-berkeley-db=no --localstatedir=${localstatedir}/log/apache \
-		--with-gdbm=no --with-ndbm=no --datadir=${datadir}/apache --sysconfdir=${sysconfdir}/apache"
+EXTRA_OECONF = "--enable-ssl \
+		--with-ssl=${STAGING_LIBDIR}/.. \
+		--enable-dav \
+		--enable-dav-fs \
+		--with-dbm=sdbm \
+		--with-berkeley-db=no \
+		--localstatedir=${localstatedir}/log/apache \
+		--with-gdbm=no \
+		--with-ndbm=no \
+		--datadir=${datadir}/apache \
+		--sysconfdir=${sysconfdir}/apache \
+		"
+
+export LD_LIBRARY_PATH=${STAGING_LIBDIR}
 
 do_configure () {
 	# Looks like rebuilding configure doesn't work, so we are skipping
