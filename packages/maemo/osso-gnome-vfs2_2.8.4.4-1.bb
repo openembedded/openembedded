@@ -1,7 +1,7 @@
+DESCRIPTION = "The Gnome Virtual File System - OSSO Version"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-PR = "r1"
-PROVIDES = "gnome-vfs"
+PR = "r2"
 RPROVIDES = "gnome-vfs"
 
 inherit gnome pkgconfig

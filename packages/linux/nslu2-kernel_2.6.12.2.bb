@@ -1,5 +1,5 @@
 # Kernel for NSLU2
-PR = "r12"
+PR = "r13"
 include nslu2-kernel.inc
 
 # N2K_EXTRA_PATCHES - list of patches to apply (can include
