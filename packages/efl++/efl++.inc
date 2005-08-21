@@ -5,6 +5,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 MAINTAINER = "${AUTHOR}"
 HOMEPAGE = "http://www.Vanille.de/projects/efl++.html"
 DEPENDS = "virtual/evas virtual/ecore edje"
+PROVIDES = "virtual/efl++"
 
 SRC_URI = "http://www.Vanille.de/temp/efl++_${PV}.tar.bz2"
 S = "${WORKDIR}/efl++-${PV}"
@@ -14,7 +15,7 @@ inherit qmake
 PARALLEL_MAKE = ""
 QMAKE_PROFILES = "efl++.pro"
 EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${S}/src/evas INCLUDEPATH+=${S}/src/ecore INCLUDEPATH+=${S}/src/edje \
-			LIBS+=-L${S} DESTDIR=${S}"
+			LIBS+=-L${S} DESTDIR=${S} ${EFL_CONFIGURATION}"
 export OE_QMAKE_LINK="${CXX}"
 export EDIR="${S}"
 
@@ -23,7 +24,6 @@ do_configure_prepend() {
 	cat <<EOF >include.pro
 include ( common.pro )
 DEFINES += DATADIR=\"${datadir}/efl++/\"
-DEFINES += EFL_HAVE_X11
 EOF
 }
 
