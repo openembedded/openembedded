@@ -14,7 +14,8 @@ inherit qmake
 
 PARALLEL_MAKE = ""
 QMAKE_PROFILES = "efl++.pro"
-EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${S}/src/evas INCLUDEPATH+=${S}/src/ecore INCLUDEPATH+=${S}/src/edje \
+EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${S}/src/misc INCLUDEPATH+=${S}/src/common \
+			INCLUDEPATH+=${S}/src/evas INCLUDEPATH+=${S}/src/ecore INCLUDEPATH+=${S}/src/edje \
 			LIBS+=-L${S} DESTDIR=${S} ${EFL_CONFIGURATION}"
 export OE_QMAKE_LINK="${CXX}"
 export EDIR="${S}"
@@ -28,7 +29,7 @@ EOF
 }
 
 do_stage() {
-	for i in src/evas/*.h src/ecore/*.h src/edje/*.h
+	for i in src/common/*.h src/evas/*.h src/ecore/*.h src/edje/*.h
 	do
 		install -m 0644 $i ${STAGING_INCDIR}
 	done
@@ -38,7 +39,7 @@ do_stage() {
 do_install() {
 	oe_libinstall -so -C ${S} libefl++ ${D}${libdir}
 	install -d ${D}${bindir}
-	install edje-simple ${D}${bindir}
+	install *-* ${D}${bindir}
 	install -d ${D}${datadir}/efl++
 	cp -a data/* ${D}${datadir}/efl++
 }
