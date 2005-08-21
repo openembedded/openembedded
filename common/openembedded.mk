@@ -17,14 +17,18 @@ REQUIRED_DIRS = bitbake openembedded
 FIRMWARE_DEPS = create-topdir $(BUILD_DIRS) $(REQUIRED_DIRS)
 BITBAKE = bitbake
 
-# The default rule is to build the firmware in an unprotected environment.
-firmware: $(FIRMWARE_DEPS)
+# The default rule is to build everything in an unprotected environment.
+distro: $(FIRMWARE_DEPS)
 	. ./setup-env; exec ${BITBAKE} $(DISTRO)-packages
+
+# The default rule is to build the firmware in an unprotected environment.
+image: $(FIRMWARE_DEPS)
+	. ./setup-env; exec ${BITBAKE} $(DISTRO)-image
 
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).
-firmware-safe:
-	env -i HOME="$${HOME}" PATH="$${PATH}" $(MAKE) firmware
+distro-safe:
+	env -i HOME="$${HOME}" PATH="$${PATH}" $(MAKE) distro
 
 # The default rule is to build the firmware in an unprotected environment.
 prefetch: $(FIRMWARE_DEPS)
