@@ -35,9 +35,10 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${bindir}
+	install -d ${D}${sbindir}
 	install -m 0755 client/ussp-push ${D}${bindir}
 	install -m 0755 client/obextool ${D}${bindir}
-	install -m 0755 opd/opd ${D}${bindir}
+	install -m 0755 opd/opd ${D}${sbindir}
 
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0644 ${WORKDIR}/init ${D}${sysconfdir}/init.d/opd
