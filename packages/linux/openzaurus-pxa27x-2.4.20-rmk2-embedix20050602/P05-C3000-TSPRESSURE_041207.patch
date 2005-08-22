@@ -1,0 +1,235 @@
+diff -Nur c3000_pre/linux/drivers/char/Config.in c3000_work/linux/drivers/char/Config.in
+--- c3000_pre/linux/drivers/char/Config.in	2004-08-21 09:48:25.000000000 +0900
++++ c3000_work/linux/drivers/char/Config.in	2004-12-06 15:53:46.000000000 +0900
+@@ -164,6 +164,8 @@
+    if [ "$CONFIG_ARCH_SHARP_SL" = "y" ]; then
+       bool '  SL-series serial port support' CONFIG_SERIAL_SL_SERIES
+    fi
++   bool '  SL-series touchscreen pressure value read (EXPERIMENTAL)' CONFIG_SL_TS_PRESSURE
++   dep_bool '    Boot On touchscreen pressure value read' CONFIG_BOOT_PRESSURE_ON $CONFIG_SL_TS_PRESSURE
+    if [ "$CONFIG_SERIAL_SL_SERIES" = "y" ]; then
+       bool '   SL-series Bluetooth support' CONFIG_BLUETOOTH_SL
+    fi
+diff -Nur c3000_pre/linux/drivers/char/ads7846_ts.c c3000_work/linux/drivers/char/ads7846_ts.c
+--- c3000_pre/linux/drivers/char/ads7846_ts.c	2004-11-16 15:31:06.000000000 +0900
++++ c3000_work/linux/drivers/char/ads7846_ts.c	2004-12-06 15:50:06.000000000 +0900
+@@ -86,7 +86,55 @@
+ static DECLARE_WAIT_QUEUE_HEAD(queue);
+ static int head, tail, sample;
+ static char pendown = 0;
+-unsigned long Pressure;
++static unsigned long Pressure;
++#if defined(CONFIG_SL_TS_PRESSURE)
++#include <linux/proc_fs.h>
++#endif
++
++#if defined(CONFIG_SL_TS_PRESSURE)
++static unsigned long tsPressure;
++#if defined(CONFIG_BOOT_PRESSURE_ON)
++static unsigned int tspressure_mode = 1;
++#else
++static unsigned int tspressure_mode = 0;
++#endif
++
++static ssize_t tspressure_read_params(struct file *file, char *buf,
++				      size_t nbytes, loff_t *ppos)
++{
++	char outputbuf[32];
++	int count;
++
++	if (*ppos>0) /* Assume reading completed in previous read*/
++		return 0;
++	count = sprintf(outputbuf, "%d\n", (unsigned int)tspressure_mode);
++	count++;
++	*ppos += count;
++	if (count>nbytes)	/* Assume output can be read at one time */
++		return -EINVAL;
++	if (copy_to_user(buf, outputbuf, count+1))
++		return -EFAULT;
++	return count;
++}
++
++static ssize_t tspressure_write_params(struct file *file, const char *buf,
++				       size_t nbytes, loff_t *ppos)
++{
++	unsigned int param=0;
++
++	sscanf(buf,"%d",&param);
++	if (tspressure_mode != param) {
++		tspressure_mode = param;
++		printk("tspressure = %d\n", tspressure_mode);
++	}
++	return nbytes;
++}
++
++static struct file_operations proc_tspressure_operations = {
++  read:   tspressure_read_params,
++  write:  tspressure_write_params,
++};
++#endif
+ #if defined(CONFIG_ARCH_PXA_CORGI)
+ static char ispass = 1;
+ #endif
+@@ -370,7 +418,11 @@
+ 		((int)((x)-(y))<(int)(d)) && \
+ 		((int)((y)-(x))<(int)(d)) )
+ 	unsigned long cmd;
++#if defined(CONFIG_SL_TS_PRESSURE)
++	unsigned int t,x,y,z[2],z2,dummy;
++#else
+ 	unsigned int t,x,y,z[2];
++#endif
+ 	int i,j,k;
+ 	int d = 8, c = 10;
+ 	int err = 0;
+@@ -381,7 +433,18 @@
+ 			(3u << ADSCTRL_ADR_SH) | (1u << ADSCTRL_STS_SH);
+ 		t = ads7846_rw(cmd);
+ 		z[i] = ads7846_rw(cmd);
+- 
++
++#if defined(CONFIG_SL_TS_PRESSURE)
++		if (tspressure_mode) {
++			/* Z2 */
++			cmd = (1u << ADSCTRL_PD0_SH) | (1u << ADSCTRL_PD1_SH) |
++				(4u << ADSCTRL_ADR_SH) | (1u << ADSCTRL_STS_SH);
++			dummy = ads7846_rw(cmd);
++			udelay(1);
++			z2 = ads7846_rw(cmd);
++		}
++#endif
++
+ 		if( i ) break;
+ 
+ 		/* X-axis */
+@@ -415,6 +478,10 @@
+ 		}
+ 	}
+ 	Pressure = 1;
++#if defined(CONFIG_SL_TS_PRESSURE)
++	if (tspressure_mode)
++		if (z[1]) tsPressure = (15000 - x * (z2 - z[1]) / z[1]) >> 4;
++#endif
+ 	for(i=0;i<2;i++){
+ 		if( !z[i] )
+ 			Pressure = 0;
+@@ -528,12 +595,19 @@
+ 
+ 	//	printk("x=%d,y=%d\n",tp->xd,tp->yd);
+ 
+-	if (z1 != 0)
++	if (z1 != 0) {
+ 		Pressure = Rx * (tp->xd) * ((10*z2/z1) - 1*10) >> 10;
+-	else 
++#if defined(CONFIG_SL_TS_PRESSURE)
++		if (tspressure_mode)
++			tsPressure = (15000 - x[3] * (z2 - z1) / z1) >> 4;
++	}
++#endif
++	else
++#if defined(CONFIG_SL_TS_PRESSURE)
++		tsPressure = Pressure = 0;
++#else
+ 		Pressure = 0;
+-
+-
++#endif
+         cmd =	(1u << ADSCTRL_PD0_SH) | (1u << ADSCTRL_PD1_SH) |
+ 		(4u << ADSCTRL_ADR_SH) | (1u << ADSCTRL_STS_SH);
+ 	/* Power-Down Enable */
+@@ -612,11 +686,25 @@
+ //	printk("fail %d\n", fail);
+ 
+ 	if (fail == TOUCH_PANEL_AVERAGE) {
++#if defined(CONFIG_SL_TS_PRESSURE)
++		tsPressure = Pressure = 0;
++#else
+ 		Pressure = 0;
++#endif
+ //		printk("pen up\n");
+ 	}
+ 	else {
++#if defined(CONFIG_SL_TS_PRESSURE)
++		if (tspressure_mode) {
++			if (z1) {
++				tsPressure = Pressure = (15000 - x * (z2 - z1) / z1) >> 4;
++			} else
++				tsPressure = Pressure = 0;
++		} else
++			tsPressure = Pressure = 1;
++#else
+ 		Pressure = 1;
++#endif
+ 		tp->xd = tx / (TOUCH_PANEL_AVERAGE - fail);
+ 		tp->yd = ty / (TOUCH_PANEL_AVERAGE - fail);
+ //		printk("pen position (%d,%d)\n", tx, ty);
+@@ -788,7 +876,11 @@
+ 
+ static void new_data(void)
+ {
++#if !defined(CONFIG_ARCH_PXA_CORGI) && !defined(CONFIG_ARCH_PXA_POODLE)
++#if !defined(CONFIG_POODLE_TR0)
+ 	int diff0, diff1, diff2, diff3;
++#endif
++#endif
+ 
+ #ifdef CONFIG_PM
+ 	if( PowerDownMode != PMPD_MODE_ACTIVE )
+@@ -956,11 +1048,26 @@
+ 		lock_FCS(POWER_MODE_TOUCH, 1);	// not enter FCS mode.
+ #endif
+ 		if( pos_dt.xd && pos_dt.yd && Pressure ) {
++#if defined(CONFIG_SL_TS_PRESSURE)
++			if (tspressure_mode)
++				tc.pressure = Pressure;
++			else
++				tc.pressure = 500;
++#else
+ 			tc.pressure = 500;
++#endif
++
+ #else
+ 		if( pos_dt.xd && pos_dt.yd ){
++#if defined(CONFIG_SL_TS_PRESSURE)
++			if (tspressure_mode)
++				tc.pressure = Pressure;
++			else
++				tc.pressure = 1;
++#else
+ 			tc.pressure = 1;
+ #endif
++#endif
+ 			before_data = tc;
+ 			pendown = 1;
+ 			new_data();
+@@ -1005,6 +1112,16 @@
+ static void ts_hardware_init(void)
+ {
+ 	unsigned int dummy;
++
++#if defined(CONFIG_SL_TS_PRESSURE)
++	struct proc_dir_entry *tspressure_proc;
++#endif
++
++#if defined(CONFIG_SL_TS_PRESSURE)
++	tspressure_proc = create_proc_entry("zaurus/tspressure", 0, NULL);
++	if (tspressure_proc)
++		tspressure_proc->proc_fops = &proc_tspressure_operations;
++#endif
+ 	
+ #if defined(CONFIG_ARCH_PXA_POODLE) || defined(CONFIG_ARCH_PXA_CORGI)
+ 	pxa_ssp_init();
+@@ -1283,6 +1400,13 @@
+ 	case 17:         /* Clear all buffer data */
+ 	    print_par();
+ 	    break;
++#if defined(CONFIG_SL_TS_PRESSURE)
++	case 64:	/* read Pressure */
++	    if (tspressure_mode) {
++		    copy_to_user((void *)arg, &tsPressure, sizeof(tsPressure));
++		    break;
++	    }
++#endif
+ 	default:
+ 		return -EINVAL;
+ 	}

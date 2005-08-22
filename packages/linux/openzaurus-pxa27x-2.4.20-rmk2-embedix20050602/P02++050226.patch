@@ -1,0 +1,221 @@
+--- BASE/arch/arm/mach-pxa/pxa27x_power.c	Sat Feb 26 01:35:47 2005
++++ 050226/arch/arm/mach-pxa/pxa27x_power.c	Sat Feb 26 02:01:45 2005
+@@ -152,6 +152,10 @@
+ 
+ #if defined(CONFIG_CHANGE_CORE_VOLT)
+ static unsigned char current_core_voltage = 0x1a;
++static unsigned char core_voltage_value   = 0;
++extern unsigned int CCCR_ValAdr_high;
++#include  <linux/sem.h>
++static DECLARE_MUTEX(core_voltage_sem);
+ #endif
+ 
+ void PrintParamTable(void);
+@@ -397,9 +401,9 @@
+ }
+ #endif //DEBUG
+ 
++#if !defined(CONFIG_CHANGE_CORE_VOLT)
+ static void cpu_xscale_voltage_low(void)
+ {
+-
+   pwr_i2c_open();
+   pwr_i2c_write( 0x0c, 0x13 );  // 1.00V - SlewRate 1
+   //pwr_i2c_write( 0x0c, 0x12 );  // 0.95V - SlewRate 1
+@@ -409,38 +413,90 @@
+ static void cpu_xscale_voltage_high(void)
+ {
+   pwr_i2c_open();
+-#if defined(CONFIG_CHANGE_CORE_VOLT)
+-  pwr_i2c_write( 0x0c, current_core_voltage );
+-  pwr_i2c_close();
+-  printk("current voltage %x\n", current_core_voltage );
+-#else
+   pwr_i2c_write( 0x0c, 0x1a );  // 1.35V - SlewRate 1
+   pwr_i2c_close();
+-#endif
+ }
++#endif
+ 
+ #if defined(CONFIG_CHANGE_CORE_VOLT)
++static void cpu_xscale_voltage_change(unsigned char value)
++{
++  if(core_voltage_value!=value) {
++    core_voltage_value  = value;
++    pwr_i2c_open();
++    pwr_i2c_write( 0x0c, current_core_voltage );
++    pwr_i2c_close();
++  }
++}
++
++void cpu_xscale_voltage_high(void)
++{
++  down(&core_voltage_sem);
++  cpu_xscale_voltage_change(current_core_voltage);
++  up(&core_voltage_sem);
++}
+ void cpu_xscale_voltage_write(unsigned char value)
+ {
+   if (value > 0x10 )
+     return;
+   value += 0x10;
++  down(&core_voltage_sem);
++  core_voltage_value  = value;
+   pwr_i2c_open();
+   pwr_i2c_write( 0x0c, value );
+   pwr_i2c_close();
+   current_core_voltage = value;
++  up(&core_voltage_sem);
+   printk("current voltage %x\n", current_core_voltage );
+ 
+ }
++
++void  cpu_xscale_sl_change_speed_high(void)
++{
++  down(&core_voltage_sem);
++  cpu_xscale_voltage_change(current_core_voltage);
++  _cpu_xscale_sl_change_speed_high();
++  up(&core_voltage_sem);
++}
++void  cpu_xscale_sl_change_speed_low(void)
++{
++  down(&core_voltage_sem);
++  _cpu_xscale_sl_change_speed_low();
++  cpu_xscale_voltage_change(0x13);
++  up(&core_voltage_sem);
++}
++void  cpu_xscale_sl_change_speed_91(void)
++{
++  down(&core_voltage_sem);
++  _cpu_xscale_sl_change_speed_91();
++  core_voltage_value  = 0x13;
++  pwr_i2c_open();
++  pwr_i2c_write( 0x0c, core_voltage_value );
++  pwr_i2c_close();
++  up(&core_voltage_sem);
++}
++void  cpu_xscale_sl_change_speed_208(void)
++{
++  down(&core_voltage_sem);
++  core_voltage_value  = current_core_voltage;
++  pwr_i2c_open();
++  pwr_i2c_write( 0x0c, core_voltage_value );
++  pwr_i2c_close();
++  _cpu_xscale_sl_change_speed_208();
++  up(&core_voltage_sem);
++}
++
+ #endif
+ 
+ #if defined(DEBUG) || defined(CONFIG_CHANGE_CORE_VOLT)
+ unsigned char cpu_xscale_voltage_read(void)
+ {
+   unsigned char value=0xff;
++  down(&core_voltage_sem);
+   pwr_i2c_open();
+   pwr_i2c_read( 0x0c, &value );
+   pwr_i2c_close();
++  up(&core_voltage_sem);
+   return value;
+ }
+ #endif
+@@ -520,7 +576,7 @@
+ 	sys_ctx.oier = OIER;
+     
+ #if defined(CONFIG_CPU_PXA27X)
+-	if ( CCCR != 0x02000210 ) {
++	if ( CCCR != CCCR_ValAdr_high ) {  //0x02000210 ) {
+ 	  cpu_xscale_sl_change_speed_high();
+ 	}
+ #endif
+@@ -571,8 +627,10 @@
+ 	cpu_xscale_sl_disable_fastbus_mode();
+ 	udelay(1);
+ 	cpu_xscale_sl_change_speed_91();
++#if !defined(CONFIG_CHANGE_CORE_VOLT)
+ 	cpu_xscale_voltage_low();
+ #endif
++#endif
+ 
+ 	/* Scoop suspend */
+ 	sharpsl_check_scoop_reg();
+@@ -790,7 +848,9 @@
+ 	SCP2_REG_GPWR = sys_ctx.scp2_gpwr;
+ 
+ #if defined(PXA27X_SUSPEND)
++#if !defined(CONFIG_CHANGE_CORE_VOLT)
+ 	cpu_xscale_voltage_high();
++#endif
+ 	cpu_xscale_sl_change_speed_208();
+ 	udelay(1);
+ 	cpu_xscale_sl_enable_fastbus_mode();
+--- BASE/arch/arm/mach-pxa/sharpsl_apm.c	Sat Feb 26 01:35:52 2005
++++ 050226/arch/arm/mach-pxa/sharpsl_apm.c	Sat Feb 26 01:54:16 2005
+@@ -143,6 +143,7 @@
+ #if defined(CONFIG_CHANGE_CORE_VOLT)
+ extern unsigned char cpu_xscale_voltage_read(void);
+ extern void cpu_xscale_voltage_write(unsigned char);
++extern void cpu_xscale_voltage_high(void);
+ #endif
+ 
+ #if defined(CONFIG_SABINAL_DISCOVERY)
+@@ -1389,6 +1390,9 @@
+ 
+ #if defined(CONFIG_CPU_PXA27X)
+ #if defined(CONFIG_FB_SHARPSL_PXA)
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++    cpu_xscale_voltage_high();
++#endif
+ 		while (1) {
+ 		    if (!(LCCR0 & 0x1) || (GPLR(GPIO74_LCD_FCLK) &
+ 					   GPIO_bit(GPIO74_LCD_FCLK)))
+--- BASE/arch/arm/mach-pxa/sharpsl_suspend.S	Sat Feb 26 01:35:42 2005
++++ 050226/arch/arm/mach-pxa/sharpsl_suspend.S	Sat Feb 26 01:54:16 2005
+@@ -1119,7 +1119,11 @@
+ MDREFR_ValAdr_high_pre:	.word	0x001BC00B
+ MDREFR_ValAdr_high:	.word	0x001BC030
+ 	
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++ENTRY(_cpu_xscale_sl_change_speed_high)
++#else
+ ENTRY(cpu_xscale_sl_change_speed_high)
++#endif
+  	stmfd	sp!, {r0, r1, r2, r3, r4, lr}
+ 
+  	ldr		r0, CMR_BASE
+@@ -1168,7 +1172,11 @@
+ @MDREFR_ValAdr_low:	.word	0x0019C017
+ MDREFR_ValAdr_low:	.word	0x001BC017
+ 		
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++ENTRY(_cpu_xscale_sl_change_speed_low)
++#else
+ ENTRY(cpu_xscale_sl_change_speed_low)
++#endif
+  	stmfd	sp!, {r0, r1, r2, r3, r4, lr}
+ 
+  	ldr		r0, CMR_BASE
+@@ -1261,7 +1269,11 @@
+ MDREFR_ValAdr_91_pre:	.word	0x001BC00B
+ MDREFR_ValAdr_91:	.word	0x001BC013
+ 				
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++ENTRY(_cpu_xscale_sl_change_speed_91)
++#else
+ ENTRY(cpu_xscale_sl_change_speed_91)
++#endif
+  	stmfd	sp!, {r0, r1, r2, r3, r4, lr}
+ 
+  	ldr		r0, CMR_BASE
+@@ -1304,7 +1316,11 @@
+ MSC2_ValAdr_208:	.word	0x7FF034D4
+ MDREFR_ValAdr_208:	.word	0x001BC00B
+ 		
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++ENTRY(_cpu_xscale_sl_change_speed_208)
++#else
+ ENTRY(cpu_xscale_sl_change_speed_208)
++#endif
+  	stmfd	sp!, {r0, r1, r2, r3, r4, lr}
+ 
+  	ldr		r0, CMR_BASE

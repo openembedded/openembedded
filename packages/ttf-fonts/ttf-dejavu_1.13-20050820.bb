@@ -2,11 +2,15 @@ DESCRIPTION = "DejaVu font - TTF Edition"
 LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
+PV = "1.13-snapshot-20050820"
+
+#SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
+SRC_URI = "http://dejavu.sourceforge.net/snapshots/dejavu-ttf-20050820.tar.gz"
 
 include ttf.inc
 
-S = "${WORKDIR}/dejavu-ttf-${PV}"
+#S = "${WORKDIR}/dejavu-ttf-${PV}"
+S = "${WORKDIR}/dejavu-ttf-20050820"
 
 PACKAGES = "ttf-dejavu-sans ttf-dejavu-sans-mono ttf-dejavu-sans-condensed \
 	    ttf-dejavu-serif ttf-dejavu-serif-condensed"
