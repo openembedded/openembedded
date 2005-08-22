@@ -19,6 +19,6 @@ RDEPENDS += "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo       
 #
 # E
 #
-DEPENDS  += "entrance e-wm entice eclair examine evidence e-modules e-utils"
-RDEPENDS += "entrance e-wm entice eclair examine evidence e-modules e-utils"
+DEPENDS  += "entrance e-wm entice eclair examine evidence e-modules e-utils elitaire"
+RDEPENDS += "entrance e-wm entice eclair examine evidence e-modules e-utils elitaire"
 
