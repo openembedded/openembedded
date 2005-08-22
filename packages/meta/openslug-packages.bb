@@ -7,9 +7,12 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
 	atftp \
 	autoconf \
 	automake \
+	aumix \
 	bash \
 	bind \
 	binutils \
