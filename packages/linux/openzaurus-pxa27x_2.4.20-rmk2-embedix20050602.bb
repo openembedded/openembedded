@@ -1,12 +1,12 @@
 DESCRIPTION = "Linux kernel 2.4.20-embedix for Sharp Zaurus SL-C1000 and SL-C3000 devices."
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa27x-2.4.20-rmk2-embedix20050228"
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa27x-2.4.20-rmk2-embedix20050602"
 SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r13"
+PR = "r14"
 
-SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-20050228-rom1_01.tar.bz2 \
+SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
            file://P02-C3000-voltage_050221.patch;pnum=2;patch=1 \
            file://P03-C3000-SIGSTOP_FIX_041207.patch;pnum=2;patch=1 \
@@ -45,7 +45,7 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c1000/20050228/linux-c1000-2
 # Breaks compilation for now, needs to be fixed
 # SRC_URI += "file://CPAR050218.patch;patch=1"
 
-S = "${WORKDIR}/linux_n1"
+S = "${WORKDIR}/linux"
 
 inherit kernel
 
@@ -54,14 +54,16 @@ inherit kernel
 #
 CMDLINE_MTDPARTS_spitz   = "mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home)  jffs2_orphaned_inodes=delete"
 CMDLINE_MTDPARTS_akita   = "mtdparts=sharpsl-nand:7168k@0k(smf),59392k@7168k(root),-(home) jffs2_orphaned_inodes=delete"
+CMDLINE_MTDPARTS_borzoi  = "mtdparts=sharpsl-nand:7168k@0k(smf),32768k@7168k(root),-(home) jffs2_orphaned_inodes=delete"
 # CMDLINE_INIT = "init=bin/busybox ash"
 CMDLINE_INIT = ""
 CMDLINE_SHARP_spitz      = "RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
 CMDLINE_SHARP_akita      = "EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
+CMDLINE_SHARP_borzoi     = "EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
 CMDLINE_ROOT = "root=/dev/mtdblock2"
+# Caution: ttyS0 doesn't seem to work for 2.4.20 :/
+CMDLINE_CONSOLE = "tty1"
 CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_SHARP} ${CMDLINE_INIT}"
-CMDLINE = "console=tty1 root=/dev/mtdblock2 mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home) jffs2_orphaned_inodes=delete RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
-
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models
