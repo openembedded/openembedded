@@ -2,8 +2,8 @@ DESCRIPTION = "ALSA Utilities"
 MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
 SECTION = "console/utils"
 LICENSE = "GPL"
-DEPENDS = "alsa-lib"
-PR = "r1"
+DEPENDS = "alsa-lib ncurses"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
 

@@ -53,6 +53,7 @@ OPENSLUG_PACKAGES = "\
 	jpeg \
 	lcdproc \
 	less \
+	libdvb \
 	libpam \
 	libpng \
 	libtool \
