@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 SECTION = "libs"
 PRIORITY = "optional"
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz"
 S = "${WORKDIR}/${PN}-${PV}"
