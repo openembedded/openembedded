@@ -1075,7 +1075,8 @@ CONFIG_USB_DEVICEFS=y
 # USB Host Controller Drivers
 #
 # CONFIG_USB_ISP116X_HCD is not set
-# CONFIG_USB_SL811_HCD is not set
+CONFIG_USB_SL811_HCD=m
+CONFIG_USB_SL811_CS=m
 
 #
 # USB Device Class drivers
