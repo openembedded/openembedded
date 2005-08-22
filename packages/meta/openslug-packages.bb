@@ -48,6 +48,7 @@ OPENSLUG_PACKAGES = "\
 	irssi \
 	joe \
 	jpeg \
+	lcdproc \
 	less \
 	libpam \
 	libpng \
