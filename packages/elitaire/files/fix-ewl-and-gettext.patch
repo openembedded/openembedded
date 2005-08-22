@@ -1,0 +1,37 @@
+diff -Nur elitaire-0.0.4~/src/Eli_App.h elitaire-0.0.4/src/Eli_App.h
+--- elitaire-0.0.4~/src/Eli_App.h	2005-08-18 19:02:30.000000000 -0700
++++ elitaire-0.0.4/src/Eli_App.h	2005-08-18 19:02:40.000000000 -0700
+@@ -3,7 +3,7 @@
+ #include<Ecore_Config.h>
+ #include<Ecore_File.h>
+ #include<Esmart/Esmart_Container.h>
+-#include<ewl/Ewl.h>
++#include<Ewl.h>
+ #include"ewl_context_menu.h"
+ #include"Elitaire.h"
+ 
+diff -Nur elitaire-0.0.4~/src/ewl_context_menu.c elitaire-0.0.4/src/ewl_context_menu.c
+--- elitaire-0.0.4~/src/ewl_context_menu.c	2005-08-18 19:02:30.000000000 -0700
++++ elitaire-0.0.4/src/ewl_context_menu.c	2005-08-18 19:02:40.000000000 -0700
+@@ -1,4 +1,4 @@
+-#include<ewl/Ewl.h>
++#include<Ewl.h>
+ #include"ewl_context_menu.h"
+ 
+ void ewl_context_menu_expand_cb(Ewl_Widget *w, void *ev_data ,
+diff -Nur elitaire-0.0.4~/src/intl.h elitaire-0.0.4/src/intl.h
+--- elitaire-0.0.4~/src/intl.h	2005-08-18 19:02:30.000000000 -0700
++++ elitaire-0.0.4/src/intl.h	2005-08-18 19:06:05.000000000 -0700
+@@ -13,8 +13,12 @@
+ 
+ inline char * sgettext(const char *msgid)
+ {
++#ifdef ENABLE_NLS
+ 	char *msgval = gettext (msgid);
+ 	if (msgval == msgid)
++#else
++	  char *msgval;
++#endif
+ 		msgval = strrchr (msgid, '|') + 1;
+ 	return msgval;
+ }
