@@ -105,7 +105,6 @@ OPENSLUG_PACKAGES = "\
 	screen \
 	sed \
 	setpwc \
-	spca5xx \
 	ssmtp \
 	strace \
 	streamripper \
