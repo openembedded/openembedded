@@ -46,7 +46,7 @@ do_install_append() {
 		done
 		rm -f ${D}${sysconfdir}/ts.conf
 		;;
-	c7x0 | spitz | akita | tosa)
+	c7x0 | spitz | akita | tosa | borzoi )
 		install -d ${D}${datadir}/tslib
 		for f in ts.conf-corgi ts.conf-corgi-2.4; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/

@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r55"
+PR = "r56"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -40,6 +40,7 @@ SRC_URI_append_c7x0         = " file://keymap-*.map"
 SRC_URI_append_tosa         = " file://keymap-*.map"
 SRC_URI_append_akita        = " file://keymap-*.map"
 SRC_URI_append_spitz        = " file://keymap-*.map"
+SRC_URI_append_borzoi       = " file://keymap-*.map"
 
 def read_kernel_version(d):
 	import bb

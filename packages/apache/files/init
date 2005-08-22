@@ -64,7 +64,7 @@ case "$1" in
     ;;
 esac
 
-if [ $? == 0 ]; then
+if [ $? = 0 ]; then
 	echo .
 	exit 0
 else
