@@ -1,10 +1,11 @@
 SECTION = "console/utils"
 DESCRIPTION = 'The PCI Utilities package contains a library for portable access \
 to PCI bus configuration space and several utilities based on this library.'
+DESCRIPTION_pciutils-ids = 'The list of PCI IDs for pciutils'
 HOMEPAGE = "http://atrey.karlin.mff.cuni.cz/~mj/pciutils.shtml"
 LICENSE = "GPLv2"
 
-PR="r2"
+PR="r3"
 
 PARALLEL_MAKE = ""
 FILES_pciutils-ids="${prefix}/share/pci.ids"
