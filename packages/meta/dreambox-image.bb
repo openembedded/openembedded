@@ -9,7 +9,7 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	dreambox-compat"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs tuxbox-plugins links-dream enigma-modem \
-			ppp module-init-tools modutils-initscripts"
+			ppp module-init-tools modutils-initscripts samba"
 OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2fsprogs-e2fsck \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
 	tuxbox-plugin-lcdcirc   tuxbox-plugin-soko      tuxbox-plugin-tuxtxt \
@@ -20,7 +20,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2f
 	kernel-module-slhc 	kernel-module-ppp-async kernel-module-crc-ccitt \
 	ppp			kernel-module-ppp-generic \
 	update-modules		enigma-modem 		module-init-tools-depmod \
-	modutils-initscripts"
+	modutils-initscripts	sambaserver"
 
 #enigma-locale-ar enigma-locale-sr enigma-locale-ur
 ENIGMA_LANGUAGE = "enigma-locale-cs enigma-locale-da \
