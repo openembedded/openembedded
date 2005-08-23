@@ -1,7 +1,7 @@
 diff -Nur gpe-session-scripts-0.63~/Makefile gpe-session-scripts-0.63/Makefile
---- gpe-session-scripts-0.63~/Makefile	2005-08-19 18:32:17.000000000 -0700
-+++ gpe-session-scripts-0.63/Makefile	2005-08-19 18:35:46.000000000 -0700
-@@ -23,7 +23,9 @@
+--- gpe-session-scripts-0.63~/Makefile	2005-08-23 15:10:25.000000000 -0700
++++ gpe-session-scripts-0.63/Makefile	2005-08-23 15:08:40.000000000 -0700
+@@ -23,13 +23,14 @@
  all:
  
  install-program: gpe-logout.desktop
@@ -12,3 +12,9 @@ diff -Nur gpe-session-scripts-0.63~/Makefile gpe-session-scripts-0.63/Makefile
  	install -d $(DESTDIR)$(PREFIX)/bin
  	install -m 755 gpe-xcalibrate.sh $(DESTDIR)$(PREFIX)/bin/gpe-xcalibrate.sh
  	install -d $(DESTDIR)/etc/gpe
+ 	install -m 644 X11/xsettings.default $(DESTDIR)/etc/gpe/
+ 	install -m 644 standard.mbdock $(DESTDIR)/etc/gpe/gpe.mbdock
+-	install -m 644 X11/Xdefaults $(DESTDIR)/etc/X11/
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -m 644 gpe-logout.png $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
