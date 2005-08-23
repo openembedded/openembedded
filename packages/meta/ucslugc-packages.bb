@@ -44,7 +44,6 @@ UCSLUGC_PACKAGES = "\
 	gcc \
 	gdb \
 	gdbm \
-	glib-2.0 \
 	gnu-config \
 	gphoto2 \
 	grep \
@@ -123,6 +122,7 @@ UCSLUGC_PACKAGES = "\
 # These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_BROKEN_PACKAGES = "\
+	glib-2.0 \
 	iperf \
 	man man-pages \
 	php \

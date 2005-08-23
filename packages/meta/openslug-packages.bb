@@ -7,9 +7,12 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
 	atftp \
 	autoconf \
 	automake \
+	aumix \
 	bash \
 	bind \
 	binutils \
@@ -45,9 +48,12 @@ OPENSLUG_PACKAGES = "\
 	iperf \
 	ipkg-utils \
 	iptables \
+	irssi \
 	joe \
 	jpeg \
+	lcdproc \
 	less \
+	libdvb \
 	libpam \
 	libpng \
 	libtool \
@@ -104,6 +110,7 @@ OPENSLUG_PACKAGES = "\
 	streamripper \
 	sudo \
 	sysfsutils \
+	syslog-ng \
 	tar \
 	thttpd \
 	tiff \

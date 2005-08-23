@@ -34,6 +34,18 @@ module_do_install() {
 	oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" CC="${KERNEL_CC}" LD="${KERNEL_LD}" modules_install
 }
 
+pkg_postinst_append () {
+	if [ -n "$D" ]; then
+		exit 1
+	fi
+	depmod -A
+	update-modules || true
+}
+
+pkg_postrm_append () {
+	update-modules || true
+}
+
 EXPORT_FUNCTIONS do_compile do_install
 
 FILES_${PN} = "/etc /lib/modules"

@@ -76,14 +76,10 @@ static struct resource nslu2_uart_resources[] = {
 		.flags		= IORESOURCE_MEM
 	},
 	{
-	},
-#if 0 
-	, {
 		.start		= IXP4XX_UART2_BASE_PHYS,
 		.end		= IXP4XX_UART2_BASE_PHYS + 0x0fff,
 		.flags		= IORESOURCE_MEM
 	}
-#endif
 };
 
 static struct plat_serial8250_port nslu2_uart_data[] = {
@@ -97,19 +93,14 @@ static struct plat_serial8250_port nslu2_uart_data[] = {
 		.uartclk	= IXP4XX_UART_XTAL,
 	},
 	{
-	},
-
-#if 0
-	, {
 		.mapbase	= IXP4XX_UART2_BASE_PHYS,
 		.membase	= (char *)IXP4XX_UART2_BASE_VIRT + REG_OFFSET,
-		.irq		= IRQ_IXP4XX_UART1,
+		.irq		= IRQ_IXP4XX_UART2,
 		.flags		= UPF_BOOT_AUTOCONF,
 		.iotype		= UPIO_MEM,
 		.regshift	= 2,
 		.uartclk	= IXP4XX_UART_XTAL,
 	}
-#endif
 };
 
 static struct platform_device nslu2_uart = {

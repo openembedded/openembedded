@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r8"
+PR = "r10"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -79,15 +79,20 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
-           ${RPSRC}/pxa27x_extraregs-r1.patch;patch=1 \
-           ${RPSRC}/spitzbase-r3.patch;patch=1 \
-           ${RPSRC}/spitzkbd-r0.patch;patch=1 \
+           ${RPSRC}/pxa27x_extraregs-r2.patch;patch=1 \
+           ${RPSRC}/spitzbase-r5.patch;patch=1 \
+           ${RPSRC}/spitzkbd-r1.patch;patch=1 \
            ${RPSRC}/spitzssp-r4.patch;patch=1 \
            ${RPSRC}/spitzbl-r1.patch;patch=1 \
            ${RPSRC}/spitzts-r1.patch;patch=1 \
            ${RPSRC}/spitzcf-r1.patch;patch=1 \
+           ${RPSRC}/spitz_power-r1.patch;patch=1 \
+           ${RPSRC}/spitz_usbhost-r0.patch;patch=1 \
+           ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \
+           ${RPSRC}/scoop_susres-r0.patch;patch=1 \
+           ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r0.patch;patch=1 \
-           ${RPSRC}/pxa_cf_initorder_hack-r0.patch;patch=1 \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/pxa_pcmcia_init-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
@@ -132,6 +137,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
 CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
+CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 "
 
 ##############################################################
 # Configure memory/ramdisk split for collie

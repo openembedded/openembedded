@@ -4,9 +4,10 @@ LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
+           file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
            file://add-menu-autoscroll-options.patch;patch=1"
 S = "${WORKDIR}/e"
@@ -24,4 +25,9 @@ EXTRA_OECONF = "--with-profile=${PROFILE} \
                 --x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR}"
 
-FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir}"
+FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir}"
+
+do_install_append() {
+	install -d ${D}/${sysconfdir}/X11/Xsession.d
+	install -m 755 ${WORKDIR}/Xsession.d/98enlightenment ${D}/${sysconfdir}/X11/Xsession.d
+}

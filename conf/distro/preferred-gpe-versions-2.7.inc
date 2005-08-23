@@ -3,22 +3,25 @@
 #
 
 #work around some breakages
-CVSDATE_minimo=20050401
+#CVSDATE_minimo=20050401
 
 #set some preferred providers:
 PREFERRED_PROVIDER_gconf=gconf-dbus
 
 #specify versions, as the header says :)
-PREFERRED_VERSION_libmatchbox ?= "1.6"
+PREFERRED_VERSION_libmatchbox ?= "1.7"
 PREFERRED_VERSION_matchbox ?= "0.9.1"
 PREFERRED_VERSION_matchbox-common ?= "0.9.1"
 PREFERRED_VERSION_matchbox-desktop ?= "0.9.1"
-PREFERRED_VERSION_matchbox-wm ?= "0.9.4"
+PREFERRED_VERSION_matchbox-wm ?= "0.9.5"
 PREFERRED_VERSION_matchbox-panel ?= "0.9.2"
 PREFERRED_VERSION_matchbox-applet-inputmanager ?= "0.6"
+PREFERRED_VERSION_atk ?= "1.9.0"
 PREFERRED_VERSION_cairo ?= "0.5.2"
 PREFERRED_VERSION_glib-2.0 ?= "2.6.4"
 PREFERRED_VERSION_gtk+ ?= "2.6.7"
+PREFERRED_VERSION_pango ?= "1.8.1"
+PREFERRED_VERSION_librsvg ?= "2.6.5"
 PREFERRED_VERSION_libgpewidget ?= "0.103"
 PREFERRED_VERSION_libgpepimc ?= "0.5"
 PREFERRED_VERSION_libgpevtype ?= "0.12"

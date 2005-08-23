@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r1"
+PR = "r3"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -86,10 +86,10 @@ do_compile () {
 	rm -rf ${S}/lib
 
 	# Install upgrade mode files
-	mv ${S}/home/httpd/html/Management/upgrade.htm ${S}/home/httpd/html/Management/upgrade-old.htm 
-	mv ${S}/home/httpd/html/Management/upgrade.cgi ${S}/home/httpd/html/Management/upgrade-old.cgi 
-	install -m 644 ${WORKDIR}/upgrade.htm ${S}/home/httpd/html/Management
-	install -m 755 ${WORKDIR}/upgrade.cgi ${S}/home/httpd/html/Management
+#	mv ${S}/home/httpd/html/Management/upgrade.htm ${S}/home/httpd/html/Management/upgrade-old.htm 
+#	mv ${S}/home/httpd/html/Management/upgrade.cgi ${S}/home/httpd/html/Management/upgrade-old.cgi 
+#	install -m 644 ${WORKDIR}/upgrade.htm ${S}/home/httpd/html/Management
+#	install -m 755 ${WORKDIR}/upgrade.cgi ${S}/home/httpd/html/Management
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \
 		${S}/home/httpd/html/Management/upgrade.htm
 }
