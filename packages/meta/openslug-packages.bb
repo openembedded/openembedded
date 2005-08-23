@@ -98,7 +98,6 @@ OPENSLUG_PACKAGES = "\
 	pwc \
 	python \
 	quilt \
-	qc-usb-messenger \
 	reiserfsprogs reiser4progs \
 	rsync \
 	samba \
