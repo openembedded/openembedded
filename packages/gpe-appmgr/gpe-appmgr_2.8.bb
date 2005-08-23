@@ -1,5 +1,5 @@
 DESCRIPTION = "GPE application launcher"
-DEPENDS = "libgpewidget libgpelaunch cairo"
+DEPENDS = "libgpewidget libgpelaunch cairo libxsettings-client"
 SECTION = "gpe"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
