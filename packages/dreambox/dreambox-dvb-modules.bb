@@ -5,7 +5,7 @@ LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 KV = "2.6.9"
-PV = "${KV}-20050620"
+PV = "${KV}-20050808"
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
