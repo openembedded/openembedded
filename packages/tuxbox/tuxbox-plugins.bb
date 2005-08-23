@@ -7,7 +7,7 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;me
            file://remove_nonworking.diff;patch=1;pnum=1 \
            file://game_names.diff;patch=1;pnum=1"
 
-CVSDATE = "20050716"
+CVSDATE = "20050720"
 PV = "0.0+cvs${CVSDATE}"
 PR = "r0"
 
