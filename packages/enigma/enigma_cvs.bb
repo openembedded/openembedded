@@ -24,7 +24,7 @@ FILES_${PN} += " ${datadir}/tuxbox ${datadir}/fonts"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-target=native --with-boxtype=dm7020 "
+EXTRA_OECONF = "--with-target=native --with-boxtype=${MACHINE} "
 
 do_configure_prepend() {
 	mkdir -p m4
