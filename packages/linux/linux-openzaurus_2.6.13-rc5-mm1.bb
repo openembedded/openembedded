@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r9"
+PR = "r10"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -80,13 +80,15 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
            ${RPSRC}/pxa27x_extraregs-r2.patch;patch=1 \
-           ${RPSRC}/spitzbase-r4.patch;patch=1 \
+           ${RPSRC}/spitzbase-r5.patch;patch=1 \
            ${RPSRC}/spitzkbd-r1.patch;patch=1 \
            ${RPSRC}/spitzssp-r4.patch;patch=1 \
            ${RPSRC}/spitzbl-r1.patch;patch=1 \
            ${RPSRC}/spitzts-r1.patch;patch=1 \
            ${RPSRC}/spitzcf-r1.patch;patch=1 \
            ${RPSRC}/spitz_power-r1.patch;patch=1 \
+           ${RPSRC}/spitz_usbhost-r0.patch;patch=1 \
+           ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \
            ${RPSRC}/scoop_susres-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r0.patch;patch=1 \
