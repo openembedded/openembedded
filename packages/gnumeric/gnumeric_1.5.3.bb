@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
 S = "${WORKDIR}/gnumeric-${PV}"
-DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui"
+DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
 inherit gnome flow-lossage
