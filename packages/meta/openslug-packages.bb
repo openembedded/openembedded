@@ -118,6 +118,7 @@ OPENSLUG_PACKAGES = "\
 	unionfs-modules unionfs-utils \
 	usbutils \
 	util-linux \
+	vim \
 	vlan \
 	vsftpd \
 	wakelan \
