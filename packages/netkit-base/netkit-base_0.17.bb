@@ -7,6 +7,8 @@ SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-base-${PV}.
            file://init \
            file://inetd.conf"
 
+PR = "r1"
+
 EXTRA_OEMAKE = "-C inetd"
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' all
