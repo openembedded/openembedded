@@ -1,7 +1,7 @@
 DESCRIPTION = "Driver for QuickCam Messenger and Communicate usb cameras"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
+MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 PR = "r1"
 
