@@ -229,7 +229,7 @@ python populate_packages_prepend () {
 
 		kernelver = bb.data.getVar('PV', d, 1) + bb.data.getVar('KERNEL_LOCALVERSION', d, 1)
 		kernelver_stripped = kernelver
-		m = re.match('^(.*-hh.*)\..*$', kernelver)
+		m = re.match('^(.*-hh.*)[\.\+].*$', kernelver)
 		if m:
 			kernelver_stripped = m.group(1)
 		path = bb.data.getVar("PATH", d, 1)
