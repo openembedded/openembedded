@@ -4,12 +4,13 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz \
-file://fix-pda.patch;patch=1"
+	file://fix-pda.patch;patch=1 \
+	file://vlc-tremor.patch;patch=1"
 S = "${WORKDIR}/vlc-${PV}"
 
 inherit autotools

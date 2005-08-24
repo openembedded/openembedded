@@ -1,0 +1,14 @@
+--- vlc-0.8.1/modules/codec/vorbis.c.orig	2005-08-05 19:57:05 +0200
++++ vlc-0.8.1/modules/codec/vorbis.c	2005-08-05 20:01:22 +0200
+@@ -481,7 +481,11 @@
+ #endif
+ 
+     if( p_oggpacket->bytes &&
++#ifdef MODULE_NAME_IS_tremor
++        vorbis_synthesis( &p_sys->vb, p_oggpacket, 1 ) == 0 )
++#else
+         vorbis_synthesis( &p_sys->vb, p_oggpacket ) == 0 )
++#endif
+         vorbis_synthesis_blockin( &p_sys->vd, &p_sys->vb );
+ 
+     /* **pp_pcm is a multichannel float vector. In stereo, for
