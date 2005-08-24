@@ -193,6 +193,7 @@ module_autoload_rfcomm = "rfcomm"
 module_autoload_sa1100-rtc = "sa1100-rtc"
 
 # alias defaults (alphabetically sorted)
+module_conf_af_packet = "alias net-pf-17 af_packet"
 module_conf_bluez = "alias net-pf-31 bluez"
 module_conf_bnep = "alias bt-proto-4 bnep"
 module_conf_hci_uart = "alias tty-ldisc-15 hci_uart"
