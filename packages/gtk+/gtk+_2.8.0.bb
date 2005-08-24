@@ -9,10 +9,8 @@ DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt cair
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
-#           file://no-demos.patch;patch=1 \
            file://no-xwc.patch;patch=1 \
            file://automake-lossage.patch;patch=1 \
-#           file://gtk+-handhelds.patch;patch=1 \
 	   file://spinbutton.patch;patch=1 \
 	   file://hardcoded_libtool.patch;patch=1 \
 	   file://disable-tooltips.patch;patch=1 \
@@ -21,9 +19,10 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
 	   file://xsettings.patch;patch=1 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
-	   file://migration.patch;patch=1;pnum=0 \
-#	   file://single-click.patch;patch=1 \
-"
+	   file://migration.patch;patch=1;pnum=0"
+#           file://no-demos.patch;patch=1
+#           file://gtk+-handhelds.patch;patch=1
+#	   file://single-click.patch;patch=1
 
 inherit autotools pkgconfig
 
