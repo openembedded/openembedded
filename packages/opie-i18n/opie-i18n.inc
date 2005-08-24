@@ -32,6 +32,7 @@ do_install() {
 		then
 			install -m 0644 ${WORKDIR}/dict/dawg.$f ${D}${palmtopdir}/etc/dict/
 		fi
+		install -m 0644 ${WORKDIR}/dict/dawg ${D}${palmtopdir}/etc/dict/
 	done
 }
 
@@ -48,7 +49,7 @@ FILES_opie-dict-cz = "${palmtopdir}/etc/dict/dawg.cz"
 FILES_opie-dict-da = "${palmtopdir}/etc/dict/dawg.da"
 FILES_opie-dict-de = "${palmtopdir}/etc/dict/dawg.de"
 FILES_opie-dict-dk = "${palmtopdir}/etc/dict/dawg.dk"
-FILES_opie-dict-en = "${palmtopdir}/etc/dict/dawg.en"
+FILES_opie-dict-en = "${palmtopdir}/etc/dict/dawg"
 FILES_opie-dict-es = "${palmtopdir}/etc/dict/dawg.es"
 FILES_opie-dict-fr = "${palmtopdir}/etc/dict/dawg.fr"
 FILES_opie-dict-hu = "${palmtopdir}/etc/dict/dawg.hu"
