@@ -1,0 +1,359 @@
+diff -Nur c3000_pre/linux/drivers/char/drm/r128_state.c c3000_work/linux/drivers/char/drm/r128_state.c
+--- c3000_pre/linux/drivers/char/drm/r128_state.c	2004-08-21 09:48:33.000000000 +0900
++++ c3000_work/linux/drivers/char/drm/r128_state.c	2004-12-16 21:11:04.000000000 +0900
+@@ -23,8 +23,22 @@
+  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  * DEALINGS IN THE SOFTWARE.
+  *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * RED HAT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ * THIS SOFTWARE IS NOT INTENDED FOR USE IN SAFETY CRITICAL SYSTEMS
++ *
+  * Authors:
+  *    Gareth Hughes <gareth@valinux.com>
++ *
++ * Memory allocation size checks added 14/01/2003, Alan Cox <alan@redhat.com>
++ * Memory allocation size checks enhanced 16/02/2004, Thomas Biege <thomas@suse.de>
++ *
+  */
+ 
+ #include "r128.h"
+@@ -902,6 +916,9 @@
+ 	DRM_DEBUG( "%s\n", __FUNCTION__ );
+ 
+ 	count = depth->n;
++
++	if( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( copy_from_user( &x, depth->x, sizeof(x) ) ) {
+ 		return -EFAULT;
+ 	}
+@@ -996,6 +1013,9 @@
+ 
+ 	count = depth->n;
+ 
++	if( count > 4096 || count <= 0)
++		return -EMSGSIZE;
++
+ 	x = kmalloc( count * sizeof(*x), GFP_KERNEL );
+ 	if ( x == NULL ) {
+ 		return -ENOMEM;
+@@ -1110,6 +1130,9 @@
+ 	DRM_DEBUG( "%s\n", __FUNCTION__ );
+ 
+ 	count = depth->n;
++
++	if ( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( copy_from_user( &x, depth->x, sizeof(x) ) ) {
+ 		return -EFAULT;
+ 	}
+@@ -1152,9 +1175,14 @@
+ 	DRM_DEBUG( "%s\n", __FUNCTION__ );
+ 
+ 	count = depth->n;
++	if ( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( count > dev_priv->depth_pitch ) {
+ 		count = dev_priv->depth_pitch;
+ 	}
++	if( count * sizeof(int) <= 0 || count * sizeof(*x) <= 0 || count * sizeof(*y) <= 0)
++		return -EMSGSIZE;
++
+ 
+ 	x = kmalloc( count * sizeof(*x), GFP_KERNEL );
+ 	if ( x == NULL ) {
+diff -Nur c3000_pre/linux/drivers/char/drm-4.0/r128_state.c c3000_work/linux/drivers/char/drm-4.0/r128_state.c
+--- c3000_pre/linux/drivers/char/drm-4.0/r128_state.c	2004-08-21 09:48:33.000000000 +0900
++++ c3000_work/linux/drivers/char/drm-4.0/r128_state.c	2004-12-16 21:11:04.000000000 +0900
+@@ -26,6 +26,8 @@
+  * Authors:
+  *    Gareth Hughes <gareth@valinux.com>
+  *
++ * Memory allocation size checks added 16/02/2004, Thomas Biege <thomas@suse.de>
++ *
+  */
+ 
+ #define __NO_VERSION__
+@@ -938,6 +940,9 @@
+ 	}
+ 
+ 	count = depth->n;
++
++	if( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( copy_from_user( &x, depth->x, sizeof(x) ) ) {
+ 		return -EFAULT;
+ 	}
+@@ -1047,6 +1052,9 @@
+ 	}
+ 
+ 	count = depth->n;
++	if( count > 4096 || count <= 0 || count * sizeof(*x) <= 0 ||
++	    count * sizeof(*y) <= 0)
++		return -EMSGSIZE;
+ 
+ 	x = kmalloc( count * sizeof(*x), 0 );
+ 	if ( x == NULL ) {
+@@ -1178,6 +1186,9 @@
+ 	}
+ 
+ 	count = depth->n;
++
++	if ( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( copy_from_user( &x, depth->x, sizeof(x) ) ) {
+ 		return -EFAULT;
+ 	}
+@@ -1235,9 +1246,13 @@
+ 	}
+ 
+ 	count = depth->n;
++	if ( count > 4096 || count <= 0)
++		return -EMSGSIZE;
+ 	if ( count > dev_priv->depth_pitch ) {
+ 		count = dev_priv->depth_pitch;
+ 	}
++	if( count * sizeof(int) <= 0 || count * sizeof(*x) <= 0 || count * sizeof(*y) <= 0)
++		return -EMSGSIZE;
+ 
+ 	x = kmalloc( count * sizeof(*x), 0 );
+ 	if ( x == NULL ) {
+diff -Nur c3000_pre/linux/drivers/sound/sb_audio.c c3000_work/linux/drivers/sound/sb_audio.c
+--- c3000_pre/linux/drivers/sound/sb_audio.c	2004-08-21 09:48:54.000000000 +0900
++++ c3000_work/linux/drivers/sound/sb_audio.c	2004-12-16 21:11:04.000000000 +0900
+@@ -879,7 +879,7 @@
+ 			c -= locallen; p += locallen;
+ 		}
+ 		/* used = ( samples * 16 bits size ) */
+-		*used = len << 1;
++		*used = (max_in > (max_out << 1)) ? (max_out << 1) : max_in;
+ 		/* returned = ( samples * 8 bits size ) */
+ 		*returned = len;
+ 	}
+diff -Nur c3000_pre/linux/fs/isofs/dir.c c3000_work/linux/fs/isofs/dir.c
+--- c3000_pre/linux/fs/isofs/dir.c	2004-08-21 09:48:59.000000000 +0900
++++ c3000_work/linux/fs/isofs/dir.c	2004-12-16 21:11:04.000000000 +0900
+@@ -63,7 +63,8 @@
+ 			break;
+ 
+ 		/* Convert remaining ';' to '.' */
+-		if (c == ';')
++		/* Also '/' to '.' (broken Acorn-generated ISO9660 images) */
++		if (c == ';' || c == '/')
+ 			c = '.';
+ 
+ 		new[i] = c;
+diff -Nur c3000_pre/linux/fs/jbd/journal.c c3000_work/linux/fs/jbd/journal.c
+--- c3000_pre/linux/fs/jbd/journal.c	2004-08-21 09:48:59.000000000 +0900
++++ c3000_work/linux/fs/jbd/journal.c	2004-12-16 21:11:04.000000000 +0900
+@@ -671,6 +671,7 @@
+ 
+ 	bh = getblk(journal->j_dev, blocknr, journal->j_blocksize);
+ 	lock_buffer(bh);
++	memset(bh->b_data, 0, journal->j_blocksize);
+ 	BUFFER_TRACE(bh, "return this buffer");
+ 	return journal_add_journal_head(bh);
+ }
+diff -Nur c3000_pre/linux/fs/ncpfs/dir.c c3000_work/linux/fs/ncpfs/dir.c
+--- c3000_pre/linux/fs/ncpfs/dir.c	2004-08-21 09:49:00.000000000 +0900
++++ c3000_work/linux/fs/ncpfs/dir.c	2004-12-16 21:11:04.000000000 +0900
+@@ -266,8 +266,8 @@
+ 	struct ncp_server *server;
+ 	struct inode *dir = dentry->d_parent->d_inode;
+ 	struct ncp_entry_info finfo;
+-	int res, val = 0, len = dentry->d_name.len + 1;
+-	__u8 __name[len];
++	int res, val = 0, len;
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+ 	if (!dentry->d_inode || !dir)
+ 		goto finished;
+@@ -291,14 +291,15 @@
+ 		dentry->d_parent->d_name.name, dentry->d_name.name,
+ 		NCP_GET_AGE(dentry));
+ 
++	len = sizeof(__name);
+ 	if (ncp_is_server_root(dir)) {
+ 		res = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, 1);
++				 dentry->d_name.len, 1);
+ 		if (!res)
+ 			res = ncp_lookup_volume(server, __name, &(finfo.i));
+ 	} else {
+ 		res = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, !ncp_preserve_case(dir));
++				 dentry->d_name.len, !ncp_preserve_case(dir));
+ 		if (!res)
+ 			res = ncp_obtain_info(server, dir, __name, &(finfo.i));
+ 	}
+@@ -548,9 +549,9 @@
+ 	int valid = 0;
+ 	int hashed = 0;
+ 	ino_t ino = 0;
+-	__u8 __name[256];
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+-	qname.len = 256;
++	qname.len = sizeof(__name);
+ 	if (ncp_vol2io(NCP_SERVER(inode), __name, &qname.len,
+ 			entry->i.entryName, entry->i.nameLen,
+ 			!ncp_preserve_entry_case(inode, entry->i.NSCreator)))
+@@ -705,16 +706,19 @@
+ {
+ 	struct ncp_server* server = NCP_SBP(sb);
+ 	struct nw_info_struct i;
+-	int result, len = strlen(server->m.mounted_vol) + 1;
+-	__u8 __name[len];
++	int result;
+ 
+ 	if (ncp_single_volume(server)) {
++		int len;
+ 		struct dentry* dent;
++		__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+-		result = -ENOENT;
+-		if (ncp_io2vol(server, __name, &len, server->m.mounted_vol,
+-								len-1, 1))
++		len = sizeof(__name);
++		result = ncp_io2vol(server, __name, &len, server->m.mounted_vol,
++				    strlen(server->m.mounted_vol), 1);
++		if (result)
+ 			goto out;
++		result = -ENOENT;
+ 		if (ncp_lookup_volume(server, __name, &i)) {
+ 			PPRINTK("ncp_conn_logged_in: %s not found\n",
+ 				server->m.mounted_vol);
+@@ -745,8 +749,8 @@
+ 	struct ncp_server *server = NCP_SERVER(dir);
+ 	struct inode *inode = NULL;
+ 	struct ncp_entry_info finfo;
+-	int error, res, len = dentry->d_name.len + 1;
+-	__u8 __name[len];
++	int error, res, len;
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+ 	error = -EIO;
+ 	if (!ncp_conn_valid(server))
+@@ -755,14 +759,15 @@
+ 	PPRINTK("ncp_lookup: server lookup for %s/%s\n",
+ 		dentry->d_parent->d_name.name, dentry->d_name.name);
+ 
++	len = sizeof(__name);
+ 	if (ncp_is_server_root(dir)) {
+ 		res = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, 1);
++						dentry->d_name.len, 1);
+ 		if (!res)
+ 			res = ncp_lookup_volume(server, __name, &(finfo.i));
+ 	} else {
+ 		res = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, !ncp_preserve_case(dir));
++				 dentry->d_name.len, !ncp_preserve_case(dir));
+ 		if (!res)
+ 			res = ncp_obtain_info(server, dir, __name, &(finfo.i));
+ 	}
+@@ -825,9 +830,9 @@
+ {
+ 	struct ncp_server *server = NCP_SERVER(dir);
+ 	struct ncp_entry_info finfo;
+-	int error, result, len = dentry->d_name.len + 1;
++	int error, result, len;
+ 	int opmode;
+-	__u8 __name[len];
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 	
+ 	PPRINTK("ncp_create_new: creating %s/%s, mode=%x\n",
+ 		dentry->d_parent->d_name.name, dentry->d_name.name, mode);
+@@ -836,8 +841,9 @@
+ 		goto out;
+ 
+ 	ncp_age_dentry(server, dentry);
++	len = sizeof(__name);
+ 	error = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, !ncp_preserve_case(dir));
++			   dentry->d_name.len, !ncp_preserve_case(dir));
+ 	if (error)
+ 		goto out;
+ 
+@@ -880,8 +886,8 @@
+ {
+ 	struct ncp_entry_info finfo;
+ 	struct ncp_server *server = NCP_SERVER(dir);
+-	int error, len = dentry->d_name.len + 1;
+-	__u8 __name[len];
++	int error, len;
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+ 	DPRINTK("ncp_mkdir: making %s/%s\n",
+ 		dentry->d_parent->d_name.name, dentry->d_name.name);
+@@ -890,8 +896,9 @@
+ 		goto out;
+ 
+ 	ncp_age_dentry(server, dentry);
++	len = sizeof(__name);
+ 	error = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, !ncp_preserve_case(dir));
++			   dentry->d_name.len, !ncp_preserve_case(dir));
+ 	if (error)
+ 		goto out;
+ 
+@@ -909,8 +916,8 @@
+ static int ncp_rmdir(struct inode *dir, struct dentry *dentry)
+ {
+ 	struct ncp_server *server = NCP_SERVER(dir);
+-	int error, result, len = dentry->d_name.len + 1;
+-	__u8 __name[len];
++	int error, result, len;
++	__u8 __name[NCP_MAXPATHLEN + 1];
+ 
+ 	DPRINTK("ncp_rmdir: removing %s/%s\n",
+ 		dentry->d_parent->d_name.name, dentry->d_name.name);
+@@ -923,8 +930,9 @@
+ 	if (!d_unhashed(dentry))
+ 		goto out;
+ 
++	len = sizeof(__name);
+ 	error = ncp_io2vol(server, __name, &len, dentry->d_name.name,
+-						len-1, !ncp_preserve_case(dir));
++			   dentry->d_name.len, !ncp_preserve_case(dir));
+ 	if (error)
+ 		goto out;
+ 
+@@ -1022,9 +1030,8 @@
+ {
+ 	struct ncp_server *server = NCP_SERVER(old_dir);
+ 	int error;
+-	int old_len = old_dentry->d_name.len + 1;
+-	int new_len = new_dentry->d_name.len + 1;
+-	__u8 __old_name[old_len], __new_name[new_len];
++	int old_len, new_len;
++	__u8 __old_name[NCP_MAXPATHLEN + 1], __new_name[NCP_MAXPATHLEN + 1];
+ 
+ 	DPRINTK("ncp_rename: %s/%s to %s/%s\n",
+ 		old_dentry->d_parent->d_name.name, old_dentry->d_name.name,
+@@ -1037,14 +1044,16 @@
+ 	ncp_age_dentry(server, old_dentry);
+ 	ncp_age_dentry(server, new_dentry);
+ 
++	old_len = sizeof(__old_name);
+ 	error = ncp_io2vol(server, __old_name, &old_len,
+-					old_dentry->d_name.name, old_len-1,
++			   old_dentry->d_name.name, old_dentry->d_name.len,
+ 					!ncp_preserve_case(old_dir));
+ 	if (error)
+ 		goto out;
+ 
++	new_len = sizeof(__new_name);
+ 	error = ncp_io2vol(server, __new_name, &new_len,
+-					new_dentry->d_name.name, new_len-1,
++			   new_dentry->d_name.name, new_dentry->d_name.len,
+ 					!ncp_preserve_case(new_dir));
+ 	if (error)
+ 		goto out;

@@ -3,7 +3,7 @@
 #
 
 #work around some breakages
-CVSDATE_minimo=20050401
+#CVSDATE_minimo=20050401
 
 #set some preferred providers:
 PREFERRED_PROVIDER_gconf=gconf-dbus
@@ -48,9 +48,9 @@ PREFERRED_VERSION_gpe-contacts ?= "0.41"
 PREFERRED_VERSION_gpe-today ?= "0.08"
 PREFERRED_VERSION_matchbox-panel-manager ?= "0.1"
 PREFERRED_VERSION_dbus ?= "0.23.4"
-PREFERRED_VERSION_gpe-bluetooth ?= "0.38"
+PREFERRED_VERSION_gpe-bluetooth ?= "0.42"
 PREFERRED_VERSION_gpe-su ?= "0.18"
-PREFERRED_VERSION_gpe-conf ?= "0.1.24"
+PREFERRED_VERSION_gpe-conf ?= "0.1.25"
 PREFERRED_VERSION_gpe-clock ?= "0.20"
 PREFERRED_VERSION_gpe-mininet ?= "0.5"
 PREFERRED_VERSION_gpe-mixer ?= "0.42"

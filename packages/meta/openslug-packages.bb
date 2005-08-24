@@ -7,9 +7,12 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 OPENSLUG_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
 	atftp \
 	autoconf \
 	automake \
+	aumix \
 	bash \
 	bind \
 	binutils \
@@ -48,7 +51,9 @@ OPENSLUG_PACKAGES = "\
 	irssi \
 	joe \
 	jpeg \
+	lcdproc \
 	less \
+	libdvb \
 	libpam \
 	libpng \
 	libtool \
@@ -113,6 +118,7 @@ OPENSLUG_PACKAGES = "\
 	unionfs-modules unionfs-utils \
 	usbutils \
 	util-linux \
+	vim \
 	vlan \
 	vsftpd \
 	wakelan \

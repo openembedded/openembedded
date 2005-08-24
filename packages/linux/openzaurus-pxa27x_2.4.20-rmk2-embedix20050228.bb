@@ -60,6 +60,8 @@ CMDLINE_SHARP_spitz      = "RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO
 CMDLINE_SHARP_akita      = "EQUIPMENT=0 LOGOLANG=1 DEFYEAR=2006 LOGO=1 LAUNCH=q"
 CMDLINE_ROOT = "root=/dev/mtdblock2"
 CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_MTDPARTS} ${CMDLINE_SHARP} ${CMDLINE_INIT}"
+CMDLINE = "console=tty1 root=/dev/mtdblock2 mtdparts=sharpsl-nand:7168k@0k(smf),5120k@7168k(root),-(home) jffs2_orphaned_inodes=delete RTC_RESET=1 EQUIPMENT=4 LOGOLANG=1 DEFYEAR=2005 LOGO=1 LAUNCH=q"
+
 
 #
 # Compensate for sucky bootloader on all Sharp Zaurus models

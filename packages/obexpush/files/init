@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Start or stop the OBEX Push daemon.
+#
+# Written by Michael Haynie <mbhaynie@zoominternet.net>
+#
+# It might be better to just edit the bluetooth script, 
+# since opd depends heavily on it.
+#
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+[ -f /etc/default/opd_args ] && . /etc/default/opd_args
+
+case "$1" in
+    start)
+        echo -n "Starting the OBEX Push daemon: "
+        start-stop-daemon -S -x /usr/sbin/opd -- --daemonize $OPD_ARGS
+        if [ $? = 0 ]; then
+            echo "opd."
+        else
+            echo "(failed.)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping the OBEX Push daemon: "
+        start-stop-daemon -K \
+                -x /usr/sbin/opd
+        echo "opd."
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        exit
+        ;;
+    *)
+        echo "Usage: " $0 " {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0
+
