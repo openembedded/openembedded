@@ -596,7 +596,18 @@ CONFIG_PPP_BSDCOMP=m
 #
 # Wireless LAN (non-hamradio)
 #
-# CONFIG_NET_RADIO is not set
+CONFIG_NET_RADIO=y
+# CONFIG_STRIP is not set
+# CONFIG_WAVELAN is not set
+# CONFIG_ARLAN is not set
+# CONFIG_AIRONET4500 is not set
+# CONFIG_AIRONET4500_NONCS is not set
+# CONFIG_AIRONET4500_PROC is not set
+# CONFIG_AIRO is not set
+# CONFIG_HERMES is not set
+# CONFIG_PLX_HERMES is not set
+# CONFIG_PCI_HERMES is not set
+CONFIG_NET_WIRELESS=y
 
 #
 # Token Ring devices
