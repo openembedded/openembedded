@@ -1,10 +1,11 @@
 LICENSE = "GPL"
 DESCRIPTION = "Linux Digital Video Broadcast library"
+DESCRIPTION_libdvb-dev = "Headers for libdvb development"
 HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 SECTION = "libs"
 PRIORITY = "optional"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz"
 S = "${WORKDIR}/${PN}-${PV}"
