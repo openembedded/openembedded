@@ -193,6 +193,7 @@ module_autoload_rfcomm = "rfcomm"
 module_autoload_sa1100-rtc = "sa1100-rtc"
 
 # alias defaults (alphabetically sorted)
+module_conf_af_packet = "alias net-pf-17 af_packet"
 module_conf_bluez = "alias net-pf-31 bluez"
 module_conf_bnep = "alias bt-proto-4 bnep"
 module_conf_hci_uart = "alias tty-ldisc-15 hci_uart"
@@ -229,7 +230,7 @@ python populate_packages_prepend () {
 
 		kernelver = bb.data.getVar('PV', d, 1) + bb.data.getVar('KERNEL_LOCALVERSION', d, 1)
 		kernelver_stripped = kernelver
-		m = re.match('^(.*-hh.*)\..*$', kernelver)
+		m = re.match('^(.*-hh.*)[\.\+].*$', kernelver)
 		if m:
 			kernelver_stripped = m.group(1)
 		path = bb.data.getVar("PATH", d, 1)
