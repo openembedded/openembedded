@@ -163,7 +163,6 @@ else
 ucslugc build-ucslugc:
 endif
 
-
 .PHONY: unslung-image build-unslung-image
 ifneq ($(HOST_MACHINE),armeb)
 unslung-image build-unslung-image: unslung/.configured bitbake/.configured openembedded/.configured
@@ -177,7 +176,7 @@ ifneq ($(HOST_MACHINE),armeb)
 openslug-image build-openslug-image: openslug/.configured bitbake/.configured openembedded/.configured
 	( cd openslug ; ${MAKE} image )
 else
-openslug build-openslug:
+openslug-image build-openslug-image:
 endif
 
 .PHONY: ucslugc-image build-ucslugc-image
@@ -185,8 +184,11 @@ ifneq ($(HOST_MACHINE),armeb)
 ucslugc-image build-ucslugc-image: ucslugc/.configured bitbake/.configured openembedded/.configured
 	( cd ucslugc ; ${MAKE} image)
 else
-ucslugc build-ucslugc:
+ucslugc-image build-ucslugc-image:
 endif
+
+.PHONY: build-optware
+build-optware: build-optware-nslu2 build-optware-wl500g
 
 .PHONY: optware-nslu2 build-optware-nslu2
 ifneq ($(HOST_MACHINE),armeb)
