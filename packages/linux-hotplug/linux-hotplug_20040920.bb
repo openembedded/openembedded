@@ -3,12 +3,12 @@ for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
 HOMEPAGE = "http://linux-hotplug.sourceforge.net/"
 LICENSE = "GPL"
-RPROVIDES = "hotplug"
-RCONFLICTS = "hotplug"
-RREPLACES = "hotplug"
+RPROVIDES_${PN} = "hotplug"
+RCONFLICTS_${PN} = "hotplug"
+RREPLACES_${PN} = "hotplug"
 SECTION = "base"
 RSUGGESTS = "pciutils usbutils"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
 	file://userspecified_hcd.patch;patch=1 \
