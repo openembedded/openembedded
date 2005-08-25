@@ -1,4 +1,4 @@
-PR = "r6"
+PR = "r7"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol"
