@@ -12,7 +12,7 @@ EXTRA_OECONF = "--disable-lynx --disable-doxygen"
 do_stage () {
 	oe_libinstall -a -so -C src libdaemon ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/libdaemon
-	for i in dlog.h dfork.h dsignal.h dnonblock.h dpid.h; do
+	for i in dlog.h dexec.h dfork.h dsignal.h dnonblock.h dpid.h; do
 		install -m 0644 ${S}/src/$i ${STAGING_INCDIR}/libdaemon/
 	done
 }

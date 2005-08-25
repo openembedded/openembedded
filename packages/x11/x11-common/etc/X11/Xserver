@@ -63,7 +63,7 @@ case `module_id` in
 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
 		ARGS="$ARGS -rgba rgb" ;;
 	"SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
-		ARGS="$ARGS -rgba rgb -screen 640x480@270" ;;
+		ARGS="$ARGS -rgba rgb -screen 480x640@270" ;;
 	"Simpad")
 		ARGS="$ARGS -rgba rgb" ;;
 	"Generic OMAP1510/1610/1710")
