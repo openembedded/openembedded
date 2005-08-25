@@ -3,9 +3,9 @@ LICENSE = MIT
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
            binutils-cross-sdk gcc-cross-sdk gdb-cross \
            libidl libsvg-cairo sed-native \
-           meta-gpe \
+           meta-gpe gstreamer\
            opie-mail"
-PR = "r5"
+PR = "r7"
 
 PACKAGES = ""
 
@@ -51,24 +51,14 @@ libice-dev \
 libidl-2-dev \
 libipkg-dev \
 libjpeg-dev \
-libmailwrapper-dev \
 libmb-dev \
 libmimedir-dev \
 libopenobex-1.0-dev \
-libopiebluez2-dev \
-libopiedb2-dev \
-libopiecore2-dev \
-libopienet2-dev \
-libopiepim2-dev \
-libopieui2-dev \
 libpcap-dev \
 libpixman-dev \
 libpng-dev \
 libpng12-dev \
 libpopt-dev \
-libqpe1-dev \
-libqte2-dev \
-libqtaux2-dev \
 libreadline-dev \
 libschedule-dev \
 libsm-dev \
@@ -113,7 +103,20 @@ xextensions-dev \
 libxmu-dev \
 xproto-dev \
 xtrans-dev \
+gstreamer-dev \
 "
+
+#libopiebluez2-dev \
+#libopiedb2-dev \
+#libopiecore2-dev \
+#libopienet2-dev \
+#libopiepim2-dev \
+#libopieui2-dev \
+#libqpe1-dev \
+#libqte2-dev \
+#libqtaux2-dev \
+#libmailwrapper-dev \
+
 
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
