@@ -69,8 +69,8 @@ do_stage_append () {
 }
 
 PACKAGES = "${SRCNAME} ${SRCNAME}-themes ${SRCNAME}-dev ${SRCNAME}-examples"
-FILES_${SRCNAME} = "${libdir}"
+FILES_${SRCNAME} = "${libdir}/lib*.so*"
 FILES_${SRCNAME}-themes = "${datadir}/${SRCNAME}/themes ${datadir}/${SRCNAME}/data ${datadir}/${SRCNAME}/fonts ${datadir}/${SRCNAME}/pointers ${datadir}/${SRCNAME}/images ${datadir}/${SRCNAME}/users ${datadir}/${SRCNAME}/images ${datadir}/${SRCNAME}/styles"
-FILES_${SRCNAME}-dev += "${bindir}/${SRCNAME}-config ${libdir}/pkgconfig ${datadir}/${SRCNAME}/include"
+FILES_${SRCNAME}-dev += "${bindir}/${SRCNAME}-config ${libdir}/pkgconfig ${libdir}/lib*.?a ${datadir}/${SRCNAME}/include"
 FILES_${SRCNAME}-examples = "${bindir} ${datadir}"
 
