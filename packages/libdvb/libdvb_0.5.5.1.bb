@@ -5,9 +5,11 @@ HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 SECTION = "libs"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz"
+SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz \
+	  file://topf2ps.patch;patch=1"
+
 S = "${WORKDIR}/${PN}-${PV}"
 
 inherit autotools pkgconfig
