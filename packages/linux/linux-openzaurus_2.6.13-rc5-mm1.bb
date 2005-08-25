@@ -95,9 +95,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${RPSRC}/spitz_base-r8.patch;patch=1 \
            ${RPSRC}/spitz_pm-r0.patch;patch=1 \
            ${RPSRC}/scoop_susres-r0.patch;patch=1 \
+           ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r0.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
+           ${RPSRC}/pxa_pcmcia_init-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -156,7 +158,6 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} debug"
 # Enable or disable ELPP via local.conf - default is "no"
 #
 ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
-
 ###############################################################
 # module configs specific to this kernel
 #
