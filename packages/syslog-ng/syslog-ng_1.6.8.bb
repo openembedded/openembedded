@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol"
@@ -12,6 +12,7 @@ inherit autotools update-rc.d
 EXTRA_OECONF = "--with-libol=${STAGING_BINDIR}/"
 CONFFILES_${PN} = "${sysconfdir}/${PN}/syslog-ng.conf"
 INITSCRIPT_NAME = "syslog-ng"
+INITSCRIPT_PARAMS = "defaults 05"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/${PN}
