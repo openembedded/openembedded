@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Online Screenshot
+Name=Upload Screenshot
 Comment=Upload a screenshot to http://handhelds.org/scap
 Exec=scap
 Terminal=0
