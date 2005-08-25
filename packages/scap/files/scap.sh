@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sleep 5
+sleep 2
 if [ -x /usr/bin/bl ]; then
 	bl toggle
 fi
