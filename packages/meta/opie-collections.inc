@@ -33,17 +33,22 @@ OPIE_BASE_DECOS = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 OPIE_BASE_STYLES = "opie-style-flat opie-style-liquid opie-style-fresh \
                     opie-style-metal opie-style-web opie-style-phase"
 
-OPIE_BASE_DEPENDS = "ipkg timezones ntp bluez-utils-nodbus irda-utils \
-                     openobex-apps libopieobex0 wireless-tools usbutils"
-OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset \
-                      bluez-utils-nodbus openobex-apps libopieobex0 wireless-tools "
+OPIE_BLUETOOTH_DEPENDS = "bluez-utils-nodbus openobex obexftp openobex-apps obexpush \
+                          libopieobex0 libopietooth1 \
+                          opie-bluepin opie-bluetoothapplet opie-bluetoothmanager"
+OPIE_BLUETOOTH_RDEPENDS = "bluez-utils-nodbus obexftp openobex-apps obexpush \
+                           opie-bluepin opie-bluetoothapplet opie-bluetoothmanager"
+
+OPIE_BASE_DEPENDS = "ipkg timezones ntp irda-utils wireless-tools usbutils ${OPIE_BLUETOOTH_DEPENDS}"
+OPIE_BASE_RDEPENDS = "timezones ntpdate opie-handwriting-classicset wireless-tools ${OPIE_BLUETOOTH_RDEPENDS}"
 
 #
 # Clamshell models can benefit from the autorotate applet
 #
-OPIE_BASE_DEPENDS_append_c7x0 = " opie-autorotateapplet"
-OPIE_BASE_DEPENDS_append_spitz = " opie-autorotateapplet"
-OPIE_BASE_DEPENDS_append_akita = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_c7x0   = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_spitz  = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_akita  = " opie-autorotateapplet"
+OPIE_BASE_DEPENDS_append_borzoi = " opie-autorotateapplet"
 
 # Keyboard models can benefit from the VT and logout applets
 OPIE_BASE_APPLETS_append_openzaurus = " opie-vtapplet opie-logoutapplet"
