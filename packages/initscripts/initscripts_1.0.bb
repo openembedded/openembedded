@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r56"
+PR = "r57"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -103,7 +103,7 @@ do_install () {
 	fi
 
     case ${MACHINE} in
-        c7x0 | tosa | spitz | akita )
+        c7x0 | tosa | spitz | akita | borzoi )
 			install -m 0755 ${WORKDIR}/keymap		${D}${sysconfdir}/init.d
 			ln -sf	../init.d/keymap	${D}${sysconfdir}/rcS.d/S00keymap
 			install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
