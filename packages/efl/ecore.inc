@@ -5,6 +5,7 @@ LEAD_SONAME = "libecore.so"
 LICENSE = "MIT"
 # can also have openssl, dbus
 DEPENDS = "virtual/evas curl eet"
+PROVIDES = "virtual/ecore"
 
 inherit efl
 
