@@ -22,7 +22,7 @@ do_install_append() {
 }
 
 pkg_postinst() {
-	update-rc.d syslog remove
+	update-rc.d -f syslog remove
 }
 
 pkg_postrm() {
