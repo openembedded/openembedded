@@ -3,9 +3,10 @@ DESCRIPTION = "This package contains the scripts necessary \
 for hotplug Linux support, and lets you plug in new devices \
 and use them immediately."
 LICENSE = "GPL"
-RPROVIDES = "hotplug"
-RCONFLICTS = "hotplug"
-RREPLACES = "hotplug"
+RPROVIDES_${PN} = "hotplug"
+RCONFLICTS_${PN} = "hotplug"
+RREPLACES_${PN} = "hotplug"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_29.tar.gz \
 	   file://busybox.patch;patch=1 \
