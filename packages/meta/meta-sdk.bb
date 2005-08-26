@@ -5,7 +5,7 @@ DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
            libidl libsvg-cairo sed-native \
            meta-gpe gstreamer\
            opie-mail"
-PR = "r7"
+PR = "r8"
 
 PACKAGES = ""
 
@@ -85,7 +85,6 @@ libxpm-dev \
 libxrandr-dev \
 libxrender-dev \
 libxsettings-client-dev \
-libxsettings-dev \
 libxss-dev \
 libxt-dev \
 libxtst-dev \
