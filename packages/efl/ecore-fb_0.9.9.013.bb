@@ -1,6 +1,5 @@
 include ecore.inc
-PROVIDES += "virtual/ecore"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-job \
@@ -16,6 +15,8 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-ipc \
 		--enable-ecore-txt \
 		--disable-ecore-x \
+		--disable-curl \
+		--without-curl-config \
 		--enable-ecore-config \
 		--disable-openssl"
 
