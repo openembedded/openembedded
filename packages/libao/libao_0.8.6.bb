@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 PR = "r0"
 
-SRC_URI = "http://www.xiph.org/ao/src/libao-${PV}.tar.gz"
+SRC_URI = "http://downloads.xiph.org/releases/ao/libao-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
