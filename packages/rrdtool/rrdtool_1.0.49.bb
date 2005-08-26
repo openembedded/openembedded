@@ -4,7 +4,7 @@ HOMEPAGE = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"
 PR = "r1"
-SRC_URI = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-${PV}.tar.gz \
+SRC_URI = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.x/rrdtool-${PV}.tar.gz \
 	file://perl-make-options.diff;patch=1;pnum=0"
 
 inherit autotools
