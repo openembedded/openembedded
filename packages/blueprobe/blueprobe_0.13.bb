@@ -1,4 +1,4 @@
-SECTION = "x11/network"
+SECTION = "base"
 LICENSE = "GPL"
 inherit gpe
 
