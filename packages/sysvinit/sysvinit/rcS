@@ -12,6 +12,10 @@ prevlevel=N
 umask 022
 export PATH runlevel prevlevel
 
+#	Make sure proc is mounted
+#
+[ -d "/proc/1" ] || mount /proc
+
 #
 #	See if system needs to be setup. This is ONLY meant to
 #	be used for the initial setup after a fresh installation!
@@ -36,7 +40,6 @@ trap ":" INT QUIT TSTP
 #       If so, calculate the number of scripts and the incremental step
 #
 if [ "$VERBOSE" = no ]; then
-    mount /proc
     if [ -e /proc/progress ]; then
         set `ls -1 /etc/rc$runlevel.d/S* | wc`
         numscripts=$1
