@@ -16,5 +16,8 @@ case $MACHINE in
 	"Simpad")
 		xmodmap - < /etc/X11/simpad.xmodmap
 		;;
+	"HP iPAQ H2200")
+		xmodmap - < /etc/X11/h2200.xmodmap
+		;;
 esac
 
