@@ -78,7 +78,7 @@ Manuel Teira <manuel.teira@telefonica.net>
  		    delete qt_screen;
 --- /dev/null
 +++ qt-2.3.10/src/3rdparty/kernel/aticore/aticore.h
-@@ -0,0 +1,567 @@
+@@ -0,0 +1,574 @@
 +/*
 + * AtiCore 2D acceleration API
 + *
@@ -248,6 +248,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +   * @return 1:success, 0:fail
 +   */
 +  int AtiCore_ProcessDetach( void );
++
 +  
 +  /**
 +   * Allocates a surface on the internal RAM.
@@ -478,6 +479,12 @@ Manuel Teira <manuel.teira@telefonica.net>
 +  int AtiCore_ProcessAttachSpecialMode( int mode );
 +
 +  /**
++   * Detach from the special mode. Whatever it means.
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessDetachSpecialMode( void );
++
++  /**
 +   * Sets up the position of the Graphic viewport ?
 +   * @param x X coordinate
 +   * @param y Y coordinate
@@ -648,7 +655,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +#endif
 --- /dev/null
 +++ qt-2.3.10/src/kernel/qgfxw100_qws.cpp
-@@ -0,0 +1,2514 @@
+@@ -0,0 +1,2702 @@
 + /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil -*- */
 +/***************************************************************************
 +
@@ -666,7 +673,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +#include <fcntl.h>
 +#include <sys/types.h>
 +#include <sys/mman.h>
++#include <sys/time.h>
 +#include <time.h>
++
++#include <sys/ipc.h>
++#include <sys/shm.h>
 +
 +#include <qapplication.h>
 +
@@ -737,8 +748,10 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    W100Driver():
 +        m_loglevel( 0 ),
 +        m_logenabled( 0 ),
++        m_logcount( 0 ),
 +        m_attached( false )
 +    {
++        m_pid = getpid();
 +        m_loglevel = 0;
 +        char *var;
 +        if ( var = getenv( "W100_DEBUG" ) ) {
@@ -795,9 +808,19 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +    bool accelerated( int opcode )
 +    {
-+        if ( !m_attached ) return false;
++        if ( !m_attached ) {
++            log( WARNING, "Asking for accelerated '%s' when not attached",
++                 lOpcodes[opcode].str.latin1() );
++            return false;
++        }
 +        if ( opcode < EOO ) {
-+            return lOpcodes[opcode].accelerated;
++            if ( lOpcodes[opcode].accelerated ) {
++                return true;
++            } else {
++                log( WARNING, "Not accelerated '%s'",
++                     lOpcodes[opcode].str.latin1() );
++                return false;
++            }
 +        }
 +        return false;
 +    }
@@ -815,26 +838,40 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    void log( int level, const char *fmt, ... )
 +    {
 +        if ( m_logenabled && ( level <= m_loglevel ) ) {
++            timeval tv;
 +            char buffer[1024];
 +            va_list ap;
 +            va_start( ap, fmt );
 +            vsnprintf( buffer, 1023, fmt, ap );
 +            va_end( ap );
-+            fprintf( m_logfile, "%d:%s:%s\n", getpid(),
++            gettimeofday( &tv, NULL );
++            fprintf( m_logfile, "(%010u.%06u)%d:%d:%s:%s\n", 
++                     tv.tv_sec, tv.tv_usec,
++                     m_logcount++, 
++                     m_pid,
 +                     level2str( level ).latin1(), 
 +                     buffer );
 +            fflush( m_logfile );
 +        }
 +    }
 +
++    bool attached( void ) const
++    {
++        return m_attached;
++    }
 +
 +    int processAttach( void )
 +    {
 +        if ( !m_attached ) {
 +            if ( AtiCore_ProcessAttach() ) {
++                log( WARNING, "Process attached succesfully" );
 +                m_attached = true;
 +                return codOK;
++            } else {
++                log( WARNING, "Error attaching process" );
 +            }
++        } else {
++            log( WARNING, "Process already attached" );
 +        }
 +        return codError;
 +    }
@@ -843,9 +880,14 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    {
 +        if ( m_attached ) {
 +            if ( AtiCore_ProcessDetach() ) {
++                log( WARNING, "Process detached succesfully" );
 +                m_attached = false;
 +                return codOK;
++            } else {
++                log( WARNING, "Error detaching process" );
 +            }
++        } else {
++            log( WARNING, "Trying to detach while not attached" );
 +        }
 +        return codError;
 +    }
@@ -857,7 +899,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +            if ( AtiCore_AllocateSurface( handle, offset, 
 +                                          size, direction ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in allocateSurface" );
 +            }
++        } else {
++            log( WARNING, "Trying to allocateSurface while not attached" );
 +        }
 +        return codError;
 +    }
@@ -867,7 +913,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_DestroySurface( handle ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in destroySurface" );
 +            }
++        } else {
++            log( WARNING, "Trying to destroySurface while not attached" );
 +        }
 +        return codError;
 +    }
@@ -877,7 +927,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_DrawPixel( npoints, points ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in drawPixel" );
 +            }
++        } else {
++            log( WARNING, "Trying to drawPixel while not attached" );
 +        }
 +        return codError;
 +    }
@@ -887,7 +941,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetRopOperation( rop ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setRopOperation" );
 +            }
++        } else {
++            log( WARNING, "Trying to setRopOperation while not attached" );
 +        }
 +        return codError;
 +    }
@@ -897,7 +955,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetDstType( dtype ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setDstType" );
 +            }
++        } else {
++            log( WARNING, "Trying to setDstType while not attached" );
 +        }
 +        return codError;
 +    }
@@ -907,7 +969,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetSrcType( stype ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcType" );
 +            }
++        } else {
++            log( WARNING, "Trying to setSrcType while not attached" );
 +        }
 +        return codError;
 +    }
@@ -917,7 +983,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetSrcClippingRect( cliprect ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcClippingRect" );
 +            }
++        } else {
++            log( WARNING, "Trying to setSrcClippingRect while not attached" );
 +        }
 +        return codError;
 +    }
@@ -927,7 +997,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetDstClippingRect( cliprect ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setDstClippingRect" );
 +            }
++        } else {
++            log( WARNING, "Trying to setDstClippingRect while not attached" );
 +        }
 +        return codError;
 +    }
@@ -937,7 +1011,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetSrcPitchOffset( pitch, offset ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcPitchOffset" );
 +            }
++        } else {
++            log( WARNING, "Trying to setSrcPitchOffset while not attached" );
 +        }
 +        return codError;
 +    }
@@ -947,7 +1025,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetDstPitchOffset( pitch, offset ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setDstPitchOffset" );
 +            }
++        } else {
++            log( WARNING, "Trying to setDstPitchOffset while not attached" );
 +        }
 +        return codError;
 +    }
@@ -959,7 +1041,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_BitBltFilpRotate( rot, dstRect, srcRect ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in bitBltFlipRotate" );
 +            }
++        } else {
++            log( WARNING, "Trying to bitBltFlipRotate while not attached" );
 +        }
 +        return codError;
 +    }
@@ -971,7 +1057,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_StretchBlt( option, point, srcRect ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in stretchBlt" );
 +            }
++        } else {
++            log( WARNING, "Trying to stretchBlt while not attached" );
 +        }
 +        return codError;
 +    }
@@ -981,7 +1071,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_WaitComplete( msec ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in waitComplete" );
 +            }
++        } else {
++            log( WARNING, "Trying to waitComplete while not attached" );
 +        }
 +        return codError;
 +    }
@@ -991,7 +1085,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_AllocOverlay( handle ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in allocOverlay" );
 +            }
++        } else {
++            log( WARNING, "Trying to allocOverlay while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1001,7 +1099,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_ReleaseOverlay( handle ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in releaseOverlay" );
 +            }
++        } else {
++            log( WARNING, "Trying to releaseOverlay while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1011,7 +1113,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetupOverlay( handle, prop ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setupOverlay" );
 +            }
++        } else {
++            log( WARNING, "Trying to setupOverlay while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1022,7 +1128,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetupOverlayExtended( handle, prop ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setupOverlayExtended" );
 +            }
++        } else {
++            log( WARNING, "Trying to setupOverlayExtended while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1032,7 +1142,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetOverlayOnOff( handle, isShow ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setOverlayOnOff" );
 +            }
++        } else {
++            log( WARNING, "Trying to setOverlayOnOff while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1042,7 +1156,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetOverlayPos( handle, x, y ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setOverlayPos" );
 +            }
++        } else {
++            log( WARNING, "Trying to setOverlayPos while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1052,7 +1170,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetupMemoryTransfer( offset, regdata ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setupMemoryTransfer" );
 +            }
++        } else {
++            log( WARNING, "Trying to setupMemoryTransfer while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1062,7 +1184,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_TerminateMemoryTransfer() ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in terminateMemoryTransfer" );
 +            }
++        } else {
++            log( WARNING, "Trying to terminateMemoryTransfer while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1072,7 +1198,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_GetFrontBufferPitchOffset( pitch, offset ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in getFrontBufferPitchOffset" );
 +            }
++        } else {
++            log( WARNING, "Trying to getFrontBufferPitchOffset while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1082,7 +1212,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetDisplayBrightness( bri ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setDisplayBrightness" );
 +            }
++        } else {
++            log( WARNING, "Trying to setDisplayBrighness while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1092,7 +1226,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( GetAvailableVideoMem( internal, external ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in getAvailableVideoMem" );
 +            }
++        } else {
++            log( WARNING, "Trying to getAvailableVideoMem while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1102,7 +1240,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetupGraphicWindow( ( void * ) win ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setupGraphicWindow" );
 +            }
++        } else {
++            log( WARNING, "Trying to setupGraphicWindow while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1112,7 +1254,25 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_ProcessAttachSpecialMode( mode ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in processAttachSpecialMode" );
 +            }
++        } else {
++            log( WARNING, "Trying to processAttachSpecialMode while not attached" );
++        }
++        return codError;
++    }
++
++    int processDetachSpecialMode( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessDetachSpecialMode() ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in processDetachSpecialMode" );
++            }
++        } else {
++            log( WARNING, "Trying to processDetachSpecialMode while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1122,7 +1282,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetGraphicWindowPos( x, y ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setGraphicWindowPos" );
 +            }
++        } else {
++            log( WARNING, "Trying to setGraphicWindow while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1132,7 +1296,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetFrontBuffer( offset, a, b ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setFrontBuffer" );
 +            }
++        } else {
++            log( WARNING, "Trying to setFrontBuffer while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1142,7 +1310,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetGraphicWindowOnOff( val ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setGraphicWindowOnOff" );
 +            }
++        } else {
++            log( WARNING, "Trying to setGraphicWindowOnOff while not attached" );
 +        }
 +    }
 +
@@ -1161,7 +1333,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_SetFrgColour( ccolor( val ) ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in setFrgColour" );
 +            }
++        } else {
++            log( WARNING, "Trying to setFrgColour while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1171,7 +1347,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_BrushType( type, &pattern ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in brushType" );
 +            }
++        } else {
++            log( WARNING, "Trying to brushType while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1181,7 +1361,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_PaintRect( flags, rect ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in paintRect" );
 +            }
++        } else {
++            log( WARNING, "Trying to paintRect while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1191,7 +1375,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_Polyline( npoints, points ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in polyline" );
 +            }
++        } else {
++            log( WARNING, "Trying to polyline while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1201,7 +1389,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_GetPitchOffsetProperty( pitch, offset ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in getPitchOffsetProperty" );
 +            }
++        } else {
++            log( WARNING, "Trying to getPitchOffsetProperty while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1211,7 +1403,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_CursorOnOff( a, b ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in cursorOnOff" );
 +            }
++        } else {
++            log( WARNING, "Trying to cursorOnOff while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1221,7 +1417,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_BitBlt( flags, dst, src ) ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in bitBlt" );
 +            }
++        } else {
++            log( WARNING, "Trying to bitBlt while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1231,7 +1431,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        if ( m_attached ) {
 +            if ( AtiCore_WakeUpCall() ) {
 +                return codOK;
++            } else {
++                log( ERROR, "Error in wakeUpCall" );
 +            }
++        } else {
++            log( WARNING, "Trying to wakeupCall while not attached" );
 +        }
 +        return codError;
 +    }
@@ -1241,6 +1445,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    int m_loglevel;
 +    bool m_logenabled;
 +    bool m_attached;
++    int m_pid;
++    int m_logcount;
 +};
 +
 +W100Driver::Opcode W100Driver::lOpcodes[] = {
@@ -1443,32 +1649,34 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    QGfxRaster<depth,type>::setOffset( x, y );
 +}
 +
-+static QString penStyleStr( const QPen &pen ) 
-+{
-+    QString res;
-+    switch( pen.style() ) {
-+    case Qt::NoPen:
-+        res = "NoPen";
-+        break;
-+    case Qt::SolidLine:
-+        res = "SolidLine";
-+        break;
-+    case Qt::DashLine:
-+        res = "DashLine";
-+        break;
-+    case Qt::DotLine:
-+        res = "DotLine";
-+        break;
-+    case Qt::DashDotLine:
-+        res = "DashDotLine";
-+        break;
-+    case Qt::DashDotDotLine:
-+        res = "DashDotDotLine";
-+        break;
-+    default:
-+        res = "Unknown";
++namespace {
++    QString penStyleStr( const QPen &pen ) 
++    {
++        QString res;
++        switch( pen.style() ) {
++        case Qt::NoPen:
++            res = "NoPen";
++            break;
++        case Qt::SolidLine:
++            res = "SolidLine";
++            break;
++        case Qt::DashLine:
++            res = "DashLine";
++            break;
++        case Qt::DotLine:
++            res = "DotLine";
++            break;
++        case Qt::DashDotLine:
++            res = "DashDotLine";
++            break;
++        case Qt::DashDotDotLine:
++            res = "DashDotDotLine";
++            break;
++        default:
++            res = "Unknown";
++        }
++        return res;
 +    }
-+    return res;
 +}
 +
 +template<const int depth, const int type>
@@ -1532,8 +1740,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +template<const int depth,const int type>
 +void QGfxW100<depth,type>::dDrawLine( int x1, int y1, int x2, int y2 )
 +{
-+    // No point going any further if the window isn't visible
-+    if( this->ncliprect < 1 ) {
++    if ( ( this->ncliprect < 1) || 
++         ( this->cpen.style() == this->NoPen ) ) {
 +        return;
 +    }
 +
@@ -1563,10 +1771,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
++
 +    // Note that the last operation used the 2d engine
 +    ( *optype ) = 1;
-+
-+
 +
 +    // Add the offset of the gfx - used to make the origin the right
 +    // place for windows
@@ -1575,67 +1782,22 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    x2 += this->xoffs;
 +    y2 += this->yoffs;
 +
-+    // Only cope with lines going from left to right
-+    // - swap them round if this isn't TRUE
-+    if ( x1 > x2 ) {
-+        int x3 = x2;
-+        int y3 = y2;
-+        x2 = x1;
-+        y2 = y1;
-+        x1 = x3;
-+        y1 = y3;
-+    }
++    QRect boundRect( x1 < x2 ? x1: x2,
++                     y1 < y2 ? y1 : y2, 
++                     QABS( x2 - x1 ) + 1,
++                     QABS( y2 - y1 ) + 1 );
 +
-+    GFX_START( QRect( x1, 
-+                      y1 < y2 ? y1 : y2, 
-+                      ( x2 - x1  + 1 ), 
-+                      QABS( y2 - y1 ) + 1 ) );
++    GFX_START( boundRect );
 +
 +    // The clip region is defined as a series of rectangles
 +    // We repeatedly set up the hardware clip rectangle to one of
 +    // these rectangles and re-draw the line - an alternative approach
 +    // would be to clip to the rectangle in software
 +    
-+
-+
-+    /*
-+     * Just a dirty hack. Comment it out for now
-+     if ( this->dashedLines ) {
-+     brushType( 4, 0xaaaaaaaa );
-+     } else {
-+     brushType( 6, 0 );
-+     }
-+     switch( this->cpen.style() ) {
-+     case Qt::NoPen:
-+     //W100DEBUG( "Using pen style NoPen" );
-+     break;
-+     case Qt::SolidLine:
-+     //W100DEBUG( "Using pen style SolidLine" );
-+     break;
-+     case Qt::DashLine:
-+     //W100DEBUG( "Using pen style DashLine" );
-+     break;
-+     case Qt::DotLine:
-+     //W100DEBUG( "Using pen style DotLine" );
-+     break;
-+     case Qt::DashDotLine:
-+     //W100DEBUG( "Using pen style DashDotLine" );
-+     break;
-+     case Qt::DashDotDotLine:
-+     //W100DEBUG( "Using pen style DashDotDotLine" );
-+     break;
-+     default:
-+     //W100DEBUG( "Using unknown type of pen" );
-+     }
-+    */
-+
-+    //if ( driver.lastOp() != W100Driver::DRAWLINE &&
-+    //driver.lastOp() != W100Driver::POLYLINE ) {
 +    driver.setDstType( DSTTYPE_16BPP_1555 );
 +    driver.setSrcType( SRCTYPE_EQU_DST );
 +    driver.setRopOperation( ROP3_PATCOPY );
 +    driver.brushType( 6, 0 );
-+    //}
 +    driver.setFrgColour( this->cpen.color().rgb() );
 +    driver.addHit( W100Driver::DRAWLINE );
 +
@@ -1650,15 +1812,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    points[1].YCoord = y2;
 +    points[2].XCoord = x2;
 +    points[2].YCoord = y2;
-+    for ( int loopc = 0 ; loopc < this->ncliprect; loopc++ ) {
-+        ATI_CLIPRECT clip;
-+        clip.X_Top_Left = this->cliprect[loopc].x();
-+        clip.Y_Top_Left = this->cliprect[loopc].y();
-+        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
-+        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
-+        driver.setDstClippingRect( &clip );
-+
-+        driver.polyline( 3, points );
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++        if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++            ATI_CLIPRECT clip;
++            clip.X_Top_Left = this->cliprect[loopc].x();
++            clip.Y_Top_Left = this->cliprect[loopc].y();
++            clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++            clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++            driver.setDstClippingRect( &clip );
++            driver.polyline( 3, points );
++        }
 +    }
 +
 +    // Software mouse cursor stuff
@@ -1696,7 +1859,9 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                                            int index, 
 +                                            int npoints )
 +{
-+    if ( ( this->ncliprect < 1 ) || ( npoints < 1 ) ) {
++    if ( ( this->ncliprect < 1 ) || 
++         ( npoints < 1 ) ||
++         ( this->cpen.style() == this->NoPen ) ) {
 +        return;
 +    }
 +
@@ -1723,16 +1888,10 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +    ( *optype ) = 1;
 +
-+    //if ( driver.lastOp() != W100Driver::POLYLINE &&
-+    //driver.lastOp() != W100Driver::DRAWLINE ) {
-+
 +    driver.setDstType( DSTTYPE_16BPP_1555 );
 +    driver.setSrcType( SRCTYPE_EQU_DST );
 +    driver.setRopOperation( ROP3_PATCOPY );
 +    driver.brushType( 6, 0 );
-+  
-+    //}
-+
 +    driver.setFrgColour( this->cpen.color().rgb() );
 +
 +    driver.addHit( W100Driver::POLYLINE );
@@ -1806,7 +1965,6 @@ Manuel Teira <manuel.teira@telefonica.net>
 +{
 +
 +    if ( this->ncliprect < 1 ) {
-+        //W100DEBUG( "ncliprect=%d", this->ncliprect );
 +        return;
 +    }
 +
@@ -1972,16 +2130,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +    if ( checkDest( true ) ) {
 +
-+
 +        rx += this->xoffs;
 +        sx += this->xoffs;
 +        ry += this->yoffs;
 +        sy += this->yoffs;
 +
-+        GFX_START( QRect( QMIN( rx , sx  ),
++        QRect boundRect(  QMIN( rx , sx  ),
 +                          QMIN( ry , sy  ),
 +                          w + QABS( dx ) + 1,
-+                          h + QABS( dy ) + 1 ) );
++                          h + QABS( dy ) + 1 );
++        GFX_START( boundRect );
 +        ( *optype ) = 1;
 +
 +
@@ -2003,18 +2161,16 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        dstrect.YCoord = ry;
 +        dstrect.Width = w;
 +        dstrect.Height = h;
-+        driver.log( W100Driver::WARNING, 
-+                     "scroll [%d,%d,%d,%d] ->[%d,%d,%d,%d]",
-+                     sx, sy, w, h, rx, ry, w, h );
 +        for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
-+            ATI_CLIPRECT clip;
-+            clip.X_Top_Left     = this->cliprect[ loopc ].x();
-+            clip.Y_Top_Left     = this->cliprect[ loopc ].y();
-+            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
-+            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
-+
-+            driver.setDstClippingRect( &clip );
-+            driver.bitBlt( 1, &dstrect, &srcrect );
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++                driver.setDstClippingRect( &clip );
++                driver.bitBlt( 1, &dstrect, &srcrect );
++            }
 +        }
 +        GFX_END;
 +        QWSDisplay::ungrab();
@@ -2069,15 +2225,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    rx += this->xoffs;
 +    ry += this->yoffs;
 +
-+    GFX_START( QRect( rx, ry, w + 1, h + 1 ) );
++    QRect boundRect( rx, ry, w + 1, h + 1 );
++    GFX_START( boundRect );
 +
 +    ( *optype ) = 1;
-+    //if ( driver.lastOp() != W100Driver::FILLRECT ) {
++
 +    driver.setDstType( DSTTYPE_16BPP_1555 );
 +    driver.setSrcType( SRCTYPE_EQU_DST );
 +    driver.setRopOperation( ROP3_PATCOPY );
 +    driver.brushType( 6, 0 );
-+    //}
 +    driver.setFrgColour( this->cbrush.color().rgb() );
 +
 +    driver.addHit( W100Driver::FILLRECT );
@@ -2085,20 +2241,22 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    if ( this->cbrush.style() != this->NoBrush ) {
 +        //Using all the cliprects
 +        for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
-+            ATI_CLIPRECT clip;
-+            ATI_RECT rect;
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                ATI_RECT rect;
 +
-+            clip.X_Top_Left     = this->cliprect[ loopc ].x();
-+            clip.Y_Top_Left     = this->cliprect[ loopc ].y();
-+            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
-+            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
 +
-+            driver.setDstClippingRect( &clip );
-+            rect.XCoord = rx;
-+            rect.YCoord = ry;
-+            rect.Width  = w;
-+            rect.Height = h;
-+            driver.paintRect( 1, &rect );
++                driver.setDstClippingRect( &clip );
++                rect.XCoord = rx;
++                rect.YCoord = ry;
++                rect.Width  = w;
++                rect.Height = h;
++                driver.paintRect( 1, &rect );
++            }
 +        }
 +    }
 +    GFX_END;
@@ -2168,7 +2326,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if( ( this->srcdepth != 16 ) || this->alphatype != this->IgnoreAlpha ) {
++    if ( ( this->srcdepth != 16 ) || this->alphatype != this->IgnoreAlpha ) {
 +        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
 +        return;
@@ -2176,16 +2334,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +    QWSDisplay::grab( TRUE );
 +
-+    if( checkSourceDest() ) {
-+        GFX_START( QRect( rx + xoffs, ry + yoffs ,
-+                          w + 1, h + 1 ) );
++    if ( checkSourceDest() ) {
++        QRect boundRect( rx + this->xoffs, ry + this->yoffs,
++                         w + 1, h + 1 );
++        GFX_START( boundRect );
 +        ( *optype ) = 1;
 +
-+        //if ( driver.lastOp() != W100Driver::BITBLT ) {
 +        driver.setRopOperation( ROP3_SRCCOPY );
 +        driver.setDstType( DSTTYPE_16BPP_1555 );
 +        driver.setSrcType( SRCTYPE_EQU_DST );
-+        //}
 +
 +        driver.addHit( W100Driver::BITBLT );
 +
@@ -2204,13 +2361,15 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        rect2.Width = w;
 +        rect2.Height = h;
 +        for(int loopc = 0; loopc < this->ncliprect; loopc++ ) {
-+            ATI_CLIPRECT clip;
-+            clip.X_Top_Left     = this->cliprect[ loopc ].x();
-+            clip.Y_Top_Left     = this->cliprect[ loopc ].y();
-+            clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
-+            clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
-+            driver.setDstClippingRect( &clip );
-+            driver.bitBlt( 1, &rect2, &rect1 );
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++                driver.setDstClippingRect( &clip );
++                driver.bitBlt( 1, &rect2, &rect1 );
++            }
 +        }
 +        GFX_END;
 +      
@@ -2218,7 +2377,6 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    } else {
 +        QWSDisplay::ungrab();
-+        // software fallback
 +        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, 
 +                                     w, h, sx, sy );
@@ -2426,6 +2584,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +void QW100Screen::disconnect( void )
 +{
 +    driver.log( W100Driver::WARNING, "QW100Screen::disconnect()" );
++    driver.processDetachSpecialMode();
 +    driver.processDetach();
 +    QLinuxFbScreen::disconnect();
 +    printf( "[%d]QW100Screen disconnected with %d surfaces\n", 
@@ -2435,21 +2594,43 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +void QW100Screen::prepareToSuspend( void )
 +{
-+    driver.log( W100Driver::WARNING, 
++
++    driver.log( W100Driver::WARNING,
 +                 "QW100Screen::prepareToSuspend. Server = %s",
 +                 m_isServer ? "true" : "false" );
-+    driver.processDetach();
++
++    QWSDisplay::grab( true );
++    driver.waitComplete( -1 );
++
++    if ( !driver.attached() ) {
++        driver.log( W100Driver::ERROR, "Driver was not attached. " );
++    } else {
++        driver.processDetachSpecialMode();
++        driver.processDetach();
++    }
++    QWSDisplay::ungrab();
++
++    driver.log( W100Driver::WARNING, "prepareToSuspend done" );
++
 +}
 +
 +void QW100Screen::prepareToResume( void )
 +{
-+    driver.log( W100Driver::WARNING, 
++
++    driver.log( W100Driver::WARNING,
 +                 "QW100Screen::prepareToResume. Server = %s",
 +                 m_isServer ? "true": "false" );
++
 +    driver.processAttach();
++    driver.processAttachSpecialMode( ( w == 480 ) ? 0xaaab : 0xaaaa );
 +    if ( m_isServer ) {
++        QWSDisplay::grab( true );
 +        w100init();
++        QWSDisplay::ungrab();
++        driver.log( W100Driver::WARNING, "W100 restarted" );
 +    }
++    driver.log( W100Driver::WARNING, "prepareToResume done" );
++
 +}
 +
 +QW100Screen::~QW100Screen()
@@ -2462,6 +2643,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                 "QW100Screen::w100init(%dx%d)", dw, dh );
 +    ATI_GRAPHICWINDOW win;
 +    ATI_CLIPRECT      clip;
++    uint16_t          overlay;
 +
 +    win.dummy1 = 0;
 +    win.Size.XCoord = 0;
@@ -2471,10 +2653,11 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    win.Width = dw > dh ? dh : dw;
 +    win.Height = dw > dh ? dw : dh;
 +    win.Flag = DSTTYPE_16BPP_444;
-+    
-+    if ( driver.setupGraphicWindow( &win ) != W100Driver::codOK ) {
-+        return false;
-+    }
++
++    driver.waitComplete( -1 );
++    driver.setGraphicWindowOnOff( 0 );    
++
++    driver.setupGraphicWindow( &win );
 +    driver.setGraphicWindowPos( 0, 0 );
 +
 +    driver.setFrontBuffer( vramoffset, 0, 0 );
@@ -2494,7 +2677,18 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    clip.Y_Bottom_Right = 0x1FFF;
 +    
 +    driver.setSrcClippingRect( &clip );
++
++    driver.setRopOperation( ROP3_SRCCOPY );
 +    driver.setGraphicWindowOnOff( 1 );
++    driver.allocOverlay( &overlay );
++    driver.setOverlayOnOff( overlay, 0 );
++    driver.releaseOverlay( overlay );
++    driver.setDstPitchOffset( dw, vramoffset );
++    driver.setDstClippingRect( NULL );
++    for ( int i = 0; i < dw * dh ; i++ ) {
++        *( data + i ) = 0;
++    }
++    driver.waitComplete( -1 );
 +    return true;
 +}
 +
@@ -2504,19 +2698,25 @@ Manuel Teira <manuel.teira@telefonica.net>
 +
 +bool QW100Screen::initDevice()
 +{
++    QWSDisplay::grab( true );
 +    driver.log( W100Driver::WARNING, "initDevice( dw=%d, dh=%d )",
 +                 dw, dh );
 +    m_isServer = true;
 +
-+    if ( !w100init() ) return false;
++    if ( !w100init() ) {
++        QWSDisplay::ungrab();
++        return false;
++    }
 +
 +    if ( QLinuxFbScreen::initDevice() ) {
 +        //HACK
 +        //Some sprite corruption seems to be avoided
 +        //reserving some upper memory on the offscreen framebuffer memory
 +        QLinuxFbScreen::cache( 65535 * 2, 0 );
++        QWSDisplay::ungrab();
 +        return true;
 +    }
++    QWSDisplay::ungrab();
 +    return false;
 +}
 +
@@ -2529,11 +2729,6 @@ Manuel Teira <manuel.teira@telefonica.net>
 +void QW100Screen::restore()
 +{
 +    driver.log( W100Driver::WARNING, "Restoring W100..." );
-+    /*
-+      wakeUpCall();
-+      initDevice();
-+ 
-+    */
 +    QLinuxFbScreen::restore();
 +    driver.log( W100Driver::WARNING, "Restoring done" );
 +}
