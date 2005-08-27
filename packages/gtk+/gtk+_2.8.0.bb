@@ -6,7 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt cairo"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
@@ -17,6 +17,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
 	   file://gtklabel-resize-patch;patch=1 \
 	   file://menu-deactivate.patch;patch=1 \
 	   file://xsettings.patch;patch=1 \
+	   file://pkg-config-pangoft2.patch;patch=1 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0"
