@@ -45,6 +45,7 @@ OPENSLUG_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
+	ifupdown \
 	iperf \
 	ipkg-utils \
 	iptables \

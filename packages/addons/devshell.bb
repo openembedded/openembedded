@@ -1,6 +1,7 @@
 DESCRIPTION = "Runs a shell in an environment as emitted by BitBake to execute tasks"
 LICENSE = "GPL"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+PR = "r1"
 
 inherit autotools pkgconfig
 
@@ -63,7 +64,10 @@ do_package() {
 	cp $shellfile tmpfile
 	echo "#!/bin/bash --rcfile" > $shellfile
 	sed -e "s:${S}:.:g" -e "s:exit 1:true:" tmpfile >> $shellfile
+	
 	echo "export PS1='[OE::${TARGET_PREFIX}${DISTRO}-${MACHINE}]:\w\$ '" >> $shellfile
+	echo "alias ./configure=oe_runconf" >> $shellfile
+	echo "alias make=oe_runmake" >> $shellfile
 
 	mkdir -p ${DEPLOY_DIR}/addons
 	install -m 755 $shellfile ${DEPLOY_DIR}/addons
