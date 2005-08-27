@@ -97,6 +97,7 @@ OPENSLUG_PACKAGES = "\
 	puppy \
 	pwc \
 	python \
+	qc-usb-messenger \
 	quilt \
 	reiserfsprogs reiser4progs \
 	rsync \

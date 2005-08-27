@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE="-1"
 
 PACKAGES += "gpsdrive-add"
 DESCRIPTION = "GPS navigation/map display software"
-DEPENDS = "virtual/libc gtk+ pcre gpsd"
+DEPENDS = "virtual/libc libart-lgpl gtk+ pcre gpsd"
 RDEPENDS_${PN} = "gdk-pixbuf-loader-gif gpsd"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 SECTION = "x11"
@@ -14,7 +14,6 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "cvs://anonymous@cvs.gpsdrive.cc/cvsroot;module=gpsdrive \
-	   file://gpsdrive-pda-fix.patch;patch=1;pnum=1 \
            file://gpsdrive.desktop"
 
 S = "${WORKDIR}/gpsdrive"

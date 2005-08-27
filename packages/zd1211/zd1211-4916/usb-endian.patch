@@ -1,0 +1,298 @@
+diff -ur zdold/Makefile zd1211-4916-r0/Makefile
+--- zdold/Makefile	2005-02-18 21:58:36.000000000 -0800
++++ zd1211-4916-r0/Makefile	2005-02-28 17:59:05.000000000 -0800
+@@ -149,7 +149,7 @@
+ CFLAGS += -DfNEW_CODE_MAP=1
+ CFLAGS += -DfWRITE_WORD_REG=1
+ CFLAGS += -DfREAD_MUL_REG=1
+-#CFLAGS += -DENHANCE_RX=1
++CFLAGS += -DENHANCE_RX=1
+ 
+ all: $(MODULE)
+ 
+diff -ur zdold/src/zd1211.c zd1211-4916-r0/src/zd1211.c
+--- zdold/src/zd1211.c	2005-01-28 22:55:15.000000000 -0800
++++ zd1211-4916-r0/src/zd1211.c	2005-03-01 14:41:07.003613776 -0800
+@@ -429,16 +429,16 @@
+ 		memset(pRegBuffer, 0x0, size);                     
+ 
+  
+-    ((PUSB_WRITE_REG)pRegBuffer)->RequestID = REGID_PROG_FLSH;
+-    ((PUSB_SET_RF) pRegBuffer)->Value       = Value[0];
+-    ((PUSB_SET_RF) pRegBuffer)->Index       = Value[1];
++    ((PUSB_WRITE_REG)pRegBuffer)->RequestID = cpu_to_le16(REGID_PROG_FLSH);
++    ((PUSB_SET_RF) pRegBuffer)->Value       = cpu_to_le16(Value[0]);
++    ((PUSB_SET_RF) pRegBuffer)->Index       = cpu_to_le16(Value[1]);
+ 
+ 
+ 
+ 
+ 
+     for (ii = 2; ii < RegCount; ii ++)
+-    	((PUSB_SET_RF)pRegBuffer)->Data[ii - 2] = Value[ii];
++    	((PUSB_SET_RF)pRegBuffer)->Data[ii - 2] = cpu_to_le16(Value[ii]);
+ 
+     
+     bufSize = sizeof(u16) * (1+RegCount);
+@@ -513,7 +513,7 @@
+ 	}else
+ 		memset(pRegBuffer, 0x0, size);
+ 
+-    ((PUSB_READ_REG_REQ)pRegBuffer)->RequestID  = REGID_READ;
++	((PUSB_READ_REG_REQ)pRegBuffer)->RequestID  = cpu_to_le16(REGID_READ);
+ 
+     
+ 
+@@ -526,7 +526,7 @@
+         else if ((Address[ii] & BASE_ADDR_MASK_HOST) == USB_BASE_ADDR_EEPROM)
+            Address[ii] = ((Address[ii] - USB_BASE_ADDR_EEPROM) / 2) + cFIRMWARE_EEPROM_OFFSET;
+                                          //0x9900                     //0xF817
+-        ((PUSB_READ_REG_REQ) pRegBuffer)->Address[ii] = Address[ii];
++        ((PUSB_READ_REG_REQ) pRegBuffer)->Address[ii] = cpu_to_le16(Address[ii]);
+ 
+     }
+ 
+@@ -608,7 +608,7 @@
+     }    
+     else {
+         for (ii = 0; ii < (macp->ReadRegCount-2) / 4; ii++){
+-            pValue[ii] = *((u16 *) macp->IntEPBuffer2 + 1 + ii * 2 + 1);
++	  pValue[ii] = le16_to_cpu(*((u16 *) macp->IntEPBuffer2 + 1 + ii * 2 + 1));
+         }    
+         ret = 0;    
+ 
+@@ -686,7 +686,7 @@
+     }    
+ 
+  	down(&macp->reg_sem);	    
+-		
++
+ 
+ 
+     if ((RegCount == 0) || (!macp->bUSBDeveiceAttached) || !test_bit(ZD1211_RUNNING, &macp->flags)) {	
+@@ -712,7 +712,7 @@
+ 
+ 
+ 
+-	((PUSB_WRITE_REG)pRegBuffer)->RequestID	= REGID_WRITE;
++	((PUSB_WRITE_REG)pRegBuffer)->RequestID	= cpu_to_le16(REGID_WRITE);
+ 
+     if (RegCount > cMIN_MULTI_WRITE_REG_NUM){
+         for (i=cMIN_MULTI_WRITE_REG_NUM; i<RegCount; i++){
+@@ -724,8 +724,8 @@
+             else if ((Address[i] & BASE_ADDR_MASK_HOST) == USB_BASE_ADDR_EEPROM)
+                 Address[i] = ((Address[i] - USB_BASE_ADDR_EEPROM) / 2) + cFIRMWARE_EEPROM_OFFSET;
+ 
+-            ((PUSB_WRITE_REG)pRegBuffer)->WritePackage[i].Address = Address[i];
+-            ((PUSB_WRITE_REG)pRegBuffer)->WritePackage[i].WriteData_low = Value[i];
++            ((PUSB_WRITE_REG)pRegBuffer)->WritePackage[i].Address = cpu_to_le16(Address[i]);
++            ((PUSB_WRITE_REG)pRegBuffer)->WritePackage[i].WriteData_low = cpu_to_le16(Value[i]);
+          }
+     }
+ 
+@@ -1726,17 +1726,17 @@
+ 
+ 
+ 
+-	((PUSB_SET_RF)pRegBuffer)->RequestID = REGID_RFOFDMSET;
++	((PUSB_SET_RF)pRegBuffer)->RequestID = cpu_to_le16(REGID_RFOFDMSET);
+ 	
+ 	if (bIs3683A)
+-		((PUSB_SET_RF)pRegBuffer)->Value = 1;
++		((PUSB_SET_RF)pRegBuffer)->Value = cpu_to_le16(1);
+ 	else
+-		((PUSB_SET_RF)pRegBuffer)->Value = 2;
++		((PUSB_SET_RF)pRegBuffer)->Value = cpu_to_le16(2);
+ 	
+-	((PUSB_SET_RF)pRegBuffer)->Index = (u16)S_bit_cnt;
++	((PUSB_SET_RF)pRegBuffer)->Index = cpu_to_le16((u16)S_bit_cnt);
+ 
+     for (i = 0; i < S_bit_cnt; i ++)
+-        ((PUSB_SET_RF)pRegBuffer)->Data[i] = InputValue[i];
++        ((PUSB_SET_RF)pRegBuffer)->Data[i] = cpu_to_le16(InputValue[i]);
+ 
+ 
+ 	bufSize = sizeof(u16) * (3+S_bit_cnt);
+@@ -2229,7 +2229,7 @@
+ 
+ 
+ 
+-    ZD1211DEBUG(4, "actual_length = %x\n", urb->actual_length);
++    ZD1211DEBUG(2, "actual_length = %x\n", urb->actual_length);
+ 
+ 
+ 	rx_struct = list_entry(macp->active_rx_list.next,
+@@ -2266,7 +2266,7 @@
+     if (last_pkt_len <= (macp->wMaxPacketSize - 4)){
+ 
+ 
+-       if (((u16 *) pRxBuffer)[TotalLength / sizeof(u16) - 1] == 0x697E){
++       if (le16_to_cpu(((u16 *) pRxBuffer)[TotalLength / sizeof(u16) - 1]) == 0x697E){
+ 
+             total_rx_struct = 3;
+             //ZD1211DEBUG(0, "Got merged Rx Frames!!\n");
+@@ -2288,8 +2288,8 @@
+             int CurFrmLen;
+ 
+             if (total_rx_struct> 1){
+-                CurFrmLen = ((u16 *) pRxBuffer)[TotalLength / sizeof(u16) + i - 4];
+-                //ZD1211DEBUG(2, "CurFrmLen = %x\n", CurFrmLen);
++                CurFrmLen = le16_to_cpu(((u16 *) pRxBuffer)[TotalLength / sizeof(u16) + i - 4]);
++                //ZD1211DEBUG(2, "[RX] CurFrmLen = %x\n", CurFrmLen);
+             }    
+ 
+             else
+@@ -2316,22 +2316,22 @@
+ 
+ 	
+ 
+-            rfd->CbStatus = RFD_STATUS_COMPLETE;
+-            rfd->ActualCount = CurFrmLen;
++            rfd->CbStatus = cpu_to_le32(RFD_STATUS_COMPLETE);
++            rfd->ActualCount = cpu_to_le32(CurFrmLen);
+ 
+ 
+             if (i > 0){
+                 memcpy(&rfd->RxBuffer[macp->rxOffset],
+                    	pRxBuffer + tmpLen,
+-                    rfd->ActualCount);
++                    CurFrmLen);
+ 
+             }        
+ 
+ 
+-            tmpLen += (rfd->ActualCount & ~0x03);
++            tmpLen += (CurFrmLen & ~0x03);
+ 
+ 
+-            if (rfd->ActualCount & 0x03)
++            if (CurFrmLen & 0x03)
+                 tmpLen += 4;
+ 
+        }
+@@ -2361,8 +2361,8 @@
+ 
+ #else
+ 
+-    rfd->CbStatus = RFD_STATUS_COMPLETE;
+-    rfd->ActualCount = TotalLength;
++    rfd->CbStatus = cpu_to_le32(RFD_STATUS_COMPLETE);
++    rfd->ActualCount = cpu_to_le32(TotalLength);
+     zd1205_rx_isr(macp);
+ #endif
+ 
+@@ -2521,8 +2521,8 @@
+ 				// this is USB_READ_REGISTER response
+ 	            macp->ReadRegCount = (u16)actual_length;
+ 
+-                intNum = *(u16 *)(macp->IntEPBuffer+2);
+-                //intNum = macp->IntEPBuffer[2] + (((u16)macp->IntEPBuffer[3]) << 8);
++                //intNum = *(u16 *)(macp->IntEPBuffer+2);
++                intNum = macp->IntEPBuffer[2] + (((u16)macp->IntEPBuffer[3]) << 8);
+                
+                 if (intNum == (InterruptCtrl | macp->USBCSRAddress)){   
+ 					// Handle non-RxTx interrupt
+@@ -2549,8 +2549,8 @@
+ 			case EPINT_RetryFial_Event:
+ 			{
+ 				u8 *pMacAddr = macp->IntEPBuffer + 4;
+-				u8 NewRate = (u8)(*(u16 *)(macp->IntEPBuffer + 2));
+-                //u8 NewRate = macp->IntEPBuffer[2];
++				//u8 NewRate = (u8)(*(u16 *)(macp->IntEPBuffer + 2));
++                u8 NewRate = (u8)macp->IntEPBuffer[2];
+ 				u16 aid;
+ 
+ 
+@@ -2568,7 +2568,7 @@
+  		        //ZD1211DEBUG(2, "NewRate = %x\n", NewRate);
+  		       	aid = zd_AidLookUp(pMacAddr);
+ 	           	zd_EventNotify(EVENT_TX_COMPLETE, ZD_RETRY_FAILED, 0xff, (U32)aid);
+-				macp->retryFailCnt +=  *(u16 *)(macp->IntEPBuffer + 10);
++				macp->retryFailCnt +=  le16_to_cpu(*(u16 *)(macp->IntEPBuffer + 10));
+ 				break;
+ 
+ 			}
+@@ -2634,7 +2634,7 @@
+ 	// in current design, no need to use spinlock
+ 
+ 
+-	intr_status = *(u16 *)(macp->IntEPBuffer3+4);
++	intr_status = le16_to_cpu(*(u16 *)(macp->IntEPBuffer3+4));
+     //ZD1211DEBUG(2, "intr_status = %x\n", intr_status);
+  
+     if (!intr_status)
+@@ -2765,7 +2765,7 @@
+ 
+ 	sw_tcb = macp->activeTxQ->first;
+ 	if (sw_tcb) 
+-		sw_tcb->pTcb->CbStatus = CB_STATUS_COMPLETE;
++		sw_tcb->pTcb->CbStatus = cpu_to_le32(CB_STATUS_COMPLETE);
+ 
+ 	zd1205_tx_isr(macp);
+ 
+@@ -2889,23 +2889,25 @@
+ 	Tbd++;
+ 
+ 	//Mac Header
+-	memcpy(dst, (u8 *)Tbd->TbdBufferAddrLowPart, Tbd->TbdCount);
++	memcpy(dst, (u8 *)le32_to_cpu(Tbd->TbdBufferAddrLowPart), 
++	       le32_to_cpu(Tbd->TbdCount));
+ 
+     ZD1211DEBUG(2, "MAC Header Length = %x\n", Tbd->TbdCount);
+-	dst += Tbd->TbdCount;
++	dst += le32_to_cpu(Tbd->TbdCount);
+ 
+-	TotalLength += Tbd->TbdCount;
++	TotalLength += le32_to_cpu(Tbd->TbdCount);
+ 
+ 	Tbd++;
+ 
+ 	//MAC Body
+- 	memcpy(dst, (u8 *)Tbd->TbdBufferAddrLowPart, Tbd->TbdCount);
++ 	memcpy(dst, (u8 *)le32_to_cpu(Tbd->TbdBufferAddrLowPart), 
++	       le32_to_cpu(Tbd->TbdCount));
+ 
+     ZD1211DEBUG(2, "Tx DATA Length = %x\n", Tbd->TbdCount);
+-	dst += Tbd->TbdCount;
++	dst += le32_to_cpu(Tbd->TbdCount);
+ 
+ 
+-	TotalLength += Tbd->TbdCount;
++	TotalLength += le32_to_cpu(Tbd->TbdCount);
+ 	Tbd++;
+ 
+     ZD1211DEBUG(2, "TotalLength = %x\n", TotalLength);
+@@ -2914,7 +2916,7 @@
+ 
+ 
+ 	// write down total length
+-	*((u16 *)(macp->tx_buff+4)) = (u16)TotalLength + 14;
++	*((u16 *)(macp->tx_buff+4)) = cpu_to_le16((u16)TotalLength + 14);
+ 
+ 	ZD1211DEBUG(2, "macp->tx_buff+4 = %x\n", *((u16 *)(macp->tx_buff+4)));
+ 
+diff -ur zdold/src/zd1211.h zd1211-4916-r0/src/zd1211.h
+--- zdold/src/zd1211.h	2005-01-28 22:55:14.000000000 -0800
++++ zd1211-4916-r0/src/zd1211.h	2005-03-01 14:12:15.023914712 -0800
+@@ -146,7 +146,9 @@
+ typedef struct _USB_WRITE_REG {
+ 	u16  RequestID;
+     USB_WRITE_REG_PACKAGE WritePackage[cMAX_MULTI_WRITE_REG_NUM];
+-} USB_WRITE_REG, * PUSB_WRITE_REG;
++} __attribute__((__packed__));
++
++typedef struct _USB_WRITE_REG USB_WRITE_REG, * PUSB_WRITE_REG;
+ 
+ 
+ typedef struct _USB_SET_RF {
+diff -ur zdold/src/zdshared.c zd1211-4916-r0/src/zdshared.c
+--- zdold/src/zdshared.c	2005-01-28 22:55:15.000000000 -0800
++++ zd1211-4916-r0/src/zdshared.c	2005-03-01 14:43:35.078103032 -0800
+@@ -416,6 +416,7 @@
+ 	U16 len;
+ 	Frame_t *pf = pfrmDesc->mpdu;
+ 	
++	pf->header[2] = pf->header[3] = 0; // Initialize them to something?
+ 	setFrameType(pf, ST_PROBE_REQ);
+ 	pf->body = pfrmDesc->buffer;
+ 	body = pf->body;

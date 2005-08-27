@@ -1,5 +1,6 @@
 DESCRIPTION = "The Enlightened Widget Library, \
 a simple-to-use general purpose widget library based on the enlightenment foundation libraries."
+# as of recent CVS HEAD, ewl no longer needs etox and no longer needs edb
 DEPENDS = "edb virtual/evas virtual/ecore edje emotion"
 RDEPENDS += "libewl-themes"
 LICENSE = "MIT"

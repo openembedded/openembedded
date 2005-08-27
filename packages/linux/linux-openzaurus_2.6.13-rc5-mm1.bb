@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r11"
+PR = "r16"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -38,23 +38,38 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 
 
 # Patches submitted upstream are towards top of this list 
+# Hacks should clearly named and at the bottom
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.13-rc5.bz2;patch=1 \
            ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13-rc5/2.6.13-rc5-mm1/2.6.13-rc5-mm1.bz2;patch=1 \
            ${RPSRC}/reverse_pagefault-r3.patch;patch=1 \
            ${RPSRC}/corgi_tspmufix-r0.patch;patch=1 \
            ${RPSRC}/nwfpe_x80-r0.patch;patch=1 \
-           ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
-           ${RPSRC}/pxa_irda-r2.patch;patch=1 \
-           ${RPSRC}/sharp_multi_pcmcia-r3.patch;patch=1 \
-           ${RPSRC}/input_power-r2.patch;patch=1 \
-           ${RPSRC}/corgi_irda-r2.patch;patch=1 \
-           ${RPSRC}/corgi_base_extras4-r0.patch;patch=1 \
-           ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
-           ${RPSRC}/corgi_power-r24.patch;patch=1 \
-           ${RPSRC}/corgi_power1-r1.patch;patch=1 \
            ${DOSRC}/mmc-bulk-r0.patch;patch=1 \
-           ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
+           ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \	   
+           ${RPSRC}/ohci_portcount-r0.patch;patch=1 \
+           ${RPSRC}/pxa_ohci_power-r0.patch;patch=1 \
+           ${RPSRC}/pxa_ohci_platform-r0.patch;patch=1 \
+           ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
+           ${RPSRC}/pxa_pcmcia_init-r0.patch;patch=1 \
+           ${RPSRC}/pxa_remove_static-r0.patch;patch=1 \
+           ${RPSRC}/pxafb_hsync-r2.patch;patch=1 \
+           ${RPSRC}/pxa27x_extraregs-r4.patch;patch=1 \
+           ${RPSRC}/sharp_multi_pcmcia-r3.patch;patch=1 \
+           ${RPSRC}/sharpsl_ssp-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_lcd-r1.patch;patch=1 \
+           ${RPSRC}/sharpsl_ts-r3.patch;patch=1 \
+           ${RPSRC}/sharpsl_bl-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-r1.patch;patch=1 \
+           ${RPSRC}/corgi_pm-r0.patch;patch=1 \
+           ${RPSRC}/spitzkbd-r1.patch;patch=1 \
+           ${RPSRC}/spitzcf-r1.patch;patch=1 \
+           ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
+           ${RPSRC}/pxa_irda-r3.patch;patch=1 \
+           ${RPSRC}/corgi_irda-r3.patch;patch=1 \
+           ${RPSRC}/input_power-r2.patch;patch=1 \	   
+           ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_bl_kick-r0.patch;patch=1 \
            ${RPSRC}/corgi_snd-r10.patch;patch=1 \
            ${DOSRC}/rmk-i2c-pxa-r0.patch;patch=1 \
            ${RPSRC}/spitz_mtd-r0.patch;patch=1 \
@@ -79,21 +94,12 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${DOSRC}/tosa-2.6.13-r1.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r5.patch;patch=1 \
-           ${RPSRC}/pxa27x_extraregs-r3.patch;patch=1 \
-           ${RPSRC}/spitzbase-r5.patch;patch=1 \
-           ${RPSRC}/spitzkbd-r1.patch;patch=1 \
-           ${RPSRC}/spitzssp-r4.patch;patch=1 \
-           ${RPSRC}/spitzbl-r1.patch;patch=1 \
-           ${RPSRC}/spitzts-r1.patch;patch=1 \
-           ${RPSRC}/spitzcf-r1.patch;patch=1 \
-           ${RPSRC}/spitz_power-r1.patch;patch=1 \
-           ${RPSRC}/spitz_usbhost-r0.patch;patch=1 \
-           ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \
+           ${RPSRC}/spitz_base-r10.patch;patch=1 \
+           ${RPSRC}/spitz_pm-r0.patch;patch=1 \
            ${RPSRC}/scoop_susres-r0.patch;patch=1 \
-           ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r0.patch;patch=1 \
+           ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
-           ${RPSRC}/pxa_pcmcia_init-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -152,6 +158,11 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} debug"
 # Enable or disable ELPP via local.conf - default is "no"
 #
 ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
+
+###############################################################
+# module configs specific to this kernel
+#
+module_autoload_pxaficp_ir = "pxaficp_ir"
 
 do_configure() {
 
