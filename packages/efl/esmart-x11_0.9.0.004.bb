@@ -1,14 +1,5 @@
-DESCRIPTION = "ESmart is a collection of smart Evas objects"
-LICENSE = "MIT"
-DEPENDS = "evas-x11 ecore-x11 virtual/imlib2 epsilon edje libtool"
+include esmart.inc
 PR = "r2"
-
-inherit efl
-
-SRC_URI += "file://compile-fix.patch;patch=1"
-
-headers = ""
-libraries = ""
 
 myheaders = "esmart_container/Esmart_Container.h \
              esmart_draggies/Esmart_Draggies.h \
@@ -25,14 +16,3 @@ mylibraries = "esmart_container \
                esmart_textarea \
                esmart_thumb \
                esmart_trans_x11"
-
-do_stage_append() {
-	install -d ${STAGING_INCDIR}/Esmart/
-	for i in ${myheaders}; do
-		install -m 0644 ${S}/src/lib/$i ${STAGING_INCDIR}/Esmart/
-	done
-	oe_libinstall -C src/lib libsmart ${STAGING_LIBDIR}/
-	for i in ${mylibraries}; do
-		oe_libinstall -C src/lib/$i lib$i ${STAGING_LIBDIR}/
-	done
-}
