@@ -1,9 +1,9 @@
 DESCRIPTION = "Engage is the E17 icon dock"
-DEPENDS = "evas-x11 ecore-x11 esmart imlib2-x11 edje ewl e"
+DEPENDS = "evas-x11 ecore-x11 esmart-x11 imlib2-x11 edje ewl e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=misc/engage \
            file://no-local-includes.patch;patch=1"
