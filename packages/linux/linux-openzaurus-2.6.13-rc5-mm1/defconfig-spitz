@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.13-rc5-mm1
-# Mon Aug 22 10:54:13 2005
+# Sat Aug 27 18:38:49 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -98,9 +98,11 @@ CONFIG_PXA_SHARPSL=y
 # CONFIG_PXA_SHARPSL_25x is not set
 CONFIG_PXA_SHARPSL_27x=y
 CONFIG_MACH_SPITZ=y
-# CONFIG_MACH_AKITA is not set
+CONFIG_MACH_AKITA=y
+CONFIG_MACH_BORZOI=y
 CONFIG_PXA27x=y
 # CONFIG_PXA_KEYS is not set
+CONFIG_PXA_SHARP_Cxx00=y
 
 #
 # Processor Type
@@ -160,7 +162,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2   debug"
+CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/hda1 rootfstype=ext3   debug"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -256,7 +258,6 @@ CONFIG_IRDA=m
 # IrDA protocols
 #
 CONFIG_IRLAN=m
-CONFIG_IRNET=m
 CONFIG_IRCOMM=m
 # CONFIG_IRDA_ULTRA is not set
 
@@ -680,7 +681,7 @@ CONFIG_HW_CONSOLE=y
 
 #
 # Serial drivers
-# 
+#
 CONFIG_SERIAL_8250=m
 CONFIG_SERIAL_8250_CS=m
 CONFIG_SERIAL_8250_NR_UARTS=4
