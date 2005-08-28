@@ -1,10 +1,10 @@
 DESCRIPTION = "Enlightenment Window Manager Utilities"
-DEPENDS = "virtual/ecore virtual/evas esmart edje eet ewl engrave virtual/imlib2 e epsilon"
+DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet ewl engrave virtual/imlib2 e epsilon"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
