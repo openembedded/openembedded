@@ -46,7 +46,15 @@ Manuel Teira <manuel.teira@telefonica.net>
  
 --- qt-2.3.10/src/kernel/qgfxraster_qws.cpp~w100
 +++ qt-2.3.10/src/kernel/qgfxraster_qws.cpp
-@@ -5945,6 +5945,10 @@
+@@ -2673,7 +2673,6 @@
+     }
+ #endif
+     // Bresenham algorithm from Graphics Gems
+-
+     int ax=QABS(dx)*2;
+     int ay=QABS(dy)*2;
+     int sy=dy>0 ? 1 : -1;
+@@ -5945,6 +5944,10 @@
  # include "qgfxmatrox_qws.cpp"
  #endif
  
@@ -57,7 +65,7 @@ Manuel Teira <manuel.teira@telefonica.net>
  #if !defined(QT_NO_QWS_VFB)
  # include "qgfxvfb_qws.cpp"
  #endif
-@@ -5999,6 +6003,9 @@
+@@ -5999,6 +6002,9 @@
  #if !defined(QT_NO_QWS_MATROX)
      { "Matrox", qt_get_screen_matrox, 1 },
  #endif
@@ -67,7 +75,7 @@ Manuel Teira <manuel.teira@telefonica.net>
  #if !defined(QT_NO_QWS_TRANSFORMED)
      { "Transformed", qt_get_screen_transformed, 0 },
  #endif
-@@ -6039,6 +6046,8 @@
+@@ -6039,6 +6045,8 @@
  	    qt_screen = driverTable[i].qt_get_screen( display_id );
  	    if ( qt_screen ) {
  		if ( qt_screen->connect( spec ) ) {
@@ -655,7 +663,7 @@ Manuel Teira <manuel.teira@telefonica.net>
 +#endif
 --- /dev/null
 +++ qt-2.3.10/src/kernel/qgfxw100_qws.cpp
-@@ -0,0 +1,2702 @@
+@@ -0,0 +1,2709 @@
 + /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil -*- */
 +/***************************************************************************
 +
@@ -1745,7 +1753,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !driver.accelerated( W100Driver::DRAWLINE ) ) {
++    if ( depth != 16 || 
++         !driver.accelerated( W100Driver::DRAWLINE ) ) {
 +        driver.addMiss( W100Driver::DRAWLINE );
 +        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
 +        return;
@@ -1865,7 +1874,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !driver.accelerated( W100Driver::POLYLINE ) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::POLYLINE ) ) {
 +        driver.addMiss( W100Driver::POLYLINE );
 +        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
 +        return;
@@ -1968,7 +1978,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !driver.accelerated( W100Driver::DRAWPOINT) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::DRAWPOINT) ) {
 +        driver.addMiss( W100Driver::DRAWPOINT );
 +        QGfxRaster<depth,type>::drawPoint( x, y );
 +        return;
@@ -2037,7 +2048,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !driver.accelerated( W100Driver::DRAWPOINTS ) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::DRAWPOINTS ) ) {
 +        driver.addMiss( W100Driver::DRAWPOINTS );
 +        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
 +        return;
@@ -2110,7 +2122,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +                                      int w, int h, 
 +                                      int sx, int sy )
 +{
-+    if ( !driver.accelerated( W100Driver::SCROLL ) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::SCROLL ) ) {
 +        driver.addMiss( W100Driver::SCROLL );
 +        QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
 +        return;
@@ -2202,7 +2215,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +{
 +    if ( w <= 0 || h <= 0 || this->ncliprect < 1 ) return;
 +
-+    if ( !driver.accelerated( W100Driver::FILLRECT ) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::FILLRECT ) ) {
 +        driver.addMiss( W100Driver::FILLRECT );
 +        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
 +        return;
@@ -2310,7 +2324,8 @@ Manuel Teira <manuel.teira@telefonica.net>
 +        return;
 +    }
 +
-+    if ( !driver.accelerated( W100Driver::BITBLT ) ) {
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::BITBLT ) ) {
 +        driver.addMiss( W100Driver::BITBLT );
 +        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
 +        return;
