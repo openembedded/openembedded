@@ -14,9 +14,7 @@ inherit qmake
 
 PARALLEL_MAKE = ""
 QMAKE_PROFILES = "efl++.pro"
-EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${S}/src/misc INCLUDEPATH+=${S}/src/common \
-			INCLUDEPATH+=${S}/src/evas INCLUDEPATH+=${S}/src/ecore INCLUDEPATH+=${S}/src/edje \
-			LIBS+=-L${S} DESTDIR=${S} ${EFL_CONFIGURATION}"
+EXTRA_QMAKEVARS_POST = "DESTDIR=${S}"
 export OE_QMAKE_LINK="${CXX}"
 export EDIR="${S}"
 
@@ -24,7 +22,16 @@ do_configure_prepend() {
 	rm include.pro
 	cat <<EOF >include.pro
 include ( common.pro )
+
+LIBS        += -L${EDIR}
+
+CONFIG      = console release eflbasic
+INCLUDEPATH += ${EDIR}/src/common ${EDIR}/src/extra ${EDIR}/src/misc
+INCLUDEPATH += ${EDIR}/src/evas ${EDIR}/src/ecore ${EDIR}/src/edje
+INCLUDEPATH += ${EDIR}/src/esmart ${EDIR}/src/ewl
+
 DEFINES += DATADIR=\"${datadir}/efl++/\"
+
 EOF
 }
 
