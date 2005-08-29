@@ -6,13 +6,9 @@ RRECOMMENDS = "libnss-mdns"
 SECTION = "net"
 PRIORITY = "optional"
 
-SRC_URI = "http://www.freedesktop.org/~lennart/avahi-0.1.tar.gz \
-	   file://no-strict-ansi.patch;patch=1 \
-	   file://avahi-glib.pc.patch;patch=1 \
-	   file://avahi-test-memory-corruption.patch;patch=1 \
-	   file://dbus-warn.patch;patch=1 \
-	   file://resolving.patch;patch=1 \
-	   file://static-services-protocol.patch;patch=1"
+SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz"
+
+#	   file://no-strict-ansi.patch;patch=1"
 
 PACKAGES = "avahi-daemon libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib avahi-dev avahi-doc"
 
