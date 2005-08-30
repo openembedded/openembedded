@@ -1,0 +1,27 @@
+Index: gaim/gaim.desktop
+===================================================================
+--- gaim.orig/gaim.desktop	2005-06-06 03:40:46.000000000 +0200
++++ gaim/gaim.desktop	2005-08-21 02:00:18.525853592 +0200
+@@ -33,21 +33,7 @@
+ GenericName[sq]=Lajmësjellës Internet
+ GenericName[sv]=Meddelandeklient
+ GenericName[zh_CN]=互联网通讯程序
+-Name=Gaim Internet Messenger
+-Name[da]=Gaim - internet beskeder
+-Name[de]=Gaim Internet Messenger
+-Name[fr]=Gaim Messagerie Instantanée
+-Name[hu]=Gaim IM
+-Name[it]=Gaim Internet Messenger
+-Name[ko]=게임 메신저
+-Name[nb]=Gaim lynmeldingsklient
+-Name[nl]=Gaim - Expresberichten
+-Name[pl]=Komunikator Internetowy Gaim
+-Name[pt]=Mensageiro Internet Gaim
+-Name[sl]=Gaim - spletni sel
+-Name[sq]=Lajmësjellësi Internet Gaim
+-Name[sv]=Gaim Internet Messenger
+-Name[zh_CN]=Gaim 互联网通讯程序
++Name=Gaim
+ Exec=gaim
+ Icon=gaim.png
+ StartupNotify=true

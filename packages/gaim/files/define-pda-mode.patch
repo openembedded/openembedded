@@ -1,0 +1,36 @@
+Index: gaim/src/gtkgaim.h
+===================================================================
+--- gaim.orig/src/gtkgaim.h	2005-08-25 17:29:42.000000000 +0200
++++ gaim/src/gtkgaim.h	2005-08-25 19:00:37.335318168 +0200
+@@ -57,14 +57,14 @@
+  * Spacings between components, as defined by the
+  * Gnome Human Interface Guidelines.
+  */
+-#define GAIM_HIG_CAT_SPACE     18
+-#define GAIM_HIG_BORDER        12
+-#define GAIM_HIG_BOX_SPACE      6
++#define GAIM_HIG_CAT_SPACE     9
++#define GAIM_HIG_BORDER        6
++#define GAIM_HIG_BOX_SPACE     3
+ 
+ /**
+  * Do we want icons in dialogs?
+  */
+-#define ICONS_IN_DIALOGS 1
++#define ICONS_IN_DIALOGS 0
+ 
+ /**
+  * How many fields is there screen-space for vertically, before a scrollbar is needed?
+Index: gaim/src/gtkutils.c
+===================================================================
+--- gaim.orig/src/gtkutils.c	2005-08-25 19:01:19.630888264 +0200
++++ gaim/src/gtkutils.c	2005-08-25 19:02:05.067980776 +0200
+@@ -398,7 +398,7 @@
+ 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+ 	gtk_widget_show(hbox);
+ 
+-	label = gtk_label_new("    ");
++	label = gtk_label_new("  ");
+ 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+ 	gtk_widget_show(label);
+ 
