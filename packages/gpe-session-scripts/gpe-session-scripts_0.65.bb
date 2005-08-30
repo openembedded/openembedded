@@ -12,7 +12,7 @@ RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo xserver-common"
 
 SRC_URI += "file://matchbox-session \
-	file://disable-composite.xsetting"
+	file://disable-composite.xsettings"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d

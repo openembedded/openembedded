@@ -6,7 +6,7 @@ SECTION = "gnome/multimedia"
 DEPENDS = "gtk+ libglade"
 PR = "r0"
 
-SRC_URI = "http://mercury.chem.pitt.edu/~shank/glurp-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/glurp/glurp-${PV}.tar.gz"
 
 LDFLAGS += "-export-dynamic"
 

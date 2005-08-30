@@ -1,0 +1,19 @@
+Index: gaim/src/gtkstock.c
+===================================================================
+--- gaim.orig/src/gtkstock.c	2005-08-15 08:52:45.000000000 +0200
++++ gaim/src/gtkstock.c	2005-08-19 18:13:26.550881552 +0200
+@@ -214,12 +214,12 @@
+ 
+ 			pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
+ 
+ 			g_free(filename);
+ 
+-			if (!strcmp(stock_icons[i].name, GAIM_STOCK_LOGO))
+-				gaim_gtk_stock_versionize(&pixbuf, win);
++			/*if (!strcmp(stock_icons[i].name, GAIM_STOCK_LOGO))
++				gaim_gtk_stock_versionize(&pixbuf, win);*/
+ 
+ 			iconset = gtk_icon_set_new_from_pixbuf(pixbuf);
+ 
+ 			g_object_unref(G_OBJECT(pixbuf));
+ 		}

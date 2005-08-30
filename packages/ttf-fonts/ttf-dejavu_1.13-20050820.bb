@@ -5,7 +5,7 @@ HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 PV = "1.13-snapshot-20050820"
 
 #SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
-SRC_URI = "http://dejavu.sourceforge.net/snapshots/dejavu-ttf-20050820.tar.gz"
+SRC_URI = "http://handhelds.org/~hrw/mirror/dejavu-ttf-20050820.tar.gz"
 
 include ttf.inc
 

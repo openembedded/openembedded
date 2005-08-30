@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r18"
+PR = "r19"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -57,7 +57,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            ${RPSRC}/pxa27x_extraregs-r4.patch;patch=1 \
            ${RPSRC}/borzoi_machtype-r0.patch;patch=1 \
            ${RPSRC}/sharp_multi_pcmcia-r3.patch;patch=1 \
-           ${RPSRC}/sharpsl_detection-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_detection-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_ssp-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_lcd-r2.patch;patch=1 \
            ${RPSRC}/sharpsl_ts-r3.patch;patch=1 \
