@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "db3 pcre postfix-native"
 LICENSE = "IPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -32,9 +32,12 @@ do_compile () {
 
 do_install () {
 	sh ./postfix-install 'install_root=${D}' -non-interactive
-	rm -rf ${D}/var/spool/postfix
+	rm -rf ${D}${localstatedir}/spool/postfix
         mv ${D}${sysconfdir}/postfix/main.cf ${D}${sysconfdir}/postfix/sample-main.cf
-	install -m 755 ${WORKDIR}/main.cf_2.0 ${D}/var/tmp/main_cf.sh
+	install -d ${D}${localstatedir}/tmp
+	install -d ${D}${sysconfdir}/default/volatiles
+	install -d ${D}${sysconfdir}/init.d
+	install -m 755 ${WORKDIR}/main.cf_2.0 ${D}${localstatedir}/tmp/main_cf.sh
         install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_postfix
         install -m 755 ${WORKDIR}/postfix ${D}${sysconfdir}/init.d/postfix
 	mv ${D}${sbindir}/sendmail ${D}${sbindir}/sendmail.${PN}
