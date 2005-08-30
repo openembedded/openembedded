@@ -100,7 +100,7 @@ prefetch-ucslugc:
 endif
 
 .PHONY: prefetch-optware
-prefetch-optware: prefetch-optware-nslu2 prefetch-optware-wl500g
+prefetch-optware: prefetch-optware-nslu2 prefetch-optware-wl500g prefetch-optware-ds101 prefetch-optware-ds101g
 
 .PHONY: prefetch-optware-nslu2
 ifneq ($(HOST_MACHINE),armeb)
@@ -115,12 +115,12 @@ prefetch-optware-nslu2:
 endif
 endif
 
-.PHONY: prefetch-optware-wl500g
+.PHONY: prefetch-optware-%
 ifneq ($(HOST_MACHINE),armeb)
-prefetch-optware-wl500g: optware/wl500g/.configured
-	( cd optware/wl500g ; ${MAKE} source )
+prefetch-optware-%: optware/%/.configured
+	( cd optware/$* ; ${MAKE} source )
 else
-prefetch-optware-wl500g:
+prefetch-optware-%:
 endif
 
 prefetch-openslug-%-beta: releases/OpenSlug-%-beta/.configured
@@ -188,7 +188,7 @@ ucslugc-image build-ucslugc-image:
 endif
 
 .PHONY: build-optware
-build-optware: build-optware-nslu2 build-optware-wl500g
+build-optware: build-optware-nslu2 build-optware-wl500g build-optware-ds101 build-optware-ds101g
 
 .PHONY: optware-nslu2 build-optware-nslu2
 ifneq ($(HOST_MACHINE),armeb)
@@ -209,6 +209,22 @@ optware-wl500g build-optware-wl500g: optware/wl500g/.configured
 	( cd optware/wl500g ; ${MAKE} autoclean ; ${MAKE} )
 else
 optware-wl500g build-optware-wl500g:
+endif
+
+.PHONY: optware-ds101 build-optware-ds101
+ifneq ($(HOST_MACHINE),armeb)
+optware-ds101 build-optware-ds101: optware/ds101/.configured
+	( cd optware/ds101 ; ${MAKE} autoclean ; ${MAKE} )
+else
+optware-ds101 build-optware-ds101:
+endif
+
+.PHONY: optware-ds101g build-optware-ds101g
+ifneq ($(HOST_MACHINE),armeb)
+optware-ds101g build-optware-ds101g: optware/ds101g/.configured
+	( cd optware/ds101g ; ${MAKE} autoclean ; ${MAKE} )
+else
+optware-ds101g build-optware-ds101g:
 endif
 
 openslug-%-beta: update-openslug-%-beta build-openslug-%-beta upload-openslug-%-beta
@@ -241,6 +257,31 @@ setup-openembedded openembedded/.configured: MT/.configured
 	[ -e openembedded/conf/machine/nslu2.conf ] || monotone co -b org.openembedded.dev openembedded
 	touch openembedded/.configured
 
+.PHONY: setup-optware
+setup-optware optware/.configured: MT/.configured
+	[ -e downloads ]        || ( mkdir -p downloads )
+	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
+	touch optware/.configured
+
+# This pattern rule has to come before the subsequent %/.configured openembedded pattern rule.
+optware/%/.configured: optware/.configured
+	[ -e optware/$*/Makefile ] || ( \
+		mkdir -p optware/$* ; \
+		echo "OPTWARE_TARGET=$*" > optware/$*/Makefile ; \
+	 	echo "include ../Makefile" >> optware/$*/Makefile ; \
+		ln -s ../../downloads optware/$*/downloads ; \
+		ln -s ../make optware/$*/make ; \
+		ln -s ../scripts optware/$*/scripts ; \
+		ln -s ../sources optware/$*/sources ; \
+	)
+	touch optware/$*/.configured
+
+.PHONY: setup-optware-developer
+setup-optware-developer:
+	[ ! -e optware ] || ( mv optware optware-user )
+	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
+	${MAKE} setup-optware
+
 .PHONY: setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc
 setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc: setup-%: MT/.configured
 	rm -rf $*/.configured
@@ -271,42 +312,6 @@ setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc: setup-%:
 	)
 	rm -rf $*/tmp/cache
 	touch $*/.configured
-
-.PHONY: setup-optware
-setup-optware optware/.configured: MT/.configured
-	[ -e downloads ]        || ( mkdir -p downloads )
-	[ -e optware/Makefile ] || ( cvs -q -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co -d optware unslung )
-	touch optware/.configured
-
-optware/nslu2/.configured: optware/.configured
-	[ -e optware/nslu2/Makefile ] || ( \
-		mkdir -p optware/nslu2 ; \
-		echo "OPTWARE_TARGET=nslu2" > optware/nslu2/Makefile ; \
-	 	echo "include ../Makefile" >> optware/nslu2/Makefile ; \
-		ln -s ../../downloads optware/nslu2/downloads ; \
-		ln -s ../make optware/nslu2/make ; \
-		ln -s ../scripts optware/nslu2/scripts ; \
-		ln -s ../sources optware/nslu2/sources ; \
-	)
-	touch optware/nslu2/.configured
-
-optware/wl500g/.configured: optware/.configured
-	[ -e optware/wl500g/Makefile ] || ( \
-		mkdir -p optware/wl500g ; \
-		echo "OPTWARE_TARGET=wl500g" > optware/wl500g/Makefile ; \
-	 	echo "include ../Makefile" >> optware/wl500g/Makefile ; \
-		ln -s ../../downloads optware/wl500g/downloads ; \
-		ln -s ../make optware/wl500g/make ; \
-		ln -s ../scripts optware/wl500g/scripts ; \
-		ln -s ../sources optware/wl500g/sources ; \
-	)
-	touch optware/wl500g/.configured
-
-.PHONY: setup-optware-developer
-setup-optware-developer:
-	[ ! -e optware ] || ( mv optware optware-user )
-	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
-	${MAKE} setup-optware
 
 .PHONY: setup-slugimage-developer
 setup-slugimage-developer:
@@ -515,15 +520,11 @@ clobber-ucslugc:
 	[ ! -e ucslugc/Makefile ] || ( cd ucslugc ; ${MAKE} clobber )
 
 .PHONY: clobber-optware
-clobber-optware: clobber-optware-nslu2 clobber-optware-wl500g
+clobber-optware: clobber-optware-nslu2 clobber-optware-wl500g clobber-optware-ds101 clobber-optware-ds101g
 
-.PHONY: clobber-optware-nslu2
-clobber-optware-nslu2:
-	[ ! -e optware/nslu2/Makefile ] || ( cd optware/nslu2 ; ${MAKE} distclean )
-
-.PHONY: clobber-optware-wl500g
-clobber-optware-wl500g:
-	[ ! -e optware/wl500g/Makefile ] || ( cd optware/wl500g ; ${MAKE} distclean )
+.PHONY: clobber-optware-%
+clobber-optware-%:
+	[ ! -e optware/$*/Makefile ] || ( cd optware/$* ; ${MAKE} distclean )
 
 .PHONY: distclean-master
 distclean-master:
@@ -599,6 +600,8 @@ endif
 ifneq ($(HOST_MACHINE),armeb)
 	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
 	- ${MAKE} build-optware-wl500g upload-optware-wl500g  || echo -n " optware/wl500g" >> builderrors.log
+#	- ${MAKE} build-optware-ds101  upload-optware-ds101   || echo -n " optware/ds101"  >> builderrors.log
+#	- ${MAKE} build-optware-ds101g upload-optware-ds101g  || echo -n " optware/ds101g" >> builderrors.log
 else
 ifeq ($(HOST_FIRMWARE),Unslung)
 	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
@@ -623,7 +626,8 @@ endif
 
 .PHONY: upload
 ifneq ($(HOST_MACHINE),armeb)
-upload: upload-openslug upload-ucslugc upload-unslung-modules upload-optware-nslu2 upload-optware-wl500g upload-sources
+upload: upload-openslug upload-ucslugc upload-unslung-modules \
+	upload-optware-nslu2 upload-optware-wl500g upload-optware-ds101 upload-optware-ds101g upload-sources
 else
 ifeq ($(HOST_FIRMWARE),OpenSlug)
 upload: upload-openslug upload-sources
@@ -699,13 +703,13 @@ else
 	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/nslu2/native/unstable
 endif
 
-.PHONY: upload-optware-wl500g
-upload-optware-wl500g: optware/wl500g/.configured
-	rsync -vlrt --exclude='Packages*' optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/wl500g/cross/unstable
-	rsync -vl optware/wl500g/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
-	rsync -vlrt --delete optware/wl500g/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/wl500g/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/wl500g/cross/unstable
+.PHONY: upload-optware-%
+upload-optware-%: optware/%/.configured
+	rsync -vlrt --exclude='Packages*' optware/$*/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/$*/cross/unstable
+	rsync -vl optware/$*/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
+	rsync -vlrt --delete optware/$*/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
+	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/$*/cross/unstable
 
 .PHONY: upload-sources
 upload-sources:
