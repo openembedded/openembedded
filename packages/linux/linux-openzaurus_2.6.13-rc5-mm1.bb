@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r19"
+PR = "r20"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -105,6 +105,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.gz \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
            file://dtl1_cs-add-socket-revE.patch;patch=1 \
+	   file://connectplus-remove-ide-HACK.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa-2.6 \
            file://defconfig-collie \
