@@ -1,4 +1,4 @@
-DESCRIPTION = "Entrace is the Enlightenment login manager"
+DESCRIPTION = "Entrance is the Enlightenment login manager"
 SECTION = "e/apps"
 LICENSE = "MIT"
 # can also use pam and crypt
