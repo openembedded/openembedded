@@ -4,12 +4,13 @@ LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
            file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
-           file://add-menu-autoscroll-options.patch;patch=1"
+           file://add-menu-autoscroll-options.patch;patch=1 \
+           file://remove-large-fonts.patch;patch=1"
 S = "${WORKDIR}/e"
 
 inherit autotools
