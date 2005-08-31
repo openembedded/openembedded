@@ -4,13 +4,13 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
-QTVER = "qt-x11-opensource-desktop-4.0.0-rc1"
+QTVER = "qt-x11-opensource-src-4.0.1"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.bz2 \
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
 

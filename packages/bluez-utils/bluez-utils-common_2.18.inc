@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs-${PV} pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
@@ -21,7 +21,7 @@ SRC_URI_append_openzaurus = " file://default-manfid-0x0-to-bcps.patch"
 S = "${WORKDIR}/bluez-utils-${PV}"
 
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} \
-                --enable-pcmcia --enable-initscripts"
+                --enable-pcmcia --enable-initscripts --enable-bcm203x"
 
 inherit autotools update-rc.d
 
