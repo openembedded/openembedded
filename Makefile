@@ -600,7 +600,7 @@ endif
 ifneq ($(HOST_MACHINE),armeb)
 	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
 	- ${MAKE} build-optware-wl500g upload-optware-wl500g  || echo -n " optware/wl500g" >> builderrors.log
-	- ${MAKE} build-optware-ds101  upload-optware-ds101   || echo -n " optware/ds101"  >> builderrors.log
+#	- ${MAKE} build-optware-ds101  upload-optware-ds101   || echo -n " optware/ds101"  >> builderrors.log
 	- ${MAKE} build-optware-ds101g upload-optware-ds101g  || echo -n " optware/ds101g" >> builderrors.log
 else
 ifeq ($(HOST_FIRMWARE),Unslung)
