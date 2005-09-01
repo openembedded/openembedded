@@ -26,6 +26,6 @@ RDEPENDS_task-e-x11-core += "entrance e-wm"
 #
 # E
 #
-DEPENDS +=             "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
+DEPENDS +=             "                entice eclair examine evidence e-modules e-utils elitaire"
 RDEPENDS_task-e-x11 += "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
 
