@@ -1,7 +1,8 @@
 DESCRIPTION = "Meta-package for Enlightenment/X11"
 LICENSE = "MIT"
-PACKAGES = "task-enlightenment-x11 task-enlightenment-x11-core"
-PR = "r5"
+PACKAGES = "task-e-x11-core task-e-x11"
+PROVIDES = "task-e-x11-core task-e-x11"
+PR = "r6"
 
 FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
               e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
@@ -11,20 +12,20 @@ ALLOW_EMPTY = 1
 #
 # X
 #
-DEPENDS_task-enlightenment-x11-core  += "diet-x11 rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo fontconfig \
+DEPENDS =                  "diet-x11 rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo fontconfig \
                                          ttf-bitstream-vera chkhinge"
-RDEPENDS_task-enlightenment-x11-core += "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo            \
+RDEPENDS_task-e-x11-core = "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo            \
                                          ttf-bitstream-vera chkhinge"
 
 #
 # E-core
 #
-DEPENDS_task-enlightenment-x11-core  += "entrance e-wm"
-RDEPENDS_task-enlightenment-x11-core += "entrance e-wm"
+DEPENDS +=                  "entrance e-wm"
+RDEPENDS_task-e-x11-core += "entrance e-wm"
 
 #
 # E
 #
-DEPENDS_task-enlightenment-x11 +=  "task-enlightenment-x11-core entice eclair examine evidence e-modules e-utils elitaire"
-RDEPENDS_task-enlightenment-x11 += "task-enlightenment-x11-core entice eclair examine evidence e-modules e-utils elitaire"
+DEPENDS +=             "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
+RDEPENDS_task-e-x11 += "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
 
