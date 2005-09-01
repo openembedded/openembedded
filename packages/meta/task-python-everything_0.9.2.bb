@@ -2,11 +2,11 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml1"
+PR = "ml2"
 
 DEPENDS = "\
-		python-ao 			\
-		python-bluez		\
+		python-ao 		\
+		python-pybluez		\
 		python-constraint	\
 		python-crypto		\
 		python-dialog		\
