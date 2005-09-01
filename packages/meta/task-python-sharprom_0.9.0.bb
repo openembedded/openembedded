@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml3"
+PR = "ml4"
 
 NONWORKING = "\
 		python-codes		\
@@ -15,8 +15,8 @@ NONWORKING = "\
 		python-vorbis"
 
 DEPENDS = "\
-		python-ao 			\
-		python-bluez		\
+		python-ao 		\
+		python-pybluez		\
 		python-constraint	\
 		python-dialog		\
 		python-egenix-mx-base   \
