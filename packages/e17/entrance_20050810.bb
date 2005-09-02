@@ -7,7 +7,7 @@ RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r7"
+PR = "r9"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
            file://Xserver.patch;patch=1 \
@@ -15,6 +15,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
            file://allow-missing-xsession.patch;patch=1 \
            file://run-Xinit.patch;patch=1 \
            file://use-bash.patch;patch=1 \
+           file://set-display-env.patch;patch=1 \
 	   file://Xinit.d \
 	   file://Sessions"
 	   
