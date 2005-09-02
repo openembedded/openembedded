@@ -16,7 +16,6 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
            file://run-Xinit.patch;patch=1 \
            file://use-bash.patch;patch=1 \
            file://set-display-env.patch;patch=1 \
-	   file://Xinit.d \
 	   file://Sessions"
 	   
 S = "${WORKDIR}/entrance"
