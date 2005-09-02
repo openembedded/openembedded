@@ -8,7 +8,7 @@
 +		chmod -x /etc/X11/Xinit.d/99gpe-login
 +fi
 +
-+exec /etc/X11/Xinit
++/etc/X11/Xinit
 +
  exec @prefix@/bin/entrance "$@"
  
