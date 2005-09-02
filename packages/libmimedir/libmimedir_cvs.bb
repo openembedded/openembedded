@@ -15,7 +15,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-headers = "mimedir-recurrence.h  mimedir-attachment.h mimedir-attendee.h mimedir-attribute.h mimedir-datetime.h mimedir-init.h mimedir-period.h mimedir-profile.h mimedir-valarm.h mimedir-vcal.h mimedir-vcard-address.h mimedir-vcard-email.h mimedir-vcard-phone.h mimedir-vcard.h mimedir-vcomponent.h mimedir-vevent.h mimedir-vfreebusy.h mimedir-vjournal.h mimedir-vtimezone.h mimedir-vtodo.h mimedir.h"
+headers = "mimedir-attachment.h mimedir-attendee.h mimedir-attribute.h mimedir-datetime.h mimedir-init.h mimedir-marshal.h mimedir-period.h mimedir-profile.h mimedir-recurrence.h mimedir-utils.h mimedir-valarm.h mimedir-vcal.h mimedir-vcard-address.h mimedir-vcard-email.h mimedir-vcard-phone.h mimedir-vcard.h mimedir-vcomponent.h mimedir-vevent.h mimedir-vfreebusy.h mimedir-vjournal.h mimedir-vtimezone.h mimedir-vtodo.h mimedir.h"
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/mimedir-1.0/mimedir
