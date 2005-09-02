@@ -124,7 +124,6 @@ OPENSLUG_PACKAGES = "\
 	vlan \
 	vsftpd \
 	wakelan \
-	watchdog \
 	wireless-tools \
 	wget \
 	xinetd \
@@ -136,6 +135,7 @@ OPENSLUG_PACKAGES = "\
 BROKEN_PACKAGES = "\
 	groff \
 	icecast \
+	watchdog \
 	"
 
 DEPENDS = 'openslug-image \
