@@ -5,7 +5,7 @@ your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
 DEPENDS = "freetype libpng jpeg eet edb"
-PROVIDES = "virtual/evas"
+PROVIDES += "virtual/evas"
 
 inherit efl
 

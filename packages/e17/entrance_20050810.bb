@@ -2,12 +2,12 @@ DESCRIPTION = "Entrance is the Enlightenment login manager"
 SECTION = "e/apps"
 LICENSE = "MIT"
 # can also use pam and crypt
-DEPENDS = "edb evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
-RDEPENDS += "bash keylaunch detect-stylus x11-common glibc-gconv-iso8859-1"
+DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
+RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
            file://Xserver.patch;patch=1 \

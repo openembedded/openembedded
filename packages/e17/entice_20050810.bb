@@ -1,7 +1,7 @@
 DESCRIPTION = "Entice is the E17 picture viewer"
 SECTION = "e/apps"
 # can also depend on GIMP for editing
-DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart"
+DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart-x11"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"

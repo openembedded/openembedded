@@ -1,6 +1,7 @@
 DESCRIPTION = "ESmart is a collection of smart Evas objects"
 LICENSE = "MIT"
 DEPENDS = "virtual/evas virtual/ecore virtual/imlib2 epsilon edje libtool"
+PROVIDES += "virtual/esmart"
 
 inherit efl
 
@@ -40,4 +41,4 @@ DEPENDS_libesmart-container += "libesmart-container-plugins"
 FILES_libesmart-container-plugins = "${libdir}/esmart/layout/*.so"
 FILES_libesmart-file-dialog = "${libdir}/libesmart_file_dialog*.so*"
 FILES_libesmart-draggies = "${libdir}/libesmart_draggies*.so*"
-FILES_libesarmt-trans-x11 = "${libdir}/libesmart_trans_x11*.so*"
+FILES_libesmart-trans-x11 = "${libdir}/libesmart_trans_x11*.so*"

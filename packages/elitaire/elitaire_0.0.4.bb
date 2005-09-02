@@ -1,5 +1,5 @@
 DESCRIPTION = "EFL-based solitaire"
-DEPENDS = "evas-x11 ecore-x11 edje esmart ewl"
+DEPENDS = "evas-x11 ecore-x11 edje esmart-x11 ewl"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"

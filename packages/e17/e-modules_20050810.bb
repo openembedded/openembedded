@@ -1,5 +1,5 @@
 DESCRIPTION = "Enlightenment Window Manager Extra Modules"
-DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet e"
+DEPENDS = "ecore-x11 evas-x11 esmart-x11 edje eet e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
