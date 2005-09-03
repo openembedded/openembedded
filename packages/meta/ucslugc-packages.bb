@@ -70,7 +70,6 @@ UCSLUGC_PACKAGES = "\
 	microcom \
 	monotone-4 \
 	monotone-5 \
-	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
@@ -130,6 +129,7 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	timezones \
 	xinetd \
 	gphoto2 \
+	mpd \
 	"
 
 # These packages have problems with thumb or thumb-interwork compilation - they
