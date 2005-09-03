@@ -31,11 +31,8 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
 FILES += "${datadir}"
 
 do_install_append() {
-	install -d ${D}/etc/X11/Xinit.d
 	install -d ${D}/etc/X11/Xsession.d
 	install -d ${D}/etc/X11/Sessions
 	
-	install -m 755 ${WORKDIR}/Xinit.d/* ${D}/etc/X11/Xinit.d
 	install -m 755 ${WORKDIR}/Sessions/* ${D}/etc/X11/Sessions
-	
 }
