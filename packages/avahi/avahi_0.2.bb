@@ -39,7 +39,7 @@ INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
 INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
 
 pkg_postinst_avahi-daemon () {
-	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon avahi
+	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi -g Avahi
 }
 
 pkg_postrm_avahi-daemon () {
