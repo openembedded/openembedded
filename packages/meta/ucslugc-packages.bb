@@ -45,7 +45,6 @@ UCSLUGC_PACKAGES = "\
 	gdb \
 	gdbm \
 	gnu-config \
-	gphoto2 \
 	grep \
 	gtk-doc \
 	gzip \
@@ -130,6 +129,7 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	screen \
 	timezones \
 	xinetd \
+	gphoto2 \
 	"
 
 # These packages have problems with thumb or thumb-interwork compilation - they
