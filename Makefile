@@ -396,7 +396,7 @@ setup-host-ubuntu:
 		cvs \
 		docbook \
 		flex \
-		g++ gawk gcj gettext \
+		gcc g++ gawk gcj gettext \
 		libc6-dev libglib2.0-dev libtool \
 		m4 make \
 		patch pkg-config \
