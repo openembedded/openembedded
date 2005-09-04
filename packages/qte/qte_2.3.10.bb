@@ -2,12 +2,12 @@ DESCRIPTION = "Qt/Embedded Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-LICENSE = "GPL QPL"
+LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r25"
+PR = "r26"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -29,10 +29,11 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-linuxfb-setmode.patch;patch=1 \
 	   file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
 	   file://fix-qscreen-sync.patch;patch=1 \
-	   file://sharp_char.h \
+       file://improve-calibration-r0.patch;patch=1 \
 	   file://key.patch;patch=1 \
-	   file://switches.h \
-	   file://bidimetrics.patch;patch=5 "
+       file://bidimetrics.patch;patch=5 \
+	   file://sharp_char.h \
+	   file://switches.h"
 
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \

@@ -3,11 +3,11 @@ SECTION = "e/apps"
 LICENSE = "MIT"
 # can also use pam and crypt
 DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
-RDEPENDS += "bash keylaunch detect-stylus x11-common glibc-gconv-iso8859-1"
+RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
-PR = "r6"
+PR = "r9"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
            file://Xserver.patch;patch=1 \
@@ -15,7 +15,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/
            file://allow-missing-xsession.patch;patch=1 \
            file://run-Xinit.patch;patch=1 \
            file://use-bash.patch;patch=1 \
-	   file://Xinit.d \
+           file://set-display-env.patch;patch=1 \
 	   file://Sessions"
 	   
 S = "${WORKDIR}/entrance"
@@ -31,11 +31,8 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
 FILES += "${datadir}"
 
 do_install_append() {
-	install -d ${D}/etc/X11/Xinit.d
 	install -d ${D}/etc/X11/Xsession.d
 	install -d ${D}/etc/X11/Sessions
 	
-	install -m 755 ${WORKDIR}/Xinit.d/* ${D}/etc/X11/Xinit.d
 	install -m 755 ${WORKDIR}/Sessions/* ${D}/etc/X11/Sessions
-	
 }

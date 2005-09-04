@@ -3,10 +3,11 @@ HOMEPAGE = "http://www.musicpd.org"
 LICENSE = "GPLv2"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/multimedia"
-DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile"
-PR = "r2"
+DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv"
+PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
+           file://save-volume-state.patch;patch=1"
 
 inherit autotools
 

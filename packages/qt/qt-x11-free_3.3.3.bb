@@ -1,10 +1,11 @@
 DESCRIPTION = "Qt/X11 Version ${PV}"
-SECTION = "libs"
+SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
+HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \

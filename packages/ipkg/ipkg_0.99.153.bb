@@ -1,3 +1,3 @@
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE = "-1"
 
 include ipkg.inc
