@@ -27,7 +27,7 @@
 /dev/rbuttons	c	660	0	0	60	0	-	-	-
 /dev/rtc	c	644	0	0	10	135	-	-	-
 /dev/sda	b	664	0	0	8	0	-	-	-
-/dev/sda	b	664	0	0	8	1	1	1	5
+/dev/sda	b	664	0	0	8	1	1	1	10
 /dev/sdb	b	664	0	0	8	16	-	-	-
 /dev/sdb	b	664	0	0	8	17	1	1	5
 /dev/sdc	b	664	0	0	8	32	-	-	-
