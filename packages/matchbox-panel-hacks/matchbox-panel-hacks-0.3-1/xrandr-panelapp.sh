@@ -6,3 +6,4 @@ xmodmap /etc/X11/xmodmap-portrait
 else 
 xrandr -o left
 xmodmap /etc/X11/xmodmap-left
+fi
