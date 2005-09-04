@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.musicpd.org"
 LICENSE = "GPLv2"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/multimedia"
-DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile"
-PR = "r3"
+DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile libiconv"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
            file://save-volume-state.patch;patch=1"
