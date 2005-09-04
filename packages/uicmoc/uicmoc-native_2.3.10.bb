@@ -1,7 +1,7 @@
 DESCRIPTION = "User Interface Generator and Meta Object Compiler (moc) for Qt(E) 2.x"
 SECTION = "devel"
 PRIORITY = "optional"
-LICENSE = "GPL/QPL"
+LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 

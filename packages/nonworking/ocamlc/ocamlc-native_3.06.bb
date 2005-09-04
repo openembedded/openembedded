@@ -1,9 +1,8 @@
-DESCRIPTION=Objective Caml Compiler
-SECTION=base
-PRIORITY=optional
-LICENSE=QPL
+DESCRIPTION = "Objective Caml Compiler"
+SECTION = "devel"
+LICENSE = "QPL"
 
-SRC_URI = http://caml.inria.fr/distrib/ocaml-3.06/ocaml-3.06.tar.gz
-S = ${WORKDIR}/ocaml-${PV}
+SRC_URI = "http://caml.inria.fr/distrib/ocaml-${PV}/ocaml-${PV}.tar.gz"
+S = "${WORKDIR}/ocaml-${PV}"
 
 inherit autotools native

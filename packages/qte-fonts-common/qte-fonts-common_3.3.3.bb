@@ -1,7 +1,7 @@
-SECTION = "opie/base"
 DESCRIPTION= "Tools to update the Qt fontdir"
 MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
-LICENSE = "GPL/QPL"
+SECTION = "opie/base"
+LICENSE = "GPL QPL"
 PACKAGE_ARCH = "all"
 PR = "r3"
 
@@ -10,6 +10,7 @@ SRC_URI += "file://update-qtfontdir"
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 do_compile() {
+	:
 }
 
 do_install() {
