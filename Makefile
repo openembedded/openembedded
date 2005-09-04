@@ -405,6 +405,7 @@ setup-host-ubuntu:
 		texinfo \
 		unzip \
 		subversion \
+		texinfo \
 		bzip2 ;\
 	echo You will have to install monotone separately.  See http://venge.net/monotone/ \
 	echo To get python2.4-psyco (Recommended to speed up builds), please read \ 
