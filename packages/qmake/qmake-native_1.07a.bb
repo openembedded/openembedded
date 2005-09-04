@@ -3,8 +3,8 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
-LICENSE = "GPL|QPL"
-PR = "r1"
+LICENSE = "GPL QPL"
+PR = "r2"
 
 QTEVER = "qt-embedded-free-3.3.4"
 
