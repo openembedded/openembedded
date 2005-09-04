@@ -5,7 +5,7 @@ DEPENDS = "expat libdaemon dbus-0.34"
 RRECOMMENDS = "libnss-mdns"
 SECTION = "net"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz"
 
@@ -39,10 +39,13 @@ INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
 INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
 
 pkg_postinst_avahi-daemon () {
-	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi -g Avahi
+	grep avahi /etc/group || addgroup avahi
+	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
+	/etc/init.d/dbus-1 force-reload
 }
 
 pkg_postrm_avahi-daemon () {
 	deluser avahi || true
+	delgroup avahi || true
 }
 
