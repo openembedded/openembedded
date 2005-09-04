@@ -33,7 +33,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://key.patch;patch=1 \
        file://bidimetrics.patch;patch=5 \
 	   file://sharp_char.h \
-	   file://switches.h"
+	   file://switches.h "
 
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
