@@ -400,13 +400,15 @@ setup-host-ubuntu:
 		libc6-dev libglib2.0-dev libtool \
 		m4 make \
 		patch pkg-config \
-		python python-dev python2.4-psyco python2.4 python2.4-dev \
+		python python-dev python2.4 python2.4-dev \
 		sed \
 		texinfo \
 		unzip \
 		subversion \
 		bzip2 ;\
 	echo You will have to install monotone separately.  See http://venge.net/monotone/ \
+	echo To get python2.4-psyco (Recommended to speed up builds), please read \ 
+	echo http://ubuntuguide.org/#extrarepositories \
 		"
 
 
