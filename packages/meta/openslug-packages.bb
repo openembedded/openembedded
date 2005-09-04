@@ -45,6 +45,7 @@ OPENSLUG_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
+	icecast \
 	ifupdown \
 	iperf \
 	ipkg-utils \
