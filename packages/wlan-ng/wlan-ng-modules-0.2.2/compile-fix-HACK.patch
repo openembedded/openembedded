@@ -1,0 +1,43 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-wlan-ng-0.2.2/src/prism2/driver/prism2_cs.c~compile-fix-HACK.patch
++++ linux-wlan-ng-0.2.2/src/prism2/driver/prism2_cs.c
+@@ -21,15 +21,6 @@
+ 						 * is set to and what the CIS
+ 						 * says.
+ 						 */
+-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,11) )
+-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,5))
+-static int numlist = 4;
+-module_param_array(irq_list, int, numlist, 0444);
+-#else
+-module_param_array(irq_list, int, NULL, 0444);
+-#endif
+-module_param( irq_mask, int, 0644);
+-#endif
+ 
+ static dev_link_t	*dev_list = NULL;	/* head of instance list */
+ 
+--- linux-wlan-ng-0.2.2/src/prism2/driver/hfa384x_usb.c~compile-fix-HACK.patch
++++ linux-wlan-ng-0.2.2/src/prism2/driver/hfa384x_usb.c
+@@ -3240,7 +3240,7 @@
+ 	int		result;
+ 	DBFENTER;
+ 
+-	might_sleep();
++	might_sleep(0);
+ 
+ 	if (usb_clear_halt(hw->usb, hw->endp_in)) {
+ 		WLAN_LOG_ERROR(
+@@ -3316,7 +3316,7 @@
+ 	int	i;
+ 	DBFENTER;
+ 
+-	might_sleep();
++	might_sleep(0);
+ 
+ 	/* There's no need for spinlocks here. The USB "disconnect"
+ 	 * function sets this "removed" flag and then calls us.
