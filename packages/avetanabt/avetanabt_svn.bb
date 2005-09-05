@@ -8,9 +8,10 @@ LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt \
+	   file://avetanalocaldevice.patch;patch=1"
 
 S = "${WORKDIR}/avetanabt"
 
@@ -28,9 +29,14 @@ do_compile() {
   ${STAGING_BINDIR}/find {de,javax,com} -iname *.java > file.list
   ${STAGING_BINDIR}/jikes -verbose --bootclasspath ${STAGING_DIR}/${BUILD_SYS}/share/kaffeh/rt.jar -d build @file.list
 
+  # create own version.xml
+  head -n 4 version.xml >> build/version.xml
+  echo "    <build value=\"${PR}\" date=\"${CVSDATE}\"/>" >> build/version.xml
+  tail -n 3 version.xml >> build/version.xml
+
   # jar -> fastjar
   cd build
-  ${STAGING_BINDIR}/fastjar -cf ../avetanaBT.jar de javax com
+  ${STAGING_BINDIR}/fastjar -cf ../avetanaBT.jar de javax com version.xml
   cd ..
 
   # JNI generated header file - de_avetana_bluetooth_stack_BlueZ.h
