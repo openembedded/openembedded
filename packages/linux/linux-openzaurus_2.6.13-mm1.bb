@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r2"
+PR = "r3"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -60,7 +60,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/sharpsl_ssp-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_lcd-r2.patch;patch=1 \
            ${RPSRC}/sharpsl_ts-r3.patch;patch=1 \
-           ${RPSRC}/sharpsl_bl-r2.patch;patch=1 \
+           ${RPSRC}/sharpsl_bl-r3.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r6.patch;patch=1 \
            ${RPSRC}/corgi_pm-r1.patch;patch=1 \
            ${RPSRC}/spitzkbd-r1.patch;patch=1 \
