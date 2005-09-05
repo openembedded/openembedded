@@ -1,14 +1,15 @@
-Index: gaim/src/gtkprefs.c
-===================================================================
---- gaim.orig/src/gtkprefs.c	2005-08-21 01:59:55.000000000 +0200
-+++ gaim/src/gtkprefs.c	2005-08-21 02:49:51.635872168 +0200
-@@ -2106,8 +2106,19 @@
- 		g_object_unref(pixbuf);
+--- gaim.ori/src/gtkprefs.c	2005-09-05 08:28:17.000000000 +0200
++++ gaim/src/gtkprefs.c	2005-09-05 09:06:27.000000000 +0200
+@@ -2108,12 +2108,18 @@
  	if (icon)
  		g_object_unref(icon);
--
+ 
+-#if GTK_CHECK_VERSION(2,4,0)
 -	return gtk_notebook_append_page(GTK_NOTEBOOK(prefsnotebook), page, gtk_label_new(text));
-+	
+-#else
+-	gtk_notebook_append_page(GTK_NOTEBOOK(prefsnotebook), page, gtk_label_new(text));
+-	return gtk_notebook_page_num(GTK_NOTEBOOK(prefsnotebook), page);
+-#endif
 +	//Add a scrolled window around the page contents
 +	GtkWidget *sw;
 +	sw = gtk_scrolled_window_new(NULL, NULL);
@@ -24,7 +25,7 @@ Index: gaim/src/gtkprefs.c
  }
  
  static void prefs_notebook_init() {
-@@ -2140,9 +2151,9 @@
+@@ -2146,9 +2152,9 @@
  void gaim_gtk_prefs_show(void)
  {
  	GtkWidget *vbox;
@@ -36,7 +37,7 @@ Index: gaim/src/gtkprefs.c
  
  	if (prefs) {
  		gtk_window_present(GTK_WINDOW(prefs));
-@@ -2170,11 +2181,13 @@
+@@ -2176,11 +2182,13 @@
  
  	/* The notebook */
  	prefsnotebook = notebook = gtk_notebook_new ();
@@ -52,7 +53,7 @@ Index: gaim/src/gtkprefs.c
  	gtk_box_set_spacing(GTK_BOX(bbox), GAIM_HIG_BOX_SPACE);
  	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
  	gtk_box_pack_start(GTK_BOX(vbox), bbox, FALSE, FALSE, 0);
-@@ -2184,7 +2197,7 @@
+@@ -2190,7 +2198,7 @@
  	g_signal_connect_swapped(G_OBJECT(button), "clicked",
  							 G_CALLBACK(gtk_widget_destroy), prefs);
  	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
