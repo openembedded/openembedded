@@ -1,4 +1,5 @@
 PR = "r0"
+CVSDATE_${PV} = "20050904"
 PV = "2.0.0-cvs-mco1-${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
