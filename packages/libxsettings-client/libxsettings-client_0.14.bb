@@ -1,7 +1,7 @@
 SECTION = "gpe/libs"
 LICENSE = "BSD-X"
 PRIORITY = "optional"
-DEPENDS = "libgpewidget libxsettings x11"
+DEPENDS = "libxsettings x11"
 
 inherit autotools pkgconfig gpe
 
