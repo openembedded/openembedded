@@ -6,7 +6,7 @@ RPROVIDES = "gnome-vfs"
 
 inherit gnome pkgconfig
 
-DEPENDS = "libxml2 gconf-dbus dbus bzip2 gnome-mime-data zlib samba-3.0.14"
+DEPENDS = "libxml2 gconf-dbus dbus bzip2 gnome-mime-data zlib samba-3.0.14a"
 RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 
