@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug2"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 SECTION = "console/network"
 PRIORITY = "optional"
-LICENSE = "GPL-2"
+LICENSE = "MIT"
 
 # On Linux libpcap does not work.  Using libpcap is sub-optimal - it
 # is intended for packet capture not management of a new protocol
