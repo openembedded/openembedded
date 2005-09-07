@@ -11,27 +11,26 @@ LICENSE = "GPL MIT Artistic"
 SECTION = "console/utils" 
 DEPENDS = "jpeg zlib libpng tiff install-native flex-native" 
 RDEPENDS = "perl\
-	perl-module-xsloader\
-	perl-module-carp\
-	perl-module-constant\
+	perl-module-cwd\
 	perl-module-english\
-	perl-module-exporter\
-	perl-module-exporter-heavy\
 	perl-module-fcntl\
+	perl-module-file-basename\
 	perl-module-file-spec\
-	perl-module-file-spec-unix\
 	perl-module-getopt-long\
 	perl-module-strict\
-	perl-module-vars\
-	perl-module-warnings\
-	perl-module-warnings-register\
 	"
+
+# these should not be required, they are here because the perl
+# module dependencies are currently incorrect:
+RDEPENDS += "perl-module-exporter-heavy"
+RDEPENDS += "perl-module-file-spec-unix"
+
 HOMEPAGE = "http://netpbm.sourceforge.net" 
 DESCRIPTION = "Netpbm is a toolkit for manipulation of graphic images, including\
 conversion of images between a variety of different formats.  There\
 are over 220 separate tools in the package including converters for\
 about 100 graphics formats."
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \
