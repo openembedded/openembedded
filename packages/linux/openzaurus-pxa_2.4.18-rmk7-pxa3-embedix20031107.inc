@@ -1,13 +1,15 @@
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
-PV = "2.4.18-rmk7-pxa3-embedix"
 LICENSE = "GPL"
+PV = "2.4.18-rmk7-pxa3-embedix"
+PR = "r43"
+
 KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-PR = "r41"
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
@@ -49,6 +51,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz \
            file://fix_tosa_apm.patch;patch=1 \
            file://dumb-hack-for-wlan-ng.patch;patch=1 \
+           file://unb0rk-apm.patch;patch=1 \
            file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
