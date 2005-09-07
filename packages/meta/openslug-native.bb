@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are required for the OpenSlug native build environment"
 LICENSE = MIT
-PR = "r10"
+PR = "r11"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -16,6 +16,7 @@ OPENSLUG_NATIVE = "\
 	coreutils \
 	cpp cpp-symlinks \
 	cvs \
+	file \
 	flex \
 	gawk \
 	g++ g++-symlinks \

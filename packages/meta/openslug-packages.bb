@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r5"
+PR = "r6"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -33,6 +33,7 @@ OPENSLUG_PACKAGES = "\
 	diffutils \
 	dnsmasq \
 	expat \
+	file \
 	findutils \
 	flex \
 	ftpd-topfield \

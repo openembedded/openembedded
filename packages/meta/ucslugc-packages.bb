@@ -4,7 +4,7 @@
 # do not necessarily work.
 DESCRIPTION = "Packages that are compatible with the UcSlugC firmware"
 LICENSE = MIT
-PR = "r0"
+PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -38,6 +38,7 @@ UCSLUGC_PACKAGES = "\
 	diffutils \
 	dnsmasq \
 	expat \
+	file \
 	findutils \
 	flac \
 	flex \
