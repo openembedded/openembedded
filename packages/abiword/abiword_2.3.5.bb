@@ -3,10 +3,10 @@ HOMEPAGE="http://www.abiword.org""
 MAINTAINER="Koen Kooi <koen@handhelds.org>"
 LICENSE="GPLv2"
 
-DEPENDS     = "cdump-native libglade libfribidi enchant jpeg libpng perl glibc libxml2"
+DEPENDS     = "cdump-native libgnomeprint libglade libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
-PR="r3"
+PR="r4"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
 	file://cdump-hack.patch;patch=1"
