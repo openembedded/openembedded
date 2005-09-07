@@ -1,13 +1,11 @@
 PR = "r1"
-PV = "0.17-cvs-${CVSDATE}"
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-mini-browser"
+SRC_URI = "ftp://ftp.handhelds.org/projects/gpe/source/gpe-mini-browser-${PV}.tar.gz"
 DESCRIPTION = "A lightweight webbrowser for the GPE platform"
 LICENSE = "GPL"
-DEPENDS = "sqlite osb-nrcit libgpewidget"
-DEFAULT_PREFERENCE = "-1"
+DEPENDS = "osb-nrcit sqlite libgpewidget"
 
-S = "${WORKDIR}/gpe-mini-browser"
+S = "${WORKDIR}/gpe-mini-browser-${PV}"
 
 inherit autotools
 

@@ -13,6 +13,8 @@ PACKAGES = "${PN}"
 # The list of packages to build for the ucslugc DISTRO.
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
 	atftp \
 	audiofile \
 	autoconf \
@@ -153,4 +155,4 @@ UCSLUGC_UNSUPPORTABLE_PACKAGES = "\
 
 # The package-index at the end causes regeneration of the Packages.gz and
 # other control files.
-DEPENDS = "openslug-image ${UCSLUGC_PACKAGES} openslug-native package-index"
+DEPENDS = "openslug-image ${UCSLUGC_PACKAGES} ucslugc-native package-index"
