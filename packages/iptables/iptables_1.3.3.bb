@@ -25,6 +25,7 @@ do_compile () {
 }
 
 do_install () {
+	unset CFLAGS
 	oe_runmake BINDIR=${D}${sbindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} install NO_SHARED_LIBS=1
 }
 
