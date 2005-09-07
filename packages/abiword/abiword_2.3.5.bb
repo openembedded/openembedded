@@ -3,7 +3,7 @@ HOMEPAGE="http://www.abiword.org""
 MAINTAINER="Koen Kooi <koen@handhelds.org>"
 LICENSE="GPLv2"
 
-DEPENDS     = "cdump-native libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"
+DEPENDS     = "cdump-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
 PR="r4"
