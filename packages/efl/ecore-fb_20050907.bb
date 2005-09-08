@@ -3,7 +3,7 @@ PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore;date=${PV}"
 S = "${WORKDIR}/ecore"
 
 EXTRA_OECONF = "--enable-ecore-fb \
