@@ -2,14 +2,14 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 HOMEPAGE = "http://e2fsprogs.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-dynamic-e2fsck"
+EXTRA_OECONF = "--enable-dynamic-e2fsck --sbindir=${base_sbindir}"
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
@@ -34,8 +34,17 @@ do_stage () {
 	done
 }
 
-sbindir = "/sbin"
+pkg_postinst_e2fsprogs-e2fsck() {
+	ln -s ${base_sbindir}/e2fsck ${base_sbindir}/fsck.ext2
+	ln -s ${base_sbindir}/e2fsck ${base_sbindir}/fsck.ext3
+}
+
+pkg_postinst_e2fsprogs-mke2fs() {
+	ln -s ${base_sbindir}/mke2fs ${base_sbindir}/mkfs.ext2
+	ln -s ${base_sbindir}/mke2fs ${base_sbindir}/mkfs.ext3
+}
+
 PACKAGES_prepend = "e2fsprogs-e2fsck e2fsprogs-mke2fs e2fsprogs-fsck "
-FILES_e2fsprogs-fsck = "${sbindir}/fsck"
-FILES_e2fsprogs-e2fsck = "${sbindir}/e2fsck ${sbindir}/fsck.ext2 ${sbindir}/fsck.ext3"
-FILES_e2fsprogs-mke2fs = "${sbindir}/mke2fs ${sbindir}/mkfs.ext2 ${sbindir}/mkfs.ext3"
+FILES_e2fsprogs-fsck = "${base_sbindir}/fsck"
+FILES_e2fsprogs-e2fsck = "${base_sbindir}/e2fsck"
+FILES_e2fsprogs-mke2fs = "${base_sbindir}/mke2fs"
