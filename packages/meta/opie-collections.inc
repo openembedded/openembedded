@@ -8,7 +8,8 @@
 
 OPIE_LIBS_DEPENDS  = "qte libopie2 opie-ttf-support ttf-dejavu"
 OPIE_LIBS_RDEPENDS = "opie-ttf-support ttf-dejavu-sans ttf-dejavu-sans-mono"
-OPIE_BASE = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics opie-sounds"
+OPIE_BASE = "opie-qcop opie-freetype opie-qss opie-quicklauncher opie-taskbar \
+             opie-pics opie-sounds"
 
 #
 # Things for reasonable bootstrap image
