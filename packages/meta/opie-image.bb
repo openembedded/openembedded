@@ -1,12 +1,12 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
- 
+
 FEED_URIS_append_openzaurus = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r15"
+PR = "r16"
 
 include opie-collections.inc
 
@@ -19,7 +19,7 @@ export IPKG_INSTALL = "task-bootstrap ${OPIE_LIBS_RDEPENDS} ${OPIE_BASE} ${OPIE_
                        ${OPIE_PIM} ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} \
                        ${OPIE_EXTRA_APPS} ${OPIE_BASE_STYLES} ${OPIE_BASE_DECOS} \
                        ${OPIE_BASE_INPUTMETHODS} ${OPIE_MORE_RDEPENDS}"
- 
+
 DEPENDS = "task-bootstrap ${OPIE_LIBS_DEPENDS} ${OPIE_BASE} ${OPIE_BASE_APPLETS} \
             ${OPIE_BASE_SETTINGS}  ${OPIE_BASE_APPS} ${OPIE_BASE_DEPENDS} ${OPIE_PIM} \
             ${OPIE_EXTRA_APPLETS} ${OPIE_EXTRA_SETTINGS} ${OPIE_EXTRA_APPS} \
