@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r0"
+PR = "r1"
 
 include uclibc.inc
 
@@ -20,3 +20,10 @@ S = "${WORKDIR}/uClibc-${PV}"
 # be necessary to add this for architectures which do not initially
 # have a 'good' set of kernel header files in the cross directory.
 #SRC_URI += "file://nokernelheadercheck.patch;patch=1"
+#
+# Thumb support
+SRC_URI += " file://thumb-defined-arm-or-thumb.patch;patch=1"
+#
+# Thumb interworking support
+SRC_URI += " file://thumb-mov-pc-bx.patch;patch=1"
+SRC_URI += " file://thumb-resolve.patch;patch=1"
