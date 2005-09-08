@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 AUTHOR = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 MAINTAINER = "${AUTHOR}"
 HOMEPAGE = "http://www.Vanille.de/projects/efl++.html"
-DEPENDS = "virtual/evas virtual/ecore edje"
+DEPENDS = "virtual/evas virtual/ecore edje libsigc++-2.0"
 PROVIDES = "virtual/efl++"
 
 SRC_URI = "http://www.Vanille.de/temp/efl++_${PV}.tar.bz2"
@@ -25,7 +25,7 @@ include ( common.pro )
 
 LIBS        += -L${EDIR}
 
-CONFIG      = console release eflbasic
+EFLCONFIG      = console release eflbasic angstrom
 INCLUDEPATH += ${EDIR}/src/common ${EDIR}/src/extra ${EDIR}/src/misc
 INCLUDEPATH += ${EDIR}/src/evas ${EDIR}/src/ecore ${EDIR}/src/edje
 INCLUDEPATH += ${EDIR}/src/esmart ${EDIR}/src/ewl
