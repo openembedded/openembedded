@@ -12,6 +12,7 @@ SECTION = "base"
 PRIORITY = "required"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_nslu2 = ""
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
