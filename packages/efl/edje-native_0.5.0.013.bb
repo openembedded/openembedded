@@ -1,4 +1,5 @@
 include edje_${PV}.bb
+PR = "r2"
 
 REAL_TARGET_SYS := ${TARGET_SYS}
 
