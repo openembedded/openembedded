@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r1"
+PR = "r2"
 
 include uclibc.inc
 
@@ -11,6 +11,9 @@ KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${PV}"
+
+# At present the thumb implementation is non-functional
+ARM_INSTRUCTION_SET = ""
 
 #*** PATCHES ***
 #
