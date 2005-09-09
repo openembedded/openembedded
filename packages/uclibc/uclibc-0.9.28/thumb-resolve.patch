@@ -170,3 +170,46 @@
 +	mov   pc, ip
 +#endif
  .size _dl_linux_resolve, .-_dl_linux_resolve
+--- uClibc/ldso/ldso/dl-hash.c	2005-09-08 13:54:30.124416436 -0700
++++ uClibc/ldso/ldso/dl-hash.c	2005-09-08 14:17:44.828179610 -0700
+@@ -186,11 +186,19 @@
+ 
+ 			if (type_class & (sym->st_shndx == SHN_UNDEF))
+ 				continue;
+-			if (_dl_strcmp(strtab + sym->st_name, name) != 0)
+-				continue;
+ 			if (sym->st_value == 0)
+ 				continue;
+-			if (ELF_ST_TYPE(sym->st_info) > STT_FUNC)
++			if (ELF_ST_TYPE(sym->st_info) > STT_FUNC
++#if defined(__arm__) || defined(__thumb__)
++				/* On ARM (only) STT_ARM_TFUNC is a function
++				 * and has a value >STT_FUNC, so this must
++				 * be checked specially.
++				 */
++				&& ELF_ST_TYPE(sym->st_info) != STT_ARM_TFUNC
++#endif
++			   )
++				continue;
++			if (_dl_strcmp(strtab + sym->st_name, name) != 0)
+ 				continue;
+ 
+ 			switch (ELF_ST_BIND(sym->st_info)) {
+@@ -203,7 +211,17 @@
+ 				break;
+ #endif
+ 			case STB_GLOBAL:
++#if defined(__arm__) || defined(__thumb__)
++				/* On ARM the caller needs to know that STT_ARM_TFUNC
++				 * is a thumb function call, this is now indicated by
++				 * setting the low bit of the value (and newer binutils
++				 * will do this and record STT_FUNC).
++				 */
++				return (char*)tpnt->loadaddr + (sym->st_value |
++					(ELF_ST_TYPE(sym->st_info) == STT_ARM_TFUNC));
++#else
+ 				return (char*)tpnt->loadaddr + sym->st_value;
++#endif
+ 			default:	/* Local symbols not handled here */
+ 				break;
+ 			}
