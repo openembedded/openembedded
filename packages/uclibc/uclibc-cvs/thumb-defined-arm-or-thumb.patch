@@ -1,0 +1,15 @@
+# in various places defined(__arm__) is used to protect/select code which
+# is ARM specific, that code must also be selected for __thumb__ because
+# __thumb__ is an ARM but __arm__ is not set...
+#
+--- ./ldso/include/dl-string.h.orig	2005-09-07 14:09:19.375564254 -0700
++++ ./ldso/include/dl-string.h	2005-09-07 14:09:52.045620051 -0700
+@@ -270,7 +270,7 @@
+ 
+ /* On some arches constant strings are referenced through the GOT.
+  * This requires that load_addr must already be defined... */
+-#if defined(mc68000) || defined(__arm__) || defined(__mips__)	\
++#if defined(mc68000) || defined(__arm__) || defined(__thumb__) || defined(__mips__)	\
+                      || defined(__sh__) ||  defined(__powerpc__)
+ # define CONSTANT_STRING_GOT_FIXUP(X) \
+ 	if ((X) < (const char *) load_addr) (X) += load_addr
