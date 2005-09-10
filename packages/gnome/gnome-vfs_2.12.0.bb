@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r0"
+PR = "r2"
 
 inherit gnome
 
@@ -15,6 +15,11 @@ FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/modules/*.a ${libdir}/gnome-vfs-2.0
 FILES_${PN}-doc += " ${datadir}/gtk-doc"
 
 GNOME_VFS_HEADERS = " \
+gnome-vfs-mime-deprecated.h \
+gnome-vfs-address.h \
+gnome-vfs-dns-sd.h \
+gnome-vfs-mime-info-cache.h \
+gnome-vfs-resolve.h \
 gnome-vfs-utils.h \
 gnome-vfs-application-registry.h \
 gnome-vfs-async-ops.h \
