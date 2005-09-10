@@ -5,7 +5,7 @@ LICENSE = "GPL QPL"
 PACKAGE_ARCH = "all"
 PR = "r3"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
 SRC_URI += "file://update-qtfontdir"
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 

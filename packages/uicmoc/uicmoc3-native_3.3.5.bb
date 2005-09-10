@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-3.3.2.tar.bz2 \
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
 	   file://no-examples.patch;patch=1"
 
-S = "${WORKDIR}/qt-embedded-free-3.3.2"
+S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 inherit native qmake-base qt3e
 
@@ -16,7 +16,7 @@ export OE_QMAKE_LINK="${CXX}"
 CXXFLAGS += " -DQWS"
 
 QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound \
-                   -no-sm -qt-libpng -no-gif -no-xshape -no-xinerama \
+                   -no-sm -no-libjpeg -no-libmng -no-gif -no-xshape -no-xinerama \
                    -no-xcursor -no-xrandr -no-xrender -no-xft -no-tablet \
                    -no-xkb -no-dlopen-opengl -no-freetype -no-thread \
                    -no-nis -no-cups -prefix ${prefix} \
@@ -26,6 +26,12 @@ QT_CONFIG_FLAGS = "-release -static -depths 8,16 -qt-zlib -no-nas-sound \
 do_configure() {
     oe_qmake_mkspecs
     echo "yes" | ./configure ${QT_CONFIG_FLAGS}
+}
+
+do_compile() {
+    oe_runmake symlinks  || die "Can't symlink include files"
+    oe_runmake src-moc   || die "Building moc failed"
+    oe_runmake sub-tools || die "Building tools failed"
 }
 
 do_stage() {
