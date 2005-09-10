@@ -83,6 +83,7 @@ UCSLUGC_PACKAGES = "\
 	ncftp \
 	ncurses \
 	netpbm \
+	nmap \
 	ntp \
 	obexftp openobex openobex-apps ircp \
 	openldap \
@@ -116,6 +117,7 @@ UCSLUGC_PACKAGES = "\
 	tiff \
 	unionfs-modules unionfs-utils \
 	util-linux \
+	vim \
 	vlan \
 	wakelan \
 	wget \
