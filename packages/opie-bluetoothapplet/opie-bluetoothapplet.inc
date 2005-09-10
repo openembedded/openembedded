@@ -8,6 +8,8 @@ APPNAME = "bluetoothapplet"
 
 S = "${WORKDIR}/applet"
 
+EXTRA_QMAKEVARS_POST += " INCLUDEPATH+=${STAGING_INCDIR}/opietooth "
+
 inherit opie
 
 do_install() {
