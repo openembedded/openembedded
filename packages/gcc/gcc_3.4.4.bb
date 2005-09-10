@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -8,6 +8,9 @@ MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 inherit autotools gettext
 
 include gcc-package.inc
+
+# At present the thumb implementation is non-functional
+ARM_INSTRUCTION_SET = ""
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-reverse-compare.patch;patch=1 \
