@@ -48,7 +48,7 @@ EXTRA_OECONF=" \
 	\
 	--cpu=${PACKAGE_ARCH} \
 	--prefix=${D}${prefix} \
-	--mandir=${D}${prefix}/man \
+	--mandir=${D}${prefix}/share/man \
 "
 
 PACKAGES += "libavcodec libavcodec-dev libavformat libavformat-dev"
