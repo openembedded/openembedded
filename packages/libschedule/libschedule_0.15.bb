@@ -1,10 +1,11 @@
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "RTC alarm handling library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 sqlite"
+GPE_TARBALL_SUFFIX = "bz2"
 
 inherit autotools libtool pkgconfig gpe 
 
