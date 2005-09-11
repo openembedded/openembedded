@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml2"
+PR = "ml0"
 
 DEPENDS = "\
 		python-ao 		\
@@ -51,6 +51,7 @@ DEPENDS = "\
 		python-sgmlop		\
 		python-snmplib		\
 		python-soappy		\
+		python-sword		\
 		python-pysqlite		\
 		python-pysqlite2	\
 		python-tlslite		\
