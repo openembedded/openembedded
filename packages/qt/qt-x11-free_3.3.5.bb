@@ -5,7 +5,7 @@ LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PROVIDES = "qt3-x11"
+PROVIDES = "qt3x11"
 PR = "r10"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \

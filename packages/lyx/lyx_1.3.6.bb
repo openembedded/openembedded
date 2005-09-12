@@ -3,7 +3,7 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "boost"
+DEPENDS = "boost qt3x11"
 RRECOMMENDS = "tetex"
 PR = "r1"
 
