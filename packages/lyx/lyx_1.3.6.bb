@@ -3,8 +3,9 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "boost qt-x11-free"
+DEPENDS = "boost"
 RRECOMMENDS = "tetex"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.lyx.org/pub/lyx/stable/lyx-${PV}.tar.bz2"
 
