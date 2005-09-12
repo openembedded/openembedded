@@ -3,6 +3,7 @@ to enable graphical display of graphs and other relational structures."
 SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+DEPENDS = "qt3x11"
 LICENSE = "GPL"
 PR = "r1"
 
