@@ -7,7 +7,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 I18N_FILES = "libmultiauthdummyplugin.ts"
 RDEPENDS = "opie-security"
-PV = "1.2.0+cvs-${CVSDATE}"
+PV = "1.2.1+cvs-${CVSDATE}"
 APPNAME = "multiauthdummyplugin"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/dummy \
