@@ -3,7 +3,7 @@ DESCRIPTION = "Itsy Package Manager"
 DESCRIPTION_libipkg = "Itsy Package Manager Library"
 LICENSE = "GPL"
 PROVIDES = "virtual/ipkg libipkg"
-PR = "r0"
+PR = "r1"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
@@ -11,7 +11,8 @@ FILES_libipkg = "${libdir}"
 AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-	file://terse.patch;patch=1 "
+	file://terse.patch;patch=1 \
+	file://libbb_tar_gnu_extensions.patch;patch=1 "
 
 S = "${WORKDIR}/ipkg/C"
 
