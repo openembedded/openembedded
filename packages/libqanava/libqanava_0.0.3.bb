@@ -4,7 +4,7 @@ SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "qt-x11-free-3.3.3"
+PR = "r1"
 
 SRC_URI = "http://www.libqanava.org/dl/qanava-${PV}.tar.gz"
 S = "${WORKDIR}/qanava-${PV}"
