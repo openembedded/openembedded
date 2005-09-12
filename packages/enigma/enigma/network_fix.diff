@@ -1,0 +1,124 @@
+Index: include/lib/dvb/edvb.h
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/include/lib/dvb/edvb.h,v
+retrieving revision 1.37
+diff -u -r1.37 edvb.h
+--- a/include/lib/dvb/edvb.h	12 Jun 2005 19:55:44 -0000	1.37
++++ b/include/lib/dvb/edvb.h	12 Sep 2005 15:45:30 -0000
+@@ -196,6 +196,7 @@
+ //////////////////////////////Network Stuff////////////////////////////////////
+ public:
+ #ifndef DISABLE_NETWORK
++	void applyNetworkFix();
+ 	void configureNetwork();
+ 	void UDHCPC_DataAvail(eString);
+ 	void UDHCPC_Closed(int);
+Index: lib/dvb/edvb.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/lib/dvb/edvb.cpp,v
+retrieving revision 1.104
+diff -u -r1.104 edvb.cpp
+--- a/lib/dvb/edvb.cpp	24 Aug 2005 19:07:40 -0000	1.104
++++ b/lib/dvb/edvb.cpp	12 Sep 2005 15:45:34 -0000
+@@ -80,6 +80,7 @@
+ {
+ #ifndef DISABLE_NETWORK
+ 	CONNECT(delayTimer.timeout, eDVB::restartSamba);
++	applyNetworkFix();
+ #ifndef DISABLE_NFS
+ 	CONNECT(delayTimer.timeout, eDVB::doMounts);
+ #endif
+@@ -773,6 +774,28 @@
+ 	}
+ }
+ 
++void eDVB::applyNetworkFix()
++{
++	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020 )
++	{
++		int networkfix=0;
++		eConfig::getInstance()->getKey("/elitedvb/network/fix", networkfix);
++		struct stat s;
++		if ( !stat("/proc/net/dream_mode", &s) )
++		{
++			FILE *f = fopen("/proc/net/dream_mode", "w");
++			if (f)
++			{
++				const char *tmp = networkfix ? "1" : "0";
++				fwrite(tmp, 2, 1, f);
++				fclose(f);
++			}
++			else
++				eDebug("couldn't open /proc/net/dream_mode");
++		}
++	}
++}
++
+ void eDVB::configureNetwork()
+ {
+ #ifndef USE_IFUPDOWN
+Index: src/setup_extra.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/src/setup_extra.cpp,v
+retrieving revision 1.32
+diff -u -r1.32 setup_extra.cpp
+--- a/src/setup_extra.cpp	1 Sep 2005 22:54:31 -0000	1.32
++++ b/src/setup_extra.cpp	12 Sep 2005 15:48:46 -0000
+@@ -104,6 +104,8 @@
+ 	CONNECT((new eListBoxEntryCheck( (eListBox<eListBoxEntry>*)&list, _("Don't open serial port"), "/ezap/extra/disableSerialOutput", _("don't write debug messages to /dev/tts/0")))->selected, eExpertSetup::reinitializeHTTPServer );
+ 	new eListBoxEntryCheck( (eListBox<eListBoxEntry>*)&list, _("Auto bouquet change"), "/elitedvb/extra/autobouquetchange", _("change into next bouquet when end of current bouquet is reached"));
+ #ifndef DISABLE_NETWORK
++	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020 )
++		CONNECT((new eListBoxEntryCheck( (eListBox<eListBoxEntry>*)&list, _("Enable network fix"), "/elitedvb/network/fix", _("enable this when your network is very slow(for testing)")))->selected, eExpertSetup::networkFixChanged ); 
+ 	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7000 ||
+ 	    eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020)
+ 		new eListBoxEntryCheck( (eListBox<eListBoxEntry>*)&list, _("Enable file sharing"), "/elitedvb/network/samba", _("start file sharing(samba) on startup"));
+@@ -174,6 +176,11 @@
+ 	eZap::getInstance()->reconfigureHTTPServer();
+ }
+ 
++void eExpertSetup::networkFixChanged(bool b)
++{
++	eDVB::getInstance()->applyNetworkFix();
++}
++
+ void eExpertSetup::fastZappingChanged(bool b)
+ {
+ 	Decoder::setFastZap(b);
+Index: src/setup_extra.h
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/src/setup_extra.h,v
+retrieving revision 1.12
+diff -u -r1.12 setup_extra.h
+--- a/src/setup_extra.h	1 Sep 2005 22:33:22 -0000	1.12
++++ b/src/setup_extra.h	12 Sep 2005 15:48:46 -0000
+@@ -17,6 +17,7 @@
+ 	void factory_reset();
+ 	void rc_setup();
+ 	void tuxtxtCachingChanged(bool);
++	void networkFixChanged(bool);
+ 	void colorbuttonsChanged(bool);
+ 	void reinitializeHTTPServer(bool);
+ 	void fastZappingChanged(bool b);
+Index: de.po
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/po/de.po,v
+retrieving revision 1.58
+diff -u -r1.58 de.po
+--- a/po/de.po	1 Sep 2005 22:56:52 -0000	1.58
++++ b/po/de.po	12 Sep 2005 16:08:00 -0000
+@@ -4089,6 +4089,14 @@
+ msgid "change into next bouquet when end of current bouquet is reached"
+ msgstr "Ins nächste Bouquet wechseln, wenn das Ende des aktuellen erreicht ist."
+ 
++#: src/setup_extra.cpp:108
++msgid "Enable network fix"
++msgstr "Netzwerk 'fix' aktivieren"
++
++#: src/setup_extra.cpp:108
++msgid "enable this when your network is very slow(for testing)"
++msgstr "anhaken, wenn das Netzwerk extrem langsam ist(zum testen)"
++
+ #: src/setup_extra.cpp:109
+ msgid "Enable file sharing"
+ msgstr "Dateifreigaben aktivieren"
