@@ -9,8 +9,11 @@ PR = "r1"
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
 	file://msleep-vs-mdelay.patch;patch=1 \
+	file://might-sleep.patch;patch=1 \
 	file://only-the-modules.patch;patch=1 \
-	file://compile-fix-HACK.patch;patch=1 \
+	file://module_param_array.patch;patch=1 \
+	file://scripts-makefile-hostcc.patch;patch=1 \
+	file://pcmciasrc.patch;patch=1 \
 	file://config.in"
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
@@ -31,6 +34,7 @@ do_configure() {
         echo "TARGET_MODDIR=${D}/lib/modules/${KERNEL_VERSION}/wlan-ng" >> config.mk
 	echo "CC=${KERNEL_CC}"			>> config.mk
 	echo "LD=${KERNEL_LD}"			>> config.mk
+	echo "LDFLAGS="				>> config.mk
 
 	# Listen closely... sssshhh... can you hear the wlan-ng build system suck?
 	rm -f ${KERNEL_SOURCE}/../config.mk
