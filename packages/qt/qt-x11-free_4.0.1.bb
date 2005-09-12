@@ -5,9 +5,10 @@ HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native freetype jpeg x11 xft xext libxrender libxrandr libxcursor mysql"
+PROVIDES = "qt4-x11"
 # FIXME: Make it use 'our' qmake
 # DEPENDS += "qmake-native-2.00a"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
