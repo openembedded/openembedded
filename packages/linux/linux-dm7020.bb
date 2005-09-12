@@ -6,7 +6,8 @@ PR = "r0"
 
 SRC_URI = "ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-2.6.9.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linuxppc-2.6.9-r1.diff.bz2;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linuxppc-2.6.9-dream-${PR}.diff.bz2;patch=1;pnum=1"
+	http://sources.dreamboxupdate.com/download/kernel-patches/linuxppc-2.6.9-dream-${PR}.diff.bz2;patch=1;pnum=1 \
+	file://netfix.diff;patch=1;pnum=1 "
 
 S = "${WORKDIR}/linux-2.6.9"
 
