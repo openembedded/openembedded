@@ -5,7 +5,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/dvb/dvbsnoop;method=ext \
            file://acinclude.m4"
 	   
-CVSDATE = "20050815"
+CVSDATE = "20050910"
 PR = "r0"
 PV = "0.0+cvs${CVSDATE}"
 S = "${WORKDIR}/dvbsnoop"
