@@ -7,6 +7,8 @@ PR = "r0"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://only-the-utils.patch;patch=1 \
+	file://scripts-makefile-hostcc.patch;patch=1 \
+	file://pcmciasrc.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://usbctl \
