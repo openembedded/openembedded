@@ -1,13 +1,15 @@
 DESCRIPTION = "A full featured personal video recorder system."
-MAINTAINER = "Michael 'Mickey' Lauer"
+HOMEPAGE = "http://www.mythtv.org"
+LICENSE = "GPL"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "x11/multimedia"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2 \
 	file://msmpeg-underscore-pic.patch;patch=1 \
 	file://settings.pro"
 
-DEPENDS = "xinerama qt-x11-free lame libxv libxxf86vm libxvmc lirc"
+DEPENDS = "xinerama lame libxv libxxf86vm libxvmc lirc"
 RDEPENDS = "qt-x11-plugins"
 
 inherit qmake qt3x11
