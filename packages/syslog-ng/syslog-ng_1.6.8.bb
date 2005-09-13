@@ -1,7 +1,7 @@
-PR = "r7"
+PR = "r8"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DESCRIPTION = "Alternative system logger daemon"
-DEPENDS = "libol"
+DEPENDS = "libol flex"
 
 SRC_URI = "http://www.balabit.com/downloads/syslog-ng/1.6/src/${PN}-${PV}.tar.gz \
 	  file://initscript"
