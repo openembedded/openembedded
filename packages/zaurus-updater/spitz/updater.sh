@@ -44,7 +44,6 @@ Cleanup(){
 	rm -f $VTMPNAME > /dev/null 2>&1
 	rm -f $MTMPNAME > /dev/null 2>&1
 	rm $CTRLPATH/* > /dev/null 2>&1
-	rm $DATAPATH/* > /dev/null 2>&1
 	exit $1
 }
 trap 'Cleanup 1' 1 15
@@ -95,9 +94,9 @@ fi
 ### Check that we have a valid tar
 for TARNAME in gnu-tar GNU-TAR
 do
-	if [ -e /mnt/cf/$TARNAME ]
+	if [ -e $DATAPATH/$TARNAME ]
 	then
-		TARBIN=/mnt/cf/$TARNAME
+		TARBIN=$DATAPATH/$TARNAME
 	fi
 done
 
