@@ -180,15 +180,19 @@ do_configure() {
 	yes '' | oe_runmake oldconfig
 }
 
-# Check the kernel is below the 1272*1024 byte limit for the c7x0
+# Check the kernel is below the 1272*1024 byte limit for the PXA Zaurii
 do_compile_append() {
-	if [ "${MACHINE}" == "c7x0" ]; then
-		size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
-		if [ $size -ge 1271 ]; then
-			rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
-			die "This kernel is too big for the c7x0 and will destroy your machine if you flash it!!!"
-		fi
-	fi
+	case ${MACHINE} in
+		c7x0 | akita | poodle | spitz | borzoi )
+			size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
+			if [ $size -ge 1271 ]; then	
+				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+				die "This kernel is too big for the c7x0 and will destroy your machine if you flash it!!!"
+			fi
+			;;
+        	*)
+			;;
+	esac
 }
 
 do_deploy() {
