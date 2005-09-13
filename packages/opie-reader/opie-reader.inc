@@ -13,6 +13,9 @@ PARALLEL_MAKE = ""
 
 inherit opie
 
+DEPENDS += " flite "
+EXTRA_QMAKEVARS_POST += " SUBDIRS+=FliteDyn SUBDIRS+=FliteDyn16 "
+
 do_install() {
 		install -d ${D}${palmtopdir}/pics/${APPNAME}/
 		install -d ${D}${palmtopdir}/lib/
@@ -44,3 +47,26 @@ do_install() {
 		install -m 0644 ${S}/HTMLentities ${D}${palmtopdir}/plugins/reader/data/
 }
 
+python populate_packages_prepend () {
+        print "opie-reader:", bb.data.getVar( 'RDEPENDS_opie-reader', d )
+        plugindir = bb.data.expand('${palmtopdir}/plugins/reader', d)                                     
+        for dir, type in [ ( 'codecs', 'codec' ), ( 'filters', 'filter' ), ( 'outcodecs', 'output' ) ]:
+            dir = plugindir + '/' + dir
+            do_split_packages(d, dir,
+                              '^lib(.*)\.so$', 'opie-reader-' + type + '-%s',
+                              'Opie reader %s ' + type,
+                              prepend=True)
+
+        # input codes are small and should be installed together with opie-reader,
+        # flite output pulls in libflite and thus should only be installed if
+        # really wanted by the user
+        suggests=[]
+        recommends=[]
+        for package in bb.data.getVar('PACKAGES', d).split():
+            if 'flite' in package:
+                suggests.append(package)
+            else:
+                recommends.append(package)
+        bb.data.setVar('RRECOMMENDS_opie-reader', " ".join( recommends ), d)
+        bb.data.setVar('RSUGGESTS_opie-reader', " ".join( suggests ), d)
+}
