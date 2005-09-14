@@ -11,10 +11,10 @@ inherit opie
 
 pkg_postinst() {
 #!/bin/sh
+if [ -n "$D" ]; then exit 1; fi
 if pidof -s qpe >/dev/null; then
   /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
 fi
- if [ -n "$D" ]; then false; fi
 }
 
 pkg_postrm() {
