@@ -39,6 +39,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/poodle_cleanup-r0.patch;patch=1 \
            ${RPSRC}/poodle_mmc-r0.patch;patch=1 \
            ${RPSRC}/poodle_irda-r0.patch;patch=1 \
+           ${RPSRC}/scoop_collie_fix-r0.patch;patch=1 \
            ${RPSRC}/spitz_kbd_fix1-r0.patch;patch=1 \
            ${RPSRC}/spitzcf-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
@@ -85,11 +86,15 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            file://defconfig-spitz \
            file://defconfig-tosa "
 
-#           ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
-#           ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 \
-#           ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
+# These patches would really help collie/poodle but we 
+# need someone to maintain them
+# ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+#   (Pavel Machek's git tree has updated versions of this?)
+# ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 
+#   (This is mostly in mainline now?)
+# ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
+# ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
 
-SRC_URI_append_poodle = "${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1"
 SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
                        ${DOSRC}/pxa-ac97-suspend-r0.patch;patch=1 \
 		       ${DOSRC}/ac97codec-rename-revert-r0.patch;patch=1 \
