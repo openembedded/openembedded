@@ -6,18 +6,20 @@ FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r17"
+PR = "r18"
 
 DEPENDS = "meta-opie"
 
 extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
 
-export IPKG_INSTALL = "task-bootstrap task-opie-base task-opie-base-applets \
-                       task-opie-base-inputmethods task-opie-base-apps \
-                       task-opie-base-settings task-opie-base-decorations \
-                       task-opie-base-styles task-opie-base-pim \
-		       task-opie-extra-settings \
-		       ${extra_stuff}"
+INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
+		    task-opie-base-inputmethods task-opie-base-apps \
+		    task-opie-base-settings task-opie-base-decorations \
+		    task-opie-base-styles task-opie-base-pim \
+		    task-opie-extra-settings \
+		    ${extra_stuff}"
+
+export IPKG_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {
