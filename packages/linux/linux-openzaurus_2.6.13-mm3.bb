@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r7"
+PR = "r0"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -15,30 +15,20 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.12-rc4-git1.bz2;patch=1 \
-# ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.12-rc6.bz2;patch=1 \
+# ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.14-rc1.bz2;patch=1 \
+# git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-#           ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.13-rc5.bz2;patch=1 \
+
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
-           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13/2.6.13-mm1/2.6.13-mm1.bz2;patch=1 \
-           ${RPSRC}/pxa_pcmcia_init-r1.patch;patch=1 \
-           ${RPSRC}/pxafb_hsync-r2.patch;patch=1 \
+           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.13/2.6.13-mm3/2.6.13-mm3.bz2;patch=1 \
            ${RPSRC}/borzoi_machtype-r0.patch;patch=1 \
-           ${RPSRC}/sharp_multi_pcmcia-r4.patch;patch=1 \
-           ${RPSRC}/rmk_mmc_updates-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_detection-r1.patch;patch=1 \
-           ${RPSRC}/corgi_mmc_detect-r0.patch;patch=1 \
-           ${RPSRC}/scoop_typefix-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_ssp-r4.patch;patch=1 \
-           ${RPSRC}/sharpsl_lcd-r4.patch;patch=1 \
-           ${RPSRC}/sharpsl_ts-r6.patch;patch=1 \
-           ${RPSRC}/sharpsl_bl-r5.patch;patch=1 \
-           ${RPSRC}/spitzkbd-r3.patch;patch=1 \
-           ${RPSRC}/spitz_base-r17.patch;patch=1 \
+           ${RPSRC}/sharpsl_bl_miss-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_mtd_extras-r1.patch;patch=1 \
            ${RPSRC}/ohci_portcount-r0.patch;patch=1 \
            ${RPSRC}/pxa_ohci_power-r0.patch;patch=1 \
+           ${RPSRC}/pxa_i2c_fixes-r0.patch;patch=1 \
            ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_ohci_platform-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r8.patch;patch=1 \
@@ -49,7 +39,6 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/spitzcf-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pxa_remove_static-r0.patch;patch=1 \
-           ${RPSRC}/rmk-i2c-pxa-r2.patch;patch=1 \
            ${RPSRC}/pxa_irda-r3.patch;patch=1 \
            ${RPSRC}/corgi_irda-r3.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
@@ -67,9 +56,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${DOSRC}/pxa2xx-ir-dma-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r5.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r6.patch;patch=1 \
-           ${DOSRC}/tosa-machine-base-r9.patch;patch=1 \
+           ${RPSRC}/temp/tosa-machine-base-r10.patch;patch=1 \
            ${DOSRC}/tosa-keyboard-r6.patch;patch=1 \
-           ${DOSRC}/tc6393fb-r6.patch;patch=1 \
+           ${RPSRC}/temp/tc6393fb-r7.patch;patch=1 \
            ${DOSRC}/tosa-power-r6.patch;patch=1 \
            ${DOSRC}/tosa-mmc-r5.patch;patch=1 \
            ${DOSRC}/tosa-udc-r4.patch;patch=1 \
