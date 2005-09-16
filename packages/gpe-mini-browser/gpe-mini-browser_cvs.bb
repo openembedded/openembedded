@@ -4,7 +4,7 @@ PV = "0.17+cvs-${CVSDATE}"
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-mini-browser"
 DESCRIPTION = "A lightweight webbrowser for the GPE platform"
 LICENSE = "GPL"
-DEPENDS = "sqlite osb-nrcit libgpewidget"
+DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/gpe-mini-browser"
