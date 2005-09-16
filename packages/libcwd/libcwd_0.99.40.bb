@@ -3,7 +3,7 @@ It includes ostream-based debug output with custom debug channels and devices, \
 powerful memory allocation debugging support, as well as run-time support for \
 printing source line number information and demangled type names."
 SECTION = "devel/libs"
-LICENSE = "LGPL"
+LICENSE = "QPL"
 HOMEPAGE = "http://libcwd.sourceforge.net"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
