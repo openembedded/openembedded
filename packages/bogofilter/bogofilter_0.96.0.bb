@@ -4,14 +4,28 @@ DESCRIPTION = "Bogofilter is a mail filter that classifies mail as spam or ham (
 by a statistical analysis of the message's header and content (body). \
 The program is able to learn from the user's classifications and corrections."
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 PRIORITY = "optional"
 
 SRC_URI = "http://download.sourceforge.net/bogofilter/bogofilter-${PV}.tar.bz2 \
            file://${FILESDIR}/configure.ac.patch;patch=1 \
+	   file://volatiles \
+	   file://postfix-filter.sh \
 	   "
 
 inherit autotools
 
 EXTRA_OECONF = "--with-libdb-prefix=${libdir}"
 
+do_install_append () {
+	mkdir -p ${D}${sysconfdir}/default/volatiles
+        install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_bogofilter
+	install -m 755 ${WORKDIR}/postfix-filter.sh ${D}${bindir}/postfix-filter.sh
+}
+
+pkg_postinst () {
+        grep filter /etc/group || addgroup filter
+        grep spam /etc/passwd || adduser --disabled-password --home=/var/spool/filter --ingroup filter -g "Bogofilter" spam
+        grep bogo /etc/passwd || adduser --disabled-password --home=/home/bogo --ingroup filter -g "Bogofilter" bogo
+	/etc/init.d/populate-volatile.sh
+}
