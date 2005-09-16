@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "db3 pcre postfix-native"
 LICENSE = "IPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -47,8 +47,8 @@ pkg_postinst () {
         grep postfix /etc/group || addgroup postfix
         grep postdrop /etc/group || addgroup postdrop
         grep vmail /etc/group || addgroup vmail
-        grep postfix /etc/passwd || adduser --disabled-password --home=/var/spool/postfix --ingroup postfix postfix
-        grep vmail /etc/passwd || adduser --disabled-password --home=/var/spool/vmail --ingroup vmail vmail
+        grep postfix /etc/passwd || adduser --disabled-password --home=/var/spool/postfix --ingroup postfix -g "Postfix" postfix
+        grep vmail /etc/passwd || adduser --disabled-password --home=/var/spool/vmail --ingroup vmail -g "Postfix" vmail
 	chgrp postdrop /usr/sbin/postqueue
 	chgrp postdrop /usr/sbin/postdrop
 	chmod g+s /usr/sbin/postqueue
