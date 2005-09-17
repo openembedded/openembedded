@@ -5,6 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
+           file://kernel_updates.patch;patch=1 \
            file://hostap_cs.conf "
 
 SRC_URI_append_mtx-1 = " file://mtx_compat.diff;patch=1;pnum=0 \
