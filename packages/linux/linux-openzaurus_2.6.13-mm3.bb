@@ -5,7 +5,7 @@ LICENSE = "GPL"
 #KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 KV = "${@bb.data.getVar('PV',d,True)}"
 
-PR = "r0"
+PR = "r1"
 
 DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
@@ -33,6 +33,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/poodle_mmc-r0.patch;patch=1 \
            ${RPSRC}/poodle_irda-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r0.patch;patch=1 \
+           ${RPSRC}/pcmcia_really_resume-r0.patch;patch=1 \
            ${RPSRC}/spitz_usbsuspend-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_ohci_platform-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r8.patch;patch=1 \
@@ -178,7 +179,7 @@ do_configure() {
 # Check the kernel is below the 1272*1024 byte limit for the PXA Zaurii
 do_compile_append() {
 	case ${MACHINE} in
-		c7x0 | akita | poodle | spitz | borzoi )
+		c7x0 | akita | poodle | spitz | borzoi | tosa )
 			size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
 			if [ $size -ge 1271 ]; then	
 				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
