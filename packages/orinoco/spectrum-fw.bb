@@ -8,7 +8,7 @@ SRC_URI = "file://get_symbol_fw \
 S = "${WORKDIR}"
 
 do_compile() {
-	get_symbol_fw
+	./get_symbol_fw
 }
 
 FILES_${PN} += "${base_libdir}/firmware/symbol*"
