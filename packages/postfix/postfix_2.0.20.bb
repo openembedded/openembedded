@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "db3 pcre postfix-native"
 LICENSE = "IPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -54,6 +54,7 @@ pkg_postinst () {
 	chmod g+s /usr/sbin/postqueue
 	chmod g+s /usr/sbin/postdrop
 	/var/tmp/main_cf.sh >/etc/postfix/main.cf
+	rm -f /var/tmp/main_cf.sh
 	chmod 644 /etc/postfix/main.cf
 	[ -d /var/spool/postfix ] && rmdir /var/spool/postfix
 	/etc/init.d/populate-volatile.sh

@@ -8,7 +8,7 @@ FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${D
 LICENSE = "MIT"
 PR = "r18"
 
-DEPENDS = "meta-opie"
+DEPENDS = "task-bootstrap meta-opie"
 
 extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
 
