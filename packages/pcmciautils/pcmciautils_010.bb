@@ -1,5 +1,6 @@
-DESCRIPTION = "2.6 pcmcia utilities"
+DESCRIPTION = "Linux Kernel 2.6 Userland Utilities for the PCMCIA Subsystem"
 DEPENDS = "sysfsutils"
+HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 
@@ -17,6 +18,7 @@ export hotplugdir = "${sysconfdir}/hotplug"
 export pcmciaconfdir = "${sysconfdir}/pcmcia"
 LD = "${CC}"
 CFLAGS =+ "-I${S}/src"
+CFLAGS =+ '-DPCMCIAUTILS_VERSION=010'
 
 PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs'"
