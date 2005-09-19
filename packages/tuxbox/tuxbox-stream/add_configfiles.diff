@@ -27,7 +27,7 @@ diff -Naur stream/AUTHORS stream_configure/AUTHORS
 diff -Naur stream/configure.ac stream_configure/configure.ac
 --- stream/configure.ac	1970-01-01 01:00:00.000000000 +0100
 +++ stream_configure/configure.ac	2004-11-16 00:13:26.000000000 +0100
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,25 @@
 +AC_INIT([tuxbox-stream],[1.0.0],[obi@tuxbox.org])
 +AM_INIT_AUTOMAKE([dist-bzip2 no-define])
 +
@@ -49,9 +49,6 @@ diff -Naur stream/configure.ac stream_configure/configure.ac
 +AC_SUBST(BOXTYPE)
 +AM_CONDITIONAL(BOXTYPE_DREAMBOX,test "$BOXTYPE" != "dbox2")
 +AM_CONDITIONAL(BOXTYPE_DBOX2,test "$BOXTYPE" = "dbox2")
-+
-+AC_SUBST(BOXTYPE)
-+AM_CONDITIONAL(BOXTYPE_DREAMBOX, false)
 +
 +AC_OUTPUT([
 +Makefile

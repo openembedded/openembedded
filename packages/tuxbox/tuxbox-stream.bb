@@ -11,7 +11,7 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/dvb/tools/stream;
 CVSDATE = "20050802"
 S = "${WORKDIR}/stream"
 PV = "1.0+${CVSDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
