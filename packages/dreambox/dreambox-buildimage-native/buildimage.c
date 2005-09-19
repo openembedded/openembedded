@@ -210,12 +210,11 @@ void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 		die("size changed");
 }
 
-
 int main(int argc, char **argv)
 {
-	if (argc != 4)
+	if ((argc != 4) && (argc != 5))
 	{
-		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> > image.nfi\n", *argv);
+		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> [<arch>] > image.nfi\n", *argv);
 		return 1;
 	}
 	
@@ -239,6 +238,14 @@ int main(int argc, char **argv)
 	int num_partitions = 3;
 	
 	int total_size = 4 + num_partitions * 4 + 4 + sectors_2nd * 528 + 4 + sectors_boot * 528 + 4 + sectors_root * 528;
+
+		/* in case an architecture is given, write NFI1 header */	
+	if (argc == 5)
+	{
+		char header[32] = "NFI1";
+		strncpy(header + 4, argv[4], 28);
+		write(1, header, 32);
+	}
 	
 		/* global header */
 	emit_4(total_size);
