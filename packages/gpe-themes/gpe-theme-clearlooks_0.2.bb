@@ -1,5 +1,6 @@
 DESCRIPTION =	"GTK+ clearlooks theme adjusted for GPE"
 MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+PR=		"r1"
 
 #it doesn't really depends on it, but it's nice to make OE build it
 DEPENDS =		"gtk-engines"
