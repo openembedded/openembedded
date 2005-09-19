@@ -17,7 +17,7 @@ do_install() {
 	mkdir -p ${D}${sbindir}
 	install -m 755 ${WORKDIR}/update-qtfontdir ${D}${sbindir}
 	mkdir -p ${D}${palmtopdir}/lib/fonts
-	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts
+	cp -pPR lib/fonts/* ${D}${palmtopdir}/lib/fonts
 	# Delete all other font formats, Qt/E would have a dead slow
 	# application start time if it had to use any other font format
 	# as *.qpf ...
