@@ -15,5 +15,5 @@ inherit palmtop
 do_install() {
         install -m 0755 zipsc Qtopia${palmtopdir}/bin/zipsc
 	install -d ${D}/
-	cp -a Qtopia/* ${D}/
+	cp -pPR Qtopia/* ${D}/
 }

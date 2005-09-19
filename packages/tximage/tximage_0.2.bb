@@ -17,5 +17,5 @@ do_install() {
         	   ${D}${palmtopdir}/bin
         install -D -m 755 tximage ${D}${palmtopdir}/bin/tximage
         install -D -m 644 imageviewer.desktop ${D}${palmtopdir}/apps/Applications/tximage.desktop
-        cp -a tximage.png ${D}${palmtopdir}/pics/
+        cp -pPR tximage.png ${D}${palmtopdir}/pics/
 }
