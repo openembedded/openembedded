@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r37"
+PR = "r38"
 
 ALLOW_EMPTY = "1"
 
@@ -49,7 +49,9 @@ gpe-task-pim = "\
     gpe-calendar \
     gpe-sketchbook \
     gpe-contacts \
-    gpe-today"
+    gpe-today \
+    gpesyncd"
+
 RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
 DEPENDS += " ${gpe-task-pim}"
 
