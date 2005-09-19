@@ -2,7 +2,7 @@ DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "ncurses"
+DEPENDS = "dbus-0.23.4 ncurses"
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
 	file://gpsd"
