@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -61,7 +61,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${DOSRC}/tosa-udc-r4.patch;patch=1 \
            ${DOSRC}/tosa-irda-r3.patch;patch=1 \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
-           ${DOSRC}/tosa-bl-r5.patch;patch=1 \
+           ${RPSRC}/temp/tosa-bl-r5a.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r1.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
