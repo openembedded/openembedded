@@ -11,9 +11,9 @@ UDEV_DEVFS_RULES = "0"
 
 include udev.inc
 
-PR = "r0"
+PR = "r1"
 
-UDEV_EXTRAS = "extras/scsi_id/ extras/volume_id/ extras/run_directory/"
+UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
 
 do_install_append() {
 	install -m 0644 ${WORKDIR}/udev.rules ${D}${sysconfdir}/udev/rules.d/
