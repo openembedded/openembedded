@@ -105,11 +105,11 @@ do_stage() {
 
         for lib in Core Gui Network Sql Xml
         do
-                cp -a lib/libQt${lib}* ${STAGING_DIR}/${HOST_SYS}/qt4/lib/
+                cp -pPR lib/libQt${lib}* ${STAGING_DIR}/${HOST_SYS}/qt4/lib/
         done
 
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt4/include/
-	cp -a include/* ${STAGING_DIR}/${HOST_SYS}/qt4/include
+	cp -pPR include/* ${STAGING_DIR}/${HOST_SYS}/qt4/include
 }
 
 do_install() {
@@ -117,7 +117,7 @@ do_install() {
 	install -d ${D}${sbindir}/
 	install -m 0755 ${WORKDIR}/update-qtfontdir ${D}${sbindir}/
 	install -d ${D}${palmtopdir}/lib/fonts/
-	cp -a lib/fonts/* ${D}${palmtopdir}/lib/fonts/
+	cp -pPR lib/fonts/* ${D}${palmtopdir}/lib/fonts/
 
 	for lib in Core Gui Network Sql Xml
 	do

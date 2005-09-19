@@ -85,12 +85,12 @@ export CFLAGS_KERNEL="-fno-delayed-branch "
 
 do_unpack_extra(){
 	# copy kernel source which is maintained in openwrt via cvs
-	cp -a ${WORKDIR}/kernel-source/* ${S}
+	cp -pPR ${WORKDIR}/kernel-source/* ${S}
 	# copy binary wlan driver
-	cp -a ${WORKDIR}/wl/*.o ${S}/drivers/net/wl
+	cp -pPR ${WORKDIR}/wl/*.o ${S}/drivers/net/wl
 	# copy proprietary et source
-	cp -a ${WORKDIR}/et/* ${S}/drivers/net/et
-	cp -a ${WORKDIR}/et/*.h ${S}/include/
+	cp -pPR ${WORKDIR}/et/* ${S}/drivers/net/et
+	cp -pPR ${WORKDIR}/et/*.h ${S}/include/
 }
 addtask unpack_extra after do_unpack before do_patch
 

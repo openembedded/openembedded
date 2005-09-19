@@ -78,7 +78,7 @@ do_stage() {
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake DESTDIR="${STAGE_TEMP}" install_include
 	mkdir -p ${STAGING_INCDIR}/db4
-	cp -af ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/db4
+	cp -pPRf ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/db4
 	rm -rf ${STAGE_TEMP}
 	oe_libinstall -so -C .libs libdb-4.3 ${STAGING_LIBDIR}
 }

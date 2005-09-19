@@ -17,5 +17,5 @@ do_install() {
         install -D -m 755 dviviewer ${D}${palmtopdir}/bin/dviviewer
         install -D -m 644 dviviewer.desktop ${D}${palmtopdir}/Applications/dviviewer.desktop
         install -d ${D}${palmtopdir}/pics
-        cp -a *.png ${D}${palmtopdir}/pics/
+        cp -pPR *.png ${D}${palmtopdir}/pics/
 }

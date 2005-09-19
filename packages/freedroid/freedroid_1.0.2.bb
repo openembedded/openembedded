@@ -26,9 +26,9 @@ do_install() {
         install -D -m 0755 src/freedroid ${D}${palmtopdir}/bin/freedroid
 	install -D -m 0644 ${WORKDIR}/icon.png ${D}${palmtopdir}/pics/freedroid.png
 
-	cp -a graphics/* ${D}${palmtopdir}/share/freedroid/graphics
-	cp -a map/* ${D}${palmtopdir}/share/freedroid/map
-	cp -a sound/* ${D}${palmtopdir}/share/freedroid/sound
+	cp -pPR graphics/* ${D}${palmtopdir}/share/freedroid/graphics
+	cp -pPR map/* ${D}${palmtopdir}/share/freedroid/map
+	cp -pPR sound/* ${D}${palmtopdir}/share/freedroid/sound
 
 	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/freedroid.desktop
 	echo "Comment=A Paradroid Clone" >>${D}${palmtopdir}/apps/Games/freedroid.desktop
