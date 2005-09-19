@@ -12,6 +12,6 @@ S = "${WORKDIR}/Numeric-${PV}"
 inherit distutils
 
 do_stage() {
-	cp -a Include/Numeric ${STAGING_INCDIR}
+	cp -pPR Include/Numeric ${STAGING_INCDIR}
 }
 

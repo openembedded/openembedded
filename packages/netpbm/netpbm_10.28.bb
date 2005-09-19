@@ -65,16 +65,16 @@ do_install() {
 		*/VERSION)	;;
 		*/pkginfo)	;;
 		*/bin)		install -d ${D}${bindir}
-				cp -a "$d"/* ${D}${bindir}
+				cp -pPR "$d"/* ${D}${bindir}
 				rm ${D}${bindir}/doc.url;;
 		*/include)	install -d ${D}${includedir}
-				cp -a "$d"/* ${D}${includedir};;
+				cp -pPR "$d"/* ${D}${includedir};;
 		*/link|*/lib)	install -d ${D}${libdir}
-				cp -a "$d"/* ${D}${libdir};;
+				cp -pPR "$d"/* ${D}${libdir};;
 		*/man)		install -d ${D}${mandir}
-				cp -a "$d"/* ${D}${mandir};;
+				cp -pPR "$d"/* ${D}${mandir};;
 		*/misc)		install -d ${D}${datadir}/netpbm
-				cp -a "$d"/* ${D}${datadir}/netpbm;;
+				cp -pPR "$d"/* ${D}${datadir}/netpbm;;
 		*/config_template)
 				install -d ${D}${bindir}
 				sed "/^@/d

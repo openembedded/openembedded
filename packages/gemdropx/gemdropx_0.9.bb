@@ -27,7 +27,7 @@ do_install() {
 		   ${D}${palmtopdir}/share/gemdropx
         install -D -m 0755 gemdropx ${D}${palmtopdir}/bin/gemdropx
 	install -D -m 0644 ${WORKDIR}/icon.png ${D}${palmtopdir}/pics/gemdropx.png
-	cp -a data/* ${D}${palmtopdir}/share/gemdropx
+	cp -pPR data/* ${D}${palmtopdir}/share/gemdropx
 
 	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/gemdropx.desktop
 	echo "Comment=Puzzle game" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop

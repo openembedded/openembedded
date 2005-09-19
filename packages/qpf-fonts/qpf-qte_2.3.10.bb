@@ -31,5 +31,5 @@ QPF_DESCRIPTION = "Qt/E font %s"
 
 do_install() {
 	install -d ${D}${palmqtdir}/lib/fonts/
-	cp -a lib/fonts/* ${D}${palmqtdir}/lib/fonts/
+	cp -pPR lib/fonts/* ${D}${palmqtdir}/lib/fonts/
 }

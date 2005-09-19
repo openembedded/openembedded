@@ -19,6 +19,6 @@ do_install() {
     install -d ${D}${palmtopdir}/bin \
 	       ${D}${palmtopdir}/pics/kstars \
 	       ${D}${palmtopdir}/share/apps/kstars
-    cp -a ${WORKDIR}/pics ${D}${palmtopdir}
-    cp -a ${WORKDIR}/share/apps/kstars ${D}${palmtopdir}/share/apps/
+    cp -pPR ${WORKDIR}/pics ${D}${palmtopdir}
+    cp -pPR ${WORKDIR}/share/apps/kstars ${D}${palmtopdir}/share/apps/
 }

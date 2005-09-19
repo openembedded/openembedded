@@ -70,7 +70,7 @@ do_stage() {
 		oe_libinstall -so -C lib libQt$part ${STAGING_QT_DIR}
 	done
 	oe_libinstall -a -C lib libQtAssistantClient ${STAGING_QT_DIR}
-	cp -a include/* ${STAGING_INCDIR}/
+	cp -pPR include/* ${STAGING_INCDIR}/
 }
 
 do_install() {
@@ -81,9 +81,9 @@ do_install() {
 		oe_libinstall -so -C lib libQt$part ${D}${libdir}
 	done
 	oe_libinstall -a -C lib libQtAssistantClient ${STAGING_QT_DIR}
-	cp -a include/* ${D}${incdir}
-	cp -a plugins ${D}${libdir}
-	cp -a bin/* ${D}${bindir}
+	cp -pPR include/* ${D}${incdir}
+	cp -pPR plugins ${D}${libdir}
+	cp -pPR bin/* ${D}${bindir}
 
 	install -d ${D}${bindir}/qt4-examples
 	for binary in `find examples -perm 0755 -type f`

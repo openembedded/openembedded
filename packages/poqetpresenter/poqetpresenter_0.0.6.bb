@@ -22,5 +22,5 @@ do_install() {
         install -D -m 0755 poqetp/poqetp ${D}${palmtopdir}/bin/poqetp
         install -D -m 0644 poqetp.desktop ${D}${palmtopdir}/apps/Applications/poqetp.desktop
         install -d ${D}${palmtopdir}/pics/poqetp
-        cp -a pics/* ${D}${palmtopdir}/pics/poqetp/
+        cp -pPR pics/* ${D}${palmtopdir}/pics/poqetp/
 }

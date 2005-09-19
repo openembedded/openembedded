@@ -18,5 +18,5 @@ do_install() {
         install -m 0755 zauralign ${D}${palmtopdir}/bin/
 	install -m 0644 zauralign.png ${D}${palmtopdir}/pics/
 	install -m 0644 zauralign.desktop ${D}${palmtopdir}/apps/Games/
-	cp -a pics/* ${D}${palmtopdir}/pics/zauralign/
+	cp -pPR pics/* ${D}${palmtopdir}/pics/zauralign/
 }

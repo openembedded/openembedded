@@ -44,7 +44,7 @@ do_install() {
 	install ${WORKDIR}/lircd.init ${D}${sysconfdir}/init.d/lircd
 
 	install -d ${D}${datadir}/lirc/
-	cp -a remotes ${D}${datadir}/lirc/
+	cp -pPR remotes ${D}${datadir}/lirc/
 	find ${D}${datadir}/lirc -name CVS -o -name '*~*' | xargs rm -rf
 }
 

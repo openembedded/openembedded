@@ -13,5 +13,5 @@ inherit palmtop
 do_install() {
         install -m 0755 puzz-le Qtopia/puzz-le/${palmtopdir}/bin/puzz-le
 	install -d ${D}/
-	cp -a Qtopia/puzz-le/* ${D}/
+	cp -pPR Qtopia/puzz-le/* ${D}/
 }

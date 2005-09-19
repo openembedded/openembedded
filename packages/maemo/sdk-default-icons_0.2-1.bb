@@ -14,7 +14,7 @@ FILES_${PN} = "${datadir}"
 do_install() {
 
   install -d ${D}/${datadir}
-  cp -a ${S}/icons/  ${D}/${datadir}/
+  cp -pPR ${S}/icons/  ${D}/${datadir}/
 
 }
 

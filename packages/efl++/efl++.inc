@@ -48,7 +48,7 @@ do_install() {
 	install -d ${D}${bindir}
 	install *-* ${D}${bindir}
 	install -d ${D}${datadir}/efl++
-	cp -a data/* ${D}${datadir}/efl++
+	cp -pPR data/* ${D}${datadir}/efl++
 }
 
 PACKAGES =+ "efl++-examples"

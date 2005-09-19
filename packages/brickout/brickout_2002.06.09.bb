@@ -28,9 +28,9 @@ do_install() {
         install -D -m 0755 brickout ${D}${palmtopdir}/bin/brickout
 	install -D -m 0644 brickout.png ${D}${palmtopdir}/pics/brickout.png
 
-        cp -a sounds/* ${D}${palmtopdir}/share/brickout/sounds/
-        cp -a music/* ${D}${palmtopdir}/share/brickout/music/
-        cp -a images-sdl/* ${D}${palmtopdir}/share/brickout/images/
+        cp -pPR sounds/* ${D}${palmtopdir}/share/brickout/sounds/
+        cp -pPR music/* ${D}${palmtopdir}/share/brickout/music/
+        cp -pPR images-sdl/* ${D}${palmtopdir}/share/brickout/images/
 
 	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/brickout.desktop
 	echo "Comment=Arkanoid game" >>${D}${palmtopdir}/apps/Games/brickout.desktop

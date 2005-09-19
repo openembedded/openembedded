@@ -147,7 +147,7 @@ do_stage() {
 	rm -f include/qxt.h
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
-	cp -a lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
 }
 
 do_install() {
