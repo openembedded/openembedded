@@ -6,7 +6,8 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r19"
+USBV= "usb20040610"
+PR = "r1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/opensimpad-${PV}"
 
@@ -14,19 +15,28 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://${KV}-${VRSV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch;patch=1 \
+           file://${KV}-mh1.patch;patch=1 \
            file://sound-volume-reversed.patch;patch=1 \
 	   file://disable-pcmcia-probe.patch;patch=1 \
            file://mkdep.patch;patch=1 \
            file://defconfig-${MACHINE} \
 	   http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
-           file://mipv6-1.1-v2.4.25.patch;patch=1 \
+           file://mipv6-1.1-v${KV}.patch;patch=1 \
            file://simpad-backlight-if.patch;patch=1 \
            file://simpad-switches-input.patch;patch=1 \
            file://simpad-switches-input2.patch;patch=1 \
-           file://simpad-apm.diff;patch=1;pnum=0 \
+           file://simpad-apm.patch;patch=1 \
            file://simpad-ts-noninput.patch;patch=1 \
-           file://simpad-pm-updates.patch;patch=1;pnum=0 \
-           file://support-128mb-flash.patch;patch=1"
+           file://simpad-pm-updates.patch;patch=1 \
+           file://support-128mb-flash.patch;patch=1 \
+           file://simpad-proc-sys-board.patch;patch=1 \
+           file://simpad-serial.patch;patch=1 \
+           file://mppe-20040216.patch;patch=1 \
+           file://sa1100-usb-tcl1.patch;patch=1 \
+"
+# This applies right after the jpm patch but is useless until we
+# have sa1100_udc.c
+#           file://${KV}-${VRSV}-${USBV}.patch;patch=1 \
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
@@ -42,12 +52,12 @@ COMPATIBLE_HOST = "arm.*-linux"
 SIMPAD_MEM     = ${@bb.data.getVar("SIMPAD_MEMORY_SIZE",d,1)  or "32"}
 SIMPAD_RD      = ${@bb.data.getVar("SIMPAD_RAMDISK_SIZE",d,1) or "32"}
 export CMDLINE = ${@bb.data.getVar("SIMPAD_CMDLINE",d,1) or  "mtdparts=sa1100:512k(boot),1m(kernel),14848k(root),-(home) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 "}
-EXTRA_OEMAKE = ""
+#EXTRA_OEMAKE = ""
 
 module_conf_sa1100_ir = "alias irda0 sa1100_ir"
 
-do_configure() {
-        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+do_configure() { 
+       install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
               
 	mem=${SIMPAD_MEM}
 	rd=${SIMPAD_RD}

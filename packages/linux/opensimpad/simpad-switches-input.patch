@@ -1,5 +1,10 @@
---- /mnt/bdisk/openembedded/oetmp/base/opensimpad-2.4.25-vrs2-pxa1-jpm1-r5/linux-2.4.25/drivers/misc/switches.h	2004-07-01 21:10:30.000000000 +0200
-+++ drivers/misc/switches.h	2004-07-03 23:45:46.000000000 +0200
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/drivers/misc/switches.h~simpad-switches-input
++++ linux-2.4.27/drivers/misc/switches.h
 @@ -25,4 +25,14 @@
  extern int  switches_ucb1x00_init(void);
  extern void switches_ucb1x00_exit(void);
@@ -15,8 +20,8 @@
 +#endif
 +
  #endif  /* !defined(_SWITCHES_H) */
---- /mnt/bdisk/openembedded/oetmp/base/opensimpad-2.4.25-vrs2-pxa1-jpm1-r5/linux-2.4.25/drivers/misc/switches-core.c	2004-07-01 21:10:30.000000000 +0200
-+++ drivers/misc/switches-core.c	2004-07-04 17:57:37.000000000 +0200
+--- linux-2.4.27/drivers/misc/switches-core.c~simpad-switches-input
++++ linux-2.4.27/drivers/misc/switches-core.c
 @@ -16,6 +16,9 @@
   *  11 September 2001 - UCB1200 driver framework support added.
   *

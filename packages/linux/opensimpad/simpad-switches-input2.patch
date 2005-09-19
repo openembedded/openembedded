@@ -3,8 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- drivers/misc/switches-core.c~Fooo
-+++ drivers/misc/switches-core.c
+--- linux-2.4.27/drivers/misc/switches-core.c~simpad-switches-input2
++++ linux-2.4.27/drivers/misc/switches-core.c
 @@ -66,7 +66,32 @@
  int 
  dummy_k_translate(unsigned char scancode, unsigned char *keycode, char raw_mode)

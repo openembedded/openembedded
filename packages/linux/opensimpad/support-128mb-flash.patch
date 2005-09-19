@@ -3,8 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- linux-2.4.25/arch/arm/mach-sa1100/simpad.c~support-128mb-flash
-+++ linux-2.4.25/arch/arm/mach-sa1100/simpad.c
+--- linux-2.4.27/arch/arm/mach-sa1100/simpad.c~support-128mb-flash
++++ linux-2.4.27/arch/arm/mach-sa1100/simpad.c
 @@ -83,11 +83,16 @@
  {
  #ifdef CONFIG_SA1100_SIMPAD_SINUSPAD
