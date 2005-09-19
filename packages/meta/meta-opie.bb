@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r26"
+PR = "r27"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -35,7 +35,7 @@ DEPENDS = "irda-utils ntp wireless-tools timezones ttf-dejavu \
 #
 
 task-opie-base = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
-                  opie-sounds opie-ttf-support ttf-dejavu-sans ttf-dejavu-sans-mono"
+                  opie-sounds opie-freetype ttf-dejavu-sans ttf-dejavu-sans-mono"
 
 #
 # things for reasonable bootstrap image
