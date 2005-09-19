@@ -75,7 +75,7 @@ do_install() {
 	install -d ${D}${bindir}/
 	install -m 0755 bin/designer bin/assistant tools/qvfb/qvfb bin/qtconfig ${D}${bindir}
 	install -d ${D}${prefix}/plugins/
-	cp -a plugins/imageformats plugins/sqldrivers plugins/designer ${D}${prefix}/plugins/
+	cp -pPR plugins/imageformats plugins/sqldrivers plugins/designer ${D}${prefix}/plugins/
 }
 
 PACKAGES =+ "qt-x11-plugins-imageformats qt-x11-plugins-sqldrivers qt-x11-plugins-designer \

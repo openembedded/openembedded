@@ -22,7 +22,7 @@ do_install() {
 		   ${D}${palmtopdir}/pics/billiardz
         install -m 0755 billiardz ${D}${palmtopdir}/bin/billiardz
         install -m 0644 billiardz.png ${D}${palmtopdir}/pics/billiardz.png
-	cp -a images/*.png ${D}${palmtopdir}/pics/billiardz
+	cp -pPR images/*.png ${D}${palmtopdir}/pics/billiardz
 
 	echo "[Desktop Entry] " >${D}${palmtopdir}/apps/Games/billiardz.desktop
 	echo "Comment=Billiards for Zaurus" >>${D}${palmtopdir}/apps/Games/billiardz.desktop
