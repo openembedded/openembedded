@@ -49,7 +49,12 @@ DB4_CONFIG ?= "--enable-o_direct --enable-smallbuild"
 # the default - "POSIX/pthreads/library".
 # Don't ignore the nice SWP instruction on the ARM:
 EXTRA_OECONF = "${DB4_CONFIG}"
-EXTRA_OECONF_nslu2 = "${DB4_CONFIG} --with-mutex=ARM/gcc-assembly"
+# These enable the ARM assembler mutex code, this won't
+# work with thumb compilation...
+ARM_MUTEX = "--with-mutex=ARM/gcc-assembly"
+ARM_MUTEX_thumb = ""
+# NOTE: only tested on nslu2, should probably be _armeb
+EXTRA_OECONF_nslu2 = "${DB4_CONFIG} ${ARM_MUTEX}"
 
 # Cancel the site stuff - it's set for db3 and destroys the
 # configure.
@@ -64,7 +69,7 @@ do_configure() {
 
 do_stage() {
 	# The .h files get installed read-only, the autostage
-	# function just uses cp -a, so do this by hand
+	# function just uses cp -pPR, so do this by hand
 	# Install, for the moment, into include/db4 to avoid
 	# interfering with the db3 headers (which have the same
 	# name).  -I${STAGING_INCDIR}/db4 to use db4, as opposed
@@ -73,7 +78,7 @@ do_stage() {
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake DESTDIR="${STAGE_TEMP}" install_include
 	mkdir -p ${STAGING_INCDIR}/db4
-	cp -af ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/db4
+	cp -pPRf ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/db4
 	rm -rf ${STAGE_TEMP}
 	oe_libinstall -so -C .libs libdb-4.3 ${STAGING_LIBDIR}
 }

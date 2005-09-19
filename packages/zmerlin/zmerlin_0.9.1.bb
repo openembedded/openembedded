@@ -13,6 +13,6 @@ inherit palmtop
 do_install() {
         install -m 0755 zmerlin ${S}/ipk${palmtopdir}/bin/zmerlin
 	install -d ${D}${palmtopdir}/
-        cp -a ipk/opt/* ${D}/opt
+        cp -pPR ipk/opt/* ${D}/opt
 }
 

@@ -140,11 +140,14 @@ autotools_do_install() {
 STAGE_TEMP="${WORKDIR}/temp-staging"
 
 autotools_stage_includes() {
-	rm -rf ${STAGE_TEMP}
-	mkdir -p ${STAGE_TEMP}
-	make DESTDIR="${STAGE_TEMP}" install
-	cp -a ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
-	rm -rf ${STAGE_TEMP}
+	if [ "${INHIBIT_AUTO_STAGE_INCLUDES}" != "1" ]
+	then
+		rm -rf ${STAGE_TEMP}
+		mkdir -p ${STAGE_TEMP}
+		make DESTDIR="${STAGE_TEMP}" install
+		cp -pPR ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
+		rm -rf ${STAGE_TEMP}
+	fi
 }
 
 EXPORT_FUNCTIONS do_configure do_install

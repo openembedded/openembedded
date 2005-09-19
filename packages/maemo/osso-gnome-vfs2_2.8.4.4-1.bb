@@ -1,12 +1,13 @@
+DESCRIPTION = "The Gnome Virtual File System - OSSO Version"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-PR = "r1"
-PROVIDES = "gnome-vfs"
+PR = "r4"
+PROVIDES = "virtual/gnome-vfs"
 RPROVIDES = "gnome-vfs"
 
 inherit gnome pkgconfig
 
-DEPENDS = "libxml2 gconf-osso dbus bzip2 gnome-mime-data zlib samba osso-gwconnect"
+DEPENDS = "libxml2 gconf-osso dbus-0.23.1-osso5 bzip2 gnome-mime-data zlib samba osso-gwconnect"
 RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz \

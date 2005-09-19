@@ -1,6 +1,6 @@
 SRC_URI = "http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development/kaffe-${PV}.tar.gz"
 S = "${WORKDIR}/kaffe-${PV}"
-PR = "r2"
+PR = "r3"
 
 include kaffe.inc
 
@@ -22,4 +22,7 @@ EXTRA_OECONF = "--disable-alsatest \
 
 do_stage() {
 	install -m 0755 kaffe/kaffeh/kaffeh ${STAGING_BINDIR}/
+
+	install -d ${STAGING_DATADIR}/kaffeh
+	install -m 0755 libraries/javalib/*.jar ${STAGING_DATADIR}/kaffeh/
 }

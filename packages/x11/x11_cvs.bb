@@ -1,6 +1,6 @@
 PV = "6.2.1cvs${CVSDATE}"
 LICENSE = "XFree86"
-PR = "r4"
+PR = "r5"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
@@ -10,7 +10,8 @@ FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
 PROVIDES = "x11"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11"
+SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11 \
+	   file://errordb-keysymdb-path-fix.patch;patch=1"
 S = "${WORKDIR}/X11"
 
 inherit autotools pkgconfig 

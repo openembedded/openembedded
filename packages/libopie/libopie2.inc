@@ -4,7 +4,7 @@ SECTION = "opie/libs"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
-DEPENDS = "libqpe-opie sqlite3 libpcap"
+DEPENDS = "libqpe-opie libpcap sqlite3 bluez-libs"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
 
 S = "${WORKDIR}/libopie2"
@@ -20,10 +20,11 @@ EXTRA_QMAKEVARS_POST = 'DEFINES+=OPIE_NEW_MALLOC \
 			DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX \
 			LIBS+=-L${S} LIBS+="-Wl,-rpath-link,${S}"'
 
-EXTRA_QMAKEVARS_PRE = 'ENABLE_SQL_PIM_BACKEND=y'
+#NOTE: We no longer enable the sqlite PIM backend here, since a) using it means no sync and b) it's too large for 16MB images
+EXTRA_QMAKEVARS_PRE = 'ENABLE_SQL_PIM_BACKEND=n'
 
-MODULES = "opiecore opiedb opiemm opienet opiepim opiesecurity opieui"
-LIBS    = "core2    db2    mm2    net2    pim2    security2    ui2"
+MODULES = "opiecore opiedb opiemm opienet opiepim opiesecurity opieui opiebluez"
+LIBS    = "core2    db2    mm2    net2    pim2    security2    ui2 bluez2"
 PRIVATE = "opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h"
 
 # uclibc doesn't have backtrace()

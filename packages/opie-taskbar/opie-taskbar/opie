@@ -3,13 +3,11 @@
 [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
 [ -z $HOME ] && export HOME=/home/$LOGNAME
 
-export QWS_DISPLAY=Transformed:Rot0:0
 export QTDIR=/opt/QtPalmtop
 export OPIEDIR=/opt/QtPalmtop
 export QPEDIR=/opt/QtPalmtop
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
 export PATH=$PATH:$OPIEDIR/bin
-# export QWS_KEYBOARD=KernelTTY
 
 if [ ! -x "$OPIEDIR/bin/qpe" ] ; then 
     echo Opie not installed

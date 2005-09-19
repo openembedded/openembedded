@@ -1,6 +1,11 @@
-PR = "r2"
-
-DEPENDS = "ipkg-native ipkg-utils-native binutils-cross-sdk gcc-cross-sdk gdb-cross fakeroot-native meta-gpe"
+DESCRIPTION = "Meta package for SDK including GPE and Opie"
+LICENSE = MIT
+DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
+           binutils-cross-sdk gcc-cross-sdk gdb-cross \
+           libidl libsvg-cairo sed-native \
+           meta-gpe gstreamer\
+           opie-mail"
+PR = "r8"
 
 PACKAGES = ""
 
@@ -19,7 +24,7 @@ compositeext-dev \
 damageext-dev \
 dbus-dev \
 fixesext-dev \
-gconf-dev \
+gconf-dbus-dev \
 gtk+-dev \
 gtk-engines-dev \
 libapm-dev \
@@ -28,6 +33,7 @@ libaudiofile-dev \
 libbluetooth-dev \
 libcairo-dev \
 libdisplaymigration-dev \
+libetpan-dev \
 libesd-dev \
 libeventdb-dev \
 libexpat-dev \
@@ -79,27 +85,37 @@ libxpm-dev \
 libxrandr-dev \
 libxrender-dev \
 libxsettings-client-dev \
-libxsettings-dev \
 libxss-dev \
 libxt-dev \
 libxtst-dev \
 libz-dev \
 matchbox-desktop-dev \
 ncurses-dev \
-orbit2-dev \
 pango-dev \
 randrext-dev \
 recordext-dev \
 renderext-dev \
 resourceext-dev \
-rxvt-unicode-dev \
-wireless-tools-dev \
+libiw-dev \
 xcalibrateext-dev \
 xextensions-dev \
-xmu-dev \
+libxmu-dev \
 xproto-dev \
 xtrans-dev \
+gstreamer-dev \
 "
+
+#libopiebluez2-dev \
+#libopiedb2-dev \
+#libopiecore2-dev \
+#libopienet2-dev \
+#libopiepim2-dev \
+#libopieui2-dev \
+#libqpe1-dev \
+#libqte2-dev \
+#libqtaux2-dev \
+#libmailwrapper-dev \
+
 
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
@@ -132,27 +148,39 @@ EOF
 	${IPKG_TARGET} install ${TARGET_INSTALL}
 
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
-	cp -a ${SDK_OUTPUT}/${prefix}/usr/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
+	cp -pPR ${SDK_OUTPUT}/${prefix}/usr/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
 	rm -rf ${SDK_OUTPUT}/${prefix}/usr/
 
-        cp -a ${SDK_OUTPUT}/${prefix}/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib
+        cp -pPR ${SDK_OUTPUT}/${prefix}/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib
         rm -rf ${SDK_OUTPUT}/${prefix}/lib/*
 
 	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc* ${SDK_OUTPUT}/${prefix}/lib
 
-	cp -a ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-        cp -a ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
+	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
+        cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 	chmod -R a+r ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 	find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/ -type d | xargs chmod +x
 
         echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
         echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}${libdir}/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	mv ${SDK_OUTPUT}${libdir}/../arm-linux/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
 	rm -rf ${SDK_OUTPUT}${libdir}/ipkg
 
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
+
+	# remove broken .la files
+	rm ${SDK_OUTPUT}/${prefix}/arm-linux/lib/*.la
+
+	# fix pkgconfig data files
+	cd ${SDK_OUTPUT}/${prefix}/arm-linux/lib/pkgconfig
+	for f in *.pc ; do
+		sed -i 's%=/usr%=${prefix}/arm-linux%g' "$f"
+	done
+	for f in *.pc ; do
+		sed -i 's%${STAGING_DIR}%/usr/local/arm/oe%g' "$f"
+	done
 
         mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
@@ -161,4 +189,3 @@ EOF
 
 do_populate_sdk[nostamp] = 1
 addtask populate_sdk before do_build after do_install
-LICENSE = MIT

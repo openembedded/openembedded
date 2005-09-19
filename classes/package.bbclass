@@ -481,7 +481,8 @@ python package_do_pkgconfig () {
 								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
 
 	for pkg in packages.split():
-		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
+		ppkg = bb.data.getVar("PKG_" + pkg, d, 1) or pkg
+		pkgs_file = os.path.join(shlibs_dir, ppkg + ".pclist")
 		if os.path.exists(pkgs_file):
 			os.remove(pkgs_file)
 		if pkgconfig_provided[pkg] != []:

@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-${PV}.tar.gz \
 	file://makefile.patch;patch=1 \
 	file://cifdefroute.patch;patch=1 \
 	file://pppd-resolv-varrun.patch;patch=1 \
+	file://plugins-fix-CC.patch;patch=1 \
 	file://pon \
 	file://poff \
 	file://init \

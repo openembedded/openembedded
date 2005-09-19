@@ -1,0 +1,45 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-wlan-ng-0.2.2/Configure~pcmciasrc
++++ linux-wlan-ng-0.2.2/Configure
+@@ -358,37 +358,6 @@
+ 	# kernel PCMCIA. 
+ 
+ 	if [ $WLAN_KERN_PCMCIA != "y" ] ; then
+-	    if [ ! "$PCMCIA_SRC" ] ; then
+-		if [ -f /sbin/cardctl ] ; then
+-			PCMCIA_SRC=`/sbin/cardctl -V 2>&1 | sed -e 's/cardctl version //'`
+-			PCMCIA_SRC=/usr/src/pcmcia-cs-$PCMCIA_SRC
+-		fi 	
+-	    fi
+-	    ask_str "pcmcia-cs source dir" PCMCIA_SRC
+-
+-	    if [ ! -f $PCMCIA_SRC/Makefile ] ; then
+-		$ECHO "pcmcia-cs source tree $PCMCIA_SRC is incomplete or missing!"
+-		$ECHO "The wlan driver for pcmcia cannot be built without "
+-		$ECHO "the pcmcia-cs source tree present and configured."
+-		fail
+-	    fi
+-	    if [ ! -f $PCMCIA_SRC/include/pcmcia/config.h ] ; then
+-		$ECHO "The pcmcia-cs source tree does not appear to be configured."
+-		$ECHO "The wlan driver for pcmcia cannot be built without "\
+-		$ECHO "the pcmcia-cs source tree present and configured."
+-		fail
+-	    fi
+-	    $ECHO ""
+-
+-            # Now we need to generate the module options flags.
+-	    # It's only relevant if modversions is turned on.
+-	    grep CONFIG_MODVERSIONS=y < $PCMCIA_SRC/config.mk > /dev/null
+-	    if [ $? = 0 ] ; then
+-		PCMCIA_MODFLAGS="-DMODULE -DMODVERSIONS -include $PCMCIA_SRC/include/linux/modversions.h"
+-	    else
+-		PCMCIA_MODFLAGS="-DMODULE"
+-	    fi
+-	    
+ 	    # new versions of pcmcia-cs don't generate their own modversion.h
+ 	    # if they don't have it, use the kernel module flags instead.
+ 	    if [ ! -f $PCMCIA_SRC/include/linux/modversions.h ] ; then

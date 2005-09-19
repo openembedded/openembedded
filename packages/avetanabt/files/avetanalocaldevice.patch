@@ -1,0 +1,11 @@
+--- avetanabt/javax/bluetooth/LocalDevice.java.old	2005-08-29 03:00:53.000000000 +0200
++++ avetanabt/javax/bluetooth/LocalDevice.java	2005-08-29 03:05:58.183734408 +0200
+@@ -227,7 +227,7 @@
+       if (property.equals("bluetooth.api.version")) return "1.0";
+ 
+       else if (property.equals("bluetooth.connected.devices.max"))
+-        try {return ""+BlueZ.getMaxConnectedDevices();}catch(Exception ex) {return "1";}
++        try {return ""+BlueZ.getMaxConnectedDevices();}catch(Exception ex) {return "7";}
+ 
+       else if (property.equals("bluetooth.sd.trans.max")) return "1";
+ 

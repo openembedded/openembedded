@@ -1,117 +1,145 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r3"
+PR = "r6"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
-OPENSLUG_DEVELOPMENT = "\
+OPENSLUG_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
+	atftp \
 	autoconf \
 	automake \
+	aumix \
 	bash \
+	bind \
 	binutils \
 	bison \
+	bluez-utils-nodbus \
+	bridge-utils \
+	bwmon \
 	bzip2 \
+	ccxstream \
 	coreutils \
-	cvs \
+	cron \
+	ctorrent \
+	ctrlproxy \
+	cvs\
+	cyrus-imapd \
+	db4 \
+	diffstat \
 	diffutils \
+	dnsmasq \
+	expat \
+	file \
 	findutils \
 	flex \
+	ftpd-topfield \
 	gawk \
 	gcc \
 	gdb \
-	gnu-config \
-	grep \
-	lsof \
-	m4 \
-	make \
-	monotone-4 monotone-5 \
-	ncurses \
-	openssh \
-	patch \
-	pciutils \
-	quilt \
-	sed \
-	util-linux \
-	"
-
-# These packages only build on TARGET_OS=linux, not
-# TARGET_OS=linux-uclibc
-OPENSLUG_DEVELOPMENT_append_linux = "\
-	perl \
-	tar \
-	"
-
-
-OPENSLUG_PACKAGES = "\
-	bash \
-	bluez-utils-nodbus \
-	bridge-utils \
-	coreutils \
-	cron \
-	cvs\
-	dnsmasq \
-	expat \
-	ftpd-topfield \
 	glib-2.0 \
+	gnu-config \
 	gphoto2 \
+	grep \
 	gtk-doc \
+	gzip \
+	ifupdown \
+	iperf \
+	ipkg-utils \
+	iptables \
+	irssi \
+	joe \
+	jpeg \
+	lcdproc \
 	less \
+	libdvb \
+	libpam \
+	libpng \
+	libtool \
 	libusb \
 	libxml2 \
+	lsof \
+	m4 \
+	mailx \
+	make \
+	man man-pages \
+	mgetty \
 	miau \ 
 	microcom \
+	monotone-5 \
+	mpd \
 	mt-daapd \
 	mutt \
 	mysql \
 	nail \
-	openssh \
-	openvpn \
-	pcre \
-	ppp \
-	puppy \
-	pwc \
-	rsync \
-	sudo \
-	sysfsutils \
-	thttpd \
-	db4 \
+	nano \
+	ncftp \
+	ncurses \
+	netpbm \
+	nfs-utils \
+	ntp \
+	obexftp openobex openobex-apps ircp \
 	openldap \
 	openntpd \
-	ntp \
-	reiserfsprogs reiser4progs \
+	openssh \
+	openvpn \
+	patch \
+	pciutils \
+	pcre \
+	perl \
+	php \
+	pkgconfig \
+	postfix \
+	ppp \
+	procps \
+	psmisc \
+	puppy \
+	pwc \
 	python \
+	qc-usb-messenger \
+	quilt \
+	reiserfsprogs reiser4progs \
+	rsync \
 	samba \
 	sane-backends \
+	screen \
+	sed \
+	setpwc \
+	ssmtp \
+	strace \
+	streamripper \
+	sudo \
+	sysfsutils \
+	syslog-ng \
+	tar \
 	thttpd \
-	vlan \
-	wget \
+	tiff \
+	timezones \
 	unionfs-modules unionfs-utils \
-	"
-
-# These packages only build on TARGET_OS=linux, not
-# TARGET_OS=linux-uclibc  (Note that for several this
-# is because of use of single precision FP interfaces
-# such as sinf.)
-OPENSLUG_PACKAGES_append_linux = "\
-	bind \
-	mgetty \
-	mpd \
-	nfs-utils \
-	libpam \
-	php \
-	postfix \
+	usbutils \
+	util-linux \
+	vim \
+	vlan \
+	vsftpd \
+	wakelan \
+	wireless-tools \
+	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
+	zd1211 \
+	zlib \
 	"
 
 BROKEN_PACKAGES = "\
-	atftp \
-	strace \
+	groff \
+	icecast \
+	watchdog \
 	"
 
 DEPENDS = 'openslug-image \
 	${OPENSLUG_PACKAGES} \
-	${OPENSLUG_DEVELOPMENT} \
+	openslug-native \
 	package-index'

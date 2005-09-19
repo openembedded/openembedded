@@ -31,6 +31,6 @@ do_install_append() {
 	install ${WORKDIR}/lircd.init ${D}${sysconfdir}/init.d/lircd
 
         install -d ${D}${datadir}/lirc/
-        cp -a ${S}/remotes ${D}${datadir}/lirc/
+        cp -pPR ${S}/remotes ${D}${datadir}/lirc/
 }
 

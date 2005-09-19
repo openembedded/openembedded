@@ -13,7 +13,7 @@
 -STA=/etc/pcmcia/RF010802.HEX
 -PRISM2_SREC=/usr/local/bin/prism2_srec
 +PRI=/etc/pcmcia/pm010102.hex
-+STA=/etc/pcmcia/rf010803.hex
++STA=/etc/pcmcia/rf010804.hex
 +PRISM2_SREC=/usr/sbin/prism2_srec
  
  set -e

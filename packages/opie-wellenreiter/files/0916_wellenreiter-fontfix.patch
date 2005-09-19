@@ -1,0 +1,43 @@
+
+This patch is backport from OPIE CVS.
+Submitted upstream by Marcin Juszkiewicz <openembedded@hrw.one.pl>
+Date: 2005-09-16
+
+Index: packetview.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/net/wellenreiter/gui/packetview.cpp,v
+retrieving revision 1.9
+diff -u -r1.9 packetview.cpp
+--- wellenreiter/gui/packetview.cpp	24 Aug 2004 11:53:44 -0000	1.9
++++ wellenreiter/gui/packetview.cpp	16 Sep 2005 17:41:03 -0000
+@@ -20,6 +20,7 @@
+ #include <opie2/odebug.h>
+ #include <opie2/olistview.h>
+ #include <opie2/oapplication.h>
++#include <qpe/config.h>
+ 
+ /* QT */
+ #include <qfont.h>
+@@ -38,6 +39,9 @@
+ PacketView::PacketView( QWidget * parent, const char * name, WFlags f )
+            :QFrame( parent, name, f )
+ {
++    Config c( "qpe" );
++    c.setGroup( "Appearance" );
++    
+     _number = new QSpinBox( this );
+     _number->setPrefix( "Pkt# " );
+     _label = new QLabel( this );
+@@ -47,11 +51,10 @@
+     _list->setColumnAlignment( 0, Qt::AlignCenter );
+     _list->setColumnAlignment( 1, Qt::AlignLeft );
+     _list->setAllColumnsShowFocus( true );
+-    _list->setFont( QFont( "Fixed", 8 ) );
+ 
+     _hex = new QTextView( this );
+     _hex->setMargin( 0 );
+-    _hex->setFont( QFont( "Fixed", 8 ) );
++    _hex->setFont( QFont( c.readEntry( "FixedFontFamily", "Fixed" ), c.readNumEntry( "FixedFontSize", 8 ) ) );
+ 
+     QVBoxLayout* vb = new QVBoxLayout( this, 2, 2 );
+     QHBoxLayout* hb = new QHBoxLayout( vb, 2 );

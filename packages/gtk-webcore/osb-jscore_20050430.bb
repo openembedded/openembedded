@@ -7,12 +7,16 @@ SECTION = "gpe"
 
 FIXEDCVSDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.5.0+cvs${FIXEDCVSDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=JavaScriptCore;date=${FIXEDCVSDATE} \
            file://libm.patch;patch=1"
 S = "${WORKDIR}/JavaScriptCore"
 
 inherit autotools pkgconfig
+
+# zap CPPFLAGS to avoid trouble with internal vs. pcre from staging
+CPPFLAGS = ""
 
 do_configure () {
 	autotools_do_configure

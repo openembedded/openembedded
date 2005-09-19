@@ -1,7 +1,7 @@
 SECTION = "devel"
 include libtool_${PV}.bb
 
-PR = "r1"
+PR = "r3"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://libdir-la.patch;patch=1 \
                    file://prefix.patch;patch=1 \
@@ -30,4 +30,5 @@ do_stage () {
 }
 
 do_install () {
+	:
 }

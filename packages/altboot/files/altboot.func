@@ -1,0 +1,294 @@
+#! /bin/sh
+# This function checks for the presence of a real filesystem and loop-images on the target
+# $1 = folder of rootfs, $2 = runlevel (defaults to 5)
+check_target() {
+	# Check if there is a /sbin/init or /sbin/init.sysvinit on the card
+	if test -x $1/sbin/init -o -x $1/$REAL_INIT
+	then
+		real_fs_found=1
+	else
+		echo -e "Note: No INIT [$REAL_INIT] found on target"
+	fi
+	
+	# Check for loop-images
+	if (ls $1/$IMAGE_PATH/*rootfs.bin) >/dev/null 2>&1
+	then
+		image_found=1
+	else
+		echo "Note: No boot-images found in [$1/$IMAGE_PATH]"
+	fi
+	
+	# Check if we have both, a real fs and boot-images. If so, ask the user what to boot
+	if test "$real_fs_found" = 1 -a "$image_found" = 1
+	then
+		echo -e "\nI have found a real filesystem and boot-images on the target"
+		echo -e "What do you want to boot?\n"
+		
+		echo -e "\t[1] The real filesystem"
+		echo -e "\t[2] A loop-image"
+		echo ""
+		
+		while test -z "$ans"
+		do
+			echo -n "Your choice: "
+			read junk < /dev/tty1
+			
+			if test "$junk" = 1 -o "$junk" = 2
+			then
+				ans="$junk"
+			fi
+		done
+		
+		case "$ans" in
+		1)	pivot_realfs "$1" "$2">/dev/tty0;;
+		2)	pivot_image "$1" "$2">/dev/tty0;;
+		esac
+				
+		exit 0
+	fi
+
+	# Boot a real filesystem	
+	test "$real_fs_found" = 1 && pivot_realfs "$1" >/dev/tty0
+	
+	# Boot a loop-image
+	test "$image_found" = 1 && pivot_image "$1" >/dev/tty0
+		
+	if test "$real_fs_found" != 1 -a "$image_found" != 1
+	then
+		die "Nothing to do!"
+	fi
+}
+
+# This function pivot_root's into a real filesystem calling $newrootfs/sbin/init
+# $1 = The new rootfs
+pivot_realfs() {
+	test -z "$2" && RL="5" || RL="$2"
+	mkdir -p $1/media/ROM || die "mkdir -p $1/media/ROM failed"
+
+	mount -o remount,ro /
+
+	echo -n "Pivoting root..."
+	if (/sbin/pivot_root $1 $1/media/ROM) 
+	then
+		echo "Success"
+
+		# Interestingly, this doesn't work with the "real" mount
+		# Without this command, /dev would be mounted under /media/ROM/dev after pivoting root
+		/bin/busybox mount -o move /media/ROM/dev /dev
+
+		cd /
+
+		# Boot init.sysvinit if it is available or use /sbin/init instead
+		if test -x $REAL_INIT
+		then
+			echo "Calling INIT [$REAL_INIT $RL]"
+			exec /usr/sbin/chroot . $REAL_INIT $RL >/dev/tty0 2>&1			
+		else
+			echo "Calling INIT [/sbin/init $RL]"			
+			exec /usr/sbin/chroot . /sbin/init $RL >/dev/tty0 2>&1			
+		fi
+	else
+		echo "FAILED"
+		die "* * * pivot_root failed! * * *" 
+	fi
+}
+
+# This function loop-mounts an image-file and pivot_root's into it
+# $1: The new rootfs
+pivot_image() {
+	test -z "$2" && RL="5" || RL="$2"
+	cd $1/$IMAGE_PATH
+
+	# Check for rootfs images on the card
+	if test "`ls *rootfs.bin | wc -l | tr -d " "`" -gt 1
+	then
+		echo -e "\n\nPlease select a rootfs:\n"
+
+		# Show all available images
+		x=0
+		for file in `ls *rootfs.bin`
+		do
+			let x=$x+1
+			echo -e "\t\t[$x] $file"
+		done
+
+		echo ""			
+
+		IMAGE_NAME=""
+		while test -z "$IMAGE_NAME"
+		do
+			echo -en "Please choose one of the above: "
+			read junk < /dev/tty1
+
+			x=0
+			for file in `ls *rootfs.bin`
+			do
+				let x=$x+1
+				if test "$x" = "$junk"
+				then
+					IMAGE_NAME="$file"						
+				fi
+			done	
+		done
+	else
+		IMAGE_NAME="`ls *rootfs.bin`"		
+		test -z "$IMAGE_NAME" && die "No rootfs found (*rootfs.bin) in $1/$IMAGE_PATH"
+	fi
+
+	echo "Using [$IMAGE_NAME]"
+
+	mkdir -p /media/image || die "mkdir -p /media/image failed"
+
+	echo "Setting up loopback (/dev/loop0) for $IMAGE_NAME"
+	losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME || die "losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME failed!"
+	check_fs /dev/loop0 $IMAGE_TYPE
+
+	echo -e "\n* * * Booting rootfs image * * *\n"
+
+
+	# Busybox's "mount" doesn't seem to like "-o loop" for some reason
+	# It works on collie and b0rks on poodle.
+	if [ "$IMAGE_TYPE" = "" ]; then
+		IMAGE_TYPE="auto"
+	fi
+	# If mount fails it has the tendency to spew out a _lot_ of error messages.
+	# We direct the output to /dev/null so the user can see which step actually failed.
+	mount -t $IMAGE_TYPE /dev/loop0 /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE  /dev/loop0 /media/image failed!"
+
+	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
+
+	echo -n "Pivoting root..."
+	if (/sbin/pivot_root /media/image /media/image/media/ROM) 
+	then
+		echo "Success"
+
+		cd /
+
+		/bin/busybox mount -o move /media/ROM$1 $1
+		/bin/busybox mount -o move /media/ROM/dev /dev
+		/bin/busybox mount -o move /media/ROM/proc /proc >/dev/null 2>&1
+
+		echo "Calling INIT"
+		exec /usr/sbin/chroot . /sbin/init $RL >/dev/tty0 2>&1
+	else
+		echo "FAILED"
+		die "* * * pivot_root failed! * * *" 
+	fi
+
+
+}
+
+# This functions configures the master password for altboot if none is set
+set_password() {
+	mount -o remount,rw /
+	if test -z "$MASTER_PASSWORD"
+	then
+		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF and NFS"
+		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
+		echo -e "${C_RED}This is *not* your root password!\nIt is used by altboot alone!${C_RESET}"
+		echo -e "${C_BLUE}\nNote:\tThe password will be echoed to the screen\n\tand it will be asked twice for confirmation.${C_RESET}"
+		echo -e "\nPlease enter a new master password:\n"
+
+		while true
+		do
+			echo -en "New password: "
+			read junk1 < /dev/tty0
+			if ! test -z "$junk1"
+			then
+				echo -n "Repeat: "
+				read junk2  < /dev/tty0
+				
+				if test "$junk1" = "$junk2"
+				then
+					crypt_pw="`echo "$junk1" | md5sum | awk '{print $1}'`"
+					
+					if test -e /etc/altboot.cfg
+					then
+						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" /etc/altboot.cfg > /etc/altboot.cfg_
+						mv /etc/altboot.cfg_ /etc/altboot.cfg
+						MASTER_PASSWORD="$crypt_pw"
+						echo "Password changed."
+					else
+						echo "/etc/altboot.cfg is missing, no password saved"
+					fi
+					
+					break
+				else
+					echo -e "Passwords didn't match, try again\n"
+				fi
+			fi	
+		done
+	fi
+	
+}
+
+# This function asks for altboots master password. It only returns if the correct password was supplied
+verify_master_pw() {
+	if ! test -z "$MASTER_PASSWORD"
+	then
+		auth_timeout="3"
+
+		echo "Please enter your altboot master password"
+
+		cnt=0
+		while true
+		do
+			let cnt=$cnt+$auth_timeout
+			echo -n "Password: "
+			read junk < /dev/tty0
+
+			if test "`echo "$junk" | md5sum | awk '{print $1}'`" = "$MASTER_PASSWORD"
+			then
+				break
+			else
+				echo "[`echo "$junk" | md5sum | awk '{print $1}'`]"
+				echo "[$MASTER_PASSWORD]"
+				echo "Wrong password, sleeping $cnt seconds..."
+				sleep $cnt
+
+#				if test "$cnt" -gt 10
+#				then
+#					break
+#				fi
+			fi
+		done
+	fi
+}
+
+
+check_fs() {
+	if [ "$FSCK_IMAGES" = "yes" ]
+	then
+                FSCK=""
+		if [ "$2" = "" ]; then
+			FSTYPE="ext2"
+		else
+			FSTYPE="$2"
+		fi
+		case "$FSTYPE" in
+		ext2 | ext3)
+	        	if [ -e /sbin/fsck.ext3 ]; then
+		       		FSCK="/sbin/fsck.ext3"
+			elif [ -e /sbin/e3fsck ]; then
+		       		FSCK="/sbin/e3fsck"
+			elif [ -e /sbin/fsck.ext2 ]; then
+		       		FSCK="/sbin/fsck.ext2"
+			elif [ -e /sbin/e2fsck ]; then
+		       		FSCK="/sbin/e2fsck"
+			fi
+			FSCK="$FSCK -p"
+		;;
+		vfat)
+		    if [ -e /sbin/dosfsck ]; then
+			FSCK="/sbin/dosfsck -a"
+		    fi
+		;;
+		esac
+		if [ "$FSCK" = "" ]; then
+		        echo "Could not find fsck for $FSTYPE!"
+		else
+			echo "Checking file system on $1"
+			$FSCK $1 || sleep 2
+		fi
+	fi
+}

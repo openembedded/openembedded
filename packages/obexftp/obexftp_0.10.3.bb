@@ -1,8 +1,9 @@
-LICENSE = "GPL"
 DESCRIPTION = "OBEX Ftp Client"
 SECTION = "console/network"
+LICENSE = "GPL"
 PRIORITY = "optional"
-DEPENDS = "openobex"
+DEPENDS = "openobex libgsm"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.gz \
 	   file://m4.patch;patch=1"

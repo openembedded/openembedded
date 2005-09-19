@@ -58,8 +58,8 @@ python populate_packages_prepend () {
 	libdir = bb.data.expand('${libdir}/perl5/${PV}', d)
 	archlibdir =  bb.data.expand('${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}', d)
 	do_split_packages(d, archlibdir, 'auto/(.*)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-	do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 	do_split_packages(d, archlibdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+	do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 }
 
 PACKAGES = "perl perl-misc perl-lib perl-dev perl-pod"

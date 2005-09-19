@@ -5,7 +5,8 @@ HOMEPAGE = "http://www.openntpd.org/"
 LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
-PR="r2"
+DEPENDS = "timezones"
+PR="r11"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -14,10 +15,14 @@ SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz
 	   file://init"
 S = "${WORKDIR}/openntpd-${PV}"
 
-inherit autotools
+INITSCRIPT_NAME = "openntpd"
+INITSCRIPT_PARAMS = "defaults"
+
+
+inherit autotools update-rc.d
 
 EXTRA_OECONF += "CFLAGS=-DUSE_ADJTIMEX --disable-strip --prefix=/usr \
-		--sysconfdir=/etc  --with-privsep-path=/var/shared/empty \
+		--sysconfdir=/etc  --with-privsep-path=/${localstatedir}/shared/empty \
 		--with-privsep-user=ntpd"
 
 do_install_prepend() {
@@ -26,14 +31,15 @@ do_install_prepend() {
 
 do_install_append() {
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/openntpd
-	install -d ${D}${localstatedir}/shared/empty
 }
 
 pkg_postrm () {
-	grep ntpd /etc/passwd && deluser ntpd 
+	grep ntpd ${sysconfdir}/passwd && deluser ntpd 
 }
 
 pkg_postinst () {
-	grep ntpd /etc/passwd || adduser --disabled-password --home=/var/shared/empty --ingroup nogroup ntpd
+	[ ! -d ${localstatedir}/shared ] && mkdir -p ${localstatedir}/shared
+	grep ntpd ${sysconfdir}/passwd || adduser --disabled-password --home=${localstatedir}/shared/empty --ingroup nogroup ntpd
+	chown root:root ${localstatedir}/shared/empty
 }
 	

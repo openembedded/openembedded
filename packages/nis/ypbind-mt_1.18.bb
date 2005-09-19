@@ -16,6 +16,8 @@ HOMEPAGE="http://www.linux-nis.org/nis/ypbind-mt/index.html"
 
 include nis.inc
 
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
+
 # ypbind-mt now provides all the functionality of ypbind
 # and is used in place of it.
 PROVIDES += "ypbind"

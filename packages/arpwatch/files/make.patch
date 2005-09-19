@@ -1,0 +1,11 @@
+--- arpwatch-2.1a13/Makefile.in.orig	2005-07-21 15:20:16.000000000 +0200
++++ arpwatch-2.1a13/Makefile.in	2000-06-15 02:39:55.000000000 +0200
+@@ -51,7 +51,7 @@
+ CFLAGS = $(CCOPT) $(DEFS) $(INCLS)
+ 
+ # Standard LIBS
+-LIBS = @LIBS@
++LIBS = @LIBS@ $(LDFLAGS)
+ # Standard LIBS without libpcap.a
+ SLIBS = @LBL_LIBS@
+ 

@@ -15,13 +15,13 @@ EXTRA_QMAKEVARS_POST = "CONFIG-=thread"
 
 do_stage() {
 	oe_libinstall -so -C lib libqwt ${STAGING_LIBDIR}
-	cp -a include/* ${STAGING_INCDIR}
+	cp -pPR include/* ${STAGING_INCDIR}
 }
 
 do_install() {
 	install -d ${D}${libdir} \
 		   ${D}${includedir}
 	oe_libinstall -so -C lib libqwt ${D}${libdir}
-	cp -a include/* ${D}${includedir}
+	cp -pPR include/* ${D}${includedir}
 }
 

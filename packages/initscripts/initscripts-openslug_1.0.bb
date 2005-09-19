@@ -11,7 +11,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.1"
+PR := "${PR}.3"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -96,7 +96,7 @@ do_install_append() {
 	# checkfs.sh is currently disabled from S 30 (and won't work on OpenSlug)
 	# ramdisk is not used on OpenSlug, would run at S 30
 	update-rc.d -r ${D} mountall.sh		start 35 S .
-	# base-files populate-var.sh runs at S37
+	# base-files populate-volatile.sh runs at S37
 	update-rc.d -r ${D} devpts.sh		start 38 S .
 	# openslug file syslog starts here (39)
 

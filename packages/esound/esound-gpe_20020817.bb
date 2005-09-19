@@ -11,7 +11,7 @@ SRC_URI = "${HANDHELDS_CVS};module=gpe/base/esound \
 
 S = "${WORKDIR}/esound"
 
-inherit autotools pkgconfig
+inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "--disable-alsa"
 

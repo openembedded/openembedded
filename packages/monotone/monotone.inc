@@ -32,7 +32,7 @@ ALTERNATIVE_PRIORITY = "40"
 do_install_append() {
 	install -d ${D}${tsd}
 	install -c -m 755 testsuite ${D}${tsd}/testsuite
-	cp -a tests ${D}${tsd}/tests
+	cp -pPR tests ${D}${tsd}/tests
 	#
 	mv ${D}${bindir}/monotone ${D}${bindir}/${PN}
 }
@@ -40,6 +40,4 @@ do_install_append() {
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
-RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch"
-# The testsuite also requires the following - not yet available...
-#RDEPENDS_${PN}-testsuite += "perl"
+RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"

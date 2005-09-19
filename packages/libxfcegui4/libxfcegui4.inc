@@ -2,14 +2,11 @@
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-DESCRIPTION="XFCE Widget library and X Window System interaction"
-DEPENDS="libxfce4util dbh libxml2 gtk+"
+DESCRIPTION = "XFCE Widget library and X Window System interaction"
+DEPENDS = "libxfce4util dbh libxml2 gtk+"
 SECTION = "x11/libs"
 
 inherit xfce pkgconfig
-
-FILES_${PN} += "/usr/lib/xfce4/modules/* /usr/share/xfce4/mime/ \
-	/usr/share/icons/hicolor/"
 
 XFCE_HEADERS= "dialogs.h        netk-trayicon.h         xfce-icontheme.h \
 	gtk_style.h      netk-util.h           xfce_aboutdialog.h \
@@ -29,17 +26,17 @@ XFCE_HEADERS= "dialogs.h        netk-trayicon.h         xfce-icontheme.h \
 MODULE_HEADERS="combo.h  constants.h  mime.h  mime_icons.h"
 
 do_stage() {
-    install -d ${STAGING_INCDIR}/xfce4/libxfcegui4
-    install -d ${STAGING_INCDIR}/xfce4/xfce4-modules
-    install -d ${STAGING_LIBDIR}/xfce4/modules
+    install -d ${STAGING_INCDIR}/libxfcegui4
+    install -d ${STAGING_INCDIR}/xfce4-modules
+    install -d ${STAGING_LIBDIR}/modules
 
     for file in ${XFCE_HEADERS}; do
-    	install -m 644 libxfcegui4/$file ${STAGING_INCDIR}/xfce4/libxfcegui4
+    	install -m 644 libxfcegui4/$file ${STAGING_INCDIR}/libxfcegui4
     done 
 
     for file in ${MODULE_HEADERS}; do
     	install -m 644 xfce4-modules/headers/$file \
-		${STAGING_INCDIR}/xfce4/xfce4-modules
+		${STAGING_INCDIR}/xfce4-modules
     done 
 
     oe_libinstall -C libxfcegui4 -so libxfcegui4 ${STAGING_LIBDIR}
@@ -51,3 +48,5 @@ do_stage() {
     oe_libinstall -C xfce4-modules/mime-applications -so libxfce4_mime \ 
     ${STAGING_LIBDIR}/xfce4/modules
 }
+
+FILES_${PN} += "${libdir}/xfce4/modules ${datadir}/xfce4/mime ${datadir}/icons/hicolor"

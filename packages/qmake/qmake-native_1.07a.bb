@@ -3,12 +3,12 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
-LICENSE = "GPL|QPL"
-PR = "r0"
+LICENSE = "GPL QPL"
+PR = "r2"
 
-QTEVER = "qt-embedded-free-3.3.3"
+QTEVER = "qt-embedded-free-3.3.5"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTEVER}.tar.gz \
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTEVER}.tar.bz2 \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTEVER}"
 

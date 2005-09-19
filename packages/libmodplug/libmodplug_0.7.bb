@@ -8,5 +8,5 @@ inherit autotools  pkgconfig
 do_stage() {
 	install -m 0644 ${S}/src/modplug.h ${STAGING_INCDIR}
 #FIXME!
-	cp -a src/.libs/libmodplug.so* ${STAGING_LIBDIR}
+	cp -pPR src/.libs/libmodplug.so* ${STAGING_LIBDIR}
 }

@@ -218,7 +218,7 @@ CONFIG_KCORE_ELF=y
 # CONFIG_KCORE_AOUT is not set
 CONFIG_BINFMT_AOUT=y
 CONFIG_BINFMT_ELF=y
-# CONFIG_BINFMT_MISC is not set
+CONFIG_BINFMT_MISC=m
 # CONFIG_PM is not set
 # CONFIG_ARTHUR is not set
 CONFIG_CMDLINE="console=ttyS0,115200n8 root=/dev/ram0 rw init=/linuxrc initrd=0x01000000,10M mem=32M@0x00000000"
@@ -388,8 +388,19 @@ CONFIG_IP_PNP_BOOTP=y
 #
 #   IP: Netfilter Configuration
 #
-# CONFIG_IP_NF_CONNTRACK is not set
-# CONFIG_IP_NF_QUEUE is not set
+CONFIG_IP_NF_CONNTRACK=m
+CONFIG_IP_NF_FTP=m
+# CONFIG_IP_NF_H323 is not set
+# CONFIG_IP_NF_AMANDA is not set
+# CONFIG_IP_NF_TFTP is not set
+# CONFIG_IP_NF_IRC is not set
+# CONFIG_IP_NF_CT_PROTO_GRE is not set
+# CONFIG_IP_NF_PPTP is not set
+# CONFIG_IP_NF_MATCH_HELPER is not set
+# CONFIG_IP_NF_MATCH_STATE is not set
+CONFIG_IP_NF_MATCH_CONNTRACK=m
+CONFIG_IP_NF_NAT=m
+CONFIG_IP_NF_QUEUE=m
 CONFIG_IP_NF_IPTABLES=m
 CONFIG_IP_NF_MATCH_LIMIT=m
 CONFIG_IP_NF_MATCH_MAC=m
@@ -585,7 +596,18 @@ CONFIG_PPP_BSDCOMP=m
 #
 # Wireless LAN (non-hamradio)
 #
-# CONFIG_NET_RADIO is not set
+CONFIG_NET_RADIO=y
+# CONFIG_STRIP is not set
+# CONFIG_WAVELAN is not set
+# CONFIG_ARLAN is not set
+# CONFIG_AIRONET4500 is not set
+# CONFIG_AIRONET4500_NONCS is not set
+# CONFIG_AIRONET4500_PROC is not set
+# CONFIG_AIRO is not set
+# CONFIG_HERMES is not set
+# CONFIG_PLX_HERMES is not set
+# CONFIG_PCI_HERMES is not set
+CONFIG_NET_WIRELESS=y
 
 #
 # Token Ring devices

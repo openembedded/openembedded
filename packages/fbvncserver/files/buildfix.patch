@@ -1,0 +1,31 @@
+--- fbvncserver-0.9.4/fbvncserver.c.orig	2005-07-31 15:01:32.552177176 +0200
++++ fbvncserver-0.9.4/fbvncserver.c	2005-07-31 15:02:47.287366483 +0200
+@@ -574,7 +574,6 @@
+   rfbScreen                  = rfbGetScreen(&argc,argv,rfb_width,rfb_height,5,2,2);
+   rfbScreen->desktopName     = DESKTOP_NAME;
+   rfbScreen->frameBuffer     = (char *)rfbbuf;
+-  rfbScreen->rfbAlwaysShared = TRUE;
+   rfbScreen->ptrAddEvent     = ptrevent;
+   rfbScreen->kbdAddEvent     = keyevent;
+   rfbScreen->newClientHook   = newclient;
+@@ -595,18 +594,12 @@
+   varblock.b_offset = vscrinfo.blue.offset+vscrinfo.blue.length-5;
+   varblock.rfb_xres = vscrinfo.yres;
+   varblock.rfb_maxy = vscrinfo.xres-1;
+-  while(1)
++  while(1) 
+   {
+-      /* If no clients are connected, just wait for events and don't bother
+-         updating the rfb, to save CPU */
+-      while(rfbScreen->rfbClientHead==NULL) {
+-          rfbProcessEvents(rfbScreen,100000);       /* We still run a tight loop
+-                                                       so http clients don't wait */
+-      }
+       /* Process events for a while */
+       do
+       {
+-          got_event=0;
++          got_event=0; 
+           rfbProcessEvents(rfbScreen,30000);
+       }
+       while(got_event);

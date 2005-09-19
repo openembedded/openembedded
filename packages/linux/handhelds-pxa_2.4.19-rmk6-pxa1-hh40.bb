@@ -3,6 +3,8 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
 PR = "r0"
+DEFAULT_PREFERENCE="-1"
+
 
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"

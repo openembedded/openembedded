@@ -4,7 +4,7 @@ include nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
 MAINTAINER = "NSLU2 Linux <www.nlsu2-linux.org>"
-PR = "r2"
+PR = "r5"
 
 KERNEL_SUFFIX = "unslung"
 

@@ -62,9 +62,17 @@ SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'y
 UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
 UCLIBC_STAGE_PREFIX = "${STAGING_DIR}/${HOST_SYS}"
 
-EXTRA_OEMAKE = "'OPTIMIZATION=' 'CPU_CFLAGS=${CFLAGS}' 'STRIPTOOL=true' 'LD=${LD}' \
+# do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in
+# the CFLAGS (for when building the utils).
+OEMAKE_NO_CC = "'OPTIMIZATION=' 'CPU_CFLAGS=${CFLAGS}' 'STRIPTOOL=true' 'LD=${LD}' \
 		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
-configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${CROSS_DIR}/${TARGET_SYS}/include",g; \
+EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}'"
+EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
+EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
+
+KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}/include"
+
+configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
 		s,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX="/",g; \
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
 		s,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH="/lib",; \

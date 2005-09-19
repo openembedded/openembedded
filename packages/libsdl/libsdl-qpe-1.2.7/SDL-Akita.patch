@@ -1,0 +1,37 @@
+--- SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc.orig	2005-07-23 14:31:20.060123510 +0200
++++ SDL-1.2.7/src/video/qtopia/SDL_sysvideo.cc	2005-07-23 14:38:49.000000000 +0200
+@@ -109,6 +109,7 @@
+     MACHINE_SHARP_SLC760,
+     MACHINE_SHARP_SLC860,
+     MACHINE_SHARP_SL6000,
++    MACHINE_SHARP_SLC1000,
+     MACHINE_IPAQ,
+     MACHINE_MAX
+   } machine_t;
+@@ -123,6 +124,7 @@
+     { "Sharp", "SL-C760", 0 },
+     { "Sharp", "SL-C860", 0 },
+     { "Sharp", "SL-6000", 0 },
++    { "Sharp", "SL-C1000", 0 },    
+     { "HP", "HP IPAQ", 0 },
+   };
+ 
+@@ -428,6 +430,8 @@
+           machine = MACHINE_SHARP_SLC760;
+         else if (strstr(buf, "SHARP Boxer") != NULL)
+           machine = MACHINE_SHARP_SLC860;
++        else if (strstr(buf, "SHARP Akita") != NULL)
++          machine = MACHINE_SHARP_SLC1000;	  
+         else if ( ODevice::inst ( )-> series ( ) == Model_iPAQ )
+           machine = MACHINE_IPAQ;
+ 	else
+@@ -523,7 +527,8 @@
+         machine == MACHINE_SHARP_SLC750 ||
+         machine == MACHINE_SHARP_SLC760 ||
+         machine == MACHINE_SHARP_SLC860 ||      // 詳しいことわからんけどとりあえず
+-        machine == MACHINE_SHARP_SL6000 ) {     // 詳しいことわからんけどとりあえず
++        machine == MACHINE_SHARP_SL6000 ||
++        machine == MACHINE_SHARP_SLC1000 ) {     // 詳しいことわからんけどとりあえず
+ 	is_VGA_machine = true;
+     }else {
+ 	is_VGA_machine = false;

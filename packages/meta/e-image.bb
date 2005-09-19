@@ -1,8 +1,8 @@
+DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager and Tools"
+PR = "r3"
+
+include e-image-core.bb
+
 export IMAGE_BASENAME = "e-image"
-
-DEPENDS = "task-bootstrap meta-e"
-
-export IPKG_INSTALL = "task-bootstrap e-base"
-
-inherit image_ipk
-LICENSE = MIT
+export IPKG_INSTALL += "task-e-x11"
+DEPENDS += "task-e-x11"

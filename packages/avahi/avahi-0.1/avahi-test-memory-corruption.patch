@@ -1,0 +1,34 @@
+diff -Nurd avahi-0.1.orig/avahi-core/avahi-test.c avahi-0.1/avahi-core/avahi-test.c
+--- avahi-0.1.orig/avahi-core/avahi-test.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/avahi-test.c	2005-08-28 00:34:50 +0200
+@@ -261,7 +261,7 @@
+     poll_api->timeout_new(poll_api, &tv, dump_timeout_callback, server);
+ 
+     avahi_elapse_time(&tv, 1000*60, 0);
+-    poll_api->timeout_new(poll_api, &tv, quit_timeout_callback, server);
++    poll_api->timeout_new(poll_api, &tv, quit_timeout_callback, simple_poll);
+ 
+     for (;;)
+         if (avahi_simple_poll_iterate(simple_poll, -1) != 0)
+diff -Nurd avahi-0.1.orig/avahi-core/server.c avahi-0.1/avahi-core/server.c
+--- avahi-0.1.orig/avahi-core/server.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/server.c	2005-08-28 00:34:50 +0200
+@@ -267,7 +267,6 @@
+         }
+     }
+ 
+-
+     if (!ours) {
+ 
+         if (won)
+diff -Nurd avahi-0.1.orig/avahi-core/hashmap.c avahi-0.1/avahi-core/hashmap.c
+--- avahi-0.1.orig/avahi-core/hashmap.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/hashmap.c	2005-08-28 00:34:50 +0200
+@@ -69,6 +69,7 @@
+ 
+ static void entry_free(AvahiHashmap *m, Entry *e, int stolen) {
+     unsigned idx;
++    assert(m);
+     assert(e);
+ 
+     idx = m->hash_func(e->key) % HASH_MAP_SIZE;

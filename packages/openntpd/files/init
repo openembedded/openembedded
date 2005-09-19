@@ -7,11 +7,12 @@
 
 ntpd=/usr/sbin/ntpd
 test -x "$ntpd" || exit 0
+[ ! -d /var/shared/empty ] && mkdir /var/shared/empty
 
 case "$1" in
   start)
     echo "Starting openntpd"
-    start-stop-daemon --start --quiet --exec $ntpd
+    start-stop-daemon --start --quiet --exec $ntpd -- -s
     ;;
   stop)
     echo "Stopping openntpd"
@@ -26,7 +27,7 @@ case "$1" in
     start-stop-daemon --stop --quiet --exec $ntpd
     sleep 1
     echo "Starting openntpd"
-    start-stop-daemon --start --quiet --exec $ntpd
+    start-stop-daemon --start --quiet --exec $ntpd -- -s
     ;;
   *)
     echo "Usage: /etc/init.d/openntpd {start|stop|reload|restart|force-reload}"

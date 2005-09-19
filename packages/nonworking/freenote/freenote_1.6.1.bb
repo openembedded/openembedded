@@ -18,5 +18,5 @@ do_install() {
         install -D -m 755 freenoteeintu ${D}${palmtopdir}/bin/freenoteeintu
         install -D -m 644 ${FILESDIR}/freenoteeintu.desktop ${D}${palmtopdir}/apps/Applications/freenoteeintu.desktop
         install -d ${D}/${palmtopdir}/pics
-        cp -a *.png ${D}${palmtopdir}/pics/
+        cp -pPR *.png ${D}${palmtopdir}/pics/
 }

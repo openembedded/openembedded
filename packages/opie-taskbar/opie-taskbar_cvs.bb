@@ -1,7 +1,6 @@
 include ${PN}.inc
     
-PV = "1.2.0+cvs-${CVSDATE}"
-PR = "r5"
+PV = "1.2.1+cvs-${CVSDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \

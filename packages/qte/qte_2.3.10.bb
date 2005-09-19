@@ -2,12 +2,12 @@ DESCRIPTION = "Qt/Embedded Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-LICENSE = "GPL QPL"
+LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r22"
+PR = "r27"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -27,20 +27,22 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://increase-qxml-robustness.patch;patch=1 \
 	   file://qte-fix-iconsize.patch;patch=1 \
 	   file://fix-linuxfb-setmode.patch;patch=1 \
-       file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
-       file://fix-qscreen-sync.patch;patch=1 \
-	   file://sharp_char.h \
+	   file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
+	   file://fix-qscreen-sync.patch;patch=1 \
+       file://improve-calibration-r0.patch;patch=1 \
 	   file://key.patch;patch=1 \
-	   file://switches.h \
-       file://bidimetrics.patch;patch=5 "
+       file://bidimetrics.patch;patch=5 \
+	   file://fix-native-build.patch;patch=1 \
+	   file://sharp_char.h \
+	   file://switches.h "
 
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
 SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_borzoi       = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_beagle       = "file://beagle.patch;patch=1 "
 SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
@@ -50,6 +52,7 @@ SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
                                file://qkeyboard_qws.cpp "
 SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"
@@ -71,6 +74,7 @@ QTE_ARCH := "${@qte_arch(d)}"
 
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
+EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
 EXTRA_OEMAKE = "-e"
@@ -84,6 +88,8 @@ EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB                 -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
 EXTRA_DEFINES_h3600     	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ" 
 EXTRA_DEFINES_h3900 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_h1910 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_a716 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_jornada56x	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_jornada6xx	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_jornada7xx	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
@@ -91,7 +97,7 @@ EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS
 EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
-EXTRA_DEFINES_beagle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_BEAGLE"
+EXTRA_DEFINES_borzoi            = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"
@@ -143,7 +149,7 @@ do_stage() {
 	rm -f include/qxt.h
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
-	cp -a lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
 }
 
 do_install() {

@@ -9,6 +9,8 @@ APPNAME = "bluetooth-manager"
 
 S = "${WORKDIR}/manager"
 
+EXTRA_QMAKEVARS_POST += " INCLUDEPATH+=${STAGING_INCDIR}/opietooth "
+
 inherit opie
 
 # Files: plugins/application/libbluetooth-manager.so* bin/bluetooth-manager apps/Settings/bluetooth-manager.desktop pics/opietooth/*

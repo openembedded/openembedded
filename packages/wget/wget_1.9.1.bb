@@ -19,3 +19,16 @@ do_configure () {
 	rm -f libtool.m4
 	autotools_do_configure
 }
+
+do_install () {
+	autotools_do_install
+	mv ${D}${bindir}/wget ${D}${bindir}/wget.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${bindir}/wget wget wget.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove wget wget.${PN}
+}

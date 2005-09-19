@@ -30,4 +30,5 @@ do_stage () {
 }
 
 do_install () {
+	:
 }

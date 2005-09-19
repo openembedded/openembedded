@@ -1,0 +1,39 @@
+--- gpe-login.pre-session.orig	2005-09-08 00:18:21.000000000 +0200
++++ gpe-login-0.82/X11/gpe-login.pre-session	2005-09-08 00:18:13.000000000 +0200
+@@ -4,26 +4,28 @@
+ 
+ # Sound devices on various devices #
+ 
++if [ -e /dev/dsp ]; then
++chown $USER /dev/dsp
++fi
++
++if [ -e /dev/mixer ]; then
++chown $USER /dev/mixer
++fi
++
+ if [ -e /dev/sound/dsp ]; then
+ chown $USER /dev/sound/dsp
++chmod u+rw /dev/sound/dsp
+ fi
+ 
+ if [ -e /dev/sound/mixer ]; then
+ chown $USER /dev/sound/mixer
++chmod u+rw /dev/sound/mixer
+ fi
+ 
+ if [ -e /dev/misc/buzzer ]; then
+ chown $USER /dev/misc/buzzer
+ fi
+ 
+-if [ -e /dev/dsp ]; then
+-chown $USER /dev/dsp
+-fi
+-
+-if [ -e /dev/mixer ]; then
+-chown $USER /dev/mixer
+-fi
+-
+ # touchscreen devices #
+ 
+ if [ -e /dev/touchscreen/0raw ]; then

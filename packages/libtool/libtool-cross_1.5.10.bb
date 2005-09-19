@@ -13,6 +13,7 @@ prefix = "${STAGING_DIR}"
 exec_prefix = "${prefix}/${BUILD_SYS}"
 
 do_compile () {
+	:
 }
 
 do_stage () {
@@ -20,4 +21,5 @@ do_stage () {
 }
 
 do_install () {
+	:
 }

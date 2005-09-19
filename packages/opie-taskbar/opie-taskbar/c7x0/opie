@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+[ -z $HOME ] && export HOME=/home/$LOGNAME
+
+# we need to tinker directly with qws_display until the ODevice
+# default (which is now W100:Rot0:0) works flawlessly with rotation
+# and survives a suspend/resume cycle
+export QWS_DISPLAY=Transformed:Rot0:0
+# export QWS_DISPLAY=W100:Rot0:0
+export QTDIR=/opt/QtPalmtop
+export OPIEDIR=/opt/QtPalmtop
+export QPEDIR=/opt/QtPalmtop
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
+export PATH=$PATH:$OPIEDIR/bin
+
+if [ ! -x "$OPIEDIR/bin/qpe" ] ; then 
+    echo Opie not installed
+    exit 0 
+fi
+
+. /etc/profile
+
+for conf in $OPIEDIR/etc/skel/*.conf; do
+	conf_basename=`basename $conf`
+	if [ ! -e "$HOME/Settings/$conf_basename" ] ; then
+		echo "Copying default $conf_basename into $HOME/Settings/"
+		mkdir -p $HOME/Settings/
+		cat $conf >$HOME/Settings/$conf_basename
+	fi
+done
+
+if [ ! -e "$HOME/systeminfo/linkver" ] ; then
+    mkdir -p $HOME/systeminfo/
+    echo "1.13" >$HOME/systeminfo/linkver
+fi
+
+if [ ! -e "/opt/Qtopia" ] ; then
+    ln -sf /opt/QtPalmtop /opt/Qtopia
+fi
+
+case $1 in
+'start')
+    /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
+    
+    if [ -x "$OPIEDIR/bin/opie-login" ]; then
+            echo Starting Opie-login....
+            $OPIEDIR/bin/opie-login -terminal 2
+    else
+        $OPIEDIR/bin/opie-reorgfiles
+        if [ -x /usr/bin/ssh-agent ]; then
+             SSHAGENT=/usr/bin/ssh-agent
+        else
+             SSHAGENT=""
+        fi
+        
+        if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
+            export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
+        fi           
+        echo Starting Opie....
+        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
+    fi
+
+    ;;
+
+'stop')
+    echo "Stopping Opie..."
+    killall qpe 2>/dev/null
+    killall opie-login 2>/dev/null
+    killall quicklauncher 2>/dev/null
+
+    ;;
+
+'restart')
+	$0 stop && $0 start
+
+	;;
+
+*)
+    echo "usage: $0 { start | stop | restart }"
+
+    ;;
+
+esac
+

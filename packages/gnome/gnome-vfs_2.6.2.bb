@@ -3,7 +3,7 @@ PR = "r4"
 
 inherit gnome
 
-DEPENDS = "libxml2 gconf libbonobo bzip2 gnome-mime-data orbit2 zlib samba"
+DEPENDS = "libxml2 gconf libbonobo bzip2 gnome-mime-data orbit2 zlib samba-3.0.14a"
 RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1"

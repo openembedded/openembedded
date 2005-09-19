@@ -9,6 +9,10 @@ file://m4.patch;patch=1"
 
 inherit autotools  pkgconfig
 
+# vorbisfile.c reveals a problem in the gcc register spilling for the
+# thumb instruction set...
+FULL_OPTIMIZATION_thumb = "-O0"
+
 EXTRA_OECONF = "--with-ogg-libraries=${STAGING_LIBDIR} \
 	        --with-ogg-includes=${STAGING_INCDIR}"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "Rebuild the package index"
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r0"
 
 DEPENDS = "ipkg-native"

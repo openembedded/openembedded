@@ -21,6 +21,7 @@ PIXMAP_SIZE 		= ""
 PIXMAP_SIZE_c7x0 	= "-640x480"
 PIXMAP_SIZE_spitz	= "-640x480"
 PIXMAP_SIZE_akita	= "-640x480"
+PIXMAP_SIZE_borzoi      = "-640x480"
 # PIXMAP_SIZE_tosa 	= "-640x480"
 PIXMAP_SIZE_simpad 	= "-800x600"
 

@@ -1,7 +1,6 @@
 include flex.inc
 inherit native
-
-PR = "r1"
+PR = "r2"
 
 do_stage () {
 	install -m 0755 flex ${STAGING_BINDIR}

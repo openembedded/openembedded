@@ -1,0 +1,86 @@
+#!/bin/sh
+
+usage="Usage: $0 disk1|disk2"
+
+# Set target disk
+
+if [ $# -gt 1 ] ; then
+    echo $usage
+    exit 1
+fi
+
+if [ $# -eq 1 ] ; then
+    if [ "$1" = "disk1" ] ; then
+	mtch="/dev/sdb1 /share/hdd/data ext3 rw 0 0"
+	targ=/share/hdd/data
+	flag=.sda1root
+    elif [ "$1" = "disk2" ] ; then
+	mtch="/dev/sda1 /share/flash/data ext3 rw 0 0"
+	targ=/share/flash/data
+	flag=.sdb1root
+    else
+	echo $usage
+	exit 1
+    fi
+else
+    echo $usage
+    exit 1
+fi
+
+# Check it's a real mount point
+
+echo "Waiting for $targ"
+CNT=120
+while [ $CNT -gt 0 ]
+do
+   if grep "$mtch" /proc/mounts >/dev/null 2>&1 ; then
+       echo "Target disk is $targ"
+       CNT=-1
+   else
+       echo -ne "\r$CNT   "
+       sleep 1
+       CNT=`expr $CNT - 1`
+   fi
+done
+if [ $CNT -eq 0 ] ; then
+   echo "Error: $targ is not a mounted disk"
+   exit 1
+fi
+
+# Start at the root directory
+
+cd /
+
+# Save the existing ipkg database.
+
+rm -rf $targ/usr/lib/ipkg.old
+if [ -f $targ/usr/lib/ipkg/status ] ; then
+	mv $targ/usr/lib/ipkg $targ/usr/lib/ipkg.old
+fi
+
+# Copy the complete rootfs to the target.
+
+echo "Copying the complete rootfs from / to $targ."
+/usr/bin/find / -print0 -mount | /usr/bin/cpio -p -0 -d -m -u $targ
+rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
+rm -rf $targ/var ; mv $targ/var.state $targ/var
+
+# Copy over the existing ipkg database.
+
+if [ -f $targ/usr/lib/ipkg.old/status ] ; then
+	echo "Preserving existing ipkg database on target disk."
+	( cd $targ/usr/lib/ipkg.old ; tar cf - . ) | ( cd $targ/usr/lib/ipkg ; tar xf - )
+fi
+
+echo "Linking /usr/bin/ipkg executable on target disk."
+rm -f $targ/usr/bin/ipkg ; ln -s /usr/bin/ipkg-cl $targ/usr/bin/ipkg
+
+# Create the boot flag file.
+
+rm -f /.sd??root $targ/.sd??root
+
+echo "Creating /$flag to direct switchbox to boot from $targ."
+echo > /$flag
+echo > $targ/$flag
+
+exit 0

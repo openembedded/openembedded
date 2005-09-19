@@ -1,0 +1,19 @@
+--- entrance/configure.in.~1.42.~	2005-07-29 23:15:58.000000000 -0700
++++ entrance/configure.in	2005-08-13 03:11:41.000000000 -0700
+@@ -190,11 +190,11 @@
+ 	    fi
+ 	]
+ )
+-if test ! -x $xsession ; then
+-    AC_MSG_WARN([** no $xsession file on this system **])
+-    AC_MSG_WARN([** Perhaps you need to specify --with-xsession **])
+-    xsession="You should reconfigure --with-xsession"
+-fi
++#if test ! -x $xsession ; then
++#    AC_MSG_WARN([** no $xsession file on this system **])
++#    AC_MSG_WARN([** Perhaps you need to specify --with-xsession **])
++#    xsession="You should reconfigure --with-xsession"
++#fi
+ 
+ AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession", [Xsession script])
+ AC_SUBST(xsession)

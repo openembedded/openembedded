@@ -3,14 +3,14 @@ DESCRIPTION = "Iperf is a tool to measure maximum TCP bandwidth, allowing the tu
 HOMEPAGE = "http://dast.nlanr.net/Projects/Iperf/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
+PR = "r1"
 
 SRC_URI = "http://dast.nlanr.net/Projects/Iperf/iperf-${PV}-source.tar.gz \
-	file://socketaddr-h-errno.diff;patch=1;pnum=0"
+	file://socketaddr-h-errno.diff;patch=1"
 
 inherit autotools
 
 S="${WORKDIR}/iperf-${PV}/cfg"
-PATCHES_DIR="${WORKDIR}/iperf-${PV}"
 
 do_configure() {
 	oe_runconf

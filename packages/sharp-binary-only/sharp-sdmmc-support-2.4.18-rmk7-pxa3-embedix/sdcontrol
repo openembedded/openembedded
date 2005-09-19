@@ -27,7 +27,7 @@ vecho() {
 
 # import FS mount options from fstab or use defaults
 # if detection fails
-SD_OPTS="`grep "$MOUNT_POINT" /etc/fstab | awk '{print $4}'`" 
+SD_OPTS="`grep "$MOUNT_POINT" /etc/fstab | head -1 | awk '{print $4}'`" 
 if test -z "$SD_OPTS"
 then
 	SD_OPTS="noatime,sync"
@@ -130,14 +130,14 @@ case "$ACTION" in
 	
 	vecho "Beginning SD auto-mount..:"
 	
-	ps ax > "$LOGFILE-ps"
+	test "$ENABLE_LOG" = yes && ps ax > "$LOGFILE-ps"
 	
 	# Read available partitions from /proc/partitions.
 	OK_PARTS=` head -20 /proc/partitions |grep mmcda | sort| uniq | awk '{print $4}'`
 	
 	decho "OK_PARTS [$OK_PARTS]"
 	
-	echo $OK_PARTS > "$LOGFILE-part"
+	test "$ENABLE_LOG" = yes && echo $OK_PARTS > "$LOGFILE-part"
 	
 	if test "`echo "$OK_PARTS" | wc -l | awk '{print $1}`" -gt 1
 	then

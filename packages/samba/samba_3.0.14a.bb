@@ -1,4 +1,4 @@
-PR = "r8"
+PR = "r12"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -10,13 +10,14 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 S := ${WORKDIR}/${P}/source
 
 include samba.inc
+inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the
 # level, later levels put the shutdown later too - see the links
 # in rc6.d, the shutdown must precede network shutdown).
 INITSCRIPT_PARAMS = "defaults"
-#CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
+CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
 
 # The file system settings --foodir=dirfoo and overridden unconditionally
 # in the samba config by --with-foodir=dirfoo - even if the --with is not

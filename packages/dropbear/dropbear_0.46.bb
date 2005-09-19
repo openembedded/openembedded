@@ -3,7 +3,7 @@ HOMEPAGE = "http://matt.ucc.asn.au/dropbear/dropbear.html"
 SECTION = "console/network"
 LICENSE = "MIT"
 DEPENDS = "zlib"
-PR = "r1"
+PR = "r3"
 PROVIDES = "ssh sshd"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
@@ -41,10 +41,8 @@ do_install() {
 		   ${D}${localstatedir}
 
 	install -m 0755 dropbearmulti ${D}${sbindir}/
-	for i in ${BINCOMMANDS}
-	do
-		ln -s ${sbindir}/dropbearmulti ${D}${bindir}/$i
-	done
+	ln -s ${sbindir}/dropbearmulti ${D}${bindir}/dbclient
+	
 	for i in ${SBINCOMMANDS}
 	do
 		ln -s ./dropbearmulti ${D}${sbindir}/$i
@@ -57,6 +55,11 @@ do_install() {
 	chmod 755 ${D}${sysconfdir}/init.d/dropbear
 }
 
+pkg_postinst () {
+	update-alternatives --install ${bindir}/scp scp ${sbindir}/dropbearmulti 20
+	update-alternatives --install ${bindir}/ssh ssh ${sbindir}/dropbearmulti 20
+}
+
 pkg_postrm_append () {
   if [ -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
         rm ${sysconfdir}/dropbear/dropbear_rsa_host_key
@@ -64,4 +67,6 @@ pkg_postrm_append () {
   if [ -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
         rm ${sysconfdir}/dropbear/dropbear_dss_host_key
   fi
+  update-alternatives --remove ssh ${bindir}/dropbearmulti
+  update-alternatives --remove scp ${bindir}/dropbearmulti
 }

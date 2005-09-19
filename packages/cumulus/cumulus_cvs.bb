@@ -6,10 +6,10 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
-PV = "1.2+cvs-${CVSDATE}"
-PR = "r2"
+PV = "1.2.1+cvs-${CVSDATE}"
+PR = "r0"
 
-SRC_URI = "http://cumulus.kflog.org/download/snapshot/cumulus-snapshot.tbz"
+SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/cumulus-snapshot.tbz"
 S = "${WORKDIR}/cumulus/cumulus"
 
 inherit opie
@@ -31,15 +31,15 @@ do_compile() {
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/pics/mapicons \
-                   ${D}${palmtopdir}/pics/mapicons/small \
-                   ${D}${palmtopdir}/pics/mapicons/windarrows
-        install -m 0644 ../cumulus.png ${D}${palmtopdir}/pics/cumulus.png
-        install -m 0644 map-icons/*.png ${D}${palmtopdir}/pics/mapicons
-        install -m 0644 map-icons/*.xpm ${D}${palmtopdir}/pics/mapicons
-        install -m 0644 map-icons/small/*.png ${D}${palmtopdir}/pics/mapicons/small
-        install -m 0644 map-icons/small/*.xpm ${D}${palmtopdir}/pics/mapicons/small
-        install -m 0644 map-icons/windarrows/*.png ${D}${palmtopdir}/pics/mapicons/windarrows
+        install -d ${D}${palmtopdir}/pics/cumulus \
+                   ${D}${palmtopdir}/pics/cumulus/small \
+                   ${D}${palmtopdir}/pics/cumulus/windarrows
+        install -m 0644 ../cumulus.png ${D}${palmtopdir}/pics/cumulus/cumulus.png
+        install -m 0644 map-icons/*.png ${D}${palmtopdir}/pics/cumulus
+        install -m 0644 map-icons/*.xpm ${D}${palmtopdir}/pics/cumulus
+        install -m 0644 map-icons/small/*.png ${D}${palmtopdir}/pics/cumulus/small
+        install -m 0644 map-icons/small/*.xpm ${D}${palmtopdir}/pics/cumulus/small
+        install -m 0644 map-icons/windarrows/*.png ${D}${palmtopdir}/pics/cumulus/windarrows
 
 	install -m 0755 gpsClient ${D}${palmtopdir}/bin/
 }

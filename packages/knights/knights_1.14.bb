@@ -28,5 +28,5 @@ do_install() {
         install -D -m 755 knights/knights ${D}${palmtopdir}/bin/knights
         install -D -m 644 knights.desktop ${D}${palmtopdir}/apps/Games/knights.desktop
         install -d ${D}${palmtopdir}/pics
-        cp -a pics/knights ${D}${palmtopdir}/pics/
+        cp -pPR pics/knights ${D}${palmtopdir}/pics/
 }

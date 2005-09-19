@@ -19,6 +19,7 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL-2"
+PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -37,6 +38,14 @@ SRC_URI += " file://libpam-make.patch;patch=1"
 inherit autotools
 
 # EXTRA_OECONF += " --enable-static-libpam"
+# Disable building of the documentation - it requires too many different
+# programs installed on the build system and is a waste of time.  This
+# leaves the man documentation in the build.
+EXTRA_OECONF += "ac_cv_prog_HAVE_SGML2TXT=no"
+EXTRA_OECONF += "ac_cv_prog_HAVE_SGML2HTML=no"
+EXTRA_OECONF += "ac_cv_prog_HAVE_SGML2LATEX=no"
+EXTRA_OECONF += "ac_cv_prog_HAVE_PS2PDF=no"
+EXTRA_OECONF += "ac_cv_prog_HAVE_SGML2PS=no"
 
 LEAD_SONAME = "libpam.so.*"
 

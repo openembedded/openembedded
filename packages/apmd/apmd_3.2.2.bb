@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r5"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://debian.patch;patch=1 \
@@ -13,7 +13,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://default \
            file://apmd_proxy \
            file://apmd_proxy.conf"
-SRC_URI_append_beagle = " file://devfs.patch;patch=1 "	   
 
 S = "${WORKDIR}/apmd-${PV}.orig"
 
@@ -45,8 +44,25 @@ do_install() {
 	install -d ${D}${bindir}
 	install -d ${D}${libdir}
 	install -d ${D}${datadir}/apmd
-	install -m 4755 ${S}/.libs/apm ${D}${bindir}/apm.orig
-	install -m 0755 ${WORKDIR}/apmwrapper ${D}${bindir}/apm
+#
+# only Zaurus 2.4-embedix kernels need a breadead apm hack
+#
+#
+	case ${MACHINE} in
+		collie | poodle | tosa | c7x0 | akita | spitz | borzoi)
+			if [ "${KERNEL_VERSION}" == "2.6" ]
+			then
+				install -m 4577 ${S}/.libs/apm ${D}${bindir}/apm
+			else
+				install -m 4755 ${S}/.libs/apm ${D}${bindir}/apm.orig
+				install -m 0755 ${WORKDIR}/apmwrapper ${D}${bindir}/apm
+			fi
+			;;
+        *)
+			install -m 4577 ${S}/.libs/apm ${D}${bindir}/apm
+        	;;
+    esac
+
 	install -m 0755 ${S}/.libs/apmd ${D}${sbindir}/apmd
 	install -m 0755 ${WORKDIR}/apmd_proxy ${D}${sysconfdir}/apm/
 	install -m 0644 ${WORKDIR}/apmd_proxy.conf ${D}${datadir}/apmd/

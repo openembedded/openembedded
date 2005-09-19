@@ -1,0 +1,72 @@
+--- gpsdrive/src/gpsdrive.c	2005-07-22 23:17:36.452918848 +0200
++++ gpsdrive/src/gpsdrive.c	2005-07-23 01:02:40.482560672 +0200
+@@ -10516,7 +10516,7 @@
+ 			PangoFontDescription *font_desc;
+ 			font_desc =
+ 				pango_font_description_from_string
+-				("Sans 20");
++				("Sans 10");
+ 			gtk_widget_modify_font (myroutelist, font_desc);
+ 			pango_font_description_free (font_desc);
+ 		}
+@@ -12343,6 +12343,8 @@
+ 			       GDK_BUTTON_PRESS_MASK);
+ 	gtk_signal_connect (GTK_OBJECT (drawing_sats), "button-press-event",
+ 			    GTK_SIGNAL_FUNC (satpos_cb), NULL);
++        if(!pdamode)
++	{
+ 	frame_sats = gtk_frame_new (_("GPS Info"));
+ 	sateventbox = gtk_event_box_new ();
+ 	gtk_container_add (GTK_CONTAINER (sateventbox), drawing_sats);
+@@ -12386,7 +12388,7 @@
+ 
+ 	gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE,
+ 			    1 * PADDING);
+-
++	}
+ 	havebattery = battery_get_values ();
+ 	if (debug)
+ 		fprintf (stderr, "batt: %d, temp: %d\n", havebattery,
+@@ -12569,9 +12571,11 @@
+ 	/*   if (!pdamode) */
+ 	/*     gtk_box_pack_start (GTK_BOX (hbox2), frame_speed, TRUE, TRUE, */
+ 	/*                  1 * PADDING); */
+-
++	if (!pdamode)
++	{
+ 	frame_altitude = gtk_frame_new (_("Altitude"));
+ 	gtk_container_add (GTK_CONTAINER (frame_altitude), altilabel);
++	}
+     /*** Mod by Arms */
+ 	/*   if (!pdamode) */
+ 	/*     gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE, */
+@@ -12904,23 +12908,23 @@
+ 		if (onemousebutton)
+ 		{
+ 			/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
+-			gtk_misc_set_padding (GTK_MISC (l1), 50, 1);
+-			gtk_misc_set_padding (GTK_MISC (l2), 50, 1);
+-			gtk_misc_set_padding (GTK_MISC (l3), 50, 1);
++			gtk_misc_set_padding (GTK_MISC (l1), 20, 1);
++			gtk_misc_set_padding (GTK_MISC (l2), 20, 1);
++			gtk_misc_set_padding (GTK_MISC (l3), 20, 1);
+ 
+ 			/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
+ 
+ 			char *markup;
+ 			markup = g_markup_printf_escaped
+-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
++				("<span font_desc='10'>%s</span>",
+ 				 _("Map"));
+ 			gtk_label_set_markup (GTK_LABEL (l1), markup);
+ 			markup = g_markup_printf_escaped
+-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
++				("<span font_desc='10'>%s</span>",
+ 				 _("Menu"));
+ 			gtk_label_set_markup (GTK_LABEL (l2), markup);
+ 			markup = g_markup_printf_escaped
+-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
++				("<span font_desc='10'>%s</span>",
+ 				 _("Status"));
+ 			gtk_label_set_markup (GTK_LABEL (l3), markup);
+ 

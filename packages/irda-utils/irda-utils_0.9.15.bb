@@ -8,7 +8,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://m4.patch;patch=1"
 
-inherit autotools 
+export SYS_INCLUDES="-I${STAGING_INCDIR}"
+BROKEN = "1"
+
+inherit autotools
 
 do_compile () {
 	oe_runmake -e -C irattach
