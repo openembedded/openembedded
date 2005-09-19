@@ -7,14 +7,14 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  
  
 -
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  static void prism2_detach(dev_link_t *link);
 +#else
 +static void prism2_detach(struct pcmcia_device *p_dev);
 +#endif
 +
  static void prism2_release(u_long arg);
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  static int prism2_event(event_t event, int priority,
  			event_callback_args_t *args);
 -
@@ -30,21 +30,21 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  
  /* allocate local data and register with CardServices
   * initialize dev_link structure, but do not configure the card yet */
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  static dev_link_t *prism2_attach(void)
 +#else
 +static int prism2_attach(struct pcmcia_device *p_dev)
 +#endif
  {
  	dev_link_t *link;
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  	client_reg_t client_reg;
  	int ret;
 +#endif
  
  	link = kmalloc(sizeof(dev_link_t), GFP_KERNEL);
  	if (link == NULL)
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  		return NULL;
 -
 +#else
@@ -56,7 +56,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  	link->conf.Vcc = 33;
  	link->conf.IntType = INT_MEMORY_AND_IO;
  
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  	/* register with CardServices */
  	link->next = dev_list;
  	dev_list = link;
@@ -78,13 +78,13 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
 +#endif
 +}
  
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  static void prism2_detach(dev_link_t *link)
 +#else
 +static void prism2_detach(struct pcmcia_device *p_dev)
 +#endif
  {
-+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,15))
 +	dev_link_t *link = dev_to_instance(p_dev);
 +#endif
  	dev_link_t **linkp;
@@ -94,7 +94,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  		prism2_release((u_long)link);
  	}
  
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  	if (link->handle) {
  		int res = pcmcia_deregister_client(link->handle);
  		if (res) {
@@ -110,7 +110,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  	PDEBUG(DEBUG_FLOW, "release - done\n");
  }
  
-+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,15))
 +static int prism2_suspend1(struct pcmcia_device *dev)
 +{
 +	dev_link_t *link = dev_to_instance(dev);
@@ -156,7 +156,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
 +}
 +#endif
 +
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  static int prism2_event(event_t event, int priority,
  			event_callback_args_t *args)
  {
@@ -173,7 +173,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
  	.drv		= {
  		.name	= "hostap_cs",
  	},
-+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,15))
 +	.probe		= prism2_attach,
 +	.remove		= prism2_detach,
 +	.suspend	= prism2_suspend1,
@@ -184,7 +184,7 @@ Index: hostap-driver-0.4.4/driver/modules/hostap_cs.c
 +#endif
  	.owner		= THIS_MODULE,
  #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,13))
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
  	.event		= prism2_event,
 +#endif
  	.id_table	= hostap_cs_ids,
