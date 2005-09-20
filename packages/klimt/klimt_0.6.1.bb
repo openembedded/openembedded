@@ -14,7 +14,7 @@ inherit opie
 
 do_stage() {
 	oe_libinstall -so libKlimt ${STAGING_LIBDIR}/
-	cp -a ${S}/../../include/* ${STAGING_INCDIR}/
+	cp -pPR ${S}/../../include/* ${STAGING_INCDIR}/
 }
 
 do_install() {

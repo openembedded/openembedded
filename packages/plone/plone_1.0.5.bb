@@ -9,7 +9,7 @@ S = "${WORKDIR}/CMFPlone-${PV}"
 
 do_install() {
 	install -d ${D}${libdir}/python/Products/
-	cp -a ${S}/* ${D}${libdir}/python/Products/
+	cp -pPR ${S}/* ${D}${libdir}/python/Products/
 }
 
 FILES_${PN} = "${libdir}/python/Products/"

@@ -7,7 +7,7 @@ DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r26"
+PR = "r27"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -32,6 +32,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
        file://improve-calibration-r0.patch;patch=1 \
 	   file://key.patch;patch=1 \
        file://bidimetrics.patch;patch=5 \
+	   file://fix-native-build.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -73,6 +74,7 @@ QTE_ARCH := "${@qte_arch(d)}"
 
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
+EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
 EXTRA_OEMAKE = "-e"
@@ -147,7 +149,7 @@ do_stage() {
 	rm -f include/qxt.h
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
-	cp -a lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
 }
 
 do_install() {

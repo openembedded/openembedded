@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r27"
+PR = "r28"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -27,7 +27,7 @@ DEPENDS = "irda-utils ntp wireless-tools timezones ttf-dejavu \
            opie-freetype opie-help-en opie-i18n opie-login \
            opie-securityplugin-blueping opie-securityplugin-dummy \
            opie-securityplugin-notice opie-securityplugin-pin \
-           opie-sh opie-symlinker \
+           opie-sh opie-symlinker openobex \
            konqueror-embedded qpdf2"
 
 #
@@ -167,13 +167,12 @@ task-opie-todayplugins = "opie-today-addressbookplugin opie-today-datebookplugin
 
 task-opie-pim = "${task-opie-base-pim} opie-mail opie-pimconverter"
 
-task-opie-bluetooth = "bluez-utils-nodbus openobex obexftp obexpush \
-                       libopieobex0 opie-bluepin opie-bluetoothmanager \
-                       opie-bluetoothapplet"
+task-opie-bluetooth = "bluez-utils-nodbus obexftp obexpush libopieobex0 \
+                       opie-bluepin opie-bluetoothmanager opie-bluetoothapplet"
 
 task-opie-wlan = "wireless-tools opie-wellenreiter"
 
-task-opie-irda = "irda-utils openobex libopieobex0 obexftp"
+task-opie-irda = "irda-utils libopieobex0 obexftp obexpush"
 
 #
 # additional things for a >= 24mb distribution
@@ -192,8 +191,8 @@ task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-ticta
 #
 
 DEPENDS += "${task-opie-applets} ${task-opie-apps} \
-	    opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
-	    opie-sounds opie-ttf-support ttf-dejavu \
+            opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
+            opie-sounds opie-ttf-support ttf-dejavu \
             ${task-opie-bluetooth} ${task-opie-datebookplugins} \
             ${task-opie-decorations} ${task-opie-extra-settings} \
             ${task-opie-games} ${task-opie-inputmethods} ${task-opie-irda} \

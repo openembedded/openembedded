@@ -24,7 +24,7 @@ do_install() {
         	   ${D}${palmtopdir}/bin
         install -m 0755 vectoroids-${PV} ${D}${palmtopdir}/bin/vectoroids
 	install -m 0644 data/images/icon.png ${D}${palmtopdir}/pics/vectoroids.png
-	cp -a data/* ${D}${palmtopdir}/share/vectoroids
+	cp -pPR data/* ${D}${palmtopdir}/share/vectoroids
 
 	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/vectoroids.desktop
 	echo "Comment=Asteroids game" >>${D}${palmtopdir}/apps/Games/vectoroids.desktop

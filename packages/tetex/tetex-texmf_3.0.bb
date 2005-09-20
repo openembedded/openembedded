@@ -14,7 +14,7 @@ do_install() {
 	install -d ${D}${datadir}/texmf
 	for i in ${STUFF}
 	do
-		cp -a $i ${D}${datadir}/texmf
+		cp -pPR $i ${D}${datadir}/texmf
 	done
 }
 

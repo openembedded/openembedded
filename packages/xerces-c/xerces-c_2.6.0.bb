@@ -27,7 +27,7 @@ do_stage () {
 	oe_libinstall lib/libxerces-c ${STAGING_LIBDIR}
 	oe_libinstall lib/libxerces-depdom ${STAGING_LIBDIR}
 
-	cp -a include/xercesc ${STAGING_INCDIR}
+	cp -pPR include/xercesc ${STAGING_INCDIR}
 }
 
 do_install () {

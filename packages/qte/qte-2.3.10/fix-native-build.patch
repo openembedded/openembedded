@@ -1,0 +1,11 @@
+--- qt-2.3.10/src/kernel/qwindowsystem_qws.h.orig	2005-09-19 17:50:39.000000000 +0200
++++ qt-2.3.10/src/kernel/qwindowsystem_qws.h	2005-09-19 17:50:45.000000000 +0200
+@@ -53,6 +53,8 @@
+ class QWSRegionManager;
+ class QGfx;
+ class QWSServerData;
++class QWSInputMethod;
++class QWSGestureMethod;
+ 
+ class QWSInternalWindowInfo
+ {

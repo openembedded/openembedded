@@ -9,5 +9,5 @@ FILES_${PN} = "${prefix}/src/unixbench-${PV}"
 
 do_install () {
 	install -d ${D}${prefix}/src
-	cp -a ${S} ${D}${prefix}/src/
+	cp -pPR ${S} ${D}${prefix}/src/
 }

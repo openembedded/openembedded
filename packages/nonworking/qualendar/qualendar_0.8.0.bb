@@ -13,5 +13,5 @@ do_install() {
         install -D -m 755 qualendar ${D}${palmtopdir}/bin/qualendar
         install -D -m 644 qualendar.desktop ${D}${palmtopdir}/apps/Applications/qualendar.desktop
         install -d ${D}${palmtopdir}/pics
-        cp -a *.png ${D}${palmtopdir}/pics/
+        cp -pPR *.png ${D}${palmtopdir}/pics/
 }

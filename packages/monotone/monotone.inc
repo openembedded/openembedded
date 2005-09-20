@@ -32,7 +32,7 @@ ALTERNATIVE_PRIORITY = "40"
 do_install_append() {
 	install -d ${D}${tsd}
 	install -c -m 755 testsuite ${D}${tsd}/testsuite
-	cp -a tests ${D}${tsd}/tests
+	cp -pPR tests ${D}${tsd}/tests
 	#
 	mv ${D}${bindir}/monotone ${D}${bindir}/${PN}
 }
