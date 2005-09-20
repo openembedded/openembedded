@@ -1,5 +1,6 @@
 DESCRIPTION = "Linux Kernel 2.6 Userland Utilities for the PCMCIA Subsystem"
-DEPENDS = "sysfsutils"
+DEPENDS = "sysfsutils udev"
+RDEPENDS = "udev"
 HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
@@ -14,8 +15,9 @@ INITSCRIPT_PARAMS = "defaults"
 
 export HOSTCC = "${BUILD_CC}"
 export etcdir = "${sysconfdir}"
-export hotplugdir = "${sysconfdir}/hotplug"
 export pcmciaconfdir = "${sysconfdir}/pcmcia"
+export udevrulesdir = "${sysconfdir}/udev/rules.d"
+export UDEV = 1
 LD = "${CC}"
 CFLAGS =+ "-I${S}/src"
 CFLAGS =+ '-DPCMCIAUTILS_VERSION=010'
