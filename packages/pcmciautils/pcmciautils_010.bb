@@ -8,6 +8,8 @@ PRIORITY = "optional"
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
 S = "${WORKDIR}/pcmciautils-${PV}"
 
+PR = "r1"
+
 inherit update-rc.d
 
 INITSCRIPT_NAME = "coldplug"
