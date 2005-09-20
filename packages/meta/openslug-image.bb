@@ -14,7 +14,7 @@ DEPENDS = "virtual/kernel base-files base-passwd \
         ixp4xx-csr ixp425-eth openslug-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link diffutils \
-	cpio findutils mtd-utils \
+	cpio findutils mtd-utils udev \
         ${OPENSLUG_EXTRA_DEPENDS}"
 
 # NOTE: file system kernel modules are defined in openslug.conf
