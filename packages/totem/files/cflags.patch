@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- totem-1.0.4/src/Makefile.am~cflags
++++ totem-1.0.4/src/Makefile.am
+@@ -1,4 +1,4 @@
+-noinst_PROGRAMS = bvw-test list_v4l test-parser disc-test metadata-test
++#noinst_PROGRAMS = bvw-test list_v4l test-parser disc-test metadata-test
+ 
+ if TOTEM_VANITY
+ VANITY=vanity
+@@ -179,8 +179,10 @@
+ list_v4l_SOURCES = list_v4l.c $(BACON_V4L_SELECTION)
+ list_v4l_LDADD = $(GTK_LIBS)
+ 
++test_parser_CFLAGS = $(TOTEM_PLPARSER_CFLAGS)
+ test_parser_SOURCES = test-parser.c
+ test_parser_LDADD = \
++	$(TOTEM_PLPARSER_LIBS)
+ 	$(EXTRA_GNOME_LIBS) \
+ 	libtotem-plparser.la
+ 
+@@ -224,6 +226,8 @@
+ 	totem-disc.h				\
+ 	totem-pl-parser.h
+ 
++libtotem_plparser_la_CFLAGS = $(TOTEM_PLPARSER_CFLAGS)
++
+ libtotem_plparser_la_LDFLAGS =			\
+ 	-version-info $(PLPARSER_LT_VERSION)	\
+ 	-no-undefined				\

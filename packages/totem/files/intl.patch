@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- totem-1.0.4/src/totem.c~intl
++++ totem-1.0.4/src/totem.c
+@@ -35,6 +35,25 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdkkeysyms.h>
+ #include <stdlib.h>
++#ifdef ENABLE_NLS
++#    include <libintl.h>
++#    define _(String) dgettext (GETTEXT_PACKAGE, String)
++#    ifdef gettext_noop
++#        define N_(String) gettext_noop (String)
++#    else
++#        define N_(String) (String)
++#    endif
++#else
++/* Stubs that do something close enough.  */
++#    define textdomain(String) (String)
++#    define gettext(String) (String)
++#    define dgettext(Domain,Message) (Message)
++#    define dcgettext(Domain,Message,Type) (Message)
++#    define ngettext(Singular, Plural, IsPlural) (Singular)
++#    define bindtextdomain(Domain,Directory) (Domain)
++#    define _(String) (String)
++#    define N_(String) (String)
++#endif
+ #endif /* !HAVE_GTK_ONLY */
+ 
+ #include <string.h>
