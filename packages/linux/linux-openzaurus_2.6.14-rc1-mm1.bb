@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -38,6 +38,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/pxa_ohci_platform-r1.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r0.patch;patch=1 \	   
            ${RPSRC}/sharpsl_pm-r8.patch;patch=1 \
+           ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/corgi_pm-r3.patch;patch=1 \
            ${RPSRC}/spitz_base_extras-r2.patch;patch=1 \
            ${RPSRC}/spitz_pm-r3.patch;patch=1 \
@@ -71,7 +72,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${DOSRC}/tosa-irda-r3.patch;patch=1 \
            ${DOSRC}/tosa-lcd-r3.patch;patch=1 \
            ${RPSRC}/temp/tosa-bl-r7.patch;patch=1 \
-           ${RPSRC}/pcmcia_dev_ids-r1.patch;patch=1 \
+           ${RPSRC}/pcmcia_dev_ids-r2.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
