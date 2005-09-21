@@ -1,22 +1,21 @@
-BROKEN = "1"
-# do_configure() broken with:
-# No package 'libnautilus-burn' found
-
 SECTION = "x11/multimedia"
 # totem OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="A GTK2 based media player"
-HOMEPAGE="http://www.hadess.net/totem.php3"
+HOMEPAGE="http://www.gnome.org/projects/totem/"
 LICENSE="GPL"
 
-SRC_URI="http://www.hadess.net/files/software/totem/totem-${PV}.tar.gz \
+SRC_URI="http://ftp.gnome.org/pub/GNOME/sources/totem/1.0/totem-${PV}.tar.gz \
 	file://include.patch;patch=1 \
-	file://omf.patch;patch=1"
+	file://omf.patch;patch=1 \
+	file://nonautilus.patch;patch=1 \
+	file://intl.patch;patch=1 \
+	file://cflags.patch;patch=1 \
+	file://gtkonly.patch;patch=1"
 
-DEPENDS="gtk+ libglade gnome-vfs gconf libxine-x11 libgnomeui"
-RDEPENDS += " libgnomeui"
+DEPENDS="gtk+ libglade gnome-vfs gconf libxine-x11 libxml2"
 
 inherit autotools
 

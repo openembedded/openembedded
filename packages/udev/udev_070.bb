@@ -2,23 +2,13 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
            file://tmpfs.patch;patch=1 \
            file://noasmlinkage.patch;patch=1 \
            file://flags.patch;patch=1 \
-           file://tty-symlinks.patch;patch=1 \
-	   file://udev.rules \
-	   file://links.conf \
-           file://init"
-
-UDEV_DEVFS_RULES = "0"
+           file://tty-symlinks.patch;patch=1"
 
 include udev.inc
 
-PR = "r1"
+PR = "r3"
 
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
-
-do_install_append() {
-	install -m 0644 ${WORKDIR}/udev.rules ${D}${sysconfdir}/udev/rules.d/
-	install -m 0644 ${WORKDIR}/links.conf ${D}${sysconfdir}/udev/links.conf
-}
 
 #FIXME UDEV MIGRATION PLAN:
 #FIXME      a) udevd is now a netlink daemon and needs to be started by the init script (ours is way too old)

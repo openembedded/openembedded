@@ -1,5 +1,5 @@
 DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
-SECTION = "network"
+SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-0.23.4 ncurses"

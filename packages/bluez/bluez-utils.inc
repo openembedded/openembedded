@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs-${PV} pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \

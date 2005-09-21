@@ -20,11 +20,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://defconfig-${MACHINE} \
 	   http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
            file://mipv6-1.1-v2.4.25.patch;patch=1 \
-           file://simpad-backlight-if.diff;patch=1;pnum=0 \
-           file://simpad-switches-input.diff;patch=1;pnum=0 \
-           file://simpad-switches-input2.diff;patch=1;pnum=0 \
+           file://simpad-backlight-if.patch;patch=1 \
+           file://simpad-switches-input.patch;patch=1 \
+           file://simpad-switches-input2.patch;patch=1 \
            file://simpad-apm.diff;patch=1;pnum=0 \
-           file://simpad-ts-noninput.diff;patch=1;pnum=0 \
+           file://simpad-ts-noninput.patch;patch=1 \
            file://simpad-pm-updates.patch;patch=1;pnum=0 \
            file://support-128mb-flash.patch;patch=1"
 

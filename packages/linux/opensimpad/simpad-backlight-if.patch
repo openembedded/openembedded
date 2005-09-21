@@ -1,5 +1,10 @@
---- /mnt/bdisk/openembedded/oetmp/base/opensimpad-2.4.25-vrs2-pxa1-jpm1-r5/linux-2.4.25/drivers/video/mq200fb.c	2004-07-01 21:10:30.000000000 +0200
-+++ drivers/video/mq200fb.c	2004-07-03 20:58:59.000000000 +0200
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/drivers/video/mq200fb.c~simpad-backlight-if
++++ linux-2.4.27/drivers/video/mq200fb.c
 @@ -82,6 +82,20 @@
  	write:	proc_write_reg
  };
