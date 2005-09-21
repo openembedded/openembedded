@@ -1,5 +1,5 @@
 DESCRIPTION = "Linux Kernel 2.6 Userland Utilities for the PCMCIA Subsystem"
-DEPENDS = "sysfsutils udev"
+DEPENDS = "sysfsutils udev module-init-tools"
 RDEPENDS = "udev module-init-tools"
 HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
@@ -8,7 +8,7 @@ PRIORITY = "optional"
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
 S = "${WORKDIR}/pcmciautils-${PV}"
 
-PR = "r2"
+PR = "r3"
 
 export HOSTCC = "${BUILD_CC}"
 export etcdir = "${sysconfdir}"
