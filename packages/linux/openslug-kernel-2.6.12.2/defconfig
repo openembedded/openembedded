@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.12.2
-# Fri Sep 16 22:26:41 2005
+# Mon Sep 19 00:54:57 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -968,10 +968,13 @@ CONFIG_SOUND=m
 # Advanced Linux Sound Architecture
 #
 CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_RAWMIDI=m
 # CONFIG_SND_SEQUENCER is not set
 CONFIG_SND_OSSEMUL=y
 CONFIG_SND_MIXER_OSS=m
-# CONFIG_SND_PCM_OSS is not set
+CONFIG_SND_PCM_OSS=m
 # CONFIG_SND_RTCTIMER is not set
 # CONFIG_SND_VERBOSE_PRINTK is not set
 # CONFIG_SND_DEBUG is not set
@@ -1034,7 +1037,7 @@ CONFIG_SND_MIXER_OSS=m
 #
 # USB devices
 #
-# CONFIG_SND_USB_AUDIO is not set
+CONFIG_SND_USB_AUDIO=m
 
 #
 # Open Sound System
