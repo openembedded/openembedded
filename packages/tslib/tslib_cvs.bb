@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r31"
+PR = "r32"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -9,7 +9,7 @@ PACKAGE_ARCH_mnci = "${MACHINE}"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
-	   file://ts.conf-h3600 file://ts.conf-h3600-2.4 file://ts.conf-h2200 file://ts.conf-h6300 \
+	   file://ts.conf-h3600 file://ts.conf-h3600-2.4 file://ts.conf-h6300 \
 	   file://ts.conf-corgi file://ts.conf-corgi-2.4 \
 	   file://tslib.sh"
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"
@@ -42,7 +42,7 @@ do_install_append() {
 	case ${MACHINE} in
 	h3600 | h3900 | h1940 | h6300 | ipaq-pxa270)
 		install -d ${D}${datadir}/tslib
-		for f in ts.conf-h3600 ts.conf-h3600-2.4 ts.conf-h2200 ts.conf-h6300; do
+		for f in ts.conf-h3600 ts.conf-h3600-2.4 ts.conf-h6300; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
 		done
 		rm -f ${D}${sysconfdir}/ts.conf
