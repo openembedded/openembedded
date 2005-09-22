@@ -61,7 +61,6 @@ UCSLUGC_NATIVE = "\
 	make \
 	ncurses \
 	patch \
-	perl \
 	pkgconfig \
 	python-core \
 	quilt \
@@ -73,6 +72,7 @@ UCSLUGC_NATIVE = "\
 
 UCSLUGC_NATIVE_THUMB_BROKEN = "\
 	monotone-5 \
+	perl \
 	"
 
 # These things are required but are not valid RDEPENDS
