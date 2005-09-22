@@ -1,0 +1,41 @@
+# This patch causes gdb to use thumb swi(1) on linux for a thumb breakpoint
+# rather than the default, swi(254).  To stand any chance of making this
+# work a linux kernel patch is required to read the swi number on a thumb
+# swi.  In the absence of this patch gdb will effectively insert a random
+# swi because the kernel reads the swi number from r7...
+#
+--- gdb-6.3/gdb/arm-linux-tdep.c.orig	2005-09-19 13:55:16.486702426 -0700
++++ gdb-6.3/gdb/arm-linux-tdep.c	2005-09-19 13:57:44.127992906 -0700
+@@ -44,6 +44,12 @@
+ 
+ static const char arm_linux_arm_be_breakpoint[] = { 0xef, 0x9f, 0x00, 0x01 };
+ 
++/* The following requires the corresponding patch to the kernel to recognise
++ * this SWI as a breakpoint.
++ */
++static const char arm_linux_thumb_le_breakpoint[] = {0x01, 0xdf};
++static const char arm_linux_thumb_be_breakpoint[] = {0xdf, 0x01};
++
+ /* Description of the longjmp buffer.  */
+ #define ARM_LINUX_JB_ELEMENT_SIZE	INT_REGISTER_SIZE
+ #define ARM_LINUX_JB_PC			21
+@@ -463,10 +469,17 @@
+ 
+   tdep->lowest_pc = 0x8000;
+   if (info.byte_order == BFD_ENDIAN_BIG)
+-    tdep->arm_breakpoint = arm_linux_arm_be_breakpoint;
++    {
++      tdep->arm_breakpoint = arm_linux_arm_be_breakpoint;
++      tdep->thumb_breakpoint = arm_linux_thumb_be_breakpoint;
++    }
+   else
+-    tdep->arm_breakpoint = arm_linux_arm_le_breakpoint;
++    {
++      tdep->arm_breakpoint = arm_linux_arm_le_breakpoint;
++      tdep->thumb_breakpoint = arm_linux_thumb_le_breakpoint;
++    }
+   tdep->arm_breakpoint_size = sizeof (arm_linux_arm_le_breakpoint);
++  tdep->thumb_breakpoint_size = sizeof (arm_linux_thumb_le_breakpoint);
+ 
+   tdep->fp_model = ARM_FLOAT_FPA;
+ 
