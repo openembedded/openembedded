@@ -1,0 +1,11 @@
+--- pmount-0.9.4/Makefile.orig	2005-09-22 15:43:39 +0200
++++ pmount-0.9.4/Makefile	2005-09-22 15:43:52 +0200
+@@ -9,7 +9,7 @@
+ pumount_OBJ = pumount.o policy.o utils.o luks.o
+ pmount_hal_OBJ = pmount-hal.o policy.o utils.o fs.o
+ 
+-all: pmount pumount pmount-hal po/pmount.pot
++all: pmount pumount po/pmount.pot
+ 
+ pmount: $(pmount_OBJ)
+ 	$(CC) $(LDFLAGS) $^ $(LIBS) -o $@
