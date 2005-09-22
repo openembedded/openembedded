@@ -1,8 +1,9 @@
 DESCRIPTION="mount removable devices as normal user"
 DEPENDS="sysfsutils"
-PR="r0"
+PR="r1"
 
 SRC_URI="http://www.piware.de/projects/pmount-0.9.4.tar.gz \
+	 file://mmc-fix.patch;patch=1 \
 	 file://no-hal.patch;patch=1"
 
 do_install() {
