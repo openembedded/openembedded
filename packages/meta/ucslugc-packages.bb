@@ -32,7 +32,6 @@ UCSLUGC_PACKAGES = "\
 	cron \
 	cvs \
 	cvs\
-	cyrus-imapd \
 	db4 \
 	diffstat \
 	diffutils \
@@ -73,12 +72,9 @@ UCSLUGC_PACKAGES = "\
 	mgetty \
 	miau \ 
 	microcom \
-	monotone-4 \
-	monotone-5 \
 	mpd \
 	mt-daapd \
 	mutt \
-	mysql \
 	nail \
 	nano \
 	ncftp \
@@ -137,11 +133,18 @@ UCSLUGC_BROKEN_PACKAGES = "\
 	xinetd \
 	"
 
+# These packages are not in the build because they have a significant compilation
+# time and probably aren't very useful on a ucslugc system
+THUMB_OPTIONAL_PACKAGES = "\
+	monotone-4 \
+	mysql \
+	"
+
 # These packages have problems with thumb or thumb-interwork compilation - they
 # should really be fixed (if still in the build it is because there is a hacky
-# work round.)  The problem here is that _call_via_r2 is apparently inaccessible
-# under some circumstances.
+# work round.)  The problem with monotone-5 is that it is simply too big.
 THUMB_BROKEN_PACKAGES = "\
+	monotone-5 \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
