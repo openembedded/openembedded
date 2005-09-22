@@ -1,0 +1,45 @@
+--- uClibc-0.9.28/extra/scripts/gen_bits_syscall_h.sh.orig	2005-09-18 02:20:04.441119651 -0700
++++ uClibc-0.9.28/extra/scripts/gen_bits_syscall_h.sh	2005-09-18 03:17:58.287715035 -0700
+@@ -11,6 +11,37 @@
+ UNISTD_H_PATH=$TOPDIR/include/asm/unistd.h
+ INCLUDE_OPTS="-I$TOPDIR/include"
+ 
++# This test is added to avoid mangling the (variable) syscall base value on
++# ARM
++if echo "#if defined __arm__ || defined __thumb__
++xyzzy
++#endif" | $CC -E $INCLUDE_OPTS - | grep xyzzy >/dev/null
++then
++	echo '/* WARNING!!! AUTO-GENERATED FILE!!! DO NOT EDIT!!! */
++#ifndef _BITS_SYSNUM_H
++#define _BITS_SYSNUM_H
++
++#ifndef _SYSCALL_H
++# error "Never use <bits/sysnum.h> directly; include <sys/syscall.h> instead."
++#endif'
++	# arm case, assume unistd.h conforms to the one in 2.6.x, if not
++	# go into a corner and sulk (fix this script)  The sed rune below
++	# expects items of the form UCLIBC_foo at the start of the line
++	# for each syscall number, the arm syscalls all start with lower
++	# case alpha and the all-important __NR_SYSCALL_BASE does not...
++	sed -n -e '/__sys2/Q' -e '/^[ 	]*#include/,${
++		s/^[ 	]*#include.*$//
++		h
++		s/^[ 	]*#define[ 	]*__NR_\([a-z][A-Za-z0-9_]*\)[ 	]*\(.*\)[ 	]*$/#undef __NR_\1\
++#define SYS_\1 __NR_\1/p
++		g
++		p
++		}' $UNISTD_H_PATH
++	# i.e. this relies on the __sys2 definition coming after the last
++	# sys number define (and #include preceding all useful definitions)
++	echo '#endif'
++else
++# non-arm case
+ ( echo "#include \"$UNISTD_H_PATH\"" ;
+   $CC -E -dN $INCLUDE_OPTS $UNISTD_H_PATH | # needed to strip out any kernel-internal defines
+   sed -ne 's/^[ ]*#define[ ]*__NR_\([A-Za-z0-9_]*\).*/UCLIBC_\1 __NR_\1/gp'
+@@ -29,3 +60,4 @@
+   echo ;
+   echo "#endif" ;
+ )
++fi

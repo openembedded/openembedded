@@ -1,0 +1,48 @@
+# This is a work round for a fairly serious GCC compiler bug - when
+# the syscall assembler overwrites r7 (required on thumb) the
+# compiler fails to protect the register when it is using it as a
+# frame pointer.
+#
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/bits/syscalls.h	2005-09-12 17:51:26.062205918 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/bits/syscalls.h	2005-09-12 18:16:15.507930828 -0700
+@@ -111,6 +111,11 @@
+      }								\
+      (int) _sys_result; })
+ #else
++#if 0
++/* This doesn't work because GCC uses r7 as a frame pointer in
++ * some cases and doesn't notice that the _r7 value changes
++ * it, resulting in mysterious crashes after the SWI.
++ */
+ #define INTERNAL_SYSCALL(name, err, nr, args...)		\
+   ({ unsigned int _sys_result;					\
+      {								\
+@@ -124,6 +129,28 @@
+        _sys_result = _a1;					\
+      }								\
+      (int) _sys_result; })
++#else
++/* So hide the use of r7 from the compiler, this would be a lot
++ * easier but for the fact that the syscalls can exceed 255.
++ * For the moment the LOAD_ARG_7 is sacrificed.
++ */
++#define INTERNAL_SYSCALL(name, err, nr, args...)		\
++  ({ unsigned int _sys_result;					\
++     {								\
++       register int _a1 asm ("a1");				\
++       LOAD_ARGS_##nr (args)					\
++       register int _v3 asm ("v3") = (int) (SYS_ify(name));	\
++       asm volatile ("push	{r7}\n"				\
++	       	     "\tmov	r7, v3\n"			\
++	       	     "\tswi	0	@ syscall " #name "\n"	\
++		     "\tpop	{r7}"				\
++		     : "=r" (_a1)				\
++		     : "r" (_v3) ASM_ARGS_##nr			\
++		     : "memory");				\
++       _sys_result = _a1;					\
++     }								\
++     (int) _sys_result; })
++#endif
+ #endif
+ 
+ #undef INTERNAL_SYSCALL_ERROR_P
