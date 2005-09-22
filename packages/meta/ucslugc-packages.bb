@@ -24,6 +24,7 @@ UCSLUGC_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils-nodbus \
+	boost \
 	bridge-utils \
 	bwmon \
 	bzip2 \
@@ -90,7 +91,6 @@ UCSLUGC_PACKAGES = "\
 	patch \
 	pciutils \
 	pcre \
-	perl \
 	pkgconfig \
 	ppp \
 	procps \
@@ -143,8 +143,12 @@ THUMB_OPTIONAL_PACKAGES = "\
 # These packages have problems with thumb or thumb-interwork compilation - they
 # should really be fixed (if still in the build it is because there is a hacky
 # work round.)  The problem with monotone-5 is that it is simply too big.
+# The problem with perl is that it links a .so without explicitly including
+# libgcc.a or crti.o - consequently the .so does not have a set of _call_via_rX
+# functions to call...
 THUMB_BROKEN_PACKAGES = "\
 	monotone-5 \
+	perl \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
