@@ -25,4 +25,5 @@ N2K_PATCHES = "\
 	file://timer.patch;patch=1 \
 	file://nslu2-io_rpbutton.patch;patch=1 \
 	file://disk_led_blinking.patch;patch=1 \
+	file://thumb-swi.patch;patch=1 \
 "
