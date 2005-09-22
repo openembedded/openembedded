@@ -210,6 +210,9 @@ void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 		die("size changed");
 }
 
+	/* reserve to two sectors plus 1% for badblocks, and round down */
+#define BADBLOCK_SAFE(x) ( ((x) - (16384 * 2) - (x) / 100) &~ 16384 )
+
 int main(int argc, char **argv)
 {
 	if ((argc != 4) && (argc != 5))
@@ -224,17 +227,23 @@ int main(int argc, char **argv)
 	file_open(&f_2nd, &size_2nd, argv[1]);
 	file_open(&f_boot, &size_boot, argv[2]);
 	file_open(&f_root, &size_root, argv[3]);
+
+		// pre-35 have old layout
+#ifdef OLD_LAYOUT
+	int partition[] = {0x20000, 0x200000, 0x2000000};
+#else
+	int partition[] = {0x40000, 0x400000, 0x2000000};
+#endif
 	
-	if (size_2nd > 128 * 1024)
-		die("2nd stage max. size is 128k. did you gzip it before?");
-	if (size_boot > 2 * 1024 * 1024)
-		die("boot is > 2M. You can modify the buildimage tool, but you don't want that.");
-	if (size_root > 30 * 1024 * 1024)
-		die("root is > 30M. This doesn't work. sorry.");
+	if (size_2nd > BADBLOCK_SAFE(partition[0]))
+		die("2nd stage is too big. did you gzip it before?");
+	if (size_boot > BADBLOCK_SAFE(partition[1] - partition[0]))
+		die("boot is too big. You can modify the buildimage tool, but you don't want that.");
+	if (size_root > BADBLOCK_SAFE(partition[2] - partition[1]))
+		die("root is too big. This doesn't work. sorry.");
 	
 	int sectors_2nd = TO_SECT(size_2nd), sectors_boot = TO_SECT(size_boot), sectors_root = TO_SECT(size_root);
 	
-	int partition[] = {0x20000, 0x200000, 0x2000000};
 	int num_partitions = 3;
 	
 	int total_size = 4 + num_partitions * 4 + 4 + sectors_2nd * 528 + 4 + sectors_boot * 528 + 4 + sectors_root * 528;
