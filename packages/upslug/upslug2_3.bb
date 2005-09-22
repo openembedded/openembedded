@@ -1,1 +1,1 @@
-include upslug2.inc
+include upslug2-cvs.inc

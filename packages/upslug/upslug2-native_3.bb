@@ -1,3 +1,2 @@
-include upslug2.inc
-
+include upslug2_3.bb
 inherit native
