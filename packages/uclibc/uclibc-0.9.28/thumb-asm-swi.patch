@@ -1,0 +1,153 @@
+# WARNING: nasty hack.  Because sysnum.h produces thumb syscall
+# numbers when compiled in thumb mode the arm assembler (which is arm
+# even in thumb mode) needs to write the OS syscall base back into
+# the swi calls.  This is done here just by orring in the correct
+# value.  This is a hack - it might be better to add a define to
+# sysnum.h to force it to output arm (not thumb) values on demand -
+# but this hack is fairly safe (rmk would have to change the syscall
+# base, this seems unlikely).
+#
+# The patch also fixes up the .align directives to '2' (i.e. a multiple
+# of 4) not '4' (a multiple of 16 - apparently an error since it seems
+# to be unnecessary, there is no advantage here in cache line alignment).
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/__longjmp.S uClibc-0.9.28/libc/sysdeps/linux/arm/__longjmp.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/__longjmp.S	2005-09-18 18:41:36.870986621 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/__longjmp.S	2005-09-18 19:01:26.741860474 -0700
+@@ -25,7 +25,7 @@
+ 
+ .global __longjmp
+ .type __longjmp,%function
+-.align 4
++.align 2
+ __longjmp:
+ 	mov	ip, r0		/* save jmp_buf pointer */
+ 	
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/bsd-_setjmp.S uClibc-0.9.28/libc/sysdeps/linux/arm/bsd-_setjmp.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/bsd-_setjmp.S	2005-09-18 18:41:36.870986621 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/bsd-_setjmp.S	2005-09-18 19:01:31.982190228 -0700
+@@ -27,7 +27,7 @@
+ 
+ .global _setjmp
+ .type _setjmp,%function
+-.align 4
++.align 2
+ _setjmp:
+ 	mov	r1, #0
+ #ifdef __PIC__
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/bsd-setjmp.S uClibc-0.9.28/libc/sysdeps/linux/arm/bsd-setjmp.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/bsd-setjmp.S	2005-09-18 18:41:36.870986621 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/bsd-setjmp.S	2005-09-18 19:01:40.166705247 -0700
+@@ -27,7 +27,7 @@
+ 
+ .global setjmp
+ .type setjmp,%function
+-.align 4
++.align 2
+ setjmp:
+ 	mov	r1, #1
+ #ifdef __PIC__
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/clone.S uClibc-0.9.28/libc/sysdeps/linux/arm/clone.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/clone.S	2005-09-18 18:41:36.870986621 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/clone.S	2005-09-18 19:01:45.427036258 -0700
+@@ -30,7 +30,7 @@
+ .text
+ .global __clone
+ .type __clone,%function
+-.align 4
++.align 2
+ __clone:
+ 	@ sanity check args
+ 	cmp	r0, #0
+@@ -48,7 +48,7 @@
+ 	@ get flags
+ 	mov	r0, r2
+ 	@ new sp is already in r1
+-	swi	__NR_clone
++	swi	(__NR_clone | 0x900000)
+ 	movs	a1, a1
+ 	blt	__error
+ #if defined(__THUMB_INTERWORK__)
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/mmap64.S uClibc-0.9.28/libc/sysdeps/linux/arm/mmap64.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/mmap64.S	2005-09-18 18:41:36.874986873 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/mmap64.S	2005-09-18 19:02:03.692185612 -0700
+@@ -27,7 +27,7 @@
+ .text
+ .global mmap64
+ .type mmap64,%function
+-.align 4
++.align 2
+ mmap64:
+ 	stmfd	sp!, {r4, r5, lr}
+ 	ldr	r5, [sp, $16]
+@@ -40,7 +40,7 @@
+ 	movs	ip, ip, lsr $12
+ 	bne	.Linval			@ check for overflow
+ 	mov	ip, r0
+-	swi	__NR_mmap2
++	swi	(__NR_mmap2 | 0x900000)
+ 	cmn	r0, $4096
+ 	ldmccfd	sp!, {r4, r5, pc}
+ 	cmn	r0, $ENOSYS
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/setjmp.S uClibc-0.9.28/libc/sysdeps/linux/arm/setjmp.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/setjmp.S	2005-09-18 18:41:36.874986873 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/setjmp.S	2005-09-18 19:02:08.956516875 -0700
+@@ -24,7 +24,7 @@
+ 
+ .global __sigsetjmp
+ .type __sigsetjmp,%function
+-.align 4
++.align 2
+ __sigsetjmp:
+ 	/* Save registers */
+ #if defined __UCLIBC_HAS_FLOATS__ && ! defined __UCLIBC_HAS_SOFT_FLOAT__
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/sigrestorer.S uClibc-0.9.28/libc/sysdeps/linux/arm/sigrestorer.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/sigrestorer.S	2005-09-18 18:41:36.874986873 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/sigrestorer.S	2005-09-18 19:02:18.041088531 -0700
+@@ -24,17 +24,17 @@
+ 
+ .global __default_sa_restorer
+ .type __default_sa_restorer,%function
+-.align 4
++.align 2
+ __default_sa_restorer:
+-	swi	__NR_sigreturn
++	swi	(__NR_sigreturn | 0x900000)
+ 
+ 
+ #ifdef __NR_rt_sigreturn
+ 
+ .global __default_rt_sa_restorer
+ .type __default_rt_sa_restorer,%function
+-.align 4
++.align 2
+ __default_rt_sa_restorer:
+-	swi	__NR_rt_sigreturn
++	swi	(__NR_rt_sigreturn | 0x900000)
+ 
+ #endif
+diff -u uClibc-0.9.28/libc/sysdeps/linux/arm/orig/vfork.S uClibc-0.9.28/libc/sysdeps/linux/arm/vfork.S
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/orig/vfork.S	2005-09-18 18:41:36.874986873 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/vfork.S	2005-09-18 19:02:23.561435905 -0700
+@@ -28,11 +28,11 @@
+ .text
+ .global vfork
+ .type vfork,%function
+-.align 4
++.align 2
+ vfork:
+ 
+ #ifdef __NR_vfork
+-	swi	__NR_vfork
++	swi	(__NR_vfork | 0x900000)
+ 	cmn	r0, #4096
+ #if defined(__THUMB_INTERWORK__)
+ 	bxcc	lr
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ 	/* If we don't have vfork, use fork.  */
+-	swi     __NR_fork
++	swi     (__NR_fork | 0x900000)
+ 	cmn     r0, #4096
+ 
+ 	/* Syscal worked.  Return to child/parent */

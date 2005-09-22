@@ -59,7 +59,6 @@ UCSLUGC_NATIVE = "\
 	lrzsz \
 	m4 \
 	make \
-	monotone-5 \
 	ncurses \
 	patch \
 	perl \
@@ -70,6 +69,10 @@ UCSLUGC_NATIVE = "\
 	tar \
 	util-linux \
 	wget \
+	"
+
+UCSLUGC_NATIVE_THUMB_BROKEN = "\
+	monotone-5 \
 	"
 
 # These things are required but are not valid RDEPENDS
