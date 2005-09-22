@@ -1,0 +1,20 @@
+--- pmount-0.9.4/policy.c.orig	2005-09-22 23:11:29 +0200
++++ pmount-0.9.4/policy.c	2005-09-22 23:12:54 +0200
+@@ -354,7 +354,7 @@
+ device_removable( const char* device )
+ {
+     struct sysfs_device *dev;
+-    static char* hotplug_buses[] = { "usb", "ieee1394", NULL };
++    static char* hotplug_buses[] = { "usb", "ieee1394", "mmc", NULL };
+     int removable;
+     char blockdevpath[PATH_MAX];
+ 
+@@ -370,7 +370,7 @@
+     /* check whether device has "removable" attribute with value '1' */
+     removable = get_blockdev_attr( blockdevpath, "removable" );
+ 
+-    /* if not, fall back to bus scanning (regard USB and FireWire as removable) */
++    /* if not, fall back to bus scanning (regard USB, FireWire and MMC as removable) */
+     if( !removable )
+         removable = find_bus_ancestry( dev, hotplug_buses );
+     sysfs_close_device( dev );
