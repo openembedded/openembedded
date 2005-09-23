@@ -1,0 +1,148 @@
+diff -urpN linux-2.6.11.12/arch/arm/boot/compressed/Makefile linux-2.6.11.12-le2/arch/arm/boot/compressed/Makefile
+--- linux-2.6.11.12/arch/arm/boot/compressed/Makefile	2005-06-12 04:45:37.000000000 +0200
++++ linux-2.6.11.12-le2/arch/arm/boot/compressed/Makefile	2005-07-17 12:13:55.000000000 +0200
+@@ -56,6 +56,8 @@ endif
+ 
+ ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
+ OBJS		+= big-endian.o
++else
++OBJS		+= little-endian.o
+ endif
+ 
+ #
+diff -urpN linux-2.6.11.12/arch/arm/boot/compressed/little-endian.S linux-2.6.11.12-le2/arch/arm/boot/compressed/little-endian.S
+--- linux-2.6.11.12/arch/arm/boot/compressed/little-endian.S	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.11.12-le2/arch/arm/boot/compressed/little-endian.S	2005-07-17 12:13:55.000000000 +0200
+@@ -0,0 +1,13 @@
++/*
++ *  linux/arch/arm/boot/compressed/little-endian.S
++ *
++ *  Switch CPU into little endian mode.
++ *  Author: Nicolas Pitre
++ */
++
++	.section ".start", #alloc, #execinstr
++
++	mrc	p15, 0, r0, c1, c0, 0	@ read control reg
++	bic	r0, r0, #(1 << 7)	@ enable little endian mode
++	mcr	p15, 0, r0, c1, c0, 0	@ write control reg
++
+diff -urpN linux-2.6.11.12/arch/arm/mach-ixp4xx/common-pci.c linux-2.6.11.12-le2/arch/arm/mach-ixp4xx/common-pci.c
+--- linux-2.6.11.12/arch/arm/mach-ixp4xx/common-pci.c	2005-06-12 04:45:37.000000000 +0200
++++ linux-2.6.11.12-le2/arch/arm/mach-ixp4xx/common-pci.c	2005-07-17 12:13:55.000000000 +0200
+@@ -427,7 +427,7 @@ void __init ixp4xx_pci_preinit(void)
+ #ifdef __ARMEB__
+ 	*PCI_CSR = PCI_CSR_IC | PCI_CSR_ABE | PCI_CSR_PDS | PCI_CSR_ADS;
+ #else
+-	*PCI_CSR = PCI_CSR_IC;
++	*PCI_CSR = PCI_CSR_IC | PCI_CSR_ABE;
+ #endif
+ 
+ 	pr_debug("DONE\n");
+diff -urpN linux-2.6.11.12/drivers/mtd/maps/ixp4xx.c linux-2.6.11.12-le2/drivers/mtd/maps/ixp4xx.c
+--- linux-2.6.11.12/drivers/mtd/maps/ixp4xx.c	2005-07-17 12:13:05.000000000 +0200
++++ linux-2.6.11.12-le2/drivers/mtd/maps/ixp4xx.c	2005-07-17 12:13:55.000000000 +0200
+@@ -28,12 +28,12 @@
+ #include <asm/io.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/flash.h>
+-
++#include <asm/byteorder.h>
+ #include <asm/unaligned.h>
+ 
+ #include <linux/reboot.h>
+ 
+-#ifndef __ARMEB__
++#if !defined(__ARMEB__) && !defined(CONFIG_ARCH_NSLU2)
+ #define	BYTE0(h)	((h) & 0xFF)
+ #define	BYTE1(h)	(((h) >> 8) & 0xFF)
+ #else
+@@ -44,6 +44,10 @@
+ static map_word ixp4xx_read16(struct map_info *map, unsigned long ofs)
+ {
+ 	map_word val;
++
++#ifndef __ARMEB__
++	ofs ^= 2;
++#endif
+ 	val.x[0] = *(__u16 *) (map->map_priv_1 + ofs);
+ 	return val;
+ }
+@@ -53,6 +57,21 @@ static map_word ixp4xx_read16(struct map
+  * when attached to a 16-bit wide device (such as the 28F128J3A),
+  * so we can't just memcpy_fromio().
+  */
++
++#if !defined(__ARMEB__) && defined(CONFIG_MTD_REDBOOT_PARTS)
++struct fis_image_desc {
++	unsigned char name[16];      // Null terminated name
++	unsigned long flash_base;    // Address within FLASH of image
++	unsigned long mem_base;      // Address in memory where it executes
++	unsigned long size;          // Length of image
++	unsigned long entry_point;   // Execution entry point
++	unsigned long data_length;   // Length of actual data
++	unsigned char _pad[256-(16+7*sizeof(unsigned long))];
++	unsigned long desc_cksum;    // Checksum over image descriptor
++	unsigned long file_cksum;    // Checksum over image data
++};
++#endif
++
+ static void ixp4xx_copy_from(struct map_info *map, void *to,
+ 			     unsigned long from, ssize_t len)
+ {
+@@ -62,13 +81,34 @@ static void ixp4xx_copy_from(struct map_
+ 	u16 data;
+ 
+ 	for (i = 0; i < (len / 2); i++) {
+-		data = get_unaligned((u16*)(src + i));
++		int j = i;
++#ifndef __ARMEB__
++		j ^= 1;
++#endif
++		data = get_unaligned((u16*)(src + j));
+ 		dest[i * 2] = BYTE0(data);
+ 		dest[i * 2 + 1] = BYTE1(data);
+ 	}
+ 
++#ifndef __ARMEB__
++	i ^= 1;
++#endif
++
+ 	if (len & 1)
+ 		dest[len - 1] = BYTE0(get_unaligned((u16*)(src + i)));
++
++	/* Hack: Last sector contains RedBoot FIS table in big-endian format.
++	   Convert into little endian format so we can use RedBoot parser */
++#if !defined(__ARMEB__) && defined(CONFIG_MTD_REDBOOT_PARTS)
++	if (from == 0x7e0000) {
++		struct fis_image_desc *desc = (struct fis_image_desc *)to;
++		for (i=0; i < (len/sizeof(struct fis_image_desc)); i++) {
++			desc[i].flash_base = be32_to_cpu(desc[i].flash_base);
++			desc[i].mem_base   = be32_to_cpu(desc[i].mem_base);
++			desc[i].size       = be32_to_cpu(desc[i].size);
++		}
++	}
++#endif
+ }
+ 
+ /* 
+@@ -77,6 +117,9 @@ static void ixp4xx_copy_from(struct map_
+  */
+ static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
+ {
++#ifndef __ARMEB__
++	adr ^= 2;
++#endif
+ 	if (!(adr & 1))
+ 	       *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
+ }
+@@ -86,6 +129,9 @@ static void ixp4xx_probe_write16(struct 
+  */
+ static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
+ {
++#ifndef __ARMEB__
++	adr ^= 2;
++#endif
+        *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
+ }
+ 

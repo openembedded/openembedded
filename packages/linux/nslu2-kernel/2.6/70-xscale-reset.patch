@@ -1,0 +1,155 @@
+--- linux-2.6.11.2/arch/arm/mm/proc-xscale.S	2005-03-09 00:12:44.000000000 -0800
++++ linux-2.6.11.2/arch/arm/mm/proc-xscale.S	2005-06-18 15:39:22.701222319 -0700
+@@ -137,23 +137,129 @@
+  * same state as it would be if it had been reset, and branch
+  * to what would be the reset vector.
+  *
++ * This code is ixp425 specific with respect to the reset of
++ * the 'configuration register' - to be found at address
++ * 0xC40000020 'IXP425_EXP_CNFGO'
++ *
+  * loc: location to jump to for soft reset
+  */
+ 	.align	5
+ ENTRY(cpu_xscale_reset)
++	@ always branch to 0
++	mov	r0, #0
++
++	@ disable both FIQ and IRQ, put us into 32 bit
++	@ SVC mode (no thumb).
+ 	mov	r1, #PSR_F_BIT|PSR_I_BIT|SVC_MODE
+ 	msr	cpsr_c, r1			@ reset CPSR
+-	mrc	p15, 0, r1, c1, c0, 0		@ ctrl register
+-	bic	r1, r1, #0x0086			@ ........B....CA.
+-	bic	r1, r1, #0x3900			@ ..VIZ..S........
+-	mcr	p15, 0, r1, c1, c0, 0		@ ctrl register
+-	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches & BTB
+-	bic	r1, r1, #0x0001			@ ...............M
+-	mcr	p15, 0, r1, c1, c0, 0		@ ctrl register
+-	@ CAUTION: MMU turned off from this point. We count on the pipeline
+-	@ already containing those two last instructions to survive.
++
++	@ disable debug, clock and power registers are
++	@ unimplemented.
++	mcr	p14, 0, r0, c10, c0, 0		@ disable debug
++
++	@ disable the performance monitor
++	mcr	p14, 0, r0, c0, c1, 0		@ PMNC (ctrl reg)
++	mcr	p14, 0, r0, c4, c1, 0		@ INTEN (intrpt enable)
++
++	@ wait for p14 to complete
++	mrc	p14, 0, ip, c4, c1, 0		@ arbitrary read
++	mov	ip, ip				@ sync
++
++	@ clear the PID register
++	mcr	p15, 0, r0, c13, c0, 0		@ OR nothing with address!
++
++	@ unlock the TLBs and the I/D cache locks
++	mcr	p15, 0, r0, c10, c8, 1		@ data TLB unlocked
++	mcr	p15, 0, r0, c10, c4, 1		@ instruction TLB unlocked
++	mcr	p15, 0, r0,  c9, c2, 1		@ unlock data cache
++	mcr	p15, 0, r0,  c9, c1, 1		@ unlock instruction cache
++
++	@ zap the minidata cache to write through with write coalescing
++	@ disabled.
++	mov	r1, #0x21			@ MD=b10, K=1
++	mcr	p15, 0, r0, c7, c10, 4		@ drain write buffer
++	mrc	p15, 0, ip, c1, c0, 0		@ read of ctrl register
++	mov	ip, ip				@ sync
++	mcr 	p15, 0, r1, c1, c0, 1		@ write through, no coalesc
++
++	@ set the control register, the MMU is enabled but everything else
++	@ is disabled at this point, r1 contains the control register flags
++	@ the process is now in little-endian mode (no matter, we aren't
++	@ going to do any <word access)
++	mov	r1, #0x79			@ 00vIz0rs.b1111caM
++	orr	r1, r1, #0x1000			@ I-cache enable
++	mcr	p15, 0, r1, c1, c0, 0
++	mrc	p15, 0, ip, c1, c0, 0
++	mov	ip, ip				@ sync to coproc
++	mov	r1, #0x78			@ 00viz0rs.b1111cam
++
++	@ and flush the I/D cache and BTB
++	mcr	p15, 0, r0, c7, c7, 0
++
++	@ that's most of the work.  The only thing which remains is to
++	@ remap the flash memory and disable the MMU.  Do some setup
++	@ for this, also get ready to set the LED to red and put in
++	@ a watchdog timer.
++
++	@ get ready to reset the configuration registers in the expansion
++	@ bus.  CFGN1 disables byte swap and interrupt.
++	ldr	r3, =IXP4XX_PERIPHERAL_BASE_VIRT
++	ldr	r4, [r3, #IXP4XX_EXP_CFG1_OFFSET]
++	bic	r4, r4, #0x13			@ -BYTE_SWAP_EN, -SW_INT?
++	str	r4, [r3, #IXP4XX_EXP_CFG1_OFFSET]
++
++	@ load the current configuration register from its
++	@ virtual address and set the MEM_MAP bit ready to map the
++	@ flash back to address 0, but don't write it yet.
++	ldr	r4, [r3, #IXP4XX_EXP_CFG0_OFFSET]
++	orr	r4, r4, #0x80000000
++
++	@ load the GPIO OUTR register address and current value,
++	@ set the low nibble to just red LED on.
++	ldr	r5, =IXP4XX_GPIO_BASE_VIRT
++	ldr	r6, [r5, #IXP4XX_GPIO_GPOUTR_OFFSET]
++	bic	r6, r6, #0xf
++	orr	r6, r6, #0xd
++
++	@ load the watchdog timer virtual address, set the key and
++	@ the timer and start the down counter
++	ldr	r7, =IXP4XX_TIMER_BASE_VIRT
++	ldr	r8, =IXP4XX_WDT_KEY		@ set key
++	str	r8, [r7, #IXP4XX_OSWK_OFFSET]
++	mov	r8, #0x1000000			@ about 0.25 seconds
++	str	r8, [r7, #IXP4XX_OSWT_OFFSET]	@ set timer
++	mov	r8, #(IXP4XX_WDT_RESET_ENABLE | IXP4XX_WDT_COUNT_ENABLE)
++	str	r8, [r7, #IXP4XX_OSWE_OFFSET]	@ enable reset
++
++	@ invalidate the TLBs to ensure that there isn't a match for
++	@ '0' there.
+ 	mcr	p15, 0, ip, c8, c7, 0		@ invalidate I & D TLBs
+-	mov	pc, r0
++	mrc	p15, 0, ip, c1, c0, 0		@ read of ctrl register
++	mov	ip, ip				@ sync
++
++	@ remap the flash (after preloading instructions into the
++	@ I-cache) then turn off the MMU and branch to 0 when it is
++	@ off.  It seems that RedBoot relies on the page tables being
++	@ set up on boot, so set the page table head register too.
++	mov	r7, #0x4000			@ flash page table
++	ldr	r8, =IXP4XX_GPIO_BASE_PHYS	@ for led setting
++	bic	r9, r6, #0xc			@ disk1+disk2 led on
++	str	r6, [r5, #IXP4XX_GPIO_GPOUTR_OFFSET]	@ red led
++	b	cache
++
++	@ cached instructions  These 8 instructions are valid in the cache
++	@ along with the associated TLB as soon as the first is executed.
++	@ They are used to effect the transition back into the flash
++	@ ROM code.
++	.align	5
++cache:	str	r4, [r3, #IXP4XX_EXP_CFG0_OFFSET]	@0 no memory!
++	mcr	p15, 0, r7, c2, c0, 0			@1 set translation table base
++	mcr	p15, 0, r1, c1, c0, 0			@2 no MMU!
++	mrc	p15, 0, ip, c2, c0, 0			@3 arbitrary read of cp15
++	str	r9, [r8, #IXP4XX_GPIO_GPOUTR_OFFSET]	@4 red+disk1+disk2 led
++	sub	pc, r0, ip, LSR #32			@5 sync and branch to zero
++	nop						@6
++	nop						@7
+ 
+ /*
+  * cpu_xscale_do_idle()
+@@ -168,8 +274,10 @@
+ 	.align	5
+ 
+ ENTRY(cpu_xscale_do_idle)
+-	mov	r0, #1
+-	mcr	p14, 0, r0, c7, c0, 0		@ Go to IDLE
++	@ NSLU2/ixp420: not implemented in the hardware, docs
++	@ say do not write!
++	@mov	r0, #1
++	@mcr	p14, 0, r0, c7, c0, 0		@ Go to IDLE
+ 	mov	pc, lr
+ 
+ /* ================================= CACHE ================================ */

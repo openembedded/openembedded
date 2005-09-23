@@ -1,0 +1,29 @@
+diff -urN nslu2-2.6.13.1/arch/arm/configs/nslu2_defconfig test/arch/arm/configs/nslu2_defconfig
+--- nslu2-2.6.13.1/arch/arm/configs/nslu2_defconfig	2005-09-17 16:45:43.000000000 +0200
++++ test/arch/arm/configs/nslu2_defconfig	2005-09-17 16:46:48.000000000 +0200
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.13.1
+-# Sat Sep 17 16:45:18 2005
++# Sat Sep 17 16:23:38 2005
+ #
+ CONFIG_ARM=y
+ CONFIG_MMU=y
+@@ -120,7 +120,7 @@
+ # Processor Features
+ #
+ # CONFIG_ARM_THUMB is not set
+-CONFIG_CPU_BIG_ENDIAN=y
++# CONFIG_CPU_BIG_ENDIAN is not set
+ CONFIG_XSCALE_PMU=y
+ CONFIG_DMABOUNCE=y
+ 
+@@ -168,6 +168,7 @@
+ # At least one emulation must be selected
+ #
+ CONFIG_FPE_NWFPE=y
++# CONFIG_FPE_NWFPE_XP is not set
+ # CONFIG_FPE_FASTFPE is not set
+ 
+ #
