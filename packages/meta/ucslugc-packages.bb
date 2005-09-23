@@ -102,11 +102,9 @@ UCSLUGC_PACKAGES = "\
 	reiserfsprogs reiser4progs \
 	rsync \
 	samba \
-	sane-backends \
 	sed \
 	setpwc \
 	strace \
-	streamripper \
 	sudo \
 	sysfsutils \
 	tar \
@@ -149,6 +147,8 @@ THUMB_OPTIONAL_PACKAGES = "\
 THUMB_BROKEN_PACKAGES = "\
 	monotone-5 \
 	perl \
+	sane-backends \
+	streamripper \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
