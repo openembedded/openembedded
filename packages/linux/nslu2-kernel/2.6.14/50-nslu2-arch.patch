@@ -1,0 +1,73 @@
+--- linux-2.6.11/arch/arm/boot/compressed/head.S	2005-06-17 17:51:27.245788998 -0700
++++ linux-2.6.11/arch/arm/boot/compressed/head.S	2005-06-17 17:54:45.041806429 -0700
+@@ -37,6 +37,7 @@
+     defined(CONFIG_ARCH_INTEGRATOR) || \
+     defined(CONFIG_ARCH_PXA) || \
+     defined(CONFIG_ARCH_IXP4XX) || \
++    defined(CONFIG_MACH_NSLU2) || \
+     defined(CONFIG_ARCH_IXP2000) || \
+     defined(CONFIG_ARCH_LH7A40X) || \
+     defined(CONFIG_ARCH_OMAP)
+--- linux-2.6.11/.pc/2.6.patch/arch/arm/boot/compressed/head-xscale.S	2005-03-01 23:37:52.000000000 -0800
++++ linux-2.6.11/arch/arm/boot/compressed/head-xscale.S	2005-06-17 17:51:32.546985425 -0700
+@@ -47,3 +47,8 @@
+                orr     r7, r7, #(MACH_TYPE_GTWX5715 & 0xff00)
+ #endif
+ 
++#ifdef CONFIG_MACH_NSLU2
++               mov     r7, #(MACH_TYPE_NSLU2 & 0xff)
++               orr     r7, r7, #(MACH_TYPE_NSLU2 & 0xff00)
++#endif
++
+--- linux-2.6.11/.pc/2.6.patch/arch/arm/mach-ixp4xx/Kconfig	2005-06-17 17:51:27.365770810 -0700
++++ linux-2.6.11/arch/arm/mach-ixp4xx/Kconfig	2005-06-17 17:51:32.560983303 -0700
+@@ -43,6 +43,12 @@
+ 	  IXDP465 Development Platform (Also known as BMP).
+ 	  For more information on this platform, see <file:Documentation/arm/IXP4xx>.
+ 
++config MACH_NSLU2
++       bool "NSLU2"
++       help
++         Say 'Y' here if you want your kernel to support Linksys's 
++         NSLU2 NAS device. For more information on this platform, 
++         see http://www.nslu2-linux.org
+ 
+ #
+ # IXCDP1100 is the exact same HW as IXDP425, but with a different machine 
+--- linux-2.6.11/.pc/2.6.patch/drivers/mtd/maps/ixp4xx.c	2005-03-01 23:37:30.000000000 -0800
++++ linux-2.6.11/drivers/mtd/maps/ixp4xx.c	2005-06-17 17:51:32.566982394 -0700
+@@ -94,7 +94,11 @@
+ 	struct resource *res;
+ };
+ 
++#ifdef CONFIG_MACH_NSLU2
++static const char *probes[] = { "cmdlinepart", "RedBoot", "NSLU2", NULL };
++#else
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
++#endif
+ 
+ static int ixp4xx_flash_remove(struct device *_dev)
+ {
+--- linux-2.6.11/.pc/2.6.patch/include/asm-arm/arch-ixp4xx/hardware.h	2005-03-01 23:37:51.000000000 -0800
++++ linux-2.6.11/include/asm-arm/arch-ixp4xx/hardware.h	2005-06-17 17:51:32.567982242 -0700
+@@ -44,5 +44,6 @@
+ #include "ixdp425.h"
+ #include "coyote.h"
+ #include "prpmc1100.h"
++#include "nslu2.h"
+ 
+ #endif  /* _ASM_ARCH_HARDWARE_H */
+--- linux-2.6.11/.pc/2.6.patch/include/asm-arm/arch-ixp4xx/irqs.h	2005-03-01 23:38:12.000000000 -0800
++++ linux-2.6.11/include/asm-arm/arch-ixp4xx/irqs.h	2005-06-17 17:51:32.568982091 -0700
+@@ -93,4 +93,11 @@
+ #define	IRQ_COYOTE_PCI_SLOT1	IRQ_IXP4XX_GPIO11
+ #define	IRQ_COYOTE_IDE		IRQ_IXP4XX_GPIO5
+ 
++/*
++ * NSLU2 board IRQs
++ */
++#define        IRQ_NSLU2_PCI_INTA      IRQ_IXP4XX_GPIO11
++#define        IRQ_NSLU2_PCI_INTB      IRQ_IXP4XX_GPIO10
++#define        IRQ_NSLU2_PCI_INTC      IRQ_IXP4XX_GPIO9
++
+ #endif

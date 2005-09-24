@@ -1,0 +1,11 @@
+--- linux-2.6.14-rc2/include/asm-arm/arch-ixp4xx/platform.h	2005-09-24 13:17:24.000000000 +0200
++++ test3/include/asm-arm/arch-ixp4xx/platform.h	2005-09-24 16:41:17.000000000 +0200
+@@ -93,7 +93,7 @@
+ 
+ static inline void gpio_line_config(u8 line, u32 direction)
+ {
+-	if (direction == IXP4XX_GPIO_OUT)
++	if (direction == IXP4XX_GPIO_IN)
+ 		*IXP4XX_GPIO_GPOER |= (1 << line);
+ 	else
+ 		*IXP4XX_GPIO_GPOER &= ~(1 << line);

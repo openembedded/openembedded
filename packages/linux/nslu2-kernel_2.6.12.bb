@@ -1,5 +1,15 @@
 # Kernel for NSLU2
-PR = "r3"
+#
+# Increment PR_CONFIG for changes to the nslu2-kernel specific
+# defconfig (do *NOT* increment anything in here for changes
+# to other kernel configs!)
+PR_CONFIG = "0"
+#
+# Increment the number below (i.e. the digits after PR) when
+# making changes within this file or for changes to the patches
+# applied to the kernel.
+PR = "r3.${PR_CONFIG}"
+
 include nslu2-kernel.inc
 
 # N2K_EXTRA_PATCHES - list of patches to apply (can include

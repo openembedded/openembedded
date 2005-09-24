@@ -1,0 +1,41 @@
+--- linux-2.6.14-rc2/include/asm-arm/arch-ixp4xx/timex.h	2005-09-17 12:42:45.000000000 +0200
++++ test3/include/asm-arm/arch-ixp4xx/timex.h	2005-09-24 14:51:41.000000000 +0200
+@@ -12,4 +12,7 @@
+  */
+ #define FREQ 66666666
+ #define CLOCK_TICK_RATE (((FREQ / HZ & ~IXP4XX_OST_RELOAD_MASK) + 1) * HZ)
++#define CLOCK_TICKS_PER_USEC ((CLOCK_TICK_RATE + USEC_PER_SEC/2) / USEC_PER_SEC)
++
++extern u32 ixp4xx_ticks_per_usec;
+ 
+--- linux-2.6.14-rc2/arch/arm/mach-ixp4xx/common.c	2005-09-24 13:16:59.000000000 +0200
++++ test3/arch/arm/mach-ixp4xx/common.c	2005-09-24 17:16:11.000000000 +0200
+@@ -239,7 +239,7 @@
+ 
+ static unsigned volatile last_jiffy_time;
+ 
+-#define CLOCK_TICKS_PER_USEC	((CLOCK_TICK_RATE + USEC_PER_SEC/2) / USEC_PER_SEC)
++u32 ixp4xx_ticks_per_usec = CLOCK_TICKS_PER_USEC;
+ 
+ /* IRQs are disabled before entering here from do_gettimeofday() */
+ static unsigned long ixp4xx_gettimeoffset(void)
+@@ -248,7 +248,7 @@
+ 
+ 	elapsed = *IXP4XX_OSTS - last_jiffy_time;
+ 
+-	return elapsed / CLOCK_TICKS_PER_USEC;
++	return elapsed / ixp4xx_ticks_per_usec;
+ }
+ 
+ static irqreturn_t ixp4xx_timer_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+@@ -328,6 +328,10 @@
+ 
+ void __init ixp4xx_sys_init(void)
+ {
++	printk(KERN_INFO "%s: ticks_per_usec, std: %ld, this: %u\n",
++		__FUNCTION__,
++		CLOCK_TICKS_PER_USEC, ixp4xx_ticks_per_usec);
++
+ 	if (cpu_is_ixp46x()) {
+ 		platform_add_devices(ixp46x_devices,
+ 				ARRAY_SIZE(ixp46x_devices));
