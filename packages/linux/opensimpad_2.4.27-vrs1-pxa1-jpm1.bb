@@ -46,7 +46,7 @@ S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
 
-KERNEL_CCSUFFIX = "-3.3.3"
+KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
 
 SIMPAD_MEM     = ${@bb.data.getVar("SIMPAD_MEMORY_SIZE",d,1)  or "32"}
