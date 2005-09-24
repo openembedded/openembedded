@@ -8,7 +8,8 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPa
 	   file://intdriven.patch;patch=1 \
 	   file://pollcontroller.patch;patch=1 \
 	   file://mm4.patch;patch=1"
-PR = "r8"
+SRC_URI += "file://2.6.13.patch;patch=1"
+PR = "r9"
 
 S = "${WORKDIR}"
 
