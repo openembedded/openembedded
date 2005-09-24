@@ -1,0 +1,63 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xine-lib-1.1.0/src/demuxers/demux_ogg.c~demuxogg
++++ xine-lib-1.1.0/src/demuxers/demux_ogg.c
+@@ -40,7 +40,7 @@
+ #include <inttypes.h>
+ 
+ #include <ogg/ogg.h>
+-#include <vorbis/codec.h>
++#include <tremor/ivorbiscodec.h>
+ 
+ #ifdef HAVE_SPEEX
+ #ifdef HAVE_SPEEX_SUBDIR
+--- xine-lib-1.1.0/src/demuxers/Makefile.am~demuxogg
++++ xine-lib-1.1.0/src/demuxers/Makefile.am
+@@ -1,6 +1,6 @@
+ include $(top_srcdir)/misc/Makefile.common
+ 
+-AM_CFLAGS = $(THEORA_CFLAGS) $(OGG_CFLAGS) $(SPEEX_CFLAGS) $(LIBMODPLUG_CFLAGS)
++AM_CFLAGS = $(THEORA_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(SPEEX_CFLAGS) $(LIBMODPLUG_CFLAGS)
+ 
+ libdir = $(XINE_PLUGINDIR)
+ 
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xine-lib-1.1.0/src/libvorbis/xine_decoder.c~libxine-libvorbis
++++ xine-lib-1.1.0/src/libvorbis/xine_decoder.c
+@@ -40,7 +40,7 @@
+ #include "buffer.h"
+ 
+ #include <ogg/ogg.h>
+-#include <vorbis/codec.h>
++#include <tremor/ivorbiscodec.h>
+ 
+ #define MAX_NUM_SAMPLES 4096
+ 
+@@ -217,7 +217,7 @@
+  
+   } else if (this->output_open) {
+ 
+-    float **pcm;
++    int **pcm;
+     int samples;
+ 
+     if(vorbis_synthesis(&this->vb,&this->op)==0) 
+@@ -246,9 +246,9 @@
+ 	 interleave */
+       for(i=0;i<this->vi.channels;i++){
+ 	ogg_int16_t *ptr=audio_buffer->mem+i;
+-	float  *mono=pcm[i];
++	int  *mono=pcm[i];
+ 	for(j=0;j<bout;j++){
+-	  int val=mono[j]*32767.f;
++	  int val=mono[j]>>9;
+ 	  /* might as well guard against clipping */
+ 	  if(val>32767){
+ 	    val=32767;

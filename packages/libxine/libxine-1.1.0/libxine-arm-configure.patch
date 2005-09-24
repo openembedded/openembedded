@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xine-lib-1.1.0/configure.ac~libxine-arm-configure
++++ xine-lib-1.1.0/configure.ac
+@@ -2052,8 +2052,8 @@
+     AC_DEFINE_UNQUOTED(FPM_DEFAULT,,[Define to select libmad fixed point arithmetic implementation])
+     ;;
+ 
+-  armv4l-*-linux*)
+-    CFLAGS="-O2 -fsigned-char -ffast-math -mcpu=strongarm1100 -fomit-frame-pointer -fthread-jumps -fregmove $CFLAGS"
++  arm-*-linux*)
++    CFLAGS="-O2 -fsigned-char -ffast-math -march=armv4 -mtune=xscale -fomit-frame-pointer -fthread-jumps -fregmove $CFLAGS"
+     dnl    CFLAGS="-O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fregmove -fschedule-insns2 $INLINE_FUNCTIONS -fsigned-char -fomit-frame-pointer -march=armv4 -mtune=strongarm $CFLAGS"
+     DEBUG_CFLAGS="-O2 $DEBUG_CFLAGS"
+     AC_DEFINE_UNQUOTED(FPM_ARM,,[Define to select libmad fixed point arithmetic implementation])
