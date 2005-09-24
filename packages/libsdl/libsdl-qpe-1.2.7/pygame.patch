@@ -53,7 +53,7 @@ Index: SDL-1.2.7/src/main/qtopia/SDL_qtopia_main.cc
 Index: SDL-1.2.7/src/video/qtopia/SDL_qmain.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ SDL-1.2.7/src/video/qtopia/SDL_qmain.cc	2005-03-13 18:04:59.218302232 +0100
++++ SDL-1.2.7/src/video/qtopia/SDL_qmain.cc	2005-09-24 19:55:14.000000000 +0200
 @@ -0,0 +1,99 @@
 +/* Include the SDL main definition header */
 +#include "SDL_main.h"
@@ -157,7 +157,7 @@ Index: SDL-1.2.7/src/video/qtopia/SDL_qmain.cc
 Index: SDL-1.2.7/src/main/Makefile.am
 ===================================================================
 --- SDL-1.2.7.orig/src/main/Makefile.am	2004-02-18 18:22:01.000000000 +0100
-+++ SDL-1.2.7/src/main/Makefile.am	2005-03-13 18:03:46.321636109 +0100
++++ SDL-1.2.7/src/main/Makefile.am	2005-09-24 19:56:40.000000000 +0200
 @@ -21,11 +21,7 @@
  if TARGET_MACOSX
  MAINLIB_ARCH_SRCS = macosx/SDLMain.m macosx/SDLMain.h
@@ -173,7 +173,7 @@ Index: SDL-1.2.7/src/main/Makefile.am
 Index: SDL-1.2.7/src/video/qtopia/Makefile.am
 ===================================================================
 --- SDL-1.2.7.orig/src/video/qtopia/Makefile.am	2002-05-28 21:24:11.000000000 +0200
-+++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-03-13 18:03:46.322635967 +0100
++++ SDL-1.2.7/src/video/qtopia/Makefile.am	2005-09-24 19:56:40.000000000 +0200
 @@ -15,4 +15,5 @@
  	SDL_syswm.cc		\
  	SDL_syswm_c.h		\
@@ -181,3 +181,16 @@ Index: SDL-1.2.7/src/video/qtopia/Makefile.am
 -	SDL_sysevents_c.h	
 +	SDL_sysevents_c.h       \
 +	SDL_qmain.cc
+Index: SDL-1.2.7/configure.in
+===================================================================
+--- SDL-1.2.7.orig/configure.in	2004-02-22 22:31:47.000000000 +0100
++++ SDL-1.2.7/configure.in	2005-09-24 19:58:30.000000000 +0200
+@@ -1806,7 +1806,7 @@
+         # Set up files for the main() stub
+         if test "x$video_qtopia" = "xyes"; then
+           SDL_CFLAGS="$SDL_CFLAGS -Dmain=SDL_main"
+-          SDL_LIBS="-lSDLmain $SDL_LIBS"
++
+         fi
+         # Set up files for the audio library
+         # We use the OSS and ALSA API's, not the Sun audio API
