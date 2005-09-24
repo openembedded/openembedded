@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ../generic/tk.h~disable-xim
++++ ../generic/tk.h
+@@ -109,9 +109,9 @@
+  * Decide whether or not to use input methods.
+  */
+ 
+-#ifdef XNQueryInputStyle
+-#define TK_USE_INPUT_METHODS
+-#endif
++//#ifdef XNQueryInputStyle
++#undef TK_USE_INPUT_METHODS
++//#endif
+ 
+ /*
+  * Dummy types that are used by clients:

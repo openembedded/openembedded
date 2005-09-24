@@ -1,0 +1,36 @@
+DESCRIPTION = "Tool Command Language"
+LICENSE = "tcl"
+SECTION = "devel/tcltk"
+HOMEPAGE = "http://tcl.sourceforge.net"
+PR = "r0"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz"
+S = "${WORKDIR}/tcl${PV}/unix"
+
+inherit autotools
+
+EXTRA_OECONF = "--enable-threads"
+
+do_configure() {
+	gnu-configize
+	oe_runconf
+}
+
+do_compile_prepend() {
+	echo > ../compat/fixstrtod.c
+}
+
+do_stage() {
+	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
+	oe_libinstall -so libtcl8.4 ${STAGING_LIBDIR}
+	install -m 0755 tclConfig.sh ${STAGING_BINDIR}
+}
+
+do_install() {
+	autotools_do_install
+	oe_libinstall -so libtcl8.4 ${D}${libdir}
+	ln -sf ./tclsh8.4 ${D}${bindir}/tclsh
+}
+
+FILES_${PN} += "${libdir}/tcl8.4"
+
