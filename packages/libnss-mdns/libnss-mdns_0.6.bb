@@ -5,12 +5,13 @@ SECTION = "libs"
 PRIORITY = "optional"
 
 RRECOMMENDS_${PN} = "avahi-daemon zeroconf"
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = "--libdir=/lib"
 S = "${WORKDIR}/nss-mdns-${PV}"
 
-SRC_URI = "http://0pointer.de/lennart/projects/nss-mdns/nss-mdns-${PV}.tar.gz"
+SRC_URI = "http://0pointer.de/lennart/projects/nss-mdns/nss-mdns-${PV}.tar.gz \
+	   file://alignment-fix.patch;patch=1"
 
 inherit autotools
 
