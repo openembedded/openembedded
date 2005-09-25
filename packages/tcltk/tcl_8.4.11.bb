@@ -2,9 +2,10 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
+           file://tcl-add-soname.patch;patch=1"
 S = "${WORKDIR}/tcl${PV}/unix"
 
 inherit autotools
@@ -41,4 +42,4 @@ do_install() {
 	ln -sf ./tclsh8.4 ${D}${bindir}/tclsh
 }
 
-FILES_${PN} += "${libdir}/tcl8.4"
+FILES_${PN} += "${libdir}/tcl8.4 ${libdir}/libtcl8.4.so"

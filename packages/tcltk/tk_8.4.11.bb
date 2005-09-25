@@ -3,10 +3,12 @@ LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl x11"
-PR = "r1"
+RDEPENDS = "tcl"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
-           file://disable-xim.patch;patch=1;pnum=0"
+           file://disable-xim.patch;patch=1;pnum=0 \
+           file://tk-add-soname.patch;patch=1"
 S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
@@ -41,4 +43,4 @@ do_install() {
 	ln -sf ./wish8.4 ${D}${bindir}/wish
 }
 
-FILES_${PN} += "${libdir}/tk8.4"
+FILES_${PN} += "${libdir}/tk8.4 ${libdir}/libtk8.4.so"

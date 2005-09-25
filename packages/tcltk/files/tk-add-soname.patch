@@ -1,0 +1,12 @@
+diff -u tk8.3.5/unix/tcl.m4~ tk8.3.5/unix/tcl.m4
+--- unix/tcl.m4~	2003-01-14 21:22:12.000000000 +0900
++++ unix/tcl.m4	2003-01-14 21:22:12.000000000 +0900
+@@ -949,7 +949,7 @@
+ 	    CFLAGS_OPTIMIZE="${CFLAGS_OPTIMIZE} -D__NO_STRING_INLINES -D__NO_MATH_INLINES"
+ 
+ 	    if test "$have_dl" = yes; then
+-		SHLIB_LD="${CC} -shared"
++		SHLIB_LD='${CC} -shared -Wl,-soname,${@}'
+ 		DL_OBJS="tclLoadDl.o"
+ 		DL_LIBS="-ldl"
+ 		LDFLAGS="-rdynamic"
