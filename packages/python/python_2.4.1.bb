@@ -5,14 +5,15 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PROVIDES = "python python-core"
-DEPENDS = "python-native readline zlib gdbm openssl"
-PR = "ml7"
+DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
+PR = "ml8"
 
 PYTHON_MAJMIN = "2.4"
 
 SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
-	   file://bindir-libdir.patch;patch=1 \
-	   file://crosscompile.patch;patch=1"
+           file://bindir-libdir.patch;patch=1 \
+           file://crosscompile.patch;patch=1 \
+           file://fix-tkinter-detection.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
