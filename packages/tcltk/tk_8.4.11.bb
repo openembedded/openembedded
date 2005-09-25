@@ -3,7 +3,7 @@ LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl x11"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0"
@@ -23,6 +23,16 @@ do_stage() {
         oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
         oe_libinstall -so libtk8.4 ${STAGING_LIBDIR}
         install -m 0755 tkConfig.sh ${STAGING_BINDIR}
+	cd ..
+	#for dir in compat generic unix
+	#do
+	#	install -d ${STAGING_INCDIR}/tk${PV}/$dir
+	#install -m 0644 $dir/*.h ${STAGING_INCDIR}/tk${PV}/$dir/
+	#done
+	install -m 0644 generic/tk.h ${STAGING_INCDIR}
+	install -m 0644 generic/tkDecls.h ${STAGING_INCDIR}
+	install -m 0644 generic/tkPlatDecls.h ${STAGING_INCDIR}
+
 }
 
 do_install() {
