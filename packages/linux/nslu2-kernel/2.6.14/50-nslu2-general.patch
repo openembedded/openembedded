@@ -1160,7 +1160,7 @@ diff -urN linux-2.6.14-rc2/arch/arm/mach-ixp4xx/nslu2-setup.c test3/arch/arm/mac
 +static void __init nslu2_init(void)
 +{
 +	/* NSLU2 has a 33.00 MHZ crystal, we need to cope with that */
-+	ixp4xx_ticks_per_usec = NSLU2_CLOCK_TICKS_PER_USEC;
++/*	ixp4xx_ticks_per_usec = NSLU2_CLOCK_TICKS_PER_USEC;*/
 +
 +	ixp4xx_sys_init();
 +
