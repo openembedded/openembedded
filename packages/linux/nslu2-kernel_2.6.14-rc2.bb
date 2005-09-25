@@ -27,6 +27,7 @@ N2K_PATCHES = "\
 	file://10-ixp4xx-copy-from.patch;patch=1 \
 	file://10-ixp4xx-gpio.patch;patch=1 \
 	file://10-ixp4xx-ticks.patch;patch=1 \
+	file://15-ixp4xx-writesb-l-w.patch;patch=1 \
 	file://30-i2c-x1205.patch;patch=1 \
 	file://50-nslu2-arch.patch;patch=1 \
 	file://50-nslu2-general.patch;patch=1 \
