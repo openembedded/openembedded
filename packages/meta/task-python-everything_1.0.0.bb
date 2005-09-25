@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml0"
+PR = "ml2"
 
 DEPENDS = "\
 		python-ao 		\
@@ -28,6 +28,7 @@ DEPENDS = "\
 		python-pexpect		\
 		python-pychecker	\
 		python-pycodes		\
+		python-pyflakes		\
 		python-pygame		\
 		python-pygoogle		\
 		python-pygtk		\
@@ -41,6 +42,7 @@ DEPENDS = "\
 		python-pyro		\
 		python-pyserial		\
 		python-pytest		\
+		python-pyvisa		\
 		python-pyweather	\
 		python-pyxml		\
 		python-pyxmlrpc		\
