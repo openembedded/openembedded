@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are compatible with the OpenSlug firmware"
 LICENSE = MIT
-PR = "r6"
+PR = "r7"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -97,6 +97,7 @@ OPENSLUG_PACKAGES = "\
 	procps \
 	psmisc \
 	puppy \
+	pvrusb2-mci \
 	pwc \
 	python \
 	qc-usb-messenger \
