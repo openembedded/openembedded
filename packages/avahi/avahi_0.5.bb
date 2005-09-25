@@ -5,9 +5,10 @@ DEPENDS = "expat libdaemon dbus-0.50"
 RRECOMMENDS = "libnss-mdns"
 SECTION = "net"
 PRIORITY = "optional"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz"
+SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz \
+	   file://alignment-fix.patch;patch=1"
 
 PACKAGES = "avahi-daemon libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib avahi-dev avahi-doc"
 
