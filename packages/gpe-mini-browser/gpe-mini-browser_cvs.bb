@@ -1,10 +1,12 @@
-PR = "r1"
-PV = "0.17+cvs-${CVSDATE}"
+PR = 			"r2"
+PV = 			"0.17+cvs-${CVSDATE}"
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-mini-browser"
-DESCRIPTION = "A lightweight webbrowser for the GPE platform"
-LICENSE = "GPL"
-DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
+SRC_URI = 		"${HANDHELDS_CVS};module=gpe/base/gpe-mini-browser"
+DESCRIPTION = 	"A lightweight webbrowser for the GPE platform"
+LICENSE = 		"GPL"
+DEPENDS = 		"sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
+RRECOMMENDS = 	"gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
+ 
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/gpe-mini-browser"
