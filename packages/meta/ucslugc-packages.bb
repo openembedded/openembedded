@@ -17,6 +17,7 @@ UCSLUGC_PACKAGES = "\
 	alsa-utils \
 	atftp \
 	audiofile \
+	aumix \
 	autoconf \
 	automake \
 	bash \
@@ -31,12 +32,15 @@ UCSLUGC_PACKAGES = "\
 	ccxstream \
 	coreutils \
 	cron \
+	ctorrent \
 	cvs \
 	cvs\
 	db4 \
 	diffstat \
+	diffstat \
 	diffutils \
 	dnsmasq \
+	e2fsprogs \
 	expat \
 	file \
 	findutils \
@@ -47,21 +51,30 @@ UCSLUGC_PACKAGES = "\
 	gcc \
 	gdb \
 	gdbm \
+	glib-1.2 \
 	glib-2.0 \
 	gnu-config \
 	gphoto2 \
 	grep \
 	gtk-doc \
 	gzip \
+	ifupdown \
 	ipkg-utils \
+	iptables \
+	irssi \
+	joe \
 	jpeg \
+	lcdproc \
 	less \
 	libao \
+	libdvb \
 	libgphoto2 \
 	libid3tag \
+	liblockfile \
 	libmad \
 	libmikmod \
 	libogg \
+	libol \
 	libpng \
 	libtool \
 	libusb \
@@ -70,6 +83,7 @@ UCSLUGC_PACKAGES = "\
 	lrzsz \
 	lsof \
 	m4 \
+	mailx \
 	make \
 	mgetty \
 	miau \ 
@@ -92,6 +106,7 @@ UCSLUGC_PACKAGES = "\
 	patch \
 	pciutils \
 	pcre \
+	perl \
 	pkgconfig \
 	ppp \
 	procps \
@@ -99,6 +114,7 @@ UCSLUGC_PACKAGES = "\
 	pwc \
 	python \
 	python-core \
+	qc-usb-messenger \
 	quilt \
 	reiserfsprogs reiser4progs \
 	rsync \
@@ -106,32 +122,48 @@ UCSLUGC_PACKAGES = "\
 	sane-backends \
 	sed \
 	setpwc \
+	ssmtp \
 	strace \
 	streamripper \
 	sudo \
 	sysfsutils \
+	syslog-ng \
 	tar \
 	thttpd \
 	tiff \
 	unionfs-modules unionfs-utils \
+	unzip \
+	usbutils \
 	util-linux \
 	vim \
 	vlan \
+	vsftpd \
 	wakelan \
 	wget \
+	wget \
+	wireless-tools \
 	zlib \
 	"
 
 # These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
 # KEEP IN ALPHABETICAL ORDER
 UCSLUGC_BROKEN_PACKAGES = "\
+	ctrlproxy \
+	icecast \
 	iperf \
+	iputils \
+	libxslt \
 	man man-pages \
 	php \
 	psmisc \
+	pvrusb2-mci \
 	screen \
+	spca5xx \
 	timezones \
+	watchdog \
 	xinetd \
+	xirssi \
+	zd1211 \
 	"
 
 # These packages are not in the build because they have a significant compilation
@@ -144,12 +176,8 @@ THUMB_OPTIONAL_PACKAGES = "\
 # These packages have problems with thumb or thumb-interwork compilation - they
 # should really be fixed (if still in the build it is because there is a hacky
 # work round.)  The problem with monotone-5 is that it is simply too big.
-# The problem with perl is that it links a .so without explicitly including
-# libgcc.a or crti.o - consequently the .so does not have a set of _call_via_rX
-# functions to call...
 THUMB_BROKEN_PACKAGES = "\
 	monotone-5 \
-	perl \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
