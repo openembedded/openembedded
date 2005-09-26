@@ -227,7 +227,7 @@ else
 optware-ds101g build-optware-ds101g:
 endif
 
-openslug-%-beta: update-openslug-%-beta build-openslug-%-beta upload-openslug-%-beta
+openslug-%-beta: update-openslug-%-beta build-openslug-%-beta
 	echo "$@ completed"
 
 build-openslug-2.3-beta: releases/OpenSlug-2.3-beta/.configured
@@ -408,7 +408,7 @@ setup-host-ubuntu:
 		texinfo \
 		bzip2 ;\
 	echo You will have to install monotone separately.  See http://venge.net/monotone/ \
-	echo To get python2.4-psyco (Recommended to speed up builds), please read \ 
+	echo To get python2.4-psyco (Recommended to speed up builds), please read \
 	echo http://ubuntuguide.org/#extrarepositories \
 		"
 
@@ -573,7 +573,6 @@ push: push-master push-bitbake push-openembedded
 .PHONY: push-master
 push-master: update-master
 	monotone push
-	scp Makefile slug@nugabe.nslu2-linux.org:htdocs/www/Makefile
 
 .PHONY: push-bitbake
 push-bitbake: update-bitbake
@@ -584,139 +583,6 @@ push-openembedded: update-openembedded
 	( cd openembedded ; monotone push )
 
 # Targets for use by core team members only
-
-.PHONY: autobuild
-autobuild:
-	date
-	rm -rf builderrors.log
-	- ${MAKE} update                                      || echo -n " update"         >> builderrors.log
-ifneq ($(HOST_MACHINE),armeb)
-	- ${MAKE} build-openslug       upload-openslug        || echo -n " openslug"       >> builderrors.log
-	- ${MAKE} build-ucslugc        upload-ucslugc         || echo -n " ucslugc"        >> builderrors.log
-	- ${MAKE} build-unslung        upload-unslung-modules || echo -n " unslung"        >> builderrors.log
-else
-ifeq ($(HOST_FIRMWARE),OpenSlug)
-	rm -rf openslug/tmp/cache
-	- ${MAKE} build-openslug       upload-openslug        || echo -n " openslug"       >> builderrors.log
-endif
-endif
-ifneq ($(HOST_MACHINE),armeb)
-	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
-	- ${MAKE} build-optware-wl500g upload-optware-wl500g  || echo -n " optware/wl500g" >> builderrors.log
-	- ${MAKE} build-optware-ds101  upload-optware-ds101   || echo -n " optware/ds101"  >> builderrors.log
-	- ${MAKE} build-optware-ds101g upload-optware-ds101g  || echo -n " optware/ds101g" >> builderrors.log
-else
-ifeq ($(HOST_FIRMWARE),Unslung)
-	- ${MAKE} build-optware-nslu2  upload-optware-nslu2   || echo -n " optware/nslu2"  >> builderrors.log
-endif
-endif
-	- ${MAKE}                      upload-sources         || echo -n " upload-sources" >> builderrors.log
-
-	date
-	if [ -e builderrors.log ] ; then \
-	  echo -n "*** Errors during autobuild:" ; \
-	  cat builderrors.log ; \
-	  echo " ***" ; \
-	  if [ -e autobuild.log ] ; then \
-	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/logs/buildlogs/autobuild-`hostname`-last.txt ; \
-	  fi \
-	else \
-	  if [ -e autobuild.log ] ; then \
-	    ssh slug@nugabe.nslu2-linux.org mv htdocs/logs/buildlogs/autobuild-`hostname`-last.txt htdocs/logs/buildlogs/autobuild-`hostname`-prev.txt ; \
-	    rsync autobuild.log slug@nugabe.nslu2-linux.org:htdocs/logs/buildlogs/autobuild-`hostname`-last.txt ; \
-	  fi \
-	fi
-
-.PHONY: upload
-ifneq ($(HOST_MACHINE),armeb)
-upload: upload-openslug upload-ucslugc upload-unslung-modules \
-	upload-optware-nslu2 upload-optware-wl500g upload-optware-ds101 upload-optware-ds101g upload-sources
-else
-ifeq ($(HOST_FIRMWARE),OpenSlug)
-upload: upload-openslug upload-sources
-else
-ifeq ($(HOST_FIRMWARE),Unslung)
-upload: upload-optware-nslu2 upload-sources
-else
-upload: upload-sources
-endif
-endif
-endif
-
-.PHONY: upload-openslug
-upload-openslug: openslug/.configured
-	rm -rf openslug/tmp/deploy/ipk/morgue
-ifneq ($(HOST_MACHINE),armeb)
-	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/unstable
-	rsync -vl openslug/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
-	rsync -vlrt --delete openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/unstable
-else
-	rsync -vlrt --exclude='Packages*' openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/native/unstable
-	rsync -vl openslug/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
-	rsync -vlrt --delete openslug/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/native/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/native/unstable
-endif
-
-upload-openslug-%-beta: releases/OpenSlug-%-beta/.configured
-	rm -rf releases/OpenSlug-$*-beta/tmp/deploy/ipk/morgue
-	rsync -vlrt --exclude='Packages*' releases/OpenSlug-$*-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk openslug/cross/$*-beta
-	rsync -vl releases/OpenSlug-$*-beta/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
-	rsync -vlrt --delete releases/OpenSlug-$*-beta/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/openslug/cross/$*-beta/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean openslug/cross/$*-beta
-
-.PHONY: upload-ucslugc
-upload-ucslugc: ucslugc/.configured
-	rm -rf ucslugc/tmp/deploy/ipk/morgue
-	rsync -vlrt --exclude='Packages*' ucslugc/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk ucslugc/cross/unstable
-	rsync -vl ucslugc/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
-	rsync -vlrt --delete ucslugc/tmp/deploy/ipk/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/ucslugc/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean ucslugc/cross/unstable
-
-.PHONY: upload-unslung-modules
-upload-unslung-modules: unslung/.configured
-	rm -rf unslung/tmp/deploy/ipk/morgue
-	scripts/package-strip.pl kernel-module-\* unslung/tmp/deploy/ipk/Packages unslung/tmp/deploy/ipk/Packages.new
-	mv unslung/tmp/deploy/ipk/Packages.new unslung/tmp/deploy/ipk/Packages
-	rm -f unslung/tmp/deploy/ipk/Packages.gz
-	gzip -c unslung/tmp/deploy/ipk/Packages > unslung/tmp/deploy/ipk/Packages.gz
-	rsync -vlt unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk unslung/modules/stable
-	rsync -vl unslung/tmp/deploy/ipk/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean unslung/modules/stable
-#	rsync -vlt --delete unslung/tmp/deploy/ipk/kernel-module-* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/unslung/modules/stable/
-
-.PHONY: upload-optware-nslu2
-upload-optware-nslu2: optware/nslu2/.configured
-ifneq ($(HOST_MACHINE),armeb)
-	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/nslu2/cross/unstable
-	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
-	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/nslu2/cross/unstable
-else
-	rsync -vlrt --exclude='Packages*' optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/nslu2/native/unstable
-	rsync -vl optware/nslu2/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
-	rsync -vlrt --delete optware/nslu2/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/nslu2/native/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/nslu2/native/unstable
-endif
-
-.PHONY: upload-optware-%
-upload-optware-%: optware/%/.configured
-	rsync -vlrt --exclude='Packages*' optware/$*/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-ipk optware/$*/cross/unstable
-	rsync -vl optware/$*/packages/Packages* slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
-	rsync -vlrt --delete optware/$*/packages/ slug@nugabe.nslu2-linux.org:htdocs/ipkg/feeds/optware/$*/cross/unstable/
-	ssh nslu2@sources.nslu2-linux.org mirror/sync-packages-clean optware/$*/cross/unstable
-
-.PHONY: upload-sources
-upload-sources:
-	rsync -vlrt --exclude='ixp400*' downloads/ nslu2@sources.nslu2-linux.org:ipkg/sources/
 
 .PHONY: import-bitbake
 import-bitbake: bitbake/.configured
