@@ -17,7 +17,7 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/networking"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 PATCH_DEPENDS = ""
