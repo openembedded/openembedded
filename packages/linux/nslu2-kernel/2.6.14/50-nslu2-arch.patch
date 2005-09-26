@@ -34,20 +34,6 @@
  
  #
  # IXCDP1100 is the exact same HW as IXDP425, but with a different machine 
---- linux-2.6.11/.pc/2.6.patch/drivers/mtd/maps/ixp4xx.c	2005-03-01 23:37:30.000000000 -0800
-+++ linux-2.6.11/drivers/mtd/maps/ixp4xx.c	2005-06-17 17:51:32.566982394 -0700
-@@ -94,7 +94,11 @@
- 	struct resource *res;
- };
- 
-+#ifdef CONFIG_MACH_NSLU2
-+static const char *probes[] = { "cmdlinepart", "RedBoot", "NSLU2", NULL };
-+#else
- static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
-+#endif
- 
- static int ixp4xx_flash_remove(struct device *_dev)
- {
 --- linux-2.6.11/.pc/2.6.patch/include/asm-arm/arch-ixp4xx/hardware.h	2005-03-01 23:37:51.000000000 -0800
 +++ linux-2.6.11/include/asm-arm/arch-ixp4xx/hardware.h	2005-06-17 17:51:32.567982242 -0700
 @@ -44,5 +44,6 @@
