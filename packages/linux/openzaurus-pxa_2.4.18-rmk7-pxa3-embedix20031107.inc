@@ -56,6 +56,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
+SRC_URI_append_poodle255 += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
 # SRC_URI_append = file://machtune-args.patch;patch=1
 SRC_URI_append_tosa = " file://tosa-power-key-off.patch;patch=1"
@@ -68,6 +69,7 @@ inherit kernel
 # Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
 #
 CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_poodle255   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"
