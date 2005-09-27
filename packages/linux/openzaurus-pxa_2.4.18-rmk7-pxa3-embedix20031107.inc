@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
 LICENSE = "GPL"
 PV = "2.4.18-rmk7-pxa3-embedix"
-PR = "r43"
+PR = "r44"
 
 KV = "2.4.18"
 RMKV = "7"
@@ -52,6 +52,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://fix_tosa_apm.patch;patch=1 \
            file://dumb-hack-for-wlan-ng.patch;patch=1 \
            file://unb0rk-apm.patch;patch=1 \
+           file://apm_arrowkey.patch;patch=1 \
            file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
