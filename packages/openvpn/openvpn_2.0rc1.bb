@@ -1,4 +1,5 @@
 SECTION = "console/network"
+
 DESCRIPTION = "A VPN solution via tun device.  Not IPSEC!"
 HOMEPAGE = "http://openvpn.sourceforge.net"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
@@ -7,6 +8,7 @@ PRIORITY = "optional"
 DEPENDS = "lzo openssl"
 RRECOMMENDS = "kernel-module-tun"
 PR = "r2"
+DEFAULT_PREFERENCE = "-1"	
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openvpn/openvpn-2.0_rc1.tar.gz \
 	file://openvpn"
