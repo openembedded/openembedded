@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
 LICENSE = "GPL"
 PV = "2.4.18-rmk7-pxa3-embedix"
-PR = "r44"
+PR = "r45"
 
 KV = "2.4.18"
 RMKV = "7"

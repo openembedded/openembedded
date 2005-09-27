@@ -1,10 +1,15 @@
 --- linux/arch/arm/mach-pxa/sharpsl_apm.c-original	2005-09-07 02:38:21.000000000 -0600
 +++ linux/arch/arm/mach-pxa/sharpsl_apm.c	2005-09-08 01:11:56.000000000 -0600
-@@ -89,6 +89,7 @@
+@@ -89,6 +89,12 @@
  #include <linux/ioctl.h>
  #include <asm/sharp_apm.h>
  #include <asm/sharp_char.h>
++#if defined(CONFIG_ARCH_PXA_POODLE)
 +#include <asm-arm/arch-pxa/keyboard_poodle.h> /* blc */
++#elif defined(CONFIG_ARCH_PXA_TOSA)
++#include <asm-arm/arch-pxa/keyboard_tosa.h>
++#define	NR_KEYCODES	(KEYCODE(KB_ROWS-1,KB_COLS-1)+1)
++#endif
  #include <linux/delay.h>
  #include <asm/arch/ads7846_ts.h>
  #include <linux/apm_bios.h>
