@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 CVSDATE_${PN} = "20050904"
 PV = "2.0.0-cvs-mco1-${CVSDATE}"
 
