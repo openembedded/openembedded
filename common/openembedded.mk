@@ -25,6 +25,10 @@ distro: $(FIRMWARE_DEPS)
 image: $(FIRMWARE_DEPS)
 	. ./setup-env; exec ${BITBAKE} $(DISTRO)-image
 
+# The default rule is to build the firmware in an unprotected environment.
+kernel: $(FIRMWARE_DEPS)
+	. ./setup-env; exec ${BITBAKE} virtual/kernel
+
 # This rule clobbers the environment (note that ccache uses '$HOME' by
 # default, so the cache will end up there).
 distro-safe:

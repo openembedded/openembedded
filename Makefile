@@ -70,14 +70,6 @@ else
 prefetch-unslung:
 endif
 
-.PHONY: prefetch-unslung-binary-kernel
-ifneq ($(HOST_MACHINE),armeb)
-prefetch-unslung-binary-kernel: unslung-binary-kernel/.configured bitbake/.configured openembedded/.configured
-	( cd unslung-binary-kernel ; ${MAKE} prefetch )
-else
-prefetch-unslung-binary-kernel:
-endif
-
 .PHONY: prefetch-openslug
 ifneq ($(HOST_MACHINE),armeb)
 prefetch-openslug: openslug/.configured bitbake/.configured openembedded/.configured
@@ -134,14 +126,6 @@ else
 unslung build-unslung:
 endif
 
-.PHONY: unslung-binary-kernel build-unslung-binary-kernel
-ifneq ($(HOST_MACHINE),armeb)
-unslung-binary-kernel build-unslung-binary-kernel: unslung-binary-kernel/.configured bitbake/.configured openembedded/.configured
-	( cd unslung-binary-kernel ; ${MAKE} )
-else
-unslung-binary-kernel build-unslung-binary-kernel:
-endif
-
 .PHONY: openslug build-openslug
 ifneq ($(HOST_MACHINE),armeb)
 openslug build-openslug: openslug/.configured bitbake/.configured openembedded/.configured
@@ -185,6 +169,30 @@ ucslugc-image build-ucslugc-image: ucslugc/.configured bitbake/.configured opene
 	( cd ucslugc ; ${MAKE} image)
 else
 ucslugc-image build-ucslugc-image:
+endif
+
+.PHONY: unslung-kernel build-unslung-kernel
+ifneq ($(HOST_MACHINE),armeb)
+unslung-kernel build-unslung-kernel: unslung/.configured bitbake/.configured openembedded/.configured
+	( cd unslung ; ${MAKE} kernel)
+else
+unslung-kernel build-unslung-kernel:
+endif
+
+.PHONY: openslug-kernel build-openslug-kernel
+ifneq ($(HOST_MACHINE),armeb)
+openslug-kernel build-openslug-kernel: openslug/.configured bitbake/.configured openembedded/.configured
+	( cd openslug ; ${MAKE} kernel )
+else
+openslug-kernel build-openslug-kernel:
+endif
+
+.PHONY: ucslugc-kernel build-ucslugc-kernel
+ifneq ($(HOST_MACHINE),armeb)
+ucslugc-kernel build-ucslugc-kernel: ucslugc/.configured bitbake/.configured openembedded/.configured
+	( cd ucslugc ; ${MAKE} kernel)
+else
+ucslugc-kernel build-ucslugc-kernel:
 endif
 
 .PHONY: build-optware
@@ -282,8 +290,8 @@ setup-optware-developer:
 	cvs -q -d :ext:${CVS_USER}@cvs.sf.net:/cvsroot/nslu co -d optware unslung
 	${MAKE} setup-optware
 
-.PHONY: setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc
-setup-unslung setup-unslung-binary-kernel setup-openslug setup-ucslugc: setup-%: MT/.configured
+.PHONY: setup-unslung setup-openslug setup-ucslugc
+setup-unslung setup-openslug setup-ucslugc: setup-%: MT/.configured
 	rm -rf $*/.configured
 	${MAKE} $*/.configured
 
@@ -510,10 +518,6 @@ status-openslug-%-beta:
 clobber-unslung:
 	[ ! -e unslung/Makefile ] || ( cd unslung ; ${MAKE} clobber )
 
-.PHONY: clobber-unslung-binary-kernel
-clobber-unslung-binary-kernel:
-	[ ! -e unslung-binary-kernel/Makefile ] || ( cd unslung-binary-kernel ; ${MAKE} clobber )
-
 .PHONY: clobber-openslug
 clobber-openslug:
 	[ ! -e openslug/Makefile ] || ( cd openslug ; ${MAKE} clobber )
@@ -544,10 +548,6 @@ distclean-openembedded:
 .PHONY: distclean-unslung
 distclean-unslung:
 	rm -rf unslung
-
-.PHONY: distclean-unslung-binary-kernel
-distclean-unslung-binary-kernel:
-	rm -rf unslung-binary-kernel
 
 .PHONY: distclean-openslug
 distclean-openslug:
