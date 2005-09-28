@@ -1,0 +1,13 @@
+diff -urpN linux-2.6.11.12/arch/arm/mach-ixp4xx/common-pci.c linux-2.6.11.12-le2/arch/arm/mach-ixp4xx/common-pci.c
+--- linux-2.6.11.12/arch/arm/mach-ixp4xx/common-pci.c	2005-06-12 04:45:37.000000000 +0200
++++ linux-2.6.11.12-le2/arch/arm/mach-ixp4xx/common-pci.c	2005-07-17 12:13:55.000000000 +0200
+@@ -427,7 +427,7 @@ void __init ixp4xx_pci_preinit(void)
+ #ifdef __ARMEB__
+ 	*PCI_CSR = PCI_CSR_IC | PCI_CSR_ABE | PCI_CSR_PDS | PCI_CSR_ADS;
+ #else
+-	*PCI_CSR = PCI_CSR_IC;
++	*PCI_CSR = PCI_CSR_IC | PCI_CSR_ABE;
+ #endif
+ 
+ 	pr_debug("DONE\n");
+ 
