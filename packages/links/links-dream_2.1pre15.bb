@@ -5,7 +5,7 @@ DESCRIPTION = "Dreambox plugin version of Links: Links is graphics and text mode
 browser, similar to Lynx."
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRC_URI = "http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-2.1pre15.tar.bz2 \
+SRC_URI = "http://dreamboxupdate.com/sources-mirror/links-2.1pre15.tar.bz2 \
 	   http://sources.dreamboxupdate.com/download/opendreambox/links-dream-2.1pre15/links-dream-plugin.diff;patch=1"
 
 PACKAGES = "links-dream-plugin"
