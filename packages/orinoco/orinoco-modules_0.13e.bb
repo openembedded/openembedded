@@ -9,7 +9,9 @@ PR = "r4"
 SRC_URI = "http://ozlabs.org/people/dgibson/dldwd/orinoco-${PV}.tar.gz; \
            file://crosscompile.patch;patch=1 \
            file://monitor-${PV}.patch;patch=1 \
-           file://spectrum* \
+           file://spectrum.conf \
+           file://spectrum_fw.h \
+	   file://spectrum_cs.c \
            file://orinoco_cs.conf"
 S = "${WORKDIR}/orinoco-${PV}"
 
