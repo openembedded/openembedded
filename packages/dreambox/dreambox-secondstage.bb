@@ -2,9 +2,9 @@ DESCRIPTION = "Dreambox DM702x second stage bootloader"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
-PV_dm7020 = "28"
+PV_dm7020 = "35"
 PV_dm7025 = "35"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
 
