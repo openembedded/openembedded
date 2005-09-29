@@ -1,0 +1,84 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: sqlite-3.2.1/configure.ac
+===================================================================
+--- sqlite-3.2.1.orig/configure.ac	2005-03-23 17:08:39.000000000 +0100
++++ sqlite-3.2.1/configure.ac	2005-04-25 23:02:40.000000000 +0200
+@@ -186,10 +186,11 @@
+ default_build_cflags="-g"
+ if test "$config_BUILD_CC" = ""; then
+   AC_PROG_CC
+-  if test "$cross_compiling" = "yes"; then
+-    AC_MSG_ERROR([unable to find a compiler for building build tools])
+-  fi
+-  BUILD_CC=$CC
++#  if test "$cross_compiling" = "yes"; then
++#    AC_MSG_ERROR([unable to find a compiler for building build tools])
++#  fi
++#  BUILD_CC=$CC
++  BUILD_CC=gcc
+   default_build_cflags=$CFLAGS
+ else
+   BUILD_CC=$config_BUILD_CC
+@@ -539,55 +540,14 @@
+ # Figure out what C libraries are required to compile programs
+ # that use "readline()" library.
+ #
+-if test "$config_TARGET_READLINE_LIBS" != ""; then
+-  TARGET_READLINE_LIBS="$config_TARGET_READLINE_LIBS"
+-else
+-  CC=$TARGET_CC
+-  LIBS=""
+-  AC_SEARCH_LIBS(tgetent, [readline ncurses curses termcap])
+-  AC_CHECK_LIB([readline], [readline])
+-  TARGET_READLINE_LIBS="$LIBS"
+-fi
++TARGET_READLINE_LIBS="-lreadline"
+ AC_SUBST(TARGET_READLINE_LIBS)
+ 
+ ##########
+ # Figure out where to get the READLINE header files.
+ #
+-AC_MSG_CHECKING([readline header files])
+-found=no
+-if test "$config_TARGET_READLINE_INC" != ""; then
+-  TARGET_READLINE_INC=$config_TARGET_READLINE_INC
+-  found=yes
+-fi
+-if test "$found" = "yes"; then
+-  AC_MSG_RESULT($TARGET_READLINE_INC)
+-else
+-  AC_MSG_RESULT(not specified: still searching...)
+-  AC_CHECK_HEADER(readline.h, [found=yes])
+-fi
+-if test "$found" = "no"; then
+-  for dir in /usr /usr/local /usr/local/readline /usr/contrib /mingw; do
+-    AC_CHECK_FILE($dir/include/readline.h, found=yes)
+-    if test "$found" = "yes"; then
+-      TARGET_READLINE_INC="-I$dir/include"
+-      break
+-    fi
+-    AC_CHECK_FILE($dir/include/readline/readline.h, found=yes)
+-    if test "$found" = "yes"; then
+-      TARGET_READLINE_INC="-I$dir/include/readline"
+-      break
+-    fi
+-  done
+-fi
+-if test "$found" = "yes"; then
+-  if test "$TARGET_READLINE_LIBS" = ""; then
+-    TARGET_HAVE_READLINE=0
+-  else
+-    TARGET_HAVE_READLINE=1
+-  fi
+-else
+-  TARGET_HAVE_READLINE=0
+-fi
++TARGET_READLINE_INC=""
++TARGET_HAVE_READLINE=1
+ AC_SUBST(TARGET_READLINE_INC)
+ AC_SUBST(TARGET_HAVE_READLINE)
+ 
