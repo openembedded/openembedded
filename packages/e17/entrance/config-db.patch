@@ -19,7 +19,7 @@ diff -Nur entrance~/data/config/build_config.sh.in entrance/data/config/build_co
 -ecore_config $DB set /entrance/session/0/session str "default"
 +ecore_config $DB set /entrance/greeting/after str " e17/OE"
 +ecore_config $DB set /entrance/session/count int 3
-+ecore_config $DB set /entrance/session/0/session str "/etc/X11/Sessions/Default"
++ecore_config $DB set /entrance/session/0/session str "/etc/X11/Sessions/Enlightenment"
  ecore_config $DB set /entrance/session/0/title str "Default"
  ecore_config $DB set /entrance/session/0/icon str "default.png"
  ecore_config $DB set /entrance/session/1/icon str "enlightenment.png"
