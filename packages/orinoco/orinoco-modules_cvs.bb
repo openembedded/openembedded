@@ -5,7 +5,7 @@ PRIORITY = "optional"
 PROVIDES = "spectrum-modules"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 PARALLEL_MAKE = ""
 EXTRA_OEMAKE = 'KERNEL_SRC="${KERNEL_STAGING_DIR}"'

@@ -8,7 +8,7 @@ PROVIDES = "python python-core"
 DEPENDS_GUI = "tcl tk"
 DEPENDS_GUI_nslu2 = ""
 DEPENDS = "python-native readline zlib gdbm openssl ${DEPENDS_GUI}"
-PR = "ml8"
+PR = "ml1"
 
 PYTHON_MAJMIN = "2.4"
 

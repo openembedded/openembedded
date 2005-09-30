@@ -1,0 +1,18 @@
+diff -Nur ewl-0.0.4.004~/src/lib/Ewl.h.in ewl-0.0.4.004/src/lib/Ewl.h.in
+--- ewl-0.0.4.004~/src/lib/Ewl.h.in	2005-09-29 18:26:11.000000000 -0700
++++ ewl-0.0.4.004/src/lib/Ewl.h.in	2005-09-29 18:26:55.000000000 -0700
+@@ -254,6 +254,14 @@
+ extern"C" {
+ #endif
+ 
++#ifndef MAX
++#define MAX(a, b) (a > b ? a : b)
++#endif
++
++#ifndef MIN
++#define MIN(a, b) (a < b ? a : b)
++#endif
++
+ #include <Evas.h>
+ #include <Edje.h>
+ #include <Ecore.h>

@@ -6,9 +6,8 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
-           file://fix-configure.patch;patch=1"
-S = "${WORKDIR}/e"
+SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz"
+S = "${WORKDIR}/enlightenment-${PV}"
 
 PROFILE = "LORES_PDA"
 PROFILE_c7x0 = "HIRES_PDA"

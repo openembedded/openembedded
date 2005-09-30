@@ -5,8 +5,9 @@ SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r0"
 
-SRC_URI = "http://www.mowem.de/elitaire/elitaire-0.0.4.tar.bz2 \
-           file://fix-ewl-and-gettext.patch;patch=1"
+SRC_URI = "http://www.mowem.de/elitaire/elitaire-${PV}.tar.bz2 \
+           file://fix-ewl-and-gettext.patch;patch=1 \
+           file://math.patch;patch=1"
 
 inherit autotools pkgconfig binconfig
 
