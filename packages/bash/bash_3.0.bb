@@ -3,7 +3,7 @@ HOMEPAGE = "http://cnswww.cns.cwru.edu/~chet/bash/bashtop.html"
 DEPENDS = "ncurses"
 SECTION = "base/shell"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
 	file://signames-mipsel.diff;patch=1"
@@ -24,6 +24,6 @@ do_configure () {
 }
 
 pkg_postinst () {
-	grep "bin/bash" ${sysconfdir}/shells || echo /bin/bash >> ${sysconfdir}/shells
-	grep "bin/sh" ${sysconfdir}/shells || echo /bin/sh >> ${sysconfdir}/shells
+	grep -q "bin/bash" ${sysconfdir}/shells || echo /bin/bash >> ${sysconfdir}/shells
+	grep -q "bin/sh" ${sysconfdir}/shells || echo /bin/sh >> ${sysconfdir}/shells
 }
