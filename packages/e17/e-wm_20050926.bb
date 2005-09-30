@@ -6,6 +6,8 @@ MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 CVSDATE = "${PV}"
 PR = "r3"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
            file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
