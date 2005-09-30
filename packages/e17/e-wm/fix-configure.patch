@@ -1,10 +1,6 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- e/configure.in~fix-configure.patch
-+++ e/configure.in
+diff -Nur e~/configure.in e/configure.in
+--- e~/configure.in	2005-09-29 13:17:29.000000000 -0700
++++ e/configure.in	2005-09-29 13:19:35.000000000 -0700
 @@ -114,9 +114,7 @@
  AC_PATH_XTRA
  AC_CHECK_HEADER(X11/X.h,
@@ -16,8 +12,9 @@
    ],[
      AC_MSG_ERROR([Cannot find X headers and libraries.])
    ]
---- e/src/bin/Makefile.am~fix-configure.patch
-+++ e/src/bin/Makefile.am
+diff -Nur e~/src/bin/Makefile.am e/src/bin/Makefile.am
+--- e~/src/bin/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/bin/Makefile.am	2005-09-29 13:19:35.000000000 -0700
 @@ -1,6 +1,5 @@
  MAINTAINERCLEANFILES = Makefile.in
 -INCLUDES = -I$(includedir) \
@@ -26,18 +23,20 @@
  	   -I$(top_srcdir)/src/bin \
  	   -I$(top_srcdir)/src/lib \
  	   @e_cflags@ \
---- e/src/lib/Makefile.am~fix-configure.patch
-+++ e/src/lib/Makefile.am
+diff -Nur e~/src/lib/Makefile.am e/src/lib/Makefile.am
+--- e~/src/lib/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/lib/Makefile.am	2005-09-29 13:19:56.000000000 -0700
 @@ -1,6 +1,5 @@
  MAINTAINERCLEANFILES	= Makefile.in
 -INCLUDES		= -I$(includedir) \
 -			  -I$(top_srcdir)/src/bin \
 +INCLUDES		= -I$(top_srcdir)/src/bin \
- 			  @ecore_cflags@ \
- 			  @evas_cflags@
+ 			  @e_cflags@
  
---- e/src/preload/Makefile.am~fix-configure.patch
-+++ e/src/preload/Makefile.am
+ lib_LTLIBRARIES		= libe.la
+diff -Nur e~/src/preload/Makefile.am e/src/preload/Makefile.am
+--- e~/src/preload/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/preload/Makefile.am	2005-09-29 13:19:35.000000000 -0700
 @@ -2,7 +2,6 @@
  
  INCLUDES               = -I. \
@@ -46,9 +45,3 @@
                           -I$(top_srcdir)src/preload \
                           @x_cflags@
  pkgdir                 = $(libdir)/enlightenment/preload
---- e/src/Makefile.am~fix-configure.patch
-+++ e/src/Makefile.am
-@@ -1,2 +1,2 @@
- MAINTAINERCLEANFILES = Makefile.in
--SUBDIRS = bin modules lib preload
-+SUBDIRS = bin modules preload

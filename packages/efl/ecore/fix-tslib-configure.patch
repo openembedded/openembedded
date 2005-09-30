@@ -1,0 +1,12 @@
+diff -Nur ecore-0.9.9.015~/configure.in ecore-0.9.9.015/configure.in
+--- ecore-0.9.9.015~/configure.in	2005-09-27 17:22:38.000000000 -0700
++++ ecore-0.9.9.015/configure.in	2005-09-27 17:23:40.000000000 -0700
+@@ -103,7 +102,7 @@
+ tslib_libs=""
+ AC_CHECK_HEADER(tslib.h,
+   [
+-    tslib_libs="-ltslib"
++    tslib_libs="-lts"
+     AC_DEFINE(HAVE_TSLIB, 1, [Build Ecore_X Module])
+   ],[
+     AC_MSG_RESULT("No tslib header found. No tslib support being built")
