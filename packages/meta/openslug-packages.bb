@@ -97,7 +97,6 @@ OPENSLUG_PACKAGES = "\
 	procps \
 	psmisc \
 	puppy \
-	pvrusb2-mci \
 	pwc \
 	python \
 	qc-usb-messenger \
@@ -130,14 +129,15 @@ OPENSLUG_PACKAGES = "\
 	wget \
 	xinetd \
 	yp-tools ypbind ypserv \
-	zd1211 \
 	zlib \
 	"
 
 BROKEN_PACKAGES = "\
 	groff \
 	icecast \
+	pvrusb2-mci \
 	watchdog \
+	zd1211 \
 	"
 
 DEPENDS = 'openslug-image \
