@@ -1,0 +1,24 @@
+--- ./ixp425_eth.c	2005-10-01 00:50:45.179775259 -0700
++++ ./ixp425_eth.c	2005-10-01 00:54:10.976725245 -0700
+@@ -777,7 +777,9 @@
+ 	 * before re-using it on the Rx-path
+ 	 */
+         skb->nfmark = 0;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
+ 	skb->nfcache = 0;
++#endif
+         nf_conntrack_put(skb->nfct);
+         skb->nfct = NULL;
+ #ifdef CONFIG_NETFILTER_DEBUG
+@@ -1451,7 +1453,11 @@
+     skb->len -= header_len;
+    
+     /* fill the pkt arrival time (set at the irq callback entry) */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
+     skb->stamp = irq_stamp;
++#else
++    skb_set_timestamp(skb, &irq_stamp);
++#endif
+  
+     /* fill the input device field */
+     skb->dev = dev;

@@ -1,0 +1,1468 @@
+diff -Naur ixp425_eth.orig/Makefile ixp425_eth/Makefile
+--- ixp425_eth.orig/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ ixp425_eth/Makefile	2005-09-28 19:03:50.000000000 +0200
+@@ -0,0 +1,36 @@
++obj-m := ixp425_eth.o
++
++PWD         := $(shell pwd)
++
++LINUX_SRC := $($(IX_TARGET)_KERNEL_DIR)
++
++OSAL_DIR := $(IX_XSCALE_SW)/../ixp_osal
++CFLAGS_ixp425_eth.o = -DWall \
++          -I$(IX_XSCALE_SW)/src/include \
++          -I$(OSAL_DIR)/ \
++          -I$(OSAL_DIR)/os/linux/include/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/ioMem/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/core/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/bufferMgt/ \
++          -I$(OSAL_DIR)/os/linux/include/core/  \
++          -I$(OSAL_DIR)/os/linux/include/platforms/ \
++          -I$(OSAL_DIR)/os/linux/include/platforms/ixp400/ \
++          -I$(OSAL_DIR)/os/linux/include/core/ \
++          -I$(OSAL_DIR)/include/ \
++          -I$(OSAL_DIR)/include/modules/ \
++          -I$(OSAL_DIR)/include/modules/bufferMgt/ \
++          -I$(OSAL_DIR)/include/modules/ioMem/ \
++          -I$(OSAL_DIR)/include/modules/core/ \
++          -I$(OSAL_DIR)/include/platforms/ \
++          -I$(OSAL_DIR)/include/platforms/ixp400/ \
++
++#	-DDEBUG 
++
++# -DDEBUG_DUMP
++
++default:
++	$(MAKE) ARCH=arm CROSS_COMPILE=$(LINUX_CROSS_COMPILE) V=1 -C $(LINUX_SRC) SUBDIRS=$(PWD) modules
++
++clean:
++	rm -f ixp425_eth.ko
+diff -Naur ixp425_eth.orig/Readme-Kernel-2_6-Patch.txt ixp425_eth/Readme-Kernel-2_6-Patch.txt
+--- ixp425_eth.orig/Readme-Kernel-2_6-Patch.txt	1970-01-01 01:00:00.000000000 +0100
++++ ixp425_eth/Readme-Kernel-2_6-Patch.txt	2005-09-28 20:26:19.000000000 +0200
+@@ -0,0 +1,33 @@
++This file describes a patch to use version 1.2 of the ethernet driver
++for Intel Ixp4XX with Linux 2.6 kernels.
++
++Authors/History
++---------------
++
++This patch is based on the nslu2-linux project's patches for version
++1.1 of the same driver. The changes were adapted to version 1.2 by
++Hannes Reich & Cian Masterson.
++
++Status
++------
++
++This code has been tested on a Linksys NSLU2. It works in big-endian
++mode, performance seems around 10% faster than 1.4.
++
++The code does not work in little-endian mode. It appears as though the
++hardware is initialised correctly, but packet receive / transmit done
++callbacks are never called.
++
++The driver has not been tested in "polling mode".
++
++Licence Information
++-------------------
++
++This patch is licenced under the same terms as the original Ethernet
++driver (GPL v2).
++
++References
++----------
++
++The nslu2-linux project's patch for version 1.1 of the driver is at
++http://nslu.sourceforge.net/downloads/ixp425_eth.c.patch
+\ No newline at end of file
+diff -Naur ixp425_eth.orig/ixp425_eth.c ixp425_eth/ixp425_eth.c
+--- ixp425_eth.orig/ixp425_eth.c	2005-08-26 21:44:19.000000000 +0200
++++ ixp425_eth/ixp425_eth.c	2005-09-02 00:01:59.000000000 +0200
+@@ -47,21 +47,18 @@
+  */
+ #include <linux/config.h>
+ #include <linux/module.h>
+-#include <linux/kernel.h>
++#include <linux/moduleparam.h>
+ #include <linux/init.h>
++#include <linux/kernel.h>
+ #include <linux/ioport.h>
++#include <linux/device.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+-#include <linux/delay.h>
+ #include <linux/mii.h>
+-#include <linux/socket.h>
+-#include <linux/cache.h>
+ #include <asm/io.h>
+ #include <asm/errno.h>
+ #include <net/pkt_sched.h>
+ #include <net/ip.h>
+-#include <linux/sysctl.h>
+-#include <linux/unistd.h>
+ 
+ /*
+  * Intel IXP400 Software specific header files
+@@ -93,8 +90,8 @@
+ MODULE_DESCRIPTION("IXP425 NPE Ethernet driver");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Intel Corporation");
+-#define MODULE_NAME "ixp425_eth"
+-#define MODULE_VERSION "1.2"
++#define DRV_NAME "ixp425_eth"
++#define DRV_VERSION "1.2A"
+ 
+ /* Module parameters */
+ static int npe_learning = 1; /* default : NPE learning & filtering enable */
+@@ -122,26 +119,23 @@
+  */
+ static int netdev_max_backlog = 290;
+ 
+-MODULE_PARM(npe_learning, "i");
++module_param(npe_learning, int, 4);
+ MODULE_PARM_DESC(npe_learning, "If non-zero, NPE MAC Address Learning & Filtering feature will be enabled");
+-MODULE_PARM(log_level, "i");
++module_param(log_level, int, 6);
+ MODULE_PARM_DESC(log_level, "Set log level: 0 - None, 1 - Verbose, 2 - Debug");
+-MODULE_PARM(no_csr_init, "i");
++module_param(no_csr_init, int, 0);
+ MODULE_PARM_DESC(no_csr_init, "If non-zero, do not initialise Intel IXP400 Software Release core components");
+-MODULE_PARM(no_phy_scan, "i");
++module_param(no_phy_scan, int, 0);
+ MODULE_PARM_DESC(no_phy_scan, "If non-zero, use hard-coded phy addresses");
+-MODULE_PARM(datapath_poll, "i");
++module_param(datapath_poll, int, 0);
+ MODULE_PARM_DESC(datapath_poll, "If non-zero, use polling method for datapath instead of interrupts");
+-MODULE_PARM(phy_reset, "i");
++module_param(phy_reset, int, 0);
+ MODULE_PARM_DESC(phy_reset, "If non-zero, reset the phys");
+-MODULE_PARM(netdev_max_backlog, "i");
++module_param(netdev_max_backlog, int, 4);
+ MODULE_PARM_DESC(netdev_max_backlog, "Should be set to the value of /proc/sys/net/core/netdev_max_backlog (perf affecting)");
+-MODULE_PARM(dev_max_count, "i");
++module_param(dev_max_count, int, 4);
+ MODULE_PARM_DESC(dev_max_count, "Number of devices to initialize");
+ 
+-/* devices will be called ixp0 and ixp1 */
+-#define DEVICE_NAME "ixp"
+-
+ /* boolean values for PHY link speed, duplex, and autonegotiation */
+ #define PHY_SPEED_10    0
+ #define PHY_SPEED_100   1
+@@ -257,36 +251,35 @@
+  */
+ /* Print kernel error */
+ #define P_ERROR(args...) \
+-    printk(KERN_ERR MODULE_NAME ": " args)
++    printk(KERN_ERR DRV_NAME ": " args)
+ /* Print kernel warning */
+ #define P_WARN(args...) \
+-    printk(KERN_WARNING MODULE_NAME ": " args)
++    printk(KERN_WARNING DRV_NAME ": " args)
+ /* Print kernel notice */
+ #define P_NOTICE(args...) \
+-    printk(KERN_NOTICE MODULE_NAME ": " args)
++    printk(KERN_NOTICE DRV_NAME ": " args)
+ /* Print kernel info */
+ #define P_INFO(args...) \
+-    printk(KERN_INFO MODULE_NAME ": " args)
++    printk(KERN_INFO DRV_NAME ": " args)
+ /* Print verbose message. Enabled/disabled by 'log_level' param */
+ #define P_VERBOSE(args...) \
+-    if (log_level >= 1) printk(MODULE_NAME ": " args)
++    if (log_level >= 1) printk(DRV_NAME ": " args)
+ /* Print debug message. Enabled/disabled by 'log_level' param  */
+ #define P_DEBUG(args...) \
+     if (log_level >= 2) { \
+-        printk("%s: %s()\n", MODULE_NAME, __FUNCTION__); \
++        printk("%s: %s()\n", DRV_NAME, __FUNCTION__); \
+         printk(args); }
+ 
+ #ifdef DEBUG
+ /* Print trace message */
+ #define TRACE \
+-    if (log_level >= 2) printk("%s: %s(): line %d\n", MODULE_NAME, __FUNCTION__, __LINE__)
++    if (log_level >= 2) printk("%s: %s(): line %d\n", DRV_NAME, __FUNCTION__, __LINE__)
+ #else
+ /* no trace */
+ #define TRACE 
+ #endif
+ 
+ /* extern Linux kernel data */
+-extern struct softnet_data softnet_data[]; /* used to get the current queue level */
+ extern unsigned long loops_per_jiffy; /* used to calculate CPU clock speed */
+ 
+ /* internal Ethernet Access layer polling entry points */
+@@ -295,10 +288,12 @@
+ extern void 
+ ixEthTxFrameDoneQMCallback(IxQMgrQId qId, IxQMgrCallbackId callbackId);
+ 
++#ifdef CONFIG_NET_POLL_CONTROLLER
++static void ixp425eth_poll_controller(struct net_device *dev);
++#endif
++
+ /* Private device data */
+ typedef struct {
+-    spinlock_t lock;  /* multicast management lock */
+-    
+     unsigned int msdu_size;
+     unsigned int replenish_size;
+     unsigned int pkt_size;
+@@ -338,17 +333,11 @@
+     /* TX MBUF pool */
+     IX_OSAL_MBUF_POOL *tx_pool;
+ 
+-    /* id of thread for the link duplex monitoring */
+-    int maintenanceCheckThreadId;
+-
+-    /* mutex locked by thread, until the thread exits */
+-    struct semaphore *maintenanceCheckThreadComplete;
+-
+-    /* Used to stop the kernel thread for link monitoring. */
+-    volatile BOOL maintenanceCheckStopped;
++    /* link duplex monitoring */
++    struct work_struct mii_job;
+ 
+-    /* used for tx timeout */
+-    struct tq_struct tq_timeout;
++    /* handle tx timeouts */
++    struct work_struct tx_timeout_job;
+ 
+     /* used to control the message output */
+     UINT32 devFlags;
+@@ -370,11 +359,13 @@
+  */
+ 
+ /* values used inside the irq */
++#ifdef IXP425ETH_POLLING_MODE
+ static unsigned long timer_countup_ticks;
++static unsigned int rx_queue_id = IX_QMGR_MAX_NUM_QUEUES;
++#endif
+ static IxQMgrDispatcherFuncPtr dispatcherFunc;
+ static struct timeval  irq_stamp;  /* time of interrupt */
+ static unsigned int maxbacklog = RX_MBUF_POOL_SIZE;
+-static unsigned int rx_queue_id = IX_QMGR_MAX_NUM_QUEUES;
+ 
+ /* Implements a software queue for skbufs 
+  * This queue is written in the tx done process and 
+@@ -523,13 +514,18 @@
+ #endif
+ };
+ 
++/*
++ * Shared workqueue thread for device maintenance tasks.
++ */
++static struct workqueue_struct *npe_eth_workqueue;
++
+ /* Mutex lock used to coordinate access to IxEthAcc functions
+  * which manipulate the MII registers on the PHYs
+  */
+-static struct semaphore *miiAccessMutex;
++static DECLARE_MUTEX(miiAccessMutex);
+ 
+ /* mutex locked when maintenance is being performed */
+-static struct semaphore *maintenance_mutex;
++static DECLARE_MUTEX(maintenance_mutex);
+ 
+ /* Flags which is set when the corresponding IRQ is running,
+  */
+@@ -592,7 +588,7 @@
+     printk(">> mbuf:\n");
+     hex_dump(mbuf, sizeof(*mbuf));
+     printk(">> m_data:\n");
+-    hex_dump(__va(IX_OSAL_MBUF_MDATA(mbuf)), IX_OSAL_MBUF_MLEN(mbuf));
++    hex_dump(IX_OSAL_MBUF_MDATA(mbuf), IX_OSAL_MBUF_MLEN(mbuf));
+     printk("\n-------------------------\n");
+ }
+ 
+@@ -791,6 +787,8 @@
+ #ifdef CONFIG_NETFILTER
+ #if defined(CONFIG_BRIDGE) || defined(CONFIG_BRIDGE_MODULE)
+ /* We need to free the memory attached to the nf_bridge pointer to avoid a memory leak */
++	 nf_bridge_put(skb->nf_bridge);
++        skb->nf_bridge = NULL;
+ 
+ #endif
+ #endif /* CONFIG_NETFILTER */
+@@ -1041,135 +1039,63 @@
+  * KERNEL THREADS
+  */
+ 
+-/* flush the pending signals for a thread and 
+- * check if a thread is killed  (e.g. system shutdown)
+- */
+-static BOOL dev_thread_signal_killed(void)
+-{
+-    int killed = FALSE;
+-    if (signal_pending (current))
+-    {
+-	spin_lock_irq(&current->sigmask_lock);
+-	if (sigismember(&(current->pending.signal), SIGKILL)
+-	    || sigismember(&(current->pending.signal), SIGTERM))
+-	{
+-	    /* someone kills this thread */
+-	    killed = TRUE;
+-	}
+-	flush_signals(current);
+-	spin_unlock_irq(&current->sigmask_lock);
+-    }
+-    return killed;
+-}
+-
+-/* This timer will check the PHY for the link duplex and
++/* This workqueue job will check the PHY for the link duplex and
+  * update the MAC accordingly. It also executes some buffer
+  * maintenance to release mbuf in excess or replenish after
+  * a severe starvation
+  *
+  * This function loops and wake up every 3 seconds.
+  */
+-static int dev_media_check_thread (void* arg)
++static void dev_media_check_work (void* arg)
+ {
+     struct net_device *dev = (struct net_device *) arg;
+     priv_data_t *priv = dev->priv;
+-    int linkUp;
+-    int speed100;
+-    int fullDuplex = -1; /* unknown duplex mode */
+-    int newDuplex;
+-    int autonegotiate;
+-    unsigned phyNum = phyAddresses[priv->port_id];
+-    int res;
+ 
+-    TRACE;
+ 
+-    /* Lock the mutex for this thread.
+-       This mutex can be used to wait until the thread exits
+-    */
+-    down (priv->maintenanceCheckThreadComplete);
+-
+-    daemonize();
+-    reparent_to_init();
+-    spin_lock_irq(&current->sigmask_lock);
+-    sigemptyset(&current->blocked);
+-    recalc_sigpending(current);
+-    spin_unlock_irq(&current->sigmask_lock);
+-    
+-    snprintf(current->comm, sizeof(current->comm), "ixp425 %s", dev->name);
++    /*
++     * Determine the link status
++     */
+ 
+-    TRACE;
+-    
+-    while (1)
++    if (default_phy_cfg[priv->port_id].linkMonitor)
+     {
+-	/* We may have been woken up by a signal. If so, we need to
+-	 * flush it out and check for thread termination 
+-	 */ 
+-	if (dev_thread_signal_killed())
+-	{
+-	    priv->maintenanceCheckStopped = TRUE;
+-	}
+-
+-	/* If the interface is down, or the thread is killed,
+-	 * or gracefully aborted, we need to exit this loop
+-	 */
+-	if (priv->maintenanceCheckStopped)
+-	{
+-	    break;
+-	}
+-	
+-	/*
+-	 * Determine the link status
+-	 */
++	int linkUp;
++	int speed100;
++	int fullDuplex = -1; /* unknown duplex mode */
++	int newDuplex;
++	int autonegotiate;
++	unsigned phyNum = phyAddresses[priv->port_id];
++	int res;
+ 
+ 	TRACE;
+ 
+-	if (default_phy_cfg[priv->port_id].linkMonitor)
+-	{
+-	    /* lock the MII register access mutex */
+-	    down(miiAccessMutex);
++	/* lock the MII register access mutex */
++	down(&miiAccessMutex);
+ 	    
+-	    res = ixEthMiiLinkStatus(phyNum,
+-				     &linkUp,
+-				     &speed100,
+-				     &newDuplex, 
+-				     &autonegotiate);
+-	    /* release the MII register access mutex */
+-	    up(miiAccessMutex);
+-
+-	    /* We may have been woken up by a signal. If so, we need to
+-	     * flush it out and check for thread termination 
+-	     */ 
+-	    if (dev_thread_signal_killed())
+-	    {
+-		priv->maintenanceCheckStopped = TRUE;
+-	    }
++	res = ixEthMiiLinkStatus(phyNum,
++				 &linkUp,
++				 &speed100,
++				 &newDuplex, 
++				 &autonegotiate);
++	/* release the MII register access mutex */
++	up(&miiAccessMutex);
++
++	if (res != IX_ETH_ACC_SUCCESS)
++	{
++	    P_WARN("ixEthMiiLinkStatus failed on PHY%d.\n"
++		   "\tCan't determine\nthe auto negotiated parameters. "
++		   "Using default values.\n",
++		   phyNum); 
++            /* this shouldn't happen. exit the thread if it does */
++            goto out;
++	}
+ 	    
+-	    /* If the interface is down, or the thread is killed,
+-	     * or gracefully aborted, we need to exit this loop
+-	     */
+-	    if (priv->maintenanceCheckStopped)
+-	    {
+-		break;
+-	    }
+-	
+-	    if (res != IX_ETH_ACC_SUCCESS)
++	if (linkUp)
++	{
++	    if (! netif_carrier_ok(dev))
+ 	    {
+-		P_WARN("ixEthMiiLinkStatus failed on PHY%d.\n"
+-		       "\tCan't determine\nthe auto negotiated parameters. "
+-		       "Using default values.\n",
+-		       phyNum); 
+-		/* something is bad, gracefully stops the loop */
+-		priv->maintenanceCheckStopped = TRUE;
+-		break;
++		/* inform the kernel of a change in link state */
++		netif_carrier_on(dev);
+ 	    }
+-	    
+-	    if (linkUp)
+-	    {
+-		if (! netif_carrier_ok(dev))
+-		{
+-		    /* inform the kernel of a change in link state */
+-		    netif_carrier_on(dev);
+-		}
+ 
+ 		/*
+ 		 * Update the MAC mode to match the PHY mode if 
+@@ -1218,18 +1144,14 @@
+ 	 * long
+ 	 */
+ 	dev_buff_maintenance(dev);
+-    
+-	/* Now sleep for 3 seconds */
+-	current->state = TASK_INTERRUPTIBLE;
+-	schedule_timeout(MEDIA_CHECK_INTERVAL);
+-    } /* while (1) ... */
+-
+-    /* free the mutex for this thread. */
+-    up (priv->maintenanceCheckThreadComplete);
+-
+-    return 0;
++	/* reschedule to run in 3 seconds */
++	queue_delayed_work(npe_eth_workqueue, &priv->mii_job, 3*HZ);
++out:
++	return;
+ }
+ 
++#ifdef IXP425ETH_POLLING_MODE
++
+ /*
+  * TIMERS
+  *
+@@ -1263,12 +1185,14 @@
+     restore_flags(flags);
+ }
+ 
++#endif /* IXP425ETH_POLLING_MODE */
++
+ /* Internal ISR : run a few thousand times per second and calls 
+  * the queue manager dispatcher entry point.
+  */
+-static void dev_qmgr_os_isr(int irg, void *dev_id, struct pt_regs *regs)
++static irqreturn_t dev_qmgr_os_isr(int irg, void *dev_id, struct pt_regs *regs)
+ {
+-    int qlevel = softnet_data[0].input_pkt_queue.qlen;
++    int qlevel = __get_cpu_var(softnet_data).input_pkt_queue.qlen;
+ 
+     /* at the interrupt entry, the queue contains already a few entries 
+      * so it is safe to decrease the number of entries
+@@ -1302,14 +1226,17 @@
+ 
+     /* call the queue manager entry point */
+     dispatcherFunc(IX_QMGR_QUELOW_GROUP);
++    return IRQ_HANDLED;
+ }
+ 
++#ifdef IXP425ETH_POLLING_MODE
++
+ /* Internal ISR : run a few thousand times per second and calls 
+  * the ethernet entry point.
+  */
+-static void dev_poll_os_isr(int irg, void *dev_id, struct pt_regs *regs)
++static irqreturn_t dev_poll_os_isr(int irg, void *dev_id, struct pt_regs *regs)
+ {
+-    int qlevel = softnet_data[0].input_pkt_queue.qlen;
++    int qlevel = __get_cpu_var(softnet_data).input_pkt_queue.qlen;
+     dev_pmu_timer_restart(); /* set up the timer for the next interrupt */
+ 
+     /* at the interrupt entry, the queue contains already a few entries 
+@@ -1346,6 +1273,7 @@
+     ixEthRxFrameQMCallback(rx_queue_id,0);
+     ixEthTxFrameDoneQMCallback(0,0);
+    
++    return IRQ_HANDLED;
+ }
+ 
+ /* initialize the PMU timer */
+@@ -1400,46 +1328,33 @@
+     restore_flags(flags);
+ }
+ 
+-/* This timer will call ixEthDBDatabaseMaintenance every
+- * IX_ETH_DB_MAINTENANCE_TIME jiffies
+- */
+-static void maintenance_timer_cb(unsigned long data);
+-
+-static struct timer_list maintenance_timer = {
+-    function:&maintenance_timer_cb
+-};
++#endif /* IXP425ETH_POLLING_MODE */
+ 
+-static void maintenance_timer_task(void *data);
+ 
+-/* task spawned by timer interrupt for EthDB maintenance */
+-static struct tq_struct tq_maintenance = {
+-  routine:maintenance_timer_task
+-};
++static void db_maintenance_code(void *data);
++static DECLARE_WORK(db_maintenance_job, db_maintenance_code, NULL);
+ 
+-static void maintenance_timer_set(void)
++static inline
++void schedule_db_maintenance(void)
+ {
+-    maintenance_timer.expires = jiffies + DB_MAINTENANCE_TIME;
+-    add_timer(&maintenance_timer);
++    queue_delayed_work(npe_eth_workqueue, &db_maintenance_job,
++                       DB_MAINTENANCE_TIME);
+ }
+ 
+-static void maintenance_timer_clear(void)
++static inline
++void cancel_db_maintenance(void)
+ {
+-    del_timer_sync(&maintenance_timer);
++    cancel_delayed_work(&db_maintenance_job);
+ }
+ 
+-static void maintenance_timer_task(void *data)
++static void db_maintenance_code(void *data)
+ {
+-    down(maintenance_mutex);
++    down(&maintenance_mutex);
+     ixEthDBDatabaseMaintenance();
+-    up(maintenance_mutex);
++    up(&maintenance_mutex);
++    schedule_db_maintenance();
+ }
+ 
+-static void maintenance_timer_cb(unsigned long data)
+-{
+-    schedule_task(&tq_maintenance);
+-
+-    maintenance_timer_set();
+-}
+ 
+ /*
+  *  DATAPLANE
+@@ -1553,7 +1468,7 @@
+ 	 * and its constants are taken from the eth_type_trans()
+ 	 * function.
+ 	 */
+-	struct ethhdr *eth = skb->mac.ethernet;
++	struct ethhdr *eth = eth_hdr(skb);
+ 	unsigned short hproto = ntohs(eth->h_proto);
+ 	
+ 	if (hproto >= 1536)
+@@ -1595,7 +1510,7 @@
+ 	     * mode is set This costs
+ 	     * a lookup inside the packet payload.
+ 	     */
+-	    struct ethhdr *eth = skb->mac.ethernet;
++	    struct ethhdr *eth = eth_hdr(skb);
+ 	    unsigned char *hdest = eth->h_dest;
+ 	    
+ 	    if (memcmp(hdest, dev->dev_addr, ETH_ALEN)!=0)
+@@ -1654,7 +1569,7 @@
+     dev = (struct net_device *)callbackTag;
+     priv = dev->priv;
+ 
+-    qlevel = softnet_data[0].input_pkt_queue.qlen;
++    qlevel = __get_cpu_var(softnet_data).input_pkt_queue.qlen;
+     /* check if the system accepts more traffic and
+      * against chained mbufs 
+      */
+@@ -1754,10 +1669,6 @@
+ 
+     TRACE;
+ 
+-    /* if called from irq handler, lock already acquired */
+-    if (!in_irq())
+-	spin_lock_irq(&priv->lock);
+-
+     /* clear multicast addresses that were set the last time (if exist) */
+     ixEthAccPortMulticastAddressLeaveAll (priv->port_id);
+ 
+@@ -1838,10 +1749,10 @@
+     }
+ 
+ Exit:
+-    if (!in_irq())
+-	spin_unlock_irq(&priv->lock);
++    return;
+ }
+ 
++#ifdef IXP425ETH_POLLING_MODE
+ /* The QMgr dispatch entry point can be called from the 
+  * IX_OSAL_IXP400_QM1_IRQ_LVL irq (which will trigger
+  * an interrupt for every packet) or a timer (which will
+@@ -1893,8 +1804,8 @@
+     /* poll the datapath from a timer IRQ */
+     if (request_irq(IX_OSAL_IXP400_XSCALE_PMU_IRQ_LVL,
+                     dev_poll_os_isr,
+-                    SA_SHIRQ,
+-                    MODULE_NAME,
++                    SA_SHIRQ | SA_SAMPLE_RANDOM,
++                    DRV_NAME,
+                     (void *)IRQ_ANY_PARAMETER))
+     {
+         P_ERROR("Failed to reassign irq to PMU timer interrupt!\n");
+@@ -1918,6 +1829,8 @@
+   return 0;
+ }
+ 
++#endif /* IXP425ETH_POLLING_MODE */
++
+ /* Enable the MAC port.
+  * Called on do_dev_open, dev_tx_timeout and mtu size changes
+  */
+@@ -1946,23 +1859,6 @@
+ 	return convert_error_ethAcc(res);	
+     }
+ 
+-    /* restart the link-monitoring thread if necessary */
+-    if (priv->maintenanceCheckStopped)
+-    {
+-	/* Starts the driver monitoring thread, if configured */
+-	priv->maintenanceCheckStopped = FALSE;
+-	
+-	priv->maintenanceCheckThreadId = 
+-	    kernel_thread(dev_media_check_thread,
+-			  (void *) dev,
+-			  CLONE_FS | CLONE_FILES);
+-	if (priv->maintenanceCheckThreadId < 0)
+-	{
+-	    P_ERROR("%s: Failed to start thread for media checks\n", dev->name);
+-	    priv->maintenanceCheckStopped = TRUE;
+-	}
+-    }
+-
+     /* force replenish if necessary */
+     dev_rx_buff_prealloc(priv);
+ 
+@@ -2019,38 +1915,11 @@
+ static void port_disable(struct net_device *dev)
+ {
+     priv_data_t *priv = dev->priv;
+-    int res;
+     IX_STATUS status;
+ 
+     P_DEBUG("port_disable(%s)\n", dev->name);
+ 
+-    if (!netif_queue_stopped(dev))
+-    {
+-        dev->trans_start = jiffies;
+-        netif_stop_queue(dev);
+-    }
+-
+-    if (priv->maintenanceCheckStopped)
+-    {
+-	/* thread is not running */
+-    }
+-    else
+-    {
+-	/* thread is running */
+-	priv->maintenanceCheckStopped = TRUE;
+-	/* Wake up the media-check thread with a signal.
+-	   It will check the 'running' flag and exit */
+-	if ((res = kill_proc (priv->maintenanceCheckThreadId, SIGKILL, 1)))
+-	{
+-	    P_ERROR("%s: unable to signal thread\n", dev->name);
+-	}
+-	else
+-	{
+-	    /* wait for the thread to exit. */
+-	    down (priv->maintenanceCheckThreadComplete);
+-	    up (priv->maintenanceCheckThreadComplete);
+-	}
+-    }
++    netif_stop_queue(dev);
+ 
+     /* Set callbacks when port is disabled */
+     ixEthAccPortTxDoneCallbackRegister(priv->port_id, 
+@@ -2100,7 +1969,6 @@
+             ixEthAccPortTxDoneCallbackRegister(priv->port_id, 
+                                                tx_done_queue_stopped_cb,
+                                                (UINT32)dev);
+-            dev->trans_start = jiffies;
+             netif_stop_queue (dev);
+         }
+ 	return 0;
+@@ -2143,12 +2011,19 @@
+     int res;
+ 
+     /* prevent the maintenance task from running while bringing up port */
+-    down(maintenance_mutex);
++    down(&maintenance_mutex);
+ 
+     /* bring up the port */
+     res = port_enable(dev);
+ 
+-    up(maintenance_mutex);
++    up(&maintenance_mutex);
++
++    if(!res)
++    {
++	/* schedule mii job to run in 3 seconds */
++	priv_data_t *priv = dev->priv;	
++	queue_delayed_work(npe_eth_workqueue, &priv->mii_job, 3*HZ);
++    }
+ 
+     return res;
+ }
+@@ -2158,28 +2033,34 @@
+  */
+ static int do_dev_stop(struct net_device *dev)
+ {
++    priv_data_t *priv = dev->priv;
++
+     TRACE;
+ 
++    cancel_delayed_work(&priv->mii_job);
++    cancel_delayed_work(&priv->tx_timeout_job);
++    netif_stop_queue(dev);
++    netif_carrier_off(dev);
+     /* prevent the maintenance task from running while bringing up port */
+-    down(maintenance_mutex);
++    down(&maintenance_mutex);
+ 
+     /* bring the port down */
+     port_disable(dev);
+ 
+-    up(maintenance_mutex);
++    up(&maintenance_mutex);
+ 
+     return 0;
+ }
+ 
+ static void
+-dev_tx_timeout_task(void *dev_id)
++dev_tx_timeout_work(void *arg)
+ {
+-    struct net_device *dev = (struct net_device *)dev_id;
++    struct net_device *dev = (struct net_device *)arg;
+     priv_data_t *priv = dev->priv;
+ 
+     P_WARN("%s: Tx Timeout for port %d\n", dev->name, priv->port_id);
+ 
+-    down(maintenance_mutex);
++    down(&maintenance_mutex);
+     port_disable(dev);
+ 
+     /* Note to user: Consider performing other reset operations here
+@@ -2202,7 +2083,7 @@
+ 	port_enable(dev);
+     }
+ 
+-    up(maintenance_mutex);
++    up(&maintenance_mutex);
+ }
+ 
+ 
+@@ -2212,8 +2093,7 @@
+     priv_data_t *priv = dev->priv;
+ 
+     TRACE;
+-    schedule_task(&priv->tq_timeout);
+-    
++    queue_work(npe_eth_workqueue, &priv->tx_timeout_job);
+ }
+ 
+ /* update the maximum msdu value for this device */
+@@ -2270,14 +2150,14 @@
+     }
+ 
+     /* safer to stop maintenance task while bringing port down and up */
+-    down(maintenance_mutex);
++    down(&maintenance_mutex);
+ 
+     if (ixEthDBFilteringPortMaximumFrameSizeSet(priv->port_id, 
+ 						new_msdu_size))
+     {
+ 	P_ERROR("%s: ixEthDBFilteringPortMaximumFrameSizeSet failed for port %d\n",
+ 		dev->name, priv->port_id);
+-	up(maintenance_mutex);
++	up(&maintenance_mutex);
+ 
+ 	return -1;
+     }
+@@ -2287,7 +2167,7 @@
+     /* update the driver mtu value */
+     dev->mtu = new_mtu_size;
+ 
+-    up(maintenance_mutex);
++    up(&maintenance_mutex);
+ 
+     return 0;
+ }
+@@ -2316,27 +2196,27 @@
+         /* Read MII PHY register */
+ 	case SIOCGMIIREG:		
+ 	case SIOCDEVPRIVATE+1:
+-	    down (miiAccessMutex);     /* lock the MII register access mutex */
++	    down (&miiAccessMutex);     /* lock the MII register access mutex */
+ 	    if ((res = ixEthAccMiiReadRtn (data->phy_id, data->reg_num, &data->val_out)))
+ 	    {
+ 		P_ERROR("Error reading MII reg %d on phy %d\n",
+ 		       data->reg_num, data->phy_id);
+ 		res = -1;
+ 	    }
+-	    up (miiAccessMutex);	/* release the MII register access mutex */
++	    up (&miiAccessMutex);	/* release the MII register access mutex */
+ 	    return res;
+ 
+ 	/* Write MII PHY register */
+ 	case SIOCSMIIREG:
+ 	case SIOCDEVPRIVATE+2:
+-	    down (miiAccessMutex);     /* lock the MII register access mutex */
++	    down (&miiAccessMutex);     /* lock the MII register access mutex */
+ 	    if ((res = ixEthAccMiiWriteRtn (data->phy_id, data->reg_num, data->val_in)))
+ 	    {
+ 		P_ERROR("Error writing MII reg %d on phy %d\n",
+                         data->reg_num, data->phy_id);
+ 		res = -1;
+ 	    }
+-	    up (miiAccessMutex);	/* release the MII register access mutex */
++	    up (&miiAccessMutex);	/* release the MII register access mutex */
+ 	    return res;
+ 
+ 	/* set the MTU size */
+@@ -2373,7 +2253,7 @@
+ 
+     TRACE;
+ 
+-    invalidate_dcache_range((unsigned int)&ethStats, sizeof(ethStats));
++    IX_ACC_DATA_CACHE_INVALIDATE(&ethStats, sizeof(ethStats));
+     if ((res = ixEthAccMibIIStatsGetClear(priv->port_id, &ethStats)))
+     {
+ 	P_ERROR("%s: ixEthAccMibIIStatsGet failed for port %d, res = %d\n",
+@@ -2462,8 +2342,8 @@
+      */
+     if (request_irq(IX_OSAL_IXP400_QM1_IRQ_LVL,
+                     dev_qmgr_os_isr,
+-                    SA_SHIRQ,
+-                    MODULE_NAME,
++                    SA_SHIRQ | SA_SAMPLE_RANDOM,
++                    DRV_NAME,
+                     (void *)IRQ_ANY_PARAMETER))
+     {
+         P_ERROR("Failed to request_irq to Queue Manager interrupt!\n");
+@@ -2582,15 +2462,6 @@
+     BOOL physcan[IXP425_ETH_ACC_MII_MAX_ADDR];
+     int i, phy_found, num_phys_to_set, dev_count;
+ 
+-    /* initialise the MII register access mutex */
+-    miiAccessMutex = (struct semaphore *) kmalloc(sizeof(struct semaphore), GFP_KERNEL);
+-    if (!miiAccessMutex)
+-	return -ENOMEM;
+-
+-    init_MUTEX(miiAccessMutex);
+-
+-    TRACE;
+-
+     /* detect the PHYs (ethMii requires the PHYs to be detected) 
+      * and provides a maximum number of PHYs to search for.
+      */
+@@ -2680,8 +2551,8 @@
+ 	if (port_id == IX_ETH_PORT_1) npe_id = "B";
+ 	if (port_id == IX_ETH_PORT_2) npe_id = "C";
+ 
+-	P_INFO("%s%d is using NPE%s and the PHY at address %d\n",
+-	       DEVICE_NAME, dev_count, npe_id, phyAddresses[port_id]);
++	P_INFO("npe%d is using NPE%s and the PHY at address %d\n",
++	       dev_count, npe_id, phyAddresses[port_id]);
+ 
+ 	/* Set the MAC to the same duplex mode as the phy */
+ 	ixEthAccPortDuplexModeSet(port_id,
+@@ -2693,12 +2564,11 @@
+ }
+ 
+ /* set port MAC addr and update the dev struct if successfull */
+-int dev_set_mac_address(struct net_device *dev, void *addr)
++int dev_set_mac_address(struct net_device *dev, struct sockaddr *saddr)
+ {
+     int res;
+     priv_data_t *priv = dev->priv;
+     IxEthAccMacAddr npeMacAddr;
+-    struct sockaddr *saddr = (struct sockaddr *)addr;
+ 
+     /* Get MAC addr from parameter */
+     memcpy(&npeMacAddr.macAddress,
+@@ -2758,7 +2628,7 @@
+ 
+ static struct Qdisc_ops dev_qdisc_ops =
+ {
+-	NULL, NULL, "ixp425_eth", 0,
++	NULL, NULL, DRV_NAME, 0,
+ 	dev_qdisc_no_enqueue, 
+ 	dev_qdisc_no_dequeue,
+ 	dev_qdisc_no_enqueue, 
+@@ -2771,35 +2641,13 @@
+ /* Initialize device structs.
+  * Resource allocation is deffered until do_dev_open
+  */
+-static int __devinit dev_eth_probe(struct net_device *dev)
++static int __devinit dev_eth_probe(struct device *dev)
+ {
+-    static int found_devices = 0;
+-    priv_data_t *priv;
+-
+-    TRACE;
+-
+-    /* there is a limited number of devices */
+-    if (found_devices >= dev_max_count) /* module parameter */
+-	return -ENODEV;
+-
+-    SET_MODULE_OWNER(dev);
+-
+-    /* set device name */
+-    strcpy(dev->name, found_devices ? DEVICE_NAME "1" : DEVICE_NAME "0");
+-
+-    /* allocate and initialize priv struct */
+-    priv = dev->priv = kmalloc(sizeof(priv_data_t), GFP_KERNEL);
+-    if (dev->priv == NULL)
+-	return -ENOMEM;
+-
+-    memset(dev->priv, 0, sizeof(priv_data_t));
+-
+-    TRACE;
+-
+-    /* set the mapping between port ID and devices 
+-     * 
+-     */
+-    priv->port_id  = default_portId[found_devices];
++    int res = -ENOMEM;
++    struct platform_device *pdev = to_platform_device(dev);
++    struct net_device *ndev = dev_get_drvdata(dev);
++    priv_data_t *priv = (priv_data_t*)ndev->priv;
++    priv->port_id  = pdev->id;
+ 
+     TRACE;
+ 
+@@ -2809,9 +2657,8 @@
+     if(priv->rx_pool == NULL)
+     {
+ 	P_ERROR("%s: Buffer RX Pool init failed on port %d\n",
+-		dev->name, priv->port_id);
+-	kfree(dev->priv);
+-	return -ENOMEM;
++		ndev->name, priv->port_id);
++	goto out;
+     }
+ 
+     TRACE;
+@@ -2822,45 +2669,38 @@
+     if(priv->tx_pool == NULL)
+     {
+ 	P_ERROR("%s: Buffer TX Pool init failed on port %d\n",
+-		dev->name, priv->port_id);
+-	kfree(dev->priv);
+-	return -ENOMEM;
++		ndev->name, priv->port_id);
++	goto out;
+     }
+ 
+-     TRACE;
++    TRACE;
+ 
+-   /* initialise the MII register access mutex */
+-    priv->maintenanceCheckThreadComplete = (struct semaphore *)
+-	kmalloc(sizeof(struct semaphore), GFP_KERNEL);
+-    if (!priv->maintenanceCheckThreadComplete)
+-    {
+-	kfree(dev->priv);
+-	return -ENOMEM;
+-    }
+-    priv->lock = SPIN_LOCK_UNLOCKED;
+-    init_MUTEX(priv->maintenanceCheckThreadComplete);
+-    priv->maintenanceCheckStopped = TRUE;
+-
+-    /* initialize ethernet device (default handlers) */
+-    ether_setup(dev);
++    /* initialise the MII and tx timeout jobs */
++    INIT_WORK(&priv->mii_job, dev_media_check_work, ndev);
++    INIT_WORK(&priv->tx_timeout_job, dev_tx_timeout_work, ndev);
+ 
+     TRACE;
+ 
+-     /* fill in dev struct callbacks with customized handlers */
+-    dev->open = do_dev_open;
+-    dev->stop = do_dev_stop;
++    /* initialize ethernet device (default handlers) */
++    ether_setup(ndev);
+ 
+-    dev->hard_start_xmit = dev_hard_start_xmit;
++     /* fill in dev struct callbacks with customized handlers */
++    ndev->open = do_dev_open;
++    ndev->stop = do_dev_stop;
+ 
+-    dev->watchdog_timeo = DEV_WATCHDOG_TIMEO;
+-    dev->tx_timeout = dev_tx_timeout;
+-    dev->change_mtu = dev_change_mtu;
+-    dev->do_ioctl = do_dev_ioctl;
+-    dev->get_stats = dev_get_stats;
+-    dev->set_multicast_list = dev_set_multicast_list;
+-    dev->flags |= IFF_MULTICAST;
++    ndev->hard_start_xmit = dev_hard_start_xmit;
+ 
+-    dev->set_mac_address = dev_set_mac_address;
++    ndev->watchdog_timeo = DEV_WATCHDOG_TIMEO;
++    ndev->tx_timeout = dev_tx_timeout;
++    ndev->change_mtu = dev_change_mtu;
++    ndev->do_ioctl = do_dev_ioctl;
++    ndev->get_stats = dev_get_stats;
++    ndev->set_multicast_list = dev_set_multicast_list;
++    ndev->flags |= IFF_MULTICAST;
++#ifdef CONFIG_NET_POLL_CONTROLLER
++    ndev->poll_controller = ixp425eth_poll_controller;
++#endif
++    ndev->set_mac_address = dev_set_mac_address;
+ 
+     TRACE;
+ 
+@@ -2878,22 +2718,22 @@
+      *
+      */
+ 
+-    memcpy(dev->dev_addr, 
++    memcpy(ndev->dev_addr, 
+ 	   &default_mac_addr[priv->port_id].macAddress,
+ 	   IX_IEEE803_MAC_ADDRESS_SIZE);
+ 
+     /* possibly remove this test and the message when a valid MAC address 
+      * is not hardcoded in the driver source code. 
+      */
+-    if (is_valid_ether_addr(dev->dev_addr))
++    if (is_valid_ether_addr(ndev->dev_addr))
+     {
+ 	P_WARN("Use default MAC address %2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x for port %d\n",
+-	       (unsigned)dev->dev_addr[0],
+-	       (unsigned)dev->dev_addr[1],
+-	       (unsigned)dev->dev_addr[2],
+-	       (unsigned)dev->dev_addr[3],
+-	       (unsigned)dev->dev_addr[4],
+-	       (unsigned)dev->dev_addr[5],
++	       (unsigned)ndev->dev_addr[0],
++	       (unsigned)ndev->dev_addr[1],
++	       (unsigned)ndev->dev_addr[2],
++	       (unsigned)ndev->dev_addr[3],
++	       (unsigned)ndev->dev_addr[4],
++	       (unsigned)ndev->dev_addr[5],
+ 	       priv->port_id);
+     }
+     
+@@ -2903,62 +2743,132 @@
+      */
+     TRACE;
+ 
+-    dev_change_msdu(dev, dev->mtu + dev->hard_header_len + VLAN_HDR);
+-
+-    priv->tq_timeout.routine = dev_tx_timeout_task;
+-    priv->tq_timeout.data = (void *)dev;
++    dev_change_msdu(ndev, ndev->mtu + ndev->hard_header_len + VLAN_HDR);
+ 
+ #ifdef CONFIG_IXP425_ETH_QDISC_ENABLED
+     /* configure and enable a fast TX queuing discipline */
+     TRACE;
+ 
+-    priv->qdisc = qdisc_create_dflt(dev, &dev_qdisc_ops);
+-    dev->qdisc_sleeping = priv->qdisc;
+-    dev->qdisc = priv->qdisc;
++    priv->qdisc = qdisc_create_dflt(ndev, &dev_qdisc_ops);
++    ndev->qdisc_sleeping = priv->qdisc;
++    ndev->qdisc = priv->qdisc;
+     
+-    if (!dev->qdisc_sleeping)
++    if (!ndev->qdisc_sleeping)
+     {
+ 	P_ERROR("%s: qdisc_create_dflt failed on port %d\n",
+-		dev->name, priv->port_id);
+-	kfree(dev->priv);
+-	return -ENOMEM;
++		ndev->name, priv->port_id);
++	goto out;
+     }
+ #endif
+ 
+     /* set the internal maximum queueing capabilities */
+-    dev->tx_queue_len = TX_MBUF_POOL_SIZE;
++    ndev->tx_queue_len = TX_MBUF_POOL_SIZE;
+ 
+-    if (!netif_queue_stopped(dev))
+-    {
+-	TRACE;
++    if ((res = register_netdev(ndev)))
++        P_ERROR("Failed to register netdev. res = %d\n", res);
++out:
++    return res;
++}
+ 
+-        dev->trans_start = jiffies;
+-        netif_stop_queue(dev);
+-    }
++#ifdef CONFIG_NET_POLL_CONTROLLER
++/*
++ * Polling receive - used by netconsole and other diagnostic tools
++ * to allow network i/o with interrupts disabled.
++ * (stolen from 8139too.c by siddy)
++ */
++static void ixp425eth_poll_controller(struct net_device *dev)
++{
++        disable_irq(dev->irq);
++        dev_qmgr_os_isr(dev->irq, dev, NULL);
++        enable_irq(dev->irq);
++}
++#endif
+ 
+-    found_devices++;
++static int __devinit npe_eth_init_device(struct device *dev)
++{
++    int res = -ENOMEM;
++    int ixRes = 0;
++    struct platform_device *pdev = to_platform_device(dev);
++    struct net_device *ndev = alloc_etherdev(sizeof(priv_data_t));
++    if (ndev == NULL) {
++        P_ERROR("could not allocate device.\n");
++        goto out;
++    }
++    SET_MODULE_OWNER(ndev);
++    SET_NETDEV_DEV(ndev, dev);
++    ixEthAccTxSchedulingDisciplineSet(pdev->id, FIFO_NO_PRIORITY);
++    dev_set_drvdata(dev, ndev);
++    res = dev_eth_probe(dev);
++    if (res == 0) {
++        /* This was added in v0.1.8 of the driver. It seems that we need to
++         * enable the port before the user can set a mac address for the port
++         * using 'ifconfig hw ether ...'. To enable the port we must first
++         * register Q callbacks, so we register the portDisable callbacks to
++         * ensure that no buffers are passed up to the kernel until the port is
++         * brought up properly (ifconfig up)
++         */
++        if ((ixRes = ixEthAccPortTxDoneCallbackRegister(pdev->id, 
++						      tx_done_disable_cb,
++						      (UINT32)dev)))
+ 
+-    TRACE;
++	{
++	    TRACE;
++	    res = convert_error_ethAcc(ixRes);
++	    goto out;
++	}
++        if ((ixRes = ixEthAccPortRxCallbackRegister(pdev->id, 
++						  rx_disable_cb, 
++						  (UINT32)dev)))
++	{
++	    TRACE;
++	    res = convert_error_ethAcc(ixRes);
++	    goto out;
++	}
++        port_enable(ndev);
++    } else {
++        dev_set_drvdata(dev, NULL);
++        kfree(ndev);
++    }
++out:
++    return res;
++}
+ 
++static int __devexit npe_eth_fini_device(struct device *dev)
++{
++    struct net_device *ndev = dev_get_drvdata(dev);
++    dev_set_drvdata(dev, NULL);
++    unregister_netdev(ndev);
++    kfree(ndev);
+     return 0;
+ }
+ 
+-
+ /* Module initialization and cleanup */
+ 
+ #ifdef MODULE
+ 
+-static struct net_device ixp425_devices[IX_ETH_ACC_NUMBER_OF_PORTS];
++static struct device_driver npe_eth_driver = {
++    .name       = DRV_NAME,
++    .bus        = &platform_bus_type,
++    .probe      = npe_eth_init_device,
++    .remove     = npe_eth_fini_device,
++};
+ 
+-int init_module(void)
+-{
+-    int res, dev_count;
+-    IxEthAccPortId portId;
+-    struct net_device *dev;
++static struct platform_device npe_eth_devs[] = {
++    {
++        .name   = DRV_NAME,
++        .id     = IX_ETH_PORT_1,
++    },
++    {
++        .name   = DRV_NAME,
++        .id     = IX_ETH_PORT_2,
++    }
++};
+ 
+-    TRACE;
++static int __init ixp425_eth_init(void)
++{
++    int res;
+ 
+-    P_INFO("Initializing IXP425 NPE Ethernet driver software v. " MODULE_VERSION " \n");
++    P_INFO("Initializing IXP425 NPE Ethernet driver software v. " DRV_VERSION " \n");
+ 
+     TRACE;
+ 
+@@ -3037,82 +2947,16 @@
+ 
+     TRACE;
+ 
+-    /* Initialise the driver structure */
+-    for (dev_count = 0; 
+-	 dev_count < dev_max_count;  /* module parameter */
+-	 dev_count++)
+-    {
+-	portId = default_portId[dev_count];
+-
+-	dev = &ixp425_devices[dev_count];
+-
+-	dev->init = dev_eth_probe;
+-
+-        TRACE;
+-
+-	if ((res = register_netdev(dev)))
+-	{
+-	    TRACE;
+-
+-	    P_ERROR("Failed to register netdev. res = %d\n", res);
+-	    return res;
+-	}
+-
+-        TRACE;
+-
+-	/* register "safe" callbacks. This ensure that no traffic will be 
+-	 * sent to the stack until the port is brought up (ifconfig up)
+-	 */
+-        if ((res = ixEthAccPortTxDoneCallbackRegister(portId, 
+-						      tx_done_disable_cb,
+-						      (UINT32)dev)))
+-
+-	{
+-	    TRACE;
+-	    return convert_error_ethAcc(res);
+-	}
+-        if ((res = ixEthAccPortRxCallbackRegister(portId, 
+-						  rx_disable_cb, 
+-						  (UINT32)dev)))
+-	{
+-	    TRACE;
+-	    return convert_error_ethAcc(res);
+-	}
+-    }
+-
+-    TRACE;
+-
+-    if (no_csr_init == 0 && datapath_poll != 0 ) /* module parameter */
+-    {
+-      /* The QMgr dispatch entry point is called from the 
+-       * IX_OSAL_IXP400_QM1_IRQ_LVL irq (which will trigger
+-       * an interrupt for every packet)
+-       * This function setup the datapath in polling mode
+-       * for better performances.
+-       */
+-
+-        if ((res = ethAcc_datapath_poll_setup()))
+-	{
+-	    TRACE;
+-	    return res;
+-	}
+-    }
+-
+-    TRACE;
+-
+-    /* initialise the DB Maintenance task mutex */
+-    maintenance_mutex = (struct semaphore *) kmalloc(sizeof(struct semaphore), GFP_KERNEL);
+-    if (!maintenance_mutex)
++    npe_eth_workqueue = create_workqueue(DRV_NAME);
++    if (npe_eth_workqueue == NULL)
+ 	return -ENOMEM;
+ 
+-    init_MUTEX(maintenance_mutex);
+-
+     TRACE;
+ 
+     /* Do not start the EthDB maintenance thread if learning & filtering feature is disabled */
+     if (npe_learning) /* module parameter */
+     {
+-        maintenance_timer_set();
++        schedule_db_maintenance();
+     }
+ 
+     TRACE;
+@@ -3127,12 +2971,29 @@
+     }
+     netdev_max_backlog /= BACKLOG_TUNE;
+ 
++    res = driver_register(&npe_eth_driver);
++    if (res != 0) {
++        P_ERROR("Failed to register NPE EThernet driver (res = %d)\n", res);
++        return res;
++    }
++
+     TRACE;
+ 
++    res = platform_device_register(&npe_eth_devs[0]);
++    if (res != 0) {
++        P_ERROR("Failed to register NPE platform device 0 (res = %d)\n", res);
++        return res;
++    }
++    res = platform_device_register(&npe_eth_devs[1]);
++    if (res != 0) {
++        P_ERROR("Failed to register NPE platform device 1 (res = %d)\n", res);
++        return res;
++    }
++
+     return 0;
+ }
+ 
+-void cleanup_module(void)
++static void __exit ixp425_eth_exit(void)
+ {
+     int dev_count;
+ 
+@@ -3147,7 +3008,9 @@
+     {
+ 	TRACE;
+ 
++#ifdef IXP425ETH_POLLING_MODE
+ 	dev_pmu_timer_disable(); /* stop the timer */
++#endif
+     
+ 	if (irq_pmu_used) 
+         {
+@@ -3169,19 +3032,10 @@
+ 
+     TRACE;
+ 
+-    /* stop the maintenance timer */
+-    maintenance_timer_clear();
+-
+-    TRACE;
+-
+-    /* Wait for maintenance task to complete (if started) */
+-    if (npe_learning) /* module parameter */
+-    {
+-	TRACE;
+-
+-	down(maintenance_mutex);
+-	up(maintenance_mutex);
+-    }
++    /* stop the maintenance timer and destroy the driver's work queue */
++    cancel_db_maintenance();
++    flush_workqueue(npe_eth_workqueue);
++    destroy_workqueue(npe_eth_workqueue);
+ 
+     TRACE;
+ 
+@@ -3194,37 +3048,39 @@
+ 	 dev_count < dev_max_count;  /* module parameter */
+ 	 dev_count++)
+     {
+-	struct net_device *dev = &ixp425_devices[dev_count];
+-	priv_data_t *priv = dev->priv;
+-	if (priv != NULL)
++	IxEthAccPortId portId = default_portId[dev_count];
++	
++	if (default_npeImageId[portId] == IX_ETH_NPE_B_IMAGE_ID)
+ 	{
+-	    IxEthAccPortId portId = default_portId[dev_count];
+-
+-	    if (default_npeImageId[portId] == IX_ETH_NPE_B_IMAGE_ID)
++	    if (IX_SUCCESS != ixNpeDlNpeStopAndReset(IX_NPEDL_NPEID_NPEB))
+ 	    {
+-		if (IX_SUCCESS != ixNpeDlNpeStopAndReset(IX_NPEDL_NPEID_NPEB))
+-		{
+-		    P_NOTICE("Error Halting NPE for Ethernet port %d!\n", portId);
+-		}
++		P_NOTICE("Error Halting NPE for Ethernet port %d!\n", portId);
+ 	    }
+-	    if (default_npeImageId[portId] == IX_ETH_NPE_C_IMAGE_ID)
++	}
++	if (default_npeImageId[portId] == IX_ETH_NPE_C_IMAGE_ID)
++	{
++	    if (IX_SUCCESS != ixNpeDlNpeStopAndReset(IX_NPEDL_NPEID_NPEC))
+ 	    {
+-		if (IX_SUCCESS != ixNpeDlNpeStopAndReset(IX_NPEDL_NPEID_NPEC))
+-		{
+-		    P_NOTICE("Error Halting NPE for Ethernet port %d!\n", portId);
+-		}
++		P_NOTICE("Error Halting NPE for Ethernet port %d!\n", portId);
+ 	    }
+-	    unregister_netdev(dev);
+-	    kfree(dev->priv);
+-	    dev->priv = NULL;
+ 	}
+     }
+ 
+     TRACE;
+ 
++    driver_unregister(&npe_eth_driver);
++    platform_device_unregister(&npe_eth_devs[1]);
++    platform_device_unregister(&npe_eth_devs[0]);
++
++    TRACE;
++
+     P_VERBOSE("IXP425 NPE Ethernet driver software uninstalled\n");
+ }
+ 
+ #endif /* MODULE */
+ 
++module_init(ixp425_eth_init);
++module_exit(ixp425_eth_exit);
++
++
+ 
