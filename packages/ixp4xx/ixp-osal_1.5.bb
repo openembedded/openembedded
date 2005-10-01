@@ -1,10 +1,24 @@
 # Intel ixp4xx access library software.  Note that this has an Intel
 # license which restricts its use.
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/download_ixp400.htm"
-LICENSE = "${PN}"
-LICENSE_HOMEPAGE = "http://www.intel.com/design/network/swsup/ixp400AccessLibrary-1_5.htm"
-SRC_URI = "http://www.intel.com/design/network/swsup/ixp400AccessLibrary-1_5.zip"
+MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
+HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
+LICENSE = "http://www.intel.com/design/network/swsup/np_sla/ixp400.htm"
+LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425swr1.htm"
+# You must download the following software to your OpenEmbedded downloads
+# directory before using this package:
+#
+#	ixp400AccessLibrary-1_5.zip
+#
+# To do this go to the LICENSE_HOMEPAGE above, register/login (using a
+# web browser which is supported by the login page), this will give you
+# access to the web page from which you can download the software - you
+# need the: "Intel® IXP400 Software and RedBoot* Boot Loader" and, from
+# this the "Intel Hardware Access Software" (versions 1.5 encryption is
+# not required.)
+#
+# Store the file with the name given below in your downloads directory
+#
+SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/ixp400AccessLibrary-1_5.zip"
 SRC_URI += "file://2.6.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
 PR = "r0"
