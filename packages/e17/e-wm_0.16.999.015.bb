@@ -11,10 +11,11 @@ SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz
            file://remove-large-fonts.patch;patch=1 \
            file://disable-splash.patch;patch=1 \
            file://Xsession.d/98enlightenment \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/default_entry.edc?rev=1.1 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/focus.png?rev=1.1 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/entry.png?rev=1.1 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/entry_focus.png?rev=1.1"
+           cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e/data/themes;date=20050926"
+#           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/default_entry.edc?rev=1.1 \
+#           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/focus.png?rev=1.1 \
+#           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/entry.png?rev=1.1 \
+#           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/entry_focus.png?rev=1.1"
 
 S = "${WORKDIR}/enlightenment-${PV}"
 
@@ -34,10 +35,10 @@ EXTRA_OECONF = "--with-profile=${PROFILE} \
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir}"
 
 do_compile_prepend() {
-	mv "${WORKDIR}/default_entry.edc?rev=1.1" "${S}/data/themes/default_entry.edc"
-	mv "${WORKDIR}/focus.png?rev=1.1" "${S}/data/themes/images/focus.png"
-	mv "${WORKDIR}/entry.png?rev=1.1" "${S}/data/themes/images/entry.png"
-	mv "${WORKDIR}/entry_focus.png?rev=1.1" "${S}/data/themes/images/entry_focus.png"
+	mv "${WORKDIR}/themes/default_entry.edc" "${S}/data/themes/"
+	mv "${WORKDIR}/themes/images/focus.png" "${S}/data/themes/images/"
+	mv "${WORKDIR}/themes/images/entry.png" "${S}/data/themes/images/"
+	mv "${WORKDIR}/themes/images/entry_focus.png" "${S}/data/themes/images/"
 }
 
 do_install_append() {

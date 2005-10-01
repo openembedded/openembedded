@@ -13,9 +13,7 @@ export FREETYPE_CONFIG		= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/libs/evas/m4/ac_expand_dir.m4?rev=1.1 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/libs/evas/m4/ac_path_generic.m4?rev=1.2 \
-           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/libs/evas/m4/pkg.m4?rev=1.2"
+           cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas/m4;date=20050926"
 
 S = "${WORKDIR}/evas-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
@@ -23,9 +21,8 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 EXTRA_OECONF = "<override me>"
 
 do_configure_prepend() {
-	install -D "${WORKDIR}/ac_expand_dir.m4?rev=1.1" "${S}/m4/ac_expand_dir.m4"
-	mv "${WORKDIR}/ac_path_generic.m4?rev=1.2" "${S}/m4/ac_path_generic.m4"
-	mv "${WORKDIR}/pkg.m4?rev=1.2" "${S}/m4/pkg.m4"
+	install -d "${S}/m4"
+	install "${WORKDIR}/m4/"*.m4 "${S}/m4"
 	aclocal -I m4
 }
 
