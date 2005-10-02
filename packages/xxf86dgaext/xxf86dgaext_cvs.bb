@@ -1,7 +1,7 @@
 PV = "0.0cvs${CVSDATE}"
 LICENSE = "Xorg"
 SECTION = "x11/libs"
-MAINTAINER = "Phil Blundell <pb@nexus.co.uk>"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DESCRIPTION = "Xxf86dga extension headers"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XF86DGAExt"
