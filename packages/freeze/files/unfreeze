@@ -31,7 +31,7 @@ else
 		FROZEN_DIR=""
 		for d in ${BBPATH//:/ }
 		do
-			if test -r "$d/conf/local.conf"
+			if test -r "$d/conf/local.conf" -o -r "$d/conf/auto.conf"
 			then
 				FROZEN_DIR="$d/conf"
 				break
