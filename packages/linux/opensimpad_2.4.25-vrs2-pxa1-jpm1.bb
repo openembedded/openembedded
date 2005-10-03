@@ -8,7 +8,7 @@ PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
 PR = "r19"
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/opensimpad-${PV}"
+FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://${KV}-${VRSV}.patch;patch=1 \
