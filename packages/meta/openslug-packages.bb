@@ -18,6 +18,7 @@ OPENSLUG_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils-nodbus \
+	bogofilter \
 	bridge-utils \
 	bwmon \
 	bzip2 \
