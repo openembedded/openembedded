@@ -8,17 +8,6 @@
      defined(CONFIG_ARCH_IXP2000) || \
      defined(CONFIG_ARCH_LH7A40X) || \
      defined(CONFIG_ARCH_OMAP)
---- linux-2.6.11/.pc/2.6.patch/arch/arm/boot/compressed/head-xscale.S	2005-03-01 23:37:52.000000000 -0800
-+++ linux-2.6.11/arch/arm/boot/compressed/head-xscale.S	2005-06-17 17:51:32.546985425 -0700
-@@ -47,3 +47,8 @@
-                orr     r7, r7, #(MACH_TYPE_GTWX5715 & 0xff00)
- #endif
- 
-+#ifdef CONFIG_MACH_NSLU2
-+               mov     r7, #(MACH_TYPE_NSLU2 & 0xff)
-+               orr     r7, r7, #(MACH_TYPE_NSLU2 & 0xff00)
-+#endif
-+
 --- linux-2.6.11/.pc/2.6.patch/arch/arm/mach-ixp4xx/Kconfig	2005-06-17 17:51:27.365770810 -0700
 +++ linux-2.6.11/arch/arm/mach-ixp4xx/Kconfig	2005-06-17 17:51:32.560983303 -0700
 @@ -43,6 +43,12 @@

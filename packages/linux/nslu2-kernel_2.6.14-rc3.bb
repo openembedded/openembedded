@@ -8,7 +8,7 @@ PR_CONFIG = "0"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r0.${PR_CONFIG}"
+PR = "r1.${PR_CONFIG}"
 
 include nslu2-kernel.inc
 
@@ -33,7 +33,6 @@ N2K_PATCHES = "\
 	file://50-nslu2-arch.patch;patch=1 \
 	file://50-nslu2-beeper.patch;patch=1 \
 	file://50-nslu2-general.patch;patch=1 \
-	file://90-arm-le.patch;patch=1 \
 	file://90-ixp4xx-pci-le.patch;patch=1 \
 	file://anonymiser.patch;patch=1 \
 "
@@ -42,4 +41,4 @@ N2K_PATCHES = "\
 # specific to the bootstrap of *this* kernel in here - DISTRO specfic
 # config must be in CMDLINE_ROOT (see the full definition of CMDLINE
 # in nslu2-kernel.inc)
-CMDLINE_KERNEL_OPTIONS = ""
+CMDLINE_KERNEL_OPTIONS = "x1205.hctosys=1"

@@ -54,6 +54,8 @@ DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 MAINTAINER = "John Bowler <jbowler@acm.org>"
 
+DEPENDS += "devio-native"
+
 # Linux kernel source has the general form linux-X.Y.Z-patchP,
 # X.Y is the major version number, Z (which may have multiple
 # parts) is a sub-version and 'patch' is something like 'mm' or
@@ -240,15 +242,55 @@ addtask unpacklocal before do_patch after do_unpack
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	if test '${NSLU2_ARCH_TYPE}' = l
+	then
+		sed -i '/CONFIG_CPU_BIG_ENDIAN/d' '${S}/.config'
+	else
+		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
+	fi
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
 
+# This function adds the required prefix to the image to deal with two
+# problems:
+#
+# 1) The machine type set by RedBoot is wrong - the type for an ixdp425, not an NSLU2
+#    e3a01c02 e3811055
+# 2) For LE kernels it is necessary to prefix change-to-le code to the kernel image:
+#    ee110f10 e3c00080 ee010f10
+#
+# The argument to the function is the destination directory
+redboot_fixup_armeb() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'cp$'
+	mv "$1".new "$1"
+}
+
+redboot_fixup_arm() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wl 0xe3a01c02,4' \
+		'wl 0xe3811055,4' \
+		'wl 0xee110f10,4' \
+		'wl 0xe3c00080,4' \
+		'wl 0xee010f10,4' \
+		'cp$'
+	mv "$1".new "$1"
+}
+
+do_install_append() {
+	redboot_fixup '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
+}
+
 do_deploy[dirs] = "${S}"
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${N2K_SUFFIX}
+	redboot_fixup '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${N2K_SUFFIX}'
 }
 
 addtask deploy before do_build after do_compile
