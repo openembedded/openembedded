@@ -1,17 +1,15 @@
-DESCRIPTION = "Classic Arcade Shooter for Qt/Embedded based palmtop environments w/ SDL."
+DESCRIPTION = "Classic Arcade Shooter for Qt/Embedded based palmtop environments"
 SECTION = "opie/games"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe libsdl-qpe libsdl-mixer libsdl-image"
-PR = "r2"
+DEPENDS = "virtual/libqpe"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.billsgames.com/unix/agenda/aliens/src/aliens_V${PV}.tar.gz"
 S = "${WORKDIR}/aliens_V${PV}"
 
 inherit palmtop
-
-EXTRA_QMAKEVARS_POST="INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer LIBS+=-lSDL_image LIBS+=-lpthread CONFIG+=qte"
 
 do_compile_prepend() {
 	cd images && make && cd ..
