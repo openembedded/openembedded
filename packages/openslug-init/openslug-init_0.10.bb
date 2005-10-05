@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r43"
+PR = "r44"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -99,7 +99,9 @@ do_install() {
 
 	# Configuration files
 	install -m 0644 conffiles ${D}${sysconfdir}/default
-	install -m 0644 modprobe.conf ${D}${sysconfdir}/
+	# Change MODULE in modprobe.conf to the correct module name
+	rm -f ${D}${sysconfdir}/modprobe.conf
+	sed 's/MODULE/'"$(echo '${PREFERRED_PROVIDER_virtual/ixp-eth}'|sed 's/-/_/g')"'/g' modprobe.conf >${D}${sysconfdir}/modprobe.conf
 
 	set +ex
 }

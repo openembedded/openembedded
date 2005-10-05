@@ -1,4 +1,4 @@
-PR = "r13"
+PR = "r14"
 
 IMAGE_BASENAME = "openslug"
 
@@ -11,7 +11,7 @@ OPENSLUG_HIDDEN_PACKAGES = "ipkg-native ipkg-utils-native fakeroot-native ${PATC
 DEPENDS = "virtual/kernel base-files base-passwd \
         busybox dropbear hotplug-ng initscripts-openslug netbase \
         sysvinit tinylogin portmap \
-        ixp4xx-csr ixp425-eth openslug-init \
+        virtual/ixp-eth openslug-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link diffutils \
 	cpio findutils mtd-utils udev \
@@ -23,7 +23,7 @@ DEPENDS = "virtual/kernel base-files base-passwd \
 IPKG_INSTALL = "base-files base-passwd \
         busybox dropbear hotplug-ng initscripts-openslug netbase \
         update-modules sysvinit tinylogin portmap \
-        ixp4xx-csr ixp425-eth openslug-init \
+        ${PREFERRED_PROVIDER_virtual/ixp-eth} openslug-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link diffutils \
 	cpio findutils \
