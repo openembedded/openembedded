@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r29"
+PR = "r30"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -35,7 +35,7 @@ DEPENDS = "irda-utils ntp timezones ttf-dejavu \
 # Dependencies to get the launcher up and running
 #
 
-task-opie-base = "bluez-utils-nodbus wireless-tools \
+task-opie-base = "bluez-utils-nodbus wireless-tools opie-alarm \
                   opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
                   opie-sounds opie-freetype ttf-dejavu-sans ttf-dejavu-sans-mono"
 
