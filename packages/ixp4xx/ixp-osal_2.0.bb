@@ -22,9 +22,9 @@ SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
-PR = "r0"
+PR = "r1"
 
-COMPATIBLE_HOST = "^armeb-linux.*"
+COMPATIBLE_HOST = "^arm.*-linux.*"
 
 inherit module
 
@@ -34,17 +34,19 @@ inherit module
 KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
+IX_TARGET = "linux${NSLU2_ARCH_TYPE}e"
+
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
 		'AR=${AR}' \
 		'IX_XSCALE_SW=${S}' \
-		'IX_TARGET=linuxbe' \
+		'IX_TARGET=${IX_TARGET}' \
 		'IX_DEVICE=ixp42X' \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
 		"
 
-OSAL_PATH = "lib/ixp425/linux/linuxbe"
+OSAL_PATH = "lib/ixp425/linux/${IX_TARGET}"
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 

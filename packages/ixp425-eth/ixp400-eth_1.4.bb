@@ -1,7 +1,6 @@
 # This is the Intel GPL IXP4XX ethernet driver (Linux) plus patches
 # to make it work on 2.6 kernels.
 #
-DEPENDS = "ixp4xx-csr"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "ftp://aiedownload.intel.com/df-support/8500/eng/GPL_ixp400LinuxEthernetDriverPatch-1_4.zip"
@@ -9,11 +8,16 @@ SRC_URI += "file://ixp400-le-be.patch;patch=1"
 SRC_URI += "file://makefile.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
-PR = "r0"
+PR = "r1"
+
+DEPENDS = "ixp4xx-csr"
+RDEPENDS = "ixp4xx-csr"
 
 S = "${WORKDIR}"
 
-COMPATIBLE_HOST = "^armeb-linux.*"
+COMPATIBLE_HOST = "^arm.*-linux.*"
+
+PROVIDES = "virtual/ixp-eth"
 
 inherit module
 
@@ -26,9 +30,12 @@ KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
+IX_TARGET = "linux${NSLU2_ARCH_TYPE}e"
+
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
 		'PWD=${S}' \
+		'IX_TARGET=${IX_TARGET}' \
 		'IXP4XX_CSR_DIR=${STAGING_INCDIR}/linux/ixp4xx-csr' \
 		'OSAL_DIR=${OSAL_DIR}' \
 		'IX_CFLAGS=-DIX_UTOPIAMODE=0 -DIX_MPHYSINGLEPORT=1' \

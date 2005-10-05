@@ -1,7 +1,6 @@
 # This is the Intel GPL IXP4XX ethernet driver (Linux) plus patches
 # to make it work on 2.6 kernels.
 #
-DEPENDS = "ixp4xx-csr"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "ftp://download.intel.com/design/network/swsup/ixp400linuxethernetdriverpatch-1_2.zip"
@@ -9,11 +8,16 @@ SRC_URI += "file://ixp400linuxethernetdriver-1_2-kernel26_hr_20050929.patch;patc
 SRC_URI += "file://makefile.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
-PR = "r0"
+PR = "r1"
+
+DEPENDS = "ixp4xx-csr"
+RDEPENDS = "ixp4xx-csr"
 
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
+
+PROVIDES = "virtual/ixp-eth"
 
 inherit module
 

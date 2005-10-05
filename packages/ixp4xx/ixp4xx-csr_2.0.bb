@@ -26,9 +26,9 @@ SRC_URI += "file://2.6.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r0"
+PR = "r1"
 
-COMPATIBLE_HOST = "^armeb-linux.*"
+COMPATIBLE_HOST = "^arm.*-linux.*"
 
 inherit module
 
@@ -38,7 +38,9 @@ inherit module
 KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
-OSAL_PATH = "lib/ixp425/linux/linuxbe"
+IX_TARGET = "linux${NSLU2_ARCH_TYPE}e"
+
+OSAL_PATH = "lib/ixp425/linux/${IX_TARGET}"
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
@@ -49,7 +51,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
 		'AR=${AR}' \
 		'IX_XSCALE_SW=${S}' \
-		'IX_TARGET=linuxbe' \
+		'IX_TARGET=${IX_TARGET}' \
 		'IX_DEVICE=ixp42X' \
 		'IX_MPHY=1' \
 		'IX_MPHYSINGLEPORT=1' \
@@ -64,7 +66,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 do_compile () {
 	# The target makes the .ko as a side effect, as a result of the
 	# Makefile.patch
-	oe_runmake lib/linuxbe/ixp400.o
+	oe_runmake lib/${IX_TARGET}/ixp400.o
 }
 
 do_stage () {
@@ -73,6 +75,6 @@ do_stage () {
 }
 
 do_install () {
-	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400
-	install -m 0644 lib/linuxbe/ixp400.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/ixp400/
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400
+	install -m 0644 lib/${IX_TARGET}/ixp400.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400/
 }
