@@ -70,6 +70,7 @@ OPENSLUG_PACKAGES = "\
 	mgetty \
 	miau \ 
 	microcom \
+	minicom \
 	monotone-5 \
 	mpd \
 	mt-daapd \
