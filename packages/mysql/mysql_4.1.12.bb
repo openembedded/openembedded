@@ -2,7 +2,7 @@ DESCRIPTION = "The MySQL Open Source Database System"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "libs"
 DEPENDS += "ncurses mysql-native"
-PR = "r3"
+PR = "r4"
 LICENSE = "GPL"
 SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -11,7 +11,8 @@ S = "${WORKDIR}/mysql-${PV}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/mysql-${PV}', '${FILE_DIRNAME}/mysql-4.1.10a', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-inherit autotools
+BINCONFIG_GLOB = "mysql_config"
+inherit autotools binconfig
 
 
 EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
