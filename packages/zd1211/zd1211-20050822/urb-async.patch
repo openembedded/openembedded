@@ -1,0 +1,82 @@
+--- zd1211/src/zd1211.c.orig	2005-03-27 22:47:35.000000000 +0200
++++ zd1211/src/zd1211.c	2005-10-06 02:53:23.380909536 +0200
+@@ -313,7 +313,6 @@
+ 	} else {
+ 		usb_fill_bulk_urb(macp->reg_urb, macp->usb,usb_sndbulkpipe(macp->usb, EP_REG_OUT),pBuffer, DataLen,zd1211_reg_cb, macp);
+ 	}
+-	macp->reg_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 
+ 	if ((ret = SUBMIT_URB(macp->reg_urb, GFP_ATOMIC))) {
+ 		printk(KERN_ERR "zd1211: failed reg_urb\n");
+@@ -362,7 +361,6 @@
+ 	} else {
+ 		usb_fill_bulk_urb(macp->reg_urb, macp->usb,usb_sndbulkpipe(macp->usb, EP_REG_OUT),pRegBuffer, bufSize,zd1211_reg_cb, macp);
+ 	}
+-	macp->reg_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	if ((ret = SUBMIT_URB(macp->reg_urb, memflags))) {
+ 		printk(KERN_ERR "zd1211: failed reg_urb\n");
+ 		zd1211_DumpErrorCode(macp, ret);
+@@ -426,7 +424,6 @@
+ 	} else {
+ 		usb_fill_bulk_urb(macp->reg_urb, macp->usb,usb_sndbulkpipe(macp->usb, EP_REG_OUT),pRegBuffer, bufSize,zd1211_reg_cb, macp);
+ 	}
+-	macp->reg_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 
+ 	if ((ret = SUBMIT_URB(macp->reg_urb, GFP_ATOMIC))) {
+ 		printk(KERN_ERR "zd1211: failed reg_urb\n");
+@@ -569,7 +566,6 @@
+ 		usb_fill_bulk_urb(macp->reg_urb, macp->usb,usb_sndbulkpipe(macp->usb, EP_REG_OUT),pRegBuffer, bufSize,zd1211_reg_cb, macp);
+ 	}
+ 
+-	macp->reg_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	if ((ret = SUBMIT_URB(macp->reg_urb, GFP_ATOMIC))) {
+ 		printk(KERN_ERR "zd1211: failed reg_urb\n");
+ 		zd1211_DumpErrorCode(macp, ret);
+@@ -1240,7 +1236,6 @@
+ 			pRegBuffer, bufSize,
+ 			zd1211_reg_cb, macp);
+ 
+-	macp->reg_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 
+ 	if ((ret = SUBMIT_URB(macp->reg_urb, GFP_ATOMIC))) {
+ 		printk(KERN_ERR "zd1211: failed rf reg_urb\n");
+@@ -1311,7 +1306,6 @@
+ 		return;
+ 
+ 	printk("%s: Tx timed out.\n", dev->name);
+-	macp->tx_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	USB_URB(macp->tx_urb);
+ }
+ 
+@@ -1384,7 +1378,6 @@
+ 			zd1211_intr_cb, macp);
+ #endif
+ 
+-	macp->intr_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 
+ 	if ((res = SUBMIT_URB(macp->intr_urb, GFP_KERNEL))) {
+ 		printk(KERN_ERR "zd1211: failed intr_urb\n");
+@@ -1822,7 +1815,6 @@
+ 			  macp->IntEPBuffer, MAX_EPINT_BUFFER,
+ 			  zd1211_intr_cb, macp);
+ 
+-	macp->intr_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	status = SUBMIT_URB(macp->intr_urb, GFP_ATOMIC);
+ 
+ 	if (status)
+@@ -1916,7 +1908,6 @@
+ 			 usb_rcvbulkpipe(macp->usb, EP_DATA_IN),
+ 			 rx_buff, bufLen, zd1211_rx_comp_cb, macp);
+ 
+-	macp->rx_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	if ((res = SUBMIT_URB(macp->rx_urb, GFP_ATOMIC))) {
+ 		printk(KERN_ERR "zd1211: failed rx_urb\n");
+ 		zd1211_DumpErrorCode(macp, res);
+@@ -2024,7 +2015,6 @@
+ 			  macp->tx_buff, TotalLength,zd1211_tx_comp_cb, macp);
+ 
+ 	macp->tx_urb->transfer_buffer_length = TotalLength;
+-	macp->tx_urb->transfer_flags |= URB_ASYNC_UNLINK;
+ 	res = SUBMIT_URB(macp->tx_urb, GFP_ATOMIC);
+ 	if (res) {
+ 		printk("error in tx submit urb: %d", res);
