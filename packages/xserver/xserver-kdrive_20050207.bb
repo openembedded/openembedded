@@ -37,13 +37,13 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;
 	file://kmode.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1 "
 
-SRC_URI_append_mnci   = 	"file://onlyfb.patch;patch=1 \
+SRC_URI_append_mnci   = 	" file://onlyfb.patch;patch=1 \
                           	 file://devfs.patch;patch=1 \
                           	 file://disable-apm.patch;patch=1"
-SRC_URI_append_poodle = 	"file://xserver-kdrive-poodle.patch;patch=1"
-SRC_URI_append_c7x0 = 		"file://disable-apm.patch;patch=1"
-SRC_URI_append_ipaq-pxa270= "file://disable-apm.patch;patch=1"
-SRC_URI_append_h3900 = 		"file://disable-apm.patch;patch=1"
+SRC_URI_append_poodle = 	" file://xserver-kdrive-poodle.patch;patch=1"
+SRC_URI_append_c7x0 = 		" file://disable-apm.patch;patch=1"
+SRC_URI_append_ipaq-pxa270= " file://disable-apm.patch;patch=1"
+SRC_URI_append_h3900 = 		" file://disable-apm.patch;patch=1"
 SRC_URI_append_h2200 =          " file://disable-apm.patch;patch=1"
 
 PACKAGE_ARCH_poodle = "poodle"
