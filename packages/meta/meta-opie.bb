@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r30"
+PR = "r31"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -28,7 +28,7 @@ DEPENDS = "irda-utils ntp timezones ttf-dejavu \
            opie-freetype opie-help-en opie-i18n opie-login \
            opie-securityplugin-blueping opie-securityplugin-dummy \
            opie-securityplugin-notice opie-securityplugin-pin \
-           opie-sh opie-symlinker openobex \
+           opie-sh opie-symlinker opie-alarm openobex \
            konqueror-embedded qpdf2"
 
 #
