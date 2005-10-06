@@ -9,8 +9,8 @@ PACKAGES = "${PN}"
 # Run-time only (RDEPENDS) stuff - no package explicitly provides
 # these targets.
 UCSLUGC_NATIVE_RT_prepend_linux = "\
-	glibc-utils \
-	libc6-dev \
+	glibc-extra-nss glibc-utils \
+	libc6 libc6-dev \
 	"
 UCSLUGC_NATIVE_RT_prepend_linux-uclibc = "\
 	uclibc-dev uclibc-utils \
@@ -33,8 +33,6 @@ UCSLUGC_NATIVE_RT = "\
 
 # Run-time and DEPENDS
 UCSLUGC_NATIVE_prepend_linux = "\
-	glibc-extra-nss \
-	libc6 \
 	"
 UCSLUGC_NATIVE_prepend_linux-uclibc = "\
 	libiconv \
