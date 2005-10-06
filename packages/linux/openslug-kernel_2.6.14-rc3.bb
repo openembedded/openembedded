@@ -5,4 +5,4 @@
 include nslu2-kernel_${PV}.bb
 # Increment the following if the openslug-kernel defconfig is
 # changed.
-PR_CONFIG = "0"
+PR_CONFIG = "1"

@@ -1,9 +1,37 @@
-# This patch fixes ixp4xx_copy_from for cases where the 'from'
-# pointer is odd - that would cause all the accesses to be
-# misaligned in the old code.
---- linux-2.6.12.2/.pc/ixp4xx_copy_from.patch/drivers/mtd/maps/ixp4xx.c	2005-09-21 22:35:38.761014739 -0700
-+++ linux-2.6.12.2/drivers/mtd/maps/ixp4xx.c	2005-09-23 01:27:54.696223365 -0700
-@@ -54,19 +54,23 @@
+--- linux-2.6.14-rc3/drivers/mtd/maps/ixp4xx.c	2005-10-05 20:35:42.916786530 -0700
++++ linux-2.6.14-rc3/drivers/mtd/maps/ixp4xx.c	2005-10-05 22:42:25.811206514 -0700
+@@ -30,18 +30,29 @@
+ 
+ #include <linux/reboot.h>
+ 
++/* On a little-endian IXP4XX system (tested on NSLU2) contrary to the
++ * Intel documentation LDRH/STRH appears to XOR the address with 10b.
++ * This causes the cfi commands (sent to the command address, 0xAA for
++ * 16 bit flash) to fail.  This is fixed here by XOR'ing the address
++ * before use with 10b.  The cost of this is that the flash layout ends
++ * up consistently big-endian, however this is not a problem as the
++ * access code consistently only accesses half words - so the endianness
++ * is not determinable.
++ */
+ #ifndef __ARMEB__
+ #define	BYTE0(h)	((h) & 0xFF)
+ #define	BYTE1(h)	(((h) >> 8) & 0xFF)
++#define	FLASHW(a)	(*(__u16*)((u32)(a) ^ 2))
+ #else
+ #define	BYTE0(h)	(((h) >> 8) & 0xFF)
+ #define	BYTE1(h)	((h) & 0xFF)
++#define	FLASHW(a)	(*(__u16*)(a))
+ #endif
+ 
+ static map_word ixp4xx_read16(struct map_info *map, unsigned long ofs)
+ {
+ 	map_word val;
+-	val.x[0] = *(__u16 *) (map->map_priv_1 + ofs);
++	val.x[0] = FLASHW(map->map_priv_1 + ofs);
+ 	return val;
+ }
+ 
+@@ -53,19 +64,23 @@
  static void ixp4xx_copy_from(struct map_info *map, void *to,
  			     unsigned long from, ssize_t len)
  {
@@ -21,10 +49,10 @@
 +	u8 *dest = (u8 *) to;
 +	u8 *src  = (u8 *) (map->map_priv_1 + from);
 +	if (from & 1)
-+		*dest++ = BYTE1(*(u16 *)(src-1)), ++src, --len;
++		*dest++ = BYTE1(FLASHW(src-1)), ++src, --len;
 +
 +	while (len >= 2) {
-+		u16 data = *(u16 *)src; src += 2;
++		u16 data = FLASHW(src); src += 2;
 +		*dest++ = BYTE0(data);
 +		*dest++ = BYTE1(data);
 +		len -= 2;
@@ -33,7 +61,25 @@
 -	if (len & 1)
 -		dest[len - 1] = BYTE0(src[i]);
 +	if (len > 0)
-+		*dest++ = BYTE0(*(u16 *)src);
++		*dest++ = BYTE0(FLASHW(src));
  }
  
  /* 
+@@ -75,7 +90,7 @@
+ static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
+ {
+ 	if (!(adr & 1))
+-	       *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
++	       FLASHW(map->map_priv_1 + adr) = d.x[0];
+ }
+ 
+ /* 
+@@ -83,7 +98,7 @@
+  */
+ static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
+ {
+-       *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
++       FLASHW(map->map_priv_1 + adr) = d.x[0];
+ }
+ 
+ struct ixp4xx_flash_info {
