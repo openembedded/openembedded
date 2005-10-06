@@ -35,6 +35,7 @@ EXTRA_OECONF = "--with-profile=${PROFILE} \
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir}"
 
 do_compile_prepend() {
+        find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
 	mv "${WORKDIR}/themes/default_entry.edc" "${S}/data/themes/"
 	mv "${WORKDIR}/themes/images/focus.png" "${S}/data/themes/images/"
 	mv "${WORKDIR}/themes/images/entry.png" "${S}/data/themes/images/"
