@@ -4,7 +4,7 @@ FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${D
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r18"
+PR = "r19"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -15,23 +15,28 @@ GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 
 GPE_EXTRA_THEMES = "gpe-theme-industrial"
 
-GPE_EXTRA_DEPENDS_bigscreen = ""
+GPE_EXTRA_DEPENDS_bigscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_bigscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-GPE_EXTRA_DEPENDS_smallscreen = ""
+GPE_EXTRA_DEPENDS_smallscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
 #ship more stuff with devices with >16MB of flash
-GPE_BIGFLASH := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
-		gpe-theme-clearlooks \
-		gpe-filemanager \
-		gpe-nmf \
-		gpe-task-connectivity \
-		figment \
+GPE_BIGFLASH_DEPENDS := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
+        gpe-theme-clearlooks \
+        gpe-filemanager \
+        gpe-nmf \
+        figment \
 ",d)}'
 
-GPE_EXTRA_DEPENDS += ${GPE_BIGFLASH}
-GPE_EXTRA_INSTALL += ${GPE_BIGFLASH}
+
+GPE_BIGFLASH_INSTALL := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
+		gpe-task-connectivity \
+		${GPE_BIGFLASH_DEPENDS} \
+",d)}'
+
+GPE_EXTRA_DEPENDS += ${GPE_BIGFLASH_DEPENDS}
+GPE_EXTRA_INSTALL += ${GPE_BIGFLASH_INSTALL}
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
