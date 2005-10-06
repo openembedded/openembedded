@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r40"
+PR = "r41"
 
 ALLOW_EMPTY = "1"
 
@@ -13,6 +13,7 @@ RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
 DEPENDS += " ${gpe-base-depends}"
 
 gpe-task-base = "\
+    gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
     xcursor-transparent-theme \
