@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r39"
+PR = "r40"
 
 ALLOW_EMPTY = "1"
 
@@ -100,13 +100,17 @@ gpe-task-games = "\
     gsoko \
     xdemineur"
 
+RDEPENDS_gpe-task-games := "${gpe-task-games}"
+DEPENDS += " ${gpe-task-games}"
+
 gpe-task-connectivity = "\
     gpe-mini-browser \
     gaim \ 
     linphone-hh"
 
-RDEPENDS_gpe-task-games := "${gpe-task-games}"
-DEPENDS += " ${gpe-task-games}"
+RDEPENDS_gpe-task-connectivity := "${gpe-task-connectivity}"
+DEPENDS += " ${gpe-task-connectivity}"
+
 
 DEPENDS += "matchbox-themes-extra"
 
