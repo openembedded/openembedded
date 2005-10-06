@@ -4,7 +4,7 @@ FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${D
                                 gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r17"
+PR = "r18"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -13,19 +13,25 @@ GUI_MACHINE_CLASS ?= "none"
 GPE_EXTRA_DEPENDS += "${GPE_EXTRA_DEPENDS_${GUI_MACHINE_CLASS}}"
 GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 
-GPE_EXTRA_THEMES = "gtk-theme-industrial matchbox-themes-extra-industrial"
+GPE_EXTRA_THEMES = "gpe-theme-industrial"
 
-#GPE_EXTRA_DEPENDS_bigscreen = "firefox linphone"
-#GPE_EXTRA_INSTALL_bigscreen = "firefox linphone"
-GPE_EXTRA_DEPENDS_bigscreen = "figment"
-GPE_EXTRA_INSTALL_bigscreen = " figment gpe-task-games ${GPE_EXTRA_THEMES}"
+GPE_EXTRA_DEPENDS_bigscreen = ""
+GPE_EXTRA_INSTALL_bigscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-GPE_EXTRA_DEPENDS_smallscreen = "gpe-mini-browser figment linphone-hh"
-GPE_EXTRA_INSTALL_smallscreen = "gpe-mini-browser figment linphone-hh gpe-task-games ${GPE_EXTRA_THEMES}"
+GPE_EXTRA_DEPENDS_smallscreen = ""
+GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-#h3900 has 32mb of *useable* flash
-#GPE_EXTRA_DEPENDS_append_h3900 = " vlc-gpe "
-#GPE_EXTRA_INSTALL_append_h3900 = " vlc-gpe "
+#ship more stuff with devices with >16MB of flash
+GPE_BIGFLASH := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
+		gpe-theme-clearlooks \
+		gpe-filemanager \
+		gpe-nmf \
+		gpe-task-connectivity \
+		figment \
+",d)}'
+
+GPE_EXTRA_DEPENDS += ${GPE_BIGFLASH}
+GPE_EXTRA_INSTALL += ${GPE_BIGFLASH}
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
