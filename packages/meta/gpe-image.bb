@@ -15,10 +15,10 @@ GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 
 GPE_EXTRA_THEMES = "gpe-theme-industrial"
 
-GPE_EXTRA_DEPENDS_bigscreen = ""
+GPE_EXTRA_DEPENDS_bigscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_bigscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-GPE_EXTRA_DEPENDS_smallscreen = ""
+GPE_EXTRA_DEPENDS_smallscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
 #ship more stuff with devices with >16MB of flash
