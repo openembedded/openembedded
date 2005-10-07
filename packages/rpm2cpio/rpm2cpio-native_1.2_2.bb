@@ -4,7 +4,7 @@
 
 DEPENDS="perl-native"
 LICENSE="BSD"
-SRC_URI="http://ftp.rutgers.edu/pub/FreeBSD/ports/packages/archivers/rpm2cpio-1.2_2.tgz"
+SRC_URI="${FREEBSD_MIRROR}/ports/packages/archivers/rpm2cpio-1.2_2.tbz"
 
 inherit native
 
