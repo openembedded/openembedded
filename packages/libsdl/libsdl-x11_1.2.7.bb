@@ -16,7 +16,7 @@ S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig
 
-EXTRA_OECONF = "--disable-debug --disable-cdrom --enable-threads --enable-timers --enable-endian \
+EXTRA_OECONF = "--disable-static --disable-debug --disable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --enable-oss --enable-alsa --disable-esd --disable-arts \
                 --disable-diskaudio --disable-nas --disable-esd-shared --disable-esdtest \
                 --disable-mintaudio --disable-nasm --enable-video-x11 --disable-video-dga \
@@ -43,6 +43,7 @@ do_configure_append () {
 
 do_stage() {
 	oe_libinstall -so -C src libSDL ${STAGING_LIBDIR}
+	rm ${STAGING_LIBDIR}/libSDL.la
 	ln -sf libSDL.so ${STAGING_LIBDIR}/libSDL-1.2.so
 	#oe_libinstall -a -C src/main libSDLmain ${STAGING_LIBDIR}
 	install -m 0644 src/main/libSDLmain.a ${STAGING_LIBDIR}
