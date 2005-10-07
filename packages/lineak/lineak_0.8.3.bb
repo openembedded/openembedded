@@ -8,6 +8,7 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lineak/lineakd-${PV}.tar.gz \
            file://add-zaurus-remote-support.patch;patch=1"
+S = "${WORKDIR}/lineakd-${PV}"
 
 inherit autotools
 
