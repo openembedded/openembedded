@@ -41,7 +41,7 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
-	h3600 | h3900 | h1940 | h6300 | ipaq-pxa270)
+	h3600 | h3900 | h1940 | h6300 | h2200 | ipaq-pxa270)
 		install -d ${D}${datadir}/tslib
 		for f in ts.conf-h3600 ts.conf-h3600-2.4 ts.conf-h6300; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
