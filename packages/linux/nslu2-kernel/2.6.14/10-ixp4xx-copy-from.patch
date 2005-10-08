@@ -1,6 +1,14 @@
---- linux-2.6.14-rc3/drivers/mtd/maps/ixp4xx.c	2005-10-05 20:35:42.916786530 -0700
-+++ linux-2.6.14-rc3/drivers/mtd/maps/ixp4xx.c	2005-10-05 22:42:25.811206514 -0700
-@@ -30,18 +30,29 @@
+--- linux-2.6.13/.pc/10-ixp4xx-copy-from.patch/drivers/mtd/maps/ixp4xx.c	2005-10-07 15:55:08.958509801 -0700
++++ linux-2.6.13/drivers/mtd/maps/ixp4xx.c	2005-10-07 19:06:22.352484966 -0700
+@@ -22,6 +22,7 @@
+ #include <linux/string.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
++#include <linux/mtd/cfi_endian.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/ioport.h>
+ #include <linux/device.h>
+@@ -30,18 +31,45 @@
  
  #include <linux/reboot.h>
  
@@ -9,20 +17,36 @@
 + * This causes the cfi commands (sent to the command address, 0xAA for
 + * 16 bit flash) to fail.  This is fixed here by XOR'ing the address
 + * before use with 10b.  The cost of this is that the flash layout ends
-+ * up consistently big-endian, however this is not a problem as the
-+ * access code consistently only accesses half words - so the endianness
-+ * is not determinable.
++ * up with pdp-endiannes (on an LE syste), however this is not a problem
++ * as the access code consistently only accesses half words - so the
++ * endianness is not determinable on stuff which is written and read
++ * consistently in the little endian world.
++ *
++ * For flash data from the big-endian world, however, the results are
++ * weird - the pdp-endianness results in the data apparently being
++ * 2-byte swapped (as in dd conv=swab).  To work round this the 16
++ * bit values are written and read using cpu_to_cfi16 and cfi16_to_cpu,
++ * by default these are no-ops, but if the MTD driver is configed with
++ * CONFIG_MTD_CFI_BE_BYTE_SWAP the macros will byte swap the data,
++ * resulting in a consistently BE view of the flash on both BE (no
++ * op) and LE systems.  This config setting also causes the command
++ * data from the CFI implementation to get swapped - as is required
++ * so that this code will *unswap* it and give the correct command
++ * data to the flash.
 + */
  #ifndef __ARMEB__
  #define	BYTE0(h)	((h) & 0xFF)
  #define	BYTE1(h)	(((h) >> 8) & 0xFF)
-+#define	FLASHW(a)	(*(__u16*)((u32)(a) ^ 2))
++#define	FLASHWORD(a)	(*(__u16*)((u32)(a) ^ 2))
  #else
  #define	BYTE0(h)	(((h) >> 8) & 0xFF)
  #define	BYTE1(h)	((h) & 0xFF)
-+#define	FLASHW(a)	(*(__u16*)(a))
++#define	FLASHWORD(a)	(*(__u16*)(a))
  #endif
  
++#define FLASHW(a)	cfi16_to_cpu(FLASHWORD(a))
++#define FLASHSET(a,v)	(FLASHWORD(a) = cpu_to_cfi16(v))
++
  static map_word ixp4xx_read16(struct map_info *map, unsigned long ofs)
  {
  	map_word val;
@@ -31,7 +55,7 @@
  	return val;
  }
  
-@@ -53,19 +64,23 @@
+@@ -53,19 +81,23 @@
  static void ixp4xx_copy_from(struct map_info *map, void *to,
  			     unsigned long from, ssize_t len)
  {
@@ -65,21 +89,21 @@
  }
  
  /* 
-@@ -75,7 +90,7 @@
+@@ -75,7 +107,7 @@
  static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
  {
  	if (!(adr & 1))
 -	       *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
-+	       FLASHW(map->map_priv_1 + adr) = d.x[0];
++	       FLASHSET(map->map_priv_1 + adr, d.x[0]);
  }
  
  /* 
-@@ -83,7 +98,7 @@
+@@ -83,7 +115,7 @@
   */
  static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
  {
 -       *(__u16 *) (map->map_priv_1 + adr) = d.x[0];
-+       FLASHW(map->map_priv_1 + adr) = d.x[0];
++       FLASHSET(map->map_priv_1 + adr, d.x[0]);
  }
  
  struct ixp4xx_flash_info {
