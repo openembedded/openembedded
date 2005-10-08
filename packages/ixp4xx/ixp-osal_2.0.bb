@@ -21,8 +21,9 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
+SRC_URI += "file://le.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 

@@ -24,9 +24,10 @@ SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
+SRC_URI += "file://le.patch;patch=1"
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 

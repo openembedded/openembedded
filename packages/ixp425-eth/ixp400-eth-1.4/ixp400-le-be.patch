@@ -1,5 +1,5 @@
---- ./ixp400_eth.c.orig	2005-10-02 18:38:46.472966042 -0700
-+++ ./ixp400_eth.c	2005-10-02 18:39:33.271910913 -0700
+--- ./ixp400_eth.c.orig	2005-10-07 14:14:11.713351394 -0700
++++ ./ixp400_eth.c	2005-10-07 14:21:11.667777460 -0700
 @@ -57,6 +57,7 @@
  #include <linux/mii.h>
  #include <linux/socket.h>
@@ -8,13 +8,11 @@
  #include <asm/io.h>
  #include <asm/errno.h>
  #include <net/pkt_sched.h>
-@@ -94,8 +95,10 @@
- MODULE_DESCRIPTION("IXP400 NPE Ethernet driver");
+@@ -95,7 +96,9 @@
  MODULE_LICENSE("GPL");
  MODULE_AUTHOR("Intel Corporation");
--#define MODULE_NAME "ixp400_eth"
+ #define MODULE_NAME "ixp400_eth"
 -#define MODULE_VERSION "1.4"
-+#define MODULE_NAME "ixp400_eth"
 +#define MODULE_VERSION_IXP400_ETH "1.4B"
 +
 +#define CONFIG_ARCH_IXDP425
@@ -340,15 +338,15 @@
  	skb->tail = skb->data + len;
  	skb->len = len;
 +
++#ifndef __ARMEB__
 +	{
-+	  int l = (skb->len+3) >> 2;
-+	  unsigned *p = (unsigned*)((unsigned)skb->data & ~0x3);
-+	  int i;
-+	  for (i = 0; i < l; i++) {
-+	    *p = ntohl(*p);
-+	    p++;
-+	  }
++	    /* Byte swap all words containing data from the buffer. */
++	    unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	    unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	    while (p < e)
++		*p = ntohl(*p), ++p;
 +	}
++#endif
  	
  #ifdef DEBUG_DUMP
  	skb_dump("rx", skb);
@@ -415,23 +413,24 @@
  
      /* Set MAC addr in h/w (ethAcc checks for MAC address to be valid) */
      memcpy(&npeMacAddr.macAddress,
-@@ -2084,6 +2302,15 @@
-         }
+@@ -2085,6 +2303,16 @@
  	return 0;
      }
-+	{
-+	  int l = (skb->len+3) >> 2;
-+	  unsigned *p = (unsigned*)((unsigned)skb->data & ~0x3);
-+	  int i;
-+	  for (i = 0; i < l; i++) {
-+	    *p = ntohl(*p);
-+	    p++;
-+	  }
-+	}
  
++#ifndef __ARMEB__
++    {
++	/* Byte swap all words containing data from the buffer. */
++	unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	while (p < e)
++	    *p = ntohl(*p), ++p;
++    }
++#endif
++
  #ifdef DEBUG_DUMP
      skb_dump("tx", skb);
-@@ -2120,6 +2347,7 @@
+ #endif
+@@ -2120,6 +2348,7 @@
  static int do_dev_open(struct net_device *dev)
  {
      int res;
@@ -439,7 +438,7 @@
  
      /* prevent the maintenance task from running while bringing up port */
      down(maintenance_mutex);
-@@ -2151,6 +2379,27 @@
+@@ -2151,6 +2380,27 @@
  }
  
  static void
@@ -467,7 +466,7 @@
  dev_tx_timeout_task(void *dev_id)
  {
      struct net_device *dev = (struct net_device *)dev_id;
-@@ -2191,7 +2440,7 @@
+@@ -2191,7 +2441,7 @@
      priv_data_t *priv = dev->priv;
  
      TRACE;
@@ -476,7 +475,7 @@
      
  }
  
-@@ -2352,7 +2601,8 @@
+@@ -2352,7 +2602,8 @@
  
      TRACE;
  
@@ -486,7 +485,7 @@
      if ((res = ixEthAccMibIIStatsGetClear(priv->port_id, &ethStats)))
      {
  	P_ERROR("%s: ixEthAccMibIIStatsGet failed for port %d, res = %d\n",
-@@ -2565,7 +2815,6 @@
+@@ -2565,7 +2816,6 @@
      miiAccessMutex = (struct semaphore *) kmalloc(sizeof(struct semaphore), GFP_KERNEL);
      if (!miiAccessMutex)
  	return -ENOMEM;
@@ -494,7 +493,7 @@
      init_MUTEX(miiAccessMutex);
  
      TRACE;
-@@ -2673,12 +2922,12 @@
+@@ -2673,12 +2923,12 @@
  }
  
  /* set port MAC addr and update the dev struct if successfull */
@@ -509,7 +508,7 @@
  
      /* Get MAC addr from parameter */
      memcpy(&npeMacAddr.macAddress,
-@@ -2751,35 +3000,16 @@
+@@ -2751,35 +3001,16 @@
  /* Initialize device structs.
   * Resource allocation is deffered until do_dev_open
   */
@@ -551,7 +550,7 @@
  
      TRACE;
  
-@@ -2789,9 +3019,8 @@
+@@ -2789,9 +3020,8 @@
      if(priv->rx_pool == NULL)
      {
  	P_ERROR("%s: Buffer RX Pool init failed on port %d\n",
@@ -563,7 +562,7 @@
      }
  
      TRACE;
-@@ -2802,13 +3031,14 @@
+@@ -2802,13 +3032,14 @@
      if(priv->tx_pool == NULL)
      {
  	P_ERROR("%s: Buffer TX Pool init failed on port %d\n",
@@ -581,7 +580,7 @@
     /* initialise the MII register access mutex */
      priv->maintenanceCheckThreadComplete = (struct semaphore *)
  	kmalloc(sizeof(struct semaphore), GFP_KERNEL);
-@@ -2823,24 +3053,27 @@
+@@ -2823,24 +3054,27 @@
  
      /* initialize ethernet device (default handlers) */
      ether_setup(dev);
@@ -592,11 +591,11 @@
 -     /* fill in dev struct callbacks with customized handlers */
 -    dev->open = do_dev_open;
 -    dev->stop = do_dev_stop;
+-
+-    dev->hard_start_xmit = dev_hard_start_xmit;
 +    INIT_WORK(&priv->mii_job, dev_media_check_work, ndev);
 +    INIT_WORK(&priv->tx_timeout_job, dev_tx_timeout_work, ndev);
  
--    dev->hard_start_xmit = dev_hard_start_xmit;
--
 -    dev->watchdog_timeo = DEV_WATCHDOG_TIMEO;
 -    dev->tx_timeout = dev_tx_timeout;
 -    dev->change_mtu = dev_change_mtu;
@@ -622,7 +621,7 @@
  
      TRACE;
  
-@@ -2858,22 +3091,22 @@
+@@ -2858,22 +3092,22 @@
       *
       */
  
@@ -653,7 +652,7 @@
  	       priv->port_id);
      }
      
-@@ -2883,31 +3116,30 @@
+@@ -2883,31 +3117,30 @@
       */
      TRACE;
  
@@ -696,7 +695,7 @@
      if (!netif_queue_stopped(dev))
      {
  	TRACE;
-@@ -2917,9 +3149,63 @@
+@@ -2917,9 +3150,63 @@
      }
  
      found_devices++;
@@ -760,7 +759,7 @@
      return 0;
  }
  
-@@ -2928,6 +3214,28 @@
+@@ -2928,6 +3215,28 @@
  
  #ifdef MODULE
  
@@ -789,7 +788,7 @@
  static struct net_device ixp400_devices[IX_ETH_ACC_NUMBER_OF_PORTS];
  
  int init_module(void)
-@@ -2935,11 +3243,11 @@
+@@ -2935,11 +3244,11 @@
      int res, dev_count;
      IxEthAccPortId portId;
      struct net_device *dev;
@@ -804,7 +803,7 @@
      TRACE;
  
      /* check module parameter range */
-@@ -2951,6 +3259,16 @@
+@@ -2951,6 +3260,16 @@
  
      TRACE;
  
@@ -821,7 +820,7 @@
  #ifndef DEBUG
      /* check module parameter range */
      if (log_level >= 2)  /* module parameter */
-@@ -3015,6 +3333,13 @@
+@@ -3015,6 +3334,13 @@
      /* Initialise the NPEs and access layer */
      TRACE;
  
@@ -835,7 +834,7 @@
      if ((res = ethacc_init()))
  	return res;
  
-@@ -3026,6 +3351,13 @@
+@@ -3026,6 +3352,13 @@
  
      TRACE;
  
@@ -849,7 +848,7 @@
      /* Initialise the driver structure */
      for (dev_count = 0; 
  	 dev_count < dev_max_count;  /* module parameter */
-@@ -3038,7 +3370,7 @@
+@@ -3038,7 +3371,7 @@
  	dev->init = dev_eth_probe;
  
          TRACE;
@@ -858,7 +857,7 @@
  	if ((res = register_netdev(dev)))
  	{
  	    TRACE;
-@@ -3068,6 +3400,35 @@
+@@ -3068,6 +3401,35 @@
  	    return convert_error_ethAcc(res);
  	}
      }
@@ -894,7 +893,7 @@
  
      TRACE;
  
-@@ -3104,33 +3465,13 @@
+@@ -3104,33 +3466,13 @@
      }
  
      TRACE;
@@ -931,7 +930,7 @@
  
      TRACE;
  
-@@ -3175,7 +3516,8 @@
+@@ -3175,7 +3517,8 @@
      TRACE;
  
      /* stop the maintenance timer */
