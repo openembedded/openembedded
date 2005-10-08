@@ -85,7 +85,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
            file://defconfig-poodle \
-           file://defconfig-spitz \
+           file://defconfig-cxx00 \
            file://defconfig-tosa "
 
 # These patches would really help collie/poodle but we 

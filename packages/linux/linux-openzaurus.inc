@@ -45,7 +45,14 @@ module_autoload_pxaficp_ir = "pxaficp_ir"
 
 do_configure() {
 
-	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+	case ${MACHINE} in
+		akita | spitz | borzoi )
+			install -m 0644 ${WORKDIR}/defconfig-cxx00 ${S}/.config || die "No default configuration for cxx00 available."
+			;;
+        	*)
+			install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
+			;;
+	esac
 
 	if [ "${MACHINE}" == "collie" ]; then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
