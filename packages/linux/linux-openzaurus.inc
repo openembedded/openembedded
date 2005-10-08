@@ -86,7 +86,7 @@ do_compile_append() {
 			size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
 			if [ $size -ge 1271 ]; then	
 				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
-				die "This kernel is too big for the c7x0 and will destroy your machine if you flash it!!!"
+				die "This kernel is too big for your PXA Zaurus and will destroy data if you flash it. Please reduce the size of the kernel by making more of it modular."
 			fi
 			;;
         	*)
