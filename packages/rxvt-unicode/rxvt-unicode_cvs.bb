@@ -10,9 +10,7 @@ LICENSE = "GPL"
 SRC_URI = "cvs://anonymous@cvs.schmorp.de/schmorpforge;module=rxvt-unicode \
 	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1 \
-	   file://makefile.patch;patch=1 \
-	   file://rxvt.desktop \
-	   file://rxvt.png"
+	   file://makefile.patch;patch=1"
 
 inherit autotools update-alternatives
 
@@ -58,14 +56,3 @@ do_compile () {
 	# docs need "yodl" and I have no idea what that is
 	oe_runmake -C src "LIBTOOL=$LIBTOOL"
 }
-
-do_install_append () {
-	install -d ${D}/${datadir}
-	install -d ${D}/${datadir}/applications
-	install -d ${D}/${datadir}/pixmaps/
-
-	install -m 0644 ${WORKDIR}/rxvt.png ${D}/${datadir}/pixmaps
-	install -m 0644 ${WORKDIR}/rxvt.desktop ${D}/${datadir}/applications
-}
-
-FILES_${PN} += "${datadir}/applications/rxvt.desktop ${datadir}/pixmaps/rxvt.png"
