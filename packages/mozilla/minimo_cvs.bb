@@ -16,7 +16,7 @@ LICENSE = "MPL/LGPL/GPL"
 
 inherit mozilla
 
-EXTRA_OECONF += "--enable-application=suite"
+EXTRA_OECONF += "--enable-application=suite --disable-native-uconv"
 export MOZ_CO_PROJECT="suite"
 
 export MINIMO=1
