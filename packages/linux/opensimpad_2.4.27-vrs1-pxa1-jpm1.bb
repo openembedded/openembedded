@@ -20,7 +20,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   file://disable-pcmcia-probe.patch;patch=1 \
            file://mkdep.patch;patch=1 \
            file://defconfig-${MACHINE} \
-	   http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
+	   http://www.openswan.org/download/old/openswan-2/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
            file://mipv6-1.1-v${KV}.patch;patch=1 \
            file://simpad-backlight-if.patch;patch=1 \
            file://simpad-switches-input.patch;patch=1 \
