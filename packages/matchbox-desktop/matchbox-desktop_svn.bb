@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox Window Manager Desktop"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 SECTION = "x11/wm"
-PV = "0.9cvs${CVSDATE}"
+PV = "0.9.1+cvs${CVSDATE}"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
@@ -23,3 +23,9 @@ FILES_${PN} = "${bindir} \
 FILES_${PN}-dev = "${libdir}/matchbox-desktop \
 		   ${includedir}/matchbox-desktop \
 		   ${datadir}/matchbox/desktop/modules/*a"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/matchbox-desktop/
+	install -m 0644 ${S}/src/*.h ${STAGING_INCDIR}/matchbox-desktop/
+}
+
