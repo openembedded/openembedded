@@ -3,7 +3,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
-DEPENDS = "opie-taskbar"
+DEPENDS = "opie-taskbar openobex-apps"
 RDEPENDS = "openobex-apps"
 APPNAME = "obex"
 
