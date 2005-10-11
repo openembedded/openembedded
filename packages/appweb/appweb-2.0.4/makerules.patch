@@ -1,0 +1,30 @@
+--- appWeb-2.0.4/make.rules~	2005-07-05 09:09:38.000000000 -0700
++++ appWeb-2.0.4/make.rules	2005-10-10 21:55:10.000000000 -0700
+@@ -61,25 +61,20 @@
+ for i in $$D "" ; \
+ do [ -z "$$i" ] && continue ;\
+ 	[ -d "$$i" ] || continue ;\
+-	home=`pwd` ; \
+-	cd "$$i" >/dev/null ; \
+-	if [ -f Makefile ] ; then \
++	if [ -f $$i/Makefile ] ; then \
+ 		echo ; \
+-		echo "  cd $$i" ; \
+ 		set +e ; \
+ 		unset COMPILE_SHARED EXPORT_OBJECTS _LDPATH ; \
+ 		set -e ; \
+ 		echo -e "\n  \# $(MAKE) $$T" ; \
+-		$(MAKE) --no-print-directory -S $$T ; \
++		$(MAKE) -C $$i --no-print-directory -S $$T ; \
+ 		code=$$? ; \
+ 		if [ $$code != 0 ] ; then \
+ 			echo "\#WARNING: Makefile error in `pwd`" ; \
+ 			exit 255 ; \
+ 		fi ; \
+ 		echo ; \
+-		echo "  cd $$home" ; \
+ 	fi ; \
+-	cd "$$home" >/dev/null ;\
+ done
+ 
+ DO_RECURSE=[ -z "$$D" ] || $(RECURSE)
