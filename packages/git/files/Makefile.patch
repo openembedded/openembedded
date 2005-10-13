@@ -1,13 +1,13 @@
-Index: git-snapshot-20050912/Makefile
+Index: git-snapshot-20051008/Makefile
 ===================================================================
---- git-snapshot-20050912.orig/Makefile	2005-09-11 03:46:53.000000000 +0100
-+++ git-snapshot-20050912/Makefile	2005-09-12 12:18:38.000000000 +0100
-@@ -239,7 +240,7 @@
+--- git-snapshot-20051008.orig/Makefile	2005-10-06 00:57:23.000000000 +0100
++++ git-snapshot-20051008/Makefile	2005-10-08 22:03:50.000000000 +0100
+@@ -332,7 +332,7 @@
  	$(CC) -o $*.o -c $(ALL_CFLAGS) $<
  
- git-%: %.o $(LIB_FILE)
+ git-%$X: %.o $(LIB_FILE)
 -	$(CC) $(ALL_CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
 +	$(CC) $(ALL_CFLAGS) -o $@ $(filter %.o,$^) $(LIBS) $(LDFLAGS)
  
- git-mailinfo : SIMPLE_LIB += $(LIB_4_ICONV)
+ git-mailinfo$X : SIMPLE_LIB += $(LIB_4_ICONV)
  $(SIMPLE_PROGRAMS) : $(LIB_FILE)

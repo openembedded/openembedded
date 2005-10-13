@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r3"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -19,18 +19,21 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/sharpsl_bl-r5a.patch;patch=1 \
            ${RPSRC}/spitzkbd-r3.patch;patch=1 \
            ${RPSRC}/spitz_base-r17.patch;patch=1 \
-           ${RPSRC}/pxa_i2c_fixes-r0.patch;patch=1 \
+           ${RPSRC}/corgi_addinclude-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_mtd_extras-r1.patch;patch=1 \
-           ${RPSRC}/pxa_ohci_platform-r1.patch;patch=1 \
-           ${RPSRC}/pxa_ohci_suspend-r0.patch;patch=1 \	 
            ${RPSRC}/corgi_cleanup-r0.patch;patch=1 \
            ${RPSRC}/poodle_cleanup-r0.patch;patch=1 \
            ${RPSRC}/poodle_mmc-r0.patch;patch=1 \
+           ${RPSRC}/scoop_collie_fix-r0.patch;patch=1 \
+           ${RPSRC}/collie_scoop_fix1-r0.patch;patch=1 \
+           ${RPSRC}/scoop_susres-r1.patch;patch=1 \
+           ${RPSRC}/pxa_i2c_fixes-r0.patch;patch=1 \
+           ${RPSRC}/pxa_ohci_platform-r1.patch;patch=1 \
+           ${RPSRC}/pxa_ohci_suspend-r0.patch;patch=1 \	 
            ${RPSRC}/poodle_irda-r0.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
-           ${RPSRC}/scoop_collie_fix-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r8.patch;patch=1 \
-           ${RPSRC}/corgi_pm-r3.patch;patch=1 \
+           ${RPSRC}/corgi_pm-r4.patch;patch=1 \
            ${RPSRC}/spitz_base_extras-r2.patch;patch=1 \
            ${RPSRC}/spitz_pm-r4.patch;patch=1 \
            ${RPSRC}/spitz_kbd_fix1-r0.patch;patch=1 \
@@ -40,12 +43,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/pxa_irda-r4.patch;patch=1 \
            ${RPSRC}/corgi_irda-r3.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
-           ${RPSRC}/scoop_susres-r1.patch;patch=1 \
            ${RPSRC}/input_power-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_bl_kick-r1.patch;patch=1 \
            ${RPSRC}/corgi_snd-r10.patch;patch=1 \
-           ${RPSRC}/ipaq/hx2750_base-r20.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_base-r21.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_bl-r2.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_pcmcia-r1.patch;patch=1 \
            ${RPSRC}/ipaq/pxa_keys-r2.patch;patch=1 \
