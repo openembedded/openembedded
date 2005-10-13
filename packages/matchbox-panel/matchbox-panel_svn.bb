@@ -1,4 +1,4 @@
-include "matchbox-panel.inc"
+include matchbox-panel.inc
 PV = "0.9.2+cvs-${CVSDATE}"
 DEFAULT_PREFERENCE = "-1"
 
