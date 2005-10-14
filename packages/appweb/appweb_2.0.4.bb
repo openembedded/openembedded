@@ -3,7 +3,8 @@ SECTION = "console/network"
 LICENSE = "GPL"
 SRC_URI = "http://www.mbedthis.com/software/appWeb-src-${PV}-1.tar.gz \
 	   file://makerules.patch;patch=1 \
-	   file://init.d.patch;patch=1"
+	   file://init.d.patch;patch=1 \
+           file://libdb.patch;patch=1"
 S = "${WORKDIR}/appWeb-${PV}"
 
 APPWEB_HOST = "${@get_appweb_host(d, bb)}"
@@ -82,7 +83,11 @@ EXTRA_OECONF = "--prefix=${prefix} \
 		--enable-config-parse \
 		--enable-config-save \
 		--enable-digest-auth \
-		--without-ssl"
+		--without-ssl \
+--with-php5='loadable' \
+--with-php5-dir='../../php-5.0.5-r0/php-5.0.5/libs' \
+--with-php5-libs='php5 crypt expat xml2 m mysqlclient z' \
+--with-php5-iflags='-I$(BLD_TOP)/$(BLD_PHP5_DIR)/.. -I$(BLD_TOP)/$(BLD_PHP5_DIR)/../main -I$(BLD_TOP)/$(BLD_PHP5_DIR)/../Zend -I$(BLD_TOP)/$(BLD_PHP5_DIR)/../TSRM'"
 
 export IFLAGS = "${CPPFLAGS}"
 export CC_FOR_BUILD = "${BUILD_CC}"
@@ -95,6 +100,10 @@ do_configure () {
 }
 
 do_compile () {
+	sed -i 's:MAKE_IFLAGS:MAKE_LDFLAGS = -L${STAGING_LIBDIR}\nMAKE_IFLAGS:' ${S}/http/modules/php5/Makefile
+#	find ${S} -type f | xargs sed -i 's:-I${STAGING_INCDIR}:-I${STAGING_INCDIR} -I../../../../../php-5.0.5-r0/php-5.0.5 -I../../../../../php-5.0.5-r0/php-5.0.5/Zend -I../../../../../php-5.0.5-r0/php-5.0.5/TSRM -I../../../../../php-5.0.5-r0/php-5.0.5/main:'
+#	sed -i 's:/usr/lib:${STAGING_LIBDIR}:' ${S}/http/package/LINUX/http.files
+#	sed -i 's:cpmod ${STAGING_LIBDIR}/:cpmod :' ${S}/http/package/LINUX/http.files
 	oe_runmake build
 	oe_runmake compile
 }
