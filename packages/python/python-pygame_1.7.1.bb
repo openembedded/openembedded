@@ -6,9 +6,9 @@ LICENSE = "LGPL"
 RDEPENDS = "python-core python-numeric libsdl-x11"
 DEPENDS = "virtual/libsdl libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg python-numeric"
 SRCNAME = "pygame"
+PR = "ml1"
 
 SRC_URI = "http://www.pygame.org/ftp/${SRCNAME}-${PV}release.tar.gz \
-           file://qpe.patch;patch=1 \
            file://Setup"
 S = "${WORKDIR}/${SRCNAME}-${PV}release"
 
