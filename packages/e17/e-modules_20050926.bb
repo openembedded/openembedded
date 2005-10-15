@@ -14,3 +14,7 @@ S = "${WORKDIR}/e_modules"
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
 
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir}"
+
+do_compile_prepend() {
+        find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+}

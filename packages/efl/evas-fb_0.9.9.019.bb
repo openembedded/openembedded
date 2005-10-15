@@ -8,6 +8,7 @@ EXTRA_OECONF = "--enable-fb         \
 		--disable-software-qtopia   \
 		--disable-software-x11      \
 		--disable-gl-x11            \
+		--disable-xrender-x11       \
 		--enable-image-loader-eet   \
 		--disable-image-loader-edb  \
 		--enable-image-loader-png   \
