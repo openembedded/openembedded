@@ -3,13 +3,11 @@ LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
-#SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
-SRC_URI = "http://handhelds.org/~hrw/mirror/dejavu-ttf-20051003.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
 
 include ttf.inc
 
-#S = "${WORKDIR}/dejavu-ttf-${PV}"
-S = "${WORKDIR}/dejavu-ttf-20051003"
+S = "${WORKDIR}/dejavu-ttf-${PV}"
 
 PACKAGES = "ttf-dejavu-sans ttf-dejavu-sans-mono ttf-dejavu-sans-condensed \
 	    ttf-dejavu-serif ttf-dejavu-serif-condensed"

@@ -3,9 +3,10 @@ DESCRIPTION = "Internet Software Consortium DHCP package"
 HOMEPAGE = "http://www.isc.org/"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://noattrmode.patch;patch=1 \
+	   file://fixincludes.patch;patch=1 \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
 	   file://dhclient.conf file://dhcpd.conf"
