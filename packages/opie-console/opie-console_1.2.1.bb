@@ -1,6 +1,8 @@
 include ${PN}.inc
 
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/apps/${APPNAME} \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
+	   file://1686-bugfix.patch;patch=1"
