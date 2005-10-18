@@ -45,6 +45,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--disable-convert-32-rgb-rot-270"
 
 headers = "Evas_Engine_Software_X11.h \
+           Evas_Engine_XRender_X11.h \
            Evas_Engine_Buffer.h \
            Evas_Engine_FB.h \
            Evas.h"

@@ -6,6 +6,8 @@ PR = "r6"
 FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
               e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
 
+PREFERRED_PROVIDER_virtual/imlib2 = "imlib-x11"
+
 ALLOW_EMPTY = 1
 
 #
