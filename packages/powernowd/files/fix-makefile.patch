@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2005-10-18 19:11:58.513569480 +0200
++++ powernowd-0.96/Makefile	2005-10-18 19:12:37.132698480 +0200
+@@ -4,7 +4,7 @@
+ all: powernow
+ 
+ powernow:
+-	gcc -O2 -Wall -o powernowd powernowd.c
++	${CC} -O2 -Wall -o powernowd powernowd.c
+ 
+ install:
+ 	install -m 755 powernowd /usr/sbin
