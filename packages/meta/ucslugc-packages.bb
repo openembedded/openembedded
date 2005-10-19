@@ -85,6 +85,7 @@ UCSLUGC_PACKAGES = "\
 	m4 \
 	mailx \
 	make \
+	mdadm \
 	mgetty \
 	miau \ 
 	microcom \
