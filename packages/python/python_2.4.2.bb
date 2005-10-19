@@ -10,7 +10,7 @@ PR = "ml2"
 
 PYTHON_MAJMIN = "2.4"
 
-SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
+SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://bindir-libdir.patch;patch=1 \
            file://crosscompile.patch;patch=1 \
            file://fix-tkinter-detection.patch;patch=1"

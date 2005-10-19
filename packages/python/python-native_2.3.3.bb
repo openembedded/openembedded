@@ -7,7 +7,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = ""
 PR = "r1"
 
-SRC_URI = "ftp://www.python.org/pub/python/${PV}/Python-${PV}.tar.bz2 \
+SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://bindir-libdir.patch;patch=1             \
 	   file://cross-distutils.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
