@@ -1,0 +1,1 @@
+DEPENDS = openslug-image
