@@ -74,6 +74,7 @@ OPENSLUG_PACKAGES = "\
 	minicom \
 	monotone-5 \
 	mpd \
+	mtd-utils \
 	mt-daapd \
 	mutt \
 	mysql \

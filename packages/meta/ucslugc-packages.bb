@@ -90,6 +90,7 @@ UCSLUGC_PACKAGES = "\
 	miau \ 
 	microcom \
 	mpd \
+	mtd-utils \
 	mt-daapd \
 	mutt \
 	nail \

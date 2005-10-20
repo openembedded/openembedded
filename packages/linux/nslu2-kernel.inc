@@ -260,6 +260,7 @@ do_configure_prepend() {
 #    e3a01c02 e3811055
 # 2) For LE kernels it is necessary to prefix change-to-le code to the kernel image:
 #    ee110f10 e3c00080 ee010f10
+#    and to byte swap the (LE) image to match the BE flash layout
 #
 # The argument to the function is the destination directory
 redboot_fixup_armeb() {
@@ -274,12 +275,17 @@ redboot_fixup_armeb() {
 redboot_fixup_arm() {
 	rm -f "$1".new
 	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
-		'wl 0xe3a01c02,4' \
-		'wl 0xe3811055,4' \
-		'wl 0xee110f10,4' \
-		'wl 0xe3c00080,4' \
-		'wl 0xee010f10,4' \
-		'cp$'
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'wb 0xee110f10,4' \
+		'wb 0xe3c00080,4' \
+		'wb 0xee010f10,4' \
+		'A= $' \
+		'$( A3>; wb l,4; A= A4-; $) A3>' \
+		'$( A0>; !! 1; $) 0' || {
+		echo 'arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: bad zImage length (not a multiple of 4)' >&2
+		return 1
+	}
 	mv "$1".new "$1"
 }
 
