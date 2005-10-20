@@ -24,8 +24,6 @@ GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 #ship more stuff with devices with >16MB of flash
 GPE_BIGFLASH_DEPENDS := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
         gpe-theme-clearlooks \
-        gpe-filemanager \
-        gpe-nmf \
         figment \
 ",d)}'
 
