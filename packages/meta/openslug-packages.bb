@@ -94,7 +94,6 @@ OPENSLUG_PACKAGES = "\
 	pciutils \
 	pcre \
 	perl \
-	php \
 	pkgconfig \
 	postfix \
 	ppp \
