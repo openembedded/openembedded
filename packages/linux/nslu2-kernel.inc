@@ -280,10 +280,8 @@ redboot_fixup_arm() {
 		'wb 0xee110f10,4' \
 		'wb 0xe3c00080,4' \
 		'wb 0xee010f10,4' \
-		'A= $' \
-		'$( A3>; wb l,4; A= A4-; $) A3>' \
-		'$( A0>; !! 1; $) 0' || {
-		echo 'arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: bad zImage length (not a multiple of 4)' >&2
+		'xp $,4' || {
+		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to byteswap zImage' >&2
 		return 1
 	}
 	mv "$1".new "$1"
