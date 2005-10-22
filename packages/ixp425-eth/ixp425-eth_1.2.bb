@@ -8,7 +8,7 @@ SRC_URI += "file://ixp400linuxethernetdriver-1_2-kernel26_hr_20050929.patch;patc
 SRC_URI += "file://makefile.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
