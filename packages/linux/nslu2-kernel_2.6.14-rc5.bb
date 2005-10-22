@@ -3,7 +3,7 @@
 # Increment PR_CONFIG for changes to the nslu2-kernel specific
 # defconfig (do *NOT* increment anything in here for changes
 # to other kernel configs!)
-PR_CONFIG = "0"
+PR_CONFIG = "1"
 #
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
