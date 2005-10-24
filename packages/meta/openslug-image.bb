@@ -15,7 +15,11 @@ USE_DEVFS = "1"
 # Removing these probably leaves the system bootable, but standard
 # openslug and ucslugc stuff won't work, so only take these out in
 # very non-standard turnkey ucslugc builds.
-OPENSLUG_SUPPORT ?= "diffutils cpio findutils"
+#
+# udev is the default way of handling devices, there is no guarantee
+# that the static device table is completely correct (it is just
+# known to be sufficient for boot.)
+OPENSLUG_SUPPORT ?= "diffutils cpio findutils udev"
 
 # NOTE: file system kernel modules are defined in openslug.conf
 # (OPENSLUG_EXTRA_FILESYSTEMS, included in OPENSLUG_EXTRA_INSTALL)
