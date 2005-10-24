@@ -1,12 +1,6 @@
-On IXP4XX systems the FIS directory is big endian even with a little
-endian kernel.  This patch recognises the FIS directory on such a
-system and byte swaps it to obtain a valid table based on the 'size'
-field of the FIS directory (the size field is know to always match the
-erase block size on such systems, and probably all systems.)
-
---- linux-2.6.13/drivers/mtd/redboot.c.orig	2005-10-19 17:14:19.304956677 -0700
-+++ linux-2.6.13/drivers/mtd/redboot.c	2005-10-19 17:48:16.457146582 -0700
-@@ -89,8 +89,32 @@
+--- linux-2.6.13/.pc/10-mtdpart-redboot-fis-byteswap.patch/drivers/mtd/redboot.c	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/drivers/mtd/redboot.c	2005-10-23 21:44:59.999694674 -0700
+@@ -89,8 +89,34 @@
  			i = numslots;
  			break;
  		}
@@ -26,13 +20,15 @@ erase block size on such systems, and probably all systems.)
 +					/* The unsigned long fields were written with the
 +					 * wrong byte sex, name and pad have no byte sex.
 +					 */
-+					swab32s(&buf[j].flash_base);
-+					swab32s(&buf[j].mem_base);
-+					swab32s(&buf[j].size);
-+					swab32s(&buf[j].entry_point);
-+					swab32s(&buf[j].data_length);
-+					swab32s(&buf[j].desc_cksum);
-+					swab32s(&buf[j].file_cksum);
++#					define do_swab32(x) (x) = swab32(x)
++					do_swab32(buf[j].flash_base);
++					do_swab32(buf[j].mem_base);
++					do_swab32(buf[j].size);
++					do_swab32(buf[j].entry_point);
++					do_swab32(buf[j].data_length);
++					do_swab32(buf[j].desc_cksum);
++					do_swab32(buf[j].file_cksum);
++#					undef do_swab32
 +				}
 +			}
  			break;
