@@ -8,7 +8,7 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # directory before using this package:
 #
 #	IPL_ixp400AccessLibrary-2_0.zip
-#	IPL_ixp400NpeLibrary-2_0.zip
+#	IPL_ixp400NpeLibrary-2_0_5.zip
 #
 # To do this go to the LICENSE_HOMEPAGE above, register/login (using a
 # web browser which is supported by the login page), this will give you
@@ -20,14 +20,14 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # Store the files with the names given below in your downloads directory
 #
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
-SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_0.zip"
+SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_0_5.zip"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
