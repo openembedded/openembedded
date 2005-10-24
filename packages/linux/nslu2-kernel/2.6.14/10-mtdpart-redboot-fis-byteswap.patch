@@ -1,3 +1,9 @@
+On IXP4XX systems the FIS directory is big endian even with a little
+endian kernel.  This patch recognises the FIS directory on such a
+system and byte swaps it to obtain a valid table based on the 'size'
+field of the FIS directory (the size field is know to always match the
+erase block size on such systems, and probably all systems.)
+
 --- linux-2.6.13/.pc/10-mtdpart-redboot-fis-byteswap.patch/drivers/mtd/redboot.c	2005-08-28 16:41:01.000000000 -0700
 +++ linux-2.6.13/drivers/mtd/redboot.c	2005-10-23 21:44:59.999694674 -0700
 @@ -89,8 +89,34 @@
