@@ -1,5 +1,5 @@
---- ./ixp400_eth.c.orig	2005-10-07 14:14:11.713351394 -0700
-+++ ./ixp400_eth.c	2005-10-07 14:21:11.667777460 -0700
+--- ./.pc/ixp400-le-be.patch/ixp400_eth.c	2005-04-19 22:58:18.000000000 -0700
++++ ./ixp400_eth.c	2005-10-23 23:29:06.760778566 -0700
 @@ -57,6 +57,7 @@
  #include <linux/mii.h>
  #include <linux/socket.h>
@@ -8,18 +8,16 @@
  #include <asm/io.h>
  #include <asm/errno.h>
  #include <net/pkt_sched.h>
-@@ -95,7 +96,9 @@
+@@ -95,7 +96,7 @@
  MODULE_LICENSE("GPL");
  MODULE_AUTHOR("Intel Corporation");
  #define MODULE_NAME "ixp400_eth"
 -#define MODULE_VERSION "1.4"
 +#define MODULE_VERSION_IXP400_ETH "1.4B"
-+
-+#define CONFIG_ARCH_IXDP425
  
  /* Module parameters */
  static int npe_learning = 1;      /* default : NPE learning & filtering enable */
-@@ -358,8 +361,13 @@
+@@ -358,8 +359,13 @@
      /* Used to stop the kernel thread for link monitoring. */
      volatile BOOL maintenanceCheckStopped;
  
@@ -34,7 +32,7 @@
  
      /* used to control the message output */
      UINT32 devFlags;
-@@ -557,6 +565,8 @@
+@@ -557,6 +563,8 @@
  #endif
  };
  
@@ -43,7 +41,7 @@
  /* Mutex lock used to coordinate access to IxEthAcc functions
   * which manipulate the MII registers on the PHYs
   */
-@@ -565,6 +575,11 @@
+@@ -565,6 +573,11 @@
  /* mutex locked when maintenance is being performed */
  static struct semaphore *maintenance_mutex;
  
@@ -55,7 +53,7 @@
  /* Flags which is set when the corresponding IRQ is running,
   */
  static int irq_pmu_used = 0;
-@@ -1070,6 +1085,117 @@
+@@ -1070,6 +1083,117 @@
      return 0;
  }
  
@@ -173,7 +171,7 @@
  
  /* 
   * KERNEL THREADS
-@@ -1122,11 +1248,11 @@
+@@ -1122,11 +1246,11 @@
      */
      down (priv->maintenanceCheckThreadComplete);
  
@@ -188,7 +186,7 @@
      spin_unlock_irq(&current->sigmask_lock);
      
      snprintf(current->comm, sizeof(current->comm), "ixp400 %s", dev->name);
-@@ -1285,7 +1411,7 @@
+@@ -1285,7 +1409,7 @@
  static void dev_pmu_timer_restart(void)
  {
      unsigned long flags;
@@ -197,7 +195,7 @@
       __asm__(" mcr p14,0,%0,c1,c1,0\n"  /* write current counter */
              : : "r" (timer_countup_ticks));
  
-@@ -1294,13 +1420,13 @@
+@@ -1294,13 +1418,13 @@
              " mcr p14,0,r1,c5,c1,0; "  /* clear overflow */
              " mcr p14,0,r1,c4,c1,0\n"  /* enable interrupts */
              : : : "r1");
@@ -213,7 +211,7 @@
  {
      /* get the time of this interrupt : all buffers received during this
       * interrupt will be assigned the same time */
-@@ -1308,22 +1434,32 @@
+@@ -1308,22 +1432,32 @@
  
      /* call the queue manager entry point */
      dispatcherFunc(IX_QMGR_QUELOW_GROUP);
@@ -250,7 +248,7 @@
  }
  
  /* initialize the PMU timer */
-@@ -1370,17 +1506,18 @@
+@@ -1370,17 +1504,18 @@
  static void dev_pmu_timer_disable(void)
  {
      unsigned long flags;
@@ -271,7 +269,7 @@
  static void maintenance_timer_cb(unsigned long data);
  
  static struct timer_list maintenance_timer = {
-@@ -1418,6 +1555,34 @@
+@@ -1418,6 +1553,34 @@
  
      maintenance_timer_set();
  }
@@ -306,7 +304,7 @@
  
  /*
   *  DATAPLANE
-@@ -1531,7 +1696,7 @@
+@@ -1531,7 +1694,7 @@
  	 * and its constants are taken from the eth_type_trans()
  	 * function.
  	 */
@@ -315,7 +313,7 @@
  	unsigned short hproto = ntohs(eth->h_proto);
  	
  	if (hproto >= 1536)
-@@ -1573,7 +1738,7 @@
+@@ -1573,7 +1736,7 @@
  	     * mode is set This costs
  	     * a lookup inside the packet payload.
  	     */
@@ -324,7 +322,7 @@
  	    unsigned char *hdest = eth->h_dest;
  	    
  	    if (memcmp(hdest, dev->dev_addr, ETH_ALEN)!=0)
-@@ -1632,7 +1797,7 @@
+@@ -1632,7 +1795,7 @@
      dev = (struct net_device *)callbackTag;
      priv = dev->priv;
  
@@ -333,7 +331,7 @@
      /* check if the system accepts more traffic and
       * against chained mbufs 
       */
-@@ -1674,10 +1839,21 @@
+@@ -1674,10 +1837,21 @@
  	/* set the length of the received skb from the mbuf length  */
  	skb->tail = skb->data + len;
  	skb->len = len;
@@ -355,7 +353,7 @@
  	/* Set the skb protocol and set mcast/bcast flags */
  	dev_eth_type_trans(mcastFlags, skb, dev);
  
-@@ -1821,6 +1997,39 @@
+@@ -1821,6 +1995,39 @@
  	spin_unlock_irq(&priv->lock);
  }
  
@@ -395,7 +393,7 @@
  /* The QMgr dispatch entry point can be called from the 
   * IX_OSAL_IXP400_QM1_IRQ_LVL irq (which will trigger
   * an interrupt for every packet) or a timer (which will
-@@ -1906,7 +2115,16 @@
+@@ -1906,7 +2113,16 @@
      IxEthAccMacAddr npeMacAddr;
      priv_data_t *priv = dev->priv;
  
@@ -413,7 +411,7 @@
  
      /* Set MAC addr in h/w (ethAcc checks for MAC address to be valid) */
      memcpy(&npeMacAddr.macAddress,
-@@ -2085,6 +2303,16 @@
+@@ -2085,6 +2301,16 @@
  	return 0;
      }
  
@@ -430,7 +428,7 @@
  #ifdef DEBUG_DUMP
      skb_dump("tx", skb);
  #endif
-@@ -2120,6 +2348,7 @@
+@@ -2120,6 +2346,7 @@
  static int do_dev_open(struct net_device *dev)
  {
      int res;
@@ -438,7 +436,7 @@
  
      /* prevent the maintenance task from running while bringing up port */
      down(maintenance_mutex);
-@@ -2151,6 +2380,27 @@
+@@ -2151,6 +2378,27 @@
  }
  
  static void
@@ -466,7 +464,7 @@
  dev_tx_timeout_task(void *dev_id)
  {
      struct net_device *dev = (struct net_device *)dev_id;
-@@ -2191,7 +2441,7 @@
+@@ -2191,7 +2439,7 @@
      priv_data_t *priv = dev->priv;
  
      TRACE;
@@ -475,7 +473,7 @@
      
  }
  
-@@ -2352,7 +2602,8 @@
+@@ -2352,7 +2600,8 @@
  
      TRACE;
  
@@ -485,7 +483,7 @@
      if ((res = ixEthAccMibIIStatsGetClear(priv->port_id, &ethStats)))
      {
  	P_ERROR("%s: ixEthAccMibIIStatsGet failed for port %d, res = %d\n",
-@@ -2565,7 +2816,6 @@
+@@ -2565,7 +2814,6 @@
      miiAccessMutex = (struct semaphore *) kmalloc(sizeof(struct semaphore), GFP_KERNEL);
      if (!miiAccessMutex)
  	return -ENOMEM;
@@ -493,7 +491,7 @@
      init_MUTEX(miiAccessMutex);
  
      TRACE;
-@@ -2673,12 +2923,12 @@
+@@ -2673,12 +2921,12 @@
  }
  
  /* set port MAC addr and update the dev struct if successfull */
@@ -508,7 +506,7 @@
  
      /* Get MAC addr from parameter */
      memcpy(&npeMacAddr.macAddress,
-@@ -2751,35 +3001,16 @@
+@@ -2751,35 +2999,16 @@
  /* Initialize device structs.
   * Resource allocation is deffered until do_dev_open
   */
@@ -550,7 +548,7 @@
  
      TRACE;
  
-@@ -2789,9 +3020,8 @@
+@@ -2789,9 +3018,8 @@
      if(priv->rx_pool == NULL)
      {
  	P_ERROR("%s: Buffer RX Pool init failed on port %d\n",
@@ -562,17 +560,15 @@
      }
  
      TRACE;
-@@ -2802,13 +3032,14 @@
+@@ -2802,45 +3030,45 @@
      if(priv->tx_pool == NULL)
      {
  	P_ERROR("%s: Buffer TX Pool init failed on port %d\n",
 -		dev->name, priv->port_id);
+-	kfree(dev->priv);
+-	return -ENOMEM;
 +		ndev->name, priv->port_id);
 +	goto out;
-+    }
-+#if 0
- 	kfree(dev->priv);
- 	return -ENOMEM;
      }
  
 -     TRACE;
@@ -580,22 +576,32 @@
     /* initialise the MII register access mutex */
      priv->maintenanceCheckThreadComplete = (struct semaphore *)
  	kmalloc(sizeof(struct semaphore), GFP_KERNEL);
-@@ -2823,24 +3054,27 @@
+     if (!priv->maintenanceCheckThreadComplete)
+     {
+-	kfree(dev->priv);
+-	return -ENOMEM;
++	P_ERROR("%s: Failed to allocate maintenance semaphore %d\n",
++		ndev->name, priv->port_id);
++	goto out;
+     }
+     priv->lock = SPIN_LOCK_UNLOCKED;
+     init_MUTEX(priv->maintenanceCheckThreadComplete);
+     priv->maintenanceCheckStopped = TRUE;
  
      /* initialize ethernet device (default handlers) */
-     ether_setup(dev);
-+#endif
+-    ether_setup(dev);
++    ether_setup(ndev);
  
      TRACE;
  
 -     /* fill in dev struct callbacks with customized handlers */
 -    dev->open = do_dev_open;
 -    dev->stop = do_dev_stop;
--
--    dev->hard_start_xmit = dev_hard_start_xmit;
 +    INIT_WORK(&priv->mii_job, dev_media_check_work, ndev);
 +    INIT_WORK(&priv->tx_timeout_job, dev_tx_timeout_work, ndev);
  
+-    dev->hard_start_xmit = dev_hard_start_xmit;
+-
 -    dev->watchdog_timeo = DEV_WATCHDOG_TIMEO;
 -    dev->tx_timeout = dev_tx_timeout;
 -    dev->change_mtu = dev_change_mtu;
@@ -621,7 +627,7 @@
  
      TRACE;
  
-@@ -2858,22 +3092,22 @@
+@@ -2858,22 +3086,22 @@
       *
       */
  
@@ -652,7 +658,7 @@
  	       priv->port_id);
      }
      
-@@ -2883,31 +3117,30 @@
+@@ -2883,31 +3111,30 @@
       */
      TRACE;
  
@@ -695,7 +701,7 @@
      if (!netif_queue_stopped(dev))
      {
  	TRACE;
-@@ -2917,9 +3150,63 @@
+@@ -2917,9 +3144,63 @@
      }
  
      found_devices++;
@@ -759,7 +765,7 @@
      return 0;
  }
  
-@@ -2928,6 +3215,28 @@
+@@ -2928,6 +3209,28 @@
  
  #ifdef MODULE
  
@@ -788,7 +794,7 @@
  static struct net_device ixp400_devices[IX_ETH_ACC_NUMBER_OF_PORTS];
  
  int init_module(void)
-@@ -2935,11 +3244,11 @@
+@@ -2935,11 +3238,11 @@
      int res, dev_count;
      IxEthAccPortId portId;
      struct net_device *dev;
@@ -803,7 +809,7 @@
      TRACE;
  
      /* check module parameter range */
-@@ -2951,6 +3260,16 @@
+@@ -2951,6 +3254,16 @@
  
      TRACE;
  
@@ -820,7 +826,7 @@
  #ifndef DEBUG
      /* check module parameter range */
      if (log_level >= 2)  /* module parameter */
-@@ -3015,6 +3334,13 @@
+@@ -3015,6 +3328,13 @@
      /* Initialise the NPEs and access layer */
      TRACE;
  
@@ -834,7 +840,7 @@
      if ((res = ethacc_init()))
  	return res;
  
-@@ -3026,6 +3352,13 @@
+@@ -3026,6 +3346,13 @@
  
      TRACE;
  
@@ -848,7 +854,7 @@
      /* Initialise the driver structure */
      for (dev_count = 0; 
  	 dev_count < dev_max_count;  /* module parameter */
-@@ -3038,7 +3371,7 @@
+@@ -3038,7 +3365,7 @@
  	dev->init = dev_eth_probe;
  
          TRACE;
@@ -857,7 +863,7 @@
  	if ((res = register_netdev(dev)))
  	{
  	    TRACE;
-@@ -3068,6 +3401,35 @@
+@@ -3068,6 +3395,35 @@
  	    return convert_error_ethAcc(res);
  	}
      }
@@ -893,7 +899,7 @@
  
      TRACE;
  
-@@ -3104,33 +3466,13 @@
+@@ -3104,33 +3460,13 @@
      }
  
      TRACE;
@@ -930,7 +936,7 @@
  
      TRACE;
  
-@@ -3175,7 +3517,8 @@
+@@ -3175,7 +3511,8 @@
      TRACE;
  
      /* stop the maintenance timer */

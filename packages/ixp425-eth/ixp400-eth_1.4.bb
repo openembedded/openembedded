@@ -8,7 +8,7 @@ SRC_URI += "file://ixp400-le-be.patch;patch=1"
 SRC_URI += "file://makefile.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
@@ -38,7 +38,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'IX_TARGET=${IX_TARGET}' \
 		'IXP4XX_CSR_DIR=${STAGING_INCDIR}/linux/ixp4xx-csr' \
 		'OSAL_DIR=${OSAL_DIR}' \
-		'IX_CFLAGS=-DIX_UTOPIAMODE=0 -DIX_MPHYSINGLEPORT=1' \
+		'IX_CFLAGS=-DIX_UTOPIAMODE=0 -DIX_MPHYSINGLEPORT=1 -DCONFIG_IXP400_ETH_NPEB_ONLY=1' \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
 		"
