@@ -23,6 +23,7 @@ CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
 # in the samba config by --with-foodir=dirfoo - even if the --with is not
 # specified!  Fix that here.  Set the privatedir to /etc/samba/private.
 EXTRA_OECONF += "\
+	samba_cv_struct_timespec=yes \
 	--with-configdir=${sysconfdir}/samba \
 	--with-privatedir=${sysconfdir}/samba/private \
 	--with-lockdir=${localstatedir}/lock \
