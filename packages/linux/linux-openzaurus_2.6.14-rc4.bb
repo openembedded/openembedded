@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,18 +15,21 @@ DEFAULT_PREFERENCE = "-1"
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.14-rc4.bz2;patch=1 \
+           ${RPSRC}/spitz_pxafb_cleanup-r1.patch;patch=1 \
+           ${RPSRC}/pxafb_add_parent-r1.patch;patch=1 \
+           ${RPSRC}/spitz_compilefix-r0.patch;patch=1 \
+           ${RPSRC}/spitz_kbd_fix1-r0.patch;patch=1 \
+           ${RPSRC}/pxa_pmops_static-r1.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r1.patch;patch=1 \
            ${RPSRC}/pxa_ohci_platform-r1.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r0.patch;patch=1 \	   
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-r8.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-r9.patch;patch=1 \
            ${RPSRC}/corgi_pm-r4.patch;patch=1 \
-           ${RPSRC}/spitz_base_extras-r2.patch;patch=1 \
+           ${RPSRC}/spitz_base_extras-r3.patch;patch=1 \
            ${RPSRC}/spitz_pm-r4.patch;patch=1 \
-           ${RPSRC}/spitz_kbd_fix1-r0.patch;patch=1 \
            ${RPSRC}/spitzcf-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
-           ${RPSRC}/pxa_remove_static-r0.patch;patch=1 \
            ${RPSRC}/pxa_irda-r5.patch;patch=1 \
            ${RPSRC}/corgi_irda-r3.patch;patch=1 \
            ${RPSRC}/poodle_irda-r0.patch;patch=1 \	   
@@ -34,7 +37,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/input_power-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_bl_kick-r1.patch;patch=1 \
-           ${RPSRC}/corgi_snd-r10.patch;patch=1 \
+           ${RPSRC}/corgi_snd-r11.patch;patch=1 \
+           ${RPSRC}/export_scoop-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_base-r21.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_bl-r2.patch;patch=1 \
@@ -57,6 +61,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/pcmcia_dev_ids-r2.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
+           ${RPSRC}/alsa/alsa_soc-r3.patch;patch=1 \
+           ${RPSRC}/alsa/ssp_pxa_regs-r0.patch;patch=1 \
+           ${RPSRC}/wm8731-r1.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
