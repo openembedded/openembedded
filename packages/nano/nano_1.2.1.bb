@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
 
-SRC_URI = "${GNU_MIRROR}/nano/nano-${PV}.tar.gz \
+SRC_URI = "http://www.nano-editor.org/dist/v1.2/nano-${PV}.tar.gz \
            file://configure.patch;patch=1 \
            file://glib.m4"
 
