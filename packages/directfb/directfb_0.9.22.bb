@@ -10,7 +10,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "jpeg libpng zlib"
 PR = "r0"
 
-SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz"
+SRC_URI = "http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz"
 S = "${WORKDIR}/DirectFB-${PV}"
 
 inherit autotools pkgconfig
