@@ -3,7 +3,7 @@ DEPENDS = "cyrus-sasl"
 PR = "r1"
 LICENSE = "BSD"
 
-SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/imap/cyrus-imapd-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
            file://tail.patch;patch=1"
 
