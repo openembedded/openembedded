@@ -13,7 +13,7 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # web browser which is supported by the login page), this will give you
 # access to the web page from which you can download the software - you
 # need the: "Intel® IXP400 Software and RedBoot* Boot Loader" and, from
-# this the "Intel Hardware Access Software" (versions 1.5 encryption is
+# this the "Intel Hardware Access Software" (versions 2.0 encryption is
 # not required.)
 #
 # Store the file with the name given below in your downloads directory

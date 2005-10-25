@@ -15,7 +15,7 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # access to the web page from which you can download the software - you
 # need the: "Intel® IXP400 Software and RedBoot* Boot Loader" and, from
 # this the "Intel Hardware Access Software" and "NPE Microcode" (both
-# versions 1.5, encryption is not required.)
+# versions 2.0, encryption is not required.)
 #
 # Store the files with the names given below in your downloads directory
 #
