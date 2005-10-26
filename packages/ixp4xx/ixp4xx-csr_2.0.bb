@@ -39,7 +39,7 @@ inherit module
 KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
-IX_TARGET = "linux${NSLU2_ARCH_TYPE}e"
+IX_TARGET = "linux${ARCH_BYTE_SEX}"
 
 OSAL_PATH = "lib/ixp425/linux/${IX_TARGET}"
 # This is a somewhat arbitrary choice:

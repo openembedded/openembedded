@@ -1,0 +1,37 @@
+--- linux-2.6.14-rc5/include/asm-arm/arch-ixp4xx/io.h	2005-10-26 08:37:22.844417060 -0700
++++ patched/include/asm-arm/arch-ixp4xx/io.h	2005-10-26 12:14:20.771583571 -0700
+@@ -80,21 +80,21 @@ __ixp4xx_iounmap(void __iomem *addr)
+ #define __arch_ioremap(a, s, f, x)	__ixp4xx_ioremap(a, s, f, x)
+ #define	__arch_iounmap(a)		__ixp4xx_iounmap(a)
+ 
+-#define	writeb(p, v)			__ixp4xx_writeb(p, v)
+-#define	writew(p, v)			__ixp4xx_writew(p, v)
+-#define	writel(p, v)			__ixp4xx_writel(p, v)
+-
+-#define	writesb(p, v, l)		__ixp4xx_writesb(p, v, l)
+-#define	writesw(p, v, l)		__ixp4xx_writesw(p, v, l)
+-#define	writesl(p, v, l)		__ixp4xx_writesl(p, v, l)
++#define	writeb(v, p)			__ixp4xx_writeb(v, (u32)p)
++#define	writew(v, p)			__ixp4xx_writew(v, (u32)p)
++#define	writel(v, p)			__ixp4xx_writel(v, (u32)p)
++
++#define	writesb(p, v, l)		__ixp4xx_writesb((u32)p, v, l)
++#define	writesw(p, v, l)		__ixp4xx_writesw((u32)p, v, l)
++#define	writesl(p, v, l)		__ixp4xx_writesl((u32)p, v, l)
+ 	
+-#define	readb(p)			__ixp4xx_readb(p)
+-#define	readw(p)			__ixp4xx_readw(p)
+-#define	readl(p)			__ixp4xx_readl(p)
++#define	readb(p)			__ixp4xx_readb((u32)p)
++#define	readw(p)			__ixp4xx_readw((u32)p)
++#define	readl(p)			__ixp4xx_readl((u32)p)
+ 	
+-#define	readsb(p, v, l)			__ixp4xx_readsb(p, v, l)
+-#define	readsw(p, v, l)			__ixp4xx_readsw(p, v, l)
+-#define	readsl(p, v, l)			__ixp4xx_readsl(p, v, l)
++#define	readsb(p, v, l)			__ixp4xx_readsb((u32)p, v, l)
++#define	readsw(p, v, l)			__ixp4xx_readsw((u32)p, v, l)
++#define	readsl(p, v, l)			__ixp4xx_readsl((u32)p, v, l)
+ 
+ static inline void 
+ __ixp4xx_writeb(u8 value, u32 addr)

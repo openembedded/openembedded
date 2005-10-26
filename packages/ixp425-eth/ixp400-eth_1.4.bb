@@ -30,7 +30,7 @@ KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
-IX_TARGET = "linux${NSLU2_ARCH_TYPE}e"
+IX_TARGET = "linux${ARCH_BYTE_SEX}"
 
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \

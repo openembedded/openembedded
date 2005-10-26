@@ -1,7 +1,7 @@
-# Work round problems with the flash being unreadable on boot.
-#
---- linux-2.6.13/.pc/25-nslu2-arch-reset.patch/include/asm-arm/arch-ixp4xx/system.h	2005-08-28 16:41:01.000000000 -0700
-+++ linux-2.6.13/include/asm-arm/arch-ixp4xx/system.h	2005-09-25 23:34:14.762872391 -0700
+# On NSLU2 ensure that the flash is readable on system boot.
+
+--- linux-2.6.13/include/asm-arm/arch-ixp4xx/system.h	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/include/asm-arm/arch-ixp4xx/system.h	2005-10-26 07:43:11.763839457 -0700
 @@ -10,6 +10,7 @@
   */
  
@@ -10,10 +10,11 @@
  
  static inline void arch_idle(void)
  {
-@@ -22,6 +23,21 @@
+@@ -22,6 +23,23 @@ static inline void arch_idle(void)
  
  static inline void arch_reset(char mode)
  {
++#if (defined CONFIG_MACH_NSLU2) && (defined NSLU2_FLASH_BASE)
 +	/* On NSLU2 machines the flash is sometimes left in a non-read
 +	 * mode, such that attempting a read will cause problems - such as
 +	 * a hang.  This will prevent both hard and soft reboot since the
@@ -28,11 +29,12 @@
 +		 */
 +		*(__u16*)(NSLU2_FLASH_BASE+0xAA/*command*/) = 0x00ff/*reset*/;
 +	}
++#endif
 +
  	if ( 1 && mode == 's') {
  		/* Jump into ROM at address 0 */
  		cpu_reset(0);
-@@ -39,4 +55,3 @@
+@@ -39,4 +57,3 @@ static inline void arch_reset(char mode)
  		*IXP4XX_OSWE = IXP4XX_WDT_RESET_ENABLE | IXP4XX_WDT_COUNT_ENABLE;
  	}
  }

@@ -242,7 +242,7 @@ addtask unpacklocal before do_patch after do_unpack
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	if test '${NSLU2_ARCH_TYPE}' = l
+	if test '${ARCH_BYTE_SEX}' = le
 	then
 		sed -i '/CONFIG_CPU_BIG_ENDIAN/d' '${S}/.config'
 	else

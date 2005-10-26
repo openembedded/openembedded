@@ -1,7 +1,7 @@
 # Release 0.22 reveals bugs in g++ for thumb (g++ generates
 # relocations which the linker cannot represent)
 #FIXME: remove the following
-ARM_INSTRUCTION_SET = ""
+ARM_INSTRUCTION_SET = "arm"
 
 include monotone.inc
 

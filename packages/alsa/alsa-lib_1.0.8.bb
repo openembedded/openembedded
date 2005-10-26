@@ -8,7 +8,7 @@ PR = "r1"
 # (not just those with the ARM instruction set), this should be removed,
 # (or replaced by a permitted #define).
 #FIXME: remove the following
-ARM_INSTRUCTION_SET = ""
+ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2"
 
