@@ -1,0 +1,560 @@
+--- linux-2.6.13/.pc/70-nslu2-io.patch/arch/arm/mach-ixp4xx/Makefile	2005-10-26 15:19:43.443489188 -0700
++++ linux-2.6.13/arch/arm/mach-ixp4xx/Makefile	2005-10-26 15:24:08.652177718 -0700
+@@ -8,5 +8,5 @@ obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pc
+ obj-$(CONFIG_MACH_IXDPG425)	+= ixdpg425-pci.o coyote-setup.o
+ obj-$(CONFIG_ARCH_ADI_COYOTE)	+= coyote-pci.o coyote-setup.o
+ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
+-obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o nslu2-rtc.o
++obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o nslu2-rtc.o nslu2-io.o
+ 
+--- linux-2.6.13/.pc/70-nslu2-io.patch/arch/arm/mach-ixp4xx/nslu2-io.c	2005-10-26 15:19:43.979522918 -0700
++++ linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-io.c	2005-10-26 15:24:08.652177718 -0700
+@@ -0,0 +1,548 @@
++//=============================================================================
++//
++// n2-io.c version 0.1.7
++// Author: Karen Spearel <kas11 at tampabay.rr.com>
++// please report problems/bugs directly to the address above
++//
++// Boilerplate to be added "real soon now"...it is and has always been GPL'ed per
++// MODULE_LICENSE but is offered without warrantee of any sort..use at your own risk
++//
++// NOTE: THIS IS INCOMPLETE.  INCLUDED ONLY TO KEEP FROM BREAKING THE BUILD,
++// IT BEEPS AND SENDS A MESSAGE TO /proc/poweroff.  EVENTUALLY IT
++// WILL TALK TO THE n2_pbd DAEMON.  EVENTUALLY THE LED DRIVER
++// WILL TALK TO SOME USERLAND APP BUT ***NOT*** SET_LEDS.
++// 
++//=============================================================================
++//	GPIO		Function	State
++//	0		Red LED		Status		
++//	1		Green LED	Ready = 1
++//	2		Disk 2 LED	On = 0
++//	3		Disk 1 LED	On = 0
++//	4		Buzzer
++//	5		Power Button	Pressed = 1
++//	8		Power Down	Output = 1 powers down NSLU2
++//	12		Reset		Pressed = 0
++
++#include <linux/config.h>
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/proc_fs.h>
++#include <linux/device.h>
++#include <linux/reboot.h>
++
++#include <asm/uaccess.h>
++#include <asm-arm/irq.h>
++#include <asm-arm/delay.h>
++
++/* Set this to 1 to output lots of debug messages. */
++#define NSLU2_IO_DEBUG 0
++
++#if NSLU2_IO_DEBUG
++#define nslu2_io_debug(args) printk args
++#else
++#define nslu2_io_debug(args) ((void)0)
++#endif
++
++#define VERSION			"0.1.7"
++
++#define	NSLU2BZ_MAJOR		62		//buzzer
++#define NSLU2LM_MAJOR		126
++
++
++#define NSLU2_BEEP_DUR_LONG	2000
++#define NSLU2_BEEP_DUR_MED	400
++#define NSLU2_BEEP_DUR_SHORT	100
++#define NSLU2_BEEP_PITCH_HIGH	250
++#define NSLU2_BEEP_PITCH_MED	500
++#define NSLU2_BEEP_PITCH_LOW	1000
++#define NSLU2_LONG_DELAY	30000
++
++#define NSLU2_BZ_BM		(1L << NSLU2_GPIO_BUZZ)
++
++// ioctls -- 'M" is used for sound cards...we don't got one so it seems safe
++
++#define NSLU2BZ_BEEP_STOP		_IO('M',0)       //stop multi-beep at end of audible
++#define NSLU2BZ_BEEP		_IO('M',1)       //one beep at current defaults
++#define NSLU2BZ_BEEPS		_IOW('M',3,long) //param beeps at current defaults
++#define NSLU2BZ_TONESET		_IOW('M',4,long) //set tone: range is high=250 to low=2000
++#define NSLU2BZ_ONTIME		_IOW('M',5,long) //ontime for multi-beeps in jiffies
++#define	NSLU2BZ_SILENTTIME		_IOW('M',6,long) //offtime for multi-beeps in jiffies
++#define NSLU2BZ_REPEATCNT		_IOW('M',7,long) //number of repeats for multi-beeps 0 = forever
++#define NSLU2BZ_COMBINED		_IOW('M',8,long) //combine all params in a long
++
++#define NSLU2LM_OFF		_IOW('M',32,long)
++#define NSLU2LM_ON			_IOW('M',33,long)
++#define NSLU2LM_BLINK		_IOW('M',34,long)
++#define NSLU2LM_ALT		_IOW('M',35,long)
++#define NSLU2LM_ALL_ON		_IO('M',36)
++#define NSLU2LM_ALL_OFF		_IO('M',37)
++
++#define PHYS_LEDS		4
++#define BLINK_DELAY		25
++
++//  OR Masks to turn these LEDs ON
++
++#define	RS_RED_ON	0x00000001	//0b0000 0000 0000 0010
++#define	RS_GRN_ON	0x00000002	//0b0000 0000 0000 0001
++#define RS_YEL_ON	0x00000003	//0b0000 0000 0000 0011
++
++// AND Masks to turn these LEDs OFF
++
++#define	RS_RED_OFF	0xfffffffe	//0b1111 1111 1111 1101
++#define	RS_GRN_OFF	0xfffffffd	//0b1111 1111 1111 1110
++#define RS_YEL_OFF	0xfffffffc	//0b1111 1111 1111 1100
++
++// AND Masks to turn these LEDs ON
++
++#define DISK1_ON	0xfffffff7	//0b1111 1111 1111 0111
++#define	DISK2_ON	0xfffffffb	//0b1111 1111 1111 1011
++
++// Or Masks to turn these LEDs OFF
++
++#define DISK1_OFF	0x00000008	//0b0000 0000 0000 1000
++#define	DISK2_OFF	0x00000004	//0b0000 0000 0000 0100	
++
++// EOR masks for toggling LEDs on/off
++
++#define RS_RG_ALT	0x00000003	//eor mask to toggle rs rg bits
++#define RS_GRN_TGL	0x00000002
++#define RS_RED_TGL	0x00000001
++#define DISK1_TGL	0x00000008
++#define DISK2_TGL	0x00000004
++
++// The LED names for switches
++
++#define LED_RS_RED	0
++#define LED_RS_GRN	1
++#define	LED_DISK1	2
++#define LED_DISK2	3
++#define LED_ALL		4
++
++static unsigned long ontime = 50;
++static unsigned long offtime = 450;
++static unsigned long bz_repeatcnt = 10;
++static unsigned long tone = 1000;
++
++static struct timer_list n2lm_rsg_timer;	//rs green 
++static struct timer_list n2lm_rsr_timer;	//rs red
++static struct timer_list n2lm_d1_timer;		//drive 1
++static struct timer_list n2lm_d2_timer;		//drive 2
++static struct timer_list n2bz_timer;		//beeper
++
++// sysfs class
++static struct class *n2lm_class;
++
++//==================================================================================================
++//
++// Blinking is handled entirely by the 4 timer handlers.  On timeout, the bit in the
++// GPIO output register is xor'd with a mask corresponding to the selected led which simply
++// flips that bit.  No record of what any of the other leds is doing is needed.
++//
++//==================================================================================================
++// this blinks rs green or green/yellow if rs red is on
++#ifndef CONFIG_LEDS
++static void n2lm_rsg_handler(unsigned long data)
++{
++	*IXP4XX_GPIO_GPOUTR ^= RS_GRN_TGL;			//flip the led
++	n2lm_rsg_timer.expires = jiffies + BLINK_DELAY;		//next timeout
++	add_timer(&n2lm_rsg_timer);				//reinit timer
++	return;
++}
++
++// this blinks or alternates rs red green... inited wit green on/red off
++static void n2lm_rsr_handler(unsigned long data)
++{
++	*IXP4XX_GPIO_GPOUTR ^= n2lm_rsr_timer.data;
++	n2lm_rsr_timer.expires = jiffies + BLINK_DELAY;
++	add_timer(&n2lm_rsr_timer);
++	return;	
++}
++// blinks disk 1
++static void n2lm_d1_handler(unsigned long data)
++{
++	*IXP4XX_GPIO_GPOUTR ^= DISK1_TGL;
++	n2lm_d1_timer.expires = jiffies + BLINK_DELAY;
++	add_timer(&n2lm_d1_timer);
++	return;
++}
++// blinks disk 2
++static void n2lm_d2_handler(unsigned long data)
++{
++	*IXP4XX_GPIO_GPOUTR ^= DISK2_TGL;
++	n2lm_d2_timer.expires = jiffies + BLINK_DELAY;
++	add_timer(&n2lm_d2_timer);
++	return;
++}
++
++//==================================================================================================
++
++static void n2lm_timer_start(unsigned long led)
++{
++
++	nslu2_io_debug((KERN_DEBUG "timer: %ld\n",led));
++
++	switch(led) {
++		case LED_RS_RED:
++			n2lm_rsr_timer.expires = jiffies + BLINK_DELAY;
++			add_timer(&n2lm_rsr_timer);
++			break;
++
++		case LED_RS_GRN:
++			n2lm_rsg_timer.expires = jiffies + BLINK_DELAY;
++			add_timer(&n2lm_rsg_timer);
++			break;
++
++		case LED_DISK1:
++			n2lm_d1_timer.expires = jiffies + BLINK_DELAY;
++			add_timer(&n2lm_d1_timer);
++ 			break;
++
++		case LED_DISK2:
++			n2lm_d2_timer.expires = jiffies + BLINK_DELAY; 
++			add_timer(&n2lm_d2_timer);
++			break;
++
++		default:
++			break;
++	}
++	return;
++}
++
++//==================================================================================================
++
++static void n2lm_timer_stop(unsigned long led)
++{
++	switch (led) {
++		case LED_RS_RED:
++			del_timer(&n2lm_rsr_timer);
++			break;
++		case LED_RS_GRN:
++			del_timer(&n2lm_rsg_timer);
++			break;
++		case LED_DISK1:
++			del_timer(&n2lm_d1_timer);
++ 			break;
++		case LED_DISK2: 
++			del_timer(&n2lm_d2_timer);
++			break;
++		default:
++			break;
++	}
++	return;
++}
++
++//--------------------------------------------------------------------------------------------------
++
++static void n2lm_timer_stop_all(void)
++{
++	del_timer(&n2lm_rsg_timer);
++	del_timer(&n2lm_rsr_timer);
++	del_timer(&n2lm_d1_timer); 
++	del_timer(&n2lm_d2_timer);
++	return;
++}
++//--------------------------------------------------------------------------------------------------
++
++static void n2lm_ledon(unsigned long led)
++{
++
++	nslu2_io_debug((KERN_DEBUG "ledon: %ld\n", led));
++
++	switch (led) {
++		case LED_RS_RED:	
++			*IXP4XX_GPIO_GPOUTR |= RS_RED_ON;	//1
++			return;
++		case LED_RS_GRN:
++			*IXP4XX_GPIO_GPOUTR |= RS_GRN_ON;	//2
++			return;
++		case LED_DISK1:
++			*IXP4XX_GPIO_GPOUTR &= DISK1_ON;	//0xfffffff7
++			return;
++		case LED_DISK2:	
++			*IXP4XX_GPIO_GPOUTR &= DISK2_ON;	//0xfffffffb
++			return;
++		case LED_ALL:					//all green
++			*IXP4XX_GPIO_GPOUTR |= RS_GRN_ON;
++			*IXP4XX_GPIO_GPOUTR &= (DISK1_ON & DISK2_ON);
++			return;	
++	}
++}
++
++//--------------------------------------------------------------------------------------------------
++
++static void n2lm_ledoff(unsigned long led)
++{
++
++	switch (led) {
++		case LED_RS_RED:	
++			*IXP4XX_GPIO_GPOUTR &= RS_RED_OFF;	//0xffffffffe
++			return;
++		case LED_RS_GRN:
++			*IXP4XX_GPIO_GPOUTR &= RS_GRN_OFF;	//0xfffffffd
++			return;
++		case LED_DISK1:
++			*IXP4XX_GPIO_GPOUTR |= DISK1_OFF;	//0x00000008
++			return;
++		case LED_DISK2:	
++			*IXP4XX_GPIO_GPOUTR |= DISK2_OFF;	//0x00000004
++			return;
++		case LED_ALL:
++			*IXP4XX_GPIO_GPOUTR &= (RS_GRN_OFF & RS_RED_OFF);
++			*IXP4XX_GPIO_GPOUTR |= (DISK1_OFF | DISK2_OFF);
++	}
++}
++
++//==================================================================================================
++
++static int n2lm_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long led)
++{
++
++	nslu2_io_debug((KERN_DEBUG "cmd=%d, led=%ld\n", cmd, led));
++	
++	if (led < 0 || led >= PHYS_LEDS)
++		return -EINVAL;
++
++	switch (cmd ) {
++		case NSLU2LM_ON:
++			n2lm_timer_stop(led);
++			n2lm_ledon(led);
++			break;
++			
++		case NSLU2LM_OFF:
++			n2lm_timer_stop(led);
++			n2lm_ledoff(led);
++			break;
++			
++		case NSLU2LM_BLINK:
++			n2lm_ledon(led);
++			if (led == LED_RS_RED)
++				n2lm_rsr_timer.data = RS_RED_TGL;
++			n2lm_timer_start(led);
++			break;
++
++		case NSLU2LM_ALT:
++			if (led == LED_RS_RED)
++			{
++				n2lm_ledon(LED_RS_GRN);
++				n2lm_ledoff(LED_RS_RED);
++				n2lm_rsr_timer.data = RS_RG_ALT;
++				n2lm_timer_start(LED_RS_RED);
++				break;
++			} else
++				return -EINVAL;
++		
++		case NSLU2LM_ALL_ON:
++			n2lm_timer_stop_all();
++			n2lm_ledon(LED_ALL);
++			break;
++		
++		case NSLU2LM_ALL_OFF:
++			n2lm_timer_stop_all();
++			n2lm_ledoff(LED_ALL);
++			break;
++		
++		default:
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++static struct file_operations n2lm_fops = {
++	.owner		= THIS_MODULE,
++	.ioctl		= n2lm_ioctl,
++};
++#endif
++//==================================================================================================
++// We can't do anything fancy here since the system tick rate is far below that required to
++// generate a desirable tone.  Therefore we haven't much choice but to use a busy loop until
++// I get up to speed on the timers.  The saving grace is that for the normal uses, nothing 
++// important should be haprepening. 
++//==================================================================================================
++
++static void n2_buzz(int tone_delay, int duration)
++{
++	int i;
++
++	*IXP4XX_GPIO_GPOER &= ~NSLU2_BZ_BM;
++		
++	for (i = 1; i < duration; i++) {
++		*IXP4XX_GPIO_GPOUTR &= ~NSLU2_BZ_BM;
++		udelay(tone_delay);
++		*IXP4XX_GPIO_GPOUTR |= NSLU2_BZ_BM;
++		udelay(tone_delay);
++	}
++	*IXP4XX_GPIO_GPOER |= NSLU2_BZ_BM;
++
++	return;
++}
++//=================================================================================================
++
++// this handles the buzzer duty cycle
++static void n2bz_handler(unsigned long data)
++{
++	if (--bz_repeatcnt > 0) {			//if just one beep left to do
++		n2bz_timer.expires = jiffies + ontime + offtime;	//next timeout
++		add_timer(&n2bz_timer);					//reinit timer
++	}
++	n2_buzz(tone/2, ontime);
++	nslu2_io_debug((KERN_DEBUG "Count = %d\tOntime = %d\n", bz_repeatcnt, ontime));
++	return;
++}
++
++//==================================================================================================
++
++static int n2bz_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long param)
++{
++	switch (cmd) {
++		case NSLU2BZ_BEEP:
++			n2_buzz(tone/2, ontime);
++			break;
++	
++		case NSLU2BZ_BEEP_STOP:
++			del_timer(&n2bz_timer);
++			break;
++
++		case NSLU2BZ_BEEPS:
++			if (param == 0)
++				bz_repeatcnt = 0xffffffff;
++			else
++				bz_repeatcnt = param;
++			n2bz_handler(0);
++			break;
++	
++		case NSLU2BZ_TONESET:
++			if (param >= 250 && param <= 2000)
++				tone = param;
++			break;
++
++		case NSLU2BZ_ONTIME:
++			if (param > 4 && param < 201)
++				ontime = param;
++			break;
++
++		case NSLU2BZ_SILENTTIME:
++			if (param > ontime)			//enforce a reasonable duty cycle
++				offtime = param;
++			else
++				offtime = ontime;
++			break;
++
++		case NSLU2BZ_REPEATCNT:
++			if (param == 0)
++				bz_repeatcnt = 0xffffffff;
++			else
++				bz_repeatcnt = param;
++			break;
++
++		case NSLU2BZ_COMBINED:
++			bz_repeatcnt =  (param & 0xF0000000) >> 28;	//repeat 1 - 16
++			ontime =        (param & 0x0FF00000) >> 20; 	//ontime 1 - 256 jiffies
++			offtime =       (param & 0x000FFF00) >> 8;	//offtime 1 - 4095 jiffies
++			tone =          (param & 0x000000FF) << 4;	//tone (1 - 255) * 16
++			break;
++
++		default:
++			break;
++	}
++	return 0;
++}
++
++static struct file_operations n2bz_fops = {
++	.owner		= THIS_MODULE,
++	.ioctl		= n2bz_ioctl,
++};
++
++static void n2iom_initarch(void)
++{
++#ifndef CONFIG_LEDS
++	init_timer(&n2lm_rsg_timer);
++	init_timer(&n2lm_rsr_timer);
++	init_timer(&n2lm_d1_timer);
++	init_timer(&n2lm_d2_timer);
++
++	n2lm_rsr_timer.function = n2lm_rsr_handler;
++	n2lm_rsg_timer.function = n2lm_rsg_handler;
++	n2lm_d2_timer.function = n2lm_d2_handler;
++	n2lm_d1_timer.function = n2lm_d1_handler;
++#endif
++
++	init_timer(&n2bz_timer);
++	n2bz_timer.function = n2bz_handler;
++
++	n2lm_rsr_timer.data = n2lm_rsg_timer.data = n2lm_d1_timer.data = n2lm_d2_timer.data = n2bz_timer.data = 0;
++
++#ifndef CONFIG_LEDS
++	*IXP4XX_GPIO_GPOER &= 0xfffffff0;	//enable gpio 0-3
++	*IXP4XX_GPIO_GPOUTR |= 0x00000003;	//turn off the leds
++	*IXP4XX_GPIO_GPOUTR &= 0xfffffffc;
++	n2lm_ledon(LED_ALL);
++	n2_buzz(NSLU2_BEEP_PITCH_MED, NSLU2_BEEP_DUR_SHORT);
++	n2lm_ledoff(LED_ALL);
++
++	// Default the Ready/Status to Red during kernel boot, Turn Green at the end of sysvinit
++	n2lm_ledon(LED_RS_RED);
++#endif
++
++	return;
++}
++
++//==================================================================================================
++
++static int __init n2iom_init(void)
++{
++	printk(KERN_INFO "NSLU2: i/o, %s\n", VERSION);
++  	
++	n2iom_initarch();
++
++	n2lm_class = class_create(THIS_MODULE, "nslu2");
++
++#ifndef CONFIG_LEDS
++	if (register_chrdev(NSLU2LM_MAJOR, "n2_ledm", &n2lm_fops) < 0) {
++		printk(KERN_DEBUG "Led Manager Major %d not available\n", NSLU2LM_MAJOR);
++		return -EBUSY;
++	}
++	else {
++		class_device_create(n2lm_class, MKDEV(NSLU2LM_MAJOR, 0), NULL, "leds");
++	}
++#endif
++
++	if (register_chrdev(NSLU2BZ_MAJOR, "n2_bzm", &n2bz_fops) < 0) {
++		printk(KERN_DEBUG "Buzzer Major %d not available\n", NSLU2BZ_MAJOR);
++		return -EBUSY;
++	}
++	else {
++		class_device_create(n2lm_class, MKDEV(NSLU2BZ_MAJOR, 0), NULL, "buzzer");
++	}
++
++	return 0;
++}
++
++//==================================================================================================
++
++static void __exit n2iom_exit(void)
++{
++
++#ifndef CONFIG_LEDS
++	del_timer(&n2lm_rsg_timer);
++	del_timer(&n2lm_rsr_timer);
++	del_timer(&n2lm_d1_timer);
++	del_timer(&n2lm_d2_timer);	
++
++	unregister_chrdev(NSLU2LM_MAJOR, "n2lm" );
++	class_device_destroy(n2lm_class, MKDEV(NSLU2LM_MAJOR, 0));
++#endif
++
++	unregister_chrdev(NSLU2BZ_MAJOR, "n2bz");
++	class_device_destroy(n2lm_class, MKDEV(NSLU2BZ_MAJOR, 0));
++
++	class_destroy(n2lm_class);
++}
++
++module_init(n2iom_init);
++module_exit(n2iom_exit);
++
++MODULE_AUTHOR("Karen Spearel <kas11@tampabay.rr.com>");
++MODULE_DESCRIPTION("NSLU2 I/O driver");
++MODULE_LICENSE("GPL");

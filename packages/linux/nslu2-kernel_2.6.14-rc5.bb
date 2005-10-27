@@ -24,6 +24,7 @@ include nslu2-kernel.inc
 N2K_FILES = ""
 
 N2K_PATCHES = "\
+	file://90-ixp4xx-pci-le.patch;patch=1 \
 	file://10-ixp4xx-copy-from.patch;patch=1 \
 	file://10-mtdpart-redboot-fis-byteswap.patch;patch=1 \
 	file://15-ixp4xx-writesb-l-w.patch;patch=1 \
@@ -35,9 +36,12 @@ N2K_PATCHES = "\
 	file://29-ipv4-route-c-spinlock.patch;patch=1 \
 	file://30-i2c-x1205.patch;patch=1 \
 	file://50-nslu2-arch.patch;patch=1 \
-	file://50-nslu2-general.patch;patch=1 \
+"
+N2K_PATCHES_2 = "\
+	file://55-nslu2-rtc.patch;patch=1 \
 	file://60-nslu2-beeper.patch;patch=1 \
-	file://90-ixp4xx-pci-le.patch;patch=1 \
+	file://70-nslu2-io.patch;patch=1 \
+	file://75-nslu2-leds.patch;patch=1 \
 	file://anonymiser.patch;patch=1 \
 "
 

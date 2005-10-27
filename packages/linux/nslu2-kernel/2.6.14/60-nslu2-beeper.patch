@@ -1,7 +1,6 @@
-diff -urN -X linux-2.6.14-rc3/Documentation/dontdiff linux-2.6.14-rc3/drivers/input/misc/Kconfig test12/drivers/input/misc/Kconfig
---- linux-2.6.14-rc3/drivers/input/misc/Kconfig	2005-09-17 12:42:09.000000000 +0200
-+++ test12/drivers/input/misc/Kconfig	2005-10-03 23:26:15.000000000 +0200
-@@ -40,6 +40,18 @@
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/Kconfig	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/drivers/input/misc/Kconfig	2005-10-26 15:24:01.199708764 -0700
+@@ -40,6 +40,18 @@ config INPUT_M68K_BEEP
  	tristate "M68k Beeper support"
  	depends on M68K
  
@@ -20,17 +19,15 @@ diff -urN -X linux-2.6.14-rc3/Documentation/dontdiff linux-2.6.14-rc3/drivers/in
  config INPUT_UINPUT
  	tristate "User level driver support"
  	help
-diff -urN -X linux-2.6.14-rc3/Documentation/dontdiff linux-2.6.14-rc3/drivers/input/misc/Makefile test12/drivers/input/misc/Makefile
---- linux-2.6.14-rc3/drivers/input/misc/Makefile	2005-09-17 12:42:09.000000000 +0200
-+++ test12/drivers/input/misc/Makefile	2005-10-03 23:26:15.000000000 +0200
-@@ -10,3 +10,4 @@
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/Makefile	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/drivers/input/misc/Makefile	2005-10-26 15:24:01.199708764 -0700
+@@ -10,3 +10,4 @@ obj-$(CONFIG_INPUT_M68K_BEEP)		+= m68ksp
  obj-$(CONFIG_INPUT_98SPKR)		+= 98spkr.o
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o
 +obj-$(CONFIG_INPUT_NSLU2_BEEPER)	+= nslu2spkr.o
-diff -urN -X linux-2.6.14-rc3/Documentation/dontdiff linux-2.6.14-rc3/drivers/input/misc/nslu2spkr.c test12/drivers/input/misc/nslu2spkr.c
---- linux-2.6.14-rc3/drivers/input/misc/nslu2spkr.c	1970-01-01 01:00:00.000000000 +0100
-+++ test12/drivers/input/misc/nslu2spkr.c	2005-10-05 03:06:20.000000000 +0200
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/nslu2spkr.c	2005-10-26 15:19:43.711506053 -0700
++++ linux-2.6.13/drivers/input/misc/nslu2spkr.c	2005-10-26 15:24:01.199708764 -0700
 @@ -0,0 +1,144 @@
 +/*
 + * drivers/input/misc/nslu2spkr.c
