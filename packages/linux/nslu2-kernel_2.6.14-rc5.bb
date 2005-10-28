@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r1.${PR_CONFIG}"
+PR = "r0.${PR_CONFIG}"
 
 include nslu2-kernel.inc
 
@@ -34,7 +34,6 @@ N2K_PATCHES = "\
 	file://50-nslu2-general.patch;patch=1 \
 	file://60-nslu2-beeper.patch;patch=1 \
 	file://90-ixp4xx-pci-le.patch;patch=1 \
-	file://90-pegasus.patch;patch=1 \
 	file://anonymiser.patch;patch=1 \
 "
 
