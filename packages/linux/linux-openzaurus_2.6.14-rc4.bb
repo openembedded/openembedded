@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -26,9 +26,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r9.patch;patch=1 \
            ${RPSRC}/corgi_pm-r4.patch;patch=1 \
-           ${RPSRC}/spitz_base_extras-r3.patch;patch=1 \
-           ${RPSRC}/spitz_pm-r4.patch;patch=1 \
-           ${RPSRC}/spitzcf-r3.patch;patch=1 \
+           ${RPSRC}/spitz_base_extras-r4.patch;patch=1 \
+           ${RPSRC}/spitz_pm-r5.patch;patch=1 \
+           ${RPSRC}/spitz_cf-r4.patch;patch=1 \
+           ${RPSRC}/akita_mtd_fix-r0.patch;patch=1 \
+           ${RPSRC}/max7310-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pxa_irda-r5.patch;patch=1 \
            ${RPSRC}/corgi_irda-r3.patch;patch=1 \
@@ -63,7 +65,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/alsa/alsa_soc-r3.patch;patch=1 \
            ${RPSRC}/alsa/ssp_pxa_regs-r0.patch;patch=1 \
-           ${RPSRC}/wm8731-r1.patch;patch=1 \
+           ${RPSRC}/wm8731-r2.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
