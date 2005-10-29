@@ -12,12 +12,12 @@
  
  #include <linux/reboot.h>
  
-+/* On a little-endian IXP4XX system (tested on NSLU2) contrary to the
-+ * Intel documentation LDRH/STRH appears to XOR the address with 10b.
++/* On a little-endian IXP4XX system (tested on NSLU2) an LDRH or STRH
++ * will flip the second address bit - i.e. XOR the address with 10b.
 + * This causes the cfi commands (sent to the command address, 0xAA for
 + * 16 bit flash) to fail.  This is fixed here by XOR'ing the address
 + * before use with 10b.  The cost of this is that the flash layout ends
-+ * up with pdp-endiannes (on an LE syste), however this is not a problem
++ * up with pdp-endiannes (on an LE system), however this is not a problem
 + * as the access code consistently only accesses half words - so the
 + * endianness is not determinable on stuff which is written and read
 + * consistently in the little endian world.
