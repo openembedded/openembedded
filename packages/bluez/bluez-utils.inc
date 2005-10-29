@@ -28,6 +28,10 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults 23 19"
 
+do_compile_prepend() {
+	find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+}
+
 do_install_append() {
 	install -d ${D}${base_sbindir} ${D}${base_bindir}/
 	mv ${D}${sbindir}/* ${D}${base_sbindir}/
