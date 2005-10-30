@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.14-rc4
-# Tue Oct 18 21:53:12 2005
+# Fri Oct 21 16:13:58 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -717,6 +717,7 @@ CONFIG_NET_RADIO=y
 #
 # Wireless 802.11b ISA/PCI cards support
 #
+# CONFIG_AIRO is not set
 # CONFIG_HERMES is not set
 # CONFIG_ATMEL is not set
 

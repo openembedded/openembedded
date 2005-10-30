@@ -228,6 +228,13 @@ CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_
 KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
+# Set EXTRAVERSION and LOCALVERSION to "" so that the kernel version
+# remains pinned to the x.y.z form, also turn off the directory
+# printing which provides almost all the output of an incremental build.
+EXTRA_OEMAKE += "EXTRAVERSION="
+EXTRA_OEMAKE += "LOCALVERSION="
+EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
+
 # By putting the added files in place in a separate task before
 # do_patch it becomes possible to patch these files.
 do_unpacklocal() {
