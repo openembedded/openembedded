@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -66,7 +66,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/alsa/alsa_soc-r3.patch;patch=1 \
            ${RPSRC}/alsa/alsa_soc-r3_1.patch;patch=1 \
            ${RPSRC}/alsa/ssp_pxa_regs-r0.patch;patch=1 \
-           ${RPSRC}/wm8731-r4.patch;patch=1 \
+           ${RPSRC}/wm8731-r5.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://add-elpp-stuff.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
