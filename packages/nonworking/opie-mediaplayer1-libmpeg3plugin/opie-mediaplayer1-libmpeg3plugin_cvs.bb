@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer1"
 RDEPENDS = "opie-mediaplayer1"
-PV = "1.1.6-cvs-${CVSDATE}"
+PV = "1.2.1+cvs-${CVSDATE}"
 APPNAME = "mpeg3plugin"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=opie/core/multimedia/opieplayer;date=${CVSDATE} "
+SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer"
 
 S = "${WORKDIR}/opieplayer/libmpeg3"
 
