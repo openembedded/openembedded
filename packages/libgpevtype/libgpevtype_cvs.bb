@@ -13,7 +13,7 @@ PR = 		"r0"
 
 inherit pkgconfig gpe autotools
 
-SRC_URI =   	"cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/${PN}"
+SRC_URI =   	"${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 
 headers = "tag-db.h vcard.h vevent.h vtodo.h"

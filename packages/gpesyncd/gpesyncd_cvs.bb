@@ -3,7 +3,7 @@ DESCRIPTION =	"Sync daemon for GPE and OpenSync"
 MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
 
 
-SRC_URI =	"cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/gpesyncd"
+SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/gpesyncd"
 
 DEPENDS =	"libgpevtype sqlite libmimedir glib-2.0"
 

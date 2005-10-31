@@ -2,7 +2,7 @@ DEFAULT_PREFERENCE = "-1"
 LICENSE =	"GPL"
 DESCIPTION =	"Buttonbox for gpe"
 
-SRC_URI =	"cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/gpe-buttonbox"
+SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/gpe-buttonbox"
 
 DEPENDS =	"libgpewidget libgpelaunch"
 
