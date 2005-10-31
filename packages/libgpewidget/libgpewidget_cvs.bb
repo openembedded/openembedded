@@ -14,10 +14,10 @@ PR = "r0"
 
 inherit autotools pkgconfig
 
-SRC_URI =   "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/${PN}"
+SRC_URI =   "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 EXTRA_OECONF = "--enable-cairo"
 
 do_stage () {
 	autotools_stage_all
-
+}
