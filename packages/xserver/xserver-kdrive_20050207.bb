@@ -45,12 +45,18 @@ SRC_URI_append_c7x0 = 		" file://disable-apm.patch;patch=1"
 SRC_URI_append_ipaq-pxa270= " file://disable-apm.patch;patch=1"
 SRC_URI_append_h3900 = 		" file://disable-apm.patch;patch=1"
 SRC_URI_append_h2200 =          " file://disable-apm.patch;patch=1"
+SRC_URI_append_spitz =          " file://disable-apm.patch;patch=1"
+SRC_URI_append_akita =          " file://disable-apm.patch;patch=1"
+SRC_URI_append_borzoi =         " file://disable-apm.patch;patch=1"
 
 PACKAGE_ARCH_poodle = "poodle"
 PACKAGE_ARCH_c7x0 = "c7x0"
 PACKAGE_ARCH_ipaq-pxa270 = "ipaq-pxa270"
 PACKAGE_ARCH_h3900 = "h3900"
 PACKAGE_ARCH_h2200 = "h2200"
+PACKAGE_ARCH_spitz = "spitz"
+PACKAGE_ARCH_akita = "akita"
+PACKAGE_ARCH_borzoi = "borzoi"
 
 S = "${WORKDIR}/xserver"
 
