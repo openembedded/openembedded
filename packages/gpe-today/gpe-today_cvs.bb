@@ -12,7 +12,7 @@ PR = 			"r0"
 
 inherit gpe
 
-SRC_URI =		"cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/${PN} \
+SRC_URI =		"${HANDHELDS_CVS};module=gpe/base/${PN} \
 		 		 file://Makefile.dpkg_ipkg \
     		 	 file://Makefile.translation"
 
