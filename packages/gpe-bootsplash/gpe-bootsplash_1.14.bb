@@ -5,7 +5,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI += "file://splash-p.svg file://splash-l.svg \
             file://c7x0-rotation.patch;patch=1 \
