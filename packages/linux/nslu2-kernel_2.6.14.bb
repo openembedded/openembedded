@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r2.${PR_CONFIG}"
+PR = "r3.${PR_CONFIG}"
 
 include nslu2-kernel.inc
 
@@ -26,6 +26,7 @@ N2K_FILES = ""
 N2K_PATCHES = "\
 	file://90-ixp4xx-pci-le.patch;patch=1 \
 	file://10-ixp4xx-copy-from.patch;patch=1 \
+	file://10-ixp4xx-le.patch;patch=1 \
 	file://10-mtdpart-redboot-fis-byteswap.patch;patch=1 \
 	file://15-ixp4xx-writesb-l-w.patch;patch=1 \
 	file://18-ixp4xx-io-h-addr.patch;patch=1 \
