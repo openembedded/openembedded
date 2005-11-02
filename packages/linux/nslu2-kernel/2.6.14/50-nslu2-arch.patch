@@ -1,4 +1,4 @@
---- linux-2.6.13/.pc/50-nslu2-arch.patch/arch/arm/boot/compressed/head.S	2005-08-28 16:41:01.000000000 -0700
+--- linux-2.6.13/arch/arm/boot/compressed/head.S	2005-08-28 16:41:01.000000000 -0700
 +++ linux-2.6.13/arch/arm/boot/compressed/head.S	2005-10-26 15:23:39.646352497 -0700
 @@ -37,6 +37,7 @@
      defined(CONFIG_ARCH_INTEGRATOR) || \
@@ -8,7 +8,7 @@
      defined(CONFIG_ARCH_IXP2000) || \
      defined(CONFIG_ARCH_LH7A40X) || \
      defined(CONFIG_ARCH_OMAP)
---- linux-2.6.13/.pc/50-nslu2-arch.patch/arch/arm/mach-ixp4xx/Kconfig	2005-08-28 16:41:01.000000000 -0700
+--- linux-2.6.13/arch/arm/mach-ixp4xx/Kconfig	2005-08-28 16:41:01.000000000 -0700
 +++ linux-2.6.13/arch/arm/mach-ixp4xx/Kconfig	2005-10-26 15:23:39.646352497 -0700
 @@ -43,6 +43,12 @@ config MACH_IXDP465
  	  IXDP465 Development Platform (Also known as BMP).
@@ -23,7 +23,7 @@
  
  #
  # IXCDP1100 is the exact same HW as IXDP425, but with a different machine 
---- linux-2.6.13/.pc/50-nslu2-arch.patch/arch/arm/mach-ixp4xx/Makefile	2005-08-28 16:41:01.000000000 -0700
+--- linux-2.6.13/arch/arm/mach-ixp4xx/Makefile	2005-08-28 16:41:01.000000000 -0700
 +++ linux-2.6.13/arch/arm/mach-ixp4xx/Makefile	2005-10-26 15:23:39.646352497 -0700
 @@ -8,4 +8,5 @@ obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pc
  obj-$(CONFIG_MACH_IXDPG425)	+= ixdpg425-pci.o coyote-setup.o
@@ -31,7 +31,7 @@
  obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
 +obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
  
---- linux-2.6.13/.pc/50-nslu2-arch.patch/arch/arm/mach-ixp4xx/nslu2-pci.c	2005-10-26 15:19:43.171472071 -0700
+--- linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-pci.c	2005-10-26 15:19:43.171472071 -0700
 +++ linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-pci.c	2005-10-26 15:23:39.646352497 -0700
 @@ -0,0 +1,78 @@
 +/*
@@ -209,7 +209,7 @@
 +MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 +MODULE_DESCRIPTION("NSLU2 Power/Reset driver");
 +MODULE_LICENSE("GPL");
---- linux-2.6.13/.pc/50-nslu2-arch.patch/arch/arm/mach-ixp4xx/nslu2-setup.c	2005-10-26 15:19:43.171472071 -0700
+--- linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-setup.c	2005-10-26 15:19:43.171472071 -0700
 +++ linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-setup.c	2005-10-26 15:23:39.646352497 -0700
 @@ -0,0 +1,134 @@
 +/*
@@ -346,7 +346,7 @@
 +	.timer          = &ixp4xx_timer,
 +	.init_machine	= nslu2_init,
 +MACHINE_END
---- linux-2.6.13/.pc/50-nslu2-arch.patch/include/asm-arm/arch-ixp4xx/hardware.h	2005-10-26 15:19:37.451112111 -0700
+--- linux-2.6.13/include/asm-arm/arch-ixp4xx/hardware.h	2005-10-26 15:19:37.451112111 -0700
 +++ linux-2.6.13/include/asm-arm/arch-ixp4xx/hardware.h	2005-10-26 15:23:39.650352748 -0700
 @@ -44,5 +44,6 @@ extern unsigned int processor_id;
  #include "ixdp425.h"
@@ -355,7 +355,7 @@
 +#include "nslu2.h"
  
  #endif  /* _ASM_ARCH_HARDWARE_H */
---- linux-2.6.13/.pc/50-nslu2-arch.patch/include/asm-arm/arch-ixp4xx/irqs.h	2005-08-28 16:41:01.000000000 -0700
+--- linux-2.6.13/include/asm-arm/arch-ixp4xx/irqs.h	2005-08-28 16:41:01.000000000 -0700
 +++ linux-2.6.13/include/asm-arm/arch-ixp4xx/irqs.h	2005-10-26 15:23:39.650352748 -0700
 @@ -93,4 +93,11 @@
  #define	IRQ_COYOTE_PCI_SLOT1	IRQ_IXP4XX_GPIO11
@@ -369,7 +369,7 @@
 +#define        IRQ_NSLU2_PCI_INTC      IRQ_IXP4XX_GPIO9
 +
  #endif
---- linux-2.6.13/.pc/50-nslu2-arch.patch/include/asm-arm/arch-ixp4xx/nslu2.h	2005-10-26 15:19:43.175472322 -0700
+--- linux-2.6.13/include/asm-arm/arch-ixp4xx/nslu2.h	2005-10-26 15:19:43.175472322 -0700
 +++ linux-2.6.13/include/asm-arm/arch-ixp4xx/nslu2.h	2005-10-26 15:23:39.650352748 -0700
 @@ -0,0 +1,96 @@
 +/*
