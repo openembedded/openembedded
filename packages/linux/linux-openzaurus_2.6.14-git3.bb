@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -20,7 +20,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/pxa_i2c_fixes-r3.patch;patch=1 \
            ${RPSRC}/pxa_ohci_platform-r2.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r2.patch;patch=1 \
-           ${RPSRC}/revert_bootmem-r0.patch;patch=1 \
+           ${RPSRC}/revert_bootmem-r1.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r10.patch;patch=1 \
            ${RPSRC}/corgi_pm-r4.patch;patch=1 \
@@ -62,9 +62,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/pcmcia_dev_ids-r2.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
-           ${RPSRC}/alsa/alsa_soc-r3.patch;patch=1 \
-           ${RPSRC}/alsa/alsa_soc-r3_1.patch;patch=1 \
-           ${RPSRC}/wm8731-r6.patch;patch=1 \
+           ${RPSRC}/alsa/alsa_soc_0.5-r0.patch;patch=1 \
+           ${RPSRC}/alsa_snd_corgi-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
