@@ -38,7 +38,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;
 	file://fbdev-not-fix.patch;patch=1 "
 
 SRC_URI_append_mnci   = 	" file://onlyfb.patch;patch=1 \
-                         	  file://faster-rotated.patch;patch=1 
+                         	  file://faster-rotated.patch;patch=1 \
 				  file://devfs.patch;patch=1 \
                           	  file://disable-apm.patch;patch=1"
 SRC_URI_append_collie = 	" file://faster-rotated.patch;patch=1"
