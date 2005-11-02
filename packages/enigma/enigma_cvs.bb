@@ -9,9 +9,7 @@ PN = "enigma"
 PR = "r0"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;method=ext \
-           file://acinclude.m4 \
            file://enigma.sh \
-           file://oe_enigma_diff.patch;patch=1;pnum=1 \
            file://config \
            file://userbouquet* \
            http://sources.dreamboxupdate.com/download/opendreambox/enigma/boot-${MACHINE} \
@@ -28,7 +26,6 @@ EXTRA_OECONF = "--with-target=native --with-boxtype=${MACHINE} "
 
 do_configure_prepend() {
 	mkdir -p m4
-	install ${WORKDIR}/acinclude.m4 ${S}/acinclude.m4
 }
 
 do_compile_prepend() {

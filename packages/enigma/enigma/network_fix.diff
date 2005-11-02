@@ -92,10 +92,10 @@ retrieving revision 1.12
 diff -u -r1.12 setup_extra.h
 --- a/src/setup_extra.h	1 Sep 2005 22:33:22 -0000	1.12
 +++ b/src/setup_extra.h	12 Sep 2005 15:48:46 -0000
-@@ -17,6 +17,7 @@
- 	void factory_reset();
- 	void rc_setup();
+@@ -19,6 +19,7 @@
+ #ifndef TUXTXT_CFG_STANDALONE
  	void tuxtxtCachingChanged(bool);
+ #endif
 +	void networkFixChanged(bool);
  	void colorbuttonsChanged(bool);
  	void reinitializeHTTPServer(bool);
