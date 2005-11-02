@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -20,6 +20,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/pxa_i2c_fixes-r3.patch;patch=1 \
            ${RPSRC}/pxa_ohci_platform-r2.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r2.patch;patch=1 \
+           ${RPSRC}/revert_bootmem-r0.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-r10.patch;patch=1 \
            ${RPSRC}/corgi_pm-r4.patch;patch=1 \
@@ -33,7 +34,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/input_power-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_bl_kick-r1.patch;patch=1 \
-           ${RPSRC}/corgi_snd-r11.patch;patch=1 \
+           ${RPSRC}/corgi_snd-r14.patch;patch=1 \
            ${RPSRC}/export_scoop-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/fbdev/fbdev-r0.patch;patch=1 \
@@ -68,6 +69,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
            file://dtl1_cs-add-socket-revE.patch;patch=1 \
+           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
