@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -16,26 +16,24 @@ DEFAULT_PREFERENCE = "-1"
 # Hacks should clearly named and at the bottom
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.14-git3.bz2;patch=1 \
-           ${RPSRC}/pxa_pmops_static-r1.patch;patch=1 \
-           ${RPSRC}/pxa_i2c_fixes-r3.patch;patch=1 \
+           ${RPSRC}/revert_bootmem-r1.patch;patch=1 \
+           ${RPSRC}/pxa_pmops_static-r2.patch;patch=1 \
            ${RPSRC}/pxa_ohci_platform-r2.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r2.patch;patch=1 \
-           ${RPSRC}/revert_bootmem-r1.patch;patch=1 \
-           ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-r10.patch;patch=1 \
-           ${RPSRC}/corgi_pm-r4.patch;patch=1 \
-           ${RPSRC}/spitz_base_extras-r7.patch;patch=1 \
-           ${RPSRC}/spitz_pm-r5.patch;patch=1 \
-           ${RPSRC}/spitz_cf-r5.patch;patch=1 \
            ${RPSRC}/akita_mtd_fix-r0.patch;patch=1 \
+           ${RPSRC}/spitz_cf-r7.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-r12.patch;patch=1 \
+           ${RPSRC}/corgi_pm-r5.patch;patch=1 \
+           ${RPSRC}/spitz_pm-r8.patch;patch=1 \
+           ${RPSRC}/spitz_base_extras-r11.patch;patch=1 \
            ${RPSRC}/max7310-r1.patch;patch=1 \
+           ${RPSRC}/pxa_i2c_fixes-r3.patch;patch=1 \
+           ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r1.patch;patch=1 \
            ${RPSRC}/input_power-r2.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_bl_kick-r1.patch;patch=1 \
            ${RPSRC}/corgi_snd-r14.patch;patch=1 \
-           ${RPSRC}/export_scoop-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/fbdev/fbdev-r0.patch;patch=1 \
            ${RPSRC}/fbdev/fbdev1-r0.patch;patch=1 \
@@ -44,10 +42,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/fbdev/con_rotate-r0.patch;patch=1 \
            ${RPSRC}/fbdev/con_rotate1-r1.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_base-r22.patch;patch=1 \
-           ${RPSRC}/ipaq/hx2750_bl-r2.patch;patch=1 \
+           ${RPSRC}/ipaq/hx2750_bl-r3.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_pcmcia-r1.patch;patch=1 \
-           ${RPSRC}/ipaq/pxa_keys-r2.patch;patch=1 \
-           ${RPSRC}/ipaq/tsc2101-r8.patch;patch=1 \
+           ${RPSRC}/ipaq/pxa_keys-r3.patch;patch=1 \
+           ${RPSRC}/ipaq/tsc2101-r9.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_test1-r2.patch;patch=1 \
            ${DOSRC}/tc6393-device-r5.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r6.patch;patch=1 \
