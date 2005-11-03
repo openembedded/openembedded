@@ -4,9 +4,9 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
 PR = "r0"
-PV = "0.0+cvs-${CVSDATE}"
+PV = "0.3.1+cvs-${CVSDATE}"
 
-DEFAULT_PREFERENCE = 1
+DEFAULT_PREFERENCE = -1
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=libmimedir"
 S = "${WORKDIR}/libmimedir"
