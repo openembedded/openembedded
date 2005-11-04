@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -27,6 +27,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
            ${RPSRC}/spitz_pm-r8.patch;patch=1 \
            ${RPSRC}/spitz_base_extras-r11.patch;patch=1 \
            ${RPSRC}/max7310-r1.patch;patch=1 \
+           ${RPSRC}/enable_iwmmxt-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r3.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
