@@ -78,12 +78,36 @@ python () {
     major = '.'.join(name[0].split('.')[0:2])
     minor = '.'.join(name[0].split('.')[0:3])
     patch_uri = [ None ]
-    filedir = "${FILE_DIRNAME}/nas100d-kernel/%s"
+    filedir = "${FILE_DIRNAME}/nslu2-kernel/%s"
     # This entry will become the last one (everything is inserted before it)
     filepath = [ filedir % "files" ]
+    pref = 10
+    mmac = 0
     for patch in pv[1:]:
 	name.append(patch)
 	pname = '-'.join(name)
+    	if patch[0:2] == "rc" or patch[0:3] == "pre":
+	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/testing/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
+	    kernel[-1] = str(int(kernel[-1]) - 1)
+	    if patch[0:2] == "rc" and pref == 10:
+	    	pref = 6
+		filepath[0:0] = [ filedir % name[0] ]
+		filepath[0:0] = [ filedir % (name[0] + "-rc") ]
+	    else:
+	    	pref = 2
+	elif patch[0:2] == "bk" or patch[0:3] == "git":
+	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
+	    pref = 2
+	elif patch[0:2] == "ac":
+	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/alan/linux-%s/%s/patch-%s" % (major, base, pname))
+	    mmac = 2
+	    filepath[0:0] = [ filedir % (name[0] + "-ac") ]
+	elif patch[0:2] == "mm":
+	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/%s/%s/%s/%s.bz2;patch=1;pname=%s" % (major, base, pname, pname, pname))
+	    mmac = 2
+	    filepath[0:0] = [ filedir % (name[0] + "-mm") ]
+	else:
+	    raise bb.build.FuncFailed("nslu2-kernel: patch %s not recognized in %s" % (patch, '-'.join(pv)))
 	filepath[0:0] = [ filedir % pname ]
 	base = pname
 
@@ -103,6 +127,7 @@ python () {
     bb.data.setVar("N1K_FILESPATH", ':'.join(filepath), d)
     # bb.note("N1K_FILESPATH := %s" % ' '.join(filepath))
     bb.data.setVar("DEFAULT_PREFERENCE", pref-mmac, d)
+    # bb.note("DEFAULT_PREFERENCE := %s" % (pref-mmac))
 }
 
 # FILESPATH: this list is in order last-searched-first, therefore
