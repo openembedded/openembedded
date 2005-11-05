@@ -78,7 +78,7 @@ python () {
     major = '.'.join(name[0].split('.')[0:2])
     minor = '.'.join(name[0].split('.')[0:3])
     patch_uri = [ None ]
-    filedir = "${FILE_DIRNAME}/nslu2-kernel/%s"
+    filedir = "${FILE_DIRNAME}/nas100d-kernel/%s"
     # This entry will become the last one (everything is inserted before it)
     filepath = [ filedir % "files" ]
     pref = 10
@@ -107,7 +107,7 @@ python () {
 	    mmac = 2
 	    filepath[0:0] = [ filedir % (name[0] + "-mm") ]
 	else:
-	    raise bb.build.FuncFailed("nslu2-kernel: patch %s not recognized in %s" % (patch, '-'.join(pv)))
+	    raise bb.build.FuncFailed("nas100d-kernel: patch %s not recognized in %s" % (patch, '-'.join(pv)))
 	filepath[0:0] = [ filedir % pname ]
 	base = pname
 
