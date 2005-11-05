@@ -1,0 +1,86 @@
+Index: appearance.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/settings/appearance2/appearance.cpp,v
+retrieving revision 1.35
+retrieving revision 1.37
+diff -u -r1.35 -r1.37
+--- appearance2/appearance.cpp	9 Jun 2005 20:47:58 -0000	1.35
++++ appearance2/appearance.cpp	26 Oct 2005 15:36:04 -0000	1.37
+@@ -394,6 +394,39 @@
+     m_rotdir_ccw-> setChecked ( rot == CCW );
+     m_rotdir_flip-> setChecked ( rot == Flip );
+ 
++    QFrame *f2 = new QFrame ( tab );
++    f2-> setFrameStyle ( QFrame::HLine | QFrame::Sunken );
++    vertLayout-> addWidget ( f2 );
++    vertLayout-> addSpacing ( 3 );
++
++    QHBoxLayout *bigIconlay = new QHBoxLayout ( vertLayout, 3 );
++
++    QLabel* label2 = new QLabel( tr( "Big Icon size:" ), tab );
++    bigIconlay-> addWidget ( label2, 0, 0 );
++
++    m_bigIconSize = new QSpinBox(0, 128, 1, tab);
++    m_bigIconSize->setValue(cfg.readNumEntry( "BigIconSize", AppLnk::bigIconSize() ));
++    bigIconlay->addWidget( m_bigIconSize );
++    label2->setBuddy( m_bigIconSize );
++    QWhatsThis::add( label2, tr( "Big Icon Size determines the size of the application icons in Launcher" ) );
++    QWhatsThis::add( m_bigIconSize, tr( "Big Icon Size determines the size of the application icons in Launcher" ) );
++
++    QHBoxLayout *smallIconlay = new QHBoxLayout ( vertLayout, 3 );
++
++    QLabel* label3 = new QLabel( tr( "Small Icon size:" ), tab );
++    smallIconlay-> addWidget ( label3, 0, 0 );
++
++    m_smallIconSize = new QSpinBox(0, 128, 1, tab);
++    m_smallIconSize->setValue(cfg.readNumEntry( "SmallIconSize", AppLnk::smallIconSize() ));
++    smallIconlay->addWidget( m_smallIconSize );
++    label3->setBuddy( m_smallIconSize );
++    QWhatsThis::add( label3, tr( "Small Icon Size determines the size of many of the icons seen in applications (in menus, tab bars, tool bars, etc.), as well as the size of taskbar." ) );
++    QWhatsThis::add( m_smallIconSize, tr( "Small Icon Size determines the size of many of the icons seen in applications (in menus, tab bars, tool bars, etc.), as well as the size of taskbar." ) );
++
++    m_useBigPixmaps = new QCheckBox( tr("use Big Pixmaps"), tab);
++    m_useBigPixmaps->setChecked(cfg.readBoolEntry( "useBigPixmaps", qApp->desktop()->width() > 320 ));
++    vertLayout->addWidget( m_useBigPixmaps );
++    QWhatsThis::add( m_useBigPixmaps, tr( "Enlarge toolbar pixmaps, you probably want to enable this option for devices with screen resolution greater than 240x320" ) );
+ 
+     /*
+      * add a spacing
+@@ -513,6 +546,10 @@
+ 
+     config. writeEntry( "LeftHand", m_leftHand->isChecked() );
+ 
++    config. writeEntry( "useBigPixmaps", m_useBigPixmaps->isChecked() );
++    config. writeEntry( "BigIconSize", m_bigIconSize->value() );
++    config. writeEntry( "SmallIconSize", m_smallIconSize->value() );
++
+     config. write ( ); // need to flush the config info first
+     Global::applyStyle ( );
+ 
+Index: appearance.h
+===================================================================
+RCS file: /cvs/opie/noncore/settings/appearance2/appearance.h,v
+retrieving revision 1.13
+retrieving revision 1.14
+diff -u -r1.13 -r1.14
+--- appearance2/appearance.h	5 Jun 2005 22:47:00 -0000	1.13
++++ appearance2/appearance.h	17 Oct 2005 13:28:10 -0000	1.14
+@@ -37,6 +37,7 @@
+ #include <qpe/fontdatabase.h>
+ 
+ #include <qdialog.h>
++#include <qspinbox.h>
+ 
+ using Opie::Ui::OFontSelector;
+ 
+@@ -123,6 +124,10 @@
+ 
+     QWidget *     m_advtab;
+     QCheckBox    *m_leftHand;
++
++    QSpinBox	*m_bigIconSize;
++    QSpinBox	*m_smallIconSize;
++    QCheckBox	*m_useBigPixmaps;
+ };
+ 
+ #endif
