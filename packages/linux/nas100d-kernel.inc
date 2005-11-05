@@ -1,0 +1,242 @@
+# nas100d-kernel.inc
+#
+# Standard definitions for any NAS 100d Linux kernel.
+# Include this file in a .bb which specifies, at least,
+# PN,PV,PR for the desired kernel
+#
+# Define the following *before* including this file as
+# required:
+#
+# N1K_FILES - kernel-tree path of files to install
+# N1K_PATCHES - full list of patches to apply
+#
+# N1K_SUFFIX - the suffix to add after 'zImage-' in the
+#   deploy/images directory - defaults to "ludeos"
+#
+# --------------------------------------------------------------
+#
+# Within this file bitbake variables local to the file are
+# named N1K_FOO
+#
+SECTION = "kernel"
+DESCRIPTION = "Linux kernel for the Iomega NAS 100d device"
+LICENSE = "GPL"
+MAINTAINER = "John Bowler <jbowler@acm.org>"
+
+DEPENDS += "devio-native"
+
+# Linux kernel source has the general form linux-X.Y.Z-patchP,
+# X.Y is the major version number, Z (which may have multiple
+# parts) is a sub-version and 'patch' is something like 'mm' or
+# 'ac' with a patch version.  The original bz2 archive will be
+# in a directory/file vX.Y/linux-X.Y.Z.tar.bz2.  The unpacked
+# source will be in the directory linux-X.Y.Z and this directory
+# name corresponds to the module directory (in /lib/modules).
+#
+# The corresponding .bb file should be called:
+#
+#	package_X.Y.Z-patchP
+#
+# Giving PN=package PV=X.Y.Z-patchP (and PR is set in the .bb
+# file).  Files, including the all important defconfig, are
+# searched for in the following directories (last one first):
+#
+#	ludeos-kernel-2.6.11.2
+#	nas100d-kernel/files
+#	nas100d-kernel/X.Y
+#	nas100d-kernel/X.Y.Z
+#	nas100d-kernel/X.Y.Z-patch
+#	nas100d-kernel/X.Y.Z-patchP
+#	package-X.Y.Z-patchP
+#
+# This allows sharing of patch files and other useful source!
+# To share a file or patch with an earlier version put it in
+# the shared directory - e.g. to use foo.patch on 2.6.11.2 and
+# 2.6.11.4 it should be in directory nas100d-kernel/2.6.11.
+#
+# Note that when there are multiple patches the X.Y.Z-patch form
+# uses base-patch (e.g. 2.6.12-mm) whereas X.Y.Z-patchP has the
+# full form, for example 2.6.12-rc3-mm1 (in the same case).
+
+#PN=package-name
+#PV=package-version (full)
+
+# The patch has the general form (rcN|preN|acN|mmN|bkN)* with the
+# separate patch items being separated by '-' characters.  The
+# rc patch is first and has the important property that it
+# requires the *preceding* kernel base version and that this
+# will be the source directory name.
+python () {
+    # The patches list may be empty.  This code starts with the base
+    # kernel version and steps through the patches.  Because the rc and
+    # pre patches actually require the *preceding* kernel version the code
+    # fixes that up appropriately.
+    pv = bb.data.getVar("PV",d,1).split('-')
+    kernel = pv[0].split('.')
+    base = pv[0]
+    name = [base]
+    major = '.'.join(name[0].split('.')[0:2])
+    minor = '.'.join(name[0].split('.')[0:3])
+    patch_uri = [ None ]
+    filedir = "${FILE_DIRNAME}/nas100d-kernel/%s"
+    # This entry will become the last one (everything is inserted before it)
+    filepath = [ filedir % "files" ]
+    for patch in pv[1:]:
+	name.append(patch)
+	pname = '-'.join(name)
+	filepath[0:0] = [ filedir % pname ]
+	base = pname
+
+    base = '.'.join(kernel)
+    patch_uri[0] = "ftp://ftp.kernel.org/pub/linux/kernel/v%s/linux-%s.tar.bz2" % (major, base)
+    filepath[-1:-1] = [ filedir % base ]
+    if base != minor:
+	    filepath[-1:-1] = [ filedir % minor ]
+    filepath[-1:-1] = [ filedir % major ]
+
+    bb.data.setVar("N1K_SRCMAJ", major, d)
+    # bb.note("N1K_SRCMAJ := %s" % major)
+    bb.data.setVar("N1K_SRCVER", base, d)
+    # bb.note("N1K_SRCVER := %s" % base)
+    bb.data.setVar("N1K_SRCURI", ' '.join(patch_uri), d)
+    # bb.note("N1K_SRCURI := %s" % ' '.join(patch_uri))
+    bb.data.setVar("N1K_FILESPATH", ':'.join(filepath), d)
+    # bb.note("N1K_FILESPATH := %s" % ' '.join(filepath))
+    bb.data.setVar("DEFAULT_PREFERENCE", pref-mmac, d)
+}
+
+# FILESPATH: this list is in order last-searched-first, therefore
+# the first entry is the *latest* and/or most specific
+FILESPATH = "${N1K_FILESPATH}:${FILE_DIRNAME}/nas100d-kernel/"
+
+# The working directory will be the 'base' version (which may not be the
+# same as implied by the PV variable because it corresponds to the prior
+# minor version for rc and pre patched versions).
+S = "${WORKDIR}/linux-${N1K_SRCVER}"
+
+# N1K_FILES is a list of additional files added to the source, these are
+# put in place before the patches, so may themselves be patched.  The list
+# gives the path name relative to the base of the kernel source tree, the
+# base file name is used to *find* the file.
+N1K_FILES ?= ""
+
+N1K_SRCFILES = "${@( ' '.join([ ("file://" + n2k_file.split('/')[-1]) for n2k_file in bb.data.getVar("N1K_FILES",d,1).split(None) ]) )}"
+
+# N1K_PATCHES is a list of additional patches, the list specified
+# here comes from the ludeos-2.6.11.2 kernel, typically extra
+# patches will be required and very often patches will need to
+# be removed (i.e. the default is typically not very useful!)
+N1K_PATCHES ?= ""
+
+N1K_SUFFIX ?= "ludeos"
+
+SRC_URI  = "${N1K_SRCURI}"
+SRC_URI += "${N1K_SRCFILES}"
+SRC_URI += "${N1K_PATCHES}"
+SRC_URI += "file://defconfig"
+
+COMPATIBLE_HOST = 'arm.*-linux'
+
+inherit kernel
+
+ARCH = "arm"
+KERNEL_IMAGETYPE = "zImage"
+# To specify the console set KERNEL_CONSOLE in the .bb file.
+# CMDLINE_ROOT contains the boot options, CMDLINE_KERNEL_OPTIONS
+# contains the things for a specific kernel.
+CMDLINE_KERNEL_OPTIONS ?= "reboot=s"
+CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
+# Add distro specific debug (or non-debug) options to this
+CMDLINE_DEBUG ?= ""
+CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
+
+# Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
+# required.  Notice that this has to be done for each separately built
+# module as well!
+KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
+KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
+
+# Set EXTRAVERSION and LOCALVERSION to "" so that the kernel version
+# remains pinned to the x.y.z form, also turn off the directory
+# printing which provides almost all the output of an incremental build.
+EXTRA_OEMAKE += "EXTRAVERSION="
+EXTRA_OEMAKE += "LOCALVERSION="
+EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
+
+# By putting the added files in place in a separate task before
+# do_patch it becomes possible to patch these files.
+do_unpacklocal() {
+	for f in ${N1K_FILES}
+	do
+		s="$(basename "$f")"
+		install -m 0644 "${WORKDIR}/$s" "${S}/$f"
+	done
+}
+
+addtask unpacklocal before do_patch after do_unpack
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	if test '${ARCH_BYTE_SEX}' = le
+	then
+		sed -i '/CONFIG_CPU_BIG_ENDIAN/d' '${S}/.config'
+	else
+		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
+	fi
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
+	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
+}
+
+# This function adds the required prefix to the image to deal with two
+# problems:
+#
+# 1) The machine type set by RedBoot is wrong - the type for an ixdp425, not an NAS 100d
+#    e3a01c02 e3811055
+# 2) For LE kernels it is necessary to prefix change-to-le code to the kernel image:
+#    ee110f10 e3c00080 ee010f10
+#    and to byte swap the (LE) image to match the BE flash layout
+#
+# The argument to the function is the destination directory
+redboot_fixup_armeb() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'cp$'
+	mv "$1".new "$1"
+}
+
+redboot_fixup_arm() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'wb 0xee110f10,4' \
+		'wb 0xe3c00080,4' \
+		'wb 0xee010f10,4' \
+		'xp $,4' || {
+		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to byteswap zImage' >&2
+		return 1
+	}
+	mv "$1".new "$1"
+}
+
+do_install_append() {
+	redboot_fixup '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
+}
+
+do_deploy[dirs] = "${S}"
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+	redboot_fixup '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${N1K_SUFFIX}'
+}
+
+addtask deploy before do_build after do_compile
+
+python () {
+	# Don't build the kernel unless we're targeting an nas100d
+	mach = bb.data.getVar("MACHINE", d, 1)
+	if mach != 'nas100d':
+		raise bb.parse.SkipPackage("LudeOS only builds for the Iomega NAS 100d")
+}
