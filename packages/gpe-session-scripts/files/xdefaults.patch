@@ -1,0 +1,7 @@
+--- gpe-session-scripts-0.62/X11/Xdefaults.old	2004-11-26 23:40:15.000000000 +0000
++++ gpe-session-scripts-0.62/X11/Xdefaults	2004-11-26 23:40:17.000000000 +0000
+@@ -1,2 +1,3 @@
+ Rxvt*scrollBar_right: true
+-Rxvt*font: Mono-6
++Rxvt*font: xft:Mono:pixelsize=9
++

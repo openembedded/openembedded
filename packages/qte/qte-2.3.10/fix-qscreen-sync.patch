@@ -1,0 +1,17 @@
+Add a sync member to QScreen class
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/kernel/qgfx_qws.h~fix-qscreen-sync
++++ qt-2.3.10/src/kernel/qgfx_qws.h
+@@ -191,6 +191,7 @@
+     virtual int pixmapOffsetAlignment() { return 64; }
+     virtual int pixmapLinestepAlignment() { return 64; }
+ 
++    virtual void sync() {}
+     virtual bool onCard(unsigned char *) const;
+     virtual bool onCard(unsigned char *, ulong& out_offset) const;
+ 

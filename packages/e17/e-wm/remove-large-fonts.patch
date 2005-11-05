@@ -1,0 +1,25 @@
+diff -Nur e~/data/fonts/Makefile.am e/data/fonts/Makefile.am
+--- e~/data/fonts/Makefile.am	2005-08-31 09:54:20.000000000 -0700
++++ e/data/fonts/Makefile.am	2005-08-31 09:54:42.000000000 -0700
+@@ -15,10 +15,6 @@
+ baekmuk.COPYING \
+ dotum.ttf \
+ fonts.alias \
+-fonts.dir \
+-kochi-gothic.ttf \
+-kochi.COPYING \
+-fireflysung.ttf \
+-fireflysung.COPYING
++fonts.dir
+ 
+ EXTRA_DIST = $(files_DATA)
+diff -Nur e~/data/fonts/fonts.dir e/data/fonts/fonts.dir
+--- e~/data/fonts/fonts.dir	2005-08-31 09:54:20.000000000 -0700
++++ e/data/fonts/fonts.dir	2005-08-31 09:54:56.000000000 -0700
+@@ -50,6 +50,3 @@
+ VeraSeBd.ttf -Bitstream-Bitstream Vera Serif-bold-r-normal--0-0-0-0-p-0-iso8859-15
+ VeraSeBd.ttf -Bitstream-Bitstream Vera Serif-bold-r-normal--0-0-0-0-p-0-iso8859-9
+ dotum.ttf -misc-Baekmuk Dotum-medium-r-normal--0-0-0-0-p-0-iso8859-1
+-kochi-gothic.ttf -misc-Kochi Gothic-medium-r-normal--0-0-0-0-c-0-jisx0208.1983-0
+-kochi-gothic.ttf -misc-Kochi Gothic-medium-r-normal--0-0-0-0-p-0-iso8859-1
+-fireflysung.ttf -misc-New Sung-medium-r-normal--0-0-0-0-p-0-iso8859-1

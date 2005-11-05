@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- postfix-2.0.15/makedefs~makedefs
++++ postfix-2.0.15/makedefs
+@@ -189,7 +189,7 @@
+ 		    echo "No <db.h> include file found." 1>&2
+ 		    echo "Install the appropriate db*-devel package first." 1>&2
+ 		    echo "See the RELEASE_NOTES file for more information." 1>&2
+-		    exit 1
++		    #exit 1
+ 		fi
+ 		# GDBM locks the DBM .pag file after open. This breaks postmap.
+ 		# if [ -f /usr/include/gdbm-ndbm.h ]

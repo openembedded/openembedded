@@ -1,0 +1,10 @@
+--- localedata/SUPPORTED	26 Jun 2003 07:29:43 -0000	1.59
++++ localedata/SUPPORTED	30 Aug 2003 15:51:20 -0000
+@@ -113,7 +113,6 @@
+ ko_KR.EUC-KR/EUC-KR \
+ ko_KR.UTF-8/UTF-8 \
+ kw_GB/ISO-8859-1 \
+-lo_LA/UTF-8 \
+ lt_LT/ISO-8859-13 \
+ lv_LV/ISO-8859-13 \
+ mi_NZ/ISO-8859-13 \

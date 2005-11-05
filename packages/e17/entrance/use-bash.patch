@@ -1,0 +1,12 @@
+diff -Nur entrance~/src/client/entrance_session.c entrance/src/client/entrance_session.c
+--- entrance~/src/client/entrance_session.c	2005-09-29 15:03:26.000000000 -0700
++++ entrance/src/client/entrance_session.c	2005-09-29 15:04:11.000000000 -0700
+@@ -470,7 +470,7 @@
+            snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
+                     (int) pid);
+         }
+-        shell = strdup("/bin/sh");
++        shell = strdup("/bin/bash");
+         /* this bypasses a race condition where entrance loses its x
+            connection before the wm gets it and x goes and resets itself */
+         sleep(10);

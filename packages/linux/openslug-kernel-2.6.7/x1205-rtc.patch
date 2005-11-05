@@ -1,0 +1,142 @@
+--- drivers/i2c/chips/Kconfig.orig	2004-06-16 01:19:35.000000000 -0400
++++ drivers/i2c/chips/Kconfig	2004-09-22 18:09:48.454794342 -0400
+@@ -240,6 +240,16 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called pcf8591.
+ 
++config SENSORS_X1205
++ 	tristate "Xicor X1205 RTC chip"
++ 	depends on I2C && EXPERIMENTAL
++ 	select I2C_SENSOR
++ 	help
++ 	  If you say yes here you get support for the Xicor x1205 RTC chip.
++ 
++ 	  This driver can also be built as a module.  If so, the module
++ 	  will be called x1205-rtc
++
+ config SENSORS_RTC8564
+ 	tristate "Epson 8564 RTC chip"
+ 	depends on I2C && EXPERIMENTA
+--- drivers/i2c/chips/Makefile.old	2004-06-16 01:20:26.000000000 -0400
++++ drivers/i2c/chips/Makefile	2004-09-22 16:48:06.435580334 -0400
+@@ -25,6 +25,7 @@
+ obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564.o
+ obj-$(CONFIG_SENSORS_VIA686A)	+= via686a.o
+ obj-$(CONFIG_SENSORS_W83L785TS)	+= w83l785ts.o
++obj-$(CONFIG_SENSORS_X1205)     += x1205-rtc.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+ EXTRA_CFLAGS += -DDEBUG
+
+--- arch/arm/mach-ixp4xx/ixp425-time.c.old	1969-12-31 19:00:00.000000000 -0500
++++ arch/arm/mach-ixp4xx/ixp425-time.c	2004-09-22 23:30:54.165988077 -0400
+@@ -0,0 +1,87 @@
++/*
++ * arch/arm/mach-ixp425/ixp425-time.c
++ *
++ * Timer tick for IXP425 based sytems. We use OS timer1 on the CPU.
++ *
++ * Author:  Peter Barry
++ * Copyright:   (C) 2001 Intel Corporation.
++ *
++ * Maintainer: Deepak Saxena <dsaxena@mvista.com>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/time.h>
++#include <linux/init.h>
++#include <linux/smp.h>
++
++#include <asm/uaccess.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <linux/timex.h>
++#include <asm/hardware.h>
++
++
++extern int setup_arm_irq(int, struct irqaction *);
++
++/* IRQs are disabled before entering here from do_gettimeofday() */
++static unsigned long ixp425_gettimeoffset(void)
++{
++	u32 elapsed, usec, curr, reload;
++
++	/* 
++	 * We need elapsed timer ticks since last interrupt
++	 * 
++	 * Read the CCNT value.  The returned value is 
++	 * between -LATCH and 0, 0 corresponding to a full jiffy 
++	 */
++
++	reload = *IXP425_OSRT1 & ~IXP425_OST_RELOAD_MASK;
++	curr = *IXP425_OST1;
++
++	/* Corner case when rolling over as int disabled ?? */
++	elapsed = reload - curr;
++
++	/* Now convert them to usec */
++	usec = (unsigned long)(elapsed * tick) / LATCH;
++
++	return usec;
++}
++
++static void ixp425_timer_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	/* Clear Pending Interrupt by writing '1' to it */
++	*IXP425_OSST = IXP425_OSST_TIMER_1_PEND;
++
++	do_timer(regs);
++}
++
++extern unsigned long (*gettimeoffset)(void);
++
++static struct irqaction timer_irq = {
++	name: "IXP425 Timer 1",
++};
++
++void __init setup_timer(void)
++{
++	gettimeoffset = ixp425_gettimeoffset;
++	timer_irq.handler = ixp425_timer_interrupt;
++
++	/* Clear Pending Interrupt by writing '1' to it */
++	*IXP425_OSST = IXP425_OSST_TIMER_1_PEND;
++
++	/* Setup the Timer counter value */
++	*IXP425_OSRT1 = (LATCH & ~IXP425_OST_RELOAD_MASK) | IXP425_OST_ENABLE;
++
++	/* Connect the interrupt handler and enable the interrupt */
++	setup_arm_irq(IRQ_IXP425_TIMER1, &ixp4xx_timer_irq);
++}
+--- include/linux/i2c-id.h	2004-06-16 01:18:57.000000000 -0400
++++ include/linux/i2c-id.h.new	2004-09-23 00:56:30.772429217 -0400
+@@ -101,7 +101,7 @@
+ #define I2C_DRIVERID_UDA1342	53	/* UDA1342 audio codec		*/
+ #define I2C_DRIVERID_ADV7170	54	/* video encoder		*/
+ #define I2C_DRIVERID_RADEON	55	/* I2C bus on Radeon boards	*/
+-
++#define I2C_DRIVERID_X1205	0xF0	/* Xicor X1205 RTC         	*/
+ 
+ #define I2C_DRIVERID_EXP0	0xF0	/* experimental use id's	*/
+ #define I2C_DRIVERID_EXP1	0xF1
+--- archold/arm/kernel/time.c	2004-06-16 01:19:43.000000000 -0400
++++ arch/arm/kernel/time.c	2004-10-14 12:28:51.434231567 -0400
+@@ -58,7 +58,7 @@ static int dummy_set_rtc(void)
+  * hook for setting the RTC's idea of the current time.
+  */
+ int (*set_rtc)(void) = dummy_set_rtc;
+-
++EXPORT_SYMBOL(set_rtc);
+ static unsigned long dummy_gettimeoffset(void)
+ {
+ 	return 0;

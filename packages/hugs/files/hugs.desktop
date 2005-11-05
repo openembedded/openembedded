@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Hugs
+Comment=Hugs Haskell interpreter
+Exec=x-terminal-emulator -e hugs
+Terminal=0
+Type=Application
+Icon=hugs.png
+Categories=Programming

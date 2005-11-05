@@ -1,0 +1,19 @@
+diff -uNr konq.orig/konq-embed/src/mainwindowbase.cc konqueror-embedded-snapshot-20030705/konq-embed/src/mainwindowbase.cc
+--- konq.orig/konq-embed/src/mainwindowbase.cc	2005-01-26 14:34:06.335579881 +0100
++++ konqueror-embedded-snapshot-20030705/konq-embed/src/mainwindowbase.cc	2005-01-26 14:35:55.839632151 +0100
+@@ -357,12 +357,12 @@
+ 
+     if ( u.isMalformed() )
+     {
+-	if ( QRegExp( "^www" ).match( text ) == 0 )
+-	    u = KURL( text.prepend( "http://" ) );
+ #if defined(ENABLE_FTP)
+-	else if ( QRegExp( "^ftp" ).match( text ) == 0 )
++	if ( QRegExp( "^ftp" ).match( text ) == 0 )
+ 	    u = KURL( text.prepend( "ftp://" ) );
++        else
+ #endif
++	    u = KURL( text.prepend( "http://" ) );
+     }
+ 
+     if ( !u.isMalformed() )

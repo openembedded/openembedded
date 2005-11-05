@@ -1,0 +1,20 @@
+--- drm/linux-core/Makefile	2005-06-03 21:02:54.000000000 +0100
++++ drm/linux-core/Makefile	2005-06-17 21:40:34.000000000 +0100
+@@ -173,7 +173,7 @@
+ all: modules
+ 
+ modules: includes
+-	make -C $(LINUXDIR) $(GETCONFIG) SUBDIRS=`pwd` DRMSRCDIR=`pwd` modules
++	$(MAKE) -C $(LINUXDIR) $(GETCONFIG) SUBDIRS=`pwd` DRMSRCDIR=`pwd` modules
+ 
+ ifeq ($(HEADERFROMBOOT),1)
+ 
+@@ -243,7 +243,7 @@
+ 	rm -rf $(CLEANFILES)
+ 
+ $(MODULE_LIST)::
+-	make DRM_MODULES=$@ modules
++	 $(MAKE) DRM_MODULES=$@ modules
+ 
+ # Build test utilities
+ 

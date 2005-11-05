@@ -1,0 +1,47 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-wlan-ng-0.2.1pre21/src/include/wlan/wlan_compat.h~no-compat
++++ linux-wlan-ng-0.2.1pre21/src/include/wlan/wlan_compat.h
+@@ -351,14 +351,14 @@
+ 
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(2,4,20))
+ #ifdef _LINUX_LIST_H
+-
++/*
+ static inline void list_move_tail(struct list_head *list,
+           struct list_head *head)
+ {
+         __list_del(list->prev, list->next);
+         list_add_tail(list, head);
+ }
+-
++*/
+ static inline void __list_splice(struct list_head *list,
+                                 struct list_head *head)
+ {
+@@ -372,13 +372,13 @@
+       last->next = at;
+       at->prev = last;
+ }
+-
++/*
+ static inline void list_move(struct list_head *list, struct list_head *head)
+ {
+       __list_del(list->prev, list->next);
+       list_add(list, head);
+ }
+-
++*/
+ static inline void list_splice_init(struct list_head *list,
+             struct list_head *head)
+ {
+@@ -388,7 +388,6 @@
+        }
+ }
+ 
+-
+ #endif  // LIST_H
+ #endif

@@ -1,0 +1,83 @@
+#!/bin/sh
+
+usage="Usage: $0 disk1|disk2"
+
+if [ $# -gt 1 ] ; then
+    echo $usage
+    exit 1
+fi
+
+if [ $# -lt 1 ] ; then
+    echo $usage
+    exit 1
+fi
+
+if   [ "$1" = "disk1" ] ; then
+	source=/share/hdd/conf
+	target=/share/hdd/data
+elif [ "$1" = "disk2" ] ; then
+	source=/share/flash/conf
+	target=/share/flash/data
+else
+	echo $usage
+	exit 1
+fi
+
+# Check it's a real mount point
+
+if grep $source /proc/mounts >/dev/null 2>&1 ; then
+    echo "Source disk is $source"
+else
+    echo "Error: $source is not a mounted disk"
+    exit 1
+fi
+
+if grep $target /proc/mounts >/dev/null 2>&1 ; then
+    echo "Target disk is $target"
+else
+    echo "Error: $target is not a mounted disk"
+    exit 1
+fi
+
+if [ -d $source/opt ] ; then
+    if [ -d $target/opt.old -a -h $target/opt ] ; then
+	echo "Reverting old /opt symlink on $target."
+	rm -f $target/opt
+	mv $target/opt.old $target/opt
+    fi
+    echo "Copying /opt directory from $source to $target."
+    ( cd $source ; tar cf - opt ) | ( cd $target ; tar xf - )
+    rm -rf $source/opt.old
+    mv $source/opt $source/opt.old
+fi
+
+if [ -d $source/usr ] ; then
+    if [ -d $target/usr/lib/ipkg.old -a -h $target/usr/lib/ipkg ] ; then
+	echo "Reverting old /usr/lib/ipkg symlink on $target."
+	rm -f $target/usr/lib/ipkg
+	mv $target/usr/lib/ipkg.old $target/usr/lib/ipkg
+    fi
+    echo "Copying /usr directory from $source to $target."
+    ( cd $source ; tar cf - usr ) | ( cd $target ; tar xf - )
+    rm -rf $source/usr.old
+    mv $source/usr $source/usr.old
+fi
+
+if [ -d $source/unslung ] ; then
+    echo "Copying /unslung directory from $source to $target."
+    ( cd $source ; tar cf - unslung ) | ( cd $target ; tar xf - )
+    rm -rf $source/unslung.old
+    mv $source/unslung $source/unslung.old
+fi
+
+if [ -f $target/opt/bin/perl ] ; then
+    echo "Replicating /usr/bin/perl symlink."
+    ln -s /opt/bin/perl $target/usr/bin/perl
+fi
+
+if [ -f $target/opt/bin/bash ] ; then
+    echo "Replicating /bin/bash symlink."
+    ln -s /opt/bin/bash $target/bin/bash
+fi
+
+exit 0

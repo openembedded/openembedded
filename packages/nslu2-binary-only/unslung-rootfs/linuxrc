@@ -1,0 +1,132 @@
+#!/bin/sh
+
+# ****  DO NOT EVEN THINK OF EDITING OR REMOVING THIS FILE  ****
+# **** UNLESS YOU REALLY KNOW *EXACTLY* WHAT YOU ARE DOING. ****
+
+
+# Determine the desired rootfs based on user flag files.
+
+if [ -f /.sda1root ] ; then
+    /bin/echo "Preferred root device is /dev/sda1 (disk 1)"
+    mounted=/mnt
+    prefroot=sda1
+elif [ -f /.sda2root ] ; then
+    /bin/echo "Preferred root device is /dev/sda2 (disk 1)"
+    mounted=/mnt
+    prefroot=sda2
+elif [ -f /.sdb1root ] ; then
+    /bin/echo "Preferred root device is /dev/sdb1 (disk 2)"
+    mounted=/mnt
+    prefroot=sdb1
+elif [ -f /.sdb2root ] ; then
+    /bin/echo "Preferred root device is /dev/sdb2 (disk 2)"
+    mounted=/mnt
+    prefroot=sdb2
+elif [ -f /.nfsroot ] ; then
+    /bin/echo "Preferred root device is NFS"
+    mounted=/mnt
+    prefroot=nfsroot
+else
+    /bin/echo "Preferred root device is jffs2"
+    mounted=
+    prefroot=jffs2
+fi
+
+
+# Perform prepatory tasks, and determine whether the desired rootfs is viable.
+
+/bin/mount -t proc proc /proc
+
+if [ $prefroot = "sda1" -o $prefroot = "sda2" -o $prefroot = "sdb1" -o $prefroot = "sdb2" ] ; then
+    /bin/echo "Sleeping while waiting for disk..."
+    cnt=20
+    while [ $cnt -gt 0 ] ; do
+      echo -ne "\r$cnt "
+      sleep 1
+      [ $prefroot = "sda1" ] && [ -f /proc/hd_conn ] && cnt=0
+      [ $prefroot = "sda2" ] && [ -f /proc/hd_conn ] && cnt=0
+      [ $prefroot = "sdb1" ] && [ -f /proc/hd2_conn ] && cnt=0
+      [ $prefroot = "sdb2" ] && [ -f /proc/hd2_conn ] && cnt=0
+      cnt=`expr $cnt - 1`
+    done
+    echo
+    /bin/mount -rt ext3 /dev/$prefroot /mnt
+    if [ -L /mnt/sbin/init -o -x /mnt/sbin/init -o \
+	-L /mnt/bin/init  -o -x /mnt/bin/init ] ; then
+	/bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
+    else
+	/bin/umount /mnt
+	/bin/echo "Can't find valid rootfs on /dev/$prefroot, using jffs2 ..."
+	mounted=
+	prefroot=jffs2
+    fi
+fi
+
+if [ $prefroot = "nfsroot" ] ; then
+
+    sysconflen=`/bin/dd if=/dev/mtd1 bs=4 count=1 2>/dev/null | /usr/bin/hexdump -n 6 -e '"%02d"'`
+    ipaddr=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep ip_addr | sed -e s/ip_addr=//`
+    netmask=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep netmask | sed -e s/netmask=//`
+    gateway=`/bin/dd if=/dev/mtd1 bs=1 count=$sysconflen skip=4 2>/dev/null | grep gateway | sed -e s/gateway=//`
+
+    /sbin/insmod ixp400
+    /sbin/insmod ixp425_eth
+    /sbin/ifconfig ixp0 up $ipaddr netmask $netmask
+    /sbin/route add default gw $gateway
+
+    /sbin/ifconfig lo up 127.0.0.1
+
+    # The nfsrootloc and nfsrootopts vars can be overridden here.
+    . /.nfsroot
+
+    /bin/mount $nfsrootopts $nfsrootloc /mnt
+
+    if  [ -L /mnt/sbin/init -o -x /mnt/sbin/init -o \
+	-L /mnt/bin/init  -o -x /mnt/bin/init ] ; then
+	/bin/echo "Root filesystem will be mounted from an NFS root ..."
+	mounted=/mnt
+    else
+	/bin/umount /mnt
+	/bin/echo "Can't find valid NFS rootfs, using jffs2 ..."
+	mounted=
+	prefroot=jffs2
+    fi
+fi
+
+if [ $prefroot = "jffs2" ] ; then
+    /bin/echo "Root filesystem will be mounted from /dev/mtdblock4 ..."
+    mounted=
+fi
+
+
+/bin/umount /proc
+
+# Pivot to the desired rootfs and run the initial executable.
+
+if [ -n "$mounted" ] ; then
+
+    cd $mounted
+
+    if [ -x ./sbin/init -o -L ./sbin/init ] ; then
+	runboot=/sbin/init
+    elif [ -x ./bin/init -o -L ./bin/init ] ; then
+	runboot=/bin/init
+    else
+	runboot=/bin/sh
+    fi
+
+    /sbin/pivot_root . initrd
+
+    exec /usr/sbin/chroot . $runboot < /dev/console 1> /dev/console 2> /dev/console
+
+else
+
+    exec /bin/init
+
+fi
+
+/bin/echo "Can't chroot to $prefroot, using jffs2 ..."
+exec /bin/init
+
+# Last-resort fall-back - this should never be reached.
+/bin/sh

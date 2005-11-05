@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- libgaim/Makefile.am~fix-compilation
++++ libgaim/Makefile.am
+@@ -32,7 +32,7 @@
+ appsdir = $(datadir)/applications
+ apps_DATA = gaim.desktop
+ 
+-SUBDIRS = doc intl plugins po src
++SUBDIRS = src
+ 
+ docs: Doxyfile
+ 	@doxygen

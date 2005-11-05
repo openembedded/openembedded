@@ -1,0 +1,22 @@
+#!/bin/sh
+# This script is run on resume to force a down and up of any linux-wlanng
+# iterfaces. Otherwise they could get into a weird state.
+IFACES=$(ifconfig | grep -B 1 ^wlan | cut -d ' ' -f 1)
+for iface in $IFACES; do
+	echo down $ifcase >>/tmp/log
+	ifdown $iface || ifconfig $iface down
+done
+
+rmmod prism2_pci 2>/dev/null
+rmmod prism2_usb 2>/dev/null
+rmmod prism2_cs 2>/dev/null
+rmmod prism2_plx 2>/dev/null
+rmmod p80211 2>/dev/null
+
+# There is a race here for some reason.
+sleep 2
+
+for iface in $IFACES; do
+	ifup $iface
+done
+

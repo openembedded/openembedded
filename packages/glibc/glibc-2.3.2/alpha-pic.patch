@@ -1,0 +1,17 @@
+--- sysdeps/unix/alpha/sysdep.S	2003-03-23 16:01:02.000000000 +0900
++++ sysdeps/unix/alpha/sysdep.S.new	2003-03-23 16:02:50.000000000 +0900
+@@ -95,14 +95,10 @@
+ 	PROLOGUE
+ 
+ 	/* Find our per-thread errno address  */
+-#ifdef PIC
+-	bsr	ra, __errno_location	!samegp
+-#else
+ 	jsr	ra, __errno_location
+ #ifndef GPSAVEREG
+ 	ldgp	gp, 0(ra)
+ #endif
+-#endif
+ 
+ 	/* Store the error value.  */
+ 	ldq	t0, 8(sp)

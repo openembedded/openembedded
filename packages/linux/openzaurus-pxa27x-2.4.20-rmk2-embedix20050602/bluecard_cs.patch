@@ -1,0 +1,11 @@
+--- linux-orig/drivers/bluetooth/bluecard_cs.c	2004-02-16 10:51:46.000000000 +0300
++++ linux/drivers/bluetooth/bluecard_cs.c	2004-02-17 03:45:31.000000000 +0300
+@@ -102,7 +102,7 @@
+ 
+ 
+ /* Default baud rate: 57600, 115200, 230400 or 460800 */
+-#define DEFAULT_BAUD_RATE  230400
++#define DEFAULT_BAUD_RATE  460800
+ 
+ 
+ /* Hardware states */

@@ -1,0 +1,326 @@
+--- uClibc-0.9.27/ldso/include/dl-elf.h	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/ldso/include/dl-elf.h	2005-08-12 18:24:43.000000000 -0700
+@@ -112,6 +112,13 @@
+ # define ELF_RTYPE_CLASS_COPY	(0x2)
+ #endif
+ #define ELF_RTYPE_CLASS_PLT	(0x1)
++/* The type class can be qualified by a list (mask) of the acceptable
++ * STT_ symbol types, if not given the default is everything numerically
++ * <= STT_FUNC (from the original code...)
++ */
++#define ELF_RTYPE_CLASS_OF(type) ((1<<2) << (type))
++#define ELF_RTYPE_CLASS_ALL      (0xffff << 2)
++#define ELF_RTYPE_CLASS_DEFAULT  (((ELF_RTYPE_CLASS_OF(STT_FUNC) << 1) - 1)&ELF_RTYPE_CLASS_ALL)
+ 
+ 
+ /* Convert between the Linux flags for page protections and the
+--- uClibc-0.9.27/ldso/ldso/arm/resolve.S	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/ldso/ldso/arm/resolve.S	2005-08-13 15:08:27.523344709 -0700
+@@ -1,43 +1,117 @@
+ /*
+- * This function is _not_ called directly.  It is jumped to (so no return
+- * address is on the stack) when attempting to use a symbol that has not yet
+- * been resolved.  The first time a jump symbol (such as a function call inside
+- * a shared library) is used (before it gets resolved) it will jump here to
+- * _dl_linux_resolve.  When we get called the stack looks like this:
+- *	reloc_entry
+- *	tpnt
+- *
+- * This function saves all the registers, puts a copy of reloc_entry and tpnt
+- * on the stack (as function arguments) then make the function call
+- * _dl_linux_resolver(tpnt, reloc_entry).  _dl_linux_resolver() figures out
+- * where the jump symbol is _really_ supposed to have jumped to and returns
+- * that to us.  Once we have that, we overwrite tpnt with this fixed up
+- * address. We then clean up after ourselves, put all the registers back how we
+- * found them, then we jump to the fixed up address, which is where the jump
+- * symbol that got us here really wanted to jump to in the first place.
+- *  -Erik Andersen
++ * On ARM the PLT contains the following three instructions (for ARM calls):
++ *
++ *	add   ip, pc, #0xNN00000
++ *	add   ip, ip, #0xNN000
++ *	ldr   pc, [ip, #0xNNN]!
++ *
++ * So that, effectively, causes the following to happen:
++ *
++ *	ip := pc+0x0NNNNNNN
++ *	pc := *ip
++ *
++ * For thumb the above fragment is preceded by "bx pc, nop" to switch to ARM
++ * mode and the thumb 'bl' must go to PLT-4 - the PLT entry is expanded by
++ * four bytes to accomodate the trampoline code.
++ *
++ * 0x0NNNNNNN is the offset of the GOT entry for this function relative to
++ * the PLT entry for this function (where the code is).  So the code in the
++ * PLT causes a branch to whatever is in the GOT, leaving the actual address
++ * of the GOT entry in ip.  (Note that the GOT must follow the PLT - the
++ * added value is 28 bit unsigned).
++ *
++ * ip is a pointer to the GOT entry for this function, the first time round
++ * *ip points to this code:
++ *
++ *	str   lr, [sp, #-4]!	@ save lr
++ *	ldr   lr, [pc, #4]	@ lr := *dat (&GOT_TABLE[0]-.)
++ *	add   lr, pc, lr	@ lr += &dat (so lr == &GOT_TABLE[0])
++ *	ldr   pc, [lr, #8]!	@ pc := GOT_TABLE[2]
++ *dat:	.long &GOT_TABLE[0] - .
++ *
++ * (this code is actually held in the first entry of the PLT).  The code
++ * preserves lr then uses it as a scratch register (this preserves the ip
++ * value calculated above).  GOT_TABLE[2] is initialized by INIT_GOT in
++ * dl-sysdep.h to point to _dl_linux_resolve - this function.  The first
++ * three entries in the GOT are reserved, then they are followed by the
++ * entries for the PLT entries, in order.
++ *
++ * The linker initialises the following (non-reserved) GOT entries to
++ * the offset of the PLT with an associated relocation so that on load
++ * the entry is relocated to point to the PLT - the above code.
++ *
++ * The net effect of all this is that on the first call to an external (as
++ * yet unresolved) function all seven of the above instructions are
++ * executed in sequence and the program ends up executing _dl_linux_resolve
++ * with the following important values in registers:
++ *
++ *	ip - a pointer to the GOT entry for the as yet unresolved function
++ *	lr - &GOT_TABLE[2]
++ *
++ * GOT_TABLE[2] has already been initialised to _dl_linux_resolve, and
++ * GOT_TABLE[1] is a pointer to the (elf_resolve*) from INIT_GOT.
++ * _dl_linux_resolve unfrobnicates the ip and lr values to obtain arguments
++ * for a call to _dl_linux_resolver (not the additional 'r' on the end) -
++ * this is in elfinterp.c in this directory.  The call takes arguments:
++ *
++ *	_dl_linux_resolver(struct elf_resolve *tpnt, int reloc_entry)
++ *
++ * And returns the address of the function, it also overwrites the GOT
++ * table entry so that the next time round only the first code fragment will
++ * be executed - it will call the function directly.
++ *
++ * [[Of course, this simply doesn't work on ARM 4T with a thumb target - because
++ * 4T did not do the thumb/arm change on ldr pc!  It can be made to work by
++ * changing _dl_linux_resolver to return __%s_from_arm for an STT_TFUNC, but
++ * this hasn't been done, and there is no guarantee that the linker generated
++ * that glue anyway.]]
++ *
++ * _dl_linux_resolve gets the arguments to call the resolver as follows:
++ *
++ *	tpnt		GOT_TABLE[1], [lr-4]
++ *	reloc-entry	&GOT-&GOT_TABLE[3], (ip - lr - 4)/4
++ *
++ * (I.e. 'GOT' means the table entry for this function, the thing for which
++ * ip holds the address.)  The reloc-entry is passed as an index, since
++ * since the GOT table has 4 byte entries the code needs to divide this by 4
++ * to get the actual index.
++ *
++ * John Bowler, August 13, 2005 - determined by experiment and examination
++ * of generated ARM code (there was no documentation...)
++ *
++ * This code is all ARM code - not thumb - _dl_linux_resolver may, itself,
++ * be thumb, in which case the linker will insert the appropriate glue.  A
++ * call from thumb to the PLT hits the trampoline code described above.
++ * This code (now) builds a proper stack frame.
++ *
++ * The code does *not* set sb (r9,v6) - to do that the basic PLT instructions
++ * would need to save sb and load the new value and that would require
++ * support in the linker since it generates those instructions.  (Also note
++ * that linux/uclibc seems to be using r10 - sl - as a PIC base register - see
++ * dl-startup.c).
+  */
+ 
+-#define sl r10
+-#define fp r11
+-#define ip r12
+-
+ .text
+ .globl _dl_linux_resolve
+ .type _dl_linux_resolve,%function
+ .align 4;
+ 
+ _dl_linux_resolve:
+-	stmdb sp!, {r0, r1, r2, r3, sl, fp}
+-	sub r1, ip, lr
+-	sub r1, r1, #4
+-	add r1, r1, r1
+-	ldr r0, [lr, #-4]
+-	mov r3,r0
++	@ _dl_linux_resolver is a standard subroutine call, therefore it
++	@ preserves everything except r0-r3 (a1-a4), ip and lr.  This
++	@ function must branch to the real function, and that expects
++	@ r0-r3 and lr to be as they were before the whole PLT stuff -
++	@ ip can be trashed.
++	stmdb sp!, {r0-r3}
++	ldr r0, [lr, #-4]	@ r0 := [lr-4] (GOT_TABLE[1])
++	sub r1, lr, ip		@ r1 := (lr-ip) (a multple of 4)
++	mvn r1, r1, ASR #2	@ r1 := ~((lr-ip)>>2), since -x = (1+~x)
++				@ ~x = -x-1, therefore ~(r1>>2) = (-((lr-ip)>>2)-1)
++				@ = - ((lr-ip)/4) - 1 = (ip - lr - 4)/4, as required
+ 
+ 	bl _dl_linux_resolver
+ 
+-	mov ip, r0
+-	ldmia sp!, {r0, r1, r2, r3, sl, fp, lr}
+-	mov pc,ip
++	mov   ip, r0
++	ldmia sp!, {r0-r3, lr}
++	bx    ip
+ .size _dl_linux_resolve, .-_dl_linux_resolve
+--- uClibc-0.9.27/ldso/ldso/arm/elfinterp.c	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/ldso/ldso/arm/elfinterp.c	2005-08-13 16:08:19.061345947 -0700
+@@ -128,7 +128,7 @@
+ 
+ 	rel_addr = (ELF_RELOC *) (tpnt->dynamic_info[DT_JMPREL] + tpnt->loadaddr);
+ 
+-	this_reloc = rel_addr + (reloc_entry >> 3);
++	this_reloc = rel_addr + reloc_entry;
+ 	reloc_type = ELF32_R_TYPE(this_reloc->r_info);
+ 	symtab_index = ELF32_R_SYM(this_reloc->r_info);
+ 
+@@ -149,13 +149,20 @@
+ 	got_addr = (char **) instr_addr;
+ 
+ 	/* Get the address of the GOT entry */
+-	new_addr = _dl_find_hash(symname, tpnt->symbol_scope,
+-				 tpnt, ELF_RTYPE_CLASS_PLT);
+-	if (unlikely(!new_addr)) {
+-		_dl_dprintf(2, "%s: can't resolve symbol '%s'\n",
+-			_dl_progname, symname);
+-		_dl_exit(1);
+-	};
++	new_addr = _dl_find_hash(symname, tpnt->symbol_scope, tpnt,
++		ELF_RTYPE_CLASS_PLT+ELF_RTYPE_CLASS_OF(STT_FUNC));
++	if (!new_addr) {
++		new_addr = _dl_find_hash(symname, tpnt->symbol_scope, tpnt,
++			ELF_RTYPE_CLASS_PLT+ELF_RTYPE_CLASS_OF(STT_ARM_TFUNC));
++		if (new_addr) {
++			/* Fix up the address for thumb. */
++			new_addr = (char*)((unsigned long)new_addr | 1);
++		} else {
++			_dl_dprintf(2, "%s: can't resolve symbol '%s'\n",
++				_dl_progname, symname);
++			_dl_exit(1);
++		}
++	}
+ #if defined (__SUPPORT_LD_DEBUG__)
+ 	if ((unsigned long) got_addr < 0x40000000)
+ 	{
+@@ -278,7 +285,8 @@
+ 	if (symtab_index) {
+ 
+ 		symbol_addr = (unsigned long) _dl_find_hash(strtab + symtab[symtab_index].st_name,
+-				scope, tpnt, elf_machine_type_class(reloc_type));
++				scope, tpnt, elf_machine_type_class(reloc_type) +
++				ELF_RTYPE_CLASS_DEFAULT + ELF_RTYPE_CLASS_OF(STT_ARM_TFUNC));
+ 
+ 		/*
+ 		 * We want to allow undefined references to weak symbols - this might
+--- uClibc-0.9.27/ldso/ldso/dl-hash.c	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/ldso/ldso/dl-hash.c	2005-08-12 18:28:05.000000000 -0700
+@@ -148,7 +148,11 @@
+ 	char *weak_result = NULL;
+ 
+ 	elf_hash_number = _dl_elf_hash(name);
+-	   
++	/* The type class argument may specify the valid symbol types, if not
++	 * any type <= STT_FUNC is permitted.
++	 */
++	if ((type_class & ELF_RTYPE_CLASS_ALL) == 0)
++		type_class += ELF_RTYPE_CLASS_DEFAULT;
+ 	for (; rpnt; rpnt = rpnt->next) {
+ 		tpnt = rpnt->dyn;
+ 
+@@ -178,13 +182,16 @@
+ 		for (si = tpnt->elf_buckets[hn]; si != STN_UNDEF; si = tpnt->chains[si]) {
+ 			sym = &symtab[si];
+ 
++			/*... nb, ELF_RTYPE_CLASS_PLT is, must be, "1" - at least
++			 * it must be for the following to work.
++			 */
+ 			if (type_class & (sym->st_shndx == SHN_UNDEF))
+ 				continue;
+-			if (_dl_strcmp(strtab + sym->st_name, name) != 0)
+-				continue;
+ 			if (sym->st_value == 0)
+ 				continue;
+-			if (ELF32_ST_TYPE(sym->st_info) > STT_FUNC)
++			if ((ELF_RTYPE_CLASS_OF(ELF32_ST_TYPE(sym->st_info)) & type_class) == 0)
++				continue;
++			if (_dl_strcmp(strtab + sym->st_name, name) != 0)
+ 				continue;
+ 
+ 			switch (ELF32_ST_BIND(sym->st_info)) {
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/clone.S	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/clone.S	2005-08-13 11:56:47.275679748 -0700
+@@ -49,12 +49,13 @@
+ 	swi	__NR_clone
+ 	movs	a1, a1
+ 	blt	__syscall_error  (PLT)
+-	movne    pc, lr
++	bxne    lr
+ 
+ 	@ pick the function arg and call address off the stack and execute
+ 	ldr	r0, [sp, #4]
++	ldr	ip, [sp]
+ 	mov	lr, pc
+-	ldr 	pc, [sp]
++	bx 	ip
+ 
+ 	@ and we are done, passing the return value through r0
+ 	b	_exit	(PLT)
+@@ -70,7 +71,7 @@
+ 
+ 	/* return -1 */
+ 	mvn  r0, $0
+-	mov  pc, lr
++	bx   lr
+ .size __clone,.-__clone;
+ 
+ .L4:  .word errno
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/mmap64.S	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/mmap64.S	2005-08-13 12:20:35.633560643 -0700
+@@ -44,7 +44,7 @@
+ 	mov	ip, r0
+ 	swi	__NR_mmap2
+ 	cmn	r0, $4096
+-	ldmccfd	sp!, {r4, r5, pc}
++	ldmccfd	sp!, {r4, r5, pc}	@ requires >=5T
+ 	cmn	r0, $ENOSYS
+ 	ldmnefd	sp!, {r4, r5, lr}
+ 	bne	__syscall_error (PLT)
+@@ -71,7 +71,7 @@
+ 
+ 	/* return -1 */
+ 	mvn  r0, $0
+-	mov  pc, lr
++	bx   lr
+ .size mmap64,.-mmap64;
+ 
+ .L4:  .word errno
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/vfork.S	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/vfork.S	2005-08-13 12:23:27.500375540 -0700
+@@ -37,7 +37,7 @@
+ #ifdef __NR_vfork
+ 		swi		__NR_vfork
+ 		cmn		r0, #4096
+-		movcc	pc, lr
++		bxcc	lr
+ 
+ 		/* Check if vfork even exists.  */
+ 		ldr     r1, =-ENOSYS
+@@ -50,7 +50,7 @@
+ 		cmn     r0, #4096
+ 
+ 		/* Syscal worked.  Return to child/parent */
+-		movcc   pc, lr
++		bxcc    lr
+ 
+ __syscall_error:
+ 
+@@ -64,7 +64,7 @@
+ 
+ 		/* return -1 */
+ 		mvn  r0, $0
+-		mov  pc, lr
++		bx   lr
+ 
+ .L4:  .word errno
+ 

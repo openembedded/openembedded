@@ -1,0 +1,9 @@
+diff -ur GConf-2.6.4/gconf/gconf.service.in GConf-2.6.4.new/gconf/gconf.service.in
+--- GConf-2.6.4/gconf/gconf.service.in	2004-09-19 15:29:37.000000000 +0300
++++ GConf-2.6.4.new/gconf/gconf.service.in	2005-03-14 17:33:08.474147816 +0200
+@@ -1,3 +1,3 @@
+ [D-BUS Service]
+ Name=org.gnome.GConf
+-Exec=@libexecdir@/gconfd-2
++Exec=/etc/osso-af-init/gconf-daemon-dbus.sh
+Only in GConf-2.6.4.new/gconf: gconf.service.in~

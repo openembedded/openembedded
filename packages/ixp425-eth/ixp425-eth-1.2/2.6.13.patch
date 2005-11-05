@@ -1,0 +1,39 @@
+--- ./ixp425_eth.c	2005-10-01 00:45:45.180897520 -0700
++++ ./ixp425_eth.c	2005-10-01 00:50:45.179775259 -0700
+@@ -797,7 +797,9 @@
+ 	skb->pkt_type = PACKET_HOST;    /* Default type */
+         skb->ip_summed = 0;
+         skb->priority = 0;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+         skb->security = 0;
++#endif
+ #ifdef CONFIG_NET_SCHED
+ 	skb->tc_index = 0;
+ #endif
+@@ -2564,8 +2566,14 @@
+ }
+ 
+ /* set port MAC addr and update the dev struct if successfull */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+ int dev_set_mac_address(struct net_device *dev, struct sockaddr *saddr)
+ {
++#else
++static int set_mac_address(struct net_device *dev, void *saddrIn)
++{
++    struct sockaddr *saddr = saddrIn;
++#endif
+     int res;
+     priv_data_t *priv = dev->priv;
+     IxEthAccMacAddr npeMacAddr;
+@@ -2700,7 +2708,11 @@
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+     ndev->poll_controller = ixp425eth_poll_controller;
+ #endif
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+     ndev->set_mac_address = dev_set_mac_address;
++#else
++    ndev->set_mac_address = set_mac_address;
++#endif
+ 
+     TRACE;
+ 

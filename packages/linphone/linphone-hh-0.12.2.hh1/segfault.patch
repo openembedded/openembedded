@@ -1,0 +1,23 @@
+--- linphone-0.12.2.hh1/coreapi/misc.c~	2004-05-14 15:41:04.000000000 +0100
++++ linphone-0.12.2.hh1/coreapi/misc.c	2005-01-05 20:04:49.000000000 +0000
+@@ -197,6 +197,8 @@
+ {
+ 	int len;
+ 	char *prim_contact;
++	if (lc->sip_conf.username == NULL)
++	  abort ();
+ #ifdef LINPHONE_DEPRECATED
+ #ifdef INET6
+ 	len=32+strlen(lc->sip_conf.username) + 2;
+--- linphone-0.12.2.hh1/coreapi/linphonecore.c~	2004-05-14 20:40:19.000000000 +0100
++++ linphone-0.12.2.hh1/coreapi/linphonecore.c	2005-01-05 20:04:12.000000000 +0000
+@@ -454,8 +454,8 @@
+ 	if (def){
+ 		port=5060;
+ 	}
+-	linphone_core_set_sip_port(lc,port);
+ 	linphone_core_set_primary_contact(lc,g_strdup_printf("sip:%s@%s",username,hostname));
++	linphone_core_set_sip_port(lc,port);
+ 	registrar_config_read(lc);
+ }
+ 

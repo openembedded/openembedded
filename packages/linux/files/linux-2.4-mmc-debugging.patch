@@ -1,0 +1,15 @@
+--- kernel/include/linux/mmc/mmc_protocol.h	2005-04-09 17:30:57.930462521 +0200
++++ /tmp/mmc_protocol.h	2005-04-09 17:30:33.649097537 +0200
+@@ -273,10 +273,10 @@
+ #define START_MMC_DEBUG(n) do { if (n <= g_mmc_debug)
+ #define END_MMC_DEBUG      } while (0)
+ #else
+ #define MMC_DEBUG(n, args...)
+-#define START_MMC_DEBUG(n)
+-#define END_MMC_DEBUG
++#define START_MMC_DEBUG(n) do { if (0)
++#define END_MMC_DEBUG      } while (0)
+ #endif /* CONFIG_MMC_DEBUG */
+ 
+ #endif  /* MMC_MMC_PROTOCOL_H */
+ 

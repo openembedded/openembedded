@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- zsh-4.1.1/zshconfig.ac~configure
++++ zsh-4.1.1/zshconfig.ac
+@@ -460,7 +460,7 @@
+ AC_PROG_MAKE_SET            dnl Does make define $MAKE
+ AC_PROG_INSTALL             dnl Check for BSD compatible `install'
+ AC_PROG_AWK                 dnl Check for mawk,gawk,nawk, then awk.
+-AC_PROG_LN                  dnl Check for working ln, for "make install"
++AC_PROG_LN_S                  dnl Check for working ln, for "make install"
+ AC_CHECK_PROGS([YODL], [yodl], [: yodl])
+ AC_CHECK_PROGS([ANSI2KNR], [ansi2knr], [: ansi2knr])
+ 
+--- zsh-4.1.1/Src/Makefile.in~configure
++++ zsh-4.1.1/Src/Makefile.in
+@@ -35,7 +35,7 @@
+ sdir            = @srcdir@
+ sdir_top        = @top_srcdir@
+ INSTALL         = @INSTALL@
+-LN		= @LN@
++LN		= @LN_S@
+ 
+ @DEFS_MK@
+ 

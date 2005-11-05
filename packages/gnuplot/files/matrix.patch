@@ -1,0 +1,17 @@
+--- gnuplot-4.0.0/src/matrix.c.old	2004-04-13 18:23:58.000000000 +0100
++++ gnuplot-4.0.0/src/matrix.c	2005-03-01 12:38:07.068232748 +0000
+@@ -290,9 +290,12 @@
+     *d = 1.0;
+     for (ar = a, lim = &(a[n]); ar < lim; ar++) {
+ 	large = 0.0;
+-	for (ac = *ar, limc = &(ac[n]); ac < limc;)
+-	    if ((temp = fabs(*ac++)) > large)
++	for (ac = *ar, limc = &(ac[n]); ac < limc;){
++	temp = *ac++;
++	temp = fabs(temp);
++	    if (temp > large)
+ 		large = temp;
++	}
+ 	if (large == 0.0)
+ 	    int_error(NO_CARET, "Singular matrix in LU-DECOMP");
+ 	*dp++ = 1 / large;

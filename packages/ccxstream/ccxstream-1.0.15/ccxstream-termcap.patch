@@ -1,0 +1,11 @@
+--- ccxstream-1.0.15/Makefile.orig	2003-12-27 04:57:23.733355080 +0000
++++ ccxstream-1.0.15/Makefile	2003-12-27 04:57:34.506717280 +0000
+@@ -22,7 +22,7 @@
+ #
+ 
+ CFLAGS+=-I. -g
+-LDFLAGS+=-lreadline -ltermcap
++LDFLAGS+=-lreadline -lncurses
+ 
+ all: ccxstream ccxtest
+ 

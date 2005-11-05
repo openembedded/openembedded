@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- unionfs-1.0.13/Makefile~make
++++ unionfs-1.0.13/Makefile
+@@ -59,7 +59,7 @@
+ unionfs2.4: ${obj-m}
+ 
+ ${obj-m}: ${unionfs-objs}
+-	ld -o ${obj-m} -r ${unionfs-objs}
++	${CC} -o ${obj-m} -r ${unionfs-objs}
+ 
+ unionctl: unionctl.c usercommon.c
+ 	${CC} -o $@ $^ ${UCFLAGS}

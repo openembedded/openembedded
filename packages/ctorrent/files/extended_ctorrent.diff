@@ -1,0 +1,2169 @@
+Only in ctorrent-1.3.4: README-DNH.TXT
+diff -u ctorrent-1.3.4.orig/btconfig.cpp ctorrent-1.3.4/btconfig.cpp
+--- ctorrent-1.3.4.orig/btconfig.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btconfig.cpp	2005-08-11 23:45:29.424694440 +0200
+@@ -1,6 +1,7 @@
+ #include <sys/types.h>
+ 
+-size_t cfg_req_slice_size = 32768;
++//size_t cfg_req_slice_size = 32768;
++size_t cfg_req_slice_size = 16384;
+ 
+ size_t cfg_cache_size = 16;
+ 
+@@ -11,7 +12,8 @@
+ int cfg_max_listen_port = 2706;
+ int cfg_min_listen_port = 2106;
+ 
+-int cfg_max_bandwidth = -1;
++int cfg_max_bandwidth_down = -1;
++int cfg_max_bandwidth_up = -1;
+ 
+ time_t cfg_seed_hours = 72;
+ 
+@@ -25,6 +27,8 @@
+ unsigned char arg_flg_check_only = 0;
+ unsigned char arg_flg_exam_only = 0;
+ unsigned char arg_flg_make_torrent = 0;
++unsigned char arg_file_to_download = 0;
++unsigned char arg_verbose = 0;
+ 
+ size_t arg_piece_length = 262144;
+ char *arg_announce = (char*) 0;
+diff -u ctorrent-1.3.4.orig/btconfig.h ctorrent-1.3.4/btconfig.h
+--- ctorrent-1.3.4.orig/btconfig.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btconfig.h	2005-08-11 23:45:29.425694288 +0200
+@@ -22,6 +22,8 @@
+ extern time_t cfg_seed_hours;
+ 
+ extern int cfg_max_bandwidth;
++extern int cfg_max_bandwidth_down;
++extern int cfg_max_bandwidth_up;
+ 
+ // arguments global value
+ extern char *arg_metainfo_file;
+@@ -33,6 +35,8 @@
+ extern unsigned char arg_flg_check_only;
+ extern unsigned char arg_flg_exam_only;
+ extern unsigned char arg_flg_make_torrent;
++extern unsigned char arg_file_to_download;
++extern unsigned char arg_verbose;
+ 
+ extern size_t arg_piece_length;
+ extern char *arg_announce;
+diff -u ctorrent-1.3.4.orig/btcontent.cpp ctorrent-1.3.4/btcontent.cpp
+--- ctorrent-1.3.4.orig/btcontent.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btcontent.cpp	2005-08-11 23:45:29.425694288 +0200
+@@ -23,6 +23,7 @@
+ #include "bencode.h"
+ #include "peer.h"
+ #include "httpencode.h"
++#include "tracker.h"
+ 
+ #define meta_str(keylist,pstr,pint) decode_query(b,flen,(keylist),(pstr),(pint),QUERY_STR)
+ #define meta_int(keylist,pint) decode_query(b,flen,(keylist),(const char**) 0,(pint),QUERY_INT)
+@@ -53,6 +54,7 @@
+   m_announce = global_piece_buffer = (char*) 0;
+   m_hash_table = (unsigned char *) 0;
+   pBF = (BitField*) 0;
++  pBFilter = (BitField*) 0;
+   m_create_date = m_seed_timestamp = (time_t) 0;
+   time(&m_start_timestamp);
+   m_cache = (BTCACHE*) 0;
+@@ -226,6 +228,7 @@
+   if( m_btfiles.BuildFromMI(b, flen, saveas) < 0) ERR_RETURN();
+ 
+   delete []b;
++  b = (char *)0;
+   PrintOut();
+   
+   if( arg_flg_exam_only ) return 0;
+@@ -242,6 +245,17 @@
+   if( !pBF ) ERR_RETURN();
+ #endif
+ 
++    //create the file filter
++    pBFilter = new BitField(m_npieces);
++#ifndef WINDOWS
++     if( !pBFilter ) ERR_RETURN();
++#endif
++  if(arg_file_to_download>0){
++    m_btfiles.SetFilter(arg_file_to_download,pBFilter,m_piece_length);
++  }
++
++
++
+   m_left_bytes = m_btfiles.GetTotalLength() / m_piece_length;
+   if( m_btfiles.GetTotalLength() % m_piece_length ) m_left_bytes++;
+   if( m_left_bytes != m_npieces ) ERR_RETURN();
+@@ -309,7 +323,8 @@
+ 
+ ssize_t btContent::ReadSlice(char *buf,size_t idx,size_t off,size_t len)
+ {
+-  u_int64_t offset = idx * m_piece_length + off;
++  //changed
++  u_int64_t offset = (u_int64_t)idx * (u_int64_t)m_piece_length + (u_int64_t)off;
+ 
+   if( !m_cache_size ) return m_btfiles.IO(buf, offset, len, 0);
+   else{
+@@ -405,7 +420,11 @@
+ 
+ ssize_t btContent::WriteSlice(char *buf,size_t idx,size_t off,size_t len)
+ {
+-  u_int64_t offset = (u_int64_t)(idx * m_piece_length + off);
++  //u_int64_t offset = (u_int64_t)(idx * m_piece_length + off);
++  //changed
++  u_int64_t offset = (u_int64_t)idx * (u_int64_t)m_piece_length + (u_int64_t)off;
++
++  //  printf("\nOffset-write: %lu - Piece:%lu\n",offset,(unsigned long)idx);
+ 
+   if( !m_cache_size ) return m_btfiles.IO(buf, offset, len, 1);
+   else{
+@@ -514,9 +533,9 @@
+   if( !percent ) percent = 1;
+ 
+   for( ; idx < m_npieces; idx++){
+-    if( GetHashValue(idx, md) == 0 && memcmp(md, m_hash_table + idx * 20, 20) == 0){
+-      m_left_bytes -= GetPieceLength(idx);
+-      pBF->Set(idx);
++      if( GetHashValue(idx, md) == 0 && memcmp(md, m_hash_table + idx * 20, 20) == 0){
++       m_left_bytes -= GetPieceLength(idx);
++       pBF->Set(idx);
+     }
+     if(idx % percent == 0){
+       printf("\rCheck exist: %d/%d",idx,pBF->NBits());
+@@ -575,7 +594,6 @@
+     fprintf(stderr,"warn,piece %d hash check failed.\n",idx);
+     return 0;
+   }
+-
+   pBF->Set(idx);
+   m_left_bytes -= GetPieceLength(idx);
+   return 1;
+@@ -592,6 +610,7 @@
+ {
+   if( pBF->IsFull() ){
+     if( !m_seed_timestamp ){
++      Tracker.Reset(15);
+       Self.ResetDLTimer();
+       Self.ResetULTimer();
+       ReleaseHashTable();
+@@ -605,3 +624,13 @@
+   }
+   return 0;
+ }
++
++
++size_t btContent::getFilePieces(unsigned char nfile){
++   return m_btfiles.getFilePieces(nfile);
++}
++
++
++void btContent::SetFilter(){
++  m_btfiles.SetFilter(arg_file_to_download,pBFilter,m_piece_length);
++}
+diff -u ctorrent-1.3.4.orig/btcontent.h ctorrent-1.3.4/btcontent.h
+--- ctorrent-1.3.4.orig/btcontent.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btcontent.h	2005-08-11 23:45:29.426694136 +0200
+@@ -60,6 +60,7 @@
+   
+  public:
+   BitField *pBF;
++  BitField *pBFilter;
+   char *global_piece_buffer;
+   
+   btContent();
+@@ -93,6 +94,11 @@
+ 
+   int PrintOut();
+   int SeedTimeout(const time_t *pnow);
++
++
++ void SetFilter();
++ size_t getFilePieces(unsigned char nfile);
++
+ };
+ 
+ extern btContent BTCONTENT;
+diff -u ctorrent-1.3.4.orig/btfiles.cpp ctorrent-1.3.4/btfiles.cpp
+--- ctorrent-1.3.4.orig/btfiles.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btfiles.cpp	2005-08-11 23:45:29.426694136 +0200
+@@ -105,6 +105,7 @@
+   pos = (size_t) (off - (n - pbf->bf_length));
+ 
+   for(; len ;){
++
+     if( !pbf->bf_flag_opened ){
+       if( _btf_open(pbf) < 0 ) return -1;
+     }
+@@ -119,6 +120,7 @@
+       if( 1 != fread(buf,nio,1,pbf->bf_fp) ) return -1;
+     }else{
+       if( 1 != fwrite(buf,nio,1,pbf->bf_fp) ) return -1;
++      fflush(pbf->bf_fp);
+     }
+ 
+     len -= nio;
+@@ -169,7 +171,7 @@
+   DIR *dp;
+   BTFILE *pbf;
+ 
+-  if( !getwd(full_cur) ) return -1;
++  if( !getcwd(full_cur,MAXPATHLEN) ) return -1;
+ 
+   if( cur_path ){
+     strcpy(fn, full_cur);
+@@ -293,7 +295,7 @@
+     m_btfhead = pbf;
+   }else if( S_IFDIR & sb.st_mode ){
+     char wd[MAXPATHLEN];
+-    if( !getwd(wd) ) return -1;
++    if( !getcwd(wd,MAXPATHLEN) ) return -1;
+     m_directory = new char[strlen(pathname) + 1];
+ #ifndef WINDOWS
+     if( !m_directory ) return -1;
+@@ -488,3 +490,54 @@
+   }
+   return 1;
+ }
++
++
++void btFiles::SetFilter(int nfile, BitField *pFilter,  size_t pieceLength)
++{
++  //set the filter
++
++  BTFILE *p = m_btfhead;
++  size_t id = 1;
++  u_int64_t sizeBuffer=0;
++  size_t index;
++
++
++   pFilter->SetAll();
++     for( ; p ; p = p->bf_next ){
++      if(id++ == nfile){
++        size_t start,stop;
++        start = sizeBuffer/pieceLength;
++        stop  = (sizeBuffer+p->bf_length)/pieceLength;
++        printf ("\rDownloading file: <%d> %s        \nPieces: %d - %d (%d)\n",nfile,p->bf_filename,start,stop,stop-start+1);
++        p->bf_npieces = stop-start+1;
++        for(index=sizeBuffer/pieceLength;index<=(sizeBuffer+p->bf_length)/pieceLength;index++){
++	  pFilter->UnSet(index);
++        }
++     }
++     sizeBuffer+=(u_int64_t) p->bf_length;
++   }
++    if(nfile>=id){
++      printf("\nEnd of files list. Resuming normal behaviour\n");
++      pFilter->Invert();
++      arg_file_to_download = 0;
++    }
++}
++
++size_t btFiles::getFilePieces(unsigned char nfile)
++{
++  //returns the pieces of the file already gotten
++
++  BTFILE *p = m_btfhead;
++  size_t id = 1;
++
++     for( ; p ; p = p->bf_next ){
++      if(id++ == nfile){
++        return p->bf_npieces;
++        }
++     }
++return 0;
++}
++
++
++
++
+diff -u ctorrent-1.3.4.orig/btfiles.h ctorrent-1.3.4/btfiles.h
+--- ctorrent-1.3.4.orig/btfiles.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btfiles.h	2005-08-11 23:45:29.427693984 +0200
+@@ -3,6 +3,10 @@
+ 
+ #include <sys/types.h>
+ #include <stdio.h>
++
++#include "bitfield.h"
++extern unsigned char arg_file_to_download;
++
+ #include "./def.h"
+ 
+ typedef struct _btfile{
+@@ -14,6 +18,8 @@
+ 
+   size_t bf_completed;		// already downloaded length
+ 
++  size_t bf_npieces;  //number of pieces
++
+   unsigned char bf_flag_opened:1;
+   unsigned char bf_flag_need:1;
+   unsigned char bf_reserved:6;
+@@ -53,6 +59,10 @@
+   u_int64_t GetTotalLength() const { return m_total_files_length; }
+   ssize_t IO(char *buf, u_int64_t off, size_t len, const int iotype);
+   size_t FillMetaInfo(FILE* fp);
++
++  void SetFilter(int nfile, BitField *pFilter,size_t pieceLength);
++  size_t getFilePieces(unsigned char nfile);
++
+ #ifndef WINDOWS
+   void PrintOut();
+ #endif
+diff -u ctorrent-1.3.4.orig/btrequest.cpp ctorrent-1.3.4/btrequest.cpp
+--- ctorrent-1.3.4.orig/btrequest.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btrequest.cpp	2005-08-11 23:45:29.427693984 +0200
+@@ -44,6 +44,58 @@
+   rq.rq_head = (PSLICE) 0;
+ }
+ 
++int RequestQueue::CopyShuffle(RequestQueue &rq)
++{
++  PSLICE ps;
++
++  if( rq_head ) _empty_slice_list(&rq_head);
++  
++  if( rq.IsEmpty() ) return 0;
++  for (ps = rq.GetHead(); ps; ps = ps->next) {
++    if (random()&01) {
++      if (Add(ps->index, ps->offset, ps->length) < 0) return -1;
++    }
++    else if (Insert(ps->index, ps->offset, ps->length) < 0) return -1;
++  }
++  return 0;
++}
++
++size_t RequestQueue::Qsize()
++{
++  size_t cnt = 0;
++  PSLICE n = rq_head;
++  PSLICE u = (PSLICE) 0;
++
++  for( ; n ; u = n,n = u->next) cnt++; // move to end
++  return cnt;
++}
++
++int RequestQueue::Insert(size_t idx,size_t off,size_t len)
++{
++  size_t cnt = 0;
++  PSLICE n = rq_head;
++  PSLICE u = (PSLICE) 0;
++
++  for( ; n ; u = n,n = u->next) cnt++; // move to end (count)
++
++  if( cnt >= cfg_req_queue_length ) return -1;	// already full
++
++  n = new SLICE;
++
++#ifndef WINDOWS
++  if( !n ) return -1;
++#endif
++
++  n->next = rq_head;
++  n->index = idx;
++  n->offset = off;
++  n->length = len;
++
++  rq_head = n;
++
++  return 0;
++}
++
+ int RequestQueue::Add(size_t idx,size_t off,size_t len)
+ {
+   size_t cnt = 0;
+@@ -231,3 +283,33 @@
+   }
+   return 0;
+ }
++
++int PendingQueue::Delete(size_t idx)
++{
++   int i = 0;
++  for ( ; i < PENDING_QUEUE_SIZE && pq_count; i++){
++    if( (PSLICE) 0 != pending_array[i] && idx == pending_array[i]->index){
++      delete pending_array[i];
++      pending_array[i] = (PSLICE) 0;
++    }
++  }
++  return 0;
++}
++
++int PendingQueue::DeleteSlice(size_t idx, size_t off, size_t len)
++{
++   int i = 0;
++   RequestQueue rq;
++  for ( ; i < PENDING_QUEUE_SIZE && pq_count; i++){
++    if( (PSLICE) 0 != pending_array[i] && idx == pending_array[i]->index){
++      //check if off & len match any slice
++      //remove the slice if so
++      rq.SetHead(pending_array[i]);
++      if( rq.Remove(idx, off, len) == 0 )
++        pending_array[i] = rq.GetHead();
++      rq.Release();
++    }
++  }
++  return 0;
++}
++
+diff -u ctorrent-1.3.4.orig/btrequest.h ctorrent-1.3.4/btrequest.h
+--- ctorrent-1.3.4.orig/btrequest.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btrequest.h	2005-08-11 23:45:29.427693984 +0200
+@@ -31,9 +31,12 @@
+   int IsValidRequest(size_t idx,size_t off,size_t len);
+ 
+   void operator=(RequestQueue &rq);
++  int CopyShuffle(RequestQueue &rq);
++  size_t Qsize();
+ 
+   int IsEmpty() const { return rq_head ? 0 : 1; }
+ 
++  int Insert(size_t idx,size_t off,size_t len);
+   int Add(size_t idx,size_t off,size_t len);
+   int Remove(size_t idx,size_t off,size_t len);
+ 
+@@ -60,6 +63,8 @@
+   int Pending(RequestQueue *prq);
+   int ReAssign(RequestQueue *prq, BitField &bf);
+   int Exist(size_t idx);
++  int Delete(size_t idx);
++  int DeleteSlice(size_t idx, size_t off, size_t len);
+ };
+ 
+ extern PendingQueue PENDINGQUEUE;
+diff -u ctorrent-1.3.4.orig/btstream.cpp ctorrent-1.3.4/btstream.cpp
+--- ctorrent-1.3.4.orig/btstream.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/btstream.cpp	2005-08-11 23:45:29.428693832 +0200
+@@ -1,5 +1,6 @@
+ #include <arpa/inet.h>
+ #include "btstream.h"
++#include "peer.h"
+ #include "msgencode.h"
+ #include "btconfig.h"
+ 
+@@ -11,7 +12,8 @@
+ ssize_t btStream::Send_State(unsigned char state)
+ {
+   char msg[H_BASE_LEN + 4];
+-  *(size_t*)msg = htonl(H_BASE_LEN);
++
++  set_nl(msg, H_BASE_LEN);
+   msg[4] = (char)state;
+   return out_buffer.PutFlush(sock,msg,H_BASE_LEN + 4);
+ }
+@@ -19,12 +21,10 @@
+ ssize_t btStream::Send_Have(size_t idx)
+ {
+   char msg[H_HAVE_LEN + 4];
+-  size_t *p = (size_t*)msg;
+ 
+-  *p = htonl(H_HAVE_LEN);
++  set_nl(msg, H_HAVE_LEN);
+   msg[4] = (char)M_HAVE;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx);
++  set_nl(msg + 5, idx);
+ 
+   return out_buffer.PutFlush(sock,msg,H_HAVE_LEN + 4);
+ }
+@@ -43,14 +43,12 @@
+ ssize_t btStream::Send_Cancel(size_t idx,size_t off,size_t len)
+ {
+   char msg[H_CANCEL_LEN + 4];
+-  size_t *p = (size_t*)msg;
+ 
+-  *p = htonl(H_CANCEL_LEN);
++  set_nl(msg, H_CANCEL_LEN);
+   msg[4] = M_CANCEL;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx); p++;
+-  *p = htonl(off); p++;
+-  *p = htonl(len);
++  set_nl(msg + 5, idx);
++  set_nl(msg + 9, off);
++  set_nl(msg + 13, len);
+   return out_buffer.Put(sock,msg,H_CANCEL_LEN + 4);
+ }
+ 
+@@ -72,14 +70,12 @@
+ ssize_t btStream::Send_Request(size_t idx, size_t off,size_t len)
+ {
+   char msg[H_REQUEST_LEN + 4];
+-  size_t *p = (size_t*) msg;
+ 
+-  *p = htonl(H_REQUEST_LEN);
++  set_nl(msg, H_REQUEST_LEN);
+   msg[4] = (char)M_REQUEST;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx); p++;
+-  *p = htonl(off); p++;
+-  *p = htonl(len);
++  set_nl(msg + 5, idx);
++  set_nl(msg + 9, off);
++  set_nl(msg + 13, len);
+   return out_buffer.Put(sock,msg,H_REQUEST_LEN + 4);
+ }
+ 
+@@ -94,7 +90,7 @@
+   // if message arrived.
+   size_t r;
+   if( 4 <= in_buffer.Count() ){
+-    r = ntohl(*(size_t*)in_buffer.BasePointer());
++    r = get_nl(in_buffer.BasePointer());
+     if( (cfg_max_slice_size + H_PIECE_LEN + 4) < r) return -1; //message too long
+     if( (r + 4) <= in_buffer.Count() ) return 1;
+   }
+diff -u ctorrent-1.3.4.orig/ctorrent.cpp ctorrent-1.3.4/ctorrent.cpp
+--- ctorrent-1.3.4.orig/ctorrent.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/ctorrent.cpp	2005-08-11 23:45:29.428693832 +0200
+@@ -87,9 +87,13 @@
+ 	Tracker.Initial();
+ 
+ 	signal(SIGPIPE,SIG_IGN);
+-    signal(SIGINT,sigint_catch);
++    signal(SIGINT,sig_catch);
++    signal(SIGTERM,sig_catch);
+     Downloader();
+   }
++  if( cfg_cache_size ) BTCONTENT.FlushCache();
++  if( arg_bitfield_file ) BTCONTENT.pBF->WriteToFile(arg_bitfield_file);
++  WORLD.CloseAll();
+ 
+   exit(0);
+ }
+@@ -99,7 +103,7 @@
+ int param_check(int argc, char **argv)
+ {
+   int c, l;
+-  while ( ( c = getopt(argc,argv,"b:B:cC:e:fl:M:m:P:p:s:tu:xhH")) != -1)
++  while ( ( c = getopt(argc,argv,"b:cC:D:e:fl:M:m:n:P:p:s:tu:U:vxhH")) != -1)
+     switch( c ){
+     case 'b':
+       arg_bitfield_file = new char[strlen(optarg) + 1];
+@@ -150,14 +154,23 @@
+       }
+       break;
+ 
++    case 'n':                  // Which file download
++      arg_file_to_download = atoi(optarg);
++    break;
++
++
+     case 'f':			// force seed mode, skip sha1 check when startup.
+       arg_flg_force_seed_mode = 1;
+       break;
+       
+-    case 'B':
+-      cfg_max_bandwidth = atoi(optarg);
++    case 'D':
++      cfg_max_bandwidth_down = (int)(strtod(optarg, NULL) * 1024);
+       break;
+ 
++       case 'U':
++      cfg_max_bandwidth_up = (int)(strtod(optarg, NULL) * 1024);
++         break;
++
+     case 'P':
+ 		l = strlen(optarg);
+ 		if (l > MAX_PF_LEN) {printf("-P arg must be 8 or less characters\n"); exit(1);}
+@@ -190,6 +203,10 @@
+       arg_flg_exam_only = 1;
+       break;
+ 
++    case 'v':
++      arg_verbose = 1;
++      break;
++
+     case 'h':
+     case 'H':
+     default:
+@@ -217,6 +234,7 @@
+   fprintf(stderr,"-h/-H\t\tShow this message.\n");
+   fprintf(stderr,"-x\t\tDecode metainfo(torrent) file only, don't download.\n");
+   fprintf(stderr,"-c\t\tCheck exist only. don't download.\n");
++  fprintf(stderr,"-v\t\tVerbose output (for debugging).\n");
+   fprintf(stderr,"\nDownload Options:\n");
+   fprintf(stderr,"-e int\t\tExit while seed <int> hours later. (default 72 hours)\n");
+   fprintf(stderr,"-p port\t\tListen port. (default 2706 -> 2106)\n");
+@@ -226,7 +244,9 @@
+   fprintf(stderr,"-b bf_filename\tBit field filename. (use it carefully)\n");
+   fprintf(stderr,"-M max_peers\tMax peers count.\n");
+   fprintf(stderr,"-m min_peers\tMin peers count.\n");
+-  fprintf(stderr,"-B rate\t\tMax bandwidth (unit KB/s)\n");
++  fprintf(stderr,"-n file_number\tWhich file download.\n");
++  fprintf(stderr,"-D rate\t\tMax bandwidth down (unit KB/s)\n");
++  fprintf(stderr,"-U rate\t\tMax bandwidth up (unit KB/s)\n");
+   fprintf(stderr,"-P peer_id\tSet Peer ID ["PEER_PFX"]\n");
+   fprintf(stderr,"\nMake metainfo(torrent) file Options:\n");
+   fprintf(stderr,"-t\t\tWith make torrent. must specify this option.\n");
+diff -u ctorrent-1.3.4.orig/downloader.cpp ctorrent-1.3.4/downloader.cpp
+--- ctorrent-1.3.4.orig/downloader.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/downloader.cpp	2005-08-11 23:45:29.429693680 +0200
+@@ -29,10 +29,14 @@
+   time_t now;
+   fd_set rfd;
+   fd_set wfd;
++  int stopped = 0;
+ 
+-  for(;;){
++  do{
+     time(&now);
+-    if( BTCONTENT.SeedTimeout(&now) ) break;
++    if( !stopped && BTCONTENT.SeedTimeout(&now) ) {
++	Tracker.SetStoped();
++	stopped = 1;
++    }
+     
+     FD_ZERO(&rfd); FD_ZERO(&wfd);
+     maxfd = Tracker.IntervalCheck(&now,&rfd, &wfd);
+@@ -48,5 +52,5 @@
+       if(T_FREE != Tracker.GetStatus()) Tracker.SocketReady(&rfd,&wfd,&nfds);
+ 	  if( nfds ) WORLD.AnyPeerReady(&rfd,&wfd,&nfds);
+ 	}
+-  }/* end for(;;) */
++  } while(Tracker.GetStatus() != T_FINISHED);
+ }
+diff -u ctorrent-1.3.4.orig/httpencode.cpp ctorrent-1.3.4/httpencode.cpp
+--- ctorrent-1.3.4.orig/httpencode.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/httpencode.cpp	2005-08-11 23:45:29.429693680 +0200
+@@ -88,7 +88,7 @@
+ 
+   /* path */
+   if( *p != '/' ) return -1;
+-  for( ; *p && *p != '?'; p++,path++) *path = *p;
++  for( ; *p; p++,path++) *path = *p;
+   *path = '\0';
+   return 0;
+ }
+diff -u ctorrent-1.3.4.orig/httpencode.h ctorrent-1.3.4/httpencode.h
+--- ctorrent-1.3.4.orig/httpencode.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/httpencode.h	2005-08-11 23:45:29.429693680 +0200
+@@ -2,8 +2,11 @@
+ #define HTTPENCODE_H
+ 
+ #define REQ_URL_P1_FMT "GET %s?info_hash=%s&peer_id=%s&port=%d"
+-#define REQ_URL_P2_FMT "%s&uploaded=%d&downloaded=%d&left=%d&event=%s&compact=1 HTTP/1.0"
+-#define REQ_URL_P3_FMT "%s&uploaded=%d&downloaded=%d&left=%d&compact=1 HTTP/1.0"
++//#define REQ_URL_P2_FMT "%s&uploaded=%d&downloaded=%d&left=%d&event=%s&compact=1 HTTP/1.0"
++//#define REQ_URL_P3_FMT "%s&uploaded=%d&downloaded=%d&left=%d&compact=1 HTTP/1.0"
++#define REQ_URL_P2_FMT "%s&uploaded=%llu&downloaded=%llu&left=%llu&compact=1&event=%s&numwant=%u HTTP/1.0"
++#define REQ_URL_P3_FMT "%s&uploaded=%llu&downloaded=%llu&left=%llu&compact=1&numwant=%u HTTP/1.0"
++
+ 
+ char* Http_url_encode(char *s,char *b,size_t n);
+ int Http_url_analyse(char *url,char *host,int *port,char *path);
+diff -u ctorrent-1.3.4.orig/iplist.cpp ctorrent-1.3.4/iplist.cpp
+--- ctorrent-1.3.4.orig/iplist.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/iplist.cpp	2005-08-11 23:45:29.429693680 +0200
+@@ -8,8 +8,8 @@
+   IPLIST *node = ipl_head;
+   for(; ipl_head;){
+     node = ipl_head;
+-    delete ipl_head;
+     ipl_head = node->next;
++    delete node;
+   }
+   count = 0;
+ }
+diff -u ctorrent-1.3.4.orig/peer.cpp ctorrent-1.3.4/peer.cpp
+--- ctorrent-1.3.4.orig/peer.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/peer.cpp	2005-08-11 23:45:29.431693376 +0200
+@@ -2,12 +2,34 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
++#include <ctype.h>
+ 
++#include "btstream.h"
+ #include "./btcontent.h"
+ #include "./msgencode.h"
+ #include "./peerlist.h"
+ #include "./btconfig.h"
+ 
++size_t get_nl(char *sfrom)
++{
++  unsigned char *from = (unsigned char *)sfrom;
++  size_t t;
++  t = (*from++) << 24;
++  t |= (*from++) << 16;
++  t |= (*from++) << 8;
++  t |= *from;
++  return t;
++}
++
++void set_nl(char *sto, size_t from)
++{
++  unsigned char *to = (unsigned char *)sto;
++  *to++ = (from >> 24) & 0xff;
++  *to++ = (from >> 16) & 0xff;
++  *to++ = (from >> 8) & 0xff;
++  *to = from & 0xff;
++}
++
+ btBasic Self;
+ 
+ void btBasic::SetIp(struct sockaddr_in addr)
+@@ -44,11 +66,13 @@
+ 
+ int btPeer::Need_Remote_Data()
+ {
++
+   if( BTCONTENT.pBF->IsFull()) return 0;
+   else if( bitfield.IsFull() ) return 1;
+   else{
+     BitField tmpBitfield = bitfield;
+     tmpBitfield.Except(*BTCONTENT.pBF);
++    tmpBitfield.Except(*BTCONTENT.pBFilter);
+     return tmpBitfield.IsEmpty() ? 0 : 1;
+   }
+   return 0;
+@@ -65,6 +89,7 @@
+ 
+   m_err_count = 0;
+   m_cached_idx = BTCONTENT.GetNPieces();
++  m_standby = 0;
+ }
+ 
+ int btPeer::SetLocal(unsigned char s)
+@@ -72,20 +97,30 @@
+   switch(s){
+   case M_CHOKE:
+     if( m_state.local_choked ) return 0;
++    time(&m_unchoke_timestamp);
++//  if(arg_verbose) fprintf(stderr, "Choking %p\n", this);
++    if(arg_verbose) fprintf(stderr, "Choking %p (D=%lluMB@%uK/s)\n", this,
++      TotalDL() >> 20, RateDL() >> 10);
+     m_state.local_choked = 1; 
+     break;
+   case M_UNCHOKE: 
+     if( !reponse_q.IsEmpty() ) StartULTimer();
+     if( !m_state.local_choked ) return 0;
+     time(&m_unchoke_timestamp);
++//  if(arg_verbose) fprintf(stderr, "Unchoking %p\n", this);
++    if(arg_verbose) fprintf(stderr, "Unchoking %p (D=%lluMB@%uK/s)\n", this,
++      TotalDL() >> 20, RateDL() >> 10);
+     m_state.local_choked = 0;
+     break;
+   case M_INTERESTED: 
++    m_standby = 0;
+     if( m_state.local_interested ) return 0;
++    if(arg_verbose) fprintf(stderr, "Interested in %p\n", this);
+     m_state.local_interested = 1;
+     break;
+   case M_NOT_INTERESTED:
+     if( !m_state.local_interested ) return 0;
++    if(arg_verbose) fprintf(stderr, "Not interested in %p\n", this);
+     m_state.local_interested = 0; 
+     break;
+   default:
+@@ -97,12 +132,15 @@
+ int btPeer::RequestPiece()
+ {
+   size_t idx;
++  int endgame = 0;
+ 
+   PENDINGQUEUE.ReAssign(&request_q,bitfield);
+ 
+   if( !request_q.IsEmpty() ) return SendRequest();
+ 
+-  if( m_cached_idx < BTCONTENT.GetNPieces() ){
++  if( m_cached_idx < BTCONTENT.GetNPieces() && !BTCONTENT.pBF->IsEmpty() ){
++    // A HAVE msg already selected what we want from this peer
++    // but ignore it in initial-piece mode.
+     idx = m_cached_idx;
+     m_cached_idx = BTCONTENT.GetNPieces();
+     if( !BTCONTENT.pBF->IsSet(idx) &&
+@@ -110,39 +148,72 @@
+ 	!WORLD.AlreadyRequested(idx) ){
+       return (request_q.CreateWithIdx(idx) < 0) ? -1 : SendRequest();
+     }
+-  }else{
++  }	// If we didn't want the cached piece, select another.
++  if( BTCONTENT.pBF->IsEmpty() ){
++    // If we don't have a complete piece yet, try to get one that's already
++    // in progress.  (Initial-piece mode)
++    btPeer *peer = WORLD.Who_Can_Duplicate(this, BTCONTENT.GetNPieces());
++    if(peer){
++      if(arg_verbose) fprintf( stderr, "Duping: %p to %p (#%u)\n",
++        peer, this, peer->request_q.GetRequestIdx() );
++      return (request_q.CopyShuffle(peer->request_q) < 0) ? -1 : SendRequest();
++    }
++  }	// Doesn't have a piece that's already in progress--choose another.
+     BitField tmpBitField;
+     if( bitfield.IsFull() ){
++      // peer is a seed
+       tmpBitField = *BTCONTENT.pBF;
+       tmpBitField.Invert();
+     }else{
+       tmpBitField = bitfield;
+       tmpBitField.Except(*BTCONTENT.pBF);
+     }
++    // The filter tells what we don't want.
++    tmpBitField.Except(*BTCONTENT.pBFilter);
++    // tmpBitField tells what we need from this peer...
+ 
+     if( !tmpBitField.IsEmpty() ){
+-      WORLD.CheckBitField(tmpBitField);
+-      if(tmpBitField.IsEmpty()){
+-	
+-	btPeer *peer = WORLD.Who_Can_Abandon(this);
+-	if(peer){
+-	  peer->StopDLTimer();
+-	  request_q = peer->request_q;
+-
+-	  if(peer->CancelRequest(request_q.GetHead()) < 0 ||
+-	     peer->RequestCheck() < 0){
+-	    peer->CloseConnection();
+-	  }
+-	  
+-	  return SendRequest();
+-	}
+-	
++      BitField tmpBitField2 = tmpBitField;
++      WORLD.CheckBitField(tmpBitField2);
++      // [tmpBitField2]... that we haven't requested from anyone.
++      if(tmpBitField2.IsEmpty()){
++        // Everything this peer has that I want, I've already requested.
++        endgame = ( WORLD.Pieces_I_Can_Get() - BTCONTENT.pBF->Count() )
++            < WORLD.TotalPeers();
++        if(endgame){	// OK to duplicate a request.
++//	  idx = tmpBitField.Random();
++	  idx = 0;	// flag for Who_Can_Duplicate()
++	  btPeer *peer = WORLD.Who_Can_Duplicate(this, idx);
++	  if(arg_verbose) fprintf( stderr, "Duping: %p to %p (#%u)\n",
++	    peer, this, peer->request_q.GetRequestIdx() );
++	  return (request_q.CopyShuffle(peer->request_q) < 0) ?
++	     -1 : SendRequest();
++        }else{	// not endgame mode
++	  btPeer *peer = WORLD.Who_Can_Abandon(this); // slowest choice
++	  if(peer){
++	    // Cancel a request to the slowest peer & request it from this one.
++	    if(arg_verbose) fprintf( stderr, "Reassigning %p to %p (#%u)\n",
++	      peer, this, peer->request_q.GetRequestIdx() );
++	    peer->StopDLTimer();
++	    // RequestQueue class "moves" rather than "copies" in assignment!
++	    request_q = peer->request_q;
++
++	    if(peer->CancelRequest(request_q.GetHead()) < 0 ||
++	        peer->RequestCheck() < 0){
++	      peer->CloseConnection();
++	    }
++	    return SendRequest();
++	  }else m_standby = 1;	// nothing to do at the moment
++        }
+       }else{
+-	idx = tmpBitField.Random();
+-	return (request_q.CreateWithIdx(idx) < 0) ? -1 : SendRequest();
++        // Request something that we haven't requested yet (most common case).
++        idx = tmpBitField2.Random();
++        return (request_q.CreateWithIdx(idx) < 0) ? -1 : SendRequest();
+       }
++    } else {
++      // We don't need anything from the peer.  How'd we get here?
++      return SetLocal(M_NOT_INTERESTED);
+     }
+-  }
+   return 0;
+ }
+ 
+@@ -152,37 +223,46 @@
+ 
+   char *msgbuf = stream.in_buffer.BasePointer();
+ 
+-  r = ntohl(*(size_t*) msgbuf);
++  r = get_nl(msgbuf);
+ 
++  // Don't require keepalives if we're receiving other messages.
++  time(&m_last_timestamp);
+   if( 0 == r ){
+-    time(&m_last_timestamp);
+     if( !m_f_keepalive ) if( stream.Send_Keepalive() < 0 ) return -1;
+     m_f_keepalive = 0;
+-    return (!m_state.remote_choked && request_q.IsEmpty()) ? RequestCheck() : 0;
++    return 0;
+   }else{
+     switch(msgbuf[4]){
+     case M_CHOKE:
+       if(H_BASE_LEN != r){ return -1;}
++      if(arg_verbose) fprintf(stderr, "%p choked me\n", this);
+       m_state.remote_choked = 1;
+       StopDLTimer();
+       if( !request_q.IsEmpty()){
+ 	PSLICE ps = request_q.GetHead();
+-	PENDINGQUEUE.Pending(&request_q);
++	if( !PENDINGQUEUE.Exist(request_q.GetRequestIdx()) )
++	  PENDINGQUEUE.Pending(&request_q);
+ 	if( CancelRequest(ps) < 0) return -1;
+       }
+       return 0;
++
+     case M_UNCHOKE:
+       if(H_BASE_LEN != r){return -1;}
++      if(arg_verbose) fprintf(stderr, "%p unchoked me\n", this);
+       m_state.remote_choked = 0;
++      if(!request_q.IsEmpty())	// shouldn't happen; maybe peer is confused.
++        return SendRequest();
+       return RequestCheck();
+ 
+     case M_INTERESTED:
+       if(H_BASE_LEN != r){return -1;}
++      if(arg_verbose) fprintf(stderr, "%p is interested\n", this);
+       m_state.remote_interested = 1;
+       break;
+ 
+     case M_NOT_INTERESTED:
+       if(r != H_BASE_LEN){return -1;}
++      if(arg_verbose) fprintf(stderr, "%p is not interested\n", this);
+ 
+       m_state.remote_interested = 0;
+       StopULTimer();
+@@ -190,10 +270,11 @@
+       /* remove peer's reponse queue */
+       if( !reponse_q.IsEmpty()) reponse_q.Empty();
+       return 0;
++
+     case M_HAVE:
+       if(H_HAVE_LEN != r){return -1;}
+ 
+-      idx = ntohl(*(size_t*) (msgbuf + 5));
++      idx = get_nl(msgbuf + 5);
+ 
+       if( idx >= BTCONTENT.GetNPieces() || bitfield.IsSet(idx)) return -1;
+ 
+@@ -201,19 +282,24 @@
+ 
+       if( bitfield.IsFull() && BTCONTENT.pBF->IsFull() ){ return -2; }
+ 
+-      if( !BTCONTENT.pBF->IsSet(idx) ) m_cached_idx = idx;
++      if( !BTCONTENT.pBF->IsSet(idx) && !BTCONTENT.pBFilter->IsSet(idx) ){
++        m_cached_idx = idx;
++        m_standby = 0;
++      }
++      //      if( !BTCONTENT.pBF->IsSet(idx) ) m_cached_idx = idx;
+       
+-      return ( !m_state.remote_choked && request_q.IsEmpty() ) ? RequestCheck() : 0;
++      // see if we're Interested now
++      return request_q.IsEmpty() ? RequestCheck() : 0;
+ 
+     case M_REQUEST:
+       if(H_REQUEST_LEN != r || !m_state.remote_interested){ return -1; }
+ 
+-      idx = ntohl(*(size_t*)(msgbuf + 5));
++      idx = get_nl(msgbuf + 5);
+       
+       if( !BTCONTENT.pBF->IsSet(idx) ) return -1;
+       
+-      off = ntohl(*(size_t*)(msgbuf + 9));
+-      len = ntohl(*(size_t*)(msgbuf + 13));
++      off = get_nl(msgbuf + 9);
++      len = get_nl(msgbuf + 13);
+ 
+       if( !reponse_q.IsValidRequest(idx, off, len) ) return -1;
+       
+@@ -222,6 +308,8 @@
+     case M_PIECE:
+       if( request_q.IsEmpty() || !m_state.local_interested){
+ 	m_err_count++;
++	if(arg_verbose) fprintf(stderr,"err: %p (%d) Unwanted piece\n",
++	  this, m_err_count);
+ 	return 0;
+       }
+       return PieceDeliver(r);
+@@ -230,22 +318,28 @@
+       if( (r - 1) != bitfield.NBytes() || !bitfield.IsEmpty()) return -1;
+       bitfield.SetReferBuffer(msgbuf + 5);
+       if(bitfield.IsFull() && BTCONTENT.pBF->IsFull()) return -2;
+-      return 0;
++
++      //This is needed in order to set our Interested state
++      return RequestCheck(); // fixed client stall
+ 
+     case M_CANCEL:
+       if(r != H_CANCEL_LEN || !m_state.remote_interested) return -1;
+ 
+-      idx = ntohl(*(size_t*)(msgbuf + 5));
+-      off = ntohl(*(size_t*)(msgbuf + 9));
+-      len = ntohl(*(size_t*)(msgbuf + 13));
++      idx = get_nl(msgbuf + 5);
++      off = get_nl(msgbuf + 9);
++      len = get_nl(msgbuf + 13);
+       if( reponse_q.Remove(idx,off,len) < 0 ){
+ 	m_err_count++;
++	if(arg_verbose) fprintf(stderr, "err: %p (%d) Bad cancel\n",
++	  this, m_err_count);
+ 	return 0;
+       }
+       if( reponse_q.IsEmpty() ) StopULTimer();
+       return 0;
+     default:
+-      return -1;		// unknow message type
++      if(arg_verbose) fprintf(stderr, "Unknown message type %u from peer %p\n",
++        msgbuf[4], this);
++      return 0;	// ignore unknown message & continue (forward compatibility)
+     }
+   }
+   return 0;
+@@ -279,8 +373,13 @@
+ int btPeer::SendRequest()
+ {
+   PSLICE ps = request_q.GetHead();
+-  for( ; ps ; ps = ps->next )
++  if(arg_verbose) fprintf(stderr, "Requesting #%u from %p:",
++    request_q.GetRequestIdx(), this);
++  for( ; ps ; ps = ps->next ){
++    if(arg_verbose) fprintf(stderr, ".");
+     if(stream.Send_Request(ps->index,ps->offset,ps->length) < 0){ return -1; }
++  }
++  if(arg_verbose) fprintf(stderr, "\n");
+ 
+   return stream.Flush();
+ }
+@@ -294,16 +393,56 @@
+   return stream.Flush();
+ }
+ 
++int btPeer::CancelSliceRequest(size_t idx, size_t off, size_t len)
++{
++  PSLICE ps;
++
++  for(ps = request_q.GetHead() ; ps; ps = ps->next){
++    if( idx == ps->index && off == ps->offset && len == ps->length ){
++      if( request_q.Remove(idx,off,len) < 0 ){
++        m_err_count++;
++        if(arg_verbose) fprintf(stderr,"err: %p (%d) Bad CS remove\n",
++          this, m_err_count);
++      }
++      if(stream.Send_Cancel(idx,off,len) < 0)
++        return -1;
++      return stream.Flush();
++    }
++  }
++  return 0;
++}
++
+ int btPeer::ReportComplete(size_t idx)
+ {
+   if( BTCONTENT.APieceComplete(idx) ){
++    if(arg_verbose) fprintf(stderr, "Piece #%u completed\n", idx);
+     WORLD.Tell_World_I_Have(idx);
++    PENDINGQUEUE.Delete(idx);
+     if( BTCONTENT.pBF->IsFull() ){
+       ResetDLTimer();
+       WORLD.CloseAllConnectionToSeed();
+     }
+-  }else
++
++    if( arg_file_to_download ){
++      BitField tmpBitField =  *BTCONTENT.pBF;
++      tmpBitField.Except(*BTCONTENT.pBFilter);
++
++      while( arg_file_to_download &&
++        tmpBitField.Count() >= BTCONTENT.getFilePieces(arg_file_to_download) ){
++        //when the file is complete, we go after the next
++        ++arg_file_to_download;
++        BTCONTENT.FlushCache();
++        BTCONTENT.SetFilter();
++        tmpBitField =  *BTCONTENT.pBF;
++        tmpBitField.Except(*BTCONTENT.pBFilter);
++      }
++      WORLD.CheckInterest();
++    }
++  }else{
+     m_err_count++;
++    if(arg_verbose) fprintf(stderr, "err: %p (%d) Bad complete\n",
++      this, m_err_count);
++  }
+   return (P_FAILED == m_status) ? -1 : RequestCheck();
+ }
+ 
+@@ -312,12 +451,14 @@
+   size_t idx,off,len;
+   char *msgbuf = stream.in_buffer.BasePointer();
+ 
+-  idx = ntohl(*(size_t*) (msgbuf + 5));
+-  off = ntohl(*(size_t*) (msgbuf + 9));
++  idx = get_nl(msgbuf + 5);
++  off = get_nl(msgbuf + 9);
+   len = mlen - 9;
+ 
+   if( request_q.Remove(idx,off,len) < 0 ){
+     m_err_count++;
++    if(arg_verbose) fprintf(stderr, "err: %p (%d) Bad remove\n",
++      this, m_err_count);
+     return 0;
+   }
+ 
+@@ -329,13 +470,21 @@
+   Self.DataRecved(len);
+   DataRecved(len);
+ 
++  // Check for & cancel requests for this slice from other peers in initial
++  // and endgame modes.
++  if( BTCONTENT.pBF->Count() < 2 ||
++      WORLD.Pieces_I_Can_Get() - BTCONTENT.pBF->Count() < WORLD.TotalPeers() ){
++    WORLD.CancelSlice(idx, off, len);
++    PENDINGQUEUE.DeleteSlice(idx, off, len);
++  }
++
+   /* if piece download complete. */
+   return request_q.IsEmpty() ? ReportComplete(idx) : 0;
+ }
+ 
+ int btPeer::RequestCheck()
+ {
+-  if( BandWidthLimit() ) return 0;
++  if( BandWidthLimitDown() ) return 0;
+   
+   if( BTCONTENT.pBF->IsFull() ){
+     if( bitfield.IsFull() ){ return -1; }
+@@ -347,7 +496,8 @@
+     if(request_q.IsEmpty() && !m_state.remote_choked){
+       if( RequestPiece() < 0 ) return -1;
+     }
+-  }
++  } else
++    if(m_state.local_interested && SetLocal(M_NOT_INTERESTED) < 0) return -1;
+   
+   if(!request_q.IsEmpty()) StartDLTimer();
+   return 0;
+@@ -355,6 +505,7 @@
+ 
+ void btPeer::CloseConnection()
+ {
++  if(arg_verbose) fprintf(stderr, "%p closed\n", this);
+   if( P_FAILED != m_status ){
+     m_status = P_FAILED;
+     stream.Close();
+@@ -364,13 +515,76 @@
+ int btPeer::HandShake()
+ {
+   ssize_t r = stream.Feed();
+-  if( r < 0 ) return -1;
++  if( r < 0 ){
++//  if(arg_verbose) fprintf(stderr, "hs: r<0 (%d)\n", r);
++    return -1;
++  }
+   else if( r < 68 ){
+-    if(r && memcmp(stream.in_buffer.BasePointer(),BTCONTENT.GetShakeBuffer(),r) != 0) return -1;
++    if(r >= 21){	// Ignore 8 reserved bytes following protocol ID.
++      if( memcmp(stream.in_buffer.BasePointer()+20,
++          BTCONTENT.GetShakeBuffer()+20, (r<28) ? r-20 : 8) != 0 ){
++        if(arg_verbose){
++          if( r>48 ) fprintf( stderr, "\npeer %p gave 0x", this);
++          else fprintf( stderr, "\npeer gave 0x" );
++          for(int i=20; i<r && i<27; i++) fprintf(stderr, "%2.2hx",
++            (u_short)(u_char)(stream.in_buffer.BasePointer()[i]));
++          fprintf( stderr, " as reserved bytes (partial)\n" );
++        }
++        memcpy(stream.in_buffer.BasePointer()+20, BTCONTENT.GetShakeBuffer()+20,
++          (r<28) ? r-20 : 8);
++      }
++    }
++    if(r && memcmp(stream.in_buffer.BasePointer(),BTCONTENT.GetShakeBuffer(),
++        (r<48) ? r : 48) != 0){
++      if(arg_verbose){
++        fprintf(stderr, "\nmine: 0x");
++        for(int i=0; i<r && i<48; i++) fprintf(stderr, "%2.2hx",
++          (u_short)(u_char)(BTCONTENT.GetShakeBuffer()[i]));
++        fprintf(stderr, "\npeer: 0x");
++        for(int i=0; i<r && i<48; i++) fprintf(stderr, "%2.2hx",
++          (u_short)(u_char)(stream.in_buffer.BasePointer()[i]));
++        fprintf(stderr, "\n");
++        fprintf(stderr, "peer is %.8s\n", stream.in_buffer.BasePointer()+48);
++      }
++      return -1;
++    }
+     return 0;
+   }
+ 
+-  if( memcmp(stream.in_buffer.BasePointer(),BTCONTENT.GetShakeBuffer(),48) != 0 ) return -1;
++  // If the reserved bytes differ, make them the same.
++  // If they mean anything important, the handshake is likely to fail anyway.
++  if( memcmp(stream.in_buffer.BasePointer()+20, BTCONTENT.GetShakeBuffer()+20,
++      8) != 0 ){
++    if(arg_verbose){
++      fprintf(stderr, "\npeer %p gave 0x", this);
++      for(int i=20; i<27; i++) fprintf(stderr, "%2.2hx",
++        (u_short)(u_char)(stream.in_buffer.BasePointer()[i]));
++      fprintf( stderr, " as reserved bytes\n" );
++    }
++    memcpy(stream.in_buffer.BasePointer()+20, BTCONTENT.GetShakeBuffer()+20, 8);
++  }
++  if( memcmp(stream.in_buffer.BasePointer(),BTCONTENT.GetShakeBuffer(),48) != 0 ){
++    if(arg_verbose){
++      fprintf(stderr, "\nmine: 0x");
++      for(int i=0; i<48; i++) fprintf(stderr, "%2.2hx",
++        (u_short)(u_char)(BTCONTENT.GetShakeBuffer()[i]));
++      fprintf(stderr, "\npeer: 0x");
++      for(int i=0; i<48; i++) fprintf(stderr, "%2.2hx",
++        (u_short)(u_char)(stream.in_buffer.BasePointer()[i]));
++      fprintf(stderr, "\n");
++    }
++    return -1;
++  }
++
++  if(arg_verbose){
++    fprintf(stderr, "Peer %p ID: ", this);
++    for(int i=48; i<60; i++){
++      if( isprint(stream.in_buffer.BasePointer()[i]) )
++        fprintf(stderr, "%c", stream.in_buffer.BasePointer()[i]);
++      else break;
++    }
++    fprintf(stderr, "\n");
++  }
+ 
+   // ignore peer id verify
+   if( !BTCONTENT.pBF->IsEmpty()){
+@@ -395,10 +609,17 @@
+   return stream.Send_Buffer((char*)BTCONTENT.GetShakeBuffer(),68);
+ }
+ 
+-int btPeer::BandWidthLimit()
++int btPeer::BandWidthLimitUp()
++{
++  if( cfg_max_bandwidth_up <= 0 ) return 0;
++  return ((Self.RateUL()) >= cfg_max_bandwidth_up) ?
++    1:0;
++}
++
++int btPeer::BandWidthLimitDown()
+ {
+-  if( cfg_max_bandwidth <= 0 ) return 0;
+-  return ((Self.RateDL() + Self.RateUL()*2) / 1024 >= cfg_max_bandwidth) ?
++  if( cfg_max_bandwidth_down <= 0 ) return 0;
++  return ((Self.RateDL()) >= cfg_max_bandwidth_down) ?
+     1:0;
+ }
+ 
+@@ -406,12 +627,23 @@
+ {
+   int yn = 0;
+   if( stream.out_buffer.Count() || // data need send in buffer.
+-      (!reponse_q.IsEmpty() && CouldReponseSlice() && !BandWidthLimit()) ||
++      (!reponse_q.IsEmpty() && CouldReponseSlice() && !  BandWidthLimitUp()) ||
++      ( !m_state.remote_choked && request_q.IsEmpty()
++	    && m_state.local_interested
++	    && !BandWidthLimitDown() && !m_standby ) ||	// can request a piece.
+       P_CONNECTING == m_status ) // peer is connecting
+     yn = 1;
+   return yn;
+ }
+ 
++int btPeer::NeedRead()
++{
++  int yn = 1;
++  if( !request_q.IsEmpty() && BandWidthLimitDown() )
++    yn = 0;
++  return yn;
++}
++
+ int btPeer::CouldReponseSlice()
+ {
+   if(!m_state.local_choked &&
+@@ -453,15 +685,15 @@
+ {
+   if( stream.out_buffer.Count() && stream.Flush() < 0) return -1;
+ 
+-  if(! reponse_q.IsEmpty() &&  CouldReponseSlice() ) {
++  if( !reponse_q.IsEmpty() && CouldReponseSlice() && !BandWidthLimitUp() ) {
+     StartULTimer();
+     Self.StartULTimer();
+   }
+ 
+-  for(; !reponse_q.IsEmpty() && CouldReponseSlice(); )
++  for(; !reponse_q.IsEmpty() && CouldReponseSlice() && !BandWidthLimitUp(); )
+     if( ReponseSlice() < 0) return -1;
+ 
+-  return 0;
++  return (!m_state.remote_choked && request_q.IsEmpty()) ? RequestCheck() : 0;
+ }
+ 
+ void btPeer::dump()
+diff -u ctorrent-1.3.4.orig/peer.h ctorrent-1.3.4/peer.h
+--- ctorrent-1.3.4.orig/peer.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/peer.h	2005-08-11 23:45:29.432693224 +0200
+@@ -34,6 +34,9 @@
+   unsigned char reserved:4;		/* unused */
+ }BTSTATUS;
+ 
++size_t get_nl(char *from);
++void set_nl(char *to, size_t from);
++
+ class btBasic
+ {
+ private:
+@@ -84,6 +87,7 @@
+ 
+   size_t m_cached_idx;
+   size_t m_err_count;
++  int m_standby;
+   
+   int PieceDeliver(size_t mlen);
+   int ReportComplete(size_t idx);
+@@ -96,6 +100,8 @@
+   int CouldReponseSlice();
+ 
+   int BandWidthLimit();
++  int BandWidthLimitUp();
++  int BandWidthLimitDown();
+  public:
+   BitField bitfield;
+   btStream stream;
+@@ -118,10 +124,12 @@
+   int Is_Local_UnChoked() const { return m_state.local_choked ? 0 : 1; }
+   int SetLocal(unsigned char s);
+ 
++  int CancelSliceRequest(size_t idx, size_t off, size_t len);
+   
+   void SetStatus(unsigned char s){ m_status = s; }
+   unsigned char GetStatus() const { return m_status; }
+   int NeedWrite();
++  int NeedRead();
+ 
+   
+   void CloseConnection();
+diff -u ctorrent-1.3.4.orig/peerlist.cpp ctorrent-1.3.4/peerlist.cpp
+--- ctorrent-1.3.4.orig/peerlist.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/peerlist.cpp	2005-08-11 23:45:29.433693072 +0200
+@@ -21,6 +21,8 @@
+ #define MAX_UNCHOKE 3
+ #define UNCHOKE_INTERVAL 10
+ 
++#define OPT_INTERVAL 30
++
+ #define KEEPALIVE_INTERVAL 117
+ 
+ #define LISTEN_PORT_MAX 2706
+@@ -36,12 +38,13 @@
+ 
+ PeerList::PeerList()
+ {
+-  m_unchoke_check_timestamp = 
+-    m_keepalive_check_timestamp = time((time_t*) 0);
++  m_unchoke_check_timestamp =
++    m_keepalive_check_timestamp =
++    m_opt_timestamp = time((time_t*) 0);
+ 
+   m_head = (PEERNODE*) 0;
+   m_listen_sock = INVALID_SOCKET;
+-  m_peers_count = 0;
++  m_peers_count = m_seeds_count = 0;
+   m_live_idx = 0;
+ }
+ 
+@@ -118,6 +121,8 @@
+     
+     if( setfd_nonblock(sk) < 0) goto err;
+ 
++    if(arg_verbose) fprintf(stderr, "Connecting to %s:%hu\n",
++        inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+     if( -1 == (r = connect_nonb(sk,(struct sockaddr*)&addr)) ) return -1;
+ 
+     peer = new btPeer;
+@@ -182,19 +187,44 @@
+     if(NewPeer(addr,INVALID_SOCKET) == -4) break;
+   }
+ 
++
+   // show status line.
+   if( m_pre_dlrate.TimeUsed(pnow) ){
+-    printf("\r                                                                           ");
+-	printf("\r%c %u,[%u/%u/%u],%u,%u | %u,%u  E:%u",
++    char partial[30] = "";
++    if(arg_file_to_download){
++      BitField tmpBitField =  *BTCONTENT.pBF;
++      tmpBitField.Except(*BTCONTENT.pBFilter);
++      sprintf( partial, "P:%u/%u ", 
++	tmpBitField.Count(),
++	BTCONTENT.getFilePieces(arg_file_to_download) );
++    }
++    printf("\r                                                                               ");
++    printf("\r%c %u/%u/%u [%u/%u/%u] %lluMB,%lluMB | %u,%uK/s | %u,%uK E:%u,%u %s%s ",
+ 	   LIVE_CHAR[m_live_idx],
+-	   m_peers_count,
++
++	   m_seeds_count,
++	   m_peers_count - m_seeds_count,
++	   Tracker.GetPeersCount(),
++
+ 	   BTCONTENT.pBF->Count(),
+ 	   BTCONTENT.pBF->NBits(),
+ 	   Pieces_I_Can_Get(),
+-	   Self.RateDL(), Self.RateUL(),
+-	   m_pre_dlrate.RateMeasure(Self.GetDLRate()),
+-	   m_pre_ulrate.RateMeasure(Self.GetULRate()),
+-	   Tracker.GetRefuseClick());
++
++ 	   Self.TotalDL() >> 20, Self.TotalUL() >> 20,
++
++	   Self.RateDL() >> 10, Self.RateUL() >> 10,
++
++	   m_pre_dlrate.RateMeasure(Self.GetDLRate()) >> 10,
++	   m_pre_ulrate.RateMeasure(Self.GetULRate()) >> 10,
++
++	   Tracker.GetRefuseClick(),
++	   Tracker.GetOkClick(),
++
++	   partial,
++
++	   (Tracker.GetStatus()==1) ? "Connecting" :
++	       ((Tracker.GetStatus()==2) ? "Connected" : "")
++    );
+     fflush(stdout);
+     m_pre_dlrate = Self.GetDLRate();
+     m_pre_ulrate = Self.GetULRate();
+@@ -214,8 +244,12 @@
+     Sort();
+   }
+ 
+-  if( f_unchoke_check ) memset(UNCHOKER, 0, (MAX_UNCHOKE + 1) * sizeof(btPeer*));
++  if( f_unchoke_check ) {
++    memset(UNCHOKER, 0, (MAX_UNCHOKE + 1) * sizeof(btPeer*));
++    if (OPT_INTERVAL <= *pnow - m_opt_timestamp) m_opt_timestamp = 0;
++  }
+ 
++  m_seeds_count = 0;
+   for(p = m_head; p;){
+     if( PEER_IS_FAILED(p->peer)){
+       if( pp ) pp->next = p->next; else m_head = p->next;
+@@ -225,9 +259,11 @@
+       if( pp ) p = pp->next; else p = m_head;
+       continue;
+     }else{
++      if (p->peer->bitfield.IsFull()) m_seeds_count++;
+       if( f_keepalive_check ){
+ 
+ 	if(3 * KEEPALIVE_INTERVAL <= (*pnow - p->peer->GetLastTimestamp())){
++	  if(arg_verbose) fprintf(stderr, "close: keepalive expired\n");
+ 	  p->peer->CloseConnection();
+ 	  goto skip_continue;
+ 	}
+@@ -235,28 +271,26 @@
+ 	if(PEER_IS_SUCCESS(p->peer) && 
+ 	   KEEPALIVE_INTERVAL <= (*pnow - p->peer->GetLastTimestamp()) &&
+ 	   p->peer->AreYouOK() < 0){
++	   if(arg_verbose) fprintf(stderr, "close: keepalive death\n");
+ 	  p->peer->CloseConnection();
+ 	  goto skip_continue;
+ 	}
+       }
+ 
+-      if( f_unchoke_check ){
+-
+-	if(PEER_IS_SUCCESS(p->peer) && p->peer->Need_Local_Data()){
++      if( f_unchoke_check && PEER_IS_SUCCESS(p->peer) ){
+ 
+-	  if((time_t) 0 == p->peer->GetLastUnchokeTime()){
+-	    if(p->peer->SetLocal(M_UNCHOKE) < 0){
+-	      p->peer->CloseConnection();
+-	      goto skip_continue;
+-	    }
+-	  }else
++	if( p->peer->Is_Remote_Interested() && p->peer->Need_Local_Data() )
+ 	    UnChokeCheck(p->peer, UNCHOKER);
+-	}
++	else if(p->peer->SetLocal(M_CHOKE) < 0){
++	  if(arg_verbose) fprintf(stderr, "close: Can't choke peer\n");
++	  p->peer->CloseConnection();
++	  goto skip_continue;
++        }
+       }
+ 
+       sk = p->peer->stream.GetSocket();
+       if(maxfd < sk) maxfd = sk;
+-      FD_SET(sk,rfdp);
++      if( p->peer->NeedRead() ) FD_SET(sk,rfdp);
+ 
+       if( p->peer->NeedWrite() ) FD_SET(sk,wfdp);
+     skip_continue: 
+@@ -272,13 +306,26 @@
+   }
+ 
+   if( f_unchoke_check ){
++//  if (!m_opt_timestamp) m_opt_timestamp = *pnow;
++    if(arg_verbose) fprintf(stderr, "\nUnchoker ");
++    if (!m_opt_timestamp){
++      if(arg_verbose) fprintf(stderr, "(opt) ");
++      m_opt_timestamp = *pnow;
++    }
+     for( i = 0; i < MAX_UNCHOKE + 1; i++){
+ 
+       if( (btPeer*) 0 == UNCHOKER[i]) break;
+ 
+       if( PEER_IS_FAILED(UNCHOKER[i]) ) continue;
+ 
++      if(arg_verbose){
++        fprintf(stderr, "D=%lluMB@%uK/s:U=%lluMB ",
++          UNCHOKER[i]->TotalDL() >> 20, UNCHOKER[i]->RateDL() >> 10,
++          UNCHOKER[i]->TotalUL() >> 20);
++        if( UNCHOKER[i]->bitfield.IsEmpty() ) fprintf(stderr, "(empty) ");
++      }
+       if( UNCHOKER[i]->SetLocal(M_UNCHOKE) < 0){
++        if(arg_verbose) fprintf(stderr, "close: Can't unchoke peer\n");
+ 	UNCHOKER[i]->CloseConnection();
+ 	continue;
+       }
+@@ -290,6 +337,7 @@
+ 	if( maxfd < sk) maxfd = sk;
+       }
+     } // end for
++    if(arg_verbose) fprintf(stderr, "\n");
+   }
+   
+   return maxfd;
+@@ -314,6 +362,64 @@
+   return peer;
+ }
+ 
++// Duplicating a request queue that's in progress rather than creating a new
++// one helps avoid requesting slices that we already have.
++// This takes an index parameter to facilitate modification of the function to
++// allow targeting of a specific piece.  It's currently only used as a flag to
++// specify endgame or initial-piece mode though.
++btPeer* PeerList::Who_Can_Duplicate(btPeer *proposer, size_t idx)
++{
++  PEERNODE *p;
++  btPeer *peer = (btPeer*) 0;
++  int endgame;
++  size_t qsize, mark, bench;
++  // In endgame mode, select from peers with the longest request queue.
++  // In initial mode, select from peers with the shortest non-empty request
++  // queue.
++
++  endgame = idx < BTCONTENT.GetNPieces();	// else initial-piece mode
++  if(endgame) mark = 0;
++  else mark = cfg_req_queue_length;
++  bench = BTCONTENT.GetNPieces();
++
++  for(p = m_head; p; p = p->next){
++    if(!PEER_IS_SUCCESS(p->peer) || p->peer == proposer ||
++       p->peer->request_q.IsEmpty() ) continue;
++
++    if(proposer->bitfield.IsSet(p->peer->request_q.GetRequestIdx())){
++      qsize = p->peer->request_q.Qsize();
++      if( (endgame && qsize > mark) || (!endgame && qsize && qsize < mark) ){
++        mark = qsize;
++        peer = p->peer;
++      }else if( qsize == mark ){
++        if( bench != p->peer->request_q.GetRequestIdx() && random()&01 ){
++          bench = peer->request_q.GetRequestIdx();
++          peer = p->peer;
++        }
++      }
++    }
++  }
++  return peer;
++}
++
++void PeerList::CancelSlice(size_t idx, size_t off, size_t len)
++{
++  PEERNODE *p;
++  PSLICE ps;
++
++  for( p = m_head; p; p = p->next){
++    
++    if( !PEER_IS_SUCCESS(p->peer) ) continue;
++
++    if( idx == p->peer->request_q.GetRequestIdx() ) {
++      if (p->peer->CancelSliceRequest(idx,off,len) < 0) {
++        if(arg_verbose) fprintf(stderr, "close: CancelSlice\n");
++        p->peer->CloseConnection();
++      }
++    }
++  }
++}
++
+ void PeerList::Tell_World_I_Have(size_t idx)
+ {
+   PEERNODE *p;
+@@ -330,7 +436,12 @@
+     
+     if( f_seed ){
+       if( !p->peer->request_q.IsEmpty() ) p->peer->request_q.Empty();
+-      if(p->peer->SetLocal(M_NOT_INTERESTED) < 0) p->peer->CloseConnection();
++//    if(p->peer->SetLocal(M_NOT_INTERESTED) < 0) p->peer->CloseConnection();
++      if(p->peer->SetLocal(M_NOT_INTERESTED) < 0) {
++        if(arg_verbose)
++          fprintf(stderr, "close: Can't set self not interested (T_W_I_H)\n");
++        p->peer->CloseConnection();
++      }
+     }
+     
+   } // end for
+@@ -474,15 +585,20 @@
+ 	FD_CLR(sk,wfdp);
+ 
+ 	if(FD_ISSET(sk,rfdp)){	// connect failed.
++	  (*nready)--; 
+ 	  FD_CLR(sk,rfdp);
+ 	  peer->CloseConnection();
+ 	}else{
+ 	  if(peer->Send_ShakeInfo() < 0){
++	    if(arg_verbose) fprintf(stderr, "close: Sending handshake\n");
+ 	    peer->CloseConnection();
+ 	  }
+ 	  else 
+ 	    peer->SetStatus(P_HANDSHAKE);
+ 	}
++      }else if(FD_ISSET(sk,rfdp)){
++	(*nready)--; 
++	peer->CloseConnection();
+       }
+     }else{
+       if(FD_ISSET(sk,rfdp)){
+@@ -493,18 +609,29 @@
+ 	(*nready)--;
+ 	FD_CLR(sk,rfdp);
+ 	if(peer->GetStatus() == P_HANDSHAKE){
+-	  if( peer->HandShake() < 0 ) peer->CloseConnection();
+-	}else{
+-	  if( peer->RecvModule() < 0 ) peer->CloseConnection();
++	  if( peer->HandShake() < 0 ) {
++	    if(arg_verbose) fprintf(stderr, "close: bad handshake\n");
++	    peer->CloseConnection();
++	  }
++	} // fixed client stall
++	if(peer->GetStatus() == P_SUCCESS){
++	  if( peer->RecvModule() < 0 ) {
++	    if(arg_verbose) fprintf(stderr, "close: receive\n");
++	    peer->CloseConnection();
++	  }
+ 	}
+-      }else if(PEER_IS_SUCCESS(peer) && FD_ISSET(sk,wfdp)){
++      }
++      if(PEER_IS_SUCCESS(peer) && FD_ISSET(sk,wfdp)){
+ 	p->click++;
+ 	if( !(p->click) )
+ 	  for(p2 = m_head; p2; p2=p2->next) p2->click = 0;
+ 
+ 	(*nready)--;
+ 	FD_CLR(sk,wfdp);
+-	if( peer->SendModule() < 0 ) peer->CloseConnection();
++	if( peer->SendModule() < 0 ) {
++	  if(arg_verbose) fprintf(stderr, "close: send\n");
++	  peer->CloseConnection();
++	}
+       }
+     }
+   }// end for
+@@ -514,7 +641,11 @@
+ {
+   PEERNODE *p = m_head;
+   for( ; p; p = p->next)
+-    if(p->peer->bitfield.IsFull()) p->peer->CloseConnection();
++//  if(p->peer->bitfield.IsFull()) p->peer->CloseConnection();
++    if(p->peer->bitfield.IsFull()) {
++      if(arg_verbose) fprintf(stderr, "close: seed<->seed\n");
++      p->peer->CloseConnection();
++    }
+ }
+ 
+ void PeerList::UnChokeCheck(btPeer* peer, btPeer *peer_array[])
+@@ -523,8 +654,15 @@
+   int cancel_idx = 0;
+   btPeer *loster = (btPeer*) 0;
+   int f_seed = BTCONTENT.pBF->IsFull();
++  int no_opt = 0;
++
++  if (m_opt_timestamp) no_opt = 1;
+ 
+-  for( cancel_idx = i = 0; i < MAX_UNCHOKE; i++ ){
++// Find my 3 or 4 fastest peers.
++// The MAX_UNCHOKE+1 (4th) slot is for the optimistic unchoke when it happens.
++
++  // Find a slot for the candidate--the slowest peer, or an available slot.
++  for( cancel_idx = i = 0; i < MAX_UNCHOKE+no_opt; i++ ){
+     if((btPeer*) 0 == peer_array[i] || PEER_IS_FAILED(peer_array[i]) ){	// 有空位
+       cancel_idx = i; 
+       break;
+@@ -537,7 +675,13 @@
+ 	  cancel_idx = i;
+       }else{
+ 	// compare download rate.
+-	if(peer_array[cancel_idx]->RateDL() > peer_array[i]->RateDL())
++//	if(peer_array[cancel_idx]->RateDL() > peer_array[i]->RateDL())
++	if( peer_array[cancel_idx]->RateDL() > peer_array[i]->RateDL()
++          //if equal, reciprocate to the peer we've sent less to, proportionally
++          ||(peer_array[cancel_idx]->RateDL() == peer_array[i]->RateDL()
++            && peer_array[cancel_idx]->TotalUL()
++                / (peer_array[cancel_idx]->TotalDL()+.001)
++              < peer_array[i]->TotalUL() / (peer_array[i]->TotalDL()+.001)) )
+ 	  cancel_idx = i;
+       }
+     }
+@@ -551,7 +695,13 @@
+       }else
+ 	loster = peer;
+     }else{
+-      if(peer->RateDL() > peer_array[cancel_idx]->RateDL()){
++//    if(peer->RateDL() > peer_array[cancel_idx]->RateDL()){
++      if( peer->RateDL() > peer_array[cancel_idx]->RateDL()
++        // If equal, reciprocate to the peer we've sent less to, proportionally
++        ||(peer_array[cancel_idx]->RateDL() == peer->RateDL()
++          && peer_array[cancel_idx]->TotalUL()
++                / (peer_array[cancel_idx]->TotalDL()+.001)
++            > peer->TotalUL() / (peer->TotalDL()+.001)) ){
+ 	loster = peer_array[cancel_idx];
+ 	peer_array[cancel_idx] = peer;
+       }else
+@@ -559,15 +709,56 @@
+     }
+ 
+     // opt unchoke
+-    if((btPeer*) 0 == peer_array[MAX_UNCHOKE] || PEER_IS_FAILED(peer_array[MAX_UNCHOKE]) )
++    if (no_opt) {
++      if(loster->SetLocal(M_CHOKE) < 0) loster->CloseConnection();
++    }
++    else
++    // The last slot is for the optimistic unchoke.
++    // Bump the loser into it if he's been waiting longer than the occupant.
++    if((btPeer*) 0 == peer_array[MAX_UNCHOKE] || PEER_IS_FAILED(peer_array[MAX_UNCHOKE]))
+       peer_array[MAX_UNCHOKE] = loster;
+-    else{
+-      if(loster->GetLastUnchokeTime() < peer_array[MAX_UNCHOKE]->GetLastUnchokeTime())
+-	peer_array[MAX_UNCHOKE] = loster;
+-      else{
+-	if(loster->SetLocal(M_CHOKE) < 0) loster->CloseConnection();
++    else {
++//    if(loster->GetLastUnchokeTime() < peer_array[MAX_UNCHOKE]->GetLastUnchokeTime()) {
++      // if loser is empty and current is not, loser gets 75% chance.
++      if( loster->bitfield.IsEmpty() && !peer_array[MAX_UNCHOKE]->bitfield.IsEmpty()
++            && random()&03 ) {
++        btPeer* tmp = peer_array[MAX_UNCHOKE];
++        peer_array[MAX_UNCHOKE] = loster;
++        loster = tmp;
++      } else // if loser waited longer:
++      if(loster->GetLastUnchokeTime() < peer_array[MAX_UNCHOKE]->GetLastUnchokeTime()) {
++        // if current is empty and loser is not, loser gets 25% chance;
++        //    else loser wins.
++        // transformed to: if loser is empty or current isn't, or 25% chance,
++        //    then loser wins.
++        if( !peer_array[MAX_UNCHOKE]->bitfield.IsEmpty() || loster->bitfield.IsEmpty()
++            || !random()&03 ) {
++          btPeer* tmp = peer_array[MAX_UNCHOKE];
++          peer_array[MAX_UNCHOKE] = loster;
++          loster = tmp;
++        }
+       }
++      if(loster->SetLocal(M_CHOKE) < 0) loster->CloseConnection();
+     }
+   }else //else if((btPeer*) 0 != peer_array[cancel_idx].....
+     peer_array[cancel_idx] = peer;
+ }
++
++// When we change what we're going after, we need to evaluate & set our
++// interest with each peer appropriately.
++void PeerList::CheckInterest()
++{
++  PEERNODE *p = m_head;
++  for( ; p; p = p->next) {
++    // Don't shortcut by checking Is_Local_Interested(), as we need to let
++    // SetLocal() reset the m_standby flag.
++    if( p->peer->Need_Remote_Data() ) {
++      if( p->peer->SetLocal(M_INTERESTED) < 0 )
++        p->peer->CloseConnection();
++    } else {
++      if( p->peer->SetLocal(M_NOT_INTERESTED) < 0 )
++        p->peer->CloseConnection();
++    }
++  }
++}
++
+diff -u ctorrent-1.3.4.orig/peerlist.h ctorrent-1.3.4/peerlist.h
+--- ctorrent-1.3.4.orig/peerlist.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/peerlist.h	2005-08-11 23:45:29.434692920 +0200
+@@ -18,7 +18,8 @@
+   SOCKET m_listen_sock;
+   PEERNODE *m_head;
+   size_t m_peers_count;
+-  time_t m_unchoke_check_timestamp, m_keepalive_check_timestamp, m_last_progress_timestamp;
++  size_t m_seeds_count;
++  time_t m_unchoke_check_timestamp, m_keepalive_check_timestamp, m_last_progress_timestamp, m_opt_timestamp;
+ 
+   unsigned char m_live_idx:2;
+   unsigned char m_reserved:6;
+@@ -50,9 +51,12 @@
+   
+   void Tell_World_I_Have(size_t idx);
+   btPeer* Who_Can_Abandon(btPeer *proposer);
++  btPeer* Who_Can_Duplicate(btPeer *proposer, size_t idx);
++  void CancelSlice(size_t idx, size_t off, size_t len);
+   void CheckBitField(BitField &bf);
+   int AlreadyRequested(size_t idx);
+   size_t Pieces_I_Can_Get();
++  void CheckInterest();
+ };
+ 
+ extern PeerList WORLD;
+diff -u ctorrent-1.3.4.orig/rate.cpp ctorrent-1.3.4/rate.cpp
+--- ctorrent-1.3.4.orig/rate.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/rate.cpp	2005-08-11 23:45:29.434692920 +0200
+@@ -1,5 +1,7 @@
+ #include "rate.h"
+ 
++#define RATE_INTERVAL 20
++
+ void Rate::StartTimer()
+ {
+   if( !m_last_timestamp ) time(&m_last_timestamp);
+@@ -7,7 +9,7 @@
+ 
+ void Rate::StopTimer()
+ {
+-  if( !m_last_timestamp ){
++  if( m_last_timestamp ){
+     m_total_timeused += (time((time_t*) 0) - m_last_timestamp);
+     m_last_timestamp = 0;
+   }
+@@ -15,7 +17,27 @@
+ 
+ void Rate::CountAdd(size_t nbytes)
+ {
++  time_t now = time((time_t*) 0);
++
+   m_count_bytes += nbytes;
++
++  // save bandwidth history data
++  for (int i=0; i <= n_samples; i++)
++  {
++    if (i < MAX_SAMPLES)
++    {
++      if (now == m_timestamp_sample[i]) {
++        m_bytes_sample[i] += nbytes;
++        break;
++      }
++      else if (now - RATE_INTERVAL > m_timestamp_sample[i]) {
++        m_timestamp_sample[i] = now;
++        m_bytes_sample[i] = nbytes;
++        if (n_samples < MAX_SAMPLES) n_samples++;
++        break;
++      }
++    }
++  }
+ }
+ 
+ void Rate::operator=(const Rate &ra)
+@@ -26,17 +48,33 @@
+ 
+ size_t Rate::RateMeasure() const
+ {
+-  time_t timeused = m_total_timeused;
+-  if( m_last_timestamp ) timeused += (time((time_t*) 0) - m_last_timestamp);
++  // calculate rate based on bandwidth history data
++  time_t timestamp = time((time_t*) 0);
++  u_int64_t countbytes = 0;
++  time_t timeused = 0;
++
++  if( !m_last_timestamp ) return 0; // no current rate
++
++  timeused = (TimeUsed(&timestamp) < RATE_INTERVAL) ?
++    TimeUsed(&timestamp) : RATE_INTERVAL;
+   if( timeused < 1 ) timeused = 1;
+-  return (size_t)(m_count_bytes / timeused);
++
++  for (int i=0; i<n_samples; i++)
++  {
++    if (timestamp - m_timestamp_sample[i] <= timeused)
++      countbytes += m_bytes_sample[i];
++  }
++  return (size_t)(countbytes / timeused);
+ }
+ 
+ size_t Rate::RateMeasure(const Rate &ra_to) const
+ {
++  int tmp;
+   time_t timeused = time((time_t*) 0) - m_last_timestamp;
+   if( timeused < 1 ) timeused = 1;
+-  return (size_t)((ra_to.m_count_bytes - m_count_bytes) / timeused);
++  tmp = (ra_to.m_count_bytes - ra_to.m_recent_base)
++      - (m_count_bytes - m_recent_base);
++  return (size_t)( (tmp>0) ? (tmp/timeused) : 0 );
+ }
+ 
+ time_t Rate::TimeUsed(const time_t *pnow) const
+diff -u ctorrent-1.3.4.orig/rate.h ctorrent-1.3.4/rate.h
+--- ctorrent-1.3.4.orig/rate.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/rate.h	2005-08-11 23:45:29.434692920 +0200
+@@ -5,14 +5,29 @@
+ #include <time.h>
+ #include "def.h"
+ 
++#define MAX_SAMPLES 20
++
+ class Rate{
+  private:
+   time_t m_last_timestamp;
+   time_t m_total_timeused;
+   u_int64_t m_count_bytes;
++  u_int64_t m_recent_base;
++  
++  // bandwidth history data
++  size_t n_samples;
++  time_t m_timestamp_sample[MAX_SAMPLES];
++  u_int64_t m_bytes_sample[MAX_SAMPLES];
++
+  public:
+-  Rate(){ m_last_timestamp = m_total_timeused = (time_t)0; m_count_bytes = 0; }
+-  void Reset(){ m_last_timestamp = m_total_timeused = (time_t)0; m_count_bytes = 0;}
++  Rate(){ m_last_timestamp = m_total_timeused = (time_t)0;
++    m_recent_base = m_count_bytes = 0;
++    n_samples=0; for(int i=0;i<MAX_SAMPLES;i++) m_timestamp_sample[i]=0;
++  }
++  void Reset(){ m_last_timestamp = m_total_timeused = (time_t)0;
++    m_recent_base = m_count_bytes;
++    n_samples = 0; for(int i=0;i<MAX_SAMPLES;i++) m_timestamp_sample[i]=0;
++  }
+   void StartTimer();
+   void StopTimer();
+   void CountAdd(size_t nbytes);
+diff -u ctorrent-1.3.4.orig/sigint.cpp ctorrent-1.3.4/sigint.cpp
+--- ctorrent-1.3.4.orig/sigint.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/sigint.cpp	2005-08-11 23:45:29.434692920 +0200
+@@ -4,17 +4,27 @@
+ #include <signal.h>
+ 
+ #include "btcontent.h"
++#include "tracker.h"
+ #include "peerlist.h"
+ #include "btconfig.h"
++#include "sigint.h"
+ 
+-void sigint_catch(int sig_no)
++void sig_catch(int sig_no)
+ {
+-  if(SIGINT == sig_no){
++  if(SIGINT == sig_no || SIGTERM == sig_no){
++    Tracker.SetStoped();
++    signal(sig_no,sig_catch2);
++  }
++}
++
++static void sig_catch2(int sig_no)
++{
++  if(SIGINT == sig_no || SIGTERM == sig_no){
+     if( cfg_cache_size ) BTCONTENT.FlushCache();
+     if( arg_bitfield_file ) BTCONTENT.pBF->WriteToFile(arg_bitfield_file);
+     WORLD.CloseAll();
+-    signal(SIGINT,SIG_DFL);
+-    raise(SIGINT);
++    signal(sig_no,SIG_DFL);
++    raise(sig_no);
+   }
+ }
+ 
+diff -u ctorrent-1.3.4.orig/sigint.h ctorrent-1.3.4/sigint.h
+--- ctorrent-1.3.4.orig/sigint.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/sigint.h	2005-08-11 23:45:29.435692768 +0200
+@@ -2,7 +2,8 @@
+ #define SIGINT_H
+ 
+ #ifndef WINDOWS
+-void sigint_catch(int sig_no);
++void sig_catch(int sig_no);
++static void sig_catch2(int sig_no);
+ #endif
+ 
+ #endif
+diff -u ctorrent-1.3.4.orig/tracker.cpp ctorrent-1.3.4/tracker.cpp
+--- ctorrent-1.3.4.orig/tracker.cpp	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/tracker.cpp	2005-08-11 23:45:29.435692768 +0200
+@@ -31,11 +31,12 @@
+   m_sock = INVALID_SOCKET;
+   m_port = 80;
+   m_status = T_FREE;
+-  m_f_started = m_f_stoped = m_f_pause = 0;
++  m_f_started = m_f_stoped = m_f_pause = m_f_completed = 0;
+   m_interval = 15;
+ 
+   m_connect_refuse_click = 0;
+   m_last_timestamp = (time_t) 0;
++  m_prevpeers = 0;
+ }
+ 
+ btTracker::~btTracker()
+@@ -54,7 +55,8 @@
+   
+   m_reponse_buffer.Reset();
+   time(&m_last_timestamp);
+-  m_status = T_FREE;
++  if (m_f_stoped) m_status = T_FINISHED;
++  else m_status = T_FREE;
+ }
+ 
+ int btTracker:: _IPsin(char *h, int p, struct sockaddr_in *psin)
+@@ -111,6 +113,13 @@
+ 
+   if(m_interval != (time_t)i) m_interval = (time_t)i;
+ 
++  if(decode_query(buf,bufsiz,"complete",(const char**) 0,&i,QUERY_INT)) {
++    m_peers_count = i;
++  }
++  if(decode_query(buf,bufsiz,"incomplete",(const char**) 0,&i,QUERY_INT)) {
++    m_peers_count += i;
++  }
++
+   pos = decode_query(buf,bufsiz,"peers",(const char**) 0,(size_t *) 0,QUERY_POS);
+ 
+   if( !pos ){
+@@ -161,7 +170,10 @@
+     }
+   }
+   
+-  if( !cnt ) fprintf(stderr,"warn, peers list received from tracker is empty.\n");
++  if(arg_verbose)
++    fprintf(stderr, "\nnew peers=%u; next check in %u sec\n", cnt, m_interval);
++// moved to CheckResponse--this function isn't called if no peer data.
++//  if( !cnt ) fprintf(stderr,"warn, peers list received from tracker is empty.\n");
+   return 0;
+ }
+ 
+@@ -230,10 +242,14 @@
+       return 0;
+   }
+ 
+-  if ( !pdata ) return 0;
++  if ( !pdata ){
++    fprintf(stderr,"warn, peers list received from tracker is empty.\n");
++    return 0;
++  }
+ 
+   if( !m_f_started ) m_f_started = 1;
+   m_connect_refuse_click = 0;
++  m_ok_click++;
+ 
+   return _UpdatePeerList(pdata,dlen);
+ }
+@@ -329,30 +345,34 @@
+ //  fprintf(stdout,"Old Set Self:");
+ //  fprintf(stdout,"%s\n", inet_ntoa(Self.m_sin.sin_addr));
+ 
+-  if( m_f_stoped )	/* stopped */
+-    event = str_event[1];
+-  else if( BTCONTENT.pBF->IsFull())	/* download complete */
+-    event = str_event[2];
+-  else if( m_f_started ) 	/* interval */
+-    event = (char*) 0;
+-  else
++  if( m_f_stoped )
++    event = str_event[1];	/* stopped */
++  else if( m_f_started == 0 ) {
++    if( BTCONTENT.pBF->IsFull() ) m_f_completed = 1;
+     event = str_event[0];	/* started */
++  } else if( BTCONTENT.pBF->IsFull() && !m_f_completed){
++    event = str_event[2];	/* download complete */
++    m_f_completed = 1;		/* only send download complete once */
++  } else
++    event = (char*) 0;  /* interval */
+ 
+   if(event){
+     if(MAXPATHLEN < snprintf(REQ_BUFFER,MAXPATHLEN,REQ_URL_P2_FMT,
+ 			     m_path,
+-			     (size_t)Self.TotalUL(),
+-			     (size_t)Self.TotalDL(),
+-			     (size_t)BTCONTENT.GetLeftBytes(),
+-			     event)){
++			     Self.TotalUL(),
++			     Self.TotalDL(),
++			     BTCONTENT.GetLeftBytes(),
++			     event,
++			     cfg_max_peers)){
+       return -1;
+     }
+   }else{
+     if(MAXPATHLEN < snprintf(REQ_BUFFER,MAXPATHLEN,REQ_URL_P3_FMT,
+ 			     m_path,
+-			     (size_t)Self.TotalUL(),
+-			     (size_t)Self.TotalDL(),
+-			     (size_t)BTCONTENT.GetLeftBytes()
++			     Self.TotalUL(),
++			     Self.TotalDL(),
++			     BTCONTENT.GetLeftBytes(),
++			     cfg_max_peers
+ 			     )){
+       return -1;
+     }
+@@ -380,8 +400,12 @@
+ {
+   /* tracker communication */
+   if( T_FREE == m_status ){
+-    if((*pnow - m_last_timestamp >= m_interval) &&
+-       (cfg_min_peers > WORLD.TotalPeers())){
++//  if(*pnow - m_last_timestamp >= m_interval){
++    if(*pnow - m_last_timestamp >= m_interval ||
++        // Connect to tracker early if we run out of peers.
++        (!WORLD.TotalPeers() && m_prevpeers &&
++          *pnow - m_last_timestamp >= 15) ){
++      m_prevpeers = WORLD.TotalPeers();
+    
+       if(Connect() < 0){ Reset(15); return -1; }
+     
+@@ -396,7 +420,7 @@
+     if( m_status == T_CONNECTING ){
+       FD_SET(m_sock, rfdp);
+       FD_SET(m_sock, wfdp);
+-    }else{
++    }else if (INVALID_SOCKET != m_sock){
+       FD_SET(m_sock, rfdp);
+     }
+   }
+@@ -425,7 +449,7 @@
+       if( SendRequest() == 0 ) m_status = T_READY; 
+       else { Reset(15); return -1; }
+     }
+-  }else if(FD_ISSET(m_sock, rfdp) ){
++  }else if(INVALID_SOCKET != m_sock && FD_ISSET(m_sock, rfdp) ){
+     (*nfds)--;
+     FD_CLR(m_sock,rfdp);
+     CheckReponse();
+diff -u ctorrent-1.3.4.orig/tracker.h ctorrent-1.3.4/tracker.h
+--- ctorrent-1.3.4.orig/tracker.h	2004-09-09 01:10:51.000000000 +0200
++++ ctorrent-1.3.4/tracker.h	2005-08-11 23:45:29.436692616 +0200
+@@ -21,6 +21,7 @@
+ #define T_FREE 		0
+ #define T_CONNECTING	1
+ #define T_READY		2
++#define T_FINISHED	3
+ 
+ class btTracker
+ {
+@@ -34,15 +35,20 @@
+   unsigned char m_status:2;
+   unsigned char m_f_started:1;
+   unsigned char m_f_stoped:1;
++  unsigned char m_f_completed:1;
+ 
+   unsigned char m_f_pause:1;
+-  unsigned char m_f_reserved:3;
++  unsigned char m_f_reserved:2;
+ 
+ 
+   time_t m_interval;		// 与Tracker通信的时间间隔
+   time_t m_last_timestamp;	// 最后一次成功与Tracker通信的时间
+   size_t m_connect_refuse_click;
+ 
++  size_t m_ok_click;	// tracker ok response counter
++  size_t m_peers_count;	// total number of peers
++  size_t m_prevpeers;	// number of peers previously seen
++
+   SOCKET m_sock;
+   BufIo m_reponse_buffer;
+   
+@@ -66,6 +72,8 @@
+   void SetPause() { m_f_pause = 1; }
+   void ClearPause() { m_f_pause = 0; }
+ 
++  void SetStoped() { Reset(15); m_f_stoped = 1; m_last_timestamp -= 15;}
++
+   int Connect();
+   int SendRequest();
+   int CheckReponse();
+@@ -73,6 +81,8 @@
+   int SocketReady(fd_set *rfdp, fd_set *wfdp, int *nfds);
+ 
+   size_t GetRefuseClick() const { return m_connect_refuse_click; }
++  size_t GetOkClick() const { return m_ok_click; }
++  size_t GetPeersCount() const { return m_peers_count; }
+ };
+ 
+ extern btTracker Tracker;

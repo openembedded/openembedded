@@ -1,0 +1,29 @@
+2005-05-06  Steven Brown  <swbrown@ucsd.edu>
+
+	* scripts/macros.m4: Assume the AC_TRY_RUN test of exceptions worked
+	if we were cross compiling (and therefore can't use AC_TRY_RUN).
+
+
+diff -ruN libsigcx-old/scripts/macros.m4 libsigcx/scripts/macros.m4
+--- libsigcx-old/scripts/macros.m4	2005-05-06 21:04:44.000000000 -0700
++++ libsigcx/scripts/macros.m4	2005-05-06 21:07:40.000000000 -0700
+@@ -68,6 +68,10 @@
+ AC_MSG_CHECKING([whether the C++ compiler ($CXX $CXXFLAGS) has correct exception handling])
+ AC_CACHE_VAL(ac_cv_cxx_eh,
+ [
++if test x"$cross_compiling" = x"yes"; then
++  dnl Assume true when cross compiling.
++  ac_cv_cxx_eh=yes
++else
+ AC_TRY_RUN(
+ [
+ #include <stdexcept>
+@@ -92,7 +96,7 @@
+ ],
+ ac_cv_cxx_eh=yes,
+ ac_cv_cxx_eh=no)
+-])
++fi])
+ AC_MSG_RESULT([$ac_cv_cxx_eh])
+ if test "x$ac_cv_cxx_eh" = "xyes"
+ then

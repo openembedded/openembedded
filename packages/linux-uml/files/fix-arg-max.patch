@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.24/arch/um/kernel/user_util.c~fix-arg-max	2004-05-12 18:13:03.000000000 +0200
++++ linux-2.4.24/arch/um/kernel/user_util.c	2004-05-12 18:14:24.000000000 +0200
+@@ -31,7 +31,7 @@
+ #include "helper.h"
+ #include "uml-config.h"
+ 
+-#define COMMAND_LINE_SIZE _POSIX_ARG_MAX
++#define COMMAND_LINE_SIZE 4096
+ 
+ /* Changed in linux_main and setup_arch, which run before SMP is started */
+ char saved_command_line[COMMAND_LINE_SIZE] = { 0 };

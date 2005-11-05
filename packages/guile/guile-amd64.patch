@@ -1,0 +1,13 @@
+--- guile-1.6.4/libguile/gc_os_dep.c	2003-04-16 20:16:21.000000000 +0000
++++ guile-1.6.4-amd64/libguile/gc_os_dep.c	2003-10-20 01:52:11.543267320 +0000
+@@ -205,6 +205,10 @@
+ #    define I386
+ #    define mach_type_known
+ # endif
++# if defined(LINUX) && defined(__x86_64__)
++#    define IA64
++#    define mach_type_known
++# endif
+ # if defined(LINUX) && (defined(__ia64__) || defined(__ia64))
+ #    define IA64
+ #    define mach_type_known

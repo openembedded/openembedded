@@ -1,0 +1,20 @@
+--- esound/configure.in~	2002-07-19 13:14:01.000000000 +0100
++++ esound/configure.in	2004-05-16 10:51:48.000000000 +0100
+@@ -352,17 +352,5 @@
+ esound.spec
+ esound.pc
+ esddsp
+-docs/Makefile
+-docs/esd.1
+-docs/esdcat.1
+-docs/esd-config.1
+-docs/esdctl.1
+-docs/esddsp.1
+-docs/esdfilt.1
+-docs/esdloop.1
+-docs/esdmon.1
+-docs/esdplay.1
+-docs/esdrec.1
+-docs/esdsample.1
+ ])
+ dnl , [case "$CONFIG_FILES" in *esd-config*) chmod +x esd-config;; esac])

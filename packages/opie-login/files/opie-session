@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ -x /usr/bin/ssh-agent ]; then
+	SSHAGENT=/usr/bin/ssh-agent
+else
+	SSHAGENT=""
+fi
+
+if [ -x $OPIEDIR/bin/opie-sh-ssh-askpass.sh ]; then
+	export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
+fi
+
+$OPIEDIR/bin/opie-reorgfiles
+
+$SSHAGENT $OPIEDIR/bin/qpe

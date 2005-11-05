@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=gEDA
+Comment=GPL suite of Electronic Design Automation tools
+Exec=geda
+Terminal=0
+Type=Application
+Icon=/usr/share/gEDA/bitmap/gschem-net.xpm
+Categories=Utility

@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.27/arch/arm/Makefile~shortloadbytes	2004-11-27 15:32:10.906865000 -0500
++++ linux-2.4.27/arch/arm/Makefile	2004-11-27 15:32:16.891955488 -0500
+@@ -50,8 +50,8 @@
+ tune-$(CONFIG_CPU_SA110)	:=-mtune=strongarm110
+ tune-$(CONFIG_CPU_SA1100)	:=-mtune=strongarm1100
+ 
+-CFLAGS_BOOT	:=$(apcs-y) $(arch-y) $(tune-y) -mshort-load-bytes -msoft-float -Uarm
+-CFLAGS		+=$(apcs-y) $(arch-y) $(tune-y) -mshort-load-bytes -msoft-float -Uarm
++CFLAGS_BOOT	:=$(apcs-y) $(arch-y) $(tune-y) $(call check_gcc,-malignment-traps,-mshort-load-bytes) -msoft-float -Uarm
++CFLAGS		+=$(apcs-y) $(arch-y) $(tune-y) $(call check_gcc,-malignment-traps,-mshort-load-bytes) -msoft-float -Uarm
+ AFLAGS		+=$(apcs-y) $(arch-y) -msoft-float
+ 
+ ifeq ($(CONFIG_CPU_26),y)

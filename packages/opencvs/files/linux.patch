@@ -1,0 +1,2239 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- /dev/null
++++ cvs/bsd-md5.h
+@@ -0,0 +1,36 @@
++#include <openssl/md5.h>
++#include <stdio.h>
++
++/* fscking linux boxen doesnt have MD5File in a crypto lib*/
++
++void 
++MDPrint (unsigned char digest[16], char buf[])
++{ 
++   unsigned int i;
++
++   for (i = 0; i < 16; i++) {
++      sprintf((char *)(buf+2*i),"%02x", digest[i]);
++   }
++}  
++  
++char *
++MD5File(const char *fname, char *buf)
++{
++   FILE *f;
++   char mybuf[100];
++   int i;
++   MD5_CTX c;
++
++   if( (f=fopen(fname, "r")) == NULL ) 
++      return NULL;
++   else {
++      MD5_Init(&c);
++      while( (i=fread(mybuf, sizeof(char), 100, f) ) > 0) {
++         MD5_Update(&c, mybuf, i);   
++      }
++      fclose(f);
++      MD5_Final(mybuf, &c);
++      MDPrint(mybuf, buf);
++      return buf; 
++   }
++}
+--- /dev/null
++++ cvs/bsd-queue.h
+@@ -0,0 +1,584 @@
++/*	$OpenBSD: queue.h,v 1.22 2001/06/23 04:39:35 angelos Exp $	*/
++/*	$NetBSD: queue.h,v 1.11 1996/05/16 05:17:14 mycroft Exp $	*/
++
++/*
++ * Copyright (c) 1991, 1993
++ *	The Regents of the University of California.  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. All advertising materials mentioning features or use of this software
++ *    must display the following acknowledgement:
++ *	This product includes software developed by the University of
++ *	California, Berkeley and its contributors.
++ * 4. Neither the name of the University nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ *	@(#)queue.h	8.5 (Berkeley) 8/20/94
++ */
++
++#ifndef	_FAKE_QUEUE_H_
++#define	_FAKE_QUEUE_H_
++
++/*
++ * Ignore all <sys/queue.h> since older platforms have broken/incomplete
++ * <sys/queue.h> that are too hard to work around.
++ */
++#undef SLIST_HEAD
++#undef SLIST_HEAD_INITIALIZER
++#undef SLIST_ENTRY
++#undef SLIST_FIRST
++#undef SLIST_END
++#undef SLIST_EMPTY
++#undef SLIST_NEXT
++#undef SLIST_FOREACH
++#undef SLIST_INIT
++#undef SLIST_INSERT_AFTER
++#undef SLIST_INSERT_HEAD
++#undef SLIST_REMOVE_HEAD
++#undef SLIST_REMOVE
++#undef LIST_HEAD
++#undef LIST_HEAD_INITIALIZER
++#undef LIST_ENTRY
++#undef LIST_FIRST
++#undef LIST_END
++#undef LIST_EMPTY
++#undef LIST_NEXT
++#undef LIST_FOREACH
++#undef LIST_INIT
++#undef LIST_INSERT_AFTER
++#undef LIST_INSERT_BEFORE
++#undef LIST_INSERT_HEAD
++#undef LIST_REMOVE
++#undef LIST_REPLACE
++#undef SIMPLEQ_HEAD
++#undef SIMPLEQ_HEAD_INITIALIZER
++#undef SIMPLEQ_ENTRY
++#undef SIMPLEQ_FIRST
++#undef SIMPLEQ_END
++#undef SIMPLEQ_EMPTY
++#undef SIMPLEQ_NEXT
++#undef SIMPLEQ_FOREACH
++#undef SIMPLEQ_INIT
++#undef SIMPLEQ_INSERT_HEAD
++#undef SIMPLEQ_INSERT_TAIL
++#undef SIMPLEQ_INSERT_AFTER
++#undef SIMPLEQ_REMOVE_HEAD
++#undef TAILQ_HEAD
++#undef TAILQ_HEAD_INITIALIZER
++#undef TAILQ_ENTRY
++#undef TAILQ_FIRST
++#undef TAILQ_END
++#undef TAILQ_NEXT
++#undef TAILQ_LAST
++#undef TAILQ_PREV
++#undef TAILQ_EMPTY
++#undef TAILQ_FOREACH
++#undef TAILQ_FOREACH_REVERSE
++#undef TAILQ_INIT
++#undef TAILQ_INSERT_HEAD
++#undef TAILQ_INSERT_TAIL
++#undef TAILQ_INSERT_AFTER
++#undef TAILQ_INSERT_BEFORE
++#undef TAILQ_REMOVE
++#undef TAILQ_REPLACE
++#undef CIRCLEQ_HEAD
++#undef CIRCLEQ_HEAD_INITIALIZER
++#undef CIRCLEQ_ENTRY
++#undef CIRCLEQ_FIRST
++#undef CIRCLEQ_LAST
++#undef CIRCLEQ_END
++#undef CIRCLEQ_NEXT
++#undef CIRCLEQ_PREV
++#undef CIRCLEQ_EMPTY
++#undef CIRCLEQ_FOREACH
++#undef CIRCLEQ_FOREACH_REVERSE
++#undef CIRCLEQ_INIT
++#undef CIRCLEQ_INSERT_AFTER
++#undef CIRCLEQ_INSERT_BEFORE
++#undef CIRCLEQ_INSERT_HEAD
++#undef CIRCLEQ_INSERT_TAIL
++#undef CIRCLEQ_REMOVE
++#undef CIRCLEQ_REPLACE
++
++/*
++ * This file defines five types of data structures: singly-linked lists, 
++ * lists, simple queues, tail queues, and circular queues.
++ *
++ *
++ * A singly-linked list is headed by a single forward pointer. The elements
++ * are singly linked for minimum space and pointer manipulation overhead at
++ * the expense of O(n) removal for arbitrary elements. New elements can be
++ * added to the list after an existing element or at the head of the list.
++ * Elements being removed from the head of the list should use the explicit
++ * macro for this purpose for optimum efficiency. A singly-linked list may
++ * only be traversed in the forward direction.  Singly-linked lists are ideal
++ * for applications with large datasets and few or no removals or for
++ * implementing a LIFO queue.
++ *
++ * A list is headed by a single forward pointer (or an array of forward
++ * pointers for a hash table header). The elements are doubly linked
++ * so that an arbitrary element can be removed without a need to
++ * traverse the list. New elements can be added to the list before
++ * or after an existing element or at the head of the list. A list
++ * may only be traversed in the forward direction.
++ *
++ * A simple queue is headed by a pair of pointers, one the head of the
++ * list and the other to the tail of the list. The elements are singly
++ * linked to save space, so elements can only be removed from the
++ * head of the list. New elements can be added to the list before or after
++ * an existing element, at the head of the list, or at the end of the
++ * list. A simple queue may only be traversed in the forward direction.
++ *
++ * A tail queue is headed by a pair of pointers, one to the head of the
++ * list and the other to the tail of the list. The elements are doubly
++ * linked so that an arbitrary element can be removed without a need to
++ * traverse the list. New elements can be added to the list before or
++ * after an existing element, at the head of the list, or at the end of
++ * the list. A tail queue may be traversed in either direction.
++ *
++ * A circle queue is headed by a pair of pointers, one to the head of the
++ * list and the other to the tail of the list. The elements are doubly
++ * linked so that an arbitrary element can be removed without a need to
++ * traverse the list. New elements can be added to the list before or after
++ * an existing element, at the head of the list, or at the end of the list.
++ * A circle queue may be traversed in either direction, but has a more
++ * complex end of list detection.
++ *
++ * For details on the use of these macros, see the queue(3) manual page.
++ */
++
++/*
++ * Singly-linked List definitions.
++ */
++#define SLIST_HEAD(name, type)						\
++struct name {								\
++	struct type *slh_first;	/* first element */			\
++}
++ 
++#define	SLIST_HEAD_INITIALIZER(head)					\
++	{ NULL }
++ 
++#define SLIST_ENTRY(type)						\
++struct {								\
++	struct type *sle_next;	/* next element */			\
++}
++ 
++/*
++ * Singly-linked List access methods.
++ */
++#define	SLIST_FIRST(head)	((head)->slh_first)
++#define	SLIST_END(head)		NULL
++#define	SLIST_EMPTY(head)	(SLIST_FIRST(head) == SLIST_END(head))
++#define	SLIST_NEXT(elm, field)	((elm)->field.sle_next)
++
++#define	SLIST_FOREACH(var, head, field)					\
++	for((var) = SLIST_FIRST(head);					\
++	    (var) != SLIST_END(head);					\
++	    (var) = SLIST_NEXT(var, field))
++
++/*
++ * Singly-linked List functions.
++ */
++#define	SLIST_INIT(head) {						\
++	SLIST_FIRST(head) = SLIST_END(head);				\
++}
++
++#define	SLIST_INSERT_AFTER(slistelm, elm, field) do {			\
++	(elm)->field.sle_next = (slistelm)->field.sle_next;		\
++	(slistelm)->field.sle_next = (elm);				\
++} while (0)
++
++#define	SLIST_INSERT_HEAD(head, elm, field) do {			\
++	(elm)->field.sle_next = (head)->slh_first;			\
++	(head)->slh_first = (elm);					\
++} while (0)
++
++#define	SLIST_REMOVE_HEAD(head, field) do {				\
++	(head)->slh_first = (head)->slh_first->field.sle_next;		\
++} while (0)
++
++#define SLIST_REMOVE(head, elm, type, field) do {			\
++	if ((head)->slh_first == (elm)) {				\
++		SLIST_REMOVE_HEAD((head), field);			\
++	}								\
++	else {								\
++		struct type *curelm = (head)->slh_first;		\
++		while( curelm->field.sle_next != (elm) )		\
++			curelm = curelm->field.sle_next;		\
++		curelm->field.sle_next =				\
++		    curelm->field.sle_next->field.sle_next;		\
++	}								\
++} while (0)
++
++/*
++ * List definitions.
++ */
++#define LIST_HEAD(name, type)						\
++struct name {								\
++	struct type *lh_first;	/* first element */			\
++}
++
++#define LIST_HEAD_INITIALIZER(head)					\
++	{ NULL }
++
++#define LIST_ENTRY(type)						\
++struct {								\
++	struct type *le_next;	/* next element */			\
++	struct type **le_prev;	/* address of previous next element */	\
++}
++
++/*
++ * List access methods
++ */
++#define	LIST_FIRST(head)		((head)->lh_first)
++#define	LIST_END(head)			NULL
++#define	LIST_EMPTY(head)		(LIST_FIRST(head) == LIST_END(head))
++#define	LIST_NEXT(elm, field)		((elm)->field.le_next)
++
++#define LIST_FOREACH(var, head, field)					\
++	for((var) = LIST_FIRST(head);					\
++	    (var)!= LIST_END(head);					\
++	    (var) = LIST_NEXT(var, field))
++
++/*
++ * List functions.
++ */
++#define	LIST_INIT(head) do {						\
++	LIST_FIRST(head) = LIST_END(head);				\
++} while (0)
++
++#define LIST_INSERT_AFTER(listelm, elm, field) do {			\
++	if (((elm)->field.le_next = (listelm)->field.le_next) != NULL)	\
++		(listelm)->field.le_next->field.le_prev =		\
++		    &(elm)->field.le_next;				\
++	(listelm)->field.le_next = (elm);				\
++	(elm)->field.le_prev = &(listelm)->field.le_next;		\
++} while (0)
++
++#define	LIST_INSERT_BEFORE(listelm, elm, field) do {			\
++	(elm)->field.le_prev = (listelm)->field.le_prev;		\
++	(elm)->field.le_next = (listelm);				\
++	*(listelm)->field.le_prev = (elm);				\
++	(listelm)->field.le_prev = &(elm)->field.le_next;		\
++} while (0)
++
++#define LIST_INSERT_HEAD(head, elm, field) do {				\
++	if (((elm)->field.le_next = (head)->lh_first) != NULL)		\
++		(head)->lh_first->field.le_prev = &(elm)->field.le_next;\
++	(head)->lh_first = (elm);					\
++	(elm)->field.le_prev = &(head)->lh_first;			\
++} while (0)
++
++#define LIST_REMOVE(elm, field) do {					\
++	if ((elm)->field.le_next != NULL)				\
++		(elm)->field.le_next->field.le_prev =			\
++		    (elm)->field.le_prev;				\
++	*(elm)->field.le_prev = (elm)->field.le_next;			\
++} while (0)
++
++#define LIST_REPLACE(elm, elm2, field) do {				\
++	if (((elm2)->field.le_next = (elm)->field.le_next) != NULL)	\
++		(elm2)->field.le_next->field.le_prev =			\
++		    &(elm2)->field.le_next;				\
++	(elm2)->field.le_prev = (elm)->field.le_prev;			\
++	*(elm2)->field.le_prev = (elm2);				\
++} while (0)
++
++/*
++ * Simple queue definitions.
++ */
++#define SIMPLEQ_HEAD(name, type)					\
++struct name {								\
++	struct type *sqh_first;	/* first element */			\
++	struct type **sqh_last;	/* addr of last next element */		\
++}
++
++#define SIMPLEQ_HEAD_INITIALIZER(head)					\
++	{ NULL, &(head).sqh_first }
++
++#define SIMPLEQ_ENTRY(type)						\
++struct {								\
++	struct type *sqe_next;	/* next element */			\
++}
++
++/*
++ * Simple queue access methods.
++ */
++#define	SIMPLEQ_FIRST(head)	    ((head)->sqh_first)
++#define	SIMPLEQ_END(head)	    NULL
++#define	SIMPLEQ_EMPTY(head)	    (SIMPLEQ_FIRST(head) == SIMPLEQ_END(head))
++#define	SIMPLEQ_NEXT(elm, field)    ((elm)->field.sqe_next)
++
++#define SIMPLEQ_FOREACH(var, head, field)				\
++	for((var) = SIMPLEQ_FIRST(head);				\
++	    (var) != SIMPLEQ_END(head);					\
++	    (var) = SIMPLEQ_NEXT(var, field))
++
++/*
++ * Simple queue functions.
++ */
++#define	SIMPLEQ_INIT(head) do {						\
++	(head)->sqh_first = NULL;					\
++	(head)->sqh_last = &(head)->sqh_first;				\
++} while (0)
++
++#define SIMPLEQ_INSERT_HEAD(head, elm, field) do {			\
++	if (((elm)->field.sqe_next = (head)->sqh_first) == NULL)	\
++		(head)->sqh_last = &(elm)->field.sqe_next;		\
++	(head)->sqh_first = (elm);					\
++} while (0)
++
++#define SIMPLEQ_INSERT_TAIL(head, elm, field) do {			\
++	(elm)->field.sqe_next = NULL;					\
++	*(head)->sqh_last = (elm);					\
++	(head)->sqh_last = &(elm)->field.sqe_next;			\
++} while (0)
++
++#define SIMPLEQ_INSERT_AFTER(head, listelm, elm, field) do {		\
++	if (((elm)->field.sqe_next = (listelm)->field.sqe_next) == NULL)\
++		(head)->sqh_last = &(elm)->field.sqe_next;		\
++	(listelm)->field.sqe_next = (elm);				\
++} while (0)
++
++#define SIMPLEQ_REMOVE_HEAD(head, elm, field) do {			\
++	if (((head)->sqh_first = (elm)->field.sqe_next) == NULL)	\
++		(head)->sqh_last = &(head)->sqh_first;			\
++} while (0)
++
++/*
++ * Tail queue definitions.
++ */
++#define TAILQ_HEAD(name, type)						\
++struct name {								\
++	struct type *tqh_first;	/* first element */			\
++	struct type **tqh_last;	/* addr of last next element */		\
++}
++
++#define TAILQ_HEAD_INITIALIZER(head)					\
++	{ NULL, &(head).tqh_first }
++
++#define TAILQ_ENTRY(type)						\
++struct {								\
++	struct type *tqe_next;	/* next element */			\
++	struct type **tqe_prev;	/* address of previous next element */	\
++}
++
++/* 
++ * tail queue access methods 
++ */
++#define	TAILQ_FIRST(head)		((head)->tqh_first)
++#define	TAILQ_END(head)			NULL
++#define	TAILQ_NEXT(elm, field)		((elm)->field.tqe_next)
++#define TAILQ_LAST(head, headname)					\
++	(*(((struct headname *)((head)->tqh_last))->tqh_last))
++/* XXX */
++#define TAILQ_PREV(elm, headname, field)				\
++	(*(((struct headname *)((elm)->field.tqe_prev))->tqh_last))
++#define	TAILQ_EMPTY(head)						\
++	(TAILQ_FIRST(head) == TAILQ_END(head))
++
++#define TAILQ_FOREACH(var, head, field)					\
++	for((var) = TAILQ_FIRST(head);					\
++	    (var) != TAILQ_END(head);					\
++	    (var) = TAILQ_NEXT(var, field))
++
++#define TAILQ_FOREACH_REVERSE(var, head, field, headname)		\
++	for((var) = TAILQ_LAST(head, headname);				\
++	    (var) != TAILQ_END(head);					\
++	    (var) = TAILQ_PREV(var, headname, field))
++
++/*
++ * Tail queue functions.
++ */
++#define	TAILQ_INIT(head) do {						\
++	(head)->tqh_first = NULL;					\
++	(head)->tqh_last = &(head)->tqh_first;				\
++} while (0)
++
++#define TAILQ_INSERT_HEAD(head, elm, field) do {			\
++	if (((elm)->field.tqe_next = (head)->tqh_first) != NULL)	\
++		(head)->tqh_first->field.tqe_prev =			\
++		    &(elm)->field.tqe_next;				\
++	else								\
++		(head)->tqh_last = &(elm)->field.tqe_next;		\
++	(head)->tqh_first = (elm);					\
++	(elm)->field.tqe_prev = &(head)->tqh_first;			\
++} while (0)
++
++#define TAILQ_INSERT_TAIL(head, elm, field) do {			\
++	(elm)->field.tqe_next = NULL;					\
++	(elm)->field.tqe_prev = (head)->tqh_last;			\
++	*(head)->tqh_last = (elm);					\
++	(head)->tqh_last = &(elm)->field.tqe_next;			\
++} while (0)
++
++#define TAILQ_INSERT_AFTER(head, listelm, elm, field) do {		\
++	if (((elm)->field.tqe_next = (listelm)->field.tqe_next) != NULL)\
++		(elm)->field.tqe_next->field.tqe_prev =			\
++		    &(elm)->field.tqe_next;				\
++	else								\
++		(head)->tqh_last = &(elm)->field.tqe_next;		\
++	(listelm)->field.tqe_next = (elm);				\
++	(elm)->field.tqe_prev = &(listelm)->field.tqe_next;		\
++} while (0)
++
++#define	TAILQ_INSERT_BEFORE(listelm, elm, field) do {			\
++	(elm)->field.tqe_prev = (listelm)->field.tqe_prev;		\
++	(elm)->field.tqe_next = (listelm);				\
++	*(listelm)->field.tqe_prev = (elm);				\
++	(listelm)->field.tqe_prev = &(elm)->field.tqe_next;		\
++} while (0)
++
++#define TAILQ_REMOVE(head, elm, field) do {				\
++	if (((elm)->field.tqe_next) != NULL)				\
++		(elm)->field.tqe_next->field.tqe_prev =			\
++		    (elm)->field.tqe_prev;				\
++	else								\
++		(head)->tqh_last = (elm)->field.tqe_prev;		\
++	*(elm)->field.tqe_prev = (elm)->field.tqe_next;			\
++} while (0)
++
++#define TAILQ_REPLACE(head, elm, elm2, field) do {			\
++	if (((elm2)->field.tqe_next = (elm)->field.tqe_next) != NULL)	\
++		(elm2)->field.tqe_next->field.tqe_prev =		\
++		    &(elm2)->field.tqe_next;				\
++	else								\
++		(head)->tqh_last = &(elm2)->field.tqe_next;		\
++	(elm2)->field.tqe_prev = (elm)->field.tqe_prev;			\
++	*(elm2)->field.tqe_prev = (elm2);				\
++} while (0)
++
++/*
++ * Circular queue definitions.
++ */
++#define CIRCLEQ_HEAD(name, type)					\
++struct name {								\
++	struct type *cqh_first;		/* first element */		\
++	struct type *cqh_last;		/* last element */		\
++}
++
++#define CIRCLEQ_HEAD_INITIALIZER(head)					\
++	{ CIRCLEQ_END(&head), CIRCLEQ_END(&head) }
++
++#define CIRCLEQ_ENTRY(type)						\
++struct {								\
++	struct type *cqe_next;		/* next element */		\
++	struct type *cqe_prev;		/* previous element */		\
++}
++
++/*
++ * Circular queue access methods 
++ */
++#define	CIRCLEQ_FIRST(head)		((head)->cqh_first)
++#define	CIRCLEQ_LAST(head)		((head)->cqh_last)
++#define	CIRCLEQ_END(head)		((void *)(head))
++#define	CIRCLEQ_NEXT(elm, field)	((elm)->field.cqe_next)
++#define	CIRCLEQ_PREV(elm, field)	((elm)->field.cqe_prev)
++#define	CIRCLEQ_EMPTY(head)						\
++	(CIRCLEQ_FIRST(head) == CIRCLEQ_END(head))
++
++#define CIRCLEQ_FOREACH(var, head, field)				\
++	for((var) = CIRCLEQ_FIRST(head);				\
++	    (var) != CIRCLEQ_END(head);					\
++	    (var) = CIRCLEQ_NEXT(var, field))
++
++#define CIRCLEQ_FOREACH_REVERSE(var, head, field)			\
++	for((var) = CIRCLEQ_LAST(head);					\
++	    (var) != CIRCLEQ_END(head);					\
++	    (var) = CIRCLEQ_PREV(var, field))
++
++/*
++ * Circular queue functions.
++ */
++#define	CIRCLEQ_INIT(head) do {						\
++	(head)->cqh_first = CIRCLEQ_END(head);				\
++	(head)->cqh_last = CIRCLEQ_END(head);				\
++} while (0)
++
++#define CIRCLEQ_INSERT_AFTER(head, listelm, elm, field) do {		\
++	(elm)->field.cqe_next = (listelm)->field.cqe_next;		\
++	(elm)->field.cqe_prev = (listelm);				\
++	if ((listelm)->field.cqe_next == CIRCLEQ_END(head))		\
++		(head)->cqh_last = (elm);				\
++	else								\
++		(listelm)->field.cqe_next->field.cqe_prev = (elm);	\
++	(listelm)->field.cqe_next = (elm);				\
++} while (0)
++
++#define CIRCLEQ_INSERT_BEFORE(head, listelm, elm, field) do {		\
++	(elm)->field.cqe_next = (listelm);				\
++	(elm)->field.cqe_prev = (listelm)->field.cqe_prev;		\
++	if ((listelm)->field.cqe_prev == CIRCLEQ_END(head))		\
++		(head)->cqh_first = (elm);				\
++	else								\
++		(listelm)->field.cqe_prev->field.cqe_next = (elm);	\
++	(listelm)->field.cqe_prev = (elm);				\
++} while (0)
++
++#define CIRCLEQ_INSERT_HEAD(head, elm, field) do {			\
++	(elm)->field.cqe_next = (head)->cqh_first;			\
++	(elm)->field.cqe_prev = CIRCLEQ_END(head);			\
++	if ((head)->cqh_last == CIRCLEQ_END(head))			\
++		(head)->cqh_last = (elm);				\
++	else								\
++		(head)->cqh_first->field.cqe_prev = (elm);		\
++	(head)->cqh_first = (elm);					\
++} while (0)
++
++#define CIRCLEQ_INSERT_TAIL(head, elm, field) do {			\
++	(elm)->field.cqe_next = CIRCLEQ_END(head);			\
++	(elm)->field.cqe_prev = (head)->cqh_last;			\
++	if ((head)->cqh_first == CIRCLEQ_END(head))			\
++		(head)->cqh_first = (elm);				\
++	else								\
++		(head)->cqh_last->field.cqe_next = (elm);		\
++	(head)->cqh_last = (elm);					\
++} while (0)
++
++#define	CIRCLEQ_REMOVE(head, elm, field) do {				\
++	if ((elm)->field.cqe_next == CIRCLEQ_END(head))			\
++		(head)->cqh_last = (elm)->field.cqe_prev;		\
++	else								\
++		(elm)->field.cqe_next->field.cqe_prev =			\
++		    (elm)->field.cqe_prev;				\
++	if ((elm)->field.cqe_prev == CIRCLEQ_END(head))			\
++		(head)->cqh_first = (elm)->field.cqe_next;		\
++	else								\
++		(elm)->field.cqe_prev->field.cqe_next =			\
++		    (elm)->field.cqe_next;				\
++} while (0)
++
++#define CIRCLEQ_REPLACE(head, elm, elm2, field) do {			\
++	if (((elm2)->field.cqe_next = (elm)->field.cqe_next) ==		\
++	    CIRCLEQ_END(head))						\
++		(head).cqh_last = (elm2);				\
++	else								\
++		(elm2)->field.cqe_next->field.cqe_prev = (elm2);	\
++	if (((elm2)->field.cqe_prev = (elm)->field.cqe_prev) ==		\
++	    CIRCLEQ_END(head))						\
++		(head).cqh_first = (elm2);				\
++	else								\
++		(elm2)->field.cqe_prev->field.cqe_next = (elm2);	\
++} while (0)
++
++#endif	/* !_FAKE_QUEUE_H_ */
+--- cvs/buf.h~linux.patch
++++ cvs/buf.h
+@@ -39,6 +39,7 @@
+ #define BUF_H
+ 
+ #include <sys/types.h>
++#include "config.h"
+ 
+ 
+ /* flags */
+--- cvs/cache.c~linux.patch
++++ cvs/cache.c
+@@ -25,7 +25,11 @@
+  */
+ 
+ #include <sys/param.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/time.h>
+ 
+ #include <stdlib.h>
+--- cvs/commit.c~linux.patch
++++ cvs/commit.c
+@@ -25,7 +25,11 @@
+  */
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/stat.h>
+ 
+ #include <errno.h>
+--- /dev/null
++++ cvs/configure.ac
+@@ -0,0 +1,72 @@
++#                                               -*- Autoconf -*-
++# Process this file with autoconf to produce a configure script.
++
++AC_PREREQ(2.59)
++AC_INIT(OpenCVS, 1.0, unknown@unknown.com)
++AC_CONFIG_SRCDIR([remove.c])
++AM_CONFIG_HEADER([config.h])
++AM_INIT_AUTOMAKE
++
++# Checks for programs.
++AC_PROG_CC
++
++# Checks for libraries.
++AC_CHECK_HEADER([md5.h], [], [
++	AC_CHECK_LIB([ssl], [MD5_Final], MD5_LIBS="-lssl", AC_MSG_ERROR([Unable to find an appropriate lib for the MD5 functions]))
++])
++AC_SUBST([MD5_LIBS])
++
++# Checks for header files.
++AC_HEADER_DIRENT
++AC_HEADER_STDC
++AC_HEADER_SYS_WAIT
++AC_CHECK_HEADERS([fcntl.h netinet/in.h paths.h stddef.h stdlib.h string.h sys/param.h sys/socket.h sys/time.h syslog.h unistd.h])
++AC_CHECK_HEADERS([stdint.h])
++AC_CHECK_HEADERS([md5.h])
++
++# Checks for typedefs, structures, and compiler characteristics.
++AC_C_CONST
++AC_TYPE_UID_T
++AC_TYPE_MODE_T
++AC_TYPE_OFF_T
++AC_TYPE_PID_T
++AC_TYPE_SIZE_T
++AC_HEADER_TIME
++AC_STRUCT_TM
++AC_C_VOLATILE
++AC_CHECK_DECL([LIST_FOREACH], [], [], [[
++#if HAVE_SYS_QUEUE_H
++# include <sys/queue.h>
++#endif
++]])
++AC_CHECK_TYPES([ptrdiff_t])
++AC_CHECK_DECL([optreset])
++AC_CHECK_FUNC([syslog_r])
++AC_CHECK_DECL([u_int], [], [AC_DEFINE([u_int], [unsigned int], [u_int isnt defined for Linux platforms])])
++AC_CHECK_DECL([u_char], [], [AC_DEFINE([u_char], [unsigned char], [u_char isnt defined for Linux platforms])])
++
++# NOTE: strn* is not as safe as strl*, due to the fact that if
++# the src is larger than the dest, strn* do not NULL terminate.
++# FIXME: replace these with inline functions that call strn* and
++# then NULL terminate the dest.
++AC_CHECK_FUNCS([strlcpy], [], [AC_DEFINE([strlcpy], [strncpy], [strlcpy isnt portable])])
++AC_CHECK_FUNCS([strlcat], [], [AC_DEFINE([strlcat], [strncat], [strlcat isnt portable])])
++AC_CHECK_FUNCS([heapsort], [], [AC_DEFINE([heapsort], [qsort], [heapsrt isnt portable, and according to the man page, the only advantage over qsort is memory])])
++
++# Checks for library functions.
++AC_FUNC_CHOWN
++AC_REPLACE_FNMATCH
++AC_FUNC_FORK
++AC_FUNC_MALLOC
++AC_FUNC_MEMCMP
++AC_FUNC_MKTIME
++AC_FUNC_REALLOC
++AC_FUNC_SETVBUF_REVERSED
++AC_TYPE_SIGNAL
++AC_FUNC_STAT
++AC_FUNC_VPRINTF
++AC_CHECK_FUNCS([dup2 gettimeofday localtime_r memchr memset mkdir realpath socket strcasecmp strchr strdup strerror strrchr strtol])
++AC_CHECK_FUNCS([getdirentries], [], [AC_MSG_ERROR([getdirentries not found])])
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+--- cvs/conf.y~linux.patch
++++ cvs/conf.y
+@@ -33,7 +33,11 @@
+ 
+ %{
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ 
+ #include <errno.h>
+ #include <ctype.h>
+--- cvs/cvs/Makefile
++++ /dev/null
+--- cvs/cvs.c~linux.patch
++++ cvs/cvs.c
+@@ -41,6 +41,7 @@
+ #include "cvs.h"
+ #include "log.h"
+ #include "file.h"
++#include "config.h"
+ 
+ 
+ extern char *__progname;
+@@ -518,7 +519,9 @@
+ 
+ 	ret = optind;
+ 	optind = 1;
++#if HAVE_DECL_OPTRESET
+ 	optreset = 1;	/* for next call */
++#endif
+ 
+ 	return (ret);
+ }
+--- cvs/cvsd/Makefile
++++ /dev/null
+--- cvs/cvsd.h~linux.patch
++++ cvs/cvsd.h
+@@ -28,7 +28,11 @@
+ #define CVSD_H
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+ 
+--- cvs/cvs.h~linux.patch
++++ cvs/cvs.h
+@@ -33,6 +33,7 @@
+ 
+ #include "rcs.h"
+ #include "file.h"
++#include "config.h"
+ 
+ #define CVS_VERSION_MAJOR 0
+ #define CVS_VERSION_MINOR 2
+--- cvs/diff.c~linux.patch
++++ cvs/diff.c
+@@ -126,6 +126,8 @@
+  *	6n words for files of length n.
+  */
+ 
++#include "config.h"
++
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+@@ -142,6 +144,9 @@
+ #include <unistd.h>
+ #include <string.h>
+ #include <sysexits.h>
++#if HAVE_STDINT_H
++# include <stdint.h>
++#endif
+ 
+ #include "cvs.h"
+ #include "log.h"
+--- cvs/event.h~linux.patch
++++ cvs/event.h
+@@ -28,7 +28,11 @@
+ #define EVENT_H
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/time.h>
+ 
+ #include <pwd.h>
+--- cvs/file.c~linux.patch
++++ cvs/file.c
+@@ -25,7 +25,11 @@
+  */
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/stat.h>
+ 
+ #include <pwd.h>
+--- cvs/import.c~linux.patch
++++ cvs/import.c
+@@ -25,7 +25,11 @@
+  */
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ 
+ #include <err.h>
+ #include <dirent.h>
+--- cvs/log.c~linux.patch
++++ cvs/log.c
+@@ -73,7 +73,9 @@
+ #define NB_FILTERS  sizeof(cvs_log_filters)/sizeof(cvs_log_filters[0])
+ 
+ 
++#if HAVE_SYSLOG_R
+ static struct syslog_data cvs_sl;
++#endif
+ 
+ 
+ /*
+@@ -106,7 +108,11 @@
+ 		if (flags & LF_PID)
+ 			slopt |= LOG_PID;
+ 
++#if HAVE_SYSLOG_R
+ 		openlog_r(__progname, slopt, LOG_DAEMON, &cvs_sl);
++#else
++		openlog(__progname, slopt, LOG_DAEMON);
++#endif
+ 	}
+ 
+ 	return (0);
+@@ -122,7 +128,11 @@
+ cvs_log_cleanup(void)
+ {
+ 
++#if HAVE_SYSLOG_R
+ 	closelog_r(&cvs_sl);
++#else
++	closelog();
++#endif
+ }
+ 
+ 
+@@ -276,7 +286,11 @@
+ 	}
+ 
+ 	if (cvs_log_dest & LD_SYSLOG)
++#if HAVE_SYSLOG_R
+ 		syslog_r(cvs_slpriomap[level], &cvs_sl, "%s", buf);
++#else
++		syslog(cvs_slpriomap[level], "%s", buf);
++#endif
+ 
+ 	/* preserve it just in case we changed it? */
+ 	if (level == LP_ERRNO)
+--- cvs/Makefile~linux.patch
++++ cvs/Makefile
+@@ -1,7 +1,1227 @@
+-#	$OpenBSD: Makefile,v 1.2 2004/07/26 17:29:49 jfb Exp $
++# Makefile.in generated by automake 1.8.4 from Makefile.am.
++# Makefile.  Generated from Makefile.in by configure.
+ 
+-.include <bsd.own.mk>
++# Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
++# 2003, 2004  Free Software Foundation, Inc.
++# This Makefile.in is free software; the Free Software Foundation
++# gives unlimited permission to copy and/or distribute it,
++# with or without modifications, as long as this notice is preserved.
+ 
+-SUBDIR= cvs cvsd
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
++# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
++# PARTICULAR PURPOSE.
+ 
+-.include <bsd.subdir.mk>
++
++
++SOURCES = $(cvs_SOURCES)
++
++srcdir = /home/kergoth/code/user/oe/build-omap/tmp/work/opencvs-0.0cvs20050111-r0/cvs
++top_srcdir = /home/kergoth/code/user/oe/build-omap/tmp/work/opencvs-0.0cvs20050111-r0/cvs
++VPATH = /home/kergoth/code/user/oe/build-omap/tmp/work/opencvs-0.0cvs20050111-r0/cvs
++pkgdatadir = $(datadir)/
++pkglibdir = $(libdir)/
++pkgincludedir = $(includedir)/
++top_builddir = .
++am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
++INSTALL = /usr/bin/install -c
++install_sh_DATA = $(install_sh) -c -m 644
++install_sh_PROGRAM = $(install_sh) -c
++install_sh_SCRIPT = $(install_sh) -c
++INSTALL_HEADER = $(INSTALL_DATA)
++transform = $(program_transform_name)
++NORMAL_INSTALL = :
++PRE_INSTALL = :
++POST_INSTALL = :
++NORMAL_UNINSTALL = :
++PRE_UNINSTALL = :
++POST_UNINSTALL = :
++bin_PROGRAMS = cvs$(EXEEXT)
++subdir = .
++DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
++	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
++	$(top_srcdir)/configure TODO compile depcomp install-sh \
++	missing
++ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
++am__aclocal_m4_deps = $(top_srcdir)/configure.ac
++am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
++	$(ACLOCAL_M4)
++am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
++ configure.lineno configure.status.lineno
++mkinstalldirs = $(mkdir_p)
++CONFIG_HEADER = config.h
++CONFIG_CLEAN_FILES =
++am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man7dir)"
++binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
++PROGRAMS = $(bin_PROGRAMS)
++am_cvs_OBJECTS = cvs-cvs.$(OBJEXT) cvs-add.$(OBJEXT) \
++	cvs-annotate.$(OBJEXT) cvs-buf.$(OBJEXT) \
++	cvs-checkout.$(OBJEXT) cvs-commit.$(OBJEXT) cvs-diff.$(OBJEXT) \
++	cvs-entries.$(OBJEXT) cvs-file.$(OBJEXT) cvs-getlog.$(OBJEXT) \
++	cvs-history.$(OBJEXT) cvs-hist.$(OBJEXT) cvs-import.$(OBJEXT) \
++	cvs-init.$(OBJEXT) cvs-log.$(OBJEXT) cvs-logmsg.$(OBJEXT) \
++	cvs-proto.$(OBJEXT) cvs-rcs.$(OBJEXT) cvs-rcsnum.$(OBJEXT) \
++	cvs-remove.$(OBJEXT) cvs-req.$(OBJEXT) cvs-resp.$(OBJEXT) \
++	cvs-root.$(OBJEXT) cvs-server.$(OBJEXT) cvs-sock.$(OBJEXT) \
++	cvs-status.$(OBJEXT) cvs-tag.$(OBJEXT) cvs-update.$(OBJEXT) \
++	cvs-util.$(OBJEXT) cvs-version.$(OBJEXT)
++cvs_OBJECTS = $(am_cvs_OBJECTS)
++am__DEPENDENCIES_1 =
++cvs_DEPENDENCIES = $(am__DEPENDENCIES_1)
++DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
++depcomp = $(SHELL) $(top_srcdir)/depcomp
++am__depfiles_maybe = depfiles
++@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/cvs-add.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-annotate.Po ./$(DEPDIR)/cvs-buf.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-checkout.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-commit.Po ./$(DEPDIR)/cvs-cvs.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-diff.Po ./$(DEPDIR)/cvs-entries.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-file.Po ./$(DEPDIR)/cvs-getlog.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-hist.Po ./$(DEPDIR)/cvs-history.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-import.Po ./$(DEPDIR)/cvs-init.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-log.Po ./$(DEPDIR)/cvs-logmsg.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-proto.Po ./$(DEPDIR)/cvs-rcs.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-rcsnum.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-remove.Po ./$(DEPDIR)/cvs-req.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-resp.Po ./$(DEPDIR)/cvs-root.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-server.Po ./$(DEPDIR)/cvs-sock.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-status.Po ./$(DEPDIR)/cvs-tag.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-update.Po ./$(DEPDIR)/cvs-util.Po \
++@AMDEP_TRUE@	./$(DEPDIR)/cvs-version.Po
++COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
++	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
++CCLD = $(CC)
++LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
++SOURCES = $(cvs_SOURCES)
++DIST_SOURCES = $(cvs_SOURCES)
++man1dir = $(mandir)/man1
++man5dir = $(mandir)/man5
++man7dir = $(mandir)/man7
++NROFF = nroff
++MANS = $(man1_MANS) $(man5_MANS) $(man7_MANS)
++ETAGS = etags
++CTAGS = ctags
++DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
++distdir = $(PACKAGE)-$(VERSION)
++top_distdir = $(distdir)
++am__remove_distdir = \
++  { test ! -d $(distdir) \
++    || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
++         && rm -fr $(distdir); }; }
++DIST_ARCHIVES = $(distdir).tar.gz
++GZIP_ENV = --best
++distuninstallcheck_listfiles = find . -type f -print
++distcleancheck_listfiles = find . -type f -print
++ACLOCAL = aclocal-1.4
++AMDEP_FALSE = @AMDEP_FALSE@
++AMDEP_TRUE = @AMDEP_TRUE@
++AMTAR = @AMTAR@
++AUTOCONF = autoconf
++AUTOHEADER = autoheader
++AUTOMAKE = automake-1.4
++AWK = @AWK@
++CC = ccache arm-linux-uclibc-gcc -march=armv5te -mtune=arm926ejs
++CCDEPMODE = @CCDEPMODE@
++CFLAGS = -I/home/kergoth/code/user/oe/build-omap/tmp/staging/arm-linux-uclibc/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2
++CPP = arm-linux-uclibc-gcc -E
++CPPFLAGS = -I/home/kergoth/code/user/oe/build-omap/tmp/staging/arm-linux-uclibc/include
++CYGPATH_W = @CYGPATH_W@
++DEFS = -DHAVE_CONFIG_H
++DEPDIR = @DEPDIR@
++ECHO_C = 
++ECHO_N = -n
++ECHO_T = 
++EGREP = grep -E
++EXEEXT = 
++INSTALL_DATA = ${INSTALL} -m 644
++INSTALL_PROGRAM = ${INSTALL}
++INSTALL_SCRIPT = ${INSTALL}
++INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
++LDFLAGS = -L/home/kergoth/code/user/oe/build-omap/tmp/staging/arm-linux-uclibc/lib -Wl,-rpath-link,/home/kergoth/code/user/oe/build-omap/tmp/staging/arm-linux-uclibc/lib -Wl,-rpath,/usr/lib -Wl,-O1
++LIBOBJS =  malloc$U.o memcmp$U.o mktime$U.o realloc$U.o lstat$U.o stat$U.o
++LIBS = 
++LTLIBOBJS =  malloc$U.lo memcmp$U.lo mktime$U.lo realloc$U.lo lstat$U.lo stat$U.lo
++MAKEINFO = makeinfo
++MD5_LIBS = -lssl
++OBJEXT = o
++PACKAGE = 
++PACKAGE_BUGREPORT = unknown@unknown.com
++PACKAGE_NAME = OpenCVS
++PACKAGE_STRING = OpenCVS 1.0
++PACKAGE_TARNAME = opencvs
++PACKAGE_VERSION = 1.0
++PATH_SEPARATOR = :
++SET_MAKE = 
++SHELL = /bin/sh
++STRIP = @STRIP@
++VERSION = 
++ac_ct_CC = 
++ac_ct_STRIP = @ac_ct_STRIP@
++am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
++am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
++am__include = @am__include@
++am__leading_dot = @am__leading_dot@
++am__quote = @am__quote@
++bindir = /usr/bin
++build_alias = i686-linux
++datadir = /usr/share
++exec_prefix = /usr
++host_alias = arm-linux-uclibc
++includedir = /usr/include
++infodir = /usr/share/info
++install_sh = @install_sh@
++libdir = /usr/lib
++libexecdir = /usr/libexec
++localstatedir = /var
++mandir = /usr/share/man
++mkdir_p = @mkdir_p@
++oldincludedir = /usr/include
++prefix = /usr
++program_transform_name = s,x,x,
++sbindir = /usr/sbin
++sharedstatedir = /usr/com
++sysconfdir = /etc
++target_alias = arm-linux-uclibc
++
++# ACLOCAL_AMFLAGS = -I m4
++AUTOMAKE_OPTIONS = foreign 1.6
++AM_CFLAGS = -I$(top_srcdir)
++cvs_SOURCES = cvs.c add.c annotate.c buf.c checkout.c commit.c diff.c entries.c \
++	      file.c getlog.c history.c hist.c import.c init.c log.c logmsg.c \
++	      proto.c rcs.c rcsnum.c remove.c req.c resp.c root.c server.c \
++	      sock.c status.c tag.c update.c util.c version.c
++
++cvs_CFLAGS = $(AM_CFLAGS) -DCVS -D_BSD_SOURCE -D_GNU_SOURCE
++cvs_LDADD = $(MD5_LIBS)
++man1_MANS = cvs.1
++man5_MANS = cvsrc.5
++man7_MANS = cvsintro.7
++EXTRA_DIST = $(man_MANS)
++all: config.h
++	$(MAKE) $(AM_MAKEFLAGS) all-am
++
++.SUFFIXES:
++.SUFFIXES: .c .o .obj
++am--refresh:
++	@:
++$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++	@for dep in $?; do \
++	  case '$(am__configure_deps)' in \
++	    *$$dep*) \
++	      echo ' cd $(srcdir) && $(AUTOMAKE) --foreign '; \
++	      cd $(srcdir) && $(AUTOMAKE) --foreign  \
++		&& exit 0; \
++	      exit 1;; \
++	  esac; \
++	done; \
++	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  Makefile'; \
++	cd $(top_srcdir) && \
++	  $(AUTOMAKE) --foreign  Makefile
++.PRECIOUS: Makefile
++Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
++	@case '$?' in \
++	  *config.status*) \
++	    echo ' $(SHELL) ./config.status'; \
++	    $(SHELL) ./config.status;; \
++	  *) \
++	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
++	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
++	esac;
++
++$(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
++	$(SHELL) ./config.status --recheck
++
++$(top_srcdir)/configure:  $(am__configure_deps)
++	cd $(srcdir) && $(AUTOCONF)
++$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
++
++config.h: stamp-h1
++	@if test ! -f $@; then \
++	  rm -f stamp-h1; \
++	  $(MAKE) stamp-h1; \
++	else :; fi
++
++stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
++	@rm -f stamp-h1
++	cd $(top_builddir) && $(SHELL) ./config.status config.h
++$(srcdir)/config.h.in:  $(am__configure_deps) 
++	cd $(top_srcdir) && $(AUTOHEADER)
++	rm -f stamp-h1
++	touch $@
++
++distclean-hdr:
++	-rm -f config.h stamp-h1
++install-binPROGRAMS: $(bin_PROGRAMS)
++	@$(NORMAL_INSTALL)
++	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
++	@list='$(bin_PROGRAMS)'; for p in $$list; do \
++	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
++	  if test -f $$p \
++	  ; then \
++	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
++	   echo " $(INSTALL_PROGRAM_ENV) $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
++	   $(INSTALL_PROGRAM_ENV) $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
++	  else :; fi; \
++	done
++
++uninstall-binPROGRAMS:
++	@$(NORMAL_UNINSTALL)
++	@list='$(bin_PROGRAMS)'; for p in $$list; do \
++	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
++	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
++	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
++	done
++
++clean-binPROGRAMS:
++	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
++cvs$(EXEEXT): $(cvs_OBJECTS) $(cvs_DEPENDENCIES) 
++	@rm -f cvs$(EXEEXT)
++	$(LINK) $(cvs_LDFLAGS) $(cvs_OBJECTS) $(cvs_LDADD) $(LIBS)
++
++mostlyclean-compile:
++	-rm -f *.$(OBJEXT)
++
++distclean-compile:
++	-rm -f *.tab.c
++
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-add.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-annotate.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-buf.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-checkout.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-commit.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-cvs.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-diff.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-entries.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-file.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-getlog.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-hist.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-history.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-import.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-init.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-log.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-logmsg.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-proto.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-rcs.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-rcsnum.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-remove.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-req.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-resp.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-root.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-server.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-sock.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-status.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-tag.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-update.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-util.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cvs-version.Po@am__quote@
++
++.c.o:
++@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(COMPILE) -c $<
++
++.c.obj:
++@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
++
++cvs-cvs.o: cvs.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-cvs.o -MD -MP -MF "$(DEPDIR)/cvs-cvs.Tpo" -c -o cvs-cvs.o `test -f 'cvs.c' || echo '$(srcdir)/'`cvs.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-cvs.Tpo" "$(DEPDIR)/cvs-cvs.Po"; else rm -f "$(DEPDIR)/cvs-cvs.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cvs.c' object='cvs-cvs.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-cvs.Po' tmpdepfile='$(DEPDIR)/cvs-cvs.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-cvs.o `test -f 'cvs.c' || echo '$(srcdir)/'`cvs.c
++
++cvs-cvs.obj: cvs.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-cvs.obj -MD -MP -MF "$(DEPDIR)/cvs-cvs.Tpo" -c -o cvs-cvs.obj `if test -f 'cvs.c'; then $(CYGPATH_W) 'cvs.c'; else $(CYGPATH_W) '$(srcdir)/cvs.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-cvs.Tpo" "$(DEPDIR)/cvs-cvs.Po"; else rm -f "$(DEPDIR)/cvs-cvs.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cvs.c' object='cvs-cvs.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-cvs.Po' tmpdepfile='$(DEPDIR)/cvs-cvs.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-cvs.obj `if test -f 'cvs.c'; then $(CYGPATH_W) 'cvs.c'; else $(CYGPATH_W) '$(srcdir)/cvs.c'; fi`
++
++cvs-add.o: add.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-add.o -MD -MP -MF "$(DEPDIR)/cvs-add.Tpo" -c -o cvs-add.o `test -f 'add.c' || echo '$(srcdir)/'`add.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-add.Tpo" "$(DEPDIR)/cvs-add.Po"; else rm -f "$(DEPDIR)/cvs-add.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='add.c' object='cvs-add.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-add.Po' tmpdepfile='$(DEPDIR)/cvs-add.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-add.o `test -f 'add.c' || echo '$(srcdir)/'`add.c
++
++cvs-add.obj: add.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-add.obj -MD -MP -MF "$(DEPDIR)/cvs-add.Tpo" -c -o cvs-add.obj `if test -f 'add.c'; then $(CYGPATH_W) 'add.c'; else $(CYGPATH_W) '$(srcdir)/add.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-add.Tpo" "$(DEPDIR)/cvs-add.Po"; else rm -f "$(DEPDIR)/cvs-add.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='add.c' object='cvs-add.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-add.Po' tmpdepfile='$(DEPDIR)/cvs-add.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-add.obj `if test -f 'add.c'; then $(CYGPATH_W) 'add.c'; else $(CYGPATH_W) '$(srcdir)/add.c'; fi`
++
++cvs-annotate.o: annotate.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-annotate.o -MD -MP -MF "$(DEPDIR)/cvs-annotate.Tpo" -c -o cvs-annotate.o `test -f 'annotate.c' || echo '$(srcdir)/'`annotate.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-annotate.Tpo" "$(DEPDIR)/cvs-annotate.Po"; else rm -f "$(DEPDIR)/cvs-annotate.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='annotate.c' object='cvs-annotate.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-annotate.Po' tmpdepfile='$(DEPDIR)/cvs-annotate.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-annotate.o `test -f 'annotate.c' || echo '$(srcdir)/'`annotate.c
++
++cvs-annotate.obj: annotate.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-annotate.obj -MD -MP -MF "$(DEPDIR)/cvs-annotate.Tpo" -c -o cvs-annotate.obj `if test -f 'annotate.c'; then $(CYGPATH_W) 'annotate.c'; else $(CYGPATH_W) '$(srcdir)/annotate.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-annotate.Tpo" "$(DEPDIR)/cvs-annotate.Po"; else rm -f "$(DEPDIR)/cvs-annotate.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='annotate.c' object='cvs-annotate.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-annotate.Po' tmpdepfile='$(DEPDIR)/cvs-annotate.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-annotate.obj `if test -f 'annotate.c'; then $(CYGPATH_W) 'annotate.c'; else $(CYGPATH_W) '$(srcdir)/annotate.c'; fi`
++
++cvs-buf.o: buf.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-buf.o -MD -MP -MF "$(DEPDIR)/cvs-buf.Tpo" -c -o cvs-buf.o `test -f 'buf.c' || echo '$(srcdir)/'`buf.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-buf.Tpo" "$(DEPDIR)/cvs-buf.Po"; else rm -f "$(DEPDIR)/cvs-buf.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='buf.c' object='cvs-buf.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-buf.Po' tmpdepfile='$(DEPDIR)/cvs-buf.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-buf.o `test -f 'buf.c' || echo '$(srcdir)/'`buf.c
++
++cvs-buf.obj: buf.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-buf.obj -MD -MP -MF "$(DEPDIR)/cvs-buf.Tpo" -c -o cvs-buf.obj `if test -f 'buf.c'; then $(CYGPATH_W) 'buf.c'; else $(CYGPATH_W) '$(srcdir)/buf.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-buf.Tpo" "$(DEPDIR)/cvs-buf.Po"; else rm -f "$(DEPDIR)/cvs-buf.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='buf.c' object='cvs-buf.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-buf.Po' tmpdepfile='$(DEPDIR)/cvs-buf.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-buf.obj `if test -f 'buf.c'; then $(CYGPATH_W) 'buf.c'; else $(CYGPATH_W) '$(srcdir)/buf.c'; fi`
++
++cvs-checkout.o: checkout.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-checkout.o -MD -MP -MF "$(DEPDIR)/cvs-checkout.Tpo" -c -o cvs-checkout.o `test -f 'checkout.c' || echo '$(srcdir)/'`checkout.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-checkout.Tpo" "$(DEPDIR)/cvs-checkout.Po"; else rm -f "$(DEPDIR)/cvs-checkout.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='checkout.c' object='cvs-checkout.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-checkout.Po' tmpdepfile='$(DEPDIR)/cvs-checkout.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-checkout.o `test -f 'checkout.c' || echo '$(srcdir)/'`checkout.c
++
++cvs-checkout.obj: checkout.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-checkout.obj -MD -MP -MF "$(DEPDIR)/cvs-checkout.Tpo" -c -o cvs-checkout.obj `if test -f 'checkout.c'; then $(CYGPATH_W) 'checkout.c'; else $(CYGPATH_W) '$(srcdir)/checkout.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-checkout.Tpo" "$(DEPDIR)/cvs-checkout.Po"; else rm -f "$(DEPDIR)/cvs-checkout.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='checkout.c' object='cvs-checkout.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-checkout.Po' tmpdepfile='$(DEPDIR)/cvs-checkout.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-checkout.obj `if test -f 'checkout.c'; then $(CYGPATH_W) 'checkout.c'; else $(CYGPATH_W) '$(srcdir)/checkout.c'; fi`
++
++cvs-commit.o: commit.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-commit.o -MD -MP -MF "$(DEPDIR)/cvs-commit.Tpo" -c -o cvs-commit.o `test -f 'commit.c' || echo '$(srcdir)/'`commit.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-commit.Tpo" "$(DEPDIR)/cvs-commit.Po"; else rm -f "$(DEPDIR)/cvs-commit.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='commit.c' object='cvs-commit.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-commit.Po' tmpdepfile='$(DEPDIR)/cvs-commit.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-commit.o `test -f 'commit.c' || echo '$(srcdir)/'`commit.c
++
++cvs-commit.obj: commit.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-commit.obj -MD -MP -MF "$(DEPDIR)/cvs-commit.Tpo" -c -o cvs-commit.obj `if test -f 'commit.c'; then $(CYGPATH_W) 'commit.c'; else $(CYGPATH_W) '$(srcdir)/commit.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-commit.Tpo" "$(DEPDIR)/cvs-commit.Po"; else rm -f "$(DEPDIR)/cvs-commit.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='commit.c' object='cvs-commit.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-commit.Po' tmpdepfile='$(DEPDIR)/cvs-commit.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-commit.obj `if test -f 'commit.c'; then $(CYGPATH_W) 'commit.c'; else $(CYGPATH_W) '$(srcdir)/commit.c'; fi`
++
++cvs-diff.o: diff.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-diff.o -MD -MP -MF "$(DEPDIR)/cvs-diff.Tpo" -c -o cvs-diff.o `test -f 'diff.c' || echo '$(srcdir)/'`diff.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-diff.Tpo" "$(DEPDIR)/cvs-diff.Po"; else rm -f "$(DEPDIR)/cvs-diff.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='diff.c' object='cvs-diff.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-diff.Po' tmpdepfile='$(DEPDIR)/cvs-diff.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-diff.o `test -f 'diff.c' || echo '$(srcdir)/'`diff.c
++
++cvs-diff.obj: diff.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-diff.obj -MD -MP -MF "$(DEPDIR)/cvs-diff.Tpo" -c -o cvs-diff.obj `if test -f 'diff.c'; then $(CYGPATH_W) 'diff.c'; else $(CYGPATH_W) '$(srcdir)/diff.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-diff.Tpo" "$(DEPDIR)/cvs-diff.Po"; else rm -f "$(DEPDIR)/cvs-diff.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='diff.c' object='cvs-diff.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-diff.Po' tmpdepfile='$(DEPDIR)/cvs-diff.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-diff.obj `if test -f 'diff.c'; then $(CYGPATH_W) 'diff.c'; else $(CYGPATH_W) '$(srcdir)/diff.c'; fi`
++
++cvs-entries.o: entries.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-entries.o -MD -MP -MF "$(DEPDIR)/cvs-entries.Tpo" -c -o cvs-entries.o `test -f 'entries.c' || echo '$(srcdir)/'`entries.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-entries.Tpo" "$(DEPDIR)/cvs-entries.Po"; else rm -f "$(DEPDIR)/cvs-entries.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='entries.c' object='cvs-entries.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-entries.Po' tmpdepfile='$(DEPDIR)/cvs-entries.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-entries.o `test -f 'entries.c' || echo '$(srcdir)/'`entries.c
++
++cvs-entries.obj: entries.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-entries.obj -MD -MP -MF "$(DEPDIR)/cvs-entries.Tpo" -c -o cvs-entries.obj `if test -f 'entries.c'; then $(CYGPATH_W) 'entries.c'; else $(CYGPATH_W) '$(srcdir)/entries.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-entries.Tpo" "$(DEPDIR)/cvs-entries.Po"; else rm -f "$(DEPDIR)/cvs-entries.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='entries.c' object='cvs-entries.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-entries.Po' tmpdepfile='$(DEPDIR)/cvs-entries.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-entries.obj `if test -f 'entries.c'; then $(CYGPATH_W) 'entries.c'; else $(CYGPATH_W) '$(srcdir)/entries.c'; fi`
++
++cvs-file.o: file.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-file.o -MD -MP -MF "$(DEPDIR)/cvs-file.Tpo" -c -o cvs-file.o `test -f 'file.c' || echo '$(srcdir)/'`file.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-file.Tpo" "$(DEPDIR)/cvs-file.Po"; else rm -f "$(DEPDIR)/cvs-file.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='file.c' object='cvs-file.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-file.Po' tmpdepfile='$(DEPDIR)/cvs-file.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-file.o `test -f 'file.c' || echo '$(srcdir)/'`file.c
++
++cvs-file.obj: file.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-file.obj -MD -MP -MF "$(DEPDIR)/cvs-file.Tpo" -c -o cvs-file.obj `if test -f 'file.c'; then $(CYGPATH_W) 'file.c'; else $(CYGPATH_W) '$(srcdir)/file.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-file.Tpo" "$(DEPDIR)/cvs-file.Po"; else rm -f "$(DEPDIR)/cvs-file.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='file.c' object='cvs-file.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-file.Po' tmpdepfile='$(DEPDIR)/cvs-file.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-file.obj `if test -f 'file.c'; then $(CYGPATH_W) 'file.c'; else $(CYGPATH_W) '$(srcdir)/file.c'; fi`
++
++cvs-getlog.o: getlog.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-getlog.o -MD -MP -MF "$(DEPDIR)/cvs-getlog.Tpo" -c -o cvs-getlog.o `test -f 'getlog.c' || echo '$(srcdir)/'`getlog.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-getlog.Tpo" "$(DEPDIR)/cvs-getlog.Po"; else rm -f "$(DEPDIR)/cvs-getlog.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getlog.c' object='cvs-getlog.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-getlog.Po' tmpdepfile='$(DEPDIR)/cvs-getlog.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-getlog.o `test -f 'getlog.c' || echo '$(srcdir)/'`getlog.c
++
++cvs-getlog.obj: getlog.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-getlog.obj -MD -MP -MF "$(DEPDIR)/cvs-getlog.Tpo" -c -o cvs-getlog.obj `if test -f 'getlog.c'; then $(CYGPATH_W) 'getlog.c'; else $(CYGPATH_W) '$(srcdir)/getlog.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-getlog.Tpo" "$(DEPDIR)/cvs-getlog.Po"; else rm -f "$(DEPDIR)/cvs-getlog.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getlog.c' object='cvs-getlog.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-getlog.Po' tmpdepfile='$(DEPDIR)/cvs-getlog.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-getlog.obj `if test -f 'getlog.c'; then $(CYGPATH_W) 'getlog.c'; else $(CYGPATH_W) '$(srcdir)/getlog.c'; fi`
++
++cvs-history.o: history.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-history.o -MD -MP -MF "$(DEPDIR)/cvs-history.Tpo" -c -o cvs-history.o `test -f 'history.c' || echo '$(srcdir)/'`history.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-history.Tpo" "$(DEPDIR)/cvs-history.Po"; else rm -f "$(DEPDIR)/cvs-history.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='history.c' object='cvs-history.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-history.Po' tmpdepfile='$(DEPDIR)/cvs-history.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-history.o `test -f 'history.c' || echo '$(srcdir)/'`history.c
++
++cvs-history.obj: history.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-history.obj -MD -MP -MF "$(DEPDIR)/cvs-history.Tpo" -c -o cvs-history.obj `if test -f 'history.c'; then $(CYGPATH_W) 'history.c'; else $(CYGPATH_W) '$(srcdir)/history.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-history.Tpo" "$(DEPDIR)/cvs-history.Po"; else rm -f "$(DEPDIR)/cvs-history.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='history.c' object='cvs-history.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-history.Po' tmpdepfile='$(DEPDIR)/cvs-history.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-history.obj `if test -f 'history.c'; then $(CYGPATH_W) 'history.c'; else $(CYGPATH_W) '$(srcdir)/history.c'; fi`
++
++cvs-hist.o: hist.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-hist.o -MD -MP -MF "$(DEPDIR)/cvs-hist.Tpo" -c -o cvs-hist.o `test -f 'hist.c' || echo '$(srcdir)/'`hist.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-hist.Tpo" "$(DEPDIR)/cvs-hist.Po"; else rm -f "$(DEPDIR)/cvs-hist.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hist.c' object='cvs-hist.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-hist.Po' tmpdepfile='$(DEPDIR)/cvs-hist.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-hist.o `test -f 'hist.c' || echo '$(srcdir)/'`hist.c
++
++cvs-hist.obj: hist.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-hist.obj -MD -MP -MF "$(DEPDIR)/cvs-hist.Tpo" -c -o cvs-hist.obj `if test -f 'hist.c'; then $(CYGPATH_W) 'hist.c'; else $(CYGPATH_W) '$(srcdir)/hist.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-hist.Tpo" "$(DEPDIR)/cvs-hist.Po"; else rm -f "$(DEPDIR)/cvs-hist.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hist.c' object='cvs-hist.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-hist.Po' tmpdepfile='$(DEPDIR)/cvs-hist.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-hist.obj `if test -f 'hist.c'; then $(CYGPATH_W) 'hist.c'; else $(CYGPATH_W) '$(srcdir)/hist.c'; fi`
++
++cvs-import.o: import.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-import.o -MD -MP -MF "$(DEPDIR)/cvs-import.Tpo" -c -o cvs-import.o `test -f 'import.c' || echo '$(srcdir)/'`import.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-import.Tpo" "$(DEPDIR)/cvs-import.Po"; else rm -f "$(DEPDIR)/cvs-import.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='import.c' object='cvs-import.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-import.Po' tmpdepfile='$(DEPDIR)/cvs-import.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-import.o `test -f 'import.c' || echo '$(srcdir)/'`import.c
++
++cvs-import.obj: import.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-import.obj -MD -MP -MF "$(DEPDIR)/cvs-import.Tpo" -c -o cvs-import.obj `if test -f 'import.c'; then $(CYGPATH_W) 'import.c'; else $(CYGPATH_W) '$(srcdir)/import.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-import.Tpo" "$(DEPDIR)/cvs-import.Po"; else rm -f "$(DEPDIR)/cvs-import.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='import.c' object='cvs-import.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-import.Po' tmpdepfile='$(DEPDIR)/cvs-import.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-import.obj `if test -f 'import.c'; then $(CYGPATH_W) 'import.c'; else $(CYGPATH_W) '$(srcdir)/import.c'; fi`
++
++cvs-init.o: init.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-init.o -MD -MP -MF "$(DEPDIR)/cvs-init.Tpo" -c -o cvs-init.o `test -f 'init.c' || echo '$(srcdir)/'`init.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-init.Tpo" "$(DEPDIR)/cvs-init.Po"; else rm -f "$(DEPDIR)/cvs-init.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='init.c' object='cvs-init.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-init.Po' tmpdepfile='$(DEPDIR)/cvs-init.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-init.o `test -f 'init.c' || echo '$(srcdir)/'`init.c
++
++cvs-init.obj: init.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-init.obj -MD -MP -MF "$(DEPDIR)/cvs-init.Tpo" -c -o cvs-init.obj `if test -f 'init.c'; then $(CYGPATH_W) 'init.c'; else $(CYGPATH_W) '$(srcdir)/init.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-init.Tpo" "$(DEPDIR)/cvs-init.Po"; else rm -f "$(DEPDIR)/cvs-init.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='init.c' object='cvs-init.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-init.Po' tmpdepfile='$(DEPDIR)/cvs-init.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-init.obj `if test -f 'init.c'; then $(CYGPATH_W) 'init.c'; else $(CYGPATH_W) '$(srcdir)/init.c'; fi`
++
++cvs-log.o: log.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-log.o -MD -MP -MF "$(DEPDIR)/cvs-log.Tpo" -c -o cvs-log.o `test -f 'log.c' || echo '$(srcdir)/'`log.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-log.Tpo" "$(DEPDIR)/cvs-log.Po"; else rm -f "$(DEPDIR)/cvs-log.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log.c' object='cvs-log.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-log.Po' tmpdepfile='$(DEPDIR)/cvs-log.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-log.o `test -f 'log.c' || echo '$(srcdir)/'`log.c
++
++cvs-log.obj: log.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-log.obj -MD -MP -MF "$(DEPDIR)/cvs-log.Tpo" -c -o cvs-log.obj `if test -f 'log.c'; then $(CYGPATH_W) 'log.c'; else $(CYGPATH_W) '$(srcdir)/log.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-log.Tpo" "$(DEPDIR)/cvs-log.Po"; else rm -f "$(DEPDIR)/cvs-log.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log.c' object='cvs-log.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-log.Po' tmpdepfile='$(DEPDIR)/cvs-log.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-log.obj `if test -f 'log.c'; then $(CYGPATH_W) 'log.c'; else $(CYGPATH_W) '$(srcdir)/log.c'; fi`
++
++cvs-logmsg.o: logmsg.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-logmsg.o -MD -MP -MF "$(DEPDIR)/cvs-logmsg.Tpo" -c -o cvs-logmsg.o `test -f 'logmsg.c' || echo '$(srcdir)/'`logmsg.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-logmsg.Tpo" "$(DEPDIR)/cvs-logmsg.Po"; else rm -f "$(DEPDIR)/cvs-logmsg.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logmsg.c' object='cvs-logmsg.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-logmsg.Po' tmpdepfile='$(DEPDIR)/cvs-logmsg.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-logmsg.o `test -f 'logmsg.c' || echo '$(srcdir)/'`logmsg.c
++
++cvs-logmsg.obj: logmsg.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-logmsg.obj -MD -MP -MF "$(DEPDIR)/cvs-logmsg.Tpo" -c -o cvs-logmsg.obj `if test -f 'logmsg.c'; then $(CYGPATH_W) 'logmsg.c'; else $(CYGPATH_W) '$(srcdir)/logmsg.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-logmsg.Tpo" "$(DEPDIR)/cvs-logmsg.Po"; else rm -f "$(DEPDIR)/cvs-logmsg.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logmsg.c' object='cvs-logmsg.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-logmsg.Po' tmpdepfile='$(DEPDIR)/cvs-logmsg.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-logmsg.obj `if test -f 'logmsg.c'; then $(CYGPATH_W) 'logmsg.c'; else $(CYGPATH_W) '$(srcdir)/logmsg.c'; fi`
++
++cvs-proto.o: proto.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-proto.o -MD -MP -MF "$(DEPDIR)/cvs-proto.Tpo" -c -o cvs-proto.o `test -f 'proto.c' || echo '$(srcdir)/'`proto.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-proto.Tpo" "$(DEPDIR)/cvs-proto.Po"; else rm -f "$(DEPDIR)/cvs-proto.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='proto.c' object='cvs-proto.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-proto.Po' tmpdepfile='$(DEPDIR)/cvs-proto.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-proto.o `test -f 'proto.c' || echo '$(srcdir)/'`proto.c
++
++cvs-proto.obj: proto.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-proto.obj -MD -MP -MF "$(DEPDIR)/cvs-proto.Tpo" -c -o cvs-proto.obj `if test -f 'proto.c'; then $(CYGPATH_W) 'proto.c'; else $(CYGPATH_W) '$(srcdir)/proto.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-proto.Tpo" "$(DEPDIR)/cvs-proto.Po"; else rm -f "$(DEPDIR)/cvs-proto.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='proto.c' object='cvs-proto.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-proto.Po' tmpdepfile='$(DEPDIR)/cvs-proto.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-proto.obj `if test -f 'proto.c'; then $(CYGPATH_W) 'proto.c'; else $(CYGPATH_W) '$(srcdir)/proto.c'; fi`
++
++cvs-rcs.o: rcs.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-rcs.o -MD -MP -MF "$(DEPDIR)/cvs-rcs.Tpo" -c -o cvs-rcs.o `test -f 'rcs.c' || echo '$(srcdir)/'`rcs.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-rcs.Tpo" "$(DEPDIR)/cvs-rcs.Po"; else rm -f "$(DEPDIR)/cvs-rcs.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rcs.c' object='cvs-rcs.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-rcs.Po' tmpdepfile='$(DEPDIR)/cvs-rcs.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-rcs.o `test -f 'rcs.c' || echo '$(srcdir)/'`rcs.c
++
++cvs-rcs.obj: rcs.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-rcs.obj -MD -MP -MF "$(DEPDIR)/cvs-rcs.Tpo" -c -o cvs-rcs.obj `if test -f 'rcs.c'; then $(CYGPATH_W) 'rcs.c'; else $(CYGPATH_W) '$(srcdir)/rcs.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-rcs.Tpo" "$(DEPDIR)/cvs-rcs.Po"; else rm -f "$(DEPDIR)/cvs-rcs.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rcs.c' object='cvs-rcs.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-rcs.Po' tmpdepfile='$(DEPDIR)/cvs-rcs.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-rcs.obj `if test -f 'rcs.c'; then $(CYGPATH_W) 'rcs.c'; else $(CYGPATH_W) '$(srcdir)/rcs.c'; fi`
++
++cvs-rcsnum.o: rcsnum.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-rcsnum.o -MD -MP -MF "$(DEPDIR)/cvs-rcsnum.Tpo" -c -o cvs-rcsnum.o `test -f 'rcsnum.c' || echo '$(srcdir)/'`rcsnum.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-rcsnum.Tpo" "$(DEPDIR)/cvs-rcsnum.Po"; else rm -f "$(DEPDIR)/cvs-rcsnum.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rcsnum.c' object='cvs-rcsnum.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-rcsnum.Po' tmpdepfile='$(DEPDIR)/cvs-rcsnum.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-rcsnum.o `test -f 'rcsnum.c' || echo '$(srcdir)/'`rcsnum.c
++
++cvs-rcsnum.obj: rcsnum.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-rcsnum.obj -MD -MP -MF "$(DEPDIR)/cvs-rcsnum.Tpo" -c -o cvs-rcsnum.obj `if test -f 'rcsnum.c'; then $(CYGPATH_W) 'rcsnum.c'; else $(CYGPATH_W) '$(srcdir)/rcsnum.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-rcsnum.Tpo" "$(DEPDIR)/cvs-rcsnum.Po"; else rm -f "$(DEPDIR)/cvs-rcsnum.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rcsnum.c' object='cvs-rcsnum.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-rcsnum.Po' tmpdepfile='$(DEPDIR)/cvs-rcsnum.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-rcsnum.obj `if test -f 'rcsnum.c'; then $(CYGPATH_W) 'rcsnum.c'; else $(CYGPATH_W) '$(srcdir)/rcsnum.c'; fi`
++
++cvs-remove.o: remove.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-remove.o -MD -MP -MF "$(DEPDIR)/cvs-remove.Tpo" -c -o cvs-remove.o `test -f 'remove.c' || echo '$(srcdir)/'`remove.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-remove.Tpo" "$(DEPDIR)/cvs-remove.Po"; else rm -f "$(DEPDIR)/cvs-remove.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='remove.c' object='cvs-remove.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-remove.Po' tmpdepfile='$(DEPDIR)/cvs-remove.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-remove.o `test -f 'remove.c' || echo '$(srcdir)/'`remove.c
++
++cvs-remove.obj: remove.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-remove.obj -MD -MP -MF "$(DEPDIR)/cvs-remove.Tpo" -c -o cvs-remove.obj `if test -f 'remove.c'; then $(CYGPATH_W) 'remove.c'; else $(CYGPATH_W) '$(srcdir)/remove.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-remove.Tpo" "$(DEPDIR)/cvs-remove.Po"; else rm -f "$(DEPDIR)/cvs-remove.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='remove.c' object='cvs-remove.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-remove.Po' tmpdepfile='$(DEPDIR)/cvs-remove.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-remove.obj `if test -f 'remove.c'; then $(CYGPATH_W) 'remove.c'; else $(CYGPATH_W) '$(srcdir)/remove.c'; fi`
++
++cvs-req.o: req.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-req.o -MD -MP -MF "$(DEPDIR)/cvs-req.Tpo" -c -o cvs-req.o `test -f 'req.c' || echo '$(srcdir)/'`req.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-req.Tpo" "$(DEPDIR)/cvs-req.Po"; else rm -f "$(DEPDIR)/cvs-req.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='req.c' object='cvs-req.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-req.Po' tmpdepfile='$(DEPDIR)/cvs-req.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-req.o `test -f 'req.c' || echo '$(srcdir)/'`req.c
++
++cvs-req.obj: req.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-req.obj -MD -MP -MF "$(DEPDIR)/cvs-req.Tpo" -c -o cvs-req.obj `if test -f 'req.c'; then $(CYGPATH_W) 'req.c'; else $(CYGPATH_W) '$(srcdir)/req.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-req.Tpo" "$(DEPDIR)/cvs-req.Po"; else rm -f "$(DEPDIR)/cvs-req.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='req.c' object='cvs-req.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-req.Po' tmpdepfile='$(DEPDIR)/cvs-req.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-req.obj `if test -f 'req.c'; then $(CYGPATH_W) 'req.c'; else $(CYGPATH_W) '$(srcdir)/req.c'; fi`
++
++cvs-resp.o: resp.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-resp.o -MD -MP -MF "$(DEPDIR)/cvs-resp.Tpo" -c -o cvs-resp.o `test -f 'resp.c' || echo '$(srcdir)/'`resp.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-resp.Tpo" "$(DEPDIR)/cvs-resp.Po"; else rm -f "$(DEPDIR)/cvs-resp.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='resp.c' object='cvs-resp.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-resp.Po' tmpdepfile='$(DEPDIR)/cvs-resp.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-resp.o `test -f 'resp.c' || echo '$(srcdir)/'`resp.c
++
++cvs-resp.obj: resp.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-resp.obj -MD -MP -MF "$(DEPDIR)/cvs-resp.Tpo" -c -o cvs-resp.obj `if test -f 'resp.c'; then $(CYGPATH_W) 'resp.c'; else $(CYGPATH_W) '$(srcdir)/resp.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-resp.Tpo" "$(DEPDIR)/cvs-resp.Po"; else rm -f "$(DEPDIR)/cvs-resp.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='resp.c' object='cvs-resp.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-resp.Po' tmpdepfile='$(DEPDIR)/cvs-resp.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-resp.obj `if test -f 'resp.c'; then $(CYGPATH_W) 'resp.c'; else $(CYGPATH_W) '$(srcdir)/resp.c'; fi`
++
++cvs-root.o: root.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-root.o -MD -MP -MF "$(DEPDIR)/cvs-root.Tpo" -c -o cvs-root.o `test -f 'root.c' || echo '$(srcdir)/'`root.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-root.Tpo" "$(DEPDIR)/cvs-root.Po"; else rm -f "$(DEPDIR)/cvs-root.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='root.c' object='cvs-root.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-root.Po' tmpdepfile='$(DEPDIR)/cvs-root.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-root.o `test -f 'root.c' || echo '$(srcdir)/'`root.c
++
++cvs-root.obj: root.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-root.obj -MD -MP -MF "$(DEPDIR)/cvs-root.Tpo" -c -o cvs-root.obj `if test -f 'root.c'; then $(CYGPATH_W) 'root.c'; else $(CYGPATH_W) '$(srcdir)/root.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-root.Tpo" "$(DEPDIR)/cvs-root.Po"; else rm -f "$(DEPDIR)/cvs-root.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='root.c' object='cvs-root.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-root.Po' tmpdepfile='$(DEPDIR)/cvs-root.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-root.obj `if test -f 'root.c'; then $(CYGPATH_W) 'root.c'; else $(CYGPATH_W) '$(srcdir)/root.c'; fi`
++
++cvs-server.o: server.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-server.o -MD -MP -MF "$(DEPDIR)/cvs-server.Tpo" -c -o cvs-server.o `test -f 'server.c' || echo '$(srcdir)/'`server.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-server.Tpo" "$(DEPDIR)/cvs-server.Po"; else rm -f "$(DEPDIR)/cvs-server.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server.c' object='cvs-server.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-server.Po' tmpdepfile='$(DEPDIR)/cvs-server.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-server.o `test -f 'server.c' || echo '$(srcdir)/'`server.c
++
++cvs-server.obj: server.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-server.obj -MD -MP -MF "$(DEPDIR)/cvs-server.Tpo" -c -o cvs-server.obj `if test -f 'server.c'; then $(CYGPATH_W) 'server.c'; else $(CYGPATH_W) '$(srcdir)/server.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-server.Tpo" "$(DEPDIR)/cvs-server.Po"; else rm -f "$(DEPDIR)/cvs-server.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server.c' object='cvs-server.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-server.Po' tmpdepfile='$(DEPDIR)/cvs-server.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-server.obj `if test -f 'server.c'; then $(CYGPATH_W) 'server.c'; else $(CYGPATH_W) '$(srcdir)/server.c'; fi`
++
++cvs-sock.o: sock.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-sock.o -MD -MP -MF "$(DEPDIR)/cvs-sock.Tpo" -c -o cvs-sock.o `test -f 'sock.c' || echo '$(srcdir)/'`sock.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-sock.Tpo" "$(DEPDIR)/cvs-sock.Po"; else rm -f "$(DEPDIR)/cvs-sock.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sock.c' object='cvs-sock.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-sock.Po' tmpdepfile='$(DEPDIR)/cvs-sock.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-sock.o `test -f 'sock.c' || echo '$(srcdir)/'`sock.c
++
++cvs-sock.obj: sock.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-sock.obj -MD -MP -MF "$(DEPDIR)/cvs-sock.Tpo" -c -o cvs-sock.obj `if test -f 'sock.c'; then $(CYGPATH_W) 'sock.c'; else $(CYGPATH_W) '$(srcdir)/sock.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-sock.Tpo" "$(DEPDIR)/cvs-sock.Po"; else rm -f "$(DEPDIR)/cvs-sock.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sock.c' object='cvs-sock.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-sock.Po' tmpdepfile='$(DEPDIR)/cvs-sock.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-sock.obj `if test -f 'sock.c'; then $(CYGPATH_W) 'sock.c'; else $(CYGPATH_W) '$(srcdir)/sock.c'; fi`
++
++cvs-status.o: status.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-status.o -MD -MP -MF "$(DEPDIR)/cvs-status.Tpo" -c -o cvs-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-status.Tpo" "$(DEPDIR)/cvs-status.Po"; else rm -f "$(DEPDIR)/cvs-status.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='cvs-status.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-status.Po' tmpdepfile='$(DEPDIR)/cvs-status.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
++
++cvs-status.obj: status.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-status.obj -MD -MP -MF "$(DEPDIR)/cvs-status.Tpo" -c -o cvs-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-status.Tpo" "$(DEPDIR)/cvs-status.Po"; else rm -f "$(DEPDIR)/cvs-status.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='cvs-status.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-status.Po' tmpdepfile='$(DEPDIR)/cvs-status.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
++
++cvs-tag.o: tag.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-tag.o -MD -MP -MF "$(DEPDIR)/cvs-tag.Tpo" -c -o cvs-tag.o `test -f 'tag.c' || echo '$(srcdir)/'`tag.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-tag.Tpo" "$(DEPDIR)/cvs-tag.Po"; else rm -f "$(DEPDIR)/cvs-tag.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tag.c' object='cvs-tag.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-tag.Po' tmpdepfile='$(DEPDIR)/cvs-tag.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-tag.o `test -f 'tag.c' || echo '$(srcdir)/'`tag.c
++
++cvs-tag.obj: tag.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-tag.obj -MD -MP -MF "$(DEPDIR)/cvs-tag.Tpo" -c -o cvs-tag.obj `if test -f 'tag.c'; then $(CYGPATH_W) 'tag.c'; else $(CYGPATH_W) '$(srcdir)/tag.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-tag.Tpo" "$(DEPDIR)/cvs-tag.Po"; else rm -f "$(DEPDIR)/cvs-tag.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tag.c' object='cvs-tag.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-tag.Po' tmpdepfile='$(DEPDIR)/cvs-tag.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-tag.obj `if test -f 'tag.c'; then $(CYGPATH_W) 'tag.c'; else $(CYGPATH_W) '$(srcdir)/tag.c'; fi`
++
++cvs-update.o: update.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-update.o -MD -MP -MF "$(DEPDIR)/cvs-update.Tpo" -c -o cvs-update.o `test -f 'update.c' || echo '$(srcdir)/'`update.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-update.Tpo" "$(DEPDIR)/cvs-update.Po"; else rm -f "$(DEPDIR)/cvs-update.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='update.c' object='cvs-update.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-update.Po' tmpdepfile='$(DEPDIR)/cvs-update.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-update.o `test -f 'update.c' || echo '$(srcdir)/'`update.c
++
++cvs-update.obj: update.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-update.obj -MD -MP -MF "$(DEPDIR)/cvs-update.Tpo" -c -o cvs-update.obj `if test -f 'update.c'; then $(CYGPATH_W) 'update.c'; else $(CYGPATH_W) '$(srcdir)/update.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-update.Tpo" "$(DEPDIR)/cvs-update.Po"; else rm -f "$(DEPDIR)/cvs-update.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='update.c' object='cvs-update.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-update.Po' tmpdepfile='$(DEPDIR)/cvs-update.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-update.obj `if test -f 'update.c'; then $(CYGPATH_W) 'update.c'; else $(CYGPATH_W) '$(srcdir)/update.c'; fi`
++
++cvs-util.o: util.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-util.o -MD -MP -MF "$(DEPDIR)/cvs-util.Tpo" -c -o cvs-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-util.Tpo" "$(DEPDIR)/cvs-util.Po"; else rm -f "$(DEPDIR)/cvs-util.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='util.c' object='cvs-util.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-util.Po' tmpdepfile='$(DEPDIR)/cvs-util.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
++
++cvs-util.obj: util.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-util.obj -MD -MP -MF "$(DEPDIR)/cvs-util.Tpo" -c -o cvs-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-util.Tpo" "$(DEPDIR)/cvs-util.Po"; else rm -f "$(DEPDIR)/cvs-util.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='util.c' object='cvs-util.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-util.Po' tmpdepfile='$(DEPDIR)/cvs-util.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
++
++cvs-version.o: version.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-version.o -MD -MP -MF "$(DEPDIR)/cvs-version.Tpo" -c -o cvs-version.o `test -f 'version.c' || echo '$(srcdir)/'`version.c; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-version.Tpo" "$(DEPDIR)/cvs-version.Po"; else rm -f "$(DEPDIR)/cvs-version.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='version.c' object='cvs-version.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-version.Po' tmpdepfile='$(DEPDIR)/cvs-version.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-version.o `test -f 'version.c' || echo '$(srcdir)/'`version.c
++
++cvs-version.obj: version.c
++@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -MT cvs-version.obj -MD -MP -MF "$(DEPDIR)/cvs-version.Tpo" -c -o cvs-version.obj `if test -f 'version.c'; then $(CYGPATH_W) 'version.c'; else $(CYGPATH_W) '$(srcdir)/version.c'; fi`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/cvs-version.Tpo" "$(DEPDIR)/cvs-version.Po"; else rm -f "$(DEPDIR)/cvs-version.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='version.c' object='cvs-version.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/cvs-version.Po' tmpdepfile='$(DEPDIR)/cvs-version.TPo' @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cvs_CFLAGS) $(CFLAGS) -c -o cvs-version.obj `if test -f 'version.c'; then $(CYGPATH_W) 'version.c'; else $(CYGPATH_W) '$(srcdir)/version.c'; fi`
++uninstall-info-am:
++install-man1: $(man1_MANS) $(man_MANS)
++	@$(NORMAL_INSTALL)
++	test -z "$(man1dir)" || $(mkdir_p) "$(DESTDIR)$(man1dir)"
++	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.1*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
++	  else file=$$i; fi; \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    1*) ;; \
++	    *) ext='1' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man1dir)/$$inst'"; \
++	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man1dir)/$$inst"; \
++	done
++uninstall-man1:
++	@$(NORMAL_UNINSTALL)
++	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.1*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    1*) ;; \
++	    *) ext='1' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " rm -f '$(DESTDIR)$(man1dir)/$$inst'"; \
++	  rm -f "$(DESTDIR)$(man1dir)/$$inst"; \
++	done
++install-man5: $(man5_MANS) $(man_MANS)
++	@$(NORMAL_INSTALL)
++	test -z "$(man5dir)" || $(mkdir_p) "$(DESTDIR)$(man5dir)"
++	@list='$(man5_MANS) $(dist_man5_MANS) $(nodist_man5_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.5*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
++	  else file=$$i; fi; \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    5*) ;; \
++	    *) ext='5' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man5dir)/$$inst'"; \
++	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man5dir)/$$inst"; \
++	done
++uninstall-man5:
++	@$(NORMAL_UNINSTALL)
++	@list='$(man5_MANS) $(dist_man5_MANS) $(nodist_man5_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.5*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    5*) ;; \
++	    *) ext='5' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " rm -f '$(DESTDIR)$(man5dir)/$$inst'"; \
++	  rm -f "$(DESTDIR)$(man5dir)/$$inst"; \
++	done
++install-man7: $(man7_MANS) $(man_MANS)
++	@$(NORMAL_INSTALL)
++	test -z "$(man7dir)" || $(mkdir_p) "$(DESTDIR)$(man7dir)"
++	@list='$(man7_MANS) $(dist_man7_MANS) $(nodist_man7_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.7*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
++	  else file=$$i; fi; \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    7*) ;; \
++	    *) ext='7' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man7dir)/$$inst'"; \
++	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man7dir)/$$inst"; \
++	done
++uninstall-man7:
++	@$(NORMAL_UNINSTALL)
++	@list='$(man7_MANS) $(dist_man7_MANS) $(nodist_man7_MANS)'; \
++	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
++	for i in $$l2; do \
++	  case "$$i" in \
++	    *.7*) list="$$list $$i" ;; \
++	  esac; \
++	done; \
++	for i in $$list; do \
++	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
++	  case "$$ext" in \
++	    7*) ;; \
++	    *) ext='7' ;; \
++	  esac; \
++	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
++	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
++	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  echo " rm -f '$(DESTDIR)$(man7dir)/$$inst'"; \
++	  rm -f "$(DESTDIR)$(man7dir)/$$inst"; \
++	done
++
++ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
++	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	mkid -fID $$unique
++tags: TAGS
++
++TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
++		$(TAGS_FILES) $(LISP)
++	tags=; \
++	here=`pwd`; \
++	list='$(SOURCES) $(HEADERS) config.h.in $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	if test -z "$(ETAGS_ARGS)$$tags$$unique"; then :; else \
++	  test -z "$$unique" && unique=$$empty_fix; \
++	  $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
++	    $$tags $$unique; \
++	fi
++ctags: CTAGS
++CTAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
++		$(TAGS_FILES) $(LISP)
++	tags=; \
++	here=`pwd`; \
++	list='$(SOURCES) $(HEADERS) config.h.in $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	test -z "$(CTAGS_ARGS)$$tags$$unique" \
++	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
++	     $$tags $$unique
++
++GTAGS:
++	here=`$(am__cd) $(top_builddir) && pwd` \
++	  && cd $(top_srcdir) \
++	  && gtags -i $(GTAGS_ARGS) $$here
++
++distclean-tags:
++	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
++
++distdir: $(DISTFILES)
++	$(am__remove_distdir)
++	mkdir $(distdir)
++	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
++	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
++	list='$(DISTFILES)'; for file in $$list; do \
++	  case $$file in \
++	    $(srcdir)/*) file=`echo "$$file" | sed "s|^$$srcdirstrip/||"`;; \
++	    $(top_srcdir)/*) file=`echo "$$file" | sed "s|^$$topsrcdirstrip/|$(top_builddir)/|"`;; \
++	  esac; \
++	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
++	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
++	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
++	    dir="/$$dir"; \
++	    $(mkdir_p) "$(distdir)$$dir"; \
++	  else \
++	    dir=''; \
++	  fi; \
++	  if test -d $$d/$$file; then \
++	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
++	      cp -pR $(srcdir)/$$file $(distdir)$$dir || exit 1; \
++	    fi; \
++	    cp -pR $$d/$$file $(distdir)$$dir || exit 1; \
++	  else \
++	    test -f $(distdir)/$$file \
++	    || cp -p $$d/$$file $(distdir)/$$file \
++	    || exit 1; \
++	  fi; \
++	done
++	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
++	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
++	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
++	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
++	|| chmod -R a+r $(distdir)
++dist-gzip: distdir
++	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
++	$(am__remove_distdir)
++
++dist-bzip2: distdir
++	$(AMTAR) chof - $(distdir) | bzip2 -9 -c >$(distdir).tar.bz2
++	$(am__remove_distdir)
++
++dist-tarZ: distdir
++	$(AMTAR) chof - $(distdir) | compress -c >$(distdir).tar.Z
++	$(am__remove_distdir)
++
++dist-shar: distdir
++	shar $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).shar.gz
++	$(am__remove_distdir)
++
++dist-zip: distdir
++	-rm -f $(distdir).zip
++	zip -rq $(distdir).zip $(distdir)
++	$(am__remove_distdir)
++
++dist dist-all: distdir
++	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
++	$(am__remove_distdir)
++
++# This target untars the dist file and tries a VPATH configuration.  Then
++# it guarantees that the distribution is self-contained by making another
++# tarfile.
++distcheck: dist
++	case '$(DIST_ARCHIVES)' in \
++	*.tar.gz*) \
++	  GZIP=$(GZIP_ENV) gunzip -c $(distdir).tar.gz | $(AMTAR) xf - ;;\
++	*.tar.bz2*) \
++	  bunzip2 -c $(distdir).tar.bz2 | $(AMTAR) xf - ;;\
++	*.tar.Z*) \
++	  uncompress -c $(distdir).tar.Z | $(AMTAR) xf - ;;\
++	*.shar.gz*) \
++	  GZIP=$(GZIP_ENV) gunzip -c $(distdir).shar.gz | unshar ;;\
++	*.zip*) \
++	  unzip $(distdir).zip ;;\
++	esac
++	chmod -R a-w $(distdir); chmod a+w $(distdir)
++	mkdir $(distdir)/_build
++	mkdir $(distdir)/_inst
++	chmod a-w $(distdir)
++	dc_install_base=`$(am__cd) $(distdir)/_inst && pwd | sed -e 's,^[^:\\/]:[\\/],/,'` \
++	  && dc_destdir="$${TMPDIR-/tmp}/am-dc-$$$$/" \
++	  && cd $(distdir)/_build \
++	  && ../configure --srcdir=.. --prefix="$$dc_install_base" \
++	    $(DISTCHECK_CONFIGURE_FLAGS) \
++	  && $(MAKE) $(AM_MAKEFLAGS) \
++	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
++	  && $(MAKE) $(AM_MAKEFLAGS) check \
++	  && $(MAKE) $(AM_MAKEFLAGS) install \
++	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
++	  && $(MAKE) $(AM_MAKEFLAGS) uninstall \
++	  && $(MAKE) $(AM_MAKEFLAGS) distuninstallcheck_dir="$$dc_install_base" \
++	        distuninstallcheck \
++	  && chmod -R a-w "$$dc_install_base" \
++	  && ({ \
++	       (cd ../.. && umask 077 && mkdir "$$dc_destdir") \
++	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" install \
++	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" uninstall \
++	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" \
++	            distuninstallcheck_dir="$$dc_destdir" distuninstallcheck; \
++	      } || { rm -rf "$$dc_destdir"; exit 1; }) \
++	  && rm -rf "$$dc_destdir" \
++	  && $(MAKE) $(AM_MAKEFLAGS) dist \
++	  && rm -rf $(DIST_ARCHIVES) \
++	  && $(MAKE) $(AM_MAKEFLAGS) distcleancheck
++	$(am__remove_distdir)
++	@(echo "$(distdir) archives ready for distribution: "; \
++	  list='$(DIST_ARCHIVES)'; for i in $$list; do echo $$i; done) | \
++	  sed -e '1{h;s/./=/g;p;x;}' -e '$${p;x;}'
++distuninstallcheck:
++	@cd $(distuninstallcheck_dir) \
++	&& test `$(distuninstallcheck_listfiles) | wc -l` -le 1 \
++	   || { echo "ERROR: files left after uninstall:" ; \
++	        if test -n "$(DESTDIR)"; then \
++	          echo "  (check DESTDIR support)"; \
++	        fi ; \
++	        $(distuninstallcheck_listfiles) ; \
++	        exit 1; } >&2
++distcleancheck: distclean
++	@if test '$(srcdir)' = . ; then \
++	  echo "ERROR: distcleancheck can only run from a VPATH build" ; \
++	  exit 1 ; \
++	fi
++	@test `$(distcleancheck_listfiles) | wc -l` -eq 0 \
++	  || { echo "ERROR: files left in build directory after distclean:" ; \
++	       $(distcleancheck_listfiles) ; \
++	       exit 1; } >&2
++check-am: all-am
++check: check-am
++all-am: Makefile $(PROGRAMS) $(MANS) config.h
++installdirs:
++	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man7dir)"; do \
++	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
++	done
++install: install-am
++install-exec: install-exec-am
++install-data: install-data-am
++uninstall: uninstall-am
++
++install-am: all-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++
++installcheck: installcheck-am
++install-strip:
++	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
++	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
++	  `test -z '$(STRIP)' || \
++	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
++mostlyclean-generic:
++
++clean-generic:
++
++distclean-generic:
++	-rm -f $(CONFIG_CLEAN_FILES)
++
++maintainer-clean-generic:
++	@echo "This command is intended for maintainers to use"
++	@echo "it deletes files that may require special tools to rebuild."
++clean: clean-am
++
++clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
++
++distclean: distclean-am
++	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
++	-rm -rf ./$(DEPDIR)
++	-rm -f Makefile
++distclean-am: clean-am distclean-compile distclean-generic \
++	distclean-hdr distclean-tags
++
++dvi: dvi-am
++
++dvi-am:
++
++html: html-am
++
++info: info-am
++
++info-am:
++
++install-data-am: install-man
++
++install-exec-am: install-binPROGRAMS
++
++install-info: install-info-am
++
++install-man: install-man1 install-man5 install-man7
++
++installcheck-am:
++
++maintainer-clean: maintainer-clean-am
++	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
++	-rm -rf $(top_srcdir)/autom4te.cache
++	-rm -rf ./$(DEPDIR)
++	-rm -f Makefile
++maintainer-clean-am: distclean-am maintainer-clean-generic
++
++mostlyclean: mostlyclean-am
++
++mostlyclean-am: mostlyclean-compile mostlyclean-generic
++
++pdf: pdf-am
++
++pdf-am:
++
++ps: ps-am
++
++ps-am:
++
++uninstall-am: uninstall-binPROGRAMS uninstall-info-am uninstall-man
++
++uninstall-man: uninstall-man1 uninstall-man5 uninstall-man7
++
++.PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
++	clean-binPROGRAMS clean-generic ctags dist dist-all dist-bzip2 \
++	dist-gzip dist-shar dist-tarZ dist-zip distcheck distclean \
++	distclean-compile distclean-generic distclean-hdr \
++	distclean-tags distcleancheck distdir distuninstallcheck dvi \
++	dvi-am html html-am info info-am install install-am \
++	install-binPROGRAMS install-data install-data-am install-exec \
++	install-exec-am install-info install-info-am install-man \
++	install-man1 install-man5 install-man7 install-strip \
++	installcheck installcheck-am installdirs maintainer-clean \
++	maintainer-clean-generic mostlyclean mostlyclean-compile \
++	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
++	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
++	uninstall-man uninstall-man1 uninstall-man5 uninstall-man7
++
++# Tell versions [3.59,3.63) of GNU make to not export all variables.
++# Otherwise a system limit (for SysV at least) may be exceeded.
++.NOEXPORT:
+--- /dev/null
++++ cvs/Makefile.am
+@@ -0,0 +1,16 @@
++# ACLOCAL_AMFLAGS = -I m4
++AUTOMAKE_OPTIONS = foreign 1.6
++AM_CFLAGS = -I$(top_srcdir)
++
++bin_PROGRAMS = cvs
++cvs_SOURCES = cvs.c add.c annotate.c buf.c checkout.c commit.c diff.c entries.c \
++	      file.c getlog.c history.c hist.c import.c init.c log.c logmsg.c \
++	      proto.c rcs.c rcsnum.c remove.c req.c resp.c root.c server.c \
++	      sock.c status.c tag.c update.c util.c version.c
++cvs_CFLAGS = $(AM_CFLAGS) -DCVS -D_BSD_SOURCE -D_GNU_SOURCE
++cvs_LDADD = $(MD5_LIBS)
++
++man1_MANS = cvs.1
++man5_MANS = cvsrc.5
++man7_MANS = cvsintro.7
++EXTRA_DIST = $(man_MANS)
+--- cvs/rcs.c~linux.patch
++++ cvs/rcs.c
+@@ -25,7 +25,11 @@
+  */
+ 
+ #include <sys/param.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ #include <sys/stat.h>
+ 
+ #include <errno.h>
+--- cvs/rcs.h~linux.patch
++++ cvs/rcs.h
+@@ -28,11 +28,16 @@
+ #define RCS_H
+ 
+ #include <sys/types.h>
+-#include <sys/queue.h>
++#if HAVE_DECL_LIST_FOREACH
++# include <sys/queue.h>
++#else
++# include <bsd-queue.h>
++#endif
+ 
+ #include <time.h>
+ 
+ #include "buf.h"
++#include "config.h"
+ 
+ #define RCS_DIFF_MAXARG   32
+ #define RCS_DIFF_DIV \
+--- cvs/README~linux.patch
++++ cvs/README
+@@ -1,9 +1,6 @@
+ OpenCVS README
+ ==============
+ 
+-This release of OpenCVS is for OpenBSD systems only.
+-Please consult http://www.opencvs.org/ for portable release availability.
+-
+ This is a BSD-licensed equivalent of the popular versioning system
+ CVS.  It is currently in development and thus is not yet suited to replace
+ GNU CVS entirely, so is not yet enabled in /usr/src/usr.bin/Makefile.
+--- cvs/util.c~linux.patch
++++ cvs/util.c
+@@ -28,7 +28,11 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ 
+-#include <md5.h>
++#if HAVE_MD5_H
++# include <md5.h>
++#else
++# include <bsd-md5.h>
++#endif
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>

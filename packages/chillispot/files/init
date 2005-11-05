@@ -1,0 +1,35 @@
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/chilli
+NAME=chilli
+DESC=chillispot
+
+test -f $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC: "
+	start-stop-daemon -S -p /var/run/$NAME.pid -x $DAEMON
+	echo "$NAME."
+	;;
+  stop)
+	echo -n "Stopping $DESC: "
+	start-stop-daemon -K -p /var/run/$NAME.pid -x $DAEMON
+	echo "$NAME."
+	;;
+  restart|force-reload)
+	echo -n "Restarting $DESC: "
+	start-stop-daemon -K -p /var/run/$NAME.pid -x $DAEMON
+	sleep 1
+	start-stop-daemon -S -p /var/run/$NAME.pid -x $DAEMON
+	echo "$NAME."
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

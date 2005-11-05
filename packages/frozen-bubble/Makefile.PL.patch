@@ -1,0 +1,26 @@
+--- frozen-bubble/c_stuff/Makefile.PL.old	2004-06-25 19:51:53.000000000 +0100
++++ frozen_bubble/c_stuff/Makefile.PL	2004-06-25 20:07:43.000000000 +0100
+@@ -16,8 +16,8 @@
+ }
+ EOTEST
+ 	close(CTEST);
+-	$r = system("$Config{cc} -o $fname $fname.c $cflags $libs 2>/dev/null 1>/dev/null");
+-	warn("RUNNING: $Config{cc} -o $fname $fname.c $cflags $libs\n") if $ENV{VERBOSE};
++	$r = system("$ENV{CC} $ENV{CFLAGS} $ENV{LDFLAGS} -o $fname $fname.c $cflags $libs 2>/dev/null 1>/dev/null");
++	warn("RUNNING: $ENV{CC} $ENV{CFLAGS} $ENV{LDFLAGS} -o $fname $fname.c $cflags $libs\n") if $ENV{VERBOSE};
+ 	unlink($fname, "$fname.c");
+ 	return $r == 0;
+ }
+@@ -51,10 +51,10 @@
+ 
+ WriteMakefile(
+     'NAME'         => 'fb_c_stuff',
+-    'LIBS'         => [ chomp_(`sdl-config --libs`) . ' -lSDL_mixer'],
++    'LIBS'         => [ $ENV{LDFLAGS} . " " . chomp_(`sdl-config --libs`) . ' -lSDL_mixer'],
+     'VERSION_FROM' => 'fb_c_stuff.pm', # finds VERSION
+     'OBJECT'       => 'fb_c_stuff.o',
+-    'INC'          => chomp_(`sdl-config --cflags`) . ' -I.',
++    'INC'          => $ENV{CFLAGS} . " " . chomp_(`sdl-config --cflags`) . ' -I.',
+     'OPTIMIZE'     => '-O2 -Wall',
+     'MAKEFILE'     => 'Makefile_c',
+ );

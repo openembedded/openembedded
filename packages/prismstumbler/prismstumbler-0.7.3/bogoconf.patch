@@ -1,0 +1,30 @@
+--- prismstumbler-0.7.3/configure.ac	Wed Mar 10 19:19:56 2004
++++ prismstumbler-0.7.3/configure.ac	Tue Oct 26 23:56:36 2004
+@@ -405,8 +405,7 @@
+         if cd $withval; then withval=`pwd`; cd $owd; fi
+ 	PCAPINC="-I$withval -I$withval/bpf"
+ 	PCAPLIB="-L$withval -lpcap"
+-     elif test -f $withval/include/pcap.h -a \
+-	       -f $withval/include/net/bpf.h; then
++     elif test -f $withval/include/pcap.h; then
+ 	owd=`pwd`
+ 	if cd $withval; then withval=`pwd`; cd $owd; fi
+ 	PCAPINC="-I$withval/include"
+@@ -416,7 +415,7 @@
+ 	   PCAPLIB="-L$withval/lib -lpcap"
+         fi
+      else
+-        AC_ERROR(pcap.h, net/bpf.h, or libpcap.a not found in $withval)
++        AC_ERROR(pcap.h net/bpf.h or libpcap.a not found in $withval)
+      fi
+      ;;
+   esac ],
+@@ -504,7 +503,7 @@
+ 													 [FIND_SQLITE_LIBS($withval, "")],
+ 													 [FIND_SQLITE_LIBS($SQLITEDIRS, "lib")])
+ 
+-AC_ARG_WITH(mysql-includes,[  --with-sqlite-includes=DIR	SQLite includes in DIR],
++AC_ARG_WITH(sqlite-includes,[  --with-sqlite-includes=DIR	SQLite includes in DIR],
+ 													 [FIND_SQLITE_INCS($withval, "")],
+ 													 [FIND_SQLITE_INCS($SQLITEDIRS, "include")])
+ 

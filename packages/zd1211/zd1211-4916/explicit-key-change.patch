@@ -1,0 +1,24 @@
+--- zd1211-4916-r0/src/zd1205.c.korig	2005-03-04 13:45:07.000000000 -0800
++++ zd1211-4916-r0/src/zd1205.c	2005-03-08 10:43:26.304994072 -0800
+@@ -5528,7 +5528,8 @@
+         /* Check if the key is not marked as invalid */
+ 
+         if (!(erq->flags & IW_ENCODE_NOKEY)){
+-            pSetting->EncryKeyId = index;
++            // Only change the current keyid when explicitly asked
++            // pSetting->EncryKeyId = index;
+ 
+ 
+             memcpy(&pSetting->keyVector[index][0], key, pSetting->WepKeyLen);
+--- zd1211-4916-r0/src/zd1211.c.orig	2005-03-08 17:15:24.085747960 -0800
++++ zd1211-4916-r0/src/zd1211.c	2005-03-08 17:05:02.044312632 -0800
+@@ -3423,8 +3423,8 @@
+    //update card setting
+ 
+    if (test_bit(KEVENT_UPDATE_SETTING, &macp->kevent_flags)){
+-      zd_UpdateCardSetting(&macp->cardSetting);
+       clear_bit(KEVENT_UPDATE_SETTING, &macp->kevent_flags);
++      zd_UpdateCardSetting(&macp->cardSetting);
+    }
+ 
+ 

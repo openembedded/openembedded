@@ -1,0 +1,178 @@
+--- mgetty-1.1.30/fax/faxrunqd.in.orig	2003-09-13 11:04:12.000000000 +0000
++++ mgetty-1.1.30-5.1/fax/faxrunqd.in	2003-09-13 11:12:47.000000000 +0000
+@@ -13,6 +13,9 @@
+ #
+ # Change Log:
+ #
++# Debian 1.1.30-5.1 2003/07/20  Andreas Barth <aba@not.so.argh.org>
++# Can specify group per commandline.
++#
+ # $Log: faxrunqd.in,v $
+ # Revision 1.63  2002/11/23 16:52:18  gert
+ # make messages more clear, print warning if running as root
+@@ -45,6 +48,11 @@
+ # a "low prio" job for phone number 123 could be attached to a high prio
+ # job to 123, and thus be sent before a high prio job to 456)
+ #
++# Debian 1.1.28-4 2002/11/27 18:32:23 Wolfgang Sourdeau <was@debian.org>
++# Quit quietly when received signal TERM or HUP since it is expected the
++# user knows what is happening already. The quit message is still written
++# into the logfile.
++#
+ # Revision 1.56  2002/01/04 17:52:42  gert
+ # pass sendfax exit code as 2nd argument to success/failure program
+ #
+@@ -55,6 +63,9 @@
+ # Revision 1.54  2001/12/16 14:26:25  gert
+ # stop queue handling if a file named 'stop' exists
+ #
++# Add a -D option to allow for running in the background as a Daemon
++#       Philip Hands <phil@hands.com>
++#
+ # Revision 1.53  2000/08/06 14:28:37  gert
+ # go from using $fax_spool_out/.last_run to VARRUNDIR/faxqueue_done
+ #
+@@ -129,6 +140,8 @@
+ #
+ #
+ require 5.004;
++
++use Fcntl;
+ use POSIX;
+ use IO::Handle;
+ use Getopt::Std;
+@@ -143,10 +156,10 @@
+ $mail='@MAILER@';
+ 
+ $faxrunq_cf='@CONFDIR@/faxrunq.config';
+-$fax_acct='@FAX_SPOOL@/acct.log';
+-$faxrd_log='@FAX_SPOOL@/faxrunqd.log';
++$fax_acct='/var/log/mgetty/fax/acct.log';
++$faxrd_log='/var/log/mgetty/fax/faxrunqd.log';
+ 
+-$faxrd_pid='@FAX_SPOOL_OUT@/faxrunqd.pid';
++$faxrd_pid='/var/run/mgetty-fax/faxrunqd.pid';
+ $last_run='@FAX_SPOOL_OUT@/faxqueue_done';
+ 
+ $policy_config='';
+@@ -189,8 +202,10 @@
+ $opt_V = 0;					# print version number
+ $opt_l = '';					# ttys to use
+ $opt_u = '';					# user id to setuid() to
+-getopts( 'dvVl:u:' ) || 
+-    die "Valid options: -d (debug), -v (verbose), -l tty<n>, -u uid, -V (version)\n";
++$opt_g = '';					# group id to setgid() to
++$opt_D = 0;					# daemon
++getopts( 'DdvVl:u:g:' ) || 
++    die "Valid options: -D (daemon), -d (debug), -v (verbose), -l tty<n>, -u uid, -g uid, -V (version)\n";
+ 
+ if ( $opt_d ) { $opt_v=1; }
+ 
+@@ -201,32 +216,63 @@
+ mgetty+sendfax by Gert Doering
+ $rcs_id
+ 
+-config file read from '$faxrunq_cf'
++config read from '$faxrunq_cf'
+ 
+ EOF
+     exit 0;
+ }
+ 
++$uid=$>;
++$gid=$);
++
+ if ( $opt_u ne '' )	# set user ID to $opt_u
+ {
+-    my ( $uid, $gid ) = ( getpwnam( $opt_u ) )[2,3];
++    ( $uid, $gid ) = ( ( $opt_u =~ /^[0-9]+$/ )
++			    ? getpwuid( $opt_u )
++			    : getpwnam( $opt_u ) )[2,3];
+ 
+     if ( !defined($uid) || !defined($gid) )
+ 		{ die "$0: no such user: '$opt_u'\n"; }
+ 
+     print "change user ID to '$opt_u' (numeric uid: $uid, gid: $gid)\n"
+ 								if $opt_d;
+-    $( = $) = $gid;
+-    $< = $> = $uid;
+-
+-    if ( $> != $uid || $) != $gid )
+-		{ die "$0: can't set uid to $uid / gid to $gid: $!\n"; }
+ }
++
++if ( $opt_g ne '' )
++    {
++	$gid = ( ( $opt_g =~ /^[0-9]+$/ )
++		   ? getgrgid( $opt_g )
++		   : getgrnam( $opt_g ) )[2];
++	die "$0: no such group: '$opt_g'\n" unless defined ($gid);
++    }
++
++$( = $) = $gid;
++$< = $> = $uid;
++
++if ( $> != $uid || $) != $gid )
++	{ die "$0: can't set uid to $uid / gid to $gid: $!\n"; }
++
+ if ( $> == 0 )		# root check
+ {
+     print STDERR "$0: running with root privileges is not recommended\n";
+ }
+ 
++# fork as a daemon if invoked with -D
++if ( $opt_D ) {
++  $pid = fork ;
++  die "Cannot fork: $!" unless defined $pid ;
++  if (0 == $pid) {
++    # Child process: become leader of a new session, lose STDIN, log STDOUT/ERR
++    POSIX::setsid();
++    umask(022);
++    open(STDIN, "/dev/null") ;
++    open(STDOUT, ">&LOG") ;
++    open(STDERR, ">&LOG") ;
++  } else {
++    exit 0;     # parent process
++  }
++}
++
+ #
+ # startup... write PID file, make sure no other faxrunqd runs
+ #
+@@ -262,7 +308,7 @@
+ 
+ $SIG{USR1} = \&signal_handler_USR1;		# roll log file
+ $roll_log_file_requested = 0;
+-$roll_level=3;					# keep 3 old files around
++$roll_level=7;					# keep 7 old files around
+ 
+ $SIG{USR2} = \&signal_handler_USR2;		# graceful exit
+ $graceful_exit_requested = 0;
+@@ -355,7 +401,7 @@
+ #
+ # open log file
+ #
+-open( LOG, ">>$faxrd_log" ) ||
++sysopen( LOG, "$faxrd_log", O_CREAT | O_APPEND | O_WRONLY, 0640 ) ||
+ 	    die "can't write log file '$faxrd_log'";
+ LOG->autoflush(1);
+ print LOG "\n" . localtime() .": faxrunqd starting, pid=$$\n";
+@@ -552,7 +598,7 @@
+ 	$roll_log_file_requested=0;
+ 
+ 	# start new
+-	open( LOG, ">$faxrd_log" ) ||
++	sysopen( LOG, "$faxrd_log", O_CREAT | O_APPEND | O_WRONLY, 0640 ) ||
+ 		    die "can't re-open log file '$faxrd_log'";
+ 	LOG->autoflush(1);
+ 	print LOG localtime() .": -- new log file started --\n";
+@@ -1639,7 +1685,8 @@
+ {
+ my $sig = shift;
+ 
+-    print "\nfaxrunqd: signal handler: got signal $sig, goodbye...\n";
++    print "\nfaxrunqd: signal handler: got signal $sig, goodbye...\n"
++	if ($sig ne 'TERM' && $sig ne 'HUP' && $sig ne 'USR2');
+     print LOG "\nfaxrunqd: signal handler: got signal $sig, goodbye...\n";
+ 
+     # save tty statistics

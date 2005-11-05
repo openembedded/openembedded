@@ -1,0 +1,11 @@
+--- configure.ac	2005-05-27 16:56:43.219843424 +0200
++++ hildon-libs-0.9.6/configure.ac	2005-05-27 16:57:03.699730008 +0200
+@@ -17,7 +17,7 @@
+ # -pedantic removed due to D-BUS; should be replaced after D-BUS is no
+ # longer broken in this regard...
+ 
+-CFLAGS="$CFLAGS -Wall -ansi -Wmissing-prototypes -Wmissing-declarations -Werror"
++CFLAGS="$CFLAGS -Wall -ansi -Wmissing-prototypes -Wmissing-declarations"
+ 
+ GTK_VERSION=2.6.4
+ 

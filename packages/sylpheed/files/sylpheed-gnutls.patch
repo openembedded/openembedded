@@ -1,0 +1,96 @@
+diff -upr --exclude='*.o' --exclude='*~' --exclude=configure clean/sylpheed-1.0.0-gtk2-20041224/config.h.in sylpheed-1.0.0-gtk2-20041224/config.h.in
+--- clean/sylpheed-1.0.0-gtk2-20041224/config.h.in	2004-12-24 06:17:08.000000000 +0000
++++ sylpheed-1.0.0-gtk2-20041224/config.h.in	2005-01-02 18:22:27.000000000 +0000
+@@ -260,6 +260,9 @@
+ /* Define to 1 if your <sys/time.h> declares `struct tm'. */
+ #undef TM_IN_SYS_TIME
+ 
++/* Define if you use GnuTLS to support SSL. */
++#undef USE_GNUTLS
++
+ /* Define if you use GPGME to support OpenPGP. */
+ #undef USE_GPGME
+ 
+@@ -270,6 +273,9 @@
+ #undef USE_LDAP
+ 
+ /* Define if you use OpenSSL to support SSL. */
++#undef USE_OPENSSL
++
++/* Define if SSL is supported. */
+ #undef USE_SSL
+ 
+ /* Whether to use multithread or not */
+diff -upr --exclude='*.o' --exclude='*~' --exclude=configure clean/sylpheed-1.0.0-gtk2-20041224/configure.in sylpheed-1.0.0-gtk2-20041224/configure.in
+--- clean/sylpheed-1.0.0-gtk2-20041224/configure.in	2004-12-24 05:39:37.000000000 +0000
++++ sylpheed-1.0.0-gtk2-20041224/configure.in	2005-01-02 18:23:11.000000000 +0000
+@@ -265,7 +265,8 @@ if test $ac_cv_enable_ssl = yes; then
+ #include <openssl/opensslv.h>
+ ],	[ return OPENSSL_VERSION_NUMBER; ],
+ 	[ AC_MSG_RESULT(yes)
+-	  AC_DEFINE(USE_SSL, 1, Define if you use OpenSSL to support SSL.) ],
++	  AC_DEFINE(USE_SSL, 1, Define if SSL is supported.)
++	  AC_DEFINE(USE_OPENSSL, 1, Define if you use OpenSSL to support SSL.) ],
+ 	[ AC_MSG_RESULT(no)
+ 	  LIBS="$ac_save_LIBS"
+ 	  ac_cv_enable_ssl=no ])
+@@ -273,6 +274,27 @@ else
+ 	AC_MSG_RESULT(no)
+ fi
+ 
++AC_ARG_ENABLE(gnutls,
++	[  --enable-gnutls         Enable SSL support using GnuTLS [default=no]],
++	[ac_cv_enable_gnutls=$enableval], [ac_cv_enable_gnutls=no])
++AC_MSG_CHECKING([whether to use GnuTLS])
++if test $ac_cv_enable_gnutls = yes; then
++	AC_MSG_RESULT(yes)
++	AC_MSG_CHECKING([if GnuTLS is available])
++	LIBS="$LIBS -lgnutls-openssl"
++	AC_TRY_LINK([
++#include <gnutls/openssl.h>
++],	[ return OPENSSL_VERSION_NUMBER; ],
++	[ AC_MSG_RESULT(yes)
++	  AC_DEFINE(USE_SSL, 1, Define if SSL is supported.)
++	  AC_DEFINE(USE_GNUTLS, 1, Define if you use GnuTLS to support SSL.) ],
++	[ AC_MSG_RESULT(no)
++	  LIBS="$ac_save_LIBS"
++	  ac_cv_enable_gnutls=no ])
++else
++	AC_MSG_RESULT(no)
++fi
++
+ dnl Check for X-Face support
+ AC_ARG_ENABLE(compface,
+ 	[  --disable-compface      Do not use compface (X-Face)],
+@@ -415,6 +437,7 @@ echo "GnuPG         : $ac_cv_enable_gpgm
+ echo "JPilot        : $ac_cv_enable_jpilot"
+ echo "LDAP          : $ac_cv_enable_ldap"
+ echo "OpenSSL       : $ac_cv_enable_ssl"
++echo "GnuTLS        : $ac_cv_enable_gnutls"
+ echo "iconv         : $am_cv_func_iconv"
+ echo "compface      : $ac_cv_enable_compface"
+ echo "IPv6          : $ac_cv_enable_ipv6"
+diff -upr --exclude='*.o' --exclude='*~' --exclude=configure clean/sylpheed-1.0.0-gtk2-20041224/src/ssl.h sylpheed-1.0.0-gtk2-20041224/src/ssl.h
+--- clean/sylpheed-1.0.0-gtk2-20041224/src/ssl.h	2003-09-06 10:26:34.000000000 +0100
++++ sylpheed-1.0.0-gtk2-20041224/src/ssl.h	2005-01-02 18:25:00.000000000 +0000
+@@ -27,11 +27,20 @@
+ #if USE_SSL
+ 
+ #include <glib.h>
++
++#if USE_OPENSSL
+ #include <openssl/crypto.h>
+ #include <openssl/x509.h>
+ #include <openssl/pem.h>
+ #include <openssl/ssl.h>
+ #include <openssl/err.h>
++#else
++#if USE_GNUTLS
++#include <gnutls/openssl.h>
++#else
++#error Must select either GnuTLS or OpenSSL
++#endif
++#endif
+ 
+ #include "socket.h"
+ 

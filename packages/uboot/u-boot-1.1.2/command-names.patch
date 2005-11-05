@@ -1,0 +1,340 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- u-boot-1.1.2/common/cmd_mem.c~command-names
++++ u-boot-1.1.2/common/cmd_mem.c
+@@ -1188,56 +1188,56 @@
+ /**************************************************/
+ #if (CONFIG_COMMANDS & CFG_CMD_MEMORY)
+ U_BOOT_CMD(
+-	md,     3,     1,      do_mem_md,
+-	"md      - memory display\n",
++	memdump,     3,     1,      do_mem_md,
++	"memdump - memory display\n",
+ 	"[.b, .w, .l] address [# of objects]\n    - memory display\n"
+ );
+ 
+ 
+ U_BOOT_CMD(
+-	mm,     2,      1,       do_mem_mm,
+-	"mm      - memory modify (auto-incrementing)\n",
++	memmod,     2,      1,       do_mem_mm,
++	"memmod  - memory modify (auto-incrementing)\n",
+ 	"[.b, .w, .l] address\n" "    - memory modify, auto increment address\n"
+ );
+ 
+ 
+ U_BOOT_CMD(
+-	nm,     2,	    1,     	do_mem_nm,
+-	"nm      - memory modify (constant address)\n",
++	memchg,     2,	    1,     	do_mem_nm,
++	"memchg  - memory modify (constant address)\n",
+ 	"[.b, .w, .l] address\n    - memory modify, read and keep address\n"
+ );
+ 
+ U_BOOT_CMD(
+-	mw,    4,    1,     do_mem_mw,
+-	"mw      - memory write (fill)\n",
++	memfill,    4,    1,     do_mem_mw,
++	"memfill - fill write\n",
+ 	"[.b, .w, .l] address value [count]\n    - write memory\n"
+ );
+ 
+ U_BOOT_CMD(
+-	cp,    4,    1,    do_mem_cp,
+-	"cp      - memory copy\n",
++	memcp,    4,    1,    do_mem_cp,
++	"memcp   - copy memory\n",
+ 	"[.b, .w, .l] source target count\n    - copy memory\n"
+ );
+ 
+ U_BOOT_CMD(
+-	cmp,    4,     1,     do_mem_cmp,
+-	"cmp     - memory compare\n",
++	memcmp,    4,     1,     do_mem_cmp,
++	"memcmp  - compary memory\n",
+ 	"[.b, .w, .l] addr1 addr2 count\n    - compare memory\n"
+ );
+ 
+ #ifndef CONFIG_CRC32_VERIFY
+ 
+ U_BOOT_CMD(
+-	crc32,    4,    1,     do_mem_crc,
+-	"crc32   - checksum calculation\n",
++	memcrc,    4,    1,     do_mem_crc,
++	"memcrc  - checksum memory\n",
+ 	"address count [addr]\n    - compute CRC32 checksum [save at addr]\n"
+ );
+ 
+ #else	/* CONFIG_CRC32_VERIFY */
+ 
+ U_BOOT_CMD(
+-	crc32,    5,    1,     do_mem_crc,
+-	"crc32   - checksum calculation\n",
++	memcrc,    5,    1,     do_mem_crc,
++	"memcrc  - checksum memory\n",
+ 	"address count [addr]\n    - compute CRC32 checksum [save at addr]\n"
+ 	"-v address count crc\n    - verify crc of memory area\n"
+ );
+@@ -1245,31 +1245,31 @@
+ #endif	/* CONFIG_CRC32_VERIFY */
+ 
+ U_BOOT_CMD(
+-	base,    2,    1,     do_mem_base,
+-	"base    - print or set address offset\n",
++	membase,    2,    1,     do_mem_base,
++	"membase - print/set memory offset\n",
+ 	"\n    - print address offset for memory commands\n"
+-	"base off\n    - set address offset for memory commands to 'off'\n"
++	"[offset]\n    - set address offset for memory commands to 'offset'\n"
+ );
+ 
+ U_BOOT_CMD(
+-	loop,    3,    1,    do_mem_loop,
+-	"loop    - infinite loop on address range\n",
++	memloop,    3,    1,    do_mem_loop,
++	"memloop - infinite loop on address range\n",
+ 	"[.b, .w, .l] address number_of_objects\n"
+ 	"    - loop on a set of addresses\n"
+ );
+ 
+ #ifdef CONFIG_LOOPW
+ U_BOOT_CMD(
+-	loopw,    4,    1,    do_mem_loopw,
+-	"loopw   - infinite write loop on address range\n",
++	memloopw,    4,    1,    do_mem_loopw,
++	"memloopw- infinite write loop on address range\n",
+ 	"[.b, .w, .l] address number_of_objects data_to_write\n"
+ 	"    - loop on a set of addresses\n"
+ );
+ #endif /* CONFIG_LOOPW */
+ 
+ U_BOOT_CMD(
+-	mtest,    4,    1,     do_mem_mtest,
+-	"mtest   - simple RAM test\n",
++	memtest,    4,    1,     do_mem_mtest,
++	"memtest - simple RAM test\n",
+ 	"[start [end [pattern]]]\n"
+ 	"    - simple RAM read/write test\n"
+ );
+--- u-boot-1.1.2/common/cmd_flash.c~command-names
++++ u-boot-1.1.2/common/cmd_flash.c
+@@ -507,30 +507,30 @@
+ );
+ 
+ U_BOOT_CMD(
+-	erase,   3,   1,  do_flerase,
+-	"erase   - erase FLASH memory\n",
++	flerase,   3,   1,  do_flerase,
++	"flerase - erase FLASH memory\n",
+ 	"start end\n"
+ 	"    - erase FLASH from addr 'start' to addr 'end'\n"
+-	"erase N:SF[-SL]\n    - erase sectors SF-SL in FLASH bank # N\n"
+-	"erase bank N\n    - erase FLASH bank # N\n"
+-	"erase all\n    - erase all FLASH banks\n"
++	"flerase N:SF[-SL]\n    - erase sectors SF-SL in FLASH bank # N\n"
++	"flerase bank N\n    - erase FLASH bank # N\n"
++	"flerase all\n    - erase all FLASH banks\n"
+ );
+ 
+ U_BOOT_CMD(
+-	protect,  4,  1,   do_protect,
+-	"protect - enable or disable FLASH write protection\n",
++	flprot,  4,  1,   do_protect,
++	"flprot  - enable or disable FLASH write protection\n",
+ 	"on  start end\n"
+ 	"    - protect FLASH from addr 'start' to addr 'end'\n"
+-	"protect on  N:SF[-SL]\n"
++	"flprot on  N:SF[-SL]\n"
+ 	"    - protect sectors SF-SL in FLASH bank # N\n"
+-	"protect on  bank N\n    - protect FLASH bank # N\n"
+-	"protect on  all\n    - protect all FLASH banks\n"
+-	"protect off start end\n"
++	"flprot on  bank N\n    - protect FLASH bank # N\n"
++	"flprot on  all\n    - protect all FLASH banks\n"
++	"flprot off start end\n"
+ 	"    - make FLASH from addr 'start' to addr 'end' writable\n"
+-	"protect off N:SF[-SL]\n"
++	"flprot off N:SF[-SL]\n"
+ 	"    - make sectors SF-SL writable in FLASH bank # N\n"
+-	"protect off bank N\n    - make FLASH bank # N writable\n"
+-	"protect off all\n    - make all FLASH banks writable\n"
++	"flprot off bank N\n    - make FLASH bank # N writable\n"
++	"flprot off all\n    - make all FLASH banks writable\n"
+ );
+ 
+ #endif	/* CFG_CMD_FLASH */
+--- u-boot-1.1.2/common/cmd_bootm.c~command-names
++++ u-boot-1.1.2/common/cmd_bootm.c
+@@ -446,8 +446,8 @@
+ }
+ 
+ U_BOOT_CMD(
+- 	bootm,	CFG_MAXARGS,	1,	do_bootm,
+- 	"bootm   - boot application image from memory\n",
++ 	imgboot, CFG_MAXARGS,	1,	do_bootm,
++ 	"imgboot - boot application image from memory\n",
+  	"[addr [arg ...]]\n    - boot application image stored in memory\n"
+  	"\tpassing arguments 'arg ...'; when booting a Linux kernel,\n"
+  	"\t'arg' can be the address of an initrd image\n"
+@@ -1056,8 +1056,8 @@
+ }
+ 
+ U_BOOT_CMD(
+-	iminfo,	CFG_MAXARGS,	1,	do_iminfo,
+-	"iminfo  - print header information for application image\n",
++	imginfo, CFG_MAXARGS,	1,	do_iminfo,
++	"imginfo  - print header information for application image\n",
+ 	"addr [addr ...]\n"
+ 	"    - print header information for application image starting at\n"
+ 	"      address 'addr' in memory; this includes verification of the\n"
+@@ -1116,8 +1116,8 @@
+ }
+ 
+ U_BOOT_CMD(
+-	imls,	1,		1,	do_imls,
+-	"imls    - list all images found in flash\n",
++	imgls,	1,		1,	do_imls,
++	"imgls    - list all images found in flash\n",
+ 	"\n"
+ 	"    - Prints information about all images found at sector\n"
+ 	"      boundaries in flash.\n"
+--- u-boot-1.1.2/common/cmd_jffs2.c~command-names
++++ u-boot-1.1.2/common/cmd_jffs2.c
+@@ -259,8 +259,8 @@
+ }
+ 
+ U_BOOT_CMD(
+-	chpart,	2,	0,	do_jffs2_chpart,
+-	"chpart\t- change active partition\n",
++	jffspart,	2,	0,	do_jffs2_chpart,
++	"jffspart\t- change active partition\n",
+ 	"    - change active partition\n"
+ );
+ #endif	/* CFG_JFFS_SINGLE_PART */
+@@ -268,22 +268,22 @@
+ /***************************************************/
+ 
+ U_BOOT_CMD(
+-	fsload,	3,	0,	do_jffs2_fsload,
+-	"fsload\t- load binary file from a filesystem image\n",
++	jffsload,	3,	0,	do_jffs2_fsload,
++	"jffsload- load binary file from a filesystem image\n",
+ 	"[ off ] [ filename ]\n"
+ 	"    - load binary file from flash bank\n"
+ 	"      with offset 'off'\n"
+ );
+ 
+ U_BOOT_CMD(
+-	fsinfo,	1,	1,	do_jffs2_fsinfo,
+-	"fsinfo\t- print information about filesystems\n",
++	jffsinfo,	1,	1,	do_jffs2_fsinfo,
++	"jffsinfo- print information about filesystems\n",
+ 	"    - print information about filesystems\n"
+ );
+ 
+ U_BOOT_CMD(
+-	ls,	2,	1,	do_jffs2_ls,
+-	"ls\t- list files in a directory (default /)\n",
++	jffsls,	2,	1,	do_jffs2_ls,
++	"jffsls\t- list files in a directory (default /)\n",
+ 	"[ directory ]\n"
+ 	"    - list files in a directory.\n"
+ );
+--- u-boot-1.1.2/common/cmd_nvedit.c~command-names
++++ u-boot-1.1.2/common/cmd_nvedit.c
+@@ -570,19 +570,19 @@
+ /**************************************************/
+ 
+ U_BOOT_CMD(
+-	printenv, CFG_MAXARGS, 1,	do_printenv,
+-	"printenv- print environment variables\n",
++	env, CFG_MAXARGS, 1,	do_printenv,
++	"env     - print environment variables\n",
+ 	"\n    - print values of all environment variables\n"
+-	"printenv name ...\n"
++	"env name ...\n"
+ 	"    - print value of environment variable 'name'\n"
+ );
+ 
+ U_BOOT_CMD(
+-	setenv, CFG_MAXARGS, 0,	do_setenv,
+-	"setenv  - set environment variables\n",
++	envset, CFG_MAXARGS, 0,	do_setenv,
++	"envset  - set environment variables\n",
+ 	"name value ...\n"
+ 	"    - set environment variable 'name' to 'value ...'\n"
+-	"setenv name\n"
++	"envset name\n"
+ 	"    - delete environment variable 'name'\n"
+ );
+ 
+@@ -590,8 +590,8 @@
+     ((CONFIG_COMMANDS & (CFG_CMD_ENV|CFG_CMD_FLASH)) == \
+       (CFG_CMD_ENV|CFG_CMD_FLASH))
+ U_BOOT_CMD(
+-	saveenv, 1, 0,	do_saveenv,
+-	"saveenv - save environment variables to persistent storage\n",
++	envsave, 1, 0,	do_saveenv,
++	"envsave - save environment variables to persistent storage\n",
+ 	NULL
+ );
+ 
+@@ -600,16 +600,16 @@
+ #if (CONFIG_COMMANDS & CFG_CMD_ASKENV)
+ 
+ U_BOOT_CMD(
+-	askenv,	CFG_MAXARGS,	1,	do_askenv,
+-	"askenv  - get environment variables from stdin\n",
++	envask,	CFG_MAXARGS,	1,	do_askenv,
++	"envask  - get environment variables from stdin\n",
+ 	"name [message] [size]\n"
+ 	"    - get environment variable 'name' from stdin (max 'size' chars)\n"
+-	"askenv name\n"
++	"envask name\n"
+ 	"    - get environment variable 'name' from stdin\n"
+-	"askenv name size\n"
++	"envask name size\n"
+ 	"    - get environment variable 'name' from stdin (max 'size' chars)\n"
+-	"askenv name [message] size\n"
+-	"    - display 'message' string and get environment variable 'name'"
++	"envask name [message] size\n"
++	"    - display 'message' string and get environment variable 'name' "
+ 	"from stdin (max 'size' chars)\n"
+ );
+ #endif	/* CFG_CMD_ASKENV */
+@@ -617,8 +617,8 @@
+ #if (CONFIG_COMMANDS & CFG_CMD_RUN)
+ int do_run (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
+ U_BOOT_CMD(
+-	run,	CFG_MAXARGS,	1,	do_run,
+-	"run     - run commands in an environment variable\n",
++	envrun,	CFG_MAXARGS,	1,	do_run,
++	"envrun  - run commands in an environment variable\n",
+ 	"var [...]\n"
+ 	"    - run the commands in the environment variable(s) 'var'\n"
+ );
+--- u-boot-1.1.2/common/cmd_cache.c~command-names
++++ u-boot-1.1.2/common/cmd_cache.c
+@@ -96,15 +96,15 @@
+ 
+ 
+ U_BOOT_CMD(
+-	icache,   2,   1,     do_icache,
+-	"icache  - enable or disable instruction cache\n",
++	cachei,   2,   1,     do_icache,
++	"cachei  - enable or disable instruction cache\n",
+ 	"[on, off]\n"
+ 	"    - enable or disable instruction cache\n"
+ );
+ 
+ U_BOOT_CMD(
+-	dcache,   2,   1,     do_dcache,
+-	"dcache  - enable or disable data cache\n",
++	cached,   2,   1,     do_dcache,
++	"cached  - enable or disable data cache\n",
+ 	"[on, off]\n"
+ 	"    - enable or disable data (writethrough) cache\n"
+ );

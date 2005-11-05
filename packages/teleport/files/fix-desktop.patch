@@ -1,0 +1,12 @@
+--- teleport-0.33/teleport.desktop      2003-07-06 23:47:14.000000000 +0200
++++ /tmp/teleport.desktop       2005-03-04 17:34:32.193817208 +0100
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Teleport
+ Comment=Move applications between displays
+-Exec=monolaunch -k /usr/share/pixmaps/teleport.png teleport
++Exec=mb-applet-launcher -k /usr/share/pixmaps/teleport.png teleport
+ Type=PanelApp
+ Icon=teleport.png
+ Categories=Panel;Utility;GPE
+

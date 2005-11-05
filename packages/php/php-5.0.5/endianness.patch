@@ -1,0 +1,10 @@
+--- php-5.0.5/Zend/zend_strtod.c~	2005-10-10 19:58:06.000000000 -0700
++++ php-5.0.5/Zend/zend_strtod.c	2005-10-10 20:21:35.000000000 -0700
+@@ -130,6 +130,7 @@
+  * but the word order is big endian.
+  */
+ #define IEEE_BIG_ENDIAN
++#undef IEEE_LITTLE_ENDIAN
+ #endif
+ 
+ #ifdef __vax__

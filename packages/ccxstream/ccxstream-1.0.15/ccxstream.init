@@ -1,0 +1,37 @@
+#! /bin/sh
+
+start() {
+        . /etc/ccxstream.conf
+        if [ "${CHECK}" = "YES" ] ; then
+
+            echo -n "Starting ccXstream : "
+            start-stop-daemon --start --quiet --exec ${BIN} \
+            -- ${PARAMS} -C ${SERVERCOMMENT}
+            status="$?"
+            test ${status} = "0" && echo OK || echo FAILED
+            return ${status}
+        else
+            echo "Please setup /etc/ccxstream.conf before starting ccXstream"
+            return 1
+        fi
+}
+
+stop() {
+        echo -n "Stopping ccXstream : "
+        start-stop-daemon --stop --quiet --pidfile /var/run/ccxstream.pid
+        return $?
+}
+
+case $1 in
+        start)
+                start
+        ;;
+        stop)
+                stop
+        ;;
+        restart)
+                stop
+                start
+        ;;
+esac
+

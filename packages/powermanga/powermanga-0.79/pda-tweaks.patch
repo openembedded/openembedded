@@ -1,0 +1,24 @@
+--- powermanga-0.79/src/main.cpp~pda-tweaks
++++ powermanga-0.79/src/main.cpp
+@@ -211,8 +211,8 @@
+                 { iVerbeux = 1;
+                 }
+                 else
+-                { if(strcmp(_pArguments[_iIndex], "--320") == 0)
+-                  { vmode = 0;
++                { if(strcmp(_pArguments[_iIndex], "--640") == 0)
++                  { vmode = 1;
+                   }
+                   else
+                   { if(strcmp(_pArguments[_iIndex], "--window") == 0)
+--- powermanga-0.79/src/sdl_tlk.cpp~pda-tweaks
++++ powermanga-0.79/src/sdl_tlk.cpp
+@@ -46,7 +46,7 @@
+ unsigned int            iLargeurEcran = 0;                     //largeur de notre fenetre
+ unsigned int            iHauteurEcran = 0;                     //hauteur de notre fenetre
+ unsigned int            iLargeurEcranTotal = 0;                //taille d'une ligne du buffer 'ecran_ram'
+-int                     vmode = 1;                             //0=resolution de 320x200 / 1=640*400 / 2=640*400 (double pixels)
++int                     vmode = 0;                             //0=resolution de 320x200 / 1=640*400 / 2=640*400 (double pixels)
+ 
+ //...............................................................................
+ int                     fullscreen = 1;                        //1=marche en plein ecran

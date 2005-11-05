@@ -1,0 +1,34 @@
+Index: u2nl-1.1/Makefile
+===================================================================
+--- u2nl-1.1.orig/Makefile	2005-03-06 16:32:23.000000000 -0500
++++ u2nl-1.1/Makefile	2005-03-11 02:38:00.454572600 -0500
+@@ -1,10 +1,25 @@
++CC      = gcc
++CFLAGS  = -Wall -g
++LDFLAGS =
++
++DESTDIR =
++prefix  = /usr/local
++bindir  = $(prefix)/bin
++
++INSTALL_BIN = install -m 0755
++INSTALL_DIR = install -d
++
+ all: u2nl
+ 
+ u2nl: u2nl.c
+-	gcc $(CFLAGS) -Wall -g u2nl.c -o u2nl
+-	
++	$(CC) $(CFLAGS) $(LDFLAGS) u2nl.c -o u2nl
++
+ install:
+-	cp u2nl /usr/local/bin
++	$(INSTALL_DIR) $(DESTDIR)$(bindir)
++	$(INSTALL_BIN) u2nl $(DESTDIR)$(bindir)/u2nl
++
++uninstall:
++	-rm -f $(DESTDIR)$(bindir)/u2nl
+ 
+ clean:
+-	rm -fR u2nl
++	-rm -fR u2nl

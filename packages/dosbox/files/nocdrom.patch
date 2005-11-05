@@ -1,0 +1,27 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- dosbox-0.63/src/dos/cdrom.h~nocdrom
++++ dosbox-0.63/src/dos/cdrom.h
+@@ -20,6 +20,19 @@
+ #include "SDL_sound.h"
+ #endif
+ 
++#ifdef C_SDL_NOCDROM
++#define SDL_CDNumDrives(x) (0)
++#define SDL_CDName(x) ((const char *)0)
++#define SDL_CDOpen(x) ((SDL_CD *)0)
++#define SDL_CDPlay(x,y,z) (-1)
++#define SDL_CDResume(x) (-1)
++#define SDL_CDPause(x) (-1)
++#define SDL_CDStop(x) (-1)
++#define SDL_CDEject(x) (-1)
++#define SDL_CDClose(x) ((void)0)
++#define SDL_CDStatus(x) (-1)
++#endif
++
+ #define RAW_SECTOR_SIZE		2352
+ #define COOKED_SECTOR_SIZE	2048
+ 

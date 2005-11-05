@@ -1,0 +1,140 @@
+diff -Nur c3000_pre/linux/arch/cris/drivers/ds1302.c c3000_test/linux/arch/cris/drivers/ds1302.c
+--- c3000_pre/linux/arch/cris/drivers/ds1302.c	2004-08-21 09:48:08.000000000 +0900
++++ c3000_test/linux/arch/cris/drivers/ds1302.c	2004-12-13 23:30:00.000000000 +0900
+@@ -315,6 +315,7 @@
+ 		{
+ 			struct rtc_time rtc_tm;
+ 						
++			memset(&rtc_tm, 0, sizeof (struct rtc_time));
+ 			get_rtc_time(&rtc_tm);						
+ 			if (copy_to_user((struct rtc_time*)arg, &rtc_tm, sizeof(struct rtc_time)))
+ 				return -EFAULT;	
+diff -Nur c3000_pre/linux/arch/m68k/bvme6000/rtc.c c3000_test/linux/arch/m68k/bvme6000/rtc.c
+--- c3000_pre/linux/arch/m68k/bvme6000/rtc.c	2004-08-21 09:48:10.000000000 +0900
++++ c3000_test/linux/arch/m68k/bvme6000/rtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -54,6 +54,7 @@
+ 		/* Ensure clock and real-time-mode-register are accessible */
+ 		msr = rtc->msr & 0xc0;
+ 		rtc->msr = 0x40;
++		memset(&wtime, 0, sizeof(struct rtc_time));
+ 		do {
+ 			wtime.tm_sec =  BCD2BIN(rtc->bcd_sec);
+ 			wtime.tm_min =  BCD2BIN(rtc->bcd_min);
+diff -Nur c3000_pre/linux/arch/m68k/mvme16x/rtc.c c3000_test/linux/arch/m68k/mvme16x/rtc.c
+--- c3000_pre/linux/arch/m68k/mvme16x/rtc.c	2004-08-21 09:48:11.000000000 +0900
++++ c3000_test/linux/arch/m68k/mvme16x/rtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -52,6 +52,7 @@
+ 		cli();
+ 		/* Ensure clock and real-time-mode-register are accessible */
+ 		rtc->ctrl = RTC_READ;
++		memset(&wtime, 0, sizeof(struct rtc_time));
+ 		wtime.tm_sec =  BCD2BIN(rtc->bcd_sec);
+ 		wtime.tm_min =  BCD2BIN(rtc->bcd_min);
+ 		wtime.tm_hour = BCD2BIN(rtc->bcd_hr);
+diff -Nur c3000_pre/linux/drivers/char/efirtc.c c3000_test/linux/drivers/char/efirtc.c
+--- c3000_pre/linux/drivers/char/efirtc.c	2004-08-21 09:48:25.000000000 +0900
++++ c3000_test/linux/drivers/char/efirtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -118,6 +118,7 @@
+ static void
+ convert_from_efi_time(efi_time_t *eft, struct rtc_time *wtime)
+ {
++	memset(wtime, 0, sizeof(struct rtc_time));
+ 	wtime->tm_sec  = eft->second;
+ 	wtime->tm_min  = eft->minute;
+ 	wtime->tm_hour = eft->hour;
+diff -Nur c3000_pre/linux/drivers/char/rtc.c c3000_test/linux/drivers/char/rtc.c
+--- c3000_pre/linux/drivers/char/rtc.c	2004-08-21 09:48:25.000000000 +0900
++++ c3000_test/linux/drivers/char/rtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -375,7 +375,7 @@
+ 		 * means "don't care" or "match all". Only the tm_hour,
+ 		 * tm_min, and tm_sec values are filled in.
+ 		 */
+-
++		memset(&wtime, 0, sizeof(struct rtc_time));
+ 		get_rtc_alm_time(&wtime);
+ 		break; 
+ 	}
+@@ -423,6 +423,7 @@
+ 	}
+ 	case RTC_RD_TIME:	/* Read the time/date from RTC	*/
+ 	{
++		memset(&wtime, 0, sizeof(struct rtc_time));
+ 		get_rtc_time(&wtime);
+ 		break;
+ 	}
+diff -Nur c3000_pre/linux/drivers/macintosh/rtc.c c3000_test/linux/drivers/macintosh/rtc.c
+--- c3000_pre/linux/drivers/macintosh/rtc.c	2004-08-21 09:48:35.000000000 +0900
++++ c3000_test/linux/drivers/macintosh/rtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -64,6 +64,7 @@
+ 	case RTC_RD_TIME:
+ 		if (ppc_md.get_rtc_time)
+ 		{
++			memset(&rtc_tm, 0, sizeof(struct rtc_time));
+ 			get_rtc_time(&rtc_tm);
+ 
+ 			if (copy_to_user((struct rtc_time*)arg, &rtc_tm, sizeof(struct rtc_time)))
+diff -Nur c3000_pre/linux/drivers/sbus/char/rtc.c c3000_test/linux/drivers/sbus/char/rtc.c
+--- c3000_pre/linux/drivers/sbus/char/rtc.c	2004-08-21 09:48:39.000000000 +0900
++++ c3000_test/linux/drivers/sbus/char/rtc.c	2004-12-13 23:30:00.000000000 +0900
+@@ -89,6 +89,7 @@
+ 	switch (cmd)
+ 	{
+ 	case RTCGET:
++		memset(&rtc_tm, 0, sizeof(struct rtc_time));
+ 		get_rtc_time(&rtc_tm);
+ 
+ 		if (copy_to_user((struct rtc_time*)arg, &rtc_tm, sizeof(struct rtc_time)))
+diff -Nur c3000_pre/linux/mm/mmap.c c3000_test/linux/mm/mmap.c
+--- c3000_pre/linux/mm/mmap.c	2004-08-21 09:49:15.000000000 +0900
++++ c3000_test/linux/mm/mmap.c	2004-12-13 23:27:31.000000000 +0900
+@@ -1045,6 +1045,9 @@
+ 	if (!len)
+ 		return addr;
+ 
++	if ((addr + len) > TASK_SIZE || (addr + len) < addr)
++	        return -EINVAL;
++
+ 	/*
+ 	 * mlock MCL_FUTURE?
+ 	 */
+diff -Nur c3000_pre/linux/mm/mremap.c c3000_test/linux/mm/mremap.c
+--- c3000_pre/linux/mm/mremap.c	2004-08-21 09:49:15.000000000 +0900
++++ c3000_test/linux/mm/mremap.c	2004-12-13 23:30:18.000000000 +0900
+@@ -242,6 +242,13 @@
+ 
+ 		if (new_len > TASK_SIZE || new_addr > TASK_SIZE - new_len)
+ 			goto out;
++		/*
++		 * Allow new_len == 0 only if new_addr == addr
++		 * to preserve truncation in place (that was working
++		 * safe and some app may depend on it).
++		 */
++		if (unlikely(!new_len && new_addr != addr))
++			goto out;
+ 
+ 		/* Check if the location we're moving into overlaps the
+ 		 * old location at all, and fail if it does.
+@@ -252,16 +259,20 @@
+ 		if ((addr <= new_addr) && (addr+old_len) > new_addr)
+ 			goto out;
+ 
+-		do_munmap(current->mm, new_addr, new_len);
++		ret = do_munmap(current->mm, new_addr, new_len);
++		if (ret && new_len)
++		        goto out;
+ 	}
+ 
+ 	/*
+ 	 * Always allow a shrinking remap: that just unmaps
+ 	 * the unnecessary pages..
+ 	 */
+-	ret = addr;
+ 	if (old_len >= new_len) {
+-		do_munmap(current->mm, addr+new_len, old_len - new_len);
++		ret = do_munmap(current->mm, addr+new_len, old_len - new_len);
++		if (ret && old_len != new_len)
++                       goto out;
++		ret = addr;
+ 		if (!(flags & MREMAP_FIXED) || (new_addr == addr))
+ 			goto out;
+ 	}

@@ -1,0 +1,24 @@
+diff -urN xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro xmms-embedded/xmms/Input/mplayer/mplayer.pro
+--- xmms-embedded.orig/xmms/Input/mplayer/mplayer.pro	2003-04-01 12:55:53.000000000 -0500
++++ xmms-embedded/xmms/Input/mplayer/mplayer.pro	2004-03-28 10:39:36.000000000 -0500
+@@ -4,7 +4,7 @@
+ HEADERS = wav.h
+ SOURCES = wav.c 
+ 
+-INCLUDEPATH = . ../../include ../.. $(INC_PATH)
++INCLUDEPATH = . ../../include ../..
+ LIBS = $(SUB_LIBS) -lglib -lm -ldl 
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 
+diff -urN xmms-embedded.orig/xmms/Output/OSS/OSS.pro xmms-embedded/xmms/Output/OSS/OSS.pro
+--- xmms-embedded.orig/xmms/Output/OSS/OSS.pro	2003-04-01 12:55:54.000000000 -0500
++++ xmms-embedded/xmms/Output/OSS/OSS.pro	2004-03-28 10:39:20.000000000 -0500
+@@ -10,7 +10,7 @@
+ mixer.c \
+ OSS.c
+ 
+-INCLUDEPATH = . ../../include ../.. $(INC_PATH)
++INCLUDEPATH = . ../../include ../..
+ LIBS = $(SUB_LIBS) -lglib -lm -ldl
+ TMAKE_CFLAGS = -O2 -Wpointer-arith -finline-functions -ffast-math -funroll-all-loops -DHAVE_CONFIG_H
+ TMAKE_LFLAGS = 

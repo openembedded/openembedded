@@ -1,0 +1,27 @@
+--- konqueror-embedded-snapshot-20030705/konq-embed/dropin/kio/slavebase.cpp.old	2002-11-17 15:55:22.000000000 +0100
++++ konqueror-embedded-snapshot-20030705/konq-embed/dropin/kio/slavebase.cpp	2004-08-23 20:47:06.000000000 +0200
+@@ -398,8 +398,8 @@
+ 
+     if ( m_config.find( key ) != m_config.end() )
+         return true;
+-
+-    return false;
++	
++    return key == QString::fromLatin1("UserAgent");
+ }
+ 
+ QString SlaveBase::metaData( const QString &key ) const
+@@ -410,7 +410,12 @@
+     {
+         it = m_config.find( key );
+ 
+-        if ( it == m_config.end() )
++	/*
++	 * special case in hasMetaData and metaData
++	 */
++        if ( it == m_config.end() && key == QString::fromLatin1("UserAgent") )
++	    return KProtocolManager::defaultUserAgent("me");
++	else
+             return QString::null;
+     }
+ 

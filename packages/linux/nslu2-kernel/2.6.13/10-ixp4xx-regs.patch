@@ -1,0 +1,11 @@
+--- linux-2.6.11/.pc/2.6.patch/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h	2005-03-01 23:37:49.000000000 -0800
++++ linux-2.6.11/include/asm-arm/arch-ixp4xx/ixp4xx-regs.h	2005-06-17 17:51:32.569981939 -0700
+@@ -52,7 +52,7 @@
+  * Expansion BUS Configuration registers
+  */
+ #define IXP4XX_EXP_CFG_BASE_PHYS	(0xC4000000)
+-#define IXP4XX_EXP_CFG_BASE_VIRT	(0xFFBFD000)
++#define IXP4XX_EXP_CFG_BASE_VIRT	(0xFFBFE000)
+ #define IXP4XX_EXP_CFG_REGION_SIZE	(0x00001000)
+ 
+ /*

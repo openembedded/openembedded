@@ -1,0 +1,29 @@
+--- openntpd-3.7p1/Makefile.in.original	2005-07-02 06:08:47.795870784 +0200
++++ openntpd-3.7p1/Makefile.in	2005-07-02 06:15:34.768001616 +0200
+@@ -78,26 +78,6 @@
+ 	else \
+ 		echo "$(DESTDIR)$(sysconfdir)/ntpd.conf already exists, install will not overwrite"; \
+ 	fi
+-	@if [ ! -d $(DESTDIR)$(PRIVSEP_PATH) ]; then \
+-		mkdir -p $(DESTDIR)$(PRIVSEP_PATH) ;\
+-		chown 0 $(DESTDIR)$(PRIVSEP_PATH) ; \
+-		chgrp 0 $(DESTDIR)$(PRIVSEP_PATH) ; \
+-		chmod 0755 $(DESTDIR)$(PRIVSEP_PATH) ; \
+-	fi
+-	@if grep "$(PRIVSEP_USER):" /etc/group >/dev/null; then \
+-	  : ;\
+-	else \
+-	  echo "Please create a dedicated group for ntpd." ;\
+-	  echo "This is system-dependant, possibly:" ;\
+-	  echo "# groupadd $(PRIVSEP_USER)" ;\
+-	fi
+-	@if grep "$(PRIVSEP_USER):" /etc/passwd >/dev/null; then \
+-	  : ;\
+-	else \
+-	  echo "Please create a dedicated user for ntpd and ensure it can" ;\
+-	  echo "not be used to log in.  This is system-dependant, possibly:" ;\
+-	  echo "# useradd -g $(PRIVSEP_USER) -s /sbin/nologin -d $(PRIVSEP_PATH) -c 'OpenNTP daemon' $(PRIVSEP_USER)" ;\
+-	fi
+ 
+ diff:
+ 	-diff -x CVS -x Makefile -ru /usr/src/usr.sbin/ntpd ./ | \

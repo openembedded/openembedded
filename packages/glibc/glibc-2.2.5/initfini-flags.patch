@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- glibc-2.2.5/csu/Makefile~glibc-2.3.2-initfini
++++ glibc-2.2.5/csu/Makefile
+@@ -92,7 +92,7 @@
+ $(objpfx)crt%.o: $(objpfx)crt%.S $(objpfx)defs.h
+ 	$(compile.S) -g0 $(ASFLAGS-.os) -o $@
+ 
+-CFLAGS-initfini.s = -g0 -fPIC -fno-inline-functions
++CFLAGS-initfini.s = -O1 -g0 -fPIC -fno-inline-functions
+ 
+ vpath initfini.c $(full_config_sysdirs)
+ 

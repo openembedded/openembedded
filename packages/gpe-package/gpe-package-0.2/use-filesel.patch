@@ -1,0 +1,51 @@
+diff -urNd ../gpe-package-0.2-r0/gpe-package-0.2/Makefile gpe-package-0.2/Makefile
+--- ../gpe-package-0.2-r0/gpe-package-0.2/Makefile	2004-10-20 09:37:58 +01:00
++++ gpe-package-0.2/Makefile	2004-12-24 20:57:02 +00:00
+@@ -18,7 +18,7 @@
+ BUILD = build
+ endif
+ 
+-MEMBERS  = main interface packages filechooser feededit
++MEMBERS  = main interface packages filesel feededit
+ 
+ ifeq ($(DEBUG),yes)
+ CFLAGS += -g -DDEBUG
+diff -urNd ../gpe-package-0.2-r0/gpe-package-0.2/filesel.c gpe-package-0.2/filesel.c
+--- ../gpe-package-0.2-r0/gpe-package-0.2/filesel.c	2003-11-28 23:50:10 +00:00
++++ gpe-package-0.2/filesel.c	2004-12-24 21:14:38 +00:00
+@@ -81,20 +81,18 @@
+ }
+ 
+ 
+-void
++/*void
+ ask_user_a_file (char *path, char *prompt,
+ 		 void (*File_Selected) (char *filename, gpointer data),
+-		 void (*Cancel) (gpointer data), gpointer data)
++		 void (*Cancel) (gpointer data), gpointer data)*/
++int package_choose(GtkWidget *parent, void (*File_Selected) (char *filename, gpointer data))
+ {
+ 	char buf[1024];
+ 	char *ret = getcwd (buf, 1024);
+ 	
+-	if (path)		// this is a hack, we're all waiting a gtk_file_selection_change_directory().. (TODO)
+-		chdir (path);
+ 	{
+ 		GtkWidget *fileselection1 =
+-			gtk_file_selection_new (prompt ? prompt :
+-						_("Select File"));
++			gtk_file_selection_new (_("Choose packages"));
+ 		GtkWidget *ok_button1 =
+ 			GTK_FILE_SELECTION (fileselection1)->ok_button;
+ 		GtkWidget *cancel_button1 =
+@@ -110,8 +108,8 @@
+ 			chdir (buf);
+ 		s->fs = fileselection1;
+ 		s->File_Selected = File_Selected;
+-		s->Cancel = Cancel;
+-		s->data = data;
++		s->Cancel = NULL;
++		s->data = NULL;
+ 
+ 		GTK_WINDOW (fileselection1)->type = GTK_WINDOW_TOPLEVEL;
+ 

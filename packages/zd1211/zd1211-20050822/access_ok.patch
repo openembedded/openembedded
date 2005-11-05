@@ -1,0 +1,11 @@
+--- zd1211/src/zd1205.c.orig	2005-10-06 03:30:27.200837520 +0200
++++ zd1211/src/zd1205.c	2005-10-06 03:29:37.176442384 +0200
+@@ -4434,7 +4434,7 @@
+ 				{ SIOCIWFIRSTPRIV + 0xD, 0, 0, "save_conf" },
+  			};
+ 
+-			err = verify_area(VERIFY_WRITE, wrq->u.data.pointer, sizeof(privtab));
++			err = access_ok(VERIFY_WRITE, wrq->u.data.pointer, sizeof(privtab));
+ 			if (err)
+ 				break;
+ 

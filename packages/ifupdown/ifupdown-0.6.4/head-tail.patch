@@ -1,0 +1,14 @@
+--- ifupdown-0.6.4/Makefile~	2000-11-18 07:12:01.000000000 +0000
++++ ifupdown-0.6.4/Makefile	2004-04-24 11:06:58.000000000 +0100
+@@ -46,9 +46,9 @@
+ 	LINE=$$(grep -n '^##ADDRESSFAM##$$' $< | sed 's/:.*//g'); \
+ 	WC=`wc -l < $<`;                                          \
+ 	(                                                         \
+-	  head -$$(($$LINE - 1)) $<;                              \
++	  head -n $$(($$LINE - 1)) $<;                              \
+ 	  cat $(MAN);                                             \
+-	  tail -$$(($$WC - $$LINE)) $<;                           \
++	  tail -n $$(($$WC - $$LINE)) $<;                           \
+ 	) > $@
+ 
+ ifdown.8: ifup.8

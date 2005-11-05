@@ -1,0 +1,13 @@
+--- zeroconf-0.6.1/zeroconf.sh.orig	2005-08-27 21:25:07 +0200
++++ zeroconf-0.6.1/zeroconf.sh	2005-08-27 21:26:21 +0200
+@@ -30,7 +30,9 @@
+ 
+ remove_linklocal_addrs() 
+ {
+-    ip addr show $IFACE | grep "inet.*169.254" | cut -d" " -f6 | xargs --replace -n 1 ip addr del {} dev $IFACE
++    for IP in `ip addr show $IFACE | grep "inet.*169.254" | cut -d" " -f6`; do
++	ip addr delete $IP dev $IFACE
++    done
+ }
+ 
+ case $PHASE in

@@ -1,0 +1,13 @@
+diff -uNr konq.orig/konq-embed/kdesrc/kio/http/http.cc konqueror-embedded-snapshot-20030705/konq-embed/kdesrc/kio/http/http.cc
+--- konq.orig/konq-embed/kdesrc/kio/http/http.cc	2005-01-26 15:23:13.357226175 +0100
++++ konqueror-embedded-snapshot-20030705/konq-embed/kdesrc/kio/http/http.cc	2005-01-26 15:24:15.887127980 +0100
+@@ -203,5 +203,8 @@
+   m_bUseCookiejar = config()->readBoolEntry("Cookies", true);
+   m_bUseCache = config()->readBoolEntry("UseCache", true);
+-  m_strCacheDir = config()->readEntry("CacheDir", "/tmp/");
++  m_strCacheDir = config()->readEntry("CacheDir", "/tmp/konq/");
++  if(m_strCacheDir.isEmpty() || m_strCacheDir == "/")
++    m_strCacheDir = "/tmp/konq/";
++  mkdir(m_strCacheDir.latin1(), 0777);
+   m_maxCacheAge = config()->readNumEntry("MaxCacheAge");
+   m_request.window = config()->readEntry("window-id");

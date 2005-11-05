@@ -1,0 +1,19 @@
+--- linux-2.6.12/drivers/char/random.c~	2005-05-14 16:42:24.000000000 -0400
++++ linux-2.6.12/drivers/char/random.c	2005-05-14 16:42:46.000000000 -0400
+@@ -646,6 +646,7 @@ extern void add_input_randomness(unsigne
+ 	add_timer_randomness(&input_timer_state,
+ 			     (type << 4) ^ code ^ (code >> 4) ^ value);
+ }
++EXPORT_SYMBOL_GPL(add_input_randomness);
+ 
+ void add_interrupt_randomness(int irq)
+ {
+--- linux-2.6.12/lib/kobject_uevent.c~	2005-05-14 16:45:13.000000000 -0400
++++ linux-2.6.12/lib/kobject_uevent.c	2005-05-14 16:45:27.000000000 -0400
+@@ -178,6 +178,7 @@ static inline int send_uevent(const char
+ 
+ #ifdef CONFIG_HOTPLUG
+ char hotplug_path[HOTPLUG_PATH_LEN] = "/sbin/hotplug";
++EXPORT_SYMBOL_GPL(hotplug_path);
+ u64 hotplug_seqnum;
+ static DEFINE_SPINLOCK(sequence_lock);

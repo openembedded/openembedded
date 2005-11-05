@@ -1,0 +1,37 @@
+--- skippy-xd-0.5.0/Makefile.old	2005-04-29 03:42:33 +01:00
++++ skippy-xd-0.5.0/Makefile	2005-04-29 03:45:21 +01:00
+@@ -1,17 +1,17 @@
+-PREFIX = /usr/local
+-BINDIR = ${PREFIX}/bin
++#PREFIX = /usr
++#BINDIR = ${PREFIX}/bin
+ 
+-X11PREFIX = /usr/X11R6
++#X11PREFIX = /usr/X11R6
+ 
+-CFLAGS += -I${X11PREFIX}/include `pkg-config xft xrender xcomposite xdamage xfixes --cflags` -g -pedantic -Wall
+-LDFLAGS += -L${X11PREFIX}/lib -lX11 -lm `pkg-config xft xrender xcomposite xdamage xfixes --libs`
++CFLAGS += `${PKG_CONFIG} xft xrender xcomposite xdamage xfixes --cflags` -Wall
++LDFLAGS += -lX11 -lm `${PKG_CONFIG} xft xrender xcomposite xdamage xfixes --libs`
+ 
+ # Disable post-processing effects
+-# CFLAGS += -DNOEFFECTS
++CFLAGS += -DNOEFFECTS
+ 
+ # Comment these out to disable Xinerama support
+-CFLAGS += -DXINERAMA
+-LDFLAGS += -lXext -lXinerama
++#CFLAGS += -DXINERAMA
++#LDFLAGS += -lXext -lXinerama
+ 
+ # Uncomment this for Xinerama debugging
+ #CFLAGS += -DDEBUG
+@@ -24,7 +24,7 @@
+ all: skippy-xd${EXESUFFIX}
+ 
+ skippy-xd${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
+-	gcc ${CFLAGS} -o skippy-xd${EXESUFFIX} ${SOURCES} ${LDFLAGS}
++	${CC} ${CFLAGS} -o skippy-xd${EXESUFFIX} ${SOURCES} ${LDFLAGS}
+ 
+ clean:
+ 	rm -f skippy-xd${EXESUFFIX}

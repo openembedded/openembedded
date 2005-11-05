@@ -1,0 +1,125 @@
+--- linux-2.6.13/.pc/55-nslu2-rtc.patch/arch/arm/mach-ixp4xx/Makefile	2005-10-26 15:19:43.171472071 -0700
++++ linux-2.6.13/arch/arm/mach-ixp4xx/Makefile	2005-10-26 15:23:52.923187955 -0700
+@@ -8,5 +8,5 @@ obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pc
+ obj-$(CONFIG_MACH_IXDPG425)	+= ixdpg425-pci.o coyote-setup.o
+ obj-$(CONFIG_ARCH_ADI_COYOTE)	+= coyote-pci.o coyote-setup.o
+ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
+-obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
++obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o nslu2-rtc.o
+ 
+--- linux-2.6.13/.pc/55-nslu2-rtc.patch/arch/arm/mach-ixp4xx/nslu2-rtc.c	2005-10-26 15:19:43.443489188 -0700
++++ linux-2.6.13/arch/arm/mach-ixp4xx/nslu2-rtc.c	2005-10-26 15:23:52.923187955 -0700
+@@ -0,0 +1,113 @@
++/*
++ * arch/arm/mach-ixp4xx/nslu2-rtc.c
++ *
++ * NSLU2 RTC driver
++ *
++ * Copyright (C) 2005 Tower Technologies
++ *
++ * based on x1205-rtc.c  
++ *  Copyright (C) 2004 Karen Spearel
++ *
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Maintainers: http://www.nslu2-linux.org/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/time.h>
++#include <linux/rtc.h>
++#include <linux/init.h>
++
++#include <linux/x1205.h>
++
++#include <asm/rtc.h>
++#include <asm/mach-types.h>
++
++extern int (*set_rtc)(void);
++
++static int nslu2_set_rtc(void)
++{
++	struct rtc_time new_tm, old_tm;
++	unsigned long cur_secs = xtime.tv_sec;
++
++	if (x1205_do_command(X1205_CMD_GETDATETIME, &old_tm))
++		return 0;
++
++	/* FIXME      xtime.tv_nsec = old_tm.tm_sec * 10000000; */
++	new_tm.tm_sec  = cur_secs % 60;
++	cur_secs /= 60;
++	new_tm.tm_min  = cur_secs % 60;
++	cur_secs /= 60;
++	new_tm.tm_hour = cur_secs % 24;
++
++       /*
++	* avoid writing when we're going to change the day
++	* of the month.  We will retry in the next minute.
++	* This basically means that if the RTC must not drift
++	* by more than 1 minute in 11 minutes.
++	*/
++	if ((old_tm.tm_hour == 23 && old_tm.tm_min == 59) ||
++	    (new_tm.tm_hour == 23 && new_tm.tm_min == 59))
++		return 1;
++
++	return x1205_do_command(X1205_CMD_SETTIME, &new_tm);
++}
++
++static int rtc_read_alarm(struct rtc_wkalrm *alrm)
++{
++	return x1205_do_command(X1205_CMD_GETALARM, &alrm->time);
++}
++
++static int rtc_set_alarm(struct rtc_wkalrm *alrm)
++{
++	return x1205_do_command(X1205_CMD_SETALARM, &alrm->time);
++}
++
++static int rtc_read_time(struct rtc_time *tm)
++{
++	return x1205_do_command(X1205_CMD_GETDATETIME, tm);
++}
++
++static int rtc_set_time(struct rtc_time *tm)
++{
++	return x1205_do_command(X1205_CMD_SETDATETIME, tm);
++}
++
++static struct rtc_ops rtc_ops = {
++	.owner		= THIS_MODULE,
++	.read_time	= rtc_read_time,
++	.set_time	= rtc_set_time,
++	.read_alarm	= rtc_read_alarm,
++	.set_alarm	= rtc_set_alarm,
++};
++
++static int __init nslu2_rtc_init(void)
++{
++	int ret;
++
++	if (!(machine_is_nslu2()))
++		return 0;
++
++	printk(KERN_INFO "NSLU2: rtc\n");
++
++	if ((ret = register_rtc(&rtc_ops)) != 0)
++		return ret;
++
++	set_rtc = nslu2_set_rtc;
++
++	return 0;
++}
++
++static void __exit nslu2_rtc_exit(void)
++{
++	set_rtc = NULL;
++
++	unregister_rtc(&rtc_ops);
++}
++
++module_init(nslu2_rtc_init);
++module_exit(nslu2_rtc_exit);

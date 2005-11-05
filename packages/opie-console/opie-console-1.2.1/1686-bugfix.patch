@@ -1,0 +1,146 @@
+Index: emulation_handler.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/apps/opie-console/emulation_handler.cpp,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -u -u -r1.25 -r1.26
+--- opie-console/emulation_handler.cpp	11 Jun 2005 12:22:32 -0000	1.25
++++ opie-console/emulation_handler.cpp	12 Oct 2005 21:05:47 -0000	1.26
+@@ -250,3 +250,6 @@
+   m_teWid->setWrapAt(columns);
+ }
+ 
++void EmulationHandler::setScrollbarLocation(int index) {
++  m_teWid->setScrollbarLocation(index);
++}
+Index: emulation_handler.h
+===================================================================
+RCS file: /cvs/opie/noncore/apps/opie-console/emulation_handler.h,v
+retrieving revision 1.8
+retrieving revision 1.9
+diff -u -u -r1.8 -r1.9
+--- opie-console/emulation_handler.h	8 Oct 2004 20:03:40 -0000	1.8
++++ opie-console/emulation_handler.h	12 Oct 2005 21:05:47 -0000	1.9
+@@ -83,6 +83,7 @@
+ 
+ 	/* Propagate change to widget */
+ 	void setWrap(int columns);
++	void setScrollbarLocation(int index);
+ signals:
+     void send( const QByteArray& );
+     void changeSize(int rows, int cols );
+Index: mainwindow.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/apps/opie-console/mainwindow.cpp,v
+retrieving revision 1.94
+retrieving revision 1.95
+diff -u -u -r1.94 -r1.95
+--- opie-console/mainwindow.cpp	16 May 2005 18:56:02 -0000	1.94
++++ opie-console/mainwindow.cpp	12 Oct 2005 21:05:47 -0000	1.95
+@@ -69,6 +69,7 @@
+     m_scripts = new QPopupMenu( this );
+     m_sessionsPop= new QPopupMenu( this );
+     m_scriptsPop = new QPopupMenu( this );
++    m_scrollbar = new QPopupMenu( this );
+ 
+     /* add a toolbar for icons */
+     m_icons = new QToolBar(this);
+@@ -164,6 +165,17 @@
+     connect( m_fullscreen, SIGNAL( activated() ),
+              this,  SLOT( slotFullscreen() ) );
+ 
++	/*
++	 * scrollbar
++	 */
++    sm_none = m_scrollbar->insertItem(tr( "None" ));
++    sm_left = m_scrollbar->insertItem(tr( "Left" ));
++    sm_right = m_scrollbar->insertItem(tr( "Right" ));
++
++    m_console->insertItem(tr("Scrollbar"), m_scrollbar, -1, 0);
++    connect( m_scrollbar, SIGNAL(activated(int)),
++			 this, SLOT(slotScrollbarSelected(int)));
++
+     m_console->insertSeparator();
+ 
+ 	m_recordLog = new QAction();
+@@ -693,6 +705,35 @@
+     m_isFullscreen = !m_isFullscreen;
+ }
+ 
++void MainWindow::slotScrollbarSelected(int index)
++{
++	int loc;
++
++    Config cfg( "Konsole" );
++    cfg.setGroup("ScrollBar");
++    if(index == sm_none)
++    {
++		loc = 0;
++    }
++    else if(index == sm_left)
++    {
++		loc = 1;
++    }
++    else if(index == sm_right)
++    {
++		loc = 2;
++    }
++	
++	cfg.writeEntry("Position", loc);
++
++    if (currentSession()) {
++        currentSession()->emulationHandler()->setScrollbarLocation(loc);
++    }
++
++    m_scrollbar->setItemChecked(sm_none, index == sm_none);
++    m_scrollbar->setItemChecked(sm_left, index == sm_left);
++    m_scrollbar->setItemChecked(sm_right, index == sm_right);
++}
+ 
+ void MainWindow::slotKeyReceived(FKey k, ushort, ushort, bool pressed) {
+ 
+Index: mainwindow.h
+===================================================================
+RCS file: /cvs/opie/noncore/apps/opie-console/mainwindow.h,v
+retrieving revision 1.29
+retrieving revision 1.30
+diff -u -u -r1.29 -r1.30
+--- opie-console/mainwindow.h	8 Oct 2004 20:03:40 -0000	1.29
++++ opie-console/mainwindow.h	12 Oct 2005 21:05:47 -0000	1.30
+@@ -24,6 +24,7 @@
+ class FKey;
+ class DocLnk;
+ 
++
+ class MainWindow : public QMainWindow {
+     Q_OBJECT
+ public:
+@@ -75,6 +76,7 @@
+     void slotKeyReceived(FKey, ushort, ushort, bool);
+     void slotSaveHistory();
+     void slotSaveLog();
++    void slotScrollbarSelected(int);
+ 
+     /* what could these both slot do? */
+     void slotCopy();
+@@ -105,6 +107,12 @@
+     MetaFactory* m_factory;
+     ProfileManager* m_manager;
+ 
++	/*
++	 * scrollbar
++	 */
++
++    int sm_none, sm_left, sm_right;
++	
+     TabWidget* m_consoleWindow;
+     QToolBar* m_tool;
+     QToolBar* m_icons;
+@@ -115,6 +123,7 @@
+     QPopupMenu* m_sessionsPop;
+     QPopupMenu* m_scriptsPop;
+     QPopupMenu* m_scripts;
++    QPopupMenu* m_scrollbar;
+     QAction* m_connect;
+     QAction* m_disconnect;
+     QAction* m_quickLaunch;

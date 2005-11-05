@@ -1,0 +1,15 @@
+Index: netlink.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-mininet/netlink.c,v
+retrieving revision 1.2
+diff -u -r1.2 netlink.c
+--- netlink.c	17 Apr 2004 16:14:03 -0000	1.2
++++ netlink.c	9 Jul 2004 06:12:37 -0000
+@@ -16,7 +16,6 @@
+ #include <stdio.h>
+ #include <sys/socket.h>
+ #include <linux/types.h>
+-#include <linux/uio.h>
+ 
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>

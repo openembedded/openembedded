@@ -1,0 +1,31 @@
+#!/bin/sh
+
+case "$1" in
+
+        start)
+        echo "Starting Postfix..."
+        postfix start
+        ;;
+
+        stop)
+        echo "Stopping Postfix..."
+        postfix stop
+        ;;
+                
+        reload)
+        echo "Reloading Postfix..."
+        postfix reload
+        ;;
+
+        restart)
+        $0 stop
+        sleep 1
+        $0 start
+        ;;
+
+        *)
+        echo "Usage: $0 {start|stop|reload|restart}"
+        exit 1
+        ;;
+esac
+

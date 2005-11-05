@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libao-0.8.4/configure.in~configure
++++ libao-0.8.4/configure.in
+@@ -174,9 +174,8 @@
+ 
+ if test "$BUILD_ESD" = "yes"; then
+   AM_PATH_ESD(0.2.8, have_esd=yes, have_esd=no)
+-  AM_CONDITIONAL(HAVE_ESD,test "x$have_esd" = xyes)
+ fi
+-
++AM_CONDITIONAL(HAVE_ESD,test "x$have_esd" = xyes)
+ 
+ dnl Check for OSS
+ 

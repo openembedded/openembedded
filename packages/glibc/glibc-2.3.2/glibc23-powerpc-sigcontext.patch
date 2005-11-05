@@ -1,0 +1,326 @@
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/Versions	2003-08-25 13:15:36.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/Versions	2003-09-23 18:19:41.000000000 +1000
+@@ -22,5 +22,6 @@
+   }
+   GLIBC_2.3.3 {
+     posix_fadvise64; posix_fallocate64;
++    setcontext; getcontext; swapcontext; makecontext;
+   }
+ }
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext.S	2003-06-18 13:36:23.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext.S	2003-09-23 19:15:38.000000000 +1000
+@@ -18,12 +18,20 @@
+    02111-1307 USA.  */
+ 
+ #include <sysdep.h>
++#include <shlib-compat.h>
+ 
+ #define __ASSEMBLY__
+ #include <asm/ptrace.h>
+ #include "ucontext_i.h"
+ 
+ ENTRY(__getcontext)
++	/*
++	 * Since we are not attempting to save the altivec registers,
++	 * there is no need to get the register storage space
++	 * aligned on a 16-byte boundary.
++	 */
++	addi	r3,r3,_UC_REG_SPACE
++	stw	r3,_UC_REGS_PTR - _UC_REG_SPACE(r3)
+ 	stw	r0,_UC_GREGS+(PT_R0*4)(r3)
+ 	stw	r1,_UC_GREGS+(PT_R1*4)(r3)
+ 	mflr	r0
+@@ -112,7 +120,7 @@
+ 	stfd	fp31,_UC_FREGS+(31*8)(r3)
+ 	stfd	fp0,_UC_FREGS+(32*8)(r3)
+ 
+-	addi	r5,r3,_UC_SIGMASK
++	addi	r5,r3,_UC_SIGMASK - _UC_REG_SPACE
+ 	li	r4,0
+ 	li	r3,SIG_BLOCK
+ 	bl	JUMPTARGET(sigprocmask)
+@@ -123,4 +131,18 @@
+ 	blr
+ PSEUDO_END(__getcontext)
+ 
+-weak_alias(__getcontext, getcontext)
++versioned_symbol (libc, __getcontext, getcontext, GLIBC_2_3_3)
++
++#if SHLIB_COMPAT (libc, GLIBC_2_1, GLIBC_2_3_3)
++
++#define _ERRNO_H	1
++#include <bits/errno.h>
++
++ENTRY (__getcontext_stub)
++	li	r3,ENOSYS
++	b	JUMPTARGET(__syscall_error)
++	END (__getcontext_stub)
++
++compat_symbol (libc, __getcontext_stub, getcontext, GLIBC_2_1)
++
++#endif
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S	2003-06-18 13:36:38.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S	2003-09-23 19:15:48.000000000 +1000
+@@ -18,6 +18,7 @@
+    02111-1307 USA.  */
+ 
+ #include <sysdep.h>
++#include <shlib-compat.h>
+ 
+ #define __ASSEMBLY__
+ #include <asm/ptrace.h>
+@@ -25,22 +26,24 @@
+ 
+ ENTRY(__makecontext)
+ 	/* Set up the first 7 args to the function in its registers */
+-	stw	r6,_UC_GREGS+(PT_R3*4)(r3)
+-	stw	r7,_UC_GREGS+(PT_R4*4)(r3)
+-	stw	r8,_UC_GREGS+(PT_R5*4)(r3)
+-	stw	r9,_UC_GREGS+(PT_R6*4)(r3)
+-	stw	r10,_UC_GREGS+(PT_R7*4)(r3)
++	addi	r11,r3,_UC_REG_SPACE
++	stw	r11,_UC_REGS_PTR(r3)
++	stw	r6,_UC_GREGS+(PT_R3*4)(r11)
++	stw	r7,_UC_GREGS+(PT_R4*4)(r11)
++	stw	r8,_UC_GREGS+(PT_R5*4)(r11)
++	stw	r9,_UC_GREGS+(PT_R6*4)(r11)
++	stw	r10,_UC_GREGS+(PT_R7*4)(r11)
+ 	lwz	r8,8(r1)
+ 	lwz	r9,12(r1)
+-	stw	r8,_UC_GREGS+(PT_R8*4)(r3)
+-	stw	r9,_UC_GREGS+(PT_R9*4)(r3)
++	stw	r8,_UC_GREGS+(PT_R8*4)(r11)
++	stw	r9,_UC_GREGS+(PT_R9*4)(r11)
+ 
+ 	/* Set the NIP to the start of the function */
+-	stw	r4,_UC_GREGS+(PT_NIP*4)(r3)
++	stw	r4,_UC_GREGS+(PT_NIP*4)(r11)
+ 
+ 	/* Set the function's r31 to ucp->uc_link for the exitcode below. */
+ 	lwz	r7,_UC_LINK(r3)
+-	stw	r7,_UC_GREGS+(PT_R31*4)(r3)
++	stw	r7,_UC_GREGS+(PT_R31*4)(r11)
+ 
+ 	/* Set the function's LR to point to the exitcode below. */
+ #ifdef PIC
+@@ -53,7 +56,7 @@
+ 	lis	r6,L(exitcode)@ha
+ 	addi	r6,r6,L(exitcode)@l
+ #endif
+-	stw	r6,_UC_GREGS+(PT_LNK*4)(r3)
++	stw	r6,_UC_GREGS+(PT_LNK*4)(r11)
+ 
+ 	/*
+ 	 * Set up the stack frame for the function.
+@@ -71,7 +74,7 @@
+ 	cmpwi	r5,8
+ 	blt	2f		/* less than 8 args is easy */
+ 	lwz	r10,16(r1)
+-	stw	r10,_UC_GREGS+(PT_R10*4)(r3)
++	stw	r10,_UC_GREGS+(PT_R10*4)(r11)
+ 	beq	2f		/* if exactly 8 args */
+ 	subi	r9,r5,3
+ 	subi	r5,r5,8
+@@ -83,7 +86,7 @@
+ 3:	lwzu	r10,4(r6)
+ 	stwu	r10,4(r8)
+ 	bdnz	3b
+-2:	stw	r7,_UC_GREGS+(PT_R1*4)(r3)
++2:	stw	r7,_UC_GREGS+(PT_R1*4)(r11)
+ 	li	r6,0
+ 	stw	r6,0(r7)
+ 
+@@ -102,4 +105,19 @@
+ 	b	4b
+ 
+ END(__makecontext)
+-weak_alias(__makecontext, makecontext)
++
++versioned_symbol (libc, __makecontext, makecontext, GLIBC_2_3_3)
++
++#if SHLIB_COMPAT (libc, GLIBC_2_1, GLIBC_2_3_3)
++
++#define _ERRNO_H	1
++#include <bits/errno.h>
++
++ENTRY (__makecontext_stub)
++	li	r3,ENOSYS
++	b	JUMPTARGET(__syscall_error)
++	END (__makecontext_stub)
++
++compat_symbol (libc, __makecontext_stub, makecontext, GLIBC_2_1)
++
++#endif
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S	2003-06-18 13:36:57.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S	2003-09-23 17:01:40.000000000 +1000
+@@ -18,6 +18,7 @@
+    02111-1307 USA.  */
+ 
+ #include <sysdep.h>
++#include <shlib-compat.h>
+ 
+ #define __ASSEMBLY__
+ #include <asm/ptrace.h>
+@@ -28,7 +29,7 @@
+ 	stwu	r1,-16(r1)
+ 	stw	r0,20(r1)
+ 	stw	r31,12(r1)
+-	mr	r31,r3
++	lwz	r31,_UC_REGS_PTR(r3)
+ 
+ 	/*
+ 	 * If this ucontext refers to the point where we were interrupted
+@@ -144,6 +145,20 @@
+ 	sc
+ 	/* NOTREACHED */
+ 
+-PSEUDO_END(__setcontext)
++PSEUDO_END (__setcontext)
+ 
+-weak_alias(__setcontext, setcontext)
++versioned_symbol (libc, __setcontext, setcontext, GLIBC_2_3_3)
++
++#if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_3_3)
++
++#define _ERRNO_H	1
++#include <bits/errno.h>
++
++ENTRY (__setcontext_stub)
++	li	r3,ENOSYS
++	b	JUMPTARGET(__syscall_error)
++	END (__setcontext_stub)
++
++compat_symbol (libc, __setcontext_stub, setcontext, GLIBC_2_0)
++
++#endif
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext.S	2003-06-18 13:37:19.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext.S	2003-09-23 19:15:56.000000000 +1000
+@@ -18,6 +18,7 @@
+    02111-1307 USA.  */
+ 
+ #include <sysdep.h>
++#include <shlib-compat.h>
+ 
+ #define __ASSEMBLY__
+ #include <asm/ptrace.h>
+@@ -25,6 +26,8 @@
+ 
+ ENTRY(__swapcontext)
+ 	/* Save the current context */
++	addi	r3,r3,_UC_REG_SPACE
++	stw	r3,_UC_REGS_PTR - _UC_REG_SPACE(r3)
+ 	stw	r0,_UC_GREGS+(PT_R0*4)(r3)
+ 	stw	r1,_UC_GREGS+(PT_R1*4)(r3)
+ 	mflr	r0
+@@ -115,7 +118,7 @@
+ 	stfd	fp31,_UC_FREGS+(31*8)(r3)
+ 	stfd	fp0,_UC_FREGS+(32*8)(r3)
+ 
+-	addi	r5,r3,_UC_SIGMASK
++	addi	r5,r3,_UC_SIGMASK - _UC_REG_SPACE
+ 	addi	r4,r4,_UC_SIGMASK
+ 	li	r3,SIG_SETMASK
+ 	bl	JUMPTARGET(sigprocmask)
+@@ -133,6 +136,8 @@
+ 	 * r0, xer, ctr.  We don't restore r2 since it will be used as
+ 	 * the TLS pointer.
+ 	 */
++	mr	r4,r31
++	lwz	r31,_UC_REGS_PTR(r31)
+ 	lwz	r0,_UC_GREGS+(PT_MSR*4)(r31)
+ 	cmpwi	r0,0
+ 	bne	L(do_sigret)
+@@ -223,11 +228,25 @@
+ 	blr
+ 
+ L(do_sigret):
+-	addi	r1,r31,-0xd0
++	addi	r1,r4,-0xd0
+ 	li	r0,SYS_ify(rt_sigreturn)
+ 	sc
+ 	/* NOTREACHED */
+ 
+ PSEUDO_END(__swapcontext)
+ 
+-weak_alias(__swapcontext, swapcontext)
++versioned_symbol (libc, __swapcontext, swapcontext, GLIBC_2_3_3)
++
++#if SHLIB_COMPAT (libc, GLIBC_2_1, GLIBC_2_3_3)
++
++#define _ERRNO_H	1
++#include <bits/errno.h>
++
++ENTRY (__swapcontext_stub)
++	li	r3,ENOSYS
++	b	JUMPTARGET(__syscall_error)
++	END (__swapcontext_stub)
++
++compat_symbol (libc, __swapcontext_stub, swapcontext, GLIBC_2_1)
++
++#endif
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/ucontext_i.h	2003-06-18 13:37:33.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/powerpc32/ucontext_i.h	2003-09-11 16:48:08.000000000 +1000
+@@ -24,7 +24,11 @@
+ #define _UC_LINK	4
+ #define _UC_STACK_SP	8
+ #define _UC_STACK_SIZE	16
+-#define _UC_SIGMASK	64
+-#define _UC_GREGS	192
+-#define _UC_FREGS	384
+-#define _UC_VREGS	656
++#define _UC_REGS_PTR	48
++#define _UC_SIGMASK	52
++#define _UC_REG_SPACE	180
++
++/* offsets within mcontext_t */
++#define _UC_GREGS	0
++#define _UC_FREGS	192
++#define _UC_VREGS	464
+--- cvs/libc/sysdeps/unix/sysv/linux/powerpc/sys/ucontext.h	2003-07-04 10:12:48.000000000 +1000
++++ libc/sysdeps/unix/sysv/linux/powerpc/sys/ucontext.h	2003-09-11 16:31:52.000000000 +1000
+@@ -74,14 +74,40 @@
+     struct ucontext *uc_link;
+     stack_t uc_stack;
+ #if __WORDSIZE == 32
+-    /* These fields are for backwards compatibility. */
++    /*
++     * These fields are set up this way to maximize source and
++     * binary compatibility with code written for the old
++     * ucontext_t definition, which didn't include space for the
++     * registers.
++     *
++     * Different versions of the kernel have stored the registers on
++     * signal delivery at different offsets from the ucontext struct.
++     * Programs should thus use the uc_mcontext.uc_regs pointer to
++     * find where the registers are actually stored.  The registers
++     * will be stored within the ucontext_t struct but not necessarily
++     * at a fixed address.  As a side-effect, this lets us achieve
++     * 16-byte alignment for the register storage space if the
++     * Altivec registers are to be saved, without requiring 16-byte
++     * alignment on the whole ucontext_t.
++     *
++     * The uc_mcontext.regs field is included for source compatibility
++     * with programs written against the older ucontext_t definition,
++     * and its name should therefore not change.  The uc_pad field
++     * is for binary compatibility with programs compiled against the
++     * old ucontext_t; it ensures that uc_mcontext.regs and uc_sigmask
++     * are at the same offset as previously.
++     */
+     int uc_pad[7];
+-    mcontext_t *uc_regs;
+-    unsigned int uc_oldsigmask[2];
+-    int uc_pad2;
+-#endif
++    union uc_regs_ptr {
++      struct pt_regs *regs;
++      mcontext_t *uc_regs;
++    } uc_mcontext;
++    sigset_t    uc_sigmask;
++    char uc_reg_space[sizeof(mcontext_t) + 12];  /* last for extensibility */
++#else /* 64-bit */
+     sigset_t    uc_sigmask;
+     mcontext_t  uc_mcontext;  /* last for extensibility */
++#endif
+   } ucontext_t;
+ 
+ #endif /* sys/ucontext.h */

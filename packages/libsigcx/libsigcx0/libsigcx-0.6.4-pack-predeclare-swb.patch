@@ -1,0 +1,21 @@
+2005-05-06  Steven Brown  <swbrown@ucsd.edu>
+
+	* sigcx/tunnel.h: Predeclare pack<R,P1>, fixing issue with
+	TunnelCallback1<R,P1>::pack_n_tunnel calling it before it was known.
+
+
+diff -ruN libsigcx-0.6.4-old/sigcx/tunnel.h libsigcx-0.6.4/sigcx/tunnel.h
+--- libsigcx-0.6.4-old/sigcx/tunnel.h	2005-05-06 22:08:33.000000000 -0700
++++ libsigcx-0.6.4/sigcx/tunnel.h	2005-05-06 22:10:22.000000000 -0700
+@@ -188,6 +188,11 @@
+ *****  Tunnel 1
+ ****************************************************************/
+ 
++/* Predeclare pack<R,P1> */
++template <class R,class P1>
++class TunnelCallback1;
++template <class R,class P1>
++TunnelCallback1<R,P1> *pack(const SigC::Slot1<R,P1>& s,P1 p1);
+ 
+ /** Tunnel callback for 1 arguments. */
+ template <class R,class P1>

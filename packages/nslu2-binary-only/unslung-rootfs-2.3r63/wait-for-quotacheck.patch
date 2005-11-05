@@ -1,0 +1,10 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.local~	2005-04-03 10:14:51.000000000 +0930
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.local	2005-04-03 10:14:59.000000000 +0930
+@@ -14,6 +14,6 @@
+ /bin/chmod 775 /share 2>/dev/null
+ /bin/chown admin.everyone /share/hdd/ 2>/dev/null
+ /bin/chown admin.everyone /share 2>/dev/null
+-/etc/rc.d/rc.quota &>/dev/null
++/etc/rc.d/rc.quota 2>/dev/null
+ /usr/sbin/init_media 2>/dev/null
+ /bin/echo "$HOSTNAME: boot complete!"; check_status

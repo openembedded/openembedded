@@ -1,0 +1,32 @@
+Set lstep properly on a mode change
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp~fix-linuxfb-setmode
++++ qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp
+@@ -791,11 +791,6 @@
+     fb_fix_screeninfo finfo;
+     fb_var_screeninfo vinfo;
+ 
+-    if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
+-	perror("reading /dev/fb0");
+-	qFatal("Error reading fixed information");
+-    }
+-
+     if (ioctl(fd, FBIOGET_VSCREENINFO, &vinfo)) {
+ 	qFatal("Error reading variable information in mode change");
+     }
+@@ -812,6 +807,10 @@
+ 	qFatal("Error reading changed variable information in mode change");
+     }
+ 
++    if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
++	qFatal("Error reading changed fixed information in mode change");
++    }
++
+     w=vinfo.xres;
+     h=vinfo.yres;
+     d=vinfo.bits_per_pixel;

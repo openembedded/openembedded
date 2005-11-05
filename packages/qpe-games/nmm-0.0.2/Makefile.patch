@@ -1,0 +1,9 @@
+diff -ur nmm_V0.0.2.orig/tools/Makefile nmm_V0.0.2/tools/Makefile
+--- nmm_V0.0.2.orig/tools/Makefile	2004-06-16 21:11:26.000000000 +0200
++++ nmm_V0.0.2/tools/Makefile	2004-06-16 21:11:43.000000000 +0200
+@@ -1,3 +1,3 @@
+ bin2c:
+-	gcc -O2 -Wall -o bin2c bin2c.c
++	$(BUILD_CC) -O2 -Wall -o bin2c bin2c.c
+ 
+Nur in nmm_V0.0.2/tools: Makefile.nmm.

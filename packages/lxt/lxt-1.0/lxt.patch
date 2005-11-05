@@ -1,0 +1,38 @@
+diff -urNdb lxt-orig/gui.c lxt/gui.c
+--- lxt-orig/gui.c	Sat Mar 31 21:07:05 2001
++++ lxt/gui.c	Sun Jan  6 14:50:03 2002
+@@ -133,8 +133,8 @@
+ 
+   maxx=stdscr->_maxx+1;
+   maxy=stdscr->_maxy+1;
+-  if((maxx<75)||(maxy<15)) crapout_nobug("cannot run the program in a window smaller than 75x15");
+-  debuglog("maxx=%d, maxy=%d\n",maxx,maxy);
++//  if((maxx<75)||(maxy<15)) crapout_nobug("cannot run the program in a window smaller than 75x15");
++//  debuglog("maxx=%d, maxy=%d\n",maxx,maxy);
+ 
+   /* the one window that is always allocated */
+   gui_msbar=newwin(1,maxx,maxy-1,0);
+diff -urNdb lxt-orig/readconfig.c lxt/readconfig.c
+--- lxt-orig/readconfig.c	Sun Apr  1 07:15:38 2001
++++ lxt/readconfig.c	Mon Jan  7 12:13:48 2002
+@@ -77,7 +77,8 @@
+ 
+   for(n=0;stropts[n].var;n++) *stropts[n].var=NULL;
+   config_setoption("tmppath:/tmp");
+-  config_setoption("editor:vi %p");
++  config_setoption("editor:vi %p");
++/*    config_setoption("editor:vi %p"); */
+   config_setoption("archivebranch:tar cvfz %a -C %b .");
+   config_setoption("archivetagged:cd %b && tar cvfz %a -T %c");
+ 
+--- lxt/help.h.orig	2003-07-28 20:39:46.000000000 -0600
++++ lxt/help.h	2003-07-28 20:38:37.000000000 -0600
+@@ -98,7 +98,7 @@
+  d         | dump mode			\n\
+  m         | toggle mask		\n\
+  h         | hex mode			\n\
+- e         | hex editor         \n
++ e         | hex editor         \n\
+  f/p       | pipe mode                  \n\
+  /         | search forward             \n\
+            |   a search of the form /pattern/e will do an extended regex\n\

@@ -1,0 +1,60 @@
+2005-05-07  Steven Brown  <swbrown@ucsd.edu>
+
+	* include/easysoap/SOAPSTL.h: Specializations require template<>.
+
+	* tests/interopclient.cpp: gcc 3.4 tries to invoke the private copy
+	constructor on SOAPBase64 and SOAPHex when passed directly through
+	the overload of << to AddParameter.  Not sure why it does this
+	(bug?), but assigning a name to the variables makes it happy.
+
+
+diff -ruN EasySoap++-0.6.1-old/include/easysoap/SOAPSTL.h EasySoap++-0.6.1/include/easysoap/SOAPSTL.h
+--- EasySoap++-0.6.1-old/include/easysoap/SOAPSTL.h	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/include/easysoap/SOAPSTL.h	Sat May  7 20:56:10 2005
+@@ -58,6 +58,7 @@
+ /**
+ *
+ */
++template<>
+ class SOAPTypeTraits<std::string>
+ {
+ public:
+@@ -168,6 +169,7 @@
+ /**
+ *
+ */
++template<>
+ class SOAPTypeTraits< SOAPSTLBase64 > : public SOAPBase64Traits
+ {
+ };
+@@ -200,6 +202,7 @@
+ /**
+ *
+ */
++template<>
+ class SOAPTypeTraits< SOAPSTLHex > : public SOAPHexTraits
+ {
+ };
+diff -ruN EasySoap++-0.6.1-old/tests/interopclient.cpp EasySoap++-0.6.1/tests/interopclient.cpp
+--- EasySoap++-0.6.1-old/tests/interopclient.cpp	Sat May  7 19:55:34 2005
++++ EasySoap++-0.6.1/tests/interopclient.cpp	Sat May  7 20:55:52 2005
+@@ -990,7 +990,8 @@
+ 
+ 	SOAPMethod method;
+ 	SetupMethod(method, "echoBase64", e);
+-	method.AddParameter("inputBase64") << SOAPBase64(inputBinary);
++	SOAPBase64 inputBase64(inputBinary);
++	method.AddParameter("inputBase64") << inputBase64;
+ 	const SOAPResponse& response = proxy.Execute(method);
+ 
+ 	SOAPBase64 base64(outputBinary);
+@@ -1217,7 +1218,8 @@
+ 
+ 	SOAPMethod method;
+ 	SetupMethod(method, "echoHexBinary", e);
+-	method.AddParameter("inputHexBinary") << SOAPHex(inputBinary);
++	SOAPHex inputHex(inputBinary);
++	method.AddParameter("inputHexBinary") << inputHex;
+ 	const SOAPResponse& response = proxy.Execute(method);
+ 
+ 	SOAPHex hex(outputBinary);

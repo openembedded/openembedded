@@ -1,0 +1,44 @@
+diff -ur metalog-0.7_org/configure.ac metalog-0.7_patch/configure.ac
+--- metalog-0.7_org/configure.ac        2003-04-06 23:21:05.000000000 +0200
++++ metalog-0.7_patch/configure.ac      2004-07-19 14:41:48.226352264 +0200
+@@ -162,39 +162,6 @@
+ 
+ dnl Custom checks
+ 
+-AC_MSG_CHECKING(whether snprintf is C99 conformant)
+-AC_TRY_RUN([
+-#include <stdio.h>
+-#ifdef STDC_HEADERS
+-# include <stdlib.h>
+-# include <stddef.h>
+-#else
+-# if HAVE_STDLIB_H
+-#  include <stdlib.h>
+-# endif
+-#endif
+-#ifdef HAVE_UNISTD_H
+-# include <unistd.h>
+-#endif
+-
+-int main(void)
+-{
+-    char buf[4];
+-    
+-    (void) fprintf(fopen("conftestval", "wt"), "%d\n",
+-        (int) snprintf(buf, sizeof buf, "12345678"));
+-    return 0;
+-}
+-],
+-CONF_SNPRINTF_TYPE=`cat conftestval`
+-)
+-AC_MSG_RESULT(done)
+-if test "x$CONF_SNPRINTF_TYPE" = "x" ; then
+-  AC_MSG_WARN(your operating system doesn't implement snprintf)
+-else
+-  AC_DEFINE_UNQUOTED(CONF_SNPRINTF_TYPE, $CONF_SNPRINTF_TYPE, [return value of an overflowed snprintf])
+-fi
+-
+ dnl Options
+ 
+ AM_WITH_DMALLOC
+

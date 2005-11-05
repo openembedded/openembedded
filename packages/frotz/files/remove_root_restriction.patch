@@ -1,0 +1,18 @@
+--- ./src/curses/ux_init.c	2004-09-11 10:15:07.000000000 -0700
++++ ux_init.c.patch	2004-09-11 10:15:40.000000000 -0700
+@@ -139,15 +139,6 @@
+     char *home;
+     char configfile[FILENAME_MAX + 1];
+ 
+-    if ((getuid() == 0) || (geteuid() == 0)) {
+-        printf("I won't run as root!\n");
+-        exit(1);
+-    }
+-
+-    if ((home = getenv("HOME")) == NULL) {
+-        printf("Hard drive on fire!\n");
+-        exit(1);
+-    }
+ 
+ /* 
+  * It doesn't look like Frotz can reliably be resized given its current

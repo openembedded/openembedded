@@ -1,0 +1,10 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc~	2004-07-27 23:37:55.000000000 -0400
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc	2004-09-01 21:47:47.000000000 -0400
+@@ -1,4 +1,7 @@
+ ## Simple beta script to verify csr
++
++if ( [ -f /unslung/rc ] && . /unslung/rc ) ; then return 0 ; fi
++
+ /usr/bin/Set_Led r_blinking &
+ mount -t proc proc /proc
+ mount -o remount,rw /dev/root /

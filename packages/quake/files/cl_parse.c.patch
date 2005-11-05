@@ -1,0 +1,42 @@
+--- quake1src/cl_parse.c~	2003-09-09 14:30:55.000000000 +0100
++++ quake1src/cl_parse.c	2005-05-06 16:02:13.228407752 +0100
+@@ -898,14 +898,14 @@
+ 
+ 				if (cl.paused)
+ 				{
+-					CDAudio_Pause ();
++//					CDAudio_Pause ();
+ #ifdef _WIN32
+ 					VID_HandlePause (true);
+ #endif
+ 				}
+ 				else
+ 				{
+-					CDAudio_Resume ();
++//					CDAudio_Resume ();
+ #ifdef _WIN32
+ 					VID_HandlePause (false);
+ #endif
+@@ -940,14 +940,14 @@
+ 			CL_ParseStaticSound ();
+ 			break;
+ 
+-		case svc_cdtrack:
+-			cl.cdtrack = MSG_ReadByte ();
+-			cl.looptrack = MSG_ReadByte ();
+-			if ( (cls.demoplayback || cls.demorecording) && (cls.forcetrack != -1) )
+-				CDAudio_Play ((byte)cls.forcetrack, true);
+-			else
+-				CDAudio_Play ((byte)cl.cdtrack, true);
+-			break;
++		case svc_cdtrack:
++			cl.cdtrack = MSG_ReadByte ();
++			cl.looptrack = MSG_ReadByte ();
++//			if ( (cls.demoplayback || cls.demorecording) && (cls.forcetrack != -1) )
++//				CDAudio_Play ((byte)cls.forcetrack, true);
++//			else
++//				CDAudio_Play ((byte)cl.cdtrack, true);
++			break;
+ 
+ 		case svc_intermission:
+ 			cl.intermission = 1;

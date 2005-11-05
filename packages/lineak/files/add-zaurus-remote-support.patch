@@ -1,0 +1,26 @@
+--- lineakd-0.8.3/lineakd/lineakkb.def	2005-03-02 04:15:39.000000000 -0800
++++ lineakd-0.8.3/lineakd/lineakkb.def.new	2005-07-14 20:50:40.000000000 -0700
+@@ -1166,6 +1166,23 @@
+ 
+ #### END CodeGen Keyboards ####
+ 
++#### Sharp Zaurus Remotes ####
++
++[CE-RH2]
++  brandname = "Sharp"
++  modelname = "Sharp CE-RH2"
++  [KEYS]
++    AudioPlay|Pause  = 72
++    AudioRaiseVolume = 126
++    AudioLowerVolume = 127
++    AudioMute        = 128
++    AudioStop        = 76
++    AudioPrev        = 124
++    AudioNext        = 116
++  [END KEYS]
++[END CE-RH2]
++
++#### END Sharp Zaurus Remotes ####
+ 
+ #### Compaq keyboards ####
+ 

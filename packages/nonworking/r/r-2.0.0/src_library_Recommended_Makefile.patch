@@ -1,0 +1,18 @@
+--- R-2.0.0/src/library/Recommended/Makefile.in~	2004-12-12 11:26:10.565476200 +0000
++++ R-2.0.0/src/library/Recommended/Makefile.in	2004-12-12 11:27:09.177565808 +0000
+@@ -12,7 +12,7 @@
+ 
+ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+ DISTFILES = Makefile.in .cvsignore
+-R = R_LIBS= $(top_builddir)/bin/R
++R = R_LIBS= $(R_EXE_NATIVE)
+ 
+ ## foo.ts is the timestamp for package foo;
+ ## foo.tgz is a symlink to foo_x.y-z.tar.gz in the source dir.
+@@ -79,4 +79,4 @@
+ 
+ ## Hardcoded dependencies (see 'share/make/vars.mk')
+ mgcv.ts: nlme.ts VR.ts
+-nlme.ts: lattice.ts
+\ No newline at end of file
++nlme.ts: lattice.ts

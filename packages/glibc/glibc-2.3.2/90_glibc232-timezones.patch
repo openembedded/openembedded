@@ -1,0 +1,1078 @@
+--- timezone/asia	2003-11-05 10:37:29.000000000 -0500
++++ timezone/asia	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)asia	7.71
++# @(#)asia	7.72
+ 
+ # This data is by no means authoritative; if you think you know better,
+ # go ahead and edit the file (and please send any changes to
+@@ -736,44 +736,19 @@
+ 			2:20:40	-	JMT	1918	# Jerusalem Mean Time?
+ 			2:00	Zion	I%sT
+ 
+-# From Ephraim Silverberg (2002-07-07):
++# From Ephraim Silverberg (2003-03-23):
+ #
+-# The Israeli government today adopted a proposal by Minister of Interior
+-# Eli Yishai to shorten the period of Daylight Savings Time for the year
+-# 2002 (only -- the dates for 2003 and 2004 are, so far, unaffected).
+-#
+-# The proposed date to Daylight Savings Time is September 13, 2002 instead
+-# of the current date: October 7, 2002.  The hour of changeover has not
+-# yet been decided.
+-#
+-# (2002-07-10):
+-# While today the Knesset passed the initial proposal to reduce DST by
+-# some three weeks, a new compromise is being worked out between
+-# Minister of Justice Meir Sheetrit and Minister of Interior Eli
+-# Yishai to revert to standard time for a period of 48-96 _hours_
+-# (sic) around the Yom Kippur fast day (September 15-16) and then go
+-# *back* to DST until the end of October.  The details of the proposal
+-# have yet to be worked out, but the second and final readings of the
+-# bill have until July 24 to pass.
+-#
+-# (2002-07-25):
+-# Thanks go to Yitschak Goldberg from E&M for bringing this (Hebrew) article
+-# to my attention:
+-#
+-#	http://www.ynet.co.il/articles/0,7340,L-2019315,00.html
+-#
+-# Hence, the proposal to shorten DST was withdrawn yesterday and the timezone
+-# files that have been in effect since July 2000 are still valid for all of
+-# 2002.
+-#
+-# Please note that the article mentions that the Shas MK's intend to
+-# bring up their amendment for future years (2003 and beyond).  What this
+-# means exactly is anyone's guess since there are no set dates yet beyond
+-# 2004 and the end day set for 2003 and 2004 is already the 7th of Tishrei
+-# (i.e. before the fast of Yom Kippur).  The only thing they may want to
+-# change is the start date of DST in 2003 from Mar.28.03 (24th of Adar II)
+-# to Apr.18.03 (16th of Nisan) so that the Passover Seder will take place
+-# during Standard Time.  The start date for 2004 is already Nisan 16th.
++# Minister of Interior Poraz has announced that he will respect the law
++# passed in July 2000 (proposed at the time jointly by himself and
++# then-MK David Azulai [Shas]) fixing the dates for 2000-2004.  Hence,
++# the dates for 2003 and 2004 remain unchanged....
++#
++# As far as 2005 and beyond, no dates have been set.  However, the
++# minister has mentioned that he wishes to propose to move Israel's
++# timezone in 2005 from GMT+2 to GMT+3 and upon that have DST during
++# the summer months (i.e. GMT+4).  However, no legislation in this
++# direction is expected until the latter part of 2004 which is a long
++# time off in terms of Israeli politics.
+ 
+ 
+ 
+@@ -926,7 +901,7 @@
+ 			6:00	-	SHET	1982 Apr  1
+ 			5:00 RussiaAsia	SHE%sT	1991
+ 			5:00	-	SHET	1991 Dec 16 # independence
+-			5:00 RussiaAsia	AQT%sT	1995 Sep lastSun # Aqtau Time
++			5:00 RussiaAsia	AQT%sT	1995 Mar lastSun 2:00 # Aqtau Time
+ 			4:00 RussiaAsia	AQT%sT
+ # West Kazakhstan
+ Zone	Asia/Oral	3:25:24	-	LMT	1924 May  2 # or Ural'sk
+--- timezone/australasia	2003-11-05 10:37:29.000000000 -0500
++++ timezone/australasia	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)australasia	7.68
++# @(#)australasia	7.69
+ # This file also includes Pacific islands.
+ 
+ # Notes are at the end of this file
+@@ -297,45 +297,37 @@
+ ###############################################################################
+ 
+ # New Zealand
+-#
+-# From Paul Eggert (2002-10-23):
+-# The Department of Internal Affairs (DIA) maintains a brief history;
+-# see tz-link.htm for the full reference.
+-#
+-# Shanks gives 1868 for the introduction of standard time; go with the
+-# DIA's more-precise 1868-11-02.  The DIA says that clocks were
+-# advanced by half an hour in 1941; go with Shanks's more-precise
+-# 1940-09-29 02:00.  The DIA says that starting in 1933 DST began the
+-# first Sunday in September; go with Shanks's last Sunday starting in
+-# 1934.
+ 
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+-# Shanks gives 1927 Nov 6 - 1928 Mar 4, 1928 Oct 14 - 1929 Mar 17,
+-# 1929 Oct 13 - 1930 Mar 16; go with Whitman.
+-Rule	NZ	1927	only	-	Nov	26	2:00	0:30	HD
+-Rule	NZ	1928	1929	-	Mar	Sun>=1	2:00	0	S
+-Rule	NZ	1928	only	-	Nov	 4	2:00	0:30	HD
+-Rule	NZ	1929	only	-	Oct	30	2:00	0:30	HD
+-Rule	NZ	1930	1933	-	Mar	Sun>=15	2:00	0	S
+-Rule	NZ	1930	1933	-	Oct	Sun>=8	2:00	0:30	HD
+-# Whitman says DST went on and off during war years, and the base UT offset
+-# didn't change until 1945 Apr 30; go with Shanks.
+-Rule	NZ	1934	1940	-	Apr	lastSun	2:00	0	S
+-Rule	NZ	1934	1939	-	Sep	lastSun	2:00	0:30	HD
++Rule	NZ	1927	only	-	Nov	 6	2:00	1:00	S
++Rule	NZ	1928	only	-	Mar	 4	2:00	0	M
++Rule	NZ	1928	1933	-	Oct	Sun>=8	2:00	0:30	S
++Rule	NZ	1929	1933	-	Mar	Sun>=15	2:00	0	M
++Rule	NZ	1934	1940	-	Apr	lastSun	2:00	0	M
++Rule	NZ	1934	1940	-	Sep	lastSun	2:00	0:30	S
++Rule	NZ	1946	only	-	Jan	 1	0:00	0	S
++# Since 1957 Chatham has been 45 minutes ahead of NZ, but there's no
++# convenient notation for this so we must duplicate the Rule lines.
+ Rule	NZ	1974	only	-	Nov	Sun>=1	2:00s	1:00	D
++Rule	Chatham	1974	only	-	Nov	Sun>=1	2:45s	1:00	D
+ Rule	NZ	1975	only	-	Feb	lastSun	2:00s	0	S
++Rule	Chatham	1975	only	-	Feb	lastSun	2:45s	0	S
+ Rule	NZ	1975	1988	-	Oct	lastSun	2:00s	1:00	D
++Rule	Chatham	1975	1988	-	Oct	lastSun	2:45s	1:00	D
+ Rule	NZ	1976	1989	-	Mar	Sun>=1	2:00s	0	S
++Rule	Chatham	1976	1989	-	Mar	Sun>=1	2:45s	0	S
+ Rule	NZ	1989	only	-	Oct	Sun>=8	2:00s	1:00	D
++Rule	Chatham	1989	only	-	Oct	Sun>=8	2:45s	1:00	D
+ Rule	NZ	1990	max	-	Oct	Sun>=1	2:00s	1:00	D
+-Rule	NZ	1990	max	-	Mar	Sun>=15	2:00s	0	S
+ Rule	Chatham	1990	max	-	Oct	Sun>=1	2:45s	1:00	D
+-Rule	Chatham	1991	max	-	Mar	Sun>=15	2:45s	0	S
++Rule	NZ	1990	max	-	Mar	Sun>=15	2:00s	0	S
++Rule	Chatham	1990	max	-	Mar	Sun>=15	2:45s	0	S
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone Pacific/Auckland	11:39:04 -	LMT	1868 Nov  2
+-			11:30	NZ	NZ%sT	1940 Sep 29 2:00
++			11:30	NZ	NZ%sT	1946 Jan  1
+ 			12:00	NZ	NZ%sT
+-Zone Pacific/Chatham	12:45	Chatham	CHA%sT
++Zone Pacific/Chatham	12:13:48 -	LMT	1957 Jan  1
++			12:45	Chatham	CHA%sT
+ 
+ 
+ # Auckland Is
+@@ -443,6 +435,8 @@
+ 
+ # Midway
+ Zone Pacific/Midway	-11:49:28 -	LMT	1901
++			-11:00	-	NST	1956 Jun  3
++			-11:00	1:00	NDT	1956 Sep  2
+ 			-11:00	-	NST	1967 Apr	# N=Nome
+ 			-11:00	-	BST	1983 Nov 30	# B=Bering
+ 			-11:00	-	SST			# S=Samoa
+@@ -513,7 +507,8 @@
+ #	 10:00	EST EST	Eastern Australia
+ #	 10:00	ChST	Chamorro
+ #	 10:30	LHST LHST Lord Howe*
+-#	 12:00	NZST NZDT New Zealand
++#	 11:30	NZMT NZST New Zealand through 1945
++#	 12:00	NZST NZDT New Zealand 1946-present
+ #	 12:45	CHAST CHADT Chatham*
+ #	-11:00	SST	Samoa
+ #	-10:00	HST	Hawaii
+@@ -1067,11 +1062,14 @@
+ # time on both the first Sunday in October and the third Sunday in March.
+ # As with Australia, we'll assume the tradition is 2:00s, not 2:00.
+ #
+-# From Paul Eggert (1999-10-29):
+-# Shanks gives no time data for Chatham; usno1989 says it's +12:45,
+-# usno1995 says it's +12:45/+13:45, and IATA SSIM (1991/1999)
+-# gives the NZ rules but with transitions at 2:45 local standard time.
+-# Guess that they have been in lock-step with NZ since 1990.
++# From Paul Eggert (2003-05-26):
++# The Department of Internal Affairs (DIA) maintains a brief history,
++# as does Carol Squires; see tz-link.htm for the full references.
++# Use these sources in preference to Shanks.
++#
++# For Chatham, IATA SSIM (1991/1999) gives the NZ rules but with
++# transitions at 2:45 local standard time; this confirms that Chatham
++# is always exactly 45 minutes ahead of Auckland.
+ 
+ ###############################################################################
+ 
+@@ -1154,6 +1152,23 @@
+ # We don't know when Kosrae switched from UTC+12; assume January 1 for now.
+ 
+ 
++# Midway
++
++# From Charles T O'Connor, KMTH DJ (1956),
++# quoted in the KTMH section of the Radio Heritage Collection
++# <http://radiodx.com/spdxr/KMTH.htm> (2002-12-31):
++# For the past two months we've been on what is known as Daylight
++# Saving Time.  This time has put us on air at 5am in the morning,
++# your time down there in New Zealand.  Starting September 2, 1956
++# we'll again go back to Standard Time.  This'll mean that we'll go to
++# air at 6am your time.
++#
++# From Paul Eggert (2003-03-23):
++# We don't know the date of that quote, but we'll guess they
++# started DST on June 3.  Possibly DST was observed other years
++# in Midway, but we have no record of it.
++
++
+ # Pitcairn
+ 
+ # From Rives McDow (1999-11-08):
+@@ -1277,6 +1292,24 @@
+ # From Pulu 'Anau (2002-11-05):
+ # The law was for 3 years, supposedly to get renewed.  It wasn't.
+ 
++
++# Wake
++
++# From Vernice Anderson, Personal Secretary to Philip Jessup,
++# US Ambassador At Large (oral history interview, 1971-02-02):
++#
++# Saturday, the 14th [of October, 1950] -- ...  The time was all the
++# more confusing at that point, because we had crossed the
++# International Date Line, thus getting two Sundays.  Furthermore, we
++# discovered that Wake Island had two hours of daylight saving time
++# making calculation of time in Washington difficult if not almost
++# impossible.
++#
++# http://www.trumanlibrary.org/wake/meeting.htm
++
++# From Paul Eggert (2003-03-23):
++# We have no other report of DST in Wake Island, so omit this info for now.
++
+ ###############################################################################
+ 
+ # The International Date Line
+--- timezone/backward	2002-04-05 22:40:00.000000000 -0500
++++ timezone/backward	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)backward	7.23
++# @(#)backward	7.24
+ 
+ # This file provides links between current names for time zones
+ # and their old names.  Many names changed in late 1993.
+@@ -36,7 +36,7 @@
+ Link	America/Halifax		Canada/Atlantic
+ Link	America/Winnipeg	Canada/Central
+ Link	America/Regina		Canada/East-Saskatchewan
+-Link	America/Montreal	Canada/Eastern
++Link	America/Toronto		Canada/Eastern
+ Link	America/Edmonton	Canada/Mountain
+ Link	America/St_Johns	Canada/Newfoundland
+ Link	America/Vancouver	Canada/Pacific
+--- timezone/europe	2003-11-05 10:37:29.000000000 -0500
++++ timezone/europe	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)europe	7.83
++# @(#)europe	7.84
+ 
+ # This data is by no means authoritative; if you think you know better,
+ # go ahead and edit the file (and please send any changes to
+@@ -24,6 +24,10 @@
+ #	Whitman Publishing Co, 2 Niagara Av, Ealing, London (undated),
+ #	which I found in the UCLA library.
+ #
++#	<a href="http://www.pettswoodvillage.co.uk/Daylight_Savings_William_Willett.pdf">
++#	William Willett, The Waste of Daylight, 19th edition
++#	</a> (1914-03)
++#
+ #	Brazil's Departamento Servico da Hora (DSH),
+ #	<a href="http://pcdsh01.on.br/HISTHV.htm">
+ #	History of Summer Time
+@@ -125,7 +129,7 @@
+ # transition date for London, namely 1847-12-01.  We don't know as much
+ # about Dublin, so we use 1880-08-02, the legal transition time.
+ 
+-# From Paul Eggert (1999-01-30):
++# From Paul Eggert (2003-07-29):
+ # Summer Time was first seriously proposed by William Willett (1857-1915),
+ # a London builder and member of the Royal Astronomical Society
+ # who circulated a pamphlet ``The Waste of Daylight'' (1907)
+@@ -133,14 +137,24 @@
+ # and retarding them by the same amount on four Sundays in September.
+ # A bill was drafted in 1909 and introduced in Parliament several times,
+ # but it met with ridicule and opposition, especially from farming interests.
+-# One-hour Summer Time was eventually adopted as a wartime measure in 1916.
+-# See:
+-# <a href="http://www.the-times.co.uk/news/pages/tim/2000/05/18/x-timcrtcrt01011.html">
+-# Summer Time Arrives Early, The Times (2000-05-18)
+-# </a>
+-# A monument was erected in 1927 to Willett, in an open space in a 45-acre wood
+-# near Chiselhurst, Kent that was purchased by popular subscription and open
+-# to the public.
++# Later editions of the pamphlet proposed one-hour summer time, and
++# it was eventually adopted as a wartime measure in 1916.
++# See: Summer Time Arrives Early, The Times (2000-05-18).
++# A monument to Willett was unveiled on 1927-05-21, in an open space in
++# a 45-acre wood near Chiselhurst, Kent that was purchased by popular
++# subscription and open to the public.  On the south face of the monolith,
++# designed by G. W. Miller, is the the William Willett Memorial Sundial,
++# which is permanently set to Summer Time.
++
++# From Winston Churchill (1934-04-28):
++# It is one of the paradoxes of history that we should owe the boon of
++# summer time, which gives every year to the people of this country
++# between 160 and 170 hours more daylight leisure, to a war which
++# plunged Europe into darkness for four years, and shook the
++# foundations of civilization throughout the world.
++#	-- <a href="http://www.winstonchurchill.org/fh114willett.htm">
++#	"A Silent Toast to William Willett", Pictorial Weekly
++#	</a>
+ 
+ # From Paul Eggert (1996-09-03):
+ # The OED Supplement says that the English originally said ``Daylight Saving''
+@@ -1323,7 +1337,7 @@
+ 			2:00	1:00	EEST	1989 Sep lastSun 2:00s
+ 			2:00	Latvia	EE%sT	1997 Jan 21
+ 			2:00	EU	EE%sT	2000 Feb 29
+-			2:00	-	EET	2001
++			2:00	-	EET	2001 Jan  2
+ 			2:00	EU	EE%sT
+ 
+ # Liechtenstein
+@@ -1750,8 +1764,10 @@
+ Rule	Port	1981	1982	-	Mar	lastSun	 1:00s	1:00	S
+ Rule	Port	1983	only	-	Mar	lastSun	 2:00s	1:00	S
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
++# Shanks says that the transition from LMT to WET occurred 1911-05-24;
++# Willett says 1912-01-01.  Go with Willett.
+ Zone	Europe/Lisbon	-0:36:32 -	LMT	1884
+-			-0:36:32 -	LMT	1911 May 24   # Lisbon Mean Time
++			-0:36:32 -	LMT	1912 Jan  1  # Lisbon Mean Time
+ 			 0:00	Port	WE%sT	1966 Apr  3 2:00
+ 			 1:00	-	CET	1976 Sep 26 1:00
+ 			 0:00	Port	WE%sT	1983 Sep 25 1:00s
+--- timezone/iso3166.tab	2003-11-05 10:37:29.000000000 -0500
++++ timezone/iso3166.tab	2003-10-06 13:46:22.000000000 -0400
+@@ -6,7 +6,7 @@
+ #
+ # This file contains a table with the following columns:
+ # 1.  ISO 3166-1 alpha-2 country code, current as of
+-#     ISO 3166-1 Newsletter No. V-7 (2003-01-14).  See:
++#     ISO 3166-1 Newsletter No. V-8 (2003-07-23).  See:
+ #     <a href="http://www.iso.org/iso/en/prods-services/iso3166ma/index.html">
+ #     ISO 3166 Maintenance agency (ISO 3166/MA)
+ #     </a>.
+@@ -69,6 +69,7 @@
+ CN	China
+ CO	Colombia
+ CR	Costa Rica
++CS	Serbia and Montenegro
+ CU	Cuba
+ CV	Cape Verde
+ CX	Christmas Island
+@@ -256,7 +257,6 @@
+ WS	Samoa (Western)
+ YE	Yemen
+ YT	Mayotte
+-YU	Serbia and Montenegro
+ ZA	South Africa
+ ZM	Zambia
+ ZW	Zimbabwe
+--- timezone/leapseconds	2002-01-28 23:18:04.000000000 -0500
++++ timezone/leapseconds	2003-09-22 15:50:51.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)leapseconds	7.15
++# @(#)leapseconds	7.16
+ 
+ # Allowance for leapseconds added to each timezone file.
+ 
+@@ -44,8 +44,8 @@
+ Leap	1997	Jun	30	23:59:60	+	S
+ Leap	1998	Dec	31	23:59:60	+	S
+ 
+-#                  INTERNATIONAL EARTH ROTATION SERVICE (IERS)
+-#   	       SERVICE INTERNATIONAL DE LA ROTATION TERRESTRE
++# 		INTERNATIONAL EARTH ROTATION SERVICE (IERS)
++# 		SERVICE INTERNATIONAL DE LA ROTATION TERRESTRE
+ # 
+ # SERVICE DE LA ROTATION TERRESTRE
+ # OBSERVATOIRE DE PARIS
+@@ -54,27 +54,26 @@
+ # FAX       : 33 (0) 1 40 51 22 91
+ # Internet  : iers@obspm.fr
+ # 
+-#                                               Paris, 14 January 2002
++# 				 		Paris, 1 July 2003
+ # 
+-#                                               Bulletin C 23
++# 						Bulletin C 26
+ # 
+-#                                               To authorities responsible
+-#                                               for the measurement and
+-#                                               distribution of time
++# 						To authorities responsible
++# 						for the measurement and
++# 						distribution of time
+ # 
+-#                          INFORMATION ON UTC - TAI
++# 			INFORMATION ON UTC - TAI
+ # 
+-# NO positive leap second will be introduced at the end of June 2002.
+-# The difference between UTC and the International Atomic Time TAI is :		
++# NO positive leap second will be introduced at the end of December 2003.
++# The difference between UTC and the International Atomic Time TAI is:
+ # 		
+-#     from 1999 January 1, 0h UTC, until further notice : UTC-TAI = -32 s
++# 	from 1999 January 1, 0h UTC, until further notice: UTC-TAI = -32 s
+ # 
+ # Leap seconds can be introduced in UTC at the end of the months of December
+-# or June,  depending on the evolution of UT1-TAI. Bulletin C is mailed every
++# or June, depending on the evolution of UT1-TAI. Bulletin C is mailed every
+ # six months, either to announce a time step in UTC, or to confirm that there
+ # will be no time step at the next possible date.
+ # 
+-#                                             Daniel GAMBIS
+-#                                             Director			
+-#                                             Earth Orientation Center of IERS
+-#                                             Observatoire de Paris, France
++# 					Daniel GAMBIS
++# 					Director
++# 					Earth Orientation Center of IERS
+--- timezone/northamerica	2003-11-05 10:37:29.000000000 -0500
++++ timezone/northamerica	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)northamerica	7.62
++# @(#)northamerica	7.63
+ # also includes Central America and the Caribbean
+ 
+ # This data is by no means authoritative; if you think you know better,
+@@ -685,9 +685,15 @@
+ # Except where otherwise noted, Shanks is the source for entries through 1990,
+ # and IATA SSIM is the source for entries after 1990.
+ #
+-# Another source occasionally used is Edward W. Whitman, World Time Differences,
+-# Whitman Publishing Co, 2 Niagara Av, Ealing, London (undated), which
+-# I found in the UCLA library.
++# Other sources occasionally used include:
++#
++#	Edward W. Whitman, World Time Differences,
++#	Whitman Publishing Co, 2 Niagara Av, Ealing, London (undated),
++#	which I found in the UCLA library.
++#
++#	<a href="http://www.pettswoodvillage.co.uk/Daylight_Savings_William_Willett.pdf">
++#	William Willett, The Waste of Daylight, 19th edition
++#	</a> (1914-03)
+ #
+ # See the `europe' file for Greenland.
+ 
+@@ -743,7 +749,8 @@
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+ Rule	Canada	1918	only	-	Apr	14	2:00	1:00	D
+ Rule	Canada	1918	only	-	Oct	31	2:00	0	S
+-Rule	Canada	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	Canada	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	Canada	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	Canada	1945	only	-	Sep	30	2:00	0	S
+ Rule	Canada	1974	1986	-	Apr	lastSun	2:00	1:00	D
+ Rule	Canada	1974	max	-	Oct	lastSun	2:00	0	S
+@@ -759,27 +766,20 @@
+ # but excluding, say, Black Tickle.
+ 
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+-Rule	StJohns	1917	1918	-	Apr	Sun>=8	2:00	1:00	D
++Rule	StJohns	1917	only	-	Apr	 8	2:00	1:00	D
+ Rule	StJohns	1917	only	-	Sep	17	2:00	0	S
+-Rule	StJohns	1918	only	-	Oct	31	2:00	0	S
+ # Whitman gives 1919 Apr 5 and 1920 Apr 5; go with Shanks.
+ Rule	StJohns	1919	only	-	May	 5	23:00	1:00	D
+ Rule	StJohns	1919	only	-	Aug	12	23:00	0	S
+ # For 1931-1935 Whitman gives Apr same date; go with Shanks.
+ Rule	StJohns	1920	1935	-	May	Sun>=1	23:00	1:00	D
+ Rule	StJohns	1920	1935	-	Oct	lastSun	23:00	0	S
+-# For 1936-1941 Shanks gives May Mon>=9 and Oct Mon>=2; go with Whitman.
+-Rule	StJohns	1936	1941	-	May	Sun>=8	0:00	1:00	D
+-Rule	StJohns	1936	1941	-	Oct	Sun>=1	0:00	0	S
+-# Shanks gives 1942 May 11 - 1945 Sep 30; go with Whitman.
+-Rule	StJohns	1942	only	-	Mar	 1	0:00	1:00	W
+-Rule	StJohns	1942	only	-	Dec	31	0:00	0	S
+-Rule	StJohns	1943	only	-	May	30	0:00	1:00	W
+-Rule	StJohns	1943	only	-	Sep	 5	0:00	0	S
+-Rule	StJohns	1944	only	-	Jul	10	0:00	1:00	W
+-Rule	StJohns	1944	only	-	Sep	 2	0:00	0	S
+-Rule	StJohns	1945	only	-	Jan	 1	0:00	1:00	W
+-Rule	StJohns	1945	only	-	Oct	 7	2:00	0	S
++# For 1936-1941 Whitman gives May Sun>=8 and Oct Sun>=1; go with Shanks.
++Rule	StJohns	1936	1941	-	May	Mon>=9	0:00	1:00	D
++Rule	StJohns	1936	1941	-	Oct	Mon>=2	0:00	0	S
++# Whitman gives the following transitions:
++# 1942 03-01/12-31, 1943 05-30/09-05, 1944 07-10/09-02, 1945 01-01/10-07
++# but go with Shanks and assume they used Canadian rules.
+ # For 1946-9 Whitman gives May 5,4,9,1 - Oct 1,5,3,2, and for 1950 he gives
+ # Apr 30 - Sep 24; go with Shanks.
+ Rule	StJohns	1946	1950	-	May	Sun>=8	2:00	1:00	D
+@@ -797,18 +797,24 @@
+ # St John's has an apostrophe, but Posix file names can't have apostrophes.
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/St_Johns	-3:30:52 -	LMT	1884
++			-3:30:52 StJohns N%sT	1918
++			-3:30:52 Canada	N%sT	1919
+ 			-3:30:52 StJohns N%sT	1935 Mar 30
++			-3:30	StJohns	N%sT	1942 May 11
++			-3:30	Canada	N%sT	1946
+ 			-3:30	StJohns	N%sT
+ 
+-
+ # most of east Labrador
+ 
+ # The name `Happy Valley-Goose Bay' is too long; use `Goose Bay'.
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/Goose_Bay	-4:01:40 -	LMT	1884 # Happy Valley-Goose Bay
+-			-3:30:52 StJohns NST	1919
++			-3:30:52 -	NST	1918
++			-3:30:52 Canada N%sT	1919
+ 			-3:30:52 -	NST	1935 Mar 30
+ 			-3:30	-	NST	1936
++			-3:30	StJohns	N%sT	1942 May 11
++			-3:30	Canada	N%sT	1946
+ 			-3:30	StJohns	N%sT	1966 Mar 15 2:00
+ 			-4:00	StJohns	A%sT
+ 
+@@ -830,8 +836,6 @@
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+ Rule Halifax	1916	only	-	Apr	 1	0:00	1:00	D
+ Rule Halifax	1916	only	-	Oct	 1	0:00	0	S
+-Rule Halifax	1918	only	-	Apr	14	2:00	1:00	D
+-Rule Halifax	1918	only	-	Oct	31	2:00	0	S
+ Rule Halifax	1920	only	-	May	 9	0:00	1:00	D
+ Rule Halifax	1920	only	-	Aug	29	0:00	0	S
+ Rule Halifax	1921	only	-	May	 6	0:00	1:00	D
+@@ -850,6 +854,7 @@
+ Rule Halifax	1929	only	-	Sep	 3	0:00	0	S
+ Rule Halifax	1930	only	-	Sep	15	0:00	0	S
+ Rule Halifax	1931	1932	-	Sep	Mon>=24	0:00	0	S
++Rule Halifax	1932	only	-	May	 1	0:00	1:00	D
+ Rule Halifax	1933	only	-	Apr	30	0:00	1:00	D
+ Rule Halifax	1933	only	-	Oct	 2	0:00	0	S
+ Rule Halifax	1934	only	-	May	20	0:00	1:00	D
+@@ -862,33 +867,55 @@
+ Rule Halifax	1937	1941	-	Sep	Mon>=24	0:00	0	S
+ Rule Halifax	1939	only	-	May	28	0:00	1:00	D
+ Rule Halifax	1940	1941	-	May	Sun>=1	0:00	1:00	D
+-Rule Halifax	1942	only	-	Feb	9	2:00	1:00	W
+-Rule Halifax	1945	1959	-	Sep	lastSun	2:00	0	S
+-Rule Halifax	1946	1959	-	Apr	lastSun	2:00	1:00	D
+-Rule Halifax	1962	1986	-	Apr	lastSun	2:00	1:00	D
+-Rule Halifax	1962	max	-	Oct	lastSun	2:00	0	S
+-Rule Halifax	1987	max	-	Apr	Sun>=1	2:00	1:00	D
++Rule Halifax	1946	1949	-	Sep	lastSun	2:00	0	S
++Rule Halifax	1946	1949	-	Apr	lastSun	2:00	1:00	D
++Rule Halifax	1951	1954	-	Sep	lastSun	2:00	0	S
++Rule Halifax	1951	1954	-	Apr	lastSun	2:00	1:00	D
++Rule Halifax	1956	1959	-	Sep	lastSun	2:00	0	S
++Rule Halifax	1956	1959	-	Apr	lastSun	2:00	1:00	D
++Rule Halifax	1962	1973	-	Apr	lastSun	2:00	1:00	D
++Rule Halifax	1962	1973	-	Oct	lastSun	2:00	0	S
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/Halifax	-4:14:24 -	LMT	1902 Jun 15
+-			-4:00	Halifax	A%sT
++			-4:00	Halifax	A%sT	1918
++			-4:00	Canada	A%sT	1919
++			-4:00	Halifax	A%sT	1942 Feb  9 2:00s
++			-4:00	Canada	A%sT	1946
++			-4:00	Halifax	A%sT	1974
++			-4:00	Canada	A%sT
+ Zone America/Glace_Bay	-3:59:48 -	LMT	1902 Jun 15
+ 			-4:00	Canada	A%sT	1953
+ 			-4:00	Halifax	A%sT	1954
+ 			-4:00	-	AST	1972
+-			-4:00	Halifax	A%sT
++			-4:00	Halifax	A%sT	1974
++			-4:00	Canada	A%sT
+ 
+ 
+ # Ontario, Quebec
+ 
+ # From Paul Eggert (1996-06-12):
+-# Shanks writes that since 1970 most of this region has been like Montreal.
++# Shanks writes that since 1970 most of Ontario has been like Toronto,
++# and most of Quebec has been like Montreal.
+ # Thunder Bay skipped DST in 1973.
+ # Many smaller locales did not observe peacetime DST until 1974;
+ # Nipigon (EST) and Rainy River (CST) are the largest that we know of.
+ # Far west Ontario is like Winnipeg; far east Quebec is like Halifax.
+ 
++# From Mark Brader (2003-07-26):
++# [According to the Toronto Star] Orillia, Ontario, adopted DST
++# effective Saturday, 1912-06-22, 22:00; the article mentions that
++# Port Arthur (now part of Thunder Bay, Ontario) as well as Moose Jaw
++# have already done so.  In Orillia DST was to run until Saturday,
++# 1912-08-31 (no time mentioned), but it was met with considerable
++# hostility from certain segments of the public, and was revoked after
++# only two weeks -- I copied it as Saturday, 1912-07-07, 22:00, but
++# presumably that should be -07-06.  (1912-06-19, -07-12; also letters
++# earlier in June).
++#
++# Kenora, Ontario, was to abandon DST on 1914-06-01 (-05-21).
++
+ # From Paul Eggert (1997-10-17):
+-# msb@sq.com writes that an article in the 1997-10-14 Toronto Star
++# Mark Brader writes that an article in the 1997-10-14 Toronto Star
+ # says that Atikokan, Ontario currently does not observe DST,
+ # but will vote on 11-10 whether to use EST/EDT.
+ # He also writes that the
+@@ -915,43 +942,99 @@
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+ Rule	Mont	1917	only	-	Mar	25	2:00	1:00	D
+ Rule	Mont	1917	only	-	Apr	24	0:00	0	S
+-Rule	Mont	1918	only	-	Apr	14	2:00	1:00	D
+-Rule	Mont	1918	only	-	Oct	31	2:00	0	S
+ Rule	Mont	1919	only	-	Mar	31	2:30	1:00	D
+ Rule	Mont	1919	only	-	Oct	25	2:30	0	S
+ Rule	Mont	1920	only	-	May	 2	2:30	1:00	D
+-Rule	Mont	1920	only	-	Oct	 3	2:30	0	S
++Rule	Mont	1920	1922	-	Oct	Sun>=1	2:30	0	S
+ Rule	Mont	1921	only	-	May	 1	2:00	1:00	D
+-Rule	Mont	1921	only	-	Oct	 2	2:30	0	S
+ Rule	Mont	1922	only	-	Apr	30	2:00	1:00	D
+-Rule	Mont	1922	only	-	Oct	 1	2:30	0	S
+ Rule	Mont	1924	only	-	May	17	2:00	1:00	D
+ Rule	Mont	1924	1926	-	Sep	lastSun	2:30	0	S
+ Rule	Mont	1925	1926	-	May	Sun>=1	2:00	1:00	D
+-Rule	Mont	1927	only	-	May	 1	0:00	1:00	D
+-Rule	Mont	1927	1932	-	Sep	Sun>=25	0:00	0	S
+-Rule	Mont	1928	1931	-	Apr	Sun>=25	0:00	1:00	D
+-Rule	Mont	1932	only	-	May	 1	0:00	1:00	D
+-Rule	Mont	1933	1940	-	Apr	Sun>=24	0:00	1:00	D
+-Rule	Mont	1933	only	-	Oct	 1	0:00	0	S
+-Rule	Mont	1934	1939	-	Sep	Sun>=24	0:00	0	S
++Rule	Mont	1927	1937	-	Apr	lastSat	24:00	1:00	D
++Rule	Mont	1927	1937	-	Sep	lastSat	24:00	0	S
++Rule	Mont	1938	1940	-	Apr	lastSun	0:00	1:00	D
++Rule	Mont	1938	1939	-	Sep	lastSun	0:00	0	S
++Rule	Mont	1946	1973	-	Apr	lastSun	2:00	1:00	D
+ Rule	Mont	1945	1948	-	Sep	lastSun	2:00	0	S
+-Rule	Mont	1946	1986	-	Apr	lastSun	2:00	1:00	D
+ Rule	Mont	1949	1950	-	Oct	lastSun	2:00	0	S
+ Rule	Mont	1951	1956	-	Sep	lastSun	2:00	0	S
+-Rule	Mont	1957	max	-	Oct	lastSun	2:00	0	S
+-Rule	Mont	1987	max	-	Apr	Sun>=1	2:00	1:00	D
++Rule	Mont	1957	1973	-	Oct	lastSun	2:00	0	S
++
++Rule	Toronto	1919	only	-	Mar	30	23:30	1:00	D
++Rule	Toronto	1919	only	-	Oct	26	0:00	0	S
++Rule	Toronto	1920	only	-	May	 2	2:00	1:00	D
++Rule	Toronto	1920	only	-	Sep	26	0:00	0	S
++Rule	Toronto	1921	only	-	May	15	2:00	1:00	D
++Rule	Toronto	1921	only	-	Sep	15	2:00	0	S
++Rule	Toronto	1922	1923	-	May	Sun>=8	2:00	1:00	D
++# Shanks says 1923-09-19; assume it's a typo and that "-16" was meant.
++Rule	Toronto	1922	1926	-	Sep	Sun>=15	2:00	0	S
++Rule	Toronto	1924	1927	-	May	Sun>=1	2:00	1:00	D
++Rule	Toronto	1927	1928	-	Sep	lastSun	2:00	0	S
++Rule	Toronto	1928	only	-	Apr	lastSun	2:00	1:00	D
++Rule	Toronto	1929	only	-	Apr	lastSun	0:00	1:00	D
++Rule	Toronto	1929	only	-	Sep	lastSun	0:00	0	S
++Rule	Toronto	1930	1937	-	Apr	lastSat	24:00	1:00	D
++Rule	Toronto	1930	1937	-	Sep	lastSat	24:00	0	S
++Rule	Toronto	1938	1940	-	Apr	lastSun	0:00	1:00	D
++Rule	Toronto	1938	1939	-	Sep	lastSun	0:00	0	S
++Rule	Toronto	1945	1946	-	Sep	lastSun	2:00	0	S
++Rule	Toronto	1946	only	-	Apr	lastSun	2:00	1:00	D
++Rule	Toronto	1947	1949	-	Apr	lastSun	0:00	1:00	D
++Rule	Toronto	1947	1948	-	Sep	lastSun	0:00	0	S
++Rule	Toronto	1949	only	-	Nov	lastSun	0:00	0	S
++Rule	Toronto	1950	1973	-	Apr	lastSun	2:00	1:00	D
++Rule	Toronto	1950	only	-	Nov	lastSun	2:00	0	S
++Rule	Toronto	1951	1956	-	Sep	lastSun	2:00	0	S
++# Shanks says Toronto ended DST a week early in 1971, namely on 1971-10-24,
++# but Mark Brader wrote (2003-05-31) that he checked the 1971-10-30 issue
++# of the Toronto Star, and it said that DST ended 1971-10-31 as usual.
++Rule	Toronto	1957	1973	-	Oct	lastSun	2:00	0	S
++
++# From Paul Eggert (2003-07-27):
++# Willett (1914-03) writes (p. 17) "In the Cities of Fort William, and
++# Port Arthur, Ontario, the principle of the Bill has been in
++# operation for the past three years, and in the City of Moose Jaw,
++# Saskatchewan, for one year."  Assume that the Thunder Bay region
++# observed DST starting 1910, and Moose Jaw starting 1912, as this
++# matches the Toronto Star report about Moose Jaw.  For lack of better
++# info, assume the Thunder Bay region used Willett's proposal, namely
++# third Sunday in April at 02:00 to third Sunday in September at
++# 03:00; also assume that they continued until Canada instituted
++# uniform DST in 1918.
++Rule	Thunder	1910	1917	-	Apr	Sun>=15	2:00s	1:00	D
++Rule	Thunder	1910	1917	-	Sep	Sun>=15	2:00s	0	S
++
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/Montreal	-4:54:16 -	LMT	1884
+-			-5:00	Mont	E%sT
++			-5:00	Mont	E%sT	1918
++			-5:00	Canada	E%sT	1919
++			-5:00	Mont	E%sT	1942 Feb  9 2:00s
++			-5:00	Canada	E%sT	1946
++			-5:00	Mont	E%sT	1974
++			-5:00	Canada	E%sT
++Zone America/Toronto	-5:17:32 -	LMT	1895
++			-5:00	Canada	E%sT	1919
++			-5:00	Toronto	E%sT	1942 Feb  9 2:00s
++			-5:00	Canada	E%sT	1946
++			-5:00	Toronto	E%sT	1974
++			-5:00	Canada	E%sT
+ Zone America/Thunder_Bay -5:57:00 -	LMT	1895
++			-5:00	Thunder	E%sT	1918
++			-5:00	Canada	E%sT	1940 Sep 29
++			-5:00	1:00	EDT	1942 Feb  9 2:00s
+ 			-5:00	Canada	E%sT	1970
+ 			-5:00	Mont	E%sT	1973
+ 			-5:00	-	EST	1974
+ 			-5:00	Canada	E%sT
+ Zone America/Nipigon	-5:53:04 -	LMT	1895
++			-5:00	Canada	E%sT	1940 Sep 29
++			-5:00	1:00	EDT	1942 Feb  9 2:00s
+ 			-5:00	Canada	E%sT
+ Zone America/Rainy_River -6:17:56 -	LMT	1895
++			-6:00	Canada	C%sT	1940 Sep 29
++			-6:00	1:00	CDT	1942 Feb  9 2:00s
+ 			-6:00	Canada	C%sT
+ 
+ 
+@@ -964,7 +1047,8 @@
+ Rule	Winn	1918	only	-	Oct	31	2:00	0	S
+ Rule	Winn	1937	only	-	May	16	2:00	1:00	D
+ Rule	Winn	1937	only	-	Sep	26	2:00	0	S
+-Rule	Winn	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	Winn	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	Winn	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	Winn	1945	only	-	Sep	lastSun	2:00	0	S
+ Rule	Winn	1946	only	-	May	12	2:00	1:00	D
+ Rule	Winn	1946	only	-	Oct	13	2:00	0	S
+@@ -992,6 +1076,20 @@
+ 
+ # Saskatchewan
+ 
++# From Mark Brader (2003-07-26):
++# The first actual adoption of DST in Canada was at the municipal
++# level.  As the [Toronto] Star put it (1912-06-07), "While people
++# elsewhere have long been talking of legislation to save daylight,
++# the city of Moose Jaw [Saskatchewan] has acted on its own hook."
++# DST in Moose Jaw began on Saturday, 1912-06-01 (no time mentioned:
++# presumably late evening, as below), and would run until "the end of
++# the summer".  The discrepancy between municipal time and railroad
++# time was noted.
++
++# From Paul Eggert (2003-07-27):
++# Willett (1914-03) notes that DST "has been in operation ... in the
++# City of Moose Jaw, Saskatchewan, for one year."
++
+ # From Paul Eggert (2000-10-02):
+ # Shanks writes that since 1970 most of this region has been like Regina.
+ # Some western towns (e.g. Swift Current) switched from MST/MDT to CST in 1972.
+@@ -1034,12 +1132,14 @@
+ Rule	Regina	1937	only	-	Oct	Sun>=8	0:00	0	S
+ Rule	Regina	1938	only	-	Oct	Sun>=1	0:00	0	S
+ Rule	Regina	1939	1941	-	Oct	Sun>=8	0:00	0	S
+-Rule	Regina	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	Regina	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	Regina	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	Regina	1945	only	-	Sep	lastSun	2:00	0	S
+ Rule	Regina	1946	only	-	Apr	Sun>=8	2:00	1:00	D
+ Rule	Regina	1946	only	-	Oct	Sun>=8	2:00	0	S
+-Rule	Regina	1947	1959	-	Apr	lastSun	2:00	1:00	D
+-Rule	Regina	1947	1958	-	Sep	lastSun	2:00	0	S
++Rule	Regina	1947	1957	-	Apr	lastSun	2:00	1:00	D
++Rule	Regina	1947	1957	-	Sep	lastSun	2:00	0	S
++Rule	Regina	1959	only	-	Apr	lastSun	2:00	1:00	D
+ Rule	Regina	1959	only	-	Oct	lastSun	2:00	0	S
+ #
+ Rule	Swift	1957	only	-	Apr	lastSun	2:00	1:00	D
+@@ -1067,7 +1167,8 @@
+ Rule	Edm	1920	1923	-	Apr	lastSun	2:00	1:00	D
+ Rule	Edm	1920	only	-	Oct	lastSun	2:00	0	S
+ Rule	Edm	1921	1923	-	Sep	lastSun	2:00	0	S
+-Rule	Edm	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	Edm	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	Edm	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	Edm	1945	only	-	Sep	lastSun	2:00	0	S
+ Rule	Edm	1947	only	-	Apr	lastSun	2:00	1:00	D
+ Rule	Edm	1947	only	-	Sep	lastSun	2:00	0	S
+@@ -1093,7 +1194,8 @@
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+ Rule	Vanc	1918	only	-	Apr	14	2:00	1:00	D
+ Rule	Vanc	1918	only	-	Oct	31	2:00	0	S
+-Rule	Vanc	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	Vanc	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	Vanc	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	Vanc	1945	only	-	Sep	30	2:00	0	S
+ Rule	Vanc	1946	1986	-	Apr	lastSun	2:00	1:00	D
+ Rule	Vanc	1946	only	-	Oct	13	2:00	0	S
+@@ -1219,7 +1321,8 @@
+ Rule	NT_YK	1918	only	-	Oct	27	2:00	0	S
+ Rule	NT_YK	1919	only	-	May	25	2:00	1:00	D
+ Rule	NT_YK	1919	only	-	Nov	 1	0:00	0	S
+-Rule	NT_YK	1942	only	-	Feb	 9	2:00	1:00	W
++Rule	NT_YK	1942	only	-	Feb	 9	2:00	1:00	W # War
++Rule	NT_YK	1945	only	-	Aug	14	23:00u	1:00	P # Peace
+ Rule	NT_YK	1945	only	-	Sep	30	2:00	0	S
+ Rule	NT_YK	1965	only	-	Apr	lastSun	0:00	2:00	DD
+ Rule	NT_YK	1965	only	-	Oct	lastSun	2:00	0	S
+@@ -1412,7 +1515,7 @@
+ Rule	Mexico	1939	only	-	Jun	25	0:00	0	S
+ Rule	Mexico	1940	only	-	Dec	9	0:00	1:00	D
+ Rule	Mexico	1941	only	-	Apr	1	0:00	0	S
+-Rule	Mexico	1943	only	-	Dec	16	0:00	1:00	W
++Rule	Mexico	1943	only	-	Dec	16	0:00	1:00	W # War
+ Rule	Mexico	1944	only	-	May	1	0:00	0	S
+ Rule	Mexico	1950	only	-	Feb	12	0:00	1:00	D
+ Rule	Mexico	1950	only	-	Jul	30	0:00	0	S
+@@ -1682,7 +1785,8 @@
+ # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+ Rule	Salv	1987	1988	-	May	Sun>=1	0:00	1:00	D
+ Rule	Salv	1987	1988	-	Sep	lastSun	0:00	0	S
+-# There are too many San Salvadors elsewhere, so we'll use `El Salvador'.
++# There are too many San Salvadors elsewhere, so use America/El_Salvador
++# instead of America/San_Salvador.
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/El_Salvador -5:56:48 -	LMT	1921		# San Salvador
+ 			-6:00	Salv	C%sT
+@@ -1812,7 +1916,8 @@
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+ Zone America/Miquelon	-3:44:40 -	LMT	1911 May 15	# St Pierre
+ 			-4:00	-	AST	1980 May
+-			-3:00	Mont	PM%sT	# Pierre & Miquelon Time
++			-3:00	-	PMST	1987 # Pierre & Miquelon Time
++			-3:00	Canada	PM%sT
+ 
+ # St Vincent and the Grenadines
+ # Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+--- timezone/southamerica	2003-11-05 10:37:29.000000000 -0500
++++ timezone/southamerica	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)southamerica	7.46
++# @(#)southamerica	7.49
+ 
+ # This data is by no means authoritative; if you think you know better,
+ # go ahead and edit the file (and please send any changes to
+@@ -443,12 +443,13 @@
+ # Decree 4,399 (2002-10-01) repeals DST in AL, CE, MA, PB, PE, PI, RN, SE.
+ # <a href="http://www.presidencia.gov.br/CCIVIL/decreto/2002/D4399.htm"></a>
+ Rule	Brazil	2002	only	-	Nov	 3	 0:00	1:00	S
++# Decree 4,844 (2003-09-24; corrected 2003-09-26) repeals DST in BA, MT, TO.
++# <a href="http://www.presidencia.gov.br/CCIVIL/decreto/2003/D4844.htm"></a>
++Rule	Brazil	2003	max	-	Oct	Sun>=15	 0:00	1:00	S
++# The latest ruleset listed above says that the following states observe DST:
++# DF, ES, GO, MG, MS, PR, RJ, RS, SC, SP.
+ #
+-Rule	Brazil	2003	max	-	Oct	Sun>=8	 0:00	1:00	S
+-# The latest decree listed above says that the following states observe DST:
+-# BA, DF, ES, GO, MG, MS, MT, PR, RJ, RS, SC, SP, TO.
+-#
+-# For dates after mid-2003, the above rules with TO="max" are guesses
++# For dates after mid-2004, the above rules with TO="max" are guesses
+ # and are quite possibly wrong, but are more likely than no DST at all.
+ 
+ 
+@@ -462,6 +463,9 @@
+ #
+ # Amapa (AP), east Para (PA)
+ # East Para includes Belem, Maraba, Serra Norte, and Sao Felix do Xingu.
++# The division between east and west Para is the river Xingu.
++# In the north a very small part from the river Javary (now Jari I guess,
++# the border with Amapa) to the Amazon, then to the Xingu.
+ Zone America/Belem	-3:13:56 -	LMT	1914
+ 			-3:00	Brazil	BR%sT	1988 Sep 12
+ 			-3:00	-	BRT
+@@ -489,7 +493,8 @@
+ Zone America/Araguaina	-3:12:48 -	LMT	1914
+ 			-3:00	Brazil	BR%sT	1990 Sep 17
+ 			-3:00	-	BRT	1995 Sep 14
+-			-3:00	Brazil	BR%sT
++			-3:00	Brazil	BR%sT	2003 Sep 24
++			-3:00	-	BRT
+ #
+ # Alagoas (AL), Sergipe (SE)
+ Zone America/Maceio	-2:22:52 -	LMT	1914
+@@ -502,7 +507,14 @@
+ 			-3:00	Brazil	BR%sT	2002 Oct  1
+ 			-3:00	-	BRT
+ #
+-# Bahia (BA), Goias (GO), Distrito Federal (DF), Minas Gerais (MG),
++# Bahia (BA)
++# There are too many Salvadors elsewhere, so use America/Bahia instead
++# of America/Salvador.
++Zone America/Bahia	-2:34:04 -	LMT	1914
++			-3:00	Brazil	BR%sT	2003 Sep 24
++			-3:00	-	BRT
++#
++# Goias (GO), Distrito Federal (DF), Minas Gerais (MG),
+ # Espirito Santo (ES), Rio de Janeiro (RJ), Sao Paulo (SP), Parana (PR),
+ # Santa Catarina (SC), Rio Grande do Sul (RS)
+ Zone America/Sao_Paulo	-3:06:28 -	LMT	1914
+@@ -510,10 +522,15 @@
+ 			-3:00	1:00	BRST	1964
+ 			-3:00	Brazil	BR%sT
+ #
+-# Mato Grosso (MT), Mato Grosso do Sul (MS)
+-Zone America/Cuiaba	-3:44:20 -	LMT	1914
++# Mato Grosso do Sul (MS)
++Zone America/Campo_Grande -3:38:28 -	LMT	1914
+ 			-4:00	Brazil	AM%sT
+ #
++# Mato Grosso (MT)
++Zone America/Cuiaba	-3:44:20 -	LMT	1914
++			-4:00	Brazil	AM%sT	2003 Sep 24
++			-4:00	-	AMT
++#
+ # west Para (PA), Rondonia (RO)
+ # West Para includes Altamira, Oribidos, Prainha, Oriximina, and Santarem.
+ Zone America/Porto_Velho -4:15:36 -	LMT	1914
+@@ -528,6 +545,8 @@
+ 			-4:00	-	AMT
+ #
+ # east Amazonas (AM): Boca do Acre, Jutai, Manaus, Floriano Peixoto
++# The great circle line from Tabatinga to Porto Acre divides
++# east from west Amazonas.
+ Zone America/Manaus	-4:00:04 -	LMT	1914
+ 			-4:00	Brazil	AM%sT	1988 Sep 12
+ 			-4:00	-	AMT	1993 Sep 28
+--- timezone/zdump.c	2001-03-15 20:07:38.000000000 -0500
++++ timezone/zdump.c	2003-09-22 15:50:15.000000000 -0400
+@@ -1,8 +1,4 @@
+-#ifndef lint
+-#ifndef NOID
+-static char	elsieid[] = "@(#)zdump.c	7.29";
+-#endif /* !defined NOID */
+-#endif /* !defined lint */
++static char	elsieid[] = "@(#)zdump.c	7.31";
+ 
+ /*
+ ** This code has been made independent of the rest of the time
+@@ -163,6 +159,11 @@
+ 	(void) textdomain(TZ_DOMAIN);
+ #endif /* HAVE_GETTEXT - 0 */
+ 	progname = argv[0];
++	for (i = 1; i < argc; ++i)
++		if (strcmp(argv[i], "--version") == 0) {
++			(void) printf("%s\n", elsieid);
++			(void) exit(EXIT_SUCCESS);
++		}
+ 	vflag = 0;
+ 	cutoff = NULL;
+ 	while ((c = getopt(argc, argv, "c:v")) == 'c' || c == 'v')
+@@ -172,7 +173,7 @@
+ 	if ((c != EOF && c != -1) ||
+ 		(optind == argc - 1 && strcmp(argv[optind], "=") == 0)) {
+ 			(void) fprintf(stderr,
+-_("%s: usage is %s [ -v ] [ -c cutoff ] zonename ...\n"),
++_("%s: usage is %s [ --version ] [ -v ] [ -c cutoff ] zonename ...\n"),
+ 				argv[0], argv[0]);
+ 			(void) exit(EXIT_FAILURE);
+ 	}
+--- timezone/zic.c	2003-11-05 10:37:29.000000000 -0500
++++ timezone/zic.c	2003-09-22 15:50:02.000000000 -0400
+@@ -1,8 +1,4 @@
+-#ifndef lint
+-#ifndef NOID
+-static char	elsieid[] = "@(#)zic.c	7.107";
+-#endif /* !defined NOID */
+-#endif /* !defined lint */
++static char	elsieid[] = "@(#)zic.c	7.113";
+ 
+ #include "private.h"
+ #include "locale.h"
+@@ -446,7 +442,7 @@
+ static void
+ usage P((void))
+ {
+-	(void) fprintf(stderr, _("%s: usage is %s [ -s ] [ -v ] [ -l localtime ] [ -p posixrules ] \\\n\t[ -d directory ] [ -L leapseconds ] [ -y yearistype ] [ filename ... ]\n"),
++	(void) fprintf(stderr, _("%s: usage is %s [ --version ] [ -s ] [ -v ] [ -l localtime ] [ -p posixrules ] \\\n\t[ -d directory ] [ -L leapseconds ] [ -y yearistype ] [ filename ... ]\n"),
+ 		progname, progname);
+ 	(void) exit(EXIT_FAILURE);
+ }
+@@ -479,6 +475,11 @@
+ 	(void) textdomain(TZ_DOMAIN);
+ #endif /* HAVE_GETTEXT - 0 */
+ 	progname = argv[0];
++	for (i = 1; i < argc; ++i)
++		if (strcmp(argv[i], "--version") == 0) {
++			(void) printf("%s\n", elsieid);
++			(void) exit(EXIT_SUCCESS);
++		}
+ 	while ((c = getopt(argc, argv, "d:l:p:L:vsy:")) != EOF && c != -1)
+ 		switch (c) {
+ 			default:
+@@ -1165,14 +1166,15 @@
+ 		error(_("time before zero"));
+ 		return;
+ 	}
+-	t = (time_t) dayoff * SECSPERDAY;
+-	/*
+-	** Cheap overflow check.
+-	*/
+-	if (t / SECSPERDAY != dayoff) {
+-		error(_("time overflow"));
++	if (dayoff < min_time / SECSPERDAY) {
++		error(_("time too small"));
+ 		return;
+ 	}
++	if (dayoff > max_time / SECSPERDAY) {
++		error(_("time too large"));
++		return;
++	}
++	t = (time_t) dayoff * SECSPERDAY;
+ 	tod = gethms(fields[LP_TIME], _("invalid time of day"), FALSE);
+ 	cp = fields[LP_CORR];
+ 	{
+@@ -1325,9 +1327,9 @@
+ 		return;
+ 	} else if (noise) {
+ 		if (rp->r_loyear < min_year_representable)
+-			warning(_("starting year too low to be represented"));
++			warning(_("ending year too low to be represented"));
+ 		else if (rp->r_loyear > max_year_representable)
+-			warning(_("starting year too high to be represented"));
++			warning(_("ending year too high to be represented"));
+ 	}
+ 	if (rp->r_loyear > rp->r_hiyear) {
+ 		error(_("starting year greater than ending year"));
+--- timezone/zone.tab	2003-11-05 10:37:29.000000000 -0500
++++ timezone/zone.tab	2003-10-06 13:46:22.000000000 -0400
+@@ -1,4 +1,4 @@
+-# @(#)zone.tab	1.28
++# @(#)zone.tab	1.29
+ #
+ # TZ zone descriptions
+ #
+@@ -74,12 +74,14 @@
+ BO	-1630-06809	America/La_Paz
+ BR	-0351-03225	America/Noronha	Atlantic islands
+ BR	-0127-04829	America/Belem	Amapa, E Para
+-BR	-0343-03830	America/Fortaleza	NE Brazil (MA, PI, CE, RN, PR)
++BR	-0343-03830	America/Fortaleza	NE Brazil (MA, PI, CE, RN, PB)
+ BR	-0803-03454	America/Recife	Pernambuco
+ BR	-0712-04812	America/Araguaina	Tocantins
+ BR	-0940-03543	America/Maceio	Alagoas, Sergipe
+-BR	-2332-04637	America/Sao_Paulo	S & SE Brazil (BA, GO, DF, MG, ES, RJ, SP, PR, SC, RS)
+-BR	-1535-05605	America/Cuiaba	Mato Grosso, Mato Grosso do Sul
++BR	-1259-03831	America/Bahia	Bahia
++BR	-2332-04637	America/Sao_Paulo	S & SE Brazil (GO, DF, MG, ES, RJ, SP, PR, SC, RS)
++BR	-2027-05437	America/Campo_Grande	Mato Grosso do Sul
++BR	-1535-05605	America/Cuiaba	Mato Grosso
+ BR	-0846-06354	America/Porto_Velho	W Para, Rondonia
+ BR	+0249-06040	America/Boa_Vista	Roraima
+ BR	-0308-06001	America/Manaus	E Amazonas
+@@ -94,7 +96,8 @@
+ CA	+4439-06336	America/Halifax	Atlantic Time - Nova Scotia (most places), NB, W Labrador, E Quebec & PEI
+ CA	+4612-05957	America/Glace_Bay	Atlantic Time - Nova Scotia - places that did not observe DST 1966-1971
+ CA	+5320-06025	America/Goose_Bay	Atlantic Time - E Labrador
+-CA	+4531-07334	America/Montreal	Eastern Time - Ontario & Quebec - most locations
++CA	+4531-07334	America/Montreal	Eastern Time - Quebec - most locations
++CA	+4339-07923	America/Toronto	Eastern Time - Ontario - most locations
+ CA	+4901-08816	America/Nipigon	Eastern Time - Ontario & Quebec - places that did not observe DST 1967-1973
+ CA	+4823-08915	America/Thunder_Bay	Eastern Time - Thunder Bay, Ontario
+ CA	+6608-06544	America/Pangnirtung	Eastern Standard Time - Pangnirtung, Nunavut
+@@ -130,6 +133,7 @@
+ CN	+3929+07559	Asia/Kashgar	southwest Xinjiang Uyghur
+ CO	+0436-07405	America/Bogota
+ CR	+0956-08405	America/Costa_Rica
++CS	+4450+02030	Europe/Belgrade
+ CU	+2308-08222	America/Havana
+ CV	+1455-02331	Atlantic/Cape_Verde
+ CX	-1025+10543	Indian/Christmas
+@@ -275,7 +279,7 @@
+ NR	-0031+16655	Pacific/Nauru
+ NU	-1901+16955	Pacific/Niue
+ NZ	-3652+17446	Pacific/Auckland	most locations
+-NZ	-4355-17630	Pacific/Chatham	Chatham Islands
++NZ	-4357-17633	Pacific/Chatham	Chatham Islands
+ OM	+2336+05835	Asia/Muscat
+ PA	+0858-07932	America/Panama
+ PE	-1203-07703	America/Lima
+@@ -393,7 +397,6 @@
+ WS	-1350-17144	Pacific/Apia
+ YE	+1245+04512	Asia/Aden
+ YT	-1247+04514	Indian/Mayotte
+-YU	+4450+02030	Europe/Belgrade
+ ZA	-2615+02800	Africa/Johannesburg
+ ZM	-1525+02817	Africa/Lusaka
+ ZW	-1750+03103	Africa/Harare

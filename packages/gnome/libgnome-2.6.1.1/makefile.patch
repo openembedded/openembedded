@@ -1,0 +1,11 @@
+--- libgnome/monikers/Makefile.am~	2003-05-08 08:29:46.000000000 +0100
++++ libgnome/monikers/Makefile.am	2004-05-16 09:51:28.000000000 +0100
+@@ -7,7 +7,7 @@
+ GNOME_Moniker_std.server.in: GNOME_Moniker_std.server.in.in
+ 	sed -e "s|\@MONIKER_LIBDIR\@|$(monikerdir)|" $< > $@
+ 
+-CLEANFILES+=GNOME_Moniker_std.server GNOME_Moniker_std.server.in
++CLEANFILES = GNOME_Moniker_std.server GNOME_Moniker_std.server.in
+ 
+ serverdir = $(libdir)/bonobo/servers
+ server_DATA = GNOME_Moniker_std.server

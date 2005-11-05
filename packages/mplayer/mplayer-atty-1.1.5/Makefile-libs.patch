@@ -1,0 +1,11 @@
+--- mplayer-1.1.4/Makefile.orig	2005-06-24 15:36:12.974059040 +0000
++++ mplayer-1.1.4/Makefile	2005-06-24 15:36:31.628223176 +0000
+@@ -245,7 +245,7 @@
+     ifeq ($(TARGET_WIN32),yes)
+ 	windres -o osdep/mplayer-rc.o osdep/mplayer.rc
+     endif
+-	$(CC) $(CFLAGS) -o $(PRG) $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) $(I18NLIBS) $(MATH_LIB)
++	$(CC) $(CFLAGS) -o $(PRG) $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) $(I18NLIBS) $(MATH_LIB) $(LDFLAGS)
+ 	cp $(PRG) $(PRG).debug
+ 	$(STRIP) $(PRG)
+ 

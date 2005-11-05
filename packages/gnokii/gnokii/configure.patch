@@ -1,0 +1,21 @@
+--- gnokii-0.6.4/configure.in.old	2005-01-09 20:15:53.000000000 +0000
++++ gnokii-0.6.4/configure.in	2005-01-09 20:15:55.000000000 +0000
+@@ -379,11 +379,16 @@
+       AC_MSG_WARN(Cannot find library libX11.)
+       AC_MSG_WARN(Disabling xgnokii.)
+    else
++      if test "x$x_libraries" != "x"; then
++          l_x_libraries="-L$x_libraries"
++      else
++          l_x_libraries=""
++      fi
+       AC_CHECK_LIB(Xpm, XpmWriteFileFromXpmImage,
+-            [ XPM_CFLAGS="$XINCL" XPM_LIBS="-L$x_libraries -lXpm -lX11"
++            [ XPM_CFLAGS="$XINCL" XPM_LIBS="$l_x_libraries -lXpm -lX11"
+               AC_DEFINE(XPM) ],
+             AC_MSG_WARN(Cannot found library libXpm - disabling XPM support.),
+-            [ -L$x_libraries -lX11 ]
++            [ $l_x_libraries -lX11 ]
+       )
+ 
+       if test "x$PTHREAD_LIBS" = xerror; then

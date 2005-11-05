@@ -1,0 +1,459 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.9-snapshot-20050114/configure~qt-visibility
++++ qt-2.3.9-snapshot-20050114/configure
+@@ -409,6 +409,9 @@
+    -tslib)
+        TSLIB=yes
+ 	;;
++   -visibility-hidden)
++   	VISIBILITY=YES
++	;;
+    -no-g++-exceptions)
+ 	GPLUSPLUS_EXCEPTIONS=no
+ 	;;
+@@ -1296,6 +1299,9 @@
+     -tslib ............. Enable TSlib (touchscreen library) mouse handler.
+                          See http://arm.linux.org.uk 			      
+ 
++    -visibility-hidden . Use -fvisibility=hidden as default. This requires GCC 4.0
++                         or a special patched GCC to support the visibility attribute
++
+     -no-g++-exceptions . Disable exceptions on platforms using the GNU C++
+ 			 compiler by using the -fno-exceptions flag.
+ 
+@@ -1364,6 +1370,10 @@
+    QT_CXX="${QT_CXX} -DQT_QWS_TSLIB"
+    QT_LIBS="${QT_LIBS} -lts"
+ fi
++if [ "x$VISIBILITY=" = "xyes" ]
++then
++   QT_CXX="${QT_CXX} -DGCC_SUPPORTS_VISIBILITY -fvisibility=hidden"
++fi
+ if [ "x$THREAD" = "xyes" ]
+ then
+    cat >src-mt.mk <<EOF
+--- qt-2.3.9-snapshot-20050114/src/tools/qglobal.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/tools/qglobal.h
+@@ -503,6 +503,12 @@
+ #undef QT_DLL
+ #endif
+ 
++#ifdef GCC_SUPPORTS_VISIBILITY
++#ifndef Q_EXPORT
++	#define Q_EXPORT __attribute__((visibility("default")))
++#endif
++#endif
++
+ #ifndef Q_EXPORT
+ #define Q_EXPORT
+ #endif
+--- qt-2.3.9-snapshot-20050114/src/widgets/qscrollview.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/widgets/qscrollview.cpp
+@@ -696,7 +696,7 @@
+   The surrounding environment (or application, if there is no
+   environment, may set this. Requires Qt >= 2.3.8.
+ */
+-bool qt_left_hand_scrollbars = FALSE;
++bool Q_EXPORT qt_left_hand_scrollbars = FALSE;
+ 
+ /*!
+   Updates scrollbars - all possibilities considered.  You should never
+--- qt-2.3.9-snapshot-20050114/src/Makefile.in~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/Makefile.in
+@@ -641,7 +641,7 @@
+ 		network/qsocket.h \
+ 		network/qsocketdevice.h
+ 	echo '#include "kernel/qt.h"' >allmoc.cpp
+-	$(CXX) -E -DQT_MOC_CPP $(CXXFLAGS) $(INCPATH) >allmoc.h allmoc.cpp
++	$(CXX) -E -DQT_MOC_CPP -DQ_EXPORT="" $(CXXFLAGS) $(INCPATH) >allmoc.h allmoc.cpp
+ 	$(MOC) -o allmoc.cpp allmoc.h
+ 	perl -pi -e 's{"allmoc.h"}{"kernel/qt.h"}' allmoc.cpp
+ 	rm allmoc.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qcopchannel_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qcopchannel_qws.h
+@@ -42,7 +42,7 @@
+ class QCopChannelPrivate;
+ class QWSClient;
+ 
+-class QCopChannel : public QObject
++class Q_EXPORT QCopChannel : public QObject
+ {
+     Q_OBJECT
+ public:
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.cpp
+@@ -68,7 +68,7 @@
+     return r;
+ }
+ 
+-QFontManager * qt_fontmanager=0;
++QFontManager Q_EXPORT *qt_fontmanager=0;
+ 
+ /*!
+   \class QFontManager qfontmanager_qws.h
+--- qt-2.3.9-snapshot-20050114/src/kernel/qgfx_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qgfx_qws.cpp
+@@ -38,10 +38,10 @@
+ #include <stdlib.h>
+ 
+ #ifndef QT_NO_QWS_CURSOR
+-bool qt_sw_cursor=false;
+-QScreenCursor * qt_screencursor=0;
++bool Q_EXPORT qt_sw_cursor=false;
++QScreenCursor Q_EXPORT * qt_screencursor=0;
+ #endif
+-QScreen * qt_screen=0;
++QScreen Q_EXPORT * qt_screen=0;
+ 
+ extern bool qws_screen_is_interlaced; //### hack, from qapplication_qws.cpp
+ 
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.cpp
+@@ -89,7 +89,7 @@
+ 
+ extern void qt_setMaxWindowRect(const QRect& r);
+ 
+-QWSServer *qwsServer=0;
++QWSServer Q_EXPORT *qwsServer=0;
+ 
+ #define MOUSE 0
+ #define KEY 1
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsdecoration_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsdecoration_qws.h
+@@ -41,7 +41,7 @@
+ /*
+  Implements decoration styles
+ */
+-class QWSDecoration
++class Q_EXPORT QWSDecoration
+ {
+ public:
+     QWSDecoration() {}
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwindowsystem_qws.h
+@@ -67,7 +67,7 @@
+ 
+ struct QWSWindowData;
+ 
+-class QWSScreenSaver
++class Q_EXPORT QWSScreenSaver
+ {
+ public:
+     virtual ~QWSScreenSaver();
+@@ -75,7 +75,7 @@
+     virtual bool save(int level)=0;
+ };
+ 
+-class QWSWindow
++class Q_EXPORT QWSWindow
+ {
+     friend class QWSServer;
+ public:
+@@ -169,9 +169,9 @@
+ struct QWSCommandStruct;
+ 
+ #ifndef QT_NO_QWS_MULTIPROCESS
+-class QWSServer : public QWSServerSocket
++class Q_EXPORT QWSServer : public QWSServerSocket
+ #else
+-class QWSServer : public QObject
++class Q_EXPORT QWSServer : public QObject
+ #endif
+ {
+     friend class QCopChannel;
+@@ -501,7 +501,7 @@
+ 
+ 
+ #ifndef QT_NO_QWS_IM
+-class QWSInputMethod : public QObject
++class Q_EXPORT QWSInputMethod : public QObject
+ {
+ public:
+     QWSInputMethod();
+@@ -525,7 +525,7 @@
+ #endif
+ 
+ #ifndef QT_NO_QWS_FSIM
+-class QWSGestureMethod : public QObject
++class Q_EXPORT QWSGestureMethod : public QObject
+ {
+ public:
+     QWSGestureMethod();
+@@ -573,7 +573,7 @@
+ 
+ typedef QMap<int, QWSCursor*> QWSCursorMap;
+ 
+-class QWSClient : public QObject
++class Q_EXPORT QWSClient : public QObject
+ {
+     Q_OBJECT
+ public:
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsdefaultdecoration_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsdefaultdecoration_qws.h
+@@ -44,7 +44,7 @@
+ 
+ 
+ 
+-class QWSDefaultDecoration : public QWSDecoration
++class Q_EXPORT QWSDefaultDecoration : public QWSDecoration
+ {
+ public:
+     QWSDefaultDecoration();
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwscommand_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwscommand_qws.h
+@@ -47,8 +47,8 @@
+  *
+  *********************************************************************/
+ #ifndef QT_NO_QWS_MULTIPROCESS
+-void qws_write_command( QWSSocket *socket, int type, char *simpleData, int simpleLen, char *rawData, int rawLen );
+-bool qws_read_command( QWSSocket *socket, char *&simpleData, int &simpleLen, char *&rawData, int &rawLen, int &bytesRead );
++void Q_EXPORT qws_write_command( QWSSocket *socket, int type, char *simpleData, int simpleLen, char *rawData, int rawLen );
++bool Q_EXPORT qws_read_command( QWSSocket *socket, char *&simpleData, int &simpleLen, char *&rawData, int &rawLen, int &bytesRead );
+ #endif
+ /*********************************************************************
+  *
+@@ -57,7 +57,7 @@
+  *********************************************************************/
+ 
+ 
+-struct QWSProtocolItem
++struct Q_EXPORT QWSProtocolItem
+ {
+     // ctor - dtor
+     QWSProtocolItem( int t, int len, char *ptr ) : type( t ),
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfont_qws.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfont_qws.cpp
+@@ -152,7 +152,7 @@
+ static QFontCache    *fontCache	     = 0;	// cache of loaded fonts
+ static QFontDict     *fontDict	     = 0;	// dict of all loaded fonts
+ 
+-void qws_clearLoadedFonts()
++void Q_EXPORT qws_clearLoadedFonts()
+ {
+     QFontDictIt it( *fontDict );
+     while ( it.current() ) {
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwscursor_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwscursor_qws.h
+@@ -37,7 +37,7 @@
+ #include <qimage.h>
+ #endif // QT_H
+ 
+-class QWSCursor : public Qt
++class Q_EXPORT QWSCursor : public Qt
+ {
+ public:
+     QWSCursor() {}
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsevent_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsevent_qws.h
+@@ -40,7 +40,7 @@
+ 
+ struct QWSMouseEvent;
+ 
+-struct QWSEvent : QWSProtocolItem {
++struct Q_EXPORT QWSEvent : QWSProtocolItem {
+ 
+     QWSEvent( int t, int len, char *ptr ) : QWSProtocolItem(t,len,ptr) {}
+ 
+@@ -71,7 +71,7 @@
+ 
+ //All events must start with windowID
+ 
+-struct QWSConnectedEvent : QWSEvent {
++struct Q_EXPORT QWSConnectedEvent : QWSEvent {
+     QWSConnectedEvent()
+ 	: QWSEvent( QWSEvent::Connected, sizeof( simpleData ),
+ 		(char*)&simpleData ) {}
+@@ -90,7 +90,7 @@
+     char *display;
+ };
+ 
+-struct QWSMaxWindowRectEvent : QWSEvent {
++struct Q_EXPORT QWSMaxWindowRectEvent : QWSEvent {
+     QWSMaxWindowRectEvent()
+ 	: QWSEvent( MaxWindowRect, sizeof( simpleData ), (char*)&simpleData ) { }
+     struct SimpleData {
+@@ -99,7 +99,7 @@
+     } simpleData;
+ };
+ 
+-struct QWSMouseEvent : QWSEvent {
++struct Q_EXPORT QWSMouseEvent : QWSEvent {
+     QWSMouseEvent()
+ 	: QWSEvent( QWSEvent::Mouse, sizeof( simpleData ),
+ 		(char*)&simpleData ) {}
+@@ -110,7 +110,7 @@
+     } simpleData;
+ };
+ 
+-struct QWSFocusEvent : QWSEvent {
++struct Q_EXPORT QWSFocusEvent : QWSEvent {
+     QWSFocusEvent()
+ 	: QWSEvent( QWSEvent::Focus, sizeof( simpleData ), (char*)&simpleData )
+ 	{ memset((char*)&simpleData,0,sizeof(simpleData)); }
+@@ -120,7 +120,7 @@
+     } simpleData;
+ };
+ 
+-struct QWSKeyEvent: QWSEvent {
++struct Q_EXPORT QWSKeyEvent: QWSEvent {
+     QWSKeyEvent()
+ 	: QWSEvent( QWSEvent::Key, sizeof( simpleData ),
+ 	      (char*)&simpleData )
+@@ -136,7 +136,7 @@
+ };
+ 
+ 
+-struct QWSCreationEvent : QWSEvent {
++struct Q_EXPORT QWSCreationEvent : QWSEvent {
+     QWSCreationEvent()
+ 	: QWSEvent( QWSEvent::Creation, sizeof( simpleData ),
+ 	      (char*)&simpleData ) {}
+@@ -146,7 +146,7 @@
+ };
+ 
+ #ifndef QT_NO_QWS_PROPERTIES
+-struct QWSPropertyNotifyEvent : QWSEvent {
++struct Q_EXPORT QWSPropertyNotifyEvent : QWSEvent {
+     QWSPropertyNotifyEvent()
+ 	: QWSEvent( QWSEvent::PropertyNotify, sizeof( simpleData ),
+ 	      (char*)&simpleData ) {}
+@@ -162,7 +162,7 @@
+ };
+ #endif
+ 
+-struct QWSSelectionClearEvent : QWSEvent {
++struct Q_EXPORT QWSSelectionClearEvent : QWSEvent {
+     QWSSelectionClearEvent()
+ 	: QWSEvent( QWSEvent::SelectionClear, sizeof( simpleData ),
+ 	      (char*)&simpleData ) {}
+@@ -171,7 +171,7 @@
+     } simpleData;
+ };
+ 
+-struct QWSSelectionRequestEvent : QWSEvent {
++struct Q_EXPORT QWSSelectionRequestEvent : QWSEvent {
+     QWSSelectionRequestEvent()
+ 	: QWSEvent( QWSEvent::SelectionRequest, sizeof( simpleData ),
+ 	      (char*)&simpleData ) {}
+@@ -184,7 +184,7 @@
+     } simpleData;
+ };
+ 
+-struct QWSSelectionNotifyEvent : QWSEvent {
++struct Q_EXPORT QWSSelectionNotifyEvent : QWSEvent {
+     QWSSelectionNotifyEvent()
+ 	: QWSEvent( QWSEvent::SelectionNotify, sizeof( simpleData ),
+ 	      (char*)&simpleData ) {}
+@@ -198,7 +198,7 @@
+ 
+ //complex events:
+ 
+-struct QWSRegionModifiedEvent : QWSEvent {
++struct Q_EXPORT QWSRegionModifiedEvent : QWSEvent {
+     QWSRegionModifiedEvent()
+ 	: QWSEvent( QWSEvent::RegionModified, sizeof( simpleData ),
+ 		(char*)&simpleData )
+@@ -218,7 +218,7 @@
+     QRect *rectangles;
+ };
+ #ifndef QT_NO_QWS_PROPERTIES
+-struct QWSPropertyReplyEvent : QWSEvent {
++struct Q_EXPORT QWSPropertyReplyEvent : QWSEvent {
+     QWSPropertyReplyEvent()
+ 	: QWSEvent( QWSEvent::PropertyReply, sizeof( simpleData ),
+ 		(char*)&simpleData ) {}
+@@ -238,7 +238,7 @@
+ #endif //QT_NO_QWS_PROPERTIES
+ 
+ #ifndef QT_NO_COP
+-struct QWSQCopMessageEvent : QWSEvent {
++struct Q_EXPORT QWSQCopMessageEvent : QWSEvent {
+     QWSQCopMessageEvent()
+ 	: QWSEvent( QWSEvent::QCopMessage, sizeof( simpleData ),
+ 		(char*)&simpleData )
+@@ -268,7 +268,7 @@
+ 
+ #endif
+ 
+-struct QWSWindowOperationEvent : QWSEvent {
++struct Q_EXPORT QWSWindowOperationEvent : QWSEvent {
+     QWSWindowOperationEvent()
+ 	: QWSEvent( WindowOperation, sizeof( simpleData ), (char*)&simpleData ) { }
+ 
+@@ -280,7 +280,7 @@
+ };
+ 
+ #ifndef QT_NO_QWS_IM
+-struct QWSIMEvent : QWSEvent {
++struct Q_EXPORT QWSIMEvent : QWSEvent {
+     QWSIMEvent()
+ 	: QWSEvent( IMEvent, sizeof( simpleData ), (char*)&simpleData ) { }
+ 
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsmanager_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsmanager_qws.h
+@@ -48,7 +48,7 @@
+ class QWSButton;
+ class QWSManager;
+ 
+-class QWSManager : public QObject
++class Q_EXPORT QWSManager : public QObject
+ {
+     Q_OBJECT
+ 
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsmouse_qws.h
+@@ -38,7 +38,7 @@
+ #include <qpointarray.h>
+ #endif // QT_H
+ 
+-class QWSPointerCalibrationData
++class Q_EXPORT QWSPointerCalibrationData
+ {
+ public:
+     enum Location { TopLeft = 0, BottomLeft = 1, BottomRight = 2, TopRight = 3,
+@@ -47,7 +47,7 @@
+     QPoint screenPoints[5];
+ };
+ 
+-class QWSMouseHandler : public QObject {
++class Q_EXPORT QWSMouseHandler : public QObject {
+     Q_OBJECT
+ public:
+     QWSMouseHandler();
+--- qt-2.3.9-snapshot-20050114/src/kernel/qwsproperty_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qwsproperty_qws.h
+@@ -47,7 +47,7 @@
+ 
+ class QWSPropertyManagerData;
+ 
+-class QWSPropertyManager
++class Q_EXPORT QWSPropertyManager
+ {
+ public:
+     enum Mode {
+--- qt-2.3.9-snapshot-20050114/src/kernel/qlayoutengine.cpp~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qlayoutengine.cpp
+@@ -70,7 +70,7 @@
+   pos and space give the interval (relative to parentWidget topLeft.)
+ */
+ 
+-void qGeomCalc( QArray<QLayoutStruct> &chain, int start, int count, int pos,
++void Q_EXPORT qGeomCalc( QArray<QLayoutStruct> &chain, int start, int count, int pos,
+ 		      int space, int spacer )
+ {
+     typedef int fixed;
+--- qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.h~qt-visibility
++++ qt-2.3.9-snapshot-20050114/src/kernel/qfontmanager_qws.h
+@@ -84,7 +84,7 @@
+ // e.g. Truetype Times, 10 point. There's only one of these though;
+ // we want to share generated glyphs
+ 
+-class QRenderedFont {
++class Q_EXPORT QRenderedFont {
+ 
+ public:
+ 

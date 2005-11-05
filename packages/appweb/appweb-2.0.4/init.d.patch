@@ -1,0 +1,14 @@
+--- appWeb-2.0.4/appWeb/package/files/LINUX/appWeb.files~	2005-10-10 22:16:58.000000000 -0700
++++ appWeb-2.0.4/appWeb/package/files/LINUX/appWeb.files	2005-10-10 22:16:43.000000000 -0700
+@@ -23,9 +23,9 @@
+ 	SrcD=${BLD_TOP}/${BLD_PRODUCT}/package/LINUX
+ 	if [ "${BLD_ROOT_PREFIX}" = "/" ]
+ 	then
+-		DestD=/etc/rc.d
++		DestD=/etc
+ 	else
+-		DestD=${BLD_ROOT_PREFIX}/etc/rc.d
++		DestD=${BLD_ROOT_PREFIX}/etc
+ 	fi
+ 
+ 	makeDir "${DestD}"

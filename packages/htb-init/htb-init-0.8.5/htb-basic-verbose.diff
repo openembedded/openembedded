@@ -1,0 +1,25 @@
+--- htb.init-v0.8.5.o	2004-10-25 18:47:57.216822072 +0200
++++ htb.init-v0.8.5	2004-10-25 18:48:18.748548752 +0200
+@@ -441,11 +441,11 @@
+ PRIO_REALM_DEFAULT=${PRIO_REALM:-300}
+ 
+ ### Default HTB_PATH & HTB_CACHE settings
+-HTB_PATH=${HTB_PATH:-/etc/sysconfig/htb}
++HTB_PATH=${HTB_PATH:-/etc/htb}
+ HTB_CACHE=${HTB_CACHE:-/var/cache/htb.init}
+ 
+ ### Uncomment for sed/find with less features (useful for busybox)
+-#HTB_BASIC="yes"
++HTB_BASIC="yes"
+ 
+ ### Uncomment to enable logfile for debugging
+ #HTB_DEBUG="/var/run/htb-$1"
+@@ -462,7 +462,7 @@
+ HTB_CLASS="$HTB_CLASS\|LIMIT\|QUANTUM\|PERTURB"
+ 
+ ### uncomment to print some info while setting up
+-#VERBOSE="yes"
++VERBOSE="yes"
+ 
+ #############################################################################
+ ############################# SUPPORT FUNCTIONS #############################

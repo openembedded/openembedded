@@ -1,0 +1,8 @@
+--- util-linux-2.12.orig/mount/my_dev_t.h
++++ util-linux-2.12/mount/my_dev_t.h
+@@ -4,4 +4,4 @@
+ /* for ancient systems use "unsigned short" */
+ 
+ #include <linux/posix_types.h>
+-#define my_dev_t __kernel_dev_t
++#define my_dev_t __kernel_old_dev_t

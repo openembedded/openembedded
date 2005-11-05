@@ -1,0 +1,10 @@
+--- mgetty-1.1.30.orig/fax/faxq.in	Sat Nov 23 19:57:59 2002
++++ mgetty-1.1.30.orig/fax/faxq.in	Sun Sep 28 17:59:40 2003
+@@ -100,6 +100,7 @@
+ 			       }' -`
+ 	$echo "$i:"
+ 	$echo "\tQueued by: $USER"
++	$echo "\t       at: "`find $(dirname $i)/${PAGES%% *} -printf "%Ax %AH:%AM\n"`
+        if [ -z "$VERBTO" ]
+        then
+ 	$echo "\t       to: $PHONE"

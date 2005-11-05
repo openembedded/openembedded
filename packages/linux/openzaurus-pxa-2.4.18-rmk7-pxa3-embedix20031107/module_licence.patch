@@ -1,0 +1,96 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux/drivers/usb/device/bi/sa1100.c~modulelicence
++++ linux/drivers/usb/device/bi/sa1100.c
+@@ -43,6 +43,7 @@
+ #include "../usbd-build.h"
+ #include "../usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device SA-1100 Bus Interface");
+ 
+--- linux/drivers/usb/device/usbd.c~modulelicence
++++ linux/drivers/usb/device/usbd.c
+@@ -72,6 +72,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Core Support");
+ 
+--- linux/drivers/usb/device/usbd-monitor.c~modulelicence
++++ linux/drivers/usb/device/usbd-monitor.c
+@@ -35,6 +35,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Monitor");
+ USBD_MODULE_INFO ("usbd_monitor 0.3");
+--- linux/drivers/usb/device/net_fd/net-fd.c~modulelicence
++++ linux/drivers/usb/device/net_fd/net-fd.c
+@@ -33,6 +33,7 @@
+ #include "../usbd-build.h"
+ #include "../usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Network Function");
+ 
+--- linux/arch/arm/mach-sa1100/deviceinfo.c~modulelicence
++++ linux/arch/arm/mach-sa1100/deviceinfo.c
+@@ -28,6 +28,7 @@
+ 
+ #define	MODULE_NAME	"deviceinfo"
+ #define	DEVINFO_DIRNAME	"deviceinfo"
++MODULE_LICENSE("GPL");
+ 
+ static int proc_read_deviceinfo(struct file * file, char * buf,
+ 				size_t nbytes, loff_t *ppos);
+--- linux/arch/arm/mach-sa1100/gpio.c~modulelicence
++++ linux/arch/arm/mach-sa1100/gpio.c
+@@ -15,7 +15,7 @@
+ 
+ #include <asm/hardware.h>
+ 
+-
++MODULE_LICENSE("GPL");
+ 
+ static int proc_gpio_read(char *page, char **start, off_t off,
+ 			  int count, int *eof, void *data)
+--- linux/drivers/usb/device/serial_fd/serial.c~modulelicence
++++ linux/drivers/usb/device/serial_fd/serial.c
+@@ -80,6 +80,7 @@
+ #include "../usbd-module.h"
+ 
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Serial Function");
+ 
+--- linux/drivers/usb/device/usbd-serialnumber.c~modulelicence
++++ linux/drivers/usb/device/usbd-serialnumber.c
+@@ -33,6 +33,7 @@
+ #include "usbd-build.h"
+ #include "usbd-module.h"
+ 
++MODULE_LICENSE("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("USB Device Monitor");
+ USBD_MODULE_INFO ("usbd_monitor 0.2-alpha");
+--- linux/drivers/usb/device/bi/pxa.c~modulelicence
++++ linux/drivers/usb/device/bi/pxa.c
+@@ -48,6 +48,7 @@
+ #include "../usbd-build.h"
+ #include "../usbd-module.h"
+ 
++MODULE_LICENSE ("GPL");
+ MODULE_AUTHOR ("sl@lineo.com, tbr@lineo.com");
+ MODULE_DESCRIPTION ("Xscale USB Device Bus Interface");
+ 

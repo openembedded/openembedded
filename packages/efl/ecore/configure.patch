@@ -1,0 +1,22 @@
+diff -Nur ecore-0.9.9.015~/configure.in ecore-0.9.9.015/configure.in
+--- ecore-0.9.9.015~/configure.in	2005-09-26 16:59:23.000000000 -0700
++++ ecore-0.9.9.015/configure.in	2005-09-26 17:01:02.000000000 -0700
+@@ -16,7 +16,6 @@
+ AC_CHECK_SIZEOF(long, 4)
+ AM_ENABLE_SHARED
+ AM_PROG_LIBTOOL
+-AC_C___ATTRIBUTE__
+ 
+ if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+   if test "x${exec_prefix}" = "xNONE"; then
+@@ -262,9 +261,7 @@
+       AM_CONDITIONAL(BUILD_ECORE_X, true)
+       AC_DEFINE(BUILD_ECORE_X, 1, [Build Ecore_X Module])
+       have_ecore_x="yes"
+-      x_dir=${x_dir:-/usr/X11R6}
+-      x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+-      x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+       x_ldflags=" "$ecore_x_libs;
++      x_libs="-lX11 -lXext"
+       ecore_x_libs="-lecore_x";
+     ],[

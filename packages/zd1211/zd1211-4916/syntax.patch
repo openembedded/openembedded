@@ -1,0 +1,20 @@
+--- zd1211-4916-r0/src/zd1205.c.orig	2005-01-28 22:55:14.000000000 -0800
++++ zd1211-4916-r0/src/zd1205.c	2005-02-18 17:40:39.136488936 -0800
+@@ -5182,6 +5182,7 @@
+ 
+  
+ exit:
++	1;
+  	//read_unlock(&(macp->isolate_lock));    
+ 
+ }
+--- zd1211-4916-r0/src/zdhci.c.orig	2005-01-28 22:55:15.000000000 -0800
++++ zd1211-4916-r0/src/zdhci.c	2005-02-18 21:01:45.426134088 -0800
+@@ -10,6 +10,7 @@
+ #define MAX_CHANNEL_ALLOW		13
+ zd_80211Obj_t *pdot11Obj = 0;
+ U16 CurrScanCH = 1;
++void zd_ChooseAP(void);
+ 
+ BOOLEAN zd_SendPkt(U8 *pEthHdr, U8 *pBody, U32 bodyLen, void *buf, U8 bEapol, void *pHash)
+ {

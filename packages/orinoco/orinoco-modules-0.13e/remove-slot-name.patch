@@ -1,0 +1,38 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- orinoco-0.13e-SN-6/orinoco_plx.c~fix-plx
++++ orinoco-0.13e-SN-6/orinoco_plx.c
+@@ -236,7 +236,7 @@
+ 
+ 	printk(KERN_DEBUG
+ 	       "Detected Orinoco/Prism2 PLX device at %s irq:%d, io addr:0x%lx\n",
+-	       pdev->slot_name, pdev->irq, pccard_ioaddr);
++	       "unknown", pdev->irq, pccard_ioaddr);
+ 
+ 	hermes_struct_init(&(priv->hw), dev->base_addr,
+ 			HERMES_IO, HERMES_16BIT_REGSPACING);
+--- orinoco-0.13e-SN-6/orinoco_tmd.c~fix-plx
++++ orinoco-0.13e-SN-6/orinoco_tmd.c
+@@ -128,7 +128,7 @@
+ 
+ 	printk(KERN_DEBUG
+ 	       "Detected Orinoco/Prism2 TMD device at %s irq:%d, io addr:0x%lx\n",
+-	       pdev->slot_name, pdev->irq, pccard_ioaddr);
++	       "unknown", pdev->irq, pccard_ioaddr);
+ 
+ 	hermes_struct_init(&(priv->hw), dev->base_addr,
+ 			HERMES_IO, HERMES_16BIT_REGSPACING);
+--- orinoco-0.13e-SN-6/orinoco_pci.c~fix-plx
++++ orinoco-0.13e-SN-6/orinoco_pci.c
+@@ -223,7 +223,7 @@
+ 
+ 	printk(KERN_DEBUG
+ 	       "Detected Orinoco/Prism2 PCI device at %s, mem:0x%lX to 0x%lX -> 0x%p, irq:%d\n",
+-	       pdev->slot_name, dev->mem_start, dev->mem_end, pci_ioaddr, pdev->irq);
++	       pci_name, dev->mem_start, dev->mem_end, pci_ioaddr, pdev->irq);
+ 
+ 	hermes_struct_init(&priv->hw, dev->base_addr,
+ 			   HERMES_MEM, HERMES_32BIT_REGSPACING);

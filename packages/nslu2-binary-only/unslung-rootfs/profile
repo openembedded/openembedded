@@ -1,0 +1,2 @@
+export PATH=$PATH:/opt/bin:/opt/sbin:/opt/usr/bin:/opt/usr/sbin
+export LD_LIBRARY_PATH=/opt/lib

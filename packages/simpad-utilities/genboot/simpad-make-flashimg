@@ -1,0 +1,89 @@
+#!/bin/sh
+# Script to build a full (kernel+initrd) flash rom bootimage
+# (C) 2003-2004 Michael 'Mickey' Lauer <mickey@Vanille.de>
+# Use serload to flash the image on your SIMpad
+
+#
+# vars
+#
+GENBOOT=genboot
+PAD=pad
+KERNEL=$2
+INITRD=$3
+
+doComplete()
+{
+    kernel=$(basename $KERNEL)
+    initrd=$INITRD
+    outfile=/tmp/tmpfile
+    padfile=/tmp/tmpfile2
+    flashfile=$kernel.initrd.flashfile
+
+    cp -f $KERNEL $padfile
+    $PAD 1048556 $padfile
+    cat $padfile $initrd >$outfile
+    set X`ls -l $outfile`
+    filelen=$5
+
+    loader_start="0xc0208000"
+    loader_entry="0xc0208000"
+
+    echo "File: $flashfile Exec: $loader_entry $filelen "
+    $GENBOOT -d3 $loader_entry 1 $loader_start $filelen >/tmp/bheader
+    cat /tmp/bheader $outfile >$flashfile
+    rm $outfile
+    rm $padfile
+    exit 0
+}
+
+doKernel()
+{
+    kernel=$(basename $KERNEL)
+    outfile=/tmp/tmpfile
+    flashfile=$kernel.flashfile
+
+    cat $KERNEL >$outfile
+    set X`ls -l $outfile`
+    filelen=$5
+
+    loader_start="0xc0208000"
+    loader_entry="0xc0208000"
+
+    echo "File: $flashfile Exec: $loader_entry $filelen "
+    $GENBOOT -d3 $loader_entry 1 $loader_start $filelen >/tmp/bheader
+    cat /tmp/bheader $outfile >$flashfile
+    rm $outfile
+    exit 0
+}
+
+doKernelInPlace()
+{
+    kernel=$(basename $KERNEL)
+    outfile=/tmp/tmpfile
+    flashfile=$kernel.flashfile
+
+    cat $KERNEL >$outfile
+    set X`ls -l $outfile`
+    filelen=$5
+
+    loader_start="0xc0080000"
+    loader_entry="0xc0080000"
+
+    echo "File: $flashfile Exec: $loader_entry $filelen "
+    $GENBOOT $loader_entry 1 $loader_start $filelen >/tmp/bheader
+    cat /tmp/bheader $outfile >$flashfile.inplace
+    rm $outfile
+    exit 0
+}
+
+if [ $# -lt 2 ]
+    then echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel> [rootfs.jffs2]" && exit -1
+fi
+
+case "$1" in
+kernel) doKernel;;
+complete) doComplete;;
+inplace) doKernelInPlace;;
+*) echo "Usage: ./simpad-make-flashimg [kernel|complete|inplace] <kernel> [rootfs.jffs2]"; exit;;
+esac
+

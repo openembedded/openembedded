@@ -1,0 +1,58 @@
+diff -Nurd avahi-0.1.orig/avahi-core/resolve-service.c avahi-0.1/avahi-core/resolve-service.c
+--- avahi-0.1.orig/avahi-core/resolve-service.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/resolve-service.c	2005-08-28 00:34:50 +0200
+@@ -200,10 +200,11 @@
+     } else {
+         assert(event == AVAHI_BROWSER_REMOVE);
+ 
++        
+         switch (record->key->type) {
+             case AVAHI_DNS_TYPE_SRV:
+ 
+-                if (avahi_record_equal_no_ttl(record, r->srv_record)) {
++                if (r->srv_record && avahi_record_equal_no_ttl(record, r->srv_record)) {
+                     avahi_record_unref(r->srv_record);
+                     r->srv_record = NULL;
+ 
+@@ -216,7 +217,7 @@
+ 
+             case AVAHI_DNS_TYPE_TXT:
+ 
+-                if (avahi_record_equal_no_ttl(record, r->txt_record)) {
++                if (r->txt_record && avahi_record_equal_no_ttl(record, r->txt_record)) {
+                     avahi_record_unref(r->txt_record);
+                     r->txt_record = NULL;
+ 
+@@ -229,7 +230,7 @@
+             case AVAHI_DNS_TYPE_A:
+             case AVAHI_DNS_TYPE_AAAA:
+ 
+-                if (avahi_record_equal_no_ttl(record, r->address_record)) {
++                if (r->address_record && avahi_record_equal_no_ttl(record, r->address_record)) {
+                     avahi_record_unref(r->address_record);
+                     r->address_record = NULL;
+ 
+diff -Nurd avahi-0.1.orig/avahi-core/resolve-address.c avahi-0.1/avahi-core/resolve-address.c
+--- avahi-0.1.orig/avahi-core/resolve-address.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/resolve-address.c	2005-08-28 00:34:50 +0200
+@@ -121,7 +121,7 @@
+         
+         assert(event == AVAHI_BROWSER_REMOVE);
+         
+-        if (avahi_record_equal_no_ttl(record, r->ptr_record)) {
++        if (r->ptr_record && avahi_record_equal_no_ttl(record, r->ptr_record)) {
+             avahi_record_unref(r->ptr_record);
+             r->ptr_record = NULL;
+ 
+diff -Nurd avahi-0.1.orig/avahi-core/resolve-host-name.c avahi-0.1/avahi-core/resolve-host-name.c
+--- avahi-0.1.orig/avahi-core/resolve-host-name.c	2005-08-21 23:27:14 +0200
++++ avahi-0.1/avahi-core/resolve-host-name.c	2005-08-28 00:34:50 +0200
+@@ -141,7 +141,7 @@
+ 
+         assert(event == AVAHI_BROWSER_REMOVE);
+ 
+-        if (avahi_record_equal_no_ttl(record, r->address_record)) {
++        if (r->address_record && avahi_record_equal_no_ttl(record, r->address_record)) {
+             avahi_record_unref(r->address_record);
+             r->address_record = NULL;
+ 

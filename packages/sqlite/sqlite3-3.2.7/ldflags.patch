@@ -1,0 +1,77 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- sqlite-3.2.5/Makefile.in~ldflags
++++ sqlite-3.2.5/Makefile.in
+@@ -31,6 +31,10 @@
+ #
+ TCC = @TARGET_CC@ @TARGET_CFLAGS@ -I. -I${TOP}/src
+ 
++# OE overrides
++#
++TARGET_LFLAGS = @TARGET_LFLAGS@
++
+ # Define -DNDEBUG to compile without debugging (i.e., for production usage)
+ # Omitting the define will cause extra debugging code to be inserted and
+ # includes extra comments when "EXPLAIN stmt" is used.
+@@ -235,17 +239,17 @@
+           | awk '{print $$5,$$6}' >last_change
+ 
+ libsqlite3.la:	$(LIBOBJ)
+-	$(LTLINK) -o libsqlite3.la $(LIBOBJ) $(LIBPTHREAD) \
++	$(LTLINK) -o libsqlite3.la $(LIBOBJ) $(TARGET_LFLAGS) $(LIBPTHREAD) \
+ 		${ALLOWRELEASE} -rpath $(libdir) -version-info "8:6:8"
+ 
+ libtclsqlite3.la:	tclsqlite.lo libsqlite3.la
+ 	$(LTLINK) -o libtclsqlite3.la tclsqlite.lo \
+-		$(LIBOBJ) @TCL_STUB_LIB_SPEC@ $(LIBPTHREAD) \
++		$(LIBOBJ) @TCL_STUB_LIB_SPEC@ $(TARGET_LFLAGS) $(LIBPTHREAD) \
+                 -rpath $(libdir)/sqlite \
+ 		-version-info "8:6:8"
+ 
+ sqlite3$(TEXE):	$(TOP)/src/shell.c libsqlite3.la sqlite3.h
+-	$(LTLINK) $(READLINE_FLAGS) $(LIBPTHREAD) \
++	$(LTLINK) $(TARGET_LFLAGS) $(READLINE_FLAGS) $(LIBPTHREAD) \
+ 		-o sqlite3 $(TOP)/src/shell.c libsqlite3.la $(LIBREADLINE)
+ 
+ # This target creates a directory named "tsrc" and fills it with
+@@ -419,18 +423,18 @@
+ 
+ tclsqlite3:	tclsqlite-shell.lo libsqlite3.la
+ 	$(LTLINK) -o tclsqlite3 tclsqlite-shell.lo \
+-		 libsqlite3.la $(LIBTCL)
++		 libsqlite3.la $(TARGET_LFLAGS) $(LIBTCL)
+ 
+ testfixture$(TEXE):	$(TOP)/src/tclsqlite.c libsqlite3.la $(TESTSRC)
+ 	$(LTLINK) -DTCLSH=1 -DSQLITE_TEST=1 $(TEMP_STORE) \
+ 		-o testfixture $(TESTSRC) $(TOP)/src/tclsqlite.c \
+-		libsqlite3.la $(LIBTCL)
++		libsqlite3.la $(TARGET_LFLAGS) $(LIBTCL)
+ 
+ crashtest$(TEXE):	$(TOP)/src/tclsqlite.c libsqlite3.la $(TESTSRC) $(TOP)/src/os_test.c
+ 	$(LTLINK) -DOS_TEST=1 -DTCLSH=1 -DSQLITE_TEST=1 \
+ 		-o crashtest \
+ 		$(TESTSRC) $(TOP)/src/os_test.c $(TOP)/src/tclsqlite.c \
+-		libsqlite3.la $(LIBTCL)
++		libsqlite3.la $(TARGET_LFLAGS) $(LIBTCL)
+ 
+ 
+ 
+--- sqlite-3.2.5/configure.ac~ldflags
++++ sqlite-3.2.5/configure.ac
+@@ -238,6 +238,13 @@
+   TARGET_LINK=$config_TARGET_LINK
+ fi
+ AC_MSG_RESULT($TARGET_LINK)
++AC_MSG_CHECKING([switches on the target linker])
++if test "$config_TARGET_LFLAGS" != ""; then
++  TARGET_LFLAGS=$config_TARGET_LFLAGS
++else
++  TARGET_LFLAGS=$BUILD_LFLAGS
++fi
++AC_MSG_RESULT($TARGET_LFLAGS)
+ AC_MSG_CHECKING([switches on the target compiler])
+ if test "$config_TARGET_TFLAGS" != ""; then
+   TARGET_TFLAGS=$config_TARGET_TFLAGS

@@ -1,0 +1,12 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.local.orig	2004-07-27 23:37:55.000000000 -0400
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.local	2004-09-01 21:57:17.000000000 -0400
+@@ -1,5 +1,9 @@
+ #!/bin/sh
++
+ HOSTNAME=`hostname`
++
++if ( [ -r /unslung/rc.local ] && . /unslung/rc.local ) ; then return 0 ; fi
++
+ /usr/sbin/CheckResetButton 2>/dev/null
+ /usr/sbin/CheckPowerButton 2>/dev/null
+ /usr/sbin/do_umount 2>/dev/null

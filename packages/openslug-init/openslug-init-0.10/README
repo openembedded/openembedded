@@ -1,0 +1,49 @@
+OpenSlug-1.x Family Release README
+
+Warning:  OpenSlug is not for the faint of heart!  In fact, OpenSlug has a 
+specific target audience.
+
+Some background first.  According to the NSLU2 - Linux developers, there are 4
+specific types ("camps") of NSLU2 - Linux users:
+
+    Camp #1:    Users who want full Linksys compatibility (including for future
+                Linksys firmware releases).  They can load firmware images via
+                the Linksys web interface and telnet in - to load Optware - 
+                Unslung packages with ipkg, but have no idea what RedBoot is or
+                does.
+	
+    Camp #2:    "Camp #1 Plus users."  They can telnet into RedBoot (ability
+                to "self-rescue" a non-working NSLU2), and are comfortable 
+                using Linux.
+
+    Camp #3:    Power users!  Firmware flashing via any interface is a walk
+                in the park.  They aren't just *users*, but are developers or
+                administrators of computers and/or computer software.  
+                However, they have no JTAG or custom bootloaders.
+
+    Camp #4:    Bleeding edge users.  They create and use custom bootloaders,
+                certainly having no need or desire for Linksys compatibility, 
+                modifying and/or changing the hardware as well.
+
+With those camps in mind, OpenSlug is targetted toward Camp #3 and Camp #4
+users.  If you're not in Camps 3 & 4, then you should be looking to use the
+Unslung firmware.  If you are a Camp #2 user, and still want to use OpenSlug,
+you need to practice gaining RedBoot access, and be able to recover from bad
+flashes, "drive not formatted" conditions, and other common mistakes/problems
+which are documented in the NSLU2-Linux Wiki at http://www.nslu2-linux.org.
+Once you are comfortable doing those things, then you may consider using
+OpenSlug.
+
+If you're still reading - and still intent on using OpenSlug, click through
+the Intel license, download the latest OpenSlug binary and flash it to your
+NSLU2!  (Without any HD attached while flashing!!!)  Your next stop should be
+the OpenSlug Turnip page at: 
+
+    http://www.nslu2-linux.org/wiki/OpenSlug/OpenSlugTurnUp
+	
+Please add your name and information to the OpenSlug database at the yahoo
+NSLU2-Linux group at:
+
+    http://groups.yahoo.com/group/nslu2-linux/
+	
+Happy OpenSlugging!

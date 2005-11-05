@@ -1,0 +1,1954 @@
+--- xscreensaver-4.16/configure.in	2004-05-11 18:43:13.000000000 -0700
++++ xscreensaver-4.16.new/configure.in	2004-08-06 13:31:20.547673720 -0700
+@@ -24,781 +24,11 @@
+   fi
+ done
+ 
+-###############################################################################
+-#
+-#       Function to figure out how to run the compiler.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_PROG_CC_ANSI,
+- [AC_PROG_CC
+-
+-  if test -z "$GCC"; then
+-    AC_MSG_CHECKING(how to request ANSI compilation)
+-    case "$host" in
+-      *-hpux* )
+-        AC_MSG_RESULT(HPUX: adding -Ae)
+-        CC="$CC -Ae"
+-      ;;
+-      *-aix* )
+-        AC_MSG_RESULT(AIX: adding -qlanglvl=ansi -qhalt=e)
+-        CC="$CC -qlanglvl=ansi -qhalt=e"
+-      ;;
+-
+-      *-dec-* )
+-        AC_MSG_RESULT(DEC: adding -std1 -ieee)
+-        CC="$CC -std1"
+-      ;;
+-
+-      *)
+-        AC_MSG_RESULT(no idea)
+-      ;;
+-    esac
+-  fi
+-
+-  OBJCC="$CC"
+-
+-  AC_MSG_CHECKING([whether the compiler works on ANSI C])
+-  AC_TRY_RUN([ main(int ac, char **av) { return 0; } ],
+-     AC_MSG_RESULT(yes),
+-     AC_MSG_RESULT(no)
+-     AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.),
+-     AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.))
+-
+-  if test -n "$GCC"; then
+-    AC_MSG_RESULT(Turning on gcc compiler warnings.)
+-    CC="$CC -pedantic -Wall -Wstrict-prototypes -Wnested-externs"
+-    OBJCC="$OBJCC -Wall"
+-    # supposedly gcc 3.4 will have "-Wdeclaration-after-statement"
+-    # and then perhaps we can do without -pedantic?
+-  else
+-    case "$host" in
+-      *-irix5* |*-irix6.[0-3]* )
+-        AC_MSG_RESULT(Turning on SGI compiler warnings.)
+-        CC="$CC -fullwarn -use_readonly_const -rdata_shared -g3"
+-      ;;
+-#     *-dec-osf* )
+-#       if test -z "$GCC"; then
+-#         AC_MSG_RESULT(Turning on DEC C compiler warnings.)
+-#         CC="$CC -migrate -w0 -verbose -warnprotos"
+-#       fi
+-#     ;;
+-    esac
+-  fi
+-])
+-
+-
+-###############################################################################
+-#
+-#       Functions to figure out how to disable // comments in ANSI C code.
+-#
+-#       (With recent gcc, this is done with "-std=c89".  With older gcc, this
+-#       is done by passing "-lang-c89" to cpp, by passing "-Wp,-lang-c89" to
+-#       gcc.  Old gcc doesn't support -std, and new gcc doesn't support -lang.
+-#       so much for compatibility!)
+-#
+-#       UPDATE: apparently there is NO WAY to tell gcc 3.2.2 to require that
+-#       declarations preceed statements, without resorting to "-pedantic".
+-#       This means that there is no way to get gcc3 to issue warnings that
+-#       ensure that your code complies with the ANSI/ISO C89 standard, without
+-#       also drowning in totally useless warnings.  Thank you master may I
+-#       have another.
+-#
+-#       So, I give up, let's just use -pedantic.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_GCC_ACCEPTS_STD,
+- [if test -n "$GCC"; then
+-   AC_CACHE_CHECK([whether gcc accepts -std],
+-     ac_cv_gcc_accepts_std,
+-    [if ( ( gcc -E -std=c89 - </dev/null >/dev/null ) 2>&1 | \
+-          grep unrecognized >/dev/null ); then
+-       ac_cv_gcc_accepts_std=no
+-     else
+-       ac_cv_gcc_accepts_std=yes
+-     fi])
+-   ac_gcc_accepts_std="$ac_cv_gcc_accepts_std"
+-  fi
+-])
+-
+-AC_DEFUN(AC_NO_CPLUSPLUS_COMMENTS_IN_C_CODE,
+- [if test -n "$GCC"; then
+-   AC_GCC_ACCEPTS_STD
+-   AC_MSG_RESULT(Disabling C++ comments in ANSI C code.)
+-   #
+-   # The reason that // comments are banned from xscreensaver is that gcc is
+-   # basically the only compiler in the world that supports them in C code.
+-   # All other vendors support them only in their C++ compilers, not in their
+-   # ANSI C compilers.  This means that it's a portability problem: every time
+-   # these comments have snuck into the xscreensaver source code, I've gotten
+-   # complaints about it the next day.  So we turn off support for them in gcc
+-   # as well to prevent them from accidentially slipping in.
+-   #
+-   if test "$ac_gcc_accepts_std" = yes ; then
+-     #
+-     # -std=c89 defines __STRICT_ANSI__, which we don't want.
+-     # (That appears to be the only additional preprocessor symbol
+-     # it defines, in addition to the syntax changes it makes.)
+-     #
+-     # -std=gnu89 is no good, because // comments were a GNU extension
+-     # before they were in the ANSI C 99 spec...  (gcc 2.96 permits //
+-     # with -std=gnu89 but not with -std=c89.)
+-     #
+-     CC="$CC -std=c89 -U__STRICT_ANSI__"
+-   else
+-     # The old way:
+-     CC="$CC -Wp,-lang-c89"
+-   fi
+-  fi
+-])
+-
+-
+-###############################################################################
+-#
+-#       Function to figure out how to turn off Objective C on MacOS X.
+-#       (We have to do this to work around an Apple-specific gcc bug.)
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_GCC_ACCEPTS_NO_CPP_PRECOMP,
+- [if test -n "$GCC"; then
+-   AC_CACHE_CHECK([whether gcc accepts -no-cpp-precomp],
+-     ac_cv_gcc_accepts_no_cpp_precomp,
+-    [if ( ( gcc -E -no-cpp-precomp - </dev/null >/dev/null ) 2>&1 | \
+-          grep unrecognized >/dev/null ); then
+-       ac_cv_gcc_accepts_no_cpp_precomp=no
+-     else
+-       ac_cv_gcc_accepts_no_cpp_precomp=yes
+-     fi])
+-   ac_gcc_accepts_no_cpp_precomp="$ac_cv_gcc_accepts_no_cpp_precomp"
+-  fi
+-])
+-
+-AC_DEFUN(AC_NO_OBJECTIVE_C,
+- [if test -n "$GCC"; then
+-   AC_GCC_ACCEPTS_NO_CPP_PRECOMP
+-   if test "$ac_gcc_accepts_no_cpp_precomp" = yes ; then
+-     AC_MSG_RESULT(Disabling Objective C extensions in ANSI C code.)
+-     CC="$CC -no-cpp-precomp"
+-   fi
+-  fi
+-])
+-
+-
+-###############################################################################
+-#
+-#       Function to figure out how to create directory trees.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_PROG_INSTALL_DIRS,
+- [AC_CACHE_CHECK([whether "\${INSTALL} -d" creates intermediate directories],
+-    ac_cv_install_d_creates_dirs,
+-    [ac_cv_install_d_creates_dirs=no
+-     rm -rf conftestdir
+-     if mkdir conftestdir; then
+-       cd conftestdir 2>/dev/null
+-       ${INSTALL} -d `pwd`/dir1/dir2 >/dev/null 2>&1
+-       if test -d dir1/dir2/. ; then
+-         ac_cv_install_d_creates_dirs=yes
+-       fi
+-       cd .. 2>/dev/null
+-       rm -rf conftestdir
+-     fi
+-    ])
+-
+-  if test "$ac_cv_install_d_creates_dirs" = no ; then
+-    AC_CACHE_CHECK([whether "mkdir -p" creates intermediate directories],
+-      ac_cv_mkdir_p_creates_dirs,
+-      [ac_cv_mkdir_p_creates_dirs=no
+-       rm -rf conftestdir
+-       if mkdir conftestdir; then
+-         cd conftestdir 2>/dev/null
+-         mkdir -p dir1/dir2 >/dev/null 2>&1
+-         if test -d dir1/dir2/. ; then
+-           ac_cv_mkdir_p_creates_dirs=yes
+-         fi
+-         cd .. 2>/dev/null
+-         rm -rf conftestdir
+-       fi
+-      ])
+-  fi
+-
+-  if test "$ac_cv_install_d_creates_dirs" = yes ; then
+-    INSTALL_DIRS='${INSTALL} -d'
+-  elif test "$ac_cv_mkdir_p_creates_dirs" = yes ; then
+-    INSTALL_DIRS='mkdir -p'
+-  else
+-    # any other ideas?
+-    INSTALL_DIRS='${INSTALL} -d'
+-  fi
+-])
+-
+-
+-###############################################################################
+-#
+-#       Function to check whether gettimeofday() exists, and how to call it.
+-#	This may define HAVE_GETTIMEOFDAY and GETTIMEOFDAY_TWO_ARGS.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_GETTIMEOFDAY_ARGS,
+- [AC_MSG_CHECKING(how to call gettimeofday)
+-  AC_CACHE_VAL(ac_cv_gettimeofday_args,
+-   [AC_TRY_COMPILE([#include <stdlib.h>
+-                    #include <sys/time.h>],
+-                   [struct timeval tv; struct timezone tzp;
+-                    gettimeofday(&tv, &tzp);],
+-                   [ac_gettimeofday_args=2],
+-                   [AC_TRY_COMPILE([#include <stdlib.h>
+-                                    #include <sys/time.h>],
+-                                   [struct timeval tv; gettimeofday(&tv);],
+-                                   [ac_gettimeofday_args=1],
+-                                   [ac_gettimeofday_args=0])])
+-    ac_cv_gettimeofday_args=$ac_gettimeofday_args])
+-  ac_gettimeofday_args=$ac_cv_gettimeofday_args
+-  if test "$ac_gettimeofday_args" = 1 ; then
+-    AC_DEFINE(HAVE_GETTIMEOFDAY)
+-    AC_MSG_RESULT(one argument)
+-  elif test "$ac_gettimeofday_args" = 2 ; then
+-    AC_DEFINE(HAVE_GETTIMEOFDAY)
+-    AC_DEFINE(GETTIMEOFDAY_TWO_ARGS)
+-    AC_MSG_RESULT(two arguments)
+-  else
+-    AC_MSG_RESULT(unknown)
+-  fi
+-])
+-
+-
+-###############################################################################
+-#
+-#       Function to find perl5 (defines PERL and PERL_VERSION.)
+-#
+-###############################################################################
+-
+-# M4 sucks!!  perl sucks too!!
+-changequote(X,Y)
+-perl_version_cmd='print $]'
+-changequote([,])
+-
+-AC_DEFUN(AC_PROG_PERL,
+- [AC_PATH_PROGS(PERL, [perl5 perl],,)
+-  if test -z "$PERL" ; then
+-    PERL_VERSION=0
+-  else
+-    AC_CACHE_CHECK([perl version], ac_cv_perl_version,
+-                   [ac_cv_perl_version=`$PERL -e "$perl_version_cmd"`])
+-    PERL_VERSION=$ac_cv_perl_version
+-  fi
+- ])
+-
+-
+-###############################################################################
+-#
+-#       Function to demand "bc".  Losers.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_DEMAND_BC,
+- [ac_bc_result=`echo 6+9 | bc 2>/dev/null`
+-  AC_MSG_CHECKING([for bc])
+-  if test "$ac_bc_result" = "15" ; then
+-    AC_MSG_RESULT(yes)
+-  else
+-    AC_MSG_RESULT(no)
+-    echo ''
+-    AC_MSG_ERROR([Your system doesn't have \"bc\", which has been a standard
+-                  part of Unix since the 1970s.  Come back when your vendor
+-                  has grown a clue.])
+-  fi
+- ])
+-
+-###############################################################################
+-#
+-#       Functions to check how to do ICMP PING requests.
+-#
+-###############################################################################
+-
+-AC_DEFUN(AC_CHECK_ICMP,
+- [AC_CACHE_CHECK([for struct icmp], ac_cv_have_icmp,
+-  [AC_TRY_COMPILE([#include <stdlib.h>
+-                   #include <stdio.h>
+-                   #include <math.h>
+-                   #include <unistd.h>
+-                   #include <limits.h>
+-                   #include <signal.h>
+-                   #include <fcntl.h>
+-                   #include <sys/types.h>
+-                   #include <sys/time.h>
+-                   #include <sys/ipc.h>
+-                   #include <sys/shm.h>
+-                   #include <sys/socket.h>
+-                   #include <netinet/in_systm.h>
+-                   #include <netinet/in.h>
+-                   #include <netinet/ip.h>
+-                   #include <netinet/ip_icmp.h>
+-                   #include <netinet/udp.h>
+-                   #include <arpa/inet.h>
+-                   #include <netdb.h>],
+-                  [struct icmp i;
+-                   struct sockaddr s;
+-                   struct sockaddr_in si;
+-                   struct ip ip;
+-                   i.icmp_type = ICMP_ECHO;
+-                   i.icmp_code = 0;
+-                   i.icmp_cksum = 0;
+-                   i.icmp_id = 0;
+-                   i.icmp_seq = 0;
+-                   si.sin_family = AF_INET;
+-                   #if defined(__DECC) || defined(_IP_VHL)
+-                   ip.ip_vhl = 0;
+-                   #else
+-                   ip.ip_hl = 0;
+-                   #endif
+-                   ],
+-                  [ac_cv_have_icmp=yes],
+-                  [ac_cv_have_icmp=no])])
+- if test "$ac_cv_have_icmp" = yes ; then
+-   AC_DEFINE(HAVE_ICMP)
+- fi])
+-
+-AC_DEFUN(AC_CHECK_ICMPHDR,
+- [AC_CACHE_CHECK([for struct icmphdr], ac_cv_have_icmphdr,
+-  [AC_TRY_COMPILE([#include <stdlib.h>
+-                   #include <stdio.h>
+-                   #include <math.h>
+-                   #include <unistd.h>
+-                   #include <limits.h>
+-                   #include <signal.h>
+-                   #include <fcntl.h>
+-                   #include <sys/types.h>
+-                   #include <sys/time.h>
+-                   #include <sys/ipc.h>
+-                   #include <sys/shm.h>
+-                   #include <sys/socket.h>
+-                   #include <netinet/in_systm.h>
+-                   #include <netinet/in.h>
+-                   #include <netinet/ip.h>
+-                   #include <netinet/ip_icmp.h>
+-                   #include <netinet/udp.h>
+-                   #include <arpa/inet.h>
+-                   #include <netdb.h>],
+-                  [struct icmphdr i;
+-                   struct sockaddr s;
+-                   struct sockaddr_in si;
+-                   struct ip ip;
+-                   i.type = ICMP_ECHO;
+-                   i.code = 0;
+-                   i.checksum = 0;
+-                   i.un.echo.id = 0;
+-                   i.un.echo.sequence = 0;
+-                   si.sin_family = AF_INET;
+-                   ip.ip_hl = 0;],
+-                  [ac_cv_have_icmphdr=yes],
+-                  [ac_cv_have_icmphdr=no])])
+- if test "$ac_cv_have_icmphdr" = yes ; then
+-   AC_DEFINE(HAVE_ICMPHDR)
+- fi])
+-
+-
+-###############################################################################
+-#
+-#       Functions to check for various X11 crap.
+-#
+-###############################################################################
+-
+-# Try and find the app-defaults directory.
+-# It sucks that autoconf doesn't do this already...
+-#
+-AC_DEFUN(AC_PATH_X_APP_DEFAULTS_XMKMF,[
+-  rm -fr conftestdir
+-  if mkdir conftestdir; then
+-    cd conftestdir 2>/dev/null
+-    # Make sure to not put "make" in the Imakefile rules, since we grep it out.
+-    cat > Imakefile <<'EOF'
+-acfindx:
+-	@echo 'ac_x_app_defaults="${XAPPLOADDIR}"'
+-EOF
+-    if (xmkmf) >/dev/null 2>&1 && test -f Makefile; then
+-      # GNU make sometimes prints "make[1]: Entering...", which'd confuse us.
+-      eval `${MAKE-make} acfindx 2>/dev/null | grep -v make`
+-    fi
+-    cd .. 2>/dev/null
+-    rm -fr conftestdir
+-  fi])
+-
+-AC_DEFUN(AC_PATH_X_APP_DEFAULTS_DIRECT,[
+-  # Look for the directory under a standard set of common directories.
+-  # Check X11 before X11Rn because it's often a symlink to the current release.
+-  for ac_dir in                                 \
+-    /usr/X11/lib/app-defaults                   \
+-    /usr/X11R6/lib/app-defaults                 \
+-    /usr/X11R6/lib/X11/app-defaults             \
+-    /usr/X11R5/lib/app-defaults                 \
+-    /usr/X11R5/lib/X11/app-defaults             \
+-    /usr/X11R4/lib/app-defaults                 \
+-    /usr/X11R4/lib/X11/app-defaults             \
+-                                                \
+-    /usr/lib/X11/app-defaults                   \
+-    /usr/lib/X11R6/app-defaults                 \
+-    /usr/lib/X11R5/app-defaults                 \
+-    /usr/lib/X11R4/app-defaults                 \
+-                                                \
+-    /usr/local/X11/lib/app-defaults             \
+-    /usr/local/X11R6/lib/app-defaults           \
+-    /usr/local/X11R5/lib/app-defaults           \
+-    /usr/local/X11R4/lib/app-defaults           \
+-                                                \
+-    /usr/local/lib/X11/app-defaults             \
+-    /usr/local/lib/X11R6/app-defaults           \
+-    /usr/local/lib/X11R6/X11/app-defaults       \
+-    /usr/local/lib/X11R5/app-defaults           \
+-    /usr/local/lib/X11R5/X11/app-defaults       \
+-    /usr/local/lib/X11R4/app-defaults           \
+-    /usr/local/lib/X11R4/X11/app-defaults       \
+-                                                \
+-    /usr/X386/lib/X11/app-defaults              \
+-    /usr/x386/lib/X11/app-defaults              \
+-    /usr/XFree86/lib/X11/app-defaults           \
+-                                                \
+-    /usr/lib/X11/app-defaults                   \
+-    /usr/local/lib/X11/app-defaults             \
+-    /usr/unsupported/lib/X11/app-defaults       \
+-    /usr/athena/lib/X11/app-defaults            \
+-    /usr/local/x11r5/lib/X11/app-defaults       \
+-    /usr/lpp/Xamples/lib/X11/app-defaults       \
+-    /lib/usr/lib/X11/app-defaults               \
+-                                                \
+-    /usr/openwin/lib/app-defaults               \
+-    /usr/openwin/lib/X11/app-defaults           \
+-    /usr/openwin/share/lib/app-defaults         \
+-    /usr/openwin/share/lib/X11/app-defaults     \
+-                                                \
+-    /X11R6/lib/app-defaults                     \
+-    /X11R5/lib/app-defaults                     \
+-    /X11R4/lib/app-defaults                     \
+-    ; \
+-  do
+-    if test -d "$ac_dir"; then
+-      ac_x_app_defaults=$ac_dir
+-      break
+-    fi
+-  done
+-])
+-
+-AC_DEFUN(AC_PATH_X_APP_DEFAULTS,
+-  [AC_REQUIRE_CPP()
+-    AC_CACHE_CHECK([for X app-defaults directory], ac_cv_x_app_defaults,
+-     [AC_PATH_X_APP_DEFAULTS_XMKMF
+-      if test x"$ac_x_app_defaults" = x; then
+-        AC_PATH_X_APP_DEFAULTS_DIRECT
+-      fi
+-      if test x"$ac_x_app_defaults" = x; then
+-        ac_cv_x_app_defaults="/usr/lib/X11/app-defaults"
+-      else
+-        # Record where we found app-defaults for the cache.
+-        ac_cv_x_app_defaults="$ac_x_app_defaults"
+-      fi])
+-    eval ac_x_app_defaults="$ac_cv_x_app_defaults"])
+-
+-
+-AC_DEFUN(AC_XPOINTER,
+- [AC_CACHE_CHECK([for XPointer], ac_cv_xpointer,
+-                 [AC_TRY_X_COMPILE([#include <X11/Xlib.h>],
+-                                   [XPointer foo = (XPointer) 0;],
+-                                   [ac_cv_xpointer=yes],
+-                                   [ac_cv_xpointer=no])])
+-  if test "$ac_cv_xpointer" != yes; then
+-   AC_DEFINE(XPointer,[char*])
+-  fi])
+-
+-
+-# Random special-cases for X on certain pathological OSes.
+-# You know who you are.
+-#
+-AC_DEFUN(AC_X_RANDOM_PATHS,
+- [case "$host" in
+-    *-hpux*)
+-
+-      # The following arcana was gleaned from conversations with
+-      # Eric Schwartz <erics@col.hp.com>:
+-      #
+-      # On HPUX 10.x, the parts of X that HP considers "standard" live in
+-      # /usr/{include,lib}/X11R6/.  The parts that HP doesn't consider
+-      # "standard", notably, Xaw and Xmu, live in /usr/contrib/X11R6/.
+-      # Yet /usr/contrib/X11R6/ comes preinstalled on all HPUX systems.
+-      # Also, there are symlinks from /usr/include/ and /usr/lib/ into
+-      # /usr/{include,lib}/X11R6/, so that (if you don't use Xmu at all)
+-      # you don't need any -I or -L arguments.
+-      #
+-      # On HPUX 9.x, /usr/{include,lib}/X11R5/ and /usr/contrib/X11R5/
+-      # are the same division as 10.x.  However, there are no symlinks to
+-      # the X stuff from /usr/include/ and /usr/lib/, so -I and -L
+-      # arguments are always necessary.
+-      #
+-      # However, X11R6 was available on HPUX 9.x as a patch: if that
+-      # patch was installed, then all of X11R6 went in to
+-      # /usr/contrib/X11R6/ (there was no /usr/{include,lib}/X11R6/.)
+-      #
+-      # HPUX 8.x was the same as 9.x, but was X11R4 instead (I don't know
+-      # whether R5 was available as a patch; R6 undoubtedly was not.)
+-      #
+-      # So.  We try and use the highest numbered pair of
+-      # /usr/{include,lib}/X11R?/ and /usr/contrib/X11R?/{include,lib}/
+-      # that are available.  We do not mix and match different versions
+-      # of X.
+-      #
+-      # Question I still don't know the answer to: (do you?)
+-      #
+-      #   * On HPUX 9.x, where /usr/include/X11R5/ was standard, and
+-      #     /usr/contrib/X11R6/ could be installed as a patch, what was in
+-      #     that contrib directory?  Did it contain so-called "standard"
+-      #     X11R6, or did it include Xaw and Xmu as well?  If the former,
+-      #     where did one find Xaw and Xmu on 9.x R6 systems?  Would this
+-      #     be a situation where one had to reach into the R5 headers and
+-      #     libs to find Xmu?  That is, must both R6 and R5 directories
+-      #     be on the -I and -L lists in that case?
+-      #
+-      for version in X11R6 X11R5 X11R4 ; do
+-        # if either pair of directories exists...
+-        if test -d /usr/include/$version || test -d /usr/contrib/$version/include
+-        then
+-           # if contrib exists, use it...
+-           if test -d /usr/contrib/$version/include ; then
+-             X_CFLAGS="$X_CFLAGS -I/usr/contrib/$version/include"
+-             X_LIBS="$X_LIBS -L/usr/contrib/$version/lib"
+-           fi
+-           # if the "standard" one exists, use it.
+-           if test -d /usr/include/$version ; then
+-             X_CFLAGS="$X_CFLAGS -I/usr/include/$version"
+-             X_LIBS="$X_LIBS -L/usr/lib/$version"
+-           fi
+-           # since at least one of the pair exists, go no farther.
+-           break
+-        fi
+-      done
+-
+-      # Now find Motif.  Thanks for not making xmkmf find this by
+-      # default, you losers.
+-      #
+-      if test -d /usr/include/Motif2.1 ; then
+-        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif2.1"
+-        X_LIBS="$X_LIBS -L/usr/lib/Motif2.1"
+-      elif test -d /usr/include/Motif1.2 ; then
+-        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif1.2"
+-        X_LIBS="$X_LIBS -L/usr/lib/Motif1.2"
+-      elif test -d /usr/include/Motif1.1 ; then
+-        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif1.1"
+-        X_LIBS="$X_LIBS -L/usr/lib/Motif1.1"
+-      fi
+-
+-      # Now let's check for the pseudo-standard locations for OpenGL and XPM.
+-      #
+-      if test -d /opt/graphics/OpenGL/include ; then
+-        # HP-UX 10.20 puts it here
+-        X_CFLAGS="-I/opt/graphics/OpenGL/include $X_CFLAGS"
+-        X_LIBS="-L/opt/graphics/OpenGL/lib $X_LIBS"
+-      elif test -d /opt/Mesa/lib ; then
+-        X_CFLAGS="-I/opt/Mesa/include $X_CFLAGS"
+-        X_LIBS="-L/opt/Mesa/lib $X_LIBS"
+-      fi
+-
+-
+-      if test -d /opt/xpm/lib/X11 ; then
+-        X_CFLAGS="-I/opt/xpm/include $X_CFLAGS"
+-        X_LIBS="-L/opt/xpm/lib/X11 $X_LIBS"
+-      fi
+-
+-      # On HPUX, default to installing in /opt/xscreensaver/ instead of
+-      # in /usr/local/, unless there is already an xscreensaver in
+-      # /usr/local/bin/.  This can be overridden with the --prefix arg
+-      # to configure.  I'm not sure this is the right thing to do, but
+-      # Richard Lloyd says so...
+-      #
+-      if test \! -x /usr/local/bin/xscreensaver ; then
+-        ac_default_prefix=/opt/xscreensaver
+-      fi
+-
+-    ;;
+-    *-solaris*)
+-
+-      # Thanks for not making xmkmf find this by default, pinheads.
+-      # And thanks for moving things around again, too.  Is this
+-      # really the standard location now?  What happened to the
+-      # joke that this kind of thing went in /opt?
+-      # cthomp says "answer: CDE (Common Disorganized Environment)"
+-      #
+-      if test -f /usr/dt/include/Xm/Xm.h ; then
+-        X_CFLAGS="$X_CFLAGS -I/usr/dt/include"
+-        MOTIF_LIBS="$MOTIF_LIBS -L/usr/dt/lib -R/usr/dt/lib"
+-
+-        # Some versions of Slowlaris Motif require -lgen.  But not all.  Why?
+-        AC_CHECK_LIB(gen, regcmp, [MOTIF_LIBS="$MOTIF_LIBS -lgen"])
+-      fi
+-
+-    ;;
+-    *-darwin*)
+-
+-      # On MacOS X (10.x with "fink"), many things are under /sw/.
+-      #
+-      if test -d /sw/include ; then
+-        X_CFLAGS="-I/sw/include $X_CFLAGS"
+-        X_LIBS="-L/sw/lib $X_LIBS"
+-      fi
+-    ;;
+-  esac])
+-
+-
+-
+-###############################################################################
+-#
+-#       Some utility functions to make checking for X things easier.
+-#
+-###############################################################################
+-
+-# Like AC_CHECK_HEADER, but it uses the already-computed -I directories.
+-#
+-AC_DEFUN(AC_CHECK_X_HEADER, [
+-  ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+-  AC_CHECK_HEADER([$1],[$2],[$3],[$4])
+-  CPPFLAGS="$ac_save_CPPFLAGS"])
+-
+-# Like AC_EGREP_HEADER, but it uses the already-computed -I directories.
+-#
+-AC_DEFUN(AC_EGREP_X_HEADER, [
+-  ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+-  AC_EGREP_HEADER([$1], [$2], [$3], [$4])
+-  CPPFLAGS="$ac_save_CPPFLAGS"])
+-
+-# Like AC_TRY_COMPILE, but it uses the already-computed -I directories.
+-#
+-AC_DEFUN(AC_TRY_X_COMPILE, [
+-  ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+-  AC_TRY_COMPILE([$1], [$2], [$3], [$4])
+-  CPPFLAGS="$ac_save_CPPFLAGS"])
+-
+-
+-# Like AC_CHECK_LIB, but it uses the already-computed -I and -L directories.
+-# Use this sparingly; it probably doesn't work very well on X programs.
+-#
+-AC_DEFUN(AC_CHECK_X_LIB, [
+-  ac_save_CPPFLAGS="$CPPFLAGS"
+-  ac_save_LDFLAGS="$LDFLAGS"
+-#  ac_save_LIBS="$LIBS"
+-
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+-  # note: $X_CFLAGS includes $x_includes
+-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+-
+-  if test \! -z "$libdir" ; then
+-    LDFLAGS="$LDFLAGS -L$libdir"
+-  fi
+-  # note: $X_LIBS includes $x_libraries
+-  LDFLAGS="$LDFLAGS $X_LIBS $X_EXTRA_LIBS"
+-
+-  AC_CHECK_LIB([$1], [$2], [$3], [$4], [$5])
+-  CPPFLAGS="$ac_save_CPPFLAGS"
+-  LDFLAGS="$ac_save_LDFLAGS"
+-#  LIBS="$ac_save_LIBS"
+-  ])
+-
+-# Like AC_TRY_RUN, but it uses the already-computed -I directories.
+-# (But not the -L directories!)
+-#
+-AC_DEFUN(AC_TRY_X_RUN, [
+-  ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+-  AC_TRY_RUN([$1], [$2], [$3], [$4])
+-  CPPFLAGS="$ac_save_CPPFLAGS"])
+-
+-
+-
+-# Usage: HANDLE_X_PATH_ARG([variable_name],
+-#                          [--command-line-option],
+-#                          [descriptive string])
+-#
+-# All of the --with options take three forms:
+-#
+-#   --with-foo (or --with-foo=yes)
+-#   --without-foo (or --with-foo=no)
+-#   --with-foo=/DIR
+-#
+-# This function, HANDLE_X_PATH_ARG, deals with the /DIR case.  When it sees
+-# a directory (string beginning with a slash) it checks to see whether
+-# /DIR/include and /DIR/lib exist, and adds them to $X_CFLAGS and $X_LIBS
+-# as appropriate.
+-#
+-AC_DEFUN(HANDLE_X_PATH_ARG, [
+-   case "$[$1]" in
+-    yes) ;;
+-    no)  ;;
+-
+-    /*)
+-     AC_MSG_CHECKING([for [$3] headers])
+-     d=$[$1]/include
+-     if test -d $d; then
+-       X_CFLAGS="-I$d $X_CFLAGS"
+-       AC_MSG_RESULT($d)
+-     else
+-       AC_MSG_RESULT(not found ($d: no such directory))
+-     fi
+-
+-     AC_MSG_CHECKING([for [$3] libs])
+-     d=$[$1]/lib
+-     if test -d $d; then
+-       X_LIBS="-L$d $X_LIBS"
+-       AC_MSG_RESULT($d)
+-     else
+-       AC_MSG_RESULT(not found ($d: no such directory))
+-     fi
+-
+-     # replace the directory string with "yes".
+-     [$1]_req="yes"
+-     [$1]=$[$1]_req
+-     ;;
+-
+-    *)
+-     echo ""
+-     echo "error: argument to [$2] must be \"yes\", \"no\", or a directory."
+-     echo "       If it is a directory, then \`DIR/include' will be added to"
+-     echo "       the -I list, and \`DIR/lib' will be added to the -L list."
+-     exit 1
+-     ;;
+-   esac
+-  ])
+-
+-
+-
+-###############################################################################
+-###############################################################################
+-#
+-#       End of function definitions.  Now start actually executing stuff.
+-#
+-###############################################################################
+-###############################################################################
+-
+ # random compiler setup
+ AC_CANONICAL_HOST
+-AC_PROG_CC_ANSI
+-AC_NO_CPLUSPLUS_COMMENTS_IN_C_CODE
++AC_PROG_CC
++#AC_PROG_CC_ANSI
++#AC_NO_CPLUSPLUS_COMMENTS_IN_C_CODE
+ AC_NO_OBJECTIVE_C
+ AC_PROG_CPP
+ AC_C_CONST
+@@ -870,8 +100,8 @@
+ 
+ AC_PROG_INTLTOOL
+ GETTEXT_PACKAGE=xscreensaver
+-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+-AC_DEFINE_UNQUOTED(PACKAGE, "$GETTEXT_PACKAGE")
++AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",[ This is the name of the gettext package to use. ])
++AC_DEFINE_UNQUOTED(PACKAGE, "$GETTEXT_PACKAGE", [ This is the same as GETTEXT_PACKAGE, but for the glade generated code ])
+ AC_SUBST(GETTEXT_PACKAGE)
+ 
+ ALL_LINGUAS="ca da de es et fi fr hu it ja ko nl no pl pt pt_BR ru sk sv vi wa zh_CN zh_TW"
+@@ -898,7 +128,7 @@
+   XMU_SRCS=''
+   XMU_OBJS=''
+   XMU_LIBS='-lXmu'
+-  AC_DEFINE(HAVE_XMU)
++  AC_DEFINE(HAVE_XMU, 1, [ Define this if you have the Xmu library. ])
+ fi
+ 
+ 
+@@ -1059,7 +289,7 @@
+ if test "$with_sgi" = yes; then
+   AC_CHECK_X_HEADER(X11/extensions/XScreenSaver.h,
+                     [have_sgi=yes
+-                     AC_DEFINE(HAVE_SGI_SAVER_EXTENSION)],,
++                     AC_DEFINE(HAVE_SGI_SAVER_EXTENSION, 1, [ Define this if you have the SGI SCREEN_SAVER extension. ])],,
+                     [#include <X11/Xlib.h>])
+ 
+ elif test "$with_sgi" != no; then
+@@ -1111,7 +341,7 @@
+     fi
+ 
+   if test "$have_mit" = yes; then
+-    AC_DEFINE(HAVE_MIT_SAVER_EXTENSION)
++    AC_DEFINE(HAVE_MIT_SAVER_EXTENSION, 1, [ Define this if you have the MIT-SCREEN-SAVER extension installed. ])
+   fi
+ 
+   fi
+@@ -1139,7 +369,7 @@
+ if test "$with_xidle" = yes; then
+   AC_CHECK_X_HEADER(X11/extensions/xidle.h,
+                     [have_xidle=yes
+-                     AC_DEFINE(HAVE_XIDLE_EXTENSION)],,
++                     AC_DEFINE(HAVE_XIDLE_EXTENSION, 1, [ Define this if you have the XIDLE extension installed.])],,
+                     [#include <X11/Xlib.h>])
+ elif test "$with_xidle" != no; then
+   echo "error: must be yes or no: --with-xidle-ext=$with_xidle"
+@@ -1177,7 +407,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_sgivc" = yes; then
+-    AC_DEFINE(HAVE_SGI_VC_EXTENSION)
++    AC_DEFINE(HAVE_SGI_VC_EXTENSION, 1, [ Define this if you have the SGI-VIDEO-CONTROL extension. ])
+   fi
+ 
+ elif test "$with_sgivc" != no; then
+@@ -1225,7 +455,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_dpms" = yes; then
+-    AC_DEFINE(HAVE_DPMS_EXTENSION)
++    AC_DEFINE(HAVE_DPMS_EXTENSION, 1, [ Define this if you have the XDPMS extension. ])
+   fi
+ 
+ elif test "$with_dpms" != no; then
+@@ -1272,7 +502,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_xinerama" = yes; then
+-    AC_DEFINE(HAVE_XINERAMA)
++    AC_DEFINE(HAVE_XINERAMA, 1, [ Define this if you have the Xinerama extension.])
+   fi
+ 
+ elif test "$with_xinerama" != no; then
+@@ -1312,7 +542,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_xf86vmode" = yes; then
+-    AC_DEFINE(HAVE_XF86VMODE)
++    AC_DEFINE(HAVE_XF86VMODE, 1, [ Define this if you have the functions XF86VidModeGetModeLine() and XF86VidModeGetViewPort() ])
+   fi
+ 
+ elif test "$with_xf86vmode" != no; then
+@@ -1365,11 +595,11 @@
+ 
+   # if those tests succeeded, then we've really got the functions.
+   if test "$have_xf86gamma" = yes; then
+-    AC_DEFINE(HAVE_XF86VMODE_GAMMA)
++    AC_DEFINE(HAVE_XF86VMODE_GAMMA, 1, [ Define this if you have the functions XF86VidModeGetGamma() and XF86VidModeSetGamma() ])
+   fi
+ 
+   if test "$have_xf86gamma_ramp" = yes; then
+-    AC_DEFINE(HAVE_XF86VMODE_GAMMA_RAMP)
++    AC_DEFINE(HAVE_XF86VMODE_GAMMA_RAMP, 1, [ Define this if you have the functions XF86VidModeGetGammaRamp() and  XF86VidModeSetGammaRamp() ])
+   fi
+ 
+   # pull in the lib, if we haven't already
+@@ -1431,7 +661,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_randr" = yes; then
+-    AC_DEFINE(HAVE_RANDR)
++    AC_DEFINE(HAVE_RANDR, 1, [ Define this if you have the Resize and Rotate extension ])
+   fi
+ 
+ elif test "$with_randr" != no; then
+@@ -1454,7 +684,7 @@
+                 [true], -lXext -lX11)
+   if test "$have_xf86miscsetgrabkeysstate" = yes ; then
+     SAVER_LIBS="$SAVER_LIBS -lXxf86misc"
+-    AC_DEFINE(HAVE_XF86MISCSETGRABKEYSSTATE)
++    AC_DEFINE(HAVE_XF86MISCSETGRABKEYSSTATE, 1, [ Define this if you have the XF86MiscSetGrabKeysState function ])
+   fi
+ fi
+ 
+@@ -1467,7 +697,7 @@
+ 
+ AC_MSG_CHECKING([for XHPDisableReset in X11/XHPlib.h])
+ AC_EGREP_X_HEADER(XHPDisableReset, X11/XHPlib.h,
+-                  [AC_DEFINE(HAVE_XHPDISABLERESET)
++                  [AC_DEFINE(HAVE_XHPDISABLERESET, 1, [ Define this if you have the XHPDisableReset function ])
+                    SAVER_LIBS="-lXhp11 $SAVER_LIBS"
+                    AC_MSG_RESULT(yes)],
+                   [AC_MSG_RESULT(no)])
+@@ -1499,7 +729,7 @@
+    have_proc_interrupts=$ac_cv_have_proc_interrupts
+ 
+   if test "$have_proc_interrupts" = yes; then
+-    AC_DEFINE(HAVE_PROC_INTERRUPTS)
++    AC_DEFINE(HAVE_PROC_INTERRUPTS, 1, [ Define this if you have a Linux-like /proc/interrupts file ])
+   fi
+ 
+ elif test "$with_proc_interrupts" != no; then
+@@ -1523,7 +753,7 @@
+ if test "$enable_locking" = yes; then
+   true
+ elif test "$enable_locking" = no; then
+-  AC_DEFINE(NO_LOCKING)
++  AC_DEFINE(NO_LOCKING, 1, [Define this to remove the option of locking the screen at all. ] )
+ else
+   echo "error: must be yes or no: --enable-locking=$enable_locking"
+   exit 1
+@@ -1535,7 +765,7 @@
+   if test "$enable_locking" = yes; then
+     AC_MSG_RESULT(locking disabled: it doesn't work on MacOS X)
+     enable_locking=no
+-    AC_DEFINE(NO_LOCKING)
++    AC_DEFINE(NO_LOCKING, 1, [ Define this to remove the option of locking the screen at all. ])
+   fi
+ fi
+ 
+@@ -1614,7 +844,7 @@
+                                    [ac_cv_pam=no])])
+   if test "$ac_cv_pam" = yes ; then
+     have_pam=yes
+-    AC_DEFINE(HAVE_PAM)
++    AC_DEFINE(HAVE_PAM, 1, [ Define this option if you have PAM ])
+     PASSWD_LIBS="${PASSWD_LIBS} -lpam"
+ 
+     # libpam typically requires dlopen and dlsym.  On FreeBSD,
+@@ -1648,7 +878,7 @@
+     if test "$ac_pam_strerror_args" = 1 ; then
+       AC_MSG_RESULT(one argument)
+     elif test "$ac_pam_strerror_args" = 2 ; then
+-      AC_DEFINE(PAM_STRERROR_TWO_ARGS)
++      AC_DEFINE(PAM_STRERROR_TWO_ARGS, 1, [ Define if you have PAM and pam_strerror() requires two arguments. ])
+       AC_MSG_RESULT(two arguments)
+     else
+       AC_MSG_RESULT(unknown)
+@@ -1685,7 +915,7 @@
+ 
+   if test "$ac_cv_kerberos" = yes ; then
+     have_kerberos=yes
+-    AC_DEFINE(HAVE_KERBEROS)
++    AC_DEFINE(HAVE_KERBEROS, 1, [ Define this if you have Kerberos ])
+   fi
+ 
+   if test "$ac_cv_kerberos5" = yes ; then
+@@ -1705,8 +935,8 @@
+                    [have_kerberos=no])
+     if test "$have_kerberos" = yes ; then
+       have_kerberos5=yes
+-      AC_DEFINE(HAVE_KERBEROS)
+-      AC_DEFINE(HAVE_KERBEROS5)
++      AC_DEFINE(HAVE_KERBEROS, 1, [ Define this if you have Kerberos ])
++      AC_DEFINE(HAVE_KERBEROS5, 1, [ Define this if you have Kerberos 5 ])
+     else
+       have_kerberos5=no
+       AC_MSG_WARN([Cannot find compat lib (libkrb4) needed to use Kerberos 5])
+@@ -1943,13 +1173,13 @@
+ 
+ 
+ if test "$have_shadow_adjunct" = yes ; then
+-  AC_DEFINE(HAVE_ADJUNCT_PASSWD)
++  AC_DEFINE(HAVE_ADJUNCT_PASSWD, 1, [ Define this if your system is Solaris with ``adjunct'' passwords ])
+ elif test "$have_shadow_enhanced" = yes ; then
+-  AC_DEFINE(HAVE_ENHANCED_PASSWD)
++  AC_DEFINE(HAVE_ENHANCED_PASSWD, 1, [ Define this if your system is Digital or SCO Unix with so-called ``Enhanced Security'' ])
+ elif test "$have_shadow_hpux" = yes ; then
+-  AC_DEFINE(HAVE_HPUX_PASSWD)
++  AC_DEFINE(HAVE_HPUX_PASSWD, 1, [ Define this if you are running HPUX with so-called ``Secure Passwords'' ])
+ elif test "$have_shadow" = yes ; then
+-  AC_DEFINE(HAVE_SHADOW_PASSWD)
++  AC_DEFINE(HAVE_SHADOW_PASSWD 1, [ Define this if your system uses `shadow' passwords ])
+ fi
+ 
+ 
+@@ -1983,7 +1213,7 @@
+ case "$with_passwd_helper" in
+   ""|no) : ;;
+   /*)
+-    AC_DEFINE_UNQUOTED(PASSWD_HELPER_PROGRAM, "$with_passwd_helper")
++    AC_DEFINE_UNQUOTED(PASSWD_HELPER_PROGRAM, "$with_passwd_helper", [ Define a password helper to use ])
+     have_passwd_helper=yes;;
+   *)
+     echo "error: --with-passwd-helper needs full pathname of helper (not '$with_passwd_helper')." >&2
+@@ -2017,7 +1247,7 @@
+   have_motif=no
+   AC_CHECK_X_HEADER(Xm/Xm.h,
+                     [have_motif=yes
+-                     AC_DEFINE(HAVE_MOTIF)
++                     AC_DEFINE(HAVE_MOTIF, 1, [ Define this if you have motif ])
+                      MOTIF_LIBS="$MOTIF_LIBS -lXm"],,
+                     [#include <stdlib.h>
+                      #include <stdio.h>
+@@ -2026,7 +1256,7 @@
+ 
+ 
+ if test "$have_motif" = yes; then
+-  AC_CHECK_X_HEADER(Xm/ComboBox.h, [AC_DEFINE(HAVE_XMCOMBOBOX)],,
++  AC_CHECK_X_HEADER(Xm/ComboBox.h, [AC_DEFINE(HAVE_XMCOMBOBOX, 1, [ Define this if you have Motif ])],,
+                     [#include <stdlib.h>
+                      #include <stdio.h>
+                      #include <X11/Intrinsic.h>])
+@@ -2171,7 +1401,7 @@
+ 
+     if test "$have_gtk" = yes; then
+       have_gtk2=yes
+-      AC_DEFINE(HAVE_GTK2)
++      AC_DEFINE(HAVE_GTK2, 1, [ Define this if you have GTK2 ])
+     else
+       if test -n "$ac_gtk_version_string" ; then
+         gtk2_halfassed="$ac_gtk_version_string"
+@@ -2205,7 +1435,7 @@
+         if test "$have_gnome" = no; then
+           pkgs="$old_pkgs"
+         else
+-          AC_DEFINE(HAVE_CRAPPLET)
++          AC_DEFINE(HAVE_CRAPPLET, 1, [ Define this if you have the configuration appliet ])
+         fi
+       fi
+     fi
+@@ -2325,7 +1555,7 @@
+     if test "$have_gnome" = yes -a "$have_gtk" = yes; then
+       ac_gtk_config_cflags=$ac_gnome_config_cflags
+       ac_gtk_config_libs=$ac_gnome_config_libs
+-      AC_DEFINE(HAVE_CRAPPLET)
++      AC_DEFINE(HAVE_CRAPPLET, 1, [ Define this if you have the configuration applet ])
+     fi
+ 
+   fi   # end of {gnome,gtk}-config based tests
+@@ -2334,7 +1564,7 @@
+     # check for this function that was not in libcapplet 1.2.
+     # (only needed in Gnome/Gtk 1.x, not Gnome/Gtk 2.x)
+     AC_CHECK_X_LIB(capplet, capplet_widget_changes_are_immediate,
+-                   [AC_DEFINE(HAVE_CRAPPLET_IMMEDIATE)], [true],
++                   [AC_DEFINE(HAVE_CRAPPLET_IMMEDIATE, 1, [ Define this if capplet_widget_changes_are_immediate ])], [true],
+                    $ac_gnome_config_libs)
+   fi
+ 
+@@ -2364,7 +1594,7 @@
+   if test "$have_gtk" = yes; then
+     INCLUDES="$INCLUDES $ac_gtk_config_cflags"
+     GTK_LIBS="$GTK_LIBS $ac_gtk_config_libs"
+-    AC_DEFINE(HAVE_GTK)
++    AC_DEFINE(HAVE_GTK, 1, [ Define this if you have GTK ])
+ 
+     if test "$have_gtk2" = yes; then
+       GTK_EXTRA_OBJS=""
+@@ -2533,7 +1763,7 @@
+                    [have_xml=yes
+                     xml_halfassed=no
+                     XML_LIBS="$ac_xml_config_libs"
+-                    AC_DEFINE(HAVE_XML)],
++                    AC_DEFINE(HAVE_XML,1,[ Define this if you have libxml ])],
+                    [true],
+                    $ac_xml_config_libs)
+   fi
+@@ -2541,9 +1771,9 @@
+   if test "$have_xml" = yes; then
+     INCLUDES="$INCLUDES $ac_xml_config_cflags"
+     GTK_LIBS="$GTK_LIBS $ac_xml_config_libs"
+-    AC_DEFINE(HAVE_XML)
++    AC_DEFINE(HAVE_XML,1,[ Define this if you have libxml ])
+     if test "$have_old_xml" = yes; then
+-      AC_DEFINE(HAVE_OLD_XML_HEADERS)
++      AC_DEFINE(HAVE_OLD_XML_HEADERS, 1, [ Define this if you have libxml1 ])
+     fi
+   fi
+ 
+@@ -2773,9 +2003,9 @@
+       gl_halfassed=yes
+     else
+       # linking works -- we can build the GL hacks.
+-      AC_DEFINE(HAVE_GL)
++      AC_DEFINE(HAVE_GL, 1, [ Define this if you have OpenGL ])
+       if test "$ac_have_mesa_gl" = yes ; then
+-        AC_DEFINE(HAVE_MESA_GL)
++        AC_DEFINE(HAVE_MESA_GL, 1, [ Define this if you have Mesa GL ])
+       fi
+     fi
+   fi
+@@ -2868,7 +2098,7 @@
+ 
+     # Check for OpenGL 1.1 features.
+     #
+-    AC_CHECK_X_LIB($gl_lib_1, glBindTexture, [AC_DEFINE(HAVE_GLBINDTEXTURE)],
++    AC_CHECK_X_LIB($gl_lib_1, glBindTexture, [AC_DEFINE(HAVE_GLBINDTEXTURE, 1, [ Define this if you have OpenGL 1.1 ])],
+                    [true], $GL_LIBS -lX11 -lXext -lm)
+   fi
+ 
+@@ -2951,9 +2181,9 @@
+   fi
+ 
+   if test "$have_gle" = yes ; then
+-    AC_DEFINE(HAVE_GLE)
++    AC_DEFINE(HAVE_GLE, 1, [ Define this if you have GLE ])
+     if test "$have_gle3" = yes ; then
+-      AC_DEFINE(HAVE_GLE3)
++      AC_DEFINE(HAVE_GLE3, 1, [ Define this if you have GLE3 ])
+     fi
+   fi
+ 
+@@ -2983,7 +2213,7 @@
+ if test "$with_xpm" = yes; then
+   AC_CHECK_X_HEADER(X11/xpm.h,
+                    [have_xpm=yes
+-                    AC_DEFINE(HAVE_XPM)
++                    AC_DEFINE(HAVE_XPM, 1, [ Define this if you have XPM ])
+                     XPM_LIBS="-lXpm"],,
+                     [#include <X11/Xlib.h>])
+ elif test "$with_xpm" != no; then
+@@ -3195,7 +2425,7 @@
+   if test "$have_gdk_pixbuf" = yes; then
+     INCLUDES="$INCLUDES $ac_gdk_pixbuf_config_cflags"
+     XPM_LIBS="$ac_gdk_pixbuf_config_libs"
+-    AC_DEFINE(HAVE_GDK_PIXBUF)
++    AC_DEFINE(HAVE_GDK_PIXBUF, 1, [ Define this if you have GDK ])
+   else
+     have_gdk_pixbuf2=no
+   fi
+@@ -3236,7 +2466,7 @@
+                    [have_jpeg=yes
+                     jpeg_halfassed=no
+                     JPEG_LIBS="-ljpeg"
+-                    AC_DEFINE(HAVE_JPEGLIB)])
++                    AC_DEFINE(HAVE_JPEGLIB, 1, [ Define this if you have libjpeg ])])
+   fi
+ fi
+ 
+@@ -3251,7 +2481,7 @@
+ AC_CHECK_HEADERS(pty.h util.h)
+ AC_CHECK_X_LIB(util, forkpty,
+                [PTY_LIBS="-lutil"
+-                AC_DEFINE(HAVE_FORKPTY)])
++                AC_DEFINE(HAVE_FORKPTY, 1, [ Define this if you have forkpty() ])])
+ 
+ 
+ ###############################################################################
+@@ -3305,7 +2535,7 @@
+ 
+   # if that succeeded, then we've really got it.
+   if test "$have_xshm" = yes; then
+-    AC_DEFINE(HAVE_XSHM_EXTENSION)
++    AC_DEFINE(HAVE_XSHM_EXTENSION, 1, [ Define this if you have XSHM ])
+   fi
+ 
+ elif test "$with_xshm" != no; then
+@@ -3333,7 +2563,7 @@
+   AC_CHECK_X_HEADER(X11/extensions/Xdbe.h, [have_xdbe=yes],,
+                     [#include <X11/Xlib.h>])
+   if test "$have_xdbe" = yes; then
+-    AC_DEFINE(HAVE_DOUBLE_BUFFER_EXTENSION)    
++    AC_DEFINE(HAVE_DOUBLE_BUFFER_EXTENSION, 1. [ Define this if you have double buffering ])    
+   fi
+ 
+ elif test "$with_xdbe" != no; then
+@@ -3363,7 +2593,7 @@
+ 
+ if test "$with_readdisplay" = yes; then
+   AC_CHECK_X_HEADER(X11/extensions/readdisplay.h,
+-                    AC_DEFINE(HAVE_READ_DISPLAY_EXTENSION),,
++                    AC_DEFINE(HAVE_READ_DISPLAY_EXTENSION,1, [ Define this if you have readdisplay.h ]),,
+                     [#include <X11/Xlib.h>])
+ elif test "$with_readdisplay" != no; then
+   echo "error: must be yes or no: --with-readdisplay=$with_readdisplay"
+@@ -3462,7 +2692,7 @@
+ unset ac_cv_path_fortune_tmp
+ unset fortune_tmp
+ 
+-AC_DEFINE_UNQUOTED(FORTUNE_PROGRAM, "$ac_cv_fortune_program")
++AC_DEFINE_UNQUOTED(FORTUNE_PROGRAM, "$ac_cv_fortune_program", [ define your fortune program ])
+ 
+ 
+ ###############################################################################
+--- xscreensaver-4.16/m4/macros.m4	1969-12-31 17:00:00.000000000 -0700
++++ xscreensaver-4.16.new/m4/macros.m4	2004-08-06 13:25:10.605913416 -0700
+@@ -0,0 +1,759 @@
++###############################################################################
++#
++#       Function to figure out how to run the compiler.
++#
++###############################################################################
++
++AC_DEFUN(AC_PROG_CC_ANSI,
++ [AC_PROG_CC
++
++  if test -z "$GCC"; then
++    AC_MSG_CHECKING(how to request ANSI compilation)
++    case "$host" in
++      *-hpux* )
++        AC_MSG_RESULT(HPUX: adding -Ae)
++        CC="$CC -Ae"
++      ;;
++      *-aix* )
++        AC_MSG_RESULT(AIX: adding -qlanglvl=ansi -qhalt=e)
++        CC="$CC -qlanglvl=ansi -qhalt=e"
++      ;;
++
++      *-dec-* )
++        AC_MSG_RESULT(DEC: adding -std1 -ieee)
++        CC="$CC -std1"
++      ;;
++
++      *)
++        AC_MSG_RESULT(no idea)
++      ;;
++    esac
++  fi
++
++  OBJCC="$CC"
++
++  AC_MSG_CHECKING([whether the compiler works on ANSI C])
++  AC_TRY_RUN([ main(int ac, char **av) { return 0; } ],
++     AC_MSG_RESULT(yes),
++     AC_MSG_RESULT(no)
++     AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.),
++     AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.))
++
++  if test -n "$GCC"; then
++    AC_MSG_RESULT(Turning on gcc compiler warnings.)
++    CC="$CC -pedantic -Wall -Wstrict-prototypes -Wnested-externs"
++    OBJCC="$OBJCC -Wall"
++    # supposedly gcc 3.4 will have "-Wdeclaration-after-statement"
++    # and then perhaps we can do without -pedantic?
++  else
++    case "$host" in
++      *-irix5* |*-irix6.[0-3]* )
++        AC_MSG_RESULT(Turning on SGI compiler warnings.)
++        CC="$CC -fullwarn -use_readonly_const -rdata_shared -g3"
++      ;;
++#     *-dec-osf* )
++#       if test -z "$GCC"; then
++#         AC_MSG_RESULT(Turning on DEC C compiler warnings.)
++#         CC="$CC -migrate -w0 -verbose -warnprotos"
++#       fi
++#     ;;
++    esac
++  fi
++])
++
++###############################################################################
++#
++#       Functions to figure out how to disable // comments in ANSI C code.
++#
++#       (With recent gcc, this is done with "-std=c89".  With older gcc, this
++#       is done by passing "-lang-c89" to cpp, by passing "-Wp,-lang-c89" to
++#       gcc.  Old gcc doesn't support -std, and new gcc doesn't support -lang.
++#       so much for compatibility!)
++#
++#       UPDATE: apparently there is NO WAY to tell gcc 3.2.2 to require that
++#       declarations preceed statements, without resorting to "-pedantic".
++#       This means that there is no way to get gcc3 to issue warnings that
++#       ensure that your code complies with the ANSI/ISO C89 standard, without
++#       also drowning in totally useless warnings.  Thank you master may I
++#       have another.
++#
++#       So, I give up, let's just use -pedantic.
++#
++###############################################################################
++
++AC_DEFUN(AC_GCC_ACCEPTS_STD,
++ [if test -n "$GCC"; then
++   AC_CACHE_CHECK([whether gcc accepts -std],
++     ac_cv_gcc_accepts_std,
++    [if ( ( gcc -E -std=c89 - </dev/null >/dev/null ) 2>&1 | \
++          grep unrecognized >/dev/null ); then
++       ac_cv_gcc_accepts_std=no
++     else
++       ac_cv_gcc_accepts_std=yes
++     fi])
++   ac_gcc_accepts_std="$ac_cv_gcc_accepts_std"
++  fi
++])
++
++AC_DEFUN(AC_NO_CPLUSPLUS_COMMENTS_IN_C_CODE,
++ [if test -n "$GCC"; then
++   AC_GCC_ACCEPTS_STD
++   AC_MSG_RESULT(Disabling C++ comments in ANSI C code.)
++   #
++   # The reason that // comments are banned from xscreensaver is that gcc is
++   # basically the only compiler in the world that supports them in C code.
++   # All other vendors support them only in their C++ compilers, not in their
++   # ANSI C compilers.  This means that it's a portability problem: every time
++   # these comments have snuck into the xscreensaver source code, I've gotten
++   # complaints about it the next day.  So we turn off support for them in gcc
++   # as well to prevent them from accidentially slipping in.
++   #
++   if test "$ac_gcc_accepts_std" = yes ; then
++     #
++     # -std=c89 defines __STRICT_ANSI__, which we don't want.
++     # (That appears to be the only additional preprocessor symbol
++     # it defines, in addition to the syntax changes it makes.)
++     #
++     # -std=gnu89 is no good, because // comments were a GNU extension
++     # before they were in the ANSI C 99 spec...  (gcc 2.96 permits //
++     # with -std=gnu89 but not with -std=c89.)
++     #
++     CC="$CC -std=c89 -U__STRICT_ANSI__"
++   else
++     # The old way:
++     CC="$CC -Wp,-lang-c89"
++   fi
++  fi
++])
++
++
++###############################################################################
++#
++#       Function to figure out how to turn off Objective C on MacOS X.
++#       (We have to do this to work around an Apple-specific gcc bug.)
++#
++###############################################################################
++
++AC_DEFUN(AC_GCC_ACCEPTS_NO_CPP_PRECOMP,
++ [if test -n "$GCC"; then
++   AC_CACHE_CHECK([whether gcc accepts -no-cpp-precomp],
++     ac_cv_gcc_accepts_no_cpp_precomp,
++    [if ( ( gcc -E -no-cpp-precomp - </dev/null >/dev/null ) 2>&1 | \
++          grep unrecognized >/dev/null ); then
++       ac_cv_gcc_accepts_no_cpp_precomp=no
++     else
++       ac_cv_gcc_accepts_no_cpp_precomp=yes
++     fi])
++   ac_gcc_accepts_no_cpp_precomp="$ac_cv_gcc_accepts_no_cpp_precomp"
++  fi
++])
++
++AC_DEFUN(AC_NO_OBJECTIVE_C,
++ [if test -n "$GCC"; then
++   AC_GCC_ACCEPTS_NO_CPP_PRECOMP
++   if test "$ac_gcc_accepts_no_cpp_precomp" = yes ; then
++     AC_MSG_RESULT(Disabling Objective C extensions in ANSI C code.)
++     CC="$CC -no-cpp-precomp"
++   fi
++  fi
++])
++
++
++###############################################################################
++#
++#       Function to figure out how to create directory trees.
++#
++###############################################################################
++
++AC_DEFUN(AC_PROG_INSTALL_DIRS,
++ [AC_CACHE_CHECK([whether "\${INSTALL} -d" creates intermediate directories],
++    ac_cv_install_d_creates_dirs,
++    [ac_cv_install_d_creates_dirs=no
++     rm -rf conftestdir
++     if mkdir conftestdir; then
++       cd conftestdir 2>/dev/null
++       ${INSTALL} -d `pwd`/dir1/dir2 >/dev/null 2>&1
++       if test -d dir1/dir2/. ; then
++         ac_cv_install_d_creates_dirs=yes
++       fi
++       cd .. 2>/dev/null
++       rm -rf conftestdir
++     fi
++    ])
++
++  if test "$ac_cv_install_d_creates_dirs" = no ; then
++    AC_CACHE_CHECK([whether "mkdir -p" creates intermediate directories],
++      ac_cv_mkdir_p_creates_dirs,
++      [ac_cv_mkdir_p_creates_dirs=no
++       rm -rf conftestdir
++       if mkdir conftestdir; then
++         cd conftestdir 2>/dev/null
++         mkdir -p dir1/dir2 >/dev/null 2>&1
++         if test -d dir1/dir2/. ; then
++           ac_cv_mkdir_p_creates_dirs=yes
++         fi
++         cd .. 2>/dev/null
++         rm -rf conftestdir
++       fi
++      ])
++  fi
++
++  if test "$ac_cv_install_d_creates_dirs" = yes ; then
++    INSTALL_DIRS='${INSTALL} -d'
++  elif test "$ac_cv_mkdir_p_creates_dirs" = yes ; then
++    INSTALL_DIRS='mkdir -p'
++  else
++    # any other ideas?
++    INSTALL_DIRS='${INSTALL} -d'
++  fi
++])
++
++
++###############################################################################
++#
++#       Function to check whether gettimeofday() exists, and how to call it.
++#	This may define HAVE_GETTIMEOFDAY and GETTIMEOFDAY_TWO_ARGS.
++#
++###############################################################################
++
++AC_DEFUN(AC_GETTIMEOFDAY_ARGS,
++ [AC_MSG_CHECKING(how to call gettimeofday)
++  AC_CACHE_VAL(ac_cv_gettimeofday_args,
++   [AC_TRY_COMPILE([#include <stdlib.h>
++                    #include <sys/time.h>],
++                   [struct timeval tv; struct timezone tzp;
++                    gettimeofday(&tv, &tzp);],
++                   [ac_gettimeofday_args=2],
++                   [AC_TRY_COMPILE([#include <stdlib.h>
++                                    #include <sys/time.h>],
++                                   [struct timeval tv; gettimeofday(&tv);],
++                                   [ac_gettimeofday_args=1],
++                                   [ac_gettimeofday_args=0])])
++    ac_cv_gettimeofday_args=$ac_gettimeofday_args])
++  ac_gettimeofday_args=$ac_cv_gettimeofday_args
++  if test "$ac_gettimeofday_args" = 1 ; then
++    AC_DEFINE(HAVE_GETTIMEOFDAY, 1, [ Define if you have the gettimeofday function.])
++    AC_MSG_RESULT(one argument)
++  elif test "$ac_gettimeofday_args" = 2 ; then
++    AC_DEFINE(HAVE_GETTIMEOFDAY, 1[ Define if you have the gettimeofday function ])
++    AC_DEFINE(GETTIMEOFDAY_TWO_ARGS, 1, [ Define if gettimeofday requires two arguments.])
++    AC_MSG_RESULT(two arguments)
++  else
++    AC_MSG_RESULT(unknown)
++  fi
++])
++
++
++###############################################################################
++#
++#       Function to find perl5 (defines PERL and PERL_VERSION.)
++#
++###############################################################################
++
++# M4 sucks!!  perl sucks too!!
++changequote(X,Y)
++perl_version_cmd='print $]'
++changequote([,])
++
++AC_DEFUN(AC_PROG_PERL,
++ [AC_PATH_PROGS(PERL, [perl5 perl],,)
++  if test -z "$PERL" ; then
++    PERL_VERSION=0
++  else
++    AC_CACHE_CHECK([perl version], ac_cv_perl_version,
++                   [ac_cv_perl_version=`$PERL -e "$perl_version_cmd"`])
++    PERL_VERSION=$ac_cv_perl_version
++  fi
++ ])
++
++
++###############################################################################
++#
++#       Function to demand "bc".  Losers.
++#
++###############################################################################
++
++AC_DEFUN(AC_DEMAND_BC,
++ [ac_bc_result=`echo 6+9 | bc 2>/dev/null`
++  AC_MSG_CHECKING([for bc])
++  if test "$ac_bc_result" = "15" ; then
++    AC_MSG_RESULT(yes)
++  else
++    AC_MSG_RESULT(no)
++    echo ''
++    AC_MSG_ERROR([Your system doesn't have \"bc\", which has been a standard
++                  part of Unix since the 1970s.  Come back when your vendor
++                  has grown a clue.])
++  fi
++ ])
++
++###############################################################################
++#
++#       Functions to check how to do ICMP PING requests.
++#
++###############################################################################
++
++AC_DEFUN(AC_CHECK_ICMP,
++ [AC_CACHE_CHECK([for struct icmp], ac_cv_have_icmp,
++  [AC_TRY_COMPILE([#include <stdlib.h>
++                   #include <stdio.h>
++                   #include <math.h>
++                   #include <unistd.h>
++                   #include <limits.h>
++                   #include <signal.h>
++                   #include <fcntl.h>
++                   #include <sys/types.h>
++                   #include <sys/time.h>
++                   #include <sys/ipc.h>
++                   #include <sys/shm.h>
++                   #include <sys/socket.h>
++                   #include <netinet/in_systm.h>
++                   #include <netinet/in.h>
++                   #include <netinet/ip.h>
++                   #include <netinet/ip_icmp.h>
++                   #include <netinet/udp.h>
++                   #include <arpa/inet.h>
++                   #include <netdb.h>],
++                  [struct icmp i;
++                   struct sockaddr s;
++                   struct sockaddr_in si;
++                   struct ip ip;
++                   i.icmp_type = ICMP_ECHO;
++                   i.icmp_code = 0;
++                   i.icmp_cksum = 0;
++                   i.icmp_id = 0;
++                   i.icmp_seq = 0;
++                   si.sin_family = AF_INET;
++                   #if defined(__DECC) || defined(_IP_VHL)
++                   ip.ip_vhl = 0;
++                   #else
++                   ip.ip_hl = 0;
++                   #endif
++                   ],
++                  [ac_cv_have_icmp=yes],
++                  [ac_cv_have_icmp=no])])
++ if test "$ac_cv_have_icmp" = yes ; then
++   AC_DEFINE(HAVE_ICMP, 1 [ Define this if you do pings with a `struct icmp' and  a `icmp_id' slot. ])
++ fi])
++
++AC_DEFUN(AC_CHECK_ICMPHDR,
++ [AC_CACHE_CHECK([for struct icmphdr], ac_cv_have_icmphdr,
++  [AC_TRY_COMPILE([#include <stdlib.h>
++                   #include <stdio.h>
++                   #include <math.h>
++                   #include <unistd.h>
++                   #include <limits.h>
++                   #include <signal.h>
++                   #include <fcntl.h>
++                   #include <sys/types.h>
++                   #include <sys/time.h>
++                   #include <sys/ipc.h>
++                   #include <sys/shm.h>
++                   #include <sys/socket.h>
++                   #include <netinet/in_systm.h>
++                   #include <netinet/in.h>
++                   #include <netinet/ip.h>
++                   #include <netinet/ip_icmp.h>
++                   #include <netinet/udp.h>
++                   #include <arpa/inet.h>
++                   #include <netdb.h>],
++                  [struct icmphdr i;
++                   struct sockaddr s;
++                   struct sockaddr_in si;
++                   struct ip ip;
++                   i.type = ICMP_ECHO;
++                   i.code = 0;
++                   i.checksum = 0;
++                   i.un.echo.id = 0;
++                   i.un.echo.sequence = 0;
++                   si.sin_family = AF_INET;
++                   ip.ip_hl = 0;],
++                  [ac_cv_have_icmphdr=yes],
++                  [ac_cv_have_icmphdr=no])])
++ if test "$ac_cv_have_icmphdr" = yes ; then
++   AC_DEFINE(HAVE_ICMPHDR, 1, [ Define this if you do pings with a `struct icmphdr' and a `un.echo.id' slot. ])
++ fi])
++
++
++###############################################################################
++#
++#       Functions to check for various X11 crap.
++#
++###############################################################################
++
++# Try and find the app-defaults directory.
++# It sucks that autoconf doesn't do this already...
++#
++AC_DEFUN(AC_PATH_X_APP_DEFAULTS_XMKMF,[
++  rm -fr conftestdir
++  if mkdir conftestdir; then
++    cd conftestdir 2>/dev/null
++    # Make sure to not put "make" in the Imakefile rules, since we grep it out.
++    cat > Imakefile <<'EOF'
++acfindx:
++	@echo 'ac_x_app_defaults="${XAPPLOADDIR}"'
++EOF
++    if (xmkmf) >/dev/null 2>&1 && test -f Makefile; then
++      # GNU make sometimes prints "make[1]: Entering...", which'd confuse us.
++      eval `${MAKE-make} acfindx 2>/dev/null | grep -v make`
++    fi
++    cd .. 2>/dev/null
++    rm -fr conftestdir
++  fi])
++
++AC_DEFUN(AC_PATH_X_APP_DEFAULTS_DIRECT,[
++  # Look for the directory under a standard set of common directories.
++  # Check X11 before X11Rn because it's often a symlink to the current release.
++  for ac_dir in                                 \
++    /usr/X11/lib/app-defaults                   \
++    /usr/X11R6/lib/app-defaults                 \
++    /usr/X11R6/lib/X11/app-defaults             \
++    /usr/X11R5/lib/app-defaults                 \
++    /usr/X11R5/lib/X11/app-defaults             \
++    /usr/X11R4/lib/app-defaults                 \
++    /usr/X11R4/lib/X11/app-defaults             \
++                                                \
++    /usr/lib/X11/app-defaults                   \
++    /usr/lib/X11R6/app-defaults                 \
++    /usr/lib/X11R5/app-defaults                 \
++    /usr/lib/X11R4/app-defaults                 \
++                                                \
++    /usr/local/X11/lib/app-defaults             \
++    /usr/local/X11R6/lib/app-defaults           \
++    /usr/local/X11R5/lib/app-defaults           \
++    /usr/local/X11R4/lib/app-defaults           \
++                                                \
++    /usr/local/lib/X11/app-defaults             \
++    /usr/local/lib/X11R6/app-defaults           \
++    /usr/local/lib/X11R6/X11/app-defaults       \
++    /usr/local/lib/X11R5/app-defaults           \
++    /usr/local/lib/X11R5/X11/app-defaults       \
++    /usr/local/lib/X11R4/app-defaults           \
++    /usr/local/lib/X11R4/X11/app-defaults       \
++                                                \
++    /usr/X386/lib/X11/app-defaults              \
++    /usr/x386/lib/X11/app-defaults              \
++    /usr/XFree86/lib/X11/app-defaults           \
++                                                \
++    /usr/lib/X11/app-defaults                   \
++    /usr/local/lib/X11/app-defaults             \
++    /usr/unsupported/lib/X11/app-defaults       \
++    /usr/athena/lib/X11/app-defaults            \
++    /usr/local/x11r5/lib/X11/app-defaults       \
++    /usr/lpp/Xamples/lib/X11/app-defaults       \
++    /lib/usr/lib/X11/app-defaults               \
++                                                \
++    /usr/openwin/lib/app-defaults               \
++    /usr/openwin/lib/X11/app-defaults           \
++    /usr/openwin/share/lib/app-defaults         \
++    /usr/openwin/share/lib/X11/app-defaults     \
++                                                \
++    /X11R6/lib/app-defaults                     \
++    /X11R5/lib/app-defaults                     \
++    /X11R4/lib/app-defaults                     \
++    ; \
++  do
++    if test -d "$ac_dir"; then
++      ac_x_app_defaults=$ac_dir
++      break
++    fi
++  done
++])
++
++AC_DEFUN(AC_PATH_X_APP_DEFAULTS,
++  [AC_REQUIRE_CPP()
++    AC_CACHE_CHECK([for X app-defaults directory], ac_cv_x_app_defaults,
++     [AC_PATH_X_APP_DEFAULTS_XMKMF
++      if test x"$ac_x_app_defaults" = x; then
++        AC_PATH_X_APP_DEFAULTS_DIRECT
++      fi
++      if test x"$ac_x_app_defaults" = x; then
++        ac_cv_x_app_defaults="/usr/lib/X11/app-defaults"
++      else
++        # Record where we found app-defaults for the cache.
++        ac_cv_x_app_defaults="$ac_x_app_defaults"
++      fi])
++    eval ac_x_app_defaults="$ac_cv_x_app_defaults"])
++
++
++AC_DEFUN(AC_XPOINTER,
++ [AC_CACHE_CHECK([for XPointer], ac_cv_xpointer,
++                 [AC_TRY_X_COMPILE([#include <X11/Xlib.h>],
++                                   [XPointer foo = (XPointer) 0;],
++                                   [ac_cv_xpointer=yes],
++                                   [ac_cv_xpointer=no])])
++  if test "$ac_cv_xpointer" != yes; then
++   AC_DEFINE(XPointer,[char*], [ Define this to char* if you're using X11R4 or earlier. ])
++  fi])
++
++
++# Random special-cases for X on certain pathological OSes.
++# You know who you are.
++#
++AC_DEFUN(AC_X_RANDOM_PATHS,
++ [case "$host" in
++    *-hpux*)
++
++      # The following arcana was gleaned from conversations with
++      # Eric Schwartz <erics@col.hp.com>:
++      #
++      # On HPUX 10.x, the parts of X that HP considers "standard" live in
++      # /usr/{include,lib}/X11R6/.  The parts that HP doesn't consider
++      # "standard", notably, Xaw and Xmu, live in /usr/contrib/X11R6/.
++      # Yet /usr/contrib/X11R6/ comes preinstalled on all HPUX systems.
++      # Also, there are symlinks from /usr/include/ and /usr/lib/ into
++      # /usr/{include,lib}/X11R6/, so that (if you don't use Xmu at all)
++      # you don't need any -I or -L arguments.
++      #
++      # On HPUX 9.x, /usr/{include,lib}/X11R5/ and /usr/contrib/X11R5/
++      # are the same division as 10.x.  However, there are no symlinks to
++      # the X stuff from /usr/include/ and /usr/lib/, so -I and -L
++      # arguments are always necessary.
++      #
++      # However, X11R6 was available on HPUX 9.x as a patch: if that
++      # patch was installed, then all of X11R6 went in to
++      # /usr/contrib/X11R6/ (there was no /usr/{include,lib}/X11R6/.)
++      #
++      # HPUX 8.x was the same as 9.x, but was X11R4 instead (I don't know
++      # whether R5 was available as a patch; R6 undoubtedly was not.)
++      #
++      # So.  We try and use the highest numbered pair of
++      # /usr/{include,lib}/X11R?/ and /usr/contrib/X11R?/{include,lib}/
++      # that are available.  We do not mix and match different versions
++      # of X.
++      #
++      # Question I still don't know the answer to: (do you?)
++      #
++      #   * On HPUX 9.x, where /usr/include/X11R5/ was standard, and
++      #     /usr/contrib/X11R6/ could be installed as a patch, what was in
++      #     that contrib directory?  Did it contain so-called "standard"
++      #     X11R6, or did it include Xaw and Xmu as well?  If the former,
++      #     where did one find Xaw and Xmu on 9.x R6 systems?  Would this
++      #     be a situation where one had to reach into the R5 headers and
++      #     libs to find Xmu?  That is, must both R6 and R5 directories
++      #     be on the -I and -L lists in that case?
++      #
++      for version in X11R6 X11R5 X11R4 ; do
++        # if either pair of directories exists...
++        if test -d /usr/include/$version || test -d /usr/contrib/$version/include
++        then
++           # if contrib exists, use it...
++           if test -d /usr/contrib/$version/include ; then
++             X_CFLAGS="$X_CFLAGS -I/usr/contrib/$version/include"
++             X_LIBS="$X_LIBS -L/usr/contrib/$version/lib"
++           fi
++           # if the "standard" one exists, use it.
++           if test -d /usr/include/$version ; then
++             X_CFLAGS="$X_CFLAGS -I/usr/include/$version"
++             X_LIBS="$X_LIBS -L/usr/lib/$version"
++           fi
++           # since at least one of the pair exists, go no farther.
++           break
++        fi
++      done
++
++      # Now find Motif.  Thanks for not making xmkmf find this by
++      # default, you losers.
++      #
++      if test -d /usr/include/Motif2.1 ; then
++        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif2.1"
++        X_LIBS="$X_LIBS -L/usr/lib/Motif2.1"
++      elif test -d /usr/include/Motif1.2 ; then
++        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif1.2"
++        X_LIBS="$X_LIBS -L/usr/lib/Motif1.2"
++      elif test -d /usr/include/Motif1.1 ; then
++        X_CFLAGS="$X_CFLAGS -I/usr/include/Motif1.1"
++        X_LIBS="$X_LIBS -L/usr/lib/Motif1.1"
++      fi
++
++      # Now let's check for the pseudo-standard locations for OpenGL and XPM.
++      #
++      if test -d /opt/graphics/OpenGL/include ; then
++        # HP-UX 10.20 puts it here
++        X_CFLAGS="-I/opt/graphics/OpenGL/include $X_CFLAGS"
++        X_LIBS="-L/opt/graphics/OpenGL/lib $X_LIBS"
++      elif test -d /opt/Mesa/lib ; then
++        X_CFLAGS="-I/opt/Mesa/include $X_CFLAGS"
++        X_LIBS="-L/opt/Mesa/lib $X_LIBS"
++      fi
++
++
++      if test -d /opt/xpm/lib/X11 ; then
++        X_CFLAGS="-I/opt/xpm/include $X_CFLAGS"
++        X_LIBS="-L/opt/xpm/lib/X11 $X_LIBS"
++      fi
++
++      # On HPUX, default to installing in /opt/xscreensaver/ instead of
++      # in /usr/local/, unless there is already an xscreensaver in
++      # /usr/local/bin/.  This can be overridden with the --prefix arg
++      # to configure.  I'm not sure this is the right thing to do, but
++      # Richard Lloyd says so...
++      #
++      if test \! -x /usr/local/bin/xscreensaver ; then
++        ac_default_prefix=/opt/xscreensaver
++      fi
++
++    ;;
++    *-solaris*)
++
++      # Thanks for not making xmkmf find this by default, pinheads.
++      # And thanks for moving things around again, too.  Is this
++      # really the standard location now?  What happened to the
++      # joke that this kind of thing went in /opt?
++      # cthomp says "answer: CDE (Common Disorganized Environment)"
++      #
++      if test -f /usr/dt/include/Xm/Xm.h ; then
++        X_CFLAGS="$X_CFLAGS -I/usr/dt/include"
++        MOTIF_LIBS="$MOTIF_LIBS -L/usr/dt/lib -R/usr/dt/lib"
++
++        # Some versions of Slowlaris Motif require -lgen.  But not all.  Why?
++        AC_CHECK_LIB(gen, regcmp, [MOTIF_LIBS="$MOTIF_LIBS -lgen"])
++      fi
++
++    ;;
++    *-darwin*)
++
++      # On MacOS X (10.x with "fink"), many things are under /sw/.
++      #
++      if test -d /sw/include ; then
++        X_CFLAGS="-I/sw/include $X_CFLAGS"
++        X_LIBS="-L/sw/lib $X_LIBS"
++      fi
++    ;;
++  esac])
++
++
++
++###############################################################################
++#
++#       Some utility functions to make checking for X things easier.
++#
++###############################################################################
++
++# Like AC_CHECK_HEADER, but it uses the already-computed -I directories.
++#
++AC_DEFUN(AC_CHECK_X_HEADER, [
++  ac_save_CPPFLAGS="$CPPFLAGS"
++  if test \! -z "$includedir" ; then 
++    CPPFLAGS="$CPPFLAGS -I$includedir"
++  fi
++  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
++  AC_CHECK_HEADER([$1],[$2],[$3],[$4])
++  CPPFLAGS="$ac_save_CPPFLAGS"])
++
++# Like AC_EGREP_HEADER, but it uses the already-computed -I directories.
++#
++AC_DEFUN(AC_EGREP_X_HEADER, [
++  ac_save_CPPFLAGS="$CPPFLAGS"
++  if test \! -z "$includedir" ; then 
++    CPPFLAGS="$CPPFLAGS -I$includedir"
++  fi
++  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
++  AC_EGREP_HEADER([$1], [$2], [$3], [$4])
++  CPPFLAGS="$ac_save_CPPFLAGS"])
++
++# Like AC_TRY_COMPILE, but it uses the already-computed -I directories.
++#
++AC_DEFUN(AC_TRY_X_COMPILE, [
++  ac_save_CPPFLAGS="$CPPFLAGS"
++  if test \! -z "$includedir" ; then 
++    CPPFLAGS="$CPPFLAGS -I$includedir"
++  fi
++  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
++  AC_TRY_COMPILE([$1], [$2], [$3], [$4])
++  CPPFLAGS="$ac_save_CPPFLAGS"])
++
++
++# Like AC_CHECK_LIB, but it uses the already-computed -I and -L directories.
++# Use this sparingly; it probably doesn't work very well on X programs.
++#
++AC_DEFUN(AC_CHECK_X_LIB, [
++  ac_save_CPPFLAGS="$CPPFLAGS"
++  ac_save_LDFLAGS="$LDFLAGS"
++#  ac_save_LIBS="$LIBS"
++
++  if test \! -z "$includedir" ; then 
++    CPPFLAGS="$CPPFLAGS -I$includedir"
++  fi
++  # note: $X_CFLAGS includes $x_includes
++  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
++
++  if test \! -z "$libdir" ; then
++    LDFLAGS="$LDFLAGS -L$libdir"
++  fi
++  # note: $X_LIBS includes $x_libraries
++  LDFLAGS="$LDFLAGS $X_LIBS $X_EXTRA_LIBS"
++
++  AC_CHECK_LIB([$1], [$2], [$3], [$4], [$5])
++  CPPFLAGS="$ac_save_CPPFLAGS"
++  LDFLAGS="$ac_save_LDFLAGS"
++#  LIBS="$ac_save_LIBS"
++  ])
++
++# Like AC_TRY_RUN, but it uses the already-computed -I directories.
++# (But not the -L directories!)
++#
++AC_DEFUN(AC_TRY_X_RUN, [
++  ac_save_CPPFLAGS="$CPPFLAGS"
++  if test \! -z "$includedir" ; then 
++    CPPFLAGS="$CPPFLAGS -I$includedir"
++  fi
++  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
++  AC_TRY_RUN([$1], [$2], [$3], [$4])
++  CPPFLAGS="$ac_save_CPPFLAGS"])
++
++
++
++# Usage: HANDLE_X_PATH_ARG([variable_name],
++#                          [--command-line-option],
++#                          [descriptive string])
++#
++# All of the --with options take three forms:
++#
++#   --with-foo (or --with-foo=yes)
++#   --without-foo (or --with-foo=no)
++#   --with-foo=/DIR
++#
++# This function, HANDLE_X_PATH_ARG, deals with the /DIR case.  When it sees
++# a directory (string beginning with a slash) it checks to see whether
++# /DIR/include and /DIR/lib exist, and adds them to $X_CFLAGS and $X_LIBS
++# as appropriate.
++#
++AC_DEFUN(HANDLE_X_PATH_ARG, [
++   case "$[$1]" in
++    yes) ;;
++    no)  ;;
++
++    /*)
++     AC_MSG_CHECKING([for [$3] headers])
++     d=$[$1]/include
++     if test -d $d; then
++       X_CFLAGS="-I$d $X_CFLAGS"
++       AC_MSG_RESULT($d)
++     else
++       AC_MSG_RESULT(not found ($d: no such directory))
++     fi
++
++     AC_MSG_CHECKING([for [$3] libs])
++     d=$[$1]/lib
++     if test -d $d; then
++       X_LIBS="-L$d $X_LIBS"
++       AC_MSG_RESULT($d)
++     else
++       AC_MSG_RESULT(not found ($d: no such directory))
++     fi
++
++     # replace the directory string with "yes".
++     [$1]_req="yes"
++     [$1]=$[$1]_req
++     ;;
++
++    *)
++     echo ""
++     echo "error: argument to [$2] must be \"yes\", \"no\", or a directory."
++     echo "       If it is a directory, then \`DIR/include' will be added to"
++     echo "       the -I list, and \`DIR/lib' will be added to the -L list."
++     exit 1
++     ;;
++   esac
++  ])

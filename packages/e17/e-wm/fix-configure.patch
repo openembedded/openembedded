@@ -1,0 +1,47 @@
+diff -Nur e~/configure.in e/configure.in
+--- e~/configure.in	2005-09-29 13:17:29.000000000 -0700
++++ e/configure.in	2005-09-29 13:19:35.000000000 -0700
+@@ -114,9 +114,7 @@
+ AC_PATH_XTRA
+ AC_CHECK_HEADER(X11/X.h,
+   [
+-    x_dir=${x_dir:-/usr/X11R6}
+-    x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+-    x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
++    x_libs="-lX11 -lXext";
+   ],[
+     AC_MSG_ERROR([Cannot find X headers and libraries.])
+   ]
+diff -Nur e~/src/bin/Makefile.am e/src/bin/Makefile.am
+--- e~/src/bin/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/bin/Makefile.am	2005-09-29 13:19:35.000000000 -0700
+@@ -1,6 +1,5 @@
+ MAINTAINERCLEANFILES = Makefile.in
+-INCLUDES = -I$(includedir) \
+-	   -I$(top_srcdir) \
++INCLUDES = -I$(top_srcdir) \
+ 	   -I$(top_srcdir)/src/bin \
+ 	   -I$(top_srcdir)/src/lib \
+ 	   @e_cflags@ \
+diff -Nur e~/src/lib/Makefile.am e/src/lib/Makefile.am
+--- e~/src/lib/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/lib/Makefile.am	2005-09-29 13:19:56.000000000 -0700
+@@ -1,6 +1,5 @@
+ MAINTAINERCLEANFILES	= Makefile.in
+-INCLUDES		= -I$(includedir) \
+-			  -I$(top_srcdir)/src/bin \
++INCLUDES		= -I$(top_srcdir)/src/bin \
+ 			  @e_cflags@
+ 
+ lib_LTLIBRARIES		= libe.la
+diff -Nur e~/src/preload/Makefile.am e/src/preload/Makefile.am
+--- e~/src/preload/Makefile.am	2005-09-29 13:17:29.000000000 -0700
++++ e/src/preload/Makefile.am	2005-09-29 13:19:35.000000000 -0700
+@@ -2,7 +2,6 @@
+ 
+ INCLUDES               = -I. \
+                          -I$(top_srcdir) \
+-			 -I$(includedir) \
+                          -I$(top_srcdir)src/preload \
+                          @x_cflags@
+ pkgdir                 = $(libdir)/enlightenment/preload

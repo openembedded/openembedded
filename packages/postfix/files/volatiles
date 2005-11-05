@@ -1,0 +1,15 @@
+d postfix nogroup 2755 /var/spool/mail
+d root postfix 0755 /var/spool/postfix
+d postfix root 0700 /var/spool/postfix/active
+d postfix root 0700 /var/spool/postfix/bounce
+d postfix root 0700 /var/spool/postfix/corrupt
+d postfix root 0700 /var/spool/postfix/defer
+d postfix root 0700 /var/spool/postfix/deferred
+d postfix root 0700 /var/spool/postfix/flush
+d postfix root 0700 /var/spool/postfix/hold
+d postfix root 0700 /var/spool/postfix/incoming
+d postfix postdrop 0730 /var/spool/postfix/maildrop
+d root root 0755 /var/spool/postfix/pid
+d postfix root 0700 /var/spool/postfix/private
+d postfix postdrop 0710 /var/spool/postfix/public
+d root root 0755 /var/spool/vmail

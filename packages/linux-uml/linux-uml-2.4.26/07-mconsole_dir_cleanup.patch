@@ -1,0 +1,11 @@
+Index: linux-2.4.24-2/arch/um/kernel/umid.c
+--- linux-2.4.24-2/arch/um/kernel/umid.c	16 Feb 2004 00:10:11 -0000	1.21
++++ linux-2.4.24-2/arch/um/kernel/umid.c	17 May 2004 18:35:49 -0000
+@@ -151,6 +151,7 @@
+ 
+ 	sprintf(dir, "%s%s", uml_dir, umid);
+ 	actually_do_remove(dir);
++	rmdir(uml_dir);
+ }
+ 
+ char *get_umid(int only_if_set)

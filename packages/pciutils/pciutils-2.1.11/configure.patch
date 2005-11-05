@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- pciutils-2.1.11/lib/configure~configure	2003-01-04 07:29:23.000000000 -0500
++++ pciutils-2.1.11/lib/configure	2004-01-19 12:33:45.000000000 -0500
+@@ -12,15 +12,15 @@
+ echo_n "Configuring libpci for your system..."
+ sharedir=${1:-/usr/share}
+ version=${2:-0.0}
+-sys=`uname -s`
+-rel=`uname -r`
++sys=${3:-`uname -s`}
++rel=${4:-`uname -r`}
+ if [ "$sys" = "AIX" -a -x /usr/bin/oslevel -a -x /usr/sbin/lsattr ]
+ then
+ 	rel=`/usr/bin/oslevel`
+ 	proc=`/usr/sbin/lsdev -C -c processor -S available -F name | head -1`
+ 	cpu=`/usr/sbin/lsattr -F value -l $proc -a type | sed 's/_.*//'`
+ else
+-	cpu=`uname -m | sed 's/^i.86$/i386/;s/^sun4u$/sparc64/'`
++	cpu=${5:-`uname -m | sed 's/^i.86$/i386/;s/^sun4u$/sparc64/'`}
+ fi
+ echo " $sys/$cpu $rel"
+ 
+@@ -31,7 +31,7 @@
+ echo_n "Looking for access methods..."
+ 
+ case $sys in
+-	Linux)
++	[lL]inux)
+ 		case $rel in
+ 			2.[1-9]*|[3-9]*)	echo_n " proc"
+ 						echo >>$c '#define HAVE_PM_LINUX_PROC'

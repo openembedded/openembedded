@@ -1,0 +1,7 @@
+abiword
+	command=AbiWord-2.0
+	name=AbiWord
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=text/*,text/abiword,application/x-abiword,application/rtf,application/msword

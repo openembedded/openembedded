@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# gpsd	This shell script starts and stops gpsd.
+#
+# chkconfig: 345 90 40
+# description: Gpsd manages access to a serial- or USB-connected GPS
+# processname: gpsd
+
+# If you must specify a non-NMEA driver, uncomment and modify the next line
+#GPSD_OPTS=
+GPS_DEV="/dev/ttyS3"
+
+# Source function library.
+#. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog="gpsd"
+
+start() {
+	# Start daemons.
+	echo -n "Starting $prog: "
+	# We don't use the daemon function here because of a known bug
+	# in initlog -- it spuriously returns a nonzero status when 
+	# starting daemons that fork themselves.  See
+	# http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=130629
+	# for discussion.  Fortunately:
+	#
+	# 1. gpsd startup can't fail, or at least not in the absence of
+	# much larger resource-exhaustion problems that would be very obvious.
+	#
+	# 2. We don't need all the logging crud that daemon/initlog sets
+	# up -- gpsd does its own syslog calls.
+	#
+	if [ -e "${GPS_DEV}" ]
+	then
+	    gpsd ${GPSD_OPTS} -p ${GPS_DEV}
+	     echo "success"
+	else
+	    # User needs to symlink ${GPS_DEV} to the right thing
+	    echo "No ${GPS_DEV} device, aborting gpsd startup."
+	fi
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/gpsd
+	return $RETVAL
+}
+
+stop() {
+	# Stop daemons.
+	echo -n "Shutting down $prog: "
+        killall gpsd
+#        killproc gpsd
+	RETVAL=$?
+	echo
+	if [ $RETVAL -eq 0 ]
+	then
+	    rm -f /var/lock/subsys/gpsd;
+	fi
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	stop
+	start
+	RETVAL=$?
+	;;
+  condrestart)
+	if [ -f /var/lock/subsys/gpsd ]; then
+	    stop
+	    start
+	    RETVAL=$?
+	fi
+	;;
+  status)
+#	status gpsd
+#	RETVAL=$?
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|condrestart|status}"
+	exit 1
+esac
+
+exit $RETVAL

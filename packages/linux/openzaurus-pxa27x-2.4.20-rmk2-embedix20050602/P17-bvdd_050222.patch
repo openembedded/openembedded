@@ -1,0 +1,1506 @@
+diff -Nur c3000_pre/linux/drivers/video/Config.in c3000_work/linux/drivers/video/Config.in
+--- c3000_pre/linux/drivers/video/Config.in	2005-02-22 00:14:45.000000000 +0900
++++ c3000_work/linux/drivers/video/Config.in	2005-02-21 23:36:35.000000000 +0900
+@@ -86,6 +86,7 @@
+      dep_bool '  Sharp SL-Series PXA LCD support' CONFIG_FB_SHARPSL_PXA $CONFIG_ARCH_SHARP_SL
+      if [ "$CONFIG_FB_SHARPSL_PXA" = "y" ]; then
+ 	dep_bool '    Cached FB support for Sharp SL PXA LCDC' CONFIG_SHARPSL_PXA_CONSISTENT_ALLOC $CONFIG_FB_SHARPSL_PXA
++	dep_tristate '    PXA270 overlay(bvdd) support(EXPERIMENTAL)' CONFIG_FB_SHARPSL_PXA_BVDD $CONFIG_FB_SHARPSL_PXA
+      fi
+      dep_bool '  SHARP LOGO screen support' CONFIG_SHARP_LOGO_SCREEN $CONFIG_ARCH_SHARP_SL
+      if [ "$CONFIG_FB_PXA" != "n" -a "$CONFIG_ARCH_LUBBOCK" = "y" ]; then
+diff -Nur c3000_pre/linux/drivers/video/Makefile c3000_work/linux/drivers/video/Makefile
+--- c3000_pre/linux/drivers/video/Makefile	2005-02-22 00:14:45.000000000 +0900
++++ c3000_work/linux/drivers/video/Makefile	2005-02-21 23:40:57.000000000 +0900
+@@ -160,6 +160,7 @@
+ obj-$(CONFIG_FB_CORGI)            += w100fb.o fbgen.o corgi_backlight.o
+ obj-$(CONFIG_FB_TOSA)             += tc6393fb.o fbgen.o tosa_backlight.o
+ obj-$(CONFIG_FB_SHARPSL_PXA)      += sharpsl_pxafb.o fbgen.o corgi_backlight.o
++obj-$(CONFIG_FB_SHARPSL_PXA_BVDD) += bvdd.o
+ 
+ # Generic Low Level Drivers
+ 
+diff -Nur c3000_pre/linux/drivers/video/bvdd.c c3000_work/linux/drivers/video/bvdd.c
+--- c3000_pre/linux/drivers/video/bvdd.c	1970-01-01 09:00:00.000000000 +0900
++++ c3000_work/linux/drivers/video/bvdd.c	2005-02-22 00:05:24.000000000 +0900
+@@ -0,0 +1,1124 @@
++/*  bvdd.c - Create an input/output character device
++ */
++
++#include <linux/kernel.h>   /* We're doing kernel work */
++#include <linux/module.h>   /* Specifically, a module */
++
++#if CONFIG_MODVERSIONS==1
++#define MODVERSIONS
++#include <linux/modversions.h>
++#endif
++
++#include <linux/fs.h>  /* The character device definitions are here */
++#include <linux/wrapper.h>
++#include <linux/mm.h>
++#include <linux/sched.h>
++#include <asm/system.h>
++#include <asm/hardware.h>
++#include <asm/uaccess.h>	/* for get_user and put_user */
++#include <asm/io.h>
++
++/* Our own ioctl numbers */
++#include "bvdd.h"
++#include "bvdd_p.h"
++
++#define SUCCESS 0
++
++#define DEVICE_NAME "bvdd"	/* The name for our device */
++
++#ifdef DEBUG
++# define PRINT_DEBUG(x...) printk(KERN_WARNING DEVICE_NAME ": " x)
++# define PRINT_INFO(x...) printk(KERN_WARNING DEVICE_NAME ": " x)
++# define PRINT_WARN(x...) printk(KERN_WARNING DEVICE_NAME ": " x)
++# define PRINT_ERROR(x...) printk(KERN_ERROR DEVICE_NAME ": " x)
++# define PRINT_FATAL(x...) printk(KERN_FATAL DEVICE_NAME ": " x)
++#else
++# define PRINT_DEBUG(x...)
++# define PRINT_INFO(x...)
++# define PRINT_WARN(x...) printk(KERN_WARNING DEVICE_NAME ": " x)
++# define PRINT_ERROR(x...) printk(KERN_ERROR DEVICE_NAME ": " x)
++# define PRINT_FATAL(x...) printk(KERN_FATAL DEVICE_NAME ": " x)
++#endif
++
++/* Is the device open right now? Used to prevent concurent access into the same device */
++static int device_open = 0;
++
++static dma_addr_t vram_sharpsl_pxafb_phys;
++static void *vram_virt = NULL; /* virtual address of VRAM (if NULL, VRAM is not allocated) */
++static dma_addr_t vram_phys = 0; /* physical address of VRAM */
++static u32 vram_size = 0;	/* VRAM size */
++
++#undef FDADR
++// ----------------------------------------------------------------
++// ディスクリプタ
++// aligned on a 16-byte boundary
++
++typedef struct {
++    unsigned long FDADR;	/* frame descriptor address */
++    unsigned long FSADR;      /* DMA Frame Source Address Registers */
++    unsigned long FIDR;		/* frame id reg */
++    unsigned long LDCMD;	/* LCD command reg */
++} descriptor_t;
++
++static descriptor_t *descriptors = NULL;
++#ifndef USE_PXAFB_DESCRIPTOR_AREA
++# define MAX_DESCRIPTORS (PAGE_SIZE / 16)
++static descriptor_t *descriptor_virt; /* ディスクリプタ配列の仮想アドレス */
++static dma_addr_t descriptor_phys; /* ディスクリプタ配列の物理アドレス */
++static u32 descriptor_size;	/* ディスクリプタ配列のサイズ */
++#else
++# define MAX_DESCRIPTORS ((PAGE_SIZE - 16) / 16)
++#endif
++
++// Physical addresses, offsets & lengths
++#define	SRAM_BASE	0xfe100000
++#define	SRAM_BASE_PHYS	0x5c000000
++#define MAX_VRAM_SIZE (1024 * 4)
++static unsigned long offset2phys_map[MAX_VRAM_SIZE >> PAGE_SHIFT];
++#define OFFSET2PHYS_MAP_SRAM_INDEX 0
++
++// vram manager
++typedef struct {
++    unsigned long start_phys;
++    void *start_virt;
++    unsigned long end_phys;
++    unsigned long offset;
++} vram_area_t;
++#define MAX_VRAM_AREAS 128
++static vram_area_t vram_areas[MAX_VRAM_AREAS];
++
++// test
++static volatile unsigned int next_fbr2 = 0;
++static volatile unsigned int next_fbr3 = 0;
++static volatile unsigned int next_fbr4 = 0;
++static wait_queue_head_t fbr2_wait;
++static wait_queue_head_t fbr3_wait;
++static wait_queue_head_t fbr4_wait;
++static wait_queue_head_t wq_lcd_quick_disable_done;
++static wait_queue_head_t wq_lcd_disable_done;
++
++
++#if defined(CONFIG_SL_CCCR_CHANGE)
++extern int read_cccr(void);
++extern void write_cccr(int);
++#endif
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++extern int read_vcore(void);
++extern void write_vcore(int);
++#endif
++
++// ----------------------------------------------------------------
++static void bvdd_vsync();
++
++// ----------------------------------------------------------------
++#if 1
++static void *consistent_alloc(int gfp, size_t size, dma_addr_t *dma_handle);
++static void *l_consistent_alloc2(int gfp, size_t size, dma_addr_t *dma_handle, int pte);
++static void consistent_free(void *vaddr, size_t size, dma_addr_t handle);
++#endif
++
++
++static void inttest(int irq, void *dev_id, struct pt_regs *regs)
++{
++    static int count = 0;
++    static int start = 0;
++    LCSR0_u lcsr0;
++    LCSR1_u lcsr1;
++    int st = 0;
++
++    lcsr1.val = REG_LCSR1;
++    if (lcsr1.f.EOF2 == 1) {
++	LCSR1_u v;
++/* 	if ((next_fbr2 != 0) && ((REG_FBR2 & 1) == 0)) { */
++	if ((next_fbr2 != 0)) {
++	    REG_FBR2 = next_fbr2 | 3;
++/* 	    REG_FDADR2 = next_fbr2; */
++/* 	    wake_up_interruptible(&fbr2_wait); */
++	}
++	v.val = 0;
++	v.f.EOF2 = 1;
++	REG_LCSR1 = v.val;
++    }
++    else if (lcsr1.f.EOF3 == 1) {
++	LCSR1_u v;
++/* 	if ((next_fbr3 != 0) && ((REG_FBR3 & 1) == 0)) { */
++	if ((next_fbr3 != 0)) {
++	    REG_FBR3 = next_fbr3 | 3;
++/* 	    REG_FDADR3 = next_fbr3; */
++/* 	    next_fbr3 = 0; */
++/* 	    wake_up_interruptible(&fbr3_wait); */
++	}
++	v.val = 0;
++	v.f.EOF3 = 1;
++	REG_LCSR1 = v.val;
++    }
++    else if (lcsr1.f.EOF4 == 1) {
++	LCSR1_u v;
++/* 	if ((next_fbr4 != 0) && ((REG_FBR4 & 1) == 0)) { */
++	if ((next_fbr4 != 0)) {
++	    REG_FBR4 = next_fbr4 | 3;
++/* 	    REG_FDADR4 = next_fbr4; */
++/* 	    next_fbr4 = 0; */
++/* 	    wake_up_interruptible(&fbr4_wait); */
++	}
++	v.val = 0;
++	v.f.EOF4 = 1;
++	REG_LCSR1 = v.val;
++    }
++    if (REG_LCSR1 & 0x20000) {	/* BS2 */
++	next_fbr2 = 0;
++	wake_up_interruptible(&fbr2_wait);
++	REG_LCSR1 = 0x20000;
++    }
++    if (REG_LCSR1 & 0x40000) {	/* BS3 */
++	next_fbr3 = 0;
++	wake_up_interruptible(&fbr3_wait);
++	REG_LCSR1 = 0x40000;
++    }
++    if (REG_LCSR1 & 0x80000) {	/* BS4 */
++	next_fbr4 = 0;
++	wake_up_interruptible(&fbr4_wait);
++	REG_LCSR1 = 0x80000;
++    }
++
++#if 0
++    lcsr0.val = REG_LCSR0;
++    if (lcsr0.f.QD == 1) {
++	LCSR0_u v;
++	v.val = 0;
++	v.f.QD = 1;
++	REG_LCSR0 = v.val;
++	wake_up_interruptible(&wq_lcd_quick_disable_done);
++    }
++    if (lcsr0.f.LDD == 1) {
++	LCSR0_u v;
++	v.val = 0;
++	v.f.LDD = 1;
++	REG_LCSR0 = v.val;
++	wake_up_interruptible(&wq_lcd_disable_done);
++    }
++#endif
++}
++
++static int setup_vram(int size)
++{
++    int order, i;
++    unsigned int offset = BVDD_VRAM_OFFSET_USER;
++
++    size = PAGE_ALIGN(size);
++    order = get_order(size);
++    PRINT_DEBUG("setup_vram(size=%d)\n", size);
++
++    for (i = 2; i < MAX_VRAM_AREAS - 2; ++i) {
++	vram_area_t *va = &vram_areas[i];
++	va->start_virt = NULL;
++	do {
++/* 	    if (order > 3) { */
++/* 		order --; */
++/* 		continue; */
++/* 	    } */
++	    va->start_virt = consistent_alloc(GFP_KERNEL|GFP_DMA, PAGE_SIZE << order, (dma_addr_t *)&va->start_phys);
++	    if (va->start_virt == NULL) {
++		order --;
++		if (order < 1)
++		    return -1;
++	    }
++	} while (va->start_virt == NULL);
++	va->end_phys = va->start_phys + (PAGE_SIZE << order);
++	va->offset = offset;
++	offset += PAGE_SIZE << order;
++	size -= PAGE_SIZE << order;
++	PRINT_DEBUG("  vram_area[%2d] : 0x%p, %d, 0x%p\n", i, va->start_phys, PAGE_SIZE << order, va->offset);
++	if (size <= 0)
++	    break;
++    }
++
++    if (size > 0)
++	return -1;
++    else
++	return 0;
++}
++
++static int free_vram(void)
++{
++    int i;
++    for (i = 2; i < MAX_VRAM_AREAS - 2; ++i) {
++	vram_area_t *va = &vram_areas[i];
++	if (va->start_virt != NULL) {
++	    consistent_free(va->start_virt, va->end_phys - va->start_phys, va->start_phys);
++	    memset(va, 0, sizeof(vram_area_t));
++	}
++    }
++}
++
++// ----------------------------------------------------------------
++static lcdc_state_t lcdc_state_orig;
++static lcdc_state_t lcdc_state;
++
++static void lcdc_state_read(lcdc_state_t *ls)
++{
++    ls->cken20_intmem = (CKEN & CKEN20_INTMEM) ? 1 : 0;
++    ls->lccr0.val = REG_LCCR0;
++    ls->lccr0.f.reserved1 = 0;
++    ls->lccr0.f.reserved2 = 0;
++    ls->lccr1.val = REG_LCCR1;
++    ls->lccr2.val = REG_LCCR2;
++    ls->lccr3.val = REG_LCCR3;
++    ls->lccr3.f.reserved1 = 0;
++    ls->lccr4.val = REG_LCCR4;
++    ls->lccr4.f.reserved1 = 0;
++    ls->lccr4.f.reserved2 = 0;
++    ls->ovl1c1.val = REG_OVL1C1;
++    ls->ovl1c1.f.reserved1 = 0;
++    ls->ovl1c2.val = REG_OVL1C2;
++    ls->ovl1c2.f.reserved1 = 0;
++    ls->ovl2c1.val = REG_OVL2C1;
++    ls->ovl2c1.f.reserved1 = 0;
++    ls->ovl2c2.val = REG_OVL2C2;
++    ls->ovl2c2.f.reserved1 = 0;
++    ls->fdadr0 = REG_FDADR0;
++    ls->fdadr1 = REG_FDADR1;
++    ls->fdadr2 = REG_FDADR2;
++    ls->fdadr3 = REG_FDADR3;
++    ls->fdadr4 = REG_FDADR4;
++    ls->fdadr5 = REG_FDADR5;
++    ls->fdadr6 = REG_FDADR6;
++}
++
++static void lcdc_state_write(lcdc_state_t *ls)
++{
++    int i;
++
++    ls->cken20_intmem = (CKEN & CKEN20_INTMEM) ? 1 : 0;
++    if (ls->cken20_intmem)
++	CKEN |= CKEN20_INTMEM;
++    else
++	CKEN &= ~CKEN20_INTMEM;
++
++/*     { */
++/* 	LCCR0_u v; */
++/* 	v.val = 0; */
++/* 	v.f.QDM = 1; */
++/* 	v.f.LDM = 1; */
++/* 	REG_LCCR0 &= ~v.val; */
++/*     } */
++
++    ls->lccr2.f.EFW = 64;
++    ls->lccr2.f.VSW = 64;
++    for (i = 0; i < 2; ++i) {
++	bvdd_vsync();
++	REG_LCCR0 |= 0x400;	/* Disable LCD controller */
++/* 	interruptible_sleep_on(&wq_lcd_disable_done); */
++
++	bvdd_vsync();		/* Wait for disabled */
++	REG_LCCR0 &= ~1;	/* Do a quick disable */
++
++	REG_OVL2C1 = ls->ovl2c1.val;
++	REG_OVL2C2 = ls->ovl2c2.val;
++	REG_OVL1C1 = ls->ovl1c1.val;
++	REG_OVL1C2 = ls->ovl1c2.val;
++	REG_LCCR1 = ls->lccr1.val;
++	REG_LCCR2 = ls->lccr2.val;
++	REG_LCCR3 = ls->lccr3.val;
++	REG_LCCR4 = ls->lccr4.val;
++/* 	REG_LCCR5 = 0x3F3F3F31; */
++/* 	REG_LCCR5 = 0x3F3F313F;	/\* EOF *\/ */
++	REG_LCCR5 = 0x3F31313F;	/* BSM/EOF */
++
++	REG_LCDBSCNTR = 5;
++
++	REG_LCSR0 = 0x00001FFF;
++	REG_LCSR1 = 0x3E3F3F3F;
++
++	ls->lccr0.f.ENB = 1;
++	REG_LCCR0 = ls->lccr0.val; /* Enable LCD controller */
++
++	REG_LCCR0 &= ~1;	/* Do a quick disable */
++/* 	interruptible_sleep_on(&wq_lcd_quick_disable_done); */
++
++	REG_FDADR0 = ls->fdadr0;
++	REG_FDADR1 = ls->fdadr1;
++	REG_FDADR2 = ls->fdadr2;
++	REG_FDADR3 = ls->fdadr3;
++	REG_FDADR4 = ls->fdadr4;
++	REG_FDADR5 = ls->fdadr5;
++	REG_FDADR6 = ls->fdadr6;
++
++	REG_LCCR0 = ls->lccr0.val;
++    }
++}
++
++static void lcdc_state_print_descriptor(int n, unsigned long addr)
++{
++    PRINT_DEBUG("  FDADR%d : 0x%08x         FDADR      FSADR       FIDR      LDCMD\n", n, addr);
++    if (addr == 0)
++	PRINT_DEBUG("                         ---------- ---------- ---------- ----------\n");
++    else {
++	PRINT_DEBUG("                         0x%08x 0x%08x 0x%08x 0x%08x\n",
++		    ((unsigned long *)__phys_to_virt(addr))[0],
++		    ((unsigned long *)__phys_to_virt(addr))[1],
++		    ((unsigned long *)__phys_to_virt(addr))[2],
++		    ((unsigned long *)__phys_to_virt(addr))[3]);
++    }
++}
++
++static void lcdc_state_print(lcdc_state_t *ls)
++{
++    PRINT_DEBUG("lcdc_state_print(lcdc_state_t * = 0x%p)\n", ls);
++    PRINT_DEBUG("  CKEN20_INTMEM : %d\n", ls->cken20_intmem);
++    PRINT_DEBUG("  LCCR0 : 0x%08x\n", ls->lccr0.val);
++    PRINT_DEBUG("    ENB CMS SDS LDM SOFM0 IUM EOFM0 PAS DPD DIS QDM PDD BSM0 OUM LCDT\n");
++    PRINT_DEBUG("    %3d %3d %3d %3d   %3d %3d   %3d %3d %3d %3d %3d %3d  %3d %3d  %3d\n",
++		ls->lccr0.f.ENB, ls->lccr0.f.CMS, ls->lccr0.f.SDS, ls->lccr0.f.LDM, ls->lccr0.f.SOFM0,
++		ls->lccr0.f.IUM, ls->lccr0.f.EOFM0, ls->lccr0.f.PAS, ls->lccr0.f.DPD, ls->lccr0.f.DIS,
++		ls->lccr0.f.QDM, ls->lccr0.f.PDD, ls->lccr0.f.BSM0, ls->lccr0.f.OUM, ls->lccr0.f.LCDT);
++    PRINT_DEBUG("    RDSTM CMDIM OUC LDDALT\n");
++    PRINT_DEBUG("      %3d   %3d %3d    %3d\n",
++		ls->lccr0.f.RDSTM, ls->lccr0.f.CMDIM, ls->lccr0.f.OUC, ls->lccr0.f.LDDALT);
++    PRINT_DEBUG("  LCCR1 : 0x%08x\n", ls->lccr1.val);
++    PRINT_DEBUG("     PPL HSW ELW BLW\n");
++    PRINT_DEBUG("    %4d %3d %3d %3d\n",
++		ls->lccr1.f.PPL, ls->lccr1.f.HSW, ls->lccr1.f.ELW, ls->lccr1.f.BLW);
++    PRINT_DEBUG("  LCCR2 : 0x%08x\n", ls->lccr2.val);
++    PRINT_DEBUG("     LPP VSW EFW BFW\n");
++    PRINT_DEBUG("    %4d %3d %3d %3d\n",
++		ls->lccr2.f.LPP, ls->lccr2.f.VSW, ls->lccr2.f.EFW, ls->lccr2.f.BFW);
++    PRINT_DEBUG("  LCCR3 : 0x%08x\n", ls->lccr3.val);
++    PRINT_DEBUG("    PCD ACB API VSP HSP PCP OEP BPP DPC BPP3 PDFOR\n");
++    PRINT_DEBUG("    %3d %3d %3d %3d %3d %3d %3d %3d %3d  %3d   %3d\n",
++		ls->lccr3.f.PCD, ls->lccr3.f.ACB, ls->lccr3.f.API, ls->lccr3.f.VSP,
++		ls->lccr3.f.HSP, ls->lccr3.f.PCP, ls->lccr3.f.OEP, ls->lccr3.f.BPP,
++		ls->lccr3.f.DPC, ls->lccr3.f.BPP3, ls->lccr3.f.PDFOR);
++    PRINT_DEBUG("  LCCR4 : 0x%08x\n", ls->lccr4.val);
++    PRINT_DEBUG("    K1 K2 K3 PAL_FOR PCDDIV\n");
++    PRINT_DEBUG("    %2d %2d %2d     %3d    %3d\n",
++		ls->lccr4.f.K1, ls->lccr4.f.K2, ls->lccr4.f.K3, ls->lccr4.f.PAL_FOR,
++		ls->lccr4.f.PCDDIV);
++    PRINT_DEBUG("  OVL1C1 : 0x%08x\n", ls->ovl1c1.val);
++    PRINT_DEBUG("    PPL1 LPO1 BPP1 O1EN\n");
++    PRINT_DEBUG("     %3d  %3d  %3d  %3d\n",
++		ls->ovl1c1.f.PPL1, ls->ovl1c1.f.LPO1, ls->ovl1c1.f.BPP1, ls->ovl1c1.f.O1EN);
++    PRINT_DEBUG("  OVL1C2 : 0x%08x\n", ls->ovl1c2.val);
++    PRINT_DEBUG("    O1XPOS O1YPOS\n");
++    PRINT_DEBUG("      %4d   %4d\n",
++		ls->ovl1c2.f.O1XPOS, ls->ovl1c2.f.O1YPOS);
++    PRINT_DEBUG("  OVL2C1 : 0x%08x\n", ls->ovl2c1.val);
++    PRINT_DEBUG("    PPL2 LPO2 BPP2 O2EN\n");
++    PRINT_DEBUG("     %3d  %3d  %3d  %3d\n",
++		ls->ovl2c1.f.PPL2, ls->ovl2c1.f.LPO2, ls->ovl2c1.f.BPP2, ls->ovl2c1.f.O2EN);
++    PRINT_DEBUG("  OVL2C2 : 0x%08x\n", ls->ovl2c2.val);
++    PRINT_DEBUG("    O2XPOS O2YPOS FOR\n");
++    PRINT_DEBUG("      %4d   %4d %3d\n",
++		ls->ovl2c2.f.O2XPOS, ls->ovl2c2.f.O2YPOS, ls->ovl2c2.f.FOR);
++    lcdc_state_print_descriptor(0, ls->fdadr0);
++    lcdc_state_print_descriptor(1, ls->fdadr1);
++    lcdc_state_print_descriptor(2, ls->fdadr2);
++    lcdc_state_print_descriptor(3, ls->fdadr3);
++    lcdc_state_print_descriptor(4, ls->fdadr4);
++    lcdc_state_print_descriptor(5, ls->fdadr5);
++    lcdc_state_print_descriptor(6, ls->fdadr6);
++}
++
++typedef struct {
++    unsigned int offset;
++    int size;
++    unsigned int desc_phys;
++} desc_cache_t;
++
++#define MAX_DESC_CACHE 256
++desc_cache_t desc_cache[MAX_DESC_CACHE];
++int desc_cache_index = 0;
++
++static unsigned int lcdc_set_descriptor(unsigned long offset, int size)
++{
++    descriptor_t *desc, *desc_prev = NULL, *desc_prev2, *desc_first = NULL;
++    int i, count = 0, is_first_desc = 1;
++    unsigned int desc_phys, desc_first_phys;
++    unsigned int offset_orig = offset, size_orig = size;
++
++    PRINT_DEBUG("lcdc_set_descriptor(offset=0x%08x, size=0x%08x)\n", offset, size);
++
++    for (i = 0; i < desc_cache_index; ++i) {
++	if (desc_cache[i].offset == offset && desc_cache[i].size == size)
++	    return desc_cache[i].desc_phys;
++    }
++
++    /* build descriptor */
++    while (size > 0) {
++	vram_area_t *va = NULL;
++	unsigned int alen, aoff;
++
++	desc = NULL;
++	for (i = 0; i < MAX_DESCRIPTORS; ++i) {
++	    unsigned int fdadr = *(unsigned int *)(&descriptors[i]);
++	    if (fdadr == 0) {
++		desc = &descriptors[i];
++		desc_phys = descriptor_phys + (sizeof(descriptor_t) * i);
++		break;
++	    }
++	}
++	if (desc == NULL) {
++	    // empty
++	    return 0;
++	}
++
++	for (i = 0; i < MAX_VRAM_AREAS; ++i) {
++	    va = &vram_areas[i];
++	    if (va->offset <= offset && offset < (va->offset + (va->end_phys - va->start_phys)))
++		break;
++	}
++	if (i == MAX_VRAM_AREAS) {
++	    return 0;
++	}
++
++	aoff = offset - va->offset;
++	if (is_first_desc) {
++	    alen = 4 * 1024;
++	    is_first_desc = 0;
++	} else {
++	    alen = va->end_phys - va->start_phys - aoff;
++	    if (alen > size)
++		alen = size;
++	}
++
++	desc->FDADR = desc_phys;
++	desc->FSADR = va->start_phys + aoff;
++	desc->FIDR = 0;
++	desc->LDCMD = alen;
++
++	if (desc_prev != NULL)
++	    desc_prev->FDADR = desc_phys;
++	desc_prev2 = desc_prev;
++	desc_prev = desc;
++
++	if (desc_first == NULL) {
++	    desc_first = desc;
++	    desc_first_phys = desc_phys;
++	}
++
++	size -= alen;
++	offset += alen;
++    }
++
++    /* 先頭のディスクリプタへリンクさせる */
++    desc->FDADR = desc_first_phys;
++
++    /* 末尾のディスクリプタはSOF/EOF割り込みを発生させる */
++/*     desc->LDCMD = desc->LDCMD | 0x400000; */
++/*     desc->LDCMD = desc->LDCMD | 0x200000; */
++    desc_prev2->LDCMD |= 0x200000;
++
++    desc_cache[desc_cache_index].offset = offset_orig;
++    desc_cache[desc_cache_index].size = size_orig;
++    desc_cache[desc_cache_index].desc_phys = desc_first_phys;
++    ++ desc_cache_index;	/* FIXME: buffer overflow */
++
++#if 0
++    desc = desc_first;
++    desc_phys = desc_first_phys;
++    do {
++	lcdc_state_print_descriptor(count++, desc_phys);
++	if (count >= MAX_DESCRIPTORS)
++	    break;
++	desc_prev = desc;
++	desc_phys = desc->FDADR;
++    } while (desc_prev->FDADR != desc_first_phys);
++#endif
++
++    return desc_first_phys;
++}
++
++// ----------------------------------------------------------------
++
++static int bvdd_open(struct inode *inode,
++		     struct file *file)
++{
++    int i;
++    printk(DEVICE_NAME ": bvdd_open(0x%p, 0x%p)\n", inode, file);
++
++    if (device_open)
++	return -EBUSY;
++
++    lcdc_state_read(&lcdc_state_orig);
++    lcdc_state_orig.fdadr1 = 0;
++    lcdc_state_orig.fdadr2 = 0;
++    lcdc_state_orig.fdadr3 = 0;
++    lcdc_state_orig.fdadr4 = 0;
++    lcdc_state_orig.fdadr5 = 0;
++    lcdc_state_orig.fdadr6 = 0;
++/*     lcdc_state_print(&lcdc_state_orig); */
++
++    memcpy(&lcdc_state, &lcdc_state_orig, sizeof(lcdc_state));
++    lcdc_state.cken20_intmem = 1;
++
++#ifndef USE_PXAFB_DESCRIPTOR_AREA
++    descriptor_size = PAGE_ALIGN(sizeof(descriptor_t) * MAX_DESCRIPTORS);
++    descriptors = consistent_alloc(GFP_KERNEL|GFP_DMA, descriptor_size, &descriptor_phys);
++    memset(descriptors, 0, sizeof(descriptor_t) * MAX_DESCRIPTORS);
++    printk(DEVICE_NAME ":   descriptor: virt=0x%p, phys=0x%p, size=%d\n",
++	   descriptors, descriptor_phys, descriptor_size);
++#else
++    // SHARPSL_PXAFBが確保している領域を借用する。
++    // 頭の16バイトはSLARPSL_PXAFBが使っているのでスキップする。
++    descriptors = (descriptor_t *)__phys_to_virt((lcdc_state_orig.fdadr0 + 16));
++    PRINT_DEBUG("  descriptors : phys=0x%p, virt=0x%p\n", lcdc_state_orig.fdadr0 + 16, descriptors);
++    memset(descriptors, 0, sizeof(descriptor_t) * MAX_DESCRIPTORS);
++    PRINT_DEBUG("  descriptors : 0x%p, 0x%p\n", &descriptors[0], &descriptors[1]);
++#endif
++
++    init_waitqueue_head(&fbr2_wait);
++    init_waitqueue_head(&fbr3_wait);
++    init_waitqueue_head(&fbr4_wait);
++    init_waitqueue_head(&wq_lcd_quick_disable_done);
++    init_waitqueue_head(&wq_lcd_disable_done);
++
++    next_fbr2 = 0;
++    next_fbr3 = 0;
++    next_fbr4 = 0;
++
++    request_irq(17, inttest, SA_INTERRUPT|SA_SHIRQ, "bvdd", (void *)0xDEADBEAF);
++
++    device_open++;
++
++    MOD_INC_USE_COUNT;
++
++    return 0;
++}
++
++
++static int bvdd_release(struct inode *inode,
++			struct file *file)
++{
++    PRINT_DEBUG("bvdd_release(0x%p, 0x%p)\n", inode, file);
++    PRINT_DEBUG("  ***** %d\n", REG_LCSR1 & 0x200);
++
++    free_irq(17, (void *)0xDEADBEAF);
++
++    /* restore lcdc state */
++    lcdc_state_write(&lcdc_state_orig);
++    lcdc_state_write(&lcdc_state_orig);
++
++    // free vram
++    if (vram_virt != NULL) {
++	printk(DEVICE_NAME ":  Now freeing vram.\n");
++	consistent_free(vram_virt, vram_size, vram_phys);
++	vram_virt = NULL;
++    } else {
++	printk(DEVICE_NAME ":  vram is not allocated.\n");
++    }
++    free_vram();
++
++#ifndef USE_PXAFB_DESCRIPTOR_AREA
++    // free descriptor
++    consistent_free(descriptors, descriptor_size, descriptor_phys);
++    descriptors = NULL;
++    descriptor_size = 0;
++    descriptor_phys = 0;
++#else
++    descriptors = NULL;
++#endif
++
++    // free descriptor cache
++    desc_cache_index = 0;
++
++    __asm__ __volatile__ ("mcr p15, 0, %0, c15, c1, 0" : :"r"(0));
++
++    /* We're now ready for our next caller */
++    device_open --;
++
++    MOD_DEC_USE_COUNT;
++
++    return 0;
++}
++
++#define SHARPSL_PXA_VSYNC_TIMEOUT 30000 // timeout = 30[ms] > 16.8[ms]
++//
++static void bvdd_vsync()
++{
++    int timeout = SHARPSL_PXA_VSYNC_TIMEOUT;
++
++    while(timeout > 0)
++    {
++	if ((GPLR(GPIO74_LCD_FCLK) & GPIO_bit(GPIO74_LCD_FCLK)))
++	    break;
++	udelay(1);
++	timeout--;
++    }
++    while(timeout > 0)
++    {
++	if (!(GPLR(GPIO74_LCD_FCLK) & GPIO_bit(GPIO74_LCD_FCLK)))
++	    break;
++	udelay(1);
++	timeout--;
++    }
++}
++
++static int bvdd_setup_frame(int type, bvdd_frame_t *frame_user, int is_branch)
++{
++    bvdd_frame_t frame;
++    int i;
++
++    copy_from_user(&frame, (void *)frame_user, sizeof(frame));
++
++#if 0
++    PRINT_DEBUG("bvdd_setup_frame(type=%d,bvdd_frame_t*=0x%p)\n", type, frame_user);
++    printk(DEVICE_NAME ":   bvdd_frame_t {\n");
++    printk(DEVICE_NAME ":     format=%d\n", frame.format);
++    printk(DEVICE_NAME ":     width=%d\n", frame.width);
++    printk(DEVICE_NAME ":     height=%d\n", frame.height);
++    printk(DEVICE_NAME ":     x=%d\n", frame.x);
++    printk(DEVICE_NAME ":     y=%d\n", frame.y);
++    printk(DEVICE_NAME ":     offset=0x%p\n", frame.offset);
++    printk(DEVICE_NAME ":     u_offset=0x%p\n", frame.u_offset);
++    printk(DEVICE_NAME ":     v_offset=0x%p\n", frame.v_offset);
++    printk(DEVICE_NAME ":   }\n");
++#endif
++
++    if (frame.format > 16) {
++	unsigned int desc, y_stride, uv_stride;
++
++	y_stride = (frame.width + 15) & ~15;
++	uv_stride = y_stride / 2;
++
++/* 	lcdc_state.lccr3.f.PDFOR = 3; */
++
++	lcdc_state.ovl2c1.f.O2EN = 1;
++	lcdc_state.ovl2c1.f.LPO2 = frame.height - 1;
++	lcdc_state.ovl2c1.f.PPL2 = y_stride - 1;
++	lcdc_state.ovl2c1.f.BPP2 = 0;
++	lcdc_state.ovl2c2.f.FOR = frame.format - 16;
++/* 	lcdc_state.ovl2c2.f.FOR = 4; */
++	lcdc_state.ovl2c2.f.O2XPOS = frame.x;
++	lcdc_state.ovl2c2.f.O2YPOS = frame.y;
++
++	desc = lcdc_set_descriptor(frame.offset, y_stride * frame.height);
++	if (desc == 0) {
++	    PRINT_DEBUG("  couldn't set descriptors.\n");
++	    return -1;
++	}
++	lcdc_state.fdadr2 = desc;
++
++	desc = lcdc_set_descriptor(frame.u_offset, uv_stride * (frame.height / 2));
++	if (desc == 0) {
++	    PRINT_DEBUG("  couldn't set descriptors.\n");
++	    lcdc_state.fdadr2 = 0;
++	    return -1;
++	}
++	lcdc_state.fdadr3 = desc;
++
++	desc = lcdc_set_descriptor(frame.v_offset, uv_stride * (frame.height / 2));
++	if (desc == 0) {
++	    PRINT_DEBUG("  couldn't set descriptors.\n");
++	    lcdc_state.fdadr2 = 0;
++	    lcdc_state.fdadr3 = 0;
++	    return -1;
++	}
++	lcdc_state.fdadr4 = desc;
++
++	if (is_branch) {
++/* 	    interruptible_sleep_on(&fbr2_wait); */
++/* 	    interruptible_sleep_on(&fbr3_wait); */
++/* 	    interruptible_sleep_on(&fbr4_wait); */
++	    wait_event_interruptible(fbr2_wait, (next_fbr2 == 0));
++	    wait_event_interruptible(fbr3_wait, (next_fbr3 == 0));
++	    wait_event_interruptible(fbr4_wait, (next_fbr4 == 0));
++	    disable_irq(17);
++	    next_fbr2 = lcdc_state.fdadr2;
++	    next_fbr3 = lcdc_state.fdadr3;
++	    next_fbr4 = lcdc_state.fdadr4;
++	    enable_irq(17);
++	} else {
++	    lcdc_state_print(&lcdc_state);
++	    lcdc_state_write(&lcdc_state);
++	}
++    }
++}
++
++static int bvdd_ioctl(struct inode *inode, struct file *file,
++		      unsigned int ioctl_num, unsigned long ioctl_param)
++{
++    int i;
++    char *temp;
++    char ch;
++
++    switch (ioctl_num) {
++    case BVDD_IOCTL_SETUP_VRAM: {
++	printk(DEVICE_NAME ": BVDD_IOCTL_SETUP_VRAM(0x%08x)\n", ioctl_param);
++#if 0
++	// 既にVRAMが確保されていれば解放する
++	if (vram_virt != NULL) {
++	    printk(DEVICE_NAME ":   now freeing allocated vram\n");
++	    consistent_free(vram_virt, vram_size, vram_phys);
++	}
++
++	vram_size = PAGE_ALIGN(ioctl_param + PAGE_SIZE);
++	vram_virt = consistent_alloc(GFP_KERNEL /* | GFP_DMA */, vram_size, &vram_phys);
++	if (vram_virt == NULL) {
++	    printk(DEVICE_NAME ":   consistent_alloc failed\n");
++	    return -EINVAL;
++	}
++
++	printk(DEVICE_NAME ":   vram_virt=0x%p\n", vram_virt);
++	printk(DEVICE_NAME ":   vram_phys=0x%p\n", vram_phys);
++	printk(DEVICE_NAME ":   vram_size=%d\n", vram_size);
++	vram_areas[2].start_virt = vram_virt;
++	vram_areas[2].start_phys = vram_phys;
++	vram_areas[2].end_phys = vram_phys + vram_size;
++	vram_areas[2].offset = BVDD_VRAM_OFFSET_USER;
++#endif
++	free_vram();
++	if (setup_vram(ioctl_param) < 0)
++	    return -EINVAL;
++
++	break;
++    }
++
++    case BVDD_IOCTL_SETUP_BASE_FRAME: {
++	printk(DEVICE_NAME ": BVDD_IOCTL_SETUP_BASE_FRAME(0x%08x)\n", ioctl_param);
++	break;
++    }
++    case BVDD_IOCTL_SETUP_OVERLAY1_FRAME: {
++	break;
++    }
++    case BVDD_IOCTL_SETUP_OVERLAY2_FRAME: {
++	bvdd_frame_t frame;
++	printk(DEVICE_NAME ": BVDD_IOCTL_SETUP_OVERLAY2_FRAME(0x%08x)\n", ioctl_param);
++	bvdd_setup_frame(2, (bvdd_frame_t *)ioctl_param, 0);
++	break;
++    }
++
++    case BVDD_IOCTL_BRANCH_OVERLAY2_FRAME: {
++	bvdd_frame_t frame;
++/* 	PRINT_DEBUG("BVDD_IOCTL_BRANCH_OVERLAY2_FRAME(0x%08x)\n", ioctl_param); */
++	bvdd_setup_frame(2, (bvdd_frame_t *)ioctl_param, 1);
++	break;
++    }
++
++    case BVDD_IOCTL_SET_IWMMXT_STATE: {
++	__asm__ __volatile__ ("mcr p15, 0, %0, c15, c1, 0" : :"r"(ioctl_param ? 3 : 0));
++	break;
++    }
++
++#if defined(CONFIG_SL_CCCR_CHANGE)
++    case BVDD_IOCTL_GET_CCCR: {
++      *((int *)ioctl_param) = read_cccr();
++      printk(DEVICE_NAME ": Read CCCR = %x.\n", *((int *)ioctl_param));
++      break;
++    }
++    case BVDD_IOCTL_SET_CCCR: {
++      write_cccr((int)ioctl_param);
++      printk(DEVICE_NAME ": Change CCCR = %x.\n", (int)ioctl_param);
++      break;
++    }
++#endif
++#if defined(CONFIG_CHANGE_CORE_VOLT)
++    case BVDD_IOCTL_GET_VCORE: {
++      *((int *)ioctl_param) = read_vcore();
++      printk(DEVICE_NAME ": Read VCORE = %x.\n", *((int *)ioctl_param));
++      break;
++    }
++    case BVDD_IOCTL_SET_VCORE: {
++      write_vcore((int)ioctl_param);
++      printk(DEVICE_NAME ": Change VCORE = %x.\n", (int)ioctl_param);
++      break;
++    }
++#endif
++
++    case BVDD_IOCTL_DEBUG: {
++	printk(DEVICE_NAME ": BVDD_IOCTL_DEBUG\n");
++	break;
++    }
++    }
++
++    return 0;
++}
++
++/*
++  vma->vm_start, vma->vm_end は、mmap引数がページ境界でなくともアラインされたものがこの関数に渡る。
++  vma->vm_pgoff は、mmap引数がページ境界でなければエラーになる。
++*/
++static int bvdd_mmap(struct file *file, struct vm_area_struct *vma)
++{
++    unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
++    struct page *map, *mapend;
++    int i, size;
++    unsigned long vma_start;
++
++    PRINT_DEBUG("bvdd_mmap(file=0x%p, vma=0x%p)\n", file, vma);
++
++/*     if (vram_virt == NULL) { */
++/* 	printk(DEVICE_NAME ":   vram is not allocated.\n"); */
++/* 	return -EINVAL; */
++/*     } */
++
++    printk(DEVICE_NAME ":   vm_start = 0x%p\n", (uint32_t)vma->vm_start);
++    printk(DEVICE_NAME ":   vm_end   = 0x%p\n", (uint32_t)vma->vm_end);
++    printk(DEVICE_NAME ":   vm_pgoff = 0x%p\n", (uint32_t)vma->vm_pgoff);
++    printk(DEVICE_NAME ":   vm_page_prot.pgprot = 0x%08u\n", (uint32_t)vma->vm_page_prot.pgprot);
++    printk(DEVICE_NAME ":   PAGE_OFFSET = %x\n", (int)PAGE_OFFSET);
++    printk(DEVICE_NAME ":   offset = %x\n", (int)offset);
++    printk(DEVICE_NAME ":   vram_phys = 0x%p\n", vram_phys);
++
++    if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
++	return -EINVAL;
++
++#if 0
++    if ((vma->vm_end - vma->vm_start + offset) > vram_size) {
++	printk(DEVICE_NAME ":   mmap length is too large (vram_size=%d, len=%d\n",
++	       vram_size, vma->vm_end - vma->vm_start + offset);
++	return -EINVAL;
++    }
++#endif
++
++    // from fbmem.c
++    vma->vm_flags |= VM_IO;
++    vma->vm_page_prot = __pgprot(pgprot_val(vma->vm_page_prot) | L_PTE_CACHEABLE);
++
++#if 0
++    for (i = vma->vm_pgoff; i < vma->vm_pgoff + ((vma->vm_end - vma->vm_start) >> PAGE_SHIFT); ++i) {
++	if (offset2phys_map[i] == 0) {
++	    printk(DEVICE_NAME ":   io_remap_page_range failed.\n");
++	    return -EAGAIN;
++	}
++	if (io_remap_page_range(vma->vm_start + (i << PAGE_SHIFT),
++				offset2phys_map[i],
++				PAGE_SIZE, vma->vm_page_prot)) {
++	    printk(DEVICE_NAME ":   io_remap_page_range failed.\n");
++	    return -EAGAIN;
++	}
++    }
++#endif
++
++#if 1
++    vma_start = vma->vm_start;
++    size = vma->vm_end - vma->vm_start;
++    while (size > 0) {
++	vram_area_t *va = NULL;
++	int aoff, alen;
++
++	for (i = 0; i < MAX_VRAM_AREAS; ++i) {
++	    va = &vram_areas[i];
++	    if (va->offset <= offset && offset < va->offset + (va->end_phys - va->start_phys))
++		break;
++	}
++	if (i == MAX_VRAM_AREAS) {
++	    return -EAGAIN;
++	}
++
++	aoff = offset - va->offset;
++	alen = va->end_phys - va->start_phys - aoff;
++	if (alen > size)
++	    alen = size;
++	PRINT_DEBUG("io_remap_page_range(0x%p, 0x%p, %d)\n", vma_start, va->start_phys + aoff, alen);
++	if (io_remap_page_range(vma_start, va->start_phys + aoff, alen, vma->vm_page_prot)) {
++	    printk(DEVICE_NAME ":   io_remap_page_range failed.\n");
++	    return -EAGAIN;
++	}
++	vma_start += alen;
++	size -= alen;
++	offset += alen;
++    }
++
++    printk(DEVICE_NAME ":   successed.\n");
++    return 0;
++#endif
++}
++
++/* Module Declarations *************************** */
++
++
++/* This structure will hold the functions to be called
++ * when a process does something to the device we
++ * created. Since a pointer to this structure is kept in
++ * the devices table, it can't be local to
++ * init_module. NULL is for unimplemented functions. */
++struct file_operations fops = {
++    ioctl : bvdd_ioctl,
++    mmap : bvdd_mmap,
++    open : bvdd_open,
++    release : bvdd_release,
++};
++
++
++/* Initialize the module - Register the character device */
++int init_module()
++{
++    int i, ret;
++    unsigned long *p;
++
++    /* Register the character device (atleast try) */
++    ret = register_chrdev(BVDD_MAJOR_NUM, DEVICE_NAME, &fops);
++
++    /* Negative values signify an error */
++    if (ret < 0) {
++	printk (DEVICE_NAME ": Registering the device failed with %d\n", ret);
++	return ret;
++    }
++
++    printk (DEVICE_NAME ": Registeration is a success. \n");
++
++    /* TODO */
++/*     vram_sharpsl_pxafb_phys = ((descriptor_t *)__phys_to_virt(FDADR0))->FSADR; */
++    vram_sharpsl_pxafb_phys = (dma_addr_t)0xA3E00000UL;
++
++#if 0
++    p = offset2phys_map;
++    for (i = 0; i < ((256 * 1024) >> PAGE_SHIFT); ++i) {
++	*p++ = SRAM_BASE_PHYS + (i << PAGE_SHIFT);
++    }
++    for (i = 0; i < ((PAGE_ALIGN(640 * 480 * 2)) >> PAGE_SHIFT); ++i) {
++	*p++ = vram_sharpsl_pxafb_phys + (i << PAGE_SHIFT);
++    }
++#endif
++
++    memset(vram_areas, 0, sizeof(vram_areas));
++    vram_areas[0].start_phys = vram_sharpsl_pxafb_phys;
++    vram_areas[0].start_virt = (void *)__phys_to_virt(vram_sharpsl_pxafb_phys);
++    vram_areas[0].end_phys = vram_areas[0].start_phys + PAGE_ALIGN(480 * 640 * 2);
++    vram_areas[0].offset = 0;
++    vram_areas[1].start_phys = SRAM_BASE_PHYS;
++    vram_areas[1].start_virt = (void *)SRAM_BASE;
++    vram_areas[1].end_phys = vram_areas[1].start_phys + 256 * 1024;
++    vram_areas[1].offset = PAGE_ALIGN(480 * 640 * 2);
++
++    return 0;
++}
++
++
++/* Cleanup - unregister the appropriate file from /proc */
++void cleanup_module()
++{
++    int ret;
++
++    /* Unregister the device */
++    ret = unregister_chrdev(BVDD_MAJOR_NUM, DEVICE_NAME);
++
++    /* If there's an error, report it */
++    if (ret < 0)
++	printk(DEVICE_NAME ": Error in unregister_chrdev: %d\n", ret);
++    printk (DEVICE_NAME ": Unregisteration is a success. \n");
++}
++
++#if 1
++//////////////////////////////////////////////
++#include <linux/interrupt.h>
++
++/*
++ * This allocates one page of cache-coherent memory space and returns
++ * both the virtual and a "dma" address to that space.  It is not clear
++ * whether this could be called from an interrupt context or not.  For
++ * now, we expressly forbid it, especially as some of the stuff we do
++ * here is not interrupt context safe.
++ *
++ * We should allow this function to be called from interrupt context.
++ * However, we call ioremap, which needs to fiddle around with various
++ * things (like the vmlist_lock, and allocating page tables).  These
++ * things aren't interrupt safe (yet).
++ *
++ * Note that this does *not* zero the allocated area!
++ */
++static void *consistent_alloc(int gfp, size_t size, dma_addr_t *dma_handle)
++{
++    return l_consistent_alloc2(gfp, size, dma_handle, L_PTE_CACHEABLE);
++}
++
++static void *l_consistent_alloc2(int gfp, size_t size, dma_addr_t *dma_handle, int pte)
++{
++    struct page *page, *end, *free;
++    unsigned long order;
++    void *ret;
++
++    /* FIXME */
++    if (in_interrupt())
++	BUG();
++
++    size = PAGE_ALIGN(size);
++    order = get_order(size);
++
++    page = alloc_pages(gfp, order);
++    if (!page) {
++	printk("size:%d, order:%d\n", size, order);
++	goto no_page;
++    }
++
++    *dma_handle = page_to_bus(page);
++    //ret = __ioremap(page_to_pfn(page) << PAGE_SHIFT, size, 0);
++    ret = __ioremap(page_to_pfn(page) << PAGE_SHIFT, size, pte);
++    if (!ret) {
++	goto no_remap;
++    }
++
++#if 0 /* ioremap_does_flush_cache_all */
++    {
++	void *virt = page_address(page);
++
++	/*
++	 * we need to ensure that there are no cachelines in use, or
++	 * worse dirty in this area.  Really, we don't need to do
++	 * this since __ioremap does a flush_cache_all() anyway. --rmk
++	 */
++	invalidate_dcache_range(virt, virt + size);
++    }
++#endif
++
++    /*
++     * free wasted pages.  We skip the first page since we know
++     * that it will have count = 1 and won't require freeing.
++     * We also mark the pages in use as reserved so that
++     * remap_page_range works.
++     */
++    free = page + (size >> PAGE_SHIFT);
++    end  = page + (1 << order);
++
++    for (; page < end; page++) {
++	set_page_count(page, 1);
++	if (page >= free)
++	    __free_page(page);
++	else
++	    SetPageReserved(page);
++    }
++    return ret;
++
++ no_remap:
++    __free_pages(page, order);
++ no_page:
++    return NULL;
++}
++
++/*
++ * free a page as defined by the above mapping.  We expressly forbid
++ * calling this from interrupt context.
++ */
++static void consistent_free(void *vaddr, size_t size, dma_addr_t handle)
++{
++    struct page *page, *end;
++
++    if (in_interrupt())
++	BUG();
++
++    /*
++     * More messing around with the MM internals.  This is
++     * sick, but then so is remap_page_range().
++     */
++    size = PAGE_ALIGN(size);
++    page = virt_to_page(bus_to_virt(handle));
++    end = page + (size >> PAGE_SHIFT);
++
++    for (; page < end; page++)
++	ClearPageReserved(page);
++
++    __iounmap(vaddr);
++}
++
++#endif
++
++/*
++
++document
++
++- Do not change resolution (VGA, QVGA) while bvdd device opened. (TODO)
++- open()するときとclose()するときの解像度が同じでないといけません。
++  状態が違ったときの動作は未保証です。
++
++
++*/
+diff -Nur c3000_pre/linux/drivers/video/bvdd.h c3000_work/linux/drivers/video/bvdd.h
+--- c3000_pre/linux/drivers/video/bvdd.h	1970-01-01 09:00:00.000000000 +0900
++++ c3000_work/linux/drivers/video/bvdd.h	2005-02-21 23:48:01.000000000 +0900
+@@ -0,0 +1,64 @@
++/*  bulverded.h - bulverde(PXA27x) display driver
++BulVerDD
++ */
++
++#ifndef CHARDEV_H
++#define CHARDEV_H
++
++#include <linux/ioctl.h>
++
++#define BVDD_VRAM_OFFSET_PXAFB (0)
++#define BVDD_VRAM_OFFSET_SRAM (480 * 640 * 2)
++#define BVDD_VRAM_OFFSET_USER (BVDD_VRAM_OFFSET_SRAM + (256 * 1024))
++
++#define BVDD_FORMAT_RGB2 1	/* 2-bits/pixel [4 entry palette] */
++#define BVDD_FORMAT_RGB4 2	/* 4-bits/pixel [16 entry palette] */
++#define BVDD_FORMAT_RGB8 3	/* 8-bits/pixel [256 entry palette] */
++#define BVDD_FORMAT_RGB16 4	/* 16-bits/pixel */
++#define BVDD_FORMAT_RGB18 5	/* 18-bits/pixel, unpacked */
++#define BVDD_FORMAT_RGB18P 6	/* 18-bits/pixel, packed */
++#define BVDD_FORMAT_RGB19 7	/* 19-bits/pixel, unpacked */
++#define BVDD_FORMAT_RGB19P 8	/* 19-bits/pixel, packed */
++#define BVDD_FORMAT_RGB24 9	/* 24-bits/pixel */
++#define BVDD_FORMAT_RGB25 10	/* 25-bits/pixel */
++#define BVDD_FORMAT_YUV444P 17	/* YCbCr4:4:4 Packed */
++#define BVDD_FORMAT_YUV444 18	/* YCbCr4:4:4 Planar */
++#define BVDD_FORMAT_YUV422 19	/* YCbCr4:2:2 Planar */
++#define BVDD_FORMAT_YUV420 20	/* YCbCr4:2:0 Planar */
++
++
++typedef struct {
++    unsigned char format;
++    unsigned short width;
++    unsigned short height;
++    unsigned short x;
++    unsigned short y;
++    unsigned long offset;	/* aligned on a 16-byte boundary */
++    unsigned long u_offset;	/* aligned on a 16-byte boundary */
++    unsigned long v_offset;	/* aligned on a 16-byte boundary */
++} bvdd_frame_t;
++
++/* The major device number. We can't rely on dynamic 
++ * registration any more, because ioctls need to know 
++ * it. */
++#define BVDD_MAJOR_NUM 240
++
++/* Set the message of the device driver */
++#define BVDD_IOCTL_SETUP_VRAM _IOR(BVDD_MAJOR_NUM, 0, uint32_t)
++#define BVDD_IOCTL_SETUP_BASE_FRAME _IOR(BVDD_MAJOR_NUM, 1, bvdd_frame_t *)
++#define BVDD_IOCTL_SETUP_OVERLAY1_FRAME _IOR(BVDD_MAJOR_NUM, 2, bvdd_frame_t *)
++#define BVDD_IOCTL_SETUP_OVERLAY2_FRAME _IOR(BVDD_MAJOR_NUM, 3, bvdd_frame_t *)
++#define BVDD_IOCTL_BRANCH_OVERLAY2_FRAME _IOR(BVDD_MAJOR_NUM, 6, bvdd_frame_t *)
++#define BVDD_IOCTL_SET_IWMMXT_STATE _IOR(BVDD_MAJOR_NUM, 7, int)
++#define BVDD_IOCTL_GET_CCCR _IOR(BVDD_MAJOR_NUM, 11, int *)
++#define BVDD_IOCTL_SET_CCCR _IOR(BVDD_MAJOR_NUM, 12, int)
++#define BVDD_IOCTL_GET_VCORE _IOR(BVDD_MAJOR_NUM, 13, int *)
++#define BVDD_IOCTL_SET_VCORE _IOR(BVDD_MAJOR_NUM, 14, int)
++
++#define BVDD_IOCTL_DEBUG _IO(BVDD_MAJOR_NUM, 10)
++
++/* The name of the device file */
++#define BVDD_DEVICE_FILE_NAME "bvdd"
++
++
++#endif
+diff -Nur c3000_pre/linux/drivers/video/bvdd_p.h c3000_work/linux/drivers/video/bvdd_p.h
+--- c3000_pre/linux/drivers/video/bvdd_p.h	1970-01-01 09:00:00.000000000 +0900
++++ c3000_work/linux/drivers/video/bvdd_p.h	2005-02-21 23:41:29.000000000 +0900
+@@ -0,0 +1,284 @@
++#ifndef BVDD_P_INCLUDED
++#define BVDD_P_INCLUDED
++
++#include <asm/hardware.h>
++
++#define REG_LCCR0	__REG(0x44000000) /* LCD Controller Control register 0 */
++#define REG_LCCR1	__REG(0x44000004) /* LCD Controller Control register 1 */
++#define REG_LCCR2	__REG(0x44000008) /* LCD Controller Control register 2 */
++#define REG_LCCR3	__REG(0x4400000C) /* LCD Controller Control register 3 */
++#define REG_LCCR4	__REG(0x44000010) /* LCD Controller Control register 4 */
++#define REG_LCCR5	__REG(0x44000014) /* LCD Controller Control register 5 */
++#define REG_FBR0	__REG(0x44000020)
++#define REG_FBR1	__REG(0x44000024)
++#define REG_FBR2	__REG(0x44000028)
++#define REG_FBR3	__REG(0x4400002C)
++#define REG_FBR4	__REG(0x44000030)
++#define REG_LCSR1	__REG(0x44000034)
++#define REG_LCSR0	__REG(0x44000038)
++#define REG_LIIDR	__REG(0x4400003C)
++#define REG_TRGBR	__REG(0x44000040)
++#define REG_TCR		__REG(0x44000044)
++#define REG_OVL1C1	__REG(0x44000050)
++#define REG_OVL1C2	__REG(0x44000060)
++#define REG_OVL2C1	__REG(0x44000070)
++#define REG_OVL2C2	__REG(0x44000080)
++#define REG_CCR		__REG(0x44000090)
++#define REG_CMDCR	__REG(0x44000100)
++#define REG_PRSR	__REG(0x44000104)
++#define REG_FBR5	__REG(0x44000110)
++#define REG_FBR6	__REG(0x44000114)
++#define REG_FDADR0	__REG(0x44000200)
++#define REG_FSADR0	__REG(0x44000204)
++#define REG_FIDR0	__REG(0x44000208)
++#define REG_LDCMD0	__REG(0x4400020C)
++#define REG_FDADR1	__REG(0x44000210)
++#define REG_FSADR1	__REG(0x44000214)
++#define REG_FIDR1	__REG(0x44000218)
++#define REG_LDCMD1	__REG(0x4400021C)
++#define REG_FDADR2	__REG(0x44000220)
++#define REG_FSADR2	__REG(0x44000224)
++#define REG_FIDR2	__REG(0x44000228)
++#define REG_LDCMD2	__REG(0x4400022C)
++#define REG_FDADR3	__REG(0x44000230)
++#define REG_FSADR3	__REG(0x44000234)
++#define REG_FIDR3	__REG(0x44000238)
++#define REG_LDCMD3	__REG(0x4400023C)
++#define REG_FDADR4	__REG(0x44000240)
++#define REG_FSADR4	__REG(0x44000244)
++#define REG_FIDR4	__REG(0x44000248)
++#define REG_LDCMD4	__REG(0x4400024C)
++#define REG_FDADR5	__REG(0x44000250)
++#define REG_FSADR5	__REG(0x44000254)
++#define REG_FIDR5	__REG(0x44000258)
++#define REG_LDCMD5	__REG(0x4400025C)
++#define REG_FDADR6	__REG(0x44000260)
++#define REG_FSADR6	__REG(0x44000264)
++#define REG_FIDR6	__REG(0x44000268)
++#define REG_LDCMD6	__REG(0x4400026C)
++#define REG_LCDBSCNTR	__REG(0x48000054)
++
++typedef struct {
++    unsigned long ENB		: 1; /* LCD Controller Enable */
++    unsigned long CMS		: 1; /* Color/Monochrome Select */
++    unsigned long SDS		: 1; /* Single-Scan/dual-scan Display Select */
++    unsigned long LDM		: 1; /* LCD Disable Done Mask */
++    unsigned long SOFM0		: 1; /* Start of Frame Mask for Channel 0 and Channel 1 (Dual Scan) */
++    unsigned long IUM		: 1; /* Input FIFO Underrun Mask */
++    unsigned long EOFM0		: 1; /* End of Frame Mask for Channel 0 and for Channel 1 (Dual Scan) */
++    unsigned long PAS		: 1; /* Passive/Active Display Select */
++    unsigned long reserved2	: 1;
++    unsigned long DPD		: 1; /* Double-Pixel Data (DPD) Pin Mode */
++    unsigned long DIS		: 1; /* LCD Disable */
++    unsigned long QDM		: 1; /* LCD Quick Disable Mask */
++    unsigned long PDD		: 8; /* Palette DMA Request Delay */
++    unsigned long BSM0		: 1; /* Branch Status Mask */
++    unsigned long OUM		: 1; /* Output FIFO Underrun Mask */
++    unsigned long LCDT		: 1; /* LCD Panel Type */
++    unsigned long RDSTM		: 1; /* LCD Read Status Interrupt Mask */
++    unsigned long CMDIM		: 1; /* LCD Command Interrupt Mask */
++    unsigned long OUC		: 1; /* Overlay Underlay Control Bit */
++    unsigned long LDDALT	: 1; /* LDD Alternate Mapping Control Bit */
++    unsigned long reserved1     : 5;
++} LCCR0_t;
++typedef union {
++    LCCR0_t f;
++    unsigned long val;
++} LCCR0_u;
++
++typedef struct {
++    unsigned long PPL		:10; /* Pixels per Line for the Base Frame */
++    unsigned long HSW		: 6; /* Horizontal Sync Pulse Width */
++    unsigned long ELW		: 8; /* End-of-Line Pixel Clock Wait Count */
++    unsigned long BLW		: 8; /* Beginning-of-Line Pixel Clock Wait Count */
++} LCCR1_t;
++typedef union {
++    LCCR1_t f;
++    unsigned long val;
++} LCCR1_u;
++
++typedef struct {
++    unsigned long LPP		:10; /* Lines per Panel for the Base Frame */
++    unsigned long VSW		: 6; /* Vertical Sync Pulse Width */
++    unsigned long EFW		: 8; /* End-of-Frame Line Clock Wait Count */
++    unsigned long BFW		: 8; /* Beginning-of-Frame Line Clock Wait Count */
++} LCCR2_t;
++typedef union {
++    LCCR2_t f;
++    unsigned long val;
++} LCCR2_u;
++
++typedef struct {
++    unsigned long PCD		: 8; /* Pixel Clock Divisor */
++    unsigned long ACB		: 8; /* AC Bias Pin Frequency */
++    unsigned long API		: 4; /* AC Bias Pin Transitions per Interrupt */
++    unsigned long VSP		: 1; /* Vertical Sync Polarity */
++    unsigned long HSP		: 1; /* Horizontal Sync Polarity */
++    unsigned long PCP		: 1; /* Pixel Clock Polarity */
++    unsigned long OEP		: 1; /* Output Enable Polarity */
++    unsigned long BPP		: 3; /* Bits per Pixel */
++    unsigned long DPC		: 1; /* Double Pixel Clock Mode */
++    unsigned long reserved1	: 1;
++    unsigned long BPP3		: 1; /* Bits per Pixel */
++    unsigned long PDFOR		: 2; /* Pixel Data Format */
++} LCCR3_t;
++typedef union {
++    LCCR3_t f;
++    unsigned long val;
++} LCCR3_u;
++
++typedef struct {
++    unsigned long K1		: 3; /* Multiplication Constant for Red for Half Transparency */
++    unsigned long K2		: 3; /* Multiplication Constant for Blue for Half Transparency */
++    unsigned long K3		: 3; /* Multiplication Constant for Green for Half Transparency */
++    unsigned long reserved2	: 6;
++    unsigned long PAL_FOR	: 2; /* Palette Data Format */
++    unsigned long reserved1	:12;
++    unsigned long PCDDIV	: 1; /* PCD Divisor Selection */
++} LCCR4_t;
++typedef union {
++    LCCR4_t f;
++    unsigned long val;
++} LCCR4_u;
++
++/* LCCR5 unused */
++
++typedef struct {
++    unsigned long PPL1		:10; /* Pixels per Line for Overlay 1 Frame */
++    unsigned long LPO1		:10; /* Number of Lines for Overlay 1 */
++    unsigned long BPP1		: 4; /* Bits per Pixel for Overlay 1 */
++    unsigned long reserved1	: 7;
++    unsigned long O1EN		: 1; /* Enable bit for Overlay 1 */
++} OVL1C1_t;
++typedef union {
++    OVL1C1_t f;
++    unsigned long val;
++} OVL1C1_u;
++
++typedef struct {
++    unsigned long O1XPOS	:10; /* Horizontal Position of the Upper Left-Most Pixel of Overlay 1 Window */
++    unsigned long O1YPOS	:10; /* Vertical Position of the Upper Left-Most Pixel of Overlay 1 Window */
++    unsigned long reserved1	:12;
++} OVL1C2_t;
++typedef union {
++    OVL1C2_t f;
++    unsigned long val;
++} OVL1C2_u;
++
++typedef struct {
++    unsigned long PPL2		:10; /* Pixels per Line for Overlay 2 Frame */
++    unsigned long LPO2		:10; /* Number of Lines for Overlay 2 Frame */
++    unsigned long BPP2		: 4; /* Bits per Pixel for Overlay 2 */
++    unsigned long reserved1	: 7;
++    unsigned long O2EN		: 1; /* Overlay 2 Enable */
++} OVL2C1_t;
++typedef union {
++    OVL2C1_t f;
++    unsigned long val;
++} OVL2C1_u;
++
++typedef struct {
++    unsigned long O2XPOS	:10; /* Horizontal Position of the Upper Left Most Pixel of Overlay 2 */
++    unsigned long O2YPOS	:10; /* Vertical Position of the Upper Left Most Pixel of Overlay 2 */
++    unsigned long FOR		: 3; /* Format */
++    unsigned long reserved1	: 9;
++} OVL2C2_t;
++typedef union {
++    OVL2C2_t f;
++    unsigned long val;
++} OVL2C2_u;
++
++#undef BS0
++typedef struct {
++    unsigned long LDD		: 1; /* LCD Disable Done Flag */
++    unsigned long SOF0		: 1; /* Start of Frame Status for Base */
++    unsigned long BER		: 1; /* Bus Error Status */
++    unsigned long ABC		: 1; /* AC Bias Count Status */
++    unsigned long IU0		: 1; /* Input FIFO Underrun for Channel 0 */
++    unsigned long IU1		: 1; /* Input FIFO Underrun for Channel 1 */
++    unsigned long OU		: 1; /* Output FIFO Underrun */
++    unsigned long QD		: 1; /* LCD Quick Disable Status */
++    unsigned long EOF0		: 1; /* End of Frame Status for Base (Channel 0) */
++    unsigned long BS0		: 1; /* Branch Status for Base */
++    unsigned long SINT		: 1; /* Subsequent Interrupt Status */
++    unsigned long RD_ST		: 1; /* Read Status */
++    unsigned long CMD_INT	: 1; /* Command Interrupt Status */
++    unsigned long reserved2	:15;
++    unsigned long BER_CH	: 3; /* Bus Error Channel Number */
++    unsigned long reserved1	: 1;
++} LCSR0_t;
++typedef union {
++    LCSR0_t f;
++    unsigned long val;
++} LCSR0_u;
++
++#undef BS1
++typedef struct {
++    unsigned long SOF1		: 1; /* Start of Frame Status for Channel 1 */
++    unsigned long SOF2		: 1; /* Start of Frame Status for Channel 2 */
++    unsigned long SOF3		: 1; /* Start of Frame Status for Channel 3 */
++    unsigned long SOF4		: 1; /* Start of Frame Status for Channel 4 */
++    unsigned long SOF5		: 1; /* Start of Frame Status for Channel 5 */
++    unsigned long SOF6		: 1; /* Start of Frame Status for Channel 6 */
++    unsigned long reserved4	: 2;
++    unsigned long EOF1		: 1; /* End of Frame Status for Channel 1 */
++    unsigned long EOF2		: 1; /* End of Frame Status for Channel 2 */
++    unsigned long EOF3		: 1; /* End of Frame Status for Channel 3 */
++    unsigned long EOF4		: 1; /* End of Frame Status for Channel 4 */
++    unsigned long EOF5		: 1; /* End of Frame Status for Channel 5 */
++    unsigned long EOF6		: 1; /* End of Frame Status for Channel 6 */
++    unsigned long reserved3	: 2;
++    unsigned long BS1		: 1; /* Branch Status for Channel 1 (Command Register) */
++    unsigned long BS2		: 1; /* Branch Status for Channel 2 (Command Register) */
++    unsigned long BS3		: 1; /* Branch Status for Channel 3 (Command Register) */
++    unsigned long BS4		: 1; /* Branch Status for Channel 4 (Command Register) */
++    unsigned long BS5		: 1; /* Branch Status for Channel 5 (Command Register) */
++    unsigned long BS6		: 1; /* Branch Status for Channel 6 (Command Register) */
++    unsigned long reserved2	: 3;
++    unsigned long IU2		: 1; /* Input FIFO Underrun for Channel 2 */
++    unsigned long IU3		: 1; /* Input FIFO Underrun for Channel 3 */
++    unsigned long IU4		: 1; /* Input FIFO Underrun for Channel 4 */
++    unsigned long IU5		: 1; /* Input FIFO Underrun for Channel 5 */
++    unsigned long IU6		: 1; /* Input FIFO Underrun for Channel 6 */
++    unsigned long reserved1	: 2;
++} LCSR1_t;
++typedef union {
++    LCSR1_t f;
++    unsigned long val;
++} LCSR1_u;
++
++/* CCR unused */
++/* CMDCR unused */
++/* TRGBR unused */
++/* TCR unused */
++
++typedef struct {
++    unsigned long LCDBS		: 4; /* LCD Buffer Strength */
++    unsigned long reserved1	:28;
++} LCDBSCNTR_t;
++typedef union {
++    LCDBSCNTR_t f;
++    unsigned long val;
++} LCDBSCNTR_u;
++
++typedef struct {
++    LCCR0_u lccr0;
++    LCCR1_u lccr1;
++    LCCR2_u lccr2;
++    LCCR3_u lccr3;
++    LCCR4_u lccr4;
++    OVL1C1_u ovl1c1;
++    OVL1C2_u ovl1c2;
++    OVL2C1_u ovl2c1;
++    OVL2C2_u ovl2c2;
++    unsigned long fdadr0;
++    unsigned long fdadr1;
++    unsigned long fdadr2;
++    unsigned long fdadr3;
++    unsigned long fdadr4;
++    unsigned long fdadr5;
++    unsigned long fdadr6;
++    char cken20_intmem;
++} lcdc_state_t;
++
++#endif /* BVDD_P_INCLUDED */

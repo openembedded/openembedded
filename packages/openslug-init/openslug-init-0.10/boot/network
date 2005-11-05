@@ -1,0 +1,25 @@
+#!/bin/sh
+# bring up the network before boot, used to allow
+# netconsole logging and NFS boot.  This runs out
+# of flash, but that's ok because the script doesn't
+# leave any process running.
+#
+# NOTE: /etc/default/functions defines ifup as a shell
+# function!
+. /etc/default/functions
+#
+# Now all the information for booting should be in the configuration
+# file.  Config the loopback and network interfaces.
+ifconfig lo 127.0.0.1 up
+mac="$(config mac)"
+iface="$(config iface)"
+if test -n "$mac" -a -n "$iface" -a "$mac" != "00:00:00:00:00:00" -a "$mac" != "FF:FF:FF:FF:FF:FF"
+then
+	if ifconfig "$iface" hw ether "$mac" &&
+	   ifup "$iface"
+	then
+		exit 0
+	fi
+fi
+# exit code is true only if the interface config has succeeded
+exit 1

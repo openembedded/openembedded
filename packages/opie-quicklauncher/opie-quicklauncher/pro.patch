@@ -1,0 +1,14 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- quicklauncher/quicklauncher.pro~pro	2004-04-02 01:30:03.000000000 -0800
++++ quicklauncher/quicklauncher.pro	2004-04-05 12:07:11.000000000 -0700
+@@ -1,6 +1,5 @@
+ TEMPLATE	= app
+ CONFIG		+= qt warn_on 
+-DESTDIR		= $(OPIEDIR)/bin
+ 
+ HEADERS		= dropins.h
+ SOURCES		= main.cpp

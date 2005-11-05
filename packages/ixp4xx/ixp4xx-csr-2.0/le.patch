@@ -1,0 +1,696 @@
+diff -bBdurN hannes/ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h merged/ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h
+--- ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h	2005-10-07 09:28:48.147833350 -0700
++++ ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h	2005-10-07 15:08:42.343159153 -0700
+@@ -113,7 +113,11 @@
+  * @return IX_FAIL - Error initialising codelet
+  */
+ IX_STATUS
++#ifndef __ARMEB__
++ixDmaAccCodeletInit(IxDmaNpeId npeId);
++#else /* __ARMEB__ */
+ ixDmaAccCodeletInit(IxNpeDlNpeId npeId);
++#endif /* __ARMEB__ */
+ 
+ /**
+  * @fn ixDmaAccCodeletTestPerform( UINT16 transferLength, 
+diff -bBdurN hannes/ixp400_xscale_sw/src/ethAcc/IxEthAccDataPlane.c merged/ixp400_xscale_sw/src/ethAcc/IxEthAccDataPlane.c
+--- ixp400_xscale_sw/src/ethAcc/IxEthAccDataPlane.c	2005-04-17 20:55:12.000000000 -0700
++++ ixp400_xscale_sw/src/ethAcc/IxEthAccDataPlane.c	2005-10-07 15:08:42.511169725 -0700
+@@ -59,6 +59,16 @@
+ #include "IxEthAcc_p.h"
+ #include "IxEthAccQueueAssign_p.h"
+ 
++#ifndef __ARMEB__
++#ifdef DEBUG_ACDC
++#define TRACE printk("%s: %s(): line %d\n", "IxEth", __FUNCTION__, __LINE__)
++#define PRINTK(args...) printk(args)
++#else
++#define TRACE while (0) {}
++#define PRINTK(args...) while (0) {}
++#endif
++
++#endif /* ! __ARMEB__ */
+ extern PUBLIC IxEthAccMacState ixEthAccMacState[];
+ extern PUBLIC UINT32 ixEthAccNewSrcMask;
+ 
+@@ -252,7 +262,13 @@
+ 
+     if (qEntry != 0)
+     {
++#ifndef __ARMEB__
++      	PRINTK("qEntry = %p %d ",qEntry, mask);
++#endif /* ! __ARMEB__ */
+         /* mask NPE bits (e.g. priority, port ...) */
++#ifndef __ARMEB__
++	TRACE;
++#endif /* ! __ARMEB__ */
+         qEntry &= mask;
+         
+ #if IX_ACC_DRAM_PHYS_OFFSET != 0
+@@ -270,6 +286,14 @@
+ 
+         /* preload the cacheline used by xscale */
+         IX_ACC_DATA_CACHE_PRELOAD(mbufPtr); 
++#ifndef __ARMEB__
++	PRINTK("%p\n", mbufPtr );
++
++#if 0
++	{int junk = *(int*)mbufPtr;
++	  printk("j=%d\n", junk);}
++#endif
++#endif /* ! __ARMEB__ */
+     }
+     else
+     {
+@@ -506,15 +530,30 @@
+ ixEthAccMbufFromRxQ(IX_OSAL_MBUF *mbuf)
+ {
+     UINT32 len;
++#ifndef __ARMEB__
++    TRACE;
++    PRINTK("mbuf=%p\n", mbuf);
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* endianess swap for tci and flags
+        note: this is done only once, even for chained buffers */
+     IX_ETHACC_NE_FLAGS(mbuf)   = IX_OSAL_SWAP_BE_SHARED_SHORT(IX_ETHACC_NE_FLAGS(mbuf));
++#ifndef __ARMEB__
++    TRACE;
++#endif /* ! __ARMEB__ */
+     IX_ETHACC_NE_VLANTCI(mbuf) = IX_OSAL_SWAP_BE_SHARED_SHORT(IX_ETHACC_NE_VLANTCI(mbuf));
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* test for unchained mbufs */
+     if (IX_ETHACC_NE_NEXT(mbuf) == 0)
+     {
++#ifndef __ARMEB__
++      TRACE;
++#endif /* ! __ARMEB__ */
+ 	/* unchained mbufs */
+ 	IX_ETH_ACC_STATS_INC(ixEthAccDataStats.unchainedRxMBufs);
+     
+@@ -531,11 +570,19 @@
+ 	IX_OSAL_MBUF *ptr = mbuf;
+ 	IX_OSAL_MBUF *nextPtr;
+ 	UINT32 frmLen;
++#ifndef __ARMEB__
++	TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	/* convert the frame length */
+ 	frmLen = IX_OSAL_SWAP_BE_SHARED_LONG(IX_ETHACC_NE_LEN(mbuf));
+ 	IX_OSAL_MBUF_PKT_LEN(mbuf) = (frmLen & IX_ETHNPE_ACC_PKTLENGTH_MASK);
++#ifndef __ARMEB__
++	PRINTK("frm len %d\n", frmLen);
++#else /* __ARMEB__ */
+ 	
++#endif /* __ARMEB__ */
+         /* chained mbufs */
+ 	do
+ 	{
+@@ -547,6 +594,9 @@
+ 	    
+             /* get the next pointer */	    
+  	    PTR_NPE2VIRT(IX_OSAL_MBUF *,IX_ETHACC_NE_NEXT(ptr), nextPtr);
++#ifndef __ARMEB__
++	    PRINTK("nextptr %p\n", nextPtr);
++#endif /* ! __ARMEB__ */
+ 	    if (nextPtr != NULL)
+ 	    {
+ 		nextPtr = (IX_OSAL_MBUF *)((UINT8 *)nextPtr - offsetof(IX_OSAL_MBUF,ix_ne));
+@@ -558,6 +608,9 @@
+ 	    ptr = nextPtr;
+ 	}
+ 	while (ptr != NULL);
++#ifndef __ARMEB__
++	TRACE;
++#endif /* ! __ARMEB__ */
+     }
+ }
+ 
+@@ -1449,7 +1502,11 @@
+ {	
+     UINT32 flags;
+     IxEthDBStatus result;
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ #ifndef NDEBUG
+     /* Prudent to at least check the port is within range */
+     if (portId >= IX_ETH_ACC_NUMBER_OF_PORTS)
+@@ -1461,18 +1518,33 @@
+ 	return FALSE;
+     }
+ #endif
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* convert fields from mbuf header */
+     ixEthAccMbufFromRxQ(mbufPtr);
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* check about any special processing for this frame */
+     flags = IX_ETHACC_NE_FLAGS(mbufPtr);
+     if ((flags & (IX_ETHACC_NE_FILTERMASK | IX_ETHACC_NE_NEWSRCMASK)) == 0)
+     {
++#ifndef __ARMEB__
++      TRACE;
++#endif /* ! __ARMEB__ */
+ 	/* "best case" scenario : nothing special to do for this frame */
+ 	return TRUE;
+     }
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* if a new source MAC address is detected by the NPE, 
+      * update IxEthDB with the portId and the MAC address.
+      */
+@@ -1501,7 +1573,11 @@
+ 	    RX_STATS_INC(portId, rxUnlearnedMacAddress);
+ 	}
+     }
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* check if this frame should have been filtered
+      * by the NPE and take the appropriate action 
+      */
+@@ -1542,7 +1618,11 @@
+         /* indicate that frame should not be subjected to further processing */
+         return FALSE;
+     }
++#ifndef __ARMEB__
++    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     return TRUE;
+ }
+ 
+@@ -1588,6 +1668,9 @@
+      */
+     IX_ETH_ACC_STATS_INC(ixEthAccDataStats.rxCallbackCounter);
+ 
++#ifndef __ARMEB__
++    TRACE;
++#endif /* ! __ARMEB__ */
+     do
+     {
+ 	/* 
+@@ -1602,7 +1685,12 @@
+ 	rxQReadStatus = ixQMgrQBurstRead(qId, 
+ 		 IX_ETH_ACC_MAX_RX_FRAME_CONSUME_PER_CALLBACK, 
+ 		 qEntryPtr);
++#ifndef __ARMEB__
++	//	TRACE;
++	PRINTK("rxQReadStatus = %d\n", rxQReadStatus);
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ #ifndef NDEBUG
+ 	if ((rxQReadStatus != IX_QMGR_Q_UNDERFLOW)
+ 	    && (rxQReadStatus != IX_SUCCESS))
+@@ -1623,9 +1711,16 @@
+ 	nextQEntry = *qEntryPtr;
+ 	nextMbufPtr = ixEthAccEntryFromQConvert(nextQEntry, 
+ 			  IX_ETHNPE_QM_Q_RXENET_ADDR_MASK);
++#ifndef __ARMEB__
++	//	TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	while(nextQEntry != 0)
+ 	{
++#ifndef __ARMEB__
++	  int res;
++#endif /* ! __ARMEB__ */
+ 	    /* get the next entry */
+ 	    qEntry = nextQEntry;
+ 	    mbufPtr = nextMbufPtr;
+@@ -1648,7 +1743,11 @@
+ 	    nextQEntry = *(++qEntryPtr);
+ 	    nextMbufPtr = ixEthAccEntryFromQConvert(nextQEntry, 
+ 			      IX_ETHNPE_QM_Q_RXENET_ADDR_MASK);
++#ifndef __ARMEB__
++	    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	    /*
+ 	     * Get Port and Npe ID from message.
+ 	     */	    
+@@ -1659,7 +1758,12 @@
+ 	    /* process frame, check the return code and skip the remaining of
+ 	     * the loop if the frame is to be filtered out 
+ 	     */
++#ifndef __ARMEB__
++	    res = ixEthRxFrameProcess(portId, mbufPtr);
++            if (res)
++#else /* __ARMEB__ */
+             if (ixEthRxFrameProcess(portId, mbufPtr))
++#endif /* __ARMEB__ */
+             {
+ 	        /* destination portId for this packet */
+ 	        destPortId = IX_ETHACC_NE_DESTPORTID(mbufPtr);
+@@ -1682,7 +1786,11 @@
+ 					    callbackId);
+ 		    }
+ 	        }
++#ifndef __ARMEB__
++		TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	        /* 
+ 	        * increment priority stats 
+ 	        */
+@@ -1696,6 +1804,9 @@
+ 	        /* 
+ 	        * Call user level callback.
+ 	        */
++#ifndef __ARMEB__
++		TRACE;
++#endif /* ! __ARMEB__ */
+ 	        ixEthAccPortData[portId].ixEthAccRxData.rxCallbackFn(
+ 		    ixEthAccPortData[portId].ixEthAccRxData.rxCallbackTag, 
+ 		    mbufPtr,
+@@ -1703,6 +1814,9 @@
+             }
+ 	}
+     } while (rxQReadStatus == IX_SUCCESS);
++#ifndef __ARMEB__
++    TRACE;
++#endif /* ! __ARMEB__ */
+ }
+ 
+ /**
+@@ -2092,10 +2206,19 @@
+     
+     do{
+ 	qEntryPtr = txDoneQEntry;
++#ifndef __ARMEB__
++	//	TRACE;
++#endif /* ! __ARMEB__ */
+ 	txDoneQReadStatus = ixQMgrQBurstRead(IX_ETH_ACC_TX_FRAME_DONE_ETH_Q, 
+ 		     IX_ETH_ACC_MAX_TX_FRAME_DONE_CONSUME_PER_CALLBACK,
+ 		     qEntryPtr);
++#ifndef __ARMEB__
++	if (txDoneQReadStatus == 0 && qEntryPtr[0] == 0)
++	  return; 
++	PRINTK("txDoneQReadStatus %d\n", txDoneQReadStatus);
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ #ifndef NDEBUG
+ 	if (txDoneQReadStatus != IX_QMGR_Q_UNDERFLOW
+ 	    && (txDoneQReadStatus != IX_SUCCESS))
+@@ -2113,6 +2236,9 @@
+ 
+ 	while(qEntry != 0)
+ 	{	    
++#ifndef __ARMEB__
++	  TRACE;
++#endif /* ! __ARMEB__ */
+ 	    mbufPtr = ixEthAccEntryFromQConvert(qEntry,
+ 		      IX_ETHNPE_QM_Q_TXENET_ADDR_MASK);
+ 
+@@ -2126,7 +2252,11 @@
+ 		return;
+ 	    }
+ #endif
++#ifndef __ARMEB__
++	    TRACE;
++#else /* __ARMEB__ */
+ 	    
++#endif /* __ARMEB__ */
+ 	    /* endianness conversions and stats updates */
+ 	    ixEthAccMbufFromTxQ(mbufPtr);
+ 
+@@ -2151,14 +2281,22 @@
+ #endif
+ 
+ 	    TX_STATS_INC(portId,txDoneClientCallback);
++#ifndef __ARMEB__
++            TRACE;
++#else /* __ARMEB__ */
+             
++#endif /* __ARMEB__ */
+ 	    /* 
+ 	     * Call user level callback.
+ 	     */
+ 	    ixEthAccPortData[portId].ixEthAccTxData.txBufferDoneCallbackFn(
+ 		ixEthAccPortData[portId].ixEthAccTxData.txCallbackTag, 
+ 		mbufPtr);
++#ifndef __ARMEB__
++	    TRACE;
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	    /* move to next queue entry */
+ 	    qEntry = *(++qEntryPtr);
+ 
+diff -bBdurN hannes/ixp400_xscale_sw/src/ethAcc/IxEthAccMii.c merged/ixp400_xscale_sw/src/ethAcc/IxEthAccMii.c
+--- ixp400_xscale_sw/src/ethAcc/IxEthAccMii.c	2005-04-17 20:55:13.000000000 -0700
++++ ixp400_xscale_sw/src/ethAcc/IxEthAccMii.c	2005-10-07 15:08:42.515169976 -0700
+@@ -94,6 +94,12 @@
+ 	      (mdioCommand >> 24) & 0xff);
+ }
+ 
++#ifndef __ARMEB__
++#if defined(IX_OSAL_LINUX_LE)
++//#error it is defined
++#endif
++
++#endif /* ! __ARMEB__ */
+ PRIVATE void
+ ixEthAccMdioCmdRead(UINT32 *data)
+ {
+@@ -241,6 +246,9 @@
+ 
+     while(miiTimeout)
+     {
++#ifndef __ARMEB__
++	ixOsalSleep(ixEthAccMiiAccessTimeout);
++#endif /* ! __ARMEB__ */
+ 	
+ 	ixEthAccMdioCmdRead(&regval);
+      
+@@ -249,7 +257,9 @@
+ 	    break;
+ 	}
+ 	/* Sleep for a while */
++#ifdef __ARMEB__
+ 	ixOsalSleep(ixEthAccMiiAccessTimeout);
++#endif /* __ARMEB__ */
+ 	miiTimeout--;
+     }
+     
+@@ -321,6 +331,9 @@
+ 
+     while(miiTimeout)
+     {
++#ifndef __ARMEB__
++	ixOsalSleep(ixEthAccMiiAccessTimeout);
++#endif /* ! __ARMEB__ */
+ 	
+ 	ixEthAccMdioCmdRead(&regval);
+ 
+@@ -330,7 +343,9 @@
+ 	    break;
+ 	}
+ 	/* Sleep for a while */
++#ifdef __ARMEB__
+ 	ixOsalSleep(ixEthAccMiiAccessTimeout);
++#endif /* __ARMEB__ */
+         miiTimeout--;
+     }
+     
+diff -bBdurN hannes/ixp400_xscale_sw/src/ethAcc/include/IxEthAccMac_p.h merged/ixp400_xscale_sw/src/ethAcc/include/IxEthAccMac_p.h
+--- ixp400_xscale_sw/src/ethAcc/include/IxEthAccMac_p.h	2005-04-17 20:56:03.000000000 -0700
++++ ixp400_xscale_sw/src/ethAcc/include/IxEthAccMac_p.h	2005-10-07 15:08:42.467166956 -0700
+@@ -46,7 +46,11 @@
+ #define IxEthAccMac_p_H
+ 
+ #include "IxOsal.h"
++#ifndef __ARMEB__
++#define BIT(x) (1 << (x))
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ #define IX_ETH_ACC_MAX_MULTICAST_ADDRESSES 256
+ #define IX_ETH_ACC_NUM_PORTS 3
+ #define IX_ETH_ACC_MAX_FRAME_SIZE_DEFAULT 1536
+diff -bBdurN hannes/ixp400_xscale_sw/src/ethMii/IxEthMii.c merged/ixp400_xscale_sw/src/ethMii/IxEthMii.c
+--- ixp400_xscale_sw/src/ethMii/IxEthMii.c	2005-04-17 20:55:18.000000000 -0700
++++ ixp400_xscale_sw/src/ethMii/IxEthMii.c	2005-10-07 15:08:42.575173752 -0700
+@@ -110,6 +110,14 @@
+ 		/*Need to read the register twice here to flush PHY*/
+ 		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID1_REG, &regvalId1);
+ 		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID1_REG, &regvalId1);
++#ifndef __ARMEB__
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID1_REG, &regvalId1);
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID1_REG, &regvalId1);
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID1_REG, &regvalId1);
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID2_REG, &regvalId2);
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID2_REG, &regvalId2);
++		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID2_REG, &regvalId2);
++#endif /* ! __ARMEB__ */
+ 		ixEthAccMiiReadRtn(i,  IX_ETH_MII_PHY_ID2_REG, &regvalId2);
+ 		ixEthMiiPhyId[i] = (regvalId1 << IX_ETH_MII_REG_SHL) | regvalId2;
+ 		if ((ixEthMiiPhyId[i] == IX_ETH_MII_KS8995_PHY_ID)
+diff -bBdurN hannes/ixp400_xscale_sw/src/ethMii/IxEthMii_p.h merged/ixp400_xscale_sw/src/ethMii/IxEthMii_p.h
+--- ixp400_xscale_sw/src/ethMii/IxEthMii_p.h	2005-04-17 20:55:18.000000000 -0700
++++ ixp400_xscale_sw/src/ethMii/IxEthMii_p.h	2005-10-07 15:08:42.579174004 -0700
+@@ -52,7 +52,11 @@
+ 
+ #ifndef IxEthMii_p_H
+ #define IxEthMii_p_H
++#ifndef __ARMEB__
++#define BIT(x) (1 << (x))
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 
+ /* MII definitions - these have been verified against the LXT971 and
+  LXT972 PHYs*/
+diff -bBdurN hannes/ixp400_xscale_sw/src/include/IxQMgr.h merged/ixp400_xscale_sw/src/include/IxQMgr.h
+--- ixp400_xscale_sw/src/include/IxQMgr.h	2005-04-17 20:55:31.000000000 -0700
++++ ixp400_xscale_sw/src/include/IxQMgr.h	2005-10-07 15:08:42.723183066 -0700
+@@ -96,8 +96,13 @@
+ 
+ #else
+ 
++#ifndef __ARMEB__
++#define IX_QMGR_INLINE_READ_LONG IX_OSAL_READ_LONG_LE_AC
++#define IX_QMGR_INLINE_WRITE_LONG IX_OSAL_WRITE_LONG_LE_AC
++#else /* __ARMEB__ */
+ #define IX_QMGR_INLINE_READ_LONG IX_OSAL_READ_LONG_LE_DC
+ #define IX_QMGR_INLINE_WRITE_LONG IX_OSAL_WRITE_LONG_LE_DC
++#endif /* __ARMEB__ */
+ 
+ #endif
+ 
+@@ -1340,7 +1345,11 @@
+     {
+ 	/* get the queue status */
+ 	UINT32 status = IX_QMGR_INLINE_READ_LONG(infoPtr->qUOStatRegAddr);
++#ifndef __ARMEB__
++	PRINTK("Qstatus %d\n", status);
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ 	if (status & infoPtr->qUflowStatBitMask)
+ 	{
+ 	    /* clear the underflow status bit if it was set */
+diff -bBdurN hannes/ixp400_xscale_sw/src/include/IxTypes.h merged/ixp400_xscale_sw/src/include/IxTypes.h
+--- ixp400_xscale_sw/src/include/IxTypes.h	2005-10-07 09:28:48.151833601 -0700
++++ ixp400_xscale_sw/src/include/IxTypes.h	2005-10-07 15:08:42.735183821 -0700
+@@ -79,10 +79,12 @@
+ #endif
+ #endif
+ 
++#ifdef __ARMEB__
+ #ifndef BIT
+ #define BIT(x)  ((1)<<(x))
+ #endif
+ 
++#endif /* __ARMEB__ */
+ #include "IxOsalBackward.h"
+ 
+ #endif /* IxTypes_H */
+diff -bBdurN hannes/ixp400_xscale_sw/src/osServices/IxOsServices.c merged/ixp400_xscale_sw/src/osServices/IxOsServices.c
+--- ixp400_xscale_sw/src/osServices/IxOsServices.c	2005-04-17 20:55:38.000000000 -0700
++++ ixp400_xscale_sw/src/osServices/IxOsServices.c	2005-10-07 15:08:42.827189611 -0700
+@@ -172,3 +172,61 @@
+     ixOsalYield ();
+ }
+  
++#ifndef __ARMEB__
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++
++/*
++ * 2.6 kernels do not export the required cache management routines so
++ * reimplement them here.
++ */
++
++#define _IX_STR(x) #x
++#define IX_STR(x) _IX_STR(x)
++#define IX_CLM IX_STR(IX_XSCALE_CACHE_LINE_SIZE-1)
++
++/*
++ * IX_ACC_DATA_CACHE_INVALIDATE(addr, size)
++ */
++void
++ix_dcache_invalidate_range(unsigned long start, unsigned long size)
++{
++  __asm__
++    ("    tst    %0, #" IX_CLM "\n"
++     "    mcrne  p15, 0, %0, c7, c10, 1      @ clean D cache line\n"
++     "    bic    %0, %0, #" IX_CLM "\n"
++     "    tst    %1, #" IX_CLM "\n"
++     "    mcrne  p15, 0, %1, c7, c10, 1      @ clean D cache line\n"
++     "1:  mcr    p15, 0, %0, c7, c6, 1       @ invalidate D cache line\n"
++     "    add    %0, %0, #" IX_STR(IX_XSCALE_CACHE_LINE_SIZE) "\n"
++     "    cmp    %0, %1\n"
++     "    blo    1b\n"
++     "    mcr    p15, 0, %0, c7, c10, 4      @ drain write & fill buffer\n"
++     : /* no output */
++     : "r"(start), "r"(size)
++     : "cc");
++}
++
++/*
++ * IX_ACC_DATA_CACHE_FLUSH(addr, size)
++ */
++void
++ix_dcache_flush_range(unsigned long start, unsigned long size)
++{
++  __asm__
++    ("    bic    %0, %0, #" IX_CLM "\n"
++     "1:  mcr    p15, 0, %0, c7, c10, 1      @ clean D cache line\n"
++     "    add    %0, %0, #" IX_STR(IX_XSCALE_CACHE_LINE_SIZE) "\n"
++     "    cmp    %0, %1\n"
++     "    blo    1b\n"
++     "    mcr    p15, 0, %0, c7, c10, 4      @ drain write & fill buffer\n"
++     : /* no output */
++     : "r"(start), "r"(size)
++     : "cc");
++}
++
++#undef _IX_STR
++#undef IX_STR
++#undef IX_CLM
++
++#endif
++#endif /* ! __ARMEB__ */
+diff -bBdurN hannes/ixp400_xscale_sw/src/osServices/IxOsServicesSymbols.c merged/ixp400_xscale_sw/src/osServices/IxOsServicesSymbols.c
+--- ixp400_xscale_sw/src/osServices/IxOsServicesSymbols.c	2005-04-17 20:55:39.000000000 -0700
++++ ixp400_xscale_sw/src/osServices/IxOsServicesSymbols.c	2005-10-07 15:08:42.827189611 -0700
+@@ -74,6 +74,11 @@
+ EXPORT_SYMBOL (ixOsServYield);
+ EXPORT_SYMBOL (ixOsalOsIxp400BackwardPoolInit);
+ EXPORT_SYMBOL (ixOsalOsIxp400BackwardMbufPoolGet);
++#ifndef __ARMEB__
++EXPORT_SYMBOL(ix_dcache_invalidate_range);
++EXPORT_SYMBOL(ix_dcache_flush_range);
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+ #endif /* __linux */
+ 
+diff -bBdurN hannes/ixp400_xscale_sw/src/oslinux/IxLinuxInit.c merged/ixp400_xscale_sw/src/oslinux/IxLinuxInit.c
+--- ixp400_xscale_sw/src/oslinux/IxLinuxInit.c	2005-10-07 14:55:03.931659764 -0700
++++ ixp400_xscale_sw/src/oslinux/IxLinuxInit.c	2005-10-07 15:08:42.831189862 -0700
+@@ -99,6 +99,9 @@
+ /* Init and cleanup functions for module */
+ static int __init ixp400_sw_init_module(void)
+ {
++#ifndef __ARMEB__
++  ixOsalLogLevelSet(IX_OSAL_LOG_LVL_ALL);
++#endif /* ! __ARMEB__ */
+     /* Add initialization code here */
+ #ifdef DEBUG
+     printk("\n\n"__FUNCTION__": addr=%p\n\n", ixp400_sw_init_module);
+diff -bBdurN hannes/ixp400_xscale_sw/src/qmgr/IxQMgrInit.c merged/ixp400_xscale_sw/src/qmgr/IxQMgrInit.c
+--- ixp400_xscale_sw/src/qmgr/IxQMgrInit.c	2005-04-17 20:55:44.000000000 -0700
++++ ixp400_xscale_sw/src/qmgr/IxQMgrInit.c	2005-10-07 15:08:42.923195652 -0700
+@@ -84,13 +84,25 @@
+ 
+     /* Initialise the QCfg component */
+     ixQMgrQCfgInit ();
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* Initialise the Dispatcher component */
+     ixQMgrDispatcherInit ();
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* Initialise the Access component */
+     ixQMgrQAccessInit ();
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* Initialization complete */
+     qMgrIsInitialized = TRUE;
+ 
+diff -bBdurN hannes/ixp400_xscale_sw/src/qmgr/IxQMgrQCfg.c merged/ixp400_xscale_sw/src/qmgr/IxQMgrQCfg.c
+--- ixp400_xscale_sw/src/qmgr/IxQMgrQCfg.c	2005-04-17 20:55:45.000000000 -0700
++++ ixp400_xscale_sw/src/qmgr/IxQMgrQCfg.c	2005-10-07 15:08:42.931196155 -0700
+@@ -150,7 +150,11 @@
+ ixQMgrQCfgInit (void)
+ {
+     int loopIndex;
++#ifndef __ARMEB__
++    TRACE();    
++#else /* __ARMEB__ */
+     
++#endif /* __ARMEB__ */
+     for (loopIndex=0; loopIndex < IX_QMGR_MAX_NUM_QUEUES;loopIndex++)
+     {
+ 	/* info for code inlining */
+@@ -167,10 +171,18 @@
+ 	ixQMgrQInlinedReadWriteInfo[loopIndex].qSizeInEntries = 0;
+ 	ixQMgrQInlinedReadWriteInfo[loopIndex].qConfigRegAddr = zeroedPlaceHolder;
+    }
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     /* Initialise the AqmIf component */
+     ixQMgrAqmIfInit ();
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+    
++#endif /* __ARMEB__ */
+     /* Reset all queues to have queue name = NULL, entry size = 0 and
+      * isConfigured = false
+      */
+@@ -188,11 +200,23 @@
+ 
+     /* Statistics */
+     stats.wmSetCnt = 0;
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     ixQMgrAqmIfSramBaseAddressGet (&freeSramAddress);
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+     
++#endif /* __ARMEB__ */
+     ixOsalMutexInit(&ixQMgrQCfgMutex);
++#ifndef __ARMEB__
++    TRACE();
++#else /* __ARMEB__ */
+ 
++#endif /* __ARMEB__ */
+     cfgInitialized = TRUE;
+ }
+ 

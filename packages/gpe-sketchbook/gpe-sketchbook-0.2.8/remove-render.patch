@@ -1,0 +1,34 @@
+diff -Nurd gpe-sketchbook-0.2.8.old/src/selector-gui.c gpe-sketchbook-0.2.8/src/selector-gui.c
+--- gpe-sketchbook-0.2.8.old/src/selector-gui.c	2004-06-14 17:37:28.000000000 +0200
++++ gpe-sketchbook-0.2.8/src/selector-gui.c	2005-04-20 22:13:13.442852960 +0200
+@@ -24,7 +24,6 @@
+ 
+ //gpe libs
+ #include "gpe/pixmaps.h"
+-#include "gpe/render.h"
+ #include "gpe/gpeiconlistview.h"
+ 
+ //--i18n
+diff -Nurd gpe-sketchbook-0.2.8.old/src/sketchpad-cb.c gpe-sketchbook-0.2.8/src/sketchpad-cb.c
+--- gpe-sketchbook-0.2.8.old/src/sketchpad-cb.c	2004-06-14 18:26:04.000000000 +0200
++++ gpe-sketchbook-0.2.8/src/sketchpad-cb.c	2005-04-20 22:15:35.295288112 +0200
+@@ -30,7 +30,6 @@
+ #include "dock.h"
+ #include "gpe/question.h"
+ #include "gpe/gpeiconlistview.h"
+-#include "gpe/popup_menu.h"
+ 
+ //--i18n
+ #include <libintl.h>
+diff -Nurd gpe-sketchbook-0.2.8.old/src/sketchpad-gui.c gpe-sketchbook-0.2.8/src/sketchpad-gui.c
+--- gpe-sketchbook-0.2.8.old/src/sketchpad-gui.c	2004-06-14 17:37:48.000000000 +0200
++++ gpe-sketchbook-0.2.8/src/sketchpad-gui.c	2005-04-20 22:13:58.829953072 +0200
+@@ -25,8 +25,6 @@
+ 
+ #include "dock.h"
+ #include "gpe/pixmaps.h"
+-#include "gpe/render.h"
+-#include "gpe/popup_menu.h"
+ #include "gpe/picturebutton.h"
+ 
+ //--i18n

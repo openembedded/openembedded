@@ -1,0 +1,50 @@
+# conffiles
+# Known OpenSlug configuration files.  These files are preserved on
+# a flash upgrade.  Other configuration files, found from:
+#
+#    /usr/lib/ipkg/*.conffiles
+#    /etc/*.conf
+#
+# are preserved too with an operation of 'diff' if they have been
+# changed since /etc/.configured was created.
+#
+# Lines starting with # are comments, other lines have
+# two fields:
+#
+# operation file 
+#
+# The file must *NOT* have a leading /
+#
+# operation may be:
+#   ignore    Do not preserve this file
+#   preserve  Preserve this file unconditionally
+#   diff      Compare file with the new version, ask if different
+#
+preserve	linuxrc
+preserve	etc/.configured
+preserve	etc/TZ
+diff		etc/default/conffiles
+diff		etc/default/devpts
+diff		etc/default/rcS
+preserve	etc/default/sysconf
+diff		etc/default/usbd
+preserve	etc/defaultdomain
+preserve	etc/dropbear/dropbear_dss_host_key
+preserve	etc/dropbear/dropbear_rsa_host_key
+preserve	etc/fstab
+preserve	etc/group
+preserve	etc/gshadow
+preserve	etc/hostname
+preserve	etc/hosts
+preserve	etc/localtime
+ignore		etc/modules
+ignore		etc/modules.conf
+preserve	etc/motd
+preserve	etc/network/interfaces
+preserve	etc/ntp.drift
+preserve	etc/passwd
+preserve	etc/profile
+preserve	etc/resolv.conf
+preserve	etc/shadow
+preserve	etc/syslog.conf
+preserve	etc/timezone

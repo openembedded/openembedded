@@ -1,0 +1,4 @@
+obj-m := snes232.o
+
+all:
+	make -C $(KERNEL_SOURCE) SUBDIRS=`pwd`

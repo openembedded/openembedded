@@ -1,0 +1,71 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: xine-lib-1.0/src/xine-engine/audio_out.c
+===================================================================
+--- xine-lib-1.0.orig/src/xine-engine/audio_out.c	2004-12-19 21:24:30.000000000 +0100
++++ xine-lib-1.0/src/xine-engine/audio_out.c	2005-02-16 22:19:25.836765770 +0100
+@@ -95,10 +95,10 @@
+ #include "metronom.h"
+ 
+ 
+-#define NUM_AUDIO_BUFFERS       32
+-#define AUDIO_BUF_SIZE       32768
++#define NUM_AUDIO_BUFFERS       16
++#define AUDIO_BUF_SIZE        8192
+ 
+-#define ZERO_BUF_SIZE         5000
++#define ZERO_BUF_SIZE         2048
+ 
+ /* By adding gap errors (difference between reported and expected
+  * sound card clock) into metronom's vpts_offset we can use its 
+Index: xine-lib-1.0/src/xine-engine/video_decoder.c
+===================================================================
+--- xine-lib-1.0.orig/src/xine-engine/video_decoder.c	2004-12-16 14:59:06.000000000 +0100
++++ xine-lib-1.0/src/xine-engine/video_decoder.c	2005-02-16 22:20:47.104487350 +0100
+@@ -479,7 +479,7 @@
+   
+     num_buffers = stream->xine->config->register_num (stream->xine->config,
+                                                       "engine.buffers.video_num_buffers",
+-                                                      500,
++                                                      250,
+                                                       _("number of video buffers"),
+ 						      _("The number of video buffers (each is 8k in size) "
+ 						        "xine uses in its internal queue. Higher values "
+@@ -487,7 +487,7 @@
+ 							"also increased latency and memory consumption."),
+                                                       20, NULL, NULL);
+   
+-    stream->video_fifo = _x_fifo_buffer_new (num_buffers, 8192);
++    stream->video_fifo = _x_fifo_buffer_new (num_buffers, 4096);
+     stream->spu_track_map_entries = 0;
+   
+     pthread_attr_init(&pth_attrs);
+Index: xine-lib-1.0/src/xine-engine/video_overlay.h
+===================================================================
+--- xine-lib-1.0.orig/src/xine-engine/video_overlay.h	2004-12-08 19:18:24.000000000 +0100
++++ xine-lib-1.0/src/xine-engine/video_overlay.h	2005-02-16 22:19:25.837765631 +0100
+@@ -36,7 +36,7 @@
+ #define CLUT_Y_CR_CB_INIT(_y,_cr,_cb)	{ (_cb), (_cr), (_y) }
+ #endif
+ 
+-#define MAX_OBJECTS   50
++#define MAX_OBJECTS    5
+ #define MAX_EVENTS    50
+ #define MAX_SHOWING   16
+ 
+Index: xine-lib-1.0/src/xine-engine/audio_decoder.c
+===================================================================
+--- xine-lib-1.0.orig/src/xine-engine/audio_decoder.c	2004-12-16 14:59:06.000000000 +0100
++++ xine-lib-1.0/src/xine-engine/audio_decoder.c	2005-02-16 22:21:42.846730591 +0100
+@@ -462,7 +462,7 @@
+     
+     num_buffers = stream->xine->config->register_num (stream->xine->config,
+                                                       "engine.buffers.audio_num_buffers",
+-                                                      230,
++                                                      100,
+                                                       _("number of audio buffers"),
+ 						      _("The number of audio buffers (each is 8k in size) "
+ 						        "xine uses in its internal queue. Higher values "

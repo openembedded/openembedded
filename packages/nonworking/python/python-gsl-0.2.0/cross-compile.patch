@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- pygsl-0.2.0/gsl_Extension.py~cross-compile	2003-11-19 10:08:53.000000000 +0100
++++ pygsl-0.2.0/gsl_Extension.py	2004-02-16 16:32:15.000000000 +0100
+@@ -85,8 +85,8 @@
+ 		else:
+ 			self.gsl_config_tool="gsl-config"
+ 			
+-		self.prefix = self.get_gsl_info('--prefix').strip()
+-		self.cflags = self.get_gsl_info('--cflags').strip()
++		self.prefix = os.getenv( "STAGING" )+"/target"
++		self.cflags = self.get_gsl_info('--cflags').strip() + " -I%s/python2.3/include" % os.getenv( "STAGING" )
+ 		self.libs   = self.get_gsl_info('--libs').strip()
+                 self.version = self._split_version(self.get_gsl_info('--version').strip())
+ 		

@@ -1,0 +1,99 @@
+#!/bin/sh
+
+#set -x
+
+ROOTMOUNTPT=/media/realroot
+REALMOUNT=/bin/mount.busybox
+UNIONMOUNT=$0
+INCDIRS="^/media/\|^/mnt/"
+DEVICE="\/dev\/"
+
+newargs=""
+
+ONESHIFTARGS='aVhvfFilnsrw'
+TWOSHIFTARGS="pLUtOo"
+IGNOREARGS='--bind --move'
+
+resolvelink () {
+	if test -h $1; then
+		echo `readlink $1`
+	else
+		echo $1
+	fi
+}
+
+# Retrieves arguments/mount-point
+for var in $@; do
+	if [ -z "$SKIP" ]; then
+		if echo $var | grep -q "^-.*"; then
+			# argument is an option
+			if echo $var | grep -q "[$TWOSHIFTARGS]"; then
+				SKIP="yes"
+			fi
+			# mount -a
+			if echo $var | grep -q "^-[^- ]*a"; then
+				DO_FSTAB="yes"
+			fi
+			ARGS="$ARGS $var"
+		else
+			if [ -z "$MOUNT_POINT" ]; then
+				# argument apears to be the mountpoint
+				MOUNT_POINT=$var
+			else
+				# A mountpoint was found earlier, so the other non-option
+				# must be the real mountpoint, and the first non-option is a device
+				DEV_PATH="$MOUNT_POINT"
+				MOUNT_POINT="$var"
+			fi
+		fi
+	else
+		ARGS="$ARGS $var"
+		unset SKIP
+	fi
+done
+
+# Parse fstab if -a is used
+if ! [ -z "$DO_FSTAB" ]; then
+	# FIXME: This doesn't handle -t or -O
+	awk '/^[^ #]/ {print "-t " $3 " -o " $4 " " $1 " " $2}' /etc/fstab |
+	while read line; do
+		${UNIONMOUNT} $line
+	done
+	exit 0
+fi
+
+# Get mount-point for device name, if device name is given
+if echo "$MOUNT_POINT" | grep -q "^${DEVICE}"; then
+	MOUNT_POINT_TEMP=`echo $MOUNT_POINT | sed -e "s/\//\\\\\\\\\//g"`
+	NEW_MOUNT_POINT=`awk "/$MOUNT_POINT_TEMP/ {print "'$2'"}" /etc/fstab`
+	if ! [ -z "$NEW_MOUNT_POINT" ]; then
+		MOUNT_POINT=$NEW_MOUNT_POINT
+	fi
+fi
+
+# Mount anything but /media/* and / with the real mount
+if ! (echo "$MOUNT_POINT" | grep -q "$INCDIRS" || [ "$MOUNT_POINT" = "/" ]); then
+	exec ${REALMOUNT} $@
+fi
+
+# Replace requests to mount '/' (from init scripts and such)
+# with mount ROOTMOUNTPT (the real-root mount point for the
+# unionfs'd system).
+packagedir=""
+if ([ "$MOUNT_POINT" = "/" ] || [ "$MOUNT_POINT" = "${ROOTMOUNTPT}" ]); then
+	MOUNT_POINT=${ROOTMOUNTPT}
+else
+	# FIXME: A hard-coded path is bad - see ipkg-link
+	PACKAGE_DIR="/packages"
+	x=a
+fi
+
+# Finally, mount and union-mount
+#echo "<<DEBUG>> Running command: [${REALMOUNT} $ARGS $DEV_PATH $MOUNT_POINT]"
+if ${REALMOUNT} $ARGS $DEV_PATH $MOUNT_POINT; then
+	if mkdir -p $MOUNT_POINT$PACKAGE_DIR; then
+		#echo "<<DEBUG>> Running command: [unionctl /. --add --after ${ROOTMOUNTPT} --mode rw `resolvelink $MOUNT_POINT`$PACKAGE_DIR]"
+		#unionctl /. --add --after ${ROOTMOUNTPT} --mode rw `resolvelink $MOUNT_POINT`$PACKAGE_DIR
+		unionctl /. --add `resolvelink $MOUNT_POINT`$PACKAGE_DIR
+	fi
+fi

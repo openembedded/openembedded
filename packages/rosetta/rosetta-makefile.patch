@@ -1,0 +1,86 @@
+Index: rosetta/Makefile
+===================================================================
+--- rosetta.orig/Makefile	2005-03-04 02:54:06.000000000 +0000
++++ rosetta/Makefile	2005-03-07 12:18:35.284433304 +0000
+@@ -26,39 +26,27 @@
+ VERSION = 0.01
+ 
+ DESTDIR =
+-PREFIX  = /usr/local
++PREFIX  = /usr
+ OPTIONS = -DNEW_NORMALIZE_CODE -DNEW_MATCH_CODE
+ 
+-ifeq ($(CROSSCOMPILE),yes)
+-
+-CC      = arm-linux-gcc
+-STRIP   = arm-linux-strip
+-
+-PKG_CONFIG_PATH=/skiff/local/arm-linux/lib/pkgconfig/
+-
+-LDFLAGS     += -L/skiff/local/arm-linux/lib
+-LDFLAGS     += -L/skiff/local/arm-linux/lib/X11
+-LDFLAGS     += -lX11 -lXtst -lXext -lm 
+-
+-else
+-
+-CC      = gcc
+-STRIP   = strip
+-
+-LDFLAGS     += -L/usr/X11R6/lib -lX11 -lXtst -lm 
+-
+-endif
+-
+ CONTROL = control
+ 
+ CFLAGS += -Os -Wall
+ CFLAGS += -MD $(OPTIONS) -g  
+-CFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DGTK_PACKAGE=\"$(GTK_PACKAGE)\" -DPREFIX=\"$(PREFIX)\" 
+-CFLAGS += -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\" 
+-CFLAGS += -DPACKAGE_DATA_DIR=\"$(PREFIX)/share/\"
+-CFLAGS += -I$(GPE_DIR)/libgpewidget
+-CFLAGS += -DENABLE_NLS -D_GNU_SOURCE
+-CFLAGS += $(GPECFLAGS)
++
++PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" $(OPTIONS)
++PACKAGE_CPPFLAGS += -DGTK_PACKAGE=\"$(GTK_PACKAGE)\"
++PACKAGE_CPPFLAGS += -DPREFIX=\"$(PREFIX)\"
++PACKAGE_CPPFLAGS += -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\" 
++PACKAGE_CPPFLAGS += -DPACKAGE_DATA_DIR=\"$(PREFIX)/share/\"
++PACKAGE_CPPFLAGS += -DENABLE_NLS
++
++PACKAGE_CFLAGS += `pkg-config --cflags gtk+-2.0 libgpewidget x11 xrandr xrender xft xtst xext xau` -D_GNU_SOURCE
++PACKAGE_LDFLAGS += `pkg-config --libs gtk+-2.0 libgpewidget x11 xrandr xrender xft xtst xext xau`
++PACKAGE_LDFLAGS += -L/skiff/local/arm-linux/lib
++PACKAGE_LDFLAGS += -L/skiff/local/arm-linux/lib/X11
++PACKAGE_LDFLAGS += -lm
++
+ #CFLAGS += -DDEBUG
+ 
+ .SUFFIXES: .d .c
+@@ -77,11 +65,15 @@
+ all: $(PACKAGE) $(GTK_PACKAGE)
+ 
+ $(PACKAGE): $(OBJS)
+-	$(CC) -o $@ $^ $(LDFLAGS)
++	$(CC) -o $@ $^ $(PACKAGE_LDFLAGS) $(LDFLAGS)
+ 	
+ $(GTK_PACKAGE): $(GTK_OBJS)
+-	$(CC) -o $@ $^ $(LDFLAGS) $(GPELIBS) -lXrender -lXinerama
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS) $(GPELIBS)
++
++.c.o:;
++	$(CC) $(PACKAGE_CPPFLAGS) $(PACKAGE_CFLAGS) -c $< -o $@
+ 
++install: install-program
+ install-program: all 
+ 	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -D $(GTK_PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(GTK_PACKAGE)
+@@ -92,7 +84,7 @@
+ 	mkdir   -p $(DESTDIR)/etc
+ 	install -m 644 $(PACKAGE).png  $(DESTDIR)$(PREFIX)/share/pixmaps/$(PACKAGE).png
+ 	install -m 644 penwrite24.png  $(DESTDIR)$(PREFIX)/share/pixmaps/penwrite24.png
+-	install -m 644 $(PACKAGE).pc   $(DESTDIR)$(PREFIX)/share/$(PACKAGE)
++#	install -m 644 $(PACKAGE).pc   $(DESTDIR)$(PREFIX)/share/$(PACKAGE)
+ 	install -m 666 $(PACKAGE).db   $(DESTDIR)$(PREFIX)/share/$(PACKAGE)
+ 	install -m 644 $(PACKAGE).conf $(DESTDIR)/etc
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications

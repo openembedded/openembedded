@@ -1,0 +1,11 @@
+--- qpdf2_2.2.1/QOutputDev.cpp.orig	2005-01-31 10:57:03.000000000 +0000
++++ qpdf2_2.2.1/QOutputDev.cpp	2005-01-31 10:57:36.000000000 +0000
+@@ -1083,7 +1083,7 @@
+ 			tmp. setPoints ( 4, lrint ( x0 ), lrint ( y0 ), lrint ( x1 ), lrint ( y1 ),
+ 			                    lrint ( x2 ), lrint ( y2 ), lrint ( x3 ), lrint ( y3 ));
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+ 			tmp = tmp. quadBezier ( );
+ 			
+ 			for ( uint loop = 0; loop < tmp. count ( ); loop++ ) {

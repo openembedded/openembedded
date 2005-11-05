@@ -1,0 +1,24 @@
+--- gpe-soundserver-0.4-1/Makefile~	2004-08-18 16:00:22.000000000 +0100
++++ gpe-soundserver-0.4-1/Makefile	2004-08-18 16:17:39.000000000 +0100
+@@ -15,7 +15,7 @@
+ endif
+ CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+-LDFLAGS += `pkg-config --libs x11`
++PACKAGE_LDFLAGS += `pkg-config --libs x11 xau`
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ 
+@@ -30,10 +30,10 @@
+ all: $(PACKAGE) wrapesd
+ 
+ $(PACKAGE): $(OBJS)
+-	$(CC) -o $@ $^ $(LDFLAGS)
++	$(CC) -o $@ $^ $(PACKAGE_LDFLAGS)
+ 
+ wrapesd: wrapesd.o
+-	$(CC) -o $@ $^ $(LDFLAGS)
++	$(CC) -o $@ $^ $(PACKAGE_LDFLAGS)
+ 
+ install-program: all
+ 	install -d $(DESTDIR)$(PREFIX)/bin

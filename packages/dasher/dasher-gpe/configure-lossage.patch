@@ -1,0 +1,21 @@
+--- dasher/configure.in.old	2004-08-29 23:50:19.000000000 +0100
++++ dasher/configure.in	2004-08-29 23:50:23.000000000 +0100
+@@ -89,12 +89,12 @@
+ 	        LIBS="$save_LIBS"
+ 	        break],[AC_MSG_RESULT(no)])
+ 	  done
+-	  if test "x$XTST_LIBS" = x; then
+-	    AC_MSG_ERROR(Couldn't find the Xtst library. Check config.log for details)
+-	  else
+-	    X_LIBS="$X_LIBS $XTST_LIBS"
+-	    AC_DEFINE(HAVE_XTST, 1, [The XTest extension is present])
+-	  fi
++	fi
++	if test "x$XTST_LIBS" = x; then
++	  AC_MSG_ERROR(Couldn't find the Xtst library. Check config.log for details)
++	else
++	  X_LIBS="$X_LIBS $XTST_LIBS"
++	  AC_DEFINE(HAVE_XTST, 1, [The XTest extension is present])
+ 	fi
+ 
+ AC_SUBST(X_LIBS)

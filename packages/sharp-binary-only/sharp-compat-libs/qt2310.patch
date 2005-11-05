@@ -1,0 +1,13 @@
+--- oz-compat-0.5/opt/QtPalmtop.compat/bin/runcompat.orig	2005-02-11 14:12:00 +0100
++++ oz-compat-0.5/opt/QtPalmtop.compat/bin/runcompat	2005-02-11 15:17:50 +0100
+@@ -5,6 +5,10 @@
+ 
+ echo $0
+ 
++if [ ! -e "/tmp/qtembedded-root/QtEmbedded-0" ] ; then
++	ln -sf /tmp/qtembedded-0/QtEmbedded-0 /tmp/qtembedded-root/QtEmbedded-0
++fi
++
+ PROG=`basename $0`
+ 
+ if [ "$PROG" != "runcompat" ]; then

@@ -1,0 +1,39 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+IFACES="eth0"
+PIPES="in out"
+
+case "$1" in
+        start)
+                echo -n "Starting pmacct daemon"
+                for iface in $IFACES; do
+                        pmacctd -f /etc/pmacct/pmacct.conf.$iface
+                done
+                echo "."
+        ;;
+        stop)
+                echo -n "Stopping pmacct daemon"
+                killall -INT pmacctd
+                echo "."
+        ;;
+        restart)
+                $0 stop
+                $0 start
+        ;;
+        show)
+                for iface in $IFACES; do
+			echo "= $iface ======================="
+                        for pipe in $PIPES; do
+				echo "- $pipe -----------------------"
+                                pmacct -s -p /var/run/pmacct-$iface-$pipe.pipe
+                        done
+                done
+        ;;
+        *)
+                echo "Usage: $0 {start|stop|restart|show}"
+                exit 1
+        ;;
+esac
+
+exit 0

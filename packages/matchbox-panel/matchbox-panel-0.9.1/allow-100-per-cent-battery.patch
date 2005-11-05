@@ -1,0 +1,30 @@
+Index: matchbox-panel-0.9.1/applets/mb-applet-battery.c
+===================================================================
+--- matchbox-panel-0.9.1.orig/applets/mb-applet-battery.c	2005-01-21 15:28:14.000000000 +0000
++++ matchbox-panel-0.9.1/applets/mb-applet-battery.c	2005-02-16 14:26:03.000000000 +0000
+@@ -230,7 +230,7 @@
+   printf("bar: %ix%i +%i+%i (%i)\n", bar_width, bar_height, bar_x, bar_y, mb_pixbuf_img_get_width(img_backing) );
+   */  
+ 
+-  if (apm_vals[PERCENTAGE] <= 0 || apm_vals[PERCENTAGE] > 99)
++  if (apm_vals[PERCENTAGE] <= 0 || apm_vals[PERCENTAGE] > 100)
+     { 
+       r = 0x66; g = 0xff; b = 0x33; ac_power = True; 
+       apm_vals[PERCENTAGE] = -1;
+@@ -378,14 +378,14 @@
+   if (apm_vals[AC_POWER] == AC_LINE_STATUS_ON)
+     {
+       if (apm_vals[PERCENTAGE] > 0 
+-	  && apm_vals[PERCENTAGE] < 100 )
++	  && apm_vals[PERCENTAGE] <= 100 )
+ 	sprintf(tray_msg, _("AC Connected\nCharging: %.2i %%\n")
+ 		, apm_vals[PERCENTAGE]);
+       else
+ 	sprintf(tray_msg, _("AC Connected\nFully charged.\n"));
+     } else {
+       if (apm_vals[PERCENTAGE] > 0 
+-	  && apm_vals[PERCENTAGE] < 100 
++	  && apm_vals[PERCENTAGE] <= 100 
+ 	  /* && apm_vals[TIME_LEFT] > 0 Less strict */)
+ 	{
+ 	  sprintf(tray_msg, 

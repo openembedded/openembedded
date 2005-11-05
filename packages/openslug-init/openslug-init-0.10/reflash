@@ -1,0 +1,620 @@
+#!/bin/sh
+# reflash
+#  ensure the flash disk is not mounted
+#  save configuration files
+#  update the kernel
+#  update the flashdisk
+#  restore the saved configuration files
+# the set of configuration files is described by
+# /etc/default/conffiles.
+#
+# /etc/default/functions contains useful utility functions
+. /etc/default/functions
+#
+# CHECKING FOR INPUT (ARGUMENTS ETC)
+# ----------------------------------
+#
+# find the kernel and the new flash file system, an image file can
+# be used to specify both images.
+ffsfile=
+kfile=
+imgfile=
+while test $# -gt 0
+do
+	case "$1" in
+	-k)	shift
+		test $# -gt 0 || {
+			echo "reflash: -k: give the file containing the kernel image" >&2
+			exit 1
+		}
+		kfile="$1"
+		shift;;
+	-[jr])	shift
+		test $# -gt 0 || {
+			echo "reflash: -j: give the file containing the root jffs2 image" >&2
+			exit 1
+		}
+		ffsfile="$1"
+		shift;;
+	-i)	shift
+		test $# -gt 0 || {
+			echo "reflash: -i: give the file containing the complete flash image" >&2
+			exit 1
+		}
+		imgfile="$1"
+		shift;;
+	*)	echo "reflash: usage: $0 [-k kernel] [-j rootfs] [-i image]" >&2
+		echo "  -k file: the new compressed kernel image ('zImage')" >&2
+		echo "  -j file: the new root file system (jffs2)" >&2
+		echo "  -i file: a complete flash image (gives both kernel and jffs2)" >&2
+		echo " The current jffs2 will be umounted if mounted." >&2
+		exit 1;;
+	esac
+done
+#
+# Sanity check on the arguments
+if test -n "$imgfile" -a -n "$ffsfile" -a -n "$kfile"
+then
+	echo "reflash: -k,-j,-i: specify at most two files" >&2
+	echo "  -i has both a kernel and rootfs, the kernel from -k and" >&2
+	echo "  the rootfs from -j override the one in the image (if given)" >&2
+	exit 1
+elif test -z "$imgfile" -a -z "$ffsfile" -a -z "$kfile"
+then
+	echo "reflash: -k,-j,-i: specify at least one file to flash" >&2
+	exit 1
+fi
+#
+# Perform basic checks on the input (must exist, size must be ok).
+if test -n "$imgfile"
+then
+	if test -r "$imgfile"
+	then
+		# read the partition table and from this find the offset
+		# and size of Kernel and Flashdisk partitions.  The following
+		# devio command just dumps the partition table in a format
+		# similar to /proc/mtd (but it outputs decimal values!)
+		#NOTE: this uses a here document because this allows the while
+		# loop to set the variables, a pipe would put the while in
+		# a sub-shell and the variable settings would be lost.  This
+		# works in ash, no guarantees about other shells!
+		while read size base name
+		do
+			case "$name" in
+			Kernel)	imgksize="$size"
+				imgkoffset="$base";;
+			Flashdisk)
+				imgffssize="$size"
+				imgffsoffset="$base";;
+			esac
+		done <<EOI
+$(devio "<<$imgfile" '
+	<= $ 0x20000 -
+	L= 0x1000
+	$( 1
+		# 0xff byte in name[0] ends the partition table
+		$? @ 255 =
+		# output size base name
+		<= f15+
+		.= b 0xfffffff &
+		<= f4+
+		.= b
+		pf "%lu %lu "
+		<= f28-
+		cp 16
+		pn
+		<= f240+
+		L= L256-
+	$) L255>')
+EOI
+		# check the result
+		test "$imgksize" -gt 0 -a "$imgkoffset" -ge 0 || {
+			echo "reflash: $imgfile: failed to find Kernel partition in image" >&2
+			exit 1
+		}
+		# the kernel is after a 16 byte header which holds the
+		# values length,0,0,0  Get the true size.
+		ktmp="$(devio "<<$imgfile" "L=$imgksize" "O=$imgkoffset" '
+			$( OL+$>!
+				<= O
+				A= b
+				$( AL>!
+					pr A
+				$) 0
+			$) 0')"
+		test "$ktmp" -gt 0 || {
+			echo "reflash: $imgfile($imgkoffset,$imgksize): invalid kernel offset/size" >&2
+			exit 1
+		}
+		# update the size and offset to these values (the offset is 16+ because
+		# of the header).
+		imgksize="$ktmp"
+		imgkoffset="$(devio "O=$imgkoffset" 'pr O16+')"
+		# just test the size for the rootfs
+		test "$imgffssize" -gt 0 -a "$imgffsoffset" -ge 0 || {
+			echo "reflash: $imgfile: failed to find Flashdisk" >&2
+			exit 1
+		}
+	else
+		echo "reflash: $imgfile: image file not found" >&2
+		exit 1
+	fi
+fi
+if test -n "$kfile"
+then
+	if test ! -r "$kfile"
+	then
+		echo "reflash: $kfile: kernel file not found" >&2
+		exit 1
+	fi
+	# the file values override anything from the image.
+	imgksize="$(devio "<<$kfile" 'pr$')"
+	imgkoffset=0
+else
+	kfile="$imgfile"
+fi
+if test -n "$ffsfile"
+then
+	if test ! -r "$ffsfile"
+	then
+		echo "reflash: $ffsfile: root file system image file not found" >&2
+		exit 1
+	fi
+	# values override those from the image
+	imgffssize="$(devio "<<$ffsfile" 'pr$')"
+	imgffsoffset=0
+else
+	ffsfile="$imgfile"
+fi
+#
+# INPUTS OK, CHECKING THE ENVIRONMENT
+# -----------------------------------
+# basic setup.  This could be parameterised to use different partitions!
+kpart=Kernel
+ffspart=Flashdisk
+#
+kdev=
+ksize=0
+if test -n "$kfile"
+then
+	# we have a new kernel
+	kdev="$(mtblockdev $kpart)"
+	test -n "$kdev" -a -b "$kdev" || {
+		echo "reflash: $kpart($kdev): cannot find $kpart mtd partition." >&2
+		echo "  check /proc/mtd, either the partition does not exist or there is no" >&2
+		echo "  corresponding block device." >&2
+		exit 1
+	}
+	ksize="$(devio "<<$kdev" 'pr$')"
+	#
+	# check the input file size
+	test -n "$imgksize" -a "$imgksize" -gt 0 -a "$imgksize" -le "$ksize" || {
+		echo "reflash: $kfile: bad Kernel size ($s, max $ksize)" >&2
+		exit 1
+	}
+fi
+#
+ffsdev=
+ffssize=0
+if test -n "$ffsfile"
+then
+	ffsdev="$(mtblockdev $ffspart)"
+	test -n "$ffsdev" -a -b "$ffsdev" || {
+		echo "reflash: $ffspart($ffsdev): cannot find $ffspart mtd partition." >&2
+		echo "  check /proc/mtd, either the partition does not exist or there is no" >&2
+		echo "  corresponding block device." >&2
+		exit 1
+	}
+	ffssize="$(devio "<<$ffsdev" 'pr$')"
+	#
+	# check the input file size
+	test -n "$imgffssize" -a "$imgffssize" -gt 0 -a "$imgffssize" -le "$ffssize" || {
+		echo "reflash: $ffsfile: bad Flashdisk size ($s, max $ffssize)" >&2
+		exit 1
+	}
+fi
+
+#
+# INPUTS OK, ENVIRONMENT OK, UMOUNT ANY EXISTING MOUNT OF THE FLASHDISK
+# ---------------------------------------------------------------------
+# This is only required if the device is going to be used
+if test -n "$ffsdev"
+then
+	# -r causes this to fail if the flash device is mounted on /
+	umountflash -r "$ffsdev" || exit 1
+	#
+	# Everything is umounted, now remount on a temporary directory.
+	ffsdir="/tmp/flashdisk.$$"
+	mkdir "$ffsdir" || {
+		echo "reflash: $ffsdir: failed to create temporary directory" >&2
+		exit 1
+	}
+	#
+	mountflash "$ffsdev" "$ffsdir" -o ro || {
+		rmdir "$ffsdir"
+		exit 1
+	}
+	#
+	# this is a utility function to make the cleanup easier
+	errorexit() {
+		umount "$ffsdir" && rmdir "$ffsdir" ||
+			echo "reflash: $ffsdir: temporary directory cleanup failed" >&2
+		exit 1
+	}
+	#
+	test -r "$ffsdir/etc/default/conffiles" || {
+		echo "reflash: [/initrd]/etc/default/conffiles: file not found" >&2
+		errorexit
+	}
+else
+	errorexit() {
+		exit 1
+	}
+fi
+#
+# PRESERVE EXISTING CONFIGURATION
+# -------------------------------
+# Only required if the flash partition will be written
+if test -n "$ffsdev"
+then
+	echo "reflash: preserving existing configuration file" >&2
+	#
+	# This step produces /tmp/preserve.$$ and /tmp/cpio.$$, the former is
+	# a list of the preserved configuration files together with the processing
+	# option, the latter is a directory tree of the preserved files (a directory
+	# tree makes the restore step easier.)
+	saved=/tmp/cpio.$$
+	list=/tmp/preserve.$$
+	mkdir "$saved" || {
+		echo "reflash: $saved: could not create save directory" >&2
+		errorexit
+	}
+	#
+	(	cd "$ffsdir"
+		find etc/*.conf $(sed 's!^/!!' usr/lib/ipkg/info/*.conffiles) ! -type d -newer etc/.configured -print |
+			sed 's/^/diff /'
+		exec sed 's/#.*$//;/^[ 	]*$/d' etc/default/conffiles
+	) | sed 's!^/*!!' | awk '{ op=$1; $1=""; file[$0]=op }
+		END{ for (f in file) if (file[f] != "ignore") print file[f] f }' |
+	while read op file
+	do
+		if test -e "$ffsdir/$file"
+		then
+			echo "$op $file" >&3
+			echo "$file"
+		fi
+	done 3>"$list" | (cd "$ffsdir"; exec cpio -p -d -m -u "$saved") || {
+		echo "reflash: $saved: copy of saved configuration files failed" >&2
+		rm -rf "$saved"
+		rm "$list"
+		errorexit
+	}
+	#
+	# If this umount fails do not try to continue...
+	umount "$ffsdir" || {
+		echo "reflash: $ffsdir: temporary mount point umount failed" >&2
+		echo "  No changes have been made." >&2
+		rm -rf "$saved"
+		rm "$list"
+		exit 1
+	}
+fi
+#
+# FLASH THE NEW IMAGES
+# --------------------
+echo "reflash: about to flash new image" >&2
+#
+# There are four possibilities here - kernel only, flashdisk only, then
+# kernel&flashdisk in either one or two different files.  The code used
+# to attempt to do everything in one step, but this complicates it,
+# so two steps are used (as required).  A failure between the two
+# steps is a problem, but then so is a failure in a partial write.
+# Write the flashdisk first because this is larger (most likely to
+# fail).
+# Temporarily check for devio progress indicator capability this way...
+if devio -p '' 2>/dev/null
+then
+	progress=-p
+else
+	progress=
+fi
+do_kernel() {
+	devio $progress "$@" "<<$kfile" ">>$kdev" '
+		# kernel is at imgkoffset[imgksize]
+		' "<= $imgkoffset" "L=$imgksize" '
+		# kernel write length,0,0,0 header, then fill
+		wb L,4
+		fb 12,0
+		cp L
+		# fill with 255
+		fb #t-,255'
+}
+#
+do_ffs() {
+	devio $progress "$@" "<<$ffsfile" ">>$ffsdev" '
+		# rootfs is at imgffsoffset[imgffssize]
+		' "<= $imgffsoffset" "cp $imgffssize" '
+		# fill with 255
+		fb #t-,255'
+}
+#
+# check_status $? type file(offset,size) device
+#  check the devio status code (given in $1)
+check_status() {
+	case "$1" in
+	0)	echo " done" >&2;;
+	1)	echo " failed" >&2
+		echo "reflash: $3: flash $2 failed, no changes have been made to $4" >&2
+		if test "$2" = rootfs
+		then
+			rm -rf "$saved"
+			rm "$list"
+			exit 1
+		else
+			echo "reflash: $2: continuing with rootfs changes" >&2
+			echo "  NOTE: the old kernel is still in $4!" >&2
+		fi;;
+	3)	echo " failed" >&2
+		echo "reflash: $3: WARNING: partial flash of $2 to $4 the system is unbootable" >&2
+		echo "  Reflash from RedBoot or correct the problem here." >&2
+		if test "$2" = rootfs
+		then
+			exit 3
+		else
+			echo "reflash: $2: continuing with rootfs changes" >&2
+			echo "  NOTE: the kernel in $4 must be reflashed!" >&2
+		fi;;
+	*)	echo " failed" >&2
+		echo "reflash($1): $3: internal error flashing $2 to $4" >&2
+		exit $1;;
+	esac
+}
+#
+if test -n "$ffsdev"
+then
+	echo -n "reflash: writing rootfs to $ffsdev " >&2
+	do_ffs
+	check_status $? rootfs "$ffsfile($imgffsoffset,$imgffssize)" "$ffsdev"
+fi
+#
+if test -n "$kdev"
+then
+	echo -n "reflash: writing kernel to $kdev " >&2
+	do_kernel
+	check_status $? kernel "$kfile($imgkoffset,$imgksize)" "$kdev"
+fi
+#
+# verify - this just produces a warning
+if test -n "$ffsdev"
+then
+	echo -n "reflash: verifying new flash image " >&2
+	if do_ffs -v
+	then
+		echo " done" >&2
+	else
+		echo " failed" >&2
+		echo "reflash: WARNING: rootfs flash image verification failed" >&2
+		echo "  The system is probably unbootable." >&2
+		echo "  System configuration files will be restored but this may fail" >&2
+		echo "  Starting a shell for user recovery (exit to continue)" >&2
+		PS1='badflash$ ' sh -i <>/dev/tty >&0 2>&0
+	fi
+fi
+#
+if test -n "$kdev"
+then
+	echo -n "reflash: verifying new kernel image " >&2
+	if do_kernel -v
+	then
+		echo " done" >&2
+	else
+		echo " failed" >&2
+		echo "reflash: WARNING: kernel flash image verification failed" >&2
+		echo "  The system is probably unbootable." >&2
+		echo "  System configuration files will be restored in the rootfs." >&2
+	fi
+fi
+#
+# RESTORE THE OLD CONFIGURATION
+# -----------------------------
+# If not write the rootfs none of the following is required - exit now.
+test -n "$ffsdev" || exit 0
+#
+echo "reflash: restoring saved configuration files" >&2
+#
+# the file /etc/.configured is the datestamp file used to ensure that
+# changed configuration files can be recognised.  It is created by
+# /etc/rcS.d/S99finish on first boot (if it does not exist).  We need
+# a timestamp earlier than any files we create so touch it here, this
+# also acts as a test on the mounted file system
+mountflash "$ffsdev" "$ffsdir" && :>"$ffsdir/etc/.configured" || {
+	rmdir "$ffsdir"
+	echo "reflash: mount of new flash root file system failed" >&2
+	if test -d "$ffsdir/etc"
+	then
+		echo "    The file system does not seem to be writeable." >&2
+		echo "    The mounted file system is in $ffsdir" >&2
+	fi
+	echo "  WARNING: the kernel and root file system have been reflashed," >&2
+	echo "  HOWEVER the new root file system seems to be unuseable." >&2
+	echo "  Saved configuration files are in $saved" >&2
+	echo "  The list of saved configuration files is in $list" >&2
+	echo " You should determine the reason for the failed mount, mount the new" >&2
+	echo " file system and restore the configuration from $saved - it's just a" >&2
+	echo " matter of copying the saved files where required." >&2
+	exit 1
+}
+#
+# verify file
+#  this is called with the name of a 'diff' file which is, indeed,
+#  different and with all the std streams connected to the tty.  It
+#  returns a status code to say whether (0) or not (1) to copy the
+#  file over.
+#
+verify_help() {
+	echo "Please specify how to handle this file or link, the options are as follows,"
+	echo "two character abbreviations may be used:"
+	echo
+	echo " keep:    retain the old file, overwrite the new flash image file"
+	echo " upgrade: retain the new file, the old (saved) file is not used"
+	echo " diff:    display the differences between the old and the new using diff -u"
+	echo " shell:   temporarily start an interactive shell (sh -i), exit to continue"
+	echo " skip:    ignore this file for the moment.  The file is left in the directory"
+	echo "          $saved and many be handled after this script has completed"
+}
+#
+verify() {
+	local command file
+
+	file="$1"
+	echo "reflash: $file: configuration file changed."
+	verify_help "$file"
+	while :
+	do
+		echo -n "option: "
+		read command
+		case "$command" in
+		ke*)	return 0;;
+		up*)	rm "$saved/$file"
+			return 1;;
+		di*)	echo "DIFF OLD($saved) NEW($ffsdir)"
+			diff -u "$saved/$file" "$ffsdir/$file";;
+		sh*)	PS1="$file: " sh -i;;
+		sk*)	return 1;;
+		*)	verify_help "$file";;
+		esac
+	done
+}
+# the same, but for a link
+verify_link() {
+	local command link
+
+	link="$1"
+	echo "reflash: $link: configuration link changed."
+	verify_help "$link"
+	while :
+	do
+		echo -n "option: "
+		read command
+		case "$command" in
+		ke*)	return 0;;
+		up*)	rm "$saved/$link"
+			return 1;;
+		di*)	echo "DIFF:"
+			echo "OLD($saved): $link -> $(readlink "$saved/$link")"
+			echo "NEW($ffsdir): $link -> $(readlink "$ffsdir/$link")";;
+		sh*)	PS1="$link: " sh -i;;
+		sk*)	return 1;;
+		*)	verify_help "$link";;
+		esac
+	done
+}
+#
+while read op file
+do
+	# handle .configured specially (to preserve the original datestamp)
+	if test "$file" = "etc/.configured"
+	then
+		# this should definately not fail because of the test above!
+		if cp -a "$saved/$file" "$ffsdir/$file"
+		then
+			echo "$file" >&3
+		else
+			echo "reflash: $file: timestamp copy failed (ignored)" >&2
+		fi
+	elif test -h "$saved/file" -o -h "$ffsdir/$file"
+	then
+		# new or old symbolic link
+		if test -h "$saved/$file" -a -h "$ffsdir/$file" &&
+			test "$(readlink "$saved/$file")" = "$(readlink "$ffsdir/$file")"
+		then
+			# no change
+			echo "$file" >&3
+		else
+			# assume a change regardless
+			case "$op" in
+			preserve)
+				echo "$file"
+				echo "$file" >&3;;
+			diff)	# need user input
+				if verify_link "$file" <>/dev/tty >&0 2>&0
+				then
+					echo "$file"
+					echo "$file" >&3
+				fi;;
+			esac
+		fi
+	else
+		# only overwrite if necessary
+		if test -e "$ffsdir/$file" && cmp -s "$saved/$file" "$ffsdir/$file"
+		then
+			# do not overwrite
+			echo "$file" >&3
+		elif test ! -e "$ffsdir/$file"
+		then
+			# always preserve
+			echo "$file"
+			echo "$file" >&3
+		else
+			case "$op" in
+			preserve)
+				echo "$file"
+				echo "$file" >&3;;
+			diff)	# the files are different, get user input
+				if verify "$file" <>/dev/tty >&0 2>&0
+				then
+					echo "$file"
+					echo "$file" >&3
+				fi;;
+			esac
+		fi
+	fi
+done <"$list" 3>/tmp/restore.$$ | (cd "$saved"; exec cpio -p -d -u "$ffsdir") || {
+	echo "reflash: $saved: restore of saved configuration files failed" >&2
+	echo "  The new flash file system is mounted on $ffsdir" >&2
+	echo "  The saved files are in $saved and the list in $list, the list of" >&2
+	echo "  files selected for restore is in /tmp/restore.$$" >&2
+	echo "  You should restore any required configuration from $saved," >&2
+	echo "  then umount $ffsdir and reboot." >&2
+	exit 1
+}
+#
+# remove the copied files (i.e. the ones which were preserved)
+(	cd "$saved"
+	exec rm $(cat /tmp/restore.$$)
+)
+rm /tmp/restore.$$
+#
+# clean up, files left in $saved need to be handled by the user
+files="$(find "$saved" ! -type d -print)"
+if test -n "$files"
+then
+	echo "reflash: the following saved configuration files remain:" >&2
+	echo "$files" >&2
+	echo "The full list of preserved files is in $list.  To alter the" >&2
+	echo "new root file system use the command:" >&2
+	echo "" >&2
+	echo "  mount -t jffs2 $ffsdev /mnt" >&2
+	echo "" >&2
+	echo "The saved files are in the temporary directory, they will not" >&2
+	echo "be retained across a system boot.  Copy them elsewhere if you" >&2
+	echo "are unsure whether they are needed" >&2
+else
+	rm -rf "$saved"
+	rm "$list"
+fi
+#
+# now the final umount
+if umount "$ffsdir"
+then
+	rmdir "$ffsdir"
+	echo "reflash: system upgrade complete.  Reboot to continue." >&2
+	exit 0
+else
+	echo "reflash: $ffsdir: temporary mount point umount failed" >&2
+	echo "  ALL changes have been made successfully, however the umount of" >&2
+	echo "  the new root file system has failed.  You should determine the" >&2
+	echo "  cause of the failure, umount $ffsdir, then reboot the system (this" >&2
+	echo "  will use the upgraded kernel and root file system)" >&2
+	exit 1
+fi

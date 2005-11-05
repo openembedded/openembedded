@@ -1,0 +1,325 @@
+#!/bin/sh
+#
+# altboot provides a simple bootmenu before init is beeing run.
+# There are two default menu entries: "Normal boot" and "Single user mode"
+# New menu entries can be created be putting files into /etc/altboot-menu.
+#
+
+test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+
+CURRENT_ENV="`set`"
+VERSION="0.0.2"
+
+# Set some defaults in case altboot.cfg is missing
+REAL_INIT="/sbin/init.sysvinit"
+
+# Read default runlevel from inittab
+INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
+test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
+
+test -e /etc/altboot.cfg && . /etc/altboot.cfg || echo "WARNING: No altboot.cfg found! Check your installation of Altboot!" > /dev/tty1
+
+C_RED="\033[31m"
+C_BLUE="\033[34m"
+C_WHITE="\033[37m"
+C_RESET="\033[0m"
+
+die() {
+	echo "ERROR: $1" >/dev/tty0
+	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+}
+
+
+# This function prints the boot-menu
+# $1: Directory containing the scripts for the menu-items
+show_menu() {
+	test -z "$1" && die "DEBUG: Parameter 1 is empty in show_menu"
+	echo "" 
+	echo -e "altboot v$VERSION\n" 
+
+	cnt=0
+	m_entry=""
+	if test -d $1
+	then
+		# Build "m_entry" for scripts in /etc/altboot-menu
+		cd $1
+		for file in `ls -1`
+		do	
+			if ! test -d "$1/$file"
+			then			
+				M_TITLE="`$1/$file title`"
+				if ! test -z "$M_TITLE"
+				then
+					let cnt=$cnt+1
+					# Keep a list of existing "modules" together with an index number
+					# This sure is ugly, but Busybox sh doesn't do arrays....
+					m_entry="`echo -e "$m_entry\n$cnt:$file\n"`"
+					echo -e "\t\t[$cnt] $M_TITLE"					
+				fi
+				M_TITLE=""
+			fi
+		done
+
+		# Display directories below /etc/altboot-menu as menu-item
+		# and add all scripts inside the directory to m_entry
+		for dir in `ls -1`
+		do	
+			if test -d "$1/$dir"
+			then			
+				M_TITLE="`basename "$1/$dir"`"
+				if ! test -z "$M_TITLE"
+				then
+					let cnt=$cnt+1
+					# Keep a list of existing "modules" together with an index number
+					# This sure is ugly, but Busybox sh doesn't do arrays....
+					m_entry="`echo -e "$m_entry\n$cnt:$dir:DIR\n"`"
+					echo -e "\t\t[$cnt] $M_TITLE"					
+					
+					OLD_PWD="$PWD"
+					cd "$1/$dir"
+					for file in `ls -1`
+					do	
+						if ! test -d "$1/$dir/$file"
+						then			
+							M_TITLE="`$1/$dir/$file title`"
+							if ! test -z "$M_TITLE"
+							then
+								let cnt=$cnt+1
+								# Keep a list of existing "modules" together with an index number
+								# This sure is ugly, but Busybox sh doesn't do arrays....
+								m_entry="`echo -e "$m_entry\n$cnt:$dir/$file\n"`"
+								#echo -e "\t\t[$cnt] $M_TITLE"					
+							fi
+							M_TITLE=""
+						fi
+					done
+					cd "$OLD_PWD"
+
+				fi
+				M_TITLE=""
+			fi
+		done
+		
+		
+		echo ""
+	else
+		echo "WARNING: $1 not found"
+	fi
+	
+}
+
+# This function is used to display the content of directories below
+# /etc/altboot-menu as menu-items
+show_sub_menu() {
+	dirname="`basename "$1"`"
+		
+	d_entries="`echo "$m_entry"|grep "$dirname/"`"
+	
+#	echo "[$d_entries]"
+	
+	echo -e "\naltboot v$VERSION: $dirname menu\n" 
+	
+	
+	for d_entry in $d_entries
+	do
+		d_entry_number="`echo "$d_entry"| sed -n "s/\(.*\)\:\(.*\)/\1/p"`"
+		d_entry_file="`echo "$d_entry"| sed -n "s/\(.*\)\:\(.*\)/\2/p"`"
+		d_entry_title="`$d_entry_file title`"
+		
+#		echo "number: [$d_entry_number]"
+#		echo "file: [$d_entry_file]"
+#		echo "title: [$d_entry_title]"
+		
+		echo -e "\t\t[$d_entry_number] $d_entry_title"
+	done
+		
+	echo ""
+	
+}
+
+# Shows the timer and sets $launch_altboot to yes if a keypress was detected
+run_timer() {
+	if test "$TIMEOUT" != 0
+	then
+		test -x /opt/QtPalmtop/bin/zgreeter.sh && /opt/QtPalmtop/bin/zgreeter.sh
+			
+		mount -t proc proc /proc >/dev/null 2>&1
+		key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`"
+	
+		echo -en "\n\nPlease press any key to launch altboot." > /dev/tty1
+		
+		test -z "$TIMEOUT" && TIMEOUT="3"
+
+		cnt=0
+		while test "$cnt" != "$TIMEOUT"
+		do
+			sleep 1
+			if test "`cat /proc/interrupts | grep keyboard | awk '{print $2}'`" != "$key_ints" 
+			then				
+				launch_altboot=yes				
+				break
+			fi
+			echo -n "." >/dev/tty1
+			let cnt=$cnt+1
+		done
+		#umount /proc
+	else
+		launch_altboot=yes
+	fi
+} 
+
+# This function launches the selected menu item / script
+# $1: Directory containing the scripts for the menu-items
+launch_selection() {
+	test -z "$1" && die "Parameter 1 of launch_selection is empty!"
+	
+	case "$junk" in
+	*)	file="`echo "$m_entry"| sed -n "/$junk\:/s/^.*\:\(.*\)/\1/p"`"
+		
+		# The selected menu-item points to a directory
+		if test "$file" = DIR
+		then
+			dir="`echo "$m_entry"| sed -n "/$junk\:/s/^.*\:\(.*\)\:\(.*\)/\1/p"`"
+			show_sub_menu /etc/altboot-menu/$dir >/dev/tty0
+			wait_for_input >/dev/tty0			
+			launch_selection /etc/altboot-menu >/dev/tty0						
+		fi
+		
+		if test "$file" = MAIN
+		then
+			show_sub_menu /etc/altboot-menu >/dev/tty0
+			wait_for_input >/dev/tty0			
+			launch_selection /etc/altboot-menu >/dev/tty0						
+		fi	
+		
+		#echo "[$file]"
+				
+		. $1/$file run "$file" >/dev/tty0	
+		echo "WARNING: Using failsafe shell" >/dev/tty0	
+		exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1				
+		
+		;;	
+	esac
+}
+
+
+wait_for_input() {
+	while true
+	do
+		echo -n "Please choose one of the above [$last_selection]: " </dev/tty0 > /dev/tty0 2>&1
+		read junk < /dev/tty0 2>&1
+
+		# This is required to work around an annoying busybox bug.
+		# Every key you press while this script runs will be
+		# picked up by the next "read $junk". And there's no goddamn way
+		# to prevent it. So the next read would pick up the "any" key the user pressed
+		# above to launch the altboot menu.		
+		junk="`echo "$junk" |  sed -n "s/.*\([0-9]\)/\1/p"`"
+		
+		
+		if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
+		then
+			if test ! -z "$junk"
+			then
+				# Don't remount rw if the drive is already mounted rw
+				# Only helpful for testing / debugging
+				if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw"
+				then
+					
+					mount -o remount,rw / >/dev/null 2>&1
+					echo "$junk" > /etc/altboot.conf
+					mount -o remount,ro / >/dev/null 2>&1	
+				else
+					echo "$junk" > /etc/altboot.conf
+				fi
+			else
+				junk="$last_selection"
+				break
+			fi
+			break
+		fi
+	done
+}
+
+# * * * * * * This is the main function * * * * * *
+
+if ! test -z "$*" 
+then
+	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
+	exec $REAL_INIT $*
+	exit 0
+else	
+
+	# Execute scripts in /etc/altboot.rc before doing anything else.
+	# Required for special situations, like booting spitz
+	RC_FILES=`ls /etc/altboot.rc | grep \.sh$`
+
+	for file in $RC_FILES
+	do
+		 . /etc/altboot.rc/$file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
+	done
+	
+	if test "$ENABLE_ALTBOOT" != "yes" 
+	then	
+		echo "altboot: Using real init [$REAL_INIT] **" >/dev/tty1
+		exec $REAL_INIT $INIT_RUNLEVEL
+		exit 0
+	fi
+	
+	# Make sure altboots master password is set
+	set_password >/dev/tty0 
+	
+	test "$ASK_PW_ON_BOOT" = "yes" && verify_master_pw >/dev/tty0 
+	
+	# This timeout works by reading /proc/interrupts to see if the keyboard interrupt
+	# increases while the timer is running. A TIMEOUT of 0 will always launch altboot.	
+	run_timer >/dev/tty1 2>&1
+		
+	echo "" >/dev/tty0
+	
+	
+	if test "$launch_altboot" != yes
+	then
+		# last_selection is the previously selected menu item by the user
+		last_selection="`cat /etc/altboot.conf`" >/dev/null 2>&1
+		test -z "$last_selection" && last_selection="1"	
+		
+		echo "Booting last selection: [$last_selection]" >/dev/tty0
+		
+		# Set up the wanna-be array of available menu entries and their numbers
+		show_menu /etc/altboot-menu >/dev/null
+		junk="$last_selection"
+		launch_selection /etc/altboot-menu >/dev/tty0
+
+	fi
+	# Anything after this point will never be reached if $launch_altboot != yes
+	
+	# Show the altboot menu
+	show_menu /etc/altboot-menu >/dev/tty0
+
+	# Load last selection for use as default if <ENTER> is pressed at the prompt
+	last_selection="`cat /etc/altboot.conf`" >/dev/null 2>&1
+	test -z "$last_selection" && last_selection="1"	
+
+	# Ask the user which menu-item to use
+	wait_for_input >/dev/tty0 
+	
+	# This should _never_ happen.
+	if test -z "$junk"
+	then
+		echo "WARNING: Trying failsafe mode" >/dev/tty0
+		mount -o remount,rw / >/dev/tty0 2>&1
+		echo "Dumping environment to /altboot.env"
+		echo "$CURRENT_ENV" > /altboot.env
+		mount -o remount,ro / >/dev/tty0 2>&1
+		junk=1
+	fi
+
+	launch_selection /etc/altboot-menu >/dev/tty0	
+	
+	# Uhoh, something went terribly wrong if we reach this point!
+	die "WARNING: Failsafe fall-through activated. Spawning emergency shell"	
+
+fi
+
+

@@ -1,0 +1,50 @@
+# Don't forget to use chattr +S (if you are using ext[23])
+# when you change these directories (read the docs).
+
+# Configuration directory
+configdirectory:        /var/lib/cyrus
+
+# Which partition to use for default mailboxes
+defaultpartition: default
+partition-default:      /var/spool/cyrus/mail
+
+sievedir:               /var/lib/cyrus/sieve
+
+## News setup
+#partition-news:	/var/spool/cyrus/news
+#newsspool:		/var/spool/news
+
+
+tls_ca_path:            /etc/ssl/certs
+tls_cert_file:          /etc/ssl/cyrus/server.crt
+tls_key_file:           /etc/ssl/cyrus/server.key
+
+# Who has the right to create Mailboxes
+admins:                 cyrus root
+
+hashimapspool:          yes
+allowanonymouslogin:    no
+allowplaintext:         yes
+
+# Minimum time between POP mail fetches in minutes
+popminpoll: 1
+
+# umask used by Cyrus programs
+umask: 077
+
+# Allow renaming of top-level mailboxes.
+#allowusermoves:         yes
+
+# Use this if sieve-scripts could be in ~user/.sieve.
+#sieveusehomedir:       yes
+
+#sasl_pwcheck_method:   saslauthd
+
+## all possible values.
+#sasl_mech_list: LOGIN PLAIN CRAM-MD5 DIGEST-MD5 NTLM
+## or limit to CRAM-MD5 only
+#sasl_mech_list: CRAM-MD5
+
+# This program will be used to send out Mails
+sendmail: /usr/sbin/sendmail
+

@@ -1,0 +1,91 @@
+--- mgetty-1.1.28.copy/doc/Makefile	1997-11-27 15:33:26.000000000 -0500
++++ mgetty-1.1.28/doc/Makefile	2002-07-30 03:27:31.000000000 -0400
+@@ -4,6 +4,8 @@
+ #
+ 
+ NROFF=nroff
++
++INSTALL=install
+ #
+ #
+ MAN1PAGES=g32pbm.1 g3cat.1 pbm2g3.1 fax.1 \
+@@ -12,11 +14,11 @@
+ MAN5PAGES=faxqueue.5
+ MAN8PAGES=sendfax.8 mgetty.8 callback.8 faxrunqd.8
+ MANSRC=$(MAN1PAGES) $(MAN4PAGES) $(MAN5PAGES) $(MAN8PAGES)
+-MAN1DIR=/usr/local/man/man1
+-MAN4DIR=/usr/local/man/man4
+-MAN5DIR=/usr/local/man/man5
+-MAN8DIR=/usr/local/man/man8
+-INFODIR=/usr/local/info
++MAN1DIR=$(PREFIX)/usr/share/man/man1
++MAN4DIR=$(PREFIX)/usr/share/man/man4
++MAN5DIR=$(PREFIX)/usr/share/man/man5
++MAN8DIR=$(PREFIX)/usr/share/man/man8
++INFODIR=$(PREFIX)/usr/share/info
+ 
+ #
+ # formatted man pages
+@@ -26,18 +28,19 @@
+ 
+ all:
+ 
+-doc-all: mgetty.asc mgetty.info mgetty.dvi mgetty.ps fmt-manpages $(MANSRC) 
++doc-all: mgetty.info mgetty.dvi mgetty.ps fmt-manpages $(MANSRC) # mgetty.asc
+ 
+ manpages: $(MANSRC)
+ 
+ fmt-manpages:
+ 	-$(MAKE) `for i in $(MANSRC) ; do echo \`expr $$i : "\([^.]*\)"\`.man ; done `
+ 
+-mgetty.asc: mgetty.ms
+-	-$(NROFF) -ms mgetty.ms >mgetty.asc
++# commented out since I couldn't find texi2roff
++#mgetty.asc: mgetty.ms
++#	-$(NROFF) -ms mgetty.ms >mgetty.asc
+ 
+-mgetty.ms: mgetty.texi
+-	-texi2roff -ms <mgetty.texi >mgetty.ms
++#mgetty.ms: mgetty.texi
++#	-texi2roff -ms <mgetty.texi >mgetty.ms
+ 
+ mgetty.html: mgetty.texi
+ 	-texi2html -verbose mgetty.texi
+@@ -62,10 +65,12 @@
+ 
+ fullclean: clean
+ 	rm -f mgetty.ps mgetty.dvi mgetty.aux mgetty.info* mgetty.ms \
+-	      *.man *.[1-9] mgetty.texi
++	      *.man *.[1-9] mgetty.texi # mgetty.asc
++
++install: install.man install.info
+ 
+-install: $(MANSRC) mgetty.info
+-	-mkdir `dirname $(MAN1DIR)` $(MAN1DIR) $(MAN4DIR) $(MAN5DIR) $(MAN8DIR) 2>/dev/null
++install.man: $(MANSRC)
++	-mkdir -p `dirname $(MAN1DIR)` $(MAN1DIR) $(MAN4DIR) $(MAN5DIR) $(MAN8DIR) 2>/dev/null
+ 	for i in $(MAN1PAGES) ; do \
+ 		$(INSTALL) -m 644 $$i $(MAN1DIR) ; \
+ 	done
+@@ -78,8 +83,10 @@
+ 	for i in $(MAN8PAGES) ; do \
+ 		$(INSTALL) -m 644 $$i $(MAN8DIR) ; \
+ 	done
++
++install.info:
+ 	if [ -f mgetty.info ] ; then\
+-	    test -d $(INFODIR) || mkdir $(INFODIR) 2>/dev/null ; \
++	    test -d $(INFODIR) || mkdir -p $(INFODIR) 2>/dev/null ; \
+ 	    for i in mgetty.info* ; do \
+ 		$(INSTALL) -m 644 $$i $(INFODIR) ; \
+ 	    done ; \
+@@ -92,8 +99,8 @@
+ ../mgetty0$(VS)doc.tar.gz: doc-all mgetty.html
+ 	gtar cvvf ../mgetty0$(VS)doc.tar mgetty.texi mgetty.info* \
+ 				         mgetty.dvi mgetty.ps \
+-				         mgetty.ms mgetty.asc \
+ 					 mgetty.html *.man
++#				         mgetty.ms mgetty.asc
+ 	gzip -f -9 -v ../mgetty0$(VS)doc.tar
+ 
+ # explicit man page dependencies

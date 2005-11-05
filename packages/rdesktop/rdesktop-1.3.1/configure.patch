@@ -1,0 +1,134 @@
+--- rdesktop-1.3.1/configure	2003-12-11 07:59:54.000000000 -0700
++++ rdesktop-1.3.1.new/configure	2004-05-25 11:17:14.661455560 -0700
+@@ -53,6 +53,9 @@
+   --with-libvncserver-config=*)
+     vncserverconfig=$optarg
+     ;;
++  --with-oss)
++    withoss=yes
++    ;;
+   --with-debug)
+     cflags="$cflags -g -DWITH_DEBUG"
+     ;;
+@@ -83,6 +86,7 @@
+     echo " --with-libvncserver     make rdp2vnc"
+     echo " --with-libvncserver-config=CMD"
+     echo "                         use CMD as libvncserver-config"
++    echo " --with-oss              Specify that we should use the OSS system"
+     echo " --with-debug            enable protocol debugging output"
+     echo " --with-debug-kbd        enable debugging of keyboard handling"
+     echo " --with-debug-rdp5       enable debugging of RDP5 code"
+@@ -139,7 +143,9 @@
+ 
+ # Find X installation
+ 
+-xdirs="$extraxdir /usr/X11R6 /usr/X11 /usr/openwin /usr /usr/local/X11R6 /usr/local/X11 /usr/local"
++#xdirs="$extraxdir /usr/X11R6 /usr/X11 /usr/openwin /usr /usr/local/X11R6 /usr/local/X11 /usr/local"
++
++xdirs="$extraxdir"
+ 
+ for dir in $xdirs; do
+     if [ -f $dir/include/X11/Xlib.h ]; then
+@@ -178,7 +184,10 @@
+ #withoutopenssl not currently supported
+ #if [ -z "$withoutopenssl" ]; then
+     # Find OpenSSL installation if available
+-    ssldirs="$extrassldir /usr/openssl /usr/ssl /usr /usr/local/openssl /usr/local/ssl /usr/local"
++
++#ssldirs="$extrassldir /usr/openssl /usr/ssl /usr /usr/local/openssl /usr/local/ssl /usr/local"
++
++ssldirs="$extrassldir"
+     
+     for dir in $ssldirs; do
+     	if [ -f $dir/include/openssl/rc4.h ]; then
+@@ -259,22 +268,27 @@
+ 
+ # Check for OSS sound support
+ 
+-if [ -f /usr/include/sys/soundcard.h ]; then
+-    echo Sound support enabled: Open Sound System
+-    echo
+-    echo "SOUNDOBJ    = rdpsnd.o rdpsnd_oss.o" >>Makeconf
+-    cflags="$cflags -DWITH_RDPSND"
+-elif [ -f /usr/include/sys/audioio.h ]; then
+-    echo Sound support enabled: Sun/BSD
+-    echo
+-    echo "SOUNDOBJ    = rdpsnd.o rdpsnd_sun.o" >>Makeconf
+-    cflags="$cflags -DWITH_RDPSND"
+-else
+-    echo "WARNING: sound support disabled (no /usr/include/sys/soundcard.h or /usr/include/sys/audio.h)"
+-    echo "Currently supported systems are Open Sound System and Sun"
+-    echo
++if [ -z "$withoss" ]; then
++	if [ -f /usr/include/sys/soundcard.h ]; then
++		withoss=yes
++	elif [ -f /usr/include/sys/audioio.h ]; then
++    		echo Sound support enabled: Sun/BSD
++    		echo
++    		echo "SOUNDOBJ    = rdpsnd.o rdpsnd_sun.o" >>Makeconf
++    		cflags="$cflags -DWITH_RDPSND"
++	else
++    		echo "WARNING: sound support disabled (no /usr/include/sys/soundcard.h or /usr/include/sys/audio.h)"
++    		echo "Currently supported systems are Open Sound System and Sun"
++    		echo
++	fi
+ fi
+ 
++if [ ! -z "$withoss" ]; then	
++	echo Sound support enabled: Open Sound System
++    	echo
++    	echo "SOUNDOBJ    = rdpsnd.o rdpsnd_oss.o" >>Makeconf
++    	cflags="$cflags -DWITH_RDPSND"
++fi
+ 
+ # Platform-specific options
+ 
+@@ -294,8 +308,8 @@
+ esac
+ 
+ 
+-echo "CFLAGS      = $cflags" >>Makeconf
+-echo "LDFLAGS     = $ldflags" >>Makeconf
++echo "LCFLAGS      = $cflags" >>Makeconf
++echo "LLDFLAGS     = $ldflags" >>Makeconf
+ echo "TARGETS     = $targets" >>Makeconf
+ 
+ echo "configure complete - now run make"
+--- rdesktop-1.3.1/Makefile	2004-01-21 20:26:01.000000000 -0700
++++ rdesktop-1.3.1.new/Makefile	2004-05-25 11:16:59.338784960 -0700
+@@ -25,22 +25,22 @@
+ all: $(TARGETS)
+ 
+ rdesktop: $(X11OBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ)
+-	$(CC) $(CFLAGS) -o rdesktop $(X11OBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ) $(LDFLAGS) -lX11
++	$(CC) $(CFLAGS) $(LCFLAGS) -o rdesktop $(X11OBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ) $(LDFLAGS) $(LLDFLAGS) -lX11 
+ 
+ rdp2vnc: $(VNCOBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ)
+-	$(CCLD) $(CFLAGS) -o rdp2vnc $(VNCOBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ) $(LDFLAGS) $(LDVNC)
++	$(CCLD) $(CFLAGS) $(LCFLAGS) -o rdp2vnc $(VNCOBJ) $(SOUNDOBJ) $(RDPOBJ) $(CRYPTOBJ) $(LDFLAGS) $(LLDFLAGS) $(LDVNC)
+ 
+ vnc/rdp2vnc.o: rdesktop.c
+-	$(CC) $(CFLAGS) $(VNCINC) -DRDP2VNC -o vnc/rdp2vnc.o -c rdesktop.c
++	$(CC) $(CFLAGS) $(LCFLAGS) $(VNCINC) -DRDP2VNC -o vnc/rdp2vnc.o -c rdesktop.c
+ 
+ vnc/vnc.o: vnc/vnc.c
+-	$(CC) $(CFLAGS) $(VNCINC) -DRDP2VNC -o vnc/vnc.o -c vnc/vnc.c
++	$(CC) $(CFLAGS) $(LCFLAGS) $(VNCINC) -DRDP2VNC -o vnc/vnc.o -c vnc/vnc.c
+ 
+ vnc/xkeymap.o: xkeymap.c
+-	$(CC) $(CFLAGS) $(VNCINC) -DRDP2VNC -o vnc/xkeymap.o -c xkeymap.c
++	$(CC) $(CFLAGS) $(LCFLAGS) $(VNCINC) -DRDP2VNC -o vnc/xkeymap.o -c xkeymap.c
+ 
+ vnc/x11stubs.o: vnc/x11stubs.c
+-	$(CC) $(CFLAGS) $(VNCINC) -o vnc/x11stubs.o -c vnc/x11stubs.c
++	$(CC) $(CFLAGS) $(LCFLAGS) $(VNCINC) -o vnc/x11stubs.o -c vnc/x11stubs.c
+ 
+ Makeconf:
+ 	./configure
+@@ -106,5 +106,5 @@
+ .SUFFIXES: .c .o
+ 
+ .c.o:
+-	$(CC) $(CFLAGS) -o $@ -c $<
++	$(CC) $(CFLAGS) $(LCFLAGS) -o $@ -c $<
+ 

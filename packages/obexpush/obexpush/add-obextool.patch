@@ -1,0 +1,461 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- obexpush/client/obex_main.c~add-obextool.patch
++++ obexpush/client/obex_main.c
+@@ -221,12 +221,7 @@
+         return NULL;
+     }
+ 
+-
+-    #ifdef OLDLIBOBEX
+-    custfunc.userdata = gt->userdata;
+-    #else //OLDLIBOBEX
+     custfunc.customdata = gt->userdata;
+-    #endif //OLDLIBOBEX
+     custfunc.connect = cobex_connect;
+     custfunc.disconnect = cobex_disconnect;
+     custfunc.write = cobex_write;
+--- /dev/null
++++ obexpush/client/obextool.c
+@@ -0,0 +1,411 @@
++/*
++ *
++ *  Bluetooth OBEX tool
++ *
++ *  Copyright (C) 2002  Marcel Holtmann <marcel@holtmann.org>
++ *
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <getopt.h>
++#include <string.h>
++#include <libgen.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <sys/time.h>
++#include <sys/param.h>
++#include <sys/socket.h>
++
++#include <bluetooth/bluetooth.h>
++#include <bluetooth/hci.h>
++#include <bluetooth/hci_lib.h>
++#include <bluetooth/rfcomm.h>
++
++#include <glib.h>
++#include <openobex/obex.h>
++
++
++
++volatile int finished = 0;
++
++struct btobex_context_t {
++	int fd;
++	bdaddr_t bdaddr;
++	uint8_t channel;
++} btobex_context;
++
++
++gint btobex_connect(obex_t *handle, gpointer userdata)
++{
++	struct btobex_context_t *context = userdata;
++	struct sockaddr_rc laddr, raddr;
++	int s;
++
++	if ((s = socket(PF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
++		printf("Can't create socket. %s (%d)\n", strerror(errno), errno);
++		return -1;
++	}
++
++	laddr.rc_family = AF_BLUETOOTH;
++	bacpy(&laddr.rc_bdaddr, BDADDR_ANY);
++	laddr.rc_channel = 0;
++	if (bind(s, (struct sockaddr *)&laddr, sizeof(laddr)) < 0) {
++		printf("Can't bind socket. %s (%d)\n", strerror(errno), errno);
++		close(s);
++		return -1;
++	}
++
++	raddr.rc_family = AF_BLUETOOTH;
++	bacpy(&raddr.rc_bdaddr, &context->bdaddr);
++	raddr.rc_channel = context->channel;
++	if (connect(s, (struct sockaddr *)&raddr, sizeof(raddr)) < 0) {
++		printf("Can't connect. %s (%d)\n", strerror(errno), errno);
++		close(s);
++		return -1;
++	}
++
++	context->fd = s;
++
++	return 1;
++}
++
++
++gint btobex_disconnect(obex_t *handle, gpointer userdata)
++{
++	struct btobex_context_t *context = userdata;
++
++	close(context->fd);
++
++	return 1;
++}
++
++
++gint btobex_listen(obex_t *handle, gpointer userdata)
++{
++	printf("The listen command is not implemented\n");
++
++	return -1;
++}
++
++
++gint btobex_write(obex_t *handle, gpointer userdata, guint8 *buffer, gint length)
++{
++	struct btobex_context_t *context = userdata;
++
++	return (write(context->fd, buffer, length));
++}
++
++
++gint btobex_handleinput(obex_t *handle, gpointer userdata, gint timeout)
++{
++	struct btobex_context_t *context = userdata;
++	struct timeval to;
++	fd_set fdset;
++	unsigned char buf[1024];
++	int sel, len;
++
++	to.tv_sec = timeout;
++	to.tv_usec = 0;
++
++	FD_ZERO(&fdset);
++	FD_SET(context->fd, &fdset);
++
++	len = 0;
++
++	if ((sel = select(context->fd + 1, &fdset, NULL, NULL, &to)) > 0) {
++		if ((len = read(context->fd, buf, sizeof(buf))) > 0)
++			OBEX_CustomDataFeed(handle, buf, len);
++	}
++
++	return len;
++}
++
++
++obex_ctrans_t btobex_ctrans = {
++	customdata:  &btobex_context,
++	connect:     btobex_connect,
++	disconnect:  btobex_disconnect,
++	listen:      btobex_listen,
++	write:       btobex_write,
++	handleinput: btobex_handleinput,
++};
++
++
++void btobex_event(obex_t *handle, obex_object_t *object, gint mode, gint event, gint obex_cmd, gint obex_rsp)
++{
++	switch (event) {
++	case OBEX_EV_PROGRESS:
++		break;
++	case OBEX_EV_ABORT:
++		printf("Request aborted\n");
++		finished = 1;
++		break;
++	case OBEX_EV_REQDONE:
++		finished = 1;
++		break;
++	case OBEX_EV_REQHINT:
++		printf("Request hint\n");
++		break;
++	case OBEX_EV_REQ:
++		printf("Server request\n");
++		break;
++	case OBEX_EV_LINKERR:
++		OBEX_TransportDisconnect(handle);
++		printf("Link broken\n");
++		break;
++	case OBEX_EV_PARSEERR:
++		printf("Parse error\n");
++		break;
++        default:
++		printf("Unknown event 0x%02x\n", event);
++		break;
++	}
++}
++
++
++
++guint8 *btobex_readfile(const char *filename, int *filesize)
++{
++	guint8 *buf;
++	struct stat stats;
++	int fd, fs;
++
++	stat(filename, &stats);
++	fs = stats.st_size;
++
++	if ((fd = open(filename, O_RDONLY, 0)) < 0)
++		return NULL;
++
++	if (!(buf = g_malloc(fs))) {
++		close(fd);
++		return NULL;
++	}
++
++	*filesize = read(fd, buf, fs);
++
++	close(fd);
++
++	return buf;
++}
++
++
++int btobex_push(bdaddr_t *bdaddr, uint8_t channel, char *filename, char *alias)
++{
++	obex_t *handle;
++	obex_object_t *object;
++	obex_headerdata_t hd;
++
++	guint8 namebuf[MAXPATHLEN + 1];
++	int namelen;
++	guint8 *databuf;
++	int datalen;
++
++	int err;
++
++	if (!(handle = OBEX_Init(OBEX_TRANS_CUST, btobex_event, 0))) {
++		printf("Init of OBEX failed. %s (%d)", strerror(errno), errno);
++		return -1;
++	}
++
++	bacpy(&btobex_context.bdaddr, bdaddr);
++	btobex_context.channel = channel;
++
++	OBEX_SetUserData(handle, &btobex_context);
++
++	if (OBEX_RegisterCTransport(handle, &btobex_ctrans) < 0) {
++		printf("Custom transport callback registration failed.");
++		return -1;
++	}
++
++	if (OBEX_TransportConnect(handle, (void *)1, 0) != 1)
++		return -1;
++
++
++	object = OBEX_ObjectNew(handle, OBEX_CMD_CONNECT);
++	err = OBEX_Request(handle, object);
++
++	finished = 0;
++	while (!finished) {
++		if ((err = OBEX_HandleInput(handle, 1)) < 0) {
++			printf("Error while handling input.\n");
++			break;
++		}
++	}
++
++
++	object = OBEX_ObjectNew(handle, OBEX_CMD_PUT);
++
++	namelen = OBEX_CharToUnicode(namebuf, alias, MAXPATHLEN);
++	hd.bs = namebuf;
++	OBEX_ObjectAddHeader(handle, object, OBEX_HDR_NAME, hd, namelen, 0);
++
++	if (!(databuf = btobex_readfile(filename, &datalen))) {
++		OBEX_TransportDisconnect(handle);
++		return -1;
++	}
++
++	hd.bq4 = datalen;
++	OBEX_ObjectAddHeader(handle, object, OBEX_HDR_LENGTH, hd, sizeof(guint32), 0);
++
++	hd.bs = databuf;
++	OBEX_ObjectAddHeader(handle, object, OBEX_HDR_BODY, hd, datalen, 0);
++
++	printf("Sending object ...\n");
++
++	err = OBEX_Request(handle, object);
++
++	finished = 0;
++	while (!finished) {
++		if ((err = OBEX_HandleInput(handle, 1)) < 0) {
++			printf("Error while handling input.\n");
++			break;
++		}
++	}
++
++
++	object = OBEX_ObjectNew(handle, OBEX_CMD_DISCONNECT);
++	err = OBEX_Request(handle, object);
++
++	finished = 0;
++	while (!finished) {
++		if ((err = OBEX_HandleInput(handle, 1)) < 0) {
++			printf("Error while handling input.\n");
++			break;
++		}
++	}
++
++
++	OBEX_TransportDisconnect(handle);
++
++	return 0;
++}
++
++
++
++static void usage(void);
++
++
++void cmd_push(bdaddr_t *local, int argc, char **argv)
++{
++	char *filename;
++	char *alias;
++	bdaddr_t bdaddr;
++	uint8_t channel;
++
++	if (argc < 3) {
++		usage();
++		return;
++	}
++
++	filename = argv[1];
++	alias = basename(filename);
++	str2ba(argv[2], &bdaddr);
++	channel = (argc > 3) ? atoi(argv[3]) : 10;
++
++	btobex_push(&bdaddr, channel, filename, alias);
++}
++
++
++struct {
++	char *cmd;
++	void (*func)(bdaddr_t *bdaddr, int argc, char **argv);
++	char *opt;
++	char *doc;
++} command[] = {
++	{ "push", cmd_push, "<file> <bdaddr> [channel]", "Push a file" },
++	{ NULL, NULL, 0, 0 }
++};
++
++
++static void usage(void)
++{
++	int i;
++
++	printf("Bluetooth OBEX tool\n\n");
++
++	printf("Usage:\n"
++		"\tobextool [options] <command>\n"
++                "\n");
++
++	printf("Options:\n"
++		"\t-i [hciX|bdaddr]   Local HCI device or BD Address\n"
++		"\t-h, --help         Display help\n"
++		"\n");
++
++	printf("Commands:\n");
++        for (i = 0; command[i].cmd; i++)
++		printf("\t%-6s %-18s\t%s\n", command[i].cmd,
++		command[i].opt ? command[i].opt : " ",
++		command[i].doc);
++	printf("\n");
++}
++
++
++static struct option main_options[] = {
++	{ "help",	0, 0, 'h' },
++	{ "device",	1, 0, 'i' },
++	{ 0, 0, 0, 0 }
++};
++
++
++int main(int argc, char *argv[])
++{
++	bdaddr_t bdaddr;
++	int i, opt;
++
++	bacpy(&bdaddr, BDADDR_ANY);
++
++	while ((opt = getopt_long(argc, argv, "+i:h", main_options, NULL)) != -1) {
++		switch(opt) {
++		case 'i':
++			if (strncmp(optarg, "hci", 3) == 0)
++				hci_devba(atoi(optarg + 3), &bdaddr);
++			else
++				str2ba(optarg, &bdaddr);
++			break;
++		case 'h':
++			usage();
++			exit(0);
++		default:
++			exit(0);
++		}
++	}
++
++	argc -= optind;
++	argv += optind;
++	optind = 0;
++
++	if (argc < 1) {
++		usage();
++		exit(0);
++	}
++
++	for (i = 0; command[i].cmd; i++) {
++		if (strncmp(command[i].cmd, argv[0], 3))
++			continue;
++		command[i].func(&bdaddr, argc, argv);
++		exit(0);
++	}
++
++	usage();
++
++	return 0;
++}
+--- obexpush/client/Makefile~add-obextool.patch
++++ obexpush/client/Makefile
+@@ -35,11 +35,21 @@
+ #
+ 
+ ussp-push: obex_main.o obex_socket.o
+-	gcc obex_main.o obex_socket.o ${GLIBLIB} ${OBEXLIB} -o ussp-push
++	$(CC) obex_main.o obex_socket.o ${GLIBLIB} ${OBEXLIB} -o ussp-push
+  
+ obex_main.o: obex_main.c obex_socket.h
+-	gcc ${OBEXINC} ${GLIBINC} -c obex_main.c -o obex_main.o
++	$(CC) ${OBEXINC} ${GLIBINC} -c obex_main.c -o obex_main.o
+ 
+ obex_socket.o: obex_socket.c obex_socket.h
+-	gcc ${OBEXINC} ${GLIBINC} -c obex_socket.c -o obex_socket.o
++	$(CC) ${OBEXINC} ${GLIBINC} -c obex_socket.c -o obex_socket.o
++
++
++
++obextool: obextool.o
++	$(CC) obextool.o ${GLIBLIB} ${OBEXLIB} -lbluetooth -o obextool
++ 
++obextool.o: obextool.c
++	$(CC) ${OBEXINC} ${GLIBINC} -c obextool.c -o obextool.o
++
++all: ussp-push obextool
+ 

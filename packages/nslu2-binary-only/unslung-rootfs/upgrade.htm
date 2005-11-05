@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Upgrade Firmware</title>
+<LINK REL="stylesheet" TYPE="text/css" HREF="../ig_n.css">
+<meta HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
+<script language="JavaScript" type="text/javascript" src="../stdlib.js"></script>
+<script language="JavaScript" type="text/javascript" src="../message.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--  Start Script
+
+function checkUpgrade()
+{
+	var cf=document.upgrade;
+	
+	if(!confirm("Your NSLU2 will now enter RedBoot Upgrade Mode\n(Ready/Status LED will be flashing red and green).\nYou will require either the Linux UpSlug tool or the\nWindows SerComm Upgrade tool to upload firmware.\nNote that you will not be able to access your NSLU2\nuntil you have successfully uploaded new firmware.\nClick OK to continue, Cancel to abort."))
+		return;
+	cf.submit();
+	return;
+}
+
+// end script -->
+</script>
+</head>
+
+<body bgcolor="white" onLoad="showMsg()" marginheight="0" marginwidth="0" leftmargin="0" topmargin="0">
+<FORM name="upgrade" method="post" action="upgrade.cgi" ENCTYPE="multipart/form-data">
+<DIV align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="750" align="center">
+<tr>
+       <td width="165"><img border="0" src="../linksys.gif" width="165" height="57"></td>
+        <td width="585" colspan="2" bgcolor="#6666CC" valign="bottom" align="right"><span class="fwversion">Firmware 
+          Version: &nbsp;@ds_sw_version#</span> &nbsp;&nbsp;</td>
+</tr>
+
+<tr>
+     <td colspan="3" height="11" bgcolor="black"><img src="../tborder.gif" width="750" height="11" alt="" border="0"></td>
+</tr>
+
+<TR>
+    <TD width="165" bgcolor="black" align="center"><h3>Upgrade</h3></td>
+	<td width="585" colspan="2" bgcolor="#6666cc" valign="top">
+	<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+	 <td align="right" class="pname" height="25" colspan="5">Network Storage Link for USB 2.0 Disks &nbsp; &nbsp; </td>
+	 <td align="center" width="100" class="mname">NSLU2</td>
+	</tr>
+	<tr bgcolor="black">
+	  <td colspan="6" height="3"><img src="TRANSPAR.GIF" width="1" height="3" alt="" border="0"></td>
+	</tr>
+	<tr>
+	    <td align="center" height="1" background="../UI_06.gif"><img src="TRANSPAR.GIF" width="1" height="8" alt="" border="0"></td>
+	    <td align="center" height="1" background="../UI_06.gif"><img src="TRANSPAR.GIF" width="1" height="1" alt="" border="0"></td>
+	    <td align="center" height="1"><img src="TRANSPAR.GIF" width="1" height="1" alt="" border="0"></td>
+	    <td align="center" height="1" background="../UI_06.gif"><img src="TRANSPAR.GIF" width="1" height="1" alt="" border="0"></td>
+	    <td align="center" height="1" background="../UI_06.gif"><img src="TRANSPAR.GIF" width="1" height="1" alt="" border="0"></td>
+	    <td align="center" height="1" background="../UI_06.gif"><img src="TRANSPAR.GIF" width="1" height="1" alt="" border="0"></td>
+	</tr>
+
+	<tr>
+	    <td align="center" height="25" bgcolor="black" width="100"><a href="/index.cgi" class="mainmenu">Home</a></td>
+	    <td align="center" height="25" bgcolor="black" width="100"><a href="/user_pass.cgi" class="mainmenu">User<br> password</a></td>
+	    <td align="center" height="25" width="100"><span class="mainmenu">Administration</span></td>
+	    <td align="center" height="25" bgcolor="black" width="100"><a href="/userman_fs.htm" class="mainmenu">User Guide</a></td>
+	    <td align="center" height="25" bgcolor="black" width="120"><a href="http://www.linksys.com" class="mainmenu" target="new_win">Linksys Web</a></td>
+		<td align="center" height="25" bgcolor="black">&nbsp;</td>
+	</tr>
+	<tr>
+	    <td height="25" width="130">&nbsp;  </td>
+	    <td height="25" colspan="5">
+		 <a href="/Management/file_sharing.cgi?next_file=groups.htm" class="submenu">Groups</a> <span class="divider"> | </span>
+		 <a href="/Management/file_sharing.cgi?next_file=shares.htm" class="submenu">Shares</a> <span class="divider"> | </span>
+		 <a href="/Management/sh_backup.cgi?next_file=backup.htm" class="submenu">Backup</a> <span class="divider"> | </span>
+		 <a href="/Management/disk_fs.htm" class="submenu">Disk</a> <span class="divider"> | </span>
+		 <a href="/Management/setup.cgi?next_file=lan.htm" class="submenu">Setup</a>
+		</td>
+	</tr>
+	</table>
+	
+	</td>
+</tr>
+
+<tr>
+    <td colspan="3" bgcolor="#e7e7e7" height="6"><img src="TRANSPAR.GIF" width="1" height="6" alt="" border="0"></td>
+</tr>	
+
+
+<tr>
+    <th width="165" height="24">Current Firmware  &nbsp; </th>
+	<td width="409"><img src="TRANSPAR.GIF" width="409" height="6" alt="" border="0"></td>
+	<td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="24" width="15"></td>
+</tr>
+<tr>
+	<td bgcolor="#e7e7e7" align="right"><img border="0" src="../UI_04.gif" width="8" hspace="0" vspace="0" height="80"></td>
+	<td width="409"><div class="std"><table border=0 cellspacing=0 cellpadding=4>
+	<tr>
+	  <td nowrap>Current Firmware Version:</td>
+	  <td nowrap>@ds_sw_version# </td></tr>
+	</table></div> </td>
+ <td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="80" width="15"></td>
+</tr>
+
+	
+<tr>
+    <td bgcolor="#e7e7e7" height="30" align="right"><img border="0" src="../UI_04.gif" width="8" hspace="0" vspace="0" height="30"></td>
+	<td height="30">&nbsp;  </td>
+	<td rowspan="2" valign="bottom" bgcolor="#6666cc" height="64"><img src="../cisco.gif" hspace="0" vspace="0"></td>
+</tr>
+
+<tr>
+    <td bgcolor="black" height="34">&nbsp;  </td>
+	<td bgcolor="#6666cc" align="right" height="33" valign="middle">
+<a class="textbutton" href="javascript:checkUpgrade();" style="{padding:3px}">&nbsp; Enter Upgrade Mode </a>
+&nbsp;
+<a class="textbutton" href="javascript:openHelpWin('help/util_upg.htm')" style="{padding:3px}">&nbsp; Help &nbsp;</a> &nbsp; &nbsp;  </td>
+</tr>
+
+
+</table>
+</div>
+<input type="Hidden" name="message" value="@message#">
+<input type="Hidden" name="this_file" value="upgrade.htm">
+<input type="Hidden" name="todo" value="@todo#">
+<input type="Hidden" name="finish" value="@finish#">
+</form>
+    
+</body>
+
+</html>

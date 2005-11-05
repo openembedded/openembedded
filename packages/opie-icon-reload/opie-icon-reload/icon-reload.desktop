@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=icon-reload.sh
+Icon=reload
+Type=Application
+Name=Reload Icons
+Comment=Force reloading of .desktop files
+Name[de]=Icons laden
+Comment[de]=.desktop Dateien neu einlesen.

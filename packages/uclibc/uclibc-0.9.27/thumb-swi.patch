@@ -1,0 +1,82 @@
+--- uClibc-0.9.27/.pc/thumb-swi.patch/libc/sysdeps/linux/arm/bits/syscalls.h	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/bits/syscalls.h	2005-08-08 21:04:11.081932985 -0700
+@@ -97,6 +97,7 @@
+ #define INTERNAL_SYSCALL_DECL(err) do { } while (0)
+ 
+ #undef INTERNAL_SYSCALL
++#if !defined(__thumb__)
+ #define INTERNAL_SYSCALL(name, err, nr, args...)		\
+   ({ unsigned int _sys_result;					\
+      {								\
+@@ -109,6 +110,21 @@
+        _sys_result = _a1;					\
+      }								\
+      (int) _sys_result; })
++#else
++#define INTERNAL_SYSCALL(name, err, nr, args...)		\
++  ({ unsigned int _sys_result;					\
++     {								\
++       register int _a1 asm ("a1");				\
++       LOAD_ARGS_##nr (args)					\
++       register int _r7 asm ("r7") = (int) (SYS_ify(name));	\
++       asm volatile ("swi	0	@ syscall " #name	\
++		     : "=r" (_a1)				\
++		     : "r" (_r7) ASM_ARGS_##nr			\
++		     : "memory");				\
++       _sys_result = _a1;					\
++     }								\
++     (int) _sys_result; })
++#endif
+ 
+ #undef INTERNAL_SYSCALL_ERROR_P
+ #define INTERNAL_SYSCALL_ERROR_P(val, err) \
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/brk.c.orig	2005-01-11 23:59:21.000000000 -0800
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/brk.c	2005-08-09 12:44:56.000000000 -0700
+@@ -26,14 +26,7 @@
+ 
+ int brk (void *addr)
+ {
+-    void *newbrk;
+-
+-    asm ("mov a1, %1\n"	/* save the argment in r0 */
+-	    "swi %2\n"	/* do the system call */
+-	    "mov %0, a1;"	/* keep the return value */
+-	    : "=r"(newbrk)
+-	    : "r"(addr), "i" (__NR_brk)
+-	    : "a1");
++    void *newbrk = (void*)INTERNAL_SYSCALL(brk, , 1, addr);
+ 
+     __curbrk = newbrk;
+ 
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/syscall.c.orig	2005-08-09 12:51:10.681364959 -0700
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/syscall.c	2005-08-09 12:52:43.371197563 -0700
+@@ -26,6 +26,7 @@
+ 
+ long syscall(long sysnum, long a, long b, long c, long d, long e, long f)
+ {
++#if !defined(__thumb__)
+ 	register long _r0 asm("r0")=(long)(sysnum);
+ 	register long _r6 asm("r6")=(long)(f);
+ 	register long _r5 asm("r5")=(long)(e);
+@@ -40,6 +41,21 @@
+ 			"r"(_r2), "r"(_r3), "r"(_r4), "r"(_r5),
+ 			"r"(_r6)
+ 			: "memory");
++#else
++	register long _r7 asm("r7")=(long)(sysnum);
++	register long _r5 asm("r5")=(long)(f);
++	register long _r4 asm("r4")=(long)(e);
++	register long _r3 asm("r3")=(long)(d);
++	register long _r2 asm("r2")=(long)(c);
++	register long _r1 asm("r1")=(long)(b);
++	register long _r0 asm("r0")=(long)(a);
++	asm volatile(
++			"swi 0"
++			: "=r"(_r0)
++			: "r"(_r0), "r"(_r1), "r"(_r2), "r"(_r3),
++			"r"(_r4), "r"(_r5), "r"(_r7)
++			: "memory");
++#endif
+ 	if(_r0 >=(unsigned long) -4095) {
+ 		long err = _r0;
+ 		(*__errno_location())=(-err);

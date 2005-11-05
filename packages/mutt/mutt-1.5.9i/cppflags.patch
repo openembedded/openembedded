@@ -1,0 +1,11 @@
+--- mutt-1.5.9/Makefile.am.orig	2005-08-04 08:58:08.169498584 +0000
++++ mutt-1.5.9/Makefile.am	2005-08-04 08:58:30.514101688 +0000
+@@ -55,7 +55,7 @@
+ 
+ INCLUDES=-I. -I$(top_srcdir) $(IMAP_INCLUDES) $(LIBGPGME_CFLAGS) -Iintl
+ 
+-CPPFLAGS=@CPPFLAGS@ -I$(includedir)
++CPPFLAGS=@CPPFLAGS@
+ 
+ 
+ EXTRA_mutt_SOURCES = account.c md5c.c mutt_sasl.c mutt_socket.c mutt_ssl.c \

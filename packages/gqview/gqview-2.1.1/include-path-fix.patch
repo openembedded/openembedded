@@ -1,0 +1,11 @@
+--- gqview-2.1.1/src/Makefile.am.orig	2005-08-02 10:27:57.883396232 +0000
++++ gqview-2.1.1/src/Makefile.am	2005-08-02 10:28:19.032181128 +0000
+@@ -3,7 +3,7 @@
+ 
+ INCLUDES = -I$(srcdir) -I$(builddir)    \
+ 	-I$(top_srcdir) -I$(top_builddir)       \
+-	-I$(includedir) $(GTK_CFLAGS)
++	$(GTK_CFLAGS)
+ 
+ module_SLIK = \
+ 	intl.h		\

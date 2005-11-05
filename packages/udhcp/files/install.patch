@@ -1,0 +1,64 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- udhcp-0.9.8/Makefile~install.patch
++++ udhcp-0.9.8/Makefile
+@@ -1,10 +1,11 @@
+ # udhcp makefile
+ 
++DESTDIR=
+ prefix=/usr
+-SBINDIR=/sbin
+-USRSBINDIR=${prefix}/sbin
+-USRBINDIR=${prefix}/bin
+-USRSHAREDIR=${prefix}/share
++sbindir=/sbin
++usrsbindir=$(prefix)/sbin
++usrbindir=$(prefix)/bin
++datadir=$(prefix)/share
+ 
+ # Uncomment this to get a shared binary. Call as udhcpd for the server,
+ # and udhcpc for the client
+@@ -81,25 +82,27 @@
+ 
+ 
+ install: all
+-
+-	$(INSTALL) $(DAEMONS) $(USRSBINDIR)
+-	$(INSTALL) $(COMMANDS) $(USRBINDIR)
++	$(INSTALL) -d $(DESTDIR)$(usrsbindir)
++	$(INSTALL) $(DAEMONS) $(DESTDIR)$(usrsbindir)
++	$(INSTALL) -d $(DESTDIR)$(usrbindir)
++	$(INSTALL) $(COMMANDS) $(DESTDIR)$(usrbindir)
++	$(INSTALL) -d $(DESTDIR)$(sbindir)
+ ifdef COMBINED_BINARY
+-	ln -sf $(USRSBINDIR)/$(DAEMONS) $(SBINDIR)/$(BOOT_PROGRAMS)
++	ln -sf $(usrsbindir)/$(DAEMONS) $(DESTDIR)$(sbindir)/$(BOOT_PROGRAMS)
+ else
+-	$(INSTALL) $(BOOT_PROGRAMS) $(SBINDIR)
++	$(INSTALL) $(BOOT_PROGRAMS) $(DESTDIR)$(sbindir)
+ endif
+-	mkdir -p $(USRSHAREDIR)/udhcpc
++	$(INSTALL) -d $(DESTDIR)$(datadir)/udhcpc
+ 	for name in bound deconfig renew script ; do \
+ 		$(INSTALL) samples/sample.$$name \
+-			$(USRSHAREDIR)/udhcpc/default.$$name ; \
++			$(DESTDIR)$(datadir)/udhcpc/default.$$name ; \
+ 	done
+-	mkdir -p $(USRSHAREDIR)/man/man1
+-	$(INSTALL) dumpleases.1 $(USRSHAREDIR)/man/man1
+-	mkdir -p $(USRSHAREDIR)/man/man5
+-	$(INSTALL) udhcpd.conf.5 $(USRSHAREDIR)/man/man5
+-	mkdir -p $(USRSHAREDIR)/man/man8
+-	$(INSTALL) udhcpc.8 udhcpd.8 $(USRSHAREDIR)/man/man8
++	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
++	$(INSTALL) dumpleases.1 $(DESTDIR)$(mandir)/man1
++	$(INSTALL) -d $(DESTDIR)$(mandir)/man5
++	$(INSTALL) udhcpd.conf.5 $(DESTDIR)$(mandir)/man5
++	$(INSTALL) -d $(DESTDIR)$(mandir)/man8
++	$(INSTALL) udhcpc.8 udhcpd.8 $(DESTDIR)$(mandir)/man8
+ 
+ clean:
+ 	-rm -f udhcpd udhcpc dumpleases *.o core

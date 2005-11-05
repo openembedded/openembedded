@@ -1,0 +1,12 @@
+--- squashfs-tools/Makefile.orig	2005-06-12 21:41:47.000000000 +0200
++++ squashfs-tools/Makefile	2005-06-12 21:42:08.000000000 +0200
+@@ -10,6 +10,9 @@
+ mksquashfs: mksquashfs.o read_fs.o sort.o
+ 	$(CCLD) $(LDFLAGS_R) $(LDFLAGS) mksquashfs.o read_fs.o sort.o $(LIBS) -o $@
+ 
++mksquashfs-lzma: mksquashfs.o read_fs.o sort.o
++	$(CXX) $(LDFLAGS) mksquashfs.o read_fs.o sort.o -llzma -o $@
++
+ mksquashfs.o: mksquashfs.c mksquashfs.h
+ 	$(CC) $(CFLAGS_R) $(CFLAGS) -c -o mksquashfs.o mksquashfs.c
+ 

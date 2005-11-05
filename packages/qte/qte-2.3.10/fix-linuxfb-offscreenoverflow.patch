@@ -1,0 +1,22 @@
+Fix an overflow when the amount of requested cache memory
+is greater than the *lowest value
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp~fix-linuxfb-offscreenoverflow
++++ qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp
+@@ -610,6 +610,11 @@
+ 
+     // No free blocks in already-taken memory; get some more
+     // if we can
++    if ( amount >= (*lowest ) ) {
++	//Avoid this overflow
++	qt_fbdpy->ungrab();
++	return 0;
++    }
+     unsigned int newlowest = (*lowest)-amount;
+     if (newlowest % align) {
+        	newlowest -= align;

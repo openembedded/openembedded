@@ -1,0 +1,207 @@
+diff -Nur e~/src/bin/e_config.c e/src/bin/e_config.c
+--- e~/src/bin/e_config.c	2005-08-05 21:12:17.000000000 -0700
++++ e/src/bin/e_config.c	2005-08-16 13:55:06.000000000 -0700
+@@ -298,6 +298,8 @@
+    E_CONFIG_VAL(D, T, resize_info_follows, INT); /**/
+    E_CONFIG_VAL(D, T, focus_last_focused_per_desktop, INT); /**/
+    E_CONFIG_VAL(D, T, focus_revert_on_hide_or_close, INT); /**/
++   E_CONFIG_VAL(D, T, menu_autoscroll_margin, INT); /**/
++   E_CONFIG_VAL(D, T, menu_autoscroll_cursor_margin, INT); /**/
+    
+    e_config = e_config_domain_load("e", _e_config_edd);
+    if (e_config)
+@@ -403,6 +405,8 @@
+ 	e_config->resize_info_follows = 1;
+ 	e_config->focus_last_focused_per_desktop = 1;
+ 	e_config->focus_revert_on_hide_or_close = 1;
++	e_config->menu_autoscroll_margin = 10;
++	e_config->menu_autoscroll_cursor_margin = 15;
+ 	
+ 	  {
+ 	     E_Config_Module *em;
+@@ -959,6 +963,8 @@
+    E_CONFIG_LIMIT(e_config->resize_info_follows, 0, 1);
+    E_CONFIG_LIMIT(e_config->focus_last_focused_per_desktop, 0, 1);
+    E_CONFIG_LIMIT(e_config->focus_revert_on_hide_or_close, 0, 1);
++   E_CONFIG_LIMIT(e_config->menu_autoscroll_margin, 0, 50);
++   E_CONFIG_LIMIT(e_config->menu_autoscroll_cursor_margin, 0, 50);
+ 
+    /* apply lang config - exception because config is loaded after intl setup */
+    
+diff -Nur e~/src/bin/e_config.h e/src/bin/e_config.h
+--- e~/src/bin/e_config.h	2005-08-05 21:12:18.000000000 -0700
++++ e/src/bin/e_config.h	2005-08-16 13:55:06.000000000 -0700
+@@ -142,6 +142,8 @@
+    int         resize_info_follows;
+    int         focus_last_focused_per_desktop;
+    int         focus_revert_on_hide_or_close;
++   int         menu_autoscroll_margin;
++   int         menu_autoscroll_cursor_margin;
+ };
+ 
+ struct _E_Config_Module
+diff -Nur e~/src/bin/e_ipc_handlers.h e/src/bin/e_ipc_handlers.h
+--- e~/src/bin/e_ipc_handlers.h	2005-08-09 21:52:07.000000000 -0700
++++ e/src/bin/e_ipc_handlers.h	2005-08-16 14:01:38.000000000 -0700
+@@ -4592,3 +4592,84 @@
+ #if 0
+ }
+ #endif
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_MARGIN_SET
++#if (TYPE == E_REMOTE_OPTIONS)
++   OP("-menu-autoscroll-margin-set", 1, "Set the distance from the edge of the screen the menu will autoscroll to", 0, HDL)
++#elif (TYPE == E_REMOTE_OUT)
++   REQ_INT(atoi(params[0]), HDL);
++#elif (TYPE == E_WM_IN)
++   START_INT(value, HDL);
++   e_config->menu_autoscroll_margin = value;
++   E_CONFIG_LIMIT(e_config->menu_autoscroll_margin, 0, 50);
++   SAVE;
++   END_INT;
++#elif (TYPE == E_REMOTE_IN)
++#endif
++#undef HDL
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET
++#if (TYPE == E_REMOTE_OPTIONS)
++   OP("-menu-autoscroll-margin-get", 0, "Get the distance from the edge of the screen the menu will autoscroll to", 1, HDL)
++#elif (TYPE == E_REMOTE_OUT)
++   REQ_NULL(HDL)
++#elif (TYPE == E_WM_IN)
++   SEND_INT(e_config->menu_autoscroll_margin, E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET_REPLY, HDL);
++#elif (TYPE == E_REMOTE_IN)
++#endif
++#undef HDL
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET_REPLY
++#if (TYPE == E_REMOTE_OPTIONS)
++#elif (TYPE == E_REMOTE_OUT)
++#elif (TYPE == E_WM_IN)
++#elif (TYPE == E_REMOTE_IN)
++   START_INT(val, HDL)
++		 printf("REPLY: %i\n", val);
++		 END_INT;
++#endif
++#undef HDL
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_SET
++#if (TYPE == E_REMOTE_OPTIONS)
++   OP("-menu-autoscroll-cursor-margin-set", 1, "Set the distance from the edge of the screen the cursor needs to be to start menu autoscrolling", 0, HDL)
++#elif (TYPE == E_REMOTE_OUT)
++   REQ_INT(atoi(params[0]), HDL);
++#elif (TYPE == E_WM_IN)
++   START_INT(value, HDL);
++   e_config->menu_autoscroll_cursor_margin = value;
++   E_CONFIG_LIMIT(e_config->menu_autoscroll_cursor_margin, 0, 50);
++	 //   e_zone_update_flip_all();
++   SAVE;
++   END_INT;
++#elif (TYPE == E_REMOTE_IN)
++#endif
++#undef HDL
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET
++#if (TYPE == E_REMOTE_OPTIONS)
++   OP("-menu-autoscroll-cursor-margin-get", 0, "Get the distance from the edge of the screen the cursor needs to be to start menu autoscrolling", 1, HDL)
++#elif (TYPE == E_REMOTE_OUT)
++   REQ_NULL(HDL)
++#elif (TYPE == E_WM_IN)
++   SEND_INT(e_config->menu_autoscroll_cursor_margin, E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET_REPLY, HDL);
++#elif (TYPE == E_REMOTE_IN)
++#endif
++#undef HDL
++
++/****************************************************************************/
++#define HDL E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET_REPLY
++#if (TYPE == E_REMOTE_OPTIONS)
++#elif (TYPE == E_REMOTE_OUT)
++#elif (TYPE == E_WM_IN)
++#elif (TYPE == E_REMOTE_IN)
++   START_INT(val, HDL)
++		 printf("REPLY: %i\n", val);
++		 END_INT;
++#endif
++#undef HDL
+diff -Nur e~/src/bin/e_ipc_handlers_list.h e/src/bin/e_ipc_handlers_list.h
+--- e~/src/bin/e_ipc_handlers_list.h	2005-08-05 21:00:03.000000000 -0700
++++ e/src/bin/e_ipc_handlers_list.h	2005-08-16 13:55:06.000000000 -0700
+@@ -222,3 +222,9 @@
+ #define E_IPC_OP_DESKTOP_NAME_DEL 222
+ #define E_IPC_OP_DESKTOP_NAME_LIST 223
+ #define E_IPC_OP_DESKTOP_NAME_LIST_REPLY 224
++#define E_IPC_OP_MENU_AUTOSCROLL_MARGIN_SET 225
++#define E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET 226
++#define E_IPC_OP_MENU_AUTOSCROLL_MARGIN_GET_REPLY 227
++#define E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_SET 228
++#define E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET 229
++#define E_IPC_OP_MENU_AUTOSCROLL_CURSOR_MARGIN_GET_REPLY 230
+diff -Nur e~/src/bin/e_menu.c e/src/bin/e_menu.c
+--- e~/src/bin/e_menu.c	2005-07-25 02:55:44.000000000 -0700
++++ e/src/bin/e_menu.c	2005-08-16 13:55:06.000000000 -0700
+@@ -1968,24 +1968,24 @@
+ 	E_Menu *m;
+ 
+ 	m = l->data;
+-	if (m->cur.x < m->zone->x)
++	if (m->cur.x < m->zone->x + e_config->menu_autoscroll_margin)
+ 	  {
+-	     i = m->zone->x - m->cur.x;
++	     i = m->zone->x - m->cur.x + e_config->menu_autoscroll_margin;
+ 	     if (i > outl) outl = i;
+ 	  }
+-	if (m->cur.y < m->zone->y)
++	if (m->cur.y < m->zone->y + e_config->menu_autoscroll_margin)
+ 	  {
+-	     i = m->zone->y - m->cur.y;
++	     i = m->zone->y - m->cur.y + e_config->menu_autoscroll_margin;
+ 	     if (i > outt) outt = i;
+ 	  }
+-	if ((m->cur.x + m->cur.w) > (m->zone->w))
++	if ((m->cur.x + m->cur.w) > (m->zone->w - e_config->menu_autoscroll_margin))
+ 	  {
+-	     i = m->cur.x + m->cur.w - (m->zone->x + m->zone->w);
++	     i = m->cur.x + m->cur.w - (m->zone->x + m->zone->w - e_config->menu_autoscroll_margin);
+ 	     if (i > outr) outr = i;
+ 	  }
+-	if ((m->cur.y + m->cur.h) > (m->zone->h))
++	if ((m->cur.y + m->cur.h) > (m->zone->h - e_config->menu_autoscroll_margin))
+ 	  {
+-	     i = m->cur.y + m->cur.h - (m->zone->y + m->zone->h);
++	     i = m->cur.y + m->cur.h - (m->zone->y + m->zone->h - e_config->menu_autoscroll_margin);
+ 	     if (i > outb) outb = i;
+ 	  }
+      }
+@@ -2029,11 +2029,11 @@
+    int autoscroll_x = 0;
+    int autoscroll_y = 0;
+    
+-   if (_e_menu_x == 0)
++   if (_e_menu_x - e_config->menu_autoscroll_cursor_margin <= 0)
+      {
+ 	if (_e_menu_outside_bounds_get(-1, 0)) autoscroll_x = -1;
+      }
+-   if (_e_menu_y == 0)
++   if (_e_menu_y - e_config->menu_autoscroll_cursor_margin <= 0)
+      {
+ 	if (_e_menu_outside_bounds_get(0, -1)) autoscroll_y = -1;
+      }
+@@ -2044,11 +2044,11 @@
+ 	     E_Menu *m;
+ 	     
+ 	     m = _e_active_menus->data;
+-	     if (_e_menu_x == (m->zone->w - 1))
++	     if (_e_menu_x + e_config->menu_autoscroll_cursor_margin >= (m->zone->w - 1))
+ 	       {
+ 		  if (_e_menu_outside_bounds_get(1, 0)) autoscroll_x = 1;
+ 	       }
+-	     if (_e_menu_y == (m->zone->h - 1))
++	     if (_e_menu_y + e_config->menu_autoscroll_cursor_margin >= (m->zone->h - 1))
+ 	       {
+ 		  if (_e_menu_outside_bounds_get(0, 1)) autoscroll_y = 1;
+ 	       }

@@ -1,0 +1,42 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- orinoco-0.13e-SN-6/orinoco_cs.c~catch-up-with-cardservices.patch
++++ orinoco-0.13e-SN-6/orinoco_cs.c
+@@ -144,16 +144,6 @@
+ /* PCMCIA stuff     						    */
+ /********************************************************************/
+ 
+-/* In 2.5 (as of 2.5.69 at least) there is a cs_error exported which
+- * does this, but it's not in 2.4 so we do our own for now. */
+-static void
+-orinoco_cs_error(client_handle_t handle, int func, int ret)
+-{
+-	error_info_t err = { func, ret };
+-	pcmcia_report_error(handle, &err);
+-}
+-
+-
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0) 
+ /* Remove zombie instances (card removed, detach pending) */
+ static void
+@@ -248,7 +238,7 @@
+ 
+ 	ret = pcmcia_register_client(&link->handle, &client_reg);
+ 	if (ret != CS_SUCCESS) {
+-		orinoco_cs_error(link->handle, RegisterClient, ret);
++		cs_error(link->handle, RegisterClient, ret);
+ 		orinoco_cs_detach(link);
+ 		return NULL;
+ 	}
+@@ -538,7 +528,7 @@
+ 	return;
+ 
+  cs_failed:
+-	orinoco_cs_error(link->handle, last_fn, last_ret);
++	cs_error(link->handle, last_fn, last_ret);
+ 
+  failed:
+ 	orinoco_cs_release(link);

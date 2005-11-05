@@ -1,0 +1,229 @@
+diff -ur services.orig/af-defines.sh services/af-defines.sh
+--- services.orig/af-defines.sh	2005-06-14 16:25:27.000000000 +0200
++++ services/af-defines.sh	2005-06-14 16:32:54.000000000 +0200
+@@ -29,7 +29,7 @@
+ fi
+ 
+ # no existence check because user does not have rights to delete the file
+-source /etc/osso-af-init/locale
++. /etc/osso-af-init/locale
+ 
+ # The MyDocs directory
+ export MYDOCSDIR=$HOME/MyDocs
+diff -ur services.orig/dbus-sessionbus.sh services/dbus-sessionbus.sh
+--- services.orig/dbus-sessionbus.sh	2005-06-14 16:25:27.000000000 +0200
++++ services/dbus-sessionbus.sh	2005-06-14 16:32:54.000000000 +0200
+@@ -19,8 +19,8 @@
+ esac
+ 
+ if [ $START = TRUE ]; then
+-  source $LAUNCHWRAPPER_NICE start "$SVC" $PROG --session
++  . $LAUNCHWRAPPER_NICE start "$SVC" $PROG --session
+ else
+   # giving parameter also here so that dsmetool works...
+-  source $LAUNCHWRAPPER_NICE stop "$SVC" $PROG --session
++  . $LAUNCHWRAPPER_NICE stop "$SVC" $PROG --session
+ fi
+Only in services: fixsource.sh~
+diff -ur services.orig/real-af-base-apps services/real-af-base-apps
+--- services.orig/real-af-base-apps	2005-06-14 16:25:27.000000000 +0200
++++ services/real-af-base-apps	2005-06-14 16:32:54.000000000 +0200
+@@ -7,7 +7,7 @@
+ DIR=/etc/osso-af-init
+ 
+ AF_DEFS=$DIR/af-defines.sh
+-source $AF_DEFS || exit 2
++. $AF_DEFS || exit 2
+ 
+ case "$1" in
+ start)  START=TRUE
+@@ -29,43 +29,43 @@
+ 
+ 
+ if [ $START = TRUE ]; then
+-  source $DIR/osso-gtk.defs
++  . $DIR/osso-gtk.defs
+ 
+   if [ -f $DIR/tasknav.defs ]; then
+-    source $DIR/tasknav.defs
++    . $DIR/tasknav.defs
+   fi
+-  source $DIR/tasknav.sh start
++  . $DIR/tasknav.sh start
+ 
+   # first evil sleep hack in attempt to boost Task Navigator startup
+   # (this should also reduce context switches)
+   sleep 5
+ 
+   if [ -f $DIR/home.defs ]; then
+-    source $DIR/home.defs
++    . $DIR/home.defs
+   fi
+-  source $DIR/home.sh start 
++  . $DIR/home.sh start 
+ 
+   # second evil sleep hack in attempt to boost Home startup
+   sleep 5
+ 
+   if [ -f $DIR/statusbar.defs ]; then
+-    source $DIR/statusbar.defs
++    . $DIR/statusbar.defs
+   fi
+-  source $DIR/statusbar.sh start
++  . $DIR/statusbar.sh start
+ 
+   if [ -f $DIR/ke-recv.sh ]; then
+-    source $DIR/ke-recv.sh start
++    . $DIR/ke-recv.sh start
+   fi
+ 
+   if [ -f $DIR/keyboard.defs ]; then
+-    source $DIR/keyboard.defs
++    . $DIR/keyboard.defs
+   fi
+-  source $DIR/keyboard.sh start
++  . $DIR/keyboard.sh start
+ 
+   # LD_PRELOAD script (only for media-server)
+   LDPRELOADSCRIPT=/usr/bin/connectivity_preload.sh
+   if [ -f $LDPRELOADSCRIPT ]; then
+-    source $LDPRELOADSCRIPT
++    . $LDPRELOADSCRIPT
+   fi
+   if [ -x $DIR/osso-media-server.sh ]; then
+     $DIR/osso-media-server.sh start
+@@ -73,17 +73,17 @@
+   unset LD_PRELOAD
+ 
+   if [ -x /usr/bin/clipboard-manager ]; then
+-    source $LAUNCHWRAPPER start clipboard-manager /usr/bin/clipboard-manager
++    . $LAUNCHWRAPPER start clipboard-manager /usr/bin/clipboard-manager
+   fi
+ else
+   if [ -x /usr/bin/clipboard-manager ]; then
+-    source $LAUNCHWRAPPER stop clipboard-manager /usr/bin/clipboard-manager
++    . $LAUNCHWRAPPER stop clipboard-manager /usr/bin/clipboard-manager
+   fi
+-  source $DIR/keyboard.sh stop
++  . $DIR/keyboard.sh stop
+   if [ -f $DIR/ke-recv.sh ]; then
+-    source $DIR/ke-recv.sh stop
++    . $DIR/ke-recv.sh stop
+   fi
+-  source $DIR/statusbar.sh stop
+-  source $DIR/home.sh stop
+-  source $DIR/tasknav.sh stop
++  . $DIR/statusbar.sh stop
++  . $DIR/home.sh stop
++  . $DIR/tasknav.sh stop
+ fi
+diff -ur services.orig/real-af-services services/real-af-services
+--- services.orig/real-af-services	2005-06-14 16:25:27.000000000 +0200
++++ services/real-af-services	2005-06-14 16:32:54.000000000 +0200
+@@ -7,7 +7,7 @@
+ DIR=/etc/osso-af-init
+ 
+ AF_DEFS=$DIR/af-defines.sh
+-source $AF_DEFS || exit 2
++. $AF_DEFS || exit 2
+ 
+ case "$1" in
+ start)  START=TRUE
+@@ -30,21 +30,21 @@
+ 
+ if [ $START = TRUE ]; then
+   # GConf daemon (probably started already by D-BUS)
+-  source $DIR/gconf-daemon.sh start
++  . $DIR/gconf-daemon.sh start
+ 
+   # Must be before D-BUS session bus is started!
+-  source $DIR/osso-gtk.defs
++  . $DIR/osso-gtk.defs
+ 
+   # opera needs some definitions
+   if [ -f $DIR/browser.defs ]; then
+-    source $DIR/browser.defs
++    . $DIR/browser.defs
+   fi
+   # LD_PRELOAD script (only for the session bus environment)
+   LDPRELOADSCRIPT=/usr/bin/connectivity_preload.sh
+   if [ -f $LDPRELOADSCRIPT ]; then
+-    source $LDPRELOADSCRIPT
++    . $LDPRELOADSCRIPT
+   fi
+-  source $DIR/dbus-sessionbus.sh start
++  . $DIR/dbus-sessionbus.sh start
+   unset LD_PRELOAD
+ 
+   # Wait until X is ready
+@@ -58,12 +58,12 @@
+     INC=`expr $INC + 1`
+   done
+ 
+-  source $DIR/sapwood-server.sh start
++  . $DIR/sapwood-server.sh start
+ 
+   if [ -f $DIR/matchbox.defs ]; then
+-    source $DIR/matchbox.defs
++    . $DIR/matchbox.defs
+   fi
+-  source $DIR/matchbox.sh start
++  . $DIR/matchbox.sh start
+ 
+   # wait until system D-BUS is ready (some stuff started by init
+   # after us assume it is running)
+@@ -79,7 +79,7 @@
+     # LD_PRELOAD script (only for media-server)
+     LDPRELOADSCRIPT=/usr/bin/connectivity_preload.sh
+     if [ -f $LDPRELOADSCRIPT ]; then
+-      source $LDPRELOADSCRIPT
++      . $LDPRELOADSCRIPT
+     fi
+     if [ -x $DIR/osso-media-server.sh ]; then
+       $DIR/osso-media-server.sh start
+@@ -88,8 +88,8 @@
+   fi
+ else
+   $DIR/osso-media-server.sh stop
+-  source $DIR/matchbox.sh stop
+-  source $DIR/sapwood-server.sh stop
+-  source $DIR/dbus-sessionbus.sh stop
+-  source $DIR/gconf-daemon.sh stop
++  . $DIR/matchbox.sh stop
++  . $DIR/sapwood-server.sh stop
++  . $DIR/dbus-sessionbus.sh stop
++  . $DIR/gconf-daemon.sh stop
+ fi
+diff -ur services.orig/real-af-startup services/real-af-startup
+--- services.orig/real-af-startup	2005-06-14 16:25:27.000000000 +0200
++++ services/real-af-startup	2005-06-14 16:32:54.000000000 +0200
+@@ -7,7 +7,7 @@
+ DIR=/etc/osso-af-init
+ 
+ AF_DEFS=$DIR/af-defines.sh
+-source $AF_DEFS || exit 2
++. $AF_DEFS || exit 2
+ 
+ case "$1" in
+ start)  START=TRUE
+@@ -30,7 +30,7 @@
+ 
+ if [ $START = TRUE ]; then
+   # Wizards and Connectivity use Gtk
+-  source $DIR/osso-gtk.defs
++  . $DIR/osso-gtk.defs
+ 
+   if [ -x /sbin/devlock-blocker ]; then
+     # this blocks until the device is unlocked
+@@ -54,9 +54,9 @@
+   if [ -x /usr/bin/suw -a -e $HOME/first-boot-flag ]; then
+     # we need to start VKB for the wizard...
+     if [ -f $DIR/keyboard.defs ]; then
+-      source $DIR/keyboard.defs
++      . $DIR/keyboard.defs
+     fi
+-    source $DIR/keyboard.sh start
++    . $DIR/keyboard.sh start
+     # give VKB some time to start
+     sleep 5
+     rm -f $HOME/first-boot-flag

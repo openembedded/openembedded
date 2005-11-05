@@ -1,0 +1,35 @@
+diff -Nurd fbvncserver-0.9.4.old/fbvncserver.c fbvncserver-0.9.4/fbvncserver.c
+--- fbvncserver-0.9.4.old/fbvncserver.c	2005-07-27 22:25:25.069921936 +0200
++++ fbvncserver-0.9.4/fbvncserver.c	2005-07-27 22:27:21.087284616 +0200
+@@ -28,7 +28,7 @@
+ 
+ 
+ #ifdef IPAQ
+-#define FANCY_PANEL_JPG "/usr/local/vnc/ipaq_panel.jpg"
++#define FANCY_PANEL_JPG "/usr/share/fbvncserver/ipaq_panel.jpg"
+ #define DESKTOP_NAME "iPAQ"
+ #else   /* #ifdef ZAURUS */
+ #define FANCY_PANEL_JPG "/usr/share/fbvncserver/zaurus_panel.jpg"
+diff -Nurd fbvncserver-0.9.4.old/Makefile fbvncserver-0.9.4/Makefile
+--- fbvncserver-0.9.4.old/Makefile	2005-07-27 22:25:25.068922088 +0200
++++ fbvncserver-0.9.4/Makefile	2005-07-27 22:26:49.983013184 +0200
+@@ -89,7 +89,7 @@
+ 		${CC} ${KERNEL_INCLUDES} -Wall -D__KERNEL__ -c -o $@ $<
+ 
+ ipaq_kbdsim.o:			kbdsim.c
+-		${CC} -DIPAQ -Wall -D__KERNEL__ -c -o $@ $<
++		${CC} ${KERNEL_INCLUDES} -DIPAQ -Wall -D__KERNEL__ -c -o $@ $<
+ 
+ loadjpeg.o:	loadjpeg.c						\
+ 		loadjpeg.h
+diff -Nurd fbvncserver-0.9.4.old/tssimd.c fbvncserver-0.9.4/tssimd.c
+--- fbvncserver-0.9.4.old/tssimd.c	2005-07-27 22:25:25.070921784 +0200
++++ fbvncserver-0.9.4/tssimd.c	2005-07-27 22:25:53.595585376 +0200
+@@ -26,6 +26,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <signal.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>

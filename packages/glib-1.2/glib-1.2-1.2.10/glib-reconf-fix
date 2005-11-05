@@ -1,0 +1,683 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- glib-1.2.10/configure.in~glib-reconf-fix.patch
++++ glib-1.2.10/configure.in
+@@ -12,12 +12,16 @@
+ # Save this value here, since automake will set cflags later
+ cflags_set=${CFLAGS+set}
+ 
+-# we rewrite this file
+-rm -f glibconfig-sysdefs.h
++if test $cross_compiling != yes ; then
++	# we rewrite this file
++	rm -f glibconfig-sysdefs.h
++fi
+ 
+ dnl we need to AC_DIVERT_PUSH/AC_DIVERT_POP these variable definitions so they
+ dnl are available for $ac_help expansion (don't we all *love* autoconf?)
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
++ifdef([AC_DIVERSION_NOTICE],
++             [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
++         [AC_DIVERT_PUSH(NOTICE)])dnl
+ #
+ # The following version number definitions apply to GLib, GModule and GThread
+ # as a whole, so if changes occoured in any of them, they are all
+@@ -72,7 +76,7 @@
+ AC_DEFINE_UNQUOTED(GLIB_BINARY_AGE, $GLIB_BINARY_AGE)
+ 
+ dnl Initialize libtool
+-AM_PROG_LIBTOOL
++AC_PROG_LIBTOOL
+ 
+ dnl Initialize maintainer mode
+ AM_MAINTAINER_MODE
+@@ -81,7 +85,9 @@
+ 
+ dnl figure debugging default, prior to $ac_help setup
+ dnl
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
++ifdef([AC_DIVERSION_NOTICE],
++             [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
++         [AC_DIVERT_PUSH(NOTICE)])dnl
+ if test `expr $GLIB_MINOR_VERSION \% 2` = 1 ; then
+ 	debug_default=yes
+ else
+@@ -179,24 +185,26 @@
+ changequote([,])dnl
+ 
+ dnl DU4 native cc currently needs -std1 for ANSI mode (instead of K&R)
+-AC_MSG_CHECKING([for extra flags to get ANSI library prototypes])
+-glib_save_LIBS=$LIBS
+-LIBS="$LIBS -lm"
+-AC_TRY_RUN([#include <math.h>
+-             int main (void) { return (log(1) != log(1.)); }],
+-     AC_MSG_RESULT(none needed),
+-     glib_save_CFLAGS=$CFLAGS
+-     CFLAGS="$CFLAGS -std1"
+-     AC_TRY_RUN([#include <math.h>
++if test $cross_compiling != yes ; then
++    AC_MSG_CHECKING([for extra flags to get ANSI library prototypes])
++    glib_save_LIBS=$LIBS
++    LIBS="$LIBS -lm"
++    AC_TRY_RUN([#include <math.h>
+                  int main (void) { return (log(1) != log(1.)); }],
+-         AC_MSG_RESULT(-std1),
+-         AC_MSG_RESULT()
+-         CFLAGS=$glib_save_CFLAGS
+-         AC_MSG_WARN(
+-                [No ANSI prototypes found in library. (-std1 didn't work.)])
+-     )
+-)
+-LIBS=$glib_save_LIBS
++         AC_MSG_RESULT(none needed),
++         glib_save_CFLAGS=$CFLAGS
++         CFLAGS="$CFLAGS -std1"
++         AC_TRY_RUN([#include <math.h>
++                     int main (void) { return (log(1) != log(1.)); }],
++             AC_MSG_RESULT(-std1),
++             AC_MSG_RESULT()
++             CFLAGS=$glib_save_CFLAGS
++             AC_MSG_WARN(
++                    [No ANSI prototypes found in library. (-std1 didn't work.)])
++         )
++    )
++    LIBS=$glib_save_LIBS
++fi
+ 
+ dnl NeXTStep cc seems to need this
+ AC_MSG_CHECKING([for extra flags for POSIX compliance])
+@@ -232,9 +240,8 @@
+ dnl AC_C_INLINE is useless to us since it bails out too early, we need to
+ dnl truely know which ones of `inline', `__inline' and `__inline__' are
+ dnl actually supported.
+-AC_MSG_CHECKING(for __inline)
+-AC_CACHE_VAL(glib_cv_has__inline,[
+-        AC_TRY_RUN([
++AC_CACHE_CHECK([for __inline],glib_cv_has__inline,[
++        AC_COMPILE_IFELSE([
+ 	__inline int foo () { return 0; }
+ 	int main () { return foo (); }
+        	],
+@@ -243,13 +250,11 @@
+ 	glib_cv_has__inline=no
+         ,)
+ ])
+-AC_MSG_RESULT($glib_cv_has__inline)
+ case x$glib_cv_has__inline in
+-xyes) AC_DEFINE(G_HAVE___INLINE)
++xyes) AC_DEFINE(G_HAVE___INLINE,1,[Have __inline keyword])
+ esac
+-AC_MSG_CHECKING(for __inline__)
+-AC_CACHE_VAL(glib_cv_has__inline__,[
+-        AC_TRY_RUN([
++AC_CACHE_CHECK([for __inline__],glib_cv_has__inline__,[
++        AC_COMPILE_IFELSE([
+ 	__inline__ int foo () { return 0; }
+ 	int main () { return foo (); }
+        	],
+@@ -258,13 +263,12 @@
+ 	glib_cv_has__inline__=no
+         ,)
+ ])
+-AC_MSG_RESULT($glib_cv_has__inline__)
+ case x$glib_cv_has__inline__ in
+-xyes) AC_DEFINE(G_HAVE___INLINE__)
++xyes) AC_DEFINE(G_HAVE___INLINE__,1,[Have __inline__ keyword])
+ esac
+-AC_MSG_CHECKING(for inline)
+-AC_CACHE_VAL(glib_cv_hasinline,[
+-        AC_TRY_RUN([
++AC_CACHE_CHECK([for inline], glib_cv_hasinline,[
++        AC_COMPILE_IFELSE([
++	#undef inline
+ 	inline int foo () { return 0; }
+ 	int main () { return foo (); }
+        	],
+@@ -273,9 +277,8 @@
+ 	glib_cv_hasinline=no
+         ,)
+ ])
+-AC_MSG_RESULT($glib_cv_hasinline)
+ case x$glib_cv_hasinline in
+-xyes) AC_DEFINE(G_HAVE_INLINE)
++xyes) AC_DEFINE(G_HAVE_INLINE,1,[Have inline keyword])
+ esac
+ 
+ dnl for bytesex stuff
+@@ -397,20 +400,18 @@
+ AC_MSG_RESULT($glib_working_wctype)
+ 
+ dnl *** check for sane realloc() ***
+-AC_MSG_CHECKING(whether realloc (NULL,) will work)
+-AC_CACHE_VAL(glib_cv_sane_realloc,[
+-	AC_TRY_RUN([
+-	#include <stdlib.h>
+-	int main() {
+-	  return realloc (0, sizeof (int)) == 0;
+-	}],
+-	glib_cv_sane_realloc=yes
+-	AC_DEFINE(REALLOC_0_WORKS)
+-	,
+-	glib_cv_sane_realloc=no
+-	,)
++AC_CACHE_CHECK([whether realloc (NULL,) will work],glib_cv_sane_realloc,[
++        AC_TRY_RUN([#include <stdlib.h>
++        int main() {
++          return realloc (0, sizeof (int)) == 0;
++        }],
++        [glib_cv_sane_realloc=yes],
++        [glib_cv_sane_realloc=no],
++	[glib_cv_sane_realloc=yes])
+ ])
+-AC_MSG_RESULT($glib_cv_sane_realloc)
++if test x$glib_cv_sane_realloc = xyes; then
++  AC_DEFINE(REALLOC_0_WORKS,1,[whether realloc (NULL,) works])
++fi
+ 
+ 
+ dnl **********************
+@@ -418,10 +419,8 @@
+ dnl **********************
+ dnl we currently check for all three va_copy possibilities, so we get
+ dnl all results in config.log for bug reports.
+-AC_MSG_CHECKING(for an implementation of va_copy())
+-AC_CACHE_VAL(glib_cv_va_copy,[
+-	AC_TRY_RUN([
+-	#include <stdarg.h>
++AC_CACHE_CHECK([for an implementation of va_copy()],glib_cv_va_copy,[
++	AC_LINK_IFELSE([#include <stdarg.h>
+ 	void f (int i, ...) {
+ 	va_list args1, args2;
+ 	va_start (args1, i);
+@@ -434,16 +433,11 @@
+ 	  f (0, 42);
+ 	  return 0;
+ 	}],
+-	glib_cv_va_copy=yes
+-	,
+-	glib_cv_va_copy=no
+-	,)
++	[glib_cv_va_copy=yes],
++	[glib_cv_va_copy=no])
+ ])
+-AC_MSG_RESULT($glib_cv_va_copy)
+-AC_MSG_CHECKING(for an implementation of __va_copy())
+-AC_CACHE_VAL(glib_cv___va_copy,[
+-	AC_TRY_RUN([
+-	#include <stdarg.h>
++AC_CACHE_CHECK([for an implementation of __va_copy()],glib_cv___va_copy,[
++	AC_LINK_IFELSE([#include <stdarg.h>
+ 	void f (int i, ...) {
+ 	va_list args1, args2;
+ 	va_start (args1, i);
+@@ -456,16 +450,23 @@
+ 	  f (0, 42);
+ 	  return 0;
+ 	}],
+-	glib_cv___va_copy=yes
+-	,
+-	glib_cv___va_copy=no
+-	,)
++	[glib_cv___va_copy=yes],
++	[glib_cv___va_copy=no])
+ ])
+-AC_MSG_RESULT($glib_cv___va_copy)
+-AC_MSG_CHECKING(whether va_lists can be copied by value)
+-AC_CACHE_VAL(glib_cv_va_val_copy,[
+-	AC_TRY_RUN([
+-	#include <stdarg.h>
++
++if test "x$glib_cv_va_copy" = "xyes"; then
++  g_va_copy_func=va_copy
++else if test "x$glib_cv___va_copy" = "xyes"; then
++  g_va_copy_func=__va_copy
++fi
++fi
++
++if test -n "$g_va_copy_func"; then
++  AC_DEFINE_UNQUOTED(G_VA_COPY,$g_va_copy_func,[A 'va_copy' style function])
++fi
++
++AC_CACHE_CHECK([whether va_lists can be copied by value],glib_cv_va_val_copy,[
++	AC_TRY_RUN([#include <stdarg.h>
+ 	void f (int i, ...) {
+ 	va_list args1, args2;
+ 	va_start (args1, i);
+@@ -478,21 +479,14 @@
+ 	  f (0, 42);
+ 	  return 0;
+ 	}],
+-	glib_cv_va_val_copy=yes
+-	,
+-	glib_cv_va_val_copy=no
+-	,)
++	[glib_cv_va_val_copy=yes],
++	[glib_cv_va_val_copy=no],
++	[glib_cv_va_val_copy=yes])
+ ])
+-if test "x$glib_cv_va_copy" = "xyes"; then
+-  AC_DEFINE(G_VA_COPY, va_copy)
+-else if test "x$glib_cv___va_copy" = "xyes"; then
+-  AC_DEFINE(G_VA_COPY, __va_copy)
+-fi
+-fi
++
+ if test "x$glib_cv_va_val_copy" = "xno"; then
+-  AC_DEFINE(G_VA_COPY_AS_ARRAY)
++  AC_DEFINE(G_VA_COPY_AS_ARRAY,1, ['va_lists' cannot be copies as values])
+ fi
+-AC_MSG_RESULT($glib_cv_va_val_copy)
+ 
+ 
+ dnl ***********************
+@@ -506,20 +500,18 @@
+ G_MODULE_HAVE_DLERROR=0
+ dnl *** dlopen() and dlsym() in system libraries
+ if test -z "$G_MODULE_IMPL"; then
+-	AC_CHECK_FUNC(dlopen,
+-		AC_CHECK_FUNC(dlsym,
+-			G_MODULE_IMPL=G_MODULE_IMPL_DL
+-		,)
+-	,)
++        AC_CHECK_FUNC(dlopen,
++                      [AC_CHECK_FUNC(dlsym,
++                                     [G_MODULE_IMPL=G_MODULE_IMPL_DL],[])],
++                      [])
+ fi
+ dnl *** dlopen() and dlsym() in libdl
+ if test -z "$G_MODULE_IMPL"; then
+ 	AC_CHECK_LIB(dl, dlopen,
+-		AC_CHECK_LIB(dl, dlsym,
+-			G_MODULE_LIBS=-ldl
+-			G_MODULE_IMPL=G_MODULE_IMPL_DL
+-		,)
+-	,)
++		[AC_CHECK_LIB(dl, dlsym,
++			[G_MODULE_LIBS=-ldl
++			G_MODULE_IMPL=G_MODULE_IMPL_DL],[])],
++		[])
+ fi
+ dnl *** shl_load() in libdld (HP-UX)
+ if test -z "$G_MODULE_IMPL"; then
+@@ -556,40 +548,43 @@
+ 	LIBS="$LIBS $G_MODULE_LIBS"
+ 	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
+ dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
+-        AC_CACHE_CHECK([for RTLD_GLOBAL brokenness],
+-                glib_cv_rtldglobal_broken,[
+-                AC_TRY_RUN([
+-                #include <dlfcn.h>
+-                #ifndef RTLD_GLOBAL
+-                #define RTLD_GLOBAL 0
+-                #endif
+-                #ifndef RTLD_LAZY
+-                #define RTLD_LAZY 0
+-                #endif
+-                int pthread_create;
+-                int main () {
+-                void *handle, *global, *local;
+-                global = &pthread_create;
+-                handle = dlopen ("libpthread.so", RTLD_GLOBAL | RTLD_LAZY);
+-                if (!handle) return 0;
+-                local = dlsym (handle, "pthread_create");
+-                return global == local;
+-                }],
+-                        [glib_cv_rtldglobal_broken=no],
+-                        [glib_cv_rtldglobal_broken=yes],
+-                        [])
+-                rm -f plugin.c plugin.o plugin.lo
+-        ])
+-        if test "x$glib_cv_rtldglobal_broken" = "xyes"; then
+-                G_MODULE_BROKEN_RTLD_GLOBAL=1
+-        else
+-                G_MODULE_BROKEN_RTLD_GLOBAL=0
+-        fi
+-dnl *** check whether we need preceeding underscores
+-	AC_MSG_CHECKING(for preceeding underscore in symbols)
+-	AC_CACHE_VAL(glib_cv_uscore,[
++	echo "void glib_plugin_test(void) { }" > plugin.c
++	${SHELL} ./libtool --mode=compile ${CC} -shared \
++		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
++	AC_CACHE_CHECK([for RTLD_GLOBAL brokenness],
++		glib_cv_rtldglobal_broken,[
+ 		AC_TRY_RUN([
+-		#include <dlfcn.h>
++#include <dlfcn.h>
++#ifndef RTLD_GLOBAL
++#  define RTLD_GLOBAL 0
++#endif
++#ifndef RTLD_LAZY
++#  define RTLD_LAZY 0
++#endif
++int glib_plugin_test;
++int main () {
++    void *handle, *global, *local;
++    global = &glib_plugin_test;
++    handle = dlopen ("./.libs/plugin.o", RTLD_GLOBAL | RTLD_LAZY);
++    if (!handle) return 0;
++    local = dlsym (handle, "glib_plugin_test");
++    return global == local;
++}                       ],
++			[glib_cv_rtldglobal_broken=no],
++			[glib_cv_rtldglobal_broken=yes],
++			[glib_cv_rtldglobal_broken=no])
++		rm -f plugin.c plugin.o plugin.lo .libs/plugin.o
++		rmdir .libs 2>/dev/null
++	])
++	if test "x$glib_cv_rtldglobal_broken" = "xyes"; then
++  		G_MODULE_BROKEN_RTLD_GLOBAL=1
++	else
++  		G_MODULE_BROKEN_RTLD_GLOBAL=0
++	fi
++dnl *** check whether we need preceeding underscores
++	AC_CACHE_CHECK([for preceeding underscore in symbols],
++		glib_cv_uscore,[
++		AC_TRY_RUN([#include <dlfcn.h>
+                 int glib_underscore_test (void) { return 42; }
+ 		int main() {
+ 		  void *f1 = (void*)0, *f2 = (void*)0, *handle;
+@@ -599,12 +594,12 @@
+ 		    f2 = dlsym (handle, "_glib_underscore_test");
+ 		  } return (!f2 || f1);
+ 		}],
+-			glib_cv_uscore=yes,
+-			glib_cv_uscore=no,
+-		)
+-		rm -f plugin.c plugin.o plugin.lo
++			[glib_cv_uscore=yes],
++			[glib_cv_uscore=no],
++			[])
++		rm -f plugin.c plugin.$ac_objext plugin.lo
+ 	])
+-	AC_MSG_RESULT($glib_cv_uscore)
++        AC_MSG_RESULT($glib_cv_uscore)
+ 	if test "x$glib_cv_uscore" = "xyes"; then
+   		G_MODULE_NEED_USCORE=1
+ 	else
+@@ -614,8 +609,8 @@
+ 	LDFLAGS="$LDFLAGS_orig"
+ dnl *** check for having dlerror()
+ 	AC_CHECK_FUNC(dlerror,
+-		G_MODULE_HAVE_DLERROR=1,
+-		G_MODULE_HAVE_DLERROR=0)
++		[G_MODULE_HAVE_DLERROR=1],
++		[G_MODULE_HAVE_DLERROR=0])
+ 	LIBS="$LIBS_orig"
+ fi
+ dnl *** done, have e got an implementation?
+@@ -822,100 +817,168 @@
+ dnl check for mt safe function variants
+ dnl ***********************************
+ 
+-if test x"$have_threads" != xnone; then
++if test x"$have_threads" != xno; then
+ 	glib_save_LIBS="$LIBS"
+-	glib_save_CFLAGS="$CFLAGS"
+ 	# we are not doing the following for now, as this might require glib 
+ 	# to always be linked with the thread libs on some platforms. 
+ 	# LIBS="$LIBS $G_THREAD_LIBS"
+-	CFLAGS="$CFLAGS $G_THREAD_CFLAGS"
+-	AC_CHECK_FUNCS(localtime_r rand_r)
++	AC_CHECK_FUNCS(localtime_r)
+ 	if test "$ac_cv_header_pwd_h" = "yes"; then
+-		AC_MSG_CHECKING([for getpwuid_r])
+-	 	AC_CACHE_VAL(ac_cv_func_getpwuid_r,
+-			[AC_TRY_RUN([#include <errno.h>
+-				int main () { char buffer[10000], *pointer; 
+-				char getpwuid_r (long, void*, void*,
+-					int, void*);
+-				int error;
+-				errno = 0;
+-				error = getpwuid_r (0, &buffer, &buffer, 
+-					sizeof (buffer), &pointer);
+-				return errno == ENOSYS || error == ENOSYS;}],
+-				[ac_cv_func_getpwuid_r=yes],
+-				[ac_cv_func_getpwuid_r=no])])
+-		if test "$ac_cv_func_getpwuid_r" = yes; then
+-			AC_MSG_RESULT(yes)
++	 	AC_CACHE_CHECK([for posix getpwuid_r],
++			ac_cv_func_posix_getpwuid_r,
++			[AC_TRY_RUN([
++#include <errno.h>
++#include <pwd.h>
++int main () { 
++    char buffer[10000];
++    struct passwd pwd, *pwptr = &pwd;
++    int error;
++    errno = 0;
++    error = getpwuid_r (0, &pwd, buffer, 
++                        sizeof (buffer), &pwptr);
++   return (error < 0 && errno == ENOSYS) 
++	   || error == ENOSYS; 
++}                               ],
++				[ac_cv_func_posix_getpwuid_r=yes],
++				[ac_cv_func_posix_getpwuid_r=no])])
++		if test "$ac_cv_func_posix_getpwuid_r" = yes; then
++			AC_DEFINE(HAVE_POSIX_GETPWUID_R,1,
+ 			AC_DEFINE(HAVE_GETPWUID_R)
++				[Have POSIX function getpwuid_r])
+ 		else
+-			AC_MSG_RESULT(no)
+-		fi
+-		if test "$ac_cv_func_getpwuid_r" = "yes"; then
+-			AC_MSG_CHECKING(whether getpwuid_r is posix like)
+-			# The signature for the POSIX version is:
+-			# int getpwuid_r(uid_t, struct passwd *, char *, size_t, struct passwd **)
+-			AC_TRY_COMPILE([#include <pwd.h>
+-                                        #include <sys/types.h>
+-                                        #include <stdlib.h>],
+-				[getpwuid_r((uid_t)0, NULL, NULL, (size_t)0, NULL);],
+-				[AC_DEFINE(HAVE_GETPWUID_R_POSIX)
+-				AC_MSG_RESULT(yes)],
+-				[AC_MSG_RESULT(no)])
++	 		AC_CACHE_CHECK([for nonposix getpwuid_r],
++				ac_cv_func_nonposix_getpwuid_r,
++				[AC_TRY_LINK([#include <pwd.h>],
++                                	[char buffer[10000];
++                                	struct passwd pwd;
++                                	getpwuid_r (0, &pwd, buffer, 
++                                        		sizeof (buffer));],
++					[AC_DEFINE(HAVE_GETPWUID_R_POSIX)
++					AC_MSG_RESULT(yes)],
++					[AC_MSG_RESULT(no)])])
++			if test "$ac_cv_func_nonposix_getpwuid_r" = yes; then
++				AC_DEFINE(HAVE_NONPOSIX_GETPWUID_R,1,
++					[Have non-POSIX function getpwuid_r])
++			fi
+ 		fi
+ 	fi
++	LIBS="$G_THREAD_LIBS $LIBS"
+ 	if test x"$have_threads" = xposix; then
+-		LIBS="$LIBS $G_THREAD_LIBS"
+-		AC_MSG_CHECKING(whether pthread_getspecific is posix like)
+-		# PCThreads has pthread_getspecific(pthread_key_t, void **);
+-		AC_TRY_COMPILE([#include <pthread.h>],
+-			[pthread_getspecific(0,NULL);],
+-			[AC_MSG_RESULT(no)],
+-			[AC_MSG_RESULT(yes)
+-			AC_DEFINE(HAVE_PTHREAD_GETSPECIFIC_POSIX)])
+-		AC_MSG_CHECKING(whether pthread_mutex_trylock is posix like)
+-		# DCE Threads return 1 as success, posix 0. what a mess.
+-		AC_TRY_RUN([#include <pthread.h>
+-			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+-			int main () { 
+-			return !pthread_mutex_trylock (&mutex); }],
+-			[AC_MSG_RESULT(no)],
+-			[AC_MSG_RESULT(yes)
+-			AC_DEFINE(HAVE_PTHREAD_MUTEX_TRYLOCK_POSIX)])
+-		AC_MSG_CHECKING(whether pthread_cond_timedwait is posix like)
+-		# DCE Threads return -1 as failure, posix ETIMEDOUT.
+-		AC_TRY_RUN([#include <pthread.h>
+-			int main () { 
+-			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+-			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+-			struct timeval tval;
+-			struct timespec tspec;
+-			gettimeofday (&tval, NULL);
+-			tspec.tv_sec = tval.tv_sec;
+-			tspec.tv_nsec = 0;
+-			return pthread_cond_timedwait (&cond,&mutex,&tspec) 
+-				!= -1;}],
+-			[AC_MSG_RESULT(no)],
++		glib_save_CPPFLAGS="$CPPFLAGS"
++		CPPFLAGS="$CPPFLAGS $GTHREAD_COMPILE_IMPL_DEFINES"
++		dnl we might grow sizeof(pthread_t) later on, so use a dummy name here
++		GLIB_SIZEOF([#include <pthread.h>], pthread_t, system_thread)
++		# This is not AC_CHECK_FUNC to also work with function
++		# name mangling in header files.
++		AC_MSG_CHECKING(for pthread_attr_setstacksize)
++		AC_TRY_LINK([#include <pthread.h>],
++			[pthread_attr_t t; pthread_attr_setstacksize(&t,0)],
+ 			[AC_MSG_RESULT(yes)
+-			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
++			AC_DEFINE(HAVE_PTHREAD_ATTR_SETSTACKSIZE,1,
++				  [Have function pthread_attr_setstacksize])],
++			[AC_MSG_RESULT(no)])
++		AC_MSG_CHECKING(for minimal/maximal thread priority)
++		if test x"$posix_priority_min" = x; then
++			AC_EGREP_CPP(PX_PRIO_MIN,[#include <pthread.h>
++				PX_PRIO_MIN],,[
++				posix_priority_min=PX_PRIO_MIN
++				posix_priority_max=PX_PRIO_MAX])
++		fi
++		if test x"$posix_priority_min" = x; then
++			# AIX
++			AC_EGREP_CPP(PTHREAD_PRIO_MIN,[#include <pthread.h>
++				PTHREAD_PRIO_MIN],,[
++				posix_priority_min=PTHREAD_PRIO_MIN
++				posix_priority_max=PTHREAD_PRIO_MAX])
++		fi
++		if test x"$posix_priority_min" = x; then
++			AC_EGREP_CPP(PRI_OTHER_MIN,[#include <pthread.h>
++				PRI_OTHER_MIN],,[
++				posix_priority_min=PRI_OTHER_MIN	
++				posix_priority_max=PRI_OTHER_MAX])
++		fi
++		if test x"$posix_priority_min" = x; then
++			AC_MSG_RESULT(none found)
++			AC_MSG_WARN($POSIX_NO_PRIORITIES)
++	                posix_priority_min=-1
++			posix_priority_max=-1
++		else
++			AC_MSG_RESULT($posix_priority_min/$posix_priority_max)
++			AC_MSG_CHECKING(for pthread_setschedparam)
++			AC_TRY_LINK([#include <pthread.h>],
++		          [pthread_t t; pthread_setschedparam(t, 0, NULL)],
++			  [AC_MSG_RESULT(yes)
++			AC_DEFINE_UNQUOTED(POSIX_MIN_PRIORITY,$posix_priority_min,[Minimum POSIX RT priority])
++			   AC_DEFINE_UNQUOTED(POSIX_MAX_PRIORITY,$posix_priority_max,[Maximum POSIX RT priority])],
++                          [AC_MSG_RESULT(no)
++                           AC_MSG_WARN($POSIX_NO_PRIORITIES)])
++		fi
++		posix_yield_func=none
++		AC_MSG_CHECKING(for posix yield function)
++		for yield_func in sched_yield pthread_yield_np pthread_yield \
++							thr_yield; do
++			AC_TRY_LINK([#include <pthread.h>],
++				[$yield_func()],
++				[posix_yield_func="$yield_func"
++				break])
++		done		
++		if test x"$posix_yield_func" = xnone; then
++			AC_MSG_RESULT(none found)
++			AC_MSG_WARN($POSIX_NO_YIELD)
++	                posix_yield_func="g_usleep(1000)"
++		else
++			AC_MSG_RESULT($posix_yield_func)
++			posix_yield_func="$posix_yield_func()"
++		fi
++		AC_DEFINE_UNQUOTED(POSIX_YIELD_FUNC,$posix_yield_func,[The POSIX RT yield function])
++		CPPFLAGS="$glib_save_CPPFLAGS"
++           
++	elif test x"$have_threads" = xwin32; then
++		# It's a pointer to a private struct
++		GLIB_SIZEOF(,struct _GThreadData *, system_thread)
++	elif test x"$have_threads" = xsolaris; then 
++		GLIB_SIZEOF([#include <thread.h>], thread_t, system_thread)
+ 	fi
++
+ 	LIBS="$glib_save_LIBS"
+-	CFLAGS="$glib_save_CFLAGS"
+-fi
+ 
+-if test "x$enable_threads" = "xyes"; then
+-	if test "$ac_cv_func_getpwuid_r" != "yes"; then
++	# now spit out all the warnings.
++	if test "$ac_cv_func_posix_getpwuid_r" != "yes" && 
++	   test "$ac_cv_func_nonposix_getpwuid_r" != "yes"; then
+ 		AC_MSG_WARN($FUNC_NO_GETPWUID_R)
+ 	fi
+ 	if test "$ac_cv_func_localtime_r" != "yes"; then
+ 		AC_MSG_WARN($FUNC_NO_LOCALTIME_R)
+ 	fi
++fi	
++
++if test x"$glib_cv_sizeof_system_thread" = x; then
++   # use a pointer as a fallback.
++   GLIB_SIZEOF(,void *, system_thread)
+ fi
+ 
+-AC_DEFINE_UNQUOTED(G_THREAD_SOURCE,"gthread-$have_threads.c")
++#
++# Hack to deal with:
++# 
++#  a) GCC < 3.3 for Linux doesn't include -lpthread when
++#     building shared libraries with linux.
++#  b) libtool doesn't recognize -pthread as a library dependency.
++#
++case $host in
++  *-*-linux*)
++    G_THREAD_LIBS_FOR_GTHREAD="`echo $G_THREAD_LIBS | sed s/-pthread/-lpthread/`"
++    ;;
++  *)
++    G_THREAD_LIBS_FOR_GTHREAD="`echo $G_THREAD_LIBS | sed s/-pthread/-Wc,-pthread/`"
++    ;;
++esac
++
++AC_DEFINE_UNQUOTED(G_THREAD_SOURCE,"gthread-$have_threads.c",
++		   [Source file containing theread implementation])
+ AC_SUBST(G_THREAD_CFLAGS)
+ AC_SUBST(G_THREAD_LIBS)
+-
+-CFLAGS="$CFLAGS $G_THREAD_CFLAGS"
++AC_SUBST(G_THREAD_LIBS_FOR_GTHREAD)
++AC_SUBST(G_THREAD_LIBS_EXTRA)
+ 
+ dnl **********************************************
+ dnl *** GDefaultMutex setup and initialization ***
+@@ -940,13 +1003,14 @@
+ dnl ****************************************
+ dnl *** GLib POLL* compatibility defines ***
+ dnl ****************************************
+-GLIB_SYSDEFS(
+-[#include <sys/types.h>
+-#include <sys/poll.h>],
+-	POLLIN:1 POLLOUT:4 POLLPRI:2 POLLERR:8 POLLHUP:16 POLLNVAL:32,
+-	glibconfig-sysdefs.h,
+-	=)
+-
++if test $cross_compiling != yes ; then
++	GLIB_SYSDEFS(
++	[#include <sys/types.h>
++	#include <sys/poll.h>],
++		POLLIN:1 POLLOUT:4 POLLPRI:2 POLLERR:8 POLLHUP:16 POLLNVAL:32,
++		glibconfig-sysdefs.h,
++		=)
++fi
+ 
+ dnl ******************************
+ dnl *** output the whole stuff ***
+--- glib-1.2.10/gmodule/Makefile.am~glib-reconf-fix.patch
++++ glib-1.2.10/gmodule/Makefile.am
+@@ -42,7 +42,7 @@
+ libgplugin_b_la_LIBADD = @G_MODULE_LIBS@ # $(libglib)
+ 
+ noinst_PROGRAMS = testgmodule
+-testgmodule_LDFLAGS += @G_MODULE_LDFLAGS@
++testgmodule_LDFLAGS = @G_MODULE_LDFLAGS@
+ testgmodule_LDADD = libgmodule.la $(libglib) @G_MODULE_LIBS@
+ 
+ .PHONY: files release

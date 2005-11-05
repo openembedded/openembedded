@@ -1,0 +1,20 @@
+*** flite-1.2-release/configure.in~	Tue Feb 18 01:45:45 2003
+--- flite-1.2-release/configure.in	Mon Jul 18 22:01:25 2005
+***************
+*** 144,150 ****
+  dnl
+  AC_ARG_WITH( audio,
+  	[  --with-audio          with specific audio support (none linux freebsd etc) ],
+!         AUDIODRIVER=$with_audio )
+  
+  if test "x$AUDIODEFS" = x; then
+      case "$AUDIODRIVER" in
+--- 144,151 ----
+  dnl
+  AC_ARG_WITH( audio,
+  	[  --with-audio          with specific audio support (none linux freebsd etc) ],
+!         [AUDIODRIVER=$with_audio
+!          AUDIODEFS=])
+  
+  if test "x$AUDIODEFS" = x; then
+      case "$AUDIODRIVER" in

@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ifupdown-0.6.4/inet.defn~busybox
++++ ifupdown-0.6.4/inet.defn
+@@ -116,8 +116,8 @@
+   options
+     provider name  -- Use /name/ as the provider (from /etc/ppp/peers).
+   up
+-    /sbin/start-stop-daemon --start -x /usr/bin/wvdial \
+-                      -p /var/run/wvdial.%iface% -b -m -- [[ %provider% ]]
++    /sbin/start-stop-daemon -S -x /usr/bin/wvdial \
++                      -p /var/run/wvdial.%iface% -- [[ %provider% ]]
+   down
+-    /sbin/start-stop-daemon --stop -x /usr/bin/wvdial \
+-                      -p /var/run/wvdial.%iface% -s 2
++    /sbin/start-stop-daemon -X -x /usr/bin/wvdial \
++                      -p /var/run/wvdial.%iface%

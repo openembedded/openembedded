@@ -1,0 +1,219 @@
+Index: gaim/src/gtkaccount.c
+===================================================================
+--- gaim.orig/src/gtkaccount.c	2005-08-25 17:16:44.000000000 +0200
++++ gaim/src/gtkaccount.c	2005-08-29 22:34:25.511003600 +0200
+@@ -857,7 +857,6 @@
+ {
+ 	GtkWidget *frame;
+ 	GtkWidget *vbox;
+-	GtkWidget *vbox2;
+ 	GtkWidget *hbox;
+ 	GtkWidget *hbox2;
+ 	GtkWidget *button;
+@@ -901,12 +900,8 @@
+ 	gaim_set_accessible_label (dialog->icon_entry, label);
+ 	dialog->icon_path = NULL;
+ 
+-	vbox2 = gtk_vbox_new(FALSE, 0);
+-	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
+-	gtk_widget_show(vbox2);
+-
+ 	hbox2 = gtk_hbox_new(FALSE, GAIM_HIG_BOX_SPACE);
+-	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, GAIM_HIG_BORDER);
++	gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, FALSE, GAIM_HIG_BORDER);
+ 	gtk_widget_show(hbox2);
+ 
+ 	button = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+@@ -1275,7 +1270,18 @@
+ 		gtk_option_menu_get_menu(GTK_OPTION_MENU(dialog->proxy_dropdown));
+ #endif
+ 
+-	add_pref_box(dialog, vbox, _("Proxy _type:"), dialog->proxy_dropdown);
++	GtkWidget *label;
++	label = gtk_label_new_with_mnemonic(_("Proxy _type:"));
++	gtk_size_group_add_widget(dialog->sg, label);
++	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
++	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
++	gtk_widget_show(label);
++
++	gtk_box_pack_start(GTK_BOX(vbox), dialog->proxy_dropdown, TRUE, TRUE, GAIM_HIG_BORDER);
++	gtk_widget_show(dialog->proxy_dropdown);
++	gaim_set_accessible_label (dialog->proxy_dropdown, label);
++	
++	//add_pref_box(dialog, vbox, _("Proxy _type:"), dialog->proxy_dropdown);
+ 
+ 	/* Setup the second vbox, which may be hidden at times. */
+ 	dialog->proxy_vbox = vbox2 = gtk_vbox_new(FALSE, GAIM_HIG_BOX_SPACE);
+@@ -1643,6 +1649,7 @@
+ 	AccountPrefsDialog *dialog;
+ 	GtkWidget *win;
+ 	GtkWidget *main_vbox;
++	GtkWidget *sw;
+ 	GtkWidget *vbox;
+ 	GtkWidget *bbox;
+ 	GtkWidget *dbox;
+@@ -1709,10 +1716,19 @@
+ 	gtk_box_pack_start(GTK_BOX(main_vbox), notebook, FALSE, FALSE, 0);
+ 
+ 	/* Setup the inner vbox */
++	//With a scrollbox
++	sw = gtk_scrolled_window_new(NULL, NULL);
++	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
++	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
++		GTK_SHADOW_NONE);
++	gtk_widget_set_size_request(sw, -1, -1);
++	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw,
++			gtk_label_new_with_mnemonic("_Basic"));
++	gtk_widget_show(sw);
+ 	dialog->top_vbox = vbox = gtk_vbox_new(FALSE, GAIM_HIG_BORDER);
+ 	gtk_container_set_border_width(GTK_CONTAINER(vbox), GAIM_HIG_BORDER);
+-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox,
+-			gtk_label_new_with_mnemonic("_Basic"));
++	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), vbox);
+ 	gtk_widget_show(vbox);
+ 
+ 	/* Setup the top frames. */
+@@ -1720,10 +1736,20 @@
+ 	add_user_options(dialog, vbox);
+ 
+ 	/* Setup the page with 'Advanced'. */
++	//With a scrollbox
++	sw = gtk_scrolled_window_new(NULL, NULL);
++	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
++	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
++		GTK_SHADOW_NONE);
++	gtk_widget_set_size_request(sw, -1, -1);
++	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw,
++			gtk_label_new_with_mnemonic("_Advanced"));
++	gtk_widget_show(sw);
+ 	dialog->bottom_vbox = dbox = gtk_vbox_new(FALSE, GAIM_HIG_BORDER);
+ 	gtk_container_set_border_width(GTK_CONTAINER(dbox), GAIM_HIG_BORDER);
+-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), dbox,
+-			gtk_label_new_with_mnemonic("_Advanced"));
++	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), dbox);
++	gtk_widget_show(dbox);
+ 
+ 	/** Setup the bottom frames. */
+ 	add_protocol_options(dialog, dbox);
+@@ -1731,46 +1757,50 @@
+ 	add_proxy_options(dialog, dbox);
+ 
+ 	/* Setup the button box */
+-	bbox = gtk_hbutton_box_new();
++	//bbox = gtk_hbutton_box_new();
++	//Replaced with a hbox, otherwise the Register-button doesn't fit (same size required)
++	bbox = gtk_hbox_new(FALSE, GAIM_HIG_BORDER);
+ 	gtk_box_set_spacing(GTK_BOX(bbox), GAIM_HIG_BOX_SPACE);
+-	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
+ 	gtk_box_pack_end(GTK_BOX(main_vbox), bbox, FALSE, TRUE, 0);
+ 	gtk_widget_show(bbox);
+ 
+-	/* Register button */
+-	button = gtk_button_new_with_label(_("Register"));
+-	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+-	gtk_widget_show(button);
+-
+-	g_signal_connect(G_OBJECT(button), "clicked",
+-			G_CALLBACK(register_account_prefs_cb), dialog);
+-
+-	dialog->register_button = button;
+-
++	/* Save button */
++	button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
++	gtk_box_pack_end(GTK_BOX(bbox), button, FALSE, FALSE, 0);
++	
+ 	if (dialog->account == NULL)
+ 		gtk_widget_set_sensitive(button, FALSE);
+ 
+-	if (!dialog->prpl_info || !dialog->prpl_info->register_user)
+-		gtk_widget_hide(button);
++	gtk_widget_show(button);
++
++	dialog->ok_button = button;
++	
++	g_signal_connect(G_OBJECT(button), "clicked",
++					 G_CALLBACK(ok_account_prefs_cb), dialog);
+ 
+ 	/* Cancel button */
+ 	button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+-	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
++	gtk_box_pack_end(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+ 	gtk_widget_show(button);
+ 
+ 	g_signal_connect(G_OBJECT(button), "clicked",
+ 					 G_CALLBACK(cancel_account_prefs_cb), dialog);
+ 
+-	/* Save button */
+-	button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+-	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
++	/* Register button */
++	button = gtk_button_new_with_label(_("Register"));
++	gtk_box_pack_end(GTK_BOX(bbox), button, FALSE, FALSE, 0);
++	gtk_widget_show(button);
++
++	g_signal_connect(G_OBJECT(button), "clicked",
++			G_CALLBACK(register_account_prefs_cb), dialog);
++
++	dialog->register_button = button;
+ 
+ 	if (dialog->account == NULL)
+ 		gtk_widget_set_sensitive(button, FALSE);
+ 
+-	gtk_widget_show(button);
+-
+-	dialog->ok_button = button;
++	if (!dialog->prpl_info || !dialog->prpl_info->register_user)
++		gtk_widget_hide(button);
+ 
+ 	/* Set up DND */
+ 	gtk_drag_dest_set(dialog->window,
+@@ -1783,11 +1813,20 @@
+ 	g_signal_connect(G_OBJECT(dialog->window), "drag_data_received",
+ 			 G_CALLBACK(account_dnd_recv), dialog);
+ 
+-	g_signal_connect(G_OBJECT(button), "clicked",
+-					 G_CALLBACK(ok_account_prefs_cb), dialog);
+-
+ 	/* Show the window. */
+ 	gtk_widget_show(win);
++
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust widgets accordingly
++	int w, h;
++	gtk_window_get_size(GTK_WINDOW(win), &w, &h);
++	
++	w = w - GAIM_HIG_BORDER * 2;
++	gtk_widget_set_size_request(GTK_WIDGET(dialog->protocol_menu), w, -1);
++
+ }
+ 
+ /**************************************************************************
+@@ -2389,6 +2428,7 @@
+ 	bbox = gtk_hbutton_box_new();
+ 	gtk_box_set_spacing(GTK_BOX(bbox), GAIM_HIG_BOX_SPACE);
+ 	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
++	gtk_button_box_set_child_size(GTK_BUTTON_BOX(bbox), 20, -1); //DEPRECATED FFH
+ 	gtk_box_pack_end(GTK_BOX(vbox), bbox, FALSE, TRUE, 0);
+ 	gtk_widget_show(bbox);
+ 
+@@ -2421,12 +2461,13 @@
+ 					 G_CALLBACK(ask_delete_account_cb), dialog);
+ 
+ 	/* Close button */
+-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
++	//We can do without the close button to save screen estate
++	/*button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+ 	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+ 	gtk_widget_show(button);
+ 
+ 	g_signal_connect(G_OBJECT(button), "clicked",
+-					 G_CALLBACK(close_accounts_cb), dialog);
++					 G_CALLBACK(close_accounts_cb), dialog);*/
+ 
+ 	/* Setup some gaim signal handlers. */
+ 	gaim_signal_connect(gaim_connections_get_handle(), "signed-on",

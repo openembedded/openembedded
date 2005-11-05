@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- knights/knights/knights.cpp~gcc3	2002-09-01 14:06:29.000000000 +0200
++++ knights/knights/knights.cpp	2004-01-16 00:30:04.000000000 +0100
+@@ -24,7 +24,7 @@
+ #include <qpe/qpeapplication.h>
+ #include <qpe/applnk.h>
+ #include "aboutdialog.h"
+-Knights::Knights(QWidget *parent, const char *name, const QString &args="") : QMainWindow(parent, name)
++Knights::Knights(QWidget *parent, const char *name, const QString &args) : QMainWindow(parent, name)
+ {
+ setCaption("Knights");
+ 	InitAll = TRUE;

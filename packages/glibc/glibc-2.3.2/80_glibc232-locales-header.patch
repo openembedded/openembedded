@@ -1,0 +1,43 @@
+--- localedata/locales/an_ES	26 Jun 2003 07:29:02 -0000	1.2
++++ localedata/locales/an_ES	25 Aug 2003 08:27:32 -0000	1.3
+@@ -26,10 +26,10 @@
+ email      "bug-glibc@gnu.org"
+ tel        ""
+ fax        ""
+-language   "an"
+-territory  "ES"
+-revision   "1.0"
+-date       "2003-06-15"
++language   "Aragonese"
++territory  "Spain"
++revision   "1.1"
++date       "2003-08-25"
+ %
+ category  "i18n:1999";LC_IDENTIFICATION
+ category  "i18n:1999";LC_CTYPE
+--- localedata/locales/wa_BE	23 Feb 2002 19:29:34 -0000	1.1
++++ localedata/locales/wa_BE	25 Aug 2003 18:35:41 -0000	1.2
+@@ -11,8 +11,8 @@
+ address ""
+ tel ""
+ fax ""
+-language "wa"
+-territory "BE"
++language "Walloon"
++territory "Belgium"
+ revision "0.7"
+ date "2002-02-11"
+ 
+--- localedata/locales/yi_US	3 Aug 2001 08:39:48 -0000	1.1
++++ localedata/locales/yi_US	25 Aug 2003 18:35:41 -0000	1.2
+@@ -11,8 +11,8 @@
+ email "pablo@mandrakesoft.com"
+ tel ""
+ fax ""
+-language "yi"
+-territory "US"
++language "Yiddish"
++territory "USA"
+ revision "0.3"
+ date "2001-01-28"
+ 

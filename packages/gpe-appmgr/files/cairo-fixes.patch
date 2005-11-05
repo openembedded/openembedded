@@ -1,0 +1,48 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- gpe-appmgr-2.8/row_view.c~cairo-fixes.patch
++++ gpe-appmgr-2.8/row_view.c
+@@ -158,34 +158,33 @@
+   gv = gdk_window_get_visual (programs_fixed->window);
+   gcm = gdk_drawable_get_colormap (programs_fixed->window);
+ 
+-  cr = cairo_create ();
+   surface = cairo_xlib_surface_create (GDK_WINDOW_XDISPLAY (pixmap), GDK_WINDOW_XWINDOW (pixmap), 
+ 				       gdk_x11_visual_get_xvisual (gv), 0, 
+ 				       gdk_x11_colormap_get_xcolormap (gcm));
+ 
+-  cairo_set_target_surface (cr, surface);
++  cr = cairo_create (surface);
+ 
+-  cairo_set_rgb_color (cr, 1.0, 1.0, 1.0);
++  cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+   cairo_rectangle (cr, 0, 0, LABEL_WIDTH, height);
+   cairo_fill (cr);
+ 
+-  cairo_set_rgb_color (cr, 0xa5 / 255.0, 0xae / 255.0, 0xbf / 255.0);
++  cairo_set_source_rgb (cr, 0xa5 / 255.0, 0xae / 255.0, 0xbf / 255.0);
+   cairo_move_to (cr, LABEL_WIDTH, 0);
+   cairo_line_to (cr, 0, 0);
+   cairo_line_to (cr, 0, height);
+   cairo_line_to (cr, LABEL_WIDTH, height);
+   cairo_stroke (cr);
+ 
+-  cairo_select_font (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
++  cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+ 		     CAIRO_FONT_WEIGHT_NORMAL);
+-  cairo_scale_font (cr, 14.0);
++  cairo_set_font_size (cr, 14.0);
+ 
+   cairo_text_extents (cr, text, &extents);
+ 
+   cairo_move_to (cr, 18, (height + extents.width) / 2);
+ 
+   cairo_rotate (cr, -M_PI/2);
+-  cairo_set_rgb_color (cr, 0, 0, 1.0);
++  cairo_set_source_rgb (cr, 0, 0, 1.0);
+   cairo_show_text (cr, text);
+ 
+   cairo_destroy (cr);

@@ -1,0 +1,11 @@
+--- gmime-2.1.7/configure.in~	2004-07-29 16:14:01.000000000 +0100
++++ gmime-2.1.7/configure.in	2004-07-29 16:35:07.000000000 +0100
+@@ -47,7 +47,7 @@
+ 
+ AM_MAINTAINER_MODE
+ 
+-LDFLAGS=${_ldflags}
++#LDFLAGS=${_ldflags}
+ 
+ dnl Checks for header files.
+ AC_CHECK_HEADERS(sys/mman.h)

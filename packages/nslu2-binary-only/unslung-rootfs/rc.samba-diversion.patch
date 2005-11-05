@@ -1,0 +1,10 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.samba.orig	2004-07-27 23:37:55.000000000 -0400
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.samba	2004-09-01 21:58:57.000000000 -0400
+@@ -1,4 +1,7 @@
+ #!/bin/sh
++
++if ( [ -f /unslung/rc.samba ] && . /unslung/rc.samba ) ; then return 0 ; fi
++
+ if [ -n "`pidof smbd`" ] ; then
+     killall smbd 2>/dev/null
+ fi

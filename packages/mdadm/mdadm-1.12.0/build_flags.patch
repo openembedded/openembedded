@@ -1,0 +1,19 @@
+--- mdadm-1.12.0/Makefile	2005-08-22 17:30:21.000000000 -0700
++++ mdadm-1.12.0/Makefile~	2005-08-22 17:30:14.000000000 -0700
+@@ -37,13 +37,13 @@
+ 
+ KLIBC_GCC = gcc -nostdinc -iwithprefix include -I$(KLIBC)/klibc/include -I$(KLIBC)/linux/include -I$(KLIBC)/klibc/arch/i386/include -I$(KLIBC)/klibc/include/bits32
+ 
+-CC = gcc
+-CXFLAGS = -ggdb
++CC := $(CC) 
++CXFLAGS = 
+ CWFLAGS = -Wall -Werror -Wstrict-prototypes
+ SYSCONFDIR = /etc
+ CONFFILE = $(SYSCONFDIR)/mdadm.conf
+ MAILCMD =/usr/sbin/sendmail -t
+-CFLAGS = $(CWFLAGS) -DCONFFILE=\"$(CONFFILE)\" $(CXFLAGS) -DSendmail=\""$(MAILCMD)"\"
++CFLAGS := $(CFLAGS) $(TARGET_CFLAGS) $(CWFLAGS) -DCONFFILE=\"$(CONFFILE)\" $(CXFLAGS) -DSendmail=\""$(MAILCMD)"\"
+ 
+ # If you want a static binary, you might uncomment these
+ # LDFLAGS = -static

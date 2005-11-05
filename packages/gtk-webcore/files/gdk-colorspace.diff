@@ -1,0 +1,25 @@
+Index: src/ImageRenderer.cpp
+===================================================================
+RCS file: /cvsroot/gtk-webcore/NRCit/src/ImageRenderer.cpp,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 ImageRenderer.cpp
+--- NRCit.orig/src/ImageRenderer.cpp	16 Feb 2005 09:33:16 -0000	1.1.1.1
++++ NRCit/src/ImageRenderer.cpp	27 May 2005 23:36:28 -0000
+@@ -297,7 +297,7 @@
+ 						       wantedSize.height, 
+ 						       GDK_INTERP_BILINEAR);
+ 
+-	gdk_pixbuf_render_pixmap_and_mask(scaledbuf, &pixmap, &alpha, 100);
++	gdk_pixbuf_render_pixmap_and_mask_for_colormap(scaledbuf,gdk_colormap_get_system(), &pixmap, &alpha,  100);
+ 
+ 	buf = scaledbuf;
+ 	if (iter) {
+@@ -312,7 +312,7 @@
+     } else {
+ 
+ 	//correct size
+-	gdk_pixbuf_render_pixmap_and_mask(buf, &pixmap, &alpha, 100);
++	gdk_pixbuf_render_pixmap_and_mask_for_colormap(buf, gdk_colormap_get_system(),&pixmap, &alpha,  100);
+     }
+ 
+     assert(gdk_pixbuf_get_has_alpha(buf) == (alpha != NULL));

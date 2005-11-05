@@ -1,0 +1,19 @@
+patch added into upstream bugzilla:
+http://handhelds.org/~bugzilla/show_bug.cgi?id=1393
+Index: pkg_hash.c
+===================================================================
+RCS file: /cvs/familiar/dist/ipkg/C/pkg_hash.c,v
+retrieving revision 1.71
+diff -u -r1.71 pkg_hash.c
+--- C/pkg_hash.c	29 Jul 2005 20:19:39 -0000	1.71
++++ C/pkg_hash.c	2 Sep 2005 13:23:08 -0000
+@@ -216,7 +216,8 @@
+ 		    pkg_t *maybe = vec->pkgs[i];
+ 		    ipkg_message(conf, IPKG_DEBUG, "  %s arch=%s arch_priority=%d  \n",
+ 				 maybe->name, maybe->architecture, maybe->arch_priority);
+-		    if (maybe->arch_priority > 0)  {
++ 		    if ((maybe->arch_priority > 0) 
++ 			&& ((constraint_fcn == NULL) || constraint_fcn(maybe, cdata))) {
+ 			 max_count++;
+ 			 abstract_pkg_vec_insert(matching_apkgs, maybe->parent);
+ 			 pkg_vec_insert(matching_pkgs, maybe);

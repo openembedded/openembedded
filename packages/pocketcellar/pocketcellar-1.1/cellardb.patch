@@ -1,0 +1,88 @@
+#
+#Try to remove hardcoded /home path
+#
+--- pocketcellar-1.1/cellardb.cpp.old	2005-02-28 13:43:19.000000000 +0000
++++ pocketcellar-1.1/cellardb.cpp	2005-02-28 13:42:55.000000000 +0000
+@@ -19,6 +19,7 @@
+ 
+ #include "cellardb.h"
+ #include <qfile.h>
++#include <qdir.h>
+ #include <qdatastream.h>
+ #include "winedb.h"
+ 
+@@ -55,16 +56,16 @@
+ 
+ 
+ bool CellarDB::load(QListView *parent, QListView *wines, int loc) {
+-	QString path("/home");
+-
++	QString path(QDir::homeDirPath());
++	
+ 	if (loc == 1)
+-		path = "/usr/mnt.rom/cf";
++		path = "/media/cf";
+ 	else if (loc == 2)
+-		path = "/usr/mnt.rom/card";
++		path = "/media/card";
+ 
+-	mkdir(QString(path + "/QtPalmtop/data/PocketCellar").ascii(), 755);
++	mkdir(QString(path + "/Documents/application/PocketCellar").ascii(), 755);
+ 
+-	QFile f(path+"/QtPalmtop/data/PocketCellar/PCellarDB");
++	QFile f(path+"/Documents/application/PocketCellar/PCellarDB");
+ 
+ 	if (!f.open(IO_ReadOnly))
+ 		return false;
+@@ -102,28 +103,28 @@
+ 
+ 	f.close();
+ 
+-	if (loc != 0)
++/*	if (loc != 0)
+ 		unlink("/home/QtPalmtop/data/PocketCellar/PCellarDB");
+ 	if (loc != 1)
+ 		unlink("/usr/mnt.rom/cf/QtPalmtop/data/PocketCellar/PCellarDB");
+ 	if (loc != 2)
+-		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCellarDB");
++		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCellarDB");*/
+ 
+ return true;
+ }
+ 
+ 
+ bool CellarDB::save(QListView *parent, int loc) {
+-	QString path("/home");
+-
++	QString path(QDir::homeDirPath());
++	
+ 	if (loc == 1)
+-		path = "/usr/mnt.rom/cf";
++		path = "/media/cf";
+ 	else if (loc == 2)
+-		path = "/usr/mnt.rom/card";
++		path = "/media/card";
+ 
+-	mkdir(QString(path + "/QtPalmtop/data/PocketCellar").ascii(), 755);
++	mkdir(QString(path + "/Documents/application/PocketCellar").ascii(), 755);
+ 
+-	QFile f(path+"/QtPalmtop/data/PocketCellar/PCellarDB");
++	QFile f(path+"/Documents/application/PocketCellar/PCellarDB");
+ 
+ //qDebug("Filename %s\n", (path+"/QtPalmtop/data/PocketCellar/PCellarDB").latin1());
+ 	if (!f.open(IO_WriteOnly))
+@@ -143,12 +144,12 @@
+ 
+ 	f.close();
+ 
+-	if (loc != 0)
++/*	if (loc != 0)
+ 		unlink("/home/QtPalmtop/data/PocketCellar/PCellarDB");
+ 	if (loc != 1)
+ 		unlink("/usr/mnt.rom/cf/QtPalmtop/data/PocketCellar/PCellarDB");
+ 	if (loc != 2)
+-		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCellarDB");
++		unlink("/usr/mnt.rom/card/QtPalmtop/data/PocketCellar/PCellarDB");*/
+ 
+ return true;
+ }

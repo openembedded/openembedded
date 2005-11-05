@@ -1,0 +1,8 @@
+# NSLU2 specific machine overrides.
+#
+# NSLU2 can be arm or armeb - the ARCH (arm,armeb) decides
+# this, NSLU2 is always XScale - this file enfoces this.
+#
+CONFIG_ARM_XSCALE=y
+ARCH_HAS_MMU=y
+HAS_FPU=n

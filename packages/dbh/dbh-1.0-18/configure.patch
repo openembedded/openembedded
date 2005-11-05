@@ -1,0 +1,42 @@
+Index: dbh_1.0-18/configure.ac
+===================================================================
+--- dbh_1.0-18.orig/configure.ac	2004-03-16 16:02:20.000000000 -0700
++++ dbh_1.0-18/configure.ac	2005-04-06 12:30:01.900159452 -0700
+@@ -34,6 +34,8 @@
+ 
+ dnl Initialize libtool
+ AC_CANONICAL_HOST
++AC_CANONICAL_TARGET
++
+ # libtool.m4 is a bit outof sync.
+ AC_PROG_LIBTOOL
+ 
+@@ -122,17 +124,17 @@
+ 
+ 
+ dnl echo "dbg:target $target"
+-case "$target" in
+-"")
+-;;
+-"no")
+-;;
+-"NONE")
+-;;
+-*)
+-   CFLAGS="$CFLAGS -march=$target"
+-   ;;
+-esac
++dnl case "$target" in
++dnl "")
++dnl ;;
++dnl "no")
++dnl ;;
++dnl "NONE")
++dnl ;;
++dnl *)
++dnl  CFLAGS="$CFLAGS -march=$target_cpu"
++dnl   ;;
++dnl esac
+ 
+ # At present, only 32 bit system. 
+ 

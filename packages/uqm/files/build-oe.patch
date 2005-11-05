@@ -1,0 +1,58 @@
+--- build/unix/config_proginfo	2005-01-21 23:55:20.600681568 +1300
++++ build/unix/config_proginfo	2005-01-21 23:55:28.136535944 +1300
+@@ -19,9 +19,9 @@
+ 
+ # Describe the programs (possibly) used:
+ PROG_gcc_NAME="GNU C compiler"
+-PROG_gcc_FILE="gcc"
++PROG_gcc_FILE="$CC"
+ PROG_gcc_ACTION=""
+-PROG_gcc_VERSION='$(gcc --version)'
++PROG_gcc_VERSION='$($CC --version)'
+ 
+ PROG_sed_NAME="Sed stream editor"
+ PROG_sed_FILE="sed"
+@@ -60,7 +60,7 @@
+ esac
+ case "$OSNAME" in
+ 	FreeBSD)  LIB_SDL_LDFLAGS='$(sdl11-config --libs)' ;;
+-	*)        LIB_SDL_LDFLAGS='$(sdl-config --libs)' ;;
++	*)        LIB_SDL_LDFLAGS='$(sdl-config --libs) -lts -lpng -ljpeg -lz' ;;
+ esac
+ case "$OSNAME" in
+ 	FreeBSD)  LIB_SDL_VERSION='$(sdl11-config --version)' ;;
+@@ -123,8 +123,8 @@
+ 		LIB_vorbisfile_LDFLAGS="-lvorbisfile -lvorbis -logg -lm"
+ 		;;
+ 	*)
+-		LIB_vorbisfile_CFLAGS=""
+-		LIB_vorbisfile_LDFLAGS="-lvorbisfile -lvorbis"
++		LIB_vorbisfile_CFLAGS="-I$STAGING_INCDIR"
++		LIB_vorbisfile_LDFLAGS="-L$STAGING_LIBDIR -lvorbisfile -lvorbis -logg"
+ 		;;
+ esac
+ LIB_vorbisfile_VERSION=""
+--- build/unix/build.config	2005-01-21 00:26:04.000000000 +1300
++++ build/unix/build.config	2005-01-21 23:55:25.658912600 +1300
+@@ -7,7 +7,7 @@
+ 
+ 
+ # Some requirements:
+-have_program gcc || exit 1
++#have_program gcc || exit 1
+ COMPILE="$PROG_gcc_FILE"
+ 
+ case "$OSNAME" in
+--- build.vars.in	2005-01-21 21:15:59.058256960 +1300
++++ build.vars.in	2005-01-21 21:16:13.493062536 +1300
+@@ -15,8 +15,8 @@
+ # along with this program; if not, write to the Free Software
+ #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+-COMPILE=gcc
+-MKDEPEND="gcc -MM"
++COMPILE=$CC
++MKDEPEND="$CC -MM"
+ MAKE="@MAKE@"
+ uqm_CFLAGS="@CFLAGS@"
+ uqm_LDFLAGS="@LDFLAGS@"

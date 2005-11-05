@@ -1,0 +1,86 @@
+#!/bin/sh
+
+#set -x
+
+ROOTMOUNTPT=/media/realroot
+REALUMOUNT=/bin/umount.busybox
+UNIONUMOUNT=$0
+INCDIRS="^/media/\|^/mnt/"
+DEVICE="\/dev\/"
+
+newargs=""
+
+ONESHIFTARGS='adflnrv'
+TWOSHIFTARGS="tO"
+
+resolvelink () {
+	if test -h $1; then
+		echo `readlink $1`
+	else
+		echo $1
+	fi
+}
+
+# Retrieves arguments/mount-point
+for var in $@; do
+	if [ -z "$SKIP" ]; then
+		if echo $var | grep -q "^-.*"; then
+			if echo $var | grep -q "[$TWOSHIFTARGS]"; then
+				SKIP="yes"
+			fi
+			if echo $var | grep -q "^-[^- ]*a"; then
+				DO_FSTAB="yes"
+			fi
+			ARGS="$ARGS $var"
+		else
+			if [ -z "$MOUNT_POINT" ]; then
+				MOUNT_POINT=$var
+			else
+				# This really shouldn't happen when unmounting
+				DEV_PATH="$MOUNT_POINT"
+				MOUNT_POINT="$var"
+			fi
+		fi
+	else
+		ARGS="$ARGS $var"
+		unset SKIP
+	fi
+done
+
+# Parse fstab if -a is used
+if ! [ -z "$DO_FSTAB" ]; then
+	# FIXME: This doesn't handle -t or -O
+	awk '/^[^ #]/ {print $1}' /etc/fstab |
+	while read line; do
+		${UNIONUMOUNT} $line
+	done
+	exit 0
+fi
+
+# Get mount-point for device name, if device name is given
+if echo "$MOUNT_POINT" | grep -q "^${DEVICE}"; then
+	MOUNT_POINT_TEMP=`echo $MOUNT_POINT | sed -e "s/\//\\\\\\\\\//g"`
+	NEW_MOUNT_POINT=`awk "/$MOUNT_POINT_TEMP/ {print "'$2'"}" /etc/fstab`
+	if ! [ -z "$NEW_MOUNT_POINT" ]; then
+		MOUNT_POINT=$NEW_MOUNT_POINT
+	fi
+fi
+
+if ! (echo "$MOUNT_POINT" | grep -q "$INCDIRS"||[ "$MOUNT_POINT" = "/" ]); then
+	exec ${REALMOUNT} $@
+fi
+
+# Replace requests to mount '/' (from init scripts and such)
+# with mount ROOTMOUNTPT (the real-root mount point for the
+# unionfs'd system).
+packagedir=""
+if ([ "$MOUNT_POINT" = "/" ]||[ "$MOUNT_POINT" = "${ROOTMOUNTPT}" ]); then
+	MOUNT_POINT=${ROOTMOUNTPT}
+else
+	PACKAGE_DIR="/packages"
+fi
+
+# Finally, umount and union-umount
+unionctl /. --remove `resolvelink $MOUNT_POINT`$PACKAGE_DIR
+exec ${REALUMOUNT} $ARGS $MOUNT_POINT
+

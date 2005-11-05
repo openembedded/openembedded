@@ -1,0 +1,13 @@
+diff -urN freeciv-1.14.1.orig/configure.ac freeciv-1.14.1/configure.ac
+--- freeciv-1.14.1.orig/configure.ac	2003-12-02 13:56:54.000000000 -0500
++++ freeciv-1.14.1/configure.ac	2004-03-24 00:01:25.000000000 -0500
+@@ -139,6 +139,9 @@
+ 
+ AC_CHECK_PROG(UNAME,uname,uname,:)
+ 
++ARFLAGS=${ARFLAGS:-cru}
++AC_SUBST(ARFLAGS)
++
+ dnl Programs already checked by AM_INIT_AUTOMAKE:
+ dnl  AC_PROG_MAKE_SET
+ 

@@ -1,0 +1,36 @@
+#! /bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/olsrd
+NAME="olsr.org"
+DESC="OLSR routing protocol daemon"
+
+test -x $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+  start)
+	echo "Starting $DESC: $NAME"
+	start-stop-daemon -S -x $DAEMON -- -d 0;
+	echo "done."
+	;;
+  stop)
+	echo "Stopping $DESC: $NAME "
+	start-stop-daemon -K -x $DAEMON
+	echo "done."
+	;;
+  restart|force-reload)
+	echo "restarting $DESC: $NAME "
+	$0 stop
+	sleep 5
+	$0 start
+	exit;
+	;;
+  *)
+	echo "Usage: /etc/init.d/$NAME {start|stop|restart}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

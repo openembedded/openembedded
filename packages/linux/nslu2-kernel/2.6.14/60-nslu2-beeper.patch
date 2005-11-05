@@ -1,0 +1,175 @@
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/Kconfig	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/drivers/input/misc/Kconfig	2005-10-26 15:24:01.199708764 -0700
+@@ -40,6 +40,18 @@ config INPUT_M68K_BEEP
+ 	tristate "M68k Beeper support"
+ 	depends on M68K
+ 
++config INPUT_NSLU2_BEEPER
++	tristate "NSLU2 Beeper support"
++	depends on MACH_NSLU2
++	help
++	  Say Y here if you want the embedded beeper on the LinkSys NSLU2
++	  to be used for bells and whistles.
++
++	  If unsure, say Y.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called nslu2spkr.
++
+ config INPUT_UINPUT
+ 	tristate "User level driver support"
+ 	help
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/Makefile	2005-08-28 16:41:01.000000000 -0700
++++ linux-2.6.13/drivers/input/misc/Makefile	2005-10-26 15:24:01.199708764 -0700
+@@ -10,3 +10,4 @@ obj-$(CONFIG_INPUT_M68K_BEEP)		+= m68ksp
+ obj-$(CONFIG_INPUT_98SPKR)		+= 98spkr.o
+ obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
+ obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o
++obj-$(CONFIG_INPUT_NSLU2_BEEPER)	+= nslu2spkr.o
+--- linux-2.6.13/.pc/60-nslu2-beeper.patch/drivers/input/misc/nslu2spkr.c	2005-10-26 15:19:43.711506053 -0700
++++ linux-2.6.13/drivers/input/misc/nslu2spkr.c	2005-10-26 15:24:01.199708764 -0700
+@@ -0,0 +1,144 @@
++/*
++ * drivers/input/misc/nslu2spkr.c
++ *
++ * NSLU2 Beeper driver
++ *
++ * Copyright (C) 2005 Tower Technologies
++ *
++ * based on nslu2-io.c  
++ *  Copyright (C) 2004 Karen Spearel
++ *
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Maintainers: http://www.nslu2-linux.org/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/input.h>
++#include <linux/delay.h>
++
++#include <asm/hardware.h>
++#include <asm/irq.h>
++
++static unsigned int beep_on_startup = 1;
++module_param(beep_on_startup, bool, 0);
++MODULE_PARM_DESC(beep_on_startup, "Play a beep on module startup");
++
++DEFINE_SPINLOCK(beep_lock);
++
++static int nslu2_spkr_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
++{
++	unsigned int count = 0;
++	unsigned long flags;
++
++	if (type != EV_SND)
++		return -1;
++
++	switch (code) {
++		case SND_BELL:
++			if (value) value = 1000;
++		case SND_TONE:
++			break;
++		default:
++			return -1;
++	}
++
++	if (value > 20 && value < 32767)
++		count = (NSLU2_FREQ / (value*4)) - 1;
++
++	spin_lock_irqsave(&beep_lock, flags);
++
++	 if (count) {
++
++		gpio_line_config(NSLU2_GPIO_BUZZ, IXP4XX_GPIO_OUT);
++		gpio_line_set(NSLU2_GPIO_BUZZ, IXP4XX_GPIO_LOW);
++
++		*IXP4XX_OSRT2 = (count & ~IXP4XX_OST_RELOAD_MASK) | IXP4XX_OST_ENABLE;
++
++	} else {
++
++		gpio_line_config(NSLU2_GPIO_BUZZ, IXP4XX_GPIO_IN);
++		gpio_line_set(NSLU2_GPIO_BUZZ, IXP4XX_GPIO_HIGH);
++
++		*IXP4XX_OSRT2 = 0;
++	}
++
++	spin_unlock_irqrestore(&beep_lock, flags);
++
++	return 0;
++}
++
++static struct input_dev nslu2_spkr_dev = {
++	.phys		= "ixp420/gpio4",
++	.name		= "NSLU2 Beeper",
++	.evbit[0]	= BIT(EV_SND),
++	.sndbit[0]	= BIT(SND_BELL) | BIT(SND_TONE),
++	.event		= nslu2_spkr_event,
++	.id		= {
++		.bustype	= BUS_HOST,
++		.vendor		= 0x001f,
++		.product	= 0x0001,
++		.version	= 0x0100
++	}
++};
++
++static irqreturn_t nslu2_spkr_handler(int irq, void *dev_id, struct pt_regs *regs)
++{
++	/* clear interrupt */
++	*IXP4XX_OSST = IXP4XX_OSST_TIMER_2_PEND;
++
++	/* flip the beeper output */
++	*IXP4XX_GPIO_GPOUTR ^= NSLU2_BZ_BM;
++
++	return IRQ_HANDLED;
++}
++
++static int __init nslu2_spkr_init(void)
++{
++	if (request_irq(IRQ_IXP4XX_TIMER2, &nslu2_spkr_handler,
++		SA_INTERRUPT | SA_TIMER, "NSLU2 beeper", NULL < 0)) {
++			
++		printk(KERN_INFO "NSLU2 beeper: IRQ %d not available\n",
++			IRQ_IXP4XX_TIMER2);
++
++		return -EIO;
++	}
++
++	input_register_device(&nslu2_spkr_dev);
++
++	/* do a little beep to tell the world we are alive */
++	if (beep_on_startup)
++	{
++		nslu2_spkr_event(NULL, EV_SND, SND_TONE, 440);
++		msleep(120);
++		nslu2_spkr_event(NULL, EV_SND, SND_TONE, 0);
++	}
++
++        printk(KERN_INFO "NSLU2: beeper\n");
++	return 0;
++}
++
++static void __exit nslu2_spkr_exit(void)
++{
++	input_unregister_device(&nslu2_spkr_dev);
++
++	disable_irq(IRQ_IXP4XX_TIMER2);
++
++	/* turn it off */
++	nslu2_spkr_event(NULL, EV_SND, SND_BELL, 0);
++
++	free_irq(IRQ_IXP4XX_TIMER2, NULL);
++}
++
++module_init(nslu2_spkr_init);
++module_exit(nslu2_spkr_exit);
++
++MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
++MODULE_DESCRIPTION("NSLU2 Beeper driver");
++MODULE_LICENSE("GPL");

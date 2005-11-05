@@ -1,0 +1,11 @@
+--- R-2.0.0/src/library/stats/Makefile.in~	2004-12-12 11:12:45.191911592 +0000
++++ R-2.0.0/src/library/stats/Makefile.in	2004-12-12 11:12:58.530883760 +0000
+@@ -16,7 +16,7 @@
+ 
+ pkg = stats
+ 
+-R_EXE = $(top_builddir)/bin/R --vanilla
++R_EXE = $(R_EXE_NATIVE) --vanilla
+ 
+ all: Makefile DESCRIPTION
+ 	@echo "building package '$(pkg)'"

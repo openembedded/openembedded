@@ -1,0 +1,40 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- glibc-2.2.5/sysdeps/unix/sysv/linux/arm/ioperm.c~arm-ctl_bus_isa.patch	2004-09-03 19:00:33.000000000 -0500
++++ glibc-2.2.5/sysdeps/unix/sysv/linux/arm/ioperm.c	2004-09-03 19:00:37.000000000 -0500
+@@ -47,6 +47,12 @@
+ #include <asm/page.h>
+ #include <sys/sysctl.h>
+ 
++/* see http://www.ussg.iu.edu/hypermail/linux/kernel/0311.0/0529.html */
++#include <linux/version.h>
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,4,23))
++#define CTL_BUS_ISA BUS_ISA	/* and hope it's not the one from linux/input.h */
++#endif
++
+ #define PATH_ARM_SYSTYPE	"/etc/arm_systype"
+ #define PATH_CPUINFO		"/proc/cpuinfo"
+ 
+@@ -80,7 +86,7 @@
+  * Initialize I/O system.  There are several ways to get the information
+  * we need.  Each is tried in turn until one succeeds.
+  *
+- * 1. Sysctl (CTL_BUS, BUS_ISA, ISA_*).  This is the preferred method
++ * 1. Sysctl (CTL_BUS, CTL_BUS_ISA, ISA_*).  This is the preferred method
+  *    but not all kernels support it.
+  *
+  * 2. Read the value (not the contents) of symlink PATH_ARM_SYSTYPE.
+@@ -100,8 +106,8 @@
+ {
+   char systype[256];
+   int i, n;
+-  static int iobase_name[] = { CTL_BUS, BUS_ISA, BUS_ISA_PORT_BASE };
+-  static int ioshift_name[] = { CTL_BUS, BUS_ISA, BUS_ISA_PORT_SHIFT };
++  static int iobase_name[] = { CTL_BUS, CTL_BUS_ISA, BUS_ISA_PORT_BASE };
++  static int ioshift_name[] = { CTL_BUS, CTL_BUS_ISA, BUS_ISA_PORT_SHIFT };
+   size_t len = sizeof(io.base);
+ 
+   if (! sysctl (iobase_name, 3, &io.io_base, &len, NULL, 0)

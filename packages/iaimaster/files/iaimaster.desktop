@@ -1,0 +1,7 @@
+[Desktop Entry]
+Comment=pen action mini game. you fight evil Iai-Master and must survive. (Iai is a kind of the samurai fighting style)
+Exec=iaimaster
+Icon=iaimaster
+Type=Application
+Name=IaiMaster
+CanFastload=0

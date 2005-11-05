@@ -1,0 +1,18 @@
+--- gcalctool-5.5.21/configure.in	2004-12-21 11:06:24.000000000 -0700
++++ gcalctool-5.5.21.new/configure.in	2005-01-04 16:25:32.179108536 -0700
+@@ -42,15 +42,6 @@
+ AC_SUBST(GCONF_CFLAGS)
+ AC_SUBST(GCONF_LIBS)
+ 
+-dnl ********************
+-dnl scrollkeeper checks
+-dnl ********************
+-
+-AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
+-if test x$SCROLLKEEPER_CONFIG = xno; then
+-  AC_MSG_ERROR(Couldn't find scrollkeeper-config. Please install the scrollkeeper package)
+-fi
+-
+ dnl *******************************
+ dnl Internationalization
+ dnl *******************************

@@ -1,0 +1,40 @@
+#! /bin/sh
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/miau and type
+# > update-rc.d miau defaults 60
+#
+
+
+test -f /usr/bin/miau || exit 0
+
+test -d /var/spool/miau || mkdir -p /var/spool/miau
+
+case "$1" in
+  start)
+    echo -n "Starting miau daemon: miau"
+    start-stop-daemon --start --quiet --exec /usr/bin/miau
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping miau daemon: miau"
+    start-stop-daemon --stop --quiet --exec /usr/bin/miau
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec /usr/bin/miau
+    ;;
+  restart)
+    echo -n "Stopping miau daemon: miau"
+    start-stop-daemon --stop --quiet --exec /usr/bin/miau
+    sleep 1
+    echo -n "Starting miau daemon: miau"
+    start-stop-daemon --start --quiet --exec /usr/bin/miau
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/miau {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0

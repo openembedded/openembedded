@@ -1,0 +1,11 @@
+--- configure.ac~	2005-07-03 18:54:13.000000000 +0200
++++ configure.ac	2005-07-03 18:54:13.000000000 +0200
+@@ -33,7 +33,7 @@
+ # D-BUS headers do not compile with -pedantic. Once they are fixed, 
+ #return the flag
+ #CFLAGS="$CFLAGS -Wall -ansi -pedantic -Wmissing-prototypes -Wmissing-declarations -Werror" 
+-CFLAGS="$CFLAGS -Wall -ansi -Wmissing-prototypes -Wmissing-declarations -Werror -lcrypt" 
++CFLAGS="$CFLAGS -Wall -ansi -Wmissing-prototypes -Wmissing-declarations -lcrypt" 
+ AC_SUBST(CFLAGS)
+ 
+ PKG_CHECK_MODULES(OSSO,libosso >= 0.0.3)

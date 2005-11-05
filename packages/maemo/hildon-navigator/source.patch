@@ -1,0 +1,11 @@
+--- navigator-launch.sh.old	2005-06-14 17:19:23.000000000 +0200
++++ navigator-launch.sh	2005-06-14 17:19:37.000000000 +0200
+@@ -20,7 +20,7 @@
+ # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ # 02110-1301 USA
+ #
+-source af.conf
++. af.conf
+ 
+ if [ "$1" != "start" ] && [ "$1" != "stop" ] && [ "$1" != "restart" ]; then
+   echo "Usage: $0 {start|stop|restart}"

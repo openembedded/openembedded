@@ -1,0 +1,6 @@
+CVSDATE = "20050226"
+
+include x11_cvs.bb
+
+DEFAULT_PREFERENCE = "0"
+

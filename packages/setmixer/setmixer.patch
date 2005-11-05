@@ -1,0 +1,78 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- setmixer-27DEC94.orig/Makefile~setmixer
++++ setmixer-27DEC94.orig/Makefile
+@@ -1,8 +1,8 @@
+ DESTDIR =
+ INSTALL = install
+ CC=gcc
+-CFLAGS= -O6 -fomit-frame-pointer -Wall -pipe -m486
+-LDFLAGS= -Xlinker -N -s
++CFLAGS= -O2 -fomit-frame-pointer -Wall -pipe
++#LDFLAGS= -Xlinker -N -s
+ PROG=setmixer
+ 
+ $(PROG): setmixer.o
+--- setmixer-27DEC94.orig/setmixer.c~setmixer
++++ setmixer-27DEC94.orig/setmixer.c
+@@ -36,7 +36,7 @@
+ 
+     int devmask, stereod, i, d;
+     int mixer_fd;
+-    int lcval,rcval;
++    int lcval,rcval,oldlcval,oldrcval,val;
+     int verbose = 0;
+     size_t len;
+     char *endptr;
+@@ -52,9 +52,9 @@
+ 	}
+     }
+     
+-    if (!verbose && ((argc <= 0) || (argc & 1))) {
++    if ((!verbose && ((argc <= 0) || (argc & 1))) || (verbose && argc % 2)) {
+ 	fprintf(stderr, "usage: %s [-V] cntrl val [cntrl val ....]\n"
+-       "where val is in 0-100 range and 'cntrl' is one of the following:\n\t",
++       "where val is in [+-]0-100 range and 'cntrl' is one of the following:\n\t",
+ 		prog);
+ 	for (i = 0; i < SOUND_MIXER_NRDEVICES; i++)
+ 	    fprintf(stderr, "%s ", dname[i]);
+@@ -84,16 +84,36 @@
+     
+     while (argc) {
+ 	cntrl = *argv++;
++	oldlcval = (('+' == **argv) || ('-' == **argv));
+ 	lcval = strtol(*argv++, &endptr, 0);
+ 	if (',' == *endptr) {
+ 	    endptr += 1;
++	    oldrcval = (('+' == *endptr) || ('-' == *endptr));
+ 	    rcval = strtol((const char *)endptr, 0, 0);
+ 	}
+ 	else {
+ 	    rcval = lcval;
++	    oldrcval = oldlcval;
+ 	}
+ 	argc -= 2;
+ 	len = strlen(cntrl);
++	if (oldlcval || oldrcval) {
++	    for (i = 0; i < SOUND_MIXER_NRDEVICES; i++) {
++	    	if (0 == strncmp(dname[i], cntrl, len)) {
++		    d = (1 << i);
++		    if (0 != (devmask & d)) {
++			if (-1 == ioctl(mixer_fd, MIXER_READ(i), &val)) {
++			    perror("MIXER_READ");
++			}
++			else {
++			    lcval += oldlcval ? (val & 0x7f) : 0;
++			    rcval += oldrcval ? ((val >> 8) & 0x7f) : 0;
++			}
++		    }
++		    break;
++		}
++	    }
++	}
+ 	for (i = 0; i < SOUND_MIXER_NRDEVICES; i++) {
+ 	    if (0 == strncmp(dname[i], cntrl, len)) {
+ 		d = (1 << i);

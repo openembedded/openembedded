@@ -1,0 +1,13 @@
+Index: u-boot/cpu/pxa/config.mk
+===================================================================
+--- u-boot.orig/cpu/pxa/config.mk	2005-01-09 16:28:17.000000000 -0500
++++ u-boot/cpu/pxa/config.mk	2005-02-25 16:38:23.789788636 -0500
+@@ -23,7 +23,7 @@
+ #
+ 
+ PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 \
+-	-mshort-load-bytes -msoft-float
++	-msoft-float
+ 
+ #PLATFORM_CPPFLAGS += -mapcs-32 -march=armv4 -mtune=strongarm1100
+ PLATFORM_CPPFLAGS += -mapcs-32 -march=armv5 -mtune=xscale

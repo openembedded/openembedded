@@ -1,0 +1,12 @@
+diff -u -r1.6 main.h
+--- main.h      16 Oct 2004 12:17:51 -0000      1.6
++++ main.h      29 Jul 2005 21:17:02 -0000
+@@ -21,8 +21,6 @@
+ #define HINT_HTTP        0x10
+ #define HINT_OBEX        0x20
+
+-extern gboolean radio_is_on;
+-
+ extern GdkWindow *dock_window;
+ extern void schedule_message_delete (guint id, guint time);
+ extern void send_data (char *filename, char *data, size_t len);

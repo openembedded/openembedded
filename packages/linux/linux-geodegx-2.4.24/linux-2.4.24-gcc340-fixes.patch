@@ -1,0 +1,1588 @@
+diff -urN linux-2.4.24/arch/i386/Makefile linux-2.4.24-new/arch/i386/Makefile
+--- linux-2.4.24/arch/i386/Makefile	2003-06-13 07:51:29.000000000 -0700
++++ linux-2.4.24-new/arch/i386/Makefile	2004-05-04 12:20:40.583841872 -0700
+@@ -94,6 +94,8 @@
+ CFLAGS += $(call check_gcc,-march=c3-2,-march=i686)
+ endif
+ 
++CFLAGS += $(call check_gcc,-fno-unit-at-a-time,)
++
+ HEAD := arch/i386/kernel/head.o arch/i386/kernel/init_task.o
+ 
+ SUBDIRS += arch/i386/kernel arch/i386/mm arch/i386/lib
+diff -urN linux-2.4.24/arch/i386/boot/compressed/misc.c linux-2.4.24-new/arch/i386/boot/compressed/misc.c
+--- linux-2.4.24/arch/i386/boot/compressed/misc.c	2003-08-25 04:44:39.000000000 -0700
++++ linux-2.4.24-new/arch/i386/boot/compressed/misc.c	2004-05-04 12:20:40.583841872 -0700
+@@ -104,7 +104,7 @@
+ static void *malloc(int size);
+ static void free(void *where);
+ 
+-static void puts(const char *);
++static void putstr(const char *);
+ 
+ extern int end;
+ static long free_mem_ptr = (long)&end;
+@@ -165,7 +165,7 @@
+ 		vidmem[i] = ' ';
+ }
+ 
+-static void puts(const char *s)
++static void putstr(const char *s)
+ {
+ 	int x,y,pos;
+ 	char c;
+@@ -283,9 +283,9 @@
+ 
+ static void error(char *x)
+ {
+-	puts("\n\n");
+-	puts(x);
+-	puts("\n\n -- System halted");
++	putstr("\n\n");
++	putstr(x);
++	putstr("\n\n -- System halted");
+ 
+ 	while(1);	/* Halt */
+ }
+@@ -369,9 +369,9 @@
+ 	else setup_output_buffer_if_we_run_high(mv);
+ 
+ 	makecrc();
+-	puts("Uncompressing Linux... ");
++	putstr("Uncompressing Linux... ");
+ 	gunzip();
+-	puts("Ok, booting the kernel.\n");
++	putstr("Ok, booting the kernel.\n");
+ 	if (high_loaded) close_output_buffer_if_we_run_high(mv);
+ 	return high_loaded;
+ }
+diff -urN linux-2.4.24/arch/i386/kernel/io_apic.c linux-2.4.24-new/arch/i386/kernel/io_apic.c
+--- linux-2.4.24/arch/i386/kernel/io_apic.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/io_apic.c	2004-05-04 12:20:40.584841720 -0700
+@@ -1349,7 +1349,7 @@
+ 
+ #ifndef CONFIG_SMP
+ 
+-void send_IPI_self(int vector)
++void fastcall send_IPI_self(int vector)
+ {
+ 	unsigned int cfg;
+ 
+diff -urN linux-2.4.24/arch/i386/kernel/pci-pc.c linux-2.4.24-new/arch/i386/kernel/pci-pc.c
+--- linux-2.4.24/arch/i386/kernel/pci-pc.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/pci-pc.c	2004-05-04 12:20:40.585841568 -0700
+@@ -1017,11 +1017,13 @@
+ 		"1:"
+ 		: "=a" (ret),
+ 		  "=b" (map),
+-		  "+m" (opt)
++		  "=m" (opt)
+ 		: "0" (PCIBIOS_GET_ROUTING_OPTIONS),
+ 		  "1" (0),
+ 		  "D" ((long) &opt),
+-		  "S" (&pci_indirect));
++		  "S" (&pci_indirect),
++		  "m" (opt)
++		: "memory");
+ 	DBG("OK  ret=%d, size=%d, map=%x\n", ret, opt.size, map);
+ 	if (ret & 0xff00)
+ 		printk(KERN_ERR "PCI: Error %02x when fetching IRQ routing table.\n", (ret >> 8) & 0xff);
+diff -urN linux-2.4.24/arch/i386/kernel/process.c linux-2.4.24-new/arch/i386/kernel/process.c
+--- linux-2.4.24/arch/i386/kernel/process.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/process.c	2004-05-04 12:20:40.585841568 -0700
+@@ -687,7 +687,7 @@
+  * More important, however, is the fact that this allows us much
+  * more flexibility.
+  */
+-void __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
++void fastcall __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+ {
+ 	struct thread_struct *prev = &prev_p->thread,
+ 				 *next = &next_p->thread;
+diff -urN linux-2.4.24/arch/i386/kernel/signal.c linux-2.4.24-new/arch/i386/kernel/signal.c
+--- linux-2.4.24/arch/i386/kernel/signal.c	2002-08-02 17:39:42.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/signal.c	2004-05-04 12:20:40.585841568 -0700
+@@ -581,7 +581,7 @@
+  * want to handle. Thus you cannot kill init even with a SIGKILL even by
+  * mistake.
+  */
+-int do_signal(struct pt_regs *regs, sigset_t *oldset)
++int fastcall do_signal(struct pt_regs *regs, sigset_t *oldset)
+ {
+ 	siginfo_t info;
+ 	struct k_sigaction *ka;
+diff -urN linux-2.4.24/arch/i386/kernel/smp.c linux-2.4.24-new/arch/i386/kernel/smp.c
+--- linux-2.4.24/arch/i386/kernel/smp.c	2003-06-13 07:51:29.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/smp.c	2004-05-04 12:20:40.586841416 -0700
+@@ -150,7 +150,7 @@
+ 	apic_write_around(APIC_ICR, cfg);
+ }
+ 
+-void send_IPI_self(int vector)
++void fastcall send_IPI_self(int vector)
+ {
+ 	__send_IPI_shortcut(APIC_DEST_SELF, vector);
+ }
+diff -urN linux-2.4.24/arch/i386/kernel/vm86.c linux-2.4.24-new/arch/i386/kernel/vm86.c
+--- linux-2.4.24/arch/i386/kernel/vm86.c	2003-08-25 04:44:39.000000000 -0700
++++ linux-2.4.24-new/arch/i386/kernel/vm86.c	2004-05-04 12:20:40.586841416 -0700
+@@ -91,7 +91,7 @@
+ #define VM86_REGS_SIZE2 (sizeof(struct kernel_vm86_regs) - VM86_REGS_SIZE1)
+ 
+ struct pt_regs * FASTCALL(save_v86_state(struct kernel_vm86_regs * regs));
+-struct pt_regs * save_v86_state(struct kernel_vm86_regs * regs)
++struct pt_regs * fastcall save_v86_state(struct kernel_vm86_regs * regs)
+ {
+ 	struct tss_struct *tss;
+ 	struct pt_regs *ret;
+diff -urN linux-2.4.24/arch/ppc/kernel/ppc_htab.c linux-2.4.24-new/arch/ppc/kernel/ppc_htab.c
+--- linux-2.4.24/arch/ppc/kernel/ppc_htab.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/ppc/kernel/ppc_htab.c	2004-05-04 12:20:40.586841416 -0700
+@@ -488,7 +488,7 @@
+ 				if (!isspace(c))
+ 					break;
+ 				left--;
+-				((char *) buffer)++;
++				buffer++;
+ 			}
+ 			if (!left)
+ 				break;
+diff -urN linux-2.4.24/arch/x86_64/boot/compressed/misc.c linux-2.4.24-new/arch/x86_64/boot/compressed/misc.c
+--- linux-2.4.24/arch/x86_64/boot/compressed/misc.c	2003-06-13 07:51:32.000000000 -0700
++++ linux-2.4.24-new/arch/x86_64/boot/compressed/misc.c	2004-05-04 12:20:40.587841264 -0700
+@@ -96,7 +96,7 @@
+ static void gzip_mark(void **);
+ static void gzip_release(void **);
+  
+-static void puts(const char *);
++static void putstr(const char *);
+   
+ extern int end;
+ static long free_mem_ptr = (long)&end;
+@@ -157,7 +157,7 @@
+ 		vidmem[i] = ' ';
+ }
+ 
+-static void puts(const char *s)
++static void putstr(const char *s)
+ {
+ 	int x,y,pos;
+ 	char c;
+@@ -275,9 +275,9 @@
+ 
+ static void error(char *x)
+ {
+-	puts("\n\n");
+-	puts(x);
+-	puts("\n\n -- System halted");
++	putstr("\n\n");
++	putstr(x);
++	putstr("\n\n -- System halted");
+ 
+ 	while(1);
+ }
+@@ -351,9 +351,9 @@
+ 	else setup_output_buffer_if_we_run_high(mv);
+ 
+ 	makecrc();
+-	puts(".\nDecompressing Linux...");
++	putstr(".\nDecompressing Linux...");
+ 	gunzip();
+-	puts("done.\nBooting the kernel.\n");
++	putstr("done.\nBooting the kernel.\n");
+ 	if (high_loaded) close_output_buffer_if_we_run_high(mv);
+ 	return high_loaded;
+ }
+diff -urN linux-2.4.24/arch/x86_64/ia32/ia32_ioctl.c linux-2.4.24-new/arch/x86_64/ia32/ia32_ioctl.c
+--- linux-2.4.24/arch/x86_64/ia32/ia32_ioctl.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/x86_64/ia32/ia32_ioctl.c	2004-05-04 12:20:40.589840960 -0700
+@@ -1164,6 +1164,7 @@
+ 		case FDDEFPRM32:
+ 		case FDGETPRM32:
+ 		{
++			u32 name;
+ 			struct floppy_struct *f;
+ 
+ 			f = karg = kmalloc(sizeof(struct floppy_struct), GFP_KERNEL);
+@@ -1180,7 +1181,8 @@
+ 			err |= __get_user(f->rate, &((struct floppy_struct32 *)arg)->rate);
+ 			err |= __get_user(f->spec1, &((struct floppy_struct32 *)arg)->spec1);
+ 			err |= __get_user(f->fmt_gap, &((struct floppy_struct32 *)arg)->fmt_gap);
+-			err |= __get_user((u64)f->name, &((struct floppy_struct32 *)arg)->name);
++			err |= __get_user(name, &((struct floppy_struct32 *)arg)->name);
++			f->name = (void*)(u64)name;
+ 			if (err) {
+ 				err = -EFAULT;
+ 				goto out;
+@@ -2708,20 +2710,23 @@
+ {
+ 	struct blkpg_ioctl_arg a;
+ 	struct blkpg_partition p;
++	struct blkpg_partition *up32;
++	u32 udata;
+ 	int err;
+ 	mm_segment_t old_fs = get_fs();
+ 
+ 	err = get_user(a.op, &arg->op);
+ 	err |= __get_user(a.flags, &arg->flags);
+ 	err |= __get_user(a.datalen, &arg->datalen);
+-	err |= __get_user((long)a.data, &arg->data);
++	err |= __get_user(udata, &arg->data);
++	up32 = (void*)(u64)udata;
+ 	if (err) return err;
+ 	switch (a.op) {
+ 	case BLKPG_ADD_PARTITION:
+ 	case BLKPG_DEL_PARTITION:
+ 		if (a.datalen < sizeof(struct blkpg_partition))
+ 			return -EINVAL;
+-                if (copy_from_user(&p, a.data, sizeof(struct blkpg_partition)))
++                if (copy_from_user(&p, up32, sizeof(struct blkpg_partition)))
+ 			return -EFAULT;
+ 		a.data = &p;
+ 		set_fs (KERNEL_DS);
+diff -urN linux-2.4.24/arch/x86_64/ia32/sys_ia32.c linux-2.4.24-new/arch/x86_64/ia32/sys_ia32.c
+--- linux-2.4.24/arch/x86_64/ia32/sys_ia32.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/x86_64/ia32/sys_ia32.c	2004-05-04 12:20:40.590840808 -0700
+@@ -381,12 +381,16 @@
+ 		return -EINVAL;
+ 
+ 	if (act) {
++		u32 handler, restorer;
++
+ 		if (verify_area(VERIFY_READ, act, sizeof(*act)) ||
+-		    __get_user((long)new_ka.sa.sa_handler, &act->sa_handler) ||
++		    __get_user(handler, &act->sa_handler) ||
+ 		    __get_user(new_ka.sa.sa_flags, &act->sa_flags) ||
+-		    __get_user((long)new_ka.sa.sa_restorer, &act->sa_restorer)||
++		    __get_user(restorer, &act->sa_restorer)||
+ 		    __copy_from_user(&set32, &act->sa_mask, sizeof(sigset32_t)))
+ 			return -EFAULT;
++		new_ka.sa.sa_handler = (void*)(u64)handler;
++		new_ka.sa.sa_restorer = (void*)(u64)restorer;
+ 
+ 		/* FIXME: here we rely on _IA32_NSIG_WORS to be >= than _NSIG_WORDS << 1 */
+ 		switch (_NSIG_WORDS) {
+@@ -438,13 +442,16 @@
+ 
+         if (act) {
+ 		old_sigset32_t mask;
++		u32 handler, restorer;
+ 
+ 		if (verify_area(VERIFY_READ, act, sizeof(*act)) ||
+-		    __get_user((long)new_ka.sa.sa_handler, &act->sa_handler) ||
++		    __get_user(handler, &act->sa_handler) ||
+ 		    __get_user(new_ka.sa.sa_flags, &act->sa_flags) ||
+-		    __get_user((long)new_ka.sa.sa_restorer, &act->sa_restorer) ||
++		    __get_user(restorer, &act->sa_restorer) ||
+ 		    __get_user(mask, &act->sa_mask))
+ 			return -EFAULT;
++		new_ka.sa.sa_handler = (void*)(u64)handler;
++		new_ka.sa.sa_restorer = (void*)(u64)restorer;
+ 		siginitset(&new_ka.sa.sa_mask, mask);
+         }
+ 
+@@ -775,7 +782,7 @@
+ 	put_user(reclen, &dirent->d_reclen);
+ 	copy_to_user(dirent->d_name, name, namlen);
+ 	put_user(0, dirent->d_name + namlen);
+-	((char *) dirent) += reclen;
++	dirent = (void*)dirent + reclen;
+ 	buf->current_dir = dirent;
+ 	buf->count -= reclen;
+ 	return 0;
+diff -urN linux-2.4.24/arch/x86_64/kernel/x8664_ksyms.c linux-2.4.24-new/arch/x86_64/kernel/x8664_ksyms.c
+--- linux-2.4.24/arch/x86_64/kernel/x8664_ksyms.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/x86_64/kernel/x8664_ksyms.c	2004-05-04 12:20:40.591840656 -0700
+@@ -155,7 +155,7 @@
+ extern __kernel_size_t strlen(const char *);
+ extern int strcmp(const char *,const char *);
+ extern char * strcpy(char *,const char *);
+-extern char * bcopy(const char * src, char * dest, int count);
++extern void bcopy(const void * src, void * dest, size_t count);
+ 
+ EXPORT_SYMBOL_NOVERS(memcpy);
+ EXPORT_SYMBOL_NOVERS(__memcpy);
+diff -urN linux-2.4.24/arch/x86_64/lib/usercopy.c linux-2.4.24-new/arch/x86_64/lib/usercopy.c
+--- linux-2.4.24/arch/x86_64/lib/usercopy.c	2003-11-28 11:26:19.000000000 -0700
++++ linux-2.4.24-new/arch/x86_64/lib/usercopy.c	2004-05-04 12:20:40.591840656 -0700
+@@ -88,7 +88,7 @@
+ 		"	.quad 1b,2b\n"
+ 		".previous"
+ 		: [size8] "=c"(size), [dst] "=&D" (__d0)
+-		: [size1] "r"(size & 7), "[size8]" (size / 8), "[dst] "(addr),
++		: [size1] "r"(size & 7), "[size8]" (size / 8), "[dst]"(addr),
+ 		  [zero] "r" (0UL), [eight] "r" (8UL));
+ 	return size;
+ }
+diff -urN linux-2.4.24/drivers/char/drm/drm_dma.h linux-2.4.24-new/drivers/char/drm/drm_dma.h
+--- linux-2.4.24/drivers/char/drm/drm_dma.h	2003-11-28 11:26:20.000000000 -0700
++++ linux-2.4.24-new/drivers/char/drm/drm_dma.h	2004-05-04 12:20:40.592840504 -0700
+@@ -648,7 +648,7 @@
+ 		 * for the same vblank sequence number; nothing to be done in
+ 		 * that case
+ 		 */
+-		list_for_each( ( (struct list_head *) vbl_sig ), &dev->vbl_sigs.head ) {
++		list_for_each_entry( vbl_sig, &dev->vbl_sigs.head, head ) {
+ 			if (vbl_sig->sequence == vblwait.request.sequence
+ 			    && vbl_sig->info.si_signo == vblwait.request.signal
+ 			    && vbl_sig->task == current)
+@@ -699,19 +699,20 @@
+ 
+ void DRM(vbl_send_signals)( drm_device_t *dev )
+ {
+-	struct list_head *tmp;
++	struct list_head *list, *tmp;
+ 	drm_vbl_sig_t *vbl_sig;
+ 	unsigned int vbl_seq = atomic_read( &dev->vbl_received );
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave( &dev->vbl_lock, flags );
+ 
+-	list_for_each_safe( ( (struct list_head *) vbl_sig ), tmp, &dev->vbl_sigs.head ) {
++	list_for_each_safe( list, tmp, &dev->vbl_sigs.head ) {
++		vbl_sig = list_entry( list, drm_vbl_sig_t, head );
+ 		if ( ( vbl_seq - vbl_sig->sequence ) <= (1<<23) ) {
+ 			vbl_sig->info.si_code = vbl_seq;
+ 			send_sig_info( vbl_sig->info.si_signo, &vbl_sig->info, vbl_sig->task );
+ 
+-			list_del( (struct list_head *) vbl_sig );
++			list_del( list );
+ 
+ 
+ 			kfree( vbl_sig );
+diff -urN linux-2.4.24/drivers/char/drm/radeon_state.c linux-2.4.24-new/drivers/char/drm/radeon_state.c
+--- linux-2.4.24/drivers/char/drm/radeon_state.c	2003-11-28 11:26:20.000000000 -0700
++++ linux-2.4.24-new/drivers/char/drm/radeon_state.c	2004-05-04 12:20:40.593840352 -0700
+@@ -1223,7 +1223,7 @@
+ 		/* Update the input parameters for next time */
+ 		image->y += height;
+ 		image->height -= height;
+-		(const u8 *)image->data += size;
++		image->data = (const u8 *)image->data + size;
+ 	} while (image->height > 0);
+ 
+ 	/* Flush the pixel cache after the blit completes.  This ensures
+diff -urN linux-2.4.24/drivers/char/ftape/lowlevel/ftape-bsm.c linux-2.4.24-new/drivers/char/ftape/lowlevel/ftape-bsm.c
+--- linux-2.4.24/drivers/char/ftape/lowlevel/ftape-bsm.c	2000-10-16 12:58:51.000000000 -0700
++++ linux-2.4.24-new/drivers/char/ftape/lowlevel/ftape-bsm.c	2004-05-04 12:20:40.593840352 -0700
+@@ -203,6 +203,7 @@
+ 	    ft_format_code == fmt_1100ft) {
+ 		SectorCount *ptr = (SectorCount *)bad_sector_map;
+ 		unsigned int sector;
++		__u16 *ptr16;
+ 
+ 		while((sector = get_sector(ptr++)) != 0) {
+ 			if ((ft_format_code == fmt_big || 
+@@ -218,9 +219,10 @@
+ 		}
+ 		/*  Display old ftape's end-of-file marks
+ 		 */
+-		while ((sector = get_unaligned(((__u16*)ptr)++)) != 0) {
++		ptr16 = (__u16*)ptr;
++		while ((sector = get_unaligned(ptr16++)) != 0) {
+ 			TRACE(ft_t_noise, "Old ftape eof mark: %4d/%2d",
+-			      sector, get_unaligned(((__u16*)ptr)++));
++			      sector, get_unaligned(ptr16++));
+ 		}
+ 	} else { /* fixed size format */
+ 		for (i = ft_first_data_segment;
+diff -urN linux-2.4.24/drivers/char/ftape/lowlevel/ftape-bsm.h linux-2.4.24-new/drivers/char/ftape/lowlevel/ftape-bsm.h
+--- linux-2.4.24/drivers/char/ftape/lowlevel/ftape-bsm.h	1997-11-25 15:45:27.000000000 -0700
++++ linux-2.4.24-new/drivers/char/ftape/lowlevel/ftape-bsm.h	2004-05-04 12:20:40.593840352 -0700
+@@ -47,7 +47,7 @@
+  */
+ typedef struct NewSectorMap {          
+ 	__u8 bytes[3];
+-} SectorCount __attribute__((packed));
++} SectorCount;
+ 
+ 
+ /*
+diff -urN linux-2.4.24/drivers/char/ftape/zftape/zftape-eof.c linux-2.4.24-new/drivers/char/ftape/zftape/zftape-eof.c
+--- linux-2.4.24/drivers/char/ftape/zftape/zftape-eof.c	1999-11-23 11:29:15.000000000 -0700
++++ linux-2.4.24-new/drivers/char/ftape/zftape/zftape-eof.c	2004-05-04 12:20:40.593840352 -0700
+@@ -123,7 +123,7 @@
+ 	while (ptr + 3 < limit) {
+ 
+ 		if (get_unaligned((__u32*)ptr)) {
+-			++(__u32*)ptr;
++			ptr += sizeof(__u32);
+ 		} else {
+ 			return ptr;
+ 		}
+diff -urN linux-2.4.24/drivers/parport/parport_pc.c linux-2.4.24-new/drivers/parport/parport_pc.c
+--- linux-2.4.24/drivers/parport/parport_pc.c	2003-06-13 07:51:35.000000000 -0700
++++ linux-2.4.24-new/drivers/parport/parport_pc.c	2004-05-04 12:20:40.594840200 -0700
+@@ -414,7 +414,8 @@
+ 				left -= 16;
+ 			} else {
+ 				/* grab single byte from the warp fifo */
+-				*((char *)buf)++ = inb (EPPDATA (port));
++				*((char *)buf) = inb (EPPDATA (port));
++				buf++;
+ 				got++;
+ 				left--;
+ 			}
+@@ -441,7 +442,8 @@
+ 		return length;
+ 	}
+ 	for (; got < length; got++) {
+-		*((char*)buf)++ = inb (EPPDATA(port));
++		*((char*)buf) = inb (EPPDATA(port));
++		buf++;
+ 		if (inb (STATUS (port)) & 0x01) {
+ 			/* EPP timeout */
+ 			clear_epp_timeout (port);
+@@ -470,7 +472,8 @@
+ 		return length;
+ 	}
+ 	for (; written < length; written++) {
+-		outb (*((char*)buf)++, EPPDATA(port));
++		outb (*((char*)buf), EPPDATA(port));
++		buf++;
+ 		if (inb (STATUS(port)) & 0x01) {
+ 			clear_epp_timeout (port);
+ 			break;
+@@ -494,7 +497,8 @@
+ 		return length;
+ 	}
+ 	for (; got < length; got++) {
+-		*((char*)buf)++ = inb (EPPADDR (port));
++		*((char*)buf) = inb (EPPADDR (port));
++		buf++;
+ 		if (inb (STATUS (port)) & 0x01) {
+ 			clear_epp_timeout (port);
+ 			break;
+@@ -519,7 +523,8 @@
+ 		return length;
+ 	}
+ 	for (; written < length; written++) {
+-		outb (*((char*)buf)++, EPPADDR (port));
++		outb (*((char*)buf), EPPADDR (port));
++		buf++;
+ 		if (inb (STATUS (port)) & 0x01) {
+ 			clear_epp_timeout (port);
+ 			break;
+diff -urN linux-2.4.24/drivers/pcmcia/bulkmem.c linux-2.4.24-new/drivers/pcmcia/bulkmem.c
+--- linux-2.4.24/drivers/pcmcia/bulkmem.c	2002-11-28 16:53:14.000000000 -0700
++++ linux-2.4.24-new/drivers/pcmcia/bulkmem.c	2004-05-04 12:20:40.595840048 -0700
+@@ -301,7 +301,7 @@
+     {
+ 	window_handle_t w;
+         int ret = pcmcia_request_window(a1, a2, &w);
+-        (window_handle_t *)a1 = w;
++        a1 = w;
+ 	return  ret;
+     }
+         break;
+diff -urN linux-2.4.24/drivers/usb/hid-core.c linux-2.4.24-new/drivers/usb/hid-core.c
+--- linux-2.4.24/drivers/usb/hid-core.c	2003-08-25 04:44:42.000000000 -0700
++++ linux-2.4.24-new/drivers/usb/hid-core.c	2004-05-04 12:20:40.595840048 -0700
+@@ -613,14 +613,16 @@
+ 
+ 				case 2:
+ 					if ((end - start) >= 2) {
+-						item->data.u16 = le16_to_cpu( get_unaligned(((__u16*)start)++));
++						item->data.u16 = le16_to_cpu(get_unaligned((__u16*)start));
++						start = (__u8 *)((__u16 *)start + 1);
+ 						return start;
+ 					}
+ 
+ 				case 3:
+ 					item->size++;
+ 					if ((end - start) >= 4) {
+-						item->data.u32 = le32_to_cpu( get_unaligned(((__u32*)start)++));
++						item->data.u32 = le32_to_cpu(get_unaligned((__u32*)start));
++						start = (__u8 *)((__u32 *)start + 1);
+ 						return start;
+ 					}
+ 			}
+diff -urN linux-2.4.24/drivers/video/fbcon.c linux-2.4.24-new/drivers/video/fbcon.c
+--- linux-2.4.24/drivers/video/fbcon.c	2003-08-25 04:44:42.000000000 -0700
++++ linux-2.4.24-new/drivers/video/fbcon.c	2004-05-04 12:20:40.597839744 -0700
+@@ -1877,7 +1877,10 @@
+        font length must be multiple of 256, at least. And 256 is multiple
+        of 4 */
+     k = 0;
+-    while (p > new_data) k += *--(u32 *)p;
++    while (p > new_data) {
++	    p = (u8 *)((u32 *)p - 1);
++	    k += *(u32 *) p;
++    }
+     FNTSUM(new_data) = k;
+     /* Check if the same font is on some other console already */
+     for (i = 0; i < MAX_NR_CONSOLES; i++) {
+diff -urN linux-2.4.24/fs/buffer.c linux-2.4.24-new/fs/buffer.c
+--- linux-2.4.24/fs/buffer.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/fs/buffer.c	2004-05-04 12:20:40.598839592 -0700
+@@ -130,7 +130,7 @@
+ int bdflush_min[N_PARAM] = {  0,  1,    0,   0,  0,   1*HZ,   0, 0, 0};
+ int bdflush_max[N_PARAM] = {100,50000, 20000, 20000,10000*HZ, 10000*HZ, 100, 100, 0};
+ 
+-void unlock_buffer(struct buffer_head *bh)
++void fastcall unlock_buffer(struct buffer_head *bh)
+ {
+ 	clear_bit(BH_Wait_IO, &bh->b_state);
+ 	clear_bit(BH_Launder, &bh->b_state);
+@@ -613,7 +613,7 @@
+ 	return bh;
+ }
+ 
+-void buffer_insert_list(struct buffer_head *bh, struct list_head *list)
++void fastcall buffer_insert_list(struct buffer_head *bh, struct list_head *list)
+ {
+ 	spin_lock(&lru_list_lock);
+ 	if (buffer_attached(bh))
+@@ -1056,7 +1056,7 @@
+ }
+ EXPORT_SYMBOL(balance_dirty);
+ 
+-inline void __mark_dirty(struct buffer_head *bh)
++inline void fastcall __mark_dirty(struct buffer_head *bh)
+ {
+ 	bh->b_flushtime = jiffies + bdf_prm.b_un.age_buffer;
+ 	refile_buffer(bh);
+@@ -1064,13 +1064,13 @@
+ 
+ /* atomic version, the user must call balance_dirty() by hand
+    as soon as it become possible to block */
+-void __mark_buffer_dirty(struct buffer_head *bh)
++void fastcall __mark_buffer_dirty(struct buffer_head *bh)
+ {
+ 	if (!atomic_set_buffer_dirty(bh))
+ 		__mark_dirty(bh);
+ }
+ 
+-void mark_buffer_dirty(struct buffer_head *bh)
++void fastcall mark_buffer_dirty(struct buffer_head *bh)
+ {
+ 	if (!atomic_set_buffer_dirty(bh)) {
+ 		if (block_dump)
+@@ -2693,7 +2693,7 @@
+  *       obtain a reference to a buffer head within a page.  So we must
+  *	 lock out all of these paths to cleanly toss the page.
+  */
+-int try_to_free_buffers(struct page * page, unsigned int gfp_mask)
++int fastcall try_to_free_buffers(struct page * page, unsigned int gfp_mask)
+ {
+ 	struct buffer_head * tmp, * bh = page->buffers;
+ 
+diff -urN linux-2.4.24/fs/file_table.c linux-2.4.24-new/fs/file_table.c
+--- linux-2.4.24/fs/file_table.c	2002-11-28 16:53:15.000000000 -0700
++++ linux-2.4.24-new/fs/file_table.c	2004-05-04 12:20:40.598839592 -0700
+@@ -97,7 +97,7 @@
+ 		return 0;
+ }
+ 
+-void fput(struct file * file)
++void fastcall fput(struct file * file)
+ {
+ 	struct dentry * dentry = file->f_dentry;
+ 	struct vfsmount * mnt = file->f_vfsmnt;
+@@ -126,7 +126,7 @@
+ 	}
+ }
+ 
+-struct file * fget(unsigned int fd)
++struct file * fastcall fget(unsigned int fd)
+ {
+ 	struct file * file;
+ 	struct files_struct *files = current->files;
+diff -urN linux-2.4.24/fs/namei.c linux-2.4.24-new/fs/namei.c
+--- linux-2.4.24/fs/namei.c	2003-08-25 04:44:43.000000000 -0700
++++ linux-2.4.24-new/fs/namei.c	2004-05-04 12:20:40.599839440 -0700
+@@ -447,7 +447,7 @@
+  *
+  * We expect 'base' to be positive and a directory.
+  */
+-int link_path_walk(const char * name, struct nameidata *nd)
++int fastcall link_path_walk(const char * name, struct nameidata *nd)
+ {
+ 	struct dentry *dentry;
+ 	struct inode *inode;
+@@ -653,7 +653,7 @@
+ 	return err;
+ }
+ 
+-int path_walk(const char * name, struct nameidata *nd)
++int fastcall path_walk(const char * name, struct nameidata *nd)
+ {
+ 	current->total_link_count = 0;
+ 	return link_path_walk(name, nd);
+@@ -741,7 +741,7 @@
+ }
+ 
+ /* SMP-safe */
+-int path_lookup(const char *path, unsigned flags, struct nameidata *nd)
++int fastcall path_lookup(const char *path, unsigned flags, struct nameidata *nd)
+ {
+ 	int error = 0;
+ 	if (path_init(path, flags, nd))
+@@ -751,7 +751,7 @@
+ 
+ 
+ /* SMP-safe */
+-int path_init(const char *name, unsigned int flags, struct nameidata *nd)
++int fastcall path_init(const char *name, unsigned int flags, struct nameidata *nd)
+ {
+ 	nd->last_type = LAST_ROOT; /* if there are only slashes... */
+ 	nd->flags = flags;
+@@ -847,7 +847,7 @@
+  * that namei follows links, while lnamei does not.
+  * SMP-safe
+  */
+-int __user_walk(const char *name, unsigned flags, struct nameidata *nd)
++int fastcall __user_walk(const char *name, unsigned flags, struct nameidata *nd)
+ {
+ 	char *tmp;
+ 	int err;
+diff -urN linux-2.4.24/fs/readdir.c linux-2.4.24-new/fs/readdir.c
+--- linux-2.4.24/fs/readdir.c	2002-08-02 17:39:45.000000000 -0700
++++ linux-2.4.24-new/fs/readdir.c	2004-05-04 12:20:40.599839440 -0700
+@@ -263,7 +263,7 @@
+ 	put_user(reclen, &dirent->d_reclen);
+ 	copy_to_user(dirent->d_name, name, namlen);
+ 	put_user(0, dirent->d_name + namlen);
+-	((char *) dirent) += reclen;
++	dirent = (void*)dirent + reclen;
+ 	buf->current_dir = dirent;
+ 	buf->count -= reclen;
+ 	return 0;
+@@ -346,7 +346,7 @@
+ 	copy_to_user(dirent, &d, NAME_OFFSET(&d));
+ 	copy_to_user(dirent->d_name, name, namlen);
+ 	put_user(0, dirent->d_name + namlen);
+-	((char *) dirent) += reclen;
++	dirent = (void*)dirent + reclen;
+ 	buf->current_dir = dirent;
+ 	buf->count -= reclen;
+ 	return 0;
+diff -urN linux-2.4.24/include/asm-i386/apic.h linux-2.4.24-new/include/asm-i386/apic.h
+--- linux-2.4.24/include/asm-i386/apic.h	2002-08-02 17:39:45.000000000 -0700
++++ linux-2.4.24-new/include/asm-i386/apic.h	2004-05-04 12:25:47.385200976 -0700
+@@ -77,7 +77,7 @@
+ extern void smp_local_timer_interrupt (struct pt_regs * regs);
+ extern void setup_APIC_clocks (void);
+ extern void setup_apic_nmi_watchdog (void);
+-extern inline void nmi_watchdog_tick (struct pt_regs * regs);
++extern void nmi_watchdog_tick (struct pt_regs * regs);
+ extern int APIC_init_uniprocessor (void);
+ extern void disable_APIC_timer(void);
+ extern void enable_APIC_timer(void);
+diff -urN linux-2.4.24/include/asm-i386/rwsem.h linux-2.4.24-new/include/asm-i386/rwsem.h
+--- linux-2.4.24/include/asm-i386/rwsem.h	2002-11-28 16:53:15.000000000 -0700
++++ linux-2.4.24-new/include/asm-i386/rwsem.h	2004-05-04 12:25:47.337208272 -0700
+@@ -113,8 +113,8 @@
+ 		"  jmp       1b\n"
+ 		LOCK_SECTION_END
+ 		"# ending down_read\n\t"
+-		: "+m"(sem->count)
+-		: "a"(sem)
++		: "=m"(sem->count)
++		: "a"(sem), "m"(sem->count)
+ 		: "memory", "cc");
+ }
+ 
+@@ -151,8 +151,8 @@
+ 	tmp = RWSEM_ACTIVE_WRITE_BIAS;
+ 	__asm__ __volatile__(
+ 		"# beginning down_write\n\t"
+-LOCK_PREFIX	"  xadd      %0,(%%eax)\n\t" /* subtract 0x0000ffff, returns the old value */
+-		"  testl     %0,%0\n\t" /* was the count 0 before? */
++LOCK_PREFIX	"  xadd      %%edx,(%%eax)\n\t" /* subtract 0x0000ffff, returns the old value */
++		"  testl     %%edx,%%edx\n\t" /* was the count 0 before? */
+ 		"  jnz       2f\n\t" /* jump if we weren't granted the lock */
+ 		"1:\n\t"
+ 		LOCK_SECTION_START("")
+@@ -163,8 +163,8 @@
+ 		"  jmp       1b\n"
+ 		LOCK_SECTION_END
+ 		"# ending down_write"
+-		: "+d"(tmp), "+m"(sem->count)
+-		: "a"(sem)
++		: "=m"(sem->count), "=d"(tmp)
++		: "a"(sem), "1"(tmp), "m"(sem->count)
+ 		: "memory", "cc");
+ }
+ 
+@@ -202,8 +202,8 @@
+ 		"  jmp       1b\n"
+ 		LOCK_SECTION_END
+ 		"# ending __up_read\n"
+-		: "+m"(sem->count), "+d"(tmp)
+-		: "a"(sem)
++		: "=m"(sem->count), "=d"(tmp)
++		: "a"(sem), "1"(tmp), "m"(sem->count)
+ 		: "memory", "cc");
+ }
+ 
+@@ -228,8 +228,8 @@
+ 		"  jmp       1b\n"
+ 		LOCK_SECTION_END
+ 		"# ending __up_write\n"
+-		: "+m"(sem->count)
+-		: "a"(sem), "i"(-RWSEM_ACTIVE_WRITE_BIAS)
++		: "=m"(sem->count)
++		: "a"(sem), "i"(-RWSEM_ACTIVE_WRITE_BIAS), "m"(sem->count)
+ 		: "memory", "cc", "edx");
+ }
+ 
+diff -urN linux-2.4.24/include/asm-i386/unistd.h linux-2.4.24-new/include/asm-i386/unistd.h
+--- linux-2.4.24/include/asm-i386/unistd.h	2002-11-28 16:53:15.000000000 -0700
++++ linux-2.4.24-new/include/asm-i386/unistd.h	2004-05-04 12:20:40.600839288 -0700
+@@ -372,7 +372,7 @@
+ static inline _syscall3(int,execve,const char *,file,char **,argv,char **,envp)
+ static inline _syscall3(int,open,const char *,file,int,flag,int,mode)
+ static inline _syscall1(int,close,int,fd)
+-static inline _syscall1(int,_exit,int,exitcode)
++static inline _syscall1(void,_exit,int,exitcode)
+ static inline _syscall3(pid_t,waitpid,pid_t,pid,int *,wait_stat,int,options)
+ static inline _syscall1(int,delete_module,const char *,name)
+ 
+diff -urN linux-2.4.24/include/asm-ppc/unistd.h linux-2.4.24-new/include/asm-ppc/unistd.h
+--- linux-2.4.24/include/asm-ppc/unistd.h	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/include/asm-ppc/unistd.h	2004-05-04 12:20:40.600839288 -0700
+@@ -382,7 +382,7 @@
+ static inline _syscall3(int,execve,const char *,file,char **,argv,char **,envp)
+ static inline _syscall3(int,open,const char *,file,int,flag,int,mode)
+ static inline _syscall1(int,close,int,fd)
+-static inline _syscall1(int,_exit,int,exitcode)
++static inline _syscall1(void,_exit,int,exitcode)
+ static inline _syscall3(pid_t,waitpid,pid_t,pid,int *,wait_stat,int,options)
+ static inline _syscall1(int,delete_module,const char *,name)
+ 
+diff -urN linux-2.4.24/include/asm-x86_64/unistd.h linux-2.4.24-new/include/asm-x86_64/unistd.h
+--- linux-2.4.24/include/asm-x86_64/unistd.h	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/include/asm-x86_64/unistd.h	2004-05-04 12:20:40.601839136 -0700
+@@ -673,7 +673,7 @@
+ }
+ 
+ extern long sys_exit(int) __attribute__((noreturn));
+-extern inline long exit(int error_code)
++static inline void exit(int error_code)
+ {
+ 	sys_exit(error_code);
+ }
+diff -urN linux-2.4.24/include/linux/blkdev.h linux-2.4.24-new/include/linux/blkdev.h
+--- linux-2.4.24/include/linux/blkdev.h	2003-08-25 04:44:44.000000000 -0700
++++ linux-2.4.24-new/include/linux/blkdev.h	2004-05-04 12:25:47.425194896 -0700
+@@ -233,7 +233,7 @@
+ extern void grok_partitions(struct gendisk *dev, int drive, unsigned minors, long size);
+ extern void register_disk(struct gendisk *dev, kdev_t first, unsigned minors, struct block_device_operations *ops, long size);
+ extern void generic_make_request(int rw, struct buffer_head * bh);
+-extern inline request_queue_t *blk_get_queue(kdev_t dev);
++extern request_queue_t *blk_get_queue(kdev_t dev);
+ extern void blkdev_release_request(struct request *);
+ 
+ /*
+diff -urN linux-2.4.24/include/linux/compiler.h linux-2.4.24-new/include/linux/compiler.h
+--- linux-2.4.24/include/linux/compiler.h	2001-09-18 14:12:45.000000000 -0700
++++ linux-2.4.24-new/include/linux/compiler.h	2004-05-04 12:25:41.704064640 -0700
+@@ -13,4 +13,12 @@
+ #define likely(x)	__builtin_expect((x),1)
+ #define unlikely(x)	__builtin_expect((x),0)
+ 
++#if __GNUC__ == 3
++#if __GNUC_MINOR__ >= 1 && __GNUC_MINOR__ < 4
++# define inline         __inline__ __attribute__((always_inline))
++# define __inline__     __inline__ __attribute__((always_inline))
++# define __inline       __inline__ __attribute__((always_inline))
++#endif
++#endif /* __GNUC__ */
++
+ #endif /* __LINUX_COMPILER_H */
+diff -urN linux-2.4.24/include/linux/ide.h linux-2.4.24-new/include/linux/ide.h
+--- linux-2.4.24/include/linux/ide.h	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/include/linux/ide.h	2004-05-04 12:26:04.153651784 -0700
+@@ -1446,10 +1446,10 @@
+ 	void			*special;
+ } pkt_task_t;
+ 
+-extern inline void SELECT_DRIVE(ide_drive_t *);
+-extern inline void SELECT_INTERRUPT(ide_drive_t *);
+-extern inline void SELECT_MASK(ide_drive_t *, int);
+-extern inline void QUIRK_LIST(ide_drive_t *);
++extern void SELECT_DRIVE(ide_drive_t *);
++extern void SELECT_INTERRUPT(ide_drive_t *);
++extern void SELECT_MASK(ide_drive_t *, int);
++extern void QUIRK_LIST(ide_drive_t *);
+ 
+ extern void ata_input_data(ide_drive_t *, void *, u32);
+ extern void ata_output_data(ide_drive_t *, void *, u32);
+diff -urN linux-2.4.24/include/linux/irq_cpustat.h linux-2.4.24-new/include/linux/irq_cpustat.h
+--- linux-2.4.24/include/linux/irq_cpustat.h	2001-11-22 12:46:18.000000000 -0700
++++ linux-2.4.24-new/include/linux/irq_cpustat.h	2004-05-04 12:25:47.413196720 -0700
+@@ -22,7 +22,7 @@
+ #ifdef CONFIG_SMP
+ #define __IRQ_STAT(cpu, member)	(irq_stat[cpu].member)
+ #else
+-#define __IRQ_STAT(cpu, member)	((void)(cpu), irq_stat[0].member)
++#define __IRQ_STAT(cpu, member)	(irq_stat[((void)(cpu), 0)].member)
+ #endif	
+ 
+   /* arch independent irq_stat fields */
+diff -urN linux-2.4.24/include/linux/kernel.h linux-2.4.24-new/include/linux/kernel.h
+--- linux-2.4.24/include/linux/kernel.h	2002-11-28 16:53:15.000000000 -0700
++++ linux-2.4.24-new/include/linux/kernel.h	2004-05-04 12:25:47.305213136 -0700
+@@ -51,8 +51,10 @@
+ 
+ #ifdef __i386__
+ #define FASTCALL(x)	x __attribute__((regparm(3)))
++#define fastcall	__attribute__((regparm(3)))
+ #else
+ #define FASTCALL(x)	x
++#define fastcall
+ #endif
+ 
+ struct completion;
+diff -urN linux-2.4.24/include/linux/sched.h linux-2.4.24-new/include/linux/sched.h
+--- linux-2.4.24/include/linux/sched.h	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/include/linux/sched.h	2004-05-04 12:25:47.400198696 -0700
+@@ -761,7 +761,7 @@
+ extern void end_lazy_tlb(struct mm_struct *mm);
+ 
+ /* mmdrop drops the mm and the page tables */
+-extern inline void FASTCALL(__mmdrop(struct mm_struct *));
++extern void FASTCALL(__mmdrop(struct mm_struct *));
+ static inline void mmdrop(struct mm_struct * mm)
+ {
+ 	if (atomic_dec_and_test(&mm->mm_count))
+diff -urN linux-2.4.24/include/linux/smp.h linux-2.4.24-new/include/linux/smp.h
+--- linux-2.4.24/include/linux/smp.h	2001-11-22 12:46:19.000000000 -0700
++++ linux-2.4.24-new/include/linux/smp.h	2004-05-04 12:25:47.387200672 -0700
+@@ -26,7 +26,7 @@
+ /*
+  * sends a 'reschedule' event to another CPU:
+  */
+-extern void FASTCALL(smp_send_reschedule(int cpu));
++extern void smp_send_reschedule(int cpu);
+ 
+ 
+ /*
+diff -urN linux-2.4.24/include/net/ip.h linux-2.4.24-new/include/net/ip.h
+--- linux-2.4.24/include/net/ip.h	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/include/net/ip.h	2004-05-04 12:28:47.997743696 -0700
+@@ -137,7 +137,7 @@
+ void ip_send_reply(struct sock *sk, struct sk_buff *skb, struct ip_reply_arg *arg,
+ 		   unsigned int len); 
+ 
+-extern __inline__ int ip_finish_output(struct sk_buff *skb);
++extern int ip_finish_output(struct sk_buff *skb);
+ 
+ struct ipv4_config
+ {
+diff -urN linux-2.4.24/kernel/fork.c linux-2.4.24-new/kernel/fork.c
+--- linux-2.4.24/kernel/fork.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/kernel/fork.c	2004-05-04 12:20:40.604838680 -0700
+@@ -39,7 +39,7 @@
+ 
+ struct task_struct *pidhash[PIDHASH_SZ];
+ 
+-void add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
++void fastcall add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
+ {
+ 	unsigned long flags;
+ 
+@@ -49,7 +49,7 @@
+ 	wq_write_unlock_irqrestore(&q->lock, flags);
+ }
+ 
+-void add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait)
++void fastcall add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait)
+ {
+ 	unsigned long flags;
+ 
+@@ -59,7 +59,7 @@
+ 	wq_write_unlock_irqrestore(&q->lock, flags);
+ }
+ 
+-void remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
++void fastcall remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
+ {
+ 	unsigned long flags;
+ 
+@@ -262,7 +262,7 @@
+  * is dropped: either by a lazy thread or by
+  * mmput. Free the page directory and the mm.
+  */
+-inline void __mmdrop(struct mm_struct *mm)
++void fastcall __mmdrop(struct mm_struct *mm)
+ {
+ 	BUG_ON(mm == &init_mm);
+ 	pgd_free(mm->pgd);
+diff -urN linux-2.4.24/kernel/sched.c linux-2.4.24-new/kernel/sched.c
+--- linux-2.4.24/kernel/sched.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/kernel/sched.c	2004-05-04 12:20:40.605838528 -0700
+@@ -209,7 +209,7 @@
+  */
+ static FASTCALL(void reschedule_idle(struct task_struct * p));
+ 
+-static void reschedule_idle(struct task_struct * p)
++static void fastcall reschedule_idle(struct task_struct * p)
+ {
+ #ifdef CONFIG_SMP
+ 	int this_cpu = smp_processor_id();
+@@ -367,7 +367,7 @@
+ 	return success;
+ }
+ 
+-inline int wake_up_process(struct task_struct * p)
++inline int fastcall wake_up_process(struct task_struct * p)
+ {
+ 	return try_to_wake_up(p, 0);
+ }
+@@ -405,7 +405,7 @@
+  *
+  * In all cases the return value is guaranteed to be non-negative.
+  */
+-signed long schedule_timeout(signed long timeout)
++signed long fastcall schedule_timeout(signed long timeout)
+ {
+ 	struct timer_list timer;
+ 	unsigned long expire;
+@@ -735,7 +735,7 @@
+ 	}
+ }
+ 
+-void __wake_up(wait_queue_head_t *q, unsigned int mode, int nr)
++void fastcall __wake_up(wait_queue_head_t *q, unsigned int mode, int nr)
+ {
+ 	if (q) {
+ 		unsigned long flags;
+@@ -745,7 +745,7 @@
+ 	}
+ }
+ 
+-void __wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr)
++void fastcall __wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr)
+ {
+ 	if (q) {
+ 		unsigned long flags;
+@@ -755,7 +755,7 @@
+ 	}
+ }
+ 
+-void complete(struct completion *x)
++void fastcall complete(struct completion *x)
+ {
+ 	unsigned long flags;
+ 
+@@ -765,7 +765,7 @@
+ 	spin_unlock_irqrestore(&x->wait.lock, flags);
+ }
+ 
+-void wait_for_completion(struct completion *x)
++void fastcall wait_for_completion(struct completion *x)
+ {
+ 	spin_lock_irq(&x->wait.lock);
+ 	if (!x->done) {
+@@ -800,7 +800,7 @@
+ 	__remove_wait_queue(q, &wait);				\
+ 	wq_write_unlock_irqrestore(&q->lock,flags);
+ 
+-void interruptible_sleep_on(wait_queue_head_t *q)
++void fastcall interruptible_sleep_on(wait_queue_head_t *q)
+ {
+ 	SLEEP_ON_VAR
+ 
+@@ -811,7 +811,7 @@
+ 	SLEEP_ON_TAIL
+ }
+ 
+-long interruptible_sleep_on_timeout(wait_queue_head_t *q, long timeout)
++long fastcall interruptible_sleep_on_timeout(wait_queue_head_t *q, long timeout)
+ {
+ 	SLEEP_ON_VAR
+ 
+@@ -824,7 +824,7 @@
+ 	return timeout;
+ }
+ 
+-void sleep_on(wait_queue_head_t *q)
++void fastcall sleep_on(wait_queue_head_t *q)
+ {
+ 	SLEEP_ON_VAR
+ 	
+@@ -835,7 +835,7 @@
+ 	SLEEP_ON_TAIL
+ }
+ 
+-long sleep_on_timeout(wait_queue_head_t *q, long timeout)
++long fastcall sleep_on_timeout(wait_queue_head_t *q, long timeout)
+ {
+ 	SLEEP_ON_VAR
+ 	
+diff -urN linux-2.4.24/kernel/softirq.c linux-2.4.24-new/kernel/softirq.c
+--- linux-2.4.24/kernel/softirq.c	2002-11-28 16:53:15.000000000 -0700
++++ linux-2.4.24-new/kernel/softirq.c	2004-05-04 12:20:40.605838528 -0700
+@@ -111,7 +111,7 @@
+ /*
+  * This function must run with irq disabled!
+  */
+-inline void cpu_raise_softirq(unsigned int cpu, unsigned int nr)
++inline void fastcall cpu_raise_softirq(unsigned int cpu, unsigned int nr)
+ {
+ 	__cpu_raise_softirq(cpu, nr);
+ 
+@@ -128,7 +128,7 @@
+ 		wakeup_softirqd(cpu);
+ }
+ 
+-void raise_softirq(unsigned int nr)
++void fastcall raise_softirq(unsigned int nr)
+ {
+ 	unsigned long flags;
+ 
+@@ -149,7 +149,7 @@
+ struct tasklet_head tasklet_vec[NR_CPUS] __cacheline_aligned;
+ struct tasklet_head tasklet_hi_vec[NR_CPUS] __cacheline_aligned;
+ 
+-void __tasklet_schedule(struct tasklet_struct *t)
++void fastcall __tasklet_schedule(struct tasklet_struct *t)
+ {
+ 	int cpu = smp_processor_id();
+ 	unsigned long flags;
+@@ -161,7 +161,7 @@
+ 	local_irq_restore(flags);
+ }
+ 
+-void __tasklet_hi_schedule(struct tasklet_struct *t)
++void fastcall __tasklet_hi_schedule(struct tasklet_struct *t)
+ {
+ 	int cpu = smp_processor_id();
+ 	unsigned long flags;
+diff -urN linux-2.4.24/kernel/sysctl.c linux-2.4.24-new/kernel/sysctl.c
+--- linux-2.4.24/kernel/sysctl.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/kernel/sysctl.c	2004-05-04 12:20:40.605838528 -0700
+@@ -876,7 +876,7 @@
+ 				if (!isspace(c))
+ 					break;
+ 				left--;
+-				((char *) buffer)++;
++				buffer++;
+ 			}
+ 			if (!left)
+ 				break;
+@@ -1029,7 +1029,7 @@
+ 				if (!isspace(c))
+ 					break;
+ 				left--;
+-				((char *) buffer)++;
++				buffer++;
+ 			}
+ 			if (!left)
+ 				break;
+@@ -1130,7 +1130,7 @@
+ 				if (!isspace(c))
+ 					break;
+ 				left--;
+-				((char *) buffer)++;
++				buffer++;
+ 			}
+ 			if (!left)
+ 				break;
+diff -urN linux-2.4.24/lib/brlock.c linux-2.4.24-new/lib/brlock.c
+--- linux-2.4.24/lib/brlock.c	2001-11-09 15:11:15.000000000 -0700
++++ linux-2.4.24-new/lib/brlock.c	2004-05-04 12:20:40.606838376 -0700
+@@ -20,7 +20,7 @@
+ brlock_read_lock_t __brlock_array[NR_CPUS][__BR_IDX_MAX] =
+    { [0 ... NR_CPUS-1] = { [0 ... __BR_IDX_MAX-1] = RW_LOCK_UNLOCKED } };
+ 
+-void __br_write_lock (enum brlock_indices idx)
++void fastcall __br_write_lock (enum brlock_indices idx)
+ {
+ 	int i;
+ 
+@@ -28,7 +28,7 @@
+ 		write_lock(&__brlock_array[cpu_logical_map(i)][idx]);
+ }
+ 
+-void __br_write_unlock (enum brlock_indices idx)
++void fastcall __br_write_unlock (enum brlock_indices idx)
+ {
+ 	int i;
+ 
+@@ -44,7 +44,7 @@
+ struct br_wrlock __br_write_locks[__BR_IDX_MAX] =
+    { [0 ... __BR_IDX_MAX-1] = { SPIN_LOCK_UNLOCKED } };
+ 
+-void __br_write_lock (enum brlock_indices idx)
++void fastcall __br_write_lock (enum brlock_indices idx)
+ {
+ 	int i;
+ 
+@@ -59,7 +59,7 @@
+ 		}
+ }
+ 
+-void __br_write_unlock (enum brlock_indices idx)
++void fastcall __br_write_unlock (enum brlock_indices idx)
+ {
+ 	spin_unlock(&__br_write_locks[idx].lock);
+ }
+diff -urN linux-2.4.24/lib/crc32.c linux-2.4.24-new/lib/crc32.c
+--- linux-2.4.24/lib/crc32.c	2003-08-25 04:44:44.000000000 -0700
++++ linux-2.4.24-new/lib/crc32.c	2004-05-04 12:20:40.606838376 -0700
+@@ -100,7 +100,9 @@
+ 	/* Align it */
+ 	if(unlikely(((long)b)&3 && len)){
+ 		do {
+-			DO_CRC(*((u8 *)b)++);
++			u8 *p = (u8 *)b;
++			DO_CRC(*p++);
++			b = (void *)p;
+ 		} while ((--len) && ((long)b)&3 );
+ 	}
+ 	if(likely(len >= 4)){
+@@ -121,7 +123,9 @@
+ 	/* And the last few bytes */
+ 	if(len){
+ 		do {
+-			DO_CRC(*((u8 *)b)++);
++			u8 *p = (u8 *)b;
++			DO_CRC(*p++);
++			b = (void *)p;
+ 		} while (--len);
+ 	}
+ 
+@@ -201,7 +205,9 @@
+ 	/* Align it */
+ 	if(unlikely(((long)b)&3 && len)){
+ 		do {
+-			DO_CRC(*((u8 *)b)++);
++			u8 *p = (u8 *)b;
++			DO_CRC(*p++);
++			b = (u32 *)p;
+ 		} while ((--len) && ((long)b)&3 );
+ 	}
+ 	if(likely(len >= 4)){
+@@ -222,7 +228,9 @@
+ 	/* And the last few bytes */
+ 	if(len){
+ 		do {
+-			DO_CRC(*((u8 *)b)++);
++			u8 *p = (u8 *)b;
++			DO_CRC(*p++);
++			b = (void *)p;
+ 		} while (--len);
+ 	}
+ 	return __be32_to_cpu(crc);
+diff -urN linux-2.4.24/lib/rwsem.c linux-2.4.24-new/lib/rwsem.c
+--- linux-2.4.24/lib/rwsem.c	2001-07-10 20:08:51.000000000 -0700
++++ linux-2.4.24-new/lib/rwsem.c	2004-05-04 12:20:40.606838376 -0700
+@@ -152,7 +152,7 @@
+ /*
+  * wait for the read lock to be granted
+  */
+-struct rw_semaphore *rwsem_down_read_failed(struct rw_semaphore *sem)
++struct rw_semaphore * fastcall rwsem_down_read_failed(struct rw_semaphore *sem)
+ {
+ 	struct rwsem_waiter waiter;
+ 
+@@ -168,7 +168,7 @@
+ /*
+  * wait for the write lock to be granted
+  */
+-struct rw_semaphore *rwsem_down_write_failed(struct rw_semaphore *sem)
++struct rw_semaphore * fastcall rwsem_down_write_failed(struct rw_semaphore *sem)
+ {
+ 	struct rwsem_waiter waiter;
+ 
+@@ -185,7 +185,7 @@
+  * handle waking up a waiter on the semaphore
+  * - up_read has decremented the active part of the count if we come here
+  */
+-struct rw_semaphore *rwsem_wake(struct rw_semaphore *sem)
++struct rw_semaphore * fastcall rwsem_wake(struct rw_semaphore *sem)
+ {
+ 	rwsemtrace(sem,"Entering rwsem_wake");
+ 
+diff -urN linux-2.4.24/lib/string.c linux-2.4.24-new/lib/string.c
+--- linux-2.4.24/lib/string.c	2002-08-02 17:39:46.000000000 -0700
++++ linux-2.4.24-new/lib/string.c	2004-05-04 12:20:40.606838376 -0700
+@@ -380,14 +380,13 @@
+  * You should not use this function to access IO space, use memcpy_toio()
+  * or memcpy_fromio() instead.
+  */
+-char * bcopy(const char * src, char * dest, int count)
++void bcopy(const void * srcp, void * destp, size_t count)
+ {
+-	char *tmp = dest;
++	const char *src = srcp;
++	char *dest = destp;
+ 
+ 	while (count--)
+-		*tmp++ = *src++;
+-
+-	return dest;
++		*dest++ = *src++;
+ }
+ #endif
+ 
+diff -urN linux-2.4.24/mm/filemap.c linux-2.4.24-new/mm/filemap.c
+--- linux-2.4.24/mm/filemap.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/filemap.c	2004-05-04 12:20:40.608838072 -0700
+@@ -68,7 +68,7 @@
+ #define CLUSTER_OFFSET(x)	(((x) >> page_cluster) << page_cluster)
+ 
+ static void FASTCALL(add_page_to_hash_queue(struct page * page, struct page **p));
+-static void add_page_to_hash_queue(struct page * page, struct page **p)
++static void fastcall add_page_to_hash_queue(struct page * page, struct page **p)
+ {
+ 	struct page *next = *p;
+ 
+@@ -149,7 +149,7 @@
+ /*
+  * Add a page to the dirty page list.
+  */
+-void set_page_dirty(struct page *page)
++void fastcall set_page_dirty(struct page *page)
+ {
+ 	if (!test_and_set_bit(PG_dirty, &page->flags)) {
+ 		struct address_space *mapping = page->mapping;
+@@ -258,7 +258,7 @@
+ }
+ 
+ static int FASTCALL(truncate_list_pages(struct list_head *, unsigned long, unsigned *));
+-static int truncate_list_pages(struct list_head *head, unsigned long start, unsigned *partial)
++static int fastcall truncate_list_pages(struct list_head *head, unsigned long start, unsigned *partial)
+ {
+ 	struct list_head *curr;
+ 	struct page * page;
+@@ -380,7 +380,7 @@
+ }
+ 
+ static int FASTCALL(invalidate_list_pages2(struct list_head *));
+-static int invalidate_list_pages2(struct list_head *head)
++static int fastcall invalidate_list_pages2(struct list_head *head)
+ {
+ 	struct list_head *curr;
+ 	struct page * page;
+@@ -710,7 +710,7 @@
+  * and schedules an I/O to read in its contents from disk.
+  */
+ static int FASTCALL(page_cache_read(struct file * file, unsigned long offset));
+-static int page_cache_read(struct file * file, unsigned long offset)
++static int fastcall page_cache_read(struct file * file, unsigned long offset)
+ {
+ 	struct address_space *mapping = file->f_dentry->d_inode->i_mapping;
+ 	struct page **hash = page_hash(mapping, offset);
+@@ -745,7 +745,7 @@
+  */
+ static int FASTCALL(read_cluster_nonblocking(struct file * file, unsigned long offset,
+ 					     unsigned long filesize));
+-static int read_cluster_nonblocking(struct file * file, unsigned long offset,
++static int fastcall read_cluster_nonblocking(struct file * file, unsigned long offset,
+ 	unsigned long filesize)
+ {
+ 	unsigned long pages = CLUSTER_PAGES;
+@@ -826,7 +826,7 @@
+  * callbacks that would result into the blkdev layer waking
+  * up the page after a queue unplug.
+  */
+-void wakeup_page_waiters(struct page * page)
++void fastcall wakeup_page_waiters(struct page * page)
+ {
+ 	wait_queue_head_t * head;
+ 
+@@ -882,7 +882,7 @@
+  * of the waiters for all of the pages in the appropriate
+  * wait queue are woken.
+  */
+-void unlock_page(struct page *page)
++void fastcall unlock_page(struct page *page)
+ {
+ 	wait_queue_head_t *waitqueue = page_waitqueue(page);
+ 	ClearPageLaunder(page);
+@@ -929,7 +929,7 @@
+  * Get an exclusive lock on the page, optimistically
+  * assuming it's not locked..
+  */
+-void lock_page(struct page *page)
++void fastcall lock_page(struct page *page)
+ {
+ 	if (TryLockPage(page))
+ 		__lock_page(page);
+@@ -980,7 +980,7 @@
+  * during blocking operations..
+  */
+ static struct page * FASTCALL(__find_lock_page_helper(struct address_space *, unsigned long, struct page *));
+-static struct page * __find_lock_page_helper(struct address_space *mapping,
++static struct page * fastcall __find_lock_page_helper(struct address_space *mapping,
+ 					unsigned long offset, struct page *hash)
+ {
+ 	struct page *page;
+@@ -1340,7 +1340,7 @@
+  * If it was already so marked, move it to the active queue and drop
+  * the referenced bit.  Otherwise, just mark it for future action..
+  */
+-void mark_page_accessed(struct page *page)
++void fastcall mark_page_accessed(struct page *page)
+ {
+ 	if (!PageActive(page) && PageReferenced(page)) {
+ 		activate_page(page);
+diff -urN linux-2.4.24/mm/highmem.c linux-2.4.24-new/mm/highmem.c
+--- linux-2.4.24/mm/highmem.c	2003-06-13 07:51:39.000000000 -0700
++++ linux-2.4.24-new/mm/highmem.c	2004-05-04 12:27:51.835281688 -0700
+@@ -129,7 +129,7 @@
+ 	return vaddr;
+ }
+ 
+-void *kmap_high(struct page *page, int nonblocking)
++void * fastcall kmap_high(struct page *page, int nonblocking)
+ {
+ 	unsigned long vaddr;
+ 
+@@ -154,7 +154,7 @@
+ 	return (void*) vaddr;
+ }
+ 
+-void kunmap_high(struct page *page)
++void fastcall kunmap_high(struct page *page)
+ {
+ 	unsigned long vaddr;
+ 	unsigned long nr;
+diff -urN linux-2.4.24/mm/memory.c linux-2.4.24-new/mm/memory.c
+--- linux-2.4.24/mm/memory.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/memory.c	2004-05-04 12:20:40.608838072 -0700
+@@ -1396,7 +1396,7 @@
+  * On a two-level page table, this ends up actually being entirely
+  * optimized away.
+  */
+-pmd_t *__pmd_alloc(struct mm_struct *mm, pgd_t *pgd, unsigned long address)
++pmd_t fastcall *__pmd_alloc(struct mm_struct *mm, pgd_t *pgd, unsigned long address)
+ {
+ 	pmd_t *new;
+ 
+@@ -1430,7 +1430,7 @@
+  * We've already handled the fast-path in-line, and we own the
+  * page table lock.
+  */
+-pte_t *pte_alloc(struct mm_struct *mm, pmd_t *pmd, unsigned long address)
++pte_t fastcall *pte_alloc(struct mm_struct *mm, pmd_t *pmd, unsigned long address)
+ {
+ 	if (pmd_none(*pmd)) {
+ 		pte_t *new;
+diff -urN linux-2.4.24/mm/page_alloc.c linux-2.4.24-new/mm/page_alloc.c
+--- linux-2.4.24/mm/page_alloc.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/page_alloc.c	2004-05-04 12:22:05.157984648 -0700
+@@ -82,7 +82,7 @@
+  */
+ 
+ static void FASTCALL(__free_pages_ok (struct page *page, unsigned int order));
+-static void __free_pages_ok (struct page *page, unsigned int order)
++static void fastcall __free_pages_ok (struct page *page, unsigned int order)
+ {
+ 	unsigned long index, page_idx, mask, flags;
+ 	free_area_t *area;
+@@ -200,7 +200,7 @@
+ }
+ 
+ static FASTCALL(struct page * rmqueue(zone_t *zone, unsigned int order));
+-static struct page * rmqueue(zone_t *zone, unsigned int order)
++static struct page * fastcall rmqueue(zone_t *zone, unsigned int order)
+ {
+ 	free_area_t * area = zone->free_area + order;
+ 	unsigned int curr_order = order;
+@@ -246,7 +246,7 @@
+ }
+ 
+ #ifndef CONFIG_DISCONTIGMEM
+-struct page *_alloc_pages(unsigned int gfp_mask, unsigned int order)
++struct page * fastcall _alloc_pages(unsigned int gfp_mask, unsigned int order)
+ {
+ 	return __alloc_pages(gfp_mask, order,
+ 		contig_page_data.node_zonelists+(gfp_mask & GFP_ZONEMASK));
+@@ -254,7 +254,7 @@
+ #endif
+ 
+ static struct page * FASTCALL(balance_classzone(zone_t *, unsigned int, unsigned int, int *));
+-static struct page * balance_classzone(zone_t * classzone, unsigned int gfp_mask, unsigned int order, int * freed)
++static struct page * fastcall balance_classzone(zone_t * classzone, unsigned int gfp_mask, unsigned int order, int * freed)
+ {
+ 	struct page * page = NULL;
+ 	int __freed;
+@@ -332,7 +332,7 @@
+ /*
+  * This is the 'heart' of the zoned buddy allocator:
+  */
+-struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_t *zonelist)
++struct page * fastcall __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_t *zonelist)
+ {
+ 	zone_t **zone, * classzone;
+ 	struct page * page;
+@@ -444,7 +444,7 @@
+ /*
+  * Common helper functions.
+  */
+-unsigned long __get_free_pages(unsigned int gfp_mask, unsigned int order)
++unsigned long fastcall __get_free_pages(unsigned int gfp_mask, unsigned int order)
+ {
+ 	struct page * page;
+ 
+@@ -454,7 +454,7 @@
+ 	return (unsigned long) page_address(page);
+ }
+ 
+-unsigned long get_zeroed_page(unsigned int gfp_mask)
++unsigned long fastcall get_zeroed_page(unsigned int gfp_mask)
+ {
+ 	struct page * page;
+ 
+@@ -467,13 +467,13 @@
+ 	return 0;
+ }
+ 
+-void __free_pages(struct page *page, unsigned int order)
++void fastcall __free_pages(struct page *page, unsigned int order)
+ {
+ 	if (!PageReserved(page) && put_page_testzero(page))
+ 		__free_pages_ok(page, order);
+ }
+ 
+-void free_pages(unsigned long addr, unsigned int order)
++void fastcall free_pages(unsigned long addr, unsigned int order)
+ {
+ 	if (addr != 0)
+ 		__free_pages(virt_to_page(addr), order);
+diff -urN linux-2.4.24/mm/slab.c linux-2.4.24-new/mm/slab.c
+--- linux-2.4.24/mm/slab.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/slab.c	2004-05-04 12:20:40.611837616 -0700
+@@ -1735,7 +1735,7 @@
+  *
+  * Called from do_try_to_free_pages() and __alloc_pages()
+  */
+-int kmem_cache_reap (int gfp_mask)
++int fastcall kmem_cache_reap (int gfp_mask)
+ {
+ 	slab_t *slabp;
+ 	kmem_cache_t *searchp;
+diff -urN linux-2.4.24/mm/swap.c linux-2.4.24-new/mm/swap.c
+--- linux-2.4.24/mm/swap.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/swap.c	2004-05-04 12:20:40.611837616 -0700
+@@ -44,7 +44,7 @@
+ 	}
+ }
+ 
+-void activate_page(struct page * page)
++void fastcall activate_page(struct page * page)
+ {
+ 	spin_lock(&pagemap_lru_lock);
+ 	activate_page_nolock(page);
+@@ -55,7 +55,7 @@
+  * lru_cache_add: add a page to the page lists
+  * @page: the page to add
+  */
+-void lru_cache_add(struct page * page)
++void fastcall lru_cache_add(struct page * page)
+ {
+ 	if (!PageLRU(page)) {
+ 		spin_lock(&pagemap_lru_lock);
+@@ -72,7 +72,7 @@
+  * This function is for when the caller already holds
+  * the pagemap_lru_lock.
+  */
+-void __lru_cache_del(struct page * page)
++void fastcall __lru_cache_del(struct page * page)
+ {
+ 	if (TestClearPageLRU(page)) {
+ 		if (PageActive(page)) {
+@@ -87,7 +87,7 @@
+  * lru_cache_del: remove a page from the page lists
+  * @page: the page to remove
+  */
+-void lru_cache_del(struct page * page)
++void fastcall lru_cache_del(struct page * page)
+ {
+ 	spin_lock(&pagemap_lru_lock);
+ 	__lru_cache_del(page);
+diff -urN linux-2.4.24/mm/swapfile.c linux-2.4.24-new/mm/swapfile.c
+--- linux-2.4.24/mm/swapfile.c	2003-08-25 04:44:44.000000000 -0700
++++ linux-2.4.24-new/mm/swapfile.c	2004-05-04 12:20:40.611837616 -0700
+@@ -256,7 +256,7 @@
+  * work, but we opportunistically check whether
+  * we need to get all the locks first..
+  */
+-int can_share_swap_page(struct page *page)
++int fastcall can_share_swap_page(struct page *page)
+ {
+ 	int retval = 0;
+ 
+@@ -284,7 +284,7 @@
+  * Work out if there are any other processes sharing this
+  * swap cache page. Free it if you can. Return success.
+  */
+-int remove_exclusive_swap_page(struct page *page)
++int fastcall remove_exclusive_swap_page(struct page *page)
+ {
+ 	int retval;
+ 	struct swap_info_struct * p;
+diff -urN linux-2.4.24/mm/vmscan.c linux-2.4.24-new/mm/vmscan.c
+--- linux-2.4.24/mm/vmscan.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/mm/vmscan.c	2004-05-04 12:20:40.612837464 -0700
+@@ -323,7 +323,7 @@
+ }
+ 
+ static int FASTCALL(swap_out(zone_t * classzone));
+-static int swap_out(zone_t * classzone)
++static int fastcall swap_out(zone_t * classzone)
+ {
+ 	int counter, nr_pages = SWAP_CLUSTER_MAX;
+ 	struct mm_struct *mm;
+@@ -366,7 +366,7 @@
+ 
+ static void FASTCALL(refill_inactive(int nr_pages, zone_t * classzone));
+ static int FASTCALL(shrink_cache(int nr_pages, zone_t * classzone, unsigned int gfp_mask, int * failed_swapout));
+-static int shrink_cache(int nr_pages, zone_t * classzone, unsigned int gfp_mask, int * failed_swapout)
++static int fastcall shrink_cache(int nr_pages, zone_t * classzone, unsigned int gfp_mask, int * failed_swapout)
+ {
+ 	struct list_head * entry;
+ 	int max_scan = (classzone->nr_inactive_pages + classzone->nr_active_pages) / vm_cache_scan_ratio;
+@@ -577,7 +577,7 @@
+  * We move them the other way when we see the
+  * reference bit on the page.
+  */
+-static void refill_inactive(int nr_pages, zone_t * classzone)
++static void fastcall refill_inactive(int nr_pages, zone_t * classzone)
+ {
+ 	struct list_head * entry;
+ 	unsigned long ratio;
+@@ -610,7 +610,7 @@
+ }
+ 
+ static int FASTCALL(shrink_caches(zone_t * classzone, unsigned int gfp_mask, int nr_pages, int * failed_swapout));
+-static int shrink_caches(zone_t * classzone, unsigned int gfp_mask, int nr_pages, int * failed_swapout)
++static int fastcall shrink_caches(zone_t * classzone, unsigned int gfp_mask, int nr_pages, int * failed_swapout)
+ {
+ 	nr_pages -= kmem_cache_reap(gfp_mask);
+ 	if (nr_pages <= 0)
+@@ -627,7 +627,7 @@
+ 
+ static int check_classzone_need_balance(zone_t * classzone);
+ 
+-int try_to_free_pages_zone(zone_t *classzone, unsigned int gfp_mask)
++int fastcall try_to_free_pages_zone(zone_t *classzone, unsigned int gfp_mask)
+ {
+ 	gfp_mask = pf_gfp_mask(gfp_mask);
+ 
+@@ -661,7 +661,7 @@
+ 	return 0;
+ }
+ 
+-int try_to_free_pages(unsigned int gfp_mask)
++int fastcall try_to_free_pages(unsigned int gfp_mask)
+ {
+ 	pg_data_t *pgdat;
+ 	zonelist_t *zonelist;
+diff -urN linux-2.4.24/net/ipv4/ip_output.c linux-2.4.24-new/net/ipv4/ip_output.c
+--- linux-2.4.24/net/ipv4/ip_output.c	2003-11-28 11:26:21.000000000 -0700
++++ linux-2.4.24-new/net/ipv4/ip_output.c	2004-05-04 12:20:40.612837464 -0700
+@@ -184,7 +184,7 @@
+ 	return -EINVAL;
+ }
+ 
+-__inline__ int ip_finish_output(struct sk_buff *skb)
++int ip_finish_output(struct sk_buff *skb)
+ {
+ 	struct net_device *dev = skb->dst->dev;
+ 

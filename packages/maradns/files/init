@@ -1,0 +1,35 @@
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/maradns
+NAME="maradns"
+DESC="DNS server"
+CONF="/etc/maradns/mararc"
+
+test -f $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC: "
+	start-stop-daemon -S -x $DAEMON -- -f $CONF 2>&1 | logger -p daemon.notice -t $NAME &
+	echo "$NAME."
+	;;
+  stop)
+	echo -n "Stopping $DESC: "
+	start-stop-daemon -K -x $DAEMON
+	echo "$NAME."
+	;;
+  restart)
+	echo -n "Restarting $DESC: "
+	$0 stop
+	sleep 3
+	$0 start
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

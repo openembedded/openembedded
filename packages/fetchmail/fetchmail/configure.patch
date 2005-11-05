@@ -1,0 +1,159 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- fetchmail-6.2.3/configure.in~configure
++++ fetchmail-6.2.3/configure.in
+@@ -4,7 +4,7 @@
+ dnl Process this file with autoconf to produce a configure script.
+ dnl
+ 
+-AC_INIT([fetchmail], [6.1.2])
++AC_INIT([fetchmail],[6.1.2])
+ AC_CONFIG_SRCDIR([fetchmail.h])
+ AC_CONFIG_HEADERS([config.h])
+ 
+@@ -155,27 +155,20 @@
+ 
+ dnl Check for usable void pointer type
+ AC_MSG_CHECKING(use of void pointer type)
+-AC_TRY_COMPILE([],
+-   [char *p;
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[char *p;
+     void *xmalloc();
+     p = (char *) xmalloc(1);
+-   ],
+- [AC_DEFINE(HAVE_VOIDPOINTER) AC_MSG_RESULT(yes)],
+- AC_MSG_RESULT(no))
++   ]])],[AC_DEFINE(HAVE_VOIDPOINTER) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ dnl Check for ANSI volatile
+ AC_MSG_CHECKING(for ANSI volatile)
+-AC_TRY_COMPILE([],
+-   [volatile int n;],
+- [AC_DEFINE(HAVE_VOLATILE) AC_MSG_RESULT(yes)],
+- AC_MSG_RESULT(no))
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[volatile int n;]])],[AC_DEFINE(HAVE_VOLATILE) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ dnl Check out the wait reality.  We have to assume sys/wait.h is present.
+ AC_CHECK_FUNCS(waitpid wait3)
+ AC_MSG_CHECKING(for union wait);
+-AC_TRY_LINK([#include <sys/types.h>
+-#include <sys/wait.h>],
+-	 	 [union wait status; int pid; pid = wait (&status);
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
++#include <sys/wait.h>]], [[union wait status; int pid; pid = wait (&status);
+ #ifdef WEXITSTATUS
+ /* Some POSIXoid systems have both the new-style macros and the old
+    union wait type, and they do not work together.  If union wait
+@@ -186,18 +179,14 @@
+ /* Make sure union wait works with waitpid.  */
+ pid = waitpid (-1, &status, 0);
+ #endif
+-],
+-  [AC_DEFINE(HAVE_UNION_WAIT) AC_MSG_RESULT(yes)],
+-  AC_MSG_RESULT(no))
++]])],[AC_DEFINE(HAVE_UNION_WAIT) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ AC_MSG_CHECKING(sys_siglist declaration in signal.h or unistd.h)
+-AC_TRY_LINK([#include <signal.h>
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>
+ /* NetBSD declares sys_siglist in <unistd.h>.  */
+ #ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+-#endif], [char *msg = *(sys_siglist + 1);],
+-  [AC_DEFINE(SYS_SIGLIST_DECLARED) AC_MSG_RESULT(yes)],
+-  AC_MSG_RESULT(no))
++#endif]], [[char *msg = *(sys_siglist + 1);]])],[AC_DEFINE(SYS_SIGLIST_DECLARED) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 
+ # Find the right directory to put the root-mode PID file in
+ for dir in "/var/run" "/etc"
+@@ -264,21 +253,21 @@
+ 
+ case "$enable_fallback" in
+ 	sendmail)	if test -z "$sendmail" ; then 
+-				AC_ERROR([Sendmail selected as fallback, but not found])
++				AC_MSG_ERROR([Sendmail selected as fallback, but not found])
+ 				#not reached
+ 			fi
+ 			AC_DEFINE_UNQUOTED(FALLBACK_MDA, "$sendmail -i %T")
+ 			echo "Will use $sendmail as fallback MDA."
+ 			;;
+ 	procmail)	if test -z "$procmail" ; then
+-				AC_ERROR([procmail selected as fallback, but not found])
++				AC_MSG_ERROR([procmail selected as fallback, but not found])
+ 				#not reached
+ 			fi
+ 			AC_DEFINE_UNQUOTED(FALLBACK_MDA, "$procmail -d %T")
+ 			echo "Will use $procmail as fallback MDA."
+ 			;;
+ 	maildrop)	if test -z "$maildrop" ; then
+-				AC_ERROR([maildrop selected as fallback, but not found])
++				AC_MSG_ERROR([maildrop selected as fallback, but not found])
+ 				#not reached
+ 			fi
+ 			AC_DEFINE_UNQUOTED(FALLBACK_MDA, "$maildrop -d %T")
+@@ -294,7 +283,7 @@
+ 				echo "for automatic fallback MDA configuration for reliability reasons."
+ 			fi
+ 			;;
+-	*)		AC_ERROR([unkown value for --enable-fallback given: $enable_fallback])
++	*)		AC_MSG_ERROR([unkown value for --enable-fallback given: $enable_fallback])
+ 			#notreached
+ 			;;
+ esac
+@@ -429,7 +418,7 @@
+ # Check for a OpenBSD special case
+ if test "$with_kerberos5" = "yes" && ( test `uname` = "OpenBSD" )
+ then
+-  AC_CHECKING([kerberosV for OpenBSD])
++  AS_MESSAGE(checking kerberosV for OpenBSD...)
+   AC_DEFINE(HEIMDAL)
+   AC_DEFINE(KERBEROS_V5)
+   CEFLAGS="$CEFLAGS -I/usr/include/kerberosV"
+@@ -458,7 +447,7 @@
+                 ${LDEFLAGS})
+            AC_CHECK_LIB(des, des_string_to_key, libk5crypto=-ldes,
+               AC_CHECK_LIB(ssl, MD5_Init, [],
+-                AC_ERROR([DES libraries not found. Try adding --with-ssl to enable OpenSSL support]),
++                AC_MSG_ERROR([DES libraries not found. Try adding --with-ssl to enable OpenSSL support]),
+                 ${LDEFLAGS} ${ac_krblibs}),
+            ${LDEFLAGS} ${ac_krblibs})
+            AC_DEFINE(HEIMDAL)
+@@ -471,7 +460,7 @@
+                 AC_CHECK_LIB(k5crypto,
+                    krb5_des_string_to_key,
+                    libk5crypto=-lk5crypto,
+-                      AC_ERROR([Kerberos 5 DES libraries not found]),
++                      AC_MSG_ERROR([Kerberos 5 DES libraries not found]),
+                    ${LDEFLAGS} ${ac_krblibs}),
+                  ${LDEFLAGS} ${ac_krblibs})
+         fi
+@@ -489,7 +478,7 @@
+      fi
+   done
+   if test -z "$with_kerberos5" ; then
+-     AC_ERROR([Kerberos 5 libraries not found])
++     AC_MSG_ERROR([Kerberos 5 libraries not found])
+   fi
+ fi
+ fi
+@@ -505,7 +494,7 @@
+ # Check for a NetBSD/OpenBSD special case
+ if test "$with_kerberos" = "yes" && ( test `uname` = "NetBSD" || test `uname` = "OpenBSD" )
+ then
+-  AC_CHECKING([kerberosIV for `uname`])
++  AS_MESSAGE(checking kerberosIV for `uname`...)
+   AC_DEFINE(KERBEROS_V4)
+   CEFLAGS="$CEFLAGS -I/usr/include/kerberosIV"
+   LIBS="$LIBS -lkrb -ldes"
+@@ -550,7 +539,7 @@
+      break
+   done
+   if test -z "$with_kerberos" ; then
+-     AC_ERROR([Kerberos 4 libraries not found])
++     AC_MSG_ERROR([Kerberos 4 libraries not found])
+   fi
+   LDFLAGS="$ac_saveLDFLAGS"
+ fi

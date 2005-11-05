@@ -1,0 +1,85 @@
+--- linux-2.6.10/arch/arm/mm/alignment.c.broken	2005-02-11 20:57:58.353668651 +0100
++++ linux-2.6.10/arch/arm/mm/alignment.c	2005-02-11 20:58:02.141660877 +0100
+@@ -130,6 +130,18 @@
+ #define TYPE_LDST	2
+ #define TYPE_DONE	3
+ 
++#ifdef __ARMEB__
++#define BE		1
++#define FIRST_BYTE_16	"mov	%1, %1, ror #8\n"
++#define FIRST_BYTE_32	"mov	%1, %1, ror #24\n"
++#define NEXT_BYTE	"ror #24"
++#else
++#define BE		0
++#define FIRST_BYTE_16
++#define FIRST_BYTE_32
++#define NEXT_BYTE	"lsr #8"
++#endif
++
+ #define __get8_unaligned_check(ins,val,addr,err)	\
+ 	__asm__(					\
+ 	"1:	"ins"	%1, [%2], #1\n"			\
+@@ -149,9 +161,10 @@
+ #define __get16_unaligned_check(ins,val,addr)			\
+ 	do {							\
+ 		unsigned int err = 0, v, a = addr;		\
+-		__get8_unaligned_check(ins,val,a,err);		\
+ 		__get8_unaligned_check(ins,v,a,err);		\
+-		val |= v << 8;					\
++		val =  v << ((BE) ? 8 : 0);			\
++		__get8_unaligned_check(ins,v,a,err);		\
++		val |= v << ((BE) ? 0 : 8);			\
+ 		if (err)					\
+ 			goto fault;				\
+ 	} while (0)
+@@ -165,13 +178,14 @@
+ #define __get32_unaligned_check(ins,val,addr)			\
+ 	do {							\
+ 		unsigned int err = 0, v, a = addr;		\
+-		__get8_unaligned_check(ins,val,a,err);		\
+ 		__get8_unaligned_check(ins,v,a,err);		\
+-		val |= v << 8;					\
++		val =  v << ((BE) ? 24 :  0);			\
++		__get8_unaligned_check(ins,v,a,err);		\
++		val |= v << ((BE) ? 16 :  8);			\
+ 		__get8_unaligned_check(ins,v,a,err);		\
+-		val |= v << 16;					\
++		val |= v << ((BE) ?  8 : 16);			\
+ 		__get8_unaligned_check(ins,v,a,err);		\
+-		val |= v << 24;					\
++		val |= v << ((BE) ?  0 : 24);			\
+ 		if (err)					\
+ 			goto fault;				\
+ 	} while (0)
+@@ -185,9 +199,9 @@
+ #define __put16_unaligned_check(ins,val,addr)			\
+ 	do {							\
+ 		unsigned int err = 0, v = val, a = addr;	\
+-		__asm__(					\
++		__asm__( FIRST_BYTE_16				\
+ 		"1:	"ins"	%1, [%2], #1\n"			\
+-		"	mov	%1, %1, lsr #8\n"		\
++		"	mov	%1, %1, "NEXT_BYTE"\n"		\
+ 		"2:	"ins"	%1, [%2]\n"			\
+ 		"3:\n"						\
+ 		"	.section .fixup,\"ax\"\n"		\
+@@ -215,13 +229,13 @@
+ #define __put32_unaligned_check(ins,val,addr)			\
+ 	do {							\
+ 		unsigned int err = 0, v = val, a = addr;	\
+-		__asm__(					\
++		__asm__( FIRST_BYTE_32				\
+ 		"1:	"ins"	%1, [%2], #1\n"			\
+-		"	mov	%1, %1, lsr #8\n"		\
++		"	mov	%1, %1, "NEXT_BYTE"\n"		\
+ 		"2:	"ins"	%1, [%2], #1\n"			\
+-		"	mov	%1, %1, lsr #8\n"		\
++		"	mov	%1, %1, "NEXT_BYTE"\n"		\
+ 		"3:	"ins"	%1, [%2], #1\n"			\
+-		"	mov	%1, %1, lsr #8\n"		\
++		"	mov	%1, %1, "NEXT_BYTE"\n"		\
+ 		"4:	"ins"	%1, [%2]\n"			\
+ 		"5:\n"						\
+ 		"	.section .fixup,\"ax\"\n"		\
+
+

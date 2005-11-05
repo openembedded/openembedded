@@ -1,0 +1,362 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- ntp-4.1.2/./configure.in~configure
++++ ntp-4.1.2/./configure.in
+@@ -1,12 +1,13 @@
+ dnl -*-fundamental-*-
+ dnl Process this file with autoconf to produce a configure script.
+-AC_INIT(ntpd/ntp_refclock.c)
+-AC_CANONICAL_SYSTEM
++AC_INIT
++AC_CONFIG_SRCDIR([ntpd/ntp_refclock.c])
++AC_CANONICAL_TARGET([])
+ AC_DEFINE_UNQUOTED(STR_SYSTEM, "$host", [canonical system (cpu-vendor-os) string])
+ AM_CONFIG_HEADER(config.h)
+ AC_ARG_PROGRAM
+ AM_INIT_AUTOMAKE(ntp, 4.1.2)
+-AC_PREREQ(2.53)
++AC_PREREQ(2.57)
+ 
+ ac_cv_var_atom_ok=no
+ ac_cv_var_oncore_ok=no
+@@ -22,7 +23,7 @@
+ 
+ dnl  we need to check for cross compile tools for vxWorks here
+ AC_PROG_CC
+-AC_PROG_CC_STDC
++
+ AC_PROG_CPP
+ 
+ case "$host" in
+@@ -294,19 +295,15 @@
+ AC_CHECK_HEADER(nlist.h,
+ [AC_DEFINE(NLIST_STRUCT, 1, [nlist stuff])
+ AC_CACHE_CHECK([for n_un in struct nlist], ac_cv_struct_nlist_n_un,
+-[AC_TRY_COMPILE([#include <nlist.h>],
+-[struct nlist n; n.n_un.n_name = 0;],
+-ac_cv_struct_nlist_n_un=yes, ac_cv_struct_nlist_n_un=no)])
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <nlist.h>]], [[struct nlist n; n.n_un.n_name = 0;]])],[ac_cv_struct_nlist_n_un=yes],[ac_cv_struct_nlist_n_un=no])])
+ if test $ac_cv_struct_nlist_n_un = yes; then
+   AC_DEFINE(NLIST_NAME_UNION, 1, [does struct nlist use a name union?])
+ fi
+ ])dnl
+ 
+ AC_CACHE_CHECK(for basic volatile support, ac_cv_c_volatile,
+-[AC_TRY_COMPILE([],[
+-volatile int x;],
+-	ac_cv_c_volatile=yes,
+-	ac_cv_c_volatile=no)
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
++volatile int x;]])],[ac_cv_c_volatile=yes],[ac_cv_c_volatile=no])
+ ])
+ case "$ac_cv_c_volatile" in
+  yes)
+@@ -324,10 +321,10 @@
+     ;;
+ esac
+ AC_CACHE_CHECK(if C compiler permits function prototypes, ac_cv_have_prototypes,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ extern int foo (short);
+-int foo(short i) { return i; }],[
+-int i;], ac_cv_have_prototypes=yes, ac_cv_have_prototypes=no)
++int foo(short i) { return i; }]], [[
++int i;]])],[ac_cv_have_prototypes=yes],[ac_cv_have_prototypes=no])
+ ])
+ if test "$ac_cv_have_prototypes" = yes; then
+   AC_DEFINE(HAVE_PROTOTYPES, 1, [Are function prototypes OK?])
+@@ -376,9 +373,8 @@
+ esac
+ 
+ dnl AC_CACHE_CHECK(ut_host in struct utmp, ac_cv_func_ut_host_in_utmp,
+-dnl [AC_TRY_LINK([#include <sys/types.h>
+-dnl #include <utmp.h>], [struct utmp ut; ut.ut_host;],
+-dnl ac_cv_func_ut_host_in_utmp=yes, ac_cv_func_ut_host_in_utmp=no)])
++dnl [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
++dnl #include <utmp.h>]], [[struct utmp ut; ut.ut_host;]])],[dnl ac_cv_func_ut_host_in_utmp=yes],[ac_cv_func_ut_host_in_utmp=no])])
+ dnl if test $su_cv_func_ut_host_in_utmp = yes; then
+ dnl   AC_DEFINE(HAVE_UT_HOST)
+ dnl fi
+@@ -401,12 +397,8 @@
+   struct sigaction for sa_sigaction,
+   ac_cv_struct_sigaction_has_sa_sigaction,
+   [
+-    AC_TRY_COMPILE(
+-      [#include <signal.h>],
+-      [struct sigaction act; act.sa_sigaction = 0;],
+-      ac_cv_struct_sigaction_has_sa_sigaction=yes,
+-      ac_cv_struct_sigaction_has_sa_sigaction=no
+-    )
++    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]], [[struct sigaction act; act.sa_sigaction = 0;]])],[ac_cv_struct_sigaction_has_sa_sigaction=yes],[ac_cv_struct_sigaction_has_sa_sigaction=no
++    ])
+   ]
+ )
+ if test $ac_cv_struct_sigaction_has_sa_sigaction = yes; then
+@@ -414,7 +406,7 @@
+ fi
+ 
+ AC_CACHE_CHECK(for struct ppsclockev, ac_cv_struct_ppsclockev,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+ #ifdef HAVE_SYS_TERMIOS_H
+ # include <sys/termios.h>
+@@ -424,24 +416,20 @@
+ #endif
+ #ifdef HAVE_SYS_PPSCLOCK_H
+ # include <sys/ppsclock.h>
+-#endif],[
++#endif]], [[
+ extern struct ppsclockev *pce;
+-return pce->serial;],
+-	ac_cv_struct_ppsclockev=yes,
+-	ac_cv_struct_ppsclockev=no)
++return pce->serial;]])],[ac_cv_struct_ppsclockev=yes],[ac_cv_struct_ppsclockev=no])
+ ])
+ if test $ac_cv_struct_ppsclockev = yes; then
+     AC_DEFINE(HAVE_STRUCT_PPSCLOCKEV, 1, [Does a system header define struct ppsclockev?])
+ fi
+ 
+ AC_CACHE_CHECK(struct sockaddr for sa_len, ac_cv_struct_sockaddr_has_sa_len,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/types.h>
+-#include <sys/socket.h>],[
++#include <sys/socket.h>]], [[
+ extern struct sockaddr *ps;
+-return ps->sa_len;],
+-	ac_cv_struct_sockaddr_has_sa_len=yes,
+-	ac_cv_struct_sockaddr_has_sa_len=no)
++return ps->sa_len;]])],[ac_cv_struct_sockaddr_has_sa_len=yes],[ac_cv_struct_sockaddr_has_sa_len=no])
+ ])
+ if test $ac_cv_struct_sockaddr_has_sa_len = yes; then
+     AC_DEFINE(HAVE_SA_LEN_IN_STRUCT_SOCKADDR, 1, [Should be obvious...])
+@@ -450,17 +438,15 @@
+ case "$ac_cv_header_machine_soundcard_h$ac_cv_header_sys_soundcard_h" in
+   *yes*)
+     AC_CACHE_CHECK([for struct snd_size], ac_cv_struct_snd_size,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #ifdef HAVE_MACHINE_SOUNDCARD_H
+ # include <machine/soundcard.h>
+ #endif
+ #ifdef HAVE_SYS_SOUNDCARD_H
+ # include <sys/soundcard.h>
+-#endif],[
++#endif]], [[
+ extern struct snd_size *ss;
+-return ss->rec_size;],
+-    ac_cv_struct_snd_size=yes,
+-    ac_cv_struct_snd_size=no)
++return ss->rec_size;]])],[ac_cv_struct_snd_size=yes],[ac_cv_struct_snd_size=no])
+ ])
+     case "$ac_cv_struct_snd_size" in
+      yes) AC_DEFINE(HAVE_STRUCT_SND_SIZE, 1,[Do we have struct snd_size?]) ;;
+@@ -469,31 +455,27 @@
+ esac
+ 
+ AC_CACHE_CHECK(struct clockinfo for hz, ac_cv_struct_clockinfo_has_hz,
+-[AC_TRY_COMPILE([
+-#include <sys/time.h>],[
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
++#include <sys/time.h>]], [[
+ extern struct clockinfo *pc;
+-return pc->hz;],
+-	ac_cv_struct_clockinfo_has_hz=yes,
+-	ac_cv_struct_clockinfo_has_hz=no)
++return pc->hz;]])],[ac_cv_struct_clockinfo_has_hz=yes],[ac_cv_struct_clockinfo_has_hz=no])
+ ])
+ if test $ac_cv_struct_clockinfo_has_hz = yes; then
+     AC_DEFINE(HAVE_HZ_IN_STRUCT_CLOCKINFO, 1, [Obvious...])
+ fi
+ 
+ AC_CACHE_CHECK(struct clockinfo for tickadj, ac_cv_struct_clockinfo_has_tickadj,
+-[AC_TRY_COMPILE([
+-#include <sys/time.h>],[
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
++#include <sys/time.h>]], [[
+ extern struct clockinfo *pc;
+-return pc->tickadj;],
+-	ac_cv_struct_clockinfo_has_tickadj=yes,
+-	ac_cv_struct_clockinfo_has_tickadj=no)
++return pc->tickadj;]])],[ac_cv_struct_clockinfo_has_tickadj=yes],[ac_cv_struct_clockinfo_has_tickadj=no])
+ ])
+ if test $ac_cv_struct_clockinfo_has_tickadj = yes; then
+     AC_DEFINE(HAVE_TICKADJ_IN_STRUCT_CLOCKINFO, 1, [Obvious...])
+ fi
+ 
+ AC_CACHE_CHECK([for struct timespec], ac_cv_struct_timespec,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/time.h>
+ /* Under SunOS, timespec is in sys/timepps.h, which needs errno.h and FRAC */
+ #ifdef HAVE_ERRNO_H
+@@ -502,19 +484,15 @@
+ #ifdef HAVE_SYS_TIMEPPS_H
+ # define FRAC 4294967296
+ # include <sys/timepps.h>
+-#endif],
+-[struct timespec n;],
+-ac_cv_struct_timespec=yes, ac_cv_struct_timespec=no)])
++#endif]], [[struct timespec n;]])],[ac_cv_struct_timespec=yes],[ac_cv_struct_timespec=no])])
+ if test $ac_cv_struct_timespec = yes; then
+   AC_DEFINE(HAVE_STRUCT_TIMESPEC, 1, [Do we have struct timespec?])
+ fi
+ 
+ AC_CACHE_CHECK([for struct ntptimeval], ac_cv_struct_ntptimeval,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include <sys/time.h>
+-#include <sys/timex.h>],
+-[struct ntptimeval n;],
+-ac_cv_struct_ntptimeval=yes, ac_cv_struct_ntptimeval=no)])
++#include <sys/timex.h>]], [[struct ntptimeval n;]])],[ac_cv_struct_ntptimeval=yes],[ac_cv_struct_ntptimeval=no])])
+ if test $ac_cv_struct_ntptimeval = yes; then
+   AC_DEFINE(HAVE_STRUCT_NTPTIMEVAL, 1, [Do we have struct ntptimeval?])
+ fi
+@@ -575,7 +553,7 @@
+ 	# (prr) aix 4.1 doesn't have clock_settime, but in aix 4.3 it's a stub
+ 	# (returning ENOSYS).  I didn't check 4.2.  If, in the future,
+ 	# IBM pulls its thumbs out long enough to implement clock_settime,
+-	# this conditional will need to change.  Maybe use AC_TRY_RUN
++	# this conditional will need to change.  Maybe use AC_RUN_IFELSE([AC_LANG_SOURCE([[]])],[],[],[])
+ 	# instead to try to set the time to itself and check errno.
+     ;;
+  *) AC_CHECK_FUNCS(clock_gettime clock_settime)
+@@ -587,10 +565,8 @@
+     [AC_MSG_CHECKING(for isfinite with <math.h>)
+     _libs=$LIBS
+     LIBS="$LIBS -lm"
+-    AC_TRY_LINK([#include <math.h>], [float f = 0.0; isfinite(f)],
+-      [AC_MSG_RESULT(yes)
+-      AC_DEFINE(HAVE_ISFINITE)],
+-      AC_MSG_RESULT(no))
++    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[float f = 0.0; isfinite(f)]])],[AC_MSG_RESULT(yes)
++      AC_DEFINE(HAVE_ISFINITE)],[AC_MSG_RESULT(no)])
+     LIBS=$_libs])])
+ AC_CHECK_FUNCS(getbootfile getclock getdtablesize getrusage)
+ AC_CHECK_FUNC(gettimeofday, ,[
+@@ -691,26 +667,24 @@
+ AC_CHECK_FUNCS(uname updwtmp updwtmpx vsprintf)
+ 
+ AC_CACHE_CHECK(number of arguments to gettimeofday(), ac_cv_func_Xettimeofday_nargs,
+-[AC_TRY_COMPILE([#include <sys/time.h>],[
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]], [[
+ gettimeofday((struct timeval*)0,(struct timezone*)0);
+ settimeofday((struct timeval*)0,(struct timezone*)0);
+-],
+-	ac_cv_func_Xettimeofday_nargs=2, ac_cv_func_Xettimeofday_nargs=1)
++]])],[ac_cv_func_Xettimeofday_nargs=2],[ac_cv_func_Xettimeofday_nargs=1])
+ ])
+ if test $ac_cv_func_Xettimeofday_nargs = 1; then
+ 	AC_DEFINE(SYSV_TIMEOFDAY, 1, [Does Xettimeofday take 1 arg?])
+ fi
+ 
+ AC_CACHE_CHECK(number of arguments taken by setpgrp(), ac_cv_func_setpgrp_nargs,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #ifdef HAVE_SYS_TYPES_H
+ # include <sys/types.h>
+ #endif
+ #ifdef HAVE_UNISTD_H
+ # include <unistd.h>
+ #endif
+-],[setpgrp(0,0);],
+-        ac_cv_func_setpgrp_nargs=2, ac_cv_func_setpgrp_nargs=0)
++]], [[setpgrp(0,0);]])],[ac_cv_func_setpgrp_nargs=2],[ac_cv_func_setpgrp_nargs=0])
+ ])
+ if test $ac_cv_func_setpgrp_nargs = 0; then
+         AC_DEFINE(HAVE_SETPGRP_0, 1, [define if setpgrp takes 0 arguments])
+@@ -721,7 +695,7 @@
+ 
+ AC_CACHE_CHECK(argument pointer type of qsort()'s compare function and base,
+ ac_cv_func_qsort_argtype,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include "l_stdlib.h"
+ 
+ #ifdef HAVE_PROTOTYPES
+@@ -735,10 +709,9 @@
+ int sortfunc(a, b)
+   const void *a;
+   const void *b; { return 0; }
+-],[
++]], [[
+ qsort(base, 2, sizeof(char *), sortfunc);
+-],
+-	ac_cv_func_qsort_argtype=void, ac_cv_func_qsort_argtype=char)
++]])],[ac_cv_func_qsort_argtype=void],[ac_cv_func_qsort_argtype=char])
+ ])
+ case "$ac_cv_func_qsort_argtype" in
+  void)
+@@ -749,11 +722,9 @@
+ CFLAGS=$save_CFLAGS
+ 
+ AC_CACHE_CHECK(if we need to declare 'errno', ac_cv_decl_errno,
+-[AC_TRY_COMPILE([#ifdef HAVE_ERRNO_H
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef HAVE_ERRNO_H
+ #include <errno.h>
+-#endif],
+-  [errno = 0;],
+-  ac_cv_decl_errno=no, ac_cv_decl_errno=yes)])
++#endif]], [[errno = 0;]])],[ac_cv_decl_errno=no],[ac_cv_decl_errno=yes])])
+ case "$ac_cv_decl_errno" in
+  yes) AC_DEFINE(DECL_ERRNO, 1, [Declare errno?]) ;;
+ esac
+@@ -767,7 +738,7 @@
+ dnl without breaking any other platforms.
+ dnl
+ AC_CACHE_CHECK(if we may declare 'h_errno', ac_cv_decl_h_errno,
+-[AC_TRY_COMPILE([#include <sys/types.h>
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
+ #ifdef HAVE_NETINET_IN_H
+ #include <netinet/in.h>
+ #endif
+@@ -779,28 +750,24 @@
+ #endif
+ #ifdef HAVE_RESOLV_H
+ #include <resolv.h>
+-#endif],
+-  [extern int h_errno;],
+-  ac_cv_decl_h_errno=yes, ac_cv_decl_h_errno=no)])
++#endif]], [[extern int h_errno;]])],[ac_cv_decl_h_errno=yes],[ac_cv_decl_h_errno=no])])
+ case "$ac_cv_decl_h_errno" in
+  yes) AC_DEFINE(DECL_H_ERRNO, 1, [Declare h_errno?]) ;;
+ esac
+ 
+ dnl See if char *sys_errlist[] is OK.
+ AC_CACHE_CHECK([[if declaring 'char *sys_errlist[]' is ok]], ac_cv_decl_sys_errlist,
+-[AC_TRY_COMPILE([#include <stdio.h>
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+ #ifdef HAVE_ERRNO_H
+ #include <errno.h>
+-#endif],
+-  [extern char *sys_errlist[];
+-],
+-  ac_cv_decl_sys_errlist=yes, ac_cv_decl_sys_errlist=no)])
++#endif]], [[extern char *sys_errlist[];
++]])],[ac_cv_decl_sys_errlist=yes],[ac_cv_decl_sys_errlist=no])])
+ case "$ac_cv_decl_sys_errlist" in
+  yes) AC_DEFINE(CHAR_SYS_ERRLIST, 1, [Declare char *sys_errlist array]) ;;
+ esac
+ 
+ AC_CACHE_CHECK(if declaring 'syscall()' is ok, ac_cv_decl_syscall,
+-[AC_TRY_COMPILE([
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #ifdef HAVE_SYS_TYPES_H
+ # include <sys/types.h>
+ #endif
+@@ -812,9 +779,7 @@
+ #else
+ #define P(x) ()
+ #endif
+-],
+-  [extern int syscall P((int, ...));],
+-  ac_cv_decl_syscall=yes, ac_cv_decl_syscall=no)])
++]], [[extern int syscall P((int, ...));]])],[ac_cv_decl_syscall=yes],[ac_cv_decl_syscall=no])])
+ case "$ac_cv_decl_syscall" in
+  yes) AC_DEFINE(DECL_SYSCALL, 1, [Declare syscall()?]) ;;
+ esac

@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- totem-1.0.4/configure.in~nonautilus
++++ totem-1.0.4/configure.in
+@@ -144,7 +144,7 @@
+ 	PKG_CHECK_MODULES(EXTRA_GNOME, glib-2.0 >= 2.6.3 gtk+-2.0 >= 2.5.6 libgnomeui-2.0 >= 2.3.3 libglade-2.0 gnome-vfs-2.0 >= 2.1.6 gnome-vfs-module-2.0 >= 2.1.6 gnome-desktop-2.0 >= 2.1.5 $MM)
+ 	HAVE_GNOME=yes
+ else
+-	PKG_CHECK_MODULES(EXTRA_GNOME, glib-2.0 >= 2.6.3 gtk+-2.0 >= 2.5.6 libglade-2.0 gnome-vfs-2.0 >= 2.1.6 gnome-vfs-module-2.0 >= 2.1.6 libnautilus-burn >= 2.9.0 $MM)
++	PKG_CHECK_MODULES(EXTRA_GNOME, glib-2.0 >= 2.6.3 gtk+-2.0 >= 2.5.6 libglade-2.0 gnome-vfs-2.0 >= 2.1.6 gnome-vfs-module-2.0 >= 2.1.6 $MM)
+ 	AC_DEFINE(USE_STABLE_LIBGNOMEUI, 1, [defined if we don't have GNOME])
+ 	AC_DEFINE(HAVE_GTK_ONLY, 1, [defined if GNOME isn't used])
+ 	HAVE_GNOME=no

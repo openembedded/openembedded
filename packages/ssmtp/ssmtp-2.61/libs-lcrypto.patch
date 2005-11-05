@@ -1,0 +1,13 @@
+Index: ssmtp-2.61/configure.in
+===================================================================
+--- ssmtp-2.61.orig/configure.in	2005-03-31 18:53:48.046049000 +1000
++++ ssmtp-2.61/configure.in	2005-03-31 19:10:49.919318000 +1000
+@@ -52,7 +52,7 @@
+ [  --enable-ssl           support for secure connection to mail server])
+ if test x$enableval = xyes ; then
+ 	AC_DEFINE(HAVE_SSL)
+-	LIBS="$LIBS -lssl"
++	LIBS="$LIBS -lssl -lcrypto"
+ fi
+ enableval=""
+ 

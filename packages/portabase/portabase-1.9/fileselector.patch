@@ -1,0 +1,128 @@
+diff -urN portabase.orig/fileselector.cpp portabase/fileselector.cpp
+--- portabase.orig/fileselector.cpp	2004-09-02 20:06:38.000000000 +0200
++++ portabase/fileselector.cpp	2004-09-02 20:59:22.000000000 +0200
+@@ -43,8 +43,8 @@
+ 
+ bool PBFileSelector::duplicate()
+ {
+-    const DocLnk *selection = selected();
+-    if (selection == 0) {
++    DocLnk selection(selectedDocument());
++    if (!selection.isValid()) {
+         return FALSE;
+     }
+     bool ok;
+@@ -56,7 +56,7 @@
+         DocLnk copy;
+         configureDocLnk(copy, name);
+         FileManager fm;
+-        ok = fm.copyFile(*selection, copy);
++        ok = fm.copyFile(selection, copy);
+     }
+     if (ok) {
+         reread();
+@@ -65,14 +65,13 @@
+         QMessageBox::warning(this, QQDialog::tr("PortaBase"),
+                              tr("Unable to create new file"));
+     }
+-    delete selection;
+     return ok;
+ }
+ 
+ bool PBFileSelector::rename()
+ {
+-    const DocLnk *selection = selected();
+-    if (selection == 0) {
++    DocLnk selection(selectedDocument());
++    if (!selection.isValid()) {
+         return FALSE;
+     }
+     bool ok;
+@@ -88,9 +87,9 @@
+         configureDocLnk(copy, name);
+         // actual moving would be more efficient, but harder to implement...
+         FileManager fm;
+-        if (fm.copyFile(*selection, copy)) {
+-            QFile::remove(selection->file());
+-            QFile::remove(selection->linkFile());
++        if (fm.copyFile(selection, copy)) {
++            QFile::remove(selection.file());
++            QFile::remove(selection.linkFile());
+             ok = TRUE;
+         }
+         else {
+@@ -104,7 +103,6 @@
+         QMessageBox::warning(this, QQDialog::tr("PortaBase"),
+                              tr("Unable to rename the file"));
+     }
+-    delete selection;
+     return ok;
+ }
+ 
+diff -urN portabase.orig/importdialog.cpp portabase/importdialog.cpp
+--- portabase.orig/importdialog.cpp	2004-09-02 20:06:38.000000000 +0200
++++ portabase/importdialog.cpp	2004-09-02 20:54:47.000000000 +0200
+@@ -130,14 +130,13 @@
+     int result = QDialog::exec();
+     if (result && !importDone) {
+         // "OK" was clicked...see if there is a selected file
+-        const DocLnk *f = selector->selected();
+-        if (!f) {
++        DocLnk f(selector->selectedDocument());
++        if (!f.isValid()) {
+             return QDialog::Rejected;
+         }
+-        if (!import(f->file())) {
++        if (!import(f.file())) {
+             result = QDialog::Rejected;
+         }
+-        delete f;
+     }
+     return result;
+ }
+diff -urN portabase.orig/portabase.cpp portabase/portabase.cpp
+--- portabase.orig/portabase.cpp	2004-09-02 20:06:38.000000000 +0200
++++ portabase/portabase.cpp	2004-09-02 20:56:58.000000000 +0200
+@@ -527,12 +527,11 @@
+ 
+ void PortaBase::openFile()
+ {
+-    const DocLnk *selection = fileSelector->selected();
+-    if (selection == 0) {
++    DocLnk selection (fileSelector->selectedDocument());
++    if (!selection.isValid()) {
+         return;
+     }
+-    openFile(*selection);
+-    delete selection;
++    openFile(selection);
+ }
+ 
+ void PortaBase::openFile(const QString &f)
+@@ -591,21 +590,19 @@
+ 
+ void PortaBase::deleteFile()
+ {
+-    const DocLnk *selection = fileSelector->selected();
+-    if (selection == 0) {
++    DocLnk selection(fileSelector->selectedDocument());
++    if (!selection.isValid()) {
+         return;
+     }
+     if (QMessageBox::warning(this, QQDialog::tr("PortaBase"), tr("Delete")
+-                             + " \"" + selection->name() + "\"\n"
++                             + " \"" + selection.name() + "\"\n"
+                              + tr("Are you sure?"),
+                              QObject::tr("Yes"), QObject::tr("No"),
+                              QString::null, 1) > 0) {
+-        delete selection;
+         return;
+     }
+-    QFile::remove(selection->file());
+-    QFile::remove(selection->linkFile());
+-    delete selection;
++    QFile::remove(selection.file());
++    QFile::remove(selection.linkFile());
+     fileSelector->reread();
+ }
+ 

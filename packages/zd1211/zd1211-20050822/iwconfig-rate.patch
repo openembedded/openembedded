@@ -1,0 +1,126 @@
+--- zd1211/src/zd1205.c	7 Jun 2005 21:45:21 -0000	1.17
++++ zd1211/src/zd1205.c	24 Aug 2005 11:39:29 -0000
+@@ -3599,9 +3599,59 @@
+ 
+ }
+ 
++static const unsigned long zd1205_rates[] = {
++	/* RATE_1M,  0  */
++	1000000,
++	/* RATE_2M,  1  */
++	2000000,
++	/* RATE_5M,  2  */
++	5500000,
++	/* RATE_11M, 3  */
++	11000000,
++	/* RATE_6M,  4  */
++	600000,
++	/* RATE_9M,  5  */
++	9000000,
++	/* RATE_12M, 6  */
++	12000000,
++	/* RATE_18M, 7  */
++	18000000,
++	/* RATE_24M, 8  */
++	24000000,
++	/* RATE_36M, 9  */
++	36000000,
++	/* RATE_48M, 10 */
++	48000000,
++	/* RATE_54M, 11 */
++	54000000,
++};
++
++#define ZD1205_NRATES ((sizeof(zd1205_rates))/(sizeof(unsigned long)))
++
+ static int zd1205_ioctl_setrate(struct net_device *dev, struct iw_param *frq)
+ {
+-	return 0;
++	struct zd1205_private *macp = dev->priv;
++	U8 rate;
++	if(frq->value < 0) {
++		/* Auto */
++		macp->bFixedRate = 0;
++		macp->AdapterMaxRate = RATE_54M;
++		return 0;
++	}
++	for(rate = 0; rate < ZD1205_NRATES; rate++)
++		if(zd1205_rates[rate] == frq->value) {
++			zd1205_lock(macp);
++			macp->bFixedRate = frq->fixed;
++			if(frq->fixed)
++				macp->cardSetting.FixedRate = rate;
++			else {
++				macp->AdapterMaxRate = rate;
++				macp->cardSetting.TxRate = rate;
++			}
++			zd1205_unlock(macp);
++			return 0;
++		}
++	return -EINVAL;
+ }
+ 
+ static int zd1205_ioctl_getrate(struct net_device *dev, struct iw_param *frq)
+@@ -3612,60 +3662,9 @@
+ 	frq->disabled = 0;
+ 	frq->value = 0;
+ 
+-	switch(macp->cardSetting.CurrTxRate)
+-	{
+-	case RATE_1M:
+-		frq->value = 1000000;
+-		break;
+-
+-	case RATE_2M:
+-		frq->value = 2000000;
+-		break;
+-
+-	case RATE_5M:
+-		frq->value = 5500000;
+-		break;
+-
+-	case RATE_11M:
+-		frq->value = 11000000;
+-		break;
+-
+-	case RATE_6M:
+-		frq->value = 600000;
+-		break;
+-
+-	case RATE_9M:
+-		frq->value = 9000000;
+-		break;
+-
+-	case RATE_12M:
+-		frq->value = 12000000;
+-		break;
+-
+-	case RATE_18M:
+-		frq->value = 18000000;
+-		break;
+-
+-	case RATE_24M:
+-		frq->value = 24000000;
+-		break;
+-
+-	case RATE_36M:
+-		frq->value = 36000000;
+-		break;
+-
+-	case RATE_48M:
+-		frq->value = 48000000;
+-		break;
+-
+-	case RATE_54M:
+-		frq->value = 54000000;
+-		break;
+-
+-	default:
++	if(macp->cardSetting.CurrTxRate > ZD1205_NRATES)
+ 		return -EINVAL;
+-	}
+-
++	frq->value = zd1205_rates[macp->cardSetting.CurrTxRate];
+ 	return 0;
+ }
+ 

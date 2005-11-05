@@ -1,0 +1,92 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- konqueror3-embedded-0.2-20050322/konq-embed/kdesrc/kparts/browserextension.cpp~qt-embedded.patch
++++ konqueror3-embedded-0.2-20050322/konq-embed/kdesrc/kparts/browserextension.cpp
+@@ -441,6 +441,7 @@
+ 
+ void BrowserExtension::pasteRequest()
+ {
++#ifndef QT_NO_CLIPBOARD
+     QCString plain("plain");
+     QString url = QApplication::clipboard()->text(plain, QClipboard::Selection).stripWhiteSpace();
+     // Remove linefeeds and any whitespace surrounding it.
+@@ -477,6 +478,7 @@
+ 		    KStdGuiItem::cancel(), "MiddleClickSearch" ) == KMessageBox::Yes)
+           slotOpenURLRequest( filterData.uri(), KParts::URLArgs() );
+     }
++#endif
+ }
+ 
+ void BrowserExtension::slotOpenURLRequest( const KURL &url, const KParts::URLArgs &args )
+--- konqueror3-embedded-0.2-20050322/konq-embed/kdesrc/khtml/khtmlview.cpp~qt-embedded.patch
++++ konqueror3-embedded-0.2-20050322/konq-embed/kdesrc/khtml/khtmlview.cpp
+@@ -96,8 +96,10 @@
+ 
+ //#define DEBUG_PIXEL
+ 
++#ifdef THIS_DOESNT_WORK_WITH_QT_EMBEDDED
+ #include <X11/Xlib.h>
+ #include <fixx11h.h>
++#endif
+ 
+ #define PAINT_BUFFER_HEIGHT 128
+ 
+@@ -1182,9 +1184,11 @@
+         if( !d->cursor_icon_widget ) {
+             QPixmap icon_pixmap = KGlobal::iconLoader()->loadIcon( "mail_generic", KIcon::Small, 0, KIcon::DefaultState, 0, true );
+             d->cursor_icon_widget = new QWidget( NULL, NULL, WX11BypassWM );
++#ifdef THIS_DOESNT_WORK_WITH_QT_EMBEDDED
+             XSetWindowAttributes attr;
+             attr.save_under = True;
+             XChangeWindowAttributes( qt_xdisplay(), d->cursor_icon_widget->winId(), CWSaveUnder, &attr );
++#endif
+             d->cursor_icon_widget->resize( icon_pixmap.width(), icon_pixmap.height());
+             if( icon_pixmap.mask() )
+                 d->cursor_icon_widget->setMask( *icon_pixmap.mask());
+@@ -1195,8 +1199,10 @@
+         }
+         QPoint c_pos = QCursor::pos();
+         d->cursor_icon_widget->move( c_pos.x() + 15, c_pos.y() + 15 );
++#ifdef THIS_DOESNT_WORK_WITH_QT_EMBEDDED
+         XRaiseWindow( qt_xdisplay(), d->cursor_icon_widget->winId());
+         QApplication::flushX();
++#endif
+         d->cursor_icon_widget->show();
+     }
+     else if ( d->cursor_icon_widget )
+--- konqueror3-embedded-0.2-20050322/acinclude.m4~qt-embedded.patch
++++ konqueror3-embedded-0.2-20050322/acinclude.m4
+@@ -2131,9 +2131,9 @@
+ save_CXXFLAGS="$CXXFLAGS"
+ kde_safe_LIBS="$LIBS"
+ LIBS="$LIBS $X_EXTRA_LIBS"
+-if test "$GXX" = "yes"; then
+-CXXFLAGS="$CXXFLAGS -pedantic-errors"
+-fi
++#if test "$GXX" = "yes"; then
++#CXXFLAGS="$CXXFLAGS -pedantic-errors"
++#fi
+ AC_TRY_COMPILE([
+ $2
+ ],
+@@ -3012,7 +3012,7 @@
+   if test "$GXX" = "yes" || test "$CXX" = "KCC"; then
+     if test "$kde_use_debug_code" != "no"; then
+       if test "$CXX" = "KCC"; then
+-        CXXFLAGS="+K0 -Wall -pedantic -W -Wpointer-arith -Wwrite-strings $CXXFLAGS"
++        CXXFLAGS="+K0 -Wall -W -Wpointer-arith -Wwrite-strings $CXXFLAGS"
+       else
+         if test "$kde_use_debug_code" = "full"; then
+           CXXFLAGS="-g3 -fno-inline $CXXFLAGS"
+@@ -3052,7 +3052,7 @@
+         case $host in
+           *-*-linux-gnu)	
+             CFLAGS="-std=iso9899:1990 -W -Wall -Wchar-subscripts -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -D_XOPEN_SOURCE=500 -D_BSD_SOURCE $CFLAGS"
+-            CXXFLAGS="-ansi -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -Wcast-align -Wconversion -Wchar-subscripts $CXXFLAGS"
++            CXXFLAGS="-D_XOPEN_SOURCE=500 -D_BSD_SOURCE -Wcast-align -Wconversion -Wchar-subscripts $CXXFLAGS"
+             KDE_CHECK_COMPILER_FLAG(Wmissing-format-attribute, [CXXFLAGS="$CXXFLAGS -Wformat-security -Wmissing-format-attribute"])
+             KDE_CHECK_C_COMPILER_FLAG(Wmissing-format-attribute, [CFLAGS="$CFLAGS -Wformat-security -Wmissing-format-attribute"])
+           ;;

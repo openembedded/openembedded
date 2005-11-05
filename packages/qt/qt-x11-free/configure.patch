@@ -1,0 +1,60 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-free-3.3.2/configure~configure.patch
++++ qt-x11-free-3.3.2/configure
+@@ -219,7 +219,7 @@
+ # licensed modules depend on type of commercial license
+ MODULES="styles tools kernel widgets dialogs iconview workspace"
+ [ "$PLATFORM_QWS" = "yes" ] && [ "$Products" = "qt-professional" ] && MODULES="$MODULES network"
+-[ "$Products" != "qt-professional" ] && MODULES="$MODULES network canvas table xml opengl sql"
++[ "$Products" != "qt-professional" ] && MODULES="$MODULES network canvas table xml sql"
+ CFG_MODULES_AVAILABLE=$MODULES
+ QMAKE_VARS="$QMAKE_VARS \"QT_PRODUCT=$Products\""
+ QMAKE_VARS="$QMAKE_VARS \"styles += windows motif mac platinum sgi cde motifplus\""
+@@ -1754,21 +1754,14 @@
+ 	    CFG_FREETYPE=yes
+ 	fi
+     fi
+-    # add freetype2 include path
+-    if [ "$CFG_FREETYPE" = "yes" ] && [ -f $outpath/config.tests/x11/xft.inc ];then
+-	QMAKE_VARS="$QMAKE_VARS \"INCLUDEPATH+=`cat $outpath/config.tests/x11/xft.inc`\""
+-    fi
+-    rm -f $outpath/config.tests/x11/xft.inc
+     # add Xft specific libraries
+     if [ "$CFG_FREETYPE" = "yes" ] && [ -f $outpath/config.tests/x11/xft.lib ]; then
+ 	QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBS_X11=`cat $outpath/config.tests/x11/xft.lib` \$\$QMAKE_LIBS_X11\""
+     fi
+-    rm -f $outpath/config.tests/x11/xft.lib
+     # add Xft specific config options
+     if [ "$CFG_FREETYPE" = "yes" ] && [ -f $outpath/config.tests/x11/xft.cfg ]; then
+ 	QMAKE_CONFIG="$QMAKE_CONFIG `cat $outpath/config.tests/x11/xft.cfg`"
+     fi
+-    rm -f $outpath/config.tests/x11/xft.cfg
+     # auto-detect Session Management support
+     if [ "$CFG_SM" = "auto" ]; then
+ 	if $x11tests/sm.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
+@@ -2553,12 +2546,6 @@
+     (cd $outpath/qmake; $MAKE || (echo "qmake failed to build. Aborting." && exit 2)) || exit 2
+ fi
+ 
+-# clean up temporary qconfig.h and qmodules.h
+-rm -f $outpath/include/qmake/qconfig.h
+-rm -f $outpath/include/qmake/qmodules.h
+-rmdir $outpath/include/qmake
+-
+-
+ #-------------------------------------------------------------------------------
+ # tests that need qmake
+ #-------------------------------------------------------------------------------
+@@ -3605,7 +3592,7 @@
+ 
+ EOF
+ 	else
+-	    EXEC="$outpath/bin/qmake $QMAKE_SWITCHES $QMAKE_SPEC_ARGS -o $OUTDIR $a"
++	    EXEC="$outpath/bin/qmake $QMAKE_SWITCHES $QMAKE_SPEC_ARGS -o $OUTDIR $a $OE_EXTRA_QMAKE"
+ 	    if [ "$OPT_VERBOSE" = "yes" ]; then
+ 		echo " (`basename $SPEC`)"
+ 		if echo '\c' | grep '\c' >/dev/null; then

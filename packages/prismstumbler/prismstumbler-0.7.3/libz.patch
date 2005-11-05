@@ -1,0 +1,16 @@
+Index: src/Makefile.in
+===================================================================
+RCS file: /cvs/apps/prismstumbler/src/Makefile.in,v
+retrieving revision 1.5
+diff -u -r1.5 Makefile.in
+--- src/Makefile.in	1 Oct 2004 23:03:57 -0000	1.5
++++ src/Makefile.in	29 Nov 2004 23:19:29 -0000
+@@ -89,7 +89,7 @@
+ 
+ bin_PROGRAMS = prismstumbler psfront
+ 
+-psfront_LDADD = -L@SQLITELIB@ -lsqlite $(LIBGTK)
++psfront_LDADD = -L@SQLITELIB@ -lsqlite -lz $(LIBGTK)
+ psfront_CFLAGS = $(INCLUDES)
+ 
+ prismstumbler_LDADD = @PCAPLIB@ -lm gpsd/libgpsd.a $(LIBGTK)

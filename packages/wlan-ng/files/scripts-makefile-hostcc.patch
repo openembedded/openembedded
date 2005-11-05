@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-wlan-ng-0.2.2/scripts/Makefile~scripts-makefile-hostcc
++++ linux-wlan-ng-0.2.2/scripts/Makefile
+@@ -24,7 +24,7 @@
+ 		exit 1;\
+ 	fi
+ 
+-	$(CC) -I$(KERNEL_SOURCE)/include get_version.c -o get_version
++	$(BUILD_CC) -I$(KERNEL_SOURCE)/include get_version.c -o get_version
+ 
+ get_options:
+ 	$(MAKE) -f $(CURR_DIR)/Makefile.get_options -C $(KERNEL_SOURCE) get_version_target

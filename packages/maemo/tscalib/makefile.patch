@@ -1,0 +1,24 @@
+--- Makefile.orig	2005-06-20 18:44:26.000000000 +0200
++++ Makefile	2005-06-20 18:43:56.000000000 +0200
+@@ -1,6 +1,4 @@
+ 
+-CC = gcc
+-CFLAGS = -Os
+ LIBS = -lts
+ PREFIX = /usr/local
+ 
+@@ -20,11 +18,11 @@
+ 	rm -rf $(OBJECTS) $(TARGET) .depends
+ 
+ install: $(TARGET)
+-	install -d -m 755 $(PREFIX)/bin
+-	install -c -m 755 $(TARGET) $(PREFIX)/bin/$(TARGET)
++	install -d -m 755 $(DESTDIR)/$(PREFIX)/bin
++	install -c -m 755 $(TARGET) $(DESTDIR)/$(PREFIX)/bin/$(TARGET)
+ 
+ .depends:
+-	$(CC) -MM $(SOURCES) > .depends
++	$(CC) -MM $(CFLAGS) $(SOURCES) > .depends
+ 
+ 
+ -include .depends

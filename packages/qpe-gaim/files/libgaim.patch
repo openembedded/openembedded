@@ -1,0 +1,408 @@
+Index: gaim-1.3.0/src/status.c
+===================================================================
+--- gaim-1.3.0.orig/src/status.c	2005-02-10 01:07:25.000000000 +0100
++++ gaim-1.3.0/src/status.c	2005-06-05 02:21:59.000000000 +0200
+@@ -24,10 +24,13 @@
+ #include "internal.h"
+ #include "debug.h"
+ #include "util.h"
++#include "away.h"
+ 
+ /* XXX CORE/UI */
++#if 0
+ #include "away.h"
+ #include "gtkgaim.h"
++#endif
+ 
+ 
+ /* for people like myself who are too lazy to add an away msg :) */
+Index: gaim-1.3.0/plugins/Makefile.am
+===================================================================
+--- gaim-1.3.0.orig/plugins/Makefile.am	2005-04-29 19:01:57.000000000 +0200
++++ gaim-1.3.0/plugins/Makefile.am	2005-06-05 02:24:20.000000000 +0200
+@@ -13,46 +13,29 @@
+ endif
+ 
+ SUBDIRS = \
+-	docklet gaim-remote $(GEVOLUTION_DIR) gestures \
+-	$(PERL_DIR) $(TCL_DIR) ssl ticker
++	$(GEVOLUTION_DIR) \
++	$(PERL_DIR) $(TCL_DIR) ssl
+ 
+ plugindir = $(libdir)/gaim
+ 
+ autorecon_la_LDFLAGS    = -module -avoid-version $(GLIB_LIBS)
+ extplacement_la_LDFLAGS = -module -avoid-version $(GLIB_LIBS)
+-history_la_LDFLAGS      = -module -avoid-version $(GTK_LIBS)
+-iconaway_la_LDFLAGS     = -module -avoid-version $(GTK_LIBS)
+ idle_la_LDFLAGS         = -module -avoid-version $(GLIB_LIBS)
+-notify_la_LDFLAGS       = -module -avoid-version $(GTK_LIBS)
+ relnot_la_LDFLAGS       = -module -avoid-version $(GLIB_LIBS)
+-spellchk_la_LDFLAGS     = -module -avoid-version $(GTK_LIBS)
+ statenotify_la_LDFLAGS  = -module -avoid-version $(GLIB_LIBS)
+-timestamp_la_LDFLAGS    = -module -avoid-version $(GTK_LIBS)
+ 
+ if PLUGINS
+ 
+ plugin_LTLIBRARIES = \
+ 	autorecon.la     \
+-	extplacement.la  \
+-	history.la       \
+-	iconaway.la      \
+ 	idle.la          \
+-	notify.la        \
+ 	relnot.la        \
+-	spellchk.la      \
+-	statenotify.la   \
+-	timestamp.la
++	statenotify.la   
+ 
+ autorecon_la_SOURCES    = autorecon.c
+-extplacement_la_SOURCES = extplacement.c
+-history_la_SOURCES      = history.c
+-iconaway_la_SOURCES     = iconaway.c
+ idle_la_SOURCES         = idle.c
+-notify_la_SOURCES       = notify.c
+ relnot_la_SOURCES       = relnot.c
+-spellchk_la_SOURCES     = spellchk.c
+ statenotify_la_SOURCES  = statenotify.c
+-timestamp_la_SOURCES    = timestamp.c
+ 
+ endif # PLUGINS
+ 
+@@ -74,7 +57,7 @@
+ 	-DVERSION=\"$(VERSION)\" \
+ 	-I$(top_srcdir)/src \
+ 	$(DEBUG_CFLAGS) \
+-	$(GTK_CFLAGS) \
++	$(GLIB_CFLAGS) \
+ 	$(PLUGIN_CFLAGS)
+ 
+ #
+Index: gaim-1.3.0/src/gaim.h
+===================================================================
+--- gaim-1.3.0.orig/src/gaim.h	2004-08-08 07:37:58.000000000 +0200
++++ gaim-1.3.0/src/gaim.h	2005-06-05 02:21:59.000000000 +0200
+@@ -27,6 +27,10 @@
+ 
+ #include "connection.h"
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ /* Globals in main.c */
+ extern int opt_away;
+ extern char *opt_away_arg;
+@@ -36,7 +40,28 @@
+ extern GSList *unread_message_queue;
+ extern GSList *away_time_queue;
+ 
++
++/* copied from gtkdialog.h */
++struct queued_message {
++        char name[80];
++        char alias[80];
++        char *message;
++        time_t tm;
++        GaimAccount *account;
++        GaimMessageFlags flags;
++};
++
+ /* Functions in idle.c */
+ extern gint check_idle(gpointer);
+ 
++/* Variable in .. */
++extern int docklet_count;
++
++/* implemented by gtkutils.h and used by server.c */
++extern char *stylize(const gchar *text, int length);
++
++#ifdef __cplusplus
++}
++#endif
++
+ #endif /* _GAIM_H_ */
+Index: gaim-1.3.0/src/Makefile.am
+===================================================================
+--- gaim-1.3.0.orig/src/Makefile.am	2005-04-11 22:59:21.000000000 +0200
++++ gaim-1.3.0/src/Makefile.am	2005-06-05 02:21:59.000000000 +0200
+@@ -61,6 +61,8 @@
+ 
+ SUBDIRS = protocols
+ 
++lib_LTLIBRARIES = libgaim.la
++
+ gaim_coresources = \
+ 	account.c \
+ 	accountopt.c \
+@@ -112,6 +114,7 @@
+ 	debug.h \
+ 	eventloop.h \
+ 	ft.h \
++	gaim.h \
+ 	imgstore.h \
+ 	log.h \
+ 	md5.h \
+@@ -139,101 +142,21 @@
+ 	version.h \
+ 	xmlnode.h
+ 
+-bin_PROGRAMS = gaim gaim-remote
+-
+-gaim_SOURCES = \
+-	$(gaim_coresources) \
+-	away.c \
+-	dnd-hints.c \
+-	gaim-disclosure.c \
+-	gtkaccount.c \
+-	gtkcellrendererprogress.c \
+-	gtkblist.c \
+-	gtkconn.c \
+-	gtkconv.c \
+-	gtkdebug.c \
+-	gtkdialogs.c \
+-	gtkeventloop.c \
+-	gtkft.c \
+-	gtkimhtml.c \
+-	gtkimhtmltoolbar.c \
+-	gtklog.c \
+-	gtknotify.c \
+-	gtkplugin.c \
+-	gtkpluginpref.c \
+-	gtkprefs.c \
+-	gtkprivacy.c \
+-	gtkpounce.c \
+-	gtkrequest.c \
+-	gtkroomlist.c \
+-	gtksound.c \
+-	gtksourceiter.c \
+-	gtkutils.c \
+-	idle.c \
+-	main.c \
+-	session.c \
+-	stock.c \
+-	themes.c
+-
+-gaim_headers = \
+-	$(gaim_coreheaders) \
+-	dnd-hints.h \
+-	gaim.h \
+-	gaim-disclosure.h \
+-	gtkaccount.h \
+-	gtkcellrendererprogress.h \
+-	gtkblist.h \
+-	gtkconn.h \
+-	gtkconv.h \
+-	gtkdebug.h \
+-	gtkdialogs.h \
+-	gtkeventloop.h \
+-	gtkft.h \
+-	gtkgaim.h \
+-	gtkimhtml.h \
+-	gtkimhtmltoolbar.h \
+-	gtklog.h \
+-	gtknotify.h \
+-	gtkplugin.h \
+-	gtkpluginpref.h \
+-	gtkprefs.h \
+-	gtkprivacy.h \
+-	gtkpounce.h \
+-	gtkrequest.h \
+-	gtkroomlist.h \
+-	gtksound.h \
+-	gtksourceiter.h \
+-	gtkutils.h \
+-	internal.h \
+-	stock.h
+ 
+ gaimincludedir=$(includedir)/gaim
+ gaiminclude_HEADERS = \
+-	$(gaim_coreheaders) \
+-	$(gaim_headers)
++	$(gaim_coreheaders)
+ 
+-gaim_DEPENDENCIES = @LIBOBJS@ $(STATIC_LINK_LIBS)
+-gaim_LDFLAGS = -export-dynamic
+-gaim_LDADD = \
+-	@LIBOBJS@ \
+-	$(GTK_LIBS) \
+-	$(SOUND_LIBS) \
+-	$(STATIC_LINK_LIBS) \
+-	$(XSS_LIBS) \
+-	$(SM_LIBS) \
+-	$(INTLLIBS) \
+-	$(GTKSPELL_LIBS) \
+-	$(STARTUP_NOTIFICATION_LIBS)
+-
+-gaim_remote_SOURCES = \
+-	gaim-remote.c \
+-	prefix.c \
+-	prefix.h
++libgaim_la_SOURCES = \
++	$(gaim_coresources)
+ 
+-gaim_remote_DEPENDENCIES = @LIBOBJS@
+-gaim_remote_LDADD = \
+-	@LIBOBJS@ $(GLIB_LIBS) $(INTLLIBS) \
+-	$(top_builddir)/plugins/gaim-remote/libgaim-remote.la
++libgaim_la_DEPENDENCIES = @LIBOBJS@ $(STATIC_LINK_LIBS)
++libgaim_la_LDFLAGS = -version-info 0:0:0
++libgaim_la_LIBDADD = \
++	@LIBOBJS@ 
++	$(GLIB_LIBS) \
++	$(STATIC_LINK_LIBS) \
++	$(INTLLIBS) 
+ 
+ AM_CPPFLAGS = \
+ 	-DBR_PTHREADS=0 \
+@@ -242,9 +165,5 @@
+ 	-DLOCALEDIR=\"$(datadir)/locale\" \
+ 	-DSYSCONFDIR=\"$(sysconfdir)\" \
+ 	-I$(top_srcdir)/plugins \
+-	$(AUDIOFILE_CFLAGS) \
+-	$(AO_CFLAGS) \
+ 	$(DEBUG_CFLAGS) \
+-	$(GTK_CFLAGS) \
+-	$(GTKSPELL_CFLAGS) \
+-	$(STARTUP_NOTIFICATION_CFLAGS)
++	$(GLIB_CFLAGS)
+Index: gaim-1.3.0/plugins/extplacement.c
+===================================================================
+--- gaim-1.3.0.orig/plugins/extplacement.c	2004-09-03 23:34:03.000000000 +0200
++++ gaim-1.3.0/plugins/extplacement.c	2005-06-05 02:21:59.000000000 +0200
+@@ -21,10 +21,12 @@
+  */
+ 
+ #include "internal.h"
++#if 0
+ #include "gtkgaim.h"
++#include "gtkplugin.h"
++#endif
+ #include "conversation.h"
+ #include "version.h"
+-#include "gtkplugin.h"
+ 
+ static void
+ conv_placement_by_number(GaimConversation *conv)
+Index: gaim-1.3.0/src/away.h
+===================================================================
+--- gaim-1.3.0.orig/src/away.h	2004-08-20 07:11:29.000000000 +0200
++++ gaim-1.3.0/src/away.h	2005-06-05 02:21:59.000000000 +0200
+@@ -25,7 +25,7 @@
+ #ifndef _GAIM_AWAY_H_
+ #define _GAIM_AWAY_H_
+ 
+-#include "gtkgaim.h"
++#include "gaim.h"
+ 
+ /* XXX CUI: away messages aren't really anything more than char* but we need two char*'s
+  * for the UI so that people can name their away messages when they save them. So these
+@@ -36,6 +36,23 @@
+ 	char message[2048];
+ };
+ 
++
++
++extern GSList *away_messages;
++extern struct away_message *awaymessage;
++extern void *awaymenu;
++extern void *awayqueue;
++extern void *awayqueuestore;
++
++extern void rem_away_mess(void *, struct away_message *);
++extern void do_away_message(void *, struct away_message *);
++extern void do_away_menu();
++extern void toggle_away_queue();
++extern void purge_away_queue(GSList **);
++extern void do_im_back(void *, void*);
++void create_away_mess(void *, void *);
++
++#if 0
+ extern GSList *away_messages;
+ extern struct away_message *awaymessage;
+ extern GtkWidget *awaymenu;
+@@ -49,5 +66,6 @@
+ extern void purge_away_queue(GSList **);
+ extern void do_im_back(GtkWidget *, GtkWidget *);
+ void create_away_mess(GtkWidget *, void *);
++#endif
+ 
+ #endif /* _GAIM_AWAY_H_ */
+Index: gaim-1.3.0/src/server.c
+===================================================================
+--- gaim-1.3.0.orig/src/server.c	2005-04-14 21:17:50.000000000 +0200
++++ gaim-1.3.0/src/server.c	2005-06-05 02:21:59.000000000 +0200
+@@ -32,13 +32,17 @@
+ #include "server.h"
+ #include "sound.h"
+ #include "util.h"
++#include "gaim.h"
++#include "away.h"
+ 
++#if 0
+ /* XXX UI Stuff */
+ #include "away.h"
+ #include "gtkdialogs.h"
+ #include "gaim.h"
+ #include "gtkimhtml.h"
+ #include "gtkutils.h"
++#endif
+ 
+ #define SECS_BEFORE_RESENDING_AUTORESPONSE 600
+ #define SEX_BEFORE_RESENDING_AUTORESPONSE "Only after you're married"
+@@ -805,6 +809,8 @@
+ 	gchar *temp;
+ 	gint i = 0;
+ 	gboolean valid;
++
++#if 0	
+ 	GtkTreeIter iter;
+ 
+ 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(awayqueuestore), &iter);
+@@ -817,6 +823,7 @@
+ 		i++;
+ 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(awayqueuestore), &iter);
+ 	}
++#endif	
+ 
+ 	return -1;
+ }
+@@ -828,7 +835,7 @@
+ 
+ 	templist = message_queue;
+ 
+-	while (templist) {
++	while (templist) {		
+ 		struct queued_message *qm = (struct queued_message *)templist->data;
+ 		if ((qm->flags & GAIM_MESSAGE_RECV) && !strcmp(name, qm->name))
+ 			i++;
+@@ -964,6 +971,7 @@
+ 			qm->flags = msgflags;
+ 
+ 			if (queue_to_away) {
++#if 0				
+ 				GtkTreeIter iter;
+ 				gchar path[10];
+ 
+@@ -992,6 +1000,7 @@
+ 									2, _("(1 message)"),
+ 									-1);
+ 				}
++#endif			
+ 			} else /* queue_to_docklet */
+ 				unread_message_queue = g_slist_append(unread_message_queue, qm);
+ 		} else {
+@@ -1049,7 +1058,12 @@
+ 		lar->sent = t;
+ 
+ 		/* apply default fonts and colors */
++		#if 0		
+ 		tmpmsg = stylize(gc->away, MSG_LEN);
++		#else
++		tmpmsg = (gchar*)g_malloc(MSG_LEN);
++		g_snprintf(tmpmsg, MSG_LEN, "%s", gc->away);
++		#endif
+ 
+ 		/* Move this to oscar.c! */
+ 		buffy = gaim_str_sub_away_formatters(tmpmsg, alias);

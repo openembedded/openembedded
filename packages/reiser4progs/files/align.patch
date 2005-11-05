@@ -1,0 +1,373 @@
+--- orig/include/reiser4/plugin.h	2005-03-26 16:52:16.913589432 -0800
++++ reiser4progs-1.0.4/include/reiser4/plugin.h	2005-03-26 17:05:13.324557024 -0800
+@@ -36,6 +36,28 @@
+ #define EXTENT_HOLE_UNIT		(0)
+ #define EXTENT_UNALLOC_UNIT		(1)
+ 
++#if __arm__
++/* Getting this right requires machine dependent knowledge of the
++ * minimum structure packing gcc implements for the architecture, on
++ * ARM it is 4, so we need 'packed' for <4 and must not use 'packed'
++ * for 8! (packed,align(4) is the default.)
++ */
++#define PACKED8  __attribute__ ((packed,aligned(1)))
++#define PACKED16 __attribute__ ((packed,aligned(2)))
++#define PACKED32 __attribute__ ((aligned(4)))
++#define PACKED64 __attribute__ ((aligned(8)))
++#else
++#define PACKED8  __attribute__ ((aligned(1)))
++#define PACKED16 __attribute__ ((aligned(2)))
++#define PACKED32 __attribute__ ((aligned(4)))
++#define PACKED64 __attribute__ ((aligned(8)))
++#endif
++
++#define PACKEDt(t) __attribute__ ((packed,aligned(__alignof__ (t)) ))
++#define PACKEDt2(t1,t2) __attribute__ ((packed,aligned(\
++		__alignof__ (t1) < __alignof__ (t2) ? __alignof__ (t2) : __alignof__ (t1) )))
++#define PACKED __attribute__((packed))
++
+ /* Defining the types for disk structures. All types like f32_t are fake ones
+    and needed to avoid gcc-2.95.x bug with size of typedefined aligned types. */
+ typedef uint8_t  f8_t;  typedef f8_t  d8_t  __attribute__((aligned(1)));
+--- orig/include/reiser4/types.h	2005-03-26 16:52:16.915589128 -0800
++++ reiser4progs-1.0.4/include/reiser4/types.h	2005-03-26 17:08:29.143787976 -0800
+@@ -33,7 +33,7 @@
+ 
+ 	/* Filesystem label in use. */
+ 	char ms_label[16];
+-};
++} PACKED16;
+ 
+ typedef struct reiser4_master_sb reiser4_master_sb_t;
+ 
+@@ -63,7 +63,7 @@
+ 
+ 	/* Error message related to saved status and stack trace. */
+ 	char ss_message[SS_MESSAGE_SIZE];
+-};
++} PACKED64;
+ 
+ typedef struct reiser4_status_sb reiser4_status_sb_t;
+ 
+--- orig/plugin/format/format40/format40.h	2005-03-26 16:52:17.022572864 -0800
++++ reiser4progs-1.0.4/plugin/format/format40/format40.h	2005-03-26 17:09:21.068894160 -0800
+@@ -36,7 +36,7 @@
+ 	d64_t sb_flags;
+ 	
+ 	char sb_unused[432];
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct format40_super format40_super_t;
+ 
+@@ -60,7 +60,7 @@
+ 	d16_t sb_policy;
+ 	d64_t sb_flags;
+ 	d64_t sb_reserved;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct format40_backup format40_backup_t;
+ #endif
+--- orig/plugin/item/cde40/cde40.h	2005-03-26 16:52:17.041569976 -0800
++++ reiser4progs-1.0.4/plugin/item/cde40/cde40.h	2005-03-26 17:12:11.154037288 -0800
+@@ -21,7 +21,7 @@
+ 
+ struct cde40 {
+ 	d16_t units;
+-};
++} PACKED16;
+ 
+ typedef struct cde40 cde40_t;
+ 
+@@ -29,7 +29,7 @@
+ struct objid3 {
+ 	d8_t locality[8];
+ 	d8_t objectid[8];
+-};
++} PACKED8;
+ 
+ typedef struct objid3 objid3_t;
+ 
+@@ -37,21 +37,21 @@
+ struct hash3 {
+ 	d8_t objectid[8];
+ 	d8_t offset[8];
+-};
++} PACKED8;
+ 
+ typedef struct hash3 hash3_t;
+ 
+ struct entry3 {
+ 	hash3_t hash;
+ 	d16_t offset;
+-};
++} PACKEDt2(hash3_t, d16_t);
+ 
+ typedef struct entry3 entry3_t;
+ 
+ struct cde403 {
+ 	d16_t units;
+ 	entry3_t entry[0];
+-};
++} PACKEDt2(d16_t, entry3_t);
+ 
+ typedef struct cde403  cde403_t;
+ #endif
+@@ -61,7 +61,7 @@
+ 	d8_t locality[8];
+ 	d8_t ordering[8];
+ 	d8_t objectid[8];
+-};
++} PACKED8;
+ 
+ typedef struct objid4 objid4_t;
+ 
+@@ -69,21 +69,21 @@
+ 	d8_t ordering[8];
+ 	d8_t objectid[8];
+ 	d8_t offset[8];
+-};
++} PACKED8;
+ 
+ typedef struct hash4 hash4_t;
+ 
+ struct entry4 {
+ 	hash4_t hash;
+ 	d16_t offset;
+-};
++} PACKEDt2(hash4_t, d16_t);
+ 
+ typedef struct entry4 entry4_t;
+ 
+ struct cde404 {
+ 	d16_t units;
+ 	entry4_t entry[0];
+-};
++} PACKEDt2(d16_t, entry4_t);
+ 
+ typedef struct cde404  cde404_t;
+ #endif
+--- orig/plugin/item/ctail40/ctail40.h	2005-03-26 16:52:17.050568608 -0800
++++ reiser4progs-1.0.4/plugin/item/ctail40/ctail40.h	2005-03-26 17:12:25.634835872 -0800
+@@ -15,7 +15,7 @@
+ 	/* Cluster size is block size shifted to this field. */
+ 	d8_t shift;
+ 	d8_t body[0];
+-};
++} PACKED8;
+ 
+ typedef struct ctail40 ctail40_t;
+ 
+--- orig/plugin/item/extent40/extent40.h	2005-03-26 16:52:17.056567696 -0800
++++ reiser4progs-1.0.4/plugin/item/extent40/extent40.h	2005-03-26 17:12:43.461125864 -0800
+@@ -24,7 +24,7 @@
+ struct extent40 {
+ 	d64_t start;
+ 	d64_t width;
+-};
++} PACKED64;
+ 
+ typedef struct extent40 extent40_t;
+ 
+--- orig/plugin/item/nodeptr40/nodeptr40.h	2005-03-26 16:52:17.057567544 -0800
++++ reiser4progs-1.0.4/plugin/item/nodeptr40/nodeptr40.h	2005-03-26 17:12:56.313172056 -0800
+@@ -11,7 +11,7 @@
+ 
+ struct nodeptr40 {
+ 	d64_t ptr;
+-};
++} PACKED64;
+ 
+ extern reiser4_core_t *nodeptr40_core;
+ typedef struct nodeptr40 nodeptr40_t;
+--- orig/plugin/item/stat40/stat40.h	2005-03-26 16:52:17.061566936 -0800
++++ reiser4progs-1.0.4/plugin/item/stat40/stat40.h	2005-03-26 17:13:13.492560392 -0800
+@@ -22,7 +22,7 @@
+ 
+ struct stat40 {
+ 	d16_t extmask;
+-};
++} PACKED16;
+ 
+ typedef struct stat40 stat40_t;
+ extern reiser4_core_t *stat40_core;
+--- orig/plugin/journal/journal40/journal40.h	2005-03-26 16:52:17.071565416 -0800
++++ reiser4progs-1.0.4/plugin/journal/journal40/journal40.h	2005-03-26 17:15:34.993049048 -0800
+@@ -53,7 +53,7 @@
+ 
+ struct journal40_header {
+ 	d64_t jh_last_commited;
+-};
++} PACKED64;
+ 
+ typedef struct journal40_header journal40_header_t;
+ 
+@@ -66,7 +66,7 @@
+ 	d64_t jf_free_blocks;
+ 	d64_t jf_used_oids;
+ 	d64_t jf_next_oid;
+-};
++} PACKED64;
+ 
+ typedef struct journal40_footer journal40_footer_t;
+ 
+@@ -100,7 +100,7 @@
+ 	d64_t th_free_blocks;
+ 	d64_t th_used_oids;
+ 	d64_t th_next_oid;
+-};
++} PACKED64;
+ 
+ typedef struct journal40_tx_header journal40_tx_header_t;
+ 
+@@ -131,7 +131,7 @@
+ 	d32_t lh_total;
+ 	d32_t lh_serial;
+ 	d64_t lh_next_block;
+-};
++} PACKED64;
+ 
+ typedef struct journal40_lr_header journal40_lr_header_t;
+ 
+@@ -150,7 +150,7 @@
+ struct journal40_lr_entry {
+ 	d64_t le_original;
+ 	d64_t le_wandered;
+-};
++} PACKED64;
+ 
+ typedef struct journal40_lr_entry journal40_lr_entry_t;
+ 
+--- orig/plugin/key/key_large/key_large.h	2005-03-26 16:52:17.073565112 -0800
++++ reiser4progs-1.0.4/plugin/key/key_large/key_large.h	2005-03-26 17:15:59.982250112 -0800
+@@ -39,7 +39,7 @@
+ union key_large {
+ 	d64_t el[KEY_LARGE_LAST_INDEX];
+ 	int pad;
+-};
++} PACKED64;
+ 
+ typedef union key_large key_large_t;
+ 
+--- orig/plugin/key/key_short/key_short.h	2005-03-26 16:52:17.076564656 -0800
++++ reiser4progs-1.0.4/plugin/key/key_short/key_short.h	2005-03-26 17:16:13.687166648 -0800
+@@ -38,7 +38,7 @@
+ union key_short {
+ 	d64_t el[KEY_SHORT_LAST_INDEX];
+ 	int pad;
+-};
++} PACKED64;
+ 
+ typedef union key_short key_short_t;
+ 
+--- orig/plugin/node/node40/node40.h	2005-03-26 16:52:17.082563744 -0800
++++ reiser4progs-1.0.4/plugin/node/node40/node40.h	2005-03-26 17:17:08.539827776 -0800
+@@ -45,7 +45,7 @@
+ 	d8_t level;
+ 	
+ 	d8_t pad;
+-}  __attribute__((packed));
++} PACKED;
+ 
+ typedef struct node40_header node40_header_t;  
+ 
+@@ -166,7 +166,7 @@
+ union key3 {
+ 	d64_t el[3];
+ 	int pad;
+-};
++} PACKED64;
+ 
+ typedef union key3 key3_t;
+ 
+@@ -176,7 +176,7 @@
+ 	d16_t offset;
+ 	d16_t flags;
+ 	d16_t pid;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct item_header3 item_header3_t;
+ #endif
+@@ -185,7 +185,7 @@
+ union key4 {
+ 	d64_t el[4];
+ 	int pad;
+-};
++} PACKED64;
+ 
+ typedef union key4 key4_t;
+ 
+@@ -195,7 +195,7 @@
+ 	d16_t offset;
+ 	d16_t flags;
+ 	d16_t pid;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct item_header4 item_header4_t;
+ #endif
+--- orig/plugin/sdext/sdext_flags/sdext_flags.h	2005-03-26 16:52:17.111559336 -0800
++++ reiser4progs-1.0.4/plugin/sdext/sdext_flags/sdext_flags.h	2005-03-26 17:17:36.787533472 -0800
+@@ -11,7 +11,7 @@
+ 
+ struct sdext_flags {
+ 	d32_t flags;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_flags sdext_flags_t;
+ 
+--- orig/plugin/sdext/sdext_lt/sdext_lt.h	2005-03-26 16:52:17.112559184 -0800
++++ reiser4progs-1.0.4/plugin/sdext/sdext_lt/sdext_lt.h	2005-03-26 17:17:43.199558696 -0800
+@@ -13,7 +13,7 @@
+ 	d32_t atime;
+ 	d32_t mtime;
+ 	d32_t ctime;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_lt sdext_lt_t;
+ 
+--- orig/plugin/sdext/sdext_lw/sdext_lw.h	2005-03-26 16:52:17.117558424 -0800
++++ reiser4progs-1.0.4/plugin/sdext/sdext_lw/sdext_lw.h	2005-03-26 17:17:50.272483448 -0800
+@@ -13,7 +13,7 @@
+ 	d16_t mode;
+ 	d32_t nlink;
+ 	d64_t size;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_lw sdext_lw_t;
+ 
+--- orig/plugin/sdext/sdext_plug/sdext_plug.h	2005-03-26 16:52:17.118558272 -0800
++++ reiser4progs-1.0.4/plugin/sdext/sdext_plug/sdext_plug.h	2005-03-26 17:18:02.400639688 -0800
+@@ -14,14 +14,14 @@
+ struct sdext_plug_slot {
+         d16_t member;
+         d16_t plug;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_plug_slot sdext_plug_slot_t;
+ 
+ struct sdext_plug {
+         d16_t count;
+         sdext_plug_slot_t slot[0];
+-}  __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_plug sdext_plug_t;
+ 
+--- orig/plugin/sdext/sdext_unix/sdext_unix.h	2005-03-26 16:52:17.120557968 -0800
++++ reiser4progs-1.0.4/plugin/sdext/sdext_unix/sdext_unix.h	2005-03-26 17:18:12.969033048 -0800
+@@ -20,7 +20,7 @@
+ 		d64_t rdev;
+ 		d64_t bytes;
+ 	} u;
+-} __attribute__((packed));
++} PACKED;
+ 
+ typedef struct sdext_unix sdext_unix_t;
+ 

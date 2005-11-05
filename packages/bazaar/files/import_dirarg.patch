@@ -1,0 +1,53 @@
+--- bazaar-1.2.orig/src/baz/tests/test-import-baz.sh
++++ bazaar-1.2/src/baz/tests/test-import-baz.sh
+@@ -23,7 +23,9 @@
+ tla init-tree --nested jane@example.com--2003/hello-world--mainline--1.0
+ tla id-tagging-method explicit
+ tla add hello-world.c README
+-tla import -L 'initial import'
++cd ..
++tla import -d hello-world--mainline--1.0 -L 'initial import'
++cd hello-world--mainline--1.0
+ tla categories -A jane@example.com--2003 >&2
+ test "$(tla categories -A jane@example.com--2003)" = "hello-world"
+ test "$(tla branches jane@example.com--2003/hello-world)" = "hello-world--mainline"
+--- bazaar-1.2.orig/src/baz/commands/import.c
++++ bazaar-1.2/src/baz/commands/import.c
+@@ -32,7 +32,7 @@
+ 
+ 
+ 
+-static t_uchar * usage = N_("[options] [directory] [archive]/version");
++static t_uchar * usage = N_("[options] [directory] [[archive]/version]");
+ 
+ #define OPTS(OP) \
+   OP (opt_help_msg, "h", "help", 0, \
+@@ -42,12 +42,14 @@
+   OP (opt_version, "V", "version", 0, \
+       N_("Display a release identifier string\n" \
+       "and exit.")) \
++  OP (opt_dir, "d", "dir DIR", 1, \
++      N_("Change to DIR first.")) \
+   OP (opt_log, "l", "log FILE", 1, \
+       N_("Commit with log file FILE.")) \
+   OP (opt_summary, "s", "summary TEXT", 1, \
+       N_("log with summary TEXT plus log-for-merge output") ) \
+   OP (opt_automatic, "a", "automatic", 0, \
+-      N_("Initialise dir as a working tree, add all source-looking files in dir and import.") ) \
++      N_("Initialise dir as a working tree, add all source-looking files in dir and import. This requires version to operate.") ) \
+   OP (opt_log_msg, "L", "log-message TEXT", 1, \
+       N_("log with TEXT"))
+ 
+@@ -157,6 +159,12 @@
+           safe_printfmt (2, "ill-formed argument for `%s' (`%s')\n", option->opt_string, option->arg_string);
+           goto usage_error;
+ 
++	case opt_dir:
++	  {
++	    automatic = 0;
++	    break;
++	  }
++
+         case opt_log:
+           {
+             log_file = str_save (0, option->arg_string);

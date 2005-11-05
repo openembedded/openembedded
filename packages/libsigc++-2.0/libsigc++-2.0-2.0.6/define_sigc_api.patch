@@ -1,0 +1,12 @@
+--- libsigc++-2.0.6/configure.ac.old	2005-01-21 16:05:45.000000000 +0100
++++ libsigc++-2.0.6/configure.ac	2005-01-21 16:07:35.000000000 +0100
+@@ -74,6 +74,9 @@
+ SIGC_CXX_GCC_TEMPLATE_SPECIALIZATION_OPERATOR_OVERLOAD()
+ SIGC_CXX_MSVC_TEMPLATE_SPECIALIZATION_OPERATOR_OVERLOAD()
+ 
++dnl FIXME Define this here since it does not seem to be defined elsewhere
++AC_DEFINE(SIGC_API, [], [Empty specifier])
++
+ if test "X$config_error" = "Xyes" ; then
+   AC_ERROR(
+ [One or more of the required compiler features is missing.

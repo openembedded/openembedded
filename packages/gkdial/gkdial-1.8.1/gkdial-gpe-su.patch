@@ -1,0 +1,22 @@
+--- gkdial-1.8.1.orig/src/util.c	2003-06-27 22:30:29.000000000 +0200
++++ gkdial-1.8.1/src/util.c	2004-06-18 16:57:43.000000000 +0200
+@@ -336,13 +336,13 @@
+   gint a;
+   pid_t pid;
+   gchar **command;
++  gchar *fcmd = g_strdup_printf("%s > /dev/null 2>&1",cmd);
+ 
+-  command = g_malloc (sizeof (gchar *) * 5);
+-  command[0] = g_strdup ("/usr/bin/gksu");
+-  command[1] = g_strdup ("-m");
+-  command[2] = g_strdup (msg);
+-  command[3] = g_strdup (cmd);
+-  command[4] = NULL;
++  command = g_malloc (sizeof (gchar *) * 4);
++  command[0] = g_strdup (PREFIX "/bin/gpe-su");
++  command[1] = g_strdup ("-c");
++  command[2] = fcmd;
++  command[3] = NULL;
+ 
+   pid = fork ();
+   if (pid == 0)

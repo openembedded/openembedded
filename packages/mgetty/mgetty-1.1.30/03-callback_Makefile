@@ -1,0 +1,20 @@
+--- mgetty-1.1.27.orig/callback/Makefile
++++ mgetty-1.1.27/callback/Makefile
+@@ -5,7 +5,7 @@
+ #
+ 
+ CC=gcc
+-CFLAGS=-O2 -I.. -g
++CFLAGS=-O2 -I..
+ 
+ zigzag:
+ 	cd .. ; $(MAKE) call-back
+@@ -40,7 +40,7 @@
+ # install programs
+ #
+ install: all
+-	$(INSTALL) -s -m 700 -o root callback $(SBINDIR)
++	$(INSTALL) -s -m 755 -o root callback $(SBINDIR)
+ 	$(INSTALL) -s -m 4711 -o root ct $(BINDIR)
+ 
+ # source modules

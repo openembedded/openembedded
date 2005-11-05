@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ewl-0.0.4.003/configure.in~fix-configure
++++ ewl-0.0.4.003/configure.in
+@@ -13,7 +13,6 @@
+ AC_C_CONST
+ AM_ENABLE_SHARED
+ AM_PROG_LIBTOOL
+-AC_C___ATTRIBUTE__
+ 
+ dnl Check for Solaris or other OS
+ case "$host" in

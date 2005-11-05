@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment=nmapfe for the QPE environment
+Exec=qpenmapfe
+Icon=qpenmapfe
+Type=Application
+Name=qpenmapfe

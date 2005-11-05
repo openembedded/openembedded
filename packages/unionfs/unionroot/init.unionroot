@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH=/usr/bin:/usr/sbin:/bin:/sbin
+INIT=/sbin/init.sysvinit
+ROOTBACKUP=/media/realroot
+UNION=/media/union
+
+if ! which unionctl; then
+	echo >&2 "ERROR: Package unionfs-utils not installed!"
+	exec ${INIT} $@
+fi
+
+# For shutdown
+if ! [ -z "$@" ]; then
+	exec ${INIT} $@
+fi
+
+mount.busybox /proc
+insmod /lib/modules/`uname -r`/kernel/fs/unionfs.o
+mount.busybox -t unionfs -o dirs=/.=rw,setattr=all none ${UNION}
+umount.busybox /proc
+
+cd ${UNION}
+pivot_root . ./${ROOTBACKUP}
+exec chroot . ${INIT}

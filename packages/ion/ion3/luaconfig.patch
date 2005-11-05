@@ -1,0 +1,27 @@
+--- tmp/work/arm-linux/ion3-0.0+ds20041104-r0/ion-3ds-20041104/configure.ac	2004-11-04 08:55:55.000000000 -0600
++++ ion-3ds-20041104/configure.ac	2004-12-28 13:47:05.000000000 -0600
+@@ -204,11 +185,15 @@
+ fi
+ dnl }}}
+ 
++AC_PATH_PROG([LUACONFIG], [lua$with_lua_suffix-config], [], [$lua_search_path])
++
+ dnl LUA_INCLUDES {{{
+ if test "x$with_lua_includes" != x; then
+     LUA_INCLUDES="-I$with_lua_includes"
+ elif test "x$with_lua_prefix" != x; then
+     LUA_INCLUDES="-I$with_lua_prefix/include"
++elif test "x$LUACONFIG" != x; then
++	LUA_INCLUDES="`lua-config --includes`"
+ fi
+ save_CFLAGS="$CFLAGS"
+ CFLAGS="$CFLAGS $LUA_INCLUDES"
+@@ -221,6 +206,8 @@
+     LUA_LIBS="-L$with_lua_libraries"
+ elif test "x$with_lua" != x; then
+     LUA_LIBS="-L$with_lua_prefix/lib"
++elif test "x$LUACONFIG" != x; then
++	LUA_LIBS="`lua-config --libs`"
+ fi
+ AC_CHECK_LIB([lua$with_lua_suffix],
+              [lua_open],

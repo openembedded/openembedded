@@ -1,0 +1,24 @@
+*** omniORB-4.0.5/src/dir.mk    2002-02-18 06:58:54.000000000 -0500
+--- omniORB-4.0.5.new/src/dir.mk        2005-03-23 09:11:04.585121450 -0500
+***************
+*** 12,20 ****
+
+  SUBDIRS += lib
+
+! ifndef EmbeddedSystem
+  SUBDIRS += appl services
+! endif
+
+  all::
+        @echo
+--- 12,20 ----
+
+  SUBDIRS += lib
+
+! #ifndef EmbeddedSystem
+  SUBDIRS += appl services
+! #endif
+
+  all::
+        @echo
+

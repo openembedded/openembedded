@@ -1,0 +1,57 @@
+diff -urNd ../gpe-mixer-0.32-r0/gpe-mixer-0.32/Makefile gpe-mixer-0.32/Makefile
+--- ../gpe-mixer-0.32-r0/gpe-mixer-0.32/Makefile	2004-08-03 03:31:33.000000000 +0100
++++ gpe-mixer-0.32/Makefile	2004-08-03 13:00:42.000000000 +0100
+@@ -1,6 +1,6 @@
+ PREFIX = /usr
+ PACKAGE = gpe-mixer
+-DEBUG = yes
++DEBUG = no
+ CVSBUILD = no
+ GST = yes
+ VERSION = 0.32
+@@ -8,26 +8,26 @@
+ MEMBERS = gpe-mixer
+ 
+ GTKCFLAGS = `pkg-config --cflags gtk+-2.0` -DGTK_DISABLE_DEPRECATED
+-GTKLDFLAGS += -L/skiff/local/arm-linux/lib/X11 `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext -lXinerama
++GTKLDFLAGS += -L/skiff/local/arm-linux/lib/X11 `pkg-config --libs gtk+-2.0` -lX11 -lXrender -lXext
+ 
+-CFLAGS = $(GTKCFLAGS) -DUSE_GPE -D_GNU_SOURCE -Wall
++PACKAGE_CFLAGS = $(GTKCFLAGS) -DUSE_GPE -D_GNU_SOURCE -Wall
+ ifeq ($(DEBUG),yes)
+-CFLAGS += -O2 -g
+-LDFLAGS = -g #-lefence
++PACKAGE_CFLAGS += -O2 -g
++PACKAGE_LDFLAGS = -g #-lefence
+ else
+-CFLAGS += -Os -fomit-frame-pointer
++PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+-CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
++PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ ifeq ($(CVSBUILD),yes)
+-CFLAGS += -I../libgpewidget
+-LDFLAGS += -L../libgpewidget
++PACKAGE_CFLAGS += -I../libgpewidget
++PACKAGE_LDFLAGS += -L../libgpewidget
+ BUILD = ../build
+ else
+-CFLAGS += -I/usr/include/gpe
++PACKAGE_CFLAGS += -I/usr/include/gpe
+ BUILD = build
+ endif
+-LDFLAGS += -lgpewidget $(GTKLDFLAGS)
++PACKAGE_LDFLAGS += -lgpewidget $(GTKLDFLAGS)
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ SOURCES = $(patsubst %,%.c,$(MEMBERS))
+@@ -35,7 +35,7 @@
+ all: $(PACKAGE)
+ 
+ $(PACKAGE): $(OBJS) $(LIB)
+-	$(CC) -o $@ $^ $(LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all $(PACKAGE).desktop
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin

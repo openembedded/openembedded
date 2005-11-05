@@ -1,0 +1,13 @@
+--- linux/include/asm-arm/processor.h.orig	2005-04-22 16:17:14.240797608 +0100
++++ linux/include/asm-arm/processor.h	2005-04-22 16:18:16.671306728 +0100
+@@ -46,6 +46,10 @@
+ #include <asm/proc/processor.h>
+ #include <asm/types.h>
+ 
++/*
++ * Evil hack because the Embedix 2.95 defines this which breaks things. JMD.
++ */
++#undef arm
+ union debug_insn {
+ 	u32	arm;
+ 	u16	thumb;

@@ -1,0 +1,31 @@
+*** omniORB-4.0.5/mk/beforeauto.mk.in   2004-10-17 20:44:56.000000000 -0400
+--- omniORB-4.0.5.new/mk/beforeauto.mk.in       2005-03-21 12:33:05.756947025 -0500
+***************
+*** 48,59 ****
+  #
+  # Tool bindir to use depends on make target
+  #
+  ifeq ($(MAKECMDGOALS),install)
+    TOOLBINDIR = $(INSTALLBINDIR)
+  else
+    TOOLBINDIR = $(TOP)/$(BINDIR)
+  endif
+!
+
+  #############################################################################
+  #
+--- 48,60 ----
+  #
+  # Tool bindir to use depends on make target
+  #
++ ifndef TOOLBINDIR
+  ifeq ($(MAKECMDGOALS),install)
+    TOOLBINDIR = $(INSTALLBINDIR)
+  else
+    TOOLBINDIR = $(TOP)/$(BINDIR)
+  endif
+! endif
+
+  #############################################################################
+  #
+

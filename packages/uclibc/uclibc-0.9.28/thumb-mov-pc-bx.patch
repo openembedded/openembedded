@@ -1,0 +1,173 @@
+# This patch changes all cases where the ARM assembler mov pc,rx
+# instructions are used to ensure that the thumb/arm interwork change of
+# process more works - in essence mov pc,rx needs to become bx rc.
+#
+# The ldr pc or ldm rx, {pc} instructions are not changed - this is
+# fine on ARM >=v5 but will fail to restore thumb mode on ARM v4T,
+# i.e. this code will not provide support for thumb on ARM v4T.
+#
+# One mov pc is left in resolve.S, this is fixed in a different patch -
+# thumb-resolve.patch
+#
+# The changes are protected by __THUMB_INTERWORK__ - the original
+# mov instruction will work on newer architectures and is required on
+# arch v4 (not v4t) and earlier - those which did not support thumb -
+# so this is safe.  See gcc lib1asmfuncs for a more exact test.
+#
+--- uClibc-0.9.28/.pc/thumb-mov-pc-bx.patch/ldso/ldso/arm/dl-startup.h	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/ldso/ldso/arm/dl-startup.h	2005-09-16 23:38:34.266546180 -0700
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2000-2004 by Erik Andersen <andersen@codepoet.org>
+  */
+ 
++#if defined(__arm__)
+ asm(
+     "	.text\n"
+     "	.globl	_start\n"
+@@ -40,7 +41,11 @@
+ 	"	ldr	r0, .L_FINI_PROC\n"
+ 	"	ldr	r0, [sl, r0]\n"
+ 	"	@ jump to the user_s entry point\n"
++#if defined(__THUMB_INTERWORK__)
++	"	bx	r6\n"
++#else
+ 	"	mov	pc, r6\n"
++#endif
+ 	".L_GET_GOT:\n"
+ 	"	.word	_GLOBAL_OFFSET_TABLE_ - .L_GOT_GOT - 4\n"
+ 	".L_SKIP_ARGS:\n"
+@@ -51,6 +56,70 @@
+     "	.size	_start,.-_start\n"
+ 	".previous\n"
+ );
++#else
++asm(
++    "	.text\n"
++    "	.arm\n"
++    "	.globl	_start\n"
++    "	.type	_start,%function\n"
++	"_start:\n"
++	"	@ dumb: can't persuade the linker to make the start address\n"
++	"	@ odd, so use an arm function and change to thumb (_dl_start\n"
++	"	@ is thumb)\n"
++	"	adr	r0, __dl_thumb_start+1\n"
++	"	bx	r0\n"
++	"\n\n"
++    "	.thumb\n"
++    "	.globl	__dl_thumb_start\n"
++    "	.thumb_func\n"
++    "	.type	__dl_thumb_start,%function\n"
++	"__dl_thumb_start:\n"
++	"	@ at start time, all the args are on the stack\n"
++	"	mov	r0, sp\n"
++	"	bl	_dl_start\n"
++	"	@ returns user entry point in r0\n"
++	"	mov	r6, r0\n"
++	"	@ we are PIC code, so get global offset table\n"
++	"	ldr	r7, .L_GET_GOT\n"
++	".L_GOT_GOT:\n"
++	"	add	r7, pc\n"
++	"	@ See if we were run as a command with the executable file\n"
++	"	@ name as an extra leading argument.\n"
++	"	ldr	r4, .L_SKIP_ARGS\n"
++	"	ldr	r4, [r7, r4]\n"
++	"	@ get the original arg count\n"
++	"	ldr	r1, [sp]\n"
++	"	@ subtract _dl_skip_args from it\n"
++	"	sub	r1, r1, r4\n"
++	"	@ adjust the stack pointer to skip them\n"
++	"	lsl	r4, r4, #2\n"
++	"	add	sp, r4\n"
++	"	@ get the argv address\n"
++	"	add	r2, sp, #4\n"
++	"	@ store the new argc in the new stack location\n"
++	"	str	r1, [sp]\n"
++	"	@ compute envp\n"
++	"	lsl	r3, r1, #2\n"
++	"	add	r3, r3, r2\n"
++	"	add	r3, #4\n"
++	"\n\n"
++	"	@ load the finalizer function\n"
++	"	ldr	r0, .L_FINI_PROC\n"
++	"	ldr	r0, [r7, r0]\n"
++	"	@ jump to the user_s entry point\n"
++	"	bx	r6\n"
++	"\n\n"
++	".L_GET_GOT:\n"
++	"	.word	_GLOBAL_OFFSET_TABLE_ - .L_GOT_GOT - 4\n"
++	".L_SKIP_ARGS:\n"
++	"	.word	_dl_skip_args(GOTOFF)\n"
++	".L_FINI_PROC:\n"
++	"	.word	_dl_fini(GOT)\n"
++	"\n\n"
++    "	.size	_start,.-_start\n"
++	".previous\n"
++);
++#endif
+ 
+ 
+ /* Get a pointer to the argv array.  On many platforms this can be just
+--- uClibc-0.9.28/.pc/thumb-mov-pc-bx.patch/ldso/ldso/arm/dl-sysdep.h	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/ldso/ldso/arm/dl-sysdep.h	2005-09-07 20:10:35.923583424 -0700
+@@ -85,7 +85,19 @@
+ 	extern void __dl_start asm ("_dl_start");
+ 	Elf32_Addr got_addr = (Elf32_Addr) &__dl_start;
+ 	Elf32_Addr pcrel_addr;
++#if !defined(__thumb__)
++	/* On thumb this has to be two instructions because
++	 * the offset is negative.
++	 */
+ 	asm ("adr %0, _dl_start" : "=r" (pcrel_addr));
++#else
++	/* This is dumb, gcc should support a thumb adrl
++	 * but it doesn't, so this is the same thing the
++	 * hard way.  If this code moves too far from _dl_start
++	 * it will fail.
++	 */
++	asm ("adr\t%0, 1f\n1:\tsub\t%0, #1b-_dl_start\n" : "=r" (pcrel_addr));
++#endif
+ 	return pcrel_addr - got_addr;
+ }
+ 
+--- uClibc-0.9.28/.pc/thumb-mov-pc-bx.patch/libc/sysdeps/linux/arm/clone.S	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/clone.S	2005-09-08 09:36:24.801986529 -0700
+@@ -51,7 +51,11 @@
+ 	swi	__NR_clone
+ 	movs	a1, a1
+ 	blt	__error
+-	movne    pc, lr
++#if defined(__THUMB_INTERWORK__)
++	bxne	lr
++#else
++	movne	pc, lr
++#endif
+ 
+ 	@ pick the function arg and call address off the stack and execute
+ 	ldr	r0, [sp, #4]
+--- uClibc-0.9.28/.pc/thumb-mov-pc-bx.patch/libc/sysdeps/linux/arm/vfork.S	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/vfork.S	2005-09-08 09:51:13.377901086 -0700
+@@ -34,7 +34,11 @@
+ #ifdef __NR_vfork
+ 	swi	__NR_vfork
+ 	cmn	r0, #4096
++#if defined(__THUMB_INTERWORK__)
++	bxcc	lr
++#else
+ 	movcc	pc, lr
++#endif
+ 
+ 	/* Check if vfork even exists.  */
+ 	ldr     r1, =-ENOSYS
+@@ -47,7 +51,11 @@
+ 	cmn     r0, #4096
+ 
+ 	/* Syscal worked.  Return to child/parent */
+-	movcc   pc, lr
++#if defined(__THUMB_INTERWORK__)
++	bxcc	lr
++#else
++	movcc	pc, lr
++#endif
+ 
+ __error:
+ 	b	__syscall_error

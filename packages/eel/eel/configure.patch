@@ -1,0 +1,42 @@
+--- eel-2.6.1/configure.in	2004-04-19 03:54:15.000000000 -0700
++++ eel-2.6.1.new/configure.in	2004-11-12 17:48:40.272719976 -0700
+@@ -87,21 +87,25 @@
+ dnl ===========================================================================
+ 
+ dnl strftime checks
++dnl grrrr...  this doesn't work for cross compiling
++dnl define it for OE
+ 
+-AC_TRY_RUN([#include <time.h>
+-                int main ()
+-                {
+-                  char buf[100];
+-                  struct tm tm = {0};
+-                  tm.tm_year = 99;
+-                  if (strftime(buf, 100, "%EY", &tm) == 4 &&
+-		      strcmp (buf, "1999")==0)
+-                    return 0;
+-                  return 1;
+-                }
+-            ],
+-	    AC_DEFINE(HAVE_STRFTIME_EXTENSION, 1, [Define if strftime supports %E and %O modifiers.])
+-            )
++AC_DEFINE(HAVE_STRFTIME_EXTENSION, 1, [Define if strftime supports %E and %O modifiers.])
++dnl            )
++dnl AC_TRY_RUN([#include <time.h>
++dnl                int main ()
++dnl                {
++dnl                  char buf[100];
++dnl                  struct tm tm = {0};
++dnl                  tm.tm_year = 99;
++dnl                  if (strftime(buf, 100, "%EY", &tm) == 4 &&
++dnl		      strcmp (buf, "1999")==0)
++dnl                    return 0;
++dnl                  return 1;
++dnl                }
++dnl            ],
++dnl	    AC_DEFINE(HAVE_STRFTIME_EXTENSION, 1, [Define if strftime supports %E and %O modifiers.])
++dnl            )
+ 
+ dnl ===========================================================================
+ 

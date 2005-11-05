@@ -1,0 +1,11 @@
+!
+! pmacctd configuration for eth0
+!
+promisc: false
+interface: eth0
+daemonize: true
+aggregate[in]: dst_host
+aggregate[out]: src_host
+plugins: memory[in], memory[out]
+imt_path[in]: /var/run/pmacct-eth0-in.pipe
+imt_path[out]: /var/run/pmacct-eth0-out.pipe

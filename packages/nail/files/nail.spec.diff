@@ -1,0 +1,11 @@
+--- nail-11.21/nail.spec.orig	2005-08-11 16:57:23.893061048 +0200
++++ nail-11.21/nail.spec	2005-08-11 16:57:35.244335392 +0200
+@@ -38,7 +38,7 @@
+ %define	sysconfdir	/etc
+ %define	mailrc		%{sysconfdir}/nail.rc
+ %define	mailspool	/var/mail
+-%define	sendmail	/usr/lib/sendmail
++%define	sendmail	/usr/sbin/sendmail
+ %define	ucbinstall	install
+ %define	cflags		-O2 -fomit-frame-pointer
+ %define	cppflags	-D_GNU_SOURCE

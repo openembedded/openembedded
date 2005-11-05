@@ -1,0 +1,261 @@
+--- Linux-PAM-0.79/.pc/ac-define.patch/configure.in	2005-03-30 06:32:52.000000000 -0800
++++ Linux-PAM-0.79/configure.in	2005-04-15 00:14:58.514541928 -0700
+@@ -13,8 +13,8 @@
+ 
+ AC_SUBST(LIBPAM_VERSION_MAJOR)
+ AC_SUBST(LIBPAM_VERSION_MINOR)
+-AC_DEFINE(LIBPAM_VERSION_MAJOR)
+-AC_DEFINE(LIBPAM_VERSION_MINOR)
++AC_DEFINE_UNQUOTED(LIBPAM_VERSION_MAJOR, $LIBPAM_VERSION_MAJOR, [libpam major version number])
++AC_DEFINE_UNQUOTED(LIBPAM_VERSION_MINOR, $LIBPAM_VERSION_MINOR, [libpam minor version number])
+ 
+ dnl
+ dnl By default, everything under PAM is installed under the root fs.
+@@ -28,8 +28,6 @@
+ dnl
+ LOCALSRCDIR=`/bin/pwd`         ; AC_SUBST(LOCALSRCDIR)
+ LOCALOBJDIR=`/bin/pwd`         ; AC_SUBST(LOCALOBJDIR)
+-OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+-AC_SUBST(OS)
+ 
+ dnl
+ dnl Rules needed for the following (hardcoded Linux defaults for now)
+@@ -45,7 +43,16 @@
+ USESONAME=yes			; AC_SUBST(USESONAME)
+ SOSWITCH="-Wl,-soname -Wl,"	; AC_SUBST(SOSWITCH)
+ NEEDSONAME=yes			; AC_SUBST(NEEDSONAME)
+-LDCONFIG=/sbin/ldconfig		; AC_SUBST(LDCONFIG)
++
++dnl Cross compiling requires no ldconfig, as the library will not be used here.
++if test "$cross_compiling" = yes ; then
++	LDCONFIG=:
++else
++	LDCONFIG=/sbin/ldconfig
++fi
++AC_SUBST(LDCONFIG)
++MV=mv
++AC_SUBST(MV)
+ 
+ dnl Checks for programs.
+ AC_PROG_CC
+@@ -63,24 +70,24 @@
+ dnl lots of debugging information goes to /tmp/pam-debug.log
+ AC_ARG_ENABLE(debug,
+ [  --enable-debug           specify you are building with debugging on],
+-	WITH_DEBUG=yes ; AC_DEFINE(DEBUG) , WITH_DEBUG=no)
++	WITH_DEBUG=yes ; AC_DEFINE(DEBUG, 1, [lots of stuff gets written to /tmp/pam-debug.log]) , WITH_DEBUG=no)
+ AC_SUBST(WITH_DEBUG)
+ 
+ AC_ARG_ENABLE(memory-debug,
+ [  --enable-memory-debug    specify you want every malloc etc. call tracked],
+-	WITH_MEMORY_DEBUG=yes ; AC_DEFINE(MEMORY_DEBUG) , WITH_MEMORY_DEBUG=no)
++	WITH_MEMORY_DEBUG=yes ; AC_DEFINE(MEMORY_DEBUG, 1, [track all memory allocations and liberations]) , WITH_MEMORY_DEBUG=no)
+ AC_SUBST(WITH_MEMORY_DEBUG)
+ 
+ dnl build specially named libraries (for debugging purposes)
+ AC_ARG_ENABLE(libdebug,
+ [  --enable-libdebug        specify you are building debugging libraries],
+-	WITH_LIBDEBUG=yes ; AC_DEFINE(WITH_LIBDEBUG) , WITH_LIBDEBUG=no)
++	WITH_LIBDEBUG=yes ; AC_DEFINE(WITH_LIBDEBUG, 1, [build libraries with different names (suffixed with 'd')]) , WITH_LIBDEBUG=no)
+ AC_SUBST(WITH_LIBDEBUG)
+ 
+ dnl have prelude support
+ AC_ARG_ENABLE(prelude,
+ [  --enable-prelude         build prelude ids support],
+-        WITH_PRELUDE=yes ; AC_DEFINE(WITH_PRELUDE), WITH_PRELUDE=no)
++        WITH_PRELUDE=yes ; AC_DEFINE(WITH_PRELUDE, 1, [build prelude ids support]), WITH_PRELUDE=no)
+ AC_SUBST(WITH_PRELUDE)
+ 
+ dnl packaging convenience
+@@ -128,16 +135,16 @@
+ 
+ AC_ARG_ENABLE(pamlocking,
+ [  --enable-pamlocking      configure libpam to observe a global authentication lock],
+-	WITH_PAMLOCKING=yes ; AC_DEFINE(PAM_LOCKING) , WITH_PAMLOCKING=no)
++	WITH_PAMLOCKING=yes ; AC_DEFINE(PAM_LOCKING, 1, [provide a global locking facility within libpam]) , WITH_PAMLOCKING=no)
+ AC_SUBST(WITH_PAMLOCKING)
+ 
+ AC_ARG_ENABLE(uglyhack,
+ [  --enable-uglyhack        configure libpam to try to honor old pam_strerror syntax],
+-	AC_DEFINE(UGLY_HACK_FOR_PRIOR_BEHAVIOR_SUPPORT))
++	AC_DEFINE(UGLY_HACK_FOR_PRIOR_BEHAVIOR_SUPPORT, 1, [ugly hack to partially support old pam_strerror syntax]))
+ 
+ AC_ARG_ENABLE(read-both-confs,
+ [  --enable-read-both-confs  read both /etc/pam.d and /etc/pam.conf files],
+-	AC_DEFINE(PAM_READ_BOTH_CONFS))
++	AC_DEFINE(PAM_READ_BOTH_CONFS, 1, [read both confs - read /etc/pam.d and /etc/pam.conf in serial]))
+ AC_SUBST(PAM_READ_BOTH_CONFS)
+ 
+ AC_ARG_ENABLE(static-libpam, [  --enable-static-libpam   build a libpam.a library],
+@@ -182,7 +189,7 @@
+ pam_mail_spool="\"/var/spool/mail\"",
+ pam_mail_spool="\"/var/spool/mail\"")
+ fi
+-AC_DEFINE_UNQUOTED(PAM_PATH_MAILDIR, $pam_mail_spool)
++AC_DEFINE_UNQUOTED(PAM_PATH_MAILDIR, $pam_mail_spool, [location of the mail spool directory])
+ 
+ dnl Checks for libraries.
+ AC_CHECK_LIB(c, __libc_sched_setscheduler, PAM_NEEDS_LIBC=, PAM_NEEDS_LIBC=-lc)
+@@ -200,47 +207,50 @@
+ dnl At least on Solaris, the existing libcrack must be dynamic.
+ dnl Ought to introduce a check for this.
+ dnl
+-AC_CHECK_LIB(crack, FascistCheck, HAVE_LIBCRACK=yes ; AC_DEFINE(HAVE_LIBCRACK),
++AC_CHECK_LIB(crack, FascistCheck, HAVE_LIBCRACK=yes ; AC_DEFINE(HAVE_LIBCRACK, 1, [we have libcrack available]),
+ 	HAVE_LIBCRACK=no)
+ AC_SUBST(HAVE_LIBCRACK)
+ 
+-AC_CHECK_LIB(crypt, crypt, HAVE_LIBCRYPT=yes ; AC_DEFINE(HAVE_LIBCRYPT),
++AC_CHECK_LIB(crypt, crypt, HAVE_LIBCRYPT=yes ; AC_DEFINE(HAVE_LIBCRYPT, 1, [we have libcrypt - its not part of libc (do we need both definitions?)]),
+ 	HAVE_LIBCRYPT=no)
+ AC_SUBST(HAVE_LIBCRYPT)
+-AC_CHECK_LIB(util, logwtmp, HAVE_LIBUTIL=yes ; AC_DEFINE(HAVE_LIBUTIL),
++AC_CHECK_LIB(util, logwtmp, HAVE_LIBUTIL=yes ; AC_DEFINE(HAVE_LIBUTIL, 1, [we have libutil]),
+ 	HAVE_LIBUTIL=no)
+ AC_SUBST(HAVE_LIBUTIL)
+-AC_CHECK_LIB(ndbm, dbm_store, HAVE_LIBNDBM=yes ; AC_DEFINE(HAVE_LIBNDBM),
++AC_CHECK_LIB(ndbm, dbm_store, HAVE_LIBNDBM=yes ; AC_DEFINE(HAVE_LIBNDBM, 1, [we have libndbm]),
+ 	HAVE_LIBNDBM=no)
+ AC_SUBST(HAVE_LIBNDBM)
+-AC_CHECK_LIB(db, dbm_store, HAVE_LIBDB=yes ; AC_DEFINE(HAVE_LIBDB),
++AC_CHECK_LIB(db, dbm_store, HAVE_LIBDB=yes ; AC_DEFINE(HAVE_LIBDB, 1, [we have libdb]),
+ 	HAVE_LIBDB=no)
+ if test x$HAVE_LIBDB != xyes ; then
+ 	AC_CHECK_LIB(db, db_create, HAVE_LIBDB=yes ; AC_DEFINE(HAVE_LIBDB),
+ 	HAVE_LIBDB=no)
+ fi
+ AC_SUBST(HAVE_LIBDB)
+-AC_CHECK_LIB(fl, yylex, yyterminate, HAVE_LIBFL=yes ; AC_DEFINE(HAVE_LIBFL),
++AC_CHECK_LIB(fl, yylex, yyterminate, HAVE_LIBFL=yes ; AC_DEFINE(HAVE_LIBFL, 1, [have libfl (Flex)]),
+ 	HAVE_LIBFL=no)
+ AC_SUBST(HAVE_LIBFL)
+-AC_CHECK_LIB(nsl, yp_maplist, HAVE_LIBNSL=yes ; AC_DEFINE(HAVE_LIBNSL),
++AC_CHECK_LIB(nsl, yp_maplist, HAVE_LIBNSL=yes ; AC_DEFINE(HAVE_LIBNSL, 1, [have libnsl - instead of libc support]),
+ 	HAVE_LIBNSL=no)
+ AC_SUBST(HAVE_LIBNSL)
+ 
+ if test $HAVE_LIBNSL = yes ; then
+ 	pwdblibs="$pwdblibs -lnsl"
+ fi
+-AC_CHECK_LIB(pwdb, pwdb_db_name, HAVE_LIBPWDB=yes ; AC_DEFINE(HAVE_LIBPWDB),
++AC_CHECK_LIB(pwdb, pwdb_db_name, HAVE_LIBPWDB=yes ; AC_DEFINE(HAVE_LIBPWDB, 1, [have libpwdb - don't expect this to be important for much longer]),
+ 	HAVE_LIBPWDB=no,$pwdblibs)
+ AC_SUBST(HAVE_LIBPWDB)
+ unset pwdblibs
+ 
+-AC_CHECK_LIB(fl, yywrap, HAVE_LIBFLEX=yes ; AC_DEFINE(HAVE_LIBFLEX),
++AC_CHECK_LIB(fl, yywrap, HAVE_LIBFLEX=yes ; AC_DEFINE(HAVE_LIBFLEX, 1, [have libflex]),
+ 	HAVE_LIBFLEX=no)
+ AC_SUBST(HAVE_LIBFLEX)
+-AC_CHECK_LIB(l, yywrap, HAVE_LIBLEX=yes ; AC_DEFINE(HAVE_LIBLEX),
++AC_CHECK_LIB(l, yywrap, HAVE_LIBLEX=yes ; AC_DEFINE(HAVE_LIBLEX, 1, [have liblex]),
+ 	HAVE_LIBLEX=no)
+ AC_SUBST(HAVE_LIBLEX)
++AC_CHECK_LIB(cap, capget, HAVE_LIBCAP=yes ; AC_DEFINE(HAVE_LIBCAP, 1, [have libcap (POSIX 1003.e capabilities)]),
++	HAVE_LIBCAP=no)
++AC_SUBST(HAVE_LIBCAP)
+ 
+ dnl Checks for header files.
+ AC_HEADER_DIRENT
+@@ -308,44 +318,38 @@
+ 	-Wnested-externs -Winline -Wshadow"
+ 
+ if test "$GCC" = yes; then
+-	CC=gcc				; AC_SUBST(CC)
+ ### May need per-OS attention
+ ### Example: -D_POSIX_SOURCE: needed on Linux but harms Solaris.
+-	case $OS in
+-	linux)
++	case "$target_alias" in
++	*linux)
++		OS="linux"
+ 		OS_CFLAGS=
+ 		LD_D="$CC -shared $LDFLAGS"
+ 		WARNINGS="$GCC_WARNINGS"
+ 		PIC="-fPIC"
+ 		DYNTYPE=so
+-		LD=gcc
+ 		LD_L="$CC -shared $LDFLAGS"
+-		RANLIB=:
+-		STRIP=strip
+ 		CC_STATIC="-Xlinker -export-dynamic"
+ 		;;
+-	sunos)
++	*sunos)
++		OS="sunos"
+ 		OS_CFLAGS="-ansi -pedantic"
+ 		LD_D="gcc -shared -Xlinker -x"
+ 		WARNINGS="$GCC_WARNINGS"
+ 		PIC="-fPIC"
+ 		DYNTYPE=so
+-		LD=ld
+ 		LD_L="$LD -x -shared"
+-		RANLIB=ranlib
+-		STRIP=strip
+ 		CC_STATIC="-Xlinker -export-dynamic"
+ 		;;
+-	aix)
++	*aix)
++		OS="aix"
+ 		OS_CFLAGS=""
+ 		DYNTYPE=lo
+-		LD=ld
+ 		LD_L=ld -bexpall -bM:SRE -bnoentry
+ 		LD_D="$LD_L"
+-		RANLIB=ranlib
+-		STRIP=strip
+ 		;;
+ 	*)
++		OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+ 		OS_CFLAGS=""
+ 		;;
+ 	esac
+@@ -354,34 +358,31 @@
+ ### Non-gcc needs attention on per-OS basis
+ ###
+ 	case "$OS" in
+-	darwin)
++	*darwin)
++		OS="darwin"
+ # add some stuff here (see sourceforge bug 534205)
+ # DOCDIR=/System/Documentation/Administration/Libraries/PAM
+ # MANDIR=/usr/share/man
+ 		;;
+-	solaris)
++	*solaris)
+ 	    ### Support for Solaris-C
++		OS="solaris"
+ 	    OS_CFLAGS=""
+ 	    WARNINGS=""
+ 	    PIC="-K pic"
+-	    LD=ld
+ 	    LD_D="cc -z text -G -R."
+ 	    LD_L="$LD_D"
+-	    RANLIB=ranlib
+-	    STRIP=strip
+ 	    CC_STATIC=
+ 	    ;;
+-	irix*)
++	*irix*)
++		OS="irix"
+ 	    OSRELEASE=`uname -r`
+ 	    if test "$OSRELEASE" = 6.5; then
+ 		OS_CFLAGS=""
+ 		WARNINGS="-fullwarn"
+ 		PIC=                    #PIC code is default for IRIX
+-		LD="cc -shared"         # modules friendly approach
+ 		LD_D="cc -shared"
+ 		LD_L="ld -G -z redlocsym"
+-		RANLIB=echo
+-		STRIP=strip
+ 		CC_STATIC=
+ 	    else
+ 		echo "IRIX prior to 6.5 not allowed for"
+@@ -394,6 +395,7 @@
+        esac
+ fi
+ 
++AC_SUBST(OS)
+ AC_SUBST(DYNTYPE)
+ AC_SUBST(OS_CFLAGS)
+ AC_SUBST(WARNINGS)

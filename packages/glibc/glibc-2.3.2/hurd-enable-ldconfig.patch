@@ -1,0 +1,61 @@
+--- glibc-2.3.2.old/sysdeps/mach/hurd/configure	2003-02-25 19:46:36.000000000 -0500
++++ glibc-2.3.2/sysdeps/mach/hurd/configure	2003-04-08 17:35:13.000000000 -0400
+@@ -115,3 +115,5 @@
+ _ACEOF
+ 
+ fi
++
++use_ldconfig=yes
+--- glibc-2.3.2.old/sysdeps/mach/hurd/configure.in	2002-10-23 02:21:18.000000000 -0400
++++ glibc-2.3.2/sysdeps/mach/hurd/configure.in	2003-04-08 17:35:17.000000000 -0400
+@@ -62,3 +62,5 @@
+ fi])
+ 
+ hurd_MIG_RETCODE
++
++use_ldconfig=yes
+--- glibc-2.3.2.old/elf/ldconfig.c~ 2003-04-12 13:24:37.000000000 -0400
++++ glibc-2.3.2/elf/ldconfig.c  2003-04-12 13:25:00.000000000 -0400
+@@ -49,6 +49,10 @@
+ 
+ #define PACKAGE _libc_intl_domainname
+ 
++#ifndef PATH_MAX
++#define PATH_MAX 1024
++#endif
++
+ static const struct
+ {
+   const char *name;
+--- glibc-2.3.2.old/sysdeps/mach/hurd/dl-cache.c	2001-07-07 15:21:25.000000000 -0400
++++ glibc-2.3.2/sysdeps/mach/hurd/dl-cache.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,29 +0,0 @@
+-/* Stubby version of dl-cache; the Hurd doesn't support this "feature".
+-   Copyright (C) 1996, 1997 Free Software Foundation, Inc.
+-   This file is part of the GNU C Library.
+-
+-   The GNU C Library is free software; you can redistribute it and/or
+-   modify it under the terms of the GNU Lesser General Public
+-   License as published by the Free Software Foundation; either
+-   version 2.1 of the License, or (at your option) any later version.
+-
+-   The GNU C Library is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-   Lesser General Public License for more details.
+-
+-   You should have received a copy of the GNU Lesser General Public
+-   License along with the GNU C Library; if not, write to the Free
+-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+-   02111-1307 USA.  */
+-
+-const char *
+-_dl_load_cache_lookup (const char *name)
+-{
+-  return 0;
+-}
+-
+-void
+-_dl_unload_cache (void)
+-{
+-}

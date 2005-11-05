@@ -1,0 +1,25 @@
+--- mobile-ip6.in	2005-02-04 15:17:25.134699880 +0100
++++ mobile-ip6.in.new	2005-02-04 16:32:12.274550936 +0100
+@@ -77,7 +77,7 @@
+ 
+ case "$1" in
+     start)
+-	$LSMOD | grep $MIPV6_MODULE &>/dev/null && \
++	$LSMOD | grep $MIPV6_MODULE >/dev/null && \
+ 	    echo "$MIPV6_MODULE already installed" && exit 1
+ 
+ 	INSMOD_ARGS=
+@@ -86,11 +86,11 @@
+ 	    INSMOD_ARGS="$INSMOD_ARGS mipv6_debug=$DEBUGLEVEL"
+ 	fi
+ 
+-	$MODPROBE $MIPV6_BASE_MODULE $INSMOD_ARGS &> /dev/null
++	$MODPROBE $MIPV6_BASE_MODULE $INSMOD_ARGS > /dev/null
+ 	status=$?
+ 
+ 	if [ "$FUNCTIONALITY" = "mn" -o "$FUNCTIONALITY" = "ha" ] ; then
+-	    $MODPROBE $MIPV6_MODULE &> /dev/null
++	    $MODPROBE $MIPV6_MODULE > /dev/null
+ 	fi
+ 
+ 	action "Starting Mobile IPv6:" [ $status -eq 0 ] || exit 1

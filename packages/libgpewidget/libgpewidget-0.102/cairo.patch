@@ -1,0 +1,39 @@
+--- /tmp/gpeclockface.c	2005-08-07 22:30:20.000000000 +0200
++++ libgpewidget-0.102/gpeclockface.c	2005-08-08 10:10:09.180756032 +0200
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2003 Philip Blundell <philb@gnu.org>
++ * Copyright (C) 2003, 2005 Philip Blundell <philb@gnu.org>
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -11,6 +11,7 @@
+ 
+ #include <sys/types.h>
+ #include <stdio.h>
++#include <string.h>
+ #include <stdlib.h>
+ #include <math.h>
+ #include <string.h>
+@@ -267,7 +268,7 @@
+ 		 0,
+ 		 2 * M_PI);
+       cairo_fill (clock->cr);
+-      cairo_set_rgb_color (clock->cr, 0, 0, 0);
++      cairo_set_source_rgba (clock->cr, 0, 0, 0, 1.0);
+       cairo_arc (clock->cr,
+ 		 clock->x_offset + clock->radius,
+ 		 clock->y_offset + clock->radius,
+@@ -493,11 +494,10 @@
+   gcm = gdk_drawable_get_colormap (widget->window);
+       
+ #ifdef HAVE_CAIRO
+-  clock->cr = cairo_create ();
+   clock->surface = cairo_xlib_surface_create (dpy, GDK_WINDOW_XWINDOW (clock->backing_pixmap), 
+ 					      gdk_x11_visual_get_xvisual (gv), 0, 
+ 					      gdk_x11_colormap_get_xcolormap (gcm));
+-  cairo_set_target_surface (clock->cr, clock->surface);
++  clock->cr = cairo_create (clock->surface);
+ #else
+   clock->backing_poly_gc = gdk_gc_new (clock->backing_pixmap);
+ #endif

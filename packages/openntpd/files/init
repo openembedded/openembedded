@@ -1,0 +1,37 @@
+#! /bin/sh 
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/samba and type
+# > update-rc.d init defaults 61
+#
+
+ntpd=/usr/sbin/ntpd
+test -x "$ntpd" || exit 0
+[ ! -d /var/shared/empty ] && mkdir /var/shared/empty
+
+case "$1" in
+  start)
+    echo "Starting openntpd"
+    start-stop-daemon --start --quiet --exec $ntpd -- -s
+    ;;
+  stop)
+    echo "Stopping openntpd"
+    start-stop-daemon --stop --quiet --exec $ntpd
+    ;;
+  reload|force-reload)
+    echo "Reloading openntpd"
+    start-stop-daemon --stop --quiet --signal 1 --exec $ntpd
+    ;;
+  restart)
+    echo "Stopping openntpd"
+    start-stop-daemon --stop --quiet --exec $ntpd
+    sleep 1
+    echo "Starting openntpd"
+    start-stop-daemon --start --quiet --exec $ntpd -- -s
+    ;;
+  *)
+    echo "Usage: /etc/init.d/openntpd {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0

@@ -1,0 +1,70 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- portabase/portabase.pro~qtopia
++++ portabase/portabase.pro
+@@ -7,7 +7,7 @@
+                   portabase_zh_TW.ts
+ # determine which version to compile for
+ # options are desktop, qtopia, or sharp (add "test" for the test environment)
+-CONFIG         += desktop
++CONFIG         += qtopia
+ 
+ # Files common between all versions
+ HEADERS         = portabase.h \
+@@ -120,7 +120,7 @@
+                   metakitfuncs.cpp
+ 
+ # Stuff for all Linux/UNIX versions
+-unix:LIBS       += -lm -lmk4 -lbeecrypt -ljpeg
++unix:LIBS       += -lm -lmk4 -lbeecrypt -ljpeg -lstdc++
+ 
+ # Stuff for older Zaurus ROMs
+ qtopia:CONFIG  += zaurus
+@@ -155,44 +155,3 @@
+                       dynamicedit.cpp \
+                       inputdialog.cpp
+ 
+-# Stuff for the Qtopia test environment
+-test:TMAKE_CC   = gcc-2.95
+-test:TMAKE_CXX  = g++-2.95
+-
+-# Stuff for all desktop versions
+-desktop:CONFIG  += thread
+-desktop:HEADERS += desktop/QtaDatePicker.h \
+-                   desktop/applnk.h \
+-                   desktop/config.h \
+-                   desktop/dynamicedit.h \
+-                   desktop/filemanager.h \
+-                   desktop/fileselector.h \
+-                   desktop/helpbrowser.h \
+-                   desktop/importdialog.h \
+-                   desktop/newfiledialog.h \
+-                   desktop/oldconfig.h \
+-                   desktop/qpeapplication.h \
+-                   desktop/resource.h \
+-                   desktop/timestring.h
+-desktop:SOURCES += desktop/QtaDatePicker.cpp \
+-                   desktop/applnk.cpp \
+-                   desktop/config.cpp \
+-                   desktop/dynamicedit.cpp \
+-                   desktop/filemanager.cpp \
+-                   desktop/fileselector.cpp \
+-                   desktop/helpbrowser.cpp \
+-                   desktop/importdialog.cpp \
+-                   desktop/newfiledialog.cpp \
+-                   desktop/oldconfig.cpp \
+-                   desktop/qpeapplication.cpp \
+-                   desktop/resource.cpp \
+-                   desktop/timestring.cpp
+-
+-# Stuff for Windows
+-win32:LIBS                   += mk4vc60s.lib beecrypt.lib libjpeg.lib
+-win32:DEFINES                += QT_DLL
+-win32:RC_FILE                 = portabase.rc
+-win32:QMAKE_CXXFLAGS_RELEASE += /MD
+-win32:INCLUDEPATH            += D:\Devel\metakit-2.4.9.3\include \
+-                                D:\Devel\jpeg-6b \
+-                                D:\Devel

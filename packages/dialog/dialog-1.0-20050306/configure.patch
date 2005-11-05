@@ -1,0 +1,37 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- dialog-0.9b-20031207/configure.in~configure
++++ dialog-0.9b-20031207/configure.in
+@@ -6,6 +6,8 @@
+ AC_CONFIG_HEADER(dlg_config.h:config.hin)
+ 
+ CF_VERSION_INFO(dialog)
++AH_TEMPLATE([DIALOG_VERSION], [Define to dialog version])
++AH_TEMPLATE([DIALOG_PATCHDATE], [Define to dialog patchdate])
+ 
+ DESTDIR=
+ AC_SUBST(DESTDIR)
+@@ -146,6 +148,20 @@
+ wget_wch \
+ )
+ 
++AH_TEMPLATE([HAVE_COLOR],
++            [Define if you have the start_color function])
++AH_TEMPLATE([HAVE_FORMBOX],
++	    [Define if you want the form dialog])
++AH_TEMPLATE([HAVE_GAUGE],
++	    [Define if you want the gauge dialog])
++AH_TEMPLATE([HAVE_TAILBOX],
++	    [Define if you want the tailbox dialog])
++AH_TEMPLATE([HAVE_XDIALOG],
++	    [Define if you want Xdialog-style dialogs])
++AH_TEMPLATE([HAVE_RC_FILE],
++	    [Define if you want the config-file support])
++AH_TEMPLATE([USE_WIDE_CURSES], [Define if using wide curses])
++
+ AC_CHECK_FUNC(start_color,[AC_DEFINE(HAVE_COLOR)])
+ CF_CURSES_CHTYPE
+ CF_FUNC_WAIT

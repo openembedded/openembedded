@@ -1,0 +1,1819 @@
+diff -Nur gkdial-1.8.1.orig/gkdial.glade gkdial-1.8.1/gkdial.glade
+--- gkdial-1.8.1.orig/gkdial.glade	2003-06-27 04:33:12.000000000 +0200
++++ gkdial-1.8.1/gkdial.glade	2004-10-14 18:57:18.000000000 +0200
+@@ -2,16 +2,20 @@
+ <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
+ 
+ <glade-interface>
+-<requires lib="gnome"/>
+ 
+-<widget class="GtkWindow" id="main_window">
++<widget class="GtkWindow" id="gk_main_window">
+   <property name="border_width">1</property>
+-  <property name="title" translatable="yes">GkDial</property>
++  <property name="title" translatable="yes">Internet Dialler</property>
+   <property name="type">GTK_WINDOW_TOPLEVEL</property>
+   <property name="window_position">GTK_WIN_POS_CENTER</property>
+   <property name="modal">False</property>
+   <property name="resizable">False</property>
+   <property name="destroy_with_parent">False</property>
++  <property name="decorated">True</property>
++  <property name="skip_taskbar_hint">False</property>
++  <property name="skip_pager_hint">False</property>
++  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
++  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+ 
+   <child>
+     <widget class="GtkVBox" id="vbox4">
+@@ -27,7 +31,7 @@
+ 	  <child>
+ 	    <widget class="GtkMenuItem" id="connection1">
+ 	      <property name="visible">True</property>
+-	      <property name="label" translatable="yes">_Connection</property>
++	      <property name="label" translatable="yes">Connec_tion</property>
+ 	      <property name="use_underline">True</property>
+ 
+ 	      <child>
+@@ -40,7 +44,7 @@
+ 		      <property name="use_underline">True</property>
+ 
+ 		      <child internal-child="image">
+-			<widget class="GtkImage" id="image9">
++			<widget class="GtkImage" id="image18">
+ 			  <property name="visible">True</property>
+ 			  <property name="stock">gtk-add</property>
+ 			  <property name="icon_size">1</property>
+@@ -56,13 +60,26 @@
+ 		  <child>
+ 		    <widget class="GtkImageMenuItem" id="menu_properties">
+ 		      <property name="visible">True</property>
+-		      <property name="stock_item">GNOMEUIINFO_MENU_PROPERTIES_ITEM</property>
++		      <property name="label" translatable="yes">_Properties</property>
++		      <property name="use_underline">True</property>
+ 		      <signal name="activate" handler="on_properties1_activate" last_modification_time="Thu, 29 May 2003 18:20:35 GMT"/>
++
++		      <child internal-child="image">
++			<widget class="GtkImage" id="image19">
++			  <property name="visible">True</property>
++			  <property name="stock">gtk-preferences</property>
++			  <property name="icon_size">1</property>
++			  <property name="xalign">0.5</property>
++			  <property name="yalign">0.5</property>
++			  <property name="xpad">0</property>
++			  <property name="ypad">0</property>
++			</widget>
++		      </child>
+ 		    </widget>
+ 		  </child>
+ 
+ 		  <child>
+-		    <widget class="GtkMenuItem" id="separator1">
++		    <widget class="GtkSeparatorMenuItem" id="separator1">
+ 		      <property name="visible">True</property>
+ 		    </widget>
+ 		  </child>
+@@ -70,7 +87,20 @@
+ 		  <child>
+ 		    <widget class="GtkImageMenuItem" id="menu_quit">
+ 		      <property name="visible">True</property>
+-		      <property name="stock_item">GNOMEUIINFO_MENU_EXIT_ITEM</property>
++		      <property name="label" translatable="yes">_Quit</property>
++		      <property name="use_underline">True</property>
++
++		      <child internal-child="image">
++			<widget class="GtkImage" id="image20">
++			  <property name="visible">True</property>
++			  <property name="stock">gtk-quit</property>
++			  <property name="icon_size">1</property>
++			  <property name="xalign">0.5</property>
++			  <property name="yalign">0.5</property>
++			  <property name="xpad">0</property>
++			  <property name="ypad">0</property>
++			</widget>
++		      </child>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
+@@ -81,7 +111,8 @@
+ 	  <child>
+ 	    <widget class="GtkMenuItem" id="edit1">
+ 	      <property name="visible">True</property>
+-	      <property name="stock_item">GNOMEUIINFO_MENU_SETTINGS_TREE</property>
++	      <property name="label" translatable="yes">_Settings</property>
++	      <property name="use_underline">True</property>
+ 
+ 	      <child>
+ 		<widget class="GtkMenu" id="edit1_menu">
+@@ -89,8 +120,21 @@
+ 		  <child>
+ 		    <widget class="GtkImageMenuItem" id="menu_preferences">
+ 		      <property name="visible">True</property>
+-		      <property name="stock_item">GNOMEUIINFO_MENU_PREFERENCES_ITEM</property>
++		      <property name="label" translatable="yes">Prefere_nces</property>
++		      <property name="use_underline">True</property>
+ 		      <signal name="activate" handler="on_preferences1_activate" last_modification_time="Thu, 29 May 2003 18:20:35 GMT"/>
++
++		      <child internal-child="image">
++			<widget class="GtkImage" id="image21">
++			  <property name="visible">True</property>
++			  <property name="stock">gtk-preferences</property>
++			  <property name="icon_size">1</property>
++			  <property name="xalign">0.5</property>
++			  <property name="yalign">0.5</property>
++			  <property name="xpad">0</property>
++			  <property name="ypad">0</property>
++			</widget>
++		      </child>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
+@@ -101,15 +145,17 @@
+ 	  <child>
+ 	    <widget class="GtkMenuItem" id="help1">
+ 	      <property name="visible">True</property>
+-	      <property name="stock_item">GNOMEUIINFO_MENU_HELP_TREE</property>
++	      <property name="label" translatable="yes">_Help</property>
++	      <property name="use_underline">True</property>
+ 
+ 	      <child>
+ 		<widget class="GtkMenu" id="help1_menu">
+ 
+ 		  <child>
+-		    <widget class="GtkImageMenuItem" id="menu_about">
++		    <widget class="GtkMenuItem" id="menu_about">
+ 		      <property name="visible">True</property>
+-		      <property name="stock_item">GNOMEUIINFO_MENU_ABOUT_ITEM</property>
++		      <property name="label" translatable="yes">A_bout</property>
++		      <property name="use_underline">True</property>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
+@@ -125,6 +171,79 @@
+       </child>
+ 
+       <child>
++	<widget class="GtkToolbar" id="toolbar1">
++	  <property name="visible">True</property>
++	  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
++	  <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
++	  <property name="tooltips">True</property>
++	  <property name="show_arrow">True</property>
++
++	  <child>
++	    <widget class="GtkToolButton" id="button_connect">
++	      <property name="visible">True</property>
++	      <property name="label" translatable="yes">_Connect</property>
++	      <property name="use_underline">True</property>
++	      <property name="stock_id">gtk-yes</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">True</property>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkToolButton" id="button_preferences">
++	      <property name="visible">True</property>
++	      <property name="stock_id">gtk-preferences</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
++	      <signal name="clicked" handler="on_preferences1_activate" last_modification_time="Thu, 14 Oct 2004 16:43:57 GMT"/>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
++	      <property name="visible">True</property>
++	      <property name="draw">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">False</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkToolButton" id="button_quit">
++	      <property name="visible">True</property>
++	      <property name="stock_id">gtk-quit</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
++	  </child>
++	</widget>
++	<packing>
++	  <property name="padding">0</property>
++	  <property name="expand">False</property>
++	  <property name="fill">False</property>
++	</packing>
++      </child>
++
++      <child>
+ 	<widget class="GtkTable" id="main_table">
+ 	  <property name="visible">True</property>
+ 	  <property name="n_rows">5</property>
+@@ -138,84 +257,6 @@
+ 	      <property name="visible">True</property>
+ 	      <property name="layout_style">GTK_BUTTONBOX_DEFAULT_STYLE</property>
+ 	      <property name="spacing">0</property>
+-
+-	      <child>
+-		<widget class="GtkButton" id="button2">
+-		  <property name="visible">True</property>
+-		  <property name="can_default">True</property>
+-		  <property name="can_focus">True</property>
+-		  <property name="label">gtk-help</property>
+-		  <property name="use_stock">True</property>
+-		  <property name="relief">GTK_RELIEF_NORMAL</property>
+-		</widget>
+-	      </child>
+-
+-	      <child>
+-		<widget class="GtkButton" id="button_connect">
+-		  <property name="visible">True</property>
+-		  <property name="can_default">True</property>
+-		  <property name="has_default">True</property>
+-		  <property name="can_focus">True</property>
+-		  <property name="has_focus">True</property>
+-		  <property name="relief">GTK_RELIEF_NORMAL</property>
+-
+-		  <child>
+-		    <widget class="GtkAlignment" id="alignment12">
+-		      <property name="visible">True</property>
+-		      <property name="xalign">0.5</property>
+-		      <property name="yalign">0.5</property>
+-		      <property name="xscale">0</property>
+-		      <property name="yscale">0</property>
+-
+-		      <child>
+-			<widget class="GtkHBox" id="hbox13">
+-			  <property name="visible">True</property>
+-			  <property name="homogeneous">False</property>
+-			  <property name="spacing">0</property>
+-
+-			  <child>
+-			    <widget class="GtkImage" id="image8">
+-			      <property name="visible">True</property>
+-			      <property name="stock">gtk-yes</property>
+-			      <property name="icon_size">4</property>
+-			      <property name="xalign">0.5</property>
+-			      <property name="yalign">0.5</property>
+-			      <property name="xpad">0</property>
+-			      <property name="ypad">0</property>
+-			    </widget>
+-			    <packing>
+-			      <property name="padding">0</property>
+-			      <property name="expand">False</property>
+-			      <property name="fill">False</property>
+-			    </packing>
+-			  </child>
+-
+-			  <child>
+-			    <widget class="GtkLabel" id="label33">
+-			      <property name="visible">True</property>
+-			      <property name="label" translatable="yes">_Connect!</property>
+-			      <property name="use_underline">True</property>
+-			      <property name="use_markup">False</property>
+-			      <property name="justify">GTK_JUSTIFY_LEFT</property>
+-			      <property name="wrap">False</property>
+-			      <property name="selectable">False</property>
+-			      <property name="xalign">0.5</property>
+-			      <property name="yalign">0.5</property>
+-			      <property name="xpad">0</property>
+-			      <property name="ypad">0</property>
+-			    </widget>
+-			    <packing>
+-			      <property name="padding">0</property>
+-			      <property name="expand">False</property>
+-			      <property name="fill">False</property>
+-			    </packing>
+-			  </child>
+-			</widget>
+-		      </child>
+-		    </widget>
+-		  </child>
+-		</widget>
+-	      </child>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="left_attach">0</property>
+@@ -246,23 +287,11 @@
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="GtkHSeparator" id="hseparator5">
+-	      <property name="visible">True</property>
+-	    </widget>
+-	    <packing>
+-	      <property name="left_attach">0</property>
+-	      <property name="right_attach">5</property>
+-	      <property name="top_attach">2</property>
+-	      <property name="bottom_attach">4</property>
+-	      <property name="y_padding">3</property>
+-	      <property name="x_options">fill</property>
+-	    </packing>
+-	  </child>
+-
+-	  <child>
+ 	    <widget class="GtkCombo" id="main_combo">
+ 	      <property name="width_request">240</property>
+ 	      <property name="visible">True</property>
++	      <property name="can_default">True</property>
++	      <property name="has_default">True</property>
+ 	      <property name="value_in_list">True</property>
+ 	      <property name="allow_empty">True</property>
+ 	      <property name="case_sensitive">False</property>
+@@ -335,12 +364,17 @@
+ </widget>
+ 
+ <widget class="GtkWindow" id="details_window">
+-  <property name="title" translatable="yes">GkDial: Details</property>
++  <property name="title" translatable="yes">Dialler: Details</property>
+   <property name="type">GTK_WINDOW_TOPLEVEL</property>
+   <property name="window_position">GTK_WIN_POS_CENTER</property>
+   <property name="modal">False</property>
+   <property name="resizable">False</property>
+   <property name="destroy_with_parent">False</property>
++  <property name="decorated">True</property>
++  <property name="skip_taskbar_hint">False</property>
++  <property name="skip_pager_hint">False</property>
++  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
++  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+ 
+   <child>
+     <widget class="GtkVBox" id="vbox7">
+@@ -525,6 +559,7 @@
+ 	      <property name="visible">True</property>
+ 	      <property name="can_focus">True</property>
+ 	      <property name="relief">GTK_RELIEF_NORMAL</property>
++	      <property name="focus_on_click">True</property>
+ 
+ 	      <child>
+ 		<widget class="GtkAlignment" id="alignment10">
+@@ -533,6 +568,10 @@
+ 		  <property name="yalign">0.5</property>
+ 		  <property name="xscale">0</property>
+ 		  <property name="yscale">0</property>
++		  <property name="top_padding">0</property>
++		  <property name="bottom_padding">0</property>
++		  <property name="left_padding">0</property>
++		  <property name="right_padding">0</property>
+ 
+ 		  <child>
+ 		    <widget class="GtkHBox" id="hbox12">
+@@ -632,12 +671,17 @@
+ </widget>
+ 
+ <widget class="GtkWindow" id="prefs_window">
+-  <property name="title" translatable="yes">GkDial: Preferences</property>
++  <property name="title" translatable="yes">Dialler: Preferences</property>
+   <property name="type">GTK_WINDOW_TOPLEVEL</property>
+   <property name="window_position">GTK_WIN_POS_CENTER</property>
+   <property name="modal">True</property>
+   <property name="resizable">True</property>
+   <property name="destroy_with_parent">False</property>
++  <property name="decorated">True</property>
++  <property name="skip_taskbar_hint">False</property>
++  <property name="skip_pager_hint">False</property>
++  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
++  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+ 
+   <child>
+     <widget class="GtkVBox" id="vbox1">
+@@ -680,6 +724,7 @@
+ 		      <property name="label">gtk-add</property>
+ 		      <property name="use_stock">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		    </widget>
+ 		  </child>
+ 
+@@ -691,6 +736,7 @@
+ 		      <property name="label">gtk-properties</property>
+ 		      <property name="use_stock">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		    </widget>
+ 		  </child>
+ 
+@@ -702,6 +748,7 @@
+ 		      <property name="label">gtk-remove</property>
+ 		      <property name="use_stock">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
+@@ -754,7 +801,7 @@
+ 	  <child>
+ 	    <widget class="GtkLabel" id="nb_accounts_page">
+ 	      <property name="visible">True</property>
+-	      <property name="label" translatable="yes">A_ccounts</property>
++	      <property name="label" translatable="yes">Acco_unts</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="use_markup">False</property>
+ 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+@@ -800,6 +847,7 @@
+ 			  <property name="label" translatable="yes">_Retry if connection quits when dialing</property>
+ 			  <property name="use_underline">True</property>
+ 			  <property name="relief">GTK_RELIEF_NORMAL</property>
++			  <property name="focus_on_click">True</property>
+ 			  <property name="active">False</property>
+ 			  <property name="inconsistent">False</property>
+ 			  <property name="draw_indicator">True</property>
+@@ -821,6 +869,7 @@
+ 			  <property name="label" translatable="yes">Reconnect if connection is lost</property>
+ 			  <property name="use_underline">True</property>
+ 			  <property name="relief">GTK_RELIEF_NORMAL</property>
++			  <property name="focus_on_click">True</property>
+ 			  <property name="active">False</property>
+ 			  <property name="inconsistent">False</property>
+ 			  <property name="draw_indicator">True</property>
+@@ -977,6 +1026,7 @@
+ 			  <property name="label" translatable="yes">Main window is hidden when the program starts</property>
+ 			  <property name="use_underline">True</property>
+ 			  <property name="relief">GTK_RELIEF_NORMAL</property>
++			  <property name="focus_on_click">True</property>
+ 			  <property name="active">False</property>
+ 			  <property name="inconsistent">False</property>
+ 			  <property name="draw_indicator">True</property>
+@@ -995,9 +1045,10 @@
+ 			  <property name="visible">True</property>
+ 			  <property name="tooltip" translatable="yes">Hides main window when starting up (implies on Always show tray icon)</property>
+ 			  <property name="can_focus">True</property>
+-			  <property name="label" translatable="yes">Exit GkDial when connection is closed</property>
++			  <property name="label" translatable="yes">Exit Dialler when connection is closed</property>
+ 			  <property name="use_underline">True</property>
+ 			  <property name="relief">GTK_RELIEF_NORMAL</property>
++			  <property name="focus_on_click">True</property>
+ 			  <property name="active">False</property>
+ 			  <property name="inconsistent">False</property>
+ 			  <property name="draw_indicator">True</property>
+@@ -1053,6 +1104,7 @@
+ 		      <property name="label" translatable="yes">Hide details window when connection is accomplished</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <property name="active">False</property>
+ 		      <property name="inconsistent">False</property>
+ 		      <property name="draw_indicator">True</property>
+@@ -1110,6 +1162,7 @@
+ 			  <property name="label" translatable="yes">Always show tray icon</property>
+ 			  <property name="use_underline">True</property>
+ 			  <property name="relief">GTK_RELIEF_NORMAL</property>
++			  <property name="focus_on_click">True</property>
+ 			  <property name="active">False</property>
+ 			  <property name="inconsistent">False</property>
+ 			  <property name="draw_indicator">True</property>
+@@ -1160,8 +1213,8 @@
+ 	  <child>
+ 	    <widget class="GtkLabel" id="nb_interface_page">
+ 	      <property name="visible">True</property>
+-	      <property name="label" translatable="yes">Interface</property>
+-	      <property name="use_underline">False</property>
++	      <property name="label" translatable="yes">_Interface</property>
++	      <property name="use_underline">True</property>
+ 	      <property name="use_markup">False</property>
+ 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+@@ -1201,6 +1254,10 @@
+ 	  <property name="yalign">0.5</property>
+ 	  <property name="xscale">0.03</property>
+ 	  <property name="yscale">1</property>
++	  <property name="top_padding">0</property>
++	  <property name="bottom_padding">0</property>
++	  <property name="left_padding">0</property>
++	  <property name="right_padding">0</property>
+ 
+ 	  <child>
+ 	    <widget class="GtkButton" id="button_prefs_close">
+@@ -1210,6 +1267,7 @@
+ 	      <property name="label">gtk-close</property>
+ 	      <property name="use_stock">True</property>
+ 	      <property name="relief">GTK_RELIEF_NORMAL</property>
++	      <property name="focus_on_click">True</property>
+ 	    </widget>
+ 	  </child>
+ 	</widget>
+@@ -1224,12 +1282,17 @@
+ </widget>
+ 
+ <widget class="GtkWindow" id="connedit_window">
+-  <property name="title" translatable="yes">Conection Properties</property>
++  <property name="title" translatable="yes">Connection Properties</property>
+   <property name="type">GTK_WINDOW_TOPLEVEL</property>
+   <property name="window_position">GTK_WIN_POS_CENTER</property>
+   <property name="modal">True</property>
+   <property name="resizable">True</property>
+   <property name="destroy_with_parent">False</property>
++  <property name="decorated">True</property>
++  <property name="skip_taskbar_hint">False</property>
++  <property name="skip_pager_hint">False</property>
++  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
++  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+ 
+   <child>
+     <widget class="GtkVBox" id="vbox3">
+@@ -1578,6 +1641,176 @@
+ 	      <property name="type">tab</property>
+ 	    </packing>
+ 	  </child>
++
++	  <child>
++	    <widget class="GtkTable" id="table7">
++	      <property name="border_width">12</property>
++	      <property name="visible">True</property>
++	      <property name="n_rows">3</property>
++	      <property name="n_columns">2</property>
++	      <property name="homogeneous">False</property>
++	      <property name="row_spacing">8</property>
++	      <property name="column_spacing">5</property>
++
++	      <child>
++		<widget class="GtkLabel" id="label38">
++		  <property name="visible">True</property>
++		  <property name="label" translatable="yes">Modem init string:</property>
++		  <property name="use_underline">False</property>
++		  <property name="use_markup">False</property>
++		  <property name="justify">GTK_JUSTIFY_LEFT</property>
++		  <property name="wrap">False</property>
++		  <property name="selectable">False</property>
++		  <property name="xalign">0</property>
++		  <property name="yalign">0.5</property>
++		  <property name="xpad">0</property>
++		  <property name="ypad">0</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">0</property>
++		  <property name="right_attach">1</property>
++		  <property name="top_attach">0</property>
++		  <property name="bottom_attach">1</property>
++		  <property name="x_options">fill</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++
++	      <child>
++		<widget class="GtkEntry" id="cp_entry_modeminit">
++		  <property name="visible">True</property>
++		  <property name="can_focus">True</property>
++		  <property name="editable">True</property>
++		  <property name="visibility">True</property>
++		  <property name="max_length">220</property>
++		  <property name="text" translatable="yes"></property>
++		  <property name="has_frame">True</property>
++		  <property name="invisible_char" translatable="yes">*</property>
++		  <property name="activates_default">False</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">1</property>
++		  <property name="right_attach">2</property>
++		  <property name="top_attach">0</property>
++		  <property name="bottom_attach">1</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++
++	      <child>
++		<widget class="GtkLabel" id="label39">
++		  <property name="visible">True</property>
++		  <property name="label" translatable="yes">Additional options:</property>
++		  <property name="use_underline">False</property>
++		  <property name="use_markup">False</property>
++		  <property name="justify">GTK_JUSTIFY_LEFT</property>
++		  <property name="wrap">False</property>
++		  <property name="selectable">False</property>
++		  <property name="xalign">0</property>
++		  <property name="yalign">0.5</property>
++		  <property name="xpad">0</property>
++		  <property name="ypad">0</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">0</property>
++		  <property name="right_attach">1</property>
++		  <property name="top_attach">1</property>
++		  <property name="bottom_attach">2</property>
++		  <property name="x_options">fill</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++
++	      <child>
++		<widget class="GtkEntry" id="cp_entry_option1">
++		  <property name="visible">True</property>
++		  <property name="can_focus">True</property>
++		  <property name="editable">True</property>
++		  <property name="visibility">True</property>
++		  <property name="max_length">220</property>
++		  <property name="text" translatable="yes"></property>
++		  <property name="has_frame">True</property>
++		  <property name="invisible_char" translatable="yes">*</property>
++		  <property name="activates_default">False</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">1</property>
++		  <property name="right_attach">2</property>
++		  <property name="top_attach">1</property>
++		  <property name="bottom_attach">2</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++
++	      <child>
++		<widget class="GtkLabel" id="label40">
++		  <property name="visible">True</property>
++		  <property name="label" translatable="yes">Additional options (cont.):</property>
++		  <property name="use_underline">False</property>
++		  <property name="use_markup">False</property>
++		  <property name="justify">GTK_JUSTIFY_LEFT</property>
++		  <property name="wrap">False</property>
++		  <property name="selectable">False</property>
++		  <property name="xalign">0</property>
++		  <property name="yalign">0.5</property>
++		  <property name="xpad">0</property>
++		  <property name="ypad">0</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">0</property>
++		  <property name="right_attach">1</property>
++		  <property name="top_attach">2</property>
++		  <property name="bottom_attach">3</property>
++		  <property name="x_options">fill</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++
++	      <child>
++		<widget class="GtkEntry" id="cp_entry_option2">
++		  <property name="visible">True</property>
++		  <property name="can_focus">True</property>
++		  <property name="editable">True</property>
++		  <property name="visibility">True</property>
++		  <property name="max_length">220</property>
++		  <property name="text" translatable="yes"></property>
++		  <property name="has_frame">True</property>
++		  <property name="invisible_char" translatable="yes">*</property>
++		  <property name="activates_default">False</property>
++		</widget>
++		<packing>
++		  <property name="left_attach">1</property>
++		  <property name="right_attach">2</property>
++		  <property name="top_attach">2</property>
++		  <property name="bottom_attach">3</property>
++		  <property name="y_options"></property>
++		</packing>
++	      </child>
++	    </widget>
++	    <packing>
++	      <property name="tab_expand">False</property>
++	      <property name="tab_fill">True</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkLabel" id="label37">
++	      <property name="visible">True</property>
++	      <property name="label" translatable="yes">Ad_vanced</property>
++	      <property name="use_underline">True</property>
++	      <property name="use_markup">False</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
++	      <property name="wrap">False</property>
++	      <property name="selectable">False</property>
++	      <property name="xalign">0.5</property>
++	      <property name="yalign">0.5</property>
++	      <property name="xpad">0</property>
++	      <property name="ypad">0</property>
++	    </widget>
++	    <packing>
++	      <property name="type">tab</property>
++	    </packing>
++	  </child>
+ 	</widget>
+ 	<packing>
+ 	  <property name="padding">0</property>
+@@ -1605,6 +1838,10 @@
+ 	  <property name="yalign">0.5</property>
+ 	  <property name="xscale">0.03</property>
+ 	  <property name="yscale">1</property>
++	  <property name="top_padding">0</property>
++	  <property name="bottom_padding">0</property>
++	  <property name="left_padding">0</property>
++	  <property name="right_padding">0</property>
+ 
+ 	  <child>
+ 	    <widget class="GtkHButtonBox" id="hbuttonbox1">
+@@ -1620,6 +1857,7 @@
+ 		  <property name="label">gtk-cancel</property>
+ 		  <property name="use_stock">True</property>
+ 		  <property name="relief">GTK_RELIEF_NORMAL</property>
++		  <property name="focus_on_click">True</property>
+ 		</widget>
+ 	      </child>
+ 
+@@ -1631,6 +1869,7 @@
+ 		  <property name="label">gtk-save</property>
+ 		  <property name="use_stock">True</property>
+ 		  <property name="relief">GTK_RELIEF_NORMAL</property>
++		  <property name="focus_on_click">True</property>
+ 		</widget>
+ 	      </child>
+ 	    </widget>
+diff -Nur gkdial-1.8.1.orig/gkdial.schemas gkdial-1.8.1/gkdial.schemas
+--- gkdial-1.8.1.orig/gkdial.schemas	1970-01-01 01:00:00.000000000 +0100
++++ gkdial-1.8.1/gkdial.schemas	2004-09-08 14:47:48.000000000 +0200
+@@ -0,0 +1,30 @@
++<gconfschemafile>
++    <schemalist>    
++
++      <schema>
++        <key>/schemas/apps/gkdial/preferences/hide_dw_on_conn</key>
++        <applyto>/apps/gkdial/preferences/hide_dw_on_conn</applyto>
++        <owner>gkdial</owner>
++        <type>bool</type>
++        <default>true</default>
++        <locale name="C">
++          <short>Behaviour of detail window.</short>
++          <long>Hide the detail window after a connection is established.</long>
++        </locale>
++      </schema>
++
++      <schema>
++        <key>/schemas/apps/gkdial/preferences/always_tray</key>
++        <applyto>/apps/gkdial/preferences/always_tray</applyto>
++        <owner>gkdial</owner>
++        <type>bool</type>
++        <default>true</default>
++        <locale name="C">
++          <short>Behaviour of tray icon.</short>
++          <long>Show tray icon only if necessary or always.</long>
++        </locale>
++      </schema>
++      
++    </schemalist>
++  
++</gconfschemafile>
+diff -Nur gkdial-1.8.1.orig/src/connedit.c gkdial-1.8.1/src/connedit.c
+--- gkdial-1.8.1.orig/src/connedit.c	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/connedit.c	2004-10-16 11:30:29.000000000 +0200
+@@ -1,7 +1,9 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
++#include <sys/types.h>
++#include <sys/stat.h>
++ 
+ #ifdef HAVE_CONFIG_H
+ #  include <config.h>
+ #endif
+@@ -41,26 +43,45 @@
+   file_name = g_strdup_printf ("/etc/ppp/peers/%s", connection->name);
+   file = fopen (file_name, "r");
+   g_free (file_name);
+-
+-  while (!feof (file))
++  
++  if (file)
+     {
+-      fgets (buf, 255, file);
+-
+-      /*
+-       * gets the user name 
+-       */
+-      if (!strncmp ("user ", buf, 5))
+-	{
+-	  gchar *tmp;
+-
+-	  g_strstrip (buf);
+-	  tmp = strstr (buf, " ");
+-	  gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_user), tmp + 1);
+-	}
++      gint parseoptions = 0;
++      while (!feof (file))
++        {
++          fgets (buf, 255, file);
++    
++          /*
++           * gets the user name 
++           */
++          if (!strncmp ("user ", buf, 5))
++            {
++              gchar *tmp;
++              
++              g_strstrip (buf);
++              tmp = strstr (buf, " ");
++              gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_user), tmp + 1);
++            }
++          
++          if (parseoptions)
++            {
++              g_strstrip (buf);
++              if (parseoptions == 1)
++                gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_option1), buf);
++              if (parseoptions == 2)
++                gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_option2), buf);
++              parseoptions++;
++            }
++          
++          if (!strncmp ("remotename ", buf, 11))
++            {
++              memset(buf, 0, 255);
++              parseoptions++;
++            }
++        }
++    
++      fclose (file);
+     }
+-
+-  fclose (file);
+-
+ #ifdef DEBUG
+   fprintf (stderr, "Reading /etc/chatscripts/%s\n", connection->name);
+ #endif
+@@ -72,31 +93,46 @@
+   file_name = g_strdup_printf ("/etc/chatscripts/%s", connection->name);
+   file = fopen (file_name, "r");
+   g_free (file_name);
+-
+-  while (!feof (file))
++  if (file)
+     {
+-      fgets (buf, 255, file);
+-
+-      if (!strncmp ("# ispauth", buf, 9))
+-	{			/* gets the auth style */
+-	  g_strstrip (buf);
+-	  tmp = strstr (buf, "auth");
+-	  gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_auth), tmp + 5);
+-	  tmp = NULL;
+-	}
+-      else if (!strncmp ("# ispnumber", buf, 11))
+-	{			/* gets the phone
+-				 * number */
+-	  fgets (buf, 255, file);
+-	  g_strstrip (buf);
+-	  tmp = strstr (buf, "ATD");
+-	  gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_phone), tmp + 4);
+-	  tmp = NULL;
+-	}
++      while (!feof (file))
++        {
++          fgets (buf, 255, file);
++    
++          if (!strncmp ("# ispauth", buf, 9))
++        {			/* gets the auth style */
++          g_strstrip (buf);
++          tmp = strstr (buf, "auth");
++          gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_auth), tmp + 5);
++          tmp = NULL;
++        }
++          else if (!strncmp ("# modeminit", buf, 11))
++        {			/* gets the modem init string */
++          fgets (buf, 255, file);
++          g_strstrip (buf);
++          tmp = strstr (buf, "''");
++          if (!strstr(tmp + 2,"'ATZ'")) /* get value, remove "'" */
++          {
++            gchar *t = strstr(tmp + 4, "'");
++            if (t) 
++                t[0] = 0;
++            gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_modeminit), tmp + 4);
++          }
++          tmp = NULL;
++        }
++          else if (!strncmp ("# ispnumber", buf, 11))
++        {			/* gets the phone
++                     * number */
++          fgets (buf, 255, file);
++          g_strstrip (buf);
++          tmp = strstr (buf, "ATD");
++          gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_phone), tmp + 4);
++          tmp = NULL;
++        }
++        }
++    
++      fclose (file);
+     }
+-
+-  fclose (file);
+-
+   /*
+    * parses /etc/ppp/${auth_type}-secrets, to get password 
+    */
+@@ -105,9 +141,8 @@
+ 
+     if (!connection->auth_type)
+       {
+-	connection->auth_type =
+-	  gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_auth),
+-				  0, -1);
++        connection->auth_type =
++        gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_auth), 0, -1);
+       }
+ 
+     if (!strcmp (connection->auth_type, "PAP"))
+@@ -124,7 +159,7 @@
+ #endif
+   file = fopen (file_name, "r");
+   g_free (file_name);
+-
++  if (file)
+   {
+     gchar *search_for;
+ 
+@@ -169,8 +204,8 @@
+ 	    break;
+ 	  }
+       }
++    fclose (file);
+   }
+-  fclose (file);
+   g_free (buf);
+ 
+   return TRUE;
+@@ -189,6 +224,12 @@
+   connection->password = NULL;
+   g_free (connection->auth_type);
+   connection->auth_type = NULL;
++  g_free (connection->modeminit);
++  connection->modeminit = NULL;
++  g_free (connection->option1);
++  connection->option1 = NULL;
++  g_free (connection->option2);
++  connection->option2 = NULL;
+ }
+ 
+ void
+@@ -201,6 +242,9 @@
+   destination->user = g_strdup (source->user);
+   destination->password = g_strdup (source->password);
+   destination->auth_type = g_strdup (source->auth_type);
++  destination->modeminit = g_strdup (source->modeminit);
++  destination->option1 = g_strdup (source->option1);
++  destination->option2 = g_strdup (source->option2);
+ }
+ 
+ void
+@@ -212,6 +256,7 @@
+   gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_phone), "");
+   gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_user), "");
+   gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_password), "");
++  gtk_entry_set_text (GTK_ENTRY (gkdial->cp_entry_modeminit), "");
+ 
+   gkconnection_clear (connection);
+ }
+@@ -617,21 +662,27 @@
+       g_free (file_name);
+       return;
+     }
+-  g_free (file_name);
+   /*
+    * FIXME: need to get the modem device from somewhere 
+    */
+-  fprintf (file, "# This optionfile was generated by %s %s.\n" "# \n" "#\n" "hide-password \n" "noauth\n" "connect \"/usr/sbin/chat -v -f /etc/chatscripts/%s\"\n" "debug\n" "%s\n"	/* modem 
+-																							 * file 
+-																							 */
+-	   "115200\n" "defaultroute\n" "noipdefault\n" "user %s\n"	/* user 
+-									 * name 
+-									 */
+-	   "remotename %s\n",	/* conn_name */
+-	   PACKAGE, VERSION, connection->name, "/dev/modem",
+-	   connection->user, connection->name);
++  fprintf (file, "# This optionfile was generated by %s %s.\n" "# \n" "#\n" 
++                 "hide-password \n" "noauth\n" 
++                 "connect \"/usr/sbin/chat -v -f /etc/chatscripts/%s\"\n" 
++                 "debug\n" "%s\n"	/* modem file */
++	             "115200\n" "defaultroute\n" 
++                 "noipdefault\n" "user %s\n"	/* user name */
++	             "remotename %s\n",	/* conn_name */
++                 PACKAGE, VERSION, connection->name, "/dev/modem",
++	             connection->user, connection->name);
++  if (connection->option1)
++      fprintf(file, "%s\n", connection->option1);
++  if (connection->option2)
++      fprintf(file, "%s\n", connection->option2);
+   fclose (file);
++  if (chmod (file_name, S_IWUSR | S_IRGRP | S_IRUSR | S_IROTH))
++	  perror("err");
+ 
++  g_free (file_name);
+   /*
+    * writes /etc/chatscripts/${peer} 
+    */
+@@ -646,16 +697,15 @@
+       g_free (file_name);
+       return;
+     }
+-  g_free (file_name);
+   /*
+    * FIXME: need to get the modem device from somewhere 
+    */
+-  fprintf (file, "# This chatfile was generated by %s %s.\n" "# Please do not delete any of the comments. " "Pppconfig and GkDial need them.\n" "# \n" "# ispauth %s\n"	/* auth 
+-																					 */
+-	   "# abortstring\n" "ABORT BUSY ABORT 'NO CARRIER' ABORT VOICE ABORT 'NO DIALTONE'" "ABORT 'NO DIAL TONE' ABORT 'NO ANSWER'\n" "# modeminit\n" "'' ATZ\n"	/* FIXME! 
+-																					 */
+-	   "# ispnumber\n" "OK-AT-OK ATDT%s\n"	/* phone - FIXME! Tone or
+-						 * Pulse */
++  fprintf (file, "# This chatfile was generated by %s %s.\n" "# Please do not delete any of the comments. " "Pppconfig and GkDial need them.\n" "# \n" 
++	   "# ispauth %s\n"	/* auth  */
++	   "# abortstring\n" "ABORT BUSY ABORT 'NO CARRIER' ABORT VOICE ABORT 'NO DIALTONE'" "ABORT 'NO DIAL TONE' ABORT 'NO ANSWER'\n" 
++	   "# modeminit\n" "'' '%s'\n"	/* FIXME! */
++       "TIMEOUT 120\n"
++	   "# ispnumber\n" "OK-AT-OK ATDT%s\n"	/* phone - FIXME! Tone or Pulse */
+ 	   "# ispconnect\n"
+ 	   "CONNECT \\d\\c\n"
+ 	   "# prelogin\n"
+@@ -665,8 +715,12 @@
+ 	   "# postlogin\n"
+ 	   "\n"
+ 	   "# end of pppconfig stuff\n",
+-	   PACKAGE, VERSION, connection->auth_type, connection->phone);
++	   PACKAGE, VERSION, connection->auth_type, connection->modeminit ? connection->modeminit : "ATZ", connection->phone);
++
+   fclose (file);
++  if (chmod (file_name, S_IWUSR | S_IRGRP | S_IRUSR | S_IROTH))
++	  perror("err");
++  g_free (file_name);
+ 
+   /*
+    * remove the old user/pass entry before adding the new 
+@@ -684,7 +738,7 @@
+    * writes /etc/ppp/${auth}-secrets 
+    */
+   {
+-    gchar *secrets_name;
++    gchar *secrets_name = NULL;
+ 
+     if (!strcmp (connection->auth_type, "PAP"))
+       secrets_name = g_strdup ("pap");
+@@ -743,7 +797,7 @@
+ 	gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_conn_name),
+ 				0, -1);
+       if (!strcmp (tmp, ""))
+-	g_free (tmp);
++        g_free (tmp);
+       else
+ 	{
+ 	  g_free (connection->name);
+@@ -759,7 +813,7 @@
+     {
+       g_free (connection->phone);
+       connection->phone =
+-	gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_phone), 0, -1);
++        gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_phone), 0, -1);
+     }
+   else if (!strcmp (entry_name, "user"))
+     {
+@@ -780,4 +834,22 @@
+       connection->auth_type =
+ 	gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_auth), 0, -1);
+     }
++  else if (!strcmp (entry_name, "modeminit"))
++    {
++      g_free (connection->modeminit);
++      connection->modeminit =
++        gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_modeminit), 0, -1);
++    }
++  else if (!strcmp (entry_name, "option1"))
++    {
++      g_free (connection->option1);
++      connection->option1 =
++        gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_option1), 0, -1);
++    }
++  else if (!strcmp (entry_name, "option2"))
++    {
++      g_free (connection->option2);
++      connection->option2 =
++        gtk_editable_get_chars (GTK_EDITABLE (gkdial->cp_entry_option2), 0, -1);
++    }
+ }
+diff -Nur gkdial-1.8.1.orig/src/defines.h gkdial-1.8.1/src/defines.h
+--- gkdial-1.8.1.orig/src/defines.h	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/defines.h	2004-09-29 14:59:38.000000000 +0200
+@@ -51,6 +51,6 @@
+ #define CHK_TIMEOUT 1000	/* check_connection */
+ #define CNT_TIMEOUT 47000	/* connecting_check */
+ 
+-#define DEBUG 1
++#define DEBUG 0
+ 
+ #endif
+diff -Nur gkdial-1.8.1.orig/src/details.c gkdial-1.8.1/src/details.c
+--- gkdial-1.8.1.orig/src/details.c	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/details.c	2004-10-16 11:30:29.000000000 +0200
+@@ -40,10 +40,11 @@
+       gtk_widget_destroy (dialog);
+ 
+       if (response == GTK_RESPONSE_YES)
+-	gk_disconnect (NULL, gkdial);
++      {
++          gk_disconnect (NULL, gkdial);
++          gk_status_set_disconnected(gkdial);
++      }
+     }
+-
+-  gtk_main_quit ();
+ }
+ 
+ void
+diff -Nur gkdial-1.8.1.orig/src/gkdial.h gkdial-1.8.1/src/gkdial.h
+--- gkdial-1.8.1.orig/src/gkdial.h	2003-06-27 04:34:21.000000000 +0200
++++ gkdial-1.8.1/src/gkdial.h	2004-10-14 18:55:22.000000000 +0200
+@@ -32,6 +32,8 @@
+   gchar *password;
+ 
+   gchar *auth_type;
++  gchar *modeminit;
++  gchar *option1, *option2;
+ };
+ 
+ typedef struct _GkDial GkDial;
+@@ -80,6 +82,8 @@
+    */
+   GtkWidget *button_connect;
+   GtkWidget *button_disconnect;
++  GtkWidget *button_quit;
++  GtkWidget *button_preferences;
+ 
+   /*
+    * misc buttons 
+@@ -166,6 +170,9 @@
+   GtkWidget *cp_entry_user;
+   GtkWidget *cp_entry_password;
+   GtkWidget *cp_entry_auth;
++  GtkWidget *cp_entry_modeminit;
++  GtkWidget *cp_entry_option1;
++  GtkWidget *cp_entry_option2;
+ 
+   gint editing_status;
+ 
+diff -Nur gkdial-1.8.1.orig/src/main.c gkdial-1.8.1/src/main.c
+--- gkdial-1.8.1.orig/src/main.c	2003-06-27 04:47:54.000000000 +0200
++++ gkdial-1.8.1/src/main.c	2004-10-16 11:30:29.000000000 +0200
+@@ -38,10 +38,11 @@
+ void
+ gkdial_show_about (GtkWidget * widget, gpointer data)
+ {
+-  gchar *translator_credits = g_strdup (_("translator_credits"));
++  gchar *translator_credits = 
++	g_strdup (_("Adapted to GPE by Florian Boor <florian@kernelconcepts.de>"));
+ 
+   gk_dialog (GTK_MESSAGE_INFO,
+-	     _("GkDial %s\n\n"
++	     _("Internet Dialler (GkDial) %s\n\n"
+ 	       "A PPP setup and dialing tool for GNOME.\n\n"
+ 	       "Author:\n\n"
+ 	       "\tGustavo Noronha Silva <kov@debian.org>\n\n"
+@@ -52,6 +53,7 @@
+   g_free (translator_credits);
+ }
+ 
++
+ int
+ gkdial_defaults_init (GkDial * gkdial)
+ {
+@@ -101,7 +103,7 @@
+   /*
+    * GUI stuff 
+    */
+-  gkdial->main_window = glade_xml_get_widget (gkdial->gui, "main_window");
++  gkdial->main_window = glade_xml_get_widget (gkdial->gui, "gk_main_window");
+   gkdial->main_combo = glade_xml_get_widget (gkdial->gui, "main_combo");
+ 
+   gkdial->menu_new = glade_xml_get_widget (gkdial->gui, "menu_new");
+@@ -121,6 +123,10 @@
+ 						 "button_connect");
+   gkdial->button_disconnect = glade_xml_get_widget (gkdial->gui,
+ 						    "button_disconnect");
++  gkdial->button_quit = glade_xml_get_widget (gkdial->gui,
++						    "button_quit");
++  gkdial->button_preferences = glade_xml_get_widget (gkdial->gui,
++						    "button_preferences");
+ 
+   gkdial->label_set_time = glade_xml_get_widget (gkdial->gui,
+ 						 "label_set_time");
+@@ -208,6 +214,12 @@
+ 		     "name", "password");
+   gkdial->cp_entry_auth = glade_xml_get_widget (gkdial->gui, "cp_entry_auth");
+   g_object_set_data (G_OBJECT (gkdial->cp_entry_auth), "name", "auth");
++  gkdial->cp_entry_modeminit = glade_xml_get_widget (gkdial->gui, "cp_entry_modeminit");
++  g_object_set_data (G_OBJECT (gkdial->cp_entry_modeminit), "name", "modeminit");
++  gkdial->cp_entry_option1 = glade_xml_get_widget (gkdial->gui, "cp_entry_option1");
++  g_object_set_data (G_OBJECT (gkdial->cp_entry_option1), "name", "option1");
++  gkdial->cp_entry_option2 = glade_xml_get_widget (gkdial->gui, "cp_entry_option2");
++  g_object_set_data (G_OBJECT (gkdial->cp_entry_option2), "name", "option2");
+ 
+   /*
+    * GkConnection 
+@@ -222,6 +234,9 @@
+     conn->user = NULL;
+     conn->password = NULL;
+     conn->auth_type = NULL;
++    conn->modeminit = NULL;
++    conn->option1 = NULL;
++    conn->option2 = NULL;
+   }
+   nullify_connection (gkdial->connection);
+   nullify_connection (gkdial->connection_backup);
+@@ -312,26 +327,30 @@
+   g_signal_connect (G_OBJECT (gkdial->menu_quit), "activate",
+ 		    G_CALLBACK (gtk_main_quit), NULL);
+ 
+-  /*
+-   * FIXME!: needs to select the connection on the peers_list, based on
+-   * the combo selection
+-   * 
+-   * g_signal_connect (G_OBJECT(gkdial->menu_properties), "activate",
+-   * G_CALLBACK(gkdial_connedit_menu_show), gkdial); 
+-   */
++  g_signal_connect (G_OBJECT(gkdial->menu_properties), "activate",
++            G_CALLBACK(gkdial_connedit_show), gkdial); 
++   
+   g_signal_connect (G_OBJECT (gkdial->menu_preferences), "activate",
+ 		    G_CALLBACK (gkdial_prefs_show), gkdial);
+ 
+   g_signal_connect (G_OBJECT (gkdial->menu_about), "activate",
+ 		    G_CALLBACK (gkdial_show_about), gkdial);
+ 
+-  /*
++  g_signal_connect_after (G_OBJECT (GTK_COMBO(gkdial->main_combo)->entry), 
++            "changed", G_CALLBACK (gkdial_main_select_peer), gkdial);
++			
++  g_signal_connect (G_OBJECT (gkdial->button_quit), "clicked",
++		    G_CALLBACK (gtk_main_quit), NULL);
++
++  g_signal_connect (G_OBJECT (gkdial->button_preferences), "clicked",
++		    G_CALLBACK (gkdial_prefs_show), gkdial);
++ /*
+    * connection handling buttons 
+    */
+   g_signal_connect (G_OBJECT (gkdial->button_connect), "clicked",
+ 		    G_CALLBACK (gk_connect), gkdial);
+   g_signal_connect (G_OBJECT (gkdial->button_disconnect), "clicked",
+-		    G_CALLBACK (gk_disconnect), gkdial);
++		    G_CALLBACK (gkdial_details_close), gkdial);
+ 
+   /*
+    * details window 
+@@ -382,6 +401,12 @@
+ 		    G_CALLBACK (cp_entry_changed_cb), gkdial);
+   g_signal_connect (G_OBJECT (gkdial->cp_entry_auth), "changed",
+ 		    G_CALLBACK (cp_entry_changed_cb), gkdial);
++  g_signal_connect (G_OBJECT (gkdial->cp_entry_modeminit), "changed",
++		    G_CALLBACK (cp_entry_changed_cb), gkdial);
++  g_signal_connect (G_OBJECT (gkdial->cp_entry_option1), "changed",
++		    G_CALLBACK (cp_entry_changed_cb), gkdial);
++  g_signal_connect (G_OBJECT (gkdial->cp_entry_option2), "changed",
++		    G_CALLBACK (cp_entry_changed_cb), gkdial);
+ 
+   /*
+    * general 
+@@ -416,7 +441,7 @@
+   gkdial.add_only = FALSE;
+   gkdial.edit_only = FALSE;
+   gkdial.remove_only = FALSE;
+-  char c;
++  int c;
+ 
+   /*
+    * it seems like poff kills gkdial together with it's children, so
+@@ -508,7 +533,11 @@
+   gkdial_tray_init (&gkdial);
+ 
+   if (!gkdial.mw_starts_hiden && !GTK_WIDGET_VISIBLE (gkdial.main_window))
+-    gtk_widget_show (gkdial.main_window);
++    {
++      gtk_widget_show (gkdial.main_window);
++      if (gkdial.always_tray && gkdial.tray)
++	    gtk_widget_show_all (gkdial.tray);
++    }
+   else
+     {
+       if (gkdial.tray)
+diff -Nur gkdial-1.8.1.orig/src/main_loop.c gkdial-1.8.1/src/main_loop.c
+--- gkdial-1.8.1.orig/src/main_loop.c	2003-06-27 23:32:32.000000000 +0200
++++ gkdial-1.8.1/src/main_loop.c	2004-10-16 11:30:29.000000000 +0200
+@@ -114,14 +114,22 @@
+       g_free (statusbar_text);
+     }
+   else
+-    gtk_statusbar_push (GTK_STATUSBAR (gkdial->details_statusbar),
+-			gkdial->status_state_id, _("Dialing..."));
++    {
++      gchar *status_phone;
++      
++      status_phone = g_strdup_printf (_("Dialling %s"),  
++        gtk_editable_get_chars (GTK_EDITABLE (
++                                  GTK_COMBO (gkdial->main_combo)->entry), 0, -1));
++      gtk_statusbar_push (GTK_STATUSBAR (gkdial->details_statusbar),
++	  		  gkdial->status_state_id, status_phone);
++      g_free (status_phone);
++    }
+ 
+   if (gkdial->connected_to)
+-    gkdial_details_set_title (gkdial, _("Connecting to: %s - GkDial"),
++    gkdial_details_set_title (gkdial, _("Connecting to: %s"),
+ 			      gkdial->connected_to);
+   else
+-    gkdial_details_set_title (gkdial, _("Connecting to: unknown - GkDial"));
++    gkdial_details_set_title (gkdial, _("Connecting"));
+ 
+   gtk_image_set_from_pixbuf (GTK_IMAGE (gkdial->tray_icon),
+ 			     gkdial->pixbuf_ppp_trying);
+@@ -136,11 +144,8 @@
+       gtk_widget_hide (gkdial->menu_item_connect);
+       gtk_widget_show (gkdial->menu_item_disconnect);
+     }
+-  if (GTK_WIDGET_VISIBLE (gkdial->main_window))
+-    {
+-      gtk_widget_hide (gkdial->main_window);
+-      gtk_widget_show (gkdial->details_window);
+-    }
++  gtk_widget_show (gkdial->details_window);
++  gtk_window_present(GTK_WINDOW(gkdial->details_window));
+ 
+   /*
+    * start clock 
+@@ -206,7 +211,7 @@
+ 	  gtk_widget_show (gkdial->main_window);
+ 	}
+ 
+-      gkdial_details_set_title (gkdial, _("Disconnected - GkDial"));
++      gkdial_details_set_title (gkdial, _("Disconnected"));
+       if (gkdial->connected_to != NULL)
+ 	{
+ 	  g_free (gkdial->connected_to);
+@@ -234,10 +239,10 @@
+ 		      gkdial->status_state_id, _("Connected."));
+ 
+   if (gkdial->connected_to)
+-    gkdial_details_set_title (gkdial, _("Connected to: %s - GkDial"),
++    gkdial_details_set_title (gkdial, _("Connected to: %s"),
+ 			      gkdial->connected_to);
+   else
+-    gkdial_details_set_title (gkdial, _("Connected to: unknown - GkDial"));
++    gkdial_details_set_title (gkdial, _("Connected to: unknown"));
+ 
+   gtk_image_set_from_pixbuf (GTK_IMAGE (gkdial->tray_icon),
+ 			     gkdial->pixbuf_ppp_none);
+@@ -252,11 +257,7 @@
+       gtk_widget_hide (gkdial->menu_item_connect);
+       gtk_widget_show (gkdial->menu_item_disconnect);
+     }
+-  if (GTK_WIDGET_VISIBLE (gkdial->main_window))
+-    {
+-      gtk_widget_hide (gkdial->main_window);
+-      gtk_widget_show (gkdial->details_window);
+-    }
++  gtk_widget_show (gkdial->details_window);
+ #ifdef DEBUG
+ 	fprintf (stderr, "hide_dw_on_conn: %d\n",
+ 		gkdial->hide_dw_on_conn);
+@@ -292,7 +293,6 @@
+ 			     gkdial->connected_to);
+   gkdial_exec (gkdial, command, CONNECTING);
+   g_free (command);
+-  pthread_exit (NULL);
+ }
+ 
+ void
+@@ -313,13 +313,10 @@
+ 
+   gkdial->was_gkdial = TRUE;
+ 
+-  gkdial_details_set_title (gkdial, _("Connecting to: %s - GkDial"),
++  gkdial_details_set_title (gkdial, _("Connecting to: %s"),
+ 			    gkdial->connected_to);
+-
+-	g_free (gkdial->connecting_thread);
+-  gkdial->connecting_thread = g_new (pthread_t, 1);
+-  pthread_create (gkdial->connecting_thread, NULL,
+-		  gk_thread_connect, (gpointer) gkdial);
++  
++  gk_thread_connect ((gpointer) gkdial);
+ }
+ 
+ /*
+@@ -330,7 +327,7 @@
+ {
+   GkDial *gkdial = (GkDial *) data;
+   gchar *disconnect_cmd = DOWNCMD;
+-
++    
+   /*
+    * this shows that gkdial was the responsible for the connection being 
+    * closed 
+diff -Nur gkdial-1.8.1.orig/src/peers_list.c gkdial-1.8.1/src/peers_list.c
+--- gkdial-1.8.1.orig/src/peers_list.c	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/peers_list.c	2004-10-16 11:30:29.000000000 +0200
+@@ -15,8 +15,7 @@
+ {
+   GtkTreeStore *tree_model;
+ 
+-  tree_model = gtk_tree_store_new (NUM_COLUMNS, G_TYPE_BOOLEAN, G_TYPE_STRING);	/* peer 
+-										 */
++  tree_model = gtk_tree_store_new (NUM_COLUMNS, G_TYPE_BOOLEAN, G_TYPE_STRING);	/* peer */
+ 
+   return tree_model;
+ }
+@@ -317,6 +316,9 @@
+ 	    if (!strcmp (tmp, ".bak"))
+ 	      continue;
+ 
++      if (!strcmp(files_peers->d_name, "lap"))
++        continue;
++        
+ 	  /*
+ 	   * for the prefs peers_list 
+ 	   */
+@@ -356,15 +358,20 @@
+ 
+       if (peer_to_select && strcmp ("", peer_to_select))
+ 	{
++      GtkTreeIter *iter;
+ #ifdef DEBUG
+ 	  printf ("setting combo to: %s\n", peer_to_select);
+ #endif
+ 	  prefs_peers_set_default (gkdial, peer_to_select);
+ 	  combo_set_selection (gkdial, peer_to_select);
++      iter = prefs_peers_list_find (gkdial, peer_to_select);
++      prefs_peers_list_select (gkdial, iter);
++      gtk_tree_iter_free (iter);
+ 	}
+       else
+ 	{
+ 	  GList *first_peer;
++      GtkTreeIter *iter;
+ 
+ 	  first_peer = g_list_first (peers_list);
+ #ifdef DEBUG
+@@ -372,6 +379,10 @@
+ 		  (gchar *) first_peer->data);
+ #endif
+ 	  combo_set_selection (gkdial, (gchar *) first_peer->data);
++
++      iter = prefs_peers_list_find (gkdial, first_peer->data);
++      prefs_peers_list_select (gkdial, iter);
++      gtk_tree_iter_free (iter);
+ 	}
+     }
+ 
+@@ -395,3 +406,22 @@
+ 
+   peers_list_fill (gkdial, TRUE);
+ }
++
++void
++gkdial_main_select_peer (GtkWidget * widget, gpointer data)
++{
++  GkDial *gkdial = data;
++  gchar *peer_to_select;
++  GtkTreeIter *iter;
++	
++  peer_to_select =
++	    gtk_editable_get_chars (GTK_EDITABLE
++				    (GTK_COMBO (gkdial->main_combo)->entry), 0, -1);
++	
++  iter = prefs_peers_list_find (gkdial, peer_to_select);
++  if (iter)
++  {
++    prefs_peers_list_select (gkdial, iter);
++    gtk_tree_iter_free (iter);
++  }
++}
+diff -Nur gkdial-1.8.1.orig/src/peers_list.h gkdial-1.8.1/src/peers_list.h
+--- gkdial-1.8.1.orig/src/peers_list.h	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/peers_list.h	2004-08-26 18:00:27.000000000 +0200
+@@ -15,6 +15,8 @@
+   NUM_COLUMNS
+ };
+ 
++void gkdial_main_select_peer (GtkWidget * widget, gpointer data);
++
+ void prefs_peers_list_select (GkDial * gkdial, GtkTreeIter * iter);
+ 
+ gboolean peers_list_get_selected (GkDial * gkdial);
+diff -Nur gkdial-1.8.1.orig/src/ppp_info.c gkdial-1.8.1/src/ppp_info.c
+--- gkdial-1.8.1.orig/src/ppp_info.c	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/ppp_info.c	2004-10-16 11:30:29.000000000 +0200
+@@ -11,7 +11,7 @@
+ 
+ #include <linux/if.h>
+ #include <linux/ppp_defs.h>
+-#include <linux/ppp.h>
++#include <linux/if_ppp.h>
+ 
+ #include <time.h>
+ #include <ctype.h>
+diff -Nur gkdial-1.8.1.orig/src/tray.c gkdial-1.8.1/src/tray.c
+--- gkdial-1.8.1.orig/src/tray.c	2003-06-27 01:14:51.000000000 +0200
++++ gkdial-1.8.1/src/tray.c	2004-10-16 11:30:29.000000000 +0200
+@@ -6,24 +6,32 @@
+ #include "prefs.h"
+ #include "images.h"
+ #include "main_loop.h"
+-
++static GtkWidget *menu;
++ 
+ gboolean
+ tray_icon_clicked (GtkWidget * w, GdkEventButton * event, gpointer data)
+ {
+   GkDial *gkdial = (GkDial *) data;
+   GtkWidget *window_to_handle;
+ 
+-  if (gkdial->state == CONNECTING || gkdial->state == CONNECTED)
+-    window_to_handle = gkdial->details_window;
+-  else
+-    window_to_handle = gkdial->main_window;
+-
+-  if (event->button != 3)
++  if (event->type == GDK_BUTTON_PRESS)
+     {
+-      if (GTK_WIDGET_VISIBLE (window_to_handle))
+-	gtk_widget_hide (window_to_handle);
++      gtk_menu_popup (GTK_MENU (menu),
++			NULL, NULL,
++			NULL, w, event->button, event->time);
++		//gnome_popup_menu_do_popup (menu, NULL, NULL, NULL, NULL, NULL);
++        return TRUE;
++	}
++	
++  if (event->type == GDK_2BUTTON_PRESS)
++    {
++      if (gkdial->state == CONNECTING || gkdial->state == CONNECTED)
++        window_to_handle = gkdial->details_window;
+       else
+-	gtk_widget_show (window_to_handle);
++        window_to_handle = gkdial->main_window;
++
++      if (!GTK_WIDGET_VISIBLE (window_to_handle))
++        gtk_widget_show (window_to_handle);
+       return TRUE;
+     }
+   else
+@@ -43,7 +51,20 @@
+ void
+ tray_exit_cb (GtkWidget * w, gpointer data)
+ {
+-  gtk_main_quit ();
++  GtkWidget *dialog;
++  GkDial *gkdial = data;
++  
++  dialog = gtk_message_dialog_new(GTK_WINDOW(gkdial->main_window), 
++                                  GTK_DIALOG_MODAL,
++                                  GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
++                                  _("Quit Dialler?"));
++  gtk_widget_show_all(dialog);
++  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES)
++    {
++      gtk_widget_destroy(dialog);  
++      gtk_main_quit ();
++    }
++  gtk_widget_destroy(dialog);  
+ }
+ 
+ GtkWidget *
+@@ -54,11 +75,10 @@
+      G_CALLBACK (gkdial_prefs_show)},
+     {N_("Co_nnect"), GTK_STOCK_YES, G_CALLBACK (gk_connect)},
+     {N_("Di_sconnect"), GTK_STOCK_NO, G_CALLBACK (gk_disconnect)},
+-    {N_("E_xit"), GTK_STOCK_CLOSE, G_CALLBACK (tray_exit_cb)},
++    {N_("_Quit"), GTK_STOCK_QUIT, G_CALLBACK (tray_exit_cb)},
+     {NULL, NULL, NULL}
+   };
+ 
+-  GtkWidget *menu;
+   int i;
+ 
+   menu = gtk_menu_new ();
+@@ -83,14 +103,14 @@
+       gtk_widget_show (item);
+ 
+       if (menuitems[i].callback == G_CALLBACK (gk_connect))
+-	gkdial->menu_item_connect = item;
++        gkdial->menu_item_connect = item;
+       else if (menuitems[i].callback == G_CALLBACK (gk_disconnect))
+ 	{
+ 	  gkdial->menu_item_disconnect = item;
+ 	  gtk_widget_hide (gkdial->menu_item_disconnect);
+ 	}
+       else if (menuitems[i].callback == G_CALLBACK (gkdial_prefs_show))
+-	gkdial->menu_item_prefs = item;
++        gkdial->menu_item_prefs = item;
+ 
+       gtk_menu_shell_append ((GtkMenuShell *) (menu), item);
+       if (menuitems[i].callback != NULL)
+@@ -109,7 +129,7 @@
+   GtkWidget *box;
+   GdkPixbuf *pixbuf;
+ 
+-  gkdial->tray = GTK_WIDGET (egg_tray_icon_new ("GkDial Tray Icon"));
++  gkdial->tray = GTK_WIDGET (egg_tray_icon_new ("Dialler Tray Icon"));
+ 
+   box = gtk_event_box_new ();
+   g_signal_connect (G_OBJECT (box), "button_press_event",
+@@ -118,13 +138,6 @@
+ 
+   gkdial->tray_icon = gtk_image_new_from_pixbuf (gkdial->pixbuf_ppp_off);
+   gtk_container_add (GTK_CONTAINER (box), gkdial->tray_icon);
+-
+-  /*
+-   * from gnome-cd gcd->tray_tips = gtk_tooltips_new ();
+-   * gtk_tooltips_set_tip (GTK_TOOLTIPS(gcd->tray_tips), gcd->tray,
+-   * _("CD Player"), NULL); 
+-   */
+-
+-  gnome_popup_menu_attach (tray_menu_init (gkdial), box, NULL);
+-
++tray_menu_init (gkdial);
++  //gnome_popup_menu_attach (tray_menu_init (gkdial), box, NULL);
+ }
+diff -Nur gkdial-1.8.1.orig/src/util.c gkdial-1.8.1/src/util.c
+--- gkdial-1.8.1.orig/src/util.c	2003-06-27 22:30:29.000000000 +0200
++++ gkdial-1.8.1/src/util.c	2004-10-16 11:30:29.000000000 +0200
+@@ -76,8 +76,7 @@
+     {
+     case 0:
+       gk_dialog (GTK_MESSAGE_INFO,
+-		 _("The connection was normaly finished\n"
+-		   "by another application."));
++		 _("Connection timed out.\nIs your modem connected?"));
+       break;
+     case 1:
+       gk_dialog (GTK_MESSAGE_ERROR,
+@@ -86,11 +85,11 @@
+       break;
+     case 2:
+       gk_dialog (GTK_MESSAGE_ERROR,
+-		 _("Options error when running:\n%s."), gkdial->command);
++		 _("No modem or bad options."));
+       retry_connection = FALSE;
+       break;
+     case 3:
+-      gk_dialog (GTK_MESSAGE_ERROR,
++      gk_dialog (GTK_MESSAGE_INFO,
+ 		 _("You are not allowed to run:\n%s."), gkdial->command);
+       retry_connection = FALSE;
+       break;
+@@ -105,17 +104,17 @@
+ 			    gkdial->status_state_id,
+ 			    _("Connection terminated by signal..."));
+       else
+-	gk_dialog (GTK_MESSAGE_ERROR,
++	gk_dialog (GTK_MESSAGE_INFO,
+ 		   _("The connection was terminated prematurely "
+ 		     "by a signal it received."));
+       break;
+     case 6:
+-      gk_dialog (GTK_MESSAGE_ERROR,
++      gk_dialog (GTK_MESSAGE_INFO,
+ 		 _("The serial port could not be locked."));
+       retry_connection = FALSE;
+       break;
+     case 7:
+-      gk_dialog (GTK_MESSAGE_ERROR,
++      gk_dialog (GTK_MESSAGE_INFO,
+ 		 _("The serial port could not be opened."));
+       retry_connection = FALSE;
+       break;
+@@ -125,13 +124,13 @@
+ 			    gkdial->status_state_id,
+ 			    _("Connection failed..."));
+       else
+-	gk_dialog (GTK_MESSAGE_ERROR,
++	gk_dialog (GTK_MESSAGE_INFO,
+ 		   _("A connection was being tried but could not\n"
+ 		     "be completed. Check the /var/log/syslog file\n"
+ 		     "for details."));
+       break;
+     case 9:
+-      gk_dialog (GTK_MESSAGE_ERROR,
++      gk_dialog (GTK_MESSAGE_INFO,
+ 		 _("The command specified as argumento to the\n"
+ 		   "pty option could not be run."));
+       retry_connection = FALSE;
+@@ -142,7 +141,7 @@
+ 			    gkdial->status_state_id,
+ 			    _("PPP negotiation failed."));
+       else
+-	gk_dialog (GTK_MESSAGE_ERROR, _("PPP negotiation failed."));
++	gk_dialog (GTK_MESSAGE_INFO, _("PPP negotiation failed."));
+       break;
+     case 11:
+       if (retry_connection)
+@@ -150,7 +149,7 @@
+ 			    gkdial->status_state_id,
+ 			    _("Peer did not authenticate itself."));
+       else
+-	gk_dialog (GTK_MESSAGE_ERROR, _("Peer did not authenticate itself."));
++	gk_dialog (GTK_MESSAGE_INFO, _("Peer did not authenticate itself."));
+       break;
+     case 12:
+       gk_dialog (GTK_MESSAGE_INFO,
+@@ -158,7 +157,7 @@
+       retry_connection = FALSE;
+       break;
+     case 13:
+-      gk_dialog (GTK_MESSAGE_ERROR,
++      gk_dialog (GTK_MESSAGE_INFO,
+ 		 _("Connection terminated because it reached\n"
+ 		   "the time limit."));
+       retry_connection = FALSE;
+@@ -298,7 +297,7 @@
+ 	{
+ 	  printf ("%s\n", gk_args[0]);
+ 	  gk_dialog (GTK_MESSAGE_ERROR,
+-		     _("Error! Could not execute %s."), gk_args[0]);
++                 _("Error! Could not execute %s."), gk_args[0]);
+ 	}
+     }
+   else if (pid == -1)
+@@ -306,23 +305,35 @@
+   else
+     {
+       if (what == CONNECTING)
+-	{
+-	  waitpid (pid, &status, 0);
+-
+-	  /*
+-	   * unlock state 
+-	   */
+-	  gkdial->state_locked = FALSE;
+-
+-	  if (WIFEXITED (status))
+-	    {
+-	      gkdial->return_code = WEXITSTATUS (status);
+-			g_free (gkdial->command);
+-	      gkdial->command = g_strdup (command);
+-	    }
+-	}
+-      else
+-	wait (NULL);
++        {
++          waitpid (pid, &status, 0);
++    
++          /*
++           * unlock state 
++           */
++          gkdial->state_locked = FALSE;
++    
++          if (WIFEXITED (status))
++            {
++              gkdial->return_code = WEXITSTATUS (status);
++                g_free (gkdial->command);
++              gkdial->command = g_strdup (command);
++            }
++        }
++        else
++        {
++          waitpid (pid, &status, 0);
++    
++          if (WIFEXITED (status) && WEXITSTATUS (status))
++            {
++              gk_dialog (GTK_MESSAGE_ERROR,
++                 _("<b>An error ocurred when trying to disconnect.</b>"
++                   "\n\n"
++                   "You may not have the needed permissions or "
++                   "there was no connection to be finished "
++                   "(stale lock file?)."));
++            }
++        }
+     }
+ 
+ 	for (i = 0; gk_args[i] != NULL; i++)
+@@ -336,13 +347,13 @@
+   gint a;
+   pid_t pid;
+   gchar **command;
++  gchar *fcmd = g_strdup_printf("%s > /dev/null 2>&1",cmd);
+ 
+-  command = g_malloc (sizeof (gchar *) * 5);
+-  command[0] = g_strdup ("/usr/bin/gksu");
+-  command[1] = g_strdup ("-m");
+-  command[2] = g_strdup (msg);
+-  command[3] = g_strdup (cmd);
+-  command[4] = NULL;
++  command = g_malloc (sizeof (gchar *) * 4);
++  command[0] = g_strdup (PREFIX "/bin/gpe-su");
++  command[1] = g_strdup ("-c");
++  command[2] = fcmd;
++  command[3] = NULL;
+ 
+   pid = fork ();
+   if (pid == 0)

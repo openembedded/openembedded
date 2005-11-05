@@ -1,0 +1,408 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qwt-4.2.0rc1/include/qwt_global.h~qt2-fix
++++ qwt-4.2.0rc1/include/qwt_global.h
+@@ -58,7 +58,7 @@
+ #define QWT_EXPORT
+ #endif
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+ // Use old QArray instead of QMemArray
+ #define QWT_NO_MEMARRAY 
+ #endif
+@@ -68,7 +68,7 @@
+ #undef QWT_NO_STL
+ // #define QWT_NO_STL // disable Standard Template Library based classes
+ #if defined(_MSC_VER)
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+ // tmake does not produce the missing -GX flag for exception handling
+ #define QWT_NO_STL
+ #else
+--- qwt-4.2.0rc1/include/qwt_picker.h~qt2-fix
++++ qwt-4.2.0rc1/include/qwt_picker.h
+@@ -89,7 +89,7 @@
+     Q_PROPERTY(ResizeMode resizeMode READ resizeMode WRITE setResizeMode)
+     Q_PROPERTY(bool isEnabled READ isEnabled WRITE setEnabled)
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     // Unfortunately moc is not aware of #ifdefs. To enable the QPen
+     // attributes as properties uncomment the following lines.
+ 
+--- qwt-4.2.0rc1/src/qwt_text.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_text.cpp
+@@ -337,7 +337,7 @@
+ //! Set the font
+ void QwtRichText::setFont(const QFont &font)
+ {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     d_doc->setDefaultFont(font);
+ #endif
+     QwtText::setFont(font);
+@@ -359,7 +359,7 @@
+ */
+ int QwtRichText::heightForWidth(int width) const
+ {
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     const QFont defaultFont = QFont::defaultFont();
+     QFont::setDefaultFont(font());
+ #endif
+@@ -367,7 +367,7 @@
+     const QwtLayoutMetrics metrics(QwtPainter::metricsMap());
+     const int height = metrics.heightForWidth(*d_doc, width);
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     QFont::setDefaultFont(defaultFont);
+ #endif
+ 
+@@ -390,7 +390,7 @@
+     painter->save();
+ 
+     painter->setPen(color());
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     const QFont defaultFont = QFont::defaultFont();
+     QFont::setDefaultFont(font());
+ #else
+@@ -399,7 +399,7 @@
+ 
+     QwtPainter::drawSimpleRichText(painter, rect, alignment(), *d_doc);
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     QFont::setDefaultFont(defaultFont);
+ #endif
+     painter->restore();
+@@ -407,7 +407,7 @@
+ 
+ QRect QwtRichText::boundingRect(QPainter *painter) const
+ {
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     const QFont defaultFont = QFont::defaultFont();
+     QFont::setDefaultFont(font());
+ #endif
+@@ -415,7 +415,7 @@
+     const QwtLayoutMetrics metrics(QwtPainter::metricsMap());
+     const QRect rect = metrics.boundingRect(*d_doc, alignment(), painter);
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     QFont::setDefaultFont(defaultFont);
+ #endif
+ 
+@@ -428,7 +428,7 @@
+     QString rich = text;
+ 
+     // By default QwtSimpleRichText is Qt::AlignLeft
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     if (align & Qt::AlignJustify) 
+     {
+         rich.prepend("<div align=\"justify\">");
+--- qwt-4.2.0rc1/src/qwt_push_button.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_push_button.cpp
+@@ -88,7 +88,7 @@
+                 !(d_button->alignment() & Qt::AlignCenter))
+             {
+                 const QRect contentsRect =
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+                     d_button->style().subRect( 
+                         QStyle::SR_PushButtonContents, d_button);
+ #else
+@@ -103,7 +103,7 @@
+                 // Many styles move the label right/down
+                 // when the button is down.
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+                 const QRect &r = *((QRect *)param[0].rect);
+ #else
+                 const QRect r(*param[0].point, param[1].pixmap->size());
+@@ -133,7 +133,7 @@
+                 d_inFilter = TRUE;
+ 
+                 d_button->style().drawItem(painter, 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+                     pixRect,
+ #else
+                     pixRect.x(), pixRect.y(), 
+@@ -150,7 +150,7 @@
+                 // We save the position of the icon. We need it later
+                 // to align the label pixmap. Hope that there are no styles
+                 // that paint the pixmap before the icon.
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+                 d_iconRect = QRect(*param[0].point, param[1].pixmap->size());
+ #else
+                 d_iconRect = *param[0].rect;
+@@ -427,7 +427,7 @@
+ 
+     QPainter picPainter(&paintFilter);
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     // When painting to QPicture the dotted line of the focus rect is
+     // set to solid. ( 06.08.2003 )
+     // So we don´t set the Style_HasFocus flag and paint the focus rect
+@@ -459,7 +459,7 @@
+ 
+     paintFilter.play(painter); 
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     if (hasFocus())
+     {
+         // Paint the focus rect on top of the button label.
+--- qwt-4.2.0rc1/src/qwt_layout_metrics.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_layout_metrics.cpp
+@@ -212,7 +212,7 @@
+ QRect QwtMetricsMap::translate(
+     const QWMatrix &m, const QRect &rect) 
+ {
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     return m.map(rect.normalize());
+ #else
+     return m.mapRect(rect);
+@@ -227,7 +227,7 @@
+ QPointArray QwtMetricsMap::translate(
+     const QWMatrix &m, const QPointArray &pa) 
+ {
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     return m.map(pa);
+ #else
+     return m * pa;
+--- qwt-4.2.0rc1/src/qwt_slider.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_slider.cpp
+@@ -353,7 +353,7 @@
+     {
+         const QRect rect = d_sliderRect;
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().drawFocusRect(painter, rect, colorGroup());
+ #else
+         style().drawPrimitive(QStyle::PE_FocusRect, painter,
+--- qwt-4.2.0rc1/src/qwt_counter.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_counter.cpp
+@@ -330,7 +330,7 @@
+     // QLineEdit::minimumSizeHint is for one char. Subtracting
+     // the size for the char we get all the margins, frames ...
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     w += d_valueEdit->minimumSizeHint().width() - fm.maxWidth();
+ #else
+     w += 2 * d_valueEdit->frameWidth() + 
+--- qwt-4.2.0rc1/src/qwt_paint
++++ /dev/null
+--- qwt-4.2.0rc1/src/qwt_painter.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_painter.cpp
+@@ -201,7 +201,7 @@
+     QColorGroup cg;
+     cg.setColor(QColorGroup::Text, painter->pen().color());
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     const QFont defaultFont = QFont::defaultFont();
+     QFont::setDefaultFont(painter->font());
+ #endif
+@@ -220,7 +220,7 @@
+ 
+     text.draw(painter, scaledRect.x(), y, scaledRect, cg);
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     QFont::setDefaultFont(defaultFont);
+ #endif
+ }
+--- qwt-4.2.0rc1/src/qwt_dial.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_dial.cpp
+@@ -491,7 +491,7 @@
+         // because round objects doesn´t cover all pixels.
+ 
+         QRect br = boundingRect();
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+ #ifdef _WS_WIN32_
+         // Qt-230-NC draws ellipses not as nicely as Qt-2.3.x on X Windows
+         br.setTop(br.top()-1);
+@@ -1044,7 +1044,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -1078,7 +1078,7 @@
+             setValue(maxValue());
+             break;
+         default:;
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+             e->ignore();
+ #endif
+     }
+--- qwt-4.2.0rc1/src/qwt_knob.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_knob.cpp
+@@ -279,7 +279,7 @@
+     {
+         QRect r = rect();
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().drawFocusRect(painter, r, colorGroup());
+ #else
+         style().drawPrimitive(QStyle::PE_FocusRect, painter,
+--- qwt-4.2.0rc1/src/qwt_arrbtn.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_arrbtn.cpp
+@@ -58,7 +58,7 @@
+ QRect QwtArrowButton::labelRect() const
+ {
+     QRect r =
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().buttonRect(rect().x(), rect().y(),
+         rect().width(), rect().height());
+ #else
+@@ -71,7 +71,7 @@
+     if ( isDown() )
+     {
+         int ph, pv;
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().getButtonShift(ph, pv);
+ #else
+         ph = style().pixelMetric(
+@@ -135,7 +135,7 @@
+     }
+     p->restore();
+ 
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     if ( hasFocus() )
+     {
+         const QRect focusRect =  
+@@ -218,7 +218,7 @@
+     if ( d_arrowType == Qt::UpArrow || d_arrowType == Qt::DownArrow )
+         sz.transpose();
+ 
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+     int bm = style().buttonMargin() - 1;
+     sz += QSize(2 * bm, 2 * bm);
+ #else
+--- qwt-4.2.0rc1/src/qwt_wheel.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_wheel.cpp
+@@ -453,7 +453,7 @@
+     {
+         QRect r = rect();
+     
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().drawFocusRect(painter, r, colorGroup());
+ #else
+         style().drawPrimitive(QStyle::PE_FocusRect, painter,
+--- qwt-4.2.0rc1/src/qwt_plot_canvas.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_plot_canvas.cpp
+@@ -195,7 +195,7 @@
+ 
+ void QwtPlotCanvas::drawFocusIndicator(QPainter *painter, const QRect &rect)
+ {
+-#if QT_VERSION < 300
++#if QT_VERSION < 0x030000
+         style().drawFocusRect(painter, rect, colorGroup());
+ #else
+         style().drawPrimitive(QStyle::PE_FocusRect, painter,
+--- qwt-4.2.0rc1/src/qwt_sldbase.cpp~qt2-fix
++++ qwt-4.2.0rc1/src/qwt_sldbase.cpp
+@@ -115,7 +115,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -166,7 +166,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -274,7 +274,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -304,7 +304,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -341,7 +341,7 @@
+ {
+     if ( isReadOnly() )
+     {
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->ignore();
+ #endif
+         return;
+@@ -370,7 +370,7 @@
+                 increment = 1;
+             break;
+         default:;
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+             e->ignore();
+ #endif
+     }
+--- qwt-4.2.0rc1/examples/realtime_plot/scrollbar.cpp~qt2-fix
++++ qwt-4.2.0rc1/examples/realtime_plot/scrollbar.cpp
+@@ -154,7 +154,7 @@
+ int ScrollBar::extent() const
+ {
+     int dim;
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+     dim = style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
+ #else
+     const QSize sz = style().scrollBarExtent();
+--- qwt-4.2.0rc1/examples/event_filter/colorbar.cpp~qt2-fix
++++ qwt-4.2.0rc1/examples/event_filter/colorbar.cpp
+@@ -48,7 +48,7 @@
+         const QRgb rgb = pm.convertToImage().pixel(e->x(), e->y());
+     
+         emit selected(QColor(rgb));
+-#if QT_VERSION >= 300
++#if QT_VERSION >= 0x030000
+         e->accept();
+ #endif
+     }

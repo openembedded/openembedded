@@ -1,0 +1,94 @@
+diff --exclude '*.o' -u xscreensaver-4.16/hacks/bouboule.c xscreensaver-4.16.new/hacks/bouboule.c
+--- xscreensaver-4.16/hacks/bouboule.c	2003-10-18 17:29:50.000000000 -0700
++++ xscreensaver-4.16.new/hacks/bouboule.c	2004-08-06 13:44:21.282983912 -0700
+@@ -105,7 +105,7 @@
+ 				   * erase the whole window than to erase each star
+ 				 */
+ 
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+ #define ADAPT_ERASE  1		/* If 1, then we try ADAPT_CHECKS black XFillArcs,
+ 				   * and after, ADAPT_CHECKS XFillRectangle.
+ 				   * We check which method seems better, knowing that
+diff --exclude '*.o' -u xscreensaver-4.16/hacks/speedmine.c xscreensaver-4.16.new/hacks/speedmine.c
+--- xscreensaver-4.16/hacks/speedmine.c	2003-05-19 21:31:29.000000000 -0700
++++ xscreensaver-4.16.new/hacks/speedmine.c	2004-08-06 13:46:25.056167528 -0700
+@@ -174,7 +174,7 @@
+ /* a forward declaration ... */
+ static void change_colors(void);
+ 
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+ static int total_nframes = 0;
+ static int nframes = 0;
+ static double fps = 0.0;
+@@ -189,7 +189,7 @@
+ static double get_time(void) {
+   struct timeval t;
+   float f;
+-#if GETTIMEOFDAY_TWO_ARGS
++#ifdef GETTIMEOFDAY_TWO_ARGS
+   gettimeofday(&t, NULL);
+ #else
+   gettimeofday(&t);
+@@ -205,7 +205,7 @@
+  * initialises the timing structures
+  */
+ static void init_time(void) {
+-#if GETTIMEOFDAY_TWO_ARGS
++#ifdef GETTIMEOFDAY_TWO_ARGS
+   gettimeofday(&start_time, NULL);
+ #else
+   gettimeofday(&start_time);
+@@ -1194,7 +1194,7 @@
+ 	render_speedmine (dpy, dbuf);
+ 	XCopyArea (dpy, dbuf, window, draw_gc, 0, 0, width, height, 0, 0);
+ 
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+ 	fps_end = get_time();
+ 	nframes++;
+ 	total_nframes++;
+diff --exclude '*.o' -u xscreensaver-4.16/hacks/xrayswarm.c xscreensaver-4.16.new/hacks/xrayswarm.c
+--- xscreensaver-4.16/hacks/xrayswarm.c	2003-07-21 01:05:51.000000000 -0700
++++ xscreensaver-4.16.new/hacks/xrayswarm.c	2004-08-06 13:47:01.984553560 -0700
+@@ -980,10 +980,10 @@
+   }
+ }
+ 
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+ static struct timeval startupTime;
+ static void initTime(void) {
+-#if GETTIMEOFDAY_TWO_ARGS
++#ifdef GETTIMEOFDAY_TWO_ARGS
+   gettimeofday(&startupTime, NULL);
+ #else
+   gettimeofday(&startupTime);
+@@ -993,7 +993,7 @@
+ static double getTime(void) {
+   struct timeval t;
+   float f;
+-#if GETTIMEOFDAY_TWO_ARGS
++#ifdef GETTIMEOFDAY_TWO_ARGS
+   gettimeofday(&t, NULL);
+ #else
+   gettimeofday(&t);
+@@ -1033,7 +1033,7 @@
+   }
+ 
+   nframes = 0;
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+   start = getTime();
+ #endif
+ 
+@@ -1055,7 +1055,7 @@
+       XSync(dpy, False);
+       screenhack_handle_events (dpy);
+     }
+-#if HAVE_GETTIMEOFDAY
++#ifdef HAVE_GETTIMEOFDAY
+     end = getTime();
+     nframes++;
+ 

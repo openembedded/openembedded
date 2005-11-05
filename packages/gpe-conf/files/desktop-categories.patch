@@ -1,0 +1,10 @@
+--- gpe-conf-0.1.22/gpe-conf.desktop.in.old	2004-11-29 19:54:23.000000000 +0000
++++ gpe-conf-0.1.22/gpe-conf.desktop.in	2004-11-29 19:54:35.000000000 +0000
+@@ -5,6 +5,6 @@
+ Terminal=0
+ Type=Application
+ Icon=gpe-config.png
+-Categories=Application;SystemSettings;GPE
++Categories=Application;GPE;
+ StartupNotify=True
+ SingleInstance=True

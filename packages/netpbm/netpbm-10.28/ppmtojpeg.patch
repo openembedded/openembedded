@@ -1,0 +1,17 @@
+# This patch makes the /usr/bin/ppmtojpeg work on OE.
+
+--- netpbm-10.28/netpbm.c.orig	2005-08-04 13:20:15.665273549 -0700
++++ netpbm-10.28/netpbm.c	2005-08-04 13:21:09.288647855 -0700
+@@ -62,8 +62,11 @@
+        which would know whether pnmtojpeg was built into the merged binary
+        or not.  But that's too much work.
+ 
+-    TRY("ppmtojpeg", main_pnmtojpeg); 
++     * Patched for OE because OE builds the jpeg library (always) and the
++     * subdirectory creates the link anyway, so otherwise we have a bogus
++     * link.
+     */
++    TRY("ppmtojpeg", main_pnmtojpeg); 
+     TRY("bmptoppm", main_bmptopnm);
+     TRY("pgmnorm", main_pnmnorm);
+     TRY("ppmnorm", main_pnmnorm);

@@ -1,0 +1,324 @@
+# !/bin/sh
+M_TITLE="Copy rootfs to SD/CF"
+
+
+die() {
+	echo "ERROR: $1" >/dev/tty0
+	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+}
+
+ask_target() {
+	available_disks="`mount | grep "/media" | grep -v ram | awk '{print $3}'`"
+	
+	if test -z "$available_disks" 
+	then
+		die "No mounted targets found!"
+	fi
+	
+	cnt=1
+	for d in $available_disks
+	do
+		echo -e "\t[$cnt] $d"
+		let cnt=$cnt+1
+	done
+
+	while test -z "$ROOTFS_TARGET"
+	do	
+		echo -n "Target: "
+		read junk </dev/tty1
+		
+		x=1
+		for d in $available_disks
+		do			
+			if test "$junk" = "$x"
+			then
+				ROOTFS_TARGET="$d"				
+				break
+			fi
+			let x=$x+1
+		done
+		
+		
+	done	
+	
+	ROOTFS_TARGET_DEV="`mount | grep "$ROOTFS_TARGET " | awk '{print $1}'`"
+	ROOTFS_TARGET_FS="`mount | grep "$ROOTFS_TARGET " | awk '{print $5}'`"
+	
+	echo "Using [$ROOTFS_TARGET] on [$ROOTFS_TARGET_DEV] with [$ROOTFS_TARGET_FS] filesystem"				
+}
+
+ask_format() {
+	if test "$ROOTFS_TARGET_FS" != ext2
+	then
+		echo -e "\nYou are not using the ext2 filesystem on your target.\nYou now have two choices:"
+		echo -e "\t[1] Reformat to ext2"
+		echo -e "\t[2] Use an image-file ontop of the existing filesystem"
+		
+		while true
+		do
+			echo -n "Your choice: "
+			read junk </dev/tty1
+			
+			case "$junk" in
+			1)	ROOTFS_TARGET_TYPE="ext2"
+				break ;;
+			2)	ROOTFS_TARGET_TYPE="image"
+				break ;;
+			esac
+		done			
+			
+		echo "Mode: [$ROOTFS_TARGET_TYPE]"
+	else
+		echo -e "\nYou are using the ext2 filesystem on your target.\nYou now have two choices:"
+		echo -e "\t[1] Install to the target directly"
+		echo -e "\t[2] Use an image-file ontop of the existing filesystem\n"
+		
+		while true
+		do
+			echo -n "Your choice: "
+			read junk </dev/tty1
+			
+			case "$junk" in
+			1)	ROOTFS_TARGET_TYPE="direct"
+				break ;;
+			2)	ROOTFS_TARGET_TYPE="image"
+				break ;;
+			esac
+		done			
+			
+		echo "Mode: [$ROOTFS_TARGET_TYPE]"
+		
+	fi
+}
+
+ask_confirm() {
+	echo -e "\nYour choices are:"
+	echo -e "\tTarget:\t$ROOTFS_TARGET_DEV (currently mounted as $ROOTFS_TARGET)"
+	case "$ROOTFS_TARGET_TYPE" in
+		direct)	echo -e "\tType:\t${C_RED}direct install, reformat if required${C_RESET}";;
+		image) echo -e "\tType:\tinstall into image-file";;
+	esac
+	
+	while true
+	do
+		echo -n "Continue? [y|n] "
+		read junk </dev/tty1
+		
+		case "$junk" in
+		y)	break ;;
+		n)	exit 1
+		esac
+	done
+}
+
+direct_install() {
+
+	format_target
+		
+	echo -n "Creating temporary directory..."
+	mkdir -p /media/temp && echo ok || die "mkdir -p /media/temp failed!"
+	
+	echo -n "Mounting [$ROOTFS_TARGET_DEV] as /media/temp..."
+	mount "$ROOTFS_TARGET_DEV" /media/temp && echo "ok" || die "mount "$ROOTFS_TARGET_DEV" /media/temp FAILED"
+	
+	copy_files
+}
+
+format_target() {
+	echo -e "\n\nI'm about to format your target ($ROOTFS_TARGET_DEV) to the ext2 filesystem\n"
+	echo -e "${C_RED}YOU WILL LOSE ALL DATA ON YOUR TARGET IF YOU CONTINUE${C_RESET}\n"
+	
+	while true
+	do
+		echo -n "Continue? [y|n] "
+		read junk </dev/tty1
+		
+		case "$junk" in
+		y)	break ;;
+		n)	die "User aborted mkfs"
+			break ;;
+		esac
+	done
+	
+	echo -n "Umounting $ROOTFS_TARGET_DEV..."
+	umount "$ROOTFS_TARGET_DEV" && echo "ok" || die "umount $ROOTFS_TARGET_DEV failed!"
+	
+	
+	echo "Formatting..."
+	/sbin/mkfs.ext2 -m0 "$ROOTFS_TARGET_DEV" && echo -e "\nmkfs.ext2 finished" || die "\nmkfs.ext2 FAILED"
+ }
+
+image_install() {
+	flash_size="` df -h | grep "/"$| awk '{print $3}'| sed s/M//`"
+	
+	echo -e "\nHow many MB do you want to configure for the image file?"
+	echo -e "It is generally a good idea to use 2.5x the used flash size ($flash_size)\n"
+	
+	while test -z "$ROOTFS_IMAGE_SIZE"
+	do
+		echo -n "Size in MegaBytes: "
+		read junk
+		
+		# test fails if $junk isn't a number
+		if test "$junk" -gt 0 >/dev/null 2>&1
+		then
+			echo -n "Use [$junk]MB? [y|n] "
+			read junk2
+			if test "$junk2" = y
+			then
+				ROOTFS_IMAGE_SIZE="$junk"
+			fi
+		fi
+	done
+	
+	echo -e "\nPlease enter a name for the image file."
+	echo "The name must _not_ contain whitespaces or the '-' sign."
+	
+	while test -z "$ROOTFS_IMAGE_NAME"
+	do
+		echo -n "File name: "
+		read junk
+		
+		if ! test -z "$junk"
+		then
+			echo -n "Use [$junk] as image name? [y|n] "
+			read junk2
+			
+			if test "$junk2" = y
+			then
+				ROOTFS_IMAGE_NAME="$junk"			
+			fi
+		fi
+	done			
+	
+	echo -e "\nDo you want to format [$ROOTFS_TARGET_DEV] to the ext2 filesystem?"
+	
+	while true
+	do
+		echo -n "Format to ext2? [y|n] "
+		read junk
+		case "$junk" in
+		y)	format_target
+			break ;;
+		n)	break ;;
+		esac
+	done
+	
+	/etc/init.d/devices start
+	
+	echo -en "\nCreating image file [$ROOTFS_TARGET/$IMAGE_PATH/$ROOTFS_IMAGE_NAME-rootfs.bin] (${ROOTFS_IMAGE_SIZE}MB)..."
+	mkdir -p "$ROOTFS_TARGET/$IMAGE_PATH"
+	
+	dd if=/dev/zero of="$ROOTFS_TARGET/$IMAGE_PATH/$ROOTFS_IMAGE_NAME-rootfs.bin" bs=1024k count=$ROOTFS_IMAGE_SIZE	 >/dev/null 2>&1 && echo ok || die "FAILED"
+	losetup /dev/loop1 "$ROOTFS_TARGET/$IMAGE_PATH/$ROOTFS_IMAGE_NAME-rootfs.bin"
+	
+	echo -n "Creating filesystem..."
+	mkfs.ext2 -m0 /dev/loop1 >/dev/null 2>&1 && echo ok || die FAILED
+	
+	mkdir -p /media/temp
+	mount /dev/loop1 /media/temp || die "mount /dev/loop1 /media/temo FAILED!"
+	
+	copy_files
+			
+}
+
+copy_files() {
+	echo -e "\nCopying files..."
+	
+	exclude_list="tmp sys proc var dev media root"
+	mkdir_list="var proc sys dev media/card media/cf /media/hdd"
+		
+	if (cat /etc/fstab | grep -q "/home")
+	then
+		echo "Note: /home appears to be mounted on a different flash partition: not copying /home"
+		exclude_list="$exclude_list home"
+		mkdir_list="$mkdir_list home/root"
+		
+	fi
+	
+
+	
+	source_dirs="`ls -1 /`"
+	
+	echo -n "Excluding ["
+	for d in $exclude_list
+	do
+		echo -n "$d "
+		source_dirs="`echo "$source_dirs" | grep -v "$d"`"
+	done
+	echo "] from copy"
+				
+	
+	cd /
+	for dir in $source_dirs
+	do
+		if test -d "$dir"
+		then
+			echo -n "Copying [$dir]..."
+			cp -a $dir /media/temp && echo ok || echo FAILED
+		fi
+	done
+	
+	for dir in $mkdir_list
+	do
+		mkdir -p /media/temp/$dir
+	done
+	
+	rm /media/temp/etc/rcS.s/S39sd
+	
+}
+run_module() {
+	
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+	
+	echo -e "${C_RED}* * * * * WARNING * * * * *${C_RESET}"
+	echo -e "${C_RED}Continueing will delete the content of the selected target device.\nTHIS IS NO JOKE. If you do now know what this menu-item does, exit NOW${C_RESET}"
+	
+	mount -o remount,rw /
+	
+	while true
+	do
+		echo -en "\nContinue? [y|n] "
+		read junk </dev/tty1
+		
+		if test "$junk" = n
+		then
+			exit 0
+		fi
+		
+		if test "$junk" = y
+		then
+			break
+		fi
+	done	
+	
+# 	echo -n "Trying to activate PCMCIA..."
+# 	cardmgr -o >/dev/null 2>&1 && echo ok || echo "FAILED"
+# 	
+# 	echo -n "Trying to mount SD card..."
+# 	/etc/init.d/sd start >/dev/null 2>&1
+# 	sleep 3
+# 	/etc/sdcontrol insert >/dev/null 2>&1 && echo ok || echo "FAILED"
+	
+	#exit 0
+	echo -e "\nPlease select the target device:"	
+	
+	# Sets ROOTFS_TARGET*
+	ask_target
+	
+	# Sets ROOTFS_TARGET_TYPE ([direct | image]
+	ask_format
+	
+	# Ask confirmation
+	ask_confirm
+	
+	case "$ROOTFS_TARGET_TYPE" in
+	direct)	direct_install;;
+	image)	image_install;;
+	esac
+}
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module;;
+esac

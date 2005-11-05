@@ -1,0 +1,10 @@
+--- glibc-2.3.2/nptl/sysdeps/unix/sysv/linux/i386/pthread_once.S.orig	2003-10-03 15:54:00.000000000 -0400
++++ glibc-2.3.2/nptl/sysdeps/unix/sysv/linux/i386/pthread_once.S	2003-10-03 15:52:31.000000000 -0400
+@@ -109,6 +109,7 @@ __pthread_once:
+ 	movl	$0, 4(%esp)
+ 	movl	%eax, (%esp)
+ 	call	__sigsetjmp@PLT
++	testl	%eax, %eax
+ 	jne	7f
+ 
+ 	leal	8(%esp), %eax

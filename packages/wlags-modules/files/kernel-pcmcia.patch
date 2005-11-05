@@ -1,0 +1,90 @@
+Compiling against PCMCIA-CS is obsolete since more than one year.
+Especially in Linux Kernel trees for embedded devices, the
+kernel-based PCMCIA are working, whereas pcmcia-cs has usual problems.
+
+This patch creates the necessary infrastructure to run the wlags
+driver with kernel-pcmcia.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- wlags/wl_version.h~kernel-pcmcia
++++ wlags/wl_version.h
+@@ -161,23 +161,29 @@
+    the status of wireless extension support. Otherwise, including wireless
+    extension support will be switched on/off by the USE_WEXT condition */
+ #if defined BUS_PCMCIA
+-#include <pcmcia/config.h>
+-#include <pcmcia/k_compat.h>
++//#include <pcmcia/config.h>
++//#include <pcmcia/k_compat.h>
+ #elif defined BUS_PCI
+ #if USE_WEXT
+ #define HAS_WIRELESS_EXTENSIONS
+ #endif  // USE_WEXT
++#endif  // BUS_XXX
+ 
+ 
+ /* These are #defines you get "for free" with PCMCIA that I needed to add for 
+    PCI to build */
++#ifndef NEW_MULTICAST
+ #define NEW_MULTICAST
++#endif
++#ifndef ALLOC_SKB
+ #define ALLOC_SKB(len)   dev_alloc_skb(len+2)
++#endif
++#ifndef GET_PACKET
+ #define GET_PACKET(dev, skb, count)\
+                         skb_reserve((skb), 2); \
+                         BLOCK_INPUT(skb_put((skb), (count)), (count)); \
+                         (skb)->protocol = eth_type_trans((skb), (dev))
+-#endif  // BUS_XXX
++#endif
+ 
+ 
+ 
+--- wlags/wl_internal.h~kernel-pcmcia
++++ wlags/wl_internal.h
+@@ -85,8 +85,8 @@
+  *  include files
+  ******************************************************************************/
+ #ifdef BUS_PCMCIA
+-#include <pcmcia/config.h>
+-#include <pcmcia/k_compat.h>
++//#include <pcmcia/config.h>
++//#include <pcmcia/k_compat.h>
+ #include <pcmcia/version.h>
+ #include <pcmcia/cs_types.h>
+ #include <pcmcia/cs.h>
+--- wlags/wl_netdev.c~kernel-pcmcia
++++ wlags/wl_netdev.c
+@@ -1447,7 +1447,7 @@
+     dev->set_multicast_list = &wl_multicast;
+ 
+ #ifdef BUS_PCMCIA
+-    init_dev_name( dev, ( (struct wl_private *)dev->priv)->node );
++//HS    init_dev_name( dev, ( (struct wl_private *)dev->priv)->node );
+ #endif  // BUS_PCMCIA
+ 
+     dev->init               = &wl_init;
+--- wlags/wl_cs.c~kernel-pcmcia
++++ wlags/wl_cs.c
+@@ -497,7 +497,7 @@
+             /* Perform device-specific removal */
+             wl_remove( dev );
+ 
+-            link->release.expires = RUN_AT( HZ/20 );
++            link->release.expires = jiffies + ( HZ/20 );
+             add_timer( &( link->release ));
+         }
+ 
+@@ -786,7 +786,7 @@
+ 
+     if( link->state & DEV_STALE_CONFIG )
+     {
+-        link->release.expires   = RUN_AT( HZ/20 );
++        link->release.expires   = jiffies + ( HZ/20 );
+         link->state             |= DEV_RELEASE_PENDING;
+         
+         add_timer( &link->release );

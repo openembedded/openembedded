@@ -1,0 +1,63 @@
+--- mutt-1.5.9/compose.c.orig	2005-08-04 10:58:39.282202360 +0000
++++ mutt-1.5.9/compose.c	2005-08-04 11:02:58.420807304 +0000
+@@ -146,16 +146,16 @@
+   if ((WithCrypto & APPLICATION_PGP) && (WithCrypto & APPLICATION_SMIME))
+   {     
+     if (!msg->security)
+-      mvaddstr (HDR_CRYPT, 0,     "    Security: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "    Security: ");
+     else if (msg->security & APPLICATION_SMIME)
+-      mvaddstr (HDR_CRYPT, 0,     "      S/MIME: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "      S/MIME: ");
+     else if (msg->security & APPLICATION_PGP)
+-      mvaddstr (HDR_CRYPT, 0,     "         PGP: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "         PGP: ");
+   }
+   else if ((WithCrypto & APPLICATION_SMIME))
+-    mvaddstr (HDR_CRYPT, 0,     "      S/MIME: ");
++    mvaddstr (HDR_CRYPT, SidebarWidth,     "      S/MIME: ");
+   else if ((WithCrypto & APPLICATION_PGP))
+-    mvaddstr (HDR_CRYPT, 0,     "         PGP: ");
++    mvaddstr (HDR_CRYPT, SidebarWidth,     "         PGP: ");
+   else
+     return;
+ 
+@@ -294,21 +294,21 @@
+   }
+   else
+   {
+-    mvprintw (HDR_TO, 0, TITLE_FMT , Prompts[HDR_NEWSGROUPS - 1]);
++    mvprintw (HDR_TO, SidebarWidth, TITLE_FMT , Prompts[HDR_NEWSGROUPS - 1]);
+     mutt_paddstr (W, NONULL (msg->env->newsgroups));
+-    mvprintw (HDR_CC, 0, TITLE_FMT , Prompts[HDR_FOLLOWUPTO - 1]);
++    mvprintw (HDR_CC, SidebarWidth, TITLE_FMT , Prompts[HDR_FOLLOWUPTO - 1]);
+     mutt_paddstr (W, NONULL (msg->env->followup_to));
+     if (option (OPTXCOMMENTTO))
+     {
+-      mvprintw (HDR_BCC, 0, TITLE_FMT , Prompts[HDR_XCOMMENTTO - 1]);
++      mvprintw (HDR_BCC, SidebarWidth, TITLE_FMT , Prompts[HDR_XCOMMENTTO - 1]);
+       mutt_paddstr (W, NONULL (msg->env->x_comment_to));
+     }
+   }
+ #endif
+-  mvprintw (HDR_SUBJECT, 0, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
++  mvprintw (HDR_SUBJECT, SidebarWidth, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
+   mutt_paddstr (W, NONULL (msg->env->subject));
+   draw_envelope_addr (HDR_REPLYTO, msg->env->reply_to);
+-  mvprintw (HDR_FCC, 0, TITLE_FMT, Prompts[HDR_FCC - 1]);
++  mvprintw (HDR_FCC, SidebarWidth, TITLE_FMT, Prompts[HDR_FCC - 1]);
+   mutt_paddstr (W, fcc);
+ 
+   if (WithCrypto)
+--- mutt-1.5.9/Makefile.am.orig	2005-08-04 11:22:12.390377264 +0000
++++ mutt-1.5.9/Makefile.am	2005-08-04 11:22:29.806729576 +0000
+@@ -28,7 +28,8 @@
+ 	score.c send.c sendlib.c signal.c sort.c \
+ 	status.c system.c thread.c charset.c history.c lib.c \
+ 	muttlib.c editmsg.c utf8.c mbyte.c wcwidth.c \
+-	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h
++	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h \
++	sidebar.c
+ 
+ mutt_LDADD = @MUTT_LIB_OBJECTS@ @LIBOBJS@ $(LIBIMAP) $(MUTTLIBS) \
+ 	$(INTLLIBS) $(LIBICONV)  $(LIBGPGME_LIBS)

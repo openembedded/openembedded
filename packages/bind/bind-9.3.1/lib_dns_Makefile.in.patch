@@ -1,0 +1,11 @@
+--- bind-9.3.1/lib/dns/Makefile.in.orig	2005-07-10 21:30:16.000000000 +0200
++++ bind-9.3.1/lib/dns/Makefile.in	2005-07-10 21:31:00.000000000 +0200
+@@ -156,7 +156,7 @@
+ 	./gen -s ${srcdir} > code.h
+ 
+ gen: gen.c
+-	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
++	${BUILD_CC} ${EXT_CFLAGS} ${BUILD_CFLAGS} ${ALL_CPPFLAGS} ${BUILD_LDFLAGS} -o $@ ${srcdir}/gen.c ${LIBS}
+ 
+ rbtdb64.@O@: rbtdb.c
+ 

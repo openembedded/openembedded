@@ -1,0 +1,27 @@
+Index: qt-2.3.10/src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qkeyboard_qws.cpp	2005-02-20 13:20:03.285091763 +0100
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2005-02-20 13:21:49.668213425 +0100
+@@ -527,17 +527,17 @@
+     {   Qt::Key_Plus,       '+'     , '-'     , 0xffff  },
+     {	Qt::Key_Pause,		0xffff  , 0xffff  , 0xffff  }, // 120
+     {	Qt::Key_F31,	0xffff  , 0xffff  , 0xffff  }, // IM toggle
+-    {	Qt::Key_F32,	0xffff  , 0xffff  , 0xffff  }, // Sync
+-    {	Qt::Key_F34,	0xffff  , 0xffff  , 0xffff  }, // Power
+-    {	Qt::Key_F35,	0xffff  , 0xffff  , 0xffff  }, // Backlight
++    {	Qt::Key_SysReq,	0xffff  , 0xffff  , 0xffff  }, // iPAQ
++    {	Qt::Key_F9,	0xffff  , 0xffff  , 0xffff  }, // iPAQ
++    {	Qt::Key_F10,	0xffff  , 0xffff  , 0xffff  }, // iPAQ
+ #if defined(QT_KEYPAD_MODE)
+     {	Qt::Key_Context1,	0xffff  , 0xffff  , 0xffff  },
+     {	Qt::Key_Context2,	0xffff  , 0xffff  , 0xffff  },
+     {	Qt::Key_Context3,	0xffff  , 0xffff  , 0xffff  },
+     {	Qt::Key_Context4,	0xffff  , 0xffff  , 0xffff  },
+ #else
+-    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  },
+-    {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  },
++    {	Qt::Key_F13,		0xffff  , 0xffff  , 0xffff  }, // iPAQ
++    {	Qt::Key_F12,		0xffff  , 0xffff  , 0xffff  }, // iPAQ
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  },
+     {	Qt::Key_unknown,	0xffff  , 0xffff  , 0xffff  },
+ #endif

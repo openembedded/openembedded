@@ -1,0 +1,30 @@
+--- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.sysinit.orig	2004-11-09 21:45:46.000000000 +1030
++++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.sysinit	2004-11-09 21:41:47.000000000 +1030
+@@ -13,7 +13,25 @@
+ 
+ mkdir -p /var/lock/samba >/dev/null
+-/bin/echo  "Creating ramfs for /var/lock/samba:"; mount -t ramfs none /var/lock/samba -o maxsize=64
+-/bin/echo  "Limit the space of log folder:"; mount -t ramfs none /var/log -o maxsize=128
++
++if ( [ ! -f /.sda1root ] && [ ! -f /.sda2root ] && [ ! -f /.sdb1root ] && [ ! -f /.sdb2root ] ) ; then
++  /bin/echo "Creating ramfs for /dev:"
++  /bin/mount -t ramfs ramfs /mnt/tmpmnt
++  /bin/cp -rp /dev/* /mnt/tmpmnt/
++  /bin/mkdir -p /dev.state
++  /bin/mount -o bind /dev /dev.state
++  /bin/mount -o bind /mnt/tmpmnt /dev
++  /bin/umount /mnt/tmpmnt
++  /bin/echo "Creating ramfs for /var:"
++  /bin/mount -t ramfs ramfs /mnt/tmpmnt -o maxsize=256
++  /bin/cp -rp /var/* /mnt/tmpmnt/
++  /bin/mkdir -p /var.state
++  /bin/mount -o bind /var /var.state
++  /bin/mount -o bind /mnt/tmpmnt /var
++  /bin/umount /mnt/tmpmnt
++  /bin/killall syslogd
++  /bin/killall klogd
++fi
++
+ mkdir -p /var/log/samba >/dev/null
+ touch /var/log/server.log >/dev/null
+ chmod 755 /var/log/samba >/dev/null

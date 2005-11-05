@@ -1,0 +1,13 @@
+--- linux-2.6.11/arch/arm/kernel/setup.c.orig	Mon Mar  7 09:41:40 2005
++++ linux-2.6.11/arch/arm/kernel/setup.c	Mon Mar  7 09:42:15 2005
+@@ -431,8 +431,10 @@
+ 	rd_prompt = prompt;
+ 	rd_doload = doload;
+ 
++#if 0 /* rd_size is not exported by 2.6.11-mm1 */
+ 	if (rd_sz)
+ 		rd_size = rd_sz;
++#endif
+ #endif
+ }
+ 

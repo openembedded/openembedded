@@ -1,0 +1,41 @@
+# Patches for compilation with 2.6.13.2
+#
+--- dir/ixp425_eth.c	2005-09-23 18:34:54.753729121 -0700
++++ dir/ixp425_eth.c	2005-09-23 18:37:48.908688002 -0700
+@@ -659,7 +659,9 @@
+ 	skb->pkt_type = PACKET_HOST;    /* Default type */
+         skb->ip_summed = 0;
+         skb->priority = 0;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+         skb->security = 0;
++#endif
+ 
+ /* Some packets may get incorrectly process by netfilter firewall software
+  * if CONFIG_NETFILTER is enabled and filtering is in use.  The solution is to
+@@ -2358,8 +2362,14 @@
+ }
+ 
+ /* set port MAC addr and update the dev struct if successfull */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+ int dev_set_mac_address(struct net_device *dev, struct sockaddr *saddr)
+ {
++#else
++static int set_mac_address(struct net_device *dev, void *saddrIn)
++{
++    struct sockaddr *saddr = saddrIn;
++#endif
+     int res;
+     priv_data_t *priv = dev->priv;
+     IxEthAccMacAddr npeMacAddr;
+@@ -2476,7 +2486,11 @@
+     ndev->poll_controller = ixp425eth_poll_controller;
+ #endif
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+     ndev->set_mac_address = dev_set_mac_address;
++#else
++    ndev->set_mac_address = set_mac_address;
++#endif
+ 
+     memcpy(ndev->dev_addr, &default_mac_addr[priv->port_id].macAddress,
+            IX_IEEE803_MAC_ADDRESS_SIZE);

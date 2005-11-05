@@ -1,0 +1,55 @@
+2005-05-06  Steven Brown  <swbrown@ucsd.edu>
+
+	* autogen.sh: Was missing from dist - add from the Arch repository.
+
+
+diff -Nur libsigcx-old/autogen.sh libsigcx/autogen.sh
+--- libsigcx-old/autogen.sh	1969-12-31 16:00:00.000000000 -0800
++++ libsigcx/autogen.sh	2005-05-06 19:48:39.000000000 -0700
+@@ -0,0 +1,46 @@
++#! /bin/sh
++
++srcdir=`dirname $0`
++test -z "$srcdir" && srcdir=.
++
++PKG_NAME="sigcx"
++
++(test -f "$srcdir/configure.ac" \
++  && test -d "$srcdir/sigcx" \
++  && test -d "$srcdir/sigcx/macros") || {
++    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
++    echo " top-level $PKG_NAME directory"
++    exit 1
++}
++
++
++echo "Adding libtools."
++libtoolize --automake
++
++echo "Building macros."
++aclocal -I scripts $ACLOCAL_FLAGS
++
++echo "Building config header."
++autoheader
++
++echo "Building makefiles."
++automake --add-missing
++
++echo "Building configure."
++autoconf
++
++rm -f config.cache
++
++if test -z "$AUTOGEN_SUBDIR_MODE"; then
++
++    echo "Running configure."
++    ./configure --enable-maintainer-mode "$@"
++    echo
++    echo 'run "make"'
++    echo
++else
++    echo
++    echo 'run "./configure ; make"'
++    echo
++fi
++

@@ -1,0 +1,110 @@
+--- linux/net/irda/irsysctl.c.orig	2003-05-13 11:20:16.000000000 +0200
++++ linux/net/irda/irsysctl.c	2005-01-22 18:39:40.496001712 +0100
+@@ -40,7 +40,8 @@
+ 
+ enum { DISCOVERY=1, DEVNAME, DEBUG, FAST_POLL, DISCOVERY_SLOTS,
+        DISCOVERY_TIMEOUT, SLOT_TIMEOUT, MAX_BAUD_RATE, MIN_TX_TURN_TIME,
+-       MAX_NOREPLY_TIME, WARN_NOREPLY_TIME, LAP_KEEPALIVE_TIME, SPECIFIC_DEV };
++       MAX_TX_DATA_SIZE, MAX_NOREPLY_TIME, WARN_NOREPLY_TIME, LAP_KEEPALIVE_TIME,
++       SPECIFIC_DEV };
+ 
+ extern int  sysctl_discovery;
+ extern int  sysctl_discovery_slots;
+@@ -51,6 +52,7 @@
+ extern char sysctl_devname[];
+ extern int  sysctl_max_baud_rate;
+ extern int  sysctl_min_tx_turn_time;
++extern int  sysctl_max_tx_data_size;
+ extern int  sysctl_max_noreply_time;
+ extern int  sysctl_warn_noreply_time;
+ extern int  sysctl_lap_keepalive_time;
+@@ -71,6 +73,8 @@
+ static int min_max_baud_rate = 2400;
+ static int max_min_tx_turn_time = 10000;	/* See qos.c - IrLAP spec */
+ static int min_min_tx_turn_time = 0;
++static int max_max_tx_data_size = 2048;		/* See qos.c - IrLAP spec */
++static int min_max_tx_data_size = 64;
+ static int max_max_noreply_time = 40;		/* See qos.c - IrLAP spec */
+ static int min_max_noreply_time = 3;
+ static int max_warn_noreply_time = 3;		/* 3s == standard */
+@@ -128,6 +132,9 @@
+ 	{ MIN_TX_TURN_TIME, "min_tx_turn_time", &sysctl_min_tx_turn_time,
+ 	  sizeof(int), 0644, NULL, &proc_dointvec_minmax, &sysctl_intvec,
+ 	  NULL, &min_min_tx_turn_time, &max_min_tx_turn_time },
++	{ MAX_TX_DATA_SIZE, "max_tx_data_size", &sysctl_max_tx_data_size,
++	  sizeof(int), 0644, NULL, &proc_dointvec_minmax, &sysctl_intvec,
++	  NULL, &min_max_tx_data_size, &max_max_tx_data_size },
+ 	{ MAX_NOREPLY_TIME, "max_noreply_time", &sysctl_max_noreply_time,
+ 	  sizeof(int), 0644, NULL, &proc_dointvec_minmax, &sysctl_intvec,
+ 	  NULL, &min_max_noreply_time, &max_max_noreply_time },
+--- linux/net/irda/qos.c.orig	2003-05-13 11:20:16.000000000 +0200
++++ linux/net/irda/qos.c	2005-01-22 18:36:46.759413688 +0100
+@@ -60,10 +60,26 @@
+  * Nonzero values (usec) are used as lower limit to the per-connection
+  * mtt value which was announced by the other end during negotiation.
+  * Might be helpful if the peer device provides too short mtt.
+- * Default is 10 which means using the unmodified value given by the peer
+- * except if it's 0 (0 is likely a bug in the other stack).
++ * Default is 10us which means using the unmodified value given by the
++ * peer except if it's 0 (0 is likely a bug in the other stack).
+  */
+ unsigned sysctl_min_tx_turn_time = 10;
++/*
++ * Maximum data size to be used in transmission in payload of LAP frame.
++ * There is a bit of confusion in the IrDA spec :
++ * The LAP spec defines the payload of a LAP frame (I field) to be
++ * 2048 bytes max (IrLAP 1.1, chapt 6.6.5, p40).
++ * On the other hand, the PHY mention frames of 2048 bytes max (IrPHY
++ * 1.2, chapt 5.3.2.1, p41). But, this number includes the LAP header
++ * (2 bytes), and CRC (32 bits at 4 Mb/s). So, for the I field (LAP
++ * payload), that's only 2042 bytes. Oups !
++ * I've had trouble trouble transmitting 2048 bytes frames with USB
++ * dongles and nsc-ircc at 4 Mb/s, so adjust to 2042... I don't know
++ * if this bug applies only for 2048 bytes frames or all negociated
++ * frame sizes, but all hardware seem to support "2048 bytes" frames.
++ * You can use the sysctl to play with this value anyway.
++ * Jean II */
++unsigned sysctl_max_tx_data_size = 2042;
+ 
+ /*
+  * Specific device list limits some negotiation parameters at the connection
+@@ -398,10 +414,10 @@
+ 	while ((qos->data_size.value > line_capacity) && (index > 0)) {
+ 		qos->data_size.value = data_sizes[index--];
+ 		IRDA_DEBUG(2, __FUNCTION__ 
+-			   "(), redusing data size to %d\n",
++			   "(), reducing data size to %d\n",
+ 			   qos->data_size.value);
+ 	}
+-#else /* Use method descibed in section 6.6.11 of IrLAP */
++#else /* Use method described in section 6.6.11 of IrLAP */
+ 	while (irlap_requested_line_capacity(qos) > line_capacity) {
+ 		ASSERT(index != 0, return;);
+ 
+@@ -409,18 +425,24 @@
+ 		if (qos->window_size.value > 1) {
+ 			qos->window_size.value--;
+ 			IRDA_DEBUG(2, __FUNCTION__ 
+-				   "(), redusing window size to %d\n",
++				   "(), reducing window size to %d\n",
+ 				   qos->window_size.value);
+ 		} else if (index > 1) {
+ 			qos->data_size.value = data_sizes[index--];
+ 			IRDA_DEBUG(2, __FUNCTION__ 
+-				   "(), redusing data size to %d\n",
++				   "(), reducing data size to %d\n",
+ 				   qos->data_size.value);
+ 		} else {
+ 			WARNING(__FUNCTION__ "(), nothing more we can do!\n");
+ 		}
+ 	}
+ #endif /* CONFIG_IRDA_DYNAMIC_WINDOW */
++	/*
++	 * Fix tx data size according to user limits - Jean II
++	 */
++	if (qos->data_size.value > sysctl_max_tx_data_size)
++		/* Allow non discrete adjustement to avoid loosing capacity */
++		qos->data_size.value = sysctl_max_tx_data_size;
+ }
+ 
+ /*

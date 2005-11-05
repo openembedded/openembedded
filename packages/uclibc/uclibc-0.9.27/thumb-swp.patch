@@ -1,0 +1,102 @@
+--- uClibc-0.9.27/libc/sysdeps/linux/arm/bits/atomicity.h.orig	2005-08-09 13:12:59.663734027 -0700
++++ uClibc-0.9.27/libc/sysdeps/linux/arm/bits/atomicity.h	2005-08-09 17:54:14.581605661 -0700
+@@ -31,12 +31,23 @@
+   int tmp2;
+   int result;
+   __asm__ ("\n"
++#if defined(__thumb__)
++           "\t.align 0\n"
++	   "\tbx pc\n"
++	   "\tnop\n"
++	   "\t.arm\n"
++#endif
+ 	   "0:\tldr\t%0,[%3]\n\t"
+ 	   "add\t%1,%0,%4\n\t"
+ 	   "swp\t%2,%1,[%3]\n\t"
+ 	   "cmp\t%0,%2\n\t"
+ 	   "swpne\t%1,%2,[%3]\n\t"
+ 	   "bne\t0b"
++#if defined(__thumb__)
++	   "\torr %1, pc, #1\n"
++	   "\tbx %1\n"
++	   "\t.force_thumb"
++#endif
+ 	   : "=&r" (result), "=&r" (tmp1), "=&r" (tmp2)
+ 	   : "r" (mem), "r"(val)
+ 	   : "cc", "memory");
+@@ -51,12 +62,23 @@
+   int tmp2;
+   int tmp3;
+   __asm__ ("\n"
++#if defined(__thumb__)
++           "\t.align 0\n"
++	   "\tbx pc\n"
++	   "\tnop\n"
++	   "\t.arm\n"
++#endif
+ 	   "0:\tldr\t%0,[%3]\n\t"
+ 	   "add\t%1,%0,%4\n\t"
+ 	   "swp\t%2,%1,[%3]\n\t"
+ 	   "cmp\t%0,%2\n\t"
+ 	   "swpne\t%1,%2,[%3]\n\t"
+ 	   "bne\t0b"
++#if defined(__thumb__)
++	   "\torr %1, pc, #1\n"
++	   "\tbx %1\n"
++	   "\t.force_thumb"
++#endif
+ 	   : "=&r" (tmp1), "=&r" (tmp2), "=&r" (tmp3)
+ 	   : "r" (mem), "r"(val)
+ 	   : "cc", "memory");
+@@ -68,6 +90,12 @@
+ {
+   int result, tmp;
+   __asm__ ("\n"
++#if defined(__thumb__)
++           "\t.align 0\n"
++	   "\tbx pc\n"
++	   "\tnop\n"
++	   "\t.arm\n"
++#endif
+ 	   "0:\tldr\t%1,[%2]\n\t"
+ 	   "mov\t%0,#0\n\t"
+ 	   "cmp\t%1,%4\n\t"
+@@ -78,6 +106,11 @@
+ 	   "bne\t0b\n\t"
+ 	   "mov\t%0,#1\n"
+ 	   "1:"
++#if defined(__thumb__)
++	   "\torr %1, pc, #1\n"
++	   "\tbx %1\n"
++	   "\t.force_thumb"
++#endif
+ 	   : "=&r" (result), "=&r" (tmp)
+ 	   : "r" (p), "r" (newval), "r" (oldval)
+ 	   : "cc", "memory");
+--- uClibc-0.9.27/libpthread/linuxthreads/sysdeps/arm/pt-machine.h.orig	2005-08-09 14:16:50.204774778 -0700
++++ uClibc-0.9.27/libpthread/linuxthreads/sysdeps/arm/pt-machine.h	2005-08-09 17:55:54.027863420 -0700
+@@ -39,9 +39,24 @@
+ {
+   register unsigned int ret;
+ 
++#if defined(__thumb__)
++  void *pc;
++  __asm__ __volatile__(
++	".align 0\n"
++	"\tbx pc\n"
++	"\tnop\n"
++	"\t.arm\n"
++	"\tswp %0, %2, [%3]\n"
++	"\torr %1, pc, #1\n"
++	"\tbx %1\n"
++	"\t.force_thumb"
++	: "=r"(ret), "=r"(pc)
++	: "0"(1), "r"(spinlock));
++#else
+   __asm__ __volatile__("swp %0, %1, [%2]"
+ 		       : "=r"(ret)
+ 		       : "0"(1), "r"(spinlock));
++#endif
+ 
+   return ret;
+ }

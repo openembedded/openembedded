@@ -1,0 +1,18 @@
+--- helplib/osso-helplib.h.old	2005-06-09 17:47:50.000000000 +0200
++++ helplib/osso-helplib.h	2005-06-09 17:48:03.000000000 +0200
+@@ -76,7 +76,7 @@
+ 							 const gchar *help_id,
+ 							 guint flags );
+ 
+-// Helper macros (deprecated)
++/* Helper macros (deprecated) */
+ #define ossohelp_dialog( osso, help_id ) \
+ 		ossohelp_show( (osso), (help_id), OSSO_HELP_SHOW_DIALOG )
+ #define ossohelp_exists( help_id ) \
+@@ -86,5 +86,5 @@
+   }
+ #endif
+ 
+-#endif	// OSSO_HELPLIB_H
++#endif	/* OSSO_HELPLIB_H */
+ 

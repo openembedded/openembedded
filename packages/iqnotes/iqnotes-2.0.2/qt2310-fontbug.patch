@@ -1,0 +1,11 @@
+--- iqnotes/preferences.cpp.orig	2005-02-23 14:36:04 +0100
++++ iqnotes/preferences.cpp	2005-02-23 14:35:59 +0100
+@@ -106,7 +106,7 @@
+ {
+ 	QFontDatabase fontDB;
+ 	int currentSize = -1;
+-#ifdef DEBUG
++#if defined(DEBUG) || QT_VERSION >= 239
+     int f = 1;
+ #else
+     int f = 10;

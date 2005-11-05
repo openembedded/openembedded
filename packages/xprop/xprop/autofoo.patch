@@ -1,0 +1,157 @@
+diff -urN xprop.orig/Makefile.am xprop/Makefile.am
+--- xprop.orig/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ xprop/Makefile.am	2004-08-15 18:49:43.000000000 +0200
+@@ -0,0 +1,53 @@
++# 
++#  $Id: Makefile.am,v 1.2 2004/06/25 19:38:50 markh Exp $
++# 
++#  Copyright © 2003 Keith Packard
++# 
++#  Permission to use, copy, modify, distribute, and sell this software and its
++#  documentation for any purpose is hereby granted without fee, provided that
++#  the above copyright notice appear in all copies and that both that
++#  copyright notice and this permission notice appear in supporting
++#  documentation, and that the name of Keith Packard not be used in
++#  advertising or publicity pertaining to distribution of the software without
++#  specific, written prior permission.  Keith Packard makes no
++#  representations about the suitability of this software for any purpose.  It
++#  is provided "as is" without express or implied warranty.
++# 
++#  KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++#  INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++#  EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++#  CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++#  DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++#  TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++#  PERFORMANCE OF THIS SOFTWARE.
++#
++
++AUTOMAKE_OPTIONS = 1.7 foreign
++
++AM_CFLAGS = @XPROP_CFLAGS@
++
++bin_PROGRAMS = xprop
++
++xprop_SOURCES = dsimple.c dsimple.h xprop.c
++
++xprop_LDADD = @XPROP_LIBS@
++
++man5_MANS=xprop.man
++
++EXTRA_DIST= $(man5_MANS)
++
++MAINTAINERCLEANFILES = configure \
++config.guess \
++config.sub \
++install-sh \
++ltmain.sh \
++missing \
++mkinstalldirs \
++aclocal.m4 \
++Makefile.in \
++depcomp \
++autoscan.log \
++configure.scan \
++config.h \
++config.h.in \
++$(man5_MANS)
+diff -urN xprop.orig/configure.ac xprop/configure.ac
+--- xprop.orig/configure.ac	1970-01-01 01:00:00.000000000 +0100
++++ xprop/configure.ac	2004-08-15 19:00:43.000000000 +0200
+@@ -0,0 +1,44 @@
++dnl
++dnl $Id: configure.ac,v 1.1 2003/10/09 06:16:59 keithp Exp $
++dnl
++dnl Copyright © 2003 Keith Packard
++dnl
++dnl Permission to use, copy, modify, distribute, and sell this software and its
++dnl documentation for any purpose is hereby granted without fee, provided that
++dnl the above copyright notice appear in all copies and that both that
++dnl copyright notice and this permission notice appear in supporting
++dnl documentation, and that the name of Keith Packard not be used in
++dnl advertising or publicity pertaining to distribution of the software without
++dnl specific, written prior permission.  Keith Packard makes no
++dnl representations about the suitability of this software for any purpose.  It
++dnl is provided "as is" without express or implied warranty.
++dnl
++dnl KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++dnl INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++dnl EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++dnl CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++dnl DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++dnl TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++dnl PERFORMANCE OF THIS SOFTWARE.
++dnl
++
++AC_PREREQ(2.57)
++AC_INIT([xprop],4.4.0,[],xprop)
++AC_CONFIG_SRCDIR([Makefile.am])
++AM_INIT_AUTOMAKE([dist-bzip2])
++AM_MAINTAINER_MODE
++AM_CONFIG_HEADER(config.h)
++
++AC_PROG_CC
++AC_PROG_INSTALL
++AC_PROG_LN_S
++AC_LIBTOOL_WIN32_DLL
++AM_PROG_LIBTOOL
++AC_PROG_MAKE_SET
++
++PKG_CHECK_MODULES(XPROP, xext xmuu x11)
++
++AC_CHECK_HEADERS([wchar.h])
++AC_CHECK_HEADERS([wctype.h])
++
++AC_OUTPUT([Makefile])
+diff -urN xprop.orig/dsimple.c xprop/dsimple.c
+--- xprop.orig/dsimple.c	2003-11-14 16:54:54.000000000 +0100
++++ xprop/dsimple.c	2004-08-15 19:19:32.000000000 +0200
+@@ -27,11 +27,16 @@
+ 
+ */
+ 
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
+ #include <X11/Xos.h>
+ #include <X11/Xlib.h>
+ #include <X11/Xutil.h>
+ #include <X11/cursorfont.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ /*
+  * Other_stuff.h: Definitions of routines in other_stuff.
+  *
+@@ -69,7 +74,7 @@
+ char *Malloc(size)
+      unsigned size;
+ {
+-	char *data, *malloc();
++	char *data;
+ 
+ 	if (!(data = malloc(size)))
+ 	  Fatal_Error("Out of memory!");
+@@ -85,7 +90,7 @@
+         char *ptr;
+         int size;
+ {
+-	char *new_ptr, *realloc();
++	char *new_ptr;
+ 
+ 	if (!ptr)
+ 	  return(Malloc(size));
+diff -urN xprop.orig/xprop.c xprop/xprop.c
+--- xprop.orig/xprop.c	2004-04-23 21:55:03.000000000 +0200
++++ xprop/xprop.c	2004-08-15 19:23:13.000000000 +0200
+@@ -30,6 +30,10 @@
+ /* $XFree86: xc/programs/xprop/xprop.c,v 1.15 2003/09/24 02:43:38 dawes Exp $ */
+ 
+ 
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
+ #include <X11/Xlib.h>
+ #include <X11/Xos.h>
+ #include <X11/Xfuncs.h>

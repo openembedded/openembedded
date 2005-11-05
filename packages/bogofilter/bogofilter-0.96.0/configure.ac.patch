@@ -1,0 +1,34 @@
+--- bogofilter-0.96.0/configure.ac.orig	2005-09-04 20:42:35.000000000 +0200
++++ bogofilter-0.96.0/configure.ac	2005-09-04 20:45:12.000000000 +0200
+@@ -460,6 +460,7 @@
+ 	dnl check if run-time link works
+ 	saveLIBS="$LIBS"
+ 	LIBS="$LIBS $LIBDB"
++	if test x$cross_compiling = xNO ; then
+ 	AC_MSG_CHECKING(if a program can be linked against Berkeley DB and run)
+ 	AC_RUN_IFELSE(
+ 	AC_LANG_PROGRAM([[
+@@ -500,6 +501,7 @@
+ 		   [AC_MSG_RESULT(no)
+ 		   AC_MSG_ERROR(db.h header file and db library version do not match.)],)
+ 	AC_MSG_RESULT(yes)
++	fi
+ 	AC_CHECK_DECLS(db_create,,
+ 	       AC_MSG_ERROR([[Can not locate a suitable Berkeley DB db.h header file.
+ Use --with-libdb-prefix=PATH to specify the path to a v3+ install directory.
+@@ -509,6 +511,7 @@
+ #endif
+ #include <db.h>]]
+ 	)
++	if test x$cross_compiling = xNO ; then
+ 	AC_MSG_CHECKING(if Berkeley DB supports shared environments)
+ 	if test "x$enable_dbshared_test" != xno && test "x$USE_TRANSACTIONS" != xNO ; then
+ 	AC_RUN_IFELSE(
+@@ -548,6 +551,7 @@
+     else
+ 	AC_MSG_RESULT(skipped)
+     fi
++	fi
+ 
+ 	AC_DEFINE(ENABLE_DB_DATASTORE,1, [Enable Berkeley DB datastore])
+ 	LIBS="$saveLIBS"

@@ -1,0 +1,112 @@
+--- xine-lib-1-rc6a/src/post/goom/xmmx.c.orig	2004-09-16 21:53:34.040049792 -0400
++++ xine-lib-1-rc6a/src/post/goom/xmmx.c	2004-09-16 21:59:24.407785800 -0400
+@@ -112,23 +112,23 @@
+ 		 * post : mm3 & mm4 : coefs for this position
+ 		 *              mm1 : X vector [0|X]
+ 		 *
+-		 * modif : eax,ebx
++		 * modif : eax,ecx
+ 		 */
+ 		__asm__ __volatile__ (
+-			"movd %%mm0,%%ebx\n"
++			"movd %%mm0,%%ecx\n"
+ 			"movq %%mm0,%%mm1\n"
+ 
+-			"andl $15,%%ebx\n"
++			"andl $15,%%ecx\n"
+ 			"psrlq $32,%%mm1\n"
+ 
+-			"shll $6,%%ebx\n"
++			"shll $6,%%ecx\n"
+ 			"movd %%mm1,%%eax\n"
+ 
+-			"addl %0,%%ebx\n"
++			"addl %0,%%ecx\n"
+ 			"andl $15,%%eax\n"
+ 
+-			"movd (%%ebx,%%eax,4),%%mm3\n"
+-			::"g"(precalCoef):"eax","ebx");
++			"movd (%%ecx,%%eax,4),%%mm3\n"
++			::"g"(precalCoef):"eax","ecx");
+ 
+ 		/*
+ 		 * extraction des coefficients...
+@@ -158,7 +158,7 @@
+ 		 * post : mm0 : expix1[position]
+ 		 *        mm2 : expix1[position+largeur]
+ 		 *
+-		 * modif : eax,ebx
++		 * modif : eax,ecx
+ 		 */
+ 		psrld_i2r (PERTEDEC,mm0);
+ 		psrld_i2r (PERTEDEC,mm1);
+@@ -167,23 +167,23 @@
+ 			/*^*/ "movq %%mm3,%%mm5\n"       /*^*/
+ 
+ 			"mull %1\n"
+-			"movd %%mm0,%%ebx\n"
++			"movd %%mm0,%%ecx\n"
+ 			/*^*/ "punpcklbw %%mm5, %%mm3\n" /*^*/
+ 
+-			"addl %%ebx,%%eax\n"
++			"addl %%ecx,%%eax\n"
+ 			/*^*/ "movq %%mm3,%%mm4\n"       /*^*/
+ 			/*^*/ "movq %%mm3,%%mm5\n"       /*^*/
+ 
+-			"movl %0,%%ebx\n"
++			"movl %0,%%ecx\n"
+ 			/*^*/ "punpcklbw %%mm5,%%mm3\n"  /*^*/
+ 
+-			"movq (%%ebx,%%eax,4),%%mm0\n"
++			"movq (%%ecx,%%eax,4),%%mm0\n"
+ 			/*^*/ "punpckhbw %%mm5,%%mm4\n"  /*^*/
+ 
+ 			"addl %1,%%eax\n"
+-			"movq (%%ebx,%%eax,4),%%mm2\n"
++			"movq (%%ecx,%%eax,4),%%mm2\n"
+ 
+-			: : "X"(expix1), "X"(prevX):"eax","ebx"
++			: : "X"(expix1), "X"(prevX):"eax","ecx"
+ 		);
+ 
+ 		/*
+--- xine-lib-1-rc7/src/post/goom/mmx.h	2004-09-12 05:17:26.000000000 -0700
++++ xine-lib-1-rc7.new/src/post/goom/mmx.h	2004-11-09 16:08:17.777667856 -0700
+@@ -71,13 +71,15 @@
+ 	*/
+ 	register int rval = 0;
+ 
++	/* Maybe if I yell it will help:  DON'T CLOBBER EBX! */
++
+ 	__asm__ __volatile__ (
+ 		/* See if CPUID instruction is supported ... */
+ 		/* ... Get copies of EFLAGS into eax and ecx */
+ 		"pushf\n\t"
+ 		"popl %%eax\n\t"
+ 		"movl %%eax, %%ecx\n\t"
+-
++	
+ 		/* ... Toggle the ID bit in one copy and store */
+ 		/*     to the EFLAGS reg */
+ 		"xorl $0x200000, %%eax\n\t"
+@@ -97,6 +99,8 @@
+ 		/* Get standard CPUID information, and
+ 		       go to a specific vendor section */
+ 		"movl $0, %%eax\n\t"
++
++		"pushl %%ebx\n\t"
+ 		"cpuid\n\t"
+ 
+ 		/* Check for Intel */
+@@ -214,9 +218,10 @@
+ 		"movl $0, %0\n\n\t"
+ 
+ 		"Return:\n\t"
++		"popl %%ebx\n\t"
+ 		: "=X" (rval)
+ 		: /* no input */
+-		: "eax", "ebx", "ecx", "edx"
++		: "eax", "ecx", "edx"
+ 	);
+ 
+ 	/* Return */

@@ -1,0 +1,12 @@
+--- vpnc-0.2-rm+zomb-pre6/vpnc.c~	2003-11-01 16:21:47.000000000 -0800
++++ vpnc-0.2-rm+zomb-pre6/vpnc.c	2003-11-14 23:23:43.000000000 -0800
+@@ -1193,7 +1193,8 @@
+ 		       ? "\n" : "")));
+ 	    break;
+ 	  default:
+-	    reject = ISAKMP_N_ATTRIBUTES_NOT_SUPPORTED;
++	    //reject = ISAKMP_N_ATTRIBUTES_NOT_SUPPORTED;
++            DEBUG(1, printf("Unknow attribute: ap->type: %d.  Continuing anyway.\n", ap->type));
+ 	  }
+ DEBUG(2, printf("S5.5\n"));
+       if (reject != 0)

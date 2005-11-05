@@ -1,0 +1,11 @@
+--- net-snmp-5.1.2/config.sub.orig	2005-10-28 22:43:40.228326250 +0100
++++ net-snmp-5.1.2/config.sub	2005-10-28 22:43:55.565284750 +0100
+@@ -118,7 +118,7 @@
+ # Here we must recognize all the valid KERNEL-OS combinations.
+ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
+ case $maybe_os in
+-  nto-qnx* | linux-gnu* | freebsd*-gnu* | storm-chaos* | os2-emx* | windows32-* | rtmk-nova*)
++  nto-qnx* | linux-gnu* | linux-uclibc* | freebsd*-gnu* | storm-chaos* | os2-emx* | windows32-* | rtmk-nova*)
+     os=-$maybe_os
+     basic_machine=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\1/'`
+     ;;

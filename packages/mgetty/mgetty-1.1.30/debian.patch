@@ -1,0 +1,913 @@
+--- mgetty-1.1.30.orig/doc/faxrunqd.8in
++++ mgetty-1.1.30/doc/faxrunqd.8in
+@@ -276,23 +276,25 @@
+ behaviour, you can send it the following signals:
+ 
+ .TP
+-.B SIGHUP
+-.TP
+ .B SIGINT
+ .TP
+ .B SIGTERM
+ remove lock file, remove pid file, terminate immediately.
+ 
+ .TP
++.B SIGHUP
++finish all fax jobs that are currently being sent, then terminate  (this
++is used to signal faxrunqd "I want you to terminate" without disturbing
++the normal flow of operation - SIGINT/TERM etc. can lead to some faxes being
++sent twice).
++
++.TP
+ .B SIGUSR1
+ close, roll, and re-open log file.
+ 
+ .TP
+ .B SIGUSR2
+-finish all fax jobs that are currently being sent, then terminate  (this
+-is used to signal faxrunqd "I want you to terminate" without disturbing
+-the normal flow of operation - SIGHUP etc. can lead to some faxes being
+-sent twice).
++dump current modem success/failure statistics to log file.
+ 
+ .IX fax
+ .SH BUGS
+--- mgetty-1.1.30.orig/doc/mgetty.8in
++++ mgetty-1.1.30/doc/mgetty.8in
+@@ -42,10 +42,13 @@
+ .B -p <login prompt>
+ Use the given string to prompt users for their login names. Various
+ tokens are allowed in this string. These tokens are: @ for the system
+-name, \\n, \\r, \\g, \\v, \\f, \\t for newline, carriage return, bell,
+-vertical tab, form feed, and tab, respectively. \\P and \\L will expand to
+-the tty name ("ttyS0"). \\I will give the "CONNECT foobar" string returned
++name, \\n, \\r, \\g, \\b, \\v, \\f, \\t for newline, carriage return, bell,
++backspace, vertical tab, form feed, and tab, respectively.
++\\P and \\L will expand to the tty name ("ttyS0"). \\Y will give the Caller
++ID, \\I the "CONNECT foobar" string returned
+ by the modem, and \\S will output the port speed.
++\\s, \\m, \\V, \\R represent the operating system, the hardware name,
++the OS version, the OS release.
+ \\N and \\U give the number of users currently logged in.
+ \\C will be changed into the result of ctime(), and \\D and \\T will
+ output the date and time, respectively. Finally, \\<digit> will use digit
+--- mgetty-1.1.30.orig/doc/mgetty.texi-in
++++ mgetty-1.1.30/doc/mgetty.texi-in
+@@ -1,6 +1,6 @@
+ \input texinfo    @c -*-texinfo-*-
+ @c %**start of header
+-@c $Id: mgetty.texi-in,v 4.58 2002/11/17 21:19:45 gert Exp $ (c) 1993-2000 Gert Doering and Klaus Weidner
++@c $Id: mgetty.texi-in,v 4.59 2003/04/06 14:09:09 gert Exp $ (c) 1993-2000 Gert Doering and Klaus Weidner
+ @setfilename mgetty.info
+ @settitle mgetty + sendfax
+ @c %**end of header
+@@ -1096,6 +1096,9 @@
+ @samp{/etc/issue}.  Some special characters are substituted by connect
+ speed, date, etc. - see below (login-prompt) for a list.
+ 
++Note: maximum line length after substitution is 300 characters, so be 
++careful with ASCII art banners with lots of color settings and such.
++
+ @item @code{prompt-waittime} @var{msecs}
+ 
+ This specifies how long @code{mgetty} will wait for modem and line to
+@@ -1117,6 +1120,10 @@
+ @item \b backspace (ascii 010)
+ @item \f form feed (ascii 013)
+ @item \t TAB
++@item \s operating system (OS)
++@item \m hardware name
++@item \V OS version
++@item \R OS release
+ @item \P (and \L) port name (e.g. ttyS0)
+ @item \C date and time, in "ctime()" format
+ @item \I Connection string (e.g. 2400/REL)
+@@ -1128,7 +1135,7 @@
+ @item \@var{digit} character with the specified octal code
+ @end itemize
+ 
+-The maximum lenght of the login prompt is limited to 140 characters (after
++The maximum lenght of the login prompt is limited to 300 characters (after
+ expansion).
+ 
+ @item @code{login-time} @var{secs}
+@@ -3039,11 +3046,22 @@
+ implemented since Linux 2.4.10, or in earlier Versions with Jan
+ Oberlaender's patch
+ (http://www.stud.uni-karlsruhe.de/~uslk/i4l-callednumber.tar.gz).
++(@strong{NOTE}: This doesn't seem to work for at least Linux 2.4.20
++as shipped by RedHat 8.0 - anyone with some details??!)
+ 
+ Alternatively, you can set @code{ATS23.0=1}. This will make i4l signal
+-the dialed MSN number as @code{RING/12345}.  Unfortunately, it will be
+-recognized by mgetty as caller ID, not destination MSN, so you might need
+-to do some fiddling with 'ring.c' to get this fixed.
++the dialed MSN number as @code{RING/12345}.  This was problematic in the
++past, as lots of other modems have a similar format to report the Caller ID
++(like @code{RING;4321} in ELSA modems) but recent mgetty versions handle 
++this properly.  With this, you can run a single mgetty instance for all
++your telephone numbers: just set @code{AT&L*} in your init string - this
++tells isnd4linux that @strong{all} incoming calls are to be signalled
++to mgetty, not only specific MSN.
++
++@c init-chat "" ATZ OK AT&L* OK ATS23.0=1S23.2=1S0=0 OK
++@c fax-only yes
++@c rings 2
++@c modem-quirks 1
+ 
+ For the full list of available AT commands, consult the i4l docs
+ (for example in @file{/usr/src/linux/Documentation/isdn/README}.
+@@ -3063,8 +3081,9 @@
+ 
+ There's a small catch: modem autodetection will make mgetty think that
+ your ttyI device doesn't support fax (because most cards can't do it).  So 
+-you need to set @code{modem-type c2.0} in @file{mgetty.config} and/or
+-@file{sendfax.config} to force class 2.0 mode.
++you need to set @code{modem-type cls} in @file{mgetty.config} and/or
++@file{sendfax.config} to force class 2 mode.  Class 2.0 mode is not
++supported.
+ 
+ Voice support with @code{vgetty} should work (use your ttyI device 
+ as an answering machine, etc.).  I have not tried it yet - talk to the
+--- mgetty-1.1.30.orig/fax/faxspool.in
++++ mgetty-1.1.30/fax/faxspool.in
+@@ -3,7 +3,7 @@
+ # faxspool - sample script how to spool fax input data to a spool
+ #            directory, creating jobs to be run by faxrunq
+ #
+-# sccsid: $Id: faxspool.in,v 4.22 2002/11/23 15:14:57 gert Exp $ (c) Gert Doering
++# sccsid: $Id: faxspool.in,v 4.25 2003/06/28 20:44:04 gert Exp $ (c) Gert Doering
+ #
+ # syntax: faxspool [flags] <phone-number> <job(s)>
+ #
+@@ -26,6 +26,15 @@
+ #  3.10.93: use "hp2hig3" for hp-pcl4-files (cl)
+ # 19.10.93: phone directories (caz)
+ # $Log: faxspool.in,v $
++# Revision 4.25  2003/06/28 20:44:04  gert
++# reset umask after creating temp directory
++#
++# Revision 4.24  2003/04/09 21:05:14  gert
++# fix case of "faxing without header" (-h -) - wasn't copying G3 files
++#
++# Revision 4.23  2003/01/21 13:27:12  gert
++# abort if input file names contain whitespace or quote characters
++#
+ # Revision 4.22  2002/11/23 15:14:57  gert
+ # revert 4.14 -> 4.15 change: faxqueue_done is now back in $FAX_SPOOL_OUT
+ # (new permission concept, faxrunq/faxrunqd no longer running as root)
+@@ -577,11 +586,15 @@
+ fi
+ 
+ #
+-# check, if all the files exist & are readable
++# check, if all the file names are "clean", that the files exist & are readable
+ #
+ 
+ for file
+ do
++    if [ `echo "$file" | tr -d ' \011\012\015\047\140"' ` != "$file" ]
++    then
++	$echo "$0: invalid characters in file name '$file'!" >&2 ; exit 5
++    fi
+     if [ ! -r $file -a x$file != x- ]
+     then
+ 	$echo "$0: cannot open '$file'!" >&2 ; exit 5
+@@ -617,12 +630,14 @@
+ #
+ spooldir=${TMP:-/tmp}/$new_seq.$$.`date +%S`
+ 
++oldumask=`umask`
+ umask 077
+ if mkdir $spooldir ; then
+     $echo "spooling to $spooldir (->$new_seq)..."
+ else
+     $echo "ERROR: can't create work dir '$spooldir', giving up" >&2 ; exit 6
+ fi
++umask $oldumask
+ 
+ #
+ # process all input files
+@@ -847,22 +862,23 @@
+ fi
+ 
+ #	
+-# concatenate header with pages
++# concatenate header with pages (optionally) and copy over to spool dir
+ #
+-if [ -z "$FAX_HEADER" ]
++if [ -n "$FAX_HEADER" ]
+ then
+-    finalpg="$pages"				# don't :)
+-else
+     $echo "\nPutting Header lines on top of pages..."
+ 
+     hdrfont=$PBMFONT_HEADER_F
+     test -z "$normal_res" || hdrfont=$PBMFONT_HEADER_N
++fi
+ 
+-    finalpg=""
+-    for f in $pages
+-    do
++finalpg=""
++for f in $pages
++do
+ 	nr=`expr $nr + 1`
+ 
++    if [ -n "$FAX_HEADER" ]
++    then
+ 	cat $FAX_HEADER | sed -e "s;@T@;$phone;g" -e "s;@P@;$nr;g" \
+ 			      -e "s;@M@;$maxnr;g" -e "s;@U@;$USER;g" \
+ 			      -e "s;@N@;$FULLNAME;g" \
+@@ -873,9 +889,13 @@
+ 	| g3cat - $f | \
+ 	$FAXQ_HELPER input $new_seq f$nr.g3 \
+ 	&& rm $f
++    else
++	g3cat $f | \
++	$FAXQ_HELPER input $new_seq f$nr.g3 \
++	&& rm $f
++    fi
+ 	finalpg="$finalpg f$nr.g3"
+-    done
+-fi				# end "if ! -z $FAX_HEADER"
++done
+ 
+ if [ -z "$finalpg" -a -z "$poll_req" ]
+ then
+--- mgetty-1.1.30.orig/fax/faxrunqd.in
++++ mgetty-1.1.30/fax/faxrunqd.in
+@@ -9,10 +9,19 @@
+ #
+ # initial version: Feb 17, 1997
+ #
+-$rcs_id='RCS: $Id: faxrunqd.in,v 1.63 2002/11/23 16:52:18 gert Exp $';
++$rcs_id='RCS: $Id: faxrunqd.in,v 1.65 2003/01/14 14:16:09 gert Exp $';
+ #
+ # Change Log:
++#
+ # $Log: faxrunqd.in,v $
++# Revision 1.65  2003/01/14 14:16:09  gert
++# include "total success" counter in the per_phone_statistics
++#
++# Revision 1.64  2003/01/07 14:48:52  gert
++# If a job is re-queued, heavily penalize previously used modem.
++# This way, a defective modem (or a modem that has problems connecting to
++# just a few destination numbers) has less impact on overall stability.
++#
+ # Revision 1.63  2002/11/23 16:52:18  gert
+ # make messages more clear, print warning if running as root
+ #
+@@ -608,6 +617,7 @@
+ #   - no other job for this phone number already queued
+ #   - this modem must be allowed for that job
+ #   - if multiple queues allowed, take the shortest one
++#   - the modem used previously is heavily penalized
+ #
+ # called whenever a job's $queue{$job}->{status} changes to 'active'
+ #
+@@ -661,6 +671,9 @@
+ 		               @{$queue{$j}->{ttys}} : @standard_ttys;
+ 
+     # find tty with the shortest queue (among those that are allowed)
++    #
++    # the previously used modem always gets a queue len of "9998", and is 
++    # thus only used if no other modem is available
+     my $min_l = 9999;
+     my $min_t = $ttys[0];
+ 
+@@ -674,9 +687,12 @@
+ 	    $tty_in_use{$t}=0;
+ 	}
+ 
+-	if ( $mq_length{$t}+$mq_badness{$t} < $min_l )
++	my $this_q_len = ( $t eq $queue{$j}->{last_modem} ) ? 9998 :
++				$mq_length{$t}+$mq_badness{$t};
++
++	if ( $this_q_len < $min_l )
+ 	{
+-	    $min_l = $mq_length{$t}+$mq_badness{$t}; $min_t = $t;
++	    $min_l = $this_q_len; $min_t = $t;
+ 	}
+     }
+ 
+@@ -701,7 +717,7 @@
+     $queue{$j}->{weight} = 1 + scalar( @{$queue{$j}->{pages}} );
+     $mq_length{$min_t} += $queue{$j}->{weight};
+ 
+-    print LOG "$j: possible ttys: " . join( ':', @ttys ) . " -> queue selected: $min_t (l: $min_l->" . $mq_length{$min_t} . ")\n"  if $opt_d;
++    print LOG "$j: possible ttys: " . join( ':', @ttys ) . " last: ". $queue{$j}->{last_modem} . " -> queue selected: $min_t (l: $min_l->" . $mq_length{$min_t} . ")\n"  if $opt_d;
+ 
+     # rotate @standard_ttys, to distribute load more evenly among modems
+     push @standard_ttys, (shift @standard_ttys);
+@@ -804,6 +820,7 @@
+ 	}
+ 
+ 	$queue{$job}->{'tries'} = $queue{$job}->{'tries_c'} = 0;
++	$queue{$job}->{'last_modem'} = 'unknown';
+ 
+ 	while( <J> )
+ 	{
+@@ -1264,15 +1281,13 @@
+     $tty_statistics{$t}{total}++;
+     $tty_statistics{$t}{$ex}++;
+ 
+-    # and, in case of errors, for per-remote-phone statistics
+-    if ( $ex > 0 )
+-    {
++    # and for per-remote-phone statistics
+         my $ph = $queue{$j}->{'phone'};
+-	if ( ! defined( $per_phone_statistics{$ph} ) || 
+-	     ! defined( $per_phone_statistics{$ph}{$ex} ) )
++    if ( ! defined( $per_phone_statistics{$ph} ) )
++	    { $per_phone_statistics{$ph}{0} = 0; }
++    if ( ! defined( $per_phone_statistics{$ph}{$ex} ) )
+ 		{ $per_phone_statistics{$ph}{$ex} = 0; }
+ 	$per_phone_statistics{$ph}{$ex}++;
+-    }
+ 
+     # now handle return codes.  This is tricky if multiple jobs have been 
+     # combined into one sendfax call - might have failed in the middle...
+@@ -1443,6 +1458,9 @@
+ 	my $fstr = ( $ex<10 )? "failed" : "FATAL FAILURE";
+ 	&wstat( $j, "Status " . localtime() . " $fstr, exit($ex): $verb_ex\n");
+ 
++	# remember tty used (try to get another one for next call)
++	$queue{$j}->{last_modem} = $tty;
++
+ 	# write acct.log
+ 	&wacct($j, "fail $ex: $verb_ex");
+ 
+@@ -1704,7 +1722,7 @@
+     foreach $t (keys %tty_statistics)
+     {
+ 	print LOG "modem statistics for tty '$t'\n";
+-	print LOG "    total faxes sent: ${tty_statistics{$t}{'total'}}\n";
++	print LOG "    total fax calls : ${tty_statistics{$t}{'total'}}\n";
+ 	print LOG "    total success   : ${tty_statistics{$t}{'0'}}\n";
+ 	foreach (sort(keys %{$tty_statistics{$t}}))
+ 	{
+@@ -1719,8 +1737,10 @@
+     foreach $t (sort (keys %per_phone_statistics))
+     {
+ 	print LOG "error statistics for remote number '$t'\n";
++	print LOG "    total success   : ${per_phone_statistics{$t}{'0'}}\n";
+ 	foreach (sort(keys %{$per_phone_statistics{$t}}))
+ 	{
++	    next if ( $_ eq '0' );
+             printf LOG "    error code %-2d   : %d [%s]\n",
+ 		$_, $per_phone_statistics{$t}{$_}, 
+ 		$exitcodes[$_];
+--- mgetty-1.1.30.orig/fax/faxrm.in
++++ mgetty-1.1.30/fax/faxrm.in
+@@ -7,7 +7,7 @@
+ # There are still a lot rough edges - but it works, and should give you an
+ # idea how to improve it
+ #
+-# SCCS: $Id: faxrm.in,v 4.5 2002/11/16 22:16:51 gert Exp $ Copyright (C) 1994 Gert Doering
++# SCCS: $Id: faxrm.in,v 4.6 2003/02/04 16:46:36 gert Exp $ Copyright (C) 1994 Gert Doering
+ 
+ FAX_SPOOL=@FAX_SPOOL@
+ FAX_SPOOL_OUT=@FAX_SPOOL_OUT@
+@@ -16,7 +16,7 @@
+ echo="@ECHO@"
+ #
+ # helper program for privileged queue access
+-FAXQ_HELPER=/usr/local/lib/mgetty+sendfax/faxq-helper
++FAXQ_HELPER=@LIBDIR@/faxq-helper
+ #
+ 
+ if [ ! -d $FAX_SPOOL_OUT ]
+--- mgetty-1.1.30.orig/fax/faxq-helper.c
++++ mgetty-1.1.30/fax/faxq-helper.c
+@@ -71,6 +71,8 @@
+ int    fax_out_uid;		/* user ID to chown() fax jobs to */
+ int    fax_out_gid;		/* group ID ... */
+ 
++#define	ROOT_UID	0	/* root's user ID - override checks */
++
+ #define FAX_SEQ_FILE	".Sequence"
+ #define FAX_SEQ_LOCK	"LCK..seq"
+ 
+@@ -370,7 +372,7 @@
+ 
+     while( *p != '\0' )
+     {
+-	if ( *p != '.' && *p != ':' && ! isalnum(*p) )
++	if ( *p == '/' || *p == '\\' || isspace(*p) || !isprint(*p) )
+ 	{
+ 	    eout( "invalid char. '%c' in file name '%s', abort\n",
+ 		  *p, outfilename );
+@@ -386,7 +388,7 @@
+ 
+     sprintf( pathbuf, "%s/%s", dir1, outfilename );
+ 
+-    fd = open( pathbuf, O_WRONLY | O_CREAT | O_EXCL, 0600 );
++    fd = open( pathbuf, O_WRONLY | O_CREAT | O_EXCL, 0644 );
+     if ( fd < 0 )
+     {
+ 	eout( "can't open '%s' for writing: %s\n", pathbuf, strerror(errno));
+@@ -543,6 +545,9 @@
+ 
+     sprintf( buf, "%s/JOB", dir1 );
+ 
++    /* the JOB file has to be world-readable, relax umask */
++    umask( 0022 );
++
+ /* TODO: check if this portably catches symlinks to non-existant files! */
+     if ( ( fd = open( buf, O_WRONLY | O_CREAT | O_EXCL, 0644 ) ) < 0 )
+     {
+@@ -571,7 +576,8 @@
+ 
+ 	if ( strncmp(buf, "user ", 5) == 0 )
+ 	{
+-	    if ( strcmp( buf+5, real_user_name ) != 0 )
++	    if ( real_user_id != ROOT_UID &&
++		 strcmp( buf+5, real_user_name ) != 0 )
+ 	    {
+ 		eout( "user name mismatch (%s <-> %s)\n", buf+5, real_user_name );
+ 		break;
+@@ -678,7 +684,8 @@
+ 
+ 	if ( strncmp(buf, "user ", 5) == 0 )
+ 	{
+-	    if ( strcmp( buf+5, real_user_name ) != 0 )
++	    if ( real_user_id != ROOT_UID &&
++		 strcmp( buf+5, real_user_name ) != 0 )
+ 	    {
+ 		fprintf( stderr, "%s: not your job, can't do anything (%s <-> %s)\n", jfile, buf+5, real_user_name );
+ 		unlink( lfile );
+@@ -803,8 +810,11 @@
+ 
+     /* common things to check and prepare */
+ 
+-    /* directories and JOB files have to be readable */
+-    umask(0022);
++    /* make sure people do not play umask tricks on us - the only
++     * bits that are accepted in a user umask are "044" - permit/prevent 
++     * read access by group/other.  Write access is always denied.
++     */
++    umask( ( umask(0) & 0044 ) | 0022 );
+ 
+     /* get numeric uid/gid for fax user */
+     pw = getpwnam( FAX_OUT_USER );
+--- mgetty-1.1.30.orig/TODO
++++ mgetty-1.1.30/TODO
+@@ -352,6 +352,8 @@
+ 246) fix "RING/<msn>" handling for i4l
+ 
+ 248) include script to rotate/move log files on a regular basis
++     (base on contrib/mvlog, move to tools/, run through sedscript for
++     location and naming for the log files)
+ 
+ 250) move prototype for time() to mgetty.h, remove everywhere else
+ 
+@@ -373,3 +375,37 @@
+ 
+ 257) generalize calling $(MAKE) in subdirs - put all $(MAKE) arguments
+      in one common variable
++
++261) faxrunqd: don't count "modem locked" as "failure" for a given job
++     (but *do* delay by a certain time)
++     (hmmm - maybe not.  If all modems are locked for a long period of
++     time, it might be useful to flag the fax as "failed" to get people to
++     notice.  Combine with 259 - should resolve problem)
++
++262) faxrunqd: smarter algorithm for "modem is broken"
++     (locked = doesn't count, can't init = +1, NO CARRIER = +0.2)
++
++263) faxspool.rules: add sample mappings for PDF (via acroread, xpdf,
++     recent ghostscript versions)
++
++264) faxrunqd: timeout on "hanging" sendfax processes
++     (timeout > 15 min + 5 minutes * number of pages, or something like that)
++
++265) faxrunqd: write tty to acct.log (format change / WEB gui)
++
++260) faxrunqd: bump up priority of "exit 12" jobs
++266) faxunrqd: if a job fails half-way through (12), increase priority
++     to re-send missing parts quickly
++
++267) faxrunqd: sort per-modem statistics numerically (watchout: "total")
++
++268) faxrunq+faxrunqd: have configurable counters for 
++        "send-a-warning after <x> tries, fail after <y>"
++     have separate counter for "modem-locked"
++              costing-failures    tries-except-modem-locked    total-tries
++       warning        -                     10                    10
++       failure        5                     30                   100
++
++269) faxrunqd: have configurable threshold for "everything is broken"
++     -> if that threshold is reached, generate STOP file, warning e-mail, 
++     and suspend itself  (like "the local in-house PABX is broken")
+--- mgetty-1.1.30.orig/Makefile
++++ mgetty-1.1.30/Makefile
+@@ -1,6 +1,6 @@
+ # Makefile for the mgetty fax package
+ #
+-# SCCS-ID: $Id: Makefile,v 4.56 2002/12/16 13:08:23 gert Exp $ (c) Gert Doering
++# SCCS-ID: $Id: Makefile,v 4.58 2003/06/12 07:52:51 gert Exp $ (c) Gert Doering
+ #
+ # this is the C compiler to use (on SunOS, the standard "cc" does not
+ # grok my code, so please use gcc there. On ISC 4.0, use "icc".).
+@@ -213,6 +213,7 @@
+ FAX_SPOOL_OUT=$(FAX_SPOOL)/outgoing
+ #
+ # the user that owns the "outgoing fax queue" (FAX_SPOOL_OUT)
++# this user must exist in the system, otherwise faxspool will not work!
+ #
+ # faxrunq and faxrunqd should run under this user ID, and nothing else.  
+ # This user needs access to the modems of course.  
+@@ -300,8 +301,8 @@
+ # Nothing to change below this line ---------------------------------!
+ #
+ MR=1.1
+-SR=30
+-DIFFR=1.1.29
++SR=31
++DIFFR=1.1.30
+ #
+ #
+ OBJS=mgetty.o logfile.o do_chat.o locks.o utmp.o logname.o login.o \
+@@ -511,7 +512,7 @@
+ 	ssh home.leo.org -l doering 'cd $$HOME ; ./beta'
+ 
+ # send to Marc and Knarf
+-	head -30 ChangeLog |mail -s "mgetty$(MR).$(SR).tar.gz on greenie/alpha" knarf@camelot.de marc marcs
++	head -30 ChangeLog |mail -s "mgetty$(MR).$(SR).tar.gz on greenie/alpha" mgetty@knarf.de marc marcs
+ #	-./ftp.sh $(MR).$(SR) ftp.camelot.de /pub/incoming
+ #	-./ftp.sh $(MR).$(SR) poseidon.thphy.uni-duesseldorf.de /incoming
+ 
+@@ -600,9 +601,9 @@
+ # data files + directories
+ #
+ 	test -d $(LIBDIR)  || \
+-		( ./mkidirs $(LIBDIR) ; chmod 755 $(LIBDIR) )
++		( ./mkidirs $(LIBDIR) &&  chmod 755 $(LIBDIR) )
+ 	test -d $(CONFDIR) || \
+-		( ./mkidirs $(CONFDIR); chmod 755 $(CONFDIR))
++		( ./mkidirs $(CONFDIR) && chmod 755 $(CONFDIR))
+ 	test -f $(CONFDIR)/login.config || \
+ 		$(INSTALL) -o root -m 600 login.config $(CONFDIR)/
+ 	test -f $(CONFDIR)/mgetty.config || \
+@@ -627,17 +628,17 @@
+ # fax spool directories
+ #
+ 	test -d $(spool) || \
+-		( mkdir $(spool) ; chmod 755 $(spool) )
++		( mkdir $(spool) && chmod 755 $(spool) )
+ 	test -d $(FAX_SPOOL) || \
+-		( mkdir $(FAX_SPOOL) ; \
+-		  chown $(FAX_OUT_USER) $(FAX_SPOOL) ; \
++		( mkdir $(FAX_SPOOL) && \
++		  chown $(FAX_OUT_USER) $(FAX_SPOOL) && \
+ 		  chmod 755 $(FAX_SPOOL) )
+ 	test -d $(FAX_SPOOL_IN) || \
+-		( mkdir $(FAX_SPOOL_IN) ; chmod 755 $(FAX_SPOOL_IN) )
++		( mkdir $(FAX_SPOOL_IN) && chmod 755 $(FAX_SPOOL_IN) )
+ 	test -d $(FAX_SPOOL_OUT) || \
+-		( mkdir $(FAX_SPOOL_OUT) ; \
+-		  chown $(FAX_OUT_USER) $(FAX_SPOOL_OUT) ; \
+-		  chmod 755 $(FAX_SPOOL_OUT) )
++		  mkdir $(FAX_SPOOL_OUT)
++	chown $(FAX_OUT_USER) $(FAX_SPOOL_OUT)
++	chmod 755 $(FAX_SPOOL_OUT)
+ #
+ # g3 tool programs
+ #
+--- mgetty-1.1.30.orig/voice/libutil/access.c
++++ mgetty-1.1.30/voice/libutil/access.c
+@@ -5,7 +5,7 @@
+  * exactly one unnested call to voice_desimpersonify() for each
+  * voice_impersonify() because of the static umask below.
+  *
+- * $Id: access.c,v 1.2 1999/07/04 07:15:52 marcs Exp $
++ * $Id: access.c,v 1.3 2003/04/23 08:49:16 gert Exp $
+  *
+  */
+ 
+@@ -32,14 +32,14 @@
+ 	    &gid);
+ 
+    if (setegid(gid)) {
+-      lprintf(L_WARN, "%s: cannot set effective GID to %d",
+-	      program_name, gid);
++      lprintf(L_WARN, "%s: cannot set effective GID to %d: %s",
++	      program_name, gid, strerror(errno));
+       return 0;
+    }
+ 
+    if (seteuid(uid)) {
+-      lprintf(L_WARN, "%s: cannot set effective UID to %d",
+-	      program_name, uid);
++      lprintf(L_WARN, "%s: cannot set effective UID to %d: %s",
++	      program_name, uid, strerror(errno));
+       return 0;
+    }
+ 
+@@ -52,14 +52,14 @@
+ 
+ int voice_desimpersonify(void) {
+    if (seteuid(getuid())) {
+-      lprintf(L_WARN, "%s: cannot switch back to effective UID %d",
+-	      program_name, getuid());
++      lprintf(L_WARN, "%s: cannot switch back to effective UID %d: %s",
++	      program_name, getuid(), strerror(errno));
+       return 0;
+    }
+ 
+    if (setegid(getgid())) {
+-      lprintf(L_WARN, "%s: cannot switch back to effective GID %d",
+-	      program_name, getgid());
++      lprintf(L_WARN, "%s: cannot switch back to effective GID %d: %s",
++	      program_name, getgid(), strerror(errno));
+       return 0;
+    }
+ 
+--- mgetty-1.1.30.orig/voice/libvoice/V253modem.c
++++ mgetty-1.1.30/voice/libvoice/V253modem.c
+@@ -16,7 +16,7 @@
+   Hint: Recorded voice files are in .ub format (refer to the sox manpage about this) except the header.
+         So you can use this files with sox.
+  *
+- * $Id: V253modem.c,v 1.6 2002/11/25 21:14:51 gert Exp $
++ * $Id: V253modem.c,v 1.7 2003/01/08 22:03:18 gert Exp $
+  *
+  */
+ 
+@@ -352,7 +352,7 @@
+ 
+ /* Only verifies the RMD name */
+ #define V253modem_RMD_NAME "V253modem"
+-#define ELSA_RMD_NAME "ELSA"
++#define ELSA_RMD_NAME "Elsa"
+ int V253_check_rmd_adequation(char *rmd_name) 
+ {
+    return !strncmp(rmd_name,
+--- mgetty-1.1.30.orig/faxrecp.c
++++ mgetty-1.1.30/faxrecp.c
+@@ -94,13 +94,13 @@
+ 
+ #ifdef SHORT_FILENAMES
+     sprintf(temp, "%s/f%c%07x%s.%02d", directory,
+-		 fax_par_d.vr == 0? 'n': 'f',
++		 (fax_par_d.vr == 0 || fax_par_d.vr == 8) ? 'n': 'f',
+ 	         (int) call_start & 0xfffffff,
+ 	         DevId, pagenum );
+ #else
+     /* include sender's fax id - if present - into filename */
+     sprintf(temp, "%s/f%c%07x%s-", directory,
+-		fax_par_d.vr == 0? 'n': 'f',
++		(fax_par_d.vr == 0 || fax_par_d.vr == 8) ? 'n': 'f',
+ 		(int) call_start & 0xfffffff,
+ 		DevId );
+     i = strlen(temp);
+--- mgetty-1.1.30.orig/logfile.c
++++ mgetty-1.1.30/logfile.c
+@@ -3,13 +3,6 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+-#ifdef USE_VARARGS
+-# if !defined(NeXT) || defined(NEXTSGTTY)
+-#  include <varargs.h>
+-# endif
+-#else
+-# include <stdarg.h>
+-#endif
+ #include <sys/types.h>
+ #include <time.h>
+ #include <errno.h>
+@@ -19,6 +12,15 @@
+ #include "mgetty.h"
+ #include "policy.h"
+ 
++/* this must be included after ugly.h (sets USE_VARARGS on non-ANSI cc's) */
++#ifdef USE_VARARGS
++# if !defined(NeXT) || defined(NEXTSGTTY)
++#  include <varargs.h>
++# endif
++#else
++# include <stdarg.h>
++#endif
++
+ #ifdef SYSLOG
+ #include <syslog.h>
+ 
+--- mgetty-1.1.30.orig/faxlib.c
++++ mgetty-1.1.30/faxlib.c
+@@ -178,8 +178,10 @@
+ 
+ 	    if ( line[ix+1] == ',' &&		/* +FPS:s,lc,blc */
+ 		 sscanf( &line[ix+2],
+-			 (modem_type==Mt_class2_0)?"%x,%x,%x,%x"
+-			                          :"%d,%d,%d,%d",
++			 ( modem_type == Mt_class2 || 
++			  (modem_quirks & MQ_FPS_NOT_HEX) )
++			                          ?"%d,%d,%d,%d"
++						  :"%x,%x,%x,%x",
+ 		         &fhs_lc, &fhs_blc, &fhs_cblc, &fhs_lbc ) >= 2 )
+ 	    {
+ 		lprintf( L_NOISE, "%d lines received, %d lines bad, %d bytes lost", fhs_lc, fhs_blc, fhs_lbc );
+@@ -636,7 +638,7 @@
+ 	  case 1445:
+ 	    lprintf( L_MESG, "USR Courier/Sportster v32bis detected (buggy fax implementation)" );
+ 	    modem_type=Mt_class2_0;
+-	    modem_quirks |= MQ_USR_FMINSP;
++	    modem_quirks |= MQ_USR_FMINSP | MQ_FPS_NOT_HEX;
+ 	    break;
+ 	  case 2886:
+ 	  case 3361:
+@@ -645,17 +647,20 @@
+ 	  case 3367:
+ 	    lprintf( L_MESG, "USR Courier/Sportster V.34(+) detected" );
+ 	    modem_type=Mt_class2_0;
++	    modem_quirks |= MQ_FPS_NOT_HEX;
+ 	    mis = mdm_get_idstring( "ATI3", 1, fd );
+ 	    break;
+ 	  case 5601:
+ 	  case 5607:
+ 	    lprintf( L_MESG, "USR Courier/Sportster 56k detected" );
+ 	    modem_type=Mt_class2_0;
++	    modem_quirks |= MQ_FPS_NOT_HEX;
+ 	    mis = mdm_get_idstring( "ATI3", 1, fd );
+ 	    break;
+ 	  case 6401:
+ 	    lprintf( L_MESG, "USR I-Modem detected" );
+ 	    modem_type=Mt_class2_0;
++	    modem_quirks |= MQ_FPS_NOT_HEX;
+ 	    mis = mdm_get_idstring( "ATI3", 1, fd );
+ 	    break;
+ 	  case 62:	/* sure? */
+@@ -813,6 +818,7 @@
+ 	{
+ 	    lprintf( L_MESG, "USR Courier/Sportster V90 (national variant?) detected" );
+ 	    modem_type=Mt_class2_0;
++	    modem_quirks |= MQ_FPS_NOT_HEX;
+ 	    mis = mdm_get_idstring( "ATI3", 1, fd );
+ 	}
+ 	/* grrr, another one of those - Bill Nugent <whn@topelo.lopi.com> */
+@@ -835,6 +841,12 @@
+ 	    modem_type=Mt_class2;
+ 	    modem_quirks |= MQ_NEED2;
+ 	}
++	else if ( strncmp( l, "LT V.92", 7 ) == 0 )	/* gert */
++	{
++	    lprintf( L_MESG, "Multitech MT5634ZBA-V92 detected" );
++	    modem_type=Mt_class2_0;
++	    modem_quirks |= MQ_FPS_NOT_HEX;
++	}
+     }
+ 
+     if ( mis != NULL ) 
+--- mgetty-1.1.30.orig/faxrec.c
++++ mgetty-1.1.30/faxrec.c
+@@ -208,7 +208,7 @@
+     fprintf( pipe_fp, "\nModem device: %s\n", Device );
+     fprintf( pipe_fp, "\nCommunication parameters: %s\n", fax_param );
+     fprintf( pipe_fp, "    Resolution : %s\n",
+-		      fax_par_d.vr == 0? "normal" :"fine");
++	      (fax_par_d.vr == 0 || fax_par_d.vr == 8) ? "normal" :"fine");
+     fprintf( pipe_fp, "    Bit Rate   : %d\n", ( fax_par_d.br+1 ) * 2400 );
+     fprintf( pipe_fp, "    Page Width : %d pixels\n", fax_par_d.wd == 0? 1728:
+ 	              ( fax_par_d.wd == 1 ? 2048: 2432 ) );
+--- mgetty-1.1.30.orig/logname.c
++++ mgetty-1.1.30/logname.c
+@@ -51,7 +51,7 @@
+ 
+ char * ln_escape_prompt _P1( (ep), char * ep )
+ {
+-#define MAX_PROMPT_LENGTH 140
++#define MAX_PROMPT_LENGTH 300
+     static char * p = NULL;
+     int    i;
+     static struct utsname un;
+@@ -191,7 +191,7 @@
+     
+     if ( *ep != 0 )
+     {
+-	lprintf( L_WARN, "buffer overrun - input prompt too long" );
++	lprintf( L_WARN, "ln_escape_prompt: input line too long - data truncated" );
+     }
+ 
+     return p;
+--- mgetty-1.1.30.orig/README.1st
++++ mgetty-1.1.30/README.1st
+@@ -72,7 +72,7 @@
+ 
+ Generic questions ("it doesn't work") should go to the mgetty mailing list
+ (mgetty@muc.de), because I just don't have time to explain it all again
+-and again.
++and again.  (Un-)Subscription is done via mgetty-request@muc.de.
+ 
+ And... please do not forget that I'm doing this kind of support entirely
+ in my spare time - sometimes my answers will be very short, or it may
+--- mgetty-1.1.30.orig/ugly.h
++++ mgetty-1.1.30/ugly.h
+@@ -38,5 +38,10 @@
+ #define const
+ #define volatile
+ 
++/* <stdarg.h> and function(fmt,...) is incompatible with K&R protoypes */
++#ifndef USE_VARARGS
++#  define USE_VARARGS
++#endif
++
+ #endif
+ 
+--- mgetty-1.1.30.orig/ChangeLog
++++ mgetty-1.1.30/ChangeLog
+@@ -1,3 +1,79 @@
++Wed Aug 20 12:39:53 MEST 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxrunqd.in: change signal handling - use HUP for graceful
++	    exit, and dump statistics to logfile upon receipt of USR2
++
++Sat Jun 28 22:14:35 MEST 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxq-helper.c: honour user umask when spooling G3 files
++	  (user decides whether group/other can read faxes)
++
++	* fax/faxspoool.in: reset umask after creating tmpdir (with umask 077)
++
++	* fax/faxq-helper.c: file name validation was overly strict - 
++	  accept anything that's printable, not a space, '/' or '\'
++
++Thu Jun 12 16:56:44 MEST 2003  Gert Doering (gert@greenie.muc.de)
++
++	* faxlib.c: Multitech and USR return class 2.0/2.1 +FPS:<x>,<lc>
++	  values in decimal, not hex -> change +FPS: parser to do decimal
++	  for those modems (via modem_quirks |= MQ_FPS_NOT_HEX)
++
++	* fax_lib.h: add MQ_FPS_NOT_HEX modem quirk bit
++
++	* faxrec.c, faxrecp.c: understand VR=8 for "normal mode" (200x100 dpi)
++
++Mon Apr 28 19:41:14 MEST 2003  Gert Doering (gert@greenie.muc.de)
++
++	* logname: make "buffer overrun" error message more precise
++
++Wed Apr 23 10:49:25 MEST 2003  John R. Jackson <jrj@purdue.edu>
++
++	* voice/libutil/access.c: more verbose error reporting
++
++Wed Apr  9 23:05:23 MEST 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxspool.in: fix spooling without header line (-h -)
++
++Sun Apr  6 16:09:14 MEST 2003  Andreas Barth <aba@not.so.argh.org>
++
++	* mgetty.8in, mgetty.texi-in: document escape sequences for
++	  /etc/issue and login prompt.
++
++Wed Mar  5 21:37:38 MET 2003  Gert Doering (gert@greenie.muc.de)
++
++	* Makefile: abort "make install" before installing faxspool
++	  if fax user does not exist
++
++	* Makefile: unconditionally chown $FAX_SPOOL_OUT to fax user
++
++Tue Feb  4 17:46:45 MET 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxq-helper.c: uid=0 overrides access permission checks
++
++	* fax/faxrm.in: bugfix: get faxq-helper path from sedscript
++
++Tue Jan 21 14:27:39 MET 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxspool.in: abort with a proper error message on input file
++	  names containing white space or quote characters
++
++Tue Jan 14 14:30:42 MET 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxrunqd.in: include "success" counter in per_phone_statistics
++
++	* ugly.h: #define USE_VARARGS for non-Ansi C compilers
++
++	* logfile.c: change #include<> sequence to catch USE_VARARGS def.
++
++Wed Jan  8 23:03:26 MET 2003  Gert Doering (gert@greenie.muc.de)
++
++	* fax/faxrunqd.in: if a fax job fails, reschedule on different
++	  modem (if possible)
++
++	* voice/libvoice/V253modem.c: fix ELSA_RMD_NAME (used for
++	  V.253 modem <-> other modem RMD equivalency checks)
++
+ Mon Dec 16 14:08:06 MET 2002  Gert Doering (gert@greenie.muc.de)
+ 
+ 	* release 1.1.30
+--- mgetty-1.1.30.orig/version.h
++++ mgetty-1.1.30/version.h
+@@ -1 +1 @@
+-char * mgetty_version = "experimental test release 1.1.30-Dec16";
++char * mgetty_version = "experimental test release 1.1.31-Sep23";
+--- mgetty-1.1.30.orig/fax_lib.h
++++ mgetty-1.1.30/fax_lib.h
+@@ -102,3 +102,6 @@
+ #define MQ_NO_XON	0x08	/* do not wait for XON char when sending */
+ #define MQ_USR_FMINSP	0x20	/* USR: +FCC=1,<max> sets MIN speed instead */
+ #define MQ_SHOW_NSF	0x40	/* set AT+FNR=1,1,1,1 (with NSFs) */
++#define MQ_FPS_NOT_HEX	0x80	/* +FPS:<status>,<lc> reported as decimal */
++
++/* note: 0x100 and 0x200 currently used for teergrubing - faxrecp.c */

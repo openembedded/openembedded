@@ -1,0 +1,50 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- libgpg-error-0.7/configure.ac~pkgconfig	2004-03-07 09:46:24.000000000 -0600
++++ libgpg-error-0.7/configure.ac	2004-07-15 18:50:43.000000000 -0500
+@@ -83,6 +83,7 @@
+ AC_SUBST(GPG_ERROR_CONFIG_LIBS)
+ AC_SUBST(GPG_ERROR_CONFIG_CFLAGS)
+ AC_CONFIG_FILES([src/gpg-error-config], [chmod +x src/gpg-error-config])
++AC_CONFIG_FILES([src/gpg-error.pc])
+ 
+ # Checks for library functions.
+ AC_CONFIG_FILES([Makefile])
+--- libgpg-error-0.7/src/Makefile.am~pkgconfig	2004-03-01 17:13:26.000000000 -0600
++++ libgpg-error-0.7/src/Makefile.am	2004-07-15 18:51:43.000000000 -0500
+@@ -24,7 +24,8 @@
+ 	mkerrnos.awk errnos.in \
+ 	mkerrcodes.awk mkerrcodes1.awk mkerrcodes2.awk mkerrcodes.c \
+ 	mkheader.awk gpg-error.h.in \
+-	err-sources.h err-codes.h gpg-error-config.in gpg-error.m4
++	err-sources.h err-codes.h gpg-error-config.in gpg-error.m4 \
++	gpg-error.pc.in
+ BUILT_SOURCES = err-sources.h err-codes.h code-to-errno.h code-from-errno.h \
+ 	err-sources-sym.h err-codes-sym.h errnos-sym.h gpg-error.h
+ CLEANFILES = err-sources.h err-codes.h code-to-errno.h code-from-errno.h \
+@@ -35,6 +36,9 @@
+ m4datadir = $(datadir)/aclocal
+ m4data_DATA = gpg-error.m4
+ 
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = gpg-error.pc
++
+ include_HEADERS = gpg-error.h
+ 
+ lib_LTLIBRARIES = libgpg-error.la
+--- /dev/null	2004-06-02 16:28:12.000000000 -0500
++++ libgpg-error-0.7/src/gpg-error.pc.in	2004-07-15 18:53:48.000000000 -0500
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: gpg-error
++Description: a library that defines common error values for all GnuPG components
++Version: @VERSION@
++Libs: -L{libdir} -lgpg-error
++Cflags: -I${includedir}

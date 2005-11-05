@@ -1,0 +1,11 @@
+--- configure.in	2005-02-02 11:05:04.000000000 -0500
++++ configure.in.new	2005-02-02 11:41:23.000000000 -0500
+@@ -37,7 +37,7 @@
+ 	trydir_l="${trydir_l} /usr/local/lib"
+ fi
+ 
+-trydir_i="${trydir_i} ${prefix}/include/pcap ${prefix}/include/pcre /usr/include/pcre /usr/include/pcap" 
++trydir_i="${prefix}/include/pcap ${prefix}/include/pcre /usr/include/pcre /usr/include/pcap" 
+ AC_ARG_WITH(includes,
+ [  --with-includes=DIR     Space-seperated list of include directories],
+ [

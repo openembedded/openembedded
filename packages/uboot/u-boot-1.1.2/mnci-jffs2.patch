@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- u-boot-1.1.2/common/cmd_jffs2.c~mnci-jffs2
++++ u-boot-1.1.2/common/cmd_jffs2.c
+@@ -43,7 +43,7 @@
+ extern int cramfs_ls (struct part_info *info, char *filename);
+ extern int cramfs_info (struct part_info *info);
+ 
+-static int part_num=0;
++static int part_num=3;
+ 
+ #ifndef CFG_JFFS_CUSTOM_PART
+ 

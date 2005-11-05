@@ -1,0 +1,9 @@
+--- zeecookbook/zeecookbook.pro
++++ zeecookbook/zeecookbook.pro
+@@ -82,5 +82,5 @@
+ INTERFACES	=
+ INCLUDEPATH	+= $(QPEDIR)/include
+ LIBS		+= -L$(QPEDIR)/lib -lsqlite -lqpe
+-DESTDIR		= $(QPEDIR)/bin
++DESTDIR		= .
+ TARGET		= zeecookbook

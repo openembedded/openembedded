@@ -1,0 +1,11 @@
+--- ./../lib/SocketAddr.cpp.orig	2004-10-05 12:10:06.763746800 +0200
++++ ./../lib/SocketAddr.cpp	2004-10-05 12:10:21.079570464 +0200
+@@ -65,7 +65,7 @@
+ 
+ 
+ #ifndef WIN32
+-extern int h_errno;
++//extern int h_errno;
+ #endif
+ 
+ Socklen_t SocketAddr::mAddress_size = sizeof(iperf_sockaddr);

@@ -1,0 +1,29 @@
+--- quake1src/host.c~	2003-09-09 13:59:53.000000000 +0100
++++ quake1src/host.c	2005-05-06 16:13:50.193452960 +0100
+@@ -874,7 +874,7 @@
+ 	else
+ 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
+ 	
+-	CDAudio_Update();
++//	CDAudio_Update();
+ 
+ 	if (host_speeds.value)
+ 	{
+@@ -1074,7 +1074,7 @@
+ #endif
+ 
+ #endif	// _WIN32
+-		CDAudio_Init ();
++//		CDAudio_Init ();
+ 		Sbar_Init ();
+ 		CL_Init ();
+ #ifdef _WIN32 // on non win32, mouse comes before video for security reasons
+@@ -1117,7 +1117,7 @@
+ 
+ 	Host_WriteConfiguration (); 
+ 
+-	CDAudio_Shutdown ();
++//	CDAudio_Shutdown ();
+ 	NET_Shutdown ();
+ 	S_Shutdown();
+ 	IN_Shutdown ();

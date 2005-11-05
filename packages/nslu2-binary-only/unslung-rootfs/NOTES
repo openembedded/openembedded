@@ -1,0 +1,449 @@
+Unslung-5.x Family Release Notes
+
+Unslung is a replacement firmware image for the Linksys NSLU2 which is designed
+to allow you to make changes to the root filesystem (including the installation
+of downloadable packages) while still providing all the standard product
+functionality.
+
+If, at any time, you have any questions concerning the installation or
+operation of Unslung firmware, your first port of call should be the
+NSLU2-Linux wiki at:
+
+	http://www.nslu2-linux.org
+
+Specifically, check the HowTos and the Frequently Asked Questions before
+posting to the mailing list or asking a question in the IRC channel
+[#nslu2-general @ irc.freenode.net].
+
+OK! Now that that's out of the way...
+
+This file is provided to give general information and usage notes for the
+Unslung 5.x firmware.  If you are looking for installation instructions, please
+stop now and go to the README file.  Follow the README instructions WORD for
+WORD to keep from turning your NSLU2 into a brick.  The information contained
+in this file will make more sense if you have already "unslung" your NSLU2.
+
+--------------------------------------------------------------------------------
+
+These "Notes" are divided into four sections:
+
+     1 - GENERAL INFORMATION
+     2 - IPKG PACKAGES
+     3 - DIVERSION SCRIPTS
+     4 - CHANGELOG
+
+
+GENERAL INFORMATION
+
+As stated above, Unslung firmware is a replacement firmware image for the
+Linksys NSLU2.  The Unslung firmware is intended to be used for loading new
+packages (giving enhanced or additional functionality) with minimal changes
+to the standard user interface and firmware.  The differences in the Unslung 5.x
+firmware from the standard Linksys 2.3R29 firmware can be found at:
+
+	http://www.nslu2-linux.org/wiki/Unslung/UnslungFeatures
+
+For more information about the Unslung firmware, including details on how to
+build it from source code yourself, look at:
+
+	http://www.nslu2-linux.org/wiki/Unslung
+
+There are several assumptions made in this Notes.  One, you've successfully
+unslung your NSLU2, and can verify the basic Linksys functionality (samba
+users, groups, and shares setup with the Linksys interface).  Two, that you can
+get telnet or ssh shell access to your NSLU2 from any computer on the same
+network as the NSLU2.  Three, that you have read and understand the NSLU2-linux
+community rules at:
+
+     http://www.nslu2-linux.org/wiki/Main/HomePage
+
+If you understand the third assumption, then you also understand that there is
+an emphasis on using and developing the NSLU2-Linux wiki.  Clarifications and
+further documentation is always welcomed on the wiki.
+
+If you are experienced with the Linux operating system, then you can make
+changes directly to the root filesystem - changes which are persistent across
+reboot.  If you want to get involved, then check the NSLU2-linux wiki at:
+
+     http://www.nslu2-linux.org/wiki/Main/HowToGetInvolved
+
+
+IPKG PACKAGES
+
+Packages require you to be running Unslung firmware (as you may have already
+guessed!)  In general, ipkg packages are commonly available software packages
+that have been ported to the NSLU2 - giving enhanced or additional
+functionality.  If you run into problems or have specific question with a
+certain package, you should look on the Internet for the general documentation
+about the package first.  If your problem is specific to the NSLU2 port, then
+check for further documentation for the corresponding package on the
+NSLU2-Linux wiki at:
+
+     http://www.nslu2-linux.org/wiki/Unslung/Packages
+
+When you "unsling" an external disk (check the README for instructions),
+downloaded packages will be installed onto that external disk.  The number of
+packages that you can install is only limited by the size of the "data"
+partition on the external disk.  Note that you *must* *not* install any
+packages before you have booted with an external "Unslung" disk.  To do so will
+almost certainly cause your internal jffs2 flash memory become full, and cause
+you to have to reflash your NSLU2.
+
+Package Installation Details
+
+     1) Check for network connectivity to the package repository from the NSLU2
+          first:  "ping ipkg.nslu2-linux.org"
+
+          - If this does not work, then please check the NSLU2 DNS settings in
+               the web interface (under "Administration", "LAN").
+
+     3) Update the list of available packages from new feeds:  "ipkg update"
+
+     4) Check the list of available packages for ones that you want on your
+          NSLU2:  "ipkg list"
+
+     5) Install the packages:  "ipkg install <package-name>"
+
+Most packages put their startup scripts into /opt/etc/init.d - which the
+Unslung firmware automatically runs at boot.  Some other packages are run from
+the cron or xinetd daemons.
+
+You can also check the ipkg command arguments simply by typing "ipkg" at the
+prompt.
+
+
+DIVERSION SCRIPTS
+
+Diversion scripts are used to start packages, set variables or function
+definitions at the time of the NSLU2 boot.  The diversion mechanism allows you
+to add to, or even replace the Linksys script functionality.  They "divert" the
+normal boot scripts to perform the needed action(s) and then can either "return
+1" to continue normal factory script progress or "return 0" to abort the
+diverted factory script.  The diversion of startup scripts is done at the
+lowest granularity, so you can just divert the rc.xinetd script and leave all
+others unchanged.  You are advised to use diversion scripts rather than editing
+system files directly (as this will allow you to upgrade the Unslung firmware
+in the future without having to make all of your changes again).
+
+     - Note:  If you do need to edit the system files directly, you can use the
+          "resling" script to save and load your modified system files.  See
+          the NSLU2-Linux wiki at:
+
+          http://www.nslu2-linux.org/wiki/Unslung/ReSling
+
+Diversion scripts go in the /unslung directory (you may have to create that
+directory first).  Note that after you have unslung to an external disk, then
+the diversion scripts will be stored on that external disk (along with the rest
+of the root filesystem).  This means that recovering from an incorrect
+diversion script is as simple as powering off, unplugging the disk, powering
+on, hot-plugging the disk (note that the diversion scripts will only run if the
+disk is attached at boot), and fix or remove the diversion script.
+
+You may divert as many or as few scripts as you like. Simply add the name of
+the standard rc script into the appropriate /unslung directory and it will be
+run.
+
+For example, I have a script /unslung/rc.local:
+
+#! /bin/sh
+/opt/bin/do_foo
+return 1
+
+That will run at the beginning of the normal /etc/rc.d/rc.local, and then
+the rest of the factory rc.local will be executed.  If I do NOT want to run
+the factory rc.local, my script would be:
+
+#!/bin/sh
+/opt/bin/do_foo
+return 0
+
+That is, if the diversion script returns with something other than 0, it will
+run the rest of the factory script.
+
+Note that any variable definitions or function declarations are allowed to
+happen before the diversion script is called.  This allows you to use the
+variables and functions defined by the factory script.
+
+Also not that telnet is not enabled by default - there is an openssh package
+and a dropbear package that either can replace telnet access with secure shell
+access.
+
+     - Dropbear package details on NSLU2-Linux wiki at:
+
+          http://www.nslu2-linux.org/wiki/HowTo/UseDropBearForRemoteAccess
+
+The rationale behind not enabling telnet by default is ensure that an Unslung
+NSLU2 has the same network footprint as a stock NSLU2 with Linksys firmware.
+That said, if you want to enable telnet on boot, then install the xinetd
+package (which enables telnet by default).
+
+
+CHANGELOG
+
+1.11:
+
+First public release
+
+1.12:
+
+Added a symlink to slingbox for gzip.  Added flashfs (as simple utility for
+preserving user files across hard disk formats during beta testing).
+
+1.13:
+
+Added LD_LIBRARY_PATH to /etc/profile (only works for telnet and ssh access,
+not for serial or diversion scripts).
+
+1.14:
+
+Added Unslung Doc link to the User Guide page.
+
+2.3:
+
+Moved development to OpenEmbedded.
+
+2.4:
+
+Updated to the latest ipk binary instead of the simple script.
+
+2.5:
+
+Added the real wget (instead of using the busybox version).  This is so we can
+support .netrc files for commercial packages.
+
+2.6:
+
+Fixed the unsling script so it removes conflicting files on an upgrade.
+
+2.7:
+
+Began development of the -able variant.
+
+2.8:
+
+Added the patch for genesys enclosures.
+
+2.9:
+
+Reorganized the various variants into a more consistent scheme.
+
+2.10:
+
+Added the ext3flash-on-disk1 functionality.
+
+2.11:
+
+Added the README to /opt/doc.
+
+2.12:
+
+First public release of 2.x firmware.
+
+3.1:
+
+Added jffs2 functionality.
+
+3.2:
+
+Incorporated switchbox functionality.
+
+3.3:
+
+Added ramdisks for /dev and /var to reduce internal flash writes.
+
+3.4:
+
+Replaced flashfs script with new resling script.
+
+3.5:
+
+Added code to reinitialize /etc/mtab on boot.
+
+3.6:
+
+Mounted /dev and /var jffs2 directories as /dev.state and /var.state so that
+they can be used for persistent changes which are used to populate the ramdisks
+on the next boot.
+
+3.7:
+
+Added "Pluggable Personalities" - now runs diversion scripts from both the
+internal jffs2 area and also from an external drive attached at boot time.
+
+3.8:
+
+Enabled mounting of external drives earlier in the boot process, so that the
+rc, rc.sysinit, and rc.1 scripts can be diverted by external diversion scripts
+on an attached drive.
+
+3.9:
+
+Moved a number of -able kernel features (such as USB devfs support) into
+-standard.
+
+3.10:
+
+Added support for unslung-start and unslung-stop diversion scripts, and package
+shutdown scripts (K??foo).
+
+3.11:
+
+Added NFS kernel support (both client and server, and both V2 and V3
+protocols).
+
+3.12:
+
+Added basic maintenance mode support.  If /.ramdisk exists in the jffs2
+filesystem, then the jffs2 filesystem is copied into a ramdisk on boot, and run
+from there.  This allows for updating firmware using the web interface.
+
+3.13:
+
+Added recovery mode support.  If a viable root filesystem cannot be found, then
+switchbox drops into a basic recovery shell, with a telnet daemon running as
+192.168.1.77 with no password.  This behavior can also be forced with a
+/.recovery file in the jffs2 filesystem.
+
+3.14:
+
+Added web control of maintenance mode.  You have to enable maintenance mode and
+reboot before the firmware upgrade page allows you to enter a filename for the
+new firmware.
+
+3.15:
+
+Added confirmation dialog boxes to the maintenance mode web control.
+
+3.16:
+
+First public release of 3.x firmware.
+
+3.17:
+
+Fixed syslog issue.  Added FP patches.
+
+3.18:
+
+Fixed a number of minor issues regarding file permissions.
+Added support for unslinging to the data partition.
+
+4.1:
+
+Split from 3.x stream to allow parallel development.
+
+4.2:
+
+New switchbox implementation with NFS and external USB disk root filesystem support.
+
+4.3:
+
+Enabled devfs.
+
+4.4:
+
+Changed slingbox program locations to match those of OpenSlug so that
+we can use the same switchbox for both.
+
+4.5:
+
+Enabled RAID support modules and USB camera support modules.
+
+4.6:
+
+Merged unslung-standard and unslung-able, and created the oe feed for
+downloadable kernel modules. Updated the unsling script to support
+external rootfs.
+
+4.7:
+
+Enabled lots of traffic shaping modules.  Enabled support for external
+disks on sda1, sda2, sdb1 and sdb2.
+
+4.8:
+
+Made Unslung *not* create ramdisk for /var and /dev when you've
+unslung to an external disk.  Fixed nsswitch.conf.  Updated the feed
+locations.  Added /dev/st devices for tape drive support.
+
+4.9:
+
+Updated the unslung script to give feedback on the rootfs transfer,
+and to preserve an existing upkg database on the target disk.  Added
+more device nodes to support the new downloadable kernel modules.
+
+4.10:
+
+Made Unslung wait until quota checking is complete before running
+package startup scripts.  Simplified unsling to support disk1 and
+disk2 (data partitions) only.
+
+4.11:
+
+Removed /tmp ramdisk if unslung to an external disk.  Now clears /tmp
+and /mnt/backup on each boot.
+
+4.12:
+
+Updated to the latest ipkg version.
+
+4.13:
+
+Added /dev/sdd and /dev/sde device nodes.
+Added support for alternate rootfs under expert user control.
+
+4.14:
+
+Added audio support to the kernel.  Increased the USB disk startup
+wait to 10 seconds, and added the ability to divert rc.bootbin to the
+startup scripts.
+
+4.15:
+
+Added /dev/dsp and updated the README and NOTES files.
+
+4.16:
+
+Added the /sbin/slingover script for migrating packages from the 3.x locations.
+
+4.17:
+
+Developer-only release booting straight from jffs2 instead of using switchbox.
+
+4.18:
+
+A number of /linuxrc fixes.  Removed support for alternate rootfs under expert
+user control (expert users can now just edit the /linuxrc in jffs2 directly).
+
+4.19:
+
+Removed all trace of switchbox from the firmware.  This saves 128Kb of flash,
+and about 1MB of RAM.
+
+4.20:
+
+First public release of 4.x firmware.
+
+5.1:
+
+Upgraded to Linksys firmware V2.3R29, but kept telnetd.
+
+5.2:
+
+Removed the ipkg link, and made unsling put it back on an external disk.
+
+5.3:
+
+Replaced maintenance mode with code to allow entry into RedBoot Upgrade Mode.
+
+5.4:
+
+Removed all maintenance mode support, and also removed support for rootfs on
+jffs2 but packages on external disk (it's either all or nothing).
+Removed unused /mnt/sda1, /mnt/sda2, /mnt/sdb1, and /mnt/sdb2.
+Disabled the download process (superceded by upgrade mode).
+Disabled the generation of the "ourtelnetrescue" user (too insecure).
+Added disk auto-wait countdown to /linuxrc (courtesy of glc).
+
+5.5:
+
+First public release of 5.x firmware.

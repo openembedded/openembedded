@@ -1,0 +1,52 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- netkit-tftp-0.17/include/arpa/tftp.h~pack_tftphdr.patch
++++ netkit-tftp-0.17/include/arpa/tftp.h
+@@ -10,10 +10,6 @@
+  * 2. Redistributions in binary form must reproduce the above copyright
+  *    notice, this list of conditions and the following disclaimer in the
+  *    documentation and/or other materials provided with the distribution.
+- * 3. All advertising materials mentioning features or use of this software
+- *    must display the following acknowledgement:
+- *	This product includes software developed by the University of
+- *	California, Berkeley and its contributors.
+  * 4. Neither the name of the University nor the names of its contributors
+  *    may be used to endorse or promote products derived from this software
+  *    without specific prior written permission.
+@@ -30,10 +26,7 @@
+  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  * SUCH DAMAGE.
+  *
+- *	From: @(#)tftp.h	8.1 (Berkeley) 6/2/93
+- *      $Id: tftp.h,v 1.1 2000/07/22 18:59:20 dholland Exp $
+- *
+- * (Fixed for netkit to have well-defined field sizes)
++ *	@(#)tftp.h	8.1 (Berkeley) 6/2/93
+  */
+ 
+ #ifndef _ARPA_TFTP_H
+@@ -54,14 +47,14 @@
+ #define	ERROR	05				/* error code */
+ 
+ struct	tftphdr {
+-	u_int16_t th_opcode;			/* packet type */
++	short	th_opcode;			/* packet type */
+ 	union {
+-		u_int16_t tu_block;		/* block # */
+-		u_int16_t tu_code;		/* error code */
+-		char tu_stuff[1];		/* request packet stuff */
+-	} th_u;
+-	char th_data[1];			/* data or error string */
+-};
++		unsigned short	tu_block;	/* block # */
++		short	tu_code;		/* error code */
++		char	tu_stuff[1];		/* request packet stuff */
++	} __attribute__ ((__packed__)) th_u;
++	char	th_data[1];			/* data or error string */
++} __attribute__ ((__packed__));
+ 
+ #define	th_block	th_u.tu_block
+ #define	th_code		th_u.tu_code

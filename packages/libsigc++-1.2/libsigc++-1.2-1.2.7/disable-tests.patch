@@ -1,0 +1,13 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- libsigc++-1.2.7/Makefile.am~disable-tests
++++ libsigc++-1.2.7/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = sigc++ tests doc MSVC_6 MSVC_Net2003 eVC4
++SUBDIRS = sigc++
+ DIST_SUBDIRS = $(SUBDIRS) examples scripts
+ ACLOCAL_AMFLAGS = -I ./scripts
+ 

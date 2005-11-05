@@ -1,0 +1,90 @@
+#!/bin/sh
+
+INIT=/sbin/init.sysvinit
+#OVERLAYS=/media/ram /media/cf /media/card
+ROOTBACKUP=/media/realroot
+UNION=/media/union
+PATH=/usr/bin:/usr/sbin:/bin:/sbin
+
+if ! test -e ${INIT}; then
+	echo >&2 "ERROR: ${INIT} not found"
+	exit 1
+fi
+
+if test x"$*" != "x"; then
+	exec ${INIT} $*
+fi
+
+if ! which unionctl; then
+	exec ${INIT}
+fi
+
+nodupmount () {
+	opts=""
+	type=""
+	while true; do
+		if test "$1" = "-o"; then
+			shift
+			opts="-o $1"
+			shift
+		elif test "$1" = "-t"; then
+			shift
+			type="$1"
+			shift
+		else
+			break
+		fi
+	done
+	if test x"$2" = "x"; then
+		mountpt="$1"
+	else
+		device="$1"
+		mountpt="$2"
+	fi
+	mountmatch="^[^ ]+ $mountpt $type"
+	# echo "NOTE: grep -E -q \"$mountmatch\" /proc/mounts"
+	if grep -E -q "$mountmatch" /proc/mounts; then
+		return 0;
+	fi
+	if test x"$type" != "x"; then
+		type="-t $type"
+	fi
+	echo >&2 "NOTE: executing mount $type $opts $device $mountpt"
+	mkdir -p $mountpt
+	/bin/mount.busybox $type $opts $device $mountpt
+	ret="$?"
+	if test "$ret" = "0"; then
+		wemounted="$wemounted $mountpt"
+	fi
+	return $ret
+}
+
+#set -x
+wemounted=""
+(
+	set -e
+	/bin/mount.busybox /proc
+	insmod /lib/modules/`uname -r`/kernel/fs/unionfs.o
+	nodupmount -t unionfs -o dirs=/.=rw,setattr=all none ${UNION}
+#	nodupmount -o bind / ${UNION}/${ROOTBACKUP}
+#	for OVERLAY in ${OVERLAYS}; do
+#		nodupmount ${OVERLAY}
+#		union-ctl /. --add --mode rw ${OVERLAY}
+#		nodupmount -o bind ${OVERLAY} ${UNION}/${OVERLAY}
+#	done
+	/bin/umount.busybox /proc
+#	nodupmount -o bind /proc ${UNION}/proc
+#	nodupmount -o bind / ${ROOTBACKUP}
+) || (
+	echo >&2 "ERROR: unable to setup mounts for chroot";
+	if test x"$wemounted" != "x"; then
+		# cleanup
+		for mount in $wemounted; do
+			/bin/umount.busybox $mount
+		done
+	fi
+	exec ${INIT}
+)
+cd ${UNION}
+pivot_root . ./${ROOTBACKUP}
+exec chroot . ${INIT}

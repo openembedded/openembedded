@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux/drivers/char/collie_keymap.map~keymap-more-sane	2003-05-13 11:18:18.000000000 +0200
++++ linux/drivers/char/collie_keymap.map	2004-06-23 00:03:19.000000000 +0200
+@@ -55,9 +55,11 @@
+ # (Cancel:34) F9 -> Escape
+ keycode 34 = Escape
+ keycode 35 = Left
++	control keycode 35 = Decr_Console
+ keycode 36 = Up
+ keycode 37 = Down
+ keycode 38 = Right
++	control keycode 38 = Incr_Console
+ # (OK:39) F4 -> Return 
+ keycode 39 = Return
+ keycode 40 = 

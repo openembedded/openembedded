@@ -1,0 +1,10 @@
+--- ion-3ds-20041104.orig/utils/ion-runinxterm	2003-05-30 21:17:53.000000000 +0000
++++ ion-3ds-20041104/utils/ion-runinxterm	2004-12-05 15:57:53.000000000 +0000
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-test "$XTERMCMD" || XTERMCMD="xterm"
++test "$XTERMCMD" || XTERMCMD="x-terminal-emulator"
+ 
+ if test $# -lt 1; then
+ 	echo error

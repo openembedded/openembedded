@@ -1,0 +1,175 @@
+diff -Nurb shorewall/action.AllowMM shorewall.confed/action.AllowMM
+--- shorewall/action.AllowMM	1970-01-01 01:00:00.000000000 +0100
++++ shorewall.confed/action.AllowMM	2004-10-14 16:50:21.200725304 +0200
+@@ -0,0 +1,15 @@
++#
++# Shorewall 2.0 /etc/shorewall/action.AllowMM
++#
++#	This action accepts MobileMesh routing protocol traffic.
++#
++#	Note: This action allows traffic for the MobileMesh routing protocol
++#
++######################################################################################
++#TARGET  SOURCE		DEST      	PROTO	DEST    SOURCE	 	RATE	USER/
++#                       	        	PORT    PORT(S)		LIMIT	GROUP
++ACCEPT	 -		-		udp	20470
++ACCEPT	 -		-		udp	20471
++ACCEPT	 -		-		tcp	20473
++ACCEPT	 -		224.1.2.3
++#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/action.AllowNetperf shorewall.confed/action.AllowNetperf
+--- shorewall/action.AllowNetperf	1970-01-01 01:00:00.000000000 +0100
++++ shorewall.confed/action.AllowNetperf	2004-10-14 15:46:36.000000000 +0200
+@@ -0,0 +1,17 @@
++#
++# Shorewall 2.0 /etc/shorewall/action.AllowSMTP
++#
++#	This action accepts SMTP (email) traffic.
++#
++#	Note: This action allows traffic between an MUA (Email client)
++#	and an MTA (mail server) or between MTAs. It does not enable
++#	reading of email via POP3 or IMAP. For those you need to use
++#	the AllowPOP3 or AllowIMAP actions.
++#
++######################################################################################
++#TARGET  SOURCE		DEST      	PROTO	DEST    SOURCE	 	RATE	USER/
++#                       	        	PORT    PORT(S)		LIMIT	GROUP
++ACCEPT	 -		-		tcp	12865
++ACCEPT	 -		-		tcp	1024:
++ACCEPT	 -		-		udp	1024:
++#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/action.AllowOLSR shorewall.confed/action.AllowOLSR
+--- shorewall/action.AllowOLSR	1970-01-01 01:00:00.000000000 +0100
++++ shorewall.confed/action.AllowOLSR	2004-10-14 15:45:29.000000000 +0200
+@@ -0,0 +1,12 @@
++#
++# Shorewall 2.0 /etc/shorewall/action.AllowOLSR
++#
++#	This action accepts OLSR routing protocol traffic.
++#
++#	Note: This action allows traffic from the OLSR routing protocol.
++#
++######################################################################################
++#TARGET  SOURCE		DEST      	PROTO	DEST    SOURCE	 	RATE	USER/
++#                       	        	PORT    PORT(S)		LIMIT	GROUP
++ACCEPT	 -		-		udp	698
++#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/action.AllowTinc shorewall.confed/action.AllowTinc
+--- shorewall/action.AllowTinc	1970-01-01 01:00:00.000000000 +0100
++++ shorewall.confed/action.AllowTinc	2004-10-14 15:48:13.000000000 +0200
+@@ -0,0 +1,13 @@
++#
++# Shorewall 2.0 /etc/shorewall/action.AllowOLSR
++#
++#	This action accepts OLSR routing protocol traffic.
++#
++#	Note: This action allows traffic from the OLSR routing protocol.
++#
++######################################################################################
++#TARGET  SOURCE		DEST      	PROTO	DEST    SOURCE	 	RATE	USER/
++#                       	        	PORT    PORT(S)		LIMIT	GROUP
++ACCEPT	 -		-		tcp	655	655
++ACCEPT	 -		-		udp	655	655
++#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/action.AllowIPSEC shorewall.confed/action.AllowIPSEC
+--- shorewall/action.AllowIPSEC	1970-01-01 01:00:00.000000000 +0100
++++ shorewall.confed/action.AllowIPSEC	2004-10-14 15:48:13.000000000 +0200
+@@ -0,0 +1,15 @@
++#
++# Shorewall 2.0 /etc/shorewall/action.AllowIPSEC
++#
++#	This action accepts IPSEC traffic.
++#
++#	Note: This action allows IPSEC encrypted traffic (ESP and AH) 
++#            and IPSEC key negotioation (IKE).
++#
++######################################################################################
++#TARGET  SOURCE		DEST      	PROTO	DEST    SOURCE	 	RATE	USER/
++#                       	        	PORT    PORT(S)		LIMIT	GROUP
++ACCEPT	 -		-		50
++ACCEPT	 -		-		51
++ACCEPT	 -		-		udp	500	500
++#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/actions shorewall.confed/actions
+--- shorewall/actions	2004-10-14 17:04:41.547932648 +0200
++++ shorewall.confed/actions	2004-10-14 15:52:38.000000000 +0200
+@@ -25,5 +25,9 @@
+ #	itself, the associated policy will have no common action. 
+ #
+ #ACTION
+-
++AllowMM
++AllowNetperf
++AllowOLSR
++AllowTinc
++AllowIPSEC
+ #LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE
+diff -Nurb shorewall/interfaces shorewall.confed/interfaces
+--- shorewall/interfaces	2004-10-14 17:04:41.546932800 +0200
++++ shorewall.confed/interfaces	2004-10-14 16:04:41.000000000 +0200
+@@ -190,5 +190,10 @@
+ #			net	ppp0	-
+ ##############################################################################
+ #ZONE	 INTERFACE	BROADCAST	OPTIONS
++net	ppp0		detect		norfc1918
++net	eth0		detect		dhcp
++loc	wlan0		detect		dhcp
++loc	ipsec0		detect
++mesh	wlan1		detect		routeback
+ #
+ #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/masq shorewall.confed/masq
+--- shorewall/masq	2004-10-14 17:04:41.547932648 +0200
++++ shorewall.confed/masq	2004-10-14 15:27:24.000000000 +0200
+@@ -137,4 +137,6 @@
+ #
+ ###############################################################################
+ #INTERFACE	        SUBNET		ADDRESS		PROTO	PORT(S)
++eth0			0.0.0.0/0
++ppp0			0.0.0.0/0
+ #LAST LINE -- ADD YOUR ENTRIES ABOVE THIS LINE -- DO NOT REMOVE
+diff -Nurb shorewall/policy shorewall.confed/policy
+--- shorewall/policy	2004-10-14 17:04:41.546932800 +0200
++++ shorewall.confed/policy	2004-10-14 16:06:33.000000000 +0200
+@@ -77,6 +77,9 @@
+ #SOURCE		DEST		POLICY		LOG		LIMIT:BURST
+ #						LEVEL
+ loc		net		ACCEPT
++mesh		net		ACCEPT
++loc		mesh		ACCEPT
++fw		all		ACCEPT
+ net		all		DROP		info
+ #
+ # THE FOLLOWING POLICY MUST BE LAST
+diff -Nurb shorewall/rules shorewall.confed/rules
+--- shorewall/rules	2004-10-14 17:04:41.547932648 +0200
++++ shorewall.confed/rules	2004-10-14 16:56:41.874854040 +0200
+@@ -310,4 +310,18 @@
+ ####################################################################################################
+ #ACTION  SOURCE		DEST      	PROTO	DEST    SOURCE	   ORIGINAL	RATE		USER/
+ #                       	        	PORT    PORT(S)    DEST		LIMIT		GROUP
++AllowPing all		all
++AllowTrcrt all		all
++AllowDNS loc		fw
++AllowDNS mesh		fw
++AllowSSH all		fw
++AllowWeb loc		fw
++AllowSNMP loc		fw
++AllowOLSR mesh		fw
++AllowOLSR fw		mesh
++AllowMM	 mesh		fw
++AllowMM	 fw		mesh
++AllowNetperf loc	fw
++AllowNetperf mesh	fw
++AllowIPSEC all		fw
+ #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+diff -Nurb shorewall/zones shorewall.confed/zones
+--- shorewall/zones	2004-10-14 17:04:41.546932800 +0200
++++ shorewall.confed/zones	2004-10-14 15:04:59.000000000 +0200
+@@ -15,5 +15,5 @@
+ #ZONE	DISPLAY		COMMENTS
+ net	Net		Internet
+ loc	Local		Local networks
+-dmz	DMZ		Demilitarized zone
++mesh	Mesh		The Mesh Netwok
+ #LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE

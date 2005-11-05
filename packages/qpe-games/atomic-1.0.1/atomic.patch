@@ -1,0 +1,12 @@
+diff -ur atomic_V1.0.1.orig/atomic.desktop atomic_V1.0.1/atomic.desktop
+--- atomic_V1.0.1.orig/atomic.desktop	2004-06-17 00:02:49.000000000 +0200
++++ atomic_V1.0.1/atomic.desktop	2004-06-17 00:03:16.000000000 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=Atomic
+ Name[de]=Atomic
+-Icon=atomic
++Icon=atomic/atomic
+ Exec=atomic
+ Comment=A port of the KDE game katomic.
+ Comment[de]=Ein Port des KDE Spiels KAtomic

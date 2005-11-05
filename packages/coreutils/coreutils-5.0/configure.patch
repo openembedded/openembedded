@@ -1,0 +1,47 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- coreutils-5.0/configure.ac~configure
++++ coreutils-5.0/configure.ac
+@@ -15,6 +15,7 @@
+ AC_PROG_GCC_TRADITIONAL
+ AC_PROG_RANLIB
+ AC_PROG_LN_S
++AC_PROG_YACC
+ AC_AIX
+ AC_MINIX
+ 
+@@ -28,6 +29,8 @@
+ 	OPTIONAL_BIN_PROGS="$OPTIONAL_BIN_PROGS hostid\$(EXEEXT)"
+ 	MAN="$MAN hostid.1")
+ 
++AC_FUNC_ALLOCA
++
+ jm_MACROS
+ 
+ AC_HEADER_TIOCGWINSZ()
+--- coreutils-5.0/configure.ac	2004-01-23 14:49:55.000000000 -0500
++++ coreutils-5.0/configure.ac	2004-01-23 14:41:46.000000000 -0500
+@@ -147,7 +147,7 @@
+   fi
+ fi
+ 
+-AC_DEFUN(jm_DUMMY_1,
++AC_DEFUN([jm_DUMMY_1],
+ [
+   AC_REQUIRE([jm_PREREQ_READUTMP])
+   if test $ac_cv_header_utmp_h = yes || test $ac_cv_header_utmpx_h = yes; then
+--- coreutils-5.0/m4/nanosleep.m4	2001-09-17 17:44:03.000000000 -0400
++++ coreutils-5.0/m4/nanosleep.m4	2004-01-23 14:47:18.000000000 -0500
+@@ -12,6 +12,9 @@
+  # Solaris 2.5.1 needs -lposix4 to get the nanosleep function.
+  # Solaris 7 prefers the library name -lrt to the obsolescent name -lposix4.
+  AC_SEARCH_LIBS(nanosleep, [rt posix4], [LIB_NANOSLEEP=$ac_cv_search_nanosleep])
++ if test "$ac_cv_search_nanosleep" = "none required"; then
++  LIB_NANOSLEEP=
++ fi
+  AC_SUBST(LIB_NANOSLEEP)
+ 
+  AC_CACHE_CHECK([whether nanosleep works],

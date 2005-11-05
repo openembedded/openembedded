@@ -1,0 +1,44 @@
+--- ntp-4.1.2/configure.in.old	2004-12-31 23:50:21.000000000 +0000
++++ ntp-4.1.2/configure.in	2004-12-31 23:58:45.000000000 +0000
+@@ -211,16 +211,17 @@
+ AC_CHECK_HEADERS(readline/history.h readline/readline.h)
+ case "$ac_cv_header_readline_history_h$ac_cv_header_readline_readline_h" in
+  *no*) ;;
+- *) AC_CHECK_LIB(readline, readline, ,
++ *) AC_CHECK_LIB(readline, readline, READLINE_LIBS="-lreadline",
+      AC_MSG_NOTICE([Trying again with -lcurses])
+      unset ac_cv_lib_readline_readline
+      AC_CHECK_LIB(readline, readline,
+-      LIBS="-lreadline -lcurses $LIBS"
++      READLINE_LIBS="-lreadline -lcurses"
+       AC_DEFINE(HAVE_LIBREADLINE)
+       AC_DEFINE(HAVE_LIBCURSES, , [Do we have the curses library?])
+       , , -lcurses))
+     ;;
+ esac
++AC_SUBST(READLINE_LIBS)
+ 
+ dnl Digital UNIX V4.0 and Solaris 7 have POSIX.1c functions in -lrt
+ dnl Solaris 2.6 only has -lposix4; in Solaris 7, this is a symlink to -lrt,
+--- ntp-4.1.2/ntpdc/Makefile.am.old	2004-12-31 23:52:58.000000000 +0000
++++ ntp-4.1.2/ntpdc/Makefile.am	2005-01-01 00:04:43.000000000 +0000
+@@ -4,6 +4,7 @@
+ INCLUDES = -I$(top_srcdir)/include
+ # LDADD might need RESLIB and ADJLIB
+ LDADD =	version.o ../libntp/libntp.a @LIBRSAREF@ 
++LIBADD = @READLINE_LIBS@
+ DISTCLEANFILES = .version version.c
+ noinst_HEADERS = ntpdc.h
+ #EXTRA_DIST = ntpdc.mak
+--- ntp-4.1.2/ntpq/Makefile.am.old	2004-12-31 23:52:54.000000000 +0000
++++ ntp-4.1.2/ntpq/Makefile.am	2005-01-01 00:04:54.000000000 +0000
+@@ -3,7 +3,8 @@
+ bin_PROGRAMS = ntpq
+ INCLUDES = -I$(top_srcdir)/include
+ # LDADD might need RESLIB and ADJLIB
+-LDADD =	version.o ../libntp/libntp.a @LIBRSAREF@ 
++LDADD =	version.o ../libntp/libntp.a @LIBRSAREF@
++LIBADD = @READLINE_LIBS@
+ DISTCLEANFILES = .version version.c
+ noinst_HEADERS = ntpq.h
+ #EXTRA_DIST = ntpq.mak

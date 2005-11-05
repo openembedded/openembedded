@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- qt-2.3.10/src/kernel/qkeyboard_qws.cpp~kernel-keymap-CXK.patch	2005-05-05 19:34:05.000000000 +0200
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2005-05-05 19:35:47.000000000 +0200
+@@ -1809,7 +1809,11 @@
+     case Qt::Key_Up:
+     case Qt::Key_Down:
+         mod_key = false;
++#if QT_QWS_SLCXK
++        if (qt_screen->transformOrientation() != 3)
++#else
+         if (qt_screen->isTransformed())
++#endif
+             qtKeyCode = static_cast<Qt::Key>( xform_dirkey(static_cast<int>( qtKeyCode ) ) );
+         break;
+     /*

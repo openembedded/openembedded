@@ -1,0 +1,116 @@
+Identiske underkataloger: src2/CVS og src/CVS
+Identiske underkataloger: src2/.deps og src/.deps
+Index: gaim/src/gtkgaim.h
+===================================================================
+--- gaim.orig/src/gtkgaim.h	2005-08-19 21:46:09.550560256 +0200
++++ gaim/src/gtkgaim.h	2005-08-19 21:47:37.276223928 +0200
+@@ -66,5 +66,11 @@
+  */
+ #define ICONS_IN_DIALOGS 0
+ 
++/**
++ * How many fields is there screen-space for vertically, before a scrollbar is needed?
++ */
++#define VERT_ITEMS 0
++
++
+ #endif /* _GAIM_GTKGAIM_H_ */
+ 
+Index: gaim/src/gtkrequest.c
+===================================================================
+--- gaim.orig/src/gtkrequest.c	2005-08-19 21:46:09.550560256 +0200
++++ gaim/src/gtkrequest.c	2005-08-19 21:53:46.782050504 +0200
+@@ -1381,6 +1381,8 @@
+ 	GtkWidget *img;
+ #endif
+ 	GtkWidget *sw;
++	GtkWidget *pri_label;
++	GtkWidget *sec_label;
+ 	GtkSizeGroup *sg;
+ 	GList *gl, *fl;
+ 	GaimRequestFieldGroup *group;
+@@ -1450,6 +1452,7 @@
+ 		gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+ 		gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+ 		gtk_widget_show(label);
++		pri_label = label;
+ 		g_free(label_text);
+ 	}
+ 
+@@ -1457,7 +1460,7 @@
+ 			gl = gl->next)
+ 		total_fields += g_list_length(gaim_request_field_group_get_fields(gl->data));
+ 
+-	if(total_fields > 9) {
++	if(total_fields > VERT_ITEMS) {
+ 		sw = gtk_scrolled_window_new(NULL, NULL);
+ 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
+ 				GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+@@ -1484,6 +1487,7 @@
+ 		gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+ 		gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
+ 		gtk_widget_show(label);
++		sec_label = label;
+ 	}
+ 
+ 	for (gl = gaim_request_fields_get_groups(fields);
+@@ -1718,6 +1722,59 @@
+ 
+ 	gtk_widget_show(win);
+ 
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust widgets accordingly
++	int w, h, field_labels_w;
++	GtkRequisition sg_labels_req;
++	gtk_window_get_size(GTK_WINDOW(win), &w, &h);
++	field_labels_w = label->allocation.width + GAIM_HIG_BORDER*2; //The width of the largest field-label
++
++	printf("%d / %d\n", field_labels_w, w);
++	
++	w = w - GAIM_HIG_BORDER * 2;
++	if (primary) gtk_widget_set_size_request(GTK_WIDGET(pri_label), w, -1);
++	if (secondary) gtk_widget_set_size_request(GTK_WIDGET(sec_label), w, -1);
++	
++	//Determine what to do - add a scrollbar or resize the input fields?
++	if ((float)field_labels_w / w > 0.5) //if the labels fill more than half the screen add a horizontal scrollbar
++	{
++		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
++	}
++	else //resize the input fields
++	{
++		for (gl = gaim_request_fields_get_groups(fields);
++			 gl != NULL;
++			 gl = gl->next)
++		{
++			GList *field_list;
++			size_t field_count = 0;
++			size_t cols = 1;
++			size_t rows;
++			size_t col_num;
++			size_t row_num = 0;
++			
++			group      = gl->data;
++			field_list = gaim_request_field_group_get_fields(group);
++	
++			for (row_num = 0, fl = field_list;
++				row_num < rows && fl != NULL;
++				row_num++)
++			{
++				for (col_num = 0;
++					 col_num < cols && fl != NULL;
++					 col_num++, fl = fl->next)
++				{
++					field = fl->data;
++					gtk_widget_set_size_request(GTK_WIDGET(field->ui_data), w-field_labels_w, -1);
++				}
++			}
++		}
++	}
++
+ 	return data;
+ }
+ 

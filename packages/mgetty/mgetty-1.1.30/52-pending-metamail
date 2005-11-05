@@ -1,0 +1,88 @@
+diff -urN mgetty-1.1.30~/samples/new_fax.mime3 mgetty-1.1.30/samples/new_fax.mime3
+--- mgetty-1.1.30~/samples/new_fax.mime3	2003-09-23 22:11:05.000000000 +1000
++++ mgetty-1.1.30/samples/new_fax.mime3	2003-09-23 22:20:41.000000000 +1000
+@@ -13,8 +13,8 @@
+ # image/x-fax-g3; viewfax -geometry +5+23 '%s'; test=test -n "$DISPLAY"
+ # image/x-fax-g3;; print=printfax '%s'
+ #
+-# You need the program mmencode for base64 encoding of the fax data,
+-# which you will find in your metamail distribution.
++# You need the program base64-encode for base64 encoding of the fax data,
++# which you will find in your mime-codecs package.
+ #
+ # (c) 1997-1998 Roland Rosenfeld <roland@spinnaker.rhein.de>
+ #
+@@ -65,7 +65,7 @@
+     echo "" >> $TMPMAIL
+ 
+     # base64 encoder:
+-    mmencode -b $file >> $TMPMAIL
++    base64-encode < $file >> $TMPMAIL
+     
+     echo "" >> $TMPMAIL
+ done
+@@ -75,4 +75,4 @@
+ # Send out the created mail:
+ sendmail $ADMIN < $TMPMAIL
+ 
+-exit 0
+\ No newline at end of file
++exit 0
+diff -urN mgetty-1.1.30~/samples/new_fax.mime4 mgetty-1.1.30/samples/new_fax.mime4
+--- mgetty-1.1.30~/samples/new_fax.mime4	2003-09-23 22:11:05.000000000 +1000
++++ mgetty-1.1.30/samples/new_fax.mime4	2003-09-23 22:21:09.000000000 +1000
+@@ -19,8 +19,8 @@
+ # MIME tools as possible.
+ #
+ # This 'new_fax' only needs ' g32pbm', 'pnmscale' and 'pnmtotiff' from the
+-# 'pbmplus' package, 'mmencode' from the 'multimail' packages, and the rest
+-# is standard Unix tools.
++# 'pbmplus' package, 'base64-encode' from the 'mime-codecs' packages, and
++# the rest is standard Unix tools.
+ # It was tested with thsmail under Linux and PMMail under OS/2 as frontends.
+ 
+ # This script is called when a message was recorded. 
+@@ -50,8 +50,7 @@
+ CAT=cat
+ ECHO=echo
+ G3TOPBM=g32pbm
+-#MMENCODE=mmencode
+-MMENCODE=mimencode
++MMENCODE=base64-encode
+ RM=rm
+ SED=sed
+ SENDMAIL=sendmail
+@@ -136,7 +135,7 @@
+ #
+ 	# Here we do base64 encoding of out TIFF data and add the result
+ 	# into our MIME mail as attachment.
+-	$MMENCODE -b $IMAG_FILE          >> $MIME_MESS 2>> $ERRO_MESS
++	$MMENCODE < $IMAG_FILE          >> $MIME_MESS 2>> $ERRO_MESS
+ #
+ 	# To clean up temporary TIFF data.
+ 	$RM -f $IMAG_FILE
+diff -urN mgetty-1.1.30~/samples/new_fax.tiff mgetty-1.1.30/samples/new_fax.tiff
+--- mgetty-1.1.30~/samples/new_fax.tiff	2003-09-23 22:11:05.000000000 +1000
++++ mgetty-1.1.30/samples/new_fax.tiff	2003-09-23 22:19:32.000000000 +1000
+@@ -12,7 +12,7 @@
+ # script. The following script combines all received pages to one
+ # tiff-file which is sent to all recipients beeing in the alias for fax.
+ # Reading the fax is quite easy with Netscape when the tiffsurf-plugin is
+-# installed.
++# installed.  You need the metamail package for metasend.
+ #
+ # As the script may be usefull for someone I'll post it here. It's quite
+ # short (and perhaps not that elegant...), but for me it works great.
+diff -urN mgetty-1.1.30~/voice/scripts/new_voice.craig_southern mgetty-1.1.30/voice/scripts/new_voice.craig_southern
+--- mgetty-1.1.30~/voice/scripts/new_voice.craig_southern	2003-09-23 22:11:05.000000000 +1000
++++ mgetty-1.1.30/voice/scripts/new_voice.craig_southern	2003-09-23 22:13:28.000000000 +1000
+@@ -50,7 +50,7 @@
+ echo Content-Transfer-Encoding: base64 >> $tempfn
+ echo Content-Disposition: attachment\; filename=\"$pagefn\" >> $tempfn
+ echo "">> $tempfn
+-/usr/bin/mimencode $outputfn >> $tempfn
++/usr/bin/base64-encode < $outputfn >> $tempfn
+ 
+ #rm -f $fn
+ rm -f $outputfn
+

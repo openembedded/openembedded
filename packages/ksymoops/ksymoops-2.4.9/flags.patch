@@ -1,0 +1,55 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ksymoops-2.4.9/Makefile~flags
++++ ksymoops-2.4.9/Makefile
+@@ -57,36 +57,36 @@
+ PROGS := ksymoops
+ 
+ CC := gcc
+-CFLAGS += -Dlinux \
+-	 -Wall \
++CFLAGS = "-Wall \
+ 	 -Wno-conversion \
+ 	 -Waggregate-return \
+ 	 -Wstrict-prototypes \
+ 	 -Wmissing-prototypes \
++	 $(DEBUG)"
++override CFLAGS += -Dlinux \
+ 	 -DINSTALL_PREFIX="\"$(INSTALL_PREFIX)\"" \
+-	 -DCROSS="\"$(CROSS)\"" \
+-	 $(DEBUG)
++	 -DCROSS="\"$(CROSS)\""
+ 
+ ifneq ($(DEF_VMLINUX),)
+-	CFLAGS += -DDEF_VMLINUX=$(DEF_VMLINUX)
++	override CFLAGS += -DDEF_VMLINUX=$(DEF_VMLINUX)
+ endif
+ ifneq ($(DEF_KSYMS),)
+-	CFLAGS += -DDEF_KSYMS=$(DEF_KSYMS)
++	override CFLAGS += -DDEF_KSYMS=$(DEF_KSYMS)
+ endif
+ ifneq ($(DEF_LSMOD),)
+-	CFLAGS += -DDEF_LSMOD=$(DEF_LSMOD)
++	override CFLAGS += -DDEF_LSMOD=$(DEF_LSMOD)
+ endif
+ ifneq ($(DEF_OBJECTS),)
+-	CFLAGS += -DDEF_OBJECTS=$(DEF_OBJECTS)
++	override CFLAGS += -DDEF_OBJECTS=$(DEF_OBJECTS)
+ endif
+ ifneq ($(DEF_MAP),)
+-	CFLAGS += -DDEF_MAP=$(DEF_MAP)
++	override CFLAGS += -DDEF_MAP=$(DEF_MAP)
+ endif
+ ifneq ($(DEF_TARGET),)
+-	CFLAGS += -DDEF_TARGET=$(DEF_TARGET)
++	override CFLAGS += -DDEF_TARGET=$(DEF_TARGET)
+ endif
+ ifneq ($(DEF_ARCH),)
+-	CFLAGS += -DDEF_ARCH=$(DEF_ARCH)
++	override CFLAGS += -DDEF_ARCH=$(DEF_ARCH)
+ endif
+ ifneq ($(BFD_PREFIX),)
+ 	CFLAGS += -I$(BFD_PREFIX)/include

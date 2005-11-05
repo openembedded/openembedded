@@ -1,0 +1,69 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- bootmenu-0.6/src/Makefile~compile
++++ bootmenu-0.6/src/Makefile
+@@ -20,9 +20,9 @@
+ SOS=
+ 
+ ifeq ($(HAVE_PLUGINS),y)
+-CFLAGS+=-DPLUGINS
+-LDFLAGS += -rdynamic
+-LIBS += -ldl
++override CFLAGS+=-DPLUGINS -D_PLUGINDIR="\"$(PLUGINDIR)\""
++override LDFLAGS += -rdynamic
++override LIBS += -ldl
+ OBJS += plugins.o
+ SOS = $(patsubst %,%.so,$(PLUGINS))
+ 
+@@ -33,20 +33,22 @@
+ endif
+ 
+ ifeq ($(USE_SYSLOG),y)
+-CFLAGS+=-DSYSLOG
++override CFLAGS+=-DSYSLOG
+ else
+ OBJS+=log.o
+ endif
+ 
++DESTDIR=
+ PREFIX=/usr/local/bin
+-PLUGINS=/usr/share/bootmenu
++PLUGINDIR=/usr/share/bootmenu
+ 
+ all: $(APP)
+ 
+ install: $(APP)
+-	cp $(APP) $(PRFIX)/$(APP)
+-	mkdir -p $(PLUGINS)
+-	cp *.so $(PLUGINS)
++	install -d $(DESTDIR)$(PREFIX)
++	install -m 0755 $(APP) $(DESTDIR)$(PREFIX)/$(APP)
++	install -d $(DESTDIR)$(PLUGINDIR)
++	install -m 0755 *.so $(DESTDIR)$(PLUGINDIR)
+ 
+ clean:
+ 	rm -f *.o *.so $(APP)
+@@ -59,7 +61,7 @@
+ #####
+ 
+ %.so: %.c
+-	$(CC) $(CFLAGS) $($(*)_CFLAGS) -shared -o $@ $< $($(*)_LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) $($(*)_CFLAGS) -shared -o $@ $< $($(*)_LIBS)
+ 
+ plugins.o: plugins.c
+ 	$(CC) -c $(CFLAGS) -DDEFAULT_PLUGIN="\"$(DEFAULT_PLUGIN)\"" -o $@ $<
+--- bootmenu-0.6/src/plugins.c~compile
++++ bootmenu-0.6/src/plugins.c
+@@ -28,7 +28,9 @@
+ #include <fcntl.h>
+ #include "bootmenu.h"
+ 
++#ifndef _PLUGINDIR
+ #define _PLUGINDIR "/usr/share/bootmenu"
++#endif
+ 
+ extern struct config bootmenu_config;
+ 

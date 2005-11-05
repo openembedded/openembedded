@@ -1,0 +1,51 @@
+diff -Nur c3000_pre/linux/drivers/video/fbcon-cfb16.c c3000_work/linux/drivers/video/fbcon-cfb16.c
+--- c3000_pre/linux/drivers/video/fbcon-cfb16.c	2004-12-16 22:55:38.000000000 +0900
++++ c3000_work/linux/drivers/video/fbcon-cfb16.c	2004-12-19 00:11:24.000000000 +0900
+@@ -219,7 +219,7 @@
+ 
+     width *= fontwidth(p)/4;
+ #if defined(CONFIG_FBCON_ROTATE_R) || defined(CONFIG_FBCON_ROTATE_L)
+-    if (width * 8 == bytes)
++    if (height * 8 == bytes)
+ 	rectfill(dest, 1, lines * width * 4, bgx, bytes);
+     else
+ 	rectfill(dest, lines, width * 4, bgx, bytes);
+diff -Nur c3000_pre/linux/drivers/video/fbcon.c c3000_work/linux/drivers/video/fbcon.c
+--- c3000_pre/linux/drivers/video/fbcon.c	2004-12-16 22:55:38.000000000 +0900
++++ c3000_work/linux/drivers/video/fbcon.c	2004-12-19 00:28:12.000000000 +0900
+@@ -247,7 +247,7 @@
+ 
+ static void fbcon_setup(int con, int init, int logo);
+ #if defined(CONFIG_FBCON_ROTATE_R) || defined(CONFIG_FBCON_ROTATE_L)
+-static __inline__ int real_x(struct display *p, int ypos);
++static __inline__ int real_x(struct display *p, int xpos);
+ #else
+ static __inline__ int real_y(struct display *p, int ypos);
+ #endif
+@@ -263,7 +263,7 @@
+ static __inline__ void xpan_down(int unit, struct vc_data *conp,
+ 				 struct display *p, int count);
+ static void fbcon_bmove_rec(struct display *p, int sx, int sy, int dx, int dy,
+-			    int height, int width, u_int y_break);
++			    int height, int width, u_int x_break);
+ #else
+ static __inline__ void ywrap_up(int unit, struct vc_data *conp,
+ 				struct display *p, int count);
+@@ -1011,7 +1010,7 @@
+ 
+ #if defined(CONFIG_FBCON_ROTATE_R) || defined(CONFIG_FBCON_ROTATE_L)
+     if ((sx <= p->cursor_x) && (p->cursor_x < sx+height) &&
+-	(sx <= p->cursor_y) && (p->cursor_y < sy+width)) {
++	(sy <= p->cursor_y) && (p->cursor_y < sy+width)) {
+ #else
+     if ((sy <= p->cursor_y) && (p->cursor_y < sy+height) &&
+ 	(sx <= p->cursor_x) && (p->cursor_x < sx+width)) {
+@@ -1235,7 +1234,7 @@
+     if (p->dispsw->cursor) {
+ #if defined(CONFIG_FBCON_ROTATE_R) || defined(CONFIG_FBCON_ROTATE_L)
+ 	p->cursor_y = conp->vc_y;
+-	p->cursor_y = x;
++	p->cursor_x = x;
+ 	p->dispsw->cursor(p, mode, p->cursor_y, real_x(p, p->cursor_x));
+ #else
+ 	p->cursor_x = conp->vc_x;

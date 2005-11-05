@@ -1,0 +1,49 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- mutt-1.5.4/mutt_dotlock.c~posix1_lim
++++ mutt-1.5.4/mutt_dotlock.c
+@@ -39,7 +39,7 @@
+ #include <limits.h>
+ 
+ #ifndef _POSIX_PATH_MAX
+-#include <posix1_lim.h>
++#include <bits/posix1_lim.h>
+ #endif
+ 
+ #include "dotlock.h"
+--- mutt-1.5.4/mutt.h~posix1_lim
++++ mutt-1.5.4/mutt.h
+@@ -43,7 +43,7 @@
+ #endif
+ 
+ #ifndef _POSIX_PATH_MAX
+-#include <posix1_lim.h>
++#include <bits/posix1_lim.h>
+ #endif
+ 
+ #include <pwd.h>
+--- mutt-1.5.4/dotlock.c~posix1_lim
++++ mutt-1.5.4/dotlock.c
+@@ -39,7 +39,7 @@
+ #include <limits.h>
+ 
+ #ifndef _POSIX_PATH_MAX
+-#include <posix1_lim.h>
++#include <bits/posix1_lim.h>
+ #endif
+ 
+ #include "dotlock.h"
+--- mutt-1.5.4/lib.h~posix1_lim
++++ mutt-1.5.4/lib.h
+@@ -40,7 +40,7 @@
+ # include <signal.h>
+ 
+ # ifndef _POSIX_PATH_MAX
+-#  include <posix1_lim.h>
++#  include <bits/posix1_lim.h>
+ # endif
+ 
+ # ifdef ENABLE_NLS

@@ -1,0 +1,16 @@
+--- omniEvents-2_6_1/config.mk.in       2004-11-16 18:04:42.000000000 -0500
++++ omniEvents-2_6_1.new/config.mk.in   2005-03-29 08:38:08.023579809 -0500
+@@ -65,8 +65,12 @@
+ ## IDL compiler.
+ ##
+
++ifndef IDL
+ IDL         := @IDL@
++endif
++ifndef IDL_COS_DIR
+ IDL_COS_DIR := @IDL_COS_DIR@
++endif
+ IDLFLAGS     = -bcxx  # <--- backend selection should be omniidl's first option.
+ IDLFLAGS    += -Wba -Wbh='.hh' -Wbs='.cc' -Wbd='DynSK.cc' -WbBOA -Wbuse_quotes
+ IDLFLAGS    += -I$(IDL_COS_DIR)/COS
+

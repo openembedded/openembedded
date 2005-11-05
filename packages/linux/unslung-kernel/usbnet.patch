@@ -1,0 +1,43 @@
+--- linux-2.4.22/drivers/usb/usbnet.c.orig	2004-09-19 03:08:09.000000000 -0400
++++ linux-2.4.22/drivers/usb/usbnet.c	2004-09-19 03:10:58.000000000 -0400
+@@ -314,8 +314,6 @@ MODULE_PARM_DESC (msg_level, "Initial me
+ #define	RUN_CONTEXT (in_irq () ? "in_irq" \
+ 			: (in_interrupt () ? "in_interrupt" : "can sleep"))
+ 
+-static struct ethtool_ops usbnet_ethtool_ops;
+-
+ /* mostly for PDA style devices, which are always present */
+ static int always_connected (struct usbnet *dev)
+ {
+@@ -2515,7 +2513,6 @@ usbnet_probe (struct usb_device *udev, u
+ 	net->watchdog_timeo = TX_TIMEOUT_JIFFIES;
+ 	net->tx_timeout = usbnet_tx_timeout;
+ 	net->do_ioctl = usbnet_ioctl;
+-	net->ethtool_ops = &usbnet_ethtool_ops;
+ 
+ 	// allow device-specific bind/init procedures
+ 	// NOTE net->name still not usable ...
+@@ -2738,13 +2735,6 @@ static struct usb_driver usbnet_driver =
+ 	.disconnect =	usbnet_disconnect,
+ };
+ 
+-/* Default ethtool_ops assigned.  Devices can override in their bind() routine */
+-static struct ethtool_ops usbnet_ethtool_ops = {
+-	.get_drvinfo		= usbnet_get_drvinfo,
+-	.get_link		= usbnet_get_link,
+-	.get_msglevel		= usbnet_get_msglevel,
+-	.set_msglevel		= usbnet_set_msglevel,
+-};
+ /*-------------------------------------------------------------------------*/
+ 
+ static int __init usbnet_init (void)
+--- linux-2.4.22/drivers/net/Makefile.orig	2004-09-21 19:29:09.000000000 -0400
++++ linux-2.4.22/drivers/net/Makefile	2004-09-21 19:30:33.000000000 -0400
+@@ -267,6 +267,7 @@ obj-$(CONFIG_AMD8111_ETH) += amd8111e.o 
+ 
+ # non-drivers/net drivers who want mii lib
+ obj-$(CONFIG_PCMCIA_SMC91C92) += mii.o
++obj-$(CONFIG_USB_USBNET) += mii.o
+ 
+ ifeq ($(CONFIG_ARCH_ACORN),y)
+ mod-subdirs	+= ../acorn/net

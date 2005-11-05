@@ -1,0 +1,21 @@
+Index: linux-2.4.24-2/arch/um/os-Linux/process.c
+--- linux-2.4.24-2/arch/um/os-Linux/process.c	19 Jan 2004 21:02:20 -0000	1.8
++++ linux-2.4.24-2/arch/um/os-Linux/process.c	17 May 2004 18:35:49 -0000
+@@ -7,6 +7,7 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <signal.h>
++#include <linux/unistd.h>
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+ #include "os.h"
+@@ -92,7 +93,8 @@
+ 
+ void os_usr1_process(int pid)
+ {
+-	kill(pid, SIGUSR1);
++	if (syscall(__NR_tkill, pid, SIGUSR1) < 0)
++	    kill(pid, SIGUSR1);
+ }
+ 
+ int os_getpid(void)

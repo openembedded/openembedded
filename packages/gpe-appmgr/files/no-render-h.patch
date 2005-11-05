@@ -1,0 +1,44 @@
+diff -urNd ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/main.c gpe-appmgr-2.8/main.c
+--- ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/main.c	2005-03-04 07:00:40 +00:00
++++ gpe-appmgr-2.8/main.c	2005-04-28 12:21:53 +01:00
+@@ -50,7 +50,6 @@
+ /* GPE */
+ #include <gpe/init.h>
+ #include <gpe/pixmaps.h>
+-#include <gpe/render.h>
+ #include <gpe/spacing.h>
+ #include <gpe/gpeiconlistview.h>
+ #include <gpe/gpeiconlistitem.h>
+diff -urNd ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/row_view.c gpe-appmgr-2.8/row_view.c
+--- ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/row_view.c	2005-01-05 21:14:47 +00:00
++++ gpe-appmgr-2.8/row_view.c	2005-04-28 12:22:07 +01:00
+@@ -43,7 +43,6 @@
+ /* GPE */
+ #include <gpe/init.h>
+ #include <gpe/pixmaps.h>
+-#include <gpe/render.h>
+ #include <gpe/spacing.h>
+ #include <gpe/gpeiconlistview.h>
+ #include <gpe/launch.h>
+diff -urNd ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/single_view.c gpe-appmgr-2.8/single_view.c
+--- ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/single_view.c	2004-11-19 00:22:09 +00:00
++++ gpe-appmgr-2.8/single_view.c	2005-04-28 12:22:15 +01:00
+@@ -39,7 +39,6 @@
+ /* GPE */
+ #include <gpe/init.h>
+ #include <gpe/pixmaps.h>
+-#include <gpe/render.h>
+ #include <gpe/spacing.h>
+ #include <gpe/gpeiconlistview.h>
+ #include <gpe/tray.h>
+diff -urNd ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/tab_view.c gpe-appmgr-2.8/tab_view.c
+--- ../gpe-appmgr-2.8-r0/gpe-appmgr-2.8/tab_view.c	2005-03-04 07:14:43 +00:00
++++ gpe-appmgr-2.8/tab_view.c	2005-04-28 12:22:22 +01:00
+@@ -46,7 +46,6 @@
+ /* GPE */
+ #include <gpe/init.h>
+ #include <gpe/pixmaps.h>
+-#include <gpe/render.h>
+ #include <gpe/spacing.h>
+ #include <gpe/gpeiconlistitem.h>
+ #include <gpe/gpeiconlistview.h>

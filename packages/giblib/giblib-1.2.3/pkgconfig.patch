@@ -1,0 +1,53 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- /dev/null	2004-06-02 16:28:12.000000000 -0500
++++ giblib-1.2.3/giblib.pc.in	2004-07-15 18:27:41.000000000 -0500
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: giblib
++Description: a utility library
++Version: @VERSION@
++Libs: -L${libdir} -lgiblib @LDFLAGS@ @IMLIB_LIBS@
++Cflags: -I${includedir}/giblib -I${includedir} @IMLIB_CFLAGS@
+--- giblib-1.2.3/Makefile.am~pkgconfig	2000-11-09 06:39:15.000000000 -0600
++++ giblib-1.2.3/Makefile.am	2004-07-15 18:24:44.000000000 -0500
+@@ -5,6 +5,11 @@
+ docs_DATA = README AUTHORS ChangeLog TODO
+ docsdir = $(prefix)/doc/giblib
+ 
+-EXTRA_DIST= $(docs_DATA)
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = giblib.pc
++
++$(pkgconfig_DATA): config.status
++
++EXTRA_DIST= $(docs_DATA) $(pkgconfig_DATA)
+ 
+ bin_SCRIPTS = giblib-config
+--- giblib-1.2.3/configure.ac~pkgconfig	2003-02-25 07:00:50.000000000 -0600
++++ giblib-1.2.3/configure.ac	2004-07-15 18:25:05.000000000 -0500
+@@ -35,6 +35,7 @@
+ AC_CONFIG_FILES([
+ Makefile
+ giblib-config
++giblib.pc
+ giblib/Makefile
+ ])
+ AC_CONFIG_COMMANDS([default],[[
+--- giblib-1.2.3/configure.in~pkgconfig	2003-02-25 07:00:55.000000000 -0600
++++ giblib-1.2.3/configure.in	2004-07-15 18:24:56.000000000 -0500
+@@ -34,6 +34,7 @@
+ AC_OUTPUT([
+ Makefile
+ giblib-config
++giblib.pc
+ giblib/Makefile
+ ], [
+ chmod +x giblib-config

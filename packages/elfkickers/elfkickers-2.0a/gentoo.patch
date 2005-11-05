@@ -1,0 +1,105 @@
+diff -Nru ELFkickers.orig/Makefile ELFkickers/Makefile
+--- ELFkickers.orig/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ ELFkickers/Makefile	2003-07-25 15:25:04.000000000 -0400
+@@ -0,0 +1,7 @@
++SUBDIRS = ebfc  elfls  elftoc  rebind  sstrip  tiny
++
++all:
++	for d in $(SUBDIRS); do cd $$d ; CFLAGS="$(CFLAGS)" CC=$(CC) make ; cd - ; done
++clean:
++	
++	for d in $(SUBDIRS); do cd $$d ; make clean; cd - ; done
+diff -Nru ELFkickers.orig/ebfc/Makefile ELFkickers/ebfc/Makefile
+--- ELFkickers.orig/ebfc/Makefile	2001-01-17 08:23:56.000000000 -0500
++++ ELFkickers/ebfc/Makefile	2003-07-25 15:18:55.000000000 -0400
+@@ -1,8 +1,5 @@
+ #  Makefile for ebfc
+ 
+-CC = gcc
+-CFLAGS = -ggdb -Wall
+-
+ ebfc: ebfc.o brainfuck.o libelfparts.a
+ 
+ ebfc.o: ebfc.c elfparts.h ebfc.h
+diff -Nru ELFkickers.orig/ebfc/rel.c ELFkickers/ebfc/rel.c
+--- ELFkickers.orig/ebfc/rel.c	2001-03-19 10:50:18.000000000 -0500
++++ ELFkickers/ebfc/rel.c	2003-07-25 15:16:08.000000000 -0400
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include	<stdlib.h>
++#include	<string.h>
+ #include	<linux/elf.h>
+ #include	"elfparts.h"
+ #include	"gen.h"
+diff -Nru ELFkickers.orig/elfls/Makefile ELFkickers/elfls/Makefile
+--- ELFkickers.orig/elfls/Makefile	1999-07-07 23:57:55.000000000 -0400
++++ ELFkickers/elfls/Makefile	2003-07-25 15:20:11.000000000 -0400
+@@ -1,7 +1,7 @@
+ #  Makefile for elfls
+ 
+ elfls: elfls.c
+-	gcc -ggdb -Wall -W -o elfls elfls.c
++	$(CC) $(CFLAGS) -W -o elfls elfls.c
+ 
+ clean:
+ 	rm -f elfls
+diff -Nru ELFkickers.orig/elfls/elfls.c ELFkickers/elfls/elfls.c
+--- ELFkickers.orig/elfls/elfls.c	2001-03-28 08:23:57.000000000 -0500
++++ ELFkickers/elfls/elfls.c	2003-07-25 15:16:08.000000000 -0400
+@@ -4,6 +4,7 @@
+ 
+ #include	<stdio.h>
+ #include	<stdlib.h>
++#include	<string.h>
+ #include	<errno.h>
+ #include	<stdarg.h>
+ #include	<unistd.h>
+diff -Nru ELFkickers.orig/elftoc/Makefile ELFkickers/elftoc/Makefile
+--- ELFkickers.orig/elftoc/Makefile	2001-03-26 05:48:59.000000000 -0500
++++ ELFkickers/elftoc/Makefile	2003-07-25 15:21:00.000000000 -0400
+@@ -1,9 +1,5 @@
+ #  Makefile for elftoc
+ 
+-CC = gcc
+-CFLAGS = -ggdb -Wall
+-LDFLAGS = $(CFLAGS)
+-
+ OBJS = pieces.o addr.o shdrtab.o dynamic.o outbasic.o outtools.o out.o elftoc.o
+ 
+ elftoc: $(OBJS)
+diff -Nru ELFkickers.orig/elftoc/shdrtab.c ELFkickers/elftoc/shdrtab.c
+--- ELFkickers.orig/elftoc/shdrtab.c	2001-03-25 08:09:09.000000000 -0500
++++ ELFkickers/elftoc/shdrtab.c	2003-07-25 15:16:08.000000000 -0400
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include	<stdlib.h>
++#include	<string.h>
+ #include	<ctype.h>
+ #include	"gen.h"
+ #include	"elf.h"
+diff -Nru ELFkickers.orig/rebind/Makefile ELFkickers/rebind/Makefile
+--- ELFkickers.orig/rebind/Makefile	2001-03-19 10:08:56.000000000 -0500
++++ ELFkickers/rebind/Makefile	2003-07-25 15:21:26.000000000 -0400
+@@ -1,7 +1,7 @@
+ #  Makefile for rebind
+ 
+ rebind: rebind.c
+-	gcc -ggdb -Wall -W -o rebind rebind.c
++	$(CC) $(CFLAGS) -W -o rebind rebind.c
+ 
+ clean:
+ 	rm -f rebind
+diff -Nru ELFkickers.orig/sstrip/Makefile ELFkickers/sstrip/Makefile
+--- ELFkickers.orig/sstrip/Makefile	2001-03-24 06:58:27.000000000 -0500
++++ ELFkickers/sstrip/Makefile	2003-07-25 15:21:47.000000000 -0400
+@@ -1,7 +1,7 @@
+ #  Makefile for sstrip
+ 
+ sstrip: sstrip.c
+-	gcc -ggdb -Wall -W -o sstrip sstrip.c
++	$(CC) $(CFLAGS) -W -o sstrip sstrip.c
+ 
+ clean:
+ 	rm -f sstrip

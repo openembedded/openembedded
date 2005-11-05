@@ -1,0 +1,11 @@
+--- MPlayer-1.0pre7/libmpcodecs/Makefile.orig	2005-04-19 12:09:24.313075760 +0100
++++ MPlayer-1.0pre7/libmpcodecs/Makefile	2005-04-19 12:09:55.204379568 +0100
+@@ -50,7 +50,7 @@
+ SRCS2=$(ENCODER_SRCS)
+ OBJS2=$(SRCS2:.c=.o)
+ 
+-CFLAGS  = $(OPTFLAGS) -I. -Inative -I.. -I../libmpdemux -I../loader $(EXTRA_INC) $(X264_INC) -D_GNU_SOURCE
++CFLAGS  = -I.. $(OPTFLAGS) -I. -Inative -I../libmpdemux -I../loader $(EXTRA_INC) $(X264_INC) -D_GNU_SOURCE
+ 
+ .SUFFIXES: .c .o
+ 

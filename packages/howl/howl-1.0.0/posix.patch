@@ -1,0 +1,20 @@
+--- src/lib/howl/Posix/posix_interface.c.old	2005-05-20 14:26:34.000000000 +0100
++++ src/lib/howl/Posix/posix_interface.c	2005-05-20 14:26:35.000000000 +0100
+@@ -37,10 +37,16 @@
+ #include <stdio.h>
+ 
+ #if defined(__linux__)
+-typedef unsigned long long u64;
++typedef __uint64_t      u64;
+ typedef __uint32_t 	u32;
+ typedef __uint16_t 	u16;
+ typedef __uint8_t		u8;
++
++typedef __uint64_t      __u64;
++typedef __uint32_t      __u32;
++typedef __uint16_t      __u16;
++typedef __uint8_t               __u8;
++
+ #	include <linux/sockios.h>
+ #	include <linux/ethtool.h> 
+ #endif

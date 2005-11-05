@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# mDNSResponder:       Starts the mDNSResponder Daemon
+#
+# This is an init script for Debian by Reed Hedges, based on the skeleton by 
+# Miguel van Smoorenburg and Ian Murdock, and based on the original mDNSResponder 
+# script from Howl.
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/mDNSResponder
+NAME=mDNSResponder
+DESC="Zeroconf service discovery responder"
+PIDFILE=/var/run/${NAME}.pid
+LOCKFILE=/var/lock/subsys/${NAME}
+CONFIG=/etc/mdnsresponder/mDNSResponder.conf
+
+test -x $DAEMON || exit 0
+
+start() {
+	echo -n $"Starting $DESC: $NAME"
+	start-stop-daemon --start --quiet -u daemon --exec $DAEMON -- -f $CONFIG
+	echo "."
+}
+
+stop() {
+	echo -n $"Stopping $DESC: $NAME"
+	start-stop-daemon --stop --quiet --exec $DAEMON
+	test -f $LOCKFILE && rm -f $LOCKFILE
+	test -f $PIDFILE &&  rm -f $PIDFILE
+	echo "."
+}
+
+restart() {
+	stop
+    sleep 1
+	start
+}
+
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Bug fix: during the initial boot sysvinit sets PREVLEVEL to
+# nothing in rcS and to 'N' in the transition from rcS to the
+# user state.  This script runs on that transition and, if
+# the PREVLEVEL is 'N', sets 'previous' (as in /etc/init.d/rc)
+# to 'S'
+if test "$PREVLEVEL" = N
+then
+	previous=S exec /etc/init.d/zleds stop
+fi
+exit 0

@@ -1,0 +1,37 @@
+# in various places defined(__arm__) is used to protect/select code which
+# is ARM specific, that code must also be selected for __thumb__ because
+# __thumb__ is an ARM but __arm__ is not set...
+#
+--- ./ldso/include/dl-string.h.orig	2005-09-07 14:09:19.375564254 -0700
++++ ./ldso/include/dl-string.h	2005-09-07 14:09:52.045620051 -0700
+@@ -270,7 +270,7 @@
+ 
+ /* On some arches constant strings are referenced through the GOT.
+  * This requires that load_addr must already be defined... */
+-#if defined(mc68000) || defined(__arm__) || defined(__mips__)	\
++#if defined(mc68000) || defined(__arm__) || defined(__thumb__) || defined(__mips__)	\
+                      || defined(__sh__) ||  defined(__powerpc__)
+ # define CONSTANT_STRING_GOT_FIXUP(X) \
+ 	if ((X) < (const char *) load_addr) (X) += load_addr
+--- ./libc/sysdeps/linux/common/create_module.c.orig	2005-09-07 14:09:55.597843578 -0700
++++ ./libc/sysdeps/linux/common/create_module.c	2005-09-07 14:10:11.650853730 -0700
+@@ -31,7 +31,7 @@
+ 
+ #ifdef __NR_create_module
+ 
+-#if defined(__i386__) || defined(__m68k__) || defined(__arm__) || defined(__cris__) || defined(__i960__)
++#if defined(__i386__) || defined(__m68k__) || defined(__arm__) || defined(__thumb__) || defined(__cris__) || defined(__i960__)
+ #define __NR___create_module  __NR_create_module
+ #ifdef __STR_NR_create_module
+ #define __STR_NR___create_module  __STR_NR_create_module
+--- ./utils/ldd.c.orig	2005-09-07 14:10:32.368157388 -0700
++++ ./utils/ldd.c	2005-09-07 14:11:23.735389724 -0700
+@@ -51,7 +51,7 @@
+ #include <dmalloc.h>
+ #endif
+ 
+-#if defined(__arm__)
++#if defined(__arm__) || defined(__thumb__)
+ #define MATCH_MACHINE(x) (x == EM_ARM)
+ #define ELFCLASSM	ELFCLASS32
+ #endif

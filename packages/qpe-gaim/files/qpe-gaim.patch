@@ -1,0 +1,721 @@
+Nur in qpe-gaim: gaim.
+diff -ur qpe-gaim.old/gaim.pro qpe-gaim/gaim.pro
+--- qpe-gaim.old/gaim.pro	2004-10-30 20:08:11.000000000 +0200
++++ qpe-gaim/gaim.pro	2005-03-03 23:04:20.000000000 +0100
+@@ -159,19 +159,22 @@
+ 	mktarball.sh
+ 
+ INCLUDEPATH += \
+-	$(QPEDIR)/include \
++	$(OPIEDIR)/include \
++	/home/ich/programming/oe/gaim/libgaim_install/include \
+ 	/usr/include/glib-2.0 \
+ 	/usr/lib/glib-2.0/include
+ 
+-DEPENDPATH  += $(QPEDIR)/include
++DEPENDPATH  += $(OPIEDIR)/include
+ LIBS        += \
+ 	-lqpe \
+-	-lopie \
+-	-ljpeg \
+-	-lpng12 \
++	-lopiecore2 \
++	-lopieui2 \
+ 	-lgaim \
+ 	-lglib-2.0 \
+ 	-lgmodule-2.0
+ 
++LIBRARYPATH += $(OPIEDIR)/lib
++LIBPATH += $(OPIEDIR)/lib
++
+ OBJECTS_DIR = obj
+ MOC_DIR     = moc
+diff -ur qpe-gaim.old/src/main.cpp qpe-gaim/src/main.cpp
+--- qpe-gaim.old/src/main.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/main.cpp	2005-02-28 23:57:59.000000000 +0100
+@@ -20,7 +20,37 @@
+  */
+ #include "QGaimMainWindow.h"
+ 
+-#include <qpe/qpeapplication.h>
+-#include <opie/oapplicationfactory.h>
++
++extern "C" {
++/*
++ * Variables needed to be defined
++ */
++GSList *away_messages = NULL;
++GSList *unread_message_queue = NULL;
++GSList *message_queue = NULL;
++int docklet_count = 0;
++struct away_message *awaymessage = NULL;
++int opt_debug = 0;
++
++void *awayqueue    = NULL;
++void *awayquestore = NULL;
++
++gint check_idle(gpointer data)
++{
++    return FALSE;
++}
++
++}
++
++char *stylize(const gchar *text, int length)
++{
++    gchar *buf = (gchar*)g_malloc(length);
++    g_snprintf(buf, length, "%s", text );
++
++    return buf;
++}
++
++#include <opie2/oapplicationfactory.h>
++using namespace Opie::Core;
+ 
+ OPIE_EXPORT_APP(OApplicationFactory<QGaimMainWindow>)
+Nur in qpe-gaim/src: main.cpp~.
+diff -ur qpe-gaim.old/src/QGaimAccountBox.cpp qpe-gaim/src/QGaimAccountBox.cpp
+--- qpe-gaim.old/src/QGaimAccountBox.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountBox.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include "QGaimAccountBox.h"
+ #include "QGaimProtocolUtils.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <qpixmap.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimAccountBox.h qpe-gaim/src/QGaimAccountBox.h
+--- qpe-gaim.old/src/QGaimAccountBox.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountBox.h	2005-02-28 23:21:30.000000000 +0100
+@@ -23,7 +23,7 @@
+ 
+ #include <qcombobox.h>
+ 
+-#include <libgaim/account.h>
++#include <gaim/account.h>
+ 
+ class QGaimAccountBox : public QComboBox
+ {
+diff -ur qpe-gaim.old/src/QGaimAccountEditor.cpp qpe-gaim/src/QGaimAccountEditor.cpp
+--- qpe-gaim.old/src/QGaimAccountEditor.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountEditor.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -25,8 +25,8 @@
+ #include "QGaimTabWidget.h"
+ #include "base.h"
+ 
+-#include <libgaim/accountopt.h>
+-#include <libgaim/debug.h>
++#include <gaim/accountopt.h>
++#include <gaim/debug.h>
+ 
+ #include <qcheckbox.h>
+ #include <qcombobox.h>
+diff -ur qpe-gaim.old/src/QGaimAccountEditor.h qpe-gaim/src/QGaimAccountEditor.h
+--- qpe-gaim.old/src/QGaimAccountEditor.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountEditor.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,9 +21,9 @@
+ #ifndef _QGAIM_ACCOUNT_EDITOR_H_
+ #define _QGAIM_ACCOUNT_EDITOR_H_
+ 
+-#include <libgaim/account.h>
+-#include <libgaim/plugin.h>
+-#include <libgaim/prpl.h>
++#include <gaim/account.h>
++#include <gaim/plugin.h>
++#include <gaim/prpl.h>
+ 
+ #include <qdialog.h>
+ #include <qlist.h>
+diff -ur qpe-gaim.old/src/QGaimAccountsWindow.cpp qpe-gaim/src/QGaimAccountsWindow.cpp
+--- qpe-gaim.old/src/QGaimAccountsWindow.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountsWindow.cpp	2005-03-03 23:03:50.000000000 +0100
+@@ -27,8 +27,8 @@
+ #include "QGaimMainWindow.h"
+ #include "base.h"
+ 
+-#include <libgaim/prpl.h>
+-#include <libgaim/signals.h>
++#include <gaim/prpl.h>
++#include <gaim/signals.h>
+ 
+ #include <qpe/resource.h>
+ #include <qaction.h>
+@@ -417,6 +417,10 @@
+ void
+ QGaimAccountsWindow::connectToAccount()
+ {
++        if ( !accountsView->selectedItem() )
++            return;
++
++
+ 	QGaimAccountListItem *item;
+ 
+ 	connectButton->setEnabled(false);
+@@ -431,6 +435,9 @@
+ void
+ QGaimAccountsWindow::disconnectFromAccount()
+ {
++        if ( !accountsView->selectedItem() )
++            return;
++
+ 	QGaimAccountListItem *item;
+ 
+ 	item = (QGaimAccountListItem *)accountsView->selectedItem();
+Nur in qpe-gaim/src: QGaimAccountsWindow.cpp~.
+diff -ur qpe-gaim.old/src/QGaimAccountsWindow.h qpe-gaim/src/QGaimAccountsWindow.h
+--- qpe-gaim.old/src/QGaimAccountsWindow.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimAccountsWindow.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_ACCOUNTS_WINDOW_H_
+ #define _QGAIM_ACCOUNTS_WINDOW_H_
+ 
+-#include <libgaim/prpl.h>
++#include <gaim/prpl.h>
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+diff -ur qpe-gaim.old/src/QGaimBListWindow.cpp qpe-gaim/src/QGaimBListWindow.cpp
+--- qpe-gaim.old/src/QGaimBListWindow.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimBListWindow.cpp	2005-02-28 23:22:29.000000000 +0100
+@@ -26,11 +26,10 @@
+ #include "QGaimMainWindow.h"
+ #include "base.h"
+ 
+-#include <libgaim/debug.h>
+-#include <libgaim/multi.h>
+-#include <libgaim/prefs.h>
+-#include <libgaim/request.h>
+-#include <libgaim/signals.h>
++#include <gaim/debug.h>
++#include <gaim/prefs.h>
++#include <gaim/request.h>
++#include <gaim/signals.h>
+ 
+ #include <qpe/resource.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimBListWindow.h qpe-gaim/src/QGaimBListWindow.h
+--- qpe-gaim.old/src/QGaimBListWindow.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimBListWindow.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_BLIST_WIN_H_
+ #define _QGAIM_BLIST_WIN_H_
+ 
+-#include <libgaim/blist.h>
++#include <gaim/blist.h>
+ 
+ #include <qiconset.h>
+ #include <qmainwindow.h>
+diff -ur qpe-gaim.old/src/QGaimBuddyList.cpp qpe-gaim/src/QGaimBuddyList.cpp
+--- qpe-gaim.old/src/QGaimBuddyList.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimBuddyList.cpp	2005-02-28 23:24:27.000000000 +0100
+@@ -23,11 +23,10 @@
+ #include "QGaimProtocolUtils.h"
+ #include "QGaimImageUtils.h"
+ 
+-#include <libgaim/debug.h>
+-#include <libgaim/multi.h>
+-#include <libgaim/prefs.h>
+-#include <libgaim/request.h>
+-#include <libgaim/server.h>
++#include <gaim/debug.h>
++#include <gaim/prefs.h>
++#include <gaim/request.h>
++#include <gaim/server.h>
+ 
+ #include <qpe/qpeapplication.h>
+ #include <qpe/resource.h>
+@@ -132,7 +131,7 @@
+ 			setText(1, text);
+ 		}
+ 
+-		setText(0, gaim_get_buddy_alias(buddy));
++		setText(0, gaim_buddy_get_alias(buddy));
+ 	}
+ 	else if (GAIM_BLIST_NODE_IS_BUDDY(node))
+ 	{
+@@ -166,7 +165,7 @@
+ 		}
+ 
+ 		setPixmap(0, QGaimBuddyList::getBuddyStatusIcon(node, pixmapSize));
+-		setText(0, gaim_get_buddy_alias(buddy));
++		setText(0, gaim_buddy_get_alias(buddy));
+ 		setText(1, text);
+ 	}
+ 	else if (GAIM_BLIST_NODE_IS_CHAT(node))
+@@ -328,7 +327,7 @@
+ 				if (contact != NULL && !isExpanded() && contact->alias != NULL)
+ 					topText = contact->alias;
+ 				else
+-					topText = gaim_get_buddy_alias(buddy);
++					topText = gaim_buddy_get_alias(buddy);
+ 
+ 				bottomText = statusText + idleTime + warning;
+ 
+diff -ur qpe-gaim.old/src/QGaimBuddyList.h qpe-gaim/src/QGaimBuddyList.h
+--- qpe-gaim.old/src/QGaimBuddyList.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimBuddyList.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,8 +21,8 @@
+ #ifndef _QGAIM_BUDDY_LIST_H_
+ #define _QGAIM_BUDDY_LIST_H_
+ 
+-#include <libgaim/account.h>
+-#include <libgaim/blist.h>
++#include <gaim/account.h>
++#include <gaim/blist.h>
+ 
+ #include <qlistview.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimConnectionMeter.cpp qpe-gaim/src/QGaimConnectionMeter.cpp
+--- qpe-gaim.old/src/QGaimConnectionMeter.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConnectionMeter.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include "QGaimConnectionMeter.h"
+ #include "QGaimProtocolUtils.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <qpushbutton.h>
+ #include <qlabel.h>
+diff -ur qpe-gaim.old/src/QGaimConnectionMeter.h qpe-gaim/src/QGaimConnectionMeter.h
+--- qpe-gaim.old/src/QGaimConnectionMeter.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConnectionMeter.h	2005-02-28 23:21:30.000000000 +0100
+@@ -28,7 +28,7 @@
+ #include <qvariant.h>
+ #include <qvbox.h>
+ 
+-#include <libgaim/connection.h>
++#include <gaim/connection.h>
+ 
+ class QProgressBar;
+ class QVBox;
+diff -ur qpe-gaim.old/src/QGaimConvButton.cpp qpe-gaim/src/QGaimConvButton.cpp
+--- qpe-gaim.old/src/QGaimConvButton.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConvButton.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -24,8 +24,8 @@
+ #include "QGaimMainWindow.h"
+ #include "base.h"
+ 
+-#include <libgaim/debug.h>
+-#include <libgaim/signals.h>
++#include <gaim/debug.h>
++#include <gaim/signals.h>
+ 
+ #include <qpe/resource.h>
+ #include <qpopupmenu.h>
+diff -ur qpe-gaim.old/src/QGaimConvButton.h qpe-gaim/src/QGaimConvButton.h
+--- qpe-gaim.old/src/QGaimConvButton.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConvButton.h	2005-02-28 23:21:30.000000000 +0100
+@@ -25,7 +25,7 @@
+ #include <qwidget.h>
+ #include <qtoolbutton.h>
+ 
+-#include <libgaim/conversation.h>
++#include <gaim/conversation.h>
+ 
+ class QPopupMenu;
+ 
+diff -ur qpe-gaim.old/src/QGaimConvWindow.cpp qpe-gaim/src/QGaimConvWindow.cpp
+--- qpe-gaim.old/src/QGaimConvWindow.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConvWindow.cpp	2005-02-28 23:34:33.000000000 +0100
+@@ -30,8 +30,8 @@
+ #include "QGaimMainWindow.h"
+ #include "base.h"
+ 
+-#include <libgaim/debug.h>
+-#include <libgaim/prefs.h>
++#include <gaim/debug.h>
++#include <gaim/prefs.h>
+ 
+ #include <qpe/resource.h>
+ #include <qpe/qpeapplication.h>
+@@ -1260,7 +1260,7 @@
+ }
+ 
+ static void
+-qGaimConvChatAddUser(GaimConversation *conv, const char *user)
++qGaimConvChatAddUser(GaimConversation *conv, const char *user, gboolean)
+ {
+ 	QGaimConvChat *qchat = (QGaimConvChat *)conv->ui_data;
+ 
+@@ -1321,6 +1321,7 @@
+ 	qGaimConvChatRemoveUsers,
+ 	NULL,
+ 	NULL,
++	NULL,
+ 	qGaimConvUpdated
+ };
+ 
+diff -ur qpe-gaim.old/src/QGaimConvWindow.h qpe-gaim/src/QGaimConvWindow.h
+--- qpe-gaim.old/src/QGaimConvWindow.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimConvWindow.h	2005-02-28 23:21:30.000000000 +0100
+@@ -25,7 +25,7 @@
+ #include <qwidget.h>
+ #include <qmainwindow.h>
+ 
+-#include <libgaim/conversation.h>
++#include <gaim/conversation.h>
+ 
+ class QAction;
+ class QGaimMultiLineEdit;
+diff -ur qpe-gaim.old/src/QGaimDebugWindow.cpp qpe-gaim/src/QGaimDebugWindow.cpp
+--- qpe-gaim.old/src/QGaimDebugWindow.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimDebugWindow.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -20,7 +20,7 @@
+  */
+ #include "QGaimDebugWindow.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <glib.h>
+ #include <stdio.h>
+diff -ur qpe-gaim.old/src/QGaimDebugWindow.h qpe-gaim/src/QGaimDebugWindow.h
+--- qpe-gaim.old/src/QGaimDebugWindow.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimDebugWindow.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_DEBUG_WIN_H_
+ #define _QGAIM_DEBUG_WIN_H_
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ GaimDebugUiOps *qGaimGetDebugUiOps(void);
+ 
+diff -ur qpe-gaim.old/src/QGaimDialogs.cpp qpe-gaim/src/QGaimDialogs.cpp
+--- qpe-gaim.old/src/QGaimDialogs.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimDialogs.cpp	2005-02-28 23:38:32.000000000 +0100
+@@ -21,11 +21,10 @@
+ #include "QGaimDialogs.h"
+ #include "QGaimAccountBox.h"
+ 
+-#include <libgaim/blist.h>
+-#include <libgaim/conversation.h>
+-#include <libgaim/multi.h>
+-#include <libgaim/notify.h>
+-#include <libgaim/prpl.h>
++#include <gaim/blist.h>
++#include <gaim/conversation.h>
++#include <gaim/notify.h>
++#include <gaim/prpl.h>
+ 
+ #include <qcombobox.h>
+ #include <qframe.h>
+@@ -336,7 +335,7 @@
+ 		}
+ 		else
+ 		{
+-			QLineEdit *edit = new QLineEdit(pce->def, widgetsFrame);
++			QLineEdit *edit = new QLineEdit(pce->identifier, widgetsFrame);
+ 
+ 			grid->addWidget(edit, row, 1);
+ 
+@@ -614,7 +613,7 @@
+ 		}
+ 		else
+ 		{
+-			QLineEdit *edit = new QLineEdit(pce->def, widgetsFrame);
++			QLineEdit *edit = new QLineEdit(pce->identifier, widgetsFrame);
+ 
+ 			grid->addWidget(edit, row, 1);
+ 
+diff -ur qpe-gaim.old/src/QGaimDialogs.h qpe-gaim/src/QGaimDialogs.h
+--- qpe-gaim.old/src/QGaimDialogs.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimDialogs.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_DIALOGS_H_
+ #define _QGAIM_DIALOGS_H_
+ 
+-#include <libgaim/account.h>
++#include <gaim/account.h>
+ 
+ #include <qdialog.h>
+ #include <qlist.h>
+diff -ur qpe-gaim.old/src/QGaimEventLoop.cpp qpe-gaim/src/QGaimEventLoop.cpp
+--- qpe-gaim.old/src/QGaimEventLoop.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimEventLoop.cpp	2005-03-03 22:59:49.000000000 +0100
+@@ -38,8 +38,8 @@
+ static guint nextSourceId = 0;
+ static QIntDict<QGaimSourceInfo> sources;
+ 
+-QGaimTimer::QGaimTimer(guint sourceId, GSourceFunc func, gpointer data)
+-	: QTimer(), sourceId(sourceId), func(func), userData(data)
++QGaimTimer::QGaimTimer(guint _sourceId, GSourceFunc func, gpointer data)
++    : QTimer(), sourceId(_sourceId), func(func), userData(data)
+ {
+ 	connect(this, SIGNAL(timeout()),
+ 			this, SLOT(update()));
+Nur in qpe-gaim/src: QGaimEventLoop.cpp~.
+diff -ur qpe-gaim.old/src/QGaimEventLoop.h qpe-gaim/src/QGaimEventLoop.h
+--- qpe-gaim.old/src/QGaimEventLoop.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimEventLoop.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_EVENT_LOOP_H_
+ #define _QGAIM_EVENT_LOOP_H_
+ 
+-#include <libgaim/eventloop.h>
++#include <gaim/eventloop.h>
+ 
+ #include <qtimer.h>
+ #include <qsocketnotifier.h>
+diff -ur qpe-gaim.old/src/QGaimImageUtils.cpp qpe-gaim/src/QGaimImageUtils.cpp
+--- qpe-gaim.old/src/QGaimImageUtils.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimImageUtils.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -20,7 +20,7 @@
+  */
+ #include "QGaimImageUtils.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <glib.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimMainWindow.cpp qpe-gaim/src/QGaimMainWindow.cpp
+--- qpe-gaim.old/src/QGaimMainWindow.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimMainWindow.cpp	2005-03-01 00:31:54.000000000 +0100
+@@ -25,13 +25,13 @@
+ #include <qvbox.h>
+ #include <qpe/qpeapplication.h>
+ 
+-#include <libgaim/prefs.h>
+-#include <libgaim/conversation.h>
+-#include <libgaim/core.h>
+-#include <libgaim/proxy.h>
+-#include <libgaim/sound.h>
+-#include <libgaim/pounce.h>
+-#include <libgaim/plugin.h>
++#include <gaim/prefs.h>
++#include <gaim/conversation.h>
++#include <gaim/core.h>
++#include <gaim/proxy.h>
++#include <gaim/sound.h>
++#include <gaim/pounce.h>
++#include <gaim/plugin.h>
+ 
+ #include "QGaimConnectionMeter.h"
+ #include "QGaimConvWindow.h"
+@@ -145,7 +145,7 @@
+ void
+ QGaimMainWindow::initCore()
+ {
+-	char *plugin_search_paths[1];
++	char *plugin_search_paths[2];
+ 
+ 	gaim_core_set_ui_ops(qGaimGetCoreUiOps());
+ 	gaim_eventloop_set_ui_ops(qGaimGetEventLoopUiOps());
+@@ -155,11 +155,8 @@
+ 				  "Please report this!\n"));
+ 	}
+ 
+-#ifdef LOCAL_COMPILE
+ 	plugin_search_paths[0] = "/opt/Qtopia/lib/gaim";
+-#else
+-	plugin_search_paths[0] = "/usr/lib/gaim";
+-#endif
++	plugin_search_paths[1] = "/usr/lib/gaim";
+ 
+ 	gaim_plugins_set_search_paths(sizeof(plugin_search_paths) /
+ 								  sizeof(*plugin_search_paths),
+diff -ur qpe-gaim.old/src/QGaimMainWindow.h qpe-gaim/src/QGaimMainWindow.h
+--- qpe-gaim.old/src/QGaimMainWindow.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimMainWindow.h	2005-02-28 23:21:30.000000000 +0100
+@@ -24,7 +24,7 @@
+ #include <qmainwindow.h>
+ #include <qwidgetstack.h>
+ 
+-#include <libgaim/conversation.h>
++#include <gaim/conversation.h>
+ 
+ #include "QGaimBListWindow.h"
+ 
+diff -ur qpe-gaim.old/src/QGaimNotify.cpp qpe-gaim/src/QGaimNotify.cpp
+--- qpe-gaim.old/src/QGaimNotify.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimNotify.cpp	2005-02-28 23:42:01.000000000 +0100
+@@ -20,7 +20,7 @@
+  */
+ #include "QGaimNotify.h"
+ 
+-#include <libgaim/prefs.h>
++#include <gaim/prefs.h>
+ 
+ #include <qdialog.h>
+ #include <qlabel.h>
+@@ -28,9 +28,9 @@
+ #include <qmessagebox.h>
+ #include <qtextview.h>
+ 
+-#include <opie/odevice.h>
++#include <opie2/odevice.h>
+ 
+-using namespace Opie;
++using namespace Opie::Core;
+ 
+ static int notifyActiveCount = 0;
+ 
+@@ -215,7 +215,7 @@
+ 	if (!gaim_prefs_get_bool("/gaim/qpe/notify/use_buzzer"))
+ 		return;
+ 
+-	ODevice::inst()->alarmSound();
++	ODevice::inst()->playAlarmSound();
+ }
+ 
+ void
+Nur in qpe-gaim/src: QGaimNotify.cpp.rej.
+diff -ur qpe-gaim.old/src/QGaimNotify.h qpe-gaim/src/QGaimNotify.h
+--- qpe-gaim.old/src/QGaimNotify.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimNotify.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_NOTIFY_H_
+ #define _QGAIM_NOTIFY_H_
+ 
+-#include <libgaim/notify.h>
++#include <gaim/notify.h>
+ 
+ GaimNotifyUiOps *qGaimGetNotifyUiOps();
+ 
+diff -ur qpe-gaim.old/src/QGaimPrefsDialog.cpp qpe-gaim/src/QGaimPrefsDialog.cpp
+--- qpe-gaim.old/src/QGaimPrefsDialog.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimPrefsDialog.cpp	2005-02-28 23:42:01.000000000 +0100
+@@ -21,8 +21,8 @@
+ #include "QGaimPrefsDialog.h"
+ #include "QGaimMainWindow.h"
+ 
+-#include <libgaim/debug.h>
+-#include <libgaim/prefs.h>
++#include <gaim/debug.h>
++#include <gaim/prefs.h>
+ 
+ #include <qcheckbox.h>
+ #include <qlabel.h>
+@@ -30,8 +30,8 @@
+ #include <qvbox.h>
+ #include <qvgroupbox.h>
+ 
+-#include <opie/otabwidget.h>
+-#include <opie/owait.h>
++#include <opie2/otabwidget.h>
++#include <opie2/owait.h>
+ 
+ #include <qpe/resource.h>
+ 
+@@ -306,7 +306,7 @@
+ 	layout = new QVBoxLayout(this);
+ 	layout->setAutoAdd(true);
+ 
+-	tabs = new OTabWidget(this, "pref tabs");
++	tabs = new Opie::Ui::OTabWidget(this, "pref tabs");
+ 
+ 	blistPage    = new QGaimBlistPrefPage(this,  "blist page");
+ 	notifyPage   = new QGaimNotifyPrefPage(this, "notify page");
+@@ -332,7 +332,7 @@
+ void
+ QGaimPrefsDialog::accept()
+ {
+-	OWait wait(this);
++	Opie::Ui::OWait wait(this);
+ 
+ 	wait.show();
+ 
+diff -ur qpe-gaim.old/src/QGaimPrefsDialog.h qpe-gaim/src/QGaimPrefsDialog.h
+--- qpe-gaim.old/src/QGaimPrefsDialog.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimPrefsDialog.h	2005-02-28 23:42:01.000000000 +0100
+@@ -22,8 +22,8 @@
+ #define _QGAIM_PREFS_DIALOG_H_
+ 
+ #include <qdialog.h>
++#include <opie2/otabwidget.h>
+ 
+-class OTabWidget;
+ class QCheckBox;
+ 
+ class QGaimPrefPage : public QWidget
+@@ -150,7 +150,7 @@
+ 		void buildInterface();
+ 
+ 	private:
+-		OTabWidget *tabs;
++		Opie::Ui::OTabWidget *tabs;
+ 
+ 		QGaimPrefPage *blistPage;
+ 		QGaimPrefPage *convPage;
+diff -ur qpe-gaim.old/src/QGaimProtocolBox.cpp qpe-gaim/src/QGaimProtocolBox.cpp
+--- qpe-gaim.old/src/QGaimProtocolBox.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimProtocolBox.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include "QGaimProtocolBox.h"
+ #include "QGaimProtocolUtils.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <qpixmap.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimProtocolBox.h qpe-gaim/src/QGaimProtocolBox.h
+--- qpe-gaim.old/src/QGaimProtocolBox.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimProtocolBox.h	2005-02-28 23:21:30.000000000 +0100
+@@ -24,7 +24,7 @@
+ #include <qvariant.h>
+ #include <qcombobox.h>
+ 
+-#include <libgaim/prpl.h>
++#include <gaim/prpl.h>
+ 
+ class QGaimProtocolBox : public QComboBox
+ {
+diff -ur qpe-gaim.old/src/QGaimProtocolUtils.h qpe-gaim/src/QGaimProtocolUtils.h
+--- qpe-gaim.old/src/QGaimProtocolUtils.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimProtocolUtils.h	2005-02-28 23:21:30.000000000 +0100
+@@ -23,9 +23,9 @@
+ 
+ #include <qvariant.h>
+ 
+-#include <libgaim/account.h>
+-#include <libgaim/plugin.h>
+-#include <libgaim/prpl.h>
++#include <gaim/account.h>
++#include <gaim/plugin.h>
++#include <gaim/prpl.h>
+ 
+ #include "QGaimImageUtils.h"
+ 
+diff -ur qpe-gaim.old/src/QGaimRequest.cpp qpe-gaim/src/QGaimRequest.cpp
+--- qpe-gaim.old/src/QGaimRequest.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimRequest.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -22,7 +22,7 @@
+ #include "QGaimInputDialog.h"
+ #include "QGaimMainWindow.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ #include <qmessagebox.h>
+ 
+diff -ur qpe-gaim.old/src/QGaimRequest.h qpe-gaim/src/QGaimRequest.h
+--- qpe-gaim.old/src/QGaimRequest.h	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimRequest.h	2005-02-28 23:21:30.000000000 +0100
+@@ -21,7 +21,7 @@
+ #ifndef _QGAIM_REQUEST_H_
+ #define _QGAIM_REQUEST_H_
+ 
+-#include <libgaim/request.h>
++#include <gaim/request.h>
+ 
+ GaimRequestUiOps *qGaimGetRequestUiOps();
+ 
+diff -ur qpe-gaim.old/src/QGaimTabBar.cpp qpe-gaim/src/QGaimTabBar.cpp
+--- qpe-gaim.old/src/QGaimTabBar.cpp	2004-10-30 20:08:06.000000000 +0200
++++ qpe-gaim/src/QGaimTabBar.cpp	2005-02-28 23:21:30.000000000 +0100
+@@ -20,7 +20,7 @@
+  */
+ #include "QGaimTabBar.h"
+ 
+-#include <libgaim/debug.h>
++#include <gaim/debug.h>
+ 
+ /**************************************************************************
+  * QGaimTabBar
+Nur in qpe-gaim/src: semantic.cache.
+Nur in qpe-gaim/src: semantic.cache~.

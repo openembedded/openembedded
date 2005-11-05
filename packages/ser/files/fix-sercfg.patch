@@ -1,0 +1,20 @@
+diff -Nur ser-0.9.0.orig/etc/ser.cfg ser-0.9.0/etc/ser.cfg
+--- ser-0.9.0.orig/etc/ser.cfg	2004-11-30 17:28:24.000000000 +0100
++++ ser-0.9.0/etc/ser.cfg	2005-03-22 17:24:11.000000000 +0100
+@@ -81,11 +81,11 @@
+ 		break;
+ 	};
+ 	
+-	if (src_ip==193.175.135.0/24){
+-		force_send_socket(smaug:5080);
+-		forward(193.175.135.179);
+-		break;
+-	}
++#	if (src_ip==193.175.135.0/24){
++#		force_send_socket(smaug:5080);
++#		forward(193.175.135.179);
++#		break;
++#	}
+ 
+ 	# we record-route all messages -- to make sure that
+ 	# subsequent messages will go through our proxy; that's

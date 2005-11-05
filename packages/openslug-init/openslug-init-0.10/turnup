@@ -1,0 +1,890 @@
+#!/bin/sh
+# turnup
+# See the help block at the end for documentation.
+#
+. /etc/default/functions
+
+#
+# configuration
+#  The following variables control which directories in /var end up on the rootfs
+#  and which end up in a temporary file system.
+INRAM_MEMSTICK="/var/cache /var/lock /var/log /var/run /var/tmp /var/lib/ipkg"
+INRAM_NFS="/var/cache /var/lock /var/run /var/tmp"
+INRAM_DISK=""
+#
+# force: override certain checks
+force=
+#
+# fstype new
+#  The type of the file system mounted on "new"  Outputs the last
+#  piece of information found, which should be the one for the
+#  currently visible mount!
+fstype() {
+	local cwd dev mp type options pass freq result
+	cwd="$(cd "$1"; /bin/pwd)"
+	result=
+	while read dev mp type options pass freq
+	do
+		case "$mp" in
+		"$cwd")	result="$type";;
+		esac
+	done </proc/mounts
+	echo "$result"
+}
+#
+# fsoptions arguments
+#  Collapses the mount (-o) options into a single list which is
+#  printed on stdout.  Accepts an arbitrary list of options and
+#  just joins them together.
+fsoptions() {
+	local options
+	options=
+	while test $# -gt 1
+	do
+		case "$1" in
+		-t)	shift;;
+		-o)	if test -n "$2"
+			then
+				if test -n "$options"
+				then
+					options="$options,$2"
+				else
+					options="$2"
+				fi
+			fi
+			shift;;
+		esac
+		shift
+	done
+	if test -n "$options"
+	then
+		echo "$options"
+	else
+		echo defaults
+	fi
+}
+#
+# get_flash <directory> {mount options}
+#  mount the flash device, writeable, on the given directory
+get_flash() {
+	local ffsdir ffsdev
+
+	ffsdir="$1"
+	shift
+	test -n "$ffsdir" -a -d "$ffsdir" || {
+		echo "$0: $ffsdir: internal error, flash mount point not a directory" >&2
+		return 1
+	}
+
+	ffsdev="$(mtblockdev Flashdisk)"
+	umountflash "$ffsdev" &&
+	mountflash "$ffsdev" "$ffsdir" "$@"
+}
+#
+# check_rootfs [-i] <root fs directory>
+#  Make sure the candidate rootfs is empty
+check_rootfs() {
+	local fcount
+
+	case "$1" in
+	-i)	shift
+		case "$force" in
+		-f) return 0;;
+		esac
+
+		fcount="$(find "$1" ! -type d -print | wc -l)"
+		test "$fcount" -eq 0 && return 0
+
+		echo "turnup: $1: partition contains existing files, specify -f to overwrite" >&2
+		return 1;;
+	*)	checkmount "$1" && return 0
+
+		echo "turnup: $1: partition does not seem to be a valid root partition" >&2
+		if test -f "$1"/.recovery
+		then
+			echo "  $1/.recovery exists: fix the partition then remove it" >&2
+		fi
+		return 1;;
+	esac
+}
+#
+# copy_rootfs old new
+#  Make a copy of the given root file system, copying only the
+#  directories needed.  The root must be the flash file system
+copy_rootfs() {
+	local old new
+	old="$1"
+	new="$2"
+	test -d "$old" -a -d "$new" || {
+		echo "turnup: rootfs: copy $old $new: not a directory" >&2
+		return 1
+	}
+	#
+	# There are no problem file names in the flash file system, so
+	# it is possible to use -print, not -print0.  The following
+	# files and directories are not copied:
+	#
+	#   /dev/*
+	#   /boot, /boot/*
+	#   /linuxrc*
+	#   /var/*
+	echo "turnup: copying root file system" >&2
+	(	cd "$1"
+		find . -mount -print |
+		sed '\@^./dev/@d;\@^./boot/@d;\@^./boot$@d;\@^./linuxrc@d;\@^./var/@d' |
+		cpio -p -d -m -u "$2"
+	) || {
+		echo "turnup: rootfs: cpio $old $new failed" >&2
+		return 1
+	}
+	echo "done" >&2
+}
+
+#
+# setup_dev new device_table
+#  In flash file systems /dev is in ramfs, in disk systems /dev
+#  can be populated permanently.  This is done by creating a
+#  single entry '.noram' in /dev - the devices init script will
+#  then populate the directory without overmounting it.  The
+#  devices in the passed in device table are also created, but
+#  note that this is insufficient, /etc/init.d/devices must
+#  also run.
+setup_dev() {
+	test -n "$1" -a -d "$1"/dev -a -r "$2" || {
+		echo "turnup: setup_dev($1,$2): expected a directory and a file" >&2
+		return 1
+	}
+	echo "turnup: initialising dev file system" >&2
+	# init tries to open the following devices:
+	#	/dev/console
+	#	/dev/tty0
+	#	/dev/null
+	# syslog, and maybe other things, only work if fd 1 is valid, therefore
+	# we must create these devices here...
+	makedevs --root="$1" --devtable="$2"
+	:>"$1"/dev/.noram
+	return 0
+}
+
+#
+# setup_bootdev new device_table
+#  As above but actually uses the supplied device table - this is possible if
+#  the table is just used for boot because the extra setup is not required.
+setup_bootdev() {
+	test -n "$1" -a -d "$1"/dev -a -r "$2" || {
+		echo "turnup: setup_bootdev($1,$2): expected a directory and a file" >&2
+		return 1
+	}
+	# NOTE: this fails silently with 0 return code(!) when a directory
+	# does not exist yet things are created within it.
+	makedevs -r "$1" -D "$2"
+}
+
+#
+# setup_var new type
+#  Populates /var.
+#  Removes the /var tmpfs entry from /etc/fstab.
+#  Creates links from /var into /media/ram for NFS and Memstick.
+
+setup_var() {
+	test -n "$1" -a -d "$1"/var || {
+		echo "turnup: setup_var($1,$2): expected a directory" >&2
+		return 1
+	}
+	case "$2" in
+	disk|nfs|memstick);;
+	*)	echo "turnup: setup_var($1,$2): expected 'disk', 'nfs' or 'memstick'" >&2
+		return 1;;
+	esac
+	#
+	# populate /var, there is a shell script to do this, but it uses
+	# absolute path names
+	chroot "$1" /bin/busybox sh /etc/init.d/populate-volatile.sh || {
+		echo "turnup: /var: could not populate directory" >&2
+		return 1
+	}
+
+	case "$2" in
+	disk) RAMTARGETS=${INRAM_DISK};;
+	nfs) RAMTARGETS=${INRAM_NFS};;
+	memstick) RAMTARGETS=${INRAM_MEMSTICK};;
+	esac
+
+	for d in ${RAMTARGETS}; do
+	  RAMDIR="/media/ram${d}"
+	  REALDIR="${d}"
+	  rm -rf "${1}${REALDIR}"
+	  ln -s "${RAMDIR}" "${1}${REALDIR}"
+	  done
+	# the startup link is left for the moment, this seems safer
+	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
+	# remove the /var tmpfs entry from the new /etc/fstab
+	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@d' "$1"/etc/fstab
+	echo "turnup: tmpfs will no longer be mounted on /var" >&2
+	#
+	# Previous versions of turnup removed populate-var.sh from the
+	# startup links, this one doesn't, so /var can be made back into
+	# a tmpfs just by a change to /etc/fstab.
+	return 0
+}
+
+#
+# setup_syslog new
+#  Moves the syslog to a file - appropriate for disk and nfs types, not
+#  otherwise.
+setup_syslog() {
+	test -n "$1" -a -d "$1"/etc || {
+		echo "turnup: setup_syslog($1): expected a directory" >&2
+		return 1
+	}
+	#
+	# if the syslog is to the buffer redirect it to a file
+	if egrep -q '^DESTINATION="buffer"' "$1"/etc/syslog.conf
+	then
+		if cp "$1"/etc/syslog.conf "$1"/etc/syslog.conf.sav
+		then
+			# the busybox syslog will fail with ROTATESIZE and ROTATEGENS
+			sed -i 's!DESTINATION="buffer"!DESTINATION="file"!
+				/^ROTATESIZE=/d
+				/^ROTATEGENS=/d' "$1"/etc/syslog.conf
+			echo "turnup: /etc/syslog.conf: changed to file buffering" >&2
+			echo " Old (buffer) version in /etc/syslog.conf.sav" >&2
+			echo " Log messages will be in /var/log/messages" >&2
+		else
+			echo "turnup: /etc/syslog.conf: failed to make a copy" >&2
+			echo " syslog will log to a buffer" >&2
+		fi
+	fi
+	return 0
+}
+
+#
+# setup_rootfs type new device_table
+#  Populates the /dev and /var directories, alters the startup to
+#  not mount or populate them further.  Does the right thing according
+#  to the given $type
+setup_rootfs() {
+	local type new table
+	type="$1"
+	new="$2"
+	table="$3"
+
+	test -n "$new" -a -d "$new" -a -f "$table" || {
+		echo "turnup: setup_rootfs($type,$new,$table): expected a directory and a file" >&2
+		return 1
+	}
+
+	case "$type" in
+	flash)	return 0;;
+	disk)	setup_dev "$new" "$table" &&
+		setup_var "$new" "$type" &&
+		setup_syslog "$new";;
+	memstick)
+		setup_bootdev "$new" "$table" &&
+		setup_var "$new" "$type" ;;
+	nfs)	setup_dev "$new" "$table" &&
+		setup_var "$new" "$type" &&
+		setup_syslog "$new";;
+	*)	echo "turnup: setup_rootfs: $type: unknown rootfs type" >&2
+		return 1;;
+	esac
+	# return code of last setup function
+}
+
+#
+# setup_fstab new fsdev fstype fsoptions
+#  Alters the /etc/fstab entry for / to refer to the correct device and
+#  have the correct type and options.  Essential for checkroot to remount
+#  / with the correct options.
+#  bad, since sed won't fail even if it changes nothing.
+setup_fstab() {
+	sed -i '\@^[^ 	]*[ 	][ 	]*/[ 	]@s@^.*$@'"$2	/	$3	$4	1  1"'@' "$1"/etc/fstab
+	egrep -q "^$2	/	$3	$4	1  1\$" "$1"/etc/fstab || {
+		echo "turnup: /etc/fstab: root(/) entry not changed" >&2
+		echo "  you probably need to check the options in /etc/fstab" >&2
+		echo "  to ensure that the root partition is mounted correctly" >&2
+		return 1
+	}
+}
+
+
+#
+# boot_rootfs <boot type> <flash file system> <sleep time> <device> [options]
+#  Change the flash partition (not the current root!) to boot off
+#  the new root file system
+boot_rootfs() {
+	local type ffs sleep device opt
+
+	type="$1"
+	ffs="$2"
+	sleep="$3"
+	device="$4"
+
+	# test this first as the test does not depend on the correctness
+	# of the other arguments
+	test -n "$ffs" -a -d "$ffs" || {
+		echo "turnup: boot_rootfs($type, $ffs, $device): expected directory" >&2
+		return 1
+	}
+	test -x "$ffs"/boot/"$type" || {
+		echo "turnup: boot_rootfs($type, $ffs, $device): invalid boot type $type" >&2
+		return 1
+	}
+	shift
+	shift
+
+	case "$type" in
+	disk)	test -n "$device" -a -b "$device" || {
+			echo "turnup: boot_rootfs($ffs, $type, $device): expected block device" >&2
+			return 1
+		}
+		shift 2;;
+	nfs)	shift 2;;
+	flash)	;;
+	ram)	;;
+	*)	echo "turnup: boot_rootfs($type, $ffs, $device): unknown type" >&2
+		return 1;;
+	esac
+
+	#
+	# The /linuxrc records the correct options to mount the device,
+	# since we have already mounted if correctly with these options
+	# we can be sure (maybe) that the boot will work.  If not /boot/disk
+	# falls back to flash.
+	#
+	# This modifies the boot process, until this point no harm has been
+	# done to the system, but at this point the boot rootfs will change
+	rm -f "$ffs"/linuxrc.new || {
+		echo "turnup: boot_rootfs: failed to remove $ffs/linuxrc.new" >&2
+		return 1
+	}
+	case "$type" in
+	flash)	ln -s "boot/flash" "$ffs"/linuxrc.new || {
+			echo "turnup: boot_rootfs: failed to create $ffs/linuxrc.new" >&2
+			return 1
+		};;
+	ram)	{	echo '#!/bin/sh'
+			echo 'rm -f /linuxrc.new'
+			echo 'ln -s boot/flash /linuxrc.new'
+			echo 'mv /linuxrc.new /linuxrc'
+			echo 'exec /boot/ram /dev/ram0'
+			echo 'exec /boot/flash'
+		} >"$ffs"/linuxrc.new &&
+		chmod 744 "$ffs"/linuxrc.new || {
+			echo "turnup: boot_rootfs: failed to write $ffs/linuxrc.new" >&2
+			return 1
+		};;
+	*)	{	echo '#!/bin/sh'
+			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
+			echo -n "exec '/boot/$type' '$device'"
+			for opt in "$@"
+			do
+				echo -n " '$opt'"
+			done
+			echo
+			echo 'exec /boot/flash'
+		} >"$ffs"/linuxrc.new &&
+		chmod 744 "$ffs"/linuxrc.new || {
+			echo "turnup: boot_rootfs: failed to write $ffs/linuxrc.new" >&2
+			return 1
+		};;
+	esac
+	rm -f "$ffs"/linuxrc.sav || {
+		echo "turnup: boot_rootfs: failed to remove $ffs/linuxrc.sav" >&2
+		return 1
+	}
+	ln "$ffs"/linuxrc "$ffs"/linuxrc.sav || {
+		echo "turnup: boot_rootfs: failed to save /linuxrc.sav" >&2
+		return 1
+	}
+	mv -f "$ffs"/linuxrc.new "$ffs"/linuxrc || {
+		echo "turnup: boot_rootfs: failed to install new /linuxrc" >&2
+		return 1
+	}
+	return 0
+}
+
+#
+# disk [-m] [-i] [-s<time>] <device> {options}
+#  Carefully copy the flash file system to the named device.
+disk() {
+	local setup_type sleep init device new ffs fst fso
+
+	setup_type=disk
+	sleep=0
+	init=
+	while test $# -gt 0
+	do
+		case "$1" in
+		-f)	force="$1"
+			shift;;
+		-m)	setup_type=memstick
+			shift;;
+		-i)	init="$1"
+			shift;;
+		-s*)	sleep="${1#-s}"
+			sleep="${sleep:-10}"
+			shift;;
+		*)	break;;
+		esac
+	done
+
+	device="$1"
+	test -n "$device" -a -b "$device" || {
+		echo "turnup disk: $device: block device required" >&2
+		return 1
+	}
+	shift
+
+	# make temporary directories for the mount points
+	new="/tmp/rootfs.$$"
+	ffs="/tmp/flashdisk.$$"
+	mkdir "$new" "$ffs" || {
+		echo "turnup: disk: failed to create temporary directories" >&2
+		return 1
+	}
+
+	# make sure we can get to the flash file system first
+	get_flash "$ffs" || {
+		rmdir "$new" "$ffs"
+		return 1
+	}
+
+	# Now mount the device with the given options, note that specifying
+	# read only is *not* an option, this is important because the boot/disk
+	# script needs a rw file system
+	status=1
+	fst=
+	fso="$(fsoptions "$@")"
+	if mount "$@" "$device" "$new"
+	then
+		fst="$(fstype "$new")"
+		umount "$new" ||
+			echo "turnup disk: $device($new): umount does not seem to work" >&2
+	fi
+
+	if test -n "$fst" && mount -t "$fst" -o "$fso" "$device" "$new"
+	then
+		if check_rootfs $init "$new" && {
+			test -z "$init" || {
+				copy_rootfs "$ffs" "$new" &&
+				setup_rootfs "$setup_type" "$new" "$ffs"/etc/device_table
+			}
+		   }
+		then
+			setup_fstab "$new" "$device" "$fst" "$fso"
+			status=0
+		fi
+
+		# clean up the disk.  It is worrying if this umount fails!
+		umount "$new" || test "$force" = "-f" || {
+			echo "turnup disk: $device: umount failed" >&2
+			echo "  you must unmount this device cleanly yourself, then use" >&2
+			if test -z "$init"
+			then
+				echo "  turnup with the -f option to boot from the device" >&2
+			else
+				echo "  turnup without the -i option to boot from the device" >&2
+			fi
+			status=1
+		}
+
+		# if everything went ok boot from this disk
+		if test $status -eq 0
+		then
+			# memsticks boot like disks, so ignore the -m
+			boot_rootfs disk "$ffs" "$sleep" "$device" -t "$fst" -o "$fso"
+		fi
+	else
+		echo "turnup disk: $device($*): unable to mount device on $new" >&2
+		# If it worked first time
+		if test -n "$fst"
+		then
+			echo "  options used: -t $fst -o $fso [error in this script]" >&2
+		fi
+	fi
+
+	# clean up the flash file system
+	umount "$ffs"
+	rmdir "$new" "$ffs"
+	return $status
+}
+
+#
+# boot_reset <type>
+#  Resets the boot type to flash or ram, as appropriate
+boot_reset() {
+	local ffs typ status
+
+	case "$1" in
+	flash|ram)type="$1"
+		shift;;
+	*)	echo "turnup: boot_reset($1): invalid type" >&2
+		return 1;;
+	esac
+
+	ffs="/tmp/flashdisk.$$"
+	mkdir "$ffs" || {
+		echo "turnup: $1: failed to create temporary directory" >&2
+		return 1
+	}
+
+	get_flash "$ffs" || {
+		rmdir "$ffs"
+		return 1
+	}
+
+	# now try to set the /linuxrc appropriately
+	boot_rootfs "$type" "$ffs"
+	status=$?
+
+	# clean up
+	umount "$ffs"
+	rmdir "$ffs"
+	return $status
+}
+
+#
+# nfs [-i] <root partition> {options}
+#  Copy the flash file system to the given NFS root partition.
+nfs() {
+	local init nfsroot new ffs
+
+	init=
+	while test $# -gt 0
+	do
+		case "$1" in
+		-i)	init="$1"
+			shift;;
+		-f)	force="$1"
+			shift;;
+		*)	break;;
+		esac
+	done
+
+	nfsroot="$1"
+	test -n "$nfsroot" || {
+		echo "turnup nfs: $nfsroot: NFS root file system required" >&2
+		return 1
+	}
+	shift
+
+	# make temporary directories for the mount points
+	new="/tmp/rootfs.$$"
+	ffs="/tmp/flashdisk.$$"
+	mkdir "$new" "$ffs" || {
+		echo "turnup nfs: failed to create temporary directories" >&2
+		return 1
+	}
+
+	# make sure we can get to the flash file system first
+	get_flash "$ffs" || {
+		rmdir "$new" "$ffs"
+		return 1
+	}
+
+	# Now mount the device with the given options, note that specifying
+	# read only is *not* an option, this is important because the boot/disk
+	# script needs a rw file system
+	status=1
+	fst=
+	# These settings for for NFS, something better will probably have to
+	# be done to support other network file systems.
+	nfsopt="nolock,noatime,hard,intr,rsize=1024,wsize=1024"
+	fso="$(fsoptions -o "$nfsopt" "$@")"
+	if mount -o "$nfsopt" "$@" "$nfsroot" "$new"
+	then
+		fst="$(fstype "$new")"
+		umount "$new" ||
+			echo "turnup nfs: $nfsroot($new): umount does not seem to work" >&2
+	fi
+
+	if test -n "$fst" && mount -t "$fst" -o "$fso" "$nfsroot" "$new"
+	then
+		if :>"$new"/ttt && test -O "$new"/ttt && rm "$new"/ttt
+		then
+			if check_rootfs $init "$new" && {
+				test -z "$init" || {
+					copy_rootfs "$ffs" "$new" &&
+					setup_rootfs nfs "$new" "$ffs"/etc/device_table
+				}
+			   }
+			then
+				setup_fstab "$new" "$nfsroot" "$fst" "$fso"
+				status=0
+			fi
+		else
+			echo "turnup nfs: $nfsroot: partition must be exported no_root_squash" >&2
+		fi
+
+		# clean up the disk.  It is worrying if this umount fails!
+		umount "$new" || test "$force" = "-f" || {
+			echo "turnup nfs: $nfsroot: umount failed" >&2
+			if test $status -eq 0
+			then
+				echo "  you must unmount this partition cleanly yourself, then use" >&2
+				if test -z "$init"
+				then
+					echo "  turnup with the -f option to boot from the NFS root" >&2
+				else
+					echo "  turnup without the -i option to boot from the NFS root" >&2
+				fi
+				status=1
+			fi
+		}
+
+		# if everything went ok boot from this disk
+		if test $status -eq 0
+		then
+			# the options used are exactly those which worked before.
+			boot_rootfs nfs "$ffs" 0 "$nfsroot" -t nfs -o "$fso"
+		fi
+	else
+		echo "turnup nfs: $nfsroot($*): unable to mount device on $new" >&2
+		# If it worked first time
+		if test -n "$fst"
+		then
+			echo "  options obtained: -t $fst -o $fso" >&2
+		fi
+	fi
+
+	# clean up the flash file system
+	umount "$ffs"
+	rmdir "$new" "$ffs"
+	return $status
+}
+
+#
+# fix_hw_addr
+#  Called when the configuration is invalid to reset /etc/default/sysconf
+fix_hw_addr() {
+	# first look on the flash disk (ideally this stuff would only
+	# be called from flash, but there is no way of guaranteeing that).
+	local ffsdev ffs mac name force
+
+	case "$1" in
+	-f)	force="$1";;
+	esac
+
+	ffsdev="$(mtblockdev Flashdisk)"
+	test -n "$ffsdev" -a -b "$ffsdev" || {
+		echo "turnup init: the flash file system device is missing" >&2
+		echo "  The device (typically /dev/mtdblock4) must exist and" >&2
+		echo "  it must identify a flash partition called 'Flashdisk'" >&2
+		echo "  It may be that the /dev directory has not been initialised." >&2
+		echo "  This script cannot correct this problem." >&2
+		return 1
+	}
+
+	test -x /etc/init.d/sysconfsetup || {
+		echo "turnup init: /etc/init.d/sysconfsetup: script not executable" >&2
+		echo "  or script not present.  turnup init requires this script to" >&2
+		echo "  exist to correct the initialisation" >&2
+		return 1
+	}
+
+	# use devio to find out if this *is* the flash disk.
+	ffs=
+	if test "$(devio "<<$ffsdev" prd)" -ne "$(devio '<</etc/init.d/sysconfsetup' prd)"
+	then
+		# this isn't the flash device
+		ffs="/tmp/flashdisk.$$"
+		# make sure we can get to the flash file system first
+		get_flash "$ffs" || {
+			rmdir "$ffs"
+			return 1
+		}
+
+		# copy if available
+		if test -r "$ffs/etc/default/sysconf"
+		then
+			cp "$ffs/etc/default/sysconf"
+			force=
+		fi
+
+		umount "$ffs"
+		rmdir "$ffs"
+	fi
+
+	# if the config is still not valid generate sysconf from the slug
+	# label.
+	config valid && test -z "$force" || {
+		mac=
+		until test -n "$mac"
+		do
+			echo "turnup init: please find the 'MAC Address' of your NSLU2" >&2
+			echo "  The required number is on a label on the bottom of the NSLU2" >&2
+			echo "  It will be something like 'LKG1A2B3C'" >&2
+			echo -n "Enter the mac address: " >/dev/tty
+			read name </dev/tty
+			case "$name" in
+			[Ll][Kk][Gg][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])
+				mac="$(echo "$name" |
+					sed -n 's/^...\(..\)\(..\)\(..\)$/00:0F:66:\1:\2:\3/p')";;
+			[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f])
+				mac="$name"
+				name=
+				;;
+			"")	return 1;;
+			*)	echo "$name: not recognised as a LinkSys mac address" >&2
+				echo "  Enter the LinkSys value or a full Ethernet MAC addrress" >&2
+				mac=;;
+			esac
+
+			# Now generate the correct sysconf
+			{	echo '[network]'
+				echo "hw_addr=$mac"
+				test -n "$name" && echo "default_server_name=$name"
+			} >/etc/default/sysconf
+		done
+	}
+
+	# the configuration should be valid now
+	/etc/init.d/sysconfsetup reload
+}
+
+#
+# read_one 'prompt' 'group' 'name'
+#  read a single value
+read_one() {
+	local n o
+	o="$(sysval "$2" "$3")"
+	echo -n "$1 [$o]: " >/dev/tty
+	read n </dev/tty
+	test -z "$n" && n="$o"
+	eval "$3='$n'"
+}
+#
+# init_network
+#  Change the network initialisation
+init_network() {
+	# fix the root password
+	echo "Please enter a new password for 'root'." >/dev/tty
+	echo "The password must be non-empty for ssh login to succeed!" >/dev/tty
+	passwd
+	# now the network configuration
+	read_one "Host name" network disk_server_name
+	read_one "Domain name" network w_d_name
+	read_one "Boot protocol (dhcp|static)" network bootproto
+	case "$bootproto" in
+	static) read_one "IP address" network ip_addr
+		read_one "IP netmask" network netmask
+		read_one "IP gateway" network gateway
+		read_one "First DNS server" network dns_server1
+		read_one "Second DNS server" network dns_server2
+		read_one "Third DNS server" network dns_server3
+		echo "$ip_addr       $disk_server_name" >> /etc/hosts
+		;;
+	dhcp)	sed -i -e "s/localhost\$/localhost $disk_server_name/" /etc/hosts
+		;;
+	*)	bootproto=dhcp;;
+	esac
+	#
+	# The other stuff which cannot be changed
+	hw_addr="$(config mac)"
+	lan_interface="$(config iface)"
+	#
+	# Write this out to a new sysconf
+	{	echo "[network]"
+		echo "hw_addr=$hw_addr"
+		echo "lan_interface=$lan_interface"
+		test -n "$disk_server_name" && echo "disk_server_name=$disk_server_name"
+		test -n "$w_d_name" && echo "w_d_name=$w_d_name"
+		echo "bootproto=$bootproto"
+		case "$bootproto" in
+		static)	echo "ip_addr=$ip_addr"
+			test -n "$netmask" && echo "netmask=$netmask"
+			test -n "$gateway" && echo "gateway=$gateway"
+			test -n "$dns_server1" && echo "dns_server1=$dns_server1"
+			test -n "$dns_server2" && echo "dns_server2=$dns_server2"
+			test -n "$dns_server3" && echo "dns_server3=$dns_server3"
+			;;
+		esac
+	} >/etc/default/sysconf
+	#
+	# And reload the result
+	/etc/init.d/sysconfsetup reload
+	#
+	# The remove the spurious 'init' motd
+	rm /etc/motd
+}
+
+#
+# Basic command switch (this should be the only thing in this
+# script which actually does anything!)
+case "$1" in
+init)	shift
+	if config valid && test "$1" != -f
+	then
+		if init_network "$@"
+		then
+			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
+		else
+			exit 1
+		fi
+	else
+		if fix_hw_addr "$@"
+		then
+			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
+		else
+			exit 1
+		fi
+	fi;;
+disk)	shift
+	disk "$@";;
+memstick)
+	shift
+	disk -m "$@" -o noatime;;
+nfs)	shift
+	nfs "$@";;
+flash)	boot_reset flash;;
+ram)	boot_reset ram;;
+*)	echo "\
+usage: turnup command [options]
+ commands:
+  help
+    output this help
+  init
+    correct errors in network information
+    initialise network information when DHCP is not available
+    change network information
+  disk [-i] [-s<seconds>] <device> [mount options]
+    With -i make <device> a bootable file system then (with or
+    without -i) arrange for the next reboot to use that device.
+    The device must already be formatted as a file system, with
+    -i it must be completely empty, without it must contain an
+    apparently bootable file system. -s (for example -s5)
+    specifies a delay in seconds to wait at boot time before
+    mounting the device.
+  memstick [-i] <device> [mount options]
+    Behaves as disk however options appropriate to a flash memory
+    stick are automatically added
+  nfs [-i] <nfs mount path> [mount options]
+    <nfs mount path> must be a mountable NFS file system.  With
+    -i the partition must be empty and is initialised with a
+    bootable file system.  Without -i the partition must already
+    contain a bootable file system.  In either case the NFS
+    partition must be available to be mounted without root id
+    sqashing (i.e. root must be root) and it will be selected
+    as the root file system for subsequent reboots.
+    A default set of -o options are provided, additional options
+    may be given on the command line (multiple -o options will
+    be combined into a single -o).
+  flash
+    Revert to booting from the flash disk on next reboot.
+  ram
+    Boot (once) into a ramdisk, subsequent boots will be to
+    the flash file system.
+ disk formatting:
+  The argument to 'nfs' or 'disk' must be an empty partition
+  of sufficient size to hold the root file system (at least
+  16MByte but more is recommended to allow package installation).
+  An appropriate ext3 partition can be made using the command:
+
+    mke2fs -j <device>  # for example: /dev/sda1
+
+  An appropriate NFS partition can be emptied using 'rm', but
+  must be set up (exported) on the NFS server." >&2
+	exit 0;;
+esac
+# Exit with return code from command.

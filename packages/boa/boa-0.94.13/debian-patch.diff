@@ -1,0 +1,243 @@
+diff -urN boa-0.94.13.orig/src/boa.c boa-0.94.13/src/boa.c
+--- boa-0.94.13.orig/src/boa.c	2002-07-23 17:50:29.000000000 +0200
++++ boa-0.94.13/src/boa.c	2004-09-01 20:00:36.000000000 +0200
+@@ -208,10 +208,11 @@
+         struct passwd *passwdbuf;
+         passwdbuf = getpwuid(server_uid);
+         if (passwdbuf == NULL) {
+-            DIE("getpwuid");
+-        }
++            WARN("getpwuid - will not initgroups");
++        } else {
+         if (initgroups(passwdbuf->pw_name, passwdbuf->pw_gid) == -1) {
+-            DIE("initgroups");
++				WARN("initgroups");
++			}
+         }
+         if (setgid(server_gid) == -1) {
+             DIE("setgid");
+diff -urN boa-0.94.13.orig/src/boa.h boa-0.94.13/src/boa.h
+--- boa-0.94.13.orig/src/boa.h	2002-07-26 05:03:44.000000000 +0200
++++ boa-0.94.13/src/boa.h	2004-09-01 20:00:36.000000000 +0200
+@@ -149,8 +149,9 @@
+ void clean_pathname(char *pathname);
+ char *get_commonlog_time(void);
+ void rfc822_time_buf(char *buf, time_t s);
+-char *simple_itoa(unsigned int i);
++char *simple_itoa(long long int i);
+ int boa_atoi(char *s);
++long long int boa_atoll(char *s);
+ char *escape_string(char *inp, char *buf);
+ int month2int(char *month);
+ int modified_since(time_t * mtime, char *if_modified_since);
+diff -urN boa-0.94.13.orig/src/boa_grammar.y boa-0.94.13/src/boa_grammar.y
+--- boa-0.94.13.orig/src/boa_grammar.y	1999-10-12 16:49:07.000000000 +0200
++++ boa-0.94.13/src/boa_grammar.y	2004-09-01 20:00:36.000000000 +0200
+@@ -20,7 +20,7 @@
+  *
+  */
+ 
+-/* $Id: boa_grammar.y,v 1.14 1999/10/12 14:49:07 jon Exp $*/
++/* $Id: boa_grammar.y,v 1.14 1999/10/12 14:49:07 jon Exp $ */
+ 
+ #include <string.h>
+ #include <stdio.h>
+diff -urN boa-0.94.13.orig/src/compat.h boa-0.94.13/src/compat.h
+--- boa-0.94.13.orig/src/compat.h	2002-06-06 07:02:28.000000000 +0200
++++ boa-0.94.13/src/compat.h	2004-09-01 20:00:36.000000000 +0200
+@@ -117,7 +117,7 @@
+ #endif
+ 
+ #ifdef HAVE_TM_GMTOFF
+-#define TIMEZONE_OFFSET(foo) foo##->tm_gmtoff
++#define TIMEZONE_OFFSET(foo) foo->tm_gmtoff
+ #else
+ #define TIMEZONE_OFFSET(foo) timezone
+ #endif
+diff -urN boa-0.94.13.orig/src/get.c boa-0.94.13/src/get.c
+--- boa-0.94.13.orig/src/get.c	2002-07-26 05:05:59.000000000 +0200
++++ boa-0.94.13/src/get.c	2004-09-01 20:00:36.000000000 +0200
+@@ -43,7 +43,7 @@
+     struct stat statbuf;
+     volatile int bytes;
+ 
+-    data_fd = open(req->pathname, O_RDONLY);
++    data_fd = open(req->pathname, O_RDONLY | O_LARGEFILE);
+     saved_errno = errno; /* might not get used */
+ 
+ #ifdef GUNZIP
+@@ -58,7 +58,7 @@
+         memcpy(gzip_pathname, req->pathname, len);
+         memcpy(gzip_pathname + len, ".gz", 3);
+         gzip_pathname[len + 3] = '\0';
+-        data_fd = open(gzip_pathname, O_RDONLY);
++        data_fd = open(gzip_pathname, O_RDONLY | O_LARGEFILE);
+         if (data_fd != -1) {
+             close(data_fd);
+ 
+@@ -313,7 +313,7 @@
+            sprintf(pathname_with_index, "%s%s", req->pathname, directory_index);
+          */
+ 
+-        data_fd = open(pathname_with_index, O_RDONLY);
++        data_fd = open(pathname_with_index, O_RDONLY | O_LARGEFILE);
+ 
+         if (data_fd != -1) {    /* user's index file */
+             strcpy(req->request_uri, directory_index); /* for mimetype */
+@@ -334,7 +334,7 @@
+          * try index.html.gz
+          */
+         strcat(pathname_with_index, ".gz");
+-        data_fd = open(pathname_with_index, O_RDONLY);
++        data_fd = open(pathname_with_index, O_RDONLY | O_LARGEFILE);
+         if (data_fd != -1) {    /* user's index file */
+             close(data_fd);
+ 
+@@ -399,9 +399,9 @@
+     time_t real_dir_mtime;
+ 
+     real_dir_mtime = statbuf->st_mtime;
+-    sprintf(pathname_with_index, "%s/dir.%d.%ld",
++    sprintf(pathname_with_index, "%s/dir.%d.%lld",
+             cachedir, (int) statbuf->st_dev, statbuf->st_ino);
+-    data_fd = open(pathname_with_index, O_RDONLY);
++    data_fd = open(pathname_with_index, O_RDONLY | O_LARGEFILE);
+ 
+     if (data_fd != -1) {        /* index cache */
+ 
+@@ -417,7 +417,7 @@
+     if (index_directory(req, pathname_with_index) == -1)
+         return -1;
+ 
+-    data_fd = open(pathname_with_index, O_RDONLY); /* Last chance */
++    data_fd = open(pathname_with_index, O_RDONLY | O_LARGEFILE); /* Last chance */
+     if (data_fd != -1) {
+         strcpy(req->request_uri, directory_index); /* for mimetype */
+         fstat(data_fd, statbuf);
+diff -urN boa-0.94.13.orig/src/globals.h boa-0.94.13/src/globals.h
+--- boa-0.94.13.orig/src/globals.h	2002-07-24 05:03:59.000000000 +0200
++++ boa-0.94.13/src/globals.h	2004-09-01 20:00:36.000000000 +0200
+@@ -54,8 +54,8 @@
+     int kacount;                /* keepalive count */
+ 
+     int data_fd;                /* fd of data */
+-    unsigned long filesize;     /* filesize */
+-    unsigned long filepos;      /* position in file */
++    unsigned long long filesize;     /* filesize */
++    unsigned long long filepos;      /* position in file */
+     char *data_mem;             /* mmapped/malloced char array */
+     int method;                 /* M_GET, M_POST, etc. */
+ 
+diff -urN boa-0.94.13.orig/src/index_dir.c boa-0.94.13/src/index_dir.c
+--- boa-0.94.13.orig/src/index_dir.c	2002-01-30 04:41:45.000000000 +0100
++++ boa-0.94.13/src/index_dir.c	2004-09-01 20:00:36.000000000 +0200
+@@ -240,10 +240,10 @@
+         printf("<tr>"
+                "<td width=\"40%%\"><a href=\"%s/\">%s/</a></td>"
+                "<td align=right>%s</td>"
+-               "<td align=right>%ld bytes</td>"
++               "<td align=right>%lld bytes</td>"
+                "</tr>\n",
+                http_filename, html_filename,
+-               ctime(&statbuf.st_mtime), (long) statbuf.st_size);
++               ctime(&statbuf.st_mtime), (long long) statbuf.st_size);
+     }
+ 
+     printf
+@@ -281,19 +281,19 @@
+                    "<td width=\"40%%\"><a href=\"%s\">%s</a> "
+                    "<a href=\"%s.gz\">(.gz)</a></td>"
+                    "<td align=right>%s</td>"
+-                   "<td align=right>%ld bytes</td>"
++                   "<td align=right>%lld bytes</td>"
+                    "</tr>\n",
+                    http_filename, html_filename, http_filename,
+-                   ctime(&statbuf.st_mtime), (long) statbuf.st_size);
++                   ctime(&statbuf.st_mtime), (long long) statbuf.st_size);
+         } else {
+ #endif
+             printf("<tr>"
+                    "<td width=\"40%%\"><a href=\"%s\">%s</a></td>"
+                    "<td align=right>%s</td>"
+-                   "<td align=right>%ld bytes</td>"
++                   "<td align=right>%lld bytes</td>"
+                    "</tr>\n",
+                    http_filename, html_filename,
+-                   ctime(&statbuf.st_mtime), (long) statbuf.st_size);
++                   ctime(&statbuf.st_mtime), (long long) statbuf.st_size);
+ #ifdef GUNZIP
+         }
+ #endif
+diff -urN boa-0.94.13.orig/src/log.c boa-0.94.13/src/log.c
+--- boa-0.94.13.orig/src/log.c	2002-07-26 05:04:48.000000000 +0200
++++ boa-0.94.13/src/log.c	2004-09-01 20:00:36.000000000 +0200
+@@ -142,7 +142,7 @@
+     if (access_log) {
+         if (virtualhost)
+             fprintf(access_log, "%s ", req->local_ip_addr);
+-        fprintf(access_log, "%s - - %s\"%s\" %d %ld \"%s\" \"%s\"\n",
++        fprintf(access_log, "%s - - %s\"%s\" %d %lld \"%s\" \"%s\"\n",
+                 req->remote_ip_addr,
+                 get_commonlog_time(),
+                 req->logline,
+diff -urN boa-0.94.13.orig/src/mmap_cache.c boa-0.94.13/src/mmap_cache.c
+--- boa-0.94.13.orig/src/mmap_cache.c	2002-03-24 23:35:34.000000000 +0100
++++ boa-0.94.13/src/mmap_cache.c	2004-09-01 20:00:36.000000000 +0200
+@@ -104,7 +104,7 @@
+     int data_fd;
+     struct stat statbuf;
+     struct mmap_entry *e;
+-    data_fd = open(fname, O_RDONLY);
++    data_fd = open(fname, O_RDONLY | O_LARGEFILE);
+     if (data_fd == -1) {
+         perror(fname);
+         return NULL;
+diff -urN boa-0.94.13.orig/src/read.c boa-0.94.13/src/read.c
+--- boa-0.94.13.orig/src/read.c	2002-03-18 02:53:48.000000000 +0100
++++ boa-0.94.13/src/read.c	2004-09-01 20:00:36.000000000 +0200
+@@ -157,7 +157,7 @@
+                 if (req->content_length) {
+                     int content_length;
+ 
+-                    content_length = boa_atoi(req->content_length);
++                    content_length = boa_atoll(req->content_length);
+                     /* Is a content-length of 0 legal? */
+                     if (content_length <= 0) {
+                         log_error_time();
+diff -urN boa-0.94.13.orig/src/util.c boa-0.94.13/src/util.c
+--- boa-0.94.13.orig/src/util.c	2002-07-08 01:22:18.000000000 +0200
++++ boa-0.94.13/src/util.c	2004-09-01 20:00:36.000000000 +0200
+@@ -386,7 +386,7 @@
+     memcpy(p, day_tab + t->tm_wday * 4, 4);
+ }
+ 
+-char *simple_itoa(unsigned int i)
++char *simple_itoa(long long int i)
+ {
+     /* 21 digits plus null terminator, good for 64-bit or smaller ints
+      * for bigger ints, use a bigger buffer!
+@@ -427,6 +427,24 @@
+     return retval;
+ }
+ 
++/* I don't "do" negative conversions
++ * Therefore, -1 indicates error
++ */
++
++long long int boa_atoll(char *s)
++{
++    long long int retval;
++
++    if (!isdigit(*s))
++        return -1;
++
++    retval = atoll(s);
++    if (retval < 0)
++        return -1;
++
++    return retval;
++}
++
+ int create_temporary_file(short want_unlink, char *storage, int size)
+ {
+     static char boa_tempfile[MAX_PATH_LENGTH + 1];

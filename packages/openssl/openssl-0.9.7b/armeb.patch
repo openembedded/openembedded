@@ -1,0 +1,12 @@
+Index: openssl-0.9.7b/Configure
+===================================================================
+--- openssl-0.9.7b.orig/Configure	2005-02-03 13:02:06.876524776 -0500
++++ openssl-0.9.7b/Configure	2005-02-03 13:03:12.869492320 -0500
+@@ -415,6 +415,7 @@
+ 
+ # Linux on ARM
+ "linux-elf-arm","gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT:::BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-elf-armeb","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT:::BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ 
+ # SCO/Caldera targets.
+ #

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if ( [ -f /unslung/rc.bootbin ] && . /unslung/rc.bootbin ) ; then return 0 ; fi
+
+/sbin/rc.bootbin
+
+return 0

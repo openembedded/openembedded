@@ -1,0 +1,22 @@
+#!/bin/sh
+
+permout ()
+{
+	if [ -e $1 ]
+	then
+		chown root $1
+	else
+		echo Warning: $1 does not exist.
+		return 1
+	fi
+}
+
+if [ -e /proc/hal/model ]; then
+	for i in /dev/sound/dsp /dev/sound/mixer /dev/touchscreen/* /dev/fb/0 /dev/vc/0; do
+		permout $i
+	done
+else
+	for i in /dev/dsp /dev/dsp1 /dev/mixer /dev/ts /dev/fb0 /dev/sharp* /dev/collie*; do
+		permout $i
+	done
+fi

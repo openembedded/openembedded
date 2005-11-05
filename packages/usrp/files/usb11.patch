@@ -1,0 +1,96 @@
+diff -ur usrp-0.8/firmware/include/fpga_regs_standard.h usrp-0.8-usb11/firmware/include/fpga_regs_standard.h
+--- usrp-0.8/firmware/include/fpga_regs_standard.h	2004-12-10 23:25:42.000000000 -0500
++++ usrp-0.8-usb11/firmware/include/fpga_regs_standard.h	2005-04-18 15:48:58.000000000 -0400
+@@ -103,6 +103,7 @@
+ //  3   chan 1 Q
+ 
+ #define	FR_TX_MUX		39
++#define FR_USB_PACKET_SIZE	40
+ 
+ #endif /* INCLUDED_FPGA_REGS_STANDARD_H */
+ 
+diff -ur usrp-0.8/firmware/src/common/usrp_common.c usrp-0.8-usb11/firmware/src/common/usrp_common.c
+--- usrp-0.8/firmware/src/common/usrp_common.c	2004-03-28 17:28:58.000000000 -0500
++++ usrp-0.8-usb11/firmware/src/common/usrp_common.c	2005-04-17 12:10:26.000000000 -0400
+@@ -101,9 +101,13 @@
+   // set autoin length for EP6
+   // FIXME should be f(enumeration)
+ 
+-  EP6AUTOINLENH = (512) >> 8;	SYNCDELAY;  // this is the length for high speed
+-  EP6AUTOINLENL = (512) & 0xff; SYNCDELAY;
+-
++  if (USBCS & bmHSM) {
++    EP6AUTOINLENH = (512) >> 8;	SYNCDELAY;  // this is the length for high speed
++    EP6AUTOINLENL = (512) & 0xff; SYNCDELAY;
++  } else {
++    EP6AUTOINLENH = (64) >> 8;	SYNCDELAY;  // this is the length for full speed
++    EP6AUTOINLENL = (64) & 0xff; SYNCDELAY;
++  }
+   init_board ();
+ }
+ 
+diff -ur usrp-0.8/firmware/src/usrp2/usb_descriptors.a51 usrp-0.8-usb11/firmware/src/usrp2/usb_descriptors.a51
+--- usrp-0.8/firmware/src/usrp2/usb_descriptors.a51	2004-12-08 16:11:24.000000000 -0500
++++ usrp-0.8-usb11/firmware/src/usrp2/usb_descriptors.a51	2005-04-14 11:51:07.000000000 -0400
+@@ -236,7 +236,7 @@
+ 	.db	DSCR_CONFIG
+ 	.db	<(_full_speed_config_descr_end - _full_speed_config_descr) ; LSB
+ 	.db	>(_full_speed_config_descr_end - _full_speed_config_descr) ; MSB
+-	.db	1		; bNumInterfaces
++	.db	3		; bNumInterfaces
+ 	.db	1		; bConfigurationValue
+ 	.db	0		; iConfiguration
+ 	.db	0x80 | bmSELF_POWERED ; bmAttributes
+@@ -253,7 +253,53 @@
+ 	.db	0xff		; bInterfaceSubClass (vendor specific)
+ 	.db	0xff		; bInterfaceProtocol (vendor specific)
+ 	.db	SI_COMMAND_AND_STATUS	; iInterface (description)
++
++	;; interface descriptor 1 (transmit path, ep2 OUT BULK)
++	
++	.db	DSCR_INTRFC_LEN
++	.db	DSCR_INTRFC
++	.db	1		; bInterfaceNumber (zero based)
++	.db	0		; bAlternateSetting
++	.db	1		; bNumEndpoints
++	.db	0xff		; bInterfaceClass (vendor specific)
++	.db	0xff		; bInterfaceSubClass (vendor specific)
++	.db	0xff		; bInterfaceProtocol (vendor specific)
++	.db	SI_TX_PATH	; iInterface (description)
++
++	;; interface 1's end point
++
++	.db	DSCR_ENDPNT_LEN
++	.db	DSCR_ENDPNT
++	.db	0x02		; bEndpointAddress (ep 2 OUT)
++	.db	ET_BULK		; bmAttributes
++	.db	<64		; wMaxPacketSize (LSB)
++	.db	>64		; wMaxPacketSize (MSB)
++	.db	0		; bInterval (iso only)
++
++	;; interface descriptor 2 (receive path, ep6 IN BULK)
++	
++	.db	DSCR_INTRFC_LEN
++	.db	DSCR_INTRFC
++	.db	2		; bInterfaceNumber (zero based)
++	.db	0		; bAlternateSetting
++	.db	1		; bNumEndpoints
++	.db	0xff		; bInterfaceClass (vendor specific)
++	.db	0xff		; bInterfaceSubClass (vendor specific)
++	.db	0xff		; bInterfaceProtocol (vendor specific)
++	.db	SI_RX_PATH	; iInterface (description)
++
++	;; interface 2's end point
++
++	.db	DSCR_ENDPNT_LEN
++	.db	DSCR_ENDPNT
++	.db	0x86		; bEndpointAddress (ep 6 IN)
++	.db	ET_BULK		; bmAttributes
++	.db	<64		; wMaxPacketSize (LSB)
++	.db	>64		; wMaxPacketSize (MSB)
++	.db	0		; bInterval (iso only)
++
+ 	
++		
+ _full_speed_config_descr_end:	
+ 	

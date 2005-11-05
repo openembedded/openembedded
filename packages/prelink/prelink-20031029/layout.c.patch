@@ -1,0 +1,26 @@
+--- prelink-0.0.20030902.orig/src/layout.c	2003-06-13 15:12:26.000000000 +0000
++++ prelink-0.0.20030902/src/layout.c	2003-09-16 23:26:16.000000000 +0000
+@@ -614,7 +614,23 @@
+ 		< ((deps[j - 1]->end + max_page_size - 1)
+ 		   & ~(max_page_size - 1))
+ 		&& (deps[j]->type == ET_DYN || deps[j - 1]->type == ET_DYN))
++{ /* XXX some binaries cause a segfault but I do not know why -- Md*/
++    fprintf(stderr,
++	"Unknown fatal error at src/layout.c:538\n"
++	"l.binlibs[i]->filename: %s\n"
++	"deps[j]->base: %lx\n"
++	"(deps[j - 1]->end + max_page_size - 1) & ~(max_page_size - 1): %ld\n"
++	"[deps[j - 1]->end: %lx  max_page_size: %lu]\n"
++	"deps[j]->type: %x  deps[j - 1]->type: %x\n"
++	,
++	l.binlibs[i]->filename,
++	deps[j]->base,
++	((deps[j - 1]->end + max_page_size - 1) & ~(max_page_size - 1)),
++	deps[j - 1]->end, max_page_size,
++	deps[j]->type, deps[j - 1]->type
++	);
+ 	      abort ();
++}
+ 	}
+ #endif
+     }

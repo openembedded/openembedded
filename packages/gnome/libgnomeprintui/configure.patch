@@ -1,0 +1,12 @@
+--- libgnomeprintui-2.6.2/configure.in~	2004-04-21 15:51:21.000000000 +0100
++++ libgnomeprintui-2.6.2/configure.in	2004-06-27 13:12:26.000000000 +0100
+@@ -82,7 +82,8 @@
+ dnl ../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la to not have to make
+ dnl install after modifying libgnomeprint
+ dnl ============================================================================
+-AC_CHECK_FILE(../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la, use_local_libgnomeprint_la="yes", use_local_libgnomeprint_la="no")
++dnl AC_CHECK_FILE(../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la, use_local_libgnomeprint_la="yes", use_local_libgnomeprint_la="no")
++use_local_libgnomeprint_la="no"
+ AM_CONDITIONAL(EXAMPLES_USE_LOCAL_LIBGNOMEPRINT, test "x$use_local_libgnomeprint_la" = "xyes")
+ 
+ AC_OUTPUT([

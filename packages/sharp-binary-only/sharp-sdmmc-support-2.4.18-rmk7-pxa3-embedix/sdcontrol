@@ -1,0 +1,290 @@
+#!/bin/sh
+#
+# sdcontrol 1.0 2001/8/8 21:33:19 (Hideki Hayami)
+#
+# Initialize or shutdown a SD card device
+#
+# The first argument should be either 'insert' of 'eject'.
+#
+
+ACTION=$1
+DEVICE=/dev/mmcda1
+MOUNT_POINT=/media/card
+SMB_MOUNT=/home/samba/SD_Card
+INSTALL_DIR=Documents/Install_Files
+
+ENABLE_LOG="no"
+LOGFILE="/tmp/sdcontrol.log"
+
+DEBUG=0
+
+vecho() {
+	stamp="`date +"%d-%m-%y %H:%M:%S"`"
+	echo -e "$1"
+	test "$ENABLE_LOG" = "yes" -a -n "$LOGFILE" && echo -e "$1" | sed "s/\(.*\)/[$stamp]\ \1/">> "$LOGFILE"
+}
+
+
+# import FS mount options from fstab or use defaults
+# if detection fails
+SD_OPTS="`grep "$MOUNT_POINT" /etc/fstab | head -1 | awk '{print $4}'`" 
+if test -z "$SD_OPTS"
+then
+	SD_OPTS="noatime,sync"
+	vecho "\nWARNING: Couldn't determine SD mount options from /etc/fstab, using defaults\n"
+fi
+
+# The "quiet" option fails on non-VFAT cards. Nice trick ;)
+SD_OPTS_VFAT="$SD_OPTS,quiet,umask=000,iocharset=utf8"
+
+
+###### for QPE ######
+get_pid()
+{
+    echo $1
+}
+
+decho() {
+	test "$DEBUG" = 1 && echo "<DEBUG> $*"
+}
+
+wait_release()
+{
+    count=1
+    while true
+    do
+        umount $MOUNT_POINT
+        if [ $? = 0 ]; then
+            #echo umount >> /tmp/sd
+            return
+        fi
+	
+	if ! (mount | grep -q "$MOUNT_POINT")
+	then
+		return
+	fi
+	
+        echo count=$count >> /tmp/sd
+        if [ `expr $count \>= 500` = 1 ]; then
+            #echo time out >> /tmp/sd
+            return
+        fi
+        count=`expr $count + 1`
+        usleep 200000 || sleep 2
+    done
+}
+
+kill_task()
+{
+  
+    if ! test -z "`which fuser`"
+    then  
+    	    echo "Using 'fuser' to kill  \"busy\" tasks"
+	    ps_line=`ps ax | grep 'qpe$' | grep -v grep` # no -w on busybox
+	    decho "* 1 *"
+	    decho "ps_line [$ps_line]"
+	    qpe_pid=`get_pid $ps_line`
+	    
+	    decho "qpe_pid [$qpe_pid]"
+	    decho "* 1.1 *"
+	    
+	    target_pids=`fuser -m $1 | cut -d : -f2 | sed "s/[a-z]//g"` >/dev/null 2>&1
+		
+	    decho "* 1.2 *"
+	    #echo $target_pids >> /tmp/sd
+	    if ! (echo "$target_pids" | grep -q "[0-9]"); then
+	    	decho "* 2 *"
+        	return
+	    fi
+	    decho "Killing PIDs: [$target_pids]"
+	    decho "* 3 *"
+	    ! test -z "$qpe_pid" && is_exist_qpe=`echo $target_pids | grep "$qpe_pid"` # no -w on busybox
+	    
+	    decho "is_exist_qpe [$is_exist_qpe]"
+	    if [ "$is_exist_qpe" = "" ]; then
+		kill -9 $target_pids
+		decho "* 4 *"
+        	#echo kill -9 $target_pids >> /tmp/sd
+	    else
+	    	decho "* 5 *"
+        	#echo "found qpe!!!" >> /tmp/sd
+		target_pids=`echo $target_pids | sed -e "s/$qpe_pid//"`
+		if (echo "$target_pids" | grep -q "[0-9]"); then
+			echo "* 6 *"
+        	    kill -9 $target_pids
+		    
+        	    #echo kill -9 $target_pids >> /tmp/sd
+        	fi
+        	wait_release
+#        	exit 0
+	    fi
+    else
+    	echo "No 'fuser' found. Running tasks may keep partitions busy."
+    fi
+}
+###### for QPE ######
+
+case "$ACTION" in
+'insert')
+	
+	
+	vecho "Beginning SD auto-mount..:"
+	
+	test "$ENABLE_LOG" = yes && ps ax > "$LOGFILE-ps"
+	
+	# Read available partitions from /proc/partitions.
+	OK_PARTS=` head -20 /proc/partitions |grep mmcda | sort| uniq | awk '{print $4}'`
+	
+	decho "OK_PARTS [$OK_PARTS]"
+	
+	test "$ENABLE_LOG" = yes && echo $OK_PARTS > "$LOGFILE-part"
+	
+	if test "`echo "$OK_PARTS" | wc -l | awk '{print $1}`" -gt 1
+	then
+		OK_PARTS="`echo "$OK_PARTS" | grep -v "^mmcda$"`"
+	fi
+	
+	if test -z "$OK_PARTS"
+	then
+		vecho "\n\nWARNING: Trying failsafe partition mode\n\n"
+		OK_PARTS="mmcda1 mmcda2 mmcda3 mmcda4"
+	fi
+
+	
+	vecho "-> Valid SD partitions are: [$OK_PARTS]"
+	
+	# Allow for "#" in fstab.
+	fstab_txt="`cat /etc/fstab | grep -v ^#`"
+	
+	cnt=1
+	for part in $OK_PARTS
+	do
+		vecho "\n* * * * * Working on [/dev/$part] * * * * *\n"
+		# Read the mount-point for this partition from fstab 
+		FS_MOUNT_POINT="`echo "$fstab_txt" | grep "/dev/$part" | awk '{print $2}`"
+
+
+		# Mount the first valid partition as /mnt/card if there was no entry in fstab
+		if test -z "$FS_MOUNT_POINT"
+		then
+			# See if /mnt/card is already mounted
+			if ! mount|awk '{print $3}'|grep "^$MOUNT_POINT$" 2>&1 >/dev/null
+			then
+				# Check if another *existing* partition is configured as /mnt/card				
+				if ! echo "$fstab_txt" | grep "$MOUNT_POINT" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>&1 >/dev/null
+				then
+					# As /mnt/card wasn't configured in fstab, we simply mount the
+					# first unconfigured partition we find
+					FS_MOUNT_POINT="$MOUNT_POINT"
+				else
+					# Go through all partitions, and check if one of them is configured
+					# as /mnt/card
+					for xpart in $OK_PARTS
+					do
+						if echo "$fstab_txt" | grep "$xpart" | awk '{print $2}'| grep "^$MOUNT_POINT$" 2>&1 >/dev/null
+						then
+							vecho "-> $MOUNT_POINT is reserved by fstab"
+							found=1
+						fi
+					done
+					
+					if test "$found" = 1 
+					then	
+						# Another existing partition is configured for /mnt/card, leave it alone.
+						FS_MOUNT_POINT="$MOUNT_POINT$cnt"
+						let cnt=$cnt+1
+					else
+						FS_MOUNT_POINT="$MOUNT_POINT"
+					fi					
+					
+				fi
+			else
+				FS_MOUNT_POINT="$MOUNT_POINT$cnt"
+				let cnt=$cnt+1				
+			fi
+			vecho "-> Using mountpoint [$FS_MOUNT_POINT]"
+		else
+			vecho "-> Using mountpoint [$FS_MOUNT_POINT] from fstab"
+		fi
+
+		! test -d $FS_MOUNT_POINT && mkdir -p $FS_MOUNT_POINT	
+			
+		DEVICE="/dev/$part"
+		if ! test -e "$DEVICE"
+		then
+			DEV_NUM="`echo "$DEVICE" | sed -n "s/.*\([0-9]\)/\1/p"`"
+			cd /dev			
+			mknod mmcda$DEV_NUM b 60 $DEV_NUM
+		fi
+				
+		vecho "-> Trying VFAT mount [$SD_OPTS_VFAT]..."
+        	mount $FSTYPE -o $SD_OPTS_VFAT $DEVICE $FS_MOUNT_POINT >/dev/null 2>&1 
+		MOUNT_RES=`mount | grep $DEVICE`
+
+
+		if [ "$MOUNT_RES" = "" ]; then
+			vecho "-> Trying ext2 mount [$SD_OPTS]..."
+	        	mount $FSTYPE -o $SD_OPTS $DEVICE $FS_MOUNT_POINT
+		else
+			vecho "-> VFAT mount was successfull"
+		fi
+
+		MOUNT_RES=`mount | grep $DEVICE`
+		if [ "$MOUNT_RES" = "" ]; then
+			vecho "-> Trying failsafe mount..."
+	        	mount $FSTYPE $DEVICE $FS_MOUNT_POINT
+		else
+			vecho "-> EXT2 mount was successfull"			
+		fi
+
+		# Um what was the function of that?
+#		chkmntsh ${MOUNT_POINT}
+
+	done
+	
+	# I have no idea what this is good for....
+	if [ -d $SMB_MOUNT ] ; then
+		rm -rf $SMB_MOUNT
+		ln -s /mnt/card $SMB_MOUNT
+		mkdir -p $FS_MOUNT_POINT/$INSTALL_DIR		
+	fi
+
+
+        ;;
+'eject')
+	# Doesn't work as "fuser" isn't in a base OZ 3.5.[1|2] ROM
+	for part in `mount | grep mmcda|awk '{print $1}'`
+	do	
+		DEVICE="$part"
+        	fuser -s -m $DEVICE
+        	if [ $? = 1 ]; then
+                	umount $DEVICE
+                	rm $SMB_MOUNT
+		else
+			exit 1
+        	fi
+	done
+        ;;
+'compeject')
+	for part in `mount | grep mmcda|awk '{print $3}'`
+	do		 
+		found_something=1
+	        kill_task "$part"      # for QPE
+		
+	        umount $part >/dev/null 2>&1 && echo "Umounted [$part]" || echo -e "\n* * * WARNING: umount $part failed! * * *"
+
+		test -e "$SMB_MOUNT" && rm $SMB_MOUNT
+	done
+	test -z "$found_something" && echo "Nothing to do."
+        ;;
+'change')
+        $0 compeject
+        $0 insert
+        ;;
+'*')
+        exit 1
+        ;;
+esac
+
+exit 0
+

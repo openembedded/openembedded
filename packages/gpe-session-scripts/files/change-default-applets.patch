@@ -1,0 +1,18 @@
+diff -urNd ../gpe-session-scripts-0.61-r4/gpe-session-scripts-0.61/standard.mbdock gpe-session-scripts-0.61/standard.mbdock
+--- ../gpe-session-scripts-0.61-r4/gpe-session-scripts-0.61/standard.mbdock	2004-02-14 20:00:02.000000000 +0000
++++ gpe-session-scripts-0.61/standard.mbdock	2004-09-16 11:26:19.000000000 +0100
+@@ -1,11 +1,11 @@
+ mb-applet-menu-launcher
+ mbinputmgr
+ xstroke
+-minivol
+-minilite
+-minibat
+ 	
+ gpe-clock
++mb-applet-battery
++mb-applet-launcher -na -l --title 'Screen Rotator' /usr/share/pixmaps/xrandr.png xrandr-panelapp.sh
+ gpe-auto-bluetooth
+ gpe-what
++minilite
+ 	

@@ -1,0 +1,20 @@
+Index: include/linux/cpufreq.h
+===================================================================
+RCS file: /cvs/linux/kernel/include/linux/cpufreq.h,v
+retrieving revision 1.4
+diff -u -r1.4 cpufreq.h
+--- linux/include/linux/cpufreq.h	23 Aug 2002 22:18:47 -0000	1.4
++++ linux/include/linux/cpufreq.h	29 Apr 2004 08:44:18 -0000
+@@ -16,9 +16,9 @@
+ #include <linux/notifier.h>
+ 
+ #ifndef CONFIG_SMP
+-#define cpufreq_current(cpu)	((void)(cpu), __cpufreq_cur)
+-#define cpufreq_max(cpu)	((void)(cpu), __cpufreq_max)
+-#define cpufreq_min(cpu)	((void)(cpu), __cpufreq_min)
++#define cpufreq_current(cpu)	(__cpufreq_cur)
++#define cpufreq_max(cpu)	(__cpufreq_max)
++#define cpufreq_min(cpu)	(__cpufreq_min)
+ #else
+ /*
+  * Should be something like:

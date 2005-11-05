@@ -1,0 +1,741 @@
+diff -urNd gxine-0.4.1/ChangeLog gxine-0.4.1.new/ChangeLog
+--- gxine-0.4.1/ChangeLog	2004-12-15 23:28:03.000000000 +0000
++++ gxine-0.4.1.new/ChangeLog	2005-04-11 22:54:10.033876296 +0100
+@@ -1,3 +1,19 @@
++0.4.1enhanced:
++   Chris Lord <cwiiis@handhelds.org>
++   * Disabled building of the mozilla plug-in, and removed dependency on libXaw
++   * Use GTK stock icons for as many controls as possible and replace volume
++     xpms with pngs from rhythmbox.
++   * Rework menus
++   * Remove info bar
++   * Add progress display in Stream info menu (now located in the File menu)
++   * Change toolbar to left-click rather than middle-click in full-screen
++   * Toolbar renders at minimum size, so it always looks correct in full-screen
++   * Disable splash screen
++   * Move audio stream switcher to Edit menu
++   * Move Up/Down buttons in playlist dialog to a new row (for low-res display)
++   * Clear playlist on Open from main window
++   * Other miscellaneous interface-related changes...
++
+ 0.4.1:
+ 	[dsalt]
+ 	* Require at least GTK+ 2.4 and GLib 2.4. (I can't test 2.2.)
+diff -urNd gxine-0.4.1/configure.ac gxine-0.4.1.new/configure.ac
+--- gxine-0.4.1/configure.ac	2004-12-15 04:37:01.000000000 +0000
++++ gxine-0.4.1.new/configure.ac	2005-04-11 04:43:15.000000000 +0100
+@@ -42,12 +42,6 @@
+ AC_PATH_XTRA
+ 
+ dnl ---------------------------------------------
+-dnl Check for Xaw headers
+-dnl ---------------------------------------------
+-AC_CHECK_HEADER(X11/Xaw/Form.h,,
+-       [AC_MSG_ERROR([you need to install libxaw header files (-dev package)])])
+-
+-dnl ---------------------------------------------
+ dnl check for gtk 2
+ dnl ---------------------------------------------
+ PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.4.0)
+@@ -210,6 +204,11 @@
+ AC_DEFINE_UNQUOTED(GXINE_PIXMAPDIR,"$GXINE_PIXMAPPATH",[where to install pixmaps])
+ AC_SUBST(GXINE_PIXMAPPATH)
+ 
++GXINE_ICONDIR="$datadir/pixmaps"
++eval GXINE_ICONPATH=`eval echo "$GXINE_ICONDIR"`
++AC_DEFINE_UNQUOTED(GXINE_ICONDIR,"$GXINE_ICONPATH",[where to install desktop icons])
++AC_SUBST(GXINE_ICONPATH)
++
+ GXINE_MISCDIR="$datadir/gxine"
+ eval GXINE_MISCPATH=`eval echo "$GXINE_MISCDIR"`
+ AC_DEFINE_UNQUOTED(GXINE_MISCDIR,"$GXINE_MISCPATH",[where to install misc files (e.g. sample mediamarks)])
+@@ -221,7 +220,6 @@
+ src/Makefile
+ src/spidermonkey/Makefile
+ src/spidermonkey/fdlibm/Makefile
+-browser-plugin/Makefile
+ pixmaps/Makefile
+ doc/Makefile
+ doc/man/Makefile
+diff -urNd gxine-0.4.1/Makefile.am gxine-0.4.1.new/Makefile.am
+--- gxine-0.4.1/Makefile.am	2004-12-14 21:48:24.000000000 +0000
++++ gxine-0.4.1.new/Makefile.am	2005-04-11 04:45:37.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS = m4 pixmaps include src doc browser-plugin misc po
++SUBDIRS = m4 pixmaps include src doc misc po
+ 
+ #DEB_FILES = debian/rules debian/changelog debian/control debian/copyright debian/README.Debian debian/menu
+ EXTRA_DIST = config.rpath gxine.desktop autogen.sh @DEPCOMP@ 
+diff -urNd gxine-0.4.1/pixmaps/Makefile.am gxine-0.4.1.new/pixmaps/Makefile.am
+--- gxine-0.4.1/pixmaps/Makefile.am	2004-12-17 02:59:48.000000000 +0000
++++ gxine-0.4.1.new/pixmaps/Makefile.am	2005-04-11 14:02:01.000000000 +0100
+@@ -1,26 +1,35 @@
+ EXTRA_DIST = fast_forward.xpm \
+-	     pause.xpm \
+-	     pause2.xpm \
+-	     play.xpm \
+-	     play2.xpm \
+-	     stop.xpm \
+-	     stop2.xpm \
+-	     sliders.xpm \
+-	     rewind.xpm \
++#	     pause.xpm \
++#	     pause2.xpm \
++#	     play.xpm \
++#	     play2.xpm \
++#	     stop.xpm \
++#	     stop2.xpm \
++#	     sliders.xpm \
++#	     rewind.xpm \
+ 	     gxine-logo.png \
+-	     speaker.xpm \
+-	     nospeaker.xpm \
+-	     playlist.xpm \
++#	     speaker.xpm \
++#	     nospeaker.xpm \
++#	     playlist.xpm \
++        rhythmbox-volume-max.png \
++        rhythmbox-volume-medium.png \
++        rhythmbox-volume-min.png \
++        rhythmbox-volume-zero.png \
+ 	     subtitle.xpm\
+ 	     logo.mpv \
+-	     gxine-icon.xpm \
++#	     gxine-icon.xpm \
+ 	     ok.xpm\
+ 	     fail.xpm\
+ 	     wizards.png\
+ 	     splash.png
+ 
+ pixmapdir = $(GXINE_PIXMAPPATH)
+-pixmap_DATA = gxine-logo.png gxine-icon.xpm wizards.png splash.png
++pixmap_DATA = wizards.png splash.png rhythmbox-volume-max.png \
++              rhythmbox-volume-medium.png rhythmbox-volume-min.png \
++              rhythmbox-volume-zero.png
++
++icondir = $(GXINE_ICONPATH)
++icon_DATA = gxine-logo.png
+ 
+ datadir   = $(GXINE_LOGOPATH)
+ data_DATA = logo.mpv
+Binary files gxine-0.4.1/pixmaps/rhythmbox-volume-max.png and gxine-0.4.1.new/pixmaps/rhythmbox-volume-max.png differ
+Binary files gxine-0.4.1/pixmaps/rhythmbox-volume-medium.png and gxine-0.4.1.new/pixmaps/rhythmbox-volume-medium.png differ
+Binary files gxine-0.4.1/pixmaps/rhythmbox-volume-min.png and gxine-0.4.1.new/pixmaps/rhythmbox-volume-min.png differ
+Binary files gxine-0.4.1/pixmaps/rhythmbox-volume-zero.png and gxine-0.4.1.new/pixmaps/rhythmbox-volume-zero.png differ
+diff -urNd gxine-0.4.1/src/globals.h gxine-0.4.1.new/src/globals.h
+--- gxine-0.4.1/src/globals.h	2004-12-11 00:40:18.000000000 +0000
++++ gxine-0.4.1.new/src/globals.h	2005-04-11 22:56:13.042176192 +0100
+@@ -62,6 +62,7 @@
+ extern char           *video_driver_id;
+ extern xine_audio_port_t *audio_port;
+ extern xine_video_port_t *video_port;
++extern GtkLabel       *time_label;
+ 
+ #define MAX_MRL_LEN 1024
+ 
+diff -urNd gxine-0.4.1/src/key_events.c gxine-0.4.1.new/src/key_events.c
+--- gxine-0.4.1/src/key_events.c	2004-12-17 00:32:59.000000000 +0000
++++ gxine-0.4.1.new/src/key_events.c	2005-04-11 22:21:19.000000000 +0100
+@@ -167,7 +167,7 @@
+       gtk_menu_popup (GTK_MENU(popup_menu), NULL, NULL, NULL, NULL, 0,
+ 		      gtk_get_current_event_time ());
+       return TRUE;
+-    case GDK_Pointer_Button2:
++    case GDK_Pointer_Button1:
+       if (gtk_video_is_fullscreen (GTK_VIDEO(gtv)))
+ 	ui_toolbar_toggle ();
+       return TRUE;
+diff -urNd gxine-0.4.1/src/main.c gxine-0.4.1.new/src/main.c
+--- gxine-0.4.1/src/main.c	2004-12-14 23:52:37.000000000 +0000
++++ gxine-0.4.1.new/src/main.c	2005-04-11 14:20:30.000000000 +0100
+@@ -280,7 +280,7 @@
+    * a splash screen for the impatient
+    */
+ 
+-  splash_show ();
++/*  splash_show ();*/
+ 
+   /*
+    * init xine, set up skript engine, main window
+@@ -288,7 +288,7 @@
+ 
+   gdk_threads_enter ();
+ 
+-  gtk_window_set_default_icon (load_icon ("gxine-logo.png"));
++  gtk_window_set_default_icon (load_icon (GXINE_ICONPATH "/gxine-logo.png"));
+ 
+   engine_init ();
+   player_init ();
+@@ -319,7 +319,7 @@
+   stream_info_init ();
+   wizards_init     ();
+ 
+-  gtk_widget_destroy (splash);
++/*  gtk_widget_destroy (splash);*/
+ 
+   /*
+    * wizards (first run only)
+diff -urNd gxine-0.4.1/src/Makefile.am gxine-0.4.1.new/src/Makefile.am
+--- gxine-0.4.1/src/Makefile.am	2004-12-15 03:52:43.000000000 +0000
++++ gxine-0.4.1.new/src/Makefile.am	2005-04-11 13:48:19.000000000 +0100
+@@ -12,7 +12,7 @@
+ INCLUDES = -I../include -I$(top_srcdir)/include -I$(includedir) \
+ 	   -I$(top_srcdir)/pixmaps $(LIRC_INCLUDE)
+ 
+-AM_CFLAGS = $(XINE_CFLAGS) @GTK2_CFLAGS@ @GTHREAD2_CFLAGS@ -DLOCALEDIR=\"$(localedir)\"
++AM_CFLAGS = $(XINE_CFLAGS) @GTK2_CFLAGS@ @GTHREAD2_CFLAGS@ -DLOCALEDIR=\"$(localedir)\" -DGXINE_PIXMAPPATH=\"@GXINE_PIXMAPPATH@\" -DGXINE_ICONPATH=\"@GXINE_ICONPATH@\"
+ 
+ 
+ bin_PROGRAMS = gxine gxine_client
+@@ -46,7 +46,6 @@
+ 	snapshot.c \
+ 	player.c \
+ 	vis.c \
+-	time_widget.c \
+ 	widget_video.c \
+ 	gtkflipbutton.c
+ 
+diff -urNd gxine-0.4.1/src/menu.c gxine-0.4.1.new/src/menu.c
+--- gxine-0.4.1/src/menu.c	2004-12-15 19:23:19.000000000 +0000
++++ gxine-0.4.1.new/src/menu.c	2005-04-11 20:20:52.000000000 +0100
+@@ -247,7 +247,7 @@
+ {
+   v_engine_exec ("set_video_size (%d);", NULL, NULL, action);
+ }
+-
++/*
+ static void zoom_in_cb(void) {
+   engine_exec ("set_zoom (get_zoom()+5);", NULL, NULL);
+ }
+@@ -257,7 +257,7 @@
+ static void zoom_100_cb(void) {
+   engine_exec ("set_zoom (100);", NULL, NULL);
+ }
+-
++*/
+ static void aspect_cb(gpointer data, guint action, GtkWidget *widget)
+ {
+   v_engine_exec ("set_aspect (%d);", NULL, NULL, action);
+@@ -334,6 +334,12 @@
+   engine_exec ("settings_show ();", NULL, NULL);
+ }
+ 
++static void audio_cb (gpointer data, guint action, GtkWidget *widget)
++{
++   if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)))
++      v_engine_exec ("set_chan (%d);", NULL, NULL, action);
++}
++
+ static void sub_cb (gpointer data, guint action, GtkWidget *widget)
+ {
+   if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)))
+@@ -363,29 +369,43 @@
+   { N_("/File/_Open..."),		"<control>O",	open_cb, 0,		STOCK(OPEN) },
+   { N_("/File/Open _MRL..."),		"<control>M",	open_mrl_cb, 0,		NULL },
+   { N_("/File/Play_list..."),		NULL,     	playlist_cb, 0,		NULL },
+-  { "/File/sep0",			NULL,		NULL, 0,		"<Separator>" },
+-  { N_("/File/_Preferences..."),	NULL,		preferences_cb, 0,	STOCK(PREFERENCES) },
+-  { N_("/File/_Keybindings..."),	NULL,		keybindings_cb, 0,	NULL },
++  { N_("/File/Play _disc"),      NULL, NULL, 0, "<Branch>" },
+   { "/File/sep1",			NULL,		NULL, 0,		"<Separator>" },
++  { N_("/File/Stream _Info..."),	NULL,		stream_info_cb, 0,	NULL },
+   { "/File/sep2",			NULL,		NULL, 0,		"<Separator>" },
+-  { N_("/File/_Snapshot..."),		"<control>S",	snapshot_cb, 0,		NULL },
+-  { "/File/sep3",			NULL,		NULL, 0,		"<Separator>" },
+   { N_("/File/_Quit"),			"<control>Q",	exit_cb, 0,		STOCK(QUIT) },
++  { N_("/_Edit"),       NULL,    NULL, 0,    "<Branch>" },
++  { N_("/Edit/_Preferences..."),	NULL,		preferences_cb, 0,	STOCK(PREFERENCES) },
++  { N_("/Edit/_Keybindings..."),	NULL,		keybindings_cb, 0,	NULL },
++  { "/Edit/sep1",			NULL,		NULL, 0,		"<Separator>" },
++  { N_("/Edit/A\\/V _settings..."),	NULL,		settings_cb, 0,		NULL },
++  { N_("/Edit/_Audio"), NULL, NULL, 0, "<Branch>" },
++  { N_("/Edit/Audio/_Auto"), NULL, audio_cb, -1, "<RadioItem>"},
++  { N_("/Edit/Audio/_None"), NULL, audio_cb, -2, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _0"), NULL, audio_cb, 0, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _1"), NULL, audio_cb, 1, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _2"), NULL, audio_cb, 2, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _3"), NULL, audio_cb, 3, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _4"), NULL, audio_cb, 4, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _5"), NULL, audio_cb, 5, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _6"), NULL, audio_cb, 6, "/Edit/Audio/Auto"},
++  { N_("/Edit/Audio/Channel _7"), NULL, audio_cb, 7, "/Edit/Audio/Auto"},
+   { N_("/_View"),			NULL,		NULL, 0,		"<Branch>" },
+   { N_("/View/_Fullscreen mode"),	"<control>F",	fullscreen_cb, 0,	"<CheckItem>" },
+   { N_("/View/Fullscreen _toolbar"),	NULL,		NULL, 0,		"<Branch>" },
+   { N_("/View/Fullscreen toolbar/_Visible"),	NULL,	tbar_toggle_cb, 0,	"<CheckItem>" },
++  { N_("/View/_Snapshot..."),		"<control>S",	snapshot_cb, 0,		NULL },
+   { N_("/View/Fullscreen toolbar/At _top"),	NULL,	tbar_position_cb, 1,	"<RadioItem>" },
+   { N_("/View/Fullscreen toolbar/At _bottom"),	NULL,	tbar_position_cb, 0,	"/View/Fullscreen toolbar/At top" },
+   { "/View/sep3",			NULL,		NULL, 0,		"<Separator>" },
+-  { N_("/View/_50%"),			NULL,		factor_cb, 50,		NULL },
+-  { N_("/View/_100%"),			NULL,		factor_cb, 100,		NULL },
+-  { N_("/View/_200%"),			NULL,		factor_cb, 200,		NULL },
+-  { "/View/sep4",			NULL,		NULL, 0,		"<Separator>" },
++  { N_("/View/_Zoom"),        NULL,    NULL,       0,    "<Branch>" },
++  { N_("/View/Zoom/_50%"),			NULL,		factor_cb, 50,		NULL },
++  { N_("/View/Zoom/_100%"),			NULL,		factor_cb, 100,		NULL },
++  { N_("/View/Zoom/_200%"),			NULL,		factor_cb, 200,		NULL },
++/* The following settings don't work anyway...  
+   { N_("/View/Zoom _in"),		NULL,		zoom_in_cb, 0,		STOCK(ZOOM_IN) },
+   { N_("/View/Zoom _out"),		NULL,		zoom_out_cb, 0,		STOCK(ZOOM_OUT) },
+-  { N_("/View/_Zoom 100%"),		NULL,		zoom_100_cb, 0,		STOCK(ZOOM_100) },
+-  { "/View/sep5",			NULL,		NULL, 0,		"<Separator>" },
++  { N_("/View/_Zoom 100%"),		NULL,		zoom_100_cb, 0,		STOCK(ZOOM_100) },*/
+   { N_("/View/_Deinterlace"),		"<control>I",	deinterlace_cb, 0,	"<CheckItem>" },
+   { N_("/View/Auto _resize"),		NULL,		auto_resize_cb, 0,	"<CheckItem>" },
+   { N_("/View/_Aspect ratio"),		NULL,		NULL, 0,		"<Branch>" },
+@@ -394,7 +414,6 @@
+   { N_("/View/Aspect ratio/_4:3"),	NULL,		ASPECT(4_3),		"/View/Aspect ratio/Auto"},
+   { N_("/View/Aspect ratio/_16:9"),	NULL,		ASPECT(ANAMORPHIC),	"/View/Aspect ratio/Auto"},
+   { N_("/View/Aspect ratio/_2:1"),	NULL,		ASPECT(DVB),		"/View/Aspect ratio/Auto"},
+-  { N_("/View/A\\/V _settings..."),	NULL,		settings_cb, 0,		NULL },
+   { "/View/sep6",			NULL,		NULL, 0,		"<Separator>" },
+   { N_("/View/_Visualisations"),	NULL,		NULL, 0,		"<Branch>" },
+   { N_("/View/Visualisations/_None"),	NULL,		vis_none_cb, 0,		"<RadioItem>"},
+@@ -415,10 +434,9 @@
+   { N_("/Media/_Manage media marks..."), "<control>B",	mediamarks_manage_cb, 0, NULL },
+   { N_("/Media/_Import media marks..."), NULL,		mediamarks_import_cb, 0, STOCK(OPEN) },
+   { "/Media/sep8",			NULL,		NULL, 0,		"<Separator>" },
+-  { N_("/_Help"),			NULL,		NULL, 0,		"<LastBranch>" },
++  { N_("/_Help"),			NULL,		NULL, 0,		"<Branch>" },
+   { N_("/Help/_About..."),		NULL,		about_cb, 0,		NULL },
+   { N_("/Help/Engine _Log..."),		"<control>L",	log_cb, 0,		NULL },
+-  { N_("/Help/Stream _Info..."),	NULL,		stream_info_cb, 0,	NULL },
+   { "/Help/sep6",			NULL,		NULL, 0,		"<Separator>" },
+   { N_("/Help/_Re-run setup wizards..."), NULL,		wizards_cb, 0,		NULL },
+ };
+@@ -501,10 +519,8 @@
+     aspect_menu_items[i] = gtk_radio_menu_item_get_group (none_item);
+ 
+     menu = GTK_MENU_SHELL (gtk_item_factory_get_widget (item_factory[i],
+-							"/File"));
+-    add_autoplay_entries (menu, g_list_index (menu->children,
+-				  gtk_item_factory_get_widget (item_factory[i],
+-							       "/File/sep1")));
++							"/File/Play disc"));
++    add_autoplay_entries (menu, g_list_index (menu->children, 0));
+ 
+     none_item = GTK_RADIO_MENU_ITEM (gtk_item_factory_get_item (item_factory[i], "/View/Visualisations/None"));
+     add_vis_entries (GTK_MENU_SHELL (gtk_item_factory_get_widget (item_factory[i], "/View/Visualisations")), none_item);
+diff -urNd gxine-0.4.1/src/noskin_window.c gxine-0.4.1.new/src/noskin_window.c
+--- gxine-0.4.1/src/noskin_window.c	2004-12-15 23:59:59.000000000 +0000
++++ gxine-0.4.1.new/src/noskin_window.c	2005-04-11 22:58:41.125664080 +0100
+@@ -41,18 +41,19 @@
+ #include "drag_drop.h"
+ #include "gtkvideo.h"
+ #include "gtkflipbutton.h"
+-#include "infobar.h"
+-#include "time_widget.h"
++/*#include "infobar.h"
++#include "time_widget.h"*/
+ #include "vis.h"
++#include "stream_info.h"
+ 
+-#include "playlist.xpm"
++/*#include "playlist.xpm"
+ #include "play.xpm"
+ #include "pause.xpm"
+ #include "stop.xpm"
+ #include "speaker.xpm"
+ #include "nospeaker.xpm"
+ #include "sliders.xpm"
+-#include "fast_forward.xpm"
++#include "fast_forward.xpm"*/
+ 
+ /*
+ #define VIS_WIDGET
+@@ -108,7 +109,7 @@
+   gtk_widget_show_all (button);
+   return button;
+ }
+-
++/*
+ static GtkWidget *new_pixmap (gchar **xpm)
+ {
+   GdkPixmap *image;
+@@ -118,7 +119,8 @@
+ 	    (NULL, gdk_colormap_get_system(), &transparent, NULL, xpm);
+   return gtk_pixmap_new (image, transparent);
+ }
+-
++*/
++/*
+ static GtkWidget *add_pix_button (GtkWidget *box, gchar **pixmap_array,
+ 				  char *cmd, char *tip, gboolean toggle,
+ 				  gboolean start)
+@@ -136,7 +138,26 @@
+   gtk_container_add (GTK_CONTAINER(button), new_pixmap (pixmap_array));
+   return add_pix_button_common (box, button, cmd, tip, start);
+ }
+-
++*/
++static GtkWidget *add_stock_button (GtkWidget *box, const gchar *stock_id,
++                                    GtkIconSize size, char *cmd, char *tip,
++                                    gboolean toggle, gboolean start)
++{
++   GtkWidget *button;
++     
++   if (toggle)
++   {
++      button = gtk_toggle_button_new ();
++      g_signal_connect (GTK_OBJECT(button), "toggled",
++              G_CALLBACK(toggle_cb), NULL);
++   }
++   else
++      button = gtk_button_new ();
++   gtk_container_add (GTK_CONTAINER(button),
++                      gtk_image_new_from_stock (stock_id, size));
++   return add_pix_button_common (box, button, cmd, tip, start);
++}
++/*
+ static GtkWidget *add_pix_flip_button (GtkWidget *box, gchar **inactive,
+ 				       gchar **active, char * cmd, char *tip,
+ 				       gboolean start)
+@@ -147,6 +168,27 @@
+ 		    G_CALLBACK(toggle_cb), NULL);
+   return add_pix_button_common (box, button, cmd, tip, start);
+ }
++*/
++
++static GtkWidget *gxine_icon_new_from_file (const gchar *filename,
++                                            GtkIconSize size)
++{
++   /* This should do some error checking... */
++   return gtk_image_new_from_icon_set (gtk_icon_set_new_from_pixbuf (
++                  gdk_pixbuf_new_from_file (filename, NULL)), size);
++}
++
++static GtkWidget *add_file_flip_button (GtkWidget *box, const gchar *inactive,
++				       const gchar *active, GtkIconSize size, char * cmd, char *tip,
++				       gboolean start)
++{
++  GtkWidget *button = gtk_flip_button_new (
++                  gxine_icon_new_from_file (inactive, size),
++					   gxine_icon_new_from_file (active, size));
++  g_signal_connect (GTK_OBJECT(button), "toggled",
++		    G_CALLBACK(toggle_cb), NULL);
++  return add_pix_button_common (box, button, cmd, tip, start);
++}
+ 
+ /*
+  * slider
+@@ -154,6 +196,7 @@
+ 
+ static gint update_slider_cb (gpointer data) {
+ 
++  char buffer[30];
+   gint pos_stream, pos_time, length_time;
+   int hv_new, ha_new;
+ 
+@@ -173,7 +216,9 @@
+       gtk_widget_hide (gtv);
+     else
+       gtk_widget_show (gtv);
+-    gtk_window_resize (GTK_WINDOW(app), 10, 10);
++      
++/*  This really isn't the way to go about this!
++    gtk_window_resize (GTK_WINDOW(app), 10, 10);*/
+   }
+ 
+   if (xine_get_status (stream) != XINE_STATUS_PLAY)
+@@ -186,6 +231,11 @@
+ 
+   /* update the control buttons while we're here */
+   ui_set_status (UI_CURRENT_STATE);
++  
++  /* Update time label */
++  snprintf (&buffer, 30, "Progress: %i:%.2i / %i:%.2i", (pos_time/1000)/60,
++            (pos_time/1000)%60, (length_time/1000)/60, (length_time/1000)%60);
++  gtk_label_set_text (time_label, &buffer);
+ 
+   return TRUE;
+ }
+@@ -295,7 +345,7 @@
+ void noskin_main_init (void) {
+ 
+   GtkWidget     *vbox;
+-  GtkWidget     *infobox, *infobar, *tw;
++  GtkWidget     *infobox/*, *infobar, *tw*/;
+ #ifdef VIS_WIDGET
+   GtkWidget     *vis;
+   xine_post_out_t *vis_out;
+@@ -304,7 +354,7 @@
+   GtkWidget     *scale, *vol_scale;
+   GtkWidget     *ctrl;
+   GtkWidget     *audio_spinner;
+-  time_widget_t *time_widget;
++/*  time_widget_t *time_widget;*/
+   GdkGeometry    cw_geom;
+ 
+   tips = gtk_tooltips_new ();
+@@ -324,7 +374,7 @@
+   gtk_window_set_accept_focus (GTK_WINDOW(controlwindow), FALSE);
+ 
+   memset (&cw_geom, 0, sizeof (cw_geom));
+-  cw_geom.max_width = cw_geom.min_width = gdk_screen_width ();
++  cw_geom.max_width = cw_geom.min_width = -1;
+   cw_geom.max_height = cw_geom.min_height = -1;
+   cw_geom.win_gravity = GDK_GRAVITY_SOUTH_WEST;
+   gtk_window_set_geometry_hints
+@@ -384,7 +434,7 @@
+ 
+   gtv = gtk_video_new (xine, stream, xine_get_video_source (stream), 
+   	               video_driver_id, 480, 300,
+-                       0x04 /* press: button 2 */,
++                       0x02 /* press: button 1 */,
+                        0x08 /* release: button 3 */);
+   drag_drop_setup (gtv);
+   g_signal_connect (GTK_OBJECT (gtv), "keypress",
+@@ -423,13 +473,13 @@
+   gtk_box_pack_start (GTK_BOX(infobox), vis, FALSE, FALSE, 0);
+ #endif
+ 
+-  time_widget = create_time_widget (&tw);
++/*  time_widget = create_time_widget (&tw);
+   gtk_box_pack_start (GTK_BOX(infobox), tw, FALSE, FALSE, 0);
+   drag_drop_setup (tw);
+ 
+   bar = create_infobar (&infobar);
+   gtk_box_pack_start (GTK_BOX(infobox), infobar, TRUE, TRUE, 0);
+-  drag_drop_setup (infobar);
++  drag_drop_setup (infobar);*/
+ 
+   gtk_box_pack_start (GTK_BOX(vbox), infobox, FALSE, FALSE, 2);
+ 
+@@ -446,6 +496,7 @@
+   ctrl = gtk_hbox_new (0, 2);
+   gtk_box_pack_start (GTK_BOX(ctrl), scale, TRUE, TRUE, 4);
+   gtk_box_pack_start (GTK_BOX(sliderbox), ctrl, TRUE, TRUE, 2);
++    
+   gtk_box_pack_start (GTK_BOX(vbox), sliderbox, FALSE, FALSE, 0);
+ 
+   /*
+@@ -458,35 +509,37 @@
+ 
+   ui_register_control_button
+     (Control_PLAY,
+-     add_pix_button (ctrl, play_xpm, "play ();", _("Play"), TRUE, TRUE));
++     add_stock_button (ctrl, GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON,
++                       "play ();", _("Play"), TRUE, TRUE));
+   ui_register_control_button
+     (Control_FASTFWD,
+-     add_pix_button (ctrl, fast_forward_xpm,
++     add_stock_button (ctrl, GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_BUTTON,
+ 		     "if (!is_live_stream ()) set_speed (16);",
+ 		     _("Fast forward"), TRUE, TRUE));
+   ui_register_control_button
+     (Control_PAUSE,
+-     add_pix_button (ctrl, pause_xpm,
++     add_stock_button (ctrl, GTK_STOCK_MEDIA_PAUSE, GTK_ICON_SIZE_BUTTON,
+ 		     "if (!is_live_stream ()) pause ();",
+ 		     _("Pause"), TRUE, TRUE));
+   ui_register_control_button
+     (Control_STOP,
+-     add_pix_button (ctrl, stop_xpm, "stop ();", _("Stop"), TRUE, TRUE));
++     add_stock_button (ctrl, GTK_STOCK_MEDIA_STOP, GTK_ICON_SIZE_BUTTON,
++                     "stop ();", _("Stop"), TRUE, TRUE));
+ 
+-  add_pix_button (ctrl, playlist_xpm,
++  add_stock_button (ctrl, GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON,
+ 		  "playlist_show ()", _("Playlist"), FALSE, TRUE);
+-  add_pix_button (ctrl, sliders_xpm,
+-		  "settings_show ()", _("A/V settings"), FALSE, TRUE);
++/*  add_pix_button (ctrl, sliders_xpm,
++		  "settings_show ()", _("A/V settings"), FALSE, TRUE);*/
+ 
+   /* audio channel selection */
+ 
+-  audio_adj = ui_register_control_adjustment (Control_AUDIO_CHANNEL);
++/*  audio_adj = ui_register_control_adjustment (Control_AUDIO_CHANNEL);
+   audio_spinner = gtk_spin_button_new (GTK_ADJUSTMENT (audio_adj),
+ 				       1.0,0);
+   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON(audio_spinner), TRUE);
+   gtk_tooltips_set_tip (GTK_TOOLTIPS (tips), audio_spinner,
+ 			_("Audio channel"), NULL);
+-  gtk_box_pack_end (GTK_BOX(ctrl), audio_spinner, FALSE, FALSE, 5);
++  gtk_box_pack_end (GTK_BOX(ctrl), audio_spinner, FALSE, FALSE, 5);*/
+ 
+   /* volume slider */
+ 
+@@ -501,7 +554,8 @@
+ 
+   ui_register_control_button
+     (Control_MUTE,
+-     add_pix_flip_button (ctrl, nospeaker_xpm, speaker_xpm,
++     add_file_flip_button (ctrl, GXINE_PIXMAPPATH "/rhythmbox-volume-zero.png",
++           GXINE_PIXMAPPATH "/rhythmbox-volume-max.png", GTK_ICON_SIZE_BUTTON,
+ 			  "set_mute ();", _("Mute/unmute"), FALSE));
+ 
+   gtk_box_pack_end (GTK_BOX(sliderbox), ctrl, FALSE, FALSE, 4);
+@@ -513,9 +567,9 @@
+ 
+   have_video = 1;
+ 
+-  postinit_infobar (app, bar);
+-  postinit_time_widget (app, time_widget);
+-
++/*  postinit_infobar (app, bar);
++  postinit_time_widget (app, time_widget);*/
++  
+   gtk_timeout_add (1000, update_slider_cb, NULL);
+ }
+ #endif /* !EXP_STUFF */
+diff -urNd gxine-0.4.1/src/open_mrl.c gxine-0.4.1.new/src/open_mrl.c
+--- gxine-0.4.1/src/open_mrl.c	2004-12-02 19:43:11.000000000 +0000
++++ gxine-0.4.1.new/src/open_mrl.c	2005-04-11 22:38:39.000000000 +0100
+@@ -43,6 +43,9 @@
+     int    pos, i;
+     gchar *mrl;
+ 
++    /* Clear playlist on load */
++    playlist_clear ();
++    
+     i = 0; pos = 0;
+     while ( (mrl = fnames[i]) ) {
+ 
+diff -urNd gxine-0.4.1/src/player.c gxine-0.4.1.new/src/player.c
+--- gxine-0.4.1/src/player.c	2004-12-11 00:40:18.000000000 +0000
++++ gxine-0.4.1.new/src/player.c	2005-04-11 18:14:37.000000000 +0100
+@@ -436,6 +436,23 @@
+   return JS_TRUE;
+ }
+ 
++static JSBool js_set_chan (JSContext *cx, JSObject *obj, uintN argc, 
++			  jsval *argv, jsval *rval) {
++
++  se_t *se = (se_t *) JS_GetContextPrivate(cx);
++  int   channel;
++
++  se_log_fncall ("set_chan");
++  se_argc_check (1, "set_chan");
++  se_arg_is_int (0, "set_chan");
++
++  JS_ValueToInt32 (cx, argv[0], &channel);
++
++  xine_set_param (stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
++
++  return JS_TRUE;
++}
++
+ static JSBool js_set_fullscreen (JSContext *cx, JSObject *obj, uintN argc, 
+ 				 jsval *argv, jsval *rval) {
+ 
+@@ -924,6 +941,8 @@
+ 	SE_GROUP_PROPERTIES, N_("[bool]"), NULL },
+       { "set_sub", js_set_sub, 0, 0,
+ 	SE_GROUP_PROPERTIES, N_("int"), NULL },
++      { "set_chan", js_set_chan, 0, 0,
++	SE_GROUP_PROPERTIES, N_("int"), NULL },
+       { "set_deinterlace", js_set_deinterlace, 0, 0,
+ 	SE_GROUP_PROPERTIES, N_("[bool]"), NULL },
+       { "set_auto_resize", js_set_auto_resize, 0, 0,
+diff -urNd gxine-0.4.1/src/playlist.c gxine-0.4.1.new/src/playlist.c
+--- gxine-0.4.1/src/playlist.c	2004-12-17 00:33:00.000000000 +0000
++++ gxine-0.4.1.new/src/playlist.c	2005-04-11 19:21:11.000000000 +0100
+@@ -1218,6 +1218,10 @@
+       gtk_tree_path_free (path);
+ 
+       playlist_play (item); 
++      
++      /* Hide the playlist after making a selection */
++      is_visible = FALSE;
++      gtk_widget_hide (dlg);
+     }
+   }
+   return FALSE;
+@@ -1743,7 +1747,7 @@
+ 		    G_CALLBACK(add_cb), 
+ 		    tree_view);
+   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 2);
+-  button = gtk_button_new_with_label (_("Edit"));
++  button = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+   g_signal_connect (GTK_OBJECT(button), "clicked", 
+ 		    G_CALLBACK(edit_cb), 
+ 		    tree_view);
+@@ -1753,6 +1757,16 @@
+ 		    G_CALLBACK(del_cb), 
+ 		    tree_view);
+   gtk_box_pack_start (GTK_BOX(hbox), button, TRUE, TRUE, 2);
++
++  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), hbox,
++		      FALSE, FALSE, 2);
++
++  /*
++   * Up/Down buttons
++   */
++   
++  hbox = gtk_hbox_new (1, 2);
++
+   button = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+   g_signal_connect (GTK_OBJECT(button), "clicked", 
+ 		    G_CALLBACK(up_cb), 
+@@ -1767,6 +1781,7 @@
+   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), hbox,
+ 		      FALSE, FALSE, 2);
+ 
++
+   button = gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_CLOSE, 1);
+   g_signal_connect (GTK_OBJECT(button), "clicked", 
+ 		    G_CALLBACK(close_cb), 
+diff -urNd gxine-0.4.1/src/script_engine.c gxine-0.4.1.new/src/script_engine.c
+--- gxine-0.4.1/src/script_engine.c	2004-12-13 21:19:23.000000000 +0000
++++ gxine-0.4.1.new/src/script_engine.c	2005-04-11 13:53:36.000000000 +0100
+@@ -178,10 +178,10 @@
+ 
+     layout = gtk_table_new (1, 2, FALSE);
+ 
+-    file = g_strconcat (pixmapdir, "/gxine-logo.png", NULL);
++    file = GXINE_ICONDIR "/gxine-logo.png";
+     gtk_table_attach (GTK_TABLE (layout), gtk_image_new_from_file (file),
+ 		      0, 1, 0, 1, 0, 0, 8, 8);
+-    g_free (file);
++/*    g_free (file);*/
+ 
+     if (!content)
+       content = g_strdup_printf (gettext (content_src), VERSION);
+diff -urNd gxine-0.4.1/src/stream_info.c gxine-0.4.1.new/src/stream_info.c
+--- gxine-0.4.1/src/stream_info.c	2004-12-02 02:38:32.000000000 +0000
++++ gxine-0.4.1.new/src/stream_info.c	2005-04-11 22:05:00.000000000 +0100
+@@ -35,6 +35,7 @@
+ static GtkWidget    *dlg;
+ static int           is_visible;
+ static GtkListStore *meta_store;
++       GtkLabel     *time_label;
+ 
+ static void add_meta_entry (const gchar *l, int info) {
+ 
+@@ -196,9 +197,13 @@
+ 				  GTK_POLICY_AUTOMATIC, 
+ 				  GTK_POLICY_AUTOMATIC);
+   gtk_container_add (GTK_CONTAINER (scrolled_window), tree_view);
++  
++  time_label = gtk_label_new ("Progress: 0:00 / 0:00");
+ 
+   gtk_box_pack_start (GTK_BOX(GTK_DIALOG (dlg)->vbox), scrolled_window,
+ 		      TRUE, TRUE, 2);
++  gtk_box_pack_start (GTK_BOX(GTK_DIALOG (dlg)->vbox), time_label,
++            FALSE, FALSE, 2);
+ 
+   is_visible = FALSE;
+ 
+diff -urNd gxine-0.4.1/src/utils.c gxine-0.4.1.new/src/utils.c
+--- gxine-0.4.1/src/utils.c	2004-12-17 00:33:00.000000000 +0000
++++ gxine-0.4.1.new/src/utils.c	2005-04-11 14:21:54.000000000 +0100
+@@ -129,13 +129,13 @@
+ GdkPixbuf *load_icon (const char *filename) {
+ 
+   GdkPixbuf *pix;
+-  gchar     *pathname;
++/*  gchar     *pathname;
+ 
+-  pathname = g_strconcat (pixmapdir, "/", filename, NULL);
++  pathname = g_strconcat (pixmapdir, "/", filename, NULL);*/
+ 
+-  pix = gdk_pixbuf_new_from_file (pathname, NULL);
++  pix = gdk_pixbuf_new_from_file (filename, NULL);
+ 
+-  g_free (pathname);
++/*  g_free (pathname);*/
+ 
+   return pix;
+ }

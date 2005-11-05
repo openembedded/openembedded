@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.4.26/arch/um/os-Linux/Makefile~disable-aio-check	2004-05-21 10:47:13.000000000 +0200
++++ linux-2.4.26/arch/um/os-Linux/Makefile	2004-05-21 10:52:28.000000000 +0200
+@@ -7,10 +7,8 @@
+ 
+ obj-y = aio.o file.o process.o time.o tty.o
+ 
+-HAVE_AIO_ABI = $(shell [ -e /usr/include/linux/aio_abi.h ] && \
+-	echo -DHAVE_AIO_ABI)
+-HAVE_AIO_LIBC = $(shell objdump -T /lib/libc-*.so | grep io_submit && \
+-	echo -DHAVE_AIO_LIBC)
++HAVE_AIO_ABI = $(shell echo -UHAVE_AIO_ABI)
++HAVE_AIO_LIBC = $(shell echo -UHAVE_AIO_LIBC)
+ CFLAGS_aio.o = $(HAVE_AIO_ABI) $(HAVE_AIO_LIBC)
+ 
+ include $(TOPDIR)/Rules.make

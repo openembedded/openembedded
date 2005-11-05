@@ -1,0 +1,48 @@
+diff -Naur xc.old/config/pswrap/lexer.l xc/config/pswrap/lexer.l
+--- xc.old/config/pswrap/lexer.l	2004-04-23 18:42:00.000000000 +0000
++++ xc/config/pswrap/lexer.l	2004-11-16 21:07:10.569144105 +0000
+@@ -41,6 +41,7 @@
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
++int yy_prev_more_offset;
+ 
+ #include "pswpriv.h"
+ #include "pswparser.h"
+diff -Naur xc.old/programs/twm/lex.l xc/programs/twm/lex.l
+--- xc.old/programs/twm/lex.l	2004-04-23 18:42:00.000000000 +0000
++++ xc/programs/twm/lex.l    2004-11-16 21:07:10.569144105 +0000
+@@ -65,6 +41,7 @@
+ #include "gram.h"
+ #include "list.h"
+ #include "parse.h"
++int yy_prev_more_offset;
+
+ #ifdef FLEX_SCANNER
+ int yylineno;
+diff -Naur xc.old/programs/xgc/lex.l xc/programs/xgc/lex.l
+--- xc.old/programs/xgc/lex.l	2004-04-23 18:42:00.000000000 +0000
++++ xc/programs/xgc/lex.l    2004-11-16 21:07:10.569144105 +0000
+@@ -11,6 +11,9 @@
+ #include <X11/X.h>
+ #include "gram.h"
+ #include "constants.h"
++ 
++int yy_prev_more_offset;
++ 
+ #if defined(FLEX_SCANNER) && !defined(YY_FLEX_LEX_COMPAT) && !defined(__UNIXOS2__)
+ int yylineno = 0;
+ #endif
+diff -Naur xc.old/programs/Xserver/hw/dmx/config/scanner.l xc/programs/Xserver/hw/dmx/config/scanner.l
+--- xc.old/programs/Xserver/hw/dmx/config/scanner.l 2004-07-30 20:06:00.000000000 +0000
++++ xc.old/programs/Xserver/hw/dmx/config/scanner.l 2004-11-16 21:07:10.569144105 +0000
+@@ -37,6 +37,9 @@
+ #include "parser.h"
+ #include <string.h>
+ #include <ctype.h>
++
++int yy_prev_more_offset;
++
+ static int getdimension(int token, const char *text, int leng);
+ static int getstring(int token, const char *text, int leng);
+ static int gettoken(int token, const char *text, int leng);

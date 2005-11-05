@@ -1,0 +1,102 @@
+--- linux/arch/arm/mach-pxa/sharpsl_apm.c	2005-09-07 10:49:06.000000000 +0200
++++ /home/hrw//devel/diffs/sharpsl_apm.c	2005-09-07 10:46:57.000000000 +0200
+@@ -1876,10 +1876,11 @@
+ 		switch (event) {
+ 		case APM_SYS_STANDBY:
+ 		case APM_USER_STANDBY:
+-			if (send_event(event)) {
+-				queue_event(event, NULL);
+-				if (standbys_pending <= 0)
++			queue_event(event, NULL);
++			if (standbys_pending <= 0) {
++				if (send_event(event)) {
+ 					standby();
++				}
+ 			}
+ 			break;
+ 
+@@ -1907,13 +1908,12 @@
+ 			 */
+ 			if (waiting_for_resume)
+ 				return;
+-			if (send_event(event)) {
+-				queue_event(event, NULL);
+-				waiting_for_resume = 1;
+-				if (suspends_pending <= 0){
++			queue_event(event, NULL);
++			waiting_for_resume = 1;
++			if (suspends_pending <= 0)
++				if (send_event(event)) {
+ 					(void) suspend();
+ 				}
+-			}
+ 			break;
+ 
+ 		case APM_NORMAL_RESUME:
+@@ -2225,26 +2225,32 @@
+ 			as->standbys_read--;
+ 			as->standbys_pending--;
+ 			standbys_pending--;
+-		} else if (!send_event(APM_USER_STANDBY))
+-			return -EAGAIN;
+-		else
++		} else {
+ 			queue_event(APM_USER_STANDBY, as);
+-		if (standbys_pending <= 0)
+-			standby();
++		}
++		if (standbys_pending <= 0) {
++			if (send_event(APM_USER_STANDBY)) {
++				standby();
++			} else {
++				return -EAGAIN;
++			}
++		}
+ 		break;
+ 	case APM_IOC_SUSPEND:
+ 		if (as->suspends_read > 0) {
+ 			as->suspends_read--;
+ 			as->suspends_pending--;
+ 			suspends_pending--;
+-		} else if (!send_event(APM_USER_SUSPEND))
+-			return -EAGAIN;
+-		else
++		} else {
+ 			queue_event(APM_USER_SUSPEND, as);
++		}
+ 		if (suspends_pending <= 0) {
+-
+-			if (suspend() != APM_SUCCESS)
+-				return -EIO;
++			if (send_event(APM_USER_SUSPEND)) {
++				if (suspend() != APM_SUCCESS)
++					return -EIO;
++			} else {
++				return -EAGAIN;
++			}
+ 		} else {
+ 			as->suspend_wait = 1;
+ 			add_wait_queue(&apm_suspend_waitqueue, &wait);
+@@ -2483,13 +2489,18 @@
+ 	lock_kernel();
+ 	if (as->standbys_pending > 0) {
+ 		standbys_pending -= as->standbys_pending;
+-		if (standbys_pending <= 0)
+-			standby();
++		if (standbys_pending <= 0) {
++			if (send_event(APM_USER_STANDBY)) {
++				standby();
++			}
++		}
+ 	}
+ 	if (as->suspends_pending > 0) {
+ 		suspends_pending -= as->suspends_pending;
+-		if (suspends_pending <= 0){
+-			(void) suspend();
++		if (suspends_pending <= 0) {
++			if (send_event(APM_USER_SUSPEND)) {
++				(void) suspend();
++			}
+ 		}
+ 	}
+ 	if (user_list == as)

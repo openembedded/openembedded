@@ -1,0 +1,12 @@
+--- teleport-0.33/Makefile    2004-07-20 22:01:25.000000000 +0200
++++ teleport-0.33/Makefile       2005-03-04 17:03:17.316841832 +0100
+@@ -13,7 +13,7 @@
+ endif
+ PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS)
+ PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GPECFLAGS) `libgcrypt-config --cflags`
+-PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS) -ltododb -ldisplaymigration -lgpepimc `libgcrypt-config --libs` -lsqlite
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS) -ldisplaymigration `libgcrypt-config --libs` -lsqlite
+ 
+ MEMBERS = teleport crypt displays keygen tp-keygen
+ 
+

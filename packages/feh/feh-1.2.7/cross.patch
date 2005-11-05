@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: feh-1.2.7/Makefile.am
+===================================================================
+--- feh-1.2.7.orig/Makefile.am	2004-09-03 15:30:58.000000000 -0400
++++ feh-1.2.7/Makefile.am	2005-03-12 19:20:36.020740008 -0500
+@@ -5,9 +5,8 @@
+ # A list of all the files in the current directory which can be regenerated
+ MAINTAINERCLEANFILES = Makefile.in feh.spec
+ 
+-LDFLAGS           = -L/usr/X11R6/lib -L/usr/lib -L/usr/local/lib
+-INCLUDES          = -I/usr/X11R6/include \
+-$(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I.
++LDFLAGS           = -L/usr/X11R6/lib
++INCLUDES          = $(X_CFLAGS) -I.
+ 
+ man_MANS = feh.1
+ 
+Index: feh-1.2.7/src/Makefile.am
+===================================================================
+--- feh-1.2.7.orig/src/Makefile.am	2004-09-04 10:19:16.000000000 -0400
++++ feh-1.2.7/src/Makefile.am	2005-03-12 19:21:22.806627472 -0500
+@@ -1,11 +1,9 @@
+ # A list of all the files in the current directory which can be regenerated
+ MAINTAINERCLEANFILES = Makefile.in				
+ 
+-LDFLAGS           = -L/usr/X11R6/lib -L/usr/local/lib -lpng
+-INCLUDES          = -I/usr/X11R6/include $(X_CFLAGS) \
+-                    -I$(prefix)/include -I$(includedir) \
++LDFLAGS           = -lpng
++INCLUDES          = $(X_CFLAGS) \
+                     -I. -I$(top_srcdir)/src \
+-                    -I/usr/local/include/libpng \
+                     -DPREFIX=\""$(prefix)"\" \
+                     @IMLIB_CFLAGS@ @GIBLIB_CFLAGS@
+ LIBOBJS = @LIBOBJS@

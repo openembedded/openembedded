@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.9-snapshot-20041211/src/kernel/qgfxraster_qws.cpp~fix-qgfxraster
++++ qt-2.3.9-snapshot-20041211/src/kernel/qgfxraster_qws.cpp
+@@ -4037,13 +4037,14 @@
+ 	for( loopc2=0;loopc2<frontadd;loopc2++ )
+ 	    *(alphaptr++)=get_value_32(16,(unsigned char **)&temppos);
+ 
+-	PackType temp2;
+-	unsigned char * cp;
++	volatile PackType temp2;
++	volatile unsigned short int * cp;
+ 	for( loopc2=0;loopc2<count;loopc2++ ) {
+-	    temp2=*((PackType *)temppos);
+-	    cp=(unsigned char *)&temp2;
+-	    *(alphaptr++)=get_value_32(16,&cp);
+-	    *(alphaptr++)=get_value_32(16,&cp);
++           temp2=*reinterpret_cast<PackType *>(temppos);
++           cp=reinterpret_cast<volatile unsigned short int *>(&temp2);
++           *(alphaptr++)=qt_conv16ToRgb(*cp);
++           cp++;
++           *(alphaptr++)=qt_conv16ToRgb(*cp);
+ 	    temppos += 2;
+ 	}
+ 

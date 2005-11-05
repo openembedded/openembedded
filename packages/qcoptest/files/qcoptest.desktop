@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment = qcoptest
+Exec = qcoptest
+Icon = qcoptest
+Name = qcoptest
+Type = Application

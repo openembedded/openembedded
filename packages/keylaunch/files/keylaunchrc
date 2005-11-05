@@ -1,0 +1,8 @@
+key=???Pressed XF86AudioRecord:Record Memo:gpe-soundbite record --autogenerate-filename $HOME_VOLATILE
+key=???XF86Calendar:Calendar:gpe-calendar
+key=???telephone:Contacts:gpe-contacts
+key=???XF86Mail:Running programs:gpe-taskmanager
+key=???XF86Start:matchbox-remote -desktop
+key=???XF86PowerDown:apm --suspend
+key=???Held XF86PowerDown:bl toggle
+key=???Combine XF86Calendar XF86Start:gpe-keylock

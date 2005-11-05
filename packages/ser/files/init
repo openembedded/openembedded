@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+case "$1" in
+	start)
+		echo -n "Starting SIP Express Router"
+		serctl start
+		echo "."
+	;;
+	stop)
+		echo -n "Stopping SIP Express Router"
+		serctl stop
+		echo "."
+	;;
+	restart)
+		echo -n "Restarting SIP Express Router"
+		serctl restart
+		echo "."
+	;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+	;;
+esac
+
+exit 0

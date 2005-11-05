@@ -1,0 +1,240 @@
+Identiske underkataloger: src2/CVS og src/CVS
+Identiske underkataloger: src2/.deps og src/.deps
+Index: gaim/src/gtkblist.c
+===================================================================
+--- gaim.orig/src/gtkblist.c	2005-08-19 21:57:30.272074856 +0200
++++ gaim/src/gtkblist.c	2005-08-19 21:57:42.030287336 +0200
+@@ -825,6 +825,15 @@
+ 	joinchat_set_sensitive_if_input_cb(NULL, data);
+ 
+ 	gtk_widget_show_all(data->entries_box);
++	
++	GList* children;
++	children = GTK_BOX(data->entries_box)->children;
++	while (children)
++	{
++		//Let the prilabel handle the maxsize
++		gtk_widget_set_size_request(((GtkBoxChild*)(children->data))->widget, 0, -1);
++		children = children->next;
++	}
+ }
+ 
+ static void
+@@ -916,12 +925,26 @@
+ #else
+ 	vbox = GTK_DIALOG(data->window)->vbox;
+ #endif
++	
++	//Make a scrollview to accomodate it all
++	sw = gtk_scrolled_window_new(NULL, NULL);
++	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
++	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
++			GTK_SHADOW_NONE);
++	gtk_widget_set_size_request(sw, -1, 200);
++	gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
++	gtk_widget_show(sw);
++
++	vbox = gtk_vbox_new(FALSE, GAIM_HIG_BORDER);
++	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), vbox);
+ 
+ 	label = gtk_label_new(_("Please enter the appropriate information "
+ 							"about the chat you would like to join.\n"));
+ 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+ 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+ 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
++	pri_label = label;
+ 
+ 	rowbox = gtk_hbox_new(FALSE, GAIM_HIG_BORDER);
+ 	gtk_box_pack_start(GTK_BOX(vbox), rowbox, TRUE, TRUE, 0);
+@@ -955,6 +978,22 @@
+ 	g_object_unref(data->sg);
+ 
+ 	gtk_widget_show_all(data->window);
++
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust widgets accordingly
++	int w, h;
++	gtk_window_get_size(GTK_WINDOW(data->window), &w, &h);
++	
++	//      Window_border    Scrollbar (FFH)
++	w = w - GAIM_HIG_BORDER * 2 - GAIM_HIG_BORDER * 4;
++	gtk_widget_set_size_request(GTK_WIDGET(pri_label), w, -1);
++
++	//Let the prilabel handle the maxsize
++	gtk_widget_set_size_request(GTK_WIDGET(data->account_menu), 0, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->entries_box), 0, -1);
+ }
+ 
+ static void gtk_blist_row_expanded_cb(GtkTreeView *tv, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data) {
+@@ -4364,6 +4403,19 @@
+ 	vbox = GTK_DIALOG(data->window)->vbox;
+ #endif
+ 
++	//Make a scrollview to accomodate it all
++	sw = gtk_scrolled_window_new(NULL, NULL);
++	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
++	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
++			GTK_SHADOW_NONE);
++	gtk_widget_set_size_request(sw, -1, 200);
++	gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
++	gtk_widget_show(sw);
++
++	vbox = gtk_vbox_new(FALSE, GAIM_HIG_BORDER);
++	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), vbox);
++
+ 	label = gtk_label_new(
+ 		_("Please enter the screen name of the person you would like "
+ 		  "to add to your buddy list. You may optionally enter an alias, "
+@@ -4374,6 +4426,7 @@
+ 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+ 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+ 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
++	pri_label = label;
+ 
+ 	hbox = gtk_hbox_new(FALSE, GAIM_HIG_BOX_SPACE);
+ 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
+@@ -4446,6 +4499,25 @@
+ 
+ 	if (group != NULL)
+ 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(data->combo)->entry), group);
++
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust widgets accordingly
++	int w, h, field_labels_w;
++	gtk_window_get_size(GTK_WINDOW(data->window), &w, &h);
++	field_labels_w = label->allocation.width + GAIM_HIG_BORDER*2; //The width of the largest field-label
++	
++	//      Window_border    Scrollbar (FFH)
++	w = w - GAIM_HIG_BORDER * 2 - GAIM_HIG_BORDER * 4;
++	gtk_widget_set_size_request(GTK_WIDGET(pri_label), w, -1);
++	//Set the size of the input fields
++	gtk_widget_set_size_request(GTK_WIDGET(data->entry), w-field_labels_w, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->entry_for_alias), w-field_labels_w, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->combo), w-field_labels_w, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->account_box), w-field_labels_w, -1);
++
+ }
+ 
+ static void
+@@ -4572,6 +4644,9 @@
+ 	GHashTable *defaults = NULL;
+ 	struct proto_chat_entry *pce;
+ 	gboolean focus = TRUE;
++	GtkWidget *label;
++	GtkWidget *rowbox;
++	GtkWidget *input;
+ 
+ 	g_return_if_fail(data->account != NULL);
+ 
+@@ -4596,10 +4671,6 @@
+ 
+ 	for (tmp = list; tmp; tmp = tmp->next)
+ 	{
+-		GtkWidget *label;
+-		GtkWidget *rowbox;
+-		GtkWidget *input;
+-
+ 		pce = tmp->data;
+ 
+ 		rowbox = gtk_hbox_new(FALSE, 5);
+@@ -4657,6 +4728,15 @@
+ 	addchat_set_sensitive_if_input_cb(NULL, data);
+ 
+ 	gtk_widget_show_all(data->entries_box);
++		
++	GList* children;
++	children = GTK_BOX(data->entries_box)->children;
++	while (children)
++	{
++		//Let the prilabel handle the maxsize
++		gtk_widget_set_size_request(((GtkBoxChild*)(children->data))->widget, 0, -1);
++		children = children->next;
++	}
+ }
+ 
+ static void
+@@ -4759,6 +4839,19 @@
+ 	vbox = GTK_DIALOG(data->window)->vbox;
+ #endif
+ 
++	//Make a scrollview to accomodate it all
++	sw = gtk_scrolled_window_new(NULL, NULL);
++	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
++			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
++	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
++			GTK_SHADOW_NONE);
++	gtk_widget_set_size_request(sw, -1, 200);
++	gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
++	gtk_widget_show(sw);
++
++	vbox = gtk_vbox_new(FALSE, GAIM_HIG_BORDER);
++	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), vbox);
++
+ 	label = gtk_label_new(
+ 		_("Please enter an alias, and the appropriate information "
+ 		  "about the chat you would like to add to your buddy list.\n"));
+@@ -4766,7 +4859,8 @@
+ 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+ 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+ 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+-
++	pri_label = label;
++			
+ 	rowbox = gtk_hbox_new(FALSE, 5);
+ 	gtk_box_pack_start(GTK_BOX(vbox), rowbox, FALSE, FALSE, 0);
+ 
+@@ -4825,6 +4919,24 @@
+ 					 G_CALLBACK(add_chat_resp_cb), data);
+ 
+ 	gtk_widget_show_all(data->window);
++
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust the label accordingly
++	int w, h;
++	gtk_window_get_size(GTK_WINDOW(data->window), &w, &h);
++
++	//      Window_border    Scrollbar (FFH)
++	w = w - GAIM_HIG_BORDER * 2 - GAIM_HIG_BORDER * 4;
++	gtk_widget_set_size_request(GTK_WIDGET(pri_label), w, -1);
++	//Let the prilabel handle the maxsize
++	gtk_widget_set_size_request(GTK_WIDGET(data->account_menu), 0, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->entries_box), 0, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->alias_entry), 0, -1);
++	gtk_widget_set_size_request(GTK_WIDGET(data->group_combo), 0, -1);
++
+ }
+ 
+ static void
+Index: gaim/src/gtkrequest.c
+===================================================================
+--- gaim.orig/src/gtkrequest.c	2005-08-19 21:57:30.273074704 +0200
++++ gaim/src/gtkrequest.c	2005-08-19 21:58:05.468724152 +0200
+@@ -650,6 +650,17 @@
+ 	/* Show everything. */
+ 	gtk_widget_show_all(dialog);
+ 
++	//Wait for the window to have recieved its "configure_event",
++	//which means it has been resized by the WM
++	while (gtk_events_pending ())  gtk_main_iteration ();
++
++	//Get allocated size, and adjust widgets accordingly
++	int w, h;
++	gtk_window_get_size(GTK_WINDOW(dialog), &w, &h);
++	
++	w = w - GAIM_HIG_BORDER * 2;
++	gtk_widget_set_size_request(GTK_WIDGET(label), w, -1);
++	
+ 	return data;
+ }
+ 

@@ -1,0 +1,99 @@
+--- oz-compat-0.5/opt/QtPalmtop.compat/bin/makecompat.orig	2004-11-30 18:51:45.000000000 +0100
++++ oz-compat-0.5//opt/QtPalmtop.compat/bin/makecompat	2004-11-30 18:44:29.000000000 +0100
+@@ -1,8 +1,10 @@
+ #! /bin/sh
+ 
++export PATH="$PATH:/opt/QtPalmtop/bin"
++
+ OPIE_SH=/opt/QtPalmtop/bin/opie-sh
+ OPIE_DIR=/opt/QtPalmtop
+-OPIE_COMPAT=runcompat
++OPIE_COMPAT=/opt/QtPalmtop/bin/runcompat
+ OPIE_TMP=/tmp
+ 
+ about() {
+@@ -31,6 +33,10 @@
+ }
+ 
+ ask_list() {
++
++        rm $OPIE_TMP/mc.names
++	rm $OPIE_TMP/mc.map
++               
+ 	# Figure out which app groups are
+ 	GROUP=`ls $OPIE_DIR/apps \
+ 		| grep -v Setting \
+@@ -38,39 +44,55 @@
+ 		| $OPIE_SH -g -i -M "Select which group" -l -F \
+ 		| sed -e"s/Pim/1Pim/g"`
+ 
++	echo -e "\n\n---------- DEBUGGING OUTPUT ----------\n"
++
+ 	for i in $OPIE_DIR/apps/$GROUP/*.desktop ; do
+ 		# Extract the name and what is run
+-		EXEC=`grep "Exec=" $i | sed -e"s/.*=//g`
+-		NAME=`grep "Name=" $i | sed -e"s/.*=//g`
++		EXEC="`egrep "Exec.*=" $i | sed -e "s/.*=//g"| sed "s/^\ //"`"
++		NAME="`egrep "Name.*=" $i | head -1 | sed -e "s/.*=//g"| sed "s/^\ //"`"
+ 
+ 		# Where is the file actually located?
+ 		# This doesnt handle spaces.
+ 		FOUND="false"
+-		for j in `echo $PATH | sed -e"s/:/ /g"`; do
+-			if [ -x $j/$EXEC ]; then
++		#echo -e "* * [$i] [$NAME] [$EXEC]\n\n"
++		for j in `echo $PATH | sed -e "s/:/ /g"`; do
++		#                     echo "* * * teste [$j]/$EXEC"
++			if [ -x "$j/$EXEC" ]; then
+ 				EXEC="$j/$EXEC"
+ 				FOUND="true"
++			#	echo "* * * * found $NAME"
+ 				break
+ 			fi
+ 		done
+ 
+ 		# Did we find the object?
+ 		if [ "$FOUND" = "false" ]; then
+-			echo "Could not find $EXEC in path"
++			echo -e "* * * * [$EXEC] not found in path"
+ 			continue
+ 		fi
+ 
+-		echo $NAME >> $OPIE_TMP/mc.names
+-		echo $NAME=$EXEC >> $OPIE_TMP/mc.map
++		echo "$NAME" >> $OPIE_TMP/mc.names
++		echo "$NAME=$EXEC" >> $OPIE_TMP/mc.map
+ 
+ 	done
+-
+-	SELECTION=`cat $OPIE_TMP/mc.names | $OPIE_SH -g -i -M "Select which application" -l -F`
++	
++	echo -e "\n--------------------------------------\n\n"
++		                           
++	SELECTION=`cat $OPIE_TMP/mc.names | $OPIE_SH -g -i -M "Select which application" -l -F`	
+ 	LOCATION=`grep "$SELECTION" $OPIE_TMP/mc.map | sed -e"s/.*=//g"`
+ 
+ 	rm $OPIE_TMP/mc.names
+ 	rm $OPIE_TMP/mc.map
+ 
++                        # User aborted
++                       if test -z "$SELECTION"
++                       then
++                                echo "User aborted"
++                                cleanup
++                                exit 1
++                       fi
++
++                      
+ 	return
+ }
+ 
+@@ -112,7 +134,7 @@
+ }
+ 
+ is_compat() {
+-	if [ "`ls -l \"$1\" | sed -e\"s/.*-> //g\"`" = "$OPIE_COMPAT" ]; then
++	if [ "`ls -l \"$1\" | sed -e \"s/.*-> //g\"`" = "$OPIE_COMPAT" ]; then
+ 		echo "Is already linked to compat lib"
+ 		return 1
+ 	else

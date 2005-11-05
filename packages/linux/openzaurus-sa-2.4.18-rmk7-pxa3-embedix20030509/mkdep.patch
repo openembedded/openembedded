@@ -1,0 +1,16 @@
+
+#
+# Made by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux/Makefile~mkdep	2003-12-19 09:36:51.000000000 -0800
++++ linux/Makefile	2003-12-19 09:57:44.000000000 -0800
+@@ -458,7 +458,7 @@
+ 
+ dep-files: scripts/mkdep archdep include/linux/version.h
+ 	scripts/mkdep -- init/*.c > .depend
+-	scripts/mkdep -- `find $(FINDHPATH) -name SCCS -prune -o -follow -name \*.h ! -name modversions.h -print` > .hdepend
++	$(foreach, dir, $(FINDHPATH), scripts/mkdep -- `find $(dir) -name SCCS -prune -o -follow -name \*.h ! -name modversions.h -print` >> .hdepend)
+ 	$(MAKE) $(patsubst %,_sfdep_%,$(SUBDIRS)) _FASTDEP_ALL_SUB_DIRS="$(SUBDIRS)"
+ ifdef CONFIG_MODVERSIONS
+ 	$(MAKE) update-modverfile

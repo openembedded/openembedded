@@ -1,0 +1,20 @@
+--- sablevm-1.12.orig/src/Makefile.am	2005-07-05 03:10:33.000000000 +0200
++++ sablevm-1.12/src/Makefile.am	2005-07-17 22:30:28.000000000 +0200
+@@ -6,16 +6,8 @@
+ ## * modification of this source file.                               *
+ ## * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 
+-DIST_SUBDIRS = include libffi libpopt libsablevm sablevm
++DIST_SUBDIRS = include libsablevm sablevm
+ 
+ SUBDIRS = include 
+ 
+-if CONV_LIBFFI
+-SUBDIRS += libffi
+-endif
+-
+-if CONV_LIBPOPT
+-SUBDIRS += libpopt
+-endif
+-
+ SUBDIRS += libsablevm sablevm

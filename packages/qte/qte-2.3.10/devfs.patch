@@ -1,0 +1,161 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10/configure
+===================================================================
+--- qt-2.3.10.orig/configure	2005-07-03 12:26:10.000000000 +0200
++++ qt-2.3.10/configure	2005-07-03 12:30:36.000000000 +0200
+@@ -412,6 +412,9 @@
+    -visibility-hidden)
+    	VISIBILITY=YES
+ 	;;
++   -devfs)
++       DEVFS=yes
++	;;
+    -no-g++-exceptions)
+ 	GPLUSPLUS_EXCEPTIONS=no
+ 	;;
+@@ -1302,6 +1305,8 @@
+     -visibility-hidden . Use -fvisibility=hidden as default. This requires GCC 4.0
+                          or a special patched GCC to support the visibility attribute
+ 
++    -devfs ............. Use devfs /dev paths.
++
+     -no-g++-exceptions . Disable exceptions on platforms using the GNU C++
+ 			 compiler by using the -fno-exceptions flag.
+ 
+@@ -1374,6 +1379,10 @@
+ then
+    QT_CXX="${QT_CXX} -DGCC_SUPPORTS_VISIBILITY -fvisibility=hidden"
+ fi
++if [ "x$DEVFS" = "xyes" ]
++then
++   QT_CXX="${QT_CXX} -DQT_QWS_DEVFS"
++fi
+ if [ "x$THREAD" = "xyes" ]
+ then
+    cat >src-mt.mk <<EOF
+Index: qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qgfxlinuxfb_qws.cpp	2005-07-03 12:26:13.000000000 +0200
++++ qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp	2005-07-03 12:30:36.000000000 +0200
+@@ -101,11 +101,19 @@
+ bool QLinuxFbScreen::connect( const QString &displaySpec )
+ {
+     // Check for explicitly specified device
++#ifdef QT_QWS_DEVFS
++    QRegExp r( "/dev/fb/[0-9]+" );
++#else
+     QRegExp r( "/dev/fb[0-9]+" );
++#endif
+     int len;
+     int m = r.match( displaySpec, 0, &len );
+ 
++#ifdef QT_QWS_DEVFS
++    QString dev = (m>=0) ? displaySpec.mid( m, len ) : QString("/dev/fb/0");
++#else
+     QString dev = (m>=0) ? displaySpec.mid( m, len ) : QString("/dev/fb0");
++#endif
+ 
+     fd=open( dev.latin1(), O_RDWR );
+     if (fd<0) {
+@@ -121,14 +129,22 @@
+ 
+     /* Get fixed screen information */
+     if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
++#ifdef QT_QWS_DEVFS
++	perror("reading /dev/fb/0");
++#else
+ 	perror("reading /dev/fb0");
++#endif
+ 	qWarning("Error reading fixed information");
+ 	return FALSE;
+     }
+ 
+     /* Get variable screen information */
+     if (ioctl(fd, FBIOGET_VSCREENINFO, &vinfo)) {
++#ifdef QT_QWS_DEVFS
++	perror("reading /dev/fb/0");
++#else
+ 	perror("reading /dev/fb0");
++#endif
+ 	qWarning("Error reading variable information");
+ 	return FALSE;
+     }
+@@ -165,7 +181,11 @@
+     data += dataoffset;
+ 
+     if ((int)data == -1) {
+-	perror("mapping /dev/fb0");
++#ifdef QT_QWS_DEVFS
++	perror("reading /dev/fb/0");
++#else
++	perror("reading /dev/fb0");
++#endif
+ 	qWarning("Error: failed to map framebuffer device to memory.");
+ 	return FALSE;
+     }
+@@ -229,7 +249,11 @@
+ 
+ static void writeTerm(const char* termctl, int sizeof_termctl)
+ {
++#ifdef QT_QWS_DEVFS
++    const char* tt[]={"/dev/vc/1","/dev/console","/dev/tty",0};
++#else
+     const char* tt[]={"/dev/console","/dev/tty","/dev/tty0",0};
++#endif
+     const char** dev=tt;
+     while (*dev) {
+ 	int tty=::open(*dev,O_WRONLY);
+Index: qt-2.3.10/src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qkeyboard_qws.cpp	2005-07-03 12:26:13.000000000 +0200
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2005-07-03 12:30:36.000000000 +0200
+@@ -1253,7 +1253,11 @@
+ 
+ QWSTtyKeyboardHandler::QWSTtyKeyboardHandler(const QString& device)
+ {
++#ifdef QT_QWS_DEVFS
++    kbdFD=open(device.isEmpty() ? "/dev/vc/1" : device.latin1(), O_RDWR | O_NDELAY, 0);
++#else
+     kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
++#endif
+ 
+     if ( kbdFD >= 0 ) {
+ 	QSocketNotifier *notifier;
+Index: qt-2.3.10/src/kernel/qwindowsystem_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qwindowsystem_qws.cpp	2005-07-03 12:26:11.000000000 +0200
++++ qt-2.3.10/src/kernel/qwindowsystem_qws.cpp	2005-07-03 12:30:36.000000000 +0200
+@@ -836,7 +836,11 @@
+     void openDevice()
+     {
+ 	if ( !sn ) {
++#ifdef QT_QWS_DEVFS
++	    int fd = ::open("/dev/sound/dsp",O_RDWR);
++#else
+ 	    int fd = ::open("/dev/dsp",O_RDWR);
++#endif
+ 	    if ( fd < 0 ) {
+ 		// For debugging purposes - defined QT_NO_SOUND if you
+ 		// don't have sound hardware!
+Index: qt-2.3.10/src/kernel/qsoundqss_qws.cpp
+===================================================================
+--- qt-2.3.10.orig/src/kernel/qsoundqss_qws.cpp	2005-01-23 15:00:46.000000000 +0100
++++ qt-2.3.10/src/kernel/qsoundqss_qws.cpp	2005-07-03 12:30:36.000000000 +0200
+@@ -1088,7 +1088,12 @@
+ 	    // Don't block open right away.
+ 	    //
+             bool openOkay = false;
+-	    if ((fd = ::open("/dev/dsp", O_WRONLY|O_NONBLOCK)) != -1) {
++#ifdef QT_QWS_DEVFS
++            if ((fd = ::open("/dev/sound/dsp", O_WRONLY|O_NONBLOCK)) != -1)
++#else
++            if ((fd = ::open("/dev/dsp", O_WRONLY|O_NONBLOCK)) != -1)
++#endif
++            {
+ 		int flags = fcntl(fd, F_GETFL);
+ 		flags &= ~O_NONBLOCK;
+ 		openOkay = (fcntl(fd, F_SETFL, flags) == 0);

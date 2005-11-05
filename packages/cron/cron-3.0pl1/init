@@ -1,0 +1,38 @@
+#! /bin/sh 
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/cron and type
+# > update-rc.d cron defaults 60
+#
+cron=/usr/sbin/cron
+test -x "$cron" || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting Vixie-cron"
+    start-stop-daemon --start --quiet --exec $cron
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping Vixie-cron"
+    start-stop-daemon --stop --quiet --pidfile /var/run/cron.pid
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec $cron
+    ;;
+  restart)
+    echo -n "Stopping Vixie-cron"
+    start-stop-daemon --stop --quiet --pidfile /var/run/cron.pid
+    echo "."
+    sleep 1
+    echo -n "Starting Vixie-cron"
+    start-stop-daemon --start --quiet --exec $cron
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/cron {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0

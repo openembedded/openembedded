@@ -1,0 +1,16 @@
+--- linphone-0.12.2.hh1/osipua/src/Makefile.am~osipua-ipv6-lossage.patch	2004-05-14 22:04:13.000000000 +0100
++++ linphone-0.12.2.hh1/osipua/src/Makefile.am	2004-08-29 21:06:30.000000000 +0100
+@@ -41,11 +41,11 @@
+ 
+ noinst_PROGRAMS = osipua_tester test_sdphandler
+ osipua_tester_SOURCES = osipua_tester.c  osipua_tester.h
+-osipua_tester_CFLAGS = $(OSIP_CFLAGS)
++osipua_tester_CFLAGS = $(OSIP_CFLAGS) $(IPV6_CFLAGS)
+ osipua_tester_LDADD   = libosipua.la
+ osipua_tester_LDFLAGS = $(OSIP_LDFLAGS)
+ 
+ test_sdphandler_SOURCES = test_sdphandler.c
+-test_sdphandler_CFLAGS = $(OSIP_CFLAGS)
++test_sdphandler_CFLAGS = $(OSIP_CFLAGS) $(IPV6_CFLAGS)
+ test_sdphandler_LDADD = libosipua.la
+ test_sdphandler_LDFLAGS = $(OSIP_LDFLAGS)

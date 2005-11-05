@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- sidplayer/sidplayer.h~use-external-libsidplay	2003-09-26 00:28:31.000000000 +0200
++++ sidplayer/sidplayer.h	2004-02-12 18:16:19.000000000 +0100
+@@ -13,9 +13,9 @@
+ 
+ #include "tabbeddialog.h"
+ 
+-#include "libsidplay/src/player.h"
+-#include "libsidplay/src/fformat.h"
+-#include "libsidplay/src/myendian.h"
++#include <player.h>
++#include <fformat.h>
++#include <myendian.h>
+ #include "audiodrv.h"
+ 
+ #include <qpe/qpeapplication.h>

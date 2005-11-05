@@ -1,0 +1,11 @@
+--- R-2.0.0/src/library/grDevices/Makefile.in~	2004-12-12 11:07:59.989268984 +0000
++++ R-2.0.0/src/library/grDevices/Makefile.in	2004-12-12 11:09:05.891250360 +0000
+@@ -15,7 +15,7 @@
+ 
+ pkg = grDevices
+ 
+-R_EXE = $(top_builddir)/bin/R --vanilla
++R_EXE = $(R_EXE_NATIVE) --vanilla
+ 
+ RSRC = `LC_COLLATE=C ls $(srcdir)/R/*.R $(srcdir)/R/$(R_OSTYPE)/*.R`
+ RdSRC = $(srcdir)/man/*.Rd $(srcdir)/man/$(R_OSTYPE)/*.Rd

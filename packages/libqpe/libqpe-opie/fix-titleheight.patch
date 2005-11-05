@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- library/qpedecoration_qws.cpp~fix-titleheight
++++ library/qpedecoration_qws.cpp
+@@ -326,9 +326,9 @@
+     switch ( m ) {
+ 	case TitleHeight:
+ 	    if ( QApplication::desktop()->height() > 320 )
+-		return 19;
++		return 28;
+ 	    else
+-		return 15;
++		return 14;
+ 	case LeftBorder:
+ 	case RightBorder:
+ 	case TopBorder:
