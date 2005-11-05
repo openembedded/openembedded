@@ -50,9 +50,9 @@ IPKG_INSTALL = "base-files base-passwd \
 inherit image_ipk
 
 python () {
-	# Don't build openslug images unless we're targeting an nslu2
+	# Don't build openslug images unless we're targeting an nslu2 or nas100d
 	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
+	if mach != 'nslu2' and mach != 'nas100d':
 		raise bb.parse.SkipPackage("OpenSlug only builds for the Linksys NSLU2")
 }
 LICENSE = MIT
