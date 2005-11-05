@@ -1,0 +1,308 @@
+diff -ur SPainter/canvas.cpp SPainter.new/canvas.cpp
+--- SPainter/canvas.cpp	2005-05-28 11:09:33.000000000 +0200
++++ SPainter.new/canvas.cpp	2005-10-31 15:57:16.770056657 +0100
+@@ -2380,7 +2380,7 @@
+ void Canvas::set_pen_color_dlg(QColor col) {
+   bool last_fullscreen;
+ //  QColor col = brush.color();
+-  ColorDialog d(col, "Pen Color");
++  ColorDialog d(this, col, "Pen Color");
+ 
+   last_fullscreen = fullscreen;
+   fullscreen = FALSE;
+@@ -2400,7 +2400,7 @@
+ void Canvas::setPaperColor(void) {
+   bool last_fullscreen;
+   QColor col = sp->paperColor();
+-  ColorDialog d(col, "Paper Color");
++  ColorDialog d(this, col, "Paper Color");
+ 
+   last_fullscreen = fullscreen;
+   fullscreen = false;
+diff -ur SPainter/colordialog.cpp SPainter.new/colordialog.cpp
+--- SPainter/colordialog.cpp	2004-01-23 14:21:34.000000000 +0100
++++ SPainter.new/colordialog.cpp	2005-10-31 15:56:48.775114835 +0100
+@@ -19,9 +19,9 @@
+ 
+ ////////// ColorDialog
+ 
+-ColorDialog::ColorDialog(QColor &col,
++ColorDialog::ColorDialog(QWidget * parent, QColor &col,
+                          const char* name)
+-     : QDialog(0, name, TRUE)
++     : QDialog(parent, name, TRUE)
+ {
+   setCaption(name);
+ 
+diff -ur SPainter/colordialog.h SPainter.new/colordialog.h
+--- SPainter/colordialog.h	2004-01-23 14:21:34.000000000 +0100
++++ SPainter.new/colordialog.h	2005-10-31 15:56:32.033747608 +0100
+@@ -21,7 +21,7 @@
+   Q_OBJECT
+ 
+ public:
+-  ColorDialog(QColor &init_col,
++    ColorDialog(QWidget * parent, QColor &init_col,
+               const char* name = 0);
+   ~ColorDialog();
+ 
+diff -ur SPainter/filedialog.cpp SPainter.new/filedialog.cpp
+--- SPainter/filedialog.cpp	2005-04-21 17:14:09.000000000 +0200
++++ SPainter.new/filedialog.cpp	2005-10-31 15:45:47.179109875 +0100
+@@ -28,8 +28,8 @@
+ QFileInfo FileDialog::fileinfo(QDir::homeDirPath());
+ 
+ //! construct
+-FileDialog::FileDialog(const char *name, bool input,const QString &path)
+-     : QDialog(0, name, TRUE)
++FileDialog::FileDialog(QWidget *parent, const char *name, bool input,const QString &path)
++     : QDialog(parent, name, TRUE)
+ {
+ 
+   //QDialog
+diff -ur SPainter/filedialog.h SPainter.new/filedialog.h
+--- SPainter/filedialog.h	2004-01-23 14:21:34.000000000 +0100
++++ SPainter.new/filedialog.h	2005-10-31 15:47:36.896960188 +0100
+@@ -17,7 +17,7 @@
+   static QFileInfo fileinfo;
+ 
+ public://construct/destruct
+-  FileDialog(const char *name = 0, bool input = TRUE,const QString &path = QString::null);
++  FileDialog(QWidget *parent, const char *name = 0, bool input = TRUE,const QString &path = QString::null);
+   ~FileDialog();
+ 
+ public://public function
+Only in SPainter.new: Makefile
+Only in SPainter.new: petitpeintu
+diff -ur SPainter/settings.cpp SPainter.new/settings.cpp
+--- SPainter/settings.cpp	2005-05-28 11:09:33.000000000 +0200
++++ SPainter.new/settings.cpp	2005-10-31 16:00:05.387681649 +0100
+@@ -268,8 +268,8 @@
+ #include <qvbox.h>
+ #include <qcheckbox.h>
+ 
+-SettingsDialog::SettingsDialog(void) :
+-QDialog(0, "SettingsDialog", true) {
++SettingsDialog::SettingsDialog(QWidget *parent) :
++QDialog(parent, "SettingsDialog", true) {
+   setCaption("Settings");
+ 
+   main_box = new QVBox(this);
+diff -ur SPainter/settings.h SPainter.new/settings.h
+--- SPainter/settings.h	2005-05-28 11:09:33.000000000 +0200
++++ SPainter.new/settings.h	2005-10-31 16:03:34.136786013 +0100
+@@ -78,7 +78,7 @@
+   QCheckBox *z_color_adjust_check;
+ 
+ public:
+-  SettingsDialog(void);
++  SettingsDialog(QWidget*);
+   ~SettingsDialog(void);
+ 
+   void setSyncWidth(bool);
+diff -ur SPainter/spainter.cpp SPainter.new/spainter.cpp
+--- SPainter/spainter.cpp	2005-05-28 11:09:33.000000000 +0200
++++ SPainter.new/spainter.cpp	2005-10-31 16:08:01.595664620 +0100
+@@ -217,7 +217,7 @@
+   layer_menu->insertItem("Move Down Current Layer", canvas,
+                          SLOT(moveDownCurrentLayer()));
+   layer_menu->insertSeparator();
+-  layer_menu->insertItem("Scale Current Layer", this,
++  layer_menu->insertItem("Scale Current Layer...", this,
+                          SLOT(scaleLayer()));
+   layer_menu->insertItem(QString("Clear Current Layer"), canvas,
+                          SLOT(clearCurrentLayer()));
+@@ -240,7 +240,7 @@
+   tool_menu->insertItem("Mirror Vertical", canvas,
+                         SLOT(mirrorVertical()));
+   tool_menu->insertSeparator();
+-  tool_menu->insertItem("Resize Canvas", this,
++  tool_menu->insertItem("Resize Canvas...", this,
+                         SLOT(setCanvasSize()));
+   tool_menu->insertSeparator();
+   tool_menu->insertItem("Rotate CW", canvas,
+@@ -369,7 +369,7 @@
+ 
+ void SPainter::setPalette(void) {
+   QString fn = settings.getPaletteFileName();
+-  FileDialog dlg("load palette", true, fn);
++  FileDialog dlg(this, "load palette", true, fn);
+ 
+   if (dlg.exec()) {
+     fn = dlg.filePath();
+@@ -389,7 +389,7 @@
+ }
+ 
+ void SPainter::penPressure(void) {
+-  TSDialog d;
++    TSDialog d(this);
+ 
+   d.setMinPressure(
+     settings.getPressure(Settings::i_pressure_min));
+@@ -475,7 +475,7 @@
+ }
+ 
+ void SPainter::showSettings(void) {
+-  SettingsDialog d;
++    SettingsDialog d(this);
+ 
+   d.setSyncWidth(settings.getSyncWidth());
+   d.setLeftRight(settings.getLeftRight());
+@@ -550,7 +550,7 @@
+ 
+ void SPainter::loadImage(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("load image", TRUE, editing_fn);
++  FileDialog dlg(this, "load image", TRUE, editing_fn);
+ 
+   if (dlg.exec()) {
+     QString fn = dlg.filePath();
+@@ -564,7 +564,7 @@
+ 
+ void SPainter::loadLayer(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("load to current layer",
++  FileDialog dlg(this, "load to current layer",
+                  TRUE, editing_fn);
+ 
+   if (dlg.exec()) {
+@@ -593,7 +593,7 @@
+ 
+ void SPainter::saveImage(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("save image", FALSE, editing_fn);
++  FileDialog dlg(this, "save image", FALSE, editing_fn);
+ 
+   if (dlg.exec()) {
+     QString fn = dlg.filePath();
+@@ -612,7 +612,7 @@
+ 
+ void SPainter::savePNG(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("save PNG image", FALSE, editing_fn);
++  FileDialog dlg(this, "save PNG image", FALSE, editing_fn);
+ 
+   if (dlg.exec()) {
+     QString fn = dlg.filePath();
+@@ -628,7 +628,7 @@
+ 
+ void SPainter::saveJPG(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("save JPEG image", FALSE, editing_fn);
++  FileDialog dlg(this, "save JPEG image", FALSE, editing_fn);
+ 
+   if (dlg.exec()) {
+     QString fn = dlg.filePath();
+@@ -644,7 +644,7 @@
+ 
+ void SPainter::saveLayer(void) {
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("save current layer", FALSE, editing_fn);
++  FileDialog dlg(this, "save current layer", FALSE, editing_fn);
+ 
+   if (dlg.exec()) {
+     QString fn = dlg.filePath();
+@@ -667,7 +667,7 @@
+     return;
+ 
+   editing_fn = settings.getLastFileName();
+-  FileDialog dlg("refresh icons", true, editing_fn);
++  FileDialog dlg(this, "refresh icons", true, editing_fn);
+ 
+   if (dlg.exec()) {
+     QFileInfo info(dlg.filePath());
+@@ -721,7 +721,7 @@
+ 
+   w = canvas->canvasWidth();
+   h = canvas->canvasHeight();
+-  ScaleDialog d(w, h);
++  ScaleDialog d(this, w, h);
+ 
+   if (d.exec()) {
+     canvas->scaleLayer(d.x(), d.y());
+@@ -733,7 +733,7 @@
+ 
+   w = canvas->canvasWidth();
+   h = canvas->canvasHeight();
+-  SetCanvasSizeDialog d(w, h);
++  SetCanvasSizeDialog d(this, w, h);
+ 
+   if (d.exec())
+     canvas->setSize(d.w(), d.h());
+@@ -753,8 +753,8 @@
+ #include <qlabel.h>
+ #include <qradiobutton.h>
+ 
+-ScaleDialog::ScaleDialog(uint sx, uint sy) :
+-QDialog(0, "ScaleDialog", true) {
++ScaleDialog::ScaleDialog(QWidget *parent, uint sx, uint sy) :
++QDialog(parent, "ScaleDialog", true) {
+   QString sxs, sys;
+ 
+   setCaption("Scaling");
+@@ -808,8 +808,8 @@
+ ////////////////////////////////////////////////////////////
+ //	SetCanvasSizeDialog
+ 
+-SetCanvasSizeDialog::SetCanvasSizeDialog(uint w, uint h) :
+-  QDialog(0, "SetCanvasSizeDialog", true) {
++SetCanvasSizeDialog::SetCanvasSizeDialog(QWidget *parent, uint w, uint h) :
++  QDialog(parent, "SetCanvasSizeDialog", true) {
+   
+   setCaption("Resize Canvas");
+   width_ = w;
+diff -ur SPainter/spainter.h SPainter.new/spainter.h
+--- SPainter/spainter.h	2005-01-07 16:17:40.000000000 +0100
++++ SPainter.new/spainter.h	2005-10-31 16:02:29.190242919 +0100
+@@ -111,7 +111,7 @@
+   uint width_, height_;
+   
+ public:
+-  ScaleDialog(uint, uint);
++  ScaleDialog(QWidget*, uint, uint);
+   ~ScaleDialog(void);
+ 
+   uint x(void);
+@@ -129,7 +129,7 @@
+   uint width_, height_;
+ 
+  public:
+-  SetCanvasSizeDialog(uint, uint);
++  SetCanvasSizeDialog(QWidget*, uint, uint);
+   ~SetCanvasSizeDialog(void);
+ 
+   uint w(void);
+diff -ur SPainter/spainter.pro SPainter.new/spainter.pro
+--- SPainter/spainter.pro	2005-05-28 11:09:33.000000000 +0200
++++ SPainter.new/spainter.pro	2005-10-31 14:52:11.000000000 +0100
+@@ -4,5 +4,5 @@
+ SOURCES		= main.cpp spainter.cpp colordialog.cpp sketchpainter.cpp layeredpainter.cpp filedialog.cpp canvas.cpp toolpanel.cpp settings.cpp rgb_hsv.cpp ptptformat.cpp tspressure.cpp layerpanel.cpp colorpanel.cpp colorpalette.cpp clipboard.cpp ptpen.cpp z_color_adjust.cpp
+ INCLUDEPATH	+= $(QPEDIR)/include
+ DEPENDPATH	+= $(QPEDIR)/include
+-LIBS            += -L$(QPEDIR) -lqpe
++LIBS            += -L$(QPEDIR)/lib -lqpe
+ TARGET		= petitpeintu
+diff -ur SPainter/tspressure.cpp SPainter.new/tspressure.cpp
+--- SPainter/tspressure.cpp	2005-04-21 17:14:10.000000000 +0200
++++ SPainter.new/tspressure.cpp	2005-10-31 16:00:47.304096516 +0100
+@@ -263,7 +263,7 @@
+ unsigned long int TSDialog::mid_pressure = 0;
+ unsigned long int TSDialog::max_pressure = 0;
+ 
+-TSDialog::TSDialog(void) : QDialog(0, "TSDialog", true) {
++TSDialog::TSDialog(QWidget *parent) : QDialog(parent, "TSDialog", true) {
+   setCaption("Touchscreen Config.");
+ 
+   //  setFixedSize(qApp->desktop()->size());
+diff -ur SPainter/tspressure.h SPainter.new/tspressure.h
+--- SPainter/tspressure.h	2004-02-18 18:03:52.000000000 +0100
++++ SPainter.new/tspressure.h	2005-10-31 16:04:23.246927970 +0100
+@@ -104,7 +104,7 @@
+   void show_values(void);
+   
+ public:
+-  TSDialog(void);
++  TSDialog(QWidget*);
+   ~TSDialog(void);
+ 
+   void showValues(void) {show_values();}
