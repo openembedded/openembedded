@@ -8,13 +8,13 @@ RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gconf;tag=gconf-dbus-2-6 \
            file://gconf-dbus-update.patch;patch=1;pnum=0 \
 	   file://69gconfd-dbus"
 
-FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir}"
+FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir} ${datadir}/dbus-1"
 
 S = "${WORKDIR}/gconf"
 
