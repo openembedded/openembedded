@@ -2,18 +2,19 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://atty.jp/?Zaurus%2Fmplayer"
-DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg"
+DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg alsa-lib"
 LICENSE = "GPL"
 RCONFLICTS = "mplayer"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
 	   file://sdl.patch;patch=1 \
            file://Makefile-libs.patch;patch=1 \
            file://libmpdemux-ogg-include.patch;patch=1 \
-           file://libmpcodecs-ogg-include.patch;patch=1 "
+           file://libmpcodecs-ogg-include.patch;patch=1 \
+	   file://alsa-configure.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
@@ -54,6 +55,7 @@ EXTRA_OECONF = " \
         --enable-dynamic-plugins \
         --enable-fbdev \
         --enable-sdl \
+	--enable-alsa \
         --with-sdl-config=${STAGING_BINDIR}/sdl-config \
         \
         --enable-mad \
