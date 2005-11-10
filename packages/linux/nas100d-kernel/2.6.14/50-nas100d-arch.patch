@@ -1,0 +1,55 @@
+--- linux-2.6.14-git.orig/arch/arm/mach-ixp4xx/Kconfig	2005-11-09 23:23:28.000000000 +0100
++++ linux-2.6.14-git/arch/arm/mach-ixp4xx/Kconfig	2005-11-09 23:24:48.000000000 +0100
+@@ -61,6 +61,14 @@
+ 	  PrPCM1100 Processor Mezanine Module. For more information on
+ 	  this platform, see <file:Documentation/arm/IXP4xx>.
+ 
++config MACH_NAS100D
++	bool
++	prompt "NAS100D"
++	help
++	  Say 'Y' here if you want your kernel to support Iomega's
++	  NAS 100d device. For more information on this platform,
++	  see http://www.nslu2-linux.org/wiki/NAS100d/HomePage
++
+ #
+ # Avila and IXDP share the same source for now. Will change in future
+ #
+--- linux-2.6.14-git.orig/arch/arm/mach-ixp4xx/Makefile	2005-11-09 23:23:28.000000000 +0100
++++ linux-2.6.14-git/arch/arm/mach-ixp4xx/Makefile	2005-11-09 23:24:48.000000000 +0100
+@@ -8,4 +8,5 @@
+ obj-$(CONFIG_MACH_IXDPG425)	+= ixdpg425-pci.o coyote-setup.o
+ obj-$(CONFIG_ARCH_ADI_COYOTE)	+= coyote-pci.o coyote-setup.o
+ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
++obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
+ 
+--- linux-2.6.14-git.orig/include/asm-arm/arch-ixp4xx/hardware.h	2005-11-09 23:23:28.000000000 +0100
++++ linux-2.6.14-git/include/asm-arm/arch-ixp4xx/hardware.h	2005-11-09 23:24:48.000000000 +0100
+@@ -44,5 +44,6 @@
+ #include "ixdp425.h"
+ #include "coyote.h"
+ #include "prpmc1100.h"
++#include "nas100d.h"
+ 
+ #endif  /* _ASM_ARCH_HARDWARE_H */
+--- linux-2.6.14-git.orig/include/asm-arm/arch-ixp4xx/irqs.h	2005-11-09 23:23:28.000000000 +0100
++++ linux-2.6.14-git/include/asm-arm/arch-ixp4xx/irqs.h	2005-11-09 23:24:48.000000000 +0100
+@@ -93,4 +93,11 @@
+ #define	IRQ_COYOTE_PCI_SLOT1	IRQ_IXP4XX_GPIO11
+ #define	IRQ_COYOTE_IDE		IRQ_IXP4XX_GPIO5
+ 
++/*
++ * NAS100D board IRQs
++ */
++#define        IRQ_NAS100D_PCI_INTA      IRQ_IXP4XX_GPIO11
++#define        IRQ_NAS100D_PCI_INTB      IRQ_IXP4XX_GPIO10
++#define        IRQ_NAS100D_PCI_INTC      IRQ_IXP4XX_GPIO9
++
+ #endif
+--- linux-2.6.14/arch/arm/tools/mach-types~	2005-10-28 09:32:08.000000000 +0930
++++ linux-2.6.14/arch/arm/tools/mach-types	2005-11-10 19:58:03.534106856 +1030
+@@ -869,3 +869,4 @@
+ htcuniversal		MACH_HTCUNIVERSAL	HTCUNIVERSAL		855
+ tpad			MACH_TPAD		TPAD			856
+ roverp3			MACH_ROVERP3		ROVERP3			857
++nas100d			MACH_NAS100D		NAS100D			865
