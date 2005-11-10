@@ -11,12 +11,11 @@ PR_CONFIG = "0"
 PR = "r0.${PR_CONFIG}"
 
 N1K_FILES = "\
+	arch/arm/mach-ixp4xx/nas100d-pci.c \
+	arch/arm/mach-ixp4xx/nas100d-power.c \
+	arch/arm/mach-ixp4xx/nas100d-setup.c \
+	include/asm-arm/arch-ixp4xx/nas100d.h \
 "
-#    arch/arm/mach-ixp4xx/nas100d-io.c \
-#    arch/arm/mach-ixp4xx/nas100d-setup.c \
-#    arch/arm/mach-ixp4xx/nas100d-pci.c \
-#    arch/arm/mach-ixp4xx/nas100d-part.c \
-#    include/asm-arm/arch-ixp4xx/nas100d.h
 
 N1K_PATCHES = "\
 	file://10-ixp4xx-copy-from.patch;patch=1 \
@@ -26,6 +25,7 @@ N1K_PATCHES = "\
 	file://18-ixp4xx-io-h-addr.patch;patch=1 \
 	file://28-spinlock-up.patch;patch=1 \
 	file://29-ipv4-route-c-spinlock.patch;patch=1 \
+	file://50-nas100d-arch.patch;patch=1 \
 	file://90-ixp4xx-pci-le.patch;patch=1 \
 "
 
