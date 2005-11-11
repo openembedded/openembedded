@@ -9,8 +9,6 @@
  * Author: Mark Rakes <mrakes at mac.com>
  * Maintainers: http://www.nslu2-linux.org/
  *
- * Fixed missing init_time in MACHINE_START kas11 10/22/04
- * Changed to conform to new style __init ixdp425 kas11 10/22/04
  */
 
 #include <linux/kernel.h>
