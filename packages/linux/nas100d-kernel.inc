@@ -169,10 +169,10 @@ KERNEL_IMAGETYPE = "zImage"
 # To specify the console set KERNEL_CONSOLE in the .bb file.
 # CMDLINE_ROOT contains the boot options, CMDLINE_KERNEL_OPTIONS
 # contains the things for a specific kernel.
-CMDLINE_KERNEL_OPTIONS ?= "reboot=s"
-CMDLINE_ROOT ?= "root=/dev/ram0 mem=64M@0x00000000 init=/linuxrc"
+CMDLINE_KERNEL_OPTIONS ?=
+CMDLINE_ROOT ?= "root=/dev/mtdblock3 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
 # Add distro specific debug (or non-debug) options to this
-CMDLINE_DEBUG ?= ""
+CMDLINE_DEBUG ?= "noirqdebug"
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as

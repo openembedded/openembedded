@@ -26,6 +26,7 @@ N1K_PATCHES = "\
 	file://28-spinlock-up.patch;patch=1 \
 	file://29-ipv4-route-c-spinlock.patch;patch=1 \
 	file://50-nas100d-arch.patch;patch=1 \
+	file://60-nas100d-ide.patch;patch=1 \
 	file://90-ixp4xx-pci-le.patch;patch=1 \
 "
 
@@ -35,4 +36,4 @@ include nas100d-kernel.inc
 # specific to the bootstrap of *this* kernel in here - DISTRO specfic
 # config must be in CMDLINE_ROOT (see the full definition of CMDLINE
 # in nas100d-kernel.inc)
-CMDLINE_KERNEL_OPTIONS = "x1205.hctosys=1"
+# CMDLINE_KERNEL_OPTIONS = "x1205.hctosys=1"
