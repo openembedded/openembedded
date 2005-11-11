@@ -1,18 +1,23 @@
-# Meta package containing all the packages which build for UcSlugC
+# Meta package containing all the packages which build for SlugOS
 #
-# All packages in here must build with the ucslugc.conf distro, they
-# do not necessarily work.
-DESCRIPTION = "Packages that are compatible with the UcSlugC firmware"
-LICENSE = MIT
-PR = "r1"
+# All packages in here must build with the slugos-???.conf distros,
+# they do not necessarily work.
+DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
+LICENSE = "MIT"
+PR = "r2"
+CONFLICTS = "db3"
+PROVIDES += "${SLUGOS_IMAGENAME}-packages"
+#FIXME: backward compatibility with the master makefile
+PROVIDES += "openslug-packages"
 
+EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 
 # The list of packages to build for the ucslugc DISTRO.
 # KEEP IN ALPHABETICAL ORDER
-UCSLUGC_PACKAGES = "\
+SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
 	atftp \
@@ -25,6 +30,7 @@ UCSLUGC_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils-nodbus \
+	bogofilter \
 	boost \
 	bridge-utils \
 	bwmon \
@@ -34,9 +40,9 @@ UCSLUGC_PACKAGES = "\
 	cron \
 	ctorrent \
 	cvs \
-	cvs\
-	db4 \
-	diffstat \
+	cyrus-imapd \
+	cyrus-sasl \
+	db \
 	diffstat \
 	diffutils \
 	dnsmasq \
@@ -51,7 +57,6 @@ UCSLUGC_PACKAGES = "\
 	gcc \
 	gdb \
 	gdbm \
-	glib-1.2 \
 	glib-2.0 \
 	gnu-config \
 	gphoto2 \
@@ -89,9 +94,10 @@ UCSLUGC_PACKAGES = "\
 	mgetty \
 	miau \ 
 	microcom \
+	minicom \
 	mpd \
-	mtd-utils \
 	mt-daapd \
+	mtd-utils \
 	mutt \
 	nail \
 	nano \
@@ -115,7 +121,6 @@ UCSLUGC_PACKAGES = "\
 	puppy \
 	pwc \
 	python \
-	python-core \
 	qc-usb-messenger \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -142,44 +147,17 @@ UCSLUGC_PACKAGES = "\
 	vsftpd \
 	wakelan \
 	wget \
-	wget \
 	wireless-tools \
+	zd1211 \
 	zlib \
 	"
 
-# These packages only build on TARGET_OS=linux, but not TARGET_OS=linux-uclibc.
-# KEEP IN ALPHABETICAL ORDER
-UCSLUGC_BROKEN_PACKAGES = "\
-	ctrlproxy \
+# Packages currently broken on all platforms
+SLUGOS_BROKEN_PACKAGES = "\
+	groff \
 	icecast \
-	iperf \
-	iputils \
-	libxslt \
-	man man-pages \
-	php \
-	psmisc \
 	pvrusb2-mci \
-	screen \
-	spca5xx \
-	timezones \
 	watchdog \
-	xinetd \
-	xirssi \
-	zd1211 \
-	"
-
-# These packages are not in the build because they have a significant compilation
-# time and probably aren't very useful on a ucslugc system
-THUMB_OPTIONAL_PACKAGES = "\
-	monotone-4 \
-	mysql \
-	"
-
-# These packages have problems with thumb or thumb-interwork compilation - they
-# should really be fixed (if still in the build it is because there is a hacky
-# work round.)  The problem with monotone-5 is that it is simply too big.
-THUMB_BROKEN_PACKAGES = "\
-	monotone-5 \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -187,13 +165,44 @@ THUMB_BROKEN_PACKAGES = "\
 # normal cause is that the package uses the "NIS" interfaces (once known as
 # YP - a trademark of BT which SUN used without license - the missing function
 # calls often still have 'yp' in the name).
-UCSLUGC_UNSUPPORTABLE_PACKAGES = "\
+UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	libpam \
 	nfs-utils \
 	postfix \
 	yp-tools ypbind ypserv \
 	"
 
+# Packages which build only with glibc or uclibc (some of these use internal
+# glibc functions and so will probably never run on uclibc).
+SLUGOS_PACKAGES_append_linux = "\
+	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
+	ctrlproxy \
+	dsniff \
+	iperf \
+	man man-pages \
+	psmisc \
+	screen \
+	timezones \
+	xinetd \
+	"
+
+SLUGOS_PACKAGES_append_linux-uclibc = "\
+	"
+
+# These packages are not in the build because they have a significant compilation
+# time, add them to SLUGOS_EXTRA_PACKAGES if required
+SLUGOS_OPTIONAL_PACKAGES = "\
+	mysql \
+	"
+
+SLUGOS_EXTRA_PACKAGES ?= ""
+
 # The package-index at the end causes regeneration of the Packages.gz and
 # other control files.
-DEPENDS = "openslug-image ${UCSLUGC_PACKAGES} ucslugc-native package-index"
+DEPENDS = "\
+	slugos-image \
+	slugos-native \
+	${SLUGOS_PACKAGES} \
+	${SLUGOS_EXTRA_PACKAGES} \
+	package-index \
+	"
