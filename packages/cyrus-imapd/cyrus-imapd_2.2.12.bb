@@ -1,7 +1,7 @@
 SECTION = "console/network"
-DEPENDS = "cyrus-sasl db3"
+DEPENDS = "cyrus-sasl virtual/db"
 LICENSE = "BSD"
-PR = "r6"
+PR = "r7"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
@@ -18,15 +18,15 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "cyrus"
 INITSCRIPT_PARAMS = "start 56 3 4 5 . stop 15 0 1 6 ."
 
+TARGET_LDFLAGS_append_thumb = " -lpthread"
 EXTRA_OECONF = "--with-auth=unix \
+		--with-dblib=berkeley \
+	        --with-bdb-libdir=${STAGING_LIBDIR} \
+	        --with-bdb-incdir=${STAGING_INCDIR} \
 		--without-perl \
 		--without-snmp"
 
 FILES_${PN} += "${prefix}/cyrus/bin"
-
-# Target only, the db4 headers are in include/db4, so *prepend* this
-# directory to the search path
-TARGET_CPPFLAGS =+ "-I${STAGING_DIR}/${TARGET_SYS}/include/db4"
 
 # All, lib/foo.c includes <config.h> from the top level directory and
 # is natively compiled

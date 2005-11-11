@@ -12,7 +12,7 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
 SRC_URI += " file://openldap-autoconf.patch;patch=1"
@@ -89,16 +89,12 @@ md = "${libexecdir}/openldap"
 # To disable this set all three of the following variables to <empty> in
 # a .conf file (this will allow ldbm to be build with gdbm).
 OPENLDAP_OPTION_bdb   ?= --enable-bdb=mod
-OPENLDAP_DEPENDS_bdb  ?= db4
+OPENLDAP_DEPENDS_bdb  ?= db
 OPENLDAP_PACKAGE_bdb  ?= "${PN}-backend-bdb"
 FILES_${PN}-backend-bdb = "${md}/back_bdb.so ${md}/back_bdb.la ${md}/back_bdb-*.so.*"
 EXTRA_OECONF += " ${OPENLDAP_OPTION_bdb}"
 DEPENDS += ${OPENLDAP_DEPENDS_bdb}
 PACKAGES += " ${OPENLDAP_PACKAGE_bdb}"
-# For the moment the db4 headers are in a sub-directory to give compatibility
-# with the identically named db3 headers in the standard staging directory,
-# *prepend* the subdirectory:
-TARGET_CPPFLAGS =+ "-I${STAGING_DIR}/${TARGET_SYS}/include/db4"
 #
 #--enable-dnssrv       enable dnssrv backend no|yes|mod no
 # This has no dependencies.
@@ -109,7 +105,7 @@ PACKAGES += " ${PN}-backend-dnssrv"
 #--enable-hdb          enable Hierarchical DB backend no|yes|mod no
 # This forces ldbm to use Berkeley too, remove to use gdbm
 OPENLDAP_OPTION_hdb   ?= --enable-hdb=mod
-OPENLDAP_DEPENDS_hdb  ?= db4
+OPENLDAP_DEPENDS_hdb  ?= db
 OPENLDAP_PACKAGE_hdb  ?= "${PN}-backend-hdb"
 FILES_${PN}-backend-hdb = "${md}/back_hdb.so ${md}/back_hdb.la ${md}/back_hdb-*.so.*"
 EXTRA_OECONF += " ${OPENLDAP_OPTION_hdb}"

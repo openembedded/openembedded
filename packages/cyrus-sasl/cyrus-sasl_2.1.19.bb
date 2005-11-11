@@ -1,8 +1,8 @@
 SECTION = "console/network"
-DEPENDS = "db3 openssl"
+DEPENDS = "openssl virtual/db"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1"
@@ -11,9 +11,10 @@ inherit autotools
 
 acpaths = "-I ${S}/cmulocal -I ${S}/config -I ."
 CFLAGS_append = " -I${S}/include -I${S}/saslauthd/include"
+TARGET_LDFLAGS_append_thumb = " -lpthread"
 EXTRA_OECONF = "--enable-shared --enable-static --with-dblib=berkeley \
 	        --with-bdb-libdir=${STAGING_LIBDIR} \
-	        --with-bdb-incdir=${STAGING_INCDIR}/db4 \
+	        --with-bdb-incdir=${STAGING_INCDIR} \
 		--without-pam \
 		--without-opie --without-des"
 

@@ -1,5 +1,5 @@
 SECTION = "console/network"
-DEPENDS = "db3"
+DEPENDS = "virtual/db"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
 

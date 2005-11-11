@@ -1,7 +1,7 @@
 SECTION = "console/network"
-DEPENDS = "db3 pcre postfix-native"
+DEPENDS = "virtual/db pcre postfix-native"
 LICENSE = "IPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -18,7 +18,14 @@ inherit update-rc.d
 INITSCRIPT_NAME = "postfix"
 INITSCRIPT_PARAMS = "start 58 3 4 5 . stop 13 0 1 6 ."
 
-export SYSLIBS = "-lpcre -ldb -lnsl -lresolv ${LDFLAGS}"
+#FIXME: this is broken because the native build won't work on systems where
+# native bdb does not require libpthread.  ARM doesn't require libpthread
+# because it uses an assembler mutex implementation.
+LIBBDB_EXTRA = "-lpthread"
+LIBBDB_EXTRA_arm = ""
+LIBBDB_EXTRA_armeb = ""
+
+export SYSLIBS = "-lpcre -ldb ${LIBBDB_EXTRA} -lnsl -lresolv ${LDFLAGS}"
 export EXPORT = "AUXLIBS='-lpcre' CCARGS='-DHAS_PCRE ${CFLAGS}' OPT='' DEBUG='-g'"
 export CC_append = " -DHAS_PCRE ${CFLAGS}"
 export EXTRA_OEMAKE = "-e"

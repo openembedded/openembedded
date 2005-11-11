@@ -1,8 +1,9 @@
 SECTION = "console/network"
 DESCRIPTION = "dsniff is a collection of tools for network auditing and penetration testing."
 LICENSE = "BSD"
+PR = "r1"
 
-DEPENDS = "db3 libpcap libnet libnids openssl"
+DEPENDS = "virtual/db libpcap libnet libnids openssl"
 
 SRC_URI = "http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
 	   file://configure.patch;patch=1"

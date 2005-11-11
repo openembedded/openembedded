@@ -3,8 +3,8 @@ HOMEPAGE = "http://rpm.org/"
 LICENSE = "LGPL GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 # NOTE: currently rpm doesn't support using an external popt,
-# file, or db3.  FIXME: patch it to support that.
-# DEPENDS = "db3 popt file zlib"
+# file, or virtual/db.  FIXME: patch it to support that.
+# DEPENDS = "virtual/db popt file zlib"
 DEPENDS = "zlib"
 PR = "r1"
 
