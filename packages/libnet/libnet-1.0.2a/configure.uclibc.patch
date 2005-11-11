@@ -1,0 +1,11 @@
+--- Libnet-1.0.2a/config.sub.orig	2005-11-10 11:24:50.238457174 -0800
++++ Libnet-1.0.2a/config.sub	2005-11-10 11:25:23.704563063 -0800
+@@ -68,7 +68,7 @@ esac
+ # Here we must recognize all the valid KERNEL-OS combinations.
+ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
+ case $maybe_os in
+-  linux-gnu*)
++  linux-gnu*|linux-uclibc)
+     os=-$maybe_os
+     basic_machine=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\1/'`
+     ;;
