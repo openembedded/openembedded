@@ -1,12 +1,12 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Frederic Devernay <frederic.devernay@m4x.org>"
 SECTION = "kernel"
 LICENSE = "GPL"
 KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r19"
+PR = "r20"
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
@@ -26,7 +26,9 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://simpad-apm.diff;patch=1;pnum=0 \
            file://simpad-ts-noninput.patch;patch=1 \
            file://simpad-pm-updates.patch;patch=1;pnum=0 \
-           file://support-128mb-flash.patch;patch=1"
+           file://support-128mb-ram.patch;patch=1 \
+           file://mmc-spi.patch;patch=1 \
+"
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
@@ -65,6 +67,18 @@ do_configure() {
                 echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
         fi
+	if [ "$total" == "128" ]
+        then
+                echo "CCONFIG_SA1100_SIMPAD_128M=y"           >> ${S}/.config
+        else
+                echo "# CONFIG_SA1100_SIMPAD_128M is not set" >> ${S}/.config
+	fi
+	if [ "$total" == "32" ]
+        then
+                echo "CONFIG_SA1100_SIMPAD_SINUSPAD=y"            >> ${S}/.config
+        else
+                echo "# CONFIG_SA1100_SIMPAD_SINUSPAD is not set" >> ${S}/.config
+	fi
 	echo "CONFIG_CMDLINE=\"${CMDLINE} mem=${mem}M\"" >> ${S}/.config
         oe_runmake oldconfig
 }

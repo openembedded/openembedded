@@ -1,5 +1,5 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Frederic Devernay <frederic.devernay@m4x.org>"
 SECTION = "kernel"
 LICENSE = "GPL"
 KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
@@ -7,7 +7,7 @@ VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
 USBV= "usb20040610"
-PR = "r1"
+PR = "r2"
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
@@ -28,11 +28,12 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://simpad-apm.patch;patch=1 \
            file://simpad-ts-noninput.patch;patch=1 \
            file://simpad-pm-updates.patch;patch=1 \
-           file://support-128mb-flash.patch;patch=1 \
+           file://support-128mb-ram.patch;patch=1 \
            file://simpad-proc-sys-board.patch;patch=1 \
            file://simpad-serial.patch;patch=1 \
            file://mppe-20040216.patch;patch=1 \
            file://sa1100-usb-tcl1.patch;patch=1 \
+           file://mmc-spi.patch;patch=1 \
 "
 # This applies right after the jpm patch but is useless until we
 # have sa1100_udc.c
@@ -75,6 +76,18 @@ do_configure() {
                 echo "CONFIG_MTDRAM_ERASE_SIZE=1"           >> ${S}/.config
                 echo "CONFIG_MTDRAM_ABS_POS=$addr"          >> ${S}/.config
         fi
+	if [ "$total" == "128" ]
+        then
+                echo "CONFIG_SA1100_SIMPAD_128M=y"            >> ${S}/.config
+        else
+                echo "# CONFIG_SA1100_SIMPAD_128M is not set" >> ${S}/.config
+	fi
+	if [ "$total" == "32" ]
+        then
+                echo "CONFIG_SA1100_SIMPAD_SINUSPAD=y"            >> ${S}/.config
+        else
+                echo "# CONFIG_SA1100_SIMPAD_SINUSPAD is not set" >> ${S}/.config
+	fi
 	echo "CONFIG_CMDLINE=\"${CMDLINE} mem=${mem}M\"" >> ${S}/.config
         oe_runmake oldconfig
 }
