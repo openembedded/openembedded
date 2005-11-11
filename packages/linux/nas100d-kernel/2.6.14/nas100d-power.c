@@ -49,13 +49,13 @@ static int __init nas100d_power_init(void)
 	if (!(machine_is_nas100d()))
 		return 0;
 
-	*IXP4XX_GPIO_GPISR = 0x20400000;	/* read the 2 irqs to clr */
+	// *IXP4XX_GPIO_GPISR = 0x20400000;	/* read the 2 irqs to clr */
 
 	set_irq_type(NAS100D_RB_IRQ, IRQT_LOW);
-	set_irq_type(NAS100D_PB_IRQ, IRQT_HIGH);
+//	set_irq_type(NAS100D_PB_IRQ, IRQT_HIGH);
 
 	gpio_line_isr_clear(NAS100D_RB_GPIO);
-	gpio_line_isr_clear(NAS100D_PB_GPIO);
+//	gpio_line_isr_clear(NAS100D_PB_GPIO);
 
 	if (request_irq(NAS100D_RB_IRQ, &nas100d_reset_handler,
 		SA_INTERRUPT, "NAS100D reset button", NULL) < 0) {
@@ -65,7 +65,7 @@ static int __init nas100d_power_init(void)
 
 		return -EIO;
 	}
-
+/*
 	if (request_irq(NAS100D_PB_IRQ, &nas100d_power_handler,
 		SA_INTERRUPT, "NAS100D power button", NULL) < 0) {
 
@@ -74,14 +74,14 @@ static int __init nas100d_power_init(void)
 
 		return -EIO;
 	}
-
+*/
 	return 0;
 }
 
 static void __exit nas100d_power_exit(void)
 {
 	free_irq(NAS100D_RB_IRQ, NULL);
-	free_irq(NAS100D_PB_IRQ, NULL);
+//	free_irq(NAS100D_PB_IRQ, NULL);
 }
 
 module_init(nas100d_power_init);
