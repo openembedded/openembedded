@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://download.sourceforge.net/zd1211/sf_zd1211_${PV}_src.tar.gz \
@@ -24,6 +24,7 @@ do_compile () {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
         oe_runmake 'KSRC=${STAGING_KERNEL_DIR}' \
         	   'KDIR=${STAGING_KERNEL_DIR}' \
+		   'KERNRELEASE=${KERNEL_VERSION}' \
                    'CC="${KERNEL_CC}"' \
                    'LD="${KERNEL_LD}"' 
 }
