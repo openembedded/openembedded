@@ -106,7 +106,7 @@ CONFIG_MACH_NAS100D=y
 #
 # IXP4xx Options
 #
-CONFIG_IXP4XX_INDIRECT_PCI=y
+# CONFIG_IXP4XX_INDIRECT_PCI is not set
 
 #
 # Processor Type
@@ -159,7 +159,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc x1205.hctosys=1 noirqdebug console=ttyS0,115200n8"
+CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc noirqdebug console=ttyS0,115200n8"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -905,7 +905,7 @@ CONFIG_SENSORS_EEPROM=y
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_RTC8564 is not set
 # CONFIG_SENSORS_MAX6875 is not set
-CONFIG_SENSORS_X1205=y
+# CONFIG_SENSORS_X1205 is not set
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set

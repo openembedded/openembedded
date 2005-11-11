@@ -56,11 +56,11 @@ static int __init nas100d_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 		break;
 	case 3:
 		if (pin == 1)
-			return IRQ_NAS100D_PCI_INTB;
-		if (pin == 2)
 			return IRQ_NAS100D_PCI_INTC;
-		if (pin == 3)
+		if (pin == 2)
 			return IRQ_NAS100D_PCI_INTD;
+		if (pin == 3)
+			return IRQ_NAS100D_PCI_INTE;
 		break;
 	}
 
