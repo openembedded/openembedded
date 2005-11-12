@@ -1,12 +1,11 @@
-SECTION = "x11/fonts"	#maybe this should be "fonts/ttf"?
+SECTION = "x11/fonts"
 PRIORITY = "optional"
 PACKAGE_ARCH = "all"
-#DEPENDS = "fontconfig"
-#RSUGGESTS = "libfontconfig-utils"
+#DEPENDS = "fontconfig opie-ttf-support"
+#RSUGGESTS = "libfontconfig-utils opie-ttf-support"
 
 # I dont want TTF fonts to depend on fontconfig on device
-# as those fonts can be used not only in X11 enviroment
-# for example I use them with OPIE
+# as those fonts are used not only in X11 enviroment
 
 do_install() {
     install -d ${D}${datadir}/fonts/truetype/
