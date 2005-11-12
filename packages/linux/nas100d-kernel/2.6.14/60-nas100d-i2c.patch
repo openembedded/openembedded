@@ -1,0 +1,61 @@
+ drivers/i2c/busses/i2c-ixp4xx.c |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+--- linux-nas100d.orig/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-11 22:22:43.000000000 +0100
++++ linux-nas100d/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-13 13:53:41.000000000 +0100
+@@ -47,16 +47,26 @@ static inline int ixp4xx_sda_pin(void *d
+ 
+ static void ixp4xx_bit_setscl(void *data, int val)
+ {
++#ifndef CONFIG_MACH_NAS100D
+ 	gpio_line_set(ixp4xx_scl_pin(data), 0);
+ 	gpio_line_config(ixp4xx_scl_pin(data),
+ 		val ? IXP4XX_GPIO_IN : IXP4XX_GPIO_OUT );
++#else
++	gpio_line_config(ixp4xx_scl_pin(data), IXP4XX_GPIO_OUT);
++	gpio_line_set(ixp4xx_scl_pin(data), val ? 1 : 0);
++#endif
+ }
+ 
+ static void ixp4xx_bit_setsda(void *data, int val)
+ {
++#ifndef CONFIG_MACH_NAS100D
+ 	gpio_line_set(ixp4xx_sda_pin(data), 0);
+ 	gpio_line_config(ixp4xx_sda_pin(data),
+ 		val ? IXP4XX_GPIO_IN : IXP4XX_GPIO_OUT );
++#else
++	gpio_line_config(ixp4xx_sda_pin(data), IXP4XX_GPIO_OUT);
++	gpio_line_set(ixp4xx_sda_pin(data), val ? 1 : 0);
++#endif
+ }
+ 
+ static int ixp4xx_bit_getscl(void *data)
+@@ -127,17 +137,26 @@ static int ixp4xx_i2c_probe(struct devic
+ 	drv_data->algo_data.udelay = 10;
+ 	drv_data->algo_data.mdelay = 10;
+ 	drv_data->algo_data.timeout = 100;
+-
++#ifdef CONFIG_MACH_NAS100D
++	drv_data->algo_data.udelay = 100;
++	drv_data->algo_data.mdelay = 100;
++#endif
+ 	drv_data->adapter.id = I2C_HW_B_IXP4XX;
+ 	drv_data->adapter.algo_data = &drv_data->algo_data;
+ 
+ 	drv_data->adapter.dev.parent = &plat_dev->dev;
+ 
++#ifdef CONFIG_MACH_NAS100D
++	gpio_line_config(gpio->scl_pin, IXP4XX_GPIO_OUT);
++	gpio_line_config(gpio->sda_pin, IXP4XX_GPIO_OUT);
++	gpio_line_set(gpio->scl_pin, IXP4XX_GPIO_HIGH);
++	gpio_line_set(gpio->sda_pin, IXP4XX_GPIO_HIGH);
++#else
+ 	gpio_line_config(gpio->scl_pin, IXP4XX_GPIO_IN);
+ 	gpio_line_config(gpio->sda_pin, IXP4XX_GPIO_IN);
+ 	gpio_line_set(gpio->scl_pin, 0);
+ 	gpio_line_set(gpio->sda_pin, 0);
+-
++#endif
+ 	if ((err = i2c_bit_add_bus(&drv_data->adapter) != 0)) {
+ 		printk(KERN_ERR "ERROR: Could not install %s\n", dev->bus_id);
+ 
