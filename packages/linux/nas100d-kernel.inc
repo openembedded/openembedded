@@ -170,7 +170,7 @@ KERNEL_IMAGETYPE = "zImage"
 # CMDLINE_ROOT contains the boot options, CMDLINE_KERNEL_OPTIONS
 # contains the things for a specific kernel.
 CMDLINE_KERNEL_OPTIONS ?= "reboot=s"
-CMDLINE_ROOT ?= "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
+CMDLINE_ROOT ?= "root=/dev/ram0 mem=64M@0x00000000 init=/linuxrc"
 # Add distro specific debug (or non-debug) options to this
 CMDLINE_DEBUG ?= ""
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
