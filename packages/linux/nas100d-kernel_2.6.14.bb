@@ -26,10 +26,10 @@ N1K_PATCHES = "\
 	file://28-spinlock-up.patch;patch=1 \
 	file://29-ipv4-route-c-spinlock.patch;patch=1 \
 	file://50-nas100d-arch.patch;patch=1 \
+	file://60-nas100d-ide.patch;patch=1 \
+	file://60-nas100d-i2c.patch;patch=1 \
 	file://90-ixp4xx-pci-le.patch;patch=1 \
 "
-
-#	file://60-nas100d-ide.patch;patch=1 \
 
 include nas100d-kernel.inc
 
