@@ -25,8 +25,7 @@ N2K_PATCHES = "\
 	file://75-nslu2-leds.patch;patch=1 \
 	file://80-nslu2-io.patch;patch=1 \
 	file://81-nslu2-class-device-create.patch;patch=1 \
-	file://mtd-unaligned-read-fix;patch=1 \
-	file://mtd-little-endian-support;patch=1 \
+	file://90-ixp4xx-nslu2.patch;patch=1 \
 	file://anonymiser.patch;patch=1 \
 "
 
