@@ -90,6 +90,7 @@ SLUGOS_PACKAGES = "\
 	m4 \
 	mailx \
 	make \
+	masqmail \
 	mdadm \
 	mgetty \
 	miau \ 
