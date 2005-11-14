@@ -1,0 +1,20 @@
+--- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000
+@@ -504,7 +504,7 @@ static int __init n2iom_init(void)
+ 		return -EBUSY;
+ 	}
+ 	else {
+-		class_device_create(n2lm_class, MKDEV(NSLU2LM_MAJOR, 0), NULL, "leds");
++		class_device_create(n2lm_class, NULL, MKDEV(NSLU2LM_MAJOR, 0), NULL, "leds");
+ 	}
+ #endif
+ 
+@@ -513,7 +513,7 @@ static int __init n2iom_init(void)
+ 		return -EBUSY;
+ 	}
+ 	else {
+-		class_device_create(n2lm_class, MKDEV(NSLU2BZ_MAJOR, 0), NULL, "buzzer");
++		class_device_create(n2lm_class, NULL, MKDEV(NSLU2BZ_MAJOR, 0), NULL, "buzzer");
+ 	}
+ 
+ 	return 0;
