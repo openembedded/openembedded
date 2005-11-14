@@ -5,11 +5,12 @@ MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 DEPENDS_mtx-1_append = "madwifi-modules"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
 	file://defconfig \
+        file://driver-hermes.patch;patch=1 \
 	file://wpa_supplicant.conf"
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
