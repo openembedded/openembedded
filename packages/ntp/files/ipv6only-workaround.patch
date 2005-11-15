@@ -1,0 +1,13 @@
+Patch taken from Debian: http://bugs.debian.org/249216
+------------------------------------------------------------------------
+--- ntp-4.2.0/ntpdate/ntpdate.c~ipv6only-workaround
++++ ntp-4.2.0/ntpdate/ntpdate.c
+@@ -1698,8 +1698,6 @@
+            if (res->ai_family == AF_INET6)
+                 if (setsockopt(fd[nbsock], IPPROTO_IPV6, IPV6_V6ONLY, (void*) &optval, sizeof(optval)) < 0) {
+    		           netsyslog(LOG_ERR, "setsockopt() IPV6_V6ONLY failed: %m");
+-   		           exit(1);
+-		           /*NOTREACHED*/
+     	        }
+ #endif
+ 
