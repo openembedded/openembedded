@@ -12,8 +12,7 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r0"
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
@@ -55,10 +54,17 @@ EXTRA_OECONF += "--enable-dynamic"
 #
 # Disable TLS to remove the need for openssl/libcrypto
 OPENLDAP_OPTION_tls  ?= "--without-tls"
-# set the following to " openssl" to build tls support
-OPENLDAP_DEPENDS_tls ?=
+# set the following to "openssl" to build tls support
+OPENLDAP_DEPENDS_tls ?= ""
 EXTRA_OECONF += "${OPENLDAP_OPTION_tls}"
 DEPENDS += "${OPENLDAP_DEPENDS_tls}"
+#
+# Disable Cyrus SASL, which may or may not be working at present...
+OPENLDAP_OPTION_sasl  ?= "--without-cyrus-sasl"
+# set the following to "cyrus-sasl" to build SASL support
+OPENLDAP_DEPENDS_sasl ?= ""
+EXTRA_OECONF += "${OPENLDAP_OPTION_sasl}"
+DEPENDS += "${OPENLDAP_DEPENDS_sasl}"
 
 # SLAPD options
 #
@@ -249,28 +255,14 @@ PACKAGES += "${PN}-slapd ${PN}-slurpd ${PN}-bin"
 
 # Package contents - shift most standard contents to -bin
 FILES_${PN} = "${libdir}/lib*.so.* ${sysconfdir}/openldap/ldap.* ${localstatedir}/openldap-data"
-FILES_${PN}-slapd = "${libexecdir}/slapd ${sbindir} ${datadir}/openldap/ucdata \
-	${localstatedir}/run ${sysconfdir}/openldap/slapd.* ${sysconfdir}/openldap/schema"
+FILES_${PN}-slapd = "${libexecdir}/slapd ${sbindir} ${localstatedir}/run \
+	${sysconfdir}/openldap/slapd.* ${sysconfdir}/openldap/schema \
+	${sysconfdir}/openldap/DB_CONFIG.example"
 FILES_${PN}-slurpd = "${libexecdir}/slurpd ${localstatedir}/openldap-slurp ${localstatedir}/run"
 FILES_${PN}-bin = "${bindir}"
 FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la ${libdir}/*.a ${libexecdir}/openldap/*.a"
 
-# Run ucgendat, and remove it.
-# This is a painful and annoying way around the use of machine-generated
-# tables within the build.  The alternative is to rewrite the ucgendat
-# stuff and associated liblunicode code to use machine-independent data
-# files - the current code seems to at least assume byte sex.
-DATFILES = "case.dat cmbcl.dat comp.dat ctype.dat decomp.dat num.dat kdecomp.dat"
-pkg_postinst_openldap-slapd() {
-test -n "${DESTDIR}" -o "${BUILD_ARCH}" = "${HOST_ARCH}" || (
-	cd "${datadir}/${PN}/ucdata" &&
-	./ucgendat UnicodeData.txt -x CompositionExclusions.txt &&
-	# This saves about 1MByte
-	rm ucgendat UnicodeData.txt CompositionExclusions.txt
-)
-}
-pkg_prerm_openldap-slapd() {
-test "${BUILD_ARCH}" = "${HOST_ARCH}" || (
-	cd "${datadir}/${PN}/ucdata" && rm ${DATFILES}
-)
+do_install_append() {
+	# This is duplicated in /etc/openldap and is for slapd
+	rm -f ${D}${localstatedir}/openldap-data/DB_CONFIG.example
 }
