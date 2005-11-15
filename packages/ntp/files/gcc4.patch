@@ -1,0 +1,46 @@
+Patch taken from Debian: http://bugs.debian.org/298697
+------------------------------------------------------------------------
+With the attached patch 'ntp' can be compiled
+on amd64 using gcc-4.0.
+
+The attached patch also changes the Build-Depends from libreadline4-dev
+to libreadline5-dev.
+
+Regards
+Andreas Jochens
+
+diff -urN ../tmp-orig/ntp-4.2.0a+stable/include/ntp_stdlib.h ./include/ntp_stdlib.h
+--- ../tmp-orig/ntp-4.2.0a+stable/include/ntp_stdlib.h	2003-05-04 16:50:25.000000000 +0200
++++ ./include/ntp_stdlib.h	2005-03-09 12:59:45.000000000 +0100
+@@ -135,7 +135,7 @@
+ 
+ /* clocktypes.c */
+ struct clktype;
+-extern struct clktype clktypes[];
++extern struct clktype *clktypes;
+ 
+ /* getopt.c */
+ extern char *	ntp_optarg;		/* global argument pointer */
+diff -urN ../tmp-orig/ntp-4.2.0a+stable/include/ntpd.h ./include/ntpd.h
+--- ../tmp-orig/ntp-4.2.0a+stable/include/ntpd.h	2004-05-04 07:01:25.000000000 +0200
++++ ./include/ntpd.h	2005-03-09 12:56:03.000000000 +0100
+@@ -226,7 +226,6 @@
+ 
+ /* ntp_control.c */
+ struct ctl_trap;
+-extern struct ctl_trap ctl_trap[];
+ extern int	num_ctl_traps;
+ extern keyid_t	ctl_auth_keyid;		/* keyid used for authenticating write requests */
+ 
+diff -urN ../tmp-orig/ntp-4.2.0a+stable/libntp/clocktypes.c ./libntp/clocktypes.c
+--- ../tmp-orig/ntp-4.2.0a+stable/libntp/clocktypes.c	2002-07-19 19:15:54.000000000 +0200
++++ ./libntp/clocktypes.c	2005-03-09 13:05:42.000000000 +0100
+@@ -9,7 +9,7 @@
+ #include "ntp_refclock.h"
+ #include "ntp_stdlib.h"
+ 
+-struct clktype clktypes[] = {
++struct clktype *clktypes = {
+ 	{ REFCLK_NONE,		"unspecified type (0)",
+ 	  "UNKNOWN" },
+ 	{ REFCLK_LOCALCLOCK,	"Undisciplined local clock (1)",
