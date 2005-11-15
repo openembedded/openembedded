@@ -1,284 +1,85 @@
- drivers/i2c/algos/i2c-algo-bit.c |   77 +++++++++++++++++++--------------------
- drivers/i2c/busses/i2c-ixp4xx.c  |   46 +++++++++++++++++++++--
- 2 files changed, 82 insertions(+), 41 deletions(-)
+ drivers/i2c/algos/i2c-algo-bit.c |    9 +++++++--
+ drivers/i2c/busses/i2c-ixp4xx.c  |    9 ++++++---
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
 --- linux-nas100d.orig/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-11 22:22:43.000000000 +0100
-+++ linux-nas100d/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-15 00:41:39.000000000 +0100
-@@ -47,16 +47,26 @@ static inline int ixp4xx_sda_pin(void *d
- 
- static void ixp4xx_bit_setscl(void *data, int val)
- {
-+#ifndef CONFIG_MACH_NAS100D
- 	gpio_line_set(ixp4xx_scl_pin(data), 0);
- 	gpio_line_config(ixp4xx_scl_pin(data),
- 		val ? IXP4XX_GPIO_IN : IXP4XX_GPIO_OUT );
-+#else
-+	gpio_line_config(ixp4xx_scl_pin(data), IXP4XX_GPIO_OUT);
-+	gpio_line_set(ixp4xx_scl_pin(data), val ? 1 : 0);
-+#endif
- }
- 
- static void ixp4xx_bit_setsda(void *data, int val)
- {
-+#ifndef CONFIG_MACH_NAS100D
- 	gpio_line_set(ixp4xx_sda_pin(data), 0);
- 	gpio_line_config(ixp4xx_sda_pin(data),
- 		val ? IXP4XX_GPIO_IN : IXP4XX_GPIO_OUT );
-+#else
-+	gpio_line_config(ixp4xx_sda_pin(data), IXP4XX_GPIO_OUT);
-+	gpio_line_set(ixp4xx_sda_pin(data), val ? 1 : 0);
-+#endif
- }
- 
- static int ixp4xx_bit_getscl(void *data)
-@@ -65,7 +75,17 @@ static int ixp4xx_bit_getscl(void *data)
++++ linux-nas100d/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-15 11:51:51.000000000 +0100
+@@ -65,7 +65,6 @@ static int ixp4xx_bit_getscl(void *data)
  
  	gpio_line_config(ixp4xx_scl_pin(data), IXP4XX_GPIO_IN );
  	gpio_line_get(ixp4xx_scl_pin(data), &scl);
 -
-+#ifdef CONFIG_MACH_NAS100D
-+	{
-+		int i;
-+		for (i = 0; i <= 0x0f; i++)
-+		{
-+			gpio_line_get(ixp4xx_scl_pin(data), &scl);
-+			if (scl == 0)
-+				break;
-+		}
-+	}
-+#endif
  	return scl;
  }	
  
-@@ -76,6 +96,17 @@ static int ixp4xx_bit_getsda(void *data)
+@@ -75,7 +74,6 @@ static int ixp4xx_bit_getsda(void *data)
+ 
  	gpio_line_config(ixp4xx_sda_pin(data), IXP4XX_GPIO_IN );
  	gpio_line_get(ixp4xx_sda_pin(data), &sda);
- 
-+#ifdef CONFIG_MACH_NAS100D
-+	{
-+		int i;
-+		for (i = 0; i <= 0x0f; i++)
-+		{
-+			gpio_line_get(ixp4xx_sda_pin(data), &sda);
-+			if (sda == 0)
-+				break;
-+		}
-+	}
-+#endif
+-
  	return sda;
  }	
  
-@@ -127,17 +158,26 @@ static int ixp4xx_i2c_probe(struct devic
+@@ -127,7 +125,10 @@ static int ixp4xx_i2c_probe(struct devic
  	drv_data->algo_data.udelay = 10;
  	drv_data->algo_data.mdelay = 10;
  	drv_data->algo_data.timeout = 100;
 -
 +#ifdef CONFIG_MACH_NAS100D
-+	drv_data->algo_data.udelay = 100;
-+	drv_data->algo_data.mdelay = 100;
++	drv_data->algo_data.udelay = 200;
++	drv_data->algo_data.mdelay = 200;
 +#endif
  	drv_data->adapter.id = I2C_HW_B_IXP4XX;
  	drv_data->adapter.algo_data = &drv_data->algo_data;
  
- 	drv_data->adapter.dev.parent = &plat_dev->dev;
- 
-+#ifdef CONFIG_MACH_NAS100D
-+	gpio_line_config(gpio->scl_pin, IXP4XX_GPIO_OUT);
-+	gpio_line_config(gpio->sda_pin, IXP4XX_GPIO_OUT);
-+	gpio_line_set(gpio->scl_pin, IXP4XX_GPIO_HIGH);
-+	gpio_line_set(gpio->sda_pin, IXP4XX_GPIO_HIGH);
-+#else
- 	gpio_line_config(gpio->scl_pin, IXP4XX_GPIO_IN);
- 	gpio_line_config(gpio->sda_pin, IXP4XX_GPIO_IN);
- 	gpio_line_set(gpio->scl_pin, 0);
- 	gpio_line_set(gpio->sda_pin, 0);
--
-+#endif
- 	if ((err = i2c_bit_add_bus(&drv_data->adapter) != 0)) {
- 		printk(KERN_ERR "ERROR: Could not install %s\n", dev->bus_id);
- 
---- linux-nas100d.orig/drivers/i2c/algos/i2c-algo-bit.c	2005-11-14 14:28:20.000000000 +0100
-+++ linux-nas100d/drivers/i2c/algos/i2c-algo-bit.c	2005-11-15 08:46:27.000000000 +0100
-@@ -78,30 +78,31 @@ static inline void scllo(struct i2c_algo
-  */
- static inline int sclhi(struct i2c_algo_bit_data *adap)
- {
--	unsigned long start;
-+	int i=0;
-+//	unsigned long start;
- 
- 	setscl(adap,1);
-+	udelay(adap->udelay);
- 
- 	/* Not all adapters have scl sense line... */
- 	if (adap->getscl == NULL ) {
--		udelay(adap->udelay);
- 		return 0;
+@@ -145,6 +146,8 @@ static int ixp4xx_i2c_probe(struct devic
+ 		return err;
  	}
  
--	start=jiffies;
-+	getscl(adap);
- 	while (! getscl(adap) ) {	
-  		/* the hw knows how to read the clock line,
-  		 * so we wait until it actually gets high.
-  		 * This is safer as some chips may hold it low
-  		 * while they are processing data internally. 
-  		 */
--		if (time_after_eq(jiffies, start+adap->timeout)) {
-+		setscl(adap,1);
-+		getscl(adap);
-+		if (i++ > 10)
- 			return -ETIMEDOUT;
--		}
--		cond_resched();
- 	}
--	DEBSTAT(printk(KERN_DEBUG "needed %ld jiffies\n", jiffies-start));
--	udelay(adap->udelay);
-+//	DEBSTAT(printk(KERN_DEBUG "needed %ld jiffies\n", jiffies-start));
-+//	udelay(adap->udelay);
- 	return 0;
- } 
- 
-@@ -111,6 +112,8 @@ static void i2c_start(struct i2c_algo_bi
- {
- 	/* assert: scl, sda are high */
- 	DEBPROTO(printk("S "));
-+	sclhi(adap);
-+	sdahi(adap);
- 	sdalo(adap);
- 	scllo(adap);
- }
-@@ -120,7 +123,7 @@ static void i2c_repstart(struct i2c_algo
- 	/* scl, sda may not be high */
- 	DEBPROTO(printk(" Sr "));
- 	setsda(adap,1);
--	sclhi(adap);
-+	setscl(adap,1);
- 	udelay(adap->udelay);
- 	
- 	sdalo(adap);
-@@ -132,8 +135,8 @@ static void i2c_stop(struct i2c_algo_bit
- {
- 	DEBPROTO(printk("P\n"));
- 	/* assert: scl is low */
-+	sclhi(adap);
- 	sdalo(adap);
--	sclhi(adap); 
- 	sdahi(adap);
- }
- 
-@@ -154,34 +157,28 @@ static int i2c_outb(struct i2c_adapter *
- 	struct i2c_algo_bit_data *adap = i2c_adap->algo_data;
- 
- 	/* assert: scl is low */
-+	setscl(adap,0);
- 	for ( i=7 ; i>=0 ; i-- ) {
- 		sb = c & ( 1 << i );
- 		setsda(adap,sb);
- 		udelay(adap->udelay);
- 		DEBPROTO(printk(KERN_DEBUG "%d",sb!=0));
--		if (sclhi(adap)<0) { /* timed out */
--			sdahi(adap); /* we don't want to block the net */
--			DEB2(printk(KERN_DEBUG " i2c_outb: 0x%02x, timeout at bit #%d\n", c&0xff, i));
--			return -ETIMEDOUT;
--		};
--		/* do arbitration here: 
--		 * if ( sb && ! getsda(adap) ) -> ouch! Get out of here.
--		 */
--		setscl(adap, 0 );
--		udelay(adap->udelay);
-+		sclhi(adap);
-+		printk(" ");
-+		scllo(adap);
- 	}
--	sdahi(adap);
--	if (sclhi(adap)<0){ /* timeout */
--	    DEB2(printk(KERN_DEBUG " i2c_outb: 0x%02x, timeout at ack\n", c&0xff));
--	    return -ETIMEDOUT;
--	};
-+	setscl(adap,0);
-+	setsda(adap,1);
-+	udelay(adap->udelay);
-+	ack=getsda(adap);
-+	sclhi(adap);
- 	/* read ack: SDA should be pulled down by slave */
- 	ack=getsda(adap);	/* ack: sda is pulled low ->success.	 */
--	DEB2(printk(KERN_DEBUG " i2c_outb: 0x%02x , getsda() = %d\n", c & 0xff, ack));
--
--	DEBPROTO( printk(KERN_DEBUG "[%2.2x]",c&0xff) );
- 	DEBPROTO(if (0==ack){ printk(KERN_DEBUG " A ");} else printk(KERN_DEBUG " NA ") );
--	scllo(adap);
-+	setsda(adap,0);
-+	setscl(adap,0);
++	printk(KERN_INFO "i2c: ixp4xx 0.0.3\n");
 +
-+	udelay(adap->udelay);
- 	return 0==ack;		/* return 1 if device acked	 */
- 	/* assert: scl is low (sda undef) */
- }
-@@ -196,14 +193,15 @@ static int i2c_inb(struct i2c_adapter *i
- 	struct i2c_algo_bit_data *adap = i2c_adap->algo_data;
+ 	dev_set_drvdata(&plat_dev->dev, drv_data);
  
- 	/* assert: scl is low */
--	sdahi(adap);
-+	setscl(adap,0);
- 	for (i=0;i<8;i++) {
-+		getsda(adap);
- 		if (sclhi(adap)<0) { /* timeout */
- 			DEB2(printk(KERN_DEBUG " i2c_inb: timeout at bit #%d\n", 7-i));
+ 	return 0;
+--- linux-nas100d.orig/drivers/i2c/algos/i2c-algo-bit.c	2005-11-15 11:01:31.000000000 +0100
++++ linux-nas100d/drivers/i2c/algos/i2c-algo-bit.c	2005-11-15 11:47:33.000000000 +0100
+@@ -44,8 +44,8 @@
+ 
+ /* module parameters:
+  */
+-static int i2c_debug;
+-static int bit_test;	/* see if the line-setting functions work	*/
++static int i2c_debug=2;
++static int bit_test=1;	/* see if the line-setting functions work	*/
+ 
+ /* --- setting states on the bus with the right timing: ---------------	*/
+ 
+@@ -203,6 +203,7 @@ static int i2c_inb(struct i2c_adapter *i
  			return -ETIMEDOUT;
  		};
--		indata *= 2;
--		if ( getsda(adap) ) 
-+		indata = indata << 1;
-+		if (getsda(adap))
+ 		indata *= 2;
++		udelay(adap->udelay);
+ 		if ( getsda(adap) ) 
  			indata |= 0x01;
  		scllo(adap);
- 	}
-@@ -469,16 +467,16 @@ static int bit_xfer(struct i2c_adapter *
- 		    struct i2c_msg msgs[], int num)
- {
- 	struct i2c_msg *pmsg;
--	struct i2c_algo_bit_data *adap = i2c_adap->algo_data;
-+//	struct i2c_algo_bit_data *adap = i2c_adap->algo_data;
- 	
- 	int i,ret;
--	unsigned short nak_ok;
-+//	unsigned short nak_ok;
+@@ -544,6 +545,8 @@ int i2c_bit_add_bus(struct i2c_adapter *
+ 	adap->timeout = 100;	/* default values, should	*/
+ 	adap->retries = 3;	/* be replaced by defines	*/
  
--	i2c_start(adap);
-+//	i2c_start(adap);
- 	for (i=0;i<num;i++) {
- 		pmsg = &msgs[i];
--		nak_ok = pmsg->flags & I2C_M_IGNORE_NAK; 
--		if (!(pmsg->flags & I2C_M_NOSTART)) {
-+//		nak_ok = pmsg->flags & I2C_M_IGNORE_NAK;
-+/*		if (!(pmsg->flags & I2C_M_NOSTART)) {
- 			if (i) {
- 				i2c_repstart(adap);
- 			}
-@@ -489,6 +487,7 @@ static int bit_xfer(struct i2c_adapter *
- 			    return (ret<0) ? ret : -EREMOTEIO;
- 			}
- 		}
-+*/
- 		if (pmsg->flags & I2C_M_RD ) {
- 			/* read bytes into buffer*/
- 			ret = readbytes(i2c_adap, pmsg);
-@@ -505,7 +504,7 @@ static int bit_xfer(struct i2c_adapter *
- 			}
- 		}
- 	}
--	i2c_stop(adap);
-+//	i2c_stop(adap);
- 	return num;
- }
- 
-@@ -530,6 +529,8 @@ int i2c_bit_add_bus(struct i2c_adapter *
- {
- 	struct i2c_algo_bit_data *bit_adap = adap->algo_data;
- 
-+	printk(KERN_INFO "i2c: nas100d 0.0.3\n");
++	printk(KERN_INFO "i2c: algo-bit 0.0.3\n");
 +
- 	if (bit_test) {
- 		int ret = test_bus(bit_adap, adap->name);
- 		if (ret<0)
+ 	i2c_add_adapter(adap);
+ 	return 0;
+ }
+@@ -561,9 +564,11 @@ MODULE_AUTHOR("Simon G. Vogl <simon@tk.u
+ MODULE_DESCRIPTION("I2C-Bus bit-banging algorithm");
+ MODULE_LICENSE("GPL");
+ 
++/*
+ module_param(bit_test, bool, 0);
+ module_param(i2c_debug, int, S_IRUGO | S_IWUSR);
+ 
+ MODULE_PARM_DESC(bit_test, "Test the lines of the bus to see if it is stuck");
+ MODULE_PARM_DESC(i2c_debug,
+ 		 "debug level - 0 off; 1 normal; 2,3 more verbose; 9 bit-protocol");
++*/
