@@ -14,10 +14,11 @@ HOMEPAGE = "http://www.sleepycat.com"
 LICENSE = "BSD Sleepycat"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db3"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://downloads.sleepycat.com/db-${PV}.tar.gz"
 #SRC_URI_MD5 = "http://downloads.sleepycat.com/db-${PV}.tar.gz.md5"
+SRC_URI += "file://arm-thumb-mutex.patch;patch=1"
 
 inherit autotools
 
@@ -60,7 +61,6 @@ EXTRA_OECONF = "${DB4_CONFIG}"
 # These enable the ARM assembler mutex code, this won't
 # work with thumb compilation...
 ARM_MUTEX = "--with-mutex=ARM/gcc-assembly"
-ARM_MUTEX_thumb = ""
 MUTEX = ""
 MUTEX_arm = "${ARM_MUTEX}"
 MUTEX_armeb = "${ARM_MUTEX}"
