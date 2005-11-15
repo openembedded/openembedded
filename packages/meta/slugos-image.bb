@@ -67,7 +67,7 @@ nslu2_pack_image() {
 
 IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image;"
 
-DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
+SLUGOS_IMAGE_DEPENDS = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
 
 IMAGE_LINGUAS = ""
 # Setting USE_DEVFS prevents *any* entries being created initially
@@ -75,6 +75,7 @@ IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
 # CONFIG:
+# SLUGOS_IMAGE_DEPENDS:  set above, do not change
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
 # SLUGOS_EXTRA_DEPENDS:  set in conf, things to build, not added
 #                        to the image.
@@ -106,7 +107,8 @@ SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
        
 # The things explicitly included in the following lists are the
 # absolute minimum to have any chance of a bootable system.
-DEPENDS = "virtual/kernel base-files base-passwd \
+DEPENDS = "${SLUGOS_IMAGE_DEPENDS} \
+	virtual/kernel base-files base-passwd \
         busybox dropbear hotplug-ng initscripts-openslug netbase \
         sysvinit tinylogin portmap \
         virtual/ixp-eth openslug-init \
