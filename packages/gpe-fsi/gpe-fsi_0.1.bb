@@ -1,6 +1,6 @@
 DESCRIPTION = "GPE frontend for libfsi-client"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
-LICENCE = "gpl"
+LICENSE = "gpl"
 
 inherit gpe
 
