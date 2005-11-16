@@ -1,144 +1,132 @@
---- linux-2.6.15/drivers/mtd/maps/ixp4xx.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/mtd/maps/ixp4xx.c	1970-01-01 00:00:00.000000000 +0000
-@@ -28,24 +28,45 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/mtd/cfi_endian.h>
- 
- #include <asm/io.h>
- #include <asm/mach/flash.h>
+ixp4xx updates:
+  - Handle reads that don't start on a half-word boundary.
+  - Make it work when CPU is in little-endian mode.
+    
+Signed-off-by: John Bowler <jbowler@acm.org>
+Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
+Signed-off-by: David Vrabel <dvrabel@arcom.com>
+
+Index: linux-2.6-working/drivers/mtd/maps/ixp4xx.c
+===================================================================
+--- linux-2.6-working.orig/drivers/mtd/maps/ixp4xx.c	2005-11-16 15:19:34.000000000 +0000
++++ linux-2.6-working/drivers/mtd/maps/ixp4xx.c	2005-11-16 16:06:54.000000000 +0000
+@@ -34,10 +34,55 @@
  
  #include <linux/reboot.h>
  
--#ifndef __ARMEB__
--#define	BYTE0(h)	((h) & 0xFF)
--#define	BYTE1(h)	(((h) >> 8) & 0xFF)
 +/*
-+ * Read a 16 bit word from flash address 'addr'.
-+ * This code ensures that the ixp4xx flash behaves as a consistent byte
-+ * stream (same bytes in same order) regardless of whether the CPU is
-+ * running in BE or LE mode, and regardless of whether the read16 or
-+ * copyfrom method is used to read the flash data.
++ * Read/write a 16 bit word from flash address 'addr'.
 + *
-+ * When the cpu is in little-endian mode the hardware inverts the low
-+ * address lines between the MMU (including the cache) and the flash chip
++ * When the cpu is in little-endian mode it swizzles the address lines
 + * ('address coherency') so we need to undo the swizzling to ensure commands
-+ * and the like end up on the correct flash address.  This requirement
-+ * only applies to command operations, however this code cannot distinguish
-+ * a command read from a data read, therefore the fix applies to the data
-+ * as well as the command and must be implemented consistently throughout
-+ * the map driver (here).
++ * and the like end up on the correct flash address.
++ *
++ * To further complicate matters, due to the way the expansion bus controller
++ * handles 32 bit reads, the byte stream ABCD is stored on the flash as:
++ *     D15    D0
++ *     +---+---+
++ *     | A | B | 0
++ *     +---+---+
++ *     | C | D | 2
++ *     +---+---+
++ * This means that on LE systems each 16 bit word must be swapped. Note that
++ * this requires CONFIG_MTD_CFI_BE_BYTE_SWAP to be enabled to 'unswap' the CFI
++ * data and other flash commands which are always in D7-D0.
 + */
-+static inline u16 flash_read16(const void __iomem *virt, unsigned long offset)
+ #ifndef __ARMEB__
++#ifndef CONFIG_MTD_CFI_BE_BYTE_SWAP
++#  error CONFIG_MTD_CFI_BE_BYTE_SWAP required
++#endif
++
++static inline u16 flash_read16(void __iomem *addr)
 +{
-+#ifdef __ARMEB__
-+	return *(const volatile u16 __iomem *)(virt + offset);
- #else
--#define	BYTE0(h)	(((h) >> 8) & 0xFF)
--#define	BYTE1(h)	((h) & 0xFF)
-+	/* Cancel the address coherency invert of address line 1 in the
-+	 * hardware on LE systems.
-+	 */
-+	return *(const volatile u16 __iomem *)(virt + (offset ^ 2));
- #endif
++	return be16_to_cpu(__raw_readw((void __iomem *)((unsigned long)addr ^ 0x2)));
 +}
- 
++
++static inline void flash_write16(u16 d, void __iomem *addr)
++{
++	__raw_writew(cpu_to_be16(d), (void __iomem *)((unsigned long)addr ^ 0x2));
++}
++
+ #define	BYTE0(h)	((h) & 0xFF)
+ #define	BYTE1(h)	(((h) >> 8) & 0xFF)
++
+ #else
++
++static inline u16 flash_read16(const void __iomem *addr)
++{
++	return __raw_readw(addr);
++}
++
++static inline void flash_write16(u16 d, void __iomem *addr)
++{
++	__raw_writew(d, addr);
++}
++
+ #define	BYTE0(h)	(((h) >> 8) & 0xFF)
+ #define	BYTE1(h)	((h) & 0xFF)
+ #endif
+@@ -45,7 +90,7 @@
  static map_word ixp4xx_read16(struct map_info *map, unsigned long ofs)
  {
  	map_word val;
 -	val.x[0] = le16_to_cpu(readw(map->virt + ofs));
-+	val.x[0] = cfi16_to_cpu(flash_read16(map->virt, ofs));
++	val.x[0] = flash_read16(map->virt + ofs);
  	return val;
  }
  
-@@ -53,41 +74,70 @@ static map_word ixp4xx_read16(struct map
-  * The IXP4xx expansion bus only allows 16-bit wide acceses
-  * when attached to a 16-bit wide device (such as the 28F128J3A),
-  * so we can't just memcpy_fromio().
-+ *
-+ * This code must obtain the correct bytes in the correct order
-+ * according to the configuration of the CFI subsystem.
-  */
-+#if (defined CFI_BIG_ENDIAN) || ((defined CFI_HOST_ENDIAN) && (defined __ARMEB__))
-+	/* BE flash */
-+#define	BYTE0(h)	(((h) >> 8) & 0xFF)
-+#define	BYTE1(h)	((h) & 0xFF)
-+#else
-+	/* LE flash */
-+#define	BYTE0(h)	((h) & 0xFF)
-+#define	BYTE1(h)	(((h) >> 8) & 0xFF)
-+#endif
-+
+@@ -57,19 +102,28 @@
  static void ixp4xx_copy_from(struct map_info *map, void *to,
  			     unsigned long from, ssize_t len)
  {
 -	int i;
--	u8 *dest = (u8 *) to;
--	void __iomem *src = map->virt + from;
+ 	u8 *dest = (u8 *) to;
+ 	void __iomem *src = map->virt + from;
 -	u16 data;
--
+ 
 -	for (i = 0; i < (len / 2); i++) {
 -		data = le16_to_cpu(readw(src + 2*i));
 -		dest[i * 2] = BYTE0(data);
 -		dest[i * 2 + 1] = BYTE1(data);
-+	u8 *dest = to;
-+	const void __iomem * const virt = map->virt;
-+
 +	if (len <= 0)
 +		return;
 +
 +	if (from & 1) {
-+		*dest++ = BYTE1(flash_read16(virt, from-1));
-+                ++from;
++		*dest++ = BYTE1(flash_read16(src));
++                src++;
 +		--len;
-+	}
-+
-+	while (len >= 2) {
-+		u16 data = flash_read16(virt, from);
-+		*dest++ = BYTE0(data);
-+		*dest++ = BYTE1(data);
-+		from += 2;
-+		len -= 2;
  	}
  
 -	if (len & 1)
 -		dest[len - 1] = BYTE0(le16_to_cpu(readw(src + 2*i)));
++	while (len >= 2) {
++		u16 data = flash_read16(src);
++		*dest++ = BYTE0(data);
++		*dest++ = BYTE1(data);
++		src += 2;
++		len -= 2;
++        }
++
 +	if (len > 0)
-+		*dest++ = BYTE0(flash_read16(virt, from));
++		*dest++ = BYTE0(flash_read16(src));
  }
  
  /*
-- * Unaligned writes are ignored, causing the 8-bit
-- * probe to fail and proceed to the 16-bit probe (which succeeds).
-+ * Fast write16 function without the probing check below.
-  */
--static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
-+static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
+@@ -79,7 +133,7 @@
+ static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
  {
--	if (!(adr & 1))
+ 	if (!(adr & 1))
 -		writew(cpu_to_le16(d.x[0]), map->virt + adr);
-+#ifdef __ARMEB__
-+	*(volatile u16 __iomem*)(map->virt + adr) = cpu_to_cfi16(d.x[0]);
-+#else
-+	/* Cancel the address coherency invert of address line 1 in the
-+	 * hardware on LE systems.
-+	 */
-+	*(volatile u16 __iomem*)(map->virt + (adr ^ 2)) = cpu_to_cfi16(d.x[0]);
-+#endif
++		flash_write16(d.x[0], map->virt + adr);
  }
  
  /*
-- * Fast write16 function without the probing check above
-+ * Unaligned writes are ignored, causing the 8-bit
-+ * probe to fail and proceed to the 16-bit probe (which succeeds).
+@@ -87,7 +141,7 @@
   */
--static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
-+static void ixp4xx_probe_write16(struct map_info *map, map_word d, unsigned long adr)
+ static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
  {
 -	writew(cpu_to_le16(d.x[0]), map->virt + adr);
-+	if (!(adr & 1))
-+		ixp4xx_write16(map, d, adr);
++	flash_write16(d.x[0], map->virt + adr);
  }
  
  struct ixp4xx_flash_info {
