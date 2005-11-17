@@ -1,13 +1,13 @@
- drivers/i2c/busses/i2c-ixp4xx.c |    9 
+ drivers/i2c/busses/i2c-ixp4xx.c |    7 
  drivers/i2c/chips/Kconfig       |    9 
  drivers/i2c/chips/Makefile      |    1 
- drivers/i2c/chips/pcf8563.c     |  547 ++++++++++++++++++++++++++++++++++++++++
- include/linux/pcf8563.h         |   24 +
- 5 files changed, 587 insertions(+), 3 deletions(-)
+ drivers/i2c/chips/pcf8563.c     |  466 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/pcf8563.h         |   24 ++
+ 5 files changed, 504 insertions(+), 3 deletions(-)
 
---- linux-nas100d.orig/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-11 22:22:43.000000000 +0100
-+++ linux-nas100d/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-15 22:06:23.000000000 +0100
-@@ -65,7 +65,6 @@ static int ixp4xx_bit_getscl(void *data)
+--- linux-nas100d.orig/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-16 23:10:02.000000000 +0100
++++ linux-nas100d/drivers/i2c/busses/i2c-ixp4xx.c	2005-11-16 23:10:02.000000000 +0100
+@@ -67,7 +67,6 @@ static int ixp4xx_bit_getscl(void *data)
  
  	gpio_line_config(ixp4xx_scl_pin(data), IXP4XX_GPIO_IN );
  	gpio_line_get(ixp4xx_scl_pin(data), &scl);
@@ -15,7 +15,7 @@
  	return scl;
  }	
  
-@@ -75,7 +74,6 @@ static int ixp4xx_bit_getsda(void *data)
+@@ -77,7 +76,6 @@ static int ixp4xx_bit_getsda(void *data)
  
  	gpio_line_config(ixp4xx_sda_pin(data), IXP4XX_GPIO_IN );
  	gpio_line_get(ixp4xx_sda_pin(data), &sda);
@@ -23,7 +23,7 @@
  	return sda;
  }	
  
-@@ -127,7 +125,10 @@ static int ixp4xx_i2c_probe(struct devic
+@@ -126,7 +124,10 @@ static int ixp4xx_i2c_probe(struct platf
  	drv_data->algo_data.udelay = 10;
  	drv_data->algo_data.mdelay = 10;
  	drv_data->algo_data.timeout = 100;
@@ -33,20 +33,11 @@
 +	drv_data->algo_data.mdelay = 100;
 +#endif
  	drv_data->adapter.id = I2C_HW_B_IXP4XX;
- 	drv_data->adapter.algo_data = &drv_data->algo_data;
- 
-@@ -145,6 +146,8 @@ static int ixp4xx_i2c_probe(struct devic
- 		return err;
- 	}
- 
-+	printk(KERN_INFO "i2c: ixp4xx 0.0.4\n");
-+
- 	dev_set_drvdata(&plat_dev->dev, drv_data);
- 
- 	return 0;
+ 	strlcpy(drv_data->adapter.name, ixp4xx_i2c_driver.driver.name,
+ 		I2C_NAME_SIZE);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nas100d/drivers/i2c/chips/pcf8563.c	2005-11-16 11:34:15.000000000 +0100
-@@ -0,0 +1,547 @@
++++ linux-nas100d/drivers/i2c/chips/pcf8563.c	2005-11-16 23:12:33.000000000 +0100
+@@ -0,0 +1,466 @@
 +/*
 + *  pcf8563.c - An i2c driver for the Philips PCF8563 RTC
 + *  Copyright 2005 Alessandro Zummo
@@ -75,7 +66,7 @@
 +
 +#include <linux/pcf8563.h>
 +
-+#define DRV_VERSION "0.3.1"
++#define DRV_VERSION "0.3.2"
 +
 +/* Addresses to scan */
 +static unsigned short normal_i2c[] = { 0x51, I2C_CLIENT_END };
@@ -106,6 +97,7 @@
 +#define PCF8563_REG_TMR		0x0F /* timer */
 +
 +#define PCF8563_SC_LV		0x80 /* low voltage */
++#define PCF8563_MO_C		0x80 /* century */
 +
 +/* Prototypes */
 +static int pcf8563_attach(struct i2c_adapter *adapter);
@@ -190,7 +182,7 @@
 +	};
 +
 +	/* read registers */
-+	if ((i2c_transfer(client->adapter, &msgs[0], 2)) != 2) {
++	if ((i2c_transfer(client->adapter, msgs, 2)) != 2) {
 +		dev_err(&client->dev, "%s: read error\n", __FUNCTION__);
 +		return -EIO;
 +	}
@@ -200,7 +192,7 @@
 +			"low voltage detected, date/time is not reliable.\n");
 +
 +	dev_dbg(&client->dev,
-+		"%s: raw read data - st1=%02x, st2=%02x, sec=%02x, min=%02x, hr=%02x, "
++		"%s: raw data is st1=%02x, st2=%02x, sec=%02x, min=%02x, hr=%02x, "
 +		"mday=%02x, wday=%02x, mon=%02x, year=%02x\n",
 +		__FUNCTION__,
 +		buf[0], buf[1], buf[2], buf[3],
@@ -215,7 +207,7 @@
 +	tm->tm_wday = buf[PCF8563_REG_DW] & 0x07;
 +	tm->tm_mon = BCD2BIN(buf[PCF8563_REG_MO] & 0x1F) - 1; /* rtc mn 1-12 */
 +	tm->tm_year = BCD2BIN(buf[PCF8563_REG_YR])
-+		+ (buf[PCF8563_REG_MO] & 0x80 ? 100 : 0);
++		+ (buf[PCF8563_REG_MO] & PCF8563_MO_C ? 100 : 0);
 +
 +	dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
 +		"mday=%d, mon=%d, year=%d, wday=%d\n",
@@ -231,23 +223,11 @@
 +	return 0;
 +}
 +
-+#if 0
 +static int pcf8563_set_datetime(struct i2c_client *client, struct rtc_time *tm,
-+				int datetoo, u8 reg_base)
++				int datetoo)
 +{
-+	int i, err, xfer;
-+
-+	unsigned char buf[8];
-+
-+	static const unsigned char wel[3] = { 0, PCF8563_REG_SR,
-+						PCF8563_SR_WEL };
-+
-+	static const unsigned char rwel[3] = { 0, PCF8563_REG_SR,
-+						PCF8563_SR_WEL | PCF8563_SR_RWEL };
-+
-+	static const unsigned char diswe[3] = { 0, PCF8563_REG_SR, 0 };
-+
-+	struct pcf8563_data *data = i2c_get_clientdata(client);
++	int i, err;
++	unsigned char buf[9];
 +
 +	/* check if all values in the tm struct are correct */
 +	if ((err = pcf8563_validate_tm(tm)) < 0)
@@ -259,62 +239,42 @@
 +		tm->tm_sec, tm->tm_min, tm->tm_hour,
 +		tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
 +
-+	buf[PCF8563_REG_SEC] = BIN2BCD(tm->tm_sec);
-+	buf[PCF8563_REG_MIN] = BIN2BCD(tm->tm_min);
-+
-+	/* set hour and 24hr bit */
-+	buf[PCF8563_REG_HOUR] = BIN2BCD(tm->tm_hour) | PCF8563_HR_MIL;
++	/* hours, minutes and seconds */
++	buf[PCF8563_REG_SC] = BIN2BCD(tm->tm_sec);
++	buf[PCF8563_REG_MN] = BIN2BCD(tm->tm_min);
++	buf[PCF8563_REG_HR] = BIN2BCD(tm->tm_hour);
 +
 +	/* should we also set the date? */
 +	if (datetoo) {
-+		buf[PCF8563_REG_MDAY] = BIN2BCD(tm->tm_mday);
++		buf[PCF8563_REG_DM] = BIN2BCD(tm->tm_mday);
 +
-+		/* month, 0 - 11 */
-+		buf[PCF8563_REG_MONTH] = BIN2BCD(tm->tm_mon);
++		/* month, 1 - 12 */
++		buf[PCF8563_REG_MO] = BIN2BCD(tm->tm_mon + 1);
 +
-+		/* year, since 1900 */
-+		buf[PCF8563_REG_YEAR] = BIN2BCD(tm->tm_year + 1900 - data->epoch);
-+		buf[PCF8563_REG_WDAY] = tm->tm_wday & 0x07;
-+		buf[PCF8563_REG_Y2K] = BIN2BCD(data->epoch / 100);
-+	}
++		/* year and century */
++		buf[PCF8563_REG_YR] = BIN2BCD(tm->tm_year % 100);
++		if (tm->tm_year / 100)
++			buf[PCF8563_REG_MO] |= PCF8563_MO_C;
 +
-+	/* this sequence is required to unlock the chip */
-+	xfer = i2c_master_send(client, wel, 3);
-+	if (xfer != 3) {
-+		dev_err(&client->dev, "%s: wel - %d\n", __FUNCTION__, xfer);
-+		return -EIO;
-+	}
-+
-+	xfer = i2c_master_send(client, rwel, 3);
-+	if (xfer != 3) {
-+		dev_err(&client->dev, "%s: rwel - %d\n", __FUNCTION__, xfer);
-+		return -EIO;
++		buf[PCF8563_REG_DW] = tm->tm_wday & 0x07;
 +	}
 +
 +	/* write register's data */
-+	for (i = 0; i < (datetoo ? 8 : 3); i++) {
-+		unsigned char rdata[3] = { 0, reg_base + i, buf[i] };
++	for (i = 0; i < (datetoo ? 7 : 3); i++) {
++		unsigned char data[2] = { PCF8563_REG_SC + i,
++						buf[PCF8563_REG_SC + i] };
 +
-+		xfer = i2c_master_send(client, rdata, 3);
-+		if (xfer != 3) {
++		err = i2c_master_send(client, data, sizeof(data));
++		if (err != sizeof(data)) {
 +			dev_err(&client->dev,
-+				"%s: xfer=%d addr=%02x, data=%02x\n",
-+				__FUNCTION__,
-+				 xfer, rdata[1], rdata[2]);
++				"%s: err=%d addr=%02x, data=%02x\n",
++				__FUNCTION__, err, data[0], data[1]);
 +			return -EIO;
 +		}
 +	};
 +
-+	/* disable further writes */
-+	xfer = i2c_master_send(client, diswe, 3);
-+	if (xfer != 3) {
-+		dev_err(&client->dev, "%s: diswe - %d\n", __FUNCTION__, xfer);
-+		return -EIO;
-+	}
-+
 +	return 0;
 +}
-+#endif
 +
 +static int pcf8563_hctosys(struct i2c_client *client)
 +{
@@ -363,7 +323,7 @@
 +
 +	return 0;
 +}
-+#if 0
++
 +struct pcf8563_limit
 +{
 +	unsigned char reg;
@@ -376,66 +336,25 @@
 +{
 +	int i, xfer;
 +
-+	/* Probe array. We will read the register at the specified
-+	 * address and check if the given bits are zero.
-+	 */
-+	static const unsigned char probe_zero_pattern[] = {
-+		/* register, mask */
-+		PCF8563_REG_SR,	0x18,
-+		PCF8563_REG_DTR,	0xF8,
-+		PCF8563_REG_ATR,	0xC0,
-+		PCF8563_REG_INT,	0x18,
-+		PCF8563_REG_0,	0xFF,
-+	};
-+
 +	static const struct pcf8563_limit probe_limits_pattern[] = {
 +		/* register, mask, min, max */
-+		{ PCF8563_REG_Y2K,	0xFF,	19,	20	},
-+		{ PCF8563_REG_DW,		0xFF,	0,	6	},
-+		{ PCF8563_REG_YR,		0xFF,	0,	99	},
-+		{ PCF8563_REG_MO,		0xFF,	0,	12	},
-+		{ PCF8563_REG_DT,		0xFF,	0,	31	},
-+		{ PCF8563_REG_HR,		0x7F,	0,	23	},
-+		{ PCF8563_REG_MN,		0xFF,	0,	59	},
-+		{ PCF8563_REG_SC,		0xFF,	0,	59	},
-+		{ PCF8563_REG_Y2K1,	0xFF,	19,	20	},
-+		{ PCF8563_REG_Y2K0,	0xFF,	19,	20	},
++		{ PCF8563_REG_SC,	0x7F,	0,	59	},
++		{ PCF8563_REG_MN,	0x7F,	0,	59	},
++		{ PCF8563_REG_HR,	0x3F,	0,	23	},
++		{ PCF8563_REG_DM,	0x3F,	1,	31	},
++		{ PCF8563_REG_MO,	0x1F,	1,	12	},
++		{ PCF8563_REG_YR,	0xFF,	0,	99	},
 +	};
-+
-+	/* check that registers have bits at 0 where expected */
-+	for (i = 0; i < ARRAY_SIZE(probe_zero_pattern); i += 2) {
-+		unsigned char buf;
-+
-+		struct i2c_msg msgs[2] = {
-+			{ client->addr, 0, 1, &probe_zero_pattern[i] },
-+			{ client->addr, I2C_M_RD, 1, &buf },
-+		};
-+
-+		xfer = i2c_transfer(client->adapter, msgs, 2);
-+		if (xfer != 2) {
-+			dev_err(&client->adapter->dev,
-+				"%s: could not read register %x\n",
-+				__FUNCTION__, probe_zero_pattern[i]);
-+
-+			return -EIO;
-+		}
-+
-+		if ((buf & probe_zero_pattern[i+1]) != 0) {
-+			dev_err(&client->adapter->dev,
-+				"%s: register=%02x, zero pattern=%d, value=%x\n",
-+				__FUNCTION__, probe_zero_pattern[i], i, buf);
-+
-+			return -ENODEV;
-+		}
-+	}
 +
 +	/* check limits (only registers with bcd values) */
 +	for (i = 0; i < ARRAY_SIZE(probe_limits_pattern); i++) {
-+		unsigned char reg, value;
++		unsigned char addr, buf, value;
++
++		addr = probe_limits_pattern[i].reg;
 +
 +		struct i2c_msg msgs[2] = {
-+			{ client->addr, 0, 2, &probe_limits_pattern[i].reg},
-+			{ client->addr, I2C_M_RD, 1, &reg },
++			{ client->addr, 0, 2, &addr },
++			{ client->addr, I2C_M_RD, 1, &buf },
 +		};
 +
 +		xfer = i2c_transfer(client->adapter, msgs, 2);
@@ -448,7 +367,7 @@
 +			return -EIO;
 +		}
 +
-+		value = BCD2BIN(reg & probe_limits_pattern[i].mask);
++		value = BCD2BIN(buf & probe_limits_pattern[i].mask);
 +
 +		if (value > probe_limits_pattern[i].max ||
 +			value < probe_limits_pattern[i].min) {
@@ -462,7 +381,7 @@
 +
 +	return 0;
 +}
-+#endif
++
 +static int pcf8563_attach(struct i2c_adapter *adapter)
 +{
 +	return i2c_probe(adapter, &addr_data, pcf8563_probe);
@@ -492,17 +411,17 @@
 +	client->driver = &pcf8563_driver;
 +	client->adapter	= adapter;
 +
-+	strlcpy(client->name, "pcf8563", I2C_NAME_SIZE);
++	strlcpy(client->name, pcf8563_driver.driver.name, I2C_NAME_SIZE);
 +
 +	i2c_set_clientdata(client, data);
 +
 +	/* Verify the chip is really an PCF8563 */
 +	if (kind < 0) {
-+/*		if (pcf8563_validate_client(client) < 0) {
++		if (pcf8563_validate_client(client) < 0) {
 +			err = -ENODEV;
 +			goto exit_kfree;
 +		}
-+*/	}
++	}
 +
 +	/* Inform the i2c layer */
 +	if ((err = i2c_attach_client(client)))
@@ -554,22 +473,13 @@
 +	switch (cmd) {
 +	case PCF8563_CMD_GETDATETIME:
 +		return pcf8563_get_datetime(client, param);
-+/*
++
 +	case PCF8563_CMD_SETTIME:
-+		return pcf8563_set_datetime(client, param, 0,
-+				PCF8563_CCR_BASE);
++		return pcf8563_set_datetime(client, param, 0);
 +
 +	case PCF8563_CMD_SETDATETIME:
-+		return pcf8563_set_datetime(client, param, 1,
-+				PCF8563_CCR_BASE);
++		return pcf8563_set_datetime(client, param, 1);
 +
-+	case PCF8563_CMD_GETALARM:
-+		return pcf8563_get_datetime(client, param, PCF8563_ALM0_BASE);
-+
-+	case PCF8563_CMD_SETALARM:
-+		return pcf8563_set_datetime(client, param, 1,
-+				PCF8563_ALM0_BASE);
-+*/
 +	default:
 +		return -EINVAL;
 +	}
@@ -595,7 +505,7 @@
 +module_init(pcf8563_init);
 +module_exit(pcf8563_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nas100d/include/linux/pcf8563.h	2005-11-15 20:55:54.000000000 +0100
++++ linux-nas100d/include/linux/pcf8563.h	2005-11-16 23:10:02.000000000 +0100
 @@ -0,0 +1,24 @@
 +/*
 + *  pcf8563.h - defines for drivers/i2c/chips/pcf8563.c
@@ -621,11 +531,11 @@
 +extern int pcf8563_do_command(unsigned int cmd, void *arg);
 +
 +#endif /* __LINUX_PCF8563_H__ */
---- linux-nas100d.orig/drivers/i2c/chips/Kconfig	2005-11-11 22:22:43.000000000 +0100
-+++ linux-nas100d/drivers/i2c/chips/Kconfig	2005-11-15 22:37:25.000000000 +0100
-@@ -126,4 +126,13 @@ config SENSORS_MAX6875
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called max6875.
+--- linux-nas100d.orig/drivers/i2c/chips/Kconfig	2005-11-16 23:09:48.000000000 +0100
++++ linux-nas100d/drivers/i2c/chips/Kconfig	2005-11-16 23:10:02.000000000 +0100
+@@ -135,4 +135,13 @@ config RTC_X1205_I2C
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called x1205.
  
 +config RTC_PCF8563_I2C
 +	tristate "Philips PCF8563 RTC"
@@ -637,12 +547,12 @@
 +	  This driver can also be built as a module. If so, the module
 +	  will be called pcf8563.
  endmenu
---- linux-nas100d.orig/drivers/i2c/chips/Makefile	2005-11-11 22:22:43.000000000 +0100
-+++ linux-nas100d/drivers/i2c/chips/Makefile	2005-11-15 21:11:26.000000000 +0100
-@@ -13,6 +13,7 @@ obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591
- obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564.o
+--- linux-nas100d.orig/drivers/i2c/chips/Makefile	2005-11-16 23:09:48.000000000 +0100
++++ linux-nas100d/drivers/i2c/chips/Makefile	2005-11-16 23:10:02.000000000 +0100
+@@ -14,6 +14,7 @@ obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564
  obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
  obj-$(CONFIG_TPS65010)		+= tps65010.o
+ obj-$(CONFIG_RTC_X1205_I2C)	+= x1205.o
 +obj-$(CONFIG_RTC_PCF8563_I2C)	+= pcf8563.o
  
  ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
