@@ -25,7 +25,7 @@ SRC_URI += "file://badpaths.patch;patch=1"
 SRC_URI += "file://build-timing-annoyance.patch;patch=1"
 
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r5"
+PR = "r6"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
 

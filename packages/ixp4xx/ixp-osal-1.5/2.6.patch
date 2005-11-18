@@ -49,10 +49,10 @@ diff -Naur ixp_osal.orig/include/linux-2.6.h ixp_osal/include/linux-2.6.h
 +# define IXP425_EXP_BUS_BASE2_PHYS	IXP4XX_EXP_BUS_CS2_BASE_PHYS
 +#endif
 +#if !defined (IXP425_EthA_BASE_PHYS)
-+# define IXP425_EthA_BASE_PHYS		IXP4XX_EthA_BASE_PHYS
++# define IXP425_EthA_BASE_PHYS		(IXP4XX_PERIPHERAL_BASE_PHYS + 0x9000)
 +#endif
 +#if !defined (IXP425_EthB_BASE_PHYS)
-+# define IXP425_EthB_BASE_PHYS		IXP4XX_EthB_BASE_PHYS
++# define IXP425_EthB_BASE_PHYS		(IXP4XX_PERIPHERAL_BASE_PHYS + 0xA000)
 +#endif
 +#if !defined (IXP425_ICMR)
 +# define IXP425_ICMR			IXP4XX_ICMR
