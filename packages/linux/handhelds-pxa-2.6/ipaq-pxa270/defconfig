@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.12-hh2
-# Mon Aug 15 19:13:48 2005
+# Linux kernel version: 2.6.12-hh1
+# Wed Jul 13 18:54:32 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -102,7 +102,6 @@ CONFIG_PXA27x=y
 CONFIG_PXA_KEYS=y
 # CONFIG_ARCH_ESERIES is not set
 # CONFIG_MACH_A620 is not set
-# CONFIG_MACH_A716 is not set
 # CONFIG_ARCH_H1900 is not set
 # CONFIG_ARCH_H2200 is not set
 # CONFIG_ARCH_H3900 is not set
@@ -125,9 +124,6 @@ CONFIG_HX4700_LEDS=m
 # CONFIG_ARCH_ROVERP1 is not set
 # CONFIG_ARCH_ROVERP5P is not set
 # CONFIG_PXA_SHARPSL is not set
-# CONFIG_SA1100_H3100 is not set
-# CONFIG_SA1100_H3600 is not set
-# CONFIG_SA1100_H3800 is not set
 
 #
 # Linux As Bootloader
@@ -153,7 +149,12 @@ CONFIG_ARM_THUMB=y
 CONFIG_XSCALE_PMU=y
 
 #
-# Compaq/iPAQ Platforms
+# Bus support
+#
+CONFIG_ISA_DMA_API=y
+
+#
+# Compaq/iPAQ Options
 #
 CONFIG_PXA_IPAQ=y
 
@@ -161,22 +162,9 @@ CONFIG_PXA_IPAQ=y
 # XScale-based iPAQ
 #
 CONFIG_IPAQ_HANDHELD=y
-
-#
-# Compaq/iPAQ Drivers
-#
-
-#
-# Compaq/HP iPAQ Drivers
-#
 # CONFIG_IPAQ_SLEEVE is not set
 # CONFIG_IPAQ_SAMCOP is not set
 # CONFIG_IPAQ_HAMCOP is not set
-
-#
-# Bus support
-#
-CONFIG_ISA_DMA_API=y
 
 #
 # PCCARD (PCMCIA/CardBus) support
@@ -377,6 +365,7 @@ CONFIG_BLK_DEV_IDECS=m
 # CONFIG_BLK_DEV_IDECD is not set
 # CONFIG_BLK_DEV_IDETAPE is not set
 # CONFIG_BLK_DEV_IDEFLOPPY is not set
+# CONFIG_BLK_DEV_IDESCSI is not set
 # CONFIG_IDE_TASK_IOCTL is not set
 
 #
@@ -699,6 +688,7 @@ CONFIG_NET_RADIO=y
 #
 # CONFIG_AIRO_CS is not set
 # CONFIG_PCMCIA_WL3501 is not set
+# CONFIG_PCMCIA_ACX100 is not set
 CONFIG_NET_WIRELESS=y
 # CONFIG_HOSTAP is not set
 
@@ -745,6 +735,7 @@ CONFIG_INPUT=y
 # Userland interfaces
 #
 # CONFIG_INPUT_MOUSEDEV is not set
+# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
 # CONFIG_INPUT_JOYDEV is not set
 # CONFIG_INPUT_TSDEV is not set
 CONFIG_INPUT_EVDEV=m
@@ -1047,8 +1038,6 @@ CONFIG_SND_GENERIC_PM=y
 #
 # ALSA ARM devices
 #
-# CONFIG_SND_A716 is not set
-# CONFIG_SND_H1910 is not set
 # CONFIG_SND_H2200 is not set
 CONFIG_SND_HX4700=m
 # CONFIG_SND_PXA2XX_UDA1380 is not set
@@ -1099,7 +1088,7 @@ CONFIG_USB_PXA27X=m
 # CONFIG_USB_ZERO is not set
 CONFIG_USB_ETH=m
 # CONFIG_USB_ETH_RNDIS is not set
-# CONFIG_USB_GADGETFS is not set
+CONFIG_USB_GADGETFS=m
 CONFIG_USB_FILE_STORAGE=m
 # CONFIG_USB_FILE_STORAGE_TEST is not set
 CONFIG_USB_G_SERIAL=m
@@ -1131,7 +1120,7 @@ CONFIG_EXT2_FS_POSIX_ACL=y
 # CONFIG_EXT2_FS_SECURITY is not set
 # CONFIG_EXT3_FS is not set
 # CONFIG_JBD is not set
-CONFIG_FS_MBCACHE=m
+CONFIG_FS_MBCACHE=y
 # CONFIG_REISERFS_FS is not set
 # CONFIG_JFS_FS is not set
 CONFIG_FS_POSIX_ACL=y
@@ -1242,7 +1231,7 @@ CONFIG_MSDOS_PARTITION=y
 # Native Language Support
 #
 CONFIG_NLS=m
-CONFIG_NLS_DEFAULT="utf8"
+CONFIG_NLS_DEFAULT="iso8859-1"
 CONFIG_NLS_CODEPAGE_437=m
 # CONFIG_NLS_CODEPAGE_737 is not set
 # CONFIG_NLS_CODEPAGE_775 is not set
