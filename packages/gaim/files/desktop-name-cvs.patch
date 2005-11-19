@@ -1,0 +1,33 @@
+--- gaim/gaim.desktop.orig	2005-11-03 22:34:17 +0100
++++ gaim/gaim.desktop	2005-11-03 22:34:50 +0100
+@@ -7,29 +7,7 @@
+ Terminal=false
+ Type=Application
+ 
+-Name=Gaim Internet Messenger
+-Name[ca]=Missatger d'Internet Gaim
+-Name[cs]=Gaim Internet Messenger
+-Name[da]=Gaim - internet beskeder
+-Name[de]=Gaim Internet Messenger
+-Name[es]=Gaim - cliente de mensajería de Internet
+-Name[fr]=Gaim Messagerie Internet
+-Name[hu]=Gaim azonnali üzenetküldő
+-Name[it]=Gaim Internet Messenger
+-Name[ja]=Gaim インターネット・メッセンジャー
+-Name[ko]=게임 메신저
+-Name[nb]=Gaim lynmeldingsklient
+-Name[nl]=Gaim - Expresberichten
+-Name[pl]=Komunikator Internetowy Gaim
+-Name[pt_BR]=Mensageiro via Internet Gaim
+-Name[pt]=Mensageiro Internet Gaim
+-Name[ro]=Mesagerul Gaim
+-Name[ru]=Gaim - клиент обмена мгновенными сообщениями
+-Name[sl]=Gaim - spletni sel
+-Name[sq]=Lajmësjellësi Internet Gaim
+-Name[sv]=Gaim Internet Messenger
+-Name[zh_CN]=Gaim 互联网通讯程序
+-Name[zh_TW]=Gaim 網路即時通
++Name=Gaim
+ 
+ GenericName=Internet Messenger
+ GenericName[ca]=Missatger d'Internet
