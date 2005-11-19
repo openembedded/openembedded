@@ -7,7 +7,7 @@ PR = "r0"
 
 inherit autotools gpe
 
-SRC_URI =   "cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/${PN}"
+SRC_URI =   "cvs://anoncvs:anoncvs@anoncvs.handhelds.org/cvs;module=gpe/base/${PN}"
 
 
 DEPENDS = "libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration libgpevtype"
