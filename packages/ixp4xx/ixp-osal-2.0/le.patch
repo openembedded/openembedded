@@ -1,64 +1,39 @@
-diff -bBdurN hannes/ixp_osal/include/modules/ioMem/IxOsalMemAccess.h merged/ixp_osal/include/modules/ioMem/IxOsalMemAccess.h
---- ixp_osal/include/modules/ioMem/IxOsalMemAccess.h	2005-04-17 20:56:25.000000000 -0700
-+++ ixp_osal/include/modules/ioMem/IxOsalMemAccess.h	2005-10-07 15:08:43.115207734 -0700
-@@ -84,7 +84,12 @@
+diff -urp ixp_osal/.pc/le.patch/include/modules/ioMem/IxOsalMemAccess.h ixp_osal/include/modules/ioMem/IxOsalMemAccess.h
+--- ixp_osal/.pc/le.patch/include/modules/ioMem/IxOsalMemAccess.h	2005-04-17 20:56:25.000000000 -0700
++++ ixp_osal/include/modules/ioMem/IxOsalMemAccess.h	2005-11-19 16:44:33.414684841 -0800
+@@ -84,7 +84,7 @@
  
  #elif defined (IX_OSAL_LINUX_LE)
  
-+#ifndef __ARMEB__
-+//#define IX_SDRAM_LE_DATA_COHERENT
+-#define IX_SDRAM_LE_DATA_COHERENT
 +#define IX_SDRAM_LE_ADDRESS_COHERENT
-+#else /* __ARMEB__ */
- #define IX_SDRAM_LE_DATA_COHERENT
-+#endif /* __ARMEB__ */
  
  #elif defined (IX_OSAL_WINCE_LE)
  
-diff -bBdurN hannes/ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h merged/ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h
---- ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h	2005-04-17 20:56:27.000000000 -0700
-+++ ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h	2005-10-07 15:08:43.147209748 -0700
-@@ -171,7 +171,12 @@
+diff -urp ixp_osal/.pc/le.patch/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h
+--- ixp_osal/.pc/le.patch/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h	2005-04-17 20:56:27.000000000 -0700
++++ ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400CustomizedMapping.h	2005-11-19 16:45:35.298578949 -0800
+@@ -171,7 +171,7 @@
   ***************************/
  #if (IX_COMPONENT_NAME == ix_qmgr)
  
-+#ifndef __ARMEB__
-+//#define IX_OSAL_LE_DC_MAPPING
+-#define IX_OSAL_LE_DC_MAPPING
 +#define IX_OSAL_LE_AC_MAPPING
-+#else /* __ARMEB__ */
- #define IX_OSAL_LE_DC_MAPPING
-+#endif /* __ARMEB__ */
  
  #endif /* qmgr */
  
-diff -bBdurN hannes/ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h merged/ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h
---- ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h	2005-10-07 09:29:02.392729725 -0700
-+++ ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h	2005-10-07 15:08:43.143209496 -0700
-@@ -85,6 +85,17 @@
-      * Queue Manager 
-      */
-     {
-+#ifndef __ARMEB__
-+     IX_OSAL_DYNAMIC_MAP,                  /* type            */
-+     IX_OSAL_IXP400_QMGR_PHYS_BASE,	/* physicalAddress */
-+     IX_OSAL_IXP400_QMGR_MAP_SIZE,	/* size            */
-+     0,
-+     ixOsalLinuxMemMap,		/* mapFunction     */
-+     ixOsalLinuxMemUnmap,	/* unmapFunction   */
-+     0,
-+     IX_OSAL_BE | IX_OSAL_LE_AC,	/* endianType      */   
-+     "qMgr"			/* name            */
-+#else /* __ARMEB__ */
- #ifdef IXP425_QMGR_BASE_VIRT
-      IX_OSAL_STATIC_MAP,	/* type            */
-      IX_OSAL_IXP400_QMGR_PHYS_BASE,	/* physicalAddress */
-@@ -103,6 +114,7 @@
+diff -urp ixp_osal/.pc/le.patch/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h
+--- ixp_osal/.pc/le.patch/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h	2005-11-19 15:53:11.808771607 -0800
++++ ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h	2005-11-19 16:51:40.729574072 -0800
+@@ -101,7 +101,7 @@ IxOsalMemoryMap ixOsalGlobalMemoryMap[] 
+      ixOsalLinuxMemUnmap,	/* unmapFunction   */
+ #endif
       0,				/* refCount        */
-      IX_OSAL_BE | IX_OSAL_LE_DC,	/* endianType      */   
+-     IX_OSAL_BE | IX_OSAL_LE_DC,	/* endianType      */   
++     IX_OSAL_BE | IX_OSAL_LE_AC,	/* endianType      */   
       "qMgr"			/* name            */
-+#endif /* __ARMEB__ */
       },
  
-     /*
 diff -bBdurN hannes/ixp_osal/include/modules/ioMem/IxOsalIoMem.h merged/ixp_osal/include/modules/ioMem/IxOsalIoMem.h
 --- ixp_osal/include/modules/ioMem/IxOsalIoMem.h	2005-04-17 20:56:25.000000000 -0700
 +++ ixp_osal/include/modules/ioMem/IxOsalIoMem.h	2005-10-07 16:20:27.786083595 -0700

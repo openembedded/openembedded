@@ -23,7 +23,7 @@ SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
-PR = "r3"
+PR = "r4"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
