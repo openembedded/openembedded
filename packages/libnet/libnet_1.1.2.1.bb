@@ -26,3 +26,13 @@ do_stage () {
 	oe_runmake -C include 'DESTDIR=${STAGING_INCDIR}' 'includedir=' install-includeHEADERS
 	oe_runmake -C include/libnet 'DESTDIR=${STAGING_INCDIR}' 'includedir=' install-libnetincludeHEADERS
 }
+
+do_install_append () {
+    install -d ${D}${datadir}/man/man3/
+    install -d ${D}${bindir}
+    install -m 0644 ${S}/doc/man/man3/*.3 ${D}${datadir}/man/man3/
+    install -m 0755 ${S}/libnet-config ${D}${bindir}
+}
+
+PACKAGES = "${PN}-dev ${PN}-doc"
+FILES_${PN}-dev += "${bindir}/libnet-config"
