@@ -10,7 +10,7 @@ SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://ixp400_pollcontroller.patch;patch=1"
 SRC_URI += "file://2.6.14-mm.patch;patch=1"
-PR = "r6"
+PR = "r7"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
