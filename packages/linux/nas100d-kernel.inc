@@ -171,10 +171,8 @@ KERNEL_IMAGETYPE = "zImage"
 # contains the things for a specific kernel.
 # CMDLINE_KERNEL_OPTIONS ?= "reboot=s"
 CMDLINE_KERNEL_OPTIONS ?=
-CMDLINE_ROOT ?= "root=/dev/mtdblock3 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
-# Add distro specific debug (or non-debug) options to this
-# CMDLINE_DEBUG ?= "noirqdebug"
-CMDLINE_DEBUG ?=
+CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
+CMDLINE_DEBUG =
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as

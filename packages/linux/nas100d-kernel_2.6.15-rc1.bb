@@ -25,6 +25,7 @@ N1K_PATCHES = "\
 	file://50-nas100d-arch.patch;patch=1 \
 	file://60-nas100d-ide.patch;patch=1 \
 	file://60-nas100d-i2c.patch;patch=1 \
+	file://90-ixp4xx-nslu2.patch;patch=1 \
 "
 
 include nas100d-kernel.inc
