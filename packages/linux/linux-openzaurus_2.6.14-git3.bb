@@ -2,7 +2,7 @@ include linux-openzaurus.inc
 
 PR = "r5"
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "+1"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
