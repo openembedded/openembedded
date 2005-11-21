@@ -188,6 +188,9 @@ EXTRA_OEMAKE += "EXTRAVERSION="
 EXTRA_OEMAKE += "LOCALVERSION="
 EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 
+# Override KERNEL_RELEASE from kernel.bbclass to match:
+KERNEL_RELEASE = "${KERNEL_VERSION}"
+
 # By putting the added files in place in a separate task before
 # do_patch it becomes possible to patch these files.
 do_unpacklocal() {
@@ -201,14 +204,13 @@ do_unpacklocal() {
 addtask unpacklocal before do_patch after do_unpack
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	if test '${ARCH_BYTE_SEX}' = le
+	rm -f ${S}/.config
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
+	if test '${ARCH_BYTE_SEX}' = be
 	then
-		sed -i '/CONFIG_CPU_BIG_ENDIAN/d' '${S}/.config'
-	else
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
-	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+	sed -e '/CONFIG_CPU_BIG_ENDIAN/d' -e '/CONFIG_CMDLINE=/d' '${WORKDIR}/defconfig' >>'${S}/.config'
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }

@@ -39,24 +39,6 @@
  	(void) aec62xx_tune_chipset(drive, speed);
  	return ide_dma_enable(drive);
  }
-@@ -263,7 +281,7 @@ static int aec62xx_irq_timeout (ide_driv
- 		case PCI_DEVICE_ID_ARTOP_ATP865:
- 		case PCI_DEVICE_ID_ARTOP_ATP865R:
- 			printk(" AEC62XX time out ");
--#if 0
-+#ifdef CONFIG_MACH_NAS100D
- 			{
- 				int i = 0;
- 				u8 reg49h = 0;
-@@ -277,7 +295,7 @@ static int aec62xx_irq_timeout (ide_driv
- 		default:
- 			break;
- 	}
--#if 0
-+#ifdef CONFIG_MACH_NAS100D
- 	{
- 		ide_hwif_t *hwif	= HWIF(drive);
- 		struct pci_dev *dev	= hwif->pci_dev;
 @@ -299,6 +317,14 @@ static unsigned int __devinit init_chips
  {
  	int bus_speed = system_bus_clock();
