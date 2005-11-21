@@ -7,32 +7,34 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # You must download the following software to your OpenEmbedded downloads
 # directory before using this package:
 #
-#	IPL_ixp400AccessLibrary-2_0.zip
-#	IPL_ixp400NpeLibrary-2_0_5.zip
+#	IPL_ixp400AccessLibrary-2_1.zip
+#	IPL_ixp400NpeLibrary-2_1.zip
 #
 # To do this go to the LICENSE_HOMEPAGE above, register/login (using a
 # web browser which is supported by the login page), this will give you
 # access to the web page from which you can download the software - you
 # need the: "Intel® IXP400 Software and RedBoot* Boot Loader" and, from
 # this the "Intel Hardware Access Software" and "NPE Microcode" (both
-# versions 2.0, encryption is not required.)
+# versions 2.1, encryption is not required.)
 #
 # Store the files with the names given below in your downloads directory
 # and store the 32 character md5sum of the file in a file of the same
 # name with the additional extension .md5:
 #
-#	IPL_ixp400AccessLibrary-2_0.zip.md5
-#	IPL_ixp400NpeLibrary-2_0_5.zip.md5
+#	IPL_ixp400AccessLibrary-2_1.zip.md5
+#	IPL_ixp400NpeLibrary-2_1.zip.md5
 #
-SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
-SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_0_5.zip"
+SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_1.zip"
+SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_1.zip"
 SRC_URI += "file://Makefile.patch;patch=1"
-SRC_URI += "file://2.6.patch;patch=1"
-SRC_URI += "file://2.6.14.patch;patch=1"
+SRC_URI += "file://ixethdb-header.patch;patch=1"
+SRC_URI += "file://bit-macro.patch;patch=1"
+SRC_URI += "file://ixnpemhconfigisr-is-private.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
+
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r6"
+PR = "r0"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -45,6 +47,8 @@ KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
 IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_ENSURE = ""
+#IX_ENSURE = "IX_OSAL_ENSURE_ON=1"
 
 OSAL_PATH = "lib/ixp425/linux/${IX_TARGET}"
 # This is a somewhat arbitrary choice:
@@ -57,11 +61,9 @@ COMPONENTS = "qmgr npeMh npeDl ethAcc ethDB ethMii featureCtrl osServices oslinu
 CODELETS_COMPONENTS = ""
 
 # NOTE: IX_INCLUDE_MICROCODE causes the microcode to be included in
-# the ixp4xx-csr module, this *requires* the IPL_ixp400NpeLibrary-2_0.zip
+# the ixp4xx-csr module, this *requires* the IPL_ixp400NpeLibrary-2_1.zip
 # to be added to the SRC_URI - see above.
-EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
-		'LD=${KERNEL_LD}' \
-		'AR=${AR}' \
+EXTRA_OEMAKE = "'AR=${AR}' \
 		'IX_XSCALE_SW=${S}' \
 		'IX_TARGET=${IX_TARGET}' \
 		'${IX_TARGET}_COMPONENTS=${COMPONENTS}' \
@@ -70,6 +72,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'IX_MPHY=1' \
 		'IX_MPHYSINGLEPORT=1' \
 		'IX_INCLUDE_MICROCODE=1' \
+		${IX_ENSURE} \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
 		'OSAL_DIR=${OSAL_DIR}' \
@@ -77,15 +80,29 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'OSAL_MODULE=${OSAL_DIR}/${OSAL_PATH}/ixp_osal.o' \
 		"
 
-do_compile () {
-	# The target makes the .ko as a side effect, as a result of the
-	# Makefile.patch
-	oe_runmake lib/${IX_TARGET}/ixp400.o
-}
+MAKE_TARGETS = "lib/${IX_TARGET}/ixp400.o"
 
+KCONFIG_FILE = "${STAGING_KERNEL_DIR}/config-${KERNEL_VERSION}"
 do_stage () {
 	install -d ${STAGING_INCDIR}/linux/ixp4xx-csr
 	install -m 0644 src/include/*.h ${STAGING_INCDIR}/linux/ixp4xx-csr/
+	# Since Module.symvers in the kernel staging directory doesn't include
+	# the symbols from ixp400.o we need to add them to another file for
+	# the ixp400-eth build
+	rm -f '${STAGING_KERNEL_DIR}/ixp400-csr.symvers'
+	. '${KCONFIG_FILE}'
+	if '${STAGING_KERNEL_DIR}/scripts/mod/modpost' \
+		${CONFIG_MODVERSIONS:+-m} \
+		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
+		-i '${STAGING_KERNEL_DIR}/Module.symvers' \
+		-o '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
+		${MAKE_TARGETS} >&2 | egrep .
+	then
+		echo "MODPOST errors - see above"
+		return 1
+	else
+		return 0
+	fi
 }
 
 PACKAGES = "${PN}"

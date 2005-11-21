@@ -1,0 +1,18 @@
+--- ixp400_xscale_sw/src/npeMh/IxNpeMhSymbols.c.orig	2005-11-20 08:59:46.816701092 -0800
++++ ixp400_xscale_sw/src/npeMh/IxNpeMhSymbols.c	2005-11-20 08:59:54.561188422 -0800
+@@ -63,7 +63,6 @@ EXPORT_SYMBOL(ixNpeMhMessagesReceive);
+ EXPORT_SYMBOL(ixNpeMhShow);
+ EXPORT_SYMBOL(ixNpeMhShowReset);
+ 
+-extern void ixNpeMhConfigIsr (void *parameter);
+ extern BOOL ixNpeMhConfigInFifoIsFull(IxNpeMhNpeId npeId);
+ extern BOOL ixNpeMhConfigOutFifoIsEmpty (IxNpeMhNpeId npeId);
+ extern void ixNpeMhConfigLockRelease (IxNpeMhNpeId npeId);
+@@ -72,7 +71,6 @@ extern void ixNpeMhConfigOutFifoRead (Ix
+ extern void ixNpeMhConfigInFifoWrite (IxNpeMhNpeId npeId,IxNpeMhMessage message);
+ extern struct ixNpeMhConfigNpeInfo ixNpeMhConfigNpeInfo[IX_NPEMH_NUM_NPES];
+ 
+-EXPORT_SYMBOL(ixNpeMhConfigIsr);
+ EXPORT_SYMBOL(ixNpeMhConfigInFifoIsFull);
+ EXPORT_SYMBOL(ixNpeMhConfigOutFifoIsEmpty);
+ EXPORT_SYMBOL(ixNpeMhConfigLockRelease);
