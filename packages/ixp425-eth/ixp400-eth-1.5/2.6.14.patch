@@ -1,0 +1,32 @@
+--- ./ixp400_eth.c	2005-11-19 23:27:54.541565744 -0800
++++ ./ixp400_eth.c	2005-11-19 23:28:56.253449028 -0800
+@@ -1838,7 +1838,11 @@ static inline void dev_eth_type_trans(un
+     skb->len -= header_len;
+    
+     /* fill the pkt arrival time (set at the irq callback entry) */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
+     skb->stamp = irq_stamp;
++#else
++    skb_set_timestamp(skb, &irq_stamp);
++#endif
+  
+     /* fill the input device field */
+     skb->dev = dev;
+@@ -3014,7 +3018,7 @@ static int phy_init(void)
+ }
+ 
+ /* set port MAC addr and update the dev struct if successfull */
+-int dev_set_mac_address(struct net_device *dev, void *addr)
++static int set_mac_address(struct net_device *dev, void *addr)
+ {
+     int res;
+     IxEthAccMacAddr npeMacAddr;
+@@ -3266,7 +3270,7 @@ static int __devinit dev_eth_probe(struc
+     ndev->set_multicast_list = dev_set_multicast_list;
+     ndev->flags |= IFF_MULTICAST;
+ 
+-    ndev->set_mac_address = dev_set_mac_address;
++    ndev->set_mac_address = set_mac_address;
+ 
+ #ifdef CONFIG_IXP400_NAPI
+     ndev->poll = &dev_rx_poll;

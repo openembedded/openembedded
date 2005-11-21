@@ -1,0 +1,36 @@
+--- ./ixp400_eth.c	2005-11-20 18:25:26.812410374 -0800
++++ ./ixp400_eth.c	2005-11-20 18:50:22.126504557 -0800
+@@ -2046,6 +2046,16 @@ static void rx_cb(UINT32 callbackTag, IX
+ 	skb->tail = skb->data + len;
+ 	skb->len = len;
+ 	
++#ifndef __ARMEB__
++	{
++	    /* Byte swap all words containing data from the buffer. */
++	    unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	    unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	    while (p < e)
++		*p = ntohl(*p), ++p;
++	}
++#endif
++	
+ #ifdef DEBUG_DUMP
+ 	skb_dump("rx", skb);
+ #endif
+@@ -2436,6 +2446,16 @@ static int dev_hard_start_xmit(struct sk
+ 	return 0;
+     }
+ 
++#ifndef __ARMEB__
++    {
++	/* Byte swap all words containing data from the buffer. */
++	unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	while (p < e)
++	    *p = ntohl(*p), ++p;
++    }
++#endif
++
+ #ifdef DEBUG_DUMP
+     skb_dump("tx", skb);
+ #endif
