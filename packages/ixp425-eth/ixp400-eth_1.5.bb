@@ -59,7 +59,7 @@ EXTRA_OEMAKE = "'PWD=${S}' \
 # This is to check for unresolved symbol errors and ensure the build
 # fails, an error here probably means too much as been deconfigured
 # out of ixp4xx-csr.
-KCONFIG_FILE = "${STAGING_KERNEL_DIR}/config-${KERNEL_VERSION}"
+KCONFIG_FILE = "${STAGING_KERNEL_DIR}/kernel-config"
 do_compile_append () {
 	. '${KCONFIG_FILE}'
 	echo "MODPOST: checking that all symbols are resolved"
