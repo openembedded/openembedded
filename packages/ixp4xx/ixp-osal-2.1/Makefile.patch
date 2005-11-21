@@ -1,0 +1,27 @@
+diff -Naur ixp_osal.orig/Makefile ixp_osal/Makefile
+--- ixp_osal.orig/Makefile	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/Makefile	2005-08-24 00:18:02.000000000 +0200
+@@ -172,7 +172,7 @@
+ 
+ # TODO push this to linux make
+ ifeq ($(IX_OSAL_MK_HOST_OS), linux)
+-INCLUDE_DIRS += $(LINUX_SRC)/include/asm-arm/arch-ixp425/
++INCLUDE_DIRS += $(LINUX_SRC)/include/asm-arm/arch-ixp4xx/
+ endif
+ 
+ CFLAGS += $(INCLUDE_DIRS:%=-I%)
+--- ixp_osal/os/linux/make/macros.mk.orig	2005-10-01 15:50:19.544167880 -0700
++++ ixp_osal/os/linux/make/macros.mk	2005-10-01 15:50:43.053647239 -0700
+@@ -88,10 +88,10 @@
+ # Compiler & linker options
+ 
+ # Compiler flags
+-LINUX_MACH_CFLAGS := -D__LINUX_ARM_ARCH__=5 -mcpu=xscale -mtune=xscale
++LINUX_MACH_CFLAGS := -D__LINUX_ARM_ARCH__=5 -mtune=xscale
+ 
+ CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -Wall -Wno-trigraphs -fno-common \
+-          -pipe -mapcs-32 -mshort-load-bytes -msoft-float -DMODULE \
++          -pipe -mapcs-32 -msoft-float -DMODULE \
+           -D__linux -DCPU=33 -DXSCALE=33 $(LINUX_MACH_CFLAGS) -DEXPORT_SYMTAB
+ 
+ # Linux linker flags

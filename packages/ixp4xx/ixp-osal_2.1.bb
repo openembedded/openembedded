@@ -7,27 +7,31 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # You must download the following software to your OpenEmbedded downloads
 # directory before using this package:
 #
-#	IPL_ixp400AccessLibrary-2_0.zip
+#	IPL_ixp400AccessLibrary-2_1.zip
 #
 # To do this go to the LICENSE_HOMEPAGE above, register/login (using a
 # web browser which is supported by the login page), this will give you
 # access to the web page from which you can download the software - you
 # need the: "Intel® IXP400 Software and RedBoot* Boot Loader" and, from
-# this the "Intel Hardware Access Software" (versions 2.0 encryption is
+# this the "Intel Hardware Access Software" (versions 2.1 encryption is
 # not required.)
 #
 # Store the file with the name given below in your downloads directory
 # and store the 32 character md5sum of the file in a file of the same
 # name with the additional extension .md5:
 #
-#	IPL_ixp400AccessLibrary-2_0.zip.md5
+#	IPL_ixp400AccessLibrary-2_1.zip.md5
 #
-SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
+SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_1.zip"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
+SRC_URI += "file://invalidate-cache.patch;patch=1"
+SRC_URI += "file://ixp4xx-header.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
+SRC_URI += "file://assert.patch;patch=1"
+
 S = "${WORKDIR}/ixp_osal"
-PR = "r4"
+PR = "r0"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -40,6 +44,8 @@ KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
 
 IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_ENSURE = ""
+#IX_ENSURE = "IX_OSAL_ENSURE_ON=1"
 
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
@@ -47,6 +53,7 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'IX_XSCALE_SW=${S}' \
 		'IX_TARGET=${IX_TARGET}' \
 		'IX_DEVICE=ixp42X' \
+		${IX_ENSURE} \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
 		"
