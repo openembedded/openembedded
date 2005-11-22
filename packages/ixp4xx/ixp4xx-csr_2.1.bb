@@ -82,7 +82,7 @@ EXTRA_OEMAKE = "'AR=${AR}' \
 
 MAKE_TARGETS = "lib/${IX_TARGET}/ixp400.o"
 
-KCONFIG_FILE = "${STAGING_KERNEL_DIR}/config-${KERNEL_VERSION}"
+KCONFIG_FILE = "${STAGING_KERNEL_DIR}/kernel-config"
 do_stage () {
 	install -d ${STAGING_INCDIR}/linux/ixp4xx-csr
 	install -m 0644 src/include/*.h ${STAGING_INCDIR}/linux/ixp4xx-csr/

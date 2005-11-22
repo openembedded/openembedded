@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.xwaves.net
+#
+
+--- cherokee-0.4.29/cherokee/util.c~util
++++ cherokee-0.4.29/cherokee/util.c
+@@ -348,9 +348,9 @@
+ 
+ 
+ 
+-#if defined(HAVE_PTHREAD) && !defined(HAVE_READDIR_R)
++/*#if defined(HAVE_PTHREAD) && !defined(HAVE_READDIR_R)*/
+ static pthread_mutex_t readdir_mutex = PTHREAD_MUTEX_INITIALIZER;
+-#endif
++/*#endif*/
+ 
+ /* The readdir subroutine is reentrant when an application program
+  * uses different DirectoryPointer parameter values (returned from the
