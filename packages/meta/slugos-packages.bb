@@ -36,6 +36,7 @@ SLUGOS_PACKAGES = "\
 	bwmon \
 	bzip2 \
 	ccxstream \
+	cherokee \
 	coreutils \
 	cron \
 	ctorrent \
@@ -178,7 +179,6 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 SLUGOS_PACKAGES_append_linux = "\
 	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
 	ctrlproxy \
-	dsniff \
 	iperf \
 	man man-pages \
 	psmisc \
@@ -186,6 +186,9 @@ SLUGOS_PACKAGES_append_linux = "\
 	timezones \
 	xinetd \
 	"
+
+#BROKEN:
+#	dsniff
 
 SLUGOS_PACKAGES_append_linux-uclibc = "\
 	"
