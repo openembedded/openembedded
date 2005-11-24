@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl virtual/db"
 LICENSE = "BSD"
-PR = "r7"
+PR = "r8"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
@@ -33,9 +33,11 @@ FILES_${PN} += "${prefix}/cyrus/bin"
 BUILD_CPPFLAGS += " -I${S} -I${S}/et"
 
 do_install_append () {
+	install -d ${D}${sysconfdir}/init.d
 	install -m 755 ${WORKDIR}/cyrus ${D}${sysconfdir}/init.d/cyrus
 	install -m 644 ${WORKDIR}/cyrus.conf_2.2 ${D}${sysconfdir}/cyrus.conf
 	install -m 644 ${WORKDIR}/imapd.conf_2.2 ${D}${sysconfdir}/imapd.conf
+	install -d ${D}${sysconfdir}/default/volatiles
 	install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_cyrus-imapd
 }
 
