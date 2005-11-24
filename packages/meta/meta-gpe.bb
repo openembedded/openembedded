@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r41"
+PR = "r42"
 
 ALLOW_EMPTY = "1"
 
@@ -88,7 +88,8 @@ gpe-task-apps = "\
     matchbox-panel-hacks \
     gpe-aerial \
     gpe-soundbite \
-    rosetta"
+    rosetta \
+    gpe-screenshot"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"
