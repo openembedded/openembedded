@@ -93,9 +93,10 @@ do_configure() {
 do_compile_append() {
 	case ${MACHINE} in
 		c7x0 | akita | poodle | spitz | borzoi | tosa )
-			size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
-			if [ $size -ge 1271 ]; then	
+			size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
+			if [ $size -ge 1302000 ]; then	
 				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+				echo "Size is $size"
 				die "This kernel is too big for your PXA Zaurus and will destroy data if you flash it. Please reduce the size of the kernel by making more of it modular."
 			fi
 			;;

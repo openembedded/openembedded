@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.15-rc2
-# Mon Nov 21 10:53:30 2005
+# Fri Nov 25 17:06:09 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -959,6 +959,7 @@ CONFIG_I2C_PXA=y
 # Hardware Monitoring support
 #
 # CONFIG_HWMON is not set
+# CONFIG_HWMON_VID is not set
 
 #
 # Misc devices
@@ -971,6 +972,15 @@ CONFIG_I2C_PXA=y
 #
 # Multi-Function Devices
 #
+
+#
+# LED devices
+#
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+CONFIG_LEDS_TRIGGERS=y
+CONFIG_LEDS_CORGI=y
+CONFIG_LEDS_TRIGGER_TIMER=y
 
 #
 # Multimedia devices
@@ -1463,6 +1473,9 @@ CONFIG_SMB_FS=m
 CONFIG_SMB_NLS_DEFAULT=y
 CONFIG_SMB_NLS_REMOTE="cp437"
 CONFIG_CIFS=m
+# CONFIG_CIFS_STATS is not set
+# CONFIG_CIFS_XATTR is not set
+# CONFIG_CIFS_EXPERIMENTAL is not set
 # CONFIG_NCP_FS is not set
 # CONFIG_CODA_FS is not set
 # CONFIG_AFS_FS is not set
