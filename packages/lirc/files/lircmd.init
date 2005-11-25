@@ -6,28 +6,28 @@
 #
 
 
-test -f /usr/bin/lircmd || exit 0
+test -f /usr/sbin/lircmd || exit 0
 
 case "$1" in
   start)
     echo -n "Starting lirc daemon: lircmd"
-    start-stop-daemon --start --quiet --exec /usr/bin/lircmd
+    start-stop-daemon --start --quiet --exec /usr/sbin/lircmd
     echo "."
     ;;
   stop)
     echo -n "Stopping lirc daemon: lircmd"
-    start-stop-daemon --stop --quiet --exec /usr/bin/lircmd
+    start-stop-daemon --stop --quiet --exec /usr/sbin/lircmd
     echo "."
     ;;
   reload|force-reload)
-    start-stop-daemon --stop --quiet --signal 1 --exec /usr/bin/lircmd
+    start-stop-daemon --stop --quiet --signal 1 --exec /usr/sbin/lircmd
     ;;
   restart)
     echo -n "Stopping lirc daemon: lircmd"
-    start-stop-daemon --stop --quiet --exec /usr/bin/lircmd
+    start-stop-daemon --stop --quiet --exec /usr/sbin/lircmd
     sleep 1
     echo -n "Starting lirc daemon: lircmd"
-    start-stop-daemon --start --quiet --exec /usr/bin/lircmd
+    start-stop-daemon --start --quiet --exec /usr/sbin/lircmd
     echo "."
     ;;
   *)
