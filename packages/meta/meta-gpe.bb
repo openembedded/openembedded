@@ -106,8 +106,9 @@ DEPENDS += " ${gpe-task-games}"
 
 gpe-task-connectivity = "\
     gpe-mini-browser \
-    gaim \ 
-    linphone-hh"
+"
+#    gaim \ 
+#    linphone-hh"
 
 RDEPENDS_gpe-task-connectivity := "${gpe-task-connectivity}"
 DEPENDS += " ${gpe-task-connectivity}"
