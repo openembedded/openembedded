@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r42"
+PR = "r41"
 
 ALLOW_EMPTY = "1"
 
@@ -33,6 +33,7 @@ gpe-task-base = "\
     gpe-autostarter \
     libgtkstylus \
     detect-stylus \
+    suspend-desktop \
     teleport \
     xauth"
 
@@ -88,8 +89,7 @@ gpe-task-apps = "\
     matchbox-panel-hacks \
     gpe-aerial \
     gpe-soundbite \
-    rosetta \
-    gpe-screenshot"
+    rosetta"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"
@@ -107,8 +107,9 @@ DEPENDS += " ${gpe-task-games}"
 
 gpe-task-connectivity = "\
     gpe-mini-browser \
-    gaim \ 
-    linphone-hh"
+"
+#    gaim \ 
+#    linphone-hh"
 
 RDEPENDS_gpe-task-connectivity := "${gpe-task-connectivity}"
 DEPENDS += " ${gpe-task-connectivity}"
