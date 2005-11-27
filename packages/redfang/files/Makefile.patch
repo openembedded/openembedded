@@ -1,0 +1,18 @@
+--- Makefile	2005-11-23 10:43:27.000000000 -0500
++++ Makefile.new	2005-11-23 10:42:20.000000000 -0500
+@@ -3,12 +3,13 @@
+ 
+ DEPS=list.h
+ 
+-LIBS=-lbluetooth -lpthread
++#LIBS=-lbluetooth -lpthread
++LIBS=$(LDFLAGS)
+ 
+ all: $(EXE)
+ 
+ $(EXE): $(OBJ) $(DEPS)
+-	cc -o $(EXE) $(OBJ) $(LIBS)
++	$(CC) -o $(EXE) $(OBJ) $(LIBS)
+ 
+ clean:
+ 	rm -f $(EXE) $(OBJ) *~
