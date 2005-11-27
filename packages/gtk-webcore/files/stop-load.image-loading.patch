@@ -1,0 +1,44 @@
+--- NRCit/src/frameimpl.cpp.orig	2005-02-16 11:33:16.000000000 +0200
++++ NRCit/src/frameimpl.cpp	2005-10-28 00:44:15.000000000 +0300
+@@ -152,6 +152,7 @@
+ 
+ void FrameImpl::stopLoad()
+ {
++    frameLoadDelegate()->onFrameLoadFinished(this, 1);
+     closeURL();
+ }
+ 
+--- NRCit/src/ImageRenderer.cpp.orig	2005-02-16 11:33:16.000000000 +0200
++++ NRCit/src/ImageRenderer.cpp	2005-10-28 20:43:42.000000000 +0300
+@@ -133,19 +133,19 @@
+ 	g_object_ref(pixbuf);
+     } else {
+ 	// not loading 
+-	if (ir.anim) {
++	/*if (ir.anim) {
+ 	    // is an animation => get own pixbuf, owned by iterator
+ 	    anim = ir.anim;
+ 	    g_object_ref(anim);
+ 	    assert(ir.iter);
+ 	    iter = gdk_pixbuf_animation_get_iter(anim, NULL);
+-	} else {
++	} else {*/
+ 	    // not an animation
+ 	    assert(!ir.iter);
+ 	    pixbuf = ir.pixbuf;
+ 	    if (pixbuf)
+ 		g_object_ref(pixbuf);
+-	}
++	//}
+     }
+ }
+ 
+@@ -415,7 +417,7 @@
+ 
+ void ImageRenderer::stopAnimation()
+ {
+-    //stopped = true;
++    stopped = true;
+ }
+ 
+ void ImageRenderer::tileInRect(GdkRectangle* r, int sx, int sy, CGContextRef context)
