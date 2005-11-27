@@ -33,6 +33,7 @@ gpe-task-base = "\
     gpe-autostarter \
     libgtkstylus \
     detect-stylus \
+    suspend-desktop \
     teleport \
     xauth"
 
