@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = 1
 
@@ -16,3 +16,8 @@ EXTRA_OECONF = "--disable-gtk-doc"
 do_stage() {
 autotools_stage_all
 }
+
+
+PACKAGES += libmimedir-utils
+FILES_libmimedir-utils = "${bindir}"
+FILES_${PN} = "${libdir}"
