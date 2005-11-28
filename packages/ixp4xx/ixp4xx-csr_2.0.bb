@@ -18,6 +18,11 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # versions 2.0, encryption is not required.)
 #
 # Store the files with the names given below in your downloads directory
+# and store the 32 character md5sum of the file in a file of the same
+# name with the additional extension .md5:
+#
+#	IPL_ixp400AccessLibrary-2_0.zip.md5
+#	IPL_ixp400NpeLibrary-2_0_5.zip.md5
 #
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
 SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_0_5.zip"
@@ -27,7 +32,7 @@ SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r3"
+PR = "r6"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -45,6 +50,12 @@ OSAL_PATH = "lib/ixp425/linux/${IX_TARGET}"
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
+# COMPONENTS: do not build all the components, this just creates a
+# ridiculously large module which duplicates functionality in the
+# available Linux drivers.
+COMPONENTS = "qmgr npeMh npeDl ethAcc ethDB ethMii featureCtrl osServices oslinux"
+CODELETS_COMPONENTS = ""
+
 # NOTE: IX_INCLUDE_MICROCODE causes the microcode to be included in
 # the ixp4xx-csr module, this *requires* the IPL_ixp400NpeLibrary-2_0.zip
 # to be added to the SRC_URI - see above.
@@ -53,6 +64,8 @@ EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'AR=${AR}' \
 		'IX_XSCALE_SW=${S}' \
 		'IX_TARGET=${IX_TARGET}' \
+		'${IX_TARGET}_COMPONENTS=${COMPONENTS}' \
+		'${IX_TARGET}_CODELETS_COMPONENTS=${CODELETS_COMPONENTS}' \
 		'IX_DEVICE=ixp42X' \
 		'IX_MPHY=1' \
 		'IX_MPHYSINGLEPORT=1' \
@@ -74,6 +87,8 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/linux/ixp4xx-csr
 	install -m 0644 src/include/*.h ${STAGING_INCDIR}/linux/ixp4xx-csr/
 }
+
+PACKAGES = "${PN}"
 
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400

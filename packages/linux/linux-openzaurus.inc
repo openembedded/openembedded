@@ -3,7 +3,7 @@ SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 
-DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
+DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
@@ -21,8 +21,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
-CMDLINE_ROOT_poodle = "root=/dev/mtdblock1 rootfstype=jffs2 "
 CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rw "
+CMDLINE_ROOT_borzoi = "root=/dev/hda1 rootfstype=ext3 rw "
 
 ##############################################################
 # Configure memory/ramdisk split for collie
@@ -93,9 +93,10 @@ do_configure() {
 do_compile_append() {
 	case ${MACHINE} in
 		c7x0 | akita | poodle | spitz | borzoi | tosa )
-			size=`ls arch/${ARCH}/boot/${KERNEL_IMAGETYPE} -s | cut -d ' ' -f 1`
-			if [ $size -ge 1271 ]; then	
+			size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
+			if [ $size -ge 1302000 ]; then	
 				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+				echo "Size is $size"
 				die "This kernel is too big for your PXA Zaurus and will destroy data if you flash it. Please reduce the size of the kernel by making more of it modular."
 			fi
 			;;

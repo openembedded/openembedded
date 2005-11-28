@@ -17,13 +17,17 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 # not required.)
 #
 # Store the file with the name given below in your downloads directory
+# and store the 32 character md5sum of the file in a file of the same
+# name with the additional extension .md5:
+#
+#	IPL_ixp400AccessLibrary-2_0.zip.md5
 #
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400AccessLibrary-2_0.zip"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://2.6.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
-PR = "r2"
+PR = "r4"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 

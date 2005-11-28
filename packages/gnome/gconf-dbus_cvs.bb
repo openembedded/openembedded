@@ -8,18 +8,16 @@ RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r6"
+PR = "r8"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gconf;tag=gconf-dbus-2-6 \
            file://gconf-dbus-update.patch;patch=1;pnum=0 \
 	   file://69gconfd-dbus"
 
-FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir}"
-
+inherit pkgconfig autotools
 S = "${WORKDIR}/gconf"
 
-
-inherit pkgconfig autotools
+FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir} ${datadir}/dbus*"
 
 EXTRA_OECONF = " --with-ipc=dbus --disable-gtk-doc --enable-gtk --host=${HOST_SYS} --enable-shared --disable-static"
 
@@ -35,4 +33,6 @@ do_stage() {
 do_install_append () {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/69gconfd-dbus ${D}/${sysconfdir}/X11/Xsession.d/
+	install -d ${D}/${datadir}/dbus-1.0/services/
+	install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1.0/services/ 
 }

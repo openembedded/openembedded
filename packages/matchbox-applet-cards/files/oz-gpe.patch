@@ -1,0 +1,466 @@
+--- mb-applet-cards-1.0.2/mb-applet-cards.desktop.ori	2005-11-10 21:17:56.000000000 +0100
++++ mb-applet-cards-1.0.2/mb-applet-cards.desktop	2005-11-10 21:18:11.000000000 +0100
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=CF/SD Monitor
+ Comment=Panel based CF/SD Monitor
+-Exec=mb-applet-cards
++Exec=gpe-applet-cards
+ Type=PanelApp
+ Icon=cards.png
+ Categories=Panel;Utility;MB
+--- mb-applet-cards-1.0.2/mb-applet-cards.c.ori	2005-09-13 22:18:53.000000000 +0200
++++ mb-applet-cards-1.0.2/mb-applet-cards.c	2005-11-15 10:33:13.000000000 +0100
+@@ -47,6 +47,8 @@
+ #define POPUP_PTR_SZ 10
+ 
+ #define IMG_PREFIX	"/usr/share/pixmaps"
++#define SD_MOUNT_PATH   "/media/card"
++#define CARD_CONTROL   "/sbin/cardctl"
+ 
+ static char *ImgLookup[64] = {
+   "cards."      IMG_EXT,
+@@ -71,8 +73,8 @@
+ 
+ GtkWidget *cards_window;
+ GtkWidget *cards;
+-GtkWidget *button;
+-GtkWidget *button1;
++GtkWidget *button_cf;
++GtkWidget *button_sd;
+ GtkWidget *boxV;
+ GtkWidget *box_cf;
+ GtkWidget *box_sd;
+@@ -123,15 +125,15 @@
+     int err;
+     gtk_widget_hide (cards_window);
+     if (old_cf_status == 1) {
+-        err = system("cardctl eject 0");
+-	if (err != 0) {
+-	    error_dialog("CF/PCMCIA card eject failed!");
+-	}
++        err = system(CARD_CONTROL " eject 0");
++        if (err != 0) {
++            error_dialog("CF/PCMCIA card eject failed!");
++        }
+     } else {
+-	err = system("cardctl insert 0");
+-	if (err != 0) {
+-	    error_dialog("CF/PCMCIA card insert failed!");
+-	}
++        err = system(CARD_CONTROL " insert 0");
++        if (err != 0) {
++            error_dialog("CF/PCMCIA card insert failed!");
++        }
+     }
+ }
+ 
+@@ -142,15 +144,15 @@
+     GtkWidget *dialog;
+     gtk_widget_hide (cards_window);
+     if (old_sd_status == 1) {
+-	err = system("umount /mnt/card");
+-	if (err != 0) {
+-	    error_dialog("SD/MMC card unmount failed!");
+-	}
++        err = system("umount " SD_MOUNT_PATH);
++        if (err != 0) {
++            error_dialog("SD/MMC card unmount failed!");
++        }
+     } else {
+-	err = system("mount /mnt/card");
+-	if (err != 0) {
+-	    error_dialog("SD/MMC card mount failed!");
+-	}
++        err = system("mount " SD_MOUNT_PATH);
++        if (err != 0) {
++            error_dialog("SD/MMC card mount failed!");
++        }
+     }
+ }
+ 
+@@ -158,35 +160,35 @@
+ {
+     boxV = gtk_vbox_new(FALSE, 0);
+ 
+-    button = gtk_button_new ();
++    button_cf = gtk_button_new ();
+ 
+-    g_signal_connect (G_OBJECT (button), "clicked",
+-		      G_CALLBACK (callback_cf), (gpointer) "cool button");
++    g_signal_connect (G_OBJECT (button_cf), "clicked",
++        G_CALLBACK (callback_cf), (gpointer) "button_cf");
+ 
+     box_cf = xpm_label_box (IMG_PREFIX "/cf_mount.png", "CF eject\nlala");
+ 
+     gtk_widget_show (box_cf);
+ 
+-    gtk_container_add (GTK_CONTAINER (button), box_cf);
++    gtk_container_add (GTK_CONTAINER (button_cf), box_cf);
+ 
+-    gtk_box_pack_start(GTK_BOX(boxV), button, FALSE, FALSE, 0);
++    gtk_box_pack_start(GTK_BOX(boxV), button_cf, FALSE, FALSE, 0);
+ 
+-    gtk_widget_show (button);
++    gtk_widget_show (button_cf);
+ 
+-    button1 = gtk_button_new ();
++    button_sd = gtk_button_new ();
+ 
+-    g_signal_connect (G_OBJECT (button1), "clicked",
+-		      G_CALLBACK (callback_sd), (gpointer) "cool button1");
++    g_signal_connect (G_OBJECT (button_sd), "clicked",
++        G_CALLBACK (callback_sd), (gpointer) "button_sd");
+ 
+     box_sd = xpm_label_box (IMG_PREFIX "/sd_mount.png", "SD eject");
+ 
+     gtk_widget_show (box_sd);
+ 
+-    gtk_container_add (GTK_CONTAINER (button1), box_sd);
++    gtk_container_add (GTK_CONTAINER (button_sd), box_sd);
+ 
+-    gtk_box_pack_start(GTK_BOX(boxV), button1, FALSE, FALSE, 0);
++    gtk_box_pack_start(GTK_BOX(boxV), button_sd, FALSE, FALSE, 0);
+ 
+-    gtk_widget_show (button1);
++    gtk_widget_show (button_sd);
+ 
+     gtk_container_add (GTK_CONTAINER (cards_window), boxV);
+ 
+@@ -198,49 +200,51 @@
+     int sd_found = 0;
+     FILE *inf;
+     char buf[256];
+-    inf = fopen("/var/lib/pcmcia/stab", "r");
++    //inf = fopen("/var/lib/pcmcia/stab", "r");
++    inf = fopen("/var/run/stab", "r");
+     fgets(buf, 256, inf);
+     fclose(inf);
+     if (strncmp(buf, "Socket 0: empty", 15 ) == 0) {
+-//	if (old_cf_status != 0) {
+-	    gtk_widget_destroy(box_cf);
+-	    box_cf = xpm_label_box (IMG_PREFIX "/cf_unmount.png", "empty");
+-	    gtk_widget_show (box_cf);
+-	    gtk_container_add (GTK_CONTAINER (button), box_cf);
+-//	}
+-	old_cf_status = 0;
++// if (old_cf_status != 0) {
++        gtk_widget_destroy(box_cf);
++        box_cf = xpm_label_box (IMG_PREFIX "/cf_unmount.png", "empty");
++        gtk_widget_show (box_cf);
++        gtk_container_add (GTK_CONTAINER (button_cf), box_cf);
++// }
++    old_cf_status = 0;
+     } else {
+-//	if (old_cf_status != 1) {
+-	    gtk_widget_destroy(box_cf);
+-	    box_cf = xpm_label_box (IMG_PREFIX "/cf_mount.png", &buf[10]);
+-	    gtk_widget_show (box_cf);
+-	    gtk_container_add (GTK_CONTAINER (button), box_cf);	    
+-//	}
+-	old_cf_status = 1;
++// if (old_cf_status != 1) {
++        gtk_widget_destroy(box_cf);
++        box_cf = xpm_label_box (IMG_PREFIX "/cf_mount.png", &buf[10]);
++        gtk_widget_show (box_cf);
++        gtk_container_add (GTK_CONTAINER (button_cf), box_cf);	    
++// }
++    old_cf_status = 1;
+     }
+ 
+     inf = fopen("/etc/mtab", "r");
+     while (!feof(inf)) {
+-	fgets(buf, 256, inf);
+-	if (strncmp(buf, "/dev/mmcd", 9) == 0) sd_found = 1;
++    fgets(buf, 256, inf);
++    //if (strncmp(buf, "/dev/mmcd", 9) == 0) sd_found = 1;
++    if (strncmp(buf, "/dev/mmc", 8) == 0) sd_found = 1;
+     }
+     fclose(inf);
+     if (sd_found == 0) {
+-//	if (old_sd_status != 0) {
+-	    gtk_widget_destroy(box_sd);
+-	    box_sd = xpm_label_box (IMG_PREFIX "/sd_unmount.png", "empty");
+-	    gtk_widget_show (box_sd);
+-	    gtk_container_add (GTK_CONTAINER (button1), box_sd);
+-//	}
+-	old_sd_status = 0;
++// if (old_sd_status != 0) {
++        gtk_widget_destroy(box_sd);
++        box_sd = xpm_label_box (IMG_PREFIX "/sd_unmount.png", "empty");
++        gtk_widget_show (box_sd);
++        gtk_container_add (GTK_CONTAINER (button_sd), box_sd);
++// }
++    old_sd_status = 0;
+     } else {
+-//	if (old_sd_status != 1) {
+-	    gtk_widget_destroy(box_sd);
+-	    box_sd = xpm_label_box (IMG_PREFIX "/sd_mount.png", "SD card");
+-	    gtk_widget_show (box_sd);
+-	    gtk_container_add (GTK_CONTAINER (button1), box_sd);
+-//	}
+-	old_sd_status = 1;
++// if (old_sd_status != 1) {
++        gtk_widget_destroy(box_sd);
++        box_sd = xpm_label_box (IMG_PREFIX "/sd_mount.png", "SD card");
++        gtk_widget_show (box_sd);
++        gtk_container_add (GTK_CONTAINER (button_sd), box_sd);
++// }
++    old_sd_status = 1;
+     }
+ }
+ 
+@@ -250,13 +254,13 @@
+ paint_callback (MBTrayApp *app, Drawable drw )
+ {
+   MBPixbufImage *img_backing = NULL;
+-  
++
+   img_backing = mb_tray_app_get_background (app, pb);
+ 
+   /* CurrentVolLevel */
+-  mb_pixbuf_img_composite(pb, img_backing, 
+-			  ImgsScaled[0], 
+-			  0, 0);
++  mb_pixbuf_img_composite(pb, img_backing,
++        ImgsScaled[0],
++        0, 0);
+ 
+   mb_pixbuf_img_render_to_drawable(pb, img_backing, drw, 0, 0);
+ 
+@@ -284,48 +288,46 @@
+   for (i=0; i<1; i++)
+     {
+       if (Imgs[i] != NULL) mb_pixbuf_img_free(pb, Imgs[i]);
+-      icon_path = mb_dot_desktop_icon_get_full_path (ThemeName, 
+-						     32, 
+-						     ImgLookup[i]);
+-      
+-      if (icon_path == NULL 
+-	  || !(Imgs[i] = mb_pixbuf_img_new_from_file(pb, icon_path)))
+-	{
+-	  fprintf(stderr, "cards: failed to load icon\n" );
+-	  exit(1);
+-	}
++      icon_path = mb_dot_desktop_icon_get_full_path (ThemeName,
++                            32,
++                            ImgLookup[i]);
+ 
++      if (icon_path == NULL
++        || !(Imgs[i] = mb_pixbuf_img_new_from_file(pb, icon_path)))
++    {
++        fprintf(stderr, "cards: failed to load icon\n" );
++        exit(1);
++    }
+       free(icon_path);
+     }
+ }
+ 
+-void 
++void
+ theme_callback (MBTrayApp *app, char *theme_name)
+ {
+   if (!theme_name) return;
+   if (ThemeName) free(ThemeName);
+   ThemeName = strdup(theme_name);
+-  load_icons(); 	
++  load_icons();
+   resize_callback (app, mb_tray_app_width(app), mb_tray_app_width(app) );
+ }
+ 
++/*
+ gboolean
+ popup_close (GtkWidget *w, GtkWidget *list_view)
+ {
+   gtk_widget_hide (cards_window);
+   PopupIsMapped = False;
+-      
+ }
++*/
+ 
+ static void
+ cards_clicked (GtkWidget *w, GdkEventButton *ev)
+ {
+   gdk_pointer_ungrab (ev->time);
+-
+   gtk_widget_hide (cards_window);
+ }
+ 
+-
+ static void
+ button_callback (MBTrayApp *app, int cx, int cy, Bool is_released)
+ {
+@@ -337,6 +339,7 @@
+   if (PopupIsMapped) {
+     gtk_widget_hide (cards_window);
+     PopupIsMapped = False;
++    return;
+   }
+ 
+   mb_tray_app_get_absolute_coords (app, &x, &y);
+@@ -344,65 +347,58 @@
+   gtk_widget_show_all (cards_window);
+ 
+   gdk_window_get_geometry (cards_window->window, NULL, NULL,
+-			   &win_w, &win_h, NULL);
++            &win_w, &win_h, NULL);
+ 
+   if (mb_tray_app_tray_is_vertical (app))
+     {
+-      if (x > (DisplayWidth(mb_tray_app_xdisplay(app), 
+-			    mb_tray_app_xscreen(app)) /2) )
+-	x -= ( mb_tray_app_width(app) + win_w );
++      if (x > (DisplayWidth(mb_tray_app_xdisplay(app),
++            mb_tray_app_xscreen(app)) /2) )
++    x -= ( mb_tray_app_width(app) + win_w );
+       else
+-	x += mb_tray_app_width(app);
++    x += mb_tray_app_width(app);
+     }
+   else
+     {
+       if (y < mb_tray_app_height(app))
+-	{ y = mb_tray_app_height(app); }
++    { y = mb_tray_app_height(app); }
+       else
+-	{ 
+-	  y = DisplayHeight(mb_tray_app_xdisplay(app), 
+-			    mb_tray_app_xscreen(app)) 
+-	    - win_h - mb_tray_app_height(app) - 4;
+-	}
+-
+-      x -= (mb_tray_app_width(app)/2);
+-      
+-      if ((x + win_w) > DisplayWidth(mb_tray_app_xdisplay(app), 
+-				     mb_tray_app_xscreen(app)))
+-	x = DisplayWidth(mb_tray_app_xdisplay(app), 
+-			 mb_tray_app_xscreen(app)) - win_w - 2;
++    {
++        y = DisplayHeight(mb_tray_app_xdisplay(app),
++            mb_tray_app_xscreen(app))
++        - win_h - mb_tray_app_height(app) - 4;
++    }
++
++        x -= (mb_tray_app_width(app)/2);
++
++        if ((x + win_w) > DisplayWidth(mb_tray_app_xdisplay(app),
++            mb_tray_app_xscreen(app)))
++        x = DisplayWidth(mb_tray_app_xdisplay(app),
++        mb_tray_app_xscreen(app)) - win_w - 2;
+     }
+ 
+-  
+   check_for_cards();
+-  
++
+   gtk_widget_set_uposition (GTK_WIDGET (cards_window), x, y);
+-  
++
+   gdk_pointer_grab (cards_window->window, TRUE, GDK_BUTTON_PRESS_MASK, NULL, NULL, CurrentTime);
+ 
+   PopupIsMapped = True;
+ }
+ 
+-
++/*
+ void
+ popup_vol_changed_cb (GtkAdjustment *adj, gpointer data)
+ {
+   int value;
+   MBTrayApp *app = (MBTrayApp *)data;
+-  
+ 
+   mb_tray_app_repaint(app);
+ }
++*/
+ 
+ void
+ popup_init(MBTrayApp *app)
+ {
+-  GtkWidget     *vbox;
+-  GtkWidget     *hbox;
+-  GtkWidget     *label;
+-  GtkWidget     *button_mute, *button_ok;
+-  GtkAdjustment *adj;
+-
+   cards_window = gtk_window_new (GTK_WINDOW_POPUP);
+ 
+   g_signal_connect (G_OBJECT (cards_window), "button-press-event", G_CALLBACK (cards_clicked), NULL);
+@@ -412,8 +408,6 @@
+   gtk_widget_realize (cards_window);
+ }
+ 
+-
+-
+ GdkFilterReturn
+ event_filter (GdkXEvent *xev, GdkEvent *gev, gpointer data)
+ {
+@@ -430,7 +424,6 @@
+ static gboolean
+ cards_timeout_cb (MBTrayApp *app)
+ {
+-  
+   mb_tray_app_repaint(app);
+ 
+   return TRUE;
+@@ -451,40 +444,39 @@
+ #endif
+ 
+   /* XXX check for err_str here */
+-  
+   app = mb_tray_app_new_with_display ( "CF/SD Monitor",
+-				       resize_callback,
+-				       paint_callback,
+-				       &argc,
+-				       &argv,
+-				       GDK_DISPLAY ());  
+-  
+-  if (!app) exit(0); 
+-  
+-  pb = mb_pixbuf_new(mb_tray_app_xdisplay(app), 
+-		     mb_tray_app_xscreen(app));
+-  
++                    resize_callback,
++                    paint_callback,
++                    &argc,
++                    &argv,
++                    GDK_DISPLAY ());
++
++  if (!app) exit(0);
++
++  pb = mb_pixbuf_new(mb_tray_app_xdisplay(app),
++        mb_tray_app_xscreen(app));
++
+   mb_tray_app_set_theme_change_callback (app, theme_callback );
+ 
+   mb_tray_app_set_button_callback (app, button_callback );
+-  
++
+   gtk_timeout_add (500,
+-		   (GSourceFunc) cards_timeout_cb,
+-		   app);
+-  
++        (GSourceFunc) cards_timeout_cb,
++        app);
++
+   load_icons();
+-  
++
+   mb_tray_app_set_icon(app, pb, Imgs[0]);
+ 
+   popup_init(app);
+ 
+   mb_tray_app_main_init (app);
+-  
++
+   gdk_window_add_filter (NULL, event_filter, (gpointer)app );
+-  
++
+   init_buttons();
+-  
++
+   gtk_main ();
+-  
++
+   return 1;
+ }

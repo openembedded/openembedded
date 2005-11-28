@@ -2,7 +2,7 @@ MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DESCRIPTION = "Scanner drivers for SANE"
 PR = "r4"
 DEPENDS = "gphoto2 jpeg libusb"
-LICENCE = "LGPL"
+LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.sane-project.org/pub/sane/sane-backends-${PV}/sane-backends-${PV}.tar.gz \
 	file://sane-plustek.patch;patch=1 \

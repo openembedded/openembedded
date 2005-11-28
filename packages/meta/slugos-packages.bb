@@ -1,0 +1,213 @@
+# Meta package containing all the packages which build for SlugOS
+#
+# All packages in here must build with the slugos-???.conf distros,
+# they do not necessarily work.
+DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
+LICENSE = "MIT"
+PR = "r2"
+CONFLICTS = "db3"
+PROVIDES += "${SLUGOS_IMAGENAME}-packages"
+#FIXME: backward compatibility with the master makefile
+PROVIDES += "openslug-packages"
+
+EXCLUDE_FROM_WORLD = "1"
+INHIBIT_DEFAULT_DEPS = "1"
+ALLOW_EMPTY = 1
+PACKAGES = "${PN}"
+
+# The list of packages to build for the ucslugc DISTRO.
+# KEEP IN ALPHABETICAL ORDER
+SLUGOS_PACKAGES = "\
+	alsa-lib \
+	alsa-utils \
+	atftp \
+	audiofile \
+	aumix \
+	autoconf \
+	automake \
+	bash \
+	bind \
+	binutils \
+	bison \
+	bluez-utils-nodbus \
+	bogofilter \
+	boost \
+	bridge-utils \
+	bwmon \
+	bzip2 \
+	ccxstream \
+	cherokee \
+	coreutils \
+	cron \
+	ctorrent \
+	cvs \
+	cyrus-imapd \
+	cyrus-sasl \
+	db \
+	diffstat \
+	diffutils \
+	dnsmasq \
+	e2fsprogs \
+	expat \
+	ez-ipupdate \
+	file \
+	findutils \
+	flac \
+	flex \
+	ftpd-topfield \
+	gawk \
+	gcc \
+	gdb \
+	gdbm \
+	glib-2.0 \
+	gnu-config \
+	gphoto2 \
+	grep \
+	gtk-doc \
+	gzip \
+	ifupdown \
+	ipkg-utils \
+	iptables \
+	irssi \
+	joe \
+	jpeg \
+	lcdproc \
+	less \
+	libao \
+	libdvb \
+	libgphoto2 \
+	libid3tag \
+	liblockfile \
+	libmad \
+	libmikmod \
+	libogg \
+	libol \
+	libpng \
+	libtool \
+	libusb \
+	libvorbis \
+	libxml2 \
+	lrzsz \
+	lsof \
+	m4 \
+	mailx \
+	make \
+	masqmail \
+	mdadm \
+	mgetty \
+	miau \ 
+	microcom \
+	minicom \
+	mpd \
+	mt-daapd \
+	mtd-utils \
+	mutt \
+	nail \
+	nano \
+	ncftp \
+	ncurses \
+	netpbm \
+	nmap \
+	ntp \
+	obexftp openobex openobex-apps ircp \
+	openldap \
+	openntpd \
+	openssh \
+	openvpn \
+	patch \
+	pciutils \
+	pcre \
+	perl \
+	pkgconfig \
+	ppp \
+	procps \
+	puppy \
+	pwc \
+	python \
+	qc-usb-messenger \
+	quilt \
+	reiserfsprogs reiser4progs \
+	rsync \
+	samba \
+	sane-backends \
+	sed \
+	setpwc \
+	ssmtp \
+	strace \
+	streamripper \
+	sudo \
+	sysfsutils \
+	syslog-ng \
+	tar \
+	thttpd \
+	tiff \
+	unionfs-modules unionfs-utils \
+	unzip \
+	usbutils \
+	util-linux \
+	vim \
+	vlan \
+	vsftpd \
+	wakelan \
+	wget \
+	wireless-tools \
+	zd1211 \
+	zlib \
+	"
+
+# Packages currently broken on all platforms
+SLUGOS_BROKEN_PACKAGES = "\
+	groff \
+	icecast \
+	pvrusb2-mci \
+	watchdog \
+	"
+
+# These packages will never build because uclibc lacks (and always will lack)
+# appropriate support.  This define is for documentation of this fact!  The
+# normal cause is that the package uses the "NIS" interfaces (once known as
+# YP - a trademark of BT which SUN used without license - the missing function
+# calls often still have 'yp' in the name).
+UCLIBC_UNSUPPORTABLE_PACKAGES = "\
+	libpam \
+	nfs-utils \
+	postfix \
+	yp-tools ypbind ypserv \
+	"
+
+# Packages which build only with glibc or uclibc (some of these use internal
+# glibc functions and so will probably never run on uclibc).
+SLUGOS_PACKAGES_append_linux = "\
+	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
+	ctrlproxy \
+	iperf \
+	man man-pages \
+	psmisc \
+	screen \
+	timezones \
+	xinetd \
+	"
+
+#BROKEN:
+#	dsniff
+
+SLUGOS_PACKAGES_append_linux-uclibc = "\
+	"
+
+# These packages are not in the build because they have a significant compilation
+# time, add them to SLUGOS_EXTRA_PACKAGES if required
+SLUGOS_OPTIONAL_PACKAGES = "\
+	mysql \
+	"
+
+SLUGOS_EXTRA_PACKAGES ?= ""
+
+# The package-index at the end causes regeneration of the Packages.gz and
+# other control files.
+DEPENDS = "\
+	slugos-image \
+	slugos-native \
+	${SLUGOS_PACKAGES} \
+	${SLUGOS_EXTRA_PACKAGES} \
+	package-index \
+	"

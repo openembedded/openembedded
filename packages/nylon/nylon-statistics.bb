@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 PV = "cvs${CVSDATE}"
 PR = "r1"
 
-SRC_URI = "svn://meshcube.org/svn/application;module=${PN};proto=http"
+SRC_URI = "http://meshcube.org/download/${PN}_${CVSDATE}.tgz"
 S = "${WORKDIR}/${PN}"
 
 do_install() {

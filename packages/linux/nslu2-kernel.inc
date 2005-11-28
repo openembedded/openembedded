@@ -1,5 +1,3 @@
-# nslu2-kernel.inc
-#
 # Standard definitions for any NSLU2 Linux kernel.
 # Include this file in a .bb which specifies, at least,
 # PN,PV,PR for the desired kernel
@@ -7,32 +5,10 @@
 # Define the following *before* including this file as
 # required:
 #
-# N2K_EXTRA_FILES - kernel-tree path of extra files to install
-# N2K_FILES - kernel-tree path of files to install, defaults to:
-#   drivers/i2c/chips/x1205-rtc.c
-#   arch/arm/mach-ixp4xx/nslu2-io.c
-#   arch/arm/mach-ixp4xx/nslu2-setup.c
-#   arch/arm/mach-ixp4xx/nslu2-pci.c
-#   arch/arm/mach-ixp4xx/nslu2-part.c
-#   include/asm-arm/arch-ixp4xx/nslu2.h
-#   ${N2K_EXTRA_FILES}
-#
-# N2K_EXTRA_PATCHES - list of patches to apply (can include
-#   patches to the files installed above)
-# N2K_PATCHES - full list of patches to apply, defaults to:
-#   file://nslu2_2.6.11.patch;patch=1
-#   file://usbnet.patch;patch=1
-#   file://ixp4xx_copy_from.patch;patch=1
-#   file://anonymiser.patch;patch=1
-#   file://xscale-reset.patch;patch=1
-#   file://mtd-shutdown.patch;patch=1
-#   ${N2K_EXTRA_PATCHES}
-#
+# N2K_PATCHES - full list of patches to apply, to add files
+#   generate a patch against /dev/null
 # N2K_SUFFIX - the suffix to add after 'zImage-' in the
-#   deploy/images directory - defaults to "openslug"
-#
-# Notice that the N2K_PATCHES list is appropriate for
-# openslug-kernel_2.6.11.2 and probably nothing else.
+#   deploy/images directory, should identify the image config
 #
 # DEFAULT_PREFERENCE is set automagically in this file as
 # follows:
@@ -72,7 +48,6 @@ DEPENDS += "devio-native"
 # file).  Files, including the all important defconfig, are
 # searched for in the following directories (last one first):
 #
-#	openslug-kernel-2.6.11.2
 #	nslu2-kernel/files
 #	nslu2-kernel/X.Y
 #	nslu2-kernel/X.Y.Z
@@ -163,47 +138,23 @@ python () {
 
 # FILESPATH: this list is in order last-searched-first, therefore
 # the first entry is the *latest* and/or most specific
-FILESPATH = "${FILE_DIRNAME}/${P}:${N2K_FILESPATH}:${FILE_DIRNAME}/openslug-kernel-2.6.11.2"
+FILESPATH = "${FILE_DIRNAME}/${P}:${N2K_FILESPATH}"
 
 # The working directory will be the 'base' version (which may not be the
 # same as implied by the PV variable because it corresponds to the prior
 # minor version for rc and pre patched versions).
 S = "${WORKDIR}/linux-${N2K_SRCVER}"
 
-# N2K_FILES is a list of additional files added to the source, these are
-# put in place before the patches, so may themselves be patched.  The list
-# gives the path name relative to the base of the kernel source tree, the
-# base file name is used to *find* the file.
-N2K_EXTRA_FILES ?=
-N2K_FILES ?= "\
-    drivers/i2c/chips/x1205-rtc.c \
-    arch/arm/mach-ixp4xx/nslu2-io.c \
-    arch/arm/mach-ixp4xx/nslu2-setup.c \
-    arch/arm/mach-ixp4xx/nslu2-pci.c \
-    arch/arm/mach-ixp4xx/nslu2-part.c \
-    include/asm-arm/arch-ixp4xx/nslu2.h \
-    ${N2K_EXTRA_FILES}"
+# N2K_PATCHES is the list of patches.
+N2K_PATCHES ?= ""
 
-N2K_SRCFILES = "${@( ' '.join([ ("file://" + n2k_file.split('/')[-1]) for n2k_file in bb.data.getVar("N2K_FILES",d,1).split(None) ]) )}"
-
-# N2K_PATCHES is a list of additional patches, the list specified
-# here comes from the openslug-2.6.11.2 kernel, typically extra
-# patches will be required and very often patches will need to
-# be removed (i.e. the default is typically not very useful!)
-N2K_EXTRA_PATCHES ?=
-N2K_PATCHES ?= "\
-    file://nslu2_2.6.11.patch;patch=1 \
-    file://usbnet.patch;patch=1 \
-    file://ixp4xx_copy_from.patch;patch=1 \
-    file://anonymiser.patch;patch=1 \
-    file://xscale-reset.patch;patch=1 \
-    file://mtd-shutdown.patch;patch=1 \
-    ${N2K_EXTRA_PATCHES}"
-
+# Image suffix - actually set in conf/machine/nslu2.conf as it is also
+# used by anything which needs to know the name of the generated image.
+# May be overridden in the distro if patches or defconfig are changed.
+#FIXME: this can be removed, it is just here for safety with the old names.
 N2K_SUFFIX ?= "openslug"
 
 SRC_URI  = "${N2K_SRCURI}"
-SRC_URI += "${N2K_SRCFILES}"
 SRC_URI += "${N2K_PATCHES}"
 SRC_URI += "file://defconfig"
 
@@ -235,27 +186,22 @@ EXTRA_OEMAKE += "EXTRAVERSION="
 EXTRA_OEMAKE += "LOCALVERSION="
 EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 
-# By putting the added files in place in a separate task before
-# do_patch it becomes possible to patch these files.
-do_unpacklocal() {
-	for f in ${N2K_FILES}
-	do
-		s="$(basename "$f")"
-		install -m 0644 "${WORKDIR}/$s" "${S}/$f"
-	done
-}
+# Override KERNEL_RELEASE from kernel.bbclass to match:
+KERNEL_RELEASE = "${KERNEL_VERSION}"
 
 addtask unpacklocal before do_patch after do_unpack
 
+# NOTE: in MM kernel builds the config options (oldconfig, menuconfig
+# and so on) do not allow an option to be overridden, so the following
+# removes the options which must be changed.
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	if test '${ARCH_BYTE_SEX}' = le
+	rm -f ${S}/.config
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
+	if test '${ARCH_BYTE_SEX}' = be
 	then
-		sed -i '/CONFIG_CPU_BIG_ENDIAN/d' '${S}/.config'
-	else
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
-	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+	sed -e '/CONFIG_CPU_BIG_ENDIAN/d' -e '/CONFIG_CMDLINE=/d' '${WORKDIR}/defconfig' >>'${S}/.config'
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
@@ -310,5 +256,5 @@ python () {
 	# Don't build the kernel unless we're targeting an nslu2
 	mach = bb.data.getVar("MACHINE", d, 1)
 	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("OpenSlug only builds for the Linksys NSLU2")
+		raise bb.parse.SkipPackage("nslu2-kernel only builds for the Linksys NSLU2")
 }

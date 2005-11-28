@@ -1,0 +1,44 @@
+--- ./ixp400_eth.c.orig	2005-11-13 16:17:57.943717806 -0800
++++ ./ixp400_eth.c	2005-11-13 16:29:00.829430574 -0800
+@@ -65,6 +65,10 @@
+ #include <linux/sysctl.h>
+ #include <linux/unistd.h>
+ 
++#ifndef to_platform_device
++#include <linux/platform_device.h>
++#endif
++
+ /*
+  * Intel IXP400 Software specific header files
+  */
+@@ -2410,7 +2414,7 @@ dev_tx_timeout_work(void* arg)
+ }
+ 
+ 
+-
++#if 0
+ static void
+ dev_tx_timeout_task(void *dev_id)
+ {
+@@ -2444,6 +2448,7 @@ dev_tx_timeout_task(void *dev_id)
+ 
+     up(maintenance_mutex);
+ }
++#endif
+ 
+ 
+ /* This function is called when kernel thinks that TX is stuck */
+@@ -3274,9 +3279,12 @@ static struct net_device ixp400_devices[
+ 
+ int init_module(void)
+ {
+-    int res, dev_count;
++    int res;
++#if 0
++    int dev_count;
+     IxEthAccPortId portId;
+     struct net_device *dev;
++#endif
+     int i;
+     TRACE;
+ 

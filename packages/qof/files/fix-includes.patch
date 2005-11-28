@@ -1,0 +1,16 @@
+--- /tmp/Makefile.am	2005-11-13 21:41:47.368686720 +0100
++++ qof-0.6.0-pre1/qof/Makefile.am	2005-11-13 21:41:58.637973528 +0100
+@@ -86,13 +86,11 @@
+ 
+ if USE_LIBGDA
+ INCLUDES = \
+-  -I$(includedir) \
+   -DPREFIX=\""$(prefix)"\"  \
+   -DDATADIR=\""$(datadir)"\"
+ else
+ INCLUDES = \
+   -I${top_srcdir}/lib/libsql  \
+-  -I$(includedir) \
+   -DPREFIX=\""$(prefix)"\" \
+   -DDATADIR=\""$(datadir)"\"
+ endif

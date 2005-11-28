@@ -1,0 +1,13 @@
+--- linux-2.6.15/fs/jffs2/nodelist.h	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/fs/jffs2/nodelist.h	1970-01-01 00:00:00.000000000 +0000
+@@ -44,7 +44,9 @@
+ #define D2(x)
+ #endif
+ 
+-#define JFFS2_NATIVE_ENDIAN
++#undef JFFS2_NATIVE_ENDIAN
++#define JFFS2_BIG_ENDIAN 1
++#undef JFFS2_LITTLE_ENDIAN
+ 
+ /* Note we handle mode bits conversion from JFFS2 (i.e. Linux) to/from
+    whatever OS we're actually running on here too. */

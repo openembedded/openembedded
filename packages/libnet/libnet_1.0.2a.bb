@@ -4,9 +4,12 @@ portable framework for low-level network packet shaping, \
 handling, and injection."
 SECTION = "libs/network"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch;patch=1 \
+	   file://configure.uclibc.patch;patch=1 \
+	   "
 S = "${WORKDIR}/Libnet-${PV}"
 
 inherit autotools
@@ -15,7 +18,7 @@ CPPFLAGS_prepend = "-I${S}/libnet/include -DHAVE_PF_PACKET "
 EXTRA_OEMAKE = "'LIB_PREFIX=${libdir}/' 'MAN_PREFIX=${mandir}/' \
 	        'BIN_PREFIX=${bindir}/' 'INC_PREFIX=${includedir}/'"
 
-#FIXME:
+#FIXME: (fixing this would remove the need for configure.uclibc.patch above)
 do_configure() {
 	oe_runconf
 }

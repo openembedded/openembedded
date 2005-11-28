@@ -1,7 +1,10 @@
 DESCRIPTION = "Lightweight At Daemon"
 SECTION = "base"
 LICENSE = "GPLV2"
-PR = "r2"
+RCONFLICTS = "at"
+RREPLACES = "at"
+
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
 			file://no-oknodo.patch;patch=1"

@@ -21,7 +21,7 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/ixp400AccessLibrary-1_5.zip"
 SRC_URI += "file://2.6.patch;patch=1"
 S = "${WORKDIR}/ixp_osal"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r31"
+PR = "r32"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -23,7 +23,7 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
 #
 
 DEPENDS = "irda-utils ntp timezones ttf-dejavu \
-           bluez-utils-nodbus wireless-tools usbutils \
+           bluez-utils-nodbus wireless-tools \
            opie-ttf-support libopieobex0 opie-examples-python \
            opie-freetype opie-help-en opie-i18n opie-login \
            opie-securityplugin-blueping opie-securityplugin-dummy \
