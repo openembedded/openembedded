@@ -3,7 +3,7 @@ SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 
-DOSRC = "http://www.do13.in-berlin.de/openzaurus/patches"
+DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"

@@ -1,0 +1,10 @@
+--- ez-ipupdate-3.0.10/conf_file.c.orig	2005-11-27 20:03:46.557322517 -0800
++++ ez-ipupdate-3.0.10/conf_file.c	2005-11-27 20:03:15.519369422 -0800
+@@ -34,6 +34,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <errno.h>
+ 
+ #include <conf_file.h>
+ 

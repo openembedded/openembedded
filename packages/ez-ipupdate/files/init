@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# ipupdate	init.d script for ez-ipupdate
+#
+# You *must* create or update the /etc/ipupdate.conf file for
+# this to work
+CONF=/etc/ipupdate.conf
+PIDFILE=/var/run/ipupdate.pid
+test -x /usr/bin/ez-ipupdate -a -r "${CONF}" || exit 0
+if egrep '^service-type=<type of service>$' "${CONF}" >/dev/null
+then
+	# conf file not editted
+	exit 0
+fi
+
+case "$1" in
+  start)
+	echo -n "Starting ez-ipupdate: "
+	start-stop-daemon --start -x /usr/bin/ez-ipupdate -- -c "${CONF}" -d -F "${PIDFILE}" "$@"
+	echo "done"
+	;;
+  stop)
+	echo -n "Stopping ez-ipupdate: "
+	start-stop-daemon --stop -s 3 -p "${PIDFILE}"
+	echo "done"
+	;;
+  restart)
+	echo -n "Restarting ez-ipupdate: "
+	start-stop-daemon --stop -s 3 -p "${PIDFILE}"
+	start-stop-daemon --start -x /usr/bin/ez-ipupdate -- -c "${CONF}" -d -F "${PIDFILE}" "$@"
+	echo "done"
+	;;
+  force-reload|reload)
+  	# HUP causes a reload, a simple TERM causes the daemon
+	# to wake up and re-update the IP address
+	start-stop-daemon --stop -s 1 -p "${PIDFILE}"
+  	;;
+  *)
+	echo "Usage: ipupdate { start | stop | restart | reload }" >&2
+	exit 1
+	;;
+esac
+
+exit 0

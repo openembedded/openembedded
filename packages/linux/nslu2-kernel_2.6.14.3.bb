@@ -8,7 +8,7 @@ PR_CONFIG = "0"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r1.${PR_CONFIG}"
+PR = "r0.${PR_CONFIG}"
 
 include nslu2-kernel.inc
 

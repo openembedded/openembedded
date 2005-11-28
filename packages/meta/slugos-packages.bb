@@ -49,6 +49,7 @@ SLUGOS_PACKAGES = "\
 	dnsmasq \
 	e2fsprogs \
 	expat \
+	ez-ipupdate \
 	file \
 	findutils \
 	flac \

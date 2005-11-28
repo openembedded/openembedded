@@ -1,0 +1,11 @@
+--- ez-ipupdate-3.0.10/ez-ipupdate.c.orig	2005-11-27 22:59:39.149355269 -0800
++++ ez-ipupdate-3.0.10/ez-ipupdate.c	2005-11-27 22:59:46.705830768 -0800
+@@ -3806,7 +3806,7 @@ int ZONEEDIT_update_entry(void)
+       break;
+ 
+     case 200:
+-      if(strstr(buf, "<SUCCESS\n") != NULL)
++      if(strstr(buf, "<SUCCESS ") != NULL)
+       {
+         if(!(options & OPT_QUIET))
+         {
