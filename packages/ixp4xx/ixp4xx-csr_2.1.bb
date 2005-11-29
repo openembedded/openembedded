@@ -34,7 +34,7 @@ SRC_URI += "file://le.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -69,9 +69,9 @@ EXTRA_OEMAKE = "'AR=${AR}' \
 		'${IX_TARGET}_COMPONENTS=${COMPONENTS}' \
 		'${IX_TARGET}_CODELETS_COMPONENTS=${CODELETS_COMPONENTS}' \
 		'IX_DEVICE=ixp42X' \
-		'IX_MPHY=1' \
-		'IX_MPHYSINGLEPORT=1' \
 		'IX_INCLUDE_MICROCODE=1' \
+		'IX_UTOPIAMODE=0' \
+		'IX_MPHYSINGLEPORT=1' \
 		${IX_ENSURE} \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
