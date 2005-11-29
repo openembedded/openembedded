@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r3"
 
 #DEFAULT_PREFERENCE = "-1"
 
@@ -22,13 +22,15 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/enable_iwmmxt-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r4.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
-           ${RPSRC}/led_core-r0.patch;patch=1 \
-           ${RPSRC}/led_triggers-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
+           ${RPSRC}/led_core-r1.patch;patch=1 \
+           ${RPSRC}/led_triggers-r1.patch;patch=1 \
            ${RPSRC}/led_trig_timer-r0.patch;patch=1 \
-           ${RPSRC}/led_zaurus-r0.patch;patch=1 \
-           ${RPSRC}/led_locomo-r0.patch;patch=1 \
-           ${RPSRC}/led_ide-r0.patch;patch=1 \
-           ${RPSRC}/led_nand-r0.patch;patch=1 \
+           ${RPSRC}/led_trig_sharpsl_pm-r0.patch;patch=1 \
+           ${RPSRC}/led_zaurus-r2.patch;patch=1 \
+           ${RPSRC}/led_locomo-r1.patch;patch=1 \
+           ${RPSRC}/led_ide-r1.patch;patch=1 \
+           ${RPSRC}/led_nand-r1.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r2.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
