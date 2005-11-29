@@ -9,7 +9,7 @@ MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
 inherit autotools pkgconfig
 
-FILES_${PN} += "{datadir} ${libdir}"
+FILES_${PN} += "${datadir} ${libdir}"
 
 do_install() {
 install -d ${D}${datadir}/opensync/defaults
