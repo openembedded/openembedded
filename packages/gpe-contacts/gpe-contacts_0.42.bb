@@ -1,4 +1,5 @@
 LICENSE = "GPL"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 inherit gpe autotools
 
 PR = "r0"
