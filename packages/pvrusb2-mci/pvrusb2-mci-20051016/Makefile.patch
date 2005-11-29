@@ -1,0 +1,15 @@
+--- driver/Makefile-	2005-09-11 13:22:08.000000000 -1000
++++ driver/Makefile	2005-09-17 01:02:06.341217389 -1000
+@@ -37,10 +37,10 @@
+   all: modules
+ 
+   modules modules_install clean:
+-	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(shell pwd) $@
++	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) CFLAGS="$(CFLAGS) $(TARGET_CFLAGS)" -C $(KDIR) M=$(shell pwd) $@
+ 
+   install:
+-	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(shell pwd) modules_install
++	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) CFLAGS="$(CFLAGS) $(TARGET_CFLAGS)" -C $(KDIR) M=$(shell pwd) modules_install
+ 
+ else
+ 

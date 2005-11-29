@@ -12,9 +12,10 @@ SRC_URI += "file://2.6.15.patch;patch=1"
 SRC_URI += "file://device-name.patch;patch=1"
 SRC_URI += "file://poll-controller.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
+SRC_URI += "file://mac-address.patch;patch=1"
 SRC_URI += "file://debug.patch;patch=1"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
@@ -51,7 +52,7 @@ EXTRA_OEMAKE = "'PWD=${S}' \
 		'IXP4XX_CSR_DIR=${STAGING_INCDIR}/linux/ixp4xx-csr' \
 		'IXP4XX_CSR_SYMVERS=${IXP4XX_CSR_SYMVERS}' \
 		'OSAL_DIR=${OSAL_DIR}' \
-		'IX_CFLAGS=-DIX_UTOPIAMODE=0 -DIX_MPHYSINGLEPORT=1 -DCONFIG_IXP400_ETH_NPEB_ONLY=1 ${IX_ENSURE} ${DEVICE_NAME} -DIX_COMPONENT_NAME=-1' \
+		'IX_CFLAGS=-DIX_UTOPIAMODE=0 -DIX_MPHYSINGLEPORT=1 ${IX_ENSURE} ${DEVICE_NAME} -DIX_COMPONENT_NAME=-1' \
 		'LINUX_SRC=${STAGING_KERNEL_DIR}' \
 		'LINUX_CROSS_COMPILE=${HOST_PREFIX}' \
 		"
@@ -67,7 +68,7 @@ do_compile_append () {
 		${CONFIG_MODVERSIONS:+-m} \
 		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
 		-i '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
-		ixp400_eth.o >&2 | egrep .
+		ixp400_eth.o 2>&1 | egrep .
 	then
 		echo "MODPOST errors - see above"
 		return 1
