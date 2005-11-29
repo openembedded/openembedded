@@ -34,7 +34,7 @@ SRC_URI += "file://le.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
