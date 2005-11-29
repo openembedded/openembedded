@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.14-rc4
-# Fri Oct 21 16:13:58 2005
+# Linux kernel version: 2.6.14
+# Mon Nov 28 18:53:25 2005
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -93,12 +93,12 @@ CONFIG_ARCH_SUPPORTS_BIG_ENDIAN=y
 #
 # IXP4xx Platforms
 #
+CONFIG_MACH_NSLU2=y
 # CONFIG_ARCH_AVILA is not set
 # CONFIG_ARCH_ADI_COYOTE is not set
 # CONFIG_ARCH_IXDP425 is not set
 # CONFIG_MACH_IXDPG425 is not set
 # CONFIG_MACH_IXDP465 is not set
-CONFIG_MACH_NSLU2=y
 # CONFIG_ARCH_PRPMC1100 is not set
 # CONFIG_MACH_GTWX5715 is not set
 
@@ -169,7 +169,6 @@ CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=
 # At least one emulation must be selected
 #
 CONFIG_FPE_NWFPE=y
-# CONFIG_FPE_NWFPE_XP is not set
 # CONFIG_FPE_FASTFPE is not set
 
 #
@@ -574,7 +573,13 @@ CONFIG_SCSI_MULTI_LUN=y
 # CONFIG_SCSI_IPR is not set
 # CONFIG_SCSI_QLOGIC_FC is not set
 # CONFIG_SCSI_QLOGIC_1280 is not set
-CONFIG_SCSI_QLA2XXX=n
+CONFIG_SCSI_QLA2XXX=y
+# CONFIG_SCSI_QLA21XX is not set
+# CONFIG_SCSI_QLA22XX is not set
+# CONFIG_SCSI_QLA2300 is not set
+# CONFIG_SCSI_QLA2322 is not set
+# CONFIG_SCSI_QLA6312 is not set
+# CONFIG_SCSI_QLA24XX is not set
 # CONFIG_SCSI_LPFC is not set
 # CONFIG_SCSI_DC395x is not set
 # CONFIG_SCSI_DC390T is not set
@@ -642,6 +647,7 @@ CONFIG_TUN=m
 # Ethernet (10 or 100Mbit)
 #
 CONFIG_NET_ETHERNET=y
+CONFIG_MACLIST=y
 CONFIG_MII=y
 # CONFIG_HAPPYMEAL is not set
 # CONFIG_SUNGEM is not set
@@ -1120,7 +1126,6 @@ CONFIG_USB=y
 CONFIG_USB_DEVICEFS=y
 # CONFIG_USB_BANDWIDTH is not set
 # CONFIG_USB_DYNAMIC_MINORS is not set
-# CONFIG_USB_SUSPEND is not set
 # CONFIG_USB_OTG is not set
 
 #
@@ -1369,7 +1374,6 @@ CONFIG_RAMFS=y
 #
 # CONFIG_ADFS_FS is not set
 # CONFIG_AFFS_FS is not set
-# CONFIG_ASFS_FS is not set
 # CONFIG_HFS_FS is not set
 # CONFIG_HFSPLUS_FS is not set
 # CONFIG_BEFS_FS is not set
