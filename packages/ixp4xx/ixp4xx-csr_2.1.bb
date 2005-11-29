@@ -34,7 +34,7 @@ SRC_URI += "file://le.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -96,7 +96,7 @@ do_stage () {
 		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
 		-i '${STAGING_KERNEL_DIR}/Module.symvers' \
 		-o '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
-		${MAKE_TARGETS} >&2 | egrep .
+		${MAKE_TARGETS} 2>&1 | egrep .
 	then
 		echo "MODPOST errors - see above"
 		return 1
