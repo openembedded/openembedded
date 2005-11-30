@@ -34,7 +34,7 @@ SRC_URI += "file://le.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -89,20 +89,20 @@ do_stage () {
 	# Since Module.symvers in the kernel staging directory doesn't include
 	# the symbols from ixp400.o we need to add them to another file for
 	# the ixp400-eth build
-#	rm -f '${STAGING_KERNEL_DIR}/ixp400-csr.symvers'
-#	. '${KCONFIG_FILE}'
-#	if '${STAGING_KERNEL_DIR}/scripts/mod/modpost' \
-#		${CONFIG_MODVERSIONS:+-m} \
-#		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
-#		-i '${STAGING_KERNEL_DIR}/Module.symvers' \
-#		-o '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
-#		${MAKE_TARGETS} >&2 | egrep .
-#	then
-#		echo "MODPOST errors - see above"
-#		return 1
-#	else
-#		return 0
-#	fi
+	rm -f '${STAGING_KERNEL_DIR}/ixp400-csr.symvers'
+	. '${KCONFIG_FILE}'
+	if '${STAGING_KERNEL_DIR}/scripts/mod/modpost' \
+		${CONFIG_MODVERSIONS:+-m} \
+		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
+		-i '${STAGING_KERNEL_DIR}/Module.symvers' \
+		-o '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
+		${MAKE_TARGETS} 2>&1 | egrep .
+	then
+		echo "MODPOST errors - see above"
+		return 1
+	else
+		return 0
+	fi
 }
 
 PACKAGES = "${PN}"
