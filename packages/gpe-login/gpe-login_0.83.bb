@@ -8,6 +8,9 @@ MAINTAINER  = "Philip Blundell <pb@handhelds.org>"
 DEPENDS     = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS    = "xkbd"
 RPROVIDES   = "gpe-session-starter"
-PR = "r0"
+PR = "r1"
 
 SRC_URI += "file://busybox-bad-perms.patch;patch=1"
+
+SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
+
