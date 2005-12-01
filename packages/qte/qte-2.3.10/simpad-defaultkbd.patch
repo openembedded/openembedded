@@ -1,0 +1,11 @@
+--- qt-2.3.10/src/kernel/qwindowsystem_qws.cpp.orig	2005-11-30 10:53:32.000000000 +0100
++++ qt-2.3.10/src/kernel/qwindowsystem_qws.cpp	2005-11-30 10:55:51.000000000 +0100
+@@ -2917,7 +2917,7 @@
+ {
+     QString keyboards = getenv("QWS_KEYBOARD");
+     if ( keyboards.isEmpty() ) {
+-#if defined( QT_QWS_CASSIOPEIA )
++#if defined( QT_QWS_CASSIOPEIA ) || defined( QT_QWS_SIMPAD )
+ 	keyboards = "Buttons";
+ #elif !defined(QT_NO_QWS_VFB)
+ 	extern bool qvfbEnabled;
