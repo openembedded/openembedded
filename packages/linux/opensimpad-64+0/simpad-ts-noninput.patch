@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/drivers/misc/ucb1x00-ts.c~simpad-ts-noninput
++++ linux-2.4.27/drivers/misc/ucb1x00-ts.c
+@@ -35,7 +35,7 @@
+ /*
+  * Define this if you want the UCB1x00 stuff to talk to the input layer
+  */
+-#ifdef CONFIG_INPUT
++#if defined(CONFIG_INPUT) && !defined(CONFIG_SA1100_SIMPAD)
+ #define USE_INPUT
+ #else
+ #undef USE_INPUT
