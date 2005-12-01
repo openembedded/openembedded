@@ -1,8 +1,8 @@
 LICENSE    = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
-PR         = "r4"
+PR         = "r3"
 
-DEPENDS    = "base-passwd hotplug"
+DEPENDS    = "base-passwd"
 RDEPENDS   = "hotplug"
 
 SRC_URI    = "file://fixup-770.sh"
