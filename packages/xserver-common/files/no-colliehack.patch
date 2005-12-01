@@ -1,0 +1,12 @@
+--- /tmp/Xserver	2005-12-01 14:33:44.507282728 +0100
++++ xserver-common-1.2/X11/Xserver	2005-12-01 14:34:07.741750552 +0100
+@@ -58,9 +58,6 @@
+ 		ARGS="$ARGS -dpi 100 -screen 320x240@270 -rgba vrgb" ;;
+ 	*Collie)
+ 		ARGS="$ARGS -dpi 100 -screen 320x240@270 -rgba vrgb"
+-		# Horrible hack required to enable resuming after suspend
+-		rm -f /dev/apm_bios
+-		killall -9 apmd
+ 		;;
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		ARGS="$ARGS -dpi 100 -rgba rgb" ;;

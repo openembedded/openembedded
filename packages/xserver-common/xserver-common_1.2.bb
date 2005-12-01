@@ -4,10 +4,11 @@ LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "xmodmap xrandr xdpyinfo xtscal"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
-PR = "r1"
+PR = "r2"
 
 
 # we are using a gpe-style Makefile
 inherit gpe
 
 SRC_URI += "file://100dpi.patch;patch=1"
+SRC_URI += "file://no-colliehack.patch;patch=1"
