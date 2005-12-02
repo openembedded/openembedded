@@ -1,12 +1,38 @@
-On IXP4XX systems the FIS directory is big endian even with a little
-endian kernel.  This patch recognises the FIS directory on such a
-system and byte swaps it to obtain a valid table based on the 'size'
-field of the FIS directory (the size field is know to always match the
-erase block size on such systems, and probably all systems.)
+drivers/mtd/redboot.c: recognise a foreign byte sex partition table
 
---- linux-2.6.13/.pc/10-mtdpart-redboot-fis-byteswap.patch/drivers/mtd/redboot.c	2005-08-28 16:41:01.000000000 -0700
-+++ linux-2.6.13/drivers/mtd/redboot.c	2005-10-23 21:44:59.999694674 -0700
-@@ -89,8 +89,34 @@
+The RedBoot boot loader writes flash partition tables containing native
+byte sex 32 bit values.  When booting an opposite byte sex kernel (e.g.  an
+LE kernel from BE RedBoot) the current MTD driver fails to handle the
+partition table and therefore is unable to generate the correct partition
+map for the flash.
+
+The patch recognises that the FIS directory (the partition table) is
+byte-reversed by examining the partition table size, which is known to be
+one erase block (this is an assumption made elsewhere in redboot.c).  If
+the size matches the erase block after byte swapping the value then
+byte-reversal is assumed, if not no further action is taken.  The patched
+code is fail safe; should redboot.c be changed to support a partition table
+with a modified size field the test will fail and the partition table will
+be assumed to have the host byte sex.
+
+If byte-reversal is detected the patch byte swaps the remainder of the 32
+bit fields in the copy of the table; this copy is then used to set up the
+MTD partition map.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Modified slightly and
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+
+Index: drivers/mtd/redboot.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/redboot.c,v
+retrieving revision 1.18
+retrieving revision 1.19
+diff -u -p -r1.18 -r1.19
+--- linux-2.6.15/drivers/mtd/redboot.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/mtd/redboot.c	1970-01-01 00:00:00.000000000 +0000
+@@ -89,8 +89,32 @@ static int parse_redboot_partitions(stru
  			i = numslots;
  			break;
  		}
@@ -14,10 +40,10 @@ erase block size on such systems, and probably all systems.)
 +		if (!memcmp(buf[i].name, "FIS directory", 14)) {
 +			/* This is apparently the FIS directory entry for the
 +			 * FIS directory itself.  The FIS directory size is
-+			 * one erase block, if the buf[i].size field is
++			 * one erase block; if the buf[i].size field is
 +			 * swab32(erasesize) then we know we are looking at
 +			 * a byte swapped FIS directory - swap all the entries!
-+			 * (NOTE: this is 'size' not 'data_length', size is
++			 * (NOTE: this is 'size' not 'data_length'; size is
 +			 * the full size of the entry.)
 +			 */
 +			if (swab32(buf[i].size) == master->erasesize) {
@@ -26,15 +52,13 @@ erase block size on such systems, and probably all systems.)
 +					/* The unsigned long fields were written with the
 +					 * wrong byte sex, name and pad have no byte sex.
 +					 */
-+#					define do_swab32(x) (x) = swab32(x)
-+					do_swab32(buf[j].flash_base);
-+					do_swab32(buf[j].mem_base);
-+					do_swab32(buf[j].size);
-+					do_swab32(buf[j].entry_point);
-+					do_swab32(buf[j].data_length);
-+					do_swab32(buf[j].desc_cksum);
-+					do_swab32(buf[j].file_cksum);
-+#					undef do_swab32
++					swab32s(&buf[j].flash_base);
++					swab32s(&buf[j].mem_base);
++					swab32s(&buf[j].size);
++					swab32s(&buf[j].entry_point);
++					swab32s(&buf[j].data_length);
++					swab32s(&buf[j].desc_cksum);
++					swab32s(&buf[j].file_cksum);
 +				}
 +			}
  			break;
@@ -42,3 +66,5 @@ erase block size on such systems, and probably all systems.)
  	}
  	if (i == numslots) {
  		/* Didn't find it */
+
+
