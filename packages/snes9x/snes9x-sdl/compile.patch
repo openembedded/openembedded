@@ -1,10 +1,10 @@
 
 #
-# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+# Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- snes9x-sdl-1.39/unix/svga.cpp~compile	2003-10-28 10:08:18.000000000 +0100
-+++ snes9x-sdl-1.39/unix/svga.cpp	2004-01-19 21:29:07.000000000 +0100
+--- snes9x-sdl-1.39/unix/svga.cpp~compile
++++ snes9x-sdl-1.39/unix/svga.cpp
 @@ -48,7 +48,7 @@
  #include <stdlib.h>
  #include <signal.h>
@@ -14,8 +14,8 @@
  
  #include "snes9x.h"
  #include "memmap.h"
---- snes9x-sdl-1.39/unix/unix.cpp~compile	2003-10-28 22:09:02.000000000 +0100
-+++ snes9x-sdl-1.39/unix/unix.cpp	2004-01-19 21:29:07.000000000 +0100
+--- snes9x-sdl-1.39/unix/unix.cpp~compile
++++ snes9x-sdl-1.39/unix/unix.cpp
 @@ -50,7 +50,7 @@
  #include <sys/types.h>
  #include <ctype.h>
@@ -25,8 +25,18 @@
  #include "keydef.h"
  
  #undef USE_THREADS
---- /dev/null	1970-01-01 01:00:00.000000000 +0100
-+++ snes9x-sdl-1.39/unzip/unzipP.h	2004-01-19 21:29:07.000000000 +0100
+@@ -189,8 +189,7 @@
+ }
+ 
+ /*#include "cheats.h"*/
+-extern "C"
+-int SDL_main (int argc, char **argv)
++int main (int argc, char **argv)
+ {
+     if (argc < 2)
+ 	S9xUsage ();
+--- /dev/null
++++ snes9x-sdl-1.39/unzip/unzipP.h
 @@ -0,0 +1,124 @@
 +#ifndef _UNZIPP_H_
 +#define _UNZIPP_H_
@@ -152,8 +162,8 @@
 +}               unz_s;
 +
 +#endif
---- snes9x-sdl-1.39/Makefile~compile	2003-10-28 16:49:50.000000000 +0100
-+++ snes9x-sdl-1.39/Makefile	2004-01-19 21:31:53.000000000 +0100
+--- snes9x-sdl-1.39/Makefile~compile
++++ snes9x-sdl-1.39/Makefile
 @@ -53,12 +53,12 @@
  
  ifdef THREAD_SOUND
@@ -176,7 +186,8 @@
 -INCLUDES=-I/usr/local/include
 +INCLUDES=
  
- OPTIMISE= -D_ZAURUS -Os -ffast-math -fstrict-aliasing -fomit-frame-pointer -mcpu=strongarm1100 -mtune=strongarm1100
+-OPTIMISE= -D_ZAURUS -Os -ffast-math -fstrict-aliasing -fomit-frame-pointer -mcpu=strongarm1100 -mtune=strongarm1100
++OPTIMISE= -D_ZAURUS -Os -ffast-math -fstrict-aliasing -fomit-frame-pointer
  CCFLAGS = $(OPTIMISE) \
 --I/opt/Qtopia/include/SDL \
  -I. \
@@ -199,7 +210,66 @@
  
  snes9x: $(OBJECTS) 
 -	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) $(EXTRALIBS) -L/opt/QtPalmtop/lib/ -lSDL -lSDLmain $(LDLIBS) -lqpe -lqte -lpthread
-+	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) $(EXTRALIBS) $(LDLIBS) -lqpe -lqte -lpthread
++	$(CC) $(INCLUDES) -o $@ $(OBJECTS) $(EXTRALIBS) $(LDLIBS) -lz -lpthread
  
  gsnes9x: $(OBJECTS) unix/x11.o unix/glide.o
  	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) unix/x11.o unix/glide.o $(LDLIBS) $(GLIDELIBS) -lXext -lX11 -lXxf86dga -lXxf86vm $(EXTRALIBS) -lz -lm
+--- snes9x-sdl-1.39/snapshot.cpp~compile
++++ snes9x-sdl-1.39/snapshot.cpp
+@@ -671,7 +671,7 @@
+ 						  fields [i].type);
+     }
+ 
+-    uint8 *block = new uint8 [len];
++    uint8 *block = (uint8*) malloc(len);
+     uint8 *ptr = block;
+     uint16 word;
+     uint32 dword;
+@@ -739,7 +739,7 @@
+     }
+ 
+     FreezeBlock (stream, name, block, len);
+-    delete block;
++    free(block);
+ }
+ 
+ void FreezeBlock (STREAM stream, char *name, uint8 *block, int size)
+@@ -767,7 +767,7 @@
+ 						  fields [i].type);
+     }
+ 
+-    uint8 *block = new uint8 [len];
++    uint8 *block = (uint8*) malloc(len);
+     uint8 *ptr = block;
+     uint16 word;
+     uint32 dword;
+@@ -776,7 +776,7 @@
+ 
+     if ((result = UnfreezeBlock (stream, name, block, len)) != SUCCESS)
+     {
+-	delete block;
++	free(block);
+ 	return (result);
+     }
+ 
+@@ -841,7 +841,7 @@
+ 	}
+     }
+ 
+-    delete block;
++    free(block);
+     return (result);
+ }
+ 
+@@ -865,9 +865,9 @@
+ 
+     if (rem)
+     {
+-	char *junk = new char [rem];
++	char *junk = (char*) malloc(rem);
+ 	READ_STREAM (junk, rem, stream);
+-	delete junk;
++	free(junk);
+     }
+ 	
+     return (SUCCESS);
