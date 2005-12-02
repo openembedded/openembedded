@@ -6,6 +6,7 @@ ac_add_options --enable-application=minimo
 ac_add_options --enable-default-toolkit=gtk2
 ac_add_options --enable-xft
 ac_add_options --disable-freetype2
+ac_add_options --disable-plugins 
 
 ac_add_options --enable-optimize=-Os
 ac_add_options --enable-strip
