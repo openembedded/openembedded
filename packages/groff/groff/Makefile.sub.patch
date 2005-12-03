@@ -1,0 +1,21 @@
+*** groff-1.19.2/src/include/Makefile.sub.orig	Thu Jun 23 13:27:53 2005
+--- groff-1.19.2/src/include/Makefile.sub	Sat Dec  3 18:35:40 2005
+***************
+*** 39,46 ****
+  	"DEVICE=\"$(DEVICE)\"" \
+  	"INSTALLPATH=\"$(prefix)\"" \
+  	"BINPATH=\"$(bindir)\"" \
+! 	"FONTPATH=\"$(fontpath)\"" \
+! 	"MACROPATH=\"$(tmacpath)\"" \
+  	"INDEX_SUFFIX=\"$(indexext)\"" \
+  	"COMMON_WORDS_FILE=\"$(common_words_file)\"" \
+  	"DEFAULT_INDEX_DIR=\"$(indexdir)\"" \
+--- 39,46 ----
+  	"DEVICE=\"$(DEVICE)\"" \
+  	"INSTALLPATH=\"$(prefix)\"" \
+  	"BINPATH=\"$(bindir)\"" \
+! 	"FONTPATH=\"/usr/share/groff/site-font:/usr/share/groff/1.19.2/font:/usr/lib/font\"" \
+! 	"MACROPATH=\"/usr/lib/groff/site-tmac:/usr/share/groff/site-tmac:/usr/share/groff/1.19.2/tmac\"" \
+  	"INDEX_SUFFIX=\"$(indexext)\"" \
+  	"COMMON_WORDS_FILE=\"$(common_words_file)\"" \
+  	"DEFAULT_INDEX_DIR=\"$(indexdir)\"" \
