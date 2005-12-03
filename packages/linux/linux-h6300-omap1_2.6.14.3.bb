@@ -3,12 +3,12 @@ MAINTAINER = "Mika Laitio <lamikr@cc.jyu.fi>"
 SECTION = "kernel"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.14-rc5.tar.bz2 \
-           http://www.muru.com/linux/omap/patches/patch-2.6.14-rc5-omap1.bz2;patch=1 \
-           file://h6300_omap1_2614rc5.patch;patch=1 \
+SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.bz2 \
+           http://www.muru.com/linux/omap/patches/patch-2.6.14-omap2.bz2;patch=1 \
+           file://patch-linux-2614-omap2-to-2614_3-omap1-h6300;patch=1 \
            file://defconfig"
 
-S = "${WORKDIR}/linux-2.6.14-rc5"
+S = "${WORKDIR}/linux-2.6.14"
 
 inherit kernel
 
