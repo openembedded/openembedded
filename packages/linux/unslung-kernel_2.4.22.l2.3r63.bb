@@ -22,6 +22,7 @@ SRC_URI += "file://limit1gb.patch;patch=1 \
 	    file://nfs-blocksize.patch;patch=1 \
 	    file://pl2303.patch;patch=1 \
 	    file://linux-kernel-R25_to_R29.patch;patch=1 \
+	    file://linux-kernel-R29_to_R63.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
