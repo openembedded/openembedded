@@ -1,6 +1,6 @@
 # cdstatus OE build file
 
-PR="r0"
+PR="r1"
 LICENSE="GPL"
 HOMEPAGE = "http://cdstatus.sourceforge.net/"
 FILES_${PN} += ${datadir}/cdstatus.cfg
@@ -11,8 +11,6 @@ SRC_URI="${SOURCEFORGE_MIRROR}/cdstatus/cdstatus-0.96.05.tar.gz \
 S="${WORKDIR}/cdstatus-0.96.05"
 
 inherit autotools
-
-TARGET_LDFLAGS=""
 
 do_install() {
 	install -d 0755 ${D}/${bindir}
