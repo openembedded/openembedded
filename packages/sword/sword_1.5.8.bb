@@ -5,20 +5,15 @@ Bible software with a constantly growing list of front-ends \
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
+DEPENDS = "curl"
+PR ="r1"
 
 SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz"
 
-inherit autotools 
+inherit autotools pkgconfig
 
-EXTRA_OECONF = "--without-clucene --without-curl"
+EXTRA_OECONF = "--without-clucene --with-curl"
 
 do_stage() {
-	oe_libinstall -so -C lib libsword ${STAGING_LIBDIR}
-
-	install -d ${STAGING_INCDIR}/sword/
-	for f in include/*.h
-	do
-		install -m 0644 $f ${STAGING_INCDIR}/sword/
-	done
-
+autotools_stage_all
 }
