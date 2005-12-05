@@ -157,7 +157,6 @@ CONFIG_PM=y
 CONFIG_PREEMPT=y
 CONFIG_APM=y
 # CONFIG_ARTHUR is not set
-CONFIG_CMDLINE="console=tty0 console=ttyS0 noinitrd root=/dev/mtdblock1 rootfstype=jffs2   "
 CONFIG_ALIGNMENT_TRAP=y
 
 #

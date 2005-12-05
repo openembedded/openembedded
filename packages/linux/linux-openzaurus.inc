@@ -20,9 +20,10 @@ EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
-CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 "
-CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rw "
-CMDLINE_ROOT_borzoi = "root=/dev/hda1 rootfstype=ext3 rw "
+CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
+CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rw"
+CMDLINE_ROOT_borzoi = "root=/dev/hda1 rootfstype=ext3 rw"
+CMDLINE_OTHER = "dyntick=enable debug"
 
 ##############################################################
 # Configure memory/ramdisk split for collie
@@ -34,7 +35,7 @@ CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
 CMDLINE_ROTATE_akita = "fbcon=rotate:1"
 CMDLINE_ROTATE_borzoi = "fbcon=rotate:1"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} debug"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER}"
 
 ###############################################################
 # Enable or disable ELPP via local.conf - default is "no"
