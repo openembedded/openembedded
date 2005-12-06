@@ -4,5 +4,3 @@ RDEPENDS = "hotplug-dbus"
 LICENSE = "GPL"
 
 inherit gpe
-
-SRC_URI += "file://dbus-new-api.patch;patch=1"

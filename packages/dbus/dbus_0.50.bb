@@ -2,6 +2,7 @@ include dbus_${PV}.inc
 
 
 DEPENDS = "expat glib-2.0 virtual/libintl dbus-native"
+DEFAULT_PREFERENCE = "-1"
 SRC_URI_EXTRA = "file://no-introspect.patch;patch=1 file://no-bindings.patch;patch=1"
 
 FILES_${PN} += "${bindir}/dbus-daemon"

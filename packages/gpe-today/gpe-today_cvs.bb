@@ -1,3 +1,4 @@
+DEFAULT_PREFERENCE = "-1"
 
 DESCRIPTION = 	"Displays a summary of appointments and tasks for the day ahead"
 DEPENDS =		"gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdisplaymigration libeventdb libgpepimc libtododb"
