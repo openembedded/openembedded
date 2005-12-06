@@ -10,3 +10,5 @@ PRIORITY = "optional"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 LICENSE = "GPL"
 
+SRC_URI += "file://dbus-new-api.patch;patch=1"
+

@@ -1,5 +1,4 @@
 LICENSE = "GPL"
-DEFAULT_PREFERENCE = "-1"
 
 S =     "${WORKDIR}/${PN}"
 PV =        "0.65+cvs-${CVSDATE}"

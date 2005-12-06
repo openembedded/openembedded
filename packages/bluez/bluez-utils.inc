@@ -4,11 +4,13 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs-${PV} pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
 	file://blueboxes.patch;patch=1 \
+	file://hciattach-ti-bts.patch;patch=1 \
+	file://TIInit_3.2.26.bts \
 	file://hcid.conf \
 	file://bluetooth.default \
 	file://bluetooth.conf "
@@ -40,6 +42,7 @@ do_install_append() {
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	chmod 755 ${D}${sysconfdir}/pcmcia/bluetooth
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
+	install -m 0644 ${WORKDIR}/TIInit_3.2.26.bts ${D}${sysconfdir}/bluetooth/
 	install -m 0644 ${WORKDIR}/bluetooth.default ${D}${sysconfdir}/default/bluetooth
 	cat ${WORKDIR}/bluetooth.conf >> ${D}${sysconfdir}/pcmcia/bluetooth.conf
 }
