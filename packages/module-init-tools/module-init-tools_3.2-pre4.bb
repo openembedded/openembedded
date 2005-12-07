@@ -5,6 +5,8 @@ LICENSE = "GPL"
 SECTION = "base"
 PR = "r0"
 
+DEFAULT_PREFERENCE="-1"
+
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
 
