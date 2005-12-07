@@ -12,22 +12,22 @@ fi
 if [ $# -eq 1 ] ; then
     if [ "$1" = "disk1" ] ; then
 	targ=/share/hdd/data
-	flag=.sda1root
+	flag=.sdb1root
     elif [ "$1" = "disk2" ] ; then
 	targ=/share/flash/data
-	flag=.sdb1root
+	flag=.sda1root
     elif [ "$1" = "hdd-data" ] ; then
 	targ=/share/hdd/data
-	flag=.sda1root
+	flag=.sdb1root
     elif [ "$1" = "hdd-conf" ] ; then
 	targ=/share/hdd/conf
-	flag=.sda2root
+	flag=.sdb2root
     elif [ "$1" = "flash-data" ] ; then
 	targ=/share/flash/data
-	flag=.sdb1root
+	flag=.sda1root
     elif [ "$1" = "flash-conf" ] ; then
 	targ=/share/flash/conf
-	flag=.sdb2root
+	flag=.sda2root
     else
 	echo $usage
 	exit 1

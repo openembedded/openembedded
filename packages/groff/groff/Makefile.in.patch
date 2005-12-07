@@ -1,0 +1,31 @@
+*** groff-1.19.2/Makefile.in.orig	Sun Aug  7 10:03:33 2005
+--- groff-1.19.2/Makefile.in	Sat Dec  3 16:44:50 2005
+***************
+*** 242,249 ****
+  
+  # The configure script checks whether all necessary utility programs for
+  # grohtml are available -- only then we can build the HTML documentation.
+! make_html=@make_html@
+! make_install_html=@make_install_html@
+  
+  # The configure script also checks whether all necessary utility programs
+  # for pdfroff are available -- only then we can build PDF documentation.
+--- 242,249 ----
+  
+  # The configure script checks whether all necessary utility programs for
+  # grohtml are available -- only then we can build the HTML documentation.
+! make_html=
+! make_install_html=
+  
+  # The configure script also checks whether all necessary utility programs
+  # for pdfroff are available -- only then we can build PDF documentation.
+***************
+*** 549,555 ****
+    contrib/pic2graph \
+    contrib/eqn2graph \
+    contrib/grap2graph \
+-   contrib/groffer \
+    contrib/mom \
+    contrib/pdfmark \
+    contrib/gdiffmk
+--- 549,554 ----
