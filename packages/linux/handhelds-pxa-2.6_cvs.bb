@@ -27,3 +27,13 @@ do_configure() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "No default configuration for ${MACHINE} available."
         yes '' | oe_runmake oldconfig
 }
+
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile
+
