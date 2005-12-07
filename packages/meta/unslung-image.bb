@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r6"
+PR = "r7"
 
 IMAGE_BASENAME = "unslung"
 
@@ -31,6 +31,8 @@ unslung_clean_image () {
 	rm -f ${IMAGE_ROOTFS}/${sysconfdir}/version
 	# Tidy up some thing which are in the wrong place
 	mv ${IMAGE_ROOTFS}${libdir}/libipkg* ${IMAGE_ROOTFS}/lib/
+	# Remove the /lib/*.dat files cause they are too big
+	rm -f ${IMAGE_ROOTFS}/lib/*.dat
 	# Remove the ipkg symlink - unsling puts it back in
 	rm -f ${IMAGE_ROOTFS}${bindir}/ipkg
 	# Hack out the modutils stuff - it's too hard to make it work
