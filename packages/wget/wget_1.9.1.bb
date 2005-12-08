@@ -14,6 +14,9 @@ inherit autotools gettext
 
 EXTRA_OECONF = "--enable-ipv6"
 
+# The unslung kernel does not support ipv6
+EXTRA_OECONF_unslung = ""
+
 do_configure () {
 	if [ ! -e acinclude.m4 ]; then
 		mv aclocal.m4 acinclude.m4
