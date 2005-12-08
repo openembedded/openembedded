@@ -5,7 +5,7 @@ MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 LICENSE_${PN} = "LGPL
 
 DEPENDS = "fakeroot-native"
-RRECOMMEND_${PN} = "fuse-module"
+RRECOMMENDS_${PN} = "fuse-module"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/fuse/${P}.tar.gz"
 
