@@ -2,7 +2,7 @@ DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = ""
-PR = "r2"
+PR = "r3"
 LICENSE = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
