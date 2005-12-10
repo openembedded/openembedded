@@ -1060,7 +1060,7 @@ CONFIG_BACKLIGHT_CORGI=y
 #
 # Sound
 #
-CONFIG_SOUND=y
+CONFIG_SOUND=m
 
 #
 # Advanced Linux Sound Architecture
@@ -1135,11 +1135,11 @@ CONFIG_SND_SOC_WM8731=m
 #
 # Open Sound System
 #
-CONFIG_SOUND_PRIME=m
+= CONFIG_SOUND_PRIME is not set
 # CONFIG_OBSOLETE_OSS_DRIVER is not set
 # CONFIG_SOUND_MSNDCLAS is not set
 # CONFIG_SOUND_MSNDPIN is not set
-CONFIG_SOUND_OSS=m
+# CONFIG_SOUND_OSS is not set
 # CONFIG_SOUND_TRACEINIT is not set
 # CONFIG_SOUND_DMAP is not set
 # CONFIG_SOUND_AD1816 is not set

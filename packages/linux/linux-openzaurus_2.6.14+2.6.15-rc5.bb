@@ -1,8 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r4"
-
-#DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -15,16 +13,18 @@ PR = "r4"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.tar.bz2 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc2-rc3.bz2;patch=1 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc3-rc4.bz2;patch=1 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc4-rc5.bz2;patch=1 \
            ${RPSRC}/pxa_ohci_platform-r5.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r5.patch;patch=1 \
            ${RPSRC}/pxa_ohci_fixes-r0.patch;patch=1 \
            ${RPSRC}/spitz_ohci-r0.patch;patch=1 \
-           ${RPSRC}/enable_iwmmxt-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r4.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
-           ${RPSRC}/led_core-r5.patch;patch=1 \
-           ${RPSRC}/led_triggers-r4.patch;patch=1 \
+           ${RPSRC}/led_core-r6.patch;patch=1 \
+           ${RPSRC}/led_triggers-r5.patch;patch=1 \
            ${RPSRC}/led_trig_timer-r2.patch;patch=1 \
            ${RPSRC}/led_trig_sharpsl_pm-r2.patch;patch=1 \
            ${RPSRC}/led_zaurus-r6.patch;patch=1 \
@@ -35,7 +35,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/pxa_rtc-r2.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
            ${RPSRC}/arm_apm_pm_legacy-r1.patch;patch=1 \
-           ${RPSRC}/collie_mtd_sharp-r0.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_base-r24.patch;patch=1 \
@@ -44,7 +43,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/ipaq/pxa_keys-r5.patch;patch=1 \
            ${RPSRC}/ipaq/tsc2101-r12.patch;patch=1 \
            ${RPSRC}/ipaq/hx2750_test1-r3.patch;patch=1 \
-           ${DOSRC}/tosa-platform-device-r0.patch;patch=1 \
            ${DOSRC}/tc6393-device-r8.patch;patch=1 \
            ${DOSRC}/tc6393_nand-r7.patch;patch=1 \
            ${DOSRC}/tosa-keyboard-r9.patch;patch=1 \
@@ -58,9 +56,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/pcmcia_dev_ids-r2.patch;patch=1 \
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
-           ${RPSRC}/alsa/alsa-soc-0.7.patch;patch=1 \
-           ${RPSRC}/alsa_snd_corgi-r2.patch;patch=1 \
-           ${RPSRC}/soc_platform_upd-r1.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.8.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.8-0.8.1.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.8.1-0.9rc1.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.9rc1-rc2.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.9rc2-rc4.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.9rc4-rc5.patch;patch=1 \
+           ${RPSRC}/alsa/alsa-soc-0.9rc5-rc6.patch;patch=1 \
+           ${RPSRC}/alsa_soc_rpupdate7-r2.patch;patch=1 \
+           ${RPSRC}/alsa_soc_rpupdate8-r0.patch;patch=1 \
+           ${RPSRC}/alsa_soc_rpupdate9-r0.patch;patch=1 \
+           ${RPSRC}/pm_changes-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
