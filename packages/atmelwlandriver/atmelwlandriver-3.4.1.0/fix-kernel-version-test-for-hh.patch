@@ -1,0 +1,12 @@
+diff -Nurd atmelwlandriver-3.4.1.0/src/usb/vnetusba.c atmelwlandriver-3.4.1.0-hh/src/usb/vnetusba.c
+--- atmelwlandriver-3.4.1.0/src/usb/vnetusba.c	2004-11-10 01:40:50.000000000 -0800
++++ atmelwlandriver-3.4.1.0-hh/src/usb/vnetusba.c	2005-11-29 14:48:49.632112829 -0800
+@@ -72,7 +72,7 @@
+ #endif
+ 
+ struct usb_driver vnet_driver = {
+-#if LINUX_VERSION_CODE < 0x020415
++#if (LINUX_VERSION_CODE < 0x020415) && !defined(CONFIG_ARCH_H5400)
+ owner : THIS_MODULE,
+ #endif
+ #if defined(RFMD)
