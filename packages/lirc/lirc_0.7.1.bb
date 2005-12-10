@@ -3,8 +3,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel libx11 libxau libsm ice"
-PR = "r4"
+DEPENDS = "virtual/kernel x11 xau libsm ice"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
       file://lircd.init file://lircmd.init"
