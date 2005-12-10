@@ -46,6 +46,11 @@ ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
 # module configs specific to this kernel
 #
 module_autoload_pxaficp_ir = "pxaficp_ir"
+module_autoload_snd-pcm-oss = "snd-pcm-oss"
+module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
+module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
+module_autoload_snd-soc-spitz_borzoi = "snd-soc-spitz"
+module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 
 do_configure() {
 
