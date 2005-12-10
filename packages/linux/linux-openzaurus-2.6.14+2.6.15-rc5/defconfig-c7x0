@@ -1135,7 +1135,7 @@ CONFIG_SND_SOC_WM8731=m
 #
 # Open Sound System
 #
-= CONFIG_SOUND_PRIME is not set
+# CONFIG_SOUND_PRIME is not set
 # CONFIG_OBSOLETE_OSS_DRIVER is not set
 # CONFIG_SOUND_MSNDCLAS is not set
 # CONFIG_SOUND_MSNDPIN is not set
