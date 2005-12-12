@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -100,3 +100,6 @@ SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
                        ${DOSRC}/wm9712-pm-r0.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.15-rc2"
+
+# to get module dependencies working
+KERNEL_RELEASE = "2.6.15-rc5"
