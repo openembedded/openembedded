@@ -5,8 +5,6 @@ LICENSE = "GPL"
 SECTION = "base"
 PR = "r0"
 
-DEFAULT_PREFERENCE="-1"
-
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
 
@@ -36,23 +34,27 @@ do_install() {
 
 pkg_postinst_module-init-tools() {
 #!/bin/sh
-for f in sbin/insmod sbin/modprobe sbin/rmmod sbin/depmod sbin/modinfo bin/lsmod; do
+for f in sbin/insmod sbin/modprobe sbin/rmmod sbin/depmod sbin/modinfo; do
 bn=`basename $f`
-   update-alternatives --install /$f $bn /$f.26 20
+   update-alternatives --install /$f $bn /$f.26 60
 done
+update-alternatives --install /bin/lsmod bin-lsmod /bin/lsmod.26 60
+update-alternatives --install /sbin/lsmod lsmod /bin/lsmod.26 60
 }
 
 pkg_prerm_module-init-tools() {
 #!/bin/sh
-for f in sbin/insmod sbin/modprobe sbin/rmmod sbin/depmod sbin/modinfo bin/lsmod; do
+for f in sbin/insmod sbin/modprobe sbin/rmmod sbin/depmod sbin/modinfo; do
 bn=`basename $f`
    update-alternatives --remove $bn /$f.26
 done
+update-alternatives --remove bin-lsmod /bin/lsmod.26
+update-alternatives --remove lsmod /bin/lsmod.26
 }
 
 pkg_postinst_module-init-tools-depmod() {
 #!/bin/sh
-update-alternatives --install /sbin/depmod depmod /sbin/depmod.26 20
+update-alternatives --install /sbin/depmod depmod /sbin/depmod.26 60
 }
 
 pkg_prerm_module-init-tools() {
