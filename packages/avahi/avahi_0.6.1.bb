@@ -7,7 +7,8 @@ SECTION = "net"
 PRIORITY = "optional"
 PR = "r0"
 
-SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz"
+SRC_URI = "http://www.freedesktop.org/~lennart/avahi-${PV}.tar.gz \
+	   file://dbus-0.60-fix.patch;patch=1"
 
 PACKAGES = "avahi-daemon libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib avahi-dev avahi-doc avahi-utils"
 
