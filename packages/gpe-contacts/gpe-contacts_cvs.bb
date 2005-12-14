@@ -10,7 +10,7 @@ inherit autotools gpe
 SRC_URI =   "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 
-DEPENDS = "libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
+DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
 SECTION = "gpe"
 RDEPENDS = "gpe-icons"
 DESCRIPTION = "GPE contacts manager"
