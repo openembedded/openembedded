@@ -12,10 +12,6 @@ inherit mozilla
 
 include firefox.inc
 
-# Hack because beta shows version as 1.4
-
-FILES_${PN} = "${bindir}/firefox ${datadir}/applications ${datadir}/pixmaps ${libdir}/firefox-1.4 ${bindir}/defaults"
-
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
 }
