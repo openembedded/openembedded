@@ -9,6 +9,7 @@ PR = "r7"
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
 	file://blueboxes.patch;patch=1 \
+	file://hciattach_devlength.patch;patch=1 \
 	file://hcid.conf \
 	file://bluetooth.default \
 	file://bluetooth.conf "
