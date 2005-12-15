@@ -4,7 +4,8 @@ SECTION = "kernel/userland"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "virtual/kernel-hostap"
+DEPENDS = "virtual/kernel-hostap"
+RRECOMMENDS = "virtual/kernel-hostap"
 PR = "r3"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-utils-${PV}.tar.gz \
