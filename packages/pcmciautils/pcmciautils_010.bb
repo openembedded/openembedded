@@ -4,6 +4,7 @@ RDEPENDS = "udev module-init-tools"
 HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
+PROVIDES = "virtual/pcmcia-manager"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
 S = "${WORKDIR}/pcmciautils-${PV}"

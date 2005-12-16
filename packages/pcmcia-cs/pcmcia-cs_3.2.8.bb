@@ -1,6 +1,7 @@
 DESCRIPTION = "Utilities and system configuration files for the Linux PCMCIA card services"
 SECTION = "base"
 PRIORITY = "required"
+PROVIDES = "virtual/pcmcia-manager"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 PR = "r24"
