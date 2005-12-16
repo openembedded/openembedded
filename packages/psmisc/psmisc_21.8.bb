@@ -6,7 +6,8 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "ncurses"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
+	   file://signames-header-fix.patch;patch=1"
 S = "${WORKDIR}/psmisc-${PV}"
 
 inherit autotools gettext
