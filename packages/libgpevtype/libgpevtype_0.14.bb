@@ -2,7 +2,6 @@ LICENSE = "LGPL"
 DESCRIPTION = "Data interchange library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "libmimedir libeventdb"
 PR = "r1"
 
