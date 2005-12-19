@@ -4,9 +4,8 @@ DESCRIPTION = "Enigma Plugin IPKG"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 PV = "0.2.1"
-PR = "r0"
-SRC_URI =  "http://sources.dreamboxupdate.com/download/opendreambox/enigma/ipkgpl-${PV}.tar.bz2 \
-	    file://acinclude.m4"
+PR = "r1"
+SRC_URI =  "http://sources.dreamboxupdate.com/download/opendreambox/enigma/ipkgpl-${PV}-r1.tar.bz2"
 
 S = "${WORKDIR}/ipkgpl"
 
@@ -16,11 +15,6 @@ FILES_${PN} =  "/usr/lib/tuxbox/plugins/ipkgpl.so \
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-target=native "
-
-do_configure_prepend() {
-	mkdir -p m4
-	install ${WORKDIR}/acinclude.m4 ${S}/acinclude.m4
-}
 
 do_install() {
 	install -d ${D}/usr/lib/tuxbox/plugins

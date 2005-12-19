@@ -4,22 +4,16 @@ DESCRIPTION = "Enigma Plugin dreamdata"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 PV = "0.0.9"
-PR = "r0"
+PR = "r1"
 PN = "dreamdata"
 PACKAGES = "dreamdata"
-SRC_URI =  "http://sources.dreamboxupdate.com/download/opendreambox/enigma/dreamdata-${PV}.tar.bz2 \
-	    file://acinclude.m4"
+SRC_URI =  "http://sources.dreamboxupdate.com/download/opendreambox/enigma/dreamdata-${PV}-r1.tar.bz2"
 
 S = "${WORKDIR}/dreamdata"
 
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-target=native "
-
-do_configure_prepend() {
-	mkdir -p m4
-	install ${WORKDIR}/acinclude.m4 ${S}/acinclude.m4
-}
 
 do_install() {
 	install -d ${D}/usr/lib/tuxbox/plugins

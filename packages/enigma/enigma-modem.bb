@@ -3,12 +3,11 @@ DESCRIPTION = "Enigma Modem Plugin"
 MAINTAINER = "Andreas Monzner <ghost@dream-multimedia-tv.de>"
 LICENSE = "GPL"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}.tar.gz \
-           file://acinclude.m4"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}-r1.tar.gz"
 
 PV = "0.1"
 PN = "enigma-modem"
-PR = "r0"
+PR = "r1"
 
 PACKAGES = "enigma-modem"
 
@@ -40,7 +39,3 @@ do_install_append() {
 	install -m 0755 ${S}/01peerdns-remove ${D}/etc/ppp/ip-down.d
 }
 
-do_configure_prepend() {
-	mkdir -p m4
-	install ${WORKDIR}/acinclude.m4 ${S}/acinclude.m4
-}
