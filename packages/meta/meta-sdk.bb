@@ -5,7 +5,7 @@ DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
            libidl libsvg-cairo sed-native \
            meta-gpe gstreamer\
            opie-mail"
-PR = "r8"
+PR = "r9"
 
 PACKAGES = ""
 
@@ -184,7 +184,7 @@ EOF
 
         mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfj ${SDK_DEPLOY}/oe-sdk-$(date +"%Y%m%d%H%M%S").tar.bz2 .
+	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-oe-sdk-${DATE}.tar.bz2 .
 }
 
 do_populate_sdk[nostamp] = 1
