@@ -1,5 +1,4 @@
-DESCRIPTION = "Small utilities specific to the dreambox dvb receiver (for DVB v1)"
-DEPENDS = "dreambox-dvbincludes"
+DESCRIPTION = "Small utilities specific to the dreambox dvb receiver (for DVB v3)"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
@@ -7,11 +6,11 @@ LICENSE = "GPL"
 PV = "1.0"
 PR = "r0"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-dvb-tools-1.0.tar.gz"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-dvb-tools-v3-1.0.tar.gz"
 
 inherit qmake
 
-UTILS = "grabpic showiframe dvbnet test_tbl test_dmx"
+UTILS = "showiframe"
 
 do_configure_prepend() {
 	cd ${S}/
