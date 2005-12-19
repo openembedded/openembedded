@@ -30,6 +30,8 @@ do_install() {
 	cat <<EOF >> ${D}/etc/init.d/tuxbox-hdd.sh
 # sleep after 10min
 hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+# set UDMA66
+hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
 # accustic management
 hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
 EOF
