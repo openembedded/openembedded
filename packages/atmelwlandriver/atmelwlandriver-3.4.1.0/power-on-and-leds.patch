@@ -5,7 +5,7 @@ diff -Nurd atmelwlandriver-3.4.1.0/src/usb/vnetusba.c atmelwlandriver-3.4.1.0-hh
  #include "vnetioctl.h"
  #include "config.h"
  
-+#ifdef CONFIG_IPAQ_HANDHELD
++#ifdef CONFIG_ARCH_H5400
 +#include <asm/mach-types.h>
 +#include <asm/arch/ipaq.h>
 +#include <asm/arch-pxa/h5400-asic.h>
@@ -49,7 +49,7 @@ diff -Nurd atmelwlandriver-3.4.1.0/src/usb/vnetusba.c atmelwlandriver-3.4.1.0-hh
  	return 0;
  }
  
-+#ifdef CONFIG_IPAQ_HANDHELD
++#ifdef CONFIG_ARCH_H5400
 +static struct timer_list led_timer;
 +
 +static void
@@ -73,7 +73,7 @@ diff -Nurd atmelwlandriver-3.4.1.0/src/usb/vnetusba.c atmelwlandriver-3.4.1.0-hh
 +
 +	init_timer (&led_timer);
 +}
-+#endif /* CONFIG_IPAQ_HANDHELD */
++#endif /* CONFIG_ARCH_H5400*/
 +
  static int usb_vnet_tx(struct sk_buff *skb, struct net_device *dev)
  {
