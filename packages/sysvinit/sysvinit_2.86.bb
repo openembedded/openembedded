@@ -103,6 +103,8 @@ do_install_append_opendreambox () {
 	cat <<EOF >>${D}/etc/inittab
 # enigma
 gui:2:respawn:/usr/bin/enigma.sh
+# enigma2
+e2:3:respawn:/usr/bin/enigma2.sh
 EOF
 }
 
