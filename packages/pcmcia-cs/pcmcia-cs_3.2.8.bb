@@ -2,9 +2,10 @@ DESCRIPTION = "Utilities and system configuration files for the Linux PCMCIA car
 SECTION = "base"
 PRIORITY = "required"
 PROVIDES = "virtual/pcmcia-manager"
+RPROVIDES = "virtual/pcmcia-manager"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PR = "r24"
+PR = "r25"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch;patch=1 \
