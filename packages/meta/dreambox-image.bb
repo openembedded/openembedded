@@ -5,7 +5,7 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
-	dreambox-compat"
+	dreambox-compat tuxbox-common"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools modutils-initscripts"
@@ -19,7 +19,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2f
 OPENDREAMBOX_EXPERIMENTAL = "enigma2"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
-OPENDREAMBOX_TUXBOX = "enigma ipkgpl tuxbox-common dreamdata enigma-modem links-dream"
+OPENDREAMBOX_TUXBOX = "enigma ipkgpl dreamdata enigma-modem links-dream"
 OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins"
 OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
