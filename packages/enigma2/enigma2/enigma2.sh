@@ -2,7 +2,7 @@
 
 /usr/bin/showiframe /boot/backdrop.mvi
 
-cd ~
+cd /home/root
 /usr/bin/enigma2
 
 # enigma2 exit codes:
