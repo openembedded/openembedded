@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r41"
+PR = "r42"
 
 ALLOW_EMPTY = "1"
 
@@ -31,6 +31,7 @@ gpe-task-base = "\
     gpe-icons \
     gpe-confd \
     gpe-autostarter \
+    gpe-screenshot \	
     libgtkstylus \
     detect-stylus \
     suspend-desktop \
