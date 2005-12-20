@@ -7,7 +7,7 @@ LICENSE = "GPL"
 PV = "1.4.1"
 PR = "r1"
 
-SRC_URI = "{SOURCEFORDGE_MIRROR}/rdesktop/rdesktop-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/rdesktop/rdesktop-${PV}.tar.gz \
 	file://strip.patch;patch=1"
 
 inherit autotools
