@@ -1,5 +1,6 @@
 ac_cv_c_littleendian=${ac_cv_c_littleendian=yes}
 ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
+ac_cv_have_little_endian_long_long=${ac_cv_have_little_endian_long_long=yes}
 
 ac_cv_func_getpgrp_void=${ac_cv_func_getpgrp_void=yes}
 ac_cv_func_setvbuf_reversed=${ac_cv_func_setvbuf_reversed=no}
