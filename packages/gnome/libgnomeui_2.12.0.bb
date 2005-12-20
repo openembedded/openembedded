@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+PR = "r2"
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 DESCRIPTION = "GNOME User Interface Library"
 
@@ -18,6 +18,5 @@ do_configure_prepend() {
 }
 
 do_stage() {
-	gnome_stage_includes
-	oe_libinstall -C libgnomeui -a -so libgnomeui-2 ${STAGING_LIBDIR}
+autotools_stage_all
 }
