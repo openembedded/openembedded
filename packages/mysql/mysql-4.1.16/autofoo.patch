@@ -3,10 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
-Index: mysql-4.1.10a/acinclude.m4
-===================================================================
---- mysql-4.1.10a.orig/acinclude.m4	2005-03-12 17:51:18.685178808 -0500
-+++ mysql-4.1.10a/acinclude.m4	2005-03-12 17:51:18.955137768 -0500
+--- mysql-4.1.15/acinclude.m4~autofoo
++++ mysql-4.1.15/acinclude.m4
 @@ -1,5 +1,88 @@
  # Local macros for automake & autoconf
  
@@ -96,7 +94,7 @@ Index: mysql-4.1.10a/acinclude.m4
  
  AC_DEFUN([MYSQL_CHECK_READLINE_DECLARES_HIST_ENTRY], [
      AC_CACHE_CHECK([HIST_ENTRY is declared in readline/readline.h], mysql_cv_hist_entry_declared,
-@@ -310,7 +393,7 @@
+@@ -340,7 +423,7 @@
  AC_DEFUN([MYSQL_CHECK_ULONG],
  [AC_MSG_CHECKING(for type ulong)
  AC_CACHE_VAL(ac_cv_ulong,
@@ -105,7 +103,7 @@ Index: mysql-4.1.10a/acinclude.m4
  #include <sys/types.h>
  main()
  {
-@@ -328,7 +411,7 @@
+@@ -358,7 +441,7 @@
  AC_DEFUN([MYSQL_CHECK_UCHAR],
  [AC_MSG_CHECKING(for type uchar)
  AC_CACHE_VAL(ac_cv_uchar,
@@ -114,7 +112,7 @@ Index: mysql-4.1.10a/acinclude.m4
  #include <sys/types.h>
  main()
  {
-@@ -346,7 +429,7 @@
+@@ -376,7 +459,7 @@
  AC_DEFUN([MYSQL_CHECK_UINT],
  [AC_MSG_CHECKING(for type uint)
  AC_CACHE_VAL(ac_cv_uint,
@@ -123,7 +121,7 @@ Index: mysql-4.1.10a/acinclude.m4
  #include <sys/types.h>
  main()
  {
-@@ -365,7 +448,7 @@
+@@ -395,7 +478,7 @@
  AC_DEFUN([MYSQL_CHECK_IN_ADDR_T],
  [AC_MSG_CHECKING(for type in_addr_t)
  AC_CACHE_VAL(ac_cv_in_addr_t,
@@ -132,7 +130,7 @@ Index: mysql-4.1.10a/acinclude.m4
  #include <sys/types.h>
  #include <sys/socket.h>
  #include <netinet/in.h>
-@@ -426,7 +509,7 @@
+@@ -456,7 +539,7 @@
  AC_DEFUN([MYSQL_CHECK_FP_EXCEPT],
  [AC_MSG_CHECKING(for type fp_except)
  AC_CACHE_VAL(ac_cv_fp_except,
@@ -141,11 +139,9 @@ Index: mysql-4.1.10a/acinclude.m4
  #include <sys/types.h>
  #include <ieeefp.h>
  main()
-Index: mysql-4.1.10a/configure.in
-===================================================================
---- mysql-4.1.10a.orig/configure.in	2005-03-12 17:51:18.685178808 -0500
-+++ mysql-4.1.10a/configure.in	2005-03-12 17:51:18.957137464 -0500
-@@ -212,8 +212,6 @@
+--- mysql-4.1.15/configure.in~autofoo
++++ mysql-4.1.15/configure.in
+@@ -234,8 +234,6 @@
  else
    AC_PATH_PROG(AS, as, as)
  fi
@@ -154,7 +150,7 @@ Index: mysql-4.1.10a/configure.in
  # We use libtool
  #AC_LIBTOOL_WIN32_DLL
  AC_PROG_LIBTOOL
-@@ -234,44 +232,7 @@
+@@ -256,44 +254,7 @@
  AC_CHECK_PROG(PDFMANUAL, pdftex, manual.pdf)
  AC_CHECK_PROG(DVIS,      tex,    manual.dvi)
  
@@ -200,7 +196,7 @@ Index: mysql-4.1.10a/configure.in
  
  # option, cache_name, variable,
  # code to execute if yes, code to exectute if fail
-@@ -842,42 +803,7 @@
+@@ -870,42 +831,7 @@
  AC_SUBST(WRAPLIBS)
  
  if test "$TARGET_LINUX" = "true"; then
@@ -244,7 +240,7 @@ Index: mysql-4.1.10a/configure.in
  
    AC_ARG_WITH(pstack,
      [  --with-pstack           Use the pstack backtrace library],
-@@ -930,13 +856,13 @@
+@@ -958,13 +884,13 @@
  # Later in this script LIBS will be augmented with a threads library.
  NON_THREADED_LIBS="$LIBS"
  
@@ -261,7 +257,7 @@ Index: mysql-4.1.10a/configure.in
  #ifdef HAVE_STDLIB_H
  #include <stdlib.h>
  #endif
-@@ -947,22 +873,21 @@
+@@ -975,22 +901,21 @@
  
  #ifdef HAVE_SYS_TYPES_H
  #include <sys/types.h>
@@ -292,7 +288,7 @@ Index: mysql-4.1.10a/configure.in
  #
  # Some system specific hacks
  #
-@@ -1783,7 +1708,7 @@
+@@ -1798,7 +1723,7 @@
    AC_MSG_ERROR("MySQL needs a long long type.")
  fi
  # off_t is not a builtin type
@@ -301,10 +297,8 @@ Index: mysql-4.1.10a/configure.in
  if test "$ac_cv_sizeof_off_t" -eq 0
  then
    AC_MSG_ERROR("MySQL needs a off_t type.")
-Index: mysql-4.1.10a/innobase/configure.in
-===================================================================
---- mysql-4.1.10a.orig/innobase/configure.in	2005-03-12 17:51:18.685178808 -0500
-+++ mysql-4.1.10a/innobase/configure.in	2005-03-12 17:52:45.208025336 -0500
+--- mysql-4.1.15/innobase/configure.in~autofoo
++++ mysql-4.1.15/innobase/configure.in
 @@ -3,6 +3,7 @@
  AC_CANONICAL_SYSTEM
  AM_MAINTAINER_MODE
