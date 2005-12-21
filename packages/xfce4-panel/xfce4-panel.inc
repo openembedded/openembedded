@@ -10,20 +10,15 @@ inherit pkgconfig xfce
 
 EXTRA_OECONF += " --enable-startup-notification"
 
-HEADERS="controls.h global.h icons.h main.h panel.h item.h \
-	item_dialog.h plugins.h xfce_support.h xfce.h"
 
 do_stage() {
-	install -d ${STAGING_INCDIR}/xfce4/panel
-
-	for file in ${HEADERS}; do 
-		install -m 644 ${S}/panel/$file ${STAGING_INCDIR}/xfce4/panel/$file
-	done
+autotools_stage_all
 }
 
 do_install() {
     oe_runmake DESTDIR=${D} install
 }
 
-PACKAGES += "${PN}-plugins"
+PACKAGES += "${PN}-plugins ${PN}-mcs-plugins"
 FILES_${PN}-plugins += "${libdir}/xfce4/panel-plugins/*.so*"
+FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/"
