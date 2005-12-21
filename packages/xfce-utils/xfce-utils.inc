@@ -19,5 +19,8 @@ FILES_${PN} += " /usr/share/xfce4/AUTHORS \
 	/usr/share/xfce4/INFO.html \
         /usr/share/xfce4/LGPL.html"
 
+PACKAGES += "${PN}-mcs-plugins"
+FILES_${PN}-mcs-plugins = "/usr/lib/xfce4/mcs-plugins/"
+
 # NOTE:  This package takes a --with-browser for the default browser
 # NOTE:  Works with gdm also gtkhtml
