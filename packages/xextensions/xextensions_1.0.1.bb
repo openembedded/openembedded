@@ -3,6 +3,8 @@ LICENSE= "BSD-X"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DESCRIPTION = "various extension headers."
 
+DEFAULT_PREFERENCE="1"
+
 SRC_URI = "${XLIBS_MIRROR}/xextensions-${PV}.tar.bz2"
 S = "${WORKDIR}/xextensions-${PV}"
 
