@@ -1,0 +1,24 @@
+--- matchbox-panel-0.9.2/applets/mb-applet-wireless.c.old	2005-04-05 19:55:39.000000000 +0200
++++ matchbox-panel-0.9.2/applets/mb-applet-wireless.c	2005-12-17 14:00:01.000000000 +0100
+@@ -354,8 +354,19 @@
+   if (Mwd.iface != NULL) 
+     return 0;
+ 
+-  /* mark first found as one to monitor */
+-  Mwd.iface = strdup(ifname);
++  if(iw_get_range_info(Wfd, ifname, &(WInfo.range)) >= 0)
++    WInfo.has_range = 1;
++
++  if (iw_get_stats(Wfd, ifname,
++                   &(WInfo.stats),
++                   &(WInfo.range), WInfo.has_range) >= 0)
++    {
++     Mwd.iface = strdup(ifname);
++    }
++  else
++    {
++     Mwd.iface = "wlan0";
++    }
+ 
+   return 0;
+ }
