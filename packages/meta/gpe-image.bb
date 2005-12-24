@@ -39,6 +39,10 @@ GPE_EXTRA_INSTALL += ${GPE_BIGFLASH_INSTALL}
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
 
+GPE_EXTRA_DEPENDS_h3600 = "dillo2"
+GPE_EXTRA_INSTALL_h3600 = "dillo2"
+
+
 XSERVER ?= "xserver-kdrive-fbdev"
 
 DEPENDS = "task-bootstrap \
@@ -51,7 +55,8 @@ export IPKG_INSTALL = "task-bootstrap gpe-task-base \
 		       ${XSERVER} \
 		       ${GPE_EXTRA_INSTALL}"
 
-#ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp "
+ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
 LICENSE = MIT
