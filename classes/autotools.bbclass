@@ -159,14 +159,14 @@ autotools_stage_all() {
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake DESTDIR="${STAGE_TEMP}" install
 	if [ -d ${STAGE_TEMP}/${includedir} ]; then
-		cp -pPR ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
+		cp -fpPR ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
 	fi
 	if [ -d ${STAGE_TEMP}/${libdir} ]
 	then
 		for i in ${STAGE_TEMP}/${libdir}/*.la
 		do
 			if [ ! -f "$i" ]; then
-				cp -pPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
+				cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
 				break
 			fi
 			oe_libinstall -a -so $(basename $i .la) ${STAGING_LIBDIR}
@@ -174,7 +174,7 @@ autotools_stage_all() {
 	fi
 	if [ -d ${STAGE_TEMP}/${datadir}/aclocal ]; then
 		install -d ${STAGING_DATADIR}/aclocal
-		cp -pPR ${STAGE_TEMP}/${datadir}/aclocal/* ${STAGING_DATADIR}/aclocal
+		cp -fpPR ${STAGE_TEMP}/${datadir}/aclocal/* ${STAGING_DATADIR}/aclocal
 	fi
 	rm -rf ${STAGE_TEMP}
 }
