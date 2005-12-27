@@ -3,6 +3,8 @@ SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
+RDEPENDS_${PN} = "less groff"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/man/man-${PV}.tar.bz2"
 
