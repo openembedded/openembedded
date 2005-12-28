@@ -2,7 +2,9 @@ DESCRIPTION = "Enlightened Sound Daemon - GPE version"
 SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
-PR = "r3"
+PR = "r4"
+PROVIDES += "esound"
+RPROVIDES += "esound"
 
 CVSDATE = "${PV}"
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/esound \
