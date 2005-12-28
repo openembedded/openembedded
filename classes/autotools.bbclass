@@ -169,7 +169,7 @@ autotools_stage_all() {
 				cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
 				break
 			fi
-			oe_libinstall -a -so $(basename $i .la) ${STAGING_LIBDIR}
+			oe_libinstall -so $(basename $i .la) ${STAGING_LIBDIR}
 		done
 	fi
 	if [ -d ${STAGE_TEMP}/${datadir}/aclocal ]; then
