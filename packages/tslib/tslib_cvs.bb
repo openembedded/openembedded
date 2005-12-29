@@ -27,10 +27,7 @@ EXTRA_OECONF_mnci   = "--enable-shared --disable-h3600 --enable-input --disable-
 EXTRA_OECONF_beagle = "--enable-shared --enable-h3600 --disable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 
 do_stage () {
-	oe_libinstall -so -C src libts-0.0 ${STAGING_LIBDIR}
-	ln -sf libts-0.0.so ${STAGING_LIBDIR}/libts.so
-	install -m 0644 src/tslib.h ${STAGING_INCDIR}/
-	install -m 0644 src/tslib-private.h ${STAGING_INCDIR}/
+autotools_stage_all
 }
 
 do_install_prepend () {
