@@ -21,6 +21,5 @@ EXTRA_OECONF = "${DISABLE_LIBMINIMAL}"
 
 do_stage() {
 	echo "NOTE: stage package ${PF} is: (${PN},${PV},${PR})"
-	autotools_stage_includes
-	oe_libinstall -a -so -C src ${PN} ${STAGING_LIBDIR}
+	autotools_stage_all
 }
