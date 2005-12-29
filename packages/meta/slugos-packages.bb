@@ -68,7 +68,6 @@ SLUGOS_PACKAGES = "\
 	ifupdown \
 	ipkg-utils \
 	iptables \
-	irssi \
 	joe \
 	jpeg \
 	lcdproc \
@@ -159,6 +158,7 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	groff \
 	icecast \
+	irssi \
 	pvrusb2-mci \
 	watchdog \
 	"
