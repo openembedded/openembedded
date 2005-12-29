@@ -27,10 +27,7 @@ do_compile () {
 }
 
 do_stage () {
-	oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
-	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
-	install -m 0644 pcre.h ${STAGING_INCDIR}/
-	install -m 0644 pcreposix.h ${STAGING_INCDIR}/
+	autotools_stage_all
 }
 
 FILES_${PN} = "${libdir}/lib*.so*"
