@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 SECTION = "libs"
 LICENSE = "LGPL GPL"
 DESCRIPTION = "The Audio File Library provides a uniform and elegant \
@@ -17,7 +17,5 @@ SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 inherit autotools pkgconfig binconfig
 
 do_stage () {
-	install -m 0644 libaudiofile/audiofile.h libaudiofile/aupvlist.h libaudiofile/af_vfs.h ${STAGING_INCDIR}/
-	oe_libinstall -C libaudiofile libaudiofile ${STAGING_LIBDIR}
-	install -m 0644 audiofile.m4 ${STAGING_DATADIR}/aclocal/
+	autotools_stage_all
 }
