@@ -1,7 +1,7 @@
 # This is the support library for reiser4progs, required when
 # building that package.  The libraries from this build must
 # be installed on the system to use the reiser4progs programs
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "Library for user-level code accessing Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
 MAINTAINER = "John Bowler <jbowler@acm.org>"
@@ -21,6 +21,5 @@ EXTRA_OECONF = "${DISABLE_LIBMINIMAL}"
 
 do_stage() {
 	echo "NOTE: stage package ${PF} is: (${PN},${PV},${PR})"
-	autotools_stage_includes
-	oe_libinstall -a -so -C src ${PN} ${STAGING_LIBDIR}
+	autotools_stage_all
 }

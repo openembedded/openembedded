@@ -9,8 +9,7 @@ inherit autotools
 export LTCC = "${CC}"
 
 do_stage () {
-	install -m 0644 ${S}/lib/expat.h ${STAGING_INCDIR}/
-	oe_libinstall -so libexpat ${STAGING_LIBDIR}/
+	autotools_stage_all
 }
 
 do_install () {
