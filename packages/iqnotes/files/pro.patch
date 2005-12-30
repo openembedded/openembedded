@@ -1,0 +1,10 @@
+--- iqnotes/iqnotes.pro.orig	2005-12-30 13:38:24.000000000 +0100
++++ iqnotes/iqnotes.pro	2005-12-30 13:39:01.000000000 +0100
+@@ -1,6 +1,5 @@
+ TEMPLATE = app
+-#CONFIG = qt warn_on pda
+-CONFIG = qt warn_on debug desktop
++CONFIG = qt warn_on pda
+ DEFINES = TOOLBAR_BIG_ICONS
+ pda:INCLUDEPATH += $(QPEDIR)/include
+ DESTDIR = ../bin
