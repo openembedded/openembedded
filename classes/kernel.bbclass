@@ -83,6 +83,7 @@ kernel_do_stage() {
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
 	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	rm -f $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
