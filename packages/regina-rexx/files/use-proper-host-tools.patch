@@ -1,0 +1,48 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- regina-rexx-3.3-r0/Makefile.in~use-proper-host-tools.patch
++++ regina-rexx-3.3-r0/Makefile.in
+@@ -321,8 +321,8 @@
+ # Convert .mts to .mtb
+ #
+ $(MTBFILES): msgcmp$(EXE) $(MTSSRC)
+-	./msgcmp $(MTSSRC)
+-	./rexx $(srcdir)/checkmts.rexx $(srcdir)
++	$(STAGING_BINDIR)/msgcmp-multi-input $(MTSSRC)
++	$(STAGING_BINDIR)/rexx $(srcdir)/checkmts.rexx $(srcdir)
+ 
+ msgcmp$(EXE): msgcmp.$(OBJ)
+ 	$(PURIFY) $(CC) $(LINKOPT) -o msgcmp$(EXE) msgcmp.$(OBJ)
+@@ -919,22 +919,22 @@
+ 	$(INSTALL) -m 644 -c ./de.mtb $(sharedir)/de.mtb
+ 	$(INSTALL) -m 644 -c ./es.mtb $(sharedir)/es.mtb
+ 	$(INSTALL) -m 644 -c ./pl.mtb $(sharedir)/pl.mtb
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/rexxcps.rexx  $(sharedir)/rexxcps.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/rexxcps.rexx  $(sharedir)/rexxcps.rexx
+ 	-chmod 755 $(sharedir)/rexxcps.rexx
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/animal.rexx   $(sharedir)/animal.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/animal.rexx   $(sharedir)/animal.rexx
+ 	-chmod 755 $(sharedir)/animal.rexx
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/block.rexx    $(sharedir)/block.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/block.rexx    $(sharedir)/block.rexx
+ 	-chmod 755 $(sharedir)/block.rexx
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/dateconv.rexx $(sharedir)/dateconv.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/dateconv.rexx $(sharedir)/dateconv.rexx
+ 	-chmod 755 $(sharedir)/dateconv.rexx
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/timeconv.rexx $(sharedir)/timeconv.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/timeconv.rexx $(sharedir)/timeconv.rexx
+ 	-chmod 755 $(sharedir)/timeconv.rexx
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/newstr.rexx   $(sharedir)/newstr.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/rexx $(srcdir)/demo/newstr.rexx   $(sharedir)/newstr.rexx
+ 	-chmod 755 $(sharedir)/newstr.rexx
+ 
+ installregina:
+ 	$(INSTALL) -m 755 -c ./regina$(EXE) $(bindir)/regina$(EXE)
+-	$(bindir)/rexx $(srcdir)/preinst.rexx $(bindir)/regina $(srcdir)/demo/dynfunc.rexx  $(sharedir)/dynfunc.rexx
++	$(STAGING_BINDIR)/rexx $(srcdir)/preinst.rexx $(bindir)/regina $(srcdir)/demo/dynfunc.rexx  $(sharedir)/dynfunc.rexx
+ 	-chmod 755 $(sharedir)/dynfunc.rexx
+ 
+ installlib: installregina
