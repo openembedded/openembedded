@@ -8,11 +8,17 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPa
 	   file://intdriven.patch;patch=1 \
 	   file://pollcontroller.patch;patch=1 \
 	   file://mm4.patch;patch=1"
-PR = "r8"
+SRC_URI += "file://2.6.13.patch;patch=1"
+SRC_URI += "file://2.6.14.patch;patch=1"
+PR = "r12"
+
+RDEPENDS = "ixp4xx-csr"
 
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
+
+PROVIDES = "virtual/ixp-eth"
 
 inherit module
 
@@ -21,22 +27,6 @@ inherit module
 # module as well!
 KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
 KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
-
-#do_ixp425_c_patch_fetch () {
-#	if test ! -e ${DL_DIR}/ixp425_eth.c.patch.md5; then
-#		cd ${DL_DIR}
-#		wget -Oixp425_eth.c.patch http://sourceforge.net/tracker/download.php?group_id=74209\&atid=544386\&file_id=90129\&aid=970193
-#		md5sum > ixp425_eth.c.patch.md5
-#	fi
-#}
-#
-#addtask ixp425_c_patch_fetch after do_fetch before do_unpack
-
-#do_ixp425_c_patch_unpack () {
-#	install -m 0644 ${DL_DIR}/ixp425_eth.c.patch ${WORKDIR}/
-#}
-
-#addtask ixp425_c_patch_unpack after do_unpack before do_pre_patch
 
 do_pre_patch () {
 	patcher -p 0 -i ixp425_eth_1_1_update_nf_bridge.patch
@@ -50,7 +40,7 @@ do_compile () {
 	oe_runmake 'KDIR=${STAGING_KERNEL_DIR}' \
 		   'CC=${KERNEL_CC}' \
 		   'LD=${KERNEL_LD}' \
-		   'EXTRA_CFLAGS=-I${STAGING_INCDIR}/linux/ixp4xx-csr -I${STAGING_KERNEL_DIR}/include'
+		   'EXTRA_CFLAGS=-I${STAGING_INCDIR}/linux/ixp4xx-csr -I${STAGING_KERNEL_DIR}/include -DCPU=33 -DXSCALE=33'
 }
 
 do_install () {

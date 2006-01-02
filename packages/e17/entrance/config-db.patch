@@ -1,61 +1,52 @@
---- entrance/data/config/build_config.sh.in~	2005-08-15 23:24:39.000000000 -0700
-+++ entrance/data/config/build_config.sh.in	2005-08-15 23:25:15.000000000 -0700
+diff -Nur entrance~/data/config/build_config.sh.in entrance/data/config/build_config.sh.in
+--- entrance~/data/config/build_config.sh.in	2005-09-29 14:58:41.000000000 -0700
++++ entrance/data/config/build_config.sh.in	2005-09-29 15:01:04.000000000 -0700
 @@ -3,7 +3,7 @@
  rm -f $DB
  
  # set auth to 1 for pam, 2 for shadow
--edb_ed $DB add /entrance/auth int @auth_mode@
-+edb_ed $DB add /entrance/auth int 0
+-ecore_config $DB set /entrance/auth int @auth_mode@
++ecore_config $DB set /entrance/auth int 0
  
  # uncomment the below to enable experimental OpenGL hardware acceleration
- #edb_ed $DB add /entrance/engine int 1
-@@ -18,30 +18,30 @@
- #edb_ed $DB add /entrance/fonts/0/str str "/usr/share/fonts/truetype/"
- #edb_ed $DB add /entrance/fonts/1/str str "/usr/X11R6/lib/X11/fonts/Truetype/"
- edb_ed $DB add /entrance/greeting/before str "Welcome to "
--edb_ed $DB add /entrance/greeting/after str ""
-+edb_ed $DB add /entrance/greeting/after str " e17/OE"
- edb_ed $DB add /entrance/session/count int 8
--edb_ed $DB add /entrance/session/0/session str "default"
-+edb_ed $DB add /entrance/session/0/session str "/etc/X11/Sessions/Default"
- edb_ed $DB add /entrance/session/0/title str "Default"
- edb_ed $DB add /entrance/session/0/icon str "default.png"
- edb_ed $DB add /entrance/session/1/icon str "enlightenment.png"
- edb_ed $DB add /entrance/session/1/title str "Enlightenment"
--edb_ed $DB add /entrance/session/1/session str "Enlightenment"
--edb_ed $DB add /entrance/session/2/session str "kde"
--edb_ed $DB add /entrance/session/2/title str "KDE"
--edb_ed $DB add /entrance/session/2/icon str "kde.png"
--edb_ed $DB add /entrance/session/3/session str "gnome"
--edb_ed $DB add /entrance/session/3/title str "Gnome"
--edb_ed $DB add /entrance/session/3/icon str "gnome.png"
--edb_ed $DB add /entrance/session/4/session str "blackbox"
--edb_ed $DB add /entrance/session/4/title str "Blackbox"
--edb_ed $DB add /entrance/session/4/icon str "blackbox.png"
--edb_ed $DB add /entrance/session/5/session str "sawfish"
--edb_ed $DB add /entrance/session/5/title str "Sawfish"
--edb_ed $DB add /entrance/session/5/icon str "default.png"
--edb_ed $DB add /entrance/session/6/session str "xfce"
--edb_ed $DB add /entrance/session/6/title str "XFce"
--edb_ed $DB add /entrance/session/6/icon str "xfce.png"
--edb_ed $DB add /entrance/session/7/session str "failsafe"
-+edb_ed $DB add /entrance/session/2/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/2/icon str "enlightenment.png"
-+edb_ed $DB add /entrance/session/2/title str "Enlightenment"
-+edb_ed $DB add /entrance/session/3/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/3/icon str "enlightenment.png"
-+edb_ed $DB add /entrance/session/3/title str "Enlightenment"
-+edb_ed $DB add /entrance/session/4/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/4/icon str "enlightenment.png"
-+edb_ed $DB add /entrance/session/4/title str "Enlightenment"
-+edb_ed $DB add /entrance/session/5/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/5/icon str "enlightenment.png"
-+edb_ed $DB add /entrance/session/5/title str "Enlightenment"
-+edb_ed $DB add /entrance/session/6/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/6/icon str "enlightenment.png"
-+edb_ed $DB add /entrance/session/6/title str "Enlightenment"
-+edb_ed $DB add /entrance/session/1/session str "/etc/X11/Sessions/Enlightenment"
-+edb_ed $DB add /entrance/session/7/session str "/etc/X11/Sessions/Failsafe"
- edb_ed $DB add /entrance/session/7/title str "Failsafe"
- edb_ed $DB add /entrance/session/7/icon str "failsafe.png"
- edb_ed $DB add /entrance/system/reboot int 1
+ #ecore_config $DB set /entrance/engine int 1
+@@ -18,32 +18,17 @@
+ #ecore_config $DB set /entrance/fonts/0/str str "/usr/share/fonts/truetype/"
+ #ecore_config $DB set /entrance/fonts/1/str str "/usr/X11R6/lib/X11/fonts/Truetype/"
+ ecore_config $DB set /entrance/greeting/before str "Welcome to"
+-ecore_config $DB set /entrance/greeting/after str ""
+-ecore_config $DB set /entrance/session/count int 8
+-ecore_config $DB set /entrance/session/0/session str "default"
++ecore_config $DB set /entrance/greeting/after str " e17/OE"
++ecore_config $DB set /entrance/session/count int 3
++ecore_config $DB set /entrance/session/0/session str "/etc/X11/Sessions/Enlightenment"
+ ecore_config $DB set /entrance/session/0/title str "Default"
+ ecore_config $DB set /entrance/session/0/icon str "default.png"
+ ecore_config $DB set /entrance/session/1/icon str "enlightenment.png"
+ ecore_config $DB set /entrance/session/1/title str "Enlightenment"
+-ecore_config $DB set /entrance/session/1/session str "Enlightenment"
+-ecore_config $DB set /entrance/session/2/session str "kde"
+-ecore_config $DB set /entrance/session/2/title str "KDE"
+-ecore_config $DB set /entrance/session/2/icon str "kde.png"
+-ecore_config $DB set /entrance/session/3/session str "gnome"
+-ecore_config $DB set /entrance/session/3/title str "Gnome"
+-ecore_config $DB set /entrance/session/3/icon str "gnome.png"
+-ecore_config $DB set /entrance/session/4/session str "blackbox"
+-ecore_config $DB set /entrance/session/4/title str "Blackbox"
+-ecore_config $DB set /entrance/session/4/icon str "blackbox.png"
+-ecore_config $DB set /entrance/session/5/session str "sawfish"
+-ecore_config $DB set /entrance/session/5/title str "Sawfish"
+-ecore_config $DB set /entrance/session/5/icon str "default.png"
+-ecore_config $DB set /entrance/session/6/session str "xfce"
+-ecore_config $DB set /entrance/session/6/title str "XFce"
+-ecore_config $DB set /entrance/session/6/icon str "xfce.png"
+-ecore_config $DB set /entrance/session/7/session str "failsafe"
+-ecore_config $DB set /entrance/session/7/title str "Failsafe"
+-ecore_config $DB set /entrance/session/7/icon str "failsafe.png"
++ecore_config $DB set /entrance/session/1/session str "/etc/X11/Sessions/Enlightenment"
++ecore_config $DB set /entrance/session/2/session str "/etc/X11/Sessions/Failsafe"
++ecore_config $DB set /entrance/session/2/title str "Failsafe"
++ecore_config $DB set /entrance/session/2/icon str "failsafe.png"
+ ecore_config $DB set /entrance/system/reboot int 1
+ ecore_config $DB set /entrance/system/halt int 1
+ ecore_config $DB set /entrance/user/remember int 1

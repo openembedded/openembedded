@@ -1,0 +1,32 @@
+--- linux/arch/arm/mach-pxa/sharpsl_apm.c-original	2005-09-07 02:38:21.000000000 -0600
++++ linux/arch/arm/mach-pxa/sharpsl_apm.c	2005-09-08 01:11:56.000000000 -0600
+@@ -89,6 +89,12 @@
+ #include <linux/ioctl.h>
+ #include <asm/sharp_apm.h>
+ #include <asm/sharp_char.h>
++#if defined(CONFIG_ARCH_PXA_POODLE)
++#include <asm-arm/arch-pxa/keyboard_poodle.h> /* blc */
++#elif defined(CONFIG_ARCH_PXA_TOSA)
++#include <asm-arm/arch-pxa/keyboard_tosa.h>
++#define	NR_KEYCODES	(KEYCODE(KB_ROWS-1,KB_COLS-1)+1)
++#endif
+ #include <linux/delay.h>
+ #include <asm/arch/ads7846_ts.h>
+ #include <linux/apm_bios.h>
+@@ -155,6 +156,7 @@
+ /// ioctl 
+ #if defined(CONFIG_ARCH_PXA_POODLE) || defined(CONFIG_ARCH_PXA_CORGI) || defined(CONFIG_ARCH_PXA_TOSA)
+ static u32 apm_event_mask = (APM_EVT_POWER_BUTTON);
++extern kbd_keyinfo sharppda_kbdstate[(NR_KEYCODES+1)];
+ #else
+ static u32 apm_event_mask = (APM_EVT_POWER_BUTTON | APM_EVT_BATTERY_STATUS);
+ #endif
+@@ -472,7 +474,7 @@
+ 	if (irq == IRQ_GPIO_ON_KEY) {	/* suspend */
+ 
+ 		DPRINTK("irq=%d count=%d sharpsl_suspend_request%d\n",irq, count, sharpsl_suspend_request);
+-		if ( GPLR(GPIO_ON_KEY) & GPIO_bit(GPIO_ON_KEY) ) {
++		if ( GPLR(GPIO_ON_KEY) & GPIO_bit(GPIO_ON_KEY) || (!sharppda_kbdstate[1].in) ) { /* second half, if something other than cancel is pushed blc */
+ 			/* release */
+ 			count = 0;
+ 		} else {

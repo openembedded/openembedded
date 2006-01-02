@@ -1,0 +1,147 @@
+diff -ur libeina-0.96.7.orig/configure.in libeina-0.96.7/configure.in
+--- libeina-0.96.7.orig/configure.in	2005-01-19 20:01:04.000000000 +0100
++++ libeina-0.96.7/configure.in	2005-10-13 16:50:22.000000000 +0200
+@@ -4,12 +4,31 @@
+ 
+ AM_MAINTAINER_MODE
+ 
++AC_ARG_ENABLE(
++	[magic],
++	[  --disable-magic	Disables libmagic support])
++
+ AC_CHECK_HEADER(
+ 	[magic.h],
+-	[AC_DEFINE(HAVE_MAGIC_H, YES, [Have a valid magic.h])],
+-	[AC_MSG_ERROR([Install package libmagic-dev please])]
++	[
++	if test "x$enable_magic" = "xyes" || test -z "$enable_magic" ; then
++		AC_DEFINE(HAVE_MAGIC_H, YES, [Have a valid magic.h])
++		MAGIC_LIBS="-lmagic"
++	else
++		MAGIC_LIBS=""
++	fi
++	],
++	[	
++	if test "x$enable_magic" = "xyes"; then
++		AC_MSG_ERROR([Install package libmagic-dev please])
++	else
++		MAGIC_LIBS=""    
++	fi
++	]
+ 	)
+ 
++AC_SUBST(MAGIC_LIBS)
++
+ dnl AC_CHECK_HEADER(magic.h,
+ dnl	[AC_MSG_ERROR([Install package libmagic-dev please])])
+ dnl	[AC_DEFINE(HAVE_STDIO_H)],
+diff -ur libeina-0.96.7.orig/src/Makefile.am libeina-0.96.7/src/Makefile.am
+--- libeina-0.96.7.orig/src/Makefile.am	2004-09-15 17:45:20.000000000 +0200
++++ libeina-0.96.7/src/Makefile.am	2005-10-13 16:50:22.000000000 +0200
+@@ -23,5 +23,5 @@
+ ##	# -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+ ##	# -export-dynamic $(no_undefined) $(export_symbols)
+ 
+-libeina_1_0_la_LIBADD = @PACKAGE_LIBS@ $(INTLLIBS) -lmagic
++libeina_1_0_la_LIBADD = @PACKAGE_LIBS@ $(INTLLIBS) @MAGIC_LIBS@
+ 
+diff -ur libeina-0.96.7.orig/src/player.c libeina-0.96.7/src/player.c
+--- libeina-0.96.7.orig/src/player.c	2004-12-26 15:02:09.000000000 +0100
++++ libeina-0.96.7/src/player.c	2005-10-13 16:50:22.000000000 +0200
+@@ -46,6 +46,8 @@
+ 	p->eos    = FALSE;
+ 	p->slots  = NULL;
+ 	p->state  = EINA_STATE_STOP;
++
++#ifdef HAVE_MAGIC_H
+ 	p->mimedetector = (magic_t) magic_open(
+ 						MAGIC_MIME |
+ 						MAGIC_PRESERVE_ATIME |
+@@ -56,7 +58,7 @@
+ 		"eos",
+ 		G_CALLBACK(eina_player_trap_eos),
+ 		(gpointer) p);
+-
++#endif
+ 	p->watcher_id = g_timeout_add(100, eina_player_eos_watcher,    p);
+ 
+ 	return p;
+@@ -65,8 +67,10 @@
+ /* Finalize player*/
+ void eina_player_unref(EinaPlayer *p) {
+ 	GList *pl;
+-	
++
++#ifdef HAVE_MAGIC_H
+ 	magic_close(p->mimedetector);
++#endif
+ 	g_source_remove(p->watcher_id);
+ 	eina_core_unref(p->core);
+ 
+@@ -177,27 +181,29 @@
+ 
+ gboolean eina_player_add(EinaPlayer *p, EinaStream *stream) {
+ 	gboolean add_ok = FALSE;
+-	gboolean is_audio, is_ogg;
+-	const gchar *mimetype;
+ 	const gchar *filename;
+-	
++#ifdef HAVE_MAGIC_H
++	gboolean is_audio, is_ogg;
++        const gchar *mimetype;
++#endif
+ 	if ( !eina_stream_is_local(stream) ) {
+ 		/* Something on GnomeVFS/KIOSlave/... add */
+ 		return eina_player_add_file(p, stream);
+ 	} else {
+ 		filename = eina_stream_get_location(stream);
++#ifdef HAVE_MAGIC_H
+ 		mimetype = eina_priv_get_mime(p, filename); /* Stream is filesystem encoding */
+ 		if ( mimetype == NULL )
+ 			return FALSE;
+ 
+ 		is_audio = g_str_has_prefix(mimetype, "audio/");
+ 		is_ogg   = !g_ascii_strcasecmp("application/ogg", mimetype);
+-
++#endif
+ 		/* Filter by category */
+ 		if ( g_file_test(filename, G_FILE_TEST_IS_DIR) ) {
+ 			add_ok |= eina_player_add_dir(p, stream);
+ 		}
+-
++#ifdef HAVE_MAGIC_H
+ 		else if ( is_audio || is_ogg ) {
+ 			add_ok |= eina_player_add_file(p, stream);
+ 		}
+@@ -205,7 +211,10 @@
+ 		else if ( !g_ascii_strcasecmp("text/plain", mimetype) ) {
+ 			add_ok |= eina_player_add_m3u(p, stream);
+ 		} 
+-
++#endif
++		add_ok |= eina_player_add_file(p, stream);
++		add_ok |= eina_player_add_m3u(p, stream);
++		
+ 		return add_ok;
+ 	}
+ }
+diff -ur libeina-0.96.7.orig/src/player-priv.c libeina-0.96.7/src/player-priv.c
+--- libeina-0.96.7.orig/src/player-priv.c	2004-12-26 15:02:09.000000000 +0100
++++ libeina-0.96.7/src/player-priv.c	2005-10-13 16:50:41.000000000 +0200
+@@ -173,6 +173,7 @@
+ 	}
+ }
+ 
++#ifdef HAVE_MAGIC_H
+ const gchar *eina_priv_get_mime(EinaPlayer *p, const gchar *filename) {
+ 	const gchar *mimetype;
+ 	gchar *pos;
+@@ -190,6 +191,8 @@
+ 	return mimetype;
+ }
+ 
++#endif
++
+ #if 0
+ gboolean eina_player_fadder_watcher(gpointer data) {
+ 	EinaPlayer *p = data;

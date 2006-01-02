@@ -71,7 +71,6 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/more more more.${PN} 100
 	update-alternatives --install ${base_bindir}/mount mount mount.${PN} 100
 	update-alternatives --install ${base_bindir}/umount umount umount.${PN} 100
-	update-alternatives --install ${base_sbindir}/hwclock hwclock hwclock.${PN} 100
 	update-alternatives --install ${base_sbindir}/losetup losetup losetup.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
 	update-alternatives --install ${base_sbindir}/pivot_root pivot_root pivot_root.${PN} 100
@@ -87,6 +86,7 @@ pkg_postinst_${PN} () {
 	
 	# There seems to be problem, atleast on nslu2, with these, untill they are
 	# fixed the busybox ones have higher priority
+	update-alternatives --install ${base_sbindir}/hwclock hwclock hwclock.${PN} 10
 	update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 10
 	update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 10
 	update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 10

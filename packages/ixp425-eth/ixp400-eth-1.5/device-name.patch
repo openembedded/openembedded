@@ -1,0 +1,14 @@
+--- ./ixp400_eth.c	2005-11-20 16:58:48.973330982 -0800
++++ ./ixp400_eth.c	2005-11-20 17:01:26.719257307 -0800
+@@ -161,7 +161,11 @@ MODULE_PARM(dev_max_count, "i");
+ MODULE_PARM_DESC(dev_max_count, "Number of devices to initialize");
+ 
+ /* devices will be called ixp0 and ixp1 */
++#ifdef IX_DEVICE_NAME_ETH
++#define DEVICE_NAME "eth"
++#else
+ #define DEVICE_NAME "ixp"
++#endif
+ 
+ /* boolean values for PHY link speed, duplex, and autonegotiation */
+ #define PHY_SPEED_10    0

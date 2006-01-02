@@ -6,7 +6,7 @@ FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r18"
+PR = "r19"
 
 DEPENDS = "task-bootstrap meta-opie"
 
@@ -17,6 +17,7 @@ INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
+		    task-opie-bluetooth task-opie-irda \
 		    ${extra_stuff}"
 
 export IPKG_INSTALL = "${INSTALL_PACKAGES}"

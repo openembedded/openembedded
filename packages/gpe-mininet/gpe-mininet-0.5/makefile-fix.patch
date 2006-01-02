@@ -1,0 +1,18 @@
+--- gpe-mininet-0.5/Makefile.orig	2005-11-03 21:30:17 +0100
++++ gpe-mininet-0.5/Makefile	2005-11-03 21:30:19 +0100
+@@ -29,11 +29,11 @@
+ 
+ PACKAGE_CPPFLAGS += -I.
+ 
+-GTKCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0 libmb` 
+-GTKLDFLAGS += `pkg-config --libs gtk+-2.0 gdk-2.0` `pkg-config --libs gthread-2.0 libmb`
++GTKCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0`
++GTKLDFLAGS += `pkg-config --libs gtk+-2.0 gdk-2.0`
+ 
+-PACKAGE_CFLAGS +=  -Wall $(GTKCFLAGS)
+-PACKAGE_LDFLAGS += -lgpewidget $(GTKLDFLAGS) 
++PACKAGE_CFLAGS +=  -Wall $(GTKCFLAGS) `pkg-config --cflags libmb`
++PACKAGE_LDFLAGS += -lgpewidget $(GTKLDFLAGS)  `pkg-config --libs gthread-2.0 libmb`
+ 
+ MEMBERS  = main netlink iwlib
+ 

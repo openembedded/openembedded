@@ -1,0 +1,207 @@
+# Put the call_via_rx code into each executable - call_via_ip cannot
+# possibly work if called through the PLT!  ldso requires this code
+# too as it is not linked with the crt stuff and thumb ldso does
+# make calls via a register.
+#
+# The patch puts the code into crti.S so that it is linked into
+# every normally built application (if thumb or interworking is
+# selected).  This is only 30 extra bytes and it works - the previous
+# code did not because nothing both implemented and exported the
+# APIs (they were in libgcc, but not in the version script).
+#
+# crti.S and crtn.S is also brought up to date with GCC 3.4.4 - this
+# is essential for thumb support because the .init and .fini sections
+# must use arm or thumb code to match the compilation of the libraries.
+#
+# Note that code which pushes stuff into .init or .fini must be
+# compiled with or without -mthumb to match the uclibc compilation -
+# and gcc itself (which does do this) must therefore be compiled to
+# match.
+#
+--- uClibc-0.9.28/.pc/thumb-call-via-rx.patch/libc/sysdeps/linux/arm/crti.S	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/crti.S	2005-09-21 19:15:19.996721584 -0700
+@@ -1,26 +1,86 @@
+ 	.file	"initfini.c"
+ 	
+ 	.section .init
+-	.align	2
+ 	.global	_init
+ 	.type	_init, %function
++#if defined __thumb__
++	.align	1
++	.thumb
++	.thumb_func
+ _init:
+-	@ args = 0, pretend = 0, frame = 0
+-	@ frame_needed = 0, uses_anonymous_args = 0
+-	str	lr, [sp, #-4]!
+-	
+-	.align 2
+-	
+-	
+-	.section .fini
++	push	{r4-r7, lr}
++#else
+ 	.align	2
++	.arm
++_init:
++	@ gcc 3.3.2 didn't create a stack frame, gcc 3.4.4 does -
++	@ presumably 3.4.4 can put stuff into .init which requires
++	@ the arguments to be saved.  This code is copied from 3.4.4
++	mov	ip, sp
++	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}
++	sub	fp, ip, #4
++#endif
++
++
++	.section .fini
+ 	.global	_fini
+ 	.type	_fini, %function
++#if defined __thumb__
++	.align	1
++	.thumb
++	.thumb_func
+ _fini:
+-	@ args = 0, pretend = 0, frame = 0
+-	@ frame_needed = 0, uses_anonymous_args = 0
+-	str	lr, [sp, #-4]!
+-	.align 2
+-	
+-	
++	push	{r4-r7, lr}
++#else
++	.align	2
++	.arm
++_fini:
++	mov	ip, sp
++	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}
++	sub	fp, ip, #4
++#endif
++
++
++#if (defined __thumb__ || defined __THUMB_INTERWORK__) && (defined __ARM_ARCH_4T__ || defined __ARM_ARCH_5T__ || defined __ARM_ARCH_5TE__)
++	@ To support thumb code it is currently necessary to have the _call_via_rX
++	@ functions exposed to the linker for any program or shared library.  PLT
++	@ references are inadequate - the PLT zaps ip and therefore breaks _call_via_ip
++	@ (and the compiler does generate this).  It is simpler to put all the
++	@ required code in here - it only amounts to 60 bytes overhead.
++	@NOTE: it would be better to have the compiler generate this stuff as
++	@ required...
++	.section	".text"
++	.align 0
++	.force_thumb
++
++.macro call_via register
++	.global _call_via_\register
++	.type	_call_via_\register, %function
++	.weak	_call_via_\register
++	.hidden	_call_via_\register
++	.thumb_func
++_call_via_\register:
++	bx	\register
++	nop
++	.size	_call_via_\register, . - _call_via_\register
++.endm
++
++	@ and calls for the 15 general purpose registers (2 bytes each).
++	call_via r0
++	call_via r1
++	call_via r2
++	call_via r3
++	call_via r4
++	call_via r5
++	call_via r6
++	call_via r7
++	call_via r8
++	call_via r9
++	call_via sl
++	call_via fp
++	call_via ip
++	call_via sp
++	call_via lr
++#endif
++
+ 	.ident	"GCC: (GNU) 3.3.2 20031005 (Debian prerelease)"
+--- uClibc-0.9.28/libc/sysdeps/linux/arm/crtn.S.orig	2005-09-20 16:39:20.010925582 -0700
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/crtn.S	2005-09-20 17:00:51.700206464 -0700
+@@ -1,17 +1,34 @@
+ 	.file	"initfini.c"
+ 	
+ 	.section .init
+-	.align	2
+ 	.global	_init
+ 	.type	_init, %function
+-	ldr	pc, [sp], #4
++#if defined __thumb__
++	.align	1
++	.thumb
++	@ this will not work on ARMv4T, but lots of stuff
++	@ in here won't work there anyway...
++	pop	{r4-r7, pc}
++#else
++	.align	2
++	.arm
++	ldmdb	fp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
++#endif
+ 	.size	_init, .-_init
+ 	
+ 	.section .fini
+-	.align	2
+ 	.global	_fini
+ 	.type	_fini, %function
+-	ldr	pc, [sp], #4
++#if defined __thumb__
++	.align	1
++	.thumb
++	pop	{r4-r7, pc}
++#else
++	.align	2
++	.arm
++	ldmdb	fp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
++#endif
+ 	.size	_fini, .-_fini
+ 	
++	@ In fact this is modified to 3.4.4
+ 	.ident	"GCC: (GNU) 3.3.2 20031005 (Debian prerelease)"
+--- uClibc-0.9.28/.pc/thumb-call-via-rx.patch/ldso/ldso/arm/dl-syscalls.h	2005-08-17 15:49:41.000000000 -0700
++++ uClibc-0.9.28/ldso/ldso/arm/dl-syscalls.h	2005-09-21 19:17:01.143086323 -0700
+@@ -4,3 +4,39 @@
+ #define __set_errno(X) {(_dl_errno) = (X);}
+ #include "sys/syscall.h"
+ 
++/* _call_via_rX calls are used in thumb ldso because of calls via
++ * function pointers, but ldso is not linked with anything which
++ * provides them, so define them here (only required for thumb).
++ */
++#if defined(__thumb__)
++asm(
++	".macro call_via register\n"
++	"	.global	_call_via_\\register\n"
++	"	.hidden	_call_via_\\register\n"
++	"	.type	_call_via_\\register, %function\n"
++	"	.thumb_func\n"
++	"_call_via_\\register:\n"
++	"	bx	\\register\n"
++	"	.size	_call_via_\\register, . - _call_via_\\register\n"
++	".endm\n"
++
++	".text\n"
++	".thumb\n"
++	".align 1\n"
++	"	call_via r0\n"
++	"	call_via r1\n"
++	"	call_via r2\n"
++	"	call_via r3\n"
++	"	call_via r4\n"
++	"	call_via r5\n"
++	"	call_via r6\n"
++	"	call_via r7\n"
++	"	call_via r8\n"
++	"	call_via r9\n"
++	"	call_via r10\n"
++	"	call_via r11\n"
++	"	call_via r12\n"
++	"	call_via r13\n"
++	"	call_via r14\n"
++);
++#endif

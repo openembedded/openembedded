@@ -1,0 +1,805 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- /dev/null
++++ linux-2.4.27/arch/arm/mach-sa1100/pm-common.c
+@@ -0,0 +1,268 @@
++/*
++ * SA1100 Power Management Routines
++ *
++ * Copyright (c) 2001 Cliff Brake <cbrake@accelent.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License.
++ *
++ * History:
++ *
++ * 2001-02-06:	Cliff Brake         Initial code
++ *
++ * 2001-02-25:	Sukjae Cho <sjcho@east.isi.edu> &
++ * 		Chester Kuo <chester@linux.org.tw>
++ * 			Save more value for the resume function! Support
++ * 			Bitsy/Assabet/Freebird board
++ *
++ * 2001-08-29:	Nicolas Pitre <nico@cam.org>
++ * 			Cleaned up, pushed platform dependent stuff
++ * 			in the platform specific files.
++ *
++ * 2002-05-27:	Nicolas Pitre	Killed sleep.h and the kmalloced save array.
++ * 				Storage is local on the stack now.
++ */
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/pm.h>
++#include <linux/slab.h>
++#include <linux/sched.h>
++#include <linux/interrupt.h>
++#include <linux/sysctl.h>
++#include <linux/errno.h>
++#include <linux/cpufreq.h>
++
++#include <asm/hardware.h>
++#include <asm/memory.h>
++#include <asm/system.h>
++#include <asm/leds.h>
++#include <asm/uaccess.h>
++
++
++#ifdef CONFIG_IPAQ_HANDHELD
++#include <asm/arch-sa1100/h3600_asic.h>
++#endif
++
++#define __KERNEL_SYSCALLS__
++#include <linux/unistd.h>
++
++/*
++ * Debug macros
++ */
++#undef DEBUG
++
++
++
++static char pm_helper_path[128] = "/sbin/pm_helper";
++extern int exec_usermodehelper(char *path, char **argv, char **envp);
++int debug_pm = 0;
++static int pm_helper_veto = 0;
++
++static int
++run_sbin_pm_helper( pm_request_t action )
++{
++	int i;
++	char *argv[3], *envp[8];
++
++	if (!pm_helper_path[0])
++		return 2;
++
++	if ( action != PM_SUSPEND && action != PM_RESUME )
++		return 1;
++
++	/* Be root */
++	current->uid = current->gid = 0;
++
++	i = 0;
++	argv[i++] = pm_helper_path;
++	argv[i++] = (action == PM_RESUME ? "resume" : "suspend");
++	argv[i] = 0;
++
++	i = 0;
++	/* minimal command environment */
++	envp[i++] = "HOME=/";
++	envp[i++] = "PATH=/sbin:/bin:/usr/sbin:/usr/bin";
++	envp[i] = 0;
++
++	/* other stuff we want to pass to /sbin/pm_helper */
++	return exec_usermodehelper (argv [0], argv, envp);
++}
++
++/*
++ * If pm_suggest_suspend_hook is non-NULL, it is called by pm_suggest_suspend.
++ */
++int (*pm_suggest_suspend_hook)(int state);
++EXPORT_SYMBOL(pm_suggest_suspend_hook);
++
++/*
++ * If pm_use_sbin_pm_helper is nonzero, then run_sbin_pm_helper is called before suspend and after resume
++ */
++int pm_use_sbin_pm_helper = 1;
++EXPORT_SYMBOL(pm_use_sbin_pm_helper);
++
++/*
++ * If sysctl_pm_do_suspend_hook is non-NULL, it is called by sysctl_pm_do_suspend.
++ * If it returns a true value, then pm_suspend is not called. 
++ * Use this to hook in apmd, for now.
++ */
++int (*pm_sysctl_suspend_hook)(int state);
++EXPORT_SYMBOL(pm_sysctl_suspend_hook);
++
++int pm_suspend(void);
++
++int pm_suggest_suspend(void)
++{
++	int retval;
++
++	if (pm_suggest_suspend_hook) {
++		if (pm_suggest_suspend_hook(PM_SUSPEND))
++			return 0;
++	}
++	
++	if (pm_use_sbin_pm_helper) {
++		pid_t pid;
++		int res;
++		int status = 0;
++		unsigned int old_fs;
++        	
++		pid = kernel_thread ((int (*) (void *)) run_sbin_pm_helper, (void *) PM_SUSPEND, 0 );
++		if ( pid < 0 )
++			return pid;
++
++		if (debug_pm)
++			printk(KERN_CRIT "%s:%d got pid=%d\n", __FUNCTION__, __LINE__, pid);	
++        		
++		old_fs = get_fs ();
++		set_fs (get_ds ());
++		res = waitpid(pid, &status, __WCLONE);
++		set_fs (old_fs);
++	
++		if ( pid != res ) {
++			if (debug_pm)
++				printk(KERN_CRIT ": waitpid returned %d (exit_code=%d); not suspending\n", res, status );
++	        	
++			return -1;
++		}
++        		
++		/*if ( WIFEXITED(status) && ( WIFEXITSTATUS(status) != 0 )) {*/
++		if (( status & 0xff7f ) != 0 ) {
++			if (pm_helper_veto) {
++				if (debug_pm)
++					printk(KERN_CRIT "%s: SUSPEND WAS CANCELLED BY pm_helper (exit status %d)\n", __FUNCTION__, status >> 8);
++				return -1;
++			} else {
++				if (debug_pm)
++					printk(KERN_CRIT "%s: pm_helper returned %d, but going ahead anyway\n", __FUNCTION__, status >> 8);
++			}
++		}
++	}
++
++	if (debug_pm)
++		printk(KERN_CRIT "%s: REALLY SUSPENDING NOW\n", __FUNCTION__ );
++
++	if (pm_sysctl_suspend_hook) {
++		if (pm_sysctl_suspend_hook(PM_SUSPEND))
++			return 0;
++	}
++
++	retval = pm_suspend();
++	if (retval) {
++		if (debug_pm)
++			printk(KERN_CRIT "pm_suspend returned %d\n", retval);
++		return retval;
++	}
++
++	if (pm_use_sbin_pm_helper) {
++		pid_t pid;
++        	
++		if (debug_pm)
++			printk(KERN_CRIT "%s: running pm_helper for wakeup\n", __FUNCTION__);
++
++		pid = kernel_thread ((int (*) (void *)) run_sbin_pm_helper, (void *) PM_RESUME, 0 );
++		if ( pid < 0 )
++			return pid;
++        		
++		if ( pid != waitpid ( pid, NULL, __WCLONE ))
++			return -1;
++	}
++
++	return 0;
++}
++
++EXPORT_SYMBOL(pm_suggest_suspend);
++
++
++/*
++ * Send us to sleep.
++ */
++int pm_suspend(void)
++{
++	int retval;
++
++	retval = pm_send_all(PM_SUSPEND, (void *)3);
++	if ( retval )
++		return retval;
++
++#ifdef CONFIG_IPAQ_HANDHELD
++	retval = h3600_power_management(PM_SUSPEND);
++	if (retval) {
++		pm_send_all(PM_RESUME, (void *)0);
++		return retval;
++	}
++#endif
++
++	retval = pm_do_suspend();
++
++#ifdef CONFIG_IPAQ_HANDHELD
++	/* Allow the power management routines to override resuming */
++	while ( h3600_power_management(PM_RESUME) )
++		retval = pm_do_suspend();
++#endif
++
++	pm_send_all(PM_RESUME, (void *)0);
++
++	return retval;
++}
++EXPORT_SYMBOL(pm_suspend);
++
++#ifdef CONFIG_SYSCTL
++/*
++ * ARGH!  ACPI people defined CTL_ACPI in linux/acpi.h rather than
++ * linux/sysctl.h.
++ *
++ * This means our interface here won't survive long - it needs a new
++ * interface.  Quick hack to get this working - use sysctl id 9999.
++ */
++#warning ACPI broke the kernel, this interface needs to be fixed up.
++#define CTL_ACPI 9999
++#define ACPI_S1_SLP_TYP 19
++
++static struct ctl_table pm_table[] =
++{
++/*	{ACPI_S1_SLP_TYP, "suspend", NULL, 0, 0600, NULL, (proc_handler *)&sysctl_pm_suspend},*/
++	{2, "helper", pm_helper_path, sizeof(pm_helper_path), 0644, NULL, (proc_handler *)&proc_dostring},
++	{3, "debug", &debug_pm, sizeof(debug_pm), 0644, NULL, (proc_handler *)&proc_dointvec},
++	{4, "helper_veto", &pm_helper_veto, sizeof(pm_helper_veto), 0644, NULL, (proc_handler *)&proc_dointvec},
++	{0}
++};
++
++static struct ctl_table pm_dir_table[] =
++{
++	{CTL_ACPI, "pm", NULL, 0, 0555, pm_table},
++	{0}
++};
++
++/*
++ * Initialize power interface
++ */
++static int __init pm_init(void)
++{
++	register_sysctl_table(pm_dir_table, 1);
++	return 0;
++}
++
++__initcall(pm_init);
++
++#endif
++
+--- linux-2.4.27/arch/arm/mach-sa1100/apm.c~simpad-apm
++++ linux-2.4.27/arch/arm/mach-sa1100/apm.c
+@@ -32,9 +32,7 @@
+ 
+ #include <asm/system.h>
+ #include <asm/hardware.h>
+-#if FIXME
+ #include <asm/arch-sa1100/pm.h>
+-#endif
+ 
+ #ifdef CONFIG_IPAQ_HANDHELD
+ #include <asm/arch-sa1100/h3600_hal.h>
+@@ -92,6 +90,8 @@
+ 	int		magic;
+ 	struct apm_user *	next;
+ 	int		suser: 1;
++	int		writer: 1;
++	int		reader: 1;
+ 	int		suspend_wait: 1;
+ 	int		suspend_result;
+ 	int		suspends_pending;
+@@ -111,7 +111,7 @@
+ /*
+  * Local variables
+  */
+-//static int			suspends_pending;
++static int			suspends_pending;
+ //static int			standbys_pending;
+ //static int			ignore_normal_resume;
+ 
+@@ -129,8 +129,6 @@
+ #else
+ static int			power_off = 1;
+ #endif
+-static int			exit_kapmd;
+-static int			kapmd_running;
+ 
+ static DECLARE_WAIT_QUEUE_HEAD(apm_waitqueue);
+ static DECLARE_WAIT_QUEUE_HEAD(apm_suspend_waitqueue);
+@@ -190,6 +188,42 @@
+ 	return as->events[as->event_tail];
+ }
+ 
++static void queue_event(apm_event_t event, struct apm_user *sender)
++{
++	struct apm_user *	as;
++
++	if (user_list == NULL)
++		return;
++	for (as = user_list; as != NULL; as = as->next) {
++		if ((as == sender) || (!as->reader))
++			continue;
++		as->event_head = (as->event_head + 1) % APM_MAX_EVENTS;
++		if (as->event_head == as->event_tail) {
++			static int notified;
++
++			if (notified++ == 0)
++			    printk(KERN_ERR "apm: an event queue overflowed\n");
++			as->event_tail = (as->event_tail + 1) % APM_MAX_EVENTS;
++		}
++		as->events[as->event_head] = event;
++		if ((!as->suser) || (!as->writer))
++			continue;
++		switch (event) {
++		case APM_SYS_SUSPEND:
++		case APM_USER_SUSPEND:
++			as->suspends_pending++;
++			suspends_pending++;
++			break;
++
++		case APM_SYS_STANDBY:
++		case APM_USER_STANDBY:
++			as->standbys_pending++;
++			break;
++		}
++	}
++	wake_up_interruptible(&apm_waitqueue);
++}
++
+ static int check_apm_user(struct apm_user *as, const char *func)
+ {
+ 	if ((as == NULL) || (as->magic != APM_BIOS_MAGIC)) {
+@@ -228,7 +262,6 @@
+ 	i = count;
+ 	while ((i >= sizeof(event)) && !queue_empty(as)) {
+ 		event = get_queued_event(as);
+-                printk("  do_read: event=%d\n", event);
+ 		if (copy_to_user(buf, &event, sizeof(event))) {
+ 			if (i < count)
+ 				break;
+@@ -280,9 +313,17 @@
+ 		return -EPERM;
+ 	switch (cmd) {
+         case APM_IOC_SUSPEND:
+-#if FIXME
+-		pm_suggest_suspend();
+-#endif
++		if (as->suspends_read > 0) {
++			as->suspends_read--;
++			as->suspends_pending--;
++			suspends_pending--;
++		} else {
++			queue_event(APM_USER_SUSPEND, as);
++		}
++
++		if (suspends_pending <= 0)
++			wake_up(&apm_suspend_waitqueue);
++		
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -299,6 +340,20 @@
+ 		return 0;
+ 	filp->private_data = NULL;
+ 	lock_kernel();
++	if (user_list == as)
++		user_list = as->next;
++	else {
++		struct apm_user *	as1;
++
++		for (as1 = user_list;
++		     (as1 != NULL) && (as1->next != as);
++		     as1 = as1->next)
++			;
++		if (as1 == NULL)
++			printk(KERN_ERR "apm: filp not in user list\n");
++		else
++			as1->next = as->next;
++	}
+ 	unlock_kernel();
+ 	kfree(as);
+ 	return 0;
+@@ -326,6 +381,8 @@
+ 	 * privileged operation -- cevans
+ 	 */
+ 	as->suser = capable(CAP_SYS_ADMIN);
++	as->writer = (filp->f_mode & FMODE_WRITE) == FMODE_WRITE;
++	as->reader = (filp->f_mode & FMODE_READ) == FMODE_READ;
+ 	as->next = user_list;
+ 	user_list = as;
+ 	filp->private_data = as;
+@@ -409,34 +466,6 @@
+ 	return p - buf;
+ }
+ 
+-#ifndef MODULE
+-static int __init apm_setup(char *str)
+-{
+-	int	invert;
+-
+-	while ((str != NULL) && (*str != '\0')) {
+-		if (strncmp(str, "off", 3) == 0)
+-			apm_disabled = 1;
+-		if (strncmp(str, "on", 2) == 0)
+-			apm_disabled = 0;
+-		invert = (strncmp(str, "no-", 3) == 0);
+-		if (invert)
+-			str += 3;
+-		if (strncmp(str, "debug", 5) == 0)
+-			debug = !invert;
+-		if ((strncmp(str, "power-off", 9) == 0) ||
+-		    (strncmp(str, "power_off", 9) == 0))
+-			power_off = !invert;
+-		str = strchr(str, ',');
+-		if (str != NULL)
+-			str += strspn(str, ", \t");
+-	}
+-	return 1;
+-}
+-
+-__setup("apm=", apm_setup);
+-#endif
+-
+ static struct file_operations apm_bios_fops = {
+ 	owner:		THIS_MODULE,
+ 	read:		do_read,
+@@ -454,6 +483,50 @@
+ 
+ #define APM_INIT_ERROR_RETURN	return -1
+ 
++static pid_t apmd_pid;
++static DECLARE_COMPLETION(apmd_exited);
++
++static int apm(void *unused)
++{
++	unsigned short	bx;
++	unsigned short	cx;
++	unsigned short	dx;
++	int		error;
++	char *		power_stat;
++	char *		bat_stat;
++	DECLARE_WAITQUEUE(wait, current);
++	struct apm_user au, *as;
++
++	lock_kernel();
++
++	daemonize();
++
++	strcpy(current->comm, "kapmd");
++
++	as = &au;
++	as->magic = APM_BIOS_MAGIC;
++	as->event_tail = as->event_head = 0;
++	as->suspends_pending = as->standbys_pending = 0;
++	as->suspends_read = as->standbys_read = 0;
++	as->suser = 1;
++	as->writer = 1;
++	as->reader = 0;
++
++	for (;;) {
++		interruptible_sleep_on(&apm_suspend_waitqueue);
++		if (signal_pending (current))
++			break;
++
++		pm_suggest_suspend();
++
++		queue_event(APM_NORMAL_RESUME, as);
++	}
++
++	unlock_kernel();
++
++	complete_and_exit(&apmd_exited, 0);
++}
++
+ /*
+  * Just start the APM thread. We do NOT want to do APM BIOS
+  * calls from anything but the APM thread, if for no other reason
+@@ -492,6 +563,8 @@
+ 
+ 	misc_register(&apm_device);
+ 
++	apmd_pid = kernel_thread(apm, NULL, 0);
++
+ 	return 0;
+ }
+ 
+@@ -499,11 +572,10 @@
+ {
+ 	misc_deregister(&apm_device);
+ 	remove_proc_entry("apm", NULL);
++	kill_proc (apmd_pid, SIGTERM, 1);
++	wait_for_completion(&apmd_exited);
+ 	if (power_off)
+ 		pm_power_off = NULL;
+-	exit_kapmd = 1;
+-	while (kapmd_running)
+-		schedule();
+ 	pm_active = 0;
+ }
+ 
+@@ -512,6 +584,7 @@
+ 
+ MODULE_AUTHOR("Jamey Hicks, pulling bits from original by Stephen Rothwell");
+ MODULE_DESCRIPTION("A minimal emulation of APM");
++MODULE_LICENSE("GPL");
+ MODULE_PARM(debug, "i");
+ MODULE_PARM_DESC(debug, "Enable debug mode");
+ MODULE_PARM(power_off, "i");
+--- /dev/null
++++ linux-2.4.27/include/asm-arm/arch-sa1100/pm.h
+@@ -0,0 +1,20 @@
++/*
++ *
++ * Declarations for ARM Linux Power Management
++ *
++ * Copyright 2002 Compaq Computer Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Jamey Hicks.
++ *
++ */
++
++
++extern int (*pm_suggest_suspend_hook)(int state);
++extern int (*pm_sysctl_suspend_hook)(int state);
++extern int pm_use_sbin_pm_helper; 
++extern int pm_suspend(void);
++extern int pm_suggest_suspend(void); /* triggers /sbin/pm_helper or queueing event to apmd */
+--- linux-2.4.27/arch/arm/mach-sa1100/Makefile~simpad-apm
++++ linux-2.4.27/arch/arm/mach-sa1100/Makefile
+@@ -19,7 +19,7 @@
+ 		flexanet.o freebird.o frodo.o generic.o h3600.o \
+ 		huw_webpanel.o irq.o sa1111.o sa1111-pcibuf.o \
+ 		system3.o yopy.o usb_ctl.o usb_recv.o usb_send.o simputer.o ssp.o \
+-		simpad.o
++		simpad.o pm-sa1100.o
+ 
+ # These aren't present yet, and prevents a plain -ac kernel building.
+ # hwtimer.o
+@@ -105,7 +105,7 @@
+ obj-$(CONFIG_SA1100_USB_CHAR) += usb-char.o
+ 
+ # Miscelaneous functions
+-obj-$(CONFIG_PM) += pm.o sleep.o
++obj-$(CONFIG_PM) += pm-sa1100.o sleep.o
+ obj-$(CONFIG_APM) += apm.o
+ 
+ # SIMpad specific
+--- /dev/null
++++ linux-2.4.27/arch/arm/mach-sa1100/pm-sa1100.c
+@@ -0,0 +1,225 @@
++/*
++ * SA1100 Power Management Routines
++ *
++ * Copyright (c) 2001 Cliff Brake <cbrake@accelent.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License.
++ *
++ * History:
++ *
++ * 2001-02-06:	Cliff Brake         Initial code
++ *
++ * 2001-02-25:	Sukjae Cho <sjcho@east.isi.edu> &
++ * 		Chester Kuo <chester@linux.org.tw>
++ * 			Save more value for the resume function! Support
++ * 			Bitsy/Assabet/Freebird board
++ *
++ * 2001-08-29:	Nicolas Pitre <nico@cam.org>
++ * 			Cleaned up, pushed platform dependent stuff
++ * 			in the platform specific files.
++ *
++ * 2002-05-27:	Nicolas Pitre	Killed sleep.h and the kmalloced save array.
++ * 				Storage is local on the stack now.
++ */
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/pm.h>
++#include <linux/slab.h>
++#include <linux/sched.h>
++#include <linux/interrupt.h>
++#include <linux/sysctl.h>
++#include <linux/errno.h>
++#include <linux/cpufreq.h>
++
++#include <asm/hardware.h>
++#include <asm/memory.h>
++#include <asm/system.h>
++#include <asm/leds.h>
++
++
++#ifdef CONFIG_IPAQ_HANDHELD
++#include <asm/arch/h3600_asic.h>
++#endif
++
++#define __KERNEL_SYSCALLS__
++#include <linux/unistd.h>
++
++extern void sa1100_cpu_suspend(void);
++extern void sa1100_cpu_resume(void);
++extern int debug_pm;
++
++#define SAVE(x)		sleep_save[SLEEP_SAVE_##x] = x
++#define RESTORE(x)	x = sleep_save[SLEEP_SAVE_##x]
++
++/*
++ * List of global SA11x0 peripheral registers to preserve.
++ * More ones like CP and general purpose register values are preserved
++ * with the stack location in sleep.S.
++ */
++enum {	SLEEP_SAVE_START = 0,
++
++	SLEEP_SAVE_OSCR, SLEEP_SAVE_OIER,
++	SLEEP_SAVE_OSMR0, SLEEP_SAVE_OSMR1, SLEEP_SAVE_OSMR2, SLEEP_SAVE_OSMR3,
++
++	SLEEP_SAVE_GPDR, SLEEP_SAVE_GRER, SLEEP_SAVE_GFER, SLEEP_SAVE_GAFR,
++	SLEEP_SAVE_PPDR, SLEEP_SAVE_PPSR, SLEEP_SAVE_PPAR, SLEEP_SAVE_PSDR,
++
++	SLEEP_SAVE_ICMR,
++#ifdef CONFIG_SA1100_SIMPAD
++	SLEEP_SAVE_MECR, /* needed by SIMpad to get PCMCIA working after resume */
++#endif
++	SLEEP_SAVE_Ser1SDCR0,
++
++        SLEEP_SAVE_PWER,
++        SLEEP_SAVE_MSC1, SLEEP_SAVE_MSC2,
++
++	SLEEP_SAVE_SIZE
++};
++
++
++int pm_do_suspend(void)
++{
++	unsigned long sleep_save[SLEEP_SAVE_SIZE];
++
++	cli();
++
++	leds_event(led_stop);
++
++	/* preserve current time */
++	RCNR = xtime.tv_sec;
++
++	/* save vital registers */
++	SAVE(OSCR);
++	SAVE(OSMR0);
++	SAVE(OSMR1);
++	SAVE(OSMR2);
++	SAVE(OSMR3);
++	SAVE(OIER);
++
++	SAVE(GPDR);
++	SAVE(GRER);
++	SAVE(GFER);
++	SAVE(GAFR);
++
++	SAVE(PPDR);
++	SAVE(PPSR);
++	SAVE(PPAR);
++	SAVE(PSDR);
++
++	SAVE(Ser1SDCR0);
++
++	SAVE(ICMR);
++#ifdef CONFIG_SA1100_SIMPAD
++	SAVE(MECR);
++#endif
++        SAVE(PWER);
++        SAVE(MSC1);
++        SAVE(MSC2);
++
++	/* ... maybe a global variable initialized by arch code to set this? */
++	GRER &= PWER;
++	GFER &= PWER;
++	// Ugly, but I need the AC inserted event
++	// In the future, we're going to care about DCD and USB interrupts as well
++	if ( machine_is_h3800()) {
++#ifdef CONFIG_IPAQ_HANDHELD
++		GFER = GPIO_H3800_AC_IN;
++#endif
++	} else {
++		GFER = 0;
++		if (machine_is_jornada56x()) {
++			/* jca */
++			GFER = PWER;
++			ICMR |= PWER;
++		}
++	}
++	GEDR = GEDR;
++
++	/* Clear previous reset status */
++	RCSR = RCSR_HWR | RCSR_SWR | RCSR_WDR | RCSR_SMR;
++
++	/* set resume return address */
++	PSPR = virt_to_phys(sa1100_cpu_resume);
++
++	/* go zzz */
++	sa1100_cpu_suspend();
++
++	/* ensure not to come back here if it wasn't intended */
++	PSPR = 0;
++
++	if (debug_pm)
++		printk(KERN_CRIT "*** made it back from resume\n");
++
++#ifdef CONFIG_IPAQ_HANDHELD
++	if ( machine_is_ipaq()) {
++		ipaq_model_ops.gedr = GEDR;
++		ipaq_model_ops.icpr = ICPR;
++	}
++#endif
++
++	/* restore registers */
++	RESTORE(GPDR);
++	RESTORE(GRER);
++	RESTORE(GFER);
++	RESTORE(GAFR);
++
++	/* clear any edge detect bit */
++	GEDR = GEDR;
++
++	RESTORE(PPDR);
++	RESTORE(PPSR);
++	RESTORE(PPAR);
++	RESTORE(PSDR);
++
++	RESTORE(Ser1SDCR0);
++
++	PSSR = PSSR_PH;
++
++	RESTORE(OSMR0);
++	RESTORE(OSMR1);
++	RESTORE(OSMR2);
++	RESTORE(OSMR3);
++	RESTORE(OSCR);
++	RESTORE(OIER);
++
++#ifdef CONFIG_IPAQ_HANDHELD
++/* OSMR0 may have fired before we went to sleep, but after interrupts
++   were shut off.  Set OSMR0 to something plausible */
++	OSMR0 = OSCR + LATCH;
++#endif
++	ICLR = 0;
++	ICCR = 1;
++	RESTORE(ICMR);
++#ifdef CONFIG_SA1100_SIMPAD
++	RESTORE(MECR);
++#endif
++	RESTORE(PWER);
++	RESTORE(MSC1);
++	RESTORE(MSC2);
++	/* restore current time */
++	xtime.tv_sec = RCNR;
++
++	leds_event(led_start);
++	
++	sti();
++
++	if (debug_pm)
++		printk("interrupts are enabled\n");
++
++	/*
++	 * Restore the CPU frequency settings.
++	 */
++#ifdef CONFIG_CPU_FREQ
++	cpufreq_restore();
++#endif
++	return 0;
++}
++
++unsigned long sleep_phys_sp(void *sp)
++{
++	return virt_to_phys(sp);
++}
++
++#include "pm-common.c"

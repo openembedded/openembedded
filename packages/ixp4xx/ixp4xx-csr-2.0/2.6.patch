@@ -1,0 +1,148 @@
+diff -Naur ixp400_xscale_sw.orig/Readme-Kernel-2_6-Patch.txt ixp400_xscale_sw/Readme-Kernel-2_6-Patch.txt
+--- ixp400_xscale_sw.orig/Readme-Kernel-2_6-Patch.txt	1970-01-01 01:00:00.000000000 +0100
++++ ixp400_xscale_sw/Readme-Kernel-2_6-Patch.txt	2005-09-28 19:50:30.000000000 +0200
+@@ -0,0 +1,49 @@
++This file describes a patch to use version 1.5 of the Intel Ixp4XX
++Access Library with Linux 2.6 kernels.
++
++Authors/History
++---------------
++
++This patch consists of the changes made by Marc Singer for use of
++version 1.5 of the library with the APEX bootloader, and a patch made
++by Robin Farine and Tom Winkler for use of version 1.4 of the library
++with Linux-2.6 kernels. These changes were merged together by Hannes
++Reich.
++
++Both patches are incorporated in their entirety, with the exception of
++some tweaks to sleep times in the ethAcc code and modifications to
++the code in src/codelets/usb/ from the Robin Farine / Tom Winkler
++patch.
++
++Status
++------
++
++This code has been tested on a Linksys NSLU2. It works in big-endian
++mode, performance seems around 10% faster than 1.4.
++
++The code does not work in little-endian mode. It appears as though the
++hardware is initialised correctly, but packet receive / transmit done
++callbacks are never called.
++
++Licence Information
++-------------------
++
++The patch is licenced under the same conditions as the original Access
++Library 1.5 (INTEL SOFTWARE LICENSE AGREEMENT). The full text of the
++licence can be downloaded from:
++http://www.intel.com/design/network/swsup/np_sla/ixp400.htm
++
++The patch is free, unsupported and the authors make no warranties.
++Use it at your own risk, do with it as you see fit so long as you do
++not violate the original licence agreement.
++
++The authors permit derivative works based upon the patch.
++
++References
++----------
++
++The version 1.4 patch by Robin Farine and Tom Winkler is available from
++http://www.wnk.at/ixp400_accesslib_kernel26/data/patch_accesslib_kernel26_20040811.diff
++
++The version 1.5 patch by Marc Singer is at
++http://wiki.buici.com/bin/view/Main/IXPAccessLibrary
+diff -Naur ixp400_xscale_sw.orig/src/codelets/dmaAcc/IxDmaAccCodelet_p.h ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h
+--- ixp400_xscale_sw.orig/src/codelets/dmaAcc/IxDmaAccCodelet_p.h	2005-08-24 00:16:36.000000000 +0200
++++ ixp400_xscale_sw/src/codelets/dmaAcc/IxDmaAccCodelet_p.h	2005-08-24 00:18:02.000000000 +0200
+@@ -113,7 +113,7 @@
+  * @return IX_FAIL - Error initialising codelet
+  */
+ IX_STATUS
+-ixDmaAccCodeletInit(IxDmaNpeId npeId);
++ixDmaAccCodeletInit(IxNpeDlNpeId npeId);
+ 
+ /**
+  * @fn ixDmaAccCodeletTestPerform( UINT16 transferLength, 
+diff -Naur ixp400_xscale_sw.orig/src/ethDB/include/IxEthDB_p.h ixp400_xscale_sw/src/ethDB/include/IxEthDB_p.h
+--- ixp400_xscale_sw.orig/src/ethDB/include/IxEthDB_p.h	2005-08-24 00:16:36.000000000 +0200
++++ ixp400_xscale_sw/src/ethDB/include/IxEthDB_p.h	2005-08-24 00:18:02.000000000 +0200
+@@ -633,7 +633,7 @@
+ IX_ETH_DB_PUBLIC UINT32 ixEthDBKeyXORHash(void *macAddress);
+ 
+ /* Port updates */
+-IX_ETH_DB_PUBLIC IxEthDBStatus ixEthDBNPEUpdateHandler(IxEthDBPortId portID, IxEthDBFeature type);
++IX_ETH_DB_PUBLIC IxEthDBStatus ixEthDBNPEUpdateHandler(IxEthDBPortId portID, IxEthDBRecordType type);
+ IX_ETH_DB_PUBLIC void ixEthDBUpdatePortLearningTrees(IxEthDBPortMap triggerPorts);
+ IX_ETH_DB_PUBLIC void ixEthDBNPEAccessRequest(IxEthDBPortId portID);
+ IX_ETH_DB_PUBLIC void ixEthDBUpdateLock(void);
+diff -Naur ixp400_xscale_sw.orig/src/include/IxTypes.h ixp400_xscale_sw/src/include/IxTypes.h
+--- ixp400_xscale_sw.orig/src/include/IxTypes.h	2005-08-24 00:16:36.000000000 +0200
++++ ixp400_xscale_sw/src/include/IxTypes.h	2005-08-26 01:19:15.000000000 +0200
+@@ -79,6 +79,10 @@
+ #endif
+ #endif
+ 
++#ifndef BIT
++#define BIT(x)  ((1)<<(x))
++#endif
++
+ #include "IxOsalBackward.h"
+ 
+ #endif /* IxTypes_H */
+diff -Naur ixp400_xscale_sw.orig/src/usb/include/usbprivatetypes.h ixp400_xscale_sw/src/usb/include/usbprivatetypes.h
+--- ixp400_xscale_sw.orig/src/usb/include/usbprivatetypes.h	2005-08-24 00:16:36.000000000 +0200
++++ ixp400_xscale_sw/src/usb/include/usbprivatetypes.h	2005-08-24 00:18:02.000000000 +0200
+@@ -164,6 +164,53 @@
+ } USBEventProcessor;
+ 
+ /*  UDC Registers */
++
++#undef UDCCR
++#undef UDCCS0
++#undef UDCCS1
++#undef UDCCS2
++#undef UDCCS3
++#undef UDCCS4
++#undef UDCCS5
++#undef UDCCS6
++#undef UDCCS7
++#undef UDCCS8
++#undef UDCCS9
++#undef UDCCS10
++#undef UDCCS11
++#undef UDCCS12
++#undef UDCCS13
++#undef UDCCS14
++#undef UDCCS15
++#undef UICR0
++#undef UICR1
++#undef USIR0
++#undef USIR1
++#undef UFNHR
++#undef UFNLR
++#undef UBCR2
++#undef UBCR4
++#undef UBCR7
++#undef UBCR9
++#undef UBCR12
++#undef UBCR14
++#undef UDDR0
++#undef UDDR5
++#undef UDDR10
++#undef UDDR15
++#undef UDDR1
++#undef UDDR2
++#undef UDDR3
++#undef UDDR4
++#undef UDDR6
++#undef UDDR7
++#undef UDDR8
++#undef UDDR9
++#undef UDDR11
++#undef UDDR12
++#undef UDDR13
++#undef UDDR14
++
+ typedef struct  /* UDCRegisters */
+ {
+     volatile UINT32 UDCCR;

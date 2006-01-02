@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
@@ -14,6 +14,10 @@ SRC_URI = \
 
 # uclibc patches
 SRC_URI += "file://binutils-2.16-linux-uclibc.patch;patch=1"
+
+# thumb support patches
+SRC_URI += "file://binutils-2.16-thumb-trampoline.patch;patch=1"
+SRC_URI += "file://binutils-2.16-thumb-glue.patch;patch=1"
 
 #to be removed:
 # this patch does not seem to do anything any longer

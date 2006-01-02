@@ -7,7 +7,8 @@ such as Eli (a state of the art compiler generation system), and Elk (the \
 Extension Language Kit - an implementation of the Scheme programming \
 language.)"
 LICENSE = "LGPL"
-SRC_URI = "http://www.stud.uni-hannover.de/~michael/software/libelf-${PV}.tar.gz"
+
+SRC_URI = "http://www.mr511.de/software/libelf-${PV}.tar.gz"
 
 inherit autotools
 

@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.xwaves.net
+#
+
+--- cherokee-0.4.29/cherokee/Makefile.in~Makefile
++++ cherokee-0.4.29/cherokee/Makefile.in
+@@ -403,11 +403,11 @@
+ am_cherokee_admin_OBJECTS = cherokee_admin.$(OBJEXT)
+ cherokee_admin_OBJECTS = $(am_cherokee_admin_OBJECTS)
+ cherokee_admin_DEPENDENCIES = libcherokee-config.la \
+-	libcherokee-base.la libcherokee-client.la
++	libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ am_cherokee_logrotate_OBJECTS = cherokee_logrotate.$(OBJEXT)
+ cherokee_logrotate_OBJECTS = $(am_cherokee_logrotate_OBJECTS)
+ cherokee_logrotate_DEPENDENCIES = libcherokee-config.la \
+-	libcherokee-base.la libcherokee-client.la
++	libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+ SCRIPTS = $(bin_SCRIPTS)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+@@ -1343,9 +1343,9 @@
+ 
+ cherokee_LDFLAGS = -export-dynamic
+ cherokee_logrotate_SOURCES = cherokee_logrotate.c
+-cherokee_logrotate_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la 
++cherokee_logrotate_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ cherokee_admin_SOURCES = cherokee_admin.c 
+-cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la 
++cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ 
+ #noinst_PROGRAMS = cherokee_modules cherokee_base64 cherokee_headers cherokee_fastcgi
+ 

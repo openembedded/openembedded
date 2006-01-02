@@ -13,7 +13,7 @@ inherit autotools gettext
 
 include gcc-package.inc
 
-SRC_URI = "cvs://anoncvs@savannah.gnu.org/cvsroot/gcc;method=ext;tag=csl-arm-branch;module=gcc;date=${CVSDATE} \
+SRC_URI = "cvs://anonymous@cvs.savannah.gnu.org/cvsroot/gcc;method=pserver;tag=csl-arm-branch;module=gcc;date=${CVSDATE} \
 	   file://gcc34-arm-tune.patch;patch=1"
 
 include gcc3-build.inc

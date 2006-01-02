@@ -4,6 +4,7 @@ LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 DEPENDS = "openssl"
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
+	file://uclibc-fix.patch;patch=1 \
 	file://init \
 	file://snmpd.conf \
 	file://snmptrapd.conf"

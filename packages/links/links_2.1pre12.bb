@@ -4,7 +4,7 @@ DEPENDS = "jpeg libpng gpm flex openssl zlib"
 DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
 
-SRC_URI = "http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/download/links-${PV}.tar.bz2 \
+SRC_URI = "http://links.twibright.com/download/links-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
 
 inherit autotools

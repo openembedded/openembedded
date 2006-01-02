@@ -14,7 +14,3 @@ inherit autotools pkgconfig
 
 # FIXME: libXaw needs a full x11, not diet
 BROKEN = "1"
-
-do_stage () {
-	oe_runmake install DESTDIR="" mandir=${STAGING_DATADIR}/man bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
-}

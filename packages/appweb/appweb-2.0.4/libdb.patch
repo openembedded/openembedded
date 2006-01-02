@@ -1,0 +1,10 @@
+--- appWeb-2.0.4/http/package/LINUX/http.files~	2005-09-09 14:19:18.000000000 -0700
++++ appWeb-2.0.4/http/package/LINUX/http.files	2005-10-14 15:48:10.000000000 -0700
+@@ -152,7 +152,4 @@
+ then
+ 	cpmod ${BLD_TOP}/${BLD_PHP5_DIR}/libphp5.so "${DestD}" 755
+ 	stripFile "${DestD}/libphp5.so"
+-	name=`ls -l /usr/lib/libdb.so | awk '{ print $11 }'`
+-	name=${name:-/usr/lib/libdb.so}
+-	cpmod /usr/lib/$name "${DestD}" 755
+ fi

@@ -1,0 +1,14 @@
+--- ixp400_xscale_sw/src/include/IxTypes.h	2005-08-24 00:16:36.000000000 +0200
++++ ixp400_xscale_sw/src/include/IxTypes.h	2005-08-26 01:19:15.000000000 +0200
+@@ -79,6 +79,10 @@
+ #endif
+ #endif
+ 
++#ifndef BIT
++#define BIT(x)  ((1)<<(x))
++#endif
++
+ #include "IxOsalBackward.h"
+ 
+ #endif /* IxTypes_H */
+

@@ -21,15 +21,12 @@ LIBPCAP_RDEPENDS_linux-uclibc = ""
 
 RDEPENDS += "${LIBPCAP_RDEPENDS}"
 
-SRC_TAG = "upslug2_${@'_'.join(bb.data.getVar('PV',d,1).split('.'))}"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/nslu;method=pserver;module=upslug2;tag=${SRC_TAG}"
-# For testing use this (tags and other changes take a day to
-# propogate on sourceforge).  Change 'jbowler' to your login name!
-#SRC_URI = "cvs://jbowler@cvs.sourceforge.net/cvsroot/nslu;method=ext;rsh=ssh;module=upslug2;tag=${SRC_TAG}"
+SRC_URI = "${SOURCEFORGE_MIRROR}/nslu/upslug2-${PV}.tar.gz"
 
 inherit autotools
 
-S = "${WORKDIR}/upslug2"
+S = "${WORKDIR}/upslug2-${PV}"
+
 PACKAGES = "${PN}"
 EXTRA_OECONF += "${LIBPCAP_OECONF}"
 

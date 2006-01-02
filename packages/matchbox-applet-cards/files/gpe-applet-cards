@@ -1,0 +1,3 @@
+#!/bin/sh
+
+`gpe-su -c /usr/bin/mb-applet-cards`

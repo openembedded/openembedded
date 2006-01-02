@@ -10,3 +10,7 @@ inherit efl
 
 PACKAGES += "emotion-plugins"
 FILES_emotion-plugins = "${libdir}/xine/plugins/1.1.0/*.so ${libdir}/emotion/*.so"
+
+do_compile_prepend() {
+	find ${S} -type f -name "*.[ch]" | xargs sed -i 's:NULL:0:g'
+}

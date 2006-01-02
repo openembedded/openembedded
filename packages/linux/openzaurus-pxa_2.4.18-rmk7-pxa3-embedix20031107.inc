@@ -3,7 +3,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
 LICENSE = "GPL"
 PV = "2.4.18-rmk7-pxa3-embedix"
-PR = "r43"
+PR = "r45"
 
 KV = "2.4.18"
 RMKV = "7"
@@ -41,7 +41,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://tosa_ts.patch;patch=1 \
            file://corgi-fbcon-logo.patch;patch=1 \
            file://corgi-default-brightness.patch;patch=1 \
-           http://www.openswan.org/download/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
+	   http://www.openswan.org/download/old/openswan-2/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
            http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
@@ -52,9 +52,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://fix_tosa_apm.patch;patch=1 \
            file://dumb-hack-for-wlan-ng.patch;patch=1 \
            file://unb0rk-apm.patch;patch=1 \
+           file://apm_arrowkey.patch;patch=1 \
            file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
+SRC_URI_append_poodle255 += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
 # SRC_URI_append = file://machtune-args.patch;patch=1
 SRC_URI_append_tosa = " file://tosa-power-key-off.patch;patch=1"
@@ -67,6 +69,7 @@ inherit kernel
 # Create the kernel command line. CMDLINE_CONSOLE is set through kernel.oeclass.
 #
 CMDLINE_MTDPARTS_poodle   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
+CMDLINE_MTDPARTS_poodle255   = "mtdparts=sharpsl-nand:7168k@0k(smf),22528k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_corgi    = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_shepherd = "mtdparts=sharpsl-nand:7168k@0k(smf),25600k@7168k(root),-(home)"
 CMDLINE_MTDPARTS_husky    = "mtdparts=sharpsl-nand:7168k@0k(smf),54272k@7168k(root),-(home)"

@@ -9,15 +9,5 @@ S = "${WORKDIR}/libIDL-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage() {
-	oe_runmake install \
-		prefix=${STAGING_DIR} \
-		bindir=${STAGING_BINDIR} \
-		includedir=${STAGING_INCDIR} \
-		libdir=${STAGING_LIBDIR} \
-		datadir=${STAGING_DATADIR} \
-		infodir=${STAGING_INFODIR}
-}
-
 FILES_${PN} = "${libdir}/*.so.*"
 FILES_${PN}-dev += " ${bindir}" 

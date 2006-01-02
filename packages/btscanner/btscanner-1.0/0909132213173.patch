@@ -1,0 +1,25 @@
+--- /tmp/bs_info.c	2005-10-07 16:04:20.842924176 +0200
++++ btscanner-1.0/bs_info.c	2005-10-07 16:08:26.368598600 +0200
+@@ -160,7 +160,7 @@
+ 	struct hci_conn_info_req *cr;
+ 	struct hci_request rq;
+ 	read_rssi_rp rp_rssi;
+-	get_link_quality_rp rp_lq;
++	read_link_quality_rp rp_lq;
+ 	int err = 0;
+ 	int leave = 0;;
+ 
+@@ -292,11 +292,11 @@
+ 		memset(&rq, 0, sizeof(rq));
+ 		memset(&rp_lq, 0, sizeof(rp_lq));
+ 		rq.ogf = OGF_STATUS_PARAM;
+-		rq.ocf = OCF_GET_LINK_QUALITY;
++		rq.ocf = OCF_READ_LINK_QUALITY;
+ 		rq.cparam = &handle;
+ 		rq.clen = 2;
+ 		rq.rparam = &rp_lq;
+-		rq.rlen = GET_LINK_QUALITY_RP_SIZE;
++		rq.rlen = READ_LINK_QUALITY_RP_SIZE;
+ 
+ 		if (hci_send_req(dd, &rq, 100) < 0) {
+ 			p->lq_status = (uint8_t)-1;

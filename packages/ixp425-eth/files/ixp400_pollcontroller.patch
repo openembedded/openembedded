@@ -1,0 +1,50 @@
+*** ixp400-eth-1.4-r4/ixp400_eth.c.orig	Mon Oct 31 22:45:46 2005
+--- ixp400-eth-1.4-r4/ixp400_eth.c	Mon Oct 31 22:47:48 2005
+***************
+*** 306,311 ****
+--- 306,316 ----
+  ixEthRxFrameQMCallback(IxQMgrQId qId, IxQMgrCallbackId callbackId);
+  extern void 
+  ixEthTxFrameDoneQMCallback(IxQMgrQId qId, IxQMgrCallbackId callbackId);
++ #ifdef CONFIG_NET_POLL_CONTROLLER
++ /* poll controller (needed for netconsole et al) */
++ static void
++ ixp425eth_poll_controller(struct net_device *dev);
++ #endif
+  
+  /* Private device data */
+  typedef struct {
+***************
+*** 3082,3087 ****
+--- 3087,3095 ----
+      ndev->get_stats = dev_get_stats;
+      ndev->set_multicast_list = dev_set_multicast_list;
+      ndev->flags |= IFF_MULTICAST;
++ #ifdef CONFIG_NET_POLL_CONTROLLER
++     ndev->poll_controller = ixp425eth_poll_controller;
++ #endif
+  #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
+      ndev->set_mac_address = dev_set_mac_address;
+  #else
+***************
+*** 3172,3177 ****
+--- 3180,3198 ----
+      return res;
+  }
+  
++ #ifdef CONFIG_NET_POLL_CONTROLLER
++ /*
++  * Polling receive - used by netconsole and other diagnostic tools
++  * to allow network i/o with interrupts disabled.
++  * (stolen from 8139too.c by siddy)
++  */
++ static void ixp425eth_poll_controller(struct net_device *dev)
++ {
++         disable_irq(dev->irq);
++         dev_qmgr_os_isr(dev->irq, dev, NULL);
++         enable_irq(dev->irq);
++ }
++ #endif
+  
+  static int __devinit npe_eth_init_device(struct device *dev)
+  {

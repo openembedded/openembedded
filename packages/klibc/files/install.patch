@@ -1,0 +1,42 @@
+# These are OE specific patches which make the install stuff work
+# in the OE build environment and fix the problem that the gzip
+# stuff should be all links to one executable but end up being
+# copies
+--- klibc-1.1.1/Makefile.orig	2005-12-29 14:20:09.080981353 -0800
++++ klibc-1.1.1/Makefile	2005-12-29 14:20:25.634022970 -0800
+@@ -61,7 +61,7 @@ local-install: $(CROSS)klcc
+ 	  mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)include/$$d ; \
+ 	  for r in $(KRNLSRC)/include $(KRNLOBJ)/include $(KRNLOBJ)/include2 ; do \
+ 	    [ ! -d $$r/$$d ] || \
+-	      cp -rfL $$r/$$d/. $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/$$d/. ; \
++	      cp -rf $$r/$$d/. $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/$$d/. ; \
+ 	  done ; \
+ 	done
+ 	cd $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include && ln -sf asm-$(ARCH) asm
+--- klibc-1.1.1/gzip/Makefile.orig	2005-12-29 18:10:00.787869930 -0800
++++ klibc-1.1.1/gzip/Makefile	2005-12-29 18:11:21.084922705 -0800
+@@ -70,9 +70,12 @@ clean:
+ spotless: clean
+ 	rm -f *~
+ 
+-# These should presumably be shared...
+ install: all
+-	$(INSTALL_EXEC) gzip gunzip zcat $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin
++	$(INSTALL_EXEC) gzip $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin
++	rm -f $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/gunzip
++	ln $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/gzip $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/gunzip
++	rm -f $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/zcat
++	ln $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/gzip $(INSTALLROOT)$(INSTALLDIR)/$(CROSS)bin/zcat
+ 
+ ifneq ($(wildcard .*.d),)
+ include $(wildcard .*.d)
+--- klibc-1.1.1/klibc/Makefile.orig	2005-12-30 10:39:04.504930675 -0800
++++ klibc-1.1.1/klibc/Makefile	2005-12-30 10:39:52.755966921 -0800
+@@ -184,6 +184,7 @@ install: all
+ 		$(INSTALLROOT)$(INSTALLDIR)/$(CROSS)lib
+ 	$(INSTALL_EXEC) klibc-`cat $(SOLIB).hash`.so \
+ 		$(INSTALLROOT)$(INSTALLDIR)/$(CROSS)lib
++	test -z "$(INSTALLROOT)" || \
+ 	$(INSTALL_EXEC) klibc-`cat $(SOLIB).hash`.so \
+ 		$(INSTALLROOT)/$(SHLIBDIR)
+ 

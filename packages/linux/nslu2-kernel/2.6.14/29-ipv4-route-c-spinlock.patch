@@ -1,0 +1,11 @@
+--- linux-2.6.14-rc5/net/ipv4/route.c	2005-10-26 08:37:20.752285410 -0700
++++ patched/net/ipv4/route.c	2005-10-26 12:17:00.761651111 -0700
+@@ -231,7 +231,7 @@ static spinlock_t	*rt_hash_locks;
+ 			spin_lock_init(&rt_hash_locks[i]); \
+ 		}
+ #else
+-# define rt_hash_lock_addr(slot) NULL
++# define rt_hash_lock_addr(slot) ((spinlock_t*)NULL)
+ # define rt_hash_lock_init()
+ #endif
+ 

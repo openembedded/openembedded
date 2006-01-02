@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/arch/arm/mach-sa1100/pm-sa1100.c~simpad-pm-updates
++++ linux-2.4.27/arch/arm/mach-sa1100/pm-sa1100.c
+@@ -69,6 +69,7 @@
+ 	SLEEP_SAVE_ICMR,
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	SLEEP_SAVE_MECR, /* needed by SIMpad to get PCMCIA working after resume */
++	SLEEP_SAVE_Ser4MCCR0, SLEEP_SAVE_Ser4MCSR, SLEEP_SAVE_Ser4MCCR1, /* touchscreen */
+ #endif
+ 	SLEEP_SAVE_Ser1SDCR0,
+ 
+@@ -113,6 +114,9 @@
+ 	SAVE(ICMR);
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	SAVE(MECR);
++	SAVE(Ser4MCCR0);
++	SAVE(Ser4MCSR);
++	SAVE(Ser4MCCR1);
+ #endif
+         SAVE(PWER);
+         SAVE(MSC1);
+@@ -194,6 +198,9 @@
+ 	RESTORE(ICMR);
+ #ifdef CONFIG_SA1100_SIMPAD
+ 	RESTORE(MECR);
++	RESTORE(Ser4MCCR0);
++	RESTORE(Ser4MCSR);
++	RESTORE(Ser4MCCR1);
+ #endif
+ 	RESTORE(PWER);
+ 	RESTORE(MSC1);

@@ -1,0 +1,13 @@
+Add support for building with uclibc.
+
+--- libnet/config.sub	2005/11/16 12:34:11	1.1
++++ libnet/config.sub	2005/11/16 12:35:56
+@@ -117,7 +117,7 @@
+ # Here we must recognize all the valid KERNEL-OS combinations.
+ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
+ case $maybe_os in
+-  nto-qnx* | linux-gnu* | storm-chaos* | os2-emx* | windows32-*)
++  nto-qnx* | linux-gnu* | linux-uclibc* | storm-chaos* | os2-emx* | windows32-*)
+     os=-$maybe_os
+     basic_machine=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\1/'`
+     ;;

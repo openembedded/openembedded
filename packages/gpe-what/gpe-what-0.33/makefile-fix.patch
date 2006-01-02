@@ -1,0 +1,21 @@
+--- gpe-what-0.33/Makefile.orig	2005-11-03 21:41:33 +0100
++++ gpe-what-0.33/Makefile	2005-11-03 21:45:10 +0100
+@@ -6,16 +6,14 @@
+ 
+ MEMBERS = gpe-what mbtray
+ 
+-PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GTKCFLAGS)
+-PACKAGE_LDFLAGS += $(GTKLDFLAGS)
++PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GTKCFLAGS) `pkg-config --cflags libmb`
++PACKAGE_LDFLAGS += $(GTKLDFLAGS) `pkg-config --libs libmb`
+ PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ DEPS = $(patsubst %,%.d,$(MEMBERS))
+ SOURCES = $(patsubst %,%.c,$(MEMBERS))
+ 
+-PACKAGE_LDFLAGS += -lmb
+-
+ ifeq ($(CVSBUILD),yes)
+ BUILD = ../build
+ else

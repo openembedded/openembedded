@@ -1,0 +1,714 @@
+diff -urN linux-2.6.14-rc3/drivers/i2c/chips/Kconfig test9/drivers/i2c/chips/Kconfig
+--- linux-2.6.14-rc3/drivers/i2c/chips/Kconfig	2005-10-01 13:46:50.000000000 +0200
++++ test9/drivers/i2c/chips/Kconfig	2005-10-03 16:10:22.000000000 +0200
+@@ -126,4 +126,13 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called max6875.
+ 
++config SENSORS_X1205
++       tristate "Xicor X1205 RTC chip"
++       depends on I2C
++       help
++         If you say yes here you get support for the Xicor X1205 RTC chip.
++
++         This driver can also be built as a module.  If so, the module
++         will be called x1205
++
+ endmenu
+diff -urN linux-2.6.14-rc3/drivers/i2c/chips/Makefile test9/drivers/i2c/chips/Makefile
+--- linux-2.6.14-rc3/drivers/i2c/chips/Makefile	2005-09-17 12:42:33.000000000 +0200
++++ test9/drivers/i2c/chips/Makefile	2005-10-01 15:30:06.000000000 +0200
+@@ -13,6 +13,7 @@
+ obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564.o
+ obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
+ obj-$(CONFIG_TPS65010)		+= tps65010.o
++obj-$(CONFIG_SENSORS_X1205)     += x1205.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+ EXTRA_CFLAGS += -DDEBUG
+diff -urN linux-2.6.14-rc3/drivers/i2c/chips/x1205.c test9/drivers/i2c/chips/x1205.c
+--- linux-2.6.14-rc3/drivers/i2c/chips/x1205.c	1970-01-01 01:00:00.000000000 +0100
++++ test9/drivers/i2c/chips/x1205.c	2005-10-03 16:02:57.000000000 +0200
+@@ -0,0 +1,612 @@
++/*
++ *  linux/drivers/i2c/chips/x1205.c
++ *
++ *  x1205.c - An 12c driver for the Xicor X1205 RTC
++ *  Copyright 2004 Karen Spearel
++ *  Copyright 2005 Alessandro Zummo
++ *
++ *  please send all reports to:
++ *	kas11 at tampabay dot rr dot com
++ *      a dot zummo at towertech dot it
++ *     
++ *  based on the other drivers in this same directory.
++ *   
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/string.h>
++#include <linux/bcd.h>
++#include <linux/rtc.h>
++#include <linux/list.h>
++
++#include <linux/x1205.h>
++
++#define	EPOCH_1900	1900
++#define	EPOCH_1970	1970
++
++#define DRIVER_VERSION	"0.9.6"
++#define DRIVER_NAME	(x1205_driver.name)
++
++
++/* Addresses to scan */
++static unsigned short normal_i2c[] = { X1205_I2C_BUS_ADDR, I2C_CLIENT_END };
++
++/* Insmod parameters */
++I2C_CLIENT_INSMOD;
++I2C_CLIENT_MODULE_PARM(hctosys,
++	"Set the system time from the hardware clock upon initialization");
++
++/* Prototypes */
++
++static int x1205_attach(struct i2c_adapter *adapter);
++static int x1205_detach(struct i2c_client *client);
++static int x1205_probe(struct i2c_adapter *adapter, int address, int kind);
++static int x1205_validate_client(struct i2c_client *client);
++
++static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm,
++				u8 reg_base);
++static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm,
++				int datetoo, u8 reg_base);
++static int x1205_validate_tm(struct rtc_time *tm);
++static int x1205_command(struct i2c_client *client, unsigned int cmd, void *arg);
++static int x1205_hctosys(struct i2c_client *client);
++
++
++static struct i2c_driver x1205_driver = {
++	.owner		= THIS_MODULE,
++	.name		= "x1205",
++	.flags		= I2C_DF_NOTIFY,
++	.attach_adapter = &x1205_attach,
++	.detach_client	= &x1205_detach,
++/*	.command	= &x1205_command,*/
++};
++
++struct x1205_data {
++	struct i2c_client client;
++	struct list_head list;
++	unsigned int epoch;
++};
++
++
++static const unsigned char days_in_mo[] = 
++{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
++
++static LIST_HEAD(x1205_clients);
++
++/* Workaround until the I2C subsytem will allow to send
++ * commands to a specific client. This function will send the command
++ * to the first client.
++ */
++
++int x1205_do_command(unsigned int cmd, void *arg)
++{
++	struct list_head *walk;
++	struct list_head *tmp;
++	struct x1205_data *data;
++
++	list_for_each_safe(walk, tmp, &x1205_clients) {
++		data = list_entry(walk, struct x1205_data, list);
++		return x1205_command(&data->client, cmd, arg);
++	}
++
++	return -ENODEV;
++}
++
++
++/*
++ * in the routines that deal directly with the x1205 hardware, we use
++ * rtc_time -- month 0-11, hour 0-23, yr = calendar year-epoch
++ * Epoch is inited as 2000. Time is set to UT
++ */
++
++static int x1205_get_datetime(struct i2c_client *client, struct rtc_time *tm,
++				u8 reg_base)
++{
++	static unsigned char dt_addr[] = { 0, };
++	static unsigned char sr_addr[] = { 0, };
++
++	unsigned char buf[8], sr;	
++
++	struct i2c_msg msgs[] = {
++		{ client->addr, 0, 2, sr_addr }, 	/* random read */
++		{ client->addr, I2C_M_RD, 1, &sr }, 
++		{ client->addr, 0, 2, dt_addr },	/* random read */
++		{ client->addr, I2C_M_RD, 8, buf },
++	};
++
++	struct x1205_data *xdata = i2c_get_clientdata(client);
++
++	dt_addr[1] = reg_base;
++	sr_addr[1] = X1205_REG_SR;
++
++	if ((i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs))) ==
++		ARRAY_SIZE(msgs)) {
++		/* did we read the correct number of messages? */
++
++		/* check for battery failure */
++		if (sr & X1205_SR_RTCF)
++		{	
++			dev_info(&client->adapter->dev,
++				"%s: Clock had a power failure, you must set the date.\n",
++				DRIVER_NAME);
++
++			return -EINVAL;
++		}
++
++		dev_dbg(&client->dev,
++			"%s: raw read data - sec-%02x min-%02x hr-%02x"
++			" mday-%02x mon-%02x year-%02x wday-%02x y2k-%02x\n", 
++			__FUNCTION__,
++			buf[0], buf[1], buf[2], buf[3],
++			buf[4], buf[5], buf[6], buf[7]);
++
++		tm->tm_sec  = BCD2BIN(buf[CCR_SEC]);
++		tm->tm_min  = BCD2BIN(buf[CCR_MIN]);
++		buf[CCR_HOUR] &= ~X1205_HR_MIL;
++		tm->tm_hour = BCD2BIN(buf[CCR_HOUR]); /* hr is 0-23 */
++		tm->tm_mday = BCD2BIN(buf[CCR_MDAY]);
++		tm->tm_mon  = BCD2BIN(buf[CCR_MONTH]);
++		xdata->epoch   = BCD2BIN(buf[CCR_Y2K]) * 100;
++		tm->tm_year = BCD2BIN(buf[CCR_YEAR]) + xdata->epoch - EPOCH_1900;
++		tm->tm_wday = buf[CCR_WDAY];
++
++		dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
++			"mday=%d, mon=%d, year=%d, wday=%d\n",
++			__FUNCTION__,
++			tm->tm_sec, tm->tm_min, tm->tm_hour,
++			tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++	} else {
++		dev_dbg(&client->dev, "%s: read error\n", __FUNCTION__);
++		return -EIO;
++	}		
++	
++	return 0;
++}
++
++
++static int x1205_set_datetime(struct i2c_client *client, struct rtc_time *tm,
++				int datetoo, u8 reg_base)
++{
++	int i, err, xfer;
++
++	static unsigned char wel[3]   = { 0, X1205_REG_SR,
++					X1205_SR_WEL };
++
++
++	static unsigned char rwel[3]  = { 0, X1205_REG_SR,
++					X1205_SR_WEL | X1205_SR_RWEL };
++
++	static unsigned char diswe[3] = { 0, X1205_REG_SR, 0 };
++
++	static unsigned char data[3]  = { 0, };
++	static unsigned char buf[8];
++
++	struct x1205_data *xdata = i2c_get_clientdata(client);
++
++	if ((err = x1205_validate_tm(tm)) < 0)
++		return err;
++
++	dev_dbg(&client->dev, "%s: secs=%d, mins=%d, hours=%d, "
++		"mday=%d, mon=%d, year=%d, wday=%d\n",
++		__FUNCTION__,
++		tm->tm_sec, tm->tm_min, tm->tm_hour,
++		tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++
++	buf[CCR_SEC]  = BIN2BCD(tm->tm_sec);
++	buf[CCR_MIN]  = BIN2BCD(tm->tm_min);
++
++	/* Set 24HR format */
++	buf[CCR_HOUR] = BIN2BCD(tm->tm_hour) | X1205_HR_MIL;
++
++	if (datetoo == X1205_DATETOO) {
++		buf[CCR_MDAY]  = BIN2BCD(tm->tm_mday);
++
++		/* month, 0 - 11 */
++		buf[CCR_MONTH] = BIN2BCD(tm->tm_mon);	/* input is 0-11 */
++
++		/* year, since 1900 */
++		buf[CCR_YEAR]  = BIN2BCD((tm->tm_year + EPOCH_1900 - xdata->epoch));
++		buf[CCR_WDAY]  = tm->tm_wday & 7;
++		buf[CCR_Y2K]   = BIN2BCD(xdata->epoch / 100);
++	}
++
++	xfer = i2c_master_send(client, wel, 3);
++	dev_dbg(&client->dev, "%s: wen - %x\n", __FUNCTION__, xfer);
++	if (xfer != 3)
++		return -EIO;
++
++	xfer = i2c_master_send(client, rwel, 3);
++	dev_dbg(&client->dev, "%s: wenb - %x\n", __FUNCTION__, xfer);
++	if (xfer != 3)
++		return -EIO;
++
++	for (i = 0; i < 8; i++) {
++		data[1] = i + reg_base;
++		data[2] =  buf[i];
++		xfer = i2c_master_send(client, data, 3);
++
++		dev_dbg(&client->dev, "%s: xfer %d addr, %02x,  data %02x\n",
++			__FUNCTION__,
++			 xfer, data[1], data[2]);
++
++		if (xfer != 3)
++			return -EIO;
++	};
++
++	xfer = i2c_master_send(client, diswe, 3);
++	dev_dbg(&client->dev, "%s: wdis - %x\n", __FUNCTION__, xfer);
++	if (xfer != 3)
++		return -EIO;		
++
++	return 0;
++}
++
++static int x1205_hctosys(struct i2c_client *client)
++{
++	int err;
++
++	struct rtc_time tm;
++	struct timespec tv;
++	
++
++	err = x1205_command(client, X1205_CMD_GETDATETIME, &tm);
++
++	if (err)
++	{
++		dev_info(&client->adapter->dev,
++			"%s: Unable to set the system clock\n",
++			DRIVER_NAME);
++
++		return err;
++
++	}
++
++	/* IMPORTANT: the RTC only stores whole seconds.  It is arbitrary whether
++	 * it stores the most close value or the value with partial seconds
++	 * truncated, however it is important for x1205_sync_rtc that it be
++	 * defined to store the truncated value.  This is because otherwise it
++	 * is necessary to read both xtime.tv_sec and xtime.tv_nsec in the
++	 * sync function, and atomic reads of >32bits on ARM are not possible.
++	 * So storing the most close value would slow down the sync API.  So
++	 * Here we have the truncated value and the best guess is to add 0.5s
++	 */
++
++	tv.tv_nsec = NSEC_PER_SEC >> 1;
++
++	/* WARNING: this is not the C library 'mktime' call, it is a built in
++	 * inline function from include/linux/time.h.  It expects (requires)
++	 * the month to be in the range 1-12
++	 */
++
++	tv.tv_sec  = mktime(tm.tm_year + EPOCH_1900, tm.tm_mon + 1,
++				tm.tm_mday, tm.tm_hour,
++				tm.tm_min, tm.tm_sec);
++
++	do_settimeofday(&tv);
++
++	dev_info(&client->adapter->dev,
++		"%s: Setting the system clock to %d-%d-%d %d:%d:%d\n",
++		DRIVER_NAME,
++		tm.tm_year + EPOCH_1900, tm.tm_mon + 1,
++		tm.tm_mday, tm.tm_hour, tm.tm_min,
++		tm.tm_sec);
++
++	return 0;
++}
++
++struct x1205_limit
++{
++	unsigned char reg;
++	unsigned char mask;
++	unsigned char min;	
++	unsigned char max;
++};
++
++static int x1205_validate_client(struct i2c_client *client)
++{
++	int i, xfer;
++
++	/* Probe array. We will read the register at the specified
++	 * address and check if the given bits are zero.
++	 */
++
++	const unsigned char probe_zero_pattern[] = {
++
++		X1205_REG_SR,	0x18,
++		X1205_REG_Y2K,	0xC6,
++		X1205_REG_DW,	0xF8,
++		X1205_REG_MO,	0xE0,
++		X1205_REG_DT,	0xC0,
++		X1205_REG_HR,	0x40,
++		X1205_REG_MN,	0x80,
++		X1205_REG_SC,	0x80,
++		X1205_REG_DTR,	0xF8,
++		X1205_REG_ATR,	0xC0,
++		X1205_REG_INT,	0x18,
++		X1205_REG_0,	0xFF,
++		X1205_REG_Y2K1,	0xC6,
++		X1205_REG_DWA1,	0x78,
++		X1205_REG_MOA1,	0x60,
++		X1205_REG_DTA1,	0x40,
++		X1205_REG_HRA1,	0x40,
++		X1205_REG_Y2K0,	0xC6,
++		X1205_REG_DWA0,	0x78,
++		X1205_REG_MOA0,	0x60,
++		X1205_REG_DTA0,	0x40,
++		X1205_REG_HRA0,	0x40,
++	};
++
++	const struct x1205_limit probe_limits_pattern[] = {
++		/* register, mask, min, max */
++		{ X1205_REG_Y2K,	0xFF,	19,	20	},
++		{ X1205_REG_DW,		0xFF,	0,	6	},
++		{ X1205_REG_YR,		0xFF,	0,	99	},
++		{ X1205_REG_MO,		0xFF,	0,	12	},
++		{ X1205_REG_DT,		0xFF,	0,	31	},
++		{ X1205_REG_HR,		0x7F,	0,	23	},
++		{ X1205_REG_MN,		0xFF,	0,	59	},
++		{ X1205_REG_SC,		0xFF,	0,	59	},
++		{ X1205_REG_Y2K1,	0xFF,	19,	20	},
++		{ X1205_REG_DWA1,	0x7F,	0,	6	},
++		{ X1205_REG_MOA1,	0x7F,	0,	12	},
++		{ X1205_REG_DTA1,	0x7F,	0,	31	},
++		{ X1205_REG_HRA1,	0x7F,	0,	23	},
++		{ X1205_REG_MNA1,	0x7F,	0,	59	},
++		{ X1205_REG_SCA1,	0x7F,	0,	59	},
++		{ X1205_REG_Y2K0,	0xFF,	19,	20	},
++		{ X1205_REG_DWA0,	0x7F,	0,	6	},
++		{ X1205_REG_MOA0,	0x7F,	0,	12	},
++		{ X1205_REG_DTA0,	0x7F,	0,	31	},
++		{ X1205_REG_HRA0,	0x7F,	0,	23	},
++		{ X1205_REG_MNA0,	0x7F,	0,	59	},
++		{ X1205_REG_SCA0,	0x7F,	0,	59	},
++	};
++
++	/* check that registers have bits a 0 where expected */
++
++	for (i = 0; i < ARRAY_SIZE(probe_zero_pattern); i += 2)
++	{
++		unsigned char buf;
++
++		static unsigned char addr[2];
++
++		struct i2c_msg msgs[2] = {
++			{ client->addr, 0, 2, addr },	/* random read */
++			{ client->addr, I2C_M_RD, 1, &buf },
++		};
++
++		addr[0] = 0x00;
++		addr[1] = probe_zero_pattern[i];
++
++		xfer = i2c_transfer(client->adapter, msgs, 2);
++
++		if (xfer != 2) {
++			dev_dbg(&client->adapter->dev, 
++				"%s: could not read register %x\n",
++				__FUNCTION__, addr[1]);
++
++			return -EIO;
++		}
++
++		if ((buf & probe_zero_pattern[i+1]) != 0) {
++			dev_dbg(&client->adapter->dev,
++				"%s: register %x, zero pattern %d: %x\n",
++				__FUNCTION__, addr[1], i, buf);
++
++			return -ENODEV;
++		}
++	}
++
++	/* check limits */
++
++	for (i = 0; i < ARRAY_SIZE(probe_limits_pattern); i++)
++	{
++		unsigned char buf, val;
++
++		static unsigned char addr[2];
++
++		struct i2c_msg msgs[2] = {
++			{ client->addr, 0, 2, addr },	/* random read */
++			{ client->addr, I2C_M_RD, 1, &buf },
++		};
++
++		addr[0] = 0x00;
++		addr[1] = probe_limits_pattern[i].reg;
++
++		xfer = i2c_transfer(client->adapter, msgs, 2);
++
++		if (xfer != 2) {
++			dev_dbg(&client->adapter->dev, 
++				"%s: could not read register %x\n",
++				__FUNCTION__, addr[1]);
++
++			return -EIO;
++		}
++
++		val = BCD2BIN(buf & probe_limits_pattern[i].mask);
++
++		if (val > probe_limits_pattern[i].max ||
++			val < probe_limits_pattern[i].min) {
++			dev_dbg(&client->adapter->dev,
++				"%s: register %x, lim pattern %d: %d\n",
++				__FUNCTION__, addr[1], i, val);
++
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++}
++
++static int x1205_attach(struct i2c_adapter *adapter)
++{
++	dev_dbg(&adapter->dev, "%s\n", __FUNCTION__);
++
++	return i2c_probe(adapter, &addr_data, x1205_probe);
++}
++
++static int x1205_probe(struct i2c_adapter *adapter, int address, int kind)
++{
++	struct i2c_client *new_client;
++	struct x1205_data *xdata;
++
++	int err = 0;
++
++	dev_dbg(&adapter->dev, "%s\n", __FUNCTION__);
++
++	if (!(xdata = kmalloc(sizeof(struct x1205_data), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	/* Fill our data structure */
++
++	memset(xdata, 0, sizeof(struct x1205_data));
++
++	xdata->epoch = 2000;
++
++
++	/* Prepare i2c_client structure */
++
++	new_client		= &xdata->client;
++	i2c_set_clientdata(new_client, xdata);
++	new_client->addr	= address;
++	new_client->adapter	= adapter;
++	new_client->driver	= &x1205_driver;
++	new_client->flags	= 0;
++	
++	strlcpy(new_client->name, "x1205", I2C_NAME_SIZE);
++
++
++	/* Verify the chip is really an X1205 */
++
++	if (kind < 0)
++	{
++		if (x1205_validate_client(new_client) < 0) {
++			err = -ENODEV;
++			goto exit_kfree;
++		}
++	}
++
++	/* Inform the i2c layer */
++	if ((err = i2c_attach_client(new_client)))
++		goto exit_kfree;
++
++	list_add(&xdata->list, &x1205_clients);
++
++	dev_info(&adapter->dev, "%s: Chip found, driver " DRIVER_VERSION "\n",
++			DRIVER_NAME);
++
++	/* If requested, se the system time */
++	if (hctosys)
++		x1205_hctosys(new_client);
++
++	return 0;
++
++exit_kfree:
++	kfree(xdata);
++
++exit:
++	return err;
++}
++
++static int x1205_detach(struct i2c_client *client)
++{
++	int err;
++	struct x1205_data *data = i2c_get_clientdata(client);
++	
++	dev_dbg(&client->dev, "%s\n", __FUNCTION__);
++
++	if ((err = i2c_detach_client(client)))
++		return err;
++
++	list_del(&data->list);
++	kfree(data);
++	return 0;
++}
++
++/* make sure the rtc_time values are in bounds */
++static int x1205_validate_tm(struct rtc_time *tm)
++{
++	tm->tm_year += 1900;
++
++	if (tm->tm_year < EPOCH_1970)
++		return -EINVAL;
++
++	if ((tm->tm_mon > 11) || (tm->tm_mday == 0))
++		return -EINVAL;
++
++	if (tm->tm_mday > (days_in_mo[tm->tm_mon] + ( (tm->tm_mon == 1) && 
++		((!(tm->tm_year % 4) && (tm->tm_year % 100) ) || !(tm->tm_year % 400)))))
++		return -EINVAL;
++
++	if ((tm->tm_year -= EPOCH_1900) > 255)
++		return -EINVAL;
++			
++	if ((tm->tm_hour >= 24) || (tm->tm_min >= 60) || (tm->tm_sec >= 60))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int x1205_command(struct i2c_client *client, unsigned int cmd, void *tm)
++{
++	if (client == NULL || tm == NULL)
++		return -EINVAL;
++
++	if (!capable(CAP_SYS_TIME))
++		return -EACCES;
++
++	dev_dbg(&client->dev, "%s: cmd=%d\n", __FUNCTION__, cmd);
++
++	switch (cmd) {
++	case X1205_CMD_GETDATETIME:
++		return x1205_get_datetime(client, tm, X1205_CCR_BASE);
++
++	case X1205_CMD_SETTIME:
++		return x1205_set_datetime(client, tm, X1205_NODATE, X1205_CCR_BASE);
++
++	case X1205_CMD_SETDATETIME:
++		return x1205_set_datetime(client, tm, X1205_DATETOO, X1205_CCR_BASE);
++
++	case X1205_CMD_GETALARM:
++		return x1205_get_datetime(client, tm, X1205_ALM0_BASE);
++
++	case X1205_CMD_SETALARM:
++		return x1205_set_datetime(client, tm, X1205_DATETOO, X1205_ALM0_BASE);
++
++	default:
++		return -EINVAL;
++	}
++}
++
++
++static int __init x1205_init(void)
++{
++	return i2c_add_driver(&x1205_driver);
++}
++
++static void __exit x1205_exit(void)
++{
++	i2c_del_driver(&x1205_driver);
++}
++
++MODULE_AUTHOR(
++	"Karen Spearel <kas11@tampabay.rr.com>, "
++	"Alessandro Zummo <a.zummo@towertech.it>");
++MODULE_DESCRIPTION("Xicor X1205 RTC driver");
++MODULE_LICENSE("GPL");
++
++EXPORT_SYMBOL_GPL(x1205_do_command);
++
++module_init(x1205_init);
++module_exit(x1205_exit);
+--- linux-2.6.14-rc3/include/linux/x1205.h	1970-01-01 01:00:00.000000000 +0100
++++ test9/include/linux/x1205.h	2005-10-03 15:38:21.000000000 +0200
+@@ -0,0 +1,67 @@
++
++/* commands */
++
++#define	X1205_CMD_GETDATETIME	0
++#define	X1205_CMD_SETTIME	1
++#define	X1205_CMD_SETDATETIME	2
++#define X1205_CMD_GETALARM	3
++#define X1205_CMD_SETALARM	4
++
++/* flags */
++
++#define	X1205_NODATE		0
++#define	X1205_DATETOO		1
++
++/*  offsets into read buf - add 2 for write buf */
++
++#define	CCR_SEC			0
++#define	CCR_MIN			1
++#define	CCR_HOUR		2
++#define	CCR_MDAY		3
++#define	CCR_MONTH		4
++#define	CCR_YEAR		5
++#define	CCR_WDAY		6
++#define	CCR_Y2K			7
++
++#define	X1205_REG_SR		0x3F	/* status register */
++#define	X1205_REG_Y2K		0x37
++#define	X1205_REG_DW		0x36
++#define	X1205_REG_YR		0x35
++#define	X1205_REG_MO		0x34
++#define	X1205_REG_DT		0x33
++#define	X1205_REG_HR		0x32
++#define	X1205_REG_MN		0x31
++#define	X1205_REG_SC		0x30
++#define	X1205_REG_DTR		0x13
++#define	X1205_REG_ATR		0x12
++#define	X1205_REG_INT		0x11
++#define	X1205_REG_0		0x10
++#define	X1205_REG_Y2K1		0x0F
++#define	X1205_REG_DWA1		0x0E
++#define	X1205_REG_YRA1		0x0D
++#define	X1205_REG_MOA1		0x0C
++#define	X1205_REG_DTA1		0x0B
++#define	X1205_REG_HRA1		0x0A
++#define	X1205_REG_MNA1		0x09
++#define	X1205_REG_SCA1		0x08
++#define	X1205_REG_Y2K0		0x07
++#define	X1205_REG_DWA0		0x06
++#define	X1205_REG_YRA0		0x05
++#define	X1205_REG_MOA0		0x04
++#define	X1205_REG_DTA0		0x03
++#define	X1205_REG_HRA0		0x02
++#define	X1205_REG_MNA0		0x01
++#define	X1205_REG_SCA0		0x00
++
++#define	X1205_I2C_BUS_ADDR	0x6f	/* hardwired into x1205 */
++#define	X1205_CCR_BASE		0x30	/* Base address of CCR */
++#define	X1205_ALM0_BASE		0x00	/* Base address of ALARM0 */
++
++#define X1205_SR_RTCF		0x01
++#define	X1205_SR_WEL		0x02	/* Write Enable Latch bit */
++#define	X1205_SR_RWEL		0x04	/* Register Write Enable Bit */
++
++#define	X1205_HR_MIL		0x80	/* set in ccr.hour for 24 hr mode */
++
++extern int x1205_do_command(unsigned int cmd, void *arg);
++

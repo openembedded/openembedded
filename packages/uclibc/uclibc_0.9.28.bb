@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r2"
+PR = "r3"
 
 include uclibc.inc
 
@@ -11,9 +11,6 @@ KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${PV}"
-
-# At present the thumb implementation is non-functional
-ARM_INSTRUCTION_SET = ""
 
 #*** PATCHES ***
 #
@@ -29,4 +26,13 @@ SRC_URI += " file://thumb-defined-arm-or-thumb.patch;patch=1"
 #
 # Thumb interworking support
 SRC_URI += " file://thumb-mov-pc-bx.patch;patch=1"
-SRC_URI += " file://thumb-resolve.patch;patch=1"
+SRC_URI += " file://thumb-swi-r7.patch;patch=1"
+SRC_URI += " file://thumb-sysnum-h.patch;patch=1"
+SRC_URI += " file://thumb-asm-swi.patch;patch=1"
+SRC_URI += " file://thumb-call-via-rx.patch;patch=1"
+#
+# This is a core change and is controversial, maybe even wrong
+# on some architectures
+THUMB_INTERWORK_RESOLVE_PATCH = ""
+THUMB_INTERWORK_RESOLVE_PATCH_thumb-interwork = " file://thumb-resolve.patch;patch=1"
+SRC_URI += " ${THUMB_INTERWORK_RESOLVE_PATCH}"

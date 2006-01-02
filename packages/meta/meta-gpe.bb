@@ -1,7 +1,7 @@
-PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games
+PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r38"
+PR = "r41"
 
 ALLOW_EMPTY = "1"
 
@@ -13,6 +13,7 @@ RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
 DEPENDS += " ${gpe-base-depends}"
 
 gpe-task-base = "\
+    gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
     xcursor-transparent-theme \
@@ -32,6 +33,7 @@ gpe-task-base = "\
     gpe-autostarter \
     libgtkstylus \
     detect-stylus \
+    suspend-desktop \
     teleport \
     xauth"
 
@@ -102,6 +104,16 @@ gpe-task-games = "\
 
 RDEPENDS_gpe-task-games := "${gpe-task-games}"
 DEPENDS += " ${gpe-task-games}"
+
+gpe-task-connectivity = "\
+    gpe-mini-browser \
+"
+#    gaim \ 
+#    linphone-hh"
+
+RDEPENDS_gpe-task-connectivity := "${gpe-task-connectivity}"
+DEPENDS += " ${gpe-task-connectivity}"
+
 
 DEPENDS += "matchbox-themes-extra"
 

@@ -1,0 +1,13 @@
+--- gaim/configure.ac.orig	2005-12-19 23:04:14 +0100
++++ gaim/configure.ac	2005-12-19 23:04:49 +0100
+@@ -442,10 +442,6 @@
+ 	fi
+ fi
+ 
+-if test "x$enable_deprecated" = "xno"; then
+-	DEBUG_CFLAGS="$DEBUG_CFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+-fi
+-
+ if test "x$GCC" = "xyes"; then
+ 	DEBUG_CFLAGS="-Wall $DEBUG_CFLAGS"
+ 	CFLAGS="-g $CFLAGS"

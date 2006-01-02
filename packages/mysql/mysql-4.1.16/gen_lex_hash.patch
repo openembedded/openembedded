@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- mysql-4.1.15/sql/Makefile.am~gen_lexhash
++++ mysql-4.1.15/sql/Makefile.am
+@@ -137,8 +137,10 @@
+ 		@echo "If it fails, re-run configure with --with-low-memory"
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
++GEN_LEX_HASH = ./gen_lex_hash$(EXEEXT)
++
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		$(GEN_LEX_HASH) > $@
+ 
+ # For testing of udf_example.so;  Works on platforms with gcc
+ # (This is not part of our build process but only provided as an example)

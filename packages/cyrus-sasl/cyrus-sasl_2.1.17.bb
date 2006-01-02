@@ -1,9 +1,9 @@
 SECTION = "console/network"
-DEPENDS = "db3"
+DEPENDS = "virtual/db"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
 
-SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/cyrus-sasl-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/sasl/cyrus-sasl-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
 
 inherit autotools 

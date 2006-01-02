@@ -1,0 +1,45 @@
+--- ./ixp400_eth.c	2005-11-19 23:36:44.482912850 -0800
++++ ./ixp400_eth.c	2005-11-19 23:39:13.080263492 -0800
+@@ -347,6 +347,12 @@ static int dev_pmu_timer_init(void);
+ extern void 
+ ixEthTxFrameDoneQMCallback(IxQMgrQId qId, IxQMgrCallbackId callbackId);
+ 
++#ifdef CONFIG_NET_POLL_CONTROLLER
++/* poll controller (needed for netconsole et al) */
++static void
++ixp425eth_poll_controller(struct net_device *dev);
++#endif
++
+ /* Private device data */
+ typedef struct {
+     spinlock_t lock;  /* multicast management lock */
+@@ -3056,6 +3062,19 @@ static int set_mac_address(struct net_de
+     return 0;
+ }
+ 
++#ifdef CONFIG_NET_POLL_CONTROLLER
++/*
++ * Polling receive - used by netconsole and other diagnostic tools
++ * to allow network i/o with interrupts disabled.
++ * (stolen from 8139too.c by siddy)
++ */
++static void ixp425eth_poll_controller(struct net_device *dev)
++{
++        disable_irq(dev->irq);
++        dev_qmgr_os_isr(dev->irq, dev, NULL);
++        enable_irq(dev->irq);
++}
++#endif
+ 
+ /* 
+  *  TX QDISC
+@@ -3269,6 +3288,9 @@ static int __devinit dev_eth_probe(struc
+     ndev->get_stats = dev_get_stats;
+     ndev->set_multicast_list = dev_set_multicast_list;
+     ndev->flags |= IFF_MULTICAST;
++#ifdef CONFIG_NET_POLL_CONTROLLER
++    ndev->poll_controller = ixp425eth_poll_controller;
++#endif
+ 
+     ndev->set_mac_address = set_mac_address;
+ 

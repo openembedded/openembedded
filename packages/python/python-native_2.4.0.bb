@@ -9,7 +9,7 @@ PR = "r0"
 
 EXCLUDE_FROM_WORLD = "1"
 
-SRC_URI = "ftp://www.python.org/pub/python/2.4/Python-2.4.tar.bz2 \
+SRC_URI = "http://www.python.org/ftp/python/2.4/Python-2.4.tar.bz2 \
            file://bindir-libdir.patch;patch=1             \
 	   file://cross-distutils.patch;patch=1"
 S = "${WORKDIR}/Python-2.4"

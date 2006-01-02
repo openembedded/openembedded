@@ -1,12 +1,12 @@
 DEFAULT_PREFERENCE = "-1"
 
 S =     "${WORKDIR}/${PN}"
-PV =        "0.1.25+cvs-${CVSDATE}"
+PV =        "0.1.26+cvs-${CVSDATE}"
 PR = "r0"
 
 inherit gpe
 
-SRC_URI =	"cvs://anoncvs:anoncvs@cvs.handhelds.org/cvs;module=gpe/base/${PN} \
+SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/${PN} \
 		 file://Makefile.dpkg_ipkg \
     		 file://Makefile.translation"
 

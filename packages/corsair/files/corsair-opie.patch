@@ -1,0 +1,335 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- corsair/corsair.cpp~corsair-opie
++++ corsair/corsair.cpp
+@@ -172,7 +172,7 @@
+ 
+ QString CorsairWindow::homeDir()
+ {
+-	QString home = Global::homeDirPath();
++	QString home = QDir::homeDirPath();
+ 	if(home == "/home" && option("homeReallyIsHome", "false") != "true") {
+ 		home = "/media";
+ 	}
+@@ -265,7 +265,8 @@
+ 	QString corsairDir = topDir();
+ 	
+ 	// Don't let device power off while downloading.  Will be reenabled when download completes.
+-	QPEApplication::setTempScreenSaverMode(QPEApplication::DisableSuspend);
++	//QPEApplication::setTempScreenSaverMode(QPEApplication::DisableSuspend);
++	QCopEnvelope( "QPE/System", "setScreenSaverMode(int)" ) << QPEApplication::DisableSuspend;
+ 
+ 	Download *dl = NULL;
+ 
+@@ -401,7 +402,8 @@
+ 
+ 	if(m_runningDownloads.isEmpty()) {
+ 		emit statusUpdate(res == Download::Success ? "Ready" : "Error");
+-		QPEApplication::setTempScreenSaverMode(QPEApplication::Enable);
++		//QPEApplication::setTempScreenSaverMode(QPEApplication::Enable);
++		QCopEnvelope( "QPE/System", "setScreenSaverMode(int)" ) << QPEApplication::Enable;
+ 	}
+ 	
+ 	delete dl;
+--- corsair/Makefile~corsair-opie
++++ corsair/Makefile
+@@ -14,10 +14,10 @@
+ #  along with this program; if not, write to the Free Software
+ #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ 
+-INCLUDES=-I/opt/Qtopia/include/
+-CXXFLAGS=-O $(INCLUDES) -DQWS -fno-rtti -fno-exceptions
+-LDFLAGS=-L $(QTDIR)/lib/
+-LIBS=-lqte -lqpe -lqtopia -ljpeg -luuid
++INCLUDES=-I$(QTDIR)/include
++CXXFLAGS += $(INCLUDES) -DQWS -fno-rtti -fno-exceptions
++LDFLAGS +=-L $(QTDIR)/lib/
++LIBS=-lqte -lqpe
+ 
+ SOURCES = main.cpp corsair.cpp feeds.cpp download.cpp info.cpp
+ MOCS = corsair_moc.cpp download_moc.cpp feeds_moc.cpp info_moc.cpp
+@@ -28,12 +28,15 @@
+ 	icons/play.png
+ 
+ %_moc.cpp: %.h
+-	$(QTDIR)/bin/moc -o $@ $^
++	$(OE_QMAKE_MOC) -o $@ $^
++
++#%.o: %.cpp
++#	$(CXX) $(CXXFLAGS) -I$(QTDIR)/include -c -o $@ $^
+ 
+ OBJS = $(SOURCES:.cpp=.o) $(MOCS:.cpp=.o)
+ 
+ corsair: $(OBJS)
+-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
++	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+ 
+ install: corsair
+ 	cp corsair.desktop $(QPEDIR)/apps/Applications
+@@ -54,263 +57,3 @@
+ web:
+ 	rsync -e ssh CHANGELOG FAQ README website/* tinyogre@shell.sourceforge.net:/home/groups/c/co/corsair/htdocs/
+ 
+-# DO NOT DELETE
+-
+-main.o: /opt/Qtopia/include/qmainwindow.h /opt/Qtopia/include/qwidget.h
+-main.o: /opt/Qtopia/include/qwindowdefs.h /opt/Qtopia/include/qobjectdefs.h
+-main.o: /opt/Qtopia/include/qglobal.h /opt/Qtopia/include/qconfig.h
+-main.o: /opt/Qtopia/include/qfeatures.h /opt/Qtopia/include/qstring.h
+-main.o: /opt/Qtopia/include/qcstring.h /opt/Qtopia/include/qarray.h
+-main.o: /opt/Qtopia/include/qgarray.h /opt/Qtopia/include/qshared.h
+-main.o: /usr/include/string.h /usr/include/features.h
+-main.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+-main.o: /opt/Qtopia/include/qnamespace.h /usr/include/limits.h
+-main.o: /opt/Qtopia/include/qobject.h /opt/Qtopia/include/qevent.h
+-main.o: /opt/Qtopia/include/qregion.h /opt/Qtopia/include/qrect.h
+-main.o: /opt/Qtopia/include/qsize.h /opt/Qtopia/include/qpoint.h
+-main.o: /opt/Qtopia/include/qmime.h /opt/Qtopia/include/qstringlist.h
+-main.o: /opt/Qtopia/include/qvaluelist.h /opt/Qtopia/include/qdatastream.h
+-main.o: /opt/Qtopia/include/qiodevice.h /opt/Qtopia/include/qregexp.h
+-main.o: /opt/Qtopia/include/qpaintdevice.h /opt/Qtopia/include/qpalette.h
+-main.o: /opt/Qtopia/include/qcolor.h /opt/Qtopia/include/qbrush.h
+-main.o: /opt/Qtopia/include/qcursor.h /opt/Qtopia/include/qfont.h
+-main.o: /opt/Qtopia/include/qfontmetrics.h /opt/Qtopia/include/qfontinfo.h
+-main.o: /opt/Qtopia/include/qstyle.h /opt/Qtopia/include/qsizepolicy.h
+-main.o: /opt/Qtopia/include/qpe/qpeapplication.h
+-main.o: /opt/Qtopia/include/qtopia/qpeglobal.h
+-main.o: /opt/Qtopia/include/qapplication.h /opt/Qtopia/include/qasciidict.h
+-main.o: /opt/Qtopia/include/qgdict.h /opt/Qtopia/include/qcollection.h
+-main.o: /opt/Qtopia/include/qtranslator.h /opt/Qtopia/include/qintdict.h
+-main.o: /opt/Qtopia/include/qdialog.h /opt/Qtopia/include/qtopia/timestring.h
+-main.o: /opt/Qtopia/include/qdatetime.h /opt/Qtopia/include/qmap.h
+-main.o: /opt/Qtopia/include/qtopia/applicationinterface.h
+-main.o: /opt/Qtopia/include/qtopia/qcom.h /opt/Qtopia/include/qtopia/quuid.h
+-main.o: /usr/include/memory.h /opt/Qtopia/include/qmetaobject.h
+-main.o: /opt/Qtopia/include/qconnection.h /opt/Qtopia/include/qstrlist.h
+-main.o: /opt/Qtopia/include/qlist.h /opt/Qtopia/include/qglist.h corsair.h
+-main.o: feeds.h /opt/Qtopia/include/qxml.h /opt/Qtopia/include/qmodules.h
+-main.o: /opt/Qtopia/include/qtextstream.h /usr/include/stdio.h
+-main.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+-main.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+-main.o: /usr/include/_G_config.h /usr/include/wchar.h
+-main.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+-main.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+-main.o: /opt/Qtopia/include/qfile.h /opt/Qtopia/include/qvaluestack.h
+-main.o: /opt/Qtopia/include/qlistview.h /opt/Qtopia/include/qscrollview.h
+-main.o: /opt/Qtopia/include/qframe.h /opt/Qtopia/include/qscrollbar.h
+-main.o: /opt/Qtopia/include/qrangecontrol.h /opt/Qtopia/include/qdrawutil.h
+-main.o: /opt/Qtopia/include/qpainter.h /opt/Qtopia/include/qpen.h
+-main.o: /opt/Qtopia/include/qpointarray.h /opt/Qtopia/include/qwmatrix.h
+-main.o: log.h download.h /opt/Qtopia/include/qsocket.h
+-main.o: /opt/Qtopia/include/qsocketdevice.h
+-main.o: /opt/Qtopia/include/qhostaddress.h
+-main.o: /opt/Qtopia/include/qsocketnotifier.h /opt/Qtopia/include/qurl.h
+-main.o: /opt/Qtopia/include/qdir.h /opt/Qtopia/include/qfileinfo.h
+-corsair.o: /opt/Qtopia/include/qmainwindow.h /opt/Qtopia/include/qwidget.h
+-corsair.o: /opt/Qtopia/include/qwindowdefs.h
+-corsair.o: /opt/Qtopia/include/qobjectdefs.h /opt/Qtopia/include/qglobal.h
+-corsair.o: /opt/Qtopia/include/qconfig.h /opt/Qtopia/include/qfeatures.h
+-corsair.o: /opt/Qtopia/include/qstring.h /opt/Qtopia/include/qcstring.h
+-corsair.o: /opt/Qtopia/include/qarray.h /opt/Qtopia/include/qgarray.h
+-corsair.o: /opt/Qtopia/include/qshared.h /usr/include/string.h
+-corsair.o: /usr/include/features.h /usr/include/sys/cdefs.h
+-corsair.o: /usr/include/gnu/stubs.h /opt/Qtopia/include/qnamespace.h
+-corsair.o: /usr/include/limits.h /opt/Qtopia/include/qobject.h
+-corsair.o: /opt/Qtopia/include/qevent.h /opt/Qtopia/include/qregion.h
+-corsair.o: /opt/Qtopia/include/qrect.h /opt/Qtopia/include/qsize.h
+-corsair.o: /opt/Qtopia/include/qpoint.h /opt/Qtopia/include/qmime.h
+-corsair.o: /opt/Qtopia/include/qstringlist.h /opt/Qtopia/include/qvaluelist.h
+-corsair.o: /opt/Qtopia/include/qdatastream.h /opt/Qtopia/include/qiodevice.h
+-corsair.o: /opt/Qtopia/include/qregexp.h /opt/Qtopia/include/qpaintdevice.h
+-corsair.o: /opt/Qtopia/include/qpalette.h /opt/Qtopia/include/qcolor.h
+-corsair.o: /opt/Qtopia/include/qbrush.h /opt/Qtopia/include/qcursor.h
+-corsair.o: /opt/Qtopia/include/qfont.h /opt/Qtopia/include/qfontmetrics.h
+-corsair.o: /opt/Qtopia/include/qfontinfo.h /opt/Qtopia/include/qstyle.h
+-corsair.o: /opt/Qtopia/include/qsizepolicy.h
+-corsair.o: /opt/Qtopia/include/qpe/qpeapplication.h
+-corsair.o: /opt/Qtopia/include/qtopia/qpeglobal.h
+-corsair.o: /opt/Qtopia/include/qapplication.h
+-corsair.o: /opt/Qtopia/include/qasciidict.h /opt/Qtopia/include/qgdict.h
+-corsair.o: /opt/Qtopia/include/qcollection.h
+-corsair.o: /opt/Qtopia/include/qtranslator.h /opt/Qtopia/include/qintdict.h
+-corsair.o: /opt/Qtopia/include/qdialog.h
+-corsair.o: /opt/Qtopia/include/qtopia/timestring.h
+-corsair.o: /opt/Qtopia/include/qdatetime.h /opt/Qtopia/include/qmap.h
+-corsair.o: /opt/Qtopia/include/qtopia/applicationinterface.h
+-corsair.o: /opt/Qtopia/include/qtopia/qcom.h
+-corsair.o: /opt/Qtopia/include/qtopia/quuid.h /usr/include/memory.h
+-corsair.o: /opt/Qtopia/include/qmetaobject.h
+-corsair.o: /opt/Qtopia/include/qconnection.h /opt/Qtopia/include/qstrlist.h
+-corsair.o: /opt/Qtopia/include/qlist.h /opt/Qtopia/include/qglist.h corsair.h
+-corsair.o: feeds.h /opt/Qtopia/include/qxml.h /opt/Qtopia/include/qmodules.h
+-corsair.o: /opt/Qtopia/include/qtextstream.h /usr/include/stdio.h
+-corsair.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+-corsair.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+-corsair.o: /usr/include/_G_config.h /usr/include/wchar.h
+-corsair.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+-corsair.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+-corsair.o: /opt/Qtopia/include/qfile.h /opt/Qtopia/include/qvaluestack.h
+-corsair.o: /opt/Qtopia/include/qlistview.h /opt/Qtopia/include/qscrollview.h
+-corsair.o: /opt/Qtopia/include/qframe.h /opt/Qtopia/include/qscrollbar.h
+-corsair.o: /opt/Qtopia/include/qrangecontrol.h
+-corsair.o: /opt/Qtopia/include/qdrawutil.h /opt/Qtopia/include/qpainter.h
+-corsair.o: /opt/Qtopia/include/qpen.h /opt/Qtopia/include/qpointarray.h
+-corsair.o: /opt/Qtopia/include/qwmatrix.h log.h download.h
+-corsair.o: /opt/Qtopia/include/qsocket.h /opt/Qtopia/include/qsocketdevice.h
+-corsair.o: /opt/Qtopia/include/qhostaddress.h
+-corsair.o: /opt/Qtopia/include/qsocketnotifier.h /opt/Qtopia/include/qurl.h
+-corsair.o: /opt/Qtopia/include/qdir.h /opt/Qtopia/include/qfileinfo.h
+-corsair.o: /opt/Qtopia/include/qtextbrowser.h /opt/Qtopia/include/qpixmap.h
+-corsair.o: /opt/Qtopia/include/qtextview.h /opt/Qtopia/include/qtoolbar.h
+-corsair.o: /opt/Qtopia/include/qtoolbutton.h /opt/Qtopia/include/qbutton.h
+-corsair.o: /opt/Qtopia/include/qiconset.h /opt/Qtopia/include/qstatusbar.h
+-corsair.o: /opt/Qtopia/include/qlineedit.h /opt/Qtopia/include/qhbox.h
+-corsair.o: /opt/Qtopia/include/qlayout.h
+-corsair.o: /opt/Qtopia/include/qabstractlayout.h /opt/Qtopia/include/qlabel.h
+-corsair.o: /opt/Qtopia/include/qclipboard.h /opt/Qtopia/include/qpushbutton.h
+-corsair.o: /opt/Qtopia/include/qmenubar.h /opt/Qtopia/include/qpopupmenu.h
+-corsair.o: /opt/Qtopia/include/qmenudata.h /opt/Qtopia/include/qprogressbar.h
+-corsair.o: /opt/Qtopia/include/qtopia/resource.h /opt/Qtopia/include/qimage.h
+-corsair.o: /opt/Qtopia/include/qbitmap.h /opt/Qtopia/include/qtopia/config.h
+-corsair.o: /opt/Qtopia/include/qtopia/qtopiawinexport.h
+-corsair.o: /opt/Qtopia/include/qtopia/global.h
+-corsair.o: /opt/Qtopia/include/qguardedptr.h
+-corsair.o: /opt/Qtopia/include/qtopia/qcopenvelope_qws.h
+-corsair.o: /opt/Qtopia/include/qcopchannel_qws.h info.h
+-feeds.o: corsair.h feeds.h /opt/Qtopia/include/qstring.h
+-feeds.o: /opt/Qtopia/include/qcstring.h /opt/Qtopia/include/qarray.h
+-feeds.o: /opt/Qtopia/include/qgarray.h /opt/Qtopia/include/qshared.h
+-feeds.o: /opt/Qtopia/include/qglobal.h /opt/Qtopia/include/qconfig.h
+-feeds.o: /opt/Qtopia/include/qfeatures.h /usr/include/string.h
+-feeds.o: /usr/include/features.h /usr/include/sys/cdefs.h
+-feeds.o: /usr/include/gnu/stubs.h /opt/Qtopia/include/qlist.h
+-feeds.o: /opt/Qtopia/include/qglist.h /opt/Qtopia/include/qcollection.h
+-feeds.o: /opt/Qtopia/include/qxml.h /opt/Qtopia/include/qmodules.h
+-feeds.o: /opt/Qtopia/include/qtextstream.h /opt/Qtopia/include/qiodevice.h
+-feeds.o: /usr/include/stdio.h /usr/include/bits/types.h
+-feeds.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+-feeds.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+-feeds.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+-feeds.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+-feeds.o: /opt/Qtopia/include/qfile.h /opt/Qtopia/include/qstringlist.h
+-feeds.o: /opt/Qtopia/include/qvaluelist.h /opt/Qtopia/include/qdatastream.h
+-feeds.o: /opt/Qtopia/include/qregexp.h /opt/Qtopia/include/qvaluestack.h
+-feeds.o: /opt/Qtopia/include/qmap.h /opt/Qtopia/include/qlistview.h
+-feeds.o: /opt/Qtopia/include/qscrollview.h /opt/Qtopia/include/qframe.h
+-feeds.o: /opt/Qtopia/include/qwidget.h /opt/Qtopia/include/qwindowdefs.h
+-feeds.o: /opt/Qtopia/include/qobjectdefs.h /opt/Qtopia/include/qnamespace.h
+-feeds.o: /usr/include/limits.h /opt/Qtopia/include/qobject.h
+-feeds.o: /opt/Qtopia/include/qevent.h /opt/Qtopia/include/qregion.h
+-feeds.o: /opt/Qtopia/include/qrect.h /opt/Qtopia/include/qsize.h
+-feeds.o: /opt/Qtopia/include/qpoint.h /opt/Qtopia/include/qmime.h
+-feeds.o: /opt/Qtopia/include/qpaintdevice.h /opt/Qtopia/include/qpalette.h
+-feeds.o: /opt/Qtopia/include/qcolor.h /opt/Qtopia/include/qbrush.h
+-feeds.o: /opt/Qtopia/include/qcursor.h /opt/Qtopia/include/qfont.h
+-feeds.o: /opt/Qtopia/include/qfontmetrics.h /opt/Qtopia/include/qfontinfo.h
+-feeds.o: /opt/Qtopia/include/qstyle.h /opt/Qtopia/include/qsizepolicy.h
+-feeds.o: /opt/Qtopia/include/qscrollbar.h /opt/Qtopia/include/qrangecontrol.h
+-feeds.o: /opt/Qtopia/include/qdrawutil.h /opt/Qtopia/include/qpainter.h
+-feeds.o: /opt/Qtopia/include/qpen.h /opt/Qtopia/include/qpointarray.h
+-feeds.o: /opt/Qtopia/include/qwmatrix.h /opt/Qtopia/include/qdatetime.h log.h
+-feeds.o: download.h /opt/Qtopia/include/qsocket.h
+-feeds.o: /opt/Qtopia/include/qsocketdevice.h
+-feeds.o: /opt/Qtopia/include/qhostaddress.h
+-feeds.o: /opt/Qtopia/include/qsocketnotifier.h /opt/Qtopia/include/qurl.h
+-feeds.o: /opt/Qtopia/include/qdir.h /opt/Qtopia/include/qstrlist.h
+-feeds.o: /opt/Qtopia/include/qfileinfo.h /opt/Qtopia/include/qmainwindow.h
+-feeds.o: /opt/Qtopia/include/qtopia/resource.h
+-feeds.o: /opt/Qtopia/include/qtopia/qpeglobal.h /opt/Qtopia/include/qimage.h
+-feeds.o: /opt/Qtopia/include/qpixmap.h /opt/Qtopia/include/qbitmap.h
+-feeds.o: /opt/Qtopia/include/qiconset.h opmlparser.h feedparser.h
+-download.o: corsair.h feeds.h /opt/Qtopia/include/qstring.h
+-download.o: /opt/Qtopia/include/qcstring.h /opt/Qtopia/include/qarray.h
+-download.o: /opt/Qtopia/include/qgarray.h /opt/Qtopia/include/qshared.h
+-download.o: /opt/Qtopia/include/qglobal.h /opt/Qtopia/include/qconfig.h
+-download.o: /opt/Qtopia/include/qfeatures.h /usr/include/string.h
+-download.o: /usr/include/features.h /usr/include/sys/cdefs.h
+-download.o: /usr/include/gnu/stubs.h /opt/Qtopia/include/qlist.h
+-download.o: /opt/Qtopia/include/qglist.h /opt/Qtopia/include/qcollection.h
+-download.o: /opt/Qtopia/include/qxml.h /opt/Qtopia/include/qmodules.h
+-download.o: /opt/Qtopia/include/qtextstream.h /opt/Qtopia/include/qiodevice.h
+-download.o: /usr/include/stdio.h /usr/include/bits/types.h
+-download.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+-download.o: /usr/include/libio.h /usr/include/_G_config.h
+-download.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+-download.o: /usr/include/gconv.h /usr/include/bits/stdio_lim.h
+-download.o: /usr/include/bits/sys_errlist.h /opt/Qtopia/include/qfile.h
+-download.o: /opt/Qtopia/include/qstringlist.h
+-download.o: /opt/Qtopia/include/qvaluelist.h
+-download.o: /opt/Qtopia/include/qdatastream.h /opt/Qtopia/include/qregexp.h
+-download.o: /opt/Qtopia/include/qvaluestack.h /opt/Qtopia/include/qmap.h
+-download.o: /opt/Qtopia/include/qlistview.h /opt/Qtopia/include/qscrollview.h
+-download.o: /opt/Qtopia/include/qframe.h /opt/Qtopia/include/qwidget.h
+-download.o: /opt/Qtopia/include/qwindowdefs.h
+-download.o: /opt/Qtopia/include/qobjectdefs.h
+-download.o: /opt/Qtopia/include/qnamespace.h /usr/include/limits.h
+-download.o: /opt/Qtopia/include/qobject.h /opt/Qtopia/include/qevent.h
+-download.o: /opt/Qtopia/include/qregion.h /opt/Qtopia/include/qrect.h
+-download.o: /opt/Qtopia/include/qsize.h /opt/Qtopia/include/qpoint.h
+-download.o: /opt/Qtopia/include/qmime.h /opt/Qtopia/include/qpaintdevice.h
+-download.o: /opt/Qtopia/include/qpalette.h /opt/Qtopia/include/qcolor.h
+-download.o: /opt/Qtopia/include/qbrush.h /opt/Qtopia/include/qcursor.h
+-download.o: /opt/Qtopia/include/qfont.h /opt/Qtopia/include/qfontmetrics.h
+-download.o: /opt/Qtopia/include/qfontinfo.h /opt/Qtopia/include/qstyle.h
+-download.o: /opt/Qtopia/include/qsizepolicy.h
+-download.o: /opt/Qtopia/include/qscrollbar.h
+-download.o: /opt/Qtopia/include/qrangecontrol.h
+-download.o: /opt/Qtopia/include/qdrawutil.h /opt/Qtopia/include/qpainter.h
+-download.o: /opt/Qtopia/include/qpen.h /opt/Qtopia/include/qpointarray.h
+-download.o: /opt/Qtopia/include/qwmatrix.h /opt/Qtopia/include/qdatetime.h
+-download.o: log.h download.h /opt/Qtopia/include/qsocket.h
+-download.o: /opt/Qtopia/include/qsocketdevice.h
+-download.o: /opt/Qtopia/include/qhostaddress.h
+-download.o: /opt/Qtopia/include/qsocketnotifier.h /opt/Qtopia/include/qurl.h
+-download.o: /opt/Qtopia/include/qdir.h /opt/Qtopia/include/qstrlist.h
+-download.o: /opt/Qtopia/include/qfileinfo.h /opt/Qtopia/include/qmainwindow.h
+-info.o: corsair.h feeds.h /opt/Qtopia/include/qstring.h
+-info.o: /opt/Qtopia/include/qcstring.h /opt/Qtopia/include/qarray.h
+-info.o: /opt/Qtopia/include/qgarray.h /opt/Qtopia/include/qshared.h
+-info.o: /opt/Qtopia/include/qglobal.h /opt/Qtopia/include/qconfig.h
+-info.o: /opt/Qtopia/include/qfeatures.h /usr/include/string.h
+-info.o: /usr/include/features.h /usr/include/sys/cdefs.h
+-info.o: /usr/include/gnu/stubs.h /opt/Qtopia/include/qlist.h
+-info.o: /opt/Qtopia/include/qglist.h /opt/Qtopia/include/qcollection.h
+-info.o: /opt/Qtopia/include/qxml.h /opt/Qtopia/include/qmodules.h
+-info.o: /opt/Qtopia/include/qtextstream.h /opt/Qtopia/include/qiodevice.h
+-info.o: /usr/include/stdio.h /usr/include/bits/types.h
+-info.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+-info.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+-info.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+-info.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+-info.o: /opt/Qtopia/include/qfile.h /opt/Qtopia/include/qstringlist.h
+-info.o: /opt/Qtopia/include/qvaluelist.h /opt/Qtopia/include/qdatastream.h
+-info.o: /opt/Qtopia/include/qregexp.h /opt/Qtopia/include/qvaluestack.h
+-info.o: /opt/Qtopia/include/qmap.h /opt/Qtopia/include/qlistview.h
+-info.o: /opt/Qtopia/include/qscrollview.h /opt/Qtopia/include/qframe.h
+-info.o: /opt/Qtopia/include/qwidget.h /opt/Qtopia/include/qwindowdefs.h
+-info.o: /opt/Qtopia/include/qobjectdefs.h /opt/Qtopia/include/qnamespace.h
+-info.o: /usr/include/limits.h /opt/Qtopia/include/qobject.h
+-info.o: /opt/Qtopia/include/qevent.h /opt/Qtopia/include/qregion.h
+-info.o: /opt/Qtopia/include/qrect.h /opt/Qtopia/include/qsize.h
+-info.o: /opt/Qtopia/include/qpoint.h /opt/Qtopia/include/qmime.h
+-info.o: /opt/Qtopia/include/qpaintdevice.h /opt/Qtopia/include/qpalette.h
+-info.o: /opt/Qtopia/include/qcolor.h /opt/Qtopia/include/qbrush.h
+-info.o: /opt/Qtopia/include/qcursor.h /opt/Qtopia/include/qfont.h
+-info.o: /opt/Qtopia/include/qfontmetrics.h /opt/Qtopia/include/qfontinfo.h
+-info.o: /opt/Qtopia/include/qstyle.h /opt/Qtopia/include/qsizepolicy.h
+-info.o: /opt/Qtopia/include/qscrollbar.h /opt/Qtopia/include/qrangecontrol.h
+-info.o: /opt/Qtopia/include/qdrawutil.h /opt/Qtopia/include/qpainter.h
+-info.o: /opt/Qtopia/include/qpen.h /opt/Qtopia/include/qpointarray.h
+-info.o: /opt/Qtopia/include/qwmatrix.h /opt/Qtopia/include/qdatetime.h log.h
+-info.o: download.h /opt/Qtopia/include/qsocket.h
+-info.o: /opt/Qtopia/include/qsocketdevice.h
+-info.o: /opt/Qtopia/include/qhostaddress.h
+-info.o: /opt/Qtopia/include/qsocketnotifier.h /opt/Qtopia/include/qurl.h
+-info.o: /opt/Qtopia/include/qdir.h /opt/Qtopia/include/qstrlist.h
+-info.o: /opt/Qtopia/include/qfileinfo.h /opt/Qtopia/include/qmainwindow.h
+-info.o: info.h /opt/Qtopia/include/qtextbrowser.h
+-info.o: /opt/Qtopia/include/qpixmap.h /opt/Qtopia/include/qtextview.h
+-info.o: /opt/Qtopia/include/qtopia/qprocess.h
+-info.o: /opt/Qtopia/include/qtopia/qpeglobal.h
+-info.o: /opt/Qtopia/include/qtopia/qcopenvelope_qws.h
+-info.o: /opt/Qtopia/include/qcopchannel_qws.h

@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "kernel lirc-modules-${PV}"
 DEPENDS = "virtual/kernel"
-PR = "r7"
+PR = "r8"
 
 S = "${WORKDIR}/lirc"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/lirc;module=lirc;date=20040918;method=pserver \

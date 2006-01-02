@@ -17,3 +17,8 @@ python populate_packages_prepend () {
 	themedir = bb.data.expand('${datadir}/themes', d)
 	do_split_packages(d, themedir, '^(.*)', 'xfwm4-theme-%s', 'XFWM4 theme %s', allow_dirs=True)
 }
+
+PACKAGES += " ${PN}-mcs-plugins"
+
+FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/*.so"
+

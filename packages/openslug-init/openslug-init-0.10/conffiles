@@ -31,6 +31,7 @@ diff		etc/default/usbd
 preserve	etc/defaultdomain
 preserve	etc/dropbear/dropbear_dss_host_key
 preserve	etc/dropbear/dropbear_rsa_host_key
+preserve	etc/fstab
 preserve	etc/group
 preserve	etc/gshadow
 preserve	etc/hostname

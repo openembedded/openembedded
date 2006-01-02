@@ -6,6 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"
 RDEPENDS_openmn = "libthread-db1"
+PR = "r2"
 
 PACKAGES =+ 'gdbserver '
 FILES_gdbserver = '${bindir}/gdbserver'
@@ -14,6 +15,7 @@ inherit autotools gettext
 
 SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz \
 	   file://uclibc.patch;patch=1 \
+	   file://kill_arm_map_symbols.patch;patch=1 \
 	   file://gdbserver-cflags-last.diff;patch=1;pnum=0"
 
 LDFLAGS_append = " -s"

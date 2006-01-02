@@ -11,6 +11,7 @@ RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 
 SRC_URI = "http://ftp.imendio.com/pub/extra/${PN}/${PN}-${PV}.tar.gz \
+           file://gssapi.patch;patch=1;pnum=1 \
            file://gconftool-lossage.patch;patch=1;pnum=1"
 
 EXTRA_OECONF = "--with-ipc=dbus"

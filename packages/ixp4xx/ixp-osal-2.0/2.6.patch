@@ -1,0 +1,363 @@
+diff -Naur ixp_osal.orig/include/linux-2.6.h ixp_osal/include/linux-2.6.h
+--- ixp_osal.orig/include/linux-2.6.h	1970-01-01 01:00:00.000000000 +0100
++++ ixp_osal/include/linux-2.6.h	2005-08-26 15:20:23.000000000 +0200
+@@ -0,0 +1,52 @@
++/* */
++
++#include "asm/page.h"
++
++#if !defined (IXP425_TIMER_BASE_PHYS)
++# define IXP425_TIMER_BASE_PHYS 	IXP4XX_TIMER_BASE_PHYS
++#endif
++#if !defined (IRQ_IXP425_XSCALE_PMU)
++# define IRQ_IXP425_XSCALE_PMU		IRQ_IXP4XX_XSCALE_PMU
++#endif
++#if !defined (IXP425_QMGR_BASE_PHYS)
++# define IXP425_QMGR_BASE_PHYS		IXP4XX_QMGR_BASE_PHYS
++#endif
++#if !defined (IXP425_PERIPHERAL_BASE_PHYS)
++# define IXP425_PERIPHERAL_BASE_PHYS	IXP4XX_PERIPHERAL_BASE_PHYS
++#endif
++#if !defined (IXP425_PERIPHERAL_BASE_VIRT)
++# define IXP425_PERIPHERAL_BASE_VIRT	IXP4XX_PERIPHERAL_BASE_VIRT
++#endif
++#if !defined (IXP425_EXP_CFG_BASE_PHYS)
++# define IXP425_EXP_CFG_BASE_PHYS	IXP4XX_EXP_CFG_BASE_PHYS
++#endif
++#if !defined (IXP425_EXP_CFG_BASE_VIRT)
++# define IXP425_EXP_CFG_BASE_VIRT	IXP4XX_EXP_CFG_BASE_VIRT
++#endif
++#if !defined (IXP425_PCI_CFG_BASE_PHYS)
++# define IXP425_PCI_CFG_BASE_PHYS	IXP4XX_PCI_CFG_BASE_PHYS
++#endif
++#if !defined (IXP425_PCI_CFG_BASE_VIRT)
++# define IXP425_PCI_CFG_BASE_VIRT	IXP4XX_PCI_CFG_BASE_VIRT
++#endif
++#if !defined (IXP425_EXP_BUS_BASE2_PHYS)
++# define IXP425_EXP_BUS_BASE2_PHYS	IXP4XX_EXP_BUS_CS2_BASE_PHYS
++#endif
++#if !defined (IXP425_EthA_BASE_PHYS)
++# define IXP425_EthA_BASE_PHYS		(IXP4XX_PERIPHERAL_BASE_PHYS + 0x9000)
++#endif
++#if !defined (IXP425_EthB_BASE_PHYS)
++# define IXP425_EthB_BASE_PHYS		(IXP4XX_PERIPHERAL_BASE_PHYS + 0xA000)
++#endif
++#if !defined (IXP425_ICMR)
++# define IXP425_ICMR			IXP4XX_ICMR
++#endif
++#if !defined (IXP425_USB_BASE_PHYS)
++# define IXP425_USB_BASE_PHYS		IXP4XX_USB_BASE_PHYS
++#endif
++#if !defined (IXP425_INTC_BASE_PHYS)
++# define IXP425_INTC_BASE_PHYS		IXP4XX_INTC_BASE_PHYS
++#endif
++#if !defined (IRQ_IXP425_USB)
++# define IRQ_IXP425_USB			IRQ_IXP4XX_USB
++#endif
+diff -Naur ixp_osal.orig/os/linux/include/core/IxOsalOs.h ixp_osal/os/linux/include/core/IxOsalOs.h
+--- ixp_osal.orig/os/linux/include/core/IxOsalOs.h	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/include/core/IxOsalOs.h	2005-08-26 01:56:22.000000000 +0200
+@@ -56,6 +56,7 @@
+ #include <linux/cache.h>
+ #include <linux/mm.h>
+ #include <linux/config.h>
++#include <linux/version.h>
+ #include <asm/pgalloc.h>
+ 
+ /**
+@@ -66,9 +67,23 @@
+ 
+ #define IX_OSAL_OS_MMU_PHYS_TO_VIRT(addr)  ((addr) ? phys_to_virt((unsigned int)(addr)) : 0)
+ 
+-#define IX_OSAL_OS_CACHE_INVALIDATE(addr, size)  ( invalidate_dcache_range((__u32)addr, (__u32)addr + size )) 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++/*
++ * 2.6 kernels do not export the required cache functions.
++ */
++extern void ixOsalCacheInvalidateRange(unsigned long start, unsigned long size);
++extern void ixOsalCacheFlushRange(unsigned long start, unsigned long size);
++
++#define IX_OSAL_OS_CACHE_INVALIDATE(addr, size) \
++ixOsalCacheInvalidateRange((unsigned long)addr, (unsigned long)addr + size)
++#define IX_OSAL_OS_CACHE_FLUSH(addr, size) \
++ixOsalCacheFlushRange((unsigned long)addr, (unsigned long)addr + size )
+ 
++#else
++
++#define IX_OSAL_OS_CACHE_INVALIDATE(addr, size)  ( invalidate_dcache_range((__u32)addr, (__u32)addr + size )) 
+ #define IX_OSAL_OS_CACHE_FLUSH(addr, size) ( clean_dcache_range((__u32)addr, (__u32)addr + size ))
++#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)) */
+ 
+ #define printf	printk /* For backword compatibility, needs to move to better location */
+ 
+diff -Naur ixp_osal.orig/os/linux/src/core/IxOsalOsCacheMMU.c ixp_osal/os/linux/src/core/IxOsalOsCacheMMU.c
+--- ixp_osal.orig/os/linux/src/core/IxOsalOsCacheMMU.c	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/src/core/IxOsalOsCacheMMU.c	2005-08-26 01:56:22.000000000 +0200
+@@ -210,3 +210,59 @@
+ 	free_pages ((unsigned int) memptr, order);
+     }
+ }
++
++
++/*
++ * 2.6 kernels do not export the required cache functions.
++ */
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++
++#define _IX_STR(x) #x
++#define IX_STR(x) _IX_STR(x)
++#define IX_CLM IX_STR(IX_OSAL_CACHE_LINE_SIZE-1)
++
++/*
++ * reimplementation of kernel's invalidate_dcache_range()
++ */
++void
++ixOsalCacheInvalidateRange(unsigned long start, unsigned long size)
++{
++  __asm__
++    ("    tst    %0, #" IX_CLM "\n"
++     "    mcrne  p15, 0, %0, c7, c10, 1      @ clean D cache line\n"
++     "    bic    %0, %0, #" IX_CLM "\n"
++     "    tst    %1, #" IX_CLM "\n"
++     "    mcrne  p15, 0, %1, c7, c10, 1      @ clean D cache line\n"
++     "1:  mcr    p15, 0, %0, c7, c6, 1       @ invalidate D cache line\n"
++     "    add    %0, %0, #" IX_STR(IX_OSAL_CACHE_LINE_SIZE) "\n"
++     "    cmp    %0, %1\n"
++     "    blo    1b\n"
++     "    mcr    p15, 0, %0, c7, c10, 4      @ drain write & fill buffer\n"
++     : /* no output */
++     : "r"(start), "r"(size)
++     : "cc");
++}
++
++/*
++ * reimplementation of kernel's invalidate_dcache_range()
++ */
++void
++ixOsalCacheFlushRange(unsigned long start, unsigned long size)
++{
++  __asm__
++    ("    bic    %0, %0, #" IX_CLM "\n"
++     "1:  mcr    p15, 0, %0, c7, c10, 1      @ clean D cache line\n"
++     "    add    %0, %0, #" IX_STR(IX_OSAL_CACHE_LINE_SIZE) "\n"
++     "    cmp    %0, %1\n"
++     "    blo    1b\n"
++     "    mcr    p15, 0, %0, c7, c10, 4      @ drain write & fill buffer\n"
++     : /* no output */
++     : "r"(start), "r"(size)
++     : "cc");
++}
++
++#undef _IX_STR
++#undef IX_STR
++#undef IX_CLM
++
++#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)) */
+diff -Naur ixp_osal.orig/os/linux/src/core/IxOsalOsMsgQ.c ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c
+--- ixp_osal.orig/os/linux/src/core/IxOsalOsMsgQ.c	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c	2005-08-24 00:18:02.000000000 +0200
+@@ -45,9 +45,9 @@
+  * -- End Intel Copyright Notice --
+  */
+ #include <linux/linkage.h>
++#include <linux/spinlock.h>
+ #include <linux/ipc.h>
+ #include <linux/msg.h>
+-#include <linux/spinlock.h>
+ #include <linux/interrupt.h>
+ 
+ #include "IxOsal.h"
+diff -Naur ixp_osal.orig/os/linux/src/core/IxOsalOsSemaphore.c ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c
+--- ixp_osal.orig/os/linux/src/core/IxOsalOsSemaphore.c	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c	2005-08-26 15:58:16.000000000 +0200
+@@ -46,7 +46,7 @@
+  */
+ 
+ #include <linux/slab.h>
+-#include <asm-arm/hardirq.h>
++#include <linux/hardirq.h>
+ #include "IxOsal.h"
+ 
+ /* Define a large number */
+@@ -93,7 +93,7 @@
+ {
+ 
+     IX_STATUS ixStatus = IX_SUCCESS;
+-    UINT32 timeoutTime;
++    unsigned long timeoutTime;
+ 
+     if (sid == NULL)
+     {
+diff -Naur ixp_osal.orig/os/linux/src/core/IxOsalOsSymbols.c ixp_osal/os/linux/src/core/IxOsalOsSymbols.c
+--- ixp_osal.orig/os/linux/src/core/IxOsalOsSymbols.c	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/src/core/IxOsalOsSymbols.c	2005-08-30 19:19:33.000000000 +0200
+@@ -64,6 +64,10 @@
+ 
+ EXPORT_SYMBOL (ixOsalCacheDmaMalloc);
+ EXPORT_SYMBOL (ixOsalCacheDmaFree);
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++EXPORT_SYMBOL (ixOsalCacheInvalidateRange);
++EXPORT_SYMBOL (ixOsalCacheFlushRange);
++#endif
+ 
+ EXPORT_SYMBOL (ixOsalThreadCreate);
+ EXPORT_SYMBOL (ixOsalThreadStart);
+diff -Naur ixp_osal.orig/os/linux/src/modules/ioMem/IxOsalOsIoMem.c ixp_osal/os/linux/src/modules/ioMem/IxOsalOsIoMem.c
+--- ixp_osal.orig/os/linux/src/modules/ioMem/IxOsalOsIoMem.c	2005-08-24 00:16:37.000000000 +0200
++++ ixp_osal/os/linux/src/modules/ioMem/IxOsalOsIoMem.c	2005-08-24 00:18:02.000000000 +0200
+@@ -45,6 +45,7 @@
+  * -- End Intel Copyright Notice --
+  */
+ 
++#include <asm/page.h>
+ #include <asm/io.h>
+ #include <linux/ioport.h>
+ 
+--- ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400.h.orig	2005-04-17 20:56:27.000000000 -0700
++++ ixp_osal/os/linux/include/platforms/ixp400/IxOsalOsIxp400.h	2005-10-01 16:27:05.566984144 -0700
+@@ -53,6 +53,8 @@
+ #include "asm/hardware.h"
+ #include "asm/arch/irqs.h"
+ 
++#include <linux-2.6.h>		/* Glue */
++
+ /* physical addresses to be used when requesting memory with IX_OSAL_MEM_MAP */
+ #define IX_OSAL_IXP400_INTC_PHYS_BASE          IXP425_INTC_BASE_PHYS
+ #define IX_OSAL_IXP400_GPIO_PHYS_BASE          IXP425_GPIO_BASE_PHYS
+@@ -108,7 +110,6 @@
+ #define IX_OSAL_IXP400_NPEB_VIRT_BASE          IXP425_NPEB_BASE_VIRT
+ #define IX_OSAL_IXP400_NPEC_VIRT_BASE          IXP425_NPEC_BASE_VIRT
+ #define IX_OSAL_IXP400_PERIPHERAL_VIRT_BASE    IXP425_PERIPHERAL_BASE_VIRT
+-#define IX_OSAL_IXP400_QMGR_VIRT_BASE          IXP425_QMGR_BASE_VIRT
+ #define IX_OSAL_IXP400_OSTS_VIRT_BASE          IXP425_TIMER_BASE_VIRT
+ #define IX_OSAL_IXP400_USB_VIRT_BASE           IXP425_USB_BASE_VIRT
+ #define IX_OSAL_IXP400_EXP_CFG_VIRT_BASE       IXP425_EXP_CFG_BASE_VIRT
+--- ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h.orig	2005-04-17 20:56:27.000000000 -0700
++++ ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Sys.h	2005-10-01 16:31:05.670092880 -0700
+@@ -85,12 +85,21 @@
+      * Queue Manager 
+      */
+     {
++#ifdef IXP425_QMGR_BASE_VIRT
+      IX_OSAL_STATIC_MAP,	/* type            */
+      IX_OSAL_IXP400_QMGR_PHYS_BASE,	/* physicalAddress */
+      IX_OSAL_IXP400_QMGR_MAP_SIZE,	/* size            */
+      IX_OSAL_IXP400_QMGR_VIRT_BASE,	/* virtualAddress  */
+      NULL,			/* mapFunction     */
+      NULL,			/* unmapFunction   */
++#else
++     IX_OSAL_DYNAMIC_MAP,                  /* type            */
++     IX_OSAL_IXP400_QMGR_PHYS_BASE,   /* physicalAddress */
++     IX_OSAL_IXP400_QMGR_MAP_SIZE,    /* size            */
++     0,                               /* virtualAddress  */
++     ixOsalLinuxMemMap,		/* mapFunction     */
++     ixOsalLinuxMemUnmap,	/* unmapFunction   */
++#endif
+      0,				/* refCount        */
+      IX_OSAL_BE | IX_OSAL_LE_DC,	/* endianType      */   
+      "qMgr"			/* name            */
+--- ixp_osal/os/linux/src/core/IxOsalOsServices.c.orig	2005-04-17 20:56:28.000000000 -0700
++++ ixp_osal/os/linux/src/core/IxOsalOsServices.c	2005-10-01 16:37:00.876444607 -0700
+@@ -54,6 +54,7 @@
+ #include <linux/time.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
++#include <linux/interrupt.h>
+ 
+ #include "IxOsal.h"
+ 
+@@ -89,7 +90,7 @@
+ /*
+  * General interrupt handler
+  */
+-static void
++static irqreturn_t
+ ixOsalOsIsrProxy (int irq, void *dev_id, struct pt_regs *regs)
+ {
+     IxOsalInfoType *isr_proxy_info = (IxOsalInfoType *) dev_id;
+@@ -98,6 +99,7 @@
+ 		   "ixOsalOsIsrProxy: Interrupt used before ixOsalIrqBind was invoked");
+ 
+     isr_proxy_info->routine (isr_proxy_info->parameter);
++    return IRQ_HANDLED;
+ }
+ 
+ /*
+@@ -105,11 +107,12 @@
+  * This handler saves the interrupted Program Counter (PC)
+  * into a global variable
+  */
+-static void
++static irqreturn_t
+ ixOsalOsIsrProxyWithPC (int irq, void *dev_id, struct pt_regs *regs)
+ {
+     ixOsalLinuxInterruptedPc = regs->ARM_pc;
+     ixOsalOsIsrProxy(irq, dev_id, regs);
++    return IRQ_HANDLED;
+ }
+ 
+ /**************************************
+@@ -191,10 +194,15 @@
+ PUBLIC UINT32
+ ixOsalIrqLock ()
+ {
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++    unsigned long flags;
++    local_irq_save(flags);
++#else
+     UINT32 flags;
+     save_flags (flags);
+     cli ();
+-    return flags;
++#endif
++    return (UINT32)flags;
+ }
+ 
+ /* Enable interrupts and task scheduling,
+@@ -204,7 +212,11 @@
+ PUBLIC void
+ ixOsalIrqUnlock (UINT32 lockKey)
+ {
++# if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
++    local_irq_restore((unsigned long)lockKey);
++# else
+     restore_flags (lockKey);
++# endif
+ }
+ 
+ PUBLIC UINT32
+@@ -329,7 +341,7 @@
+ PUBLIC void
+ ixOsalSleep (UINT32 milliseconds)
+ {
+-    if (milliseconds != 0)
++    if (milliseconds*HZ >= 1000)
+     {
+         set_current_state(TASK_INTERRUPTIBLE); 
+         schedule_timeout ((milliseconds * HZ) / 1000);
+--- ixp_osal/os/linux/src/core/IxOsalOsThread.c.orig	2005-04-17 20:56:28.000000000 -0700
++++ ixp_osal/os/linux/src/core/IxOsalOsThread.c	2005-10-01 16:38:58.227829064 -0700
+@@ -46,6 +46,7 @@
+  */
+ 
+ #include <linux/sched.h>
++#include <linux/version.h>
+ 
+ #include "IxOsal.h"
+ 
+@@ -65,12 +66,12 @@
+     void *arg = IxOsalOsThreadData.arg;
+     static int seq = 0;
+ 
+-    daemonize ();
++    daemonize ("IxOsal %d", ++seq);
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+     reparent_to_init ();
+ 
+     exit_files (current);
+-
+-    snprintf(current->comm, sizeof(current->comm), "IxOsal %d", ++seq);
++#endif
+ 
+     up (&IxOsalThreadMutex);
+ 

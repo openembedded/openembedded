@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -8,9 +8,6 @@ MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 inherit autotools gettext
 
 include gcc-package.inc
-
-# At present the thumb implementation is non-functional
-ARM_INSTRUCTION_SET = ""
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-reverse-compare.patch;patch=1 \
@@ -27,10 +24,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://15342.patch;patch=1 \
 	   file://always-fixincperm.patch;patch=1"
 
-SRC_URI += "file://gcc34-thumb-div0.patch;patch=1"
-SRC_URI += "file://gcc34-thumb-clearinsn.patch;patch=1"
-SRC_URI += "file://gcc34-thumb-lib1asmfuncs.patch;patch=1"
-SRC_URI += "file://gcc34-thumb-interwork.patch;patch=1"
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
+SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
 
 include gcc3-build.inc

@@ -165,7 +165,11 @@ swivel() {
 		# (it's on fd 10).
 		# init closes all file descriptors, there's no point
 		# supplying it with fds.
-		exec "$2/usr/sbin/chroot" . bin/sh -c "\
+		# NOTE: this used to use $2/usr/sbin/chroot, however on
+		# linux / is already . when the command is executed
+		# therefore it is essential to use the local (new root)
+		# chroot to ensure it gets the correct shared libraries.
+		exec usr/sbin/chroot . bin/sh -c "\
 			test -x sbin/init && exec sbin/init
 			test -x etc/init && exec etc/init
 			test -x bin/init && exec bin/init

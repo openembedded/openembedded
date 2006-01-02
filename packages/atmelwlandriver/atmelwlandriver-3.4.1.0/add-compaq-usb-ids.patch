@@ -1,0 +1,11 @@
+diff -Nurd atmelwlandriver-3.4.1.0/src/includes/usb/config.h atmelwlandriver-3.4.1.0-hh/src/includes/usb/config.h
+--- atmelwlandriver-3.4.1.0/src/includes/usb/config.h	2004-11-10 01:40:50.000000000 -0800
++++ atmelwlandriver-3.4.1.0-hh/src/includes/usb/config.h	2005-11-29 14:07:01.767789406 -0800
+@@ -33,6 +33,7 @@
+  {USB_DEVICE(0x1371,0x5743)}, /* DSE XH1153 USB adapter */ \
+  {USB_DEVICE(0x0864,0x4102)}, /* Netgear MA 101 Rev. B */ \
+  {USB_DEVICE(0x04a5,0x9001)}, /* Benq AWL400 USB adapter */ \
++ {USB_DEVICE(0x049f,0x0032)}, /* Compaq/hp h5[4,5]xx iPAQ internal wlan */ \
+  {USB_DEVICE(VNetVID,VNetPID_RFMD)}, /* Atmel's id */ \
+  { } /* end with an all-zeroes entry */\
+ } /* end marker */

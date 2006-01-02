@@ -8,7 +8,11 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI += "file://ewl-configure.patch;patch=1"
+SRC_URI += "file://ewl-configure.patch;patch=1 \
+            file://fix-ecore.patch;patch=1 \
+            file://ecore-flags.patch;patch=1 \
+            file://no-examples.patch;patch=1 \
+            file://minmax.patch;patch=1"
 
 do_stage_append() {
 	for i in src/lib/ewl_*.h

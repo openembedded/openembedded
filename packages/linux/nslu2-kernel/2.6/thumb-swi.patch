@@ -1,0 +1,19 @@
+# This patch changes the thumb swi handling for any thumb swi with
+# an immediate value != 0, those swis are mapped into the arm
+# specific swis.  This implements a thumb breakpoint swi.
+--- linux-2.6.12.2/arch/arm/kernel/entry-common.S.orig	2005-09-19 12:48:42.323365573 -0700
++++ linux-2.6.12.2/arch/arm/kernel/entry-common.S	2005-09-19 13:31:19.004247358 -0700
+@@ -137,8 +137,11 @@
+ 	 */
+ #ifdef CONFIG_ARM_THUMB
+ 	tst	r8, #PSR_T_BIT			@ this is SPSR from save_user_regs
+-	addne	scno, r7, #__NR_SYSCALL_BASE	@ put OS number in
+-	ldreq	scno, [lr, #-4]
++	ldrneh	ip, [lr, #-2]			@ thumb swi instruction
++	ldreq	scno, [lr, #-4]			@ arm swi instruction
++	addne	scno, r7, #__NR_SYSCALL_BASE	@ put OS number in to thumb r7 value
++	bicnes	ip, ip, #0xff00			@ clear thumb swi bits
++	addne	scno, ip, #__ARM_NR_BASE	@ thumb swi0->r7, swi!0->arm swi
+ #else
+ 	ldr	scno, [lr, #-4]			@ get SWI instruction
+ #endif

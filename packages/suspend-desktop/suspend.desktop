@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Suspend
+Comment=Suspend device
+Exec=/usr/bin/suspend.sh
+Terminal=0
+Type=Application
+Icon=gpe-config-sleep.png
+Categories=Utility;GPE;Action
+StartupNotify=False

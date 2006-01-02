@@ -3,8 +3,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel"
-PR = "r2"
+DEPENDS = "virtual/kernel x11 xau libsm ice"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
       file://lircd.init file://lircmd.init"
@@ -33,3 +33,6 @@ do_install_append() {
         cp -pPR ${S}/remotes ${D}${datadir}/lirc/
 }
 
+PACKAGES =+ "lirc-x"
+
+FILES_lirc-x = "${bindir}/irxevent ${bindir}/xmode2"

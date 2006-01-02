@@ -11,6 +11,9 @@ RDEPENDS = "classpath (>= 0.14) classpath-common (>= 0.14)"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
            file://jamvm-1.3.1-size-defaults.patch;patch=1"
 
+# This uses 32 bit arm, so force the instruction set to arm, not thumb
+ARM_INSTRUCTION_SET = "arm"
+
 inherit autotools update-alternatives
 
 EXTRA_OECONF = "--with-classpath-install-dir=${prefix}"

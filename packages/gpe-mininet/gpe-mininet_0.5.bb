@@ -7,7 +7,8 @@ SECTION = "gpe"
 
 DESCRIPTION = "GPE network connection checker"
 
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
+	   file://makefile-fix.patch;patch=1"
 
 FILES_${PN} = " ${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN} += " ${datadir}/gpe/pixmaps"

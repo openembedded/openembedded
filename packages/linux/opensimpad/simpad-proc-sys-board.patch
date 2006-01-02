@@ -1,0 +1,317 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/drivers/char/Makefile~simpad-proc-sys-board
++++ linux-2.4.27/drivers/char/Makefile
+@@ -134,6 +134,9 @@
+   ifeq ($(CONFIG_SA1100_CERF_CPLD),y)
+     KEYBD    += cerf_keyb.o
+   endif
++  ifeq ($(CONFIG_SA1100_SIMPAD),y)
++    obj-$(CONFIG_SA1100_SIMPAD) += sysctl.o
++  endif
+   ifeq ($(CONFIG_ARCH_FORTUNET),y)
+     KEYMAP   := defkeymap.o
+   endif
+--- /dev/null
++++ linux-2.4.27/drivers/char/sysctl.c
+@@ -0,0 +1,297 @@
++/*
++ *  /proc/sys/board - Interface to the SIMpad cs3 register
++ *
++ *  (c) 2004 by Till Harbaum, BeeCon GmbH, <harbaum@beecon.de>
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/errno.h>
++#include <linux/sysctl.h>
++#include <linux/crc32.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++
++#include <asm/io.h>
++#include <asm/arch/simpad.h>
++#include <asm/uaccess.h>
++
++extern long get_cs3_shadow(void);
++extern void set_cs3_bit(int value);
++extern void clear_cs3_bit(int value);
++
++/*
++ * This is the number for the "board" entry in /proc/sys:
++ */
++#define SIMPAD_SYSCTL 1312
++
++/*
++ * These are the numbers for the entries in /etc/sys/board
++ */
++enum {
++	CTL_NAME=991,
++	CTL_CS3,          // the complete latch
++	CTL_VCC_5V_EN,    // For 5V PCMCIA 
++        CTL_VCC_3V_EN,    // FOR 3.3V PCMCIA
++        CTL_EN1,          // This is only for EPROM's
++        CTL_EN0,          // Both should be enable for 3.3V or 5V
++        CTL_DISPLAY_ON,
++        CTL_PCMCIA_BUFF_DIS,
++        CTL_MQ_RESET,
++        CTL_PCMCIA_RESET,
++        CTL_DECT_POWER_ON,
++        CTL_IRDA_SD,      // Shutdown for powersave
++        CTL_RS232_ON, 
++        CTL_SD_MEDIAQ,    // Shutdown for powersave
++        CTL_LED2_ON,
++        CTL_IRDA_MODE,    // Fast/Slow IrDA mode
++        CTL_ENABLE_5V,    // Enable 5V circuit
++        CTL_RESET_SIMCARD
++};
++
++static const char simpad_board_name[] = "SIMpad";
++static int  dummy_int;
++static char dummy_str[80];
++
++static int
++simpad_sysctl_handler(ctl_table * ctl, int write, struct file *filp,
++		      void *buffer, size_t * lenp)
++{
++	int *valp = ctl->data;
++	int val;
++	int ret;
++
++	// Update parameters from the real registers
++	switch (ctl->ctl_name) {
++	case CTL_CS3:
++	    sprintf(dummy_str, "0x%04lx", get_cs3_shadow());
++	    return proc_dostring(ctl,write,filp,buffer,lenp);
++	    break;
++
++        // the 16 control bits of the cs3 register
++        case CTL_VCC_5V_EN:
++	case CTL_VCC_3V_EN:
++	case CTL_EN1:
++	case CTL_EN0:
++	case CTL_DISPLAY_ON:
++	case CTL_PCMCIA_BUFF_DIS:
++	case CTL_MQ_RESET:
++	case CTL_PCMCIA_RESET:
++	case CTL_DECT_POWER_ON:
++	case CTL_IRDA_SD:
++	case CTL_RS232_ON:
++	case CTL_SD_MEDIAQ:
++	case CTL_LED2_ON:
++	case CTL_IRDA_MODE:
++	case CTL_ENABLE_5V:
++	case CTL_RESET_SIMCARD:
++	        *valp = (get_cs3_shadow() & 
++		        (1u << (ctl->ctl_name-CTL_VCC_5V_EN)))?1:0;
++                break;
++
++	default:
++		// Just ignore unsupported parameters
++		break;
++	}
++
++	// the strings are all handled now and ran onto a return;
++
++	// Save old state
++	val = *valp;
++
++	// Perform the generic integer operation        
++	if ((ret = proc_dointvec(ctl, write, filp, buffer, lenp)) != 0)
++		return (ret);
++
++	// Write changes out to the registers
++	if (write && *valp != val) {
++
++		val = *valp;
++		switch (ctl->ctl_name) {
++
++                // the 16 control bits of the cs3 register
++	        case CTL_DISPLAY_ON:
++	        case CTL_DECT_POWER_ON:
++  	        case CTL_IRDA_SD:
++	        case CTL_SD_MEDIAQ:
++	        case CTL_LED2_ON:
++	        case CTL_IRDA_MODE:
++	        case CTL_RESET_SIMCARD:
++		        if (val) 
++		                set_cs3_bit(1u << (ctl->ctl_name-CTL_VCC_5V_EN));
++		        else     
++		                clear_cs3_bit(1u << (ctl->ctl_name-CTL_VCC_5V_EN));
++                break;
++
++		default:
++			// Just ignore unsupported parameters
++			break;
++		}
++	}
++
++	return ret;
++}
++
++#define PROC_RDONLY 0444
++#define PROC_RDWR   0664
++
++static ctl_table simpad_table[] = {
++        {
++	 procname:	"sys_name",
++	 ctl_name:	CTL_NAME, 
++	 data:		&simpad_board_name,
++	 maxlen:	sizeof(simpad_board_name),
++         proc_handler:	&proc_dostring,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"cs3",
++	 ctl_name:	CTL_CS3, 
++	 data:		&dummy_str,
++	 maxlen:	sizeof(dummy_str),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"vcc_5v_en",
++	 ctl_name:	CTL_VCC_5V_EN,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"vcc_3v_en",
++	 ctl_name:	CTL_VCC_3V_EN,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"en1",
++	 ctl_name:	CTL_EN1,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"en0",
++	 ctl_name:	CTL_EN0,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"display_on",
++	 ctl_name:	CTL_DISPLAY_ON,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"pcmcia_buff_dis",
++	 ctl_name:	CTL_PCMCIA_BUFF_DIS,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"mq_reset",
++	 ctl_name:	CTL_MQ_RESET,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"pcmcia_reset",
++	 ctl_name:	CTL_PCMCIA_RESET,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"dect_power_on",
++	 ctl_name:	CTL_DECT_POWER_ON,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"irda_sd",
++	 ctl_name:	CTL_IRDA_SD,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"rs232_on",
++	 ctl_name:	CTL_RS232_ON,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"sd_mediaq",
++	 ctl_name:	CTL_SD_MEDIAQ,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"led2_on",
++	 ctl_name:	CTL_LED2_ON,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"irda_mode",
++	 ctl_name:	CTL_IRDA_MODE,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	}, {
++	 procname:	"enable_5v",
++	 ctl_name:	CTL_ENABLE_5V,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDONLY,
++	}, {
++	 procname:	"reset_simcard",
++	 ctl_name:	CTL_RESET_SIMCARD,
++	 data:		&dummy_int,
++	 maxlen:	sizeof(int),
++         proc_handler:	&simpad_sysctl_handler,
++	 mode:		PROC_RDWR,
++	},
++        {0}
++        };
++
++static ctl_table simpad_root_table[] = {
++        {SIMPAD_SYSCTL, "board", NULL, 0, 0555, simpad_table},
++        {0}
++        };
++
++
++static struct ctl_table_header *simpad_table_header;
++
++
++static int __init simpad_sysctl_init(void) 
++{
++        simpad_table_header = register_sysctl_table(simpad_root_table, 0);
++        if (!simpad_table_header)
++                return -ENOMEM;
++        return 0;
++}
++
++static void __exit simpad_sysctl_exit(void)
++{
++        unregister_sysctl_table(simpad_table_header);
++}
++
++
++module_init(simpad_sysctl_init);
++module_exit(simpad_sysctl_exit);
++
++MODULE_AUTHOR("Till Harbaum <harbaum@beecon.de>");
++MODULE_DESCRIPTION("Implements /proc/sys/board");
++MODULE_LICENSE("GPL");

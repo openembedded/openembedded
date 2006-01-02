@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r28"
+PR = "r32"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -22,19 +22,21 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
 # for devices with >16M of flash
 #
 
-DEPENDS = "irda-utils ntp wireless-tools timezones ttf-dejavu \
+DEPENDS = "irda-utils ntp timezones ttf-dejavu \
+           bluez-utils-nodbus wireless-tools \
            opie-ttf-support libopieobex0 opie-examples-python \
            opie-freetype opie-help-en opie-i18n opie-login \
            opie-securityplugin-blueping opie-securityplugin-dummy \
            opie-securityplugin-notice opie-securityplugin-pin \
-           opie-sh opie-symlinker openobex \
+           opie-sh opie-symlinker opie-alarm openobex \
            konqueror-embedded qpdf2"
 
 #
 # Dependencies to get the launcher up and running
 #
 
-task-opie-base = "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
+task-opie-base = "bluez-utils-nodbus wireless-tools opie-alarm \
+                  opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
                   opie-sounds opie-freetype ttf-dejavu-sans ttf-dejavu-sans-mono"
 
 #

@@ -5,7 +5,7 @@ DEPENDS = "directfb"
 
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.directfb.org/download/DirectFB-extra/DFB++-${PV}.tar.gz"
+SRC_URI = "http://www.directfb.org/downloads/Old/DFB++-${PV}.tar.gz"
 S = "${WORKDIR}/DFB++-${PV}"
 
 inherit autotools pkgconfig

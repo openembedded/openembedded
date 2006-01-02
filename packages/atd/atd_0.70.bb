@@ -1,9 +1,13 @@
 DESCRIPTION = "Lightweight At Daemon"
 SECTION = "base"
 LICENSE = "GPLV2"
-PR = "r1"
+RCONFLICTS = "at"
+RREPLACES = "at"
 
-SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70"
+PR = "r3"
+
+SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
+			file://no-oknodo.patch;patch=1"
 S = "${WORKDIR}/atd"
 
 inherit update-rc.d

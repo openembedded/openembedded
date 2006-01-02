@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 LICENSE = "Artistic|GPL"
 SECTION = "devel"
 PRIORITY = "optional"
-DEPENDS = "db3 perl-native"
+DEPENDS = "virtual/db perl-native"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1 \

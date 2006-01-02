@@ -4,9 +4,12 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "LGPL"
+PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"
+
+export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config"
 
 inherit autotools
 

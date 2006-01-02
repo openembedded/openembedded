@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r3"
 CVSDATE_${PN} = "20050904"
 PV = "2.0.0-cvs-mco1-${CVSDATE}"
 
@@ -19,6 +19,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
 	${WEBCVSURL}/08-prefs-dialog.patch;patch=1 \
 	${WEBCVSURL}/09-filetransfer-dialog.patch;patch=1 \
 	${WEBCVSURL}/10-pda-default-settings.patch;patch=1 \
+	file://gaim-OE-branding.patch;patch=1 \
 	"
 
 include gaim.inc

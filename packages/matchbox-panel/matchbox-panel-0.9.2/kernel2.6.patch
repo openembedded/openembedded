@@ -1,0 +1,226 @@
+--- matchbox-panel-0.9.2/applets/mb-applet-system-monitor.c.old	2005-03-20 18:43:31.000000000 +0100
++++ matchbox-panel-0.9.2/applets/mb-applet-system-monitor.c	2005-12-21 10:24:18.000000000 +0100
+@@ -37,6 +37,11 @@
+ # define _(text) (text)
+ #endif
+ 
++#include <linux/version.h>
++#ifndef KERNEL_VERSION
++#define KERNEL_VERSION(a,b,c) (((a) << 16) | ((b) << 8) | (c))
++#endif
++
+ #ifdef MB_HAVE_PNG
+ #define IMG_EXT "png"
+ #else
+@@ -112,71 +117,148 @@
+ 
+ int system_memory(void)
+ {
+-    u_int64_t my_mem_used, my_mem_max;
+-    u_int64_t my_swap_max;
+-
+-    static int mem_delay = 0;
+-    FILE *mem;
+-    static u_int64_t total, used, mfree, shared, buffers, cached,
+-      cache_total, cache_used;
+-
+-    /* put this in permanent storage instead of stack */
+-    static char not_needed[2048];
+-
+-    if (mem_delay-- <= 0) {
+-      if ((mem = fopen("/proc/meminfo", "r")) == NULL)
+-	{
+-	  fprintf(stderr, "mb-applet-system-monitor: failed to open /proc/meminfo. Exiting.\n");
+-	  exit(1);
+-      }
+-
+-
+-
+-	fgets(not_needed, 2048, mem);
+-	
+-	/* 
+-	    total:    used:    free:  shared: buffers:  cached:
+-	*/
+-
+-	fscanf(mem, "%*s %Ld %Ld %Ld %Ld %Ld %Ld", &total, &used, &mfree,
+-	       &shared, &buffers, &cached);
+-
+-	fscanf(mem, "%*s %Ld %Ld", &cache_total, &cache_used);
+-
+-	fclose(mem);
+-	mem_delay = 25;
+-
+-	/* calculate it */
+-	my_mem_max = total;
+-	my_swap_max = cache_total;
+-
+-	my_mem_used = cache_used + used - cached - buffers;
+-
+-	/* No swap on ipaq 
+-	if (my_mem_used > my_mem_max) {
+-	   my_swap_used = my_mem_used - my_mem_max;
+-	    my_mem_used = my_mem_max;
+-	} else {
+-	   my_swap_used = 0;
+-	}
+-	*/
+-	
+-	msd.mem_used = my_mem_used;
+-	msd.mem_max = my_mem_max;
+-	//msd.swap_used = my_swap_used;
+-	//msd.swap_max = my_swap_max;
+-
+-	msd.mem_percent = (100 * msd.mem_used) / msd.mem_max;
+-	//msd.swap_percent = (100 * msd.swap_used) / msd.swap_max;
+-
+-	/* memory info changed - update things */
+-	return 1;
+-	}
+-    /* nothing new */
+-    return 0;
++    #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
++        u_int64_t  total, mfree, buffers, cached, used, shared,
++        cache_total, cache_free, cache_used;
++
++        u_int64_t my_mem_used, my_mem_max;
++        u_int64_t my_swap_max;
++
++        static int mem_delay = 0;
++        FILE *mem;
++
++        /* put this in permanent storage instead of stack */
++        static char not_needed[2048];
++
++        if (mem_delay-- <= 0) {
++            if ((mem = fopen("/proc/meminfo", "r")) == NULL) {
++                fprintf(stderr, "mb-applet-system-monitor: failed to open /proc/meminfo. Exiting.\n");
++                exit(1);
++        }
++
++        fgets(not_needed, 2048, mem);
++
++        rewind (mem);
++
++        fscanf (mem, "%*s %Ld %*s", &total);
++        fscanf (mem, "%*s %Ld %*s", &mfree);
++        fscanf (mem, "%*s %Ld %*s", &buffers);
++        fscanf (mem, "%*s %Ld %*s", &cached);
++        fscanf (mem, "%*s %Ld %*s", &shared);
++        fscanf (mem, "%*s %Ld %*s", &used);
++        fscanf (mem, "%*s %*Ld %*s");
++        fscanf (mem, "%*s %*Ld %*s");
++        fscanf (mem, "%*s %*Ld %*s");
++        fscanf (mem, "%*s %*Ld %*s");
++        fscanf (mem, "%*s %*Ld %*s");
++        fscanf (mem, "%*s %Ld %*s", &cache_total);
++        fscanf (mem, "%*s %Ld %*s", &cache_free);
++
++        fclose (mem);
++
++        total = total * 1024;
++        mfree = mfree * 1024;
++        buffers = buffers * 1024;
++        cached = cached * 1024;
++        used = used * 1024;
++        shared = shared * 1024;
++        cache_total = cache_total * 1024;
++        cache_used = cache_total - (cache_free * 1024);
++
++        mem_delay = 25;
++
++        /* calculate it */
++        my_mem_max = total;
++        my_swap_max = cache_total;
++
++        my_mem_used = cache_used + used - cached - buffers;
++
++        /* No swap on ipaq
++        if (my_mem_used > my_mem_max) {
++        my_swap_used = my_mem_used - my_mem_max;
++        my_mem_used = my_mem_max;
++        } else {
++        my_swap_used = 0;
++        }
++        */
++
++        msd.mem_used = my_mem_used;
++        msd.mem_max = my_mem_max;
++        //msd.swap_used = my_swap_used;
++        //msd.swap_max = my_swap_max;
++
++        msd.mem_percent = (100 * msd.mem_used) / msd.mem_max;
++        //msd.swap_percent = (100 * msd.swap_used) / msd.swap_max;
++
++        /* memory info changed - update things */
++        return 1;
++        }
++        /* nothing new */
++        return 0;
++    #else
++        static u_int64_t total, used, mfree, shared, buffers, cached,
++            cache_total, cache_used;
++
++        u_int64_t my_mem_used, my_mem_max;
++        u_int64_t my_swap_max;
++
++        static int mem_delay = 0;
++        FILE *mem;
++
++        /* put this in permanent storage instead of stack */
++        static char not_needed[2048];
++
++        if (mem_delay-- <= 0) {
++            if ((mem = fopen("/proc/meminfo", "r")) == NULL) {
++                fprintf(stderr, "mb-applet-system-monitor: failed to open /proc/meminfo. Exiting.\n");
++                exit(1);
++            }
++
++            fgets(not_needed, 2048, mem);
++
++            /*
++            total:    used:    free:  shared: buffers:  cached:
++            */
++            fscanf(mem, "%*s %Ld %Ld %Ld %Ld %Ld %Ld", &total, &used, &mfree,
++                &shared, &buffers, &cached);
++
++            fscanf(mem, "%*s %Ld %Ld", &cache_total, &cache_used);
++
++            fclose(mem);
++
++            mem_delay = 25;
++
++            /* calculate it */
++            my_mem_max = total;
++            my_swap_max = cache_total;
++
++            my_mem_used = cache_used + used - cached - buffers;
++
++            /* No swap on ipaq
++                if (my_mem_used > my_mem_max) {
++                my_swap_used = my_mem_used - my_mem_max;
++                my_mem_used = my_mem_max;
++            } else {
++                my_swap_used = 0;
++            }
++            */
++
++            msd.mem_used = my_mem_used;
++            msd.mem_max = my_mem_max;
++            //msd.swap_used = my_swap_used;
++            //msd.swap_max = my_swap_max;
++
++            msd.mem_percent = (100 * msd.mem_used) / msd.mem_max;
++            //msd.swap_percent = (100 * msd.swap_used) / msd.swap_max;
++
++            /* memory info changed - update things */
++            return 1;
++        }
++        /* nothing new */
++        return 0;
++    #endif
+ }
+ 
+-
+ void
+ paint_callback (MBTrayApp *app, Drawable drw )
+ {

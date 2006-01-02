@@ -2,7 +2,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DESCRIPTION = "A small, C implementation of hotplug."
 
-SRC_URI = "http://www.us.kernel.org/pub/linux/utils/kernel/hotplug/diethotplug-${PV}.tar.gz \
+SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/hotplug/diethotplug-${PV}.tar.gz \
            file://modules.usbmap \
            file://modules.pcimap \
            file://modules.ieee1394map"

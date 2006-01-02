@@ -1,11 +1,7 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- evas-0.9.9.013/configure.in~fix-configure
-+++ evas-0.9.9.013/configure.in
-@@ -157,9 +157,7 @@
+diff -Nur evas-0.9.9.015~/configure.in evas-0.9.9.015/configure.in
+--- evas-0.9.9.015~/configure.in	2005-09-28 15:12:03.000000000 -0700
++++ evas-0.9.9.015/configure.in	2005-09-28 15:13:05.000000000 -0700
+@@ -152,9 +152,7 @@
      [
        AM_CONDITIONAL(BUILD_ENGINE_SOFTWARE_X11, true)
        AC_DEFINE(BUILD_ENGINE_SOFTWARE_X11, 1, [Software X11 Rendering Backend])
@@ -16,7 +12,7 @@
        ENGINE_SOFTWARE_X11_PRG="evas_software_x11_test evas_software_x11_perf_test evas_software_x11_perf_load"
      ],
      [
-@@ -221,7 +219,7 @@
+@@ -216,7 +214,7 @@
          X11/X.h,
          [AM_CONDITIONAL(BUILD_ENGINE_SOFTWARE_XCB, true)
           AC_DEFINE(BUILD_ENGINE_SOFTWARE_XCB, 1, [Software XCB Rendering Backend])
@@ -25,20 +21,20 @@
           xcb_cflags="${x_cflags:--I${x_includes:-$x_dir/include}} $XCB_CFLAGS $XCB_ICCCM_CFLAGS"
           xcb_libs="${x_libs:--L${x_libraries:-$x_dir/lib}}  $XCB_LIBS $XCB_ICCCM_LIBS"
           ENGINE_SOFTWARE_XCB_PRG="evas_software_xcb_test evas_software_xcb_perf_test evas_software_xcb_perf_load"],
-@@ -433,10 +431,10 @@
- 	  AC_DEFINE(BUILD_ENGINE_GL_X11, 1, [OpenGL X11 Rendering Backend])
- 	  AM_CONDITIONAL(BUILD_ENGINE_GL_COMMON, true)
- 	  AC_DEFINE(BUILD_ENGINE_GL_COMMON, 1, [Generic OpenGL Rendering Support])
--	  x_dir=${x_dir:-/usr/X11R6};
-+	  x_dir=${x_dir:-};
- 	  x_cflags=${x_cflags:--I$x_dir/include}
- 	  x_libs="${x_libs:--L$x_dir/lib -lX11 -lXext}"
--	  gl_cflags="-I/usr/include"
-+	  gl_cflags=""
- 	  gl_libs="-lGL -lGLU -lpthread"
- 	  gl_dir=""
- 	  ENGINE_GL_X11_PRG="evas_gl_x11_test"
-@@ -490,7 +488,7 @@
+@@ -430,10 +428,10 @@
+ 	      AC_DEFINE(BUILD_ENGINE_GL_X11, 1, [OpenGL X11 Rendering Backend])
+ 	      AM_CONDITIONAL(BUILD_ENGINE_GL_COMMON, true)
+ 	      AC_DEFINE(BUILD_ENGINE_GL_COMMON, 1, [Generic OpenGL Rendering Support])
+-	      x_dir=${x_dir:-/usr/X11R6};
++	      x_dir=${x_dir:-};
+ 	      x_cflags=${x_cflags:--I$x_dir/include}
+ 	      x_libs="${x_libs:--L$x_dir/lib -lX11 -lXext}"
+-	      gl_cflags="-I/usr/include"
++	      gl_cflags=""
+ 	      gl_libs="-lGL -lGLU -lpthread"
+ 	      gl_dir=""
+ 	      ENGINE_GL_X11_PRG="evas_gl_x11_test"
+@@ -496,7 +494,7 @@
        AC_DEFINE(BUILD_ENGINE_CAIRO_X11, 1, [Cairo X11 Rendering Backend])
        AM_CONDITIONAL(BUILD_ENGINE_CAIRO_COMMON, true)
        AC_DEFINE(BUILD_ENGINE_CAIRO_COMMON, 1, [Generic Cairo Rendering Support])

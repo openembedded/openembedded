@@ -6,8 +6,9 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
 PV = "cvs${CVSDATE}"
+PR = "r2"
 
-SRC_URI = "svn://meshcube.org/svn/scripts;module=${PN};proto=http"
+SRC_URI = "http://meshcube.org/download/${PN}_${CVSDATE}.tgz"
 S = "${WORKDIR}/${PN}"
 
 do_install() {
@@ -19,8 +20,6 @@ if test "x$D" != "x"; then
 	exit 1
 else
 	update-rc.d -s hostap defaults 14
-	update-rc.d -s bridge defaults 15
-	update-rc.d -s ipaliases defaults 16
 	update-rc.d -s firewall defaults 20
 	update-rc.d -s routing defaults 20
 	update-rc.d -s emergency-ip defaults 98
@@ -55,4 +54,4 @@ update-rc.d flash-backup remove
 update-rc.d dummydate remove
 }
 
-CONFFILES_${PN} = "/etc/nylon/backup.list /etc/nylon/bridge.conf /etc/nylon/configip.conf /etc/nylon/hostap.conf /etc/nylon/interfaces.conf /etc/nylon/macfilter.list /etc/nylon/route.list"
+CONFFILES_${PN} = "/etc/nylon/backup.list /etc/nylon/hostap.conf /etc/nylon/interfaces.conf /etc/nylon/route.list"

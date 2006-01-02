@@ -1,0 +1,275 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- snes9x-sdl-1.39/unix/svga.cpp~compile
++++ snes9x-sdl-1.39/unix/svga.cpp
+@@ -48,7 +48,7 @@
+ #include <stdlib.h>
+ #include <signal.h>
+ 
+-#include "sdl.h"
++#include <SDL.h>
+ 
+ #include "snes9x.h"
+ #include "memmap.h"
+--- snes9x-sdl-1.39/unix/unix.cpp~compile
++++ snes9x-sdl-1.39/unix/unix.cpp
+@@ -50,7 +50,7 @@
+ #include <sys/types.h>
+ #include <ctype.h>
+ #include <dirent.h>
+-#include <sdl.h>
++#include <SDL.h>
+ #include "keydef.h"
+ 
+ #undef USE_THREADS
+@@ -189,8 +189,7 @@
+ }
+ 
+ /*#include "cheats.h"*/
+-extern "C"
+-int SDL_main (int argc, char **argv)
++int main (int argc, char **argv)
+ {
+     if (argc < 2)
+ 	S9xUsage ();
+--- /dev/null
++++ snes9x-sdl-1.39/unzip/unzipP.h
+@@ -0,0 +1,124 @@
++#ifndef _UNZIPP_H_
++#define _UNZIPP_H_
++
++#include "unzip.h"
++
++#ifndef local
++#define local static
++#endif
++/* compile with -Dlocal if your debugger can't find static symbols */
++
++
++
++#if !defined(unix) && !defined(CASESENSITIVITYDEFAULT_YES) && \
++                      !defined(CASESENSITIVITYDEFAULT_NO)
++#define CASESENSITIVITYDEFAULT_NO
++#endif
++
++
++#ifndef UNZ_BUFSIZE
++#define UNZ_BUFSIZE (16384)
++#endif
++
++#ifndef UNZ_MAXFILENAMEINZIP
++#define UNZ_MAXFILENAMEINZIP (256)
++#endif
++
++#ifndef ALLOC
++#define ALLOC(size) (malloc(size))
++#endif
++#ifndef TRYFREE
++#define TRYFREE(p) {if (p) free(p);}
++#endif
++
++#define SIZECENTRALDIRITEM (0x2e)
++#define SIZEZIPLOCALHEADER (0x1e)
++
++
++/* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
++
++#ifndef SEEK_CUR
++#define SEEK_CUR    1
++#endif
++
++#ifndef SEEK_END
++#define SEEK_END    2
++#endif
++
++#ifndef SEEK_SET
++#define SEEK_SET    0
++#endif
++
++/* unz_file_info_interntal contain internal info about a file in zipfile */
++typedef struct unz_file_info_internal_s
++{
++    uLong           offset_curfile;	/* relative offset of local header 4
++					 * bytes */
++}               unz_file_info_internal;
++
++
++/*
++ * file_in_zip_read_info_s contain internal information about a file in
++ * zipfile, when reading and decompress it
++ */
++typedef struct
++{
++    char           *read_buffer;/* internal buffer for compressed data */
++    z_stream        stream;	/* zLib stream structure for inflate */
++
++    uLong           pos_in_zipfile;	/* position in byte on the zipfile,
++					 * for fseek */
++    uLong           stream_initialised;	/* flag set if stream structure is
++					 * initialised */
++
++    uLong           offset_local_extrafield;	/* offset of the local extra
++						 * field */
++    uInt            size_local_extrafield;	/* size of the local extra
++						 * field */
++    uLong           pos_local_extrafield;	/* position in the local
++						 * extra field in read */
++
++    uLong           crc32;	/* crc32 of all data uncompressed */
++    uLong           crc32_wait;	/* crc32 we must obtain after decompress all */
++    uLong           rest_read_compressed;	/* number of byte to be
++						 * decompressed */
++    uLong           rest_read_uncompressed;	/* number of byte to be
++						 * obtained after decomp */
++    FILE           *file;	/* io structore of the zipfile */
++    uLong           compression_method;	/* compression method (0==store) */
++    uLong           byte_before_the_zipfile;	/* byte before the zipfile,
++						 * (>0 for sfx) */
++}               file_in_zip_read_info_s;
++
++
++/*
++ * unz_s contain internal information about the zipfile
++ */
++typedef struct
++{
++    FILE           *file;	/* io structore of the zipfile */
++    unz_global_info gi;		/* public global information */
++    uLong           byte_before_the_zipfile;	/* byte before the zipfile,
++						 * (>0 for sfx) */
++    uLong           num_file;	/* number of the current file in the zipfile */
++    uLong           pos_in_central_dir;	/* pos of the current file in the
++					 * central dir */
++    uLong           current_file_ok;	/* flag about the usability of the
++					 * current file */
++    uLong           central_pos;/* position of the beginning of the central
++				 * dir */
++
++    uLong           size_central_dir;	/* size of the central directory  */
++    uLong           offset_central_dir;	/* offset of start of central
++					 * directory with respect to the
++					 * starting disk number */
++
++    unz_file_info   cur_file_info;	/* public info about the current file
++					 * in zip */
++    unz_file_info_internal cur_file_info_internal;	/* private info about it */
++    file_in_zip_read_info_s *pfile_in_zip_read;	/* structure about the
++						 * current file if we are
++						 * decompressing it */
++}               unz_s;
++
++#endif
+--- snes9x-sdl-1.39/Makefile~compile
++++ snes9x-sdl-1.39/Makefile
+@@ -53,12 +53,12 @@
+ 
+ ifdef THREAD_SOUND
+ CPUDEFINES += -DUSE_THREADS
+-EXTRALIBS += -lpthread -L/usr/local/lib -lcygipc
++EXTRALIBS += -lpthread -lcygipc
+ endif
+ 
+ ifdef GLIDE
+ GLIDEOBJS = unix/glide.o
+-GLIDEDEFINES = -DUSE_GLIDE -I/usr/include/glide
++GLIDEDEFINES = -DUSE_GLIDE
+ GLIDELIBS = -lglide2x
+ GLIDEDEPENDS=use_glide
+ GLIDENO_DEPENDS=no_glide
+@@ -82,14 +82,12 @@
+ CC = gcc
+ NASM = nasm
+ 
+-INCLUDES=-I/usr/local/include
++INCLUDES=
+ 
+-OPTIMISE= -D_ZAURUS -Os -ffast-math -fstrict-aliasing -fomit-frame-pointer -mcpu=strongarm1100 -mtune=strongarm1100
++OPTIMISE= -D_ZAURUS -Os -ffast-math -fstrict-aliasing -fomit-frame-pointer
+ CCFLAGS = $(OPTIMISE) \
+--I/opt/Qtopia/include/SDL \
+ -I. \
+ -Iunzip \
+--Isdl \
+ -D__linux \
+ -DZLIB \
+ -DVAR_CYCLES \
+@@ -114,7 +112,7 @@
+ 
+ .SUFFIXES: .o .cpp .c .cc .h .m .i .S .asm .obj
+ 
+-LDLIBS = -L/opt/Qtopia/sharp/lib
++LDLIBS=
+ 
+ ifdef GLIDE
+ all: offsets gsnes9x
+@@ -146,7 +144,7 @@
+ 	$(RM) $(OPENGLNO_DEPENDS)
+ 
+ snes9x: $(OBJECTS) 
+-	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) $(EXTRALIBS) -L/opt/QtPalmtop/lib/ -lSDL -lSDLmain $(LDLIBS) -lqpe -lqte -lpthread
++	$(CC) $(INCLUDES) -o $@ $(OBJECTS) $(EXTRALIBS) $(LDLIBS) -lz -lpthread
+ 
+ gsnes9x: $(OBJECTS) unix/x11.o unix/glide.o
+ 	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) unix/x11.o unix/glide.o $(LDLIBS) $(GLIDELIBS) -lXext -lX11 -lXxf86dga -lXxf86vm $(EXTRALIBS) -lz -lm
+--- snes9x-sdl-1.39/snapshot.cpp~compile
++++ snes9x-sdl-1.39/snapshot.cpp
+@@ -671,7 +671,7 @@
+ 						  fields [i].type);
+     }
+ 
+-    uint8 *block = new uint8 [len];
++    uint8 *block = (uint8*) malloc(len);
+     uint8 *ptr = block;
+     uint16 word;
+     uint32 dword;
+@@ -739,7 +739,7 @@
+     }
+ 
+     FreezeBlock (stream, name, block, len);
+-    delete block;
++    free(block);
+ }
+ 
+ void FreezeBlock (STREAM stream, char *name, uint8 *block, int size)
+@@ -767,7 +767,7 @@
+ 						  fields [i].type);
+     }
+ 
+-    uint8 *block = new uint8 [len];
++    uint8 *block = (uint8*) malloc(len);
+     uint8 *ptr = block;
+     uint16 word;
+     uint32 dword;
+@@ -776,7 +776,7 @@
+ 
+     if ((result = UnfreezeBlock (stream, name, block, len)) != SUCCESS)
+     {
+-	delete block;
++	free(block);
+ 	return (result);
+     }
+ 
+@@ -841,7 +841,7 @@
+ 	}
+     }
+ 
+-    delete block;
++    free(block);
+     return (result);
+ }
+ 
+@@ -865,9 +865,9 @@
+ 
+     if (rem)
+     {
+-	char *junk = new char [rem];
++	char *junk = (char*) malloc(rem);
+ 	READ_STREAM (junk, rem, stream);
+-	delete junk;
++	free(junk);
+     }
+ 	
+     return (SUCCESS);

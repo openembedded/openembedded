@@ -1,0 +1,26 @@
+--- blueprobe-0.14/blueprobe.init.orig	2005-09-05 22:03:57 +0200
++++ blueprobe-0.14/blueprobe.init	2005-09-05 22:09:34 +0200
+@@ -47,6 +47,14 @@
+         PROTO=bcsp
+ 	PROBE=yes
+ 	;;
++    "HP iPAQ HX4700")
++	BLUETOOTH=yes
++	PORT=/dev/ttyS1
++	SPEED=921600
++	PROTO=texas
++	SCRIPT=/etc/bluetooth/TIInit_3.2.26.bts
++	PROBE=no
++	;;
+     *)
+ 	BLUETOOTH=no
+         ;;
+@@ -67,5 +75,8 @@
+     echo "BLUETOOTH_PORT=$PORT" >>/etc/sysconfig/bluetooth
+     echo "BLUETOOTH_SPEED=$SPEED" >>/etc/sysconfig/bluetooth
+     echo "BLUETOOTH_PROTOCOL=$PROTO" >>/etc/sysconfig/bluetooth
++    if [ "$SCRIPT" != "" ] && [ -f "$SCRIPT" ]; then
++      echo "BLUETOOTH_SCRIPT=$SCRIPT" >>/etc/sysconfig/bluetooth
++    fi
+   fi
+ fi

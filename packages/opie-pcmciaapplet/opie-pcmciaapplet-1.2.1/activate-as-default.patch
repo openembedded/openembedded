@@ -1,0 +1,42 @@
+Backported from CVS
+
+Index: noncore/applets/pcmcia/configdialogbase.ui
+===================================================================
+RCS file: /cvs/opie/noncore/applets/pcmcia/configdialogbase.ui,v
+retrieving revision 1.6
+diff -u -u -r1.6 configdialogbase.ui
+--- pcmcia/configdialogbase.ui  20 Jun 2005 12:46:33 -0000      1.6
++++ pcmcia/configdialogbase.ui  15 Nov 2005 21:37:22 -0000
+@@ -288,13 +288,13 @@
+             <item>
+                 <property>
+                     <name>text</name>
+-                    <string>suspend</string>
++                    <string>activate</string>
+                 </property>
+             </item>
+             <item>
+                 <property>
+                     <name>text</name>
+-                    <string>activate</string>
++                    <string>suspend</string>
+                 </property>
+             </item>
+             <item>
+@@ -319,13 +319,13 @@
+             <item>
+                 <property>
+                     <name>text</name>
+-                    <string>suspend</string>
++                    <string>activate</string>
+                 </property>
+             </item>
+             <item>
+                 <property>
+                     <name>text</name>
+-                    <string>activate</string>
++                    <string>suspend</string>
+                 </property>
+             </item>
+             <item>
+

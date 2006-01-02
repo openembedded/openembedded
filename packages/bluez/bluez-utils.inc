@@ -4,11 +4,11 @@ PRIORITY = "optional"
 DEPENDS = "bluez-libs-${PV} pcmcia-cs"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
-PR = "r6"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://base.patch;patch=1 \
 	file://blueboxes.patch;patch=1 \
+	file://hciattach_devlength.patch;patch=1 \
 	file://hcid.conf \
 	file://bluetooth.default \
 	file://bluetooth.conf "
@@ -27,6 +27,10 @@ inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults 23 19"
+
+do_compile_prepend() {
+	find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+}
 
 do_install_append() {
 	install -d ${D}${base_sbindir} ${D}${base_bindir}/
