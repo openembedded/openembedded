@@ -71,8 +71,12 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 
 # Uncomment this to select a distribution policy. See the conf directory
 # for distributions currently known to OpenEmbedded.
+# Although they no longer contain version number in the (file-)name
+# familiar-unstable and openzaurus-unstable are so called "versioned"
+# distros, i.e. they explicitely select specific versions of various
+# packages.
 # Stay away from unversioned distros unless you really know what you are doing
-# DISTRO = "familiar-0.8.3"
+# DISTRO = "familiar-unstable"
 
 # Uncomment this to select a particular kernel version if supported by 
 # your MACHINE setting. Currently only supported on Zaurus Clamshells.
