@@ -16,9 +16,8 @@ S = "${WORKDIR}/libgtkhtml2-${PV}"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-do_stage() {
+do_stage_prepend() {
 	mv src/libgtkhtml.pc src/libgtkhtml-2.0.pc || true
-    autotools_stage_all
 }
 
 do_compile() {

@@ -26,9 +26,5 @@ do_compile () {
 	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC}"
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 FILES_${PN} = "${libdir}/lib*.so*"
 FILES_${PN}-dev += "${bindir}"

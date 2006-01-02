@@ -22,10 +22,6 @@ do_configure () {
 	autotools_do_configure
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 do_install () {
 	autotools_do_install
 	# Make install doesn't properly install these

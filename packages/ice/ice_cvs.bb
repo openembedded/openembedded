@@ -11,7 +11,3 @@ SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ICE"
 S = "${WORKDIR}/ICE"
 
 inherit autotools pkgconfig 
-
-do_stage () {
-	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
-}

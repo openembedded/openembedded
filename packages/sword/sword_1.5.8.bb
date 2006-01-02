@@ -13,7 +13,3 @@ SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--without-clucene --with-curl"
-
-do_stage() {
-autotools_stage_all
-}

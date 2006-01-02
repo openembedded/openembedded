@@ -13,7 +13,3 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/gmp/gmp-${PV}.tar.bz2 \
 inherit autotools 
 
 acpaths = ""
-
-do_stage () {
-	autotools_stage_all
-}

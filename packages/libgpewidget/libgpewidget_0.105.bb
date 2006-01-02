@@ -10,8 +10,3 @@ SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 inherit pkgconfig autotools
 
 EXTRA_OECONF = "--enable-cairo"
-
-do_stage () {
-	autotools_stage_all
-}
-

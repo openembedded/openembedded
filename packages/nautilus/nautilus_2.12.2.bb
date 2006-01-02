@@ -13,7 +13,3 @@ PACKAGES += "libnautilus"
 
 FILES_${PN} = "/usr/bin/* /usr/libexec/* /usr/lib/bonobo/* /usr/share/* /etc/*"
 FILES_libnautilus = "/usr/lib/*.so*"
-
-do_stage() {
-autotools_stage_all
-}

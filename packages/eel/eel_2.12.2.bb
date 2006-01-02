@@ -9,8 +9,3 @@ SRC_URI += "file://configure.patch;patch=1"
 
 DEPENDS = "gnome-vfs gnome-menus libgnomeui gail"
 EXTRA_OECONF = "--disable-gtk-doc"
-
-
-do_stage() {
-autotools_stage_all
-}

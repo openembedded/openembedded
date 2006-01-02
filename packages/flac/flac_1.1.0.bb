@@ -32,7 +32,3 @@ do_configure () {
 	install -m 0644 ${WORKDIR}/xmms.m4 ${S}/m4/
 	autotools_do_configure
 }
-
-do_stage () {
-	autotools_stage_all
-}

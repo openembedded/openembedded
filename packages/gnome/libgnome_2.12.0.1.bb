@@ -8,7 +8,3 @@ inherit gnome
 DEPENDS = "gconf-native gnome-vfs libbonobo"
 
 EXTRA_OECONF = "--disable-gtk-doc"
-
-do_stage() {
-autotools_stage_all
-}

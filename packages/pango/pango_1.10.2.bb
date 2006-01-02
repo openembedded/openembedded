@@ -23,10 +23,6 @@ FILES_${PN} = "/etc ${bindir} ${libdir}/libpango*.so.*"
 
 LIBV = "1.4.0"
 
-do_stage () {
-autotools_stage_all
-}
-
 postinst_prologue() {
 if [ "x$D" != "x" ]; then
   exit 1

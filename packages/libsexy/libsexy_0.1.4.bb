@@ -9,9 +9,3 @@ DEPENDS = "gtk+ enchant libxml2"
 SRC_URI = "http://osiris.chipx86.com/projects/libsexy/releases/${P}.tar.gz"
 
 inherit autotools pkgconfig
-
-do_stage() {
-autotools_stage_all
-}
-
-

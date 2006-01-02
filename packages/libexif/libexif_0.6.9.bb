@@ -8,7 +8,3 @@ PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/libexif/libexif-${PV}.tar.gz"
 
 inherit autotools pkgconfig
-
-do_stage() {
-	autotools_stage_all
-}

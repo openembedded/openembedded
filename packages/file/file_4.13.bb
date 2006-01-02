@@ -13,7 +13,3 @@ inherit autotools
 do_configure_prepend() {
 	sed -i -e 's,$(top_builddir)/src/file,file,' ${S}/magic/Makefile.am
 }
-
-do_stage() {
-autotools_stage_all
-}
