@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for the Enlightenment Palmtop Environment (Codename: EpiCenter)"
 PACKAGES = "e e-libs e-base"
 
-FEED_URIS += "e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
+FEED_URIS += "e##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.2/feed/e"
 
 ALLOW_EMPTY = 1
 
