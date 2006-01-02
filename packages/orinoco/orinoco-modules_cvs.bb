@@ -15,7 +15,7 @@ EXTRA_OEMAKE = 'KERNEL_SRC="${KERNEL_STAGING_DIR}"'
 # seems to cause problems on arm
 DEFAULT_PREFERENCE_arm = "-1"
 
-SRC_URI = "cvs://anonymous@cvs.savannah.gnu.org/cvsroot/orinoco;module=orinoco;method=pserver \
+SRC_URI = "cvs://anonymous@cvs.sv.gnu.org/cvsroot/orinoco;module=orinoco;method=pserver \
            file://list-move.patch;patch=1"
 S = "${WORKDIR}/orinoco"
 
