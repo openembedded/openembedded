@@ -10,5 +10,5 @@ inherit pkgconfig gpe autotools
 
 
 do_stage () {
-autotootls_stage_all
+autotools_stage_all
 }
