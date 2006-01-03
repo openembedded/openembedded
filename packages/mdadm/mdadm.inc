@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/raid/mdadm/${PN}-${PV}.tar.bz2"
 
 inherit autotools
 
+INHIBIT_AUTO_STAGE = "1"
 
 do_install() {
 	export STRIP=""
