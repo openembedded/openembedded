@@ -19,3 +19,7 @@ do_configure_prepend () {
 #	damn picky automake...
 	touch NEWS AUTHORS ChangeLog
 }
+
+do_stage() {
+	autotools_stage_all
+}

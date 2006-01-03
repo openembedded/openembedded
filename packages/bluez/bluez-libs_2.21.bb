@@ -10,3 +10,7 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-libs-${PV}.tar.gz"
 inherit autotools pkgconfig
 
 HEADERS = "bluetooth.h bnep.h cmtp.h hci.h hci_lib.h hidp.h l2cap.h rfcomm.h sco.h sdp.h sdp_lib.h"
+
+do_stage() {
+	autotools_stage_all
+}

@@ -13,3 +13,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
 	  file://syms.patch;patch=1"
 
 inherit autotools binconfig
+
+do_stage () {
+	autotools_stage_all
+}

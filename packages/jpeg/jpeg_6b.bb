@@ -20,3 +20,7 @@ EXTRA_OECONF="--enable-static --enable-shared"
 EXTRA_OEMAKE='"LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool"'
 
 CFLAGS_append = " -D_REENTRANT"
+
+do_stage() {
+	autotools_stage_all
+}

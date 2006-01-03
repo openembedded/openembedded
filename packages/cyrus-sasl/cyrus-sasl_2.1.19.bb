@@ -32,6 +32,10 @@ do_compile_prepend () {
 	cd ..
 }
 
+do_stage () {
+	autotools_stage_all
+}
+
 pkg_postinst () {
         grep cyrus /etc/passwd || adduser --disabled-password --home=/var/spool/mail --ingroup mail -g "Cyrus sasl" cyrus
 	echo "cyrus" | saslpasswd2 -p -c cyrus

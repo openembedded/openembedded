@@ -17,3 +17,7 @@ EXTRA_OECONF = "--enable-shared"
 #	gnu-configize
 #	oe_runconf
 #}
+
+do_stage() {
+	autotools_stage_all
+}

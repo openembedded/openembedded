@@ -13,3 +13,7 @@ includedir += "/sysfs"
 
 PACKAGES_prepend = "libsysfs "
 FILES_libsysfs = "${libdir}/*.so.1.0.3"
+
+do_stage () {
+	autotools_stage_all
+}

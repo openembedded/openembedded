@@ -16,3 +16,7 @@ FULL_OPTIMIZATION_thumb = "-O0"
 
 EXTRA_OECONF = "--with-ogg-libraries=${STAGING_LIBDIR} \
 	        --with-ogg-includes=${STAGING_INCDIR}"
+
+do_stage () {
+	autotools_stage_all
+}

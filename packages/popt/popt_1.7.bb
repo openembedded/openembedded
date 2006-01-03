@@ -9,3 +9,7 @@ SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
 	   file://intl.patch;patch=1"
 
 inherit autotools 
+
+do_stage () {
+	autotools_stage_all
+}
