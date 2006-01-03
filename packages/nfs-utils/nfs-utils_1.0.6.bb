@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "console/networking"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://acinclude-lossage.patch;patch=1 \
@@ -34,6 +34,8 @@ do_compile() {
 	cat ${WORKDIR}/forgotten-defines >> ${S}/support/include/config.h
 	oe_runmake 'BUILD=1'
 }
+
+INHIBIT_AUTO_STAGE = "1"
 
 do_install() {
 	install -d ${D}${sysconfdir}/init.d
