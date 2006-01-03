@@ -1,3 +1,4 @@
+PR = "r1"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
@@ -13,6 +14,5 @@ inherit autotools
 EXTRA_OECONF = "-enable-speed"
 
 do_stage() {
-	oe_libinstall -so libid3tag ${STAGING_LIBDIR}
-        install -m 0644 id3tag.h ${STAGING_INCDIR}
+	autotools_stage_all
 }
