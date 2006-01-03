@@ -1,4 +1,3 @@
-PR = "r1"
 SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
@@ -15,5 +14,8 @@ PACKAGES_prepend = "libsysfs "
 FILES_libsysfs = "${libdir}/*.so.1.0.3"
 
 do_stage () {
-	autotools_stage_all
+	oe_libinstall -a -so -C lib libsysfs ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/sysfs
+	install -m 0644 ${S}/include/dlist.h ${STAGING_INCDIR}/sysfs
+	install -m 0644 ${S}/include/libsysfs.h ${STAGING_INCDIR}/sysfs
 }
