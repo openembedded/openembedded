@@ -7,7 +7,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20051201"
+CVSDATE = "20060103"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://dreamboxupdate.com/cvs;module=enigma2;method=ext \
@@ -15,8 +15,7 @@ SRC_URI = "cvs://dreamboxupdate.com/cvs;module=enigma2;method=ext \
 
 S = "${WORKDIR}/enigma2"
 
-FILES_${PN} += " ${datadir}/tuxbox ${datadir}/fonts ${libdir}/tuxbox"
-FILES_${PN} += "/home/root/userbouquet.favourites.tv /home/root/bouquets.tv"
+FILES_${PN} += "${datadir}/fonts"
 
 inherit autotools pkgconfig
 
@@ -26,13 +25,5 @@ sbindir = "/usr/sbin"
 EXTRA_OECONF = "--enable-maintainer-mode --with-target=native --with-libsdl=no"
 
 do_install_append() {
-	install -d ${D}/usr/share/fonts
-#	install -m 0755 ${WORKDIR}/font.ttf ${D}/usr/share/fonts/
 	install -m 0755 ${WORKDIR}/enigma2.sh ${D}/usr/bin/
-	install -d ${D}/etc/enigma2
-	install -d ${D}/home/root
-
-	# TODO: move them to /etc/enigma2
-	install -m 0755 ${S}/userbouquet.favourites.tv ${D}/home/root/
-	install -m 0755 ${S}/bouquets.tv ${D}/home/root/
 }
