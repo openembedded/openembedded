@@ -1,3 +1,4 @@
+PR = "r1"
 SECTION = "libs"
 DEPENDS = "libogg"
 DESCRIPTION = "Ogg Vorbis is a high-quality lossy audio codec \
@@ -17,14 +18,5 @@ EXTRA_OECONF = "--with-ogg-libraries=${STAGING_LIBDIR} \
 	        --with-ogg-includes=${STAGING_INCDIR}"
 
 do_stage () {
-	oe_libinstall -a -so -C lib libvorbis ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C lib libvorbisfile ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C lib libvorbisenc ${STAGING_LIBDIR}
-
-	install -d ${STAGING_INCDIR}/vorbis
-	install -m 0644 include/vorbis/vorbisenc.h \
-			include/vorbis/vorbisfile.h \
-			include/vorbis/codec.h ${STAGING_INCDIR}/vorbis/
-	install -d ${STAGING_DATADIR}/aclocal
-	install -m 0644 vorbis.m4 ${STAGING_DATADIR}/aclocal/
+	autotools_stage_all
 }
