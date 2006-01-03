@@ -1,0 +1,66 @@
+--- gpe-autostarter-0.11/autostarter.c.orig	2005-08-29 19:39:10 +0200
++++ gpe-autostarter-0.11/autostarter.c	2005-08-29 19:42:01 +0200
+@@ -50,7 +50,11 @@
+   if (type != DBUS_TYPE_STRING)
+     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   subsys = dbus_message_iter_get_string (&iter);
++#else
++  dbus_message_iter_get_basic (&iter, &subsys);
++#endif
+ 
+   if (!strcmp (subsys, "net"))
+     return handle_net_message (message, &iter);
+@@ -72,7 +72,11 @@
+     return autostarter_handle_dbus_request (connection, message);
+   
+   if (dbus_message_is_signal (message,
++#ifndef DBUS_INTERFACE_LOCAL
+                               DBUS_INTERFACE_ORG_FREEDESKTOP_LOCAL,
++#else
++                              DBUS_INTERFACE_LOCAL,
++#endif
+                               "Disconnected"))
+     exit (0);
+   
+--- gpe-autostarter-0.11/bluetooth.c.orig	2005-08-29 19:36:33 +0200
++++ gpe-autostarter-0.11/bluetooth.c	2005-08-29 19:41:43 +0200
+@@ -40,7 +40,11 @@
+   if (type != DBUS_TYPE_STRING)
+     return;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   action = dbus_message_iter_get_string (iter);
++#else
++  dbus_message_iter_get_basic (iter, &action);
++#endif
+ 
+   if (! strcmp (action, "register") || ! strcmp (action, "add"))
+     {
+--- gpe-autostarter-0.11/net.c.orig	2005-08-29 19:36:29 +0200
++++ gpe-autostarter-0.11/net.c	2005-08-29 19:41:29 +0200
+@@ -97,7 +97,11 @@
+   if (type != DBUS_TYPE_STRING)
+     return;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   action = dbus_message_iter_get_string (iter);
++#else
++  dbus_message_iter_get_basic (iter, &action);
++#endif
+ 
+   if (! dbus_message_iter_next (iter))
+     return;
+@@ -106,7 +106,11 @@
+   if (type != DBUS_TYPE_STRING)
+     return;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   interface = dbus_message_iter_get_string (iter);
++#else
++  dbus_message_iter_get_basic (iter, &interface);
++#endif
+ 
+   if (! strcmp (action, "register") || ! strcmp (action, "add"))
+     {
