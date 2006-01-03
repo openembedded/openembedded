@@ -10,3 +10,7 @@ do_install() {
 	install -d ${D}${mandir}
 	autotools_do_install
 }
+
+do_stage() {
+	:
+}

@@ -16,6 +16,9 @@ S = "${WORKDIR}/kernel26"
 
 inherit kernel
 
+FILES_kernel-image_ipaq-pxa270 = ""
+ALLOW_EMPTY_ipaq_pxa270 = 1
+
 K_MAJOR = "2"
 K_MINOR = "6"
 K_MICRO = "13"
