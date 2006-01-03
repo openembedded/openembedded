@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -23,11 +23,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/pxa_ohci_fixes-r0.patch;patch=1 \
            ${RPSRC}/spitz_ohci-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r5.patch;patch=1 \
+           ${RPSRC}/scoop_cpr_fix-r1.patch;patch=1 \
+           ${RPSRC}/pxa2xx_release-r0.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r3.patch;patch=1 \
-           ${RPSRC}/led_core-r9.patch;patch=1 \
-           ${RPSRC}/led_triggers-r7.patch;patch=1 \
+           ${RPSRC}/led_core-r10.patch;patch=1 \
+           ${RPSRC}/led_triggers-r8.patch;patch=1 \
            ${RPSRC}/led_trig_timer-r3.patch;patch=1 \
            ${RPSRC}/led_trig_sharpsl_pm-r2.patch;patch=1 \
            ${RPSRC}/led_zaurus-r7.patch;patch=1 \
@@ -60,7 +62,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
-           ${RPSRC}/usb_add_epalloc-r0.patch;patch=1 \
+           ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
+           ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
            ${RPSRC}/alsa/alsa-soc-0.9.patch;patch=1 \
            ${RPSRC}/alsa/alsa-soc-0.9-0.10rc1.patch;patch=1 \
            ${RPSRC}/alsa_soc_rpupdate7-r2.patch;patch=1 \
