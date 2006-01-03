@@ -36,7 +36,14 @@ update-alternatives --remove ipkg ${bindir}/ipkg-cl
 }
 
 do_stage() {
-	autotools_stage_all
+	oe_libinstall -so libipkg ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/replace/
+	install -m 0644 replace/replace.h ${STAGING_INCDIR}/replace/
+	install -d ${STAGING_INCDIR}/libipkg/
+	for f in *.h
+	do
+		install -m 0644 $f ${STAGING_INCDIR}/libipkg/
+	done
 }
 
 #
