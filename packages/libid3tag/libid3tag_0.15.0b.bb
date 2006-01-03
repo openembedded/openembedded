@@ -12,7 +12,3 @@ S = "${WORKDIR}/libid3tag-${PV}"
 inherit autotools 
 
 EXTRA_OECONF = "-enable-speed"
-
-do_stage() {
-	autotools_stage_all
-}

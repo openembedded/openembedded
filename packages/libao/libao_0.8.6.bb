@@ -13,8 +13,4 @@ EXTRA_OECONF = "--disable-esd --disable-esdtest \
 		--disable-alsa --disable-alsa09 \
 		--disable-arts --disable-nas"
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/ao/plugins-2/*.so"
