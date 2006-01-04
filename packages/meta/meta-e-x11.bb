@@ -3,8 +3,8 @@ PACKAGES = "task-e-x11"
 PROVIDES = "task-e-x11"
 PR = "r6"
 
-FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
-              e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
+FEED_URIS += "x11##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.2/feed/x11 \
+              e##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.2/feed/e"
 
 ALLOW_EMPTY = 1
 
