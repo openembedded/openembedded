@@ -8,7 +8,7 @@ PR_CONFIG = "0"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r1.${PR_CONFIG}"
+PR = "r2.${PR_CONFIG}"
 
 include nas100d-kernel.inc
 
@@ -16,7 +16,7 @@ include nas100d-kernel.inc
 N1K_PATCHES = "\
 	file://00-memory-h-page-shift.patch;patch=1 \
 	file://10-mtdpart-redboot-fis-byteswap.patch;patch=1 \
-	file://19-jffs2-force-be.patch;patch=1 \
+	file://15-jffs2-endian-config.patch;patch=1 \
 	file://40-rtc-class.patch;patch=1 \
 	file://50-nas100d-arch.patch;patch=1 \
 	file://60-nas100d-ide.patch;patch=1 \
