@@ -1,0 +1,285 @@
+--- linux-2.6.15/arch/arm/mach-ixp4xx/common.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-ixp4xx/common.c	1970-01-01 00:00:00.000000000 +0000
+@@ -239,36 +239,165 @@ void __init ixp4xx_init_irq(void)
+  * IXP4xx timer tick
+  * We use OS timer1 on the CPU for the timer tick and the timestamp 
+  * counter as a source of real clock ticks to account for missed jiffies.
++ *
++ * 'CLOCK_TICK_RATE' is the nominal number of internal ticks per second,
++ * this is significantly greater than the actual number on any ixp4xx
++ * board.  Neither this nor 'LATCH' are required by this code because
++ * the only requirement is to generate HZ timer_tick calls per second.
+  *************************************************************************/
++#if TICK_NSEC * HZ != 1000000000
++	/* This will cause the jiffies to drift unnecessarily. */
++#	error CLOCK_TICK_RATE should be a multiple of HZ for this code
++#endif
++
++/* These are the control registers for the interrupt handler, they must
++ * only be read and written by the interrupt handler and by the init
++ * method (which sets them to 0).
++ */
++static volatile u32 last_timer_time;
++static volatile int accumulated_error;
++
++/* Most ixp4xx boards have 66.6666MHz crystals, so default to this, reset
++ * this from the board level code if required.  The following variables
++ * must be *written* only by set_board_tick_rate
++ */
++static u32 board_tick_rate;
++static u32 board_tick_per_1000; /* board_tick_rate/1000 */
++static u32 timer_count;
++
++/* The following symbol may be written to change the current tick rate,
++ * it is read by the interrupt handler and used to reload the timer.
++ * The 'real' value (the one in use) is 'board_tick_rate' above.
++ * NOTE: this can be tweaked to match the actual crystal on a particular
++ * machine.
++ */
++volatile u32 ixp4xx_board_tick_rate = 66666600;
++EXPORT_SYMBOL(ixp4xx_board_tick_rate);
++
++/* The set API may run asynchronously in the presence of interrupts,
++ * everything it does it is both atomic and complete (notice that it
++ * doesn't change any of the 'volatile' values).  The mathematics in
++ * here require the following values.  Changing the board tick rate
++ * implies an unknown error in the current timestamp tick count.
++ */
++#if IXP4XX_OST_RELOAD_MASK != 3 || IXP4XX_OST_ENABLE != 1
++#	error unexpected value for timer reload mask
++#endif
++static void set_board_tick_rate(u32 rate) {
++	u32 reload;
++
++	/* Store the two effectively informational rate values, the
++	 * error calculation is (rate - count*HZ) (above), and rate
++	 * is changed first, this can cause a temporary error which
++	 * will be corrected on the next interrupt.
++	 */
++	board_tick_rate = rate;
++	board_tick_per_1000 = (rate+500)/1000;
++
++	/* Calculate the correct value to load into the timer countdown
++	 * register, the low two bits must be b01 (to enable the timer).
++	 * Select the top bits to be as close to the desired value as
++	 * possible.
++	 *
++	 * First find the best value, regardless of the low two bits -
++	 * this is the value used in the interrupt calculation even though
++	 * it cannot necessarily be set into the register.
++	 */
++	timer_count = (rate + (HZ/2))/HZ;
++
++	/* Now the timer_ticks are being generated at this rate, calculate
++	 * an appropriate value for the register.  This stores a 30 bit
++	 * value which gives a period of 4*x+1, we want:
++	 *
++	 *   4*x+1 = board_tick_rate/HZ
++	 *
++	 * This needs to be rounded to the closest 4*HZ value:
++	 * 
++	 *   x = ((board_tick_rate-HZ) + (4*HZ)/2) / 4*HZ
++	 *   x = (board_tick_rate+HZ) / (4*HZ);
++	 */
++	reload = (board_tick_rate + HZ) / HZ;
++	reload = (reload & ~IXP4XX_OST_RELOAD_MASK) | IXP4XX_OST_ENABLE;
++	*IXP4XX_OSRT1 = reload;
+ 
+-static unsigned volatile last_jiffy_time;
++	/* If the clock is drifing, look in syslog: */
++	printk(KERN_INFO "IXP4xx: FREQ=%d COUNT=%d\n", rate, reload);
++}
+ 
+-#define CLOCK_TICKS_PER_USEC	((CLOCK_TICK_RATE + USEC_PER_SEC/2) / USEC_PER_SEC)
++/* This returns the time in timer ticks since the 'last_timer_time'
++ * recorded above.  Use this to avoid arithmetic errors because of
++ * the overflow when the timer wraps.
++ */
++static inline u32 ixp4xx_timer_delta(void)
++{
++	return *IXP4XX_OSTS - last_timer_time;
++}
+ 
+ /* IRQs are disabled before entering here from do_gettimeofday() */
+ static unsigned long ixp4xx_gettimeoffset(void)
+ {
+-	u32 elapsed;
+-
+-	elapsed = *IXP4XX_OSTS - last_jiffy_time;
++	/* Return the offset of the current time from the last time
++	 * timer tick in microseconds.  This is only used for the
++	 * gettimeofday call.
++	 *
++	 * The result of this API is at most about 20000 (for a 50Hz
++	 * HZ - 20000 uS/tick), the input delta is at most about
++	 * 1.3M - 21 bits.
++	 */
++	u32 delta = ixp4xx_timer_delta(); /* About 21 bits max */
++	/* return delta * 1000000 / board_tick_rate; */
++	return (delta * 1000 + board_tick_per_1000/2) / board_tick_per_1000;
++}
+ 
+-	return elapsed / CLOCK_TICKS_PER_USEC;
++/* This is the correct adjustment to the counter to compensate for an
++ * error iff timer_count-1 <= exact_count <= timer_count+1
++ */
++static inline int adjustment(int error) {
++	if (error >= HZ)
++		return 1;
++	else if (error <= -HZ)
++		return -1;
++	return 0;
+ }
+ 
+ static irqreturn_t ixp4xx_timer_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ {
++	u32 rate;
++	u32 count;
++	int error;
++
+ 	write_seqlock(&xtime_lock);
+ 
+ 	/* Clear Pending Interrupt by writing '1' to it */
+ 	*IXP4XX_OSST = IXP4XX_OSST_TIMER_1_PEND;
+ 
++	/* If the board tick rate has been changed update the cached
++	 * value.
++	 */
++	if (ixp4xx_board_tick_rate != board_tick_rate) {
++		set_board_tick_rate(ixp4xx_board_tick_rate);
++		accumulated_error = 0;
++	}
++
+ 	/*
+ 	 * Catch up with the real idea of time
++	 *
++	 * board_tick_rate: actual ixp4xx ticks/second, read-only
++	 * accumulated_error: aggregate error/tick * HZ, read/write
++	 * timer_count: best ixp4xx ticks per timer_tick, read-only
+ 	 */
+-	while ((*IXP4XX_OSTS - last_jiffy_time) > LATCH) {
++	rate = board_tick_rate;
++	error = accumulated_error;
++	count = timer_count;
++	do {
++		u32 adjusted_count = count + adjustment(error);
++		if (ixp4xx_timer_delta() < adjusted_count)
++			break;
+ 		timer_tick(regs);
+-		last_jiffy_time += LATCH;
+-	}
++		last_timer_time += adjusted_count;
++		error += rate - adjusted_count*HZ;
++	} while (1);
++	accumulated_error = error;
+ 
+ 	write_sequnlock(&xtime_lock);
+ 
+@@ -281,17 +410,30 @@ static struct irqaction ixp4xx_timer_irq
+ 	.handler	= ixp4xx_timer_interrupt,
+ };
+ 
++u32 ixp4xx_get_board_tick_rate(void) {
++	return board_tick_rate;
++}
++
++EXPORT_SYMBOL(ixp4xx_get_board_tick_rate);
++
++void ixp4xx_set_board_tick_rate(u32 rate) {
++	ixp4xx_board_tick_rate = rate;
++}
++
++EXPORT_SYMBOL(ixp4xx_set_board_tick_rate);
++
+ static void __init ixp4xx_timer_init(void)
+ {
+ 	/* Clear Pending Interrupt by writing '1' to it */
+ 	*IXP4XX_OSST = IXP4XX_OSST_TIMER_1_PEND;
+ 
+ 	/* Setup the Timer counter value */
+-	*IXP4XX_OSRT1 = (LATCH & ~IXP4XX_OST_RELOAD_MASK) | IXP4XX_OST_ENABLE;
++	set_board_tick_rate(ixp4xx_board_tick_rate);
+ 
+ 	/* Reset time-stamp counter */
+ 	*IXP4XX_OSTS = 0;
+-	last_jiffy_time = 0;
++	last_timer_time = 0;
++	accumulated_error = 0;
+ 
+ 	/* Connect the interrupt handler and enable the interrupt */
+ 	setup_irq(IRQ_IXP4XX_TIMER1, &ixp4xx_timer_irq);
+@@ -337,4 +479,3 @@ void __init ixp4xx_sys_init(void)
+ 				ARRAY_SIZE(ixp46x_devices));
+ 	}
+ }
+-
+--- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
+@@ -119,6 +119,11 @@ static void nslu2_power_off(void)
+ 
+ static void __init nslu2_init(void)
+ {
++	/* The NSLU2 has a 33MHz crystal on board - 1.01% different
++	 * from the typical value.
++	 */
++	ixp4xx_set_board_tick_rate(66000000);
++
+ 	ixp4xx_sys_init();
+ 
+ 	pm_power_off = nslu2_power_off;
+--- linux-2.6.15/drivers/input/misc/nslu2spkr.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/input/misc/nslu2spkr.c	1970-01-01 00:00:00.000000000 +0000
+@@ -51,7 +51,7 @@ static int nslu2_spkr_event(struct input
+ 	}
+ 
+ 	if (value > 20 && value < 32767)
+-		count = (NSLU2_FREQ / (value*4)) - 1;
++		count = (ixp4xx_get_board_tick_rate() / (value*4)) - 1;
+ 
+ 	spin_lock_irqsave(&beep_lock, flags);
+ 
+--- linux-2.6.15/include/asm-arm/arch-ixp4xx/nslu2.h	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/asm-arm/arch-ixp4xx/nslu2.h	1970-01-01 00:00:00.000000000 +0000
+@@ -38,11 +38,6 @@
+ #define NSLU2_PCI_INTD_PIN	8
+ 
+ 
+-/* NSLU2 Timer */
+-#define NSLU2_FREQ 66000000
+-#define NSLU2_CLOCK_TICK_RATE (((NSLU2_FREQ / HZ & ~IXP4XX_OST_RELOAD_MASK) + 1) * HZ)
+-#define NSLU2_CLOCK_TICKS_PER_USEC ((NSLU2_CLOCK_TICK_RATE + USEC_PER_SEC/2) / USEC_PER_SEC)
+-
+ /* GPIO */
+ 
+ #define NSLU2_GPIO0		0
+--- linux-2.6.15/include/asm-arm/arch-ixp4xx/timex.h	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/asm-arm/arch-ixp4xx/timex.h	1970-01-01 00:00:00.000000000 +0000
+@@ -6,10 +6,23 @@
+ #include <asm/hardware.h>
+ 
+ /*
+- * We use IXP425 General purpose timer for our timer needs, it runs at 
+- * 66.66... MHz. We do a convulted calculation of CLOCK_TICK_RATE b/c the
+- * timer register ignores the bottom 2 bits of the LATCH value.
++ * In linux/timex.h 'LATCH' is defined as CLOCK_TICK_RATE/HZ and
++ * is the number of internal counts per timer interrupt.  Thus
++ * CLOCK_TICK_RATE is LATCH*HZ.
++ *
++ * The actual values of these numbers do not matter, because they
++ * are only used to calculate ACTHZ (rate/latch as a 24.8 fixed
++ * point number), so the value here gives a LATCH of 1 and pretty
++ * much guarantees to flush out any off-by-one errors.
++ *
++ * ACTHZ is equal to HZ, because CLOCK_TICK_RATE is a multiple of
++ * HZ, this is checked in the ixp4xx/common.c code.
+  */
+-#define FREQ 66666666
+-#define CLOCK_TICK_RATE (((FREQ / HZ & ~IXP4XX_OST_RELOAD_MASK) + 1) * HZ)
++#define CLOCK_TICK_RATE HZ
+ 
++/* The following allow the exact board tick rate to be set and
++ * discovered.  The value should be exactly twice the frequency
++ * (in Hz) of the onboard crystal.
++ */
++extern u32 ixp4xx_get_board_tick_rate(void);
++extern void ixp4xx_set_board_tick_rate(u32 new_rate);
