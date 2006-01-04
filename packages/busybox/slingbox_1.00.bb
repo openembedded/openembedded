@@ -4,10 +4,11 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r6"
+PR = "r8"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
+           file://lazy_umount.patch;patch=1 \
            file://slingbox.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
