@@ -3,7 +3,7 @@ inherit gpe autotools
 
 PR = "r0"
 
-DEPENDS = "libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
+DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
 SECTION = "gpe"
 RDEPENDS = "gpe-icons"
 DESCRIPTION = "GPE contacts manager"
