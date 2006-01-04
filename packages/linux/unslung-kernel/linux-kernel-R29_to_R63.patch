@@ -793,7 +793,7 @@
  	if (ss != NULL) {
  		/* Existing device -- re-connect */
  		US_DEBUGP("Found existing GUID " GUID_FORMAT "\n",
-@@ -747,95 +735,6 @@
+@@ -747,93 +735,6 @@
  				USB_ENDPOINT_NUMBER_MASK;
  		ss->ep_int = ep_int;
  
@@ -837,7 +837,6 @@
 -		ss->htmplt.removable = 1;
 -	}
 -#endif
--#if 0
 -                /* restrict device on certain port */
 -        if ( ss->htmplt.removable && (USB_DEVPATH_1 ==  dev->devpath[0]))
 -                if ( ss->htmplt.removable ^ (USB_DEVPATH_2 == dev->devpath[0]) )
@@ -854,8 +853,7 @@
 -			free_us_data( pre_ss, ss );
 -			return NULL;
 -                }
--#endif
--                if (ss->htmplt.removable && (USB_DEVPATH_2 == dev->devpath[0])){
+-                if (ss->htmplt.removable){
 -			printk("is removable disk \n");
 -			*IXP425_GPIO_GPOUTR &= 0xfffb;
 -			create_proc_read_entry("usb_conn",
@@ -6397,3 +6395,47 @@
  	struct inode *i_fat_inode;	/* struct inode of this one */
  	struct list_head i_fat_hash;	/* hash by i_location */
  };
+--- R29/drivers/scsi/scsi_scan.c	2005-12-13 02:15:15.000000000 +1030
++++ R63/drivers/scsi/scsi_scan.c	2005-05-31 15:03:23.000000000 +0930
+@@ -703,7 +703,7 @@
+         printk("*** %d\n", SDpnt->host->hostt->port);
+         /* restrict device on certain port grant */
+ 	SDpnt->host->hostt->removable = SDpnt->removable;
+-
++#if 0
+         if ( SDpnt->removable && (USB_DEVPATH_1 == SDpnt->host->hostt->port) )
+         {
+ 		create_proc_read_entry("usb_err",
+@@ -718,8 +718,9 @@
+ 		shpnt->porttype = 1;
+ 		return 0;
+         }
++#endif	
+ 		// add by super
+-        if (SDpnt->removable){
++        /*if (SDpnt->removable){
+ 		printk("is removable disk \n");
+ 		*IXP425_GPIO_GPOUTR &= 0xfffb;
+ 		create_proc_read_entry("usb_conn",
+@@ -747,7 +748,7 @@
+ 					NULL
+ 			);
+ 		}
+-	}
++	}*/
+ 		//end
+ 	/*
+ 	 * Check the peripheral qualifier field - this tells us whether LUNS
+--- R29/drivers/scsi/sd.c	2005-12-13 02:15:53.000000000 +1030
++++ R63/drivers/scsi/sd.c	2005-07-02 16:31:14.000000000 +0930
+@@ -1393,7 +1393,9 @@
+ 		 * commands if they know what they're doing and they ask for it
+ 		 * explicitly via the SHpnt->max_sectors API.
+ 		 */
+-		sd_max_sectors[i] = MAX_SEGMENTS*8;
++		//super
++		sd_max_sectors[i] = 8*8;
++	//	sd_max_sectors[i] = MAX_SEGMENTS*8;
+ 	}
+ 
+ 	for (i = 0; i < N_USED_SD_MAJORS; i++) {
