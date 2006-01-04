@@ -1,0 +1,11 @@
+
+Welcome to Unslung @v@
+
+   -------- NOTE: RUNNING FROM INTERNAL FLASH  --------
+
+This system is currently running from the internal flash memory,
+it has NOT booted up into "unslung" mode from an external drive.
+
+In this mode, very few services are running, and available disk
+space is extremely limited.  This mode is normally only used
+for initial installation, and system maintenance and recovery.

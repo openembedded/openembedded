@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if ( [ -f /unslung/rc.unslung-start ] && . /unslung/rc.unslung-start ) ; then return 0 ; fi
+if ( [ -f /unslung/rc.optware-start ] && . /unslung/rc.optware-start ) ; then return 0 ; fi
 
 # Start all init scripts in /opt/etc/init.d
 # executing them in numerical order.

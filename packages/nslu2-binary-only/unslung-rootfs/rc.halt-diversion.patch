@@ -5,7 +5,7 @@
 +
 +if ( [ -r /unslung/rc.halt ] && . /unslung/rc.halt ) ; then return 0 ; fi
 +
-+/bin/echo  "Stopping UNSLUNG Packages:"; ( . /etc/rc.d/rc.unslung-stop )
++/bin/echo  "Stopping Optware Packages:"; ( . /etc/rc.d/rc.optware-stop )
 +
  /bin/killall -2 upnpd &>/dev/null
  /bin/killall nmbd &>/dev/null

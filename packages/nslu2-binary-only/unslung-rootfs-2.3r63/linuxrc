@@ -15,8 +15,8 @@ cnt=20
 while [ $cnt -gt 0 ] ; do
   echo -ne "\r$cnt "
   sleep 1
-  [ -f /proc/hdd_sdb ] && cnt=0
-  [ -f /proc/hdd_sda ] && cnt=0
+  [ -e /.sda1root -a -f /proc/hdd_sda ] && cnt=0
+  [ -e /.sdb1root -a -f /proc/hdd_sdb ] && cnt=0
   cnt=`expr $cnt - 1`
 done
 echo
@@ -25,10 +25,10 @@ sleep 5
 
 mounted=
 
-for prefroot in sdb1 sda1 ; do
-  if [ -z "$mounted" ] ; then
+for prefroot in sda1 sdb1 ; do
+  if [ -z "$mounted" -a -e /.${prefroot}root ] ; then
     if /bin/mount -rt ext3 /dev/$prefroot /mnt ; then
-      if [ -x /mnt/bin/init ] ; then
+      if [ -e /mnt/.${prefroot}root -a -x /mnt/bin/init ] ; then
         /bin/echo "Root filesystem will be mounted from /dev/$prefroot ..."
         mounted=/mnt
       else

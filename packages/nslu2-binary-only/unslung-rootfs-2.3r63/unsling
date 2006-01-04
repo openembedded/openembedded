@@ -1,23 +1,30 @@
 #!/bin/sh
 
-usage="Usage: $0 disk1|disk2"
+usage="Usage: $0 [-nopw] disk1|disk2"
+
+nopw=0
+if [ $# -gt 1 ] ; then
+    if [ "$1" = "-nopw" ] ; then
+	nopw=1
+	shift
+    fi
+fi
 
 # Set target disk
-
-if [ $# -gt 1 ] ; then
-    echo $usage
-    exit 1
-fi
 
 if [ $# -eq 1 ] ; then
     if [ "$1" = "disk1" ] ; then
 	mtch="/dev/sdb1 /share/hdd/data ext3 rw 0 0"
 	targ=/share/hdd/data
-	flag=.sda1root
+	targconf=/share/hdd/conf
+	flag=.sdb1root
+	htmlinfo="disk1, /dev/sdb1"
     elif [ "$1" = "disk2" ] ; then
 	mtch="/dev/sda1 /share/flash/data ext3 rw 0 0"
 	targ=/share/flash/data
-	flag=.sdb1root
+	targconf=/share/flash/conf
+	flag=.sda1root
+	htmlinfo="disk2, /dev/sda1"
     else
 	echo $usage
 	exit 1
@@ -27,13 +34,57 @@ else
     exit 1
 fi
 
+# Check that we can unsling at all!  An unsling operation creates a new
+# rootfs, but it also marks the flash rootfs (with a flag file such as
+# ".sda1root") so that subsequent boots do not create the "var.state"
+# and "dev.state" mounts.  Without those mounts, though, an attempt to
+# unsling will write a new rootfs on the target with an empty /dev
+# directory, which doesnt' work really well.  So this check is all about
+# making sure that we are in a state in which we are capable of
+# performing the unsling operation.
+
+echo "Checking if able to unsling..."
+echo
+m1="/dev/root /dev.state jffs2 rw 0 0"
+m2="/dev/root /var.state jffs2 rw 0 0"
+if ! grep "$m1" /proc/mounts >/dev/null 2>&1 || ! grep "$m2" /proc/mounts >/dev/null 2>&1 ; then
+    echo "Error: This system is unable to properly unsling because certain"
+    echo "required mounts (dev.state and/or var.state) are not available."
+    echo "This is most probably because you have already unslung this system."
+    echo
+
+    if   [ -f /.sda1root ] ; then
+	rm -f /.sda1root
+    elif [ -f /.sdb1root ] ; then
+	rm -f /.sdb1root
+    elif [ -f /.sda2root ] ; then
+	rm -f /.sda2root
+    elif [ -f /.sdb2root ] ; then
+	rm -f /.sdb2root
+    else
+	echo "However, in this case, the flags that indicate an already-unslung"
+	echo "system seem to be missing.  Try restarting your NSLU2 to correct,"
+	echo "but if the problem persists, try re-flashing your NSLU2."
+	exit 1
+    fi
+    echo "The flags that indicate an already-unslung system have now been"
+    echo "removed and the required mounts should now become present after"
+    echo "reboot of the NSLU2."
+    echo
+    echo "1) Please unplug all drives from the NSLU2,"
+    echo "2) reboot,"
+    echo "3) and retry the unslinging process."
+    exit 1
+fi
+
 # Check it's a real mount point
 
-echo "Waiting for $targ"
+echo "Waiting for $targ ..."
 CNT=120
 while [ $CNT -gt 0 ]
 do
    if grep "$mtch" /proc/mounts >/dev/null 2>&1 ; then
+       echo
        echo "Target disk is $targ"
        CNT=-1
    else
@@ -43,8 +94,50 @@ do
    fi
 done
 if [ $CNT -eq 0 ] ; then
-   echo "Error: $targ is not a mounted disk"
+   echo
+   echo "Error: $targ ($htmlinfo) is not a mounted disk"
    exit 1
+fi
+
+# Do a quick sanity check to make sure we're unslinging to a disk that's been
+# formatted by the Linksys code.
+
+echo "Checking that $targ has been properly formatted..."
+if ! [ -d $targ/public ] || ! [ -f $targconf/.dongle ] || ! [ -f $targconf/passwd ] ; then
+    echo
+    echo "Error: $targ does not appear to have been formatted by the"
+    echo "Linksys formatting utility.  Please go to the web interface,"
+    echo "and format the drive before unslinging."
+    exit 1
+fi
+
+echo "Checking that $targ is clean..."
+if [ -f $targ/.unslung ] ; then
+    echo
+    echo "Error: $targ appears to have already been unslung to:"
+    cat $targ/.unslung
+    echo "Please go to the web interface, and format the drive before"
+    echo "unslinging."
+    echo
+    echo "(Or, if you wish to unsling without removing the current root"
+    echo "filesystem, simply remove the file $targ/.unslung and retry"
+    echo "the unsling -- but beware, you enter uncharted territory!)"
+    exit 1
+fi
+
+# Change the root password
+if [ "$nopw" = 0 ] ; then
+   echo
+   echo "Please enter the new root password.  This will be the new root"
+   echo "password used when the NSLU2 boots up with or without disks"
+   echo
+   passwd
+   if [ $? != 0 ] ; then
+       echo "Error setting password."
+       exit 1
+   fi
+   cp /etc/passwd /usr/local/passwd
+   cp /etc/passwd $targconf/passwd
 fi
 
 # Start at the root directory
@@ -60,7 +153,8 @@ fi
 
 # Copy the complete rootfs to the target.
 
-echo "Copying the complete rootfs from / to $targ."
+echo
+echo "Copying the complete rootfs from / to $targ ..."
 /usr/bin/find / -print0 -mount | /usr/bin/cpio -p -0 -d -m -u $targ
 rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
 rm -rf $targ/var ; mv $targ/var.state $targ/var
@@ -75,6 +169,16 @@ fi
 echo "Linking /usr/bin/ipkg executable on target disk."
 rm -f $targ/usr/bin/ipkg ; ln -s /usr/bin/ipkg-cl $targ/usr/bin/ipkg
 
+echo "Linking /etc/motd to the unslung motd on target disk."
+rm -f $targ/etc/motd ; ln -s /etc/motd-un $targ/etc/motd
+
+echo "Updating /home/httpd/html/home.htm with target disk info."
+sedcommand="s#Running.from.Internal.Flash#Unslung to $htmlinfo#"
+rm -f $targ/home/httpd/html/home.htm_bak
+cp $targ/home/httpd/html/home.htm $targ/home/httpd/html/home.htm_bak
+sed "$sedcommand" $targ/home/httpd/html/home.htm_bak > $targ/home/httpd/html/home.htm
+chmod 644 $targ/home/httpd/html/home.htm
+
 # Create the boot flag file.
 
 rm -f /.sd??root $targ/.sd??root
@@ -82,5 +186,13 @@ rm -f /.sd??root $targ/.sd??root
 echo "Creating /$flag to direct switchbox to boot from $targ."
 echo > /$flag
 echo > $targ/$flag
+
+# Done
+
+echo
+echo "Unsling complete."
+echo
+echo "Leave the device $htmlinfo plugged in, and reboot"
+echo "in order to boot this system up into unslung mode."
 
 exit 0

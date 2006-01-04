@@ -2,9 +2,9 @@ DESCRIPTION = "Linksys NSLU2 Stock Firmware Libraries."
 PACKAGE_ARCH = "nslu2"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63.tar.bz2"
+SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2"
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r63"
 

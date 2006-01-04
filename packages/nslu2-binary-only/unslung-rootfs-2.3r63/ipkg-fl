@@ -1,0 +1,11 @@
+#! /bin/sh
+echo
+echo "Error:  The ipkg command cannot currently be used because this"
+echo "system is running from its internal flash; it is not currently"
+echo "\"uNSLUng\" to an external disk or flash device."
+echo
+echo "Please complete the process of \"unslinging\" this system, or"
+echo "resolve the issues that did not permit it to boot from the"
+echo "external device before installing any ipkg packages or updates."
+echo
+exit 1

@@ -12,7 +12,7 @@
  /bin/echo  "Starting Crond :"; . /etc/rc.d/rc.crond
  /bin/echo  "Starting Rest Task :"; . /etc/rc.d/rc.local
  
-+/bin/echo  "Starting UNSLUNG Packages:"; ( . /etc/rc.d/rc.unslung-start )
++/bin/echo  "Starting Optware Packages:"; ( . /etc/rc.d/rc.optware-start )
 +
  /usr/bin/Set_Led ready
  /usr/bin/Set_Led beep1
