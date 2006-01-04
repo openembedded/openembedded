@@ -10,3 +10,8 @@ FILES_${PN}-gnome = "${libdir}/libgsf-gnome-1.so.*"
 FILES_${PN}-gnome-dev = "${libdir}/libgsf-gnome-1.* ${includedir}/libgsf-1/gsf-gnome"
 
 inherit autotools pkgconfig gnome
+
+
+do_stage() {
+autotools_stage_all
+}

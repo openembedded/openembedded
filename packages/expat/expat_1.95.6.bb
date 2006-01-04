@@ -8,6 +8,10 @@ S = "${WORKDIR}/expat-${PV}"
 inherit autotools 
 export LTCC = "${CC}"
 
+do_stage () {
+	autotools_stage_all
+}
+
 do_install () {
 	oe_runmake prefix="${D}${prefix}" \
 		bindir="${D}${bindir}" \

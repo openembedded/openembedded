@@ -179,8 +179,4 @@ autotools_stage_all() {
 	rm -rf ${STAGE_TEMP}
 }
 
-autotools_do_stage() {
-	autotools_stage_all
-}
-
-EXPORT_FUNCTIONS do_configure do_install do_stage
+EXPORT_FUNCTIONS do_configure do_install

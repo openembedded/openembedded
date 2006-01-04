@@ -12,3 +12,7 @@ FILES_${PN} = "${libdir}/*.so.*"
 FILES_rsvg = "${bindir}/rsvg ${bindir}/rsvg-view ${datadir}/pixmaps/svg-viewer.svg"
 FILES_librsvg-gtk = "${libdir}/gtk-2.0/*/*/*.so"
 FILES_librsvg-gtk-dev = "${libdir}/gtk-2.0"
+
+do_stage() {
+	autotools_stage_all
+}

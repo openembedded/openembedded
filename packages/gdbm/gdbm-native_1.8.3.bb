@@ -10,3 +10,7 @@ SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 S = "${WORKDIR}/gdbm-${PV}"
 
 inherit autotools native
+
+do_stage () {
+	autotools_stage_all
+}

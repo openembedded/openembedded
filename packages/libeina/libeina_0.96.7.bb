@@ -12,3 +12,8 @@ SRC_URI = "http://bolgo.cent.uji.es/files/libeina/${P}.tar.gz \
 EXTRA_OECONF = "--disable-magic"
 
 inherit autotools pkgconfig
+
+do_stage() {
+autotools_stage_all
+}
+

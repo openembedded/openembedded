@@ -17,3 +17,7 @@ inherit autotools pkgconfig
 SRC_URI =   "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 EXTRA_OECONF = "--enable-cairo"
+
+do_stage () {
+	autotools_stage_all
+}

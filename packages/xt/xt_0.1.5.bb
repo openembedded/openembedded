@@ -22,3 +22,7 @@ do_compile() {
         )
         oe_runmake
 }
+
+do_stage () {
+	oe_runmake install DESTDIR="" bindir=${STAGING_BINDIR} includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} prefix=${STAGING_DIR}
+}
