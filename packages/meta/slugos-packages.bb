@@ -19,7 +19,6 @@ PACKAGES = "${PN}"
 # KEEP IN ALPHABETICAL ORDER
 SLUGOS_PACKAGES = "\
 	alsa-lib \
-	alsa-utils \
 	atftp \
 	audiofile \
 	aumix \
@@ -50,6 +49,7 @@ SLUGOS_PACKAGES = "\
 	e2fsprogs \
 	expat \
 	ez-ipupdate \
+	fetchmail \
 	file \
 	findutils \
 	flac \
@@ -70,7 +70,6 @@ SLUGOS_PACKAGES = "\
 	iptables \
 	joe \
 	jpeg \
-	klibc \
 	lcdproc \
 	less \
 	libao \
@@ -176,10 +175,16 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	yp-tools ypbind ypserv \
 	"
 
-# Packages which build only with glibc or uclibc (some of these use internal
+# These packages work with glibc, but break on uclibc.
+UCLIBC_BROKEN_PACKAGES = "\
+	alsa-utils \
+	"
+
+# Packages which build only with glibc (some of these use internal
 # glibc functions and so will probably never run on uclibc).
 SLUGOS_PACKAGES_append_linux = "\
 	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
+	${UCLIBC_BROKEN_PACKAGES} \
 	ctrlproxy \
 	iperf \
 	man man-pages \
