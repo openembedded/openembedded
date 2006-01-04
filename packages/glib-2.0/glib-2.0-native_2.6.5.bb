@@ -8,7 +8,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk-doc-native"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--disable-debug"
 

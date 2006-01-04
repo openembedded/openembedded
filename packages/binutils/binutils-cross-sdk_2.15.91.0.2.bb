@@ -1,5 +1,5 @@
 SECTION = "devel"
-PR = "r1"
+PR = "r3"
 include binutils_${PV}.bb
 inherit sdk
 DEPENDS += "flex-native bison-native"

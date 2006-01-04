@@ -10,7 +10,7 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
-PR = "r1"
+PR = "r2"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
