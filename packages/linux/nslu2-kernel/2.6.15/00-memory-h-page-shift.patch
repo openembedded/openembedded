@@ -1,10 +1,68 @@
---- linux-2.6.15/include/asm-arm/arch-ixp4xx/memory.h	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/include/asm-arm/arch-ixp4xx/memory.h	1970-01-01 00:00:00.000000000 +0000
-@@ -8,6 +8,7 @@
- #define __ASM_ARCH_MEMORY_H
+--- linux-2.6.15-rc7/include/asm-arm/arch-ixp4xx/memory.h~	2005-12-30 05:18:27.000000000 +1030
++++ linux-2.6.15-rc7/include/asm-arm/arch-ixp4xx/memory.h	2005-12-30 05:36:04.000000000 +1030
+@@ -16,31 +16,10 @@
  
- #include <asm/sizes.h>
-+#include <asm/page.h>
+ #ifndef __ASSEMBLY__
  
- /*
-  * Physical DRAM offset.
+-/*
+- * Only first 64MB of memory can be accessed via PCI.
+- * We use GFP_DMA to allocate safe buffers to do map/unmap.
+- * This is really ugly and we need a better way of specifying
+- * DMA-capable regions of memory.
+- */
+-static inline void __arch_adjust_zones(int node, unsigned long *zone_size, 
+-	unsigned long *zhole_size) 
+-{
+-	unsigned int sz = SZ_64M >> PAGE_SHIFT;
+-
+-	/*
+-	 * Only adjust if > 64M on current system
+-	 */
+-	if (node || (zone_size[0] <= sz))
+-		return;
+-
+-	zone_size[1] = zone_size[0] - sz;
+-	zone_size[0] = sz;
+-	zhole_size[1] = zhole_size[0];
+-	zhole_size[0] = 0;
+-}
++void ixp4xx_adjust_zones(int node, unsigned long *size, unsigned long *holes);
+ 
+ #define arch_adjust_zones(node, size, holes) \
+-	__arch_adjust_zones(node, size, holes)
++	ixp4xx_adjust_zones(node, size, holes)
+ 
+ #define ISA_DMA_THRESHOLD (SZ_64M - 1)
+ 
+--- linux-2.6.15-rc7/arch/arm/mach-ixp4xx/common-pci.c~	2005-12-30 05:16:03.000000000 +1030
++++ linux-2.6.15-rc7/arch/arm/mach-ixp4xx/common-pci.c	2005-12-30 05:43:55.000000000 +1030
+@@ -341,6 +341,29 @@ int dma_needs_bounce(struct device *dev,
+ 	return (dev->bus == &pci_bus_type ) && ((dma_addr + size) >= SZ_64M);
+ }
+ 
++/*
++ * Only first 64MB of memory can be accessed via PCI.
++ * We use GFP_DMA to allocate safe buffers to do map/unmap.
++ * This is really ugly and we need a better way of specifying
++ * DMA-capable regions of memory.
++ */
++void __init ixp4xx_adjust_zones(int node, unsigned long *zone_size, 
++	unsigned long *zhole_size) 
++{
++	unsigned int sz = SZ_64M >> PAGE_SHIFT;
++
++	/*
++	 * Only adjust if > 64M on current system
++	 */
++	if (node || (zone_size[0] <= sz))
++		return;
++
++	zone_size[1] = zone_size[0] - sz;
++	zone_size[0] = sz;
++	zhole_size[1] = zhole_size[0];
++	zhole_size[0] = 0;
++}
++
+ void __init ixp4xx_pci_preinit(void)
+ {  
+ 	unsigned long processor_id;

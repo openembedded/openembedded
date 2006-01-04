@@ -1,0 +1,44 @@
+diff -ur linux-2.6.12.2/drivers/scsi/sd.c linux-2.6.12.2_scsi-idle/drivers/scsi/sd.c
+--- linux-2.6.12.2/drivers/scsi/sd.c	2005-08-27 06:12:31.000000000 +0200
++++ linux-2.6.12.2_scsi-idle/drivers/scsi/sd.c	2005-08-27 06:26:50.000000000 +0200
+@@ -266,6 +266,9 @@
+ 			    "count=%d\n", disk->disk_name,
+ 			 (unsigned long long)block, this_count));
+ 
++	/* Update idle-since time */
++	sdp->idle = jiffies;
++
+ 	if (!sdp || !scsi_device_online(sdp) ||
+  	    block + rq->nr_sectors > get_capacity(disk)) {
+ 		SCSI_LOG_HLQUEUE(2, printk("Finishing %ld sectors\n", 
+@@ -600,6 +603,8 @@
+ 		case SCSI_IOCTL_GET_IDLUN:
+ 		case SCSI_IOCTL_GET_BUS_NUMBER:
+ 			return scsi_ioctl(sdp, cmd, p);
++		case SCSI_IOCTL_IDLE:
++			return (jiffies - sdp->idle) / HZ + 1;
+ 		default:
+ 			error = scsi_cmd_ioctl(filp, disk, cmd, p);
+ 			if (error != -ENOTTY)
+diff -ur linux-2.6.12.2/include/scsi/scsi_device.h linux-2.6.12.2_scsi-idle/include/scsi/scsi_device.h
+--- linux-2.6.12.2/include/scsi/scsi_device.h	2005-08-27 06:12:44.000000000 +0200
++++ linux-2.6.12.2_scsi-idle/include/scsi/scsi_device.h	2005-08-27 06:27:09.000000000 +0200
+@@ -125,6 +125,7 @@
+ 	atomic_t ioerr_cnt;
+ 
+ 	int timeout;
++	unsigned long		idle;	/* scsi idle time in jiffers */
+ 
+ 	struct device		sdev_gendev;
+ 	struct class_device	sdev_classdev;
+diff -ur linux-2.6.12.2/include/scsi/scsi_ioctl.h linux-2.6.12.2_scsi-idle/include/scsi/scsi_ioctl.h
+--- linux-2.6.12.2/include/scsi/scsi_ioctl.h	2005-08-27 06:12:44.000000000 +0200
++++ linux-2.6.12.2_scsi-idle/include/scsi/scsi_ioctl.h	2005-08-28 17:32:17.000000000 +0200
+@@ -7,6 +7,7 @@
+ #define SCSI_IOCTL_SYNC 4			/* Request synchronous parameters */
+ #define SCSI_IOCTL_START_UNIT 5
+ #define SCSI_IOCTL_STOP_UNIT 6
++#define SCSI_IOCTL_IDLE 4746			/* get idle time in jiffies */
+ /* The door lock/unlock constants are compatible with Sun constants for
+    the cdrom */
+ #define SCSI_IOCTL_DOORLOCK 0x5380		/* lock the eject mechanism */

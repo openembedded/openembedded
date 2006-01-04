@@ -516,7 +516,7 @@
 +		return -EBUSY;
 +	}
 +	else {
-+		class_device_create(n2lm_class, MKDEV(NSLU2LM_MAJOR, 0), NULL, "leds");
++		class_device_create(n2lm_class, NULL, MKDEV(NSLU2LM_MAJOR, 0), NULL, "leds");
 +	}
 +#endif
 +
@@ -525,7 +525,7 @@
 +		return -EBUSY;
 +	}
 +	else {
-+		class_device_create(n2lm_class, MKDEV(NSLU2BZ_MAJOR, 0), NULL, "buzzer");
++		class_device_create(n2lm_class, NULL, MKDEV(NSLU2BZ_MAJOR, 0), NULL, "buzzer");
 +	}
 +
 +	return 0;
