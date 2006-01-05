@@ -8,7 +8,7 @@ RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
 
 PV = "0.0cvs${CVSDATE}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gconf;tag=gconf-dbus-2-6 \
            file://gconf-dbus-update.patch;patch=1;pnum=0 \
@@ -33,6 +33,6 @@ do_stage() {
 do_install_append () {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/69gconfd-dbus ${D}/${sysconfdir}/X11/Xsession.d/
-	install -d ${D}/${datadir}/dbus-1.0/services/
-	install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1.0/services/ 
+	install -d ${D}/${datadir}/dbus-1/services/
+	install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1/services/ 
 }
