@@ -2,7 +2,7 @@ SECTION = "console/network"
 DEPENDS = "openssl virtual/db"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1"
@@ -33,7 +33,16 @@ do_compile_prepend () {
 }
 
 do_stage () {
-	autotools_stage_all
+	oe_libinstall -so -a -C lib libsasl2 ${STAGING_LIBDIR}
+	install -d ${STAGING_LIBDIR}/sasl2
+	install -d ${STAGING_INCDIR}/sasl
+	install -m 0644 ${S}/include/hmac-md5.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/md5.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/md5global.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/sasl.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/saslplug.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/saslutil.h ${STAGING_INCDIR}/sasl/
+	install -m 0644 ${S}/include/prop.h ${STAGING_INCDIR}/sasl/
 }
 
 pkg_postinst () {
