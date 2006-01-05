@@ -101,6 +101,8 @@ do_configure () {
 		echo "rpcgen not found.  Install glibc-devel."
 		exit 1
 	fi
+	# workaround for recent glibc cvs breakage.
+	rm -rf {S}/bits
 	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
 	CPPFLAGS="" oe_runconf
 }
