@@ -2,7 +2,7 @@ SECTION = "libs"
 DESCRIPTION = "The popt library exists essentially \
 for parsing command line options."
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
 	   file://m4.patch;patch=1 \
@@ -11,5 +11,6 @@ SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
 inherit autotools 
 
 do_stage () {
-	autotools_stage_all
+	oe_libinstall -a -so libpopt ${STAGING_LIBDIR}
+	install -m 0644 popt.h ${STAGING_INCDIR}/
 }
