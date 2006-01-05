@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -63,7 +63,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
-           ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
            ${RPSRC}/alsa/alsa-soc-0.9.patch;patch=1 \
            ${RPSRC}/alsa/alsa-soc-0.9-0.10rc1.patch;patch=1 \
            ${RPSRC}/alsa_soc_rpupdate7-r2.patch;patch=1 \
@@ -79,6 +78,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.
            file://defconfig-poodle \
            file://defconfig-cxx00 \
            file://defconfig-tosa "
+
+# Disabled until I find the reason this gives issues with cdc_subset
+#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
 
 # These patches would really help collie/poodle but we 
 # need someone to maintain them

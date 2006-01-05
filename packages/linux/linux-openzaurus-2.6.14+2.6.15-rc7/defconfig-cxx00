@@ -185,7 +185,6 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/hda1 rootfstype=ext3 rw  fbcon=rotate:1 dyntick=enable debug"
 # CONFIG_XIP_KERNEL is not set
 
 #
