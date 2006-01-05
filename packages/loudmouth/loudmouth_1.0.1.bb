@@ -6,3 +6,7 @@ DESCRIPTION = "Loudmouth is a lightweight and easy-to-use C library for programm
 SRC_URI = "http://ftp.imendio.com/pub/imendio/${PN}/src/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig
+
+do_stage() {
+	autotools_stage_all
+}

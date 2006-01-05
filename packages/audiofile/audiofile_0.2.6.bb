@@ -15,3 +15,7 @@ RPROVIDES_${PN} += "audiofile"
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
+
+do_stage () {
+	autotools_stage_all
+}

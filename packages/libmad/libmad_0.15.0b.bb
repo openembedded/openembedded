@@ -1,3 +1,4 @@
+PR = "r1"
 DESCRIPTION = "MPEG Audio Decoder Library"
 SECTION = "libs"
 PRIORITY = "optional"
@@ -23,6 +24,5 @@ do_configure_prepend () {
 }
 
 do_stage() {
-	oe_libinstall -so libmad ${STAGING_LIBDIR}
-	install -m 0644 mad.h ${STAGING_INCDIR}
+	autotools_stage_all
 }

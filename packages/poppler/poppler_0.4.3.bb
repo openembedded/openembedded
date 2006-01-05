@@ -8,3 +8,10 @@ SRC_URI="http://poppler.freedesktop.org/${PN}-${PV}.tar.gz"
 
 EXTRA_OECONF = "--disable-gtk-test --disable-poppler-qt"  
 inherit pkgconfig autotools
+
+
+do_stage() {
+	autotools_stage_all
+}
+
+

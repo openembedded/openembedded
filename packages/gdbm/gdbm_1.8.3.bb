@@ -9,3 +9,7 @@ SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 	   file://makefile.patch;patch=1"
 
 inherit autotools 
+
+do_stage () {
+	autotools_stage_all
+}

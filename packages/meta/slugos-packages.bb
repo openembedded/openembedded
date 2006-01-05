@@ -70,6 +70,7 @@ SLUGOS_PACKAGES = "\
 	iptables \
 	joe \
 	jpeg \
+	klibc \
 	lcdproc \
 	less \
 	libao \

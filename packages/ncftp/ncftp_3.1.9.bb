@@ -1,3 +1,4 @@
+PR = "r1"
 DESCRIPTION = "A sophisticated console ftp client"
 SECTION = "console/network"
 PRIORITY = "optional"
@@ -10,6 +11,8 @@ inherit autotools
 do_configure_prepend () {
 	install -m 0644 ${WORKDIR}/acinclude.m4 acinclude.m4
 }
+
+INHIBIT_AUTO_STAGE = "1"
 
 do_install () {
 	install -d ${D}${bindir} ${D}${sysconfdir} ${D}${mandir}

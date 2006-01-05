@@ -3,7 +3,7 @@ MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
@@ -19,6 +19,8 @@ EXTRA_OECONF = "--enable-ssl"
 do_compile () {
 	oe_runmake 'LDFLAGS=${LDFLAGS}'
 }
+
+INHIBIT_AUTO_STAGE = "1"
 
 do_install () {
 	oe_runmake 'prefix=${D}${prefix}' 'exec_prefix=${D}${exec_prefix}' \

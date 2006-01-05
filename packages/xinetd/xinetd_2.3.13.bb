@@ -1,7 +1,7 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
-PR="r2"
+PR="r3"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \
 	  file://xinetd.init \
@@ -20,6 +20,8 @@ do_configure() {
 	# rebuilding configure and are just using the shipped one
 	oe_runconf
 }
+
+INHIBIT_AUTO_STAGE = "1"
 
 do_install() {
 	# Same here, the Makefile does some really stupid things,
