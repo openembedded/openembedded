@@ -1,10 +1,10 @@
-PR = "r1"
 DESCRIPTION = "MPEG Audio Decoder Library"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
@@ -21,5 +21,6 @@ do_configure_prepend () {
 }
 
 do_stage() {
-	autotools_stage_all
+	oe_libinstall -so libmad ${STAGING_LIBDIR}
+	install -m 0644 mad.h ${STAGING_INCDIR}
 }
