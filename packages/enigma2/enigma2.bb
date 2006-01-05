@@ -7,10 +7,10 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060103"
+CVSDATE = "20060104"
 PV = "1.0cvs${CVSDATE}"
 
-SRC_URI = "cvs://dreamboxupdate.com/cvs;module=enigma2;method=ext \
+SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
            file://enigma2.sh"
 
 S = "${WORKDIR}/enigma2"
