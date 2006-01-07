@@ -4,11 +4,9 @@
 # they do not necessarily work.
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
-#FIXME: backward compatibility with the master makefile
-PROVIDES += "openslug-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"

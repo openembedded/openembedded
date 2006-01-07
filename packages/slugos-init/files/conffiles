@@ -1,5 +1,5 @@
 # conffiles
-# Known OpenSlug configuration files.  These files are preserved on
+# Known SlugOS configuration files.  These files are preserved on
 # a flash upgrade.  Other configuration files, found from:
 #
 #    /usr/lib/ipkg/*.conffiles

@@ -1,7 +1,7 @@
-# OpenSlug specific stuff for the init scripts.
+# SlugOS specific stuff for the init scripts.
 #
 # This is, in effect, an extended patch to fix various
-# problems in the initscripts on OpenSlug.  The problems
+# problems in the initscripts on SlugOS.  The problems
 # mostly come down to the order the scripts are executed
 # in.
 include initscripts_${PV}.bb
@@ -11,7 +11,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.3"
+PR := "${PR}.4"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -68,11 +68,11 @@ do_install_append() {
 		status=0
 		while read d
 		do
-			oenote "initscripts-openslug: unexpected link $f"
+			oenote "initscripts-slugos: unexpected link $f"
 			status = 1
 		done
 		test $status -eq 0 ||
-			oefatal "initscripts-openslug: new links break do_install"
+			oefatal "initscripts-slugos: new links break do_install"
 	}
 
 	# Set the run-level links
@@ -86,26 +86,26 @@ do_install_append() {
 	# udev runs at S 04 .
 	update-rc.d -r ${D} devices		start  5 S .
 	update-rc.d -r ${D} alignment.sh	start  7 S .
-	# busybox hwclock.sh (openslug-init) starts here (08)
-	# openslug-init umountinitrd runs here (09)
+	# busybox hwclock.sh (slugos-init) starts here (08)
+	# slugos-init umountinitrd runs here (09)
 
 	update-rc.d -r ${D} checkroot.sh	start 10 S .
-	# openslug buffer syslog starts here (11)
+	# slugos buffer syslog starts here (11)
 	# sysconfsetup runs at S 12
 	# modutils.sh runs at S 20
-	# checkfs.sh is currently disabled from S 30 (and won't work on OpenSlug)
-	# ramdisk is not used on OpenSlug, would run at S 30
+	# checkfs.sh is currently disabled from S 30 (and won't work on SlugOS)
+	# ramdisk is not used on SlugOS, would run at S 30
 	update-rc.d -r ${D} mountall.sh		start 35 S .
 	# base-files populate-volatile.sh runs at S37
 	update-rc.d -r ${D} devpts.sh		start 38 S .
-	# openslug file syslog starts here (39)
+	# slugos file syslog starts here (39)
 
 	# set hostname and domainname before the network script works (by
 	# entering them at level 40), networking may reset them.
 	update-rc.d -r ${D} domainname.sh	start 40 S .
 	update-rc.d -r ${D} hostname.sh		start 40 S .
 	# network runs at S 40
-	# openslug network syslog starts here (44)
+	# slugos network syslog starts here (44)
 	update-rc.d -r ${D} mountnfs.sh		start 45 S .
 
 	update-rc.d -r ${D} bootmisc.sh		start 55 S .
@@ -132,20 +132,20 @@ do_install_append() {
 	#
 	# urandom would stop at (S)30
 
-	# This is the special, correct, openslug umountnfs.sh (it looks in
+	# This is the special, correct, slugos umountnfs.sh (it looks in
 	# the /proc/mounts information, not /etc/fstab)
 	update-rc.d -r ${D} umountnfs.sh	start 31 0 6 .
 	# portmap stops at 32
-	# openslug network syslog stops here (39)
+	# slugos network syslog stops here (39)
 	# networking stops at 40 (nothing else does, believe me.)
 
-	# busybox hwclock.sh (openslug-init) stops here (45)
-	# openslug file syslog stops here (47)
-	# openslug buffer syslog stops here (49)
+	# busybox hwclock.sh (slugos-init) stops here (45)
+	# slugos file syslog stops here (47)
+	# slugos buffer syslog stops here (49)
 	# Remove any errant processes
 	update-rc.d -r ${D} sendsigs		start 60 0 6 .
 
-	# This is the special, correct, openslug umountfs, it will umount
+	# This is the special, correct, slugos umountfs, it will umount
 	# any network file systems which failed to umount before.
 	update-rc.d -r ${D} umountfs		start 70 0 6 .
 

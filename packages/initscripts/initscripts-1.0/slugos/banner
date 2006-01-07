@@ -1,4 +1,4 @@
 #!/bin/sh
 #NOTE: this script may execute with absolutely nothing
 # in /dev
-echo "OpenSlug booting..."
+echo "SlugOS booting..."

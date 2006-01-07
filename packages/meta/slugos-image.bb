@@ -4,10 +4,8 @@
 # conf/distro/slugos.conf to get the standard settings).
 #
 LICENSE = "MIT"
-PR = "r16"
+PR = "r17"
 PROVIDES += "${SLUGOS_IMAGENAME}-image"
-#FIXME: backward compatibility with the master makefile
-PROVIDES += "openslug-image"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -109,9 +107,9 @@ SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
 # absolute minimum to have any chance of a bootable system.
 DEPENDS = "${SLUGOS_IMAGE_DEPENDS} \
 	virtual/kernel base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-openslug netbase \
+        busybox dropbear hotplug-ng initscripts-slugos netbase \
         sysvinit tinylogin portmap \
-        virtual/ixp-eth openslug-init \
+        virtual/ixp-eth slugos-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
 	${SLUGOS_SUPPORT} \
@@ -119,9 +117,9 @@ DEPENDS = "${SLUGOS_IMAGE_DEPENDS} \
 	${SLUGOS_NATIVE_DEPENDS}"
 
 IPKG_INSTALL = "base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-openslug netbase \
+        busybox dropbear hotplug-ng initscripts-slugos netbase \
         update-modules sysvinit tinylogin portmap \
-        ${PREFERRED_PROVIDER_virtual/ixp-eth} openslug-init \
+        ${PREFERRED_PROVIDER_virtual/ixp-eth} slugos-init \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
 	${SLUGOS_SUPPORT} \

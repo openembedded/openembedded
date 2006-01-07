@@ -1,9 +1,9 @@
-DESCRIPTION = "Openslug initial network config via sysconf"
+DESCRIPTION = "SlugOS initial network config via sysconf"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r45"
+PR = "r46"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -119,7 +119,7 @@ do_install() {
 #NB: do not use '08' (etc) for the first argument after start/stop,
 # the value is interpreted as an octal number if there is a leading
 # zero.
-pkg_postinst_openslug-init() {
+pkg_postinst_slugos-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt hwclock.sh		start  8 S . start 45 0 6 .
@@ -134,7 +134,7 @@ pkg_postinst_openslug-init() {
 	update-rc.d $opt leds_startup		start  1 1 2 3 4 5 .
 }
 
-pkg_postrm_openslug-init() {
+pkg_postrm_slugos-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
 	for s in ${INITSCRIPTS}

@@ -1,1 +1,1 @@
-DEPENDS = openslug-image
+DEPENDS = slugos-image

@@ -1,1 +1,1 @@
-DEPENDS = openslug-packages
+DEPENDS = slugos-packages
