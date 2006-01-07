@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r44"
+PR = "r45"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -25,6 +25,7 @@ SRC_URI = "file://linuxrc \
 	   file://turnup \
 	   file://reflash \
 	   file://modprobe.conf \
+	   file://links.conf \
 	   file://leds.h \
 	   file://leds.c \
 	   "
@@ -57,6 +58,7 @@ do_install() {
                    ${D}${sysconfdir}/default \
                    ${D}${sysconfdir}/init.d \
 		   ${D}${sysconfdir}/modutils \
+                   ${D}${sysconfdir}/udev \
 		   ${D}${sbindir} \
 		   ${D}${base_sbindir} \
 		   ${D}/initrd \
@@ -89,6 +91,10 @@ do_install() {
 	do
 		install -m 0755 initscripts/$s ${D}${sysconfdir}/init.d/
 	done
+
+	#
+	# Udev configuration files
+	install -m 0644 links.conf ${D}${sysconfdir}/udev
 
 	#
 	# Boot scripts
