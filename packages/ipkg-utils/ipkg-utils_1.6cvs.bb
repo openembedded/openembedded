@@ -1,5 +1,4 @@
 DESCRIPTION = "Itsy Package Manager utilities"
-DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
