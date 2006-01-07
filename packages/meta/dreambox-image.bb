@@ -19,15 +19,16 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2f
 OPENDREAMBOX_EXPERIMENTAL = "enigma2"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
-OPENDREAMBOX_TUXBOX = "enigma ipkgpl dreamdata enigma-modem links-dream"
-OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins"
+OPENDREAMBOX_TUXBOX = "enigma ipkgpl dreamdata enigma-modem"
+OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins links-dream"
 OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
 	tuxbox-plugin-lcdcirc   tuxbox-plugin-soko      tuxbox-plugin-tuxtxt \
 	tuxbox-plugin-sol       tuxbox-plugin-vierg  	tuxbox-plugin-master \
 	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
-	tuxbox-plugin-satfind   tuxbox-plugin-tuxcom 	links-dream-plugin"
+	tuxbox-plugin-satfind   tuxbox-plugin-tuxcom 	links-dream-plugin \
+	links-dream-plugin"
 
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
