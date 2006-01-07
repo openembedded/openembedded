@@ -9,7 +9,7 @@ LICENSE = "LGPL"
 DEFAULT_PREFERENCE = "-1"
 
 S =  "${WORKDIR}/${PN}"
-PV = "0.105-cvs-${CVSDATE}"
+PV = "0.105+cvs${SRCDATE}"
 PR = "r0"
 
 inherit autotools pkgconfig

@@ -1,4 +1,4 @@
-PV = "0.6.2svn${CVSDATE}"
+PV = "0.6.2+svn${SRCDATE}"
 LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"

@@ -9,7 +9,7 @@ RDEPENDS = "opie-pics"
 PV = "0.2.0"
 PR = "r4"
 
-CVSDATE = "20050911"
+SRCDATE = "20050911"
 #application was released 20050910 - next versions will be released as tarballs
 #corsair-024.patch from 'mistermix' http://www.oesf.org/forums/index.php?showtopic=14661
 

@@ -6,7 +6,7 @@ MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r3"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt \
@@ -32,7 +32,7 @@ do_compile() {
 
   # create own version.xml (add version information available at runtime)
   ${STAGING_BINDIR}/head -n 4 version.xml >> build/version.xml
-  ${STAGING_BINDIR}/echo "    <build value=\"cvs${CVSDATE}\" date=\"${CVSDATE}\" time=\"${@time.strftime('%H:%M',time.gmtime())}\"/>" >> build/version.xml
+  ${STAGING_BINDIR}/echo "    <build value=\"cvs${SRCDATE}\" date=\"${SRCDATE}\" time=\"${@time.strftime('%H:%M',time.gmtime())}\"/>" >> build/version.xml
   ${STAGING_BINDIR}/tail -n 3 version.xml >> build/version.xml
 
   # move classes into jar archive

@@ -1,4 +1,4 @@
-CVSDATE = "20050226"
+SRCDATE = "20050226"
 
 include x11_cvs.bb
 

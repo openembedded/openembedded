@@ -6,13 +6,13 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 
 LICENSE = "GPL"
 
-S =     "${WORKDIR}/${PN}"
-PV =        "0.1+cvs${CVSDATE}"
+S = "${WORKDIR}/${PN}"
+PV = "0.1+cvs${SRCDATE}"
 PR = "r0"
 
 inherit autotools gpe pkgconfig
 
-SRC_URI =   "${HANDHELDS_CVS};module=gpe/base/${PN}"
+SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 headers = "contacts-db.h"
 

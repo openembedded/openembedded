@@ -1,4 +1,4 @@
-PV = "0.4.9-pre1+cvs-${CVSDATE}"
+PV = "0.4.9-pre1+cvs${SRCDATE}"
 DESCRIPTION = "ffmpeg"
 SECTION = "libs"
 PRIORITY = "optional"

@@ -1,4 +1,4 @@
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 DEPENDS = "x11 xmu xext"
 DESCRIPTION = "X server resource database utility"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"

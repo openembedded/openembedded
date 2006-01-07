@@ -3,7 +3,7 @@ DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 PR = "r3"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz \

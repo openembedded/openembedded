@@ -7,7 +7,7 @@ APPNAME = "oxygen"
 PR = "r0"
 
 #cvsdate for 1.0.0 is 20050101
-CVSDATE = "20050101"
+SRCDATE = "20050101"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/${APPNAME} \
            ${HANDHELDS_CVS};module=opie/pics \

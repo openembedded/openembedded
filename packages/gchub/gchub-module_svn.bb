@@ -4,7 +4,7 @@ DESCRIPTION = "Kernel module for the GameCube Hub input device"
 DEPENDS = "virtual/kernel"
 MAINTAINER = "Micah Dowty <micah@navi.cx>"
 LICENSE = "GPL"
-PV = "svn-${CVSDATE}"
+PV = "svn+{SRCDATE}"
 
 SRC_URI = "svn://svn.navi.cx/misc/trunk/wasabi/devices;module=gchub;proto=http"
 
