@@ -1,6 +1,6 @@
 BROKEN = "1"
 
-PV = "1.1.4+cvs${CVSDATE}"
+PV = "1.1.4+cvs${SRCDATE}"
 SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
 S = "${WORKDIR}/kaffe"
 

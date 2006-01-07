@@ -722,9 +722,9 @@ python __anonymous () {
 	
 	pn = bb.data.getVar('PN', d, 1)
 
-	cvsdate = bb.data.getVar('CVSDATE_%s' % pn, d, 1)
-	if cvsdate != None:
-		bb.data.setVar('CVSDATE', cvsdate, d)
+	srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
+	if srcdate != None:
+		bb.data.setVar('SRCDATE', srcdate, d)
 
 	use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
 	if use_nls != None:

@@ -1,4 +1,4 @@
-PV = "1.1.5+cvs${CVSDATE}"
+PV = "1.1.5+cvs${SRCDATE}"
 DEFAULT_PREFERENCE = "-1"
 PR = "r3"
 

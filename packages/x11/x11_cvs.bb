@@ -1,4 +1,4 @@
-PV = "6.2.1cvs${CVSDATE}"
+PV = "6.2.1+cvs${SRCDATE}"
 LICENSE = "XFree86"
 PR = "r5"
 SECTION = "x11/libs"

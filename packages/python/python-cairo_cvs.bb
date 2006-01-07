@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Sandino 'Tigrux' Flores <tigrux@ximian.com>"
 DEPENDS = "python-pygtk cairo"
 SRCNAME = "pycairo"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 LICENSE = "LGPL MPL"
 inherit autotools
 

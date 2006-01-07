@@ -7,7 +7,7 @@ SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
 
 inherit module-base
 
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 S = "${WORKDIR}/drm"
 
 do_compile() {

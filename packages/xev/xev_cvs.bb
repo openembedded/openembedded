@@ -1,4 +1,4 @@
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 DESCRIPTION = "X Event Viewer"
 HOMEPAGE = "http://freedesktop.org/wiki/Software_2fxapps"
 LICENSE = "MIT"

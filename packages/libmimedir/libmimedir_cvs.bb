@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
 PR = "r1"
-PV = "0.3.1+cvs-${CVSDATE}"
+PV = "0.3.1+cvs${SRCDATE}"
 
 DEFAULT_PREFERENCE = -1
 

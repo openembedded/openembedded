@@ -5,7 +5,7 @@ LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS += "irssi gtk+"
 RDEPENDS_${PN} += "irssi-common"
-PV = "0.0+cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 
 inherit autotools

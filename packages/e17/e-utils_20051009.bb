@@ -3,7 +3,7 @@ DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet ewl engrave virtua
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 PR = "r1"
 
 inherit autotools
