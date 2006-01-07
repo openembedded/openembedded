@@ -17,8 +17,8 @@ inherit autotools pkgconfig
 
 FILES_${PN} = "/usr/lib/tuxbox/plugins/enigma_modem.so \
 		/usr/lib/tuxbox/plugins/enigma_modem.cfg \
-		/etc/ppp/dial.modem /etc/ppp/options \
-		/etc/ppp/disconnect.modem /etc/ppp/pap-secrets \
+		/etc/ppp/dial.modem \
+		/etc/ppp/disconnect.modem \
 		/etc/ppp/ip-up.d/01peerdns /etc/ppp/ip-down.d/01peerdns-remove"
 
 EXTRA_OECONF = "--with-target=native "
