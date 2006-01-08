@@ -1,3 +1,40 @@
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3215/1
+
+Iomega NAS 100d (MACH_NAS100D) machine support 
+
+This patch adds support for a new arm/ixp4xx machine - the Iomega NAS
+100d network attached storage product. The NAS100D is a consumer
+device containing a 266MHz Intel IXP420 processor, 16MB of flash, 64MB
+of RAM, a 160Gb internal IDE hard disk, and 802.11b/g wireless on an
+Atheros mini-PCI card.
+
+Work on porting the latest 2.6.x kernel to this device is being done by
+the NSLU2-Linux project (the same team who maintains the port to the
+Linksys NSLU2 device). In particular, the majority of this patch was
+authored by Alessandro Zummo, based on the work done for MACH_NSLU2
+support by the NSLU2-Linux core team of developers.
+
+MACH_NAS100D (as implemented by this patch) can be enabled in jumbo
+ixp4xx kernels without any affect on the other machines supported by
+that kernel.
+
+This patch applies cleanly against 2.6.15-rc7 and should be trivial to
+apply to later kernel versions. It does not depend upon any other
+patches.
+
+Modified files (and number of lines inserted):
+arch/arm/mach-ixp4xx/Kconfig | 8
+arch/arm/mach-ixp4xx/Makefile | 1
+include/asm-arm/arch-ixp4xx/hardware.h | 1
+include/asm-arm/arch-ixp4xx/irqs.h | 9
+include/asm-arm/arch-ixp4xx/nas100d.h | 75
+arch/arm/mach-ixp4xx/nas100d-pci.c | 77
+arch/arm/mach-ixp4xx/nas100d-power.c | 69
+arch/arm/mach-ixp4xx/nas100d-setup.c | 133
+
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
+Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
+ 
 --- linux-2.6.15-rc7/arch/arm/mach-ixp4xx/Kconfig	2005-12-27 22:29:00.000000000 +0100
 +++ linux-2.6.15-rc7/arch/arm/mach-ixp4xx/Kconfig	2005-12-27 22:29:52.000000000 +0100
 @@ -71,6 +71,14 @@ config ARCH_PRPMC1100

@@ -1,3 +1,26 @@
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3218/1
+
+PAGE_SHIFT is undeclared in include/asm-arm/arch-ixp4xx/memory.h, identified by the following kernel compilation error:
+
+CC [M] sound/core/memory.o
+In file included from include/asm/memory.h:27,
+from include/asm/io.h:28,
+from sound/core/memory.c:24:
+include/asm/arch/memory.h: In function `__arch_adjust_zones':
+include/asm/arch/memory.h:28: error: `PAGE_SHIFT' undeclared (first use
+in this function)
+
+This patch replaces my previous attempt at fixing this problem (Patch 3214/1) and is based on the following feedback:
+
+Russell King wrote:
+> The error you see came up on SA1100. The best solution was to move
+> the __arch_adjust_zones() function out of line. I suggest ixp4xx
+> does the same.
+
+I have moved the function out of line into arch/arm/mach-ixp4xx/common-pci.c as suggested.
+
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
+ 
 --- linux-2.6.15-rc7/include/asm-arm/arch-ixp4xx/memory.h~	2005-12-30 05:18:27.000000000 +1030
 +++ linux-2.6.15-rc7/include/asm-arm/arch-ixp4xx/memory.h	2005-12-30 05:36:04.000000000 +1030
 @@ -16,31 +16,10 @@
