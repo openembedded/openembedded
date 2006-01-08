@@ -10,6 +10,8 @@ inherit xfce
 # No ${PN} for this one 
 PACKAGES=""
 
+PACKAGES_DYNAMIC = "xfwm4-theme-*"
+
 python populate_packages_prepend () {
 	themedir = bb.data.expand('${datadir}/xfwm4/themes', d)
 	do_split_packages(d, themedir, '^(.*)', 'xfwm4-theme-%s', 'XFWM4 theme %s', allow_dirs=True)

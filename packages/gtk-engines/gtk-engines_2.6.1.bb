@@ -16,6 +16,8 @@ SRC_URI = "${GNOME_MIRROR}/${PN}/2.6/${PN}-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
 
+PACKAGES_DYNAMIC = "gtk-engine-* gtk-theme-*"
+
 python populate_packages_prepend() {
 	import os.path
 

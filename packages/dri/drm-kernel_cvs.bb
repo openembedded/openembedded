@@ -21,6 +21,8 @@ do_install() {
 	for i in *.ko; do install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm/; done
 }
 
+PACKAGES_DYNAMIC = "drm-module-*"
+
 python populate_packages_prepend () {
 	root = bb.data.expand('/lib/modules/${KERNEL_VERSION}/drm', d)
 

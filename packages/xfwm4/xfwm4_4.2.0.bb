@@ -14,6 +14,8 @@ DEPENDS="startup-notification x11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-
 
 EXTRA_OECONF += " --enable-startup-notification"
 
+PACKAGES_DYNAMIC = "xfwm4-theme-*"
+
 python populate_packages_prepend () {
 	themedir = bb.data.expand('${datadir}/themes', d)
 	do_split_packages(d, themedir, '^(.*)', 'xfwm4-theme-%s', 'XFWM4 theme %s', allow_dirs=True)

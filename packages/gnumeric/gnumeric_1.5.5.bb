@@ -11,6 +11,8 @@ SRC_URI += "file://remove-docs.patch;patch=1"
 
 EXTRA_OECONF=" --without-perl "
 
+PACKAGES_DYNAMIC = "gnumeric-plugin-*"
+
 python populate_packages_prepend () {
 	gnumeric_libdir = bb.data.expand('${libdir}/gnumeric/${PV}/plugins', d)
 

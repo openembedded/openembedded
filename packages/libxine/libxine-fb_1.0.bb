@@ -75,6 +75,8 @@ do_stage() {
 	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }
 
+PACKAGES_DYNAMIC = "libxine-plugin-* libxine-font-*"
+
 python populate_packages_prepend () {
 	plugindir = bb.data.expand('${libdir}/xine/plugins/1.0.0', d)
 	do_split_packages(d, plugindir, '^xineplug_(.*)\.so$', 'libxine-plugin-%s', 'Xine plugin for %s', extra_depends='' )
