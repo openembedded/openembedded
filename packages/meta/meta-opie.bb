@@ -192,14 +192,9 @@ task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-ticta
 # Let's build DEPENDS and RDEPENDS now
 #
 
-DEPENDS += "${task-opie-applets} ${task-opie-apps} \
-            opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
-            opie-sounds opie-ttf-support ttf-dejavu \
-            ${task-opie-bluetooth} ${task-opie-datebookplugins} \
-            ${task-opie-decorations} ${task-opie-extra-settings} \
-            ${task-opie-games} ${task-opie-inputmethods} ${task-opie-irda} \
-            ${task-opie-multimedia} ${task-opie-todayplugins} ${task-opie-pim} \
-            ${task-opie-settings} ${task-opie-styles} ${task-opie-wlan}"
+# FIXME - these shouldn't be here
+DEPENDS += "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
+            opie-sounds opie-ttf-support ttf-dejavu"
 
 RDEPENDS_task-opie-applets              = "${task-opie-applets}"
 RDEPENDS_task-opie-apps                 = "${task-opie-apps}"

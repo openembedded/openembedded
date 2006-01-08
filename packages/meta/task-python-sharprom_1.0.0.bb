@@ -14,7 +14,7 @@ NONWORKING = "\
 		python-sgmlop		\
 		python-vorbis"
 
-DEPENDS = "\
+RDEPENDS = "\
 		python-ao 		\
 		python-pybluez		\
 		python-constraint	\
@@ -61,7 +61,6 @@ DEPENDS = "\
 		plone			\
 		twisted			\
 		zope"
-RDEPENDS=${DEPENDS}
 
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there

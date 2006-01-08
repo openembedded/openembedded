@@ -9,8 +9,7 @@ task-e-libs = "evas edb ecore eet embryo edje etox ewl"
 task-e-base = ""
 
 RDEPENDS_e-libs = "${task-e-libs}"
-DEPENDS += "${task-e-libs}"
 
 RDEPENDS_e-base = "${task-e-base}"
-DEPENDS += "${task-e-base}"
+
 LICENSE = MIT

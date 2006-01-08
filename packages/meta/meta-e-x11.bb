@@ -8,8 +8,6 @@ FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
 
 ALLOW_EMPTY = 1
 
-DEPENDS              = "task-e-x11-core entice eclair examine evidence e-modules"
-# e-utils elitaire
 RDEPENDS_task-e-x11  = "task-e-x11-core entice eclair examine evidence e-modules"
 # e-utils elitaire
 
