@@ -4,8 +4,8 @@ PV = "0.0+cvs${SRCDATE}"
 PR = "r32"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
-PACKAGE_ARCH_tslib-conf = "${MACHINE}"
-PACKAGE_ARCH_mnci = "${MACHINE}"
+PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
+PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \

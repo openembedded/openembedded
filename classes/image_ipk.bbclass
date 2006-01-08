@@ -9,6 +9,7 @@ EXCLUDE_FROM_WORLD = "1"
 USE_DEVFS ?= "0"
 
 DEPENDS += "makedevs-native"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 def get_image_deps(d):
 	import bb
