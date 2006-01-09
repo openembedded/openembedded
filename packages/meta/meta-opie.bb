@@ -22,14 +22,14 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
 # for devices with >16M of flash
 #
 
-DEPENDS = "irda-utils ntp timezones ttf-dejavu \
-           bluez-utils-nodbus wireless-tools \
-           opie-ttf-support libopieobex0 opie-examples-python \
-           opie-freetype opie-help-en opie-i18n opie-login \
-           opie-securityplugin-blueping opie-securityplugin-dummy \
-           opie-securityplugin-notice opie-securityplugin-pin \
-           opie-sh opie-symlinker opie-alarm openobex \
-           konqueror-embedded qpdf2"
+#DEPENDS = "irda-utils ntp timezones ttf-dejavu \
+#           bluez-utils-nodbus wireless-tools \
+#           opie-ttf-support libopieobex0 opie-examples-python \
+#           opie-freetype opie-help-en opie-i18n opie-login \
+#           opie-securityplugin-blueping opie-securityplugin-dummy \
+#           opie-securityplugin-notice opie-securityplugin-pin \
+#           opie-sh opie-symlinker opie-alarm openobex \
+#           konqueror-embedded qpdf2"
 
 #
 # Dependencies to get the launcher up and running
@@ -193,9 +193,9 @@ task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-ticta
 # Let's build DEPENDS and RDEPENDS now
 #
 
-# FIXME - these shouldn't be here
-DEPENDS += "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
-            opie-sounds opie-ttf-support ttf-dejavu"
+## FIXME - these shouldn't be here
+#DEPENDS += "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
+#            opie-sounds opie-ttf-support ttf-dejavu"
 
 RDEPENDS_task-opie-applets              = "${task-opie-applets}"
 RDEPENDS_task-opie-apps                 = "${task-opie-apps}"

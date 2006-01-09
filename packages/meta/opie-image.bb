@@ -9,6 +9,7 @@ LICENSE = "MIT"
 PR = "r19"
 
 DEPENDS = "task-bootstrap meta-opie"
+RDEPENDS = "${INSTALL_PACKAGES}"
 
 extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
 

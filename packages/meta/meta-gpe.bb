@@ -10,7 +10,6 @@ RDEPENDS_gpe-base-depends := "\
     virtual/xserver"
 
 RDEPENDS_gpe-task-base := "\
-    gpe-task-base = \
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
