@@ -32,6 +32,7 @@ CONFIG_HOTPLUG=y
 CONFIG_KOBJECT_UEVENT=y
 # CONFIG_IKCONFIG is not set
 CONFIG_INITRAMFS_SOURCE=""
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 CONFIG_EMBEDDED=y
 # CONFIG_KALLSYMS is not set
 CONFIG_PRINTK=y
@@ -39,7 +40,6 @@ CONFIG_BUG=y
 # CONFIG_BASE_FULL is not set
 CONFIG_FUTEX=y
 CONFIG_EPOLL=y
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 CONFIG_SHMEM=y
 CONFIG_CC_ALIGN_FUNCTIONS=0
 CONFIG_CC_ALIGN_LABELS=0
@@ -58,6 +58,23 @@ CONFIG_OBSOLETE_MODPARM=y
 # CONFIG_MODVERSIONS is not set
 # CONFIG_MODULE_SRCVERSION_ALL is not set
 CONFIG_KMOD=y
+
+#
+# Block layer
+#
+
+#
+# IO Schedulers
+#
+CONFIG_IOSCHED_NOOP=y
+# CONFIG_IOSCHED_AS is not set
+CONFIG_IOSCHED_DEADLINE=y
+# CONFIG_IOSCHED_CFQ is not set
+# CONFIG_DEFAULT_AS is not set
+CONFIG_DEFAULT_DEADLINE=y
+# CONFIG_DEFAULT_CFQ is not set
+# CONFIG_DEFAULT_NOOP is not set
+CONFIG_DEFAULT_IOSCHED="deadline"
 
 #
 # System Type
@@ -81,6 +98,7 @@ CONFIG_ARCH_IXP4XX=y
 # CONFIG_ARCH_LH7A40X is not set
 # CONFIG_ARCH_OMAP is not set
 # CONFIG_ARCH_VERSATILE is not set
+# CONFIG_ARCH_REALVIEW is not set
 # CONFIG_ARCH_IMX is not set
 # CONFIG_ARCH_H720X is not set
 # CONFIG_ARCH_AAEC2000 is not set
@@ -93,6 +111,7 @@ CONFIG_ARCH_SUPPORTS_BIG_ENDIAN=y
 #
 # IXP4xx Platforms
 #
+# CONFIG_MACH_NSLU2 is not set
 # CONFIG_ARCH_AVILA is not set
 # CONFIG_ARCH_ADI_COYOTE is not set
 # CONFIG_ARCH_IXDP425 is not set
@@ -150,6 +169,7 @@ CONFIG_FLATMEM_MANUAL=y
 CONFIG_FLATMEM=y
 CONFIG_FLAT_NODE_MEM_MAP=y
 # CONFIG_SPARSEMEM_STATIC is not set
+CONFIG_SPLIT_PTLOCK_CPUS=4096
 CONFIG_ALIGNMENT_TRAP=y
 
 #
@@ -157,7 +177,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc console=ttyS0,115200n8 pcf8563.hctosys=1"
+CONFIG_CMDLINE="root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc pcf8563.hctosys=1  console=ttyS0,115200n8"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -168,6 +188,7 @@ CONFIG_CMDLINE="root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=
 # At least one emulation must be selected
 #
 CONFIG_FPE_NWFPE=y
+# CONFIG_FPE_NWFPE_XP is not set
 # CONFIG_FPE_FASTFPE is not set
 
 #
@@ -229,6 +250,10 @@ CONFIG_IPV6_TUNNEL=m
 CONFIG_NETFILTER=y
 # CONFIG_NETFILTER_DEBUG is not set
 CONFIG_BRIDGE_NETFILTER=y
+
+#
+# Core Netfilter Configuration
+#
 # CONFIG_NETFILTER_NETLINK is not set
 
 #
@@ -305,7 +330,6 @@ CONFIG_IP_NF_TARGET_CLASSIFY=m
 #
 # CONFIG_IP6_NF_QUEUE is not set
 # CONFIG_IP6_NF_IPTABLES is not set
-# CONFIG_IP6_NF_TARGET_NFQUEUE is not set
 
 #
 # Bridge: Netfilter Configuration
@@ -339,6 +363,10 @@ CONFIG_IPDDP_DECAP=y
 # CONFIG_NET_DIVERT is not set
 # CONFIG_ECONET is not set
 # CONFIG_WAN_ROUTER is not set
+
+#
+# QoS and/or fair queueing
+#
 # CONFIG_NET_SCHED is not set
 CONFIG_NET_CLS_ROUTE=y
 
@@ -382,6 +410,11 @@ CONFIG_PREVENT_FIRMWARE_BUILD=y
 CONFIG_FW_LOADER=m
 
 #
+# Connector - unified userspace <-> kernelspace linker
+#
+# CONFIG_CONNECTOR is not set
+
+#
 # Memory Technology Devices (MTD)
 #
 CONFIG_MTD=y
@@ -403,6 +436,7 @@ CONFIG_MTD_BLOCK=y
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
 # CONFIG_INFTL is not set
+# CONFIG_RFD_FTL is not set
 
 #
 # RAM/ROM/Flash chip drivers
@@ -442,7 +476,6 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
 # CONFIG_MTD_PHYSMAP is not set
 # CONFIG_MTD_ARM_INTEGRATOR is not set
 CONFIG_MTD_IXP4XX=y
-# CONFIG_MTD_EDB7312 is not set
 # CONFIG_MTD_PCI is not set
 # CONFIG_MTD_PLATRAM is not set
 
@@ -467,6 +500,11 @@ CONFIG_MTD_IXP4XX=y
 # NAND Flash Device Drivers
 #
 # CONFIG_MTD_NAND is not set
+
+#
+# OneNAND Flash Device Drivers
+#
+# CONFIG_MTD_ONENAND is not set
 
 #
 # Parallel port support
@@ -497,14 +535,6 @@ CONFIG_BLK_DEV_INITRD=y
 CONFIG_CDROM_PKTCDVD=m
 CONFIG_CDROM_PKTCDVD_BUFFERS=8
 # CONFIG_CDROM_PKTCDVD_WCACHE is not set
-
-#
-# IO Schedulers
-#
-CONFIG_IOSCHED_NOOP=y
-# CONFIG_IOSCHED_AS is not set
-CONFIG_IOSCHED_DEADLINE=y
-# CONFIG_IOSCHED_CFQ is not set
 # CONFIG_ATA_OVER_ETH is not set
 
 #
@@ -602,6 +632,7 @@ CONFIG_SCSI_MULTI_LUN=y
 #
 # SCSI low-level drivers
 #
+# CONFIG_ISCSI_TCP is not set
 # CONFIG_BLK_DEV_3W_XXXX_RAID is not set
 # CONFIG_SCSI_3W_9XXX is not set
 # CONFIG_SCSI_ACARD is not set
@@ -700,6 +731,7 @@ CONFIG_TUN=m
 # Ethernet (10 or 100Mbit)
 #
 CONFIG_NET_ETHERNET=y
+CONFIG_MACLIST=y
 CONFIG_MII=y
 # CONFIG_HAPPYMEAL is not set
 # CONFIG_SUNGEM is not set
@@ -799,6 +831,7 @@ CONFIG_PPP_ASYNC=m
 # CONFIG_PPP_SYNC_TTY is not set
 CONFIG_PPP_DEFLATE=m
 CONFIG_PPP_BSDCOMP=m
+# CONFIG_PPP_MPPE is not set
 # CONFIG_PPPOE is not set
 # CONFIG_SLIP is not set
 # CONFIG_NET_FC is not set
@@ -910,6 +943,7 @@ CONFIG_RTC=y
 # TPM devices
 #
 # CONFIG_TCG_TPM is not set
+# CONFIG_TELCLOCK is not set
 
 #
 # I2C support
@@ -956,17 +990,18 @@ CONFIG_I2C_IXP4XX=y
 #
 # CONFIG_SENSORS_DS1337 is not set
 # CONFIG_SENSORS_DS1374 is not set
-CONFIG_SENSORS_EEPROM=n
+# CONFIG_SENSORS_EEPROM is not set
 # CONFIG_SENSORS_PCF8574 is not set
 # CONFIG_SENSORS_PCA9539 is not set
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_RTC8564 is not set
 # CONFIG_SENSORS_MAX6875 is not set
+# CONFIG_RTC_X1205_I2C is not set
+CONFIG_RTC_PCF8563_I2C=y
 CONFIG_I2C_DEBUG_CORE=y
 CONFIG_I2C_DEBUG_ALGO=y
 CONFIG_I2C_DEBUG_BUS=y
 CONFIG_I2C_DEBUG_CHIP=y
-CONFIG_RTC_PCF8563_I2C=y
 
 #
 # Hardware Monitoring support
@@ -1044,12 +1079,16 @@ CONFIG_VIDEO_ZORAN_DC30=m
 CONFIG_VIDEO_ZORAN_LML33=m
 CONFIG_VIDEO_ZORAN_LML33R10=m
 CONFIG_VIDEO_SAA7134=m
+# CONFIG_VIDEO_SAA7134_ALSA is not set
 CONFIG_VIDEO_MXB=m
 CONFIG_VIDEO_DPC=m
 CONFIG_VIDEO_HEXIUM_ORION=m
 CONFIG_VIDEO_HEXIUM_GEMINI=m
 CONFIG_VIDEO_CX88=m
+# CONFIG_VIDEO_EM28XX is not set
 CONFIG_VIDEO_OVCAMCHIP=m
+# CONFIG_VIDEO_AUDIO_DECODER is not set
+# CONFIG_VIDEO_DECODER is not set
 
 #
 # Radio Adapters
@@ -1197,15 +1236,15 @@ CONFIG_USB_UHCI_HCD=y
 # USB Device Class drivers
 #
 # CONFIG_OBSOLETE_OSS_USB_DRIVER is not set
-
-#
-# USB Bluetooth TTY can only be used with disabled Bluetooth subsystem
-#
 CONFIG_USB_ACM=m
 CONFIG_USB_PRINTER=m
 
 #
-# NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support' may also be needed; see USB_STORAGE Help for more information
+# NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support'
+#
+
+#
+# may also be needed; see USB_STORAGE Help for more information
 #
 CONFIG_USB_STORAGE=y
 # CONFIG_USB_STORAGE_DEBUG is not set
@@ -1296,6 +1335,7 @@ CONFIG_USB_NET_ZAURUS=m
 CONFIG_USB_SERIAL=m
 CONFIG_USB_SERIAL_GENERIC=y
 # CONFIG_USB_SERIAL_AIRPRIME is not set
+# CONFIG_USB_SERIAL_ANYDATA is not set
 CONFIG_USB_SERIAL_BELKIN=m
 CONFIG_USB_SERIAL_WHITEHEAT=m
 CONFIG_USB_SERIAL_DIGI_ACCELEPORT=m
@@ -1356,6 +1396,25 @@ CONFIG_USB_EZUSB=y
 # MMC/SD Card support
 #
 # CONFIG_MMC is not set
+
+#
+# Real Time Clock
+#
+CONFIG_RTC_CLASS=y
+
+#
+# RTC interfaces
+#
+CONFIG_RTC_INTF_SYSFS=y
+CONFIG_RTC_INTF_PROC=y
+CONFIG_RTC_INTF_DEV=y
+
+#
+# RTC drivers
+#
+# CONFIG_RTC_DRV_X1205 is not set
+# CONFIG_RTC_DRV_DS1672 is not set
+# CONFIG_RTC_DRV_TEST is not set
 
 #
 # File systems
@@ -1436,6 +1495,7 @@ CONFIG_RAMFS=y
 CONFIG_JFFS2_FS=y
 CONFIG_JFFS2_FS_DEBUG=0
 CONFIG_JFFS2_FS_WRITEBUFFER=y
+# CONFIG_JFFS2_SUMMARY is not set
 # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
 CONFIG_JFFS2_ZLIB=y
 CONFIG_JFFS2_RTIME=y
