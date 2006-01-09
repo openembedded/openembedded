@@ -1,4 +1,4 @@
-PV = "0.2.2svn${CVSDATE}"
+PV = "0.2.2+svn${SRCDATE}"
 LICENSE = "LGPL"
 
 DESCRIPTION = "Class library implementing utilities for C++ programming"

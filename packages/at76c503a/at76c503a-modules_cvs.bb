@@ -4,7 +4,7 @@ SRC_URI = "cvs://anonymous@cvs.berlios.de/cvsroot/at76c503a;module=at76c503a \
 	   file://makefile.cc.patch;patch=1"
 S = "${WORKDIR}/at76c503a"
 PR = "r4"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 
 inherit module
 

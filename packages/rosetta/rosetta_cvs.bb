@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xtst xext xau \
 	   virtual/libintl"
 DESCRIPTION = "Multistroke / full word handwriting recognition for X"

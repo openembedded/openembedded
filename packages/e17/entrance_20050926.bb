@@ -6,7 +6,7 @@ DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch dete
 RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 PR = "r9"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \

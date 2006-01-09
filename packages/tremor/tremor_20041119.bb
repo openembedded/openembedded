@@ -4,7 +4,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "libogg"
 DESCRIPTION = "tremor is a fixed point implementation of the vorbis codec."
 LICENSE = "BSD"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http"

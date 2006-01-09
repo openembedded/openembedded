@@ -5,6 +5,8 @@ DEPENDS += "virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} v
 
 inherit kernel-arch
 
+PACKAGES_DYNAMIC = "kernel-module-*"
+
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 KERNEL_IMAGETYPE = "zImage"

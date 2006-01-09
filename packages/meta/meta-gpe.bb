@@ -5,14 +5,12 @@ PR = "r41"
 
 ALLOW_EMPTY = "1"
 
-gpe-base-depends = "\
+RDEPENDS_gpe-base-depends := "\
     diet-x11 \
     virtual/xserver"
 
-RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
-DEPENDS += " ${gpe-base-depends}"
-
-gpe-task-base = "\
+RDEPENDS_gpe-task-base := "\
+    gpe-task-base = \
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
@@ -35,17 +33,14 @@ gpe-task-base = "\
     detect-stylus \
     suspend-desktop \
     teleport \
-    xauth"
+    xauth \
+    gdk-pixbuf-loader-png \
+    gdk-pixbuf-loader-xpm \
+    gdk-pixbuf-loader-jpeg \
+    pango-module-basic-x \
+    pango-module-basic-fc"
 
-RDEPENDS_gpe-task-base := "gdk-pixbuf-loader-png \
-			   gdk-pixbuf-loader-xpm \
-			   gdk-pixbuf-loader-jpeg \
-			   pango-module-basic-x \
-			   pango-module-basic-fc \
-			   ${gpe-task-base}"
-DEPENDS += " ${gpe-task-base}"
-
-gpe-task-pim = "\
+RDEPENDS_gpe-task-pim := "\
     gpe-timesheet \
     gpe-todo \
     gpe-calendar \
@@ -54,10 +49,7 @@ gpe-task-pim = "\
     gpe-today \
     gpesyncd"
 
-RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
-DEPENDS += " ${gpe-task-pim}"
-
-gpe-task-settings = "\
+RDEPENDS_gpe-task-settings := "\
     matchbox-panel-manager \
     gpe-bluetooth \
     gpe-beam \
@@ -74,10 +66,7 @@ gpe-task-settings = "\
     minimix \
     xmonobut"
 
-RDEPENDS_gpe-task-settings := "${gpe-task-settings}"
-DEPENDS += " ${gpe-task-settings}"
-
-gpe-task-apps = "\
+RDEPENDS_gpe-task-apps := "\
     gpe-edit \
     gpe-gallery \
     gpe-calculator \
@@ -91,10 +80,7 @@ gpe-task-apps = "\
     gpe-soundbite \
     rosetta"
 
-RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
-DEPENDS += " ${gpe-task-apps}"
-
-gpe-task-games = "\
+RDEPENDS_gpe-task-games := "\
     gpe-go \
     gpe-lights \
     gpe-othello \
@@ -102,19 +88,12 @@ gpe-task-games = "\
     gsoko \
     xdemineur"
 
-RDEPENDS_gpe-task-games := "${gpe-task-games}"
-DEPENDS += " ${gpe-task-games}"
+RDEPENDS_gpe-task-connectivity := "\
+    gpe-mini-browser"
+#    gaim
+#    linphone-hh
 
-gpe-task-connectivity = "\
-    gpe-mini-browser \
-"
-#    gaim \ 
-#    linphone-hh"
-
-RDEPENDS_gpe-task-connectivity := "${gpe-task-connectivity}"
-DEPENDS += " ${gpe-task-connectivity}"
-
-
+# FIXME - Some dependencies are broken somewhere for this to be needed
 DEPENDS += "matchbox-themes-extra"
 
 LICENSE = "MIT"
