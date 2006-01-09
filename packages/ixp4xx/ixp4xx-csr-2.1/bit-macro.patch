@@ -1,5 +1,5 @@
---- ixp400_xscale_sw/src/include/IxTypes.h	2005-08-24 00:16:36.000000000 +0200
-+++ ixp400_xscale_sw/src/include/IxTypes.h	2005-08-26 01:19:15.000000000 +0200
+--- ixp_osal/src/include/IxTypes.h	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/src/include/IxTypes.h	1970-01-01 00:00:00.000000000 +0000
 @@ -79,6 +79,10 @@
  #endif
  #endif
