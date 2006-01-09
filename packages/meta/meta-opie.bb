@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r32"
+PR = "r33"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -71,7 +71,8 @@ task-opie-base-apps = "opie-console opie-clock opie-citytime opie-backup opie-sy
 
 task-opie-base-settings = "opie-packagemanager opie-light-and-power opie-appearance \
                            opie-systemtime opie-networksettings opie-button-settings \
-                           opie-icon-reload opie-launcher-settings opie-security"
+                           opie-icon-reload opie-launcher-settings opie-security \
+                           opie-securityplugin-pin"
 
 #
 # That settings can be removed and device will be still usable
