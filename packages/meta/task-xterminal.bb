@@ -5,6 +5,5 @@ ALLOW_EMPTY = 1
 PR = "r0"
 
 RDEPENDS = "xserver-kdrive-fbdev minicom lrzsz dropbear"
-DEPENDS = "xserver-kdrive minicom lrzsz dropbear"
 
 LICENSE = MIT

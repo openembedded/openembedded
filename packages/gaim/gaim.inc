@@ -21,6 +21,8 @@ FILES_${PN}-dev += "${libdir}/gaim/*.la"
 
 inherit autotools gettext
 
+PACKAGES_DYNAMIC = "gaim-protocol-*"
+
 python populate_packages_prepend () {
 	root = bb.data.expand('${libdir}/gaim', d)
 

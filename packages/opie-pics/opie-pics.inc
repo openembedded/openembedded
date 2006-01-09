@@ -28,5 +28,5 @@ do_install() {
 }
 
 FILES_${PN} = "${palmtopdir}"
-PACKAGE_ARCH = "${MACHINE}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 

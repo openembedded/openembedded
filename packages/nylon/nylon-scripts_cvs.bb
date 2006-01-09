@@ -5,10 +5,10 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
-PV = "cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 
-SRC_URI = "http://meshcube.org/download/${PN}_${CVSDATE}.tgz"
+SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"
 
 do_install() {

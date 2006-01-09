@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
-CVSDATE = "20040801"
+SRCDATE = "20040801"
 PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@down.physik.uni-mainz.de/cvs;module=Frodo4 \

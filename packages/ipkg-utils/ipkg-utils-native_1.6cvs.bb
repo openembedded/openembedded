@@ -2,7 +2,9 @@ SECTION = "base"
 include ipkg-utils_${PV}.bb
 PR = "r4"
 inherit native
-DEPENDS = ""
+RDEPENDS = "python-native"
+# Avoid circular dependencies from package_ipk.bbclass
+PACKAGES = ""
 
 do_stage() {
         for i in ${INSTALL}; do

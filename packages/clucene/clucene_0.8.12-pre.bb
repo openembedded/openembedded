@@ -2,7 +2,7 @@ DESCRIPTION = "CLucene is a C++ port of Lucene: the high-performance, full-featu
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-CVSDATE = "20040704"
+SRCDATE = "20040704"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/clucene;module=. \
 	   file://compile-fix.patch;patch=1"
 S = "${WORKDIR}"

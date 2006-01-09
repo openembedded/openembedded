@@ -1,7 +1,7 @@
 DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Unix platforms"
 SECTION = "console/network"
 LICENSE = "MIT"
-PV = "0.58+cvs-${CVSDATE}"
+PV = "0.58+cvs${SRCDATE}"
 
 SRC_URI = "svn://ixion.tartarus.org/main;module=putty \
 	   file://lib.pro \

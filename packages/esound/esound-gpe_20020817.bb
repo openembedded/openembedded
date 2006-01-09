@@ -6,7 +6,7 @@ PR = "r4"
 PROVIDES += "esound"
 RPROVIDES += "esound"
 
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/esound \
 	   file://audiofile-please.patch;patch=1 \
 	   file://configure.patch;patch=1"

@@ -1,10 +1,10 @@
-DESCRIPTION =	"Plugin system for GPE applications"
-AUTHOR =		"Luce DeCicco <ldecicco@gmail.com>"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+DESCRIPTION = "Plugin system for GPE applications"
+AUTHOR = "Luce DeCicco <ldecicco@gmail.com>"
+MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
-DEPENDS =		"gtk+ libgpewidget"
-PV =			"0.0+cvs${CVSDATE}"
-PR = 			"r0"
+DEPENDS = "gtk+ libgpewidget"
+PV = "0.0+cvs${SRCDATE}"
+PR = "r0"
 
 #put examples in a seperate package 
 PACKAGES += ${PN}-examples

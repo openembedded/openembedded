@@ -5,13 +5,13 @@ PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 
-FIXEDCVSDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
-PV = "0.5.0+cvs${FIXEDCVSDATE}"
+FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
+PV = "0.5.0+cvs${FIXEDSRCDATE}"
 PR = "r2"
 
 DEPENDS = "curl librsvg osb-nrcore"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDCVSDATE} \
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDSRCDATE} \
 	   file://stop-load.image-loading.patch;patch=1	\
    	   file://gdk-colorspace.diff;patch=1"
 S = "${WORKDIR}/NRCit"

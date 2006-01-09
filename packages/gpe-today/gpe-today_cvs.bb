@@ -1,14 +1,14 @@
 DEFAULT_PREFERENCE = "-1"
 
-DESCRIPTION = 	"Displays a summary of appointments and tasks for the day ahead"
-DEPENDS =		"gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdisplaymigration libeventdb libgpepimc libtododb"
-SECTION = 		"gpe"
-PRIORITY = 		"optional"
+DESCRIPTION = "Displays a summary of appointments and tasks for the day ahead"
+DEPENDS = "gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdisplaymigration libeventdb libgpepimc libtododb"
+SECTION = "gpe"
+PRIORITY = "optional"
 
 
-S =     		"${WORKDIR}/${PN}"
-PV =        	"0.10+cvs-${CVSDATE}"
-PR = 			"r0"
+S = "${WORKDIR}/${PN}"
+PV = "0.10+cvs${SRCDATE}"
+PR = "r0"
 
 inherit gpe
 

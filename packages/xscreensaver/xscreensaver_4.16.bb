@@ -51,6 +51,8 @@ do_install() {
 	install -m 0644 ${WORKDIR}/XScreenSaver ${D}/usr/X11R6/lib/X11/app-defaults
 }
 
+PACKAGES_DYNAMIC = "xscreensaver-hack-*"
+
 python populate_packages_prepend () {
 	hackdir = bb.data.expand('${libdir}/xscreensaver', d)
 	do_split_packages(d, hackdir, '^(.*)', 'xscreensaver-hack-%s', 'XScreensaver hack %s')

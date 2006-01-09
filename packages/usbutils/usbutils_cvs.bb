@@ -3,7 +3,7 @@ SECTION = "base"
 DEPENDS += "libusb"
 LICENSE = "GPL"
 PRIORITY = "optional"
-PV = "0.70-cvs${CVSDATE}"
+PV = "0.70+cvs${SRCDATE}"
 PR = "r3"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/linux-usb;module=usbutils"

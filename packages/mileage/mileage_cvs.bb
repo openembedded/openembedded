@@ -3,7 +3,7 @@ HOMEPAGE = "http://mileage.sourceforge.net"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "4.2.0-cvs-${CVSDATE}"
+PV = "4.2.0+cvs${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/mileage;module=mileage"

@@ -1,6 +1,6 @@
 PR = "r3"
-CVSDATE_${PN} = "20050904"
-PV = "2.0.0-cvs-mco1-${CVSDATE}"
+SRCDATE_${PN} = "20050904"
+PV = "2.0.0+cvs${SRCDATE}-mco1"
 
 WEBCVSURL = "http://handhelds.org/cgi-bin/cvsweb.cgi/~checkout~/gaim"
 

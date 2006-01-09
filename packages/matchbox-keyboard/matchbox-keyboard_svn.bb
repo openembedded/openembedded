@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
 SECTION = "x11"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
-PV = "0.0+svn${CVSDATE}"
+PV = "0.0+svn${SRCDATE}"
 PR="r2"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"

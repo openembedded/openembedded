@@ -4,10 +4,10 @@
 # try removing it
 #
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
-# on whether the base patches apply to the selected (CVSDATE) svn release.
+# on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.28"
-PV = "${UCLIBC_BASE}+svn${CVSDATE}"
+PV = "${UCLIBC_BASE}+svn${SRCDATE}"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
