@@ -150,9 +150,8 @@ N2K_PATCHES ?= ""
 
 # Image suffix - actually set in conf/machine/nslu2.conf as it is also
 # used by anything which needs to know the name of the generated image.
-# May be overridden in the distro if patches or defconfig are changed.
-#FIXME: this can be removed, it is just here for safety with the old names.
-N2K_SUFFIX ?= "openslug"
+# Should be overridden in the distro if patches or defconfig are changed.
+N2K_SUFFIX ?= "nslu2${ARCH_BYTE_SEX}"
 
 SRC_URI  = "${N2K_SRCURI}"
 SRC_URI += "${N2K_PATCHES}"

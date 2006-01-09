@@ -40,7 +40,7 @@ do_deploy[dirs] = "${S}"
 addtask deploy before do_build after do_compile
 
 python () {
-	# Don't build openslug kernel unless we're targeting an nslu2
+	# Don't build kernel unless we're targeting an nslu2
 	mach = bb.data.getVar("MACHINE", d, 1)
 	if mach != 'devkitidp-pxa255':
 		raise bb.parse.SkipPackage("This kernel only builds for the PXA255 DevKitIDP")

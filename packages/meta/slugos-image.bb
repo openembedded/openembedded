@@ -90,7 +90,7 @@ USE_DEVFS = "1"
 # diff, cpio and find are required for reflash and turnup ram.
 # Removing these probably leaves the system bootable, but standard
 # openslug and ucslugc stuff won't work, so only take these out in
-# very non-standard turnkey ucslugc builds.
+# very non-standard turnkey slugos builds.
 #
 # udev is the default way of handling devices, there is no guarantee
 # that the static device table is completely correct (it is just

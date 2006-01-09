@@ -59,7 +59,7 @@ then
 	# to examine the current settings.  The badly formatted stuff
 	# is removed (to be exact, the sed script selects only lines
 	# which match one of the two above).  The lan interface, which
-	# defaults to ixp0, is changed to the correct value for openslug,
+	# defaults to ixp0, is changed to the correct value for slugos,
 	# eth0.  The bootproto, which LinkSys sets to static in manufacturing,
 	# is reset to dhcp if the IP is still the original (192.168.1.77)
 	devio "<<$sysdev" cpb fb1,10 | sed -n '/^\[[^][]*\]$/p;
@@ -138,7 +138,7 @@ test -n "$domain" && echo "$domain" >/etc/defaultdomain
 #
 # Ethernet information.  This goes into /etc/network/interfaces,
 # however this is only used for static setup (and this is not
-# the default).  With dhcp the openslug udhcp script,
+# the default).  With dhcp the slugos udhcp script,
 # /etc/udhcpc.d/50default, loads the values from sysconf.  The
 # lan_interface config value must exist for the file to be
 # overwritten here.

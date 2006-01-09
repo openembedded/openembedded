@@ -2,7 +2,7 @@
 +++ busybox-1.00/examples/udhcp/simple.script	2005-06-05 15:08:28.432605118 -0700
 @@ -1,40 +1,101 @@
  #!/bin/sh
-+# openslug UDHCP client script
++# slugos UDHCP client script
 +# this must set the HW address (MAC) on the interface
 +#
 +. /etc/default/functions

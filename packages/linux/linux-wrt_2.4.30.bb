@@ -113,7 +113,7 @@ do_deploy[dirs] = "${S}"
 addtask deploy before do_build after do_compile
 
 python () {
-	# Don't build openslug kernel unless we're targeting a wrt
+	# Don't build kernel unless we're targeting a wrt
 	mach = bb.data.getVar("MACHINE", d, 1)
 	if mach != 'wrt54':
 		raise bb.parse.SkipPackage("Unable to build for non-WRT54 device.")

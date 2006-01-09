@@ -1,4 +1,5 @@
-This patch overrides the root-home.patch for DISTRO=openslug
+This patch overrides the root-home.patch for all DISTROs
+derived from slugos (DISTROs which set slugos in OVERRIDES)
 
 The patch sets a root password on /etc/passwd, this password is
 

@@ -12,6 +12,8 @@ SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
 
 oe_runmake() {
+	#FIXME: /home/slug/openslug/tmp/cross/bin/armeb-linux- is incorrect, but
+	# the cross bin directory should be on the PATH
 	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=/home/slug/openslug/tmp/cross/bin/armeb-linux- "$@"
 	make ${PARALLEL_MAKE} LDFLAGS= CROSS_COMPILE=/home/slug/openslug/tmp/cross/bin/armeb-linux- "$@" || die "oe_runmake failed"
 }
