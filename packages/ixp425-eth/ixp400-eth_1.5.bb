@@ -15,10 +15,11 @@ SRC_URI += "file://mac-address.patch;patch=1"
 SRC_URI += "file://int-random.patch;patch=1"
 SRC_URI += "file://stop-on-rmmod.patch;patch=1"
 SRC_URI += "file://continue-if-qmgr-init-fails.patch;patch=1"
+SRC_URI += "file://netdev_max_backlog.patch;patch=1"
 SRC_URI += "file://debug.patch;patch=1"
 SRC_URI += "file://Makefile.patch;patch=1"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"

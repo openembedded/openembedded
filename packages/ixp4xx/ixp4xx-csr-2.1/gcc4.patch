@@ -1,0 +1,23 @@
+--- ixp400/src/npeMh/IxNpeMhSymbols.c~	2006-01-08 03:13:28.000000000 +1030
++++ ixp400/src/npeMh/IxNpeMhSymbols.c	2006-01-09 00:56:57.000000000 +1030
+@@ -52,6 +52,7 @@
+ 
+ #include <linux/module.h>
+ #include <IxNpeMh.h>
++#include <IxNpeMhConfig_p.h>
+ 
+ EXPORT_SYMBOL(ixNpeMhInitialize);
+ EXPORT_SYMBOL(ixNpeMhUnload);
+@@ -67,9 +68,9 @@ extern BOOL ixNpeMhConfigInFifoIsFull(Ix
+ extern BOOL ixNpeMhConfigOutFifoIsEmpty (IxNpeMhNpeId npeId);
+ extern void ixNpeMhConfigLockRelease (IxNpeMhNpeId npeId);
+ extern void ixNpeMhConfigLockGet (IxNpeMhNpeId npeId);
+-extern void ixNpeMhConfigOutFifoRead (IxNpeMhNpeId npeId,IxNpeMhMessage *message);
+-extern void ixNpeMhConfigInFifoWrite (IxNpeMhNpeId npeId,IxNpeMhMessage message);
+-extern struct ixNpeMhConfigNpeInfo ixNpeMhConfigNpeInfo[IX_NPEMH_NUM_NPES];
++extern IX_STATUS ixNpeMhConfigOutFifoRead (IxNpeMhNpeId npeId,IxNpeMhMessage *message);
++extern IX_STATUS ixNpeMhConfigInFifoWrite (IxNpeMhNpeId npeId,IxNpeMhMessage message);
++extern IxNpeMhConfigNpeInfo ixNpeMhConfigNpeInfo[IX_NPEMH_NUM_NPES];
+ 
+ EXPORT_SYMBOL(ixNpeMhConfigInFifoIsFull);
+ EXPORT_SYMBOL(ixNpeMhConfigOutFifoIsEmpty);
