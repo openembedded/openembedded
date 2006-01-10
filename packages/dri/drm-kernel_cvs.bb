@@ -7,7 +7,7 @@ SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
 
 inherit module-base
 
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 S = "${WORKDIR}/drm"
 
 do_compile() {
@@ -20,6 +20,8 @@ do_install() {
 	cd linux-core
 	for i in *.ko; do install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/drm/; done
 }
+
+PACKAGES_DYNAMIC = "drm-module-*"
 
 python populate_packages_prepend () {
 	root = bb.data.expand('/lib/modules/${KERNEL_VERSION}/drm', d)

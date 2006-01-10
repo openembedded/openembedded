@@ -10,7 +10,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26"
 
 S = "${WORKDIR}/kernel26"
-PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${CVSDATE}"
+PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 
 K_MAJOR = "2"
 K_MINOR = "6"

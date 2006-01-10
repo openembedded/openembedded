@@ -1,6 +1,6 @@
 include ${PN}.inc
 
-PV = "1.2.1+cvs-${CVSDATE}"
+PV = "1.2.1+cvs${SRCDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
            ${HANDHELDS_CVS};module=opie/pics \

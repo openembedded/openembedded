@@ -1,4 +1,4 @@
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 SECTION = "console/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPLV2"

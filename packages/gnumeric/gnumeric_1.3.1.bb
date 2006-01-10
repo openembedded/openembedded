@@ -11,6 +11,8 @@ SRC_URI += 'file://workbook-control-gui-priv.h.patch;patch=1'
 
 EXTRA_OEMAKE_prepend = ' ORBIT_IDL=`which orbit-idl-2` '
 
+PACKAGES_DYNAMIC = "gnumeric-plugin-*"
+
 python populate_packages_prepend () {
 	gnumeric_libdir = bb.data.expand('${libdir}/gnumeric/${PV}/plugins', d)
 

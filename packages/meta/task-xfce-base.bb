@@ -7,9 +7,6 @@ ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
 PR = "r1"
 
-DEPENDS = "xfce-mcs-manager xfce-mcs-plugins xfwm4 xfce4-panel \
-	xfdesktop xfce-utils"
-
 RDEPENDS= "xfce-mcs-manager xfwm4 xfwm4-theme-default xfce-utils xfdesktop \
 	xfce4-panel xfce4-panel-plugins xfce-mcs-plugins xfwm4-mcs-plugins \
 	xfce-utils-mcs-plugins xfce4-panel-mcs-plugins \

@@ -1,4 +1,4 @@
-PV = "0.3.2svn${CVSDATE}"
+PV = "0.3.2+svn${SRCDATE}"
 LICENSE = "LGPL"
 
 DESCRIPTION = "C++ implementation of the Multimedia Internet KEYing (RFC3830)"

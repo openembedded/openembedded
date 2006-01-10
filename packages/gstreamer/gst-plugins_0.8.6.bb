@@ -27,6 +27,8 @@ plugin_postinst() {
 	fi
 }
 
+PACKAGES_DYNAMIC = "gst-plugin-*"
+
 python populate_packages_prepend () {
 	gst_libdir = bb.data.expand('${libdir}/gstreamer-${LIBV}', d)
 	postinst = bb.data.getVar('plugin_postinst', d, 1)

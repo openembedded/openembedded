@@ -28,6 +28,8 @@ do_stage () {
 	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
 }
 
+PACKAGES_DYNAMIC = "pango-module-*"
+
 python populate_packages_prepend () {
 	modules_root = bb.data.expand('${libdir}/pango/${LIBV}/modules', d)
 

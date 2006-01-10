@@ -54,6 +54,8 @@ do_stage() {
 	install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
 }
 
+PACKAGES_DYNAMIC = "perl-module-*"
+
 python populate_packages_prepend () {
 	libdir = bb.data.expand('${libdir}/perl5/${PV}', d)
 	archlibdir =  bb.data.expand('${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}', d)

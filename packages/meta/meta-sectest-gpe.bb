@@ -5,14 +5,11 @@ PR = "r5"
 
 ALLOW_EMPTY = "1"
 
-gpe-base-depends = "\
+RDEPENDS_gpe-base-depends := "\
     diet-x11 \
     virtual/xserver"
 
-RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
-DEPENDS += " ${gpe-base-depends}"
-
-gpe-task-base = "\
+RDEPENDS_gpe-task-base := "\
     bluez-utils-dbus \
     matchbox \
     xcursor-transparent-theme \
@@ -30,22 +27,17 @@ gpe-task-base = "\
     gpe-confd \
     gpe-autostarter \
     libgtkstylus \
-    detect-stylus"
+    detect-stylus \
+    gdk-pixbuf-loader-png \
+    gdk-pixbuf-loader-xpm \
+    gdk-pixbuf-loader-jpeg \
+    pango-module-basic-x \
+    pango-module-basic-fc"
 
-RDEPENDS_gpe-task-base := "gdk-pixbuf-loader-png \
-			   gdk-pixbuf-loader-xpm \
-			   gdk-pixbuf-loader-jpeg \
-			   pango-module-basic-x \
-			   pango-module-basic-fc \
-			   ${gpe-task-base}"
-DEPENDS += " ${gpe-task-base}"
-
-gpe-task-pim = "\
+RDEPENDS_gpe-task-pim := "\
     figment"
-RDEPENDS_gpe-task-pim := "${gpe-task-pim}"
-DEPENDS += " ${gpe-task-pim}"
 
-gpe-task-settings = "\
+RDEPENDS_gpe-task-settings := "\
     matchbox-panel-manager \
     gpe-bluetooth \
     gpe-beam \
@@ -61,10 +53,7 @@ gpe-task-settings = "\
     minilite \
     xmonobut"
 
-RDEPENDS_gpe-task-settings := "${gpe-task-settings}"
-DEPENDS += " ${gpe-task-settings}"
-
-sectest-task-apps = "\
+RDEPENDS_sectest-task-apps := "\
     gpe-edit \
     gpe-calculator \
     gpe-clock \
@@ -85,12 +74,9 @@ sectest-task-apps = "\
     hydra \
     thcrut \
     driftnet \
-	miniclipboard"
+    miniclipboard"
 
-RDEPENDS_sectest-task-apps := "${sectest-task-apps}"
-DEPENDS += " ${sectest-task-apps}"
-
-
+# FIXME - we shouldn't need this. which packages don't set their dependencies correctly?
 DEPENDS += "matchbox-themes-extra gtk-industrial-engine"
 
 LICENSE = "MIT"

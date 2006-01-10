@@ -6,9 +6,6 @@ NYLON_BASE = "base-files base-passwd bash busybox \
 	nano ncurses netbase \
 	openssh sysvinit \
 	timezones tinylogin"
-
-DEPENDS = "virtual/kernel \
-	${NYLON_BASE} ${BOOTSTRAP_EXTRA_DEPENDS}"
 	
 RDEPENDS = "kernel modutils-depmod modutils-modinfo \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"

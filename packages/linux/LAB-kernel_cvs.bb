@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 LICENSE = "GPL"
-PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${CVSDATE}"
+PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 #
 KERNEL_CCSUFFIX = "-3.4.4"
 COMPATIBLE_HOST = "arm.*-linux"

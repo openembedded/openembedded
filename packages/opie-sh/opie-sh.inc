@@ -3,7 +3,6 @@ SECTION = "opie/Shell"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-RDEPENDS = "opie-sh"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
 
@@ -31,7 +30,21 @@ do_install() {
 PACKAGES = " opie-sh-microkbd opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist \
 opie-sh-killproc opie-sh-launcher-refresh opie-sh-logviewer opie-sh-rsynchelper \
 opie-sh-servicemanager opie-sh-ssh-askpass opie-sh-stowawayctrl opie-sh-usbnetctrl \
-opie-sh-wavelanchooser opie-sh"
+opie-sh-wavelanchooser ${PN}"
+
+RDEPENDS_opie-sh-microkbd = "opie-sh"
+RDEPENDS_opie-sh-diskfree = "opie-sh"
+RDEPENDS_opie-sh-fsmounter = "opie-sh"
+RDEPENDS_opie-sh-hostlist = "opie-sh"
+RDEPENDS_opie-sh-killproc = "opie-sh"
+RDEPENDS_opie-sh-launcher-refresh = "opie-sh"
+RDEPENDS_opie-sh-logviewer = "opie-sh"
+RDEPENDS_opie-sh-rsynchelper = "opie-sh"
+RDEPENDS_opie-sh-servicemanager = "opie-sh"
+RDEPENDS_opie-sh-ssh-askpass = "opie-sh"
+RDEPENDS_opie-sh-stowawayctrl = "opie-sh"
+RDEPENDS_opie-sh-usbnetctrl = "opie-sh"
+RDEPENDS_opie-sh-wavelanchooser = "opie-sh"
 
 FILES_opie-sh-microkbd = " ${palmtopdir}/bin/microkbd.sh ${palmtopdir}/apps/Opie-SH/microkbd.desktop ${palmtopdir}/pics/opie-sh-scripts/keyz-cfg.png"
 FILES_opie-sh-diskfree = " ${palmtopdir}/bin/diskfree.sh ${palmtopdir}/apps/Opie-SH/diskfree.desktop ${palmtopdir}/pics/opie-sh-scripts/diskfree.png"

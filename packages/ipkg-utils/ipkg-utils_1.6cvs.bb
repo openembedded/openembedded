@@ -1,12 +1,11 @@
 DESCRIPTION = "Itsy Package Manager utilities"
-DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
-PV_append = "${CVSDATE}"
+PV_append = "${SRCDATE}"
 PR = "r9"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils"

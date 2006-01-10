@@ -3,7 +3,7 @@ DEPENDS = "ecore-x11 evas-x11 esmart-x11 edje eet e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 PR = "r1"
 
 inherit autotools

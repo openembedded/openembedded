@@ -1,6 +1,5 @@
-SECTION = "unknown"
 PR = "r2"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs1.sourceforge.net/cvsroot/linuxconsole;module=ruby \
 	file://serio.h \
