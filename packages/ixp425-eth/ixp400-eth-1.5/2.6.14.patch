@@ -1,5 +1,8 @@
---- ./ixp400_eth.c	2005-11-19 23:27:54.541565744 -0800
-+++ ./ixp400_eth.c	2005-11-19 23:28:56.253449028 -0800
+ ixp400_eth.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
 @@ -1838,7 +1838,11 @@ static inline void dev_eth_type_trans(un
      skb->len -= header_len;
     

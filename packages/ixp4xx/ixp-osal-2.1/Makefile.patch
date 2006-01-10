@@ -1,18 +1,21 @@
-diff -Naur ixp_osal.orig/Makefile ixp_osal/Makefile
---- ixp_osal.orig/Makefile	2005-08-24 00:16:37.000000000 +0200
-+++ ixp_osal/Makefile	2005-08-24 00:18:02.000000000 +0200
-@@ -172,7 +172,7 @@
+ Makefile                |    2 +-
+ os/linux/make/macros.mk |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+--- ixp_osal/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/Makefile	1970-01-01 00:00:00.000000000 +0000
+@@ -185,7 +185,7 @@ endif
+ INCLUDE_DIRS = include $(OSAL_DIRS:%=$(MAIN_INC_PREFIX)/%) $(OSAL_DIRS:%=$(OS_INC_PREFIX)/%)  
  
- # TODO push this to linux make
  ifeq ($(IX_OSAL_MK_HOST_OS), linux)
 -INCLUDE_DIRS += $(LINUX_SRC)/include/asm-arm/arch-ixp425/
 +INCLUDE_DIRS += $(LINUX_SRC)/include/asm-arm/arch-ixp4xx/
  endif
  
- CFLAGS += $(INCLUDE_DIRS:%=-I%)
---- ixp_osal/os/linux/make/macros.mk.orig	2005-10-01 15:50:19.544167880 -0700
-+++ ixp_osal/os/linux/make/macros.mk	2005-10-01 15:50:43.053647239 -0700
-@@ -88,10 +88,10 @@
+ CFLAGS += $(INCLUDE_DIRS:%=-I%) 
+--- ixp_osal/os/linux/make/macros.mk	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/os/linux/make/macros.mk	1970-01-01 00:00:00.000000000 +0000
+@@ -88,10 +88,10 @@ AR := $(LINUX_CROSS_COMPILE)ar
  # Compiler & linker options
  
  # Compiler flags

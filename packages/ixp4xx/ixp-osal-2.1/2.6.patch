@@ -1,5 +1,11 @@
---- ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c	2005-08-24 00:16:37.000000000 +0200
-+++ ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c	2005-08-24 00:18:02.000000000 +0200
+ os/linux/src/core/IxOsalOsMsgQ.c      |    2 +-
+ os/linux/src/core/IxOsalOsSemaphore.c |    6 +++---
+ os/linux/src/core/IxOsalOsServices.c  |   20 ++++++++++++++++----
+ os/linux/src/core/IxOsalOsThread.c    |    7 +------
+ 4 files changed, 21 insertions(+), 14 deletions(-)
+
+--- ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/os/linux/src/core/IxOsalOsMsgQ.c	1970-01-01 00:00:00.000000000 +0000
 @@ -45,9 +45,9 @@
   * -- End Intel Copyright Notice --
   */
@@ -11,8 +17,8 @@
  #include <linux/interrupt.h>
  
  #include "IxOsal.h"
---- ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c	2005-08-24 00:16:37.000000000 +0200
-+++ ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c	2005-08-26 15:58:16.000000000 +0200
+--- ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/os/linux/src/core/IxOsalOsSemaphore.c	1970-01-01 00:00:00.000000000 +0000
 @@ -46,7 +46,7 @@
   */
  
@@ -22,7 +28,7 @@
  #include "IxOsal.h"
  
  /* Define a large number */
-@@ -93,7 +93,7 @@
+@@ -93,7 +93,7 @@ ixOsalSemaphoreWait (IxOsalOsSemaphore *
  {
  
      IX_STATUS ixStatus = IX_SUCCESS;
@@ -40,8 +46,8 @@
  
      if (in_irq ())
      {
---- ixp_osal/os/linux/src/core/IxOsalOsServices.c	2005-04-17 20:56:28.000000000 -0700
-+++ ixp_osal/os/linux/src/core/IxOsalOsServices.c	2005-10-01 16:37:00.876444607 -0700
+--- ixp_osal/os/linux/src/core/IxOsalOsServices.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/os/linux/src/core/IxOsalOsServices.c	1970-01-01 00:00:00.000000000 +0000
 @@ -54,6 +54,7 @@
  #include <linux/time.h>
  #include <linux/sched.h>
@@ -50,7 +56,7 @@
  
  #include "IxOsal.h"
  
-@@ -89,7 +90,7 @@
+@@ -89,7 +90,7 @@ static IxOsalInfoType IxOsalInfo[NR_IRQS
  /*
   * General interrupt handler
   */
@@ -59,7 +65,7 @@
  ixOsalOsIsrProxy (int irq, void *dev_id, struct pt_regs *regs)
  {
      IxOsalInfoType *isr_proxy_info = (IxOsalInfoType *) dev_id;
-@@ -98,6 +99,7 @@
+@@ -98,6 +99,7 @@ ixOsalOsIsrProxy (int irq, void *dev_id,
  		   "ixOsalOsIsrProxy: Interrupt used before ixOsalIrqBind was invoked");
  
      isr_proxy_info->routine (isr_proxy_info->parameter);
@@ -67,7 +73,7 @@
  }
  
  /*
-@@ -105,11 +107,12 @@
+@@ -105,11 +107,12 @@ ixOsalOsIsrProxy (int irq, void *dev_id,
   * This handler saves the interrupted Program Counter (PC)
   * into a global variable
   */
@@ -81,7 +87,7 @@
  }
  
  /**************************************
-@@ -191,10 +194,15 @@
+@@ -191,10 +194,15 @@ ixOsalIrqUnbind (UINT32 vector)
  PUBLIC UINT32
  ixOsalIrqLock ()
  {
@@ -98,7 +104,7 @@
  }
  
  /* Enable interrupts and task scheduling,
-@@ -204,7 +212,11 @@
+@@ -204,7 +212,11 @@ ixOsalIrqLock ()
  PUBLIC void
  ixOsalIrqUnlock (UINT32 lockKey)
  {
@@ -110,7 +116,7 @@
  }
  
  PUBLIC UINT32
-@@ -329,7 +341,7 @@
+@@ -329,7 +341,7 @@ ixOsalBusySleep (UINT32 microseconds)
  PUBLIC void
  ixOsalSleep (UINT32 milliseconds)
  {
@@ -119,8 +125,8 @@
      {
          set_current_state(TASK_INTERRUPTIBLE); 
          schedule_timeout ((milliseconds * HZ) / 1000);
---- ixp_osal/os/linux/src/core/IxOsalOsThread.c	2005-11-20 00:59:09.734097888 -0800
-+++ ixp_osal/os/linux/src/core/IxOsalOsThread.c	2005-11-20 01:00:07.057705036 -0800
+--- ixp_osal/os/linux/src/core/IxOsalOsThread.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/os/linux/src/core/IxOsalOsThread.c	1970-01-01 00:00:00.000000000 +0000
 @@ -65,12 +65,7 @@ thread_internal (void *unused)
      void *arg = IxOsalOsThreadData.arg;
      static int seq = 0;

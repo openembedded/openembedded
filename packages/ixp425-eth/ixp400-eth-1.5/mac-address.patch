@@ -1,5 +1,5 @@
---- ./ixp400_eth.c.base	2005-11-28 23:59:34.476404165 -0800
-+++ ./ixp400_eth.c	2005-11-29 00:42:44.587389574 -0800
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
 @@ -23,10 +23,10 @@
   * This driver is written and optimized for Intel Xscale technology.
   *
