@@ -22,11 +22,5 @@ do_compile() {
 
 
 do_stage () {
-	oe_runmake install \
-		DESTDIR="" \
-		prefix=${STAGING_DIR} \
-		bindir=${STAGING_BINDIR} \
-		includedir=${STAGING_INCDIR} \
-		libdir=${STAGING_LIBDIR} \
-		mandir=${STAGING_DATADIR}/man
+	autotools_stage_all
 }

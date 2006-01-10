@@ -2,7 +2,6 @@ LICENSE = "GPL"
 PV = "0.0+cvs${SRCDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "x11"
 DESCRIPTION = "X11 keyboard library"
 
@@ -12,9 +11,5 @@ S = "${WORKDIR}/xkbfile"
 inherit autotools pkgconfig 
 
 do_stage() {
-	oe_runmake install prefix=${STAGING_DIR} \
-	       bindir=${STAGING_BINDIR} \
-	       includedir=${STAGING_INCDIR} \
-	       libdir=${STAGING_LIBDIR} \
-	       datadir=${STAGING_DATADIR}
+	autotools_stage_all
 }
