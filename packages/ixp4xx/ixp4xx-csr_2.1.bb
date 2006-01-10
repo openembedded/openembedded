@@ -33,11 +33,12 @@ SRC_URI += "file://ixnpemhconfigisr-is-private.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 SRC_URI += "file://mii-debug.patch;patch=1"
 SRC_URI += "file://rtl8201-support.patch;patch=1"
+SRC_URI += "file://gcc4.patch;patch=1"
 SRC_URI += "file://oe-makefile.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r6"
+PR = "r7"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 

@@ -24,7 +24,7 @@
  
  CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -Wall -Wno-trigraphs -fno-common \
 -          -pipe -mapcs-32 -mshort-load-bytes -msoft-float -DMODULE \
-+          -pipe -mapcs-32 -msoft-float -DMODULE \
++          -pipe -msoft-float -DMODULE \
            -D__linux -DCPU=33 -DXSCALE=33 $(LINUX_MACH_CFLAGS) -DEXPORT_SYMTAB
  
  # Linux linker flags
