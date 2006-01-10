@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r0"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -12,21 +12,17 @@ PR = "r2"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.15-rc2.tar.bz2 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc2-rc3.bz2;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc3-rc4.bz2;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc4-rc5.bz2;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc5-rc6.bz2;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.15-rc6-rc7.bz2;patch=1 \
+SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxa_ohci_platform-r5.patch;patch=1 \
            ${RPSRC}/pxa_ohci_suspend-r5.patch;patch=1 \
            ${RPSRC}/pxa_ohci_fixes-r0.patch;patch=1 \
            ${RPSRC}/spitz_ohci-r0.patch;patch=1 \
            ${RPSRC}/pxa_i2c_fixes-r5.patch;patch=1 \
            ${RPSRC}/scoop_cpr_fix-r1.patch;patch=1 \
-           ${RPSRC}/pxa2xx_release-r0.patch;patch=1 \
+           ${RPSRC}/pxa2xx_release-r1.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm_gcc4_fix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r3.patch;patch=1 \
            ${RPSRC}/led_core-r10.patch;patch=1 \
            ${RPSRC}/led_triggers-r8.patch;patch=1 \
@@ -97,7 +93,7 @@ SRC_URI_append_tosa = "${DOSRC}/nand-readid-r1.patch;patch=1 \
                        ${DOSRC}/wm97xx-touch-lg2-r0.patch;patch=1 \
                        ${DOSRC}/wm9712-pm-r0.patch;patch=1 "
 
-S = "${WORKDIR}/linux-2.6.15-rc2"
+S = "${WORKDIR}/linux-2.6.15"
 
 # to get module dependencies working
-KERNEL_RELEASE = "2.6.15-rc7"
+KERNEL_RELEASE = "2.6.15"
