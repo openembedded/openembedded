@@ -5,7 +5,8 @@ tree-structured databases, supporting relational joins, serialization, nested st
 and instant schema evolution."
 LICENSE = "MetaKit"
 HOMEPAGE = "http://www.equi4.com/metakit.html"
-SRC_URI = "http://www.equi4.com/pub/mk/metakit-${PV}.tar.gz \
+
+SRC_URI = "http://www.equi4.com/pub/mk/older/metakit-${PV}.tar.gz \
 	   file://metakit-2.4.9.3.patch;patch=1"
 PR = "r1"
 
