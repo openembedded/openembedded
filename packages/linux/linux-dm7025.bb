@@ -2,12 +2,13 @@ DESCRIPTION = "Linux kernel for Dreambox DM7025"
 LICENSE = "GPL"
 PN = "linux-dm7025"
 PV = "2.6.12"
-PR = "r2"
+PR = "r3"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI = "ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${PV}-dm7025-r1p2.patch.gz;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${PV}-dm7025-dvb.patch.gz;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${PV}-dm7025-r1pl1.patch.gz;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${PV}-dm7025-r1.conf"
 
 S = "${WORKDIR}/linux-${PV}"
