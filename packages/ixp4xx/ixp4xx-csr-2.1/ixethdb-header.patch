@@ -1,5 +1,5 @@
---- ixp400_xscale_sw/src/ethDB/include/IxEthDB_p.h.orig	2005-11-20 08:51:54.710993353 -0800
-+++ ixp400_xscale_sw/src/ethDB/include/IxEthDB_p.h	2005-11-20 08:51:57.559172578 -0800
+--- ixp_osal/src/ethDB/include/IxEthDB_p.h	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/src/ethDB/include/IxEthDB_p.h	1970-01-01 00:00:00.000000000 +0000
 @@ -693,7 +693,7 @@ IX_ETH_DB_PUBLIC UINT32 ixEthDBEntryXORH
  IX_ETH_DB_PUBLIC UINT32 ixEthDBKeyXORHash(void *macAddress);
  

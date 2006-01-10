@@ -1,5 +1,5 @@
---- ixp400_xscale_sw/src/npeMh/IxNpeMhSymbols.c.orig	2005-11-20 08:59:46.816701092 -0800
-+++ ixp400_xscale_sw/src/npeMh/IxNpeMhSymbols.c	2005-11-20 08:59:54.561188422 -0800
+--- ixp_osal/src/npeMh/IxNpeMhSymbols.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/src/npeMh/IxNpeMhSymbols.c	1970-01-01 00:00:00.000000000 +0000
 @@ -63,7 +63,6 @@ EXPORT_SYMBOL(ixNpeMhMessagesReceive);
  EXPORT_SYMBOL(ixNpeMhShow);
  EXPORT_SYMBOL(ixNpeMhShowReset);

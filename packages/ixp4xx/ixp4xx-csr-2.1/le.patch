@@ -1,5 +1,5 @@
---- ixp400_xscale_sw/.pc/le.patch/src/include/IxQMgr.h	2005-04-17 20:55:31.000000000 -0700
-+++ ixp400_xscale_sw/src/include/IxQMgr.h	2005-11-19 16:01:52.817556623 -0800
+--- ixp_osal/src/include/IxQMgr.h	1970-01-01 00:00:00.000000000 +0000
++++ ixp_osal/src/include/IxQMgr.h	1970-01-01 00:00:00.000000000 +0000
 @@ -96,8 +98,8 @@
  
  #else

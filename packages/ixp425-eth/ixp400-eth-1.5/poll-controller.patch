@@ -1,6 +1,11 @@
---- ./ixp400_eth.c	2005-11-19 23:36:44.482912850 -0800
-+++ ./ixp400_eth.c	2005-11-19 23:39:13.080263492 -0800
-@@ -347,6 +347,12 @@ static int dev_pmu_timer_init(void);
+poll controller support
+
+ ixp400_eth.c |   22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
+@@ -348,6 +348,12 @@ static int dev_pmu_timer_init(void);
  extern void 
  ixEthTxFrameDoneQMCallback(IxQMgrQId qId, IxQMgrCallbackId callbackId);
  
@@ -13,7 +18,7 @@
  /* Private device data */
  typedef struct {
      spinlock_t lock;  /* multicast management lock */
-@@ -3056,6 +3062,19 @@ static int set_mac_address(struct net_de
+@@ -3060,6 +3066,19 @@ static int set_mac_address(struct net_de
      return 0;
  }
  
@@ -33,7 +38,7 @@
  
  /* 
   *  TX QDISC
-@@ -3269,6 +3288,9 @@ static int __devinit dev_eth_probe(struc
+@@ -3270,6 +3289,9 @@ static int __devinit dev_eth_probe(struc
      ndev->get_stats = dev_get_stats;
      ndev->set_multicast_list = dev_set_multicast_list;
      ndev->flags |= IFF_MULTICAST;

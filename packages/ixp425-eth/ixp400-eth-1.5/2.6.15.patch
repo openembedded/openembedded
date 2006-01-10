@@ -1,5 +1,10 @@
---- ./ixp400_eth.c.orig	2005-11-13 16:17:57.943717806 -0800
-+++ ./ixp400_eth.c	2005-11-13 16:29:00.829430574 -0800
+2.6.15 needs platform_device.h
+
+ ixp400_eth.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
 @@ -65,6 +65,10 @@
  #include <linux/sysctl.h>
  #include <linux/unistd.h>
