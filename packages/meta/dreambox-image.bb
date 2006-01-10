@@ -8,12 +8,12 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	dreambox-compat tuxbox-common"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
-	ppp module-init-tools modutils-initscripts"
+	ppp module-init-tools modutils-initscripts samba"
 
 OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2fsprogs-e2fsck \
 	ppp	module-init-tools-depmod \
 	modutils-initscripts \
-	base-files-doc"
+	base-files-doc sambaserver"
 
 # experimental packages
 OPENDREAMBOX_EXPERIMENTAL = "enigma2"
