@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.1.26+cvs${SRCDATE}"
+PV = "0.1.27+cvs${SRCDATE}"
 PR = "r0"
 
 inherit gpe
