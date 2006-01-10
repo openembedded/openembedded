@@ -1,0 +1,29 @@
+devices must be explicitely stopped when
+the driver is going do be removed, otherwise
+it will simply hang.
+
+ ixp400_eth.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
+@@ -3800,9 +3800,16 @@ void __exit ixp400_eth_exit(void)
+ 
+     TRACE;
+ 
+-    /* We can only get here when the module use count is 0,
+-     * so there's no need to stop devices.
+-     */
++    /* stop devices */
++
++#if IS_KERNEL26
++    for (dev_count = 0;
++	 dev_count < dev_max_count;  /* module parameter */
++	 dev_count++)
++    {
++	do_dev_stop(platform_get_drvdata(&ixp400_eth_devices[dev_count]));
++    }
++#endif
+ 
+     if (no_ixp400_sw_init == 0) /* module parameter */
+     {

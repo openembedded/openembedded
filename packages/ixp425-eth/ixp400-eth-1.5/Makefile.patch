@@ -1,5 +1,8 @@
---- ./Makefile	2005-09-06 00:17:15.000000000 -0700
-+++ ./Makefile	2005-10-02 22:15:19.974595551 -0700
+This is an OpenEmbedded only patch to make the code buildable in
+the OpenEmbedded environment.
+
+--- ixp400-eth/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/Makefile	1970-01-01 00:00:00.000000000 +0000
 @@ -0,0 +1,30 @@
 +obj-m := ixp400_eth.o
 +
