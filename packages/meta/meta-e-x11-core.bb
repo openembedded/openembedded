@@ -13,14 +13,10 @@ ALLOW_EMPTY = 1
 #
 # X
 #
-DEPENDS =                  "diet-x11 rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo fontconfig \
-                            ttf-bitstream-vera chkhinge"
-RDEPENDS_task-e-x11-core = "         rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo            \
-                            ttf-bitstream-vera chkhinge"
+RDEPENDS_task-e-x11-core = " rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
+                             ttf-bitstream-vera chkhinge"
 
 #
 # E-core
 #
-DEPENDS +=                  "entrance e-wm"
 RDEPENDS_task-e-x11-core += "entrance e-wm"
-

@@ -1,14 +1,14 @@
 DEFAULT_PREFERENCE = "-1"
-LICENSE =	"GPL"
-DESCIPTION =	"Buttonbox for gpe"
+LICENSE = "GPL"
+DESCIPTION = "Buttonbox for gpe"
 
-SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/gpe-buttonbox"
+SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-buttonbox"
 
-DEPENDS =	"libgpewidget libgpelaunch"
+DEPENDS = "libgpewidget libgpelaunch"
 
-S =		"${WORKDIR}/${PN}"
-PV =		"0.5+cvs-${CVSDATE}"
-PR =		"r0"
+S = "${WORKDIR}/${PN}"
+PV = "0.5+cvs${SRCDATE}"
+PR = "r0"
 
 inherit autotools
 

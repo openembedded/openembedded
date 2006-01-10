@@ -53,5 +53,4 @@ DESCRIPTION_alsa-utils-alsaconf     = "a bash script that creates ALSA configura
 
 RDEPENDS_alsa-utils-aplay  += "alsa-conf"
 RDEPENDS_alsa-utils-amixer += "alsa-conf"
-RDEPENDS_alsa-utils += "${ALSA_PACKAGES}"
 ALLOW_EMPTY_alsa-utils = "1"

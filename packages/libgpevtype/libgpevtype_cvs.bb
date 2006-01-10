@@ -7,13 +7,13 @@ DEPENDS = 	"libmimedir"
 
 DEFAULT_PREFERENCE = "-1"
 
-S =     	"${WORKDIR}/${PN}"
-PV =   		"0.12+cvs-${CVSDATE}"
-PR = 		"r0"
+S = "${WORKDIR}/${PN}"
+PV = "0.12+cvs${SRCDATE}"
+PR = "r0"
 
 inherit pkgconfig gpe autotools
 
-SRC_URI =   	"${HANDHELDS_CVS};module=gpe/base/${PN}"
+SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 
 headers = "tag-db.h vcard.h vevent.h vtodo.h"

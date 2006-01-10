@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r32"
+PR = "r33"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -22,14 +22,14 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
 # for devices with >16M of flash
 #
 
-DEPENDS = "irda-utils ntp timezones ttf-dejavu \
-           bluez-utils-nodbus wireless-tools \
-           opie-ttf-support libopieobex0 opie-examples-python \
-           opie-freetype opie-help-en opie-i18n opie-login \
-           opie-securityplugin-blueping opie-securityplugin-dummy \
-           opie-securityplugin-notice opie-securityplugin-pin \
-           opie-sh opie-symlinker opie-alarm openobex \
-           konqueror-embedded qpdf2"
+#DEPENDS = "irda-utils ntp timezones ttf-dejavu \
+#           bluez-utils-nodbus wireless-tools \
+#           opie-ttf-support libopieobex0 opie-examples-python \
+#           opie-freetype opie-help-en opie-i18n opie-login \
+#           opie-securityplugin-blueping opie-securityplugin-dummy \
+#           opie-securityplugin-notice opie-securityplugin-pin \
+#           opie-sh opie-symlinker opie-alarm openobex \
+#           konqueror-embedded qpdf2"
 
 #
 # Dependencies to get the launcher up and running
@@ -71,7 +71,8 @@ task-opie-base-apps = "opie-console opie-clock opie-citytime opie-backup opie-sy
 
 task-opie-base-settings = "opie-packagemanager opie-light-and-power opie-appearance \
                            opie-systemtime opie-networksettings opie-button-settings \
-                           opie-icon-reload opie-launcher-settings opie-security"
+                           opie-icon-reload opie-launcher-settings opie-security \
+                           opie-securityplugin-pin"
 
 #
 # That settings can be removed and device will be still usable
@@ -192,14 +193,9 @@ task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-ticta
 # Let's build DEPENDS and RDEPENDS now
 #
 
-DEPENDS += "${task-opie-applets} ${task-opie-apps} \
-            opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
-            opie-sounds opie-ttf-support ttf-dejavu \
-            ${task-opie-bluetooth} ${task-opie-datebookplugins} \
-            ${task-opie-decorations} ${task-opie-extra-settings} \
-            ${task-opie-games} ${task-opie-inputmethods} ${task-opie-irda} \
-            ${task-opie-multimedia} ${task-opie-todayplugins} ${task-opie-pim} \
-            ${task-opie-settings} ${task-opie-styles} ${task-opie-wlan}"
+## FIXME - these shouldn't be here
+#DEPENDS += "opie-qcop opie-qss opie-quicklauncher opie-taskbar opie-pics \
+#            opie-sounds opie-ttf-support ttf-dejavu"
 
 RDEPENDS_task-opie-applets              = "${task-opie-applets}"
 RDEPENDS_task-opie-apps                 = "${task-opie-apps}"

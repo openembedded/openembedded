@@ -1,7 +1,6 @@
 DESCRIPTION = "Enlightenment Window Mananger Library"
 DEPENDS = "virtual/evas virtual/ecore edje eet embryo"
 LICENSE = "MIT"
-CVSDATE = "${PV}"
 PR = "r1"
 
 inherit efl

@@ -3,7 +3,7 @@ SECTION = "bootloader"
 MAINTAINER = "Cliff Brake <cliff.brake@gmail.com>"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 
 PROVIDES = "virtual/bootloader"

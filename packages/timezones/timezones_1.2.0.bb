@@ -14,9 +14,11 @@ do_install() {
 	find ${D}${datadir} -name "CVS"|xargs rm -rf
 }
 
+PACKAGES_DYNAMIC = "timezone-*"
+
 python populate_packages_prepend() {
         pkgregex = "^(.*)"
-        pkgpattern = "timezones-%s"
+        pkgpattern = "timezone-%s"
         pkgdescription = "Timezone for %s"
 
         do_split_packages(d, root=bb.data.expand('${datadir}/zoneinfo/', d), file_regex=pkgregex, output_pattern=pkgpattern, 

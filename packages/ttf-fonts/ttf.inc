@@ -2,7 +2,7 @@ SECTION = "x11/fonts"
 PRIORITY = "optional"
 PACKAGE_ARCH = "all"
 #DEPENDS = "fontconfig opie-ttf-support"
-#RSUGGESTS = "libfontconfig-utils opie-ttf-support"
+#RSUGGESTS = "fontconfig-utils opie-ttf-support"
 
 # I dont want TTF fonts to depend on fontconfig on device
 # as those fonts are used not only in X11 enviroment

@@ -1,6 +1,6 @@
 
 LICENSE = "MIT"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 
 SECTION = "libs"
 DEPENDS = "x11 xext"

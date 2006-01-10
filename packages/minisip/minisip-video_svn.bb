@@ -1,4 +1,4 @@
-PV = "0.6.2svn${CVSDATE}"
+PV = "0.6.2+svn${SRCDATE}"
 LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
@@ -6,7 +6,7 @@ MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 CONFLICTS = "minisip"
 
 DESCRIPTION = "SIP user agent, with focus on security - video support"
-DEPENDS = "libsdl-x11 ffmpeg-0.4.9-pre1+cvs-${CVSDATE} libglademm libmsip0 libmikey0"
+DEPENDS = "libsdl-x11 ffmpeg-0.4.9-pre1+cvs${SRCDATE} libglademm libmsip0 libmikey0"
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
 S = ${WORKDIR}/minisip
 

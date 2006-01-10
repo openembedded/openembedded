@@ -76,6 +76,8 @@ do_stage() {
 	oe_libinstall -so -C src/xine-engine libxine ${STAGING_LIBDIR}
 }
 
+PACKAGES_DYNAMIC = "libxine-plugin-* libxine-font-*"
+
 python populate_packages_prepend () {
 	bb.data.setVar('PKG_libxine', 'libxine', d)
 

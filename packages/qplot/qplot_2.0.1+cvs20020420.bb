@@ -4,8 +4,8 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://qplot.sourceforge.net/"
-CVSDATE = 20020420
-PV = "2.0.1-cvs-${CVSDATE}"
+SRCDATE = 20020420
+PV = "2.0.1+cvs${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/qplot;module=qplot \

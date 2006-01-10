@@ -4,7 +4,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "x11 xft xtst xpm"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anoncvs@xstroke.org/cvs/xstroke;module=xstroke"

@@ -4,7 +4,7 @@ LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r0"
-CVSDATE = "${PV}"
+SRCDATE = "${PV}"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/examine"
 S = "${WORKDIR}/examine"

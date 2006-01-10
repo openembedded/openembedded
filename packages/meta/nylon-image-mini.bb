@@ -8,9 +8,6 @@ NYLON_BASE = "base-files base-passwd busybox \
 	netbase \
 	wireless-tools"
 
-DEPENDS = "virtual/kernel modutils \
-	${NYLON_BASE} ${BOOTSTRAP_EXTRA_DEPENDS}"
-	
 RDEPENDS = "kernel \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 

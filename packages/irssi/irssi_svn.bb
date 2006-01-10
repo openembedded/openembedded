@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS += "ncurses glib-1.2"
-PV = "0.8.10+svn${CVSDATE}"
+PV = "0.8.10+svn${SRCDATE}"
 PR = "r2"
 
 PACKAGES += "${PN}-common"

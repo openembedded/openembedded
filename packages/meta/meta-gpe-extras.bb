@@ -5,24 +5,18 @@ PR="r1"
 
 ALLOW_EMPTY = 1
 
-gpe-task-apps-extra = "\
+RDEPENDS_gpe-task-apps-extra := "\
     gpe-filemanager \
     gpe-nmf \
     gpe-soundbite \
     mbmerlin"
 
-RDEPENDS_gpe-task-apps-extra := "${gpe-task-apps-extra}"
-DEPENDS += " ${gpe-task-apps-extra}"
-
-gpe-task-web = "\
+RDEPENDS_gpe-task-web := "\
     gpe-irc \
     minimo \
     gaim"
 
-RDEPENDS_gpe-task-web := "${gpe-task-web}"
-DEPENDS += " ${gpe-task-web}"
-
-gpe-task-desktopapps = "\
+RDEPENDS_gpe-task-desktopapps := "\
     firefox \
     thunderbird \
     galculator \
@@ -30,6 +24,4 @@ gpe-task-desktopapps = "\
     gpdf \
     totem"
 
-RDEPENDS_gpe-task-desktopapps := "${gpe-task-desktopapps}"
-DEPENDS += " ${gpe-task-desktopapps}"
 LICENSE = MIT

@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PV = "v19-cvs-${CVSDATE}"
+PV = "0.0.19+cvs${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "http://www.portaudio.com/archives/pa_snapshot_v19.tar.gz"

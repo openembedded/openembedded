@@ -11,16 +11,6 @@ PACKAGES = "${PN}"
 
 MODUTILS ?= "24 26"
 
-def bootstrap_modutils_depends(d):
-	import bb
-	m = bb.data.getVar('MODUTILS', d, 1)
-	r = []
-	if '24' in m:
-		r.append('modutils')
-	if '26' in m:
-		r.append('module-init-tools')
-	return ' '.join(r)
-
 def bootstrap_modutils_rdepends(d):
 	import bb
         m = bb.data.getVar('MODUTILS', d, 1)
@@ -32,13 +22,6 @@ def bootstrap_modutils_rdepends(d):
         return ' '.join(r)
 
 HOTPLUG ?= "linux-hotplug"
-
-DEPENDS = 'base-files base-passwd-3.5.9 \
-	busybox modutils netbase \
-	modutils-initscripts \
-	${HOTPLUG} \
-	${PIVOTBOOT_EXTRA_DEPENDS} \
-	${@bootstrap_modutils_depends(d)}'
 
 RDEPENDS = 'base-files base-passwd busybox \
 	netbase modutils-initscripts \

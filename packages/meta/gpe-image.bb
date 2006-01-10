@@ -42,8 +42,16 @@ GPE_EXTRA_INSTALL_none = ""
 XSERVER ?= "xserver-kdrive-fbdev"
 
 DEPENDS = "task-bootstrap \
-	   meta-gpe \
-	   ${GPE_EXTRA_DEPENDS}"
+           meta-gpe \
+           ${GPE_EXTRA_DEPENDS}"
+
+RDEPENDS = "\
+    gpe-task-base \
+    gpe-task-pim \
+    gpe-task-settings \
+    gpe-task-apps \
+    ${XSERVER} \
+    ${GPE_EXTRA_INSTALL}"
 
 export IPKG_INSTALL = "task-bootstrap gpe-task-base \
            	       gpe-task-pim gpe-task-settings \

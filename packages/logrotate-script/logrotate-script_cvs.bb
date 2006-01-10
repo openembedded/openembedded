@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 
-SRC_URI = "http://meshcube.org/download/logrotate_${CVSDATE}.tgz"
+SRC_URI = "http://meshcube.org/download/logrotate_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"
 
 do_install() {

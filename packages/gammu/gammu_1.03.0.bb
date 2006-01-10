@@ -69,6 +69,8 @@ PACKAGES =+ "libgammu"
 FILES_${PN} = "${bindir}/gammu"
 FILES_libgammu = "${libdir}/libGammu.so*"
 
+PACKAGES_DYNAMIC = "gammu-locale-*"
+
 python populate_packages_prepend () {
         help_dir = bb.data.expand('${datadir}/gammu/', d)
         
