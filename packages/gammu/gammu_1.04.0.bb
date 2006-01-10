@@ -6,9 +6,7 @@ HOMEPAGE = "http://mwiacek.com/gsm/soft/gammu.html"
 AUTHOR = "Marcin Wiacek <marcin@mwiacek.com>"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
-SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/stable/1_0x/gammu-${PV}.tar.gz \
-file://ldflags.patch;patch=1 \
-"
+SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/stable/1_0x/gammu-${PV}.tar.gz "
 
 EXTRA_OECONF = "--disable-mysql"
 
@@ -20,17 +18,17 @@ do_compile () {
 
 do_stage() {
         install -d ${STAGING_INCDIR}/gammu/misc  ${STAGING_INCDIR}/gammu/misc/coding \
-                           ${STAGING_INCDIR}/gammu/phone ${STAGING_INCDIR}/gammu/phone/at \
-                           ${STAGING_INCDIR}/gammu/phone/obex ${STAGING_INCDIR}/gammu/phone/nokia \
-                           ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4 \
-                           ${STAGING_INCDIR}/gammu/phone/symbian ${STAGING_INCDIR}/gammu/phone/alcatel \
-                           ${STAGING_INCDIR}/gammu/service ${STAGING_INCDIR}/gammu/service/sms \
-                           ${STAGING_INCDIR}/gammu/service/backup ${STAGING_INCDIR}/gammu/device \
-                           ${STAGING_INCDIR}/gammu/device/irda ${STAGING_INCDIR}/gammu/device/bluetoth \
-                           ${STAGING_INCDIR}/gammu/device/serial ${STAGING_INCDIR}/gammu/protocol \
-                           ${STAGING_INCDIR}/gammu/protocol/at ${STAGING_INCDIR}/gammu/protocol/obex \
-                           ${STAGING_INCDIR}/gammu/protocol/nokia ${STAGING_INCDIR}/gammu/protocol/symbian \
-                           ${STAGING_INCDIR}/gammu/protocol/alcatel
+                   ${STAGING_INCDIR}/gammu/phone ${STAGING_INCDIR}/gammu/phone/at \
+                   ${STAGING_INCDIR}/gammu/phone/obex ${STAGING_INCDIR}/gammu/phone/nokia \
+                   ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4 \
+                   ${STAGING_INCDIR}/gammu/phone/symbian ${STAGING_INCDIR}/gammu/phone/alcatel \
+                   ${STAGING_INCDIR}/gammu/service ${STAGING_INCDIR}/gammu/service/sms \
+                   ${STAGING_INCDIR}/gammu/service/backup ${STAGING_INCDIR}/gammu/device \
+                   ${STAGING_INCDIR}/gammu/device/irda ${STAGING_INCDIR}/gammu/device/bluetoth \
+                   ${STAGING_INCDIR}/gammu/device/serial ${STAGING_INCDIR}/gammu/protocol \
+                   ${STAGING_INCDIR}/gammu/protocol/at ${STAGING_INCDIR}/gammu/protocol/obex \
+                   ${STAGING_INCDIR}/gammu/protocol/nokia ${STAGING_INCDIR}/gammu/protocol/symbian \
+                   ${STAGING_INCDIR}/gammu/protocol/alcatel
 
         oe_libinstall -so -C common libGammu ${STAGING_LIBDIR}
 
