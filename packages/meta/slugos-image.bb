@@ -4,7 +4,7 @@
 # conf/distro/slugos.conf to get the standard settings).
 #
 LICENSE = "MIT"
-PR = "r17"
+PR = "r18"
 PROVIDES += "${SLUGOS_IMAGENAME}-image"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
@@ -65,7 +65,7 @@ nslu2_pack_image() {
 
 IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image;"
 
-SLUGOS_IMAGE_DEPENDS = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
+DEPENDS = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']} virtual/kernel virtual/ixp-eth"
 
 IMAGE_LINGUAS = ""
 # Setting USE_DEVFS prevents *any* entries being created initially
@@ -73,15 +73,8 @@ IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
 # CONFIG:
-# SLUGOS_IMAGE_DEPENDS:  set above, do not change
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_EXTRA_DEPENDS:  set in conf, things to build, not added
-#                        to the image.
-# SLUGOS_NATIVE_DEPENDS: set in conf, things to build, intended
-#                        for native (run-on-host) tools
-#
-# SLUGOS_SUPPORT:        set to here, see below, added to build and
-#                        to the image.
+# SLUGOS_SUPPORT:        set to here, see below, added to the image.
 # SLUGOS_KERNEL:         set here, kernel modules added to the image
 #
 # Do not override the last two unless you really know what you
@@ -103,28 +96,19 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 # other than the network to output error messages!)
 SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
        
-# The things explicitly included in the following lists are the
-# absolute minimum to have any chance of a bootable system.
-DEPENDS = "${SLUGOS_IMAGE_DEPENDS} \
-	virtual/kernel base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-slugos netbase \
-        sysvinit tinylogin portmap \
-        virtual/ixp-eth slugos-init \
+RDEPENDS = "kernel ixp-eth \
+	base-files base-passwd netbase \
+        busybox hotplug-ng initscripts-slugos slugos-init \
+        update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
-	${SLUGOS_SUPPORT} \
-        ${SLUGOS_EXTRA_DEPENDS} \
-	${SLUGOS_NATIVE_DEPENDS}"
-
-IPKG_INSTALL = "base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-slugos netbase \
-        update-modules sysvinit tinylogin portmap \
-        ${PREFERRED_PROVIDER_virtual/ixp-eth} slugos-init \
-	module-init-tools modutils-initscripts \
-        ipkg-collateral ipkg ipkg-link \
+	portmap \
+	dropbear \
 	${SLUGOS_SUPPORT} \
 	${SLUGOS_KERNEL} \
 	${SLUGOS_EXTRA_RDEPENDS}"
+
+IPKG_INSTALL = "${RDEPENDS}"
 
 inherit image_ipk
 

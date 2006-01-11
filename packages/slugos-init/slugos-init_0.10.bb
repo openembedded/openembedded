@@ -24,7 +24,6 @@ SRC_URI = "file://linuxrc \
 	   file://conffiles \
 	   file://turnup \
 	   file://reflash \
-	   file://modprobe.conf \
 	   file://links.conf \
 	   file://leds.h \
 	   file://leds.c \
@@ -105,9 +104,6 @@ do_install() {
 
 	# Configuration files
 	install -m 0644 conffiles ${D}${sysconfdir}/default
-	# Change MODULE in modprobe.conf to the correct module name
-	rm -f ${D}${sysconfdir}/modprobe.conf
-	sed 's/MODULE/'"$(echo '${PREFERRED_PROVIDER_virtual/ixp-eth}'|sed 's/-/_/g')"'/g' modprobe.conf >${D}${sysconfdir}/modprobe.conf
 
 	set +ex
 }
@@ -148,4 +144,4 @@ FILES_${PN} = "/"
 
 # It is bad to overwrite /linuxrc as it puts the system back to
 # a flash boot (and the flash has potentially not been upgraded!)
-CONFFILES_${PN} = "${sysconfdir}/modprobe.conf /linuxrc ${sysconfdir}/default/conffiles"
+CONFFILES_${PN} = "/linuxrc ${sysconfdir}/default/conffiles"
