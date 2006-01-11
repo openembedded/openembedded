@@ -1,0 +1,7 @@
+diff -Naur plugins_orig/enigma/Makefile.am plugins/enigma/Makefile.am
+--- plugins_orig/enigma/Makefile.am	2006-01-11 00:01:08.000000000 +0100
++++ plugins/enigma/Makefile.am	2006-01-11 00:31:59.000000000 +0100
+@@ -1,2 +1,2 @@
+-SUBDIRS = demo dreamdata ngrabstart ngrabstop dslconnect dsldisconnect rss script weather dbswitch getset dreamflash movieplayer
++SUBDIRS = demo dreamdata ngrabstart ngrabstop dslconnect dsldisconnect rss script weather dbswitch getset movieplayer
+ 
