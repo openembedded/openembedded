@@ -1,4 +1,4 @@
-DEPENDS = "jpeg libungif libid3tag libmad libpng libsigc++-1.2 gettext-native tuxbox-libs tuxbox-plugins dreambox-dvbincludes mtd-utils freetype libtuxtxt"
+DEPENDS = "jpeg libungif libid3tag libmad libpng libsigc++-1.2 gettext-native tuxbox-libs dreambox-dvbincludes mtd-utils freetype"
 DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
@@ -35,7 +35,7 @@ do_compile_prepend() {
 do_stage_append() {
 	install -d ${STAGING_INCDIR}/enigma
 	install -m 0644 ${WORKDIR}/enigma/include/*.h ${STAGING_INCDIR}/enigma
-	for dir in base dvb dvb/lowlevel codecs driver gdi gui socket system picviewer; do
+	for dir in base dvb dvb/lowlevel codecs driver gdi gui socket system picviewer movieplayer; do
 		install -d ${STAGING_INCDIR}/enigma/lib/$dir;
 		install -m 0644 ${WORKDIR}/enigma/include/lib/$dir/*.h ${STAGING_INCDIR}/enigma/lib/$dir;
 	done;
