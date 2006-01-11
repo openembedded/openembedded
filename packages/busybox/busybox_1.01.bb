@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
@@ -21,6 +21,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcpretrytime.patch;patch=1 \
 	   file://fbset.patch;patch=1 \
 	   file://hdparm_M.patch;patch=1 \
+	   file://nptl_task.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
 	   file://iproute-flush-cache.patch;patch=1;pnum=0 \
 	   file://mount-all-type.patch;patch=1 \
