@@ -22,9 +22,8 @@ N2K_SUFFIX ?= "nslu2${ARCH_BYTE_SEX}"
 # Why have anything in the config file to control the image build - why not
 # just select a different image .bb file (e.g. slugos-ramdisk-image.bb) to
 # build with different options.
-# IMAGE_SEX = "${@['big-endian', 'little-endian'][bb.data.getVar('ARCH_BYTE_SEX', d, 1) == 'le']}"
 SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
-EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x20000 -D ${SLUGOS_DEVICE_TABLE}"
+EXTRA_IMAGECMD_jffs2 = "--pad --${SLUGOS_IMAGESEX} --eraseblock=0x20000 -D ${SLUGOS_DEVICE_TABLE}"
 
 # IMAGE_PREPROCESS_COMMAND is run before making the image.  In SlugOS the
 # kernel image is removed from the root file system to recover the space used -
