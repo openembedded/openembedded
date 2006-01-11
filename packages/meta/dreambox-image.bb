@@ -5,7 +5,7 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
-	dreambox-compat tuxbox-common"
+	dreambox-compat tuxbox-common mrouted"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools modutils-initscripts samba"
@@ -19,7 +19,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2f
 OPENDREAMBOX_EXPERIMENTAL = "enigma2"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
-OPENDREAMBOX_TUXBOX = "enigma ipkgpl dreamdata enigma-modem"
+OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
 OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins links-dream"
 OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
@@ -28,7 +28,7 @@ OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
 	tuxbox-plugin-satfind   tuxbox-plugin-tuxcom 	links-dream-plugin \
-	links-dream-plugin"
+	links-dream-plugin enigma-plugin-dreamdata"
 
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
