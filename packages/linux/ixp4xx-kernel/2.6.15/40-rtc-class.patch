@@ -653,7 +653,7 @@
 +EXPORT_SYMBOL(rtc_tm_to_time);
 --- linux-nslu2.orig/arch/arm/Kconfig	2006-01-04 01:27:04.000000000 +0100
 +++ linux-nslu2/arch/arm/Kconfig	2006-01-04 01:27:31.000000000 +0100
-@@ -750,6 +750,8 @@ source "drivers/usb/Kconfig"
+@@ -748,6 +748,8 @@ source "drivers/usb/Kconfig"
  
  source "drivers/mmc/Kconfig"
  

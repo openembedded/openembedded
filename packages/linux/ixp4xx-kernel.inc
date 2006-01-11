@@ -7,15 +7,22 @@
 # Define the following *before* including this file as
 # required:
 #
-# IXP4XX_PATCHES - full list of patches to apply
-#
+# IXP4XX_PATCHES - full list of patches to apply, to add files
+#   generate a patch against /dev/null
 # IXP4XX_SUFFIX - the suffix to add after 'zImage-' in the
-#   deploy/images directory - defaults to "ixp4xx"
+#   deploy/images directory, should identify the image config
+#
+# DEFAULT_PREFERENCE is set automagically in this file as
+# follows:
+#
+#  10  For *released* kernels
+#   8  For mm or ac patched versions of released kernels
+#   6  For rc patched kernels (release candidates)
+#   4  For mm or ac patched rc (release candidate) kernels
+#   2  For pre or bk versions
+#   0  For mm or ac patched pre or bk versions
 #
 # --------------------------------------------------------------
-#
-# Within this file bitbake variables local to the file are
-# named N1K_FOO
 #
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
@@ -130,17 +137,20 @@ python () {
 
 # FILESPATH: this list is in order last-searched-first, therefore
 # the first entry is the *latest* and/or most specific
-FILESPATH = "${IXP4XX_FILESPATH}:${FILE_DIRNAME}/ixp4xx-kernel/"
+FILESPATH = "${FILE_DIRNAME}/${P}:${IXP4XX_FILESPATH}"
 
 # The working directory will be the 'base' version (which may not be the
 # same as implied by the PV variable because it corresponds to the prior
 # minor version for rc and pre patched versions).
 S = "${WORKDIR}/linux-${IXP4XX_SRCVER}"
 
-# IXP4XX_PATCHES is a list of additional patches to apply
+# IXP4XX_PATCHES is the list of patches.
 IXP4XX_PATCHES ?= ""
 
-IXP4XX_SUFFIX ?= "ixp4xx"
+# Image suffix - actually set in conf/machine/ixp4xx.conf as it is also
+# used by anything which needs to know the name of the generated image.
+# Should be overridden in the distro if patches or defconfig are changed.
+IXP4XX_SUFFIX ?= "ixp4xx${ARCH_BYTE_SEX}"
 
 SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
@@ -152,13 +162,29 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
+
 # To specify the console set KERNEL_CONSOLE in the .bb file.
 # CMDLINE_ROOT contains the boot options, CMDLINE_KERNEL_OPTIONS
 # contains the things for a specific kernel.
-# CMDLINE_KERNEL_OPTIONS ?= "reboot=s"
-CMDLINE_KERNEL_OPTIONS ?=
-CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
-CMDLINE_DEBUG =
+#
+# These are set from MACHINE specific defaults below, but an override
+# in local.conf will still take precedence.
+#
+# CMDLINE_KERNEL_OPTIONS: overridable in local.conf
+MACH_KERNEL_OPTIONS = "x1205.hctosys=1 x1205.probe=0,0x6f pcf8563.hctosys=1"
+MACH_KERNEL_OPTIONS_nas100d = "pcf8563.hctosys=1"
+MACH_KERNEL_OPTIONS_nslu2   = "rtc-x1205.hctosys=1 rtc-x1205.probe=0,0x6f"
+CMDLINE_KERNEL_OPTIONS ?= "${MACH_KERNEL_OPTIONS}"
+
+# CMDLINE_ROOT: machine specific, do not override
+CMDLINE_ROOT = "init=/linuxrc"
+CMDLINE_ROOT_loft    = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
+CMDLINE_ROOT_nas100d = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
+CMDLINE_ROOT_nslu2   = "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
+
+# CMDLINE_DEBUG: debug options such as noirqdebug, defaults to empty
+# override in local.conf etc
+CMDLINE_DEBUG ?= ""
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
@@ -177,6 +203,9 @@ EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 # Override KERNEL_RELEASE from kernel.bbclass to match:
 KERNEL_RELEASE = "${KERNEL_VERSION}"
 
+# Set the correct CONFIG_CPU_xxx_ENDIAN and CONFIG_CMDLINE at the head
+# of the .config file and remove any settings in defconfig then append
+# defconfig to .config
 do_configure_prepend() {
 	rm -f ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
@@ -189,10 +218,56 @@ do_configure_prepend() {
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
 
+# This function adds the required prefix to the image to deal with two
+# problems on NSLU2.
+#
+# 1) The machine type set by RedBoot is wrong - the type for an ixdp425, not an IXP4XX
+#    e3a01c02 e3811055
+# 2) For LE kernels it is necessary to prefix change-to-le code to the kernel image:
+#    ee110f10 e3c00080 ee010f10
+#    and to byte swap the (LE) image to match the BE flash layout
+#
+# The argument to the function is the destination directory
+redboot_fixup_armeb() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'cp$'
+	mv "$1".new "$1"
+}
+
+redboot_fixup_arm() {
+	rm -f "$1".new
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
+		'wb 0xe3a01c02,4' \
+		'wb 0xe3811055,4' \
+		'wb 0xee110f10,4' \
+		'wb 0xe3c00080,4' \
+		'wb 0xee010f10,4' \
+		'xp $,4' || {
+		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to byteswap zImage' >&2
+		return 1
+	}
+	mv "$1".new "$1"
+}
+
+do_install_append_nslu2() {
+	redboot_fixup '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
+}
+
+deploy_image_nslu2() {
+	redboot_fixup '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}'
+}
+
+deploy_image() {
+	install -m 644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}
+}
+
 do_deploy[dirs] = "${S}"
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-	install -m 644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}
+	deploy_image
 }
 
 addtask deploy before do_build after do_compile

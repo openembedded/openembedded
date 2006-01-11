@@ -1,0 +1,21 @@
+ arch/arm/mach-ixp4xx/nas100d-setup.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- linux-nas100d.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2005-11-21 22:01:22.000000000 +0100
++++ linux-nas100d/arch/arm/mach-ixp4xx/nas100d-setup.c	2005-11-30 23:04:07.000000000 +0100
+@@ -94,10 +94,15 @@ static struct platform_device nas100d_ua
+ 	.resource		= nas100d_uart_resources,
+ };
+ 
++static struct platform_device nas100d_rtc = {
++	.name			= "pcf8563-rtc",
++};
++
+ static struct platform_device *nas100d_devices[] __initdata = {
+ 	&nas100d_i2c_controller,
+ 	&nas100d_flash,
+ 	&nas100d_uart,
++	&nas100d_rtc,
+ };
+ 
+ static void nas100d_power_off(void)

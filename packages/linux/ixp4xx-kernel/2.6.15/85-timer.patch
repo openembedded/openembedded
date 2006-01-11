@@ -215,7 +215,7 @@
 -
 --- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
-@@ -119,6 +119,11 @@ static void nslu2_power_off(void)
+@@ -114,6 +114,11 @@ static void nslu2_power_off(void)
  
  static void __init nslu2_init(void)
  {
