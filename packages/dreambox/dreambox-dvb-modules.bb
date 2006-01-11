@@ -5,7 +5,7 @@ LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 KV_dm7020 = "2.6.9"
-PV_dm7020 = "${KV}-20051031"
+PV_dm7020 = "${KV}-20060111"
 
 KV_dm7025 = "2.6.12"
 PV_dm7025 = "${KV}-20051220"
