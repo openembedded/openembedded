@@ -20,7 +20,7 @@ OPENDREAMBOX_EXPERIMENTAL = "enigma2"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
-OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins links-dream"
+OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins tuxbox-plugins-enigma links-dream"
 OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
 	tuxbox-plugin-lcdcirc   tuxbox-plugin-soko      tuxbox-plugin-tuxtxt \
