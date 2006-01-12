@@ -243,7 +243,7 @@ wait_for_input() {
 
 # * * * * * * This is the main function * * * * * *
 
-if ! test -z "$*" 
+if test -n "$*" -a "$*" != "tty1"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
 	exec $REAL_INIT $*
