@@ -1,20 +1,18 @@
 DEPENDS = "curl libpng freetype dreambox-dvbincludes libtuxtxt"
-DEPENDS_append_dm7020 = " libsigc++-1.2 enigma"
-DESCRIPTION = "tuxbox libs"
+DESCRIPTION = "tuxbox plugins"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;method=ext \
 	   file://disable_nonworking.diff;patch=1;pnum=1 \
-	   file://fix_config_path.diff;patch=1;pnum=1 \
            file://game_names.diff;patch=1;pnum=1"
 
 CVSDATE = "20060112"
 PV = "0.0+cvs${CVSDATE}"
 PR = "r0"
 
-CFLAGS_append = " -DOE -I${STAGING_INCDIR}/enigma"
+CFLAGS_append = " -DOE"
 CFLAGS_append_dm7020 = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
-CXXFLAGS_append = " -DOE -I${STAGING_INCDIR}/enigma"
+CXXFLAGS_append = " -DOE"
 CXXFLAGS_append_dm7020 = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
 
 PACKAGES = "tuxbox-plugins-dev tuxbox-plugin-tuxtxt tuxbox-plugin-tuxmail \
@@ -24,11 +22,6 @@ PACKAGES = "tuxbox-plugins-dev tuxbox-plugin-tuxtxt tuxbox-plugin-tuxmail \
 	tuxbox-plugin-lcdcirc tuxbox-plugin-satfind tuxbox-plugin-vierg \
 	tuxbox-plugin-soko tuxbox-plugin-solitair tuxbox-plugin-sol \
 	tuxbox-plugin-fx2 tuxbox-plugin-vnc"
-
-PACKAGES_append_dm7020 = " enigma-plugin-dreamdata enigma-plugin-dbswitch \
-	enigma-plugin-ngrabstart enigma-plugin-ngrabstop enigma-plugin-getset \
-	enigma-plugin-movieplayer enigma-plugin-script enigma-plugin-rss \
-	enigma-plugin-weather enigma-plugin-demo"
 
 FILES_tuxbox-plugin-tuxtxt = "/usr/lib/tuxbox/plugins/tuxtxt.so /usr/lib/tuxbox/plugins/tuxtxt.cfg \
 	/usr/share/fonts/tuxtxt.ttf /usr/share/fonts/tuxtxt.otb /etc/tuxbox/tuxtxt"
@@ -57,19 +50,6 @@ FILES_tuxbox-plugin-solitair = "/usr/lib/tuxbox/plugins/solitair.so /usr/lib/tux
 FILES_tuxbox-plugin-sol = "/usr/lib/tuxbox/plugins/sol.so /usr/lib/tuxbox/plugins/sol.cfg"
 FILES_tuxbox-plugin-fx2 = "/usr/lib/tuxbox/plugins/libfx2.so"
 FILES_tuxbox-plugin-vnc = "/usr/lib/tuxbox/plugins/vnc.so /usr/lib/tuxbox/plugins/vnc.cfg /etc/tuxbox/vnc.conf"
-FILES_enigma-plugin-dreamdata = "/usr/lib/tuxbox/plugins/dreamdata.so /usr/lib/tuxbox/plugins/dreamdata.cfg \
-	/etc/tuxbox/dreamdata.xml"
-FILES_enigma-plugin-dbswitch = "/usr/lib/tuxbox/plugins/dbswitch.so /usr/lib/tuxbox/plugins/dbswitch.cfg"
-FILES_enigma-plugin-ngrabstart = "/usr/lib/tuxbox/plugins/ngrabstart.so /usr/lib/tuxbox/plugins/ngrabstart.cfg"
-FILES_enigma-plugin-ngrabstop = "/usr/lib/tuxbox/plugins/ngrabstop.so /usr/lib/tuxbox/plugins/ngrabstop.cfg"
-FILES_enigma-plugin-getset = "/usr/lib/tuxbox/plugins/enigma_getset.so /usr/lib/tuxbox/plugins/enigma_getset.cfg"
-FILES_enigma-plugin-movieplayer = "/usr/lib/tuxbox/plugins/getset.so /usr/lib/tuxbox/plugins/movieplayer.cfg"
-FILES_enigma-plugin-script = "/usr/lib/tuxbox/plugins/script.so /usr/lib/tuxbox/plugins/script.cfg"
-FILES_enigma-plugin-rss = "/usr/lib/tuxbox/plugins/rss.so /usr/lib/tuxbox/plugins/rss.cfg \
-	/etc/tuxbox/feeds.xml"
-FILES_enigma-plugin-weather = "/usr/lib/tuxbox/plugins/weather.so /usr/lib/tuxbox/plugins/weather.cfg \
-	/etc/tuxbox/weather.xml"
-FILES_enigma-plugin-demo = "/usr/lib/tuxbox/plugins/enigma_demo.so /usr/lib/tuxbox/plugins/enigma_demo.cfg"
 
 S = "${WORKDIR}/plugins"
 
