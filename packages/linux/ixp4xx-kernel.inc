@@ -10,7 +10,19 @@
 # IXP4XX_PATCHES - full list of patches to apply, to add files
 #   generate a patch against /dev/null
 # IXP4XX_SUFFIX - the suffix to add after 'zImage-' in the
-#   deploy/images directory, should identify the image config
+#   deploy/images directory, should identify the machines the
+#   kernel will run on, ixp4xx[lb] for generic kernels (le or
+#   be).  Controls the package architecture of the ipk.
+# IXP4XX_MACHID - if set the kernel will be forced to use this
+#   machine id and be forced to LE on LE systems - please always
+#   remember to override IXP4XX_SUFFIX if this is done, the kernel
+#   will simply not work on other machines.
+# IXP4XX_LEFIXUP - if set prepend the LE fixup code to the kernel
+#   and byte swap (quad word) the whole kernel image for a BE
+#   boot loader
+#
+# If you set CMDLINE_ROOT you should *also* change IXP4XX_SUFFIX
+#   because the resultant kernel may not work on other systems.
 #
 # DEFAULT_PREFERENCE is set automagically in this file as
 # follows:
@@ -29,7 +41,13 @@ DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
 LICENSE = "GPL"
 MAINTAINER = "NSLU2-Linux <www.nslu2-linux.org>"
 
-DEPENDS += "devio-native"
+# PACKAGE_ARCH must reliably identify what machines this kernel
+# will run on
+PACKAGE_ARCH = "${IXP4XX_SUFFIX}"
+
+# Defaults for the prefix flags
+IXP4XX_MACHID ?= ""
+IXP4XX_LEFIXUP ?= ""
 
 # Linux kernel source has the general form linux-X.Y.Z-patchP,
 # X.Y is the major version number, Z (which may have multiple
@@ -147,11 +165,6 @@ S = "${WORKDIR}/linux-${IXP4XX_SRCVER}"
 # IXP4XX_PATCHES is the list of patches.
 IXP4XX_PATCHES ?= ""
 
-# Image suffix - actually set in conf/machine/ixp4xx.conf as it is also
-# used by anything which needs to know the name of the generated image.
-# Should be overridden in the distro if patches or defconfig are changed.
-IXP4XX_SUFFIX ?= "ixp4xx${ARCH_BYTE_SEX}"
-
 SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 SRC_URI += "file://defconfig"
@@ -171,16 +184,17 @@ KERNEL_IMAGETYPE = "zImage"
 # in local.conf will still take precedence.
 #
 # CMDLINE_KERNEL_OPTIONS: overridable in local.conf
-MACH_KERNEL_OPTIONS = "x1205.hctosys=1 x1205.probe=0,0x6f pcf8563.hctosys=1"
-MACH_KERNEL_OPTIONS_nas100d = "pcf8563.hctosys=1"
-MACH_KERNEL_OPTIONS_nslu2   = "rtc-x1205.hctosys=1 rtc-x1205.probe=0,0x6f"
+# MACH_KERNEL_OPTIONS: the default, added to so additional stuff can be
+#  put in from local.conf etc.
+MACH_KERNEL_OPTIONS += "rtc-x1205.hctosys=1 rtc-x1205.probe=0,0x6f"
+MACH_KERNEL_OPTIONS += "rtc-ds1672.probe=0,0x68 rtc-ds1672.hctosys=1"
+MACH_KERNEL_OPTIONS += "pcf8563.hctosys=1"
+#
 CMDLINE_KERNEL_OPTIONS ?= "${MACH_KERNEL_OPTIONS}"
 
-# CMDLINE_ROOT: machine specific, do not override
-CMDLINE_ROOT = "init=/linuxrc"
-CMDLINE_ROOT_loft    = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
-CMDLINE_ROOT_nas100d = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M@0x00000000 init=/linuxrc"
-CMDLINE_ROOT_nslu2   = "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc"
+# CMDLINE_ROOT: machine specific boot options - should not be set on a
+#  generic kernel!
+CMDLINE_ROOT ?= "init=/linuxrc"
 
 # CMDLINE_DEBUG: debug options such as noirqdebug, defaults to empty
 # override in local.conf etc
@@ -230,56 +244,75 @@ do_configure_prepend() {
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
 
-# This function adds the required prefix to the image to deal with two
-# problems on NSLU2.
+# IXP4XX_MACHID and IXP4XX_LEFIXUP handling
 #
-# 1) The machine type set by RedBoot is wrong - the type for an ixdp425, not an IXP4XX
-#    e3a01c02 e3811055
-# 2) For LE kernels it is necessary to prefix change-to-le code to the kernel image:
-#    ee110f10 e3c00080 ee010f10
+# This mach_fixup function adds the required prefix to the image to
+# force the machine id in the kernel to be a particular value.  For
+# LE builds it also forces the CPU into LE mode - this is actually
+# harmless even if the CPU is already in LE mode.  This deals with
+# two known problems on some boards:
+#
+# 1) The machine type set by the boot loader is wrong - e.g. the type
+#    for an ixdp425, not the actual board type.  Prefix the code with
+#    two instructions:
+#        e3a01c<hh> e38110<ll>
+#    Where the machine ID is 0xhhll
+# 2) For LE kernels it is necessary to prefix change-to-le code to
+#    the kernel image if the boot loader runs with the CPU in BE
+#    (which is normal for IXP4XX boards):
+#        ee110f10 e3c00080 ee010f10
 #    and to byte swap the (LE) image to match the BE flash layout
 #
+# (2) is not required with an LE boot loader (neither the prefix
+#  nor the byte swapping) so this is controlled by a separate flag,
+#  however if the boot loader is LE it expects and LE image so the
+#  instructions written for the machine id must be LE.
+#
 # The argument to the function is the destination directory
-redboot_fixup_armeb() {
-	rm -f "$1".new
-	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
-		'wb 0xe3a01c02,4' \
-		'wb 0xe3811055,4' \
-		'cp$'
-	mv "$1".new "$1"
-}
 
-redboot_fixup_arm() {
+#SETMACH: set the machine id (register 1) to IXP4XX_MACHID
+SETMACH = '${@["", ".= ${IXP4XX_MACHID} .256/ 255& 0xe3a01c00+; ${WRITE}; .= 255& 0xe3811000+; ${WRITE};"][bb.data.getVar("IXP4XX_MACHID", d, 1) and 1]}'
+
+#FIXUP: the correct instructions to copy the kernel prepended with the le fixup
+FIXUP_armeb = 'cp$'
+FIXUP_arm   = '${@["cp$", "wb 0xee110f10,4;wb 0xe3c00080,4;wb 0xee010f10,4;xp $,4"][bb.data.getVar("IXP4XX_LEFIXUP", d, 1) and 1]}'
+
+#WRITE: the correct way to write a single ARM instruction (wb unless LE and !LEFIXUP).
+WRITE_armeb = 'wb 4'
+WRITE_arm   = '${@["wl 4", "wb 4"][bb.data.getVar("IXP4XX_LEFIXUP", d, 1) and 1]}'
+
+DEPENDS += "devio-native"
+
+# ${SETMACH}${FIXUP} is a sequence of devio commands to copy the image,
+# in the standard (generic) case it is just 'cp$'
+copy_image() {
 	rm -f "$1".new
-	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new \
-		'wb 0xe3a01c02,4' \
-		'wb 0xe3811055,4' \
-		'wb 0xee110f10,4' \
-		'wb 0xe3c00080,4' \
-		'wb 0xee010f10,4' \
-		'xp $,4' || {
-		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to byteswap zImage' >&2
+	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new '${SETMACH}${FIXUP}' || {
+		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to copy zImage' >&2
 		return 1
 	}
 	mv "$1".new "$1"
 }
 
-do_install_append_nslu2() {
-	redboot_fixup '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
-}
-
-deploy_image_nslu2() {
-	redboot_fixup '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}'
-}
-
-deploy_image() {
-	install -m 644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}
+do_install_append() {
+	copy_image '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
 }
 
 do_deploy[dirs] = "${S}"
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-	deploy_image
+	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}'
 }
 
 addtask deploy before do_build after do_compile
+
+python () {
+	# check for IXP4XX_SUFFIX - if not set then we don't know what to build,
+	# also sanity check the SLUGOS_IMAGESEX
+	sex = bb.data.getVar("SLUGOS_IMAGESEX", d, 1)
+	if sex != 'little-endian' and sex != 'big-endian':
+		raise bb.parse.SkipPackage("slugos kernels require SLUGOS_IMAGESEX")
+	suffix = bb.data.getVar("IXP4XX_SUFFIX", d, 1)
+	if suffix == '':
+		raise bb.parse.SkipPackage("slugos kernels require IXP4XX_SUFFIX")
+}
