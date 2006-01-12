@@ -41,10 +41,6 @@ DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
 LICENSE = "GPL"
 MAINTAINER = "NSLU2-Linux <www.nslu2-linux.org>"
 
-# PACKAGE_ARCH must reliably identify what machines this kernel
-# will run on
-PACKAGE_ARCH = "${IXP4XX_SUFFIX}"
-
 # Defaults for the prefix flags
 IXP4XX_MACHID ?= ""
 IXP4XX_LEFIXUP ?= ""
@@ -172,6 +168,12 @@ SRC_URI += "file://defconfig"
 COMPATIBLE_HOST = 'arm.*-linux'
 
 inherit kernel
+
+# PACKAGE_ARCH must reliably identify what machines this kernel
+# will run on
+PACKAGE_ARCH_kernel-image = "${IXP4XX_SUFFIX}"
+PACKAGE_ARCH_kernel-dev = "${IXP4XX_SUFFIX}"
+PACKAGE_ARCH_kernel = "${IXP4XX_SUFFIX}"
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
