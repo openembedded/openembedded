@@ -6,7 +6,7 @@ MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 I18N_FILES = "libmultiauthnoticeplugin.ts"
 RDEPENDS = "opie-security"
-PV = "1.2.1+cvs${SRCDATE}"
+PV = "${OPIE_CVS_PV}"
 APPNAME = "multiauthnoticeplugin"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/notice \

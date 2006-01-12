@@ -3,7 +3,7 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-PV = "1.2.1+cvs${SRCDATE}"
+PV = "${OPIE_CVS_PV}"
 APPNAME = "restartapplet"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/restartapplet2 \
