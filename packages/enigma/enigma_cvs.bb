@@ -1,4 +1,4 @@
-DEPENDS = "jpeg libungif libid3tag libmad libpng libsigc++-1.2 gettext-native tuxbox-libs dreambox-dvbincludes mtd-utils freetype"
+DEPENDS = "jpeg libungif libid3tag libmad libpng libsigc++-1.2 gettext-native tuxbox-libs tuxbox-plugins dreambox-dvbincludes mtd-utils freetype"
 DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
