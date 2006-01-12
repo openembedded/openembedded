@@ -3,7 +3,7 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
-PV = "1.2.1+cvs${SRCDATE}"
+PV = "${OPIE_CVS_PV}"
 APPNAME = "opieplayer2"
 
 RPROVIDES = "opie-mediaplayer2-skin"

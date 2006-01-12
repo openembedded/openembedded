@@ -6,8 +6,7 @@ MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>"
 
 PKGDATE = "${@time.strftime('%Y-%m-%d',time.gmtime())}"
 
-SRC_URI = "http://www.codemonkey.org.uk/projects/git-snapshots/git/git-${PKGDATE}.tar.gz \
-           file://Makefile.patch;patch=1"
+SRC_URI = "http://www.codemonkey.org.uk/projects/git-snapshots/git/git-${PKGDATE}.tar.gz"
 
 S = "${WORKDIR}/git-snapshot-${DATE}"
 
