@@ -1,5 +1,5 @@
 SECTION = "base"
-PV = "0.0+cvs${SRCDATE}"
+PV = "1.2+cvs${SRCDATE}"
 
 include prism54-module_1.2.bb
 

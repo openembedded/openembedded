@@ -6,7 +6,7 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
-PV = "1.2.1+cvs${SRCDATE}"
+PV = "${OPIE_CVS_PV}"
 PR = "r0"
 
 SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/cumulus-snapshot.tbz"

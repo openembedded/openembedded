@@ -10,7 +10,8 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPa
 	   file://mm4.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
-PR = "r12"
+SRC_URI += "file://modprobe.conf"
+PR = "r15"
 
 RDEPENDS = "ixp4xx-csr"
 
@@ -19,6 +20,7 @@ S = "${WORKDIR}"
 COMPATIBLE_HOST = "^armeb-linux.*"
 
 PROVIDES = "virtual/ixp-eth"
+RPROVIDES = "ixp-eth"
 
 inherit module
 
@@ -46,4 +48,6 @@ do_compile () {
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
 	install -m 0644 ixp425_eth.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net/
+	install -d ${D}${sysconfdir}/modprobe.d
+	install -m 0644 modprobe.conf ${D}${sysconfdir}/modprobe.d/eth0
 }

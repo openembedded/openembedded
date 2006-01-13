@@ -18,8 +18,9 @@ SRC_URI += "file://continue-if-qmgr-init-fails.patch;patch=1"
 SRC_URI += "file://netdev_max_backlog.patch;patch=1"
 SRC_URI += "file://debug.patch;patch=1"
 SRC_URI += "file://Makefile.patch;patch=1"
+SRC_URI += "file://modprobe.conf"
 
-PR = "r3"
+PR = "r5"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
@@ -29,6 +30,7 @@ S = "${WORKDIR}"
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
 PROVIDES = "virtual/ixp-eth"
+RPROVIDES = "ixp-eth"
 
 inherit module
 
@@ -84,4 +86,6 @@ do_compile_append () {
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
 	install -m 0644 ixp400_eth.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net/
+	install -d ${D}${sysconfdir}/modprobe.d
+	install -m 0644 modprobe.conf ${D}${sysconfdir}/modprobe.d/eth0
 }

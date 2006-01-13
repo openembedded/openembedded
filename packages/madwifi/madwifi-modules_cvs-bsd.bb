@@ -5,7 +5,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PV = "cvs-bsd+${SRCDATE}"
+PV = "1:0.0+cvs${SRCDATE}-bsd"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;tag=BSD;date=${SRCDATE}"
 

@@ -1,11 +1,12 @@
 --- linux-2.6.15/arch/arm/mach-ixp4xx/Makefile	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/arch/arm/mach-ixp4xx/Makefile	1970-01-01 00:00:00.000000000 +0000
-@@ -8,5 +8,5 @@ obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pc
+@@ -8,6 +8,6 @@ obj-$(CONFIG_ARCH_IXDP4XX)	+= ixdp425-pc
  obj-$(CONFIG_MACH_IXDPG425)	+= ixdpg425-pci.o coyote-setup.o
  obj-$(CONFIG_ARCH_ADI_COYOTE)	+= coyote-pci.o coyote-setup.o
  obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
 -obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
 +obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o nslu2-io.o
+ obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
  
 --- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000

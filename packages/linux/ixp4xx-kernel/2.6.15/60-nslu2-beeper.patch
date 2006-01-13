@@ -5,7 +5,7 @@
 
 --- linux-2.6.15/drivers/input/misc/Kconfig	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/drivers/input/misc/Kconfig	1970-01-01 00:00:00.000000000 +0000
-@@ -40,6 +40,18 @@ config INPUT_M68K_BEEP
+@@ -50,6 +50,18 @@ config INPUT_M68K_BEEP
  	tristate "M68k Beeper support"
  	depends on M68K
  
@@ -26,7 +26,7 @@
  	help
 --- linux-2.6.15/drivers/input/misc/Makefile	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/drivers/input/misc/Makefile	1970-01-01 00:00:00.000000000 +0000
-@@ -10,3 +10,4 @@ obj-$(CONFIG_INPUT_M68K_BEEP)		+= m68ksp
+@@ -11,3 +11,4 @@ obj-$(CONFIG_INPUT_M68K_BEEP)		+= m68ksp
  obj-$(CONFIG_INPUT_98SPKR)		+= 98spkr.o
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o

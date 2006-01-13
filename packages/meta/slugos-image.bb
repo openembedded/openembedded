@@ -4,27 +4,25 @@
 # conf/distro/slugos.conf to get the standard settings).
 #
 LICENSE = "MIT"
-PR = "r17"
-PROVIDES += "${SLUGOS_IMAGENAME}-image"
+PR = "r19"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
 IMAGE_BASENAME = "${SLUGOS_IMAGENAME}"
 IMAGE_FSTYPES = "jffs2"
+EXTRA_IMAGECMD_jffs2 = "--pad --${SLUGOS_IMAGESEX} --eraseblock=0x20000 -D ${SLUGOS_DEVICE_TABLE}"
+IMAGE_LINGUAS = ""
 
-# Kernel suffix - 'nslu2be' or 'nslu2le' for a truely generic image,
-# override in the DISTRO configuration if patches or defconfig are
-# changed for the DISTRO!
-N2K_SUFFIX ?= "nslu2${ARCH_BYTE_SEX}"
+# Setting USE_DEVFS prevents *any* entries being created initially
+# in /dev
+USE_DEVFS = "1"
 
 #FIXME: this is historical, there should be a minimal slugos device table and
 # this stuff shouldn't be in here at all (put it in slugos-image.bb!)
 # Why have anything in the config file to control the image build - why not
 # just select a different image .bb file (e.g. slugos-ramdisk-image.bb) to
 # build with different options.
-# IMAGE_SEX = "${@['big-endian', 'little-endian'][bb.data.getVar('ARCH_BYTE_SEX', d, 1) == 'le']}"
 SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
-EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x20000 -D ${SLUGOS_DEVICE_TABLE}"
 
 # IMAGE_PREPROCESS_COMMAND is run before making the image.  In SlugOS the
 # kernel image is removed from the root file system to recover the space used -
@@ -33,55 +31,20 @@ EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x20000 -D ${SLUGOS_DEVI
 IMAGE_PREPROCESS_COMMAND = "rm ${IMAGE_ROOTFS}/boot/zImage*;"
 
 # Building a full image.  If required do a post-process command which builds
-# the full image using slugimage.
-#
-#NOTE: you do not actually need the boot loader in normal use because it is
-# *not* overwritten by a standard upslug upgrade, so you can make an image with
-# just non-LinkSys software which can be flashed into the NSLU2.  Because
-# LinkSys have made "EraseAll" available, however, (this does overwrite RedBoot)
-# it is a bad idea to produce flash images without a valid RedBoot - that allows
-# an innocent user upgrade attempt to instantly brick the NSLU2.
-NSLU2_SLUGIMAGE_ARGS ?= ""
+# the full flash image using slugimage.  At present this only works for NSLU2 images.
+PACK_IMAGE = ""
+IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
+PACK_IMAGE_DEPENDS = ""
+EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
 
-nslu2_pack_image() {
-	if test '${SLUGOS_FLASH_IMAGE}' = yes
-	then
-		install -d ${DEPLOY_DIR_IMAGE}/slug
-		install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
-				${STAGING_LIBDIR}/nslu2-binaries/Trailer \
-				${STAGING_LIBDIR}/nslu2-binaries/SysConf \
-				${DEPLOY_DIR_IMAGE}/slug/
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${N2K_SUFFIX} \
-			${DEPLOY_DIR_IMAGE}/slug/vmlinuz
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
-			${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
-		cd ${DEPLOY_DIR_IMAGE}/slug
-		slugimage -p -b RedBoot -s SysConf -r Ramdisk:1,Flashdisk:flashdisk.jffs2 -t \
-			Trailer -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
-			${NSLU2_SLUGIMAGE_ARGS}
-		rm -rf ${DEPLOY_DIR_IMAGE}/slug
-	fi
-}
-
-IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image;"
-
-SLUGOS_IMAGE_DEPENDS = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
-
-IMAGE_LINGUAS = ""
-# Setting USE_DEVFS prevents *any* entries being created initially
-# in /dev
-USE_DEVFS = "1"
+# These depends define native utilities - they do not get put in the flash and
+# are not required to build the image.
+IMAGE_TOOLS = ""
+EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 
 # CONFIG:
-# SLUGOS_IMAGE_DEPENDS:  set above, do not change
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_EXTRA_DEPENDS:  set in conf, things to build, not added
-#                        to the image.
-# SLUGOS_NATIVE_DEPENDS: set in conf, things to build, intended
-#                        for native (run-on-host) tools
-#
-# SLUGOS_SUPPORT:        set to here, see below, added to build and
-#                        to the image.
+# SLUGOS_SUPPORT:        set to here, see below, added to the image.
 # SLUGOS_KERNEL:         set here, kernel modules added to the image
 #
 # Do not override the last two unless you really know what you
@@ -103,34 +66,65 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 # other than the network to output error messages!)
 SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
        
-# The things explicitly included in the following lists are the
-# absolute minimum to have any chance of a bootable system.
-DEPENDS = "${SLUGOS_IMAGE_DEPENDS} \
-	virtual/kernel base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-slugos netbase \
-        sysvinit tinylogin portmap \
-        virtual/ixp-eth slugos-init \
-	module-init-tools modutils-initscripts \
-        ipkg-collateral ipkg ipkg-link \
-	${SLUGOS_SUPPORT} \
-        ${SLUGOS_EXTRA_DEPENDS} \
-	${SLUGOS_NATIVE_DEPENDS}"
+#FIXME: this is temporary to ensure the correct versions are obtained
+DEPENDS = "virtual/kernel virtual/ixp-eth"
 
-IPKG_INSTALL = "base-files base-passwd \
-        busybox dropbear hotplug-ng initscripts-slugos netbase \
-        update-modules sysvinit tinylogin portmap \
-        ${PREFERRED_PROVIDER_virtual/ixp-eth} slugos-init \
+RDEPENDS = "kernel ixp-eth \
+	base-files base-passwd netbase \
+        busybox hotplug-ng initscripts-slugos slugos-init \
+        update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
+	portmap \
+	dropbear \
 	${SLUGOS_SUPPORT} \
 	${SLUGOS_KERNEL} \
 	${SLUGOS_EXTRA_RDEPENDS}"
+
+IPKG_INSTALL = "${RDEPENDS}"
 
 inherit image_ipk
 
 python () {
 	# Don't build slugos images unless the configuration is set up
 	# for an image build!
-	if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '':
+	if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '' or bb.data.getVar("SLUGOS_IMAGESEX", d, 1) == '':
 		raise bb.parse.SkipPackage("absent or broken SlugOS configuration")
 }
+
+#--------------------------------------------------------------------------------
+# NSLU2 specific
+#
+#NOTE: you do not actually need the boot loader in normal use because it is
+# *not* overwritten by a standard upslug upgrade, so you can make an image with
+# just non-LinkSys software which can be flashed into the NSLU2.  Because
+# LinkSys have made "EraseAll" available, however, (this does overwrite RedBoot)
+# it is a bad idea to produce flash images without a valid RedBoot - that allows
+# an innocent user upgrade attempt to instantly brick the NSLU2.
+PACK_IMAGE_nslu2 = "nslu2_pack_image;"
+PACK_IMAGE_DEPENDS_nslu2 = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
+
+NSLU2_SLUGIMAGE_ARGS ?= ""
+
+nslu2_pack_image() {
+	if test '${SLUGOS_FLASH_IMAGE}' = yes
+	then
+		install -d ${DEPLOY_DIR_IMAGE}/slug
+		install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
+				${STAGING_LIBDIR}/nslu2-binaries/Trailer \
+				${STAGING_LIBDIR}/nslu2-binaries/SysConf \
+				${DEPLOY_DIR_IMAGE}/slug/
+		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${IXP4XX_SUFFIX} \
+			${DEPLOY_DIR_IMAGE}/slug/vmlinuz
+		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+			${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
+		cd ${DEPLOY_DIR_IMAGE}/slug
+		slugimage -p -b RedBoot -s SysConf -r Ramdisk:1,Flashdisk:flashdisk.jffs2 -t \
+			Trailer -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
+			${NSLU2_SLUGIMAGE_ARGS}
+		rm -rf ${DEPLOY_DIR_IMAGE}/slug
+	fi
+}
+
+# upslug2 (in tmp/work/upslug2-native-*) is the program to write the NSLU2 flash
+IMAGE_TOOLS_nslu2 = "upslug2-native"

@@ -1,0 +1,174 @@
+ drivers/char/Kconfig       |    8 ++
+ drivers/char/Makefile      |    1 
+ drivers/char/pcf8563-rtc.c |  135 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+), 1 deletion(-)
+
+--- linux-nas100d.orig/drivers/char/Kconfig	2005-11-16 22:29:03.000000000 +0100
++++ linux-nas100d/drivers/char/Kconfig	2005-11-30 23:04:56.000000000 +0100
+@@ -783,6 +783,13 @@ config RTC_VR41XX
+ 	tristate "NEC VR4100 series Real Time Clock Support"
+ 	depends on CPU_VR41XX
+ 
++config RTC_PCF8563
++        tristate "PCF8563 I2C RTC Support"
++        depends on I2C && RTC_PCF8563_I2C
++	help
++	  This driver enables the kernel to use the PCF8563
++	  I2C real time clock as the system clock.
++
+ config COBALT_LCD
+ 	bool "Support for Cobalt LCD"
+ 	depends on MIPS_COBALT
+@@ -1014,4 +1021,3 @@ config TELCLOCK
+ 	  files for controlling the behavior of this hardware.
+ 
+ endmenu
+-
+--- linux-nas100d.orig/drivers/char/Makefile	2005-11-16 22:29:03.000000000 +0100
++++ linux-nas100d/drivers/char/Makefile	2005-11-30 23:01:35.000000000 +0100
+@@ -65,6 +65,7 @@ obj-$(CONFIG_SGI_IP27_RTC) += ip27-rtc.o
+ obj-$(CONFIG_DS1302) += ds1302.o
+ obj-$(CONFIG_S3C2410_RTC) += s3c2410-rtc.o
+ obj-$(CONFIG_RTC_VR41XX) += vr41xx_rtc.o
++obj-$(CONFIG_RTC_PCF8563) += pcf8563-rtc.o
+ ifeq ($(CONFIG_GENERIC_NVRAM),y)
+   obj-$(CONFIG_NVRAM) += generic_nvram.o
+ else
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-nas100d/drivers/char/pcf8563-rtc.c	2005-11-30 23:06:53.000000000 +0100
+@@ -0,0 +1,135 @@
++/*
++ * drivers/char/pcf8563-rtc.c
++ *
++ * PCF8563 RTC platform driver
++ *
++ * Copyright (C) 2005 Tower Technologies
++ *
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Maintainers: http://www.nslu2-linux.org/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/time.h>
++#include <linux/rtc.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++
++#include <linux/i2c.h>
++#include <linux/pcf8563.h>
++
++#include <asm/rtc.h>
++
++#define DRV_VERSION "0.9"
++
++extern int (*set_rtc)(void);
++
++static int pcf8563_set_rtc(void)
++{
++	int err;
++
++	struct rtc_time new_tm, old_tm;
++	unsigned long cur_secs = xtime.tv_sec;
++
++	if ((err = pcf8563_do_command(PCF8563_CMD_GETDATETIME, &old_tm) == 0))
++		return err;
++
++	/* FIXME      xtime.tv_nsec = old_tm.tm_sec * 10000000; */
++	new_tm.tm_sec  = cur_secs % 60;
++	cur_secs /= 60;
++	new_tm.tm_min  = cur_secs % 60;
++	cur_secs /= 60;
++	new_tm.tm_hour = cur_secs % 24;
++
++       /*
++	* avoid writing when we're going to change the day
++	* of the month.  We will retry in the next minute.
++	* This basically means that if the RTC must not drift
++	* by more than 1 minute in 11 minutes.
++	*/
++	if ((old_tm.tm_hour == 23 && old_tm.tm_min == 59) ||
++	    (new_tm.tm_hour == 23 && new_tm.tm_min == 59))
++		return 1;
++
++	return pcf8563_do_command(PCF8563_CMD_SETTIME, &new_tm);
++}
++
++static int pcf8563_rtc_read_time(struct rtc_time *tm)
++{
++	return pcf8563_do_command(PCF8563_CMD_GETDATETIME, tm);
++}
++
++static int pcf8563_rtc_set_time(struct rtc_time *tm)
++{
++	return pcf8563_do_command(PCF8563_CMD_SETDATETIME, tm);
++}
++
++static int pcf8563_rtc_proc(char *buf)
++{
++	char *p = buf;
++
++	p += sprintf(p, "24hr\t\t: yes\n");
++
++	return p - buf;
++}
++
++static struct rtc_ops pcf8563_rtc_ops = {
++	.owner		= THIS_MODULE,
++	.proc		= pcf8563_rtc_proc,
++	.read_time	= pcf8563_rtc_read_time,
++	.set_time	= pcf8563_rtc_set_time,
++};
++
++static int pcf8563_rtc_probe(struct device *dev)
++{
++	int ret;
++
++	if ((ret = register_rtc(&pcf8563_rtc_ops)) != 0)
++		return ret;
++
++	set_rtc = pcf8563_set_rtc;
++
++	printk(KERN_INFO "pcf8563-rtc: real time clock\n");
++
++	return 0;
++}
++
++static int pcf8563_rtc_remove(struct device *dev)
++{
++	set_rtc = NULL;
++
++	unregister_rtc(&pcf8563_rtc_ops);
++
++	return 0;
++}
++
++static struct device_driver pcf8563_rtc_driver = {
++	.name		= "pcf8563-rtc",
++        .bus            = &platform_bus_type,
++	.probe		= pcf8563_rtc_probe,
++	.remove		= pcf8563_rtc_remove,
++};
++
++static int __init pcf8563_rtc_init(void)
++{
++        return driver_register(&pcf8563_rtc_driver);
++}
++
++static void __exit pcf8563_rtc_exit(void)
++{
++        driver_unregister(&pcf8563_rtc_driver);
++}
++
++module_init(pcf8563_rtc_init);
++module_exit(pcf8563_rtc_exit);
++
++MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
++MODULE_DESCRIPTION("Xicor PCF8563 RTC platform driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);

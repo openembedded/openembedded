@@ -36,7 +36,7 @@
 + * When the RedBoot partition is added the MAC address is read from
 + * it.
 + */
-+void flash_add(struct mtd_info *mtd) {
++static void nslu2_flash_add(struct mtd_info *mtd) {
 +	if (strcmp(mtd->name, "RedBoot") == 0) {
 +		size_t retlen;
 +		u_char mac[6];
@@ -55,12 +55,12 @@
 +/*
 + * Nothing to do on remove at present.
 + */
-+void flash_remove(struct mtd_info *mtd) {
++static void nslu2_flash_remove(struct mtd_info *mtd) {
 +}
 +
-+struct mtd_notifier flash_notifier = {
-+	.add = flash_add,
-+	.remove = flash_remove,
++static struct mtd_notifier nslu2_flash_notifier = {
++	.add = nslu2_flash_add,
++	.remove = nslu2_flash_remove,
 +};
 +
  static void __init nslu2_init(void)
@@ -73,7 +73,7 @@
 +	/* The flash has an ethernet MAC embedded in it which we need,
 +	 * that is all this notifier does.
 +	 */
-+	register_mtd_user(&flash_notifier);
++	register_mtd_user(&nslu2_flash_notifier);
 +
  	ixp4xx_sys_init();
  
