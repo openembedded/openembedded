@@ -6,12 +6,11 @@ IMAGE_BASENAME = "unslung"
 IMAGE_LINGUAS = ""
 USE_DEVFS = "1"
 
-DEPENDS  = "virtual/kernel unslung-rootfs \
-	glibc slingbox ipkg cpio findutils \
+DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 RDEPENDS  = "kernel unslung-rootfs \
-	glibc slingbox ipkg cpio findutils \
+	libc6-unslung slingbox ipkg cpio findutils \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
 IPKG_INSTALL = "unslung-rootfs \
