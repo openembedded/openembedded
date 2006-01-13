@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael Stickel <michael.stickel@4g-systems.biz>"
 LICENSE = "GPL"
-PV = "0.0+cvs${SRCDATE}"
+PV = "1:0.0+cvs${SRCDATE}"
 
 SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"

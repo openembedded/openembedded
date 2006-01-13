@@ -1,7 +1,8 @@
 inherit autotools pkgconfig
 
 PR = "r1"
-PV = "2.10pre3+cvs${SRCDATE}"
+#Remove the dash below when 2.10pre3 changes in PV
+PV = "2.10pre3+cvs-${SRCDATE}"
 DEFAULT_PREFERENCE="-1"
 
 PACKAGES += "gpsdrive-add"

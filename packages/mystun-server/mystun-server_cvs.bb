@@ -4,7 +4,7 @@ MAINTAINER = "Sven-Ola Tuecke <sven-ola@gmx.de>"
 SECTION = "console/telephony"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "0.0+cvs${SRCDATE}"
+PV = "1:0.0+cvs${SRCDATE}"
 
 SRC_URI="cvs://anonymous@cvs.mystun.berlios.de/cvsroot/mystun;module=mystun \
 	file://init \

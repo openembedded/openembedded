@@ -7,6 +7,13 @@ EXCLUDE_FROM_WORLD = "1"
 PACKAGES = ""
 PACKAGE_ARCH = "${BUILD_ARCH}"
 
+# When this class has packaging enabled, setting 
+# RPROVIDES becomes unnecessary.
+RPROVIDES = "${PN}"
+
+# Need to resolve package RDEPENDS as well as DEPENDS
+BUILD_ALL_DEPS = "1"
+
 TARGET_ARCH = "${BUILD_ARCH}"
 TARGET_OS = "${BUILD_OS}"
 TARGET_VENDOR = "${BUILD_VENDOR}"

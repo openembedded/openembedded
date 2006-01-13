@@ -7,7 +7,8 @@ PRIORITY = "optional"
 
 
 S = "${WORKDIR}/${PN}"
-PV = "0.10+cvs${SRCDATE}"
+#Remove the dash below when 0.10 changes in PV
+PV = "0.10+cvs-${SRCDATE}"
 PR = "r0"
 
 inherit gpe
