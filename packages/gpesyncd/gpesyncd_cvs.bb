@@ -8,7 +8,8 @@ SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/gpesyncd"
 DEPENDS =	"libgpevtype sqlite libmimedir glib-2.0"
 
 S =		"${WORKDIR}/${PN}"
-PV =		"0.0+cvs${SRCDATE}"
+#Remove the dash below when 0.0 changes in PV
+PV =		"0.0+cvs-${SRCDATE}"
 PR =		"r0"
 
 inherit autotools

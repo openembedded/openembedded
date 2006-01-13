@@ -1,4 +1,4 @@
-PV = "0.0+cvs${SRCDATE}"
+PV = "6.0.3+cvs${SRCDATE}"
 LICENSE = "MIT-X"
 SECTION = "libs"
 PRIORITY = "optional"

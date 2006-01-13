@@ -1,4 +1,5 @@
-PV = "0.4.9-pre1+cvs${SRCDATE}"
+#Remove the dash after cvs below when 0.4.9 changes in PV
+PV = "0.4.9-pre1+cvs-${SRCDATE}"
 DESCRIPTION = "ffmpeg"
 SECTION = "libs"
 PRIORITY = "optional"

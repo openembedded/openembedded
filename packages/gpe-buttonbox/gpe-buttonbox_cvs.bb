@@ -7,7 +7,8 @@ SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-buttonbox"
 DEPENDS = "libgpewidget libgpelaunch"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.5+cvs${SRCDATE}"
+#Remove the dash below when 0.5 changes in PV
+PV = "0.5+cvs-${SRCDATE}"
 PR = "r0"
 
 inherit autotools
