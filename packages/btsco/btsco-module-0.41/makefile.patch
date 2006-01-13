@@ -1,0 +1,16 @@
+--- btsco-0.41/kernel/Makefile.orig	2006-01-13 00:32:58.000000000 +0100
++++ btsco-0.41/kernel/Makefile	2006-01-13 00:33:35.000000000 +0100
+@@ -10,10 +10,10 @@
+ 
+ 
+ default:
+-	@make -C /lib/modules/`uname -r`/build M=`pwd` modules
++	$(MAKE) -C $(KERNEL_SRC) M=`pwd` modules
+ 
+ install:
+-	@make -C /lib/modules/`uname -r`/build M=`pwd` modules_install
++	$(MAKE) -C $(KERNEL_SRC) M=`pwd` modules_install
+ 
+ clean:
+-	@make -C /lib/modules/`uname -r`/build M=`pwd` clean
++	$(MAKE) -C $(KERNEL_SRC) M=`pwd` clean

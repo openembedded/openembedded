@@ -5,7 +5,6 @@
 #
 LICENSE = "MIT"
 PR = "r19"
-PROVIDES += "${SLUGOS_IMAGENAME}-image"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
