@@ -1,10 +1,6 @@
-DESCRIPTION = "Meta-package for SDL"
+DESCRIPTION = "Tasks for SDL stuff"
 LICENSE = MIT
-RDEPENDS = "task-sdl-libs task-sdl-games task-sdl-emulators"
-PR = "r2"
-
-ALLOW_EMPTY = 1
-BUILD_ALL_DEPS = 1
+PACKAGES = "task-sdl-libs task-sdl-games task-sdl-emulators"
 
 # no need to add libsdl as all libsdl-* already rdepend on it
 RDEPENDS_task-sdl-libs = "libsdl-gfx libsdl-image libsdl-mixer libsdl-ttf libsdl-net"
