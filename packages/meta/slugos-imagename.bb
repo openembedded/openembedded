@@ -8,6 +8,8 @@ DEPENDS = "slugos-image"
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
+SLUGOS_IMAGENAME ?= "slugos"
+
 do_fetch() {
 }
 do_unpack() {
