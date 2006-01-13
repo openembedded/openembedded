@@ -1,0 +1,33 @@
+# This is an inglorious hack to provide a package to match
+# ${SLUGOS_IMAGENAME}-image
+MAINTAINER = "John Bowler <jbowler@acm.org>
+PN = "${SLUGOS_IMAGENAME}-image"
+PV = "0"
+PR = "r0"
+DEPENDS = "slugos-image"
+PACKAGES = ""
+INHIBIT_DEFAULT_DEPS = "1"
+
+do_fetch() {
+}
+do_unpack() {
+}
+do_patch() {
+}
+do_configure() {
+}
+do_compile() {
+}
+do_install() {
+}
+do_stage() {
+}
+do_build() {
+}
+
+python () {
+	# Don't build slugos images unless the configuration is set up
+	# for an image build!
+	if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '':
+		raise bb.parse.SkipPackage("absent SlugOS configuration")
+}
