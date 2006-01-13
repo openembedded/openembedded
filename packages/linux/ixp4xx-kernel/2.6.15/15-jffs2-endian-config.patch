@@ -1,3 +1,15 @@
+This patch allows the endianness of the JFSS2 filesystem to be
+specified by config options.
+
+It defaults to native-endian (the previously hard-coded option).
+
+Some architectures (in particular, the NSLU2) benefit from having a
+single known endianness of JFFS2 filesystem (for data, not
+executables) independent of the endianness of the processor (ARM
+processors can be switched to either endianness at run-time).
+
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
+
 --- linux-2.6.15/fs/Kconfig~	2006-01-03 13:51:10.000000000 +1030
 +++ linux-2.6.15/fs/Kconfig	2006-01-05 01:35:36.000000000 +1030
 @@ -1132,6 +1132,31 @@ config JFFS2_CMODE_SIZE
