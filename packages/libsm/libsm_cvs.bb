@@ -6,6 +6,8 @@ DEPENDS = "x11 ice"
 DESCRIPTION = "Session management library"
 PR = "r1"
 
+DEFAULT_PREFERENCE="-1"
+
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=SM"
 S = "${WORKDIR}/SM"
 
