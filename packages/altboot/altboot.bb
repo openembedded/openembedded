@@ -6,7 +6,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
  
 
-PR = "r8"
+PR = "r9"
 
 
 SRC_URI = "file://altboot-menu \
