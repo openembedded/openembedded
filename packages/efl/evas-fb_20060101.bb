@@ -4,7 +4,7 @@ PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas;date=${PV} \
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV} \
            file://pkg.m4"
 S = "${WORKDIR}/evas"
 

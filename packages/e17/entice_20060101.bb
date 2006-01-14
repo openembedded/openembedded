@@ -5,10 +5,9 @@ DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart-x11"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SRCDATE = "${PV}"
 PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entice"
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/entice;date=${PV}"
 S = "${WORKDIR}/entice"
 
 inherit autotools

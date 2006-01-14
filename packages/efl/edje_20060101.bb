@@ -6,7 +6,8 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI += "cvs://anonymous@thinktux.net/root;module=e17/libs/edje/m4;date=20060101"
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/edje;date=${PV}"
+S = "${WORKDIR}/edje"
 
 LEAD_SONAME = "libedje.so"
 
@@ -14,8 +15,3 @@ FILES_${PN}-dev += "${bindir}"
 
 RDEPENDS_${PN}-dev += "cpp"
 
-do_configure_prepend() {
-	install -d "${S}/m4"
-	install "${WORKDIR}/m4/"*.m4 "${S}/m4"
-	aclocal -I m4
-}
