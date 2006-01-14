@@ -20,7 +20,7 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-PR = "r8"
+PR = "r9"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
@@ -73,4 +73,5 @@ S = "${WORKDIR}/xserver"
 
 inherit autotools pkgconfig 
 
-EXTRA_OECONF = "--enable-composite --disable-xinerama"
+LDFLAGS += " -lXfont -lXdmcp -lXau "
+EXTRA_OECONF = "--enable-static=no --disable-static  --enable-composite --disable-xinerama"
