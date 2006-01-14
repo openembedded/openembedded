@@ -196,7 +196,7 @@ CMDLINE_KERNEL_OPTIONS ?= "${MACH_KERNEL_OPTIONS}"
 
 # CMDLINE_ROOT: machine specific boot options - should not be set on a
 #  generic kernel!
-CMDLINE_ROOT ?= "init=/linuxrc"
+CMDLINE_ROOT ?= ""
 
 # CMDLINE_DEBUG: debug options such as noirqdebug, defaults to empty
 # override in local.conf etc

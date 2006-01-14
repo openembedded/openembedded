@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://home.mag.cx/messenger/source/${PN}-${PV}.tar.gz \
 	   file://qc-messenger-0.8-fix;patch=1"

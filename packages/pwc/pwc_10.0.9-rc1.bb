@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
 	   file://Makefile"
