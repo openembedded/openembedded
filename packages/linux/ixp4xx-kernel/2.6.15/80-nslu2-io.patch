@@ -8,9 +8,9 @@
 +obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o nslu2-io.o
  obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
  
---- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	1970-01-01 00:00:00.000000000 +0000
-@@ -0,0 +1,548 @@
+--- /dev/null	2005-12-25 02:27:49.000000000 +1030
++++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-io.c	2006-01-15 04:11:10.000000000 +1030
+@@ -0,0 +1,555 @@
 +//=============================================================================
 +//
 +// n2-io.c version 0.1.7
@@ -47,6 +47,8 @@
 +#include <asm/uaccess.h>
 +#include <asm-arm/irq.h>
 +#include <asm-arm/delay.h>
++
++#include <asm/mach-types.h>
 +
 +/* Set this to 1 to output lots of debug messages. */
 +#define NSLU2_IO_DEBUG 0
@@ -505,6 +507,9 @@
 +
 +static int __init n2iom_init(void)
 +{
++	if (!machine_is_nslu2())
++		return 0;
++
 +	printk(KERN_INFO "NSLU2: i/o, %s\n", VERSION);
 +  	
 +	n2iom_initarch();
@@ -536,6 +541,8 @@
 +
 +static void __exit n2iom_exit(void)
 +{
++	if (!machine_is_nslu2())
++		return 0;
 +
 +#ifndef CONFIG_LEDS
 +	del_timer(&n2lm_rsg_timer);

@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r5.${PR_CONFIG}"
+PR = "r6.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -28,6 +28,8 @@ IXP4XX_PATCHES += "file://60-nslu2-beeper.patch;patch=1"
 IXP4XX_PATCHES += "file://65-loft-config.patch;patch=1"
 # IXP4XX_PATCHES += "file://75-nslu2-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://80-nslu2-io.patch;patch=1"
+IXP4XX_PATCHES += "file://81-nslu2-power.patch;patch=1"
+IXP4XX_PATCHES += "file://82-nas100d-power.patch;patch=1"
 IXP4XX_PATCHES += "file://85-timer.patch;patch=1"
 IXP4XX_PATCHES += "file://91-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://92-nas100d-maclist.patch;patch=1"
