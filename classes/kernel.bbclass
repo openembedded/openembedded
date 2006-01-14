@@ -101,8 +101,10 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/sound
-	cp -fR include/sound/* ${STAGING_KERNEL_DIR}/include/sound/
+	if [ -d include/sound ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/include/sound
+		cp -fR include/sound/* ${STAGING_KERNEL_DIR}/include/sound/
+	fi
 
 	if [ -d drivers/sound ]; then
 		# 2.4 alsa needs some headers from this directory
