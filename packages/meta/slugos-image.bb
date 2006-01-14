@@ -37,6 +37,11 @@ IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
 PACK_IMAGE_DEPENDS = ""
 EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
 
+# This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
+# preventing _mach.ipk (with no byte sex) taking precedence over everything
+# else.
+IMAGE_POSTPROCESS_COMMAND += "sed '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
+
 # These depends define native utilities - they do not get put in the flash and
 # are not required to build the image.
 IMAGE_TOOLS = ""

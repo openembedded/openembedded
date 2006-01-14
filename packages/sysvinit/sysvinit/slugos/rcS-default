@@ -10,7 +10,7 @@ SULOGIN=no
 # before system startup is complete (as soon as inetd is started)
 DELAYLOGIN=no
 # Set UTC=yes if your system clock is set to UTC (GMT), and UTC=no if not.
-#NSLU2: see the comments in /etc/init.d/hwclock.sh before changing this.
+#SlugOS: see the comments in /etc/init.d/hwclock.sh before changing this.
 UTC=yes
 # Set VERBOSE to "no" if you would like a more quiet bootup.
 VERBOSE=no

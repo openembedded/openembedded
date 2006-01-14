@@ -20,7 +20,7 @@ SRC_URI += "file://debug.patch;patch=1"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://modprobe.conf"
 
-PR = "r5"
+PR = "r6"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
