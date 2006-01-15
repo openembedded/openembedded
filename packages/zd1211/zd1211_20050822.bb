@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://download.sourceforge.net/zd1211/sf_zd1211_${PV}_src.tar.gz \
