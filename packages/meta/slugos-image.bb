@@ -1,10 +1,13 @@
-# This describes a generic NSLU2 image, even though the bb file is
+# This describes a generic SlugOS image, even though the bb file is
 # called 'slugos-image.bb' the distro specific configuration is
 # done in conf/distro/${DISTRO}.conf (which should always include
 # conf/distro/slugos.conf to get the standard settings).
 #
+DESCRIPTION = "Generic SlugOS image"
+MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
+HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r19"
+PR = "r20"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -40,7 +43,7 @@ EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
 # This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
 # preventing _mach.ipk (with no byte sex) taking precedence over everything
 # else.
-IMAGE_POSTPROCESS_COMMAND += "sed '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
+IMAGE_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
 
 # These depends define native utilities - they do not get put in the flash and
 # are not required to build the image.

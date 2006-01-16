@@ -9,20 +9,6 @@
 #
 # IXP4XX_PATCHES - full list of patches to apply, to add files
 #   generate a patch against /dev/null
-# IXP4XX_SUFFIX - the suffix to add after 'zImage-' in the
-#   deploy/images directory, should identify the machines the
-#   kernel will run on, ixp4xx[lb] for generic kernels (le or
-#   be).  Controls the package architecture of the ipk.
-# IXP4XX_MACHID - if set the kernel will be forced to use this
-#   machine id and be forced to LE on LE systems - please always
-#   remember to override IXP4XX_SUFFIX if this is done, the kernel
-#   will simply not work on other machines.
-# IXP4XX_LEFIXUP - if set prepend the LE fixup code to the kernel
-#   and byte swap (quad word) the whole kernel image for a BE
-#   boot loader
-#
-# If you set CMDLINE_ROOT you should *also* change IXP4XX_SUFFIX
-#   because the resultant kernel may not work on other systems.
 #
 # DEFAULT_PREFERENCE is set automagically in this file as
 # follows:
@@ -40,10 +26,6 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
 LICENSE = "GPL"
 MAINTAINER = "NSLU2-Linux <www.nslu2-linux.org>"
-
-# Defaults for the prefix flags
-IXP4XX_MACHID ?= ""
-IXP4XX_LEFIXUP ?= ""
 
 # Linux kernel source has the general form linux-X.Y.Z-patchP,
 # X.Y is the major version number, Z (which may have multiple
@@ -169,12 +151,6 @@ COMPATIBLE_HOST = 'arm.*-linux'
 
 inherit kernel
 
-# PACKAGE_ARCH must reliably identify what machines this kernel
-# will run on
-PACKAGE_ARCH_kernel-image = "${IXP4XX_SUFFIX}"
-PACKAGE_ARCH_kernel-dev = "${IXP4XX_SUFFIX}"
-PACKAGE_ARCH_kernel = "${IXP4XX_SUFFIX}"
-
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 
@@ -188,7 +164,7 @@ KERNEL_IMAGETYPE = "zImage"
 # CMDLINE_KERNEL_OPTIONS: overridable in local.conf
 # MACH_KERNEL_OPTIONS: the default, added to so additional stuff can be
 #  put in from local.conf etc.
-MACH_KERNEL_OPTIONS += "rtc-x1205.hctosys=1 rtc-x1205.probe=0,0x6f"
+MACH_KERNEL_OPTIONS += "rtc-x1205.probe=0,0x6f rtc-x1205.hctosys=1"
 MACH_KERNEL_OPTIONS += "rtc-ds1672.probe=0,0x68 rtc-ds1672.hctosys=1"
 MACH_KERNEL_OPTIONS += "pcf8563.hctosys=1"
 #
@@ -196,7 +172,9 @@ CMDLINE_KERNEL_OPTIONS ?= "${MACH_KERNEL_OPTIONS}"
 
 # CMDLINE_ROOT: machine specific boot options - should not be set on a
 #  generic kernel!
-CMDLINE_ROOT ?= ""
+#FIXME: this is to make NSLU2 work (temporary!)
+CMDLINE_ROOT ?= "root=/dev/mtdblock4 rootfstype=jffs2 init=/linuxrc mem=32M"
+#CMDLINE_ROOT ?= "mem=32M"
 
 # CMDLINE_DEBUG: debug options such as noirqdebug, defaults to empty
 # override in local.conf etc
@@ -246,7 +224,7 @@ do_configure_prepend() {
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
 
-# IXP4XX_MACHID and IXP4XX_LEFIXUP handling
+# MACHID and LE handling
 #
 # This mach_fixup function adds the required prefix to the image to
 # force the machine id in the kernel to be a particular value.  For
@@ -272,38 +250,99 @@ do_configure_prepend() {
 #
 # The argument to the function is the destination directory
 
-#SETMACH: set the machine id (register 1) to IXP4XX_MACHID
-SETMACH = '${@["", ".= ${IXP4XX_MACHID} .256/ 255& 0xe3a01c00+; ${WRITE}; .= 255& 0xe3811000+; ${WRITE};"][bb.data.getVar("IXP4XX_MACHID", d, 1) and 1]}'
+# The generic package only includes the generic image, the other
+# packages are made below (they are kernel-image packages but
+# with a different ARCH).
+FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}-${KERNEL_RELEASE}"
+
+# MACHINE DEFINITIONS: one block for each machine
+
+# The correct settings for the NSLU2 board:
+nslu2_CMDLINE_ROOT = "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M init=/linuxrc"
+nslu2_MACHID = "597"
+PACKAGES += "kernel-image-nslu2"
+PKG_kernel-image-nslu2 = "kernel-image-${KERNEL_VERSION}"
+PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${ARCH_BYTE_SEX}"
+DESCRIPTION_kernel-image-nas100d = "Linux kernel for the LinkSys NSLU2"
+FILES_kernel-image-nslu2 = "/boot/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+
+# The correct settings for Loft:
+loft_CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M init=/linuxrc"
+loft_MACHID = "849"
+PACKAGES += "kernel-image-loft"
+PKG_kernel-image-loft = "kernel-image-${KERNEL_VERSION}"
+PACKAGE_ARCH_kernel-image-loft = "loft${ARCH_BYTE_SEX}"
+DESCRIPTION_kernel-image-loft = "Linux kernel for the Giant Shoulder Inc. Loft board"
+FILES_kernel-image-loft = "/boot/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+
+# The correct settings for the NAS100D board:
+nas100d_CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M init=/linuxrc"
+nas100d_MACHID = "865"
+PACKAGES += "kernel-image-nas100d"
+PKG_kernel-image-nas100d = "kernel-image-${KERNEL_VERSION}"
+PACKAGE_ARCH_kernel-image-nas100d = "nas100d${ARCH_BYTE_SEX}"
+DESCRIPTION_kernel-image-nas100d = "Linux kernel for the IOMega NAS100D"
+FILES_kernel-image-nas100d = "/boot/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
 
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
-FIXUP_armeb = 'cp$'
-FIXUP_arm   = '${@["cp$", "wb 0xee110f10,4;wb 0xe3c00080,4;wb 0xee010f10,4;xp $,4"][bb.data.getVar("IXP4XX_LEFIXUP", d, 1) and 1]}'
-
-#WRITE: the correct way to write a single ARM instruction (wb unless LE and !LEFIXUP).
-WRITE_armeb = 'wb 4'
-WRITE_arm   = '${@["wl 4", "wb 4"][bb.data.getVar("IXP4XX_LEFIXUP", d, 1) and 1]}'
+#FIXME: do a fixup for BE too...
+FIXUP_armeb = "cp$"
+FIXUP_arm   = "wb 0xee110f10,4;wb 0xe3c00080,4;wb 0xee010f10,4;xp $,4"
 
 DEPENDS += "devio-native"
 
-# ${SETMACH}${FIXUP} is a sequence of devio commands to copy the image,
-# in the standard (generic) case it is just 'cp$'
+# copy_image <dest> <cmdline> <machine-id>
+#	copy the zImage and append the appropriate shim
+#  dest:       where to copy to
+#  cmdline:    command line to pass to image
+#  machine-id: decimal machine id to prepend, empty for none
 copy_image() {
+	local cmdline setmach
+
+	cmdline=""
+	test -n "$2" && cmdline="$2"' ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}'
+
+	setmach=""
+	test -n "$3" && setmach="wb $3 . 256/ 255& 0xe3a01c00+, 4; wb 255& 0xe3811000+, 4;"
+
 	rm -f "$1".new
-	devio '<<arch/${ARCH}/boot/${KERNEL_IMAGETYPE}' >"$1".new '${SETMACH}${FIXUP}' || {
-		echo 'ERROR: arch/${ARCH}/boot/${KERNEL_IMAGETYPE}: failed to copy zImage' >&2
+	devio '<<${KERNEL_OUTPUT}' >"$1".new "$setmach"'${FIXUP}' || {
+		echo 'ERROR: ${KERNEL_OUTPUT}: failed to copy zImage' >&2
 		return 1
 	}
 	mv "$1".new "$1"
 }
 
+install_image() {
+	copy_image '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-'"$1"'-${KERNEL_RELEASE}' "$2" "$3"
+}
+
 do_install_append() {
-	copy_image '${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}'
+	# Overwrite the unshimmed generic image with a shimmed one (but without
+	# any command line or machine id override).
+	rm -f '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_RELEASE}'
+	install_image '${IXP4XX_SUFFIX}'
+
+	# Add the machine specific images, with appropriate suffixes
+	install_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_CMDLINE_ROOT}' '${nslu2_MACHID}'
+	install_image 'loft${ARCH_BYTE_SEX}' '${loft_CMDLINE_ROOT}' '${loft_MACHID}'
+	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_CMDLINE_ROOT}' '${nas100d_MACHID}'
 }
 
 do_deploy[dirs] = "${S}"
+
+deploy_image() {
+	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-'"$1" "$2" "$3"
+}
+
 do_deploy() {
         install -d ${DEPLOY_DIR}/images
-	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}'
+	deploy_image '${IXP4XX_SUFFIX}'
+
+	# And the machine specific images
+	deploy_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_CMDLINE_ROOT}' '${nslu2_MACHID}'
+	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_CMDLINE_ROOT}' '${loft_MACHID}'
+	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_CMDLINE_ROOT}' '${nas100d_MACHID}'
 }
 
 addtask deploy before do_build after do_compile

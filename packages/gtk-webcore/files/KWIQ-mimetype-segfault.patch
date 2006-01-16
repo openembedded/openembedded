@@ -1,0 +1,14 @@
+--- NRCore/kwiq/KWQLoader.cpp.orig	2006-01-10 19:20:34.000000000 +0200
++++ NRCore/kwiq/KWQLoader.cpp	2006-01-10 19:20:50.000000000 +0200
+@@ -292,7 +292,10 @@
+ QString KWQResponseMIMEType(KWIQResponse *r)
+ {
+     ASSERT(r);
+-    return r->mimeType();
++    if (!r)
++	return 0;
++    else
++    	return r->mimeType();
+ }
+ 
+ QString KWQResponseHeaderString(KWIQResponse *r)
