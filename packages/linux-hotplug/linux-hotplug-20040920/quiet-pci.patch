@@ -1,0 +1,11 @@
+--- hotplug-2004_09_20/etc/hotplug/pci.rc.orig	2006-01-14 16:15:34.000000000 +0100
++++ hotplug-2004_09_20/etc/hotplug/pci.rc	2006-01-14 16:16:19.000000000 +0100
+@@ -45,7 +45,7 @@
+ 	# 2.4 kernels
+ 	LISTER=`which pcimodules`
+ 	if [ "$LISTER" = "" ] || [ ! -f /proc/bus/pci/devices ] || [ ! -x pci.agent ]; then
+-	    echo $"** can't synthesize pci hotplug events"
++	    # echo $"** can't synthesize pci hotplug events"
+ 	    return 1
+ 	fi
+ 
