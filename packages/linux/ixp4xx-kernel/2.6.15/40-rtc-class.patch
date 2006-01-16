@@ -1,5 +1,5 @@
---- linux-nslu2.orig/include/linux/rtc.h	2006-01-03 15:31:18.000000000 +0100
-+++ linux-nslu2/include/linux/rtc.h	2006-01-03 15:34:24.000000000 +0100
+--- linux-nslu2.orig/include/linux/rtc.h	2006-01-08 18:54:58.000000000 +0100
++++ linux-nslu2/include/linux/rtc.h	2006-01-08 18:55:19.000000000 +0100
 @@ -91,8 +91,81 @@ struct rtc_pll_info {
  #define RTC_PLL_GET	_IOR('p', 0x11, struct rtc_pll_info)  /* Get PLL correction */
  #define RTC_PLL_SET	_IOW('p', 0x12, struct rtc_pll_info)  /* Set PLL correction */
@@ -38,8 +38,8 @@
 +{
 +	int id;
 +	struct module *owner;
-+	struct rw_semaphore lock;
 +	struct class_device class_dev;
++	struct semaphore ops_lock;
 +	struct rtc_class_ops *ops;
 +	char name[RTC_DEVICE_NAME_SIZE];
 +
@@ -82,8 +82,8 @@
  typedef struct rtc_task {
  	void (*func)(void *private_data);
  	void *private_data;
---- linux-nslu2.orig/drivers/Kconfig	2006-01-03 15:31:19.000000000 +0100
-+++ linux-nslu2/drivers/Kconfig	2006-01-04 01:27:31.000000000 +0100
+--- linux-nslu2.orig/drivers/Kconfig	2006-01-08 18:54:58.000000000 +0100
++++ linux-nslu2/drivers/Kconfig	2006-01-08 18:55:19.000000000 +0100
 @@ -66,4 +66,6 @@ source "drivers/infiniband/Kconfig"
  
  source "drivers/sn/Kconfig"
@@ -91,8 +91,8 @@
 +source "drivers/rtc/Kconfig"
 +
  endmenu
---- linux-nslu2.orig/drivers/Makefile	2006-01-03 15:33:32.000000000 +0100
-+++ linux-nslu2/drivers/Makefile	2006-01-04 01:27:31.000000000 +0100
+--- linux-nslu2.orig/drivers/Makefile	2006-01-08 18:54:58.000000000 +0100
++++ linux-nslu2/drivers/Makefile	2006-01-08 18:55:19.000000000 +0100
 @@ -54,6 +54,7 @@ obj-$(CONFIG_USB_GADGET)	+= usb/gadget/
  obj-$(CONFIG_GAMEPORT)		+= input/gameport/
  obj-$(CONFIG_INPUT)		+= input/
@@ -102,8 +102,8 @@
  obj-$(CONFIG_W1)		+= w1/
  obj-$(CONFIG_HWMON)		+= hwmon/
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/class.c	2006-01-03 15:45:19.000000000 +0100
-@@ -0,0 +1,141 @@
++++ linux-nslu2/drivers/rtc/class.c	2006-01-08 18:55:19.000000000 +0100
+@@ -0,0 +1,143 @@
 +/*
 + * RTC subsystem, base class
 + *
@@ -178,7 +178,7 @@
 +	rtc->class_dev.class = rtc_class;
 +	rtc->class_dev.release = rtc_device_release;
 +
-+	init_rwsem(&rtc->lock);
++	init_MUTEX(&rtc->ops_lock);
 +	spin_lock_init(&rtc->irq_lock);
 +	spin_lock_init(&rtc->irq_task_lock);
 +
@@ -212,7 +212,9 @@
 + */
 +void rtc_device_unregister(struct rtc_device *rtc)
 +{
-+	down_write(&rtc->lock);
++	down(&rtc->ops_lock);
++	rtc->ops = NULL;
++	up(&rtc->ops_lock);
 +	class_device_unregister(&rtc->class_dev);
 +}
 +EXPORT_SYMBOL_GPL(rtc_device_unregister);
@@ -246,7 +248,7 @@
 +MODULE_DESCRIPTION("RTC class support");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/Kconfig	2006-01-04 01:27:21.000000000 +0100
++++ linux-nslu2/drivers/rtc/Kconfig	2006-01-09 04:17:02.000000000 +0100
 @@ -0,0 +1,93 @@
 +#
 +# RTC class/drivers configuration
@@ -342,7 +344,7 @@
 +
 +endmenu
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/Makefile	2006-01-04 01:27:21.000000000 +0100
++++ linux-nslu2/drivers/rtc/Makefile	2006-01-09 04:17:02.000000000 +0100
 @@ -0,0 +1,15 @@
 +#
 +# Makefile for RTC class/drivers.
@@ -360,8 +362,8 @@
 +obj-$(CONFIG_RTC_DRV_DS1672)	+= rtc-ds1672.o
 +
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/interface.c	2006-01-03 15:34:24.000000000 +0100
-@@ -0,0 +1,189 @@
++++ linux-nslu2/drivers/rtc/interface.c	2006-01-09 03:39:33.000000000 +0100
+@@ -0,0 +1,232 @@
 +/*
 + * RTC subsystem, interface functions
 + *
@@ -381,13 +383,22 @@
 +
 +int rtc_read_time(struct class_device *class_dev, struct rtc_time *tm)
 +{
-+	int err = -EINVAL;
-+	struct rtc_class_ops *ops = to_rtc_device(class_dev)->ops;
++	int err;
++	struct rtc_device *rtc = to_rtc_device(class_dev);
 +
-+	if (ops->read_time) {
++	if ((err = down_interruptible(&rtc->ops_lock)))
++		return err;
++
++	if (!rtc->ops)
++		err = -ENODEV;
++	else if (!rtc->ops->read_time)
++		err = -EINVAL;
++	else {
 +		memset(tm, 0, sizeof(struct rtc_time));
-+		err = ops->read_time(class_dev->dev, tm);
++		err = rtc->ops->read_time(class_dev->dev, tm);
 +	}
++
++	up(&rtc->ops_lock);
 +	return err;
 +}
 +EXPORT_SYMBOL(rtc_read_time);
@@ -395,36 +406,64 @@
 +int rtc_set_time(struct class_device *class_dev, struct rtc_time *tm)
 +{
 +	int err;
-+	struct rtc_class_ops *ops = to_rtc_device(class_dev)->ops;
++	struct rtc_device *rtc = to_rtc_device(class_dev);
 +
-+	err = rtc_valid_tm(tm);
-+	if (err == 0 && ops->set_time)
-+		err = ops->set_time(class_dev->dev, tm);
++	if ((err = rtc_valid_tm(tm)) != 0)
++		return err;
 +
++	if ((err = down_interruptible(&rtc->ops_lock)))
++		return err;
++
++	if (!rtc->ops)
++		err = -ENODEV;
++	else if (!rtc->ops->set_time)
++		err = -EINVAL;
++	else
++		err = rtc->ops->set_time(class_dev->dev, tm);
++
++	up(&rtc->ops_lock);
 +	return err;
 +}
 +EXPORT_SYMBOL(rtc_set_time);
 +
 +int rtc_read_alarm(struct class_device *class_dev, struct rtc_wkalrm *alarm)
 +{
-+	struct rtc_class_ops *ops = to_rtc_device(class_dev)->ops;
-+	int err = -EINVAL;
++	int err;
++	struct rtc_device *rtc = to_rtc_device(class_dev);
 +
-+	if (ops->read_alarm) {
++	if ((err = down_interruptible(&rtc->ops_lock)))
++		return err;
++
++	if (rtc->ops == NULL)
++		err = -ENODEV;
++	else if (!rtc->ops->read_alarm)
++		err = -EINVAL;
++	else {
 +		memset(alarm, 0, sizeof(struct rtc_wkalrm));
-+		err = ops->read_alarm(class_dev->dev, alarm);
++		err = rtc->ops->read_alarm(class_dev->dev, alarm);
 +	}
++
++	up(&rtc->ops_lock);
 +	return err;
 +}
 +EXPORT_SYMBOL(rtc_read_alarm);
 +
 +int rtc_set_alarm(struct class_device *class_dev, struct rtc_wkalrm *alarm)
 +{
-+	int err = -EINVAL;
-+	struct rtc_class_ops *ops = to_rtc_device(class_dev)->ops;
++	int err;
++	struct rtc_device *rtc = to_rtc_device(class_dev);
 +
-+	if (ops->set_alarm)
-+		err = ops->set_alarm(class_dev->dev, alarm);
++	if ((err = down_interruptible(&rtc->ops_lock)))
++		return err;
++
++	if (!rtc->ops)
++		err = -ENODEV;
++	else if (!rtc->ops->set_alarm)
++		err = -EINVAL;
++	else
++		err = rtc->ops->set_alarm(class_dev->dev, alarm);
++
++	up(&rtc->ops_lock);
 +	return err;
 +}
 +EXPORT_SYMBOL(rtc_set_alarm);
@@ -460,6 +499,11 @@
 +			break;
 +		}
 +	}
++
++	if (class_dev) {
++		if (!try_module_get(to_rtc_device(class_dev)->owner))
++			class_dev = NULL;
++	}
 +	up(&rtc_class->sem);
 +
 +	return class_dev;
@@ -468,6 +512,7 @@
 +
 +void rtc_close(struct class_device *class_dev)
 +{
++	module_put(to_rtc_device(class_dev)->owner);
 +}
 +EXPORT_SYMBOL(rtc_close);
 +
@@ -552,7 +597,7 @@
 +
 +}
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/utils.c	2006-01-03 15:34:24.000000000 +0100
++++ linux-nslu2/drivers/rtc/utils.c	2006-01-08 18:55:19.000000000 +0100
 @@ -0,0 +1,97 @@
 +/*
 + * RTC subsystem, utility functions
@@ -651,8 +696,8 @@
 +	return 0;
 +}
 +EXPORT_SYMBOL(rtc_tm_to_time);
---- linux-nslu2.orig/arch/arm/Kconfig	2006-01-04 01:27:04.000000000 +0100
-+++ linux-nslu2/arch/arm/Kconfig	2006-01-04 01:27:31.000000000 +0100
+--- linux-nslu2.orig/arch/arm/Kconfig	2006-01-09 03:36:04.000000000 +0100
++++ linux-nslu2/arch/arm/Kconfig	2006-01-09 03:39:50.000000000 +0100
 @@ -748,6 +748,8 @@ source "drivers/usb/Kconfig"
  
  source "drivers/mmc/Kconfig"
@@ -662,8 +707,8 @@
  endmenu
  
  source "fs/Kconfig"
---- linux-nslu2.orig/arch/arm/common/rtctime.c	2006-01-04 01:27:04.000000000 +0100
-+++ linux-nslu2/arch/arm/common/rtctime.c	2006-01-04 01:27:09.000000000 +0100
+--- linux-nslu2.orig/arch/arm/common/rtctime.c	2006-01-09 03:36:04.000000000 +0100
++++ linux-nslu2/arch/arm/common/rtctime.c	2006-01-09 03:39:50.000000000 +0100
 @@ -40,89 +40,6 @@ static struct rtc_ops *rtc_ops;
  
  #define rtc_epoch 1900UL
@@ -852,8 +897,8 @@
  		p += sprintf(p, "alrm_time\t: ");
  		if ((unsigned int)alrm.time.tm_hour <= 24)
  			p += sprintf(p, "%02d:", alrm.time.tm_hour);
---- linux-nslu2.orig/include/asm-arm/rtc.h	2006-01-04 01:27:04.000000000 +0100
-+++ linux-nslu2/include/asm-arm/rtc.h	2006-01-04 01:27:09.000000000 +0100
+--- linux-nslu2.orig/include/asm-arm/rtc.h	2006-01-09 03:36:04.000000000 +0100
++++ linux-nslu2/include/asm-arm/rtc.h	2006-01-09 03:39:50.000000000 +0100
 @@ -25,9 +25,6 @@ struct rtc_ops {
  	int		(*proc)(char *buf);
  };
@@ -865,8 +910,8 @@
  void rtc_update(unsigned long, unsigned long);
  int register_rtc(struct rtc_ops *);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-sysfs.c	2006-01-04 01:27:12.000000000 +0100
-@@ -0,0 +1,125 @@
++++ linux-nslu2/drivers/rtc/rtc-sysfs.c	2006-01-09 03:39:50.000000000 +0100
+@@ -0,0 +1,128 @@
 +/*
 + * RTC subsystem, sysfs interface
 + *
@@ -891,58 +936,61 @@
 +
 +static ssize_t rtc_sysfs_show_date(struct class_device *dev, char *buf)
 +{
-+	ssize_t retval = 0;
++	ssize_t retval = -ENODEV;
 +	struct rtc_device *rtc = to_rtc_device(dev);
 +	struct rtc_time tm;
 +
-+	if (down_read_trylock(&rtc->lock) == 0)
-+		return -ENODEV;
++	if ((retval = down_interruptible(&rtc->ops_lock)))
++		return retval;
 +
-+	if (rtc_read_time(dev, &tm) == 0) {
++	if (rtc->ops && ((retval = rtc_read_time(dev, &tm)) == 0)) {
 +		retval = sprintf(buf, "%04d-%02d-%02d\n",
 +			tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 +	}
 +
-+	up_read(&rtc->lock);
++	up(&rtc->ops_lock);
++
 +	return retval;
 +}
 +static CLASS_DEVICE_ATTR(date, S_IRUGO, rtc_sysfs_show_date, NULL);
 +
 +static ssize_t rtc_sysfs_show_time(struct class_device *dev, char *buf)
 +{
-+	ssize_t retval = 0;
++	ssize_t retval = -ENODEV;
 +	struct rtc_device *rtc = to_rtc_device(dev);
 +	struct rtc_time tm;
 +
-+	if (down_read_trylock(&rtc->lock) == 0)
-+		return -ENODEV;
++	if ((retval = down_interruptible(&rtc->ops_lock)))
++		return retval;
 +
-+	if (rtc_read_time(dev, &tm) == 0) {
++	if (rtc->ops && ((retval = rtc_read_time(dev, &tm)) == 0)) {
 +		retval = sprintf(buf, "%02d:%02d:%02d\n",
 +			tm.tm_hour, tm.tm_min, tm.tm_sec);
 +	}
 +
-+	up_read(&rtc->lock);
++	up(&rtc->ops_lock);
++
 +	return retval;
 +}
 +static CLASS_DEVICE_ATTR(time, S_IRUGO, rtc_sysfs_show_time, NULL);
 +
 +static ssize_t rtc_sysfs_show_since_epoch(struct class_device *dev, char *buf)
 +{
-+	ssize_t retval = 0;
++	ssize_t retval = -ENODEV;
 +	struct rtc_device *rtc = to_rtc_device(dev);
 +	struct rtc_time tm;
 +
-+	if (down_read_trylock(&rtc->lock) == 0)
-+		return -ENODEV;
++	if ((retval = down_interruptible(&rtc->ops_lock)))
++		return retval;
 +
-+	if (rtc_read_time(dev, &tm) == 0) {
++	if (rtc->ops && ((retval = rtc_read_time(dev, &tm)) == 0)) {
 +		unsigned long time;
 +		rtc_tm_to_time(&tm, &time);
 +		retval = sprintf(buf, "%lu\n", time);
 +	}
 +
-+	up_read(&rtc->lock);
++	up(&rtc->ops_lock);
++
 +	return retval;
 +}
 +static CLASS_DEVICE_ATTR(since_epoch, S_IRUGO, rtc_sysfs_show_since_epoch, NULL);
@@ -993,7 +1041,7 @@
 +MODULE_DESCRIPTION("RTC class sysfs interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-proc.c	2006-01-04 01:27:14.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-proc.c	2006-01-09 03:39:50.000000000 +0100
 @@ -0,0 +1,158 @@
 +/*
 + * RTC subsystem, proc interface
@@ -1154,7 +1202,7 @@
 +MODULE_DESCRIPTION("RTC class proc interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-dev.c	2006-01-04 01:27:15.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-dev.c	2006-01-09 04:00:16.000000000 +0100
 @@ -0,0 +1,372 @@
 +/*
 + * RTC subsystem, dev interface
@@ -1529,7 +1577,7 @@
 +MODULE_DESCRIPTION("RTC class dev interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-x1205.c	2006-01-04 01:27:17.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-x1205.c	2006-01-09 04:17:02.000000000 +0100
 @@ -0,0 +1,725 @@
 +/*
 + * An i2c driver for the Xicor/Intersil X1205 RTC
@@ -1906,7 +1954,7 @@
 +	do_settimeofday(&tv);
 +
 +	dev_info(&client->dev,
-+		"setting the system clock to %d-%d-%d %d:%d:%d\n",
++		"setting the system clock to %02d-%02d-%d %02d:%02d:%02d\n",
 +		tm.tm_year + 1900, tm.tm_mon + 1,
 +		tm.tm_mday, tm.tm_hour, tm.tm_min,
 +		tm.tm_sec);
@@ -2257,8 +2305,8 @@
 +module_init(x1205_init);
 +module_exit(x1205_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-test.c	2006-01-04 01:27:19.000000000 +0100
-@@ -0,0 +1,189 @@
++++ linux-nslu2/drivers/rtc/rtc-test.c	2006-01-09 04:17:02.000000000 +0100
+@@ -0,0 +1,206 @@
 +/*
 + * An RTC test device/driver
 + * Copyright (C) 2005 Tower Technologies
@@ -2274,6 +2322,9 @@
 +#include <linux/err.h>
 +#include <linux/rtc.h>
 +#include <linux/platform_device.h>
++
++struct platform_device *test0 = NULL, *test1 = NULL;
++
 +
 +static int test_rtc_read_alarm(struct device *dev,
 +	struct rtc_wkalrm *alrm)
@@ -2391,7 +2442,7 @@
 +	return 0;
 +}
 +
-+static int test_remove(struct platform_device *plat_dev)
++static int __devexit test_remove(struct platform_device *plat_dev)
 +{
 +	struct rtc_device *rtc = platform_get_drvdata(plat_dev);
 +
@@ -2401,25 +2452,9 @@
 +	return 0;
 +}
 +
-+static void test_release(struct device * dev)
-+{
-+}
-+
-+struct platform_device test_dev_zero = {
-+	.name	= "rtc-test",
-+	.id	= 0,
-+	.dev.release = test_release,
-+};
-+
-+struct platform_device test_dev_one = {
-+	.name	= "rtc-test",
-+	.id	= 1,
-+	.dev.release = test_release,
-+};
-+
-+struct platform_driver test_drv = {
++static struct platform_driver test_drv = {
 +	.probe	= test_probe,
-+	.remove = test_remove,
++	.remove = __devexit_p(test_remove),
 +	.driver = {
 +		.name = "rtc-test",
 +		.owner = THIS_MODULE,
@@ -2428,18 +2463,48 @@
 +
 +static int __init test_init(void)
 +{
-+	platform_device_register(&test_dev_zero);
-+	platform_device_register(&test_dev_one);
-+	platform_driver_register(&test_drv);
++	int err;
++
++	if ((err = platform_driver_register(&test_drv)))
++		return err;
++
++	if ((test0 = platform_device_alloc("rtc-test", 0)) == NULL) {
++		err = -ENOMEM;
++		goto exit_driver_unregister;
++	}
++
++	if ((test1 = platform_device_alloc("rtc-test", 1)) == NULL) {
++		err = -ENOMEM;
++		goto exit_free_test0;
++	}
++
++	if ((err = platform_device_add(test0)))
++		goto exit_free_test1;
++
++	if ((err = platform_device_add(test1)))
++		goto exit_device_unregister;
 +
 +	return 0;
++
++exit_device_unregister:
++	platform_device_unregister(test0);
++
++exit_free_test1:
++	platform_device_put(test1);
++
++exit_free_test0:
++	platform_device_put(test0);
++
++exit_driver_unregister:
++	platform_driver_unregister(&test_drv);
++	return err;
 +}
 +
 +static void __exit test_exit(void)
 +{
++	platform_device_unregister(test0);
++	platform_device_unregister(test1);
 +	platform_driver_unregister(&test_drv);
-+	platform_device_unregister(&test_dev_zero);
-+	platform_device_unregister(&test_dev_one);
 +}
 +
 +MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
@@ -2449,8 +2514,8 @@
 +module_init(test_init);
 +module_exit(test_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-ds1672.c	2006-01-04 01:27:21.000000000 +0100
-@@ -0,0 +1,266 @@
++++ linux-nslu2/drivers/rtc/rtc-ds1672.c	2006-01-12 00:31:05.000000000 +0100
+@@ -0,0 +1,278 @@
 +/*
 + * An rtc/i2c driver for the Dallas DS1672
 + * Copyright 2005 Alessandro Zummo
@@ -2465,7 +2530,7 @@
 +#include <linux/i2c.h>
 +#include <linux/rtc.h>
 +
-+#define DRV_VERSION "0.1"
++#define DRV_VERSION "0.2"
 +
 +/* Addresses to scan: none. This chip cannot be detected. */
 +static unsigned short normal_i2c[] = { I2C_CLIENT_END };
@@ -2493,7 +2558,19 @@
 +static int ds1672_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 +{
 +	unsigned long time;
++	unsigned char addr = DS1672_REG_CNT_BASE;
 +	unsigned char buf[4];
++
++	struct i2c_msg msgs[] = {
++		{ client->addr, 0, 1, &addr },		/* setup read ptr */
++		{ client->addr, I2C_M_RD, 4, buf },	/* read date */
++	};
++
++        /* read date registers */
++        if ((i2c_transfer(client->adapter, &msgs[0], 2)) != 2) {
++                dev_err(&client->dev, "%s: read error\n", __FUNCTION__);
++                return -EIO;
++        }
 +
 +	dev_dbg(&client->dev,
 +		"%s: raw read data - counters=%02x,%02x,%02x,%02x\n"
