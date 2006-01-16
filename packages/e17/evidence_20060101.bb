@@ -6,9 +6,8 @@ MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 DEPENDS = "pkgconfig gtk+ glib-2.0 ecore-x11 evas-x11 edb eet edje imlib2-x11 libpng epeg jpeg pcre curl taglib libvorbis libogg libxine-x11 emotion freetype"
 RDEPENDS += "examine"
 PR = "r0"
-SRCDATE = "${PV}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/evidence;module=evidence"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/evidence;module=evidence;date=${PV}"
 S = "${WORKDIR}/evidence"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \

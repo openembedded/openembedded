@@ -6,7 +6,7 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI += "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje/m4;date=20050926"
+SRC_URI += "cvs://anonymous@thinktux.net/root;module=e17/libs/edje/m4;date=20060101"
 
 LEAD_SONAME = "libedje.so"
 

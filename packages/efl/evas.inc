@@ -13,17 +13,20 @@ export FREETYPE_CONFIG		= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
-           cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas/m4;date=20050926"
+           cvs://anonymous@thinktux.net/root;module=e17/libs/evas/m4;date=20050926"
 
 S = "${WORKDIR}/evas-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 
 EXTRA_OECONF = "<override me>"
 
+
 do_configure_prepend() {
-	install -d "${S}/m4"
-	install "${WORKDIR}/m4/"*.m4 "${S}/m4"
-	aclocal -I m4
+	if [ -e "${WORKDIR}/m4" ]; then
+		install -d "${S}/m4"
+		install "${WORKDIR}/m4/"*.m4 "${S}/m4"
+		aclocal -I m4
+	fi
 }
 
 do_configure () {
@@ -31,6 +34,7 @@ do_configure () {
 	#find ${S} -type f | xargs sed -i 's:@FREETYPE_CFLAGS@:-I${STAGING_INCDIR}/freetype2:'
 	#find ${S} -name Makefile | xargs sed -i 's:--tag=CC:-lfreetype --tag=CC:'
 }
+
 
 headers = "<override me>"
 libraries = "libevas"
