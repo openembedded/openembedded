@@ -4,9 +4,8 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
- 
 
-PR = "r8"
+PR = "r9"
 
 
 SRC_URI = "file://altboot-menu \
@@ -16,7 +15,7 @@ SRC_URI = "file://altboot-menu \
 	   file://altboot.cfg"
 
 # S = "${WORKDIR}/files"
- 
+
 do_install() {
 	install -d ${D}/sbin
 	install -d ${D}/etc/altboot-menu
@@ -31,8 +30,6 @@ do_install() {
 	install -m 0755 ${WORKDIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 	install -m 0755 ${WORKDIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 }		
-
-
 
 pkg_postinst() {
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
