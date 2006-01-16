@@ -11,7 +11,7 @@ SRC_URI = "http://sylpheed.good-day.net/sylpheed/v1.9/sylpheed-1.9.12.tar.bz2 \
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN}-doc += "${datadir}"
 
-EXTRA_OECONF = "--enable-gnutls"
+EXTRA_OECONF = "--enable-gnutls --includedir=${STAGING_INCDIR}"
 
 CFLAGS += "-D_GNU_SOURCE"
 
