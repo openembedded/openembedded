@@ -1,8 +1,10 @@
-SECTION = "base"
 include ipkg-utils_${PV}.bb
-PR = "r4"
-inherit native
+
 RDEPENDS = "python-native"
+PR = "r5"
+
+inherit native
+
 # Avoid circular dependencies from package_ipk.bbclass
 PACKAGES = ""
 
