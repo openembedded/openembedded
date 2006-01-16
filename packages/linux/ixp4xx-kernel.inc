@@ -155,31 +155,19 @@ ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 
 # To specify the console set KERNEL_CONSOLE in the .bb file.
-# CMDLINE_ROOT contains the boot options, CMDLINE_KERNEL_OPTIONS
-# contains the things for a specific kernel.
-#
-# These are set from MACHINE specific defaults below, but an override
-# in local.conf will still take precedence.
-#
-# CMDLINE_KERNEL_OPTIONS: overridable in local.conf
-# MACH_KERNEL_OPTIONS: the default, added to so additional stuff can be
-#  put in from local.conf etc.
-MACH_KERNEL_OPTIONS += "rtc-x1205.probe=0,0x6f rtc-x1205.hctosys=1"
-MACH_KERNEL_OPTIONS += "rtc-ds1672.probe=0,0x68 rtc-ds1672.hctosys=1"
-MACH_KERNEL_OPTIONS += "pcf8563.hctosys=1"
-#
-CMDLINE_KERNEL_OPTIONS ?= "${MACH_KERNEL_OPTIONS}"
+# CMDLINE_ROOT contains the boot options, these will be
+# appended to the build in boot options (so it is only necessary
+# to override stuff in the kernel source).
 
 # CMDLINE_ROOT: machine specific boot options - should not be set on a
 #  generic kernel!
-#FIXME: this is to make NSLU2 work (temporary!)
-CMDLINE_ROOT ?= "root=/dev/mtdblock4 rootfstype=jffs2 init=/linuxrc mem=32M"
-#CMDLINE_ROOT ?= "mem=32M"
+CMDLINE_ROOT ?= ""
 
 # CMDLINE_DEBUG: debug options such as noirqdebug, defaults to empty
 # override in local.conf etc
 CMDLINE_DEBUG ?= ""
-CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
+
+CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
 # required.  Notice that this has to be done for each separately built
