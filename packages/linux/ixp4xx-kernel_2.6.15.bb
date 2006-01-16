@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r6.${PR_CONFIG}"
+PR = "r7.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -20,6 +20,7 @@ IXP4XX_PATCHES += "file://10-mtdpart-redboot-fis-byteswap.patch;patch=1"
 IXP4XX_PATCHES += "file://11-mtdpart-redboot-config-byteswap.patch;patch=1"
 IXP4XX_PATCHES += "file://15-jffs2-endian-config.patch;patch=1"
 IXP4XX_PATCHES += "file://40-rtc-class.patch;patch=1"
+IXP4XX_PATCHES += "file://45-eeprom-notifier.patch;patch=1"
 IXP4XX_PATCHES += "file://50-nas100d-arch.patch;patch=1"
 IXP4XX_PATCHES += "file://55-rtc-pcf8563.patch;patch=1"
 IXP4XX_PATCHES += "file://60-nas100d-i2c.patch;patch=1"
@@ -33,3 +34,4 @@ IXP4XX_PATCHES += "file://85-timer.patch;patch=1"
 IXP4XX_PATCHES += "file://91-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://92-nas100d-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://92-nslu2-maclist.patch;patch=1"
+IXP4XX_PATCHES += "file://93-loft-maclist.patch;patch=1"
