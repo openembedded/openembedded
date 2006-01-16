@@ -1,7 +1,7 @@
 DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
-HOMEPAGE = "http://atty.jp/?Zaurus%2Fmplayer"
+HOMEPAGE = "http://atty.skr.jp/?Zaurus%2Fmplayer"
 DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg alsa-lib"
 LICENSE = "GPL"
 RCONFLICTS = "mplayer"

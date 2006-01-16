@@ -7,8 +7,10 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 LICENSE = "GPL"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.1+cvs${SRCDATE}"
-PR = "r0"
+PV = "0.3+cvs${SRCDATE}"
+PR = "r1"
+
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools gpe pkgconfig
 

@@ -3,15 +3,16 @@ DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v1.9/sylpheed-1.9.12.tar.bz2 \
-	file://sylpheed-gnutls.patch;patch=1"
+	file://sylpheed-gnutls.patch;patch=1 \
+	file://Makefile-am.patch;patch=1"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN}-doc += "${datadir}"
 
-EXTRA_OECONF = "--enable-gnutls --includedir=${STAGING_INCDIR}"
+EXTRA_OECONF = "--enable-gnutls"
 
 CFLAGS += "-D_GNU_SOURCE"
 
