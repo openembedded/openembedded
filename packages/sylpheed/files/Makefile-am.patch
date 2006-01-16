@@ -1,0 +1,12 @@
+--- sylpheed-1.9.12/src/Makefile.am.orig	2006-01-16 13:14:05.000000000 +0000
++++ sylpheed-1.9.12/src/Makefile.am	2006-01-16 13:14:19.000000000 +0000
+@@ -177,8 +177,7 @@
+ 	-DG_LOG_DOMAIN=\"Sylpheed\" \
+ 	$(GTK_CFLAGS) \
+ 	$(GDK_PIXBUF_CFLAGS) \
+-	$(GPGME_CFLAGS) \
+-	-I$(includedir)
++	$(GPGME_CFLAGS)
+ 
+ sylpheed_LDADD = \
+ 	$(INTLLIBS) \
