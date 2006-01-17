@@ -1,0 +1,25 @@
+Index: terminalwidget.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/apps/opie-console/terminalwidget.cpp,v
+retrieving revision 1.12
+diff -u -u -r1.12 terminalwidget.cpp
+--- opie-console/terminalwidget.cpp	16 Oct 2004 21:06:28 -0000	1.12
++++ opie-console/terminalwidget.cpp	17 Jan 2006 10:00:13 -0000
+@@ -1,4 +1,5 @@
+ #include "terminalwidget.h"
++#include <qpe/config.h>
+ 
+ /* QT */
+ #include <qlabel.h>
+@@ -151,8 +152,10 @@
+         break;
+     };
+ 
++    Config qpecfg("qpe");
++    qpecfg.setGroup("Appearance");
+ 
+-    m_fontSelector->setSelectedFont( prof.readEntry( "Font"), prof.readEntry( "FontStyle"), prof.readNumEntry( "FontSize"  ), prof.readEntry( "FontCharset") );
++    m_fontSelector->setSelectedFont( prof.readEntry( "Font", qpecfg.readEntry("FixedFontFamily")), prof.readEntry( "FontStyle", qpecfg.readEntry("FixedFontStyle")), prof.readNumEntry( "FontSize" , qpecfg.readNumEntry("FixedFontStyle")), prof.readEntry( "FontCharset") );
+ 
+ //     switch( fontsize ) {
+ //     case Profile::Micro:
