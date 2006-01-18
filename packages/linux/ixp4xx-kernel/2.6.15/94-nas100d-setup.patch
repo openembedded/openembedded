@@ -15,7 +15,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
-@@ -164,12 +166,49 @@ static void __init nas100d_init(void)
+@@ -164,12 +166,53 @@ static void __init nas100d_init(void)
  	platform_add_devices(nas100d_devices, ARRAY_SIZE(nas100d_devices));
  }
  
@@ -24,20 +24,27 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + * settings to be safe (the box always has 64MByte at 0).  The
 + * passed in command line can override this default, we prepend
 + * to the config'ed default.
++ *
++ * NOTE: the startup sequence is:
++ * 	1) Call the machine fixup
++ * 	2) Parse the ATAG list, the ATAG_CMDLINE is copied in
++ * 	   to default_command_line which is the value of *from
++ * 	3) Parse the command line in *from (*not*
++ * 	   default_command_line unless they are the same!)
++ *
++ * Setting mi->nr_banks causes (2) to 'squash' (set to ATAG_NONE)
++ * any ATAG_MEM tags, but mem= command line options cause nr_banks
++ * to be reset to 0 (on the first mem=)
 + */
++static char nas100d_command_line[] __initdata =
++	"root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc "
++	"pcf8563.hctosys=1 "
++	CONFIG_CMDLINE;
++
 +static void __init nas100d_fixup(struct machine_desc *desc,
 +		struct tag *tags, char **cmdline, struct meminfo *mi)
 +{
-+	char saved_command_line[COMMAND_LINE_SIZE];
-+	/* Put NAS100D specific known-required-for-certain stuff here, leave
-+	 * a trailing space!
-+	 */
-+	static char nas100d_command_line[] =
-+		"root=/dev/mtdblock2 rw rootfstype=jffs2 init=/linuxrc "
-+		"pcf8563.hctosys=1 ";
-+	const int len = (sizeof nas100d_command_line)-1;
-+
-+	/* The NAS100D has one bank of 32MByte memory.
++	/* The NAS100D has one bank of 64MByte memory.
 +	 * NOTE: setting nr_banks != 0 causes kernel/setup.c to remove
 +	 * the mem tags from the tag list.  We need do nothing here!
 +	 */
@@ -49,10 +56,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +	/* A command line in the ATAG list will override this one,
 +	 * as is intended.
 +	 */
-+	memcpy(saved_command_line, *cmdline, COMMAND_LINE_SIZE);
-+	memcpy(*cmdline, nas100d_command_line, len);
-+	memcpy(*cmdline + len, saved_command_line, COMMAND_LINE_SIZE - len);
-+	*cmdline[COMMAND_LINE_SIZE-1] = 0;
++	strlcpy(*cmdline, nas100d_command_line, COMMAND_LINE_SIZE);
 +}
 +
  MACHINE_START(NAS100D, "Iomega NAS 100d")

@@ -167,7 +167,9 @@ CMDLINE_ROOT ?= ""
 # override in local.conf etc
 CMDLINE_DEBUG ?= ""
 
-CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}"
+CMDLINE  = "${CMDLINE_ROOT}"
+CMDLINE += "${CMDLINE_DEBUG}"
+CMDLINE += "${CMDLINE_CONSOLE}"
 
 # Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
 # required.  Notice that this has to be done for each separately built
@@ -246,31 +248,46 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}-${KERNEL_RELEAS
 # MACHINE DEFINITIONS: one block for each machine
 
 # The correct settings for the NSLU2 board:
-nslu2_CMDLINE_ROOT = "root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M init=/linuxrc"
 nslu2_MACHID = "597"
 PACKAGES += "kernel-image-nslu2"
 PKG_kernel-image-nslu2 = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${ARCH_BYTE_SEX}"
-DESCRIPTION_kernel-image-nas100d = "Linux kernel for the LinkSys NSLU2"
-FILES_kernel-image-nslu2 = "/boot/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+DESCRIPTION_kernel-image-nslu2 = "Linux kernel for the LinkSys NSLU2"
+FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+pkg_postinst_kernel-image-nslu2 () {
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+}
+pkg_postrm_kernel-image-nslu2 () {
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+}
 
 # The correct settings for Loft:
-loft_CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M init=/linuxrc"
 loft_MACHID = "849"
 PACKAGES += "kernel-image-loft"
 PKG_kernel-image-loft = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-loft = "loft${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-loft = "Linux kernel for the Giant Shoulder Inc. Loft board"
-FILES_kernel-image-loft = "/boot/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+pkg_postinst_kernel-image-loft () {
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+}
+pkg_postrm_kernel-image-loft () {
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+}
 
 # The correct settings for the NAS100D board:
-nas100d_CMDLINE_ROOT = "root=/dev/mtdblock2 rw rootfstype=jffs2 mem=64M init=/linuxrc"
 nas100d_MACHID = "865"
 PACKAGES += "kernel-image-nas100d"
 PKG_kernel-image-nas100d = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-nas100d = "nas100d${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-nas100d = "Linux kernel for the IOMega NAS100D"
-FILES_kernel-image-nas100d = "/boot/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+pkg_postinst_kernel-image-nas100d () {
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+}
+pkg_postrm_kernel-image-nas100d () {
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+}
 
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
 #FIXME: do a fixup for BE too...
@@ -279,19 +296,23 @@ FIXUP_arm   = "wb 0xee110f10,4;wb 0xe3c00080,4;wb 0xee010f10,4;xp $,4"
 
 DEPENDS += "devio-native"
 
+# We need the alternatives to happen in the kernel-image packages, not in
+# the kernel package, because only the images know the name of the kernel.
+pkg_postinst_kernel () {
+}
+pkg_postrm_kernel () {
+}
+
 # copy_image <dest> <cmdline> <machine-id>
 #	copy the zImage and append the appropriate shim
 #  dest:       where to copy to
 #  cmdline:    command line to pass to image
 #  machine-id: decimal machine id to prepend, empty for none
 copy_image() {
-	local cmdline setmach
-
-	cmdline=""
-	test -n "$2" && cmdline="$2"' ${CMDLINE_KERNEL_OPTIONS} ${CMDLINE_DEBUG} ${CMDLINE_CONSOLE}'
+	local setmach
 
 	setmach=""
-	test -n "$3" && setmach="wb $3 . 256/ 255& 0xe3a01c00+, 4; wb 255& 0xe3811000+, 4;"
+	test -n "$2" && setmach="wb $2 . 256/ 255& 0xe3a01c00+, 4; wb 255& 0xe3811000+, 4;"
 
 	rm -f "$1".new
 	devio '<<${KERNEL_OUTPUT}' >"$1".new "$setmach"'${FIXUP}' || {
@@ -302,7 +323,7 @@ copy_image() {
 }
 
 install_image() {
-	copy_image '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-'"$1"'-${KERNEL_RELEASE}' "$2" "$3"
+	copy_image '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-'"$1"'-${KERNEL_RELEASE}' "$2"
 }
 
 do_install_append() {
@@ -312,15 +333,15 @@ do_install_append() {
 	install_image '${IXP4XX_SUFFIX}'
 
 	# Add the machine specific images, with appropriate suffixes
-	install_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_CMDLINE_ROOT}' '${nslu2_MACHID}'
-	install_image 'loft${ARCH_BYTE_SEX}' '${loft_CMDLINE_ROOT}' '${loft_MACHID}'
-	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_CMDLINE_ROOT}' '${nas100d_MACHID}'
+	install_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
+	install_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
+	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 }
 
 do_deploy[dirs] = "${S}"
 
 deploy_image() {
-	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-'"$1" "$2" "$3"
+	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-'"$1" "$2"
 }
 
 do_deploy() {
@@ -328,9 +349,9 @@ do_deploy() {
 	deploy_image '${IXP4XX_SUFFIX}'
 
 	# And the machine specific images
-	deploy_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_CMDLINE_ROOT}' '${nslu2_MACHID}'
-	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_CMDLINE_ROOT}' '${loft_MACHID}'
-	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_CMDLINE_ROOT}' '${nas100d_MACHID}'
+	deploy_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
+	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
+	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 }
 
 addtask deploy before do_build after do_compile

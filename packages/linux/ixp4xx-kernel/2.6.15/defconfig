@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.15
-# Fri Jan 13 23:40:57 2006
+# Tue Jan 17 13:02:33 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -143,7 +143,7 @@ CONFIG_CPU_TLB_V4WBI=y
 # Processor Features
 #
 CONFIG_ARM_THUMB=y
-CONFIG_CPU_BIG_ENDIAN=y
+# CONFIG_CPU_BIG_ENDIAN is not set
 CONFIG_XSCALE_PMU=y
 CONFIG_DMABOUNCE=y
 
@@ -180,7 +180,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="root=/dev/mtdblock4 rw rootfstype=jffs2 mem=32M@0x00000000 init=/linuxrc  rtc-x1205.hctosys=1 rtc-x1205.probe=0,0x6f rtc-ds1672.probe=0,0x68 rtc-ds1672.hctosys=1 pcf8563.hctosys=1 noirqdebug console=ttyS0,115200n8"
+CONFIG_CMDLINE=" noirqdebug console=ttyS0,115200n8"
 # CONFIG_XIP_KERNEL is not set
 
 #
