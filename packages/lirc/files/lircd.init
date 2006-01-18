@@ -1,12 +1,12 @@
 #! /bin/sh
 #
 # This is an init script for Familiar
-# Copy it to /etc/init.d/lirc and type
-# > update-rc.d lirc defaults 20
+# Copy it to /etc/init.d/lircd and type
+# > update-rc.d lircd defaults 20
 #
 
 
-test -f /usr/ssbin/lircd || exit 0
+test -f /usr/sbin/lircd || exit 0
 
 case "$1" in
   start)
