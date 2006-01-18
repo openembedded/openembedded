@@ -1,8 +1,9 @@
 DESCRIPTION = "Print a random, hopefully interesting, adage"
 SECTION = "console/utils"
 LICENSE = "GPL"
-DEPENDS = "recode"
+DEPENDS = "recode-native recode"
 DEBV = "2"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}-${DEBV}.diff.gz;patch=1"
@@ -20,4 +21,4 @@ do_install() {
 	mv -f ${D}/usr/games/fortune ${D}/${bindir}
 }
 
-FILES_${PN} += "${datadir}"
+FILES_${PN} += "${datadir}/games/fortunes/"
