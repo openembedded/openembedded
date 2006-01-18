@@ -185,18 +185,26 @@ set_password() {
 	then
 		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF and NFS"
 		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
-		echo -e "${C_RED}This is *not* your root password!\nIt is used by altboot alone!${C_RESET}"
-		echo -e "${C_BLUE}\nNote:\tThe password will be echoed to the screen\n\tand it will be asked twice for confirmation.${C_RESET}"
-		echo -e "\nPlease enter a new master password:\n"
+		echo -e "${C_RED}This is *not* your root password!\nIt is used by altboot alone!${C_RESET}\n"
+		#echo -e "${C_BLUE}\nNote:\tThe password will be echoed to the screen\n\tand it will be asked twice for confirmation.${C_RESET}"
+		#echo -e "\nPlease enter a new master password:\n"
 
 		while true
 		do
-			echo -en "New password: "
+			echo -en "\nNew password: "
+
+			stty -echo
 			read junk1 < /dev/tty0
+			stty echo
+
 			if ! test -z "$junk1"
 			then
-				echo -n "Repeat: "
+				echo -en "\nRepeat: "
+				
+				stty -echo
 				read junk2  < /dev/tty0
+				stty echo
+				echo ""
 				
 				if test "$junk1" = "$junk2"
 				then
