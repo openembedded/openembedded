@@ -6,10 +6,14 @@ terminal emulator rxvt, modified to store text in Unicode \
 output. It also supports mixing multiple fonts at the \
 same time, including Xft fonts."
 LICENSE = "GPL"
+PACKAGES =+ "${PN}-daemon ${PN}-control"
+FILES_${PN}-daemon = "${bindir}/rxvtd"
+FILES_${PN}-control = "${bindir}/rxvtc"
+
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
 	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1"
-PR = "r2"
+PR = "r3"
 
 inherit autotools update-alternatives
 
