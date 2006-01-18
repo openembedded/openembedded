@@ -3,7 +3,7 @@ DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 DEPENDS = "libpcap"
 LICENSE = "BSD GPLv2"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-${PV}.tar.gz \
 	file://makefile.patch;patch=1 \
@@ -12,6 +12,7 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-${PV}.tar.gz \
 	file://plugins-fix-CC.patch;patch=1 \
 	file://pppoatm-makefile.patch;patch=1 \
 	file://enable-ipv6.patch;patch=1 \
+	file://makefile-remove-hard-usr-reference.patch;patch=1 \
 	file://pon \
 	file://poff \
 	file://init \
