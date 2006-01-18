@@ -6,6 +6,9 @@ PRIORITY = "optional"
 DEPENDS = "libpcap"
 PR = "r0"
 
+# There are major API changes beween libnet v1.0 and libnet v1.1
+PROVIDES = "libnet-1.1"
+
 SRC_URI = "http://www.packetfactory.net/libnet/dist/libnet-${PV}.tar.gz \
 	   file://support-uclibc.patch;patch=1 \
 	   file://fix-endianess-test.patch;patch=1 \

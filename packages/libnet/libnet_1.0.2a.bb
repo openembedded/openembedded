@@ -6,6 +6,9 @@ SECTION = "libs/network"
 LICENSE = "GPL"
 PR = "r1"
 
+# There are major API changes beween libnet v1.0 and libnet v1.1
+PROVIDES = "libnet-1.0"
+
 SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://configure.uclibc.patch;patch=1 \

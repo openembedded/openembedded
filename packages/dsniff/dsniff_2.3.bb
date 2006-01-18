@@ -3,7 +3,10 @@ DESCRIPTION = "dsniff is a collection of tools for network auditing and penetrat
 LICENSE = "BSD"
 PR = "r1"
 
-DEPENDS = "virtual/db libpcap libnet libnids openssl"
+# There is a significant API change beween 1.0.2a of libnet and
+# 1.1.x, dsniff will only work with the older and there is no
+# updated version of dnsniff.
+DEPENDS = "virtual/db libpcap libnet-1.0 libnids openssl"
 
 SRC_URI = "http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
