@@ -56,6 +56,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://defconfig-${MACHINE} "
 
 SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
+SRC_URI_append_poodle255 += " file://smallfonts.diff;patch=1"
 # apply this when we have a kernel that builds with gcc 3.x:
 # SRC_URI_append = file://machtune-args.patch;patch=1
 SRC_URI_append_tosa = " file://tosa-power-key-off.patch;patch=1"
