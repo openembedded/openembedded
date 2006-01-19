@@ -7,7 +7,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-x11
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \
@@ -16,12 +16,13 @@ SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://mouse.patch;patch=1 \
 	   file://kill-stdc++.patch;patch=1 \
 	   file://ipaq.patch;patch=1 \
-	   file://SDL-Akita.patch;patch=1"
+	   file://SDL-Akita.patch;patch=1 \
+	   file://fixlibs.patch;patch=1"
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig
 
-EXTRA_OECONF = "--disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
+EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --enable-oss --disable-alsa --disable-esd --disable-arts \
                 --disable-diskaudio --disable-nas --disable-esd-shared --disable-esdtest \
                 --disable-mintaudio --disable-nasm --disable-video-x11 --disable-video-dga \
@@ -35,6 +36,7 @@ FILES_${PN}-dev += "${bindir}/*config"
 
 do_stage() {
 	oe_libinstall -so -C src libSDL ${STAGING_LIBDIR}
+	rm ${STAGING_LIBDIR}/libSDL.la
 	ln -sf libSDL.so ${STAGING_LIBDIR}/libSDL-1.2.so
 	install -m 0655 src/main/libSDLmain.a src/main/.libs/
 	oe_libinstall -a -C src/main libSDLmain ${STAGING_LIBDIR}
