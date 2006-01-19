@@ -3,10 +3,10 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
-PV = "1.0"
+PV = "1.1"
 PR = "r0"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-dvb-tools-v3-1.0.tar.gz"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-dvb-tools-v3-${PV}.tar.gz"
 
 inherit qmake
 
