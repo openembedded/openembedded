@@ -42,10 +42,10 @@ run_module() {
 	nfs_mounts="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'`"
 	nfs_mountpoints="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $2}'`"	
 	
-	if test -z "$nfs_hosts"
+	if test -z "$nfs_host"
 	then
-		echo -e "${C_RED}No configured NFS drives found in /etc/fstab$C_RESET"
-		exit 1
+		die "${C_RED}No configured NFS drives found in /etc/fstab$C_RESET"
+		
 	fi
 	
 	# WLAN with DHCP needs some time to get a lease, set up the routing, etc.	

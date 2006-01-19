@@ -5,7 +5,6 @@
 # New menu entries can be created be putting files into /etc/altboot-menu.
 #
 
-
 test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 
 CURRENT_ENV="`set`"
