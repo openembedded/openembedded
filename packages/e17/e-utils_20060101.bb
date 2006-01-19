@@ -3,12 +3,11 @@ DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet ewl engrave virtua
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SRCDATE = "${PV}"
 PR = "r1"
 
 inherit autotools
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e_utils"
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e_utils;date=${PV}"
 S = "${WORKDIR}/e_utils"
 
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir}"

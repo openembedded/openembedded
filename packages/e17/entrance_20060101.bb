@@ -6,11 +6,9 @@ DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch dete
 RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1"
 HOMEPAGE = "http://www.enlightenment.org"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SRCDATE = "${PV}"
 PR = "r9"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/entrance \
-           file://Xserver.patch;patch=1 \
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/entrance;date=${PV} \
            file://config-db.patch;patch=1 \
            file://allow-missing-xsession.patch;patch=1 \
            file://run-Xinit.patch;patch=1 \
@@ -26,7 +24,8 @@ INITSCRIPT_NAME = "entrance"
 INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
-                --with-xsession=/etc/X11/Xsession"
+                --with-xsession=/etc/X11/Xsession \
+                --with-auth-mode=0"
 
 FILES += "${datadir}"
 

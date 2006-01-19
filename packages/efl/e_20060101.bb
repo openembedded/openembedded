@@ -1,14 +1,11 @@
 DESCRIPTION = "Enlightenment Window Mananger Library"
 DEPENDS = "virtual/evas virtual/ecore edje eet embryo"
 LICENSE = "MIT"
-SRCDATE = "${PV}"
 PR = "r1"
 
 inherit efl
 
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e;date=${PV} \
            file://fix-configure.patch;patch=1"
 S = "${WORKDIR}/e"
 

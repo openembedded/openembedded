@@ -1,17 +1,16 @@
-DESCRIPTION = "Engage is the E17 icon dock"
-DEPENDS = "evas-x11 ecore-x11 esmart-x11 imlib2-x11 edje ewl e"
+DESCRIPTION = "examine, the program configurator"
+DEPENDS = "virtual/ecore ewl"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=misc/engage \
-           file://no-local-includes.patch;patch=1"
-S = "${WORKDIR}/engage"
-
-inherit autotools pkgconfig binconfig
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/examine;date=${PV}"
+S = "${WORKDIR}/examine"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
+
+inherit autotools pkgconfig binconfig
 
 do_prepsources () {
   make clean distclean || true
@@ -19,4 +18,3 @@ do_prepsources () {
 addtask prepsources after do_fetch before do_unpack
 
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"
-
