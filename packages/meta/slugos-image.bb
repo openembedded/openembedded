@@ -122,7 +122,7 @@ nslu2_pack_image() {
 				${STAGING_LIBDIR}/nslu2-binaries/Trailer \
 				${STAGING_LIBDIR}/nslu2-binaries/SysConf \
 				${DEPLOY_DIR_IMAGE}/slug/
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${IXP4XX_SUFFIX} \
+		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${ARCH_BYTE_SEX} \
 			${DEPLOY_DIR_IMAGE}/slug/vmlinuz
 		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 			${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
