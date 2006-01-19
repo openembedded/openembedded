@@ -46,6 +46,8 @@ int main(int argc, char* argv[])
 	chdir(argv[1]);
 	if((katalog = opendir(".")))
 	{
+		int found_fixed = 0;
+
 		while((plik = readdir(katalog)))
 		{
 			if(!strstr(plik->d_name, ".ttf"))
@@ -62,7 +64,38 @@ int main(int argc, char* argv[])
 				char* ptr;
 
 				for(ptr = strchr(face->family_name,' '); (ptr = strchr(ptr, ' ')); ) *ptr = '_';
-				
+
+				if(
+						face->face_flags & FT_FACE_FLAG_FIXED_WIDTH &&
+						!found_fixed &&
+						!(face->style_flags & FT_STYLE_FLAG_ITALIC) &&
+						!(face->style_flags & FT_STYLE_FLAG_BOLD)
+					)
+				{
+					found_fixed = 1;
+					printf("fixed %s/%s FT", argv[1], plik->d_name);
+
+					if(face->style_flags & FT_STYLE_FLAG_ITALIC)
+					{
+						printf(" y");
+					}
+					else
+					{
+						printf(" n");
+					}
+
+					if(face->style_flags & FT_STYLE_FLAG_BOLD)
+					{
+						printf(" 75");
+					}
+					else
+					{
+						printf(" 50");
+					}
+
+					printf(" 60 su \n");
+				}
+
 				printf("%s %s/%s FT", face->family_name, argv[1], plik->d_name);
 
 				if(face->style_flags & FT_STYLE_FLAG_ITALIC)
@@ -82,7 +115,7 @@ int main(int argc, char* argv[])
 				{
 					printf(" 50");
 				}
-				
+
 				printf(" 60 su \n");
 
 				FT_Done_Face(face);
