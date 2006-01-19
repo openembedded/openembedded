@@ -1,5 +1,6 @@
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
-	dreambox-dvbincludes freetype libdvbsi++ python swig-native python-pyxml"
+	dreambox-dvbincludes freetype libdvbsi++ python swig-native python-pyxml \
+	libfribidi"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-pyxml"
 DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend for DVB functions"
@@ -7,7 +8,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060104"
+CVSDATE = "20060117"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
