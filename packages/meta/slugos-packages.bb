@@ -3,6 +3,8 @@
 # All packages in here must build with the slugos-???.conf distros,
 # they do not necessarily work.
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
+MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
+HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r3"
 CONFLICTS = "db3"
@@ -184,6 +186,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
 	${UCLIBC_BROKEN_PACKAGES} \
 	ctrlproxy \
+	dsniff \
 	iperf \
 	man man-pages \
 	psmisc \
@@ -191,9 +194,6 @@ SLUGOS_PACKAGES_append_linux = "\
 	timezones \
 	xinetd \
 	"
-
-#BROKEN:
-#	dsniff
 
 SLUGOS_PACKAGES_append_linux-uclibc = "\
 	"
