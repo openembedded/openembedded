@@ -1,6 +1,6 @@
 include bluez-utils.inc
 
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF += "--without-dbus"
 
