@@ -1,6 +1,8 @@
 # !/bin/sh
 M_TITLE="Copy rootfs to SD/CF"
 
+# Unfinished script.
+exit 0
 
 die() {
 	echo "ERROR: $1" >/dev/tty0
@@ -50,7 +52,7 @@ ask_target() {
 ask_format() {
 	if test "$ROOTFS_TARGET_FS" != ext2
 	then
-		echo -e "\nYou are not using the ext2 filesystem on your target.\nYou now have two choices:"
+		echo -e "\nYou are not using the ext2 filesystem on your target ($ROOTFS_TARGET_FS)$.\nYou now have two choices:"
 		echo -e "\t[1] Reformat to ext2"
 		echo -e "\t[2] Use an image-file ontop of the existing filesystem"
 		
@@ -113,7 +115,7 @@ ask_confirm() {
 
 direct_install() {
 
-	format_target
+	#format_target
 		
 	echo -n "Creating temporary directory..."
 	mkdir -p /media/temp && echo ok || die "mkdir -p /media/temp failed!"
