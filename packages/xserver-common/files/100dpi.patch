@@ -1,6 +1,13 @@
---- /tmp/Xserver	2005-11-30 19:30:24.299099552 +0100
-+++ xserver-common-1.2/X11/Xserver	2005-11-30 19:31:13.444628296 +0100
-@@ -49,7 +49,7 @@
+--- /tmp/Xserver	2006-01-15 15:13:24.000000000 +0100
++++ xserver-common-1.2/X11/Xserver	2006-01-15 15:14:00.000000000 +0100
+@@ -44,12 +44,12 @@
+ case `module_id` in
+ 	"HP iPAQ H3100" | "HP iPAQ H3800")
+ 		ARGS="$ARGS -dpi 100 -screen 320x240@90 -rgba vrgb" ;;
+-	"HP iPAQ H3600" | "HP -dpi 100 iPAQ H3700" | "HP iPAQ H3900")
+-		ARGS="$ARGS -screen 320x240@270 -rgba vbgr" ;;
++	"HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")
++		ARGS="$ARGS -dpi 100 -screen 320x240@270 -rgba vbgr" ;;
  	"HP iPAQ H5400" | "HP iPAQ H2200")
  		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
          "HP iPAQ HX4700")
