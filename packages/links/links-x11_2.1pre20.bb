@@ -16,6 +16,6 @@ EXTRA_OECONF = "--enable-javascript --with-libfl --enable-graphics \
 	        --with-ssl=${STAGING_LIBDIR}/.. --with-libjpeg \
 	        --without-libtiff --without-svgalib --without-fb \
 	        --without-directfb --without-pmshell --without-atheos \
-	        --with-x --without-gpm"
+	        --with-x --without-gpm --without-sdl"
 
 S = "${WORKDIR}/links-${PV}"
