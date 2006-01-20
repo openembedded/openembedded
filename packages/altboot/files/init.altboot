@@ -146,6 +146,7 @@ run_timer() {
 		mount -t proc proc /proc >/dev/null 2>&1
 		key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`"
 	
+		stty -echo
 		echo -en "\n\nPlease press any key to launch altboot." > /dev/tty1
 		
 		test -z "$TIMEOUT" && TIMEOUT="3"
@@ -157,6 +158,7 @@ run_timer() {
 			if test "`cat /proc/interrupts | grep keyboard | awk '{print $2}'`" != "$key_ints" 
 			then				
 				launch_altboot=yes				
+				stty echo
 				break
 			fi
 			echo -n "." >/dev/tty1
@@ -206,16 +208,28 @@ launch_selection() {
 wait_for_input() {
 	while true
 	do
-		echo -n "Please choose one of the above [$last_selection]: " </dev/tty0 > /dev/tty0 2>&1
-		read junk < /dev/tty0 2>&1
-
+		
+		
+		# Do _not_ change the next few lines!
+		# 	
 		# This is required to work around an annoying busybox bug.
 		# Every key you press while this script runs will be
-		# picked up by the next "read $junk". And there's no goddamn way
-		# to prevent it. So the next read would pick up the "any" key the user pressed
+		# picked up by the next "read $junk".	
+		# So the next read would pick up the "any" key the user pressed
 		# above to launch the altboot menu.		
-		junk="`echo "$junk" |  sed -n "s/.*\([0-9]\)/\1/p"`"
+				
+ 		
+		# This filters an "<ENTER>" from the user as "any key"
+		( while :; do read x< /dev/tty0 2>&1; done; ) > /dev/null 2>&1 &
+		sleep 1; kill $!
+				
 		
+
+		echo -n "Please choose one of the above [$last_selection]: " </dev/tty0 > /dev/tty0 2>&1
+		read junk< /dev/tty0 2>&1
+		
+		# This filters other chars the user may have used
+		junk="`echo "$junk" |  sed -n "s/.*\([0-9]\)/\1/p"`"
 		
 		if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
 		then
@@ -243,6 +257,9 @@ wait_for_input() {
 
 # * * * * * * This is the main function * * * * * *
 
+# if /sbin/init is launched with a parameter, it is very likely that the user is trying to switch runlevels
+# manually by running "/sbin/init $RUN_LEVEL". If it is empty (or just contains "tty1") we assume that the kernel
+# launched init during bootup
 if test -n "$*" -a "$*" != "tty1"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
@@ -251,7 +268,7 @@ then
 else	
 
 	# Execute scripts in /etc/altboot.rc before doing anything else.
-	# Required for special situations, like booting spitz
+	# Required in special situations, like booting spitz
 	RC_FILES=`ls /etc/altboot.rc | grep \.sh$`
 
 	for file in $RC_FILES

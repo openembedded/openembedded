@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r20"
+PR = "r21"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -43,7 +43,7 @@ EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
 # This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
 # preventing _mach.ipk (with no byte sex) taking precedence over everything
 # else.
-IMAGE_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
+ROOTFS_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
 
 # These depends define native utilities - they do not get put in the flash and
 # are not required to build the image.
