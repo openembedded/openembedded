@@ -10,7 +10,8 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://blueboxes.patch;patch=1 \
 	file://hcid.conf \
 	file://bluetooth.default \
-	file://bluetooth.conf "
+	file://bluetooth.conf \
+	file://02dtl1_cs.sh"
 
 # Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
 # Let's default to that instead of 'any' and see if we break something with that
@@ -32,7 +33,7 @@ do_compile_prepend() {
 }
 
 do_install_append() {
-	install -d ${D}${base_sbindir} ${D}${base_bindir}/
+	install -d ${D}${base_sbindir} ${D}${base_bindir}/ ${D}${sysconfdir}/apm/event.d/
 	mv ${D}${sbindir}/* ${D}${base_sbindir}/
 	mv ${D}${bindir}/* ${D}${base_bindir}/
 	rmdir ${D}${bindir} ${D}${sbindir}
@@ -41,6 +42,7 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
 	install -m 0644 ${WORKDIR}/bluetooth.default ${D}${sysconfdir}/default/bluetooth
 	cat ${WORKDIR}/bluetooth.conf >> ${D}${sysconfdir}/pcmcia/bluetooth.conf
+	install -m 0755 ${WORKDIR}/02dtl1_cs.sh ${D}${sysconfdir}/apm/event.d/
 }
 
 CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \

@@ -19,6 +19,8 @@ SRC_URI = "svn://developer.imendio.com/svn/gconf-dbus;module=trunk;proto=http \
 inherit pkgconfig autotools
 S = "${WORKDIR}/trunk"
 
+PARALLEL_MAKE = ""
+
 FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir} ${datadir}/dbus*"
 
 EXTRA_OECONF = " --with-ipc=dbus --disable-gtk-doc --enable-gtk --host=${HOST_SYS} --enable-shared --disable-static"
