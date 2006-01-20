@@ -1,0 +1,10 @@
+# German keymappings
+shift altgr keycode 63  = +Adiaeresis
+shift altgr keycode 13 = +Odiaeresis
+shift altgr keycode 12 = +Udiaeresis
+altgr keycode 63  = +adiaeresis
+altgr keycode 13 = +odiaeresis
+altgr keycode 12 = +udiaeresis
+altgr keycode 15 = ssharp
+
+keycode 103 = AltGr
