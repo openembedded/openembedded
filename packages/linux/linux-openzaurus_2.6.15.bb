@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -62,7 +62,10 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/alsa/alsa-soc-0.9.patch;patch=1 \
            ${RPSRC}/alsa/alsa-soc-0.9-0.10rc1.patch;patch=1 \
            ${RPSRC}/alsa_soc_rpupdate7-r2.patch;patch=1 \
+           ${RPSRC}/alsa_akita_fix-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
+           ${RPSRC}/corgi-bl-generic-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-do-r1.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
