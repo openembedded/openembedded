@@ -1,0 +1,8 @@
+# IXP4XX specific machine overrides.
+#
+# IXP4XX can be arm or armeb - the ARCH (arm,armeb) decides
+# this, IXP4XX is always XScale - this file enfoces this.
+#
+CONFIG_ARM_XSCALE=y
+ARCH_HAS_MMU=y
+# UCLIBC_HAS_FPU is not set

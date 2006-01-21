@@ -78,6 +78,7 @@ configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
 		s,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX="/",g; \
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
 		s,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH="/lib",; \
+		s,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX="/lib",; \
 		s,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g; \
 		${@["s,.*UCLIBC_HAS_LOCALE.*,# UCLIBC_HAS_LOCALE is not set,;", ""][bb.data.getVar("USE_NLS", d, 1) == "yes"]}'
 CFLAGS := "${@oe_filter_out('-I\S+', '${CFLAGS}', d)}"
