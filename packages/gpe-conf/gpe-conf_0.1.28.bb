@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
 inherit gpe
-PR="r0"
+PR="r1"
 
 DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
