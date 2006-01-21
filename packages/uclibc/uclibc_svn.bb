@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.28"
 PV = "${UCLIBC_BASE}+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -52,8 +52,6 @@ UCLIBC_PATCHES += " ${THUMB_INTERWORK_RESOLVE_PATCH}"
 
 # Set this for non-head patches (the above list should match the
 # requirements of the SVN head).
-#FIXME: not working with these patches
-#UCLIBC_SVN_PATCHES ?= "${UCLIBC_PATCHES}"
-UCLIBC_SVN_PATCHES ?= ""
+UCLIBC_SVN_PATCHES ?= "${UCLIBC_PATCHES}"
 
 SRC_URI += "${UCLIBC_SVN_PATCHES}"
