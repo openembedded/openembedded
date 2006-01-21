@@ -3,7 +3,6 @@ DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SRCDATE = "${PV}"
 PR = "r3"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz \
@@ -11,7 +10,7 @@ SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz
            file://remove-large-fonts.patch;patch=1 \
            file://disable-splash.patch;patch=1 \
            file://Xsession.d/98enlightenment \
-           cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e/data/themes;date=20050926"
+           cvs://anonymous@thinktux.net/root;module=e17/apps/e/data/themes;date=20050926"
 #           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/default_entry.edc?rev=1.1 \
 #           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/focus.png?rev=1.1 \
 #           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/images/entry.png?rev=1.1 \

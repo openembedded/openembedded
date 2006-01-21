@@ -3,15 +3,11 @@ DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-SRCDATE = "${PV}"
 PR = "r3"
 
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/apps/e \
+SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e;date=${PV} \
            file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
-           file://add-menu-autoscroll-options.patch;patch=1 \
            file://remove-large-fonts.patch;patch=1"
 S = "${WORKDIR}/e"
 
