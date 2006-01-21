@@ -5,7 +5,7 @@ ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
-PR = "r0"
+PR = "r1"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -25,7 +25,7 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
 #
 RDEPENDS_task-opie-base = "opie-alarm opie-qcop opie-quicklauncher opie-taskbar \
                            opie-pics opie-sounds opie-freetype ttf-dejavu-sans \
-			   ttf-dejavu-sans-mono"
+			   ttf-dejavu-sans-mono-lite"
 
 #
 # things for reasonable bootstrap image
