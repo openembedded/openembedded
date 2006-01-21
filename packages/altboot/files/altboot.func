@@ -78,14 +78,14 @@ pivot_realfs() {
 
 		cd /
 
-		# Boot init.sysvinit if it is available or use /sbin/init instead
-		if test -x $REAL_INIT
+		# Boot /sbin/init if it is available or use /sbin/init.sysvinit instead
+		if test -x $/sbin/init
 		then
-			echo "Calling INIT [$REAL_INIT $RL]"
-			exec /usr/sbin/chroot . $REAL_INIT $RL >/dev/tty0 2>&1			
-		else
-			echo "Calling INIT [/sbin/init $RL]"			
+			echo "Calling INIT [/sbin/init $RL]"
 			exec /usr/sbin/chroot . /sbin/init $RL >/dev/tty0 2>&1			
+		else
+			echo "Calling INIT [$REAL_INIT $RL]"			
+			exec /usr/sbin/chroot . $REAL_INIT $RL >/dev/tty0 2>&1			
 		fi
 	else
 		echo "FAILED"

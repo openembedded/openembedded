@@ -8,7 +8,7 @@
 test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 
 CURRENT_ENV="`set`"
-VERSION="0.0.2"
+VERSION="0.0.3"
 
 # Set some defaults in case altboot.cfg is missing
 REAL_INIT="/sbin/init.sysvinit"
@@ -141,7 +141,6 @@ show_sub_menu() {
 run_timer() {
 	if test "$TIMEOUT" != 0
 	then
-		test -x /opt/QtPalmtop/bin/zgreeter.sh && /opt/QtPalmtop/bin/zgreeter.sh
 			
 		mount -t proc proc /proc >/dev/null 2>&1
 		key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`"
@@ -257,15 +256,19 @@ wait_for_input() {
 
 # * * * * * * This is the main function * * * * * *
 
-# if /sbin/init is launched with a parameter, it is very likely that the user is trying to switch runlevels
-# manually by running "/sbin/init $RUN_LEVEL". If it is empty (or just contains "tty1") we assume that the kernel
-# launched init during bootup
-if test -n "$*" -a "$*" != "tty1"
+if test "`runlevel`" != "unknown"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
 	exec $REAL_INIT $*
 	exit 0
 else	
+	# Boot original init if altboot is turned off
+	if test "$ENABLE_ALTBOOT" != "yes" 
+	then	
+		echo "altboot: Using real init [$REAL_INIT] **" >/dev/tty1
+		exec $REAL_INIT $INIT_RUNLEVEL
+		exit 0
+	fi
 
 	# Execute scripts in /etc/altboot.rc before doing anything else.
 	# Required in special situations, like booting spitz
@@ -275,14 +278,7 @@ else
 	do
 		 . /etc/altboot.rc/$file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
 	done
-	
-	if test "$ENABLE_ALTBOOT" != "yes" 
-	then	
-		echo "altboot: Using real init [$REAL_INIT] **" >/dev/tty1
-		exec $REAL_INIT $INIT_RUNLEVEL
-		exit 0
-	fi
-	
+		
 	# Make sure altboots master password is set
 	set_password >/dev/tty0 
 	
