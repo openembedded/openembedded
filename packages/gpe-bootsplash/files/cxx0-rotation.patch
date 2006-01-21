@@ -1,0 +1,12 @@
+--- gpe-bootsplash-1.14/gpe-bootsplash.init.orig	2005-11-02 13:43:54.103787750 +0000
++++ gpe-bootsplash-1.14/gpe-bootsplash.init	2005-11-02 13:48:43.489873250 +0000
+@@ -24,6 +24,9 @@
+ 					ARGS="--force-landscape" ;;
+ 			esac
+ 			;;
++		"SHARP SPITZ" | "SHARP AKITA" | "SHARP BORZOI" )
++			ARGS="--force-landscape --flip"
++			;;
+ 		"HP IPAQ H5400" | "HP IPAQ H2200" )
+ 			;;
+ 	esac
