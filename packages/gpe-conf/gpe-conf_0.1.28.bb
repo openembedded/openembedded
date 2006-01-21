@@ -21,7 +21,7 @@ do_compile () {
 }
 
 do_install () {
-        oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
+        oe_runmake MACHINE=${MACHINE} PREFIX=${prefix} DESTDIR=${D} install-program
 }
 
 
