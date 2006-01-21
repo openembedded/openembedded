@@ -309,7 +309,7 @@ setup_fstab() {
 
 
 #
-# boot_rootfs <boot type> <flash file system> <sleep time> <label> <device> [options]
+# boot_rootfs <boot type> <flash file system> <sleep time> <device> [options]
 #  Change the flash partition (not the current root!) to boot off
 #  the new root file system
 boot_rootfs() {
@@ -318,9 +318,8 @@ boot_rootfs() {
 	type="$1"
 	ffs="$2"
 	sleep="$3"
-	label="$4"
-	device="$5"
-	
+	device="$4"
+
 	# test this first as the test does not depend on the correctness
 	# of the other arguments
 	test -n "$ffs" -a -d "$ffs" || {
@@ -377,7 +376,7 @@ boot_rootfs() {
 		};;
 	*)	{	echo '#!/bin/sh'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
-			echo -n "exec '/boot/$type' '$label'"
+			echo -n "exec '/boot/$type' '$device'"
 			for opt in "$@"
 			do
 				echo -n " '$opt'"
@@ -493,10 +492,8 @@ disk() {
 		# if everything went ok boot from this disk
 		if test $status -eq 0
 		then
-			TEMP_LABEL=`date +%y%m%d%H%M`
-			tune2fs -L $TEMP_LABEL $device
 			# memsticks boot like disks, so ignore the -m
-			boot_rootfs disk "$ffs" "$sleep" "$TEMP_LABEL" "$device" -t "$fst" -o "$fso" 
+			boot_rootfs disk "$ffs" "$sleep" "$device" -t "$fst" -o "$fso"
 		fi
 	else
 		echo "turnup disk: $device($*): unable to mount device on $new" >&2

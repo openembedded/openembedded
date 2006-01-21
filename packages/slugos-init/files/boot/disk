@@ -13,9 +13,9 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 #
 if test -n "$1"
 then
-	label="$1"
+	device="$1"
 	shift
-	echo "boot: rootfs: mount $* $label"
+	echo "boot: rootfs: mount $* $device"
 	#
 	# wait if required
 	test "$sleep" -gt 0 && sleep "$sleep"
@@ -23,7 +23,7 @@ then
 	# Mount read-write because before exec'ing init
 	# this script creates the '.recovery' link to
 	# detect failed boot.  No file type is given to
-	if mount "$@" -L "$label" /mnt
+	if mount "$@" "$device" /mnt
 	then
 		# checkmount checks for sh, init and no
 		# .recovery plus either mnt or initrd
