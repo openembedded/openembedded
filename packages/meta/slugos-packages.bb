@@ -93,6 +93,7 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
+	memtester \
 	mgetty \
 	miau \ 
 	microcom \
