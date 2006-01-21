@@ -10,16 +10,18 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/util-linux/util-linux-${PV}.tar.
            file://MCONFIG \
            file://make_include \
            file://swapargs.h \
+	   file://fdiskbsdlabel_thumb.diff;patch=1 \
            file://defines.h"
 
-PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-readprofile "
+PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-mount util-linux-readprofile "
 
 FILES_util-linux-fdisk = "/sbin/fdisk.${PN}"
 FILES_util-linux-cfdisk = "/sbin/cfdisk"
 FILES_util-linux-sfdisk = "/sbin/sfdisk"
+FILES_util-linux-mount = "/bin/mount.${PN}"
 FILES_util-linux-readprofile = "/usr/sbin/readprofile"
 
-RRECOMMENDS_${PN} = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-readprofile"
+RRECOMMENDS_${PN} = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-mount util-linux-readprofile "
 
 do_compile () {
 	set -e
@@ -43,7 +45,6 @@ do_install () {
 	mv ${D}${base_bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
 	mv ${D}${base_bindir}/more ${D}${base_bindir}/more.${PN}
-	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
 	mv ${D}${base_bindir}/umount ${D}${base_bindir}/umount.${PN}
 	mv ${D}${base_sbindir}/halt ${D}${base_sbindir}/halt.${PN}
 	mv ${D}${base_sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
@@ -62,6 +63,7 @@ do_install () {
 	mv ${D}${bindir}/renice ${D}${bindir}/renice.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
 
+	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
 	mv ${D}${base_sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
 }
 
@@ -69,7 +71,6 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/dmesg dmesg dmesg.${PN} 100
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 100
 	update-alternatives --install ${base_bindir}/more more more.${PN} 100
-	update-alternatives --install ${base_bindir}/mount mount mount.${PN} 100
 	update-alternatives --install ${base_bindir}/umount umount umount.${PN} 100
 	update-alternatives --install ${base_sbindir}/losetup losetup losetup.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
@@ -96,7 +97,6 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove dmesg dmesg.${PN}
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove more more.${PN}
-	update-alternatives --remove mount mount.${PN}
 	update-alternatives --remove umount umount.${PN}
 	update-alternatives --remove halt halt.${PN}
 	update-alternatives --remove hwclock hwclock.${PN}
@@ -124,3 +124,10 @@ pkg_prerm_util-linux-fdisk () {
 	update-alternatives --remove fdisk fdisk.${PN}
 }
 
+pkg_postinst_util-linux-mount () {
+	update-alternatives --install ${base_bindir}/mount mount mount.${PN} 100
+}
+
+pkg_prerm_util-linux-mount () {
+	update-alternatives --remove mount mount.${PN}
+}
