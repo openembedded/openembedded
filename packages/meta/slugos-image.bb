@@ -74,9 +74,6 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 # other than the network to output error messages!)
 SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
        
-#FIXME: this is temporary to ensure the correct versions are obtained
-DEPENDS = "virtual/kernel virtual/ixp-eth"
-
 RDEPENDS = "kernel ixp-eth \
 	base-files base-passwd netbase \
         busybox hotplug-ng initscripts-slugos slugos-init \
