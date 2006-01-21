@@ -109,7 +109,7 @@
 +    /* fix dev_max_count to maclist_count - the actual number of
 +     * available MACs
 +     */
-+    if (dev_max_count <= 0)
++    if (dev_max_count <= 0 || (dev_max_count > maclist_count() && maclist_count() > 0))
 +	    dev_max_count = maclist_count();
 +    if (dev_max_count <= 0)
 +	    dev_max_count = 1;

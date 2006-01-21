@@ -4,6 +4,10 @@
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
+PR = "r7"
+
+DEPENDS = "ixp4xx-csr"
+RDEPENDS = "ixp4xx-csr"
 
 SRC_URI = "ftp://aiedownload.intel.com/df-support/9519/eng/GPL_ixp400LinuxEthernetDriverPatch-1_5.zip"
 SRC_URI += "file://2.6.14.patch;patch=1"
@@ -19,11 +23,6 @@ SRC_URI += "file://netdev_max_backlog.patch;patch=1"
 SRC_URI += "file://debug.patch;patch=1"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://modprobe.conf"
-
-PR = "r6"
-
-DEPENDS = "ixp4xx-csr"
-RDEPENDS = "ixp4xx-csr"
 
 S = "${WORKDIR}"
 
