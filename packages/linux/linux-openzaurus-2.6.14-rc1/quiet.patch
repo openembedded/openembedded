@@ -1,0 +1,26 @@
+Index: linux-2.6.13/arch/arm/kernel/setup.c
+===================================================================
+--- linux-2.6.13.orig/arch/arm/kernel/setup.c	2006-01-21 23:45:47.130576416 +0100
++++ linux-2.6.13/arch/arm/kernel/setup.c	2006-01-21 23:46:23.171097424 +0100
+@@ -338,8 +338,6 @@
+ 		BUG();
+ 	}
+ 
+-	dump_cpu_info(cpu);
+-
+ 	/*
+ 	 * setup stacks for re-entrant exception handlers
+ 	 */
+Index: linux-2.6.13/sound/oss/wm8731.c
+===================================================================
+--- linux-2.6.13.orig/sound/oss/wm8731.c	2006-01-21 23:47:01.121328112 +0100
++++ linux-2.6.13/sound/oss/wm8731.c	2006-01-21 23:47:18.916622816 +0100
+@@ -39,8 +39,6 @@
+ 	char buffer[2];
+ 	int r;
+ 
+-	printk("%s: writing %x, %x\n", __FUNCTION__, address, data);
+-
+ 	buffer[0] = ((address << 1) | ((data >> 8) & 1));
+ 	buffer[1] = data & 0xff;
+ 

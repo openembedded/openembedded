@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -72,6 +72,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
            file://dtl1_cs-add-socket-revE.patch;patch=1 \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
+           file://quiet.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa-2.6 \
            file://defconfig-collie \
