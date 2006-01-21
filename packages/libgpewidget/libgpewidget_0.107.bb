@@ -6,6 +6,8 @@ DEPENDS = "gtk+ cairo libxrender gtk-doc intltool-native"
 
 PACKAGES =+ "libgpewidget-bin"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 
 inherit pkgconfig autotools
