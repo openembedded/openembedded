@@ -1,0 +1,18 @@
+Backport from CVS
+
+Index: widget.ui
+===================================================================
+RCS file: /cvs/opie/core/applets/aboutapplet/widget.ui,v
+retrieving revision 1.7
+diff -u -u -r1.7 widget.ui
+--- aboutapplet/widget.ui	13 Nov 2005 14:40:31 -0000	1.7
++++ aboutapplet/widget.ui	22 Jan 2006 20:49:33 -0000
+@@ -42,7 +42,7 @@
+             </property>
+             <property stdset="1">
+                 <name>text</name>
+-                <string>&lt;center&gt;&lt;b&gt;The Open Palmtop Integrated Environment V1.2&lt;/b&gt;&lt;/center&gt;</string>
++                <string>&lt;center&gt;&lt;b&gt;The Open Palmtop Integrated Environment V1.2.1&lt;/b&gt;&lt;/center&gt;</string>
+             </property>
+         </widget>
+         <widget row="1"  column="1" >
