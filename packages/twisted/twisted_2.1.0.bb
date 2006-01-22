@@ -5,8 +5,8 @@ HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "zope-interface-native"
-RDEPENDS = "python-core zope-interface python-pickle python-fcntl"
+DEPENDS = "zope-interface-native zope-interface python-crypto"
+RDEPENDS = "python-core zope-interface python-pickle python-fcntl python-crypto"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/2.1/Twisted-${PV}.tar.bz2"
 
