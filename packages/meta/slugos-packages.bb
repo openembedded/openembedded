@@ -151,6 +151,7 @@ SLUGOS_PACKAGES = "\
 	wakelan \
 	wget \
 	wireless-tools \
+	wpa-supplicant \
 	zd1211 \
 	zlib \
 	"
