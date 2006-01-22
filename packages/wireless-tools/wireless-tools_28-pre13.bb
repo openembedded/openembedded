@@ -4,11 +4,10 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.28.pre6.tar.gz \
+SRC_URI = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.28.pre13.tar.gz \
            file://man.patch;patch=1 \
-           file://fixheaders.patch;patch=1 \
 	   file://wireless-tools.if-pre-up"
 S = "${WORKDIR}/wireless_tools.28"
 
@@ -23,7 +22,7 @@ do_compile() {
 	oe_runmake all libiw.a
 }
 
-do_stage () {
+do_stage() {
 	install -m 0644 wireless.h ${STAGING_INCDIR}/
 	install -m 0644 iwlib.h ${STAGING_INCDIR}/
 	oe_libinstall -a -so libiw ${STAGING_LIBDIR}/
