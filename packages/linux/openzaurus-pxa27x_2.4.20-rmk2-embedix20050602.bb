@@ -4,7 +4,7 @@ SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -28,6 +28,7 @@ SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-2
            file://iw240_we15-6.diff;patch=1 \
            file://iw241_we16-6.diff;patch=1 \
            file://iw249_we17-13.diff;patch=1 \
+           file://iw240_we18-5.diff;patch=1 \
            file://bluecard_cs.patch;patch=1 \
            file://compile.patch;patch=1 \
            file://idecs.patch;patch=1 \
