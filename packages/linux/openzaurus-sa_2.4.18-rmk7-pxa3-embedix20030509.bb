@@ -6,7 +6,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20030509"
-PR = "r22"
+PR = "r23"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
@@ -18,6 +18,9 @@ SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.b
            file://iw_handlers.w13-5.diff;patch=1 \
            file://iw_handlers.w14-5.diff;patch=1 \
            file://iw240_we15-6.diff;patch=1 \
+           file://iw249_we16-6.diff;patch=1 \
+           file://iw249_we17-13.diff;patch=1 \
+           file://iw240_we18-5.diff;patch=1 \
            file://idecs.patch;patch=1 \
            file://logo.patch;patch=1 \
            file://initsh.patch;patch=1 \
@@ -25,13 +28,11 @@ SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.b
            file://mkdep.patch;patch=1 \
            file://disable-pcmcia-probe.patch;patch=1 \
            file://linux-2.4.18-list_move.patch;patch=1 \
-	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
-	   file://1764-1.patch;patch=1 \
+           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
+           file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
-	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we16-6.diff;patch=1 \
-	   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/iw249_we17-13.diff;patch=1 \
-	   file://ir240_sys_max_tx-2.diff;patch=1 \
-	   file://ir241_qos_param-2.diff;patch=1 \
+           file://ir240_sys_max_tx-2.diff;patch=1 \
+           file://ir241_qos_param-2.diff;patch=1 \
            file://defconfig-${MACHINE} \
 	   "
 
