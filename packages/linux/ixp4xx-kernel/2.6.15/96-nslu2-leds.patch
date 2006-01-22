@@ -12,7 +12,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  
  #include <asm/setup.h>
  #include <asm/memory.h>
-@@ -50,6 +51,48 @@ static struct ixp4xx_i2c_pins nslu2_i2c_
+@@ -50,6 +51,42 @@ static struct ixp4xx_i2c_pins nslu2_i2c_
  	.scl_pin		= NSLU2_SCL_PIN,
  };
  
@@ -42,12 +42,6 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +		.end		= NSLU2_LED_DISK2,
 +		.flags		= IXP4XX_GPIO_LOW,
 +	},
-+	{
-+		.name		= "buzzer",
-+		.start		= NSLU2_GPIO_BUZZ,
-+		.end		= NSLU2_GPIO_BUZZ,
-+		.flags		= IXP4XX_GPIO_LOW,
-+	},
 +};
 +
 +static struct platform_device nslu2_leds = {
@@ -61,7 +55,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  static struct platform_device nslu2_i2c_controller = {
  	.name			= "IXP4XX-I2C",
  	.id			= 0,
-@@ -103,7 +146,6 @@ static struct platform_device nslu2_uart
+@@ -103,7 +140,6 @@ static struct platform_device nslu2_uart
  static struct platform_device *nslu2_devices[] __initdata = {
  	&nslu2_i2c_controller,
  	&nslu2_flash,
@@ -69,7 +63,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  };
  
  static void nslu2_power_off(void)
-@@ -164,7 +206,18 @@ static void __init nslu2_init(void)
+@@ -164,7 +200,18 @@ static void __init nslu2_init(void)
  
  	pm_power_off = nslu2_power_off;
  

@@ -12,40 +12,16 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  
  #include <asm/types.h>
  #include <asm/setup.h>
-@@ -200,6 +201,53 @@ MACHINE_END
+@@ -200,6 +201,29 @@ MACHINE_END
   * maybe the ixdp425 too.
   */
  #ifdef CONFIG_MACH_LOFT
 +#ifdef CONFIG_LEDS_CLASS
 +static struct resource loft_led_resources[] = {
 +	{
-+		.name		= "J8:1",   /* header */
-+		.start		= 0,
-+		.end		= 0,
-+		.flags		= IXP4XX_GPIO_LOW,
-+	},
-+	{
-+		.name		= "J8:3",   /* header */
-+		.start		= 1,
-+		.end		= 1,
-+		.flags		= IXP4XX_GPIO_LOW,
-+	},
-+	{
-+		.name		= "J8:5",   /* header */
-+		.start		= 2,
-+		.end		= 2,
-+		.flags		= IXP4XX_GPIO_LOW,
-+	},
-+	{
 +		.name		= "ready",  /* green led, also J8 pin 7 */
 +		.start		= 3,
 +		.end		= 3,
-+		.flags		= IXP4XX_GPIO_LOW,
-+	},
-+	{
-+		.name		= "J8:9",   /* header */
-+		.start		= 4,
-+		.end		= 4,
 +		.flags		= IXP4XX_GPIO_LOW,
 +	},
 +};
@@ -66,7 +42,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  /*
   * When the EEPROM is added the MAC address are read from it.
   */
-@@ -244,7 +292,16 @@ static void __init loft_init(void)
+@@ -244,7 +268,16 @@ static void __init loft_init(void)
  
  	ixp4xx_sys_init();
  
