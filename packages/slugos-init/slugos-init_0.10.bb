@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r47"
+PR = "r48"
 
 SRC_URI = "file://linuxrc \
 	   file://boot/flash \
@@ -25,11 +25,9 @@ SRC_URI = "file://linuxrc \
 	   file://turnup \
 	   file://reflash \
 	   file://links.conf \
-	   file://leds.h \
-	   file://leds.c \
 	   "
 
-SBINPROGS = "leds"
+SBINPROGS = ""
 USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup reflash"

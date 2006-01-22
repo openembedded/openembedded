@@ -1,0 +1,90 @@
+NEW_LEDS support for the LinkSys NSLU2
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+--- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
+@@ -17,6 +17,7 @@
+ #include <linux/serial.h>
+ #include <linux/serial_8250.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/leds.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/memory.h>
+@@ -50,6 +51,48 @@ static struct ixp4xx_i2c_pins nslu2_i2c_
+ 	.scl_pin		= NSLU2_SCL_PIN,
+ };
+ 
++#ifdef CONFIG_LEDS_CLASS
++static struct resource nslu2_led_resources[] = {
++	{
++		.name		= "ready",  /* green led */
++		.start		= NSLU2_LED_GRN,
++		.end		= NSLU2_LED_GRN,
++		.flags		= IXP4XX_GPIO_HIGH,
++	},
++	{
++		.name		= "status", /* red led */
++		.start		= NSLU2_LED_RED,
++		.end		= NSLU2_LED_RED,
++		.flags		= IXP4XX_GPIO_HIGH,
++	},
++	{
++		.name		= "disk-1",
++		.start		= NSLU2_LED_DISK1,
++		.end		= NSLU2_LED_DISK1,
++		.flags		= IXP4XX_GPIO_LOW,
++	},
++	{
++		.name		= "disk-2",
++		.start		= NSLU2_LED_DISK2,
++		.end		= NSLU2_LED_DISK2,
++		.flags		= IXP4XX_GPIO_LOW,
++	},
++	{
++		.name		= "buzzer",
++		.start		= NSLU2_GPIO_BUZZ,
++		.end		= NSLU2_GPIO_BUZZ,
++		.flags		= IXP4XX_GPIO_LOW,
++	},
++};
++
++static struct platform_device nslu2_leds = {
++	.name			= "IXP4XX-GPIO-LED",
++	.id			= -1,
++	.num_resources		= ARRAY_SIZE(nslu2_led_resources),
++	.resource		= nslu2_led_resources,
++};
++#endif
++
+ static struct platform_device nslu2_i2c_controller = {
+ 	.name			= "IXP4XX-I2C",
+ 	.id			= 0,
+@@ -103,7 +146,6 @@ static struct platform_device nslu2_uart
+ static struct platform_device *nslu2_devices[] __initdata = {
+ 	&nslu2_i2c_controller,
+ 	&nslu2_flash,
+-	&nslu2_uart,
+ };
+ 
+ static void nslu2_power_off(void)
+@@ -164,7 +206,18 @@ static void __init nslu2_init(void)
+ 
+ 	pm_power_off = nslu2_power_off;
+ 
++	/* This is only useful on a modified machine, but it is valuable
++	 * to have it first in order to see debug messages, and so that
++	 * it does *not* get removed if platform_add_devices fails!
++	 */
++	(void)platform_device_register(&nslu2_uart);
++
+ 	platform_add_devices(nslu2_devices, ARRAY_SIZE(nslu2_devices));
++
++#ifdef CONFIG_LEDS_CLASS
++	/* We don't care whether or not this works. */
++	(void)platform_device_register(&nslu2_leds);
++#endif
+ }
+ 
+ /*
