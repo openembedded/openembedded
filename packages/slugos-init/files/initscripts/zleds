@@ -8,7 +8,10 @@
 #         two colours of the previous and next runlevel.
 # 'start' sets the LED to steady
 #
-# 'red'   is the initial setting on kernel boot
+# The 'ready' led is used for the indication of state, except that
+# if a 'status' led is used ready+status is set in place of !ready.
+#
+# For NSLU2:
 #
 # 'amber' is used for run levels S (from /linuxrc), 0 (halt),
 #         1 (single user) and 6 (reboot).  halt and reboot do not
@@ -17,22 +20,60 @@
 #
 # 'green' is used for run levels 2-5 - the normal user run levels.
 #
-# colours are 'g' (green), 'r' (red) or 'gr' (amber).
-colour() {
+# state outputs 's' (for 'system') or 'u' (for user) to distinguish
+# the required colours.
+#
+# NOTE: this will change
+state(){
 	case "$1" in
-	S|0|1|6) echo gr;;
-	2|3|4|5) echo g;;
-	N)       echo r;;
+	S|0|1|6) echo s;;
+	2|3|4|5) echo u;;
+	N)       echo s;;
 	*)       echo "led change: $runlevel: runlevel unknown" >&2
-		 echo r;;
+		 echo s;;
 	esac
 }
 
-# leds syntax is -A +<init state> /<new state>
-case "$1" in
-start) leds -gr +"$(colour "$runlevel")";;
-stop)  leds -gr +"$(colour "$previous")" /"$(colour "$runlevel")";;
-*)     echo "led change: $1: command ignored" >&2;;
+# Make the named LED do something
+flash(){
+	echo timer >/sys/class/leds/"$1"/trigger
+	echo 200 >/sys/class/leds/"$1"/frequency
+}
+on(){
+	echo none >/sys/class/leds/"$1"/trigger
+	echo 100 >/sys/class/leds/"$1"/brightness
+}
+off(){
+	echo none >/sys/class/leds/"$1"/trigger
+	echo 0 >/sys/class/leds/"$1"/brightness
+}
+
+test -d /sys/class/leds/ready && case "$1" in
+start)	if test -d /sys/class/leds/status
+	then
+		case "$(state "$runlevel")" in
+		s)	on status
+			on ready;;
+		u)	off status
+			on ready;;
+		esac
+	else
+		on ready
+	fi;;
+stop)	if test -d /sys/class/leds/status
+	then
+		case "$(state "$previous")$(state "$runlevel")" in
+		ss)	flash status
+			flash ready;;
+		su|us)	flash status
+			on ready;;
+		uu)	off status
+			flash ready;;
+		esac
+	else
+		flash ready
+	fi;;
+*)	echo "led change: $1: command ignored" >&2;;
 esac
 
 exit 0
