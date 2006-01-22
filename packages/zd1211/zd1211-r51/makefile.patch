@@ -1,0 +1,57 @@
+--- zd1211-driver-r51/Makefile.orig	2006-01-22 11:32:24.000000000 +0100
++++ zd1211-driver-r51/Makefile	2006-01-22 12:37:17.000000000 +0100
+@@ -4,17 +4,17 @@
+ #
+ #
+ 
+-CC=gcc
+-CPP=g++
+-LD=ld
+-rM=rm -f -r
++#CC=gcc
++#CPP=g++
++#LD=ld
++#RM=rm -f -r
+ 
+-MODPATH := /lib/modules/$(shell uname -r)
++#MODPATH := /lib/modules/$(shell uname -r)
+ 
+ # if the kernel is 2.6.x, turn on this
+ KERN_26=y
+ 
+-KERNEL_SOURCE=$(MODPATH)/source
++#KERNEL_SOURCE=$(MODPATH)/source
+ #KERNEL_SOURCE=/usr/src/linux
+ 
+ # set to 1 for zd1211b
+@@ -46,7 +46,7 @@
+ EXTRA_CFLAGS += -D__SMP__ -DSMP
+ endif
+ 
+-KDIR := $(MODPATH)/build
++#KDIR := $(MODPATH)/build
+ PWD := $(shell pwd)
+ 
+ WLAN_SRC=$(PWD)
+@@ -219,15 +219,15 @@
+ 	
+ 
+ install: all
+-	mkdir -p $(MODPATH)/net
++#	mkdir -p $(MODPATH)/net
+ #	mkdir -p /etc/zd1211
+-	cp $(MODULE) $(MODPATH)/net
+-	depmod -a
++#	cp $(MODULE) $(MODPATH)/net
++#	depmod -a
+ 
+ #for apdbg
+-	gcc -o apdbg apdbg.c
+-	chmod +x apdbg
+-	cp ./apdbg /sbin/apdbg   
++#	gcc -o apdbg apdbg.c
++#	chmod +x apdbg
++#	cp ./apdbg /sbin/apdbg   
+ 
+ clean:
+ 	rm -rf .tmp_versions .*.cmd *.ko *.mod.c *.mod.o *.o $(SRC_DIR)/*.o  $(SRC_DIR)/.*.o.cmd
