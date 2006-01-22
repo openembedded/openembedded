@@ -129,7 +129,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +#ifndef _LINUX_EEPROM_H
 +#define _LINUX_EEPROM_H
 +/*
-+ * $Id$
++ * $Id: 45-eeprom-notifier.patch,v 1.1 2006/01/16 05:21:31 jbowler Exp $
 + *
 + *  Copyright (C) 2006 John Bowler
 + */

@@ -5,7 +5,7 @@
  4 files changed, 503 insertions(+)
 
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nas100d/drivers/i2c/chips/pcf8563.c	2005-11-22 17:32:35.000000000 +0100
++++ linux-nslu2/drivers/i2c/chips/pcf8563.c	2006-01-20 11:57:40.000000000 +0100
 @@ -0,0 +1,466 @@
 +/*
 + * pcf8563.c - An i2c driver for the Philips PCF8563 RTC
@@ -474,7 +474,7 @@
 +module_init(pcf8563_init);
 +module_exit(pcf8563_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nas100d/include/linux/pcf8563.h	2005-11-22 01:36:46.000000000 +0100
++++ linux-nslu2/include/linux/pcf8563.h	2006-01-20 11:57:40.000000000 +0100
 @@ -0,0 +1,27 @@
 +/*
 + * pcf8563.h - defines for drivers/i2c/chips/pcf8563.c
@@ -503,11 +503,11 @@
 +extern int pcf8563_do_command(unsigned int cmd, void *arg);
 +
 +#endif /* __LINUX_PCF8563_H__ */
---- linux-nas100d.orig/drivers/i2c/chips/Kconfig	2005-11-21 22:01:31.000000000 +0100
-+++ linux-nas100d/drivers/i2c/chips/Kconfig	2005-11-22 01:36:46.000000000 +0100
-@@ -135,4 +135,13 @@ config RTC_X1205_I2C
- 	  This driver can also be built as a module. If so, the module
- 	  will be called x1205.
+--- linux-nslu2.orig/drivers/i2c/chips/Kconfig	2006-01-20 11:55:58.000000000 +0100
++++ linux-nslu2/drivers/i2c/chips/Kconfig	2006-01-20 11:57:40.000000000 +0100
+@@ -117,4 +117,13 @@ config SENSORS_MAX6875
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called max6875.
  
 +config RTC_PCF8563_I2C
 +	tristate "Philips PCF8563 RTC"
@@ -519,12 +519,12 @@
 +	  This driver can also be built as a module. If so, the module
 +	  will be called pcf8563.
  endmenu
---- linux-nas100d.orig/drivers/i2c/chips/Makefile	2005-11-21 22:01:31.000000000 +0100
-+++ linux-nas100d/drivers/i2c/chips/Makefile	2005-11-22 01:36:46.000000000 +0100
-@@ -14,6 +14,7 @@ obj-$(CONFIG_SENSORS_RTC8564)	+= rtc8564
+--- linux-nslu2.orig/drivers/i2c/chips/Makefile	2006-01-20 11:55:58.000000000 +0100
++++ linux-nslu2/drivers/i2c/chips/Makefile	2006-01-20 11:58:08.000000000 +0100
+@@ -12,6 +12,7 @@ obj-$(CONFIG_SENSORS_PCF8574)	+= pcf8574
+ obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
  obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
  obj-$(CONFIG_TPS65010)		+= tps65010.o
- obj-$(CONFIG_RTC_X1205_I2C)	+= x1205.o
 +obj-$(CONFIG_RTC_PCF8563_I2C)	+= pcf8563.o
  
  ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)

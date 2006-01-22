@@ -49,15 +49,15 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  static struct ixp4xx_i2c_pins nas100d_i2c_gpio_pins = {
  	.sda_pin		= NAS100D_SDA_PIN,
  	.scl_pin		= NAS100D_SCL_PIN,
-@@ -106,7 +137,6 @@ static struct platform_device nas100d_rt
+@@ -102,7 +133,6 @@ static struct platform_device nas100d_ua
  static struct platform_device *nas100d_devices[] __initdata = {
  	&nas100d_i2c_controller,
  	&nas100d_flash,
 -	&nas100d_uart,
- 	&nas100d_rtc,
  };
  
-@@ -163,7 +193,18 @@ static void __init nas100d_init(void)
+ static void nas100d_power_off(void)
+@@ -158,7 +188,18 @@ static void __init nas100d_init(void)
  
  	pm_power_off = nas100d_power_off;
  

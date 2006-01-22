@@ -1,6 +1,6 @@
---- linux-nslu2.orig/include/linux/rtc.h	2006-01-08 18:54:58.000000000 +0100
-+++ linux-nslu2/include/linux/rtc.h	2006-01-08 18:55:19.000000000 +0100
-@@ -91,8 +91,81 @@ struct rtc_pll_info {
+--- linux-nslu2.orig/include/linux/rtc.h	2006-01-20 12:04:18.000000000 +0100
++++ linux-nslu2/include/linux/rtc.h	2006-01-20 20:23:24.000000000 +0100
+@@ -91,8 +91,91 @@ struct rtc_pll_info {
  #define RTC_PLL_GET	_IOR('p', 0x11, struct rtc_pll_info)  /* Get PLL correction */
  #define RTC_PLL_SET	_IOW('p', 0x12, struct rtc_pll_info)  /* Set PLL correction */
  
@@ -64,7 +64,6 @@
 +extern void rtc_device_unregister(struct rtc_device *rdev);
 +extern int rtc_interface_register(struct class_interface *intf);
 +
-+
 +extern int rtc_month_days(unsigned int month, unsigned int year);
 +extern int rtc_valid_tm(struct rtc_time *tm);
 +extern int rtc_tm_to_time(struct rtc_time *tm, unsigned long *time);
@@ -79,11 +78,22 @@
 +extern void rtc_update_irq(struct class_device *class_dev,
 +			unsigned long num, unsigned long events);
 +
++extern struct class_device *rtc_open(char *name);
++extern void rtc_close(struct class_device *class_dev);
++extern int rtc_irq_register(struct class_device *class_dev,
++				struct rtc_task *task);
++extern void rtc_irq_unregister(struct class_device *class_dev,
++				struct rtc_task *task);
++extern int rtc_irq_set_state(struct class_device *class_dev,
++				struct rtc_task *task, int enabled);
++extern int rtc_irq_set_freq(struct class_device *class_dev,
++				struct rtc_task *task, int freq);
++
  typedef struct rtc_task {
  	void (*func)(void *private_data);
  	void *private_data;
---- linux-nslu2.orig/drivers/Kconfig	2006-01-08 18:54:58.000000000 +0100
-+++ linux-nslu2/drivers/Kconfig	2006-01-08 18:55:19.000000000 +0100
+--- linux-nslu2.orig/drivers/Kconfig	2006-01-20 12:04:18.000000000 +0100
++++ linux-nslu2/drivers/Kconfig	2006-01-20 20:23:24.000000000 +0100
 @@ -66,4 +66,6 @@ source "drivers/infiniband/Kconfig"
  
  source "drivers/sn/Kconfig"
@@ -91,8 +101,8 @@
 +source "drivers/rtc/Kconfig"
 +
  endmenu
---- linux-nslu2.orig/drivers/Makefile	2006-01-08 18:54:58.000000000 +0100
-+++ linux-nslu2/drivers/Makefile	2006-01-08 18:55:19.000000000 +0100
+--- linux-nslu2.orig/drivers/Makefile	2006-01-20 12:04:18.000000000 +0100
++++ linux-nslu2/drivers/Makefile	2006-01-20 20:23:24.000000000 +0100
 @@ -54,6 +54,7 @@ obj-$(CONFIG_USB_GADGET)	+= usb/gadget/
  obj-$(CONFIG_GAMEPORT)		+= input/gameport/
  obj-$(CONFIG_INPUT)		+= input/
@@ -102,7 +112,7 @@
  obj-$(CONFIG_W1)		+= w1/
  obj-$(CONFIG_HWMON)		+= hwmon/
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/class.c	2006-01-08 18:55:19.000000000 +0100
++++ linux-nslu2/drivers/rtc/class.c	2006-01-20 20:23:24.000000000 +0100
 @@ -0,0 +1,143 @@
 +/*
 + * RTC subsystem, base class
@@ -248,8 +258,8 @@
 +MODULE_DESCRIPTION("RTC class support");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/Kconfig	2006-01-09 04:17:02.000000000 +0100
-@@ -0,0 +1,93 @@
++++ linux-nslu2/drivers/rtc/Kconfig	2006-01-20 21:26:12.000000000 +0100
+@@ -0,0 +1,121 @@
 +#
 +# RTC class/drivers configuration
 +#
@@ -267,6 +277,23 @@
 +
 +	  This driver can also be built as a module. If so, the module
 +	  will be called rtc-class.
++
++config RTC_HCTOSYS
++	bool "Set system time from RTC on startup"
++	depends on RTC_CLASS = y
++	default y
++	help
++	  If you say yes here, the system time will be set using
++	  the value read from the specified RTC device. This is useful
++	  in order to avoid unnecessary fschk runs.
++
++config RTC_HCTOSYS_DEVICE
++	string "The RTC to read the time from"
++	depends on RTC_HCTOSYS = y
++	default "rtc0"
++	help
++	  The RTC device that will be used as the source for
++	  the system time, usually rtc0.
 +
 +comment "RTC interfaces"
 +	depends on RTC_CLASS
@@ -327,6 +354,17 @@
 +	  This driver can also be built as a module. If so, the module
 +	  will be called rtc-ds1672.
 +
++config RTC_DRV_PCF8563
++	tristate "Philips PCF8563/Epson RTC8564"
++	depends on RTC_CLASS && I2C
++	help
++	  If you say yes here you get support for the
++	  Philips PCF8563 RTC chip. The Epson RTC8564
++	  should work as well.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called rtc-pcf8563.
++
 +config RTC_DRV_TEST
 +	tristate "Test driver/device"
 +	depends on RTC_CLASS
@@ -344,13 +382,14 @@
 +
 +endmenu
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/Makefile	2006-01-09 04:17:02.000000000 +0100
-@@ -0,0 +1,15 @@
++++ linux-nslu2/drivers/rtc/Makefile	2006-01-20 21:26:12.000000000 +0100
+@@ -0,0 +1,17 @@
 +#
 +# Makefile for RTC class/drivers.
 +#
 +
 +obj-y				+= utils.o
++obj-$(CONFIG_RTC_HCTOSYS)	+= hctosys.o
 +obj-$(CONFIG_RTC_CLASS)		+= rtc-core.o
 +rtc-core-y			:= class.o interface.o
 +obj-$(CONFIG_RTC_INTF_SYSFS)	+= rtc-sysfs.o
@@ -360,9 +399,10 @@
 +obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
 +obj-$(CONFIG_RTC_DRV_TEST)	+= rtc-test.o
 +obj-$(CONFIG_RTC_DRV_DS1672)	+= rtc-ds1672.o
++obj-$(CONFIG_RTC_DRV_PCF8563)	+= rtc-pcf8563.o
 +
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/interface.c	2006-01-09 03:39:33.000000000 +0100
++++ linux-nslu2/drivers/rtc/interface.c	2006-01-20 21:26:14.000000000 +0100
 @@ -0,0 +1,232 @@
 +/*
 + * RTC subsystem, interface functions
@@ -597,7 +637,7 @@
 +
 +}
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/utils.c	2006-01-08 18:55:19.000000000 +0100
++++ linux-nslu2/drivers/rtc/utils.c	2006-01-20 20:23:24.000000000 +0100
 @@ -0,0 +1,97 @@
 +/*
 + * RTC subsystem, utility functions
@@ -696,8 +736,72 @@
 +	return 0;
 +}
 +EXPORT_SYMBOL(rtc_tm_to_time);
---- linux-nslu2.orig/arch/arm/Kconfig	2006-01-09 03:36:04.000000000 +0100
-+++ linux-nslu2/arch/arm/Kconfig	2006-01-09 03:39:50.000000000 +0100
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-nslu2/drivers/rtc/hctosys.c	2006-01-20 20:23:24.000000000 +0100
+@@ -0,0 +1,61 @@
++/*
++ * RTC subsystem, initialize system time on startup
++ *
++ * Copyright (C) 2005 Tower Technologies
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++*/
++
++#include <linux/rtc.h>
++
++/* IMPORTANT: the RTC only stores whole seconds. It is arbitrary
++ * whether it stores the most close value or the value with partial
++ * seconds truncated. However, it is important that we use it to store
++ * the truncated value. This is because otherwise it is necessary,
++ * in an rtc sync function, to read both xtime.tv_sec and
++ * xtime.tv_nsec. On some processors (i.e. ARM), an atomic read
++ * of >32bits is not possible. So storing the most close value would
++ * slow down the sync API. So here we have the truncated value and
++ * the best guess is to add 0.5s.
++ */
++
++static int __init rtc_hctosys(void)
++{
++	int err;
++	struct class_device *class_dev = rtc_open(CONFIG_RTC_HCTOSYS_DEVICE);
++
++	if (class_dev) {
++		struct rtc_time tm;
++
++		if ((err = rtc_read_time(class_dev, &tm)) == 0) {
++			struct timespec tv;
++
++			tv.tv_nsec = NSEC_PER_SEC >> 1;
++
++			rtc_tm_to_time(&tm, &tv.tv_sec);
++
++			do_settimeofday(&tv);
++
++			dev_info(class_dev->dev,
++				"setting the system clock to "
++				"%d-%02d-%02d %02d:%02d:%02d (%d)\n",
++				tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
++				tm.tm_hour, tm.tm_min, tm.tm_sec, tv.tv_sec);
++		}
++		else
++			dev_err(class_dev->dev,
++				"unable to set the system clock\n");
++
++		rtc_close(class_dev);
++	}
++	else
++		printk("%s: unable to open rtc device (%s)\n",
++			__FILE__, CONFIG_RTC_HCTOSYS_DEVICE);
++
++	return 0;
++}
++
++late_initcall(rtc_hctosys);
+--- linux-nslu2.orig/arch/arm/Kconfig	2006-01-20 21:25:46.000000000 +0100
++++ linux-nslu2/arch/arm/Kconfig	2006-01-20 21:26:12.000000000 +0100
 @@ -748,6 +748,8 @@ source "drivers/usb/Kconfig"
  
  source "drivers/mmc/Kconfig"
@@ -707,8 +811,8 @@
  endmenu
  
  source "fs/Kconfig"
---- linux-nslu2.orig/arch/arm/common/rtctime.c	2006-01-09 03:36:04.000000000 +0100
-+++ linux-nslu2/arch/arm/common/rtctime.c	2006-01-09 03:39:50.000000000 +0100
+--- linux-nslu2.orig/arch/arm/common/rtctime.c	2006-01-20 21:25:46.000000000 +0100
++++ linux-nslu2/arch/arm/common/rtctime.c	2006-01-20 21:26:12.000000000 +0100
 @@ -40,89 +40,6 @@ static struct rtc_ops *rtc_ops;
  
  #define rtc_epoch 1900UL
@@ -879,6 +983,24 @@
  		if (ret)
  			break;
  		ret = copy_to_user(uarg, &alrm, sizeof(alrm));
+@@ -351,7 +268,7 @@ static int rtc_ioctl(struct inode *inode
+ 	return ret;
+ }
+ 
+-static int rtc_open(struct inode *inode, struct file *file)
++static int rtc_arm_open(struct inode *inode, struct file *file)
+ {
+ 	int ret;
+ 
+@@ -406,7 +323,7 @@ static struct file_operations rtc_fops =
+ 	.read		= rtc_read,
+ 	.poll		= rtc_poll,
+ 	.ioctl		= rtc_ioctl,
+-	.open		= rtc_open,
++	.open		= rtc_arm_open,
+ 	.release	= rtc_release,
+ 	.fasync		= rtc_fasync,
+ };
 @@ -425,7 +342,7 @@ static int rtc_read_proc(char *page, cha
  	struct rtc_time tm;
  	char *p = page;
@@ -897,8 +1019,8 @@
  		p += sprintf(p, "alrm_time\t: ");
  		if ((unsigned int)alrm.time.tm_hour <= 24)
  			p += sprintf(p, "%02d:", alrm.time.tm_hour);
---- linux-nslu2.orig/include/asm-arm/rtc.h	2006-01-09 03:36:04.000000000 +0100
-+++ linux-nslu2/include/asm-arm/rtc.h	2006-01-09 03:39:50.000000000 +0100
+--- linux-nslu2.orig/include/asm-arm/rtc.h	2006-01-20 21:25:46.000000000 +0100
++++ linux-nslu2/include/asm-arm/rtc.h	2006-01-20 21:26:12.000000000 +0100
 @@ -25,9 +25,6 @@ struct rtc_ops {
  	int		(*proc)(char *buf);
  };
@@ -910,7 +1032,7 @@
  void rtc_update(unsigned long, unsigned long);
  int register_rtc(struct rtc_ops *);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-sysfs.c	2006-01-09 03:39:50.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-sysfs.c	2006-01-20 21:26:12.000000000 +0100
 @@ -0,0 +1,128 @@
 +/*
 + * RTC subsystem, sysfs interface
@@ -1041,7 +1163,7 @@
 +MODULE_DESCRIPTION("RTC class sysfs interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-proc.c	2006-01-09 03:39:50.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-proc.c	2006-01-20 21:26:12.000000000 +0100
 @@ -0,0 +1,158 @@
 +/*
 + * RTC subsystem, proc interface
@@ -1202,7 +1324,7 @@
 +MODULE_DESCRIPTION("RTC class proc interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-dev.c	2006-01-09 04:00:16.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-dev.c	2006-01-20 21:26:12.000000000 +0100
 @@ -0,0 +1,372 @@
 +/*
 + * RTC subsystem, dev interface
@@ -1577,8 +1699,8 @@
 +MODULE_DESCRIPTION("RTC class dev interface");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-x1205.c	2006-01-09 04:17:02.000000000 +0100
-@@ -0,0 +1,725 @@
++++ linux-nslu2/drivers/rtc/rtc-x1205.c	2006-01-20 21:26:12.000000000 +0100
+@@ -0,0 +1,672 @@
 +/*
 + * An i2c driver for the Xicor/Intersil X1205 RTC
 + * Copyright 2004 Karen Spearel
@@ -1620,8 +1742,6 @@
 +
 +/* Insmod parameters */
 +I2C_CLIENT_INSMOD;
-+I2C_CLIENT_MODULE_PARM(hctosys,
-+	"Set the system time from the hardware clock upon initialization");
 +
 +/* offsets into CCR area */
 +
@@ -1918,50 +2038,6 @@
 +	return 0;
 +}
 +
-+static int x1205_hctosys(struct i2c_client *client)
-+{
-+	int err;
-+
-+	struct rtc_time tm;
-+	struct timespec tv;
-+	unsigned char sr;
-+
-+	if ((err = x1205_get_status(client, &sr)) < 0)
-+		return err;
-+
-+	/* Don't set if we had a power failure */
-+	if (sr & X1205_SR_RTCF)
-+		return -EINVAL;
-+
-+	if ((err = x1205_get_datetime(client, &tm, X1205_CCR_BASE)) < 0)
-+		return err;
-+
-+	/* IMPORTANT: the RTC only stores whole seconds. It is arbitrary
-+	 * whether it stores the most close value or the value with partial
-+	 * seconds truncated. However, it is important that we use it to store
-+	 * the truncated value. This is because otherwise it is necessary,
-+	 * in an rtc sync function, to read both xtime.tv_sec and
-+	 * xtime.tv_nsec. On some processors (i.e. ARM), an atomic read
-+	 * of >32bits is not possible. So storing the most close value would
-+	 * slow down the sync API. So here we have the truncated value and
-+	 * the best guess is to add 0.5s.
-+	 */
-+
-+	tv.tv_nsec = NSEC_PER_SEC >> 1;
-+
-+	rtc_tm_to_time(&tm, &tv.tv_sec);
-+
-+	do_settimeofday(&tv);
-+
-+	dev_info(&client->dev,
-+		"setting the system clock to %02d-%02d-%d %02d:%02d:%02d\n",
-+		tm.tm_year + 1900, tm.tm_mon + 1,
-+		tm.tm_mday, tm.tm_hour, tm.tm_min,
-+		tm.tm_sec);
-+
-+	return 0;
-+}
-+
 +struct x1205_limit
 +{
 +	unsigned char reg;
@@ -2245,13 +2321,6 @@
 +	else
 +		dev_err(&client->dev, "couldn't read status\n");
 +
-+	/* If requested, set the system time */
-+	if (hctosys) {
-+		if ((err = x1205_hctosys(client)) < 0)
-+			dev_err(&client->dev,
-+				"unable to set the system clock\n");
-+	}
-+
 +	device_create_file(&client->dev, &dev_attr_atrim);
 +	device_create_file(&client->dev, &dev_attr_dtrim);
 +
@@ -2305,7 +2374,7 @@
 +module_init(x1205_init);
 +module_exit(x1205_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-test.c	2006-01-09 04:17:02.000000000 +0100
++++ linux-nslu2/drivers/rtc/rtc-test.c	2006-01-20 21:26:12.000000000 +0100
 @@ -0,0 +1,206 @@
 +/*
 + * An RTC test device/driver
@@ -2514,8 +2583,8 @@
 +module_init(test_init);
 +module_exit(test_exit);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/rtc/rtc-ds1672.c	2006-01-12 00:31:05.000000000 +0100
-@@ -0,0 +1,278 @@
++++ linux-nslu2/drivers/rtc/rtc-ds1672.c	2006-01-20 21:26:12.000000000 +0100
+@@ -0,0 +1,234 @@
 +/*
 + * An rtc/i2c driver for the Dallas DS1672
 + * Copyright 2005 Alessandro Zummo
@@ -2537,8 +2606,6 @@
 +
 +/* Insmod parameters */
 +I2C_CLIENT_INSMOD;
-+I2C_CLIENT_MODULE_PARM(hctosys,
-+	"Set the system time from the hardware clock upon initialization");
 +
 +/* Registers */
 +
@@ -2624,41 +2691,6 @@
 +	rtc_tm_to_time(tm, &secs);
 +
 +	return ds1672_set_mmss(client, secs);
-+}
-+
-+static int ds1672_hctosys(struct i2c_client *client)
-+{
-+	int err;
-+	struct rtc_time tm;
-+	struct timespec tv;
-+
-+	if ((err = ds1672_get_datetime(client, &tm)) != 0)
-+		return err;
-+
-+	/* IMPORTANT: the RTC only stores whole seconds. It is arbitrary
-+	 * whether it stores the most close value or the value with partial
-+	 * seconds truncated. However, it is important that we use it to store
-+	 * the truncated value. This is because otherwise it is necessary,
-+	 * in an rtc sync function, to read both xtime.tv_sec and
-+	 * xtime.tv_nsec. On some processors (i.e. ARM), an atomic read
-+	 * of >32bits is not possible. So storing the most close value would
-+	 * slow down the sync API. So here we have the truncated value and
-+	 * the best guess is to add 0.5s.
-+	 */
-+
-+	tv.tv_nsec = NSEC_PER_SEC >> 1;
-+
-+	rtc_tm_to_time(&tm, &tv.tv_sec);
-+
-+	do_settimeofday(&tv);
-+
-+	dev_info(&client->dev,
-+		"setting the system clock to %d-%02d-%02d %02d:%02d:%02d\n",
-+		tm.tm_year + 1900, tm.tm_mon + 1,
-+		tm.tm_mday, tm.tm_hour, tm.tm_min,
-+		tm.tm_sec);
-+
-+	return 0;
 +}
 +
 +static int ds1672_rtc_read_time(struct device *dev, struct rtc_time *tm)
@@ -2758,13 +2790,6 @@
 +
 +	i2c_set_clientdata(client, rtc);
 +
-+	/* If requested, set the system time */
-+	if (hctosys) {
-+		if ((err = ds1672_hctosys(client)) < 0)
-+			dev_err(&client->dev,
-+				"unable to set the system clock\n");
-+	}
-+
 +	return 0;
 +
 +exit_detach:
@@ -2794,3 +2819,390 @@
 +
 +module_init(ds1672_init);
 +module_exit(ds1672_exit);
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-nslu2/drivers/rtc/rtc-pcf8563.c	2006-01-20 21:27:41.000000000 +0100
+@@ -0,0 +1,384 @@
++/*
++ * An I2C driver for the Philips PCF8563 RTC
++ * Copyright 2005-06 Tower Technologies
++ *
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Maintainers: http://www.nslu2-linux.org/
++ *
++ * based on the other drivers in this same directory.
++ *
++ * http://www.semiconductors.philips.com/acrobat/datasheets/PCF8563-04.pdf
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/bcd.h>
++#include <linux/rtc.h>
++
++#define DRV_VERSION "0.4.0"
++
++/* Addresses to scan */
++static unsigned short normal_i2c[] = { 0x51, I2C_CLIENT_END };
++
++/* Module parameters */
++I2C_CLIENT_INSMOD;
++
++#define PCF8563_REG_ST1		0x00 /* status */
++#define PCF8563_REG_ST2		0x01
++
++#define PCF8563_REG_SC		0x02 /* datetime */
++#define PCF8563_REG_MN		0x03
++#define PCF8563_REG_HR		0x04
++#define PCF8563_REG_DM		0x05
++#define PCF8563_REG_DW		0x06
++#define PCF8563_REG_MO		0x07
++#define PCF8563_REG_YR		0x08
++
++#define PCF8563_REG_AMN		0x09 /* alarm */
++#define PCF8563_REG_AHR		0x0A
++#define PCF8563_REG_ADM		0x0B
++#define PCF8563_REG_ADW		0x0C
++
++#define PCF8563_REG_CLKO	0x0D /* clock out */
++#define PCF8563_REG_TMRC	0x0E /* timer control */
++#define PCF8563_REG_TMR		0x0F /* timer */
++
++#define PCF8563_SC_LV		0x80 /* low voltage */
++#define PCF8563_MO_C		0x80 /* century */
++
++/* Prototypes */
++static int pcf8563_attach(struct i2c_adapter *adapter);
++static int pcf8563_detach(struct i2c_client *client);
++static int pcf8563_probe(struct i2c_adapter *adapter, int address, int kind);
++
++static struct i2c_driver pcf8563_driver = {
++	.owner		= THIS_MODULE,
++	.name		= "pcf8563",
++	.flags		= I2C_DF_NOTIFY,
++	.attach_adapter = &pcf8563_attach,
++	.detach_client	= &pcf8563_detach,
++};
++
++/*
++ * In the routines that deal directly with the pcf8563 hardware, we use
++ * rtc_time -- month 0-11, hour 0-23, yr = calendar year-epoch.
++ */
++static int pcf8563_get_datetime(struct i2c_client *client, struct rtc_time *tm)
++{
++	unsigned char buf[13];
++	unsigned char addr = PCF8563_REG_ST1;
++
++	struct i2c_msg msgs[] = {
++		{ client->addr, 0, 1, &addr },	/* setup read ptr */
++		{ client->addr, I2C_M_RD, 13, buf },	/* read status + date */
++	};
++
++	/* read registers */
++	if ((i2c_transfer(client->adapter, msgs, 2)) != 2) {
++		dev_err(&client->dev, "%s: read error\n", __FUNCTION__);
++		return -EIO;
++	}
++
++	if (buf[PCF8563_REG_SC] & PCF8563_SC_LV)
++		dev_info(&client->dev,
++			"low voltage detected, date/time is not reliable.\n");
++
++	dev_dbg(&client->dev,
++		"%s: raw data is st1=%02x, st2=%02x, sec=%02x, min=%02x, hr=%02x, "
++		"mday=%02x, wday=%02x, mon=%02x, year=%02x\n",
++		__FUNCTION__,
++		buf[0], buf[1], buf[2], buf[3],
++		buf[4], buf[5], buf[6], buf[7],
++		buf[8]);
++
++
++	tm->tm_sec = BCD2BIN(buf[PCF8563_REG_SC] & 0x7F);
++	tm->tm_min = BCD2BIN(buf[PCF8563_REG_MN] & 0x7F);
++	tm->tm_hour = BCD2BIN(buf[PCF8563_REG_HR] & 0x3F); /* rtc hr 0-23 */
++	tm->tm_mday = BCD2BIN(buf[PCF8563_REG_DM] & 0x3F);
++	tm->tm_wday = buf[PCF8563_REG_DW] & 0x07;
++	tm->tm_mon = BCD2BIN(buf[PCF8563_REG_MO] & 0x1F) - 1; /* rtc mn 1-12 */
++	tm->tm_year = BCD2BIN(buf[PCF8563_REG_YR])
++		+ (buf[PCF8563_REG_MO] & PCF8563_MO_C ? 100 : 0);
++
++	dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
++		"mday=%d, mon=%d, year=%d, wday=%d\n",
++		__FUNCTION__,
++		tm->tm_sec, tm->tm_min, tm->tm_hour,
++		tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++	/* the clock can give out invalid datetime, but we cannot return
++	 * -EINVAL otherwise hwclock will refuse to set the time on bootup.
++	 */
++	if (rtc_valid_tm(tm) < 0)
++		dev_err(&client->dev, "retrieved date/time is not valid.\n");
++
++	return 0;
++}
++
++static int pcf8563_set_datetime(struct i2c_client *client, struct rtc_time *tm)
++{
++	int i, err;
++	unsigned char buf[9];
++
++	dev_dbg(&client->dev, "%s: secs=%d, mins=%d, hours=%d, "
++		"mday=%d, mon=%d, year=%d, wday=%d\n",
++		__FUNCTION__,
++		tm->tm_sec, tm->tm_min, tm->tm_hour,
++		tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++	/* hours, minutes and seconds */
++	buf[PCF8563_REG_SC] = BIN2BCD(tm->tm_sec);
++	buf[PCF8563_REG_MN] = BIN2BCD(tm->tm_min);
++	buf[PCF8563_REG_HR] = BIN2BCD(tm->tm_hour);
++
++	buf[PCF8563_REG_DM] = BIN2BCD(tm->tm_mday);
++
++	/* month, 1 - 12 */
++	buf[PCF8563_REG_MO] = BIN2BCD(tm->tm_mon + 1);
++
++	/* year and century */
++	buf[PCF8563_REG_YR] = BIN2BCD(tm->tm_year % 100);
++	if (tm->tm_year / 100)
++		buf[PCF8563_REG_MO] |= PCF8563_MO_C;
++
++	buf[PCF8563_REG_DW] = tm->tm_wday & 0x07;
++
++	/* write register's data */
++	for (i = 0; i < 7; i++) {
++		unsigned char data[2] = { PCF8563_REG_SC + i,
++						buf[PCF8563_REG_SC + i] };
++
++		err = i2c_master_send(client, data, sizeof(data));
++		if (err != sizeof(data)) {
++			dev_err(&client->dev,
++				"%s: err=%d addr=%02x, data=%02x\n",
++				__FUNCTION__, err, data[0], data[1]);
++			return -EIO;
++		}
++	};
++
++	return 0;
++}
++
++struct pcf8563_limit
++{
++	unsigned char reg;
++	unsigned char mask;
++	unsigned char min;
++	unsigned char max;
++};
++
++static int pcf8563_validate_client(struct i2c_client *client)
++{
++	int i, xfer;
++
++	static const struct pcf8563_limit probe_limits_pattern[] = {
++		/* register, mask, min, max */
++		{ PCF8563_REG_SC,	0x7F,	0,	59	},
++		{ PCF8563_REG_MN,	0x7F,	0,	59	},
++		{ PCF8563_REG_HR,	0x3F,	0,	23	},
++		{ PCF8563_REG_DM,	0x3F,	0,	31	},
++		{ PCF8563_REG_MO,	0x1F,	0,	12	},
++		{ PCF8563_REG_YR,	0xFF,	0,	99	},
++	};
++
++	/* check limits (only registers with bcd values) */
++	for (i = 0; i < ARRAY_SIZE(probe_limits_pattern); i++) {
++		unsigned char addr, buf, value;
++
++		addr = probe_limits_pattern[i].reg;
++
++		struct i2c_msg msgs[2] = {
++			{ client->addr, 0, 2, &addr },
++			{ client->addr, I2C_M_RD, 1, &buf },
++		};
++
++		xfer = i2c_transfer(client->adapter, msgs, 2);
++
++		if (xfer != 2) {
++			dev_err(&client->adapter->dev,
++				"%s: could not read register %x\n",
++				__FUNCTION__, probe_limits_pattern[i].reg);
++
++			return -EIO;
++		}
++
++		value = BCD2BIN(buf & probe_limits_pattern[i].mask);
++
++		if (value > probe_limits_pattern[i].max ||
++			value < probe_limits_pattern[i].min) {
++			dev_dbg(&client->adapter->dev,
++				"%s: register=%x, lim pattern=%d, value=%d\n",
++				__FUNCTION__, probe_limits_pattern[i].reg, i, value);
++
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++}
++
++static int pcf8563_rtc_read_time(struct device *dev,
++	struct rtc_time *tm)
++{
++	return pcf8563_get_datetime(to_i2c_client(dev), tm);
++}
++
++static int pcf8563_rtc_set_time(struct device *dev,
++	struct rtc_time *tm)
++{
++	return pcf8563_set_datetime(to_i2c_client(dev), tm);
++}
++
++static int pcf8563_rtc_set_mmss(struct device *dev, unsigned long secs)
++{
++	int err;
++
++	struct rtc_time new_tm, old_tm;
++
++	if ((err = pcf8563_rtc_read_time(dev, &old_tm) == 0))
++		return err;
++
++	/* FIXME      xtime.tv_nsec = old_tm.tm_sec * 10000000; */
++	new_tm.tm_sec  = secs % 60;
++	secs /= 60;
++	new_tm.tm_min  = secs % 60;
++	secs /= 60;
++	new_tm.tm_hour = secs % 24;
++
++       /*
++	* avoid writing when we're going to change the day
++	* of the month.  We will retry in the next minute.
++	* This basically means that if the RTC must not drift
++	* by more than 1 minute in 11 minutes.
++	*/
++	if ((old_tm.tm_hour == 23 && old_tm.tm_min == 59) ||
++	    (new_tm.tm_hour == 23 && new_tm.tm_min == 59))
++		return 1;
++
++	return pcf8563_rtc_set_time(dev, &new_tm);
++}
++
++static int pcf8563_rtc_proc(struct device *dev, struct seq_file *seq)
++{
++	seq_printf(seq, "24hr\t\t: yes\n");
++	return 0;
++}
++
++static struct rtc_class_ops pcf8563_rtc_ops = {
++	.proc = pcf8563_rtc_proc,
++	.read_time = pcf8563_rtc_read_time,
++	.set_time = pcf8563_rtc_set_time,
++	.set_mmss = pcf8563_rtc_set_mmss,
++};
++
++static int pcf8563_attach(struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, pcf8563_probe);
++}
++
++static int pcf8563_probe(struct i2c_adapter *adapter, int address, int kind)
++{
++	struct i2c_client *client;
++	struct rtc_device *rtc;
++
++	int err = 0;
++
++	dev_dbg(&adapter->dev, "%s\n", __FUNCTION__);
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
++		err = -ENODEV;
++		goto exit;
++	}
++
++	if (!(client = kzalloc(sizeof(struct i2c_client), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	client->addr = address;
++	client->driver = &pcf8563_driver;
++	client->adapter	= adapter;
++
++	strlcpy(client->name, pcf8563_driver.name, I2C_NAME_SIZE);
++
++	/* Verify the chip is really an PCF8563 */
++	if (kind < 0) {
++		if (pcf8563_validate_client(client) < 0) {
++			err = -ENODEV;
++			goto exit_kfree;
++		}
++	}
++
++	/* Inform the i2c layer */
++	if ((err = i2c_attach_client(client)))
++		goto exit_kfree;
++
++	dev_info(&client->dev, "chip found, driver version " DRV_VERSION "\n");
++
++	rtc = rtc_device_register(pcf8563_driver.name, &client->dev,
++				&pcf8563_rtc_ops, THIS_MODULE);
++
++	if (IS_ERR(rtc)) {
++		err = PTR_ERR(rtc);
++		dev_err(&client->dev,
++			"unable to register the class device\n");
++		goto exit_detach;
++	}
++
++	i2c_set_clientdata(client, rtc);
++
++	return 0;
++
++exit_detach:
++	i2c_detach_client(client);
++
++exit_kfree:
++	kfree(client);
++
++exit:
++	return err;
++}
++
++static int pcf8563_detach(struct i2c_client *client)
++{
++	int err;
++	struct rtc_device *rtc = i2c_get_clientdata(client);
++
++	dev_dbg(&client->dev, "%s\n", __FUNCTION__);
++
++	if (rtc)
++		rtc_device_unregister(rtc);
++
++	if ((err = i2c_detach_client(client)))
++		return err;
++
++	kfree(client);
++
++	return 0;
++}
++
++static int __init pcf8563_init(void)
++{
++	return i2c_add_driver(&pcf8563_driver);
++}
++
++static void __exit pcf8563_exit(void)
++{
++	i2c_del_driver(&pcf8563_driver);
++}
++
++MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
++MODULE_DESCRIPTION("Philips PCF8563/Epson RTC8564 RTC driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
++
++module_init(pcf8563_init);
++module_exit(pcf8563_exit);
++
