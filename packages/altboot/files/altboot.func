@@ -162,8 +162,13 @@ pivot_image() {
 	then
 		echo "Success"
 
+		# This is important since we are still cd'ed into the old root
 		cd /
-
+		
+		! test -d "$1" && mkdir -p "$1"
+		
+		# Move mountpoints from the old rootfs into the new one.
+		# The *real* mount is kinda touchy feely about that
 		/bin/busybox mount -o move /media/ROM$1 $1
 		/bin/busybox mount -o move /media/ROM/dev /dev
 		/bin/busybox mount -o move /media/ROM/proc /proc >/dev/null 2>&1

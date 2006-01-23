@@ -256,7 +256,7 @@ wait_for_input() {
 
 # * * * * * * This is the main function * * * * * *
 
-if test "`runlevel`" != "unknown"
+if test "`runlevel`" != "unknown" -a "$1" != "-force"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
 	exec $REAL_INIT $*
