@@ -6,15 +6,12 @@ MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 SECTION = "net"
 LICENSE = "MIT"
 
-DEPENDS = "libusb"
-
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_2 \
-	   cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=LIBTOPFIELD_0_5_0 \
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_6_3 \
+	   cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=FTPD_TOPFIELD_0_6_3 \
 	   file://init"
 
 # The source will end up in the subdirectory 'ftpd-topfield' - no release name
 S = "${WORKDIR}/ftpd-topfield"
-SL = "${WORKDIR}/libtopfield"
 
 inherit update-rc.d
 
@@ -27,8 +24,7 @@ PACKAGES = "${PN}"
 inherit autotools
 
 do_compile() {
-	oe_runmake -C ${SL} libtopfield.a
-	oe_runmake LDLIBS="${LDFLAGS} -L ../libtopfield -ltopfield -lusb"
+	oe_runmake
 }
 
 do_install() {
