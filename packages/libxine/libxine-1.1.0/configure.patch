@@ -3,8 +3,10 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- xine-lib-1.1.0/configure.ac~configure-1.0
-+++ xine-lib-1.1.0/configure.ac
+Index: xine-lib-1.1.0/configure.ac
+===================================================================
+--- xine-lib-1.1.0.orig/configure.ac	2005-07-21 21:10:10.000000000 +0000
++++ xine-lib-1.1.0/configure.ac	2006-01-11 14:30:05.965735856 +0000
 @@ -715,6 +715,7 @@
  LIBS="$saved_libs"
  fi
@@ -103,7 +105,17 @@
  AC_SUBST(MNG_LIBS)
  
  dnl ---------------------------------------------
-@@ -1153,7 +1120,7 @@
+@@ -1134,6 +1101,9 @@
+ dnl ---------------------------------------------
+ 
+ AC_PATH_PROG(WAND_CONFIG, Wand-config, no)
++if ( ! test -f "$WAND_CONFIG" ) && ( ! test -x "$WAND_CONFIG" ) ; then
++  WAND_CONFIG="no"
++fi
+ if test "$WAND_CONFIG" = "no" ; then
+   AC_MSG_RESULT([*** All Imagemagick dependent parts will be disabled, Wand-config not found. ***])
+ else
+@@ -1153,7 +1123,7 @@
  dnl freetype2 lib.
  dnl ---------------------------------------------
  
@@ -112,7 +124,7 @@
  
  
  dnl ---------------------------------------------
-@@ -1196,37 +1163,21 @@
+@@ -1196,37 +1166,21 @@
  dnl ESD support
  dnl ---------------------------------------------
  
@@ -153,7 +165,7 @@
  
  
  dnl ---------------------------------------------
-@@ -1403,75 +1354,7 @@
+@@ -1403,75 +1357,7 @@
      ],ISOC99_PRAGMA=no)
      AC_MSG_RESULT($ISOC99_PRAGMA)
  
