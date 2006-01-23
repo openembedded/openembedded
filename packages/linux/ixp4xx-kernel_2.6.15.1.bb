@@ -3,12 +3,12 @@
 # Increment PR_CONFIG for changes to the ixp4xx-kernel specific
 # defconfig (do *NOT* increment anything in here for changes
 # to other kernel configs!)
-PR_CONFIG = "0"
+PR_CONFIG = "1"
 #
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r12.${PR_CONFIG}"
+PR = "r13.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -49,6 +49,7 @@ IXP4XX_PATCHES += "file://93-loft-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nas100d-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nslu2-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://95-ixp4xx-leds.patch;patch=1"
+IXP4XX_PATCHES += "file://951-ixp4xx-leds-cpu-activity.patch;patch=1"
 IXP4XX_PATCHES += "file://96-loft-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nas100d-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nslu2-leds.patch;patch=1"

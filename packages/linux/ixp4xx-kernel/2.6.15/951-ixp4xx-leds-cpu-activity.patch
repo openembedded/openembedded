@@ -1,0 +1,375 @@
+This patches the new LEDs code to add cpu activity and
+inactivity triggers to the timer triggers.  The new triggers
+flash an LED at a given rate when the CPU is active and
+set it to on (cpu-idle) or off (cpu-activity trigger) when
+the CPU is idle.
+
+The patch also adds a duty_cycle attribute to the LED
+timer class, this allows control of the mark/space ratio
+in the flash.  Using duty cycles of about 50% far higher
+flash rates become possible.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+--- linux-2.6.15/arch/arm/kernel/process.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/kernel/process.c	1970-01-01 00:00:00.000000000 +0000
+@@ -27,6 +27,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/init.h>
+ #include <linux/cpu.h>
++#include <linux/leds.h>
+ 
+ #include <asm/system.h>
+ #include <asm/io.h>
+@@ -121,8 +122,10 @@ void cpu_idle(void)
+ 		if (!idle)
+ 			idle = default_idle;
+ 		leds_event(led_idle_start);
++		leds_idle(1);
+ 		while (!need_resched())
+ 			idle();
++		leds_idle(0);
+ 		leds_event(led_idle_end);
+ 		preempt_enable_no_resched();
+ 		schedule();
+--- linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
+@@ -59,5 +59,14 @@ config LEDS_TRIGGER_TIMER
+ 	  This allows LEDs to be controlled by a programmable timer
+ 	  via sysfs. If unsure, say Y.
+ 
++config LEDS_TRIGGER_CPU_ACTIVITY
++	tristate "LED CPU activity trigger"
++	depends LEDS_TRIGGER_TIMER
++	help
++	  This allows LEDs to be set to show cpu activity via sysfs.
++	  The LED will blink when the cpu is active and stay steady
++	  (on or off according to the trigger selected) when idle.
++	  If unsure, say Y.
++
+ endmenu
+ 
+--- linux-2.6.15/drivers/leds/led-triggers.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/led-triggers.c	1970-01-01 00:00:00.000000000 +0000
+@@ -98,7 +98,7 @@ void led_trigger_event(struct led_trigge
+ 	if (!trigger)
+ 		return;
+ 
+-	read_lock(&trigger->led_devs);
++	read_lock(&trigger->leddev_list_lock);
+ 	list_for_each(entry, &trigger->led_devs) {
+ 		struct led_device *led_dev;
+ 
+@@ -107,7 +107,7 @@ void led_trigger_event(struct led_trigge
+ 		leds_set_brightness(led_dev, brightness);
+ 		write_unlock(&led_dev->lock);
+ 	}
+-	read_unlock(&trigger->led_devs);
++	read_unlock(&trigger->leddev_list_lock);
+ }
+ 
+ /* Caller must ensure led_dev->lock held for write */
+--- linux-2.6.15/drivers/leds/ledtrig-timer.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/ledtrig-timer.c	1970-01-01 00:00:00.000000000 +0000
+@@ -24,46 +24,95 @@
+ #include "leds.h"
+ 
+ struct timer_trig_data {
+-	unsigned long frequency; /* frequency of blinking, in milliseconds */
++	unsigned long frequency;  /* length of space, in milliseconds */
++	unsigned long duty_cycle; /* mark/space ratio as a percentage */
+ 	struct timer_list timer;
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++	unsigned long idle_brightness;
++	int           is_idle;
++#endif
++};
++
++enum timer_property {
++	TimerFrequency,
++	TimerDutyCycle
+ };
+ 
+ static void leds_timer_function(unsigned long data)
+ {
+ 	struct led_device *led_dev = (struct led_device *) data;
+-	struct timer_trig_data *timer_data = led_dev->trigger_data;
+-	unsigned long value = 0;
++	struct timer_trig_data *timer_data;
++	unsigned long value;
+ 
+ 	write_lock(&led_dev->lock);
+ 
++	timer_data = led_dev->trigger_data;
++
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++	if (timer_data->is_idle) {
++		/* LED solid (or or off), no timer. */
++		value = timer_data->idle_brightness;
++	} else if (!timer_data->frequency) {
++		/* Put the LED in the non-idle state. */
++		value = 100-timer_data->idle_brightness;
++	}
++#else
+ 	if (!timer_data->frequency) {
+-		leds_set_brightness(led_dev, 0);
+-		write_unlock(&led_dev->lock);
+-		return;
++		value = 0;
+ 	}
++#endif
++	else {
++		unsigned long timeout = timer_data->frequency;
++
++		/* LED flashing - toggle the brightness. */
++		value = led_dev->brightness ? 0 : 100;
++
++		/* If this is the 'mark' adjust by the duty cycle. */
++		if (value)
++			timeout = timeout * timer_data->duty_cycle / 100;
++
++		timeout = msecs_to_jiffies(timeout);
++		if (!timeout)
++			timeout = 1;
+ 
+-	if (!led_dev->brightness)
+-		value = 100;
++		mod_timer(&timer_data->timer, jiffies + timeout);
++	}
+ 
+ 	leds_set_brightness(led_dev, value);
+-
+-	mod_timer(&timer_data->timer, jiffies + msecs_to_jiffies(timer_data->frequency));
+ 	write_unlock(&led_dev->lock);
+ }
+ 
+-static ssize_t leds_show_frequency(struct class_device *dev, char *buf)
++static ssize_t leds_show_prop(struct class_device *dev, char *buf, enum timer_property what)
+ {
+ 	struct led_device *led_dev = dev->class_data;
+ 	struct timer_trig_data *timer_data = led_dev->trigger_data;
++	unsigned long value = 0;
+ 
+ 	read_lock(&led_dev->lock);
+-	sprintf(buf, "%lu\n", timer_data->frequency);
++	switch (what)
++	{
++		case TimerFrequency: value = timer_data->frequency; break;
++		case TimerDutyCycle: value = timer_data->duty_cycle; break;
++	}
+ 	read_unlock(&led_dev->lock);
+ 
++	sprintf(buf, "%lu\n", value);
++
+ 	return strlen(buf) + 1;
+ }
+ 
+-static ssize_t leds_store_frequency(struct class_device *dev, const char *buf, size_t size)
++static ssize_t leds_show_frequency(struct class_device *dev, char *buf)
++{
++	return leds_show_prop(dev, buf, TimerFrequency);
++}
++
++static ssize_t leds_show_duty_cycle(struct class_device *dev, char *buf)
++{
++	return leds_show_prop(dev, buf, TimerDutyCycle);
++}
++
++static ssize_t leds_store_prop(struct class_device *dev, const char *buf,
++		size_t size, enum timer_property what)
+ {
+ 	struct led_device *led_dev = dev->class_data;
+ 	struct timer_trig_data *timer_data = led_dev->trigger_data;
+@@ -74,17 +123,33 @@ static ssize_t leds_store_frequency(stru
+ 	if (after - buf > 0) {
+ 		ret = after - buf;
+ 		write_lock(&led_dev->lock);
+-		timer_data->frequency = state;
+-		mod_timer(&timer_data->timer, jiffies + msecs_to_jiffies(timer_data->frequency));
++		switch (what)
++		{
++			case TimerFrequency: timer_data->frequency = state; break;
++			case TimerDutyCycle: timer_data->duty_cycle = state; break;
++		}
++		/* Cause the timer to fire in a jiffy */
++		mod_timer(&timer_data->timer, jiffies + 1);
+ 		write_unlock(&led_dev->lock);
+ 	}
+ 
+ 	return ret;
+ }
+ 
++static ssize_t leds_store_frequency(struct class_device *dev, const char *buf, size_t size)
++{
++	return leds_store_prop(dev, buf, size, TimerFrequency);
++}
++
++static ssize_t leds_store_duty_cycle(struct class_device *dev, const char *buf, size_t size)
++{
++	return leds_store_prop(dev, buf, size, TimerDutyCycle);
++}
++
+ static CLASS_DEVICE_ATTR(frequency, 0644, leds_show_frequency, leds_store_frequency);
++static CLASS_DEVICE_ATTR(duty_cycle, 0644, leds_show_duty_cycle, leds_store_duty_cycle);
+ 
+-void timer_trig_activate(struct led_device *led_dev)
++static void do_activate(struct led_device *led_dev, unsigned long idle_brightness)
+ {
+ 	struct timer_trig_data *timer_data;
+ 
+@@ -94,6 +159,11 @@ void timer_trig_activate(struct led_devi
+ 
+ 	led_dev->trigger_data = timer_data;
+ 	timer_data->frequency = 0;
++	timer_data->duty_cycle = 100;
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++	timer_data->idle_brightness = idle_brightness;
++	timer_data->is_idle = 0;
++#endif
+ 
+ 	init_timer(&timer_data->timer);
+ 	timer_data->timer.function = leds_timer_function;
+@@ -101,12 +171,27 @@ void timer_trig_activate(struct led_devi
+ 	timer_data->timer.expires = 0;
+ 
+ 	class_device_create_file(led_dev->class_dev, &class_device_attr_frequency);
++	class_device_create_file(led_dev->class_dev, &class_device_attr_duty_cycle);
+ }
+ 
+-void timer_trig_deactivate(struct led_device *led_dev)
++static void timer_trig_activate(struct led_device *led_dev)
++{
++	do_activate(led_dev, 100);
++}
++
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++static void cpu_trig_activate(struct led_device *led_dev)
++{
++	/* As above but the LED is off when the CPU is idle */
++	do_activate(led_dev, 0);
++}
++#endif
++
++static void timer_trig_deactivate(struct led_device *led_dev)
+ {
+ 	struct timer_trig_data *timer_data = led_dev->trigger_data;
+ 	if (timer_data) {
++		class_device_remove_file(led_dev->class_dev, &class_device_attr_duty_cycle);
+ 		class_device_remove_file(led_dev->class_dev, &class_device_attr_frequency);
+ 		del_timer_sync(&timer_data->timer);
+ 		kfree(timer_data);
+@@ -119,16 +204,90 @@ static struct led_trigger timer_led_trig
+ 	.deactivate = timer_trig_deactivate,
+ };
+ 
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++static struct led_trigger cpu_led_trigger = {
++	.name     = "cpu-activity",
++	.activate = cpu_trig_activate,
++	.deactivate = timer_trig_deactivate,
++};
++
++static struct led_trigger idle_led_trigger = {
++	.name     = "cpu-idle",
++	.activate = timer_trig_activate,
++	.deactivate = timer_trig_deactivate,
++};
++
++static int leds_do_idle = 0;
++#endif
++
+ static int __init timer_trig_init(void)
+ {
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++	int rc = led_trigger_register(&idle_led_trigger);
++	if (rc)
++		return rc;
++	rc = led_trigger_register(&cpu_led_trigger);
++	if (rc)
++		return rc;
++	leds_do_idle = 1;
++#endif
+ 	return led_trigger_register(&timer_led_trigger);
+ }
+ 
+ static void __exit timer_trig_exit (void)
+ {
+ 	led_trigger_unregister(&timer_led_trigger);
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++	leds_do_idle = 0;
++	led_trigger_unregister(&cpu_led_trigger);
++	led_trigger_unregister(&idle_led_trigger);
++#endif
+ }
+ 
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++static void leds_trigger_idle(struct led_trigger *trigger, int is_idle)
++{
++	struct list_head *entry;
++
++	if (!trigger)
++		return;
++
++	read_lock(&trigger->leddev_list_lock);
++	list_for_each(entry, &trigger->led_devs) {
++		struct led_device *led_dev;
++		struct timer_trig_data *timer_data;
++
++		/* The timer must be deactivated in this thread if the CPU
++		 * is going idle, otherwise this function will simply stop
++		 * the CPU ever becoming idle.
++		 */
++		led_dev = list_entry(entry, struct led_device, trig_list);
++		write_lock(&led_dev->lock);
++		timer_data = led_dev->trigger_data;
++		if (is_idle && !timer_data->is_idle && timer_data->frequency)
++			del_timer(&timer_data->timer);
++		timer_data->is_idle = is_idle;
++		write_unlock(&led_dev->lock);
++
++		/* Force the LED to the correct state and instantiate
++		 * a timer if necessary.
++		 */
++		leds_timer_function((unsigned long)led_dev);
++	}
++	read_unlock(&trigger->leddev_list_lock);
++}
++
++void leds_idle(int is_idle)
++{
++	if (leds_do_idle) {
++		leds_trigger_idle(&cpu_led_trigger, is_idle);
++		leds_trigger_idle(&idle_led_trigger, is_idle);
++	}
++}
++
++EXPORT_SYMBOL_GPL(leds_idle);
++#endif
++
+ module_init(timer_trig_init);
+ module_exit(timer_trig_exit);
+ 
+--- linux-2.6.15/include/linux/leds.h	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/linux/leds.h	1970-01-01 00:00:00.000000000 +0000
+@@ -89,3 +89,21 @@ void led_trigger_event(struct led_trigge
+ #define led_trigger_event(x, y) do {} while(0)
+ 
+ #endif
++
++/*
++ * CPU activity indication.
++ */
++#ifdef CONFIG_LEDS_TRIGGER_CPU_ACTIVITY
++
++/* Idle callback - call with is_idle==1 at the start of the idle loop
++ * and with is_idle==0 at the end.
++ */
++void leds_idle(int is_idle);
++
++#else
++
++/* No CPU activity support. */
++#define leds_idle(x) do {} while (0)
++
++#endif
++
