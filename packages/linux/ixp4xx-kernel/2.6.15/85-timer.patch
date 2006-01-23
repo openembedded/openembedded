@@ -1,5 +1,11 @@
---- linux-2.6.15/arch/arm/mach-ixp4xx/common.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/common.c	1970-01-01 00:00:00.000000000 +0000
+ arch/arm/mach-ixp4xx/common.c       |  165 +++++++++++++++++++++++++++++++++---
+ arch/arm/mach-ixp4xx/nslu2-setup.c  |    5 +
+ include/asm-arm/arch-ixp4xx/nslu2.h |    5 -
+ include/asm-arm/arch-ixp4xx/timex.h |   23 +++--
+ 4 files changed, 176 insertions(+), 22 deletions(-)
+
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/common.c	2006-01-20 20:23:46.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/common.c	2006-01-23 01:09:25.000000000 +0100
 @@ -239,36 +239,165 @@ void __init ixp4xx_init_irq(void)
   * IXP4xx timer tick
   * We use OS timer1 on the CPU for the timer tick and the timestamp 
@@ -77,7 +83,7 @@
 +	 *   4*x+1 = board_tick_rate/HZ
 +	 *
 +	 * This needs to be rounded to the closest 4*HZ value:
-+	 * 
++	 *
 +	 *   x = ((board_tick_rate-HZ) + (4*HZ)/2) / 4*HZ
 +	 *   x = (board_tick_rate+HZ) / (4*HZ);
 +	 */
@@ -213,9 +219,9 @@
  	}
  }
 -
---- linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/nslu2-setup.c	1970-01-01 00:00:00.000000000 +0000
-@@ -114,6 +114,11 @@ static void nslu2_power_off(void)
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 01:09:04.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 01:09:25.000000000 +0100
+@@ -120,6 +120,11 @@ static void nslu2_power_off(void)
  
  static void __init nslu2_init(void)
  {
@@ -227,19 +233,8 @@
  	ixp4xx_sys_init();
  
  	pm_power_off = nslu2_power_off;
---- linux-2.6.15/drivers/input/misc/nslu2spkr.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/input/misc/nslu2spkr.c	1970-01-01 00:00:00.000000000 +0000
-@@ -51,7 +51,7 @@ static int nslu2_spkr_event(struct input
- 	}
- 
- 	if (value > 20 && value < 32767)
--		count = (NSLU2_FREQ / (value*4)) - 1;
-+		count = (ixp4xx_get_board_tick_rate() / (value*4)) - 1;
- 
- 	spin_lock_irqsave(&beep_lock, flags);
- 
---- linux-2.6.15/include/asm-arm/arch-ixp4xx/nslu2.h	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/include/asm-arm/arch-ixp4xx/nslu2.h	1970-01-01 00:00:00.000000000 +0000
+--- linux-nslu2.orig/include/asm-arm/arch-ixp4xx/nslu2.h	2006-01-20 20:23:46.000000000 +0100
++++ linux-nslu2/include/asm-arm/arch-ixp4xx/nslu2.h	2006-01-23 01:09:25.000000000 +0100
 @@ -38,11 +38,6 @@
  #define NSLU2_PCI_INTD_PIN	8
  
@@ -252,8 +247,8 @@
  /* GPIO */
  
  #define NSLU2_GPIO0		0
---- linux-2.6.15/include/asm-arm/arch-ixp4xx/timex.h	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/include/asm-arm/arch-ixp4xx/timex.h	1970-01-01 00:00:00.000000000 +0000
+--- linux-nslu2.orig/include/asm-arm/arch-ixp4xx/timex.h	2006-01-20 20:23:46.000000000 +0100
++++ linux-nslu2/include/asm-arm/arch-ixp4xx/timex.h	2006-01-23 01:09:25.000000000 +0100
 @@ -6,10 +6,23 @@
  #include <asm/hardware.h>
  
