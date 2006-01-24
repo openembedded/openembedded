@@ -8,6 +8,7 @@ SRC_URI += " \
 	   file://links.conf \
            file://permissions.rules \
 	   file://mount.sh \
+	   file://network.sh \
 	   file://local.rules \
            file://init"
 
@@ -56,4 +57,5 @@ do_install () {
 	install -d ${D}${sysconfdir}/udev/scripts/
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
+	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
 }
