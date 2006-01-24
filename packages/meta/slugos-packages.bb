@@ -94,7 +94,6 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
-	memtester \
 	mgetty \
 	miau \ 
 	microcom \
@@ -164,6 +163,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
 	pvrusb2-mci \
 	watchdog \
+	memtester \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
