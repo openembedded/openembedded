@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "prism3-firmware hostap-utils"
 RDEPENDS = "prism3-firmware hostap-utils"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r0"
+PR = "r1"
 PACKAGE_ARCH = "all"
 
 SRC_URI = "file://hostap-fw-load"
