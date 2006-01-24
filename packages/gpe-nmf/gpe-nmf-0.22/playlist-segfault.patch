@@ -1,0 +1,27 @@
+Index: playlist_edit.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-nmf/playlist_edit.c,v
+retrieving revision 1.21
+retrieving revision 1.22
+diff -B -b -u -r1.21 -r1.22
+--- playlist_edit.c	8 Jul 2005 14:40:33 -0000	1.21
++++ playlist_edit.c	11 Jan 2006 23:23:32 -0000	1.22
+@@ -172,8 +172,16 @@
+ 
+   if (fe->current_path)
+       g_free(fe->current_path);
+-  fe->current_path = isdir(s) ? g_strdup(s) : g_path_get_dirname (s);
+-      strcat(fe->current_path,"/");
++  if (isdir (s))
++    {
++      fe->current_path = g_strdup_printf ("%s/", s);
++    }
++  else
++    {
++      gchar *dir = g_path_get_dirname (s);
++      fe->current_path = g_strdup_printf ("%s/", dir);
++      g_free (dir);
++    }
+   
+   fe->fs_open = FALSE;
+ 
