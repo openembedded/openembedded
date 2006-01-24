@@ -8,7 +8,7 @@
 test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 
 CURRENT_ENV="`set`"
-VERSION="0.0.3"
+VERSION="0.0.4"
 
 # Set some defaults in case altboot.cfg is missing
 REAL_INIT="/sbin/init.sysvinit"

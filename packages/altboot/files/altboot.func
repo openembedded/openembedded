@@ -67,30 +67,7 @@ pivot_realfs() {
 
 	mount -o remount,ro /
 
-	echo -n "Pivoting root..."
-	if (/sbin/pivot_root $1 $1/media/ROM) 
-	then
-		echo "Success"
-
-		# Interestingly, this doesn't work with the "real" mount
-		# Without this command, /dev would be mounted under /media/ROM/dev after pivoting root
-		/bin/busybox mount -o move /media/ROM/dev /dev
-
-		cd /
-
-		# Boot /sbin/init if it is available or use /sbin/init.sysvinit instead
-		if test -x $/sbin/init
-		then
-			echo "Calling INIT [/sbin/init $RL]"
-			exec /usr/sbin/chroot . /sbin/init $RL >/dev/tty0 2>&1			
-		else
-			echo "Calling INIT [$REAL_INIT $RL]"			
-			exec /usr/sbin/chroot . $REAL_INIT $RL >/dev/tty0 2>&1			
-		fi
-	else
-		echo "FAILED"
-		die "* * * pivot_root failed! * * *" 
-	fi
+	do_pivot "$1" "$RL"
 }
 
 # This function loop-mounts an image-file and pivot_root's into it
@@ -153,12 +130,17 @@ pivot_image() {
 	fi
 	# If mount fails it has the tendency to spew out a _lot_ of error messages.
 	# We direct the output to /dev/null so the user can see which step actually failed.
-	mount -t $IMAGE_TYPE /dev/loop0 /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE  /dev/loop0 /media/image failed!"
+	mount -t $IMAGE_TYPE /dev/loop0 /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"
 
 	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
 
+	do_pivot /media/image "$RL"
+}
+
+#$1=mountpoint of the soon-to-be rootfs, $2=Runlevel
+do_pivot(){
 	echo -n "Pivoting root..."
-	if (/sbin/pivot_root /media/image /media/image/media/ROM) 
+	if (/sbin/pivot_root "$1" "$1/media/ROM") 
 	then
 		echo "Success"
 
@@ -169,17 +151,27 @@ pivot_image() {
 		
 		# Move mountpoints from the old rootfs into the new one.
 		# The *real* mount is kinda touchy feely about that
-		/bin/busybox mount -o move /media/ROM$1 $1
-		/bin/busybox mount -o move /media/ROM/dev /dev
-		/bin/busybox mount -o move /media/ROM/proc /proc >/dev/null 2>&1
+ 		/bin/busybox mount -o move /media/ROM/proc /proc >/dev/null 2>&1
 
+		for mpt in ` mount | grep "/media/ROM/" | awk '{print $3}'`
+		do
+			new_mpt="`echo "$mpt" | sed -n "s/\/media\/ROM//p"`"
+			
+			echo "Moving mountpoint [$mpt] -> [$new_mpt]" >/dev/tty0 2>&1
+			
+			! test -d "$new_mpt" && mkdir -p "$new_mpt" 
+			/bin/busybox mount -o move "$mpt" "$new_mpt"
+		done
+		
 		echo "Calling INIT"
-		exec /usr/sbin/chroot . /sbin/init $RL >/dev/tty0 2>&1
+		
+		#read junk
+		
+		exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"
 		die "* * * pivot_root failed! * * *" 
 	fi
-
 
 }
 
@@ -188,11 +180,9 @@ set_password() {
 	mount -o remount,rw /
 	if test -z "$MASTER_PASSWORD"
 	then
-		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF and NFS"
+		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF, USB-Storage and NFS"
 		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
 		echo -e "${C_RED}This is *not* your root password!\nIt is used by altboot alone!${C_RESET}\n"
-		#echo -e "${C_BLUE}\nNote:\tThe password will be echoed to the screen\n\tand it will be asked twice for confirmation.${C_RESET}"
-		#echo -e "\nPlease enter a new master password:\n"
 
 		while true
 		do
