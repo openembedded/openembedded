@@ -88,6 +88,7 @@ SLUGOS_PACKAGES = "\
 	libxml2 \
 	lrzsz \
 	lsof \
+	lvm2 \
 	m4 \
 	mailx \
 	make \
