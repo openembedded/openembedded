@@ -2,7 +2,9 @@ DESCRIPTION = "Alsa Drivers"
 MAINTAINER = "Pigi"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
+
+DEPENDS += "fakeroot-native"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
 	file://sound.p.patch;patch=1 \
