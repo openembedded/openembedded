@@ -1,6 +1,6 @@
 PV = "6.2.1+cvs${SRCDATE}"
 LICENSE = "XFree86"
-PR = "r5"
+PR = "r6"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
