@@ -8,7 +8,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "jpeg libpng zlib"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz"
 S = "${WORKDIR}/DirectFB-${PV}"
@@ -29,4 +29,5 @@ do_install() {
 FILES_directfb_append = " ${libdir}/directfb-${PV}/systems/*.so \
                           ${libdir}/directfb-${PV}/inputdrivers/*.so \
                           ${libdir}/directfb-${PV}/interfaces/*/*.so \
+			  ${libdir}/directfb-${PV}/wm/*.so \
                           ${datadir}/directfb-${PV}"
