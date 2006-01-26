@@ -15,7 +15,7 @@ EXTRA_OECONF_append_collie = " --enable-small-icons "
 EXTRA_OECONF_append_poodle = " --enable-small-icons "
 EXTRA_OECONF_append_mnci = " --enable-small-icons "
 EXTRA_OECONF_append_integral13 = " --enable-small-icons "
-PACKAGE_ARCH_tslib-conf = "${MACHINE}"
+PACKAGE_ARCH = "${MACHINE}"
 
 
 FILES_${PN} = "${bindir} \
