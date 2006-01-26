@@ -4,7 +4,7 @@
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
