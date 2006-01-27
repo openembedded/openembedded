@@ -2,6 +2,7 @@ PACKAGES = "gpe-conf gpe-conf-panel"
 LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 inherit gpe
 PR="r0"
@@ -20,7 +21,7 @@ do_compile () {
 }
 
 do_install () {
-        oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
+        oe_runmake MACHINE=${MACHINE} PREFIX=${prefix} DESTDIR=${D} install-program
 }
 
 
