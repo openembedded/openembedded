@@ -1,8 +1,8 @@
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.1.27+cvs${SRCDATE}"
-PR = "r0"
+PV = "0.1.29+cvs${SRCDATE}"
+PR = "r1"
 
 inherit gpe
 
@@ -14,6 +14,7 @@ PACKAGES = "gpe-conf gpe-conf-panel"
 LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 
 DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"
