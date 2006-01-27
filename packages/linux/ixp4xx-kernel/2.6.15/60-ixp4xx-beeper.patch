@@ -1,8 +1,12 @@
+Generic beeper support for the ixp4xx platform.
+
+Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
+
  arch/arm/mach-ixp4xx/nslu2-setup.c |    7 +
  drivers/input/misc/Kconfig         |   12 ++
  drivers/input/misc/Makefile        |    1 
- drivers/input/misc/ixp4xx-beeper.c |  172 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 192 insertions(+)
+ drivers/input/misc/ixp4xx-beeper.c |  174 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 194 insertions(+)
 
 --- linux-nslu2.orig/drivers/input/misc/Kconfig	2006-01-23 02:13:55.000000000 +0100
 +++ linux-nslu2/drivers/input/misc/Kconfig	2006-01-23 02:29:48.000000000 +0100
@@ -33,7 +37,7 @@
  obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o
 +obj-$(CONFIG_INPUT_IXP4XX_BEEPER)	+= ixp4xx-beeper.o
 --- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 02:13:55.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 02:26:04.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-25 11:32:14.000000000 +0100
 @@ -52,6 +52,12 @@ static struct platform_device nslu2_i2c_
  	.num_resources		= 0,
  };
@@ -56,8 +60,8 @@
  
  static void nslu2_power_off(void)
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-nslu2/drivers/input/misc/ixp4xx-beeper.c	2006-01-23 02:13:57.000000000 +0100
-@@ -0,0 +1,172 @@
++++ linux-nslu2/drivers/input/misc/ixp4xx-beeper.c	2006-01-25 11:37:03.000000000 +0100
+@@ -0,0 +1,174 @@
 +/*
 + * Generic IXP4xx beeper driver
 + *
@@ -194,7 +198,7 @@
 +
 +	/* turn the speaker off */
 +	disable_irq(IRQ_IXP4XX_TIMER2);
-+	ixp4xx_spkr_event(NULL, EV_SND, SND_BELL, 0);
++	ixp4xx_spkr_event(input_dev, EV_SND, SND_BELL, 0);
 +
 +	free_irq(IRQ_IXP4XX_TIMER2, dev);
 +
@@ -203,9 +207,11 @@
 +
 +static void ixp4xx_spkr_shutdown(struct platform_device *dev)
 +{
++	struct input_dev *input_dev = platform_get_drvdata(dev);
++
 +	/* turn off the speaker */
 +	disable_irq(IRQ_IXP4XX_TIMER2);
-+	ixp4xx_spkr_event(NULL, EV_SND, SND_BELL, 0);
++	ixp4xx_spkr_event(input_dev, EV_SND, SND_BELL, 0);
 +}
 +
 +static struct platform_driver ixp4xx_spkr_platform_driver = {
