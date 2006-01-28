@@ -1,6 +1,5 @@
 include ipkg-utils_${PV}.bb
 
-RDEPENDS = "python-native"
 PR = "r6"
 
 inherit native
