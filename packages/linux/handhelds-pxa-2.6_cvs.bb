@@ -21,8 +21,8 @@ ALLOW_EMPTY_ipaq_pxa270 = 1
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "13"
-HHV     = "1"
+K_MICRO = "15"
+HHV     = "0"
 #
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
