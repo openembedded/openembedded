@@ -11,7 +11,7 @@ SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${SRCDATE} \
            file://kbdd-modules"
 
 #Remove the dash below when 0.8 changes in PV
-PV="0.8+cvs-${SRCDATE}"
+PV="0.10+cvs${SRCDATE}"
 PR="r5"
 
 inherit update-rc.d linux_modules
