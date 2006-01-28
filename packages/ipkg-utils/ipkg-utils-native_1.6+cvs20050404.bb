@@ -1,5 +1,6 @@
 include ipkg-utils_${PV}.bb
 
+RDEPENDS = ""
 PR = "r6"
 
 inherit native
