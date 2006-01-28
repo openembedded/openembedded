@@ -163,7 +163,6 @@ run_timer() {
 			echo -n "." >/dev/tty1
 			let cnt=$cnt+1
 		done
-		#umount /proc
 	else
 		launch_altboot=yes
 	fi
@@ -196,8 +195,7 @@ launch_selection() {
 		#echo "[$file]"
 				
 		. $1/$file run "$file" >/dev/tty0	
-		echo "WARNING: Using failsafe shell" >/dev/tty0	
-		exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1				
+		die "WARNING: Using failsafe shell" >/dev/tty0			
 		
 		;;	
 	esac
