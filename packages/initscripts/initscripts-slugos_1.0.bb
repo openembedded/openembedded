@@ -142,6 +142,7 @@ do_install_append() {
 	# busybox hwclock.sh (slugos-init) stops here (45)
 	# slugos file syslog stops here (47)
 	# slugos buffer syslog stops here (49)
+	# udev stops here (55)
 	# Remove any errant processes
 	update-rc.d -r ${D} sendsigs		start 60 0 6 .
 
