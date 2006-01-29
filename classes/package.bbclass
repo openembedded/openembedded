@@ -166,7 +166,12 @@ python populate_packages () {
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
 			if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1') and not os.path.islink(file) and isexec(file):
-				stripfunc += "${STRIP} %s || : ;\n" % fpath
+				if bb.data.getVar('IGNORE_STRIP_ERRORS', d, 1) != '1':
+					# bail out on errors
+					stripfunc += "file %s | grep -q 'not stripped' && ${STRIP} %s || return 1;\n" % (fpath, fpath)
+				else:
+					# old behaviour: ignore errors
+					stripfunc += "${STRIP} %s || : ;\n" % fpath
 			ret = bb.movefile(file,fpath)
 			if ret is None or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
