@@ -25,7 +25,7 @@ preserve	etc/.configured
 preserve	etc/TZ
 diff		etc/default/conffiles
 diff		etc/default/devpts
-diff		etc/default/rcS
+preserve	etc/default/rcS
 preserve	etc/default/sysconf
 diff		etc/default/usbd
 preserve	etc/defaultdomain

@@ -1,0 +1,780 @@
+#!/bin/sh
+# sysconf
+#
+# utility to manipulate system configuration information help
+# in a RedBoot SysConf partition
+#
+# load the utility functions (unless this is being called just
+# to load these functions!)
+test "$1" != sysconf && . /etc/default/functions
+
+#
+# sysconf_valid
+#  return true if the SysConf partition exists and seems to be
+#  potentially valid (it starts with a reasonable length).
+sysconf_valid(){
+	local sysdev
+	sysdev="$(mtblockdev SysConf)"
+	test -n "$sysdev" -a -b "$sysdev" &&
+		devio "<<$sysdev" '!! b.10>s32768<&!'
+}
+
+#
+# sysconf_read [prefix]
+#  read the SysConf partition (if present) writing the result into
+#  /etc/default/sysconf, if the result is empty it will be removed.
+sysconf_read(){
+	local sysdev sedcmd mac config_root
+	config_root="$1"
+	rm -f /tmp/sysconf.new
+	sysdev="$(mtblockdev SysConf)"
+	if sysconf_valid
+	then
+		# Read the defined part of SysConf into /etc/default/sysconf.
+		# SysConf has lines of two forms:
+		#
+		#  [section]
+		#  name=value
+		#
+		# In practice SysConf also contains other stuff, use the command:
+		#
+		#  devio '<</dev/mtd1;cpb'
+		#
+		# to examine the current settings.  The badly formatted stuff
+		# is removed (to be exact, the sed script selects only lines
+		# which match one of the two above).  The lan interface, which
+		# on NSLU2 defaults to ixp0, is changed to the correct value for
+		# slugos, eth0.  The bootproto, which LinkSys sets to static in
+		# manufacturing, is reset to dhcp if the IP is still the
+		# original (192.168.1.77)
+		sedcmd='/^\[[^][]*\]$/p;'
+		# only do the ip_addr and lan_interface fixups on NSLU2
+		if test "$(machine)" = nslu2
+		then
+			sedcmd="$sedcmd"'
+				s/^lan_interface=ixp0$/lan_interface=eth0/;
+				/^ip_addr=192\.168\.1\.77$/,/^bootproto/s/^bootproto=static$/bootproto=dhcp/;'
+		fi
+		# always fix up the hardware addr if it is present
+		mac="$(config mac)"
+		if test -n "$mac"
+		then
+			sedcmd="$sedcmd"'
+				s/^hw_addr=.*$/hw_addr='"$mac"'/;'
+		fi
+		# and only print lines of the correct form
+		sedcmd="$sedcmd"'
+			/^[-a-zA-Z0-9_][-a-zA-Z0-9_]*=/p'
+
+		devio "<<$sysdev" cpb fb1,10 | sed -n "$sedcmd" >/tmp/sysconf.new
+	fi
+	#
+	# test the result - sysconf must be non-empty
+	if test -s /tmp/sysconf.new
+	then
+		mv /tmp/sysconf.new "$config_root/etc/default/sysconf"
+	else
+		rm -f /tmp/sysconf.new
+		return 1
+	fi
+}
+
+#
+# sysconf_default [prefix]
+#  Provde a default /etc/default/sysconf when there is no SysConf partition,
+#  or when it is invalid, this function will read from an existing sysconf,
+#  copying the values into the new one.
+# sysconf_line tag config-tag
+#  write an appropriate line if the config value is non-empty
+sysconf_line(){
+	config "$2" | {
+		local value
+		read value
+		test -n "$value" && echo "$1"="$value"
+	}
+}
+#
+sysconf_default(){
+	local config_root
+	config_root="$1"
+	{	echo '[network]'
+		sysconf_line hw_addr mac
+		sysconf_line disk_server_name host
+		sysconf_line w_d_name domain
+		sysconf_line lan_interface iface
+		sysconf_line ip_addr ip
+		sysconf_line netmask netmask
+		sysconf_line gateway gateway
+		sysconf_line dns_server1 dns
+		sysconf_line dns_server2 dns2
+		sysconf_line dns_server3 dns3
+		sysconf_line bootproto boot
+	} >/tmp/sysconf.new
+	mv /tmp/sysconf.new "$config_root/etc/default/sysconf"
+}
+
+#
+# sysconf_reload [prefix]
+#  read the values from /etc/default/sysconf and use these values to set
+#  up the following system files:
+#
+#   /etc/hostname
+#   /etc/defaultdomain
+#   /etc/resolv.conf
+#   /etc/network/interfaces
+#   /etc/motd
+#
+sysconf_reload(){
+	local config_root host domain iface boot ip netmask gateway ifname iftype
+	config_root="$1"
+	host="$(config host)"
+	test -n "$host" && echo "$host" >"$config_root/etc/hostname"
+	domain="$(config domain)"
+	test -n "$domain" && echo "$domain" >"$config_root/etc/defaultdomain"
+	#
+	# The DNS server information gives up to three nameservers,
+	# but this currently only binds in the first.
+	{
+		test -n "$domain" && echo "search $domain"
+		test -n "$(config dns)" && echo "nameserver $(config dns)"
+		test -n "$(config dns2)" && echo "nameserver $(config dns2)"
+		test -n "$(config dns3)" && echo "nameserver $(config dns3)"
+	} >"$config_root/etc/resolv.conf"
+	#
+	# Ethernet information.  This goes into /etc/network/interfaces,
+	# however this is only used for static setup (and this is not
+	# the default).  With dhcp the slugos udhcp script,
+	# /etc/udhcpc.d/50default, loads the values from sysconf.
+	iface="$(config iface)"
+	boot="$(config boot)"
+	# Only dhcp and static are supported at present - bootp
+	# support requires installation of appropriate packages
+	# dhcp is the fail-safe
+	case "$boot" in
+	dhcp|static) ;;
+	*) boot=dhcp;;
+	esac
+	#
+	ip="$(config ip)"
+	netmask="$(config netmask)"
+	gateway="$(config gateway)"
+	{
+		echo "# /etc/network/interfaces"
+		echo "# configuration file for ifup(8), ifdown(8)"
+		echo "#"
+		echo "# The loopback interface"
+		echo "auto lo"
+		echo "iface lo inet loopback"
+		echo "#"
+		echo "# The interface used by default during boot"
+		echo "auto $iface"
+		echo "# Automatically generated from /etc/default/sysconf"
+		echo "# address, netmask and gateway are ignored for 'dhcp'"
+		echo "# but required for 'static'"
+		echo "iface $iface inet $boot"
+		# The following are ignored for DHCP but are harmless
+		test -n "$ip"      && echo "	address $ip"
+		test -n "$netmask" && echo "	netmask $netmask"
+		test -n "$gateway" && echo "	gateway $gateway"
+		#
+		# Now read all the other ARPHRD_ETHER (type=1) interfaces
+		# and add an entry for each.
+		for ifname in $(test -d /sys/class/net && ls /sys/class/net)
+		do
+			if test -r "/sys/class/net/$ifname/type" -a "$ifname" != "$iface"
+			then
+				read iftype <"/sys/class/net/$ifname/type"
+				case "$iftype" in
+				1)	echo "#"
+					echo "# /sys/class/net/$ifname:"
+					echo "auto $ifname"
+					echo "iface $ifname inet dhcp";;
+				esac
+			fi
+		done
+	} >"$config_root/etc/network/interfaces"
+	#
+	# Finally rewrite /etc/motd
+	{	echo "Host name:           $host"
+		echo "Domain name:         $domain"
+		echo "Host MAC:            $(config mac)"
+		echo "Network boot method: $boot"
+		case "$boot" in
+		static) echo "Host IP address:     $ip";;
+		esac
+		echo "Use 'turnup init' to reset the configuration"
+		echo "Use 'turnup preserve' to save the configuration permanently"
+		echo "Use 'turnup restore' to restore a previously saved configuration"
+		echo "Use 'turnup disk|nfs -i <device> options to initialise a non-flash root"
+		echo "Use 'turnup help' for more information"
+	} >"$config_root/etc/motd"
+}
+
+#
+# sysconf_save_conffiles <flash-directory> <dest> <list>
+#  preserve the configuration files in a directory or in a CPIO archive
+#  (which is *not* compressed).  If <dest> is a directory the files are
+#  copied, otherwise a CPIO archive is made with that name.  <list> is
+#  the listing file giving the preserved files and the processing option.
+sysconf_save_conffiles(){
+	local ffsdir dest list file
+	ffsdir="$1"
+	saved="$2"
+	list="$3"
+	test -n "$ffsdir" -a -r "$ffsdir/etc/default/conffiles" -a -n "$saved" -a -n "$list" || {
+		echo "sysconf_save_conffiles: invalid arguments: '$*'" >&2
+		echo " usage sysconf_save_conffiles <flash-directory> <dest> <list>" >&2
+		return 1
+	}
+	#
+	(	cd "$ffsdir"
+		find etc/*.conf $(sed 's!^/!!' usr/lib/ipkg/info/*.conffiles) ! -type d -newer etc/.configured -print |
+			sed 's/^/diff /'
+		exec sed 's/#.*$//;/^[ 	]*$/d' etc/default/conffiles
+	) | sed 's!^/*!!' |
+	awk '{ op=$1; $1=""; file[$0]=op }
+		END{ for (f in file) if (file[f] != "ignore") print file[f] f }' |
+	while read op file
+	do
+		if test -e "$ffsdir/$file"
+		then
+			echo "$op $file" >&3
+			echo "$file"
+		fi
+	done 3>"$list" | (
+		cd "$ffsdir"
+		if test -d "$saved"
+		then
+			exec cpio -p -d -m -u "$saved"
+		else
+			exec cpio -o -H crc >"$saved"
+		fi
+	)
+}
+
+#
+# sysconf_verify file
+#  this is called with the name of a 'diff' file which is, indeed,
+#  different and with all the std streams connected to the tty.  It
+#  returns a status code to say whether (0) or not (1) to copy the
+#  file over.
+#
+# globals: the following must be defined in the calling context!
+#  saved:  the directory containing the unpacked saved files
+#  ffsdir: the flash directory to which the files are being restored (/)
+#
+sysconf_verify_help() {
+	echo "Please specify how to handle this file or link, the options are as follows,"
+	echo "two character abbreviations may be used:"
+	echo
+	echo " keep:    retain the old file, overwrite the new flash image file"
+	echo " upgrade: retain the new file, the old (saved) file is not used"
+	echo " diff:    display the differences between the old and the new using diff -u"
+	echo " shell:   temporarily start an interactive shell (sh -i), exit to continue"
+	echo " skip:    ignore this file for the moment.  The file is left in the directory"
+	echo "          $saved and many be handled after this script has completed"
+}
+#
+sysconf_verify() {
+	local command file
+
+	# return 1 here causes the file not to be overwritten,
+	# control should never get here!
+	test -n "$sysconf_noninteractive" && {
+		echo "$0: $*: changed file cannot be handled non-interactively" >&2
+		return 1
+	}
+
+	file="$1"
+	echo "$0: $file: configuration file changed."
+	sysconf_verify_help "$file"
+	while :
+	do
+		echo -n "option: "
+		read command
+		case "$command" in
+		ke*)	return 0;;
+		up*)	rm "$saved/$file"
+			return 1;;
+		di*)	echo "DIFF OLD($saved) NEW($ffsdir)"
+			diff -u "$saved/$file" "$ffsdir/$file";;
+		sh*)	PS1="$file: " sh -i;;
+		sk*)	return 1;;
+		*)	sysconf_verify_help "$file";;
+		esac
+	done
+}
+# the same, but for a link
+sysconf_verify_link() {
+	local command link
+
+	# return 1 here causes the file not to be overwritten,
+	# control should never get here!
+	test -n "$sysconf_noninteractive" && {
+		echo "$0: $*: changed link cannot be handled non-interactively" >&2
+		return 1
+	}
+
+	link="$1"
+	echo "reflash: $link: configuration link changed."
+	sysconf_verify_help "$link"
+	while :
+	do
+		echo -n "option: "
+		read command
+		case "$command" in
+		ke*)	return 0;;
+		up*)	rm "$saved/$link"
+			return 1;;
+		di*)	echo "DIFF:"
+			echo "OLD($saved): $link -> $(readlink "$saved/$link")"
+			echo "NEW($ffsdir): $link -> $(readlink "$ffsdir/$link")";;
+		sh*)	PS1="$link: " sh -i;;
+		sk*)	return 1;;
+		*)	sysconf_verify_help "$link";;
+		esac
+	done
+}
+
+#
+# sysconf_restore_conffiles <flash-directory> <source-dir> <restore>
+#  restore the configuration files from a directory.  'source-dir'
+#  If <source> is a directory of files from sysconf_save_conffiles.  The
+#  list of files restored is written to the third argument (restore),
+#  but is not required (/dev/null would be ok).
+#
+#  the list of files to restore is read from stdin, along with the
+#  processing option for each file (the format is as produced by
+#  sysconf_save_conffiles in the 'list' output).
+sysconf_restore_conffiles(){
+	local ffsdir saved restore
+	# these are the globals used by the above function
+	ffsdir="$1"
+	saved="$2"
+	restore="$3"
+	test -n "$ffsdir" -a -r "$ffsdir/etc/default/conffiles" -a -d "$saved" -a -n "$restore" || {
+		echo "restore_conffiles: invalid arguments: '$*'" >&2
+		echo " usage sysconf_restore_conffiles <flash-directory> <source-dir> <list>" >&2
+		return 1
+	}
+	#
+	# read the list and process each given file
+	while read op file
+	do
+		# handle .configured specially (to preserve the original datestamp)
+		if test "$file" = "etc/.configured"
+		then
+			# this should definately not fail because of the test above!
+			if cp -a "$saved/$file" "$ffsdir/$file"
+			then
+				echo "$file" >&3
+			else
+				echo "sysconf_restore_conffiles: $file: timestamp copy failed (ignored)" >&2
+			fi
+		elif test -h "$saved/file" -o -h "$ffsdir/$file"
+		then
+			# new or old symbolic link
+			if test -h "$saved/$file" -a -h "$ffsdir/$file" &&
+				test "$(readlink "$saved/$file")" = "$(readlink "$ffsdir/$file")"
+			then
+				# no change
+				echo "$file" >&3
+			else
+				# assume a change regardless
+				case "$op" in
+				preserve)
+					echo "$file"
+					echo "$file" >&3;;
+				diff)	# need user input
+					if sysconf_verify_link "$file" <>/dev/tty >&0 2>&0
+					then
+						echo "$file"
+						echo "$file" >&3
+					fi;;
+				esac
+			fi
+		else
+			# only overwrite if necessary
+			if test -e "$ffsdir/$file" && cmp -s "$saved/$file" "$ffsdir/$file"
+			then
+				# do not overwrite
+				echo "$file" >&3
+			elif test ! -e "$ffsdir/$file"
+			then
+				# always preserve
+				echo "$file"
+				echo "$file" >&3
+			else
+				case "$op" in
+				preserve)
+					echo "$file"
+					echo "$file" >&3;;
+				diff)	# the files are different, get user input
+					if sysconf_verify "$file" <>/dev/tty >&0 2>&0
+					then
+						echo "$file"
+						echo "$file" >&3
+					fi;;
+				esac
+			fi
+		fi
+	done 3>"$restore" | (cd "$saved"; exec cpio -p -d -u "$ffsdir")
+}
+
+#
+# sysconf_test_restore <flash-directory> <source-dir>
+#  return true only if the restore does not need to do an interactive
+#  compare
+sysconf_test_restore(){
+	local ffsdir saved
+	# these are the globals used by the above function
+	ffsdir="$1"
+	saved="$2"
+	# this is an error case, but return 0 so that the error is
+	# detected later
+	test -n "$ffsdir" -a -r "$ffsdir/etc/default/conffiles" -a -d "$saved" ||
+		return 0
+	#
+	# read the list and check each diff file (this is just a copy of the
+	# logic above with all the work removed!)
+	while read op file
+	do
+		# handle .configured specially (to preserve the original datestamp)
+		if test "$op" != diff
+		then
+			: # no diff required
+		elif test "$file" = "etc/.configured"
+		then
+			: # special handling
+		elif test -h "$saved/file" -o -h "$ffsdir/$file"
+		then
+			# new or old symbolic link
+			if test -h "$saved/$file" -a -h "$ffsdir/$file" &&
+				test "$(readlink "$saved/$file")" = "$(readlink "$ffsdir/$file")"
+			then
+				: # no change
+			else
+				# assume a change regardless
+				return 1
+			fi
+		else
+			# only overwrite if necessary
+			if test -e "$ffsdir/$file" && cmp -s "$saved/$file" "$ffsdir/$file"
+			then
+				: # do not overwrite
+			elif test ! -e "$ffsdir/$file"
+			then
+				: # always preserve
+			else
+				# a change
+				return 1
+			fi
+		fi
+	done
+
+	return 0
+}
+
+#
+# sysconf_save
+#  save the system configuration to SysConf - SysConf must exist and
+#  there must be a writeable device for it.
+sysconf_save(){
+	local sysdev ffspart ffsdev ffsdir saved list size status
+	ffspart=Flashdisk
+	ffsdev="$(mtblockdev $ffspart)"
+	sysdev="$(mtblockdev SysConf)"
+	status=1
+	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev"
+	then
+		# this will succeed silently if the flash device is on /
+		umountflash "$ffsdev" || exit 1
+		#
+		# Everything is umounted, now remount on a temporary directory.
+		ffsdir="/tmp/flashdisk.$$"
+		mkdir "$ffsdir" || {
+			echo "$0: $ffsdir: failed to create temporary directory" >&2
+			exit 1
+		}
+		#
+		mountflash "$ffsdev" "$ffsdir" -o ro || {
+			rmdir "$ffsdir"
+			exit 1
+		}
+		# need temporary files for the cpio output and the listing
+		saved=/tmp/cpio.$$
+		list=/tmp/preserve.$$
+		rm -rf "$saved" "$list"
+		sysconf_save_conffiles "$ffsdir" "$saved" "$list" || {
+			echo "$0: $saved: archive of saved configuration files failed" >&2
+			rm -rf "$saved"
+			rm "$list"
+			umount "$ffsdir" && rmdir "$ffsdir" ||
+				echo "$0: $ffsdir: temporary directory cleanup failed" >&2
+			return 1
+		}
+		# ignore the error in this case:
+		umount "$ffsdir" && rmdir "$ffsdir" ||
+			echo "$0: $ffsdir: temporary directory cleanup failed" >&2
+		#
+		# we now have:
+		#  /etc/default/sysconf	the basic config
+		#  /tmp/preserve.$$	the list of saved files
+		#  /tmp/cpio.$$		the CPIO archive of those files
+		#
+		# make one big file with the sysconf data followed by the
+		# compressed archive in /tmp/sysconf.$$
+		{	{	cat /etc/default/sysconf
+				echo '[preserve]'
+			} | sed -n '1,/^\[preserve\]^/p'
+			while read op file
+			do
+				echo "$op"="$file"
+			done <"$list"
+		} >/tmp/sysconf.$$
+		size="$(devio "<</tmp/sysconf.$$" 'pr$')"
+		gzip -9 <"$saved" >>/tmp/sysconf.$$
+		#
+		# more cleanup, then try to write the new sysconf to SysConf
+		# the format is a 4 byte big-endian length then the text data
+		# if the data won't fit exit with error code 7
+		rm "$saved" "$list"
+		devio -p "<</tmp/sysconf.$$" ">>$sysdev" '
+			$( $4+ # >
+			!! 7
+			$) 0
+			wb '"$size"',4
+			cp $'
+		case $? in
+		0)	echo " done" >&2
+			status=0;;
+		1)	echo " failed" >&2
+			echo " SysConf could not be written (no changes made)" >&2;;
+		3)	echo " failed" >&2
+			echo " SysConf partially written, you may want to reset it" >&2;;
+		7)	echo " failed" >&2
+			echo " SysConf is too small: $size bytes required" >&2
+			echo " No change made" >&2;;
+		*)	echo " failed" >&2
+			echo " Internal error writing SysConf" >&2;;
+		esac
+		#
+		rm -f /tmp/sysconf.$$
+	else
+		echo "sysconf save: SysConf or $ffspart partition not found" >&2
+		echo " A RedBoot partition named 'SysConf' must exist in the system" >&2
+		echo " flash memory for this command to work, and there must be a" >&2
+		echo " block device to access this partition (udev will normally" >&2
+		echo " create this automatically.  The flash partition contents must" >&2
+		echo " also be accessible in a partition called '$ffspart'" >&2
+		echo
+		echo " To create the SysConf partition use the 'fis create' command" >&2
+		echo " in the RedBoot boot loader, it is sufficient to make the" >&2
+		echo " partition one erase block in size unless you have substantially" >&2
+		echo " increased the size of the files listed in /etc/default/conffiles" >&2
+	fi
+
+	return $status
+}
+
+#
+# sysconf_restore [auto]
+#  restore previously saved configuration information from SysConf
+sysconf_restore_error(){
+	local root
+	root="$1"
+	shift
+	#       -------------------------------------------------------------------------------
+	{	echo "          WARNING: saved configuration files not restored"
+		test -n "$1" && echo "$*"
+		echo
+		echo "The configuration of this machine has been reinitialised using the values"
+		echo "from /etc/default/sysconf, however configuration files saved in the SysConf"
+		echo "partition have not been restored."
+		echo
+		echo "You can restore these files by correcting any reported errors then running"
+		echo
+		echo "  sysconf restore"
+		echo
+		echo "from the command line.  This will completely reinitialise the configuration"
+		echo "using the information in the SysConf partition."
+	} >"$root/etc/motd"
+	cat "$root/etc/motd" >&2
+}
+#
+sysconf_restore(){
+	local sysdev ffspart ffsdev ffsdir saved restore size status sysconf_noninteractive config_root
+
+	# if set this means 'do no diff' - this avoids the code above which
+	# would open /dev/tty and therefore allows this stuff to be done from
+	# an init script
+	sysconf_noninteractive=
+	test "$1" = auto && sysconf_noninteractive=1
+
+	ffspart=Flashdisk
+	ffsdev="$(mtblockdev $ffspart)"
+	sysdev="$(mtblockdev SysConf)"
+	status=1
+	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev" &&
+		sysconf_valid
+	then
+		# this will succeed silently if the flash device is on /
+		umountflash "$ffsdev" || exit 1
+		#
+		# Everything is umounted, now remount on a temporary directory.
+		ffsdir="/tmp/flashdisk.$$"
+		config_root="$ffsdir"
+		mkdir "$ffsdir" || {
+			echo "$0: $ffsdir: failed to create temporary directory" >&2
+			exit 1
+		}
+		#
+		mountflash "$ffsdev" "$ffsdir" || {
+			rmdir "$ffsdir"
+			exit 1
+		}
+		#
+		# first restore the SysConf section
+		sysconf_read "$ffsdir" || sysconf_default "$ffsdir"
+		#
+		# now use this to regenerate the system files
+		sysconf_reload "$ffsdir"
+		#
+		# now examine the [preserve] section, if it is there restore
+		# it if possible.
+		if test -n "$(syssection preserve)"
+		then
+			# 'saved' is a directory, 'restore' is a file (which is
+			# used to detect unrestored files).  The directory needs
+			# to be populated with files.
+			saved=/tmp/cpio.$$
+			restore=/tmp/restore.$$
+			rm -rf "$saved" "$restore"
+			#
+			mkdir "$saved" || {
+				sysconf_restore_error "$ffsdir" "$saved: failed to create temporary directory"
+				return 1
+			}
+			#
+			# the CPIO archive is gzip compressed after the text part
+			# of sysconf, gzip will handle the LZ stream termination
+			# correctly (and break the pipe) so we don't need to know
+			# the real length of the data
+			devio "<<$sysdev" '<=b4+.' 'cp $s-' | gunzip | (
+				cd "$saved"
+				exec cpio -i -d -m -u
+			) || {
+				rm -rf "$saved"
+				sysconf_restore_error "$ffsdir" "$saved: cpio -i failed"
+				return 1
+			}
+			# either there must be no 'diff' files or it must
+			# be possible to interact with a real user.
+			if test -z "$sysconf_noninteractive" ||
+				syssection preserve | sysconf_test_restore "$ffsdir" "$saved"
+			then
+				#
+				# remove the 'init' motd from sysconf_reload
+				rm "$ffsdir/etc/motd"
+				#
+				# now restore from the directory, using the information in
+				# the preserve section, if this fails in a non-interactive
+				# setting the system might not reboot
+				syssection preserve |
+					sysconf_restore_conffiles "$ffsdir" "$saved" "$restore" || {
+					# there is a chance of the user cleaning this up
+#------------------------------------------------------------------------------
+					sysconf_restore_error "$ffsdir" \
+"$0: $saved: restore of saved configuration files failed.
+  The flash file system is mounted on $ffsdir.
+  The saved files are in $saved and the list of files selected for
+  restore is in $restore.
+  You should restore any required configuration from $saved, then umount
+  $ffsdir and reboot."
+  						# this prevents cleanup/umount
+						return 1
+				}
+				#
+				# remove the copied files (i.e. the ones which were preserved)
+				(	cd "$saved"
+					exec rm $(cat "$restore")
+				)
+				rm "$restore"
+				#
+				# clean up, files left in $saved need to be handled by the user
+				files="$(find "$saved" ! -type d -print)"
+				if test -n "$files"
+				then
+#------------------------------------------------------------------------------
+					sysconf_restore_error "$ffsdir" \
+"$0: some saved configuration files have not been handled:
+
+$files
+
+These files can be examined in $saved and restored to
+$ffsdir if required.  The saved files are in a temporary
+directory and will not be retained across a reboot - copy then elsewhere if
+you are unsure whether they are needed."
+					return 1
+				fi
+				#
+				# so this is safe now (no files, links etc)
+				rm -rf "$saved"
+			else
+				rm -rf "$saved"
+				# non-interactive and some changed diff files
+				sysconf_restore_error "$ffsdir" \
+"$0: some of the saved configuration files must be
+examined before restoration"
+				# but continue to the umount
+			fi
+		fi
+		#
+		# ignore the error in this case:
+		umount "$ffsdir" && rmdir "$ffsdir" ||
+			echo "$0: $ffsdir: temporary directory cleanup failed" >&2
+		status=0
+	else
+		echo "sysconf restore: SysConf or $ffspart partition not found" >&2
+		echo " You must have used 'sysconf save' to save configuration data" >&2
+		echo " into the SysConf partition before using this command.  The command" >&2
+		echo " will restore the configuration data to the flash root partition" >&2
+		echo " named '$ffspart' - this must also be accessible." >&2
+	fi
+
+	return $status
+}
+
+#
+# sysconf_help
+#  help text
+sysconf_help(){
+	#     -------------------------------------------------------------------------------
+	echo "sysconf: usage: sysconf read|default|reload|save|restore" >&2
+	echo " read:    the current SysConf partition is read into /etc/default/sysconf" >&2
+	echo " default: a default /etc/default/sysconf is created" >&2
+	echo " reload:  system configuration files are recreated from /etc/default/sysconf" >&2
+	echo " save:    /etc/default/sysconf and the files listed in /etc/default/conffiles" >&2
+	echo "          are written to the SysConf partition" >&2
+	echo " restore: the configuration information in the SysConf partition saved by" >&2
+	echo "          'sysconf save' is restored" >&2
+}
+
+#
+# the real commands
+sysconf_command="$1"
+test $# -gt 0 && shift
+case "$sysconf_command" in
+read)	sysconf_read "$@";;
+default)sysconf_default "$@";;
+reload)	sysconf_reload "$@";;
+save)	sysconf_save "$@";;
+restore)sysconf_restore "$@";;
+valid)  sysconf_valid "$@";;
+
+sysconf)# just load the functions
+	;;
+
+*)	# help text
+	sysconf_help "$@";;
+esac

@@ -3,7 +3,8 @@
 # must be given) using options from the rest of
 # the command line.
 #
-/sbin/leds -A '!gr'
+. /etc/default/functions
+leds boot system
 #
 # Use the standard init path (see /etc/init.d/rcS)
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin

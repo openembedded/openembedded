@@ -6,14 +6,16 @@
 
 #
 # configuration
-#  The following variables control which directories in /var end up on the rootfs
-#  and which end up in a temporary file system.
+#  The following variables control which directories in /var end
+#  up on the rootfs and which end up in a temporary file system.
 INRAM_MEMSTICK="/var/cache /var/lock /var/log /var/run /var/tmp /var/lib/ipkg"
 INRAM_NFS="/var/cache /var/lock /var/run /var/tmp"
 INRAM_DISK=""
+
 #
 # force: override certain checks
 force=
+
 #
 # fstype new
 #  The type of the file system mounted on "new"  Outputs the last
@@ -31,6 +33,7 @@ fstype() {
 	done </proc/mounts
 	echo "$result"
 }
+
 #
 # fsoptions arguments
 #  Collapses the mount (-o) options into a single list which is
@@ -63,6 +66,7 @@ fsoptions() {
 		echo defaults
 	fi
 }
+
 #
 # get_flash <directory> {mount options}
 #  mount the flash device, writeable, on the given directory
@@ -80,6 +84,7 @@ get_flash() {
 	umountflash "$ffsdev" &&
 	mountflash "$ffsdev" "$ffsdir" "$@"
 }
+
 #
 # check_rootfs [-i] <root fs directory>
 #  Make sure the candidate rootfs is empty
@@ -107,6 +112,7 @@ check_rootfs() {
 		return 1;;
 	esac
 }
+
 #
 # copy_rootfs old new
 #  Make a copy of the given root file system, copying only the
@@ -185,8 +191,9 @@ setup_bootdev() {
 #  Populates /var.
 #  Removes the /var tmpfs entry from /etc/fstab.
 #  Creates links from /var into /media/ram for NFS and Memstick.
-
 setup_var() {
+	local ram_targets directory
+
 	test -n "$1" -a -d "$1"/var || {
 		echo "turnup: setup_var($1,$2): expected a directory" >&2
 		return 1
@@ -205,17 +212,17 @@ setup_var() {
 	}
 
 	case "$2" in
-	disk) RAMTARGETS=${INRAM_DISK};;
-	nfs) RAMTARGETS=${INRAM_NFS};;
-	memstick) RAMTARGETS=${INRAM_MEMSTICK};;
+	disk)	ram_targets="$INRAM_DISK";;
+	nfs)	ram_targets="$INRAM_NFS";;
+	memstick)
+		ram_targets="$INRAM_MEMSTICK";;
 	esac
 
-	for d in ${RAMTARGETS}; do
-	  RAMDIR="/media/ram${d}"
-	  REALDIR="${d}"
-	  rm -rf "${1}${REALDIR}"
-	  ln -s "${RAMDIR}" "${1}${REALDIR}"
-	  done
+	for directory in $ram_targets
+	do
+		rm -rf "$1/$directory"
+		ln -s "/media/ram/$directory" "$1/$directory"
+	done
 	# the startup link is left for the moment, this seems safer
 	#rm "$1"/etc/rc?.d/[KS]??populate-var.sh
 	# remove the /var tmpfs entry from the new /etc/fstab
@@ -306,7 +313,6 @@ setup_fstab() {
 		return 1
 	}
 }
-
 
 #
 # boot_rootfs <boot type> <flash file system> <sleep time> <device> [options]
@@ -655,95 +661,6 @@ nfs() {
 }
 
 #
-# fix_hw_addr
-#  Called when the configuration is invalid to reset /etc/default/sysconf
-fix_hw_addr() {
-	# first look on the flash disk (ideally this stuff would only
-	# be called from flash, but there is no way of guaranteeing that).
-	local ffsdev ffs mac name force
-
-	case "$1" in
-	-f)	force="$1";;
-	esac
-
-	ffsdev="$(mtblockdev Flashdisk)"
-	test -n "$ffsdev" -a -b "$ffsdev" || {
-		echo "turnup init: the flash file system device is missing" >&2
-		echo "  The device (typically /dev/mtdblock4) must exist and" >&2
-		echo "  it must identify a flash partition called 'Flashdisk'" >&2
-		echo "  It may be that the /dev directory has not been initialised." >&2
-		echo "  This script cannot correct this problem." >&2
-		return 1
-	}
-
-	test -x /etc/init.d/sysconfsetup || {
-		echo "turnup init: /etc/init.d/sysconfsetup: script not executable" >&2
-		echo "  or script not present.  turnup init requires this script to" >&2
-		echo "  exist to correct the initialisation" >&2
-		return 1
-	}
-
-	# use devio to find out if this *is* the flash disk.
-	ffs=
-	if test "$(devio "<<$ffsdev" prd)" -ne "$(devio '<</etc/init.d/sysconfsetup' prd)"
-	then
-		# this isn't the flash device
-		ffs="/tmp/flashdisk.$$"
-		# make sure we can get to the flash file system first
-		get_flash "$ffs" || {
-			rmdir "$ffs"
-			return 1
-		}
-
-		# copy if available
-		if test -r "$ffs/etc/default/sysconf"
-		then
-			cp "$ffs/etc/default/sysconf"
-			force=
-		fi
-
-		umount "$ffs"
-		rmdir "$ffs"
-	fi
-
-	# if the config is still not valid generate sysconf from the slug
-	# label.
-	config valid && test -z "$force" || {
-		mac=
-		until test -n "$mac"
-		do
-			echo "turnup init: please find the 'MAC Address' of your NSLU2" >&2
-			echo "  The required number is on a label on the bottom of the NSLU2" >&2
-			echo "  It will be something like 'LKG1A2B3C'" >&2
-			echo -n "Enter the mac address: " >/dev/tty
-			read name </dev/tty
-			case "$name" in
-			[Ll][Kk][Gg][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])
-				mac="$(echo "$name" |
-					sed -n 's/^...\(..\)\(..\)\(..\)$/00:0F:66:\1:\2:\3/p')";;
-			[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f])
-				mac="$name"
-				name=
-				;;
-			"")	return 1;;
-			*)	echo "$name: not recognised as a LinkSys mac address" >&2
-				echo "  Enter the LinkSys value or a full Ethernet MAC addrress" >&2
-				mac=;;
-			esac
-
-			# Now generate the correct sysconf
-			{	echo '[network]'
-				echo "hw_addr=$mac"
-				test -n "$name" && echo "default_server_name=$name"
-			} >/etc/default/sysconf
-		done
-	}
-
-	# the configuration should be valid now
-	/etc/init.d/sysconfsetup reload
-}
-
-#
 # read_one 'prompt' 'group' 'name'
 #  read a single value
 read_one() {
@@ -754,6 +671,7 @@ read_one() {
 	test -z "$n" && n="$o"
 	eval "$3='$n'"
 }
+
 #
 # init_network
 #  Change the network initialisation
@@ -803,7 +721,7 @@ init_network() {
 	} >/etc/default/sysconf
 	#
 	# And reload the result
-	/etc/init.d/sysconfsetup reload
+	sysconf reload
 	#
 	# The remove the spurious 'init' motd
 	rm /etc/motd
@@ -814,21 +732,14 @@ init_network() {
 # script which actually does anything!)
 case "$1" in
 init)	shift
-	if config valid && test "$1" != -f
+	if init_network "$@"
 	then
-		if init_network "$@"
-		then
-			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
-		else
-			exit 1
-		fi
+		echo "turnup init: you must reboot for the changes to take effect" >&2
+		echo " You may want to run 'turnup preserve' to save these settings," >&2
+		echo " after making any additional configuration changes which you" >&2
+		echo " require." >&2
 	else
-		if fix_hw_addr "$@"
-		then
-			echo "turnup init: you must reboot the NSLU2 for the changes to take effect" >&2
-		else
-			exit 1
-		fi
+		exit 1
 	fi;;
 disk)	shift
 	disk "$@";;
@@ -839,6 +750,12 @@ nfs)	shift
 	nfs "$@";;
 flash)	boot_reset flash;;
 ram)	boot_reset ram;;
+preserve)
+	shift
+	sysconf save "$@";;
+restore)
+	shift
+	sysconf restore "$@";;
 *)	echo "\
 usage: turnup command [options]
  commands:
@@ -848,7 +765,7 @@ usage: turnup command [options]
     correct errors in network information
     initialise network information when DHCP is not available
     change network information
-  disk [-i] [-s<seconds>] <device> [mount options]
+  disk [-i] [-s<seconds>] <device>|<uuid> [mount options]
     With -i make <device> a bootable file system then (with or
     without -i) arrange for the next reboot to use that device.
     The device must already be formatted as a file system, with
@@ -856,7 +773,7 @@ usage: turnup command [options]
     apparently bootable file system. -s (for example -s5)
     specifies a delay in seconds to wait at boot time before
     mounting the device.
-  memstick [-i] <device> [mount options]
+  memstick [-i] <device>|<uuid> [mount options]
     Behaves as disk however options appropriate to a flash memory
     stick are automatically added
   nfs [-i] <nfs mount path> [mount options]
@@ -875,6 +792,14 @@ usage: turnup command [options]
   ram
     Boot (once) into a ramdisk, subsequent boots will be to
     the flash file system.
+  preserve
+    Save the system configuration to the SysConf partition, you
+    will need to create the SysConf partition from the boot loader
+    before using this if SysConf does not already exist.  This
+    just runs 'sysconf save'.
+  restore
+    Restore a previously saved system configuration.  This just
+    runs 'sysconf restore'.
  disk formatting:
   The argument to 'nfs' or 'disk' must be an empty partition
   of sufficient size to hold the root file system (at least

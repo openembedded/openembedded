@@ -1,0 +1,214 @@
+#!/bin/sh
+# leds
+#
+# utilities to manipulate the settings of the system leds
+#
+# load the utility functions unless this script is being called
+# just to load its own functions.
+test "$1" != leds && {
+	. /etc/default/rcS
+	. /etc/default/functions
+}
+
+#
+# led_set led-dir off|on|slow|fast|panic|blink|flash|user|*
+#  set the given LED (expressed as a directory) to the 
+#  given status.  USER_LED may be set to indicate how to
+#  handle the 'user' setting.
+led_user_default(){
+	case "$(machine)" in
+	nslu2)	echo -n "cpu-idle";;
+	*)	echo -n "cpu-activity";;
+	esac
+}
+#
+led_set(){
+	local setting
+	# expect led-dir state
+	if test -d "$1"
+	then
+		setting="$2"
+		case "$setting" in
+		user)	if test -n "$USER_LED"
+			then
+				setting="$USER_LED"
+			else
+				setting="$(led_user_default)"
+			fi;;
+		esac
+
+		case "$setting" in
+		off|on)		echo -n none
+
+				case "$setting" in
+				on)	echo -n 100;;
+				off)	echo -n 0;;
+				esac >"$1/brightness";;
+
+		slow|fast|panic|blink|flash)
+				echo -n timer
+
+				case "$setting" in
+				flash)	echo -n 727;;
+				blink)	echo -n 72;;
+				slow)	echo -n 400;;
+				fast)	echo -n 100;;
+				panic)	echo -n 50;;
+				esac >"$1/frequency"
+
+				case "$setting" in
+				flash)	echo -n 10;;
+				blink)	echo -n 1000;;
+				*)	echo -n 100;;
+				esac >"$1/duty_cycle";;
+
+		cpu-idle)	echo -n cpu-idle
+				# these settings work well on NSLU2
+				echo -n 80 >"$1/frequency"
+				echo -n 10 >"$1/duty_cycle";;
+
+		*)		echo -n "$setting";;
+		esac >"$1/trigger"
+	else
+		echo "leds: $1: no such directory" >&2
+		return 1
+	fi
+}
+
+#
+# sysled [boot] system|user|singleuser|shutdown [error|panic|*]
+#  set the system LEDs to indicate the given boot state, the function
+#  will temporarily mount sysfs is necessary (using /mnt)
+#
+# the cases for two LEDs (ready+status)
+sysled_readystatus(){
+	local ready status
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	ready=fast;	status=off;;
+	panic)	ready=fast;	status=fast;;
+	*)	case "$2" in
+		bootsystem)	ready=slow;	status=slow;;
+		system)		ready=on;	status=on;;
+		bootuser)	ready=on;	status=slow;;
+		user)		ready=user;	status=off;;
+		bootsingleuser)	ready=on;	status=slow;;
+		singleuser)	ready=user;	status=user;;
+		bootshutdown)	ready=on;	status=slow;;
+		shutdown)	ready=slow;	status=on;;
+		esac;;
+	esac
+
+	led_set "$1/ready" "$ready"
+	led_set "$1/status" "$status"
+}
+#
+# the cases for one LED (just ready)
+sysled_ready(){
+	local ready
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	ready=fast;;
+	panic)	ready=panic;;
+	*)	case "$2" in
+		bootsystem)	ready=flash;;
+		system)		ready=blink;;
+		bootuser)	ready=slow;;
+		user)		ready=user;;
+		bootsingleuser)	ready=flash;;
+		singleuser)	ready=blink;;
+		bootshutdown)	ready=slow;;
+		shutdown)	ready=blink;;
+		esac;;
+	esac
+
+	led_set "$1/ready" "$ready"
+}
+#
+sysled(){
+	local mp st boot isst
+	mp=/sys
+	st=1
+	boot=
+
+	# validate arguments
+	if test "$1" = boot
+	then
+		shift
+		boot=boot
+	fi
+	case "$1" in
+	system|user|singleuser|shutdown) :;;
+	*)	echo "sysled: unknown option '$1'" >&2
+		echo " usage: sysled [boot] system|user|singleuser|shutdown [error|panic|*]" >&2
+		return 1;;
+	esac
+
+	if test ! -d "$mp/class/leds" && mount -t sysfs sysfs /mnt
+	then
+		mp=/mnt
+	fi
+	#
+	# check for the 'ready' LED - otherwise do nothing
+	if test -d "$mp/class/leds/ready"
+	then
+		if test -d "$mp/class/leds/status"
+		then
+			sysled_readystatus "$mp/class/leds" $boot"$@"
+		else
+			sysled_ready "$mp/class/leds" $boot"$@"
+		fi
+	fi
+	#
+	# clean up
+	test "$mp" = /mnt && umount /mnt
+	return "$st"
+}
+
+#
+# beep [double]
+#  emit a beep, or a double beep
+#  dummy - at present does  nothing
+beep(){
+	return 0
+}
+
+#
+# leds_help
+#  be helpful
+# leds <led> off|on|slow|fast|panic|blink|flash|user|*
+# leds [boot] system|user|singleuser|shutdown [error|panic|*]
+leds_help(){
+	echo "leds: change the setting of the LEDs" >&2
+	echo " usage:" >&2
+	echo "  leds [boot] system|user|singleuser|shutdown [error|panic|*]" >&2
+	echo "    set leds during system boot to indicate a particular boot" >&2
+	echo "    state.  'boot' means that the system is transitioning to" >&2
+	echo "    the new state.  'error' or 'panic' means a (potentially)" >&2
+	echo "    recoverable error or an unrecoverable error ('panic') has" >&2
+	echo "    occured." >&2
+	echo "  <led> off|on|slow|fast|panic|blink|flash|user|*" >&2
+	echo "    set the named led to the given display, an arbitrary led" >&2
+	echo "    trigger may be given.  'user' will use the default specified" >&2
+	echo "    in USER_LED from /etc/default/rcS, if not specified a cpu" >&2
+	echo "    activity setting appropriate to the machine is selected" >&2
+	echo "  beep [double]" >&2
+	echo "    if possible cause the machine to emit a beep" >&2
+}
+
+#
+# the real command, if required
+case "$1" in
+boot|system|user|singleuser|shutdown)
+	sysled "$@";;
+
+beep)	beep "$@";;
+
+"")	leds_help;;
+help)	leds_help;;
+
+leds)	# just load the functions
+	;;
+
+*)	led_set /sys/class/leds/"$@"
+esac

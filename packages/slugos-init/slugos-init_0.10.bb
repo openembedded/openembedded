@@ -1,12 +1,12 @@
 DESCRIPTION = "SlugOS initial network config via sysconf"
-SECTION = "console/network"
+SECTION = "base"
+PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r48"
+PR = "r49"
 
-SRC_URI = "file://linuxrc \
-	   file://boot/flash \
+SRC_URI = "file://boot/flash \
 	   file://boot/disk \
 	   file://boot/nfs \
 	   file://boot/ram \
@@ -22,6 +22,8 @@ SRC_URI = "file://linuxrc \
 	   file://initscripts/umountinitrd.sh \
 	   file://functions \
 	   file://conffiles \
+	   file://sysconf \
+	   file://leds \
 	   file://turnup \
 	   file://reflash \
 	   file://links.conf \
@@ -30,7 +32,7 @@ SRC_URI = "file://linuxrc \
 SBINPROGS = ""
 USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
-SCRIPTS = "turnup reflash"
+SCRIPTS = "turnup reflash leds sysconf"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
 	leds_startup rmrecovery sysconfsetup umountinitrd.sh"
@@ -78,7 +80,7 @@ do_install() {
 	# Shell scripts
 	for p in ${SCRIPTS}
 	do
-		install -m 0755 $p ${D}${sbindir}/$p
+		install -m 0755 $p ${D}${base_sbindir}/$p
 	done
 
 	#
@@ -122,7 +124,7 @@ pkg_postinst_slugos-init() {
 	update-rc.d $opt sysconfsetup		start 12 S .
 	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .
 	update-rc.d $opt syslog.network		start 44 S . start 39 0 6 .
-	update-rc.d $opt zleds			start 99 S 1 2 3 4 5 . stop  5 0 1 2 3 4 5 6 .
+	update-rc.d $opt zleds			start 99 S 1 2 3 4 5 . start 89 0 6 . stop  5 0 1 2 3 4 5 6 .
 	update-rc.d $opt rmrecovery             start 99 1 2 3 4 5 .
 	# bug fix for startup
 	update-rc.d $opt leds_startup		start  1 1 2 3 4 5 .

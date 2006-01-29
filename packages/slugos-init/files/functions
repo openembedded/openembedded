@@ -1,4 +1,40 @@
+#!/bin/sh
 # . this file to load the following utility functions
+#
+# hardware
+#  the 'Hardware' string from cpuinfo
+hardware(){
+	sed -n 's!^Hardware	*: !!p' /proc/cpuinfo
+}
+#
+# machine
+#  outputs an identifier of the current machine - i.e. the board
+#  slugos is running on.
+machine(){
+	case "$(hardware)" in
+	*Coyote*)	echo coyote;;
+	*IXDPG425*)	echo ixdpg425;;
+	*WRV54G*)	echo wrv54g;;
+	*IXDP425*)	echo ixdp425;;
+	*IXDP465*)	echo ixdp465;;
+	*IXCDP1100*)	echo ixcdp1100*;;
+	*Avila*)	echo avila;;
+	*Loft*)		echo loft;;
+	*NAS?100d*)	echo nas100d;;
+	*NSLU2*)	echo nslu2;;
+	*)		echo unknown;;
+	esac
+}
+#
+# load_functions "source"
+#  load the functions in '/sbin/source' - relies on /sbin/source being
+#  a shell script and having support for this function.
+load_functions(){
+	test -n "$1" -a -x "/sbin/$1" && . "/sbin/$1" || {
+		echo "$0: /sbin/$1: script not found" >&2
+		return 1
+	}
+}
 #
 # mtdev "name"
 #  return (output) the character device name for flash parition "name"
@@ -27,90 +63,81 @@ mtsize(){
 # sysvalof "section" "name" "configuration file"
 # sysval "section" "name"
 #  outputs the value of the SysConf variable 'name' from section 'section',
-#  this is a bit gross, when it gets a match it copies the value to the
-#  hold space, if no match it jumps over the copy, at the end ($) it copies
-#  the hold space to the pattern space and prints the result, thus it only
-#  ever prints the last match
-# BUG FIX: busybox sed doesn't initialise the hold space and crashes if it
-#  is used before initialisation, so temporarily this script does it's own
-#  tail by hand.
+#  if there are multiple definitions only the last is output
 # NOTE: these functions should only be used internally, add entries to 'config'
-#  below if necessary.  This is because 'config' does the defaulting and in the
-#  recovering case (zero or absent SysConf) /etc/default/sysconf only contains
-#  the hw_addr entry!
+#  below if necessary.  This is because 'config' does the defaulting.
 sysvalmatch(){
-	# sed -n '/^\['"$1"'\]$/,/^\[.*\]$/s/^'"$2"'=\('"$3"'\)$/\1/;tH;bE;:H;h;:E;$g;$p' "$4"
 	sed -n '/^\['"$1"'\]$/,/^\[.*\]$/s/^'"$2"'=\('"$3"'\)$/\1/p' "$4" | sed -n '$p'
 }
 sysvalof(){
 	sysvalmatch "$1" "$2" '.*' "$3"
 }
 sysval(){
-	sysvalof "$1" "$2" /etc/default/sysconf
+	test -r "$config_root/etc/default/sysconf" &&
+		sysvalof "$1" "$2" "$config_root/etc/default/sysconf"
+}
+#
+# syssection "section"
+#  outputs all the values from the given section changed to the format "name value"
+#  (i.e. the '=' is dropped).
+syssection(){
+	test -r "$config_root/etc/default/sysconf" &&
+		sed -n '/^\['"$1"'\]$/,/^\[.*\]$/s/^\([^=]*\)=\(.*\)$/\1 \2/p' "$config_root/etc/default/sysconf"
 }
 #
 # config "value"
 #  convenience callers for specific values to avoid mis-typing in scripts
-#  NOTE: this function does the defaulting, 'sysval' does not!  Validity
-#  of the sysconf file is determined by the presence of the all important
-#  hw_addr.
+#  NOTE: this function does the defaulting, 'sysval' does not!
+# config_root: if set this will override the root where config/sysval
+#              looks for /etc/default/sysconf
 config(){
 	local mac
-	mac=
-	test -r /etc/default/sysconf &&
-		mac="$(sysvalmatch network hw_addr '[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]' /etc/default/sysconf)"
-	if test -n "$mac"
-	then
-		case "$1" in
-		mac)	echo "$mac";;
-		host)	if test -n "$(sysval network disk_server_name)"
-			then
-				sysval network disk_server_name
-			elif test -n "$(sysval network default_server_name)"
-			then
-				sysval network default_server_name
-			else
-				echo "$mac" | sed -n 's/^..:..:..:\(..\):\(..\):\(..\)$/LKG\1\2\3/p'
-			fi;;
-		domain)	sysval network w_d_name;;
-		iface)  if test -n "$(sysval network lan_interface)"
-			then
-				sysval network lan_interface
-			else
-				echo eth0
-			fi;;
-		ip)	if test -n "$(sysval network ip_addr)"
-			then
-				sysval network ip_addr
-			else
-				echo 192.168.1.77
-			fi;;
-		netmask)sysval network netmask;;
-		gateway)sysval network gateway;;
-		dns)	sysval network dns_server1;;
-		dns2)	sysval network dns_server2;;
-		dns3)	sysval network dns_server3;;
-		boot)	if test -n "$(sysval network bootproto)"
-			then
-				sysval network bootproto
-			else
-				echo dhcp
-			fi;;
-		valid)	return 0;;
-		*)	return 1;;
-		esac
-	else
-		# These are the defaults for an invalid mac address, use the compiled
-		# in hardware address.
-		case "$1" in
-		mac)	echo "00:02:B3:02:02:01";;
-		host)	echo "brokenslug";;
-		iface)  echo eth0;;
-		ip)	echo 192.168.1.77;;
-		boot)	echo dhcp;;
-		*)	return 1;;
-		esac
-	fi
+	mac="$(test -r /proc/net/maclist &&
+		sed -n '/^[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]:[0-9A-Za-z][0-9A-Za-z]$/p' /proc/net/maclist |
+		sed -n 1p)"
+	#
+	case "$1" in
+	mac)	test -n "$mac" && echo "$mac";;
+	host)	if test -n "$(sysval network disk_server_name)"
+		then
+			sysval network disk_server_name
+		elif test -n "$(sysval network default_server_name)"
+		then
+			sysval network default_server_name
+		elif test -n "$mac"
+		then
+			echo "$mac" | sed -n 's/^\(..\):\(..\):\(..\):\(..\):\(..\):\(..\)$/slug\1\2\3\4\5\6/p'
+		else
+			# because we want the name to remain constant:
+			echo "brokenslug"
+		fi;;
+	domain)	sysval network w_d_name;;
+	iface)  if test -n "$(sysval network lan_interface)"
+		then
+			sysval network lan_interface
+		else
+			echo eth0
+		fi;;
+	ip)	if test -n "$(sysval network ip_addr)"
+		then
+			sysval network ip_addr
+		else
+			echo 192.168.1.77
+		fi;;
+	netmask)sysval network netmask;;
+	gateway)sysval network gateway;;
+	dns)	sysval network dns_server1;;
+	dns2)	sysval network dns_server2;;
+	dns3)	sysval network dns_server3;;
+	boot)	if test -n "$(sysval network bootproto)"
+		then
+			sysval network bootproto
+		else
+			echo dhcp
+		fi;;
+	valid)	test -r "$config_root/etc/default/sysconf" -a -n "$mac";;
+	*)	return 1;;
+	esac
 }
 #
 # checkif "iface"
@@ -130,11 +157,13 @@ checkmount(){
 	# basic test for init (the kernel will try to load this)
 	# but require a shell in bin/sh and no .recovery too
 	test	\( ! -f "$1/.recovery" \) -a \
-		\( -d "$1/initrd" -o -d "$1/mnt" \) -a \
+		\( -d "$1/mnt" \) -a \
 		\( -x "$1/bin/sh" -o -h "$1/bin/sh" \) -a \
+		\( -x "$1/usr/sbin/chroot" -o -h "$1/usr/sbin/chroot" -o \
+		   -x "$1/sbin/chroot" -o -h "$1/sbin/chroot" \) -a \
 		\( -x "$1/sbin/init" -o -h "$1/sbin/init" -o \
-		-x "$1/etc/init" -o -h "$1/etc/init" -o \
-		-x "$1/bin/init" -o -h "$1/bin/init" \)
+		   -x "$1/etc/init" -o -h "$1/etc/init" -o \
+		   -x "$1/bin/init" -o -h "$1/bin/init" \)
 }
 #
 # swivel "new root" "old root"
@@ -147,7 +176,7 @@ checkmount(){
 #  Normally this function never returns!
 #  On return 0,1,2 are connected to /dev/console - this may not
 #  have been true before!
-swivel() {
+swivel(){
 	cd "$1"
 	exec <&- >&- 2>&-
 	# This is just-in-case the called mounted /proc and was
@@ -169,11 +198,26 @@ swivel() {
 		# linux / is already . when the command is executed
 		# therefore it is essential to use the local (new root)
 		# chroot to ensure it gets the correct shared libraries.
-		exec usr/sbin/chroot . bin/sh -c "\
+		if test -x usr/sbin/chroot -o -h usr/sbin/chroot
+		then
+			chroot=usr/sbin/chroot
+		elif test -x sbin/chroot -o -h sbin/chroot
+		then
+			chroot=sbin/chroot
+		else
+			chroot=chroot
+		fi
+		#
+		exec "$chroot" . bin/sh -c "\
 			test -x sbin/init && exec sbin/init
 			test -x etc/init && exec etc/init
 			test -x bin/init && exec bin/init
-			leds -A +gr1 '!g1'
+			mount -t sysfs sysfs /mnt
+			echo -n timer >/mnt/class/leds/ready/trigger
+			echo -n timer >/mnt/class/leds/status/trigger
+			echo -n 80 >/mnt/class/leds/ready/frequency
+			echo -n 80 >/mnt/class/leds/status/frequency
+			umount /mnt
 			sleep 10 >/.recovery
 			sync;sync;sync
 			exit 1"
@@ -245,7 +289,7 @@ ifdown(){
 #
 # mountflash "flash device" "flash root directory" {mount options}
 #  Finds and mounts the flash file system on the given directory
-mountflash() {
+mountflash(){
 	local ffsdev ffsdir
 
 	ffsdev="$1"
@@ -272,7 +316,7 @@ mountflash() {
 # umountflash [-r] "flash device"
 #  unmount any instance of the given flash device, if -r is specified a mount on
 #  root is an error, otherwise a mount on root is ignored (and remains).
-umountflash() {
+umountflash(){
 	local rootok ffsno ffsdev
 	rootok=1
 	case "$1" in
@@ -324,7 +368,7 @@ umountflash() {
 	}
 	#
 	ffs_umount </proc/mounts || {
-		echo "$0: umount $ffsdev from all mount points then re-run reflash" >&2
+		echo "$0: umount $ffsdev from all mount points then re-run $0" >&2
 		return 1
 	}
 

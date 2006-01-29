@@ -10,6 +10,13 @@
 #
 # /etc/default/functions contains useful utility functions
 . /etc/default/functions
+load_functions sysconf
+#
+# NSLU2 flash layout is non-standard.
+case "$(machine)" in
+nslu2)	isnslu2=1;;
+*)	isnslu2=;;
+esac
 #
 # CHECKING FOR INPUT (ARGUMENTS ETC)
 # ----------------------------------
@@ -37,31 +44,43 @@ do
 		ffsfile="$1"
 		shift;;
 	-i)	shift
+		test -n "$isnslu2" || {
+			echo "reflash: -i: only supported on the LinkSys NSLU2" >&2
+			echo " use -k and -j to specify the kernel and root file system" >&2
+			exit 1
+		}
 		test $# -gt 0 || {
 			echo "reflash: -i: give the file containing the complete flash image" >&2
 			exit 1
 		}
 		imgfile="$1"
 		shift;;
-	*)	echo "reflash: usage: $0 [-k kernel] [-j rootfs] [-i image]" >&2
+	*)	if test -n "$isnslu2"
+		then
+			echo "reflash: usage: $0 [-k kernel] [-j rootfs] [-i image]" >&2
+		else
+			echo "reflash: usage: $0 [-k kernel] [-j rootfs]" >&2
+		fi
 		echo "  -k file: the new compressed kernel image ('zImage')" >&2
 		echo "  -j file: the new root file system (jffs2)" >&2
-		echo "  -i file: a complete flash image (gives both kernel and jffs2)" >&2
+		test -n "$isnslu2" &&
+			echo "  -i file: a complete flash image (gives both kernel and jffs2)" >&2
 		echo " The current jffs2 will be umounted if mounted." >&2
 		exit 1;;
 	esac
 done
 #
-# Sanity check on the arguments
+# Sanity check on the arguments (note that the first case can only fire
+# on NSLU2 because of the check for -i above.)
 if test -n "$imgfile" -a -n "$ffsfile" -a -n "$kfile"
 then
-	echo "reflash: -k,-j,-i: specify at most two files" >&2
+	echo "reflash: specify at most two files" >&2
 	echo "  -i has both a kernel and rootfs, the kernel from -k and" >&2
 	echo "  the rootfs from -j override the one in the image (if given)" >&2
 	exit 1
 elif test -z "$imgfile" -a -z "$ffsfile" -a -z "$kfile"
 then
-	echo "reflash: -k,-j,-i: specify at least one file to flash" >&2
+	echo "reflash: specify at least one file to flash" >&2
 	exit 1
 fi
 #
@@ -270,20 +289,8 @@ then
 		errorexit
 	}
 	#
-	(	cd "$ffsdir"
-		find etc/*.conf $(sed 's!^/!!' usr/lib/ipkg/info/*.conffiles) ! -type d -newer etc/.configured -print |
-			sed 's/^/diff /'
-		exec sed 's/#.*$//;/^[ 	]*$/d' etc/default/conffiles
-	) | sed 's!^/*!!' | awk '{ op=$1; $1=""; file[$0]=op }
-		END{ for (f in file) if (file[f] != "ignore") print file[f] f }' |
-	while read op file
-	do
-		if test -e "$ffsdir/$file"
-		then
-			echo "$op $file" >&3
-			echo "$file"
-		fi
-	done 3>"$list" | (cd "$ffsdir"; exec cpio -p -d -m -u "$saved") || {
+	# sysconf_save_conffiles <flash-directory> <dest> <list>
+	sysconf_save_conffiles "$ffsdir" "$saved" "$list" || {
 		echo "reflash: $saved: copy of saved configuration files failed" >&2
 		rm -rf "$saved"
 		rm "$list"
@@ -311,21 +318,22 @@ echo "reflash: about to flash new image" >&2
 # steps is a problem, but then so is a failure in a partial write.
 # Write the flashdisk first because this is larger (most likely to
 # fail).
-# Temporarily check for devio progress indicator capability this way...
-if devio -p '' 2>/dev/null
-then
-	progress=-p
-else
-	progress=
-fi
+#
+# -p causes the progress indicator to be displayed
+progress=-p
 do_kernel() {
+	local cmd
+	if test -n "$isnslu2"
+	then
+		# NSLU2: write length,0,0,0 header, then fill
+		cmd="wb L,4; fb 12,0; cpL"
+	else
+		# Other: just write the kernel bytes
+		cmd="cpL"
+	fi
 	devio $progress "$@" "<<$kfile" ">>$kdev" '
 		# kernel is at imgkoffset[imgksize]
-		' "<= $imgkoffset" "L=$imgksize" '
-		# kernel write length,0,0,0 header, then fill
-		wb L,4
-		fb 12,0
-		cp L
+		' "<= $imgkoffset" "L=$imgksize" "$cmd" '
 		# fill with 255
 		fb #t-,255'
 }
@@ -445,135 +453,13 @@ mountflash "$ffsdev" "$ffsdir" && :>"$ffsdir/etc/.configured" || {
 	exit 1
 }
 #
-# verify file
-#  this is called with the name of a 'diff' file which is, indeed,
-#  different and with all the std streams connected to the tty.  It
-#  returns a status code to say whether (0) or not (1) to copy the
-#  file over.
-#
-verify_help() {
-	echo "Please specify how to handle this file or link, the options are as follows,"
-	echo "two character abbreviations may be used:"
-	echo
-	echo " keep:    retain the old file, overwrite the new flash image file"
-	echo " upgrade: retain the new file, the old (saved) file is not used"
-	echo " diff:    display the differences between the old and the new using diff -u"
-	echo " shell:   temporarily start an interactive shell (sh -i), exit to continue"
-	echo " skip:    ignore this file for the moment.  The file is left in the directory"
-	echo "          $saved and many be handled after this script has completed"
-}
-#
-verify() {
-	local command file
-
-	file="$1"
-	echo "reflash: $file: configuration file changed."
-	verify_help "$file"
-	while :
-	do
-		echo -n "option: "
-		read command
-		case "$command" in
-		ke*)	return 0;;
-		up*)	rm "$saved/$file"
-			return 1;;
-		di*)	echo "DIFF OLD($saved) NEW($ffsdir)"
-			diff -u "$saved/$file" "$ffsdir/$file";;
-		sh*)	PS1="$file: " sh -i;;
-		sk*)	return 1;;
-		*)	verify_help "$file";;
-		esac
-	done
-}
-# the same, but for a link
-verify_link() {
-	local command link
-
-	link="$1"
-	echo "reflash: $link: configuration link changed."
-	verify_help "$link"
-	while :
-	do
-		echo -n "option: "
-		read command
-		case "$command" in
-		ke*)	return 0;;
-		up*)	rm "$saved/$link"
-			return 1;;
-		di*)	echo "DIFF:"
-			echo "OLD($saved): $link -> $(readlink "$saved/$link")"
-			echo "NEW($ffsdir): $link -> $(readlink "$ffsdir/$link")";;
-		sh*)	PS1="$link: " sh -i;;
-		sk*)	return 1;;
-		*)	verify_help "$link";;
-		esac
-	done
-}
-#
-while read op file
-do
-	# handle .configured specially (to preserve the original datestamp)
-	if test "$file" = "etc/.configured"
-	then
-		# this should definately not fail because of the test above!
-		if cp -a "$saved/$file" "$ffsdir/$file"
-		then
-			echo "$file" >&3
-		else
-			echo "reflash: $file: timestamp copy failed (ignored)" >&2
-		fi
-	elif test -h "$saved/file" -o -h "$ffsdir/$file"
-	then
-		# new or old symbolic link
-		if test -h "$saved/$file" -a -h "$ffsdir/$file" &&
-			test "$(readlink "$saved/$file")" = "$(readlink "$ffsdir/$file")"
-		then
-			# no change
-			echo "$file" >&3
-		else
-			# assume a change regardless
-			case "$op" in
-			preserve)
-				echo "$file"
-				echo "$file" >&3;;
-			diff)	# need user input
-				if verify_link "$file" <>/dev/tty >&0 2>&0
-				then
-					echo "$file"
-					echo "$file" >&3
-				fi;;
-			esac
-		fi
-	else
-		# only overwrite if necessary
-		if test -e "$ffsdir/$file" && cmp -s "$saved/$file" "$ffsdir/$file"
-		then
-			# do not overwrite
-			echo "$file" >&3
-		elif test ! -e "$ffsdir/$file"
-		then
-			# always preserve
-			echo "$file"
-			echo "$file" >&3
-		else
-			case "$op" in
-			preserve)
-				echo "$file"
-				echo "$file" >&3;;
-			diff)	# the files are different, get user input
-				if verify "$file" <>/dev/tty >&0 2>&0
-				then
-					echo "$file"
-					echo "$file" >&3
-				fi;;
-			esac
-		fi
-	fi
-done <"$list" 3>/tmp/restore.$$ | (cd "$saved"; exec cpio -p -d -u "$ffsdir") || {
+# sysconf_restore_conffiles <flash-directory> <source-dir> <restore>
+restore="/tmp/restore.$$"
+sysconf_restore_conffiles "$ffsdir" "$saved" "$restore" <"$list" || {
 	echo "reflash: $saved: restore of saved configuration files failed" >&2
 	echo "  The new flash file system is mounted on $ffsdir" >&2
 	echo "  The saved files are in $saved and the list in $list, the list of" >&2
-	echo "  files selected for restore is in /tmp/restore.$$" >&2
+	echo "  files selected for restore is in $restore" >&2
 	echo "  You should restore any required configuration from $saved," >&2
 	echo "  then umount $ffsdir and reboot." >&2
 	exit 1
@@ -581,9 +467,9 @@ done <"$list" 3>/tmp/restore.$$ | (cd "$saved"; exec cpio -p -d -u "$ffsdir") ||
 #
 # remove the copied files (i.e. the ones which were preserved)
 (	cd "$saved"
-	exec rm $(cat /tmp/restore.$$)
+	exec rm $(cat "$restore")
 )
-rm /tmp/restore.$$
+rm "$restore"
 #
 # clean up, files left in $saved need to be handled by the user
 files="$(find "$saved" ! -type d -print)"
