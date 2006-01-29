@@ -43,10 +43,12 @@ SLUGOS_PACKAGES = "\
 	cyrus-imapd \
 	cyrus-sasl \
 	db \
+	devlabel \
 	diffstat \
 	diffutils \
 	dnsmasq \
 	e2fsprogs \
+	e2fsprogs-libs \
 	expat \
 	ez-ipupdate \
 	fetchmail \
@@ -153,6 +155,7 @@ SLUGOS_PACKAGES = "\
 	wireless-tools \
 	wpa-supplicant \
 	zd1211 \
+	zip \
 	zlib \
 	"
 

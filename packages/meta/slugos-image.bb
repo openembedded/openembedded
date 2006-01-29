@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r21"
+PR = "r22"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -82,6 +82,11 @@ RDEPENDS = "kernel ixp-eth \
         ipkg-collateral ipkg ipkg-link \
 	portmap \
 	dropbear \
+	util-linux-fdisk \
+	util-linux-mount \
+	util-linux-umount \
+	util-linux-swaponoff \
+	util-linux-losetup \
 	${SLUGOS_SUPPORT} \
 	${SLUGOS_KERNEL} \
 	${SLUGOS_EXTRA_RDEPENDS}"
