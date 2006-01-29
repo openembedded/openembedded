@@ -20,7 +20,7 @@ FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
 inherit update-rc.d
 
 INITSCRIPT_NAME = "udev"
-INITSCRIPT_PARAMS = "start 04 S ."
+INITSCRIPT_PARAMS = "start 04 S . start 55 0 6 ."
 
 export CROSS = "${TARGET_PREFIX}"
 export HOSTCC = "${BUILD_CC}"
