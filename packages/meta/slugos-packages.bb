@@ -25,6 +25,7 @@ SLUGOS_PACKAGES = "\
 	autoconf \
 	automake \
 	bash \
+	beep \
 	bind \
 	binutils \
 	bison \
