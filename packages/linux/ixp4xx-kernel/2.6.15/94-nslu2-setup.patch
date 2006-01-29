@@ -39,7 +39,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + * to be reset to 0 (on the first mem=)
 + */
 +static char nslu2_command_line[] __initdata =
-+	"root=/dev/mtdblock4 rootfstype=jffs2 init=/linuxrc "
++	"root=/dev/mtdblock4 rw rootfstype=jffs2 init=/linuxrc "
 +	"rtc-x1205.probe=0,0x6f "
 +	CONFIG_CMDLINE;
 +

@@ -37,7 +37,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + * to be reset to 0 (on the first mem=)
 + */
 +static char nas100d_command_line[] __initdata =
-+	"root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc "
++	"root=/dev/mtdblock2 rw rootfstype=jffs2 init=/linuxrc "
 +	"pcf8563.hctosys=1 "
 +	CONFIG_CMDLINE;
 +
