@@ -46,4 +46,5 @@ then
 	fi
 fi
 # fallback - use the flash boot
+leds beep -f 1000 -r 2
 exec /boot/flash

@@ -370,6 +370,7 @@ boot_rootfs() {
 			return 1
 		};;
 	ram)	{	echo '#!/bin/sh'
+			echo 'leds beep'
 			echo 'rm -f /linuxrc.new'
 			echo 'ln -s boot/flash /linuxrc.new'
 			echo 'mv /linuxrc.new /linuxrc'
@@ -381,6 +382,7 @@ boot_rootfs() {
 			return 1
 		};;
 	*)	{	echo '#!/bin/sh'
+			echo 'leds beep'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
 			echo -n "exec '/boot/$type' '$device'"
 			for opt in "$@"

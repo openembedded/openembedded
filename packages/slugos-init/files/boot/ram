@@ -9,7 +9,7 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 # Load the helper functions
 . /etc/default/functions
 #
-leds beep double
+leds beep -r 2
 leds boot system
 #
 if test -n "$1"
@@ -45,4 +45,5 @@ then
 	fi
 fi
 # fallback - use the flash boot
+leds beep -f 1000 -r 2
 exec /boot/flash

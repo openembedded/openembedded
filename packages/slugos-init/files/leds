@@ -166,10 +166,18 @@ sysled(){
 }
 
 #
-# beep [double]
-#  emit a beep, or a double beep
-#  dummy - at present does  nothing
+# beep {arguments}
+#  emit a beep
+#  does nothing if there is no beep executable
 beep(){
+	local arg
+	arg=
+	test "$1" = beep && shift
+	if test -x /bin/beep
+	then
+		test -c /dev/buzzer && arg="-e /dev/buzzer"
+		/bin/beep $arg "$@"
+	fi
 	return 0
 }
 
@@ -192,7 +200,7 @@ leds_help(){
 	echo "    trigger may be given.  'user' will use the default specified" >&2
 	echo "    in USER_LED from /etc/default/rcS, if not specified a cpu" >&2
 	echo "    activity setting appropriate to the machine is selected" >&2
-	echo "  beep [double]" >&2
+	echo "  beep {args}" >&2
 	echo "    if possible cause the machine to emit a beep" >&2
 }
 

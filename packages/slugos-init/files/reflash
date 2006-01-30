@@ -208,7 +208,7 @@ then
 	#
 	# check the input file size
 	test -n "$imgksize" -a "$imgksize" -gt 0 -a "$imgksize" -le "$ksize" || {
-		echo "reflash: $kfile: bad Kernel size ($s, max $ksize)" >&2
+		echo "reflash: $kfile: bad Kernel size ($imgksize, max $ksize)" >&2
 		exit 1
 	}
 fi
@@ -228,7 +228,7 @@ then
 	#
 	# check the input file size
 	test -n "$imgffssize" -a "$imgffssize" -gt 0 -a "$imgffssize" -le "$ffssize" || {
-		echo "reflash: $ffsfile: bad Flashdisk size ($s, max $ffssize)" >&2
+		echo "reflash: $ffsfile: bad Flashdisk size ($imgffsize, max $ffssize)" >&2
 		exit 1
 	}
 fi
