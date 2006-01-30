@@ -11,7 +11,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.4"
+PR := "${PR}.5"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -26,6 +26,10 @@ SRC_URI += "file://devices.patch;patch=1"
 S = "${WORKDIR}"
 
 do_install_append() {
+	# the image build command now installs this for slugos
+	rm	${D}${sysconfdir}/device_table
+
+	# slugos specific scripts
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/domainname.sh ${D}${sysconfdir}/init.d
 
