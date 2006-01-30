@@ -4,9 +4,9 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
- 
+IGNORE_STRIP_ERRORS = "1"
 
-PR = "r13"
+PR = "r14"
 
 
 SRC_URI = "file://altboot-menu \

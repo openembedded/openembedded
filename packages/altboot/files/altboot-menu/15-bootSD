@@ -23,9 +23,25 @@ run_module() {
 	echo -n "Generating device files..." >/dev/tty0
 	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
 
-
-	echo -n "Loading SD kernel module..."
-	/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
+	# We can't trust that the SD device file is there when running kernel 2.6 w/ udev
+	# Starting udev at this point may not be the best idea...
+#	echo "*1*"
+	if `uname -r | grep -q "2.6"`
+	then
+		#echo "***"
+		dev_no="`echo "$SD_DEVICE" | sed -n "s/\/dev\/mmcblk\(.*\)p\(.*\)/\1/p"`"
+		part_no="`echo "/dev/mmcblk0p1" | sed -n "s/\/dev\/mmcblk\(.*\)p\(.*\)/\2/p"`"
+		! test -e /dev/mmcblk${dev_no} && mknod /dev/mmcblk${dev_no} b 254 0
+		! test -e /dev/mmcblk${dev_no}p${part_no} && mknod /dev/mmcblk${dev_no}p${part_no} b 254 $part_no
+		
+		#echo "[mknod /dev/mmcblk${dev_no}p${part_no}]"
+	fi
+	
+	if test -n "$SD_KERNEL_MODULE"
+	then
+		echo -n "Loading SD kernel module..."
+		/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
+	fi
 
 	echo -n "Mounting $SD_MOUNTPOINT..."  >/dev/tty0
 	/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
