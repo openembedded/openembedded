@@ -1,0 +1,15 @@
+--- figment-0.3.5.orig/figment.desktop	2006-01-29 20:13:07.000000000 +0100
++++ figment-0.3.5/figment.desktop	2006-01-29 20:24:14.000000000 +0100
+@@ -1,8 +1,8 @@
+ [Desktop Entry]
+-Name=Figment
+-Comment=An Outliner
++Name=Outliner
++Comment=The Figment Outliner
+ Exec=figment
+ Icon=figment.png
+ Terminal=0
+ Type=Application
+-Categories=Application;PIM
+\ No newline at end of file
++Categories=Application;PIM
