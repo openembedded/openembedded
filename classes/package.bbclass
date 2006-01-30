@@ -168,7 +168,7 @@ python populate_packages () {
 			if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1') and not os.path.islink(file) and isexec(file):
 				if bb.data.getVar('IGNORE_STRIP_ERRORS', d, 1) != '1':
 					# bail out on errors
-					stripfunc += "file %s | grep -q 'not stripped' && ${STRIP} %s || return 1;\n" % (fpath, fpath)
+					stripfunc += "if (file %s | grep -q 'not stripped'); then echo 'Trying to strip: %s'; if ${STRIP} %s 2>&1 | grep strip; then return 1; fi; fi;\n" % (fpath, fpath, fpath)
 				else:
 					# old behaviour: ignore errors
 					stripfunc += "${STRIP} %s || : ;\n" % fpath
