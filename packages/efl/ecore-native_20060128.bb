@@ -12,6 +12,7 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-dbus \
 		--enable-ecore-evas \
 		--enable-ecore-evas-fb \
+		--enable-ecore-evas-buffer \
 		--disable-ecore-evas-x \
 		--disable-ecore-evas-gl \
 		--enable-ecore-con \

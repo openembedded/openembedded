@@ -9,6 +9,7 @@ SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e;date=${PV} \
            file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
            file://remove-large-fonts.patch;patch=1"
+
 S = "${WORKDIR}/e"
 
 inherit autotools

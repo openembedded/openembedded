@@ -15,7 +15,7 @@ SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/entrance;date=${PV}
            file://use-bash.patch;patch=1 \
            file://set-display-env.patch;patch=1 \
 	   file://Sessions"
-	   
+
 S = "${WORKDIR}/entrance"
 
 inherit autotools update-rc.d

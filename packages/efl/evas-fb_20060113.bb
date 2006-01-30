@@ -2,8 +2,6 @@ include evas.inc
 DEPENDS = "freetype libpng jpeg eet"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV} \
            file://pkg.m4"
 S = "${WORKDIR}/evas"
@@ -14,6 +12,7 @@ EXTRA_OECONF = "--enable-fb         \
 		--disable-software-qtopia   \
 		--disable-software-x11      \
 		--disable-gl-x11            \
+                --disable-xrender-x11       \
 		--enable-image-loader-eet   \
 		--disable-image-loader-edb  \
 		--enable-image-loader-png   \
