@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r22"
+PR = "r24"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -20,18 +20,17 @@ IMAGE_LINGUAS = ""
 # in /dev
 USE_DEVFS = "1"
 
-#FIXME: this is historical, there should be a minimal slugos device table and
-# this stuff shouldn't be in here at all (put it in slugos-image.bb!)
-# Why have anything in the config file to control the image build - why not
-# just select a different image .bb file (e.g. slugos-ramdisk-image.bb) to
-# build with different options.
+# This is passed to the image command to build the correct /dev
+# directory (because only the image program can make actual
+# dev entries!)
 SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
 
 # IMAGE_PREPROCESS_COMMAND is run before making the image.  In SlugOS the
 # kernel image is removed from the root file system to recover the space used -
 # SlugOS is assumed to boot from a separate kernel image in flash (not in the
 # root file system), if this is not the case the following must not be done!
-IMAGE_PREPROCESS_COMMAND = "rm ${IMAGE_ROOTFS}/boot/zImage*;"
+IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
+IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_ROOTFS}/etc/device_table;"
 
 # Building a full image.  If required do a post-process command which builds
 # the full flash image using slugimage.  At present this only works for NSLU2 images.
@@ -82,7 +81,7 @@ RDEPENDS = "kernel ixp-eth \
         ipkg-collateral ipkg ipkg-link \
 	portmap \
 	dropbear \
-	util-linux-fdisk \
+	beep \
 	util-linux-mount \
 	util-linux-umount \
 	util-linux-swaponoff \
