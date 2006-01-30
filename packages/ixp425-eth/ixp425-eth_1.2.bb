@@ -23,12 +23,6 @@ RPROVIDES = "ixp-eth"
 
 inherit module
 
-# Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
-# required.  Notice that this has to be done for each separately built
-# module as well!
-KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
-KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
-
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 

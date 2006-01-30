@@ -27,12 +27,6 @@ COMPATIBLE_HOST = "^armeb-linux.*"
 
 inherit module
 
-# Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
-# required.  Notice that this has to be done for each separately built
-# module as well!
-KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
-KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
-
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
 		'AR=${AR}' \

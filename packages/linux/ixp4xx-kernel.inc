@@ -171,12 +171,6 @@ CMDLINE  = "${CMDLINE_ROOT}"
 CMDLINE += "${CMDLINE_DEBUG}"
 CMDLINE += "${CMDLINE_CONSOLE}"
 
-# Add the architecture compiler flags to KERNEL_CC and KERNEL_LD as
-# required.  Notice that this has to be done for each separately built
-# module as well!
-KERNEL_CC += "${TARGET_CC_KERNEL_ARCH}"
-KERNEL_LD += "${TARGET_LD_KERNEL_ARCH}"
-
 # Set EXTRAVERSION and LOCALVERSION to "" so that the kernel version
 # remains pinned to the x.y.z form, also turn off the directory
 # printing which provides almost all the output of an incremental build.
