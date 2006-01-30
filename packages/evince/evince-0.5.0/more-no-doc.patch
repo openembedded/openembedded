@@ -1,0 +1,16 @@
+--- evince-0.5.0/Makefile.am.orig	2006-01-29 00:32:34.000000000 +0000
++++ evince-0.5.0/Makefile.am	2006-01-29 00:32:45.000000000 +0000
+@@ -1,4 +1,4 @@
+-SUBDIRS = cut-n-paste po help data
++SUBDIRS = cut-n-paste po data
+ 
+ # Backends
+ 
+--- evince-0.5.0/help/Makefile.am.orig	2006-01-29 00:33:03.000000000 +0000
++++ evince-0.5.0/help/Makefile.am	2006-01-29 00:33:16.000000000 +0000
+@@ -1,4 +1,4 @@
+-include $(top_srcdir)/gnome-doc-utils.make
++#include $(top_srcdir)/gnome-doc-utils.make
+ dist-hook: doc-dist-hook
+ 
+ DOC_MODULE = evince
