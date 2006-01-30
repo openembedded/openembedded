@@ -1,21 +1,35 @@
 #! /bin/sh
 
-DESC=irattach
+# Source IrDA networking configuration.
+. /etc/sysconfig/irda
+
+# Check that irda is up.
+[ ${IRDA} = "no" ] && exit 0
+
+[ -f /usr/sbin/irattach ] || exit 0
+
+ARGS=
+if [ $DONGLE ]; then
+	ARGS="$ARGS -d $DONGLE"
+fi
+if [ "$DISCOVERY" = "yes" ];then
+	ARGS="$ARGS -s"
+fi
 
 case "$1" in
   start)
-        echo -n "Starting $DESC: "
-		irattach /dev/ttyS1 > /dev/null 2>&1 &
+        echo -n "Starting IrDA: "
+		irattach ${DEVICE} ${ARGS} > /dev/null 2>&1 &
         echo "$NAME."
         ;;
   stop)
-        echo -n "Stopping $DESC: "
+        echo -n "Stopping IrDA: "
 		killall irattach > /dev/null 2>&1
         echo "$NAME."
         ;;
   restart|force-reload)
-        echo -n "Restarting $DESC: "
-		irattach /dev/ttyS1 > /dev/null 2>&1 &
+        echo -n "Restarting IrDA: "
+		irattach ${DEVICE} ${ARGS} > /dev/null 2>&1 &
         sleep 1
 		killall irattach > /dev/null 2>&1
         echo "$NAME."
