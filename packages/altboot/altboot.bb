@@ -4,16 +4,16 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
- 
+IGNORE_STRIP_ERRORS = "1"
 
-PR = "r13"
+PR = "r15"
 
 
 SRC_URI = "file://altboot-menu \
 	   file://altboot.rc \
 	   file://altboot.func \	 
 	   file://init.altboot \
-	   file://altboot.cfg"
+	   file://altboot*.cfg"
 
 # S = "${WORKDIR}/files"
  
@@ -24,7 +24,7 @@ do_install() {
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
 	
-	install -m 0644 ${WORKDIR}/altboot.cfg ${D}/etc
+	install -m 0644 ${WORKDIR}/altboot*.cfg ${D}/etc
 	install -m 0644 ${WORKDIR}/altboot.func ${D}/etc
 #	install -m 0644 ${WORKDIR}/docs/altboot/*.txt ${D}/usr/share/doc/altboot
 	install -m 0755 ${WORKDIR}/init.altboot ${D}/sbin	

@@ -17,7 +17,11 @@ REAL_INIT="/sbin/init.sysvinit"
 INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
 test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 
-test -e /etc/altboot.cfg && . /etc/altboot.cfg || echo "WARNING: No altboot.cfg found! Check your installation of Altboot!" > /dev/tty1
+case "`uname -r`" in
+2.6*)	test -e /etc/altboot-2.6.cfg && . /etc/altboot-2.6.cfg || echo "WARNING: No altboot-2.6.cfg found! Check your installation of Altboot!" > /dev/tty1;;
+2.4*)	test -e /etc/altboot-2.4.cfg && . /etc/altboot-2.4.cfg || echo "WARNING: No altboot-2.4.cfg found! Check your installation of Altboot!" > /dev/tty1;;
+*)	die "Unknown kernel [uname -r], no configuration found.";;
+esac
 
 C_RED="\033[31m"
 C_BLUE="\033[34m"
@@ -143,7 +147,11 @@ run_timer() {
 	then
 			
 		mount -t proc proc /proc >/dev/null 2>&1
-		key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`"
+		
+		case "`uname -r`" in
+		2.4*)	key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
+		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`";;	
+		esac		
 	
 		stty -echo
 		echo -en "\n\nPlease press any key to launch altboot." > /dev/tty1
@@ -152,9 +160,14 @@ run_timer() {
 
 		cnt=0
 		while test "$cnt" != "$TIMEOUT"
-		do
+		do		
 			sleep 1
-			if test "`cat /proc/interrupts | grep keyboard | awk '{print $2}'`" != "$key_ints" 
+			case "`uname -r`" in
+			2.4*)	key_ints_now="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
+			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`";;	
+			esac		
+			
+			if test "$key_ints_now" != "$key_ints" 
 			then				
 				launch_altboot=yes				
 				stty echo
