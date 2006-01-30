@@ -1,0 +1,9 @@
+# German keymapping
+altgr keycode 24 = +odiaresis
+altgr keycode 30 = +adiaresis
+altgr keycode 22 = +udiaresis
+shift altgr keycode 24 = +Odiaresis
+shift altgr keycode 30 = +Adiaresis
+altgr shift keycode 22 = +Udiaresis
+altgr keycode 31 = ssharp
+
