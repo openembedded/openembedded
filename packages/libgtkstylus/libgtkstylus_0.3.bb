@@ -1,10 +1,10 @@
 DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 DEPENDS = "gtk+"
 LICENSE = "LGPL"
-FILES_${PN} = "/etc ${libdir}/gtk-2.0"
-PR = "r3"
+FILES_${PN} = "/etc ${libdir}/gtk-2.0/2.4.0/modules/*.so*"
+PR = "r4"
 
 inherit autotools
 
