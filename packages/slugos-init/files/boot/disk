@@ -15,15 +15,19 @@ if test -n "$1"
 then
 	device="$1"
 	shift
-	echo "boot: rootfs: mount $* $device"
+	echo "boot: rootfs: mount $* $device [$UUID]"
 	#
 	# wait if required
 	test "$sleep" -gt 0 && sleep "$sleep"
 	#
 	# Mount read-write because before exec'ing init
-	# this script creates the '.recovery' link to
-	# detect failed boot.  No file type is given to
-	if mount "$@" "$device" /mnt
+	# If a UUID is given (in the environment) this
+	# is used in preference to the device, but if
+	# the UUID mount fails a standard device mount
+	# is attempted.
+	if	test -n "$UUID" &&
+		mount "$@" -U "$UUID" /mnt ||
+		mount "$@" "$device" /mnt
 	then
 		# checkmount checks for sh, init and no
 		# .recovery plus either mnt or initrd

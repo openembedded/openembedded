@@ -88,6 +88,7 @@ get_flash() {
 #
 # check_rootfs [-i] <root fs directory>
 #  Make sure the candidate rootfs is empty
+#  Environment: rootdev=device or NFS root path
 check_rootfs() {
 	local fcount
 
@@ -100,15 +101,24 @@ check_rootfs() {
 		fcount="$(find "$1" ! -type d -print | wc -l)"
 		test "$fcount" -eq 0 && return 0
 
-		echo "turnup: $1: partition contains existing files, specify -f to overwrite" >&2
+		echo "turnup: $rootdev: partition contains existing files, specify -f to overwrite" >&2
 		return 1;;
 	*)	checkmount "$1" && return 0
 
-		echo "turnup: $1: partition does not seem to be a valid root partition" >&2
-		if test -f "$1"/.recovery
-		then
-			echo "  $1/.recovery exists: fix the partition then remove it" >&2
-		fi
+		echo "turnup: $rootdev: partition does not seem to be a valid root partition" >&2
+		echo "  The partition must contain a full operating system.  To ensure that" >&2
+		echo "  this is the case it is checked for the following, all of which must" >&2
+		echo "  exist for the bootstrap to work:" >&2
+		echo
+		echo "  1) A directory /mnt." >&2
+		echo "  2) A command line interpreter program in /bin/sh." >&2
+		echo "  3) The program chroot in /sbin or /usr/sbin." >&2
+		echo "  4) The program init in /sbin, /etc or /bin." >&2
+		echo
+		echo "  One or more of these items is missing.  Mount $rootdev on /mnt" >&2
+		echo "  and examine its contents.  You can use turnup disk|nfs -i -f" >&2
+		echo "  to copy this operating system onto the disk, but it may overwrite" >&2
+		echo "  files on the disk." >&2
 		return 1;;
 	esac
 }
@@ -315,16 +325,17 @@ setup_fstab() {
 }
 
 #
-# boot_rootfs <boot type> <flash file system> <sleep time> <device> [options]
+# boot_rootfs <boot type> <flash file system> <sleep time> (<device> <uuid>|<nfsroot>) [options]
 #  Change the flash partition (not the current root!) to boot off
 #  the new root file system
 boot_rootfs() {
-	local type ffs sleep device opt
+	local type ffs sleep device uuid opt
 
 	type="$1"
 	ffs="$2"
 	sleep="$3"
 	device="$4"
+	uuid=
 
 	# test this first as the test does not depend on the correctness
 	# of the other arguments
@@ -344,7 +355,8 @@ boot_rootfs() {
 			echo "turnup: boot_rootfs($ffs, $type, $device): expected block device" >&2
 			return 1
 		}
-		shift 2;;
+		uuid="$3"
+		shift 3;;
 	nfs)	shift 2;;
 	flash)	;;
 	ram)	;;
@@ -384,6 +396,7 @@ boot_rootfs() {
 	*)	{	echo '#!/bin/sh'
 			echo 'leds beep'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
+			test -n "$uuid" && echo -n "UUID='$uuid' "
 			echo -n "exec '/boot/$type' '$device'"
 			for opt in "$@"
 			do
@@ -416,7 +429,7 @@ boot_rootfs() {
 # disk [-m] [-i] [-s<time>] <device> {options}
 #  Carefully copy the flash file system to the named device.
 disk() {
-	local setup_type sleep init device new ffs fst fso
+	local setup_type sleep init device uuid new ffs fst fso
 
 	setup_type=disk
 	sleep=0
@@ -444,6 +457,9 @@ disk() {
 	}
 	shift
 
+	# find the uuid if available
+	uuid="$(blkid -c /dev/null -s UUID -o value "$device")"
+
 	# make temporary directories for the mount points
 	new="/tmp/rootfs.$$"
 	ffs="/tmp/flashdisk.$$"
@@ -464,16 +480,27 @@ disk() {
 	status=1
 	fst=
 	fso="$(fsoptions "$@")"
-	if mount "$@" "$device" "$new"
+	if	if test -n "$uuid"
+		then
+			mount "$@" -U "$uuid" "$new"
+		else
+			mount "$@" "$device" "$new"
+		fi
 	then
 		fst="$(fstype "$new")"
 		umount "$new" ||
 			echo "turnup disk: $device($new): umount does not seem to work" >&2
 	fi
 
-	if test -n "$fst" && mount -t "$fst" -o "$fso" "$device" "$new"
+	if test -n "$fst" &&
+		if test -n "$uuid"
+		then
+			mount -t "$fst" -o "$fso" -U "$uuid" "$new"
+		else
+			mount -t "$fst" -o "$fso" "$device" "$new"
+		fi
 	then
-		if check_rootfs $init "$new" && {
+		if rootdev="$device" check_rootfs $init "$new" && {
 			test -z "$init" || {
 				copy_rootfs "$ffs" "$new" &&
 				setup_rootfs "$setup_type" "$new" "$ffs"/etc/device_table
@@ -501,7 +528,7 @@ disk() {
 		if test $status -eq 0
 		then
 			# memsticks boot like disks, so ignore the -m
-			boot_rootfs disk "$ffs" "$sleep" "$device" -t "$fst" -o "$fso"
+			boot_rootfs disk "$ffs" "$sleep" "$device" "$uuid" -t "$fst" -o "$fso"
 		fi
 	else
 		echo "turnup disk: $device($*): unable to mount device on $new" >&2
@@ -509,6 +536,8 @@ disk() {
 		if test -n "$fst"
 		then
 			echo "  options used: -t $fst -o $fso [error in this script]" >&2
+			test -n "$uuid" &&
+				echo "  uuid: $uuid (passed with -U)" >&2
 		fi
 	fi
 
@@ -611,7 +640,7 @@ nfs() {
 	then
 		if :>"$new"/ttt && test -O "$new"/ttt && rm "$new"/ttt
 		then
-			if check_rootfs $init "$new" && {
+			if rootdev="$nfsroot" check_rootfs $init "$new" && {
 				test -z "$init" || {
 					copy_rootfs "$ffs" "$new" &&
 					setup_rootfs nfs "$new" "$ffs"/etc/device_table

@@ -155,9 +155,8 @@ checkif(){
 #  boot with this as root.  Returns success if it appears ok.
 checkmount(){
 	# basic test for init (the kernel will try to load this)
-	# but require a shell in bin/sh and no .recovery too
-	test	\( ! -f "$1/.recovery" \) -a \
-		\( -d "$1/mnt" \) -a \
+	# but require a shell in bin/sh too
+	test	\( -d "$1/mnt" \) -a \
 		\( -x "$1/bin/sh" -o -h "$1/bin/sh" \) -a \
 		\( -x "$1/usr/sbin/chroot" -o -h "$1/usr/sbin/chroot" -o \
 		   -x "$1/sbin/chroot" -o -h "$1/sbin/chroot" \) -a \
@@ -218,7 +217,6 @@ swivel(){
 			echo -n 80 >/mnt/class/leds/ready/frequency
 			echo -n 80 >/mnt/class/leds/status/frequency
 			umount /mnt
-			sleep 10 >/.recovery
 			sync;sync;sync
 			exit 1"
 	fi
