@@ -19,7 +19,7 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-PR = "r10"
+PR = "r11"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
@@ -34,6 +34,9 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
 SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver \
 	file://kmode.patch;patch=1 \
+	file://no-serial-probing.patch;patch=1 \
+	file://kdrive-evdev.patch;patch=1  \
+	file://kdrive-use-evdev.patch;patch=1  \
 	file://fbdev-not-fix.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
