@@ -18,10 +18,14 @@ INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
 test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 
 case "`uname -r`" in
-2.6*)	test -e /etc/altboot-2.6.cfg && . /etc/altboot-2.6.cfg || echo "WARNING: No altboot-2.6.cfg found! Check your installation of Altboot!" > /dev/tty1;;
-2.4*)	test -e /etc/altboot-2.4.cfg && . /etc/altboot-2.4.cfg || echo "WARNING: No altboot-2.4.cfg found! Check your installation of Altboot!" > /dev/tty1;;
-*)	die "Unknown kernel [uname -r], no configuration found.";;
+2.6*)	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
+2.4*)	ALTBOOT_CFG_FILE="/etc/altboot-2.4.cfg";;
+*)	echo "Warning: Unknown kernel [`uname -r`], using kernel 2.6 configuration!"
+	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
 esac
+
+echo "Using [${ALTBOOT_CFG_FILE}]"
+test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > /dev/tty1
 
 C_RED="\033[31m"
 C_BLUE="\033[34m"

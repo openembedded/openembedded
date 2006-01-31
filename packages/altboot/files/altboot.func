@@ -205,14 +205,14 @@ set_password() {
 				then
 					crypt_pw="`echo "$junk1" | md5sum | awk '{print $1}'`"
 					
-					if test -e /etc/altboot.cfg
+					if test -e "${ALTBOOT_CFG_FILE}"
 					then
-						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" /etc/altboot.cfg > /etc/altboot.cfg_
-						mv /etc/altboot.cfg_ /etc/altboot.cfg
+						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" "${ALTBOOT_CFG_FILE}" > ${ALTBOOT_CFG_FILE}_
+						mv ${ALTBOOT_CFG_FILE}_ ${ALTBOOT_CFG_FILE}
 						MASTER_PASSWORD="$crypt_pw"
 						echo "Password changed."
 					else
-						echo "/etc/altboot.cfg is missing, no password saved"
+						echo "${ALTBOOT_CFG_FILE} is missing, no password saved"
 					fi
 					
 					break
