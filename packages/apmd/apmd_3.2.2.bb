@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
            file://debian.patch;patch=1 \
@@ -45,7 +45,7 @@ do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${datadir}/apmd
 
-	install -m 4577 ${S}/.libs/apm ${D}${bindir}/apm
+	install -m 0755 ${S}/.libs/apm ${D}${bindir}/apm
 	install -m 0755 ${S}/.libs/apmd ${D}${sbindir}/apmd
 	install -m 0755 ${WORKDIR}/apmd_proxy ${D}${sysconfdir}/apm/
 	install -m 0644 ${WORKDIR}/apmd_proxy.conf ${D}${datadir}/apmd/
