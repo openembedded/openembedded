@@ -25,7 +25,7 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-${PV}.tar.gz \
 inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP} MANDIR=${D}${datadir}/man/man8 INCDIR=${D}/usr/include LIBDIR=${D}/usr/lib/pppd/${PV} BINDIR=${D}/usr/sbin"
-EXTRA_OECONF = --disable-strip
+EXTRA_OECONF = "--disable-strip"
 
 do_install_append () {
 	make install-etcppp ETCDIR=${D}/${sysconfdir}/ppp
@@ -61,7 +61,7 @@ DESCRIPTION_ppp-password = "Plugin for PPP to get passwords via a pipe"
 DESCRIPTION_ppp-tools    = "The pppdump and pppstats utitilities"
 RDEPENDS_ppp_minconn    += "libpcap0.8"
 
-pkg_postinst() {
+pkg_postinst_${PN}() {
 if test "x$D" != "x"; then
 	exit 1
 else
