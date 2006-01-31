@@ -45,7 +45,7 @@ do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${datadir}/apmd
 
-	install -m 0755 ${S}/.libs/apm ${D}${bindir}/apm
+	install -m 4755 ${S}/.libs/apm ${D}${bindir}/apm
 	install -m 0755 ${S}/.libs/apmd ${D}${sbindir}/apmd
 	install -m 0755 ${WORKDIR}/apmd_proxy ${D}${sysconfdir}/apm/
 	install -m 0644 ${WORKDIR}/apmd_proxy.conf ${D}${datadir}/apmd/
