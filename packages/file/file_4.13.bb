@@ -3,7 +3,7 @@ on their contents and prints a description if a match is found."
 SECTION = "console/utils"
 LICENSE = "BSD-ADV"
 DEPENDS = "file-native"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz"
 S = "${WORKDIR}/file-${PV}"
@@ -15,5 +15,5 @@ do_configure_prepend() {
 }
 
 do_stage() {
-autotools_stage_all
+	autotools_stage_all
 }
