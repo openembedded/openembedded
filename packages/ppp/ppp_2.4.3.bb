@@ -25,7 +25,7 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-${PV}.tar.gz \
 inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP} MANDIR=${D}${datadir}/man/man8 INCDIR=${D}/usr/include LIBDIR=${D}/usr/lib/pppd/${PV} BINDIR=${D}/usr/sbin"
-EXTRA_OECONF = --disable-strip
+EXTRA_OECONF = "--disable-strip"
 
 do_install_append () {
 	make install-etcppp ETCDIR=${D}/${sysconfdir}/ppp
@@ -43,7 +43,7 @@ do_install_append () {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets ${sysconfdir}/ppp/options"
-PACKAGES += "ppp-oa ppp-oe ppp-radius ppp-winbind ppp-minconn ppp-password ppp-tools"
+PACKAGES =+ "ppp-oa ppp-oe ppp-radius ppp-winbind ppp-minconn ppp-password ppp-tools"
 FILES_${PN}        = "/etc /usr/bin /usr/sbin/chat /usr/sbin/pppd"
 FILES_ppp-oa       = "/usr/lib/pppd/2.4.3/pppoatm.so"
 FILES_ppp-oe       = "/usr/sbin/pppoe-discovery /usr/lib/pppd/2.4.3/rp-pppoe.so"
@@ -61,7 +61,7 @@ DESCRIPTION_ppp-password = "Plugin for PPP to get passwords via a pipe"
 DESCRIPTION_ppp-tools    = "The pppdump and pppstats utitilities"
 RDEPENDS_ppp_minconn    += "libpcap0.8"
 
-pkg_postinst() {
+pkg_postinst_${PN}() {
 if test "x$D" != "x"; then
 	exit 1
 else
