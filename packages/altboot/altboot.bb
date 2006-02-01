@@ -6,7 +6,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 IGNORE_STRIP_ERRORS = "1"
 
-PR = "r15"
+PR = "r16"
 
 
 SRC_URI = "file://altboot-menu \
@@ -30,6 +30,8 @@ do_install() {
 	install -m 0755 ${WORKDIR}/init.altboot ${D}/sbin	
 	install -m 0755 ${WORKDIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 	install -m 0755 ${WORKDIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+	install -m 0755 ${WORKDIR}/altboot.rc/*.sh ${D}/etc/altboot.rc
+	install -m 0644 ${WORKDIR}/altboot.rc/*.txt ${D}/etc/altboot.rc	
 }		
 
 

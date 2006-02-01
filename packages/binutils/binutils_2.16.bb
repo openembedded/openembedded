@@ -3,13 +3,14 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
      file://ld_makefile.patch;patch=1 \
      file://better_file_error.patch;patch=1 \
      file://signed_char_fix.patch;patch=1 \
+     file://binutils-2.16-objcopy-rename-errorcode.patch;patch=1 \
      file://binutils-100_cflags_for_build.patch;patch=1"
 
 # uclibc patches

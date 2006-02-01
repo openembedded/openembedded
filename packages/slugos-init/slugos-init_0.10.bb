@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r51"
+PR = "r52"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -12,6 +12,7 @@ SRC_URI = "file://boot/flash \
 	   file://boot/ram \
 	   file://boot/network \
 	   file://boot/udhcpc.script \
+	   file://initscripts/fixfstab \
 	   file://initscripts/syslog.buffer \
 	   file://initscripts/syslog.file \
 	   file://initscripts/syslog.network \
@@ -35,7 +36,8 @@ CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup reflash leds sysconf"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
-	leds_startup rmrecovery sysconfsetup umountinitrd.sh"
+	leds_startup rmrecovery sysconfsetup umountinitrd.sh\
+	fixfstab"
 
 # This just makes things easier...
 S="${WORKDIR}"
@@ -120,6 +122,7 @@ pkg_postinst_slugos-init() {
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt hwclock.sh		start  8 S . start 45 0 6 .
 	update-rc.d $opt umountinitrd.sh	start  9 S .
+	update-rc.d $opt fixfstab		start 10 S .
 	update-rc.d $opt syslog.buffer		start 11 S . start 49 0 6 .
 	update-rc.d $opt sysconfsetup		start 12 S .
 	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .

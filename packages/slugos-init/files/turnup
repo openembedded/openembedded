@@ -17,6 +17,10 @@ INRAM_DISK=""
 force=
 
 #
+# pfile: the uuid/partition file
+pfile=/etc/uuid_by_partition
+
+#
 # fstype new
 #  The type of the file system mounted on "new"  Outputs the last
 #  piece of information found, which should be the one for the
@@ -312,7 +316,7 @@ setup_rootfs() {
 # setup_fstab new fsdev fstype fsoptions
 #  Alters the /etc/fstab entry for / to refer to the correct device and
 #  have the correct type and options.  Essential for checkroot to remount
-#  / with the correct options.
+#  / with the correct options.  Writes the initial uuid file.
 #  bad, since sed won't fail even if it changes nothing.
 setup_fstab() {
 	sed -i '\@^[^ 	]*[ 	][ 	]*/[ 	]@s@^.*$@'"$2	/	$3	$4	1  1"'@' "$1"/etc/fstab
@@ -322,6 +326,11 @@ setup_fstab() {
 		echo "  to ensure that the root partition is mounted correctly" >&2
 		return 1
 	}
+	#
+	# build $pfile
+	uuid_by_partition >"$1""$pfile" ||
+		echo "turnup: $pfile: blkid failed (ignored)" >&2
+	return 0
 }
 
 #
