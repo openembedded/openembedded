@@ -372,3 +372,17 @@ umountflash(){
 
 	return 0
 }
+
+#
+# uuid_by_partition
+#  output a list of partitions and their UUIDs
+uuid_by_partition() {
+	blkid -c /dev/null -s UUID | sed -n 's/^\([^:]*\): .*UUID="\([^"]*\)".*$/\1 \2/p'
+}
+
+#
+# partition_of uuid
+#  return the partition corresponding to the UUID
+partition_of() {
+	sed -n 's/^\([^ ]*\) '"$1"'$/\1/p'
+}
