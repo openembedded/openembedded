@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r43"
+PR = "r44"
 
 ALLOW_EMPTY = "1"
 
@@ -19,6 +19,7 @@ gpe-task-base = "\
     xcursor-transparent-theme \
     rxvt-unicode \
     gtk2-theme-angelistic \
+    gpe-theme-industrial \	
     matchbox-themes-gtk \
     xst \
     xhost \
