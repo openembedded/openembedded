@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r31"
+PR = "r32"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -145,18 +145,19 @@ pkg_prerm_${PN} () {
 	# providing its files, this will make update-alternatives work, but the update-rc.d part
 	# for syslog, httpd and/or udhcpd will fail if there is no other package providing sh
 	tmpdir=`mktemp -d /tmp/busyboxrm-XXXXXX`
-	ln -s /bin/busybox $tmpdir/[
-	ln -s /bin/busybox $tmpdir/test
-	ln -s /bin/busybox $tmpdir/head
-	ln -s /bin/busybox $tmpdir/sh
-	ln -s /bin/busybox $tmpdir/basename
-	ln -s /bin/busybox $tmpdir/echo
-	ln -s /bin/busybox $tmpdir/mv
-	ln -s /bin/busybox $tmpdir/ln
-	ln -s /bin/busybox $tmpdir/dirname
-	ln -s /bin/busybox $tmpdir/rm
-	ln -s /bin/busybox $tmpdir/sed
-	ln -s /bin/busybox $tmpdir/sort
+	cp -a /bin/busybox $tmpdir/
+	ln -s $tmpdir/busybox $tmpdir/[
+	ln -s $tmpdir/busybox $tmpdir/test
+	ln -s $tmpdir/busybox $tmpdir/head
+	ln -s $tmpdir/busybox $tmpdir/sh
+	ln -s $tmpdir/busybox $tmpdir/basename
+	ln -s $tmpdir/busybox $tmpdir/echo
+	ln -s $tmpdir/busybox $tmpdir/mv
+	ln -s $tmpdir/busybox $tmpdir/ln
+	ln -s $tmpdir/busybox $tmpdir/dirname
+	ln -s $tmpdir/busybox $tmpdir/rm
+	ln -s $tmpdir/busybox $tmpdir/sed
+	ln -s $tmpdir/busybox $tmpdir/sort
 	export PATH=$PATH:$tmpdir
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; bn=`basename $link`; sh /usr/bin/update-alternatives --remove $bn $to; done </etc/busybox.links
 }
