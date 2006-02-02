@@ -2,7 +2,7 @@ DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = ""
-PR = "r1"
+PR = "r3"
 LICENSE = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
@@ -11,6 +11,11 @@ SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
 S = "${WORKDIR}/wget-${PV}"
 
 inherit autotools gettext
+
+EXTRA_OECONF = "--enable-ipv6"
+
+# The unslung kernel does not support ipv6
+EXTRA_OECONF_unslung = ""
 
 do_configure () {
 	if [ ! -e acinclude.m4 ]; then
