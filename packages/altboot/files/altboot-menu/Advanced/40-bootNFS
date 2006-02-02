@@ -23,7 +23,7 @@ run_module() {
 	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"	
 
 	echo -n "Mounting /proc..." >/dev/tty0
-	mount /proc >/dev/tty0 2>&1 && echo ok  >/dev/tty0 || echo failed
+	mount /proc >/dev/tty0 >/dev/null 2>&1 && echo ok  >/dev/tty0 || echo failed
 
 	# Needed for NFS
 	/etc/init.d/portmap start >/dev/tty1 2>&1 || die "/etc/init.d/portmap start failed!"
