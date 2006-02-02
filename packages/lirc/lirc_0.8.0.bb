@@ -1,4 +1,9 @@
 DESCRIPTION = "LIRC is a package that allows you to decode and send infra-red signals of many commonly used remote controls."
+DESCRIPTION_append_lirc = " This package contains the lirc daemon, libraries and tools."
+DESCRIPTION_append_lirc-x = " This package contains lirc tools for X11."
+DESCRIPTION_append_lirc-exec = " This package contains a daemon that runs programs on IR signals."
+DESCRIPTION_append_lirc-remotes = " This package contains some config files for remotes."
+DESCRIPTION_append_lirc-nslu2example = " This package contains a working config for RC5 remotes and a modified NSLU2."
 SECTION = "console/network"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
@@ -12,17 +17,20 @@ RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 PR = "r1"
 
-SRC_URI = "http://lirc.sourceforge.net/software/snapshots/lirc-0.8.0pre4.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lircd.init file://lircmd.init"
 SRC_URI_append_nslu2 = " file://lircexec.init \
            file://lircd.conf_nslu2 file://lircrc_nslu2"
 
-S = "${WORKDIR}/lirc-0.8.0pre4"
+S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools module-base update-rc.d
 
+INITSCRIPT_PACKAGES = "lirc lirc-exec"
 INITSCRIPT_NAME = "lircd"
 INITSCRIPT_PARAMS = "defaults 20"
+INITSCRIPT_NAME_lirc-exec = "lircexec"
+INITSCRIPT_PARAMS_lirc-exec = "defaults 21"
 
 include lirc-config.inc
 
@@ -40,26 +48,13 @@ do_install_append() {
 	install ${WORKDIR}/lircexec.init ${D}${sysconfdir}/init.d/lircexec
         install -d ${D}${datadir}/lirc/
         cp -pPR ${S}/remotes ${D}${datadir}/lirc/
+	rm -rf ${D}/dev
 }
 
 do_install_append_nslu2() {
 	install -d ${D}${sysconfdir}
-	# These are example configs for RC5 remotes and a NSLU2.
-	# As RC5 is very common, it should work for many people out of the box.
-        # The timings are for a de-underclocked NSLU2.
 	install ${WORKDIR}/lircd.conf_nslu2 ${D}${sysconfdir}/lircd.conf
 	install ${WORKDIR}/lircrc_nslu2 ${D}${sysconfdir}/lircrc
-}
-
-pkg_postinst_lirc-exec() {
-	if test "x$D" != "x"; then D="-r $D"; else D="-s"; fi
-	update-rc.d $D lircexec defaults 20
-}
-pkg_prerm_lirc-exec() {
-	if test "x$D" != "x"; then D="-r $D"; else /etc/init.d/lircexec stop; fi
-}
-pkg_postrm_lirc-exec() {
-	update-rc.d $D lircexec remove
 }
 
 PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
