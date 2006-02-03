@@ -5,9 +5,8 @@ DEPENDS = "expat freetype freetype-native zlib fontconfig-native"
 
 SRC_URI = "http://pdx.freedesktop.org/fontconfig/release/fontconfig-${PV}.tar.gz \
            file://fc-glyphname.patch;patch=1 \
-           file://fc-lang.patch;patch=1 \
-	   file://local.conf"
-PR = "r2"
+           file://fc-lang.patch;patch=1"
+PR = "r3"
 
 PACKAGES =+ "fontconfig-utils"
 FILES_fontconfig-utils = "${bindir}/*"
@@ -30,6 +29,5 @@ do_stage () {
 
 do_install () {
 	autotools_do_install
-	install -m 0644 ${WORKDIR}/local.conf ${D}${sysconfdir}/fonts/local.conf
 }
 
