@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r41"
+PR = "r42"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -128,6 +128,23 @@ do_install_append_openslug() {
 	install -m 0755 -d ${D}/root
 	ln -s ../root ${D}/home/root
 }
+
+
+#some familiar stuff below
+do_install_append_familiar() {
+	mkdir -p ${D}/${SYSCONFDIR}/default/volatiles
+	echo "l root root 644 /etc/resolv.conf /var/run/resolv.conf" > ${D}/${SYSCONFDIR}/default/volatiles/01_resolv.conf
+}
+
+
+pkg_postinst_familiar() {
+#!/bin/sh
+/etc/init.d/populate-volatile.sh
+}
+
+DEPENDS_append_familiar = " initscripts" 
+RDEPENDS_append_familiar = " initscripts (>= 1.0-r60)"
+
 
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
