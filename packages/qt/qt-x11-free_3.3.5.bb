@@ -4,8 +4,6 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
-PROVIDES = "qt3x11"
 PR = "r10"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
@@ -14,6 +12,10 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
 inherit qmake-base qt3x11
+
+DEPENDS = "uicmoc3-native freetype x11 xft xext libxrender libxrandr libxcursor mysql"
+PROVIDES = "qt3x11"
+
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${HOST_SYS}/qt3"
