@@ -1,30 +1,41 @@
---- busybox-1.00/.pc/udhcpscript.patch/examples/udhcp/simple.script	2004-10-13 00:18:05.000000000 -0700
-+++ busybox-1.00/examples/udhcp/simple.script	2005-06-05 15:08:28.432605118 -0700
-@@ -1,40 +1,101 @@
+diff -rup busybox-1.01/.pc/udhcpscript.patch/examples/udhcp/simple.script busybox-1.01/examples/udhcp/simple.script
+--- busybox-1.01/examples/udhcp/simple.script	1970-01-01 00:00:00.000000000 +0000
++++ busybox-1.01/examples/udhcp/simple.script	1970-01-01 00:00:00.000000000 +0000
+@@ -1,40 +1,129 @@
  #!/bin/sh
 +# slugos UDHCP client script
-+# this must set the HW address (MAC) on the interface
 +#
 +. /etc/default/functions
- 
--# udhcpc script edited by Tim Riker <Tim@Rikers.org>
- 
--[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
++
 +echodns(){
 +	local dns
 +	if test $# -gt 0
 +	then
 +		for dns in "$@"
 +		do
-+			echo "nameserver $dns"
++			echo "nameserver $dns #dhcp:$interface"
 +		done
 +	fi
 +}
-+
-+# Output the correct contents for resolv.conf
+ 
+-# udhcpc script edited by Tim Riker <Tim@Rikers.org>
++# Output the correct contents for resolv.conf based on
++# the current one and any new information
 +mkresolv() {
-+	test -n "$domain" && echo "search $domain"
++	local rmdomain
++	rmdomain=
++	# last search takes precedence, so a user
++	# specified search in resolv.conf is retained
++	test -n "$domain" && {
++		echo "search $domain #dhcp"
++		rmdomain='|search [^ ]* #dhcp'
++	}
++	# first nameserver takes precedence, use a user
++	# specified nameserver in preference then the
++	# new ones
++	egrep -v '^(nameserver [^ ]* #dhcp:.*'"$rmdomain"')$' "$1"
 +	echodns $dns
++	egrep '^nameserver [^ ]* #dhcp:.*$' "$1" | egrep -v :"$interface"'$'
 +}
 +
 +# checksum of a file (or stdin if -)
@@ -32,8 +43,25 @@
 +	md5sum $1 2>/dev/null | sed -n 's/^\([0-9A-Za-z]*\).*$/\1/p'
 +}
 +
++# update resolv.conf for $interface using $domain and $dns
++updresolv() {
++	local md5old md5new resolv
++	md5old="$(md5strm /etc/resolv.conf)"
++	resolv="$(mkresolv /etc/resolv.conf)"
++	md5new="$(echo "$resolv" | md5strm -)"
++	test "$md5old" != "$md5new" && echo "$resolv" >/etc/resolv.conf
++}
++
++unroute() {
++	# called to deconfig the interface
++	while route del default gw 0.0.0.0 dev $interface 2>/dev/null
++	do
++		:
++	done
++}
++
 +bind() {
-+	local B N metric i olddomain
++	local B N metric i olddomain resolv
 +	B=
 +	test -n "$broadcast" && B="broadcast $broadcast"
 +	N=
@@ -45,21 +73,15 @@
 +	# between each (this is somewhat arbitrary)
 +	if test -n "$router"
 +	then
-+		while route del default gw 0.0.0.0 dev $interface 2>/dev/null
-+		do
-+			:
-+		done
- 
--RESOLV_CONF="/etc/resolv.conf"
--[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
--[ -n "$subnet" ] && NETMASK="netmask $subnet"
++		unroute
 +		metric=0
 +		for i in $router
 +		do
 +			route add default gw "$i" dev "$interface" metric $((metric++))
 +		done
 +	fi
-+
+ 
+-[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
 +	olddomain=
 +	test -r /etc/defaultdomain && olddomain="$(cat /etc/defaultdomain)"
 +	if test -n "$domain" -a "$domain" != "$olddomain"
@@ -68,12 +90,11 @@
 +		# and update the kernel view too
 +		echo "$domain" >/proc/sys/kernel/domainname
 +	fi
-+
-+	# Update /etc/resolv.conf to reflect domain and dns information,
-+	# this always clears resolv.conf if none is given
-+	md5old="$(md5strm /etc/resolv.conf)"
-+	md5new="$(mkresolv | md5strm -)"
-+	test "$md5old" != "$md5new" && mkresolv >/etc/resolv.conf
+ 
+-RESOLV_CONF="/etc/resolv.conf"
+-[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+-[ -n "$subnet" ] && NETMASK="netmask $subnet"
++	updresolv
 +}
  
  case "$1" in
@@ -96,6 +117,14 @@
 -			done
 +deconfig)
 +	# Bring the interface up (without inet at this point)
++	# Remove the resolver information because deconfig is called
++	# on leasefail and we need to remove this interface at that
++	# point to ensure the machine remains visible on another
++	# interface!
++	domain=
++	dns=
++	unroute
++	updresolv
 +	ifconfig "$interface" up;;
 +
 +renew|bound)
