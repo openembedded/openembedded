@@ -3,11 +3,12 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
-	file://makefile.patch;patch=1" 
+	file://makefile.patch;patch=1 \
+	file://firmware.patch;patch=1" 
 
 S = "${WORKDIR}/zd1211-driver-${PV}"
 
