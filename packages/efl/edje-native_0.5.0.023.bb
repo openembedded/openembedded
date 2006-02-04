@@ -18,6 +18,8 @@ do_configure_prepend() {
         sed -i 's:EMBRYO_PREFIX"/bin:"${STAGING_BINDIR}:' ${S}/src/bin/edje_cc_out.c
 #	sed -i 's:/usr/bin/cpp:${STAGING_DIR}/cross/bin/${REAL_TARGET_SYS}-cpp:' ${S}/src/bin/edje_cc_parse.c
 #	sed -i 's:/usr/bin/gcc:${STAGING_DIR}/cross/bin/${REAL_TARGET_SYS}-gcc:' ${S}/src/bin/edje_cc_parse.c
+	sed -i 's:cpp -I:/usr/bin/cpp -I:' ${S}/src/bin/edje_cc_parse.c
+	sed -i 's:gcc -I:/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
 }
 
 do_stage_append() {
