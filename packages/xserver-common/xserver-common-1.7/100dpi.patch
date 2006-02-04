@@ -1,0 +1,27 @@
+--- /tmp/Xserver	2006-02-04 01:02:51.095272576 +0100
++++ xserver-common-1.7/X11/Xserver	2006-02-04 01:03:08.315654680 +0100
+@@ -46,10 +46,10 @@
+ 		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@90" ;;
+ 	"HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")
+ 		ARGS="$ARGS -dpi 100 -rgba vbgr -screen 320x240@270" ;;
+-	"HP iPAQ H5400" | "HP iPAQ H2200")
++	"HP iPAQ H5400" | "HP iPAQ H2100")
+ 		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
+         "HP iPAQ HX4700")
+-                ARGS="$ARGS -dpi 200" ;;
++                ARGS="$ARGS -dpi 100" ;;
+ 	"Ramses")
+ 		# What is this "vt2" in aid of?
+ 		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
+@@ -60,9 +60,9 @@
+ 		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@270"
+ 		;;
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+-		ARGS="$ARGS -dpi 200 -rgba rgb" ;;
++		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
+ 	"SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
+-		ARGS="$ARGS -dpi 200 -rgba rgb -screen 480x640@270" ;;
++		ARGS="$ARGS -dpi 100 -rgba rgb -screen 480x640@270" ;;
+ 	"Simpad")
+ 		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
+ 	"Generic OMAP1510/1610/1710")
