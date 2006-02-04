@@ -5,6 +5,7 @@ RDEPENDS += "libemotion-themes libemotion-plugins"
 PR = "r2"
 
 #FIXME: Needs patch not to build the examples when building against ecore-fb, because the examples depend on ecore-x11
+DEFAULT_PREFERENCE = "-1"
 
 inherit efl
 

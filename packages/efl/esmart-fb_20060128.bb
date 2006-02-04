@@ -4,7 +4,8 @@ PR = "r0"
 SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/esmart;date=${PV}"
 S = "${WORKDIR}/esmart"
 
-SRC_URI += "file://disable-x-only-features.patch;patch=1"
+SRC_URI += "file://disable-x-only-features.patch;patch=1 \
+            file://compile-fix.patch;patch=1"
 
 myheaders = "esmart_container/Esmart_Container.h \
              esmart_draggies/Esmart_Draggies.h \
