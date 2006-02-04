@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r3"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -25,16 +25,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_gcc4_fix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r3.patch;patch=1 \
-           ${RPSRC}/led_core-r11.patch;patch=1 \
-           ${RPSRC}/led_triggers-r9.patch;patch=1 \
-           ${RPSRC}/led_trig_timer-r4.patch;patch=1 \
+           ${RPSRC}/led_core-r12.patch;patch=1 \
+           ${RPSRC}/led_triggers-r10.patch;patch=1 \
+           ${RPSRC}/led_trig_timer-r5.patch;patch=1 \
            ${RPSRC}/led_trig_sharpsl_pm-r4a.patch;patch=1 \
-           ${RPSRC}/led_zaurus-r8.patch;patch=1 \
-           ${RPSRC}/led_locomo-r5.patch;patch=1 \
-           ${RPSRC}/led_ixp4xx-r0.patch;patch=1 \
-           ${RPSRC}/led_tosa-r2.patch;patch=1 \	   
-           ${RPSRC}/led_ide-r2.patch;patch=1 \
+           ${RPSRC}/led_zaurus-r9.patch;patch=1 \
+           ${RPSRC}/led_locomo-r6.patch;patch=1 \
+           ${RPSRC}/led_ixp4xx-r1.patch;patch=1 \
+           ${RPSRC}/led_tosa-r3.patch;patch=1 \	   
+           ${RPSRC}/led_ide-r3.patch;patch=1 \
            ${RPSRC}/led_nand-r2.patch;patch=1 \
+           ${RPSRC}/ide_end_request-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/pxa_rtc-r3.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
@@ -71,7 +72,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
            ${RPSRC}/pxa_clocks-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-do-r1.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/jl1/pxa-linking-bug.patch;patch=1 \
