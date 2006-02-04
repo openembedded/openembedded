@@ -2,8 +2,10 @@ inherit gpe pkgconfig
 
 DESCRIPTION = "Minipredict is a app that sits above the dock, e.g. mbdock, and suggests words for completion."
 DEPENDS = "x11 xext gtk+ libdictionary zlib"
+RDEPENDS = "libdictionary"
 SECTION = "gpe"
 PRIORITY = "optional"
+PR = "r1"
 
 SRC_URI = "http://handhelds.org/~paxanima/files/${PN}.tar.gz \
 	   file://fix-makefile.patch;patch=1 \
