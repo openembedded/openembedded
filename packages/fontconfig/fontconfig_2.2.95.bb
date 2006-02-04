@@ -6,11 +6,14 @@ DEPENDS = "expat freetype freetype-native zlib fontconfig-native"
 SRC_URI = "http://pdx.freedesktop.org/fontconfig/release/fontconfig-${PV}.tar.gz \
            file://fc-glyphname.patch;patch=1 \
            file://fc-lang.patch;patch=1"
-PR = "r3"
+PR = "r4"
 
 PACKAGES =+ "fontconfig-utils"
 FILES_fontconfig-utils = "${bindir}/*"
-AUTO_LIBNAME_PKGS = "fontconfig-utils"
+
+# Hacks to work around broken debian.bbclass
+RPROVIDES = "libfontconfig-utils"
+PKG_fontconfig-utils = "fontconfig-utils"
 
 S = "${WORKDIR}/fontconfig-${PV}"
 
