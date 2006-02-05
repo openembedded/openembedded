@@ -66,7 +66,6 @@ SLUGOS_PACKAGES = "\
 	gnu-config \
 	gphoto2 \
 	grep \
-	groff \
 	gtk-doc \
 	gzip \
 	ifupdown \
