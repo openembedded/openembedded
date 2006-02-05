@@ -12,7 +12,6 @@ PACKAGES = "\
     gpe-task-games \ 
     gpe-task-connectivity \
     gpe-task-apps-extra \
-    gpe-task-games \
     gpe-task-web \
     gpe-task-desktopapps \
     gpe-task-sectest"
