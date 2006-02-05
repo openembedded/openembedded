@@ -29,12 +29,10 @@ then
 		mount "$@" -U "$UUID" /mnt ||
 		mount "$@" "$device" /mnt
 	then
-		# checkmount checks for sh, init and no
-		# .recovery plus either mnt or initrd
-		if checkmount /mnt && :>/mnt/.recovery
+		# checkmount checks for sh, chroot, init
+		# and /mnt (i.e. /mnt/mnt in this case)
+		if checkmount /mnt
 		then
-			# sync to ensure .recovery is written
-			sync
 			# pivot to /initrd if available, else /mnt
 			cd /
 			if test -d /mnt/initrd
