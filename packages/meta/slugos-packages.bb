@@ -66,6 +66,7 @@ SLUGOS_PACKAGES = "\
 	gnu-config \
 	gphoto2 \
 	grep \
+	groff \
 	gtk-doc \
 	gzip \
 	ifupdown \
@@ -162,7 +163,6 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	groff \
 	icecast \
 	irssi \
 	pvrusb2-mci \
