@@ -1,12 +1,13 @@
-PR = "r0"
+PR = "r1"
 
 inherit gpe
 
 DESCRIPTION = "GPE infrared communication applet"
 DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex irda-utils dbus"
-RDEPENDS = "libopenobex-1.0-1 irda-utils"
+RDEPENDS = "irda-utils"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 LICENSE = "GPL"
 
+SRC_URI += "file://dbus-new-api.patch;patch=1"

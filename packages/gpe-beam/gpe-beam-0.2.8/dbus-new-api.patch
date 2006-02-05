@@ -1,0 +1,76 @@
+--- gpe-beam-0.2.7/dbus.c.orig	2005-08-29 21:05:28 +0200
++++ gpe-beam-0.2.7/dbus.c	2005-08-29 21:07:11 +0200
+@@ -40,7 +40,11 @@
+     return obex_client_handle_dbus_request (connection, message);
+   
+   if (dbus_message_is_signal (message,
++#ifndef DBUS_INTERFACE_LOCAL
+                               DBUS_INTERFACE_ORG_FREEDESKTOP_LOCAL,
++#else
++                              DBUS_INTERFACE_LOCAL,
++#endif
+                               "Disconnected"))
+     exit (0);
+   
+@@ -70,10 +70,18 @@
+ 
+       dbus_connection_register_object_path (connection, object_path, &dbus_obex_vtable, NULL);
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+       dbus_bus_acquire_service (connection, SERVICE_NAME, 0, &error);
++#else
++      dbus_bus_request_name (connection, SERVICE_NAME, 0, &error);
++#endif
+       if (dbus_error_is_set (&error))
+ 	{
++#ifndef DBUS_INTERFACE_LOCAL
+ 	  gpe_error_box_fmt (_("Failed to acquire service: %s"), error.message);
++#else
++	  gpe_error_box_fmt (_("Failed to request name: %s"), error.message);
++#endif
+ 	  dbus_error_free (&error);
+ 	}
+     }
+--- gpe-beam-0.2.7/obexclient-dbus.c.orig	2005-08-29 21:05:33 +0200
++++ gpe-beam-0.2.7/obexclient-dbus.c	2005-08-29 21:10:00 +0200
+@@ -73,7 +73,11 @@
+   if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+     goto wrong_args;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   filename = dbus_message_iter_get_string (&iter);
++#else
++  dbus_message_iter_get_basic (&iter, &filename);
++#endif
+ 
+   if (!dbus_message_iter_next (&iter))
+     goto wrong_args;
+@@ -81,16 +81,28 @@
+   if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+     goto wrong_args;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   mime_type = dbus_message_iter_get_string (&iter);
++#else
++  dbus_message_iter_get_basic (&iter, &mime_type);
++#endif
+ 
+   if (!dbus_message_iter_next (&iter))
+     goto wrong_args;
+   
+   if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_ARRAY
++#ifndef DBUS_INTERFACE_LOCAL
+       || dbus_message_iter_get_array_type (&iter) != DBUS_TYPE_BYTE)
++#else
++      || dbus_message_iter_get_element_type (&iter) != DBUS_TYPE_BYTE)
++#endif
+     goto wrong_args;
+ 
++#ifndef DBUS_INTERFACE_LOCAL
+   dbus_message_iter_get_byte_array (&iter, &data, &len);
++#else
++  dbus_message_iter_get_fixed_array (&iter, &data, &len);
++#endif
+ 
+   reply = dbus_message_new_method_return (message);
+   if (!reply)
