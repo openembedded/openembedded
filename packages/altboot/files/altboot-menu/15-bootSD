@@ -17,43 +17,11 @@ run_module() {
 	
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
 	
-	echo -n "Mounting rootfs rw..." >/dev/tty0
-	mount -o remount,rw / >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount -o remount,rw / failed"
+	# Mount /proc, etc
+	init_rootfs
 
-	mount proc -t proc /proc >/dev/tty0 2>&1
+	mount_sd
 
-	echo -n "Generating device files..." >/dev/tty0
-	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
-
-	# We can't trust that the SD device file is there when running kernel 2.6 w/ udev
-	# and starting udev at this point may not be the best idea...
-
-	if `uname -r | grep -q "2.6"`
-	then
-		#Let's just assume the device file name never changes...
-		dev_no="`echo "$SD_DEVICE" | sed -n "s/\/dev\/mmcblk\(.*\)p\(.*\)/\1/p"`"
-		part_no="`echo "/dev/mmcblk0p1" | sed -n "s/\/dev\/mmcblk\(.*\)p\(.*\)/\2/p"`"
-		! test -e /dev/mmcblk${dev_no} && mknod /dev/mmcblk${dev_no} b 254 0
-		! test -e /dev/mmcblk${dev_no}p${part_no} && mknod /dev/mmcblk${dev_no}p${part_no} b 254 $part_no				
-	fi
-	
-	# Kernel 2.6 has the SD driver compiled into the kernel
-	if test -n "$SD_KERNEL_MODULE"	
-	then
-		echo -n "Loading SD kernel module..."
-		/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
-	else
-		echo "No SD kernel module, configured, assuming it's build-in"
-	fi
-
-	echo -n "Mounting $SD_MOUNTPOINT..."  >/dev/tty0
-	/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
-		
-	echo ""
-
-	# Give the SD and CF mounting some time. This is a must for SD			
-	sleep 2
-	
 	# Check for a real fs and loop-images.
 	check_target "$SD_MOUNTPOINT" >/dev/tty0
 		
