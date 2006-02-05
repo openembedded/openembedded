@@ -4,7 +4,7 @@ DESCRIPTION = "A console utility to make a beep noise"
 SECTION = "console/utils"
 LICENSE = "GPL"
 MAINTAINER = "John Bowler <jbowler@nslu2-linux.org>"
-PR = "r1"
+PR = "r2"
 DEPENDS = "install-native"
 
 SRC_URI  = "http://johnath.com/beep/beep-${PV}.tar.gz"
@@ -24,7 +24,7 @@ BINDIR_slugos = "${base_bindir}"
 
 do_install() {
 	# this is easier than patching the Makefile...
-	install -d "${D}${bindir}"
+	install -d "${D}${BINDIR}"
 	install -c -s -m 755 beep "${D}${BINDIR}/beep"
 	install -d "${D}${mandir}/man1"
 	install -c -m 644 beep.1.gz "${D}${mandir}/man1/beep.1.gz"
