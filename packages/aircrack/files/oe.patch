@@ -1,0 +1,10 @@
+diff -ur aircrack-2.41-orig/Makefile aircrack-2.41/Makefile
+--- aircrack-2.41-orig/Makefile	2005-11-22 13:09:39.000000000 -0500
++++ aircrack-2.41/Makefile	2005-12-12 19:54:29.000000000 -0500
+@@ -1,5 +1,4 @@
+-CC		= gcc
+-CFLAGS          = -g -W -Wall -O2
++CFLAGS          = -g -W -Wall -O3
+ OPTFLAGS        = -D_FILE_OFFSET_BITS=64 -D_MAJ=2 -D_MIN=41
+ 
+ prefix          = /usr/local

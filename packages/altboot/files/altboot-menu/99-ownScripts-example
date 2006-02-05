@@ -40,14 +40,9 @@ run_module() {
 	# The following lines mount a SD card on 2.4-series kernels on a Zaurus
 	
 	##########################################
-	
-	
-	echo -n "Mounting rootfs rw..." >/dev/tty0
-	mount -o remount,rw / >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount -o remount,rw / failed"
-
-	echo -n "Generating device files..." >/dev/tty0
-	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
-
+		
+	# Mount /proc, etc
+	init_rootfs
 
 	echo -n "Loading SD kernel module..."
 	/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"

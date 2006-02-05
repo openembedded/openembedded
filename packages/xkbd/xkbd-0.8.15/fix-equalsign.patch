@@ -1,0 +1,24 @@
+diff -upr xkbd-0.8.15.orig/data/en_GB.qwerty.tabletpc.xkbd.in xkbd-0.8.15/data/en_GB.qwerty.tabletpc.xkbd.in
+--- xkbd-0.8.15.orig/data/en_GB.qwerty.tabletpc.xkbd.in	2003-06-30 19:58:35.000000000 +0100
++++ xkbd-0.8.15/data/en_GB.qwerty.tabletpc.xkbd.in	2006-02-04 10:59:19.000000000 +0000
+@@ -131,7 +131,7 @@ button_style rounded
+ 		default  +
+ 		default_ks  plus
+ 		shift  =
+-		shift_ks KP_Equal
++		shift_ks equal
+ 	</key>
+ 	<key>
+ 		default <--
+diff -upr xkbd-0.8.15.orig/data/en_GB.qwerty.xkbd.in xkbd-0.8.15/data/en_GB.qwerty.xkbd.in
+--- xkbd-0.8.15.orig/data/en_GB.qwerty.xkbd.in	2003-08-10 18:46:29.000000000 +0100
++++ xkbd-0.8.15/data/en_GB.qwerty.xkbd.in	2006-02-04 10:59:10.000000000 +0000
+@@ -131,7 +131,7 @@ button_style square
+ 		default  +
+ 		default_ks  plus
+ 		shift  =
+-		shift_ks KP_Equal
++		shift_ks equal
+ 	</key>
+ 	<key>
+ 		img  @pkgdatadir@/img/backspace.xpm

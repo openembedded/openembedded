@@ -1,0 +1,11 @@
+--- entrance/data/config/build_config.sh.in~	2006-01-30 07:01:47.000000000 -0800
++++ entrance/data/config/build_config.sh.in	2006-02-01 22:22:04.000000000 -0800
+@@ -3,7 +3,7 @@
+ rm -f $DB
+ 
+ # set auth to 1 for pam, 2 for shadow
+-ecore_config -c $DB  -k /entrance/auth -i @auth_mode@
++ecore_config -c $DB  -k /entrance/auth -i 0
+ 
+ # uncomment the below to enable experimental OpenGL hardware acceleration
+ #ecore_config -c $DB -k /entrance/engine -i 1
