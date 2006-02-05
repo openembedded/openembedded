@@ -8,6 +8,7 @@
 
 
 test -f /usr/bin/irexec || exit 0
+test -f /etc/lircrc || exit 0
 
 case "$1" in
   start)

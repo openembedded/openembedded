@@ -6,6 +6,9 @@ RRECOMMENDS = "wlan-ng-utils"
 LICENSE = "GPL"
 PR = "r1"
 
+# 0.2.1-pre works with the tosa internal wlan chipset, while 0.2.2 does not :/
+DEFAULT_PREFERENCE_tosa = "-1"
+
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
 	file://msleep-vs-mdelay.patch;patch=1 \

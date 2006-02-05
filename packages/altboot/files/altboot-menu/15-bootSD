@@ -15,10 +15,12 @@ die() {
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 	
-	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
 	
 	echo -n "Mounting rootfs rw..." >/dev/tty0
 	mount -o remount,rw / >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount -o remount,rw / failed"
+
+	mount proc -t proc /proc >/dev/tty0 2>&1
 
 	echo -n "Generating device files..." >/dev/tty0
 	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
