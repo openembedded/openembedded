@@ -5,10 +5,11 @@
 #
 # load the utility functions unless this script is being called
 # just to load its own functions.
-test "$1" != leds && {
-	. /etc/default/rcS
-	. /etc/default/functions
-}
+case "$1" in
+leds)	;;
+*)	. /etc/default/rcS
+	. /etc/default/functions;;
+esac
 
 #
 # led_set led-dir off|on|slow|fast|panic|blink|flash|user|*
@@ -18,7 +19,7 @@ test "$1" != leds && {
 led_user_default(){
 	case "$(machine)" in
 	nslu2)	echo -n "cpu-idle";;
-	*)	echo -n "cpu-activity";;
+	*)	echo -n "cpu";;
 	esac
 }
 #
@@ -41,7 +42,7 @@ led_set(){
 		off|on)		echo -n none
 
 				case "$setting" in
-				on)	echo -n 100;;
+				on)	echo -n 255;;
 				off)	echo -n 0;;
 				esac >"$1/brightness";;
 
@@ -49,23 +50,23 @@ led_set(){
 				echo -n timer
 
 				case "$setting" in
-				flash)	echo -n 727;;
-				blink)	echo -n 72;;
-				slow)	echo -n 400;;
-				fast)	echo -n 100;;
-				panic)	echo -n 50;;
+				flash)	echo -n 0.6;;
+				blink)	echo -n 0.6;;
+				slow)	echo -n 1;;
+				fast)	echo -n 3;;
+				panic)	echo -n 6;;
 				esac >"$1/frequency"
 
 				case "$setting" in
 				flash)	echo -n 10;;
-				blink)	echo -n 1000;;
-				*)	echo -n 100;;
-				esac >"$1/duty_cycle";;
+				blink)	echo -n 90;;
+				*)	echo -n 50;;
+				esac >"$1/duty";;
 
-		cpu-idle)	echo -n cpu-idle
+		cpu-idle)	echo -n cpu
 				# these settings work well on NSLU2
-				echo -n 80 >"$1/frequency"
-				echo -n 10 >"$1/duty_cycle";;
+				echo -n on >"$1/idle"
+				echo -n flash >"$1/active";;
 
 		*)		echo -n "$setting";;
 		esac >"$1/trigger"
@@ -195,7 +196,7 @@ leds_help(){
 	echo "    the new state.  'error' or 'panic' means a (potentially)" >&2
 	echo "    recoverable error or an unrecoverable error ('panic') has" >&2
 	echo "    occured." >&2
-	echo "  <led> off|on|slow|fast|panic|blink|flash|user|*" >&2
+	echo "  <led> off|on|slow|fast|panic|blink|flash|user|cpu|cpu-idle" >&2
 	echo "    set the named led to the given display, an arbitrary led" >&2
 	echo "    trigger may be given.  'user' will use the default specified" >&2
 	echo "    in USER_LED from /etc/default/rcS, if not specified a cpu" >&2
@@ -212,7 +213,7 @@ boot|system|user|singleuser|shutdown)
 
 beep)	beep "$@";;
 
-"")	leds_help;;
+""|-*)	leds_help;;
 help)	leds_help;;
 
 leds)	# just load the functions
