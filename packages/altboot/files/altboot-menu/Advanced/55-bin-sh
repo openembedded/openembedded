@@ -8,6 +8,11 @@ run_module() {
 	
 	test "$ASK_PW_ON_BOOT" != "yes" && verify_master_pw >/dev/tty0
 	
+	# Make the system a little bit more usable than a standard init=/bin/sh boot
+	mount -t proc proc /proc >/dev/null 2>&1
+	uname -r | grep -q "2.6." && mount sys -t sysfs /sys
+	mount -o remount,rw /			
+	
 	echo -e "\nBoot system with 'exec /sbin/init 5'\n"
 	while true
 	do
