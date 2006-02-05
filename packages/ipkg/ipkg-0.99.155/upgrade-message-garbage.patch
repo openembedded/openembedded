@@ -1,0 +1,14 @@
+Prevent the output of spurious extra characters from
+the stack.  This patch is in the manner of the rest of
+the code, there is no good reason for this.
+
+--- C/ipkg_install.c	1970-01-01 00:00:00.000000000 +0000
++++ C/ipkg_install.c	1970-01-01 00:00:00.000000000 +0000
+@@ -723,6 +723,7 @@ static int ipkg_install_check_downgrade(
+ 	  return rc;
+      } else {
+       char message_out[15] ;
++      memset(message_out,'\x0',15);
+       if ( message ) 
+           strncpy( message_out,"Upgrading ",strlen("Upgrading ") );
+       else
