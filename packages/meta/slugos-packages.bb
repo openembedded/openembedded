@@ -195,6 +195,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	ctrlproxy \
 	dsniff \
 	iperf \
+	groff \
 	man man-pages \
 	psmisc \
 	screen \
