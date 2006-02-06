@@ -24,7 +24,6 @@ case "`uname -r`" in
 	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
 esac
 
-echo "Using [${ALTBOOT_CFG_FILE}]"
 test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > /dev/tty1
 
 C_RED="\033[31m"

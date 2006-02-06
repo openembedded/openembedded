@@ -161,7 +161,6 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	groff \
 	icecast \
 	irssi \
 	pvrusb2-mci \
@@ -195,6 +194,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	ctrlproxy \
 	dsniff \
 	iperf \
+	groff \
 	man man-pages \
 	psmisc \
 	screen \

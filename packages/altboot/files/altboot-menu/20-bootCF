@@ -17,23 +17,11 @@ run_module() {
 	
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 	
-	echo -n "Mounting rootfs rw..." >/dev/tty0
-	mount -o remount,rw / >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount -o remount,rw / failed"
-
-	echo -n "Generating device files..." >/dev/tty0
-	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
-
+	# Mount /proc, etc
+	init_rootfs
 		
-	echo -n "Mounting /proc..." >/dev/tty0
-	mount /proc >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount /proc failed!"
+	mount_cf
 		
-	/etc/init.d/pcmcia start || die "/etc/init.d/pcmcia/start failed!"
-		
-	echo ""
-
-	# Give the SD and CF mounting some time. This is a must for SD			
-	sleep 2
-	
 	# Check for a real fs and loop-images.
 	check_target "$CF_MOUNTPOINT"
 		

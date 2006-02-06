@@ -35,7 +35,7 @@ single_user_ok() {
 	test "$SULOGIN" = yes -o "$SULOGIN" = ok ||
 		case "$(machine)" in
 		ixdp*|avila|loft)
-			return 0;;
+			test "$SULOGIN" != never;;
 		*)	return 1;;
 		esac
 }
