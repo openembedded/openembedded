@@ -4,6 +4,7 @@
 # Version:	@(#)checkroot.sh  2.84  25-Jan-2002  miquels@cistron.nl
 #
 
+. /etc/default/functions
 . /etc/default/rcS
 
 #
@@ -133,8 +134,15 @@ else
       # Start a single user shell on the console
       if single_user_ok
       then
-	sulogin $CONSOLE
-	reboot -f
+	sulogin -t 600 $CONSOLE
+	# if this exits with SIGALRM (which happens to be 142) the
+	# timeout happened, do not, then, reboot!
+	if test $? -ne 142
+	then
+	  reboot -f
+	else
+	  echo "/etc/init.d/checkroot.sh: sulogin timeout, continuing boot"
+	fi
       else
 	echo "/etc/init.d/checkroot.sh: fsck failed, continuing boot"
       fi

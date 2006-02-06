@@ -11,7 +11,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.7"
+PR := "${PR}.8"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
