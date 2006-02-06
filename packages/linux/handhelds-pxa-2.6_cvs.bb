@@ -6,10 +6,12 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${CVSDATE}"
 #
 KERNEL_CCSUFFIX = "-3.4.4"
 COMPATIBLE_HOST = "arm.*-linux"
+PR = "r2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
+	   file://ide_not_removable-r0.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/kernel26"
