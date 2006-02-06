@@ -11,7 +11,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -29,7 +29,8 @@ EXTRA_OECONF = "--disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
 	        --with-rand-helper=no --without-pam \
 	        --without-zlib-version-check \
 		--with-privsep-path=/var/run/sshd \
-		--sysconfdir=${sysconfdir}/ssh"
+		--sysconfdir=${sysconfdir}/ssh \
+		--with-xauth=/usr/bin/xauth"
 		
 EXTRA_OEMAKE = "'STRIP_OPT='"
 
