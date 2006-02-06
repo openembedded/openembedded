@@ -134,7 +134,6 @@ SLUGOS_PACKAGES = "\
 	samba \
 	sane-backends \
 	sed \
-	setpwc \
 	ssmtp \
 	strace \
 	streamripper \
@@ -166,6 +165,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	icecast \
 	irssi \
 	pvrusb2-mci \
+	setpwc \
 	watchdog \
 	memtester \
 	"
