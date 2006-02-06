@@ -62,7 +62,7 @@ exec 0>&9 9>&-
 # We don't test whether we're running a 2.[0123].x kernel and md
 # since that's plain too old.
 
-if test "$DOSWAP" = yes
+if test "$DOSWAP" != no
 then
 	swaps="$(blkid -t TYPE=swap -o device 2>/dev/null)"
 	if test -n "$swaps"
