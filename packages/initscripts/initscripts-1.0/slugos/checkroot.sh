@@ -130,22 +130,14 @@ else
       echo "CONTROL-D will exit from this shell and REBOOT the system."
       echo
       leds system panic
-      beep -r 5
+      leds beep -r 5
       # Start a single user shell on the console
       if single_user_ok
       then
-	sulogin -t 600 $CONSOLE
-	# if this exits with SIGALRM (which happens to be 142) the
-	# timeout happened, do not, then, reboot!
-	if test $? -ne 142
-	then
-	  reboot -f
-	else
-	  echo "/etc/init.d/checkroot.sh: sulogin timeout, continuing boot"
-	fi
-      else
-	echo "/etc/init.d/checkroot.sh: fsck failed, continuing boot"
+	sulogin -t 300 $CONSOLE
+	# assume the system is ok now...
       fi
+      echo "... continuing boot"
     fi
   else
     echo "*** ERROR!  Cannot fsck root fs because it is not mounted read-only!"
