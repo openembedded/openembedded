@@ -169,7 +169,8 @@ sysled(){
 #
 # beep {arguments}
 #  emit a beep
-#  does nothing if there is no beep executable
+#  does nothing if there is no beep executable, is very
+#  quiet in the presence of errors
 beep(){
 	local arg
 	arg=
@@ -177,7 +178,7 @@ beep(){
 	if test -x /bin/beep
 	then
 		test -c /dev/buzzer && arg="-e /dev/buzzer"
-		/bin/beep $arg "$@"
+		/bin/beep $arg "$@" 2>/dev/null
 	fi
 	return 0
 }

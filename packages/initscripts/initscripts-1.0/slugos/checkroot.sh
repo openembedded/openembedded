@@ -4,6 +4,7 @@
 # Version:	@(#)checkroot.sh  2.84  25-Jan-2002  miquels@cistron.nl
 #
 
+. /etc/default/functions
 . /etc/default/rcS
 
 #
@@ -62,7 +63,7 @@ exec 0>&9 9>&-
 # We don't test whether we're running a 2.[0123].x kernel and md
 # since that's plain too old.
 
-if test "$DOSWAP" = yes
+if test "$DOSWAP" != no
 then
 	swaps="$(blkid -t TYPE=swap -o device 2>/dev/null)"
 	if test -n "$swaps"
@@ -79,6 +80,9 @@ fi
 if test -f /fastboot || test "$ROOTFSCK" != yes
 then
   test "$ROOTFSCK" = yes && echo "Fast boot, no filesystem check"
+elif test ! -x /sbin/fsck -a ! -x /usr/sbin/fsck
+then
+  echo "/etc/init.d/checkroot.sh: no fsck"
 else
   leds disk-1 slow
   #
@@ -128,8 +132,20 @@ else
       leds system panic
       beep -r 5
       # Start a single user shell on the console
-      /sbin/sulogin $CONSOLE
-      reboot -f
+      if single_user_ok
+      then
+	sulogin -t 600 $CONSOLE
+	# if this exits with SIGALRM (which happens to be 142) the
+	# timeout happened, do not, then, reboot!
+	if test $? -ne 142
+	then
+	  reboot -f
+	else
+	  echo "/etc/init.d/checkroot.sh: sulogin timeout, continuing boot"
+	fi
+      else
+	echo "/etc/init.d/checkroot.sh: fsck failed, continuing boot"
+      fi
     fi
   else
     echo "*** ERROR!  Cannot fsck root fs because it is not mounted read-only!"

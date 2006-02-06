@@ -5,6 +5,9 @@
 # Time files in /tmp are kept in days.
 TMPTIME=0
 # Set to yes if you want sulogin to be spawned on bootup
+# Set to ok if the machine supports SULOGIN, otherwise a
+# boot time failure will be ignored unless the system
+# is known to support a serial port
 SULOGIN=no
 # Set to no if you want to be able to login over telnet/rlogin
 # before system startup is complete (as soon as inetd is started)
@@ -21,4 +24,7 @@ FSCKFIX=yes
 # Set DOSWAP to "no" if you do not want all swap to automatically be mounted
 DOSWAP=yes
 # Set ROOTFSCK to "yes" to check the root fs automatically on boot
-ROOTFSCK=yes
+# WARNING: fsck for the file system must be installed and must work
+# before enabling this option, if not your system will drop to single
+# user (sulogin) if SULOGIN is set to yes or ok!
+ROOTFSCK=no
