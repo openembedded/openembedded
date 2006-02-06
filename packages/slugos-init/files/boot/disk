@@ -20,6 +20,8 @@ then
 	# wait if required
 	test "$sleep" -gt 0 && sleep "$sleep"
 	#
+	# proc is needed for UUID mount
+	mount -t proc proc /proc 
 	# Mount read-write because before exec'ing init
 	# If a UUID is given (in the environment) this
 	# is used in preference to the device, but if
