@@ -79,6 +79,9 @@ fi
 if test -f /fastboot || test "$ROOTFSCK" != yes
 then
   test "$ROOTFSCK" = yes && echo "Fast boot, no filesystem check"
+elif test ! -x /sbin/fsck -a ! -x /usr/sbin/fsck
+then
+  echo "/etc/init.d/checkroot.sh: no fsck"
 else
   leds disk-1 slow
   #
@@ -128,8 +131,13 @@ else
       leds system panic
       beep -r 5
       # Start a single user shell on the console
-      /sbin/sulogin $CONSOLE
-      reboot -f
+      if single_user_ok
+      then
+	sulogin $CONSOLE
+	reboot -f
+      else
+	echo "/etc/init.d/checkroot.sh: fsck failed, continuing boot"
+      fi
     fi
   else
     echo "*** ERROR!  Cannot fsck root fs because it is not mounted read-only!"

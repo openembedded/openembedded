@@ -26,6 +26,20 @@ machine(){
 	esac
 }
 #
+# single_user_ok
+#  if the machine is capable of single user interaction return
+#  true, else return false.  The result of this function is
+#  preempted by setting SULOGIN to 'yes' or 'ok' in /etc/default/rcS
+single_user_ok() {
+	# list known good machines in the 'case'
+	test "$SULOGIN" = yes -o "$SULOGIN" = ok ||
+		case "$(machine)" in
+		ixdp*|avila|loft)
+			return 0;;
+		*)	return 1;;
+		esac
+}
+#
 # load_functions "source"
 #  load the functions in '/sbin/source' - relies on /sbin/source being
 #  a shell script and having support for this function.
