@@ -1,0 +1,130 @@
+diff -Nru a/arch/mips/au1000/common/irq.c b/arch/mips/au1000/common/irq.c
+--- a/arch/mips/au1000/common/irq.c	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/au1000/common/irq.c	Fri Feb 27 14:22:51 2004
+@@ -458,7 +458,14 @@
+ 	intc0_req0 |= au_readl(IC0_REQ0INT);
+ 
+ 	if (!intc0_req0) return;
+-
++#if 0
++        /* 
++         * This is no longer required. The find first bit operation
++         * is almost as fast at finding the correct interrupt, whereas
++         * leaving this in adds a small amount of overhead to all other
++         * interrupts and therefore induces more latency which may
++         * actually cause USB problems.
++         */
+ 	/*
+ 	 * Because of the tight timing of SETUP token to reply
+ 	 * transactions, the USB devices-side packet complete
+@@ -469,7 +476,7 @@
+ 		do_IRQ(AU1000_USB_DEV_REQ_INT, regs);
+ 		return;
+ 	}
+-
++#endif
+ 	irq = au_ffs(intc0_req0) - 1;
+ 	intc0_req0 &= ~(1<<irq);
+ 	do_IRQ(irq, regs);
+diff -Nru a/arch/mips/defconfig-bosporus b/arch/mips/defconfig-bosporus
+--- a/arch/mips/defconfig-bosporus	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-bosporus	Fri Feb 27 14:22:51 2004
+@@ -606,8 +606,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-db1000 b/arch/mips/defconfig-db1000
+--- a/arch/mips/defconfig-db1000	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-db1000	Fri Feb 27 14:22:51 2004
+@@ -509,8 +509,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-db1100 b/arch/mips/defconfig-db1100
+--- a/arch/mips/defconfig-db1100	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-db1100	Fri Feb 27 14:22:51 2004
+@@ -516,8 +516,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-db1500 b/arch/mips/defconfig-db1500
+--- a/arch/mips/defconfig-db1500	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-db1500	Fri Feb 27 14:22:51 2004
+@@ -506,8 +506,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-pb1000 b/arch/mips/defconfig-pb1000
+--- a/arch/mips/defconfig-pb1000	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-pb1000	Fri Feb 27 14:22:51 2004
+@@ -569,8 +569,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-pb1100 b/arch/mips/defconfig-pb1100
+--- a/arch/mips/defconfig-pb1100	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-pb1100	Fri Feb 27 14:22:51 2004
+@@ -515,8 +515,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/arch/mips/defconfig-pb1500 b/arch/mips/defconfig-pb1500
+--- a/arch/mips/defconfig-pb1500	Fri Feb 27 14:22:51 2004
++++ b/arch/mips/defconfig-pb1500	Fri Feb 27 14:22:51 2004
+@@ -619,8 +619,6 @@
+ # CONFIG_SERIAL_TXX9_CONSOLE is not set
+ CONFIG_AU1X00_UART=y
+ CONFIG_AU1X00_SERIAL_CONSOLE=y
+-# CONFIG_AU1X00_USB_TTY is not set
+-# CONFIG_AU1X00_USB_RAW is not set
+ # CONFIG_TXX927_SERIAL is not set
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_UNIX98_PTY_COUNT=256
+diff -Nru a/drivers/char/Config.in b/drivers/char/Config.in
+--- a/drivers/char/Config.in	Fri Feb 27 14:22:51 2004
++++ b/drivers/char/Config.in	Fri Feb 27 14:22:51 2004
+@@ -91,14 +91,6 @@
+ 	 if [ "$CONFIG_AU1X00_UART" = "y" ]; then
+ 	    bool '        Enable Au1x00 serial console' CONFIG_AU1X00_SERIAL_CONSOLE
+          fi
+-         dep_tristate '  Au1x00 USB TTY Device support' CONFIG_AU1X00_USB_TTY $CONFIG_SOC_AU1X00
+-	    if [ "$CONFIG_AU1000_USB_TTY" != "y" ]; then
+-	       dep_tristate '  Au1x00 USB Raw Device support' CONFIG_AU1X00_USB_RAW $CONFIG_SOC_AU1X00
+-	    fi
+-	    if [ "$CONFIG_AU1X00_USB_TTY" != "n" -o \
+-	         "$CONFIG_AU1X00_USB_RAW" != "n" ]; then
+-		 define_bool CONFIG_AU1X00_USB_DEVICE y
+-	    fi
+       fi
+       bool '  TXx927 SIO support' CONFIG_TXX927_SERIAL 
+       if [ "$CONFIG_TXX927_SERIAL" = "y" ]; then

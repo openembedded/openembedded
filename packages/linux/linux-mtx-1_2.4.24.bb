@@ -26,7 +26,7 @@ SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_
 
 S = "${WORKDIR}/linux"
 
-inherit kernel
+inherit module-base kernel
 
 PACKAGE_ARCH = "mtx-1"
 ARCH = "mips"

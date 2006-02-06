@@ -1,0 +1,12 @@
+--- linux.old/arch/mips/au1000/mtx-1/board_setup.c	2005-08-10 15:22:14.014147000 +0200
++++ linux/arch/mips/au1000/mtx-1/board_setup.c	2005-08-10 15:26:34.346571264 +0200
+@@ -78,8 +78,7 @@
+ 
+ 	// initialize sys_pinfunc:
+ 	// disable second ethernet port (SYS_PF_NI2)
+-	// set U3/GPIO23 to GPIO23 (SYS_PF_U3)
+-	au_writel( SYS_PF_NI2 | SYS_PF_U3, SYS_PINFUNC );
++	au_writel( SYS_PF_NI2, SYS_PINFUNC );
+ 
+ 	// initialize GPIO
+ 	au_writel( 0xFFFFFFFF, SYS_TRIOUTCLR );
