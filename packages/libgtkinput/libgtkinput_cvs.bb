@@ -2,7 +2,7 @@ LICENSE = "LGPL"
 inherit gpe autotools
 
 CVSDATE_${PN} = "20060122"
-PV = "0.1+cvs${CVSDATE}"
+PV = "0.1+cvs${SRCDATE}"
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN} \
 	   file://gtkinput.sh"
 

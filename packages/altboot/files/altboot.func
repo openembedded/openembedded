@@ -374,7 +374,7 @@ mount_home(){
 			home_fstab="`grep "/home " /etc/fstab`"
 			home_dev="`echo "$home_fstab" | awk '{print $1}'`"
 			home_fs="`echo "$home_fstab" | awk '{print $3}'`"		
-			home_options="`echo "$home_fstan" | awk '{print $4}'`"
+			home_options="`echo "$home_fstab" | awk '{print $4}'`"
 
 			mount -t "$home_fs" -o $home_options "$home_dev" /home
 		fi	

@@ -1,0 +1,12 @@
+--- setpwc-1.1/Makefile.orig	2006-02-06 03:25:11.000000000 +0100
++++ setpwc-1.1/Makefile	2006-02-06 03:25:27.000000000 +0100
+@@ -22,9 +22,6 @@
+ 
+ setpwc: $(OBJS)
+ 	$(CC) -Wall -W $(OBJS) $(LDFLAGS) -o setpwc
+-	strip setpwc
+-	#
+-	# Oh, blatant plug: http://keetweej.vanheusden.com/wishlist.html
+ 
+ install: setpwc
+ 	cp setpwc /usr/bin
