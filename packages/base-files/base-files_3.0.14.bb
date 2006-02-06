@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r43"
+PR = "r44"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -136,14 +136,25 @@ do_install_append_familiar() {
 	echo "l root root 644 /etc/resolv.conf /var/run/resolv.conf" > ${D}/${sysconfdir}/default/volatiles/01_resolv.conf
 }
 
+do_install_append_openzaurus() {
+	mkdir -p ${D}/${sysconfdir}/default/volatiles
+	echo "l root root 644 /etc/resolv.conf /var/run/resolv.conf" > ${D}/${sysconfdir}/default/volatiles/01_resolv.conf
+}
 
 pkg_postinst_familiar() {
 #!/bin/sh
 /etc/init.d/populate-volatile.sh
 }
 
+pkg_postinst_openzaurus() {
+#!/bin/sh
+/etc/init.d/populate-volatile.sh
+}
+
 DEPENDS_append_familiar = " initscripts" 
 RDEPENDS_append_familiar = " initscripts (>= 1.0-r60)"
+DEPENDS_append_openzaurus = " initscripts" 
+RDEPENDS_append_openzaurus = " initscripts (>= 1.0-r60)"
 
 
 PACKAGES = "${PN}-doc ${PN}"
