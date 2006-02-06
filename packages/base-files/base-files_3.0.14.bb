@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r42"
+PR = "r43"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -132,8 +132,8 @@ do_install_append_openslug() {
 
 #some familiar stuff below
 do_install_append_familiar() {
-	mkdir -p ${D}/${SYSCONFDIR}/default/volatiles
-	echo "l root root 644 /etc/resolv.conf /var/run/resolv.conf" > ${D}/${SYSCONFDIR}/default/volatiles/01_resolv.conf
+	mkdir -p ${D}/${sysconfdir}/default/volatiles
+	echo "l root root 644 /etc/resolv.conf /var/run/resolv.conf" > ${D}/${sysconfdir}/default/volatiles/01_resolv.conf
 }
 
 
