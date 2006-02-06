@@ -134,7 +134,6 @@ SLUGOS_PACKAGES = "\
 	samba \
 	sane-backends \
 	sed \
-	setpwc \
 	ssmtp \
 	strace \
 	streamripper \
@@ -162,10 +161,10 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	groff \
 	icecast \
 	irssi \
 	pvrusb2-mci \
+	setpwc \
 	watchdog \
 	memtester \
 	"
@@ -195,6 +194,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	ctrlproxy \
 	dsniff \
 	iperf \
+	groff \
 	man man-pages \
 	psmisc \
 	screen \

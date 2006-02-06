@@ -3,7 +3,10 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPL"
 KV = "${PV}"
-PR = "r3"
+PR = "r11"
+inherit module-base kernel
+
+PROVIDES = "virtual/kernel"
 RDEPENDS = "mtd-utils"
 
 SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
@@ -27,21 +30,29 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://19-kernel-make-depend.diff;patch=1 \
 	file://20-au1x00_ethernet_tx_stats.diff;patch=1 \
 	file://21-mtx-1-watchdog.diff;patch=1 \
+	file://23-mtx-1_watchdog_autotrigger.patch;patch=1 \
+	file://24-mtx-1_sysbtn.patch;patch=1 \
+	file://25-mtx-sio2.diff;patch=1 \
+	file://26-usbd-amd-pb1x00-kit-23may2003-update.diff;patch=1 \
+	file://27-usbd-amd-pb1x00-kit-23may2003-usbd.diff;patch=1 \
+	file://29-au1000-pci-config-clear-errors.diff;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
 
-inherit kernel
-
 COMPATIBLE_HOST = "mipsel.*-linux"
-PACKAGE_ARCH = "mtx-1"
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-1.flash.bin"
 KERNEL_IMAGETYPE = "zImage.flash"
 KERNEL_IMAGEDEST = "tmp"
 
+MTX_KERNEL_NON_PCI_OHCI = "yes"
+
 do_configure_prepend() {
         install -m 0644 ${WORKDIR}/defconfig-mtx-1 ${S}/.config
+	if [ "x${MTX_KERNEL_NON_PCI_OHCI}" == "xyes" ]; then
+		echo "CONFIG_USB_NON_PCI_OHCI=y" >> ${S}/.config
+	fi
 }
 
 pkg_postinst_kernel() {

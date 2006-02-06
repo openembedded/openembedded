@@ -10,6 +10,7 @@ PR = "r2"
 
 SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"
+INHIBIT_PACKAGE_STRIP = "1"
 
 do_install() {
 	(cd ${S}; tar -c --exclude .svn -f - . ) | tar -C ${D} -xpf -

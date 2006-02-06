@@ -6,7 +6,14 @@ PROVIDES += "virtual/esmart"
 inherit efl
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/esmart-${PV}.tar.gz \
-           file://compile-fix.patch;patch=1"
+           cvs://anonymous@thinktux.net/root;module=e17/libs/esmart/m4;date=20060101"
+
+do_configure_prepend() {
+	install -d "${S}/m4"
+	install "${WORKDIR}/m4/"*.m4 "${S}/m4"
+	aclocal -I m4
+}
+
 S = "${WORKDIR}/esmart-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/esmart"
 

@@ -6,9 +6,10 @@ NYLON_STANDARD = "\
 	bridge-utils \
 	dnsmasq \
 	hostap-utils \
+	hostap-daemon \
 	linux-hotplug \
 	ifplugd iproute2 iptables \
-	mobilemesh \
+	madwifi-modules \
 	nylon-scripts \
 	olsrd \
 	ppp pciutils \
@@ -16,7 +17,9 @@ NYLON_STANDARD = "\
 	shorewall \
 	tcpdump \
 	usbutils \
-	wireless-tools"
+	wireless-tools \
+	wpa-supplicant \
+	yamonenv"
 
 DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"

@@ -5,6 +5,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.chillispot.org/download/chillispot-${PV}.tar.gz \
+	file://no-ansi.patch;patch=1 \
 	file://init"
 RRECOMMENDS = "kernel-module-tun"
 
