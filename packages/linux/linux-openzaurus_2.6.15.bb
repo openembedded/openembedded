@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -21,6 +21,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/scoop_cpr_fix-r1.patch;patch=1 \
            ${RPSRC}/pxa2xx_release-r1.patch;patch=1 \
            ${RPSRC}/arm_apm_pm_legacy-r1.patch;patch=1 \
+           ${RPSRC}/arm_checksum_memory-r0.patch;patch=1 \
+           ${RPSRC}/pxa_clocks-r0.patch;patch=1 \
            ${RPSRC}/ide_not_removable-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_gcc4_fix-r0.patch;patch=1 \
@@ -37,7 +39,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/led_nand-r2.patch;patch=1 \
            ${RPSRC}/ide_end_request-r0.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
-           ${RPSRC}/pxa_rtc-r3.patch;patch=1 \
+           ${RPSRC}/rtc_class-r0.patch;patch=1 \
+           ${RPSRC}/rtc_class_pxa-r0.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
@@ -68,9 +71,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/zaurus_keyboard_tweak-r0.patch;patch=1 \
            ${RPSRC}/corgi_bl_cleanup-r2.patch;patch=1 \
            ${RPSRC}/corgi_bl_generic-r2.patch;patch=1 \
-           ${RPSRC}/arm_checksum_memory-r0.patch;patch=1 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
-           ${RPSRC}/pxa_clocks-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
