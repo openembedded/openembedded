@@ -9,6 +9,7 @@ PR = "r1"
 
 SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"
+INHIBIT_PACKAGE_STRIP = "1"
 
 do_install() {
 	install -d ${D}/srv/www/cgi-bin

@@ -6,7 +6,8 @@ NYLON_BASE = "base-files base-passwd bash busybox \
 	nano ncurses netbase \
 	openssh sysvinit \
 	timezones tinylogin"
-	
+
+DEPENDS = "virtual/kernel"
 RDEPENDS = "kernel modutils-depmod modutils-modinfo \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
@@ -17,5 +18,5 @@ IMAGE_LINGUAS = ""
 # we dont need the kernel in the image
 ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"
 
-inherit image_ipk
+inherit image_ipk nylon-image
 LICENSE = MIT
