@@ -2,7 +2,7 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 HOMEPAGE = "http://e2fsprogs.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	file://no-hardlinks.patch;patch=1"
@@ -42,7 +42,7 @@ RDEPENDS_e2fsprogs = "e2fsprogs-blkid e2fsprogs-uuidgen"
 
 PACKAGES =+ "e2fsprogs-blkid e2fsprogs-uuidgen e2fsprogs-e2fsck e2fsprogs-mke2fs e2fsprogs-fsck e2fsprogs-tune2fs"
 FILES_e2fsprogs-blkid = "${base_sbindir}/blkid"
-FILES_e2fsprogs-uuidgen = "${base_sbindir}/uuidgen"
+FILES_e2fsprogs-uuidgen = "${bindir}/uuidgen"
 FILES_e2fsprogs-fsck = "${base_sbindir}/fsck"
 FILES_e2fsprogs-e2fsck = "${base_sbindir}/e2fsck ${base_sbindir}/fsck.ext*"
 FILES_e2fsprogs-mke2fs = "${base_sbindir}/mke2fs ${base_sbindir}/mkfs.ext*"
