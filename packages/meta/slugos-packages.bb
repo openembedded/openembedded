@@ -155,6 +155,9 @@ SLUGOS_PACKAGES = "\
 	wget \
 	wireless-tools \
 	wpa-supplicant \
+	wview-sim wview-vpro wview-wxt510 \
+	wview-sim-mysql wview-vpro-mysql \
+	wview-wxt510-mysql \
 	zd1211 \
 	zip \
 	zlib \
