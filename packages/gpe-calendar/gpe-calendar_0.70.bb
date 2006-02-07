@@ -10,3 +10,6 @@ SECTION = "gpe"
 RDEPENDS = "gpe-icons"
 DESCRIPTION = "GPE calendar is the calendar application of the GPE PIM suite."
 
+do_configure () {
+	autotools_do_configure
+}
