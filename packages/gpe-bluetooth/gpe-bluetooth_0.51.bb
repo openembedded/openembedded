@@ -12,3 +12,7 @@ GPE_TARBALL_SUFFIX= "bz2"
 inherit gpe autotools
 
 FILES_${PN} += '${datadir}/bluez-pin'
+
+do_configure () {
+	autotools_do_configure
+}
