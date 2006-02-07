@@ -5,7 +5,7 @@ LICENSE = "GPL LGPL"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2"
 
-inherit autotools
+inherit autotools binconfig
 
 LDFLAGS += " -L${STAGING_LIBDIR} "
 
@@ -25,3 +25,10 @@ do_compile () {
 do_install () {
 	oe_runmake "DSTROOT=${D}" install
 }
+
+do_stage () {
+	install -d ${STAGING_INCDIR}/cups
+	install ${S}/cups/*.h ${STAGING_INCDIR}/cups/
+	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
+}
+
