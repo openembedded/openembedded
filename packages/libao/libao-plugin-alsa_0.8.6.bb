@@ -6,7 +6,9 @@ PRIORITY = "optional"
 MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 DEPENDS = "alsa-lib libao"
 RDEPENDS = "libao2 (>=${PV})"
-PR = "r1"
+PROVIDES = "libao-alsa"
+PACKAGES = "libao-alsa libao-alsa-dev"
+PR = "r2"
 
 SRC_URI = "http://downloads.xiph.org/releases/ao/libao-${PV}.tar.gz"
 S = "${WORKDIR}/libao-${PV}"
@@ -19,9 +21,10 @@ EXTRA_OECONF = "--disable-esd --disable-esdtest \
 		--disable-arts --disable-nas"
 
 do_stage() {
-	oe_libinstall -so -C src libao ${STAGING_LIBDIR}
+	install -d ${STAGING_LIBDIR}/ao
+	install -d ${STAGING_LIBDIR}/ao/plugins-2
+	oe_libinstall -so -C src/plugins/alsa09/.libs libalsa09 ${STAGING_LIBDIR}/ao/plugins-2
 }
 
-PACKAGES = "libao-alsa-plugin libao-alsa-plugin-dev"
-FILES_libao-alsa-plugin= "${libdir}/ao/plugins-2/libalsa*.so"
-FILES_libao-alsa-plugin-dev += "${libdir}/ao/plugins-2/libalsa*.la"
+FILES_libao-alsa = "${libdir}/ao/plugins-2/libalsa*.so"
+FILES_libao-alsa-dev = "${libdir}/ao/plugins-2/libalsa*.la"
