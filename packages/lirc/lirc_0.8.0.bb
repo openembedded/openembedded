@@ -6,8 +6,7 @@ DESCRIPTION_append_lirc-remotes = " This package contains some config files for 
 DESCRIPTION_append_lirc-nslu2example = " This package contains a working config for RC5 remotes and a modified NSLU2."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-MAINTAINER_nslu2 = "Matthias Goebl <matthias.goebl@goebl.net>"
+MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel libx11 libxau libsm ice"
 DEPENDS_nslu2 = "virtual/kernel lirc-modules"
@@ -15,7 +14,7 @@ RDEPENDS = "lirc-modules"
 RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lircd.init file://lircmd.init"
