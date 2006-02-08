@@ -1,0 +1,18 @@
+--- trunk/libgnomevfs/gnome-vfs-resolve.c.orig	2006-02-08 19:18:43.000000000 +0100
++++ trunk/libgnomevfs/gnome-vfs-resolve.c	2006-02-08 19:21:42.000000000 +0100
+@@ -23,7 +23,6 @@
+ 
+ #include <errno.h>
+ #include <string.h>
+-#include <glib.h>
+ #ifndef G_OS_WIN32
+ /* Keep <sys/types.h> above the network includes for FreeBSD. */
+ #include <sys/types.h>
+@@ -48,6 +47,7 @@
+ #define RELOAD_TIMEVAL 2
+ #endif
+ 
++#include <glib.h>
+ #include <glib-object.h>
+ 
+ #include <libgnomevfs/gnome-vfs-resolve.h>
