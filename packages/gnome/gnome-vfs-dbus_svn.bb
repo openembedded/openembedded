@@ -15,9 +15,8 @@ RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 SRC_URI = "svn://developer.imendio.com/svn/gnome-vfs-dbus;module=trunk;proto=http \
            file://gssapi.patch;patch=1;pnum=1 \
            file://gconftool-lossage.patch;patch=1;pnum=1 \
-	   file://werror_compile.patch;patch=1;pnum=1 \
-	   file://gtk-doc.m4 \
-	   file://gtk-doc.make"
+	   file://gtk-doc.make \
+	   file://glib-after-nameser.patch;patch=1;pnum=1"
 
 EXTRA_OECONF = "--with-ipc=dbus --disable-gtk-doc"
 S = "${WORKDIR}/trunk"
@@ -77,8 +76,6 @@ gnome-vfs-mime.h \
 gnome-vfs-socket-buffer.h"
 
 do_configure_prepend() {
-	mkdir -p m4
-	install ${WORKDIR}/gtk-doc.m4 ./m4/
 	install ${WORKDIR}/gtk-doc.make ./
 }
 
@@ -94,7 +91,7 @@ do_install() {
 	oe_runmake ORBIT_IDL="${ORBIT_IDL_SRC}" DESTDIR="${D}" install
 }
 
-PACKAGES_DYNAMIC = "gnome=vfs-plugin-*"
+PACKAGES_DYNAMIC = "gnome-vfs-plugin-*"
 
 python populate_packages_prepend () {
 	print bb.data.getVar('FILES_gnome-vfs', d, 1)
