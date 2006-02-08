@@ -1,0 +1,30 @@
+--- vpnc-0.3.3.orig/vpnc-script	2005-05-05 19:05:18.000000000 +0200
++++ vpnc-0.3.3/vpnc-script	2006-02-07 23:31:50.000000000 +0100
+@@ -19,6 +19,7 @@
+ #set -x
+ 
+ OS="`uname -s`"
++mkdir -p /var/run/vpnc
+ DEFAULT_ROUTE_FILE=/var/run/vpnc/defaultroute
+ RESOLV_CONF_BACKUP=/var/run/vpnc/resolv.conf-backup
+ 
+@@ -219,7 +220,8 @@
+ 	do_ifconfig
+ 	set_vpngateway_route
+ 	if [ -n "$CISCO_SPLIT_INC" ]; then
+-		for ((i = 0 ; i < CISCO_SPLIT_INC ; i++ )) ; do
++		CISCO_SPLIT_INC0=`expr "$CISCO_SPLIT_INC"  - 1`
++		for i in `seq 0 "$CISCO_SPLIT_INC0"` ; do
+ 			eval NETWORK="\${CISCO_SPLIT_INC_${i}_ADDR}"
+ 			eval NETMASK="\${CISCO_SPLIT_INC_${i}_MASK}"
+ 			eval NETMASKLEN="\${CISCO_SPLIT_INC_${i}_MASKLEN}"
+@@ -239,7 +241,8 @@
+ 
+ do_disconnect() {
+ 	if [ -n "$CISCO_SPLIT_INC" ]; then
+-		for ((i = 0 ; i < CISCO_SPLIT_INC ; i++ )) ; do
++		CISCO_SPLIT_INC0=`expr "$CISCO_SPLIT_INC"  - 1`
++		for i in `seq 0 "$CISCO_SPLIT_INC0"` ; do
+ 			eval NETWORK="\${CISCO_SPLIT_INC_${i}_ADDR}"
+ 			eval NETMASK="\${CISCO_SPLIT_INC_${i}_MASK}"
+ 			eval NETMASKLEN="\${CISCO_SPLIT_INC_${i}_MASKLEN}"

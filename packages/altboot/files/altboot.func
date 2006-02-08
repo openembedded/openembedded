@@ -120,6 +120,7 @@ pivot_image() {
 	losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME || die "losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME failed!"
 	check_fs /dev/loop0 $IMAGE_TYPE
 
+	losetup -d /dev/loop0
 	echo -e "\n* * * Booting rootfs image * * *\n"
 
 
@@ -130,7 +131,7 @@ pivot_image() {
 	fi
 	# If mount fails it has the tendency to spew out a _lot_ of error messages.
 	# We direct the output to /dev/null so the user can see which step actually failed.
-	mount -t $IMAGE_TYPE /dev/loop0 /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"
+	mount -o loop -t $IMAGE_TYPE $1/$IMAGE_PATH/$IMAGE_NAME /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"
 
 	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
 

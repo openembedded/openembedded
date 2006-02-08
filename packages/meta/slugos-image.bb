@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r25"
+PR = "r26"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -111,8 +111,8 @@ python () {
 # LinkSys have made "EraseAll" available, however, (this does overwrite RedBoot)
 # it is a bad idea to produce flash images without a valid RedBoot - that allows
 # an innocent user upgrade attempt to instantly brick the NSLU2.
-PACK_IMAGE_nslu2 = "nslu2_pack_image;"
-PACK_IMAGE_DEPENDS_nslu2 = "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
+PACK_IMAGE += "${@['', 'nslu2_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
+PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'yes']}"
 
 NSLU2_SLUGIMAGE_ARGS ?= ""
 
