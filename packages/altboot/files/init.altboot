@@ -297,10 +297,16 @@ else
 	set_password >/dev/tty0 
 	
 	test "$ASK_PW_ON_BOOT" = "yes" && verify_master_pw >/dev/tty0 
+
+
+	# When started with -force, always print the menu
+	echo "$*" | grep -q "-force" && TIMEOUT=0
+
 	
 	# This timeout works by reading /proc/interrupts to see if the keyboard interrupt
 	# increases while the timer is running. A TIMEOUT of 0 will always launch altboot.	
 	run_timer >/dev/tty1 2>&1
+
 		
 	echo "" >/dev/tty0
 	
