@@ -12,6 +12,8 @@
 # Source function library.
 # . /etc/rc.d/init.d/functions
 
+. /etc/default/sharp_sdmmc
+
 MODULE=sharp_mmcsd_m
 
 usage()
@@ -28,7 +30,7 @@ case "$action" in
 
 start)
     echo -n "Start SD services:"
-	/sbin/modprobe $MODULE >/dev/null
+	/sbin/insmod $MODULE_FILE >/dev/null
 	if [ -s /var/run/sdmgr.pid ]; then
 	    kill -0 `cat /var/run/sdmgr.pid` 2>/dev/null;
 	else
