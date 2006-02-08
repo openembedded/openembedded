@@ -1,9 +1,11 @@
 DESCRIPTION = "Keyboard map"
 SECTION = "base"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+DEPENDS = "initscripts console-tools"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
+PR = "r1"
 
 inherit update-rc.d
 
