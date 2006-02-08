@@ -25,6 +25,3 @@ do_stage () {
 	autotools_stage_all
 }
 
-do_configure () {
-	autotools_do_configure
-}
