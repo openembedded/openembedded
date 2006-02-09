@@ -1,0 +1,74 @@
+A more robust test for swapped RedBoot FIS directory partitions.  This
+changes the test to check the flash_base value for the FIS directory,
+since we know where the FIS directory base is we can work out whether
+the flash address stored in the directory itself is byte swapped under
+most circumstances.  If the value is 0 the directory is at the start
+of the flash and the test fails.  In this case the fallback is to use
+the original test made slightly more robust.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+--- linux-2.6.15/drivers/mtd/redboot.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/mtd/redboot.c	1970-01-01 00:00:00.000000000 +0000
+@@ -91,14 +91,41 @@ static int parse_redboot_partitions(stru
+ 		}
+ 		if (!memcmp(buf[i].name, "FIS directory", 14)) {
+ 			/* This is apparently the FIS directory entry for the
+-			 * FIS directory itself.  The FIS directory size is
+-			 * one erase block; if the buf[i].size field is
+-			 * swab32(erasesize) then we know we are looking at
+-			 * a byte swapped FIS directory - swap all the entries!
+-			 * (NOTE: this is 'size' not 'data_length'; size is
+-			 * the full size of the entry.)
++			 * FIS directory itself.  To discover whether the entries
++			 * in this are native byte sex or byte swapped look at
++			 * the flash_base field - we know the FIS directory is
++			 * at 'offset' within the flash.
+ 			 */
+-			if (swab32(buf[i].size) == master->erasesize) {
++			int maybe_native, maybe_swapped;
++			if (fis_origin != 0) {
++				maybe_native =
++					buf[i].flash_base == fis_origin + offset;
++				maybe_swapped =
++					swab32(buf[i].flash_base) == fis_origin + offset;
++			} else if (offset != 0 || buf[i].flash_base != 0) {
++				maybe_native =
++					(buf[i].flash_base & (master->size-1)) == offset;
++				maybe_swapped =
++					(swab32(buf[i].flash_base) & (master->size-1)) == offset;
++			} else {
++				/* The FIS directory is at the start of the flash and
++				 * the 'flash_base' field is 0.  The critical case is when
++				 * we are booting off this flash, but then we don't expect
++				 * this because the boot loader is pretty much always at
++				 * the start!  Since the FIS directory is always less than
++				 * or equal to one erase block do the following:
++				 */
++				maybe_native = buf[i].size <= master->erasesize;
++				maybe_swapped = swab32(buf[i].size) <= master->erasesize;
++			}
++
++			if (maybe_native && maybe_swapped)
++				printk(KERN_WARNING "RedBoot directory 0x%lx(0x%lx) assumed native\n",
++					buf[i].flash_base, buf[i].size);
++			else if (!maybe_native && !maybe_swapped)
++				printk(KERN_ERR "RedBoot directory 0x%lx(0x%lx) forced native\n",
++					buf[i].flash_base, buf[i].size);
++			else if (maybe_swapped) {
+ 				int j;
+ 				for (j = 0; j < numslots && buf[j].name[0] != 0xff; ++j) {
+ 					/* The unsigned long fields were written with the
+@@ -112,7 +139,11 @@ static int parse_redboot_partitions(stru
+ 					swab32s(&buf[j].desc_cksum);
+ 					swab32s(&buf[j].file_cksum);
+ 				}
+-			}
++				printk(KERN_NOTICE "RedBoot directory 0x%lx(0x%lx) swapped\n",
++					buf[i].flash_base, buf[i].size);
++			} else
++				printk(KERN_NOTICE "RedBoot directory 0x%lx(0x%lx) native\n",
++					buf[i].flash_base, buf[i].size);
+ 			break;
+ 		}
+ 	}

@@ -1,0 +1,14 @@
+ arch/arm/mach-ixp4xx/nslu2-setup.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 21:49:41.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 21:59:55.000000000 +0100
+@@ -27,8 +27,6 @@ static struct flash_platform_data nslu2_
+ };
+ 
+ static struct resource nslu2_flash_resource = {
+-	.start			= NSLU2_FLASH_BASE,
+-	.end			= NSLU2_FLASH_BASE + NSLU2_FLASH_SIZE,
+ 	.flags			= IORESOURCE_MEM,
+ };
+ 

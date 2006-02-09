@@ -1,0 +1,15 @@
+ arch/arm/mach-ixp4xx/nas100d-power.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nas100d-power.c	2006-02-06 20:37:01.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nas100d-power.c	2006-02-06 22:34:52.000000000 +0100
+@@ -56,6 +56,9 @@ static int __init nas100d_power_init(voi
+ 
+ static void __exit nas100d_power_exit(void)
+ {
++	if (!(machine_is_nas100d()))
++		return;
++
+ 	free_irq(NAS100D_RB_IRQ, NULL);
+ }
+ 

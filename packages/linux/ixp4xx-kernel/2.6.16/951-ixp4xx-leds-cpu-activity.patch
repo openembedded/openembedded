@@ -1,0 +1,592 @@
+This patches the new LEDs code to add cpu activity and
+inactivity triggers to the timer triggers.  The new triggers
+set the LED with the trigger to different states (on,
+flashing or off) according to whether or not all CPUs
+are idle.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+diff -rup linux-2.6.15.2/.pc/951-ixp4xx-leds-cpu-activity.patch/arch/arm/kernel/process.c linux-2.6.15.2/arch/arm/kernel/process.c
+--- linux-2.6.15/arch/arm/kernel/process.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/kernel/process.c	1970-01-01 00:00:00.000000000 +0000
+@@ -27,6 +27,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/init.h>
+ #include <linux/cpu.h>
++#include <linux/leds.h>
+ 
+ #include <asm/system.h>
+ #include <asm/io.h>
+@@ -81,6 +82,12 @@ void (*pm_power_off)(void);
+ EXPORT_SYMBOL(pm_power_off);
+ 
+ /*
++ * CPU activity indicator.
++ */
++void (*leds_idle)(int is_idle);
++EXPORT_SYMBOL(leds_idle);
++
++/*
+  * This is our default idle handler.  We need to disable
+  * interrupts here to ensure we don't miss a wakeup call.
+  */
+@@ -121,8 +128,12 @@ void cpu_idle(void)
+ 		if (!idle)
+ 			idle = default_idle;
+ 		leds_event(led_idle_start);
++		if (leds_idle)
++			leds_idle(1);
+ 		while (!need_resched())
+ 			idle();
++		if (leds_idle)
++			leds_idle(0);
+ 		leds_event(led_idle_end);
+ 		preempt_enable_no_resched();
+ 		schedule();
+diff -rup linux-2.6.15.2/.pc/951-ixp4xx-leds-cpu-activity.patch/drivers/leds/Kconfig linux-2.6.15.2/drivers/leds/Kconfig
+--- linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
+@@ -66,5 +66,14 @@ config LEDS_TRIGGER_TIMER
+ 	  This allows LEDs to be controlled by a programmable timer
+ 	  via sysfs. If unsure, say Y.
+ 
++config LEDS_TRIGGER_CPU_ACTIVITY
++	tristate "LED CPU activity trigger"
++	depends LEDS_TRIGGER_TIMER
++	help
++	  This allows LEDs to be set to show cpu activity via sysfs.
++	  The LED will blink when the cpu is active and stay steady
++	  (on or off according to the trigger selected) when idle.
++	  If unsure, say Y.
++
+ endmenu
+ 
+diff -rup linux-2.6.15.2/.pc/951-ixp4xx-leds-cpu-activity.patch/drivers/leds/Makefile linux-2.6.15.2/drivers/leds/Makefile
+--- linux-2.6.15/drivers/leds/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/Makefile	1970-01-01 00:00:00.000000000 +0000
+@@ -13,3 +13,4 @@ obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
++obj-$(CONFIG_LEDS_TRIGGER_CPU_ACTIVITY)	+= ledtrig-cpu.o
+diff -rup linux-2.6.15.2/.pc/951-ixp4xx-leds-cpu-activity.patch/drivers/leds/ledtrig-cpu.c linux-2.6.15.2/drivers/leds/ledtrig-cpu.c
+--- linux-2.6.15/drivers/leds/ledtrig-cpu.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/drivers/leds/ledtrig-cpu.c	1970-01-01 00:00:00.000000000 +0000
+@@ -0,0 +1,501 @@
++/*
++ * LEDs CPU activity trigger
++ *
++ * Author: John Bowler <jbowler@acm.org>
++ *
++ * Copyright (c) 2006 John Bowler
++ *
++ * Permission is hereby granted, free of charge, to any
++ * person obtaining a copy of this software and associated
++ * documentation files (the "Software"), to deal in the
++ * Software without restriction, including without
++ * limitation the rights to use, copy, modify, merge,
++ * publish, distribute, sublicense, and/or sell copies of
++ * the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the
++ * following conditions:
++ *
++ * The above copyright notice and this permission notice
++ * shall be included in all copies or substantial portions
++ * of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
++ * ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
++ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
++ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
++ * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
++ * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
++ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ */
++
++#include <linux/config.h>
++#include <linux/ctype.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/spinlock.h>
++#include <linux/timer.h>
++#include <linux/device.h>
++
++#include <linux/leds.h>
++#include "leds.h"
++
++//#include <linux/list.h>
++//#include <linux/sysdev.h>
++
++
++/*
++ * To simplify this the LED state is given for each case of
++ * CPU state - idle or active.  The LED can be:
++ *
++ * off
++ * flash - slow for idle, fast (flicker) for active
++ * on
++ *
++ * This gives two useless states - off/off and on/on
++ */
++typedef enum cpu_trigger_led_state {
++	cpu_led_off,
++	cpu_led_flash,
++	cpu_led_on,
++	cpu_led_invalid
++} cpu_trigger_led_state;
++
++static const char *const cpu_trigger_names[] = {
++	"off",
++	"flash",
++	"on",
++	"invalid"
++};
++
++/* Forward declaration - this is called back when an LED property
++ * is changed.
++ */
++static void leds_cpu_trigger_state_change(void);
++
++/*
++ * These constants define the actual mark/space of the flashing
++ * in jiffies.  msecs_to_jiffies rounds up and is compile time
++ * evaluable for constant arguments.  Writing the ?: stuff below
++ * this way ensures the compiler doesn't think it needs to
++ * compile in the math of msecs_to_jiffies.
++ *
++ * These values have been determined by experiment to work well
++ * for the ready/status LED on a LinkSys NSLU2 (light piped) and
++ * for the user LED on a Loft (Gateway Avila variant) board where
++ * the LED was directly visible.  Light Output Varies Everywhere.
++ */
++#define LEDS_CPU_ACTIVE_MARK	msecs_to_jiffies(40)
++#define LEDS_CPU_IDLE_MARK	msecs_to_jiffies(800)
++#define LEDS_CPU_ACTIVE_SPACE	msecs_to_jiffies(60)
++#define LEDS_CPU_IDLE_SPACE	msecs_to_jiffies(800)
++
++
++/*
++ * Individual LEDs ------------------------------------------------------------
++ */
++struct cpu_trigger_data {
++	cpu_trigger_led_state active; /* Behaviour when the CPU is active. */
++	cpu_trigger_led_state idle;   /* Behaviour when the CPU is idle. */
++};
++
++/*
++ * LED state change - called when the state of a single LED might
++ * have changed.  Returns true if the LED is blinking.  The argument
++ * is the blink state - the brightness of the blinking LED.
++ */
++static int leds_cpu_trigger_led_state_change(struct led_device *led,
++		int is_active, enum led_brightness brightness)
++{
++	int is_blinking = 0;
++
++	write_lock(&led->lock);
++	{
++		struct cpu_trigger_data *data = led->trigger_data;
++
++		/* Find the new brightness for the LED, if the LED is
++		 * set to flash then the brightness passed in is the
++		 * required value.
++		 */
++		if (likely(data != 0))
++			switch (is_active ? data->active : data->idle) {
++			case cpu_led_off:   brightness = LED_OFF;  break;
++			case cpu_led_flash: is_blinking = 1;       break;
++			case cpu_led_on:    brightness = LED_FULL; break;
++			}
++		else
++			brightness = is_active ? LED_FULL : LED_OFF;
++
++		led_set_brightness(led, brightness);
++	}
++	write_unlock(&led->lock);
++
++	return is_blinking;
++}
++
++/*
++ * sysfs properties, the property is output at an list of the
++ * values with the current setting enclosed in []
++ */
++static ssize_t leds_cpu_trigger_show_prop(struct class_device *dev, char *buf,
++		size_t where)
++{
++	struct led_device     *led = dev->class_data;
++	cpu_trigger_led_state  item = cpu_led_invalid, i;
++	char                  *next;
++
++	read_lock(&led->lock);
++	{
++		if (likely(led->trigger_data != 0))
++			item = *(const cpu_trigger_led_state*)(
++					led->trigger_data + where);
++	}
++	read_unlock(&led->lock);
++
++	for (i=0, next=buf; i<cpu_led_invalid; ++i) {
++		const char *name = cpu_trigger_names[i];
++		size_t len = strlen(name);
++
++		if (i == item)
++			*next++ = '[';
++		memcpy(next, name, len);
++		next += len;
++		if (i == item)
++			*next++ = ']';
++		*next++ = ' ';
++	}
++
++	next[-1] = '\n';
++	*next++ = 0;
++
++	return next - buf;
++}
++
++static ssize_t leds_cpu_trigger_show_active(struct class_device *dev, char *buf)
++{
++	return leds_cpu_trigger_show_prop(dev, buf,
++			offsetof(struct cpu_trigger_data, active));
++}
++
++static ssize_t leds_cpu_trigger_show_idle(struct class_device *dev, char *buf)
++{
++	return leds_cpu_trigger_show_prop(dev, buf,
++			offsetof(struct cpu_trigger_data, idle));
++}
++
++/*
++ * Any matching leading substring selects a property - so "onoffonoff"
++ * sets the property to off.
++ */
++static ssize_t leds_cpu_trigger_store_prop(struct class_device *dev,
++		const char *buf, size_t size, size_t where)
++{
++	size_t rc = 0;
++	cpu_trigger_led_state value = 0/*sic*/;
++	struct led_device *led;
++
++	/* ignore space characters before the value. */
++	while (rc < size && isspace(buf[rc]))
++		++rc;
++	if (rc >= size)
++		return rc;
++
++	/* look for a simple match against the trigger name, case
++	 * sensitive.
++	 */
++	do {
++		const char *name = cpu_trigger_names[value];
++		size_t len = strlen(name);
++		if (len <= size && memcmp(buf+rc, name, len) == 0) {
++			rc = len;
++			break;
++		}
++		if (++value >= cpu_led_invalid)
++			return -EINVAL;
++	} while (1);
++
++	led = dev->class_data;
++	write_lock(&led->lock);
++	{
++		if (likely(led->trigger_data != 0))
++			*(cpu_trigger_led_state*)(
++					led->trigger_data + where) = value;
++
++	}
++	write_unlock(&led->lock);
++
++	return rc;
++}
++
++static ssize_t leds_cpu_trigger_store_active(struct class_device *dev,
++		const char *buf, size_t size)
++{
++	ssize_t rc = leds_cpu_trigger_store_prop(dev, buf, size,
++			offsetof(struct cpu_trigger_data, active));
++	/*
++	 * At least one CPU must be active (otherwise who is doing this?)
++	 * Call down into the global state below to cause an update
++	 * to happen now.
++	 */
++	leds_cpu_trigger_state_change();
++	return rc;
++}
++
++static ssize_t leds_cpu_trigger_store_idle(struct class_device *dev,
++		const char *buf, size_t size)
++{
++	return leds_cpu_trigger_store_prop(dev, buf, size,
++			offsetof(struct cpu_trigger_data, idle));
++}
++
++static CLASS_DEVICE_ATTR(active, 0644, leds_cpu_trigger_show_active,
++					leds_cpu_trigger_store_active);
++
++static CLASS_DEVICE_ATTR(idle, 0644, leds_cpu_trigger_show_idle,
++					leds_cpu_trigger_store_idle);
++
++/*
++ * Activate and deactivate are called on individual LEDs when the
++ * LED trigger property is changed.  The LED write lock is held.
++ */
++static void leds_cpu_trigger_activate(struct led_device *led)
++{
++	/*
++	 * The initial setting of the trigger is simple CPU activity
++	 * with the LED off for idle and on for active.  Consequently
++	 * there is no need to mess with the global state initially,
++	 * we know the CPU is active at this moment!
++	 */
++	struct cpu_trigger_data *data = kmalloc(sizeof *data, GFP_KERNEL);
++	if (unlikely(data == 0))
++		return;
++
++	data->active = cpu_led_on;
++	data->idle = cpu_led_off;
++	led->trigger_data = data;
++
++	class_device_create_file(led->class_dev, &class_device_attr_active);
++	class_device_create_file(led->class_dev, &class_device_attr_idle);
++
++	led_set_brightness(led, LED_FULL);
++}
++
++static void leds_cpu_trigger_deactivate(struct led_device *led)
++{
++	struct cpu_trigger_data *data = led->trigger_data;
++	if (likely(data != 0)) {
++		led_set_brightness(led, LED_OFF);
++
++		class_device_remove_file(led->class_dev, &class_device_attr_idle);
++		class_device_remove_file(led->class_dev, &class_device_attr_active);
++
++		led->trigger_data = 0;
++		kfree(data);
++	}
++}
++
++
++/*
++ * Global state  --------------------------------------------------------------
++ *
++ * This is global because the CPU state is global and we only need one timer to
++ * do this stuff.
++ */
++typedef struct leds_cpu_trigger_data {
++	struct led_trigger trigger; /* the lock in here protects everything */
++	struct timer_list  timer;
++	unsigned long      last_active_time; /* record of last jiffies */
++	unsigned long      last_idle_time;   /* record of last jiffies */
++	int                count_active;     /* number of active CPUs */
++} leds_cpu_trigger_data;
++
++/*
++ * Mark state - uses the current time (jiffies) to work out
++ * whether this is a mark or space.
++ */
++static int leds_cpu_trigger_mark(struct leds_cpu_trigger_data *data,
++		unsigned long now) {
++	if (data->count_active > 0) {
++		unsigned long elapsed = now - data->last_active_time;
++		elapsed %= LEDS_CPU_ACTIVE_SPACE + LEDS_CPU_ACTIVE_MARK;
++		data->last_active_time = now - elapsed;
++		return elapsed > LEDS_CPU_ACTIVE_SPACE;
++	} else {
++		unsigned long elapsed = now - data->last_idle_time;
++		elapsed %= LEDS_CPU_IDLE_SPACE + LEDS_CPU_IDLE_MARK;
++		data->last_idle_time = now - elapsed;
++		return elapsed > LEDS_CPU_IDLE_SPACE;
++	}
++}
++
++
++/*
++ * State change - given information about the nature of the
++ * (possible) state change call up to each LED to adjust its
++ * state.  Returns true if any LED is blinking.  The lock
++ * must be held (a read lock is adequate).
++ */
++static int leds_cpu_trigger_scan_leds(struct leds_cpu_trigger_data *data,
++		unsigned long now)
++{
++	int blinking = 0;
++	const int active = data->count_active > 0;
++	const enum led_brightness brightness =
++		leds_cpu_trigger_mark(data, now) ? LED_FULL : LED_OFF;
++	struct list_head *entry;
++
++	list_for_each(entry, &data->trigger.led_devs) {
++		struct led_device *led =
++			list_entry(entry, struct led_device, trig_list);
++
++		blinking |= leds_cpu_trigger_led_state_change(led,
++				active, brightness);
++	}
++
++	return blinking;
++}
++
++/*
++ * Set the timer correctly according to the current state, the lock
++ * must be held for write.
++ */
++static void leds_cpu_trigger_set_timer(struct leds_cpu_trigger_data *state,
++		unsigned long now)
++{
++	unsigned long next;
++	if (state->count_active > 0) {
++		next = state->last_active_time;
++		if (now - next > LEDS_CPU_ACTIVE_SPACE)
++			next += LEDS_CPU_ACTIVE_MARK;
++		next += LEDS_CPU_ACTIVE_SPACE;
++	} else {
++		next = state->last_idle_time;
++		if (now - next > LEDS_CPU_IDLE_SPACE)
++			next += LEDS_CPU_IDLE_MARK;
++		next += LEDS_CPU_IDLE_SPACE;
++	}
++	mod_timer(&state->timer, next);
++}
++
++/*
++ * The timer callback if the LED is currently flashing, the callback
++ * calls the state change function and, if that returns true, meaning
++ * that at least one LED is still blinking, the timer is restarted
++ * with the correct timeout.
++ */
++static void leds_cpu_trigger_timer_callback(unsigned long data)
++{
++	struct leds_cpu_trigger_data *state =
++				(struct leds_cpu_trigger_data *)data;
++
++	write_lock(&state->trigger.leddev_list_lock);
++	{
++		unsigned long now = jiffies;
++
++		/* If at least one LED is set to flash; set the timer
++		 * again (this won't reset the timer set within the
++		 * idle loop).
++		 */
++		if (leds_cpu_trigger_scan_leds(state, now))
++			leds_cpu_trigger_set_timer(state, now);
++	}
++	write_unlock(&state->trigger.leddev_list_lock);
++}
++
++
++/*
++ * There is one global control structure, one timer and one set
++ * of state for active CPUs shared across all the LEDs.  Individual
++ * LEDs say how this state to be handled.  It is currently *not*
++ * possible to show per-cpu activity on individual LEDs, the code
++ * maintains a count of active CPUs and the state is only 'idle'
++ * if all CPUs are idle.
++ */
++static struct leds_cpu_trigger_data leds_cpu_trigger = {
++	.trigger = {
++		.name       = "cpu",
++		.activate   = leds_cpu_trigger_activate,
++		.deactivate = leds_cpu_trigger_deactivate,
++	} ,
++	.timer   = TIMER_INITIALIZER(leds_cpu_trigger_timer_callback, 0,
++			(unsigned long)&leds_cpu_trigger),
++	.last_active_time = 0,
++	.last_idle_time   = 0,
++	.count_active     = 0,
++};
++
++/*
++ * State change - callback from an individual LED on a property change which
++ * might require a redisplay.
++ */
++static void leds_cpu_trigger_state_change() {
++	write_lock(&leds_cpu_trigger.trigger.leddev_list_lock);
++	{
++		unsigned long now = jiffies;
++
++		if (leds_cpu_trigger_scan_leds(&leds_cpu_trigger, now) &&
++			!timer_pending(&leds_cpu_trigger.timer))
++			leds_cpu_trigger_set_timer(&leds_cpu_trigger, now);
++	}
++	write_unlock(&leds_cpu_trigger.trigger.leddev_list_lock);
++}
++
++/*
++ * Called from every CPU at the start and end of the idle loop.
++ * The active count is initially 0, even though CPUs are running,
++ * so the code below must check for the resultant underflow.
++ *
++ * If the idle behaviour is 'flash' then when the timer times out
++ * it will take the CPU out of idle, set the active state (which
++ * may also be flash), drop back into idle and reset the timer to
++ * the idle timeout...
++ */
++static void leds_cpu_trigger_idle(int is_idle)
++{
++	write_lock(&leds_cpu_trigger.trigger.leddev_list_lock);
++	if ((is_idle && leds_cpu_trigger.count_active > 0 &&
++				--leds_cpu_trigger.count_active == 0) ||
++	    (!is_idle && leds_cpu_trigger.count_active < num_online_cpus() &&
++	     			++leds_cpu_trigger.count_active == 1)) {
++		unsigned long now = jiffies;
++
++		/* State change - the system just became idle or active,
++		 * call the del_timer first in an attempt to minimise
++		 * getting a timer interrupt which will take us unnecessarily
++		 * out of idle (this doesn't matter).
++		 */
++		del_timer(&leds_cpu_trigger.timer);
++		if (leds_cpu_trigger_scan_leds(&leds_cpu_trigger, now))
++			leds_cpu_trigger_set_timer(&leds_cpu_trigger, now);
++	}
++	write_unlock(&leds_cpu_trigger.trigger.leddev_list_lock);
++}
++
++/*
++ * Module init and exit - register the trigger, then store
++ * the idle callback in the arch-specific global.  For this
++ * module to link (into the kernel) or load (into a running
++ * kernel) the architecture must define the leds_idle global.
++ */
++static int __init leds_cpu_trigger_init(void)
++{
++	int rc = led_trigger_register(&leds_cpu_trigger.trigger);
++	leds_idle = leds_cpu_trigger_idle;
++	return rc;
++}
++module_init(leds_cpu_trigger_init);
++
++static void __exit leds_cpu_trigger_exit(void)
++{
++	leds_idle = 0;
++	del_timer_sync(&leds_cpu_trigger.timer);
++	led_trigger_unregister(&leds_cpu_trigger.trigger);
++}
++module_exit(leds_cpu_trigger_exit);
++
++MODULE_AUTHOR("John Bowler <jbowler@acm.org>");
++MODULE_DESCRIPTION("CPU activity LED trigger");
++MODULE_LICENSE("MIT");
+diff -rup linux-2.6.15.2/.pc/951-ixp4xx-leds-cpu-activity.patch/include/linux/leds.h linux-2.6.15.2/include/linux/leds.h
+--- linux-2.6.15/include/linux/leds.h	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/linux/leds.h	1970-01-01 00:00:00.000000000 +0000
+@@ -95,3 +95,12 @@ void led_trigger_event(struct led_trigge
+ #define led_trigger_event(x, y) do {} while(0)
+ 
+ #endif
++
++/*
++ * CPU activity indication.
++ */
++/* Idle callback - call with is_idle==1 at the start of the idle loop
++ * and with is_idle==0 at the end.  This symbol must be defined by
++ * the arch core to be able to use LEDS_TRIGGER_CPU_ACTIVITY
++ */
++extern void (*leds_idle)(int is_idle);

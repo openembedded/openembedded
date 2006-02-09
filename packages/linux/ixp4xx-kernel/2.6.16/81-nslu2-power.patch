@@ -1,0 +1,15 @@
+ arch/arm/mach-ixp4xx/nslu2-power.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-power.c	2006-02-06 20:37:01.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-power.c	2006-02-06 22:34:46.000000000 +0100
+@@ -77,6 +77,9 @@ static int __init nslu2_power_init(void)
+ 
+ static void __exit nslu2_power_exit(void)
+ {
++	if (!(machine_is_nslu2()))
++		return;
++
+ 	free_irq(NSLU2_RB_IRQ, NULL);
+ 	free_irq(NSLU2_PB_IRQ, NULL);
+ }

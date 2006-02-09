@@ -1,0 +1,51 @@
+When invoking an LE kernel from a BE boot loader or vice versa
+the ATAG_CMDLINE command line will be byte swapped, other ATAGs
+are fine because they are 32 bit values.
+
+This patch adds support for a command line option "swx " - which
+must be at the start of the command line - and which is used to
+detect a need to byte swap the rest of the command line.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+ arch/arm/kernel/setup.c |   29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+--- linux-nslu2.orig/arch/arm/kernel/setup.c	2006-02-06 20:37:00.000000000 +0100
++++ linux-nslu2/arch/arm/kernel/setup.c	2006-02-06 21:49:18.000000000 +0100
+@@ -660,7 +660,34 @@ __tagtable(ATAG_REVISION, parse_tag_revi
+ 
+ static int __init parse_tag_cmdline(const struct tag *tag)
+ {
+-	strlcpy(default_command_line, tag->u.cmdline.cmdline, COMMAND_LINE_SIZE);
++	/* Check the first four bytes for "swx " (swap, but it's
++	 * ok) or " xws" (command line is byte swapped)
++	 */
++	const char *cmdline = tag->u.cmdline.cmdline;
++	u32 size = tag->hdr.size;
++
++	if (size > 0 && !memcmp(cmdline, " xws", 4)) {
++		cmdline += 4;
++
++		if (--size > 0) {
++			const u32 *from = (const u32*)cmdline;
++			u32 *to = (u32*)default_command_line;
++
++			if (size > COMMAND_LINE_SIZE/4)
++				size = COMMAND_LINE_SIZE/4;
++
++			while (size-- > 0)
++				to[size] = swab32(from[size]);
++
++			default_command_line[COMMAND_LINE_SIZE-1] = 0;
++			return 0;
++		}
++	}
++
++	if (size > 0 && !memcmp(cmdline, "swx ", 4))
++		cmdline += 4;
++
++	strlcpy(default_command_line, cmdline, COMMAND_LINE_SIZE);
+ 	return 0;
+ }
+ 

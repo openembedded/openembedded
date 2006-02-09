@@ -1,0 +1,74 @@
+Include a fixup machine start function in nslu2-setup.c to handle
+the command line and memory setup parameters which are not specifiable
+in the boot loader.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+ arch/arm/mach-ixp4xx/nslu2-setup.c |   45 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
+
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:35:31.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:43:44.000000000 +0100
+@@ -18,6 +18,8 @@
+ #include <linux/serial_8250.h>
+ #include <linux/mtd/mtd.h>
+ 
++#include <asm/setup.h>
++#include <asm/memory.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+ #include <asm/mach/flash.h>
+@@ -170,11 +172,52 @@ static void __init nslu2_init(void)
+ 	platform_add_devices(nslu2_devices, ARRAY_SIZE(nslu2_devices));
+ }
+ 
++/*
++ * NSLU2 RedBoot passes garbage atag/parameter values because it copies
++ * the kernel zImage on top of the parameter list before branching into
++ * the zImage.  The machine description causes the ATAG list to be
++ * skipped (by setting boot_params to 0) and this code fixes up the
++ * memory info and command line by supplying a command line with the
++ * NSLU2 specific config prepended.
++ *
++ * NOTE: the startup sequence is:
++ * 	1) Call the machine fixup
++ * 	2) Parse the ATAG list, the ATAG_CMDLINE is copied in
++ * 	   to default_command_line which is the value of *from
++ * 	3) Parse the command line in *from (*not*
++ * 	   default_command_line unless they are the same!)
++ *
++ * Setting mi->nr_banks causes (2) to 'squash' (set to ATAG_NONE)
++ * any ATAG_MEM tags, but mem= command line options cause nr_banks
++ * to be reset to 0 (on the first mem=)
++ */
++static char nslu2_command_line[] __initdata =
++	"root=/dev/mtdblock4 rootfstype=jffs2 init=/linuxrc "
++	"rtc-x1205.probe=0,0x6f "
++	CONFIG_CMDLINE;
++
++static void __init nslu2_fixup(struct machine_desc *desc,
++		struct tag *tags, char **cmdline, struct meminfo *mi)
++{
++	/* The NSLU2 has one bank of 32MByte memory.
++	 * NOTE: to make a 'fatslug' work append the appropriate
++	 * mem= to the CONFIG_CMDLINE - this will override the
++	 * setting below.
++	 */
++	mi->nr_banks=1;
++	mi->bank[0].start = 0;
++	mi->bank[0].size = (32*1024*1024);
++	mi->bank[0].node = PHYS_TO_NID(0);
++
++	strlcpy(*cmdline, nslu2_command_line, COMMAND_LINE_SIZE);
++}
++
+ MACHINE_START(NSLU2, "Linksys NSLU2")
+ 	/* Maintainer: www.nslu2-linux.org */
+ 	.phys_io	= IXP4XX_PERIPHERAL_BASE_PHYS,
+ 	.io_pg_offst	= ((IXP4XX_PERIPHERAL_BASE_VIRT) >> 18) & 0xFFFC,
+-	.boot_params	= 0x00000100,
++	.boot_params    = 0, /* because they are garbage - see above */
++	.fixup          = nslu2_fixup,
+ 	.map_io		= ixp4xx_map_io,
+ 	.init_irq	= ixp4xx_init_irq,
+ 	.timer          = &ixp4xx_timer,
