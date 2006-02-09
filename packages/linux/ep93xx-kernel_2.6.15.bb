@@ -1,4 +1,4 @@
-DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xxcompatible machines"
+DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r0"
@@ -16,4 +16,14 @@ KERNEL_IMAGETYPE = "zImage"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }
+
+do_deploy() {
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile
+
 
