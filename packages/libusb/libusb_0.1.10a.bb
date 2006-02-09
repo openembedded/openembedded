@@ -2,12 +2,12 @@ DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
-	file://debian-changes.patch;patch=1" 
+	file://debian-changes.patch;patch=1"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 PARALLEL_MAKE = ""
 
@@ -26,3 +26,7 @@ do_stage() {
                 install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
         done
 }
+
+PACKAGES =+ "libusbpp"
+
+FILES_libusbpp = "${libdir}/libusbpp*.so.*"

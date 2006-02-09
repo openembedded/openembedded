@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r5"
+PR = "r6"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
