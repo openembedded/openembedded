@@ -1,0 +1,104 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2005
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Date: 09-FEB-06
+
+
+LM_PATH="/etc/X11/login-managers"
+
+NO_KBD_LMS="gpe-dm"
+
+run_wm() {
+	if test -z "$1"
+	then
+		echo -e "\t* No valid login-managers found"
+		exit 0
+	fi
+	
+	echo "$1" > /tmp/_running_lm
+	echo -e "\t* Starting `basename "$1"`\n--\n"
+	"$1" start
+	
+	exit 0
+}
+
+get_valid_lms() {
+	if test "$HAS_KBD" = no
+	then
+		for lm in $NO_KBD_LMS
+		do	
+			if echo "$LM_FILES" | grep -iq "$lm"
+			then
+				test -x "$LM_PATH/$lm" && VALID_LMS="$VALID_LMS $lm" || echo -e "\t* Discarding [$lm]: Not executable"
+			
+			fi
+		done
+
+		if test  "`echo "$VALID_LMS" | wc -w | tr -d " "`" -gt 1
+		then
+			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
+		else
+			SELECTED_LM="$VALID_LMS"				
+		fi
+		
+		
+	else
+		for lm in $LM_FILES
+		do
+			test -x "$LM_PATH/$lm" && VALID_LMS="$VALID_LMS $lm" || echo -e "\t* Discarding [$lm]: Not executable"
+		done	
+
+		if test  "`echo "$VALID_LMS" | wc -w | tr -d " "`" -gt 1
+		then
+			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
+		else
+			SELECTED_LM="$VALID_LMS"				
+		fi
+	fi	
+}
+
+do_start(){
+#	DISPLAY_MODE="$(fbset | grep mode | sed -n "s/.*\"\(.*\)\-.*/\1/p")"
+	HARDWARE_MODEL="`cat /proc/cpuinfo | sed -n "s/^Hardware.*\:\ \(.*\)/\1/p"`"
+	LM_FILES="`ls -1 "$LM_PATH" | grep -v default`"
+
+	echo "$HARDWARE_MODEL" | grep -iq "SHARP" && HAS_KBD=yes || HAS_KBD="no"
+
+	echo "Launching login-manager"
+	echo -e "\t* Model has keyboard: $HAS_KBD"
+
+	# The user is always right
+	if test -x "$LM_PATH/default" >/dev/null 2>&1
+	then
+		echo "\t* Using default manager"
+		run_wm "$LM_PATH/default"
+	fi
+
+	get_valid_lms
+
+	echo -e "\t* Valid modes:$VALID_LMS"
+	
+	run_wm "$SELECTED_LM"
+}
+
+do_stop(){
+	echo "Stopping login-manager..."
+	`cat /tmp/_running_lm` stop
+	
+	for x in Xfbdev Xomap Xorg Xepson
+	do
+        	killall "$x" >/dev/null 2>&1
+	done
+}
+
+case "$1" in
+	start)		do_start;;
+	stop)		do_stop;;
+	restart)	do_stop
+			do_start;;		
+	*)		echo "Usage: `basename $0` [start|stop|restart]"
+			exit 0;;
+esac	
+
