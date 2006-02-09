@@ -1,7 +1,6 @@
-DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager and Tools"
-PR = "r4"
-
 include e-image-core.bb
+DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager and Tools"
+PR = "r5"
 
 export IMAGE_BASENAME = "e-image"
 export IPKG_INSTALL += "task-e-x11-core \
@@ -15,7 +14,8 @@ export IPKG_INSTALL += "task-e-x11-core \
                         xhost \
                         gpe-soundserver \
                         gpe-confd \
-                        xauth"
+                        xauth \
+                        e17-gpe-menu-convert"
 
 DEPENDS += "task-e-x11-core task-gpe"
 
