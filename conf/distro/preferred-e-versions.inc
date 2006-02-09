@@ -25,3 +25,7 @@ PREFERRED_VERSION_imlib2-x11 = "1.2.1.010"
 PREFERRED_VERSION_imlib2-native = "1.2.1.010"
 PREFERRED_VERSION_e-wm = "0.16.999.023"
 PREFERRED_VERSION_entrance = "0.9.0.005"
+
+PREFERRED_PROVIDER_virtual/evas = "evas-x11"
+PREFERRED_PROVIDER_virtual/ecore = "ecore-x11"
+PREFERRED_PROVIDER_virtual/imlib2 = "imlib2-x11"
