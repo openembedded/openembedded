@@ -1,6 +1,34 @@
 #! /bin/sh
 
-# Source IrDA networking configuration.
+module_id() {
+        awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
+}
+
+if [ ! -f /etc/sysconfig/irda ]; then
+
+    case `module_id` in
+	"HP iPAQ H2200" | "HP iPAQ HX4700")
+	    IRDA=yes
+	    DEVICE=/dev/tts/2
+	    DONGLE=
+	    DISCOVERY=
+	    ;;
+	*)
+	    IRDA=yes
+	    DEVICE=/dev/ttyS1
+	    DONGLE=
+	    DISCOVERY=
+	    ;;
+    esac
+
+    echo "IRDA=$IRDA" > /etc/sysconfig/irda
+    if [ $IRDA = "yes" ]; then
+	echo "DEVICE=$DEVICE" >> /etc/sysconfig/irda
+	echo "DONGLE=$DONGLE" >> /etc/sysconfig/irda
+	echo "DISCOVERY=$DISCOVERY" >> /etc/sysconfig/irda
+    fi
+fi
+
 . /etc/sysconfig/irda
 
 # Check that irda is up.
