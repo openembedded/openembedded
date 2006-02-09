@@ -134,7 +134,6 @@ SLUGOS_PACKAGES = "\
 	samba \
 	sane-backends \
 	sed \
-	setpwc \
 	ssmtp \
 	strace \
 	streamripper \
@@ -155,9 +154,6 @@ SLUGOS_PACKAGES = "\
 	wget \
 	wireless-tools \
 	wpa-supplicant \
-	wview-sim wview-vpro wview-wxt510 \
-	wview-sim-mysql wview-vpro-mysql \
-	wview-wxt510-mysql \
 	zd1211 \
 	zip \
 	zlib \
@@ -168,6 +164,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	icecast \
 	irssi \
 	pvrusb2-mci \
+	setpwc \
 	watchdog \
 	memtester \
 	"
@@ -202,6 +199,9 @@ SLUGOS_PACKAGES_append_linux = "\
 	psmisc \
 	screen \
 	timezones \
+        wview-sim wview-vpro wview-wxt510 \
+        wview-sim-mysql wview-vpro-mysql \
+        wview-wxt510-mysql \
 	xinetd \
 	"
 

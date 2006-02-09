@@ -134,10 +134,18 @@ else
       # Start a single user shell on the console
       if single_user_ok
       then
-	sulogin -t 300 $CONSOLE
-	# assume the system is ok now...
+	sulogin -t 600 $CONSOLE
+	# if this exits with SIGALRM (which happens to be 142) the
+	# timeout happened, do not, then, reboot!
+	if test $? -ne 142
+	then
+	  reboot -f
+	else
+	  echo "/etc/init.d/checkroot.sh: sulogin timeout, continuing boot"
+	fi
+      else
+	echo "/etc/init.d/checkroot.sh: fsck failed, continuing boot"
       fi
-      echo "... continuing boot"
     fi
   else
     echo "*** ERROR!  Cannot fsck root fs because it is not mounted read-only!"
