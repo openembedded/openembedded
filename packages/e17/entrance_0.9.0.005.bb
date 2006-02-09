@@ -35,4 +35,7 @@ do_install_append() {
 	install -d ${D}/etc/X11/Sessions
 	
 	install -m 755 ${WORKDIR}/Sessions/* ${D}/etc/X11/Sessions
+
+	install -d ${D}/etc/X11/login-managers/
+	mv ${D}/etc/init.d/entrance ${D}/etc/X11/login-managers/entrance
 }
