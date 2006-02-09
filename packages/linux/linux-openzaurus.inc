@@ -16,7 +16,7 @@ inherit kernel
 FILES_kernel-image = ""
 ALLOW_EMPTY = 1
 
-EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}-${PR}"
+EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
