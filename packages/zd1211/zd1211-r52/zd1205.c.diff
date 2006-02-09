@@ -1,0 +1,10 @@
+--- zd1211-driver-r52/src/zd1205.c.orig	2006-02-09 02:45:12.000000000 +0100
++++ zd1211-driver-r52/src/zd1205.c	2006-02-09 02:46:53.000000000 +0100
+@@ -8512,6 +8512,7 @@
+                         printk(KERN_ERR "STA_DEAUTHED\n");
+                 printk(KERN_ERR "mac addr = %02x:%02x:%02x:%02x:%02x:%02x\n",
+                        StaAddr[0], StaAddr[1], StaAddr[2], StaAddr[3], StaAddr[4], StaAddr[5]);
++                       memset(&macp->BSSID[0], 0, 6);
+                 break;
+ 
+         default:
