@@ -6,7 +6,7 @@ PR = "r4"
 
 PACKAGES = "edje-utils"
 FILES_edje-utils = "${bindir}/edje ${bindir}/edje_* ${datadir}/edje/data/template ${datadir}/edje/include"
-RDEPENDS_edje-utils = "embryo-utils cpp"
+RDEPENDS_edje-utils += "embryo-utils cpp"
 
 inherit efl
 
