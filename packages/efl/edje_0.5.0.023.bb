@@ -2,11 +2,11 @@ DESCRIPTION = "Edje is a complex graphical design & layout library."
 # can also install vim data files
 DEPENDS = "virtual/evas virtual/ecore eet embryo edje-native virtual/imlib2"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
-PACKAGES += "edje-utils"
-FILES_edje-utils += "${bindir} ${datadir}/edje/data/template ${datadir}/edje/include"
-RDEPENDS_edje-utils += "cpp"
+PACKAGES = "edje-utils"
+FILES_edje-utils = "${bindir}/edje ${bindir}/edje_* ${datadir}/edje/data/template ${datadir}/edje/include"
+RDEPENDS_edje-utils = "embryo-utils cpp"
 
 inherit efl
 
