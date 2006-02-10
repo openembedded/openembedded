@@ -4,11 +4,24 @@
 # License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
 #
 # Date: 09-FEB-06
-
+#
+# This script checks if a keyboard is present and then runs a propper LM.
+# On devices w/o keyboard, a LM from the NO_KBD_LMS variable is selected.
+#
+# If more than one usable login-manager is found, the first one is used.
+#
+# Users can force their favorite login-manager to be selected via symlinking
+# a LM from /etc/X11/login-managers to /etc/X11/login-managers/default.
+#
 
 LM_PATH="/etc/X11/login-managers"
 
+# A list of login-manager which display an OSD keyboard
 NO_KBD_LMS="gpe-dm"
+
+#
+# * * * No user-variables behind this point * * *
+#
 
 run_wm() {
 	if test -z "$1"
@@ -19,6 +32,7 @@ run_wm() {
 	
 	echo "$1" > /tmp/_running_lm
 	echo -e "\t* Starting `basename "$1"`\n--\n"
+	
 	"$1" start
 	
 	exit 0
@@ -54,7 +68,8 @@ get_valid_lms() {
 		then
 			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
 		else
-			SELECTED_LM="$VALID_LMS"				
+			# Use awk here, too to filter a backspace in VALID_LMS
+			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
 		fi
 	fi	
 }
