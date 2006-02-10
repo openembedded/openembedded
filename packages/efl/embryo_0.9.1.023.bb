@@ -6,7 +6,7 @@ basic programming structures such as in Edje EDCs."
 LICENSE = "MIT"
 PR = "r2"
 
-PACKAGES = "embryo-utils embryo-dev"
+PACKAGES = "embryo-utils"
 FILES_embryo-utils = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
 
 inherit efl
