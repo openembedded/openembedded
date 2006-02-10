@@ -15,3 +15,5 @@ FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DI
                                opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
+
+IMAGE_FSTYPES_append_spitz = " jffs2"
