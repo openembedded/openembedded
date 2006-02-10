@@ -1,0 +1,31 @@
+Index: kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c
+This patch makes the kernel try every 30 seconds to load the bootloader
+firmware until successful. Also, it changes the bootloader filename that is
+requested from hamcop_bootloader.bin to the more appropriate
+h2200_bootloader.bin.
+
+There isn't a 2.6.13-hh1 branch in hh.org CVS where we can commit this patch,
+so we'll just apply it here.
+
+===================================================================
+RCS file: /cvs/linux/kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c,v
+retrieving revision 1.13
+diff -u -p -r1.13 h2200_pm.c
+--- kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c	29 Oct 2005 23:13:04 -0000	1.13
++++ kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c	10 Feb 2006 00:11:20 -0000
+@@ -148,9 +148,12 @@ static void h2200_load_bootloader(void *
+ {
+ 	const struct firmware *fw;
+ 
+-	if (request_firmware(&fw, "hamcop_bootloader.bin", &h2200_hamcop.dev))
+-		printk(KERN_ERR "h2200_pm: request_firmware failed\n");
+-	else {
++	if (request_firmware(&fw, "h2200_bootloader.bin", &h2200_hamcop.dev)) {
++		printk(KERN_ERR "h2200_pm: request_firmware failed; "
++		       "will try again in %d seconds\n",
++		       BOOTLOADER_LOAD_DELAY / HZ);
++		schedule_delayed_work(&fw_work, BOOTLOADER_LOAD_DELAY);
++	} else {
+ 		printk("h2200_pm: bootloader loaded\n");
+ 		memcpy(bootloader, fw->data, fw->size < HAMCOP_SRAM_Size ?
+ 					       fw->size : HAMCOP_SRAM_Size);
