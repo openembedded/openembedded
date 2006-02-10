@@ -14,11 +14,11 @@
  
  $(PACKAGE): $(OBJS)
 -	$(CC) -o $@ $^ $(LDFLAGS)
-+	$(CC) -o $@ $^ $(PACKAGE_LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
  
  wrapesd: wrapesd.o
 -	$(CC) -o $@ $^ $(LDFLAGS)
-+	$(CC) -o $@ $^ $(PACKAGE_LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
  
  install-program: all
  	install -d $(DESTDIR)$(PREFIX)/bin

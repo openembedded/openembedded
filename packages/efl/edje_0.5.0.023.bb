@@ -2,17 +2,19 @@ DESCRIPTION = "Edje is a complex graphical design & layout library."
 # can also install vim data files
 DEPENDS = "virtual/evas virtual/ecore eet embryo edje-native virtual/imlib2"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r4"
+
+PACKAGES = "edje-utils"
+FILES_edje-utils = "${bindir}/edje ${bindir}/edje_* ${datadir}/edje/data/template ${datadir}/edje/include"
+RDEPENDS_edje-utils += "embryo-utils cpp"
 
 inherit efl
+
+FILES_${SRCNAME}-themes = ""
 
 SRC_URI += "cvs://anonymous@thinktux.net/root;module=e17/libs/edje/m4;date=20060101"
 
 LEAD_SONAME = "libedje.so"
-
-FILES_${PN}-dev += "${bindir}"
-
-RDEPENDS_${PN}-dev += "cpp"
 
 do_configure_prepend() {
 	install -d "${S}/m4"
