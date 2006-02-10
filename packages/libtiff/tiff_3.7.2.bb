@@ -3,7 +3,7 @@ LICENSE =	""
 HOMEPAGE = 	"http://www.remotesensing.org/libtiff/"
 
 DEPENDS =	"zlib jpeg"
-SRC_URI =	"http://dl.maptools.org/dl/libtiff/tiff-${PV}.tar.gz"
+SRC_URI =	"http://dl.maptools.org/dl/libtiff/old/tiff-${PV}.tar.gz"
 
 inherit autotools
 
