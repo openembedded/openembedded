@@ -50,6 +50,7 @@ IXP4XX_PATCHES += "file://92-nslu2-maclist.patch;patch=1"
 # IXP4XX_PATCHES += "file://93-loft-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nas100d-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nslu2-setup.patch;patch=1"
+IXP4XX_PATCHES += "file://94-loft-setup.patch;patch=1"
 # 96-loft-leds is still required, but does not apply cleanly.
 # IXP4XX_PATCHES += "file://96-loft-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nas100d-leds.patch;patch=1"
