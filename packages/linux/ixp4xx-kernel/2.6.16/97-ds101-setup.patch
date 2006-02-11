@@ -1,0 +1,288 @@
+diff -ruN linux-2.6.15.orig/arch/arm/mach-ixp4xx/ds101-setup.c linux-2.6.15.new/arch/arm/mach-ixp4xx/ds101-setup.c
+--- linux-2.6.15.orig/arch/arm/mach-ixp4xx/ds101-setup.c        1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.15.new/arch/arm/mach-ixp4xx/ds101-setup.c 2006-02-11 02:17:35.000000000 +0100
+@@ -0,0 +1,284 @@
++/*
++ * arch/arm/mach-ixp4xx/ds101-setup.c
++ *
++ * DS 101 board-setup
++ *
++ * based ixdp425-setup.c:
++ *      Copyright (C) 2003-2004 MontaVista Software, Inc.
++ *
++ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Author: Rod Whitby <rod@whitby.id.au>
++ * Author: OEyvind Repvik <oyvind@repvik.org>
++ * Maintainers: http://www.nslu2-linux.org/
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/serial.h>
++#include <linux/serial_8250.h>
++#include <linux/mtd/mtd.h>
++#include <linux/leds.h>
++
++#include <asm/setup.h>
++#include <asm/memory.h>
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++#include <asm/mach/flash.h>
++
++#include <net/maclist.h>
++
++static struct flash_platform_data ds101_flash_data = {
++       .map_name               = "cfi_probe",
++       .width                  = 2,
++};
++
++static struct resource ds101_flash_resource = {
++       .flags                  = IORESOURCE_MEM,
++};
++
++static struct platform_device ds101_flash = {
++       .name                   = "IXP4XX-Flash",
++       .id                     = 0,
++       .dev.platform_data      = &ds101_flash_data,
++       .num_resources          = 1,
++       .resource               = &ds101_flash_resource,
++};
++
++#ifdef CONFIG_LEDS_CLASS
++static struct resource ds101_led_resources[] = {
++       {
++               .name           = "power", /* blue power led */
++               .start          = 3,
++               .end            = 3,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++       {
++               .name           = "status-1",
++               .start          = 14,
++               .end            = 14,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++       {
++               .name           = "status-2",
++               .start          = 15,
++               .end            = 15,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++       {
++               .name           = "usb-1", /* The usb-copy-button led */
++               .start          = 5,
++               .end            = 5,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++       {
++               .name           = "usb-2", /* also the usb-copy-button led */
++               .start          = 4,
++               .end            = 4,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++       {
++               .name           = "test",
++               .start          = 6,
++               .end            = 6,
++               .flags          = IXP4XX_GPIO_LOW,
++       },
++};
++
++
++static struct platform_device ds101_leds = {
++       .name                   = "IXP4XX-GPIO-LED",
++       .id                     = -1,
++       .num_resources          = ARRAY_SIZE(ds101_led_resources),
++       .resource               = ds101_led_resources,
++};
++#endif
++
++static struct ixp4xx_i2c_pins ds101_i2c_gpio_pins = {
++       .sda_pin                = DS101_SDA_PIN,
++       .scl_pin                = DS101_SCL_PIN,
++};
++
++static struct platform_device ds101_i2c_controller = {
++       .name                   = "IXP4XX-I2C",
++       .id                     = 0,
++       .dev.platform_data      = &ds101_i2c_gpio_pins,
++       .num_resources          = 0,
++};
++
++static struct platform_device ds101_beeper = {
++        .name                   = "ixp4xx-beeper",
++        .id                     = 2,
++       .num_resources          = 0,
++};
++
++static struct resource ds101_uart_resources[] = {
++       {
++               .start          = IXP4XX_UART1_BASE_PHYS,
++               .end            = IXP4XX_UART1_BASE_PHYS + 0x0fff,
++               .flags          = IORESOURCE_MEM,
++       },
++       {
++               .start          = IXP4XX_UART2_BASE_PHYS,
++               .end            = IXP4XX_UART2_BASE_PHYS + 0x0fff,
++               .flags          = IORESOURCE_MEM,
++       }
++};
++
++static struct plat_serial8250_port ds101_uart_data[] = {
++       {
++               .mapbase        = IXP4XX_UART1_BASE_PHYS,
++               .membase        = (char *)IXP4XX_UART1_BASE_VIRT + REG_OFFSET,
++               .irq            = IRQ_IXP4XX_UART1,
++               .flags          = UPF_BOOT_AUTOCONF,
++               .iotype         = UPIO_MEM,
++               .regshift       = 2,
++               .uartclk        = IXP4XX_UART_XTAL,
++       },
++       {
++               .mapbase        = IXP4XX_UART2_BASE_PHYS,
++               .membase        = (char *)IXP4XX_UART2_BASE_VIRT + REG_OFFSET,
++               .irq            = IRQ_IXP4XX_UART2,
++               .flags          = UPF_BOOT_AUTOCONF,
++               .iotype         = UPIO_MEM,
++               .regshift       = 2,
++               .uartclk        = IXP4XX_UART_XTAL,
++       },
++       { }
++};
++
++static struct platform_device ds101_uart = {
++       .name                   = "serial8250",
++       .id                     = PLAT8250_DEV_PLATFORM,
++       .dev.platform_data      = ds101_uart_data,
++       .num_resources          = 2,
++       .resource               = ds101_uart_resources,
++};
++
++static struct platform_device *ds101_devices[] __initdata = {
++       &ds101_i2c_controller,
++       &ds101_flash,
++       &ds101_beeper,
++};
++
++static void ds101_power_off(void)
++{
++       /* This causes the box to drop the power and go dead. */
++
++       /* enable the pwr cntl gpio */
++       gpio_line_config(DS101_PO_GPIO, IXP4XX_GPIO_OUT);
++
++       /* do the deed */
++       gpio_line_set(DS101_PO_GPIO, IXP4XX_GPIO_HIGH);
++}
++
++/*
++ * When the RedBoot config partition is added the MAC address is read from
++ * it.
++ * FIXME: This isn't correct on the DS101!
++ */
++static void ds101_flash_add(struct mtd_info *mtd) {
++       if (strcmp(mtd->name, "RedBoot config") == 0) {
++               size_t retlen;
++               u_char mac[6];
++
++               /* The MAC is at a known offset... */
++               if (mtd->read(mtd, 0x0FD8, 6, &retlen, mac) == 0 && retlen == 6) {
++                       printk(KERN_INFO "DS101 MAC: %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
++                               mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
++                       maclist_add(mac);
++               } else {
++                       printk(KERN_ERR "DS101 MAC: read failed\n");
++               }
++       }
++}
++
++/*
++ * Nothing to do on remove at present.
++ */
++static void ds101_flash_remove(struct mtd_info *mtd) {
++}
++
++static struct mtd_notifier ds101_flash_notifier = {
++       .add = ds101_flash_add,
++       .remove = ds101_flash_remove,
++};
++
++static void __init ds101_init(void)
++{
++       /* The flash has an ethernet MAC embedded in it which we need,
++        * that is all this notifier does.
++        */
++       register_mtd_user(&ds101_flash_notifier);
++
++       ixp4xx_sys_init();
++
++       ds101_flash_resource.start = IXP4XX_EXP_BUS_BASE(0);
++       ds101_flash_resource.end =
++               IXP4XX_EXP_BUS_BASE(0) + ixp4xx_exp_bus_size - 1;
++
++       pm_power_off = ds101_power_off;
++
++       /* This is only useful on a modified machine, but it is valuable
++        * to have it first in order to see debug messages, and so that
++        * it does *not* get removed if platform_add_devices fails!
++        */
++       (void)platform_device_register(&ds101_uart);
++
++       platform_add_devices(ds101_devices, ARRAY_SIZE(ds101_devices));
++
++#ifdef CONFIG_LEDS_CLASS
++       /* We don't care whether or not this works. */
++       (void)platform_device_register(&ds101_leds);
++#endif
++}
++
++/*
++ * DS101 bootstrap may pass in parameters, but we zap the mem
++ * settings to be safe (the box always has 64MByte at 0).  The
++ * passed in command line can override this default, we prepend
++ * to the config'ed default.
++ *
++ * NOTE: the startup sequence is:
++ *     1) Call the machine fixup
++ *     2) Parse the ATAG list, the ATAG_CMDLINE is copied in
++ *        to default_command_line which is the value of *from
++ *     3) Parse the command line in *from (*not*
++ *        default_command_line unless they are the same!)
++ *
++ * Setting mi->nr_banks causes (2) to 'squash' (set to ATAG_NONE)
++ * any ATAG_MEM tags, but mem= command line options cause nr_banks
++ * to be reset to 0 (on the first mem=)
++ */
++static char ds101_command_line[] __initdata =
++       "root=/dev/sda1 rootfstype=ext3 init=/sbin/init "
++       CONFIG_CMDLINE;
++
++static void __init ds101_fixup(struct machine_desc *desc,
++               struct tag *tags, char **cmdline, struct meminfo *mi)
++{
++       /* The DS101 has one bank of 64MByte memory.
++        * NOTE: setting nr_banks != 0 causes kernel/setup.c to remove
++        * the mem tags from the tag list.  We need do nothing here!
++        */
++       mi->nr_banks=1;
++       mi->bank[0].start = 0;
++       mi->bank[0].size = (64*1024*1024);
++       mi->bank[0].node = PHYS_TO_NID(0);
++
++       /* A command line in the ATAG list will override this one,
++        * as is intended.
++        */
++       strlcpy(*cmdline, ds101_command_line, COMMAND_LINE_SIZE);
++}
++
++MACHINE_START(DS101, "Synology DiskStation DS101")
++       /* Maintainer: www.nslu2-linux.org */
++       .phys_io        = IXP4XX_PERIPHERAL_BASE_PHYS,
++       .io_pg_offst    = ((IXP4XX_PERIPHERAL_BASE_VIRT) >> 18) & 0xFFFC,
++       .boot_params    = 0x00000100,
++       .fixup          = ds101_fixup,
++       .map_io         = ixp4xx_map_io,
++       .init_irq       = ixp4xx_init_irq,
++       .timer          = &ixp4xx_timer,
++       .init_machine   = ds101_init,
++MACHINE_END
