@@ -25,8 +25,8 @@ diff -ruN linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/irqs.h linux-2.6.15.new/
 
  #endif
 diff -ruN linux-2.6.15.orig/include/asm-arm/arch/ds101.h linux-2.6.15.new/include/asm-arm/arch/ds101.h
---- linux-2.6.15.orig/include/asm-arm/arch/ds101.h      1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15.new/include/asm-arm/arch/ds101.h       2006-02-10 22:16:24.000000000 +0100
+--- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/ds101.h      1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.15.new/include/asm-arm/arch-ixp4xx/ds101.h       2006-02-10 22:16:24.000000000 +0100
 @@ -0,0 +1,72 @@
 +/*
 + * include/asm-arm/arch-ixp4xx/ds101.h
