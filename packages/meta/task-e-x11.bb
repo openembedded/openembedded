@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for Enlightenment/X11"
 PACKAGES = "task-e-x11-core task-e-x11"
 PROVIDES = "task-e-x11-core task-e-x11"
-PR = "r7"
+PR = "r8"
 
 FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
               e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
@@ -14,7 +14,7 @@ ALLOW_EMPTY = 1
 # X
 #
 RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
-                            ttf-bitstream-vera chkhinge"
+                            ttf-bitstream-vera chkhinge gpe-bootsplash-theme-e"
 
 #
 # E-core
