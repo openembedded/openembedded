@@ -4,11 +4,11 @@ in the boot loader.
 
 Signed-off-by: John Bowler <jbowler@acm.org>
 
- arch/arm/mach-ixp4xx/nas100d-setup.c |   42 +++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ arch/arm/mach-ixp4xx/nas100d-setup.c |   43 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-09 13:24:19.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-09 15:13:56.000000000 +0100
+--- linux-nslu2.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-10 19:19:53.000000000 +0100
++++ linux-nslu2/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-10 19:29:18.000000000 +0100
 @@ -17,6 +17,8 @@
  #include <linux/serial_8250.h>
  #include <linux/mtd/mtd.h>
@@ -18,7 +18,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
-@@ -161,11 +163,51 @@ static void __init nas100d_init(void)
+@@ -161,11 +163,52 @@ static void __init nas100d_init(void)
  	platform_add_devices(nas100d_devices, ARRAY_SIZE(nas100d_devices));
  }
  
@@ -41,6 +41,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + */
 +static char nas100d_command_line[] __initdata =
 +	"root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc "
++	"rtc-pcf8563.probe=0,0x51 "
 +	CONFIG_CMDLINE;
 +
 +static void __init nas100d_fixup(struct machine_desc *desc,
