@@ -1,6 +1,6 @@
 include ecore.inc
 DEPENDS += "evas-x11"
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://evas-x11-include.patch;patch=1"
 

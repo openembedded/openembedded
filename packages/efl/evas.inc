@@ -29,13 +29,5 @@ do_configure_prepend() {
 	fi
 }
 
-do_configure () {
-	autotools_do_configure
-	#find ${S} -type f | xargs sed -i 's:@FREETYPE_CFLAGS@:-I${STAGING_INCDIR}/freetype2:'
-	#find ${S} -name Makefile | xargs sed -i 's:--tag=CC:-lfreetype --tag=CC:'
-}
-
-
 headers = "<override me>"
 libraries = "libevas"
-
