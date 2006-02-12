@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is a complex graphical design & layout library."
 # can also install vim data files
 DEPENDS = "virtual/evas virtual/ecore eet embryo edje-native virtual/imlib2"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 
 ## package.bbclass kills packages when there are duplicates, this means
 ##  that efl.bbclass can't have PACKAGES += and so the FILES for previous
@@ -14,7 +14,7 @@ PR = "r5"
 
 inherit efl
 
-RDEPENDS_${PN}-dev += "libembryo-dev cpp cpp-symlinks gcc gcc-symlinks"
+FILES_${PN}-examples = "${datadir}/edje/data/images ${datadir}/edje/data/src ${datadir}/edje/data/test ${datadir}/edje/data/*.sh"
 
 FILES_${SRCNAME}-themes = ""
 

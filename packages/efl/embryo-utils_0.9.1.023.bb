@@ -8,4 +8,11 @@ PR = "r4"
 
 inherit efl
 
-FILES_${PN}-examples = "${datadir}/${PN}/examples"
+SRC_URI = "http://enlightenment.freedesktop.org/files/embryo-${PV}.tar.gz"
+S = "${WORKDIR}/embryo-${PV}"
+
+PACKAGES = "embryo-utils"
+FILES_${PN} = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
+
+libraries = ""
+headers = ""
