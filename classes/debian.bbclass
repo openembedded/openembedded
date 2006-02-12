@@ -1,3 +1,11 @@
+STAGING_PKGMAPS_DIR = "${STAGING_DIR}/pkgmaps/debian"
+
+# Debain package renaming only occurs when a package is built
+# We therefore have to make sure we build all runtime packages
+# before building the current package to make the packages runtime
+# depends are correct
+BUILD_ALL_DEPS = "1"
+
 python debian_package_name_hook () {
 	import glob, copy, stat, errno, re
 
