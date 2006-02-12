@@ -30,3 +30,4 @@ do_install () {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/irattach
 }
+
