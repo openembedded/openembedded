@@ -5,9 +5,11 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI += "file://splash-p.svg file://splash-l.svg"
+SRC_URI += "file://splash-p.svg \
+	    file://splash-l.svg \
+	    file://tty2-message.patch;patch=1"
 
 FILES_${PN} += "${datadir}/gpe"
 
