@@ -33,7 +33,11 @@ C_RESET="\033[0m"
 
 die() {
 	echo "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+	#exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+	
+	echo -e "\nPress <ENTER> to launch the altboot menu"
+	read junk
+	exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
 }
 
 
@@ -300,7 +304,7 @@ else
 
 
 	# When started with -force, always print the menu
-	echo "$*" | grep -q "-force" && TIMEOUT=0
+	echo "$*" | grep -q -- "-force" && TIMEOUT=0
 
 	
 	# This timeout works by reading /proc/interrupts to see if the keyboard interrupt
