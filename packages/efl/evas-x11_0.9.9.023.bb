@@ -1,12 +1,12 @@
 include evas.inc
 DEPENDS += "x11 xext freetype"
-PR = "r3"
+PR = "r4"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
 		--enable-fb			\
 		--disable-directfb		\
-		--disable-buffer		\
+		--enable-buffer			\
 		--disable-software-qtopia	\
 		--enable-software-x11		\
 		--disable-gl-x11		\

@@ -4,9 +4,12 @@ CompuPhase's Small language that was introduced in Dr Dobb's Journal in 1999. \
 Embryo allows scripting capabilities in places that otherwise wouldn't support \
 basic programming structures such as in Edje EDCs."
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
-PACKAGES = "embryo-utils"
-FILES_embryo-utils = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
+## package.bbclass kills packages when there are duplicates, this means
+##  that efl.bbclass can't have PACKAGES += and so the FILES for previous
+##  packages take precedence over -utils
+#PACKAGES = "embryo-utils"
+#FILES_embryo-utils = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
 
 inherit efl
