@@ -17,7 +17,7 @@ PV_akita  = "${KERNEL2420}"
 PV_borzoi = "${KERNEL2420}"
 PV_spitz  = "${KERNEL2420}"
 
-SRC_URI = "http://www.openzaurus.org/mirror/sd-modules-2.4.18-rmk7-pxa3-embedix-r4.tar.bz2 \
+SRC_URI = "http://openzaurus.sf.net/mirror/sd-modules-2.4.18-rmk7-pxa3-embedix-r4.tar.bz2 \
            file://sd \
            file://sdmgr \
            file://sdcontrol"
