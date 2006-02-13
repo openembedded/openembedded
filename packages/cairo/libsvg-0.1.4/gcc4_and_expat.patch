@@ -1,0 +1,19 @@
+diff -bur libsvg-0.1.4~orig/src/svg_parser_expat.c libsvg-0.1.4/src/svg_parser_expat.c
+--- libsvg-0.1.4~orig/src/svg_parser_expat.c	2005-02-14 11:26:26.000000000 -0600
++++ libsvg-0.1.4/src/svg_parser_expat.c	2006-02-10 21:58:20.000000000 -0600
+@@ -30,6 +30,7 @@
+ #include "svgint.h"
+ #include "svg_hash.h"
+ 
++#ifndef LIBSVG_EXPAT
+ static void
+ _svg_parser_sax_start_element (void		*closure,
+ 			       const XML_Char	*name,
+@@ -43,6 +44,7 @@
+ _svg_parser_sax_characters (void		*closure,
+ 			    const XML_Char	*ch,
+ 			    int			len);
++#endif
+ 
+ static void
+ _svg_parser_sax_warning (void		*closure,
