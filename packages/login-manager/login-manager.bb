@@ -5,7 +5,7 @@ DESCRIPTION = "Initscript for login-managers"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
-PR = "r0"
+PR = "r1"
 
 INITSCRIPT_NAME = "login-manager"
 INITSCRIPT_PARAMS = "start 99 5 . stop 20 0 1 6 ."

@@ -2,10 +2,10 @@
 
 M_TITLE="Install RootFS from tar.gz"
 
-die() {
-	echo "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-}
+# die() {
+# 	echo "ERROR: $1" >/dev/tty0
+# 	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+# }
 
 run_module(){
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
@@ -56,9 +56,9 @@ run_module(){
 		esac
 	done
 
-	echo -e "\nPlease choose the method of this installation:\n"
+	echo -e "\nPlease choose the type of this installation:\n"
 
-	echo -e "\t [1] ImageFile (loopfile)"
+	echo -e "\t [1] Imagefile (loopfile)"
 	echo -e "\t [2] Direct Install"
 	
 	echo ""
@@ -145,21 +145,40 @@ install_rootfs_image(){
 		read junk
 		
 		if test -n "$junk"
-		then
-			echo -n "Use [$junk] as name? [Y|n] "
-			read junk2
-			
-			case "$junk2"  in
-			"Y"|"y"|"")	rootfs_image_name="${junk}-rootfs.bin"
-					break ;;
-			*)		echo "err ]$junk]";;
-			esac
+		then					
+			if test -e "$1/boot-images/${junk}-rootfs.bin"
+			then			
+				echo -e "\nFile [$1/boot-images/${junk}-rootfs.bin] already exists."
+				
+				while true 
+				do
+					echo -n "Overwrite? [N|y] "
+					read junk2
+					
+					case "$junk2" in
+					Y|y)	break;;
+					n|N|"")	install_rootfs_image "$1"
+						exit 0;;
+					esac
+				done
+				rootfs_image_name="${junk}-rootfs.bin"
+				break															
+			else						
+				 echo -n "Use [$junk] as name? [Y|n] "
+				 read junk2
+
+				 case "$junk2"  in
+				 "Y"|"y"|"")	rootfs_image_name="${junk}-rootfs.bin"
+						 break ;;
+				 *)		echo "err ]$junk]";;
+				 esac
+			fi
 		fi
 	done
 	
 	echo ""
 	echo "Please enter the image size in MegaBytes"
-	echo "Must be at least 50Mb"
+	echo "Must be at least 30Mb"
 	echo ""
 	
 	while true
@@ -194,7 +213,7 @@ install_rootfs_image(){
 	echo "Please wait..."
 	mkdir -p "$1/boot-images"
 		
-	! test -e "$1/boot-images/$rootfs_image_name" && dd if=/dev/zero of="$1/boot-images/$rootfs_image_name" bs=1024k count=$rootfs_image_size >/dev/null
+	dd if=/dev/zero of="$1/boot-images/$rootfs_image_name" bs=1024k count=$rootfs_image_size >/dev/null
 	
 	echo -n "Creating an ext2 filesystem on $rootfs_image_name..."
 	losetup /dev/loop0 "$1/boot-images/$rootfs_image_name" || die "losetup /dev/loop0 \"$1/boot-images/$rootfs_image_name\" failed!"

@@ -32,13 +32,14 @@
       "qMgr"			/* name            */
 --- ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Base.h	1970-01-01 00:00:00.000000000 +0000
 +++ ixp_osal/os/linux/include/platforms/ixp400/ixp425/IxOsalOsIxp425Base.h	1970-01-01 00:00:00.000000000 +0000
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,80 @@
 +/*
 + * Glue for the current linux definitons of this stuff.
 + */
 +#ifndef IxOsalOsIxp425Base_H
 +#define IxOsalOsIxp425Base_H 1
 +#include <asm-arm/arch-ixp4xx/ixp4xx-regs.h>
++#include <linux/version.h>
 +
 +/* Force Address Coherent (the default) mapping on LE - Linux 2.6
 + * does not have a way of changing it.
@@ -64,7 +65,14 @@
 +#define IXP425_PCI_CFG_BASE_PHYS	IXP4XX_PCI_CFG_BASE_PHYS
 +
 +//#define IXP425_EXP_BUS_BASE1_PHYS
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,16)
 +#define IXP425_EXP_BUS_BASE2_PHYS	IXP4XX_EXP_BUS_CS2_BASE_PHYS
++#else
++/* The following definition should be IXP4XX_EXP_BUS_BASE(2), but that is not
++   static and causes compilation problems later.  So we need to hard-code it.
++   Note that this hard-coded value is only correct for IXP42X. */
++#define IXP425_EXP_BUS_BASE2_PHYS	(IXP4XX_EXP_BUS_BASE_PHYS + (2 * SZ_16M))
++#endif
 +//#define IXP425_EXP_BUS_CS0_BASE_PHYS
 +//#define IXP425_EXP_BUS_CS1_BASE_PHYS
 +//#define IXP425_EXP_BUS_CS4_BASE_PHYS

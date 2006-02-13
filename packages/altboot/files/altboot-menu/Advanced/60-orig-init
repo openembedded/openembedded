@@ -1,6 +1,7 @@
 # !/bin/sh
 M_TITLE="Boot original INIT"
 
+exit 0
 
 run_module() {
 	
