@@ -4,7 +4,7 @@ ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 DEPENDS = "meta-opie"
-PR = "r2"
+PR = "r3"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -117,7 +117,7 @@ DEPENDS += " ${task-qpe-games}"
 task-qpe-inputmethods = "\
 custominput \
 flexis-zaurus \
-irk \
+irk-targus \
 irk-belkin \
 "
 RDEPENDS_task-qpe-inputmethods = "${task-qpe-inputmethods}"
