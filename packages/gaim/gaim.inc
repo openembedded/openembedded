@@ -6,9 +6,6 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ gnutls virtual/libintl"
 RRECOMMENDS_${PN} = "gaim-protocol-irc gaim-protocol-jabber"
 
-PREMIRRORS_prepend () {
-	${SOURCEFORGE_MIRROR}   http://unc.dl.sourceforge.net/sourceforge
-}
 EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
 
 FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
