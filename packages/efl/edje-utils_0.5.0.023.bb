@@ -1,5 +1,5 @@
 DESCRIPTION = "Edje is a complex graphical design & layout library."
-DEPENDS = "edje"
+DEPENDS = "edje embryo-utils gcc"
 LICENSE = "MIT"
 PR = "r6"
 
