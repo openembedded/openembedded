@@ -17,6 +17,6 @@ export IPKG_INSTALL += "task-e-x11-core \
                         xauth \
                         e17-gpe-menu-convert"
 
-DEPENDS += "task-e-x11-core task-gpe"
+DEPENDS += "task-e-x11-core task-gpe e17-gpe-menu-convert"
 
 RDEPENDS = "${IPKG_INSTALL}"
