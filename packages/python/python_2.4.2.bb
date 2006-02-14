@@ -4,7 +4,6 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PROVIDES = "python python-core"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
 PR = "ml3"
 

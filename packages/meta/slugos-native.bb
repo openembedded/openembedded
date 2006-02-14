@@ -69,7 +69,6 @@ SLUGOS_NATIVE = "\
 	patch \
 	perl \
 	pkgconfig \
-	python-core \
 	quilt \
 	sed \
 	tar \
@@ -92,6 +91,7 @@ SLUGOS_NATIVE_THUMB_BROKEN_thumb = ""
 # These things are required but are not valid RDEPENDS
 SLUGOS_NATIVE_DP = "\
 	gdbm \
+	python \
 	"
 
 RDEPENDS = '${SLUGOS_NATIVE_RT} ${SLUGOS_NATIVE}'
