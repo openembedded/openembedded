@@ -22,5 +22,5 @@ usbdevfs        /proc/bus/usb   usbdevfs        noauto                0  0
 #
 # Harddisk
 #
-/dev/hda1           /media/hdd      ext3	noauto,defaults,noatime    0  0
+/dev/hda1           /media/hdd      vfat    	noauto,defaults,noatime    0  0
 
