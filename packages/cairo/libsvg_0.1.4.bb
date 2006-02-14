@@ -13,5 +13,5 @@ EXTRA_OECONF = "--with-expat"
 inherit autotools pkgconfig 
 
 do_stage () {
-	autotools_stage_all()
+	autotools_stage_all
 }
