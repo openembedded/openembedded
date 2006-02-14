@@ -15,7 +15,7 @@ export IPKG_INSTALL += "task-e-x11-core \
                         gpe-confd \
                         xauth \
                         e17-gpe-menu-convert \
-                        pango-module-basic-x"
+                        pango-module-basic-fc"
 
 DEPENDS += "task-e-x11-core meta-gpe e17-gpe-menu-convert figment xhost gpe-soundserver gpe-confd xauth"
 
