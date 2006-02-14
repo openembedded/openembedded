@@ -1,0 +1,15 @@
+--- ecore/configure.in.~1.125.~	2005-11-29 01:13:26.000000000 -0800
++++ ecore/configure.in	2006-01-12 11:21:42.000000000 -0800
+@@ -101,12 +101,6 @@
+ AC_CHECK_FUNCS(gettimeofday)
+ 
+ tslib_libs=""
+-AC_CHECK_HEADER(tslib.h,
+-  [
+-    tslib_libs="-ltslib"
+-    AC_DEFINE(HAVE_TSLIB, 1, [Build Ecore_X Module])
+-  ]
+-)
+ AC_SUBST(tslib_libs)
+ 
+ AC_CHECK_HEADERS(netinet/in.h)
