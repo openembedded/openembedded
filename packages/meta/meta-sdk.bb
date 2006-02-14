@@ -1,11 +1,7 @@
 DESCRIPTION = "Meta package for SDK including GPE and Opie"
 LICENSE = MIT
-DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
-           binutils-cross-sdk gcc-cross-sdk gdb-cross \
-           libidl libsvg-cairo sed-native \
-           meta-gpe gstreamer\
-           opie-mail"
-PR = "r9"
+DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
+PR = "r10"
 
 PACKAGES = ""
 
@@ -18,104 +14,16 @@ SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
-HOST_INSTALL = "binutils-cross-sdk gcc-cross-sdk gdb-cross"
-TARGET_INSTALL = "libc6 libc6-dev \
-compositeext-dev \
-damageext-dev \
-dbus-dev \
-fixesext-dev \
-gconf-dbus-dev \
-gtk+-dev \
-gtk-engines-dev \
-libapm-dev \
-libatk-1.0-dev \
-libaudiofile-dev \
-libbluetooth-dev \
-libcairo-dev \
-libdisplaymigration-dev \
-libetpan-dev \
-libesd-dev \
-libeventdb-dev \
-libexpat-dev \
-libfontconfig-dev \
-libfreetype-dev \
-libgcrypt-dev \
-libglade-2.0-dev \
-libglib-2.0-dev \
-libgpelaunch-dev \
-libgpepimc-dev \
-libgpevtype-dev \
-libgpewidget-dev \
-libgpg-error-dev \
-libice-dev \
-libidl-2-dev \
-libipkg-dev \
-libjpeg-dev \
-libmb-dev \
-libmimedir-dev \
-libopenobex-1.0-dev \
-libpcap-dev \
-libpixman-dev \
-libpng-dev \
-libpng12-dev \
-libpopt-dev \
-libreadline-dev \
-libschedule-dev \
-libsm-dev \
-libsoundgen-dev \
-libsqlite-dev \
-libstartup-notification-1-dev \
-libsvg-cairo-dev \
-libsvg-dev \
-libtododb-dev \
-libts-0.0-dev \
-libx11-dev \
-libxau-dev \
-libxcalibrate-dev \
-libxcomposite-dev \
-libxcursor-dev \
-libxdamage-dev \
-libxdmcp-dev \
-libxext-dev \
-libxfixes-dev \
-libxfont-dev \
-libxft-dev \
-libxml2-dev \
-libxpm-dev \
-libxrandr-dev \
-libxrender-dev \
-libxsettings-client-dev \
-libxss-dev \
-libxt-dev \
-libxtst-dev \
-libz-dev \
-matchbox-desktop-dev \
-ncurses-dev \
-pango-dev \
-randrext-dev \
-recordext-dev \
-renderext-dev \
-resourceext-dev \
-libiw-dev \
-xcalibrateext-dev \
-xextensions-dev \
-libxmu-dev \
-xproto-dev \
-xtrans-dev \
-gstreamer-dev \
-"
+HOST_INSTALL = "task-sdk-cross"
+TARGET_INSTALL = "\
+    task-sdk-base \
+    task-sdk-opie \
+    task-sdk-x11 \
+    task-sdk-x11-ext \
+    task-sdk-gpe"
 
-#libopiebluez2-dev \
-#libopiedb2-dev \
-#libopiecore2-dev \
-#libopienet2-dev \
-#libopiepim2-dev \
-#libopieui2-dev \
-#libqpe1-dev \
-#libqte2-dev \
-#libqtaux2-dev \
-#libmailwrapper-dev \
-
+RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
+BUILD_ALL_DEPS = "1"
 
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
