@@ -7,7 +7,7 @@ VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
 USBV= "usb20040610"
-PR = "r3"
+PR = "r4"
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
@@ -34,6 +34,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://mppe-20040216.patch;patch=1 \
            file://sa1100-usb-tcl1.patch;patch=1 \
            file://mmc-spi.patch;patch=1 \
+           file://iw249_we17-13.diff;patch=1 \
+           file://iw240_we18-5.diff;patch=1 \
 "
 # This applies right after the jpm patch but is useless until we
 # have sa1100_udc.c
