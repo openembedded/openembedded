@@ -16,12 +16,14 @@ ALLOW_EMPTY = 1
 RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
                             ttf-bitstream-vera chkhinge"
 # gpe-bootsplash-theme-e
+DEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
+                           ttf-bitstream-vera chkhinge"
 
 #
 # E-core
 #
 RDEPENDS_task-e-x11-core += "entrance e-wm"
-
+DEPENDS_task-e-x11-core += "entrance e-wm"
 
 #RDEPENDS_task-e-x11  = "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
 #DEPENDS_task-e-x11 = "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
