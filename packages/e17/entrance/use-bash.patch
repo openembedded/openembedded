@@ -1,12 +1,54 @@
 diff -Nur entrance~/src/client/entrance_session.c entrance/src/client/entrance_session.c
---- entrance~/src/client/entrance_session.c	2005-09-29 15:03:26.000000000 -0700
-+++ entrance/src/client/entrance_session.c	2005-09-29 15:04:11.000000000 -0700
-@@ -470,7 +470,7 @@
-            snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
-                     (int) pid);
-         }
--        shell = strdup("/bin/sh");
-+        shell = strdup("/bin/bash");
-         /* this bypasses a race condition where entrance loses its x
-            connection before the wm gets it and x goes and resets itself */
-         sleep(10);
+--- entrance~/src/client/entrance_session.c	2006-02-02 19:51:40.000000000 -0800
++++ entrance/src/client/entrance_session.c	2006-02-02 19:59:24.000000000 -0800
+@@ -495,7 +495,7 @@
+    entrance_session_free(e);
+    /* replace this process with a clean small one that just waits for its */
+    /* child to exit.. passed on the cmd-line */
+-   execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
++   execl("/bin/bash", "/bin/bash", "-l", "-c", buf, NULL);
+ }
+ 
+ 
+diff -Nur entrance~/src/client/main.c entrance/src/client/main.c
+--- entrance~/src/client/main.c	2006-02-02 19:51:40.000000000 -0800
++++ entrance/src/client/main.c	2006-02-02 19:57:24.000000000 -0800
+@@ -392,7 +392,7 @@
+       {
+         case 0:
+            if (execl
+-               ("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL))
++               ("/bin/bash", "/bin/bash", "-c", "/sbin/shutdown -r now", NULL))
+            {
+               syslog(LOG_CRIT,
+                      "Reboot failed: Unable to execute /sbin/shutdown");
+@@ -434,7 +434,7 @@
+       {
+         case 0:
+            if (execl
+-               ("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL))
++               ("/bin/bash", "/bin/bash", "-c", "/sbin/shutdown -h now", NULL))
+            {
+               syslog(LOG_CRIT,
+                      "Shutdown failed: Unable to execute /sbin/shutdown");
+diff -Nur entrance~/src/daemon/entrance_wrapper.in entrance/src/daemon/entrance_wrapper.in
+--- entrance~/src/daemon/entrance_wrapper.in	2006-02-02 19:51:40.000000000 -0800
++++ entrance/src/daemon/entrance_wrapper.in	2006-02-02 19:56:43.000000000 -0800
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # Wrapper script to set up login environment:
+ # Load up all the junk in /etc/profile first, and then
+ # pass control to entrance proper.
+diff -Nur entrance~/src/daemon/spawner.c entrance/src/daemon/spawner.c
+--- entrance~/src/daemon/spawner.c	2006-02-02 19:51:40.000000000 -0800
++++ entrance/src/daemon/spawner.c	2006-02-02 19:57:10.000000000 -0800
+@@ -162,7 +162,7 @@
+         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
+       /* FIXME: need to parse command and NOT go thru /bin/sh!!!! */
+       /* why? some /bin/sh's wont pass on this SIGUSR1 thing... */
+-        execl("/bin/sh", "/bin/sh", "-c", x_cmd, NULL);
++        execl("/bin/bash", "/bin/bash", "-c", x_cmd, NULL);
+         syslog(LOG_WARNING, "Could not execute X server.");
+         exit(1);
+      default:

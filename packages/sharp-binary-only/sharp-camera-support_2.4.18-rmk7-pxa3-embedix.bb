@@ -6,7 +6,7 @@ LICENSE = "CLOSED"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 PR = "r4"
 
-SRC_URI = "http://www.openzaurus.org/mirror/camera-modules-2.4.18-rmk7-pxa3-embedix.tar.bz2 \
+SRC_URI = "http://openzaurus.sf.net/mirror/camera-modules-2.4.18-rmk7-pxa3-embedix.tar.bz2 \
            file://CE-AG06.dat \
            file://sharpzdc \
            file://sharpzdc.conf"

@@ -12,7 +12,7 @@ inherit efl
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
            file://configure.patch;patch=1 \
            file://fix-tslib-configure.patch;patch=1 \
-           cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore/m4;date=20050926"
+           cvs://anonymous@thinktux.net/root;module=e17/libs/ecore/m4;date=20060101"
 
 S = "${WORKDIR}/ecore-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
@@ -24,9 +24,11 @@ headers = ""
 parts = "<override me>"
 
 do_configure_prepend() {
-	install -d "${S}/m4"
-	install "${WORKDIR}/m4/"*.m4 "${S}/m4"
-	aclocal -I m4
+	if [ -e "${WORKDIR}/m4" ]; then
+		install -d "${S}/m4"
+		install "${WORKDIR}/m4/"*.m4 "${S}/m4"
+		aclocal -I m4
+	fi
 }
 
 do_stage_append() {
