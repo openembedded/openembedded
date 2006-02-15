@@ -1,6 +1,7 @@
 NEW_LEDS support for the IOMega NAS100D
 
 Signed-off-by: John Bowler <jbowler@acm.org>
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
 
 --- linux-2.6.15/arch/arm/mach-ixp4xx/nas100d-setup.c	1970-01-01 00:00:00.000000000 +0000
 +++ linux-2.6.15/arch/arm/mach-ixp4xx/nas100d-setup.c	1970-01-01 00:00:00.000000000 +0000
@@ -31,7 +32,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +		.flags		= IXP4XX_GPIO_LOW,
 +	},
 +	{
-+		.name		= "disk-1", /* yellow led */
++		.name		= "disk",   /* green flashing (off) and yellow (on) led */
 +		.start		= 3,
 +		.end		= 3,
 +		.flags		= IXP4XX_GPIO_LOW,
