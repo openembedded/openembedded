@@ -26,7 +26,7 @@ str() {
 }
 
 convert_desktop_to_eap() {
-    echo "Converting $1 to $2"
+    echo "Adding $1 to e menu"
     for l in `cat $1`; do
         #on empty line clear vars
         if [ "$l" = "" ]; then
@@ -65,12 +65,17 @@ convert_desktop_to_eap() {
     str "$Exec" -set-exe
 
     if [ ! "$cmd" = "" ]; then
-        #cp ~/.e/e/applications/all/aterm.eap gpe-othello.eap
-        ##empty out eap file
-        ##enlightenment_eapp | grep -- -set- | cut -d " " -f 3 | xargs -iCMD enlightenment_eapp gpe-othello.eap CMD \"\"
-        #enlightenment_eapp gpe-othello.eap -del-all
+        eapFile="$PATH_TO_EAP/$2"
+        if [ -e $eapFile ]; then
+            echo "EAP file for $2 already created";
+        else
+            echo "Converting $1 to $2"
+            #cp ~/.e/e/applications/all/aterm.eap gpe-othello.eap
+            ##empty out eap file
+            ##enlightenment_eapp | grep -- -set- | cut -d " " -f 3 | xargs -iCMD enlightenment_eapp gpe-othello.eap CMD \"\"
+            #enlightenment_eapp gpe-othello.eap -del-all
 
-        cat <<EOF > /tmp/gpeEap.edc
+            cat <<EOF > /tmp/gpeEap.edc
 images {
     image: "$Icon" COMP;
 }
@@ -93,13 +98,14 @@ collections {
 }
 EOF
 
-        edje_cc --image_dir "$PATH_TO_PIXMAPS" /tmp/gpeEap.edc "$PATH_TO_EAP/$2"
-        rm /tmp/gpeEap.edc
+            edje_cc --image_dir "$PATH_TO_PIXMAPS" /tmp/gpeEap.edc "$eapFile"
+            rm /tmp/gpeEap.edc
 
-        cmd="enlightenment_eapp \"$PATH_TO_EAP/$2\" $cmd"
+            cmd="enlightenment_eapp \"$eapFile\" $cmd"
 
-        #pipe command in sh to allow it to re-interpret quotes
-        echo $cmd | /bin/sh -s
+            #pipe command in sh to allow it to re-interpret quotes
+            echo $cmd | /bin/sh -s
+        fi
 
         if `echo "$Categories" | grep -q "SystemSettings"`; then
             dir="Settings"
@@ -123,7 +129,18 @@ EOF
 
         #dir=`echo "$Categories" | sed 'y:;:/:'`
         mkdir -p "$PATH_TO_E_GPE/$dir"
-        echo "$2" >> "$PATH_TO_E_GPE/$dir"/.order
+        orderFile="$PATH_TO_E_GPE/$dir"/.order
+        add=1
+        if [ -e "$orderFile" ]; then
+            if grep -q "$2" "$orderFile"; then
+                echo "$2 is already in the $dir menu"
+                add=0
+            fi
+        fi
+        if [ "$add" -eq 1 ]; then
+            echo "Adding $2 to $dir menu"
+            echo "$2" >> "$orderFile"
+        fi
     fi
 }
 
