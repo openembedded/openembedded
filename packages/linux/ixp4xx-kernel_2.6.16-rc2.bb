@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r2.${PR_CONFIG}"
+PR = "r3.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -18,6 +18,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches"
 IXP4XX_PATCHES  = ""
 
 IXP4XX_PATCHES += "file://05-patch-2.6.16-rc2-ide2;patch=1"
+IXP4XX_PATCHES += "file://06-remove-extraversion.patch;patch=1"
 IXP4XX_PATCHES += "file://10-mtdpart-redboot-fis-byteswap.patch;patch=1"
 IXP4XX_PATCHES += "file://10-nslu2-fix-flash.patch;patch=1"
 IXP4XX_PATCHES += "file://11-mtdpart-redboot-config-byteswap.patch;patch=1"
