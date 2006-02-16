@@ -40,13 +40,13 @@ do_install_append() {
 	rm	${D}${sysconfdir}/rc6.d/S20sendsigs
 #	rm	${D}${sysconfdir}/rc6.d/S30urandom
 	rm	${D}${sysconfdir}/rc6.d/S31umountnfs.sh
-#	rm	${D}${sysconfdir}/rc6.d/S40umountfs
+	rm	${D}${sysconfdir}/rc6.d/S40umountfs
 	rm      ${D}${sysconfdir}/rcS.d/S30ramdisk 
 	rm	${D}${sysconfdir}/rc6.d/S90reboot
 	rm	${D}${sysconfdir}/rc0.d/S20sendsigs
 #	rm	${D}${sysconfdir}/rc0.d/S30urandom
 	rm	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
-#	rm	${D}${sysconfdir}/rc0.d/S40umountfs
+	rm	${D}${sysconfdir}/rc0.d/S40umountfs
 	rm	${D}${sysconfdir}/rc0.d/S90halt
 	rm	${D}${sysconfdir}/rcS.d/S02banner
 	rm	${D}${sysconfdir}/rcS.d/S10checkroot.sh
