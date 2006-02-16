@@ -25,7 +25,7 @@ do_compile() {
                    TOP="${S}" \
                    BCC="${BUILD_CC}" \
                    TCC="${CC}" \
-                   OPTS="-fPIC" \
+                   OPTS="-fPIC -D'INTPTR_TYPE=int'" \
                    TCL_FLAGS= LIBTCL= \
                    READLINE_FLAGS="-DHAVE_READLINE=1 -I${STAGING_INCDIR}" \
                    LIBREADLINE="-L. -L${STAGING_LIBDIR} -lreadline -lncurses"
