@@ -3,6 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
 DEPENDS = "qmake-native x11-native"
+HOMEPAGE = "http://www.trolltech.com"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qt-x11-free"
 

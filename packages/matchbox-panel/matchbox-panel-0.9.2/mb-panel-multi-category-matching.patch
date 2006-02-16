@@ -1,0 +1,32 @@
+--- matchbox-panel-0.9.2/applets/mb-applet-menu-launcher.c	2005-04-06 22:13:00.000000000 +0200
++++ matchbox-panel-0.9.2.new/applets/mb-applet-menu-launcher.c	2006-02-16 00:43:28.000000000 +0100
+@@ -566,7 +566,28 @@
+ 				    {
+ 				      fallback = menu_lookup[i].item;
+ 				    }
+-				  if (strstr(category, 
++				  if (strstr(menu_lookup[i].match_str, ";"))
++				    {
++				      char *s;
++				      char *match_str = menu_lookup[i].match_str;
++				      
++				      while (s = strstr(match_str, ";"))
++					{
++					  size_t len = s - match_str;
++					  char *tok = (char *) malloc (sizeof (char) * (len + 1));
++
++					  strncpy (tok, match_str, len);
++					  tok[len] = 0;
++					  match_str = s + 1;
++
++					  if (strstr (category, tok))
++					    {
++					      m = menu_lookup[i].item;
++					    }
++					  free (tok);
++					}
++				    }
++				  else if (strstr(category, 
+ 					     menu_lookup[i].match_str))
+ 				    {
+ 				      m = menu_lookup[i].item;

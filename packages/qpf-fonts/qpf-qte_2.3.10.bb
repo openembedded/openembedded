@@ -3,6 +3,7 @@ SECTION = "opie/fonts"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
+HOMEPAGE = "http://www.trolltech.com"
 PR = "r1"
 
 PROVIDES  = "qte-font-helvetica-100 qte-font-helvetica-120"

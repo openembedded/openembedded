@@ -6,6 +6,7 @@ DEPENDS = "zlib libpng jpeg tslib qmake-native-1.08a uicmoc4-native"
 PROVIDES = "virtual/qte4 virtual/libqte4"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "ml1"
+HOMEPAGE = "http://www.trolltech.com"
 
 BROKEN = "1"
 

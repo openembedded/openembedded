@@ -1,0 +1,39 @@
+--- matchbox-desktop-0.9.1/modules/dotdesktop.c.orig	2006-02-15 23:08:31.000000000 +0100
++++ matchbox-desktop-0.9.1/modules/dotdesktop.c	2006-02-16 00:31:46.000000000 +0100
+@@ -84,9 +84,33 @@
+ 		  item_fallback = item;
+ 		  continue;
+ 		}
+-	      if (category && strstr(category, match_str))
+-		{
+-		  return item;
++	      if (category)
++	        {
++		  if (strstr(match_str, ";"))
++		    {
++		      char *s;
++		      
++		      while (s = strstr(match_str, ";"))
++		        {
++			  size_t len = s - match_str;
++			  char *tok = (char *) malloc (sizeof (char) * (len + 1));
++
++			  strncpy (tok, match_str, len);
++			  tok[len] = 0;
++			  if (strstr (category, tok))
++			    {
++			      free (tok);
++			      return item;
++			    }
++			  match_str = s + 1;
++
++			  free (tok);
++			}
++		    }
++		  else if (strstr(category, match_str))
++		    {
++		      return item;
++		    }
+ 		}
+ 	    }
+ 	}
