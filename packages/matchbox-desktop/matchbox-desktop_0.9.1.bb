@@ -2,8 +2,10 @@ DESCRIPTION = "Matchbox Window Manager Desktop"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 SECTION = "x11/wm"
+PR = "r1"
 
-SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-desktop/0.9/matchbox-desktop-${PV}.tar.bz2"
+SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-desktop/0.9/matchbox-desktop-${PV}.tar.bz2 \
+           file://mb-desktop-multi-category-matching.patch;patch=1"
 
 EXTRA_OECONF = "--enable-startup-notification --enable-dnotify"
 
