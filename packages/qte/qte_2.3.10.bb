@@ -2,6 +2,7 @@ DESCRIPTION = "Qt/Embedded Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+HOMEPAGE   = "http://www.trolltech.com"
 LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
@@ -9,7 +10,7 @@ DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
 PR = "r28"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5=1f7ad30113afc500cab7f5b2f4dec0d7 \
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=af7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
 	   file://daemonize.patch;patch=1 \

@@ -1,6 +1,6 @@
 HOMEPAGE = "http://xqt.sourceforge.jp"
 LICENSE = "GPL"
-SECTION = "x11/base"
+SECTION = "x11"
 
 
 SRCDATE = "20041111"

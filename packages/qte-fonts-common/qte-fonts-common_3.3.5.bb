@@ -3,6 +3,7 @@ MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 SECTION = "opie/base"
 LICENSE = "GPL QPL"
 PACKAGE_ARCH = "all"
+HOMEPAGE = "http://www.trolltech.com"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
