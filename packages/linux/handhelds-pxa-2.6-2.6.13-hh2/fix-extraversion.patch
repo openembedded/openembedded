@@ -1,0 +1,11 @@
+--- kernel26/Makefile.orig	2006-02-15 14:59:53.823692360 -0800
++++ kernel26/Makefile	2006-02-15 14:39:09.000000000 -0800
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 13
+-EXTRAVERSION = -hh1
++EXTRAVERSION = -hh2
+ NAME=Woozy Numbat
+ 
+ # *DOCUMENTATION*
