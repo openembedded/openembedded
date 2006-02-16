@@ -1,11 +1,7 @@
---- /tmp/Xserver	2006-02-04 01:02:51.095272576 +0100
-+++ xserver-common-1.7/X11/Xserver	2006-02-04 01:03:08.315654680 +0100
-@@ -46,10 +46,10 @@
- 		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@90" ;;
- 	"HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")
- 		ARGS="$ARGS -dpi 100 -rgba vbgr -screen 320x240@270" ;;
--	"HP iPAQ H5400" | "HP iPAQ H2200")
-+	"HP iPAQ H5400" | "HP iPAQ H2100")
+--- xserver-common-1.7/X11/Xserver.orig	2006-02-16 12:11:22.316078680 -0800
++++ xserver-common-1.7/X11/Xserver	2006-02-16 12:11:53.681310440 -0800
+@@ -49,7 +49,7 @@ case `module_id` in
+ 	"HP iPAQ H5400" | "HP iPAQ H2200")
  		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
          "HP iPAQ HX4700")
 -                ARGS="$ARGS -dpi 200" ;;
@@ -13,7 +9,7 @@
  	"Ramses")
  		# What is this "vt2" in aid of?
  		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
-@@ -60,9 +60,9 @@
+@@ -60,9 +60,9 @@ case `module_id` in
  		ARGS="$ARGS -dpi 100 -rgba vrgb -screen 320x240@270"
  		;;
  	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
