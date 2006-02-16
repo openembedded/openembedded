@@ -1,0 +1,12 @@
+diff -bur JavaScriptCore~orig/configure.in JavaScriptCore/configure.in
+--- JavaScriptCore~orig/configure.in	2006-02-12 01:51:50.000000000 -0600
++++ JavaScriptCore/configure.in	2006-02-12 22:26:44.000000000 -0600
+@@ -63,7 +63,7 @@
+ fi
+ changequote([,])dnl
+ 
+-CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++"
++CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++ -fno-threadsafe-statics"
+ LDFLAGS="$LDFLAGS $PACKAGE_LIBS" #-nodefaultlibs -lgcc -lc -lm"
+ 
+ CPPFLAGS="$CPPFLAGS $PACKAGE_CFLAGS -I\$(top_srcdir)/kjs -I\$(top_srcdir)/pcre -I\$(top_srcdir)/" 

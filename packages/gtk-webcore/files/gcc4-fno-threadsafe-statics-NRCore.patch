@@ -1,0 +1,12 @@
+diff -bur NRCore~orig/configure.in NRCore/configure.in
+--- NRCore~orig/configure.in	2005-02-16 03:31:43.000000000 -0600
++++ NRCore/configure.in	2006-02-12 21:03:49.000000000 -0600
+@@ -107,7 +107,7 @@
+   esac
+   case " $CXXFLAGS " in
+   *[\ \	]-Wall[\ \	]*) ;;
+-  *) CXXFLAGS="$CXXFLAGS -Wall " ;;
++  *) CXXFLAGS="$CXXFLAGS -Wall -fno-threadsafe-statics " ;;
+   esac
+ fi
+ changequote([,])dnl

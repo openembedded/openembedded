@@ -1,0 +1,12 @@
+diff -bur NRCit~orig/configure.in NRCit/configure.in
+--- NRCit~orig/configure.in	2005-08-08 18:07:00.000000000 -0500
++++ NRCit/configure.in	2006-02-12 21:28:53.000000000 -0600
+@@ -37,7 +37,7 @@
+   esac
+   case " $CXXFLAGS " in
+   *[\ \	]-Wall[\ \	]*) ;;
+-  *) CXXFLAGS="$CXXFLAGS -Wall -Werror" ;;
++  *) CXXFLAGS="$CXXFLAGS -Wall -Werror -fno-threadsafe-statics" ;;
+   esac
+ fi
+ changequote([,])dnl
