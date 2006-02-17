@@ -4,6 +4,9 @@ MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 
+#!BIG FAT WARNING:
+#build this *before* building your real kernel, otherwise external modules will pickup the wrong headers
+
 DEFAULT_PREFERENCE = "-1"
 
 KERNEL_CCSUFFIX = "-3.4.4"
