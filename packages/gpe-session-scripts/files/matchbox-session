@@ -4,6 +4,6 @@ XRES=`xdpyinfo | awk '/dimensions/ { print $2 }' | cut -dx -f1`
 
   matchbox-desktop &
 
-matchbox-panel  --orientation south &
+MB_MENU_PANEL_DISABLED=1 matchbox-panel  --orientation south &
 exec matchbox-window-manager $@
 
