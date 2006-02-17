@@ -1,0 +1,85 @@
+Index: lab/lab-main.c
+===================================================================
+RCS file: /cvs/linux/kernel26/lab/lab-main.c,v
+retrieving revision 1.9
+diff -u -p -r1.9 lab-main.c
+--- kernel26/lab/lab-main.c	22 Dec 2005 02:17:57 -0000	1.9
++++ kernel26/lab/lab-main.c	16 Feb 2006 22:02:29 -0000
+@@ -18,7 +18,7 @@
+ #include <linux/lab/lab.h>
+ #include <linux/lab/commands.h>
+ 
+-
++void lab_runfile(char *source, char *sourcefile);
+ 
+ int globfail;
+ EXPORT_SYMBOL (globfail);
+@@ -67,7 +67,7 @@ static void parseargs (char *argstr, int
+ 	while ((c = *argstr) != 0) {
+ 		enum ParseState newState;
+ 
+-		if (c == ';' && lastState != PS_STRING && lastState != PS_ESCAPE)
++		if ((c == ';' || c == '\n') && lastState != PS_STRING && lastState != PS_ESCAPE)
+ 			break;
+ 
+ 		if (lastState == PS_ESCAPE) {
+@@ -106,7 +106,7 @@ static void parseargs (char *argstr, int
+ 	if (argc_p != NULL)
+ 		*argc_p = argc;
+ 
+-	if (*argstr == ';')
++	if (*argstr == ';' || *argstr == '\n')
+ 		*argstr++ = 0;
+ 
+ 	*resid = argstr;
+@@ -189,6 +189,7 @@ EXPORT_SYMBOL (lab_exec_string);
+ 
+ static char *blockdevs[] = {
+ 	"/dev/mmc/blk0/part1", "ext2",
++	"/dev/ide/host0/bus0/target0/lun0/part1", "ext2",
+ 	"/dev/mtdblock/3", "jffs2",
+ 	NULL
+ };
+@@ -222,19 +223,19 @@ void lab_main (int cmdline)
+ 		}
+ 		lab_puts ("\r\n"
+ 		          ">> Booting now.\r\n");
+-		sys_mkdir("/fs", 0000);
++		sys_mkdir("/mnt", 0000);
+ 		sys_mount("/dev", "/dev", "devfs", 0, "");
+ 		lab_puts (">> Looking for filesystems...\r\n");
+ 		blockdev = blockdevs;
+ 		while (*blockdev) {
+ 			lab_printf("  >> Trying \"%s\"... ", blockdev[0]);
+-			if (sys_mount(blockdev[0], "/fs", blockdev[1], MS_RDONLY, "") >= 0) {
++			if (sys_mount(blockdev[0], "/mnt", blockdev[1], MS_RDONLY, "") >= 0) {
+ 				struct stat sstat;
+-				
++
+ 				lab_printf("ok");
+-				if (sys_newstat("/fs/boot/zImage", &sstat) < 0) {
+-					lab_printf(", but no zImage.\r\n");
+-					sys_oldumount("/fs");
++				if (sys_newstat("/mnt/boot/labrun", &sstat) < 0) {
++					lab_printf(", but no labrun.\r\n");
++					sys_oldumount("/mnt");
+ 					blockdev += 2;
+ 					continue;
+ 				}
+@@ -249,12 +250,10 @@ void lab_main (int cmdline)
+ 			lab_printf(">> No bootable filesystems found!\r\n");
+ 			goto domenu;
+ 		}
+-		lab_printf(">> Copying zImage... ");
+-		lab_copy("fs", "/fs/boot/zImage", "fs", "/zImage");
+-		lab_printf("done\r\n>> Unmounting filesystem... ");
+-		sys_oldumount("/fs");
+-		lab_printf("done\r\n>> Booting kernel.\r\n");
+-		lab_armboot("fs", "/zImage", NULL);
++
++		lab_printf(">> Executing labrun...\r\n");
++		lab_runfile("fs", "/mnt/boot/labrun");
++		lab_printf("done\r\n");
+ 	}
+ 
+ domenu:
