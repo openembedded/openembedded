@@ -40,6 +40,11 @@ do_deploy() {
 #add the bootshim?
 }
 
+do_stage() {
+#do nothing
+}
+
+
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
