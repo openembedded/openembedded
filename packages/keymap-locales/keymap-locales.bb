@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://*.map"
 
