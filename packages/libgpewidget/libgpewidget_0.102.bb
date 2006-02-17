@@ -1,15 +1,15 @@
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "gtk+ cairo libxrender gtk-doc intltool-native"
+DEPENDS = "gtk+ cairo libxrender gtk-doc"
 
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2 \
-		file://cairo.patch;patch=1;pnum=1"
+GPE_TARBALL_SUFFIX = "bz2"
+inherit gpe pkgconfig autotools
 
-inherit pkgconfig autotools
+SRC_URI += "file://cairo.patch;patch=1;pnum=1"
 
 EXTRA_OECONF = "--enable-cairo"
 
