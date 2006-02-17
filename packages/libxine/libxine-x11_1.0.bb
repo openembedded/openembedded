@@ -21,7 +21,8 @@ SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.
 	file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
 	file://libxine-cut-memusage.patch;patch=1 \
 	file://mpegvideo-static-inlinine.patch;patch=1 \
-	file://libxine-libavcodec.patch;patch=1"
+	file://libxine-libavcodec.patch;patch=1 \
+    file://libxine-gcc4.patch;patch=1"
 S = "${WORKDIR}/xine-lib-${PV}"
 
 SOV = "1.0.7"
