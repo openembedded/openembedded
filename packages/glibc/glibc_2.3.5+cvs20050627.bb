@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r1"
+PR = "r2"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -41,8 +41,8 @@ INHIBIT_DEFAULT_DEPS = "1"
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
-	   cvs://anoncvs@sources.redhat.com/cvs/glibc;module=ports \
+SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/libc_sources.redhat.com__20050627.tar.gz \
+	   http://familiar.handhelds.org/source/v0.8.3/ports_sources.redhat.com__20050627.tar.gz \
 	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
 	   file://arm-no-hwcap.patch;patch=1 \
