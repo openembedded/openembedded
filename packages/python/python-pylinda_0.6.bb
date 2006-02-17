@@ -10,3 +10,5 @@ SRC_URI = "http://www-users.cs.york.ac.uk/~aw/pylinda/dist/linda-${PV}.tar.gz \
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+export LINDA_DATADIR = "${D}/${libdir}/${PYTHON_DIR}"
