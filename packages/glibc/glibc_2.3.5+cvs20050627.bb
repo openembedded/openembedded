@@ -43,9 +43,9 @@ INHIBIT_DEFAULT_DEPS = "1"
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/libc_sources.redhat.com__20050627.tar.gz \
-           http://familiar.handhelds.org/source/v0.8.3/ports_sources.redhat.com__20050627.tar.gz \
-	   file://arm-audit.patch;patch=1 \
+SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat.com__20050627.tar.gz \
+           http://familiar.handhelds.org/source/v0.8.3/stash_ports_sources.redhat.com__20050627.tar.gz \
+    	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
 	   file://arm-memcpy.patch;patch=1 \
 	   file://arm-longlong.patch;patch=1;pnum=0 \
