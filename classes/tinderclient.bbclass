@@ -231,9 +231,15 @@ def tinder_tinder_start(d):
 
 def tinder_do_tinder_report(event):
     """
-    Report to the tinderbox. Either we will report every step
-    (depending on TINDER_VERBOSE_REPORT) at the end we will send the
-    tinderclient.log
+    Report to the tinderbox:
+        On the BuildStart we will inform the box directly
+        On the other events we will write to the TINDER_LOG and
+        when the Task is finished we will send the report.
+
+    The above is not yet fully implemented. Currently we send
+    information immediately. The caching/queuing needs to be
+    implemented. Also sending more or less information is not
+    implemented yet.
     """
     from bb.event import getName
     from bb import data, mkdirhier
@@ -242,7 +248,6 @@ def tinder_do_tinder_report(event):
     # variables
     name = getName(event)
     log  = ""
-    logfile = None
     status = 1
 
     # Check what we need to do Build* shows we start or are done
@@ -250,40 +255,39 @@ def tinder_do_tinder_report(event):
         tinder_build_start(event.data)
         log = tinder_tinder_start(event.data)
 
-    if name == "PkgFailed" or name == "BuildCompleted":
-        status = 'build_failed'
-        if name == "BuildCompleted":
-            status = "success"
-        # append the log
-        log_file = data.getVar('TINDER_LOG', event.data, True)
-        file     = open(log_file, 'r')
-        for line in file.readlines():
-            log += line
+        try:
+            # truncate the tinder log file
+            f = file(data.getVar('TINDER_LOG', event.data, True), 'rw+')
+            f.truncate(0)
+            f.close()
+        except IOError:
+            pass
 
-    #if verbose and name == "TaskStarted":
-    #    log    = "Task %s started" % event.task
-    #
-    #if verbose and name == "PkgStarted":
-    #    log    = "Package %s started" % data.getVar('P', event.data, True)
-    #
-    #if verbose and name == "PkgSucceeded":
-    #    header = tinder_prepare_mail_header(event.data, 'building')
-    #    log    = "Package %s done" % data.getVar('P', event.data, True)
-
-    # Append the Task Log
+    # Append the Task-Log (compile,configure...) to the log file
+    # we will send to the server
     if name == "TaskSucceeded" or name == "TaskFailed":
         log_file = glob.glob("%s/log.%s.*" % (data.getVar('T', event.data, True), event.task))
 
         if len(log_file) != 0:
             to_file  = data.getVar('TINDER_LOG', event.data, True)
-            log_txt  = open(log_file[0], 'r').readlines()
-            to_file.writelines(log_txt)
+            log      = open(log_file[0], 'r').readlines()
 
-            # append to the log
-            #if verbose:
-            #    header = tinder_prepare_mail_header(event.data, 'building')
-            #    for line in log_txt:
-            #        log += line
+    # set the right 'HEADER'/Summary for the TinderBox
+    if name == "TaskStarted":
+        log += "--> TINDERBOX Task %s started" % event.task
+    elif name == "TaskSucceeded":
+        log += "<-- TINDERBOX Task %s done (SUCCESS)" % event.task
+    elif name == "TaskFailed":
+        log += "<-- TINDERBOX Task %s failed (FAILURE)" % event.task
+    elif name == "PkgStarted":
+        log += "--> TINDERBOX Package %s started" % data.getVar('P', event.data, True)
+    elif name == "PkgSucceeded":
+        log += "<-- TINDERBOX Package %s done (SUCCESS)" % data.getVar('P', event.data, True)
+    elif name == "PkgFailed":
+        log += "<-- TINDERBOX Package %s failed (FAILURE)" % data.getVar('P', event.data, True)
+        status = 200
+    elif name == "BuildCompleted":
+        status = 100
 
     # now post the log
     if len(log) == 0:
