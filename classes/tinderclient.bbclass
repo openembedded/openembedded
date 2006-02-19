@@ -20,18 +20,13 @@ def tinder_form_data(bound, dict, log):
 
     return "\r\n".join(output)
 
-def tinder_send_http(d, log):
-    """
-    Send the log via HTTP...
-    """
-
 def tinder_time_string():
     """
     Return the time as GMT
     """
     return ""
 
-def tinder_format_http_post(d,log):
+def tinder_format_http_post(d,status,log):
     """
     Format the Tinderbox HTTP post with the data needed
     for the tinderbox to be happy.
@@ -49,6 +44,20 @@ def tinder_format_http_post(d,log):
         "compiler"     : "gcc",
         "clobber"      : data.getVar('TINDER_CLOBBER', d, True)
     }
+
+    # optionally add the status
+    if status:
+        variables["status"] = str(status)
+
+    # try to load the machine id
+    # we only need on build_status.pl but sending it
+    # always does not hurt
+    try:
+        f = file(data.getVar('TMPDIR',d,True)+'/tinder-machine.id', 'r')
+        id = f.read()
+        variables['machine_id'] = id
+    except:
+        pass
 
     # the boundary we will need
     boundary = "----------------------------------%d" % int(random.random()*1000000000000)
@@ -69,7 +78,7 @@ def tinder_build_start(d):
     import httplib
 
     # get the body and type
-    content_type, body = tinder_format_http_post(d,None)
+    content_type, body = tinder_format_http_post(d,None,None)
     server = data.getVar('TINDER_HOST', d, True )
     url    = data.getVar('TINDER_URL',  d, True )
 
@@ -86,10 +95,48 @@ def tinder_build_start(d):
     h.send(body)
     errcode, errmsg, headers = h.getreply()
     print errcode, errmsg, headers
+    report = h.file.read()
+
+    # now let us find the machine id that was assigned to us
+    search = "<machine id='"
+    report = report[report.find(search)+len(search):]
+    report = report[0:report.find("'")]
+
+    import bb
+    bb.note("Machine ID assigned by tinderbox: %s" % report )
+
+    # now we will need to save the machine number
+    # we will override any previous numbers
+    f = file(data.getVar('TMPDIR', d, True)+"/tinder-machine.id", 'w')
+    f.write(report)
+
+
+def tinder_send_http(d, status, log):
+    """
+    Send this log as build status
+    """
+    from bb import data
+    import httplib
+
+
+    # get the body and type
+    content_type, body = tinder_format_http_post(d,status,log)
+    server = data.getVar('TINDER_HOST', d, True )
+    url    = data.getVar('TINDER_URL',  d, True )
+
+    selector = url + "/xml/build_status.pl"
+
+    # now post it
+    h = httplib.HTTP(server)
+    h.putrequest('POST', selector)
+    h.putheader('content-type', content_type)
+    h.putheader('content-length', str(len(body)))
+    h.endheaders()
+    h.send(body)
+    errcode, errmsg, headers = h.getreply()
+    print errcode, errmsg, headers
     print h.file.read()
 
-    print body
-    print content_type
 
 def tinder_print_info(d):
     """
@@ -196,6 +243,7 @@ def tinder_do_tinder_report(event):
     name = getName(event)
     log  = ""
     logfile = None
+    status = 1
 
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
@@ -212,15 +260,15 @@ def tinder_do_tinder_report(event):
         for line in file.readlines():
             log += line
 
-    if verbose and name == "TaskStarted":
-        log    = "Task %s started" % event.task
-
-    if verbose and name == "PkgStarted":
-        log    = "Package %s started" % data.getVar('P', event.data, True)
-
-    if verbose and name == "PkgSucceeded":
-        header = tinder_prepare_mail_header(event.data, 'building')
-        log    = "Package %s done" % data.getVar('P', event.data, True)
+    #if verbose and name == "TaskStarted":
+    #    log    = "Task %s started" % event.task
+    #
+    #if verbose and name == "PkgStarted":
+    #    log    = "Package %s started" % data.getVar('P', event.data, True)
+    #
+    #if verbose and name == "PkgSucceeded":
+    #    header = tinder_prepare_mail_header(event.data, 'building')
+    #    log    = "Package %s done" % data.getVar('P', event.data, True)
 
     # Append the Task Log
     if name == "TaskSucceeded" or name == "TaskFailed":
@@ -232,10 +280,10 @@ def tinder_do_tinder_report(event):
             to_file.writelines(log_txt)
 
             # append to the log
-            if verbose:
-                header = tinder_prepare_mail_header(event.data, 'building')
-                for line in log_txt:
-                    log += line
+            #if verbose:
+            #    header = tinder_prepare_mail_header(event.data, 'building')
+            #    for line in log_txt:
+            #        log += line
 
     # now post the log
     if len(log) == 0:
@@ -243,7 +291,7 @@ def tinder_do_tinder_report(event):
 
     # for now we will use the http post method as it is the only one
     log_post_method = tinder_send_http
-    log_post_method(event.data, log)
+    log_post_method(event.data, status, log)
 
 
 # we want to be an event handler
