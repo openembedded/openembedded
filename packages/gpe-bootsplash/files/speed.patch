@@ -1,0 +1,51 @@
+--- gpe-bootsplash-1.15/gpe-bootsplash.init.orig	2006-02-19 14:34:22.404426869 +0100
++++ gpe-bootsplash-1.15/gpe-bootsplash.init	2006-02-19 14:29:35.044269116 +0100
+@@ -32,14 +32,46 @@
+ 	esac
+ 	echo "0" > /proc/sys/kernel/printk
+ 
+-	# Clear tty2 
++	# Clear tty2 	
+ 	echo -e "\033c" > /dev/tty2
++	
+ 	chvt 2
+ 	
+ 	echo -e "\nLoading bootsplash..." > /dev/tty2
+ 	echo "Use Fn-LeftArrow to see the boot messages." > /dev/tty2
+ 
+-	/usr/bin/gpe-bootsplash $ARGS || chvt 1
++	# Catch when the user has changed the symlinks manually (normally it doesn't matter which link we check
++	# as themes always update both of them
++	echo "$ARGS" | grep -q -- "--force-landscape" && source_link="splash-l.svg" || source_link="splash-p.svg" 
++
++	# echo "[`cat /etc/bootsplash.name`] = [`readlink /usr/share/gpe/$source_link`]"
++
++	# bootsplash takes quite some time to load external images into an svg file.
++	# We speed things up by dumping the content of fb0, and catting it back (which works instantly)
++	if test -e /etc/bootsplash.raw.gz -a "`cat /etc/bootsplash.name`" = "`readlink /usr/share/gpe/$source_link`"			
++	then
++		echo -e "\nUsing /etc/bootsplash.raw.gz...." > /dev/tty2
++		sleep 1
++
++		# Turn off the cursor on tty2
++		echo -e "\033[?25l\000" > /dev/tty2 
++
++		zcat /etc/bootsplash.raw.gz > /dev/fb0
++	else
++		rm -f /etc/bootsplash.*
++		# Store the symlinks name as an indication which theme is used at the time we dump the image
++		if (/usr/bin/gpe-bootsplash $ARGS)
++		then			
++			readlink /usr/share/gpe/$source_link > /etc/bootsplash.name
++			
++			cat /dev/fb0 > /etc/bootsplash.raw ; gzip /etc/bootsplash.raw
++		else
++			echo -e "\nNOTE: gpe-bootsplash failed to start" >/dev/tty2
++			sleep 3
++			chvt 1
++		fi
++		
++	fi	
+ 	;;
+ 'stop')
+ ;;
