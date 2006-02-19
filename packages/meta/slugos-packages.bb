@@ -109,6 +109,7 @@ SLUGOS_PACKAGES = "\
 	nano \
 	ncftp \
 	ncurses \
+	netcat \
 	netpbm \
 	nmap \
 	ntp \
