@@ -1,0 +1,28 @@
+--- /tmp/configure.ac	2006-02-19 10:43:44.525208784 +0100
++++ inkscape-0.43/configure.ac	2006-02-19 10:43:55.582527816 +0100
+@@ -133,24 +133,7 @@
+                  [gc_ok=no])
+ if test "x$gc_ok" = "xyes"; then
+ 	AC_MSG_CHECKING([libgc version 6.4+])
+-	AC_RUN_IFELSE(
+-		[AC_LANG_SOURCE([[
+-			#ifdef HAVE_GC_GC_H
+-			# include <gc/gc.h>
+-			#else
+-			# include <gc.h>
+-			#endif
+-			#include <stdio.h>
+-			extern unsigned GC_version;
+-			int main(void){
+-				unsigned min = ((6 << 16) | (4 << 8) | 0);
+-				printf("%d.%d.%d ",GC_version >> 16, (GC_version >> 8) & 0xFF, GC_version & 0xFF);
+-				if (GC_version>=min) return 0;
+-				return 1;
+-			}]])],
+-		[gc_ok=yes],
+-		[gc_ok=no]
+-	)
++		[gc_ok=yes]
+ 	AC_MSG_RESULT([$gc_ok])
+ fi
+ if test "x$gc_ok" != "xyes"; then
