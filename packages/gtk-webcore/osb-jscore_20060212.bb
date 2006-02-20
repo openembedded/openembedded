@@ -13,7 +13,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=JavaSc
            file://gcc4-fno-threadsafe-statics-JavaScriptCore.patch;patch=1"
 S = "${WORKDIR}/JavaScriptCore"
 
-DEFAULT_PREFERENCE = "${@['-1', '1'][bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1).split('.')[0] == '4']}"
+DEFAULT_PREFERENCE = "${@['-1', '1'][not bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1) or bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1).split('.')[0] == '4']}"
 
 inherit autotools pkgconfig
 
