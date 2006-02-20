@@ -6,7 +6,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
-PR = "r22"
+PR = "r21"
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
@@ -28,8 +28,6 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://simpad-pm-updates.patch;patch=1;pnum=0 \
            file://support-128mb-ram.patch;patch=1 \
            file://mmc-spi.patch;patch=1 \
-           file://iw249_we17-13.diff;patch=1 \
-           file://iw240_we18-5.diff;patch=1 \
 "
 
 # apply this when we have a patch that allows building with gcc 3.x:
