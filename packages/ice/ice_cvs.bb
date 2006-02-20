@@ -7,7 +7,7 @@ DEPENDS = "x11"
 DESCRIPTION = "X11 ICE library"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=ICE"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=ICE"
 S = "${WORKDIR}/ICE"
 
 inherit autotools pkgconfig 

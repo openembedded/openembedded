@@ -6,7 +6,7 @@ SECTION = "libs"
 DEPENDS = "x11 xext"
 DESCRIPTION = "X print extension library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xp"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xp"
 S = "${WORKDIR}/Xp"
 
 inherit autotools pkgconfig 

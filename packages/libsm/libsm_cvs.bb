@@ -8,7 +8,7 @@ PR = "r1"
 
 DEFAULT_PREFERENCE="-1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=SM"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=SM"
 S = "${WORKDIR}/SM"
 
 inherit autotools pkgconfig 

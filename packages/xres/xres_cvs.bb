@@ -4,7 +4,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "x11 xextensions xext resourceext"
 DESCRIPTION = "X Resource usage library."
 LICENSE = "X-MIT"
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XRes"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=XRes"
 S = "${WORKDIR}/XRes"
 
 inherit autotools pkgconfig 

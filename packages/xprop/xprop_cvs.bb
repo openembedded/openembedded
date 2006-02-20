@@ -6,7 +6,7 @@ MAINTER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"
 PR = "r2"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xprop;tag=XORG-MAIN \
+SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc/programs/xprop;tag=XORG-MAIN \
            file://autofoo.patch;patch=1"
 S = "${WORKDIR}/xprop"
 

@@ -6,7 +6,7 @@ DEPENDS = "x11 libsm"
 DESCRIPTION = "X Toolkit Intrinsics"
 LICENSE =  "X-MIT"
 PR = "r1"
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xt"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xt"
 S = "${WORKDIR}/Xt"
 
 inherit autotools pkgconfig 
