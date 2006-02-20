@@ -1,5 +1,5 @@
 DESCRIPTION = "Avahi implements the DNS-SD over Multicast DNS"
-SECTION = "net"
+SECTION = "network"
 PRIORITY = "optional"
 AUTHOR = "Lennart Poettering <lennart@poettering.net>"
 HOMEPAGE = "http://avahi.org"

@@ -1,11 +1,10 @@
 DESCRIPTION = "Avahi implements the DNS-SD over Multicast DNS"
-HOMEPAGE = "http://avahi.org"
-LICENSE= "GPL"
-DEPENDS = "expat libdaemon dbus"
-RRECOMMENDS = "libnss-mdns"
-SECTION = "net"
+SECTION = "network"
 PRIORITY = "optional"
-PR = "r0"
+AUTHOR = "Lennart Poettering <lennart@poettering.net>"
+HOMEPAGE = "http://avahi.org"
+MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
+LICENSE= "GPL"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz"
 
