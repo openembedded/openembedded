@@ -6,7 +6,7 @@ SECTION = "x11/libs"
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DESCRIPTION = "various extension headers."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=XExtensions;date=${FIXEDSRCDATE}"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=XExtensions;date=${FIXEDSRCDATE}"
 S = "${WORKDIR}/XExtensions"
 
 inherit autotools pkgconfig

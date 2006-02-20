@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 DEPENDS = "x11 xext"
 DESCRIPTION = "X Video extension library."
 
-SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=Xv;date=20040918;method=pserver"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xv;date=20040918;method=pserver"
 S = "${WORKDIR}/Xv"
 
 inherit autotools pkgconfig 

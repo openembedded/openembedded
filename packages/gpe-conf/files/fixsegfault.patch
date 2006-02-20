@@ -1,0 +1,44 @@
+Index: network.c
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/network.c,v
+retrieving revision 1.55.2.2
+retrieving revision 1.55.2.3
+diff -u -r1.55.2.2 -r1.55.2.3
+--- network.c	16 Feb 2006 22:32:30 -0000	1.55.2.2
++++ network.c	20 Feb 2006 01:34:44 -0000	1.55.2.3
+@@ -289,19 +289,23 @@
+ 			i = iflen-1;
+ 			
+ 			fd = fopen(_PATH_PROCNET_WIRELESS, "r");
+-			fgets(buffer, 256, fd);		// chuck first two lines;
+-			fgets(buffer, 256, fd);
+-			while (!feof(fd)) {
+-				if (fgets(buffer, 256, fd) == NULL)
+-					break;
+-				name = buffer;
+-				sep = strrchr(buffer, ':');
+-				if (sep) *sep = 0;
+-				while(*name == ' ') name++;
+-				if (!strcmp(name, ifname))
+-					iflist[iflen - 1].iswireless = TRUE;
+-			}
++			if (fd != NULL)
++			{
++				fgets(buffer, 256, fd);		// chuck first two lines;
++				fgets(buffer, 256, fd);
++				while (!feof(fd)) 
++				{
++					if (fgets(buffer, 256, fd) == NULL)
++						break;
++					name = buffer;
++					sep = strrchr(buffer, ':');
++					if (sep) *sep = 0;
++					while(*name == ' ') name++;
++					if (!strcmp(name, ifname))
++						iflist[iflen - 1].iswireless = TRUE;
++				}
+ 			fclose(fd);
++			}
+ 		}
+ 		else
+ 			i = existing;

@@ -5,7 +5,7 @@ DEPENDS = "xproto x11 xextensions"
 DESCRIPTION = "X Input extension library."
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xi \
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xi \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/Xi"
 

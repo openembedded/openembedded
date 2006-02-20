@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.15-hh0
-# Thu Feb  2 11:51:53 2006
+# Wed Feb 15 12:18:35 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -234,6 +234,11 @@ CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
 CONFIG_CMDLINE="keepinitrd"
 # CONFIG_XIP_KERNEL is not set
+
+#
+# CPU Frequency scaling
+#
+# CONFIG_CPU_FREQ is not set
 
 #
 # Floating point emulation
@@ -1117,7 +1122,6 @@ CONFIG_SND_MIXER_OSS=m
 CONFIG_SND_PCM_OSS=m
 # CONFIG_SND_VERBOSE_PRINTK is not set
 # CONFIG_SND_DEBUG is not set
-CONFIG_SND_GENERIC_DRIVER=y
 
 #
 # Generic devices
@@ -1134,13 +1138,14 @@ CONFIG_SND_GENERIC_DRIVER=y
 # CONFIG_SND_H1910 is not set
 # CONFIG_SND_H2200 is not set
 CONFIG_SND_HX4700=m
-# CONFIG_SND_PXA2XX_UDA1380 is not set
 # CONFIG_SND_H5XXX_AK4535 is not set
+CONFIG_SND_PXA2xx_I2SOUND=m
 # CONFIG_SND_PXA2XX_AC97 is not set
 
 #
 # PCMCIA devices
 #
+CONFIG_SND_AK4641=m
 
 #
 # Open Sound System

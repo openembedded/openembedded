@@ -11,7 +11,7 @@ CFLAGS += "-D_GNU_SOURCE"
 
 SECTION = "x11/base"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xset;date=${FIXEDSRCDATE} \
+SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc/programs/xset;date=${FIXEDSRCDATE} \
            file://autofoo.patch;patch=1"
 S = "${WORKDIR}/xset"
 

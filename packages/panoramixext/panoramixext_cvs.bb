@@ -5,7 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DESCRIPTION = "PanoramiX extension headers"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=PanoramiXExt"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=PanoramiXExt"
 S = "${WORKDIR}/PanoramiXExt"
 
 inherit autotools pkgconfig 

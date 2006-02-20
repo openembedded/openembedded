@@ -6,7 +6,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "xproto x11 xt xmu xpm"
 DESCRIPTION = "X Athena Widgets library"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xaw"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xaw"
 S = "${WORKDIR}/Xaw"
 
 inherit autotools pkgconfig 

@@ -5,7 +5,7 @@ DEPENDS = "randrext x11 libxrender xext"
 DESCRIPTION = "X Resize and Rotate extension library."
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xrandr"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xrandr"
 S = "${WORKDIR}/Xrandr"
 
 inherit autotools pkgconfig 

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "panoramixext xproto x11 xext"
 PV = "0.0+cvs${SRCDATE}"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xinerama"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xinerama"
 S = "${WORKDIR}/Xinerama"
 
 inherit autotools pkgconfig 

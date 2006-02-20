@@ -16,6 +16,6 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=osb-br
            file://no-pedantic.patch;patch=1"
 S = "${WORKDIR}/osb-browser"
 
-DEFAULT_PREFERENCE = "${@['-1', '1'][(bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1) or "1.0").split('.')[0] == '4' or False]}"
+DEFAULT_PREFERENCE = "${@['-1', '1'][bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1).split('.')[0] == '4']}"
 
 inherit autotools

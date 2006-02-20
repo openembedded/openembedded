@@ -10,7 +10,7 @@ FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
 PROVIDES = "x11"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=X11 \
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=X11 \
 	   file://errordb-keysymdb-path-fix.patch;patch=1"
 S = "${WORKDIR}/X11"
 

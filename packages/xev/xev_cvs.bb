@@ -7,7 +7,7 @@ SECTION = "x11/base"
 DEPENDS = "x11 xau"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xapps;module=xev \
+SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=xev \
 	   file://diet-x11.patch;patch=1"
 S = "${WORKDIR}/xev"
 

@@ -1,11 +1,13 @@
 DESCRIPTION = "Avahi implements the DNS-SD over Multicast DNS"
-HOMEPAGE = "http://avahi.org"
-LICENSE= "GPL"
-DEPENDS = "expat libdaemon dbus-0.60"
-RRECOMMENDS = "libnss-mdns"
-SECTION = "net"
+SECTION = "network"
 PRIORITY = "optional"
-PR = "r0"
+AUTHOR = "Lennart Poettering <lennart@poettering.net>"
+HOMEPAGE = "http://avahi.org"
+MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
+LICENSE= "GPL"
+
+DEPENDS = "expat libdaemon dbus"
+RRECOMMENDS = "libnss-mdns"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz"
 
@@ -31,8 +33,7 @@ FILES_avahi-utils = "${bindir}/avahi-*"
 CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 
 EXTRA_OECONF = "--with-distro=debian --disable-gdbm --disable-gtk --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 --disable-python"
-inherit autotools
-inherit update-rc.d
+inherit autotools pkgconfig update-rc.d
 
 INITSCRIPT_PACKAGES = "avahi-daemon avahi-dnsconfd"
 INITSCRIPT_NAME_avahi-daemon = "avahi-daemon"

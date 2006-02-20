@@ -7,7 +7,7 @@ SECTION = "libs"
 DEPENDS = "x11 xext"
 DESCRIPTION = "X screen saver extension library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xss"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xss"
 S = "${WORKDIR}/Xss"
 
 inherit autotools pkgconfig 

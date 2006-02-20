@@ -5,7 +5,7 @@ SECTION = "x11/libs"
 DEPENDS = "x11 xext xxf86vmext"
 DESCRIPTION = "Xxf86vm extension library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xxf86vm"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xxf86vm"
 S = "${WORKDIR}/Xxf86vm"
 
 inherit autotools pkgconfig 

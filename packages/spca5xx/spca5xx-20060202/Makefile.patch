@@ -1,0 +1,19 @@
+*** spca5xx-20060202/Makefile.orig	Thu Feb  2 21:33:18 2006
+--- spca5xx-20060202/Makefile	Sun Feb 19 12:39:35 2006
+***************
+*** 51,57 ****
+  default:
+  	@echo '   Building SPCA5XX driver for 2.5/2.6 kernel.'
+  	@echo '   Remember: you must have read/write access to your kernel source tree.'
+! 	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) CC=$(CC) modules
+  
+  install:
+  	mkdir -p $(MODULE_INSTALLDIR)
+--- 51,57 ----
+  default:
+  	@echo '   Building SPCA5XX driver for 2.5/2.6 kernel.'
+  	@echo '   Remember: you must have read/write access to your kernel source tree.'
+! 	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) CC="$(CC)" modules
+  
+  install:
+  	mkdir -p $(MODULE_INSTALLDIR)

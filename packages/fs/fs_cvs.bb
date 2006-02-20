@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "xfont xtrans"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=FS"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=FS"
 S = "${WORKDIR}/FS"
 
 inherit autotools pkgconfig 

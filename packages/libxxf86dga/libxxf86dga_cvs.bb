@@ -5,7 +5,7 @@ SECTION = "x11/libs"
 DEPENDS = "x11 xext xxf86dgaext"
 DESCRIPTION = "Xxf86dga extension library."
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xlibs;module=Xxf86dga"
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xxf86dga"
 S = "${WORKDIR}/Xxf86dga"
 
 inherit autotools pkgconfig 
