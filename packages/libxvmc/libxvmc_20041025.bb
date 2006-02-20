@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 DEPENDS = "x11 xext libxv drm xserver-xorg"
 PR = "r2"
 
-SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=${PV};method=pserver \
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=XvMC;date=${PV};method=pserver \
 	file://true.patch;patch=1 file://drm.patch;patch=1"
 S = "${WORKDIR}/XvMC"
 
