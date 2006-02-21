@@ -161,6 +161,7 @@ def tinder_print_info(d):
     bbfiles = data.getVar( 'BBFILES', d, True )
     tarch   = data.getVar( 'TARGET_ARCH', d, True )
     fpu     = data.getVar( 'TARGET_FPU', d, True )
+    oerev   = data.getVar( 'OE_REVISION', d, True ) or "unknown"
 
     # there is a bug with tipple quoted strings
     # i will work around but will fix the original
@@ -184,6 +185,7 @@ def tinder_print_info(d):
     output.append("MACHINE = '%(machine)s'" )
     output.append("DISTRO = '%(distro)s'" )
     output.append("BBFILES = '%(bbfiles)s'" )
+    output.append("OEREV = '%(oerev)s'" )
     output.append("== End Tinderbox Client Info" )
 
     # now create the real output
@@ -227,6 +229,7 @@ def tinder_tinder_start(d):
     output.append( config )
     output.append( env    )
     output.append( "<--- TINDERBOX FINISHED PRINTING CONFIGURATION %(time_end)s" )
+    output.append( "" )
     return "\n".join(output) % vars()
 
 def tinder_do_tinder_report(event):
@@ -270,21 +273,21 @@ def tinder_do_tinder_report(event):
 
         if len(log_file) != 0:
             to_file  = data.getVar('TINDER_LOG', event.data, True)
-            log      = open(log_file[0], 'r').readlines()
+            log     += "\n".join(open(log_file[0], 'r').readlines())
 
     # set the right 'HEADER'/Summary for the TinderBox
     if name == "TaskStarted":
-        log += "--> TINDERBOX Task %s started" % event.task
+        log += "---> TINDERBOX Task %s started\n" % event.task
     elif name == "TaskSucceeded":
-        log += "<-- TINDERBOX Task %s done (SUCCESS)" % event.task
+        log += "<--- TINDERBOX Task %s done (SUCCESS)\n" % event.task
     elif name == "TaskFailed":
-        log += "<-- TINDERBOX Task %s failed (FAILURE)" % event.task
+        log += "<--- TINDERBOX Task %s failed (FAILURE)\n" % event.task
     elif name == "PkgStarted":
-        log += "--> TINDERBOX Package %s started" % data.getVar('P', event.data, True)
+        log += "---> TINDERBOX Package %s started\n" % data.getVar('P', event.data, True)
     elif name == "PkgSucceeded":
-        log += "<-- TINDERBOX Package %s done (SUCCESS)" % data.getVar('P', event.data, True)
+        log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('P', event.data, True)
     elif name == "PkgFailed":
-        log += "<-- TINDERBOX Package %s failed (FAILURE)" % data.getVar('P', event.data, True)
+        log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
         status = 200
     elif name == "BuildCompleted":
         status = 100
