@@ -3,7 +3,7 @@
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2006
 # License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
 #
-# Filename: Untitled
+# Filename: altboot_0.0.5-rc2.bb
 # Date: 21-Feb-06
 
 DESCRIPTION = "The altboot bootmanager"
@@ -19,8 +19,6 @@ PR = "r0"
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 
 SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG};module=altboot"
-
-S = "${PN}"
 
 ######################################################################################
 
