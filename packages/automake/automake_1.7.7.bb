@@ -7,7 +7,7 @@ PR = "r7"
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
-RDEPENDS_${PN} += "autoconf perl"
+RDEPENDS_${PN} += "autoconf-native perl-native"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
