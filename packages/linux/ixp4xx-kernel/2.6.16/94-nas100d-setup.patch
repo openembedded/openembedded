@@ -41,7 +41,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + */
 +static char nas100d_command_line[] __initdata =
 +	"root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc "
-+	"rtc-pcf8563.force=0,0x51 "
++	"rtc-pcf8563.probe=0,0x51 "
 +	CONFIG_CMDLINE;
 +
 +static void __init nas100d_fixup(struct machine_desc *desc,

@@ -1,41 +1,19 @@
-diff -ruN linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/hardware.h linux-2.6.15.new/include/asm-arm/arch-ixp4xx/hardware.h
---- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/hardware.h    2006-02-11 02:58:47.000000000 +0100
-+++ linux-2.6.15.new/include/asm-arm/arch-ixp4xx/hardware.h     2006-02-10 22:26:54.000000000 +0100
-@@ -46,5 +46,6 @@
- #include "prpmc1100.h"
- #include "nslu2.h"
- #include "nas100d.h"
-+#include "ds101.h"
+ include/asm-arm/arch-ixp4xx/ds101.h    |   70 +++++++++++++++++++++++++++++++++
+ include/asm-arm/arch-ixp4xx/hardware.h |    1 
+ include/asm-arm/arch-ixp4xx/irqs.h     |    7 +++
+ 3 files changed, 78 insertions(+)
 
- #endif  /* _ASM_ARCH_HARDWARE_H */
-diff -ruN linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/irqs.h linux-2.6.15.new/include/asm-arm/arch-ixp4xx/irqs.h
---- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/irqs.h        2006-02-11 02:58:47.000000000 +0100
-+++ linux-2.6.15.new/include/asm-arm/arch-ixp4xx/irqs.h 2006-02-10 22:56:11.000000000 +0100
-@@ -108,5 +108,12 @@
- #define        IRQ_NAS100D_PCI_INTC    IRQ_IXP4XX_GPIO9
- #define        IRQ_NAS100D_PCI_INTD    IRQ_IXP4XX_GPIO8
- #define        IRQ_NAS100D_PCI_INTE    IRQ_IXP4XX_GPIO7
-+/*
-+ * DS101 board IRQs
-+ */
-+
-+#define        IRQ_DS101_PCI_INTA    IRQ_IXP4XX_GPIO11
-+#define        IRQ_DS101_PCI_INTB    IRQ_IXP4XX_GPIO10
-+#define        IRQ_DS101_PCI_INTC    IRQ_IXP4XX_GPIO9
-
- #endif
-diff -ruN linux-2.6.15.orig/include/asm-arm/arch/ds101.h linux-2.6.15.new/include/asm-arm/arch/ds101.h
---- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/ds101.h      1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15.new/include/asm-arm/arch-ixp4xx/ds101.h       2006-02-10 22:16:24.000000000 +0100
-@@ -0,0 +1,72 @@
+Index: linux-2.6.15/include/asm-arm/arch-ixp4xx/ds101.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/asm-arm/arch-ixp4xx/ds101.h	2006-02-15 22:35:31.000000000 +0100
+@@ -0,0 +1,89 @@
 +/*
 + * include/asm-arm/arch-ixp4xx/ds101.h
 + *
 + * DS101 platform specific definitions
 + *
-+ * Copyright (c) 2005 Tower Technologies
-+ *
-+ * Author: Alessandro Zummo <a.zummo@towertech.it>
++ * Author: Øyvind Repvik <nail@nslu2-linux.org>
 + *
 + * based on ixdp425.h:
 + *     Copyright 2004 (c) MontaVista, Software, Inc.
@@ -49,23 +27,37 @@ diff -ruN linux-2.6.15.orig/include/asm-arm/arch/ds101.h linux-2.6.15.new/includ
 +#error "Do not include this directly, instead #include <asm/hardware.h>"
 +#endif
 +
-+#define DS101_SDA_PIN          1
-+#define DS101_SCL_PIN          0
++#define DS101_SCL_PIN		DS101_GPIO0
++#define DS101_SDA_PIN		DS101_GPIO1
++#define DS101_GPIO_BUZZ		DS101_GPIO2
++#define DS101_POWER_LED		DS101_GPIO3
++#define DS101_USBCOPYB_GPIO	DS101_GPIO4
++#define DS101_USBCOPY_SOLID_LED	DS101_GPIO4	/* The led and button share GPIO */
++#define DS101_USBCOPY_BLINK_LED	DS101_GPIO5
++/* GPIO6 is unknown */
++#define DS101_POWEROFF_GPIO	DS101_GPIO7
++#define DS101_POWERB_GPIO	DS101_GPIO8
++#define DS101_PCI_INTC_PIN	DS101_GPIO9
++#define DS101_PCI_INTB_PIN	DS101_GPIO10
++#define DS101_PCI_INTA_PIN	DS101_GPIO11
++#define DS101_RESETB_GPIO	DS101_GPIO12
++#define DS101_STATUSOK_LED	DS101_GPIO14
++#define DS101_STATUSBAD_LED	DS101_GPIO15
 +
-+/*
-+ * DS101 PCI IRQs
-+ */
-+#define DS101_PCI_MAX_DEV      3
-+#define DS101_PCI_IRQ_LINES    3
++#define DS101_PCI_MAX_DEV	2
++#define DS101_PCI_IRQ_LINES	3
 +
++#define DS101_POWERB_IRQ	IRQ_IXP4XX_GPIO8
++#define DS101_RESETB_IRQ	IRQ_IXP4XX_GPIO12
++#define DS101_USBCOPYB_IRQ	IRQ_IXP4XX_GPIO4
 +
-+/* PCI controller GPIO to IRQ pin mappings */
-+#define DS101_PCI_INTA_PIN     11
-+#define DS101_PCI_INTB_PIN     10
-+#define DS101_PCI_INTC_PIN     9
-+// #define DS101_PCI_INTD_PIN  8
-+// #define DS101_PCI_INTE_PIN  7
++#define DS101_GPIO_IN		IXP4XX_GPIO_IN
++#define DS101_GPIO_OUT		IXP4XX_GPIO_OUT
++#define DS101_GPIO_HIGH		1
++#define DS101_GPIO_LOW		0
 +
++#define DS101_GPIO_CLK0_ENABLE	0x100
++#define DS101_GPIO_CLK1_ENABLE	0x1000000
 +/* GPIO */
 +
 +#define DS101_GPIO0           0
@@ -85,18 +77,51 @@ diff -ruN linux-2.6.15.orig/include/asm-arm/arch/ds101.h linux-2.6.15.new/includ
 +#define DS101_GPIO14          14
 +#define DS101_GPIO15          15
 +
++/* Stuff needed to setup the IXP expansion
++ * bus on the DS101
++ */
++ 
++#define DS101_EXP_RECOVERY_T(x)	(((x) & 15) << 16)
++#define DS101_EXP_HOLD_T(x)	(((x) & 3) << 20)
++#define DS101_EXP_STROBE_T(x)	(((x) & 15) << 22)
++#define DS101_EXP_SETUP_T(x)	(((x) & 3) << 26)
++#define DS101_EXP_ADDR_T(x)	(((x) & 3) << 28)
 +
-+/* Buttons */
++#define DS101_EXP_SZ_16M	(15 << 10)
++#define DS101_EXP_WR_EN		(1 << 1)
++#define DS101_EXP_BYTE_RD16	(1 << 6)
++#define DS101_EXP_CS_EN		(1 << 31)
 +
-+#define DS101_PB_GPIO         DS101_GPIO8
-+#define DS101_RB_GPIO         DS101_GPIO12
-+#define DS101_PO_GPIO         DS101_GPIO7   /* power off */
-+
-+#define DS101_PB_IRQ          IRQ_IXP4XX_GPIO8
-+#define DS101_RB_IRQ          IRQ_IXP4XX_GPIO12
-+
++#define DS101_EXP_CS0_INIT	(DS101_EXP_ADDR_T(1) | \
++        DS101_EXP_SETUP_T(1) | DS101_EXP_STROBE_T(1) | \
++        DS101_EXP_HOLD_T(1) | DS101_EXP_RECOVERY_T(1)| \
++        DS101_EXP_SZ_16M | DS101_EXP_WR_EN | \
++        DS101_EXP_BYTE_RD16 | DS101_EXP_CS_EN)
+Index: linux-2.6.15/include/asm-arm/arch-ixp4xx/hardware.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/hardware.h	2006-02-13 21:23:22.000000000 +0100
++++ linux-2.6.15/include/asm-arm/arch-ixp4xx/hardware.h	2006-02-13 21:23:26.000000000 +0100
+@@ -46,5 +46,6 @@
+ #include "prpmc1100.h"
+ #include "nslu2.h"
+ #include "nas100d.h"
++#include "ds101.h"
+ 
+ #endif  /* _ASM_ARCH_HARDWARE_H */
+Index: linux-2.6.15/include/asm-arm/arch-ixp4xx/irqs.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-arm/arch-ixp4xx/irqs.h	2006-02-13 21:23:22.000000000 +0100
++++ linux-2.6.15/include/asm-arm/arch-ixp4xx/irqs.h	2006-02-13 21:23:26.000000000 +0100
+@@ -108,5 +108,12 @@
+ #define        IRQ_NAS100D_PCI_INTC    IRQ_IXP4XX_GPIO9
+ #define        IRQ_NAS100D_PCI_INTD    IRQ_IXP4XX_GPIO8
+ #define        IRQ_NAS100D_PCI_INTE    IRQ_IXP4XX_GPIO7
 +/*
-+#define DS101_PB_BM           (1L << DS101_PB_GPIO)
-+#define DS101_PO_BM           (1L << DS101_PO_GPIO)
-+#define DS101_RB_BM           (1L << DS101_RB_GPIO)
-+*/
++ * DS101 board IRQs
++ */
++
++#define        IRQ_DS101_PCI_INTA    IRQ_IXP4XX_GPIO11
++#define        IRQ_DS101_PCI_INTB    IRQ_IXP4XX_GPIO10
++#define        IRQ_DS101_PCI_INTC    IRQ_IXP4XX_GPIO9
+ 
+ #endif
