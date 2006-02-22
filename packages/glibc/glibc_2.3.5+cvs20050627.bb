@@ -79,6 +79,9 @@ def get_glibc_fpu_setting(bb, d):
 
 do_munge() {
 	# Integrate ports into tree
+	mv ${WORKDIR}/ports/sysdeps/unix/bsd/ultrix4/mips ${WORKDIR}
+	rm -rf `find ${WORKDIR}/ports/sysdeps -type d -name mips`
+	mv ${WORKDIR}/mips ${WORKDIR}/ports/sysdeps/unix/bsd/ultrix4
 	mv ${WORKDIR}/ports ${S}
 
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
