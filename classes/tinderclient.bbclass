@@ -290,6 +290,7 @@ def tinder_do_tinder_report(event):
         log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
         status = 200
     elif name == "BuildCompleted":
+	log += "Build Completed\n"
         status = 100
 
     # now post the log
