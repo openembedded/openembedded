@@ -53,6 +53,7 @@ do_stage () {
 		${STAGING_INCDIR}/libical
 	install -m 0644 ${S}/camel/*.h ${STAGING_INCDIR}/camel-1.2
 	install -m 0644 ${S}/camel/*.def ${STAGING_INCDIR}/camel-1.2
+	ln -sf ${STAGING_INCDIR}/camel-1.2 ${STAGING_INCDIR}/camel
 	install -m 0644 ${S}/addressbook/libebook-dbus/*.h ${STAGING_INCDIR}/libebook
 	install -m 0644 ${S}/calendar/libecal-dbus/*.h ${STAGING_INCDIR}/libecal
 	install -m 0644 ${S}/libedataserver/*.h ${STAGING_INCDIR}/libedataserver
