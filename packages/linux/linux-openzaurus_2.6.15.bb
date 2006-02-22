@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r7"
+PR = "r8"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -64,17 +64,16 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
-           ${RPSRC}/alsa/alsa-soc-0.9.patch;patch=1 \
-           ${RPSRC}/alsa/alsa-soc-0.9-0.10rc1.patch;patch=1 \
-           ${RPSRC}/alsa_soc_rpupdate7-r2.patch;patch=1 \
-           ${RPSRC}/alsa_akita_fix-r0.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-0.10rc2.diff.bz2;patch=1 \
+           ${RPSRC}/misc_fix1-r0.patch;patch=1 \
            ${RPSRC}/zaurus_keyboard_tweak-r0.patch;patch=1 \
            ${RPSRC}/corgi_bl_cleanup-r2.patch;patch=1 \
            ${RPSRC}/corgi_bl_generic-r2.patch;patch=1 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
-           ${RPSRC}/headphone_switch-r1.patch;patch=1 \
+           ${RPSRC}/headphone_switch-r2.patch;patch=1 \
+           ${RPSRC}/backport_i2c_asoc_fix-r0.patch;patch=1 \
            ${DOSRC}/kexec-arm-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
