@@ -19,7 +19,7 @@ S = "${WORKDIR}/tslib"
 LICENSE = "LGPL"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
-inherit autotools
+inherit autotools pkgconfig
 
 PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
 EXTRA_OECONF        = "--enable-shared"
