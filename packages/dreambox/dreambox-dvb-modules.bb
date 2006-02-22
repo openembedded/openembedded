@@ -8,12 +8,13 @@ KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060111"
 
 KV_dm7025 = "2.6.12"
-PV_dm7025 = "${KV}-20060116"
+PV_dm7025 = "${KV}-20060222"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
-SRC_URI = "http://sources.dreamboxupdate.com/snapshots/dreambox-dvb-modules-${MACHINE}-${PV}.tar.bz2 file://dream"
+SRC_URI = "http://sources.dreamboxupdate.com/snapshots/dreambox-dvb-modules-${MACHINE}-${PV}.tar.bz2 file://dream "
+SRC_URI_append_dm7025 = "http://sources.dreamboxupdate.com/download/7020/fpupgrade-${MACHINE}-v2"
 
 S = "${WORKDIR}"
 
@@ -39,6 +40,8 @@ do_install_dm7025() {
 			mb86a15.ko nec_ir.ko rfmod.ko stb-proc.ko tu1216.ko xilleon.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
 	done
+	install -d ${D}${sbindir}
+	install -m 0755 ${WORKDIR}/fpupgrade-${MACHINE}-v2 ${D}${sbindir}/fpupgrade
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
