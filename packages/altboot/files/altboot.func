@@ -119,10 +119,8 @@ pivot_image() {
 	echo "Setting up loopback (/dev/loop0) for $IMAGE_NAME"
 	losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME || die "losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME failed!"
 	check_fs /dev/loop0 $IMAGE_TYPE
-
-	losetup -d /dev/loop0
+	
 	echo -e "\n* * * Booting rootfs image * * *\n"
-
 
 	# Busybox's "mount" doesn't seem to like "-o loop" for some reason
 	# It works on collie and b0rks on poodle.
@@ -130,8 +128,8 @@ pivot_image() {
 		IMAGE_TYPE="auto"
 	fi
 	# If mount fails it has the tendency to spew out a _lot_ of error messages.
-	# We direct the output to /dev/null so the user can see which step actually failed.
-	mount -o loop -t $IMAGE_TYPE $1/$IMAGE_PATH/$IMAGE_NAME /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"
+	# We direct the output to /dev/null so the user can see which step actually failed.	
+	mount /dev/loop0 -t $IMAGE_TYPE /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"	
 
 	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
 
@@ -310,7 +308,7 @@ init_rootfs(){
 	fi
 	
 	echo -n "Generating device files..." >/dev/tty0
-	/etc/init.d/devices start && echo ok  >/dev/tty0|| die "FAILED"
+	/etc/init.d/devices start && echo ok  >/dev/tty0 || die "FAILED"
 }
 
 mount_sd(){
