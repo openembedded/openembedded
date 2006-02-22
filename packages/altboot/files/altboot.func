@@ -360,6 +360,8 @@ mount_cf(){
 
 		# Give the SD and CF mounting some time. This is a must for SD			
 		sleep 2
+		
+		mount /media/cf
 	fi
 }
 

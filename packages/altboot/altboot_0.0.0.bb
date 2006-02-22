@@ -34,6 +34,10 @@ do_install() {
 	install -m 0644 ${WORKDIR}/altboot.rc/*.txt ${D}/etc/altboot.rc	
 }		
 
+do_configure() {
+	cat ${WORKDIR}/init.altboot | sed "s/^VERSION=.*/VERSION=\"0.0.0 Developer Snapshot (${DATE})\"/" > ${WORKDIR}/init.altboot_
+	mv ${WORKDIR}/init.altboot_ ${WORKDIR}/init.altboot
+}
 
 
 pkg_postinst() {

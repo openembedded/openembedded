@@ -57,6 +57,15 @@ do_install() {
 	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc	
 }		
 
+######################################################################################
+
+do_configure() {
+	cat ${WORKDIR}/altboot/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}\"/" > ${WORKDIR}/altboot/init.altboot_
+	mv ${WORKDIR}/altboot/init.altboot_ ${WORKDIR}/altboot/init.altboot
+}
+
+######################################################################################
+
 pkg_postinst() {
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
 }
@@ -89,6 +98,8 @@ pkg_postinst_spitz() {
 	   fi
 	fi
 }
+
+######################################################################################
 
 pkg_postrm() {
 	update-alternatives --remove init /sbin/init.altboot
