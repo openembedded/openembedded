@@ -84,7 +84,7 @@ def tinder_build_start(d):
 
     selector = url + "/xml/build_start.pl"
 
-    print "selector %s and url %s" % (selector, url)
+    #print "selector %s and url %s" % (selector, url)
 
     # now post it
     h = httplib.HTTP(server)
@@ -94,7 +94,7 @@ def tinder_build_start(d):
     h.endheaders()
     h.send(body)
     errcode, errmsg, headers = h.getreply()
-    print errcode, errmsg, headers
+    #print errcode, errmsg, headers
     report = h.file.read()
 
     # now let us find the machine id that was assigned to us
@@ -134,8 +134,8 @@ def tinder_send_http(d, status, log):
     h.endheaders()
     h.send(body)
     errcode, errmsg, headers = h.getreply()
-    print errcode, errmsg, headers
-    print h.file.read()
+    #print errcode, errmsg, headers
+    #print h.file.read()
 
 
 def tinder_print_info(d):
