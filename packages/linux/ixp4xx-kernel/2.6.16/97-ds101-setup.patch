@@ -1,15 +1,17 @@
- arch/arm/mach-ixp4xx/ds101-setup.c |  287 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 287 insertions(+)
+Board setup code for the Synology DS101 platform
 
-Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
-===================================================================
+Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
+Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
+
+ arch/arm/mach-ixp4xx/ds101-setup.c |  245 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 245 insertions(+)
+
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-16 19:44:23.000000000 +0100
-@@ -0,0 +1,246 @@
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-21 02:00:16.000000000 +0100
+@@ -0,0 +1,245 @@
 +/*
-+ * arch/arm/mach-ixp4xx/ds101-setup.c
-+ *
-+ * DS 101 board-setup
++ * Synology DS101 board setup
 + *
 + * based ixdp425-setup.c:
 + *      Copyright (C) 2003-2004 MontaVista Software, Inc.
@@ -24,7 +26,6 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
 +#include <linux/kernel.h>
 +#include <linux/serial.h>
 +#include <linux/serial_8250.h>
-+/* #include <linux/mtd/mtd.h> */
 +#include <linux/leds.h>
 +#include <linux/pci.h>
 +
@@ -159,7 +160,7 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
 +	gpio_line_config(DS101_GPIO_BUZZ, DS101_GPIO_OUT);
 +	gpio_line_set(DS101_GPIO_BUZZ, DS101_GPIO_LOW);
 +
-+	/* Set up powerled */
++	/* Set up power led */
 +	gpio_line_config(DS101_POWER_LED, DS101_GPIO_OUT);
 +	gpio_line_set(DS101_POWER_LED, DS101_GPIO_LOW);
 +
@@ -184,16 +185,19 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
 +static void __init ds101_init(void)
 +{
 +	ixp4xx_sys_init();
++
 +	ds101_cs0_setup(); /* Needed for DoC support */
 +	ds101_gpio_setup();
 +	pm_power_off = ds101_power_off;
++
++	platform_add_devices(ds101_devices, ARRAY_SIZE(ds101_devices));
 +
 +	/* This is only useful on a modified machine, but it is valuable
 +	* to have it first in order to see debug messages, and so that
 +	* it does *not* get removed if platform_add_devices fails!
 +	*/
 +	(void)platform_device_register(&ds101_uart);
-+	platform_add_devices(ds101_devices, ARRAY_SIZE(ds101_devices));
++
 +#ifdef CONFIG_LEDS_CLASS
 +	/* We don't care whether or not this works. */
 +	(void)platform_device_register(&ds101_leds);
@@ -251,4 +255,36 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
 +	.timer		= &ixp4xx_timer,
 +	.init_machine	= ds101_init,
 +MACHINE_END
+ arch/arm/mach-ixp4xx/Kconfig  |    8 ++++++++
+ arch/arm/mach-ixp4xx/Makefile |    2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-14 19:20:21.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig	2006-02-14 19:20:26.000000000 +0100
+@@ -86,6 +86,14 @@
+ 	  NAS 100d device. For more information on this platform,
+ 	  see http://www.nslu2-linux.org/wiki/NAS100d/HomePage
+ 
++config MACH_DS101
++       bool
++       prompt "DS101"
++       help
++         Say 'Y' here if you want your kernel to support Synology's
++         DiskStation DS101(j) device. For more information on this
++         platform see http://www.nslu2-linux.org/wiki/DS101/HomePage
 +
+ #
+ # Avila and IXDP share the same source for now. Will change in future
+ #
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/Makefile
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Makefile	2006-02-14 19:20:21.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/Makefile	2006-02-14 19:20:36.000000000 +0100
+@@ -10,4 +10,4 @@
+ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
+ obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
+ obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
+-
++obj-$(CONFIG_MACH_DS101)	+= ds101-pci.o ds101-setup.o ds101-buttons.o

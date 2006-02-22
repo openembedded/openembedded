@@ -1,3 +1,5 @@
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3343/1
+
  include/asm-arm/arch-ixp4xx/nas100d.h |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 

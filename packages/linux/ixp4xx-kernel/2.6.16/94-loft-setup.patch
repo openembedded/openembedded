@@ -1,20 +1,27 @@
- arch/arm/mach-ixp4xx/ixdp425-setup.c |  115 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 112 insertions(+), 3 deletions(-)
 
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-10 18:03:51.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-10 18:06:40.000000000 +0100
-@@ -15,6 +15,7 @@
+---
+ arch/arm/mach-ixp4xx/ixdp425-setup.c |  145 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 140 insertions(+), 5 deletions(-)
+
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-22 18:53:29.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-22 18:57:00.000000000 +0100
+@@ -15,7 +15,7 @@
  #include <linux/tty.h>
  #include <linux/serial_8250.h>
  #include <linux/slab.h>
+-
 +#include <linux/eeprom.h>
- 
  #include <asm/types.h>
  #include <asm/setup.h>
-@@ -25,6 +26,10 @@
+ #include <asm/memory.h>
+@@ -25,6 +25,14 @@
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
  
++#ifdef CONFIG_LEDS_CLASS
++#include <linux/leds.h>
++#endif
++
 +#ifdef CONFIG_MACLIST
 +#include <net/maclist.h>
 +#endif
@@ -22,11 +29,29 @@
  static struct flash_platform_data ixdp425_flash_data = {
  	.map_name	= "cfi_probe",
  	.width		= 2,
-@@ -176,17 +181,122 @@ MACHINE_START(AVILA, "Gateworks Avila Ne
+@@ -176,22 +184,149 @@ MACHINE_START(AVILA, "Gateworks Avila Ne
  MACHINE_END
  #endif
  
 +#ifdef CONFIG_MACH_LOFT
++#ifdef CONFIG_LEDS_CLASS
++static struct resource loft_led_resources[] = {
++	{
++		.name		= "ready",  /* green led, also J8 pin 7 */
++		.start		= 3,		/* FIXME use #define */
++		.end		= 3,
++		.flags		= IXP4XX_GPIO_LOW,
++	},
++};
++
++static struct platform_device loft_leds = {
++	.name			= "IXP4XX-GPIO-LED",
++	.id			= -1,
++	.num_resources		= ARRAY_SIZE(loft_led_resources),
++	.resource		= loft_led_resources,
++};
++#endif
++
  /*
   * Loft is functionally equivalent to Avila except that it has a
   * different number for the maximum PCI devices.  The MACHINE
@@ -77,6 +102,22 @@
 +};
 +#endif
 +
++static void __init loft_init(void)
++{
++	ixdp425_init();
++
++#ifdef CONFIG_LEDS_CLASS
++	/* We don't care if this fails. */
++	(void)platform_device_register(&loft_leds);
++#endif
++	/* The EEPROM has two ethernet MACs embedded in it which we need,
++	 * that is all this notifier does.
++	 */
++#ifdef CONFIG_SENSORS_EEPROM
++	register_eeprom_user(&loft_eeprom_notifier);
++#endif
++}
++
 +/*
 + * Loft bootstrap may pass in parameters, if these contain an
 + * ATAG_MEM and it appears valid (not the 16MByte one in the
@@ -87,23 +128,15 @@
 +static void __init loft_fixup(struct machine_desc *desc,
 +		struct tag *tags, char **cmdline, struct meminfo *mi)
 +{
-+	char saved_command_line[COMMAND_LINE_SIZE];
-+
 +	/* Put Loft specific known-required-for-certain stuff here, leave
 +	 * a trailing space!
 +	 */
 +	static char loft_command_line[] =
 +		"root=/dev/mtdblock2 rw rootfstype=jffs2 init=/linuxrc "
-+		"rtc-ds1672.probe=0,0x68 ";
-+	const int len = (sizeof loft_command_line) - 1;
-+	int memtag = 0;
++		"rtc-ds1672.probe=0,0x68 "
++		CONFIG_CMDLINE;
 +
-+	/* The EEPROM has two ethernet MACs embedded in it which we need,
-+	 * that is all this notifier does.
-+	 */
-+#ifdef CONFIG_SENSORS_EEPROM
-+	register_eeprom_user(&loft_eeprom_notifier);
-+#endif
++	int memtag = 0;
 +
 +	/* The Loft typically has one bank of 64MByte memory.
 +	 * NOTE: setting nr_banks != 0 causes kernel/setup.c to remove
@@ -132,10 +165,7 @@
 +	/* A command line in the ATAG list will override this one,
 +	 * as is intended.
 +	 */
-+	memcpy(saved_command_line, *cmdline, COMMAND_LINE_SIZE);
-+	memcpy(*cmdline, loft_command_line, len);
-+	memcpy(*cmdline + len, saved_command_line, COMMAND_LINE_SIZE - len);
-+	*cmdline[COMMAND_LINE_SIZE-1] = 0;
++	 strlcpy(*cmdline, loft_command_line, COMMAND_LINE_SIZE);
 +}
 +
  MACHINE_START(LOFT, "Giant Shoulder Inc Loft board")
@@ -147,8 +177,9 @@
  	.map_io		= ixp4xx_map_io,
  	.init_irq	= ixp4xx_init_irq,
  	.timer		= &ixp4xx_timer,
-@@ -194,4 +304,3 @@ MACHINE_START(LOFT, "Giant Shoulder Inc 
- 	.init_machine	= ixdp425_init,
+ 	.boot_params	= 0x0100,
+-	.init_machine	= ixdp425_init,
++	.init_machine	= loft_init,
  MACHINE_END
  #endif
 -

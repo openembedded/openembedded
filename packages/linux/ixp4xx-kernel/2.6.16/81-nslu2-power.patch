@@ -1,3 +1,5 @@
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3342/1
+
  arch/arm/mach-ixp4xx/nslu2-power.c |    3 +++
  1 file changed, 3 insertions(+)
 

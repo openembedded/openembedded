@@ -1,12 +1,10 @@
- arch/arm/mach-ixp4xx/ds101-pci.c |   68 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+ arch/arm/mach-ixp4xx/ds101-pci.c |   66 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-pci.c	2006-02-11 16:27:21.000000000 +0100
-@@ -0,0 +1,68 @@
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-pci.c	2006-02-21 02:02:34.000000000 +0100
+@@ -0,0 +1,66 @@
 +/*
-+ * arch/arm/mach-ixp4xx/ds101-pci.c
-+ *
 + * DS101 board-level PCI initialization
 + *
 + * based on ixdp425-pci.c:

@@ -1,0 +1,21 @@
+---
+ drivers/scsi/pata_artop.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- linux-ixp4xx.orig/drivers/scsi/pata_artop.c	2006-02-21 02:05:33.000000000 +0100
++++ linux-ixp4xx/drivers/scsi/pata_artop.c	2006-02-21 02:49:47.000000000 +0100
+@@ -450,6 +450,14 @@ static int artop_init_one (struct pci_de
+ 		pci_read_config_byte(pdev, 0x49, &reg);		   
+ 		pci_write_config_byte(pdev, 0x49, reg & ~ 0x30);
+ 
++		/* PCI latency must be > 0x80 for burst mode, tweak it
++		 * if required.
++		 */
++		pci_read_config_byte(pdev, PCI_LATENCY_TIMER, &reg);
++		if (reg <= 0x80)
++			pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0x90);
++
++
+ 		/* Enable IRQ output and burst mode */
+ 		pci_read_config_byte(pdev, 0x4a, &reg);
+ 		pci_write_config_byte(pdev, 0x4a, (reg & ~0x01) | 0x80);

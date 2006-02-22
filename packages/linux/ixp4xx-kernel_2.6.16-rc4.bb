@@ -8,7 +8,7 @@ PR_CONFIG = "0"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r0.${PR_CONFIG}"
+PR = "r2.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -31,6 +31,7 @@ IXP4XX_PATCHES += "file://50-i2c-bus-ixp4xx-hwmon.patch;patch=1"
 IXP4XX_PATCHES += "file://50-hwmon-ad741x.patch;patch=1"
 IXP4XX_PATCHES += "file://61-nslu2-beeper.patch;patch=1"
 IXP4XX_PATCHES += "file://65-loft-config.patch;patch=1"
+IXP4XX_PATCHES += "file://70-artop-latency.patch;patch=1"
 IXP4XX_PATCHES += "file://80-nas100d-fix-i2c.patch;patch=1"
 IXP4XX_PATCHES += "file://81-nslu2-power.patch;patch=1"
 IXP4XX_PATCHES += "file://82-nas100d-power.patch;patch=1"
@@ -38,17 +39,12 @@ IXP4XX_PATCHES += "file://85-timer.patch;patch=1"
 IXP4XX_PATCHES += "file://91-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://92-nas100d-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://92-nslu2-maclist.patch;patch=1"
-# 93-loft-maclist is still required, but does not apply cleanly.
-# IXP4XX_PATCHES += "file://93-loft-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nas100d-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nslu2-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-loft-setup.patch;patch=1"
-# 96-loft-leds is still required, but does not apply cleanly.
-# IXP4XX_PATCHES += "file://96-loft-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nas100d-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nslu2-leds.patch;patch=1"
+IXP4XX_PATCHES += "file://97-ds101-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-includes.patch;patch=1"
-IXP4XX_PATCHES += "file://97-ds101-misc.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-pci.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-buttons.patch;patch=1"
-IXP4XX_PATCHES += "file://97-ds101-setup.patch;patch=1"
