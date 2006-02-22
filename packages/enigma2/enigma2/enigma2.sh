@@ -21,6 +21,14 @@ case $ret in
 	2)
 		/sbin/reboot
 		;;
+	4)
+		/sbin/rmmod lcd
+		/usr/sbin/fpupgrade --upgrade 2>&1 | tee /home/root/fpupgrade.log
+		sleep 1;
+		/sbin/rmmod fp
+		/sbin/modprobe fp
+		/sbin/reboot
+		;;
 	*)
 		;;
 esac
