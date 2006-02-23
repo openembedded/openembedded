@@ -221,13 +221,13 @@ def tinder_tinder_start(d):
 
     time_start = tinder_time_string()
     config = tinder_print_info(d)
-    env    = tinder_print_env()
+    #env    = tinder_print_env()
     time_end   = tinder_time_string()
 
     output = []
     output.append( "---> TINDERBOX PRINTING CONFIGURATION %(time_start)s" )
     output.append( config )
-    output.append( env    )
+    #output.append( env    )
     output.append( "<--- TINDERBOX FINISHED PRINTING CONFIGURATION %(time_end)s" )
     output.append( "" )
     return "\n".join(output) % vars()
@@ -273,7 +273,7 @@ def tinder_do_tinder_report(event):
 
         if len(log_file) != 0:
             to_file  = data.getVar('TINDER_LOG', event.data, True)
-            log     += "\n".join(open(log_file[0], 'r').readlines())
+            log     += "".join(open(log_file[0], 'r').readlines())
 
     # set the right 'HEADER'/Summary for the TinderBox
     if name == "TaskStarted":
