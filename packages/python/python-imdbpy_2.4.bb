@@ -6,7 +6,7 @@ LICENSE = "GPL"
 SRCNAME = "IMDbPY"
 PR = "ml0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/imdbpy/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/imdbpy/imdbpy-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
