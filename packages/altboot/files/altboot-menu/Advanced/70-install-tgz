@@ -51,8 +51,18 @@ run_module(){
 		read junk
 		
 		case "$junk" in
-		1)	rootfs_target="/media/card"; break ;;
-		2)	rootfs_target="/media/cf" ; break ;;
+		1)	if (mount | grep -q "/media/card ")
+			then
+				rootfs_target="/media/card"; break 
+			else
+				echo -e "\nInstallation target [/media/card] not mounted\n"
+			fi ;;
+		2)	if (mount | grep -q "/media/cf ")
+			then
+				rootfs_target="/media/cf"; break 
+			else
+				echo -e "\nInstallation target [/media/cf] not mounted\n"
+			fi ;;
 		esac
 	done
 
@@ -68,7 +78,13 @@ run_module(){
 		read junk
 		
 		case "$junk" in
-		1)	rootfs_type="image"; break ;;
+		1)	if test -x /sbin/mkfs.ext2
+			then
+				rootfs_type="image"
+				 break 
+			else
+				echo -e "\nNOTE: mkfs.ext2 (from e2fsprogs-mke2fs) not found, loop-images not supported\n"
+			fi ;;			
 		2)	rootfs_type="direct" ; break ;;
 		esac
 	done
@@ -94,6 +110,8 @@ clear_directories(){
 
 
 install_rootfs_direct(){
+	
+	mount | grep -q "$1 " || die "Installation target [$1] not mounted"
 	
 	echo -e "Do you want to remove existing directories from [$1]\n before installing the new rootfs?"
 	echo ""
@@ -152,7 +170,7 @@ install_rootfs_image(){
 				
 				while true 
 				do
-					echo -n "Overwrite? [N|y] "
+					echo -n "Overwrite? [y|N] "
 					read junk2
 					
 					case "$junk2" in

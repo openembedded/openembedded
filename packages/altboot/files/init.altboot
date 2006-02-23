@@ -278,6 +278,7 @@ if test "`runlevel`" != "unknown" -a "$1" != "-force"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
 	exec $REAL_INIT $*
+#	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 	exit 0
 else	
 	# Boot original init if altboot is turned off

@@ -278,7 +278,7 @@ check_fs() {
 			elif [ -e /sbin/e2fsck ]; then
 		       		FSCK="/sbin/e2fsck"
 			fi
-			FSCK="$FSCK -p"
+			test -n "$FSCK" && FSCK="$FSCK -p"
 		;;
 		vfat)
 		    if [ -e /sbin/dosfsck ]; then
@@ -351,8 +351,8 @@ mount_cf(){
 	if mount | grep -q "/media/cf "
 	then
 		echo "Note: /media/cf is already mounted"
-	else
-		/etc/init.d/pcmcia start || die "/etc/init.d/pcmcia/start failed!"
+	else	
+		/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr already active"
 
 		echo ""
 
@@ -369,7 +369,7 @@ mount_home(){
 		echo "Note: /home is already mounted"
 	else
 
-		if ( grep -q "/home " /etc/fstab )
+		if ( cat /etc/fstab | grep -v "^#" | grep "/home " )
 		then
 			echo "Mounting /home"
 			home_fstab="`grep "/home " /etc/fstab`"
