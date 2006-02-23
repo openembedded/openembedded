@@ -1,0 +1,363 @@
+diff -bur libmatchbox-1.7~orig/libmb/hash.c libmatchbox-1.7/libmb/hash.c
+--- libmatchbox-1.7~orig/libmb/hash.c	2005-03-20 11:43:25.000000000 -0600
++++ libmatchbox-1.7/libmb/hash.c	2006-02-19 14:40:43.000000000 -0600
+@@ -68,7 +68,7 @@
+    } else {
+       free((void *) np->value);
+    }
+-   if ((np->value = strdup(val)) == NULL)
++   if ((np->value = (unsigned char*)strdup(val)) == NULL)
+       return NULL;
+    return np;
+ }
+diff -bur libmatchbox-1.7~orig/libmb/mbdotdesktop.c libmatchbox-1.7/libmb/mbdotdesktop.c
+--- libmatchbox-1.7~orig/libmb/mbdotdesktop.c	2005-03-28 16:56:35.000000000 -0600
++++ libmatchbox-1.7/libmb/mbdotdesktop.c	2006-02-19 14:44:05.000000000 -0600
+@@ -200,7 +200,7 @@
+   /* Source iterator, destination iterator */
+   char *s, *d;
+   
+-  s = source = mb_dotdesktop_get (dd, "Exec");
++  s = source = (char*)mb_dotdesktop_get (dd, "Exec");
+   if (source == NULL)
+     return NULL;
+   
+@@ -348,7 +348,7 @@
+ 		    {
+ 		      theme_name_cur = NULL;
+ 		      strncpy(theme_name_cur, 
+-			      mb_dotdesktop_get(dd, "Inherits"), 512);
++			      (char*)mb_dotdesktop_get(dd, "Inherits"), 512);
+ 		      i = 2;
+ 		    }
+ 		  mb_dotdesktop_free(dd);
+@@ -450,13 +450,13 @@
+ 		}
+ 	      memset(entry_cur, 0, sizeof(MBDotDesktopFolderEntry));
+ 	  
+-	      entry_cur->name = strdup(mb_dotdesktop_get(dd, "Name"));
+-	      entry_cur->match = strdup(mb_dotdesktop_get(dd, "Match"));
++	      entry_cur->name = (unsigned char*)strdup((char*)mb_dotdesktop_get(dd, "Name"));
++	      entry_cur->match = (unsigned char*)strdup((char*)mb_dotdesktop_get(dd, "Match"));
+ 
+ 	      if (mb_dotdesktop_get(dd, "Icon"))
+ 		{
+ 		  entry_cur->icon 
+-		    = strdup(mb_dotdesktop_get(dd, "Icon"));
++		    = (unsigned char*)strdup((char*)mb_dotdesktop_get(dd, "Icon"));
+ 		}
+ 
+ 	      folders->n_entries++;
+diff -bur libmatchbox-1.7~orig/libmb/mbexp.c libmatchbox-1.7/libmb/mbexp.c
+--- libmatchbox-1.7~orig/libmb/mbexp.c	2005-03-20 11:43:25.000000000 -0600
++++ libmatchbox-1.7/libmb/mbexp.c	2006-02-19 14:50:42.000000000 -0600
+@@ -894,7 +894,7 @@
+ 		 int             encoding,
+ 		 int             opts)
+ {
+-  int len = strlen(txt);
++  int len = strlen((char*)txt);
+ 
+   /* we cant clip single char string */
+   if (len < 2) return 0;
+@@ -907,7 +907,7 @@
+       memset(str, 0, len+5);
+ 
+       /* len += 2; */
+-      strcpy(str, txt);
++      strcpy((char*)str, (char*)txt);
+ 
+       do {
+ 	  /* go back a glyth */
+@@ -1066,12 +1066,12 @@
+   if (!_mb_font_is_font_object_fresh (font))
+     _mb_font_load(font);
+ 
+-  orig_len = len = strlen(text);
++  orig_len = len = strlen((char*)text);
+ 
+   str = malloc(len+3);
+   memset(str, 0, len+3);
+ 
+-  strcpy(str, text);
++  strcpy((char*)str, (char*)text);
+ 
+   render_w = mb_font_get_txt_width(font, str, len, encoding);
+ 
+@@ -1147,12 +1147,12 @@
+   if (!_mb_font_is_font_object_fresh (font))
+     _mb_font_load(font);
+ 
+-  orig_len = len = strlen(text);
++  orig_len = len = strlen((char*)text);
+ 
+   str = malloc(len+3);
+   memset(str, 0, len+3);
+ 
+-  strcpy(str, text);
++  strcpy((char*)str, (char*)text);
+ 
+   render_w = mb_font_get_txt_width(font, str, len, encoding);
+ 
+@@ -1257,7 +1257,7 @@
+ {
+   if (layout->txt) free(layout->txt);
+ 
+-  layout->txt = strdup(text);
++  layout->txt = (unsigned char*)strdup((char*)text);
+   layout->txt_encoding = encoding;
+ }
+ 
+@@ -1304,7 +1304,7 @@
+ 			 MBFontRenderOpts opts,
+ 			 Bool             do_render)
+ {
+-  unsigned char *orig_p, *p = strdup(layout->txt);
++  unsigned char *orig_p, *p = (unsigned char*)strdup((char*)layout->txt);
+   unsigned char *q = p;
+   unsigned char *backtrack = NULL;
+   int            v_offset  = 0;
+@@ -1326,7 +1326,7 @@
+ 	  
+ 	  /* XXX q should be current_line_start */
+ 
+-	  cur_width = mb_font_get_txt_width(layout->font, q, strlen(q), 
++	  cur_width = mb_font_get_txt_width(layout->font, q, strlen((char*)q), 
+ 					    layout->txt_encoding) ;
+ 	  
+ 	  if (cur_width > layout->width )
+@@ -1405,7 +1405,7 @@
+ 
+   if (layout->_have_autocalc_size) /* Easy case */
+     {
+-      unsigned char *str = strdup(layout->txt), *start = NULL, *orig = NULL;
++      char *str = strdup((char*)layout->txt), *start = NULL, *orig = NULL;
+ 
+       orig = str;
+ 
+@@ -1426,7 +1426,7 @@
+ 		                 x,
+ 		                 y,
+ 				 layout->width,
+-				 start,
++				 (unsigned char*)start,
+ 		                 layout->txt_encoding,
+ 		                 0 );
+ 	  
+diff -bur libmatchbox-1.7~orig/libmb/mbexp.h libmatchbox-1.7/libmb/mbexp.h
+--- libmatchbox-1.7~orig/libmb/mbexp.h	2005-03-20 11:43:25.000000000 -0600
++++ libmatchbox-1.7/libmb/mbexp.h	2006-02-19 14:51:20.000000000 -0600
+@@ -92,7 +92,7 @@
+ typedef struct MBFont 
+ {
+   Display              *dpy; 
+-  unsigned char        *family;
++  char                 *family;
+   int                   weight;
+   int                   slant;
+   int                   pt_size;
+diff -bur libmatchbox-1.7~orig/libmb/mbmenu.c libmatchbox-1.7/libmb/mbmenu.c
+--- libmatchbox-1.7~orig/libmb/mbmenu.c	2005-03-20 11:43:25.000000000 -0600
++++ libmatchbox-1.7/libmb/mbmenu.c	2006-02-19 14:53:33.000000000 -0600
+@@ -726,25 +726,25 @@
+ 	      if (mb_dotdesktop_get(theme, "MenuBgColor"))
+ 		{
+ 		  mb_menu_set_col(mb, MBMENU_SET_BG_COL, 
+-				  mb_dotdesktop_get(theme, "MenuBgColor"));
++				  (char*)mb_dotdesktop_get(theme, "MenuBgColor"));
+ 		}
+ 
+ 	      if (mb_dotdesktop_get(theme, "MenuFont"))
+ 		{
+ 		  mb_menu_set_font (mb, 
+-				    mb_dotdesktop_get(theme, "MenuFont"));
++				    (char*)mb_dotdesktop_get(theme, "MenuFont"));
+ 		}
+ 
+ 	      if (mb_dotdesktop_get(theme, "MenuFgColor"))
+ 		{
+ 		  mb_menu_set_col(mb, MBMENU_SET_FG_COL, 
+-				  mb_dotdesktop_get(theme, "MenuFgColor"));
++				  (char*)mb_dotdesktop_get(theme, "MenuFgColor"));
+ 		}
+ 
+ 	      if (mb_dotdesktop_get(theme, "MenuHlColor"))
+ 		{
+ 		  mb_menu_set_col(mb, MBMENU_SET_HL_COL, 
+-				  mb_dotdesktop_get(theme, "MenuHlColor"));
++				  (char*)mb_dotdesktop_get(theme, "MenuHlColor"));
+ 		    mb->have_highlight_col = True;
+ 		}
+ 	      else mb->have_highlight_col = False;
+@@ -752,7 +752,7 @@
+ 	      if (mb_dotdesktop_get(theme, "MenuBdColor"))
+ 		{
+ 		  mb_menu_set_col(mb, MBMENU_SET_BD_COL, 
+-				  mb_dotdesktop_get(theme, "MenuBdColor"));
++				  (char*)mb_dotdesktop_get(theme, "MenuBdColor"));
+ 		}
+ 
+ 	      /* xxx currently broke xxx
+diff -bur libmatchbox-1.7~orig/libmb/mbpixbuf.c libmatchbox-1.7/libmb/mbpixbuf.c
+--- libmatchbox-1.7~orig/libmb/mbpixbuf.c	2005-03-30 06:21:26.000000000 -0600
++++ libmatchbox-1.7/libmb/mbpixbuf.c	2006-02-19 14:55:39.000000000 -0600
+@@ -418,7 +418,7 @@
+ 		      col[0] = 0;
+ 		      s[0] = 0;
+ 		      len = strlen(line);
+-		      strncpy(cmap[j].str, line, cpp);
++		      strncpy((char*)cmap[j].str, line, cpp);
+ 		      cmap[j].str[cpp] = 0;
+ 		      cmap[j].r = -1;
+ 		      cmap[j].transp = 0;
+@@ -537,7 +537,7 @@
+ 			  i--;
+ 			  for (j = 0; j < ncolors; j++)
+ 			    {
+-			      if (!strcmp(col, cmap[j].str))
++			      if (!strcmp(col, (char*)cmap[j].str))
+ 				{
+ 				  if (transp && cmap[j].transp)
+ 				    {
+@@ -1086,7 +1086,8 @@
+   int num_of_cols = 1 << pb->depth;
+ 
+   Window chld;
+-  unsigned int rx, rw, rh, rb, rdepth;
++  int rx;
++  unsigned int rw, rh, rb, rdepth;
+ 
+   XShmSegmentInfo shminfo; 
+ 
+diff -bur libmatchbox-1.7~orig/libmb/mbtray.c libmatchbox-1.7/libmb/mbtray.c
+--- libmatchbox-1.7~orig/libmb/mbtray.c	2005-03-20 11:43:25.000000000 -0600
++++ libmatchbox-1.7/libmb/mbtray.c	2006-02-19 14:59:20.000000000 -0600
+@@ -204,7 +204,7 @@
+ {
+   XEvent xevent;
+   Atom timestamp_atom = XInternAtom(dpy, "_MB_DOCK_TIMESTAMP", False);
+-  char c = 'a';
++  unsigned char c = 'a';
+ 
+   XChangeProperty (dpy, RootWindow(dpy, DefaultScreen(dpy)), 
+ 		   timestamp_atom, timestamp_atom,
+@@ -615,7 +615,7 @@
+ 
+   mb->tray_id = 0;
+ 
+-  mb->app_name = app_name ? strdup(app_name) : strdup("unnamed");
++  mb->app_name = (unsigned char*)(app_name ? strdup((char*)app_name) : strdup("unnamed"));
+ 
+   mb->have_cached_bg = False; 
+   mb->cached_bg      = NULL;
+@@ -638,7 +638,7 @@
+ 		      unsigned char *name)
+ {
+   if (mb->app_name) free(mb->app_name);
+-  mb->app_name = strdup(name);
++  mb->app_name = (unsigned char*)strdup((char*)name);
+ }
+ 
+ void
+@@ -649,7 +649,7 @@
+ 
+   if (mb->context_info) free(mb->context_info);
+ 
+-  mb->context_info = strdup(info);
++  mb->context_info = (unsigned char*)strdup((char*)info);
+ 
+   if (mb->win) _set_win_context_hint(mb);
+ 
+@@ -1055,7 +1055,7 @@
+ 		   mb->atoms[ATOM_NET_WM_NAME], 
+ 		   mb->atoms[ATOM_UTF8_STRING], 
+ 		   8, 
+-		   PropModeReplace, mb->app_name, strlen(mb->app_name));
++		   PropModeReplace, mb->app_name, strlen((char*)mb->app_name));
+ }
+ 
+ static void
+@@ -1068,7 +1068,7 @@
+ 		       mb->atoms[ATOM_UTF8_STRING], 
+ 		       8, 
+ 		       PropModeReplace, 
+-		       mb->context_info, strlen(mb->context_info));
++		       mb->context_info, strlen((char*)mb->context_info));
+     }
+ }
+ 
+@@ -1170,7 +1170,7 @@
+   
+   TRAYDBG("%s() set w: %i, h: %i\n", __func__, mb->w, mb->h);
+ 
+-  XSetStandardProperties(mb->dpy, mb->win, mb->app_name,
++  XSetStandardProperties(mb->dpy, mb->win, (char*)mb->app_name,
+ 			 NULL, 0, NULL, 0, &size_hints);
+ 
+   _set_win_utf8_name(mb);
+@@ -1186,7 +1186,7 @@
+ mb_tray_app_tray_send_message(MBTrayApp *mb, unsigned char* msg, int timeout)
+ {
+    unsigned char buf[20];
+-   int msg_len = strlen(msg);
++   int msg_len = strlen((char*)msg);
+    int id = 12345; /* TODO id should unique */
+    int bytes_sent = 0;
+    
+diff -bur libmatchbox-1.7~orig/libmb/mbutil.c libmatchbox-1.7/libmb/mbutil.c
+--- libmatchbox-1.7~orig/libmb/mbutil.c	2005-03-28 17:08:38.000000000 -0600
++++ libmatchbox-1.7/libmb/mbutil.c	2006-02-19 15:02:19.000000000 -0600
+@@ -111,9 +111,8 @@
+ 
+   Atom type;
+   int format;
+-  long bytes_after;
+   unsigned char *data = NULL;
+-  long n_items;
++  unsigned long n_items, bytes_after;
+   int result;
+ 
+   unsigned char *p, *key = NULL, *value = NULL;
+@@ -153,9 +152,9 @@
+ 
+       *p = '\0';      
+ 
+-      if (!strcmp(key, bin_name))
++      if (!strcmp((char*)key, (char*)bin_name))
+ 	{
+-	  win_found = atoi(value); /* XXX should check window ID 
++	  win_found = atoi((char*)value); /* XXX should check window ID 
+ 				      actually exists */
+ 	  XFree (data);
+ 	  return ( (win_found > 0) ? win_found : None );
+@@ -175,9 +174,8 @@
+ 
+   Atom type;
+   int format;
+-  long bytes_after;
+   unsigned char *data = NULL;
+-  long n_items;
++  unsigned long n_items, bytes_after;
+   int result;
+ 
+   result =  XGetWindowProperty (dpy, RootWindow(dpy, DefaultScreen(dpy)), 
+@@ -195,7 +193,7 @@
+ 
+ 
+ 
+-  if (strstr(data, bin_name) != NULL)
++  if (strstr((char*)data, (char*)bin_name) != NULL)
+     {
+       XFree(data);
+       return True;
+@@ -282,9 +280,8 @@
+ 
+   Atom type;
+   int format;
+-  long bytes_after;
+   Pixmap *data = NULL;
+-  long n_items;
++  unsigned long n_items, bytes_after;
+   int result;
+ 
+   result =  XGetWindowProperty (dpy, RootWindow(dpy, DefaultScreen(dpy)),

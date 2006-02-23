@@ -17,6 +17,7 @@ FILES_libavahi-common = "${libdir}/libavahi-common.so.*"
 FILES_libavahi-core= "${libdir}/libavahi-core.so.*"
 FILES_avahi-daemon = "${sbindir}/avahi-daemon \
 		      ${sysconfdir}/avahi/avahi-daemon.conf \
+		      ${sysconfdir}/avahi/hosts \
 		      ${sysconfdir}/avahi/services \
 		      ${sysconfdir}/dbus-1 \
 		      ${sysconfdir}/init.d/avahi-daemon \

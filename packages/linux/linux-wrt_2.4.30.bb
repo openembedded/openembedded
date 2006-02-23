@@ -103,9 +103,9 @@ do_configure_prepend() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR}/images
+	install -d ${DEPLOY_DIR_IMAGE}
 	cat ${KERNEL_OUTPUT} | lzma e -si -so -eos > \
-		${DEPLOY_DIR}/images/wrt-kernel-${PV}.lzma
+		${DEPLOY_DIR_IMAGE}/wrt-kernel-${PV}.lzma
 }
 
 do_deploy[dirs] = "${S}"

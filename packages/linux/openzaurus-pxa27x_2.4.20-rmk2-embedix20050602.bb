@@ -91,8 +91,8 @@ do_configure_prepend() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PACKAGE_ARCH}-${DATETIME}.bin
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PACKAGE_ARCH}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"
