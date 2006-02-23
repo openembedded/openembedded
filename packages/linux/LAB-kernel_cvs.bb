@@ -35,8 +35,8 @@ do_configure() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/LAB-image-${MACHINE}
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/LAB-image-${MACHINE}
 #add the bootshim?
 }
 

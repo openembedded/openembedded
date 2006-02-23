@@ -251,8 +251,8 @@ do_install_append() {
 
 do_deploy[dirs] = "${S}"
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-	redboot_fixup '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${N2K_SUFFIX}'
+        install -d ${DEPLOY_DIR_IMAGE}
+	redboot_fixup '${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${N2K_SUFFIX}'
 }
 
 addtask deploy before do_build after do_compile

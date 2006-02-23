@@ -32,12 +32,12 @@ do_configure_prepend() {
 }
 
 do_deploy_omap5912osk() {
-        install -d ${DEPLOY_DIR}/images
+        install -d ${DEPLOY_DIR_IMAGE}
         arm-linux-objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux ${DEPLOY_DIR}/linux.bin
         gzip -f -9 ${DEPLOY_DIR}/linux.bin
         mkimage -A arm -O linux -T kernel -C gzip -a 0x10c08000 -e 0x10c08000 -n "OE" -d ${DEPLOY_DIR}/linux.bin.gz ${DEPLOY_DIR}/uImage_bb.cc
         cp ${DEPLOY_DIR}/uImage_bb.cc /tftpboot
-#        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+#        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
 }
 
 

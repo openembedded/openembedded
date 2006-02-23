@@ -350,11 +350,11 @@ do_install_append() {
 do_deploy[dirs] = "${S}"
 
 deploy_image() {
-	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-'"$1" "$2"
+	copy_image '${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-'"$1" "$2"
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
+        install -d ${DEPLOY_DIR_IMAGE}
 	deploy_image '${IXP4XX_SUFFIX}'
 
 	# And the machine specific images
