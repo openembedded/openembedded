@@ -8,16 +8,16 @@ PR_CONFIG = "0"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r2.${PR_CONFIG}"
+PR = "r0.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
-RPSRC = "http://www.rpsys.net/openzaurus/patches"
+# RPSRC = "http://www.rpsys.net/openzaurus/patches"
 
 # IXP4XX_PATCHES - full list of patches to apply
 IXP4XX_PATCHES  = ""
 
-IXP4XX_PATCHES += "file://patch-2.6.16-rc4-ide1;patch=1"
+IXP4XX_PATCHES += "file://patch-2.6.16-rc4-ide2;patch=1"
 IXP4XX_PATCHES += "file://leds-class.patch;patch=1"
 IXP4XX_PATCHES += "file://06-remove-extraversion.patch;patch=1"
 IXP4XX_PATCHES += "file://10-mtdpart-redboot-fis-byteswap.patch;patch=1"
@@ -29,11 +29,9 @@ IXP4XX_PATCHES += "file://45-eeprom-notifier.patch;patch=1"
 IXP4XX_PATCHES += "file://48-setup-byteswap-cmdline.patch;patch=1"
 IXP4XX_PATCHES += "file://50-i2c-bus-ixp4xx-hwmon.patch;patch=1"
 IXP4XX_PATCHES += "file://50-hwmon-ad741x.patch;patch=1"
-IXP4XX_PATCHES += "file://61-nslu2-beeper.patch;patch=1"
 IXP4XX_PATCHES += "file://65-loft-config.patch;patch=1"
 IXP4XX_PATCHES += "file://70-artop-latency.patch;patch=1"
-IXP4XX_PATCHES += "file://80-nas100d-fix-i2c.patch;patch=1"
-IXP4XX_PATCHES += "file://81-nslu2-power.patch;patch=1"
+IXP4XX_PATCHES += "file://75-dsmg600.patch;patch=1"
 IXP4XX_PATCHES += "file://82-nas100d-power.patch;patch=1"
 IXP4XX_PATCHES += "file://85-timer.patch;patch=1"
 IXP4XX_PATCHES += "file://91-maclist.patch;patch=1"
@@ -42,9 +40,11 @@ IXP4XX_PATCHES += "file://92-nslu2-maclist.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nas100d-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-nslu2-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://94-loft-setup.patch;patch=1"
+IXP4XX_PATCHES += "file://96-pata-ixp4xx.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nas100d-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://96-nslu2-leds.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-setup.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-includes.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-pci.patch;patch=1"
 IXP4XX_PATCHES += "file://97-ds101-buttons.patch;patch=1"
+IXP4XX_PATCHES += "file://97-ds101-doc.patch;patch=1"

@@ -5,8 +5,8 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  arch/arm/mach-ixp4xx/nslu2-setup.c |   51 ++++++++++++++++++++++++++++++++++++-
  1 file changed, 50 insertions(+), 1 deletion(-)
 
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 02:13:58.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-01-23 02:14:51.000000000 +0100
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-21 02:54:05.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-21 02:54:05.000000000 +0100
 @@ -17,6 +17,9 @@
  #include <linux/serial.h>
  #include <linux/serial_8250.h>
@@ -17,7 +17,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  
  #include <asm/setup.h>
  #include <asm/memory.h>
-@@ -50,6 +53,42 @@ static struct ixp4xx_i2c_pins nslu2_i2c_
+@@ -48,6 +51,42 @@ static struct ixp4xx_i2c_pins nslu2_i2c_
  	.scl_pin		= NSLU2_SCL_PIN,
  };
  
@@ -60,7 +60,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  static struct platform_device nslu2_i2c_controller = {
  	.name			= "IXP4XX-I2C",
  	.id			= 0,
-@@ -109,7 +148,6 @@ static struct platform_device nslu2_uart
+@@ -107,7 +146,6 @@ static struct platform_device nslu2_uart
  static struct platform_device *nslu2_devices[] __initdata = {
  	&nslu2_i2c_controller,
  	&nslu2_flash,
@@ -68,7 +68,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  	&nslu2_beeper,
  };
  
-@@ -171,7 +209,18 @@ static void __init nslu2_init(void)
+@@ -173,7 +211,18 @@ static void __init nslu2_init(void)
  
  	pm_power_off = nslu2_power_off;
  

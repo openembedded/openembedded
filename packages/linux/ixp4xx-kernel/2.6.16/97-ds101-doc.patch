@@ -1,0 +1,43 @@
+Index: linux-2.6.15/include/linux/mtd/doc2000.h
+===================================================================
+--- linux-2.6.15.orig/include/linux/mtd/doc2000.h	2006-02-24 11:46:50.000000000 +0100
++++ linux-2.6.15/include/linux/mtd/doc2000.h	2006-02-24 12:14:18.000000000 +0100
+@@ -73,14 +73,29 @@
+ #define DoC_Mplus_Toggle		0x1046
+ #define DoC_Mplus_DownloadStatus	0x1074
+ #define DoC_Mplus_CtrlConfirm		0x1076
++#ifdef CONFIG_MACH_DS101
++#define DoC_Mplus_Power			0x1ffe
++#else
+ #define DoC_Mplus_Power			0x1fff
++#endif
+ 
+ /* How to access the device?
+  * On ARM, it'll be mmap'd directly with 32-bit wide accesses.
+  * On PPC, it's mmap'd and 16-bit wide.
++ * On DS101 (an ARM device), some tricks are needed
+  * Others use readb/writeb
+  */
+-#if defined(__arm__)
++#ifdef CONFIG_MACH_DS101
++#ifndef __ARMEB__
++#define ReadDOC_(adr, reg)      readw((unsigned long)(adr + reg) ^ 0x02)
++#define WriteDOC_(d, adr, reg)  writew(d, (unsigned long)(adr + reg) ^ 0x02)
++#define DOC_IOREMAP_LEN 0x4000
++#else
++#define ReadDOC_(adr, reg)      swab16(readw((void __iomem *)(adr) + (reg)))
++#define WriteDOC_(d, adr, reg)  writew(swab16(d), (void __iomem *)(adr) + (reg))
++#define DOC_IOREMAP_LEN 0x4000
++#endif
++#elif defined(__arm__)
+ #define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u32 *)(((unsigned long)adr)+((reg)<<2))))
+ #define WriteDOC_(d, adr, reg)  do{ *(volatile __u32 *)(((unsigned long)adr)+((reg)<<2)) = (__u32)d; wmb();} while(0)
+ #define DOC_IOREMAP_LEN 0x8000
+@@ -92,7 +107,6 @@
+ #define ReadDOC_(adr, reg)      readb((void __iomem *)(adr) + (reg))
+ #define WriteDOC_(d, adr, reg)  writeb(d, (void __iomem *)(adr) + (reg))
+ #define DOC_IOREMAP_LEN 0x2000
+-
+ #endif
+ 
+ #if defined(__i386__) || defined(__x86_64__)

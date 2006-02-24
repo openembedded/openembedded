@@ -2,8 +2,8 @@
  arch/arm/mach-ixp4xx/nslu2-setup.c |   39 +++++++++++++++++++++++++++++++++++++
  2 files changed, 41 insertions(+), 2 deletions(-)
 
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-06 22:35:26.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/Kconfig	2006-02-06 22:35:31.000000000 +0100
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:30:58.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:31:00.000000000 +0100
 @@ -11,8 +11,8 @@ comment "IXP4xx Platforms"
  # This entry is placed on top because otherwise it would have
  # been shown as a submenu.
@@ -15,8 +15,8 @@
  	help
  	  Say 'Y' here if you want your kernel to support Linksys's
  	  NSLU2 NAS device. For more information on this platform,
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:34:55.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:35:31.000000000 +0100
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-23 18:30:49.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-23 18:31:00.000000000 +0100
 @@ -16,11 +16,14 @@
  #include <linux/kernel.h>
  #include <linux/serial.h>
@@ -81,4 +81,4 @@
 +
  	ixp4xx_sys_init();
  
- 	pm_power_off = nslu2_power_off;
+ 	nslu2_flash_resource.start = IXP4XX_EXP_BUS_BASE(0);

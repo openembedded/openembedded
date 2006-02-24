@@ -7,8 +7,8 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  arch/arm/mach-ixp4xx/nslu2-setup.c |   45 ++++++++++++++++++++++++++++++++++++-
  1 file changed, 44 insertions(+), 1 deletion(-)
 
---- linux-nslu2.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:35:31.000000000 +0100
-+++ linux-nslu2/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-06 22:43:44.000000000 +0100
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-23 18:31:00.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-23 18:31:04.000000000 +0100
 @@ -18,6 +18,8 @@
  #include <linux/serial_8250.h>
  #include <linux/mtd/mtd.h>
@@ -18,7 +18,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
-@@ -170,11 +172,52 @@ static void __init nslu2_init(void)
+@@ -174,11 +176,52 @@ static void __init nslu2_init(void)
  	platform_add_devices(nslu2_devices, ARRAY_SIZE(nslu2_devices));
  }
  

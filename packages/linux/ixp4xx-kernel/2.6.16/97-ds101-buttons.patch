@@ -1,7 +1,7 @@
 Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c	2006-02-16 20:04:47.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c	2006-02-23 08:40:28.000000000 +0100
 @@ -0,0 +1,117 @@
 +/*
 + * arch/arm/mach-ixp4xx/ds101-buttons.c
@@ -47,7 +47,7 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c
 +	if (powerb_irqcount > 1)
 +	{
 +		/* Make the power led flash */
-+		gpio_line_set(DS101_POWER_LED, DS101_GPIO_LOW);
++		gpio_line_set(DS101_POWER_LED, DS101_GPIO_HIGH);
 +		ctrl_alt_del();
 +	}
 +	return IRQ_HANDLED;

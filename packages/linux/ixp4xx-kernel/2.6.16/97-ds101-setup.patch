@@ -4,11 +4,13 @@ Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
 Signed-off-by: Rod Whitby <rod@whitby.id.au>
 Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
 
+ arch/arm/mach-ixp4xx/Kconfig       |    8 +
+ arch/arm/mach-ixp4xx/Makefile      |    2 
  arch/arm/mach-ixp4xx/ds101-setup.c |  245 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 245 insertions(+)
+ 3 files changed, 254 insertions(+), 1 deletion(-)
 
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-21 02:00:16.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-23 18:08:40.000000000 +0100
 @@ -0,0 +1,245 @@
 +/*
 + * Synology DS101 board setup
@@ -255,17 +257,11 @@ Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
 +	.timer		= &ixp4xx_timer,
 +	.init_machine	= ds101_init,
 +MACHINE_END
- arch/arm/mach-ixp4xx/Kconfig  |    8 ++++++++
- arch/arm/mach-ixp4xx/Makefile |    2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-Index: linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig
-===================================================================
---- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-14 19:20:21.000000000 +0100
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig	2006-02-14 19:20:26.000000000 +0100
-@@ -86,6 +86,14 @@
- 	  NAS 100d device. For more information on this platform,
- 	  see http://www.nslu2-linux.org/wiki/NAS100d/HomePage
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:08:38.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:08:40.000000000 +0100
+@@ -94,6 +94,14 @@ config MACH_DSMG600
+ 	  DSM-G600 device. For more information on this platform,
+ 	  see http://www.nslu2-linux.org/
  
 +config MACH_DS101
 +       bool
@@ -278,13 +274,11 @@ Index: linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig
  #
  # Avila and IXDP share the same source for now. Will change in future
  #
-Index: linux-2.6.15/arch/arm/mach-ixp4xx/Makefile
-===================================================================
---- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Makefile	2006-02-14 19:20:21.000000000 +0100
-+++ linux-2.6.15/arch/arm/mach-ixp4xx/Makefile	2006-02-14 19:20:36.000000000 +0100
-@@ -10,4 +10,4 @@
- obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-pci.o gtwx5715-setup.o
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/Makefile	2006-02-23 18:08:38.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/Makefile	2006-02-23 18:09:09.000000000 +0100
+@@ -11,4 +11,4 @@ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-
  obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
  obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
+ obj-$(CONFIG_MACH_DSMG600)	+= dsmg600-pci.o dsmg600-setup.o
 -
 +obj-$(CONFIG_MACH_DS101)	+= ds101-pci.o ds101-setup.o ds101-buttons.o

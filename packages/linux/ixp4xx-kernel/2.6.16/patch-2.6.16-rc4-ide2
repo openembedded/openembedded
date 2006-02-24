@@ -1,6 +1,6 @@
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/arch/i386/pci/fixup.c linux-2.6.16-rc2/arch/i386/pci/fixup.c
---- linux.vanilla-2.6.16-rc2/arch/i386/pci/fixup.c	2006-02-06 12:21:33.000000000 +0000
-+++ linux-2.6.16-rc2/arch/i386/pci/fixup.c	2006-02-01 14:49:17.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/arch/i386/pci/fixup.c linux-2.6.16-rc4/arch/i386/pci/fixup.c
+--- linux.vanilla-2.6.16-rc4/arch/i386/pci/fixup.c	2006-02-20 11:22:15.000000000 +0000
++++ linux-2.6.16-rc4/arch/i386/pci/fixup.c	2006-02-01 14:49:17.000000000 +0000
 @@ -74,52 +74,6 @@
  }
  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NCR, PCI_DEVICE_ID_NCR_53C810, pci_fixup_ncr53c810);
@@ -54,22 +54,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  static void __devinit  pci_fixup_latency(struct pci_dev *d)
  {
  	/*
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/cdrom/cdrom.c linux-2.6.16-rc2/drivers/cdrom/cdrom.c
---- linux.vanilla-2.6.16-rc2/drivers/cdrom/cdrom.c	2006-02-06 12:21:34.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/cdrom/cdrom.c	2006-01-17 16:34:19.000000000 +0000
-@@ -1131,7 +1131,8 @@
- 	This ensures that the drive gets unlocked after a mount fails.  This 
- 	is a goto to avoid bloating the driver with redundant code. */ 
- clean_up_and_return:
--	cdinfo(CD_OPEN, "open failed.\n"); 
-+	/* Don't log this, its a perfectly normal user occurence */
-+	/* cdinfo(CD_WARNING, "open failed.\n");  */
- 	if (CDROM_CAN(CDC_LOCK) && cdi->options & CDO_LOCK) {
- 			cdo->lock_door(cdi, 0);
- 			cdinfo(CD_OPEN, "door unlocked.\n");
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/pci/probe.c linux-2.6.16-rc2/drivers/pci/probe.c
---- linux.vanilla-2.6.16-rc2/drivers/pci/probe.c	2006-02-06 12:21:35.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/pci/probe.c	2006-02-01 15:56:28.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/pci/probe.c linux-2.6.16-rc4/drivers/pci/probe.c
+--- linux.vanilla-2.6.16-rc4/drivers/pci/probe.c	2006-02-20 11:22:17.000000000 +0000
++++ linux-2.6.16-rc4/drivers/pci/probe.c	2006-02-01 15:56:28.000000000 +0000
 @@ -627,6 +627,7 @@
  static int pci_setup_device(struct pci_dev * dev)
  {
@@ -110,21 +97,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		break;
  
  	case PCI_HEADER_TYPE_BRIDGE:		    /* bridge header */
-@@ -687,6 +713,10 @@
- 		dev->class = PCI_CLASS_NOT_DEFINED;
- 	}
- 
-+	/* BIOS enabled, so assume there is a good reason */
-+	pci_read_config_word(dev, PCI_COMMAND, &cmd);
-+	if(cmd & PCI_COMMAND_MASTER)
-+		dev->is_enabled = 1;
- 	/* We found a fine healthy device, go go go... */
- 	return 0;
- }
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/ata_generic.c linux-2.6.16-rc2/drivers/scsi/ata_generic.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/ata_generic.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/ata_generic.c	2006-02-07 13:47:27.337665568 +0000
-@@ -0,0 +1,242 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/ata_generic.c linux-2.6.16-rc4/drivers/scsi/ata_generic.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/ata_generic.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/ata_generic.c	2006-02-16 15:35:41.000000000 +0000
+@@ -0,0 +1,241 @@
 +/*
 + *  ata_generic.c - Generic PATA/SATA controller driver.
 + *  Copyright 2005 Red Hat Inc <alan@redhat.com>, all rights reserved.
@@ -198,7 +174,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			/* FIXME: at some point in the future this should become
 +			   a library helper which reads the disk modes from the
 +			   disk as well */
-+			if(dma_enabled & (1 << (5 + i))) {
++			if (dma_enabled & (1 << (5 + i))) {
 +				dev->xfer_mode = XFER_MW_DMA_0;
 +				dev->xfer_shift = ATA_SHIFT_MWDMA;
 +				dev->flags &= ~ATA_DFLAG_PIO;
@@ -323,7 +299,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +}
 +
 +static struct pci_device_id pata_generic[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_NS,PCI_DEVICE_ID_NS_87410),},
 +	{ PCI_DEVICE(PCI_VENDOR_ID_PCTECH, PCI_DEVICE_ID_PCTECH_SAMURAI_IDE), },
 +	{ PCI_DEVICE(PCI_VENDOR_ID_HOLTEK, PCI_DEVICE_ID_HOLTEK_6565), },
 +	{ PCI_DEVICE(PCI_VENDOR_ID_UMC,    PCI_DEVICE_ID_UMC_UM8673F), }, 
@@ -367,9 +342,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(pata_generic_init);
 +module_exit(pata_generic_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/ata_piix.c linux-2.6.16-rc2/drivers/scsi/ata_piix.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/ata_piix.c	2006-02-06 12:21:35.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/ata_piix.c	2006-02-06 12:28:58.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/ata_piix.c linux-2.6.16-rc4/drivers/scsi/ata_piix.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/ata_piix.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/ata_piix.c	2006-02-20 20:06:17.000000000 +0000
 @@ -91,9 +91,10 @@
  #include <linux/device.h>
  #include <scsi/scsi_host.h>
@@ -378,7 +353,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  #define DRV_NAME	"ata_piix"
 -#define DRV_VERSION	"1.05"
-+#define DRV_VERSION	"1.05-ac1"
++#define DRV_VERSION	"1.05-ac7"
  
  enum {
  	PIIX_IOCFG		= 0x54, /* IDE I/O configuration register */
@@ -522,7 +497,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= ata_eng_timeout,
  
  	.irq_handler		= ata_interrupt,
-@@ -259,13 +356,9 @@
+@@ -253,47 +350,39 @@
+ };
+ 
+ static struct ata_port_info piix_port_info[] = {
+-	/* ich5_pata */
++	/* ich5_pata: 0*/
+ 	{
+ 		.sht		= &piix_sht,
  		.host_flags	= ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST |
  				  PIIX_FLAG_CHECKINTR,
  		.pio_mask	= 0x1f,	/* pio0-4 */
@@ -531,13 +513,28 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 -#else
 -		.mwdma_mask	= 0x00, /* mwdma broken */
 -#endif
- 		.udma_mask	= 0x3f, /* udma0-5 */
+-		.udma_mask	= 0x3f, /* udma0-5 */
 -		.port_ops	= &piix_pata_ops,
++		.udma_mask	= ATA_UDMA6,
 +		.port_ops	= &ich_pata_ops,
  	},
  
- 	/* ich5_sata */
-@@ -284,11 +377,7 @@
+-	/* ich5_sata */
++	/* ich5_sata: 1 */
+ 	{
+ 		.sht		= &piix_sht,
+ 		.host_flags	= ATA_FLAG_SATA | ATA_FLAG_SRST |
+ 				  PIIX_FLAG_COMBINED | PIIX_FLAG_CHECKINTR,
+ 		.pio_mask	= 0x1f,	/* pio0-4 */
+ 		.mwdma_mask	= 0x07, /* mwdma0-2 */
+-		.udma_mask	= 0x7f,	/* udma0-6 */
++		.udma_mask	= ATA_UDMA6,
+ 		.port_ops	= &piix_sata_ops,
+ 	},
+ 
+-	/* piix4_pata */
++	/* piix4_pata: 2 */
+ 	{
  		.sht		= &piix_sht,
  		.host_flags	= ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
  		.pio_mask	= 0x1f,	/* pio0-4 */
@@ -549,62 +546,86 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		.udma_mask	= ATA_UDMA_MASK_40C,
  		.port_ops	= &piix_pata_ops,
  	},
-@@ -316,6 +405,116 @@
- 		.udma_mask	= 0x7f,	/* udma0-6 */
+ 
+-	/* ich6_sata */
++	/* ich6_sata: 3 */
+ 	{
+ 		.sht		= &piix_sht,
+ 		.host_flags	= ATA_FLAG_SATA | ATA_FLAG_SRST |
+@@ -301,11 +390,11 @@
+ 				  ATA_FLAG_SLAVE_POSS,
+ 		.pio_mask	= 0x1f,	/* pio0-4 */
+ 		.mwdma_mask	= 0x07, /* mwdma0-2 */
+-		.udma_mask	= 0x7f,	/* udma0-6 */
++		.udma_mask	= ATA_UDMA6,
+ 		.port_ops	= &piix_sata_ops,
+ 	},
+ 
+-	/* ich6_sata_ahci */
++	/* ich6_sata_ahci: 4 */
+ 	{
+ 		.sht		= &piix_sht,
+ 		.host_flags	= ATA_FLAG_SATA | ATA_FLAG_SRST |
+@@ -313,9 +402,119 @@
+ 				  ATA_FLAG_SLAVE_POSS | PIIX_FLAG_AHCI,
+ 		.pio_mask	= 0x1f,	/* pio0-4 */
+ 		.mwdma_mask	= 0x07, /* mwdma0-2 */
+-		.udma_mask	= 0x7f,	/* udma0-6 */
++		.udma_mask	= ATA_UDMA6,
  		.port_ops	= &piix_sata_ops,
  	},
 +
-+	/* ich0_pata */
++	/* ich0_pata: 5 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* MWDMA0 is broken on chip */
-+		.udma_mask	= 0x07, /* UDMA33 only */
++		.udma_mask	= ATA_UDMA4,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +	
-+	/* ich2_pata */
++	/* ich2_pata: 6 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* MWDMA0 is broken on chip */
-+		.udma_mask	= 0x1f, /* UDMA100 */
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +	
-+	/* ich3_pata */
++	/* ich3_pata: 7 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* MWDMA0 is broken on chip */
-+		.udma_mask	= 0x1f, /* UDMA100 */
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +	
-+	/* ich4_pata */
++	/* ich4_pata: 8 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x1f, /* UDMA100 */
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +
-+	/* cich_pata */
++	/* cich_pata: 9 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x1f, /* UDMA100 */
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +
-+	/* piix3_pata */
++	/* piix3_pata: 10 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
@@ -614,53 +635,53 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		.port_ops	= &piix_pata_ops,
 +	},
 +
-+	/* esb_pata */
++	/* esb_pata: 11 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x1f, /* UDMA100 */
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &piix_pata_ops,
 +	},
 +
-+	/* ich_pata */
++	/* ich_pata: 12 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x07, /* UDMA66 */
++		.udma_mask	= ATA_UDMA4, /* UDMA66 */
 +		.port_ops	= &ich_pata_ops,
 +	},
 +
-+	/* ich6_pata */
++	/* ich6_pata: 13 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x3f, /* UDMA133 */
++		.udma_mask	= ATA_UDMA6, /* UDMA133 */
 +		.port_ops	= &ich_pata_ops,
 +	},
 +
-+	/* ich7_pata */
++	/* ich7_pata: 14 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x3f, /* UDMA133 */
++		.udma_mask	= ATA_UDMA6,
 +		.port_ops	= &ich_pata_ops,
 +	},
 +
-+	/* esb2_pata */
++	/* esb2_pata: 15 */
 +	{
 +		.sht		= &piix_sht,
 +		.host_flags	= ATA_FLAG_SRST | ATA_FLAG_SLAVE_POSS,
 +		.pio_mask 	= 0x1f,	/* pio 0-4 */
 +		.mwdma_mask	= 0x06, /* Check: maybe 0x07  */
-+		.udma_mask	= 0x1f, /* UDMA100  -- CHECKME --*/
++		.udma_mask	= ATA_UDMA5,
 +		.port_ops	= &ich_pata_ops,
 +	},
  };
@@ -784,7 +805,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Ensure the UDMA bit is off - it will be turned back on if
 +	   UDMA is selected */
 +	   
-+	if(ap->udma_mask) {
++	if (ap->udma_mask) {
 +		pci_read_config_byte(dev, 0x48, &udma_enable);
 +		udma_enable &= ~(1 << (2 * ap->hard_port_no + adev->devno));
 +		pci_write_config_byte(dev, 0x48, udma_enable);
@@ -873,7 +894,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 -			pci_write_config_byte(dev, 0x55, (u8) reg55 & ~w_flag);
 +		unsigned int udma	= adev->dma_mode - XFER_UDMA_0;
 +		u16 udma_timing;
-+		u32 ideconf;
++		u16 ideconf;
 +		int u_clock, u_speed;
 +		
 +		/*
@@ -899,14 +920,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		udma_timing |= u_speed << (4 * devid);
 +		pci_write_config_word(dev, 0x4A, udma_timing);
 +
-+		if(isich) {		
++		if (isich) {		
 +			/* Select a 33/66/100Mhz clock */
-+			pci_read_config_dword(dev, 0x54, &ideconf);
++			pci_read_config_word(dev, 0x54, &ideconf);
 +			ideconf &= ~(0x1001 << devid);
 +			ideconf |= u_clock << devid;
 +			/* For ICH or later we should set bit 10 for better
 +			   performance (WR_PingPong_En) */
-+			pci_write_config_dword(dev, 0x54, ideconf);
++			pci_write_config_word(dev, 0x54, ideconf);
  		}
 -		if ((reg4a & a_speed) != u_speed)
 -			pci_write_config_word(dev, 0x4a, (reg4a & ~a_speed) | u_speed);
@@ -966,7 +987,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		pci_write_config_word(dev, master_port, master_data);
  	}
 +	/* Don't scribble on 0x48 if the controller does not support UDMA */
-+	if(ap->udma_mask)
++	if (ap->udma_mask)
 +		pci_write_config_byte(dev, 0x48, udma_enable);
 +}
 +
@@ -1003,10 +1024,30 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  }
  
  #define AHCI_PCI_BAR 5
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/Kconfig linux-2.6.16-rc2/drivers/scsi/Kconfig
---- linux.vanilla-2.6.16-rc2/drivers/scsi/Kconfig	2006-02-06 12:21:35.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/Kconfig	2006-02-07 13:48:49.000000000 +0000
-@@ -599,6 +599,289 @@
+@@ -646,15 +967,15 @@
+ 		pci_read_config_byte(pdev, PCI_REVISION_ID, &rev);
+ 		pci_read_config_word(pdev, 0x41, &cfg);
+ 		/* Only on the original revision: IDE DMA can hang */
+-		if(rev == 0x00)
++		if (rev == 0x00)
+ 			no_piix_dma = 1;
+ 		/* On all revisions below 5 PXB bus lock must be disabled for IDE */
+-		else if(cfg & (1<<14) && rev < 5)
++		else if (cfg & (1<<14) && rev < 5)
+ 			no_piix_dma = 2;
+ 	}
+-	if(no_piix_dma)
++	if (no_piix_dma)
+ 		dev_printk(KERN_WARNING, &ata_dev->dev, "450NX errata present, disabling IDE DMA.\n");
+-	if(no_piix_dma == 2)
++	if (no_piix_dma == 2)
+ 		dev_printk(KERN_WARNING, &ata_dev->dev, "A BIOS update may resolve this.\n");
+ 	return no_piix_dma;
+ }		
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/Kconfig linux-2.6.16-rc4/drivers/scsi/Kconfig
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/Kconfig	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/Kconfig	2006-02-20 17:27:24.000000000 +0000
+@@ -599,6 +599,316 @@
  	depends on IDE=y && !BLK_DEV_IDE_SATA && (SCSI_SATA_AHCI || SCSI_ATA_PIIX)
  	default y
  
@@ -1190,11 +1231,20 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	  If unsure, say N.
 +
++config SCSI_PATA_NS87410
++	tristate "Nat Semi NS87410 PATA support (Experimental)"
++	depends on SCSI_SATA && PCI
++	help
++	  This option enables support for the National Semiconductor
++	  NS87410 PCI-IDE controller.
++
++	  If unsure, say N.
++
 +config SCSI_PATA_OLDPIIX
 +	tristate "Intel PATA old PIIX support (Raving Lunatic)"
 +	depends on SCSI_SATA && PCI && EXPERIMENTAL
 +	help
-+	  This option enables support for old(?) PIIX PATA support.
++	  This option enables support for early PIIX PATA interfaces.
 +
 +	  If unsure, say N.
 +
@@ -1209,10 +1259,19 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +config SCSI_PATA_PCMCIA
 +	tristate "PCMCIA PATA support (Raving Lunatic)"
-+	depends on SCSI_SATA
++	depends on SCSI_SATA && PCMCIA
 +	help
 +	  This option enables support for PCMCIA ATA interfaces, including
 +	  compact flash card adapters via the new ATA layer.
++
++	  If unsure, say N.
++
++config SCSI_PATA_PDC_OLD
++	tristate "Older Promise PATA controller support (Raving Lunatic)"
++	depends on SCSI_SATA && PCI && EXPERIMENTAL
++	help
++	  This option enables support for the Promise 20246, 20262, 20263,
++	  20265 and 20267 adapters.
 +
 +	  If unsure, say N.
 +
@@ -1221,6 +1280,15 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	depends on SCSI_SATA
 +	help
 +	  Support for QDI 6500 and 6580 PATA controllers on VESA local bus.
++
++config SCSI_PATA_RADISYS
++	tristate "RADISYS 82600 PATA support (Raving Lunatic)"
++	depends on SCSI_SATA && PCI && EXPERIMENTAL
++	help
++	  This option enables support for the RADISYS 82600
++	  PATA controllers via the new ATA layer
++
++	  If unsure, say N.
 +
 +config SCSI_PATA_RZ1000
 +	tristate "PC Tech RZ1000 PATA support"
@@ -1296,9 +1364,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  config SCSI_BUSLOGIC
  	tristate "BusLogic SCSI support"
  	depends on (PCI || ISA || MCA) && SCSI && ISA_DMA_API
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/libata-core.c linux-2.6.16-rc2/drivers/scsi/libata-core.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/libata-core.c	2006-02-06 12:21:35.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/libata-core.c	2006-02-07 11:23:41.765951784 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/libata-core.c linux-2.6.16-rc4/drivers/scsi/libata-core.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/libata-core.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/libata-core.c	2006-02-23 13:37:47.358092040 +0000
 @@ -68,9 +68,10 @@
  static void ata_dev_init_params(struct ata_port *ap, struct ata_device *dev);
  static void ata_set_mode(struct ata_port *ap);
@@ -1311,15 +1379,15 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  				u8 *xfer_mode_out,
  				unsigned int *xfer_shift_out);
  static void __ata_qc_complete(struct ata_queued_cmd *qc);
-@@ -614,7 +615,7 @@
- 	} else if (lba48 && (qc->ap->flags & ATA_FLAG_PIO_LBA48)) {
- 		/* Unable to use DMA due to host limitation */
- 		tf->protocol = ATA_PROT_PIO;
--		index = dev->multi_count ? 0 : 4;
-+		index = dev->multi_count ? 0 : 8;
- 	} else {
- 		tf->protocol = ATA_PROT_DMA;
- 		index = 16;
+@@ -78,7 +79,7 @@
+ static unsigned int ata_unique_id = 1;
+ static struct workqueue_struct *ata_wq;
+ 
+-int atapi_enabled = 0;
++int atapi_enabled = 1;
+ module_param(atapi_enabled, int, 0444);
+ MODULE_PARM_DESC(atapi_enabled, "Enable discovery of ATAPI devices (0=off, 1=on)");
+ 
 @@ -1205,6 +1206,48 @@
  	return 0;
  }
@@ -1392,7 +1460,33 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	}
  
  	/* ATAPI-specific feature tests */
-@@ -1497,7 +1547,11 @@
+@@ -1485,10 +1535,24 @@
+ 	ap->ops->phy_reset(ap);
+ 	if (ap->flags & ATA_FLAG_PORT_DISABLED)
+ 		goto err_out;
++		
++	/* The reset means we are in PIO 0, but the controller may not
++	   yet be correctly set up and may have old BIOS settings, or just
++	   no settings at all. Set all the devices to PIO 0 */
++
++	for (i = 0; i < ATA_MAX_DEVICES; i++)
++		ap->device[i].pio_mode = XFER_PIO_0;
+ 
+ 	for (i = 0; i < ATA_MAX_DEVICES; i++) {
++		struct ata_device *adev = & ap->device[i];
++
++		/* Set up the controller on this port for PIO 0. We must not
++		   send the drive speed setting commands at this point */
++		if (ap->ops->set_piomode)
++			ap->ops->set_piomode(ap, adev);
++
+ 		ata_dev_identify(ap, i);
+-		if (ata_dev_present(&ap->device[i])) {
++		if (ata_dev_present(adev)) {
+ 			found = 1;
+ 			ata_dev_config(ap,i);
+ 		}
+@@ -1497,7 +1561,11 @@
  	if ((!found) || (ap->flags & ATA_FLAG_PORT_DISABLED))
  		goto err_out_disable;
  
@@ -1405,7 +1499,31 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	if (ap->flags & ATA_FLAG_PORT_DISABLED)
  		goto err_out_disable;
  
-@@ -1824,16 +1878,19 @@
+@@ -1612,6 +1680,23 @@
+ }
+ 
+ /**
++ *	ata_dev_pair		-	return other device on cable
++ *	@ap: port
++ *	@adev: device
++ *
++ *	Obtain the other device on the same cable, or if none is
++ *	present NULL is returned
++ */
++ 
++struct ata_device *ata_dev_pair(struct ata_port *ap, struct ata_device *adev)
++{
++	struct ata_device *pair = &ap->device[1 - adev->devno];
++	if (!ata_dev_present(pair))
++		return NULL;
++	return pair;
++}
++
++/**
+  *	ata_port_disable - Disable port.
+  *	@ap: Port to be disabled.
+  *
+@@ -1824,16 +1909,19 @@
  		ap->id, dev->devno, xfer_mode_str[idx]);
  }
  
@@ -1429,7 +1547,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		return -1;
  	}
  
-@@ -1843,34 +1900,24 @@
+@@ -1843,34 +1931,24 @@
  	DPRINTK("base 0x%x xfer_mode 0x%x mask 0x%x x %d\n",
  		(int)base, (int)xfer_mode, mask, x);
  
@@ -1477,7 +1595,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	}
  }
  
-@@ -1886,32 +1933,64 @@
+@@ -1886,32 +1964,64 @@
   */
  static void ata_set_mode(struct ata_port *ap)
  {
@@ -1521,12 +1639,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		rc = ata_host_set_pio(ap, adev);
 +		if (rc)
 +			goto err_out;
-+
-+		/* step 2: if that xfer mode isn't PIO, set host DMA timings */
-+		if (xfer_shift[i] != ATA_SHIFT_PIO) {
-+			ata_host_set_dma(ap, adev, xfer_mode[i], xfer_shift[i]);
-+			used_dma = 1;
-+		}
  
 -	/* step 3: if that xfer mode isn't PIO, set host DMA timings */
 -	if (xfer_shift != ATA_SHIFT_PIO)
@@ -1535,6 +1647,12 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 -	/* step 4: update devices' xfer mode */
 -	ata_dev_set_mode(ap, &ap->device[0]);
 -	ata_dev_set_mode(ap, &ap->device[1]);
++		/* step 2: if that xfer mode isn't PIO, set host DMA timings */
++		if (xfer_shift[i] != ATA_SHIFT_PIO) {
++			ata_host_set_dma(ap, adev, xfer_mode[i], xfer_shift[i]);
++			used_dma = 1;
++		}
++
 +                /* In some cases the DMA mode will cause the driver to 
 +                   update the pio mode to match chip limits. */
 +                   
@@ -1560,7 +1678,118 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	if (ap->ops->post_set_mode)
  		ap->ops->post_set_mode(ap);
  
-@@ -2256,76 +2335,57 @@
+@@ -2200,132 +2310,126 @@
+ }
+ 
+ static const char * const ata_dma_blacklist [] = {
+-	"WDC AC11000H",
+-	"WDC AC22100H",
+-	"WDC AC32500H",
+-	"WDC AC33100H",
+-	"WDC AC31600H",
+-	"WDC AC32100H",
+-	"WDC AC23200L",
+-	"Compaq CRD-8241B",
+-	"CRD-8400B",
+-	"CRD-8480B",
+-	"CRD-8482B",
+- 	"CRD-84",
+-	"SanDisk SDP3B",
+-	"SanDisk SDP3B-64",
+-	"SANYO CD-ROM CRD",
+-	"HITACHI CDR-8",
+-	"HITACHI CDR-8335",
+-	"HITACHI CDR-8435",
+-	"Toshiba CD-ROM XM-6202B",
+-	"TOSHIBA CD-ROM XM-1702BC",
+-	"CD-532E-A",
+-	"E-IDE CD-ROM CR-840",
+-	"CD-ROM Drive/F5A",
+-	"WPI CDD-820",
+-	"SAMSUNG CD-ROM SC-148C",
+-	"SAMSUNG CD-ROM SC",
+-	"SanDisk SDP3B-64",
+-	"ATAPI CD-ROM DRIVE 40X MAXIMUM",
+-	"_NEC DV5800A",
++	"WDC AC11000H", NULL,
++	"WDC AC22100H", NULL,
++	"WDC AC32500H", NULL,
++	"WDC AC33100H", NULL,
++	"WDC AC31600H", NULL,
++	"WDC AC32100H", "24.09P07",
++	"WDC AC23200L", "21.10N21",
++	"Compaq CRD-8241B",  NULL,
++	"CRD-8400B", NULL,
++	"CRD-8480B", NULL,
++	"CRD-8482B", NULL,
++ 	"CRD-84", NULL,
++	"SanDisk SDP3B", NULL,
++	"SanDisk SDP3B-64", NULL,
++	"SANYO CD-ROM CRD", NULL,
++	"HITACHI CDR-8", NULL,
++	"HITACHI CDR-8335", NULL, 
++	"HITACHI CDR-8435", NULL,
++	"Toshiba CD-ROM XM-6202B", NULL, 
++	"TOSHIBA CD-ROM XM-1702BC", NULL, 
++	"CD-532E-A", NULL, 
++	"E-IDE CD-ROM CR-840", NULL, 
++	"CD-ROM Drive/F5A", NULL, 
++	"WPI CDD-820", NULL, 
++	"SAMSUNG CD-ROM SC-148C", NULL,
++	"SAMSUNG CD-ROM SC", NULL, 
++	"SanDisk SDP3B-64", NULL,
++	"ATAPI CD-ROM DRIVE 40X MAXIMUM",NULL,
++	"_NEC DV5800A", NULL,
++	"SAMSUNG CD-ROM SN-124", "N001"
+ };
+ 
+-static int ata_dma_blacklisted(const struct ata_device *dev)
++static int ata_strim(char *s, size_t len)
+ {
+-	unsigned char model_num[40];
+-	char *s;
+-	unsigned int len;
+-	int i;
+-
+-	ata_dev_id_string(dev->id, model_num, ATA_ID_PROD_OFS,
+-			  sizeof(model_num));
+-	s = &model_num[0];
+-	len = strnlen(s, sizeof(model_num));
++	len = strnlen(s, len);
+ 
+ 	/* ATAPI specifies that empty space is blank-filled; remove blanks */
+ 	while ((len > 0) && (s[len - 1] == ' ')) {
+ 		len--;
+ 		s[len] = 0;
+ 	}
++	return len;
++}
+ 
+-	for (i = 0; i < ARRAY_SIZE(ata_dma_blacklist); i++)
+-		if (!strncmp(ata_dma_blacklist[i], s, len))
+-			return 1;
++static int ata_dma_blacklisted(const struct ata_device *dev)
++{
++	unsigned char model_num[40];
++	unsigned char model_rev[16];
++	unsigned int nlen, rlen;
++	int i;
+ 
++	ata_dev_id_string(dev->id, model_num, ATA_ID_PROD_OFS,
++			  sizeof(model_num));
++	ata_dev_id_string(dev->id, model_rev, ATA_ID_FW_REV_OFS,
++			  sizeof(model_rev));
++	nlen = ata_strim(model_num, sizeof(model_num));
++	rlen = ata_strim(model_rev, sizeof(model_rev));
++
++	for (i = 0; i < ARRAY_SIZE(ata_dma_blacklist); i += 2) {
++		if (!strncmp(ata_dma_blacklist[i], model_num, nlen)) {
++			if (ata_dma_blacklist[i+1] == NULL)
++				return 1;
++			if (!strncmp(ata_dma_blacklist[i], model_rev, rlen))
++				return 1;
++		}
++	}
  	return 0;
  }
  
@@ -1614,6 +1843,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			mask = 0;
 +			ata_pr_blacklisted(ap, adev);
  		}
++		/* 40 pin cable enforcement */
++		if (ap->cbl == ATA_CBL_PATA40)
++			mask &= ~ATA_UDMA_MASK_40C;
  	}
  	else if (shift == ATA_SHIFT_MWDMA) {
  		mask = ap->mwdma_mask;
@@ -1658,11 +1890,12 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		}
 -	}
 -	else {
-+	} else if (shift != ATA_SHIFT_PIO) {
- 		mask = 0xffffffff; /* shut up compiler warning */
- 		BUG();
- 	}
- 
+-		mask = 0xffffffff; /* shut up compiler warning */
+-		BUG();
+-	}
+-
++	} else if (shift != ATA_SHIFT_PIO)
++		panic("gmm:bad shift");	/* BUG confuses the compiler */
 +	/*
 +	 *	Allow the controller to see the proposed mode and
 +	 *	device data to do any custom filtering rules.
@@ -1672,7 +1905,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	return mask;
  }
  
-@@ -2345,6 +2405,7 @@
+@@ -2345,6 +2449,7 @@
  /**
   *	ata_choose_xfer_mode - attempt to find best transfer mode
   *	@ap: Port for which an xfer mode will be selected
@@ -1680,7 +1913,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
   *	@xfer_mode_out: (output) SET FEATURES - XFER MODE code
   *	@xfer_shift_out: (output) bit shift that selects this mode
   *
-@@ -2359,6 +2420,7 @@
+@@ -2359,6 +2464,7 @@
   */
  
  static int ata_choose_xfer_mode(const struct ata_port *ap,
@@ -1688,7 +1921,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  				u8 *xfer_mode_out,
  				unsigned int *xfer_shift_out)
  {
-@@ -2367,7 +2429,7 @@
+@@ -2367,7 +2473,7 @@
  
  	for (i = 0; i < ARRAY_SIZE(xfer_mode_classes); i++) {
  		shift = xfer_mode_classes[i].shift;
@@ -1697,22 +1930,41 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  		x = fgb(mask);
  		if (x >= 0) {
-@@ -3010,7 +3072,7 @@
+@@ -3000,6 +3106,7 @@
+ /**
+  *	ata_mmio_data_xfer - Transfer data by MMIO
+  *	@ap: port to read/write
++ *	@adev: device to target
+  *	@buf: data buffer
+  *	@buflen: buffer length
+  *	@write_data: read/write
+@@ -3010,8 +3117,8 @@
   *	Inherited from caller.
   */
  
 -static void ata_mmio_data_xfer(struct ata_port *ap, unsigned char *buf,
-+void ata_mmio_data_xfer(struct ata_port *ap, unsigned char *buf,
- 			       unsigned int buflen, int write_data)
+-			       unsigned int buflen, int write_data)
++void ata_mmio_data_xfer(struct ata_port *ap, struct ata_device *adev,
++			unsigned char *buf, unsigned int buflen, int write_data)
  {
  	unsigned int i;
-@@ -3055,11 +3117,11 @@
+ 	unsigned int words = buflen >> 1;
+@@ -3045,6 +3152,7 @@
+ /**
+  *	ata_pio_data_xfer - Transfer data by PIO
+  *	@ap: port to read/write
++ *	@adev: device to target
+  *	@buf: data buffer
+  *	@buflen: buffer length
+  *	@write_data: read/write
+@@ -3055,11 +3163,11 @@
   *	Inherited from caller.
   */
  
 -static void ata_pio_data_xfer(struct ata_port *ap, unsigned char *buf,
-+void ata_pio_data_xfer(struct ata_port *ap, unsigned char *buf,
- 			      unsigned int buflen, int write_data)
+-			      unsigned int buflen, int write_data)
++void ata_pio_data_xfer(struct ata_port *ap, struct ata_device *adev,
++			unsigned char *buf, unsigned int buflen, int write_data)
  {
  	unsigned int words = buflen >> 1;
 -
@@ -1720,13 +1972,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	/* Transfer multiple of 2 bytes */
  	if (write_data)
  		outsw(ap->ioaddr.data_addr, buf, words);
-@@ -3082,36 +3144,53 @@
+@@ -3082,36 +3190,55 @@
  }
  
  /**
 - *	ata_data_xfer - Transfer data from/to the data register.
 + *	ata_pio_data_xfer_noirq - Transfer data from/to the data register.
   *	@ap: port to read/write
++ *	@adev: device to target
   *	@buf: data buffer
   *	@buflen: buffer length
   *	@do_write: read/write
@@ -1741,8 +1994,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
   */
  
 -static void ata_data_xfer(struct ata_port *ap, unsigned char *buf,
-+void ata_pio_data_xfer_noirq(struct ata_port *ap, unsigned char *buf,
- 			  unsigned int buflen, int do_write)
+-			  unsigned int buflen, int do_write)
++void ata_pio_data_xfer_noirq(struct ata_port *ap, struct ata_device *adev,
++			     unsigned char *buf, unsigned int buflen, int do_write)
  {
  	/* Make the crap hardware pay the costs not the good stuff */
 -	if (unlikely(ap->flags & ATA_FLAG_IRQ_MASK)) {
@@ -1761,13 +2015,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 -	}
 +	unsigned long flags;
 +	local_irq_save(flags);
-+	ata_pio_data_xfer(ap, buf, buflen, do_write);
++	ata_pio_data_xfer(ap, adev, buf, buflen, do_write);
 +	local_irq_restore(flags);
 +}
 +
 +/**
 + *	ata_mmio_data_xfer_noirq - Transfer data from/to the data register.
 + *	@ap: address to read/write
++ *	@adev: device to target
 + *	@buf: data buffer
 + *	@buflen: buffer length
 + *	@do_write: read/write
@@ -1780,45 +2035,45 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *	Inherited from caller.
 + */
 +
-+void ata_mmio_data_xfer_noirq(struct ata_port *ap, unsigned char *buf,
-+			  unsigned int buflen, int do_write)
++void ata_mmio_data_xfer_noirq(struct ata_port *ap, struct ata_device *adev,
++			      unsigned char *buf, unsigned int buflen, int do_write)
 +{
 +	/* Make the crap hardware pay the costs not the good stuff */
 +	unsigned long flags;
 +	local_irq_save(flags);
-+	ata_mmio_data_xfer(ap, buf, buflen, do_write);
++	ata_mmio_data_xfer(ap, adev, buf, buflen, do_write);
 +	local_irq_restore(flags);
  }
  
  /**
-@@ -3157,7 +3236,7 @@
+@@ -3157,7 +3284,7 @@
  
  	/* do the actual data transfer */
  	do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
 -	ata_data_xfer(ap, buf, ATA_SECT_SIZE, do_write);
-+	ap->ops->data_xfer(ap, buf, ATA_SECT_SIZE, do_write);
++	ap->ops->data_xfer(ap, qc->dev, buf, ATA_SECT_SIZE, do_write);
  
  	kunmap(page);
  }
-@@ -3204,7 +3283,7 @@
+@@ -3204,7 +3331,7 @@
  			       ap->id, bytes);
  
  		for (i = 0; i < words; i++)
 -			ata_data_xfer(ap, (unsigned char*)pad_buf, 2, do_write);
-+			ap->ops->data_xfer(ap, (unsigned char*)pad_buf, 2, do_write);
++			ap->ops->data_xfer(ap, qc->dev, (unsigned char*)pad_buf, 2, do_write);
  
  		ap->hsm_task_state = HSM_ST_LAST;
  		return;
-@@ -3239,7 +3318,7 @@
+@@ -3239,7 +3366,7 @@
  	DPRINTK("data %s\n", qc->tf.flags & ATA_TFLAG_WRITE ? "write" : "read");
  
  	/* do the actual data transfer */
 -	ata_data_xfer(ap, buf, count, do_write);
-+	ap->ops->data_xfer(ap, buf, count, do_write);
++	ap->ops->data_xfer(ap, qc->dev, buf, count, do_write);
  
  	kunmap(page);
  
-@@ -3947,14 +4026,15 @@
+@@ -3948,14 +4075,15 @@
  
  void ata_bmdma_irq_clear(struct ata_port *ap)
  {
@@ -1842,22 +2097,22 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  }
  
  
-@@ -4193,12 +4273,12 @@
+@@ -4194,12 +4322,12 @@
  		 */
  		spin_lock_irqsave(&ap->host_set->lock, flags);
  		ap->flags &= ~ATA_FLAG_NOINTR;
 -		ata_data_xfer(ap, qc->cdb, ap->cdb_len, 1);
-+		ap->ops->data_xfer(ap, qc->cdb, ap->cdb_len, 1);
++		ap->ops->data_xfer(ap, qc->dev, qc->cdb, ap->cdb_len, 1);
  		if (qc->tf.protocol == ATA_PROT_ATAPI_DMA)
  			ap->ops->bmdma_start(qc);	/* initiate bmdma */
  		spin_unlock_irqrestore(&ap->host_set->lock, flags);
  	} else {
 -		ata_data_xfer(ap, qc->cdb, ap->cdb_len, 1);
-+		ap->ops->data_xfer(ap, qc->cdb, ap->cdb_len, 1);
++		ap->ops->data_xfer(ap, qc->dev, qc->cdb, ap->cdb_len, 1);
  
  		/* PIO commands are handled by polling */
  		ap->hsm_task_state = HSM_ST;
-@@ -4504,7 +4584,7 @@
+@@ -4505,7 +4633,7 @@
   *	Number of ports registered.  Zero on error (no ports registered).
   */
  
@@ -1866,7 +2121,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  {
  	unsigned int count = 0, i;
  	struct device *dev = ent->dev;
-@@ -4524,6 +4604,9 @@
+@@ -4525,6 +4653,9 @@
  	host_set->mmio_base = ent->mmio_base;
  	host_set->private_data = ent->private_data;
  	host_set->ops = ent->port_ops;
@@ -1876,7 +2131,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	/* register each port bound to this device */
  	for (i = 0; i < ent->n_ports; i++) {
-@@ -4535,6 +4618,14 @@
+@@ -4536,6 +4667,14 @@
  			goto err_out;
  
  		host_set->ports[i] = ap;
@@ -1891,7 +2146,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		xfer_mode_mask =(ap->udma_mask << ATA_SHIFT_UDMA) |
  				(ap->mwdma_mask << ATA_SHIFT_MWDMA) |
  				(ap->pio_mask << ATA_SHIFT_PIO);
-@@ -4551,6 +4642,7 @@
+@@ -4552,6 +4691,7 @@
  	       		ent->irq);
  
  		ata_chk_status(ap);
@@ -1899,7 +2154,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		host_set->ops->irq_clear(ap);
  		count++;
  	}
-@@ -4604,7 +4696,8 @@
+@@ -4605,7 +4745,8 @@
  		ata_scsi_scan_host(ap);
  	}
  
@@ -1909,7 +2164,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	VPRINTK("EXIT, returning %u\n", ent->n_ports);
  	return ent->n_ports; /* success */
-@@ -4778,6 +4871,7 @@
+@@ -4779,6 +4920,7 @@
  {
  	struct ata_probe_ent *probe_ent =
  		ata_probe_ent_alloc(pci_dev_to_dev(pdev), port[0]);
@@ -1917,7 +2172,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	int p = 0;
  
  	if (!probe_ent)
-@@ -4792,7 +4886,13 @@
+@@ -4793,7 +4935,13 @@
  		probe_ent->port[p].altstatus_addr =
  		probe_ent->port[p].ctl_addr =
  			pci_resource_start(pdev, 1) | ATA_PCI_CTL_OFS;
@@ -1932,7 +2187,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		ata_std_ports(&probe_ent->port[p]);
  		p++;
  	}
-@@ -4802,7 +4902,14 @@
+@@ -4803,7 +4951,14 @@
  		probe_ent->port[p].altstatus_addr =
  		probe_ent->port[p].ctl_addr =
  			pci_resource_start(pdev, 3) | ATA_PCI_CTL_OFS;
@@ -1948,7 +2203,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  		ata_std_ports(&probe_ent->port[p]);
  		p++;
  	}
-@@ -4814,6 +4921,7 @@
+@@ -4815,6 +4970,7 @@
  static struct ata_probe_ent *ata_pci_init_legacy_port(struct pci_dev *pdev, struct ata_port_info *port, int port_num)
  {
  	struct ata_probe_ent *probe_ent;
@@ -1956,7 +2211,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	probe_ent = ata_probe_ent_alloc(pci_dev_to_dev(pdev), port);
  	if (!probe_ent)
-@@ -4839,7 +4947,13 @@
+@@ -4840,7 +4996,13 @@
  			probe_ent->port[0].ctl_addr = 0x376;
  			break;
  	}
@@ -1971,7 +2226,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	ata_std_ports(&probe_ent->port[0]);
  	return probe_ent;
  }
-@@ -5080,6 +5194,33 @@
+@@ -5081,6 +5243,33 @@
  	pci_set_master(pdev);
  	return 0;
  }
@@ -2005,7 +2260,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  #endif /* CONFIG_PCI */
  
  
-@@ -5157,6 +5298,10 @@
+@@ -5158,6 +5347,10 @@
  EXPORT_SYMBOL_GPL(ata_bmdma_irq_clear);
  EXPORT_SYMBOL_GPL(ata_bmdma_status);
  EXPORT_SYMBOL_GPL(ata_bmdma_stop);
@@ -2016,7 +2271,15 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  EXPORT_SYMBOL_GPL(ata_port_probe);
  EXPORT_SYMBOL_GPL(sata_phy_reset);
  EXPORT_SYMBOL_GPL(__sata_phy_reset);
-@@ -5186,6 +5331,8 @@
+@@ -5175,6 +5368,7 @@
+ EXPORT_SYMBOL_GPL(ata_dev_config);
+ EXPORT_SYMBOL_GPL(ata_scsi_simulate);
+ 
++EXPORT_SYMBOL_GPL(ata_dev_pair);
+ EXPORT_SYMBOL_GPL(ata_pio_need_iordy);
+ EXPORT_SYMBOL_GPL(ata_timing_compute);
+ EXPORT_SYMBOL_GPL(ata_timing_merge);
+@@ -5187,6 +5381,8 @@
  EXPORT_SYMBOL_GPL(ata_pci_remove_one);
  EXPORT_SYMBOL_GPL(ata_pci_device_suspend);
  EXPORT_SYMBOL_GPL(ata_pci_device_resume);
@@ -2025,10 +2288,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  #endif /* CONFIG_PCI */
  
  EXPORT_SYMBOL_GPL(ata_device_suspend);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/Makefile linux-2.6.16-rc2/drivers/scsi/Makefile
---- linux.vanilla-2.6.16-rc2/drivers/scsi/Makefile	2006-02-06 12:21:35.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/Makefile	2006-02-07 13:49:19.944546720 +0000
-@@ -139,6 +139,39 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/Makefile linux-2.6.16-rc4/drivers/scsi/Makefile
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/Makefile	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/Makefile	2006-02-17 18:20:44.000000000 +0000
+@@ -139,6 +139,42 @@
  obj-$(CONFIG_SCSI_SATA_MV)	+= libata.o sata_mv.o
  obj-$(CONFIG_SCSI_PDC_ADMA)	+= libata.o pdc_adma.o
  
@@ -2050,10 +2313,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +obj-$(CONFIG_SCSI_PATA_IT821X)	+= libata.o pata_it821x.o
 +obj-$(CONFIG_SCSI_PATA_MPIIX)	+= libata.o pata_mpiix.o
 +obj-$(CONFIG_SCSI_PATA_NETCELL)	+= libata.o pata_netcell.o
++obj-$(CONFIG_SCSI_PATA_NS87410)	+= libata.o pata_ns87410.o
 +obj-$(CONFIG_SCSI_PATA_OLDPIIX)	+= libata.o pata_oldpiix.o
 +obj-$(CONFIG_SCSI_PATA_OPTI)	+= libata.o pata_opti.o
 +obj-$(CONFIG_SCSI_PATA_PCMCIA)	+= libata.o pata_pcmcia.o
++obj-$(CONFIG_SCSI_PATA_PDC_OLD)	+= libata.o pata_pdc202xx_old.o
 +obj-$(CONFIG_SCSI_PATA_QDI)	+= libata.o pata_qdi.o
++obj-$(CONFIG_SCSI_PATA_RADISYS)	+= libata.o pata_radisys.o
 +obj-$(CONFIG_SCSI_PATA_RZ1000)	+= libata.o pata_rz1000.o
 +obj-$(CONFIG_SCSI_PATA_SERVERWORKS) += libata.o pata_serverworks.o
 +obj-$(CONFIG_SCSI_PATA_SC1200)	+= libata.o pata_sc1200.o
@@ -2068,10 +2334,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  obj-$(CONFIG_ARM)		+= arm/
  
  obj-$(CONFIG_CHR_DEV_ST)	+= st.o
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_ali.c linux-2.6.16-rc2/drivers/scsi/pata_ali.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_ali.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_ali.c	2006-02-07 13:41:31.570750360 +0000
-@@ -0,0 +1,602 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_ali.c linux-2.6.16-rc4/drivers/scsi/pata_ali.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_ali.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_ali.c	2006-02-20 12:28:04.000000000 +0000
+@@ -0,0 +1,606 @@
 +/*
 + * ata-ali.c 	- ALI 15x3 PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -2110,7 +2376,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "ali"
-+#define DRV_VERSION "0.1.1"
++#define DRV_VERSION "0.2.2"
 +
 +/**
 + *	ali_c2_cable_detect	-	cable detection
@@ -2127,13 +2393,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	   implement the detect logic */
 +	   
 +	/* Fujitsu P2000 */
-+	if(pdev->subsystem_vendor == 0x10CF && pdev->subsystem_device == 0x10AF)
++	if (pdev->subsystem_vendor == 0x10CF && pdev->subsystem_device == 0x10AF)
 +	   	return ATA_CBL_PATA80;
 +	   	
 +	/* Host view cable detect 0x4A bit 0 primary bit 1 secondary
 +	   Bit set for 40 pin */
 +	pci_read_config_byte(pdev, 0x4A, &ata66);
-+	if(ata66 & (1 << ap->hard_port_no))
++	if (ata66 & (1 << ap->hard_port_no))
 +		return ATA_CBL_PATA40;
 +	else
 +		return ATA_CBL_PATA80;
@@ -2192,14 +2458,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +{
 +	char model_num[40];
 +	/* No DMA on CD for now */
-+	if(adev->class != ATA_DEV_ATA && shift != ATA_SHIFT_PIO)
++	if (adev->class != ATA_DEV_ATA && shift != ATA_SHIFT_PIO)
 +		return 0;
 +		
-+	if(shift != ATA_SHIFT_UDMA)
++	if (shift != ATA_SHIFT_UDMA)
 +		return mask;
 +		
 +	ata_dev_id_string(adev->id, model_num, ATA_ID_PROD_OFS, sizeof(model_num));
-+	if(strstr(model_num, "WDC"))
++	if (strstr(model_num, "WDC"))
 +		return 0;
 +	return mask;
 +}
@@ -2226,8 +2492,8 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	   is on. The FIFO must not be used for ATAPI. We preserve
 +	   BIOS set thresholds */	
 +	pci_read_config_byte(pdev, pio_fifo, &fifo);
-+	fifo &= (0x0C << shift);
-+	if(on)
++	fifo &= ~(0x0C << shift);
++	if (on)
 +		fifo |= (0x04 << shift);
 +	pci_write_config_byte(pdev, pio_fifo, fifo);
 +}
@@ -2248,13 +2514,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +static void ali_program_modes(struct ata_port *ap, struct ata_device *adev, u8 cmd, u8 data, u8 ultra)
 +{
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
-+	int cbt = 0x59 + 4 * ap->hard_port_no;
-+	int drwt = 0x5A + 4 * ap->hard_port_no + adev->devno;
-+	int udmat = 0x56 + ap->hard_port_no;
++	int cbt = 0x59 + 4 * ap->hard_port_no;	/* Command timing */
++	int drwt = 0x5A + 4 * ap->hard_port_no + adev->devno; /* R/W timing */
++	int udmat = 0x56 + ap->hard_port_no;	/* UDMA timing */
 +	int shift = 4 * adev->devno;
 +	u8 udma;
 +
-+	if(ultra == 0) {
++	if (ultra == 0) {
++		/* FIXME: We ought to set up pcas not rely on the BIOS */
 +		/* Load the command block timing register */
 +		pci_write_config_byte(pdev, cbt, cmd);
 +	
@@ -2267,7 +2534,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	udma &= ~(0x0F << shift);
 +	udma |= ultra << shift;
 +	pci_write_config_byte(pdev, udmat, udma);
-+	
 +}
 +
 +/**
@@ -2281,7 +2547,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + 
 +static void ali_set_piomode(struct ata_port *ap, struct ata_device *adev)
 +{
-+	struct ata_device *pair = &ap->device[1-adev->devno];
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +	int pio = adev->pio_mode - XFER_PIO_0;
 +	int cmdpio = pio;
 +	
@@ -2289,17 +2555,17 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	static u8 cmd_block_timing[5] = { 0x0A, 0x03, 0x01, 0x33, 0x31 };
 +	static u8 data_block_timing[5] = { 0x88, 0x58, 0x44, 0x33, 0x31 };
 +	
-+	if(adev->class != ATA_DEV_ATA)
++	if (adev->class != ATA_DEV_ATA)
 +		ali_fifo_control(ap, adev, 0);
 +
 +	/* Command timing is shared, so pick the best we can use */
-+	if(ata_dev_present(pair))
++	if (pair)
 +		cmdpio = min(pair->pio_mode, adev->pio_mode) - XFER_PIO_0;
 +		
 +	ali_program_modes(ap, adev, cmd_block_timing[cmdpio], 
 +				    data_block_timing[pio], 0);
 +		
-+	if(adev->class == ATA_DEV_ATA)
++	if (adev->class == ATA_DEV_ATA)
 +		ali_fifo_control(ap, adev, 1);
 +	
 +}
@@ -2316,7 +2582,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +{
 +	static u8 udma_timing[7] = { 0xC, 0xB, 0xA, 0x9, 0x8, 0xF, 0xD };
 +
-+	if(adev->dma_mode >= XFER_UDMA_0) {
++	if (adev->dma_mode >= XFER_UDMA_0) {
 +		ali_program_modes(ap, adev, 0, 0, udma_timing[adev->dma_mode - XFER_UDMA_0]);
 +	} else {
 +		/* MWDMA is not yet supported */
@@ -2338,6 +2604,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + 
 +static void ali_lock_sectors(struct ata_port *ap, struct ata_device *adev)
 +{
++	if(ap->host->max_sectors > 255) {
++		ap->host->max_sectors = 255;
++		ap->host->hostt->max_sectors = 255;
++	}
 +	adev->flags |= ATA_DFLAG_LOCK_SECTORS;
 +}
 +
@@ -2578,7 +2848,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +         * mode data.
 +         */
 +         
-+        if(rev < 0x20) {
++        if (rev < 0x20) {
 +        	port_info[0] = port_info[1] = &info_early;
 +	} else if (rev < 0xC2) {
 +		/* 1543-E/F, 1543C-C, 1543C-D, 1543C-E */
@@ -2596,30 +2866,30 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	} else 
 +        	port_info[0] = port_info[1] = &info_c5;
 +	
-+	if(rev >= 0xC2) {
++	if (rev >= 0xC2) {
 +		/* Enable cable detection logic */
 +		pci_read_config_byte(pdev, 0x4B, &tmp);
 +		pci_write_config_byte(pdev, 0x4B, tmp | 0x08);
 +	}
 +		
-+	north = pci_get_slot(0, PCI_DEVFN(0,0));
++	north = pci_get_slot(pdev->bus, PCI_DEVFN(0,0));
 +	isa_bridge = pci_get_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M1533, NULL);
 +	
-+	if(north && north->vendor == PCI_VENDOR_ID_AL) {
++	if (north && north->vendor == PCI_VENDOR_ID_AL) {
 +		/* Configure the ALi bridge logic. For non ALi rely on BIOS.
 +		   Set the south bridge enable bit */
 +		pci_read_config_byte(isa_bridge, 0x79, &tmp);
-+		if(rev == 0xC2)
++		if (rev == 0xC2)
 +			pci_write_config_byte(isa_bridge, 0x79, tmp | 0x04);
-+		else if(rev > 0xC2)
++		else if (rev > 0xC2)
 +			pci_write_config_byte(isa_bridge, 0x79, tmp | 0x02);
 +	}
 +	
-+	if(rev >= 0x20) {
-+		if(rev < 0xC2) {
++	if (rev >= 0x20) {
++		if (rev < 0xC2) {
 +			/* Are we paired with a UDMA capable chip */
 +			pci_read_config_byte(isa_bridge, 0x5E, &tmp);
-+			if((tmp & 0x1E) == 0x12)
++			if ((tmp & 0x1E) == 0x12)
 +		        	port_info[0] = port_info[1] = &info_20_udma;
 +		}
 +		/*
@@ -2628,7 +2898,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		 * via 0x54/55.
 +		 */
 +		pci_read_config_byte(pdev, 0x53, &tmp);
-+		if(rev == 0x20)
++		if (rev == 0x20)
 +			tmp &= ~0x02;
 +		tmp |= 0x01;
 +		pci_write_config_byte(pdev, 0x53, tmp);
@@ -2674,10 +2944,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(ali_init);
 +module_exit(ali_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_amd.c linux-2.6.16-rc2/drivers/scsi/pata_amd.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_amd.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_amd.c	2006-01-30 15:07:32.000000000 +0000
-@@ -0,0 +1,651 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_amd.c linux-2.6.16-rc4/drivers/scsi/pata_amd.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_amd.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_amd.c	2006-02-16 15:37:39.000000000 +0000
+@@ -0,0 +1,650 @@
 +/*
 + * pata_amd.c 	- AMD PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -2707,7 +2977,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_amd"
-+#define DRV_VERSION "0.1.2"
++#define DRV_VERSION "0.1.3"
 +
 +/**
 + *	timing_setup		-	shared timing computation and load
@@ -2730,8 +3000,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	};
 +
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
-+	/* Should libata have an ata_peer() function */
-+	struct ata_device *peer = &ap->device[1-adev->devno];
++	struct ata_device *peer = ata_dev_pair(ap, adev);
 +	int dn = ap->hard_port_no * 2 + adev->devno;
 +	struct ata_timing at, apeer;
 +	int T, UT;
@@ -2746,9 +3015,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		return;
 +	}
 +
-+	if (ata_dev_present(peer)) {
++	if (peer) {
 +		/* This may be over conservative */
-+		if(peer->dma_mode) {
++		if (peer->dma_mode) {
 +			ata_timing_compute(peer, peer->dma_mode, &apeer, T, UT);
 +			ata_timing_merge(&apeer, &at, &at, ATA_TIMING_8BIT);
 +		}
@@ -3329,9 +3598,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(amd_init);
 +module_exit(amd_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_artop.c linux-2.6.16-rc2/drivers/scsi/pata_artop.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_artop.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_artop.c	2006-02-07 13:41:48.130232936 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_artop.c linux-2.6.16-rc4/drivers/scsi/pata_artop.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_artop.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_artop.c	2006-02-07 13:41:48.000000000 +0000
 @@ -0,0 +1,497 @@
 +/*
 + *    pata_artop.c - ARTOP ATA controller driver
@@ -3830,9 +4099,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +MODULE_DEVICE_TABLE(pci, artop_pci_tbl);
 +MODULE_VERSION(DRV_VERSION);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_atiixp.c linux-2.6.16-rc2/drivers/scsi/pata_atiixp.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_atiixp.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_atiixp.c	2006-02-07 13:42:02.706017080 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_atiixp.c linux-2.6.16-rc4/drivers/scsi/pata_atiixp.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_atiixp.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_atiixp.c	2006-02-07 13:42:02.000000000 +0000
 @@ -0,0 +1,299 @@
 +/*
 + * pata_atiixp.c 	- ATI PATA for new ATA layer
@@ -4133,9 +4402,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(atiixp_init);
 +module_exit(atiixp_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cmd64x.c linux-2.6.16-rc2/drivers/scsi/pata_cmd64x.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cmd64x.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_cmd64x.c	2006-02-07 13:42:18.251653784 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cmd64x.c linux-2.6.16-rc4/drivers/scsi/pata_cmd64x.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cmd64x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_cmd64x.c	2006-02-16 15:34:39.000000000 +0000
 @@ -0,0 +1,486 @@
 +/*
 + * pata_cmd64x.c 	- ATI PATA for new ATA layer
@@ -4172,7 +4441,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_cmd64x"
-+#define DRV_VERSION "0.1"
++#define DRV_VERSION "0.1.1"
 +
 +/*
 + * CMD64x specific registers definition.
@@ -4232,7 +4501,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	/* Check cable detect bits */
 +	pci_read_config_byte(pdev, BMIDECSR, &r);
-+	if(r & (1 << ap->hard_port_no))
++	if (r & (1 << ap->hard_port_no))
 +		ap->cbl = ATA_CBL_PATA80;
 +	else	
 +		ap->cbl = ATA_CBL_PATA40;
@@ -4278,10 +4547,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	}
 +	if (ap->hard_port_no) {
 +		/* Slave has shared address setup */
-+		struct ata_device *pair = &ap->device[adev->devno ^ 1];
-+		struct ata_timing tp;
++		struct ata_device *pair = ata_dev_pair(ap, adev);
 +		
-+		if(ata_dev_present(pair)) {
++		if (pair) {
++			struct ata_timing tp;
 +			ata_timing_compute(pair, pair->pio_mode, &tp, T, 0);
 +			ata_timing_merge(&t, &tp, &t, ATA_TIMING_SETUP);
 +		}
@@ -4564,10 +4833,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	if (pdev->device == PCI_DEVICE_ID_CMD_646) {
 +		/* Does UDMA work ? */
-+		if(class_rev > 4)
++		if (class_rev > 4)
 +			info = &cmd_info[2];
 +		/* Early rev with other problems ? */
-+		else if(class_rev == 1)
++		else if (class_rev == 1)
 +			info = &cmd_info[3];
 +	}
 +
@@ -4623,9 +4892,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(cmd64x_init);
 +module_exit(cmd64x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5520.c linux-2.6.16-rc2/drivers/scsi/pata_cs5520.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5520.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_cs5520.c	2006-02-07 13:42:34.495184392 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5520.c linux-2.6.16-rc4/drivers/scsi/pata_cs5520.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5520.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_cs5520.c	2006-02-20 13:17:11.000000000 +0000
 @@ -0,0 +1,322 @@
 +/*
 + *	IDE tuning and bus mastering support for the CS5510/CS5520
@@ -4670,7 +4939,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME	"cs5520"
-+#define DRV_VERSION	"0.3"
++#define DRV_VERSION	"0.4"
 +
 +struct pio_clocks
 +{
@@ -4747,7 +5016,8 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + 
 +static void cs5520_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 +{
-+	cs5520_set_timings(ap, adev, adev->dma_mode);
++	static const int dma_xlate[3] = { XFER_PIO_0, XFER_PIO_3, XFER_PIO_4 };
++	cs5520_set_timings(ap, adev, dma_xlate[adev->dma_mode]);
 +	cs5520_enable_dma(ap, adev);
 +}
 +
@@ -4766,7 +5036,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +{
 +	cs5520_set_timings(ap, adev, adev->pio_mode);
 +}
-+
 +
 +static struct scsi_host_template cs5520_sht = {
 +	.module			= THIS_MODULE,
@@ -4826,25 +5095,25 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_read_config_byte(dev, 0x60, &pcicfg);
 +	
 +	/* Check if the ATA ports are enabled */
-+	if((pcicfg & 3) == 0)
++	if ((pcicfg & 3) == 0)
 +		return -ENODEV;
 +		
-+	if((pcicfg & 0x40) == 0) {
++	if ((pcicfg & 0x40) == 0) {
 +		printk(KERN_WARNING DRV_NAME ": DMA mode disabled. Enabling.\n");
 +		pci_write_config_byte(dev, 0x60, pcicfg | 0x40);
 +	}
 +		
 +	/* Perform set up for DMA */
-+	if(pci_enable_device_bars(dev, 1<<2)) {
++	if (pci_enable_device_bars(dev, 1<<2)) {
 +		printk(KERN_ERR DRV_NAME ": unable to configure BAR2.\n");
 +		return -ENODEV;
 +	}
 +	pci_set_master(dev);
-+	if(pci_set_dma_mask(dev, DMA_32BIT_MASK)) {
++	if (pci_set_dma_mask(dev, DMA_32BIT_MASK)) {
 +		printk(KERN_ERR DRV_NAME ": unable to configure DMA mask.\n");
 +		return -ENODEV;
 +	}
-+	if(pci_set_consistent_dma_mask(dev, DMA_32BIT_MASK)) {
++	if (pci_set_consistent_dma_mask(dev, DMA_32BIT_MASK)) {
 +		printk(KERN_ERR DRV_NAME ": unable to configure consistent DMA mask.\n");
 +		return -ENODEV;
 +	}
@@ -4885,11 +5154,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	ata_std_ports(&probe[1].port[0]);
 +	
 +	/* Now add the ports that are active */
-+	if(pcicfg & 1)
++	if (pcicfg & 1)
 +		ports += ata_device_add(&probe[0]);
-+	if(pcicfg & 2)
++	if (pcicfg & 2)
 +		ports += ata_device_add(&probe[1]);
-+	if(ports)
++	if (ports)
 +		return 0;
 +	return -ENODEV;
 +}
@@ -4949,10 +5218,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +module_init(cs5520_init);
 +module_exit(cs5520_exit);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5530.c linux-2.6.16-rc2/drivers/scsi/pata_cs5530.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5530.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_cs5530.c	2006-02-07 13:42:42.392983744 +0000
-@@ -0,0 +1,313 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5530.c linux-2.6.16-rc4/drivers/scsi/pata_cs5530.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5530.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_cs5530.c	2006-02-21 16:44:52.000000000 +0000
+@@ -0,0 +1,371 @@
 +/*
 + * pata-cs5530.c 	- CS5530 PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -4987,9 +5256,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/delay.h>
 +#include <scsi/scsi_host.h>
 +#include <linux/libata.h>
++#include <linux/dmi.h>
 +
 +#define DRV_NAME	"cs5530"
-+#define DRV_VERSION	"0.2"
++#define DRV_VERSION	"0.4"
 +
 +/**
 + *	cs5530_set_piomode		-	PIO setup
@@ -5015,7 +5285,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	format = (tuning & 0x80000000UL) ? 1 : 0;
 +	
 +	/* Now load the right timing register */
-+	if(adev->devno)
++	if (adev->devno)
 +		base += 0x08;
 +	
 +	outl(cs5530_pio_timings[format][adev->pio_mode - XFER_PIO_0], base);
@@ -5027,11 +5297,8 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *	@adev: Device being configured
 + *
 + *	We cannot mix MWDMA and UDMA without reloading timings each switch
-+ *	master to slave. We should implement the switch but for now we follow
-+ *	the old IDE driver and just avoid setting such combinations.
-+ *
-+ *	This will come up once the SATA core grows up and develops proper
-+ *	timing code.
++ *	master to slave. We track the last DMA setup in order to minimise
++ *	reloads.
 + */
 + 
 +static void cs5530_set_dmamode(struct ata_port *ap, struct ata_device *adev)
@@ -5061,10 +5328,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	}
 +	/* Merge in the PIO format bit */
 +	timing |= (tuning & 0x80000000UL);
-+	if(adev->devno == 0) /* Master */
++	if (adev->devno == 0) /* Master */
 +		outl(timing, base + 0x04);
 +	else {
-+		if(timing & 0x00100000)
++		if (timing & 0x00100000)
 +			tuning |= 0x00100000;	/* UDMA for both */
 +		else
 +			tuning &= ~0x00100000;	/* MWDMA for both */
@@ -5076,6 +5343,38 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	reg = inb(ap->ioaddr.bmdma_addr + ATA_DMA_STATUS);
 +	reg |= (1 << (5 + adev->devno));
 +	outb(reg, ap->ioaddr.bmdma_addr + ATA_DMA_STATUS);
++	
++	/* Remember the last DMA setup we did */
++	
++	ap->private_data = adev;
++}
++
++/**
++ *	cs5530_qc_issue_prot	-	command issue
++ *	@qc: command pending
++ *
++ *	Called when the libata layer is about to issue a command. We wrap
++ *	this interface so that we can load the correct ATA timings if
++ *	neccessary.  Specifically we have a problem that there is only
++ *	one MWDMA/UDMA bit.
++ */
++
++static int cs5530_qc_issue_prot(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++	struct ata_device *prev = ap->private_data;
++
++	/* See if the DMA settings could be wrong */
++	if (adev->dma_mode != 0 && adev != prev && prev != NULL) {
++		/* Maybe, but do the channels match MWDMA/UDMA ? */
++		if ((adev->dma_mode >= XFER_UDMA_0 && prev->dma_mode < XFER_UDMA_0) ||
++		    (adev->dma_mode < XFER_UDMA_0 && prev->dma_mode >= XFER_UDMA_0))
++		    	/* Switch the mode bits */
++		    	cs5530_set_dmamode(ap, adev);
++	}
++
++	return ata_qc_issue_prot(qc);
 +}
 +
 +static struct scsi_host_template cs5530_sht = {
@@ -5099,8 +5398,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +};
 +
 +static struct ata_port_operations cs5530_port_ops = {
-+/*	.set_mode	= cs5530_set_mode,  FIXME - for master/slave */
-+	
 +	.port_disable	= ata_port_disable,
 +	.set_piomode	= cs5530_set_piomode,
 +	.set_dmamode	= cs5530_set_dmamode,
@@ -5117,7 +5414,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	.bmdma_status 	= ata_bmdma_status,
 +
 +	.qc_prep 	= ata_qc_prep,
-+	.qc_issue	= ata_qc_issue_prot,
++	.qc_issue	= cs5530_qc_issue_prot,
 +	.eng_timeout	= ata_eng_timeout,
 +	.data_xfer	= ata_pio_data_xfer,
 +
@@ -5128,6 +5425,26 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	.port_stop	= ata_port_stop,
 +	.host_stop	= ata_host_stop
 +};	
++
++static struct dmi_system_id __initdata palmax_dmi_table[] = {
++	{
++		.ident = "Palmax PD1100",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Cyrix"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Caddis"),
++		},
++	},
++	{ }
++};
++
++static int cs5530_is_palmax(void)
++{
++	if (dmi_check_system(palmax_dmi_table)) {
++		printk(KERN_INFO "Palmax PD1100: Disabling DMA on docking port.\n");
++		return 1;
++	}
++	return 0;
++}
 +
 +/**
 + *	cs5530_init_one		-	Initialise a CS5530
@@ -5149,6 +5466,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		.pio_mask = 0x1f,
 +		.mwdma_mask = 0x07,
 +		.udma_mask = 0x07,
++		.port_ops = &cs5530_port_ops
++	};
++	/* The docking connector doesn't do UDMA, and it seems not MWDMA */
++	static struct ata_port_info info_palmax_secondary = {
++		.sht = &cs5530_sht,
++		.host_flags = ATA_FLAG_SLAVE_POSS,
++		.pio_mask = 0x1f,
 +		.port_ops = &cs5530_port_ops
 +	};
 +	static struct ata_port_info *port_info[2] = { &info, &info };
@@ -5223,13 +5547,16 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_dev_put(master_0);
 +	pci_dev_put(cs5530_0);
 +
++	if (cs5530_is_palmax())
++		port_info[1] = &info_palmax_secondary;
++
 +	/* Now kick off ATA set up */
 +	return ata_pci_init_one(dev, port_info, 2);
 +	
 +fail_put:
-+	if(master_0)
++	if (master_0)
 +		pci_dev_put(master_0);
-+	if(cs5530_0)
++	if (cs5530_0)
 +		pci_dev_put(cs5530_0);
 +	return -ENODEV;
 +}
@@ -5266,10 +5593,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(cs5530_init);
 +module_exit(cs5530_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5535.c linux-2.6.16-rc2/drivers/scsi/pata_cs5535.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cs5535.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_cs5535.c	2006-02-07 13:42:50.000000000 +0000
-@@ -0,0 +1,294 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5535.c linux-2.6.16-rc4/drivers/scsi/pata_cs5535.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cs5535.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_cs5535.c	2006-02-16 15:37:21.000000000 +0000
+@@ -0,0 +1,286 @@
 +/*
 + * pata-cs5535.c 	- CS5535 PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -5311,7 +5638,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <asm/msr.h>
 +
 +#define DRV_NAME	"cs5535"
-+#define DRV_VERSION	"0.1"
++#define DRV_VERSION	"0.2.1"
 +
 +/*
 + *	The Geode (Aka Athlon GX now) uses an internal MSR based
@@ -5355,7 +5682,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +
 +	pci_read_config_byte(pdev, CS5535_CABLE_DETECT, &cable);
-+	if(cable & 1)
++	if (cable & 1)
 +		return ATA_CBL_PATA80;
 +	else
 +		return ATA_CBL_PATA40;
@@ -5392,26 +5719,24 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		0xF7F4, 0x53F3, 0x13F1, 0x5131, 0x1131
 +	};
 +	u32 reg, dummy;
-+	struct ata_device *pair = &ap->device[1 - adev->devno];
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +
 +	int mode = adev->pio_mode - XFER_PIO_0;
-+	int pairmode = pair->pio_mode - XFER_PIO_0;
 +	int cmdmode = mode;
 +	
 +	/* Command timing has to be for the lowest of the pair of devices */
-+	if(pair->class != ATA_DEV_NONE && pair->pio_mode)
++	if (pair) {
++		int pairmode = pair->pio_mode - XFER_PIO_0;
 +		cmdmode = min(mode, pairmode);
-+	
++		/* Write the other drive timing register if it changed */
++		if (cmdmode < pairmode)
++			wrmsr(ATAC_CH0D0_PIO + 2 * pair->devno, 
++				pio_cmd_timings[cmdmode] << 16 | pio_timings[pairmode], 0);
++	}
 +	/* Write the drive timing register */
 +	wrmsr(ATAC_CH0D0_PIO + 2 * adev->devno, 
 +		pio_cmd_timings[cmdmode] << 16 | pio_timings[mode], 0);
 +
-+	/* Write the other drive timing register if it changed */
-+	
-+	if(cmdmode < pairmode)
-+		wrmsr(ATAC_CH0D0_PIO + 2 * pair->devno, 
-+			pio_cmd_timings[cmdmode] << 16 | pio_timings[pairmode], 0);
-+		
 +	/* Set the PIO "format 1" bit in the DMA timing register */
 +	rdmsr(ATAC_CH0D0_DMA + 2 * adev->devno, reg, dummy);
 +	wrmsr(ATAC_CH0D0_DMA + 2 * adev->devno, reg | 0x80000000UL, 0);
@@ -5422,12 +5747,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *	@ap: ATA interface
 + *	@adev: Device being configured
 + *
-+ *	We cannot mix MWDMA and UDMA without reloading timings each switch
-+ *	master to slave. We should implement the switch but for now we follow
-+ *	the old IDE driver and just avoid setting such combinations.
-+ *
-+ *	This will come up once the SATA core grows up and develops proper
-+ *	timing code.
 + */
 + 
 +static void cs5535_set_dmamode(struct ata_port *ap, struct ata_device *adev)
@@ -5439,7 +5758,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	rdmsr(ATAC_CH0D0_DMA + 2 * adev->devno, reg, dummy);
 +	reg &= 0x80000000UL;
-+	if(mode >= XFER_UDMA_0)
++	if (mode >= XFER_UDMA_0)
 +		reg |= udma_timings[mode - XFER_UDMA_0];
 +	else
 +		reg |= mwdma_timings[mode - XFER_MW_DMA_0];
@@ -5524,10 +5843,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Check the BIOS set the initial timing clock. If not set the
 +	   timings for PIO0 */
 +	rdmsr(ATAC_CH0D0_PIO, timings, dummy);
-+	if(CS5535_BAD_PIO(timings))
++	if (CS5535_BAD_PIO(timings))
 +		wrmsr(ATAC_CH0D0_PIO, 0xF7F4F7F4UL, 0);
 +	rdmsr(ATAC_CH0D1_PIO, timings, dummy);
-+	if(CS5535_BAD_PIO(timings))
++	if (CS5535_BAD_PIO(timings))
 +		wrmsr(ATAC_CH0D1_PIO, 0xF7F4F7F4UL, 0);
 +	return ata_pci_init_one(dev, ports, 1);
 +}
@@ -5564,9 +5883,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(cs5535_init);
 +module_exit(cs5535_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cypress.c linux-2.6.16-rc2/drivers/scsi/pata_cypress.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_cypress.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_cypress.c	2006-02-07 13:43:01.234119456 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cypress.c linux-2.6.16-rc4/drivers/scsi/pata_cypress.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_cypress.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_cypress.c	2006-02-16 15:37:46.000000000 +0000
 @@ -0,0 +1,215 @@
 +/*
 + */
@@ -5637,7 +5956,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	time_16 = FIT(t.recover, 0, 15) | (FIT(t.active, 0, 15) << 4);
 +	time_8 = FIT(t.act8b, 0, 15) | (FIT(t.rec8b, 0, 15) << 4);
 +	
-+	if(adev->devno == 0) {
++	if (adev->devno == 0) {
 +		pci_read_config_dword(pdev, CY82_IDE_ADDRSETUP, &addr);
 +		
 +		addr &= ~0x0F;	/* Mask bits */
@@ -5745,7 +6064,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Devfn 1 is the ATA primary. The secondary is magic and on devfn2. For the
 +	   moment we don't handle the secondary. FIXME */
 +	   
-+	if(PCI_FUNC(pdev->devfn) != 1)
++	if (PCI_FUNC(pdev->devfn) != 1)
 +		return -ENODEV;
 +	
 +	return ata_pci_init_one(pdev, port_info, 1);
@@ -5783,9 +6102,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(cy82c693_init);
 +module_exit(cy82c693_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_efar.c linux-2.6.16-rc2/drivers/scsi/pata_efar.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_efar.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_efar.c	2006-02-07 13:41:17.978816648 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_efar.c linux-2.6.16-rc4/drivers/scsi/pata_efar.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_efar.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_efar.c	2006-02-16 15:37:53.000000000 +0000
 @@ -0,0 +1,341 @@
 +/*
 + *    pata_efar.c - EFAR PIIX clone controller driver
@@ -5901,7 +6220,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	/* Enable PPE, IE and TIME as appropriate */
 +	
-+	if(adev->devno == 0) {
++	if (adev->devno == 0) {
 +		idetm_data &= 0xCCF0;
 +		idetm_data |= control;
 +		idetm_data |= (timings[pio][0] << 12) |
@@ -6128,9 +6447,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +MODULE_DEVICE_TABLE(pci, efar_pci_tbl);
 +MODULE_VERSION(DRV_VERSION);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt34x.c linux-2.6.16-rc2/drivers/scsi/pata_hpt34x.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt34x.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_hpt34x.c	2006-02-07 13:40:32.684702400 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt34x.c linux-2.6.16-rc4/drivers/scsi/pata_hpt34x.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt34x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_hpt34x.c	2006-02-16 15:38:47.000000000 +0000
 @@ -0,0 +1,206 @@
 +#include <linux/kernel.h>
 +#include <linux/module.h>
@@ -6209,7 +6528,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	r1 |= (mode_num << (3 * dn));
 +	r2 &= ~(0x11 << dn);	/* Clear MWDMA and UDMA bits */
 +	
-+	if(adev->dma_mode >= XFER_UDMA_0)
++	if (adev->dma_mode >= XFER_UDMA_0)
 +		r2 |= 0x01 << dn;	/* Ultra mode */
 +	else
 +		r2 |= 0x10 << dn;	/* MWDMA */
@@ -6297,7 +6616,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_write_config_word(dev, 0x80, 0x00);
 +	/* Check if it is a 343 or a 363. 363 has COMMAND_MEMORY set */
 +	pci_read_config_word(dev, PCI_COMMAND, &cmd);
-+	if(cmd & PCI_COMMAND_MEMORY)
++	if (cmd & PCI_COMMAND_MEMORY)
 +		pci_write_config_byte(dev, PCI_LATENCY_TIMER, 0xF0);
 +	else
 +		pci_write_config_byte(dev, PCI_LATENCY_TIMER, 0x20);
@@ -6338,10 +6657,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(hpt34x_init);
 +module_exit(hpt34x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt366.c linux-2.6.16-rc2/drivers/scsi/pata_hpt366.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt366.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_hpt366.c	2006-02-07 13:40:40.000000000 +0000
-@@ -0,0 +1,392 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt366.c linux-2.6.16-rc4/drivers/scsi/pata_hpt366.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt366.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_hpt366.c	2006-02-16 15:45:36.000000000 +0000
+@@ -0,0 +1,479 @@
 +/*
 + * Libata driver for the highpoint 366 and 368 UDMA66 ATA controllers.
 + *
@@ -6355,8 +6674,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *
 + *
 + * TODO
-+ *	Filters if neccessary
-+ *	PLL mode
++ *	Maybe PLL mode
 + *	Look into engine reset on timeout errors. Should not be
 + *		required.
 + */
@@ -6372,7 +6690,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME	"hpt36x"
-+#define DRV_VERSION	"0.1"
++#define DRV_VERSION	"0.2"
 +
 +struct hpt_clock {
 +	u8	xfer_speed;
@@ -6459,6 +6777,93 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	{	0,		0x01208585	}
 +};
 +
++static const char *bad_ata33[] = {
++	"Maxtor 92720U8", "Maxtor 92040U6", "Maxtor 91360U4", "Maxtor 91020U3", "Maxtor 90845U3", "Maxtor 90650U2",
++	"Maxtor 91360D8", "Maxtor 91190D7", "Maxtor 91020D6", "Maxtor 90845D5", "Maxtor 90680D4", "Maxtor 90510D3", "Maxtor 90340D2",
++	"Maxtor 91152D8", "Maxtor 91008D7", "Maxtor 90845D6", "Maxtor 90840D6", "Maxtor 90720D5", "Maxtor 90648D5", "Maxtor 90576D4",
++	"Maxtor 90510D4",
++	"Maxtor 90432D3", "Maxtor 90288D2", "Maxtor 90256D2",
++	"Maxtor 91000D8", "Maxtor 90910D8", "Maxtor 90875D7", "Maxtor 90840D7", "Maxtor 90750D6", "Maxtor 90625D5", "Maxtor 90500D4",
++	"Maxtor 91728D8", "Maxtor 91512D7", "Maxtor 91303D6", "Maxtor 91080D5", "Maxtor 90845D4", "Maxtor 90680D4", "Maxtor 90648D3", "Maxtor 90432D2",
++	NULL
++};
++
++static const char *bad_ata66_4[] = {
++	"IBM-DTLA-307075",
++	"IBM-DTLA-307060",
++	"IBM-DTLA-307045",
++	"IBM-DTLA-307030",
++	"IBM-DTLA-307020",
++	"IBM-DTLA-307015",
++	"IBM-DTLA-305040",
++	"IBM-DTLA-305030",
++	"IBM-DTLA-305020",
++	"IC35L010AVER07-0",
++	"IC35L020AVER07-0",
++	"IC35L030AVER07-0",
++	"IC35L040AVER07-0",
++	"IC35L060AVER07-0",
++	"WDC AC310200R",
++	NULL
++};
++
++static const char *bad_ata66_3[] = {
++	"WDC AC310200R",
++	NULL
++};
++
++static int hpt_dma_blacklisted(const struct ata_device *dev, char *modestr, const char *list[])
++{
++	unsigned char model_num[40];
++	char *s;
++	unsigned int len;
++	int i = 0;
++
++	ata_dev_id_string(dev->id, model_num, ATA_ID_PROD_OFS,
++			  sizeof(model_num));
++	s = &model_num[0];
++	len = strnlen(s, sizeof(model_num));
++
++	/* ATAPI specifies that empty space is blank-filled; remove blanks */
++	while ((len > 0) && (s[len - 1] == ' ')) {
++		len--;
++		s[len] = 0;
++	}
++
++	while(list[i] != NULL) {
++		if (!strncmp(list[i], s, len)) {
++			printk(KERN_WARNING DRV_NAME ": %s is not supported for %s.\n", 
++				modestr, list[i]);
++			return 1;
++		}
++		i++;
++	}
++	return 0;
++}
++
++/**
++ *	hpt366_filter	-	mode selection filter
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Block UDMA on devices that cause trouble with this controller.
++ */
++ 
++static unsigned int hpt366_filter(const struct ata_port *ap, struct ata_device *adev, unsigned int mask, int shift)
++{
++	if (shift != ATA_SHIFT_UDMA)
++		return mask;
++	if (adev->class != ATA_DEV_ATA)
++		return mask;
++	if (hpt_dma_blacklisted(adev, "UDMA",  bad_ata33))
++		return 0;
++	if (hpt_dma_blacklisted(adev, "UDMA3", bad_ata66_3))
++		return mask & 0x07;
++	if (hpt_dma_blacklisted(adev, "UDMA4", bad_ata66_4))
++		return mask & 0x0F;
++	return mask;
++}
++
 +/**
 + *	hpt36x_find_mode	-	reset the hpt36x bus
 + *	@ap: ATA port
@@ -6473,7 +6878,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct hpt_clock *clocks = ap->host_set->private_data;
 +	
 +	while(clocks->xfer_speed) {
-+		if(clocks->xfer_speed == speed)
++		if (clocks->xfer_speed == speed)
 +			return clocks->timing;
 +		clocks++;
 +	}
@@ -6493,7 +6898,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +	
 +	pci_read_config_byte(pdev, 0x5A, &ata66);
-+	if(ata66 & (1 << ap->hard_port_no))
++	if (ata66 & (1 << ap->hard_port_no))
 +		ap->cbl = ATA_CBL_PATA40;
 +	else
 +		ap->cbl = ATA_CBL_PATA80;
@@ -6523,7 +6928,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	/* Fast interrupt prediction disable, hold off interrupt disable */
 +	pci_read_config_byte(pdev, addr2, &fast);
-+	if(fast & 0x80) {
++	if (fast & 0x80) {
 +		fast &= ~0x80;
 +		pci_write_config_byte(pdev, addr2, fast);
 +	}
@@ -6558,7 +6963,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	/* Fast interrupt prediction disable, hold off interrupt disable */
 +	pci_read_config_byte(pdev, addr2, &fast);
-+	if(fast & 0x80) {
++	if (fast & 0x80) {
 +		fast &= ~0x80;
 +		pci_write_config_byte(pdev, addr2, fast);
 +	}
@@ -6599,6 +7004,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	.port_disable	= ata_port_disable,
 +	.set_piomode	= hpt366_set_piomode,
 +	.set_dmamode	= hpt366_set_dmamode,
++	.mode_filter	= hpt366_filter,
 +	
 +	.tf_load	= ata_tf_load,
 +	.tf_read	= ata_tf_read,
@@ -6671,7 +7077,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	/* May be a later chip in disguise. Check */
 +	/* Newer chips are in the HPT36x driver. Ignore them */
-+	if(class_rev > 2)
++	if (class_rev > 2)
 +			return -ENODEV;
 +
 +	pci_write_config_byte(dev, PCI_CACHE_LINE_SIZE, (L1_CACHE_BYTES / 4));
@@ -6734,10 +7140,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(hpt36x_init);
 +module_exit(hpt36x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt37x.c linux-2.6.16-rc2/drivers/scsi/pata_hpt37x.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt37x.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_hpt37x.c	2006-02-07 13:40:49.417158680 +0000
-@@ -0,0 +1,1089 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt37x.c linux-2.6.16-rc4/drivers/scsi/pata_hpt37x.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt37x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_hpt37x.c	2006-02-16 15:45:27.000000000 +0000
+@@ -0,0 +1,1232 @@
 +/*
 + * Libata driver for the highpoint 37x and 30x UDMA66 ATA controllers.
 + *
@@ -6750,9 +7156,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + * Portions Copyright (C) 2003		Red Hat Inc
 + *
 + * TODO
-+ *	Filters if neccessary
 + *	PLL mode
-+ *	Investigate if we need DPLL switching on the 370
 + *	Look into engine reset on timeout errors. Should not be
 + *		required.
 + */
@@ -6767,7 +7171,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME	"hpt37x"
-+#define DRV_VERSION	"0.1.2"
++#define DRV_VERSION	"0.2"
 +
 +struct hpt_clock {
 +	u8	xfer_speed;
@@ -7081,11 +7485,110 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct hpt_clock *clocks = ap->host_set->private_data;
 +	
 +	while(clocks->xfer_speed) {
-+		if(clocks->xfer_speed == speed)
++		if (clocks->xfer_speed == speed)
 +			return clocks->timing;
 +		clocks++;
 +	}
 +	BUG();
++}
++
++static int hpt_dma_blacklisted(const struct ata_device *dev, char *modestr, const char *list[])
++{
++	unsigned char model_num[40];
++	char *s;
++	unsigned int len;
++	int i = 0;
++
++	ata_dev_id_string(dev->id, model_num, ATA_ID_PROD_OFS,
++			  sizeof(model_num));
++	s = &model_num[0];
++	len = strnlen(s, sizeof(model_num));
++
++	/* ATAPI specifies that empty space is blank-filled; remove blanks */
++	while ((len > 0) && (s[len - 1] == ' ')) {
++		len--;
++		s[len] = 0;
++	}
++
++	while(list[i] != NULL) {
++		if (!strncmp(list[i], s, len)) {
++			printk(KERN_WARNING DRV_NAME ": %s is not supported for %s.\n", 
++				modestr, list[i]);
++			return 1;
++		}
++		i++;
++	}
++	return 0;
++}
++
++static const char *bad_ata33[] = {
++	"Maxtor 92720U8", "Maxtor 92040U6", "Maxtor 91360U4", "Maxtor 91020U3", "Maxtor 90845U3", "Maxtor 90650U2",
++	"Maxtor 91360D8", "Maxtor 91190D7", "Maxtor 91020D6", "Maxtor 90845D5", "Maxtor 90680D4", "Maxtor 90510D3", "Maxtor 90340D2",
++	"Maxtor 91152D8", "Maxtor 91008D7", "Maxtor 90845D6", "Maxtor 90840D6", "Maxtor 90720D5", "Maxtor 90648D5", "Maxtor 90576D4",
++	"Maxtor 90510D4",
++	"Maxtor 90432D3", "Maxtor 90288D2", "Maxtor 90256D2",
++	"Maxtor 91000D8", "Maxtor 90910D8", "Maxtor 90875D7", "Maxtor 90840D7", "Maxtor 90750D6", "Maxtor 90625D5", "Maxtor 90500D4",
++	"Maxtor 91728D8", "Maxtor 91512D7", "Maxtor 91303D6", "Maxtor 91080D5", "Maxtor 90845D4", "Maxtor 90680D4", "Maxtor 90648D3", "Maxtor 90432D2",
++	NULL
++};
++
++static const char *bad_ata100_5[] = {
++	"IBM-DTLA-307075",
++	"IBM-DTLA-307060",
++	"IBM-DTLA-307045",
++	"IBM-DTLA-307030",
++	"IBM-DTLA-307020",
++	"IBM-DTLA-307015",
++	"IBM-DTLA-305040",
++	"IBM-DTLA-305030",
++	"IBM-DTLA-305020",
++	"IC35L010AVER07-0",
++	"IC35L020AVER07-0",
++	"IC35L030AVER07-0",
++	"IC35L040AVER07-0",
++	"IC35L060AVER07-0",
++	"WDC AC310200R",
++	NULL
++};
++
++/**
++ *	hpt370_filter	-	mode selection filter
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Block UDMA on devices that cause trouble with this controller.
++ */
++ 
++static unsigned int hpt370_filter(const struct ata_port *ap, struct ata_device *adev, unsigned int mask, int shift)
++{
++	if (shift != ATA_SHIFT_UDMA)
++		return mask;
++	if (adev->class != ATA_DEV_ATA)
++		return mask;
++	if (hpt_dma_blacklisted(adev, "UDMA", bad_ata33))
++		return mask & 0x1F;
++	if (hpt_dma_blacklisted(adev, "UDMA100", bad_ata100_5))
++		return mask & 0x1F;
++	return mask;
++}
++
++/**
++ *	hpt370a_filter	-	mode selection filter
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Block UDMA on devices that cause trouble with this controller.
++ */
++ 
++static unsigned int hpt370a_filter(const struct ata_port *ap, struct ata_device *adev, unsigned int mask, int shift)
++{
++	if (shift != ATA_SHIFT_UDMA)
++		return mask;
++	if (adev->class != ATA_DEV_ATA)
++		return mask;
++	if (hpt_dma_blacklisted(adev, "UDMA100", bad_ata100_5))
++		return mask & 0x1F;
++	return mask;
 +}
 +	
 +/**
@@ -7107,7 +7610,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Restore state */
 +	pci_write_config_byte(pdev, 0x5B, scr2);
 +	
-+	if(ata66 & (1 << ap->hard_port_no))
++	if (ata66 & (1 << ap->hard_port_no))
 +		ap->cbl = ATA_CBL_PATA40;
 +	else
 +		ap->cbl = ATA_CBL_PATA80;
@@ -7138,7 +7641,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +	
-+	if(!(PCI_FUNC(pdev->devfn) & 1)) {
++	if (!(PCI_FUNC(pdev->devfn) & 1)) {
 +		hpt37x_phy_reset(ap);
 +		return;
 +	}
@@ -7155,7 +7658,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_write_config_word(pdev, 0x52, mcr3);
 +	pci_write_config_word(pdev, 0x56, mcr6);
 +	
-+	if(ata66 & (1 << ap->hard_port_no))
++	if (ata66 & (1 << ap->hard_port_no))
 +		ap->cbl = ATA_CBL_PATA40;
 +	else
 +		ap->cbl = ATA_CBL_PATA80;
@@ -7269,11 +7772,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 dma_cmd;
 +	unsigned long bmdma = ap->ioaddr.bmdma_addr;
 +	
-+	if(dma_stat & 0x01) {
++	if (dma_stat & 0x01) {
 +		udelay(20);
 +		dma_stat = inb(bmdma + 2);
 +	}
-+	if(dma_stat & 0x01) {
++	if (dma_stat & 0x01) {
 +		/* Clear the engine */
 +		pci_write_config_byte(pdev, 0x50 + 4 * ap->hard_port_no, 0x37);
 +		udelay(10);
@@ -7374,7 +7877,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_byte(pdev, 0x6A, &bwsr_stat);
 +	pci_read_config_byte(pdev, mscreg, &msc_stat);
-+	if(bwsr_stat & (1 << ap->hard_port_no))
++	if (bwsr_stat & (1 << ap->hard_port_no))
 +		pci_write_config_byte(pdev, mscreg, msc_stat | 0x30);
 +	ata_bmdma_stop(qc);
 +}
@@ -7401,13 +7904,50 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +};
 +
 +/*
-+ *	Configuration for HPT370, HPT370A
++ *	Configuration for HPT370
 + */
 + 
 +static struct ata_port_operations hpt370_port_ops = {
 +	.port_disable	= ata_port_disable,
 +	.set_piomode	= hpt370_set_piomode,
 +	.set_dmamode	= hpt370_set_dmamode,
++	.mode_filter	= hpt370_filter,
++	
++	.tf_load	= ata_tf_load,
++	.tf_read	= ata_tf_read,
++	.check_status 	= ata_check_status,
++	.exec_command	= ata_exec_command,
++	.dev_select 	= ata_std_dev_select,
++
++	.phy_reset	= hpt37x_phy_reset,
++
++	.bmdma_setup 	= ata_bmdma_setup,
++	.bmdma_start 	= hpt370_bmdma_start,
++	.bmdma_stop	= hpt370_bmdma_stop,
++	.bmdma_status 	= ata_bmdma_status,
++
++	.qc_prep 	= ata_qc_prep,
++	.qc_issue	= ata_qc_issue_prot,
++	.eng_timeout	= ata_eng_timeout,
++	.data_xfer	= ata_pio_data_xfer,
++
++	.irq_handler	= ata_interrupt,
++	.irq_clear	= ata_bmdma_irq_clear,
++
++	.port_start	= ata_port_start,
++	.port_stop	= ata_port_stop,
++	.host_stop	= ata_host_stop
++};	
++
++/*
++ *	Configuration for HPT370A. Close to 370 but less filters
++ */
++ 
++static struct ata_port_operations hpt370a_port_ops = {
++	.port_disable	= ata_port_disable,
++	.set_piomode	= hpt370_set_piomode,
++	.set_dmamode	= hpt370_set_dmamode,
++	.mode_filter	= hpt370a_filter,
 +	
 +	.tf_load	= ata_tf_load,
 +	.tf_read	= ata_tf_read,
@@ -7517,11 +8057,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +static int hpt37x_clock_slot(unsigned int freq, unsigned int base)
 +{
 +	unsigned int f = (base * freq) / 192;	/* Mhz */
-+	if(f < 40)
++	if (f < 40)
 +		return 0;	/* 33Mhz slot */
-+	if(f < 45)
++	if (f < 45)
 +		return 1;	/* 40Mhz slot */
-+	if(f < 55)
++	if (f < 55)
 +		return 2;	/* 50Mhz slot */
 +	return 3;		/* 60Mhz slot */
 +}
@@ -7543,12 +8083,12 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	for(tries = 0; tries < 0x5000; tries++) {
 +		udelay(50);
 +		pci_read_config_byte(dev, 0x5b, &reg5b);
-+		if(reg5b & 0x80) {
++		if (reg5b & 0x80) {
 +			/* See if it stays set */
 +			for(tries = 0; tries < 0x1000; tries ++) {
 +				pci_read_config_byte(dev, 0x5b, &reg5b);
 +				/* Failed ? */
-+				if((reg5b & 0x80) == 0)
++				if ((reg5b & 0x80) == 0)
 +					return 0;
 +			}
 +			/* Turn off tuning, we have the DPLL set */
@@ -7594,7 +8134,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + 
 +static int hpt37x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 +{
-+	/* HPT370 and HPT370A - UDMA100 */
++	/* HPT370 - UDMA100 */
 +	static struct ata_port_info info_hpt370 = {
 +		.sht = &hpt37x_sht,
 +		.host_flags = ATA_FLAG_SLAVE_POSS,
@@ -7602,6 +8142,15 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		.mwdma_mask = 0x07,
 +		.udma_mask = 0x3f,
 +		.port_ops = &hpt370_port_ops
++	};
++	/* HPT370A - UDMA100 */
++	static struct ata_port_info info_hpt370a = {
++		.sht = &hpt37x_sht,
++		.host_flags = ATA_FLAG_SLAVE_POSS,
++		.pio_mask = 0x1f,
++		.mwdma_mask = 0x07,
++		.udma_mask = 0x3f,
++		.port_ops = &hpt370a_port_ops
 +	};
 +	/* HPT371, 372 and friends - UDMA133 */
 +	static struct ata_port_info info_hpt372 = {
@@ -7645,13 +8194,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_read_config_dword(dev, PCI_CLASS_REVISION, &class_rev);
 +	class_rev &= 0xFF;
 +	
-+	if(dev->device == PCI_DEVICE_ID_TTI_HPT366) {
++	if (dev->device == PCI_DEVICE_ID_TTI_HPT366) {
 +		/* May be a later chip in disguise. Check */
 +		/* Older chips are in the HPT366 driver. Ignore them */
-+		if(class_rev < 3)
++		if (class_rev < 3)
 +			return -ENODEV;
 +		/* N series chips have their own driver. Ignore */
-+		if(class_rev == 6)
++		if (class_rev == 6)
 +			return -ENODEV;
 +
 +		switch(class_rev) {			
@@ -7660,7 +8209,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +				chip_table = &hpt370;
 +				break;
 +			case 4:
-+				port = &info_hpt370;
++				port = &info_hpt370a;
 +				chip_table = &hpt370a;
 +				break;
 +			case 5:
@@ -7675,14 +8224,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		switch(dev->device) {
 +			case PCI_DEVICE_ID_TTI_HPT372:
 +				/* 372N if rev >= 2*/
-+				if(class_rev >= 2)
++				if (class_rev >= 2)
 +					return -ENODEV;
 +				port = &info_hpt372;
 +				chip_table = &hpt372a;
 +				break;
 +			case PCI_DEVICE_ID_TTI_HPT302:
 +				/* 302N if rev > 1 */
-+				if(class_rev > 1)
++				if (class_rev > 1)
 +					return -ENODEV;
 +				port = &info_hpt372;
 +				/* Check this */
@@ -7722,7 +8271,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_write_config_byte(dev, 0x5b, 0x23);	
 +	
 +	pci_read_config_dword(dev, 0x70, &freq);
-+	if((freq >> 12) != 0xABCDE) {
++	if ((freq >> 12) != 0xABCDE) {
 +		int i;
 +		u8 sr;
 +		u32 total = 0;
@@ -7745,7 +8294,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	 */
 +	 
 +	clock_slot = hpt37x_clock_slot(freq, chip_table->base);
-+	if(chip_table->clocks[clock_slot] == NULL) {
++	if (chip_table->clocks[clock_slot] == NULL) {
 +		/*
 +		 *	We need to try PLL mode instead
 +		 */
@@ -7754,16 +8303,16 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		int adjust;
 +		
 +		for(adjust = 0; adjust < 8; adjust++) {
-+			if(hpt37x_calibrate_dpll(dev))
++			if (hpt37x_calibrate_dpll(dev))
 +				break;
 +			/* See if it'll settle at a fractionally different clock */
-+			if((adjust & 3) == 3) {
++			if ((adjust & 3) == 3) {
 +				f_low --;
 +				f_high ++;
 +			}
 +			pci_write_config_dword(dev, 0x5C, (f_high << 16) | f_low);
 +		}
-+		if(adjust == 8) {
++		if (adjust == 8) {
 +			printk(KERN_WARNING "hpt37x: DPLL did not stabilize.\n");
 +			return -ENODEV;
 +		}
@@ -7778,9 +8327,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		 *	if UDMA133 is available.
 +		 */
 +	 
-+		if(clock_slot == 2 && chip_table == &hpt372) {	/* 50Mhz */
++		if (clock_slot == 2 && chip_table == &hpt372) {	/* 50Mhz */
 +			printk(KERN_WARNING "pata_hpt37x: No UDMA133 support available with 50MHz bus clock.\n");
-+			if(port == &info_hpt372)
++			if (port == &info_hpt372)
 +				port = &info_hpt372_50;
 +			else BUG();
 +		}
@@ -7827,9 +8376,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(hpt37x_init);
 +module_exit(hpt37x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt3x2n.c linux-2.6.16-rc2/drivers/scsi/pata_hpt3x2n.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_hpt3x2n.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_hpt3x2n.c	2006-02-07 13:50:40.927235480 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt3x2n.c linux-2.6.16-rc4/drivers/scsi/pata_hpt3x2n.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_hpt3x2n.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_hpt3x2n.c	2006-02-16 15:36:58.000000000 +0000
 @@ -0,0 +1,580 @@
 +/*
 + * Libata driver for the highpoint 372N and 302N UDMA66 ATA controllers.
@@ -7939,7 +8488,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct hpt_clock *clocks = hpt3x2n_clocks;
 +	
 +	while(clocks->xfer_speed) {
-+		if(clocks->xfer_speed == speed)
++		if (clocks->xfer_speed == speed)
 +			return clocks->timing;
 +		clocks++;
 +	}
@@ -7965,7 +8514,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Restore state */
 +	pci_write_config_byte(pdev, 0x5B, scr2);
 +	
-+	if(ata66 & (1 << ap->hard_port_no))
++	if (ata66 & (1 << ap->hard_port_no))
 +		ap->cbl = ATA_CBL_PATA40;
 +	else
 +		ap->cbl = ATA_CBL_PATA80;
@@ -8059,7 +8608,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_byte(pdev, 0x6A, &bwsr_stat);
 +	pci_read_config_byte(pdev, mscreg, &msc_stat);
-+	if(bwsr_stat & (1 << ap->hard_port_no))
++	if (bwsr_stat & (1 << ap->hard_port_no))
 +		pci_write_config_byte(pdev, mscreg, msc_stat | 0x30);
 +	ata_bmdma_stop(qc);
 +}
@@ -8111,7 +8660,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct ata_host_set *host = ap->host_set;
 +	struct ata_port *pair = host->ports[ap->hard_port_no ^ 1];
 +	
-+	if(pair->hsm_task_state == HSM_ST_IDLE)
++	if (pair->hsm_task_state == HSM_ST_IDLE)
 +		return 1;
 +	return 0;
 +}
@@ -8133,10 +8682,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct ata_port *ap = qc->ap;
 +	int flags = (long)ap->host_set->private_data;
 +	
-+	if(hpt3x2n_pair_idle(ap)) {
++	if (hpt3x2n_pair_idle(ap)) {
 +		int dpll = hpt3x2n_use_dpll(ap, (tf->flags & ATA_TFLAG_WRITE));
-+		if((flags & USE_DPLL) != dpll) {
-+			if(dpll == 1)
++		if ((flags & USE_DPLL) != dpll) {
++			if (dpll == 1)
 +				hpt3x2n_set_clock(ap, 0x21);
 +			else
 +				hpt3x2n_set_clock(ap, 0x23);
@@ -8216,12 +8765,12 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	for(tries = 0; tries < 0x5000; tries++) {
 +		udelay(50);
 +		pci_read_config_byte(dev, 0x5b, &reg5b);
-+		if(reg5b & 0x80) {
++		if (reg5b & 0x80) {
 +			/* See if it stays set */
 +			for(tries = 0; tries < 0x1000; tries ++) {
 +				pci_read_config_byte(dev, 0x5b, &reg5b);
 +				/* Failed ? */
-+				if((reg5b & 0x80) == 0)
++				if ((reg5b & 0x80) == 0)
 +					return 0;
 +			}
 +			/* Turn off tuning, we have the DPLL set */
@@ -8240,7 +8789,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u32 fcnt;
 +	
 +	pci_read_config_dword(pdev, 0x70/*CHECKME*/, &fcnt);
-+	if((fcnt >> 12) != 0xABCDE) {
++	if ((fcnt >> 12) != 0xABCDE) {
 +		printk(KERN_WARNING "hpt3xn: BIOS clock data not set.\n");
 +		return 33;	/* Not BIOS set */
 +	}
@@ -8249,11 +8798,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	freq = (fcnt * 77) / 192;
 +	
 +	/* Clamp to bands */
-+	if(freq < 40)
++	if (freq < 40)
 +		return 33;
-+	if(freq < 45)
++	if (freq < 45)
 +		return 40;
-+	if(freq < 55)
++	if (freq < 55)
 +		return 50;
 +	return 66;
 +}
@@ -8314,16 +8863,16 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	switch(dev->device) {
 +		case PCI_DEVICE_ID_TTI_HPT366:
-+			if(class_rev < 6)
++			if (class_rev < 6)
 +				return -ENODEV;
 +			break;
 +		case PCI_DEVICE_ID_TTI_HPT372:
 +			/* 372N if rev >= 1*/
-+			if(class_rev == 0)
++			if (class_rev == 0)
 +				return -ENODEV;
 +			break;
 +		case PCI_DEVICE_ID_TTI_HPT302:
-+			if(class_rev < 2)
++			if (class_rev < 2)
 +				return -ENODEV;
 +			break;
 +		case PCI_DEVICE_ID_TTI_HPT372N:
@@ -8358,17 +8907,17 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	/* Unlike the 37x we don't try jiggling the frequency */
 +	for(adjust = 0; adjust < 8; adjust++) {
-+		if(hpt3xn_calibrate_dpll(dev))
++		if (hpt3xn_calibrate_dpll(dev))
 +			break;
 +		pci_write_config_dword(dev, 0x5C, (f_high << 16) | f_low);
 +	}
-+	if(adjust == 8)
++	if (adjust == 8)
 +		printk(KERN_WARNING "hpt3xn: DPLL did not stabilize.\n");
 +
 +	/* Set our private data up. We only need a few flags so we use
 +	   it directly */
 +	port->private_data = NULL;
-+	if(pci_mhz > 60)
++	if (pci_mhz > 60)
 +		port->private_data = (void *)PCI66;
 +		
 +	/* Now kick off ATA set up */
@@ -8411,9 +8960,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(hpt3x2n_init);
 +module_exit(hpt3x2n_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_isapnp.c linux-2.6.16-rc2/drivers/scsi/pata_isapnp.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_isapnp.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_isapnp.c	2006-01-21 16:52:31.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_isapnp.c linux-2.6.16-rc4/drivers/scsi/pata_isapnp.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_isapnp.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_isapnp.c	2006-01-21 16:52:31.000000000 +0000
 @@ -0,0 +1,151 @@
 +
 +/*
@@ -8566,9 +9115,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(isapnp_init);
 +module_exit(isapnp_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_it8172.c linux-2.6.16-rc2/drivers/scsi/pata_it8172.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_it8172.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_it8172.c	2006-02-07 13:40:09.935160856 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_it8172.c linux-2.6.16-rc4/drivers/scsi/pata_it8172.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_it8172.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_it8172.c	2006-02-16 15:39:11.000000000 +0000
 @@ -0,0 +1,280 @@
 +/*
 + * pata_it8172.c 	- IT8172 PATA for new ATA layer
@@ -8672,14 +9221,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	 */
 +
 +	reg40 |= 0x4000;
-+	if(adev->devno) {
++	if (adev->devno) {
 +		reg40 |= 0xC006;
-+		if(pio > 1) 
++		if (pio > 1) 
 +			/* Enable prefetch and IORDY sample-point */
 +			reg40 |= 0x0060;
 +	} else {
 +		reg40 |= 0xC060;
-+		if(pio > 1)
++		if (pio > 1)
 +			/* Enable prefetch and IORDY sample-point */
 +			reg40 |= 0x0006;
 +	}
@@ -8733,7 +9282,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 + 	reg4a &= ~(3 << (4 * dn));
 + 	
-+	if(adev->dma_mode >= XFER_UDMA_0) {
++	if (adev->dma_mode >= XFER_UDMA_0) {
 +		reg48 |= 1 << dn;
 +#ifdef UDMA_TIMING_SET
 +		reg4a |= ((adev->dma_mode - XFER_UDMA_0) << (4 * dn));
@@ -8850,10 +9399,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(it8172_init);
 +module_exit(it8172_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_it821x.c linux-2.6.16-rc2/drivers/scsi/pata_it821x.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_it821x.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_it821x.c	2006-02-07 13:41:20.868377368 +0000
-@@ -0,0 +1,741 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_it821x.c linux-2.6.16-rc4/drivers/scsi/pata_it821x.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_it821x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_it821x.c	2006-02-20 12:27:55.000000000 +0000
+@@ -0,0 +1,743 @@
 +/*
 + * ata-it821x.c 	- IT821x PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -8936,7 +9485,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +
 +#define DRV_NAME "it821x"
-+#define DRV_VERSION "0.2"
++#define DRV_VERSION "0.2.1"
 +
 +struct it821x_dev
 +{
@@ -9002,7 +9551,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 conf;
 +
 +	/* Program PIO/MWDMA timing bits */
-+	if(itdev->clock_mode == ATA_66)
++	if (itdev->clock_mode == ATA_66)
 +		conf = timing >> 8;
 +	else
 +		conf = timing & 0xFF;
@@ -9031,11 +9580,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 conf;
 +
 +	/* Program UDMA timing bits */
-+	if(itdev->clock_mode == ATA_66)
++	if (itdev->clock_mode == ATA_66)
 +		conf = timing >> 8;
 +	else
 +		conf = timing & 0xFF;
-+	if(itdev->timing10 == 0)
++	if (itdev->timing10 == 0)
 +		pci_write_config_byte(pdev, 0x56 + 4 * channel + unit, conf);
 +	else {
 +		/* Early revision must be programmed for both together */
@@ -9058,14 +9607,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +	struct it821x_dev *itdev = ap->private_data;
 +	u8 unit = adev->devno;
-+	struct ata_device *pair = &ap->device[1-unit];
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +
 +	int clock, altclock;
 +	u8 v;
 +	int sel = 0;
 +
 +	/* Look for the most wanted clocking */
-+	if(itdev->want[0][0] > itdev->want[1][0]) {
++	if (itdev->want[0][0] > itdev->want[1][0]) {
 +		clock = itdev->want[0][1];
 +		altclock = itdev->want[1][1];
 +	} else {
@@ -9074,18 +9623,18 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	}
 +
 +	/* Master doesn't care does the slave ? */
-+	if(clock == ATA_ANY)
++	if (clock == ATA_ANY)
 +		clock = altclock;
 +
 +	/* Nobody cares - keep the same clock */
-+	if(clock == ATA_ANY)
++	if (clock == ATA_ANY)
 +		return;
 +	/* No change */
-+	if(clock == itdev->clock_mode)
++	if (clock == itdev->clock_mode)
 +		return;
 +
 +	/* Load this into the controller ? */
-+	if(clock == ATA_66)
++	if (clock == ATA_66)
 +		itdev->clock_mode = ATA_66;
 +	else {
 +		itdev->clock_mode = ATA_50;
@@ -9100,7 +9649,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	 *	Reprogram the UDMA/PIO of the pair drive for the switch
 +	 *	MWDMA will be dealt with by the dma switcher
 +	 */
-+	if(pair && itdev->udma[1-unit] != UDMA_OFF) {
++	if (pair && itdev->udma[1-unit] != UDMA_OFF) {
 +		it821x_program_udma(ap, pair, itdev->udma[1-unit]);
 +		it821x_program(ap, pair, itdev->pio[1-unit]);
 +	}
@@ -9108,7 +9657,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	 *	Reprogram the UDMA/PIO of our drive for the switch.
 +	 *	MWDMA will be dealt with by the dma switcher
 +	 */
-+	if(itdev->udma[unit] != UDMA_OFF) {
++	if (itdev->udma[unit] != UDMA_OFF) {
 +		it821x_program_udma(ap, adev, itdev->udma[unit]);
 +		it821x_program(ap, adev, itdev->pio[unit]);
 +	}
@@ -9166,19 +9715,19 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	int unit = adev->devno;
 +	u8 conf;
 +
-+	if(adev->dma_mode >= XFER_UDMA_0) {
++	if (adev->dma_mode >= XFER_UDMA_0) {
 +		int mode_wanted = adev->dma_mode - XFER_UDMA_0;
 +		
 +		itdev->want[unit][1] = udma_want[mode_wanted];
 +		itdev->want[unit][0] = 3;	/* UDMA is high priority */
 +		itdev->mwdma[unit] = MWDMA_OFF;
 +		itdev->udma[unit] = udma[mode_wanted];
-+		if(mode_wanted >= 5)
++		if (mode_wanted >= 5)
 +			itdev->udma[unit] |= 0x8080;	/* UDMA 5/6 select on */
 +
 +		/* UDMA on. Again revision 0x10 must do the pair */
 +		pci_read_config_byte(pdev, 0x50, &conf);
-+		if(itdev->timing10)
++		if (itdev->timing10)
 +			conf &= channel ? 0x9F: 0xE7;
 +		else
 +			conf &= ~ (1 << (3 + 2 * channel + unit));
@@ -9195,7 +9744,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +		/* UDMA bits off - Revision 0x10 do them in pairs */
 +		pci_read_config_byte(pdev, 0x50, &conf);
-+		if(itdev->timing10)
++		if (itdev->timing10)
 +			conf |= channel ? 0x60: 0x18;
 +		else
 +			conf |= 1 << (3 + 2 * channel + unit);
@@ -9220,9 +9769,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct it821x_dev *itdev = ap->private_data;
 +	int unit = adev->devno;
 +
-+	if(itdev->mwdma[unit] != MWDMA_OFF)
++	if (itdev->mwdma[unit] != MWDMA_OFF)
 +		it821x_program(ap, adev, itdev->mwdma[unit]);
-+	else if(itdev->udma[unit] != UDMA_OFF && itdev->timing10)
++	else if (itdev->udma[unit] != UDMA_OFF && itdev->timing10)
 +		it821x_program_udma(ap, adev, itdev->udma[unit]);
 +	ata_bmdma_start(qc);
 +}
@@ -9244,7 +9793,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	int unit = adev->devno;
 +
 +	ata_bmdma_stop(qc);
-+	if(itdev->mwdma[unit] != MWDMA_OFF)
++	if (itdev->mwdma[unit] != MWDMA_OFF)
 +		it821x_program(ap, adev, itdev->pio[unit]);
 +}
 +
@@ -9260,7 +9809,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +void it821x_passthru_dev_select(struct ata_port *ap, unsigned int device)
 +{
 +	struct it821x_dev *itdev = ap->private_data;
-+	if(itdev && device != itdev->last_device) {
++	if (itdev && device != itdev->last_device) {
 +		struct ata_device *adev = &ap->device[device];
 +		it821x_program(ap, adev, itdev->pio[adev->devno]);
 +		itdev->last_device = device;
@@ -9308,7 +9857,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			dev->dma_mode = XFER_MW_DMA_0;
 +			/* We do need the right mode information for DMA or PIO 
 +			   and this comes from the current configuration flags */
-+			if(dma_enabled & (1 << (5 + i))) {
++			if (dma_enabled & (1 << (5 + i))) {
 +				dev->xfer_mode = XFER_MW_DMA_0;
 +				dev->xfer_shift = ATA_SHIFT_MWDMA;
 +				dev->flags &= ~ATA_DFLAG_PIO;
@@ -9319,6 +9868,8 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			}
 +			/* Keep sector count safe (LBA48 counts blow the
 +			   brains of the firmware) */
++			   
++			/* Do we need a dev_config method ? */
 +			dev->flags |= ATA_DFLAG_LOCK_SECTORS;
 +		}
 +	}
@@ -9338,10 +9889,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct it821x_dev *itdev = ap->private_data;
 +	
 +	/* No ATAPI DMA in smart mode */
-+	if(itdev->smart)
++	if (itdev->smart)
 +		return -EOPNOTSUPP;
 +	/* No ATAPI DMA on rev 10 */
-+	if(itdev->timing10)
++	if (itdev->timing10)
 +		return -EOPNOTSUPP;
 +	/* Cool */
 +	return 0;
@@ -9365,11 +9916,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 conf;
 +
 +	int ret = ata_port_start(ap);
-+	if(ret < 0)
++	if (ret < 0)
 +		return ret;
 +		
 +	ap->private_data = kmalloc(sizeof(struct it821x_dev), GFP_KERNEL);
-+	if(ap->private_data == NULL) {
++	if (ap->private_data == NULL) {
 +		ata_port_stop(ap);
 +		return -ENOMEM;
 +	}
@@ -9379,7 +9930,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	pci_read_config_byte(pdev, 0x50, &conf);
 +
-+	if(conf & 1) {
++	if (conf & 1) {
 +		itdev->smart = 1;
 +		/* Long I/O's although allowed in LBA48 space cause the
 +		   onboard firmware to enter the twighlight zone */
@@ -9396,10 +9947,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	itdev->last_device = -1;
 +
 +	pci_read_config_byte(pdev, PCI_REVISION_ID, &conf);
-+	if(conf == 0x10) {
++	if (conf == 0x10) {
 +		itdev->timing10 = 1;
 +		/* Need to disable ATAPI DMA for this case */
-+		if(!itdev->smart)
++		if (!itdev->smart)
 +			printk(KERN_WARNING DRV_NAME": Revision 0x10, workarounds activated.\n");
 +	}
 +
@@ -9550,7 +10101,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	conf &= 1;
 +	
 +	printk(KERN_INFO DRV_NAME ": controller in %s mode.\n", mode[conf]);
-+	if(conf == 0)
++	if (conf == 0)
 +		port_info[0] = port_info[1] = &info_passthru;
 +	else
 +		port_info[0] = port_info[1] = &info_smart;
@@ -9595,10 +10146,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(it821x_init);
 +module_exit(it821x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_legacy.c linux-2.6.16-rc2/drivers/scsi/pata_legacy.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_legacy.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_legacy.c	2006-02-07 11:44:14.578535784 +0000
-@@ -0,0 +1,668 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_legacy.c linux-2.6.16-rc4/drivers/scsi/pata_legacy.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_legacy.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_legacy.c	2006-02-16 15:33:52.000000000 +0000
+@@ -0,0 +1,672 @@
 +
 +/*
 + *   pata-legacy.c - Legacy port PATA/SATA controller driver.
@@ -9618,7 +10169,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "legacy"
-+#define DRV_VERSION "0.3"
++#define DRV_VERSION "0.3.1"
 +
 +#define NR_HOST 6
 +
@@ -9741,36 +10292,40 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +}
 +
-+static void pdc_data_xfer_vlb(struct ata_port *ap, unsigned char *buf, unsigned int buflen, int write_data)
++static void pdc_data_xfer_vlb(struct ata_port *ap, struct ata_device *adev, unsigned char *buf, unsigned int buflen, int write_data)
 +{
 +	int slop = buflen & 3;
 +	unsigned long flags;
-+	
-+	local_irq_save(flags);
 +
-+	/* Perform the 32bit I/O synchronization sequence */	
-+	inb(ap->ioaddr.nsect_addr);
-+	inb(ap->ioaddr.nsect_addr);
-+	inb(ap->ioaddr.nsect_addr);
-+	
-+	/* Now the data */
++	if (ata_id_has_dword_io(adev->id)) {
++		local_irq_save(flags);
 +
-+	if (write_data)
-+		outsl(ap->ioaddr.data_addr, buf, buflen >> 2);
-+	else
-+		insl(ap->ioaddr.data_addr, buf, buflen >> 2);
++		/* Perform the 32bit I/O synchronization sequence */	
++		inb(ap->ioaddr.nsect_addr);
++		inb(ap->ioaddr.nsect_addr);
++		inb(ap->ioaddr.nsect_addr);
 +	
-+	if (unlikely(slop)) {
-+		u32 pad;
-+		if (write_data) {
-+			memcpy(&pad, buf + buflen - slop, slop);
-+			outl(le32_to_cpu(pad), ap->ioaddr.data_addr);
-+		} else {
-+			pad = cpu_to_le16(inl(ap->ioaddr.data_addr));
-+			memcpy(buf + buflen - slop, &pad, slop);
++		/* Now the data */
++	
++		if (write_data)
++			outsl(ap->ioaddr.data_addr, buf, buflen >> 2);
++		else
++			insl(ap->ioaddr.data_addr, buf, buflen >> 2);
++	
++		if (unlikely(slop)) {
++			u32 pad;
++			if (write_data) {
++				memcpy(&pad, buf + buflen - slop, slop);
++				outl(le32_to_cpu(pad), ap->ioaddr.data_addr);
++			} else {
++				pad = cpu_to_le16(inl(ap->ioaddr.data_addr));
++				memcpy(buf + buflen - slop, &pad, slop);
++			}
 +		}
++		local_irq_restore(flags);
 +	}
-+	local_irq_restore(flags);
++	else
++		ata_pio_data_xfer_noirq(ap, adev, buf, buflen, write_data);
 +}
 +
 +static struct ata_port_operations pdc20230_port_ops = {
@@ -9809,7 +10364,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct ata_timing t;
 +
 +	/* Get the timing data in cycles. For now play safe at 50Mhz */
-+	ata_timing_compute(adev, adev->pio_mode, &t, 50000, 1000);
++	ata_timing_compute(adev, adev->pio_mode, &t, 20000, 1000);
 +	
 +	active = FIT(t.active, 2, 15);
 +	recover = FIT(t.recover, 4, 15);
@@ -9861,7 +10416,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct ata_timing t;
 +	
 +	/* Get the timing data in cycles. For now play safe at 50Mhz */
-+	ata_timing_compute(adev, adev->pio_mode, &t, 50000, 1000);
++	ata_timing_compute(adev, adev->pio_mode, &t, 20000, 1000);
 +	
 +	active = FIT(t.active, 2, 15);
 +	recover = FIT(t.recover, 2, 16);
@@ -9876,7 +10431,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	if (adev->class != ATA_DEV_ATA) {
 +		u8 rconf = inb(0x3E6);
-+		if(rconf & 0x24) {
++		if (rconf & 0x24) {
 +			rconf &= ~ 0x24;
 +			outb(rconf, 0x3E6);
 +		}
@@ -9917,7 +10472,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +{
 +	u8 active, recover, setup;
 +	struct ata_timing t;
-+	struct ata_device *pair = &ap->device[adev->devno ^ 1];
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +	int clock;
 +	int khz[4] = { 50000, 40000, 33000, 25000 };
 +	u8 rc;
@@ -9927,13 +10482,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	inb(ap->ioaddr.error_addr);
 +	
 +	/* Read VLB clock strapping */
-+	clock = khz[inb(ap->ioaddr.lbah_addr) & 0x03];
++	clock = 1000000000 / khz[inb(ap->ioaddr.lbah_addr) & 0x03];
 +	
 +	/* Get the timing data in cycles */
 +	ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000);
 +	
 +	/* Setup timing is shared */
-+	if (ata_dev_present(pair)) {
++	if (pair) {
 +		struct ata_timing tp;
 +		ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000);
 +		
@@ -10054,7 +10609,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			outb(0x55, 0x1F2);
 +			inb(0x1F2);
 +			inb(0x1F2);
-+			if(inb(0x1F2) == 0x00) {
++			if (inb(0x1F2) == 0x00) {
 +				printk(KERN_INFO "PDC20230-B VLB ATA controller detected.\n");
 +			}
 +		}
@@ -10267,9 +10822,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +module_init(legacy_init);
 +module_exit(legacy_exit);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_mpiix.c linux-2.6.16-rc2/drivers/scsi/pata_mpiix.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_mpiix.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_mpiix.c	2006-01-21 16:55:12.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_mpiix.c linux-2.6.16-rc4/drivers/scsi/pata_mpiix.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_mpiix.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_mpiix.c	2006-02-16 15:38:41.000000000 +0000
 @@ -0,0 +1,303 @@
 +/*
 + * pata_mpiix.c 	- Intel MPIIX PATA for new ATA layer
@@ -10517,7 +11072,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Now add the port that is active */
 +	enabled = (idetim & 0x4000) ? 1 : 0;
 +
-+	if(ata_device_add(&probe[enabled]))
++	if (ata_device_add(&probe[enabled]))
 +		return 0;
 +	return -ENODEV;
 +}
@@ -10574,10 +11129,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(mpiix_init);
 +module_exit(mpiix_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_netcell.c linux-2.6.16-rc2/drivers/scsi/pata_netcell.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_netcell.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_netcell.c	2006-02-07 13:48:27.721485832 +0000
-@@ -0,0 +1,178 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_netcell.c linux-2.6.16-rc4/drivers/scsi/pata_netcell.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_netcell.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_netcell.c	2006-02-08 14:05:57.000000000 +0000
+@@ -0,0 +1,176 @@
 +/*
 + *    pata_netcell.c - Netcell PATA driver
 + *
@@ -10620,8 +11175,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +static void netcell_phy_reset(struct ata_port *ap)
 +{
-+	/* If you have enable bits for devices ... , if not delete */
-+	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +	ap->cbl = netcell_cable_detect(ap);
 +	ata_port_probe(ap);
 +	ata_bus_reset(ap);
@@ -10756,9 +11309,226 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +MODULE_DEVICE_TABLE(pci, netcell_pci_tbl);
 +MODULE_VERSION(DRV_VERSION);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_oldpiix.c linux-2.6.16-rc2/drivers/scsi/pata_oldpiix.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_oldpiix.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_oldpiix.c	2006-01-21 16:55:29.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_ns87410.c linux-2.6.16-rc4/drivers/scsi/pata_ns87410.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_ns87410.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_ns87410.c	2006-02-15 15:05:43.000000000 +0000
+@@ -0,0 +1,213 @@
++/*
++ * pata_ns87410.c 	- National Semiconductor 87410 PATA for new ATA layer
++ *			  (C) 2006 Red Hat Inc
++ *			  Alan Cox <alan@redhat.com>
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/init.h>
++#include <linux/blkdev.h>
++#include <linux/delay.h>
++#include <scsi/scsi_host.h>
++#include <linux/libata.h>
++
++#define DRV_NAME "pata_ns87410"
++#define DRV_VERSION "0.1"
++
++/**
++ *	ns87410_phy_reset		-	probe reset
++ *	@ap: ATA port
++ *
++ *	Perform the ATA probe and bus reset sequence plus specific handling
++ *	for this hardware. The MPIIX has the enable bits in a different place
++ *	to PIIX4 and friends. As a pure PIO device it has no cable detect
++ */
++
++static void ns87410_phy_reset(struct ata_port *ap)
++{
++	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
++	static const struct pci_bits ns87410_enable_bits[] = {
++		{ 0x43, 1, 0x08, 0x08 },
++		{ 0x47, 1, 0x08, 0x08 }
++	};
++
++	if (!pci_test_config_bits(pdev, &ns87410_enable_bits[ap->hard_port_no])) {
++		ata_port_disable(ap);
++		printk(KERN_INFO "ata%u: port disabled. ignoring.\n", ap->id);
++		return;
++	}
++	ap->cbl = ATA_CBL_PATA40;
++	ata_port_probe(ap);
++	ata_bus_reset(ap);
++}
++
++/**
++ *	ns87410_set_piomode	-	set initial PIO mode data
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Program timing data. This is kept per channel not per device,
++ *	and only affects the data port.
++ */
++
++static void ns87410_set_piomode(struct ata_port *ap, struct ata_device *adev)
++{
++	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
++	int port = 0x40 + 4 * ap->hard_port_no;
++	u8 idetcr, idefr;
++	struct ata_timing at;
++	
++	static const u8 activebits[15] = {
++		0, 1, 2, 3, 4,
++		5, 5, 6, 6, 6, 
++		6, 7, 7, 7, 7
++	};
++	
++	static const u8 recoverbits[12] = {
++		0, 1, 2, 3, 4, 5, 6, 6, 7, 7, 7, 7
++	};
++
++	pci_read_config_byte(pdev, port + 3, &idefr);
++
++	if (ata_pio_need_iordy(adev))
++		idefr |= 0x04;	/* IORDY enable */
++	else
++		idefr &= ~0x04;
++		
++	if (ata_timing_compute(adev, adev->pio_mode, &at, 30303, 1) < 0) {
++		dev_printk(KERN_ERR, &pdev->dev, "unknown mode %d.\n", adev->pio_mode);
++		return;
++	}
++	
++	at.active = FIT(at.active, 2, 16) - 2;
++	at.setup = FIT(at.setup, 1, 4) - 1;
++	at.recover = FIT(at.recover, 1, 12) - 1;
++	
++	idetcr = (at.setup << 6) | (recoverbits[at.recover] << 3) | activebits[at.active];
++
++	pci_write_config_byte(pdev, port, idetcr);
++	pci_write_config_byte(pdev, port + 3, idefr);
++	/* We use ap->private_data as a pointer to the device currently
++	   loaded for timing */
++	ap->private_data = adev;
++}
++
++/**
++ *	ns87410_qc_issue_prot	-	command issue
++ *	@qc: command pending
++ *
++ *	Called when the libata layer is about to issue a command. We wrap
++ *	this interface so that we can load the correct ATA timings if
++ *	neccessary. Our logic also clears TIME0/TIME1 for the other device so
++ *	that, even if we get this wrong, cycles to the other device will
++ *	be made PIO0.
++ */
++
++static int ns87410_qc_issue_prot(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++
++	/* If modes have been configured and the channel data is not loaded
++	   then load it. We have to check if pio_mode is set as the core code
++	   does not set adev->pio_mode to XFER_PIO_0 while probing as would be
++	   logical */
++	   
++	if (adev->pio_mode && adev != ap->private_data)
++		ns87410_set_piomode(ap, adev);
++		
++	return ata_qc_issue_prot(qc);
++}
++
++static struct scsi_host_template ns87410_sht = {
++	.module			= THIS_MODULE,
++	.name			= DRV_NAME,
++	.ioctl			= ata_scsi_ioctl,
++	.queuecommand		= ata_scsi_queuecmd,
++	.eh_strategy_handler	= ata_scsi_error,
++	.can_queue		= ATA_DEF_QUEUE,
++	.this_id		= ATA_SHT_THIS_ID,
++	.sg_tablesize		= LIBATA_MAX_PRD,
++	.max_sectors		= ATA_MAX_SECTORS,
++	.cmd_per_lun		= ATA_SHT_CMD_PER_LUN,
++	.emulated		= ATA_SHT_EMULATED,
++	.use_clustering		= ATA_SHT_USE_CLUSTERING,
++	.proc_name		= DRV_NAME,
++	.dma_boundary		= ATA_DMA_BOUNDARY,
++	.slave_configure	= ata_scsi_slave_config,
++	.bios_param		= ata_std_bios_param,
++//	.ordered_flush		= 1,
++};
++
++static struct ata_port_operations ns87410_port_ops = {
++	.port_disable	= ata_port_disable,
++	.set_piomode	= ns87410_set_piomode,
++
++	.tf_load	= ata_tf_load,
++	.tf_read	= ata_tf_read,
++	.check_status 	= ata_check_status,
++	.exec_command	= ata_exec_command,
++	.dev_select 	= ata_std_dev_select,
++
++	.phy_reset	= ns87410_phy_reset,
++
++	.qc_prep 	= ata_qc_prep,
++	.qc_issue	= ns87410_qc_issue_prot,
++	.eng_timeout	= ata_eng_timeout,
++	.data_xfer	= ata_pio_data_xfer,
++
++	.irq_handler	= ata_interrupt,
++	.irq_clear	= ata_bmdma_irq_clear,
++
++	.port_start	= ata_port_start,
++	.port_stop	= ata_port_stop,
++	.host_stop	= ata_host_stop
++};
++
++static int ns87410_init_one(struct pci_dev *dev, const struct pci_device_id *id)
++{
++	static struct ata_port_info info = {
++		.sht = &ns87410_sht,
++		.host_flags = ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
++		.pio_mask = 0x0F,
++		.port_ops = &ns87410_port_ops
++	};
++	static struct ata_port_info *port_info[2] = {&info, &info};
++	return ata_pci_init_one(dev, port_info, 2);
++}
++
++static const struct pci_device_id ns87410[] = {
++	{ PCI_DEVICE(0x100B, 0xD001), },
++	{ 0, },
++};
++
++static struct pci_driver ns87410_pci_driver = {
++        .name 		= DRV_NAME,
++	.id_table	= ns87410,
++	.probe 		= ns87410_init_one,
++	.remove		= ata_pci_remove_one
++};
++
++static int __init ns87410_init(void)
++{
++	return pci_register_driver(&ns87410_pci_driver);
++}
++
++
++static void __exit ns87410_exit(void)
++{
++	pci_unregister_driver(&ns87410_pci_driver);
++}
++
++
++MODULE_AUTHOR("Alan Cox");
++MODULE_DESCRIPTION("low-level driver for Nat Semi 87410");
++MODULE_LICENSE("GPL");
++MODULE_DEVICE_TABLE(pci, ns87410);
++MODULE_VERSION(DRV_VERSION);
++
++module_init(ns87410_init);
++module_exit(ns87410_exit);
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_oldpiix.c linux-2.6.16-rc4/drivers/scsi/pata_oldpiix.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_oldpiix.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_oldpiix.c	2006-01-21 16:55:29.000000000 +0000
 @@ -0,0 +1,327 @@
 +/*
 + *    pata_oldpiix.c - Intel PATA/SATA controllers
@@ -11087,9 +11857,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +MODULE_DEVICE_TABLE(pci, oldpiix_pci_tbl);
 +MODULE_VERSION(DRV_VERSION);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_opti.c linux-2.6.16-rc2/drivers/scsi/pata_opti.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_opti.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_opti.c	2006-01-21 16:55:42.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_opti.c linux-2.6.16-rc4/drivers/scsi/pata_opti.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_opti.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_opti.c	2006-02-16 15:38:28.000000000 +0000
 @@ -0,0 +1,268 @@
 +/*
 + * pata_opti.c 	- ATI PATA for new ATA layer
@@ -11121,7 +11891,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_opti"
-+#define DRV_VERSION "0.1.1"
++#define DRV_VERSION "0.1.2"
 +
 +enum {
 +	READ_REG	= 0,	/* index of Read cycle timing register */
@@ -11217,7 +11987,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +static void opti_set_piomode(struct ata_port *ap, struct ata_device *adev)
 +{
-+	struct ata_device *pair = &ap->device[1 - adev->devno];
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +	int clock;
 +	int pio = adev->pio_mode - XFER_PIO_0;
 +	unsigned long regio = ap->ioaddr.cmd_addr;
@@ -11242,10 +12012,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	 */
 +
 +	addr = addr_timing[clock][pio];
-+	if (ata_dev_present(pair)) {
++	if (pair) {
 +		/* Hardware constraint */
 +		u8 pair_addr = addr_timing[clock][pair->pio_mode - XFER_PIO_0];
-+		if(pair_addr > addr)
++		if (pair_addr > addr)
 +			addr = pair_addr;
 +	}
 +
@@ -11359,9 +12129,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(opti_init);
 +module_exit(opti_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_pcmcia.c linux-2.6.16-rc2/drivers/scsi/pata_pcmcia.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_pcmcia.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_pcmcia.c	2006-01-21 16:55:56.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pcmcia.c linux-2.6.16-rc4/drivers/scsi/pata_pcmcia.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pcmcia.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_pcmcia.c	2006-02-20 17:26:30.000000000 +0000
 @@ -0,0 +1,406 @@
 +/*
 + *   pata-pcmcia.c - PCMCIA PATA controller driver.
@@ -11742,7 +12512,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +static struct pcmcia_driver pcmcia_driver = {
 +	.owner		= THIS_MODULE,
-+	.drv	{
++	.drv = {
 +		.name		= DRV_NAME,
 +	},
 +	.id_table	= pcmcia_devices,
@@ -11769,9 +12539,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(pcmcia_init);
 +module_exit(pcmcia_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_pdc2027x.c linux-2.6.16-rc2/drivers/scsi/pata_pdc2027x.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_pdc2027x.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_pdc2027x.c	2006-01-21 16:56:47.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pdc2027x.c linux-2.6.16-rc4/drivers/scsi/pata_pdc2027x.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pdc2027x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_pdc2027x.c	2006-01-21 16:56:47.000000000 +0000
 @@ -0,0 +1,857 @@
 +/*
 + *  Promise PATA TX2/TX4/TX2000/133 IDE driver for pdc20268 to pdc20277.
@@ -12630,10 +13400,442 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(pdc2027x_init);
 +module_exit(pdc2027x_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_qdi.c linux-2.6.16-rc2/drivers/scsi/pata_qdi.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_qdi.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_qdi.c	2006-01-21 20:43:47.000000000 +0000
-@@ -0,0 +1,367 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pdc202xx_old.c linux-2.6.16-rc4/drivers/scsi/pata_pdc202xx_old.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_pdc202xx_old.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_pdc202xx_old.c	2006-02-20 13:19:57.000000000 +0000
+@@ -0,0 +1,428 @@
++/*
++ * pata_pdc202xx_old.c 	- SL82C105 PATA for new ATA layer
++ *			  (C) 2005 Red Hat Inc
++ *			  Alan Cox <alan@redhat.com>
++ *
++ * Based in part on linux/drivers/ide/pci/pdc202xx_old.c
++ *
++ * Initial revision
++ *
++ * TODO:
++ *	Channel interlock/reset on both required ?
++ */
++ 
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/init.h>
++#include <linux/blkdev.h>
++#include <linux/delay.h>
++#include <scsi/scsi_host.h>
++#include <linux/libata.h>
++
++#define DRV_NAME "pata_pdc202xx_old"
++#define DRV_VERSION "0.1.2"
++
++static void pdc2024x_phy_reset(struct ata_port *ap)
++{
++	ap->cbl = ATA_CBL_PATA40;
++	ata_port_probe(ap);
++	ata_bus_reset(ap);
++}
++
++
++static void pdc2026x_phy_reset(struct ata_port *ap)
++{
++	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
++	u16 cis;
++	
++	pci_read_config_word(pdev, 0x50, &cis);
++	if (cis & (1 << (10 + ap->hard_port_no)))
++		ap->cbl = ATA_CBL_PATA80;
++	else
++		ap->cbl = ATA_CBL_PATA40;
++	ata_port_probe(ap);
++	ata_bus_reset(ap);
++}
++
++
++/**
++ *	pdc_configure_piomode	-	set chip PIO timing
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *	@pio: PIO mode
++ *
++ *	Called to do the PIO mode setup. Our timing registers are shared
++ *	so a configure_dmamode call will undo any work we do here and vice
++ *	versa
++ */
++ 
++static void pdc_configure_piomode(struct ata_port *ap, struct ata_device *adev, int pio)
++{
++	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
++	int port = 0x60 + 4 * ap->hard_port_no + 2 * adev->devno;
++	static u16 pio_timing[5] = {
++		0x0913, 0x050C , 0x0308, 0x0206, 0x0104
++	};
++	u8 r_ap, r_bp;
++
++	/* FIFO, IORDY ? */	
++	pci_read_config_byte(pdev, port, &r_ap);
++	pci_read_config_byte(pdev, port + 1, &r_bp);
++	r_ap &= ~0x0F;
++	r_bp &= ~0x07;
++	r_ap |= (pio_timing[pio] >> 8);
++	r_bp |= (pio_timing[pio] & 0xFF);
++	pci_write_config_byte(pdev, port, r_ap);
++	pci_write_config_byte(pdev, port + 1, r_bp);
++}
++
++/**
++ *	pdc_set_piomode	-	set initial PIO mode data
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Called to do the PIO mode setup. Our timing registers are shared
++ *	but we want to set the PIO timing by default.
++ */
++ 
++static void pdc_set_piomode(struct ata_port *ap, struct ata_device *adev)
++{
++	pdc_configure_piomode(ap, adev, adev->pio_mode - XFER_PIO_0);
++}
++
++/**
++ *	pdc_configure_dmamode	-	set DMA mode in chip
++ *	@ap: ATA interface
++ *	@adev: ATA device
++ *
++ *	Load DMA cycle times into the chip ready for a DMA transfer
++ *	to occur.
++ */
++ 
++static void pdc_set_dmamode(struct ata_port *ap, struct ata_device *adev)
++{
++	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
++	int port = 0x60 + 4 * ap->hard_port_no + 2 * adev->devno;
++	static u8 udma_timing[6][2] = {
++		{ 0x60, 0x03 },	/* 33 Mhz Clock */
++		{ 0x40, 0x02 },
++		{ 0x20, 0x01 },
++		{ 0x40, 0x02 },	/* 66 Mhz Clock */
++		{ 0x20, 0x01 },
++		{ 0x20, 0x01 }		
++	};
++	u8 r_bp, r_cp;
++	
++	pci_read_config_byte(pdev, port + 1, &r_bp);
++	pci_read_config_byte(pdev, port + 2, &r_cp);
++	
++	r_bp &= ~0xF0;
++	r_cp &= ~0x0F;
++	
++	if (adev->dma_mode >= XFER_UDMA_0) {
++		int speed = adev->dma_mode - XFER_UDMA_0;
++		r_bp |= udma_timing[speed][0];
++		r_cp |= udma_timing[speed][1];
++		
++	} else {
++		int speed = adev->dma_mode - XFER_MW_DMA_0;
++		r_bp |= 0x60;
++		r_cp |= (5 - speed);
++	}
++	pci_write_config_byte(pdev, port + 1, r_bp);
++	pci_write_config_byte(pdev, port + 2, r_cp);
++	
++}
++
++/**
++ *	pdc2026x_reset_engine	-	Reset the DMA engine
++ *	@ap: ATA interface
++ *
++ *	Reset the 2026x DMA engine. This is not something we want to do,
++ *	and we need to figure out how to serialize this across dual channel
++ *	devices if it is neccessary.
++ *
++ *	FIXME: Do we need to reset the other interface too ?
++ */
++ 
++static void pdc2026x_reset_engine(struct ata_port *ap)
++{
++	unsigned long ctrl = ap->host_set->ports[0]->ioaddr.bmdma_addr + 0x1F;
++
++	u8 val = inb(ctrl);
++	outb(val | 0x10, ctrl);
++	mdelay(100);
++	outb(val & ~0x10, ctrl);
++	mdelay(2000);	/* Check - seems to be overkill, plus if needed 
++			   redo locking */
++	/* Need to fix up speed info at this point */
++}
++
++/**
++ *	pdc2026x_bmdma_start		-	DMA engine begin
++ *	@qc: ATA command
++ *
++ *	In UDMA3 or higher we have to clock switch for the duration of the
++ *	DMA transfer sequence.
++ */
++ 
++static void pdc2026x_bmdma_start(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++	int sel66 = ap->hard_port_no ? 0x08: 0x02;
++	/* The clock bits are in the same register for both channels */
++	unsigned long clock = ap->host_set->ports[0]->ioaddr.bmdma_addr + 0x11;
++	
++	/* Check we keep host_set level locking here */
++	if (adev->dma_mode >= XFER_UDMA_2)
++		outb(inb(clock) | sel66, clock);
++	else
++		outb(inb(clock) & ~sel66, clock);
++	/* The DMA clocks may have been trashed by a reset. FIXME: make conditional 
++	   and move to qc_issue ? */
++	pdc_set_dmamode(ap, qc->dev);
++	/* Activate DMA */	
++	ata_bmdma_start(qc);
++}
++
++/**
++ *	pdc2026x_bmdma_end		-	DMA engine stop
++ *	@qc: ATA command
++ *
++ *	After a DMA completes we need to put the clock back to 33MHz for
++ *	PIO timings.
++ */
++ 
++static void pdc2026x_bmdma_stop(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++	int sel66 = ap->hard_port_no ? 0x08: 0x02;
++	/* The clock bits are in the same register for both channels */
++	unsigned long clock = ap->host_set->ports[0]->ioaddr.bmdma_addr + 0x11;
++	
++	/* FIXME: Review LBA48 code in ide/pci driver */
++	ata_bmdma_stop(qc);
++	/* Check we keep host_set level locking here */
++	/* Flip back to 33Mhz for PIO */
++	if (adev->dma_mode >= XFER_UDMA_2)
++		outb(inb(clock) & ~sel66, clock);
++}
++
++/**
++ *	pdc2026x_eng_timeout		-	command timeout
++ *	@qc: command that timed out
++ *
++ *	When the PDC2026x times out hit the controller over the head
++ *	with a hammer before continuing. The reset unfortunately also
++ *	resets the timing registers so we must reprogram these.
++ */
++ 
++static void pdc2026x_eng_timeout(struct ata_port *ap)
++{
++	int i;
++	
++	/* Perform libata side housekeeping */
++	ata_eng_timeout(ap);
++	
++	/* Reset the controller */
++	pdc2026x_reset_engine(ap);
++	
++	/* Reprogram the device timings */
++	for (i = 0; i < 2; i++) {
++		struct ata_device *adev = &ap->device[i];
++		if (ata_dev_present(adev)) {
++			pdc_set_piomode(ap, adev);
++			if (adev->dma_mode)
++				pdc_set_dmamode(ap, adev);
++		}
++	}
++}
++
++/**
++ *	pdc2026x_dev_config	-	device setup hook
++ *	@ap: ATA port
++ *	@adev: newly found device
++ *
++ *	Perform chip specific early setup. We need to lock the transfer
++ *	sizes to 8bit to avoid making the state engine on the 2026x cards
++ *	barf.
++ */
++ 
++static void pdc2026x_dev_config(struct ata_port *ap, struct ata_device *adev)
++{
++	/* We cannot blindly set 256 as the core code may already
++	   have picked a lower limit */
++	   
++	if(ap->host->max_sectors > 256) {
++		ap->host->max_sectors = 256;
++		ap->host->hostt->max_sectors = 256;
++	}
++	adev->flags |= ATA_DFLAG_LOCK_SECTORS;
++}
++
++static struct scsi_host_template pdc_sht = {
++	.module			= THIS_MODULE,
++	.name			= DRV_NAME,
++	.ioctl			= ata_scsi_ioctl,
++	.queuecommand		= ata_scsi_queuecmd,
++	.eh_strategy_handler	= ata_scsi_error,
++	.can_queue		= ATA_DEF_QUEUE,
++	.this_id		= ATA_SHT_THIS_ID,
++	.sg_tablesize		= LIBATA_MAX_PRD,
++	.max_sectors		= ATA_MAX_SECTORS,
++	.cmd_per_lun		= ATA_SHT_CMD_PER_LUN,
++	.emulated		= ATA_SHT_EMULATED,
++	.use_clustering		= ATA_SHT_USE_CLUSTERING,
++	.proc_name		= DRV_NAME,
++	.dma_boundary		= ATA_DMA_BOUNDARY,
++	.slave_configure	= ata_scsi_slave_config,
++	.bios_param		= ata_std_bios_param,
++//	.ordered_flush		= 1,
++};
++
++static struct ata_port_operations pdc2024x_port_ops = {
++	.port_disable	= ata_port_disable,
++	.set_piomode	= pdc_set_piomode,
++	.set_dmamode	= pdc_set_dmamode,
++	.tf_load	= ata_tf_load,
++	.tf_read	= ata_tf_read,
++	.check_status 	= ata_check_status,
++	.exec_command	= ata_exec_command,
++	.dev_select 	= ata_std_dev_select,
++
++	.phy_reset	= pdc2024x_phy_reset,
++
++	.bmdma_setup 	= ata_bmdma_setup,
++	.bmdma_start 	= ata_bmdma_start,
++	.bmdma_stop	= ata_bmdma_stop,
++	.bmdma_status 	= ata_bmdma_status,
++
++	.qc_prep 	= ata_qc_prep,
++	.qc_issue	= ata_qc_issue_prot,
++	.eng_timeout	= ata_eng_timeout,
++	.data_xfer	= ata_pio_data_xfer,
++
++	.irq_handler	= ata_interrupt,
++	.irq_clear	= ata_bmdma_irq_clear,
++	
++	.port_start	= ata_port_start,
++	.port_stop	= ata_port_stop,
++	.host_stop	= ata_host_stop
++};	
++
++static struct ata_port_operations pdc2026x_port_ops = {
++	.port_disable	= ata_port_disable,
++	.set_piomode	= pdc_set_piomode,
++	.set_dmamode	= pdc_set_dmamode,
++	.tf_load	= ata_tf_load,
++	.tf_read	= ata_tf_read,
++	.check_status 	= ata_check_status,
++	.exec_command	= ata_exec_command,
++	.dev_select 	= ata_std_dev_select,
++	.dev_config	= pdc2026x_dev_config,
++
++	.phy_reset	= pdc2026x_phy_reset,
++
++	.bmdma_setup 	= ata_bmdma_setup,
++	.bmdma_start 	= pdc2026x_bmdma_start,
++	.bmdma_stop	= pdc2026x_bmdma_stop,
++	.bmdma_status 	= ata_bmdma_status,
++
++	.qc_prep 	= ata_qc_prep,
++	.qc_issue	= ata_qc_issue_prot,
++	.eng_timeout	= pdc2026x_eng_timeout,
++	.data_xfer	= ata_pio_data_xfer,
++
++	.irq_handler	= ata_interrupt,
++	.irq_clear	= ata_bmdma_irq_clear,
++	
++	.port_start	= ata_port_start,
++	.port_stop	= ata_port_stop,
++	.host_stop	= ata_host_stop
++};	
++
++static int pdc_init_one(struct pci_dev *dev, const struct pci_device_id *id)
++{
++	static struct ata_port_info info[3] = {
++		{
++			.sht = &pdc_sht,
++			.host_flags = ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
++			.pio_mask = 0x1f,
++			.mwdma_mask = 0x07,
++			.udma_mask = ATA_UDMA2,
++			.port_ops = &pdc2024x_port_ops
++		}, 
++		{
++			.sht = &pdc_sht,
++			.host_flags = ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
++			.pio_mask = 0x1f,
++			.mwdma_mask = 0x07,
++			.udma_mask = ATA_UDMA4,
++			.port_ops = &pdc2026x_port_ops
++		},
++		{
++			.sht = &pdc_sht,
++			.host_flags = ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
++			.pio_mask = 0x1f,
++			.mwdma_mask = 0x07,
++			.udma_mask = ATA_UDMA5,
++			.port_ops = &pdc2026x_port_ops
++		}
++		
++	};
++	static struct ata_port_info *port_info[2];
++
++	port_info[0] = port_info[1] = &info[id->driver_data];
++	
++	if (dev->device == PCI_DEVICE_ID_PROMISE_20265) {
++		struct pci_dev *bridge = dev->bus->self;
++		/* Don't grab anything behind a Promise I2O RAID */
++		if (bridge && bridge->vendor == PCI_VENDOR_ID_INTEL) {
++			if( bridge->device == PCI_DEVICE_ID_INTEL_I960)
++				return -ENODEV;
++			if( bridge->device == PCI_DEVICE_ID_INTEL_I960RM)
++				return -ENODEV;
++		}
++	}
++	return ata_pci_init_one(dev, port_info, 2);
++}
++
++static struct pci_device_id pdc[] = {
++	{ PCI_VENDOR_ID_PROMISE, PCI_DEVICE_ID_PROMISE_20246, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
++	{ PCI_VENDOR_ID_PROMISE, PCI_DEVICE_ID_PROMISE_20262, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1},
++	{ PCI_VENDOR_ID_PROMISE, PCI_DEVICE_ID_PROMISE_20263, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1},
++	{ PCI_VENDOR_ID_PROMISE, PCI_DEVICE_ID_PROMISE_20265, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 2},
++	{ PCI_VENDOR_ID_PROMISE, PCI_DEVICE_ID_PROMISE_20267, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 2},
++	{ 0, },
++};
++
++static struct pci_driver pdc_pci_driver = {
++        .name 		= DRV_NAME,
++	.id_table	= pdc,
++	.probe 		= pdc_init_one,
++	.remove		= ata_pci_remove_one
++};
++
++static int __init pdc_init(void)
++{
++	return pci_register_driver(&pdc_pci_driver);
++}
++
++
++static void __exit pdc_exit(void)
++{
++	pci_unregister_driver(&pdc_pci_driver);
++}
++
++
++MODULE_AUTHOR("Alan Cox");
++MODULE_DESCRIPTION("low-level driver for Promise 2024x and 20262-20267");
++MODULE_LICENSE("GPL");
++MODULE_DEVICE_TABLE(pci, pdc);
++MODULE_VERSION(DRV_VERSION);
++
++module_init(pdc_init);
++module_exit(pdc_exit);
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_qdi.c linux-2.6.16-rc4/drivers/scsi/pata_qdi.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_qdi.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_qdi.c	2006-02-15 15:08:22.000000000 +0000
+@@ -0,0 +1,370 @@
 +/*
 + *    pata_qdi.c - QDI VLB ATA controllers
 + *	(C) 2006 Red Hat <alan@redhat.com>
@@ -12660,7 +13862,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_qdi"
-+#define DRV_VERSION "0.1"
++#define DRV_VERSION "0.2"
 +
 +#define NR_HOST 4	/* Two 6580s */
 +
@@ -12684,7 +13886,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 timing;
 +
 +	/* Get the timing data in cycles */
-+	ata_timing_compute(adev, adev->pio_mode, &t, 33000, 1000);
++	ata_timing_compute(adev, adev->pio_mode, &t, 30303, 1000);
 +	
 +	if (qdi->fast) {
 +		active = 8 - FIT(t.active, 1, 8);
@@ -12708,7 +13910,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 timing;
 +
 +	/* Get the timing data in cycles */
-+	ata_timing_compute(adev, adev->pio_mode, &t, 33, 1000);
++	ata_timing_compute(adev, adev->pio_mode, &t, 30303, 1000);
 +	
 +	if (qdi->fast) {
 +		active = 8 - FIT(t.active, 1, 8);
@@ -12751,25 +13953,28 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	return ata_qc_issue_prot(qc);
 +}
 +
-+static void qdi_data_xfer(struct ata_port *ap, unsigned char *buf, unsigned int buflen, int write_data)
++static void qdi_data_xfer(struct ata_port *ap, struct ata_device *adev, unsigned char *buf, unsigned int buflen, int write_data)
 +{
 +	int slop = buflen & 3;
 +	
-+	if (write_data)
-+		outsl(ap->ioaddr.data_addr, buf, buflen >> 2);
-+	else
-+		insl(ap->ioaddr.data_addr, buf, buflen >> 2);
++	if (ata_id_has_dword_io(adev->id)) {
++		if (write_data)
++			outsl(ap->ioaddr.data_addr, buf, buflen >> 2);
++		else
++			insl(ap->ioaddr.data_addr, buf, buflen >> 2);
 +	
-+	if (unlikely(slop)) {
-+		u32 pad;
-+		if (write_data) {
-+			memcpy(&pad, buf + buflen - slop, slop);
-+			outl(le32_to_cpu(pad), ap->ioaddr.data_addr);
-+		} else {
-+			pad = cpu_to_le16(inl(ap->ioaddr.data_addr));
-+			memcpy(buf + buflen - slop, &pad, slop);
++		if (unlikely(slop)) {
++			u32 pad;
++			if (write_data) {
++				memcpy(&pad, buf + buflen - slop, slop);
++				outl(le32_to_cpu(pad), ap->ioaddr.data_addr);
++			} else {
++				pad = cpu_to_le16(inl(ap->ioaddr.data_addr));
++				memcpy(buf + buflen - slop, &pad, slop);
++			}
 +		}
-+	}
++	} else
++		ata_pio_data_xfer(ap, adev, buf, buflen, write_data);
 +}
 +
 +static struct scsi_host_template qdi_sht = {
@@ -13001,9 +14206,334 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +module_init(qdi_init);
 +module_exit(qdi_exit);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_rz1000.c linux-2.6.16-rc2/drivers/scsi/pata_rz1000.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_rz1000.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_rz1000.c	2006-02-07 13:37:54.369769928 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_radisys.c linux-2.6.16-rc4/drivers/scsi/pata_radisys.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_radisys.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_radisys.c	2006-02-17 15:31:12.000000000 +0000
+@@ -0,0 +1,321 @@
++/*
++ *    pata_radisys.c - Intel PATA/SATA controllers
++ *
++ *	(C) 2006 Red Hat <alan@redhat.com>
++ *
++ *    Some parts based on ata_piix.c by Jeff Garzik and others.
++ *
++ *    A PIIX relative, this device has a single ATA channel and no
++ *    slave timings, SITRE or PPE. In that sense it is a close relative
++ *    of the original PIIX. It does however support UDMA 33/66 per channel
++ *    although no other modes/timings. Also lacking is 32bit I/O on the ATA
++ *    port.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/init.h>
++#include <linux/blkdev.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <scsi/scsi_host.h>
++#include <linux/libata.h>
++#include <linux/ata.h>
++
++#define DRV_NAME	"pata_radisys"
++#define DRV_VERSION	"0.2"
++
++/**
++ *	radisys_pata_phy_reset - Probe specified port on PATA host controller
++ *	@ap: Port to probe
++ *
++ *	LOCKING:
++ *	None (inherited from caller).
++ */
++
++static void radisys_pata_phy_reset(struct ata_port *ap)
++{
++	ap->cbl = ATA_CBL_PATA80;
++	ata_port_probe(ap);
++	ata_bus_reset(ap);
++}
++
++/**
++ *	radisys_set_piomode - Initialize host controller PATA PIO timings
++ *	@ap: Port whose timings we are configuring
++ *	@adev: um
++ *
++ *	Set PIO mode for device, in host controller PCI config space.
++ *
++ *	LOCKING:
++ *	None (inherited from caller).
++ */
++
++static void radisys_set_piomode (struct ata_port *ap, struct ata_device *adev)
++{
++	unsigned int pio	= adev->pio_mode - XFER_PIO_0;
++	struct pci_dev *dev	= to_pci_dev(ap->host_set->dev);
++	u16 idetm_data;
++	int control = 0;
++
++	/*
++	 *	See Intel Document 298600-004 for the timing programing rules
++	 *	for PIIX/ICH. Note that the early PIIX does not have the slave
++	 *	timing port at 0x44. The Radisys is a relative of the PIIX
++	 *	but not the same so be careful.
++	 */
++
++	static const	 /* ISP  RTC */
++	u8 timings[][2]	= { { 0, 0 },	/* Check me */
++			    { 0, 0 },
++			    { 1, 1 },
++			    { 2, 2 },
++			    { 3, 3 }, };
++
++	if (pio > 0)
++		control |= 1;	/* TIME1 enable */
++	if (ata_pio_need_iordy(adev))
++		control |= 2;	/* IE IORDY */
++
++	pci_read_config_word(dev, 0x40, &idetm_data);
++
++	/* Enable IE and TIME as appropriate. Clear the other
++	   drive timing bits */
++	idetm_data &= 0xCCCC;
++	idetm_data |= (control << (4 * adev->devno));
++	idetm_data |= (timings[pio][0] << 12) |
++			(timings[pio][1] << 8);
++	pci_write_config_word(dev, 0x40, idetm_data);
++
++	/* Track which port is configured */
++	ap->private_data = adev;
++}
++
++/**
++ *	radisys_set_dmamode - Initialize host controller PATA DMA timings
++ *	@ap: Port whose timings we are configuring
++ *	@adev: Device to program
++ *	@isich: True if the device is an ICH and has IOCFG registers
++ *
++ *	Set MWDMA mode for device, in host controller PCI config space.
++ *
++ *	LOCKING:
++ *	None (inherited from caller).
++ */
++
++static void radisys_set_dmamode (struct ata_port *ap, struct ata_device *adev)
++{
++	struct pci_dev *dev	= to_pci_dev(ap->host_set->dev);
++	u16 idetm_data;
++	u8 udma_enable;
++	
++	static const	 /* ISP  RTC */
++	u8 timings[][2]	= { { 0, 0 },
++			    { 0, 0 },
++			    { 1, 1 },
++			    { 2, 2 },
++			    { 3, 3 }, };
++
++	/*
++	 * MWDMA is driven by the PIO timings. We must also enable
++	 * IORDY unconditionally.
++	 */
++
++	pci_read_config_word(dev, 0x40, &idetm_data);
++	pci_read_config_byte(dev, 0x48, &udma_enable);
++
++	if (adev->dma_mode < XFER_UDMA_0) {
++		unsigned int mwdma	= adev->dma_mode - XFER_MW_DMA_0;
++		const unsigned int needed_pio[3] = {
++			XFER_PIO_0, XFER_PIO_3, XFER_PIO_4
++		};
++		int pio = needed_pio[mwdma] - XFER_PIO_0;
++		int control = 3;	/* IORDY|TIME0 */
++
++		/* If the drive MWDMA is faster than it can do PIO then
++		   we must force PIO0 for PIO cycles. */
++
++		if (adev->pio_mode < needed_pio[mwdma])
++			control = 1;
++
++		/* Mask out the relevant control and timing bits we will load. Also
++		   clear the other drive TIME register as a precaution */
++		   
++		idetm_data &= 0xCCCC;
++		idetm_data |= control << (4 * adev->devno);
++		idetm_data |= (timings[pio][0] << 12) | (timings[pio][1] << 8);
++
++		udma_enable &= ~(1 << adev->devno);
++	} else {
++		u8 udma_mode;
++		
++		/* UDMA66 on. It isn't clear from the documentation whether
++		   UDMA 33 and 66 are switchable via register 0x4A */
++		
++		pci_read_config_byte(dev, 0x4A, &udma_mode);
++		
++		if (adev->xfer_mode == XFER_UDMA_2)
++			udma_mode &= ~ (1 << adev->devno);
++		else /* UDMA 4 */
++			udma_mode |= (1 << adev->devno);
++			
++		pci_write_config_byte(dev, 0x4A, udma_mode);
++		
++		udma_enable |= (1 << adev->devno);
++	}
++	pci_write_config_word(dev, 0x40, idetm_data);
++	pci_write_config_byte(dev, 0x48, udma_enable);
++
++	/* Track which port is configured */
++	ap->private_data = adev;
++}
++
++/**
++ *	radisys_qc_issue_prot	-	command issue
++ *	@qc: command pending
++ *
++ *	Called when the libata layer is about to issue a command. We wrap
++ *	this interface so that we can load the correct ATA timings if
++ *	neccessary. Our logic also clears TIME0/TIME1 for the other device so
++ *	that, even if we get this wrong, cycles to the other device will
++ *	be made PIO0.
++ */
++
++static int radisys_qc_issue_prot(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++
++	if (adev != ap->private_data) {
++		/* UDMA timing is not shared */
++		if (adev->dma_mode < XFER_UDMA_0) {
++			if (adev->dma_mode)
++				radisys_set_dmamode(ap, adev);
++			else if (adev->pio_mode)
++				radisys_set_piomode(ap, adev);
++		}
++	}
++	return ata_qc_issue_prot(qc);
++}
++
++
++static struct scsi_host_template radisys_sht = {
++	.module			= THIS_MODULE,
++	.name			= DRV_NAME,
++	.ioctl			= ata_scsi_ioctl,
++	.queuecommand		= ata_scsi_queuecmd,
++	.eh_strategy_handler	= ata_scsi_error,
++	.can_queue		= ATA_DEF_QUEUE,
++	.this_id		= ATA_SHT_THIS_ID,
++	.sg_tablesize		= LIBATA_MAX_PRD,
++	.max_sectors		= ATA_MAX_SECTORS,
++	.cmd_per_lun		= ATA_SHT_CMD_PER_LUN,
++	.emulated		= ATA_SHT_EMULATED,
++	.use_clustering		= ATA_SHT_USE_CLUSTERING,
++	.proc_name		= DRV_NAME,
++	.dma_boundary		= ATA_DMA_BOUNDARY,
++	.slave_configure	= ata_scsi_slave_config,
++	.bios_param		= ata_std_bios_param,
++//	.ordered_flush		= 1,
++};
++
++static const struct ata_port_operations radisys_pata_ops = {
++	.port_disable		= ata_port_disable,
++	.set_piomode		= radisys_set_piomode,
++	.set_dmamode		= radisys_set_dmamode,
++
++	.tf_load		= ata_tf_load,
++	.tf_read		= ata_tf_read,
++	.check_status		= ata_check_status,
++	.exec_command		= ata_exec_command,
++	.dev_select		= ata_std_dev_select,
++
++	.phy_reset		= radisys_pata_phy_reset,
++
++	.bmdma_setup		= ata_bmdma_setup,
++	.bmdma_start		= ata_bmdma_start,
++	.bmdma_stop		= ata_bmdma_stop,
++	.bmdma_status		= ata_bmdma_status,
++	.qc_prep		= ata_qc_prep,
++	.qc_issue		= radisys_qc_issue_prot,
++	.data_xfer		= ata_pio_data_xfer,
++
++	.eng_timeout		= ata_eng_timeout,
++
++	.irq_handler		= ata_interrupt,
++	.irq_clear		= ata_bmdma_irq_clear,
++
++	.port_start		= ata_port_start,
++	.port_stop		= ata_port_stop,
++	.host_stop		= ata_host_stop,
++};
++
++
++/**
++ *	radisys_init_one - Register PIIX ATA PCI device with kernel services
++ *	@pdev: PCI device to register
++ *	@ent: Entry in radisys_pci_tbl matching with @pdev
++ *
++ *	Called from kernel PCI layer.  We probe for combined mode (sigh),
++ *	and then hand over control to libata, for it to do the rest.
++ *
++ *	LOCKING:
++ *	Inherited from PCI layer (may sleep).
++ *
++ *	RETURNS:
++ *	Zero on success, or -ERRNO value.
++ */
++
++static int radisys_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
++{
++	static int printed_version;
++	static struct ata_port_info info = {
++		.sht		= &radisys_sht,
++		.host_flags	= ATA_FLAG_SLAVE_POSS | ATA_FLAG_SRST,
++		.pio_mask	= 0x1f,	/* pio0-4 */
++		.mwdma_mask	= 0x07, /* mwdma1-2 */
++		.udma_mask	= 0x14, /* UDMA33/66 only */
++		.port_ops	= &radisys_pata_ops,
++	};
++	static struct ata_port_info *port_info[2] = { &info, &info };
++
++	if (!printed_version++)
++		dev_printk(KERN_DEBUG, &pdev->dev,
++			   "version " DRV_VERSION "\n");
++
++	return ata_pci_init_one(pdev, port_info, 2);
++}
++
++static const struct pci_device_id radisys_pci_tbl[] = {
++	{ 0x1331, 0x8201, PCI_ANY_ID, PCI_ANY_ID, },
++	{ }	/* terminate list */
++};
++
++static struct pci_driver radisys_pci_driver = {
++	.name			= DRV_NAME,
++	.id_table		= radisys_pci_tbl,
++	.probe			= radisys_init_one,
++	.remove			= ata_pci_remove_one,
++};
++
++static int __init radisys_init(void)
++{
++	return pci_register_driver(&radisys_pci_driver);
++}
++
++static void __exit radisys_exit(void)
++{
++	pci_unregister_driver(&radisys_pci_driver);
++}
++
++
++module_init(radisys_init);
++module_exit(radisys_exit);
++
++MODULE_AUTHOR("Alan Cox");
++MODULE_DESCRIPTION("SCSI low-level driver for Radisys R82600 controllers");
++MODULE_LICENSE("GPL");
++MODULE_DEVICE_TABLE(pci, radisys_pci_tbl);
++MODULE_VERSION(DRV_VERSION);
++
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_rz1000.c linux-2.6.16-rc4/drivers/scsi/pata_rz1000.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_rz1000.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_rz1000.c	2006-02-16 15:38:18.000000000 +0000
 @@ -0,0 +1,183 @@
 +/*
 + *  RZ1000/1001 driver based upon
@@ -13139,10 +14669,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		printk(KERN_DEBUG DRV_NAME " version " DRV_VERSION "\n");
 +
 +	/* Be exceptionally paranoid as we must be sure to apply the fix */
-+	if(pci_read_config_word(pdev, 0x40, &reg) != 0)
++	if (pci_read_config_word(pdev, 0x40, &reg) != 0)
 +		goto fail;
 +	reg &= 0xDFFF;
-+	if(pci_write_config_word(pdev, 0x40, reg) != 0)
++	if (pci_write_config_word(pdev, 0x40, reg) != 0)
 +		goto fail;
 +	printk(KERN_INFO DRV_NAME ": disabled chipset readahead.\n");
 +
@@ -13188,10 +14718,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +module_init(rz1000_init);
 +module_exit(rz1000_exit);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sc1200.c linux-2.6.16-rc2/drivers/scsi/pata_sc1200.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sc1200.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_sc1200.c	2006-02-07 13:39:25.938849312 +0000
-@@ -0,0 +1,264 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sc1200.c linux-2.6.16-rc4/drivers/scsi/pata_sc1200.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sc1200.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_sc1200.c	2006-02-16 15:46:11.000000000 +0000
+@@ -0,0 +1,286 @@
 +/*
 + * New ATA layer SC1200 driver		Alan Cox <alan@redhat.com>
 + *
@@ -13234,7 +14764,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME	"sc1200"
-+#define DRV_VERSION	"0.1"
++#define DRV_VERSION	"0.2"
 +
 +#define SC1200_REV_A	0x00
 +#define SC1200_REV_B1	0x01
@@ -13256,7 +14786,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u8 silicon_rev = inb(0x903D);
 +	u16 pci_clock;
 +	
-+	if(chip_id == 0x04 && silicon_rev < SC1200_REV_B1)
++	if (chip_id == 0x04 && silicon_rev < SC1200_REV_B1)
 +		return 0;	/* 33 MHz mode */
 +
 +	/* Clock generator configuration 0x901E its 8/9 are the PCI clocking
@@ -13265,7 +14795,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_clock = inw(0x901E);
 +	pci_clock >>= 8;
 +	pci_clock &= 0x03;
-+	if(pci_clock == 3)
++	if (pci_clock == 3)
 +		pci_clock = 0;
 +	return pci_clock;
 +}
@@ -13305,11 +14835,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *	@adev: Device being configured
 + *
 + *	We cannot mix MWDMA and UDMA without reloading timings each switch
-+ *	master to slave. We should implement the switch but for now we follow
-+ *	the old IDE driver and just avoid setting such combinations.
-+ *
-+ *	This will come up once the SATA core grows up and develops proper
-+ *	timing code.
++ *	master to slave.
 + */
 + 
 +static void sc1200_set_dmamode(struct ata_port *ap, struct ata_device *adev)
@@ -13332,12 +14858,12 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	int mode = adev->dma_mode;
 +	u32 format;
 +
-+	if(mode >= XFER_UDMA_0)
++	if (mode >= XFER_UDMA_0)
 +		format = udma_timing[clock][mode - XFER_UDMA_0];
 +	else
 +		format = mwdma_timing[clock][mode - XFER_MW_DMA_0];
 +	
-+	if(adev->devno == 0) {
++	if (adev->devno == 0) {
 +		u32 timings;
 +		
 +		pci_read_config_dword(pdev, reg + 4, &timings);
@@ -13346,6 +14872,34 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		pci_write_config_dword(pdev, reg + 4, timings);
 +	} else
 +		pci_write_config_dword(pdev, reg + 12, format);
++}
++
++/**
++ *	sc1200_qc_issue_prot	-	command issue
++ *	@qc: command pending
++ *
++ *	Called when the libata layer is about to issue a command. We wrap
++ *	this interface so that we can load the correct ATA timings if
++ *	neccessary.  Specifically we have a problem that there is only
++ *	one MWDMA/UDMA bit.
++ */
++
++static int sc1200_qc_issue_prot(struct ata_queued_cmd *qc)
++{
++	struct ata_port *ap = qc->ap;
++	struct ata_device *adev = qc->dev;
++	struct ata_device *prev = ap->private_data;
++
++	/* See if the DMA settings could be wrong */
++	if (adev->dma_mode != 0 && adev != prev && prev != NULL) {
++		/* Maybe, but do the channels match MWDMA/UDMA ? */
++		if ((adev->dma_mode >= XFER_UDMA_0 && prev->dma_mode < XFER_UDMA_0) ||
++		    (adev->dma_mode < XFER_UDMA_0 && prev->dma_mode >= XFER_UDMA_0))
++		    	/* Switch the mode bits */
++		    	sc1200_set_dmamode(ap, adev);
++	}
++
++	return ata_qc_issue_prot(qc);
 +}
 +
 +static struct scsi_host_template sc1200_sht = {
@@ -13369,8 +14923,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +};
 +
 +static struct ata_port_operations sc1200_port_ops = {
-+/*	.set_mode	= sc1200_set_mode,  FIXME - for master/slave */
-+	
 +	.port_disable	= ata_port_disable,
 +	.set_piomode	= sc1200_set_piomode,
 +	.set_dmamode	= sc1200_set_dmamode,
@@ -13387,7 +14939,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	.bmdma_status 	= ata_bmdma_status,
 +
 +	.qc_prep 	= ata_qc_prep,
-+	.qc_issue	= ata_qc_issue_prot,
++	.qc_issue	= sc1200_qc_issue_prot,
 +	.eng_timeout	= ata_eng_timeout,
 +	.data_xfer	= ata_pio_data_xfer,
 +
@@ -13456,10 +15008,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(sc1200_init);
 +module_exit(sc1200_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_serverworks.c linux-2.6.16-rc2/drivers/scsi/pata_serverworks.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_serverworks.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_serverworks.c	2006-02-07 13:38:36.921301112 +0000
-@@ -0,0 +1,591 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_serverworks.c linux-2.6.16-rc4/drivers/scsi/pata_serverworks.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_serverworks.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_serverworks.c	2006-02-16 15:37:31.000000000 +0000
+@@ -0,0 +1,586 @@
 +/*
 + * ata-serverworks.c 	- Serverworks PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -13611,7 +15163,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	struct sv_cable_table *cb = cable_detect;
 +
 +	while(cb->device) {
-+		if(cb->device == pdev->device && 
++		if (cb->device == pdev->device && 
 +			(cb->subvendor == pdev->subsystem_vendor ||
 +			 cb->subvendor == PCI_ANY_ID)) {
 +			 return cb->cable_detect(ap);
@@ -13662,9 +15214,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + 
 +static unsigned int serverworks_osb4_filter(const struct ata_port *ap, struct ata_device *adev, unsigned int mask, int shift)
 +{
-+	if(shift != ATA_SHIFT_UDMA)
++	if (shift != ATA_SHIFT_UDMA)
 +		return mask;
-+	if(adev->class == ATA_DEV_ATA)
++	if (adev->class == ATA_DEV_ATA)
 +		return 0;
 +	return mask;
 +}
@@ -13685,9 +15237,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	int len, i;
 +
 +	/* Disk, UDMA */	
-+	if(shift != ATA_SHIFT_UDMA)
++	if (shift != ATA_SHIFT_UDMA)
 +		return mask;
-+	if(adev->class != ATA_DEV_ATA)
++	if (adev->class != ATA_DEV_ATA)
 +		return mask;
 +
 +	/* Actually do need to check */
@@ -13729,7 +15281,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	/* The OSB4 just requires the timing but the CSB series want the
 +	   mode number as well */
-+	if(serverworks_is_csb(pdev)) {
++	if (serverworks_is_csb(pdev)) {
 +		pci_read_config_word(pdev, 0x4A, &csb5_pio);
 +		csb5_pio &= ~(0x0F << devbits);
 +		pci_write_config_byte(pdev, 0x4A, csb5_pio | (pio << devbits));
@@ -13757,7 +15309,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	pci_read_config_byte(pdev, 0x54, &ultra_cfg);
 +
-+	if(adev->dma_mode >= XFER_UDMA_0) {
++	if (adev->dma_mode >= XFER_UDMA_0) {
 +		pci_write_config_byte(pdev, 0x44 + offset,  0x20);
 +
 +		pci_read_config_byte(pdev, 0x56 + ap->hard_port_no, &ultra);
@@ -13863,7 +15415,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	if (isa_dev) {
 +		pci_read_config_dword(isa_dev, 0x64, &reg);
 +		reg &= ~0x00002000; /* disable 600ns interrupt mask */
-+		if(!(reg & 0x00004000))
++		if (!(reg & 0x00004000))
 +			printk(KERN_DEBUG DRV_NAME ": UDMA not BIOS enabled.\n");
 +		reg |=  0x00004000; /* enable UDMA/33 support */
 +		pci_write_config_dword(isa_dev, 0x64, reg);
@@ -13895,11 +15447,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			pci_write_config_dword(findev, 0x4C, reg4c);
 +			pci_dev_put(findev);
 +		}
-+#if 0 
-+FIXME
-+		outb_p(0x06, 0x0c00);
-+		dev->irq = inb_p(0x0c01);
-+#endif
 +	} else {
 +		struct pci_dev * findev = NULL;
 +		u8 reg41 = 0;
@@ -13987,7 +15534,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* OSB4 : South Bridge and IDE */
 +	if (pdev->device == PCI_DEVICE_ID_SERVERWORKS_OSB4IDE) {
 +		/* Select non UDMA capable OSB4 if we can't do fixups */
-+		if( serverworks_fixup_osb4(pdev) < 0)
++		if ( serverworks_fixup_osb4(pdev) < 0)
 +			devinfo = &info[1];
 +	}
 +	/* setup CSB5/CSB6 : South Bridge and IDE option RAID */
@@ -13997,11 +15544,11 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		 
 +		 /* If the returned btr is the newer revision then
 +		    select the right info block */
-+		 if(serverworks_fixup_csb(pdev) == 3)
++		 if (serverworks_fixup_csb(pdev) == 3)
 +		 	devinfo = &info[3];
 +		 	
 +		/* Is this the 3rd channel CSB6 IDE ? */
-+		if(pdev->device == PCI_DEVICE_ID_SERVERWORKS_CSB6IDE2)
++		if (pdev->device == PCI_DEVICE_ID_SERVERWORKS_CSB6IDE2)
 +			ports = 1;
 +	}
 +	/* setup HT1000E */
@@ -14051,10 +15598,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(serverworks_init);
 +module_exit(serverworks_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sil680.c linux-2.6.16-rc2/drivers/scsi/pata_sil680.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sil680.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_sil680.c	2006-01-21 17:04:00.000000000 +0000
-@@ -0,0 +1,362 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sil680.c linux-2.6.16-rc4/drivers/scsi/pata_sil680.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sil680.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_sil680.c	2006-02-16 15:28:00.000000000 +0000
+@@ -0,0 +1,368 @@
 +/*
 + * pata_sil680.c 	- SIL680 PATA for new ATA layer
 + *			  (C) 2005 Red Hat Inc
@@ -14078,7 +15625,6 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + * TODO
 + *	If we know all our devices are LBA28 (or LBA28 sized)  we could use
 + *	the command fifo mode.
-+ *	Mode filters for shared PIO
 + */
 +
 +#include <linux/kernel.h>
@@ -14091,7 +15637,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_sil680"
-+#define DRV_VERSION "0.1"
++#define DRV_VERSION "0.2.1"
 +
 +/**
 + *	sil680_selreg		-	return register base
@@ -14143,7 +15689,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	unsigned long addr = sil680_selreg(ap, 0);
 +	u8 ata66;
 +	pci_read_config_byte(pdev, addr, &ata66);
-+	if(ata66 & 1)
++	if (ata66 & 1)
 +		return ATA_CBL_PATA80;
 +	else
 +		return ATA_CBL_PATA40;
@@ -14182,8 +15728,8 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *	@adev: ATA device
 + *
 + *	Program the SIL680 registers for PIO mode. Note that the task speed
-+ *	registers are shared between the devices so once the speed filters are
-+ *	in we must pick the lowest mode or switch.
++ *	registers are shared between the devices so we must pick the lowest
++ *	mode for command work.
 + */
 +
 +static void sil680_set_piomode(struct ata_port *ap, struct ata_device *adev)
@@ -14195,14 +15741,22 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	unsigned long addr = sil680_seldev(ap, adev, 0x04);
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
 +	int pio = adev->pio_mode - XFER_PIO_0;
++	int lowest_pio = pio;
 +	u16 reg;
++	
++	struct ata_device *pair = ata_dev_pair(ap, adev);
 +
++	if (pair != NULL) {
++		if (adev->pio_mode > pair->pio_mode)
++			lowest_pio = pair->pio_mode - XFER_PIO_0;
++	}
++	
 +	pci_write_config_word(pdev, addr, speed_p[pio]);
-+	pci_write_config_word(pdev, tfaddr, speed_t[pio]);
++	pci_write_config_word(pdev, tfaddr, speed_t[lowest_pio]);
 +
 +	pci_read_config_word(pdev, tfaddr-2, &reg);
 +	reg &= ~0x0200;			/* Clear IORDY */
-+	if(pio > 2)
++	if (ata_pio_need_iordy(adev))
 +		reg |= 0x0200;		/* Enable IORDY */
 +	pci_write_config_word(pdev, tfaddr-2, reg);
 +}
@@ -14214,8 +15768,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 + *
 + *	Program the MWDMA/UDMA modes for the sil680 k
 + *	chipset. The MWDMA mode values are pulled from a lookup table
-+ *	while the chipset uses mode number for UDMA. We don't yet handle
-+ *	the shared pio speed stuff in full. FIXME
++ *	while the chipset uses mode number for UDMA. 
 + */
 +
 +static void sil680_set_dmamode(struct ata_port *ap, struct ata_device *adev)
@@ -14246,7 +15799,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Extract scsc */
 +	scsc = (scsc & 0x30) ? 1: 0;
 +
-+	if(adev->dma_mode >= XFER_UDMA_0) {
++	if (adev->dma_mode >= XFER_UDMA_0) {
 +		multi = 0x10C1;
 +		ultra |= ultra_table[scsc][adev->dma_mode - XFER_UDMA_0];
 +		mode |= (0x03 << port_shift);
@@ -14360,7 +15913,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	}
 +
 +	pci_read_config_byte(pdev,   0x8A, &tmpbyte);
-+	if((tmpbyte & 0x30) == 0)
++	if ((tmpbyte & 0x30) == 0)
 +		port_info[0] = port_info[1] = &info_slow;
 +
 +	pci_write_config_byte(pdev,  0xA1, 0x72);
@@ -14417,9 +15970,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(sil680_init);
 +module_exit(sil680_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sis.c linux-2.6.16-rc2/drivers/scsi/pata_sis.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sis.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_sis.c	2006-02-07 13:38:21.080709248 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sis.c linux-2.6.16-rc4/drivers/scsi/pata_sis.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sis.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_sis.c	2006-02-16 15:36:13.000000000 +0000
 @@ -0,0 +1,982 @@
 +/*
 + *    pata_sis.c - SiS ATA driver
@@ -14480,7 +16033,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	u16 tmp;
 +	
 +	pci_read_config_word(pdev, 0x50 + 2 * ap->hard_port_no, &tmp);
-+	if(tmp & 0x8000)
++	if (tmp & 0x8000)
 +		return ATA_CBL_PATA40;
 +	return ATA_CBL_PATA80;
 +}
@@ -14527,7 +16080,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_byte(pdev, 0x48, &tmp);
 +	tmp >>= ap->hard_port_no;
-+	if(tmp & 0x10)
++	if (tmp & 0x10)
 +		return ATA_CBL_PATA40;
 +	return ATA_CBL_PATA80;
 +}
@@ -14608,7 +16161,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	reg4b &= ~mask;
 +	
 +	/* Enable for ATA (disk) only */
-+	if(adev->class == ATA_DEV_ATA)
++	if (adev->class == ATA_DEV_ATA)
 +		reg4b |= mask;
 +	pci_write_config_byte(pdev, 0x4B, reg4b);
 +}
@@ -14714,14 +16267,14 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	sis_set_fifo(ap, adev);
 +
 +	pci_read_config_dword(pdev, 0x54, &reg54);
-+	if(reg54 & 0x40000000)
++	if (reg54 & 0x40000000)
 +		port = 0x70;
 +	port += 8 * ap->hard_port_no +  4 * adev->devno;
 +
 +	pci_read_config_dword(pdev, port, &t1);
 +	t1 &= 0xC0C00FFF;	/* Mask out timing */
 +	
-+	if(t1 & 0x08)		/* 100 or 133 ? */
++	if (t1 & 0x08)		/* 100 or 133 ? */
 +		t1 |= timing133[speed];
 +	else
 +		t1 |= timing100[speed];
@@ -14755,7 +16308,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_word(pdev, drive_pci, &timing);
 +	
-+	if(adev->dma_mode < XFER_UDMA_0) {
++	if (adev->dma_mode < XFER_UDMA_0) {
 +		/* bits 3-0 hold recovery timing bits 8-10 active timing and
 +		   the higer bits are dependant on the device */
 +		timing &= ~ 0x870F;
@@ -14794,7 +16347,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_word(pdev, drive_pci, &timing);
 +	
-+	if(adev->dma_mode < XFER_UDMA_0) {
++	if (adev->dma_mode < XFER_UDMA_0) {
 +		/* bits 3-0 hold recovery timing bits 8-10 active timing and
 +		   the higer bits are dependant on the device, bit 15 udma */
 +		timing &= ~ 0x870F;
@@ -14831,7 +16384,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_word(pdev, drive_pci, &timing);
 +	
-+	if(adev->dma_mode < XFER_UDMA_0) {
++	if (adev->dma_mode < XFER_UDMA_0) {
 +		/* NOT SUPPORTED YET: NEED DATA SHEET. DITTO IN OLD DRIVER */
 +	} else {
 +		/* Bit 15 is UDMA on/off, bit 12-14 are cycle time */
@@ -14866,7 +16419,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	pci_read_config_word(pdev, drive_pci, &timing);
 +	
-+	if(adev->dma_mode < XFER_UDMA_0) {
++	if (adev->dma_mode < XFER_UDMA_0) {
 +		/* NOT SUPPORTED YET: NEED DATA SHEET. DITTO IN OLD DRIVER */
 +	} else {
 +		/* Bit 15 is UDMA on/off, bit 12-14 are cycle time */
@@ -14903,13 +16456,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	const u32 timing_u133[] = { 0x9F0, 0x6A0, 0x470, 0x250, 0x230, 0x220, 0x210 };
 +	
 +	pci_read_config_dword(pdev, 0x54, &reg54);
-+	if(reg54 & 0x40000000)
++	if (reg54 & 0x40000000)
 +		port = 0x70;
 +	port += 8 * ap->hard_port_no +  4 * adev->devno;
 +	
 +	pci_read_config_dword(pdev, port, &t1);
 +	
-+	if(adev->dma_mode < XFER_UDMA_0) {
++	if (adev->dma_mode < XFER_UDMA_0) {
 +		t1 &= ~0x00000004;
 +		/* FIXME: need data sheet to add MWDMA here. Also lacking on
 +		   ide/pci driver */
@@ -14918,7 +16471,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		/* if & 8 no UDMA133 - need info for ... */
 +		t1 &= ~0x00000FF0;
 +		t1 |= 0x00000004;
-+		if(t1 & 0x08)
++		if (t1 & 0x08)
 +			t1 |= timing_u133[speed];
 +		else
 +			t1 |= timing_u100[speed];
@@ -15161,10 +16714,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	
 +	if (sis->info == &sis_info133) {
 +		pci_read_config_word(pdev, 0x50, &regw);
-+		if(regw & 0x08)
++		if (regw & 0x08)
 +			pci_write_config_word(pdev, 0x50, regw & ~0x08);
 +		pci_read_config_word(pdev, 0x52, &regw);
-+		if(regw & 0x08)
++		if (regw & 0x08)
 +			pci_write_config_word(pdev, 0x52, regw & ~0x08);
 +		return;
 +	}
@@ -15286,7 +16839,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			if (chipset->device == 0x630) {	/* SIS630 */
 +				u8 host_rev;
 +				pci_read_config_byte(host, PCI_REVISION_ID, &host_rev);
-+				if(host_rev >= 0x30)	/* 630 ET */
++				if (host_rev >= 0x30)	/* 630 ET */
 +					chipset = &sis100_early;
 +			}
 +			break;
@@ -15325,7 +16878,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	}
 +
 +	/* Further check */	
-+	if(chipset == NULL) {
++	if (chipset == NULL) {
 +		struct pci_dev *lpc_bridge;
 +		u16 trueid;
 +		u8 prefctl;
@@ -15341,13 +16894,13 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		switch(trueid) {
 +		case 0x5517:
 +			lpc_bridge = pci_get_slot(0x00, 0x10); /* Bus 0 Dev 2 Fn 0 */
-+			if(lpc_bridge == NULL)
++			if (lpc_bridge == NULL)
 +				break;
 +			pci_read_config_byte(lpc_bridge, PCI_REVISION_ID, &sbrev);
 +			pci_read_config_byte(pdev, 0x49, &prefctl);
 +			pci_dev_put(lpc_bridge);
 +		
-+			if(sbrev == 0x10 && (prefctl & 0x80)) {
++			if (sbrev == 0x10 && (prefctl & 0x80)) {
 +				chipset = &sis133_early;
 +				break;
 +			} 
@@ -15403,9 +16956,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +MODULE_DEVICE_TABLE(pci, sis_pci_tbl);
 +MODULE_VERSION(DRV_VERSION);
 +
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sl82c105.c linux-2.6.16-rc2/drivers/scsi/pata_sl82c105.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_sl82c105.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_sl82c105.c	2006-01-21 17:05:02.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sl82c105.c linux-2.6.16-rc4/drivers/scsi/pata_sl82c105.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_sl82c105.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_sl82c105.c	2006-02-16 15:36:32.000000000 +0000
 @@ -0,0 +1,376 @@
 +/*
 + * pata_sl82c105.c 	- SL82C105 PATA for new ATA layer
@@ -15734,7 +17287,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +	rev = sl82c105_bridge_revision(dev);
 +	
-+	if(rev == -1)
++	if (rev == -1)
 +		dev_printk(KERN_WARNING, &dev->dev, "pata_sl82c105: Unable to find bridge, disabling DMA.\n");
 +	else if (rev <= 5)
 +		dev_printk(KERN_WARNING, &dev->dev, "pata_sl82c105: Early bridge revision, no DMA available.\n");
@@ -15783,9 +17336,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(sl82c105_init);
 +module_exit(sl82c105_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_triflex.c linux-2.6.16-rc2/drivers/scsi/pata_triflex.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_triflex.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_triflex.c	2006-01-21 17:05:13.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_triflex.c linux-2.6.16-rc4/drivers/scsi/pata_triflex.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_triflex.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_triflex.c	2006-02-16 15:36:23.000000000 +0000
 @@ -0,0 +1,268 @@
 +/*
 + * pata_triflex.c 	- Compaq PATA for new ATA layer
@@ -15904,7 +17457,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	triflex_timing &= ~ (0xFFFF << (16 * is_slave));
 +	triflex_timing |= (timing << (16 * is_slave));
 +
-+	if(triflex_timing != old_triflex_timing)
++	if (triflex_timing != old_triflex_timing)
 +		pci_write_config_dword(pdev, channel_offset, triflex_timing);
 +}
 +
@@ -16055,9 +17608,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(triflex_init);
 +module_exit(triflex_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/pata_via.c linux-2.6.16-rc2/drivers/scsi/pata_via.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/pata_via.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.16-rc2/drivers/scsi/pata_via.c	2006-01-21 17:06:09.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pata_via.c linux-2.6.16-rc4/drivers/scsi/pata_via.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pata_via.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16-rc4/drivers/scsi/pata_via.c	2006-02-16 15:28:17.000000000 +0000
 @@ -0,0 +1,547 @@
 +/*
 + * pata_via.c 	- VIA PATA for new ATA layer
@@ -16121,7 +17674,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +#include <linux/libata.h>
 +
 +#define DRV_NAME "pata_via"
-+#define DRV_VERSION "0.1.3"
++#define DRV_VERSION "0.1.4"
 +
 +/*
 + *	The following comes directly from Vojtech Pavlik's ide/pci/via82cxxx
@@ -16193,7 +17746,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	pci_read_config_dword(pdev, 0x50, &ata66);
 +	/* Check both the drive cable reporting bits, we might not have
 +	   two drives */
-+	if(ata66 & (0x1010 << (16 * ap->hard_port_no)))
++	if (ata66 & (0x1010 << (16 * ap->hard_port_no)))
 +		return ATA_CBL_PATA80;
 +	else
 +		return ATA_CBL_PATA40;
@@ -16245,7 +17798,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +static void via_do_set_mode(struct ata_port *ap, struct ata_device *adev, int mode, int tdiv, int set_ast, int udma_type)
 +{
 +	struct pci_dev *pdev = to_pci_dev(ap->host_set->dev);
-+	struct ata_device *peer = &ap->device[1 - adev->devno];
++	struct ata_device *peer = ata_dev_pair(ap, adev);
 +	struct ata_timing t, p;
 +	static int via_clock = 33000;	/* Bus clock in kHZ - ought to be tunable one day */
 +	unsigned long T =  1000000000 / via_clock;
@@ -16259,19 +17812,19 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	ata_timing_compute(adev, adev->pio_mode, &t, T, UT);
 +
 +	/* We share 8bit timing so we must merge the constraints */
-+	if(ata_dev_present(peer)) {
-+		if(peer->pio_mode) {
++	if (peer) {
++		if (peer->pio_mode) {
 +			ata_timing_compute(peer, peer->pio_mode, &p, T, UT);
 +			ata_timing_merge(&p, &t, &t, ATA_TIMING_8BIT);
 +		}
-+		if(peer->dma_mode) {
++		if (peer->dma_mode) {
 +			ata_timing_compute(peer, peer->dma_mode, &p, T, UT);
 +			ata_timing_merge(&p, &t, &t, ATA_TIMING_8BIT);
 +		}
 +	}
 +
 +	/* Address setup is programmable but breaks on UDMA133 setups */
-+	if(set_ast) {
++	if (set_ast) {
 +		u8 setup;	/* 2 bits per drive */
 +		int shift = 2 * offset;
 +
@@ -16306,7 +17859,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			break;
 +	}
 +	/* Set UDMA unless device is not UDMA capable */
-+	if(udma_type)
++	if (udma_type)
 +		pci_write_config_byte(pdev, 0x50 + offset, ut);
 +}
 +
@@ -16508,7 +18061,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* 0x40 low bits indicate enabled channels */
 +	pci_read_config_byte(pdev, 0x40 , &enable);
 +	enable &= 3;
-+	if(enable == 0) {
++	if (enable == 0) {
 +		pci_dev_put(isa);
 +		return -ENODEV;
 +	}
@@ -16521,7 +18074,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +		pci_read_config_byte(pdev, 0x43, &fifo);
 +
 +		/* Clear PREQ# until DDACK# for errata */
-+		if(config->flags & VIA_BAD_PREQ)
++		if (config->flags & VIA_BAD_PREQ)
 +			fifo &= 0x7F;
 +		else
 +			fifo &= 0x9f;
@@ -16532,7 +18085,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +	/* Clock set up */
 +	switch(config->flags & VIA_UDMA) {
 +		case VIA_UDMA_NONE:
-+			if(config->flags & VIA_NO_UNMASK)
++			if (config->flags & VIA_NO_UNMASK)
 +				type = &via_mwdma_info_borked;
 +			else
 +				type = &via_mwdma_info;
@@ -16559,7 +18112,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +			break;
 +	}
 +
-+	if(config->flags & VIA_BAD_CLK66) {
++	if (config->flags & VIA_BAD_CLK66) {
 +		/* Disable the 66MHz clock on problem devices */
 +		pci_read_config_dword(pdev, 0x50, &timing);
 +		timing &= ~0x80008;
@@ -16606,9 +18159,21 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
 +
 +module_init(via_init);
 +module_exit(via_exit);
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_mv.c linux-2.6.16-rc2/drivers/scsi/sata_mv.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_mv.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_mv.c	2006-01-21 17:07:20.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/pdc_adma.c linux-2.6.16-rc4/drivers/scsi/pdc_adma.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/pdc_adma.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/pdc_adma.c	2006-02-23 13:15:50.480287896 +0000
+@@ -322,7 +322,7 @@
+ 			= (pFLAGS & pEND) ? 0 : cpu_to_le32(pp->pkt_dma + i + 4);
+ 		i += 4;
+ 
+-		VPRINTK("PRD[%u] = (0x%lX, 0x%X)\n", nelem,
++		VPRINTK("PRD[%u] = (0x%lX, 0x%X)\n", i/4,
+ 					(unsigned long)addr, len);
+ 	}
+ 	return i;
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_mv.c linux-2.6.16-rc4/drivers/scsi/sata_mv.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_mv.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_mv.c	2006-02-20 11:28:03.000000000 +0000
 @@ -389,6 +389,7 @@
  
  	.qc_prep		= mv_qc_prep,
@@ -16625,9 +18190,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	.eng_timeout		= mv_eng_timeout,
  
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_nv.c linux-2.6.16-rc2/drivers/scsi/sata_nv.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_nv.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_nv.c	2006-01-21 17:08:58.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_nv.c linux-2.6.16-rc4/drivers/scsi/sata_nv.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_nv.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_nv.c	2006-01-21 17:08:58.000000000 +0000
 @@ -258,6 +258,7 @@
  	.qc_prep		= ata_qc_prep,
  	.qc_issue		= ata_qc_issue_prot,
@@ -16636,9 +18201,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.irq_handler		= nv_interrupt,
  	.irq_clear		= ata_bmdma_irq_clear,
  	.scr_read		= nv_scr_read,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_promise.c linux-2.6.16-rc2/drivers/scsi/sata_promise.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_promise.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_promise.c	2006-02-06 12:36:12.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_promise.c linux-2.6.16-rc4/drivers/scsi/sata_promise.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_promise.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_promise.c	2006-02-06 12:36:12.000000000 +0000
 @@ -130,6 +130,7 @@
  	.qc_prep		= pdc_qc_prep,
  	.qc_issue		= pdc_qc_issue_prot,
@@ -16655,9 +18220,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= pdc_eng_timeout,
  	.irq_handler		= pdc_interrupt,
  	.irq_clear		= pdc_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_qstor.c linux-2.6.16-rc2/drivers/scsi/sata_qstor.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_qstor.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_qstor.c	2006-01-21 17:09:57.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_qstor.c linux-2.6.16-rc4/drivers/scsi/sata_qstor.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_qstor.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_qstor.c	2006-01-21 17:09:57.000000000 +0000
 @@ -158,6 +158,7 @@
  	.phy_reset		= qs_phy_reset,
  	.qc_prep		= qs_qc_prep,
@@ -16666,9 +18231,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= qs_eng_timeout,
  	.irq_handler		= qs_intr,
  	.irq_clear		= qs_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sil24.c linux-2.6.16-rc2/drivers/scsi/sata_sil24.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sil24.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_sil24.c	2006-01-21 17:10:52.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sil24.c linux-2.6.16-rc4/drivers/scsi/sata_sil24.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sil24.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_sil24.c	2006-01-21 17:10:52.000000000 +0000
 @@ -309,6 +309,7 @@
  
  	.qc_prep		= sil24_qc_prep,
@@ -16677,9 +18242,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	.eng_timeout		= sil24_eng_timeout,
  
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sil.c linux-2.6.16-rc2/drivers/scsi/sata_sil.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sil.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_sil.c	2006-01-21 17:11:06.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sil.c linux-2.6.16-rc4/drivers/scsi/sata_sil.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sil.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_sil.c	2006-02-14 17:23:28.000000000 +0000
 @@ -165,6 +165,7 @@
  	.bmdma_status		= ata_bmdma_status,
  	.qc_prep		= ata_qc_prep,
@@ -16688,9 +18253,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= ata_eng_timeout,
  	.irq_handler		= ata_interrupt,
  	.irq_clear		= ata_bmdma_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sis.c linux-2.6.16-rc2/drivers/scsi/sata_sis.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sis.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_sis.c	2006-01-21 17:11:23.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sis.c linux-2.6.16-rc4/drivers/scsi/sata_sis.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sis.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_sis.c	2006-01-21 17:11:23.000000000 +0000
 @@ -115,6 +115,7 @@
  	.bmdma_status		= ata_bmdma_status,
  	.qc_prep		= ata_qc_prep,
@@ -16699,9 +18264,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= ata_eng_timeout,
  	.irq_handler		= ata_interrupt,
  	.irq_clear		= ata_bmdma_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_svw.c linux-2.6.16-rc2/drivers/scsi/sata_svw.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_svw.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_svw.c	2006-02-06 12:30:23.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_svw.c linux-2.6.16-rc4/drivers/scsi/sata_svw.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_svw.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_svw.c	2006-02-06 12:30:23.000000000 +0000
 @@ -320,6 +320,7 @@
  	.bmdma_status		= ata_bmdma_status,
  	.qc_prep		= ata_qc_prep,
@@ -16710,9 +18275,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= ata_eng_timeout,
  	.irq_handler		= ata_interrupt,
  	.irq_clear		= ata_bmdma_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sx4.c linux-2.6.16-rc2/drivers/scsi/sata_sx4.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_sx4.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_sx4.c	2006-01-21 17:12:01.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sx4.c linux-2.6.16-rc4/drivers/scsi/sata_sx4.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_sx4.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_sx4.c	2006-01-21 17:12:01.000000000 +0000
 @@ -206,6 +206,7 @@
  	.phy_reset		= pdc_20621_phy_reset,
  	.qc_prep		= pdc20621_qc_prep,
@@ -16721,9 +18286,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= pdc_eng_timeout,
  	.irq_handler		= pdc20621_interrupt,
  	.irq_clear		= pdc20621_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_uli.c linux-2.6.16-rc2/drivers/scsi/sata_uli.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_uli.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_uli.c	2006-01-21 17:12:24.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_uli.c linux-2.6.16-rc4/drivers/scsi/sata_uli.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_uli.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_uli.c	2006-01-21 17:12:24.000000000 +0000
 @@ -106,6 +106,7 @@
  	.bmdma_status		= ata_bmdma_status,
  	.qc_prep		= ata_qc_prep,
@@ -16732,9 +18297,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	.eng_timeout		= ata_eng_timeout,
  
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_via.c linux-2.6.16-rc2/drivers/scsi/sata_via.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_via.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_via.c	2006-01-21 17:12:51.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_via.c linux-2.6.16-rc4/drivers/scsi/sata_via.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_via.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_via.c	2006-01-21 17:12:51.000000000 +0000
 @@ -126,6 +126,7 @@
  
  	.qc_prep		= ata_qc_prep,
@@ -16743,10 +18308,10 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  
  	.eng_timeout		= ata_eng_timeout,
  
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/drivers/scsi/sata_vsc.c linux-2.6.16-rc2/drivers/scsi/sata_vsc.c
---- linux.vanilla-2.6.16-rc2/drivers/scsi/sata_vsc.c	2006-02-06 12:21:40.000000000 +0000
-+++ linux-2.6.16-rc2/drivers/scsi/sata_vsc.c	2006-01-21 17:13:14.000000000 +0000
-@@ -252,6 +252,7 @@
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/drivers/scsi/sata_vsc.c linux-2.6.16-rc4/drivers/scsi/sata_vsc.c
+--- linux.vanilla-2.6.16-rc4/drivers/scsi/sata_vsc.c	2006-02-20 11:22:25.000000000 +0000
++++ linux-2.6.16-rc4/drivers/scsi/sata_vsc.c	2006-02-20 11:28:11.000000000 +0000
+@@ -280,6 +280,7 @@
  	.bmdma_status		= ata_bmdma_status,
  	.qc_prep		= ata_qc_prep,
  	.qc_issue		= ata_qc_issue_prot,
@@ -16754,9 +18319,9 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	.eng_timeout		= ata_eng_timeout,
  	.irq_handler		= vsc_sata_interrupt,
  	.irq_clear		= ata_bmdma_irq_clear,
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/include/linux/ata.h linux-2.6.16-rc2/include/linux/ata.h
---- linux.vanilla-2.6.16-rc2/include/linux/ata.h	2006-02-06 12:21:42.000000000 +0000
-+++ linux-2.6.16-rc2/include/linux/ata.h	2006-02-07 11:30:07.000000000 +0000
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/include/linux/ata.h linux-2.6.16-rc4/include/linux/ata.h
+--- linux.vanilla-2.6.16-rc4/include/linux/ata.h	2006-02-20 11:22:26.000000000 +0000
++++ linux-2.6.16-rc4/include/linux/ata.h	2006-02-15 14:39:41.000000000 +0000
 @@ -134,6 +134,8 @@
  	ATA_CMD_PIO_READ_EXT	= 0x24,
  	ATA_CMD_PIO_WRITE	= 0x30,
@@ -16766,7 +18331,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	ATA_CMD_READ_MULTI	= 0xC4,
  	ATA_CMD_READ_MULTI_EXT	= 0x29,
  	ATA_CMD_WRITE_MULTI	= 0xC5,
-@@ -247,13 +249,16 @@
+@@ -247,18 +249,22 @@
  };
  
  #define ata_id_is_ata(id)	(((id)[0] & (1 << 15)) == 0)
@@ -16783,9 +18348,24 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  #define ata_id_has_wcache(id)	((id)[82] & (1 << 5))
  #define ata_id_has_pm(id)	((id)[82] & (1 << 3))
  #define ata_id_has_lba(id)	((id)[49] & (1 << 9))
-diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6.16-rc2/include/linux/libata.h linux-2.6.16-rc2/include/linux/libata.h
---- linux.vanilla-2.6.16-rc2/include/linux/libata.h	2006-02-06 12:21:42.000000000 +0000
-+++ linux-2.6.16-rc2/include/linux/libata.h	2006-02-06 18:45:03.000000000 +0000
+ #define ata_id_has_dma(id)	((id)[49] & (1 << 8))
+ #define ata_id_removeable(id)	((id)[0] & (1 << 7))
++#define ata_id_has_dword_io(id)	((id)[50] & (1 << 0))
+ #define ata_id_u32(id,n)	\
+ 	(((u32) (id)[(n) + 1] << 16) | ((u32) (id)[(n)]))
+ #define ata_id_u64(id,n)	\
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.16-rc4/include/linux/libata.h linux-2.6.16-rc4/include/linux/libata.h
+--- linux.vanilla-2.6.16-rc4/include/linux/libata.h	2006-02-20 11:22:26.000000000 +0000
++++ linux-2.6.16-rc4/include/linux/libata.h	2006-02-23 13:28:56.634774248 +0000
+@@ -41,7 +41,7 @@
+ #undef ATA_VERBOSE_DEBUG	/* yet more debugging output */
+ #undef ATA_IRQ_TRAP		/* define to ack screaming irqs */
+ #undef ATA_NDEBUG		/* define to disable quick runtime checks */
+-#undef ATA_ENABLE_PATA		/* define to enable PATA support in some
++#define ATA_ENABLE_PATA		/* define to enable PATA support in some
+ 				 * low-level drivers */
+ #undef ATAPI_ENABLE_DMADIR	/* enables ATAPI DMADIR bridge support */
+ 
 @@ -101,6 +101,7 @@
  	ATA_DFLAG_PIO		= (1 << 1), /* device currently in PIO mode */
  	ATA_DFLAG_LOCK_SECTORS	= (1 << 2), /* don't adjust max_sectors */
@@ -16852,7 +18432,7 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  	void (*bmdma_setup) (struct ata_queued_cmd *qc);
  	void (*bmdma_start) (struct ata_queued_cmd *qc);
 +	
-+	void (*data_xfer) (struct ata_port *, unsigned char *, unsigned int, int);
++	void (*data_xfer) (struct ata_port *, struct ata_device *, unsigned char *, unsigned int, int);
  
  	void (*qc_prep) (struct ata_queued_cmd *qc);
  	int (*qc_issue) (struct ata_queued_cmd *qc);
@@ -16871,15 +18451,24 @@ diff -u --exclude-from /usr/src/exclude --new-file --recursive linux.vanilla-2.6
  extern void ata_bmdma_irq_clear(struct ata_port *ap);
  extern void ata_qc_complete(struct ata_queued_cmd *qc);
  extern void ata_eng_timeout(struct ata_port *ap);
-+extern void ata_mmio_data_xfer(struct ata_port *ap, unsigned char *buf,
++extern void ata_mmio_data_xfer(struct ata_port *ap, struct ata_device *adev, unsigned char *buf,
 +			       unsigned int buflen, int write_data);
-+extern void ata_pio_data_xfer(struct ata_port *ap, unsigned char *buf,
++extern void ata_pio_data_xfer(struct ata_port *ap, struct ata_device *adev, unsigned char *buf,
 +			      unsigned int buflen, int write_data);
-+extern void ata_mmio_data_xfer_noirq(struct ata_port *ap, unsigned char *buf,
++extern void ata_mmio_data_xfer_noirq(struct ata_port *ap, struct ata_device *adev, unsigned char *buf,
 +			  unsigned int buflen, int do_write);
-+extern void ata_pio_data_xfer_noirq(struct ata_port *ap, unsigned char *buf,
++extern void ata_pio_data_xfer_noirq(struct ata_port *ap, struct ata_device *adev, unsigned char *buf,
 +			  unsigned int buflen, int do_write);
 +
  extern void ata_scsi_simulate(struct ata_port *ap, struct ata_device *dev,
  			      struct scsi_cmnd *cmd,
  			      void (*done)(struct scsi_cmnd *));
+@@ -498,6 +521,8 @@
+ 			      struct block_device *bdev,
+ 			      sector_t capacity, int geom[]);
+ extern int ata_scsi_slave_config(struct scsi_device *sdev);
++extern struct ata_device *ata_dev_pair(struct ata_port *ap, 
++				       struct ata_device *adev);
+ 
+ /*
+  * Timing helpers

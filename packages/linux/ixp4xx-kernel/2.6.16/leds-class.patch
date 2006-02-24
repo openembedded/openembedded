@@ -4,11 +4,33 @@ be controlled.
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
+---
+ arch/arm/Kconfig                |    2 
+ arch/arm/mach-pxa/corgi.c       |   10 +
+ arch/arm/mach-pxa/spitz.c       |   10 +
+ arch/arm/mach-pxa/tosa.c        |    9 +
+ drivers/Kconfig                 |    2 
+ drivers/Makefile                |    1 
+ drivers/ide/ide-disk.c          |   17 ++
+ drivers/leds/Kconfig            |   70 +++++++++++
+ drivers/leds/Makefile           |   15 ++
+ drivers/leds/led-class.c        |  164 +++++++++++++++++++++++++++
+ drivers/leds/led-core.c         |   24 ++++
+ drivers/leds/led-triggers.c     |  236 ++++++++++++++++++++++++++++++++++++++++
+ drivers/leds/leds-corgi.c       |  121 ++++++++++++++++++++
+ drivers/leds/leds-ixp4xx-gpio.c |  209 +++++++++++++++++++++++++++++++++++
+ drivers/leds/leds-locomo.c      |   91 +++++++++++++++
+ drivers/leds/leds-spitz.c       |  125 +++++++++++++++++++++
+ drivers/leds/leds-tosa.c        |  123 ++++++++++++++++++++
+ drivers/leds/leds.h             |   36 ++++++
+ drivers/leds/ledtrig-timer.c    |  205 ++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/nand_base.c    |   26 ++++
+ include/linux/leds.h            |   97 ++++++++++++++++
+ 21 files changed, 1590 insertions(+), 3 deletions(-)
+
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-29 16:02:38.000000000 +0000
-@@ -0,0 +1,18 @@
++++ linux-ixp4xx/drivers/leds/Kconfig	2006-02-23 18:17:40.000000000 +0100
+@@ -0,0 +1,70 @@
 +
 +menu "LED devices"
 +
@@ -25,22 +47,81 @@ Index: linux-2.6.15/drivers/leds/Kconfig
 +	  This option enables the led sysfs class in /sys/class/leds.  You'll
 +	  need this to do anything useful with LEDs.  If unsure, say N.
 +
++config LEDS_TRIGGERS
++	bool "LED Trigger support"
++	depends NEW_LEDS
++	help
++	  This option enables trigger support for the leds class.
++	  These triggers allow kernel events to drive the LEDs and can
++	  be configured via sysfs. If unsure, say Y.
++
++config LEDS_CORGI
++	tristate "LED Support for the Sharp SL-C7x0 series"
++	depends LEDS_CLASS && PXA_SHARP_C7xx
++	help
++	  This option enables support for the LEDs on Sharp Zaurus
++	  SL-C7x0 series (C700, C750, C760, C860).
++
++config LEDS_LOCOMO
++	tristate "LED Support for Locomo device"
++	depends LEDS_CLASS && SHARP_LOCOMO
++	help
++	  This option enables support for the LEDs on Sharp Locomo.
++	  Zaurus models SL-5500 and SL-5600.
++
++config LEDS_SPITZ
++	tristate "LED Support for the Sharp SL-Cxx00 series"
++	depends LEDS_CLASS && PXA_SHARP_Cxx00
++	help
++	  This option enables support for the LEDs on Sharp Zaurus
++	  SL-Cxx00 series (C1000, C3000, C3100).
++
++config LEDS_IXP4XX
++	tristate "LED Support for GPIO connected LEDs on IXP4XX processors"
++	depends LEDS_CLASS && ARCH_IXP4XX
++	help
++	  This option enables support for the LEDs connected to GPIO
++	  outputs of the Intel IXP4XX processors.  To be useful the
++	  particular board must have LEDs and they must be connected
++	  to the GPIO lines.  If unsure, say Y.
++
++config LEDS_TOSA
++	tristate "LED Support for the Sharp SL-6000 series"
++	depends LEDS_CLASS && PXA_SHARPSL
++	help
++	  This option enables support for the LEDs on Sharp Zaurus
++	  SL-6000 series.
++
++config LEDS_TRIGGER_TIMER
++	tristate "LED Timer Trigger"
++	depends LEDS_TRIGGERS
++	help
++	  This allows LEDs to be controlled by a programmable timer
++	  via sysfs. If unsure, say Y.
++
 +endmenu
 +
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-29 16:02:38.000000000 +0000
-@@ -0,0 +1,4 @@
++++ linux-ixp4xx/drivers/leds/Makefile	2006-02-23 18:17:40.000000000 +0100
+@@ -0,0 +1,15 @@
 +
 +# LED Core
 +obj-$(CONFIG_NEW_LEDS)			+= led-core.o
 +obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
-Index: linux-2.6.15/include/linux/leds.h
-===================================================================
++obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
++
++# LED Platform Drivers
++obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
++obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
++obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
++obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
++obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
++
++# LED Triggers
++obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/include/linux/leds.h	2006-01-29 16:03:21.000000000 +0000
-@@ -0,0 +1,48 @@
++++ linux-ixp4xx/include/linux/leds.h	2006-02-23 18:17:40.000000000 +0100
+@@ -0,0 +1,97 @@
 +/*
 + * Driver model for leds and led triggers
 + *
@@ -80,6 +161,11 @@ Index: linux-2.6.15/include/linux/leds.h
 +
 +	/* Trigger data */
 +	char *default_trigger;
++#ifdef CONFIG_LEDS_TRIGGERS
++	struct led_trigger *trigger;
++	struct list_head trig_list;
++	void *trigger_data;
++#endif
 +
 +	/* This protects the data in this structure */
 +	rwlock_t lock;
@@ -89,11 +175,53 @@ Index: linux-2.6.15/include/linux/leds.h
 +extern void led_classdev_unregister(struct led_classdev *led_cdev);
 +extern void led_classdev_suspend(struct led_classdev *led_cdev);
 +extern void led_classdev_resume(struct led_classdev *led_cdev);
-Index: linux-2.6.15/arch/arm/Kconfig
-===================================================================
---- linux-2.6.15.orig/arch/arm/Kconfig	2006-01-29 14:37:31.000000000 +0000
-+++ linux-2.6.15/arch/arm/Kconfig	2006-01-29 16:02:15.000000000 +0000
-@@ -774,6 +774,8 @@
++
++
++/*
++ * LED Triggers
++ */
++#ifdef CONFIG_LEDS_TRIGGERS
++
++#define TRIG_NAME_MAX 50
++
++struct led_trigger {
++	/* Trigger Properties */
++	const char *name;
++	void (*activate)(struct led_classdev *led_cdev);
++	void (*deactivate)(struct led_classdev *led_cdev);
++
++	/* LEDs under control by this trigger (for simple triggers) */
++	rwlock_t leddev_list_lock;
++	struct list_head led_cdevs;
++
++	/* Link to next registered trigger */
++	struct list_head next_trig;
++};
++
++/* Registration functions for complex triggers */
++int led_trigger_register(struct led_trigger *trigger);
++void led_trigger_unregister(struct led_trigger *trigger);
++
++/* Registration functions for simple triggers */
++#define INIT_LED_TRIGGER(x)		static struct led_trigger *x;
++#define INIT_LED_TRIGGER_GLOBAL(x)	struct led_trigger *x;
++void led_trigger_register_simple(const char *name, struct led_trigger **trigger);
++void led_trigger_unregister_simple(struct led_trigger *trigger);
++void led_trigger_event(struct led_trigger *trigger, enum led_brightness event);
++
++#else
++
++/* Triggers aren't active - null macros */
++#define INIT_LED_TRIGGER(x)
++#define INIT_LED_TRIGGER_GLOBAL(x)
++#define led_trigger_register_simple(x, y) do {} while(0)
++#define led_trigger_unregister_simple(x) do {} while(0)
++#define led_trigger_event(x, y) do {} while(0)
++
++#endif
+--- linux-ixp4xx.orig/arch/arm/Kconfig	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/arch/arm/Kconfig	2006-02-23 18:17:40.000000000 +0100
+@@ -807,6 +807,8 @@ source "drivers/misc/Kconfig"
  
  source "drivers/mfd/Kconfig"
  
@@ -102,23 +230,19 @@ Index: linux-2.6.15/arch/arm/Kconfig
  source "drivers/media/Kconfig"
  
  source "drivers/video/Kconfig"
-Index: linux-2.6.15/drivers/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/Makefile	2006-01-29 14:42:52.000000000 +0000
-+++ linux-2.6.15/drivers/Makefile	2006-01-29 14:43:11.000000000 +0000
-@@ -68,6 +68,7 @@
+--- linux-ixp4xx.orig/drivers/Makefile	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/drivers/Makefile	2006-02-23 18:17:40.000000000 +0100
+@@ -68,6 +68,7 @@ obj-$(CONFIG_MCA)		+= mca/
  obj-$(CONFIG_EISA)		+= eisa/
  obj-$(CONFIG_CPU_FREQ)		+= cpufreq/
  obj-$(CONFIG_MMC)		+= mmc/
 +obj-$(CONFIG_NEW_LEDS)		+= leds/
  obj-$(CONFIG_INFINIBAND)	+= infiniband/
- obj-$(CONFIG_SGI_IOC4)		+= sn/
+ obj-$(CONFIG_SGI_SN)		+= sn/
  obj-y				+= firmware/
-Index: linux-2.6.15/drivers/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/Kconfig	2006-01-29 14:42:51.000000000 +0000
-+++ linux-2.6.15/drivers/Kconfig	2006-01-29 14:43:11.000000000 +0000
-@@ -64,6 +64,8 @@
+--- linux-ixp4xx.orig/drivers/Kconfig	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/drivers/Kconfig	2006-02-23 18:17:40.000000000 +0100
+@@ -64,6 +64,8 @@ source "drivers/usb/Kconfig"
  
  source "drivers/mmc/Kconfig"
  
@@ -127,11 +251,9 @@ Index: linux-2.6.15/drivers/Kconfig
  source "drivers/infiniband/Kconfig"
  
  source "drivers/sn/Kconfig"
-Index: linux-2.6.15/drivers/leds/leds.h
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds.h	2006-01-29 16:02:38.000000000 +0000
-@@ -0,0 +1,26 @@
++++ linux-ixp4xx/drivers/leds/leds.h	2006-02-23 18:17:40.000000000 +0100
+@@ -0,0 +1,36 @@
 +/*
 + * LED Core
 + *
@@ -158,11 +280,19 @@ Index: linux-2.6.15/drivers/leds/leds.h
 +extern rwlock_t leds_list_lock;
 +extern struct list_head leds_list;
 +
-Index: linux-2.6.15/drivers/leds/led-class.c
-===================================================================
++#ifdef CONFIG_LEDS_TRIGGERS
++void led_trigger_set_default(struct led_classdev *led_cdev);
++void led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trigger);
++#else
++#define led_trigger_set_default(x) do {} while(0)
++#define led_trigger_set(x, y) do {} while(0)
++#endif
++
++ssize_t led_trigger_store(struct class_device *dev, const char *buf, size_t count);
++ssize_t led_trigger_show(struct class_device *dev, char *buf);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/led-class.c	2006-01-29 16:02:38.000000000 +0000
-@@ -0,0 +1,150 @@
++++ linux-ixp4xx/drivers/leds/led-class.c	2006-02-23 18:17:40.000000000 +0100
+@@ -0,0 +1,164 @@
 +/*
 + * LED Class Core
 + *
@@ -220,6 +350,9 @@ Index: linux-2.6.15/drivers/leds/led-class.c
 +
 +static CLASS_DEVICE_ATTR(brightness, 0644, led_brightness_show, led_brightness_store);
 +
++#ifdef CONFIG_LEDS_TRIGGERS
++static CLASS_DEVICE_ATTR(trigger, 0644, led_trigger_show, led_trigger_store);
++#endif
 +
 +/**
 + * led_classdev_suspend - suspend an led_classdev.
@@ -261,11 +394,16 @@ Index: linux-2.6.15/drivers/leds/led-class.c
 +
 +	/* register the attributes */
 +	class_device_create_file(led_cdev->class_dev, &class_device_attr_brightness);
++#ifdef CONFIG_LEDS_TRIGGERS
++	class_device_create_file(led_cdev->class_dev, &class_device_attr_trigger);
++#endif
 +
 +	/* add to the list of leds */
 +	write_lock(&leds_list_lock);
 +	list_add_tail(&led_cdev->node, &leds_list);
 +	write_unlock(&leds_list_lock);
++
++	led_trigger_set_default(led_cdev);
 +
 +	printk(KERN_INFO "Registered led device: %s\n", led_cdev->class_dev->class_id);
 +
@@ -281,6 +419,12 @@ Index: linux-2.6.15/drivers/leds/led-class.c
 +void led_classdev_unregister(struct led_classdev *led_cdev)
 +{
 +	class_device_remove_file(led_cdev->class_dev, &class_device_attr_brightness);
++#ifdef CONFIG_LEDS_TRIGGERS
++	class_device_remove_file(led_cdev->class_dev, &class_device_attr_trigger);
++#endif
++
++	if (led_cdev->trigger)
++		led_trigger_set(led_cdev, NULL);
 +
 +	class_device_unregister(led_cdev->class_dev);
 +
@@ -313,10 +457,8 @@ Index: linux-2.6.15/drivers/leds/led-class.c
 +MODULE_AUTHOR("John Lenz, Richard Purdie");
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LED Class Interface");
-Index: linux-2.6.15/drivers/leds/led-core.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/led-core.c	2006-01-29 14:43:11.000000000 +0000
++++ linux-ixp4xx/drivers/leds/led-core.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,24 @@
 +/*
 + * LED Class Core
@@ -342,171 +484,8 @@ Index: linux-2.6.15/drivers/leds/led-core.c
 +LIST_HEAD(leds_list);
 +
 +EXPORT_SYMBOL_GPL(leds_list);
-Add support for LED triggers to the LED subsystem. "Triggers" are events 
-which change the state of an LED. Two kinds of trigger are available,
-simple ones which can be added to exising code with minimum disruption
-and complex ones for implementing new or more complex functionality.
-
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Kconfig	2006-01-29 15:52:16.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-29 16:02:35.000000000 +0000
-@@ -14,5 +14,13 @@
- 	  This option enables the led sysfs class in /sys/class/leds.  You'll
- 	  need this to do anything useful with LEDs.  If unsure, say N.
- 
-+config LEDS_TRIGGERS
-+	bool "LED Trigger support"
-+	depends NEW_LEDS
-+	help
-+	  This option enables trigger support for the leds class.
-+	  These triggers allow kernel events to drive the LEDs and can
-+	  be configured via sysfs. If unsure, say Y.
-+
- endmenu
- 
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Makefile	2006-01-29 15:52:16.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-29 16:02:35.000000000 +0000
-@@ -2,3 +2,4 @@
- # LED Core
- obj-$(CONFIG_NEW_LEDS)			+= led-core.o
- obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
-+obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
-Index: linux-2.6.15/drivers/leds/leds.h
-===================================================================
---- linux-2.6.15.orig/drivers/leds/leds.h	2006-01-29 15:54:46.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds.h	2006-01-29 15:55:02.000000000 +0000
-@@ -24,3 +24,13 @@
- extern rwlock_t leds_list_lock;
- extern struct list_head leds_list;
- 
-+#ifdef CONFIG_LEDS_TRIGGERS
-+void led_trigger_set_default(struct led_classdev *led_cdev);
-+void led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trigger);
-+#else
-+#define led_trigger_set_default(x) do {} while(0)
-+#define led_trigger_set(x, y) do {} while(0)
-+#endif
-+
-+ssize_t led_trigger_store(struct class_device *dev, const char *buf, size_t count);
-+ssize_t led_trigger_show(struct class_device *dev, char *buf);
-Index: linux-2.6.15/include/linux/leds.h
-===================================================================
---- linux-2.6.15.orig/include/linux/leds.h	2006-01-29 15:52:16.000000000 +0000
-+++ linux-2.6.15/include/linux/leds.h	2006-01-29 15:55:02.000000000 +0000
-@@ -38,6 +38,11 @@
- 
- 	/* Trigger data */
- 	char *default_trigger;
-+#ifdef CONFIG_LEDS_TRIGGERS
-+	struct led_trigger *trigger;
-+	struct list_head trig_list;
-+	void *trigger_data;
-+#endif
- 
- 	/* This protects the data in this structure */
- 	rwlock_t lock;
-@@ -47,3 +52,47 @@
- extern void led_classdev_unregister(struct led_classdev *led_cdev);
- extern void led_classdev_suspend(struct led_classdev *led_cdev);
- extern void led_classdev_resume(struct led_classdev *led_cdev);
-+
-+
-+/*
-+ * LED Triggers
-+ */
-+#ifdef CONFIG_LEDS_TRIGGERS
-+
-+#define TRIG_NAME_MAX 50
-+
-+struct led_trigger {
-+	/* Trigger Properties */
-+	const char *name;
-+	void (*activate)(struct led_classdev *led_cdev);
-+	void (*deactivate)(struct led_classdev *led_cdev);
-+
-+	/* LEDs under control by this trigger (for simple triggers) */
-+	rwlock_t leddev_list_lock;
-+	struct list_head led_cdevs;
-+
-+	/* Link to next registered trigger */
-+	struct list_head next_trig;
-+};
-+
-+/* Registration functions for complex triggers */
-+int led_trigger_register(struct led_trigger *trigger);
-+void led_trigger_unregister(struct led_trigger *trigger);
-+
-+/* Registration functions for simple triggers */
-+#define INIT_LED_TRIGGER(x)		static struct led_trigger *x;
-+#define INIT_LED_TRIGGER_GLOBAL(x)	struct led_trigger *x;
-+void led_trigger_register_simple(const char *name, struct led_trigger **trigger);
-+void led_trigger_unregister_simple(struct led_trigger *trigger);
-+void led_trigger_event(struct led_trigger *trigger, enum led_brightness event);
-+
-+#else
-+
-+/* Triggers aren't active - null macros */
-+#define INIT_LED_TRIGGER(x)
-+#define INIT_LED_TRIGGER_GLOBAL(x)
-+#define led_trigger_register_simple(x, y) do {} while(0)
-+#define led_trigger_unregister_simple(x) do {} while(0)
-+#define led_trigger_event(x, y) do {} while(0)
-+
-+#endif
-Index: linux-2.6.15/drivers/leds/led-class.c
-===================================================================
---- linux-2.6.15.orig/drivers/leds/led-class.c	2006-01-29 15:54:02.000000000 +0000
-+++ linux-2.6.15/drivers/leds/led-class.c	2006-01-29 15:55:02.000000000 +0000
-@@ -55,6 +55,9 @@
- 
- static CLASS_DEVICE_ATTR(brightness, 0644, led_brightness_show, led_brightness_store);
- 
-+#ifdef CONFIG_LEDS_TRIGGERS
-+static CLASS_DEVICE_ATTR(trigger, 0644, led_trigger_show, led_trigger_store);
-+#endif
- 
- /**
-  * led_classdev_suspend - suspend an led_classdev.
-@@ -96,12 +99,17 @@
- 
- 	/* register the attributes */
- 	class_device_create_file(led_cdev->class_dev, &class_device_attr_brightness);
-+#ifdef CONFIG_LEDS_TRIGGERS
-+	class_device_create_file(led_cdev->class_dev, &class_device_attr_trigger);
-+#endif
- 
- 	/* add to the list of leds */
- 	write_lock(&leds_list_lock);
- 	list_add_tail(&led_cdev->node, &leds_list);
- 	write_unlock(&leds_list_lock);
- 
-+	led_trigger_set_default(led_cdev);
-+
- 	printk(KERN_INFO "Registered led device: %s\n", led_cdev->class_dev->class_id);
- 
- 	return 0;
-@@ -116,6 +124,12 @@
- void led_classdev_unregister(struct led_classdev *led_cdev)
- {
- 	class_device_remove_file(led_cdev->class_dev, &class_device_attr_brightness);
-+#ifdef CONFIG_LEDS_TRIGGERS
-+	class_device_remove_file(led_cdev->class_dev, &class_device_attr_trigger);
-+#endif
-+
-+	if (led_cdev->trigger)
-+		led_trigger_set(led_cdev, NULL);
- 
- 	class_device_unregister(led_cdev->class_dev);
- 
-Index: linux-2.6.15/drivers/leds/led-triggers.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/led-triggers.c	2006-01-29 15:56:15.000000000 +0000
++++ linux-ixp4xx/drivers/leds/led-triggers.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,236 @@
 +/*
 + * LED Triggers Core
@@ -744,44 +723,8 @@ Index: linux-2.6.15/drivers/leds/led-triggers.c
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LED Triggers Core");
 +
-Add an example of a complex LED trigger in the form of a generic timer 
-which triggers the LED its attached to at a user specified frequency
-and duty cycle.
-
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Kconfig	2006-01-29 16:13:48.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-29 20:32:16.000000000 +0000
-@@ -22,5 +22,12 @@
- 	  These triggers allow kernel events to drive the LEDs and can
- 	  be configured via sysfs. If unsure, say Y.
- 
-+config LEDS_TRIGGER_TIMER
-+	tristate "LED Timer Trigger"
-+	depends LEDS_TRIGGERS
-+	help
-+	  This allows LEDs to be controlled by a programmable timer
-+	  via sysfs. If unsure, say Y.
-+
- endmenu
- 
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Makefile	2006-01-29 16:13:48.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-29 20:32:16.000000000 +0000
-@@ -3,3 +3,6 @@
- obj-$(CONFIG_NEW_LEDS)			+= led-core.o
- obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
- obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
-+
-+# LED Triggers
-+obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
-Index: linux-2.6.15/drivers/leds/ledtrig-timer.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/ledtrig-timer.c	2006-01-29 17:40:11.000000000 +0000
++++ linux-ixp4xx/drivers/leds/ledtrig-timer.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,205 @@
 +/*
 + * LED Kernel Timer Trigger
@@ -891,7 +834,7 @@ Index: linux-2.6.15/drivers/leds/ledtrig-timer.c
 +		timer_data = led_cdev->trigger_data;
 +		ret = led_timer_setdata(led_cdev, state, timer_data->frequency);
 +		if (!ret)
-+			ret = after - buf;			
++			ret = after - buf;
 +		write_unlock(&led_cdev->lock);
 +	}
 +
@@ -925,7 +868,7 @@ Index: linux-2.6.15/drivers/leds/ledtrig-timer.c
 +		timer_data = led_cdev->trigger_data;
 +		ret = led_timer_setdata(led_cdev, timer_data->duty, state);
 +		if (!ret)
-+			ret = after - buf;			
++			ret = after - buf;
 +		write_unlock(&led_cdev->lock);
 +	}
 +
@@ -988,16 +931,9 @@ Index: linux-2.6.15/drivers/leds/ledtrig-timer.c
 +MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
 +MODULE_DESCRIPTION("Timer LED trigger");
 +MODULE_LICENSE("GPL");
-Adds LED drivers for LEDs found on the Sharp Zaurus c7x0 (corgi, 
-shepherd, husky) and cxx00 (akita, spitz, borzoi) models.
-
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/arch/arm/mach-pxa/corgi.c
-===================================================================
---- linux-2.6.15.orig/arch/arm/mach-pxa/corgi.c	2006-01-29 16:02:30.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-pxa/corgi.c	2006-01-29 16:11:47.000000000 +0000
-@@ -165,6 +165,15 @@
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/corgi.c	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/corgi.c	2006-02-23 18:17:40.000000000 +0100
+@@ -165,6 +165,15 @@ static struct platform_device corgikbd_d
  
  
  /*
@@ -1013,7 +949,7 @@ Index: linux-2.6.15/arch/arm/mach-pxa/corgi.c
   * Corgi Touch Screen Device
   */
  static struct resource corgits_resources[] = {
-@@ -298,6 +307,7 @@
+@@ -298,6 +307,7 @@ static struct platform_device *devices[]
  	&corgikbd_device,
  	&corgibl_device,
  	&corgits_device,
@@ -1021,11 +957,9 @@ Index: linux-2.6.15/arch/arm/mach-pxa/corgi.c
  };
  
  static void __init corgi_init(void)
-Index: linux-2.6.15/arch/arm/mach-pxa/spitz.c
-===================================================================
---- linux-2.6.15.orig/arch/arm/mach-pxa/spitz.c	2006-01-29 16:02:30.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-pxa/spitz.c	2006-01-29 16:11:48.000000000 +0000
-@@ -243,6 +243,15 @@
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/spitz.c	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/spitz.c	2006-02-23 18:17:40.000000000 +0100
+@@ -243,6 +243,15 @@ static struct platform_device spitzkbd_d
  
  
  /*
@@ -1041,7 +975,7 @@ Index: linux-2.6.15/arch/arm/mach-pxa/spitz.c
   * Spitz Touch Screen Device
   */
  static struct resource spitzts_resources[] = {
-@@ -419,6 +428,7 @@
+@@ -419,6 +428,7 @@ static struct platform_device *devices[]
  	&spitzkbd_device,
  	&spitzts_device,
  	&spitzbl_device,
@@ -1049,49 +983,8 @@ Index: linux-2.6.15/arch/arm/mach-pxa/spitz.c
  };
  
  static void __init common_init(void)
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Kconfig	2006-01-29 16:04:20.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-29 16:11:54.000000000 +0000
-@@ -22,6 +22,20 @@
- 	  These triggers allow kernel events to drive the LEDs and can
- 	  be configured via sysfs. If unsure, say Y.
- 
-+config LEDS_CORGI
-+	tristate "LED Support for the Sharp SL-C7x0 series"
-+	depends LEDS_CLASS && PXA_SHARP_C7xx
-+	help
-+	  This option enables support for the LEDs on Sharp Zaurus
-+	  SL-C7x0 series (C700, C750, C760, C860).
-+
-+config LEDS_SPITZ
-+	tristate "LED Support for the Sharp SL-Cxx00 series"
-+	depends LEDS_CLASS && PXA_SHARP_Cxx00
-+	help
-+	  This option enables support for the LEDs on Sharp Zaurus
-+	  SL-Cxx00 series (C1000, C3000, C3100).
-+
- config LEDS_TRIGGER_TIMER
- 	tristate "LED Timer Trigger"
- 	depends LEDS_TRIGGERS
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Makefile	2006-01-29 16:04:20.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-29 16:11:54.000000000 +0000
-@@ -4,5 +4,9 @@
- obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
- obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
- 
-+# LED Platform Drivers
-+obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
-+obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
-+
- # LED Triggers
- obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
-Index: linux-2.6.15/drivers/leds/leds-corgi.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds-corgi.c	2006-01-29 16:08:42.000000000 +0000
++++ linux-ixp4xx/drivers/leds/leds-corgi.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,121 @@
 +/*
 + * LED Triggers Core
@@ -1214,10 +1107,8 @@ Index: linux-2.6.15/drivers/leds/leds-corgi.c
 +MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
 +MODULE_DESCRIPTION("Corgi LED driver");
 +MODULE_LICENSE("GPL");
-Index: linux-2.6.15/drivers/leds/leds-spitz.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds-spitz.c	2006-01-29 16:08:09.000000000 +0000
++++ linux-ixp4xx/drivers/leds/leds-spitz.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,125 @@
 +/*
 + * LED Triggers Core
@@ -1344,45 +1235,8 @@ Index: linux-2.6.15/drivers/leds/leds-spitz.c
 +MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
 +MODULE_DESCRIPTION("Spitz LED driver");
 +MODULE_LICENSE("GPL");
-Adds an LED driver for LEDs exported by the Sharp LOCOMO chip as found on
-some models of Sharp Zaurus.
-
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Kconfig	2006-01-29 16:04:22.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-29 16:04:23.000000000 +0000
-@@ -29,6 +29,13 @@
- 	  This option enables support for the LEDs on Sharp Zaurus
- 	  SL-C7x0 series (C700, C750, C760, C860).
- 
-+config LEDS_LOCOMO
-+	tristate "LED Support for Locomo device"
-+	depends LEDS_CLASS && SHARP_LOCOMO
-+	help
-+	  This option enables support for the LEDs on Sharp Locomo.
-+	  Zaurus models SL-5500 and SL-5600.
-+
- config LEDS_SPITZ
- 	tristate "LED Support for the Sharp SL-Cxx00 series"
- 	depends LEDS_CLASS && PXA_SHARP_Cxx00
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Makefile	2006-01-29 16:04:22.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-29 16:04:23.000000000 +0000
-@@ -6,6 +6,7 @@
- 
- # LED Platform Drivers
- obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
-+obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
- obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
- 
- # LED Triggers
-Index: linux-2.6.15/drivers/leds/leds-locomo.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds-locomo.c	2006-01-29 16:09:46.000000000 +0000
++++ linux-ixp4xx/drivers/leds/leds-locomo.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,91 @@
 +/*
 + * linux/drivers/leds/locomo.c
@@ -1475,47 +1329,8 @@ Index: linux-2.6.15/drivers/leds/leds-locomo.c
 +MODULE_AUTHOR("John Lenz <lenz@cs.wisc.edu>");
 +MODULE_DESCRIPTION("Locomo LED driver");
 +MODULE_LICENSE("GPL");
-From: John Bowler <jbowler@acm.org>
-
-NEW_LEDS support for ixp4xx boards where LEDs are connected
-to the GPIO lines.
-
-This includes a new generic ixp4xx driver (leds-ixp4xx-gpio.c
-name "IXP4XX-GPIO-LED")
-
-Signed-off-by: John Bowler <jbowler@acm.org>
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
---- linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	1970-01-01 00:00:00.000000000 +0000
-@@ -43,6 +43,15 @@ config LEDS_SPITZ
- 	  This option enables support for the LEDs on Sharp Zaurus
- 	  SL-Cxx00 series (C1000, C3000, C3100).
- 
-+config LEDS_IXP4XX
-+	tristate "LED Support for GPIO connected LEDs on IXP4XX processors"
-+	depends LEDS_CLASS && ARCH_IXP4XX
-+	help
-+	  This option enables support for the LEDs connected to GPIO
-+	  outputs of the Intel IXP4XX processors.  To be useful the
-+	  particular board must have LEDs and they must be connected
-+	  to the GPIO lines.  If unsure, say Y.
-+
- config LEDS_TRIGGER_TIMER
- 	tristate "LED Timer Trigger"
- 	depends LEDS_TRIGGERS
---- linux-2.6.15/drivers/leds/Makefile	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	1970-01-01 00:00:00.000000000 +0000
-@@ -8,6 +8,7 @@ obj-$(CONFIG_LEDS_TRIGGERS)		+= led-trig
- obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
- obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
- obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
-+obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
- 
- # LED Triggers
- obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
---- linux-2.6.15/drivers/leds/leds-ixp4xx-gpio.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds-ixp4xx-gpio.c	1970-01-01 00:00:00.000000000 +0000
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/drivers/leds/leds-ixp4xx-gpio.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,209 @@
 +/*
 + * IXP4XX GPIO driver LED driver
@@ -1679,7 +1494,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +				ixp4xxgpioled_devices[gpio_pin].ancestor.brightness = 0;
 +
 +			ixp4xxgpioled_devices[gpio_pin].ancestor.flags = 0;
-+				
++
 +			ixp4xxgpioled_devices[gpio_pin].ancestor.brightness_set =
 +				ixp4xxgpioled_brightness_set;
 +
@@ -1726,47 +1541,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_AUTHOR("John Bowler <jbowler@acm.org>");
 +MODULE_DESCRIPTION("IXP4XX GPIO LED driver");
 +MODULE_LICENSE("MIT");
-From: Dirk Opfer <dirk@opfer-online.de>
-
-Adds LED drivers for LEDs found on the Sharp Zaurus c6000 model (tosa).
-
-Signed-off-by: Dirk Opfer <dirk@opfer-online.de>
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/drivers/leds/Kconfig
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Kconfig	2006-01-30 00:25:28.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Kconfig	2006-01-30 00:25:52.000000000 +0000
-@@ -52,6 +52,13 @@
- 	  particular board must have LEDs and they must be connected
- 	  to the GPIO lines.  If unsure, say Y.
- 
-+config LEDS_TOSA
-+	tristate "LED Support for the Sharp SL-6000 series"
-+	depends LEDS_CLASS && PXA_SHARPSL
-+	help
-+	  This option enables support for the LEDs on Sharp Zaurus
-+	  SL-6000 series.
-+
- config LEDS_TRIGGER_TIMER
- 	tristate "LED Timer Trigger"
- 	depends LEDS_TRIGGERS
-Index: linux-2.6.15/drivers/leds/Makefile
-===================================================================
---- linux-2.6.15.orig/drivers/leds/Makefile	2006-01-30 00:25:28.000000000 +0000
-+++ linux-2.6.15/drivers/leds/Makefile	2006-01-30 00:26:48.000000000 +0000
-@@ -9,6 +9,7 @@
- obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
- obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
- obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
-+obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
- 
- # LED Triggers
- obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
-Index: linux-2.6.15/drivers/leds/leds-tosa.c
-===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/leds/leds-tosa.c	2006-01-30 00:28:15.000000000 +0000
++++ linux-ixp4xx/drivers/leds/leds-tosa.c	2006-02-23 18:17:40.000000000 +0100
 @@ -0,0 +1,123 @@
 +/*
 + * LED Triggers Core
@@ -1891,11 +1667,9 @@ Index: linux-2.6.15/drivers/leds/leds-tosa.c
 +MODULE_AUTHOR("Dirk Opfer <Dirk@Opfer-Online.de>");
 +MODULE_DESCRIPTION("Tosa LED driver");
 +MODULE_LICENSE("GPL");
-Index: linux-2.6.15/arch/arm/mach-pxa/tosa.c
-===================================================================
---- linux-2.6.15.orig/arch/arm/mach-pxa/tosa.c	2006-01-03 03:21:10.000000000 +0000
-+++ linux-2.6.15/arch/arm/mach-pxa/tosa.c	2006-01-30 00:29:25.000000000 +0000
-@@ -252,10 +252,19 @@
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/tosa.c	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/tosa.c	2006-02-23 18:17:40.000000000 +0100
+@@ -252,10 +252,19 @@ static struct platform_device tosakbd_de
  	.id		= -1,
  };
  
@@ -1906,7 +1680,7 @@ Index: linux-2.6.15/arch/arm/mach-pxa/tosa.c
 +    .name   = "tosa-led",
 +    .id     = -1,
 +};
-+		  
++
  static struct platform_device *devices[] __initdata = {
  	&tosascoop_device,
  	&tosascoop_jc_device,
@@ -1915,14 +1689,8 @@ Index: linux-2.6.15/arch/arm/mach-pxa/tosa.c
  };
  
  static void __init tosa_init(void)
-Add an LED trigger for IDE disk activity to the IDE subsystem.
-
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
-Index: linux-2.6.15/drivers/ide/ide-disk.c
-===================================================================
---- linux-2.6.15.orig/drivers/ide/ide-disk.c	2006-02-04 13:35:37.000000000 +0000
-+++ linux-2.6.15/drivers/ide/ide-disk.c	2006-02-04 15:17:18.000000000 +0000
+--- linux-ixp4xx.orig/drivers/ide/ide-disk.c	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/drivers/ide/ide-disk.c	2006-02-23 18:17:40.000000000 +0100
 @@ -60,6 +60,7 @@
  #include <linux/genhd.h>
  #include <linux/slab.h>
@@ -1931,7 +1699,7 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
  
  #define _IDE_DISK
  
-@@ -80,6 +81,8 @@
+@@ -80,6 +81,8 @@ struct ide_disk_obj {
  
  static DECLARE_MUTEX(idedisk_ref_sem);
  
@@ -1940,7 +1708,7 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
  #define to_ide_disk(obj) container_of(obj, struct ide_disk_obj, kref)
  
  #define ide_disk_g(disk) \
-@@ -311,10 +314,12 @@
+@@ -312,10 +315,12 @@ static ide_startstop_t ide_do_rw_disk (i
  
  	if (!blk_fs_request(rq)) {
  		blk_dump_rq_flags(rq, "ide_do_rw_disk - bad command");
@@ -1953,8 +1721,8 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
 +
  	pr_debug("%s: %sing: block=%llu, sectors=%lu, buffer=0x%08lx\n",
  		 drive->name, rq_data_dir(rq) == READ ? "read" : "writ",
- 		 block, rq->nr_sectors, (unsigned long)rq->buffer);
-@@ -325,6 +330,12 @@
+ 		 (unsigned long long)block, rq->nr_sectors,
+@@ -327,6 +332,12 @@ static ide_startstop_t ide_do_rw_disk (i
  	return __ide_do_rw_disk(drive, rq, block);
  }
  
@@ -1967,7 +1735,7 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
  /*
   * Queries for true maximum capacity of the drive.
   * Returns maximum LBA address (> 0) of the drive, 0 if failed.
-@@ -1097,7 +1108,7 @@
+@@ -1063,7 +1074,7 @@ static ide_driver_t idedisk_driver = {
  	.media			= ide_disk,
  	.supports_dsc_overlap	= 0,
  	.do_request		= ide_do_rw_disk,
@@ -1976,7 +1744,7 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
  	.error			= __ide_error,
  	.abort			= __ide_abort,
  	.proc			= idedisk_proc,
-@@ -1259,11 +1270,13 @@
+@@ -1236,11 +1247,13 @@ failed:
  
  static void __exit idedisk_exit (void)
  {
@@ -1990,10 +1758,8 @@ Index: linux-2.6.15/drivers/ide/ide-disk.c
  	return driver_register(&idedisk_driver.gen_driver);
  }
  
-Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
-===================================================================
---- linux-2.6.15.orig/drivers/mtd/nand/nand_base.c	2006-01-29 14:37:20.000000000 +0000
-+++ linux-2.6.15/drivers/mtd/nand/nand_base.c	2006-01-29 15:25:11.000000000 +0000
+--- linux-ixp4xx.orig/drivers/mtd/nand/nand_base.c	2006-02-23 18:13:35.000000000 +0100
++++ linux-ixp4xx/drivers/mtd/nand/nand_base.c	2006-02-23 18:17:40.000000000 +0100
 @@ -80,6 +80,7 @@
  #include <linux/mtd/compatmac.h>
  #include <linux/interrupt.h>
@@ -2002,7 +1768,7 @@ Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
  #include <asm/io.h>
  
  #ifdef CONFIG_MTD_PARTITIONS
-@@ -515,6 +516,8 @@
+@@ -515,6 +516,8 @@ static int nand_block_checkbad (struct m
  	return nand_isbad_bbt (mtd, ofs, allowbbt);
  }
  
@@ -2011,7 +1777,7 @@ Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
  /*
   * Wait for the ready pin, after a command
   * The timeout is catched later.
-@@ -524,12 +527,14 @@
+@@ -524,12 +527,14 @@ static void nand_wait_ready(struct mtd_i
  	struct nand_chip *this = mtd->priv;
  	unsigned long	timeo = jiffies + 2;
  
@@ -2027,7 +1793,7 @@ Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
  }
  
  /**
-@@ -817,6 +822,8 @@
+@@ -817,6 +822,8 @@ static int nand_wait(struct mtd_info *mt
  	else
  		 timeo += (HZ * 20) / 1000;
  
@@ -2036,16 +1802,16 @@ Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
  	/* Apply this short delay always to ensure that we do wait tWB in
  	 * any case on any machine. */
  	ndelay (100);
-@@ -840,6 +847,8 @@
+@@ -840,6 +847,8 @@ static int nand_wait(struct mtd_info *mt
  		}
  		cond_resched();
  	}
 +	led_trigger_event(nand_led_trigger, LED_OFF);
-+	
++
  	status = (int) this->read_byte(mtd);
  	return status;
  }
-@@ -2724,6 +2733,21 @@
+@@ -2724,6 +2733,21 @@ void nand_release (struct mtd_info *mtd)
  EXPORT_SYMBOL_GPL (nand_scan);
  EXPORT_SYMBOL_GPL (nand_release);
  
@@ -2055,7 +1821,7 @@ Index: linux-2.6.15/drivers/mtd/nand/nand_base.c
 +	led_trigger_register_simple("nand-disk", &nand_led_trigger);
 +	return 0;
 +}
-+    
++
 +static void nand_base_exit(void)
 +{
 +	led_trigger_unregister_simple(nand_led_trigger);

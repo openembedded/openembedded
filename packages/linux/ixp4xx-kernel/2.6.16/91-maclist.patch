@@ -10,10 +10,16 @@ code.
 
 Signed-off-by: John Bowler <jbowler@acm.org>
 
-diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/Kconfig linux-2.6.15.1/drivers/net/Kconfig
---- linux-2.6.15/drivers/net/Kconfig	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/net/Kconfig	1970-01-01 00:00:00.000000000 +0000
-@@ -166,6 +166,21 @@ config NET_ETHERNET
+---
+ drivers/net/Kconfig   |   15 +
+ drivers/net/Makefile  |    1 
+ drivers/net/maclist.c |  465 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/net/maclist.h |   49 +++++
+ 4 files changed, 530 insertions(+)
+
+--- linux-ixp4xx.orig/drivers/net/Kconfig	2006-02-23 18:27:12.000000000 +0100
++++ linux-ixp4xx/drivers/net/Kconfig	2006-02-23 18:30:54.000000000 +0100
+@@ -177,6 +177,21 @@ config NET_ETHERNET
  	  kernel: saying N will just cause the configurator to skip all
  	  the questions about Ethernet network cards. If unsure, say N.
  
@@ -35,10 +41,9 @@ diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/Kconfig linux-2.6.15.1
  config MII
  	tristate "Generic Media Independent Interface device support"
  	depends on NET_ETHERNET
-diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/Makefile linux-2.6.15.1/drivers/net/Makefile
---- linux-2.6.15/drivers/net/Makefile	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/net/Makefile	1970-01-01 00:00:00.000000000 +0000
-@@ -70,6 +70,7 @@ obj-$(CONFIG_RIONET) += rionet.o
+--- linux-ixp4xx.orig/drivers/net/Makefile	2006-02-23 18:27:12.000000000 +0100
++++ linux-ixp4xx/drivers/net/Makefile	2006-02-23 18:30:54.000000000 +0100
+@@ -74,6 +74,7 @@ obj-$(CONFIG_RIONET) += rionet.o
  # end link order section
  #
  
@@ -46,9 +51,8 @@ diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/Makefile linux-2.6.15.
  obj-$(CONFIG_MII) += mii.o
  obj-$(CONFIG_PHYLIB) += phy/
  
-diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/maclist.c linux-2.6.15.1/drivers/net/maclist.c
---- linux-2.6.15/drivers/net/maclist.c	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/drivers/net/maclist.c	1970-01-01 00:00:00.000000000 +0000
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/drivers/net/maclist.c	2006-02-23 18:30:54.000000000 +0100
 @@ -0,0 +1,465 @@
 +/*
 + * drivers/net/maclist.c
@@ -238,7 +242,7 @@ diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/maclist.c linux-2.6.15
 +void maclist_read(u8 (*id)[6], u32 key) {
 +	int              count, index;
 +	maclist_entry_t *entry, *entry_to_allocate;
-+	
++
 +	/* Do this under a write lock to avoid the SMP race
 +	 * where we find the key isn't assigned, drop the lock,
 +	 * have another CPU assign it, then assign it on this
@@ -515,9 +519,8 @@ diff -rup linux-2.6.15.1/.pc/91-maclist.patch/drivers/net/maclist.c linux-2.6.15
 +
 +module_init(maclist_init);
 +module_exit(maclist_exit);
-diff -rup linux-2.6.15.1/.pc/91-maclist.patch/include/net/maclist.h linux-2.6.15.1/include/net/maclist.h
---- linux-2.6.15/include/net/maclist.h	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15/include/net/maclist.h	1970-01-01 00:00:00.000000000 +0000
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/include/net/maclist.h	2006-02-23 18:30:54.000000000 +0100
 @@ -0,0 +1,49 @@
 +#ifndef _MACLIST_H
 +#define _MACLIST_H 1
