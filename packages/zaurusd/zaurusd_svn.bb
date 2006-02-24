@@ -1,7 +1,8 @@
 LICENSE = "GPL"
 SECTION = "base"
 MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
-DESCRIPTION = "Daemon to handle zaurus hardware specifc features."
+DESCRIPTION = "Daemon to handle device specifc features."
+PV = "0.0+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http"
