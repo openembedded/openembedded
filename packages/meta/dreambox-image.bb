@@ -17,7 +17,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2f
 
 # experimental packages
 OPENDREAMBOX_EXPERIMENTAL = "enigma2"
-OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-fpupgrade enigma2-plugin-update"
+OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade enigma2-plugin-systemplugins-softwareupdate"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
