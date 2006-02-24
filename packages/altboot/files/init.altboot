@@ -255,8 +255,7 @@ wait_for_input() {
 				# Don't remount rw if the drive is already mounted rw
 				# Only helpful for testing / debugging
 				if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw"
-				then
-					
+				then					
 					mount -o remount,rw / >/dev/null 2>&1
 					echo "$junk" > /etc/altboot.conf
 					mount -o remount,ro / >/dev/null 2>&1	

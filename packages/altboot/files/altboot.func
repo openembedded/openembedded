@@ -65,7 +65,7 @@ pivot_realfs() {
 	test -z "$2" && RL="5" || RL="$2"
 	mkdir -p $1/media/ROM || die "mkdir -p $1/media/ROM failed"
 
-	mount -o remount,ro /
+	mount -o remount,ro / >/dev/null 2>&1
 
 	do_pivot "$1" "$RL"
 }
@@ -352,14 +352,14 @@ mount_cf(){
 	then
 		echo "Note: /media/cf is already mounted"
 	else	
-		/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr already active"
+		/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr is already active"
 
 		echo ""
 
 		# Give the SD and CF mounting some time. This is a must for SD			
 		sleep 2
 		
-		mount /media/cf
+		mount | grep -q "/media/cf " || mount /media/cf
 	fi
 }
 

@@ -116,7 +116,7 @@ run_module() {
 	
 	# Use configured resolv.conf in the pivoted rootfs
 	echo -n "Copying resolv.conf..."
-	cp /etc/resolv.conf /media/nfsroot/etc && echo ok || echo "FAILED"
+	#cp /etc/resolv.conf /media/nfsroot/etc && echo ok || echo "FAILED"
 	
 	check_target "/media/nfsroot"
 	
