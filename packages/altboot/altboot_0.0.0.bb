@@ -6,7 +6,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 IGNORE_STRIP_ERRORS = "1"
 
-PR = "r22"
+PR = "r23"
 
 
 SRC_URI = "file://altboot-menu \
@@ -51,8 +51,10 @@ pkg_postinst_spitz() {
 	#	So we need to do that manually (*SIGH*)
 
     # the 2.6 kernel for spitz boots from HDD, no need to copy to flash
-    if cat /proc/version | awk '{print $3}' | grep -q '^2.6'
-    then
+    if cat /proc/version | awk '{print $3}' | grep -q '^2.6'; then
+        update-alternatives --install /sbin/init init /sbin/init.altboot 55
+    # no need to copy to flash if we're installing to flash already
+    elif mount | grep ' / ' | grep -q mtdblock; then
         update-alternatives --install /sbin/init init /sbin/init.altboot 55
     else
         # /l/m only exists on the HDD on spitz
@@ -85,8 +87,10 @@ pkg_postrm() {
 
 pkg_postrm_spitz() {
     # the 2.6 kernel for spitz boots from HDD, no need to remove from flash
-    if cat /proc/version | awk '{print $3}' | grep -q '^2.6'
-    then
+    if cat /proc/version | awk '{print $3}' | grep -q '^2.6'; then
+        update-alternatives --remove init /sbin/init.altboot
+    # no need to copy to flash if we're removing from flash already
+    elif mount | grep ' / ' | grep -q mtdblock; then
         update-alternatives --remove init /sbin/init.altboot
     else
         if test -d /lib/modules
