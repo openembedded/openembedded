@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+  <HEAD>
+    <META HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
+    <TITLE>Enable/Disable NSLU2 telnet Service</TITLE>
+    <LINK REL="stylesheet" TYPE="text/css" HREF="../ig_n.css">
+    <SCRIPT language="JavaScript" type="text/javascript" src="../stdlib.js"></SCRIPT>
+  </HEAD>
+
+  <IMG SRC="../linksys.gif">
+  <H2><P ALIGN=CENTER>Enable/Disable NSLU2 telnet Service</P></H2>
+
+  <BODY onLoad="showMsg();">
+    <CENTER>
+      <HR>
+      <P>Current telnet service status: <FONT color="ff1111">@status#</FONT></P>
+      <FORM ACTION="telnet.cgi" METHOD="post">
+        <INPUT type="submit" name="action" value="@action#">
+        <INPUT type="Hidden" name="message" value="@message#">
+      </FORM>    
+    </CENTER>
+    <HR>
+    <P>NOTICE: The telnet service is inherently not secure.  Among other security concerns, the login id and passwords you enter will be sent in plaintext across the network.  In order to provide a slightly higher degree of security, the service will not be automatically restarted upon reboot.  However, if you do not intend to reboot soon, it is recommended that you use this page to disable the service as soon as it is no longer needed.</P>
+    <P>A better solution than telnet for network terminal access to the NSLU2 is to use an SSH package, such as "openssh" or "dropbear".  These packages are secure, and will not require any special steps to enable once installed.  Openssh can be installed using the standard "ipkg" mechanism: "ipkg install openssh".</P>
+    <HR>
+    <CENTER>
+      <P><A HREF="/index.cgi">Back</A></P>
+    </CENTER>
+  </BODY>
+
+</HTML>
