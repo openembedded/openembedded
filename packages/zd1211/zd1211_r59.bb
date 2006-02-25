@@ -19,8 +19,7 @@ do_compile () {
         oe_runmake 'MODPATH={D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net' \
 		   'KERNEL_SOURCE=${STAGING_KERNEL_DIR}' \
 		   'KDIR=${STAGING_KERNEL_DIR}' \
-		   'SRC_DIR=${S}/src' \
-		   'KERNE_VERSION=${KERNEL_VERSION}' \
+		   'KERNEL_VERSION=${KERNEL_VERSION}' \
                    'CC="${KERNEL_CC}"' \
                    'LD="${KERNEL_LD}"' 
 }
