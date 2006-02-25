@@ -179,6 +179,12 @@ cp $targ/home/httpd/html/home.htm $targ/home/httpd/html/home.htm_bak
 sed "$sedcommand" $targ/home/httpd/html/home.htm_bak > $targ/home/httpd/html/home.htm
 chmod 644 $targ/home/httpd/html/home.htm
 
+# Create a few empty files that are expected to be present
+touch $targ/var/log/wtmp
+chmod 644 $targ/var/log/wtmp
+touch $targ/var/run/utmp
+chmod 644 $targ/var/run/utmp
+
 # Create the boot flag file.
 
 rm -f /.sd??root $targ/.sd??root
