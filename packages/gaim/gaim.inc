@@ -4,7 +4,7 @@ MAINTAINER = "Mads Chr. Olesen <gaim@shiyee.dk>"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ gnutls virtual/libintl"
-RRECOMMENDS_${PN} = "gaim-protocol-irc gaim-protocol-jabber"
+RRECOMMENDS_${PN} = "gaim-protocol-irc gaim-protocol-jabber gaim-plugin-docklet"
 
 EXTRA_OECONF = "--disable-audio --disable-perl --disable-tcl --disable-deprecated"
 
@@ -18,10 +18,15 @@ FILES_${PN}-dev += "${libdir}/gaim/*.la"
 
 inherit autotools gettext
 
-PACKAGES_DYNAMIC = "gaim-protocol-*"
+PACKAGES_DYNAMIC = "gaim-protocol-* gaim-plugin-*"
 
 python populate_packages_prepend () {
 	root = bb.data.expand('${libdir}/gaim', d)
+
+	do_split_packages(d, root, '^([^l][^i][^b].*)\.so$',
+			   output_pattern='gaim-plugin-%s',
+			   description='GAIM plugin %s',
+			   prepend=True)
 
         do_split_packages(d, root, '^lib(.*)\.so$',
 			   output_pattern='gaim-protocol-%s',
