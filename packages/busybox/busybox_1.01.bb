@@ -39,7 +39,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox"
-SRC_URI_slugos += " file://sysctl.conf "
+SRC_URI_append_slugos += " file://sysctl.conf "
 
 S = "${WORKDIR}/busybox-${PV}"
 
@@ -131,8 +131,7 @@ do_install () {
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
 }
 
-do_install_append_slugos()
-{
+do_install_append_slugos() {
 	install -m 0644 ${WORKDIR}/sysctl.conf ${D}${sysconfdir}
 }
 
