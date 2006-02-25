@@ -1,0 +1,51 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.1.orig	2006-02-24 20:48:18.000000000 -0600
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.1	2006-02-24 21:13:01.000000000 -0600
+@@ -3,6 +3,24 @@
+ #/sbin/ifconfig ixp0 hw ether 00:C0:02:01:01:04
+ /bin/echo  "Starting Set CGI_ds.conf:"; /etc/rc.d/rc.bootbin; check_status
+ 
++if ( [ -f /.ext3flash ] ) ; then
++  dsk="nodisk"
++  /bin/grep -q "^/dev/sda1 / ext3" /proc/mounts
++  if ( [ $? -eq 0 ] ) ; then
++    dsk="sda"
++  else
++    /bin/grep -q "^/dev/sdb1 / ext3" /proc/mounts
++    if ( [ $? -eq 0 ] ) ; then
++      dsk="sdb"
++    fi
++  fi
++  /bin/echo  "Remounting /dev/${dsk}1 as ext3flash:"
++  /bin/mount -o remount,rw,noatime /dev/${dsk}1
++  /bin/echo  "Remounting /dev/${dsk}2 as ext3flash:"
++  /bin/mount -o remount,rw,sync,noatime /dev/${dsk}2
++  /bin/echo  "Removing swap from ext3flash:"
++  /sbin/swapoff /dev/${dsk}3
++fi
+ 
+ /bin/echo  "Restore time and timezone:"; /etc/rc.d/rc.rstimezone; check_status
+ /bin/echo  "Restore usrgrpshares:"; /etc/rc.d/rc.reset_usrgrpshare; check_status
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.quota.orig	2006-02-24 20:48:31.000000000 -0600
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.quota	2006-02-24 21:12:46.000000000 -0600
+@@ -8,6 +8,21 @@
+     echo "Done."
+ fi
+ 
++if ( [ -f /.ext3flash ] ) ; then
++  dsk="nodisk"
++  /bin/grep -q "^/dev/sda1 / ext3" /proc/mounts
++  if ( [ $? -eq 0 ] ) ; then
++    dsk="sda"
++  else
++    /bin/grep -q "^/dev/sdb1 / ext3" /proc/mounts
++    if ( [ $? -eq 0 ] ) ; then
++      dsk="sdb"
++    fi
++  fi
++  /bin/echo "Remounting /dev/${dsk}1 as ext3flash:"
++  /bin/mount -o remount,rw,noatime /dev/${dsk}1
++fi
++
+ if [ -x "/usr/bin/quotaon" ]
+ then
+     echo "Turning on quota."
