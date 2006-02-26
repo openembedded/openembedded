@@ -137,7 +137,12 @@ if [ "$nopw" = 0 ] ; then
        exit 1
    fi
    cp /etc/passwd /usr/local/passwd
-   cp /etc/passwd $targconf/passwd
+#   cp /etc/passwd $targconf/passwd
+   grep "^root:" /etc/passwd >$targconf/passwd.new
+   grep -v "^root:" $targconf/passwd >>$targconf/passwd.new
+   mv $targconf/passwd $targconf/passwd.save
+   mv $targconf/passwd.new $targconf/passwd
+   chmod 644 $targconf/passwd
 fi
 
 # Start at the root directory

@@ -168,8 +168,14 @@ Also not that telnet is not enabled by default - there is an openssh package
 and a dropbear package that either can replace telnet access with secure shell
 access.
 
-     - Dropbear package details on NSLU2-Linux wiki at:
+OpenSSH is the simplest to install:
 
+     - OpenSSH package details on NSLU2-Linux wiki at:
+          http://www.nslu2-linux.org/wiki/HowTo/UseOpenSSHForRemoteAccess
+
+Dropbear is preferred by some:
+
+     - Dropbear package details on NSLU2-Linux wiki at:
           http://www.nslu2-linux.org/wiki/HowTo/UseDropBearForRemoteAccess
 
 The rationale behind not enabling telnet by default is ensure that an Unslung
@@ -333,7 +339,8 @@ Split from 3.x stream to allow parallel development.
 
 4.2:
 
-New switchbox implementation with NFS and external USB disk root filesystem support.
+New switchbox implementation with NFS and external USB disk root filesystem
+support.
 
 4.3:
 
@@ -451,3 +458,27 @@ First public release of 5.x firmware.
 6.0:
 
 First alpha release of 6.x Unslung firmware, based on Linksys V2.3R63 firmware.
+
+6.5:
+
+Unsling script now prompts for a root password to be used, additional sanity
+checks added to minimize the chance of an improper unsling.  User feedback
+added to indicate the status (running from internal flash or booted up from
+an external drive) via /etc/motd, ipkg, as well as the main web page.  Improved
+diagnostic messages from unsling.  Added a Linksys customization to "mount"
+to the slingbox version of mount.
+
+6.6:
+
+- Changed the code that handles the ".ext3flash" functionality so that it can
+  handle booting from either /dev/sda or /dev/sdb.
+- Better text, and cleanup of the "telnet.htm" management page.
+- Unsling now creates the wmtp and utmp files.
+- Unsling now "edits" the .../conf/passwd file instead of replacing it.
+- Ipkg dependencies fixed so that kernel-modules no longer need to be
+  "force-installed".
+- Support for mounting ISO images stored on the local disk added
+  (kernel-modules loop.o and isofs.o are now created).
+- The keyspan.o USB serial kernel-module is also created at build time.
+- README file updated to reflect the new unsling script as well as the
+  change in preferred port for the primary external disk.
