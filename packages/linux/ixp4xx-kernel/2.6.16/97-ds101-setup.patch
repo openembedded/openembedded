@@ -9,8 +9,10 @@ Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
  arch/arm/mach-ixp4xx/ds101-setup.c |  245 +++++++++++++++++++++++++++++++++++++
  3 files changed, 254 insertions(+), 1 deletion(-)
 
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c
+===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-23 18:08:40.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/ds101-setup.c	2006-02-24 12:37:01.000000000 +0100
 @@ -0,0 +1,245 @@
 +/*
 + * Synology DS101 board setup
@@ -225,7 +227,7 @@ Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
 + */
 +
 +static char ds101_command_line[] __initdata =
-+	"root=/dev/sda1 rootfstype=ext3 init=/sbin/init "
++	"root=/dev/sda2 rootfstype=ext3 init=/sbin/init "
 +	"rtc-rs5c372.probe=0,0x32 "
 +	CONFIG_CMDLINE;
 +
@@ -257,9 +259,11 @@ Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
 +	.timer		= &ixp4xx_timer,
 +	.init_machine	= ds101_init,
 +MACHINE_END
---- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:08:38.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/Kconfig	2006-02-23 18:08:40.000000000 +0100
-@@ -94,6 +94,14 @@ config MACH_DSMG600
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Kconfig	2006-02-24 11:44:49.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/Kconfig	2006-02-24 11:44:49.000000000 +0100
+@@ -94,6 +94,14 @@
  	  DSM-G600 device. For more information on this platform,
  	  see http://www.nslu2-linux.org/
  
@@ -274,9 +278,11 @@ Signed-off-by: OEyvind Repvik <oyvind@repvik.org>
  #
  # Avila and IXDP share the same source for now. Will change in future
  #
---- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/Makefile	2006-02-23 18:08:38.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/Makefile	2006-02-23 18:09:09.000000000 +0100
-@@ -11,4 +11,4 @@ obj-$(CONFIG_MACH_GTWX5715)	+= gtwx5715-
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/Makefile
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-ixp4xx/Makefile	2006-02-24 11:44:48.000000000 +0100
++++ linux-2.6.15/arch/arm/mach-ixp4xx/Makefile	2006-02-24 11:44:49.000000000 +0100
+@@ -11,4 +11,4 @@
  obj-$(CONFIG_MACH_NSLU2)	+= nslu2-pci.o nslu2-setup.o nslu2-power.o
  obj-$(CONFIG_MACH_NAS100D)	+= nas100d-pci.o nas100d-setup.o nas100d-power.o
  obj-$(CONFIG_MACH_DSMG600)	+= dsmg600-pci.o dsmg600-setup.o
