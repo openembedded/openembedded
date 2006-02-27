@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r8"
+PR = "r9"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -74,6 +74,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/headphone_switch-r2.patch;patch=1 \
            ${RPSRC}/backport_i2c_asoc_fix-r0.patch;patch=1 \
+           ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
            ${DOSRC}/kexec-arm-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
@@ -86,6 +87,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            file://defconfig-collie \
            file://defconfig-poodle \
            file://defconfig-cxx00 \
+           file://defconfig-qemuarm \
            file://defconfig-tosa "
 
 # Disabled until I find the reason this gives issues with cdc_subset
