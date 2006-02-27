@@ -38,7 +38,7 @@ SRC_URI += "file://oe-makefile.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r8"
+PR = "r9"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
