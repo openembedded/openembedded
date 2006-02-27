@@ -3,6 +3,7 @@ SECTION = "kernel/modules"
 HOMEPAGE = "http://bluetooth-alsa.sourceforge.net/"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib bluez-libs"
+PR = "r1"
 
 inherit module
 
