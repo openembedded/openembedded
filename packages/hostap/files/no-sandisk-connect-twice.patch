@@ -1,0 +1,17 @@
+Index: hostap-driver-0.3.9/driver/etc/hostap_cs.conf
+===================================================================
+--- hostap-driver-0.3.9.orig/driver/etc/hostap_cs.conf	2005-01-29 18:49:54.000000000 +0100
++++ hostap-driver-0.3.9/driver/etc/hostap_cs.conf	2006-02-28 19:57:24.064492520 +0100
+@@ -160,12 +160,6 @@
+    manfid 0xc00f, 0x000
+    bind "hostap_cs"
+ 
+-card "SanDisk ConnectPlus"
+-   version "SanDisk", "ConnectPlus"
+-   manfid 0xd601, 0x0101
+-   bind "hostap_cs" to 0
+-   bind "ide-cs" to 1
+-
+ card "ASUS WL-100 8011b WLAN PC Card"
+    version "ASUS", "802_11b_PC_CARD_25", "Version 01.00"
+    manfid 0x02aa, 0x0002
