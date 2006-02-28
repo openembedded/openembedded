@@ -1,0 +1,383 @@
+diff -Naur linux-2.4.22/drivers/net/Config.in.orig linux-2.4.22/drivers/net/Config.in
+--- linux-2.4.22/drivers/net/Config.in.orig	2006-02-26 11:49:28.000000000 -0600
++++ linux-2.4.22/drivers/net/Config.in	2006-02-26 11:40:31.000000000 -0600
+@@ -338,6 +338,8 @@
+    dep_tristate '  SysKonnect FDDI PCI support' CONFIG_SKFP $CONFIG_PCI
+ fi
+ 
++dep_tristate 'Network logging support' CONFIG_NETCONSOLE
++
+ if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+    if [ "$CONFIG_INET" = "y" ]; then
+       bool 'HIPPI driver support (EXPERIMENTAL)' CONFIG_HIPPI
+diff -Naur linux-2.4.22/drivers/net/Makefile.orig linux-2.4.22/drivers/net/Makefile
+--- linux-2.4.22/drivers/net/Makefile.orig	2006-02-26 11:49:45.000000000 -0600
++++ linux-2.4.22/drivers/net/Makefile	2006-02-26 11:38:58.000000000 -0600
+@@ -272,6 +272,8 @@
+ obj-y		+= ../acorn/net/acorn-net.o
+ endif
+ 
++obj-$(CONFIG_NETCONSOLE) += netconsole.o
++
+ #
+ # HIPPI adapters
+ #
+diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/netconsole.c
+--- linux-2.4.22/drivers/net/netconsole.c.orig	1969-12-31 18:00:00.000000000 -0600
++++ linux-2.4.22/drivers/net/netconsole.c	2006-02-26 16:16:23.000000000 -0600
+@@ -0,0 +1,342 @@
++/*  linux/drivers/net/netconsole.c
++ *
++ *  Copyright (C) 2001  Ingo Molnar <mingo@redhat.com>
++ *
++ *  This file contains the implementation of an IRQ-safe, crash-safe
++ *  kernel console implementation that outputs kernel messages to the
++ *  network.
++ *
++ * Modification history:
++ *
++ * 2001-09-17    started by Ingo Molnar.
++ * 2006-02-26    very minor modifications to suit the NSLU2 w/Unslung -- Mike Westerhof.
++ */
++
++/****************************************************************
++ *      This program is free software; you can redistribute it and/or modify
++ *      it under the terms of the GNU General Public License as published by
++ *      the Free Software Foundation; either version 2, or (at your option)
++ *      any later version.
++ *
++ *      This program is distributed in the hope that it will be useful,
++ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *      GNU General Public License for more details.
++ *
++ *      You should have received a copy of the GNU General Public License
++ *      along with this program; if not, write to the Free Software
++ *      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ ****************************************************************/
++
++#include <net/tcp.h>
++#include <net/udp.h>
++#include <linux/mm.h>
++#include <linux/tty.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <asm/unaligned.h>
++#include <linux/console.h>
++#include <linux/smp_lock.h>
++#include <linux/netdevice.h>
++#include <linux/tty_driver.h>
++#include <linux/etherdevice.h>
++
++static struct net_device *netconsole_dev;
++static u16 source_port, target_port;
++static u32 source_ip, target_ip;
++static unsigned char daddr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff} ;
++
++#define NETCONSOLE_VERSION 0x01
++#define HEADER_LEN 5
++
++#define MAX_UDP_CHUNK 1460
++#define MAX_PRINT_CHUNK (MAX_UDP_CHUNK-HEADER_LEN)
++
++/*
++ * We maintain a small pool of fully-sized skbs,
++ * to make sure the message gets out even in
++ * extreme OOM situations.
++ */
++#define MAX_NETCONSOLE_SKBS 32
++
++static spinlock_t netconsole_lock = SPIN_LOCK_UNLOCKED;
++static int nr_netconsole_skbs;
++static struct sk_buff *netconsole_skbs;
++
++#define MAX_SKB_SIZE \
++		(MAX_UDP_CHUNK + sizeof(struct udphdr) + \
++				sizeof(struct iphdr) + sizeof(struct ethhdr))
++
++static void __refill_netconsole_skbs(void)
++{
++	struct sk_buff *skb;
++	unsigned long flags;
++
++	spin_lock_irqsave(&netconsole_lock, flags);
++	while (nr_netconsole_skbs < MAX_NETCONSOLE_SKBS) {
++		skb = alloc_skb(MAX_SKB_SIZE, GFP_ATOMIC);
++		if (!skb)
++			break;
++		if (netconsole_skbs)
++			skb->next = netconsole_skbs;
++		else
++			skb->next = NULL;
++		netconsole_skbs = skb;
++		nr_netconsole_skbs++;
++	}
++	spin_unlock_irqrestore(&netconsole_lock, flags);
++}
++
++static struct sk_buff * get_netconsole_skb(void)
++{
++	struct sk_buff *skb;
++
++	unsigned long flags;
++
++	spin_lock_irqsave(&netconsole_lock, flags);
++	skb = netconsole_skbs;
++	if (skb)
++		netconsole_skbs = skb->next;
++	skb->next = NULL;
++	nr_netconsole_skbs--;
++	spin_unlock_irqrestore(&netconsole_lock, flags);
++
++	return skb;
++}
++
++static spinlock_t sequence_lock = SPIN_LOCK_UNLOCKED;
++static unsigned int offset;
++
++static void send_netconsole_skb(struct net_device *dev, const char *msg, unsigned int msg_len)
++{
++	int total_len, eth_len, ip_len, udp_len;
++	unsigned long flags;
++	struct sk_buff *skb;
++	struct udphdr *udph;
++	struct iphdr *iph;
++	struct ethhdr *eth;
++
++	udp_len = msg_len + HEADER_LEN + sizeof(*udph);
++	ip_len = eth_len = udp_len + sizeof(*iph);
++	total_len = eth_len + ETH_HLEN;
++
++	if (nr_netconsole_skbs < MAX_NETCONSOLE_SKBS)
++		__refill_netconsole_skbs();
++
++	skb = alloc_skb(total_len, GFP_ATOMIC);
++	if (!skb) {
++		skb = get_netconsole_skb();
++		if (!skb)
++			/* tough! */
++			return;
++	}
++
++	atomic_set(&skb->users, 1);
++	skb_reserve(skb, total_len - msg_len - HEADER_LEN);
++	skb->data[0] = NETCONSOLE_VERSION;
++
++	spin_lock_irqsave(&sequence_lock, flags);
++	put_unaligned(htonl(offset), (u32 *) (skb->data + 1));
++	offset += msg_len;
++	spin_unlock_irqrestore(&sequence_lock, flags);
++
++	memcpy(skb->data + HEADER_LEN, msg, msg_len);
++	skb->len += msg_len + HEADER_LEN;
++
++	udph = (struct udphdr *) skb_push(skb, sizeof(*udph));
++	udph->source = source_port;
++	udph->dest = target_port;
++	udph->len = htons(udp_len);
++	udph->check = 0;
++
++	iph = (struct iphdr *)skb_push(skb, sizeof(*iph));
++
++	iph->version  = 4;
++	iph->ihl      = 5;
++	iph->tos      = 0;
++        iph->tot_len  = htons(ip_len);
++	iph->id       = 0;
++	iph->frag_off = 0;
++	iph->ttl      = 64;
++        iph->protocol = IPPROTO_UDP;
++	iph->check    = 0;
++        iph->saddr    = source_ip;
++        iph->daddr    = target_ip;
++	iph->check    = ip_fast_csum((unsigned char *)iph, iph->ihl);
++
++	eth = (struct ethhdr *) skb_push(skb, ETH_HLEN);
++
++	eth->h_proto = htons(ETH_P_IP);
++	memcpy(eth->h_source, dev->dev_addr, dev->addr_len);
++	memcpy(eth->h_dest, daddr, dev->addr_len);
++
++repeat:
++	spin_lock(&dev->xmit_lock);
++	dev->xmit_lock_owner = smp_processor_id();
++
++	if (netif_queue_stopped(dev)) {
++		dev->xmit_lock_owner = -1;
++		spin_unlock(&dev->xmit_lock);
++
++		dev->poll_controller(dev);
++		goto repeat;
++	}
++
++	dev->hard_start_xmit(skb, dev);
++
++	dev->xmit_lock_owner = -1;
++	spin_unlock(&dev->xmit_lock);
++}
++
++static void write_netconsole_msg(struct console *con, const char *msg, unsigned int msg_len)
++{
++	int len, left;
++	struct net_device *dev;
++
++	dev = netconsole_dev;
++	if (!dev)
++		return;
++
++	if (dev->poll_controller && netif_running(dev)) {
++		unsigned long flags;
++
++		__save_flags(flags);
++		__cli();
++		left = msg_len;
++repeat:
++		if (left > MAX_PRINT_CHUNK)
++			len = MAX_PRINT_CHUNK;
++		else
++			len = left;
++		send_netconsole_skb(dev, msg, len);
++		msg += len;
++		left -= len;
++		if (left)
++			goto repeat;
++		__restore_flags(flags);
++	}
++}
++
++static char *dev;
++static int target_eth_byte0 = 255;
++static int target_eth_byte1 = 255;
++static int target_eth_byte2 = 255;
++static int target_eth_byte3 = 255;
++static int target_eth_byte4 = 255;
++static int target_eth_byte5 = 255;
++
++MODULE_AUTHOR("Ingo Molnar <mingo@redhat.com>");
++MODULE_DESCRIPTION("kernel network console implementation");
++MODULE_LICENSE("GPL");
++MODULE_PARM(target_ip, "i");
++MODULE_PARM(target_eth_byte0, "i");
++MODULE_PARM(target_eth_byte1, "i");
++MODULE_PARM(target_eth_byte2, "i");
++MODULE_PARM(target_eth_byte3, "i");
++MODULE_PARM(target_eth_byte4, "i");
++MODULE_PARM(target_eth_byte5, "i");
++MODULE_PARM(source_port, "h");
++MODULE_PARM(target_port, "h");
++MODULE_PARM(dev, "s");
++
++static struct console netconsole =
++	 { flags: CON_ENABLED, write: write_netconsole_msg };
++
++static int init_netconsole(void)
++{
++	struct net_device *ndev = NULL;
++	struct in_device *in_dev;
++
++	// Set some reasonable defaults, at least for the NSLU2 device
++	if (!target_port)
++		target_port = 6666;
++	if (!source_port)
++		source_port = 6666;
++	if (!dev)
++		dev = "ixp0";
++
++	printk(KERN_INFO "netconsole: using network device <%s>\n", dev);
++	// this will be valid once the device goes up.
++	if (dev)
++		ndev = dev_get_by_name(dev);
++	if (!ndev) {
++		printk(KERN_ERR "netconsole: network device %s does not exist, aborting.\n", dev);
++		return -1;
++	}
++	if (!ndev->poll_controller) {
++		printk(KERN_ERR "netconsole: %s's network driver does not implement netlogging yet, aborting.\n", dev);
++		return -1;
++	}
++        in_dev = in_dev_get(ndev);
++	if (!in_dev) {
++		printk(KERN_ERR "netconsole: network device %s is not an IP protocol device, aborting.\n", dev);
++		return -1;
++	}
++	source_ip = ntohl(in_dev->ifa_list->ifa_local);
++	if (!source_ip) {
++		printk(KERN_ERR "netconsole: network device %s has no local address, aborting.\n", dev);
++		return -1;
++	}
++	source_ip = htonl(source_ip);
++#define IP(x) ((char *)&source_ip)[x]
++	printk(KERN_INFO "netconsole: using source IP %i.%i.%i.%i\n",
++		IP(0), IP(1), IP(2), IP(3));
++#undef IP
++	if (!target_ip) {
++		printk(KERN_ERR "netconsole: target_ip parameter not specified, aborting.\n");
++		return -1;
++	}
++	target_ip = htonl(target_ip);
++#define IP(x) ((char *)&target_ip)[x]
++	printk(KERN_INFO "netconsole: using target IP %i.%i.%i.%i\n",
++		IP(0), IP(1), IP(2), IP(3));
++#undef IP
++	if (!source_port) {
++		printk(KERN_ERR "netconsole: source_port parameter not specified, aborting.\n");
++		return -1;
++	}
++	printk(KERN_INFO "netconsole: using source UDP port: %i\n", source_port);
++	source_port = htons(source_port);
++	if (!target_port) {
++		printk(KERN_ERR "netconsole: target_port parameter not specified, aborting.\n");
++		return -1;
++	}
++	printk(KERN_INFO "netconsole: using target UDP port: %i\n", target_port);
++	target_port = htons(target_port);
++
++	daddr[0] = target_eth_byte0;
++	daddr[1] = target_eth_byte1;
++	daddr[2] = target_eth_byte2;
++	daddr[3] = target_eth_byte3;
++	daddr[4] = target_eth_byte4;
++	daddr[5] = target_eth_byte5;
++
++	if ((daddr[0] & daddr[1] & daddr[2] & daddr[3] & daddr[4] & daddr[5]) == 255)
++		printk(KERN_INFO "netconsole: using broadcast ethernet frames to send packets.\n");
++	else
++		printk(KERN_INFO "netconsole: using target ethernet address %02x:%02x:%02x:%02x:%02x:%02x.\n", daddr[0], daddr[1], daddr[2], daddr[3], daddr[4], daddr[5]);
++		
++	netconsole_dev = ndev;
++#define STARTUP_MSG "[...network console startup...]\n"
++	write_netconsole_msg(NULL, STARTUP_MSG, strlen(STARTUP_MSG));
++
++	register_console(&netconsole);
++	printk(KERN_INFO "netconsole: network logging started up successfully!\n");
++	return 0;
++}
++
++static void cleanup_netconsole(void)
++{
++	printk(KERN_INFO "netconsole: network logging shut down.\n");
++	unregister_console(&netconsole);
++
++#define SHUTDOWN_MSG "[...network console shutdown...]\n"
++	write_netconsole_msg(NULL, SHUTDOWN_MSG, strlen(SHUTDOWN_MSG));
++	netconsole_dev = NULL;
++}
++
++module_init(init_netconsole);
++module_exit(cleanup_netconsole);
++
++int dummy = MAX_SKB_SIZE;
+diff -Naur linux-2.4.22/include/linux/netdevice.h.orig linux-2.4.22/include/linux/netdevice.h
+--- linux-2.4.22/include/linux/netdevice.h.orig	2006-02-26 11:50:24.000000000 -0600
++++ linux-2.4.22/include/linux/netdevice.h	2006-02-26 11:37:14.000000000 -0600
+@@ -428,6 +428,9 @@
+ 	int			(*neigh_setup)(struct net_device *dev, struct neigh_parms *);
+ 	int			(*accept_fastpath)(struct net_device *, struct dst_entry*);
+ 
++#define HAVE_POLL_CONTROLLER
++	void			(*poll_controller)(struct net_device *dev);
++
+ 	/* open/release and usage marking */
+ 	struct module *owner;
+ 

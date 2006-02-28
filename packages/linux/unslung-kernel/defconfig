@@ -513,6 +513,11 @@ CONFIG_TUN=m
 CONFIG_ETHERTAP=m
 
 #
+# Netconsole support
+#
+CONFIG_NETCONSOLE=m
+
+#
 # Ethernet (10 or 100Mbit)
 #
 CONFIG_NET_ETHERNET=y
