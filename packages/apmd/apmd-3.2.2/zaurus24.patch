@@ -1,7 +1,7 @@
 Index: apmd-3.2.2.orig/apm.c
 ===================================================================
---- apmd-3.2.2.orig.orig/apm.c	2006-01-26 15:15:27.000000000 +0100
-+++ apmd-3.2.2.orig/apm.c	2006-01-26 17:50:14.000000000 +0100
+--- apmd-3.2.2.orig.orig/apm.c	2004-01-04 08:23:08.000000000 +0100
++++ apmd-3.2.2.orig/apm.c	2006-02-28 14:22:38.227003952 +0100
 @@ -24,10 +24,12 @@
  #include <unistd.h>
  #include <sys/types.h>
@@ -25,7 +25,7 @@ Index: apmd-3.2.2.orig/apm.c
  
      fd = open(APM_DEVICE, O_WRONLY);
      if (fd < 0)
-@@ -54,6 +59,22 @@
+@@ -54,6 +59,23 @@
      switch (mode)
      {
      case SUSPEND:
@@ -40,6 +40,7 @@ Index: apmd-3.2.2.orig/apm.c
 +		{
 +		    fscanf(pid_file, "%d", &apmd_pid);
 +		    fclose(pid_file);
++		    remove("/var/run/apmd.pid");
 +		}
 +
 +		kill(apmd_pid, SIGKILL);
