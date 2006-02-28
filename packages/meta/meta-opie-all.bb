@@ -4,7 +4,7 @@ ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 DEPENDS = "meta-opie"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -140,7 +140,6 @@ DEPENDS += " kdepimpi"
 
 task-qpe-emulators = "\
 scummvm \
-snes9x-sdl-qpe \
 "
 RDEPENDS_task-qpe-emulators = "${task-qpe-emulators}"
 DEPENDS += " ${task-qpe-emulators}"
