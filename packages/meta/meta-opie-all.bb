@@ -155,8 +155,6 @@ qpf-dejavuserif \
 qpf-dejavuserifcondensed \
 qpf-freemono \
 qpf-freeserif \
-qpf-gentium \
-qpf-gentiumalt \
 qpf-hunkysans \
 qpf-hunkyserif \
 qpf-qte \
