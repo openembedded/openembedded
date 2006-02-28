@@ -102,3 +102,15 @@ rd_cv_ieee_works=${rd_cv_ieee_works=yes}
 
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
+
+# samba
+samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+
+# sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+#intercom
+ac_cv_func_fnmatch_works=${ac_cv_func_fnmatch_works=yes}
