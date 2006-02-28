@@ -1,11 +1,12 @@
 DESCRIPTION = "Network suspend/resume scripts"
 SECTION = "base"
 LICENSE = "GPL"
+PACKAGE_ARCH="all"
 PV = "1.1"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://ifupdown \
-           file://usbnet"  
+           file://usbnet"
 
 do_install() {
 	install -d ${D}${sysconfdir}/apm/scripts.d
