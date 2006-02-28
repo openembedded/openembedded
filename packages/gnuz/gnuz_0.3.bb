@@ -12,7 +12,7 @@ APPNAME = "gnuz"
 APPDESKTOP = "${S}/data/"
 
 SRC_URI = "http://gnuz.4cows.net/eraser/gnuz/gnuz_0.3.tar.gz \
-           http://www.hrw.one.pl/_pliki/oe/files/gnuz-levels-0.3.tar.bz2"
+           http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/gnuz-levels-0.3.tar.bz2"
 
 S = "${WORKDIR}/gnuz"
 
