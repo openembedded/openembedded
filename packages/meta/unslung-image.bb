@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r12"
+PR = "r13"
 
 IMAGE_BASENAME = "unslung"
 
@@ -54,6 +54,9 @@ unslung_clean_image () {
 	echo "#!/bin/sh" > ${IMAGE_ROOTFS}/sbin/depmod
 	echo "exit 0" >> ${IMAGE_ROOTFS}/sbin/depmod
 	chmod ugo+x ${IMAGE_ROOTFS}/sbin/depmod
+
+	# Don't need this empty directory hanging around
+	rm -rf ${IMAGE_ROOTFS}/lib/modules/2.4.22-xfs/pcmcia
 
 	# Strip symbols and fix permissions on the libgcc_s.so.1 library
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1

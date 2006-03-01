@@ -470,15 +470,20 @@ to the slingbox version of mount.
 
 6.6:
 
-- Changed the code that handles the ".ext3flash" functionality so that it can
-  handle booting from either /dev/sda or /dev/sdb.
-- Better text, and cleanup of the "telnet.htm" management page.
-- Unsling now creates the wmtp and utmp files.
-- Unsling now "edits" the .../conf/passwd file instead of replacing it.
-- Ipkg dependencies fixed so that kernel-modules no longer need to be
-  "force-installed".
-- Support for mounting ISO images stored on the local disk added
-  (kernel-modules loop.o and isofs.o are now created).
-- The keyspan.o USB serial kernel-module is also created at build time.
-- README file updated to reflect the new unsling script as well as the
-  change in preferred port for the primary external disk.
+Changed the code that handles the ".ext3flash" functionality so that it can
+handle booting from either /dev/sda or /dev/sdb.
+Cleanup of the "telnet.htm" management page.
+Unsling now creates the wmtp and utmp files.
+Unsling now "edits" the .../conf/passwd file instead of replacing it.
+Ipkg dependencies fixed so that kernel-modules no longer need "force-install".
+Support for loopback mounting ISO images (loop.o and isofs.o are now created).
+The keyspan.o USB serial kernel-module is also created at build time.
+README file updated to reflect the new unsling script as well as the
+change in preferred port for the primary external disk.
+
+6.7:
+
+Added original "netconsole" code as a kernel module
+Fixed problem with password changing from the GUI and automatic mounting of
+drives and flash devices in port 1.
+Remove unnecessary directory /lib/modules/2.4.22-xfs/pcmcia.
