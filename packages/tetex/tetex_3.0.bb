@@ -1,7 +1,7 @@
 DESCRIPTION = "teTeX is a complete TeX distribution for UNIX compatible systems"
 LICENSE = "GPL"
 SECTION = "console/utils"
-DEPENDS = "tetex-native flex gd ncurses libpng t1lib x11 xau xext xt zlib"
+DEPENDS = "tetex-native flex gd ncurses libpng t1lib libx11 libxau libxext libxt zlib"
 TETEX_BUILDSYSTEM_TAMER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r2"
 

@@ -1,7 +1,7 @@
 SECTION = "x11/libs"
 DESCRIPTION = "Matchbox window manager core library"
 LICENSE = "GPL"
-DEPENDS = "x11 xext expat libxft pango jpeg libpng zlib libxsettings-client"
+DEPENDS = "libx11 libxext expat libxft pango jpeg libpng zlib libxsettings-client"
 PR="r1"
 
 inherit autotools pkgconfig

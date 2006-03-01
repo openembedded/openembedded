@@ -5,6 +5,6 @@ S = "${WORKDIR}/kaffe-${PV}"
 
 include kaffe.inc
 
-DEPENDS += "glib-2.0 gmp gtk+ libart-lgpl pango zlib xtst kaffeh-native"
+DEPENDS += "glib-2.0 gmp gtk+ libart-lgpl pango zlib libxtst kaffeh-native"
 
 EXTRA_OECONF += ""

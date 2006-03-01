@@ -1,5 +1,5 @@
 include evas.inc
-DEPENDS += "x11 xext freetype"
+DEPENDS += "libx11 libxext freetype"
 PR = "r4"
 
 SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV}"

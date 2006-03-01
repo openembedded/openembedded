@@ -6,7 +6,7 @@ MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "libs"
 PR = "r1"
 
-DEPENDS = "glib-2.0 gtk+ libart-lgpl pango xtst jikes-native zip-native"
+DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"
 RDEPENDS_${PN} = "${PN}-common (${PV})"
 
 SRC_URI = "${GNU_MIRROR}/${PN}/${P}.tar.gz \

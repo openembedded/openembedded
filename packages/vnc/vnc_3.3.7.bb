@@ -4,7 +4,7 @@
 
 DESCRIPTION = "A Unix VNC client"
 HOMEPAGE = "http://www.realvnc.com/"
-DEPENDS = "zlib xmu xaw"
+DEPENDS = "zlib libxmu libxaw"
 LICENSE="GPL"
 
 SRC_URI="http://www.realvnc.com/dist/vnc-${PV}-unixsrc.tar.gz"

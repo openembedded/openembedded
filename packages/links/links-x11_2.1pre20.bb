@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "console/network"
-DEPENDS = "jpeg libpng flex openssl zlib x11"
+DEPENDS = "jpeg libpng flex openssl zlib libx11"
 DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
 RCONFLICTS = "links"

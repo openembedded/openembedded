@@ -1,6 +1,6 @@
 PV = "0.0+cvs${SRCDATE}"
 LICENSE = "MIT"
-DEPENDS = "x11 xmu xext"
+DEPENDS = "libx11 libxmu libxext"
 DESCRIPTION = "property displayer for X"
 MAINTER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"

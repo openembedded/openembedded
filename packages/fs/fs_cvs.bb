@@ -2,7 +2,7 @@ PV = "0.0+cvs${SRCDATE}"
 LICENSE = "BSD-X"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "xfont xtrans"
+DEPENDS = "libxfont xtrans"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=FS"
 S = "${WORKDIR}/FS"

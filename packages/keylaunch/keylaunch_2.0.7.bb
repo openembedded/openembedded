@@ -1,6 +1,6 @@
 inherit gpe
 
-DEPENDS = "virtual/xserver xtst xau xpm"
+DEPENDS = "virtual/xserver libxtst libxau libxpm"
 SECTION = "gpe"
 LICENSE = "GPL"
 DESCRIPTION = "A small utility for binding commands to a hot key.\
