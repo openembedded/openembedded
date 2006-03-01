@@ -1,6 +1,5 @@
 SECTION = "devel"
 include libtool_${PV}.bb
-DEPENDS += "autoconf-native"
 
 PR = "r3"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
