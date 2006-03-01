@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r9"
+PR = "r10"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -65,6 +65,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${RPSRC}/alsa/asoc-0.10rc2.diff.bz2;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.10rc2-rc3.patch;patch=1 \
            ${RPSRC}/misc_fix1-r0.patch;patch=1 \
            ${RPSRC}/zaurus_keyboard_tweak-r0.patch;patch=1 \
            ${RPSRC}/corgi_bl_cleanup-r2.patch;patch=1 \
@@ -72,7 +73,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
-           ${RPSRC}/headphone_switch-r2.patch;patch=1 \
+           ${RPSRC}/headphone_switch-r3.patch;patch=1 \
            ${RPSRC}/backport_i2c_asoc_fix-r0.patch;patch=1 \
            ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
            ${DOSRC}/kexec-arm-r0.patch;patch=1 \
