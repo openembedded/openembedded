@@ -312,7 +312,7 @@ init_rootfs(){
 }
 
 mount_sd(){
-	if mount | grep -q "/media/card "
+	if mount | grep -q "/media/card"
 	then
 		echo "Note: /media/card is already mounted"
 	else
