@@ -48,16 +48,17 @@ PRE-INSTALLATION CONSIDERATIONS
      disk.  The remainder of these instructions assume that you have a
      suitable external disk or flash disk you will be using for this purpose.
 
-     [A word on ports: completely contrary to previous versions of Unslung,
-     the preferred port for the Unslung external disk as of Unslung 6.x is
-     often port 2.  This will free up the far-more-flexible port number 1
-     for other uses.
+     A few words on selecting which port to use:
+
+     Completely contrary to previous versions of Unslung, the preferred port
+     for the Unslung external disk as of Unslung 6.x is often port 2.  This
+     will free up the far-more-flexible port number 1 for other uses.
 
      However, this "feature" (part of the Linksys R63 firmware) may cause some
      small consternation for users upgrading from earlier versions of Unslung.
-     But in general, leaving the drives plugged in as-is will likely be the
-     least painful solution.  The basic challenge faced by upgraders is that
-     *something* must change: if the drive remains in port 1, then it will
+     But in general, swapping the drives between the two ports  will likely be
+     the least painful solution.  The basic challenge faced by upgraders is
+     that *something* must change: if the drive remains in port 1, then it will
      remain mounted at "/share/hdd/..." but the drive nomenclature will change
      from "/dev/sda" to "/dev/sdb".  On the other hand, if the drive is moved
      to port 2, then it will remain "/dev/sda" but it will then be mounted at
@@ -72,7 +73,14 @@ PRE-INSTALLATION CONSIDERATIONS
          port 2.
        - if you have two drives, and both will be formatted by the NSLU2, then
          unsling to the drive in port 1.
-     ]
+
+     If you unsling to port 2, and later add a drive in port 1 that will be
+     formatted by the NSLU2, initial testing indicates that it should work
+     as expected -- however, the drive to be added MUST be formatted by the
+     unslung NSLU2 in question, and once formatted, the drive must NOT be
+     removed -- as the unslung NSLU2 will move it's "conf" datafiles to the
+     drive in port 1 during the format, and thus will be dependent upon the
+     presence of both drives for proper operation.  You have been warned!
 
 3) The external disk that you use as the target for package installation must
      be (or have previously been) formatted by the NSLU2.  It is possible to

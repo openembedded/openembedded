@@ -19,12 +19,14 @@ if [ $# -eq 1 ] ; then
 	targconf=/share/hdd/conf
 	flag=.sdb1root
 	htmlinfo="disk1, /dev/sdb1"
+	fixconf=0
     elif [ "$1" = "disk2" ] ; then
 	mtch="/dev/sda1 /share/flash/data ext3 rw 0 0"
 	targ=/share/flash/data
 	targconf=/share/flash/conf
 	flag=.sda1root
 	htmlinfo="disk2, /dev/sda1"
+	fixconf=1
     else
 	echo $usage
 	exit 1
@@ -126,13 +128,13 @@ if [ -f $targ/.unslung ] ; then
 fi
 
 # Change the root password
-if [ "$nopw" = 0 ] ; then
+if [ "$nopw" -eq 0 ] ; then
    echo
    echo "Please enter the new root password.  This will be the new root"
    echo "password used when the NSLU2 boots up with or without disks"
    echo
    passwd
-   if [ $? != 0 ] ; then
+   if [ $? -ne 0 ] ; then
        echo "Error setting password."
        exit 1
    fi
@@ -189,6 +191,28 @@ touch $targ/var/log/wtmp
 chmod 644 $targ/var/log/wtmp
 touch $targ/var/run/utmp
 chmod 644 $targ/var/run/utmp
+
+# The "user password" Linksys utility is hard-coded to /share/hdd; also the
+# QuickSet utility seems to have some difficulty as well.  Ugly fix is to
+# add symlinks if we are unslinging to /share/flash.  It might seem more
+# reasonable to point to /etc/passwd, for example, but this approach seems to
+# be more likely to avoid looping symlinks.
+
+if [ "$fixconf" -eq 1 ] ; then
+    ln -s ../../flash/conf/.htpasswd      $targ/share/hdd/conf/.htpasswd
+    ln -s ../../flash/conf/backup_sh.conf $targ/share/hdd/conf/backup_sh.conf
+    ln -s ../../flash/conf/config         $targ/share/hdd/conf/config
+    ln -s ../../flash/conf/group          $targ/share/hdd/conf/group
+    ln -s ../../flash/conf/passwd         $targ/share/hdd/conf/passwd
+    ln -s ../../flash/conf/server.log     $targ/share/hdd/conf/server.log
+    ln -s ../../flash/conf/share          $targ/share/hdd/conf/share
+    ln -s ../../flash/conf/share.info     $targ/share/hdd/conf/share.info
+    ln -s ../../flash/conf/smb.conf       $targ/share/hdd/conf/smb.conf
+    ln -s ../../flash/conf/smbpasswd      $targ/share/hdd/conf/smbpasswd
+    ln -s ../../flash/conf/tmp            $targ/share/hdd/conf/tmp
+    ln -s ../../flash/conf/upgrade        $targ/share/hdd/conf/upgrade
+    ln -s ../../flash/conf/usrgrp.info    $targ/share/hdd/conf/usrgrp.info
+fi
 
 # Create the boot flag file.
 
