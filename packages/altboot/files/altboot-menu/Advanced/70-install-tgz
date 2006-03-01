@@ -141,7 +141,7 @@ install_rootfs_direct(){
 	sync
 	echo "done"
 	
-	umount "$1"
+#	umount "$1"
 	
 	echo "Press <ENTER> to bring up the altboot menu"
 	read junk </dev/tty0 >/dev/tty0 2>&1
@@ -210,7 +210,7 @@ install_rootfs_image(){
 		
 		if test -n "$junk"
 		then
-			if test "$junk" -gt 30
+			if test "$junk" -gt 29
 			then
 				echo -n "Is [${junk}Mb] correct? [Y|n] "
 				read junk2
