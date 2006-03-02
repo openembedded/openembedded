@@ -1,4 +1,5 @@
 LICENSE =	"LGPL"
+DEPENDS = 	"gtk+"
 DESCRIPTION =	"Window navigation construction toolkit"
 HOMEPAGE =	""
 
