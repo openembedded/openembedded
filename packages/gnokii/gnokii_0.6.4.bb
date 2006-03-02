@@ -4,7 +4,7 @@ SRC_URI = "http://www.gnokii.org/download/gnokii/0.6.x/gnokii-${PV}.tar.bz2 \
 	file://configure.patch;patch=1"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-DEPENDS = "xpm"
+DEPENDS = "libxpm"
 
 inherit autotools pkgconfig
 

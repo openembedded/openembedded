@@ -2,7 +2,7 @@ SECTION = "x11/base"
 PR = "r3"
 LICENSE = "MIT"
 
-SRC_URI = "cvs://anoncvs@dri.freedesktop.org/cvs/dri;module=drm;method=pserver \
+SRC_URI = "${FREEDESKTOP_CVS}/dri;module=drm;method=pserver \
 	file://make.patch;patch=1"
 
 inherit module-base

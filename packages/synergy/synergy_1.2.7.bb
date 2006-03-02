@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "x11"
 # NOTE: This depends on full x11, not diet-x11
-DEPENDS = "x11 xtst"
+DEPENDS = "libx11 libxtst"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/synergy2/synergy-${PV}.tar.gz"

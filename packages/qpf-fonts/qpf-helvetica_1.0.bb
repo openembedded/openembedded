@@ -6,7 +6,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://www.pobox.sk/~mico/zaurus.html"
 PR = "r1"
 
-SRC_URI = "http://www.hrw.one.pl/_pliki/oe/files/qpf-helvetica.tar.bz2"
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qpf-helvetica.tar.bz2"
 S = "${WORKDIR}/helvetica"
 
 do_install () { 

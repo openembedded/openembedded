@@ -9,7 +9,7 @@ SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2 \
 	file://msmpeg-underscore-pic.patch;patch=1 \
 	file://settings.pro"
 
-DEPENDS = "xinerama lame libxv libxxf86vm libxvmc lirc"
+DEPENDS = "libxinerama lame libxv libxxf86vm libxvmc lirc"
 RDEPENDS = "qt-x11-plugins"
 
 inherit qmake qt3x11

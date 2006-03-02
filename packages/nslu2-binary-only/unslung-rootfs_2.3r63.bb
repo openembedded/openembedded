@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r8"
+PR = "r11"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -42,7 +42,10 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://wait-for-quotacheck.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
 	   file://security-fixes.patch;patch=1 \
-	   file://upgrade.htm file://upgrade.cgi \
+	   file://rc.sysinit-clean_var.patch;patch=1 \
+	   file://upgrade.htm \
+	   file://upgrade.cgi \
+	   file://telnet.htm \
 	   file://rc.bootbin \
 	   "
 
@@ -59,6 +62,8 @@ do_compile () {
 	echo "V2.3R63-uNSLUng-${DISTRO_VERSION}" > ${S}/.unslung
 
 	install -m 644 ${WORKDIR}/unslung.gif ${S}/home/httpd/html/linksys.gif
+
+	install -m 644 ${WORKDIR}/telnet.htm ${S}/home/httpd/html/Management/telnet.htm
 
 	sed -i -e 's/@version#</@version#-uNSLUng-'${DISTRO_VERSION}'</' ${S}/home/httpd/html/home.htm
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \

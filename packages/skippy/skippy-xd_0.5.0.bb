@@ -2,7 +2,7 @@ LICENSE = "GPLV2"
 DESCRIPTION = "Skippy is a full-screen task-switcher for X11."
 SECTION = "x11"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
-DEPENDS = "virtual/xserver xdamage xcomposite"
+DEPENDS = "virtual/xserver libxdamage libxcomposite"
 
 inherit pkgconfig
 

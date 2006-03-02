@@ -1,0 +1,146 @@
+On architectures where highmem isn't used, arguments to kmap/unmap are
+simply thrown away without being evaluated.  This is fine until a
+wrapper function is written.  Even though it got ignored in the end,
+the arguments are evaulated.  As asm/highmem.h is not included by
+linux/highmem.h when CONFIG_HIGHMEM is off, none of KM_* constants get
+defined which results in error if those are evaluated.
+
+This patch makes linux/highmem.h include asm/kmap_types.h regardless
+of CONFIG_HIGHMEM.  To deal with the same problem, crypto subsystem
+used to include asm/kmap_types.h directly.  This patch kills it.
+
+Signed-off-by: Tejun Heo <htejun@gmail.com>
+
+---
+
+ crypto/internal.h       |    1 -
+ include/linux/highmem.h |    1 +
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+4e0462fa09e87da901867f37b2c7311ef714c3e7
+diff --git a/crypto/internal.h b/crypto/internal.h
+index 959e602..4188672 100644
+--- a/crypto/internal.h
++++ b/crypto/internal.h
+@@ -21,7 +21,6 @@
+ #include <linux/kernel.h>
+ #include <linux/rwsem.h>
+ #include <linux/slab.h>
+-#include <asm/kmap_types.h>
+ 
+ extern struct list_head crypto_alg_list;
+ extern struct rw_semaphore crypto_alg_sem;
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 6bece92..c605f01 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -6,6 +6,7 @@
+ #include <linux/mm.h>
+ 
+ #include <asm/cacheflush.h>
++#include <asm/kmap_types.h>
+ 
+ #ifdef CONFIG_HIGHMEM
+ 
+
+When block requests are handled via DMA dma mapping functions take
+care of cache coherency.  Unfortunately, cache coherencly was left
+unhandled until now for block PIOs, resulting in data corruption
+issues on architectures with aliasing caches.
+
+All block PIO operations use kmap/unmap to access target memory area
+and the mapping/unmapping points are the perfect places for cache
+flushing.  kmap/unmap are to PIO'ing cpus what dma_map/unmap are to
+DMAing devices.
+
+This patch implements blk kmap helpers which additionally take
+@direction argument and deal with cache coherency.
+
+Signed-off-by: Tejun Heo <htejun@gmail.com>
+
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 02a585f..1040029 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -17,6 +17,10 @@
+ 
+ #include <asm/scatterlist.h>
+ 
++/* for PIO kmap helpers */
++#include <linux/highmem.h>
++#include <linux/dma-mapping.h>
++
+ struct request_queue;
+ typedef struct request_queue request_queue_t;
+ struct elevator_queue;
+@@ -812,6 +816,40 @@ static inline void put_dev_sector(Sector
+ 	page_cache_release(p.v);
+ }
+ 
++/*
++ * PIO kmap helpers.
++ *
++ * Block PIO requires cache flushes on architectures with aliasing
++ * caches.  If a driver wants to perform PIO on a user-mappable page
++ * (page cache page), it MUST use one of the following kmap/unmap
++ * helpers unless it handles cache coherency itself.
++ */
++static inline void * blk_kmap_atomic(struct page *page, enum km_type type,
++				     enum dma_data_direction dir)
++{
++	return kmap_atomic(page, type);
++}
++
++static inline void blk_kunmap_atomic(void *addr, enum km_type type,
++				     enum dma_data_direction dir)
++{
++	if (dir == DMA_BIDIRECTIONAL || dir == DMA_FROM_DEVICE)
++		flush_dcache_page(kmap_atomic_to_page(addr));
++	kunmap_atomic(addr, type);
++}
++
++static inline void * blk_kmap(struct page *page, enum dma_data_direction dir)
++{
++	return kmap(page);
++}
++
++static inline void blk_kunmap(struct page *page, enum dma_data_direction dir)
++{
++	if (dir == DMA_BIDIRECTIONAL || dir == DMA_FROM_DEVICE)
++		flush_dcache_page(page);
++	kunmap(page);
++}
++
+ struct work_struct;
+ int kblockd_schedule_work(struct work_struct *work);
+ void kblockd_flush(void);
+diff --git a/drivers/ide/ide-taskfile.c b/drivers/ide/ide-taskfile.c
+index 62ebefd..24d5e56 100644
+--- a/drivers/ide/ide-taskfile.c
++++ b/drivers/ide/ide-taskfile.c
+@@ -260,6 +260,7 @@ static void ide_pio_sector(ide_drive_t *
+ {
+ 	ide_hwif_t *hwif = drive->hwif;
+ 	struct scatterlist *sg = hwif->sg_table;
++	enum dma_data_direction dir = write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+ 	struct page *page;
+ #ifdef CONFIG_HIGHMEM
+ 	unsigned long flags;
+@@ -277,7 +278,7 @@ static void ide_pio_sector(ide_drive_t *
+ #ifdef CONFIG_HIGHMEM
+ 	local_irq_save(flags);
+ #endif
+-	buf = kmap_atomic(page, KM_BIO_SRC_IRQ) + offset;
++	buf = blk_kmap_atomic(page, KM_BIO_SRC_IRQ, dir) + offset;
+ 
+ 	hwif->nleft--;
+ 	hwif->cursg_ofs++;
+@@ -293,7 +294,7 @@ static void ide_pio_sector(ide_drive_t *
+ 	else
+ 		taskfile_input_data(drive, buf, SECTOR_WORDS);
+ 
+-	kunmap_atomic(buf, KM_BIO_SRC_IRQ);
++	blk_kunmap_atomic(buf, KM_BIO_SRC_IRQ, dir);
+ #ifdef CONFIG_HIGHMEM
+ 	local_irq_restore(flags);
+ #endif

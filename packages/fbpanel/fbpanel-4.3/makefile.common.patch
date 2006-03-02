@@ -1,0 +1,13 @@
+--- fbpanel-4.3/Makefile.common.orig	2006-02-27 15:01:37.000000000 +0000
++++ fbpanel-4.3/Makefile.common	2006-02-27 15:02:04.000000000 +0000
+@@ -83,8 +83,8 @@
+ # compile flags
+ 
+ RM      = rm -f
+-CC      = gcc
+-AR      = ar
++#CC      = gcc
++#AR      = ar
+ LIBS    = $(shell pkg-config --libs gtk+-2.0 gdk-pixbuf-2.0 gdk-pixbuf-xlib-2.0) -L/usr/X11R6/lib  -lXmu
+ INCS2   = $(shell pkg-config --cflags gtk+-2.0 gdk-pixbuf-2.0 gdk-pixbuf-xlib-2.0)
+ INCS   := $(INCS2:-I%=-isystem %)

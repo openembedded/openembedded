@@ -1,7 +1,7 @@
 
 LICENSE="GPL"
 PR = "r1"
-DEPENDS = "libxsettings-client libglade xtst gconf gtk+"
+DEPENDS = "libxsettings-client libglade libxtst gconf gtk+"
 SECTION = "gpe"
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=dasher;date=20040828 \
 	file://configure-lossage.patch;patch=1"

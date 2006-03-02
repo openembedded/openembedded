@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox Window Manager Panel"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox x11 xext xpm apmd startup-notification virtual/kernel wireless-tools"
+DEPENDS = "libmatchbox libx11 libxext libxpm apmd startup-notification virtual/kernel wireless-tools"
 SECTION = "x11/wm"
 
 inherit autotools pkgconfig gettext
@@ -15,6 +15,7 @@ EXTRA_OECONF_append_collie = " --enable-small-icons "
 EXTRA_OECONF_append_poodle = " --enable-small-icons "
 EXTRA_OECONF_append_mnci = " --enable-small-icons "
 EXTRA_OECONF_append_integral13 = " --enable-small-icons "
+PACKAGE_ARCH = "${MACHINE}"
 
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \

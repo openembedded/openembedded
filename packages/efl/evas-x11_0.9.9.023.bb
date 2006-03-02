@@ -1,5 +1,5 @@
 include evas.inc
-DEPENDS += "x11 xext freetype"
+DEPENDS += "libx11 libxext freetype"
 PR = "r4"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \

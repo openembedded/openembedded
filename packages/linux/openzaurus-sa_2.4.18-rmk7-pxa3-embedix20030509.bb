@@ -91,9 +91,9 @@ do_configure_prepend() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
+        install -d ${DEPLOY_DIR_IMAGE} 
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} \
-	${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}-${DATETIME}.bin
+	${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"

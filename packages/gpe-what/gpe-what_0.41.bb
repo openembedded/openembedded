@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DESCRIPTION = "GPE modal help"
-DEPENDS = "x11 gtk+"
+DEPENDS = "libx11 gtk+"
 
 
 GPE_TARBALL_SUFFIX= "bz2"

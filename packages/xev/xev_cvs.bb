@@ -4,10 +4,10 @@ HOMEPAGE = "http://freedesktop.org/wiki/Software_2fxapps"
 LICENSE = "MIT"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "x11/base"
-DEPENDS = "x11 xau"
+DEPENDS = "libx11 libxau"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xapps;module=xev \
+SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=xev \
 	   file://diet-x11.patch;patch=1"
 S = "${WORKDIR}/xev"
 

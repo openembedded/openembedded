@@ -1,0 +1,122 @@
+Index: linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-ixp4xx/ds101-buttons.c	2006-02-23 08:40:28.000000000 +0100
+@@ -0,0 +1,117 @@
++/*
++ * arch/arm/mach-ixp4xx/ds101-buttons.c
++ *
++ * DS101 Button driver
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/reboot.h>
++#include <linux/interrupt.h>
++#include <asm/mach-types.h>
++
++extern void ctrl_alt_del(void);
++static int usbcopyb_irqcount = 0;
++static int resetb_irqcount = 0;
++static int powerb_irqcount = 0;
++
++static irqreturn_t ds101_usbcopy_handler(int irq, void *dev_id, struct pt_regs *regs)
++{
++	usbcopyb_irqcount++;
++	if (usbcopyb_irqcount > 1)  /* Init creates one IRQ. Ignore it */
++	{
++		/* The GPIO line is shared between the button and the led.
++		 * Make sure the GPIO is GPIO_OUT, so we don't recieve
++		 * irqs from the led going on/off. Disable the irq just in
++		 * case.
++		 */
++		gpio_line_config(DS101_USBCOPYB_IRQ, DS101_GPIO_OUT);
++		disable_irq(DS101_USBCOPYB_IRQ);
++		printk(KERN_INFO "Usbcopy\n");
++	}
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t ds101_power_handler(int irq, void *dev_id, struct pt_regs *regs)
++{
++	powerb_irqcount++;
++	if (powerb_irqcount > 1)
++	{
++		/* Make the power led flash */
++		gpio_line_set(DS101_POWER_LED, DS101_GPIO_HIGH);
++		ctrl_alt_del();
++	}
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t ds101_reset_handler(int irq, void *dev_id, struct pt_regs *regs)
++{
++	resetb_irqcount++;
++	if (resetb_irqcount > 1)
++	{
++		machine_power_off();
++	}
++	return IRQ_HANDLED;
++}
++
++static int __init ds101_buttons_init(void)
++{
++	if (!(machine_is_ds101()))
++		return 0;
++	printk(KERN_INFO "DiskStation DS101 button driver v0.2\n");
++	gpio_line_config(DS101_POWERB_GPIO, (DS101_GPIO_IN|IRQT_FALLING));
++	gpio_line_config(DS101_RESETB_GPIO, (DS101_GPIO_IN|IRQT_FALLING));
++	gpio_line_config(DS101_USBCOPYB_GPIO, (DS101_GPIO_IN|IRQT_FALLING));
++	set_irq_type(DS101_USBCOPYB_IRQ, IRQT_FALLING);
++	set_irq_type(DS101_POWERB_IRQ, IRQT_FALLING);
++	set_irq_type(DS101_RESETB_IRQ, IRQT_FALLING);
++	if (request_irq(DS101_USBCOPYB_IRQ, &ds101_usbcopy_handler, SA_INTERRUPT,
++		"DS101 USBCopy button", NULL) < 0)
++	{
++		printk(KERN_DEBUG "Could not get USBCopy button IRQ (%d)\n",
++				DS101_USBCOPYB_IRQ);
++
++		return -EIO;
++	}
++
++	if (request_irq(DS101_POWERB_IRQ, &ds101_power_handler, SA_INTERRUPT,
++		"DS101 Powerbutton", NULL) < 0)
++	{
++		printk(KERN_DEBUG "Could not get powerbutton IRQ (%d)\n",
++				DS101_POWERB_IRQ);
++		return -EIO;
++	}
++
++	if (request_irq(DS101_RESETB_IRQ, &ds101_reset_handler, SA_INTERRUPT,
++		"DS101 Resetbutton", NULL) < 0)
++	{
++		printk(KERN_DEBUG "Could not get resetbutton IRQ (%d)\n",
++				DS101_RESETB_IRQ);
++		return -EIO;
++	}
++	return 0;
++}
++
++static void __exit ds101_buttons_exit(void)
++{
++	if (!(machine_is_ds101()))
++		return;
++
++	disable_irq(DS101_USBCOPYB_IRQ);
++	disable_irq(DS101_POWERB_IRQ);
++	disable_irq(DS101_RESETB_IRQ);
++	free_irq(DS101_USBCOPYB_IRQ, NULL);
++	free_irq(DS101_POWERB_IRQ, NULL);
++	free_irq(DS101_RESETB_IRQ, NULL);
++}
++
++module_init(ds101_buttons_init);
++module_exit(ds101_buttons_exit);
++
++MODULE_AUTHOR("OEyvind Repvik <nail@nslu2-linux.org>");
++MODULE_DESCRIPTION("DS101 Button driver");
++MODULE_LICENSE("GPL");

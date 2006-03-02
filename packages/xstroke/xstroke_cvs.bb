@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "x11 xft xtst xpm"
+DEPENDS = "libx11 xft libxtst libxpm"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 

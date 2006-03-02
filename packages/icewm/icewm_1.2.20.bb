@@ -1,7 +1,7 @@
 SECTION = "x11/wm"
 DESCRIPTION = "IceWM Window Manager"
 LICENSE = "GPL"
-DEPENDS = "x11 xext xcomposite libxfixes xdamage libxrender xinerama xpm xrandr xft"
+DEPENDS = "libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr xft"
 PR = "r1" 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \

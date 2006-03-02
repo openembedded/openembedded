@@ -23,8 +23,8 @@ do_configure_prepend() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR}/images
-	elftoaout -o ${DEPLOY_DIR}/images/linux-aout-${DATETIME} ${KERNEL_IMAGETYPE}
+	install -d ${DEPLOY_DIR_IMAGE}
+	elftoaout -o ${DEPLOY_DIR_IMAGE}/linux-aout-${DATETIME} ${KERNEL_IMAGETYPE}
 }
 
 do_deploy[dirs] = "${S}"

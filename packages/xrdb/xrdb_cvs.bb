@@ -1,12 +1,12 @@
 PV = "0.0+cvs${SRCDATE}"
-DEPENDS = "x11 xmu xext"
+DEPENDS = "libx11 libxmu libxext"
 DESCRIPTION = "X server resource database utility"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"
 LICENSE = "xrdb"
 PR = "r2"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xorg;module=xc/programs/xrdb \
+SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc/programs/xrdb \
            file://autofoo.patch;patch=1"
 S = "${WORKDIR}/xrdb"
 

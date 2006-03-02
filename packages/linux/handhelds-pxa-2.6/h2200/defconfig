@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.15-hh0
-# Fri Feb 10 12:28:28 2006
+# Linux kernel version: 2.6.15-hh1
+# Wed Feb 22 16:24:24 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -642,7 +642,7 @@ CONFIG_MTD_NAND_HAMCOP=y
 #
 # CONFIG_BLK_DEV_COW_COMMON is not set
 CONFIG_BLK_DEV_LOOP=m
-# CONFIG_BLK_DEV_CRYPTOLOOP is not set
+CONFIG_BLK_DEV_CRYPTOLOOP=m
 CONFIG_BLK_DEV_NBD=m
 # CONFIG_BLK_DEV_UB is not set
 CONFIG_BLK_DEV_RAM=y
@@ -992,7 +992,7 @@ CONFIG_SA1100_WATCHDOG=m
 #
 # CONFIG_USBPCWATCHDOG is not set
 # CONFIG_NVRAM is not set
-CONFIG_SA1100_RTC=m
+CONFIG_SA1100_RTC=y
 # CONFIG_DTLK is not set
 # CONFIG_R3964 is not set
 
@@ -1444,7 +1444,7 @@ CONFIG_RAMFS=y
 # CONFIG_BFS_FS is not set
 # CONFIG_EFS_FS is not set
 # CONFIG_JFFS_FS is not set
-CONFIG_JFFS2_FS=m
+CONFIG_JFFS2_FS=y
 CONFIG_JFFS2_FS_DEBUG=0
 CONFIG_JFFS2_FS_WRITEBUFFER=y
 CONFIG_JFFS2_SUMMARY=y

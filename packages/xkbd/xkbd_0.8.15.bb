@@ -7,7 +7,7 @@ PR = "r1"
 
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11"
-DEPENDS = "xpm xtst libxft"
+DEPENDS = "libxpm libxtst libxft"
 
 inherit autotools
 

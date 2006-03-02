@@ -297,6 +297,20 @@ pkg_postrm_kernel-image-nas100d () {
 	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
 }
 
+# The correct settings for the DSMG600 board:
+dsmg600_MACHID = "964"
+PACKAGES += "kernel-image-dsmg600"
+PKG_kernel-image-dsmg600 = "kernel-image-${KERNEL_VERSION}"
+PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${ARCH_BYTE_SEX}"
+DESCRIPTION_kernel-image-dsmg600 = "Linux kernel for the D-Link DSM-G600"
+FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+pkg_postinst_kernel-image-dsmg600 () {
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+}
+pkg_postrm_kernel-image-dsmg600 () {
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+}
+
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
 #FIXME: do a fixup for BE too...
 FIXUP_armeb = "cp$"
@@ -345,16 +359,17 @@ do_install_append() {
 	install_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	install_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
+	install_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
 }
 
 do_deploy[dirs] = "${S}"
 
 deploy_image() {
-	copy_image '${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-'"$1" "$2"
+	copy_image '${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-'"$1" "$2"
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
+        install -d ${DEPLOY_DIR_IMAGE}
 	deploy_image '${IXP4XX_SUFFIX}'
 
 	# And the machine specific images
@@ -362,6 +377,7 @@ do_deploy() {
 	deploy_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
+	deploy_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
 }
 
 addtask deploy before do_build after do_compile

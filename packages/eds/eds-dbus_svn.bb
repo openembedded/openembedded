@@ -1,10 +1,13 @@
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade libiconv"
-RDEPENDS = "gconf dbus db libiconv"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 DESCRIPTION = "Evolution database backend server"
+
+SRCDATE = "20060126"
+
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r14"
+#PV = "1.4.0+svn20060126"
+PR = "r16"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
@@ -17,7 +20,8 @@ S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb41=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-camel --disable-nntp --disable-gtk-doc"
+#EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-camel --disable-nntp --disable-gtk-doc"
+EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc"
 
 acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
 
@@ -40,14 +44,19 @@ do_stage () {
 	oe_libinstall -so -C calendar/libecal-dbus libecal-1.2 ${STAGING_LIBDIR}
 	oe_libinstall -so -C calendar/libedata-cal-dbus libedata-cal-1.2 ${STAGING_LIBDIR}
 	oe_libinstall -so -C libedataserver libedataserver-1.2 ${STAGING_LIBDIR}
+	oe_libinstall -so -C camel libcamel-1.2 ${STAGING_LIBDIR}
+	oe_libinstall -so -C camel libcamel-provider-1.2 ${STAGING_LIBDIR}
 
-	install -d ${STAGING_INCDIR}/camel ${STAGING_INCDIR}/libebook \
+	install -d ${STAGING_INCDIR}/camel-1.2 ${STAGING_INCDIR}/libebook \
 		${STAGING_INCDIR}/libecal ${STAGING_INCDIR}/libedataserver \
 		${STAGING_INCDIR}/libical
-	install -m 0644 ${S}/camel/*.h ${STAGING_INCDIR}/camel
+	install -m 0644 ${S}/camel/*.h ${STAGING_INCDIR}/camel-1.2
+	install -m 0644 ${S}/camel/*.def ${STAGING_INCDIR}/camel-1.2
+	ln -sf ${STAGING_INCDIR}/camel-1.2 ${STAGING_INCDIR}/camel
 	install -m 0644 ${S}/addressbook/libebook-dbus/*.h ${STAGING_INCDIR}/libebook
 	install -m 0644 ${S}/calendar/libecal-dbus/*.h ${STAGING_INCDIR}/libecal
 	install -m 0644 ${S}/libedataserver/*.h ${STAGING_INCDIR}/libedataserver
 	install -m 0644 ${S}/calendar/libical/src/libical/*.h ${STAGING_INCDIR}/libical
 }
+
 

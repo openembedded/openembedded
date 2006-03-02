@@ -27,8 +27,8 @@ do_configure_prepend() {
 FILES_kernel += " /tmp"
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR}/images/${MACHINE}-${KV}-${KERNEL_IMAGETYPE}-${DATETIME}
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${MACHINE}-${KV}-${KERNEL_IMAGETYPE}-${DATETIME}
 }
 
 do_deploy[dirs] = "${S}"

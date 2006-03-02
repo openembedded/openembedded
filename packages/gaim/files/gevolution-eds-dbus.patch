@@ -1,0 +1,53 @@
+--- gaim/plugins/gevolution/gevolution.c.orig	2006-02-23 23:30:25.000000000 +0100
++++ gaim/plugins/gevolution/gevolution.c	2006-02-23 23:31:42.000000000 +0100
+@@ -38,17 +38,12 @@
+ 
+-#include <libedata-book/Evolution-DataServer-Addressbook.h>
+ 
+-#include <libebook/e-book-listener.h>
+-#include <libedata-book/e-data-book-factory.h>
+-#include <bonobo/bonobo-main.h>
++#include <libebook/e-book-view-listener.h>
++#include <libebook/e-data-book-factory-bindings.h>
+ 
+ #include <glib.h>
+ 
+ #define GEVOLUTION_PLUGIN_ID "gtk-x11-gevolution"
+ 
+-#define E_DATA_BOOK_FACTORY_OAF_ID \
+-	"OAFIID:GNOME_Evolution_DataServer_BookFactory"
+-
+ enum
+ {
+ 	COLUMN_AUTOADD,
+@@ -324,8 +320,6 @@
+ static gboolean
+ plugin_load(GaimPlugin *plugin)
+ {
+-	bonobo_activate();
+-
+ 	backup_blist_ui_ops = gaim_blist_get_ui_ops();
+ 
+ 	blist_ui_ops = g_memdup(backup_blist_ui_ops, sizeof(GaimBlistUiOps));
+@@ -370,7 +364,6 @@
+ static void
+ plugin_destroy(GaimPlugin *plugin)
+ {
+-	bonobo_debug_shutdown();
+ }
+ 
+ static void
+@@ -563,13 +556,6 @@
+ 	 * So, in conclusion, this is an evil hack, but it doesn't harm anything
+ 	 * and it works.
+ 	 */
+-	g_module_make_resident(plugin->handle);
+-
+-	if (!bonobo_init_full(NULL, NULL, bonobo_activation_orb_get(),
+-						  CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
+-	{
+-		gaim_debug_error("evolution", "Unable to initialize bonobo.\n");
+-	}
+ }
+ 
+ GAIM_INIT_PLUGIN(gevolution, init_plugin, info)

@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.yoper.com/ariszlo/hunky.html http://sourceforge.net/proje
 PACKAGE_ARCH = "all"
 PR = "r5"
 
-SRC_URI = "http://www.hrw.one.pl/_pliki/oe/files/${PN}-${PV}-r4.tar.bz2"
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/${PN}-${PV}-r4.tar.bz2"
 
 S = "${WORKDIR}/${PN}"
 

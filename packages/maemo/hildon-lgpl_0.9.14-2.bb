@@ -1,7 +1,7 @@
 LICENSE = 	"LGPL"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
-DEPENDS = "gtk+-2.6.4-1.osso7 outo xtst libmatchbox libxi xt libpng gconf"
+DEPENDS = "gtk+-2.6.4-1.osso7 outo libxtst libmatchbox libxi libxt libpng gconf"
 
 SRC_URI = 	"http://repository.maemo.org/pool/maemo/ossw/source/h/hildon-lgpl/hildon-lgpl_${PV}.tar.gz \
 			file://hildon-lgpl-noWerror.patch;patch=1"

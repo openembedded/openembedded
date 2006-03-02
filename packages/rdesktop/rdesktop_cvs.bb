@@ -1,5 +1,5 @@
 DESCRIPTION = "Rdesktop rdp client for X"
-DEPENDS = "x11 openssl"
+DEPENDS = "libx11 openssl"
 HOMEPAGE = "http://www.rdesktop.org"
 SECTION = "x11/network"
 MAINTAINER = "Adrian Davey <ade@beth2.org>"

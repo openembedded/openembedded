@@ -1,6 +1,6 @@
 SECTION = "x11/utils"
 PV = "0.0+cvs${SRCDATE}"
-DEPENDS = "gtk+ libgpewidget x11 libxrandr libxft xtst xext xau \
+DEPENDS = "gtk+ libgpewidget libx11 libxrandr libxft libxtst libxext libxau \
 	   virtual/libintl"
 DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 LICENSE = "GPL"

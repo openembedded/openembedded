@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "uicmoc4-native freetype jpeg x11 xft xext libxrender libxrandr libxcursor mysql"
+DEPENDS = "uicmoc4-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor mysql"
 PROVIDES = "qt4x11"
 # FIXME: Make it use 'our' qmake
 # DEPENDS += "qmake-native-2.00a"

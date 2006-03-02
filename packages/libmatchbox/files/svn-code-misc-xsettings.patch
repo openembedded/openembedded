@@ -1,0 +1,101 @@
+diff -uprN libmatchbox-1.7~orig/libmb/mbexp.c libmatchbox-1.7/libmb/mbexp.c
+--- libmatchbox-1.7~orig/libmb/mbexp.c	2006-02-23 00:33:19.000000000 -0600
++++ libmatchbox-1.7/libmb/mbexp.c	2006-02-23 00:40:06.000000000 -0600
+@@ -406,6 +406,10 @@ mb_font_new(Display *dpy, 
+ #endif
+   
+   font = malloc(sizeof(MBFont));
++
++  if (font == NULL)
++    return NULL;
++
+   memset(font, 0, sizeof(MBFont));
+ 
+   if (family != NULL)
+@@ -425,9 +429,12 @@ mb_font_new(Display *dpy, 
+    font->pgo_fontmap = pango_xft_get_font_map (font->dpy, DefaultScreen(dpy));
+    font->fontdes     = pango_font_description_new ();
+ 
+-   /* -- Needed ?
+-   pango_context_set_language (w->pgo, pango_language_from_string ("ar_AE"));
+-   */
++   /* If Pango is mis-setup the above will fail */
++   if (font->pgo_context == NULL || font->pgo_fontmap == NULL || font->fontdes == NULL)
++     {
++       free(font);
++       return NULL;
++     }
+ 
+ #elif defined (USE_XFT)
+ 
+@@ -581,8 +588,11 @@ MBFont*
+ mb_font_new_from_string(Display *dpy, char *spec) 
+ {
+   MBFont *font = mb_font_new(dpy, NULL);
+-  mb_font_set_from_string(font, spec); 
+-  return font;
++
++  if (font)
++    return mb_font_set_from_string(font, spec);
++
++  return NULL;
+ }
+ 
+ MBFont*
+@@ -1091,7 +1101,13 @@ mb_font_render_simple (MBFont          *
+       if (!len) { free(str); return 0; }
+       
+       if ((opts & MB_FONT_RENDER_OPTS_CLIP_TRAIL) && len > 3)
++   {
++     /* Avoid having a space before the elipsis */
++     while (len-1 >= 0 && str[len-1] == ' ')
++       len--;
++
+ 	  want_dots = True;
++   }
+     }
+   else
+     {
+diff -uprN libmatchbox-1.7~orig/libmb/mbmenu.c libmatchbox-1.7/libmb/mbmenu.c
+--- libmatchbox-1.7~orig/libmb/mbmenu.c	2006-02-23 00:33:19.000000000 -0600
++++ libmatchbox-1.7/libmb/mbmenu.c	2006-02-23 00:42:23.000000000 -0600
+@@ -19,6 +19,10 @@
+ 
+ #define _GNU_SOURCE
+ 
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
+ #include "mbmenu.h"
+ 
+ #define MBMAX(x,y) ((x>y)?(x):(y))
+@@ -664,7 +668,7 @@ mb_menu_check_scroll_button(MBMenu *mb,M
+       return WANT_SCROLL_DOWN;
+     }
+ 
+-  /*
++#if 0
+   for(tmpi = m->too_big_start_item;
+       tmpi != NULL; 
+       tmpi = tmpi->next_item)
+@@ -679,7 +683,7 @@ mb_menu_check_scroll_button(MBMenu *mb,M
+       MENUDBG("%s() retruning want scroll up\n", __func__);
+       return WANT_SCROLL_UP;
+     }
+-  */
++#endif /* #if 0 */
+ 
+   if (m->too_big_end_item
+       && y_pos > (m->too_big_end_item->y+m->too_big_end_item->h))
+diff -uprN libmatchbox-1.7~orig/libmb/mbpixbuf.c libmatchbox-1.7/libmb/mbpixbuf.c
+--- libmatchbox-1.7~orig/libmb/mbpixbuf.c	2006-02-23 00:33:19.000000000 -0600
++++ libmatchbox-1.7/libmb/mbpixbuf.c	2006-02-23 00:43:02.000000000 -0600
+@@ -907,6 +907,7 @@ mb_pixbuf_new_extended(Display *dpy, 
+ 	  fprintf(stderr, "mbpixbuf: unable to use XShm. DISPLAY remote?\n");
+ 	  pb->have_shm = False;
+ 	}
++      else XShmDetach(pb->dpy, &shminfo);
+ 
+       shmdt(shminfo.shmaddr);
+       shmctl(shminfo.shmid, IPC_RMID, 0);

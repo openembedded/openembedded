@@ -3,7 +3,7 @@ FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
-DEPENDS = "tslib xproto xdmcp xextensions-1.0.1 xtrans xau x11 xext libxrandr fixesext damageext xfont resourceext compositeext xcalibrateext recordext"
+DEPENDS = "tslib xproto libxdmcp xextensions-1.0.1 xtrans libxau libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
 PACKAGES = "xserver-kdrive-mach64 xserver-kdrive-fbdev xserver-kdrive-vesa xserver-kdrive-mga xserver-kdrive-via xserver-kdrive-ati xserver-kdrive-fake xserver-kdrive-i810 xserver-kdrive-xephyr xserver-kdrive-epson ${PN}-doc ${PN}-dev ${PN}-locale"
@@ -33,12 +33,12 @@ FILES_xserver-kdrive-i810 = "${bindir}/Xi810"
 FILES_xserver-kdrive-epson = "${bindir}/Xepson"
 FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
-SRC_URI = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;date=${FIXEDSRCDATE} \
+SRC_URI = "${FREEDESKTOP_CVS}/xserver;module=xserver;date=${FIXEDSRCDATE} \
 	file://kmode.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1 "
 
-SRC_URI_h3600 = "cvs://anoncvs:anoncvs@pdx.freedesktop.org/cvs/xserver;module=xserver;date=${FIXEDSRCDATE} \
+SRC_URI_h3600 = "${FREEDESKTOP_CVS}/xserver;module=xserver;date=${FIXEDSRCDATE} \
         file://kmode.patch;patch=1 \
         file://faster-rotated.patch;patch=1 \
         file://fbdev-not-fix.patch;patch=1 "

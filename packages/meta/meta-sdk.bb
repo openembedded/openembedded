@@ -14,7 +14,10 @@ SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
-HOST_INSTALL = "task-sdk-cross"
+HOST_INSTALL = "\
+    binutils-cross-sdk \
+    gcc-cross-sdk \
+    gdb-cross"
 TARGET_INSTALL = "\
     task-sdk-base \
     task-sdk-opie \

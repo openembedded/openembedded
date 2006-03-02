@@ -1,0 +1,132 @@
+diff -urpN libmatchbox-1.7~orig/configure.ac libmatchbox-1.7/configure.ac
+--- libmatchbox-1.7~orig/configure.ac	2005-04-08 08:53:20.000000000 -0500
++++ libmatchbox-1.7/configure.ac	2006-02-23 00:08:20.000000000 -0600
+@@ -87,9 +87,13 @@ if test $have_libx11pc = yes; then
+    fi
+ # XXX : xau is missing from x11.pc - workaround is too add here 
+    PKG_CHECK_MODULES(XLIBS, x11 xext  $xft_pkg)
++   XLIBS_REQUIRED="x11 xext"
+ else
+ 
+ AC_PATH_XTRA
++if test x"$no_x" = x"yes"; then
++    AC_MSG_ERROR([*** Required X11 Headers and libraries not found.***])
++fi
+ 
+ XFT_LIBS=
+ XFT_CFLAGS=
+@@ -125,8 +129,12 @@ fi
+ XLIBS_CFLAGS="$XLIBS_CLAGS $XFT_CFLAGS"
+ XLIBS_LIBS="$X_LIBS $XFT_LIBS -lX11 -lXext"
+ 
++MB_EXTRA_LIBS="$MB_EXTRA_LIBS $XLIBS_LIBS"
++
+ fi
+ 
++# do this here for freetype include
++MB_EXTRA_CFLAGS="$MB_EXTRA_CFLAGS $XLIBS_CFLAGS"
+ 
+ dnl ------ Check for Pango ---------------------------------------------------
+ 
+@@ -135,6 +143,7 @@ if test x$enable_pango != xno; then
+   if test x$have_pango=xyes; then
+     AC_DEFINE(USE_PANGO, [1], [Use Pango])
+     SUPPORTS_PANGO=1
++    PANGO_REQUIRED="pango pangoxft"
+   else
+     AC_MSG_WARN([*** Cannot find pango, disabling support])
+     enable_pango=no
+@@ -152,6 +161,7 @@ if test x$enable_png != xno; then
+ 	PNG_CFLAGS=`$PKG_CONFIG --cflags libpng12`
+         AC_DEFINE(USE_PNG, [1], [Use Png])
+ 	SUPPORTS_PNG=1
++	PNG_REQUIRED="libpng12"
+   else
+ 	AC_MSG_RESULT(no)
+         # AC_CHECK_HEADERS(png.h, [ have_png_h="yes" ], [ have_png_h="no" ] )
+@@ -161,6 +171,7 @@ if test x$enable_png != xno; then
+             AC_DEFINE(USE_PNG, [1], [Use Png])
+ 	    SUPPORTS_PNG=1
+             PNG_LIBS="-lpng -lz"
++            MB_EXTRA_LIBS="$MB_EXTRA_LIBS $XLIBS_LIBS $PNG_LIBS"
+         else
+ 	    AC_MSG_WARN([*** Cannot find PNG, disabling support])
+             enable_png=no
+@@ -179,6 +190,7 @@ if test x$enable_jpeg != xno; then
+         AC_DEFINE(USE_JPG, [1], [Use JPEG])
+ 	SUPPORTS_JPEG=1
+ 	JPEG_LIBS="-ljpeg"
++        MB_EXTRA_LIBS="$MB_EXTRA_LIBS -ljpeg"
+   else
+ 	AC_MSG_WARN([*** Cannot find libjpeg, disabling support])
+         enable_jpeg=no
+@@ -231,6 +243,9 @@ if test x$enable_xsettings != xno; then
+    CPPFLAGS="$saved_CPPFLAGS"
+    LIBS="$saved_LIBS"
+ 
++   MB_EXTRA_LIBS="$MB_EXTRA_LIBS $XSET_LIBS"	
++   MB_EXTRA_CFLAGS="$MB_EXTRA_CFLAGS $XSET_CFLAGS"	
++
+    AC_DEFINE(USE_XSETTINGS, [1], [Use XSettings Client])
+ 
+    AC_MSG_RESULT([yes])
+@@ -319,6 +334,12 @@ AC_SUBST(GCC_WARNINGS)
+ AC_SUBST(XSET_LIBS)
+ AC_SUBST(XSET_CFLAGS)
+ 
++AC_SUBST(MB_EXTRA_LIBS)
++AC_SUBST(MB_EXTRA_CFLAGS)
++AC_SUBST(XLIBS_REQUIRED)
++AC_SUBST(PANGO_REQUIRED)
++AC_SUBST(PNG_REQUIRED)
++
+ dnl ------ Below used for mbconfig.h ----------------------------------------
+ 
+ AC_SUBST(SUPPORTS_PNG)
+diff -urpN libmatchbox-1.7~orig/libmb/Makefile.am libmatchbox-1.7/libmb/Makefile.am
+--- libmatchbox-1.7~orig/libmb/Makefile.am	2005-04-08 08:53:11.000000000 -0500
++++ libmatchbox-1.7/libmb/Makefile.am	2006-02-23 00:01:54.000000000 -0600
+@@ -18,11 +18,11 @@ source_c = mbmenu.c       \
+ 
+ DATADIR=$(datadir)
+ 
+-AM_CFLAGS = @GCC_WARNINGS@ @XLIBS_CFLAGS@ @PANGO_CFLAGS@ @PNG_CFLAGS@ -DDATADIR=\"$(datadir)\"
++AM_CFLAGS = @GCC_WARNINGS@ @XLIBS_CFLAGS@ @PANGO_CFLAGS@ @PNG_CFLAGS@ @XSET_LIBS@ -DDATADIR=\"$(datadir)\"
+ 
+ lib_LTLIBRARIES      = libmb.la
+ libmb_la_SOURCES     = $(source_c) $(source_h)
+-libmb_la_LIBADD      = @XLIBS_LIBS@ @PANGO_LIBS@ @JPEG_LIBS@ @PNG_LIBS@
++libmb_la_LIBADD      = @XLIBS_LIBS@ @PANGO_LIBS@ @JPEG_LIBS@ @PNG_LIBS@ @XSET_CFLAGS@
+ 
+ # http://sources.redhat.com/autobook/autobook/autobook_91.html#SEC91
+ # current : revision : age
+diff -urpN libmatchbox-1.7~orig/libmb/mbtray.c libmatchbox-1.7/libmb/mbtray.c
+--- libmatchbox-1.7~orig/libmb/mbtray.c	2006-02-23 00:01:07.000000000 -0600
++++ libmatchbox-1.7/libmb/mbtray.c	2006-02-23 00:09:45.000000000 -0600
+@@ -26,7 +26,13 @@
+ 
+  */
+ 
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ 
+ #include "mbtray.h"
+ 
+diff -urpN libmatchbox-1.7~orig/libmb.pc.in libmatchbox-1.7/libmb.pc.in
+--- libmatchbox-1.7~orig/libmb.pc.in	2005-03-20 11:43:26.000000000 -0600
++++ libmatchbox-1.7/libmb.pc.in	2006-02-23 00:11:18.000000000 -0600
+@@ -6,5 +6,7 @@ includedir=@includedir@
+ Name: libmb
+ Description: Utility Library used by Matchbox utilities.
+ Version: @VERSION@
+-Libs: -L${libdir} -lmb @XLIBS_LIBS@ @PANGO_LIBS@ @JPEG_LIBS@ @PNG_LIBS@ @XSET_LIBS@
+-Cflags: -I${includedir} @XLIBS_CFLAGS@ @PANGO_CFLAGS@ @PNG_CFLAGS@ @XSET_CFLAGS@
++
++Requires: @XLIBS_REQUIRED@ @PANGO_REQUIRED@ @PNG_REQUIRED@
++Libs: -L${libdir} -lmb @MB_EXTRA_LIBS@
++Cflags: -I${includedir} @MB_EXTRA_CFLAGS@

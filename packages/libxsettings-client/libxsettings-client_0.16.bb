@@ -1,7 +1,7 @@
 SECTION = "gpe/libs"
 LICENSE = "BSD-X"
 PRIORITY = "optional"
-DEPENDS = "libxsettings x11"
+DEPENDS = "libxsettings libx11"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 PR="r1"
 

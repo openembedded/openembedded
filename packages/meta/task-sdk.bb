@@ -1,20 +1,14 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r0"
+PR = "r1"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
-    task-sdk-cross \
     task-sdk-base \
     task-sdk-opie \
     task-sdk-x11 \
     task-sdk-x11-ext \
     task-sdk-gpe"
-
-RDEPENDS_task-sdk-cross := "\
-    binutils-cross-sdk \
-    gcc-cross-sdk \
-    gdb-cross"
 
 RDEPENDS_task-sdk-base := "\
     glibc \

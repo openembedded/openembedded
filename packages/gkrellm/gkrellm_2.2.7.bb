@@ -2,7 +2,7 @@ SECTION = "x11/utils"
 DESCRIPTION = "GKrellM is a GTK-based stacked monitor program."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "gtk+ glib-2.0 libsm ice"
+DEPENDS = "gtk+ glib-2.0 libsm libice"
 
 SRC_URI = "http://members.dslextreme.com/users/billw/gkrellm/gkrellm-${PV}.tar.bz2"
 

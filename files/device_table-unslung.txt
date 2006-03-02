@@ -15,6 +15,7 @@
 /dev/kmem	c	640	0	0	1	2	-	-	-
 /dev/ledman	c	644	0	0	126	0	-	-	-
 /dev/md		b	644	0	0	9	0	0	1	4
+/dev/loop	b	664	0	0	7	0	0	1	2
 /dev/lp		c	664	0	0	180	0	0	1	4
 /dev/mem	c	640	0	0	1	1	-	-	-
 /dev/mtd	c	664	0	0	90	0	0	2	8

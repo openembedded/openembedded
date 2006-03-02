@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "x11 xft xtst xpm"
+DEPENDS = "libx11 xft libxtst libxpm"
 PR = "r2"
 
 SRC_URI = "http://xstroke.org/releases/xstroke-0.6.tar.gz \
