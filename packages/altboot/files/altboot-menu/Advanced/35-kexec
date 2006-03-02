@@ -1,0 +1,62 @@
+# !/bin/sh
+M_TITLE="init=/bin/sh"
+
+exit 0
+
+# Only kernel 2.6 offers kexec support
+uname -r | grep -q "^2.6" || exit 0
+
+run_module() {
+	
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+	
+	test -z "$KEXEC_KERNEL_DIR" && KEXEC_KERNEL_DIR="/boot"	
+	test -x "$KEXEC_BIN" || die "kexec-tools not found [$KEXEC_BIN]"
+	
+	# Mount /proc, etc
+	init_rootfs
+	
+	if test "`find "$KEXEC_KERNEL_DIR" -type f -name "*zImage*" | wc -l | tr -d " "`" -gt 1
+	then
+		echo "Please choose a kernel to boot:"
+		cd "$KEXEC_KERNEL_DIR"
+		
+		cnt=1
+		for f in `ls -1 "$KEXEC_KERNEL_DIR"`
+		do	
+			echo "[$cnt] $f"
+			let cnt=$cnt+1
+		done
+		
+		while true
+		do
+			echo -n "Boot kernel: "
+			read junk
+			
+			if test -n "$junk"
+			then
+				cnt=1
+				for f in `ls -1 "$KEXEC_KERNEL_DIR"`
+				do	
+					if test "$cnt" = "$junk"
+					then
+						KEXEC_KERNEL="$f"
+						break
+					fi
+					let cnt=$cnt+1					
+				done
+			fi
+		done
+		
+		echo "kernel dir:[$KEXEC_KERNEL_DIR]"
+		echo "Using kernel: [$KEXEC_KERNEL]"
+		
+				
+	for 
+}
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module;;
+esac
+
