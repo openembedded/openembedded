@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.pobox.sk/~mico/zaurus.html"
 PACKAGE_ARCH = "all"
 PR = "r1"
 
-SRC_URI = "http://www.hrw.one.pl/_pliki/oe/files/qpf-utopia.tar.bz2"
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qpf-utopia.tar.bz2"
 S = "${WORKDIR}/utopia"
 
 do_install () { 
