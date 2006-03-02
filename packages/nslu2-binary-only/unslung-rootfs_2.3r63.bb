@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r10"
+PR = "r11"
 
 DEPENDS = "nslu2-linksys-libs"
 
@@ -42,6 +42,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://wait-for-quotacheck.patch;patch=1 \
 	   file://mount_usbdevfs.patch;patch=1 \
 	   file://security-fixes.patch;patch=1 \
+	   file://rc.sysinit-clean_var.patch;patch=1 \
 	   file://upgrade.htm \
 	   file://upgrade.cgi \
 	   file://telnet.htm \

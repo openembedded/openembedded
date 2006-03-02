@@ -1,0 +1,22 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit.orig     2006-03-01 17:55:20.000000000 -0600
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit  2006-03-01 18:25:06.000000000 -0600
+@@ -30,6 +30,19 @@
+ mkdir -p /var/log/samba >/dev/null
+ touch /var/log/server.log >/dev/null
+ chmod 755 /var/log/samba >/dev/null
++
++# Clean up /var/lock and /var/run (fixes bug where USB_Detect fails),
++# and empty utmp and wtmp (but do not create them if they don't exist).
++rm -f /var/run/*.pid
++rm -f /var/lock/samba/*.pid
++rm -f /var/lock/ds_diag
++if ( [ -f /var/run/utmp ] ) ; then
++  > /var/run/utmp
++fi
++if ( [ -f /var/log/wtmp ] ) ; then
++  > /var/log/wtmp
++fi
++
+ /bin/echo  "Starting Hostname :"; hostname  ${HOSTNAME}; check_status
+ #/bin/echo  "Starting System Log :"; . /etc/rc.d/rc.syslogd
+ /bin/echo  "Starting Modules :"; . /etc/rc.d/rc.modules
