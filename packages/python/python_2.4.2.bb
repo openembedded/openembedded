@@ -4,11 +4,8 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PROVIDES = "python python-core"
-DEPENDS_GUI = "tcl tk"
-DEPENDS_GUI_nslu2 = ""
-DEPENDS = "python-native readline zlib gdbm openssl ${DEPENDS_GUI}"
-PR = "ml8"
+DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
+PR = "ml3"
 
 PYTHON_MAJMIN = "2.4"
 
