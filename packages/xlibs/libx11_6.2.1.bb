@@ -7,7 +7,6 @@ PROVIDES = "x11"
 DESCRIPTION = "Base X libs."
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
-PROVIDES = "libx11"
 PR = "r4"
 
 SRC_URI = "${XLIBS_MIRROR}/libX11-${PV}.tar.bz2 \
