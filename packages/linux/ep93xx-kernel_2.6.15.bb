@@ -1,10 +1,10 @@
 DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-		   file://derevo6.diff;patch=1 \
+		   http://www.wantstofly.org/~buytenh/ep93xx/derevo10.diff;patch=1 \
 		   "
 
 S = "${WORKDIR}/linux-${PV}"
