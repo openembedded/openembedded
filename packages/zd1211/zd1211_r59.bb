@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
@@ -20,8 +20,8 @@ do_compile () {
 		   'KERNEL_SOURCE=${STAGING_KERNEL_DIR}' \
 		   'KDIR=${STAGING_KERNEL_DIR}' \
 		   'KERNEL_VERSION=${KERNEL_VERSION}' \
-                   'CC="${KERNEL_CC}"' \
-                   'LD="${KERNEL_LD}"' 
+                   'CC=${KERNEL_CC}' \
+                   'LD=${KERNEL_LD}' 
 }
 
 do_install() {   
