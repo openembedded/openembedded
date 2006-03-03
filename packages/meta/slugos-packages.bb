@@ -50,6 +50,7 @@ SLUGOS_PACKAGES = "\
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
+	eciadsl \
 	expat \
 	ez-ipupdate \
 	fetchmail \
