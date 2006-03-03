@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r10"
+PR = "r11"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -60,7 +60,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/tosa-lcd-r6-rp.patch;patch=1 \
            ${DOSRC}/tosa-bl-r9.patch;patch=1 \
            ${DOSRC}/tosa-bluetooth-r2.patch;patch=1 \
-           ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
+           ${RPSRC}/rmk_pxa_mmc_timeout-r0.patch;patch=1 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
@@ -73,7 +73,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
-           ${RPSRC}/headphone_switch-r3.patch;patch=1 \
+           ${RPSRC}/headphone_switch-r4.patch;patch=1 \
            ${RPSRC}/backport_i2c_asoc_fix-r0.patch;patch=1 \
            ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
            ${DOSRC}/kexec-arm-r0.patch;patch=1 \
@@ -90,6 +90,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            file://defconfig-cxx00 \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
+
+#           ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
