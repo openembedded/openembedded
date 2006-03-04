@@ -1,11 +1,11 @@
 DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-		   http://www.wantstofly.org/~buytenh/ep93xx/derevo10.diff;patch=1 \
-                   file://defconfig \
+		   http://www.wantstofly.org/~buytenh/ep93xx/derevo12.diff;patch=1 \
+           file://defconfig \
 		   "
 
 S = "${WORKDIR}/linux-${PV}"
@@ -16,7 +16,7 @@ KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
-		make oldconfig
+		make ARCH=arm oldconfig
 }
 
 do_deploy() {
