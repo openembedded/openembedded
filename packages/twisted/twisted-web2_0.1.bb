@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "twisted-native"
+DEPENDS = "twisted twisted-native"
 RDEPENDS = "twisted python-netserver"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Web2/TwistedWeb2-${PV}.tar.bz2"
