@@ -914,7 +914,8 @@ CONFIG_INPUT_IXP4XX_BEEPER=y
 # Character devices
 #
 # CONFIG_VT is not set
-# CONFIG_SERIAL_NONSTANDARD is not set
+CONFIG_SERIAL_NONSTANDARD=y
+CONFIG_N_HDLC=m
 
 #
 # Serial drivers

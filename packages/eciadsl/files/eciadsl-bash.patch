@@ -1,0 +1,135 @@
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-config-text eciadsl-usermode-0..11/eciadsl-config-text
+--- eciadsl-usermode-0.11-old/eciadsl-config-text	2005-09-24 10:02:51.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-config-text	2006-03-03 10:26:44.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #
+ # EciAdsl Linux driver configuration script.
+ # Same goal as eciadsl-config-tk, but can be run in a terminal / console.
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-config-text.in eciadsl-usermode-0.11/eciadsl-config-text.in
+--- eciadsl-usermode-0.11-old/eciadsl-config-text.in	2005-04-16 15:31:29.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-config-text.in	2006-03-03 10:26:39.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #
+ # EciAdsl Linux driver configuration script.
+ # Same goal as eciadsl-config-tk, but can be run in a terminal / console.
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-doctor eciadsl-usermode-0.11/eciadsl-doctor
+--- eciadsl-usermode-0.11-old/eciadsl-doctor	2005-09-24 10:02:51.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-doctor	2006-03-03 10:27:06.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # Author: Benoit PAPILLAULT <benoit.papillault@free.fr>
+ # Creation: 01/02/2002
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-doctor.in eciadsl-usermode-0.11/eciadsl-doctor.in
+--- eciadsl-usermode-0.11-old/eciadsl-doctor.in	2005-04-16 15:31:29.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-doctor.in	2006-03-03 10:27:01.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # Author: Benoit PAPILLAULT <benoit.papillault@free.fr>
+ # Creation: 01/02/2002
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-makeconfig eciadsl-usermode-0.11/eciadsl-makeconfig
+--- eciadsl-usermode-0.11-old/eciadsl-makeconfig	2005-09-24 10:02:51.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-makeconfig	2006-03-03 10:27:13.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # ************************************************************************
+ # *                                                                      *
+ # *   eciadsl-makeconfig - EciAdsl Linux driver configuration script     *
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-makeconfig.in eciadsl-usermode-0.11/eciadsl-makeconfig.in
+--- eciadsl-usermode-0.11-old/eciadsl-makeconfig.in	2005-04-16 15:31:29.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-makeconfig.in	2006-03-03 10:27:18.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # ************************************************************************
+ # *                                                                      *
+ # *   eciadsl-makeconfig - EciAdsl Linux driver configuration script     *
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-probe-device eciadsl-usermode-0.11/eciadsl-probe-device
+--- eciadsl-usermode-0.11-old/eciadsl-probe-device	2004-11-06 13:47:05.000000000 +0000
++++ eciadsl-usermode-0.11/eciadsl-probe-device	2006-03-03 10:27:28.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # Author : wwp <subscript@free.fr>
+ # Creation : 2002/10/16
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-probe-synch eciadsl-usermode-0..11/eciadsl-probe-synch
+--- eciadsl-usermode-0.11-old/eciadsl-probe-synch	2004-12-28 19:16:58.000000000 +0000
++++ eciadsl-usermode-0.11/eciadsl-probe-synch	2006-03-03 10:27:35.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # probe device's VIDs and PIDs
+ 
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-remove-dabusb eciadsl-usermode-0.11/eciadsl-remove-dabusb
+--- eciadsl-usermode-0.11-old/eciadsl-remove-dabusb	2005-09-24 10:02:51.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-remove-dabusb	2006-03-03 10:27:45.000000000 +0000
+@@ -1,4 +1,4 @@
+-#! /bin/sh
++#! /bin/bash
+ # ************************************************************************
+ # *                                                                      *
+ # *   eciadsl-remove-dabusb v0.1 - dabusb destroyer script               *
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-remove-dabusb.in eciadsl-usermode-0.11/eciadsl-remove-dabusb.in
+--- eciadsl-usermode-0.11-old/eciadsl-remove-dabusb.in	2005-04-16 15:31:29.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-remove-dabusb.in	2006-03-03 10:27:51.000000000 +0000
+@@ -1,4 +1,4 @@
+-#! /bin/sh
++#! /bin/bash
+ # ************************************************************************
+ # *                                                                      *
+ # *   eciadsl-remove-dabusb v0.1 - dabusb destroyer script               *
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-start eciadsl-usermode-0.11/eciadsl-start
+--- eciadsl-usermode-0.11-old/eciadsl-start	2005-09-24 10:02:51.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-start	2006-03-03 10:31:38.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #
+ # Author   : Jean-Sebastien VALETTE <jean-sebastien.valette@libertysurf.fr>
+ # Creation : 06/12/2001
+@@ -543,7 +543,7 @@
+ case "$mode" in
+ "VCM_RFC2364"|"LLC_RFC2364")
+ 
+-    nice --20 pppd call adsl updetach
++    nice -n-20 pppd call adsl updetach
+     if [ $? -ne 0 ]; then
+         echo "ERROR: failed to connect"
+         exit $STEP
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-start.in eciadsl-usermode-0.11/eciadsl-start.in
+--- eciadsl-usermode-0.11-old/eciadsl-start.in	2005-09-24 09:42:15.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-start.in	2006-03-03 10:31:45.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #
+ # Author   : Jean-Sebastien VALETTE <jean-sebastien.valette@libertysurf.fr>
+ # Creation : 06/12/2001
+@@ -543,7 +543,7 @@
+ case "$mode" in
+ "VCM_RFC2364"|"LLC_RFC2364")
+ 
+-    nice --20 @pppdpath@ call adsl updetach
++    nice -n20 @pppdpath@ call adsl updetach
+     if [ $? -ne 0 ]; then
+         echo "ERROR: failed to connect"
+         exit $STEP
+diff -Naur eciadsl-usermode-0.11-old/eciadsl-stop eciadsl-usermode-0.11/eciadsl-stop
+--- eciadsl-usermode-0.11-old/eciadsl-stop	2005-06-11 08:05:46.000000000 +0100
++++ eciadsl-usermode-0.11/eciadsl-stop	2006-03-03 10:28:13.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # eciadsl-stop: stop EciAdsl connection
+ #

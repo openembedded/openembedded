@@ -10,8 +10,8 @@ PV = "2.15.99+csl-arm+cvs20050416"
 PR = "r0"
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_arm-linux = "1"
-DEFAULT_PREFERENCE_arm-linuxeabi = "1"
+DEFAULT_PREFERENCE_arm-linux = "-1"
+DEFAULT_PREFERENCE_arm-linuxeabi = "-1"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
