@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "sqlite3 sqlite" 
-RDEPENDS = "sqlite3 libsqlite-bin" 
+RDEPENDS = "sqlite3 sqlite-bin" 
 
 APPNAME = "opimconverter"
 
