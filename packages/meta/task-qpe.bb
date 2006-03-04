@@ -106,7 +106,7 @@ RDEPENDS_task-qpe-games = "\
 RDEPENDS_task-qpe-inputmethods = "\
     custominput \
     flexis-zaurus \
-    irk \
+    irk-targus \
     irk-belkin"
 
 RDEPENDS_task-qpe-multimedia = "\
