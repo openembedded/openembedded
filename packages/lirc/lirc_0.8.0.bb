@@ -44,7 +44,6 @@ do_stage() {
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install ${WORKDIR}/lircd.init ${D}${sysconfdir}/init.d/lircd
-	install ${WORKDIR}/lircexec.init ${D}${sysconfdir}/init.d/lircexec
         install -d ${D}${datadir}/lirc/
         cp -pPR ${S}/remotes ${D}${datadir}/lirc/
 	rm -rf ${D}/dev
@@ -54,6 +53,7 @@ do_install_append_nslu2() {
 	install -d ${D}${sysconfdir}
 	install ${WORKDIR}/lircd.conf_nslu2 ${D}${sysconfdir}/lircd.conf
 	install ${WORKDIR}/lircrc_nslu2 ${D}${sysconfdir}/lircrc
+	install ${WORKDIR}/lircexec.init ${D}${sysconfdir}/init.d/lircexec
 }
 
 PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
