@@ -38,7 +38,7 @@ chgrp "$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || addgroup "$MESSAGEUSER"
 chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
 }
 
-EXTRA_OECONF = "--disable-qt --disable-gtk --disable-tests \
+EXTRA_OECONF = "--disable-qt  --disable-qt3 --disable-gtk --disable-tests \
 		--disable-checks --disable-xml-docs --disable-doxygen-docs \
 		--with-xml=expat --without-x"
 
