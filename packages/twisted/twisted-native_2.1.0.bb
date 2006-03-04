@@ -1,6 +1,6 @@
 include twisted_${PV}.bb
 inherit native
-DEPENDS = "python-native"
+DEPENDS = "python-native zope-interface-native"
 
 do_stage() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
