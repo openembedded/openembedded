@@ -131,8 +131,7 @@ RDEPENDS_task-qpe-fonts = "\
     qpf-dejavuserifcondensed \
     qpf-freemono \
     qpf-freeserif \
-    qpf-gentium \
-    qpf-gentiumalt \
+    ttf-gentium \
     qpf-hunkysans \
     qpf-hunkyserif \
     qpf-qte \
