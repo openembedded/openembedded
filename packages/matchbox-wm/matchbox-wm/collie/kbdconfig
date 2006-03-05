@@ -51,4 +51,3 @@ telephone=!$gpe-contacts
 XF86Start=!matchbox-remote -desktop
 F2=!matchbox-remote -mbmenu
 XF86Mail=!$gpe-taskmanager
-Escape=close
