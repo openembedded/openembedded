@@ -122,8 +122,8 @@ RDEPENDS_task-kdepim = "\
 RDEPENDS_task-qpe-emulators = "scummvm"
 
 RDEPENDS_task-qpe-fonts = "\
-    qpf-bitstream-vera \
-    qpf-bitstream-vera-sans-mono \
+    qpf-bitstream-vera-large \
+    qpf-bitstream-vera-sans-mono-huge \
     qpf-dejavusans \
     qpf-dejavusanscondensed \
     qpf-dejavusansmono \
@@ -131,8 +131,7 @@ RDEPENDS_task-qpe-fonts = "\
     qpf-dejavuserifcondensed \
     qpf-freemono \
     qpf-freeserif \
-    qpf-gentium \
-    qpf-gentiumalt \
+    ttf-gentium \
     qpf-hunkysans \
     qpf-hunkyserif \
     qpf-qte \

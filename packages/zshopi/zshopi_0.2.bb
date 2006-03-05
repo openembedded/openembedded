@@ -1,6 +1,6 @@
 DESCRIPTION = "Shopping manager"
 SECTION = "opie/applications"
-DEPENDS = "sqlite"
+DEPENDS = "sqlite opie-lrelease-native"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
