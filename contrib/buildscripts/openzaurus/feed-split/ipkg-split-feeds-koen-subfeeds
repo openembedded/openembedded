@@ -1,0 +1,152 @@
+#!/usr/bin/python2.3
+# Given a Package and a package, write a script which copies
+# the packages into a 'base' feed and 'x' feed.
+
+import sys, os
+import ipkg
+import getopt
+import re
+import stat
+
+sys.stderr.write("Remember now, this program doesn't copy package-specific files correctly\n")
+progname = os.path.basename(sys.argv[0])
+verbose = 0
+
+def usage():
+     sys.stderr.write("%s [-h] Packages basefeed xfeed ofeed \n" % (progname)) 
+     sys.exit(-1)
+
+(opts, remaining_args) = getopt.getopt(sys.argv[1:], "hv")
+for (optkey, optval) in opts:
+     if optkey == '-h': 
+          usage()
+     if optkey == '-v':
+          verbose = 1
+
+if len(remaining_args)  != 4:
+    usage()
+
+packagefiles, basefeed, xfeed, ofeed = remaining_args
+
+packagedir = os.path.dirname(packagefiles)
+
+pkgs = ipkg.Packages()
+for p in packagefiles.split(','):
+  pkgs.read_packages_file(p)
+
+package = None
+
+alldepends = {}
+
+print pkgs.packages.keys()
+for name in pkgs.packages.keys():
+    depends = pkgs.packages[name].depends
+    alldepends[name] = []
+    if depends:
+        for d1 in depends.split(","):
+          d1 = re.sub(r'\(.*?\)', '', d1)
+          for depend in d1.split(" "):
+                alldepends[name].append(depend)
+    alldepends[name] = filter(None, alldepends[name])
+    # for 'provides:', create a duplicate name.  Merge all packages.
+    provides = pkgs.packages[name].provides
+    if provides:
+      p1 = re.sub(r' +', '', provides)
+      for p2 in p1.split(','):
+        if alldepends.has_key(p2):
+            for pkg in alldepends[name]:
+                if not pkg in alldepends[p2]:
+                    alldepends[p2].append(pkg)
+        else:
+            alldepends[p2] = alldepends[name]
+    #print name,alldepends[name]
+
+def add_depends(p):
+    skip = 0
+    if not len(p): 
+        print "# got led to a null package name"
+        return 1
+    if not alldepends.has_key(p):
+        print "# %s not found in Packages" % p
+        return 0
+    for p1 in alldepends[p]:
+        if not len(p1):
+            print "# found a null package name in alldepends", p, alldepends[p]
+        elif skip:
+            skip = 0
+        elif p1 == '|':# choose the first of alternative packages.
+            skip = 1
+        elif p1[-1] == '*':
+            searchfor = p1[0:-1]
+            searchforlen = len(searchfor)
+            for p2 in pkgs.packages.keys():
+                if p2[0:searchforlen] == searchfor:
+                    depends.append(p2)
+                    break # any one will do.
+        else:
+            if not p1 in depends:
+                depends.append(p1)
+                if not add_depends(p1): return 0
+    return 1
+
+def get_target_in_subfeeds (subfeeds, target, package):
+    for regex, (match_group, sub_target) in subfeeds.items():
+        if match_group:
+            m = re.match (regex, package)
+            if m:
+                sub_target_extra_qualifier = m.group(1)
+                return os.path.join (target, sub_target % (sub_target_extra_qualifier))
+        else:
+            if re.match (regex, package):
+              return os.path.join (target, sub_target)
+    return target
+
+packages = pkgs.packages.keys()
+packages.sort()
+
+subfeeds = {".*-dev(_.*)?":(False, "dev"),".*-locale-(.*)(_.*)?":(True, "locale/%s"), ".*-doc(_.*)?":(False, "doc")}
+
+for p in packages:
+    depends = []
+    if not add_depends(p):
+        print "#   dropping %s" % p
+        print "#  ",pkgs.packages[p].maintainer
+        continue
+    if verbose: print '# package:',p,' depends on:', depends
+
+    x = p.startswith('gpe-')
+    x += p.startswith('gconv-')
+    x += p.startswith('gtk')
+    x += p.startswith('xserver')        
+    x += 'libx11-6' in depends
+    x += 'gtk+' in depends
+    x += 'xserver' in depends
+
+    o = p.startswith('opie')
+    o += p.startswith('qt')
+    o += p.startswith('qp')
+    o += 'libqte1' in depends
+    o += 'libqte2' in depends
+    o += 'libqpe1' in depends
+
+    if x:
+        tofn  = get_target_in_subfeeds (subfeeds, xfeed, p)
+    elif o:
+        tofn = get_target_in_subfeeds (subfeeds, ofeed, p)
+    else:
+        tofn  = get_target_in_subfeeds (subfeeds, basefeed, p)
+
+
+    fromfn = os.path.join(packagedir, pkgs.packages[p].filename)
+    tofn = os.path.join(tofn, pkgs.packages[p].filename)
+    fromstat = os.stat(fromfn)
+
+    try:
+        tostat = os.stat(tofn)
+    except:
+        tostat = None
+
+    if 0 or (not tostat or tostat[stat.ST_SIZE] != fromstat[stat.ST_SIZE] or
+        tostat[stat.ST_MTIME] != fromstat[stat.ST_MTIME]):
+        print "mkdir -p `dirname %s`" % (tofn)
+        print "cp -af ",fromfn,tofn
