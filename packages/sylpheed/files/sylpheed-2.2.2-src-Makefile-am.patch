@@ -1,0 +1,11 @@
+--- sylpheed-2.2.2/src/Makefile.am.orig	2006-03-03 14:41:42.000000000 -0800
++++ sylpheed-2.2.2/src/Makefile.am	2006-03-03 14:42:45.000000000 -0800
+@@ -102,8 +102,6 @@
+ 	-DG_LOG_DOMAIN=\"Sylpheed\" \
+ 	$(GTK_CFLAGS) \
+ 	$(GDK_PIXBUF_CFLAGS) \
+-	$(GPGME_CFLAGS) \
+-	-I$(includedir) \
+ 	-I$(top_srcdir)/libsylph
+ 
+ if HAVE_WINDRES
