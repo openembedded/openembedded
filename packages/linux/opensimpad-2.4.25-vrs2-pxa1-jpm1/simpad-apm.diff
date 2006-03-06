@@ -445,7 +445,7 @@
  static struct file_operations apm_bios_fops = {
  	owner:		THIS_MODULE,
  	read:		do_read,
-@@ -454,6 +484,48 @@
+@@ -454,6 +484,50 @@
  
  #define APM_INIT_ERROR_RETURN	return -1
  
@@ -478,8 +478,10 @@
 +	as->writer = 1;
 +	as->reader = 0;
 +
-+	while (!signal_pending (current)) {
++	for (;;) {
 +		interruptible_sleep_on(&apm_suspend_waitqueue);
++		if (signal_pending (current))
++			break;
 +
 +		pm_suggest_suspend();
 +

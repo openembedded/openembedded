@@ -1,0 +1,35 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.4.27/arch/arm/mach-sa1100/simpad.c~support-128mb-ram
++++ linux-2.4.27/arch/arm/mach-sa1100/simpad.c
+@@ -83,11 +83,16 @@
+ {
+ #ifdef CONFIG_SA1100_SIMPAD_SINUSPAD
+ 	SET_BANK( 0, 0xc0000000, 32*1024*1024 );
++	mi->nr_banks = 1;
+ #else
+ 	SET_BANK( 0, 0xc0000000, 64*1024*1024 );
+-#endif
+ 	mi->nr_banks = 1;
++#endif
+ 
++#ifdef CONFIG_SA1100_SIMPAD_128M
++	SET_BANK( 1, 0xc8000000, 64*1024*1024 );
++	mi->nr_banks = 2;
++#endif
+ 	setup_ramdisk( 1, 0, 0, 8192 );
+ 	setup_initrd( __phys_to_virt(0xc0800000), 4*1024*1024 );
+ }
+--- linux-2.4.27/arch/arm/config.in~support-128mb-ram
++++ linux-2.4.27/arch/arm/config.in
+@@ -130,6 +130,7 @@
+ dep_bool '  Simpad' CONFIG_SA1100_SIMPAD $CONFIG_ARCH_SA1100
+ if [ "$CONFIG_SA1100_SIMPAD" = "y" ]; then
+    bool '    T-Sinus PAD' CONFIG_SA1100_SIMPAD_SINUSPAD
++   bool '    Simpad with 128Mb RAM' CONFIG_SA1100_SIMPAD_128M
+ fi
+ dep_bool '  Simputer' CONFIG_SA1100_SIMPUTER $CONFIG_ARCH_SA1100
+ dep_bool '  Tulsa' CONFIG_SA1100_PFS168 $CONFIG_ARCH_SA1100
