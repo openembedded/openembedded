@@ -1,0 +1,20 @@
+# !/bin/sh
+M_TITLE="Boot original INIT"
+
+exit 0
+
+run_module() {
+	
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+	
+	echo "altboot: Using real init [$REAL_INIT] [$INIT_RUNLEVEL] *" >/dev/tty1
+	exec $REAL_INIT $INIT_RUNLEVEL
+	exit 0	
+	
+}
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module;;
+esac
+

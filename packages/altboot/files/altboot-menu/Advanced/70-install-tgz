@@ -1,0 +1,268 @@
+#!/bin/sh
+
+M_TITLE="Install RootFS from tar.gz"
+
+# die() {
+# 	echo "ERROR: $1" >/dev/tty0
+# 	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+# }
+
+run_module(){
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
+	
+	# Mount /proc, etc
+	init_rootfs
+	
+	# Mount
+	mount_sd	
+	mount_cf
+	mount_home
+	
+	for source in /home /media/card /media/cf
+	do
+		#echo "source: [$source]"
+		rootfs_files="`ls -1 $source | grep "rootfs.tar.gz"`"
+		
+		#echo "rootfs_file: [$rootfs_files]"
+		if test "`echo "$rootfs_files" | wc -l | tr -d " "`" -gt 1
+		then
+			echo "Multiple rootfs files not supported, yet"
+		else		
+			if test -n "$rootfs_files"
+			then
+				rootfs_source="$source/$rootfs_files"
+				echo "Using [$rootfs_source]"				
+				break
+			fi
+		fi				
+	done
+	
+	test -z "$rootfs_source" && die "No rootfs.tar.gz found" 
+	
+	echo -e "\nPlease choose the target of this installation:\n"
+
+	echo -e "\t [1] SD / MMC"
+	echo -e "\t [2] Compact Flash"
+	
+	echo ""
+	while true
+	do
+		echo -n "Your target: "
+		read junk
+		
+		case "$junk" in
+		1)	if (mount | grep -q "/media/card ")
+			then
+				rootfs_target="/media/card"; break 
+			else
+				echo -e "\nInstallation target [/media/card] not mounted\n"
+			fi ;;
+		2)	if (mount | grep -q "/media/cf ")
+			then
+				rootfs_target="/media/cf"; break 
+			else
+				echo -e "\nInstallation target [/media/cf] not mounted\n"
+			fi ;;
+		esac
+	done
+
+	echo -e "\nPlease choose the type of this installation:\n"
+
+	echo -e "\t [1] Imagefile (loopfile)"
+	echo -e "\t [2] Direct Install"
+	
+	echo ""
+	while true
+	do
+		echo -n "Install type: "
+		read junk
+		
+		case "$junk" in
+		1)	if test -x /sbin/mkfs.ext2
+			then
+				rootfs_type="image"
+				 break 
+			else
+				echo -e "\nNOTE: mkfs.ext2 (from e2fsprogs-mke2fs) not found, loop-images not supported\n"
+			fi ;;			
+		2)	rootfs_type="direct" ; break ;;
+		esac
+	done
+	
+	case "$rootfs_type" in
+	image) 	install_rootfs_image "$rootfs_target";;
+	direct)	install_rootfs_direct "$rootfs_target";;
+	esac
+}
+
+clear_directories(){
+	test "$1" = "/" -o "$1" = "/ " && die "clear_directories(): You don't want to do that."
+	
+	! test -d "$1" && die "clear_directories(): [$1] not found."
+	
+	for d in bin dev media proc sys usr boot etc lib mnt sbin tmp var
+	do
+		if test -d "$1/$d"
+		then
+			echo "Removing [$1/$d]..."
+			rm -rf "$1/$d"
+		fi
+	done
+
+}
+
+
+install_rootfs_direct(){
+	
+	mount | grep -q "$1 " || die "Installation target [$1] not mounted"
+	
+	echo -e "Do you want to remove existing directories from [$1]\n before installing the new rootfs?"
+	echo ""
+	
+	while true
+	do
+		echo -n "Remove old directories? [Y|n] "
+		read junk </dev/tty0 >/dev/tty0 2>&1		
+				
+		case "$junk" in
+		Y|y|"")	clear_directories "$1"; break ;;
+		esac
+	done		
+
+	echo "Please press <ENTER> to begin the installation"
+	read junk </dev/tty0 >/dev/tty0 2>&1
+		
+	test -d "$1" || die "Directory [$1] not found"
+	
+	echo -n "Installing rootfs, please wait..."
+	tar -xzf "$rootfs_source" -C "$1" >/dev/null 2>&1 && echo ok || die "tar -xzf \"$rootfs_source\" -C \"$1\" failed!"
+	
+	echo -n "Syncing drives..."
+	sync
+	echo "done"
+	
+#	umount "$1"
+	
+	echo "Press <ENTER> to bring up the altboot menu"
+	read junk </dev/tty0 >/dev/tty0 2>&1
+	exec /sbin/init.altboot -force
+	
+}
+
+install_rootfs_image(){
+
+	mount | grep -q "$1 " || die "Installation target [$1] not mounted"
+
+	echo ""
+	echo "Please enter a name for the image file."
+	echo "Do not use the <space> character"
+	echo ""
+		
+	
+	while true
+	do
+		echo -n "Image name: "
+		read junk
+		
+		if test -n "$junk"
+		then					
+			if test -e "$1/boot-images/${junk}-rootfs.bin"
+			then			
+				echo -e "\nFile [$1/boot-images/${junk}-rootfs.bin] already exists."
+				
+				while true 
+				do
+					echo -n "Overwrite? [y|N] "
+					read junk2
+					
+					case "$junk2" in
+					Y|y)	break;;
+					n|N|"")	install_rootfs_image "$1"
+						exit 0;;
+					esac
+				done
+				rootfs_image_name="${junk}-rootfs.bin"
+				break															
+			else						
+				 echo -n "Use [$junk] as name? [Y|n] "
+				 read junk2
+
+				 case "$junk2"  in
+				 "Y"|"y"|"")	rootfs_image_name="${junk}-rootfs.bin"
+						 break ;;
+				 *)		echo "err ]$junk]";;
+				 esac
+			fi
+		fi
+	done
+	
+	echo ""
+	echo "Please enter the image size in MegaBytes"
+	echo "Must be at least 30Mb"
+	echo ""
+	
+	while true
+	do
+		echo -n "Image size: "		
+		read junk
+				
+		junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"
+		
+		if test -n "$junk"
+		then
+			if test "$junk" -gt 29
+			then
+				echo -n "Is [${junk}Mb] correct? [Y|n] "
+				read junk2
+	
+				case "$junk2"  in
+					Y|y|"")	rootfs_image_size="$junk"
+						break ;;
+				esac						
+		
+			else
+				echo "Image size of [${junk}Mb] is too small!"
+			fi
+		fi
+	done
+	
+	test -z "$rootfs_image_name" -o -z "$rootfs_image_size" && die "DEBUG: Empty VAR in install_rootfs_image()" 
+	
+	echo ""
+	echo "Creating [$rootfs_image_name] (${rootfs_image_size}Mb) on [$1]"
+	echo "Please wait..."
+	mkdir -p "$1/boot-images"
+		
+	dd if=/dev/zero of="$1/boot-images/$rootfs_image_name" bs=1024k count=$rootfs_image_size >/dev/null
+	
+	echo -n "Creating an ext2 filesystem on $rootfs_image_name..."
+	losetup /dev/loop0 "$1/boot-images/$rootfs_image_name" || die "losetup /dev/loop0 \"$1/boot-images/$rootfs_image_name\" failed!"
+	mkfs.ext2 -m0 /dev/loop0 >/dev/null 2>&1 && echo done || die "mkfs.ext2 -m0 /dev/loop0 failed!"
+	
+	echo -n "Mounting loopfile..."
+	mkdir -p /media/image
+	mount /dev/loop0 /media/image && echo ok || die "mount /dev/loop0 /media/image failed!"
+	
+	echo -n "Installing rootfs, please wait..."
+	tar -xzf "$rootfs_source" -C "/media/image" >/dev/null 2>&1 && echo ok || die "tar -xzf \"$rootfs_source\" -C \"$1\" failed!"
+	
+	echo -n "Syncing drives..."
+	sync
+	echo "done"
+	
+	umount "/media/image" && losetup -d /dev/loop0
+	
+	echo "Press <ENTER> to bring up the altboot menu"
+	read junk </dev/tty0 >/dev/tty0 2>&1
+	exec /sbin/init.altboot -force
+	
+}
+
+
+
+#run_module
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module "$2";;
+esac

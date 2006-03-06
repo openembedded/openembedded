@@ -1,0 +1,54 @@
+# !/bin/sh
+M_TITLE="Normal Boot"
+
+# Note for Spitz: The HDD has already been mounted in /media/hdd from
+# /etc/altboot.rc/00-Default.sh
+
+die() {
+	echo "ERROR: $1" >/dev/tty0
+	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+}
+
+run_module() {
+	
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
+	
+	test -z "$SPITZ_HDD_PART" && SPITZ_HDD_PART="/dev/hda1"
+	echo "Spitz: Mounting [$SPITZ_HDD_PART] as /media/hdd"
+	mount -t proc proc /proc || echo "Mounting /proc failed!"
+
+	mount -o remount,rw / 
+
+	# Note: Redirecting STDIN & STDOUT is required, cardmg will die otherwise
+	cardmgr -o < /dev/tty0 > /dev/tty0 2>&1 || echo "cardmgr -o failed!"
+
+	check_fs $SPITZ_HDD_PART $SPITZ_HDD_TYPE
+	if [ "$SPITZ_HDD_TYPE" = "" ]; then
+		SPITZ_HDD_TYPE="auto"
+	fi
+	
+	# I've seen busybox die a horrible death on "!"...
+	if (mount -t $SPITZ_HDD_TYPE $SPITZ_HDD_PART /media/hdd)
+	then
+		a=a
+	else
+		echo "ERROR: mount -t ext3 $SPITZ_HDD_PART /media/hdd failed!"
+		exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+	fi
+
+	# There are no device files on Spitz yet, requires HDD (bad for testing
+	# with CF)
+	for n in 0 1 2 3 4 5
+	do
+		! test -e /dev/loop$n && mknod /dev/loop$n b 7 $n
+	done
+	
+	# Check for /sbin/init and / or loop-images	
+	check_target "/media/hdd" 5
+}
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module;;
+esac
+
