@@ -125,14 +125,11 @@ python __anonymous () {
 			r = re.compile(regexp)
 
 			if r.match(target_arch):
-				bb.note("generation of binary locales enabled")
 				depends = bb.data.getVar("DEPENDS", d, 1)
 				depends = "%s qemu-native" % depends
 				bb.data.setVar("DEPENDS", depends, d)
 				bb.data.setVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", "1", d)
 				break
-	else:
-		bb.note("generation of binary locales disabled. this may break i18n!")
 }
 
 do_prep_locale_tree() {
@@ -145,7 +142,9 @@ do_prep_locale_tree() {
 		gunzip $i
 	done
 	cp -a ${STAGING_LIBDIR}/* $treedir/lib
-	cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* $treedir/lib
+	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* ]; then
+		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* $treedir/lib
+	fi
 	install -m 0755 ${D}${bindir}/localedef $treedir/bin
 }
 
@@ -203,6 +202,7 @@ python package_do_split_gconvs () {
 		do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='', aux_files_pattern_verbatim=binary_locales_dir + '/%s')
 	else:
 		do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
+		bb.note("generation of binary locales disabled. this may break i18n!")
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
 	f = open(os.path.join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
