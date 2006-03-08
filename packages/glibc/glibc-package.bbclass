@@ -14,7 +14,16 @@ python __anonymous () {
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
 
-BINARY_LOCALE_ARCHES ?= "0"
+# Binary locales are generated at build time if ENABLE_BINARY_LOCALE_GENERATION
+# is set. The idea is to avoid running localedef on the target (at first boot)
+# to decrease initial boot time and avoid localedef being killed by the OOM
+# killer which used to effectively break i18n on machines with < 128MB RAM.
+
+# default to disabled until qemu works for everyone
+ENABLE_BINARY_LOCALE_GENERATION ?= "0"
+
+# BINARY_LOCALE_ARCHES is a space separated list of regular expressions
+BINARY_LOCALE_ARCHES ?= "arm.*"
 
 PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-*"
@@ -104,14 +113,26 @@ rm -rf ${TMP_LOCALE}
 }
 
 python __anonymous () {
-	target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-	binary_arches = bb.data.getVar("BINARY_LOCALE_ARCHES", d, 1) or ""
+	enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
 
-	if target_arch in binary_arches.split(" "):
-		depends = bb.data.getVar("DEPENDS", d, 1)
-		depends = "%s qemu-native" % depends
-		bb.data.setVar("DEPENDS", depends, d)
-		bb.data.setVar("USE_BINARY_LOCALE", "1", d)
+	if enabled and int(enabled):
+		import re
+
+		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
+		binary_arches = bb.data.getVar("BINARY_LOCALE_ARCHES", d, 1) or ""
+
+		for regexp in binary_arches.split(" "):
+			r = re.compile(regexp)
+
+			if r.match(target_arch):
+				bb.note("generation of binary locales enabled")
+				depends = bb.data.getVar("DEPENDS", d, 1)
+				depends = "%s qemu-native" % depends
+				bb.data.setVar("DEPENDS", depends, d)
+				bb.data.setVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", "1", d)
+				break
+	else:
+		bb.note("generation of binary locales disabled. this may break i18n!")
 }
 
 do_prep_locale_tree() {
@@ -177,7 +198,7 @@ python package_do_split_gconvs () {
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
 
-	use_bin = bb.data.getVar("USE_BINARY_LOCALE", d, 1)
+	use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
 	if use_bin:
 		do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='', aux_files_pattern_verbatim=binary_locales_dir + '/%s')
 	else:
@@ -241,13 +262,13 @@ python package_do_split_gconvs () {
 			raise bb.build.FuncFailed("localedef returned an error.")
 
 	def output_locale(name, locale, encoding):
-		use_bin = bb.data.getVar("USE_BINARY_LOCALE", d, 1)
+		use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
 		if use_bin:
 			output_locale_binary(name, locale, encoding)
 		else:
 			output_locale_source(name, locale, encoding)
 
-	use_bin = bb.data.getVar("USE_BINARY_LOCALE", d, 1)
+	use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
 	if use_bin:
 		bb.note("preparing tree for binary locale generation")
 		bb.build.exec_func("do_prep_locale_tree", d)
@@ -263,7 +284,7 @@ python package_do_split_gconvs () {
 			for e in encodings[l]:
 				output_locale('%s-%s' % (l, e), l, e)			
 
-	use_bin = bb.data.getVar("USE_BINARY_LOCALE", d, 1)
+	use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
 	if use_bin:
 		bb.note("collecting binary locales from locale tree")
 		bb.build.exec_func("do_collect_bins_from_locale_tree", d)
