@@ -465,8 +465,8 @@ Unsling script now prompts for a root password to be used, additional sanity
 checks added to minimize the chance of an improper unsling.  User feedback
 added to indicate the status (running from internal flash or booted up from
 an external drive) via /etc/motd, ipkg, as well as the main web page.  Improved
-diagnostic messages from unsling.  Added a Linksys customization to "mount"
-to the slingbox version of mount.
+diagnostic messages from unsling.  Added the Linksys custom code to the "mount"
+code in the slingbox version of mount.
 
 6.6:
 
