@@ -214,7 +214,7 @@ def tinder_print_env():
 
     return "\n".join(output) % vars()
 
-def tinder_tinder_start(d):
+def tinder_tinder_start(d, event):
     """
     PRINT the configuration of this build
     """
@@ -223,13 +223,18 @@ def tinder_tinder_start(d):
     config = tinder_print_info(d)
     #env    = tinder_print_env()
     time_end   = tinder_time_string()
+    packages = " ".join( event.getPkgs() ) 
 
     output = []
     output.append( "---> TINDERBOX PRINTING CONFIGURATION %(time_start)s" )
     output.append( config )
     #output.append( env    )
     output.append( "<--- TINDERBOX FINISHED PRINTING CONFIGURATION %(time_end)s" )
-    output.append( "" )
+    output.append( "---> TINDERBOX BUILDING '%(packages)s'" )
+    output.append( "<--- TINDERBOX STARTING BUILD NOW" )
+
+    output.append( "" ) 
+ 
     return "\n".join(output) % vars()
 
 def tinder_do_tinder_report(event):
@@ -256,7 +261,7 @@ def tinder_do_tinder_report(event):
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
         tinder_build_start(event.data)
-        log = tinder_tinder_start(event.data)
+        log = tinder_tinder_start(event.data,event)
 
         try:
             # truncate the tinder log file
