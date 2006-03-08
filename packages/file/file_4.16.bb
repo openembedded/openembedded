@@ -3,7 +3,6 @@ on their contents and prints a description if a match is found."
 SECTION = "console/utils"
 LICENSE = "BSD-ADV"
 DEPENDS = "file-native"
-PR = "r2"
 
 SRC_URI = "ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz"
 S = "${WORKDIR}/file-${PV}"
