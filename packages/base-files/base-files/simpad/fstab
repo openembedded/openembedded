@@ -4,4 +4,5 @@ devpts               /dev/pts             devpts     mode=0620,gid=5       0 0
 usbdevfs             /proc/bus/usb        usbdevfs   noauto                0 0
 tmpfs		     /var		  tmpfs	     defaults		   0 0
 /dev/mtdblock/2	     /home		  jffs2	     defaults		   1 1
-
+/dev/hda1	     /media/cf		  auto	     defaults,sync,noauto  0 0
+/dev/mmc/disc0/part1 /media/card          auto       defaults,sync,noauto  0 0
