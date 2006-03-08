@@ -3,13 +3,13 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r11"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
   		   http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.16-rc5.bz2;patch=1 \   
 		   http://www.wantstofly.org/~buytenh/ep93xx/derevo14.diff;patch=1 \
            file://defconfig \
 		   "
 
-S = "${WORKDIR}/linux-${PV}"
+S = "${WORKDIR}/linux-2.6.15"
 
 inherit kernel
 
