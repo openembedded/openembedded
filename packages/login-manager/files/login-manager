@@ -46,32 +46,15 @@ get_valid_lms() {
 			if echo "$LM_FILES" | grep -iq "$lm"
 			then
 				test -x "$LM_PATH/$lm" && VALID_LMS="$VALID_LMS $lm" || echo -e "\t* Discarding [$lm]: Not executable"
-			
 			fi
 		done
-
-		if test  "`echo "$VALID_LMS" | wc -w | tr -d " "`" -gt 1
-		then
-			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
-		else
-			SELECTED_LM="$VALID_LMS"				
-		fi
-		
-		
 	else
 		for lm in $LM_FILES
 		do
 			test -x "$LM_PATH/$lm" && VALID_LMS="$VALID_LMS $lm" || echo -e "\t* Discarding [$lm]: Not executable"
 		done	
-
-		if test  "`echo "$VALID_LMS" | wc -w | tr -d " "`" -gt 1
-		then
-			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
-		else
-			# Use awk here, too to filter a backspace in VALID_LMS
-			SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"				
-		fi
 	fi	
+	SELECTED_LM="$LM_PATH/`echo "$VALID_LMS" | awk '{print $1}'`"
 }
 
 do_start(){
