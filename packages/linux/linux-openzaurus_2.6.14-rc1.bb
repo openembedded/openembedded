@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r6"
+PR = "r7"
 
 # Handy URLs
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -74,6 +74,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.13.tar.gz \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
            file://zaurus_keyboard_tweak-r0.patch;patch=1 \
            file://quiet.patch;patch=1 \
+           file://mmc_plus_2gb.diff;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa-2.6 \
            file://defconfig-collie \
