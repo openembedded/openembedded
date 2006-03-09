@@ -11,7 +11,8 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  rather than just running another copy."
 PR = "r1"
 
-SRC_URI += " file://keylaunchrc"
+SRC_URI += " file://keylaunchrc \
+	     file://makefile-fix.patch;patch=1"
 
 do_install_prepend () {
 	install ${WORKDIR}/keylaunchrc ${S}/keylaunchrc

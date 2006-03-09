@@ -1,0 +1,11 @@
+--- keylaunch-2.0.7/Makefile.orig	2006-02-02 17:44:53.000000000 +0100
++++ keylaunch-2.0.7/Makefile	2006-02-02 17:44:55.000000000 +0100
+@@ -28,7 +28,7 @@
+ all: $(PROG) 
+ 
+ $(PROG): $(OBJS)
+-	$(CC) $(OBJS) $(LIBS) -o $@
++	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+ 
+ install-program: all
+ 	install -sD $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
