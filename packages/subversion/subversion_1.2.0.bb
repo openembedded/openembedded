@@ -2,7 +2,8 @@ DESCRIPTION = "The Subversion (svn) client"
 SECTION = "console/network"
 DEPENDS = "apr-util"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
-LICENSE = "GPL"
+LICENSE = "Apache/BSD"
+HOMEPAGE = "http://subversion.tigris.org"
 
 PR = "r0"
 
