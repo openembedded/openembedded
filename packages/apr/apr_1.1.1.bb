@@ -1,7 +1,8 @@
 DESCRIPTION = "Apache Portable Runtime (APR) library"
 SECTION = "libs"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
-LICENSE = "Apache License, Version 2.0"
+LICENSE = "Apache"
+HOMEPAGE = "http://apr.apache.org"
 
 PR = "r0"
 
