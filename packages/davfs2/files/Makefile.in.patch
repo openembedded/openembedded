@@ -1,0 +1,44 @@
+--- davfs2-0.2.7/Makefile.in.orig	2006-02-11 16:42:27.000000000 +0100
++++ davfs2-0.2.7/Makefile.in	2006-02-11 16:43:10.000000000 +0100
+@@ -13,6 +13,7 @@
+ datadir = @datadir@
+ sysconfdir = @sysconfdir@/$(PACKAGE_NAME)
+ localstatedir = /var/run/$(PROGRAM_NAME)
++docdir = @datadir@/doc/$(PACKAGE_NAME)
+ datadir = @datadir@/$(PACKAGE_NAME)
+ mandir = @datadir@/man/man8
+ 
+@@ -51,7 +52,7 @@
+ 
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 4755
+ INSTALL_DATA = @INSTALL_DATA@
+-INSTALL_SECRETS = @INSTALL_DATA@ -b -m 600
++INSTALL_SECRETS = @INSTALL_DATA@ -m 600
+ INSTALL_DIR = @INSTALL@ -d -m 755
+ INSTALL = @INSTALL@
+ 
+@@ -67,7 +68,6 @@
+ 	@echo ""
+ 
+ install: $(PROGRAMS)
+-	$(INSTALL) -d -m 1775 -g $(dav_group) $(DESTDIR)$(localstatedir)
+ 	$(INSTALL_DIR) $(DESTDIR)$(sbindir)
+ 	for t in $(PROGRAMS); do \
+           $(INSTALL_PROGRAM) $(top_builddir)/$$t $(DESTDIR)$(sbindir)/$$t;done
+@@ -76,14 +77,13 @@
+           $(INSTALL_DATA) $(top_builddir)/$$t $(DESTDIR)$(sysconfdir)/$$t;done
+ 	for t in $(SECRETS); do \
+           $(INSTALL_SECRETS) $(top_builddir)/$$t $(DESTDIR)$(sysconfdir)/$$t;done
+-	$(INSTALL_DIR) $(DESTDIR)$(datadir)
++	$(INSTALL_DIR) $(DESTDIR)$(docdir)
+ 	for t in $(DATA); do \
+-          $(INSTALL_DATA) $(top_builddir)/$$t $(DESTDIR)$(datadir)/$$t;done
++          $(INSTALL_DATA) $(top_builddir)/$$t $(DESTDIR)$(docdir)/$$t;done
+ 	$(INSTALL_DIR) $(DESTDIR)$(mandir)
+ 	for t in $(MANS); do \
+           $(INSTALL_DATA) $(top_builddir)/$$t $(DESTDIR)$(mandir)/$$t;done
+ 	if [ -L /sbin/$(PROGRAM_NAME) ]; then rm /sbin/$(PROGRAM_NAME); fi
+-	ln -s $(DESTDIR)$(sbindir)/$(PROGRAM_NAME) /sbin/$(PROGRAM_NAME) 2> /dev/null
+ 
+ 	@echo ""
+ 	@echo "----------------------------------------------------"
