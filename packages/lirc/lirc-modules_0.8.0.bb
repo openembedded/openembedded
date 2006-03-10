@@ -1,12 +1,12 @@
 DESCRIPTION = "LIRC is a package that allows you to decode and send infra-red signals of many commonly used remote controls. This package contains the lirc kernel modules."
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-MAINTAINER_nslu2 = "Matthias Goebl <matthias.goebl@goebl.net>"
+HOMEPAGE = "http://www.lirc.org"
+MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"
 RDEPENDS_nslu2 = "setserial"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 S = "${WORKDIR}/lirc-${PV}"
@@ -29,7 +29,7 @@ do_install_append_nslu2() {
 	install -d ${D}${sysconfdir}/modutils/
 	echo 'lirc_serial' > ${D}${sysconfdir}/modutils/lirc_serial
 	install -d ${D}${sysconfdir}/modprobe.d/
-	echo 'install lirc_serial /bin/setserial /dev/ttyS1 uart none; /sbin/modprobe --ignore-install lirc_serial' >${D}${sysconfdir}/modprobe.d/lirc_serial
+	echo 'install lirc_serial /bin/setserial /dev/ttyS1 uart none; /sbin/leds ready on; /sbin/modprobe --ignore-install lirc_serial' >${D}${sysconfdir}/modprobe.d/lirc_serial
 	install -d ${D}${sysconfdir}/udev/rules.d/
 	echo 'KERNEL="lirc0", SYMLINK="lirc"' > ${D}${sysconfdir}/udev/rules.d/lirc.rules
 }
