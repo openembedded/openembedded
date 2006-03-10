@@ -6,6 +6,7 @@ DESCRIPTION_append_lirc-remotes = " This package contains some config files for 
 DESCRIPTION_append_lirc-nslu2example = " This package contains a working config for RC5 remotes and a modified NSLU2."
 SECTION = "console/network"
 PRIORITY = "optional"
+HOMEPAGE = "http://www.lirc.org"
 MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel libx11 libxau libsm libice"
@@ -14,12 +15,12 @@ RDEPENDS = "lirc-modules"
 RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
-PR = "r2"
+RRECOMMENDS_lirc = "lirc-exec"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
-           file://lircd.init file://lircmd.init"
-SRC_URI_append_nslu2 = " file://lircexec.init \
-           file://lircd.conf_nslu2 file://lircrc_nslu2"
+           file://lircd.init file://lircmd.init file://lircexec.init"
+SRC_URI_append_nslu2 = " file://lircd.conf_nslu2 file://lircrc_nslu2"
 
 S = "${WORKDIR}/lirc-${PV}"
 
@@ -44,6 +45,7 @@ do_stage() {
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install ${WORKDIR}/lircd.init ${D}${sysconfdir}/init.d/lircd
+	install ${WORKDIR}/lircexec.init ${D}${sysconfdir}/init.d/lircexec
         install -d ${D}${datadir}/lirc/
         cp -pPR ${S}/remotes ${D}${datadir}/lirc/
 	rm -rf ${D}/dev
@@ -53,7 +55,6 @@ do_install_append_nslu2() {
 	install -d ${D}${sysconfdir}
 	install ${WORKDIR}/lircd.conf_nslu2 ${D}${sysconfdir}/lircd.conf
 	install ${WORKDIR}/lircrc_nslu2 ${D}${sysconfdir}/lircrc
-	install ${WORKDIR}/lircexec.init ${D}${sysconfdir}/init.d/lircexec
 }
 
 PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
