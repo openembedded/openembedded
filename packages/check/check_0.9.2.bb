@@ -10,3 +10,7 @@ S = "${WORKDIR}/check-${PV}"
 inherit autotools
 
 EXTRA_OECONF += "--enable-plain-docdir"
+
+do_stage() {
+	autotools_stage_all
+}
