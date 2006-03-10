@@ -1,7 +1,6 @@
 DESCRIPTION = "avetanaBT: Bluetooth API implementation for Java (JSR-82)"
 SECTION = "devel"
 DEPENDS = "findutils-native jikes-native kaffeh-native fastjar-native bluez-libs classpath"
-# Matthias Ringwald <mringwal@inf.ethz.ch> was helping me in the first phase. Thanks.
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
@@ -9,8 +8,7 @@ HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r3"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt \
-	   file://maxConnectedDevices.patch;patch=1"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
 
 S = "${WORKDIR}/avetanabt"
 
@@ -22,8 +20,8 @@ do_compile() {
   # doing nearly the same as in Makefile written...
 
   # clean build directory
-  ${STAGING_BINDIR}/mkdir -p build
-  ${STAGING_BINDIR}/rm -fr build/*
+  mkdir -p build
+  rm -fr build/*
 
   # generate classes
   # javac -> jikes
@@ -31,9 +29,9 @@ do_compile() {
   ${STAGING_BINDIR}/jikes -verbose --bootclasspath ${STAGING_DIR}/${BUILD_SYS}/share/kaffeh/rt.jar -d build @file.list
 
   # create own version.xml (add version information available at runtime)
-  ${STAGING_BINDIR}/head -n 4 version.xml >> build/version.xml
-  ${STAGING_BINDIR}/echo "    <build value=\"cvs${SRCDATE}\" date=\"${SRCDATE}\" time=\"${@time.strftime('%H:%M',time.gmtime())}\"/>" >> build/version.xml
-  ${STAGING_BINDIR}/tail -n 3 version.xml >> build/version.xml
+  head -n 4 version.xml >> build/version.xml
+  echo "    <build value=\"cvs${SRCDATE}\" date=\"${SRCDATE}\" time=\"${@time.strftime('%H:%M',time.gmtime())}\"/>" >> build/version.xml
+  tail -n 3 version.xml >> build/version.xml
 
   # move classes into jar archive
   # jar -> fastjar
