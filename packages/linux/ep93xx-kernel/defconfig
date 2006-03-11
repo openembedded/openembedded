@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.16-rc5
-# Thu Mar  9 10:22:24 2006
+# Sat Mar 11 13:24:46 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -447,6 +447,8 @@ CONFIG_BLK_DEV_SD=y
 #
 # CONFIG_ISCSI_TCP is not set
 # CONFIG_SCSI_SATA is not set
+# CONFIG_SCSI_PATA_TS7200 is not set
+CONFIG_SCSI_PATA_EP93XX=m
 # CONFIG_SCSI_DEBUG is not set
 
 #
@@ -857,11 +859,11 @@ CONFIG_USB_EZUSB=y
 # MMC/SD Card support
 #
 # CONFIG_MMC is not set
-CONFIG_RTC_LIB=y
 
 #
 # Real Time Clock
 #
+CONFIG_RTC_LIB=y
 CONFIG_RTC_CLASS=y
 CONFIG_RTC_HCTOSYS=y
 CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
