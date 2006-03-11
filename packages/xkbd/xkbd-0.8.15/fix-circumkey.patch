@@ -1,0 +1,18 @@
+--- xkbd-0.8.15.orig/data/en_GB.qwerty.xkbd.in	2006-03-09 14:48:09.000000000 +0100
++++ xkbd-0.8.15/data/en_GB.qwerty.xkbd.in	2006-03-09 14:52:36.000000000 +0100
+@@ -95,7 +95,7 @@
+ 		default  6
+ 		default_ks  6
+ 		shift  ^
+-		shift_ks  numbersign
++		shift_ks  asciicircum
+ 	</key>
+ 	<key>
+ 		default  7
+@@ -438,4 +438,4 @@
+ 		shift_ks  Control_R
+ 	</key>
+ </row>
+-</layout>
+\ No newline at end of file
++</layout>
