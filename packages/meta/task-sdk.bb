@@ -1,14 +1,20 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r1"
+PR = "r2"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
+    task-sdk-bare \
     task-sdk-base \
     task-sdk-opie \
     task-sdk-x11 \
     task-sdk-x11-ext \
     task-sdk-gpe"
+
+RDEPENDS_task-sdk-bare := "\
+    glibc \
+    glibc-dev \
+    "	
 
 RDEPENDS_task-sdk-base := "\
     glibc \
