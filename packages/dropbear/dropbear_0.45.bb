@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "MIT"
 DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	   file://urandom-xauth-changes-to-options.h.patch;patch=1 \
@@ -27,7 +27,8 @@ BINCOMMANDS = "dbclient ssh scp"
 EXTRA_OEMAKE = 'MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
 
 do_configure_prepend() {
-	if [ "${DISTRO_TYPE}" == "debug" ]; then
+	if [ "x${DISTRO}" != "xfamiliar" -a "${DISTRO_TYPE}" == "debug" ]; then
+		oenote "WARNING: applying allow-nopw.patch which allows password-less logins!"
 		patch -p1 < ${WORKDIR}/allow-nopw.patch
 	fi
 }
