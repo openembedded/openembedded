@@ -20,7 +20,8 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-oldsoftwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
-	enigma2-plugin-extensions-cutlisteditor"
+	enigma2-plugin-extensions-cutlisteditor \
+	enigma2-plugin-systemplugins-configurationbackup"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
