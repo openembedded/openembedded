@@ -488,7 +488,7 @@ diff -Naur tuxtxt_org/configure.ac tuxtxt_32bpp/configure.ac
 diff -Naur tuxtxt_org/Makefile.am tuxtxt_32bpp/Makefile.am
 --- tuxtxt/Makefile.am	2006-03-10 22:13:21.000000000 +0100
 +++ tuxtxt/Makefile.am	2006-03-10 22:16:31.000000000 +0100
-@@ -1,37 +1,17 @@
+@@ -1,37 +1,18 @@
 -SUBDIRS = font 
 +installdir = $(CONFIGDIR)/tuxtxt
  
@@ -506,6 +506,7 @@ diff -Naur tuxtxt_org/Makefile.am tuxtxt_32bpp/Makefile.am
  AM_CPPFLAGS = \
 -	@TUXBOX_CFLAGS@ \
  	@FREETYPE_CFLAGS@ \
++	-funsigned-char \
  	-I$(top_srcdir)/include \
  	-I$(includedir)/tuxbox/tuxtxt 
  

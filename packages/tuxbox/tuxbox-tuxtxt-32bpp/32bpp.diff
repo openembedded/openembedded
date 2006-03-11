@@ -155,7 +155,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  #if !TUXTXT_CFG_STANDALONE
  	int initialized = tuxtxt_init();
  	if ( initialized )
-@@ -1487,30 +1499,69 @@
+@@ -1487,30 +1499,70 @@
  	/* show versioninfo */
  	sscanf(cvs_revision, "%*s %s", versioninfo);
  	printf("TuxTxt %s\n", versioninfo);
@@ -218,6 +218,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
 +			break;
 +		close(rc);
 +		rc=-1;
++		++cnt;
 +	}
 +	
 +	if (rc == -1)
@@ -708,7 +709,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		return;
  	}
  
-+	Char=Char & 0xFF;
++
  	if (!(glyph = FT_Get_Char_Index(face, Char)))
  	{
  #if TUXTXT_DEBUG

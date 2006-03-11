@@ -1,4 +1,4 @@
-DEPENDS = "curl libpng freetype dreambox-dvbincludes libtuxtxt"
+DEPENDS = "freetype dreambox-dvbincludes libtuxtxt"
 DESCRIPTION = "tuxbox tuxtxt for 32bit framebuffer"
 MAINTAINER = "Sven Karschewski <seddi@i-have-a-dreambox.com>"
 
@@ -12,7 +12,7 @@ FILES_${PN} = "/usr/bin /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensi
 
 CVSDATE = "20060112"
 PV = "0.0+cvs${CVSDATE}"
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/tuxtxt"
 
