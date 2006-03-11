@@ -1,0 +1,80 @@
+diff -Naur tuxtxt_32bpp/configure.ac tuxtxt/configure.ac
+--- tuxtxt/configure.ac	2006-03-10 22:16:38.000000000 +0100
++++ tuxtxt/configure.ac	2006-03-10 22:21:53.000000000 +0100
+@@ -14,3 +14,4 @@
+ 
+ AC_OUTPUT(Makefile)
+ AC_OUTPUT(font/Makefile)
++AC_OUTPUT(python/Makefile)
+diff -Naur tuxtxt_32bpp/Makefile.am tuxtxt/Makefile.am
+--- tuxtxt_32bpp/Makefile.am	2006-03-10 22:16:31.000000000 +0100
++++ tuxtxt/Makefile.am	2006-03-10 22:22:01.000000000 +0100
+@@ -1,6 +1,6 @@
+ installdir = $(CONFIGDIR)/tuxtxt
+ 
+-SUBDIRS = font
++SUBDIRS = font python
+ 
+ AM_CPPFLAGS = \
+ 	@FREETYPE_CFLAGS@ \
+diff -Naur tuxtxt_32bpp/python/Makefile.am tuxtxt/python/Makefile.am
+--- tuxtxt/python/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/python/Makefile.am	2006-03-10 21:43:45.000000000 +0100
+@@ -0,0 +1,5 @@
++installdir = $(LIBDIR)/enigma2/python/Plugins/Extensions/Tuxtxt
++
++install_DATA = \
++	plugin.py \
++	__init__.py
+diff -Naur tuxtxt_32bpp/python/plugin.py tuxtxt/python/plugin.py
+--- tuxtxt_32bpp/python/plugin.py	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/python/plugin.py	2006-03-10 21:43:45.000000000 +0100
+@@ -0,0 +1,48 @@
++from enigma import *
++from Screens.Screen import Screen
++from Plugins.Plugin import PluginDescriptor
++
++class ShellStarter(Screen):
++	skin = """
++		<screen position="1,1" size="1,1" title="TuxTXT" >
++                </screen>"""
++
++        def __init__(self, session, args = None):
++        	self.skin = ShellStarter.skin
++		Screen.__init__(self, session)
++		self.container=eConsoleAppContainer()
++		self.container.appClosed.get().append(self.finished)
++		self.runapp()
++		
++	def runapp(self):
++		service = self.session.nav.getCurrentService()
++		if service is not None:
++			self.info = service.info()
++		else:
++			self.info = None
++
++		eDBoxLCD.getInstance().lock()
++		eRCInput.getInstance().lock()
++		fbClass.getInstance().lock()
++		self.container.execute("/usr/bin/tuxtxt "+self.getValue(iServiceInformation.sTXTPID))
++
++	def finished(self,retval):
++		fbClass.getInstance().unlock()
++		eRCInput.getInstance().unlock()
++		eDBoxLCD.getInstance().unlock()
++		self.close()
++
++	def getValue(self, what):
++		if self.info is None:
++			return ""
++		
++		v = "%d" % (self.info.getInfo(what))
++
++		return v
++
++
++def main(session, **kwargs):
++	session.open(ShellStarter)
++
++def Plugins(**kwargs):
++	return PluginDescriptor(name="TuxTXT", description="Videotext", where = PluginDescriptor.WHERE_TELETEXT, fnc=main)
