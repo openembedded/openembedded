@@ -10,14 +10,17 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools modutils-initscripts samba"
 
-OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs e2fsprogs-e2fsck \
-	ppp	module-init-tools-depmod \
-	modutils-initscripts \
+OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
+	e2fsprogs-e2fsck ppp module-init-tools-depmod 	modutils-initscripts \
 	base-files-doc sambaserver"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "enigma2"
-OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade enigma2-plugin-systemplugins-softwareupdate"
+OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp"
+OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
+	enigma2-plugin-systemplugins-softwareupdate \
+	enigma2-plugin-systemplugins-oldsoftwareupdate \
+	enigma2-plugin-systemplugins-positionersetup \
+	enigma2-plugin-extensions-cutlisteditor"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
