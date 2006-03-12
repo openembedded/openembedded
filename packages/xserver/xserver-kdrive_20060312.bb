@@ -1,5 +1,6 @@
-PV = "0.0+cvs${SRCDATE}"
-DEFAULT_PREFERENCE = "-2"
+PV = "0.0+cvs${FIXEDSRCDATE}"
+FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
+DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
 DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto"
