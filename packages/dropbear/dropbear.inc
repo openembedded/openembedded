@@ -18,7 +18,7 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "dropbear"
 INITSCRIPT_PARAMS = "defaults 10"
 
-CFLAGS_prepend = "-D_GNU_SOURCE -I. "
+CFLAGS_prepend = " -I. "
 LD = "${CC}"
 
 SBINCOMMANDS = "dropbear dropbearkey dropbearconvert"
