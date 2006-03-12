@@ -1,1 +1,1 @@
-require dropbear.inc
+include dropbear.inc
