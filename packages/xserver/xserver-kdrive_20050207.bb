@@ -4,6 +4,11 @@ DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
 DEPENDS = "tslib xproto libxdmcp xextensions-1.0.1 xtrans libxau libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
+
+# Uncomment the following DEPENDS line and the commented line in SRC_URI
+# to make this snapshot build against X11R7.0 xlibs.
+#DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto"
+
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
 PACKAGES = "xserver-kdrive-mach64 xserver-kdrive-fbdev xserver-kdrive-vesa xserver-kdrive-mga xserver-kdrive-via xserver-kdrive-ati xserver-kdrive-fake xserver-kdrive-i810 xserver-kdrive-xephyr xserver-kdrive-epson ${PN}-doc ${PN}-dev ${PN}-locale"
@@ -34,6 +39,7 @@ FILES_xserver-kdrive-epson = "${bindir}/Xepson"
 FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xserver;module=xserver;date=${FIXEDSRCDATE} \
+#	file://build-20050207-against-X11R7.diff;patch=1 \
 	file://kmode.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1 "
