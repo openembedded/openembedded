@@ -8,7 +8,7 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 
 inherit pkgconfig gpe autotools
 
-SRC_URI="http://ftp.handhelds.org/pub/projects/gpe/source/${PN}-${PV}.tar.bz2"
+SRC_URI="${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 headers = "todo-db.h"
 
 do_stage () {
