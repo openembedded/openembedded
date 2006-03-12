@@ -7,17 +7,19 @@ HOMEPAGE = "http://apr.apache.org"
 
 PR = "r0"
 
-# apache mirrors?
-SRC_URI = "http://mirror.switch.ch/mirror/apache/dist/apr/${P}.tar.gz"
+SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
+           file://gen_uri_delims.patch;patch=1 \
+           file://uri_delims.h"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR} --with-dbm=gdbm --with-gdbm=${STAGING_DIR}/${HOST_SYS} --with-expat=${STAGING_DIR}/${HOST_SYS}"
 
 inherit autotools lib_package binconfig
 
 do_configure() {
+  cp ${S}/../uri_delims.h ${S}/uri/. 
   oe_runconf
 }
 
 do_stage() {
-  oe_libinstall -a -so -C .libs libaprutil-1 ${STAGING_LIBDIR}
+  oe_libinstall -a -so -C .libs libaprutil-0 ${STAGING_LIBDIR}
 }
