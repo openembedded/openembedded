@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r11"
+PR = "r12"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -27,17 +27,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/sharpsl_pm_move-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_gcc4_fix-r0.patch;patch=1 \
            ${RPSRC}/pcmcia_dev_ids-r3.patch;patch=1 \
-           ${RPSRC}/led_core-r12.patch;patch=1 \
-           ${RPSRC}/led_triggers-r10.patch;patch=1 \
-           ${RPSRC}/led_trig_timer-r5.patch;patch=1 \
-           ${RPSRC}/led_trig_sharpsl_pm-r4a.patch;patch=1 \
-           ${RPSRC}/led_zaurus-r9.patch;patch=1 \
-           ${RPSRC}/led_locomo-r6.patch;patch=1 \
-           ${RPSRC}/led_ixp4xx-r1.patch;patch=1 \
-           ${RPSRC}/led_tosa-r3.patch;patch=1 \	   
-           ${RPSRC}/led_ide-r3.patch;patch=1 \
-           ${RPSRC}/led_nand-r2.patch;patch=1 \
-           ${RPSRC}/ide_end_request-r0.patch;patch=1 \
+           ${RPSRC}/led_core-r14.patch;patch=1 \
+           ${RPSRC}/led_triggers-r11.patch;patch=1 \
+           ${RPSRC}/led_trig_timer-r6.patch;patch=1 \
+           ${RPSRC}/led_trig_sharpsl_pm-r5a.patch;patch=1 \
+           ${RPSRC}/led_zaurus-r10.patch;patch=1 \
+           ${RPSRC}/led_locomo-r7.patch;patch=1 \
+           ${RPSRC}/led_ixp4xx-r2.patch;patch=1 \
+           ${RPSRC}/led_tosa-r4.patch;patch=1 \	   
+           ${RPSRC}/led_ide-r4a.patch;patch=1 \
+           ${RPSRC}/led_nand-r3.patch;patch=1 \
+           ${RPSRC}/ide_end_request-r1.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/rtc_class-r0.patch;patch=1 \
            ${RPSRC}/rtc_class_pxa-r0.patch;patch=1 \
@@ -82,7 +82,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            ${RPSRC}/pxa-linking-bug.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
-           file://gcc4-ledclass-static-order-hack.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
@@ -90,8 +89,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
            file://defconfig-cxx00 \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
-
-#           ${RPSRC}/mmc_timeout-r0.patch;patch=1 \	   
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
