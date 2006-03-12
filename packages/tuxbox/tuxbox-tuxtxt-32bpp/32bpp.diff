@@ -597,7 +597,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	if (l > 0)
 -		memset(lfb + x + y * var_screeninfo.xres, color, l);
 +	{
-+		for (ltmp=0; ltmp <= l; l++) 
++		for (ltmp=0; ltmp <= l; ltmp++)
 +		{
 +			memcpy(lfb + x*4 + ltmp*4 + y * fix_screeninfo.line_length, bgra[color], 4);
 +		}
