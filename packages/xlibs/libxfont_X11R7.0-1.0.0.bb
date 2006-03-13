@@ -4,7 +4,7 @@ PRIORITY = "optional"
 #MAINTAINER = ""
 LICENSE = "BSD-X"
 
-DEPENDS = "xproto xtrans zlib fontcacheproto fontsproto libfontenc"
+DEPENDS = "xproto xtrans zlib fontcacheproto fontsproto libfontenc freetype"
 PROVIDES = "xfont"
 
 SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXfont-${PV}.tar.bz2"
