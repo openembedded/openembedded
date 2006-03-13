@@ -78,6 +78,16 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # Stay away from unversioned distros unless you really know what you are doing
 # DISTRO = "familiar-unstable"
 
+# So far, angstrom.conf and familiar.conf set ENABLE_BINARY_LOCALE_GENERATION
+# to generate binary locale packages at build time using qemu-native and
+# thereby guarantee i18n support on all devices. If your build breaks on 
+# qemu-native consider disabling ENABLE_BINARY_LOCALE_GENERATION (note that
+# this breaks i18n on devices with less than 128MB RAM) or installing
+# a working third-party qemu (e.g. provided by your distribution) and
+# adding qemu-native to ASSUME_PROVIDED
+# ENABLE_BINARY_LOCALE_GENERATION = "0"
+# ASSUME_PROVIDED += "qemu-native"
+
 # Uncomment this to select a particular kernel version if supported by 
 # your MACHINE setting. Currently only supported on Zaurus Clamshells.
 # KERNEL_VERSION = "2.6"
