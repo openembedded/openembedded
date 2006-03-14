@@ -5,7 +5,7 @@ DEPENDS = "zlib libxml2 expat time gnutls"
 
 PR = "r0"
 
-DEFAULT_PREFERENCES = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz"
 
