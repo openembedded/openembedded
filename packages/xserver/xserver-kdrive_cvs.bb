@@ -2,7 +2,7 @@ PV = "0.0+cvs${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
 LICENSE = "MIT"
-DEPENDS = "tslib xproto xdmcp xextensions xtrans libxau libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
+DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
 PACKAGES = "xserver-kdrive-mach64 xserver-kdrive-fbdev xserver-kdrive-vesa xserver-kdrive-mga xserver-kdrive-via xserver-kdrive-ati xserver-kdrive-fake xserver-kdrive-i810 xserver-kdrive-xephyr xserver-kdrive-epson ${PN}-doc ${PN}-dev ${PN}-locale"
@@ -34,6 +34,7 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xserver;module=xserver \
 	file://kmode.patch;patch=1 \
+	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \
 	file://kdrive-evdev.patch;patch=1  \
 	file://kdrive-use-evdev.patch;patch=1  \

@@ -1,0 +1,7 @@
+--- apr-util-0.9.7/uri/Makefile.in.old	2006-03-11 23:01:09.000000000 +0100
++++ apr-util-0.9.7/uri/Makefile.in	2006-03-11 23:01:28.000000000 +0100
+@@ -15,4 +15,3 @@
+ apr_uri.lo: uri_delims.h apr_uri.c
+ 
+ uri_delims.h: gen_uri_delims
+-	./gen_uri_delims > uri_delims.h

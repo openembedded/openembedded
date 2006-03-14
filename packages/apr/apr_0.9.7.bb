@@ -6,8 +6,7 @@ HOMEPAGE = "http://apr.apache.org"
 
 PR = "r0"
 
-# apache mirrors?
-SRC_URI = "http://mirror.switch.ch/mirror/apache/dist/apr/${P}.tar.bz2"
+SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2"
 
 inherit autotools lib_package binconfig
 
@@ -16,5 +15,5 @@ do_configure() {
 }
 
 do_stage() {
-  oe_libinstall -a -so -C .libs libapr-1 ${STAGING_LIBDIR}
+  oe_libinstall -a -so -C .libs libapr-0 ${STAGING_LIBDIR}
 }

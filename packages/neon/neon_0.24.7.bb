@@ -5,12 +5,12 @@ DEPENDS = "zlib libxml2 expat time"
 
 PR = "r2"
 
-SRC_URI = "http://www.webdav.org/neon/neon-0.24.7.tar.gz \
+SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz \
 	   file://no-func-checks.patch;patch=1"
 
 inherit autotools binconfig lib_package
 
-EXTRA_OECONF = " --without-ssl --with-libxml2 --with-expat --enable-shared"
+EXTRA_OECONF = "--without-ssl --with-libxml2 --with-expat --enable-shared"
 
 do_stage () {
 	autotools_stage_includes

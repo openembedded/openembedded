@@ -2,15 +2,17 @@ DESCRIPTION = "A Client for Wi-Fi Protected Access (WPA)."
 SECTION = "network"
 LICENSE = "GPL"
 MAINTAINER = "Holger Schurig"
+MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "gnutls"
 PR = "r1"
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
 	file://init.sh \
-	file://defaults-gnutls \
-	file://wpa_supplicant.conf-gnutls"
+	file://defaults-sane \
+	file://wpa_supplicant.conf-sane"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
@@ -47,6 +49,6 @@ do_install () {
 	install -m700 ${WORKDIR}/init.sh ${D}${sysconfdir}/init.d/wpa
 
 	install -d ${D}${sysconfdir}/default
-	install -m600 ${WORKDIR}/defaults-gnutls ${D}${sysconfdir}/default/wpa
-	install -m600 ${WORKDIR}/wpa_supplicant.conf-gnutls ${D}${sysconfdir}/wpa_supplicant.conf
+	install -m600 ${WORKDIR}/defaults-sane ${D}${sysconfdir}/default/wpa
+	install -m600 ${WORKDIR}/wpa_supplicant.conf-sane ${D}${sysconfdir}/wpa_supplicant.conf
 }
