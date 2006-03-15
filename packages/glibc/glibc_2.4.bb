@@ -111,7 +111,7 @@ do_munge() {
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/utmp.h
 
 	# Create kernel headers symlink
-	ln -s asm-${TARGET_ARCH} ${WORKDIR}/linux-libc-headers-2.6.12.0/include/asm
+	ln -s asm-${TARGET_ARCH} ${WORKDIR}/linux-libc-headers-2.6.15.99/include/asm
 
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on
