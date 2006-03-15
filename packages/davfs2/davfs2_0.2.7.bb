@@ -3,8 +3,8 @@ SECTION = "network"
 PRIORITY = "optional"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 HOMEPAGE = "http://dav.sourceforge.net"
-DEPENDS = "neon (0.24.7)"
-RDEPENDS_${PN} = "libneon (0.24.7) kernel-module-coda"
+DEPENDS = "neon-0.24.7"
+RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
 
 PR = "r0"
@@ -22,7 +22,7 @@ ALTERNATIVE_PATH = "${sbindir}/${ALTERNATIVE_NAME}"
 ALTERNATIVE_PRIORITY = "90"
 ALTERNATIVE_LINK = "${base_sbindir}/${ALTERNATIVE_NAME}" 
 
-EXTRA_OECONF = "--with-ssl --with-neon"
+EXTRA_OECONF = "--with-neon"
 
 CONFFILES_${PN} = "${sysconfdir}/davfs2/davfs2.conf ${sysconfdir}/davfs2/secrets"
 
