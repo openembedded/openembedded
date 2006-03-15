@@ -6,9 +6,9 @@ LICENSE = "GPL"
 AUTHOR = "The Vexed Development Team"
 HOMEPAGE = "http://vexed.sourceforge.net/"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/vexed/;module=vexed/levelpacks"
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/vexed-levelpacks-20060109.tar.gz"
 
 S = "${WORKDIR}"
 
