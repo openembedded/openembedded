@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
@@ -45,7 +45,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.4.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.4.tar.bz2 \
-	   http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-2.6.12.0.tar.bz2 \
+       http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-2.6.15.99.tar.bz2 \		
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -69,7 +69,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} \
-		--with-headers=${WORKDIR}/linux-libc-headers-2.6.12.0/include \
+		--with-headers=${WORKDIR}/linux-libc-headers-2.6.15.99/include \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
