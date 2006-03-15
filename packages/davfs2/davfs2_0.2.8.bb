@@ -7,8 +7,6 @@ DEPENDS = "neon-0.25.5"
 RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
 
-DEFAULT_PREFERENCE = "-1"
-
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
