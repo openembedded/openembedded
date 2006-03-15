@@ -1,0 +1,23 @@
+--- davfs2-0.2.8/Makefile.in.old	2006-03-15 23:30:50.000000000 +0100
++++ davfs2-0.2.8/Makefile.in	2006-03-15 23:39:08.000000000 +0100
+@@ -50,7 +50,7 @@
+ 
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 4755
+ INSTALL_DATA = @INSTALL_DATA@
+-INSTALL_SECRETS = @INSTALL_DATA@ -b -m 600
++INSTALL_SECRETS = @INSTALL_DATA@ -m 600
+ INSTALL_DIR = @INSTALL@ -d -m 755
+ INSTALL = @INSTALL@
+ 
+@@ -80,11 +80,6 @@
+ 	$(INSTALL_DIR) $(DESTDIR)$(mandir)
+ 	for t in $(MANS); do \
+           $(INSTALL_DATA) $(top_builddir)/$$t $(DESTDIR)$(mandir)/$$t;done
+-	if [ -n "$(DESTDIR)" -a "$(DESTDIR)" != "/" ]; then \
+-	        $(INSTALL_DIR) $(DESTDIR)/sbin; \
+-	        ln -sf ..$(sbindir)/$(PROGRAM_NAME) \
+-	               $(DESTDIR)/sbin/$(PROGRAM_NAME) 2> /dev/null; \
+-	else ln -sf $(sbindir)/$(PROGRAM_NAME) /sbin/$(PROGRAM_NAME) 2> /dev/null;	fi
+ 
+ 	@echo ""
+ 	@echo "----------------------------------------------------"

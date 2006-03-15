@@ -3,14 +3,15 @@ SECTION = "network"
 PRIORITY = "optional"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 HOMEPAGE = "http://dav.sourceforge.net"
-DEPENDS = "neon-0.24.7"
+DEPENDS = "neon-0.25.5"
 RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
+
+DEFAULT_PREFERENCE = "-1"
 
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
-           file://no-func-checks.patch;patch=1 \
            file://Makefile.in.patch;patch=1 \
            file://volatiles"
 
