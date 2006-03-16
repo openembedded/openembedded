@@ -14,3 +14,5 @@ PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 include gcc3-build-cross.inc
 # cross packaging
 include gcc-package-cross.inc
+
+EXTRA_OECONF += "--with-mpfr=${STAGING_DIR}/${BUILD_SYS}"
