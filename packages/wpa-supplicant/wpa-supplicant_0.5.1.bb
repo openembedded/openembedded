@@ -12,6 +12,7 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
 	file://init.sh \
 	file://defaults-sane \
+	file://wpa_supplicant.conf \
 	file://wpa_supplicant.conf-sane"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"
