@@ -11,6 +11,7 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
            file://no-func-checks.patch;patch=1 \
+           file://no-neon-version-test.patch;patch=1 \
            file://Makefile.in.patch;patch=1 \
            file://volatiles"
 
