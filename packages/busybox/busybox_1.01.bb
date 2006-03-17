@@ -29,6 +29,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcpscript.patch;patch=1 \
 	   file://thumb-bsdlabel.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
+           file://glibc2.4-icmp6.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \

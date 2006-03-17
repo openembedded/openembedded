@@ -13,6 +13,7 @@ DEPENDS = "glib-2.0 gtk+ pango osb-jscore"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCore;date=${FIXEDSRCDATE} \
            file://KWIQ-mimetype-segfault.patch;patch=1 \
+	   file://KWQKURL-urlcmp.patch;patch=1 \
            file://gcc4-fno-threadsafe-statics-NRCore.patch;patch=1"
 S = "${WORKDIR}/NRCore"
 

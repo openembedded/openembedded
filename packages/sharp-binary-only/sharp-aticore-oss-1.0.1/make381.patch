@@ -1,0 +1,27 @@
+Index: AtiCore-1.0.1/Makefile
+===================================================================
+--- AtiCore-1.0.1.orig/Makefile	2006-03-16 12:58:58.000000000 +0100
++++ AtiCore-1.0.1/Makefile	2006-03-16 13:06:00.000000000 +0100
+@@ -9,22 +9,6 @@
+ 
+ all:	$(TARGETSHAREDLIB) testcore atitest
+ 
+-ifndef $(CC)
+-CC = armv5tel-linux-gcc
+-endif
+-ifndef $(AS)
+-AS = armv5tel-linux-as
+-endif
+-ifndef $(AR)
+-AR = armv5tel-linux-ar
+-endif
+-ifndef $(RANLIB)
+-RANLIB = armv5tel-linux-ranlib
+-endif
+-ifndef $(LD)
+-LD = armv5tel-linux-ld
+-endif
+-
+ ifeq "$(FPU)" "soft"
+ ASFLAGS=-mfpu=softfpa -mcpu=xscale
+ else

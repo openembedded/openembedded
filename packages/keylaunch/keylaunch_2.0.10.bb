@@ -1,6 +1,6 @@
 inherit gpe
 
-DEPENDS = "virtual/xserver libxtst libxau libxpm"
+DEPENDS = "virtual/xserver libxtst libxau libxpm libgpelaunch"
 SECTION = "gpe"
 LICENSE = "GPL"
 DESCRIPTION = "A small utility for binding commands to a hot key.\
@@ -9,10 +9,10 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  computers. You can connect each key to a program of your choice; if the\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
-PR = "r1"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+PR = "r0"
 
-SRC_URI += " file://keylaunchrc \
-	     file://makefile-fix.patch;patch=1"
+SRC_URI += " file://keylaunchrc"
 
 do_install_prepend () {
 	install ${WORKDIR}/keylaunchrc ${S}/keylaunchrc

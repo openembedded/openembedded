@@ -1,0 +1,9 @@
+--- NRCore/kwiq/KWQKURL.h.orig	2006-03-16 22:48:18.000000000 +0100
++++ NRCore/kwiq/KWQKURL.h	2006-03-16 22:48:20.000000000 +0100
+@@ -130,4 +130,6 @@
+     friend bool urlcmp(const QString &URLA, const QString &URLB, bool ignoreTrailingSlash, bool ignoreRef);
+ };
+ 
++bool urlcmp(const QString &URLA, const QString &URLB, bool ignoreTrailingSlash, bool ignoreRef);
++
+ #endif
