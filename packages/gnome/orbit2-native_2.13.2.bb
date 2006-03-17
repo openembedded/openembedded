@@ -10,6 +10,7 @@ DEPENDS = "libidl-native popt-native gtk-doc"
 S = "${WORKDIR}/ORBit2-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/orbit2-${PV}"
 
+PARALLEL_MAKE = ""
 inherit autotools native pkgconfig
 
 EXTRA_OECONF = "--disable-gtk-doc"
