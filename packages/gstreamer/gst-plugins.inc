@@ -1,11 +1,8 @@
-LICENSE = "GPL"
 DESCRIPTION = "Plugins for GStreamer"
-SECTION = "x11/libs"
+SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 PR = "r0"
-
-DEFAULT_PREFERENCE = "-1"
 
 DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag"
 
@@ -13,11 +10,6 @@ SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--disable-x --disable-aalib --disable-esd --disable-shout2 \
 		--disable-sdl"
-
-# "--disable-docs-build --disable-dependency-tracking --disable-aalib --disable-arts \
-#                --disable-artsc --disable-jack  --disable-libfame --disable-sdl --disable-shout2 \
-#		--disable-gnome_vfs --disable-gconf --disable-libcaca  --disable-directfb \
-#		--disable-cairo"
 
 inherit autotools pkgconfig gconf
 
