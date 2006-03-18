@@ -295,11 +295,11 @@ def tinder_do_tinder_report(event):
         log += "Build Completed\n"
         status = 100
     elif name == "MultipleProviders":
-        log += "<--- TINDERBOX Multiple Providers\n"
+        log += "---> TINDERBOX Multiple Providers\n"
         log += "multiple providers are available (%s);\n" % ", ".join(event.getCandidates())
         log += "consider defining PREFERRED_PROVIDER_%s\n" % event.getItem()
-        log += "is runtime: %d" % event.isRuntime()
-        log += "---> TINDERBOX Multiple Providers\n"
+        log += "is runtime: %d\n" % event.isRuntime()
+        log += "<--- TINDERBOX Multiple Providers\n"
     elif name == "NoProvider":
         log += "Error: No Provider for: %s\n" % event.getItem()
         log += "Error:Was Runtime: %d\n" % event.isRuntime()
