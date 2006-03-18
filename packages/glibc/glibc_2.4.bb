@@ -4,12 +4,13 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 DEFAULT_PREFERENCE = "-1"
-PR = "r1"
+PR = "r2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 GLIBC_EXTRA_OECONF ?= ""
+LIBC_HEADER_VERSION = "2.6.15.99"
 
 GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
 
@@ -32,7 +33,7 @@ python __anonymous () {
 # nptl needs unwind support in gcc, which can't be built without glibc.
 PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
 PROVIDES += "virtual/libintl virtual/libiconv"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
+DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']}"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -45,7 +46,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.4.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.4.tar.bz2 \
-       http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-2.6.15.99.tar.bz2 \		
+       http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${LIBC_HEADER_VERSION}.tar.bz2 \		
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -69,7 +70,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} \
-		--with-headers=${WORKDIR}/linux-libc-headers-2.6.15.99/include \
+		--with-headers=${WORKDIR}/linux-libc-headers-${LIBC_HEADER_VERSION}/include \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
@@ -111,7 +112,7 @@ do_munge() {
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/utmp.h
 
 	# Create kernel headers symlink
-	ln -s asm-${TARGET_ARCH} ${WORKDIR}/linux-libc-headers-2.6.15.99/include/asm
+	ln -s asm-${TARGET_ARCH} ${WORKDIR}/linux-libc-headers-${LIBC_HEADER_VERSION}/include/asm
 
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on
