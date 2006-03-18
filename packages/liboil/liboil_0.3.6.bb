@@ -5,10 +5,8 @@ MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 
 SRC_URI = "http://liboil.freedesktop.org/download/${P}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
 do_stage() {
-autotools_stage_all
+	autotools_stage_all
 }
-
-
