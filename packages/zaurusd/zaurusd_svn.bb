@@ -4,6 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 DESCRIPTION = "Daemon to handle device specifc features."
 PV = "0.0+svn${SRCDATE}"
 PR = "r0"
+DEPENDS = "tslib"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http"
 S = "${WORKDIR}/${PN}"
