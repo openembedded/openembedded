@@ -1,0 +1,29 @@
+diff -bur linux-2.6.15~orig/drivers/ide/ide-disk.c linux-2.6.15/drivers/ide/ide-disk.c
+--- linux-2.6.15~orig/drivers/ide/ide-disk.c	2006-02-11 00:02:50.000000000 -0600
++++ linux-2.6.15/drivers/ide/ide-disk.c	2006-02-11 00:11:20.000000000 -0600
+@@ -158,6 +158,12 @@
+ 	return 0;	/* lba_capacity value may be bad */
+ }
+ 
++static int ide_end_rw_disk(ide_drive_t *drive, int uptodate, int nr_sectors)
++{
++	led_trigger_event(ide_led_trigger, LED_OFF);
++	ide_end_request(drive, uptodate, nr_sectors);
++}
++
+ /*
+  * __ide_do_rw_disk() issues READ and WRITE commands to a disk,
+  * using LBA if supported, or CHS otherwise, to address sectors.
+@@ -330,12 +336,6 @@
+ 	return __ide_do_rw_disk(drive, rq, block);
+ }
+ 
+-static int ide_end_rw_disk(ide_drive_t *drive, int uptodate, int nr_sectors)
+-{
+-	led_trigger_event(ide_led_trigger, LED_OFF);
+-	ide_end_request(drive, uptodate, nr_sectors);
+-}
+-
+ /*
+  * Queries for true maximum capacity of the drive.
+  * Returns maximum LBA address (> 0) of the drive, 0 if failed.
