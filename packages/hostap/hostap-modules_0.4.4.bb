@@ -3,7 +3,9 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
+PROVIDES = "hostap-conf"
+PROVIDES = "virtual/kernel-hostap"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
            file://kernel_updates.patch;patch=1 \

@@ -3,7 +3,9 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
+PROVIDES = "hostap-conf"
+RPROVIDES = "virtual/kernel-hostap"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz \
            file://hostap_cs.conf \
