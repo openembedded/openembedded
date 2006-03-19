@@ -1,0 +1,10 @@
+# German keymapping
+charset "iso-8859-1"
+altgr keycode 24 = +odiaeresis
+altgr keycode 30 = +adiaeresis
+altgr keycode 22 = +udiaeresis
+shift altgr keycode 24 = +Odiaeresis
+shift altgr keycode 30 = +Adiaeresis
+altgr shift keycode 22 = +Udiaeresis
+altgr keycode 31 = ssharp
+
