@@ -5,13 +5,14 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ libsigc++-2.0"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/glibmm/2.8/glibmm-${PV}.tar.bz2"
 
 inherit autotools pkgconfig flow-lossage
 
 FILES_${PN} = "${libdir}/lib*.so.*"
+FILE_${PN}-dev += "${libdir}/glibmm-2.4/include/"
 
 LIBV = "2.4.0"
 
