@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r32"
+PR = "r33"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -19,7 +19,7 @@ S = "${WORKDIR}/tslib"
 LICENSE = "LGPL"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
-inherit autotools
+inherit autotools pkgconfig
 
 PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
 EXTRA_OECONF        = "--enable-shared"
