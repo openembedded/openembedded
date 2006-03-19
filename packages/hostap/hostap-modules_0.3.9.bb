@@ -1,6 +1,5 @@
 include hostap-modules.inc
-PROVIDES = "virtual/kernel-hostap hostap-conf"
-PR = "r8"
+PR = "r9"
 
 SRC_URI += "file://Makefile.patch;patch=1 \
 	    file://add_event.patch;patch=1 \

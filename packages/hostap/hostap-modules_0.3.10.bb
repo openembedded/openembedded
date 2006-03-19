@@ -1,6 +1,5 @@
 include hostap-modules.inc
-LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://Makefile.patch;patch=1 \
 	    file://add_event.patch;patch=1 \
