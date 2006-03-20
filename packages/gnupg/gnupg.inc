@@ -2,7 +2,6 @@ SECTION = "console/utils"
 DESCRIPTION = "gnupg - GNU privacy guard"
 HOMEPAGE = "http://www.gnupg.org/"
 LICENSE = "GPLv2"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "zlib bzip2"
 
 inherit autotools gettext
