@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- konqueror-embedded-snapshot-20030705/konq-embed/src/bookmarks.h~gcc4	2002-12-05 16:39:43.000000000 +0100
++++ konqueror-embedded-snapshot-20030705/konq-embed/src/bookmarks.h	2006-03-20 18:58:49.000000000 +0100
+@@ -16,6 +16,7 @@
+ class XMLElement;
+ class ActionMenu;
+ class KAction;
++class BookmarkFolder;
+ 
+ class BookmarkAction: public QAction
+ {

@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libqpe-opie openssl pcre"
 LICENSE = "LGPL/GPL"
-PR = "r3"
+PR = "r4"
 
 # Note if this .bb files fails with the error:
 # "No rule to make target `-lpcre', needed by `konqueror'.  Stop."
@@ -13,13 +13,14 @@ PR = "r3"
 SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedded-snapshot-${PV}.tar.gz \
            file://opie1.patch;patch=1 \
            file://packing.patch;patch=1 \
-	   file://include_qconfig.patch;patch=1 \
-	   file://useragent.patch;patch=1 \
-	   file://kcookiejar-merge.patch;patch=1 \
-	   file://malformed.patch;patch=1 \
-	   file://cachepath.patch;patch=1 \
-	   file://konq-embedrc \
-	   file://vit.patch;patch=1"
+           file://include_qconfig.patch;patch=1 \
+           file://useragent.patch;patch=1 \
+           file://kcookiejar-merge.patch;patch=1 \
+           file://malformed.patch;patch=1 \
+           file://cachepath.patch;patch=1 \
+           file://vit.patch;patch=1 \
+           file://gcc4.patch;patch=1 \
+           file://konq-embedrc"
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
 inherit autotools
