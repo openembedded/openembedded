@@ -14,7 +14,7 @@
  	  NAS 100d device. For more information on this platform,
 --- linux-nslu2.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-06 20:37:01.000000000 +0100
 +++ linux-nslu2/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-06 22:35:26.000000000 +0100
-@@ -15,11 +15,14 @@
+@@ -15,12 +15,15 @@
  #include <linux/kernel.h>
  #include <linux/serial.h>
  #include <linux/serial_8250.h>
@@ -23,6 +23,7 @@
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
+ #include <asm/setup.h>
  
 +#include <net/maclist.h>
 +

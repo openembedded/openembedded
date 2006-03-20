@@ -9,6 +9,7 @@ executables) independent of the endianness of the processor (ARM
 processors can be switched to either endianness at run-time).
 
 Signed-off-by: Rod Whitby <rod@whitby.id.au>
+Signed-off-by: Alessandro Zummo <a.zummo@towertech.it>
 
  fs/Kconfig          |   25 +++++++++++++++++++++++++
  fs/jffs2/nodelist.h |    8 +++-----
