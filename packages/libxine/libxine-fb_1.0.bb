@@ -5,11 +5,11 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "zlib libogg tremor libmad libmodplug"
 PROVIDES = "virtual/libxine"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig gettext
 
-SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-${PV}.tar.gz \
 	file://cpu-${PV}.patch;patch=1 \
 	file://configure-${PV}.patch;patch=1 \
 	file://demuxogg.patch;patch=1 \
@@ -20,7 +20,8 @@ SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.
 	file://libxine-tremor-autoconf.patch;patch=1 \
 	file://mpegvideo-static-inlinine.patch;patch=1 \
 	file://libxine-arm-configure.patch;patch=1 \
-	file://no-caca.patch;patch=1 "
+	file://no-caca.patch;patch=1 \
+    file://libxine-gcc4.patch;patch=1"
 S = "${WORKDIR}/xine-lib-${PV}"
 
 SOV = "1.0.7"

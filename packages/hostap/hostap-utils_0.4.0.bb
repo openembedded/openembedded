@@ -4,7 +4,6 @@ SECTION = "kernel/userland"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel-hostap"
 RRECOMMENDS = "virtual/kernel-hostap"
 PR = "r3"
 

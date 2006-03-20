@@ -7,6 +7,11 @@ DEPENDS = "openssl pcre"
 LICENSE = "LGPL/GPL"
 PR = "r3"
 
+# Note if this .bb files fails with the error:
+# "No rule to make target `-lpcre', needed by `konqueror'.  Stop."
+# a workaround is to install the libpcre3-dev package onto your build
+# machine (Ubuntu/Debain) or your distro's equivalent (FC = pcre-devel).
+
 SRC_URI = "http://www.cirulla.net/kdenox-snapshots/snapshots/konqueror3-embedded-0.2-${PV}.tar.bz2 \
            file://qt-embedded.patch;patch=1"
 S = "${WORKDIR}/konqueror3-embedded-0.2-${PV}"

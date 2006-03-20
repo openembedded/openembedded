@@ -5,6 +5,11 @@ DEPENDS = "libqpe-opie openssl pcre"
 LICENSE = "LGPL/GPL"
 PR = "r3"
 
+# Note if this .bb files fails with the error:
+# "No rule to make target `-lpcre', needed by `konqueror'.  Stop."
+# a workaround is to install the libpcre3-dev package onto your build 
+# machine (Ubuntu/Debain) or your distro's equivalent (FC = pcre-devel).
+
 SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedded-snapshot-${PV}.tar.gz \
            file://opie1.patch;patch=1 \
            file://packing.patch;patch=1 \
