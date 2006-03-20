@@ -1,12 +1,12 @@
 DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-0.tgz \
 file://qtopia17.patch;patch=1;pnum=0 \

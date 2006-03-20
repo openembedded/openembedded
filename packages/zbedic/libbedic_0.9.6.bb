@@ -1,11 +1,11 @@
 DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
 S = "${WORKDIR}"
