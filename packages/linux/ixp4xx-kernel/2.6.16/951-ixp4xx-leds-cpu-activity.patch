@@ -21,9 +21,9 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  #include <linux/init.h>
  #include <linux/cpu.h>
 +#include <linux/leds.h>
+ #include <linux/elfcore.h>
  
  #include <asm/leds.h>
- #include <asm/processor.h>
 @@ -80,6 +81,12 @@ void (*pm_power_off)(void);
  EXPORT_SYMBOL(pm_power_off);
  
@@ -580,7 +580,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +MODULE_LICENSE("MIT");
 --- linux-ixp4xx.orig/include/linux/leds.h	2006-02-21 00:54:33.000000000 +0100
 +++ linux-ixp4xx/include/linux/leds.h	2006-02-21 01:03:33.000000000 +0100
-@@ -95,3 +95,12 @@ void led_trigger_event(struct led_trigge
+@@ -102,4 +102,13 @@ void led_trigger_event(struct led_trigge
  #define led_trigger_event(x, y) do {} while(0)
  
  #endif
@@ -593,3 +593,4 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 + * the arch core to be able to use LEDS_TRIGGER_CPU_ACTIVITY
 + */
 +extern void (*leds_idle)(int is_idle);
+ #endif		/* __LINUX_LEDS_H_INCLUDED */

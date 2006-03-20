@@ -1,35 +1,63 @@
-Add the foundations of a new LEDs subsystem. This patch adds a class
-which presents LED devices within sysfs and allows their brightness to
-be controlled.
+
+From: Richard Purdie <rpurdie@rpsys.net>
+
+Add the foundations of a new LEDs subsystem.  This patch adds a class which
+presents LED devices within sysfs and allows their brightness to be
+controlled.
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Greg KH <greg@kroah.com>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
 ---
+
  arch/arm/Kconfig                |    2 
- arch/arm/mach-pxa/corgi.c       |   10 +
- arch/arm/mach-pxa/spitz.c       |   10 +
+ arch/arm/mach-pxa/corgi.c       |    9 +
+ arch/arm/mach-pxa/spitz.c       |    9 +
  arch/arm/mach-pxa/tosa.c        |    9 +
  drivers/Kconfig                 |    2 
  drivers/Makefile                |    1 
- drivers/ide/ide-disk.c          |   17 ++
+ drivers/ide/ide-disk.c          |   22 +++
  drivers/leds/Kconfig            |   70 +++++++++++
  drivers/leds/Makefile           |   15 ++
- drivers/leds/led-class.c        |  164 +++++++++++++++++++++++++++
- drivers/leds/led-core.c         |   24 ++++
- drivers/leds/led-triggers.c     |  236 ++++++++++++++++++++++++++++++++++++++++
+ drivers/leds/led-class.c        |  174 +++++++++++++++++++++++++++++
+ drivers/leds/led-core.c         |   25 ++++
+ drivers/leds/led-triggers.c     |  239 ++++++++++++++++++++++++++++++++++++++++
  drivers/leds/leds-corgi.c       |  121 ++++++++++++++++++++
- drivers/leds/leds-ixp4xx-gpio.c |  209 +++++++++++++++++++++++++++++++++++
- drivers/leds/leds-locomo.c      |   91 +++++++++++++++
- drivers/leds/leds-spitz.c       |  125 +++++++++++++++++++++
- drivers/leds/leds-tosa.c        |  123 ++++++++++++++++++++
- drivers/leds/leds.h             |   36 ++++++
- drivers/leds/ledtrig-timer.c    |  205 ++++++++++++++++++++++++++++++++++
+ drivers/leds/leds-ixp4xx-gpio.c |  215 +++++++++++++++++++++++++++++++++++
+ drivers/leds/leds-locomo.c      |   95 +++++++++++++++
+ drivers/leds/leds-spitz.c       |  125 ++++++++++++++++++++
+ drivers/leds/leds-tosa.c        |  131 +++++++++++++++++++++
+ drivers/leds/leds.h             |   45 +++++++
+ drivers/leds/ledtrig-timer.c    |  174 +++++++++++++++++++++++++++++
  drivers/mtd/nand/nand_base.c    |   26 ++++
- include/linux/leds.h            |   97 ++++++++++++++++
- 21 files changed, 1590 insertions(+), 3 deletions(-)
+ include/linux/leds.h            |  105 +++++++++++++++++
+ 21 files changed, 1610 insertions(+), 4 deletions(-)
 
+--- linux-ixp4xx.orig/arch/arm/Kconfig	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/arch/arm/Kconfig	2006-03-07 22:59:04.000000000 +0100
+@@ -807,6 +807,8 @@ source "drivers/misc/Kconfig"
+ 
+ source "drivers/mfd/Kconfig"
+ 
++source "drivers/leds/Kconfig"
++
+ source "drivers/media/Kconfig"
+ 
+ source "drivers/video/Kconfig"
+--- linux-ixp4xx.orig/drivers/Kconfig	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/drivers/Kconfig	2006-03-07 22:59:04.000000000 +0100
+@@ -64,6 +64,8 @@ source "drivers/usb/Kconfig"
+ 
+ source "drivers/mmc/Kconfig"
+ 
++source "drivers/leds/Kconfig"
++
+ source "drivers/infiniband/Kconfig"
+ 
+ source "drivers/sn/Kconfig"
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/Kconfig	2006-02-23 18:17:40.000000000 +0100
++++ linux-ixp4xx/drivers/leds/Kconfig	2006-03-07 22:59:04.000000000 +0100
 @@ -0,0 +1,70 @@
 +
 +menu "LED devices"
@@ -102,197 +130,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +endmenu
 +
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/Makefile	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,15 @@
-+
-+# LED Core
-+obj-$(CONFIG_NEW_LEDS)			+= led-core.o
-+obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
-+obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
-+
-+# LED Platform Drivers
-+obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
-+obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
-+obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
-+obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
-+obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
-+
-+# LED Triggers
-+obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/include/linux/leds.h	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,97 @@
-+/*
-+ * Driver model for leds and led triggers
-+ *
-+ * Copyright (C) 2005 John Lenz <lenz@cs.wisc.edu>
-+ * Copyright (C) 2005 Richard Purdie <rpurdie@openedhand.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+struct device;
-+struct class_device;
-+/*
-+ * LED Core
-+ */
-+
-+enum led_brightness {
-+	LED_OFF = 0,
-+	LED_HALF = 127,
-+	LED_FULL = 255,
-+};
-+
-+struct led_classdev {
-+	const char *name;
-+	int brightness;
-+	int flags;
-+#define LED_SUSPENDED       (1 << 0)
-+
-+	/* A function to set the brightness of the led */
-+	void (*brightness_set)(struct led_classdev *led_cdev, enum led_brightness brightness);
-+
-+	struct class_device *class_dev;
-+	/* LED Device linked list */
-+	struct list_head node;
-+
-+	/* Trigger data */
-+	char *default_trigger;
-+#ifdef CONFIG_LEDS_TRIGGERS
-+	struct led_trigger *trigger;
-+	struct list_head trig_list;
-+	void *trigger_data;
-+#endif
-+
-+	/* This protects the data in this structure */
-+	rwlock_t lock;
-+};
-+
-+extern int led_classdev_register(struct device *parent, struct led_classdev *led_cdev);
-+extern void led_classdev_unregister(struct led_classdev *led_cdev);
-+extern void led_classdev_suspend(struct led_classdev *led_cdev);
-+extern void led_classdev_resume(struct led_classdev *led_cdev);
-+
-+
-+/*
-+ * LED Triggers
-+ */
-+#ifdef CONFIG_LEDS_TRIGGERS
-+
-+#define TRIG_NAME_MAX 50
-+
-+struct led_trigger {
-+	/* Trigger Properties */
-+	const char *name;
-+	void (*activate)(struct led_classdev *led_cdev);
-+	void (*deactivate)(struct led_classdev *led_cdev);
-+
-+	/* LEDs under control by this trigger (for simple triggers) */
-+	rwlock_t leddev_list_lock;
-+	struct list_head led_cdevs;
-+
-+	/* Link to next registered trigger */
-+	struct list_head next_trig;
-+};
-+
-+/* Registration functions for complex triggers */
-+int led_trigger_register(struct led_trigger *trigger);
-+void led_trigger_unregister(struct led_trigger *trigger);
-+
-+/* Registration functions for simple triggers */
-+#define INIT_LED_TRIGGER(x)		static struct led_trigger *x;
-+#define INIT_LED_TRIGGER_GLOBAL(x)	struct led_trigger *x;
-+void led_trigger_register_simple(const char *name, struct led_trigger **trigger);
-+void led_trigger_unregister_simple(struct led_trigger *trigger);
-+void led_trigger_event(struct led_trigger *trigger, enum led_brightness event);
-+
-+#else
-+
-+/* Triggers aren't active - null macros */
-+#define INIT_LED_TRIGGER(x)
-+#define INIT_LED_TRIGGER_GLOBAL(x)
-+#define led_trigger_register_simple(x, y) do {} while(0)
-+#define led_trigger_unregister_simple(x) do {} while(0)
-+#define led_trigger_event(x, y) do {} while(0)
-+
-+#endif
---- linux-ixp4xx.orig/arch/arm/Kconfig	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/arch/arm/Kconfig	2006-02-23 18:17:40.000000000 +0100
-@@ -807,6 +807,8 @@ source "drivers/misc/Kconfig"
- 
- source "drivers/mfd/Kconfig"
- 
-+source "drivers/leds/Kconfig"
-+
- source "drivers/media/Kconfig"
- 
- source "drivers/video/Kconfig"
---- linux-ixp4xx.orig/drivers/Makefile	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/drivers/Makefile	2006-02-23 18:17:40.000000000 +0100
-@@ -68,6 +68,7 @@ obj-$(CONFIG_MCA)		+= mca/
- obj-$(CONFIG_EISA)		+= eisa/
- obj-$(CONFIG_CPU_FREQ)		+= cpufreq/
- obj-$(CONFIG_MMC)		+= mmc/
-+obj-$(CONFIG_NEW_LEDS)		+= leds/
- obj-$(CONFIG_INFINIBAND)	+= infiniband/
- obj-$(CONFIG_SGI_SN)		+= sn/
- obj-y				+= firmware/
---- linux-ixp4xx.orig/drivers/Kconfig	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/drivers/Kconfig	2006-02-23 18:17:40.000000000 +0100
-@@ -64,6 +64,8 @@ source "drivers/usb/Kconfig"
- 
- source "drivers/mmc/Kconfig"
- 
-+source "drivers/leds/Kconfig"
-+
- source "drivers/infiniband/Kconfig"
- 
- source "drivers/sn/Kconfig"
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds.h	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,36 @@
-+/*
-+ * LED Core
-+ *
-+ * Copyright 2005 Openedhand Ltd.
-+ *
-+ * Author: Richard Purdie <rpurdie@openedhand.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+/* led_cdev->lock must be held as write */
-+static inline void led_set_brightness(struct led_classdev *led_cdev, enum led_brightness value)
-+{
-+	if (value > LED_FULL)
-+		value = LED_FULL;
-+	led_cdev->brightness = value;
-+	if (!(led_cdev->flags & LED_SUSPENDED))
-+		led_cdev->brightness_set(led_cdev, value);
-+}
-+
-+extern rwlock_t leds_list_lock;
-+extern struct list_head leds_list;
-+
-+#ifdef CONFIG_LEDS_TRIGGERS
-+void led_trigger_set_default(struct led_classdev *led_cdev);
-+void led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trigger);
-+#else
-+#define led_trigger_set_default(x) do {} while(0)
-+#define led_trigger_set(x, y) do {} while(0)
-+#endif
-+
-+ssize_t led_trigger_store(struct class_device *dev, const char *buf, size_t count);
-+ssize_t led_trigger_show(struct class_device *dev, char *buf);
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/led-class.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,164 @@
++++ linux-ixp4xx/drivers/leds/led-class.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,174 @@
 +/*
 + * LED Class Core
 + *
@@ -321,7 +160,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +
 +static ssize_t led_brightness_show(struct class_device *dev, char *buf)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
 +	ssize_t ret = 0;
 +
 +	/* no lock needed for this */
@@ -331,13 +170,14 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	return ret;
 +}
 +
-+static ssize_t led_brightness_store(struct class_device *dev, const char *buf, size_t size)
++static ssize_t led_brightness_store(struct class_device *dev,
++				const char *buf, size_t size)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
 +	ssize_t ret = -EINVAL;
 +	char *after;
-+
 +	unsigned long state = simple_strtoul(buf, &after, 10);
++
 +	if (after - buf > 0) {
 +		ret = after - buf;
 +		write_lock(&led_cdev->lock);
@@ -348,8 +188,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	return ret;
 +}
 +
-+static CLASS_DEVICE_ATTR(brightness, 0644, led_brightness_show, led_brightness_store);
-+
++static CLASS_DEVICE_ATTR(brightness, 0644, led_brightness_show,
++			led_brightness_store);
 +#ifdef CONFIG_LEDS_TRIGGERS
 +static CLASS_DEVICE_ATTR(trigger, 0644, led_trigger_show, led_trigger_store);
 +#endif
@@ -365,6 +205,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	led_cdev->brightness_set(led_cdev, 0);
 +	write_unlock(&led_cdev->lock);
 +}
++EXPORT_SYMBOL_GPL(led_classdev_suspend);
 +
 +/**
 + * led_classdev_resume - resume an led_classdev.
@@ -377,6 +218,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	led_cdev->brightness_set(led_cdev, led_cdev->brightness);
 +	write_unlock(&led_cdev->lock);
 +}
++EXPORT_SYMBOL_GPL(led_classdev_resume);
 +
 +/**
 + * led_classdev_register - register a new object of led_classdev class.
@@ -385,30 +227,38 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 + */
 +int led_classdev_register(struct device *parent, struct led_classdev *led_cdev)
 +{
-+	led_cdev->class_dev = class_device_create(leds_class, NULL, 0, parent, "%s", led_cdev->name);
++	led_cdev->class_dev = class_device_create(leds_class, NULL, 0,
++						parent, "%s", led_cdev->name);
 +	if (unlikely(IS_ERR(led_cdev->class_dev)))
 +		return PTR_ERR(led_cdev->class_dev);
 +
 +	rwlock_init(&led_cdev->lock);
-+	led_cdev->class_dev->class_data = led_cdev;
++	class_set_devdata(led_cdev->class_dev, led_cdev);
 +
 +	/* register the attributes */
-+	class_device_create_file(led_cdev->class_dev, &class_device_attr_brightness);
-+#ifdef CONFIG_LEDS_TRIGGERS
-+	class_device_create_file(led_cdev->class_dev, &class_device_attr_trigger);
-+#endif
++	class_device_create_file(led_cdev->class_dev,
++				&class_device_attr_brightness);
 +
 +	/* add to the list of leds */
 +	write_lock(&leds_list_lock);
 +	list_add_tail(&led_cdev->node, &leds_list);
 +	write_unlock(&leds_list_lock);
 +
++#ifdef CONFIG_LEDS_TRIGGERS
++	rwlock_init(&led_cdev->trigger_lock);
++
 +	led_trigger_set_default(led_cdev);
 +
-+	printk(KERN_INFO "Registered led device: %s\n", led_cdev->class_dev->class_id);
++	class_device_create_file(led_cdev->class_dev,
++				&class_device_attr_trigger);
++#endif
++
++	printk(KERN_INFO "Registered led device: %s\n",
++			led_cdev->class_dev->class_id);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(led_classdev_register);
 +
 +/**
 + * led_classdev_unregister - unregisters a object of led_properties class.
@@ -418,13 +268,16 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 + */
 +void led_classdev_unregister(struct led_classdev *led_cdev)
 +{
-+	class_device_remove_file(led_cdev->class_dev, &class_device_attr_brightness);
++	class_device_remove_file(led_cdev->class_dev,
++				&class_device_attr_brightness);
 +#ifdef CONFIG_LEDS_TRIGGERS
-+	class_device_remove_file(led_cdev->class_dev, &class_device_attr_trigger);
-+#endif
-+
++	class_device_remove_file(led_cdev->class_dev,
++				&class_device_attr_trigger);
++	write_lock(&led_cdev->trigger_lock);
 +	if (led_cdev->trigger)
 +		led_trigger_set(led_cdev, NULL);
++	write_unlock(&led_cdev->trigger_lock);
++#endif
 +
 +	class_device_unregister(led_cdev->class_dev);
 +
@@ -432,10 +285,6 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	list_del(&led_cdev->node);
 +	write_unlock(&leds_list_lock);
 +}
-+
-+EXPORT_SYMBOL_GPL(led_classdev_suspend);
-+EXPORT_SYMBOL_GPL(led_classdev_resume);
-+EXPORT_SYMBOL_GPL(led_classdev_register);
 +EXPORT_SYMBOL_GPL(led_classdev_unregister);
 +
 +static int __init leds_init(void)
@@ -458,8 +307,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LED Class Interface");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/led-core.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,24 @@
++++ linux-ixp4xx/drivers/leds/led-core.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,25 @@
 +/*
 + * LED Class Core
 + *
@@ -484,9 +333,194 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +LIST_HEAD(leds_list);
 +
 +EXPORT_SYMBOL_GPL(leds_list);
++EXPORT_SYMBOL_GPL(leds_list_lock);
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/led-triggers.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,236 @@
++++ linux-ixp4xx/drivers/leds/leds.h	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,45 @@
++/*
++ * LED Core
++ *
++ * Copyright 2005 Openedhand Ltd.
++ *
++ * Author: Richard Purdie <rpurdie@openedhand.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++#ifndef __LEDS_H_INCLUDED
++#define __LEDS_H_INCLUDED
++
++#include <linux/leds.h>
++
++/* led_cdev->lock must be held as write */
++static inline void led_set_brightness(struct led_classdev *led_cdev,
++					enum led_brightness value)
++{
++	if (value > LED_FULL)
++		value = LED_FULL;
++	led_cdev->brightness = value;
++	if (!(led_cdev->flags & LED_SUSPENDED))
++		led_cdev->brightness_set(led_cdev, value);
++}
++
++extern rwlock_t leds_list_lock;
++extern struct list_head leds_list;
++
++#ifdef CONFIG_LEDS_TRIGGERS
++void led_trigger_set_default(struct led_classdev *led_cdev);
++void led_trigger_set(struct led_classdev *led_cdev,
++			struct led_trigger *trigger);
++#else
++#define led_trigger_set_default(x) do {} while(0)
++#define led_trigger_set(x, y) do {} while(0)
++#endif
++
++ssize_t led_trigger_store(struct class_device *dev, const char *buf,
++			size_t count);
++ssize_t led_trigger_show(struct class_device *dev, char *buf);
++
++#endif	/* __LEDS_H_INCLUDED */
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/drivers/leds/Makefile	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,15 @@
++
++# LED Core
++obj-$(CONFIG_NEW_LEDS)			+= led-core.o
++obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
++obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
++
++# LED Platform Drivers
++obj-$(CONFIG_LEDS_CORGI)		+= leds-corgi.o
++obj-$(CONFIG_LEDS_LOCOMO)		+= leds-locomo.o
++obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
++obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
++obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
++
++# LED Triggers
++obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+--- linux-ixp4xx.orig/drivers/Makefile	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/drivers/Makefile	2006-03-07 22:59:04.000000000 +0100
+@@ -68,6 +68,7 @@ obj-$(CONFIG_MCA)		+= mca/
+ obj-$(CONFIG_EISA)		+= eisa/
+ obj-$(CONFIG_CPU_FREQ)		+= cpufreq/
+ obj-$(CONFIG_MMC)		+= mmc/
++obj-$(CONFIG_NEW_LEDS)		+= leds/
+ obj-$(CONFIG_INFINIBAND)	+= infiniband/
+ obj-$(CONFIG_SGI_SN)		+= sn/
+ obj-y				+= firmware/
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/include/linux/leds.h	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,105 @@
++/*
++ * Driver model for leds and led triggers
++ *
++ * Copyright (C) 2005 John Lenz <lenz@cs.wisc.edu>
++ * Copyright (C) 2005 Richard Purdie <rpurdie@openedhand.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++#ifndef __LINUX_LEDS_H_INCLUDED
++#define __LINUX_LEDS_H_INCLUDED
++
++struct device;
++struct class_device;
++/*
++ * LED Core
++ */
++
++enum led_brightness {
++	LED_OFF = 0,
++	LED_HALF = 127,
++	LED_FULL = 255,
++};
++
++struct led_classdev {
++	const char *name;
++	int brightness;
++	int flags;
++#define LED_SUSPENDED       (1 << 0)
++
++	/* A function to set the brightness of the led */
++	void (*brightness_set)(struct led_classdev *led_cdev,
++				enum led_brightness brightness);
++
++	struct class_device *class_dev;
++	/* LED Device linked list */
++	struct list_head node;
++
++	/* Protects the LED properties data above */
++	rwlock_t lock;
++
++	/* Trigger data */
++	char *default_trigger;
++#ifdef CONFIG_LEDS_TRIGGERS
++	rwlock_t trigger_lock;
++	/* Protects the trigger data below */
++
++	struct led_trigger *trigger;
++	struct list_head trig_list;
++	void *trigger_data;
++#endif
++};
++
++extern int led_classdev_register(struct device *parent,
++				struct led_classdev *led_cdev);
++extern void led_classdev_unregister(struct led_classdev *led_cdev);
++extern void led_classdev_suspend(struct led_classdev *led_cdev);
++extern void led_classdev_resume(struct led_classdev *led_cdev);
++
++/*
++ * LED Triggers
++ */
++#ifdef CONFIG_LEDS_TRIGGERS
++
++#define TRIG_NAME_MAX 50
++
++struct led_trigger {
++	/* Trigger Properties */
++	const char *name;
++	void (*activate)(struct led_classdev *led_cdev);
++	void (*deactivate)(struct led_classdev *led_cdev);
++
++	/* LEDs under control by this trigger (for simple triggers) */
++	rwlock_t leddev_list_lock;
++	struct list_head led_cdevs;
++
++	/* Link to next registered trigger */
++	struct list_head next_trig;
++};
++
++/* Registration functions for complex triggers */
++int led_trigger_register(struct led_trigger *trigger);
++void led_trigger_unregister(struct led_trigger *trigger);
++
++/* Registration functions for simple triggers */
++#define DEFINE_LED_TRIGGER(x)		static struct led_trigger *x;
++#define DEFINE_LED_TRIGGER_GLOBAL(x)	struct led_trigger *x;
++void led_trigger_register_simple(const char *name,
++				struct led_trigger **trigger);
++void led_trigger_unregister_simple(struct led_trigger *trigger);
++void led_trigger_event(struct led_trigger *trigger, enum led_brightness event);
++
++#else
++
++/* Triggers aren't active - null macros */
++#define DEFINE_LED_TRIGGER(x)
++#define DEFINE_LED_TRIGGER_GLOBAL(x)
++#define led_trigger_register_simple(x, y) do {} while(0)
++#define led_trigger_unregister_simple(x) do {} while(0)
++#define led_trigger_event(x, y) do {} while(0)
++
++#endif
++#endif		/* __LINUX_LEDS_H_INCLUDED */
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-ixp4xx/drivers/leds/led-triggers.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,239 @@
 +/*
 + * LED Triggers Core
 + *
@@ -512,12 +546,16 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +#include <linux/leds.h>
 +#include "leds.h"
 +
++/*
++ * Nests outside led_cdev->lock and led_cdev->trigger_lock
++ */
 +static rwlock_t triggers_list_lock = RW_LOCK_UNLOCKED;
 +static LIST_HEAD(trigger_list);
 +
-+ssize_t led_trigger_store(struct class_device *dev, const char *buf, size_t count)
++ssize_t led_trigger_store(struct class_device *dev, const char *buf,
++			size_t count)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
 +	char trigger_name[TRIG_NAME_MAX];
 +	struct led_trigger *trig;
 +	size_t len;
@@ -530,18 +568,18 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +		trigger_name[len - 1] = '\0';
 +
 +	if (!strcmp(trigger_name, "none")) {
-+		write_lock(&led_cdev->lock);
++		write_lock(&led_cdev->trigger_lock);
 +		led_trigger_set(led_cdev, NULL);
-+		write_unlock(&led_cdev->lock);
++		write_unlock(&led_cdev->trigger_lock);
 +		return count;
 +	}
 +
 +	read_lock(&triggers_list_lock);
 +	list_for_each_entry(trig, &trigger_list, next_trig) {
 +		if (!strcmp(trigger_name, trig->name)) {
-+			write_lock(&led_cdev->lock);
++			write_lock(&led_cdev->trigger_lock);
 +			led_trigger_set(led_cdev, trig);
-+			write_unlock(&led_cdev->lock);
++			write_unlock(&led_cdev->trigger_lock);
 +
 +			read_unlock(&triggers_list_lock);
 +			return count;
@@ -555,32 +593,34 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +
 +ssize_t led_trigger_show(struct class_device *dev, char *buf)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
 +	struct led_trigger *trig;
 +	int len = 0;
 +
-+	read_lock(&led_cdev->lock);
++	read_lock(&triggers_list_lock);
++	read_lock(&led_cdev->trigger_lock);
 +
 +	if (!led_cdev->trigger)
 +		len += sprintf(buf+len, "[none] ");
 +	else
 +		len += sprintf(buf+len, "none ");
 +
-+	read_lock(&triggers_list_lock);
 +	list_for_each_entry(trig, &trigger_list, next_trig) {
-+		if (led_cdev->trigger && !strcmp(led_cdev->trigger->name,  trig->name))
++		if (led_cdev->trigger && !strcmp(led_cdev->trigger->name,
++							trig->name))
 +			len += sprintf(buf+len, "[%s] ", trig->name);
 +		else
 +			len += sprintf(buf+len, "%s ", trig->name);
 +	}
++	read_unlock(&led_cdev->trigger_lock);
 +	read_unlock(&triggers_list_lock);
-+	read_unlock(&led_cdev->lock);
 +
 +	len += sprintf(len+buf, "\n");
 +	return len;
 +}
 +
-+void led_trigger_event(struct led_trigger *trigger, enum led_brightness brightness)
++void led_trigger_event(struct led_trigger *trigger,
++			enum led_brightness brightness)
 +{
 +	struct list_head *entry;
 +
@@ -599,7 +639,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	read_unlock(&trigger->leddev_list_lock);
 +}
 +
-+/* Caller must ensure led_cdev->lock held for write */
++/* Caller must ensure led_cdev->trigger_lock held */
 +void led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trigger)
 +{
 +	/* Remove any existing trigger */
@@ -609,7 +649,6 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +		write_unlock(&led_cdev->trigger->leddev_list_lock);
 +		if (led_cdev->trigger->deactivate)
 +			led_cdev->trigger->deactivate(led_cdev);
-+
 +	}
 +	if (trigger) {
 +		write_lock(&trigger->leddev_list_lock);
@@ -628,14 +667,14 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	if (!led_cdev->default_trigger)
 +		return;
 +
-+	write_lock(&led_cdev->lock);
 +	read_lock(&triggers_list_lock);
++	write_lock(&led_cdev->trigger_lock);
 +	list_for_each_entry(trig, &trigger_list, next_trig) {
 +		if (!strcmp(led_cdev->default_trigger, trig->name))
 +			led_trigger_set(led_cdev, trig);
 +	}
++	write_unlock(&led_cdev->trigger_lock);
 +	read_unlock(&triggers_list_lock);
-+	write_unlock(&led_cdev->lock);
 +}
 +
 +int led_trigger_register(struct led_trigger *trigger)
@@ -647,26 +686,26 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +
 +	/* Add to the list of led triggers */
 +	write_lock(&triggers_list_lock);
-+		list_add_tail(&trigger->next_trig, &trigger_list);
++	list_add_tail(&trigger->next_trig, &trigger_list);
 +	write_unlock(&triggers_list_lock);
 +
 +	/* Register with any LEDs that have this as a default trigger */
-+	read_lock(&leds_list);
++	read_lock(&leds_list_lock);
 +	list_for_each_entry(led_cdev, &leds_list, node) {
-+		write_lock(&led_cdev->lock);
++		write_lock(&led_cdev->trigger_lock);
 +		if (!led_cdev->trigger && led_cdev->default_trigger &&
-+				!strcmp(led_cdev->default_trigger, trigger->name))
++			    !strcmp(led_cdev->default_trigger, trigger->name))
 +			led_trigger_set(led_cdev, trigger);
-+		write_unlock(&led_cdev->lock);
++		write_unlock(&led_cdev->trigger_lock);
 +	}
-+	read_unlock(&leds_list);
++	read_unlock(&leds_list_lock);
 +
 +	return 0;
 +}
 +
 +void led_trigger_register_simple(const char *name, struct led_trigger **tp)
 +{
-+        struct led_trigger *trigger;
++	struct led_trigger *trigger;
 +
 +	trigger = kzalloc(sizeof(struct led_trigger), GFP_KERNEL);
 +
@@ -677,25 +716,24 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	*tp = trigger;
 +}
 +
-+
 +void led_trigger_unregister(struct led_trigger *trigger)
 +{
 +	struct led_classdev *led_cdev;
 +
 +	/* Remove from the list of led triggers */
 +	write_lock(&triggers_list_lock);
-+		list_del(&trigger->next_trig);
++	list_del(&trigger->next_trig);
 +	write_unlock(&triggers_list_lock);
 +
 +	/* Remove anyone actively using this trigger */
-+	read_lock(&leds_list);
++	read_lock(&leds_list_lock);
 +	list_for_each_entry(led_cdev, &leds_list, node) {
-+		write_lock(&led_cdev->lock);
++		write_lock(&led_cdev->trigger_lock);
 +		if (led_cdev->trigger == trigger)
 +			led_trigger_set(led_cdev, NULL);
-+		write_unlock(&led_cdev->lock);
++		write_unlock(&led_cdev->trigger_lock);
 +	}
-+	read_unlock(&leds_list);
++	read_unlock(&leds_list_lock);
 +}
 +
 +void led_trigger_unregister_simple(struct led_trigger *trigger)
@@ -722,10 +760,9 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_AUTHOR("Richard Purdie");
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LED Triggers Core");
-+
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/ledtrig-timer.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,205 @@
++++ linux-ixp4xx/drivers/leds/ledtrig-timer.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,174 @@
 +/*
 + * LED Kernel Timer Trigger
 + *
@@ -752,10 +789,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +#include "leds.h"
 +
 +struct timer_trig_data {
-+	unsigned long duty; /* duty cycle, as a percentage */
-+	unsigned long frequency; /* frequency of blinking, in Hz */
-+	unsigned long delay_on; /* milliseconds on */
-+	unsigned long delay_off; /* milliseconds off */
++	unsigned long delay_on;		/* milliseconds on */
++	unsigned long delay_off;	/* milliseconds off */
 +	struct timer_list timer;
 +};
 +
@@ -766,9 +801,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	unsigned long brightness = LED_OFF;
 +	unsigned long delay = timer_data->delay_off;
 +
-+	write_lock(&led_cdev->lock);
-+
-+	if (!timer_data->frequency) {
++	if (!timer_data->delay_on || !timer_data->delay_off) {
++		write_lock(&led_cdev->lock);
 +		led_set_brightness(led_cdev, LED_OFF);
 +		write_unlock(&led_cdev->lock);
 +		return;
@@ -779,104 +813,73 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +		delay = timer_data->delay_on;
 +	}
 +
++	write_lock(&led_cdev->lock);
 +	led_set_brightness(led_cdev, brightness);
++	write_unlock(&led_cdev->lock);
 +
 +	mod_timer(&timer_data->timer, jiffies + msecs_to_jiffies(delay));
-+	write_unlock(&led_cdev->lock);
 +}
 +
-+/* led_cdev write lock needs to be held */
-+static int led_timer_setdata(struct led_classdev *led_cdev, unsigned long duty, unsigned long frequency)
++static ssize_t led_delay_on_show(struct class_device *dev, char *buf)
 +{
++	struct led_classdev *led_cdev = class_get_devdata(dev);
 +	struct timer_trig_data *timer_data = led_cdev->trigger_data;
 +
-+	if (frequency > 500)
-+		return -EINVAL;
-+
-+	if (duty > 100)
-+		return -EINVAL;
-+
-+	timer_data->duty = duty;
-+	timer_data->frequency = frequency;
-+	if (frequency != 0) {
-+		timer_data->delay_on = duty * 1000 / 50 / frequency / 2;
-+		timer_data->delay_off = (100 - duty) * 1000 / 50 / frequency / 2;
-+	}
-+
-+	mod_timer(&timer_data->timer, jiffies + 1);
-+
-+	return 0;
-+}
-+
-+static ssize_t led_duty_show(struct class_device *dev, char *buf)
-+{
-+	struct led_classdev *led_cdev = dev->class_data;
-+	struct timer_trig_data *timer_data;
-+
-+	read_lock(&led_cdev->lock);
-+	timer_data = led_cdev->trigger_data;
-+	sprintf(buf, "%lu\n", timer_data->duty);
-+	read_unlock(&led_cdev->lock);
++	sprintf(buf, "%lu\n", timer_data->delay_on);
 +
 +	return strlen(buf) + 1;
 +}
 +
-+static ssize_t led_duty_store(struct class_device *dev, const char *buf, size_t size)
++static ssize_t led_delay_on_store(struct class_device *dev, const char *buf,
++				size_t size)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
-+	struct timer_trig_data *timer_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
++	struct timer_trig_data *timer_data = led_cdev->trigger_data;
 +	int ret = -EINVAL;
 +	char *after;
-+
 +	unsigned long state = simple_strtoul(buf, &after, 10);
++
 +	if (after - buf > 0) {
-+		write_lock(&led_cdev->lock);
-+		timer_data = led_cdev->trigger_data;
-+		ret = led_timer_setdata(led_cdev, state, timer_data->frequency);
-+		if (!ret)
-+			ret = after - buf;
-+		write_unlock(&led_cdev->lock);
++		timer_data->delay_on = state;
++		mod_timer(&timer_data->timer, jiffies + 1);
++		ret = after - buf;
 +	}
 +
 +	return ret;
 +}
 +
-+
-+static ssize_t led_frequency_show(struct class_device *dev, char *buf)
++static ssize_t led_delay_off_show(struct class_device *dev, char *buf)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
-+	struct timer_trig_data *timer_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
++	struct timer_trig_data *timer_data = led_cdev->trigger_data;
 +
-+	read_lock(&led_cdev->lock);
-+	timer_data = led_cdev->trigger_data;
-+	sprintf(buf, "%lu\n", timer_data->frequency);
-+	read_unlock(&led_cdev->lock);
++	sprintf(buf, "%lu\n", timer_data->delay_off);
 +
 +	return strlen(buf) + 1;
 +}
 +
-+static ssize_t led_frequency_store(struct class_device *dev, const char *buf, size_t size)
++static ssize_t led_delay_off_store(struct class_device *dev, const char *buf,
++				size_t size)
 +{
-+	struct led_classdev *led_cdev = dev->class_data;
-+	struct timer_trig_data *timer_data;
++	struct led_classdev *led_cdev = class_get_devdata(dev);
++	struct timer_trig_data *timer_data = led_cdev->trigger_data;
 +	int ret = -EINVAL;
 +	char *after;
-+
 +	unsigned long state = simple_strtoul(buf, &after, 10);
++
 +	if (after - buf > 0) {
-+		write_lock(&led_cdev->lock);
-+		timer_data = led_cdev->trigger_data;
-+		ret = led_timer_setdata(led_cdev, timer_data->duty, state);
-+		if (!ret)
-+			ret = after - buf;
-+		write_unlock(&led_cdev->lock);
++		timer_data->delay_off = state;
++		mod_timer(&timer_data->timer, jiffies + 1);
++		ret = after - buf;
 +	}
 +
 +	return ret;
 +}
 +
-+static CLASS_DEVICE_ATTR(duty, 0644, led_duty_show, led_duty_store);
-+static CLASS_DEVICE_ATTR(frequency, 0644, led_frequency_show, led_frequency_store);
++static CLASS_DEVICE_ATTR(delay_on, 0644, led_delay_on_show,
++			led_delay_on_store);
++static CLASS_DEVICE_ATTR(delay_off, 0644, led_delay_off_show,
++			led_delay_off_store);
 +
 +static void timer_trig_activate(struct led_classdev *led_cdev)
 +{
@@ -892,18 +895,21 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	timer_data->timer.function = led_timer_function;
 +	timer_data->timer.data = (unsigned long) led_cdev;
 +
-+	timer_data->duty = 50;
-+
-+	class_device_create_file(led_cdev->class_dev, &class_device_attr_duty);
-+	class_device_create_file(led_cdev->class_dev, &class_device_attr_frequency);
++	class_device_create_file(led_cdev->class_dev,
++				&class_device_attr_delay_on);
++	class_device_create_file(led_cdev->class_dev,
++				&class_device_attr_delay_off);
 +}
 +
 +static void timer_trig_deactivate(struct led_classdev *led_cdev)
 +{
 +	struct timer_trig_data *timer_data = led_cdev->trigger_data;
++
 +	if (timer_data) {
-+		class_device_remove_file(led_cdev->class_dev, &class_device_attr_duty);
-+		class_device_remove_file(led_cdev->class_dev, &class_device_attr_frequency);
++		class_device_remove_file(led_cdev->class_dev,
++					&class_device_attr_delay_on);
++		class_device_remove_file(led_cdev->class_dev,
++					&class_device_attr_delay_off);
 +		del_timer_sync(&timer_data->timer);
 +		kfree(timer_data);
 +	}
@@ -920,7 +926,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	return led_trigger_register(&timer_led_trigger);
 +}
 +
-+static void __exit timer_trig_exit (void)
++static void __exit timer_trig_exit(void)
 +{
 +	led_trigger_unregister(&timer_led_trigger);
 +}
@@ -931,9 +937,9 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
 +MODULE_DESCRIPTION("Timer LED trigger");
 +MODULE_LICENSE("GPL");
---- linux-ixp4xx.orig/arch/arm/mach-pxa/corgi.c	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-pxa/corgi.c	2006-02-23 18:17:40.000000000 +0100
-@@ -165,6 +165,15 @@ static struct platform_device corgikbd_d
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/corgi.c	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/corgi.c	2006-03-07 22:59:04.000000000 +0100
+@@ -165,6 +165,14 @@ static struct platform_device corgikbd_d
  
  
  /*
@@ -944,12 +950,11 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	.id		= -1,
 +};
 +
-+
 +/*
   * Corgi Touch Screen Device
   */
  static struct resource corgits_resources[] = {
-@@ -298,6 +307,7 @@ static struct platform_device *devices[]
+@@ -298,6 +306,7 @@ static struct platform_device *devices[]
  	&corgikbd_device,
  	&corgibl_device,
  	&corgits_device,
@@ -957,9 +962,9 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  };
  
  static void __init corgi_init(void)
---- linux-ixp4xx.orig/arch/arm/mach-pxa/spitz.c	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-pxa/spitz.c	2006-02-23 18:17:40.000000000 +0100
-@@ -243,6 +243,15 @@ static struct platform_device spitzkbd_d
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/spitz.c	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/spitz.c	2006-03-07 22:59:04.000000000 +0100
+@@ -243,6 +243,14 @@ static struct platform_device spitzkbd_d
  
  
  /*
@@ -970,12 +975,11 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	.id		= -1,
 +};
 +
-+
 +/*
   * Spitz Touch Screen Device
   */
  static struct resource spitzts_resources[] = {
-@@ -419,6 +428,7 @@ static struct platform_device *devices[]
+@@ -419,6 +427,7 @@ static struct platform_device *devices[]
  	&spitzkbd_device,
  	&spitzts_device,
  	&spitzbl_device,
@@ -984,7 +988,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  
  static void __init common_init(void)
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds-corgi.c	2006-02-23 18:17:40.000000000 +0100
++++ linux-ixp4xx/drivers/leds/leds-corgi.c	2006-03-07 22:59:04.000000000 +0100
 @@ -0,0 +1,121 @@
 +/*
 + * LED Triggers Core
@@ -1091,12 +1095,12 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	},
 +};
 +
-+static int __devinit corgiled_init(void)
++static int __init corgiled_init(void)
 +{
 +	return platform_driver_register(&corgiled_driver);
 +}
 +
-+static void corgiled_exit(void)
++static void __exit corgiled_exit(void)
 +{
 + 	platform_driver_unregister(&corgiled_driver);
 +}
@@ -1108,7 +1112,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_DESCRIPTION("Corgi LED driver");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds-spitz.c	2006-02-23 18:17:40.000000000 +0100
++++ linux-ixp4xx/drivers/leds/leds-spitz.c	2006-03-07 22:59:04.000000000 +0100
 @@ -0,0 +1,125 @@
 +/*
 + * LED Triggers Core
@@ -1219,12 +1223,12 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	},
 +};
 +
-+static int __devinit spitzled_init(void)
++static int __init spitzled_init(void)
 +{
 +	return platform_driver_register(&spitzled_driver);
 +}
 +
-+static void spitzled_exit(void)
++static void __exit spitzled_exit(void)
 +{
 + 	platform_driver_unregister(&spitzled_driver);
 +}
@@ -1236,8 +1240,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_DESCRIPTION("Spitz LED driver");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds-locomo.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,91 @@
++++ linux-ixp4xx/drivers/leds/leds-locomo.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,95 @@
 +/*
 + * linux/drivers/leds/locomo.c
 + *
@@ -1257,7 +1261,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +#include <asm/hardware.h>
 +#include <asm/hardware/locomo.h>
 +
-+static void locomoled_brightness_set(struct led_classdev *led_cdev, enum led_brightness value, int offset)
++static void locomoled_brightness_set(struct led_classdev *led_cdev,
++				enum led_brightness value, int offset)
 +{
 +	struct locomo_dev *locomo_dev = LOCOMO_DEV(led_cdev->class_dev->dev);
 +	unsigned long flags;
@@ -1270,12 +1275,14 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	local_irq_restore(flags);
 +}
 +
-+static void locomoled_brightness_set0(struct led_classdev *led_cdev, enum led_brightness value)
++static void locomoled_brightness_set0(struct led_classdev *led_cdev,
++				enum led_brightness value)
 +{
 +	locomoled_brightness_set(led_cdev, value, LOCOMO_LPT0);
 +}
 +
-+static void locomoled_brightness_set1(struct led_classdev *led_cdev, enum led_brightness value)
++static void locomoled_brightness_set1(struct led_classdev *led_cdev,
++				enum led_brightness value)
 +{
 +	locomoled_brightness_set(led_cdev, value, LOCOMO_LPT1);
 +}
@@ -1321,7 +1328,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	.remove	= locomoled_remove,
 +};
 +
-+static int __init locomoled_init(void) {
++static int __init locomoled_init(void)
++{
 +	return locomo_driver_register(&locomoled_driver);
 +}
 +module_init(locomoled_init);
@@ -1330,8 +1338,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_DESCRIPTION("Locomo LED driver");
 +MODULE_LICENSE("GPL");
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds-ixp4xx-gpio.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,209 @@
++++ linux-ixp4xx/drivers/leds/leds-ixp4xx-gpio.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,215 @@
 +/*
 + * IXP4XX GPIO driver LED driver
 + *
@@ -1382,7 +1390,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	int               flags;
 +} ixp4xxgpioled_devices[GPIO_MAX];
 +
-+void ixp4xxgpioled_brightness_set(struct led_classdev *pled, enum led_brightness value)
++void ixp4xxgpioled_brightness_set(struct led_classdev *pled,
++				enum led_brightness value)
 +{
 +	const struct ixp4xxgpioled_device *const ixp4xx_dev =
 +		container_of(pled, struct ixp4xxgpioled_device, ancestor);
@@ -1417,15 +1426,18 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 + * the function always returns 0 to allow tail call elimination.
 + */
 +static int apply_to_all_leds(struct platform_device *pdev,
-+	void (*operation)(struct led_classdev *pled)) {
++	void (*operation)(struct led_classdev *pled))
++{
 +	int i;
++
 +	for_all_leds(i, pdev)
 +		operation(&ixp4xxgpioled_devices[pdev->resource[i].start].ancestor);
 +	return 0;
 +}
 +
 +#ifdef CONFIG_PM
-+static int ixp4xxgpioled_suspend(struct platform_device *pdev, pm_message_t state)
++static int ixp4xxgpioled_suspend(struct platform_device *pdev,
++				pm_message_t state)
 +{
 +	return apply_to_all_leds(pdev, led_classdev_suspend);
 +}
@@ -1436,7 +1448,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +}
 +#endif
 +
-+static void ixp4xxgpioled_remove_one_led(struct led_classdev *pled) {
++static void ixp4xxgpioled_remove_one_led(struct led_classdev *pled)
++{
 +	led_classdev_unregister(pled);
 +	pled->name = 0;
 +}
@@ -1459,6 +1472,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	 * isn't copied.
 +	 */
 +	int i;
++
 +	for_all_leds(i, pdev) {
 +		const u8 gpio_pin = pdev->resource[i].start;
 +		int      rc;
@@ -1525,12 +1539,12 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	},
 +};
 +
-+static int __devinit ixp4xxgpioled_init(void)
++static int __init ixp4xxgpioled_init(void)
 +{
 +	return platform_driver_register(&ixp4xxgpioled_driver);
 +}
 +
-+static void ixp4xxgpioled_exit(void)
++static void __exit ixp4xxgpioled_exit(void)
 +{
 +	platform_driver_unregister(&ixp4xxgpioled_driver);
 +}
@@ -1540,10 +1554,32 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +
 +MODULE_AUTHOR("John Bowler <jbowler@acm.org>");
 +MODULE_DESCRIPTION("IXP4XX GPIO LED driver");
-+MODULE_LICENSE("MIT");
++MODULE_LICENSE("Dual MIT/GPL");
+--- linux-ixp4xx.orig/arch/arm/mach-pxa/tosa.c	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-pxa/tosa.c	2006-03-07 22:59:04.000000000 +0100
+@@ -252,10 +252,19 @@ static struct platform_device tosakbd_de
+ 	.id		= -1,
+ };
+ 
++/*
++ * Tosa LEDs
++ */
++static struct platform_device tosaled_device = {
++    .name   = "tosa-led",
++    .id     = -1,
++};
++
+ static struct platform_device *devices[] __initdata = {
+ 	&tosascoop_device,
+ 	&tosascoop_jc_device,
+ 	&tosakbd_device,
++	&tosaled_device,
+ };
+ 
+ static void __init tosa_init(void)
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-ixp4xx/drivers/leds/leds-tosa.c	2006-02-23 18:17:40.000000000 +0100
-@@ -0,0 +1,123 @@
++++ linux-ixp4xx/drivers/leds/leds-tosa.c	2006-03-07 22:59:04.000000000 +0100
+@@ -0,0 +1,131 @@
 +/*
 + * LED Triggers Core
 + *
@@ -1569,20 +1605,26 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/tosa.h>
 +
-+static void tosaled_amber_set(struct led_classdev *led_cdev, enum led_brightness value)
++static void tosaled_amber_set(struct led_classdev *led_cdev,
++				enum led_brightness value)
 +{
 +	if (value)
-+		set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_CHRG_ERR_LED);
++		set_scoop_gpio(&tosascoop_jc_device.dev,
++				TOSA_SCOOP_JC_CHRG_ERR_LED);
 +	else
-+		reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_CHRG_ERR_LED);
++		reset_scoop_gpio(&tosascoop_jc_device.dev,
++				TOSA_SCOOP_JC_CHRG_ERR_LED);
 +}
 +
-+static void tosaled_green_set(struct led_classdev *led_cdev, enum led_brightness value)
++static void tosaled_green_set(struct led_classdev *led_cdev,
++				enum led_brightness value)
 +{
 +	if (value)
-+		set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_NOTE_LED);
++		set_scoop_gpio(&tosascoop_jc_device.dev,
++				TOSA_SCOOP_JC_NOTE_LED);
 +	else
-+		reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_NOTE_LED);
++		reset_scoop_gpio(&tosascoop_jc_device.dev,
++				TOSA_SCOOP_JC_NOTE_LED);
 +}
 +
 +static struct led_classdev tosa_amber_led = {
@@ -1601,7 +1643,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +static int tosaled_suspend(struct platform_device *dev, pm_message_t state)
 +{
 +#ifdef CONFIG_LEDS_TRIGGERS
-+	if (tosa_amber_led.trigger && strcmp(tosa_amber_led.trigger->name, "sharpsl-charge"))
++	if (tosa_amber_led.trigger && strcmp(tosa_amber_led.trigger->name,
++						"sharpsl-charge"))
 +#endif
 +		led_classdev_suspend(&tosa_amber_led);
 +	led_classdev_suspend(&tosa_green_led);
@@ -1614,6 +1657,9 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	led_classdev_resume(&tosa_green_led);
 +	return 0;
 +}
++#else
++#define tosaled_suspend NULL
++#define tosaled_resume NULL
 +#endif
 +
 +static int tosaled_probe(struct platform_device *pdev)
@@ -1642,21 +1688,19 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +static struct platform_driver tosaled_driver = {
 +	.probe		= tosaled_probe,
 +	.remove		= tosaled_remove,
-+#ifdef CONFIG_PM
 +	.suspend	= tosaled_suspend,
 +	.resume		= tosaled_resume,
-+#endif
 +	.driver		= {
 +		.name		= "tosa-led",
 +	},
 +};
 +
-+static int __devinit tosaled_init(void)
++static int __init tosaled_init(void)
 +{
 +	return platform_driver_register(&tosaled_driver);
 +}
 +
-+static void tosaled_exit(void)
++static void __exit tosaled_exit(void)
 +{
 + 	platform_driver_unregister(&tosaled_driver);
 +}
@@ -1667,30 +1711,8 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +MODULE_AUTHOR("Dirk Opfer <Dirk@Opfer-Online.de>");
 +MODULE_DESCRIPTION("Tosa LED driver");
 +MODULE_LICENSE("GPL");
---- linux-ixp4xx.orig/arch/arm/mach-pxa/tosa.c	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-pxa/tosa.c	2006-02-23 18:17:40.000000000 +0100
-@@ -252,10 +252,19 @@ static struct platform_device tosakbd_de
- 	.id		= -1,
- };
- 
-+/*
-+ * Tosa LEDs
-+ */
-+static struct platform_device tosaled_device = {
-+    .name   = "tosa-led",
-+    .id     = -1,
-+};
-+
- static struct platform_device *devices[] __initdata = {
- 	&tosascoop_device,
- 	&tosascoop_jc_device,
- 	&tosakbd_device,
-+	&tosaled_device,
- };
- 
- static void __init tosa_init(void)
---- linux-ixp4xx.orig/drivers/ide/ide-disk.c	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/drivers/ide/ide-disk.c	2006-02-23 18:17:40.000000000 +0100
+--- linux-ixp4xx.orig/drivers/ide/ide-disk.c	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/drivers/ide/ide-disk.c	2006-03-07 22:59:04.000000000 +0100
 @@ -60,6 +60,7 @@
  #include <linux/genhd.h>
  #include <linux/slab.h>
@@ -1703,12 +1725,26 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  
  static DECLARE_MUTEX(idedisk_ref_sem);
  
-+INIT_LED_TRIGGER(ide_led_trigger);
++DEFINE_LED_TRIGGER(ide_led_trigger);
 +
  #define to_ide_disk(obj) container_of(obj, struct ide_disk_obj, kref)
  
  #define ide_disk_g(disk) \
-@@ -312,10 +315,12 @@ static ide_startstop_t ide_do_rw_disk (i
+@@ -298,6 +301,13 @@ static ide_startstop_t __ide_do_rw_disk(
+ 	}
+ }
+ 
++static int ide_end_rw_disk(ide_drive_t *drive, int uptodate, int nr_sectors)
++{
++	if (blk_fs_request(HWGROUP(drive)->rq))
++		led_trigger_event(ide_led_trigger, LED_OFF);
++	return ide_end_request(drive, uptodate, nr_sectors);
++}
++
+ /*
+  * 268435455  == 137439 MB or 28bit limit
+  * 320173056  == 163929 MB or 48bit addressing
+@@ -312,10 +322,12 @@ static ide_startstop_t ide_do_rw_disk (i
  
  	if (!blk_fs_request(rq)) {
  		blk_dump_rq_flags(rq, "ide_do_rw_disk - bad command");
@@ -1722,20 +1758,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  	pr_debug("%s: %sing: block=%llu, sectors=%lu, buffer=0x%08lx\n",
  		 drive->name, rq_data_dir(rq) == READ ? "read" : "writ",
  		 (unsigned long long)block, rq->nr_sectors,
-@@ -327,6 +332,12 @@ static ide_startstop_t ide_do_rw_disk (i
- 	return __ide_do_rw_disk(drive, rq, block);
- }
- 
-+static int ide_end_rw_disk(ide_drive_t *drive, int uptodate, int nr_sectors)
-+{
-+	led_trigger_event(ide_led_trigger, LED_OFF);
-+	ide_end_request(drive, uptodate, nr_sectors);
-+}
-+
- /*
-  * Queries for true maximum capacity of the drive.
-  * Returns maximum LBA address (> 0) of the drive, 0 if failed.
-@@ -1063,7 +1074,7 @@ static ide_driver_t idedisk_driver = {
+@@ -1063,7 +1075,7 @@ static ide_driver_t idedisk_driver = {
  	.media			= ide_disk,
  	.supports_dsc_overlap	= 0,
  	.do_request		= ide_do_rw_disk,
@@ -1744,7 +1767,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  	.error			= __ide_error,
  	.abort			= __ide_abort,
  	.proc			= idedisk_proc,
-@@ -1236,11 +1247,13 @@ failed:
+@@ -1236,12 +1248,16 @@ failed:
  
  static void __exit idedisk_exit (void)
  {
@@ -1754,12 +1777,16 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  
  static int __init idedisk_init(void)
  {
-+	led_trigger_register_simple("ide-disk", &ide_led_trigger);
- 	return driver_register(&idedisk_driver.gen_driver);
+-	return driver_register(&idedisk_driver.gen_driver);
++	int ret = driver_register(&idedisk_driver.gen_driver);
++	if (ret >= 0)
++		led_trigger_register_simple("ide-disk", &ide_led_trigger);
++	return ret;
  }
  
---- linux-ixp4xx.orig/drivers/mtd/nand/nand_base.c	2006-02-23 18:13:35.000000000 +0100
-+++ linux-ixp4xx/drivers/mtd/nand/nand_base.c	2006-02-23 18:17:40.000000000 +0100
+ MODULE_ALIAS("ide:*m-disk*");
+--- linux-ixp4xx.orig/drivers/mtd/nand/nand_base.c	2006-03-07 22:57:47.000000000 +0100
++++ linux-ixp4xx/drivers/mtd/nand/nand_base.c	2006-03-07 22:59:04.000000000 +0100
 @@ -80,6 +80,7 @@
  #include <linux/mtd/compatmac.h>
  #include <linux/interrupt.h>
@@ -1772,7 +1799,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
  	return nand_isbad_bbt (mtd, ofs, allowbbt);
  }
  
-+INIT_LED_TRIGGER(nand_led_trigger);
++DEFINE_LED_TRIGGER(nand_led_trigger);
 +
  /*
   * Wait for the ready pin, after a command
@@ -1822,7 +1849,7 @@ Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 +	return 0;
 +}
 +
-+static void nand_base_exit(void)
++static void __exit nand_base_exit(void)
 +{
 +	led_trigger_unregister_simple(nand_led_trigger);
 +}
