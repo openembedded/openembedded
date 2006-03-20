@@ -1,0 +1,31 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- qpdf2_2.2.1/qdocnotes.h~gcc4	2004-02-17 18:13:18.000000000 +0100
++++ qpdf2_2.2.1/qdocnotes.h	2006-03-20 19:16:38.000000000 +0100
+@@ -1,6 +1,6 @@
+ #include "xmlparser.h"
+ #include <qmap.h>
+-
++class QDocNotes;
+ class QDocNote {
+  public:
+   friend class QDocNotes;
+--- qpdf2_2.2.1/xpdf/TextOutputDev.h~gcc4	2004-02-17 18:13:18.000000000 +0100
++++ qpdf2_2.2.1/xpdf/TextOutputDev.h	2006-03-20 19:19:47.000000000 +0100
+@@ -139,6 +139,13 @@
+ //------------------------------------------------------------------------
+ // TextPool
+ //------------------------------------------------------------------------
++class TextPool;
++class TextLine;
++class TextBlock;
++class TextFlow;
++class TextWordList;
++class TextPage;
++class TextLineFrag;
+ 
+ class TextPool {
+ public:

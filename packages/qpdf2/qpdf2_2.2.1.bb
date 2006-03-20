@@ -1,19 +1,19 @@
 DESCRIPTION = "QPDF2 is a Viewer for PDF documents. An unnecessary fork based on opie-qpdf."
 PRIORITY = "optional"
 SECTION = "opie/applications"
+HOMEPAGE = "http://qpdf2.sf.net"
 LICENSE = "GPL"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-NOTE = "This is so hacky you won't believe it until you look at the source..."
 DEPENDS = "t1lib freetype"
 APPNAME = "qpdf"
 APPTYPE = "binary"
 APPDESKTOP = "${S}/ipkg-render-freetype/opt/QtPalmtop/apps/Applications"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qpdf2/qpdf2_2.2.1_20040217b.tgz \
            file://hack-the-hack.patch;patch=1 \
            file://fix-sigsegv.patch;patch=1 \
-	   file://fix_qtversion_check.patch;patch=1"
+           file://fix_qtversion_check.patch;patch=1 \
+           file://gcc4.patch;patch=1"
 S = "${WORKDIR}/qpdf2_${PV}"
 
 inherit opie
