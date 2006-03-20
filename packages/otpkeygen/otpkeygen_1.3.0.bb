@@ -2,8 +2,10 @@ DESCRIPTION = "OTP S/Key password generator"
 SECTION = "opie/applications"
 HOMEPAGE = "http://www.bitrot.de/pda_otpkeygen.html"
 AUTHOR = "Thomas Driemeyer <thomas@bitrot.de>"
+MAINTANER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPTYPE="binary"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.bitrot.de/pub/otpkeygen/otpkeygen-src_${PV}.tar.gz"
 
