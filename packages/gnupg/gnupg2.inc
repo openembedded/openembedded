@@ -2,7 +2,6 @@ SECTION = "console/utils"
 DESCRIPTION = "gnupg - GNU privacy guard - development version"
 HOMEPAGE = "http://www.gnupg.org/"
 LICENSE = "GPLv2"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 # DEPENDS = "zlib libgpg-error libgcrypt libassuan ksba opensc"
 DEPENDS = "zlib libgpg-error libgcrypt libassuan"
 
