@@ -1,7 +1,7 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
-FEED_URIS_append_openzaurus = " opie##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
+FEED_URIS_append_openzaurus = " opie##${FEED_BASE_URI}/feed/opie "
 FEED_URIS_append_opensimpad = " opie##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
