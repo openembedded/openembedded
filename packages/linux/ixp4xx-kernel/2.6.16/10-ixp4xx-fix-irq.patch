@@ -1,0 +1,25 @@
+---
+ arch/arm/mach-ixp4xx/common.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/common.c	2006-03-18 18:10:56.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/common.c	2006-03-18 18:48:46.000000000 +0100
+@@ -91,7 +91,7 @@ static void ixp4xx_config_irq(unsigned i
+ /*
+  * IRQ -> GPIO mapping table
+  */
+-static int irq2gpio[32] = {
++static char irq2gpio[32] = {
+ 	-1, -1, -1, -1, -1, -1,  0,  1,
+ 	-1, -1, -1, -1, -1, -1, -1, -1,
+ 	-1, -1, -1,  2,  3,  4,  5,  6,
+@@ -153,6 +153,9 @@ static int ixp4xx_set_irq_type(unsigned 
+ 	/* Set the new style */
+ 	*int_reg |= (int_style << (line * IXP4XX_GPIO_STYLE_SIZE));
+ 
++	/* Configure the line as an input */
++	gpio_line_config(line, IXP4XX_GPIO_IN);
++
+ 	return 0;
+ }
+ 

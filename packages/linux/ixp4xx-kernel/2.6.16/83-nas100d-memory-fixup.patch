@@ -1,0 +1,66 @@
+Include a fixup machine start function in nas100d-setup.c to handle
+the command line and memory setup parameters which are not specifiable
+in the boot loader.
+
+TODO: We must check what is actually passed by the stock
+RedBoot on the nas100d.
+
+Signed-off-by: John Bowler <jbowler@acm.org>
+
+ arch/arm/mach-ixp4xx/nas100d-setup.c |   33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-03-09 02:13:15.000000000 +0100
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-03-09 02:13:54.000000000 +0100
+@@ -19,6 +19,7 @@
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+ #include <asm/mach/flash.h>
++#include <asm/setup.h>
+ 
+ static struct flash_platform_data nas100d_flash_data = {
+ 	.map_name		= "cfi_probe",
+@@ -125,11 +126,43 @@ static void __init nas100d_init(void)
+ 	platform_add_devices(nas100d_devices, ARRAY_SIZE(nas100d_devices));
+ }
+ 
++/*
++ * NAS100D bootstrap may pass in parameters, but we zap the mem
++ * settings to be safe (the box always has 64MByte at 0).  The
++ * passed in command line can override this default, we prepend
++ * to the config'ed default.
++ *
++ * NOTE: the startup sequence is:
++ * 	1) Call the machine fixup
++ * 	2) Parse the ATAG list, the ATAG_CMDLINE is copied in
++ * 	   to default_command_line which is the value of *from
++ * 	3) Parse the command line in *from (*not*
++ * 	   default_command_line unless they are the same!)
++ *
++ * Setting mi->nr_banks causes (2) to 'squash' (set to ATAG_NONE)
++ * any ATAG_MEM tags, but mem= command line options cause nr_banks
++ * to be reset to 0 (on the first mem=)
++ */
++
++static void __init nas100d_fixup(struct machine_desc *desc,
++		struct tag *tags, char **cmdline, struct meminfo *mi)
++{
++	/* The NAS100D has one bank of 64MByte memory.
++	 * NOTE: setting nr_banks != 0 causes kernel/setup.c to remove
++	 * the mem tags from the tag list.  We need do nothing here!
++	 */
++	mi->nr_banks = 1;
++	mi->bank[0].start = 0;
++	mi->bank[0].size = (64*1024*1024);
++	mi->bank[0].node = PHYS_TO_NID(0);
++}
++
+ MACHINE_START(NAS100D, "Iomega NAS 100d")
+ 	/* Maintainer: www.nslu2-linux.org */
+ 	.phys_io	= IXP4XX_PERIPHERAL_BASE_PHYS,
+ 	.io_pg_offst	= ((IXP4XX_PERIPHERAL_BASE_VIRT) >> 18) & 0xFFFC,
+ 	.boot_params	= 0x00000100,
++	.fixup          = nas100d_fixup,
+ 	.map_io		= ixp4xx_map_io,
+ 	.init_irq	= ixp4xx_init_irq,
+ 	.timer          = &ixp4xx_timer,
