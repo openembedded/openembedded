@@ -3,20 +3,17 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
-
 DEPENDS = "gpe-bootsplash"
 RDEPENDS = "gpe-bootsplash"
-
-PR = "r0"
+PR = "r1"
 
 export THEME = "opie"
 
 SRC_URI = "file://*.svg \
-	   file://*${THEME}*logo*"
+           file://*${THEME}*logo*"
 
-FILES_${PN} = "/usr/share/gpe/splash-${THEME}-*\
-	       /usr/share/gpe/${THEME}-logo.png"
-
+#FIXME: please use $datadir instead of /usr/share
+#FIXME: please use an gpe-bootsplash-theme.inc to reduce duplication
 
 do_install(){
 	install -d "${D}/usr/share/gpe"	
@@ -33,3 +30,7 @@ pkg_postrm() {
 	update-alternatives --remove bootsplash-l /usr/share/gpe/splash-${THEME}-landscape.svg
 	update-alternatives --remove bootsplash-p /usr/share/gpe/splash-${THEME}-portrait.svg	
 }
+
+FILES_${PN} = "/usr/share/gpe/splash-${THEME}-* \
+               /usr/share/gpe/${THEME}-logo.png"
+
