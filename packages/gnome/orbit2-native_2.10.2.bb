@@ -12,6 +12,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/orbit2-${PV}"
 
 inherit autotools native pkgconfig
 
+PARALLEL_MAKE = ""
 EXTRA_OECONF = "--disable-gtk-doc"
 
 do_configure_prepend() {
