@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.16-rc4-git7
-# Fri Feb 24 22:40:39 2006
+# Linux kernel version: 2.6.16
+# Tue Mar 21 13:57:18 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -600,7 +600,7 @@ CONFIG_SCSI_PROC_FS=y
 # SCSI support type (disk, tape, CD-ROM)
 #
 CONFIG_BLK_DEV_SD=m
-# CONFIG_CHR_DEV_ST is not set
+CONFIG_CHR_DEV_ST=m
 # CONFIG_CHR_DEV_OSST is not set
 CONFIG_BLK_DEV_SR=m
 # CONFIG_BLK_DEV_SR_VENDOR is not set
@@ -865,7 +865,7 @@ CONFIG_PPP_SYNC_TTY=m
 CONFIG_PPP_DEFLATE=m
 CONFIG_PPP_BSDCOMP=m
 CONFIG_PPP_MPPE=m
-# CONFIG_PPPOE is not set
+CONFIG_PPPOE=m
 # CONFIG_SLIP is not set
 # CONFIG_NET_FC is not set
 # CONFIG_SHAPER is not set
@@ -1757,7 +1757,7 @@ CONFIG_CRYPTO_TEST=m
 # Library routines
 #
 CONFIG_CRC_CCITT=m
-# CONFIG_CRC16 is not set
+CONFIG_CRC16=m
 CONFIG_CRC32=y
 CONFIG_LIBCRC32C=m
 CONFIG_ZLIB_INFLATE=y
