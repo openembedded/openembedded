@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml2"
+PR = "ml3"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -19,6 +19,7 @@ RDEPENDS = "\
 		python-hmm		\
 		python-inotify		\
 		python-irclib		\
+		python-itools		\
 		python-logilab		\
 		python-libgmail		\
 		python-mad		\
