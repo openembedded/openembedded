@@ -14,7 +14,8 @@ SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
            file://Makefile-libs.patch;patch=1 \
            file://libmpdemux-ogg-include.patch;patch=1 \
            file://libmpcodecs-ogg-include.patch;patch=1 \
-	   file://alsa-configure.patch;patch=1 "
+	   file://alsa-configure.patch;patch=1 \
+	   file://mplayer-1.0_pre7-gcc4.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
