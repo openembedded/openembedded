@@ -5,6 +5,7 @@ DEPENDS  = "openssl ortp speex expat"
 PROVIDES = "libjingle"
 CVSDATE  = 20060322
 SRCDATE  = ${CVSDATE}
+PV = "0.3.0+tapiocasvn${SRCDATE}"
 
 inherit autotools pkgconfig
 
