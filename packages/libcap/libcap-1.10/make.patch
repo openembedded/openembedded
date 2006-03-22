@@ -1,0 +1,20 @@
+Index: libcap-1.10.orig/Make.Rules
+===================================================================
+--- libcap-1.10.orig.orig/Make.Rules	1999-11-18 07:06:02.000000000 +0100
++++ libcap-1.10.orig/Make.Rules	2006-03-20 23:05:56.083854920 +0100
+@@ -41,15 +41,11 @@
+ 
+ # Compilation specifics
+ 
+-CC=gcc
+-COPTFLAGS=-O2
+ DEBUG=-g #-DDEBUG
+ WARNINGS=-ansi -D_POSIX_SOURCE -Wall -Wwrite-strings \
+         -Wpointer-arith -Wcast-qual -Wcast-align \
+         -Wtraditional -Wstrict-prototypes -Wmissing-prototypes \
+         -Wnested-externs -Winline -Wshadow -pedantic
+-LD=ld
+-LDFLAGS=-s #-g
+ 
+ IPATH=-I$(topdir)/libcap/include
+ INCS=$(topdir)/libcap/include/sys/capability.h

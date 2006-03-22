@@ -1,0 +1,13 @@
+Index: libcap-1.10.orig/libcap/Makefile
+===================================================================
+--- libcap-1.10.orig.orig/libcap/Makefile	2006-03-20 23:11:05.696786600 +0100
++++ libcap-1.10.orig/libcap/Makefile	2006-03-20 23:14:29.527799576 +0100
+@@ -45,7 +45,7 @@
+ all: $(MINLIBNAME)
+ 
+ _makenames: _makenames.c cap_names.sed
+-	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
++	$(BUILD_CC) $(BUILD_CFLAGS) $(BUILD_LDFLAGS) $< -o $@
+ 
+ cap_names.h: _makenames
+ 	./_makenames > cap_names.h
