@@ -2,7 +2,7 @@ PR = "r0"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>
 HOMEPAGE = "http://tapioca-voip.sourceforge.net/wiki/index.php/Tapioca"
 LICENSE = "LGPL"
-DEPENDS = "glib dbus"
+DEPENDS = "glib-2.0 dbus"
 
 inherit autotools pkgconfig
 
