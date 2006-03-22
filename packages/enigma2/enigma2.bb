@@ -8,7 +8,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060312"
+CVSDATE = "20060323"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
