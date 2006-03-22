@@ -7,3 +7,5 @@ DEPENDS = "glib-2.0 dbus"
 inherit autotools pkgconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tapioca-voip/${P}.tar.gz"
+
+FILES_${PN} += "${datadir}/dbus*"
