@@ -2,7 +2,7 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
-DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag"
+DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag"
 PR = "r0"
 
 inherit autotools pkgconfig gconf
