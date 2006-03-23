@@ -1,9 +1,0 @@
---- services/launch-wrapper.sh.old	2005-06-15 12:46:19.000000000 +0200
-+++ services/launch-wrapper.sh	2005-06-15 12:46:32.000000000 +0200
-@@ -38,5 +38,5 @@
- 
- if [ $START = TRUE ]; then
-   echo "Starting $SVC"
--  /sbin/start-stop-daemon --start -x $CMD -p $PIDFILE -o -m -q -- $PARAMS &
-+  /sbin/start-stop-daemon --start -x $CMD -p $PIDFILE -m -q -- $PARAMS &
- fi
