@@ -11,6 +11,7 @@ http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
 	file://extensions-hack.patch;patch=1 \
+	file://firefox-1.0-gcc4-compile.patch;patch=1;pnum=0 \
 	file://mozilla-thunderbird.png file://mozilla-thunderbird.desktop"
 S = "${WORKDIR}/mozilla"
 

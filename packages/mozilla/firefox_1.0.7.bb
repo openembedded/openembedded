@@ -4,7 +4,8 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://no-xmb.patch;patch=1 \
 	file://firefox-cc-fix.patch;patch=1 \
 	file://jsautocfg.h \
-	file://extensions-hack.patch;patch=1"
+	file://extensions-hack.patch;patch=1 \
+	file://firefox-1.0-gcc4-compile.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/mozilla"
 
