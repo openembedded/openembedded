@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -65,6 +65,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
 	   ${DOSRC}/kexec-arm-r2.patch;patch=1 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
+           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/pxa-linking-bug.patch;patch=1 \
