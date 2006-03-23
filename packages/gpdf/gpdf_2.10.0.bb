@@ -4,6 +4,8 @@ PR = "r0"
 
 inherit gnome
 
+SRC_URI_append = " file://gpdf-2.10.0-gcc4-2.patch;patch=1"
+
 DEPENDS = "gtk+ libgnomeui libbonoboui gnome-vfs gconf gettext libglade \
 	libgnomeprint libgnomeprintui gnome-common"
 
