@@ -1,0 +1,13 @@
+Index: trunk/src/prism2/driver/prism2_usb.c
+===================================================================
+--- trunk.orig/src/prism2/driver/prism2_usb.c	2006-03-22 09:10:51.049384984 +0100
++++ trunk/src/prism2/driver/prism2_usb.c	2006-03-22 09:14:39.152708008 +0100
+@@ -313,7 +313,7 @@
+ 
+ 
+ struct usb_driver prism2_usb_driver = {
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2,4,19))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION(2,4,19) && LINUX_VERSION_CODE < KERNEL_VERSION(2,6,16))
+ 	.owner = THIS_MODULE,
+ #endif
+ 	.name = "prism2_usb",

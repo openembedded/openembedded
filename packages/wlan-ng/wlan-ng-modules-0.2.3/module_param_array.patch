@@ -1,0 +1,21 @@
+Index: linux-wlan-ng-0.2.3/src/prism2/driver/prism2_cs.c
+===================================================================
+--- linux-wlan-ng-0.2.3.orig/src/prism2/driver/prism2_cs.c	2005-09-30 18:19:26.000000000 +0200
++++ linux-wlan-ng-0.2.3/src/prism2/driver/prism2_cs.c	2006-02-06 20:23:23.902133136 +0100
+@@ -22,12 +22,16 @@
+ 						 * says.
+ 						 */
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,11) )
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+ #if (LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,8))
+ static int numlist = 4;
+ module_param_array(irq_list, int, numlist, 0444);
+ #else
+ module_param_array(irq_list, int, NULL, 0444);
+ #endif
++#else
++MODULE_PARM( irq_list, "1-4i" );
++#endif
+ module_param( irq_mask, int, 0644);
+ #endif
+ 
