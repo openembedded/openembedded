@@ -1,0 +1,84 @@
+Index: trunk/src/prism2/driver/prism2_cs.c
+===================================================================
+--- trunk.orig/src/prism2/driver/prism2_cs.c	2006-03-23 08:45:02.000000000 +0100
++++ trunk/src/prism2/driver/prism2_cs.c	2006-03-23 09:14:21.777552944 +0100
+@@ -45,6 +45,8 @@
+ static void	prism2sta_config(dev_link_t *link);
+ static void	prism2sta_release(u_long arg);
+ static int 	prism2sta_event (event_t event, int priority, event_callback_args_t *args);
++static int 	prism2sta_suspend1(struct pcmcia_device *dev);
++static int 	prism2sta_resume1(struct pcmcia_device *dev);
+ 
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,68))
+ /*----------------------------------------------------------------
+@@ -140,13 +142,23 @@
+ 	.drv = { 
+ 		.name = "prism2_cs",
+ 	},
+-	.attach = prism2sta_attach,
+-	.detach = prism2sta_detach,
+-	.owner = THIS_MODULE,
+-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,12)
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,15))
++        .probe	= prism2sta_attach,
++        .remove = prism2sta_detach,
++	.suspend= prism2sta_suspend1,
++	.resume = prism2sta_resume1,
++#else
++        .attach	= prism2sta_attach,
++        .detach	= prism2sta_detach,
++#endif
++        .owner	= THIS_MODULE,
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,13))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
++        .event	= prism2sta_event,
++#endif
+ 	.id_table = prism2_cs_ids,
+-	.event = prism2sta_event,
+ #endif
++							
+ };
+ #endif /* kernel_version */
+ 
+@@ -361,7 +373,41 @@
+ 	return;
+ }
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,15))
++static int prism2sta_suspend1(struct pcmcia_device *dev)
++{
++        dev_link_t *link = dev_to_instance(dev);
++	wlandevice_t *wlandev = (wlandevice_t*)link->priv; 
++	
++	DBFENTER;
++	
++	link->state |= DEV_SUSPEND;
++	if (link->state & DEV_CONFIG) {
++		prism2sta_ifstate(wlandev, P80211ENUM_ifstate_disable);
++		pcmcia_release_configuration(link->handle);
++	}
++	
++	DBFEXIT; 
++	return 0;
++}
+ 
++static int prism2sta_resume1(struct pcmcia_device *dev)
++{
++        dev_link_t *link = dev_to_instance(dev);
++	wlandevice_t *wlandev = (wlandevice_t*)link->priv; 
++	
++	DBFENTER; 
++		
++	link->state &= ~DEV_SUSPEND;
++	if (link->state & DEV_CONFIG) {
++		pcmcia_request_configuration(link->handle, &link->conf);
++	}
++			
++	DBFEXIT; 
++	return 0;
++}
++#endif
++																					
+ /*----------------------------------------------------------------
+ * prism2sta_config
+ *

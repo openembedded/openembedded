@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-wlan-ng-0.2.2/src/prism2/driver/prism2_usb.c~msleep-vs-mdelay
++++ linux-wlan-ng-0.2.2/src/prism2/driver/prism2_usb.c
+@@ -279,7 +279,7 @@
+ 		 * is "wake up", so that's easy.
+ 		 * (I'd like a better way to do this, really.)
+ 		 */
+-		msleep(100);
++		mdelay(100);
+ 
+ 		/* Now delete the CTLXs, because no-one else can now. */
+ 		list_for_each_safe(entry, temp, &cleanlist) {
