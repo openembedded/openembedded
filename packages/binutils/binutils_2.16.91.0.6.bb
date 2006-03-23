@@ -4,6 +4,9 @@ SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_arm-linuxeabi = "1"
+
 inherit autotools gettext
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
