@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 DEFAULT_PREFERENCE = "-1"
-PR = "r3"
+PR = "r4"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
@@ -52,6 +52,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
            file://ldsocache-varrun.patch;patch=1 \
            file://nptl-crosscompile.patch;patch=1 \
 	   file://glibc-2.4-compile.patch;patch=1 \
+	   file://fixup-aeabi-syscalls.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
