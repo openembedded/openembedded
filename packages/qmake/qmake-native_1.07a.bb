@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r2"
+PR = "r3"
 
 QTEVER = "qt-embedded-free-3.3.5"
 
@@ -18,18 +18,13 @@ export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
 
 do_configure() {
-	# Install the OE build templates (linux, linux-uclibc)
-	install -d ${S}/mkspecs/linux-oe-g++
-	install -d ${S}/mkspecs/linux-uclibc-oe-g++
-	install -m 0644 ${WORKDIR}/linux-oe-qmake.conf \
-		${S}/mkspecs/linux-oe-g++/qmake.conf
-	ln -sf ../linux-g++/qplatformdefs.h \
-		${S}/mkspecs/linux-oe-g++/qplatformdefs.h
-	ln -sf ../linux-oe-g++/qmake.conf \
-		${S}/mkspecs/linux-uclibc-oe-g++/qmake.conf
-	ln -sf ../linux-g++/qplatformdefs.h \
-		${S}/mkspecs/linux-uclibc-oe-g++/qplatformdefs.h
-
+	# Install the OE build templates
+	for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++
+	do
+		install -d ${S}/mkspecs/$template
+		install -m 0644 ${WORKDIR}/linux-oe-qmake.conf ${S}/mkspecs/$template/qmake.conf
+		ln -sf ../linux-g++/qplatformdefs.h ${S}/mkspecs/$template/qplatformdefs.h
+	done
 	QMAKESPEC=
 	PLATFORM=${HOST_OS}-oe-g++
 	export PLATFORM
