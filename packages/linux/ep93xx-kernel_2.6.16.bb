@@ -1,15 +1,18 @@
 DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
+MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
-PR = "r13"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.15.tar.bz2 \
-  		   http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.16-rc5.bz2;patch=1 \   
-		   http://www.wantstofly.org/~buytenh/ep93xx/derevo16.diff;patch=1 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+	   http://www.wantstofly.org/~buytenh/ep93xx/derevo17.diff;patch=1 \
+	   http://cowebs.contec.at/ep93xx/EP93XX_Framebuffer1.patch;patch=1 \
+	   http://cowebs.contec.at/ep93xx/EP93XX_Framebuffer1_registers.patch;patch=1 \
+	   http://cowebs.contec.at/ep93xx/EP93XX_Framebuffer1_registers_raster.patch;patch=1 \ 
            file://defconfig \
 		   "
 
-S = "${WORKDIR}/linux-2.6.15"
+S = "${WORKDIR}/linux-2.6.16"
 
 inherit kernel
 
