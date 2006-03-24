@@ -3,10 +3,11 @@ SECTION = "base"
 MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 DESCRIPTION = "Daemon to handle device specifc features."
 PV = "0.0+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 DEPENDS = "tslib"
 
-SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http"
+SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
+	   file://mbinputmgr-honor-user-prefs.patch;patch=1"
 S = "${WORKDIR}/${PN}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
