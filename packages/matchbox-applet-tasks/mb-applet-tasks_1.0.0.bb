@@ -1,7 +1,9 @@
 DESCRIPTION = "Tasks applet switcher for matchbox"
 LICENSE = "GPLv2"
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl"
+MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "gtk+ libwnck libmatchbox"
+
+PR = "r1"
 
 CFLAGS += "-I${STAGING_INCDIR} \
 	   -I${STAGING_INCDIR}/gtk-2.0 \
@@ -17,6 +19,8 @@ SRC_URI = "http://mail.pdaxrom.org/1.1.0beta1/src/${P}.tar.bz2"
 
 do_install() {
 install -d ${D}/${datadir}/applications
+install -d ${D}/${bindir}
+
 install -m 755 mb-applet-tasks ${D}/${bindir}
 install -m 644 mb-applet-tasks.desktop ${D}/${datadir}/applications
 }
