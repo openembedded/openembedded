@@ -1,6 +1,6 @@
 DESCRIPTION = "Tasks applet switcher for matchbox"
 LICENSE = "GPLv2"
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl"
+MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "gtk+ libwnck libmatchbox"
 
 CFLAGS += "-I${STAGING_INCDIR} \
