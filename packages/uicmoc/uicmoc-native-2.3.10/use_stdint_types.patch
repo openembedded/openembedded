@@ -1,0 +1,226 @@
+--- qt-2.3.10/src/kernel/qsharedmemory.cpp~64bit	2005-12-14 12:31:39.000000000 +0000
++++ qt-2.3.10/src/kernel/qsharedmemory.cpp	2005-12-14 13:24:41.000000000 +0000
+@@ -36,6 +36,7 @@
+ 
+ #include <sys/ipc.h>
+ #include <sys/types.h>
++#include <stdint.h>
+ 
+ #if defined(QT_POSIX_QSHM)
+ #include <fcntl.h>
+@@ -122,8 +123,8 @@
+   if (shmId == -1)
+     shmId = shmget (key, shmSize, 0);
+ 
+-  shmBase = shmat (shmId, 0, 0);
+-  if ((int) shmBase == -1 || shmBase == 0)
++  intptr_t shmBase = (intptr_t) shmat (shmId, 0, 0);
++  if (shmBase == -1 || shmBase == 0)
+     return FALSE;
+   else
+     return TRUE;
+--- qt-2.3.10/src/kernel/qapplication_qws.cpp~64bit	2005-12-14 12:15:42.000000000 +0000
++++ qt-2.3.10/src/kernel/qapplication_qws.cpp	2005-12-14 12:19:39.000000000 +0000
+@@ -87,6 +87,7 @@
+ #include <sys/shm.h>
+ #include <sys/sem.h>
+ #include <sys/socket.h>
++#include <stdint.h>
+ #endif
+ 
+ #include <stdlib.h>
+@@ -2041,7 +2042,7 @@
+ 	w = widgetAt(*qt_last_x, *qt_last_y, FALSE);
+     if ( !w )
+ 	w = desktop();
+-    QPaintDevice::qwsDisplay()->selectCursor(w, (int)app_cursor->handle());
++    QPaintDevice::qwsDisplay()->selectCursor(w, (intptr_t)app_cursor->handle());
+ }
+ 
+ void QApplication::restoreOverrideCursor()
+@@ -2060,11 +2061,11 @@
+ 	cursorStack = 0;
+ 	qws_overrideCursor = FALSE;
+ 	if ( w->testWState(WState_OwnCursor) )
+-	    QPaintDevice::qwsDisplay()->selectCursor(w, (int)w->cursor().handle());
++	    QPaintDevice::qwsDisplay()->selectCursor(w, (intptr_t)w->cursor().handle());
+ 	else
+ 	    QPaintDevice::qwsDisplay()->selectCursor(w, ArrowCursor);
+     } else {
+-	QPaintDevice::qwsDisplay()->selectCursor(w, (int)app_cursor->handle());
++	QPaintDevice::qwsDisplay()->selectCursor(w, (intptr_t)app_cursor->handle());
+     }
+ }
+ #endif// QT_NO_CURSOR
+@@ -2635,7 +2636,7 @@
+ 		    }
+ 		    if ( !qws_overrideCursor ) {    // is override cursor active?
+ 			if (curs)
+-			    QPaintDevice::qwsDisplay()->selectCursor(widget, (int)curs->handle());
++			    QPaintDevice::qwsDisplay()->selectCursor(widget, (intptr_t)curs->handle());
+ 			else
+ 			    QPaintDevice::qwsDisplay()->selectCursor(widget, ArrowCursor);
+ 		    }
+--- qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp~64bit	2005-01-23 14:00:46.000000000 +0000
++++ qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp	2005-12-14 12:04:56.000000000 +0000
+@@ -42,6 +42,7 @@
+ #include <sys/mman.h>
+ #include <fcntl.h>
+ #include <errno.h>
++#include <stdint.h>
+ 
+ #include "qgfxlinuxfb_qws.h"
+ #include "qwindowsystem_qws.h"
+@@ -164,7 +165,7 @@
+ 				 MAP_SHARED, fd, 0);
+     data += dataoffset;
+ 
+-    if ((int)data == -1) {
++    if ((intptr_t)data == -1) {
+ 	perror("mapping /dev/fb0");
+ 	qWarning("Error: failed to map framebuffer device to memory.");
+ 	return FALSE;
+@@ -703,7 +704,7 @@
+     psize += 8;	    // for alignment
+     psize &= ~0x7;  // align
+ 
+-    unsigned int pos=(unsigned int)data;
++    uintptr_t pos=(uintptr_t)data;
+     pos += psize;
+     entryp = ((int *)pos);
+     lowest = ((unsigned int *)pos)+1;
+--- qt-2.3.10/src/kernel/qmemorymanager_qws.h~64bit	2005-01-23 14:00:46.000000000 +0000
++++ qt-2.3.10/src/kernel/qmemorymanager_qws.h	2005-12-14 12:00:32.000000000 +0000
+@@ -33,6 +33,9 @@
+ #ifndef QMEMORYMANAGER_H
+ #define QMEMORYMANAGER_H
+ 
++/* Needed for uintptr_t to allow 64bit clean pointer handling */
++#include <stdint.h> 
++
+ #ifndef QT_H
+ #include <qfontmanager_qws.h>
+ #include <qstring.h>
+@@ -126,8 +129,8 @@
+     // constructs from a memory ptr to where the data after the item starts
+     QSMCacheItemPtr(void *data) {
+ 	char *ptr = (char*)data;
+-	if ( (int)ptr != (((int)ptr+3)&~3) )
+-	    qDebug("err, passed a non-aligned data ptr %x", (int)ptr);
++	if (intptr_t(data)&3!=0)
++	    qDebug("err, passed a non-aligned data ptr %p", ptr);
+ 	d = (QSMCacheItem*)(ptr - sizeof(QSMCacheItem));
+     }
+     // returns a pointer to the data after the item
+--- qt-2.3.10/src/kernel/qwsregionmanager_qws.cpp~64bit	2005-12-14 13:25:06.000000000 +0000
++++ qt-2.3.10/src/kernel/qwsregionmanager_qws.cpp	2005-12-14 13:25:51.000000000 +0000
+@@ -32,6 +32,7 @@
+ #include "qwsdisplay_qws.h"
+ #include "qwsregionmanager_qws.h"
+ #include <stdlib.h>
++#include <stdint.h>
+ 
+ #ifndef QT_NO_QWS_MULTIPROCESS
+ #include <sys/types.h>
+@@ -286,7 +287,7 @@
+ 	    data = (unsigned char *)shmat( shmId, 0, SHM_RDONLY );
+     }
+ 
+-    return ( shmId != -1 && (int)data != -1 );
++    return ( shmId != -1 && (intptr_t)data != -1 );
+ #else
+ 	int dataSize = sizeof(QWSRegionHeader)                // header
+ 		    + sizeof(QWSRegionIndex) * QT_MAX_REGIONS // + index
+--- qt-2.3.10/src/kernel/qpixmapcache.cpp~64bit	2005-12-14 13:26:43.000000000 +0000
++++ qt-2.3.10/src/kernel/qpixmapcache.cpp	2005-12-14 13:30:33.000000000 +0000
+@@ -38,6 +38,7 @@
+ #include "qpixmapcache.h"
+ #include "qcache.h"
+ #include "qobject.h"
++#include <stdint.h>
+ 
+ 
+ // REVISED: paul
+@@ -519,7 +520,7 @@
+ #endif // DEBUG_SHARED_MEMORY_CACHE
+     }
+ 
+-    if ( shmId == -1 || (int)shm == -1 )
++    if ( shmId == -1 || (intptr_t)shm == -1 )
+ 	qFatal("Cannot attach to shared memory");
+ 
+     qt_sharedMemoryData = shm->data;
+@@ -536,8 +537,8 @@
+ 	shm->tail.setFree(false);
+ 	shm->tail.setNextFree(QSMemPtr());
+ #ifdef THROW_AWAY_UNUSED_PAGES
+-	int freePageStart = PAGE_ALIGN((int)&shm->first + sizeof(QSMemNode));
+-	int freePagesLength = PAGE_ALIGN((int)&shm->tail) - freePageStart;
++	intptr_t freePageStart = PAGE_ALIGN((intptr_t)&shm->first + sizeof(QSMemNode));
++	intptr_t freePagesLength = PAGE_ALIGN((intptr_t)&shm->tail) - freePageStart;
+ 	if ( freePagesLength ) {
+ # ifdef DEBUG_SHARED_MEMORY_CACHE
+ 	    qDebug("Initially marking free pages as not needed");
+@@ -770,8 +771,8 @@
+     node = newFreeNode->next();
+ 
+ #ifdef THROW_AWAY_UNUSED_PAGES
+-    int freePageStart = PAGE_ALIGN((int)newFreeNode+sizeof(QSMemNode));
+-    int freePagesLength = PAGE_ALIGN((int)node) - freePageStart;
++    intptr_t freePageStart = PAGE_ALIGN((intptr_t)newFreeNode+sizeof(QSMemNode));
++    intptr_t freePagesLength = PAGE_ALIGN((intptr_t)node) - freePageStart;
+     if ( freePagesLength ) {
+ #ifdef DEBUG_SHARED_MEMORY_CACHE
+ 	qDebug("Marking pages not needed");
+--- qt-2.3.10/src/kernel/qwidget_qws.cpp~64bit	2005-12-14 12:20:46.000000000 +0000
++++ qt-2.3.10/src/kernel/qwidget_qws.cpp	2005-12-14 12:30:35.000000000 +0000
+@@ -50,6 +50,7 @@
+ #include "qwsmanager_qws.h"
+ #include "qwsregionmanager_qws.h"
+ #include "qinputcontext_p.h"
++#include <stdint.h>
+ 
+ void qt_insert_sip( QWidget*, int, int );	// defined in qapplication_x11.cpp
+ int  qt_sip_count( QWidget* );			// --- "" ---
+@@ -633,7 +634,7 @@
+ 	qt_mouseGrb->releaseMouse();
+ 
+     qwsDisplay()->grabMouse(this,TRUE);
+-    qwsDisplay()->selectCursor(this, (unsigned int)cursor.handle());
++    qwsDisplay()->selectCursor(this, (uintptr_t)cursor.handle());
+     qt_mouseGrb = this;
+     qt_pressGrab = 0;
+ }
+@@ -1840,11 +1841,11 @@
+ void QWidget::updateCursor( const QRegion &r ) const
+ {
+     if ( qt_last_x && (!QWidget::mouseGrabber() || QWidget::mouseGrabber() == this) &&
+-	    qt_last_cursor != (WId)cursor().handle() && !qws_overrideCursor ) {
++	    qt_last_cursor != (uintptr_t)cursor().handle() && !qws_overrideCursor ) {
+ 	QSize s( qt_screen->width(), qt_screen->height() );
+ 	QPoint pos = qt_screen->mapToDevice(QPoint(*qt_last_x, *qt_last_y), s);
+ 	if ( r.contains(pos) )
+-	    qwsDisplay()->selectCursor((QWidget*)this, (unsigned int)cursor().handle());
++	    qwsDisplay()->selectCursor((QWidget*)this, (uintptr_t)cursor().handle());
+     }
+ }
+ #endif
+--- qt-2.3.10/tools/qvfb/qvfbview.cpp~64bit	2005-12-14 13:32:47.000000000 +0000
++++ qt-2.3.10/tools/qvfb/qvfbview.cpp	2005-12-14 13:33:27.000000000 +0000
+@@ -40,6 +40,7 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <math.h>
++#include <stdint.h>
+ 
+ 
+ QVFbView::QVFbView( int display_id, int _w, int _h, int d, Rotation r, QWidget *parent,
+@@ -136,7 +137,7 @@
+ 	data = (unsigned char *)shmat( shmId, 0, 0 );
+     }
+ 
+-    if ( (int)data == -1 ){
++    if ( (intptr_t)data == -1 ){
+ 	::close(mouseFd);
+ 	::close(keyboardFd);
+ 	qFatal( "Cannot attach to shared memory %d",shmId );
