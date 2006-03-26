@@ -2,11 +2,12 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://atty.skr.jp/?Zaurus%2Fmplayer"
-DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg alsa-lib"
+DEPENDS = "virtual/libsdl freetype libmad libogg libvorbis zlib libpng jpeg alsa-lib mplayer-common"
+RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 RCONFLICTS = "mplayer"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.xora.org.uk/oe/mplayer-${PV}.tar.gz \
 	   file://Makefile.patch;patch=1;pnum=0 \
