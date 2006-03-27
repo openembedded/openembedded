@@ -38,7 +38,7 @@
 +		then			
 +			readlink /usr/share/gpe/$source_link > /etc/bootsplash.name
 +			
-+			cat /dev/fb0 > /etc/bootsplash.raw ; gzip /etc/bootsplash.raw
++			cat /dev/fb0 | gzip >/etc/bootsplash.raw.gz
 +		else
 +			echo -e "\nNOTE: gpe-bootsplash failed to start" >/dev/tty2
 +			sleep 3

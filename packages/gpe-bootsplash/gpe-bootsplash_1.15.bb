@@ -5,7 +5,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://splash-p.svg \
 	    file://splash-l.svg \
