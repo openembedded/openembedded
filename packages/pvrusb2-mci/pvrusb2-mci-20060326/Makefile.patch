@@ -1,0 +1,25 @@
+*** driver/Makefile-	Tue Feb 28 21:05:41 2006
+--- driver/Makefile	Tue Feb 28 21:07:15 2006
+***************
+*** 45,54 ****
+    M:=$(shell pwd)
+  
+    modules modules_install clean:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(M) CONFIG_VIDEO_PVRUSB2=m $@
+  
+    install:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(M) CONFIG_VIDEO_PVRUSB2=m modules_install
+  
+  else
+  
+--- 45,54 ----
+    M:=$(shell pwd)
+  
+    modules modules_install clean:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) CFLAGS="$(CFLAGS)" M=$(M) CONFIG_VIDEO_PVRUSB2=m $@
+  
+    install:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) CFLAGS="$(CFLAGS)" M=$(M) CONFIG_VIDEO_PVRUSB2=m modules_install
+  
+  else
+  

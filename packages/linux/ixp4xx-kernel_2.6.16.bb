@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r0.${PR_CONFIG}"
+PR = "r1.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -17,8 +17,9 @@ include ixp4xx-kernel.inc
 # IXP4XX_PATCHES - full list of patches to apply
 IXP4XX_PATCHES  = ""
 
-IXP4XX_PATCHES += "file://patch-2.6.16-rc6-ide1;patch=1"
+IXP4XX_PATCHES += "file://patch-2.6.16-rc4-ide2;patch=1"
 IXP4XX_PATCHES += "file://leds-class.patch;patch=1"
+IXP4XX_PATCHES += "file://copypage-xscale.patch;patch=1"
 # IXP4XX_PATCHES += "file://06-remove-extraversion.patch;patch=1"
 IXP4XX_PATCHES += "file://10-ixp4xx-fix-irq.patch;patch=1"
 IXP4XX_PATCHES += "file://11-mtdpart-redboot-config-byteswap.patch;patch=1"
