@@ -7,10 +7,13 @@
 
 
 STEP=5
-MAX_BRIGHTNESS=`cat /sys/class/backlight/*/max_brightness`
-ACTUAL_BRIGHTNESS=`cat /sys/class/backlight/*/actual_brightness`
-BRIGHTNESS_FILE="/sys/class/backlight/*/brightness"
+DRIVER="`ls /sys/class/backlight/|head -1`"
+MAX_BRIGHTNESS=`cat /sys/class/backlight/$DRIVER/max_brightness`
+ACTUAL_BRIGHTNESS=`cat /sys/class/backlight/$DRIVER/actual_brightness`
+BRIGHTNESS_FILE="/sys/class/backlight/$DRIVER/brightness"
 
+echo "max / current"
+echo "$MAX_BRIGHTNESS / $ACTUAL_BRIGHTNESS"
 if [ ! -n "$1" ]; then
     exit 0
 fi
