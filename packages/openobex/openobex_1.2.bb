@@ -11,7 +11,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
 
 inherit autotools binconfig pkgconfig
 
-EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump"
+EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump \
+                --with-usb=${STAGING_DIR} --with-bluez=${STAGING_DIR}"
 
 do_stage() {
 	oe_libinstall -so -C lib libopenobex ${STAGING_LIBDIR}
