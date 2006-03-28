@@ -1,0 +1,13 @@
+Index: zbedic/src/settings.cpp
+===================================================================
+--- zbedic.orig/src/settings.cpp	2006-03-15 11:24:11.000000000 +0100
++++ zbedic/src/settings.cpp	2006-03-15 15:03:55.000000000 +0100
+@@ -117,7 +117,7 @@
+ 
+ ZBEDicSettings::ZBEDicSettings( QWidget *parent ): QTabDialog( parent, "options", true )
+ {
+-  setCaption( tr( "ZBEDic Settings (v. " VERSION ")" ) );
++  setCaption( tr( "ZBEDic Settings (v. 1.0)" ) );
+ 
+ }
+ 

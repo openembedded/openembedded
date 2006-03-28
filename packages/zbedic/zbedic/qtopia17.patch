@@ -3,8 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- src/main.cpp~compilefix
-+++ src/main.cpp
+--- zbedic/src/main.cpp~compilefix
++++ zbedic/src/main.cpp
 @@ -25,5 +25,13 @@
  #include "zbedic.h"
  #include <qtopia/qpeapplication.h>
