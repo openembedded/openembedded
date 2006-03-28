@@ -12,4 +12,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
+export INCLUDE = "${STAGING_INCDIR}/${PYTHON_DIR}"
+export LIB = "${STAGING_LIBDIR}"
+
 FILES_${PN} += "${datadir}"
