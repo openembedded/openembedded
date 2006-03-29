@@ -7,10 +7,12 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 CVSDATE = "20050627"
-PR = "r0"
+PR = "r3"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
+
+GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -37,7 +39,6 @@ INHIBIT_DEFAULT_DEPS = "1"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
 #	   file://arm-memcpy.patch;patch=1;pnum=0 \
 #	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
 #	   \
@@ -47,6 +48,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
            http://familiar.handhelds.org/source/v0.8.3/stash_ports_sources.redhat.com__20050627.tar.gz \
     	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
+	   file://arm-no-hwcap.patch;patch=1 \
 	   file://arm-memcpy.patch;patch=1 \
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://fhs-linux-paths.patch;patch=1 \
