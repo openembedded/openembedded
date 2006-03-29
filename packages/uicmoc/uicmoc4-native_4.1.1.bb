@@ -2,10 +2,10 @@ DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
-           file://fix-mkspecs.patch;patch=1 "
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz"
+
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 inherit native
