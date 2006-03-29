@@ -5,7 +5,7 @@
 #
 DESCRIPTION = "Packages that are required for the SlugOS native build environment"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
@@ -16,8 +16,7 @@ PROVIDES += "${SLUGOS_IMAGENAME}-native"
 # Run-time only (RDEPENDS) stuff - no package explicitly provides
 # these targets.
 SLUGOS_NATIVE_RT_prepend_linux = "\
-	glibc-extra-nss glibc-utils \
-	libc6 libc6-dev \
+	glibc-extra-nss glibc-utils glibc \
 	"
 SLUGOS_NATIVE_RT_prepend_linux-uclibc = "\
 	uclibc-dev uclibc-utils \
