@@ -91,7 +91,20 @@ run_module() {
 		do
 			stty echo
 			echo -n "Boot NFS root: "
-			read junk < /dev/tty1
+			
+			if test "$AUTOBOOT" != "yes"
+			then
+				read junk < /dev/tty1
+			else
+				if test -e /etc/.altboot-bootNFS-source.last
+				then
+					junk="`cat /etc/.altboot-bootNFS-source.last`"
+					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+				else
+					read junk < /dev/tty1
+				fi
+			fi	
+				
 			
 			cnt=1
 			for nfs_mount in $nfs_mounts
@@ -99,6 +112,7 @@ run_module() {
 				if test "$junk" = "$cnt"
 				then
 					selection="$nfs_mount"
+					echo "$junk" > /etc/.altboot-bootNFS-source.last
 				fi
 				let cnt=$cnt+1
 			done			
@@ -115,10 +129,10 @@ run_module() {
 	mount -t nfs "$selection" /media/nfsroot && echo ok || die "mount -t nfs "$selection" /media/nfsroot failed!"
 	
 	# Use configured resolv.conf in the pivoted rootfs
-	echo -n "Copying resolv.conf..."
+	#echo -n "Copying resolv.conf..."
 	#cp /etc/resolv.conf /media/nfsroot/etc && echo ok || echo "FAILED"
 	
-	check_target "/media/nfsroot"
+	check_target "/media/nfsroot" bootNFS
 	
 }	
 
