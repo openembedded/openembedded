@@ -3,16 +3,16 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r2"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
 	file://makefile.patch;patch=1 \
-	file://firmware.patch;patch=1 \
-	file://zd1205.c.diff;patch=1 \
-	file://zdhci.c.diff;patch=1 \
-	file://transmitkey.index.fix.diff;patch=1 \
 	" 
+
+SRC_URI_unslung = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
+        	file://makefile-unslung.patch;patch=1 \
+        	"
 
 S = "${WORKDIR}/zd1211-driver-${PV}"
 
@@ -23,10 +23,9 @@ do_compile () {
         oe_runmake 'MODPATH={D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net' \
 		   'KERNEL_SOURCE=${STAGING_KERNEL_DIR}' \
 		   'KDIR=${STAGING_KERNEL_DIR}' \
-		   'SRC_DIR=${S}/src' \
-		   'KERNE_VERSION=${KERNEL_VERSION}' \
-                   'CC="${KERNEL_CC}"' \
-                   'LD="${KERNEL_LD}"' 
+		   'KERNEL_VERSION=${KERNEL_VERSION}' \
+                   'CC=${KERNEL_CC}' \
+                   'LD=${KERNEL_LD}' 
 }
 
 do_install() {   
