@@ -1,0 +1,13 @@
+--- gpe-session-scripts-0.66/X11/xsettings.default.orig	2006-03-29 19:31:24.356027984 +0200
++++ gpe-session-scripts-0.66/X11/xsettings.default	2006-03-29 19:31:38.532872776 +0200
+@@ -1,8 +1,8 @@
+ Gtk/IconSizes:S:gtk-dialog=30,30:gtk-button=16,16
+ Gtk/ToolbarIconSize:I:1
+ Gtk/ToolbarStyle:I:2
+-Gtk/FontName:S:Sans 7
+-MATCHBOX/Desktop/Font:S:Sans 7
++Gtk/FontName:S:Sans 12
++MATCHBOX/Desktop/Font:S:Sans 12
+ Net/ThemeName:S:Default
+ MATCHBOX/Background:S:col-solid:#1f00a2
+ 

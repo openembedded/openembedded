@@ -1,0 +1,7 @@
+# Finnish keymappings
+shift altgr keycode 63  = +Adiaeresis
+shift altgr keycode 13 = +Odiaeresis
+altgr keycode 63  = +adiaeresis
+altgr keycode 13 = +odiaeresis
+
+keycode 103 = AltGr
