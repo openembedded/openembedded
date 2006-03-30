@@ -37,9 +37,9 @@ check_target() {
 			then
 				read junk < /dev/tty1
 			else
-				if test -e /etc/.altboot-$2-real-or-loop.last
+				if test -e /etc/.altboot-real-or-loop.last
 				then
-					junk="`cat /etc/.altboot-$2-real-or-loop.last`"
+					junk="`cat /etc/.altboot-real-or-loop.last`"
 					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
 				else
 					read junk < /dev/tty1
@@ -49,7 +49,7 @@ check_target() {
 			if test "$junk" = 1 -o "$junk" = 2
 			then
 				ans="$junk"
-				echo "$junk" > /etc/.altboot-$2-real-or-loop.last
+				echo "$junk" > /etc/.altboot-real-or-loop.last
 			fi
 		done
 		
@@ -71,6 +71,18 @@ check_target() {
 	then
 		die "Nothing to do!"
 	fi
+}
+
+boot_new_rootfs_splash() {
+C_RED="\033[37;44m"
+C_RESET="\033[0m"
+
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}|               Booting the selected rootfs...             |${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"	
+
 }
 
 # This function pivot_root's into a real filesystem calling $newrootfs/sbin/init
@@ -137,7 +149,9 @@ pivot_image() {
 		IMAGE_NAME="`ls *rootfs.bin`"		
 		test -z "$IMAGE_NAME" && die "No rootfs found (*rootfs.bin) in $1/$IMAGE_PATH"
 	fi
-
+	
+	
+	echo ""
 	echo "Using [$IMAGE_NAME]"
 
 	mkdir -p /media/image || die "mkdir -p /media/image failed"
@@ -187,11 +201,11 @@ do_pivot(){
 			! test -d "$new_mpt" && mkdir -p "$new_mpt" 
 			/bin/busybox mount -o move "$mpt" "$new_mpt"
 		done
-		
+
+		clear		
+		boot_new_rootfs_splash		
 		echo "Calling INIT"
-		
-		#read junk
-		
+			
 		exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"

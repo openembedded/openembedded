@@ -1,12 +1,12 @@
 DESCRIPTION = "A text-based bootmanager allowing a Zaurus to boot from SD, CF, USB-Storage and NFS. \
-Tested machines: Collie, Poodle, Akita, Spitz"
+Tested machines: Collie, Poodle, Akita, Spitz, C7x0, Tosa"
 SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 IGNORE_STRIP_ERRORS = "1"
 
-PR = "r28"
+PR = "r29"
 
 
 SRC_URI = "file://altboot-menu \
