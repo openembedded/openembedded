@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
-PR = "ml5"
+PR = "ml0"
 
 PYTHON_MAJMIN = "2.4"
 
