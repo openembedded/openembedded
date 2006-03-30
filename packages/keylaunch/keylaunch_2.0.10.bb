@@ -1,6 +1,9 @@
 inherit gpe
 
 DEPENDS = "virtual/xserver libxtst libxau libxpm libgpelaunch"
+DEPENDS_append_openzaurus = " display-brightness"
+RDEPENDS_append_openzaurus = " display-brightness"
+
 SECTION = "gpe"
 LICENSE = "GPL"
 DESCRIPTION = "A small utility for binding commands to a hot key.\
@@ -10,7 +13,7 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PR = "r0"
+PR = "r2"
 
 SRC_URI += " file://keylaunchrc"
 

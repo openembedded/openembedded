@@ -183,6 +183,13 @@ run_timer() {
 			echo -n "." >/dev/tty1
 			let cnt=$cnt+1
 		done
+		
+		if test "$launch_altboot" != "yes"
+		then
+			AUTOBOOT=yes
+		else
+			rm -f /etc/.altboot*.last
+		fi
 	else
 		launch_altboot=yes
 	fi

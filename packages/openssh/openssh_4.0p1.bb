@@ -1,4 +1,10 @@
 DEPENDS = "zlib openssl"
+
+RREPLACES_openssh = "dropbear"
+RCONFLICTS_openssh = "dropbear"
+RREPLACES_openssh-sshd = "dropbear"
+RCONFLICTS_openssh-sshd = "dropbear"
+
 SECTION = "console/network"
 DESCRIPTION = "Secure rlogin/rsh/rcp/telnet replacement (OpenSSH) \
 Ssh (Secure Shell) is a program for logging into a remote machine \
@@ -11,7 +17,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \

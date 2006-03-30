@@ -1,6 +1,10 @@
-key=....F9:-:gpe-calendar
-key=....F10:-:gpe-contacts
+key=....F9:-:gpe-contacts
+key=....F10:-:gpe-calendar
 key=....F13:-:sylpheed
-key=....F12:-:gpe-mini-browser
-key=...*F18:-:display-brightness.sh down
-key=...*F19:-:display-brightness.sh up
+key=....F12:-:~matchbox-remote -next
+key=...*F12:-:~matchbox-remote -desktop
+key=....F11:-:~matchbox-remote -menu
+#key=...*1:-:~zoom out
+#key=...*2:-:~zoom in
+key=...*3:-:~display-brightness.sh down 
+key=...*4:-:~display-brightness.sh up 

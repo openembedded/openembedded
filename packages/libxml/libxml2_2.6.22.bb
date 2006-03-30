@@ -8,9 +8,8 @@ PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 FILES_${PN}-dev += "${bindir}/xml-config"
 FILES_${PN}-utils += "${bindir}"
 
-SRC_URI = "http://xmlsoft.org/sources/libxml2-${PV}.tar.gz \
+SRC_URI = "http://xmlsoft.org/sources/libxml2/libxml2-${PV}.tar.gz \
 		   file://no-testapi.patch;patch=1"
-
 inherit autotools pkgconfig 
 
 EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --without-c14n"
