@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r4"
+PR = "r3"
 
 inherit gpe
 
@@ -16,14 +16,11 @@ SRC_URI += "file://matchbox-session \
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_ipaq-pxa270 = " file://highdpifontfix.patch;patch=1"
+SRC_URI_append_spitz = " file://highdpifontfix.patch;patch=1"
+SRC_URI_append_akita = " file://highdpifontfix.patch;patch=1"
+SRC_URI_append_borzoi = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_c7x0 = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_nokia770 = " file://highdpifontfix.patch;patch=1"
-
-# While SL-Cxxxx has a 200dpi screen, too, a fontsize < 10 is barely readable
-SRC_URI_append_akita += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-SRC_URI_append_borzoi += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-SRC_URI_append_spitz += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
