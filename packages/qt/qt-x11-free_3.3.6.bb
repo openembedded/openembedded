@@ -1,4 +1,4 @@
-DESCRIPTION = "Qt/X11 Version ${PV}"
+DESCRIPTION = "Qt/X11 Version ${PV} is a full fledged cross-platform application framework"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
@@ -6,11 +6,12 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc3-native freetype libx11 xft libxext libxrender libxrandr libxcursor mysql"
 PROVIDES = "qt3x11"
-PR = "r10"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
-	   file://no-examples.patch;patch=1"
+	   file://no-examples.patch;patch=1 \
+           file://gcc4_1-HACK.patch;patch=1"
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
 inherit qmake-base qt3x11
