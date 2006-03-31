@@ -15,6 +15,8 @@ SRC_URI = "http://download.gnome.org/sources/pango/1.12/pango-${PV}.tar.bz2 \
 
 inherit autotools pkgconfig
 
+DEFAULT_PREFERENCE="-1"
+
 EXTRA_OECONF = "--disable-glibtest \
 		--enable-explicit-deps=no \
 	        --disable-debug"
