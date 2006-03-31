@@ -1,14 +1,14 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
-MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
+MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
 PR = "r3"
-DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.0beta/sylpheed-2.0.0rc.tar.bz2 \
-	file://sylpheed-gnutls_2.0.0rc.patch;patch=1 \
-	file://sylpheed-gnutls-extra.patch;patch=1 "
+SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.2/sylpheed-${PV}.tar.bz2 \
+	file://sylpheed-2.2.2-libsylph-Makefile-am.patch;patch=1 \
+	file://sylpheed-2.2.2-src-Makefile-am.patch;patch=1"
+
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN}-doc += "${datadir}"
