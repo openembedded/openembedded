@@ -53,8 +53,6 @@ SRC_URI_append_spitz =          " file://disable-apm.patch;patch=1 \
                                   file://faster-rotated.patch;patch=1"
 SRC_URI_append_akita =          " file://disable-apm.patch;patch=1 \
                                   file://faster-rotated.patch;patch=1"
-SRC_URI_append_borzoi =         " file://disable-apm.patch;patch=1 \
-                                  file://faster-rotated.patch;patch=1"
 SRC_URI_append_simpad =         " file://disable-apm.patch;patch=1"
 
 PACKAGE_ARCH_simpad = "simpad" 
@@ -67,7 +65,6 @@ PACKAGE_ARCH_h3900 = "h3900"
 PACKAGE_ARCH_h2200 = "h2200"
 PACKAGE_ARCH_spitz = "spitz"
 PACKAGE_ARCH_akita = "akita"
-PACKAGE_ARCH_borzoi = "borzoi"
 
 S = "${WORKDIR}/xserver"
 

@@ -41,7 +41,6 @@ SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
 SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_borzoi       = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
@@ -97,7 +96,6 @@ EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS
 EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
-EXTRA_DEFINES_borzoi            = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"

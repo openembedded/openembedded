@@ -61,7 +61,6 @@ task-opie-base-applets_append_mnci       = " opie-vtapplet opie-logoutapplet"
 task-opie-base-depends_append_c7x0   = " opie-autorotateapplet"
 task-opie-base-depends_append_spitz  = " opie-autorotateapplet"
 task-opie-base-depends_append_akita  = " opie-autorotateapplet"
-task-opie-base-depends_append_borzoi = " opie-autorotateapplet"
 
 task-opie-base-inputmethods = "opie-multikey opie-handwriting opie-pickboard \
                                opie-handwriting-classicset"

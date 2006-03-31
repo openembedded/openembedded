@@ -15,7 +15,6 @@ SRC_URI_append_c7x0         = " file://keymap-*.map"
 SRC_URI_append_tosa         = " file://keymap-*.map"
 SRC_URI_append_akita        = " file://keymap-*.map"
 SRC_URI_append_spitz        = " file://keymap-*.map"
-SRC_URI_append_borzoi       = " file://keymap-*.map"
 SRC_URI_append_collie       = " file://keymap-*.map"
 SRC_URI_append_poodle       = " file://keymap-*.map"
 

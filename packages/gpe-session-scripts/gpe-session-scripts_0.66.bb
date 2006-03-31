@@ -13,9 +13,8 @@ DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question 
 
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
-	
+
 SRC_URI_append_akita += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-SRC_URI_append_borzoi += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
 SRC_URI_append_spitz += " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
 
 do_install_append() {
