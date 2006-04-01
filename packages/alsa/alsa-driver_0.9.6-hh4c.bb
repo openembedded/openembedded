@@ -1,8 +1,10 @@
 DESCRIPTION = "Alsa Drivers"
-MAINTAINER = "Pigi"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r7"
+
+DEPENDS += "fakeroot-native virtual/kernel"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
 	file://sound.p.patch;patch=1 \
@@ -11,6 +13,9 @@ SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz
 	file://adriver.h.patch;patch=1"
 
 inherit autotools module
+
+# avoid miscompilation
+KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX} ${HOST_CC_ARCH}"
 
 EXTRA_OECONF = "--with-sequencer=yes \
 	--with-isapnp=no \
