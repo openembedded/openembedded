@@ -1,0 +1,154 @@
+--- clean/matchbox-panel-0.9.2/src/msg.c	2005-03-20 17:43:32.000000000 +0000
++++ matchbox-panel-0.9.2/src/msg.c	2006-01-12 20:35:29.151432064 +0000
+@@ -604,21 +604,38 @@ msg_handle_events(MBPanel *panel, XEvent
+    }
+ }
+ 
+-void
+-msg_handle_timeouts(MBPanel *d)
++Bool
++msg_set_timeout(MBPanel *d, struct timeval *tv, struct timeval **tvp)
+ {
+    if (d->msg_win)
+    {
+      if (d->msg_timeout) 	/* NON ZERO */
+        {
+-	 if ((d->msg_starttime+d->msg_timeout) < _get_server_time(d))
++	 int timeleft, sec, usec;
++	 
++	 timeleft = d->msg_timeout - (_get_server_time (d) - d->msg_starttime);
++	 if (timeleft < 0)
+ 	   {
+-	       XDestroyWindow(d->dpy, d->msg_win);
+-	       d->msg_win = None;
+-	       return;
++	     XDestroyWindow(d->dpy, d->msg_win);
++	     d->msg_win = None;
++	     return False;
+ 	   }
++
++	 sec = timeleft / 1000;
++	 usec = (timeleft % 1000) * 1000;
++
++	 if (!*tvp || tv->tv_sec > sec || (tv->tv_sec == sec && tv->tv_usec > usec))
++	   {
++	     tv->tv_usec = usec;
++	     tv->tv_sec = sec;
++	     *tvp = tv;
++	   }
++
++	 return True;
+        }
+    }
++
++   return False;
+ }
+ 
+ static MBLayout*
+diff -upr clean/matchbox-panel-0.9.2/src/msg.h matchbox-panel-0.9.2/src/msg.h
+--- clean/matchbox-panel-0.9.2/src/msg.h	2005-03-20 17:43:32.000000000 +0000
++++ matchbox-panel-0.9.2/src/msg.h	2006-01-12 20:30:40.843261568 +0000
+@@ -15,6 +15,6 @@ MBPanelMessageQueue* msg_new(MBPanel *do
+ void msg_destroy(MBPanel *d, MBPanelMessageQueue *m);
+ void msg_add_data(MBPanel *d, XClientMessageEvent *e);
+ void msg_handle_events(MBPanel *d, XEvent *e);
+-void msg_handle_timeouts(MBPanel *d);
++Bool msg_set_timeout(MBPanel *d, struct timeval *tv, struct timeval **tvp);
+ 
+ #endif
+diff -upr clean/matchbox-panel-0.9.2/src/panel.c matchbox-panel-0.9.2/src/panel.c
+--- clean/matchbox-panel-0.9.2/src/panel.c	2005-04-06 21:11:52.000000000 +0100
++++ matchbox-panel-0.9.2/src/panel.c	2006-01-12 20:33:13.282087344 +0000
+@@ -1023,11 +1023,12 @@ panel_main(MBPanel *panel)
+ 
+   while(1)
+     {
+-      struct timeval tvt;
+-      tvt.tv_usec = 500;
+-      tvt.tv_sec = 0;
++      struct timeval tvt, *tvp = NULL;
++
++      session_preexisting_set_timeout (panel, &tvt, &tvp);
++      msg_set_timeout (panel, &tvt, &tvp);
+       
+-      if (get_xevent_timed(panel->dpy, &an_event, &tvt))
++      if (get_xevent_timed(panel->dpy, &an_event, tvp))
+ 	{
+ #ifdef USE_XSETTINGS
+ 	  if (panel->xsettings_client != NULL)
+@@ -1225,8 +1226,6 @@ panel_main(MBPanel *panel)
+ 	    }
+ 	  msg_handle_events(panel, &an_event);
+ 	}
+-      session_preexisting_handle_timeouts(panel);
+-      msg_handle_timeouts(panel);
+     }
+ }
+ 
+Only in matchbox-panel-0.9.2/src: panel.c~
+Only in matchbox-panel-0.9.2/src: panel_menu.o
+Only in matchbox-panel-0.9.2/src: panel.o
+Only in matchbox-panel-0.9.2/src: panel_util.o
+diff -upr clean/matchbox-panel-0.9.2/src/session.c matchbox-panel-0.9.2/src/session.c
+--- clean/matchbox-panel-0.9.2/src/session.c	2005-03-20 17:43:33.000000000 +0000
++++ matchbox-panel-0.9.2/src/session.c	2006-01-12 20:24:15.986768648 +0000
+@@ -235,23 +235,39 @@ session_preexisting_clear_current(MBPane
+   panel->session_entry_cur[0] = '\0';
+ }
+ 
+-Bool 
+-session_preexisting_handle_timeouts(MBPanel *panel)
++Bool
++session_preexisting_set_timeout(MBPanel *panel, struct timeval *tv, struct timeval **tvp)
+ {
+-  if (!session_preexisting_restarting(panel)) return False;
+-
+-  /* DBG("%s() called\n", __func__); */
++  int timeleft;
+ 
+-  /* catch session timeouts */
+-  if (panel->session_entry_cur[0] != '\0')
++  for (;;)
+     {
+-      if ( (time(NULL)-panel->session_start_time) > SESSION_TIMEOUT)
++      if (!session_preexisting_restarting(panel)) 
++	return False;
++
++      if (panel->session_entry_cur[0] == '\0')
++	return False;
++
++      timeleft = SESSION_TIMEOUT - (time (NULL) - panel->session_start_time);
++
++      if (timeleft <= 0)
+ 	{
+ 	  fprintf(stderr, "Session timeout on %s\n", panel->session_entry_cur);
+ 	  session_preexisting_clear_current(panel);
+ 	  session_preexisting_start_next(panel);
++	  continue;
+ 	}
++
++      break;
+     }
++
++  if (!*tvp || tv->tv_sec > timeleft)
++    {
++      tv->tv_usec = 0;
++      tv->tv_sec = timeleft;
++      *tvp = tv;
++    }
++
+   return True;
+ }
+ 
+diff -upr clean/matchbox-panel-0.9.2/src/session.h matchbox-panel-0.9.2/src/session.h
+--- clean/matchbox-panel-0.9.2/src/session.h	2005-03-20 17:43:33.000000000 +0000
++++ matchbox-panel-0.9.2/src/session.h	2006-01-12 20:24:37.310526944 +0000
+@@ -28,7 +28,7 @@ Bool session_preexisting_win_matches_wan
+ 
+ void session_preexisting_clear_current(MBPanel *panel);
+ 
+-Bool session_preexisting_handle_timeouts(MBPanel *panel);
++Bool session_preexisting_set_timeout(MBPanel *panel, struct timeval *tv, struct timeval **tvp);
+ 
+ Bool session_preexisting_get_next(MBPanel *panel);
+ 
