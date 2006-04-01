@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/qwt/qwt-${PV}.tgz \
 
 inherit qmake
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=thread"
+EXTRA_QMAKEVARS_POST = "CONFIG-=thread DEFINES+=QWS"
 
 do_stage() {
 	oe_libinstall -so -C lib libqwt ${STAGING_LIBDIR}
