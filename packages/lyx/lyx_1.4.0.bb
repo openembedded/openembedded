@@ -5,25 +5,21 @@ HOMEPAGE = "http://www.lyx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "boost qt3x11"
 RRECOMMENDS = "tetex"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.lyx.org/pub/lyx/stable/lyx-${PV}.tar.bz2"
+# we're checking out from svn because the tarball doesn't contain the necessary stuff to run autoreconf
+SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags;module=lyx-1_4_0;rev=13538"
+S = "${WORKDIR}/lyx-1_4_0"
 
 inherit autotools qt3x11
 
 EXTRA_OECONF = "--with-frontend=qt --with-qt-dir=${QTDIR}"
+PARALLEL_MAKE = ""
+
+do_configure_prepend() {
+	echo "NOTE: touching missing files, please report to upstream"
+	touch lib/configure.ac lib/doc/LaTeXConfig.lyx lib/textclass.lst
+}
 
 export UIC="${OE_QMAKE_UIC}"
 export MOC="${OE_QMAKE_MOC}"
-
-do_configure() {
-	oe_runconf
-}
-
-do_install_append() {
-	for i in noweb2lyx lyx reLyX
-	do
-		ln -sf ./${TARGET_PREFIX}$i ${D}/${bindir}/$i
-	done
-}
-
