@@ -3,8 +3,9 @@ open source implementation of the Object Exchange \
 (OBEX) protocol."
 HOMEPAGE = "http://openobex.triq.net"
 SECTION = "libs"
+PROVIDES = "openobex-apps"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch;patch=1"
