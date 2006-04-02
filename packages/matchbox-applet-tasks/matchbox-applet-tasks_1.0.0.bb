@@ -15,7 +15,9 @@ CFLAGS += "-I${STAGING_INCDIR} \
 	   -I${STAGING_INCDIR}/cairo \
 	   -DWNCK_I_KNOW_THIS_IS_UNSTABLE"
 
-SRC_URI = "http://mail.pdaxrom.org/1.1.0beta1/src/${P}.tar.bz2"
+SRC_URI = "http://mail.pdaxrom.org/1.1.0beta1/src/mb-applet-tasks-${PV}.tar.bz2"
+
+S = "${WORKDIR}/mb-applet-tasks-1.0.0/"
 
 do_install() {
 install -d ${D}/${datadir}/applications
