@@ -1,7 +1,0 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- linux-wlan-ng-0.2.2/wlan_compat.h
-+++ /dev/null
