@@ -7,21 +7,21 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
-HOMEPAGE = "http://iqnotes.kybu.org"
-AUTHOR = "Peter Vrabel <kybu@kybu.org>"
-PR = "r3"
+HOMEPAGE = "http://iqnotes.berlios.de"
+AUTHOR = "Peter Vrabel <kybu@users.berlios.de>"
 
-SRC_URI = "http://www.vanille.de/mirror/iqnotes-2.0.2-src.tar.bz2 \
-           file://md5.diff;patch=1 \
-           file://qt2310-fontbug.patch;patch=1"
+#upstream version
+UPV = "2.1.0rc1"
 
-S = "${WORKDIR}/iqnotes/iqnotes"
+SRC_URI = "http://download.berlios.de/iqnotes/iqnotes-${UPV}.tar.bz2 \
+           file://pro.patch;patch=1"
 
+S = "${WORKDIR}/iqnotes-${UPV}/iqnotes/"
+
+EXTRA_QMAKEVARS_POST += "CONFIG-=desktop CONFIG-=debug CONFIG+=pda LIBS-=-lqtopia"
 inherit palmtop
 
-QMAKE_PROFILES = "iqnotes.pro"
 export OE_QMAKE_LINK="${CXX}"
-
 
 do_install() {
         install -d ${D}${palmtopdir}/help/html \
