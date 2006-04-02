@@ -6,6 +6,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqpe"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://iqnotes.berlios.de"
 AUTHOR = "Peter Vrabel <kybu@users.berlios.de>"
 
