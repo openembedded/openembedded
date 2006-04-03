@@ -96,3 +96,6 @@ KERNEL="rfcomm[0-9]*", NAME="%k", GROUP="users", MODE="0660"
 
 # Firmware Helper
 ACTION=="add", SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware_helper"
+
+# on ARM we get /dev/rtc0 but many apps need /dev/rtc
+KERNEL=="rtc0" NAME="rtc0" SYMLINK="rtc"
