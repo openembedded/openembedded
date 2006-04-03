@@ -20,7 +20,7 @@ do_stage() {
         install -d ${STAGING_INCDIR}/gammu/misc  ${STAGING_INCDIR}/gammu/misc/coding \
                    ${STAGING_INCDIR}/gammu/phone ${STAGING_INCDIR}/gammu/phone/at \
                    ${STAGING_INCDIR}/gammu/phone/obex ${STAGING_INCDIR}/gammu/phone/nokia \
-                   ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4 \
+                   ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4tiku \
                    ${STAGING_INCDIR}/gammu/phone/symbian ${STAGING_INCDIR}/gammu/phone/alcatel \
                    ${STAGING_INCDIR}/gammu/service ${STAGING_INCDIR}/gammu/service/sms \
                    ${STAGING_INCDIR}/gammu/service/backup ${STAGING_INCDIR}/gammu/device \
@@ -40,7 +40,7 @@ do_stage() {
         install -m 0644 common/phone/obex/*.h           ${STAGING_INCDIR}/gammu/phone/obex 
         install -m 0644 common/phone/nokia/*.h          ${STAGING_INCDIR}/gammu/phone/nokia 
         install -m 0644 common/phone/nokia/dct3/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct3 
-        install -m 0644 common/phone/nokia/dct4/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct4 
+        install -m 0644 common/phone/nokia/dct4tiku/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct4tiku
         install -m 0644 common/phone/symbian/*.h        ${STAGING_INCDIR}/gammu/phone/symbian 
         install -m 0644 common/phone/alcatel/*.h        ${STAGING_INCDIR}/gammu/phone/alcatel 
         install -m 0644 common/service/*.h              ${STAGING_INCDIR}/gammu/service 
