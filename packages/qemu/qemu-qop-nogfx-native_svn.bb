@@ -3,7 +3,8 @@ PV = "0.8.0+svn${SRCDATE}"
 PROVIDES = "qemu-native"
 
 SRC_URI = "svn://nowt.dyndns.org/svn/qemu;module=trunk;proto=https \
-           file://configure.patch;patch=1"
+           file://configure.patch;patch=1 \
+           file://trunk_nodocs.patch;patch=1"
            
 S = "${WORKDIR}/trunk"
 
