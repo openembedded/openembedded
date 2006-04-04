@@ -1,21 +1,21 @@
 DESCRIPTION = "KDE Web Browser Konqueror, QtE based Palmtop Environments Edition"
-BROKEN = "1"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
-DEPENDS = "openssl pcre libqte-mt dcopidl-native"
+DEPENDS = "openssl pcre libqte-mt-static dcopidl-native"
 LICENSE = "LGPL/GPL"
 DEFAULT_PREFERENCE = "-1"
 FILES_${PN} = "${palmtopdir} /usr/share"
-PR = "r0"
-PV = "svn${SRCDATE}"
+PR = "r1"
+PV = "3.5.1+svn${SRCDATE}"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
 inherit autotools
 
 SRC_URI = "svn://anonsvn.kde.org/home/kde/tags/KDE/3.5.1;module=kdelibs \
-	   svn://anonsvn.kde.org/home/kde/trunk;module=kdenox "
+	   svn://anonsvn.kde.org/home/kde/trunk;module=kdenox \
+	   file://inject-extraflags.patch;patch=1"
 
 S = "${WORKDIR}/kdenox"
 
@@ -25,6 +25,9 @@ export UIC = "${STAGING_BINDIR}/uic"
 export exec_prefix = "${palmtopdir}"
 export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
+EXTRAFLAGS = "-lts"
+EXTRAFLAGS_c7x0 = "-lts -laticore"
+export EXTRA_OEMAKE = "EXTRA_LDFLAGS='${EXTRAFLAGS}'"
 
 EXTRA_OECONF = '--prefix=${palmtopdir} \
     	--exec-prefix=${palmtopdir} \
