@@ -1,0 +1,63 @@
+--- /orig-cpusage.c	2005-08-16 15:37:25.000000000 +0300
++++ /cpusage.c	2006-03-17 22:27:09.000000000 +0200
+@@ -168,6 +168,7 @@
+ int main(int argc, char** argv) {
+ 
+     int i,c,limit;
++    int single;  /* run just one's and exit */
+     int avg; /* is avg measurement allready running */ 
+     int avg_run; /* did we allready had an avg measurement */
+     static long cp_time1[CPUSTATES];
+@@ -184,15 +185,21 @@
+     long total;
+     limit = LIMIT;
+     output = 0; /* human readable */
++    single = 1; /*run continuesly */
+ 
+     /* reading commandline options */
+     while (1) {
+-	c = getopt(argc, argv, "aohl:");
++	c = getopt(argc, argv, "saohl:");
+ 	
+-	if (c == -1)
++	if (c == -1){
+ 	    break;
++        }
+ 
+ 	switch(c){
++        case 's':
++        /*run once and exit */
++           single = 0;             
++           break;
+ 	/* use avg from begin to end -> same as "-l 100" */
+ 	case 'a':
+ 	    limit = 100; 
+@@ -278,6 +285,10 @@
+ 
+ 	print_perc(cpu_perc, ""); 
+ 
++        if (!single ) {
++          breakloop=1;
++        }
++
+ 	if (breakloop) {
+ 	    if (avg) {
+ 		avg = 0;
+@@ -292,7 +303,8 @@
+     if (sigaction(SIGINT, &sigold, &signew) < 0 ){
+ 	fprintf(stderr, "Could not restore signal handler -> exiting");
+     }
+-    
++
++   if (single != 0) {    
+     printf("---Summary----\n");
+     
+     print_perc(cpu_min, "Min");
+@@ -301,6 +313,7 @@
+ 
+     perc(CPUSTATES, cp_avg_start, cp_avg_stop, cp_diff); 
+     print_perc(cpu_perc, "Avg");
++  }
+     
+     return 0;
+ }
