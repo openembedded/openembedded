@@ -28,7 +28,7 @@ BUS=="usb", KERNEL=="ttyUSB*", SYSFS{product}=="Palm Handheld*", \
 
 # usbfs-like devices
 SUBSYSTEM=="usb_device", \
-	PROGRAM="/bin/sh -c 'X=%k X=$${X#usbdev} B=$${X%%%%.*} D=$${X#*.}; echo bus/usb/$$B/$$D'", SYMLINK+="%c"
+	PROGRAM="/bin/sh -c 'export X=%k; export X=$${X#usbdev}; export B=$${X%%%%.*}; export D=$${X#*.}; echo bus/usb/$$B/$$D'", SYMLINK+="%c"
 
 # serial devices
 KERNEL=="capi",			NAME="capi20", SYMLINK+="isdn/capi20"
@@ -96,6 +96,3 @@ KERNEL="rfcomm[0-9]*", NAME="%k", GROUP="users", MODE="0660"
 
 # Firmware Helper
 ACTION=="add", SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware_helper"
-
-# on ARM we get /dev/rtc0 but many apps need /dev/rtc
-KERNEL=="rtc0" NAME="rtc0" SYMLINK="rtc"
