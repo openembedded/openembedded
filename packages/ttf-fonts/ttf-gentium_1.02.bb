@@ -3,7 +3,7 @@ LICENSE = "SIL Open Font License"
 HOMEPAGE = "http://scripts.sil.org/gentium"
 LICENSE_URL = "http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&item_id=OFL"
 
-SRC_URI = "${DEBIAN_MIRROR}/non-free/t/ttf-gentium/ttf-gentium_${PV}.orig.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/t/ttf-gentium/ttf-gentium_${PV}.orig.tar.gz \
            file://OFL.gz"
 
 include ttf.inc
