@@ -13,3 +13,8 @@ EXTRA_OECONF = 	" --disable-gtktest \
 		--without-libtiff \
 		--disable-print \
 		--enable-mp" 
+
+do_configure_append() {
+    find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
+}
+	
