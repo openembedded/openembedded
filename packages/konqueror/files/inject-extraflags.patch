@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdenox/konq-embed/src/Makefile.am~fixit
++++ kdenox/konq-embed/src/Makefile.am
+@@ -49,7 +49,7 @@
+ 		$(top_builddir)/konq-embed/kdesrc/kssl/libkssl.la 
+ 
+ 
+-konqueror_LDFLAGS = $(KONQ_SSL_LDFLAGS) $(all_libraries) -export-dynamic
++konqueror_LDFLAGS = $(KONQ_SSL_LDFLAGS) $(all_libraries) -export-dynamic $(EXTRA_LDFLAGS)
+ konqueror_METASOURCES = AUTO
+ konqueror_DEPENDENCIES = $(LIB_KJSHTML) $(LIB_KHTML) $(LIB_ADDONS)
+ BUILT_SOURCES = init.inc
