@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/kernel/qsoundqss_qws.cpp~fix-errno-exception-spec.patch
++++ qt-2.3.10/src/kernel/qsoundqss_qws.cpp
+@@ -51,8 +51,6 @@
+ #include <sys/ioctl.h>
+ #include <sys/soundcard.h>
+ 
+-extern int errno;
+-
+ #define QT_QWS_SOUND_16BIT 1 // or 0, or undefined for always 0
+ #define QT_QWS_SOUND_STEREO 1 // or 0, or undefined for always 0
+ 
