@@ -1,4 +1,4 @@
-Unslung-5.x Family Release Notes
+Unslung-6.x Family Release Notes
 
 Unslung is a replacement firmware image for the Linksys NSLU2 which is designed
 to allow you to make changes to the root filesystem (including the installation
@@ -18,7 +18,7 @@ posting to the mailing list or asking a question in the IRC channel
 OK! Now that that's out of the way...
 
 This file is provided to give general information and usage notes for the
-Unslung 5.x firmware.  If you are looking for installation instructions, please
+Unslung 6.x firmware.  If you are looking for installation instructions, please
 stop now and go to the README file.  Follow the README instructions WORD for
 WORD to keep from turning your NSLU2 into a brick.  The information contained
 in this file will make more sense if you have already "unslung" your NSLU2.
@@ -38,8 +38,8 @@ GENERAL INFORMATION
 As stated above, Unslung firmware is a replacement firmware image for the
 Linksys NSLU2.  The Unslung firmware is intended to be used for loading new
 packages (giving enhanced or additional functionality) with minimal changes
-to the standard user interface and firmware.  The differences in the Unslung 5.x
-firmware from the standard Linksys 2.3R29 firmware can be found at:
+to the standard user interface and firmware.  The differences in the Unslung 6.x
+firmware from the standard Linksys 2.3R63 firmware can be found at:
 
 	http://www.nslu2-linux.org/wiki/Unslung/UnslungFeatures
 
@@ -447,3 +447,48 @@ Added disk auto-wait countdown to /linuxrc (courtesy of glc).
 5.5:
 
 First public release of 5.x firmware.
+
+6.1:
+
+Upgraded to Linksys firmware V2.3R63.
+
+6.1 to 6.7:
+
+"Unslung" status (i.e. Unslung to disk, or running from internal
+flash) is now displayed on the home page in the Web GUI, as well as
+displayed at login.
+
+Using "ipkg" when running from internal flash now displays a helpful
+message indicating why ipkg won't run.
+
+The unsling script now contains a number of sanity checks, and prints
+(hopefully) helpful error messages if the system will be unlikely to
+unsling correctly.
+
+The unsling script now prompts for a new root password, and sets the
+password for both booting with as well as without drives attached. (A
+new argument "-nopw" can be given to unsling to have it skip prompting
+for and setting the root password.)
+
+The "Enable Telnet" web gui page can now be reached from the home page
+in the Linksys Web GUI.
+
+The new Unslung logo is now featured in the Web GUI.
+
+The special handling for unslinging to flash devices now works for
+both USB Port 1 and 2.
+
+The utmp and wtmp files are now created by unsling, and will be
+"emptied" at each boot. Additionally, the .pid files in /var/run and
+/var/log are cleaned out at boot; this avoids a number of strange and
+difficult-to-reproduce problems.
+
+The following additional kernel modules are provided: loop.o isofs.o 
+keyspan.o netconsole.o 
+
+Sundry bugfixes. 
+
+6.8:
+
+First public release of 6.x firmware.
+
