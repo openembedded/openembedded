@@ -163,6 +163,7 @@ kernel_do_install() {
                 oe_runmake SUBDIRS="scripts/genksyms"
         fi
 
+        install -d ${STAGING_KERNEL_DIR}
         cp -fR scripts ${STAGING_KERNEL_DIR}/
 }
 

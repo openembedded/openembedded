@@ -1,6 +1,7 @@
 #! /bin/sh
 # This function checks for the presence of a real filesystem and loop-images on the target
 # $1 = folder of rootfs, $2 = runlevel (defaults to 5)
+# $2 = name of calling module
 check_target() {
 	# Check if there is a /sbin/init or /sbin/init.sysvinit on the card
 	if test -x $1/sbin/init -o -x $1/$REAL_INIT
@@ -31,11 +32,24 @@ check_target() {
 		while test -z "$ans"
 		do
 			echo -n "Your choice: "
-			read junk < /dev/tty1
+			
+			if test "$AUTOBOOT" != "yes"
+			then
+				read junk < /dev/tty1
+			else
+				if test -e /etc/.altboot-real-or-loop.last
+				then
+					junk="`cat /etc/.altboot-real-or-loop.last`"
+					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+				else
+					read junk < /dev/tty1
+				fi
+			fi	
 			
 			if test "$junk" = 1 -o "$junk" = 2
 			then
 				ans="$junk"
+				echo "$junk" > /etc/.altboot-real-or-loop.last
 			fi
 		done
 		
@@ -59,10 +73,22 @@ check_target() {
 	fi
 }
 
+boot_new_rootfs_splash() {
+C_RED="\033[37;44m"
+C_RESET="\033[0m"
+
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}|               Booting the selected rootfs...             |${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"	
+
+}
+
 # This function pivot_root's into a real filesystem calling $newrootfs/sbin/init
 # $1 = The new rootfs
 pivot_realfs() {
-	test -z "$2" && RL="5" || RL="$2"
+	#test -z "$2" && RL="5" || RL="$2"
 	mkdir -p $1/media/ROM || die "mkdir -p $1/media/ROM failed"
 
 	mount -o remount,ro / >/dev/null 2>&1
@@ -73,7 +99,7 @@ pivot_realfs() {
 # This function loop-mounts an image-file and pivot_root's into it
 # $1: The new rootfs
 pivot_image() {
-	test -z "$2" && RL="5" || RL="$2"
+	#test -z "$2" && RL="5" || RL="$2"
 	cd $1/$IMAGE_PATH
 
 	# Check for rootfs images on the card
@@ -95,7 +121,18 @@ pivot_image() {
 		while test -z "$IMAGE_NAME"
 		do
 			echo -en "Please choose one of the above: "
-			read junk < /dev/tty1
+			if test "$AUTOBOOT" != "yes"
+			then
+				read junk < /dev/tty1
+			else
+				if test -e /etc/.altboot-loopimage.last
+				then
+					junk="`cat /etc/.altboot-loopimage.last`"
+					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+				else
+					read junk < /dev/tty1
+				fi
+			fi	
 
 			x=0
 			for file in `ls *rootfs.bin`
@@ -103,7 +140,8 @@ pivot_image() {
 				let x=$x+1
 				if test "$x" = "$junk"
 				then
-					IMAGE_NAME="$file"						
+					IMAGE_NAME="$file"
+					echo "$junk" > /etc/.altboot-loopimage.last						
 				fi
 			done	
 		done
@@ -111,7 +149,9 @@ pivot_image() {
 		IMAGE_NAME="`ls *rootfs.bin`"		
 		test -z "$IMAGE_NAME" && die "No rootfs found (*rootfs.bin) in $1/$IMAGE_PATH"
 	fi
-
+	
+	
+	echo ""
 	echo "Using [$IMAGE_NAME]"
 
 	mkdir -p /media/image || die "mkdir -p /media/image failed"
@@ -161,11 +201,11 @@ do_pivot(){
 			! test -d "$new_mpt" && mkdir -p "$new_mpt" 
 			/bin/busybox mount -o move "$mpt" "$new_mpt"
 		done
-		
+
+		clear		
+		boot_new_rootfs_splash		
 		echo "Calling INIT"
-		
-		#read junk
-		
+			
 		exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"

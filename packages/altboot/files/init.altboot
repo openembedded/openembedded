@@ -8,7 +8,7 @@
 test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 
 CURRENT_ENV="`set`"
-VERSION="0.0.4"
+VERSION="DEVELOPER SNAPSHOT"
 
 # Set some defaults in case altboot.cfg is missing
 REAL_INIT="/sbin/init.sysvinit"
@@ -183,6 +183,13 @@ run_timer() {
 			echo -n "." >/dev/tty1
 			let cnt=$cnt+1
 		done
+		
+		if test "$launch_altboot" != "yes"
+		then
+			AUTOBOOT=yes
+		else
+			rm -f /etc/.altboot*.last
+		fi
 	else
 		launch_altboot=yes
 	fi
@@ -236,9 +243,13 @@ wait_for_input() {
 		# above to launch the altboot menu.		
 				
  		
-		# This filters an "<ENTER>" from the user as "any key"
-		( while :; do read x< /dev/tty0 2>&1; done; ) > /dev/null 2>&1 &
-		sleep 1; kill $!
+		# Bash throws an ugly error on kill
+		if ! (readlink /bin/sh | grep -q bash)
+		then
+			# This filters an "<ENTER>" from the user as "any key"
+			( while :; do read x< /dev/tty0 2>&1; done; ) > /dev/null 2>&1 &
+			sleep 1; kill $! >/dev/null 2>&1
+		fi
 				
 		
 
@@ -273,7 +284,7 @@ wait_for_input() {
 
 # * * * * * * This is the main function * * * * * *
 
-if test "`runlevel`" != "unknown" -a "$1" != "-force"
+if test -f /proc/cmdline -a "$1" != "-force"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] *" >/dev/tty1
 	exec $REAL_INIT $*

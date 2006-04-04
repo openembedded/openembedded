@@ -2,7 +2,7 @@ include evas.inc
 DEPENDS = "freetype libpng jpeg eet"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV} \
+SRC_URI = "${E_CVS};module=e17/libs/evas;date=${PV} \
            file://pkg.m4"
 S = "${WORKDIR}/evas"
 

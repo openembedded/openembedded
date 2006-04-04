@@ -4,5 +4,5 @@ DEPENDS = "jpeg"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/epeg;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/epeg;date=${PV}"
 S = "${WORKDIR}/epeg"

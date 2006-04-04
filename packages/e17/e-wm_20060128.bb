@@ -1,18 +1,16 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
-SECTION = "e/apps"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r3"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e;date=${PV} \
+inherit e
+
+SRC_URI = "${E_CVS};module=e17/apps/e;date=${PV} \
            file://Xsession.d/98enlightenment \
            file://fix-configure.patch;patch=1 \
            file://remove-large-fonts.patch;patch=1"
 
 S = "${WORKDIR}/e"
-
-inherit autotools
 
 PROFILE = "LORES_PDA"
 PROFILE_c7x0 = "HIRES_PDA"

@@ -5,7 +5,7 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/apps/e;date=${PV} \
+SRC_URI = "${E_CVS};module=e17/apps/e;date=${PV} \
            file://fix-configure.patch;patch=1"
 S = "${WORKDIR}/e"
 

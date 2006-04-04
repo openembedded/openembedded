@@ -16,6 +16,8 @@ FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"
 
+DEFAULT_PREFERENCE="-1"
+
 SRC_URI = "http://download.gnome.org/sources/glib/2.10//glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h"
 

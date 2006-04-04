@@ -25,10 +25,10 @@ do_configure() {
 	install -m 0655 ${WORKDIR}/config.in ${S}/config.in
 	oe_runmake LINUX_SRC=${KERNEL_SOURCE} auto_config
 
-        if grep CONFIG_PCMCIA=[ym] ${STAGING_KERNEL_DIR}/kernel-config; then
-                echo "PRISM2_PCMCIA=y"          >> config.mk
-                echo "WLAN_KERN_PCMCIA=y"       >> config.mk
-        fi
+#        if grep CONFIG_PCMCIA=[ym] ${STAGING_KERNEL_DIR}/kernel-config; then
+#                echo "PRISM2_PCMCIA=y"          >> config.mk
+#                echo "WLAN_KERN_PCMCIA=y"       >> config.mk
+#        fi
         echo "TARGET_ROOT_ON_HOST=${D}/"         >> config.mk
         echo "TARGET_MODDIR=${D}/lib/modules/${KERNEL_VERSION}/wlan-ng" >> config.mk
 	echo "CC=${KERNEL_CC}"			>> config.mk

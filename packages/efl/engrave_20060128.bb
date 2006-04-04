@@ -5,7 +5,7 @@ DEPENDS = "virtual/evas virtual/ecore"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/engrave;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/engrave;date=${PV}"
 S = "${WORKDIR}/engrave"
 
 do_stage_append() {

@@ -4,7 +4,7 @@ SECTION = "kernel/userland"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 PR = "r0"
-PV = "0.23+svn${SRCDATE}"
+PV = "0.2.3+svn${SRCDATE}"
 
 SRC_URI = "svn://svn.shaftnet.org/linux-wlan-ng;module=trunk \
 	file://only-the-utils.patch;patch=1 \
