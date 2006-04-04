@@ -197,12 +197,20 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 3) OK, now that you don't have any disks attached, you can proceed and telnet
      into the NSLU2 using the username root and password uNSLUng.
 
+     - If you are upgrading from a previous release of Unslung, please read
+
+     http://www.nslu2-linux.org/wiki/Unslung/UpgradingToUnslung6
+
 4) Identify which drive you wish you "unsling", and plug it in.  Note that for
      Unslung 6.x it is recommended that you plug the target disk into the Disk2
      port so that you can use the Disk1 port for attaching multiple ext3 and/or
-     NTFS data disks via a USB hub. Wait a minute or two while the disk is
-     mounted.  Check the web interface to make sure that the disk has been
-     recognised by the Linksys software.
+     NTFS data disks via a USB hub.  For more information, see
+
+     http://www.nslu2-linux.org/wiki/Unslung/WhichUSBPortforUnslung6
+
+     Wait a minute or two while the disk is mounted.  Check the web
+     interface to make sure that the disk has been recognised by the
+     Linksys software.
 
      - If the disk has not been previously formatted on the NSLU2, then now is
           the time to do that.  Make sure that the drive is recognized in the
