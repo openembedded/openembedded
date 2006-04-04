@@ -7,8 +7,7 @@ inherit native
 DEPENDS = "evas-native ecore-native eet-native embryo-native imlib2-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/edje"
 
-EXTRA_OECONF = "--with-fb-only \
-  --with-evas-config=${STAGING_BINDIR}/evas-config-native	\
+EXTRA_OECONF = "--with-evas-config=${STAGING_BINDIR}/evas-config-native	\
   --with-ecore-config=${STAGING_BINDIR}/ecore-config-native	\
   --with-eet-config=${STAGING_BINDIR}/eet-config-native		\
   --with-embryo-config=${STAGING_BINDIR}/embryo-config-native	\

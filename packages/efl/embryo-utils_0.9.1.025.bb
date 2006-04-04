@@ -8,7 +8,7 @@ PR = "r4"
 
 inherit efl
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/embryo-${PV}.tar.gz"
+SRC_URI = "${E_URI}/embryo-${PV}.tar.gz"
 S = "${WORKDIR}/embryo-${PV}"
 
 PACKAGES = "embryo-utils"

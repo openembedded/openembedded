@@ -8,5 +8,5 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/embryo;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/embryo;date=${PV}"
 S = "${WORKDIR}/embryo"

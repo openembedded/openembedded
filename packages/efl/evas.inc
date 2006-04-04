@@ -31,3 +31,4 @@ do_configure_prepend() {
 
 headers = "<override me>"
 libraries = "libevas"
+FILES_${PN} += "/usr/lib/evas/"

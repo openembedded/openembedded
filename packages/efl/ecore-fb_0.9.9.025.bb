@@ -7,6 +7,7 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-poll \
 		--enable-ecore-dbus \
 		--enable-ecore-evas \
+        --enable-ecore-evas-buffer \
 		--enable-ecore-evas-fb \
 		--disable-ecore-evas-x \
 		--disable-ecore-evas-xrender \

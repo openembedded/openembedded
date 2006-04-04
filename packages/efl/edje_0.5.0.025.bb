@@ -18,7 +18,7 @@ FILES_${PN}-examples = "${datadir}/edje/data/images ${datadir}/edje/data/src ${d
 
 FILES_${SRCNAME}-themes = ""
 
-SRC_URI += "cvs://anonymous@thinktux.net/root;module=e17/libs/edje/m4;date=20060101"
+SRC_URI += "${E_CVS};module=e17/libs/edje/m4;date=20060101"
 
 LEAD_SONAME = "libedje.so"
 
