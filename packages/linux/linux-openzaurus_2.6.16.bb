@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -63,6 +63,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1 \
            ${RPSRC}/poodle_memsize-r0.patch;patch=1 \
            ${RPSRC}/collie_frontlight-r1.patch;patch=1 \
+           ${RPSRC}/zlib_inflate-r3.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
