@@ -241,16 +241,6 @@ python populate_packages () {
 			return 0
 		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
-	pkgs = set()
-	packages_joined = ""
-	for pkg in packages.split():
-		if pkg in pkgs:
-			bb.note("%s is listed in PACKAGES multiple times" % (pkg))
-		else:
-			pkgs.add(pkg)
-			packages_joined = "%s %s" % (packages_joined, pkg)
-	packages = packages_joined
-
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
 		root = os.path.join(workdir, "install", pkg)
