@@ -1,0 +1,30 @@
+--- rdesktop/configure.ac	2005-06-06 15:14:45.000000000 +0100
++++ rdesktop/configure.ac-new	2005-12-11 16:48:35.000000000 +0000
+@@ -23,6 +23,8 @@
+ AC_CHECK_HEADER(locale.h, AC_DEFINE(HAVE_LOCALE_H))
+ AC_CHECK_HEADER(langinfo.h, AC_DEFINE(HAVE_LANGINFO_H))
+ 
++AC_CHECK_TOOL(STRIP, strip, :)
++
+ rpath=""
+ 
+ #
+--- rdesktop/Makefile.in	2005-08-25 21:39:58.000000000 +0100
++++ rdesktop/Makefile.in-new	2005-12-11 16:50:04.000000000 +0000
+@@ -17,6 +17,7 @@
+ INSTALL     = @INSTALL@
+ CFLAGS      = @CFLAGS@ @X_CFLAGS@ @DEFS@ -DKEYMAP_PATH=\"$(KEYMAP_PATH)\"
+ LDFLAGS     = @LDFLAGS@ @LIBS@ @X_LIBS@ @X_EXTRA_LIBS@
++STRIP       = @STRIP@
+ 
+ TARGETS     = rdesktop @RDP2VNCTARGET@
+ VNCINC      = @VNCINC@
+@@ -56,7 +57,7 @@
+ installbin: rdesktop
+ 	mkdir -p $(DESTDIR)$(bindir)
+ 	$(INSTALL) rdesktop $(DESTDIR)$(bindir)
+-	strip $(DESTDIR)$(bindir)/rdesktop
++	$(STRIP) $(DESTDIR)$(bindir)/rdesktop
+ 	chmod 755 $(DESTDIR)$(bindir)/rdesktop
+ 
+ .PHONY: installman
