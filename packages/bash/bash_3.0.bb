@@ -3,7 +3,7 @@ HOMEPAGE = "http://cnswww.cns.cwru.edu/~chet/bash/bashtop.html"
 DEPENDS = "ncurses"
 SECTION = "base/shell"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
         file://bash-3.0-fixes.patch;patch=1 \
