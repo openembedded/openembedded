@@ -1,0 +1,32 @@
+--- matchbox-panel-0.9.3/applets/mb-applet-battery.c.orig	2006-04-05 12:28:01.883215416 +0200
++++ matchbox-panel-0.9.3/applets/mb-applet-battery.c	2006-04-05 12:29:14.973104064 +0200
+@@ -374,12 +374,6 @@
+ 
+   MBPixbufImage *img_backing = NULL;
+ 
+-  while (!read_apm(apm_vals))
+-    usleep(50000L);
+-
+-  if (last_percentage == apm_vals[PERCENTAGE] && last_ac == apm_vals[AC_POWER])
+-    return;
+-
+   img_backing = mb_tray_app_get_background (app, pb);
+ 
+   /* we assume width = height */
+@@ -571,10 +565,12 @@
+ 
+ }
+ 
+-void
+-timeout_callback ( MBTrayApp *app )
+-{
+-  mb_tray_app_repaint (app);
++void timeout_callback (MBTrayApp *app) {
++	while (!read_apm(apm_vals))
++		usleep(50000L);
++
++	if (last_percentage != apm_vals[PERCENTAGE] || last_ac != apm_vals[AC_POWER])
++		mb_tray_app_repaint (app);
+ }
+ 
+ void
