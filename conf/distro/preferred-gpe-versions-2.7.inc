@@ -10,12 +10,12 @@ PREFERRED_PROVIDER_gconf=gconf-dbus
 PREFERRED_PROVIDER_gnome-vfs=gnome-vfs-dbus
 
 #specify versions, as the header says :)
-PREFERRED_VERSION_libmatchbox ?= "1.7"
+PREFERRED_VERSION_libmatchbox ?= "1.8"
 PREFERRED_VERSION_matchbox ?= "0.9.1"
 PREFERRED_VERSION_matchbox-common ?= "0.9.1"
 PREFERRED_VERSION_matchbox-desktop ?= "0.9.1"
 PREFERRED_VERSION_matchbox-wm ?= "0.9.5+cvs-${CVSDATE}"
-PREFERRED_VERSION_matchbox-panel ?= "0.9.2"
+PREFERRED_VERSION_matchbox-panel ?= "0.9.3"
 PREFERRED_VERSION_matchbox-applet-inputmanager ?= "0.6"
 PREFERRED_VERSION_atk ?= "1.9.0"
 PREFERRED_VERSION_cairo ?= "0.5.2"
