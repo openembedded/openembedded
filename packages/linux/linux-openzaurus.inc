@@ -9,6 +9,7 @@ DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
+CHSRC = "http://oz.drigon.com/patches"
 
 inherit kernel
 
@@ -38,6 +39,8 @@ CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
 CMDLINE_ROTATE_akita = "fbcon=rotate:1"
 CMDLINE_ROTATE_borzoi = "fbcon=rotate:1"
+CMDLINE_ROTATE_collie = "fbcon=rotate:1"
+CMDLINE_ROTATE_poodle = "fbcon=rotate:1"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
 
 ###############################################################
@@ -117,8 +120,9 @@ do_compile_append() {
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
+        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib	
 }
 
 do_deploy[dirs] = "${S}"
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_install
