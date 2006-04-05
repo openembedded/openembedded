@@ -72,7 +72,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc-uclibc-3.3-200-code.patch;patch=1 \
 	   file://bash3.patch;patch=1"
 
-PREMIRRORS_prepend () {
+PREMIRRORS_append () {
 ${GNU_MIRROR}/gcc/releases/	ftp://gcc.gnu.org/pub/gcc/releases/
 ${GNU_MIRROR}/gcc/releases/	http://gcc.get-software.com/releases/
 }
