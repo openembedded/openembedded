@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 inherit gpe
 
@@ -12,6 +12,7 @@ RDEPENDS_${PN} = "matchbox matchbox-panel (>= 0.9.2-r12) matchbox-desktop (>= 0.
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo xserver-common"
 
 SRC_URI += "file://matchbox-session \
+	file://0.66-reinstate-volume-applet-and-fix-order.patch;patch=1 \
 	file://disable-composite.xsettings"
 
 do_install_append() {

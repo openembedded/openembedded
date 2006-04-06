@@ -1,0 +1,17 @@
+--- gpe-session-scripts-0.66.orig/standard.mbdock	2005-05-19 13:10:55.000000000 +0200
++++ gpe-session-scripts-0.66/standard.mbdock	2006-04-05 16:00:56.000000000 +0200
+@@ -1,10 +1,10 @@
+ mb-applet-menu-launcher
+ mbinputmgr
+-minilite
+-minibat
+ 	
+-gpe-what
+-mb-applet-battery
+ gpe-clock
++mb-applet-battery
+ gpe-auto-bluetooth
++minilite
++minimix
++gpe-what
+ 	
