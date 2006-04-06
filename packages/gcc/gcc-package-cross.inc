@@ -8,6 +8,8 @@ INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGES = "libgcc libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
 
+PACKAGE_NO_LOCALE = "1"
+
 PACKAGE_ARCH_libg2c = "${TARGET_ARCH}"
 PACKAGE_ARCH_libg2c-dev = "${TARGET_ARCH}"
 PACKAGE_ARCH_libgfortran = "${TARGET_ARCH}"
