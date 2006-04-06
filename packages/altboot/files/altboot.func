@@ -1,6 +1,7 @@
 #! /bin/sh
 # This function checks for the presence of a real filesystem and loop-images on the target
 # $1 = folder of rootfs, $2 = runlevel (defaults to 5)
+# $2 = name of calling module
 check_target() {
 	# Check if there is a /sbin/init or /sbin/init.sysvinit on the card
 	if test -x $1/sbin/init -o -x $1/$REAL_INIT
@@ -31,11 +32,24 @@ check_target() {
 		while test -z "$ans"
 		do
 			echo -n "Your choice: "
-			read junk < /dev/tty1
+			
+			if test "$AUTOBOOT" != "yes"
+			then
+				read junk < /dev/tty1
+			else
+				if test -e /etc/.altboot-real-or-loop.last
+				then
+					junk="`cat /etc/.altboot-real-or-loop.last`"
+					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+				else
+					read junk < /dev/tty1
+				fi
+			fi	
 			
 			if test "$junk" = 1 -o "$junk" = 2
 			then
 				ans="$junk"
+				echo "$junk" > /etc/.altboot-real-or-loop.last
 			fi
 		done
 		
@@ -59,13 +73,27 @@ check_target() {
 	fi
 }
 
+boot_new_rootfs_splash() {
+C_RED="\033[37;44m"
+C_RESET="\033[0m"
+
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}|               Booting the selected rootfs...             |${C_RESET}"
+	echo -e "${C_RED}|                                                          |${C_RESET}"
+	echo -e "${C_RED}+----------------------------------------------------------+${C_RESET}"	
+
+}
+
 # This function pivot_root's into a real filesystem calling $newrootfs/sbin/init
 # $1 = The new rootfs
 pivot_realfs() {
-	test -z "$2" && RL="5" || RL="$2"
+	#test -z "$2" && RL="5" || RL="$2"
 	mkdir -p $1/media/ROM || die "mkdir -p $1/media/ROM failed"
 
 	mount -o remount,ro / >/dev/null 2>&1
+
+	test "$ENABLE_IMAGECONF" = yes && image_conf $1
 
 	do_pivot "$1" "$RL"
 }
@@ -73,7 +101,7 @@ pivot_realfs() {
 # This function loop-mounts an image-file and pivot_root's into it
 # $1: The new rootfs
 pivot_image() {
-	test -z "$2" && RL="5" || RL="$2"
+	#test -z "$2" && RL="5" || RL="$2"
 	cd $1/$IMAGE_PATH
 
 	# Check for rootfs images on the card
@@ -95,7 +123,18 @@ pivot_image() {
 		while test -z "$IMAGE_NAME"
 		do
 			echo -en "Please choose one of the above: "
-			read junk < /dev/tty1
+			if test "$AUTOBOOT" != "yes"
+			then
+				read junk < /dev/tty1
+			else
+				if test -e /etc/.altboot-loopimage.last
+				then
+					junk="`cat /etc/.altboot-loopimage.last`"
+					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+				else
+					read junk < /dev/tty1
+				fi
+			fi	
 
 			x=0
 			for file in `ls *rootfs.bin`
@@ -103,7 +142,8 @@ pivot_image() {
 				let x=$x+1
 				if test "$x" = "$junk"
 				then
-					IMAGE_NAME="$file"						
+					IMAGE_NAME="$file"
+					echo "$junk" > /etc/.altboot-loopimage.last						
 				fi
 			done	
 		done
@@ -111,28 +151,31 @@ pivot_image() {
 		IMAGE_NAME="`ls *rootfs.bin`"		
 		test -z "$IMAGE_NAME" && die "No rootfs found (*rootfs.bin) in $1/$IMAGE_PATH"
 	fi
-
-	echo "Using [$IMAGE_NAME]"
+	
+	
+	echo ""
 
 	mkdir -p /media/image || die "mkdir -p /media/image failed"
 
-	echo "Setting up loopback (/dev/loop0) for $IMAGE_NAME"
 	losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME || die "losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME failed!"
 	check_fs /dev/loop0 $IMAGE_TYPE
 	
-	echo -e "\n* * * Booting rootfs image * * *\n"
+	echo -e "\n* * * Mounting rootfs image * * *\n"
 
 	# Busybox's "mount" doesn't seem to like "-o loop" for some reason
 	# It works on collie and b0rks on poodle.
 	if [ "$IMAGE_TYPE" = "" ]; then
 		IMAGE_TYPE="auto"
 	fi
+	
 	# If mount fails it has the tendency to spew out a _lot_ of error messages.
 	# We direct the output to /dev/null so the user can see which step actually failed.	
 	mount /dev/loop0 -t $IMAGE_TYPE /media/image >/dev/null 2>&1 || die "mount -t $IMAGE_TYPE /dev/loop0 /media/image failed!"	
 
 	mkdir -p /media/image/media/ROM || die "mkdir -p /media/image/media/ROM failed"
 
+	test "$ENABLE_IMAGECONF" = yes && image_conf /media/image
+	
 	do_pivot /media/image "$RL"
 }
 
@@ -161,17 +204,116 @@ do_pivot(){
 			! test -d "$new_mpt" && mkdir -p "$new_mpt" 
 			/bin/busybox mount -o move "$mpt" "$new_mpt"
 		done
-		
+
+		clear		
+		boot_new_rootfs_splash		
 		echo "Calling INIT"
-		
-		#read junk
-		
+			
 		exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"
 		die "* * * pivot_root failed! * * *" 
 	fi
 
+}
+
+# $1: Path to mounted rootfs
+image_conf(){
+	! test -d "$1" && die "image_conf: [$1] not found / no directory"	
+	
+	test -e "$1/etc/.image_conf.done" && return
+	
+	echo -e "\n\n* * * rootfs configuration * * *\n"
+	echo -e "This setup lets you reconfigure your new rootfs."
+	echo "Most probably the rootfs is configured with"
+	echo "defaults based on a flash installation."
+	echo "If unsure, go with the defaults by pressing <ENTER>."
+	echo ""
+	
+	if ( cat $1/etc/fstab | grep -v "^#" | grep -q "/home " )		
+	then						
+		while true
+		do
+			echo "Usually your /home directory is located on another flash partition."
+			echo -n "Do you want me to move /home inside the loop-image? [N|y] "
+			read junk
+			
+			if test "$junk" = "y" -o "$junk" = "Y"
+			then
+			 	cat $1/etc/fstab | sed "/.*\/home.*/s/\/home/\/home.orig/" > $1/etc/fstab_
+				mv $1/etc/fstab_ $1/etc/fstab
+				break
+			fi
+			
+			test "$junk" = "" -o "$junk" = n -o "$junk" = N && break
+		done
+		
+	fi	
+
+	echo ""
+				
+# 	if ( cat $1/etc/fstab | grep -v "^#" | grep -q "/var" )		
+# 	then						
+# 		while true
+# 		do
+# 			echo "This is mainly for testing purposes."
+# 			echo -n "Do you want to configure /var as a normal non-tmpfs directory? [N|y] "
+# 			read junk
+# 			
+# 			if test "$junk" = "y" -o "$junk" = "Y"
+# 			then
+# 			 	cat $1/etc/fstab | sed "/.*\/var.*/s/\(.*\)/#\ \1/" > $1/etc/fstab_
+# 				mv $1/etc/fstab_ $1/etc/fstab
+# 				break
+# 			fi
+# 			
+# 			test "$junk" = "" -o "$junk" = n -o "$junk" = N && break
+# 		done
+# 	fi		
+
+	echo ""
+
+	if ( cat $1/etc/ipkg.conf | grep -q ^lists_dir )		
+	then						
+		while true
+		do
+			echo -e "Wasting RAM is never a good idea.\nOnly say Y if your rootfs is very small in size"
+			echo -n "Do you want to store ipkg package data in RAM? [N|y] "
+			read junk
+			
+			if test "$junk" = "" -o "$junk" = n -o "$junk" = N
+			then
+				cat $1/etc/ipkg.conf | sed "/^lists_dir.*/s/\(.*\)/#\ \1/"> $1/etc/ipkg.conf_			 	
+				mv $1/etc/ipkg.conf_ $1/etc/ipkg.conf
+				break
+			fi
+			
+			test "$junk" = "y" -o "$junk" = "Y" && break
+		done
+	fi		
+
+	echo ""
+
+	if ( cat $1/etc/ipkg.conf | grep -q "^dest sd" )		
+	then						
+		while true
+		do
+			echo -n "Do you want to keep the SD, CF and /home ipkg install targets? [N|y] "
+			read junk
+			
+			if test "$junk" = "" -o "$junk" = n -o "$junk" = N
+			then
+				cat $1/etc/ipkg.conf | sed "/^dest\ \(sd\|cf\|home\).*/s/\(.*\)/#\ \1/"	> $1/etc/ipkg.conf_		 	
+				mv $1/etc/ipkg.conf_ $1/etc/ipkg.conf
+				break
+			fi
+			
+			test "$junk" = "y" -o "$junk" = "Y" && break
+		done
+	fi	
+		
+	
+	touch "$1/etc/.image_conf.done"	
 }
 
 # This functions configures the master password for altboot if none is set

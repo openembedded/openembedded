@@ -1,4 +1,4 @@
-Unslung-5.x Family Release README INSTALLATION
+Unslung-6.x Family Release README INSTALLATION
 
 You must follow the steps in this README *exactly*.  Do not skip any steps, and
 do not skip ahead thinking you know what you are doing and don't need to follow
@@ -80,54 +80,42 @@ PRE-INSTALLATION CONSIDERATIONS
 FIRMWARE INSTALLATION DETAILS
 
 1) Shutdown the NSLU2, and remove any disks that you may have plugged into the
-     NSLU2.  Power back up the NSLU2.
+     NSLU2.
 
      - Firmware upgrades must always be performed with *no* hard disks or flash
           disks attached.  This CANNOT be emphasized enough.  Are you sure you
           unplugged the disks before powering up?  If so, you may continue.
 
-2) Access the Web interface.  Note that you should use the username "admin" and
-     password "admin" for the web interface at this point (as no disks are
-     attached, the default username and password is the only way to access the 
-     Management web pages).
-
-     2-a) If you are installing Unslung 5.x onto an NSLU2 unit with Linksys
-          standard firmware *or* Unslung version 1.x or version 2.x already
-	  installed, flash unslung-5.x.bin as you normally would flash new
-	  firmware (using the web interface "Upgrade Firmware" page).
-
-     2-b) If you are installing Unslung 5.x onto an NSLU2 unit with Unslung
-          version 3.x already installed, you must put the NSLU2 into
-	  maintenance mode before you can use the web interface to flash a new
-	  version. Just click the "Enter Maintenance Mode" link on the web
-          interface "Upgrade Firmware" page, wait for the NSLU2 to reboot, and
-          then flash the new firmware in the normal manner (using the web
-	  interface "Upgrade Firmware" page).
-
-     2-c) If you are installing Unslung 5.x onto an NSLU2 unit with Unslung
-	  version 4.x already installed, you must put the NSLU2 into RedBoot
-	  Upgrade Mode before you can upload new firmware.  Note that Unslung
-	  version 4.x has an "Enter Maintenance Mode" link on the web interface
-	  "Upgrade Firmware" page, but it does not work, so you will need to
-	  use the instructions at
-
-	    http://www.nslu2-linux.org/wiki/HowTo/TelnetIntoRedBoot
-
-	  to access the RedBoot command line, and then type "upgrade" to put
-	  the NSLU2 into RedBoot Upgrade Mode.  Then you will need to use the
-	  Linux UpSlug tool or the Windows SerComm Upgrade tool to upload the
-	  new firmware.
-
-     2-d) If you are installing Unslung 5.x onto an NSLU2 unit with version 5.x
-	  already installed, you must first put the NSLU2 into RedBoot Upgrade
-	  Mode.  Just click the "Enter Upgrade Mode" link on the web interface
-	  "Upgrade Firmware" page, wait for the NSLU2 to reboot, and for the
-	  Ready/Status LED to begin flashing red and green, and then use either
-	  the Linux UpSlug tool or the Windows SerComm Upgrade tool to upload
-	  the new firmware.
+2-a) If you are installing Unslung 6.x onto an NSLU2 unit with Linksys standard
+     firmware already installed, flash unslung-6.x.bin as you normally would
+     flash new firmware (using the web interface "Upgrade Firmware" page).
+     See your NSLU2 user manual for details if you don't know how to do this.
 
      - During firmware flashing, the top LED - Ready/Status - flashes red and
-          green (approximately 5 minutes, but can be much longer).  
+       green (approximately 5 minutes, but can be much longer).  
+
+     - The NSLU2 will reboot after the flashing is complete.
+
+2-b) If you are installing Unslung 6.x onto an NSLU2 unit with an existing
+     version of nslu2-linux.org firmware already installed, you must first put
+     the NSLU2 into RedBoot Upgrade Mode.
+
+     - The NSLU2 should still be powered off at this point.  If not, shut it
+       down again before proceeding.
+     - Using a paper clip, push and hold in the reset button which is located
+       on the back of the NSLU2 near the power socket.
+     - While holding in the reset button, press and release the power button.
+     - Watch the Ready/Status LED and as soon as it turns red, then quickly
+       release the reset button.
+     - You should now be in upgrade mode which is indicated by the Ready/Status
+       LED alternating between red and green. 
+     - Use either the Linux UpSlug tool or the Windows SerComm Upgrade tool to
+       upload the new firmware - you can find download links at
+
+	    http://www.nslu2-linux.org/wiki/HowTo/InstallUnslungFirmware
+
+     - During firmware flashing, the top LED - Ready/Status - flashes red and
+       green (approximately 5 minutes, but can be much longer).  
 
      - The NSLU2 will reboot after the flashing is complete.
 
@@ -209,9 +197,20 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 3) OK, now that you don't have any disks attached, you can proceed and telnet
      into the NSLU2 using the username root and password uNSLUng.
 
-4) Identify which drive you wish you "unsling", and plug it in.  Wait a minute
-     or two while the disk is mounted.  Check the web interface to make sure
-     that the disk has been recognised by the Linksys software.
+     - If you are upgrading from a previous release of Unslung, please read
+
+     http://www.nslu2-linux.org/wiki/Unslung/UpgradingToUnslung6
+
+4) Identify which drive you wish you "unsling", and plug it in.  Note that for
+     Unslung 6.x it is recommended that you plug the target disk into the Disk2
+     port so that you can use the Disk1 port for attaching multiple ext3 and/or
+     NTFS data disks via a USB hub.  For more information, see
+
+     http://www.nslu2-linux.org/wiki/Unslung/WhichUSBPortforUnslung6
+
+     Wait a minute or two while the disk is mounted.  Check the web
+     interface to make sure that the disk has been recognised by the
+     Linksys software.
 
      - If the disk has not been previously formatted on the NSLU2, then now is
           the time to do that.  Make sure that the drive is recognized in the
@@ -219,7 +218,8 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 
 5) In the telnet session, run "/sbin/unsling disk1" or "/sbin/unsling disk2"
      (depending upon whether you want to unsling to a disk connected to the
-     Disk1 port or the Disk2 port).
+     Disk1 port or the Disk2 port).  Again, we recommend for Unslung 6.x that
+     you unsling to disk2.
 
      - Once you "unsling" to an external disk on a particular port (Disk 1 or
           Disk 2), it is important that you keep that disk continually plugged
@@ -246,7 +246,7 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 
 6) If you wish to migrate your packages from the old Unslung 3.x location in
      the /share/hdd/conf (disk1) or /share/flash/conf (disk2) partitions to the
-     new Unslung 4.x and 5.x location on the data partition, then run:  
+     new Unslung 4.x, 5.x and 6.x location on the data partition, then run:  
      "/sbin/slingover disk1" (if your packages were previously on disk1 and you
      ran "/sbin/unsling disk1" in step 5) or "/sbin/slingover disk2" (if your
      packages were previously on disk2 and you ran "/sbin/unsling disk2" in
@@ -271,7 +271,7 @@ you won't have access until you change the file /share/hdd/conf/passwd.
 
 ***** Congratulations, you're now Unslung! *****
 
-Make sure you add an entry to the "The Unslung 5.x" table in the Yahoo group.
+Make sure you add an entry to the "The Unslung 6.x" table in the Yahoo group.
 Just use the next free integer for your Unslung number.
 
 If you make no further changes, your NSLU2 will continue to operate normally.

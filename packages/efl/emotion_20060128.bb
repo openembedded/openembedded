@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE = "-1"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/emotion;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/emotion;date=${PV}"
 S = "${WORKDIR}/emotion"
 
 PACKAGES += "emotion-plugins"

@@ -1,7 +1,7 @@
 include ecore.inc
 PR = "r1"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/ecore;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/ecore;date=${PV}"
 S = "${WORKDIR}/ecore"
 
 ### add tslib support

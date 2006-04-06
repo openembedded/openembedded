@@ -1,7 +1,7 @@
 include esmart.inc
 PR = "r2"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/esmart;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/esmart;date=${PV}"
 SRC_URI += "file://ecore-fix.patch;patch=1 \
             file://include-stdio.patch;patch=1 \
             file://compile-fix.patch;patch=1"

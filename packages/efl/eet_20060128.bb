@@ -8,5 +8,5 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/eet;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/eet;date=${PV}"
 S = "${WORKDIR}/eet"

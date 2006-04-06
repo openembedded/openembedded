@@ -1,7 +1,7 @@
 include esmart.inc
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/esmart;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/esmart;date=${PV}"
 S = "${WORKDIR}/esmart"
 
 SRC_URI += "file://disable-x-only-features.patch;patch=1 \

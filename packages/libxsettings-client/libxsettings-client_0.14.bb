@@ -1,7 +1,9 @@
 SECTION = "gpe/libs"
 LICENSE = "BSD-X"
 PRIORITY = "optional"
-DEPENDS = "libxsettings libx11"
+DEPENDS = "libxsettings libx11 libxt"
+# libxt is required to stop configure breaking builds by
+# including system paths to find it if it isn't present.
 
 inherit autotools pkgconfig gpe
 
@@ -17,4 +19,3 @@ do_stage () {
                 install -m 0644 ${S}/$h ${STAGING_INCDIR}/$h
         done
 }
-

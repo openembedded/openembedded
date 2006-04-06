@@ -25,8 +25,8 @@
 +
 +  if ! test -e "/tmp/gpe-panel.session-$panel_user"
 +  then
-+    cp /home/$panel_user/.matchbox/mbdock.session "/tmp/gpe-panel.session-$panel_user"
-+    cat "/tmp/gpe-panel.session-$panel_user" | grep -q panel || killproc @bindir@/mbinputmgr
++    test -e /home/$panel_user/.matchbox/mbdock.session && cp /home/$panel_user/.matchbox/mbdock.session "/tmp/gpe-panel.session-$panel_user"
++    test -e "/tmp/gpe-panel.session-$panel_user" && cat "/tmp/gpe-panel.session-$panel_user" | grep -q panel || killproc @bindir@/mbinputmgr
 +  else
 +    cat "/tmp/gpe-panel.session-$panel_user" | grep -q panel || killproc @bindir@/mbinputmgr
 +    rm "/tmp/gpe-panel.session-$panel_user"

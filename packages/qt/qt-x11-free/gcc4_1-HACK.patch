@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-free-3.3.6/src/tools/qstring.h~gcc4_1.patch
++++ qt-x11-free-3.3.6/src/tools/qstring.h
+@@ -60,7 +60,7 @@
+ #endif
+ #endif
+ 
+-
++#define Q_NO_PACKED_REFERENCE
+ /*****************************************************************************
+   QString class
+  *****************************************************************************/
+@@ -194,9 +194,9 @@
+     char latin1() const { return ucs > 0xff ? 0 : (char) ucs; }
+     ushort unicode() const { return ucs; }
+ #ifdef Q_NO_PACKED_REFERENCE
+-    ushort &unicode() { return *(&ucs); }
++    ushort &unicode() { return *((ushort*)&ucs); }
+ #else
+-    ushort &unicode() { return ucs; }
++    ushort &unicode() { return (ushort)ucs; }
+ #endif
+ #ifndef QT_NO_CAST_ASCII
+     // like all ifdef'd code this is undocumented

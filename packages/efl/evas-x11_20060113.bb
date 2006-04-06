@@ -1,8 +1,8 @@
 include evas.inc
 DEPENDS += "libx11 libxext freetype"
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV}"
+SRC_URI = "${E_CVS};module=e17/libs/evas;date=${PV}"
 S = "${WORKDIR}/evas"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \

@@ -10,7 +10,7 @@ SECTION = "libs"
 DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r0"
+PR = "r1"
 
 # need debian package naming for the libs
 inherit debian
@@ -127,6 +127,10 @@ BJAM_OPTS    = '${BJAM_TOOLS} \
 		--with-python-root=${PYTHON_ROOT} \
 		${BJAM_EXTRA}'
 
+
+do_configure_prepend() {
+	cp -f boost/config/platform/linux.hpp boost/config/platform/linux-gnueabi.hpp
+}
 
 do_compile() {
 	set -ex
