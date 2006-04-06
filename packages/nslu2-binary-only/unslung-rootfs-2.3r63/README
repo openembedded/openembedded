@@ -148,44 +148,43 @@ FIRMWARE INSTALLATION DETAILS
      Management web pages).
 
      2-a) If you are installing Unslung 6.x onto an NSLU2 unit with Linksys
-          standard firmware *or* Unslung version 1.x or version 2.x already
-	  installed, flash unslung-6.x.bin as you normally would flash new
-	  firmware (using the web interface "Upgrade Firmware" page).
+          standard firmware already installed, flash unslung-6.x.bin as you
+          normally would flash new firmware (using the web interface
+          "Upgrade Firmware" page).  See your NSLU2 user manual for details
+          if you don't know how to do this.
 
-     2-b) If you are installing Unslung 6.x onto an NSLU2 unit with Unslung
-          version 3.x already installed, you must put the NSLU2 into
-	  maintenance mode before you can use the web interface to flash a new
-	  version. Just click the "Enter Maintenance Mode" link on the web
-          interface "Upgrade Firmware" page, wait for the NSLU2 to reboot, and
-          then flash the new firmware in the normal manner (using the web
-	  interface "Upgrade Firmware" page).
+          - During firmware flashing, the top LED - Ready/Status - flashes
+            red and green (approximately 5 minutes, but can be much longer).  
 
-     2-c) If you are installing Unslung 6.x onto an NSLU2 unit with Unslung
-	  version 4.x already installed, you must put the NSLU2 into RedBoot
-	  Upgrade Mode before you can upload new firmware.  Note that Unslung
-	  version 4.x has an "Enter Maintenance Mode" link on the web interface
-	  "Upgrade Firmware" page, but it does not work, so you will need to
-	  use the instructions at
+          - The NSLU2 will reboot after the flashing is complete.
 
-	    http://www.nslu2-linux.org/wiki/HowTo/TelnetIntoRedBoot
+     2-b) If you are installing Unslung 6.x onto an NSLU2 unit with an
+	  existing version of nslu2-linux.org firmware already installed,
+          you must first put the NSLU2 into RedBoot Upgrade Mode.
 
-	  to access the RedBoot command line, and then type "upgrade" to put
-	  the NSLU2 into RedBoot Upgrade Mode.  Then you will need to use the
-	  Linux UpSlug2 tool or the Windows SerComm Upgrade tool to upload the
-	  new firmware.
+          - The NSLU2 should still be powered off at this point.  If not,
+            shut it down again before proceeding.
 
-     2-d) If you are installing Unslung 6.x onto an NSLU2 unit with version 5.x
-	  or version 6.x already installed, you must first put the NSLU2 into
-	  RedBoot Upgrade Mode.  Just click the "Enter Upgrade Mode" link on the
-	  web interface "Upgrade Firmware" page, wait for the NSLU2 to reboot,
-	  and for the Ready/Status LED to begin flashing red and green, and then
-	  use either the Linux UpSlug2 tool or the Windows SerComm Upgrade tool
-	  to upload the new firmware.
+          - Using a paper clip, push and hold in the reset button which is
+            located on the back of the NSLU2 near the power socket.
 
-     - During firmware flashing, the top LED - Ready/Status - flashes red and
-          green (approximately 5 minutes, but can be much longer).  
+          - While holding in the reset button, press and release the power
+            button.
 
-     - The NSLU2 will reboot after the flashing is complete.
+          - Watch the Ready/Status LED, and as soon as it turns red quickly
+            release the reset button.
+
+          - You should now be in upgrade mode which is indicated by the
+            Ready/Status LED alternating between red and green. 
+
+          - Use either the Linux UpSlug2 tool or the Windows SerComm Upgrade
+            tool to upload the new firmware - you can find download links at
+	    http://www.nslu2-linux.org/wiki/HowTo/InstallUnslungFirmware
+
+          - During firmware flashing, the top LED - Ready/Status - flashes
+            red and green (approximately 5 minutes, but can be much longer).  
+
+          - The NSLU2 will reboot after the flashing is complete.
 
 3) Shutdown the NSLU2 (again), attach disk(s), and power it back up.
 
