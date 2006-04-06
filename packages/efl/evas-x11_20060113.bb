@@ -1,6 +1,6 @@
 include evas.inc
 DEPENDS += "libx11 libxext freetype"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${E_CVS};module=e17/libs/evas;date=${PV}"
 S = "${WORKDIR}/evas"

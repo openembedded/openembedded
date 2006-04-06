@@ -1,6 +1,6 @@
 include evas.inc
 DEPENDS = "freetype libpng jpeg eet"
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = "--enable-fb         \
 		--disable-directfb          \
