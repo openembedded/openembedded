@@ -3,7 +3,7 @@ SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 PROVIDES = "virtual/kernel-hostap"
-RPROVIDES = "virtual/kernel-hostap"
+RPROVIDES_kernel-module-hostap-cs = "virtual/kernel-hostap"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
