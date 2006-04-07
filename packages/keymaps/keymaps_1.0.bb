@@ -4,7 +4,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r2"
+PR = "r3"
 
 inherit update-rc.d
 
