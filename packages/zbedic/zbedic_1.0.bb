@@ -5,14 +5,15 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
-APPDESKTOP = "${WORKDIR}/zbedic/misc"
+APPDESKTOP = "${WORKDIR}/misc"
+PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sf.net/cvsroot/bedic;module=zbedic;tag=r_1_0 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-0.tgz \
            file://opie-icons.patch;patch=1 \
            file://version.patch;patch=1 \
            file://qtopia17.patch;patch=1"
 
-S = "${WORKDIR}/zbedic"
+S = "${WORKDIR}"
 
 inherit opie
 export OE_QMAKE_LINK="${CXX}"

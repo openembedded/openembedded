@@ -5,11 +5,11 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sf.net/cvsroot/bedic;module=libbedic;tag=r_1_0"
+SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
 
-S = "${WORKDIR}/libbedic"
+S = "${WORKDIR}"
 
 inherit palmtop
 # need to override this, because bedic contains exception handling
@@ -18,7 +18,9 @@ export OE_QMAKE_CXXFLAGS="-fexceptions -fno-rtti ${CXXFLAGS}"
 do_configure() {
 	qmake -project && qmake -makefile -t lib -spec ${QMAKESPEC} CONFIG=console CONFIG+=staticlib -after \
         INCLUDEPATH+=../include TARGET=bedic DESTDIR=${STAGING_LIBDIR} \
-	HEADERS+=src/file.h SOURCES+=src/file.cpp SOURCES-=tools/xerox.cpp SOURCES-=src/test_dynamic_dictionary.cpp \
+	HEADERS+=src/file.h SOURCES+=src/file.cpp SOURCES-=tools/xerox.cpp \
+	SOURCES-=src/test_dynamic_dictionary.cpp \
+	SOURCES-=src/test_dynamic_database.cpp \
 	CXXFLAGS+=-fexceptions
 }
 
