@@ -5,6 +5,8 @@ PR = "r1"
 export IMAGE_BASENAME = "e-image-core"
 export IMAGE_LINGUAS = ""
 
+FEED_URIS_append_openzaurus = " x11##${FEED_BASE_URI}/feed/x11 "
+
 DEPENDS = "task-bootstrap xserver-kdrive task-e-x11-core"
 
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
