@@ -5,9 +5,10 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
+
 S = "${WORKDIR}"
 
 inherit palmtop
@@ -17,7 +18,10 @@ export OE_QMAKE_CXXFLAGS="-fexceptions -fno-rtti ${CXXFLAGS}"
 do_configure() {
 	qmake -project && qmake -makefile -t lib -spec ${QMAKESPEC} CONFIG=console CONFIG+=staticlib -after \
         INCLUDEPATH+=../include TARGET=bedic DESTDIR=${STAGING_LIBDIR} \
-	HEADERS+=src/file.h SOURCES+=src/file.cpp SOURCES-=tools/xerox.cpp CXXFLAGS+=-fexceptions
+	HEADERS+=src/file.h SOURCES+=src/file.cpp SOURCES-=tools/xerox.cpp \
+	SOURCES-=src/test_dynamic_dictionary.cpp \
+	SOURCES-=src/test_dynamic_database.cpp \
+	CXXFLAGS+=-fexceptions
 }
 
 do_stage() {

@@ -6,20 +6,23 @@ LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-0.tgz \
-file://qtopia17.patch;patch=1;pnum=0 \
-file://opie-icons.patch;patch=1;pnum=0 "
+           file://opie-icons.patch;patch=1 \
+           file://version.patch;patch=1 \
+           file://qtopia17.patch;patch=1"
 
-S = "${WORKDIR}/"
+S = "${WORKDIR}"
 
 inherit opie
 export OE_QMAKE_LINK="${CXX}"
 
+
 do_configure() {
 	cd ${S} && rm -rf *~ && qmake -project && qmake -makefile -spec ${QMAKESPEC} -after \
-        INCLUDEPATH=${STAGING_INCDIR}/libbedic DEFINES+=QWS LIBS+=-lqpe LIBS+=-lbedic DESTDIR=${S} TARGET=zbedic
+        INCLUDEPATH=${STAGING_INCDIR}/libbedic DEFINES+=QWS \
+	LIBS+=-lqpe LIBS+=-lbedic LIBS+=-lsqlite3 DESTDIR=${S} TARGET=zbedic
 }
 
 do_install() {
@@ -27,7 +30,7 @@ do_install() {
 	install -d ${D}${palmtopdir}/help/html/
 	# we copy small icons - in other way QVGA users will complain
 	install -m 0644 ${S}/misc/small_icons/*.png ${D}${palmtopdir}/pics/zbedic/
-	install -m 0644 ${S}/misc/zbedic.png ${D}${palmtopdir}/pics/
+	install -m 0644 ${S}/misc/large_icons/zbedic.png ${D}${palmtopdir}/pics/
 	install -m 0644 ${S}/doc/manual/*.html ${D}${palmtopdir}/help/html/
 	rm ${D}${palmtopdir}/pics/zbedic/zbedic.png
 
