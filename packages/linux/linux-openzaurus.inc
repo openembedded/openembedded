@@ -2,8 +2,9 @@ DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
-PROVIDES = "virtual/kernel-hostap"
-RPROVIDES_kernel-module-hostap-cs = "virtual/kernel-hostap"
+
+PACKAGES += "kernel-module-hostap"
+RPROVIDES_kernel-module-hostap = "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
