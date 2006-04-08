@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 inherit gpe
 
@@ -14,11 +14,6 @@ DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question 
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 	
-SRC_URI_append_akita = " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"	
-SRC_URI_append_spitz = " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-SRC_URI_append_c7x0 = " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-SRC_URI_append_tosa = " file://fix-small-fonts-SL-Cxxxx.patch;patch=1"
-
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
