@@ -25,7 +25,7 @@ do_install () {
     install -m 0755 ${WORKDIR}/keymap ${D}${sysconfdir}/init.d/
 
     case ${MACHINE} in
-        c7x0 | tosa | spitz | akita | borzoi | collie | poodle )
+        c7x0 | tosa | spitz | akita | collie | poodle )
             install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
             ;;
         *)

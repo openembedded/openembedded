@@ -48,7 +48,6 @@ RDEPENDS_task-opie-base-applets_append_mnci       = " opie-vtapplet opie-logouta
 RDEPENDS_task-opie-base-applets_append_c7x0   = " opie-autorotateapplet"
 RDEPENDS_task-opie-base-applets_append_spitz  = " opie-autorotateapplet"
 RDEPENDS_task-opie-base-applets_append_akita  = " opie-autorotateapplet"
-RDEPENDS_task-opie-base-applets_append_borzoi = " opie-autorotateapplet"
 
 RDEPENDS_task-opie-base-inputmethods = "opie-multikey opie-handwriting opie-handwriting-classicset"
 
