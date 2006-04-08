@@ -5,7 +5,7 @@ PV = "2.6.9"
 PR = "r3"
 
 # -r1 is the patch revision - it's not related to this package's PR
-SRC_URI = "ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-2.6.9.tar.bz2 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.9.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linuxppc-2.6.9-r1.diff.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linuxppc-2.6.9-dream-s7.diff.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/dm7020_new_partition_layout.diff;patch=1;pnum=1 \
