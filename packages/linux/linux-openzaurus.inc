@@ -57,15 +57,11 @@ module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
 module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 
 do_configure() {
+	rm -f ${S}/.config
 
-	case ${MACHINE} in
-		akita | spitz )
-			install -m 0644 ${WORKDIR}/defconfig-cxx00 ${S}/.config || die "No default configuration for cxx00 available."
-			;;
-        	*)
-			install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-			;;
-	esac
+	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
+		die "No default configuration for ${MACHINE} available."
+	fi
 
 	if [ "${MACHINE}" == "collie" ]; then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
@@ -87,14 +83,31 @@ do_configure() {
 
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	if [ "${ENABLE_ELPP}" == "yes" ]; then
-                echo "# Enhanced Linux Progress Patch"  >> ${S}/.config
-                echo "CONFIG_FB_ELPP=y"                 >> ${S}/.config
-                echo "CONFIG_LOGO=y"                    >> ${S}/.config
-                echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
-	else
-		echo "# CONFIG_FB_ELPP is not set"	>> ${S}/.config
+	#if [ "${ENABLE_ELPP}" == "yes" ]; then
+        #        echo "# Enhanced Linux Progress Patch"  >> ${S}/.config
+        #        echo "CONFIG_FB_ELPP=y"                 >> ${S}/.config
+        #        echo "CONFIG_LOGO=y"                    >> ${S}/.config
+        #        echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
+	#else
+	#	echo "# CONFIG_FB_ELPP is not set"	>> ${S}/.config
+	#fi
+
+	if [ "${TARGET_OS}" == "linux-gnueabi" ]; then
+		echo "CONFIG_AEABI=y"                   >> ${S}/.config
+		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+	else 
+		echo "# CONFIG_AEABI is not set"        >> ${S}/.config
+		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
+
+	sed -e '/CONFIG_AEABI/d' \
+	    -e '/CONFIG_OABI_COMPAT=/d' \
+	    -e '/CONFIG_CMDLINE=/d' \
+	    -e '/CONFIG_MTD_MTDRAM_SA1100=/d' \
+	    -e '/CONFIG_MTDRAM_TOTAL_SIZE=/d' \
+	    -e '/CONFIG_MTDRAM_ERASE_SIZE=/d' \
+	    -e '/CONFIG_MTDRAM_ABS_POS=/d' \
+	    '${WORKDIR}/defconfig-${MACHINE}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
 }
