@@ -30,11 +30,20 @@ run_module() {
 	
 	# After the PCMCIA service is started, an inserted WLAN card should automatically
 	# activate itself.
-	/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia/start failed!"
-
+	
+	if test -x /etc/init.d/pcmcia
+	then
+		/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia start failed!"
+	else	
+		# With kernel 2.6.16+ udev is used 
+		/etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
+	fi
+	
 	nfs_host="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'|sed -n "s/\(.*\)\:\(.*\)/\1/p" `"
 	nfs_mounts="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'`"
 	nfs_mountpoints="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $2}'`"	
+	
+	WLAN_NIC="`iwconfig 2>/dev/null | grep ESSID | awk '{print $1}'`"
 	
 	if test -z "$nfs_host"
 	then
@@ -61,7 +70,8 @@ run_module() {
 				then
 					echo "Restarting udhcpc"
 					killall udhcpc
-					udhcpc -i wlan0 -H `cat /etc/hostname` >/dev/null 2>&1
+					
+					udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >/dev/null 2>&1
 				else
 					die "Failed to activate WLAN!"
 					break			
