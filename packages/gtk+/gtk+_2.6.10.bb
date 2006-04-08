@@ -6,9 +6,10 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
+           file://unbreak-gdkproperty-x11-c.patch;patch=1 \
            file://help.patch;patch=1 \
            file://no-demos.patch;patch=1 \
            file://no-xwc.patch;patch=1 \
