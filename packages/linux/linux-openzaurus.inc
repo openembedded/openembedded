@@ -99,12 +99,12 @@ do_configure() {
 	yes '' | oe_runmake oldconfig
 }
 
-# Check the kernel is below the 1272*1024 byte limit for the PXA Zaurii
+# Check the kernel is below the 1264*1024 byte limit for the PXA Zaurii
 do_compile_append() {
 	case ${MACHINE} in
 		c7x0 | akita | poodle | spitz | tosa )
 			size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
-			if [ $size -ge 1302000 ]; then	
+			if [ $size -ge 1294336 ]; then	
 				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
 				echo "Size is $size"
 				die "This kernel is too big for your PXA Zaurus and will destroy data if you flash it. Please reduce the size of the kernel by making more of it modular."
