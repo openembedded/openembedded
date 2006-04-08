@@ -13,7 +13,7 @@ include udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S . start 55 0 6 ."
 
-PR = "r3"
+PR = "r4"
 
 FILES_${PN} += "${base_libdir}"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
