@@ -15,7 +15,6 @@ SRC_URI += "file://busybox-bad-perms.patch;patch=1"
 SRC_URI_append_ipaq-pxa270 = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_spitz = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_akita = " file://highdpifontfix.patch;patch=1"
-SRC_URI_append_borzoi = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_c7x0 = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_nokia770 = " file://highdpifontfix.patch;patch=1"
 
