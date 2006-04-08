@@ -7,8 +7,13 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060111"
 
-KV_dm7025 = "2.6.12"
-PV_dm7025 = "${KV}-20060323"
+def get_modules_extension(bb, d):
+	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:
+		return "-gcc4.1"
+	return ""
+
+KV_dm7025 = "2.6.12.6"
+PV_dm7025 = "${KV}-20060408${@get_modules_extension(bb, d)}"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
