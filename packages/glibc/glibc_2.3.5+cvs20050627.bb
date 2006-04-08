@@ -7,9 +7,9 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 CVSDATE = "20050627"
-PR = "r1"
+PR = "r2"
 
-GLIBC_ADDONS ?= "ports,linuxthreads"
+GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
 
 #
@@ -42,12 +42,11 @@ INHIBIT_DEFAULT_DEPS = "1"
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
-	   cvs://anoncvs@sources.redhat.com/cvs/glibc;module=ports \
-	   file://arm-audit.patch;patch=1 \
-	   file://arm-audit2.patch;patch=1 \
-	   file://arm-no-hwcap.patch;patch=1 \
-	   file://arm-memcpy.patch;patch=1 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
+#	   file://arm-audit.patch;patch=1 \
+#	   file://arm-audit2.patch;patch=1 \
+#	   file://arm-no-hwcap.patch;patch=1 \
+#	   file://arm-memcpy.patch;patch=1 \
+#	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://fhs-linux-paths.patch;patch=1 \
 	   file://dl-cache-libcmp.patch;patch=1 \
 	   file://ldsocache-varrun.patch;patch=1 \
@@ -78,12 +77,6 @@ def get_glibc_fpu_setting(bb, d):
 	return ""
 
 do_munge() {
-	# Integrate ports into tree
-	mv ${WORKDIR}/ports/sysdeps/unix/bsd/ultrix4/mips ${WORKDIR}
-	rm -rf `find ${WORKDIR}/ports/sysdeps -type d -name mips`
-	mv ${WORKDIR}/mips ${WORKDIR}/ports/sysdeps/unix/bsd/ultrix4
-	mv ${WORKDIR}/ports ${S}
-
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on
 	# 2005-12-21, which means that any attempt to check out
@@ -104,8 +97,6 @@ do_configure () {
 		echo "rpcgen not found.  Install glibc-devel."
 		exit 1
 	fi
-	# workaround for recent glibc cvs breakage.
-	rm -rf {S}/bits
 	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
 	CPPFLAGS="" oe_runconf
 }

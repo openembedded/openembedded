@@ -6,7 +6,7 @@ PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r17"
+PR = "r18"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -37,6 +37,8 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.dat
 SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
 
 SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
+
+SRC_URI_append_mipsel = " file://mips_fix.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
