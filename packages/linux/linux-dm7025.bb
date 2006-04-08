@@ -1,14 +1,23 @@
 DESCRIPTION = "Linux kernel for Dreambox DM7025"
 LICENSE = "GPL"
 PN = "linux-dm7025"
-PV = "2.6.12"
-PR = "r6"
+KV = "2.6.12"
+PV = "2.6.12.6"
+PR = "r0"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
-SRC_URI = "ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${PV}-dream-r4.patch.bz2;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${PV}-update_dvbapi-r0.patch.gz;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${PV}-dm7025-r3.conf"
+SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dream-r4.patch.bz2;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${KV}-update_dvbapi-r0.patch.gz;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dm7025-r3.conf \
+	file://gcc4_build_fix.patch;patch=1;pnum=1"
+
+def get_nptl_patches(bb, d):
+	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:
+		return "file://mips-nptl-futex.patch;patch=1;pnum=1"
+	return ""
+
+SRC_URI_append_mipsel = " ${@get_nptl_patches(bb, d)}"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -22,7 +31,7 @@ KERNEL_OUTPUT = "vmlinux"
 KERNEL_OBJECT_SUFFIX = "ko"
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/linuxmips-${PV}-dm7025-r3.conf ${S}/.config
+	oe_machinstall -m 0644 ${WORKDIR}/linuxmips-${KV}-dm7025-r3.conf ${S}/.config
 	oe_runmake oldconfig
 }
 
