@@ -18,7 +18,6 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
-	enigma2-plugin-systemplugins-oldsoftwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
 	enigma2-plugin-extensions-cutlisteditor \
 	enigma2-plugin-systemplugins-configurationbackup"
