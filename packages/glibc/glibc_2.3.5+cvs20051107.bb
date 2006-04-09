@@ -42,7 +42,8 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://etc/ld.so.conf \
 	   file://generate-supported.mk \
 	   file://glibc-20051107-remap_update-1.patch;patch=1;pnum=1 \
-	   file://glibc-20051107-localedef_segfault-1.patch;patch=1;pnum=1"
+	   file://glibc-20051107-localedef_segfault-1.patch;patch=1;pnum=1 \
+	   file://fix_mips_rlimit_rtprio.patch;patch=1;pnum=1"
 
 def get_nptl_patches(bb, d):
 	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:

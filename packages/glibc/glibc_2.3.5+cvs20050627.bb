@@ -51,7 +51,8 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   file://dl-cache-libcmp.patch;patch=1 \
 	   file://ldsocache-varrun.patch;patch=1 \
            file://etc/ld.so.conf \
-	   file://generate-supported.mk"
+	   file://generate-supported.mk \
+	   file://fix_mips_rlimit_rtprio.patch;patch=1;pnum=1"
 
 # seems to fail on tls platforms
 SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
