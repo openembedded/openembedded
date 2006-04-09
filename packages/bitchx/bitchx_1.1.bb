@@ -2,12 +2,23 @@ DESCRIPTION = "BitchX is a IRC client"
 SECTION = "console/network"
 
 LICENSE = "BSD"
+#PR = "-r1"
 
 SRC_URI = "http://www.bitchx.org/files/source/ircii-pana-${PV}-final.tar.gz \
 	   file://gcc34.patch;patch=1"
 S = "${WORKDIR}/BitchX"
 
 inherit autotools
+
+PACKAGES += "${PN}-defmsgs ${PN}-help ${PN}-scripts ${PN}-translations"
+FILES_${PN}-defmsgs = "${libdir}/bx/BitchX.*"
+RDEPENDS_${PN}-defmsgs = "${PN}"
+FILES_${PN}-help = "${libdir}/bx/help"
+RDEPENDS_${PN}-help = "${PN}"
+FILES_${PN}-scripts = "${libdir}/bx/script"
+RDEPENDS_${PN}-scripts = "${PN}"
+FILES_${PN}-translations = "${libdir}/bx/translation"
+RDEPENDS_${PN}-translations = "${PN}"
 
 do_configure() {
         gnu-configize
