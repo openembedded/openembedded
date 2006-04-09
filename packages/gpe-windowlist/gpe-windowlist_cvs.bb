@@ -6,11 +6,12 @@ LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.1+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
+
+inherit autotools gpe
 
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
 S = "${WORKDIR}/${PN}"
 
-inherit autotools 
 
 
