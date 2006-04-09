@@ -1,0 +1,17 @@
+--- pygtk-2.6.2/examples/pygtk-demo/pygtk-demo.in.orig	2006-04-09 19:48:54.000000000 +0200
++++ pygtk-2.6.2/examples/pygtk-demo/pygtk-demo.in	2006-04-09 19:48:56.000000000 +0200
+@@ -1,4 +1,4 @@
+-#! @PYTHON@
++#!/usr/bin/env python
+ 
+ import sys
+ import os.path
+
+--- pygtk-2.6.2/codegen/pygtk-codegen-2.0.in.orig	2006-04-09 19:46:57.000000000 +0200
++++ pygtk-2.6.2/codegen/pygtk-codegen-2.0.in	2006-04-09 19:47:09.000000000 +0200
+@@ -7,4 +7,4 @@
+ PYTHONPATH=$codegendir
+ export PYTHONPATH
+ 
+-exec @PYTHON@ $codegendir/codegen.py "$@"
++exec python $codegendir/codegen.py "$@"
