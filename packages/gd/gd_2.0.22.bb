@@ -3,12 +3,15 @@ LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "libpng jpeg zlib"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.boutell.com/gd/http/gd-${PV}.tar.gz"
 S = "${WORKDIR}/gd-${PV}"
 
 inherit autotools binconfig gettext
+
+PACKAGES =+ "lib${PN}"
+FILES_lib${PN} = "${libdir}/lib*.so.*"
 
 EXTRA_OECONF += " --with-zlib=${STAGING_LIBDIR}/.. \
                   --with-png=${STAGING_LIBDIR}/.. \
