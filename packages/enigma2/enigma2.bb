@@ -13,7 +13,7 @@ RDEPENDS_append_dm7025 = " gst-plugin-alsa"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060409"
+CVSDATE = "20060411"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
