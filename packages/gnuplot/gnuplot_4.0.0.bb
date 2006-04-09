@@ -5,7 +5,7 @@ LICENSE = "BSD-4"
 PRIORITY = "optional"
 MAINTAINER = "Philip Frampton"
 DEPENDS = "x11 libpng gd readline"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.gnuplot.info/pub/gnuplot/gnuplot-${PV}.tar.gz \
 	   file://subdirs.patch;patch=1 \
@@ -22,6 +22,7 @@ PACKAGES =+ "${PN}-x11"
 DESCRIPTION_${PN}-x11 = "X11 display terminal for Gnuplot."
 SECTION_${PN}-x11 = "x11/scientific"
 FILES_${PN}-x11 = "${libexecdir} ${datadir}/applications ${datadir}/pixmaps"
+RDEPENDS_${PN}-x11 = "${PN}"
 
 acpaths = ""
 EXTRA_OECONF = "--with-readline=${STAGING_LIBDIR}/.. \
