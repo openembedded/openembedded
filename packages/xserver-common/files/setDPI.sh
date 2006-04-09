@@ -16,7 +16,7 @@ XDEFAULTS="/etc/X11/Xdefaults"
 
 set_dpi() {
 	
-	CURRENT_SETTING="`cat /etc/X11/Xdefaults | sed -n "/Xft.dpi\:/s/.*\:\(.*\)/\1/p" | sed -n "s/\ //p"`"	
+	CURRENT_SETTING="`cat ${XDEFAULTS} | sed -n "/Xft.dpi\:/s/.*\:\(.*\)/\1/p" | sed -n "s/\ //p"`"	
 
 	if test "$CURRENT_SETTING" != "$1"
 	then
@@ -31,6 +31,34 @@ set_dpi() {
 		fi
 	else
 		echo "Your $SCREEN_DPI DPI screen is already configured."
+	fi
+}
+
+set_rxvt_font() {
+
+	CURRENT_SETTING="`cat ${XDEFAULTS} | sed  -n "/Rxvt\*font/s/\(.*\pixelsize=\)\(.*\)/\2/p"`"
+
+	if test "$1" -gt 100
+	then
+	
+		# Configure the rxvt font-size for your screen here:
+		test "$1" -gt 180 -a "$1" -lt "221" && RXVT_FONT_SIZE=16
+		
+		if test -z "$RXVT_FONT_SIZE"
+		then
+			echo "WARNING: No rxvt font-size configured for a $SCREEN_DPI DPI screen!"
+			echo "Defaulting to size 9"
+			RXVT_FONT_SIZE=9
+		fi
+		
+		if test "$CURRENT_SETTING" != "$RXVT_FONT_SIZE"
+		then
+			echo "Using a rxvt font-size of $RXVT_FONT_SIZE"
+			cat ${XDEFAULTS} | sed "/Rxvt\*font/s/\(.*\pixelsize\)\(=*.*\)/\1=$RXVT_FONT_SIZE/" > ${XDEFAULTS}_
+			mv ${XDEFAULTS}_ ${XDEFAULTS}
+		else
+			echo "The rxvt font-size is already configured"
+		fi 
 	fi
 }
 
@@ -61,3 +89,4 @@ then
 fi
 
 set_dpi "$SET_SCREEN_DPI"
+set_rxvt_font "$SCREEN_DPI"
