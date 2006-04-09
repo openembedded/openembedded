@@ -26,8 +26,8 @@ SLUGOS_NATIVE_RT = "\
 	cpp cpp-symlinks \
 	g++ g++-symlinks \
 	gcc-symlinks \
+	gdbm3 \
 	libg2c-dev \
-	libgdbm3 \
 	libperl5 \
 	libreadline4 libreadline-dev \
 	libstdc++-dev \
