@@ -8,3 +8,17 @@ key=....F11:-:~matchbox-remote -menu
 #key=...*2:-:~zoom in
 key=...*3:-:~display-brightness.sh down 
 key=...*4:-:~display-brightness.sh up 
+                                                                                
+# LCD Softkeys                                                                  
+# Please note that the space _between_ two softkeys can be used, too ;)         
+#key=....F5:-:                                                                  
+key=....F15:-:~matchbox-remote -next                                            
+#key=....F6:-:                                                                  
+key=....F16:-:sylpheed                                                          
+#key=....F7:-:                                                                  
+key=....F17:-:gpe-contacts                                                      
+#key=....F8:-:                                                                  
+key=....F18:-:gpe-calendar                                                      
+#key=....F19:-:                                                                 
+#key=....F19:-:                                                                 
+#key=....F10:-:                                                                 

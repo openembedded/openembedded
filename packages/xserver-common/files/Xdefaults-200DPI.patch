@@ -1,0 +1,7 @@
+--- xserver-common-1.8/X11/Xdefaults.orig	2006-04-08 11:08:35.158478256 +0200
++++ xserver-common-1.8/X11/Xdefaults	2006-04-08 11:08:42.711330048 +0200
+@@ -1,3 +1,2 @@
+ Rxvt*scrollBar_right: true
+-Rxvt*font: xft:Mono:pixelsize=9
+-Xft.dpi: 100
++Rxvt*font: xft:Mono:pixelsize=12

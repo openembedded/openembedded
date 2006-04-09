@@ -1,12 +1,10 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
-FEED_URIS_append_openzaurus = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
-FEED_URIS_append_opensimpad = " opie##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r20"
+PR = "r21"
 
 DEPENDS = "task-bootstrap task-opie"
 RDEPENDS = "${INSTALL_PACKAGES}"

@@ -1,0 +1,16 @@
+Index: zbedic/src/zbedic.cpp
+===================================================================
+--- zbedic.orig/src/zbedic.cpp	2006-03-15 11:24:12.000000000 +0100
++++ zbedic/src/zbedic.cpp	2006-03-15 11:30:21.000000000 +0100
+@@ -129,9 +129,9 @@
+   // ========== create actions
+   action[TB_SwitchDictionaries] = createAction( tr( "Switch dictionaries" ), "zbedic/switch_dictionary",
+     SLOT(switchToPreviousDict()), CTRL+Key_S );
+-  action[TB_Back] = createAction( tr( "History previous" ), "zbedic/back",
++  action[TB_Back] = createAction( tr( "History previous" ), "back",
+     SLOT(navigationPrevious()), Key_End );
+-  action[TB_Forward] = createAction( tr( "History next" ), "zbedic/forward",
++  action[TB_Forward] = createAction( tr( "History next" ), "forward",
+     SLOT(navigationNext()), Key_Home );
+   action[TB_LookupSelection] = createAction( tr( "Lookup selection" ), "zbedic/lookup_selection",
+     SLOT(lookupSelection()), CTRL+Key_L );

@@ -1,10 +1,7 @@
 DESCRIPTION = "Tasks for Enlightenment/X11"
 PACKAGES = "task-e-x11-core task-e-x11"
 PROVIDES = "task-e-x11-core task-e-x11"
-PR = "r8"
-
-FEED_URIS += "x11##http://openzaurus.org/official/unstable/3.5.2/feed/x11 \
-              e##http://openzaurus.org/official/unstable/3.5.2/feed/e"
+PR = "r9"
 
 PREFERRED_PROVIDER_virtual/imlib2 = "imlib-x11"
 

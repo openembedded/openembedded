@@ -1,4 +1,4 @@
 include hostap-modules.inc
-PR = "r5"
+PR = "r6"
 
 SRC_URI += "file://kernel_updates.patch;patch=1"
