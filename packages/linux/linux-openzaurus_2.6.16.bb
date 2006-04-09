@@ -79,7 +79,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
            file://defconfig-poodle \
-           file://defconfig-cxx00 \
+           file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
 
