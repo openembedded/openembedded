@@ -25,15 +25,13 @@ SLUGOS_NATIVE_RT = "\
 	binutils-dev binutils-symlinks \
 	cpp cpp-symlinks \
 	g++ g++-symlinks \
-	gcc-symlinks \
-	libg2c-dev \
-	libperl5 \
-	libreadline4 libreadline-dev \
+	gcc gcc-symlinks \
+	gdbm \
 	libstdc++-dev \
-	libthread-db1 \
 	ncurses-dev ncurses-terminfo \
-	perl-modules \
+	perl perl-modules \
 	python-core python-crypt python-io python-lang python-pickle python-shell python-textutils \
+	readline \
 	"
 
 # Run-time and DEPENDS
