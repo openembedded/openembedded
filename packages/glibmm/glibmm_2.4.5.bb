@@ -13,6 +13,8 @@ inherit autotools pkgconfig flow-lossage
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 RPROVIDES_${PN} = "glibmm"
+RCONFLICTS_${PN} = "glibmm"
+RREPLACES_${PN} = "glibmm"
 LEAD_SONAME = "libglibmm-.\..\..*"
 
 LIBV = "2.4.0"
