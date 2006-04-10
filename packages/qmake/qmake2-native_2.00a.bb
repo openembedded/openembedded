@@ -4,11 +4,9 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r5"
+PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
-QTVER = "qt-x11-opensource-src-4.0.1"
+QTVER = "qt-x11-opensource-src-4.1.1"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://linux-oe-qmake.conf"
@@ -40,7 +38,7 @@ do_compile() {
 }
 
 do_stage() {
-	install -m 0755 bin/qmake ${STAGING_BINDIR}
+	install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake2
 	install -d ${QMAKE_MKSPEC_PATH}
 	cp -dfR mkspecs/* ${QMAKE_MKSPEC_PATH}
 }
