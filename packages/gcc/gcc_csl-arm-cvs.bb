@@ -7,7 +7,4 @@ SRC_URI += "file://15342.patch;patch=1 file://gcc-3.4.0-arm-lib1asm.patch;patch=
 
 PR = "r0"
 
-SRCDATE = "20050603"
-OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
-
-DEFAULT_PREFERENCE_arm = "-1"
+DEFAULT_PREFERENCE = "-1"
