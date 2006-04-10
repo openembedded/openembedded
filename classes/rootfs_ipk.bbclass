@@ -29,14 +29,19 @@ real_do_rootfs () {
 	set -x
 		
 	mkdir -p ${IMAGE_ROOTFS}/dev
-
-	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-		rm -f ${DEPLOY_DIR_IPK}/Packages
-		touch ${DEPLOY_DIR_IPK}/Packages
-		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-	fi
 	mkdir -p ${T}
-	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
+
+	if [ 1 == "${USE_FEED_FOR_IMAGES}" ]; then
+		insert_feed_uris_t
+	else
+		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+			rm -f ${DEPLOY_DIR_IPK}/Packages
+			touch ${DEPLOY_DIR_IPK}/Packages
+			ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+		fi
+		echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
+	fi
+	
 	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
 	priority=1
 	for arch in $ipkgarchs; do
@@ -132,5 +137,25 @@ create_etc_timestamp() {
 
 # export the zap_root_password and create_etc_timestamp
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp
+
+insert_feed_uris_t () {
+
+        echo "Adding feed descriptors for [${DISTRO}] to get built from"
+
+        for line in ${FEED_URIS}
+        do
+                # strip leading and trailing spaces/tabs, then split into name and uri
+                line_clean="`echo "$line"|sed 's/^[ \t]*//;s/[ \t]*$//'`"
+                feed_name="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\1/p'`"
+                feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"
+
+                echo "Added $feed_name feed with URL $feed_uri"
+
+                # insert new feed-sources
+                echo "src/gz $feed_name $feed_uri" >> ${T}/ipkg.conf
+        done
+}
+
+
 
 addtask rootfs before do_build after do_install
