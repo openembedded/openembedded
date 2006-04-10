@@ -3,18 +3,18 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-x11-opensource-src-4.0.1/configure~cross-compile
-+++ qt-x11-opensource-src-4.0.1/configure
-@@ -477,7 +477,7 @@
+--- qt-x11-opensource-src-4.1.1/configure~cross-compile
++++ qt-x11-opensource-src-4.1.1/configure
+@@ -534,7 +534,7 @@
              UNKNOWN_ARG=yes
          fi
          ;;
--    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey)
-+    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-crossarch)
+-    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk)
++    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk|-crossarch)
          VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
          shift
          VAL=$1
-@@ -768,6 +768,9 @@
+@@ -845,6 +845,9 @@
      xplatform)
          XPLATFORM="$VAL"
          ;;
@@ -24,7 +24,7 @@
      debug-and-release)
          if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
              CFG_DEBUG_RELEASE="$VAL"
-@@ -1649,100 +1652,7 @@
+@@ -1698,131 +1701,7 @@
      echo "Determining system architecture... ($UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE)"
  fi
  
@@ -32,6 +32,9 @@
 -    case "$CFG_EMBEDDED" in
 -    x86)
 -        ARCH=i386
+-        ;;
+-    x86_64)
+-        ARCH=x86_64
 -        ;;
 -    ipaq|sharp)
 -        ARCH=arm
@@ -48,23 +51,45 @@
 -            echo "    SGI ($ARCH)"
 -        fi
 -        ;;
--    SunOS:5*:sun4*)
--        if [ "$OPT_VERBOSE" = "yes" ]; then
--            echo "    Sun SPARC (sparc)"
--        fi
--        ARCH=sparc
+-    SunOS:5*:*)
+-        case "$UNAME_MACHINE" in
+-	sun4u)
+-            if [ "$OPT_VERBOSE" = "yes" ]; then
+-                echo "    Sun SPARC (sparc)"
+-            fi
+-            ARCH=sparc
+-            ;;
+-        i86pc)
+-	    case "$PLATFORM" in
+-	    *-64)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-	            echo "    64-bit AMD 80x86 (x86_64)"
+-                fi
+-                ARCH=x86_64
+-                ;;
+-	    *)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-	            echo "    32-bit Intel 80x86 (i386)"
+-                fi
+-                ARCH=i386
+-                ;;
+-            esac
+-        esac
 -        ;;
--    Darwin:*:Power?Macintosh)
--        if [ "$OPT_VERBOSE" = "yes" ]; then
--            echo "    32-bit Apple PowerPC (powerpc)"
--        fi
--        ARCH=powerpc
--        ;;
--    Darwin:*:x86)
--        if [ "$OPT_VERBOSE" = "yes" ]; then
--            echo "    32-bit Apple Intel (x86)"
--        fi
--        ARCH=i386
+-    Darwin:*:*)
+-        case "$UNAME_MACHINE" in
+-            Power?Macintosh)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-                    echo "    32-bit Apple PowerPC (powerpc)"
+-                fi
+-                ;;
+-            x86)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-                    echo "    32-bit Intel 80x86 (i386)"
+-                fi
+-                ;;
+-        esac
+-        ARCH=macosx
 -        ;;
 -    AIX:*:00????????00)
 -        if [ "$OPT_VERBOSE" = "yes" ]; then
@@ -84,7 +109,7 @@
 -        fi
 -        ARCH=i386
 -        ;;
--    *:*:x86_64)
+-    *:*:x86_64|*:*:amd64)
 -        if [ "$PLATFORM" = "linux-g++-32" ]; then
 -            if [ "$OPT_VERBOSE" = "yes" ]; then
 -                echo "    32 bit on 64-bit AMD 80x86 (i386)"
@@ -103,6 +128,12 @@
 -        fi
 -        ARCH=powerpc
 -        ;;
+-    *:*:s390*)
+-    	if [ "$OPT_VERBOSE" = "yes" ]; then
+-    	    echo "    IBM S/390 (s390)"
+-    	fi
+-    	ARCH=s390
+-    	;;
 -    *:*:*)
 -        if [ "$OPT_VERBOSE" = "yes" ]; then
 -            echo "    Trying '$UNAME_MACHINE'..."
