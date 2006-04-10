@@ -30,6 +30,6 @@ PREFERRED_PROVIDER_virtual/evas = "evas-x11"
 PREFERRED_PROVIDER_virtual/ecore = "ecore-x11"
 PREFERRED_PROVIDER_virtual/imlib2 = "imlib2-x11"
 
-PREFERRED_VERSION_gnome-vfs-dbus = "svn"
+#PREFERRED_VERSION_gnome-vfs-dbus = "svn"
 
-PREFERRED_VERSION_gcc = "3.4.4"
+#PREFERRED_VERSION_gcc = "3.4.4"
