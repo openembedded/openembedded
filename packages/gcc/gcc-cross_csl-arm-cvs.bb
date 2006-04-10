@@ -1,10 +1,10 @@
-include gcc_csl-arm-20050416.bb
+include gcc_csl-arm-cvs.bb
 # path mangling, needed by the cross packaging
 include gcc-paths-cross.inc
 inherit cross
 # NOTE: split PR.  If the main .oe changes something that affects its *build*
 # remember to increment this one too.
-PR = "r4"
+PR = "r0"
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
