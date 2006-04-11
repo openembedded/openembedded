@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -69,6 +69,10 @@ PARTS = "3Support Core Designer DesignerComponents Gui Network Sql Svg Test Xml"
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
+	install -m 0755 ${STAGING_BINDIR}/rcc4 ${STAGING_QT_DIR}/bin/rcc
+	install -m 0755 ${STAGING_BINDIR}/moc4 ${STAGING_QT_DIR}/bin/moc
+	install -m 0755 ${STAGING_BINDIR}/uic4 ${STAGING_QT_DIR}/bin/uic
+
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
