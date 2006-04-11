@@ -4,6 +4,8 @@ DESCRIPTION = "tslib is a touchscreen access library (maemo patched version)."
 PR = "r1"
 PROVIDES = "tslib"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 
