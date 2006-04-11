@@ -9,7 +9,7 @@ SRC_URI = "${E_CVS};module=e17/apps/e;date=${PV} \
            file://fix-configure.patch;patch=1"
 S = "${WORKDIR}/e"
 
-PROFILE = "LORES_PDA"
+PROFILE = "LOWRES_PDA"
 PROFILE_c7x0 = "HIRES_PDA"
 PROFILE_tosa = "HIRES_PDA"
 PROFILE_spitz = "HIRES_PDA"
