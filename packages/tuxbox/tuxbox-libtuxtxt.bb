@@ -4,7 +4,9 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
            file://acinclude.m4"
 
-CVSDATE = "20050912"
+CVSDATE_dm7025 = "20050912"
+CVSDATE_dm7020= "20060301"
+
 PN = "libtuxtxt"
 PR = "r0"
 PV = "0.0+cvs${CVSDATE}"
@@ -27,6 +29,8 @@ do_configure_prepend() {
 
 do_stage() {
 	install -m 0644 ${S}/libtuxtxt/tuxtxt_*.h ${STAGING_INCDIR}
+	install -d ${STAGING_INCDIR}/tuxtxt
+	install -m 0644 ${S}/libtuxtxt/tuxtxt_*.h ${STAGING_INCDIR}/tuxtxt
 	cd libtuxtxt
 	oe_libinstall -so libtuxtxt ${STAGING_LIBDIR}
 	cd ..

@@ -5,8 +5,8 @@ diff -Naur plugins_org/Makefile.am plugins/Makefile.am
  AUTOMAKE_OPTIONS = gnu
  
  SUBDIRS = \
--	include tuxmail tuxtxt tuxcom fx2 vncviewer enigma
-+	include tuxmail tuxtxt tuxcom fx2 vncviewer
+-	include tuxmail tuxtxt tuxcom tuxcal fx2 vncviewer enigma
++	include tuxmail tuxtxt tuxcom tuxcal fx2 vncviewer
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = \
