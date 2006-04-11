@@ -5,7 +5,7 @@ LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 KV_dm7020 = "2.6.9"
-PV_dm7020 = "${KV}-20060111"
+PV_dm7020 = "${KV}-20060410"
 
 def get_modules_extension(bb, d):
 	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:
