@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -14,10 +14,10 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            file://no-tools.patch;patch=1 \
            file://no-qmake.patch;patch=1 \
            file://gcc4_1.patch;patch=1 \
-           file://configurable-cpu-extensions.patch;patch=1"
+           file://configurable-cpu-extensions.patch;patch=1 \
+           file://fix-mkspecs.patch;patch=1"
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
-# TODO: make it not look in /usr and /usr/include for its tests!
 PARALLEL_MAKE = ""
 
 inherit qmake-base qt4x11 pkgconfig
@@ -28,12 +28,14 @@ export ARCH = "${TARGET_ARCH}"
 export ARCH_i686 = "x86"
 EXTRA_OEMAKE = "-e"
 
-# FIXME: add missing options
+# FIXME:
+# * add missing options
+# * auto stl detection is broken, so we disable it
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-sm -no-libmng -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-nis -no-cups -no-opengl \
                    -nosse \
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
-                   -verbose -stl"
+                   -verbose -no-stl -no-accessibility"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
@@ -45,13 +47,15 @@ do_configure() {
 	echo "DEFINES -= QT_NO_CAST_TO_ASCII" >>src/qbase.pri
 	echo "DEFINES += QT_NO_XIM" >>src/qbase.pri
 	unset QMAKESPEC
+	#export QMAKESPEC="linux-oe-g++"
 	ln -sf ${STAGING_BINDIR}/qmake2 bin/qmake
-	echo yes | ./configure -v -prefix ${prefix} -crossarch ${ARCH} ${QT_CONFIG_FLAGS} -fast \
+	#rm -rf ./mkspecs
+	#ln -sf ${QMAKE_MKSPEC_PATH} ./mkspecs
+	echo yes | ./configure -prefix / -crossarch ${ARCH} ${QT_CONFIG_FLAGS} -fast \
 		-L${STAGING_LIBDIR} -I${STAGING_INCDIR} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/mysql
 }
 
 # FIXME: Might want to compile the cross tools for the -dev packages as well...
-
 do_compile() {
 	unset CFLAGS CXXFLAGS
 	install -m 0755 ${STAGING_BINDIR}/rcc4 ${S}/bin/rcc
@@ -64,15 +68,10 @@ do_compile() {
 PARTS = "3Support Core Designer DesignerComponents Gui Network Sql Svg Test Xml"
 
 do_stage() {
-	install -d ${STAGING_QT_DIR}
-	for part in ${PARTS}
-	do
-		oe_libinstall -so -C lib libQt$part ${STAGING_QT_DIR}
-	done
-	oe_libinstall -a -C lib libQtAssistantClient ${STAGING_QT_DIR}
-	cp -pPR include/* ${STAGING_INCDIR}/
+	oe_runmake install INSTALL_ROOT=/
 }
 
+# FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
 do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${bindir}
@@ -90,11 +89,16 @@ do_install() {
 	do
 		install -m 0755 $binary ${D}${bindir}/qt4-examples/
 	done
+	install -d ${D}${bindir}/qt4-demos
+	for binary in `find demos -perm 0755 -type f`
+	do
+		install -m 0755 $binary ${D}${bindir}/qt4-demos/
+	done
 }
 
 PACKAGES =+ "libqtcore4 libqtgui4 libqtnetwork4 libqtsql4 libqtsvg4 libqttest4 libqtxml4 \
              libqtdesigner4 libqtdesignercomponents4 \
-             qt4-assistant qt4-designer qt4-examples qt4-linguist \
+             qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers"
 
 FILES_libqtcore4               = "${libdir}/libQtCore.so*"
@@ -117,4 +121,6 @@ FILES_qt4-assistant            = "${bindir}/*assistant*"
 FILES_qt4-designer             = "${bindir}/*designer*"
 FILES_qt4-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
 
+FILES_qt4-common               = "${bindir}/qtconfig"
 FILES_qt4-examples             = "${bindir}/qt4-examples/*"
+FILES_qt4-demos                = "${bindir}/qtdemo ${bindir}/qt4-demos/*"
