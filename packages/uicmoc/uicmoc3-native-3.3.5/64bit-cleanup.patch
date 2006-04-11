@@ -1,6 +1,19 @@
---- qt-embedded-free-3.3.5/src/embedded/qgfxlinuxfb_qws.cpp~64bit	2005-12-14 15:51:23.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/embedded/qgfxlinuxfb_qws.cpp	2005-12-14 15:52:29.000000000 +0000
-@@ -176,7 +176,7 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-embedded-free-3.3.5/src/embedded/qgfxlinuxfb_qws.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/embedded/qgfxlinuxfb_qws.cpp
+@@ -40,6 +40,7 @@
+ 
+ #include <unistd.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -176,7 +177,7 @@
  				 MAP_SHARED, fd, 0);
      data += dataoffset;
  
@@ -9,7 +22,7 @@
  	perror("mapping /dev/fb0");
  	qWarning("Error: failed to map framebuffer device to memory.");
  	return FALSE;
-@@ -737,7 +737,7 @@
+@@ -737,7 +738,7 @@
      psize += 8;     // for alignment
      psize &= ~0x7;  // align
  
@@ -18,8 +31,8 @@
      pos += psize;
      entryp = ((int *)pos);
      lowest = ((unsigned int *)pos)+1;
---- qt-embedded-free-3.3.5/src/kernel/qsharedmemory_p.cpp~64bit	2005-12-14 15:34:43.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/kernel/qsharedmemory_p.cpp	2005-12-14 15:35:26.000000000 +0000
+--- qt-embedded-free-3.3.5/src/kernel/qsharedmemory_p.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/kernel/qsharedmemory_p.cpp
 @@ -31,6 +31,7 @@
  **********************************************************************/
  
@@ -37,8 +50,8 @@
      return FALSE;
    else
      return TRUE;
---- qt-embedded-free-3.3.5/src/kernel/qapplication_qws.cpp~64bit	2005-12-14 15:27:14.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/kernel/qapplication_qws.cpp	2005-12-14 15:28:37.000000000 +0000
+--- qt-embedded-free-3.3.5/src/kernel/qapplication_qws.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/kernel/qapplication_qws.cpp
 @@ -107,6 +107,7 @@
  #include <locale.h>
  #include <errno.h>
@@ -79,8 +92,8 @@
  			else
  			    QPaintDevice::qwsDisplay()->selectCursor(widget, ArrowCursor);
  		    }
---- qt-embedded-free-3.3.5/src/kernel/qfont_qws.cpp~64bit	2005-12-14 15:29:17.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/kernel/qfont_qws.cpp	2005-12-14 15:29:54.000000000 +0000
+--- qt-embedded-free-3.3.5/src/kernel/qfont_qws.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/kernel/qfont_qws.cpp
 @@ -49,6 +49,7 @@
  #include "qgfx_qws.h"
  #include "qtextengine_p.h"
@@ -98,8 +111,8 @@
  
  	// look for the requested font in the engine data cache
  	engineData = QFontCache::instance->findEngineData( key );
---- qt-embedded-free-3.3.5/src/kernel/qwsregionmanager_qws.cpp~64bit	2005-12-14 15:32:12.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/kernel/qwsregionmanager_qws.cpp	2005-12-14 15:32:52.000000000 +0000
+--- qt-embedded-free-3.3.5/src/kernel/qwsregionmanager_qws.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/kernel/qwsregionmanager_qws.cpp
 @@ -32,6 +32,7 @@
  #include "qwsdisplay_qws.h"
  #include "qwsregionmanager_qws.h"
@@ -117,8 +130,8 @@
  #else
  	int dataSize = sizeof(QWSRegionHeader)                // header
  		    + sizeof(QWSRegionIndex) * QT_MAX_REGIONS // + index
---- qt-embedded-free-3.3.5/src/kernel/qwidget_qws.cpp~64bit	2005-12-14 15:30:36.000000000 +0000
-+++ qt-embedded-free-3.3.5/src/kernel/qwidget_qws.cpp	2005-12-14 15:31:37.000000000 +0000
+--- qt-embedded-free-3.3.5/src/kernel/qwidget_qws.cpp~64bit-cleanup.patch
++++ qt-embedded-free-3.3.5/src/kernel/qwidget_qws.cpp
 @@ -53,6 +53,7 @@
  #include "qwsmanager_qws.h"
  #include "qwsregionmanager_qws.h"

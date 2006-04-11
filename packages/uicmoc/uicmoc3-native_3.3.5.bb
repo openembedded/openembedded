@@ -4,12 +4,11 @@ SECTION = "devel"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
            file://no-examples.patch;patch=1 \
            file://64bit-cleanup.patch;patch=1"
-
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 inherit native qmake-base qt3e
