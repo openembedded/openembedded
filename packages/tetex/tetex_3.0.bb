@@ -1,9 +1,10 @@
-DESCRIPTION = "teTeX is a complete TeX distribution for UNIX compatible systems"
+DESCRIPTION = "teTeX is a complete (pdf)(La)TeX distribution for UNIX compatible systems"
+HOMEPAGE = "http://www.tug.org/tetex" 
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib libx11 libxau libxext libxt zlib"
-TETEX_BUILDSYSTEM_TAMER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r2"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r4"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"
@@ -12,35 +13,49 @@ S = ${WORKDIR}/tetex-src-${PV}
 inherit autotools
 
 PARALLEL_MAKE = ""
-
+        
 export BUILDCC = "${BUILD_CC}"
 export BUILDCFLAGS = "${BUILD_CFLAGS}"
 export BUILDLDFLAGS = "${BUILD_LDFLAGS}"
 export BUILDCCLD = "${BUILD_CC}"
-
+        
 EXTRA_OECONF = "--with-system-libgd \
-		--with-system-ncurses \
-		--with-ncurses-include=${STAGING_INCDIR} \
-		--with-system-pnglib \
-		--with-system-t1lib \
-		--with-system-zlib \
-		--without-dialog \
-		--without-xdvik"
+                --with-system-ncurses \
+                --with-ncurses-include=${STAGING_INCDIR} \
+                --with-system-pnglib \
+                --with-system-t1lib \
+                --with-system-zlib \
+                --without-dialog \
+                --without-xdvik \
+                --without-x11 \
+                --without-mf-x-toolkit"
 
 # NOTE:  In theory, teTeX has a good buildsystem, which automatically detects
 #        whether we are cross-compiling and compiles the necessary host tools.
-#        Unfortunately it doesn't work in our case and it looks easier to add
-#        tetex-native for the time being. Cheers, Mickey.
-do_configure () {
-	oe_runconf
-	ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/info
-	ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/makeinfo
-	cat >${S}/utils/texinfo/tools/Makefile <<EOF
+#        Unfortunately it doesn't work in our case and we better just add
+#        tetex-native for the time being.
+#        It would be good to autoreconf all the stuff, but the upstream configure.in
+#        is faulty and outdated :/
+do_configure() {
+        rm -f texk/libtool.m4
+        libtoolize --force
+        gnu-configize
+        oe_runconf ${EXTRA_OECONF}
+        find . -name libtool|xargs rm -f
+        rm -rf ${S}/utils/texinfo/tools/info
+        rm -rf ${S}/utils/texinfo/tools/makeinfo
+        ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/info
+        ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/makeinfo
+        cat >${S}/utils/texinfo/tools/Makefile <<EOF
 install:
-	echo "done"
+	echo "mickey _is_ cool - he tamed the tetex buildsystem"
 all:
-	echo "done"
+	echo "mickeys suck - he adds easter eggs in output that no one will ever read..."
 EOF
+}
+# NOTE: Make sure it is using _our_ libtool and nothing else :/
+do_compile() {
+	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}/libtool" oe_runmake MAKE="${MAKE} LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool"
 }
 
 # NOTE: This is really ugly. Unfortunately the teTeX people seem not to know about PREFIX...
