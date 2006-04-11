@@ -14,7 +14,7 @@ run_module(){
 	init_rootfs
 	
 	# Mount
-	mount_sd	
+	mount_sd ingore_errors	
 	mount_cf
 	mount_home
 	

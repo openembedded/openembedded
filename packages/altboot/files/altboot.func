@@ -474,14 +474,18 @@ mount_sd(){
 		then
 			echo -n "Loading SD kernel module..."
 			/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
-		else
-			echo "No SD kernel module configured, assuming it's build-in"
 		fi
 		
 		check_fs "$SD_DEVICE"
 
 		echo -n "Mounting $SD_MOUNTPOINT..."  >/dev/tty0
-		/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
+		
+		if test "$1" = ingore_errors
+		then
+			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0 || echo "Could not mount SD card"
+		else
+			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
+		fi		
 	fi
 	echo ""	
 	
@@ -494,8 +498,12 @@ mount_cf(){
 	then
 		echo "Note: /media/cf is already mounted"
 	else	
-		/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr is already active"
-
+		# As of kernel 2.6.16, /e/i/pcmcia is replaced by udev
+		if test -x /etc/init.d/pcmcia
+		then
+			/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr is already active"
+		fi
+			
 		echo ""
 
 		# Give the SD and CF mounting some time. This is a must for SD			
