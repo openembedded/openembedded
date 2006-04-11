@@ -12,9 +12,6 @@ CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x
 
 UNSLUNG_KERNEL_EXTRA_SRC_URI ?=
 
-#	    file://limit1gb.patch;patch=1 \
-#	    file://ext3flash-on-disk1.patch;patch=1 \
-
 SRC_URI += "file://linux-kernel-R25_to_R29.patch;patch=1 \
 	    file://linux-kernel-R29_to_R63.patch;patch=1 \
 	    file://flash-is-now-hdd.patch;patch=1 \

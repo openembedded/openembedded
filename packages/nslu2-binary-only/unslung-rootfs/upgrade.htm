@@ -70,8 +70,8 @@ function checkUpgrade()
 		 <a href="/Management/file_sharing.cgi?next_file=shares.htm" class="submenu">Shares</a> <span class="divider"> | </span>
 		 <a href="/Management/sh_backup.cgi?next_file=backup.htm" class="submenu">Backup</a> <span class="divider"> | </span>
 		 <a href="/Management/disk_fs.htm" class="submenu">Disk</a> <span class="divider"> | </span>
-		 <a href="/Management/setup.cgi?next_file=lan.htm" class="submenu">Setup</a>
-		</td>
+		 <span class="tabtitle">Upgrade</span> <span class="divider"> | </span>
+		 <a href="/Management/setup.cgi?next_file=lan.htm" class="submenu">Setup</a></td>
 	</tr>
 	</table>
 	
@@ -94,11 +94,14 @@ function checkUpgrade()
 	<tr>
 	  <td nowrap>Current Firmware Version:</td>
 	  <td nowrap>@ds_sw_version# </td></tr>
+	  <tr><td>
+	  <div align="left"><a href="http://www.linksys.com" target="new_win"><img src="button_checkupdate.jpg" width="107" height="20" alt="" border="0"></a></div>
+	  </td>
+	</tr>
 	</table></div> </td>
  <td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="80" width="15"></td>
 </tr>
 
-	
 <tr>
     <td bgcolor="#e7e7e7" height="30" align="right"><img border="0" src="../UI_04.gif" width="8" hspace="0" vspace="0" height="30"></td>
 	<td height="30">&nbsp;  </td>
@@ -107,10 +110,9 @@ function checkUpgrade()
 
 <tr>
     <td bgcolor="black" height="34">&nbsp;  </td>
-	<td bgcolor="#6666cc" align="right" height="33" valign="middle">
-<a class="textbutton" href="javascript:checkUpgrade();" style="{padding:3px}">&nbsp; Enter Upgrade Mode </a>
-&nbsp;
-<a class="textbutton" href="javascript:openHelpWin('help/util_upg.htm')" style="{padding:3px}">&nbsp; Help &nbsp;</a> &nbsp; &nbsp;  </td>
+	    <td bgcolor="#6666cc" align="right" height="33" valign="middle"><a class="textbutton" href="javascript:checkUpgrade();" style="{padding:3px}">&nbsp; 
+          Enter Upgrade Mode&nbsp;</a>&nbsp; <a class="textbutton" href="javascript:openHelpWin('help/util_upg.htm')" style="{padding:3px}"> 
+          Help &nbsp;</a> &nbsp; &nbsp; </td>
 </tr>
 
 
