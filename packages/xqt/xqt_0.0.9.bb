@@ -4,7 +4,7 @@ SECTION = "x11/base"
 
 
 CVSDATE = "20041111"
-DEPENDS = "freetype libxi xmu flex-2.5.4-native virtual/libqte2 libqpe-opie"
+DEPENDS = "freetype libxi xmu flex-native virtual/libqte2 libqpe-opie"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xc;method=pserver \
 	   file://imake-staging.patch;patch=1 \
