@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r0"
+PR = "r1"
 
 QTVER = "qt-x11-opensource-src-4.1.1"
 
@@ -12,6 +12,8 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
 
+# we need the real target system here
+CROSS_SYS := "${TARGET_SYS}"
 inherit autotools native
 
 export QTDIR = "${S}"
@@ -29,8 +31,8 @@ do_configure() {
 	QMAKESPEC=
 	PLATFORM=${HOST_OS}-oe-g++
 	export PLATFORM
-	oenote ./configure ${EXTRA_OECONF}
-	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed"
+	# yes, TARGET_SYS is correct, because this is a 'cross'-qmake-native :) :M:
+	echo yes | ./configure -prefix ${STAGING_DIR}/${CROSS_SYS}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
 }
 
 do_compile() {
