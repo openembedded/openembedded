@@ -4,7 +4,7 @@ SECTION = "kernel/userland"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-RDEPENDS = "virtual/kernel-hostap hostap-utils (${PV})"
+RDEPENDS = "hostap-modules hostap-utils (${PV})"
 DEPENDS_mtx-1_append = "madwifi-modules"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \

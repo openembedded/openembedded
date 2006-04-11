@@ -1,11 +1,7 @@
 MAINTAINER = "Bob Davies  <tyggerbob@rogers.com>"
 LICENSE = MIT
-PR = "r5"
+PR = "r6"
 
-FEED_URIS_append_openzaurus = " x11##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 \
-                                gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
-FEED_URIS_append_opensimpad = " x11##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 \
-                                gpe##http://openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
 export IMAGE_BASENAME = "sectest-gpe-image"

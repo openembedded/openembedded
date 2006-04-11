@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.Vanille.de/projects/efl++.html"
 DEPENDS = "virtual/evas virtual/ecore edje libsigc++-2.0"
 PROVIDES = "virtual/efl++"
 
-SRC_URI = "http://www.Vanille.de/temp/efl++_${PV}.tar.bz2"
+SRC_URI = "http://www.Vanille.de/download/efl/efl++_${PV}.tar.bz2"
 S = "${WORKDIR}/efl++-${PV}"
 
 inherit qmake

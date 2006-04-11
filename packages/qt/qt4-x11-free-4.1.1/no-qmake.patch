@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-opensource-src-4.1.1/configure~no-qmake
++++ qt-x11-opensource-src-4.1.1/configure
+@@ -2548,7 +2548,7 @@
+ fi
+ 
+ # build qmake
+-if true; then ###[ '!' -f "$outpath/bin/qmake" ];
++if false; then ###[ '!' -f "$outpath/bin/qmake" ];
+     echo "Creating qmake. Please wait..."
+ 
+     OLD_QCONFIG_H=

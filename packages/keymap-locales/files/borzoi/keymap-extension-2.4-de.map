@@ -1,8 +1,0 @@
-# German keymappings
-shift altgr keycode 1  = +Adiaeresis
-shift altgr keycode 15 = +Odiaeresis
-shift altgr keycode 21 = +Udiaeresis
-altgr keycode 1  = +adiaeresis
-altgr keycode 15 = +odiaeresis
-altgr keycode 21 = +udiaeresis
-altgr keycode 19 = ssharp

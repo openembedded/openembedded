@@ -85,8 +85,10 @@ apply_cfgfile() {
         echo "Cannot create link over existing -${TNAME}-." >&2
         } || {
         TSOURCE=`echo ${LINE} | cut -d " " -f 6`
-        [ "${VERBOSE}" != "no" ] && echo "Creating link -${TNAME}- pointing to -${TSOURCE}-."
-        ln -s "${TSOURCE}" "${TNAME}"
+	[ -L "${TNAME}" ] || {
+          [ "${VERBOSE}" != "no" ] && echo "Creating link -${TNAME}- pointing to -${TSOURCE}-."
+          ln -s "${TSOURCE}" "${TNAME}"
+	  }
         }
       continue
       }

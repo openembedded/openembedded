@@ -20,13 +20,22 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 
 EXTRA_OECONF = "<override me>"
 
-
 do_configure_prepend() {
 	if [ -e "${WORKDIR}/m4" ]; then
 		install -d "${S}/m4"
 		install "${WORKDIR}/m4/"*.m4 "${S}/m4"
 		aclocal -I m4
 	fi
+}
+
+do_stage_append() {
+	cd src
+	modules=`find modules -name ".libs"`
+	for module in $modules
+	do
+		install -d ${STAGING_LIBDIR}/evas/`dirname $module`
+		install -m 0755 $module/module.so ${STAGING_LIBDIR}/evas/`dirname $module`/module.so
+	done
 }
 
 headers = "<override me>"

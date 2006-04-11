@@ -1,11 +1,12 @@
-PR = "r0"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PV = "3.4.3+csl-arm-${SRCDATE}"
-BINV = "3.4.3"
+BINV = "3.4.4"
+PV = "3.4.4+csl-arm-${SRCDATE}"
+PR = "r0"
+
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 DEFAULT_PREFERENCE = "-1"
 

@@ -89,8 +89,8 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # ASSUME_PROVIDED += "qemu-native"
 
 # Uncomment this to select a particular kernel version if supported by 
-# your MACHINE setting. Currently only supported on Zaurus Clamshells.
-# KERNEL_VERSION = "2.6"
+# your MACHINE setting. Currently only supported by poodle and tosa.
+# ZKERNEL_VERSION = "2.6"
 
 # Uncomment one of these to build packages during the build process.
 # This is done automatically if you set DISTRO (see above)
