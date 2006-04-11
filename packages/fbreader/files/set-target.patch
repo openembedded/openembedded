@@ -1,0 +1,13 @@
+--- fbreader-0.7.1b/makefiles/target.mk.orig	2005-12-06 14:29:15.000000000 -0800
++++ fbreader-0.7.1b/makefiles/target.mk	2006-02-15 01:16:33.000000000 -0800
+@@ -10,8 +10,8 @@
+ TARGET_ARCH = maemo
+ UI_TYPE = maemo
+ 
+-#TARGET_ARCH = desktop
+-#UI_TYPE = gtk
++TARGET_ARCH = desktop
++UI_TYPE = gtk
+ #UI_TYPE = qt
+ 
+ #TARGET_ARCH = zaurus

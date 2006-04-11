@@ -1,0 +1,24 @@
+--- fbreader-0.7.1b/makefiles/arch/desktop.mk.orig	2005-12-06 14:29:15.000000000 -0800
++++ fbreader-0.7.1b/makefiles/arch/desktop.mk	2006-02-15 01:16:49.000000000 -0800
+@@ -1,16 +1,16 @@
+ include $(ROOTDIR)/makefiles/arch/dummy.mk
+ 
+-INSTALLDIR=/usr/local
++INSTALLDIR=/usr
+ 
+-CC = gcc
++CC = $(CCLD) $(TARGET_CFLAGS)
+ AR = ar rsu
+-LD = g++
++LD = $(CXX)
+ 
+ DEPGEN = $(CC) -MM
+ CFLAGS = -pipe $(DUMMY_SECTIONS) -fno-exceptions -fno-rtti -Wall -Wno-ctor-dtor-privacy -W -DINSTALLDIR=\"$(INSTALLDIR)\"
+ 
+-MOC = moc-qt3
+-QTINCLUDE = -I /usr/include/qt3
++#MOC = moc-qt3
++#QTINCLUDE = -I /usr/include/qt3
+ 
+ GTKINCLUDE = $(shell pkg-config --cflags gtk+-2.0)
+ 

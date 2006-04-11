@@ -1,0 +1,11 @@
+--- fbreader-0.7.1b/fbreader/pdaxrom/usr/share/applications/FBReader.desktop.orig	2006-02-15 01:52:31.000000000 -0800
++++ fbreader-0.7.1b/fbreader/pdaxrom/usr/share/applications/FBReader.desktop	2006-02-15 01:53:10.000000000 -0800
+@@ -2,7 +2,7 @@
+ Name=FBReader
+ Comment=E-Book Reader
+ Exec=FBReader
+-Icon=FBReader/FBReader.png
++Icon=fbreader.png
+ Terminal=0
+ Type=Application
+ Categories=Application;Office;WordProcessor;
