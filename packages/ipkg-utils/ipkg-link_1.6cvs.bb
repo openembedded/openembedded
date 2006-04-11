@@ -3,7 +3,8 @@ DESCRIPTION = "Itsy Package Manager utilities link script"
 LICENSE = "GPL"
 CONFLICTS = "ipkg-utils"
 PV_append = "${CVSDATE}"
-PR = "r2"
+PACKAGE_ARCH = "all"
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
 	   file://link-vfat-libs.patch;patch=1"
