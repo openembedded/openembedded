@@ -372,14 +372,16 @@ verify_master_pw() {
 	then
 		auth_timeout="3"
 
-		echo "Please enter your altboot master password"
+		echo -e "\nPlease enter your altboot master password"
 
 		cnt=0
 		while true
 		do
 			let cnt=$cnt+$auth_timeout
 			echo -n "Password: "
+			stty -echo
 			read junk < /dev/tty0
+			stty echo
 
 			if test "`echo "$junk" | md5sum | awk '{print $1}'`" = "$MASTER_PASSWORD"
 			then
@@ -396,6 +398,8 @@ verify_master_pw() {
 #				fi
 			fi
 		done
+		
+		echo ""
 	fi
 }
 
