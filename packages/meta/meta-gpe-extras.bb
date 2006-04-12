@@ -1,7 +1,8 @@
 PACKAGES = gpe-task-apps-extra gpe-task-games gpe-task-web gpe-task-desktopapps
 DESCRIPTION = "Meta-package of extra applications for the GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR="r1"
+PACKAGE_ARCH = "all"
+PR="r2"
 
 ALLOW_EMPTY = 1
 

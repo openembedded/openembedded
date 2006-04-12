@@ -1,7 +1,8 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r44"
+PACKAGE_ARCH = "all"
+PR = "r45"
 
 ALLOW_EMPTY = "1"
 
