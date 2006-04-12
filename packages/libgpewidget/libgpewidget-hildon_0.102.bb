@@ -13,6 +13,8 @@ SRC_URI     = "${GPE_MIRROR}/libgpewidget-${PV}.tar.bz2"
 
 S = "${WORKDIR}/libgpewidget-${PV}"
 
+DEFAULT_PREFERENCE = "-1"
+
 inherit pkgconfig autotools
 
 EXTRA_OECONF = "--enable-hildon"
