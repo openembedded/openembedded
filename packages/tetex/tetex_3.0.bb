@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib libx11 libxau libxext libxt zlib"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"
@@ -55,7 +55,7 @@ EOF
 }
 # NOTE: Make sure it is using _our_ libtool and nothing else :/
 do_compile() {
-	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}/libtool" oe_runmake MAKE="${MAKE} LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool"
+	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}-libtool" oe_runmake MAKE="${MAKE} LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool"
 }
 
 # NOTE: This is really ugly. Unfortunately the teTeX people seem not to know about PREFIX...
@@ -81,7 +81,8 @@ do_install() {
 	scriptdir="${D}${bindir}" \
 	web2cdir="${D}${datadir}" \
 	kpathsea="${D}${libdir}/libkpathsea.la" \
-	DESTDIR=""
+	DESTDIR="" \
+	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}-libtool"
 	MAKE="make -e" oe_runmake -e install
 }
 
