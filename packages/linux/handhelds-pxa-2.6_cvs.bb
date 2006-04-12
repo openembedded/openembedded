@@ -4,7 +4,6 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 #
-KERNEL_CCSUFFIX = "-3.4.4"
 COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
@@ -21,7 +20,7 @@ ALLOW_EMPTY_ipaq_pxa270 = 1
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "15"
+K_MICRO = "16"
 HHV     = "0"
 #
 
