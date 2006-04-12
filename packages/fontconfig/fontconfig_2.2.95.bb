@@ -12,7 +12,9 @@ PACKAGES =+ "fontconfig-utils"
 FILES_fontconfig-utils = "${bindir}/*"
 
 # Work around past breakage in debian.bbclass
+RPROVIDES_fontconfig-utils = "libfontconfig-utils"
 RREPLACES_fontconfig-utils = "libfontconfig-utils"
+RCONFLICTS_fontconfig-utils = "libfontconfig-utils"
 DEBIAN_NOAUTONAME_fontconfig-utils = "1"
 
 S = "${WORKDIR}/fontconfig-${PV}"
