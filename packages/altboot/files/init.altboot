@@ -157,7 +157,8 @@ run_timer() {
 		
 		case "`uname -r`" in
 		2.4*)	key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
-		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`";;	
+		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`"
+			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`";;	
 		esac		
 	
 		stty -echo
@@ -171,10 +172,11 @@ run_timer() {
 			sleep 1
 			case "`uname -r`" in
 			2.4*)	key_ints_now="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
-			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`";;	
+			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`"
+				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i corgikbd`";;	
 			esac		
 			
-			if test "$key_ints_now" != "$key_ints" 
+			if test "$key_ints_now" != "$key_ints" -o -z "$key_ints_now"
 			then				
 				launch_altboot=yes				
 				stty echo

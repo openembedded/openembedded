@@ -13,7 +13,8 @@ SRC_URI = "file://altboot-menu \
 	   file://altboot.rc \
 	   file://altboot.func \	 
 	   file://init.altboot \
-	   file://altboot*.cfg"
+	   file://altboot*.cfg \
+	   file://beep.raw"
 
 # S = "${WORKDIR}/files"
  
@@ -23,7 +24,9 @@ do_install() {
 	install -d ${D}/etc/altboot-menu/Advanced
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
+	install -d ${D}/usr/share/sounds
 	
+	install -m 0644 ${WORKDIR}/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${WORKDIR}/altboot*.cfg ${D}/etc
 	install -m 0644 ${WORKDIR}/altboot.func ${D}/etc
 #	install -m 0644 ${WORKDIR}/docs/altboot/*.txt ${D}/usr/share/doc/altboot

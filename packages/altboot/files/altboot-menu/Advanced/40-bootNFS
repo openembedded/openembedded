@@ -37,6 +37,8 @@ run_module() {
 	else	
 		# With kernel 2.6.16+ udev is used 
 		/etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
+		
+		/etc/init.d/udev stop
 	fi
 	
 	nfs_host="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'|sed -n "s/\(.*\)\:\(.*\)/\1/p" `"

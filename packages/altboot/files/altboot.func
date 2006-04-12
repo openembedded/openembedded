@@ -439,8 +439,8 @@ check_fs() {
 
 # Make the initial rootfs a bit more usable
 init_rootfs(){
-	echo -n "Mounting rootfs rw..." >/dev/tty0
-	mount -o remount,rw / >/dev/tty0 2>&1 && echo ok  >/dev/tty0|| die "mount -o remount,rw / failed"
+	echo -n "Mounting rootfs rw..." 
+	mount -o remount,rw / && echo ok || die "mount -o remount,rw / failed"
 
 	mount | grep -q "/proc " >/dev/null 2>&1 && echo "Note: /proc is already mounted" || mount proc -t proc /proc >/dev/tty0 2>&1
 	
@@ -449,8 +449,8 @@ init_rootfs(){
 		mount | grep -q "/sys " >/dev/null 2>&1 && echo "Note: /sys is already mounted" || mount sys -t sysfs /sys >/dev/tty0 2>&1
 	fi
 	
-	echo -n "Generating device files..." >/dev/tty0
-	/etc/init.d/devices start && echo ok  >/dev/tty0 || die "FAILED"
+	echo -n "Generating device files..." 
+	/etc/init.d/devices start && echo ok || die "FAILED"
 }
 
 mount_sd(){
@@ -498,18 +498,26 @@ mount_cf(){
 	then
 		echo "Note: /media/cf is already mounted"
 	else	
-		# As of kernel 2.6.16, /e/i/pcmcia is replaced by udev
-		if test -x /etc/init.d/pcmcia
+		if ( cat /etc/fstab | grep -v "^#" | grep -q "/media/cf" )
 		then
-			/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr is already active"
-		fi
-			
-		echo ""
+			# As of kernel 2.6.16, /e/i/pcmcia is replaced by udev
+			if test -x /etc/init.d/pcmcia
+			then
+				/etc/init.d/pcmcia status | grep -q running || /etc/init.d/pcmcia start && echo "Note: cardmgr is already active"
+			else
+				for n in 1 2 3
+				do
+					! test -e "/dev/hda$n" && mknod /dev/hda$n b 3 $n
+				done
+			fi			
 
-		# Give the SD and CF mounting some time. This is a must for SD			
-		sleep 2
-		
-		mount | grep -q "/media/cf " || mount /media/cf
+			# Give the SD and CF mounting some time. This is a must for SD			
+			sleep 2
+
+			mount /media/cf -o async
+		else
+			echo "Note: Your system's fstab does not include an entry for /media/cf"
+		fi
 	fi
 }
 
@@ -519,7 +527,7 @@ mount_home(){
 		echo "Note: /home is already mounted"
 	else
 
-		if ( cat /etc/fstab | grep -v "^#" | grep "/home " )
+		if ( cat /etc/fstab | grep -v "^#" | grep -q "/home " )
 		then
 			echo "Mounting /home"
 			home_fstab="`grep "/home " /etc/fstab`"
@@ -528,6 +536,8 @@ mount_home(){
 			home_options="`echo "$home_fstab" | awk '{print $4}'`"
 
 			mount -t "$home_fs" -o $home_options "$home_dev" /home
-		fi	
+		else
+			echo "Note: Your system's fstab does not include an entry for /home"
+		fi
 	fi
 }
