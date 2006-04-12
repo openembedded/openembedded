@@ -1,10 +1,10 @@
 DESCRIPTION = "Meta-package for Enlightenment/X11 Core"
 PACKAGES = "task-e-x11-core"
 PROVIDES = "task-e-x11-core"
-PR = "r6"
+PACKAGE_ARCH = "all"
+PR = "r7"
 
-FEED_URIS += "x11##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.2/feed/x11 \
-              e##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.2/feed/e"
+FEED_URIS_append_openzaurus = " x11##${FEED_BASE_URI}/feed/x11 "
 
 ALLOW_EMPTY = 1
 
