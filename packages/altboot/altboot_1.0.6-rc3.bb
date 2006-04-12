@@ -32,6 +32,7 @@ do_install() {
 	install -d ${D}/etc/altboot-menu/Advanced
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
+	install -d ${D}/usr/share/sounds
 	
 	if test -d ${WORKDIR}/altboot/${MACHINE}
 	then
@@ -39,7 +40,8 @@ do_install() {
 	else
 		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc
 	fi
-	
+
+	install -m 0644 ${WORKDIR}/altboot/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${WORKDIR}/altboot/altboot.func ${D}/etc
 	install -m 0755 ${WORKDIR}/altboot/init.altboot ${D}/sbin
 	
