@@ -3,6 +3,8 @@ SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 
+inherit kernel
+
 PACKAGES += "kernel-module-hostap"
 RPROVIDES_kernel-module-hostap = "hostap-modules"
 
@@ -11,8 +13,6 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
-
-inherit kernel
 
 ##############################################################
 # Compensate for sucky bootloader on all Sharp Zaurus models
