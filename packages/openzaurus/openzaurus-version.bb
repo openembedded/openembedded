@@ -1,5 +1,6 @@
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
-PV = ${DISTRO_VERSION}
+PACKAGE_ARCH = "all"
+PV = "${DISTRO_VERSION}"
 
 do_compile() {
 	mkdir -p ${D}${sysconfdir}
