@@ -5,11 +5,14 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES = "hotplug"
 
+PR = "r1"
+
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
 	   file://flags.patch;patch=1 \
 	   file://udevsynthesize.patch;patch=1 \
-	   file://udevsynthesize.sh"
+	   file://udevsynthesize.sh \
+	   file://mount.blacklist"
 
 include udev.inc
 
@@ -28,6 +31,7 @@ do_install () {
 
 	install -d ${D}${sysconfdir}/udev/rules.d/
 
+	install -m 0644 ${WORKDIR}/mount.blacklist     ${D}${sysconfdir}/udev/
 	install -m 0644 ${WORKDIR}/local.rules         ${D}${sysconfdir}/udev/rules.d/local.rules
 	install -m 0644 ${WORKDIR}/permissions.rules   ${D}${sysconfdir}/udev/rules.d/permissions.rules
 	install -m 0644 ${WORKDIR}/udev.rules          ${D}${sysconfdir}/udev/rules.d/udev.rules
