@@ -1,8 +1,10 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r44"
+PR = "r45"
 LICENSE = "GPL"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = " \
            file://nsswitch.conf \
