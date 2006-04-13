@@ -30,7 +30,6 @@ SLUGOS_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils-nodbus \
-	bogofilter \
 	boost \
 	bridge-utils \
 	bwmon \
@@ -187,6 +186,7 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 # These packages work with glibc, but break on uclibc.
 UCLIBC_BROKEN_PACKAGES = "\
 	alsa-utils \
+	bogofilter \
 	"
 
 # Packages which build only with glibc (some of these use internal
