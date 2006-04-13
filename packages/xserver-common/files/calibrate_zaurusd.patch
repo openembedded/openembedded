@@ -1,0 +1,12 @@
+--- xserver-common-1.8/X11/Xinit.d/30xTs_Calibrate.orig	2006-04-09 15:12:16.167950472 +0200
++++ xserver-common-1.8/X11/Xinit.d/30xTs_Calibrate	2006-04-09 15:14:51.511334688 +0200
+@@ -2,4 +2,9 @@
+ 
+ if [ ! -f /etc/pointercal ]; then
+     /usr/bin/run-calibrate.sh
++    
++    if [ -x /etc/init.d/zaurusd ]; then
++    	/etc/init.d/zaurusd stop
++	/etc/init.d/zaurusd start
++    fi
+ fi
