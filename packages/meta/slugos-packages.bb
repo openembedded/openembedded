@@ -114,7 +114,7 @@ SLUGOS_PACKAGES = "\
 	netpbm \
 	nmap \
 	ntp \
-	obexftp openobex-apps ircp \
+	openobex-apps ircp \
 	openldap \
 	openntpd \
 	openssh \
@@ -165,7 +165,7 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	icecast \
 	irssi \
-	openobex \
+	obexftp openobex \
 	pvrusb2-mci \
 	setpwc \
 	watchdog \
