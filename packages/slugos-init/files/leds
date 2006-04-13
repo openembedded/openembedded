@@ -50,18 +50,20 @@ led_set(){
 				echo -n timer
 
 				case "$setting" in
-				flash)	echo -n 0.6;;
-				blink)	echo -n 0.6;;
-				slow)	echo -n 1;;
-				fast)	echo -n 3;;
-				panic)	echo -n 6;;
-				esac >"$1/frequency"
+				flash)	echo -n 60;;
+				blink)	echo -n 540;;
+				slow)	echo -n 500;;
+				fast)	echo -n 1500;;
+				panic)	echo -n 3000;;
+				esac >"$1/delay_on"
 
 				case "$setting" in
-				flash)	echo -n 10;;
-				blink)	echo -n 90;;
-				*)	echo -n 50;;
-				esac >"$1/duty";;
+				flash)	echo -n 540;;
+				blink)	echo -n 60;;
+				slow)	echo -n 500;;
+				fast)	echo -n 1500;;
+				panic)	echo -n 3000;;
+				esac >"$1/delay_off";;
 
 		cpu-idle)	echo -n cpu
 				# these settings work well on NSLU2
