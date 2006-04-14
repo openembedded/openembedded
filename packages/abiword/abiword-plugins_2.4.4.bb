@@ -3,7 +3,7 @@ HOMEPAGE="http://www.abiword.org""
 MAINTAINER="Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE="GPLv2"
 
-DEPENDS     = "abiword libwpd librsvg goffice poppler"
+DEPENDS     = "abiword libwpd gtkmathview librsvg goffice poppler"
 PR="r0"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
