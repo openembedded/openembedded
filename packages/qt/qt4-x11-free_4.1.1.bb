@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -51,7 +51,7 @@ do_configure() {
 	ln -sf ${STAGING_BINDIR}/qmake2 bin/qmake
 	#rm -rf ./mkspecs
 	#ln -sf ${QMAKE_MKSPEC_PATH} ./mkspecs
-	echo yes | ./configure -prefix / -crossarch ${ARCH} ${QT_CONFIG_FLAGS} -fast \
+	echo yes | ./configure -prefix / -platform ${TARGET_OS}-g++ -crossarch ${ARCH} ${QT_CONFIG_FLAGS} -fast \
 		-L${STAGING_LIBDIR} -I${STAGING_INCDIR} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/mysql
 }
 
