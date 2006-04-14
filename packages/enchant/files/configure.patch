@@ -1,0 +1,10 @@
+--- enchant-1.2.5/configure.in.orig	2006-04-14 11:08:20.000000000 +0100
++++ enchant-1.2.5/configure.in	2006-04-14 11:12:03.000000000 +0100
+@@ -147,6 +147,7 @@
+        LDFLAGS="-L$with_aspell_prefix/lib "$LDFLAGS
+        ASPELL_INC="-I$with_aspell_prefix/include"
+        ASPELL_LIBS="-L$with_aspell_prefix/lib -laspell"
++       aspell_prefix=$with_aspell_prefix
+    else
+        aspell_prefix=${prefix}
+        if test "x$prefix" = "xNONE"; then
