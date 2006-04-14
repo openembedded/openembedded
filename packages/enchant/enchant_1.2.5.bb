@@ -15,7 +15,7 @@ S = "${WORKDIR}/enchant-${PV}"
 SRC_URI = "http://www.abisource.com/downloads/enchant/${PV}/enchant-${PV}.tar.gz \
            file://configure.patch;patch=1"
 
-EXTRA_OECONF = "--with-aspell-prefix=${STAGING_DIR}/${HOST_SYS} --enable-aspell"
+EXTRA_OECONF = "--with-aspell-prefix=${STAGING_DIR}/${HOST_SYS} --enable-aspell --disable-binreloc"
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
