@@ -24,7 +24,7 @@
 +static struct sockaddr mac;
 +
 +static void nslu2_flash_add(struct mtd_info *mtd) {
-+	if (strcmp(mtd->name, "RedBoot config") == 0) {
++	if (strcmp(mtd->name, "RedBoot") == 0) {
 +		size_t retlen;
 +		int err;
 +		/* the mac addr is at a known offset */
