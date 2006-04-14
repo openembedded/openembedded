@@ -1,6 +1,7 @@
 PR = "r0"
 #Remove the dash below when 2.0 changes in PV
-PV = "2.0+cvs-${SRCDATE}"
+DEFAULT_PREFERENCE = "-100000"
+PV = "1.9+2.0beta3cvs-${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
 	file://no-superimposed-version-on-logo.patch;patch=1 \
