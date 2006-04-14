@@ -35,7 +35,7 @@ QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-s
                    -no-tablet -no-xkb -no-nis -no-cups -no-opengl \
                    -nosse \
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
-                   -verbose -no-stl -no-accessibility"
+                   -verbose -stl -no-accessibility"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
