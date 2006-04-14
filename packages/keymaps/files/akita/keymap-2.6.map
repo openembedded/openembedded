@@ -118,17 +118,17 @@ keycode 108 = Down
 	
 
 # LCD Softkeys as represented by zaurusd	
-keycode 82 = F5	
-keycode 79 = F15		# Home
-keycode 80 = F6
-keycode 81 = F16		# Email
-keycode 75 = F7
-keycode 76 = F17		# Addresses
-keycode 77 = F8
-keycode 71 = F18		# Calendar
-keycode 72 = F9
-keycode 73 = F19		# Book
-keycode 78 = F10
+keycode 82 = F20
+keycode 79 = F21		# Home
+keycode 80 = F22
+keycode 81 = F23		# Email
+keycode 75 = F24
+keycode 76 = F25		# Addresses
+keycode 77 = F26
+keycode 71 = F27		# Calendar
+keycode 72 = F28
+keycode 73 = F29		# Book
+keycode 78 = F30
 
 string F1 = "\033[[A"
 string F2 = "\033[[B"
