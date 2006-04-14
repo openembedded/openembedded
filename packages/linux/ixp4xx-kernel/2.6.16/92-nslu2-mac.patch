@@ -28,7 +28,7 @@
 +		size_t retlen;
 +		int err;
 +		/* the mac addr is at a known offset */
-+		err = mtd->read(mtd, 0x3FFD8, 6, &retlen, (u8 *) &mac.sa_data);
++		err = mtd->read(mtd, 0x3FFB0, 6, &retlen, (u8 *) &mac.sa_data);
 +		if (err != 0 || retlen != 6)
 +			printk(KERN_ERR "nslu2: mac addr read failed\n");
 +		else
