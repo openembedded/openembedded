@@ -13,7 +13,7 @@
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -110,8 +113,69 @@ static void nas100d_power_off(void)
+@@ -110,8 +113,68 @@ static void nas100d_power_off(void)
  	gpio_line_set(NAS100D_PO_GPIO, IXP4XX_GPIO_HIGH);
  }
  
@@ -31,11 +31,6 @@
 +		err = mtd->read(mtd, 0x0FD8, 6, &retlen, (u8 *) &mac.sa_data);
 +		if (err != 0 || retlen != 6)
 +			printk(KERN_ERR "nas100d: mac addr read failed\n");
-+		else
-+			printk(KERN_INFO
-+				"nas100d: mac %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
-+				mac.sa_data[0], mac.sa_data[1], mac.sa_data[2],
-+				mac.sa_data[3], mac.sa_data[4], mac.sa_data[5]);
 +	}
 +}
 +
@@ -63,6 +58,10 @@
 +	if (event == NETDEV_REGISTER && is_valid_ether_addr(mac.sa_data)) {
 +		mac.sa_family = dev->type;
 +		dev_set_mac_address(dev, &mac);
++		printk(KERN_INFO
++			"ixp400_eth: MAC address now set to %.2x:%.2x:%.2x:%.2x:%.2x:%.2x for port 0\n",
++			mac.sa_data[0], mac.sa_data[1], mac.sa_data[2],
++			mac.sa_data[3], mac.sa_data[4], mac.sa_data[5]);
 +	}
 +
 +	return NOTIFY_DONE;
