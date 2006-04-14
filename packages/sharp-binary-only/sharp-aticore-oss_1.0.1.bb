@@ -13,6 +13,7 @@ S = "${WORKDIR}/AtiCore-1.0.1"
 EXTRA_OEMAKE="CC='${CC}' AS='${AS}' AR='${AR}' LD='${LD}' FPU='${TARGET_FPU}'"
 
 PARALLEL_MAKE = ""
+COMPATIBLE_MACHINE = 'c7x0'
 
 do_install() {
 	install -d ${D}${bindir}

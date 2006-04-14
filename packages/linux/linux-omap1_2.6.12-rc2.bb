@@ -18,13 +18,7 @@ KERNEL_CCSUFFIX = "-3.3.4"
 
 inherit kernel
 
-python __anonymous () {
-	import re
-	host = bb.data.getVar('HOST_SYS', d, 1)
-	if not re.match('arm.*-linux', host):
-		raise bb.parse.SkipPackage("incompatible with host %s" % host)
-}
-
+COMPATIBLE_HOST = 'arm.*-linux'
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config

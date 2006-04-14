@@ -5,6 +5,7 @@ PR = "r4"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+COMPATIBLE_MACHINE = '(poodle|c7x0|spitz|akita|tosa)'
 
 SRC_URI = "file://updater.sh \
            file://gnu-tar.gz"

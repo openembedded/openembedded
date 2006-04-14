@@ -12,6 +12,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
 S = "${WORKDIR}/linux-2.6.11"
 
 COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_MACHINE = "devkitidp-pxa255"
 
 inherit kernel
 inherit package
@@ -38,10 +39,3 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
-
-python () {
-	# Don't build kernel unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'devkitidp-pxa255':
-		raise bb.parse.SkipPackage("This kernel only builds for the PXA255 DevKitIDP")
-}

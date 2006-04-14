@@ -37,9 +37,4 @@ do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
 
-python () {
-	# Don't build kernel unless we're targeting an triton
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'triton':
-		raise bb.parse.SkipPackage("The triton kernel is only for use on triton machines")
-}
+COMPATIBLE_MACHINE = "triton"
