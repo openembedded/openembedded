@@ -5,7 +5,7 @@ MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PV = "r1503-20060415"
+PV = "r1527-20060425"
 
 SRC_URI = "http://snapshots.madwifi.org/madwifi-ng/madwifi-ng-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
