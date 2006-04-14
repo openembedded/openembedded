@@ -14,8 +14,14 @@ load_functions sysconf
 #
 # NSLU2 flash layout is non-standard.
 case "$(machine)" in
-nslu2)	isnslu2=1;;
-*)	isnslu2=;;
+nslu2)
+	isnslu2=1
+	kpart="Kernel"
+	ffspart="Flashdisk";;
+*)
+	isnslu2=
+	kpart="kernel"
+	ffspart="filesystem";;
 esac
 #
 # CHECKING FOR INPUT (ARGUMENTS ETC)
@@ -90,7 +96,7 @@ then
 	if test -r "$imgfile"
 	then
 		# read the partition table and from this find the offset
-		# and size of Kernel and Flashdisk partitions.  The following
+		# and size of $kpart and $ffspart partitions.  The following
 		# devio command just dumps the partition table in a format
 		# similar to /proc/mtd (but it outputs decimal values!)
 		#NOTE: this uses a here document because this allows the while
@@ -99,13 +105,15 @@ then
 		# works in ash, no guarantees about other shells!
 		while read size base name
 		do
-			case "$name" in
-			Kernel)	imgksize="$size"
-				imgkoffset="$base";;
-			Flashdisk)
+			if test "$name" = "$kpart"
+			then
+				imgksize="$size"
+				imgkoffset="$base"
+			elif test "$name" = "$ffspart"
+			then
 				imgffssize="$size"
-				imgffsoffset="$base";;
-			esac
+				imgffsoffset="$base"
+			fi
 		done <<EOI
 $(devio "<<$imgfile" '
 	<= $ 0x20000 -
@@ -128,7 +136,7 @@ $(devio "<<$imgfile" '
 EOI
 		# check the result
 		test "$imgksize" -gt 0 -a "$imgkoffset" -ge 0 || {
-			echo "reflash: $imgfile: failed to find Kernel partition in image" >&2
+			echo "reflash: $imgfile: failed to find $kpart partition in image" >&2
 			exit 1
 		}
 		# the kernel is after a 16 byte header which holds the
@@ -151,7 +159,7 @@ EOI
 		imgkoffset="$(devio "O=$imgkoffset" 'pr O16+')"
 		# just test the size for the rootfs
 		test "$imgffssize" -gt 0 -a "$imgffsoffset" -ge 0 || {
-			echo "reflash: $imgfile: failed to find Flashdisk" >&2
+			echo "reflash: $imgfile: failed to find $ffspart" >&2
 			exit 1
 		}
 	else
@@ -189,8 +197,6 @@ fi
 # INPUTS OK, CHECKING THE ENVIRONMENT
 # -----------------------------------
 # basic setup.  This could be parameterised to use different partitions!
-kpart=Kernel
-ffspart=Flashdisk
 #
 kdev=
 ksize=0
@@ -208,7 +214,7 @@ then
 	#
 	# check the input file size
 	test -n "$imgksize" -a "$imgksize" -gt 0 -a "$imgksize" -le "$ksize" || {
-		echo "reflash: $kfile: bad Kernel size ($imgksize, max $ksize)" >&2
+		echo "reflash: $kfile: bad $kpart size ($imgksize, max $ksize)" >&2
 		exit 1
 	}
 fi
@@ -228,7 +234,7 @@ then
 	#
 	# check the input file size
 	test -n "$imgffssize" -a "$imgffssize" -gt 0 -a "$imgffssize" -le "$ffssize" || {
-		echo "reflash: $ffsfile: bad Flashdisk size ($imgffsize, max $ffssize)" >&2
+		echo "reflash: $ffsfile: bad $ffspart size ($imgffsize, max $ffssize)" >&2
 		exit 1
 	}
 fi
