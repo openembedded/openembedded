@@ -4,6 +4,7 @@ include perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
+	    file://config.sh-arm-linux-gnueabi \ 
 	    file://config.sh-i386-linux"
 
 PR = "r15"
