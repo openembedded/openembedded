@@ -9,6 +9,16 @@ MOUNT="/bin/mount"
 PMOUNT="/usr/bin/pmount"
 UMOUNT="/bin/umount"
 
+for line in `cat /etc/udev/mount.blacklist | grep -v ^#`
+do
+	if ( echo "$DEVNAME" | grep -q "$line" )
+	then
+		logger "udev/mount.sh" "[$DEVNAME] is blacklisted, ignoring"
+		exit 0
+	fi
+done
+	
+
 if [ "$ACTION" = "add" ] && [ -n "$DEVNAME" ]; then
 	if [ -x "$PMOUNT" ]; then
 		$PMOUNT $DEVNAME 2> /dev/null

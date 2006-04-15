@@ -7,6 +7,7 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.14/ORBit2-${PV}.tar.b
 	   file://gtk-doc.m4 \
 	   file://gtk-doc.make"
 DEPENDS = "libidl popt orbit2-native gtk-doc"
+PARALLEL_MAKE = ""
 
 FILES_${PN} += "${libdir}/orbit-2.0/*.so"
 

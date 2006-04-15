@@ -3,14 +3,16 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
-PR = "r1"
+PR = "r2"
 
 PACKAGE_ARCH = "all"
 
 # we are using a gpe-style Makefile
 inherit gpe
 
-SRC_URI_append_akita = " file://Xdefaults-200DPI.patch;patch=1"
-SRC_URI_append_spitz = " file://Xdefaults-200DPI.patch;patch=1"
-SRC_URI_append_c7x0 = " file://Xdefaults-200DPI.patch;patch=1"
-SRC_URI_append_tosa = " file://Xdefaults-200DPI.patch;patch=1"
+SRC_URI_append = " file://setDPI.sh \
+		   file://calibrate_zaurusd.patch;patch=1"
+
+do_install_append() {
+	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
+}
