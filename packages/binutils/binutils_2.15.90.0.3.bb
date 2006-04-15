@@ -5,7 +5,7 @@ DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
@@ -51,7 +51,7 @@ SRC_URI = \
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--with-sysroot=${prefix} \
+EXTRA_OECONF = "--with-sysroot=/ \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 

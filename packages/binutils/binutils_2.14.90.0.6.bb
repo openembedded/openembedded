@@ -1,7 +1,7 @@
 SECTION = "devel"
 inherit autotools gettext
 
-PR = "r2"
+PR = "r3"
 
 DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
@@ -53,7 +53,7 @@ SRC_URI = \
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--with-sysroot=${prefix} \
+EXTRA_OECONF = "--with-sysroot=/ \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 
