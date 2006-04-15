@@ -1,8 +1,8 @@
 SECTION = "base"
 
-PR = "r11"
+PR = "r12"
 
-DEPENDS = "nslu2-linksys-libs"
+DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
 SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://README \
@@ -43,8 +43,8 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://mount_usbdevfs.patch;patch=1 \
 	   file://security-fixes.patch;patch=1 \
 	   file://rc.sysinit-clean_var.patch;patch=1 \
+	   file://rc.modules-nls.patch;patch=1 \
 	   file://upgrade.htm \
-	   file://upgrade.cgi \
 	   file://telnet.htm \
 	   file://rc.bootbin \
 	   "
@@ -66,6 +66,7 @@ do_compile () {
 	install -m 644 ${WORKDIR}/telnet.htm ${S}/home/httpd/html/Management/telnet.htm
 
 	sed -i -e 's/@version#</@version#-uNSLUng-'${DISTRO_VERSION}'</' ${S}/home/httpd/html/home.htm
+	install -m 644 ${WORKDIR}/upgrade.htm ${S}/home/httpd/html/Management/upgrade.htm
 	sed -i -e s/@ds_sw_version#/@ds_sw_version#-uNSLUng-${DISTRO_VERSION}/ \
 		${S}/home/httpd/html/Management/upgrade.htm
 
@@ -110,6 +111,38 @@ do_compile () {
 
 	# Remove the libraries, because they are in nslu2-linksys-libs now
 	rm -rf ${S}/lib
+
+	# Remove some unnecessary web stuff to free space
+	rm -f ${S}/home/httpd/html/Management/upgrade.cgi
+	rm -f ${S}/home/httpd/html/Management/upgrade_ui.htm
+	rm -f ${S}/home/httpd/html/Management/upgrade_ui.cgi
+
+	# Remove some of the Samba codepages to make space
+	# These will have to be separately packaged, like the libraries...
+	# 437 (USA) - keep
+	# 737 (Greek)
+	rm -f ${S}/etc/samba/codepages/codepage.737
+	rm -f ${S}/etc/samba/codepages/unicode_map.737
+	# 850 (Latin1) - keep
+	# 852 (Latin2)
+	rm -f ${S}/etc/samba/codepages/codepage.852
+	rm -f ${S}/etc/samba/codepages/unicode_map.852
+	# 861 (Iceland)
+	rm -f ${S}/etc/samba/codepages/codepage.861
+	rm -f ${S}/etc/samba/codepages/unicode_map.861
+	# 866 (Russian)
+	rm -f ${S}/etc/samba/codepages/codepage.866
+	rm -f ${S}/etc/samba/codepages/unicode_map.866
+	# 932 (Japanese Shift-JIS)
+	rm -f ${S}/etc/samba/codepages/codepage.932
+	rm -f ${S}/etc/samba/codepages/unicode_map.932
+	# 936 (Simplified Chinese)
+	rm -f ${S}/etc/samba/codepages/codepage.936
+	# 949 (Korean)
+	rm -f ${S}/etc/samba/codepages/codepage.949
+	# 950 (Chinese BIG-5)
+	rm -f ${S}/etc/samba/codepages/codepage.950
+	# ISO8859-1 (Latin 1) - keep
 }
 
 do_install () {
