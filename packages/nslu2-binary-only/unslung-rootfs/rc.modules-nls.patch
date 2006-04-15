@@ -1,0 +1,10 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.modules.orig	2006-04-14 21:05:47.000000000 -0500
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.modules	2006-04-14 19:56:29.000000000 -0500
+@@ -6,3 +6,7 @@
+ insmod rbuttons  2>/dev/null
+ insmod x1226-rtc 2>/dev/null
+ insmod ufsd	 2>/dev/null
++
++for i in /lib/modules/`/bin/uname -r`/kernel/fs/nls/nls_cp*.o ; do
++  insmod "$i" 2>/dev/null
++done

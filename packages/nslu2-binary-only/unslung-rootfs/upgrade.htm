@@ -4,21 +4,6 @@
 <meta HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
 <script language="JavaScript" type="text/javascript" src="../stdlib.js"></script>
 <script language="JavaScript" type="text/javascript" src="../message.js"></script>
-<script language="JavaScript" type="text/javascript">
-<!--  Start Script
-
-function checkUpgrade()
-{
-	var cf=document.upgrade;
-	
-	if(!confirm("Your NSLU2 will now enter RedBoot Upgrade Mode\n(Ready/Status LED will be flashing red and green).\nYou will require either the Linux UpSlug tool or the\nWindows SerComm Upgrade tool to upload firmware.\nNote that you will not be able to access your NSLU2\nuntil you have successfully uploaded new firmware.\nClick OK to continue, Cancel to abort."))
-		return;
-	cf.submit();
-	return;
-}
-
-// end script -->
-</script>
 </head>
 
 <body bgcolor="white" onLoad="showMsg()" marginheight="0" marginwidth="0" leftmargin="0" topmargin="0">
@@ -81,8 +66,6 @@ function checkUpgrade()
 <tr>
     <td colspan="3" bgcolor="#e7e7e7" height="6"><img src="TRANSPAR.GIF" width="1" height="6" alt="" border="0"></td>
 </tr>	
-
-
 <tr>
     <th width="165" height="24">Current Firmware  &nbsp; </th>
 	<td width="409"><img src="TRANSPAR.GIF" width="409" height="6" alt="" border="0"></td>
@@ -93,15 +76,32 @@ function checkUpgrade()
 	<td width="409"><div class="std"><table border=0 cellspacing=0 cellpadding=4>
 	<tr>
 	  <td nowrap>Current Firmware Version:</td>
-	  <td nowrap>@ds_sw_version# </td></tr>
-	  <tr><td>
-	  <div align="left"><a href="http://www.linksys.com" target="new_win"><img src="button_checkupdate.jpg" width="107" height="20" alt="" border="0"></a></div>
-	  </td>
+	  <td nowrap>@ds_sw_version# </td>
 	</tr>
 	</table></div> </td>
  <td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="80" width="15"></td>
 </tr>
 
+<tr>
+    <th width="165" height="24">Upgrade &nbsp; </th>
+	<td width="409"><img src="TRANSPAR.GIF" width="409" height="6" alt="" border="0"></td>
+	<td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="24" width="15"></td>
+</tr>
+<tr>
+	<td bgcolor="#e7e7e7" align="right"><img border="0" src="../UI_04.gif" width="8" hspace="0" vspace="0" height="120"></td>
+	<td width="409"><div class="std"><table border=0 cellspacing=0 cellpadding=4>
+	<tr>
+	</tr>
+	<tr>
+<td colspan="2" align="left" class="smsg">
+NOTE: You cannot use this upgrade page to install new firmware on Unslung. 
+You must use the Redboot mechanism in order to install new firmware instead.
+</td>
+	</tr>
+	</table></div> </td>
+ <td width="176" bgcolor="#6666cc"><img border="0" src="../UI_05.gif" height="120" width="15"></td>
+</tr>
+	
 <tr>
     <td bgcolor="#e7e7e7" height="30" align="right"><img border="0" src="../UI_04.gif" width="8" hspace="0" vspace="0" height="30"></td>
 	<td height="30">&nbsp;  </td>
@@ -110,11 +110,9 @@ function checkUpgrade()
 
 <tr>
     <td bgcolor="black" height="34">&nbsp;  </td>
-	    <td bgcolor="#6666cc" align="right" height="33" valign="middle"><a class="textbutton" href="javascript:checkUpgrade();" style="{padding:3px}">&nbsp; 
-          Enter Upgrade Mode&nbsp;</a>&nbsp; <a class="textbutton" href="javascript:openHelpWin('help/util_upg.htm')" style="{padding:3px}"> 
-          Help &nbsp;</a> &nbsp; &nbsp; </td>
+    <td bgcolor="#6666cc" align="right" height="33" valign="middle">
+          &nbsp; &nbsp; </td>
 </tr>
-
 
 </table>
 </div>
@@ -123,7 +121,5 @@ function checkUpgrade()
 <input type="Hidden" name="todo" value="@todo#">
 <input type="Hidden" name="finish" value="@finish#">
 </form>
-    
 </body>
-
 </html>

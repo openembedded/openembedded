@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r13"
+PR = "r14"
 
 IMAGE_BASENAME = "unslung"
 
@@ -61,32 +61,6 @@ unslung_clean_image () {
 	# Strip symbols and fix permissions on the libgcc_s.so.1 library
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 	chmod ugo+x ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
-
-	# Remove some of the Samba codepages to make space
-	# 437 (USA) - keep
-	# 737 (Greek)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.737
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.737
-	# 850 (Latin1) - keep
-	# 852 (Latin2)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.852
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.852
-	# 861 (Iceland)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.861
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.861
-	# 866 (Russian)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.866
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.866
-	# 932 (Japanese Shift-JIS)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.932
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.932
-	# 936 (Simplified Chinese)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.936
-	# 949 (Korean)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.949
-	# 950 (Chinese BIG-5)
-	rm -f ${IMAGE_ROOTFS}/etc/samba/codepages/codepage.950
-	# ISO8859-1 (Latin 1) - keep
 }
 
 python () {

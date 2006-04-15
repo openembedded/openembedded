@@ -487,3 +487,28 @@ Added original "netconsole" code as a kernel module
 Fixed problem with password changing from the GUI and automatic mounting of
 drives and flash devices in port 1.
 Remove unnecessary directory /lib/modules/2.4.22-xfs/pcmcia.
+
+6.8:
+
+First beta release.
+
+6.9:
+
+Modified /etc/rc.d/rc.modules to "insmod" any nls code page modules present.
+
+Code Page 850 is now compiled into the kernel instead of a kernel module,
+and added Code Page 949 (as a module).
+
+Updated the upgrade.htm file to reflect redboot as the upgrade means.
+
+Remove the upgrade.cgi, upgrade_ui.htm, and upgrade_ui.cgi files from the
+root image as they are no longer used, and we can always use free space.
+
+Rearranged portions of the build procedure to remove the samba code pages in
+the rootfs bb, create a new package with the removed code pages in a new
+nslu2-linksys-sambacodepages.bb file (to restore the code pages, use ipkg to
+install package "nslu2-linksys-sambacodepages".  Note that the rootfs and the
+sambacodepages bb files must be kept in sync regarding the samba code pages
+that are left in the image and the ones that are added to the package (and it
+is also a good idea if the kernel defconfig reflects the inclusion of NLS
+support for the code pages that are left in the image, of course).
