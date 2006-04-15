@@ -7,7 +7,7 @@ LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "2.15.99+csl-arm+cvs20050603"
-PR = "r0"
+PR = "r1"
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE_arm-linux = "1"
@@ -51,7 +51,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@sources.redhat.com/cvs/src;module=binutils;meth
 S = "${WORKDIR}/src"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-EXTRA_OECONF = "--with-sysroot=${prefix} \
+EXTRA_OECONF = "--with-sysroot=/ \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
 
