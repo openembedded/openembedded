@@ -1,10 +1,12 @@
---- xserver-common-1.8/X11/slcXXXX.xmodmap.orig	2006-01-23 13:51:10.000000000 +0100
-+++ xserver-common-1.8/X11/slcXXXX.xmodmap	2006-04-14 21:38:57.000000000 +0200
-@@ -3,3 +3,16 @@
- keycode 40 = XF86Start
- keycode 90 = XF86Mail
- 
-+# Keymapping for the softkeys
+--- xserver-common-1.8/X11/slcXXXX.xmodmap.orig	2006-04-15 13:03:51.471463440 +0200
++++ xserver-common-1.8/X11/slcXXXX.xmodmap	2006-04-15 13:05:04.576349808 +0200
+@@ -1,5 +1,12 @@
+-keycode 88 = XF86Calendar
+-keycode 89 = telephone
+-keycode 40 = XF86Start
+-keycode 90 = XF86Mail
+-
++# Keymapping for the LCD softkeys managed by zaurusd + keylaunch
 +keycode 90 = F20
 +keycode 87 = F21
 +keycode 88 = F22
@@ -16,4 +18,3 @@
 +keycode 80 = F28
 +keycode 81 = F29
 +keycode 86 = F30
-+

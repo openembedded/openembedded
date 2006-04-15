@@ -5,7 +5,7 @@ SECTION = "x11"
 DEPENDS = "xmodmap xrandr xdpyinfo xtscal"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
 
-PR = "r8"
+PR = "r9"
 
 # we are using a gpe-style Makefile
 inherit gpe
@@ -13,6 +13,7 @@ inherit gpe
 SRC_URI_append = " file://setDPI.sh \
 		   file://calibrate_zaurusd.patch;patch=1 \
 		   file://softkeys-slcxxxx-xmodmap.patch;patch=1 \
+		   file://softkeys-c7x0.patch;patch=1 \
 		   file://load-xmodmap-k26.patch;patch=1"
 
 do_install_append() {
