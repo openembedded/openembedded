@@ -6,9 +6,9 @@
 # Filename: playbeep.sh
 # Date: 12-Apr-06
 
-if test -x /usr/sbin/alsactl
+if test -x /usr/sbin/alsactl -a -e /etc/modules
 then
-	for module in `cat /etc/modules | grep snd | grep -v ^#`
+	for module in `cat /etc/modules | grep snd | grep -v ^#` 
 	do
 		#echo "loading $module"
 		modprobe $module
@@ -30,3 +30,5 @@ then
 	
 	test -e /usr/share/sounds/beep.raw && cat /usr/share/sounds/beep.raw > /dev/dsp  
 fi
+
+/bin/true

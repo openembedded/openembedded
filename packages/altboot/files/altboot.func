@@ -240,37 +240,18 @@ image_conf(){
 			
 			if test "$junk" = "y" -o "$junk" = "Y"
 			then
-			 	cat $1/etc/fstab | sed "/.*\/home.*/s/\/home/\/home.orig/" > $1/etc/fstab_
+			 	cat $1/etc/fstab | sed "/.*\/home.*/s/\/home/\/home.flash/" > $1/etc/fstab_
 				mv $1/etc/fstab_ $1/etc/fstab
+
+				mkdir -p $1/home.flash
 				break
 			fi
 			
 			test "$junk" = "" -o "$junk" = n -o "$junk" = N && break
 		done
 		
-	fi	
-
-	echo ""
+	fi		
 				
-# 	if ( cat $1/etc/fstab | grep -v "^#" | grep -q "/var" )		
-# 	then						
-# 		while true
-# 		do
-# 			echo "This is mainly for testing purposes."
-# 			echo -n "Do you want to configure /var as a normal non-tmpfs directory? [N|y] "
-# 			read junk
-# 			
-# 			if test "$junk" = "y" -o "$junk" = "Y"
-# 			then
-# 			 	cat $1/etc/fstab | sed "/.*\/var.*/s/\(.*\)/#\ \1/" > $1/etc/fstab_
-# 				mv $1/etc/fstab_ $1/etc/fstab
-# 				break
-# 			fi
-# 			
-# 			test "$junk" = "" -o "$junk" = n -o "$junk" = N && break
-# 		done
-# 	fi		
-
 	echo ""
 
 	if ( cat $1/etc/ipkg.conf | grep -q ^lists_dir )		
@@ -329,17 +310,17 @@ set_password() {
 		do
 			echo -en "\nNew password: "
 
-			stty -echo
+			stty -echo </dev/tty0 >/dev/tty0 2>&1
 			read junk1 < /dev/tty0
-			stty echo
+			stty echo </dev/tty0 >/dev/tty0 2>&1
 
 			if ! test -z "$junk1"
 			then
 				echo -en "\nRepeat: "
 				
-				stty -echo
+				stty -echo </dev/tty0 >/dev/tty0 2>&1
 				read junk2  < /dev/tty0
-				stty echo
+				stty echo </dev/tty0 >/dev/tty0 2>&1
 				echo ""
 				
 				if test "$junk1" = "$junk2"
@@ -379,9 +360,9 @@ verify_master_pw() {
 		do
 			let cnt=$cnt+$auth_timeout
 			echo -n "Password: "
-			stty -echo
+			stty -echo  </dev/tty0 >/dev/tty0 2>&1
 			read junk < /dev/tty0
-			stty echo
+			stty echo  </dev/tty0 >/dev/tty0 2>&1
 
 			if test "`echo "$junk" | md5sum | awk '{print $1}'`" = "$MASTER_PASSWORD"
 			then

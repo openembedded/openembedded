@@ -31,13 +31,18 @@ C_BLUE="\033[34m"
 C_WHITE="\033[37m"
 C_RESET="\033[0m"
 
-die() {
+mdie() {
 	echo "ERROR: $1" >/dev/tty0
-	#exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 	
-	echo -e "\nPress <ENTER> to launch the altboot menu"
+	echo -e "\nPress <ENTER> to return to the menu"
 	read junk
-	exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+	
+	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+}
+
+die() {
+	echo -e "ERROR: $1" >/dev/tty0
+	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 }
 
 
@@ -285,7 +290,7 @@ wait_for_input() {
 }
 
 # * * * * * * This is the main function * * * * * *
-# Note: this is positivly ugly. If someone knows a better way to detect wheter
+# Note: this is positively ugly. If someone knows a better way to detect wheter
 # we are already booted into a runlevel _without_ reading /var and / or using `runlevel`
 # PLEASE let me know.
 if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force"
