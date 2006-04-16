@@ -3,6 +3,7 @@ DEPENDS = "zlib libgcrypt lzo"
 MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 
 LICENSE = "LGPL"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/devel/gnutls-${PV}.tar.bz2"
 
@@ -13,8 +14,13 @@ PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin"
 FILES_${PN}-openssl = "${libdir}/libgnutls-openssl.so.*"
 FILES_${PN}-extra = "${libdir}/libgnutls-extra.so.*"
 FILES_${PN} = "${libdir}/libgnutls.so.*"
-FILES_${PN}-bin = "${bindir}/gnutls-serv ${bindir}/gnutls-cli \
-	${bindir}/srptool ${bindir}/certtool ${bindir}/gnutls-srpcrypt"
+FILES_${PN}-bin = "${bindir}/gnutls-serv \
+		   ${bindir}/gnutls-cli \
+		   ${bindir}/srptool \
+		   ${bindir}/certtool \
+		   ${bindir}/gnutls-srpcrypt \
+		   ${bindir}/psktool"
+
 FILES_${PN}-dev += "${bindir}/*-config ${bindir}/gnutls-cli-debug"
 
 EXTRA_OECONF="--with-included-opencdk --with-included-libtasn1"
