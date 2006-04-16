@@ -4,11 +4,12 @@ SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl libx11"
 RDEPENDS = "tcl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0 \
-           file://tk-add-soname.patch;patch=1"
+           file://tk-add-soname.patch;patch=1 \
+           file://fix-configure.patch;patch=1"
 S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
