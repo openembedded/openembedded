@@ -1,6 +1,6 @@
 include evas.inc
 DEPENDS = "freetype libpng jpeg eet"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${E_CVS};module=e17/libs/evas;date=${PV} \
            file://pkg.m4"

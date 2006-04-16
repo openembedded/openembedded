@@ -33,8 +33,8 @@ do_stage_append() {
 	modules=`find modules -name ".libs"`
 	for module in $modules
 	do
-		install -d ${STAGING_LIBDIR}/evas/`dirname $module`
-		install -m 0755 $module/module.so ${STAGING_LIBDIR}/evas/`dirname $module`/module.so
+		install -d ${STAGING_LIBDIR}/evas/`dirname $module`/${TARGET_OS}-gnu-${TARGET_ARCH}
+		install -m 0755 $module/module.so ${STAGING_LIBDIR}/evas/`dirname $module`/${TARGET_OS}-gnu-${TARGET_ARCH}/module.so
 	done
 }
 

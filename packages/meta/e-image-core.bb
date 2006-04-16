@@ -7,9 +7,7 @@ export IMAGE_LINGUAS = ""
 
 DEPENDS = "task-bootstrap \
            xserver-kdrive \
-           task-e-x11-core \
-           glibc-charmap-utf-8 \
-           glibc-localedata-i18n"
+           task-e-x11-core"
 
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 PREFERRED_PROVIDER_virtual/evas = "evas-x11"
@@ -18,6 +16,6 @@ PREFERRED_PROVIDER_virtual/imlib2 = "imlib2-x11"
 PREFERRED_PROVIDER_virtual/libxine = "libxine-x11"
 PREFERRED_PROVIDER_libx11 = "libx11"
 
-export IPKG_INSTALL = "task-bootstrap task-e-x11-core xserver-kdrive-fbdev"
+export IPKG_INSTALL = "task-bootstrap task-e-x11-core xserver-kdrive-fbdev glibc-charmap-utf-8 glibc-localedata-i18n"
 
 inherit image_ipk

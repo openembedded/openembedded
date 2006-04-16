@@ -1,8 +1,0 @@
---- nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.modules.orig	2004-07-27 23:37:55.000000000 -0400
-+++ nslu2-linksys-ramdisk-2.3r25/etc/rc.d/rc.modules	2004-09-01 21:57:34.000000000 -0400
-@@ -1,2 +1,5 @@
-+
-+if ( [ -f /unslung/rc.modules ] && . /unslung/rc.modules ) ; then return 0 ; fi
-+
- insmod rbuttons  &>/dev/null
- insmod x1226-rtc &>/dev/null

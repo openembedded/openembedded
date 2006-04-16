@@ -1,20 +1,20 @@
-DESCRIPTION = "Qanava is a library built on top of the standard QT QCanvas \
-to enable graphical display of graphs and other relational structures."
+DESCRIPTION = "Qanava is a gtaph library based on the Qt4 Arthur framework."
 SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "qt3x11"
+DEPENDS = "qt4x11"
+# LGPL after 0.0.7
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://www.libqanava.org/dl/qanava-${PV}.tar.gz"
 S = "${WORKDIR}/qanava-${PV}"
 
-inherit qmake qt3x11
+inherit qmake qt4x11
 
 PARALLEL_MAKE = ""
 
-EXTRA_QMAKEVARS_POST = "CONFIG+=thread CONFIG-=staticlib"
+EXTRA_QMAKEVARS_POST = "CONFIG+=thread CONFIG-=staticlib CONFIG-=debug"
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f
