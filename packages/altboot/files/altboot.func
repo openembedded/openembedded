@@ -424,18 +424,17 @@ check_fs() {
 
 # Make the initial rootfs a bit more usable
 init_rootfs(){
-	echo -n "Mounting rootfs rw..." 
-	mount -o remount,rw / && echo ok || die "mount -o remount,rw / failed"
+#	echo -n "Mounting rootfs rw..." 
+	mount -o remount,rw / || die "mount -o remount,rw / failed"
 
-	mount | grep -q "/proc " >/dev/null 2>&1 && echo "Note: /proc is already mounted" || mount proc -t proc /proc >/dev/tty0 2>&1
+	mount | grep -q "/proc " >/dev/null 2>&1 || mount proc -t proc /proc >/dev/tty0 2>&1
 	
 	if ( uname -r | grep -q "2.6." )
 	then
-		mount | grep -q "/sys " >/dev/null 2>&1 && echo "Note: /sys is already mounted" || mount sys -t sysfs /sys >/dev/tty0 2>&1
+		mount | grep -q "/sys " >/dev/null 2>&1 || mount sys -t sysfs /sys >/dev/tty0 2>&1
 	fi
-	
-	echo -n "Generating device files..." 
-	/etc/init.d/devices start && echo ok || die "FAILED"
+		
+	/etc/init.d/devices start || die "FAILED"
 }
 
 mount_sd(){
@@ -525,4 +524,138 @@ mount_home(){
 			echo "Note: Your system's fstab does not include an entry for /home"
 		fi
 	fi
+}
+
+start_networking() {
+
+	if test "$USB_NETWORKING_AVAILABLE" = "yes"
+	then
+		echo ""
+		echo "Select the type of your network connection:"
+		echo ""
+		echo -e "\t[1] LAN or WLAN NIC"
+		echo -e "\t[2] USB Connection"
+		echo ""
+		
+		if test "$AUTOBOOT" != "yes" -o ! -e /etc/.altboot-lanselect.last
+		then
+			while true
+			do
+				echo -n "Connection Type: "
+				read junk
+				
+				test "$junk" = 1 -o "$junk" = 2 && break
+			done
+		else
+			junk="`cat /etc/.altboot-lanselect.last`"
+			test -z "$junk" && junk=1
+			
+			echo -n "Connection Type: $junk (autoboot)"
+		fi
+			
+		case "$junk" in
+		1)	NW_TYPE="NIC"
+			;;
+		2)	NW_TYPE="USB"
+			;;
+		esac
+		
+		echo "$junk" > /etc/.altboot-lanselect.last
+	else
+		NW_TYPE=NIC
+	fi
+
+
+	
+	# Needed for NFS
+	/etc/init.d/portmap start >/dev/null 2>&1 || die "/etc/init.d/portmap start failed!"
+	
+	# For some reason NFS mounts hang if /e/i/networking is not run.
+	# For the time beeing I'm too lazy to investigate ;)
+	/etc/init.d/networking start >/dev/null 2>&1 || die "/etc/init.d/networking start failed!"
+	
+	sleep 2
+
+	if test "$NW_TYPE" = "NIC"
+	then	
+		# After the PCMCIA service is started, an inserted WLAN card should automatically
+		# activate itself.
+
+		if test -x /etc/init.d/pcmcia
+		then
+			/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia start failed!"
+		else	
+			# With kernel 2.6.16+ udev is used 
+			/etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
+
+			/etc/init.d/udev stop
+		fi
+	fi
+	
+	if test "$NW_TYPE" = "USB"
+	then
+		echo ""
+		for module in $USB_NW_MODULES
+		do
+			echo "modprobing [$module]"
+			modprobe $module || die "modprobe $module FAILED"
+		done
+	
+		ifdown "$USB_NW_DEVICE" >/dev/null 2>&1
+	
+		
+		echo -e "\nPlease make sure that usb0 is up on your PC and hit <ENTER>."
+		read junk
+			
+		ifup "$USB_NW_DEVICE"
+	fi
+	
+	# WLAN with DHCP needs some time to get a lease, set up the routing, etc.	
+	echo -n "Waiting for Network."
+	cnt=0
+	while true
+	do
+		if (ping -c 1 $1) >/dev/null 2>&1
+		then
+			echo " found"
+			break
+		else
+			if test "$cnt" = 30 -o "$cnt" = 60
+			then
+				echo ""
+				echo "WARNING: $NW_TYPE didn't activate in $cnt seconds!"
+				
+				if test "$cnt" = 30
+				then
+					let cnt=$cnt+1
+			
+					if test "$NW_TYPE" = "NIC"
+					then
+						echo "Restarting udhcpc for [$WLAN_NIC]"
+						killall udhcpc
+					
+						udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >/dev/tty1 2>&1
+					fi
+					
+					if test "$NW_TYPE" = "USB"
+					then
+						echo "ifdown/up $USB_NW_DEVICE..."
+						ifdown "$USB_NW_DEVICE" 
+						sleep 1
+						ifup "$USB_NW_DEVICE"
+					fi			
+					
+				else
+					mdie "Failed to activate $NW_TYPE!"
+					break			
+				fi
+			else
+				echo -n "."
+				let cnt=$cnt+1
+			fi
+		fi
+		sleep 1
+	done				
+	
+	
 }
