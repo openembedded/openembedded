@@ -1,0 +1,1669 @@
+diff -ur vlc-0.8.4a/modules/gui/pda/pda.c vlc-0.8.4a-pda/modules/gui/pda/pda.c
+--- vlc-0.8.4a/modules/gui/pda/pda.c	2005-12-11 22:36:19.000000000 +0100
++++ vlc-0.8.4a-pda/modules/gui/pda/pda.c	2006-04-04 17:41:06.000000000 +0200
+@@ -445,8 +445,6 @@
+             }
+ 
+             /* Manage the slider */
+-#if 0
+-#define p_area p_input->p_selected_area
+             if (p_intf->p_libvlc->i_cpu & CPU_CAPABILITY_FPU)
+             {
+                 /* Manage the slider for CPU_CAPABILITY_FPU hardware */
+@@ -461,7 +459,7 @@
+                         /* Update the value */
+                         p_intf->p_sys->p_adj->value =
+                         p_intf->p_sys->f_adj_oldvalue =
+-                            ( 100. * p_area->i_tell ) / p_area->i_size;
++                            ( 100. * var_GetTime( p_intf->p_sys->p_input, "time" ) ) / var_GetTime( p_intf->p_sys->p_input, "length" );
+                         g_signal_emit_by_name( GTK_OBJECT( p_intf->p_sys->p_adj ),
+                                                  "value_changed" );
+                     }
+@@ -495,7 +493,7 @@
+                         /* Update the value */
+                         p_intf->p_sys->p_adj->value =
+                         p_intf->p_sys->i_adj_oldvalue =
+-                            ( 100 * p_area->i_tell ) / p_area->i_size;
++                            ( 100 * var_GetTime( p_intf->p_sys->p_input, "time" ) ) / var_GetTime( p_intf->p_sys->p_input, "length" );
+                         g_signal_emit_by_name( GTK_OBJECT( p_intf->p_sys->p_adj ),
+                                                  "value_changed" );
+                     }
+@@ -515,8 +513,6 @@
+                     }
+                 }
+             }
+-#undef p_area
+-#endif
+         }
+         vlc_mutex_unlock( &p_input->object_lock );
+     }
+diff -ur vlc-0.8.4a/modules/gui/pda/pda_callbacks.c vlc-0.8.4a-pda/modules/gui/pda/pda_callbacks.c
+--- vlc-0.8.4a/modules/gui/pda/pda_callbacks.c	2005-12-11 22:36:19.000000000 +0100
++++ vlc-0.8.4a-pda/modules/gui/pda/pda_callbacks.c	2006-04-05 10:26:41.000000000 +0200
+@@ -442,7 +442,7 @@
+     p_intf->p_sys->b_slider_free = 1;
+     vlc_mutex_unlock( &p_intf->change_lock );
+ 
+-    return TRUE;
++    return FALSE;
+ }
+ 
+ 
+@@ -455,7 +455,7 @@
+     p_intf->p_sys->b_slider_free = 0;
+     vlc_mutex_unlock( &p_intf->change_lock );
+ 
+-    return TRUE;
++    return FALSE;
+ }
+ 
+ void SliderMove(GtkRange *range, GtkScrollType scroll, gpointer user_data)
+@@ -1102,6 +1102,8 @@
+     p_entryStdURL = (GtkEntry*) lookup_widget( GTK_WIDGET(button), "entryStdURL" );
+     p_entryStdAnnounce = (GtkEntry*) lookup_widget( GTK_WIDGET(button), "entryAnnounceChannel" );
+     p_entryStdTTL = (GtkSpinButton*) lookup_widget( GTK_WIDGET(button), "entryStdTTL" );
++    p_checkSAP = (GtkCheckButton*) lookup_widget( GTK_WIDGET(button), "checkSAP" );
++    p_checkSLP = (GtkCheckButton*) lookup_widget( GTK_WIDGET(button), "checkSLP" );
+ 
+     p_std_access = gtk_entry_get_text(GTK_ENTRY(p_entryStdAccess));
+     p_std_muxer = gtk_entry_get_text(GTK_ENTRY(p_entryStdMuxer));
+diff -ur vlc-0.8.4a/modules/gui/pda/pda.glade vlc-0.8.4a-pda/modules/gui/pda/pda.glade
+--- vlc-0.8.4a/modules/gui/pda/pda.glade	2005-12-11 22:36:19.000000000 +0100
++++ vlc-0.8.4a-pda/modules/gui/pda/pda.glade	2006-04-05 10:50:39.000000000 +0200
+@@ -14,6 +14,12 @@
+   <property name="resizable">True</property>
+   <property name="destroy_with_parent">False</property>
+   <property name="icon">vlc16x16.png</property>
++  <property name="decorated">True</property>
++  <property name="skip_taskbar_hint">False</property>
++  <property name="skip_pager_hint">False</property>
++  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
++  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
++  <property name="focus_on_map">True</property>
+   <signal name="delete_event" handler="onPDADeleteEvent" last_modification_time="Fri, 26 Sep 2003 13:23:22 GMT"/>
+ 
+   <child>
+@@ -30,9 +36,23 @@
+ 	  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+ 	  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
+ 	  <property name="tooltips">True</property>
++	  <property name="show_arrow">True</property>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbRewind">
++	    <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
++	      <property name="visible">True</property>
++	      <property name="draw">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">False</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkToolButton" id="tbRewind">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -40,16 +60,19 @@
+ 	      <property name="label" translatable="yes">Rewind</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">pda-rewindb16x16.xpm</property>
+-	      <property name="new_group">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onRewind" last_modification_time="Fri, 26 Sep 2003 12:26:47 GMT"/>
+ 	    </widget>
+ 	    <packing>
+-	      <property name="new_group">True</property>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
+ 	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbPause">
++	    <widget class="GtkToolButton" id="tbPause">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -57,12 +80,19 @@
+ 	      <property name="label" translatable="yes">Pause</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">pda-pauseb16x16.xpm</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onPause" last_modification_time="Fri, 26 Sep 2003 12:27:01 GMT"/>
+ 	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbPlay">
++	    <widget class="GtkToolButton" id="tbPlay">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -70,12 +100,19 @@
+ 	      <property name="label" translatable="yes">Play</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">pda-playb16x16.xpm</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onPlay" last_modification_time="Fri, 26 Sep 2003 12:27:14 GMT"/>
+ 	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbStop">
++	    <widget class="GtkToolButton" id="tbStop">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -83,12 +120,19 @@
+ 	      <property name="label" translatable="yes">Stop</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">pda-stopb16x16.xpm</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onStop" last_modification_time="Fri, 26 Sep 2003 12:27:25 GMT"/>
+ 	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbForward">
++	    <widget class="GtkToolButton" id="tbForward">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -96,12 +140,32 @@
+ 	      <property name="label" translatable="yes">Forward</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">pda-forwardb16x16.xpm</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onForward" last_modification_time="Fri, 26 Sep 2003 12:27:35 GMT"/>
+ 	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
++	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="button" id="tbAbout">
++	    <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
++	      <property name="visible">True</property>
++	      <property name="draw">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	    </widget>
++	    <packing>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">False</property>
++	    </packing>
++	  </child>
++
++	  <child>
++	    <widget class="GtkToolButton" id="tbAbout">
+ 	      <property name="width_request">22</property>
+ 	      <property name="height_request">22</property>
+ 	      <property name="visible">True</property>
+@@ -109,31 +173,47 @@
+ 	      <property name="label" translatable="yes">About</property>
+ 	      <property name="use_underline">True</property>
+ 	      <property name="icon">vlc16x16.png</property>
+-	      <property name="new_group">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
+ 	      <signal name="clicked" handler="onAbout" last_modification_time="Fri, 26 Sep 2003 12:27:44 GMT"/>
+ 	    </widget>
+ 	    <packing>
+-	      <property name="new_group">True</property>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">True</property>
+ 	    </packing>
+ 	  </child>
+ 
+ 	  <child>
+-	    <widget class="GtkLabel" id="timeLabel">
++	    <widget class="GtkToolItem" id="toolitem1">
+ 	      <property name="visible">True</property>
+-	      <property name="label">00:00:00</property>
+-	      <property name="use_underline">False</property>
+-	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
+-	      <property name="wrap">False</property>
+-	      <property name="selectable">False</property>
+-	      <property name="xalign">0.5</property>
+-	      <property name="yalign">0.5</property>
+-	      <property name="xpad">0</property>
+-	      <property name="ypad">0</property>
+-	      <property name="new_group">True</property>
++	      <property name="visible_horizontal">True</property>
++	      <property name="visible_vertical">True</property>
++	      <property name="is_important">False</property>
++
++	      <child>
++		<widget class="GtkLabel" id="timeLabel">
++		  <property name="visible">True</property>
++		  <property name="label">00:00:00</property>
++		  <property name="use_underline">False</property>
++		  <property name="use_markup">False</property>
++		  <property name="justify">GTK_JUSTIFY_LEFT</property>
++		  <property name="wrap">False</property>
++		  <property name="selectable">False</property>
++		  <property name="xalign">0.5</property>
++		  <property name="yalign">0.5</property>
++		  <property name="xpad">0</property>
++		  <property name="ypad">0</property>
++		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		  <property name="width_chars">-1</property>
++		  <property name="single_line_mode">False</property>
++		  <property name="angle">0</property>
++		</widget>
++	      </child>
+ 	    </widget>
+ 	    <packing>
+-	      <property name="new_group">True</property>
++	      <property name="expand">False</property>
++	      <property name="homogeneous">False</property>
+ 	    </packing>
+ 	  </child>
+ 	</widget>
+@@ -212,6 +292,9 @@
+ 			      <property name="rules_hint">False</property>
+ 			      <property name="reorderable">False</property>
+ 			      <property name="enable_search">True</property>
++			      <property name="fixed_height_mode">False</property>
++			      <property name="hover_selection">False</property>
++			      <property name="hover_expand">False</property>
+ 			      <signal name="row_activated" handler="onFileListRow" last_modification_time="Fri, 26 Sep 2003 13:30:40 GMT"/>
+ 			    </widget>
+ 			  </child>
+@@ -240,6 +323,7 @@
+ 			      <property name="label" translatable="yes">Add to Playlist</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <signal name="pressed" handler="onAddFileToPlaylist" last_modification_time="Fri, 26 Sep 2003 12:31:03 GMT"/>
+ 			    </widget>
+ 			    <packing>
+@@ -276,13 +360,17 @@
+ 	      <property name="label" translatable="yes">File</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -311,13 +399,17 @@
+ 		      <property name="label" translatable="yes">MRL:</property>
+ 		      <property name="use_underline">False</property>
+ 		      <property name="use_markup">False</property>
+-		      <property name="justify">GTK_JUSTIFY_CENTER</property>
++		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 		      <property name="wrap">False</property>
+ 		      <property name="selectable">False</property>
+ 		      <property name="xalign">0.5</property>
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="padding">0</property>
+@@ -462,6 +554,10 @@
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="left_attach">0</property>
+@@ -486,6 +582,10 @@
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="left_attach">0</property>
+@@ -628,6 +728,10 @@
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="left_attach">0</property>
+@@ -756,6 +860,10 @@
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="left_attach">0</property>
+@@ -780,6 +888,10 @@
+ 		      <property name="yalign">0.5</property>
+ 		      <property name="xpad">0</property>
+ 		      <property name="ypad">0</property>
++		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++		      <property name="width_chars">-1</property>
++		      <property name="single_line_mode">False</property>
++		      <property name="angle">0</property>
+ 		    </widget>
+ 		    <packing>
+ 		      <property name="left_attach">0</property>
+@@ -798,6 +910,7 @@
+ 		      <property name="label" translatable="yes">enable</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <property name="active">False</property>
+ 		      <property name="inconsistent">False</property>
+ 		      <property name="draw_indicator">True</property>
+@@ -836,6 +949,7 @@
+ 		      <property name="label" translatable="yes">Add to Playlist</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onAddNetworkPlaylist" last_modification_time="Fri, 26 Sep 2003 12:37:36 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -857,7 +971,7 @@
+ 	      </child>
+ 	    </widget>
+ 	    <packing>
+-	      <property name="tab_expand">True</property>
++	      <property name="tab_expand">False</property>
+ 	      <property name="tab_fill">True</property>
+ 	    </packing>
+ 	  </child>
+@@ -868,13 +982,17 @@
+ 	      <property name="label" translatable="yes">Network</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -923,6 +1041,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -947,6 +1069,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -971,6 +1097,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -995,6 +1125,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1019,6 +1153,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1043,6 +1181,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1067,6 +1209,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1091,6 +1237,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1115,6 +1265,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1139,6 +1293,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1163,6 +1321,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1187,6 +1349,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1677,6 +1843,7 @@
+ 			      <property name="label" translatable="yes">enable</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <property name="active">False</property>
+ 			      <property name="inconsistent">False</property>
+ 			      <property name="draw_indicator">True</property>
+@@ -1726,6 +1893,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1744,6 +1915,7 @@
+ 			      <property name="label" translatable="yes">enable</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <property name="active">False</property>
+ 			      <property name="inconsistent">False</property>
+ 			      <property name="draw_indicator">True</property>
+@@ -1786,6 +1958,7 @@
+ 		      <property name="label" translatable="yes">Add to Playlist</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onAddCameraToPlaylist" last_modification_time="Fri, 26 Sep 2003 12:47:31 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -1825,6 +1998,10 @@
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -1873,6 +2050,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -1993,6 +2174,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2017,6 +2202,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2041,6 +2230,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2065,6 +2258,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2089,6 +2286,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2113,6 +2314,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2137,6 +2342,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2161,6 +2370,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2185,6 +2398,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2507,6 +2724,7 @@
+ 			      <property name="label" translatable="yes">enable</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <property name="active">False</property>
+ 			      <property name="inconsistent">False</property>
+ 			      <property name="draw_indicator">True</property>
+@@ -2553,7 +2771,7 @@
+ 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+ 			      <property name="snap_to_ticks">False</property>
+ 			      <property name="wrap">False</property>
+-			      <property name="adjustment">800000 0 1e+06 1 10 10</property>
++			      <property name="adjustment">800000 0 1000000 1 10 10</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">1</property>
+@@ -2599,6 +2817,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2730,6 +2952,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2748,6 +2974,7 @@
+ 			      <property name="label" translatable="yes">enable</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <property name="active">False</property>
+ 			      <property name="inconsistent">False</property>
+ 			      <property name="draw_indicator">True</property>
+@@ -2769,6 +2996,7 @@
+ 			      <property name="label" translatable="yes">enable</property>
+ 			      <property name="use_underline">True</property>
+ 			      <property name="relief">GTK_RELIEF_NORMAL</property>
++			      <property name="focus_on_click">True</property>
+ 			      <property name="active">False</property>
+ 			      <property name="inconsistent">False</property>
+ 			      <property name="draw_indicator">True</property>
+@@ -2796,6 +3024,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2820,6 +3052,10 @@
+ 			      <property name="yalign">0.5</property>
+ 			      <property name="xpad">0</property>
+ 			      <property name="ypad">0</property>
++			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			      <property name="width_chars">-1</property>
++			      <property name="single_line_mode">False</property>
++			      <property name="angle">0</property>
+ 			    </widget>
+ 			    <packing>
+ 			      <property name="left_attach">0</property>
+@@ -2898,6 +3134,7 @@
+ 		      <property name="label" translatable="yes">Add to Playlist</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onAddTranscodeToPlaylist" last_modification_time="Sun, 09 Nov 2003 15:55:09 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -2930,13 +3167,17 @@
+ 	      <property name="label" translatable="yes">Transcode</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -2965,6 +3206,9 @@
+ 		      <property name="rules_hint">False</property>
+ 		      <property name="reorderable">False</property>
+ 		      <property name="enable_search">True</property>
++		      <property name="fixed_height_mode">False</property>
++		      <property name="hover_selection">False</property>
++		      <property name="hover_expand">False</property>
+ 		      <signal name="event" handler="PlaylistEvent" last_modification_time="Fri, 26 Sep 2003 12:48:10 GMT"/>
+ 		      <signal name="columns_changed" handler="onPlaylistColumnsChanged" last_modification_time="Fri, 26 Sep 2003 13:36:25 GMT"/>
+ 		      <signal name="select_cursor_row" handler="onPlaylistRowSelected" last_modification_time="Fri, 26 Sep 2003 13:37:22 GMT"/>
+@@ -2992,6 +3236,7 @@
+ 		      <property name="label" translatable="yes">Update</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onUpdatePlaylist" last_modification_time="Fri, 26 Sep 2003 12:48:43 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3008,6 +3253,7 @@
+ 		      <property name="label" translatable="yes">Delete</property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onDeletePlaylist" last_modification_time="Fri, 26 Sep 2003 12:49:22 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3024,6 +3270,7 @@
+ 		      <property name="label" translatable="yes"> Clear </property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onClearPlaylist" last_modification_time="Fri, 26 Sep 2003 12:49:47 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3052,13 +3299,17 @@
+ 	      <property name="label" translatable="yes">Playlist</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -3088,6 +3339,9 @@
+ 		      <property name="rules_hint">False</property>
+ 		      <property name="reorderable">False</property>
+ 		      <property name="enable_search">True</property>
++		      <property name="fixed_height_mode">False</property>
++		      <property name="hover_selection">False</property>
++		      <property name="hover_expand">False</property>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
+@@ -3111,6 +3365,7 @@
+ 		      <property name="label" translatable="yes"> Save </property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onPreferenceSave" last_modification_time="Fri, 26 Sep 2003 13:26:11 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3127,6 +3382,7 @@
+ 		      <property name="label" translatable="yes"> Apply </property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onPreferenceApply" last_modification_time="Fri, 26 Sep 2003 13:26:54 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3147,6 +3403,7 @@
+ 		      <property name="label" translatable="yes"> Cancel </property>
+ 		      <property name="use_underline">True</property>
+ 		      <property name="relief">GTK_RELIEF_NORMAL</property>
++		      <property name="focus_on_click">True</property>
+ 		      <signal name="pressed" handler="onPreferenceCancel" last_modification_time="Fri, 26 Sep 2003 13:27:19 GMT"/>
+ 		    </widget>
+ 		    <packing>
+@@ -3177,13 +3434,17 @@
+ 	      <property name="label" translatable="yes">Preference</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+@@ -3239,6 +3500,10 @@
+ 			  <property name="yalign">0.5</property>
+ 			  <property name="xpad">0</property>
+ 			  <property name="ypad">0</property>
++			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			  <property name="width_chars">-1</property>
++			  <property name="single_line_mode">False</property>
++			  <property name="angle">0</property>
+ 			</widget>
+ 			<packing>
+ 			  <property name="x">16</property>
+@@ -3247,46 +3512,54 @@
+ 		      </child>
+ 
+ 		      <child>
+-			<widget class="GtkLabel" id="labelAuthors">
++			<widget class="GtkLabel" id="labelCopyright">
+ 			  <property name="width_request">208</property>
+-			  <property name="height_request">32</property>
++			  <property name="height_request">16</property>
+ 			  <property name="visible">True</property>
+-			  <property name="label" translatable="yes">Authors: the VideoLAN Team, http://www.videolan.org/team/</property>
++			  <property name="label" translatable="yes">(c) 1996-2004 the VideoLAN team</property>
+ 			  <property name="use_underline">False</property>
+ 			  <property name="use_markup">False</property>
+-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+-			  <property name="wrap">True</property>
++			  <property name="justify">GTK_JUSTIFY_CENTER</property>
++			  <property name="wrap">False</property>
+ 			  <property name="selectable">False</property>
+ 			  <property name="xalign">0.5</property>
+ 			  <property name="yalign">0.5</property>
+ 			  <property name="xpad">0</property>
+ 			  <property name="ypad">0</property>
++			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			  <property name="width_chars">-1</property>
++			  <property name="single_line_mode">False</property>
++			  <property name="angle">0</property>
+ 			</widget>
+ 			<packing>
+ 			  <property name="x">16</property>
+-			  <property name="y">72</property>
++			  <property name="y">48</property>
+ 			</packing>
+ 		      </child>
+ 
+ 		      <child>
+-			<widget class="GtkLabel" id="labelCopyright">
++			<widget class="GtkLabel" id="labelAuthors">
+ 			  <property name="width_request">208</property>
+-			  <property name="height_request">16</property>
++			  <property name="height_request">32</property>
+ 			  <property name="visible">True</property>
+-			  <property name="label" translatable="yes">(c) 1996-2004 the VideoLAN team</property>
++			  <property name="label" translatable="yes">Authors: the VideoLAN Team, http://www.videolan.org/team/</property>
+ 			  <property name="use_underline">False</property>
+ 			  <property name="use_markup">False</property>
+-			  <property name="justify">GTK_JUSTIFY_CENTER</property>
+-			  <property name="wrap">False</property>
++			  <property name="justify">GTK_JUSTIFY_LEFT</property>
++			  <property name="wrap">True</property>
+ 			  <property name="selectable">False</property>
+ 			  <property name="xalign">0.5</property>
+ 			  <property name="yalign">0.5</property>
+ 			  <property name="xpad">0</property>
+ 			  <property name="ypad">0</property>
++			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			  <property name="width_chars">-1</property>
++			  <property name="single_line_mode">False</property>
++			  <property name="angle">0</property>
+ 			</widget>
+ 			<packing>
+ 			  <property name="x">16</property>
+-			  <property name="y">48</property>
++			  <property name="y">72</property>
+ 			</packing>
+ 		      </child>
+ 
+@@ -3305,6 +3578,10 @@
+ 			  <property name="yalign">0.5</property>
+ 			  <property name="xpad">0</property>
+ 			  <property name="ypad">0</property>
++			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++			  <property name="width_chars">-1</property>
++			  <property name="single_line_mode">False</property>
++			  <property name="angle">0</property>
+ 			</widget>
+ 			<packing>
+ 			  <property name="x">48</property>
+@@ -3328,13 +3605,17 @@
+ 	      <property name="label" translatable="yes">About</property>
+ 	      <property name="use_underline">False</property>
+ 	      <property name="use_markup">False</property>
+-	      <property name="justify">GTK_JUSTIFY_CENTER</property>
++	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+ 	      <property name="wrap">False</property>
+ 	      <property name="selectable">False</property>
+ 	      <property name="xalign">0.5</property>
+ 	      <property name="yalign">0.5</property>
+ 	      <property name="xpad">0</property>
+ 	      <property name="ypad">0</property>
++	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
++	      <property name="width_chars">-1</property>
++	      <property name="single_line_mode">False</property>
++	      <property name="angle">0</property>
+ 	    </widget>
+ 	    <packing>
+ 	      <property name="type">tab</property>
+diff -ur vlc-0.8.4a/modules/gui/pda/pda_interface.c vlc-0.8.4a-pda/modules/gui/pda/pda_interface.c
+--- vlc-0.8.4a/modules/gui/pda/pda_interface.c	2005-12-11 22:36:19.000000000 +0100
++++ vlc-0.8.4a-pda/modules/gui/pda/pda_interface.c	2006-04-05 10:50:39.000000000 +0200
+@@ -33,13 +33,17 @@
+   GdkPixbuf *pda_icon_pixbuf;
+   GtkWidget *vbox;
+   GtkWidget *toolbar;
+-  GtkWidget *tmp_toolbar_icon;
++  GtkIconSize tmp_toolbar_icon_size;
++  GtkWidget *separatortoolitem1;
++  GtkWidget *tmp_image;
+   GtkWidget *tbRewind;
+   GtkWidget *tbPause;
+   GtkWidget *tbPlay;
+   GtkWidget *tbStop;
+   GtkWidget *tbForward;
++  GtkWidget *separatortoolitem2;
+   GtkWidget *tbAbout;
++  GtkWidget *toolitem1;
+   GtkWidget *timeLabel;
+   GtkWidget *timeSlider;
+   GtkWidget *notebook;
+@@ -198,8 +202,8 @@
+   GtkWidget *fixed2;
+   GtkWidget *aboutImage;
+   GtkWidget *labelDescription;
+-  GtkWidget *labelAuthors;
+   GtkWidget *labelCopyright;
++  GtkWidget *labelAuthors;
+   GtkWidget *labelProgramName;
+   GtkWidget *about;
+   GtkTooltips *tooltips;
+@@ -228,89 +232,81 @@
+   gtk_box_pack_start (GTK_BOX (vbox), toolbar, FALSE, FALSE, 5);
+   gtk_widget_set_size_request (toolbar, 240, 22);
+   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
++  tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar));
+ 
+-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+-
+-  tmp_toolbar_icon = create_pixmap (pda, "pda-rewindb16x16.xpm");
+-  tbRewind = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("Rewind"),
+-                                _("Rewind"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  separatortoolitem1 = (GtkWidget*) gtk_separator_tool_item_new ();
++  gtk_widget_set_name (separatortoolitem1, "separatortoolitem1");
++  gtk_widget_show (separatortoolitem1);
++  gtk_container_add (GTK_CONTAINER (toolbar), separatortoolitem1);
++
++  tmp_image = create_pixmap (pda, "pda-rewindb16x16.xpm");
++  gtk_widget_show (tmp_image);
++  tbRewind = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Rewind"));
+   gtk_widget_set_name (tbRewind, "tbRewind");
+   gtk_widget_show (tbRewind);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbRewind);
+   gtk_widget_set_size_request (tbRewind, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbRewind), tooltips, _("Rewind"), NULL);
+ 
+-  tmp_toolbar_icon = create_pixmap (pda, "pda-pauseb16x16.xpm");
+-  tbPause = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("Pause"),
+-                                _("Pause"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  tmp_image = create_pixmap (pda, "pda-pauseb16x16.xpm");
++  gtk_widget_show (tmp_image);
++  tbPause = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Pause"));
+   gtk_widget_set_name (tbPause, "tbPause");
+   gtk_widget_show (tbPause);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbPause);
+   gtk_widget_set_size_request (tbPause, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbPause), tooltips, _("Pause"), NULL);
+ 
+-  tmp_toolbar_icon = create_pixmap (pda, "pda-playb16x16.xpm");
+-  tbPlay = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("Play"),
+-                                _("Play"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  tmp_image = create_pixmap (pda, "pda-playb16x16.xpm");
++  gtk_widget_show (tmp_image);
++  tbPlay = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Play"));
+   gtk_widget_set_name (tbPlay, "tbPlay");
+   gtk_widget_show (tbPlay);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbPlay);
+   gtk_widget_set_size_request (tbPlay, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbPlay), tooltips, _("Play"), NULL);
+ 
+-  tmp_toolbar_icon = create_pixmap (pda, "pda-stopb16x16.xpm");
+-  tbStop = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("Stop"),
+-                                _("Stop"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  tmp_image = create_pixmap (pda, "pda-stopb16x16.xpm");
++  gtk_widget_show (tmp_image);
++  tbStop = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Stop"));
+   gtk_widget_set_name (tbStop, "tbStop");
+   gtk_widget_show (tbStop);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbStop);
+   gtk_widget_set_size_request (tbStop, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbStop), tooltips, _("Stop"), NULL);
+ 
+-  tmp_toolbar_icon = create_pixmap (pda, "pda-forwardb16x16.xpm");
+-  tbForward = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("Forward"),
+-                                _("Forward"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  tmp_image = create_pixmap (pda, "pda-forwardb16x16.xpm");
++  gtk_widget_show (tmp_image);
++  tbForward = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Forward"));
+   gtk_widget_set_name (tbForward, "tbForward");
+   gtk_widget_show (tbForward);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbForward);
+   gtk_widget_set_size_request (tbForward, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbForward), tooltips, _("Forward"), NULL);
+ 
+-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+-
+-  tmp_toolbar_icon = create_pixmap (pda, "vlc16x16.png");
+-  tbAbout = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+-                                GTK_TOOLBAR_CHILD_BUTTON,
+-                                NULL,
+-                                _("About"),
+-                                _("About"), NULL,
+-                                tmp_toolbar_icon, NULL, NULL);
+-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
++  separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
++  gtk_widget_set_name (separatortoolitem2, "separatortoolitem2");
++  gtk_widget_show (separatortoolitem2);
++  gtk_container_add (GTK_CONTAINER (toolbar), separatortoolitem2);
++
++  tmp_image = create_pixmap (pda, "vlc16x16.png");
++  gtk_widget_show (tmp_image);
++  tbAbout = (GtkWidget*) gtk_tool_button_new (tmp_image, _("About"));
+   gtk_widget_set_name (tbAbout, "tbAbout");
+   gtk_widget_show (tbAbout);
++  gtk_container_add (GTK_CONTAINER (toolbar), tbAbout);
+   gtk_widget_set_size_request (tbAbout, 22, 22);
++  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (tbAbout), tooltips, _("About"), NULL);
++
++  toolitem1 = (GtkWidget*) gtk_tool_item_new ();
++  gtk_widget_set_name (toolitem1, "toolitem1");
++  gtk_widget_show (toolitem1);
++  gtk_container_add (GTK_CONTAINER (toolbar), toolitem1);
+ 
+-  timeLabel = gtk_label_new (_("00:00:00"));
++  timeLabel = gtk_label_new ("00:00:00");
+   gtk_widget_set_name (timeLabel, "timeLabel");
+   gtk_widget_show (timeLabel);
+-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+-
+-  gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar), timeLabel, NULL, NULL);
++  gtk_container_add (GTK_CONTAINER (toolitem1), timeLabel);
+ 
+   timeSlider = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 6.25, 0)));
+   gtk_widget_set_name (timeSlider, "timeSlider");
+@@ -372,8 +368,6 @@
+   gtk_widget_set_name (vbox5, "vbox5");
+   gtk_widget_show (vbox5);
+   gtk_container_add (GTK_CONTAINER (notebook), vbox5);
+-  gtk_notebook_set_tab_label_packing (GTK_NOTEBOOK (notebook), vbox5,
+-                                      TRUE, TRUE, GTK_PACK_START);
+ 
+   hbox12 = gtk_hbox_new (FALSE, 0);
+   gtk_widget_set_name (hbox12, "hbox12");
+@@ -393,13 +387,13 @@
+   gtk_widget_set_name (comboMRL, "comboMRL");
+   gtk_widget_show (comboMRL);
+   gtk_box_pack_start (GTK_BOX (hbox12), comboMRL, TRUE, TRUE, 0);
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "udp://@:1234");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "udp6://@:1234");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "rtp://");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "rtp6://");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "ftp://");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "http://");
+-  comboMRL_items = g_list_append (comboMRL_items, (gpointer) "mms://");
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("udp://@:1234"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("udp6://@:1234"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("rtp://"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("rtp6://"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("ftp://"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("http://"));
++  comboMRL_items = g_list_append (comboMRL_items, (gpointer) _("mms://"));
+   gtk_combo_set_popdown_strings (GTK_COMBO (comboMRL), comboMRL_items);
+   g_list_free (comboMRL_items);
+ 
+@@ -413,7 +407,7 @@
+   gtk_widget_set_name (hseparator15, "hseparator15");
+   gtk_widget_show (hseparator15);
+   gtk_box_pack_start (GTK_BOX (vbox5), hseparator15, FALSE, FALSE, 0);
+-  gtk_widget_set_size_request (hseparator15, -2, 10);
++  gtk_widget_set_size_request (hseparator15, -1, 10);
+ 
+   table2 = gtk_table_new (6, 2, FALSE);
+   gtk_widget_set_name (table2, "table2");
+@@ -426,7 +420,6 @@
+   gtk_table_attach (GTK_TABLE (table2), labelNetworkPort, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelNetworkPort), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelNetworkPort), 0, 0.5);
+ 
+   labelNetworkAddress = gtk_label_new (_("Address:"));
+@@ -435,7 +428,6 @@
+   gtk_table_attach (GTK_TABLE (table2), labelNetworkAddress, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelNetworkAddress), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelNetworkAddress), 0, 0.5);
+ 
+   entryNetworkPort_adj = gtk_adjustment_new (1234, 0, 65535, 1, 10, 10);
+@@ -484,7 +476,6 @@
+   gtk_table_attach (GTK_TABLE (table2), labelNetworkType, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelNetworkType), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelNetworkType), 0, 0.5);
+ 
+   comboNetworkProtocolType = gtk_combo_new ();
+@@ -516,7 +507,6 @@
+   gtk_table_attach (GTK_TABLE (table2), labelNetworkProtocol, 0, 1, 3, 4,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelNetworkProtocol), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelNetworkProtocol), 0, 0.5);
+ 
+   labelNetworkTranscode = gtk_label_new (_("Transcode:"));
+@@ -525,7 +515,6 @@
+   gtk_table_attach (GTK_TABLE (table2), labelNetworkTranscode, 0, 1, 4, 5,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelNetworkTranscode), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelNetworkTranscode), 0, 0.5);
+ 
+   checkNetworkTranscode = gtk_check_button_new_with_mnemonic (_("enable"));
+@@ -578,7 +567,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4lVideDevice, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4lVideDevice), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4lVideDevice), 0, 0.5);
+ 
+   labelV4LAudioDevice = gtk_label_new (_("Audio:"));
+@@ -587,7 +575,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LAudioDevice, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LAudioDevice), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LAudioDevice), 0, 0.5);
+ 
+   labelV4LChannel = gtk_label_new (_("Channel:"));
+@@ -596,7 +583,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LChannel, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LChannel), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LChannel), 0, 0.5);
+ 
+   labelV4LNorm = gtk_label_new (_("Norm:"));
+@@ -605,7 +591,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LNorm, 0, 1, 3, 4,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LNorm), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LNorm), 0, 0.5);
+ 
+   labelV4LSize = gtk_label_new (_("Size:"));
+@@ -614,7 +599,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LSize, 0, 1, 4, 5,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LSize), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LSize), 0, 0.5);
+ 
+   labelV4LFrequency = gtk_label_new (_("Frequency:"));
+@@ -623,7 +607,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LFrequency, 0, 1, 5, 6,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LFrequency), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LFrequency), 0, 0.5);
+ 
+   labelV4LSampleRate = gtk_label_new (_("Samplerate:"));
+@@ -632,7 +615,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LSampleRate, 0, 1, 6, 7,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LSampleRate), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LSampleRate), 0, 0.5);
+ 
+   labelV4LQuality = gtk_label_new (_("Quality:"));
+@@ -641,7 +623,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LQuality, 0, 1, 7, 8,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LQuality), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LQuality), 0, 0.5);
+ 
+   labelV4LTuner = gtk_label_new (_("Tuner:"));
+@@ -650,7 +631,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LTuner, 0, 1, 9, 10,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LTuner), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LTuner), 0, 0.5);
+ 
+   labelV4LSoundDirection = gtk_label_new (_("Sound:"));
+@@ -659,7 +639,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LSoundDirection, 0, 1, 8, 9,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LSoundDirection), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LSoundDirection), 0, 0.5);
+ 
+   labelV4LMJPEG = gtk_label_new (_("MJPEG:"));
+@@ -668,7 +647,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LMJPEG, 0, 1, 10, 11,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LMJPEG), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LMJPEG), 0, 0.5);
+ 
+   labelV4LDecimation = gtk_label_new (_("Decimation:"));
+@@ -677,7 +655,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LDecimation, 0, 1, 11, 12,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LDecimation), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LDecimation), 0, 0.5);
+ 
+   comboV4lVideoDevice = gtk_combo_new ();
+@@ -689,9 +666,9 @@
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_combo_set_value_in_list (GTK_COMBO (comboV4lVideoDevice), TRUE, TRUE);
+-  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) "/dev/video");
+-  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) "/dev/video0");
+-  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) "/dev/video1");
++  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) _("/dev/video"));
++  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) _("/dev/video0"));
++  comboV4lVideoDevice_items = g_list_append (comboV4lVideoDevice_items, (gpointer) _("/dev/video1"));
+   gtk_combo_set_popdown_strings (GTK_COMBO (comboV4lVideoDevice), comboV4lVideoDevice_items);
+   g_list_free (comboV4lVideoDevice_items);
+ 
+@@ -708,10 +685,10 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), comboV4lAudioDevice, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) "/dev/dsp");
+-  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) "/dev/audio");
+-  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) "/dev/audio0");
+-  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) "/dev/audio1");
++  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) _("/dev/dsp"));
++  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) _("/dev/audio"));
++  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) _("/dev/audio0"));
++  comboV4lAudioDevice_items = g_list_append (comboV4lAudioDevice_items, (gpointer) _("/dev/audio1"));
+   gtk_combo_set_popdown_strings (GTK_COMBO (comboV4lAudioDevice), comboV4lAudioDevice_items);
+   g_list_free (comboV4lAudioDevice_items);
+ 
+@@ -851,7 +828,6 @@
+   gtk_table_attach (GTK_TABLE (tableV4L), labelV4LTranscode, 0, 1, 12, 13,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelV4LTranscode), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelV4LTranscode), 0, 0.5);
+ 
+   checkV4LTranscode = gtk_check_button_new_with_mnemonic (_("enable"));
+@@ -875,7 +851,6 @@
+   gtk_widget_set_name (Camera, "Camera");
+   gtk_widget_show (Camera);
+   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), Camera);
+-  gtk_label_set_justify (GTK_LABEL (Camera), GTK_JUSTIFY_LEFT);
+ 
+   vbox1 = gtk_vbox_new (FALSE, 0);
+   gtk_widget_set_name (vbox1, "vbox1");
+@@ -904,7 +879,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelVideoCodec, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelVideoCodec), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelVideoCodec), 0, 0.5);
+ 
+   comboVideoCodec = gtk_combo_new ();
+@@ -936,7 +910,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelVideoBitrate, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelVideoBitrate), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelVideoBitrate), 0, 0.5);
+ 
+   labelVideoBitrateTolerance = gtk_label_new (_("Bitrate Tolerance:"));
+@@ -945,7 +918,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelVideoBitrateTolerance, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelVideoBitrateTolerance), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelVideoBitrateTolerance), 0, 0.5);
+ 
+   labelVideoKeyInterval = gtk_label_new (_("Keyframe Interval:"));
+@@ -954,7 +926,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelVideoKeyInterval, 0, 1, 3, 4,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelVideoKeyInterval), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelVideoKeyInterval), 0, 0.5);
+ 
+   labelAudioCodec = gtk_label_new (_("Audio Codec:"));
+@@ -963,7 +934,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelAudioCodec, 0, 1, 5, 6,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelAudioCodec), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelAudioCodec), 0, 0.5);
+ 
+   labelVideoDeinterlace = gtk_label_new (_("Deinterlace:"));
+@@ -972,7 +942,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelVideoDeinterlace, 0, 1, 4, 5,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelVideoDeinterlace), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelVideoDeinterlace), 0, 0.5);
+ 
+   labelStdAccess = gtk_label_new (_("Access:"));
+@@ -981,7 +950,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelStdAccess, 0, 1, 7, 8,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelStdAccess), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelStdAccess), 0, 0.5);
+ 
+   labelStdMuxer = gtk_label_new (_("Muxer:"));
+@@ -990,7 +958,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelStdMuxer, 0, 1, 8, 9,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelStdMuxer), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelStdMuxer), 0, 0.5);
+ 
+   labelStdUrl = gtk_label_new (_("URL:"));
+@@ -999,7 +966,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelStdUrl, 0, 1, 9, 10,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelStdUrl), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelStdUrl), 0, 0.5);
+ 
+   labelStdTimeToLive = gtk_label_new (_("Time To Live (TTL):"));
+@@ -1008,7 +974,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelStdTimeToLive, 0, 1, 10, 11,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelStdTimeToLive), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelStdTimeToLive), 0, 0.5);
+ 
+   entryStdTTL_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+@@ -1047,14 +1012,14 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), comboStdMuxer, 1, 2, 8, 9,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("PS"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("TS"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("MPEG1"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("AVI"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("OGG"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("MP4"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("MOV"));
+-  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("ASF"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("ps"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("ts"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("mpeg1"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("avi"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("ogg"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("mp4"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("mov"));
++  comboStdMuxer_items = g_list_append (comboStdMuxer_items, (gpointer) _("asf"));
+   gtk_combo_set_popdown_strings (GTK_COMBO (comboStdMuxer), comboStdMuxer_items);
+   g_list_free (comboStdMuxer_items);
+ 
+@@ -1111,7 +1076,7 @@
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (entryVideoKeyFrameInterval), TRUE);
+ 
+-  entryVideoBitrateTolerance_adj = gtk_adjustment_new (800000, 0, 1e+06, 1, 10, 10);
++  entryVideoBitrateTolerance_adj = gtk_adjustment_new (800000, 0, 1000000, 1, 10, 10);
+   entryVideoBitrateTolerance = gtk_spin_button_new (GTK_ADJUSTMENT (entryVideoBitrateTolerance_adj), 1, 0);
+   gtk_widget_set_name (entryVideoBitrateTolerance, "entryVideoBitrateTolerance");
+   gtk_widget_show (entryVideoBitrateTolerance);
+@@ -1137,7 +1102,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelAudioBitrate, 0, 1, 6, 7,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelAudioBitrate), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelAudioBitrate), 0, 0.5);
+ 
+   comboStdAccess = gtk_combo_new ();
+@@ -1160,7 +1124,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelSAP, 0, 1, 11, 12,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelSAP), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelSAP), 0, 0.5);
+ 
+   checkSAP = gtk_check_button_new_with_mnemonic (_("enable"));
+@@ -1183,7 +1146,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelSLP_, 0, 1, 12, 13,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelSLP_), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelSLP_), 0, 0.5);
+ 
+   labelAnounceChannel = gtk_label_new (_("Announce Channel:"));
+@@ -1192,7 +1154,6 @@
+   gtk_table_attach (GTK_TABLE (tableTranscode), labelAnounceChannel, 0, 1, 13, 14,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+-  gtk_label_set_justify (GTK_LABEL (labelAnounceChannel), GTK_JUSTIFY_LEFT);
+   gtk_misc_set_alignment (GTK_MISC (labelAnounceChannel), 0, 0.5);
+ 
+   comboAnnounceChannel = gtk_combo_new ();
+@@ -1335,28 +1296,28 @@
+   gtk_widget_show (labelDescription);
+   gtk_fixed_put (GTK_FIXED (fixed2), labelDescription, 16, 112);
+   gtk_widget_set_size_request (labelDescription, 200, 112);
+-  gtk_label_set_justify (GTK_LABEL (labelDescription), GTK_JUSTIFY_LEFT);
+   gtk_label_set_line_wrap (GTK_LABEL (labelDescription), TRUE);
+ 
++  labelCopyright = gtk_label_new (_("(c) 1996-2004 the VideoLAN team"));
++  gtk_widget_set_name (labelCopyright, "labelCopyright");
++  gtk_widget_show (labelCopyright);
++  gtk_fixed_put (GTK_FIXED (fixed2), labelCopyright, 16, 48);
++  gtk_widget_set_size_request (labelCopyright, 208, 16);
++  gtk_label_set_justify (GTK_LABEL (labelCopyright), GTK_JUSTIFY_CENTER);
++
+   labelAuthors = gtk_label_new (_("Authors: the VideoLAN Team, http://www.videolan.org/team/"));
+   gtk_widget_set_name (labelAuthors, "labelAuthors");
+   gtk_widget_show (labelAuthors);
+   gtk_fixed_put (GTK_FIXED (fixed2), labelAuthors, 16, 72);
+   gtk_widget_set_size_request (labelAuthors, 208, 32);
+-  gtk_label_set_justify (GTK_LABEL (labelAuthors), GTK_JUSTIFY_LEFT);
+   gtk_label_set_line_wrap (GTK_LABEL (labelAuthors), TRUE);
+ 
+-  labelCopyright = gtk_label_new (_("(c) 1996-2004 the the VideoLAN team team"));
+-  gtk_widget_set_name (labelCopyright, "labelCopyright");
+-  gtk_widget_show (labelCopyright);
+-  gtk_fixed_put (GTK_FIXED (fixed2), labelCopyright, 16, 48);
+-  gtk_widget_set_size_request (labelCopyright, 208, 16);
+-
+   labelProgramName = gtk_label_new (_("VLC media player"));
+   gtk_widget_set_name (labelProgramName, "labelProgramName");
+   gtk_widget_show (labelProgramName);
+   gtk_fixed_put (GTK_FIXED (fixed2), labelProgramName, 48, 16);
+   gtk_widget_set_size_request (labelProgramName, 152, 16);
++  gtk_label_set_justify (GTK_LABEL (labelProgramName), GTK_JUSTIFY_CENTER);
+   gtk_label_set_line_wrap (GTK_LABEL (labelProgramName), TRUE);
+ 
+   about = gtk_label_new (_("About"));
+@@ -1459,12 +1420,15 @@
+   GLADE_HOOKUP_OBJECT_NO_REF (pda, pda, "pda");
+   GLADE_HOOKUP_OBJECT (pda, vbox, "vbox");
+   GLADE_HOOKUP_OBJECT (pda, toolbar, "toolbar");
++  GLADE_HOOKUP_OBJECT (pda, separatortoolitem1, "separatortoolitem1");
+   GLADE_HOOKUP_OBJECT (pda, tbRewind, "tbRewind");
+   GLADE_HOOKUP_OBJECT (pda, tbPause, "tbPause");
+   GLADE_HOOKUP_OBJECT (pda, tbPlay, "tbPlay");
+   GLADE_HOOKUP_OBJECT (pda, tbStop, "tbStop");
+   GLADE_HOOKUP_OBJECT (pda, tbForward, "tbForward");
++  GLADE_HOOKUP_OBJECT (pda, separatortoolitem2, "separatortoolitem2");
+   GLADE_HOOKUP_OBJECT (pda, tbAbout, "tbAbout");
++  GLADE_HOOKUP_OBJECT (pda, toolitem1, "toolitem1");
+   GLADE_HOOKUP_OBJECT (pda, timeLabel, "timeLabel");
+   GLADE_HOOKUP_OBJECT (pda, timeSlider, "timeSlider");
+   GLADE_HOOKUP_OBJECT (pda, notebook, "notebook");
+@@ -1599,8 +1563,8 @@
+   GLADE_HOOKUP_OBJECT (pda, fixed2, "fixed2");
+   GLADE_HOOKUP_OBJECT (pda, aboutImage, "aboutImage");
+   GLADE_HOOKUP_OBJECT (pda, labelDescription, "labelDescription");
+-  GLADE_HOOKUP_OBJECT (pda, labelAuthors, "labelAuthors");
+   GLADE_HOOKUP_OBJECT (pda, labelCopyright, "labelCopyright");
++  GLADE_HOOKUP_OBJECT (pda, labelAuthors, "labelAuthors");
+   GLADE_HOOKUP_OBJECT (pda, labelProgramName, "labelProgramName");
+   GLADE_HOOKUP_OBJECT (pda, about, "about");
+   GLADE_HOOKUP_OBJECT_NO_REF (pda, tooltips, "tooltips");
+diff -ur vlc-0.8.4a/modules/gui/pda/pda_support.h vlc-0.8.4a-pda/modules/gui/pda/pda_support.h
+--- vlc-0.8.4a/modules/gui/pda/pda_support.h	2005-12-11 22:36:19.000000000 +0100
++++ vlc-0.8.4a-pda/modules/gui/pda/pda_support.h	2006-04-05 10:50:39.000000000 +0200
+@@ -15,6 +15,7 @@
+ #  include <libintl.h>
+ #  undef _
+ #  define _(String) dgettext (PACKAGE, String)
++#  define Q_(String) g_strip_context ((String), gettext (String))
+ #  ifdef gettext_noop
+ #    define N_(String) gettext_noop (String)
+ #  else
+@@ -27,6 +28,7 @@
+ #  define dcgettext(Domain,Message,Type) (Message)
+ #  define bindtextdomain(Domain,Directory) (Domain)
+ #  define _(String) (String)
++#  define Q_(String) g_strip_context ((String), (String))
+ #  define N_(String) (String)
+ #endif
+ 
